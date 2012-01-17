@@ -1,7 +1,7 @@
-%& MODIF TYPELEM  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
-% COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+% COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 % THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 % IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 % THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -82,6 +82,8 @@ MODE_LOCAL__
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        W        )
     EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30])
     EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30])
+    EERREUR  = ERRE_R   ELEM__         (ERREST   NUEST    SIGCAL   TERMRE   TERMR2   TERMNO
+                                        TERMN2   TERMSA   TERMS2   TAILLE   )
 
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
     ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    )
@@ -166,3 +168,5 @@ OPTION__
     TOU_INI_ELGA          99  IN__   NGEOMER  PGEOMER
                               OUT__  EGGEOM_R PGEOM_R  EGNEUT_F PNEUT_F  EGNEUT_R PNEUT_R  EPRESGA  PPRES_R
                                      EDEPLPG  PDEPL_R
+    TOU_INI_ELEM          99  IN__   NGEOMER  PGEOMER
+                              OUT__  EERREUR  PERREUR

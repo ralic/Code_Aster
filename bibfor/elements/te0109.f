@@ -3,9 +3,9 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -54,7 +54,7 @@ C
       INTEGER ICODRE(NBRES)
       CHARACTER*2 VAL
       CHARACTER*3   NUM
-      CHARACTER*8   NOMRES(NBRES)
+      CHARACTER*8   NOMRES(NBRES),FAMI,POUM
       CHARACTER*16  PHENOM
       REAL*8 VALRES(NBRES),CONDUC,H,AXE(3,3),ANG(2),R8PI
       REAL*8 CNDREF(3),CNDELE(3),FI,ORD,C,S,C2,S2
@@ -64,11 +64,15 @@ C
       REAL*8 PVEC1(3),PVEC2(3),NPVEC1,FX,FY,FZ, FLUPG(9)
       INTEGER I,KP,ITEMPE,ICACOQ,IMATE,IFLUXN,INUMCO
       INTEGER IVF,IGEOM,IDFDE,IPOIDS,NDIM
-      INTEGER NNO,NNOS,NPG,CODE,JGANO
+      INTEGER NNO,NNOS,NPG,CODE,JGANO,KPG,SPT
 C
       VALRES(1)=0.D0
       VALRES(2)=0.D0
       VALRES(3)=0.D0
+      FAMI='FPG1'
+      KPG=1
+      SPT=1
+      POUM='+'
 C
       CALL JEVECH('PMATERC','L',IMATE)
       CALL JEVECH('PGEOMER','L',IGEOM)
@@ -89,8 +93,8 @@ C     -----------------------------
 C
         MUL = .TRUE.
         NOMRES(1) = 'HOM_28'
-        CALL RCVALA(MATER,' ','THER',0,' ',R8B,1,NOMRES,VALRES,
-     &                 ICODRE,1)
+        CALL RCVALB(FAMI,KPG,SPT,POUM,MATER,' ','THER',0,' ',R8B,1,
+     &              NOMRES,VALRES,  ICODRE,1)
         H = VALRES(1)/2.D0
         IC = ZI(INUMCO)
         CALL CODENT(IC,'G',NUM)
@@ -98,8 +102,8 @@ C
           CALL CODENT(I,'G',VAL)
           NOMRES(I) = 'C'//NUM//'_V'//VAL
     1   CONTINUE
-        CALL RCVALA(MATER,' ','THER',0,' ',R8B,3,NOMRES,VALRES,
-     &                      ICODRE,1)
+        CALL RCVALB(FAMI,KPG,SPT,POUM,MATER,' ','THER',0,' ',R8B,3,
+     &              NOMRES,VALRES,  ICODRE,1)
         CODE = ZI(INUMCO+1)
         EP  = VALRES(1)
         FI  = VALRES(2)
@@ -107,8 +111,8 @@ C
         NOMRES(1) = 'LAMBDAIL'
         NOMRES(2) = 'LAMBDAT'
         NOMRES(3) = 'LAMBDAN'
-        CALL RCVALA(MATER,' ','THER',0,' ',R8B,3,NOMRES,VALRES,
-     &              ICODRE,1)
+        CALL RCVALB(FAMI,KPG,SPT,POUM,MATER,' ','THER',0,' ',R8B,3,
+     &              NOMRES,VALRES,ICODRE,1)
         C = COS(FI*R8PI()/180.D0)
         S = SIN(FI*R8PI()/180.D0)
         C2 = C*C
@@ -125,8 +129,8 @@ C     ------------------------
 C
         MUL = .FALSE.
         NOMRES(1) = 'LAMBDA'
-        CALL RCVALA(MATER,' ','THER',1,'INST',ZR(ITEMPS),1,NOMRES,
-     &           VALRES,   ICODRE, 1)
+        CALL RCVALB(FAMI,KPG,SPT,POUM,MATER,' ','THER',1,'INST',
+     &              ZR(ITEMPS),1,NOMRES,VALRES,  ICODRE, 1)
         CONDUC = VALRES(1)
         H = ZR(ICACOQ)/2.D0
         ORD = 0.D0

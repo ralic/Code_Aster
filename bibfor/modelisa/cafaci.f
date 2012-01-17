@@ -4,9 +4,9 @@
       CHARACTER*8                 CHAR
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 17/01/2012   AUTEUR DESROCHE X.DESROCHES 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -53,7 +53,7 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       PARAMETER (NMOCL=300)
 
       INTEGER I,J,K,N,JLISTI,JNOXFL,JNOXFV
-      INTEGER NBNOEU,JVAL,NDDLA,JDIREC,NBNO
+      INTEGER NBNOEU,JVAL,NDDLA,JDIREC,NBNO,NELIM
       INTEGER IDIM,IN,JNORM,JTANG,JNONO,NFACI
       INTEGER IBID,JNOMA,IER,NDIM,NBMA2,JCOMPT
       INTEGER N1,N2,INO,JPRNM,NBEC,NMCL,INOR,ICMP
@@ -67,7 +67,7 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       CHARACTER*3 TYMOCL(NMOCL)
       CHARACTER*4 TYPCOE
       CHARACTER*8 K8B,NOMA,MOD,NOMG
-      CHARACTER*8 VALIMF(NMOCL),NOMNOE,DDL(3)
+      CHARACTER*8 VALIMF(NMOCL),NOMNOE,NOMNO,DDL(3)
       CHARACTER*16 MOTFAC,MOTCLE(NMOCL),NOMCMD,TYPMCL(2),MOCLM(2)
       CHARACTER*16 MOCLM2(2),MOCLM3(2),TYPMC3(2)
       CHARACTER*24 MESMAI,MESMA2,LNOEU2,LNOEU1,MESNO3
@@ -292,16 +292,25 @@ C              LISTE DES NOMS DES NOEUDS EXCLUS : SANS_(NOEUD,GROUP_NO)
                CALL JEVEUO ( MESNO3, 'L', JLIST3 )
 C              SI NBMA2<>0
 C                 AGRANDIR LNOEU2 DE NBNO3 ET AJOUTER MESNO3
+C                 EN SUPPRIMANT LES EVENTUELS DOUBLONS
 C              SINON
 C                 CREER LNOEU2 ET COPIER MESNO3
                IF ( NBMA2.NE.0 ) THEN
                   CALL JUVECA(LNOEU2,NBNO2+NBNO3)
                   CALL JEVEUO(LNOEU2,'E',JLINO2)
 C                 COMPLETER AVEC LES NOEUDS
-                  DO 300 J = 0 , NBNO3-1
-                     ZK8(JLINO2+NBNO2+J) = ZK8(JLIST3+J)
+                  NELIM = 0
+                  DO 300 J = 0 , NBNO3-1                     
+                     NOMNO = ZK8(JLIST3+J)
+                     DO 301 K = 0 , NBNO2-1                     
+                       IF(NOMNO.EQ.ZK8(JLINO2+K)) THEN
+                          NELIM = NELIM + 1
+                          GO TO 300
+                       ENDIF
+301                  CONTINUE
+                     ZK8(JLINO2+NBNO2+J-NELIM) = NOMNO
 300               CONTINUE
-                  NBNO2=NBNO2+NBNO3
+                  NBNO2=NBNO2+NBNO3-NELIM
                ELSE
                   CALL WKVECT(LNOEU2,'V V K8',NBNO3,JLINO2)
                   DO 310 J=0,NBNO3-1
@@ -312,20 +321,12 @@ C                 COMPLETER AVEC LES NOEUDS
             ENDIF
             CALL JEVEUO(LNOEU2,'L',JLINO2)
 
-C             WRITE(*,*) 'NOM DES NOEUDS DE LA LISTE 1'
-C             WRITE(*,*) (' '//ZK8(JLINO1+J),J=0,NBNO1-1)
-C             WRITE(*,*) 'NOM DES NOEUDS DE LA LISTE 2'
-C             WRITE(*,*) (' '//ZK8(JLINO2+J),J=0,NBNO2-1)
-
 C           LISTE DES NOMS DES NOEUDS A CONSERVER
             CALL JEDETR('&&CAFACI.NOEU_NOM')
             CALL WKVECT('&&CAFACI.NOEU_NOM','V V K8',NBNO1,JLINO)
             NBNO = NBNO1
             CALL KNDIFF(8,ZK8(JLINO1),NBNO1,ZK8(JLINO2),NBNO2,
      &                    ZK8(JLINO),NBNO)
-
-C             WRITE(*,*) 'NOM DES NOEUDS DE LA LISTE 1 - 2'
-C             WRITE(*,*) (' '//ZK8(JLINO+J),J=0,NBNO)
 
 C           LISTE DES NUMEROS DES NOEUDS A CONSERVER
             CALL JEDETR('&&CAFACI.NOEU_NUM')

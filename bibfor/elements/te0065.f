@@ -3,9 +3,9 @@
       CHARACTER*16 OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -73,7 +73,7 @@ C        - DETERMINATION DU RHO 'POUTRE': RHOPOU
            CALL U2MESS('F','ELEMENTS3_98')
          ENDIF
          TPG = 0.D0
-         CALL RCVALA(ZI(IMATE),' ',PHENOM,0,'   ',TPG,NBV,
+         CALL RCVALB('FPG1',1,1,'+',ZI(IMATE),' ',PHENOM,0,' ',TPG,NBV,
      &               NOMRES,VALRES,ICODRE,1)
          RHOPOU  = VALRES(1)
 
@@ -86,7 +86,7 @@ C        - DETERMINATION DU RHO 'FLUIDE': RHOFLU
             CALL U2MESS('F','ELEMENTS3_98')
          ENDIF
          TPG = 0.D0
-         CALL RCVALA(ZI(IMATE),' ',PHENOM,0,'   ',TPG,NBV,
+         CALL RCVALB('FPG1',1,1,'+',ZI(IMATE),' ',PHENOM,0,' ',TPG,NBV,
      &             NOMRES,VALRES,ICODRE,1)
          RHOFLU  = VALRES(1)
 
@@ -111,8 +111,8 @@ C                 AYZ  := AIRE_SECTION_POUTRE
         IF (PHENOM.EQ.'ELAS' .OR. PHENOM.EQ.'ELAS_FO' .OR.
      &      PHENOM.EQ.'ELAS_ISTR' .OR. PHENOM.EQ.'ELAS_ISTR_FO' .OR.
      &      PHENOM.EQ.'ELAS_ORTH' .OR. PHENOM.EQ.'ELAS_ORTH_FO') THEN
-          CALL RCVALA(ZI(IMATE),' ',PHENOM,0,' ',R8B,1,'RHO',RHO,
-     &               ICODRE,1)
+          CALL RCVALB('FPG1',1,1,'+',ZI(IMATE),' ',PHENOM,0,' ',R8B,
+     &               1,'RHO',RHO,ICODRE,1)
           IF(RHO.LE.R8PREM()) THEN
             CALL U2MESS('F','ELEMENTS5_45')
           ENDIF

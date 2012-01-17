@@ -1,8 +1,8 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 17/01/2012   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -465,7 +465,7 @@ def get_direction(Nnoff,ndim,DTANOR,DTANEX,Lnoff,Plev,Pfon,FOND_FISS) :
 #---------------------------------------------------------------------------------------------------------------
 
 def get_tab_dep(self,Lnocal,Nnocal,d_coorf,ABSC_CURV_MAXI,dicVP,RESULTAT,MODEL,
-                ListmaS,ListmaI,NB_NOEUD_COUPE,dmax,SYME_CHAR) :
+                ListmaS,ListmaI,NB_NOEUD_COUPE,dmax,syme_char) :
       """ retourne les tables des deplacements sup et inf pour les noeuds perpendiculaires pour
       tous les points du fond de fissure"""
 
@@ -491,7 +491,7 @@ def get_tab_dep(self,Lnocal,Nnocal,d_coorf,ABSC_CURV_MAXI,dicVP,RESULTAT,MODEL,
                               VIS_A_VIS=_F(MAILLE_1 = ListmaS),
                               LIGN_COUPE=mcfact)
 
-      if SYME_CHAR=='SANS':
+      if syme_char=='NON':
          __TlibI = MACR_LIGN_COUPE(RESULTAT=RESULTAT,
                                  NOM_CHAM='DEPL',
                                  MODELE=MODEL,
@@ -524,7 +524,7 @@ def get_dico_levres(lev,FOND_FISS,ndim,Lnoff,Nnoff):
 
 #---------------------------------------------------------------------------------------------------------------
 
-def get_coor_regle(self,RESULTAT,ndim,Lnoff,Lnocal,dicoS,SYME_CHAR,dicoI):
+def get_coor_regle(self,RESULTAT,ndim,Lnoff,Lnocal,dicoS,syme_char,dicoI):
       """retourne le dictionnaire des coordonnees des noeuds des lèvres pour les maillages regles"""
       import numpy as NP
       import string as S
@@ -538,7 +538,7 @@ def get_coor_regle(self,RESULTAT,ndim,Lnoff,Lnocal,dicoS,SYME_CHAR,dicoI):
       for ino in Lnocal :
          l=[elem for elem in dicoS[ino] if elem != '']
          Ltot+=l
-      if SYME_CHAR=='SANS':
+      if syme_char=='NON':
          for ino in Lnocal :
             l=[elem for elem in dicoI[ino] if elem != '']
             Ltot+=l
@@ -591,7 +591,7 @@ def get_absfon(Lnoff,Nnoff,d_coor):
 
 #---------------------------------------------------------------------------------------------------------------
 
-def get_noeuds_perp_regle(Lnocal,d_coor,dicoS,dicoI,Lnoff,PREC_VIS_A_VIS,ABSC_CURV_MAXI,SYME_CHAR,rmprec,precn):
+def get_noeuds_perp_regle(Lnocal,d_coor,dicoS,dicoI,Lnoff,PREC_VIS_A_VIS,ABSC_CURV_MAXI,syme_char,rmprec,precn):
       """retourne la liste des noeuds du fond (encore ?), la liste des listes des noeuds perpendiculaires"""
       import numpy as NP
       from Utilitai.Utmess     import  UTMESS
@@ -619,7 +619,7 @@ def get_noeuds_perp_regle(Lnocal,d_coor,dicoS,dicoI,Lnoff,PREC_VIS_A_VIS,ABSC_CU
                if abss<rmprec :
                   NBTRLS = NBTRLS +1
                   Tmpsup.append(dicoS[ino][k])
-            if SYME_CHAR=='SANS':
+            if syme_char=='NON':
                if dicoI[ino][k] !='':
                   itoti = itoti +1
                   Ninf =  dicoI[ino][k]
@@ -642,7 +642,7 @@ def get_noeuds_perp_regle(Lnocal,d_coor,dicoS,dicoI,Lnoff,PREC_VIS_A_VIS,ABSC_CU
                UTMESS('A','RUPTURE0_24')
             else :
                UTMESS('A','RUPTURE0_25')
-         elif (SYME_CHAR=='SANS') and (NBTRLI < 3) :
+         elif (syme_char=='NON') and (NBTRLI < 3) :
             UTMESS('A+','RUPTURE0_26',valk=ino)
             if ino==Lnoff[0] or ino==Lnoff[-1]:
                UTMESS('A+','RUPTURE0_23')
@@ -652,7 +652,7 @@ def get_noeuds_perp_regle(Lnocal,d_coor,dicoS,dicoI,Lnoff,PREC_VIS_A_VIS,ABSC_CU
                UTMESS('A','RUPTURE0_25')
          else :
             Lnosup[Nbnofo] = Tmpsup
-            if SYME_CHAR=='SANS' :
+            if syme_char=='NON' :
                Lnoinf[Nbnofo] = Tmpinf
             Lnofon.append(ino)
             Nbnofo = Nbnofo+1
@@ -914,11 +914,11 @@ def affiche_traitement(FOND_FISS,Lnofon,ino):
 
 #---------------------------------------------------------------------------------------------------------------
 
-def get_tab(self,lev,ino,Tlib,Lno,TTSo,FOND_FISS,TYPE_MAILLAGE,tabl_depl,SYME_CHAR) :
+def get_tab(self,lev,ino,Tlib,Lno,TTSo,FOND_FISS,TYPE_MAILLAGE,tabl_depl,syme_char) :
       """retourne la table des deplacements des noeuds perpendiculaires"""
       import string as S
 
-      if lev == 'sup' or (lev == 'inf' and SYME_CHAR=='SANS' and FOND_FISS) :
+      if lev == 'sup' or (lev == 'inf' and syme_char=='NON' and FOND_FISS) :
 
          if FOND_FISS :
             if TYPE_MAILLAGE =='LIBRE':
@@ -1078,7 +1078,7 @@ def affiche_instant(inst,type_para):
 
 #---------------------------------------------------------------------------------------------------------------
 
-def get_tab_inst(lev,inst,FISSURE,SYME_CHAR,PRECISION,CRITERE,tabsup,tabinf,type_para) :
+def get_tab_inst(lev,inst,FISSURE,syme_char,PRECISION,CRITERE,tabsup,tabinf,type_para) :
       """retourne la table des deplacements des noeuds à l'instant courant"""
 
       tab = None
@@ -1087,7 +1087,7 @@ def get_tab_inst(lev,inst,FISSURE,SYME_CHAR,PRECISION,CRITERE,tabsup,tabinf,type
       if lev == 'sup' :
          tabres = tabsup
       elif lev == 'inf' :
-         if SYME_CHAR=='SANS' and not FISSURE :
+         if syme_char=='NON' and not FISSURE :
             tabres = tabinf
          else :
             return tab
@@ -1192,13 +1192,13 @@ def get_depl_sup(FOND_FISS,tabsupi,ndim,Lnofon,d_coor,ino,TYPE_MAILLAGE) :
 
 #---------------------------------------------------------------------------------------------------------------
 
-def get_depl_inf(FOND_FISS,tabinfi,ndim,Lnofon,SYME_CHAR,d_coor,ino,TYPE_MAILLAGE) :
+def get_depl_inf(FOND_FISS,tabinfi,ndim,Lnofon,syme_char,d_coor,ino,TYPE_MAILLAGE) :
       """retourne les déplacements inf"""
       import numpy as NP
       import copy
       from Utilitai.Utmess     import  UTMESS
 
-      if SYME_CHAR=='SANS' and FOND_FISS :
+      if syme_char=='NON' and FOND_FISS :
          absci = getattr(tabinfi,'ABSC_CURV').values()
 
          nbval=len(absci)
@@ -1236,7 +1236,7 @@ def get_depl_inf(FOND_FISS,tabinfi,ndim,Lnofon,SYME_CHAR,d_coor,ino,TYPE_MAILLAG
 
 #---------------------------------------------------------------------------------------------------------------
 
-def get_pgl(SYME_CHAR,FISSURE,ino,VP,VN,dicVP,dicVN,Lnofon) :
+def get_pgl(syme_char,FISSURE,ino,VP,VN,dicVP,dicVN,Lnofon) :
 
       """retourne la matrice du changement de repère"""
       import numpy as NP
@@ -1256,7 +1256,7 @@ def get_pgl(SYME_CHAR,FISSURE,ino,VP,VN,dicVP,dicVN,Lnofon) :
 
       v1p = sum(v2*v1)
 
-      if SYME_CHAR=='SANS' :
+      if syme_char=='NON' :
          v1  = v1-v1p*v2
       else :
          v2  = v2-v1p*v1
@@ -1271,7 +1271,7 @@ def get_pgl(SYME_CHAR,FISSURE,ino,VP,VN,dicVP,dicVN,Lnofon) :
 
 #---------------------------------------------------------------------------------------------------------------
 
-def get_saut(self,pgl,ds,di,INFO,FISSURE,SYME_CHAR,abscs,ndim) :
+def get_saut(self,pgl,ds,di,INFO,FISSURE,syme_char,abscs,ndim) :
 
       """retourne le saut de déplacements dans le nouveau repère"""
 
@@ -1288,7 +1288,7 @@ def get_saut(self,pgl,ds,di,INFO,FISSURE,SYME_CHAR,abscs,ndim) :
 
       if FISSURE :
          saut=dpls
-      elif SYME_CHAR=='SANS' :
+      elif syme_char=='NON' :
          dpli = NP.dot(pgl,di)
          saut=(dpls-dpli)
       else :
@@ -1636,7 +1636,7 @@ def get_tabout(self,kg,args,TITRE,FOND_FISS,MODELISATION,FISSURE,ndim,ino,inst,i
 #---------------------------------------------------------------------------------------------------------------
 
 def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
-                   ABSC_CURV_MAXI,PREC_VIS_A_VIS,SYME_CHAR,INFO,TITRE,**args):
+                   ABSC_CURV_MAXI,PREC_VIS_A_VIS,INFO,TITRE,**args):
    """
    Macro POST_K1_K2_K3
    Calcul des facteurs d'intensité de contraintes en 2D et en 3D
@@ -1814,18 +1814,8 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 
    if FOND_FISS :
 
-#     Verification que les levres sont collees      
-      Basefo = FOND_FISS.sdj.BASEFOND.get()
-      if len(Basefo)==0 :
-         UTMESS('F','RUPTURE0_32')
-      
       iret,ibid,nom_ma = aster.dismoi('F','NOM_MAILLA',RESULTAT.nom,'RESULTAT')
       MAILLAGE = self.get_concept(nom_ma.strip())
-      
-      ListmaS = FOND_FISS.sdj.LEVRESUP_MAIL.get()
-
-      if not ListmaS :
-          UTMESS('F','RUPTURE0_19')
 
       NB_NOEUD_COUPE = args['NB_NOEUD_COUPE']
 
@@ -1853,6 +1843,18 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
       Lnocal = get_noeud_a_calculer(Lnoff,ndim,FOND_FISS,MAILLAGE,EnumTypes,args)
       Nnocal = len(Lnocal)
 
+#     Recuperation de la liste des mailles de la lèvre supérieure
+#     ------------------------------------------------------------
+
+      ListmaS = FOND_FISS.sdj.LEVRESUP_MAIL.get()
+      if not ListmaS :
+          UTMESS('F','RUPTURE0_19')
+
+#     Verification de la presence de symetrie
+#     ----------------------------------
+
+      iret,ibid,syme_char = aster.dismoi('F','SYME',FOND_FISS.nom,'FOND_FISS')
+
 #     ------------------------------------------------------------------
 #     I.1 SOUS-CAS MAILLAGE LIBRE
 #     ------------------------------------------------------------------
@@ -1860,7 +1862,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 #     creation des directions normales et macr_lign_coup
       if TYPE_MAILLAGE =='LIBRE':
 
-         if SYME_CHAR == 'SANS':
+         if syme_char == 'NON':
             ListmaI = FOND_FISS.sdj.LEVREINF_MAIL.get()
 
 #        Dictionnaire des coordonnees des noeuds du fond
@@ -1894,7 +1896,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
          dmax  = PREC_VIS_A_VIS * ABSC_CURV_MAXI
 
          (__TlibS,__TlibI) = get_tab_dep(self,Lnocal,Nnocal,d_coorf,ABSC_CURV_MAXI,dicVP,RESULTAT,MODEL,
-                                     ListmaS,ListmaI,NB_NOEUD_COUPE,dmax,SYME_CHAR)
+                                     ListmaS,ListmaI,NB_NOEUD_COUPE,dmax,syme_char)
 
 #        A eclaircir
          Lnofon = Lnocal
@@ -1908,11 +1910,11 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 #        Dictionnaires des levres
          dicoS = get_dico_levres('sup',FOND_FISS,ndim,Lnoff,Nnoff)
          dicoI= {}
-         if SYME_CHAR=='SANS':
+         if syme_char=='NON':
             dicoI = get_dico_levres('inf',FOND_FISS,ndim,Lnoff,Nnoff)
 
 #        Dictionnaire des coordonnees et tableau des deplacements
-         (d_coor,__tabl_depl) = get_coor_regle(self,RESULTAT,ndim,Lnoff,Lnocal,dicoS,SYME_CHAR,dicoI)
+         (d_coor,__tabl_depl) = get_coor_regle(self,RESULTAT,ndim,Lnoff,Lnocal,dicoS,syme_char,dicoI)
 
 #        Coordonnee d un pt quelconque de la levre sup + d un noeud au fond 
 #        pour determination du sens du vecteur normal allant de la levre inf vers la levre sup
@@ -1931,7 +1933,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 
 #        Noeuds LEVRE_SUP et LEVRE_INF
          (Lnofon, Lnosup, Lnoinf) = get_noeuds_perp_regle(Lnocal,d_coor,dicoS,dicoI,Lnoff,
-                                                          PREC_VIS_A_VIS,ABSC_CURV_MAXI,SYME_CHAR,rmprec,precn)
+                                                          PREC_VIS_A_VIS,ABSC_CURV_MAXI,syme_char,rmprec,precn)
          Nbnofo = len(Lnofon)
 
 #  ------------------------------------------------------------------
@@ -1997,6 +1999,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
    if 'absfon' not in locals() : absfon = []
    if 'd_coor' not in locals() : d_coor = []
    if '__tabl_depl' not in locals() : __tabl_depl = []
+   if 'syme_char' not in locals() : syme_char = 'NON'
 
 
 #  ------------------------------------------------------------------
@@ -2033,9 +2036,9 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 
 #     table 'depsup' et 'depinf'
       tabsup = get_tab(self,'sup',ino,__TlibS,Lnosup,TTSo,
-                       FOND_FISS,TYPE_MAILLAGE,__tabl_depl,SYME_CHAR)
+                       FOND_FISS,TYPE_MAILLAGE,__tabl_depl,syme_char)
       tabinf = get_tab(self,'inf',ino,__TlibI,Lnoinf,TTSo,
-                       FOND_FISS,TYPE_MAILLAGE,__tabl_depl,SYME_CHAR)
+                       FOND_FISS,TYPE_MAILLAGE,__tabl_depl,syme_char)
 
 #     les instants de post-traitement : creation de l_inst
       if type_para == 'FREQ':
@@ -2044,7 +2047,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
          (l_inst,PRECISION,CRITERE) = get_liste_inst(tabsup,args)
 
 #     récupération de la matrice de changement de repère
-      pgl = get_pgl(SYME_CHAR,FISSURE,ino,VP,VN,dicVP,dicVN,Lnofon)
+      pgl = get_pgl(syme_char,FISSURE,ino,VP,VN,dicVP,dicVN,Lnofon)
 
 #     ------------------------------------------------------------------
 #                         BOUCLE SUR LES INSTANTS/FREQUENCES
@@ -2056,12 +2059,12 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
             affiche_instant(inst,type_para)
 
 #        recuperation de la table au bon instant : tabsupi (et tabinfi)
-         tabsupi = get_tab_inst('sup',inst,FISSURE,SYME_CHAR,PRECISION,CRITERE,tabsup,tabinf,type_para)
-         tabinfi = get_tab_inst('inf',inst,FISSURE,SYME_CHAR,PRECISION,CRITERE,tabsup,tabinf,type_para)
+         tabsupi = get_tab_inst('sup',inst,FISSURE,syme_char,PRECISION,CRITERE,tabsup,tabinf,type_para)
+         tabinfi = get_tab_inst('inf',inst,FISSURE,syme_char,PRECISION,CRITERE,tabsup,tabinf,type_para)
 
 #        recupération des déplacements sup et inf : ds et di
          (abscs,ds) = get_depl_sup(FOND_FISS,tabsupi,ndim,Lnofon,d_coor,ino,TYPE_MAILLAGE)
-         (absci,di) = get_depl_inf(FOND_FISS,tabinfi,ndim,Lnofon,SYME_CHAR,d_coor,ino,TYPE_MAILLAGE)
+         (absci,di) = get_depl_inf(FOND_FISS,tabinfi,ndim,Lnofon,syme_char,d_coor,ino,TYPE_MAILLAGE)
 
 #        récupération des propriétés materiau avec temperature
          if Tempe3D :
@@ -2088,7 +2091,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 #           SI NBVAL >= 3 :
 
 #           calcul du saut de déplacements dans le nouveau repère
-            saut = get_saut(self,pgl,ds,di,INFO,FISSURE,SYME_CHAR,abscs,ndim)
+            saut = get_saut(self,pgl,ds,di,INFO,FISSURE,syme_char,abscs,ndim)
 
 #           CALCUL DES K1, K2, K3
             (isig,kgsig,saut2) = get_kgsig(saut,nbval,coefd,coefd3)

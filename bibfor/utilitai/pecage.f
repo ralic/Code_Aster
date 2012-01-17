@@ -4,9 +4,9 @@
       CHARACTER*(*) RESU,MODELE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 16/01/2012   AUTEUR CHEIGNON E.CHEIGNON 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -45,7 +45,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER MXVALE,NBPARR,IBID,IRET,LVALE,IOCC,NT,NG,NM,NBGRMA,JGR,IG,
      &        NBMA,JAD,NBMAIL,JMA,IM,NUME,NDIM,NS1,NS2,IE,NBPARC,NP,IFM,
      &        NIV,IORIG,I,ICAGE
-      PARAMETER (MXVALE=29,NBPARR=44)
+      PARAMETER (MXVALE=29,NBPARR=46)
       REAL*8 VALPAR(NBPARR),R8B,XYP(2),ORIG(3),ZERO,R8VIDE
       CHARACTER*3 SYMEX,SYMEY,TYPARR(NBPARR)
       CHARACTER*8 K8B,NOMA,LPAIN(15),LPAOUT(5),VALEK(2)
@@ -57,17 +57,17 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       LOGICAL NSYMX,NSYMY,EXIGEO
       INTEGER      IARG
 C     ------------------------------------------------------------------
-      DATA NOPARR/'LIEU','ENTITE','AIRE_M','CDG_X_M','CDG_Y_M','IX_G_M',
-     &     'IY_G_M','IXY_G_M','Y_MAX','Z_MAX','Y_MIN','Z_MIN','R_MAX',
-     &     'AIRE','CDG_X','CDG_Y','IX_G','IY_G','IXY_G','IY_PRIN_G',
-     &     'IZ_PRIN_G','ALPHA','X_P','Y_P','IX_P','IY_P','IXY_P','CT',
-     &     'AY','AZ','EY','EZ','PCTX','PCTY','JG','KY','KZ','IXR2',
-     &     'IYR2','IYR2_PRIN_G','IZR2_PRIN_G','IXR2_P','IYR2_P',
+      DATA NOPARR/'LIEU','ENTITE','A_M','CDG_Y_M','CDG_Z_M','IY_G_M',
+     &     'IZ_G_M','IYZ_G_M','Y_MAX','Z_MAX','Y_MIN','Z_MIN','R_MAX',
+     &     'A','CDG_Y','CDG_Z','IY_G','IZ_G','IYZ_G','IY',
+     &     'IZ','ALPHA','Y_P','Z_P','IY_P','IZ_P','IYZ_P','JX',
+     &     'AY','AZ','EY','EZ','PCTY','PCTZ','JG','KY','KZ','IYR2_G',
+     &     'IZR2_G','IYR2','IZR2','IYR2_P','IZR2_P','RY','RZ',
      &     'MAILLAGE'/
       DATA TYPARR/'K8','K8','R','R','R','R','R','R','R','R','R','R','R',
      &     'R','R','R','R','R','R','R','R','R','R','R','R','R','R','R',
      &     'R','R','R','R','R','R','R','R','R','R','R','R','R','R','R',
-     &     'K8'/
+     &     'R','R','K8'/
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -94,7 +94,7 @@ C      IF ( IRET .NE. 0 ) GOTO 9999
       IF (K8B(1:3).EQ.'OUI') NDIM = 2
 
       CALL EXLIM3('CARA_GEOM','V',MODELE,LIGREL)
-
+      PRINT*,'PECAGE TOTO'
 C     --- CALCUL DE L'OPTION ---
       CHELEM = '&&PECAGE.CARA_GEOM'
       LPAIN(1) = 'PGEOMER'

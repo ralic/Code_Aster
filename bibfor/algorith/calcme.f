@@ -8,9 +8,9 @@
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -65,7 +65,7 @@ C ======================================================================
       PARAMETER (NELAS = 4  )
       PARAMETER (NRESMA = 18)
       REAL*8       ELAS(NELAS)
-      CHARACTER*8  NCRA1(NELAS)
+      CHARACTER*8  NCRA1(NELAS),FAMI,POUM
       INTEGER ICODRE(NRESMA)
       REAL*8  DSDEME(6,6)
       REAL*8  R8BID,ANGMA1(3),ANGMAS(7)
@@ -81,13 +81,17 @@ C ======================================================================
 C    VARIABLES LOCALES POUR L'APPEL AU MODELE DE HOEK_BROWN_TOT
       REAL*8  DSIDP2(6),DSPDP1,DSPDP2
 C ======================================================================
-      INTEGER NDT,NDI
+      INTEGER NDT,NDI,KPG,SPT
       COMMON /TDIM/   NDT  , NDI
 C
       DATA NCRA1 / 'E','NU','ALPHA','RHO' /
 C ======================================================================
 C --- RECUPERATION DES DONNEES MATERIAU DANS DEFI_MATERIAU -------------
 C ======================================================================
+      FAMI='FPG1'
+      KPG=1
+      SPT=1
+      POUM='+'
       IF (  (MECA.EQ.'CJS')             .OR.
      &      (MECA.EQ.'CAM_CLAY')        .OR.
      &      (MECA.EQ.'BARCELONE')       .OR.
@@ -100,7 +104,7 @@ C ======================================================================
             CALL U2MESS('F','ALGORITH_67')
          ENDIF
       ENDIF
-      CALL RCVALA(IMATE,' ','ELAS',1,'TEMP', T,3,
+      CALL RCVALB(FAMI,KPG,SPT,POUM,IMATE,' ','ELAS',1,'TEMP', T,3,
      &            NCRA1(1),ELAS(1),ICODRE,1)
       YOUNG  = ELAS(1)
       NU     = ELAS(2)

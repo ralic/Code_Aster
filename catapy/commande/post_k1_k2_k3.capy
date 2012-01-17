@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 17/01/2012   AUTEUR MACOCCO K.MACOCCO 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -35,7 +35,6 @@ POST_K1_K2_K3=MACRO(nom="POST_K1_K2_K3",
          RESULTAT      =SIMP(statut='o',typ=(evol_elas,evol_noli,mode_meca),position='global',
                              fr="Déplacement des noeuds de la lèvre supérieure et inférieure"),
          NB_NOEUD_COUPE=SIMP(statut='f',typ='I',defaut=5,val_min = 3),
-         SYME_CHAR       =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SYME","SANS")),
 
 #        bloc correspondant a la donnee du fond de fissure pour les fissures maillees
          b_fond_fiss   =BLOC (condition="FOND_FISS!= None",

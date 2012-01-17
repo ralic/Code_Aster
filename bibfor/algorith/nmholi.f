@@ -2,9 +2,9 @@
      &                  IVF   , IDFDE , IMATE ,
      &                  INST  , GEOM  , DEPL  , CHLIM )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -46,7 +46,8 @@ C             2 - SOMME( A(M)/M * EPSNO**M )
 C             3 - MAX( SIEQ/SY )
 C -------------------------------------------------------------------
 
-      INTEGER KPG, NDIMSI
+      INTEGER KPG, NDIMSI,SPT
+      CHARACTER*8   FAMI,POUM
       REAL*8  EPS(6), POIDS, EPSNO, SY, M, AM, EPSH
       REAL*8  DFDI(27,3), FBID(3,3), R, DNRM2
       REAL*8  RAC23
@@ -65,8 +66,12 @@ C -- INITIALISATION
 
 
 C -- CARACTERISTIQUES
-
-      CALL RCVALA(IMATE,' ','ECRO_LINE',0,' ',0.D0,1,'SY',SY,COD,2)
+      FAMI='FPG1'
+      KPG=1
+      SPT=1
+      POUM='+'
+      CALL RCVALB(FAMI,KPG,SPT,POUM,IMATE,' ','ECRO_LINE',0,' ',0.D0,1,
+     &            'SY',SY,COD,2)
       M  = 1 + 10**(1-INST)
       AM = SY * RAC23**M
 

@@ -8,9 +8,9 @@
       REAL*8  TIME
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 17/01/2012   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -130,7 +130,7 @@ C
            IF(LCHSD) THEN
              N1 = 1
              NOMFCT = ZK24(JFCHA-1+I)
-             IF(NOMFCT(1:2).EQ.'&&') N1 = 0
+             IF(NOMFCT(1:2).EQ.'&&' .OR. NOMFCT(1:1).EQ.' ') N1 = 0
            ELSE
              CALL GETVID('EXCIT','FONC_MULT',I,IARG,1,NOMFCT,N1)
            ENDIF
@@ -186,7 +186,7 @@ C
            IF(LCHSD) THEN
              N1 = 1
              NOMFCT = ZK24(JFCHA-1+I)
-             IF(NOMFCT(1:2).EQ.'&&') N1 = 0
+             IF(NOMFCT(1:2).EQ.'&&' .OR. NOMFCT(1:1).EQ.' ') N1 = 0
            ELSE
              CALL GETVID('EXCIT','FONC_MULT',I,IARG,1,NOMFCT,N1)
            ENDIF
@@ -242,7 +242,7 @@ C
            IF(LCHSD) THEN
              N1 = 1
              NOMFCT = ZK24(JFCHA-1+I)
-             IF(NOMFCT(1:2).EQ.'&&') N1 = 0
+             IF(NOMFCT(1:2).EQ.'&&' .OR. NOMFCT(1:1).EQ.' ') N1 = 0
            ELSE
              CALL GETVID('EXCIT','FONC_MULT',I,IARG,1,NOMFCT,N1)
            ENDIF
@@ -298,7 +298,7 @@ C
            IF(LCHSD) THEN
              N1 = 1
              NOMFCT = ZK24(JFCHA-1+I)
-             IF(NOMFCT(1:2).EQ.'&&') N1 = 0
+             IF(NOMFCT(1:2).EQ.'&&' .OR. NOMFCT(1:1).EQ.' ') N1 = 0
            ELSE
              CALL GETVID('EXCIT','FONC_MULT',I,IARG,1,NOMFCT,N1)
            ENDIF
@@ -355,7 +355,7 @@ C
            IF(LCHSD) THEN
              N1 = 1
              NOMFCT = ZK24(JFCHA-1+I)
-             IF(NOMFCT(1:2).EQ.'&&') N1 = 0
+             IF(NOMFCT(1:2).EQ.'&&' .OR. NOMFCT(1:1).EQ.' ') N1 = 0
            ELSE
              CALL GETVID('EXCIT','FONC_MULT',I,IARG,1,NOMFCT,N1)
            ENDIF
@@ -393,7 +393,7 @@ C
            IF(LCHSD) THEN
              N1 = 1
              NOMFCT = ZK24(JFCHA-1+I)
-             IF(NOMFCT(1:2).EQ.'&&') N1 = 0
+             IF(NOMFCT(1:2).EQ.'&&' .OR. NOMFCT(1:1).EQ.' ') N1 = 0
            ELSE
              CALL GETVID('EXCIT','FONC_MULT',I,IARG,1,NOMFCT,N1)
            ENDIF
@@ -430,7 +430,7 @@ C
            IF(LCHSD) THEN
              N1 = 1
              NOMFCT = ZK24(JFCHA-1+I)
-             IF(NOMFCT(1:2).EQ.'&&') N1 = 0
+             IF(NOMFCT(1:2).EQ.'&&' .OR. NOMFCT(1:1).EQ.' ') N1 = 0
            ELSE
              CALL GETVID('EXCIT','FONC_MULT',I,IARG,1,NOMFCT,N1)
            ENDIF

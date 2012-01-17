@@ -1,8 +1,8 @@
-# MODIF  DATE 13/09/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 17/01/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE  MURAKAMI 9.35 FISSURE SEMI-ELLIPTIQUE DEBOUCHANT A LA PEAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -22,7 +22,7 @@
 
 DEBUT( CODE=_F( NOM = 'SSLV310A',NIV_PUB_WEB='INTERNET'))
 
-MA=LIRE_MAILLAGE()
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MO=AFFE_MODELE(   MAILLAGE=MA, 
                         AFFE=_F(  TOUT = 'OUI',
@@ -130,11 +130,9 @@ GLO1_LE5=CALC_G(         RESULTAT=CHAMDEPL,
                          )
 
 GLOC1=CALC_G(            RESULTAT=CHAMDEPL,
-                         NUME_ORDRE=1,
                          THETA=_F(FOND_FISS=FISS1,
                                   R_INF_FO=RAY_INF1,
                                   R_SUP_FO=RAY_SUP1,),
-                         EXCIT=_F( CHARGE = CH),
                          )
 
 #

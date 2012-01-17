@@ -1,8 +1,8 @@
-# MODIF  DATE 20/12/2011   AUTEUR BEAURAIN J.BEAURAIN 
+# MODIF  DATE 16/01/2012   AUTEUR BEAURAIN J.BEAURAIN 
 # TITRE VALIDATION DE L'ALGORITHME D'OPTIMISATION DE DDL_STAB
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -82,9 +82,10 @@ EVOL   = STAT_NON_LINE( MODELE     = MO,
                                        _F( CHARGE       = CH_U3),
                                        _F( CHARGE       = CH_U4),
                                      ),
-                        CRIT_FLAMB = _F( RIGI_GEOM= 'NON',
-                                         NB_FREQ = 1,
-                                         DDL_STAB = ('DX','DY')
+                        CRIT_STAB  = _F( TYPE           ='STABILITE',
+                                         RIGI_GEOM      = 'NON',
+                                         NB_FREQ        = 1,
+                                         DDL_STAB       = ('DX','DY')
                                         ),
                         COMP_INCR  = _F( TOUT           = 'OUI',
                                          RELATION       = 'ELAS',
@@ -93,7 +94,7 @@ EVOL   = STAT_NON_LINE( MODELE     = MO,
                                          REAC_ITER      = 1,),
                         CONVERGENCE= _F( RESI_GLOB_RELA = 1.E-6,),
                         INCREMENT  = _F( LIST_INST      = TEMPS,),
-                        AFFICHAGE  = _F( INFO_RESIDU = 'OUI',)
+                        AFFICHAGE  = _F( INFO_RESIDU    = 'OUI',)
                      )
 
 #***********************************************************************
@@ -102,7 +103,7 @@ EVOL   = STAT_NON_LINE( MODELE     = MO,
 
 TEST_RESU(RESU=_F(RESULTAT=EVOL,
                   NUME_ORDRE=1,
-                  PARA='CRIT_STAB',
+                  PARA='CHAR_STAB',
                   VALE=0.146447,
                   PRECISION=5.0E-6),
           );

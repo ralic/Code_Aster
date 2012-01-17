@@ -2,9 +2,9 @@
 
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,16 +32,20 @@ C
 C ---------------------------------------------------------------------
 
       REAL*8  VAL(1)
-      CHARACTER*8 NOM(2)
-      INTEGER K2(5)
+      CHARACTER*8 NOM(2),FAMI,POUM
+      INTEGER K2(5),KPG,SPT
 C ---------------------------------------------------------------------
+      FAMI='FPG1'
+      KPG=1
+      SPT=1
+      POUM='+'
 
       IF (COMPOR.EQ.'ENDO_CARRE') THEN
 
         NOM(1) = 'E'
         NOM(2) = 'NU'
-        CALL RCVALA(MAT,' ','ELAS'     ,0,' ',0.D0,1,NOM(1),VAL(1),
-     &    K2,2)
+        CALL RCVALB(FAMI,KPG,SPT,POUM,MAT,' ','ELAS'     ,0,' ',0.D0,1,
+     &    NOM(1),VAL(1),K2,2)
 
         DPIDA2 = VAL(1)
 

@@ -1,8 +1,8 @@
-#@ MODIF rupture0 Messages  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF rupture0 Messages  DATE 17/01/2012   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -212,12 +212,7 @@ Veuillez vérifier les données, notamment celles du mot-clé DIRECTION.
 Il n'y a pas de mailles de bord connectées au noeud %(k1)s.
 """),
 
-32: _(u"""
-POST_K1_K2_K3 ne peut être utilisé que si les lèvres sont collées.
--> Risque et Conseil :
-Veuillez vérifier les données dans DEFI_FOND_FISS, et plus particulièrement le
-mot-clé CONFIG_INIT.
-"""),
+
 
 33: _(u"""
 Problème dans la récupération du saut de déplacement sur les lèvres.
@@ -330,11 +325,12 @@ Aucun instant ou numéro d'ordre trouvé.
 """),
 
 55: _(u"""
--> Attention: En présence d'une SD Résultat de type MULT_ELAS, les mots-clés
-EXCIT et NOM_CAS sont obligatoires.
+-> Attention: Le mot-clé EXCIT est facultatif, il n'est pas nécessaire dans tous les cas.
+Il n'est utile que si le résultat à post-traiter a été créé avec la commande CREA_RESU ou
+lors d'un calcul de sensibilité.
 -> Risque et Conseil :
-Risque de résultats faux si un des chargements impacte le calcul de G et de K
-(par exemple force de pression sur les lèvres de la fissure,force volumique...)
+Si vous utilisez CALC_G en dehors des deux cas spécifiques précisés ci-dessus,
+vérifiez la présence de tous les chargements ayant servi à créer le résultat.
 """),
 
 56 : _(u"""

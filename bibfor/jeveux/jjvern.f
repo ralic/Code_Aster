@@ -1,8 +1,8 @@
       SUBROUTINE JJVERN ( NOML32 , ICRE , IRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 26/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 16/01/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,6 +28,15 @@ C     ------------------------------------------------------------------
       COMMON /NOMCJE/  NOMUTI , NOMOS , NOMCO , NOMOC , BL32
       INTEGER          ILLICI , JCLASS(0:255)
       COMMON /JCHAJE/  ILLICI , JCLASS
+      INTEGER          ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
+      COMMON /IATCJE/  ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
+      PARAMETER  ( N = 5 )
+      CHARACTER*1      GENR    , TYPE
+      CHARACTER*4      DOCU
+      CHARACTER*8      ORIG
+      CHARACTER*32     RNOM
+      COMMON /KATRJE/  GENR(8) , TYPE(8) , DOCU(2) , ORIG(1) , RNOM(1)
+      COMMON /JKATJE/  JGENR(N), JTYPE(N), JDOCU(N), JORIG(N), JRNOM(N)
 C     ------------------------------------------------------------------
       CHARACTER *24    NOML24
       CHARACTER *32    NOM32,BLAN32
@@ -69,6 +78,13 @@ C
               CALL U2MESK('F','JEVEUX1_58',1,NOM32(K:K))
             END IF
  10       CONTINUE
+        ENDIF
+        IF (NOML8 .NE. '        ' ) THEN
+          IF (IRET .EQ. 1 ) THEN
+            IF (GENR(JGENR(ICLAOS)+IDATOS) .NE. 'N' ) THEN
+              CALL U2MESK('F','JEVEUX1_68',1,NOML24)           
+            ENDIF
+          ENDIF
         ENDIF
       ENDIF
 C FIN ------------------------------------------------------------------

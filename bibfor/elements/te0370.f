@@ -1,8 +1,8 @@
       SUBROUTINE TE0370(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 02/05/2011   AUTEUR GREFFET N.GREFFET 
+C MODIF ELEMENTS  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -29,7 +29,8 @@ C          ---> NOMTE  : NOM DU TYPE ELEMENT
 C.......................................................................
 C
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER ICODRE
+      INTEGER            ICODRE
+      CHARACTER*8        FAMI,POUM
       CHARACTER*16       NOMTE,OPTION
       REAL*8             A(2,2,27,27)
       REAL*8             RHO
@@ -41,7 +42,7 @@ C
       REAL*8             PESA,JAC,ZERO
       REAL*8             DXDE,DXDK,DYDE,DYDK
       REAL*8             B(54,54),UL(54),C(1485)
-      INTEGER            IVECTU,JCRET,NNO2,NT2,N1,N2,NN
+      INTEGER            IVECTU,JCRET,NNO2,NT2,N1,N2,NN,KPG,SPT
 C
 C
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -68,9 +69,13 @@ C
       CALL JEVECH('PPESANR','L', LPESA)
       PESA = ZR(LPESA)
       ZERO = 0.D0
+      FAMI='FPG1'
+      KPG=1
+      SPT=1
+      POUM='+'
 C
-      CALL RCVALA(ZI(IMATE),' ','FLUIDE',0,' ',R8B,1,'RHO',RHO,
-     &           ICODRE,1)
+      CALL RCVALB(FAMI,KPG,SPT,POUM,ZI(IMATE),' ','FLUIDE',0,' ',R8B,1,
+     &          'RHO',RHO, ICODRE,1)
 C
 C     INITIALISATION DE LA MATRICE
 C

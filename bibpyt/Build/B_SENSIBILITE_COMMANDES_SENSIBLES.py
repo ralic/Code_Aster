@@ -1,8 +1,8 @@
-#@ MODIF B_SENSIBILITE_COMMANDES_SENSIBLES Build  DATE 16/08/2011   AUTEUR NISTOR I.NISTOR 
+#@ MODIF B_SENSIBILITE_COMMANDES_SENSIBLES Build  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -68,8 +68,6 @@ class SENSIBILITE_COMMANDES_SENSIBLES :
                                      'MODE_ITER_INV',
                                      'MODE_ITER_SIMULT',
                                      'STAT_NON_LINE',
-                                     'THER_LINEAIRE',
-                                     'THER_NON_LINE',
                                      'DYNA_VIBRA'],
          # commandes qui créent le concept nominal OU le(s) concept(s) dérivé(s)
          self.sensible_post       : ['CALC_ELEM',

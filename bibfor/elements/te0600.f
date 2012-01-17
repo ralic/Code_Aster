@@ -4,10 +4,10 @@
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C =====================================================================
-C MODIF ELEMENTS  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
 C RESPONSABLE GRANET S.GRANET
 C =====================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -228,8 +228,8 @@ C =====================================================================
          CALL JEVECH('PPESANR','L',IPESA)
          CALL JEVECH('PVECTUR','E',IVECTU)
          CALL RCCOMA(ZI(IMATE),'THM_DIFFU',PHENOM,ICODRE)
-         CALL RCVALA(ZI(IMATE),' ',PHENOM,1,' ',R8BID,1,'RHO',RHO,
-     &                                                    ICODRE,1)
+         CALL RCVALB('FPG1',1,1,'+',ZI(IMATE),' ',PHENOM,0,' ',R8BID,
+     &               1,'RHO',RHO,ICODRE,1)
          IF (NDIM.EQ.3) THEN
 C =====================================================================
 C --- CAS 3D ----------------------------------------------------------

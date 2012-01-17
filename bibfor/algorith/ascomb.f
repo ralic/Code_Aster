@@ -1,0 +1,221 @@
+      SUBROUTINE ASCOMB(LISCHA,VECELZ,TYPRES,NOMPAR,VALPAR,
+     &                  CNCHAR)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 17/01/2012   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C
+      IMPLICIT      NONE
+      CHARACTER*1   TYPRES
+      CHARACTER*8   NOMPAR
+      REAL*8        VALPAR
+      CHARACTER*19  LISCHA
+      CHARACTER*(*) VECELZ
+      CHARACTER*19  CNCHAR
+C
+C ----------------------------------------------------------------------
+C
+C COMBINER LES CHAM_NO
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  LISCHA : SD LISTE DES CHARGES
+C IN  VECELE : NOM DU VECT_ELEM
+C IN  TYPRES : TYPE DES VECTEURS ET DU CHAM_NO RESULTANT 'R' OU 'C'
+C IN  NOMPAR : NOM DU PARAMETRE
+C IN  VALPAR : VALEUR DU PARAMETRE
+C OUT CNCHAR : CHAM_NO RESULTAT
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER ZI
+      COMMON /IVARJE/ ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER      NBCHAR
+      INTEGER      IRET,IBID,ICHAR
+      INTEGER      JCOEF,JTYPE
+      CHARACTER*24 VACHAR
+      INTEGER      IVEC,IVECC,NBVEC,JVACHA
+      CHARACTER*8  NOMFCT
+      CHARACTER*8  K8BID
+      CHARACTER*24 CHAMNO
+      REAL*8       VALRES,VALRE,VALIM
+      COMPLEX*16   CALPHA
+      REAL*8       PHASE,OMEGA,R8DEPI,DGRD,R8DGRD
+      INTEGER      NPUIS
+      CHARACTER*19 VECELE
+      CHARACTER*16 TYPFCT
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C
+C --- VERIFICATION DU VACHAR
+C
+      VECELE = VECELZ
+      VACHAR = VECELE(1:19)//'.CHNO'
+      CALL JEEXIN(VACHAR,IRET)
+      CALL ASSERT(IRET.NE.0)
+      CALL JELIRA(VACHAR,'LONMAX',NBVEC,K8BID)
+      CALL ASSERT(NBVEC.NE.0)
+      CALL JEVEUO(VACHAR,'L',JVACHA)
+      CALL ASSERT(TYPRES.EQ.'R'.OR.TYPRES.EQ.'C')
+      CALL LISNNB(LISCHA,NBCHAR)
+      DGRD = R8DGRD()
+C
+C --- CALCUL DES COEFFICIENTS - CAS REEL
+C
+      IF (TYPRES.EQ.'R') THEN
+        CALL WKVECT('&&ASCOMB.COEF','V V R8',NBVEC,JCOEF)
+        CALL WKVECT('&&ASCOMB.TYPE','V V K8',NBVEC,JTYPE)
+        DO 10 IVEC = 1,NBVEC
+C
+C ------- NOM DU CHAMNO
+C
+          CHAMNO = ZK24(JVACHA+IVEC-1)
+C
+C ------- NUMERO DE LA CHARGE
+C
+          CALL CORICH('L',CHAMNO,IBID,ICHAR)
+          CALL ASSERT((ICHAR.NE.0).AND.(ICHAR.GE.-2))
+C
+C ------- FONCTION MULTIPLICATRICE
+C
+          IF (ICHAR.GT.0) THEN
+            CALL LISLNF(LISCHA,ICHAR ,NOMFCT)
+            CALL LISLTF(LISCHA,ICHAR ,TYPFCT)
+          ENDIF
+C
+C ------- VALEUR DU COEFFICIENT
+C
+          IF (ICHAR.EQ.-1) THEN
+            VALRES = 1.D0
+          ELSEIF (ICHAR.EQ.-2) THEN
+            VALRES = 0.D0
+          ELSEIF (ICHAR.GT.0)  THEN
+            VALRES = 1.D0
+            IF (NOMFCT.NE.' ') THEN
+              CALL ASSERT(TYPFCT(7:10).EQ.'REEL')
+              CALL FOINTE('F'   ,NOMFCT,1     ,NOMPAR,VALPAR,
+     &                    VALRES,IRET)
+            ENDIF
+          ELSE
+            CALL ASSERT(.FALSE.)
+          ENDIF
+C
+          ZR(JCOEF+IVEC-1)  = VALRES
+          ZK8(JTYPE+IVEC-1) = 'R'
+ 10     CONTINUE
+      ENDIF
+C
+C --- CALCUL DES COEFFICIENTS - CAS COMPLEXE
+C
+      IF (TYPRES.EQ.'C') THEN
+        OMEGA = R8DEPI()*VALPAR
+        CALL WKVECT('&&ASCOMB.COEF','V V R8',2*NBVEC,JCOEF)
+        CALL WKVECT('&&ASCOMB.TYPE','V V K8',NBVEC  ,JTYPE)
+        IVECC = 0
+        DO 20 IVEC = 1,NBVEC
+C
+C ------- NOM DU CHAMNO
+C
+          CHAMNO = ZK24(JVACHA+IVEC-1)         
+C
+C ------- NUMERO DE LA CHARGE
+C
+          CALL CORICH('L',CHAMNO,IBID,ICHAR)
+          CALL ASSERT((ICHAR.NE.0).AND.(ICHAR.GE.-2))
+C
+C ------- FONCTION MULTIPLICATRICE
+C
+          IF (ICHAR.GT.0) THEN
+            CALL LISLNF(LISCHA,ICHAR ,NOMFCT)
+            CALL LISLTF(LISCHA,ICHAR ,TYPFCT)
+          ENDIF
+C
+C ------- MULTIPLICATEUR COMPLEXE
+C
+          IF (ICHAR.GT.0) THEN
+            CALL LISCPP(LISCHA,ICHAR ,PHASE ,NPUIS )
+          ENDIF
+C
+C ------- VALEUR DU COEFFICIENT
+C
+          IF (ICHAR.EQ.-1) THEN
+            VALRE  = 1.D0
+            VALIM  = 0.D0
+            CALPHA = 1.D0
+          ELSEIF (ICHAR.EQ.-2) THEN
+            VALRE  = 0.D0
+            VALIM  = 0.D0
+            CALPHA = 1.D0
+          ELSEIF (ICHAR.GT.0)  THEN
+            VALRE  = 1.D0
+            VALIM  = 0.D0
+            CALPHA = EXP(DCMPLX(0.D0,PHASE*DGRD))
+            IF (NPUIS.NE.0) CALPHA = CALPHA*OMEGA**NPUIS
+            IF (NOMFCT.NE.' ') THEN
+              IF (TYPFCT(7:10).EQ.'REEL') THEN
+                CALL FOINTE('F'   ,NOMFCT,1     ,NOMPAR,VALPAR,
+     &                      VALRE ,IRET)
+                VALIM = 0.D0
+              ELSEIF  (TYPFCT(7:10).EQ.'COMP') THEN
+                CALL FOINTC('F'   ,NOMFCT,1     ,NOMPAR,VALPAR,
+     &                      VALRE ,VALIM ,IRET  )
+              ELSE
+                CALL ASSERT(.FALSE.)
+              ENDIF
+            ENDIF
+          ELSE
+            CALL ASSERT(.FALSE.)
+          ENDIF
+C
+          ZK8(JTYPE+IVEC-1) = 'C'
+          IVECC = IVECC + 1
+          ZR(JCOEF+IVECC-1) = VALRE*DBLE(CALPHA)-VALIM*DIMAG(CALPHA)
+          IVECC = IVECC + 1
+          ZR(JCOEF+IVECC-1) = VALIM*DBLE(CALPHA)+VALRE*DIMAG(CALPHA)
+C
+ 20     CONTINUE
+      ENDIF
+C
+C --- COMBINAISON LINEAIRE DES CHAM_NO
+C
+      CALL VTCMBL(NBVEC,ZK8(JTYPE),ZR(JCOEF),ZK8(JTYPE),ZK24(JVACHA),
+     &            ZK8(JTYPE),CNCHAR)
+C
+      CALL JEDETR('&&ASCOMB.COEF')
+      CALL JEDETR('&&ASCOMB.TYPE')
+C
+      CALL JEDEMA()
+      END

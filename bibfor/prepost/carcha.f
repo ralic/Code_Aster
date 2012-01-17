@@ -5,9 +5,9 @@
       CHARACTER*24 OPTION
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 20/12/2011   AUTEUR BEAURAIN J.BEAURAIN 
+C MODIF PREPOST  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -64,12 +64,6 @@ C     CHAMP DE GRANDEUR "DEPL_R"
          NOMGD  = 'DEPL_R  '
          TYPCHA = 'NOEU'
       ELSE IF (NOCH.EQ.'ACCE') THEN
-         NOMGD  = 'DEPL_R  '
-         TYPCHA = 'NOEU'
-      ELSE IF (NOCH.EQ.'MODE_FLAMB') THEN
-         NOMGD  = 'DEPL_R  '
-         TYPCHA = 'NOEU'
-      ELSE IF (NOCH.EQ.'MODE_STAB') THEN
          NOMGD  = 'DEPL_R  '
          TYPCHA = 'NOEU'
 C
@@ -187,6 +181,9 @@ C     CHAMP DE GRANDEUR "VARI_R"
       ELSE IF (NOCH.EQ.'HYDR_NOEU') THEN
          NOMGD  = 'HYDR_R'
          TYPCHA = 'NOEU'
+      ELSE IF (NOCH.EQ.'ERME_ELEM') THEN
+         NOMGD  = 'ERRE_R'
+         TYPCHA = 'ELEM'
 
 C
 C     ERREUR

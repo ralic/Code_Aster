@@ -7,9 +7,9 @@
 
 C======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -41,9 +41,9 @@ C VARIABLES DE SORTIE
       REAL*8 SIGP(DIMCON),VARIP(NBVARI),DRDE(DIMDEF,DIMDEF),TLINT,OUVH
 
 C VARIABLES LOCALES
-      INTEGER I,J
+      INTEGER I,J,KPG,SPT
       REAL*8 DA(NDIM),DSIDEP(6,6),PARA(2),OUVFIC,UNSURN
-      CHARACTER*8 NCRA(2)
+      CHARACTER*8 NCRA(2),FAMI,POUM
       INTEGER ICODRE(18)
 
 C =====================================================================
@@ -88,6 +88,10 @@ C =====================================================================
       DATA NCRA / 'OUV_FICT','UN_SUR_N' /
       OUVH=0.D0
       TLINT=0.D0
+      FAMI='FPG1'
+      KPG=1
+      SPT=1
+      POUM='+'
 
 C ====================================================================
 C LOI DE COMPORTEMENT JOINT_BANDIS
@@ -133,8 +137,8 @@ C - RECUPERATION DES PARAMETRES DE COUPLAGE POUR LA POINTE DE FISSURE
          IF (VARIP(ADVIME) .EQ. 2) THEN
            UNSURN=0.D0
          ELSE
-           CALL RCVALA(IMATE,' ','THM_RUPT',0,' ', 0.D0,2,
-     &                                 NCRA(1),PARA(1),ICODRE,1)
+           CALL RCVALB(FAMI,KPG,SPT,POUM,IMATE,' ','THM_RUPT',0,' ', 
+     &                  0.D0,2, NCRA(1),PARA(1),ICODRE,1)
            OUVFIC    = PARA(1)
            UNSURN    = PARA(2)
          END IF
@@ -200,8 +204,8 @@ C - INTEGRATION DE LA LOI DE COMPORTEMENT MECANIQUE
 
 C - RECUPERATION DES PARAMETRES DE COUPLAGE POUR LA POINTE DE FISSURE
 
-        CALL RCVALA(IMATE,' ','THM_RUPT',0,' ', 0.D0,2,
-     &                                 NCRA(1),PARA(1),ICODRE,1)
+        CALL RCVALB(FAMI,KPG,SPT,POUM,IMATE,' ','THM_RUPT',0,' ', 
+     &               0.D0,2, NCRA(1),PARA(1),ICODRE,1)
         OUVFIC    = PARA(1)
         UNSURN    = PARA(2)
 

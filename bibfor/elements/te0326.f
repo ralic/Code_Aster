@@ -2,9 +2,9 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -49,6 +49,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       INTEGER ICODRE
+      CHARACTER*8        FAMI,POUM
       CHARACTER*16       NOMTE,OPTION
       REAL*8             JAC(9),NX(9),NY(9),NZ(9)
       REAL*8             SX(9,9),SY(9,9),SZ(9,9)
@@ -63,7 +64,7 @@ C
       REAL*8             NORMN(3,9),J1N(9),J2N(9),VIBARN(2,9),GPHGXN(9)
       INTEGER            IPOIDS,IVF,IDFDX,IDFDY,IGEOM
       INTEGER            NDIM,NNO,IPG,NPG1,IVECTT,IMATE
-      INTEGER            IDEC,JDEC,KDEC,LDEC
+      INTEGER            IDEC,JDEC,KDEC,LDEC,KPG,SPT
       INTEGER            I,J,K,IACCE,IDIM,II,INO,ITEMP,JNO,NNOS,JGANO
 C-----------------------------------------------------------------------
 C
@@ -90,8 +91,12 @@ C
       CALL JEVECH('PACCELR','L',IACCE)
       CALL JEVECH('PTEMPER','L',ITEMP)
 C
-      CALL RCVALA(ZI(IMATE),' ','THER',0,' ',R8B,1,'RHO_CP',RHO,
-     &              ICODRE,1)
+      FAMI='FPG1'
+      KPG=1
+      SPT=1
+      POUM='+'
+      CALL RCVALB(FAMI,KPG,SPT,POUM,ZI(IMATE),' ','THER',0,' ',R8B,1,
+     &            'RHO_CP',RHO,  ICODRE,1)
 C
       DO 1200 I=1,NNO
          ACLOC(1,I)=0.0D0

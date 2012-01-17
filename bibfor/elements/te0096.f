@@ -1,9 +1,9 @@
       SUBROUTINE TE0096(OPTION,NOMTE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -45,7 +45,7 @@ C   -------------------------------------------------------------------
 C     SUBROUTINES APPELLEES:
 C       JEVEUX AND CO: JEMARQ, JEDEMA, JEVETE, JEVECH, TECACH.
 C       ENVIMA: R8PREM
-C       MATERIAUX: RCCOMA, RCVALA.
+C       MATERIAUX: RCCOMA, RCVALB.
 C       ELEMENTS FINIS: NMGEOM, PPGANO, D2GEOM.
 C       DIVERS: FOINTE, NMELNL, NMPLRU.
 C
@@ -84,9 +84,9 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C DECLARATION VARIABLES LOCALES
 C
 C
-      INTEGER ICODRE
+      INTEGER       ICODRE,KPG,SPT
       CHARACTER*4   FAMI
-      CHARACTER*8   NOMPAR(3),TYPMOD(2)
+      CHARACTER*8   NOMPAR(3),TYPMOD(2),FAMIL,POUM
       CHARACTER*16  COMPOR(4),OPRUPT,PHENOM
 
       REAL*8   EPSI,RAC2,R8PREM,CRIT(3)
@@ -137,6 +137,10 @@ C =====================================================================
       CP     = .FALSE.
       EPSINI = .FALSE.
       TYPMOD(2) = ' '
+      FAMIL='FPG1'
+      KPG=1
+      SPT=1
+      POUM='+'
 
       IF (LTEATT(' ','AXIS','OUI')) THEN
         TYPMOD(1) = 'AXIS'
@@ -337,17 +341,17 @@ C =====================================================================
 
       IF (IVITES.NE.0) THEN
         CALL RCCOMA(MATCOD,'ELAS',PHENOM,ICODRE)
-        CALL RCVALA(MATCOD,' ',PHENOM,1,' ',RBID,1,'RHO',RHO,
-     &              ICODRE,1)
-        CALL RCVALA(MATCOD,' ',PHENOM,1,' ',RBID,1,'NU',NU,
-     &              ICODRE,1)
+        CALL RCVALB(FAMIL,KPG,SPT,POUM,MATCOD,' ',PHENOM,1,' ',RBID,1,
+     &              'RHO',RHO,ICODRE,1)
+        CALL RCVALB(FAMIL,KPG,SPT,POUM,MATCOD,' ',PHENOM,1,' ',RBID,1,
+     &              'NU',NU,ICODRE,1)
       ENDIF
 
 C CORRECTION DES FORCES VOLUMIQUES
       IF ((IPESA.NE.0).OR.(IROTA.NE.0)) THEN
         CALL RCCOMA(MATCOD,'ELAS',PHENOM,ICODRE)
-        CALL RCVALA(MATCOD,' ',PHENOM,1,' ',RBID,1,'RHO',RHO,
-     &              ICODRE,1)
+        CALL RCVALB(FAMIL,KPG,SPT,POUM,MATCOD,' ',PHENOM,1,' ',RBID,1,
+     &              'RHO',RHO,ICODRE,1)
         IF (IPESA.NE.0) THEN
           DO 95 I=1,NNO
             IJ = NDIM*(I-1)

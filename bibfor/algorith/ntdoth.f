@@ -1,13 +1,12 @@
       SUBROUTINE NTDOTH ( MODELE, MATE, CARELE, FOMULT, MATCST,
-     &                    COECST, INFCHA,
-     &                    NBPASE, INPSCO,RESULT,NUORD)
+     &                    COECST, INFCHA,RESULT,NUORD)
 C
 C     THERMIQUE - DONNEES EN THERMIQUE
 C     *           **         **
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -38,23 +37,19 @@ C VAR INFCHA  : CONTIENT LA LISTE DES CHARGES ET DES INFOS SUR
 C               SUR LES CHARGES
 C IN  : RESULT : NOM DE LA SD RESULTAT
 C IN  : NUORD  : NUMERO D'ORDRE
-C   -------------------------------------------------------------------
-C     ASTER INFORMATIONS:
-C       28/01/02 (OB): CREATION DE LA CARTE DERIVEE CODEE.
 C----------------------------------------------------------------------
 C CORPS DU PROGRAMME
       IMPLICIT NONE
 
 C 0.1. ==> ARGUMENTS
 
-      INTEGER      NBPASE, NUORD, NP, NC, IEXCIT, JORDR
+      INTEGER      NUORD, NP, NC, IEXCIT, JORDR
       INTEGER      JLCHA, JINFC, JFCHA
       INTEGER      NBORDR
       CHARACTER*8  RESULT, CRIT
       CHARACTER*16 K16BID, NOMCMD
       CHARACTER*19 INFCHA, KNUME, EXCIT
       CHARACTER*24 MODELE,CARELE,FOMULT,MATE
-      CHARACTER*(*) INPSCO
       REAL*8       PREC
       LOGICAL      MATCST,COECST
 
@@ -83,30 +78,24 @@ C 0.3. ==> VARIABLES LOCALES
       PARAMETER ( NOMPRO = 'NTDOTH' )
 
       INTEGER N1,NCHAR,IALICH,IBID,IERD,IALIFC,ICH,IRET,JINF,JPRO,JVAL,
-     &        NRPASE,K,NCHCI,ADCHSE,IAUX,JAUX, LXLGUT
-      CHARACTER*8 LCHCI,MATERS,K8BID,CARA,MODE,TYPCH,PARCHA,REPK,
-     &            MATERI,NOPASE,BLAN8
+     &        K,NCHCI,LXLGUT
+      CHARACTER*8 LCHCI,K8BID,CARA,MODE,TYPCH,PARCHA,REPK,
+     &            MATERI,BLAN8
       CHARACTER*16 NOMMOD,NOMEXC,NOMCAR
-      CHARACTER*24 LIGRCH,LCHIN,NOMFCT,NOMCHA,CHARSE,MATSEN
-      LOGICAL FMULT,EXCHSE
+      CHARACTER*24 LIGRCH,LCHIN,NOMFCT,NOMCHA
+      LOGICAL FMULT
 
 C --- NOMBRE MAXIMUM DE TYPE DE CHARGE : NBTYCH
 
       INTEGER      NBTYCH
       PARAMETER   (NBTYCH = 10)
       CHARACTER*6  NOMLIG(NBTYCH)
-      CHARACTER*8  TYPEPS(-2:NBTYCH)
       INTEGER      IARG
 
       DATA NOMLIG/
      &     '.CIMPO'  ,'.SOURE'  ,'.FLURE'  ,'.FLUR2'  ,
      &     '.T_EXT'  ,'.COEFH'  ,'.HECHP'  ,'.GRAIN'  ,'.FLUNL'  ,
      &     '.RAYO'   /
-      DATA TYPEPS/
-     &     'MATERIAU','CARAELEM','DIRICHLE','        ',
-     &     'SOURCE  ','FLUX    ','FLUX    ',
-     &     'T_EXT   ','COEFH   ','HECHP   ','GRAIN   ','FLUNL   ',
-     &     'RAYO    '/
 
 C====
 C 1. PREALABLES
@@ -126,7 +115,6 @@ C 2. RECUPERATIONS
 C====
       IF ( (NOMCMD.EQ.'CALC_ELEM')   .OR.
      &     (NOMCMD.EQ.'CALC_NO'  )   .OR.
-     &     (NOMCMD.EQ.'CALC_SENSI')  .OR.
      &     (NOMCMD.EQ.'CALC_CHAMP')  .OR.
      &     (NOMCMD.EQ.'POST_ELEM')) THEN
 C
@@ -173,24 +161,6 @@ C 2.3. ==> LES CARACTERISTIQUES ELEMENTAIRES
       CARELE = CARA
       END IF
 
-C 2.4. ==> QUELS MATERIAUX ET CARACTERISTIQUES SONT TOUCHES PAR LE
-C          CALCUL DE SENSIBILITE ?
-
-      DO 24 , NRPASE = 1 , NBPASE
-        IAUX = NRPASE
-        JAUX = 1
-        CALL PSNSLE ( INPSCO, IAUX, JAUX, NOPASE )
-        CALL PSGENC ( MATERI, NOPASE, MATERS, IRET )
-        IF ( IRET.EQ.0 ) THEN
-          CALL PSTYPA ( NBPASE, INPSCO, MATERI, NOPASE, TYPEPS(-2) )
-          CALL RCMFMC(MATERS,MATSEN)
-        ENDIF
-        CALL PSGENC ( CARA, NOPASE, K8BID, IRET )
-        IF ( IRET.EQ.0 ) THEN
-          CALL PSTYPA ( NBPASE, INPSCO, CARA, NOPASE, TYPEPS(-1) )
-        ENDIF
-   24 CONTINUE
-
  500  CONTINUE
 C====
 C 3. LES CHARGES
@@ -214,10 +184,6 @@ C 3.1. ==> LISTE DES CHARGES
       FOMULT = INFCHA//'.FCHA'
       CALL JEDETR(FOMULT)
       CALL WKVECT(FOMULT,'V V K24',NCHAR,IALIFC)
-      CHARSE = '&&'//NOMPRO//'.CHARSE'
-      IAUX = MAX(NBPASE,1)
-      CALL JEDETR(CHARSE)
-      CALL WKVECT (CHARSE,'V V K8',IAUX,ADCHSE)
       NCHCI = 0
 
 C 3.2. ==> DETAIL DE CHAQUE CHARGE
@@ -232,21 +198,6 @@ C 3.2. ==> DETAIL DE CHAQUE CHARGE
             ZK24(IALICH+ICH-1) = ZK24(JLCHA+ICH-1)
             NOMCHA = ZK24(JLCHA+ICH-1)
         ENDIF
-C 3.2.1. ==> LA CHARGE EST-ELLE CONCERNEE PAR UN CALCUL DE SENSIBILITE ?
-
-        EXCHSE = .FALSE.
-        DO 321 , NRPASE = 1 , NBPASE
-          IAUX = NRPASE
-          JAUX = 1
-          CALL PSNSLE ( INPSCO, IAUX, JAUX, NOPASE )
-          CALL PSGENC ( NOMCHA, NOPASE, K8BID, IRET )
-          IF ( IRET.EQ.0 ) THEN
-            ZK8(ADCHSE+NRPASE-1) = NOPASE
-            EXCHSE = .TRUE.
-          ELSE
-            ZK8(ADCHSE+NRPASE-1) = '        '
-          ENDIF
-  321   CONTINUE
 
 C 3.2.2. ==> TYPES DE CHARGES UTILISEES
 
@@ -282,19 +233,6 @@ C 3.2.4. ==> ON REGARDE LES CHARGES DU TYPE DIRICHLET
      &                   PARCHA,IERD)
             IF ( PARCHA(1:3) .EQ. 'OUI' ) THEN
               ZI(JINF+ICH) = 3
-            ENDIF
-            IF ( EXCHSE ) THEN
-            DO 3241 , NRPASE = 1 , NBPASE
-              NOPASE = ZK8(ADCHSE+NRPASE-1)
-              IF ( NOPASE.NE.'        ' ) THEN
-                CALL TELLME ( 'F', 'NOM_FONCTION', LCHIN(1:19),
-     &                NOPASE,REPK, IERD )
-                IF ( REPK.EQ.'OUI' ) THEN
-                  CALL PSTYPA ( NBPASE, INPSCO, NOMCHA, NOPASE,
-     &                          TYPEPS(0) )
-                ENDIF
-              ENDIF
- 3241       CONTINUE
             ENDIF
           ELSE
             ZI(JINF+ICH) = 1
@@ -361,19 +299,6 @@ C
                 ENDIF
                 ZI(JINF+NCHAR+ICH) = MAX(3,ZI(JINF+NCHAR+ICH))
               ENDIF
-              IF ( EXCHSE ) THEN
-              DO 3261 , NRPASE = 1 , NBPASE
-                NOPASE = ZK8(ADCHSE+NRPASE-1)
-                IF ( NOPASE.NE.'        ' ) THEN
-                  CALL TELLME ( 'F', 'NOM_FONCTION', LCHIN(1:19),
-     &                  NOPASE, REPK, IERD )
-                  IF ( REPK.EQ.'OUI' ) THEN
-                    CALL PSTYPA ( NBPASE, INPSCO, NOMCHA, NOPASE,
-     &                            TYPEPS(K) )
-                  ENDIF
-                ENDIF
- 3261         CONTINUE
-              ENDIF
             ELSE
               ZI(JINF+NCHAR+ICH) = MAX(1,ZI(JINF+NCHAR+ICH))
             ENDIF
@@ -383,7 +308,6 @@ C
    32 CONTINUE
 
       IF ( NCHCI .GT. 0 ) CALL JEECRA (LCHCI,'LONUTI',NCHCI,K8BID)
-      CALL JEDETR ( CHARSE )
 
       ENDIF
 C FIN ------------------------------------------------------------------

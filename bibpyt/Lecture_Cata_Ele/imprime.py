@@ -1,4 +1,4 @@
-#@ MODIF imprime Lecture_Cata_Ele  DATE 09/01/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF imprime Lecture_Cata_Ele  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -405,7 +405,7 @@ def imprime_ojb(file,capy):
 
    #=========================================================================================
    # XXUTIL:
-   # Bouts de code servant parfois aux développeurs pour générer des fichiers de "doc" :
+   # Bouts de code peuvent servir aux développeurs pour générer des fichiers de "doc" :
    # Ces bouts de code sont placés ici, après le "degenerise" et avant les "del cata"
    if 0 :
       nomfic="/local00/home/lvabhhts/U/liCMP.txt"
@@ -417,6 +417,12 @@ def imprime_ojb(file,capy):
    if 0 :
       nomfic="/local00/home/lvabhhts/U/PbOptions.txt"
       PbOptions(nomfic,capy) # pour imprimer le nom des parametres inutilises des options
+   if 0 :
+      nomfic="/local00/home/lvabhhts/U/nomte_nomtm.txt"
+      nomte_nomtm(nomfic,capy) # pour imprimer les couples (type_elem, type_maille)
+   if 0 :
+      nomfic="/local00/home/lvabhhts/U/numte_lnomte.txt"
+      numte_lnomte(nomfic,capy) # pour imprimer les lignes (te00ij -> (type_elem1, type_elem2, ...)
    #=========================================================================================
 
 
@@ -1317,3 +1323,39 @@ def PbOptions(nomfic,capy):
            #file.write("UTILISE "+noop+" "+param+'\n')
 
 
+
+#----------------------------------------------------------------------------------
+def numte_lnomte(nomfic,capy):
+# pour imprimer les noms des type_element qui utilisent une routine te00ij
+#-----------------------------------------------------------------------------------
+   file = open(nomfic,"w")
+   dico={}
+   for cata in capy.te:
+       entete,modlocs,opts=cata.cata_te
+       note=entete[0]
+       if opts:
+            for opt in opts:
+                numte=int(opt[1])
+                if numte > 0 and numte != 99 :
+                   numte=1000+numte
+                   numte='te0'+str(numte)[1:]
+                   if not dico.has_key(numte) : dico[numte]=[]
+                   dico[numte].append(note)
+   l1=dico.keys(); l1.sort()
+   for numte in l1 :
+      file.write(numte+' ')
+      for note in dico[numte] : file.write(note+' ')
+      file.write('\n')
+
+
+#----------------------------------------------------------------------------------
+def nomte_nomtm(nomfic,capy):
+# pour imprimer les couples (type_element, type_maille)
+#-----------------------------------------------------------------------------------
+   file = open(nomfic,"w")
+   dico={}
+   for cata in capy.te:
+       entete,modlocs,opts=cata.cata_te
+       note=entete[0]
+       notm=entete[1]
+       file.write(note+' '+notm+'\n')

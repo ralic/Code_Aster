@@ -1,8 +1,8 @@
-#@ MODIF crea_elem_ssd_ops Macro  DATE 03/10/2011   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
+#@ MODIF crea_elem_ssd_ops Macro  DATE 16/01/2012   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -88,6 +88,11 @@ def crea_elem_ssd_ops(self,  NUME_DDL, INTERFACE, BASE_MODALE,
     
     if CALC_FREQ['OPTION'] == 'SANS':
         nbande = 0
+
+    if CALC_FREQ['DIM_SOUS_ESPACE']:
+        motscfa['DIM_SOUS_ESPACE'] = CALC_FREQ['DIM_SOUS_ESPACE']
+
+    motscit['VERI_MODE'] = _F(STOP_ERREUR = CALC_FREQ['STOP_ERREUR'],)
 
     motfilt = {}
     motfilt['FILTRE_MODE'] = []
@@ -231,10 +236,15 @@ def crea_elem_ssd_ops(self,  NUME_DDL, INTERFACE, BASE_MODALE,
         if BASE_MODALE[0]['TYPE_MODE'] == 'STATIQUE':
             mcfact.append(_F(MODE_MECA = _mode_intf,))
         else:
+          if nbande:
             if CALC_FREQ[0]['OPTION'] == 'PLUS_PETITE' or \
                CALC_FREQ[0]['OPTION'] == 'CENTRE':
                 arg_base['NMAX_MODE'] = CALC_FREQ[0]['NMAX_FREQ']
             mcfact.append(_F(MODE_MECA = _mode_meca,
+                             **arg_base))
+          else:
+            arg_base['NMAX_MODE'] = 0
+            mcfact.append(_F(MODE_MECA = _mode_intf,
                              **arg_base))
 
         # il faut deux occurrences du mot cle facteur RITZ

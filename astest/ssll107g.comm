@@ -1,8 +1,8 @@
-# MODIF  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/01/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE VALIDATION DE MACR_CARA_POUTRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -23,7 +23,7 @@ DEBUT(CODE=_F(NOM='SSLL107G', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
 
 MATER=DEFI_MATERIAU(   ELAS=_F(  E = 1234567.890,  NU = 0.3) )
 
-TCARS=MACR_CARA_POUTRE(   GROUP_MA_BORD='LR1',
+TCARS=MACR_CARA_POUTRE(   GROUP_MA_BORD='LR1',FORMAT='MED',
                                 GROUP_NO='GN_N64' )
 
 #
@@ -36,16 +36,9 @@ IMPR_TABLE(TABLE=TCARS)
 TEST_TABLE(     TABLE=TCARS,
                   FILTRE=_F(  NOM_PARA = 'ENTITE',
                            VALE_K = 'TOUT'),
-                NOM_PARA='AIRE',
+                NOM_PARA='A',
                 PRECISION=0.005,
                     VALE=1.E-3      )
-
-TEST_TABLE(     TABLE=TCARS,
-                  FILTRE=_F(  NOM_PARA = 'ENTITE',
-                           VALE_K = 'TOUT'),
-                NOM_PARA='CDG_X',
-                 CRITERE='ABSOLU',
-                     VALE=0.              )
 
 TEST_TABLE(     TABLE=TCARS,
                   FILTRE=_F(  NOM_PARA = 'ENTITE',
@@ -57,35 +50,42 @@ TEST_TABLE(     TABLE=TCARS,
 TEST_TABLE(     TABLE=TCARS,
                   FILTRE=_F(  NOM_PARA = 'ENTITE',
                            VALE_K = 'TOUT'),
-                NOM_PARA='IX_G',
-                PRECISION=0.009,
-                    VALE=2.0833333E-7     )
+                NOM_PARA='CDG_Z',
+                 CRITERE='ABSOLU',
+                     VALE=0.              )
 
 TEST_TABLE(     TABLE=TCARS,
                   FILTRE=_F(  NOM_PARA = 'ENTITE',
                            VALE_K = 'TOUT'),
                 NOM_PARA='IY_G',
                 PRECISION=0.009,
+                    VALE=2.0833333E-7     )
+
+TEST_TABLE(     TABLE=TCARS,
+                  FILTRE=_F(  NOM_PARA = 'ENTITE',
+                           VALE_K = 'TOUT'),
+                NOM_PARA='IZ_G',
+                PRECISION=0.009,
                     VALE=3.333333E-08      )
 
 TEST_TABLE(     TABLE=TCARS,
                   FILTRE=_F(  NOM_PARA = 'ENTITE',
                            VALE_K = 'TOUT'),
-                NOM_PARA='IXY_G',
+                NOM_PARA='IYZ_G',
                  CRITERE='ABSOLU',
                      VALE=0.               )
 
 TEST_TABLE(     TABLE=TCARS,
                   FILTRE=_F(  NOM_PARA = 'ENTITE',
                            VALE_K = 'TOUT'),
-                NOM_PARA='IY_PRIN_G',
+                NOM_PARA='IY',
                 PRECISION=0.009,
                      VALE=3.333333E-08     )
 
 TEST_TABLE(     TABLE=TCARS,
                   FILTRE=_F(  NOM_PARA = 'ENTITE',
                            VALE_K = 'TOUT'),
-                NOM_PARA='IZ_PRIN_G',
+                NOM_PARA='IZ',
                 PRECISION=0.009,
                      VALE=2.0833333E-7     )
 
@@ -122,7 +122,7 @@ TEST_TABLE(     TABLE=TCARS,
 TEST_TABLE(     TABLE=TCARS,
                   FILTRE=_F(  NOM_PARA = 'ENTITE',
                            VALE_K = 'TOUT'),
-                NOM_PARA='CT',
+                NOM_PARA='JX',
                 PRECISION=0.009,
                      VALE=9.9805E-8        )
 
@@ -155,14 +155,14 @@ TEST_TABLE(     TABLE=TCARS,
 TEST_TABLE(     TABLE=TCARS,
                   FILTRE=_F(  NOM_PARA = 'ENTITE',
                            VALE_K = 'TOUT'),
-                NOM_PARA='PCTX',
+                NOM_PARA='PCTY',
                  CRITERE='ABSOLU',
                      VALE=0.               )
 
 TEST_TABLE(     TABLE=TCARS,
                   FILTRE=_F(  NOM_PARA = 'ENTITE',
                            VALE_K = 'TOUT'),
-                NOM_PARA='PCTY',
+                NOM_PARA='PCTZ',
                  CRITERE='ABSOLU',
                      VALE=0.               )
 
@@ -186,39 +186,39 @@ TCAR2=MACR_CARA_POUTRE(     GROUP_MA_BORD=('LGR1', 'LGR2',),
 TEST_TABLE(     TABLE=TCAR2,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
                            VALE_K = 'GR1'),
-                NOM_PARA='AIRE',
+                NOM_PARA='A',
                     VALE=5.E-4      )
 
 TEST_TABLE(     TABLE=TCAR2,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
                            VALE_K = 'GR1'),
-                NOM_PARA='CDG_X',
+                NOM_PARA='CDG_Y',
                  CRITERE='ABSOLU',
                      VALE=0.              )
 
 TEST_TABLE(     TABLE=TCAR2,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
                            VALE_K = 'GR1'),
-                NOM_PARA='CDG_Y',
+                NOM_PARA='CDG_Z',
                      VALE=-1.25E-2            )
 
 TEST_TABLE(     TABLE=TCAR2,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
                            VALE_K = 'GR1'),
-                NOM_PARA='IX_G',
+                NOM_PARA='IY_G',
                     VALE=2.60417E-08     )
 
 TEST_TABLE(     TABLE=TCAR2,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
                            VALE_K = 'GR1'),
-                NOM_PARA='IY_G',
+                NOM_PARA='IZ_G',
                 PRECISION=0.009,
                     VALE=1.66667E-08      )
 
 TEST_TABLE(     TABLE=TCAR2,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
                            VALE_K = 'GR1'),
-                NOM_PARA='IXY_G',
+                NOM_PARA='IYZ_G',
                  CRITERE='ABSOLU',
                      VALE=0.               )
 
@@ -246,39 +246,39 @@ TEST_TABLE(     TABLE=TCAR2,
 TEST_TABLE(     TABLE=TCAR2,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
                            VALE_K = 'GR2'),
-                NOM_PARA='AIRE',
+                NOM_PARA='A',
                     VALE=5.E-4      )
 
 TEST_TABLE(     TABLE=TCAR2,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
                            VALE_K = 'GR2'),
-                NOM_PARA='CDG_X',
+                NOM_PARA='CDG_Y',
                  CRITERE='ABSOLU',
                      VALE=0.              )
 
 TEST_TABLE(     TABLE=TCAR2,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
                            VALE_K = 'GR2'),
-                NOM_PARA='CDG_Y',
+                NOM_PARA='CDG_Z',
                      VALE=1.25E-2            )
 
 TEST_TABLE(     TABLE=TCAR2,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
                            VALE_K = 'GR2'),
-                NOM_PARA='IX_G',
+                NOM_PARA='IY_G',
                     VALE=2.60417E-08     )
 
 TEST_TABLE(     TABLE=TCAR2,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
                            VALE_K = 'GR2'),
-                NOM_PARA='IY_G',
+                NOM_PARA='IZ_G',
                 PRECISION=0.009,
                     VALE=1.66667E-08      )
 
 TEST_TABLE(     TABLE=TCAR2,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
                            VALE_K = 'GR2'),
-                NOM_PARA='IXY_G',
+                NOM_PARA='IYZ_G',
                  CRITERE='ABSOLU',
                      VALE=0.               )
 

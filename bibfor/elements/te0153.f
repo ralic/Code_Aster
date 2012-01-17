@@ -3,9 +3,9 @@
       CHARACTER*(*)     OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -94,8 +94,8 @@ C
 C     --- CALCUL DES MATRICES ELEMENTAIRES ----
       CALL JEVECH ('PMATERC', 'L', IMATE)
       IF ( OPTION.EQ.'RIGI_MECA'  ) THEN
-         CALL RCVALA(ZI(IMATE),' ','ELAS',0,' ',R8B,1,'E',E,
-     &               CODRES,1)
+         CALL RCVALB('FPG1',1,1,'+',ZI(IMATE),' ','ELAS',0,' ',R8B,
+     &               1,'E',E,CODRES,1)
          XRIG = E * A / XL
          MAT( 1) =  XRIG
          MAT( 7) = -XRIG
@@ -103,8 +103,8 @@ C     --- CALCUL DES MATRICES ELEMENTAIRES ----
 C
       ELSE IF ( OPTION.EQ.'MASS_MECA' .OR.
      &          OPTION.EQ.'M_GAMMA') THEN
-         CALL RCVALA(ZI(IMATE),' ','ELAS',0,' ',R8B,1,'RHO',RHO,
-     &               CODRES,1)
+         CALL RCVALB('FPG1',1,1,'+',ZI(IMATE),' ','ELAS',0,' ',R8B,
+     &               1,'RHO',RHO,CODRES,1)
          DO 40 I=1,21
              MATR(I) = 0.D0
  40      CONTINUE
@@ -123,8 +123,8 @@ C
 C
       ELSE IF ( (OPTION.EQ.'MASS_MECA_DIAG') .OR.
      &          (OPTION.EQ.'MASS_MECA_EXPLI')) THEN
-         CALL RCVALA(ZI(IMATE),' ','ELAS',0,' ',R8B,1,'RHO',RHO,
-     &               CODRES,1)
+         CALL RCVALB('FPG1',1,1,'+',ZI(IMATE),' ','ELAS',0,' ',R8B,
+     &               1,'RHO',RHO,CODRES,1)
          XMAS = RHO * A * XL / 2.D0
          MAT( 1) = XMAS
          MAT( 3) = XMAS

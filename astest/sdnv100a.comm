@@ -1,10 +1,10 @@
-# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
 # ======================================================================
 # TITRE IMPACT POUTRE AVEC ELEMENTS 3D SUR PLAN RIGIDE
 # sdnv100a.para = tps_job 80 mem_job 64Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 #              SEE THE FILE "LICENSE.TERMS" FOR INFORMATION ON USAGE AND
 #              REDISTRIBUTION OF THIS FILE.
 # ======================================================================
@@ -13,7 +13,7 @@
 
 DEBUT( CODE=_F(  NOM = 'SDNV100A',NIV_PUB_WEB='INTERNET') )
 
-MAILL=LIRE_MAILLAGE( )
+MAILL=LIRE_MAILLAGE(FORMAT='MED', )
 
 MAILL=DEFI_GROUP( reuse=MAILL,
                        MAILLAGE=MAILL,CREA_GROUP_NO=(

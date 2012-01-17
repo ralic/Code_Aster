@@ -1,8 +1,8 @@
-#@ MODIF modelisa6 Messages  DATE 21/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa6 Messages  DATE 16/01/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -125,6 +125,11 @@ cata_msg = {
 Solution : Il faut dédoubler le noeud.
 """),
 
+29 : _(u"""
+ Une maille des groupes modélisant la dalle a une dimension topologique différente
+ de 1 et 2.
+"""),
+
 30 : _(u"""
  L'indicateur : %(k1)s de position des multiplicateurs de Lagrange associés à
  une relation linéaire n'est pas correct.
@@ -153,7 +158,8 @@ Solution : Il faut dédoubler le noeud.
 """),
 
 35 : _(u"""
- un élément n'est ni TRIA3 ni TRIA6 ni TRIA7 ni QUAD4 ni QUAD8 ni QUAD9
+ Les mailles des groupes modélisant la dalle ne sont pas toutes de même
+ dimension topologique (RIGI_PARASOL)
 """),
 
 36 : _(u"""

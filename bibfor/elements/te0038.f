@@ -3,9 +3,9 @@
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -85,8 +85,8 @@ C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
      &       PHENOM.EQ.'ELAS_ISTR' .OR. PHENOM.EQ.'ELAS_ISTR_FO' .OR.
      &       PHENOM.EQ.'ELAS_FLUI' .OR.
      &       PHENOM.EQ.'ELAS_ORTH' .OR. PHENOM.EQ.'ELAS_ORTH_FO') THEN
-           CALL RCVALA(ZI(LMATER),' ',PHENOM,0,' ',R8B,1,'RHO',RHO,
-     &              CODRES,1)
+           CALL RCVALB('FPG1',1,1,'+',ZI(LMATER),' ',PHENOM,0,' ',R8B,
+     &              1,'RHO',RHO,CODRES,1)
          ELSE
            CALL U2MESS('F','ELEMENTS_50')
          END IF
@@ -290,11 +290,11 @@ C              BOUCLE SUR LES GROUPES DE FIBRE
 C                 CALCUL DES CARACTERISTIQUES DU GROUPE ---
                   CALL PMFITG(NBFIG,NCARFI,ZR(IPOS),CASEC1)
 C                 ON MULTIPLIE PAR RHO (CONSTANT SUR LE GROUPE)
-                  CALL RCVALA(ZI(LMATER),MATERI,'ELAS',0,' ',
-     &                     ZERO,1,'RHO',VAL,CODRES,0)
+                  CALL RCVALB('FPG1',1,1,'+',ZI(LMATER),MATERI,
+     &                     'ELAS',0,' ',ZERO,1,'RHO',VAL,CODRES,0)
                   IF ( CODRES .EQ. 1 ) THEN
-                     CALL RCVALA(ZI(LMATER),MATERI,'ELAS_FLUI',0,' ',
-     &                        ZERO,1,'RHO',VAL,CODRES,1)
+                     CALL RCVALB('FPG1',1,1,'+',ZI(LMATER),MATERI,
+     &                     'ELAS_FLUI',0,' ',ZERO,1,'RHO',VAL,CODRES,1)
                   ENDIF
                   DO 25 I = 1,6
                      CASECT(I) = CASECT(I) + VAL*CASEC1(I)

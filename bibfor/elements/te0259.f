@@ -2,9 +2,9 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -55,12 +55,12 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       PARAMETER (NBRES=3)
       REAL*8 VALRES(NBRES)
       INTEGER CODRES(NBRES)
-      CHARACTER*8 NOMPAR,NOMRES(NBRES)
+      CHARACTER*8 NOMPAR,NOMRES(NBRES),FAMI,POUM
       REAL*8 PGL(3,3),KLV(78),KLW(78),MLV(105)
       REAL*8 E, RHO
       REAL*8     VALPAR, XNU, ZERO
       INTEGER IMATE, LMAT, LORIEN, LSECT
-      INTEGER NBPAR, NC, NNO
+      INTEGER NBPAR, NC, NNO,KPG,SPT
 C     ------------------------------------------------------------------
       DATA NOMRES/'E','RHO','NU'/
 C     ------------------------------------------------------------------
@@ -91,8 +91,12 @@ C
       NBPAR  = 0
       NOMPAR = ' '
       VALPAR = ZERO
-      CALL RCVALA(ZI(IMATE),' ','ELAS',NBPAR,NOMPAR,VALPAR,NBRES,
-     &            NOMRES,VALRES,CODRES,1)
+      FAMI='FPG1'
+      KPG=1
+      SPT=1
+      POUM='+'
+      CALL RCVALB(FAMI,KPG,SPT,POUM,ZI(IMATE),' ','ELAS',NBPAR,NOMPAR,
+     &            VALPAR,NBRES,NOMRES,VALRES,CODRES,1)
       E   = VALRES(1)
       RHO = VALRES(2)
       XNU = VALRES(3)

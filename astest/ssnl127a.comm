@@ -1,10 +1,10 @@
 
-# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 16/01/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE BARRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 # ssnl127a.para = tps_job 60 mem_job 240Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -106,8 +106,8 @@ LINST=DEFI_LIST_REEL(DEBUT=0.0,
                                  _F(JUSQU_A=0.018,
                                     NOMBRE=20,),
                                  _F(JUSQU_A=0.02,
-                                    NOMBRE=10,),),);
-                                                                   
+                                    NOMBRE=50,),),);
+
 
 DEFLIST2 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST,),
                         ECHEC=_F(ACTION='DECOUPE',
@@ -131,18 +131,37 @@ REST=STAT_NON_LINE(MODELE=MO,INFO=1,
                                 RESI_INTE_RELA=1e-06,
                                 ITER_INTE_MAXI=150),
                    INCREMENT=_F(LIST_INST=DEFLIST2,
-                   
-                   
+                   ),
+                   NEWTON=_F(REAC_INCR=1,
+                             #PREDICTION='ELASTIQUE',
+                             MATRICE='TANGENTE',
+                             REAC_ITER=1,),
+                   #RECH_LINEAIRE=_F(METHODE='CORDE',
+                                    #ITER_LINE_MAXI=3,
+                                  #  RHO_MIN=1e-06,
+                                  #  RHO_MAX=10.0,
+                                    #),
+                   CONVERGENCE=_F(RESI_GLOB_RELA=1e-05,
+                                  ITER_GLOB_MAXI=10),);
+
+# CE CALCUL A POUR BUT DE MONTRER QUE L'ON CONVERGE MOINS BIEN AVEC
+# LA MATRICE ELASTIQUE
+
+REST1E=STAT_NON_LINE(MODELE=MO,INFO=1,
+                   CHAM_MATER=CHMAT1,
+                   CARA_ELEM=CAREL,
+                   EXCIT=_F(CHARGE=CHART,
+                            FONC_MULT=FONCT,),
+                   COMP_INCR=_F(RELATION='CORR_ACIER',
+                                GROUP_MA='TOUT',
+                                RESI_INTE_RELA=1e-6,
+                                ITER_INTE_MAXI=150),
+                   INCREMENT=_F(LIST_INST=DEFLIST2,
                    ),
                    NEWTON=_F(REAC_INCR=1,
                              PREDICTION='ELASTIQUE',
-                             MATRICE='TANGENTE',
-                             REAC_ITER=3,),
-                   RECH_LINEAIRE=_F(METHODE='CORDE',
-                                    ITER_LINE_MAXI=3,
-                                  #  RHO_MIN=1e-06,
-                                  #  RHO_MAX=10.0,
-                                    ),
+                             MATRICE='ELASTIQUE',
+                             REAC_ITER=1,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1e-05,
                                   ITER_GLOB_MAXI=10),);
 
@@ -193,14 +212,14 @@ REST2=STAT_NON_LINE(MODELE=MO,INFO=1,
                                  ITER_INTE_MAXI=15,),
                     INCREMENT=_F(LIST_INST=LINST2,),
                     NEWTON=_F(REAC_INCR=1,
-                              PREDICTION='ELASTIQUE',
+                              #PREDICTION='ELASTIQUE',
                               MATRICE='TANGENTE',
                               PAS_MINI_ELAS=0.0001,
-                              REAC_ITER=3,),
-                    RECH_LINEAIRE=_F(ITER_LINE_MAXI=3,
-                                     #RHO_MIN=1e-06,
-                                     #RHO_MAX=10.0,
-                                     ),
+                              REAC_ITER=1,),
+                    #RECH_LINEAIRE=_F(ITER_LINE_MAXI=3,
+                                     ##RHO_MIN=1e-06,
+                                     ##RHO_MAX=10.0,
+                                     #),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
                                    ITER_GLOB_MAXI=10,
                                    ITER_GLOB_ELAS=10,),);
@@ -264,14 +283,14 @@ REST3=STAT_NON_LINE(MODELE=MO,INFO=1,
                                  ITER_INTE_MAXI=15,),
                     INCREMENT=_F(LIST_INST=LINST3,),
                     NEWTON=_F(REAC_INCR=1,
-                              PREDICTION='ELASTIQUE',
+                              #PREDICTION='ELASTIQUE',
                               MATRICE='TANGENTE',
                               PAS_MINI_ELAS=0.0001,
                               REAC_ITER=3,),
-                    RECH_LINEAIRE=_F(ITER_LINE_MAXI=3,
-                                     #RHO_MIN=1e-06,
-                                     #RHO_MAX=10.0,
-                                     ),
+                    #RECH_LINEAIRE=_F(ITER_LINE_MAXI=3,
+                                     ##RHO_MIN=1e-06,
+                                     ##RHO_MAX=10.0,
+                                     #),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
                                    ITER_GLOB_MAXI=10,
                                    ITER_GLOB_ELAS=10,),);
@@ -344,7 +363,20 @@ TEST_RESU(RESU=(_F(RESULTAT=REST,
                    VALE=2.29350E-03,
                    PRECISION=0.0001,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='NEW8',),),);
+                   VERSION='NEW8',),
+                _F(RESULTAT=REST,
+                   INST=0.02,
+                   PARA='ITER_GLOB',
+                   VALE_I=1,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='NEW8',),
+                 _F(RESULTAT=REST1E,
+                   INST=0.02,
+                   PARA='ITER_GLOB',
+                   VALE_I=2,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='NEW8',),
+                   ),);
 
 TEST_RESU(RESU=(_F(RESULTAT=REST2,
                    INST=0.0164,

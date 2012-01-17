@@ -1,8 +1,8 @@
-# MODIF  DATE 26/07/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 17/01/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE PLAQUE FISSUREE EN TRACTION (CALCUL DE G, K1 ET K2)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -23,7 +23,7 @@
 #
 DEBUT(CODE=_F(NOM='SSLP101B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MA=LIRE_MAILLAGE(  )
+MA=LIRE_MAILLAGE(FORMAT='MED',  )
 
 MO=AFFE_MODELE(  MAILLAGE=MA,
                                AFFE=_F( TOUT = 'OUI',
@@ -40,12 +40,6 @@ CH=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=(
                                  _F(  GROUP_NO = 'GRNM5', DY = 0.),
                                           _F(  NOEUD = 'N451', DX = 0.)),
                             FORCE_CONTOUR=_F(  GROUP_MA = 'GRMA1', FY = 1.) )
-
-FCONT = FORMULE(NOM_PARA=('X','Y'),VALE='1.')
-
-CHFONC=AFFE_CHAR_MECA_F(  MODELE=MO,
-                            FORCE_CONTOUR=_F(  GROUP_MA = 'GRMA1',
-                                             FY = FCONT)    )
 
 #-----------------------------------------------------------------------
 
@@ -96,7 +90,6 @@ FOND=DEFI_FOND_FISS( MAILLAGE=MA,
 G1=CALC_G(              RESULTAT=CHAMDEPL,
                         NUME_ORDRE=1,
                         THETA=_F(THETA=THETA1),
-#                        EXCIT=_F(CHARGE=CHFONC,),
                         SYME_CHAR='SYME',)
 
 GK1=CALC_G(             RESULTAT=CHAMDEPL,
@@ -106,7 +99,6 @@ GK1=CALC_G(             RESULTAT=CHAMDEPL,
                                  DIRECTION=( 1., 0., 0.,),
                                  FOND_FISS=FOND),
                         SYME_CHAR='SYME',
-#                        EXCIT=_F(CHARGE=CHFONC,),
                         OPTION='CALC_K_G')
 
 IMPR_TABLE(TABLE=GK1)
@@ -114,7 +106,6 @@ IMPR_TABLE(TABLE=GK1)
 G2=CALC_G(              RESULTAT=CHAMDEPL,
                         NUME_ORDRE=1,
                         THETA=_F(THETA=THETA2),
-#                        EXCIT=_F(CHARGE=CHFONC,),
                         SYME_CHAR='SYME',)
 
 GK2=CALC_G(             RESULTAT=CHAMDEPL,
@@ -125,13 +116,11 @@ GK2=CALC_G(             RESULTAT=CHAMDEPL,
                                  DIRECTION=( 1., 0., 0.,),
                                  FOND_FISS=FOND),
                         SYME_CHAR='SYME',
-#                        EXCIT=_F(CHARGE=CHFONC,),
                         OPTION='CALC_K_G')
 
 G3=CALC_G(              RESULTAT=CHAMDEPL,
                         NUME_ORDRE=1,
                         THETA=_F(THETA=THETA3),
-#                        EXCIT=_F(CHARGE=CHFONC,),
                         SYME_CHAR='SYME',)
 
 GK3=CALC_G(             RESULTAT=CHAMDEPL,
@@ -142,13 +131,11 @@ GK3=CALC_G(             RESULTAT=CHAMDEPL,
                                  DIRECTION=( 1., 0., 0.,),
                                  FOND_FISS=FOND),
                         SYME_CHAR='SYME',
-#                        EXCIT=_F(CHARGE=CHFONC,),
                         OPTION='CALC_K_G')
 
 G4=CALC_G(              RESULTAT=CHAMDEPL,
                         NUME_ORDRE=1,
                         THETA=_F(THETA=THETA4),
-#                        EXCIT=_F(CHARGE=CHFONC,),
                         SYME_CHAR='SYME',)
 
 GK4=CALC_G(              RESULTAT=CHAMDEPL,
@@ -159,13 +146,11 @@ GK4=CALC_G(              RESULTAT=CHAMDEPL,
                                  DIRECTION=( 1., 0., 0.,),
                                  FOND_FISS=FOND),
                          SYME_CHAR='SYME',
-#                         EXCIT=_F(CHARGE=CHFONC,),
                          OPTION='CALC_K_G')
 
 G5=CALC_G(               RESULTAT=CHAMDEPL,
                          NUME_ORDRE=1,
                          THETA=_F(THETA=THETA5),
-#                         EXCIT=_F(CHARGE=CHFONC,),
                          SYME_CHAR='SYME',)
 
 GK5=CALC_G(              RESULTAT=CHAMDEPL,
@@ -176,13 +161,11 @@ GK5=CALC_G(              RESULTAT=CHAMDEPL,
                                  DIRECTION=( 1., 0., 0.,),
                                  FOND_FISS=FOND),
                          SYME_CHAR='SYME',
-#                         EXCIT=_F(CHARGE=CHFONC,),
                          OPTION='CALC_K_G')
 
 G6=CALC_G(               RESULTAT=CHAMDEPL,
                          NUME_ORDRE=1,
                          THETA=_F(THETA=THETA6),
-#                         EXCIT=_F(CHARGE=CHFONC,),
                          SYME_CHAR='SYME',)
 
 GK6=CALC_G(              RESULTAT=CHAMDEPL,
@@ -193,7 +176,6 @@ GK6=CALC_G(              RESULTAT=CHAMDEPL,
                                 DIRECTION=( 1., 0., 0.,),
                                 FOND_FISS=FOND),
                          SYME_CHAR='SYME',
-#                         EXCIT=_F(CHARGE=CHFONC,),
                          OPTION='CALC_K_G')
 
 TEST_TABLE(       TABLE=G1,

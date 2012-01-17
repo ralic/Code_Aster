@@ -1,8 +1,8 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 17/01/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE BIBLIO_18 FISSURE PRESSURISEE DANS UN DOMAINE PLAN ILLIMITE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -195,9 +195,16 @@ THETA3=CALC_THETA(    MODELE=MO,
 # CALCUL DES G_THETA POUR LE CHAMP THETA0
 # ---------------------------------------
 
-G_UNI0=CALC_G(              RESULTAT=RESU,
-                            NOM_CAS='CH_UNI',
-                            EXCIT=_F(CHARGE= CH_UNI),
+G_0=CALC_G(                 RESULTAT=RESU,
+                            NOM_CAS=('CH_UNI',
+                                     'CH_EXP5',
+                                     'CH_SINH1',
+                                     'CH_SINH5',
+                                     'CH_COSH1',
+                                     'CH_COSH5',
+                                     'CH_COS1',
+                                     'CH_COS5',
+                                    ),
                             THETA=_F(THETA = THETA0,
                                      FOND_FISS=FOND),
                             OPTION='CALC_K_G'
@@ -205,7 +212,6 @@ G_UNI0=CALC_G(              RESULTAT=RESU,
 
 G_EXP10=CALC_G(             RESULTAT=RESU,
                             NOM_CAS='CH_EXP1',
-                            EXCIT=_F(CHARGE= CH_EXP1),
                             THETA=_F(
                                       DIRECTION=(1., 0., 0., ),
                                       R_INF = 0.000,
@@ -214,282 +220,47 @@ G_EXP10=CALC_G(             RESULTAT=RESU,
                              OPTION='CALC_K_G'
                          )
 
-G_EXP50=CALC_G(              RESULTAT=RESU,
-                             NOM_CAS='CH_EXP5',
-                             EXCIT=_F(CHARGE= CH_EXP5),
-                             THETA=_F(THETA = THETA0,
-                                      FOND_FISS=FOND),
-                             OPTION='CALC_K_G'
-                         )
-
-G_SINH10=CALC_G(              RESULTAT=RESU, 
-                              NOM_CAS='CH_SINH1',
-                              EXCIT=_F(CHARGE= CH_SINH1),
-                              THETA=_F(THETA = THETA0,
-                                      FOND_FISS=FOND),
-                              OPTION='CALC_K_G'
-                          )
-
-G_SINH50=CALC_G(              RESULTAT=RESU,
-                              NOM_CAS='CH_SINH5',
-                              EXCIT=_F(CHARGE= CH_SINH5),
-                              THETA=_F(THETA = THETA0,
-                                      FOND_FISS=FOND),
-                              OPTION='CALC_K_G'
-                          )
-
-G_COSH10=CALC_G(              RESULTAT=RESU,
-                              NOM_CAS='CH_COSH1',
-                              EXCIT=_F(CHARGE= CH_COSH1),
-                              THETA=_F(THETA = THETA0,
-                                      FOND_FISS=FOND),
-                              OPTION='CALC_K_G'
-                          )
-
-G_COSH50=CALC_G(              RESULTAT=RESU,
-                              NOM_CAS='CH_COSH5',
-                              EXCIT=_F(CHARGE= CH_COSH5),
-                              THETA=_F(THETA = THETA0,
-                                      FOND_FISS=FOND),
-                              OPTION='CALC_K_G'
-                          )
-
-G_COS10=CALC_G(               RESULTAT=RESU,
-                              NOM_CAS='CH_COS1',
-                              EXCIT=_F(CHARGE= CH_COS1),
-                              THETA=_F(THETA = THETA0,
-                                      FOND_FISS=FOND),
-                              OPTION='CALC_K_G'
-                         )
-
-G_COS50=CALC_G(               RESULTAT=RESU,
-                              NOM_CAS='CH_COS5',
-                              EXCIT=_F(CHARGE= CH_COS5),
-                              THETA=_F(THETA = THETA0,
-                                      FOND_FISS=FOND),
-                              OPTION='CALC_K_G'
-                         )
 
 # CALCUL DES G_THETA POUR LE CHAMP THETA1
 # ---------------------------------------
 
-G_UNI1=CALC_G(              RESULTAT=RESU, 
-                            NOM_CAS='CH_UNI',
-                            EXCIT=_F(CHARGE= CH_UNI),
+G_1=CALC_G(                 RESULTAT=RESU,
                             THETA=_F(THETA = THETA1,
                                      FOND_FISS=FOND),
                             OPTION='CALC_K_G'
                         )
 
-G_EXP11=CALC_G(              RESULTAT=RESU,
-                             NOM_CAS='CH_EXP1',
-                             EXCIT=_F(CHARGE= CH_EXP1),
-                             THETA=_F(THETA = THETA1,
-                                      FOND_FISS=FOND),
-                             OPTION='CALC_K_G'
-                         )
-
-G_EXP51=CALC_G(              RESULTAT=RESU,
-                             NOM_CAS='CH_EXP5',
-                             EXCIT=_F(CHARGE= CH_EXP5),
-                             THETA=_F(THETA = THETA1,
-                                      FOND_FISS=FOND),
-                             OPTION='CALC_K_G'
-                         )
-
-G_SINH11=CALC_G(              RESULTAT=RESU,
-                              NOM_CAS='CH_SINH1',
-                              EXCIT=_F(CHARGE= CH_SINH1),
-                              THETA=_F(THETA = THETA1,
-                                      FOND_FISS=FOND),
-                              OPTION='CALC_K_G'
-                          )
-
-G_SINH51=CALC_G(             RESULTAT=RESU,
-                             NOM_CAS='CH_SINH5',
-                             EXCIT=_F(CHARGE= CH_SINH5),
-                             THETA=_F(THETA = THETA1,
-                                      FOND_FISS=FOND),
-                             OPTION='CALC_K_G'
-                          )
-
-G_COSH11=CALC_G(             RESULTAT=RESU,
-                             NOM_CAS='CH_COSH1',
-                             EXCIT=_F(CHARGE= CH_COSH1),
-                             THETA=_F(THETA = THETA1,
-                                      FOND_FISS=FOND),
-                             OPTION='CALC_K_G'
-                          )
-
-G_COSH51=CALC_G(             RESULTAT=RESU,
-                             NOM_CAS='CH_COSH5',
-                             EXCIT=_F(CHARGE= CH_COSH5),
-                             THETA=_F(THETA = THETA1,
-                                      FOND_FISS=FOND),
-                             OPTION='CALC_K_G'
-                          )
-
-G_COS11=CALC_G(              RESULTAT=RESU,
-                             NOM_CAS='CH_COS1',
-                             EXCIT=_F(CHARGE= CH_COS1),
-                             THETA=_F(THETA = THETA1,
-                                      FOND_FISS=FOND),
-                             OPTION='CALC_K_G'
-                         )
-
-G_COS51=CALC_G(              RESULTAT=RESU,
-                             NOM_CAS='CH_COS5',
-                             EXCIT=_F(CHARGE= CH_COS5),
-                             THETA=_F(THETA = THETA1,
-                                      FOND_FISS=FOND),
-                             OPTION='CALC_K_G'
-                         )
 
 # CALCUL DES G_THETA POUR LE CHAMP THETA2
 # ---------------------------------------
 
-G_UNI2=CALC_G(              RESULTAT=RESU,
-                            NOM_CAS='CH_UNI',
-                            EXCIT=_F(CHARGE= CH_UNI),
+G_2=CALC_G(                 RESULTAT=RESU,
                             THETA=_F(THETA = THETA2,
                                       FOND_FISS=FOND,),
                             OPTION='CALC_K_G'
                         )
 
-G_EXP12=CALC_G(              RESULTAT=RESU,
-                             NOM_CAS='CH_EXP1',
-                             EXCIT=_F(CHARGE= CH_EXP1),
-                             THETA=_F(THETA = THETA2,
-                                      FOND_FISS=FOND,),
-                             OPTION='CALC_K_G'
-                         )
-
-G_EXP52=CALC_G(              RESULTAT=RESU, 
-                             NOM_CAS='CH_EXP5',
-                             EXCIT=_F(CHARGE= CH_EXP5),
-                             THETA=_F(THETA = THETA2,
-                                      FOND_FISS=FOND,),
-                             OPTION='CALC_K_G'
-                         )
-
-G_SINH12=CALC_G(              RESULTAT=RESU,
-                              NOM_CAS='CH_SINH1',
-                              EXCIT=_F(CHARGE= CH_SINH1),
-                              THETA=_F(THETA = THETA2,
-                                      FOND_FISS=FOND,),
-                              OPTION='CALC_K_G'
-                          )
-
-G_SINH52=CALC_G(              RESULTAT=RESU,
-                              NOM_CAS='CH_SINH5',
-                              EXCIT=_F(CHARGE= CH_SINH5),
-                              THETA=_F(THETA = THETA2,
-                                      FOND_FISS=FOND,),
-                              OPTION='CALC_K_G'
-                          )
-
-G_COSH12=CALC_G(              RESULTAT=RESU,
-                              NOM_CAS='CH_COSH1',
-                              EXCIT=_F(CHARGE= CH_COSH1),
-                              THETA=_F(THETA = THETA2,
-                                      FOND_FISS=FOND,),
-                              OPTION='CALC_K_G'
-                          )
-
-G_COSH52=CALC_G(              RESULTAT=RESU,
-                              NOM_CAS='CH_COSH5',
-                              EXCIT=_F(CHARGE= CH_COSH5),
-                              THETA=_F(THETA = THETA2,
-                                      FOND_FISS=FOND,),
-                              OPTION='CALC_K_G'
-                          )
-
-G_COS12=CALC_G(               RESULTAT=RESU,
-                              NOM_CAS='CH_COS1',
-                              EXCIT=_F(CHARGE= CH_COS1),
-                              THETA=_F(THETA = THETA2,
-                                       FOND_FISS=FOND,),
-                              OPTION='CALC_K_G'
-                         )
-
-G_COS52=CALC_G(              RESULTAT=RESU,
-                             NOM_CAS='CH_COS5',
-                             EXCIT=_F(CHARGE= CH_COS5),
-                             THETA=_F(THETA = THETA2,
-                                      FOND_FISS=FOND,),
-                             OPTION='CALC_K_G'
-                         )
 
 # CALCUL DES G_THETA POUR LE CHAMP THETA3
 # ---------------------------------------
 
-G_UNI3=CALC_G(              RESULTAT=RESU,
-                            NOM_CAS='CH_UNI',
-                            EXCIT=_F(CHARGE= CH_UNI),
+G_3=CALC_G(                 RESULTAT=RESU,
+                            NOM_CAS=('CH_UNI',
+                                     'CH_EXP1',
+                                     'CH_EXP5',
+                                     'CH_SINH1',
+                                     'CH_SINH5',
+                                     'CH_COSH1',
+                                     'CH_COSH5',
+                                     'CH_COS1',
+                                    ),
                             THETA=_F(THETA = THETA3,
                                      FOND_FISS=FOND),
                             OPTION='CALC_K_G'
                         )
 
-G_EXP13=CALC_G(              RESULTAT=RESU,
-                             NOM_CAS='CH_EXP1',
-                             EXCIT=_F(CHARGE= CH_EXP1),
-                             THETA=_F(THETA = THETA3,
-                                       FOND_FISS=FOND),
-                             OPTION='CALC_K_G'
-                         )
-
-G_EXP53=CALC_G(              RESULTAT=RESU, 
-                             NOM_CAS='CH_EXP5',
-                             EXCIT=_F(CHARGE= CH_EXP5),
-                             THETA=_F(THETA = THETA3,
-                                       FOND_FISS=FOND),
-                             OPTION='CALC_K_G'
-                         )
-
-G_SINH13=CALC_G(              RESULTAT=RESU,
-                              NOM_CAS='CH_SINH1',
-                              EXCIT=_F(CHARGE= CH_SINH1),
-                              THETA=_F(THETA = THETA3,
-                                       FOND_FISS=FOND),
-                              OPTION='CALC_K_G'
-                          )
-
-G_SINH53=CALC_G(              RESULTAT=RESU,
-                              NOM_CAS='CH_SINH5',
-                              EXCIT=_F(CHARGE= CH_SINH5),
-                              THETA=_F(THETA = THETA3,
-                                       FOND_FISS=FOND),
-                              OPTION='CALC_K_G'
-                          )
-
-G_COSH13=CALC_G(              RESULTAT=RESU,
-                              NOM_CAS='CH_COSH1',
-                              EXCIT=_F(CHARGE= CH_COSH1),
-                              THETA=_F(THETA = THETA3,
-                                       FOND_FISS=FOND),
-                              OPTION='CALC_K_G'
-                          )
-
-G_COSH53=CALC_G(              RESULTAT=RESU,
-                              NOM_CAS='CH_COSH5',
-                              EXCIT=_F(CHARGE= CH_COSH5),
-                              THETA=_F(THETA = THETA3,
-                                       FOND_FISS=FOND),
-                              OPTION='CALC_K_G'
-                          )
-
-G_COS13=CALC_G(              RESULTAT=RESU,
-                             NOM_CAS='CH_COS1',
-                             EXCIT=_F(CHARGE= CH_COS1),
-                             THETA=_F(THETA = THETA3,
-                                       FOND_FISS=FOND),
-                             OPTION='CALC_K_G'
-                         )
-
 G_COS53=CALC_G(              RESULTAT=RESU,
                              NOM_CAS='CH_COS5',
-                             EXCIT=_F(CHARGE= CH_COS5),
                              THETA=_F(
                                        DIRECTION=(1., 0., 0., ),
                                        R_INF = 0.060,
@@ -501,20 +272,23 @@ G_COS53=CALC_G(              RESULTAT=RESU,
 # -----------------------------------------------
 
 
-TEST_TABLE(       TABLE=G_UNI0,
+TEST_TABLE(       TABLE=G_0,
                        NOM_PARA='G',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_UNI'),
                            VALE=3.14158E-3,
                       PRECISION=0.033 ,
             REFERENCE='ANALYTIQUE'       )
 
-TEST_TABLE(       TABLE=G_UNI0,
+TEST_TABLE(       TABLE=G_0,
                        NOM_PARA='K1',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_UNI'),
                            VALE=1.77245,
                       PRECISION=0.07,
             REFERENCE='ANALYTIQUE'        )
 
-TEST_TABLE(       TABLE=G_UNI0,
+TEST_TABLE(       TABLE=G_0,
                        NOM_PARA='K2',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_UNI'),
                            VALE=0.,
                         CRITERE='ABSOLU',
                       PRECISION=0.015 ,
@@ -543,20 +317,23 @@ TEST_TABLE(       TABLE=G_EXP10,
 
 #
 
-TEST_TABLE(       TABLE=G_EXP50,
+TEST_TABLE(       TABLE=G_0,
                        NOM_PARA='G',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP5'),
                            VALE=8.356742,
                       PRECISION=0.055 ,
             REFERENCE='ANALYTIQUE'     )
 
-TEST_TABLE(       TABLE=G_EXP50,
+TEST_TABLE(       TABLE=G_0,
                        NOM_PARA='K1',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP5'),
                            VALE=91.41522,
                       PRECISION=0.07  ,
             REFERENCE='ANALYTIQUE'    )
 
-TEST_TABLE(       TABLE=G_EXP50,
+TEST_TABLE(       TABLE=G_0,
                        NOM_PARA='K2',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP5'),
                            VALE=0.,
                         CRITERE='ABSOLU',
                       PRECISION=0.01  ,
@@ -564,20 +341,23 @@ TEST_TABLE(       TABLE=G_EXP50,
 
 #
 
-TEST_TABLE(       TABLE=G_SINH10,
+TEST_TABLE(       TABLE=G_0,
                        NOM_PARA='G',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH1'),
                            VALE=1.00344E-3,
                       PRECISION=0.045 ,
             REFERENCE='ANALYTIQUE'     )
 
-TEST_TABLE(       TABLE=G_SINH10,
+TEST_TABLE(       TABLE=G_0,
                        NOM_PARA='K1',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH1'),
                            VALE=1.00172,
                       PRECISION=0.07 ,
             REFERENCE='ANALYTIQUE'     )
 
-TEST_TABLE(       TABLE=G_SINH10,
+TEST_TABLE(       TABLE=G_0,
                        NOM_PARA='K2',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH1'),
                            VALE=0.,
                         CRITERE='ABSOLU',
                       PRECISION=0.01  ,
@@ -585,20 +365,23 @@ TEST_TABLE(       TABLE=G_SINH10,
 
 #
 
-TEST_TABLE(       TABLE=G_SINH50,
+TEST_TABLE(       TABLE=G_0,
                        NOM_PARA='G',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH5'),
                            VALE=1.86052,
                       PRECISION=0.055 ,
             REFERENCE='ANALYTIQUE'     )
 
-TEST_TABLE(       TABLE=G_SINH50,
+TEST_TABLE(       TABLE=G_0,
                        NOM_PARA='K1',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH5'),
                            VALE=43.13380,
                       PRECISION=0.065  ,
             REFERENCE='ANALYTIQUE'    )
 
-TEST_TABLE(       TABLE=G_SINH50,
+TEST_TABLE(       TABLE=G_0,
                        NOM_PARA='K2',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH5'),
                            VALE=0.,
                         CRITERE='ABSOLU',
                       PRECISION=0.065  ,
@@ -606,20 +389,21 @@ TEST_TABLE(       TABLE=G_SINH50,
 
 #
 
-TEST_TABLE(       TABLE=G_COSH10,
+TEST_TABLE(       TABLE=G_0,
                        NOM_PARA='G',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH1'),
                            VALE=5.03571E-3,
                       PRECISION=0.035 ,
             REFERENCE='ANALYTIQUE'     )
 
-TEST_TABLE(       TABLE=G_COSH10,
-                       NOM_PARA='K1',
+TEST_TABLE(       TABLE=G_0,
+                       NOM_PARA='K1',FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH1'),
                            VALE=2.24404,
                       PRECISION=0.07 ,
             REFERENCE='ANALYTIQUE'     )
 
-TEST_TABLE(       TABLE=G_COSH10,
-                       NOM_PARA='K2',
+TEST_TABLE(       TABLE=G_0,
+                       NOM_PARA='K2',FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH1'),
                            VALE=0.,
                         CRITERE='ABSOLU',
                       PRECISION=0.01  ,
@@ -627,20 +411,21 @@ TEST_TABLE(       TABLE=G_COSH10,
 
 #
 
-TEST_TABLE(       TABLE=G_COSH50,
+TEST_TABLE(       TABLE=G_0,
                        NOM_PARA='G',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH5'),
                            VALE=2.331095,
                       PRECISION=0.055 ,
             REFERENCE='ANALYTIQUE'     )
 
-TEST_TABLE(       TABLE=G_COSH50,
-                       NOM_PARA='K1',
+TEST_TABLE(       TABLE=G_0,
+                       NOM_PARA='K1',FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH5'),
                            VALE=48.28142,
                       PRECISION=0.07 ,
             REFERENCE='ANALYTIQUE'     )
 
-TEST_TABLE(       TABLE=G_COSH50,
-                       NOM_PARA='K2',
+TEST_TABLE(       TABLE=G_0,
+                       NOM_PARA='K2',FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH5'),
                            VALE=0.,
                         CRITERE='ABSOLU',
                       PRECISION=0.07  ,
@@ -648,20 +433,23 @@ TEST_TABLE(       TABLE=G_COSH50,
 
 #
 
-TEST_TABLE(       TABLE=G_COS10,
+TEST_TABLE(       TABLE=G_0,
                        NOM_PARA='G',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COS1'),
                            VALE=.00183948,
                       PRECISION=0.03  ,
             REFERENCE='ANALYTIQUE'    )
 
-TEST_TABLE(       TABLE=G_COS10,
+TEST_TABLE(       TABLE=G_0,
                        NOM_PARA='K1',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COS1'),
                            VALE=1.356277,
                       PRECISION=0.07 ,
             REFERENCE='ANALYTIQUE'     )
 
-TEST_TABLE(       TABLE=G_COS10,
+TEST_TABLE(       TABLE=G_0,
                        NOM_PARA='K2',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COS1'),
                            VALE=0.,
                         CRITERE='ABSOLU',
                       PRECISION=0.07  ,
@@ -669,15 +457,17 @@ TEST_TABLE(       TABLE=G_COS10,
 
 #
 
-TEST_TABLE(       TABLE=G_COS50,
+TEST_TABLE(       TABLE=G_0,
                        NOM_PARA='G',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COS5'),
                            VALE=0.,
                         CRITERE='ABSOLU',
                       PRECISION=0.00001 ,
             REFERENCE='ANALYTIQUE'  )
 
-TEST_TABLE(       TABLE=G_COS50,
+TEST_TABLE(       TABLE=G_0,
                        NOM_PARA='K1',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COS5'),
                            VALE=0.,
                         CRITERE='ABSOLU',
                       PRECISION=0.003,
@@ -687,20 +477,23 @@ TEST_TABLE(       TABLE=G_COS50,
 # -------------------------------------------------
 
 
-TEST_TABLE(       TABLE=G_UNI1,
+TEST_TABLE(       TABLE=G_1,
                        NOM_PARA='G',
-                           VALE=3.14158E-3,
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_UNI'),
+                      VALE=3.14158E-3,
                       PRECISION=0.01  ,
             REFERENCE='ANALYTIQUE'    )
 
-TEST_TABLE(       TABLE=G_UNI1,
+TEST_TABLE(       TABLE=G_1,
                        NOM_PARA='K1',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_UNI'),
                            VALE=1.77245,
                       PRECISION=0.005  ,
             REFERENCE='ANALYTIQUE'    )
 
-TEST_TABLE(       TABLE=G_UNI1,
+TEST_TABLE(       TABLE=G_1,
                        NOM_PARA='K2',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_UNI'),
                            VALE=0.,
                         CRITERE='ABSOLU',
                       PRECISION=0.015 ,
@@ -708,20 +501,23 @@ TEST_TABLE(       TABLE=G_UNI1,
 
 #
 
-TEST_TABLE(       TABLE=G_EXP11,
+TEST_TABLE(       TABLE=G_1,
                        NOM_PARA='G',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP1'),
                            VALE=1.05349E-2,
                       PRECISION=0.005  ,
             REFERENCE='ANALYTIQUE'    )
 
-TEST_TABLE(       TABLE=G_EXP11,
+TEST_TABLE(       TABLE=G_1,
                        NOM_PARA='K1',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP1'),
                            VALE=3.24576,
                       PRECISION=0.005 ,
             REFERENCE='ANALYTIQUE'     )
 
-TEST_TABLE(       TABLE=G_EXP11,
+TEST_TABLE(       TABLE=G_1,
                        NOM_PARA='K2',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP1'),
                            VALE=0.,
                         CRITERE='ABSOLU',
                       PRECISION=0.01 ,
@@ -729,20 +525,23 @@ TEST_TABLE(       TABLE=G_EXP11,
 
 #
 
-TEST_TABLE(       TABLE=G_EXP51,
+TEST_TABLE(       TABLE=G_1,
                        NOM_PARA='G',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP5'),
                            VALE=8.356742,
                       PRECISION=0.015  ,
             REFERENCE='ANALYTIQUE' )
 
-TEST_TABLE(       TABLE=G_EXP51,
+TEST_TABLE(       TABLE=G_1,
                        NOM_PARA='K1',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP5'),
                            VALE=91.41522,
                       PRECISION=0.005 ,
             REFERENCE='ANALYTIQUE'   )
 
-TEST_TABLE(       TABLE=G_EXP51,
+TEST_TABLE(       TABLE=G_1,
                        NOM_PARA='K2',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP5'),
                            VALE=0.,
                         CRITERE='ABSOLU',
                       PRECISION=0.005  ,
@@ -750,20 +549,23 @@ TEST_TABLE(       TABLE=G_EXP51,
 
 #
 
-TEST_TABLE(       TABLE=G_SINH11,
+TEST_TABLE(       TABLE=G_1,
                        NOM_PARA='G',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH1'),
                            VALE=1.00344E-3,
                       PRECISION=0.005 ,
             REFERENCE='ANALYTIQUE'   )
 
-TEST_TABLE(       TABLE=G_SINH11,
+TEST_TABLE(       TABLE=G_1,
                        NOM_PARA='K1',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH1'),
                            VALE=1.00172,
                       PRECISION=0.005 ,
             REFERENCE='ANALYTIQUE'   )
 
-TEST_TABLE(       TABLE=G_SINH11,
+TEST_TABLE(       TABLE=G_1,
                        NOM_PARA='K2',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH1'),
                            VALE=0.,
                         CRITERE='ABSOLU',
                       PRECISION=0.01  ,
@@ -771,20 +573,23 @@ TEST_TABLE(       TABLE=G_SINH11,
 
 #
 
-TEST_TABLE(       TABLE=G_SINH51,
+TEST_TABLE(       TABLE=G_1,
                        NOM_PARA='G',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH5'),
                            VALE=1.86052,
                       PRECISION=0.015  ,
             REFERENCE='ANALYTIQUE'  )
 
-TEST_TABLE(       TABLE=G_SINH51,
+TEST_TABLE(       TABLE=G_1,
                        NOM_PARA='K1',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH5'),
                            VALE=43.13380,
                       PRECISION=0.005 ,
             REFERENCE='ANALYTIQUE'   )
 
-TEST_TABLE(       TABLE=G_SINH51,
+TEST_TABLE(       TABLE=G_1,
                        NOM_PARA='K2',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH5'),
                            VALE=0.,
                         CRITERE='ABSOLU',
                       PRECISION=0.01 ,
@@ -792,20 +597,23 @@ TEST_TABLE(       TABLE=G_SINH51,
 
 #
 
-TEST_TABLE(       TABLE=G_COSH11,
+TEST_TABLE(       TABLE=G_1,
                        NOM_PARA='G',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH1'),
                            VALE=5.03571E-3,
                       PRECISION=0.01   ,
             REFERENCE='ANALYTIQUE' )
 
-TEST_TABLE(       TABLE=G_COSH11,
+TEST_TABLE(       TABLE=G_1,
                        NOM_PARA='K1',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH1'),
                            VALE=2.24404,
                       PRECISION=0.005  ,
             REFERENCE='ANALYTIQUE'  )
 
-TEST_TABLE(       TABLE=G_COSH11,
+TEST_TABLE(       TABLE=G_1,
                        NOM_PARA='K2',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH1'),
                            VALE=0.,
                         CRITERE='ABSOLU',
                       PRECISION=0.01 ,
@@ -813,20 +621,23 @@ TEST_TABLE(       TABLE=G_COSH11,
 
 #
 
-TEST_TABLE(       TABLE=G_COSH51,
+TEST_TABLE(       TABLE=G_1,
                        NOM_PARA='G',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH5'),
                            VALE=2.331095,
                       PRECISION=0.015 ,
             REFERENCE='ANALYTIQUE'   )
 
-TEST_TABLE(       TABLE=G_COSH51,
+TEST_TABLE(       TABLE=G_1,
                        NOM_PARA='K1',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH5'),
                            VALE=48.28142,
                       PRECISION=0.005  ,
             REFERENCE='ANALYTIQUE'  )
 
-TEST_TABLE(       TABLE=G_COSH51,
+TEST_TABLE(       TABLE=G_1,
                        NOM_PARA='K2',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH5'),
                            VALE=0.,
                         CRITERE='ABSOLU',
                       PRECISION=0.01  ,
@@ -834,20 +645,23 @@ TEST_TABLE(       TABLE=G_COSH51,
 
 #
 
-TEST_TABLE(       TABLE=G_COS11,
+TEST_TABLE(       TABLE=G_1,
                        NOM_PARA='G',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COS1'),
                            VALE=.00183948,
                       PRECISION=0.015 ,
             REFERENCE='ANALYTIQUE'   )
 
-TEST_TABLE(       TABLE=G_COS11,
+TEST_TABLE(       TABLE=G_1,
                        NOM_PARA='K1',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COS1'),
                            VALE=1.356277,
                       PRECISION=0.01  ,
             REFERENCE='ANALYTIQUE'  )
 
-TEST_TABLE(       TABLE=G_COS11,
+TEST_TABLE(       TABLE=G_1,
                        NOM_PARA='K2',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COS1'),
                            VALE=0.,
                         CRITERE='ABSOLU',
                       PRECISION=0.01 ,
@@ -855,22 +669,25 @@ TEST_TABLE(       TABLE=G_COS11,
 
 #
 
-TEST_TABLE(       TABLE=G_COS51,
+TEST_TABLE(       TABLE=G_1,
                        NOM_PARA='G',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COS5'),
                            VALE=0.,
                         CRITERE='ABSOLU',
                       PRECISION=0.00001 ,
             REFERENCE='ANALYTIQUE')
 
-TEST_TABLE(       TABLE=G_COS51,
+TEST_TABLE(       TABLE=G_1,
                        NOM_PARA='K1',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COS5'),
                            VALE=0.,
                         CRITERE='ABSOLU',
                       PRECISION=0.005 ,
             REFERENCE='ANALYTIQUE')
 
-TEST_TABLE(       TABLE=G_COS51,
+TEST_TABLE(       TABLE=G_1,
                        NOM_PARA='K2',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COS5'),
                            VALE=0.,
                         CRITERE='ABSOLU',
                       PRECISION=0.00001 ,
@@ -880,20 +697,23 @@ TEST_TABLE(       TABLE=G_COS51,
 # -------------------------------------------------
 
 
-TEST_TABLE(       TABLE=G_UNI2,
+TEST_TABLE(       TABLE=G_2,
                        NOM_PARA='G',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_UNI'),
                            VALE=3.14158E-3,
                       PRECISION=0.01 ,
             REFERENCE='ANALYTIQUE'   )
 
-TEST_TABLE(       TABLE=G_UNI2,
+TEST_TABLE(       TABLE=G_2,
                        NOM_PARA='K1',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_UNI'),
                            VALE=1.77245,
                       PRECISION=0.005 ,
             REFERENCE='ANALYTIQUE'   )
 
-TEST_TABLE(       TABLE=G_UNI2,
+TEST_TABLE(       TABLE=G_2,
                        NOM_PARA='K2',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_UNI'),
                            VALE=0.,
                         CRITERE='ABSOLU',
                       PRECISION=0.015  ,
@@ -901,20 +721,23 @@ TEST_TABLE(       TABLE=G_UNI2,
 
 #
 
-TEST_TABLE(       TABLE=G_EXP12,
+TEST_TABLE(       TABLE=G_2,
                        NOM_PARA='G',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP1'),
                            VALE=1.05349E-2,
                       PRECISION=0.005  ,
             REFERENCE='ANALYTIQUE'  )
 
-TEST_TABLE(       TABLE=G_EXP12,
+TEST_TABLE(       TABLE=G_2,
                        NOM_PARA='K1',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP1'),
                            VALE=3.24576,
                       PRECISION=0.005,
             REFERENCE='ANALYTIQUE'    )
 
-TEST_TABLE(       TABLE=G_EXP12,
+TEST_TABLE(       TABLE=G_2,
                        NOM_PARA='K2',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP1'),
                            VALE=0.,
                         CRITERE='ABSOLU',
                       PRECISION=0.01  ,
@@ -922,20 +745,23 @@ TEST_TABLE(       TABLE=G_EXP12,
 
 #
 
-TEST_TABLE(       TABLE=G_EXP52,
+TEST_TABLE(       TABLE=G_2,
                        NOM_PARA='G',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP5'),
                            VALE=8.356742,
                       PRECISION=0.015  ,
             REFERENCE='ANALYTIQUE'  )
 
-TEST_TABLE(       TABLE=G_EXP52,
+TEST_TABLE(       TABLE=G_2,
                        NOM_PARA='K1',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP5'),
                            VALE=91.41522,
                       PRECISION=0.005 ,
             REFERENCE='ANALYTIQUE'   )
 
-TEST_TABLE(       TABLE=G_EXP52,
+TEST_TABLE(       TABLE=G_2,
                        NOM_PARA='K2',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP5'),
                            VALE=0.,
                         CRITERE='ABSOLU',
                       PRECISION=0.01 ,
@@ -943,20 +769,23 @@ TEST_TABLE(       TABLE=G_EXP52,
 
 #
 
-TEST_TABLE(       TABLE=G_SINH12,
+TEST_TABLE(       TABLE=G_2,
                        NOM_PARA='G',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH1'),
                            VALE=1.00344E-3,
                       PRECISION=0.005 ,
             REFERENCE='ANALYTIQUE'   )
 
-TEST_TABLE(       TABLE=G_SINH12,
+TEST_TABLE(       TABLE=G_2,
                        NOM_PARA='K1',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH1'),
                            VALE=1.00172,
                       PRECISION=0.005 ,
             REFERENCE='ANALYTIQUE'   )
 
-TEST_TABLE(       TABLE=G_SINH12,
+TEST_TABLE(       TABLE=G_2,
                        NOM_PARA='K2',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH1'),
                            VALE=0.,
                         CRITERE='ABSOLU',
                       PRECISION=0.01  ,
@@ -964,20 +793,23 @@ TEST_TABLE(       TABLE=G_SINH12,
 
 #
 
-TEST_TABLE(       TABLE=G_SINH52,
+TEST_TABLE(       TABLE=G_2,
                        NOM_PARA='G',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH5'),
                            VALE=1.86052,
                       PRECISION=0.015  ,
             REFERENCE='ANALYTIQUE'  )
 
-TEST_TABLE(       TABLE=G_SINH52,
+TEST_TABLE(       TABLE=G_2,
                        NOM_PARA='K1',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH5'),
                            VALE=43.13380,
                       PRECISION=0.005 ,
             REFERENCE='ANALYTIQUE'   )
 
-TEST_TABLE(       TABLE=G_SINH52,
+TEST_TABLE(       TABLE=G_2,
                        NOM_PARA='K2',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH5'),
                            VALE=0.,
                         CRITERE='ABSOLU',
                       PRECISION=0.01  ,
@@ -985,20 +817,23 @@ TEST_TABLE(       TABLE=G_SINH52,
 
 #
 
-TEST_TABLE(       TABLE=G_COSH12,
+TEST_TABLE(       TABLE=G_2,
                        NOM_PARA='G',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH1'),
                            VALE=5.03571E-3,
                       PRECISION=0.01  ,
             REFERENCE='ANALYTIQUE'  )
 
-TEST_TABLE(       TABLE=G_COSH12,
+TEST_TABLE(       TABLE=G_2,
                        NOM_PARA='K1',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH1'),
                            VALE=2.24404,
                       PRECISION=0.005  ,
             REFERENCE='ANALYTIQUE'  )
 
-TEST_TABLE(       TABLE=G_COSH12,
+TEST_TABLE(       TABLE=G_2,
                        NOM_PARA='K2',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH1'),
                            VALE=0.,
                         CRITERE='ABSOLU',
                       PRECISION=0.01   ,
@@ -1006,20 +841,23 @@ TEST_TABLE(       TABLE=G_COSH12,
 
 #
 
-TEST_TABLE(       TABLE=G_COSH52,
+TEST_TABLE(       TABLE=G_2,
                        NOM_PARA='G',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH5'),
                            VALE=2.331095,
                       PRECISION=0.015   ,
             REFERENCE='ANALYTIQUE' )
 
-TEST_TABLE(       TABLE=G_COSH52,
+TEST_TABLE(       TABLE=G_2,
                        NOM_PARA='K1',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH5'),
                            VALE=48.28142,
                       PRECISION=0.005  ,
             REFERENCE='ANALYTIQUE'  )
 
-TEST_TABLE(       TABLE=G_COSH52,
+TEST_TABLE(       TABLE=G_2,
                        NOM_PARA='K2',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH5'),
                            VALE=0.,
                         CRITERE='ABSOLU',
                       PRECISION=0.01  ,
@@ -1027,20 +865,23 @@ TEST_TABLE(       TABLE=G_COSH52,
 
 #
 
-TEST_TABLE(       TABLE=G_COS12,
+TEST_TABLE(       TABLE=G_2,
                        NOM_PARA='G',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COS1'),
                            VALE=.00183948,
                       PRECISION=0.015 ,
             REFERENCE='ANALYTIQUE'   )
 
-TEST_TABLE(       TABLE=G_COS12,
+TEST_TABLE(       TABLE=G_2,
                        NOM_PARA='K1',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COS1'),
                            VALE=1.356277,
                       PRECISION=0.01 ,
             REFERENCE='ANALYTIQUE'   )
 
-TEST_TABLE(       TABLE=G_COS12,
+TEST_TABLE(       TABLE=G_2,
                        NOM_PARA='K2',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COS1'),
                            VALE=0.,
                         CRITERE='ABSOLU',
                       PRECISION=0.01 ,
@@ -1048,22 +889,25 @@ TEST_TABLE(       TABLE=G_COS12,
 
 #
 
-TEST_TABLE(       TABLE=G_COS52,
+TEST_TABLE(       TABLE=G_2,
                        NOM_PARA='G',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COS5'),
                            VALE=0.,
                         CRITERE='ABSOLU',
                       PRECISION=0.00001 ,
             REFERENCE='ANALYTIQUE')
 
-TEST_TABLE(       TABLE=G_COS52,
+TEST_TABLE(       TABLE=G_2,
                        NOM_PARA='K1',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COS5'),
                            VALE=0.,
                         CRITERE='ABSOLU',
                       PRECISION=0.005,
             REFERENCE='ANALYTIQUE' )
 
-TEST_TABLE(       TABLE=G_COS52,
+TEST_TABLE(       TABLE=G_2,
                        NOM_PARA='K2',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COS5'),
                            VALE=0.,
                         CRITERE='ABSOLU',
                       PRECISION=0.00001,
@@ -1073,20 +917,23 @@ TEST_TABLE(       TABLE=G_COS52,
 # -------------------------------------------------
 
 
-TEST_TABLE(       TABLE=G_UNI3,
+TEST_TABLE(       TABLE=G_3,
                        NOM_PARA='G',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_UNI'),
                            VALE=3.14158E-3,
                       PRECISION=0.01 ,
             REFERENCE='ANALYTIQUE'   )
 
-TEST_TABLE(       TABLE=G_UNI3,
+TEST_TABLE(       TABLE=G_3,
                        NOM_PARA='K1',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_UNI'),
                            VALE=1.77245,
                       PRECISION=0.005 ,
             REFERENCE='ANALYTIQUE'   )
 
-TEST_TABLE(       TABLE=G_UNI3,
+TEST_TABLE(       TABLE=G_3,
                        NOM_PARA='K2',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_UNI'),
                            VALE=0.,
                         CRITERE='ABSOLU',
                       PRECISION=0.015 ,
@@ -1094,20 +941,23 @@ TEST_TABLE(       TABLE=G_UNI3,
 
 #
 
-TEST_TABLE(       TABLE=G_EXP13,
+TEST_TABLE(       TABLE=G_3,
                        NOM_PARA='G',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP1'),
                            VALE=1.05349E-2,
                       PRECISION=0.005  ,
             REFERENCE='ANALYTIQUE'  )
 
-TEST_TABLE(       TABLE=G_EXP13,
+TEST_TABLE(       TABLE=G_3,
                        NOM_PARA='K1',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP1'),
                            VALE=3.24576,
                       PRECISION=0.005 ,
             REFERENCE='ANALYTIQUE'   )
 
-TEST_TABLE(       TABLE=G_EXP13,
+TEST_TABLE(       TABLE=G_3,
                        NOM_PARA='K2',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP1'),
                            VALE=0.,
                         CRITERE='ABSOLU',
                       PRECISION=0.01 ,
@@ -1115,20 +965,23 @@ TEST_TABLE(       TABLE=G_EXP13,
 
 #
 
-TEST_TABLE(       TABLE=G_EXP53,
+TEST_TABLE(       TABLE=G_3,
                        NOM_PARA='G',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP5'),
                            VALE=8.356742,
                       PRECISION=0.015 ,
             REFERENCE='ANALYTIQUE'   )
 
-TEST_TABLE(       TABLE=G_EXP53,
+TEST_TABLE(       TABLE=G_3,
                        NOM_PARA='K1',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP5'),
                            VALE=91.41522,
                       PRECISION=0.005 ,
             REFERENCE='ANALYTIQUE'   )
 
-TEST_TABLE(       TABLE=G_EXP53,
+TEST_TABLE(       TABLE=G_3,
                        NOM_PARA='K2',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_EXP5'),
                            VALE=0.,
                         CRITERE='ABSOLU',
                       PRECISION=0.01 ,
@@ -1136,20 +989,23 @@ TEST_TABLE(       TABLE=G_EXP53,
 
 #
 
-TEST_TABLE(       TABLE=G_SINH13,
+TEST_TABLE(       TABLE=G_3,
                        NOM_PARA='G',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH1'),
                            VALE=1.00344E-3,
                       PRECISION=0.005 ,
             REFERENCE='ANALYTIQUE'   )
 
-TEST_TABLE(       TABLE=G_SINH13,
+TEST_TABLE(       TABLE=G_3,
                        NOM_PARA='K1',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH1'),
                            VALE=1.00172,
                       PRECISION=0.005  ,
             REFERENCE='ANALYTIQUE'  )
 
-TEST_TABLE(       TABLE=G_SINH13,
+TEST_TABLE(       TABLE=G_3,
                        NOM_PARA='K2',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH1'),
                            VALE=0.,
                         CRITERE='ABSOLU',
                       PRECISION=0.01 ,
@@ -1157,20 +1013,23 @@ TEST_TABLE(       TABLE=G_SINH13,
 
 #
 
-TEST_TABLE(       TABLE=G_SINH53,
+TEST_TABLE(       TABLE=G_3,
                        NOM_PARA='G',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH5'),
                            VALE=1.86052,
                       PRECISION=0.015 ,
             REFERENCE='ANALYTIQUE'   )
 
-TEST_TABLE(       TABLE=G_SINH53,
+TEST_TABLE(       TABLE=G_3,
                        NOM_PARA='K1',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH5'),
                            VALE=43.13380,
                       PRECISION=0.005 ,
             REFERENCE='ANALYTIQUE'   )
 
-TEST_TABLE(       TABLE=G_SINH53,
+TEST_TABLE(       TABLE=G_3,
                        NOM_PARA='K2',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_SINH5'),
                            VALE=0.,
                         CRITERE='ABSOLU',
                       PRECISION=0.01  ,
@@ -1178,20 +1037,23 @@ TEST_TABLE(       TABLE=G_SINH53,
 
 #
 
-TEST_TABLE(       TABLE=G_COSH13,
+TEST_TABLE(       TABLE=G_3,
                        NOM_PARA='G',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH1'),
                            VALE=5.03571E-3,
                       PRECISION=0.01 ,
             REFERENCE='ANALYTIQUE'   )
 
-TEST_TABLE(       TABLE=G_COSH13,
+TEST_TABLE(       TABLE=G_3,
                        NOM_PARA='K1',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH1'),
                            VALE=2.24404,
                       PRECISION=0.005 ,
             REFERENCE='ANALYTIQUE'   )
 
-TEST_TABLE(       TABLE=G_COSH13,
+TEST_TABLE(       TABLE=G_3,
                        NOM_PARA='K2',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH1'),
                            VALE=0.,
                         CRITERE='ABSOLU',
                       PRECISION=0.01  ,
@@ -1199,19 +1061,22 @@ TEST_TABLE(       TABLE=G_COSH13,
 
 #
 
-TEST_TABLE(       TABLE=G_COSH53,
+TEST_TABLE(       TABLE=G_3,
                        NOM_PARA='G',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH5'),
                            VALE=2.331095,
                       PRECISION=0.015  ,
             REFERENCE='ANALYTIQUE'  )
 
-TEST_TABLE(       TABLE=G_COSH53,
+TEST_TABLE(       TABLE=G_3,
                        NOM_PARA='K1',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH5'),
                            VALE=48.28142,
                       PRECISION=0.005    )
 
-TEST_TABLE(       TABLE=G_COSH53,
+TEST_TABLE(       TABLE=G_3,
                        NOM_PARA='K2',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COSH5'),
                            VALE=0.,
                         CRITERE='ABSOLU',
                       PRECISION=0.01 ,
@@ -1219,20 +1084,23 @@ TEST_TABLE(       TABLE=G_COSH53,
 
 #
 
-TEST_TABLE(       TABLE=G_COS13,
+TEST_TABLE(       TABLE=G_3,
                        NOM_PARA='G',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COS1'),
                            VALE=.00183948,
                       PRECISION=0.015  ,
             REFERENCE='ANALYTIQUE'  )
 
-TEST_TABLE(       TABLE=G_COS13,
+TEST_TABLE(       TABLE=G_3,
                        NOM_PARA='K1',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COS1'),
                            VALE=1.356277,
                       PRECISION=0.01 ,
             REFERENCE='ANALYTIQUE'   )
 
-TEST_TABLE(       TABLE=G_COS13,
+TEST_TABLE(       TABLE=G_3,
                        NOM_PARA='K2',
+                       FILTRE=_F(NOM_PARA = 'NOM_CAS',VALE_K = 'CH_COS1'),
                            VALE=0.,
                         CRITERE='ABSOLU',
                       PRECISION=0.01 ,

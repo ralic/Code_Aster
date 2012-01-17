@@ -1,9 +1,9 @@
-# MODIF  DATE 04/07/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 17/01/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE SECHAGE EN 3D
 # hsna100e.para = tps_job 110 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -257,8 +257,7 @@ RESUSECH=THER_NON_LINE(          MODELE=MOTH,
                               COMP_THER_NL=_F( RELATION = 'SECH_GRANGER',
                                             TOUT = 'OUI',            ),
                             EVOL_THER_SECH=RESUTHER,
-                            ARCHIVAGE=_F(DETR_NUME_SUIV='OUI'),
-                                      INFO=1,
+                            
                              TITRE=( ' CAS TEST &CODE',
                                      '&RL COMMANDE &COMMANDE', )
                          )
@@ -270,7 +269,6 @@ RESUSECH=THER_NON_LINE(reuse=RESUSECH,          MODELE=MOTH,
                                  PARM_THETA=0.57,
                                  ETAT_INIT=_F( EVOL_THER = RESUSECH,
                                             NUME_ORDRE = 32,   ),
-                                            ARCHIVAGE=_F(DETR_NUME_SUIV='OUI'),
                                  INCREMENT=_F( LIST_INST = LISTSECH,
                                             NUME_INST_INIT = 32,
                                             NUME_INST_FIN = 72,       ),
@@ -522,7 +520,6 @@ RESUMECA=STAT_NON_LINE(
                 METHODE = 'LDLT',
                 RENUM = 'RCMK',
                 ),
-                ARCHIVAGE=_F(DETR_NUME_SUIV='OUI'),
               )
 
 #

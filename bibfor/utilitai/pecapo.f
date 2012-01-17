@@ -4,9 +4,9 @@
       CHARACTER*(*)     RESU, MODELE, CARA, LCHAR(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 16/01/2012   AUTEUR CHEIGNON E.CHEIGNON 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -45,8 +45,8 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
      &             NTAB, NCT, ILIGN, NCTY, NCTZ, NGM , NGI,
      &             NGRI, IDGRMI, NRT, NBRT
       PARAMETER    ( NBTORS = 1 , NBGAUC = 1 , NBCISA = 8 , NBRT = 1 )
-      REAL*8       VALPAR(NBCISA), AY, AZ, EY, EZ, PCTX, PCTY, R8B,RT,
-     &             CT, S, XG, YG, IY, IZ, ALPHA, IOMEGA
+      REAL*8       VALPAR(NBCISA), AY, AZ, EY, EZ, PCTY, PCTZ, R8B,RT,
+     &             JX, S, YG, ZG, IY, IZ, ALPHA, IOMEGA
       CHARACTER*8  K8B, NOMA, NOMAIL, NOGRMA, TEMPER, TEMPE1, TEMPE2,
      &             PTORS(NBTORS), PGAUC(NBGAUC), PCISA(NBCISA),
      &             PRT(NBRT)
@@ -55,18 +55,18 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*24 CHGEOM, CHCARA(18), CHHARM
       COMPLEX*16   C16B
       REAL*8 K1,K2,KY,KZ,KYEQ,KZEQ,IYEQ,IZEQ,SEQ,EE,GG,HH,KSI,NU
-      REAL*8 C1,C2,PHI1,PHI2,ALPHAR,COS2,SIN2,R8DGRD,ALPHEQ,XGEQ,YGEQ
+      REAL*8 C1,C2,PHI1,PHI2,ALPHAR,COS2,SIN2,R8DGRD,ALPHEQ,YGEQ,ZGEQ
       CHARACTER*16 LL
       CHARACTER*8 MATER
       INTEGER ICODRE
       INTEGER ILIGNM,N1
       INTEGER      IARG
 C     ------------------------------------------------------------------
-      DATA  PTORS / 'CT'      /
+      DATA  PTORS / 'JX'      /
       DATA  PRT   / 'RT'      /
       DATA  PGAUC / 'JG'      /
       DATA  PCISA / 'AY'      ,  'AZ'      ,  'EY'      ,  'EZ'      ,
-     &              'PCTX'    ,  'PCTY'    ,  'KY'      ,  'KZ'      /
+     &              'PCTY'    ,  'PCTZ'    ,  'KY'      ,  'KZ'      /
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ ( )
@@ -186,17 +186,17 @@ C     -------------------
           CALL WKVECT('&&PECAPO.GRMA_INTE','V V K8',1,IDGRMI)
         ENDIF
 C
-C --- CALCUL DE LA CONSTANTE DE TORSION CT :
+C --- CALCUL DE LA CONSTANTE DE TORSION JX :
 C     ------------------------------------
-        CALL PECAP1 ( CHGEOM, TEMPER, NGI, ZK8(IDGRMI), CT )
+        CALL PECAP1 ( CHGEOM, TEMPER, NGI, ZK8(IDGRMI), JX )
 C
-C --- AJOUT DE CT ET RT DANS LA TABLE 'RESU' :
+C --- AJOUT DE JX ET RT DANS LA TABLE 'RESU' :
 C     --------------------------------------
         IF ( NRT .NE. 0 ) THEN
              CALL TBAJLI ( RESU, NBRT, PRT, IBID , RT,
      &                     C16B, K8B, ILIGN)
         ENDIF
-        CALL TBAJLI ( RESU, NBTORS, PTORS, IBID , CT,
+        CALL TBAJLI ( RESU, NBTORS, PTORS, IBID , JX,
      &                C16B, K8B, ILIGN)
 C         ILIGN = 1
 C
@@ -232,37 +232,37 @@ C --- PAR LES AXES PRINCIPAUX D'INERTIE AVEC LES AXES GLOBAUX ET
 C --- DES COORDONNEES DU CENTRE DE GRAVITE DANS LE REPERE GLOBAL :
 C     ----------------------------------------------------------
         CALL TBEXP2(RESU,'LIEU')
-        CALL TBEXP2(RESU,'AIRE')
-        CALL TBEXP2(RESU,'IY_PRIN_G')
-        CALL TBEXP2(RESU,'IZ_PRIN_G')
+        CALL TBEXP2(RESU,'A')
+        CALL TBEXP2(RESU,'IY')
+        CALL TBEXP2(RESU,'IZ')
         CALL TBEXP2(RESU,'ALPHA')
-        CALL TBEXP2(RESU,'CDG_X')
         CALL TBEXP2(RESU,'CDG_Y')
+        CALL TBEXP2(RESU,'CDG_Z')
         CALL TBLIVA ( RESU, 1, 'LIEU', IBID, R8B, C16B, NOMA, K8B,
-     &            R8B, 'AIRE', K8B, IBID, S, C16B, K8B, IRET )
+     &            R8B, 'A', K8B, IBID, S, C16B, K8B, IRET )
         IF ( IRET .NE. 0 ) CALL U2MESS('F','MODELISA2_89')
         CALL TBLIVA ( RESU, 1, 'LIEU', IBID, R8B, C16B, NOMA, K8B,
-     &            R8B, 'IY_PRIN_G', K8B, IBID, IY, C16B, K8B, IRET )
+     &            R8B, 'IY', K8B, IBID, IY, C16B, K8B, IRET )
         IF ( IRET .NE. 0 ) CALL U2MESS('F','MODELISA2_89')
         CALL TBLIVA ( RESU, 1, 'LIEU', IBID, R8B, C16B, NOMA, K8B,
-     &            R8B, 'IZ_PRIN_G', K8B, IBID, IZ, C16B, K8B, IRET )
+     &            R8B, 'IZ', K8B, IBID, IZ, C16B, K8B, IRET )
         IF ( IRET .NE. 0 ) CALL U2MESS('F','ALGELINE_7')
         CALL TBLIVA ( RESU, 1, 'LIEU', IBID, R8B, C16B, NOMA, K8B,
      &            R8B, 'ALPHA', K8B, IBID, ALPHA, C16B, K8B, IRET )
         CALL ASSERT(IRET .EQ. 0 )
         CALL TBLIVA ( RESU, 1, 'LIEU', IBID, R8B, C16B, NOMA, K8B,
-     &            R8B, 'CDG_X', K8B, IBID, XG, C16B, K8B, IRET )
+     &            R8B, 'CDG_Y', K8B, IBID, YG, C16B, K8B, IRET )
         CALL ASSERT(IRET.EQ.0)
         CALL TBLIVA ( RESU, 1, 'LIEU', IBID, R8B, C16B, NOMA, K8B,
-     &            R8B, 'CDG_Y', K8B, IBID, YG, C16B, K8B, IRET )
+     &            R8B, 'CDG_Z', K8B, IBID, ZG, C16B, K8B, IRET )
         CALL ASSERT(IRET.EQ.0)
 C
 C --- CALCUL DES COORDONNEES DU CENTRE DE CISAILLEMENT/TORSION EY ET EZ
 C --- ET DES COEFFICIENTS DE CISAILLEMENT
 C --- (OU PLUTOT DE LEUR INVERSE) AY ET AZ :
 C     ------------------------------------
-        CALL PECAP2( CHGEOM, IY, IZ, S, ALPHA, XG, YG, TEMPE1,
-     &               TEMPE2, AY, AZ, EY, EZ, PCTX, PCTY )
+        CALL PECAP2( CHGEOM, IY, IZ, S, ALPHA, YG, ZG, TEMPE1,
+     &               TEMPE2, AY, AZ, EY, EZ, PCTY, PCTZ )
 C
 C     ON CHANGE DE SIGNE EY EZ CAR ON ATTEND CG ET NON PAS GC
 C     CF DOC MACRO_CARA_POUTRE
@@ -270,8 +270,8 @@ C     CF DOC MACRO_CARA_POUTRE
         VALPAR(2) = AZ
         VALPAR(3) = -EY
         VALPAR(4) = -EZ
-        VALPAR(5) = -PCTX
-        VALPAR(6) = -PCTY
+        VALPAR(5) = -PCTY
+        VALPAR(6) = -PCTZ
         VALPAR(7) = 0.D0
         VALPAR(8) = 0.D0
         CALL TBAJLI ( RESU, NBCISA, PCISA, IBID , VALPAR,
@@ -281,13 +281,13 @@ C     CF DOC MACRO_CARA_POUTRE
           CALL TBEXP2(RESU,'KZ')
 C       CAS OU IL FAUT FAIRE UN CUMUL DANS LE MAILLAGE COMPLET
           CALL TBLIVA ( RESU, 1, 'LIEU', IBID, R8B, C16B, NOMAIL,
-     &       K8B, R8B, 'AIRE', K8B, IBID, SEQ, C16B, K8B, IRET )
+     &       K8B, R8B, 'A', K8B, IBID, SEQ, C16B, K8B, IRET )
           CALL ASSERT(IRET.EQ.0)
           CALL TBLIVA ( RESU, 1, 'LIEU', IBID, R8B, C16B, NOMAIL,
-     &       K8B, R8B, 'IY_PRIN_G', K8B, IBID, IYEQ, C16B, K8B, IRET )
+     &       K8B, R8B, 'IY', K8B, IBID, IYEQ, C16B, K8B, IRET )
           CALL ASSERT(IRET.EQ.0)
           CALL TBLIVA ( RESU, 1, 'LIEU', IBID, R8B, C16B, NOMAIL, K8B,
-     &             R8B, 'IZ_PRIN_G', K8B, IBID, IZEQ, C16B, K8B, IRET )
+     &             R8B, 'IZ', K8B, IBID, IZEQ, C16B, K8B, IRET )
           CALL ASSERT(IRET.EQ.0)
 
           CALL TBLIVA ( RESU, 1, 'LIEU', IBID, R8B, C16B, NOMAIL, K8B,
@@ -302,28 +302,28 @@ C       CAS OU IL FAUT FAIRE UN CUMUL DANS LE MAILLAGE COMPLET
      &             R8B, 'ALPHA', K8B, IBID, ALPHEQ, C16B, K8B, IRET )
           CALL ASSERT ( IRET .EQ. 0 )
           CALL TBLIVA ( RESU, 1, 'LIEU', IBID, R8B, C16B, NOMAIL, K8B,
-     &             R8B, 'CDG_X', K8B, IBID, XGEQ, C16B, K8B, IRET )
+     &             R8B, 'CDG_Y', K8B, IBID, YGEQ, C16B, K8B, IRET )
           CALL ASSERT ( IRET .EQ. 0 )
           CALL TBLIVA ( RESU, 1, 'LIEU', IBID, R8B, C16B, NOMAIL, K8B,
-     &             R8B, 'CDG_Y', K8B, IBID, YGEQ, C16B, K8B, IRET )
+     &             R8B, 'CDG_Z', K8B, IBID, ZGEQ, C16B, K8B, IRET )
           CALL ASSERT ( IRET .EQ. 0 )
 C
 C         VECTEUR GEQ-GI DANS LE REPERE GLOBAL
 C
-C         DXG=XG-XGEQ
 C         DYG=YG-YGEQ
+C         DZG=ZG-ZGEQ
 C
 C         VECTEUR GEQ-GI DANS LE REPERE PRINCIPAL DE NOMA
 C
 C         ALPHAI=ALPHA*R8DGRD()
-C         YGI= COS(ALPHAI)*DXG+SIN(ALPHAI)*DYG
-C         ZGI=-SIN(ALPHAI)*DXG+COS(ALPHAI)*DYG
+C         ZGI= COS(ALPHAI)*DYG+SIN(ALPHAI)*DZG
+C         ZGI=-SIN(ALPHAI)*DYG+COS(ALPHAI)*DZG
 C
 C         MOMENTS D'INERTIE PAR RAPPORT A GEQ,YI,ZI
 C         TRANSPORT SUPPRIME CAR NON JUSTIFIE
 C         DONNE DES RESULTATS FAUX SUR ZZZZ105H
 C          IY = IY + S*ZGI**2
-C          IZ = IZ + S*YGI**2
+C          IZ = IZ + S*ZGI**2
 C
 C         SEUL LE RAPPORT E/G EST IMPORTANT
 C

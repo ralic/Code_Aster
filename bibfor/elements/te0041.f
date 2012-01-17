@@ -3,9 +3,9 @@
       CHARACTER*16      OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -65,8 +65,8 @@ C --- ------------------------------------------------------------------
       REAL*8         MATA1(NL1),MATA2(NL1),MATA3(NL2),MATA4(NL2)
       REAL*8         ETA,R8BID,UN,ZERO,VALPAR,VALRES(3)
       COMPLEX*16     HYST,DCMPLX
-      INTEGER        ICODRE(3)
-      CHARACTER*8    NOMRES(3),K8BID
+      INTEGER        ICODRE(3),KPG,SPT
+      CHARACTER*8    NOMRES(3),K8BID,FAMI,POUM
       INTEGER        IBID,ITYPE,IREP,NBTERM,NNO,NC,NDIM,NDDL,I,IRET,J
       INTEGER        JDR,JDM,LORIEN,JDC,JMA,IACCE,IVECT,LVAPR,LVECT
       INTEGER        JTMP
@@ -79,6 +79,10 @@ C --- ------------------------------------------------------------------
       LBID =   (NOMTE(1:9).EQ.'MECA_DIS_') .OR.
      &         (NOMTE(1:12).EQ.'MECA_2D_DIS_')
       CALL ASSERT( LBID )
+      FAMI='FPG1'
+      KPG=1
+      SPT=1
+      POUM='+'
 
 C     ON VERIFIE QUE LES CARACTERISTIQUES ONT ETE AFFECTEES
 C     LE CODE DU DISCRET
@@ -450,8 +454,8 @@ C           DISCRET DE TYPE AMORTISSEMENT
             VALRES(2) = ZERO
             VALRES(3) = ZERO
             CALL UTPSGL ( NNO, NC, PGL, ZR(JDR), MATV2)
-            CALL RCVALA ( ZI(JMA),' ','DIS_CONTACT',0,' ',VALPAR,3,
-     &                            NOMRES,VALRES,ICODRE,0)
+            CALL RCVALB (FAMI,KPG,SPT,POUM, ZI(JMA),' ','DIS_CONTACT',
+     &                    0,' ',VALPAR,3, NOMRES,VALRES,ICODRE,0)
             IF (ICODRE(1).EQ.0.AND.VALRES(1).NE.ZERO) THEN
                IF (ICODRE(2).EQ.0) THEN
                   MATA3(1)=MATV2(1)*VALRES(2)/VALRES(1)

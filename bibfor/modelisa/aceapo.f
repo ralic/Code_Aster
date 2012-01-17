@@ -7,9 +7,9 @@
       CHARACTER*(*)     MCLF
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 11/10/2011   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 16/01/2012   AUTEUR CHEIGNON E.CHEIGNON 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -58,10 +58,10 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
       CHARACTER*1  K1BID
       CHARACTER*6  KIOC
-      CHARACTER*8  K8B, NOMU, NOMMAI, FCX
+      CHARACTER*8  K8B, NOMU, NOMMAI, FCX,NOMSEC
       CHARACTER*16 K16B, SEC, CONCEP, CMD, VARSEC
-      CHARACTER*19 CARTPO, CARTGE,CARTPF
-      CHARACTER*24 TMPNPO ,TMPVPO ,TMPGEN ,TMPNGE,TMPVGE
+      CHARACTER*19 CARTPO, CARTGE,CARTPF,TABCAR
+      CHARACTER*24 TMPNPO ,TMPVPO ,TMPGEN ,TMPNGE,TMPVGE,TYPCA
       CHARACTER*24 TMPNPF ,TMPVPF ,TMPGEF, MODMAI, MLGGMA, MLGNMA
       CHARACTER*16 VMESSK(2)
       INTEGER      IARG
@@ -77,6 +77,7 @@ C
       NBO    = ZI(JPARA+2)
       NBCAR  = ZI(JPARA+3)
       NBVAL  = ZI(JPARA+4)
+
       CALL WKVECT('&&ACEAPO.NCP','V V I',NTYPSE,JTYPE)
       DO 2 I = 1,NTYPSE
          ZI(JTYPE+I-1) = ZI(JPARA+4+I)
@@ -131,14 +132,69 @@ C --- LECTURE ET STOCKAGE DES DONNEES  DANS L OBJET TAMPON
      &               SEC       ,NSEC)
          CALL GETVTX('POUTRE','VARI_SECT',IOC,IARG,1,
      &               VARSEC    ,NVSEC)
-         CALL GETVTX('POUTRE','CARA',IOC,IARG,NBCAR,
+
+
+         CALL GETVID('POUTRE','TABLE_CARA',IOC,IARG,1,TABCAR,NTAB)
+         IF (NTAB.EQ.1)THEN
+             CALL GETVTX('POUTRE','NOM_SEC',IOC,IARG,1,
+     &               NOMSEC       ,NNOSEC)
+             CALL ASSERT(NNOSEC.EQ.1)
+
+             CALL JEVEUO(TABCAR//'.TBNP','L',ITBNP)
+C            NOMBRE DE COLONNES
+             NBCOLO = ZI(ITBNP)
+C            ON RECHERCHE NOMSEC DANS LA 1ER COLONNE
+             CALL JEVEUO(TABCAR//'.TBLP','L',ITBLP)
+             TYPCA=ZK24(ITBLP+1)
+             IF (TYPCA(1:2).NE.'K8'.AND.TYPCA(1:3).NE.'K24')
+     &                       CALL U2MESK('F','MODELISA8_17',1,TABCAR)
+             CALL JEVEUO(ZK24(ITBLP+2),'L',ITABL)
+             NBLIGN = ZI(ITBNP+1)
+             IF (TYPCA.EQ.'K8')THEN
+               DO 95 I=1,NBLIGN
+                 IF (ZK8(ITABL-1+I).EQ.NOMSEC) THEN
+                   IISEC=I
+                   GOTO 97
+                 ENDIF
+ 95            CONTINUE
+             ELSE
+               DO 94 I=1,NBLIGN
+                 IF (ZK24(ITABL-1+I)(1:8).EQ.NOMSEC) THEN
+                   IISEC=I
+                   GOTO 97
+                 ENDIF
+ 94            CONTINUE
+             ENDIF
+             VMESSK(1)=TABCAR
+             VMESSK(2)=NOMSEC
+             CALL U2MESK('F','MODELISA8_18',2,VMESSK)
+ 97          CONTINUE
+             JJ=0
+             DO 96 I=1,NBCOLO-1
+               IF (ZK24(ITBLP+4*I+1).NE.'R')GOTO 96
+               DO 102 K=1,NBO
+                 IF (ZK24(ITBLP+4*I).EQ.ZK8(JEXP-1+K)) GOTO 103
+ 102           CONTINUE
+               GOTO 96
+ 103           CONTINUE
+               JJ=JJ+1
+               ZK8(JCARA-1+JJ) = ZK24(ITBLP+4*I)
+               CALL JEVEUO(ZK24(ITBLP+4*I+2),'L',IVECT)
+               ZR(JVALE-1+JJ)=ZR(IVECT-1+IISEC)
+ 96          CONTINUE
+             NCARAC=JJ
+         ELSE
+           CALL GETVTX('POUTRE','CARA',IOC,IARG,NBCAR,
      &               ZK8(JCARA),NCAR)
-         CALL GETVR8('POUTRE','VALE',IOC,IARG,NBVAL,
+           CALL GETVR8('POUTRE','VALE',IOC,IARG,NBVAL,
      &               ZR(JVALE) ,NVAL)
+           CALL ASSERT(NCAR.GT.0)
+           NCARAC=NCAR
+         ENDIF
+
          FCX = '.'
          CALL GETVID('POUTRE','FCX'       ,IOC,IARG,1    ,FCX ,NFCX)
 C
-         IF (NCAR.GT.0) NCARAC = NCAR
          IVAR = 2
 C
 C ----  TYPE DE SECTION ET DE VARIATION DE SECTION POUR CETTE OCCURENCE
@@ -169,7 +225,9 @@ C        TEST DE ZK8(JCARA) SEUL > VERIFICATION D HOMOGENEITE DEJA FAITE
             NCARAC = NCAR
          ENDIF
 C
-         DO 20 I = 1 , NTYPSE
+C
+         IF (NTAB.EQ.0) THEN
+          DO 20 I = 1 , NTYPSE
             IF (SEC.EQ.ZK16(JSECT+I-1)) THEN
                ISEC = I - 1
                DO 22 J = 1 , ZI(JTYPE+I-1)
@@ -179,7 +237,12 @@ C
                   ENDIF
  22            CONTINUE
             ENDIF
- 20      CONTINUE
+ 20       CONTINUE
+         ELSE
+C         SI ON A DONNE TABLE_CARA LA SECTION EST CONSTANTE
+          IVAR = 0
+          ISEC = 0
+         ENDIF
  24      CONTINUE
          IIVAR = IVAR
 C
@@ -197,10 +260,10 @@ C                                                    GROUPES DE MAILLES
                   DO 44 K = 1 , NBEPO
                      IF (NUTYEL.EQ.NTYELE(K)) THEN
                         IF (K.EQ.4) IIVAR = 10
-                        CALL AFFPOU(TMPGEN,TMPGEF,FCX,
-     &                            NOMMAI,ISEC,IIVAR,
-     &                            ZK8(JCARA),NCARAC,
-     &                      ZR(JVALE),ZK8(JTAB),ZK8(JEXP),NBO,KIOC,IER)
+                        CALL AFFPOU(TMPGEN,TMPGEF,FCX,NOMMAI,
+     &                              ISEC  ,IIVAR ,ZK8(JCARA),
+     &                              NCARAC,ZR(JVALE),ZK8(JTAB),
+     &                              ZK8(JEXP),NBO,KIOC,IER)
                         IIVAR = IVAR
                         GOTO 42
                      ENDIF
@@ -222,8 +285,8 @@ C ---    "MAILLE" = TOUTES LES MAILLES POSSIBLES DE LA LISTE DE MAILLES
                   IF (NUTYEL.EQ.NTYELE(J)) THEN
                      IF (J.EQ.4) IIVAR = 10
                      CALL AFFPOU(TMPGEN,TMPGEF,FCX,NOMMAI,ISEC,IIVAR,
-     &                                               ZK8(JCARA),NCARAC,
-     &                      ZR(JVALE),ZK8(JTAB),ZK8(JEXP),NBO,KIOC,IER)
+     &                           ZK8(JCARA),NCARAC,ZR(JVALE),ZK8(JTAB),
+     &                           ZK8(JEXP),NBO,KIOC,IER)
                      IIVAR = IVAR
                      GOTO 50
                   ENDIF

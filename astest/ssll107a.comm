@@ -1,9 +1,9 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 16/01/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE VALIDATION DE POST_ELEM MOT CLE FACTEUR CARA_GEOM
 # ssll107a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -30,15 +30,8 @@ IMPR_TABLE(     TABLE=TCARA, )
 TEST_TABLE(     TABLE=TCARA,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
                            VALE_K = '.9000002'),
-                NOM_PARA='AIRE_M',
+                NOM_PARA='A_M',
                     REFERENCE='NON_REGRESSION',VERSION='6.3.22',VALE=7.39E-04          )
-
-TEST_TABLE(     TABLE=TCARA,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = '.9000002'),
-                NOM_PARA='CDG_X_M',
-                PRECISION=0.0015,
-                    REFERENCE='NON_REGRESSION',VERSION='6.3.22',VALE=1.53E-02      )
 
 TEST_TABLE(     TABLE=TCARA,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
@@ -50,9 +43,9 @@ TEST_TABLE(     TABLE=TCARA,
 TEST_TABLE(     TABLE=TCARA,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
                            VALE_K = '.9000002'),
-                NOM_PARA='IX_G_M',
-                PRECISION=0.0040,
-                    REFERENCE='NON_REGRESSION',VERSION='6.3.22',VALE=1.64E-07      )
+                NOM_PARA='CDG_Z_M',
+                PRECISION=0.0015,
+                    REFERENCE='NON_REGRESSION',VERSION='6.3.22',VALE=1.53E-02      )
 
 TEST_TABLE(     TABLE=TCARA,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
@@ -63,22 +56,22 @@ TEST_TABLE(     TABLE=TCARA,
 
 TEST_TABLE(     TABLE=TCARA,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
+                           VALE_K = '.9000002'),
+                NOM_PARA='IZ_G_M',
+                PRECISION=0.0040,
+                    REFERENCE='NON_REGRESSION',VERSION='6.3.22',VALE=1.64E-07      )
+
+TEST_TABLE(     TABLE=TCARA,
+                  FILTRE=_F(  NOM_PARA = 'LIEU',
                             VALE_K = '.9000002'),
-                NOM_PARA='IXY_G_M',
+                NOM_PARA='IYZ_G_M',
                     REFERENCE='NON_REGRESSION',VERSION='6.3.22',VALE=-9.50E-08     )
 
 TEST_TABLE(     TABLE=TCARA,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
                            VALE_K = '.9000002'),
-                NOM_PARA='AIRE',
+                NOM_PARA='A',
                     REFERENCE='NON_REGRESSION',VERSION='6.3.22',VALE=7.39E-04      )
-
-TEST_TABLE(     TABLE=TCARA,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = '.9000002'),
-                NOM_PARA='CDG_X',
-                PRECISION=0.0015,
-                    REFERENCE='NON_REGRESSION',VERSION='6.3.22',VALE=1.53E-02      )
 
 TEST_TABLE(     TABLE=TCARA,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
@@ -90,9 +83,9 @@ TEST_TABLE(     TABLE=TCARA,
 TEST_TABLE(     TABLE=TCARA,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
                            VALE_K = '.9000002'),
-                NOM_PARA='IX_G',
-                PRECISION=0.0040,
-                    REFERENCE='NON_REGRESSION',VERSION='6.3.22',VALE=1.64E-07      )
+                NOM_PARA='CDG_Z',
+                PRECISION=0.0015,
+                    REFERENCE='NON_REGRESSION',VERSION='6.3.22',VALE=1.53E-02      )
 
 TEST_TABLE(     TABLE=TCARA,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
@@ -104,20 +97,27 @@ TEST_TABLE(     TABLE=TCARA,
 TEST_TABLE(     TABLE=TCARA,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
                            VALE_K = '.9000002'),
-                NOM_PARA='IXY_G',
+                NOM_PARA='IZ_G',
+                PRECISION=0.0040,
+                    REFERENCE='NON_REGRESSION',VERSION='6.3.22',VALE=1.64E-07      )
+
+TEST_TABLE(     TABLE=TCARA,
+                  FILTRE=_F(  NOM_PARA = 'LIEU',
+                           VALE_K = '.9000002'),
+                NOM_PARA='IYZ_G',
                     REFERENCE='NON_REGRESSION',VERSION='6.3.22',VALE=-9.50E-08     )
 
 TEST_TABLE(     TABLE=TCARA,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
                            VALE_K = '.9000002'),
-                NOM_PARA='IY_PRIN_G',
+                NOM_PARA='IY',
                 PRECISION=0.0040,
                     REFERENCE='NON_REGRESSION',VERSION='6.3.22',VALE=6.95E-08      )
 
 TEST_TABLE(     TABLE=TCARA,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
                            VALE_K = '.9000002'),
-                NOM_PARA='IZ_PRIN_G',
+                NOM_PARA='IZ',
                 PRECISION=0.0040,
                     REFERENCE='NON_REGRESSION',VERSION='6.3.22',VALE=2.60E-07      )
 
@@ -160,7 +160,7 @@ TEST_TABLE(     TABLE=TCARA,
 TEST_TABLE(     TABLE=TCARA,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
                            VALE_K = '.9000002'),
-                NOM_PARA='CT',
+                NOM_PARA='JX',
                 PRECISION=0.12,
                      REFERENCE='NON_REGRESSION',VERSION='6.3.22',VALE=1.4336E-8    )
 
@@ -181,13 +181,6 @@ TEST_TABLE(     TABLE=TCARA,
 TEST_TABLE(     TABLE=TCARA,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
                            VALE_K = '.9000002'),
-                NOM_PARA='PCTX',
-                 CRITERE='ABSOLU',
-                     REFERENCE='NON_REGRESSION',VERSION='6.3.22',VALE=-0.004        )
-
-TEST_TABLE(     TABLE=TCARA,
-                  FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = '.9000002'),
                 NOM_PARA='PCTY',
                  CRITERE='ABSOLU',
                      REFERENCE='NON_REGRESSION',VERSION='6.3.22',VALE=-0.004        )
@@ -195,10 +188,9 @@ TEST_TABLE(     TABLE=TCARA,
 TEST_TABLE(     TABLE=TCARA,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
                            VALE_K = '.9000002'),
-                REFERENCE='ANALYTIQUE',
-                NOM_PARA='IXR2_P',
-                PRECISION=0.014,
-                VALE=1.4084E-8        )
+                NOM_PARA='PCTZ',
+                 CRITERE='ABSOLU',
+                     REFERENCE='NON_REGRESSION',VERSION='6.3.22',VALE=-0.004        )
 
 TEST_TABLE(     TABLE=TCARA,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
@@ -207,6 +199,26 @@ TEST_TABLE(     TABLE=TCARA,
                 NOM_PARA='IYR2_P',
                 PRECISION=0.014,
                 VALE=1.4084E-8        )
+
+TEST_TABLE(     TABLE=TCARA,
+                  FILTRE=_F(  NOM_PARA = 'LIEU',
+                           VALE_K = '.9000002'),
+                REFERENCE='ANALYTIQUE',
+                NOM_PARA='IZR2_P',
+                PRECISION=0.014,
+                VALE=1.4084E-8        )
+
+TEST_TABLE(     TABLE=TCARA,
+                  FILTRE=_F(  NOM_PARA = 'LIEU',
+                           VALE_K = '.9000002'),
+                NOM_PARA='RY',
+                REFERENCE='NON_REGRESSION',VERSION='6.3.22',VALE=3.536E-02    )
+
+TEST_TABLE(     TABLE=TCARA,
+                  FILTRE=_F(  NOM_PARA = 'LIEU',
+                           VALE_K = '.9000002'),
+                NOM_PARA='RZ',
+                REFERENCE='NON_REGRESSION',VERSION='6.3.22',VALE=2.166E-02    )
 
 FIN( )
 #

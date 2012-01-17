@@ -1,8 +1,8 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/01/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE VALIDATION DE MACR_CARA_POUTRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,16 +34,9 @@ IMPR_TABLE( TABLE=TCARS )
 TEST_TABLE(TABLE=TCARS,
            FILTRE=_F(NOM_PARA='LIEU',
                      VALE_K='.9000009',),
-           NOM_PARA='AIRE',REFERENCE='ANALYTIQUE',
+           NOM_PARA='A',REFERENCE='ANALYTIQUE',
            VALE=1.963495E-3,
            PRECISION=5.0E-3,);
-
-TEST_TABLE(TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000009',),
-           NOM_PARA='CDG_X',REFERENCE='ANALYTIQUE',
-           VALE=0.0,
-           CRITERE='ABSOLU',);
 
 TEST_TABLE(TABLE=TCARS,
            FILTRE=_F(NOM_PARA='LIEU',
@@ -55,9 +48,9 @@ TEST_TABLE(TABLE=TCARS,
 TEST_TABLE(TABLE=TCARS,
            FILTRE=_F(NOM_PARA='LIEU',
                      VALE_K='.9000009',),
-           NOM_PARA='IX_G',REFERENCE='ANALYTIQUE',
-           VALE=3.067961E-07,
-           PRECISION=9.E-3,);
+           NOM_PARA='CDG_Z',REFERENCE='ANALYTIQUE',
+           VALE=0.0,
+           CRITERE='ABSOLU',);
 
 TEST_TABLE(TABLE=TCARS,
            FILTRE=_F(NOM_PARA='LIEU',
@@ -69,21 +62,28 @@ TEST_TABLE(TABLE=TCARS,
 TEST_TABLE(TABLE=TCARS,
            FILTRE=_F(NOM_PARA='LIEU',
                      VALE_K='.9000009',),
-           NOM_PARA='IXY_G',REFERENCE='ANALYTIQUE',
-           VALE=0.0,
-           CRITERE='ABSOLU',);
-
-TEST_TABLE(TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000009',),
-           NOM_PARA='IY_PRIN_G',REFERENCE='ANALYTIQUE',
+           NOM_PARA='IZ_G',REFERENCE='ANALYTIQUE',
            VALE=3.067961E-07,
            PRECISION=9.E-3,);
 
 TEST_TABLE(TABLE=TCARS,
            FILTRE=_F(NOM_PARA='LIEU',
                      VALE_K='.9000009',),
-           NOM_PARA='IZ_PRIN_G',REFERENCE='ANALYTIQUE',
+           NOM_PARA='IYZ_G',REFERENCE='ANALYTIQUE',
+           VALE=0.0,
+           CRITERE='ABSOLU',);
+
+TEST_TABLE(TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='.9000009',),
+           NOM_PARA='IY',REFERENCE='ANALYTIQUE',
+           VALE=3.067961E-07,
+           PRECISION=9.E-3,);
+
+TEST_TABLE(TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='.9000009',),
+           NOM_PARA='IZ',REFERENCE='ANALYTIQUE',
            VALE=3.067961E-07,
            PRECISION=9.E-3,);
 
@@ -114,7 +114,7 @@ TEST_TABLE(TABLE=TCARS,
 TEST_TABLE(TABLE=TCARS,
            FILTRE=_F(NOM_PARA='LIEU',
                      VALE_K='.9000009',),
-           NOM_PARA='CT',REFERENCE='ANALYTIQUE',
+           NOM_PARA='JX',REFERENCE='ANALYTIQUE',
            VALE=6.1359E-07,
            PRECISION=9.E-3,);
 
@@ -183,10 +183,13 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
 CAREL=AFFE_CARA_ELEM(MODELE=MO,
                      INFO=2,
                      POUTRE=_F(GROUP_MA='G4',
-                               SECTION='CERCLE',
-                               CARA=('R'),
-                            #   VALE=(0.025)
-                               VALE=rext)
+                               #SECTION='CERCLE',
+                               #CARA=('R'),
+                            ##   VALE=(0.025)
+                               #VALE=rext,
+                                SECTION='GENERALE',
+                                TABLE_CARA=TCARS,
+                                NOM_SEC='.9000009')
                                ,)
 
 FTOT=1000. ;

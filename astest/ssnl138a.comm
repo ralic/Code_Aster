@@ -1,8 +1,8 @@
-# MODIF  DATE 20/12/2011   AUTEUR BEAURAIN J.BEAURAIN 
+# MODIF  DATE 16/01/2012   AUTEUR BEAURAIN J.BEAURAIN 
 # TITRE VALIDATION DE L'ALGORITHME D'OPTIMISATION DE DDL_STAB
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -17,10 +17,9 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# ssnl138a.para = tps_job 250 mem_job 128Mo ncpus 1 liste_test S
+# ssnl138a.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
 
 DEBUT(CODE=_F(NOM='SSNL138A', NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'), DEBUG=_F(SDVERI='OUI'))
-
 
 MAILLAGE  =  LIRE_MAILLAGE(FORMAT='MED')
 
@@ -30,10 +29,11 @@ MA         = CREA_MAILLAGE( MAILLAGE = MAILLAGE,
                           );
 
 
-TEMPS1     = DEFI_LIST_REEL( DEBUT=1.12,
-                             INTERVALLE=_F(JUSQU_A=1.16,
-                             NOMBRE=1,)
+TEMPS1     = DEFI_LIST_REEL( DEBUT=1.10,
+                             INTERVALLE=_F(JUSQU_A=1.28,
+                             NOMBRE=2,)
                            )
+
 
 MATER      = DEFI_MATERIAU( ELAS = _F(E  = 1.0,
                                       NU = 0.,
@@ -64,7 +64,7 @@ MO         = AFFE_MODELE(MAILLAGE=MA,
 
 #***********************************************************************
 #    CHARGEMENT MECANIQUE 
-#***********************************************************************                        )
+#*********************************************************************** 
 
 CH_U1  = AFFE_CHAR_CINE( MODELE    = MO,
                          MECA_IMPO = _F( GROUP_MA  = 'Gauche',
@@ -90,28 +90,33 @@ CH_U4  = AFFE_CHAR_CINE( MODELE    = MO,
                                          )
                         )
 
+#***********************************************************************
+#    CALCUL NON LOCAL
+#***********************************************************************
+
 EVOL   = STAT_NON_LINE( MODELE     = MO,
                         CHAM_MATER = CHMAT,
-                        EXCIT      = ( _F( CHARGE       = CH_U1),
-                                       _F( CHARGE       = CH_U2,
-                                           FONC_MULT    = COEF1),
-                                       _F( CHARGE       = CH_U3),
-                                       _F( CHARGE       = CH_U4),
+                        EXCIT      = ( _F( CHARGE        = CH_U1),
+                                       _F( CHARGE        = CH_U2,
+                                           FONC_MULT     = COEF1),
+                                       _F( CHARGE        = CH_U3),
+                                       _F( CHARGE        = CH_U4),
                                      ),
-                        CRIT_FLAMB = _F( RIGI_GEOM= 'NON',
-                                         NB_FREQ = 8,
-                                         COEF_DIM_ESPACE = 4,
-                                         DDL_STAB = ('DAMG'),
-                                        ), 
-                        COMP_INCR  = _F( TOUT           = 'OUI',
-                                         RELATION       = 'ENDO_CARRE',
+                        CRIT_STAB  = _F( TYPE            ='STABILITE',
+                                         RIGI_GEOM       = 'NON',
+                                         NB_FREQ         = 25,
+                                         COEF_DIM_ESPACE = 2,
+                                         DDL_STAB        = ('DAMG'),
+                                        ),
+                        COMP_INCR  = _F( TOUT            = 'OUI',
+                                         RELATION        = 'ENDO_CARRE',
                                          ),
-                        NEWTON     = _F( MATRICE        = 'TANGENTE',
-                                         REAC_ITER_ELAS = 1,
-                                         REAC_ITER      = 1,),
-                        CONVERGENCE= _F( RESI_GLOB_RELA = 1.E-6,),
-                        INCREMENT  = _F( LIST_INST      = TEMPS1,),
-                        AFFICHAGE  = _F( INFO_RESIDU = 'OUI',)
+                        NEWTON     = _F( MATRICE         = 'TANGENTE',
+                                         REAC_ITER_ELAS  = 1,
+                                         REAC_ITER       = 1,),
+                        CONVERGENCE= _F( RESI_GLOB_RELA  = 1.E-6,),
+                        INCREMENT  = _F( LIST_INST       = TEMPS1,),
+                        AFFICHAGE  = _F( INFO_RESIDU     = 'OUI',)
                      )
 
 #***********************************************************************
@@ -120,10 +125,17 @@ EVOL   = STAT_NON_LINE( MODELE     = MO,
 
 TEST_RESU(RESU=_F(RESULTAT=EVOL,
                   NUME_ORDRE=1,
-                  PARA='CRIT_STAB',
-                  VALE=1.400276E-8,
+                  PARA='CHAR_STAB',
+                  VALE=3.430938E-8,
                   PRECISION=5.0E-7),
           );
+
+TEST_RESU(RESU=_F(RESULTAT=EVOL,
+                  NUME_ORDRE=2,
+                  PARA='CHAR_STAB',
+                  VALE=-5.598244E-9,
+                  PRECISION=5.0E-7),
+          )
 
 FIN();
 

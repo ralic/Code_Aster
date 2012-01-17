@@ -1,4 +1,4 @@
-#@ MODIF calculel5 Messages  DATE 04/01/2012   AUTEUR SELLENET N.SELLENET 
+#@ MODIF calculel5 Messages  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,10 +31,6 @@ Erreur utilisateur dans MODI_MAILLAGE / DEFORME :
 Conseils :
   Pour créer un champ de déplacement adapté au maillage %(k1)s, on peut utiliser
   la commande PROJ_CHAMP.
-"""),
-
-2 : _(u"""
- pour les options de thermique, il y a encore a travailler !!
 """),
 
 3 : _(u"""
@@ -170,11 +166,6 @@ Erreur d'utilisation dans la commande CREA_MAILLAGE :
 
 
 
-32: _(u"""
-Erreur Utilisateur dans PROJ_CHAMP (ou LIAISON_MAILLE) :
- Pour le modèle  %(k1)s  on ne peut pas visualiser ensemble plusieurs champs ELGA (%(k2)s,  ...)
- car les familles de points de Gauss sont différentes
-"""),
 
 
 33 : _(u"""

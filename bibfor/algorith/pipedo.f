@@ -3,9 +3,9 @@
      &                  A0    ,A1    ,A2    ,A3    ,ETAS  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -59,13 +59,13 @@ C
       INTEGER     NBRES
       PARAMETER   (NBRES=6)
       INTEGER ICODRE(NBRES)
-      CHARACTER*8 NOMRES(NBRES)
+      CHARACTER*8 NOMRES(NBRES),FAMI,POUM
       REAL*8      VALRES(NBRES)
 C
 
       LOGICAL     CPLAN,RECHBG,RECHBD
       INTEGER     NDIMSI, K,NSOL,ITER,NITMAX
-      INTEGER     I,J,L,T(3,3)
+      INTEGER     I,J,L,T(3,3),KPG,SPT
       REAL*8      COPLAN,UN
       REAL*8      RAC2,CRITP
       REAL*8      ETA
@@ -111,14 +111,17 @@ C -- OPTION ET MODELISATION
       CPLAN  = (TYPMOD(1).EQ.'C_PLAN  ')
       NDIMSI = 2*NDIM
       RAC2   = SQRT(2.D0)
-
+      FAMI='FPG1'
+      KPG=1
+      SPT=1
+      POUM='+'
 
 C -- LECTURE DES CARACTERISTIQUES THERMOELASTIQUES
       NOMRES(1) = 'E'
       NOMRES(2) = 'NU'
-      CALL RCVALA(MATE  ,' '   ,'ELAS',0     ,' '   ,
-     &            0.D0  ,2     ,NOMRES,VALRES,ICODRE,
-     &           1)
+      CALL RCVALB(FAMI,KPG,SPT,POUM,MATE  ,' '   ,'ELAS',
+     &            0     ,' '   ,0.D0  ,2     ,NOMRES,
+     &           VALRES,ICODRE,1)
       E      = VALRES(1)
       NU     = VALRES(2)
       LAMBDA = E * NU / (1.D0+NU) / (1.D0 - 2.D0*NU)
@@ -131,9 +134,9 @@ C -- LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
       NOMRES(4) = 'K2'
       NOMRES(5) = 'ECROB'
       NOMRES(6) = 'ECROD'
-      CALL RCVALA(MATE  ,' '   ,'ENDO_ORTH_BETON',0     ,' '   ,
-     &            0.D0  ,NBRES ,NOMRES           ,VALRES,ICODRE,
-     &            1)
+      CALL RCVALB(FAMI,KPG,SPT,POUM,MATE  ,' '   ,'ENDO_ORTH_BETON',
+     &            0     ,' '   ,0.D0  ,NBRES ,NOMRES,
+     &            VALRES,ICODRE,1)
       ALPHA  = VALRES(1)
       K0     = VALRES(2)
       K1     = VALRES(3)

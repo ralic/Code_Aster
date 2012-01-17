@@ -1,8 +1,8 @@
       SUBROUTINE TE0471 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,7 +34,7 @@ C......................................................................C
       INTEGER       NBRES, NDDL
       PARAMETER   ( NBRES=4, NDDL = 7)
       CHARACTER*24  CARAC,FF
-      CHARACTER*8   NOMRES(NBRES),ELREFE
+      CHARACTER*8   NOMRES(NBRES),ELREFE, FAMI,POUM
       INTEGER ICODRE(NBRES)
       REAL*8        VALRES(NBRES),TPG,PGL(3,3)
       INTEGER       NNO1,NNO2, NPG1(2,2), NPG2(2,2), NPG, N, NBV
@@ -44,7 +44,7 @@ C......................................................................C
      &              IDSDZ1,IDSXY1,IDSXZ1,IDSYZ1,IDPDX2,IDPDY2,IDPDZ2,
      &              IDSDX2,IDSDY2,IDSDZ2,IDSXY2,IDSXZ2,IDSYZ2,IVF2,
      &              IVF3, IPOI3, IDPDX3, IDPDY3, IDPDZ3,
-     &              IVF4, IDPDX4, IDPDY4, IDPDZ4
+     &              IVF4, IDPDX4, IDPDY4, IDPDZ4,KPG,SPT
       REAL*8        RAID(3), A(7,7,8,8),POIDS2,POIDS
       REAL*8        E,NU,XIY,XIZ,RTOR,RAPP,
      &              XJX,AYZ,XK(2),COORD(60),YCELL,XLONG
@@ -142,8 +142,12 @@ C     -------------------------------------------------
          CALL U2MESS('F','ELEMENTS3_98')
       ENDIF
       TPG = 0.D0
-      CALL RCVALA(ZI(IMATE),' ',PHENOM,0,'   ',TPG,NBV,NOMRES,VALRES,
-     &             ICODRE,1)
+      FAMI='FPG1'
+      KPG=1
+      SPT=1
+      POUM='+'
+      CALL RCVALB(FAMI,KPG,SPT,POUM,ZI(IMATE),' ',PHENOM,0,'   ',TPG,
+     &            NBV,NOMRES,VALRES, ICODRE,1)
       E       = VALRES(1)
       NU      = VALRES(2)
       CALL RCCOMA(ZI(IMATE),'FLUIDE',PHENOM,ICODRE)
@@ -154,8 +158,8 @@ C     -------------------------------------------------
          CALL U2MESS('F','ELEMENTS3_98')
       ENDIF
       TPG = 0.D0
-      CALL RCVALA(ZI(IMATE),' ',PHENOM,0,'   ',TPG,NBV,NOMRES,VALRES,
-     &             ICODRE,1)
+      CALL RCVALB(FAMI,KPG,SPT,POUM,ZI(IMATE),' ',PHENOM,0,'   ',TPG,
+     &            NBV,NOMRES,VALRES, ICODRE,1)
 C     ----------------------------------------------------------------
 C     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
 C     ----------------------------------------------------------------

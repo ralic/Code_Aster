@@ -1,9 +1,9 @@
         SUBROUTINE PIPEBA(NDIM,MATE,SUP,SUD,VIM,DTAU,COPILO)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,8 +34,8 @@ C-----------------------------------------------------------------------
       REAL*8  P0,P1,P2, RAC(2), ETA(4), A0(4), A1(4), TMP
       REAL*8  LC,K0,KA,KREF,C,VAL(3),ETASOL(4),XN
       REAL*8  DDOT, R8GAEM
-      INTEGER COD(3)
-      CHARACTER*8 NOM(3)
+      INTEGER COD(3),KPG,SPT
+      CHARACTER*8 NOM(3),FAMI,POUM
 
 C-----------------------------------------------------------------------
 
@@ -45,7 +45,12 @@ C INITIALISATION
       NOM(1) = 'GC'
       NOM(2) = 'SIGM_C'
       NOM(3) = 'PENA_ADHERENCE'
-      CALL RCVALA (MATE,' ','RUPT_FRAG',0,' ',0.D0,3,NOM,VAL,COD,2)
+      FAMI='FPG1'
+      KPG=1
+      SPT=1
+      POUM='+'
+      CALL RCVALB (FAMI,KPG,SPT,POUM,MATE,' ','RUPT_FRAG',0,' ',
+     &             0.D0,3,NOM,VAL,COD,2)
       LC   = VAL(1)/VAL(2)
       K0   = VAL(1)/VAL(2)*VAL(3)
       KA   = MAX(VIM,K0)

@@ -4,9 +4,9 @@
       CHARACTER*(*)       TABLEZ
 C.======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 16/01/2012   AUTEUR CHEIGNON E.CHEIGNON 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -70,7 +70,7 @@ C ----- COMMUNS NORMALISES  JEVEUX
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C -----  VARIABLES LOCALES
       INTEGER NGM,IBID, IRET, IDCODE, DIMCOO, NBNO, JCOOR, IDCOOR, INO
-      REAL*8        R8B, P(2,2), ALPHA, R8DGRD, XG, YG, XABS, YABS
+      REAL*8        R8B, P(2,2), ALPHA, R8DGRD, YG, ZG, YABS, ZABS
       COMPLEX*16    C16B
       CHARACTER*8   K8B, NOMA, NOGRMA
       CHARACTER*19  TABLE
@@ -89,8 +89,8 @@ C
 C --- VERIFICATION DES PARARAMETRES DE LA TABLE
 C     -----------------------------------------
       CALL TBEXP2(TABLE,'LIEU')
-      CALL TBEXP2(TABLE,'CDG_X')
       CALL TBEXP2(TABLE,'CDG_Y')
+      CALL TBEXP2(TABLE,'CDG_Z')
       CALL TBEXP2(TABLE,'ALPHA')
 C
 C --- RECUPERATION DANS LA TABLE DES COORDONNEES DU CENTRE DE GRAVITE :
@@ -108,10 +108,11 @@ C     ---------------------------------------------------------------
       ENDIF
       IF ( IRET .NE. 0 ) CALL U2MESS('F','MODELISA2_89')
       CALL TBLIVA ( TABLE, 1, 'LIEU', IBID, R8B, C16B, NOMA, K8B,
-     &              R8B, 'CDG_X', K8B, IBID, XG, C16B, K8B, IRET )
+     &              R8B, 'CDG_Y', K8B, IBID, YG, C16B, K8B, IRET )
+      PRINT*,'IRET ',IRET
       IF ( IRET .NE. 0 ) CALL U2MESS('F','MODELISA2_89')
       CALL TBLIVA ( TABLE, 1, 'LIEU', IBID, R8B, C16B, NOMA, K8B,
-     &              R8B, 'CDG_Y', K8B, IBID, YG, C16B, K8B, IRET )
+     &              R8B, 'CDG_Z', K8B, IBID, ZG, C16B, K8B, IRET )
       IF ( IRET .NE. 0 ) CALL U2MESS('F','MODELISA2_89')
 C
 C --- RECUPERATION DANS LA TABLE DE L'ANGLE FAISANT PASSER DU REPERE
@@ -151,8 +152,8 @@ C     ------------------------------------
       DO 10 INO = 1, NBNO
 C
          IDCOOR       = JCOOR-1+DIMCOO*(INO-1)
-         ZR(IDCOOR+1) = ZR(IDCOOR+1) - XG
-         ZR(IDCOOR+2) = ZR(IDCOOR+2) - YG
+         ZR(IDCOOR+1) = ZR(IDCOOR+1) - YG
+         ZR(IDCOOR+2) = ZR(IDCOOR+2) - ZG
  10   CONTINUE
 C
 C --- ROTATION D'ANGLE ALPHA DES AXES :
@@ -160,11 +161,11 @@ C     -------------------------------
       DO 20 INO = 1, NBNO
 C
          IDCOOR       = JCOOR-1+DIMCOO*(INO-1)
-         XABS         = ZR(IDCOOR+1)
-         YABS         = ZR(IDCOOR+2)
+         YABS         = ZR(IDCOOR+1)
+         ZABS         = ZR(IDCOOR+2)
 C
-         ZR(IDCOOR+1) = P(1,1)*XABS + P(2,1)*YABS
-         ZR(IDCOOR+2) = P(1,2)*XABS + P(2,2)*YABS
+         ZR(IDCOOR+1) = P(1,1)*YABS + P(2,1)*ZABS
+         ZR(IDCOOR+2) = P(1,2)*YABS + P(2,2)*ZABS
  20   CONTINUE
 C
       CALL JEDEMA ( )

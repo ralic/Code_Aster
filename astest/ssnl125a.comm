@@ -1,9 +1,9 @@
-# MODIF  DATE 12/12/2011   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
 # TITRE VALIDATION DE LA LOI D ENDOMMAGEMENT FRAGILE
 # ssnl125a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -41,7 +41,7 @@ DEBUT(CODE=_F(NOM='SSNL125A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),
 #                 MAILLAGE ET MODELE
 # -----------------------------------------------------
 
-MA =  LIRE_MAILLAGE()
+MA =  LIRE_MAILLAGE(FORMAT='MED',)
 
 # ytest1 et ytest2 : ordonnees des points auxquels on releve les grandeurs testees
 

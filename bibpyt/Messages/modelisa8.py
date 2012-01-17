@@ -1,8 +1,8 @@
-#@ MODIF modelisa8 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa8 Messages  DATE 16/01/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -109,6 +109,14 @@ cata_msg = {
 
 16 : _(u"""
   , maille :  %(i1)d problème produit scalaire %(k1)s
+"""),
+
+17 : _(u"""
+ La première colonne de la table %(k1)s doit contenir des chaînes K8 ou K24.
+"""),
+
+18 : _(u"""
+ La table %(k1)s ne contient pas de nom de section %(k2)s.
 """),
 
 25 : _(u"""

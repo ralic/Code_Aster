@@ -4,10 +4,10 @@
       CHARACTER*8   NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/10/2011   AUTEUR ASSIRE A.ASSIRE 
+C MODIF MODELISA  DATE 16/01/2012   AUTEUR CHEIGNON E.CHEIGNON 
 C TOLE CRP_20
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -180,7 +180,7 @@ C     RECUPERATION DU NIVEAU D'IMPRESSION
 C  I RAIDEUR (POUR EPX)
       IR = 0
 C I AMOR (POUR EPX)
-      IA = 0  
+      IA = 0
 C --- BOUCLE SUR LES OCCURRENCES DE DISCRET
       DO 30 IOC = 1 , NBOCC
          ETA = 0.0D0
@@ -253,7 +253,8 @@ C
                   VALE(J) = VAL(II+J)
 132            CONTINUE
                CALL RAIREP(NOMA,IOC,CAR(NC),VALE,NG,ZK8(JDLS),NBNO,
-     &               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
+     &               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT,
+     &               NDIM)
                II = II + 3
             ELSEIF ( TRAROT ) THEN
                LAMASS = 'M'//CAR(NC)(2:8)
@@ -262,7 +263,8 @@ C
                   VALE(J) = VAL(II+J)
 131            CONTINUE
                CALL RAIREP(NOMA,IOC,CAR(NC),VALE,NG,ZK8(JDLS),NBNO,
-     &               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
+     &               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT,
+     &               NDIM)
                II = II + 6
             ELSE
                CALL ASSERT( .FALSE. )

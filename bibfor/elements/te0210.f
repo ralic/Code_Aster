@@ -1,8 +1,8 @@
       SUBROUTINE TE0210(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,30 +19,21 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
 C                          OPTION : 'CHAR_THER_PARO_F'
-C                          OPTION : 'CHAR_SENS_PARO_F'
 C    - ARGUMENTS:
 C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
-C   -------------------------------------------------------------------
-C     ASTER INFORMATIONS:
-C       18/01/02 (OB): MODIFICATIONS POUR INSERER LES ARGUMENTS OPTION
-C       NELS PERMETTANT D'UTILISER CETTE ROUTINE POUR CALCULER LA
-C       SENSIBILITE PAR RAPPORT A H.
-C       + MODIFS FORMELLES: IMPLICIT NONE, IDENTATION...
-C       08/03/02 (OB): CORRECTION BUG EN STATIONNAIRE ET SENSIBILITE
 C----------------------------------------------------------------------
 C CORPS DU PROGRAMME
       IMPLICIT NONE
 
-      INTEGER NBRES,IRET
+      INTEGER NBRES
       PARAMETER (NBRES=3)
       CHARACTER*16 OPTION,NOMTE
       CHARACTER*8 NOMPAR(NBRES),LIREFE(2)
       REAL*8 VALPAR(NBRES),POIDS,POIDS1,POIDS2,R,R1,R2,Z,HECHP,NX,NY,
-     &       TPG,THETA,VAPRIN,VAPRMO,Z1,Z2
+     &       TPG,THETA,Z1,Z2
       INTEGER NNO,NNOS,JGANO,NDIM,KP,NPG,IPOIDS,IVF,IDFDE,IGEOM,IVECTT,
-     &        I,L,LI,IHECHP,IVAPRI,IVAPRM,ITEMP,ITEMPS,ICODE,NBELR
-      LOGICAL LSENS,LSTAT
+     &        I,L,LI,IHECHP,ITEMP,ICODE,NBELR,ITEMPS
       LOGICAL  LTEATT, LAXI
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
@@ -80,22 +71,10 @@ C====
       CALL JEVECH('PHECHPF','L',IHECHP)
       CALL JEVECH('PTEMPER','L',ITEMP)
       CALL JEVECH('PVECTTR','E',IVECTT)
-
-C CALCUL DE SENSIBILITE PART I
-      LSTAT = .FALSE.
-      IF (OPTION(6:9).EQ.'SENS') THEN
-        LSENS = .TRUE.
-        CALL JEVECH('PVAPRIN','L',IVAPRI)
-        CALL TECACH('ONN','PVAPRMO',1,IVAPRM,IRET)
-C L'ABSENCE DE CE CHAMP DETERMINE LE CRITERE STATIONNAIRE OU PAS
-        IF (IVAPRM.EQ.0) LSTAT = .TRUE.
-      ELSE
-        LSENS = .FALSE.
-      END IF
       THETA = ZR(ITEMPS+2)
 
 C====
-C 2. CALCULS TERMES DE MASSE (STD ET/OU SENSIBLE)
+C 2. CALCULS TERMES DE MASSE
 C====
 C    BOUCLE SUR LES POINTS DE GAUSS
       DO 50 KP = 1,NPG
@@ -120,21 +99,6 @@ C    BOUCLE SUR LES POINTS DE GAUSS
           POIDS2 = POIDS2*R2
         END IF
 
-C CALCUL DE SENSIBILITE PART II
-C DETERMINATION DE T+ (VAPRIN) ET DE T- (VAPRMO)
-        IF (LSENS) THEN
-          VAPRIN = 0.D0
-          VAPRMO = 0.D0
-          DO 20 I = 1,NNO
-            L = (KP-1)*NNO + I
-            VAPRIN = VAPRIN + (ZR(IVAPRI+NNO+I-1)-ZR(IVAPRI+I-1))*
-     &               ZR(IVF+L-1)
-            IF (.NOT.LSTAT) VAPRMO = VAPRMO +
-     &                               (ZR(IVAPRM+NNO+I-1)-ZR(IVAPRM+I-
-     &                               1))*ZR(IVF+L-1)
-   20     CONTINUE
-        END IF
-
         R = (R1+R2)/2.0D0
         Z = (Z1+Z2)/2.0D0
         POIDS = (POIDS1+POIDS2)/2
@@ -145,26 +109,13 @@ C DETERMINATION DE T+ (VAPRIN) ET DE T- (VAPRMO)
         NOMPAR(2) = 'Y'
         NOMPAR(3) = 'INST'
         CALL FOINTE('FM',ZK8(IHECHP),3,NOMPAR,VALPAR,HECHP,ICODE)
-CCDIR$ IVDEP
-        IF (.NOT.LSENS) THEN
-          DO 30 I = 1,NNO
-            LI = IVF + (KP-1)*NNO + I - 1
-            ZR(IVECTT+I-1) = ZR(IVECTT+I-1) +
-     &                       POIDS*ZR(LI)*HECHP* (1.0D0-THETA)*TPG
-            ZR(IVECTT+I-1+NNO) = ZR(IVECTT+I-1+NNO) -
-     &                           POIDS*ZR(LI)*HECHP* (1.0D0-THETA)*TPG
-   30     CONTINUE
-        ELSE
-C CALCUL DE SENSIBILITE PART III
-          DO 40 I = 1,NNO
-            LI = IVF + (KP-1)*NNO + I - 1
-            ZR(IVECTT+I-1) = ZR(IVECTT+I-1) +
-     &                       POIDS*ZR(LI)*HECHP* (THETA*VAPRIN+
-     &                       (1.0D0-THETA)*VAPRMO)
-            ZR(IVECTT+I-1+NNO) = ZR(IVECTT+I-1+NNO) -
-     &                           POIDS*ZR(LI)*HECHP*
-     &                           (THETA*VAPRIN+ (1.0D0-THETA)*VAPRMO)
-   40     CONTINUE
-        END IF
+C
+        DO 30 I = 1,NNO
+          LI = IVF + (KP-1)*NNO + I - 1
+          ZR(IVECTT+I-1) = ZR(IVECTT+I-1) +
+     &               POIDS*ZR(LI)*HECHP* (1.0D0-THETA)*TPG
+          ZR(IVECTT+I-1+NNO) = ZR(IVECTT+I-1+NNO) -
+     &               POIDS*ZR(LI)*HECHP* (1.0D0-THETA)*TPG
+   30   CONTINUE
    50 CONTINUE
       END

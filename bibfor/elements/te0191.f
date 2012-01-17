@@ -3,9 +3,9 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -46,13 +46,14 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-C
+C      
+      CHARACTER*8 FAMI,POUM
       CHARACTER*16  PHENOM
       INTEGER ICODRE
       REAL*8        A(3,3,9,9),DFDX(9),DFDY(9),POIDS,R,R8B,RHO
       REAL*8        MATP(27,27), MATV(378)
       INTEGER      NNO,KP,NNOS,NPG2,I,J,K,L,IMATUU,NDDL,NVEC,IACCE,IVECT
-      INTEGER      IPOIDS,IVF,IDFDE,IGEOM,IMATE,IJKL,IK
+      INTEGER      IPOIDS,IVF,IDFDE,IGEOM,IMATE,IJKL,IK,KPG,SPT
       INTEGER      NDIM,JGANO
 C ......................................................................
 C
@@ -64,8 +65,8 @@ C
       CALL JEVECH('PMATERC','L',IMATE)
 C
       CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,ICODRE)
-      CALL RCVALA(ZI(IMATE),' ',PHENOM,0,' ',R8B,1,'RHO',RHO,
-     &            ICODRE,1)
+      CALL RCVALB(FAMI,KPG,SPT,POUM,ZI(IMATE),' ',PHENOM,0,' ',R8B,1,
+     &            'RHO',RHO,ICODRE,1)
 C
       DO 113 K=1,3
         DO 113 L=1,3

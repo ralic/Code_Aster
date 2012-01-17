@@ -1,8 +1,8 @@
-#@ MODIF sensibilite Messages  DATE 21/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF sensibilite Messages  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,10 +47,6 @@ cata_msg = {
  Le paramètre de sensibilité doit être un champ thêta.
 """),
 
-7 : _(u"""
- Cette option est indisponible en sensibilité lagrangienne.
-"""),
-
 8 : _(u"""
  Pour l'occurrence numéro %(i1)d ,
  la dérivée du champ %(k1)s de %(k2)s par rapport à %(k3)s est introuvable.
@@ -86,18 +82,6 @@ cata_msg = {
  EXICHA différent de 0 et 1
 """),
 
-22 : _(u"""
- L'option sensibilité lagrangienne non opérationnelle en non-linéaire
-"""),
-
-31 : _(u"""
- L'option sensibilité n'est pas opérationnelle en séchage
-"""),
-
-32 : _(u"""
- L'option sensibilité n'est pas opérationnelle en hydratation
-"""),
-
 33 : _(u"""
  La dérivée des contraintes par rapport à l'épaisseur n'est pas implantée
  pour les COQUE_3D.
@@ -109,14 +93,6 @@ cata_msg = {
 
 37 : _(u"""
  L'option sensibilité n'est pas opérationnelle pour la modélisation %(k1)s
-"""),
-
-38 : _(u"""
- Problème détermination sensibilité de rayonnement
-"""),
-
-39 : _(u"""
- Problème détermination sensibilité matériau THER_NL
 """),
 
 41 : _(u"""
@@ -164,10 +140,6 @@ Conseil :
 
 71 : _(u"""
  Dérivation par rapport au paramètre sensible : %(k1)s
-"""),
-
-72 : _(u"""
- Le résultat est insensible au paramètre %(k1)s.
 """),
 
 73 : _(u"""

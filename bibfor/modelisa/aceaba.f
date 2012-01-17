@@ -7,9 +7,9 @@
       CHARACTER*(*)     MCLF
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 11/10/2011   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 16/01/2012   AUTEUR CHEIGNON E.CHEIGNON 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -60,8 +60,8 @@ C     ------------------------------------------------------------------
       CHARACTER*6  KIOC
       CHARACTER*8  K8B, NOMU, NOMMAI, FCX
       CHARACTER*16 K16B, SEC, CONCEP, CMD
-      CHARACTER*19 CARTBA, CARTBG, CARTBF
-      CHARACTER*24 TMPNBA, TMPVBA, TMPNBG, TMPVBG, TMPGEN
+      CHARACTER*19 CARTBA, CARTBG, CARTBF,TABCAR
+      CHARACTER*24 TMPNBA, TMPVBA, TMPNBG, TMPVBG, TMPGEN,NOMSEC,TYPCA
       CHARACTER*24 TMPNBF ,TMPVBF, TMPGEF, MODMAI, MLGGMA, MLGNMA
       CHARACTER*16 VMESSK(2)
       INTEGER      IARG
@@ -124,10 +124,61 @@ C --- LECTURE ET STOCKAGE DES DONNEES  DANS L OBJET TAMPON
      &         IOC,IARG,LMAX,ZK8(JDLS),NM)
          CALL GETVTX('BARRE','SECTION',IOC,IARG,1,
      &               SEC       ,NSEC)
-         CALL GETVTX('BARRE','CARA',IOC,IARG,NBCAR,
+         CALL GETVID('BARRE','TABLE_CARA',IOC,IARG,
+     &               1,TABCAR,NTAB)
+         IF (NTAB.EQ.1)THEN
+           CALL GETVTX('BARRE','NOM_SEC',IOC,IARG,1,
+     &                 NOMSEC,NNOSEC)
+           CALL ASSERT(NNOSEC.EQ.1)
+             CALL JEVEUO(TABCAR//'.TBNP','L',ITBNP)
+C            NOMBRE DE CARACTERISTIQUES
+             NBCOLO = ZI(ITBNP)
+C            ON RECHERCHE NOMSEC DANS LA 1ER COLONNE
+             CALL JEVEUO(TABCAR//'.TBLP','L',ITBLP)
+             TYPCA=ZK24(ITBLP+1)
+             IF (TYPCA(1:2).NE.'K8'.AND.TYPCA(1:3).NE.'K24')
+     &                       CALL U2MESK('F','MODELISA8_17',1,TABCAR)
+             CALL JEVEUO(ZK24(ITBLP+2),'L',ITABL)
+             NBLIGN = ZI(ITBNP+1)
+             IF (TYPCA.EQ.'K8')THEN
+               DO 95 I=1,NBLIGN
+                 IF (ZK8(ITABL-1+I).EQ.NOMSEC) THEN
+                   IISEC=I
+                   GOTO 97
+                 ENDIF
+ 95            CONTINUE
+             ELSE
+               DO 94 I=1,NBLIGN
+                 IF (ZK24(ITABL-1+I)(1:8).EQ.NOMSEC) THEN
+                   IISEC=I
+                   GOTO 97
+                 ENDIF
+ 94            CONTINUE
+             ENDIF
+             VMESSK(1)=TABCAR
+             VMESSK(2)=NOMSEC
+             CALL U2MESK('F','MODELISA8_18',2,VMESSK)
+ 97          CONTINUE
+
+             DO 96 I=1,NBCOLO-1
+               IF (ZK24(ITBLP+4*I+1).NE.'R') GOTO 96
+               IF (ZK24(ITBLP+4*I).NE.'A') THEN
+                 GOTO 96
+               ELSE
+                 ZK8(JCARA) = ZK24(ITBLP+4*I)
+                 CALL JEVEUO(ZK24(ITBLP+4*I+2),'L',IVECT)
+                 ZR(JVALE)=ZR(IVECT-1+IISEC)
+                 GOTO 98
+               ENDIF
+ 96          CONTINUE
+ 98          CONTINUE
+         ELSE
+           CALL GETVTX('BARRE','CARA',IOC,IARG,NBCAR,
      &               ZK8(JCARA),NCAR)
-         CALL GETVR8('BARRE','VALE',IOC,IARG,NBVAL,
+           CALL GETVR8('BARRE','VALE',IOC,IARG,NBVAL,
      &               ZR(JVALE) ,NVAL)
+           CALL ASSERT(NCAR.GT.0)
+         ENDIF
          FCX = '.'
          CALL GETVID('BARRE','FCX'       ,IOC,IARG,1    ,FCX ,NFCX)
 C

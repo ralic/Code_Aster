@@ -1,9 +1,9 @@
       SUBROUTINE TE0039(OPTION,NOMTE)
 C ----------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -60,8 +60,8 @@ C     ------------------------------------------------------------------
       INTEGER        NBRES
       PARAMETER     (NBRES=4)
 
-      INTEGER        CODRES(NBRES)
-      CHARACTER*8    NOMRES(NBRES),NOMPAR,NOMAIL,K8BID
+      INTEGER        CODRES(NBRES),KPG,SPT
+      CHARACTER*8    NOMRES(NBRES),NOMPAR,NOMAIL,K8BID,FAMI,POUM
       CHARACTER*16   CH16,KMESS(5)
 
       REAL*8   VALRES(NBRES),MATK(78),ALFAY,ALFAZ,XNU,XL,XIZ,XIY2,XIY
@@ -88,6 +88,10 @@ C     ------------------------------------------------------------------
       CALL JEMARQ()
       INFODI = 1
       IREPE  = 0
+      FAMI='FPG1'
+      KPG=1
+      SPT=1
+      POUM='+'
       IF ( (NOMTE(1:9)  .EQ.'MECA_DIS_') .OR.
      &     (NOMTE(1:12) .EQ.'MECA_2D_DIS_') ) THEN
 C        ON VERIFIE QUE LES CARACTERISTIQUES ONT ETE AFFECTEES
@@ -297,10 +301,10 @@ C           --- CARACTERISTIQUES MATERIAUX ---
             NOMRES(2) = 'NU'
             NOMRES(3) = 'ALPHA'
             NOMRES(4) = 'RHO'
-            CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,VALPAR,2,
-     &                  NOMRES,VALRES,CODRES,1)
-            CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,VALPAR,2,
-     &                  NOMRES(3),VALRES(3),CODRES(3),0)
+            CALL RCVALB(FAMI,KPG,SPT,POUM,ZI(LMATER),' ','ELAS',NBPAR,
+     &                  NOMPAR,VALPAR,2,NOMRES,VALRES,CODRES,1)
+            CALL RCVALB(FAMI,KPG,SPT,POUM,ZI(LMATER),' ','ELAS',NBPAR,
+     &                  NOMPAR,VALPAR,2,NOMRES(3),VALRES(3),CODRES(3),0)
             IF (CODRES(3).NE.0) VALRES(3) = ZERO
             IF (CODRES(4).NE.0) VALRES(4) = ZERO
             E   = VALRES(1)

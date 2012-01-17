@@ -2,9 +2,9 @@
      &                  EPSM,DEPS,VIM,SIGP,VIP,DSDE,CRILDC,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 16/01/2012   AUTEUR CHEIGNON E.CHEIGNON 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -58,15 +58,16 @@ C     ------------------------------------------------------------------
       REAL*8 EPSM
       INTEGER CODRES
       REAL*8 E,SY,DC,V,K,M
-      REAL*8 EPSILF,EPSD,EPSC,D,P,EPSP,ECR,FPLAS
+      REAL*8 EPSILF,EPSD,EPSC,D,P,EPSP,ECR,FPLAS,INDI
       REAL*8 DFDS,DFPDS,DFDECR,DIFECR,LAMBP,FD,VAR1
-      REAL*8 VAR2,VAR3,RV,FINI,FDINI,FPLAS2
+      REAL*8 VAR2,VAR3,RV,FINI,FPLAS2,B
       LOGICAL DCONV,PCONV,MELAS
       INTEGER ITER,ITEMAX,I,J,IBID
       PM = VIM(1)
       EPSPM = VIM(1)
       D  = VIM(2)
       CODRET=0
+
 
 C --- CARACTERISTIQUES ECROUISSAGE LINEAIRE
       CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,MATERI,'CORR_ACIER',0,' ',
@@ -84,12 +85,12 @@ C --- PARAMETRES DE CONVERGENCE
       RESI = CRILDC(3)
       ITEMAX = NINT(CRILDC(1))
 
-        CALL RCVARC('F','CORR','-',FAMI,KPG,KSP,CORRM,IBID)
-        IF (CORRM .LE. 15.D0)  THEN
-         EPSC = 2.345D-1-(1.11D-2*CORRM)
-        ELSE
+      CALL RCVARC('F','CORR','-',FAMI,KPG,KSP,CORRM,IBID)
+      IF (CORRM .LE. 15.D0)  THEN
+        EPSC = 2.345D-1-(1.11D-2*CORRM)
+      ELSE
         EPSC = 5.1D-2-(6.D-4*CORRM)
-        END IF
+      END IF
 C       END IF
 C
 C    DEFORMATION PLASTIQUE DE DEBUT D'ENDOMMAGMENT
@@ -106,116 +107,127 @@ C    RV LE PARAMETRE QUI DEPEND DU TAUX DE TRIAXIALITE
       DCONV=.FALSE.
       MELAS=(OPTION.EQ.'RIGI_MECA_ELAS').OR.
      &      (OPTION.EQ.'FULL_MECA_ELAS')
-      IF (OPTION.EQ.'FULL_MECA' .OR. OPTION.EQ.'RAPH_MECA') THEN
+      IF ((OPTION.EQ.'FULL_MECA').OR.(OPTION.EQ.'RAPH_MECA')) THEN
 
-      ITER = 0
-      DO 30 I = 1,ITEMAX
-      IF (.NOT. DCONV) THEN
-        ITER = ITER+1
+        ITER = 0
+        DO 30 I = 1,ITEMAX
+          IF (.NOT. DCONV) THEN
+            ITER = ITER+1
 
 C    *******ELASTICITE********************
-         SIGP = E*(EPSILF-EPSP)
+            SIGP = E*(EPSILF-EPSP)
 CJMP         SIGP =(1.D0-D)* E*(EPSILF-EPSP)
 
-         ECR = K*(P**(1.D0/M))
-         FINI = ((ABS(SIGP)/(1.D0-D))-ECR-SY)
-         FPLAS = FINI
-         IF (FINI .LE. 0.D0) THEN
-          VIP(3) = 0.D0
-          DCONV = .TRUE.
-        ELSE
-          VIP(3) = 1.D0
-          PCONV = .FALSE.
+            ECR = K*(P**(1.D0/M))
+            FINI = ((ABS(SIGP)/(1.D0-D))-ECR-SY)
+            FPLAS = FINI
+            IF (FINI .LE. 0.D0) THEN
+              VIP(3) = 0.D0
+              DCONV = .TRUE.
+            ELSE
+              VIP(3) = 1.D0
+              PCONV = .FALSE.
 
 C    ******PLASTICITE**********************
-         DO 40 J = 1,ITEMAX
-         IF (.NOT. PCONV)  THEN
-            DFDS = (1.D0/(1.D0-D))
-            DFPDS = (1.D0/(1.D0-D))
-            DFDECR = -1.D0
-            DIFECR = ((K/M)*((SIGP/((1.D0-D)*K))-(SY/K))**(1.D0-M))
-            LAMBP = (FPLAS/((DFDS*E*DFPDS)-(DFDECR*DIFECR)))
-            EPSP = EPSP+LAMBP*DFPDS
-            P = P+(LAMBP/(1.D0-D))
-            SIGP = SIGP-((E*LAMBP)/(1.D0-D))
-             ECR = K*(P**(1.D0/M))
-            FPLAS = ((ABS(SIGP)/(1.D0-D))-ECR-SY)
-            PCONV = ((ABS(FPLAS/FINI) .LE. RESI)
-     &                .OR. (LAMBP.LE.RESI))
-          ELSE
-             GOTO 141
-         END IF
-   40    CONTINUE
-  141    CONTINUE
-          IF(J .GE. ITEMAX) THEN
-             CALL U2MESS('I','MODELISA5_40')
-             CODRET=1
-             GOTO 9999
-          ENDIF
-        ENDIF
+              DO 40 J = 1,ITEMAX
+                IF (.NOT. PCONV)  THEN
+                  DFDS = (1.D0/(1.D0-D))
+                  DFPDS = (1.D0/(1.D0-D))
+                  DFDECR = -1.D0
+                  DIFECR = ((K/M)*
+     &                     ((SIGP/((1.D0-D)*K))-(SY/K))**(1.D0-M))
+                  LAMBP = (FPLAS/((DFDS*E*DFPDS)-(DFDECR*DIFECR)))
+                  EPSP = EPSP+LAMBP*DFPDS
+                  P = P+(LAMBP/(1.D0-D))
+                  SIGP = SIGP-((E*LAMBP)/(1.D0-D))
+                  ECR = K*(P**(1.D0/M))
+                  FPLAS = ((ABS(SIGP)/(1.D0-D))-ECR-SY)
+                  PCONV = (ABS(FPLAS/SY).LE.RESI)
+                ELSE
+                  GOTO 141
+                END IF
+   40         CONTINUE
+  141         CONTINUE
+              IF (J .GE. ITEMAX) THEN
+                CALL U2MESS('I','MODELISA5_40')
+                CODRET=1
+                GOTO 9999
+              ENDIF
+            ENDIF
 C
-        END IF
+          END IF
 
 C    *****ENDOMMAGEMENT*********************
-        FD = EPSP-EPSD
-        IF (FD .LE. 0.D0) THEN
-          DCONV = .TRUE.
-
-          GOTO 142
-
-        ELSE
-         D = (DC*((RV*EPSP)-EPSD))/(EPSC-EPSD)
-         FPLAS2 = ((ABS(SIGP)/(1.D0-D))-ECR-SY)
-         IF (ITER .EQ. 1) THEN
-            FDINI = FPLAS2
-         ELSE
-           FD = FPLAS2
-           DCONV = (ABS(FD/FDINI) .LE. RESI)
-           IF (DCONV) GOTO 142
-         END IF
-        END IF
-        IF (D .GT. 0.99D0)THEN
+          FD = EPSP-EPSD
+          IF (FD .LE. 0.D0) THEN
+            DCONV = .TRUE.
+            GOTO 142
+          ELSE
+            D = (DC*((RV*EPSP)-EPSD))/(EPSC-EPSD)
+            FPLAS2 = ((ABS(SIGP)/(1.D0-D))-ECR-SY)
+            IF (ITER .NE. 1) THEN
+              FD = FPLAS2
+C  CHANGEMENT DE CRITERE
+C              DCONV = (ABS(FD/FDINI) .LE. RESI)
+              DCONV = (ABS(FD/SY).LE.RESI)
+              IF (DCONV) GOTO 142
+            END IF
+          END IF
+          IF (D .GT. 0.99D0)THEN
             DCONV = .TRUE.
             SIGP = 0.D0
             GOTO 142
-        ENDIF
+          ENDIF
    30   CONTINUE
   142   CONTINUE
-        IF(I .GE. ITEMAX) THEN
-             CALL U2MESS('I','MODELISA5_41')
-             CODRET=1
-             GOTO 9999
-          ENDIF
-        ENDIF
 
-      VIP(1) = P
-      VIP(2) = D
-C      IF ((OPTION.EQ.'RIGI_MECA_TANG').OR.
-C     &    (OPTION.EQ.'FULL_MECA')) THEN
-        IF (VIM(3).LT.0.5D0) THEN
+        IF (I .GE. ITEMAX) THEN
+          CALL U2MESS('I','MODELISA5_41')
+          CODRET=1
+          GOTO 9999
+        ENDIF
+        VIP(1) = P
+        VIP(2) = D
+      ENDIF
+
+      IF (OPTION.EQ.'RIGI_MECA_TANG') THEN
+        P = VIM(1)
+        D = VIM(2)
+        INDI = VIM(3)
+      ENDIF
+      IF (OPTION.EQ.'FULL_MECA') THEN
+        INDI = VIP(3)
+      ENDIF
+
+      IF ((OPTION.EQ.'RIGI_MECA_TANG').OR.
+     &    (OPTION.EQ.'FULL_MECA')) THEN
+        IF (INDI.LT.0.5D0) THEN
           DSDE = E
         ELSE
-          IF (VIM(2).GT.0.D0) THEN
-          IF (OPTION.EQ.'RIGI_MECA_TANG') THEN
-             P = VIM(1)
-             D = VIM(2)
-             DSDE = (((1.D0-D)*(K*(1.D0/M)*(P**((1.D0/M)-1.D0))))/
-     &   (1.D0+((1.D0-D)*((K*(1.D0/M))/E)*(P**((1.D0/M)-1.D0)))))
+          IF (D.GT.0.D0) THEN
+            IF (OPTION.EQ.'RIGI_MECA_TANG') THEN
+              B = E+K/M*(1.D0-D)*P**((1.D0/M)-1.D0)-
+     &            SIGM/(1.D0-D)*(DC*RV/(EPSC-EPSD))
+              DSDE = E/B*(K/M*(1.D0-D)*P**((1.D0/M)-1.D0)-
+     &               SIGM/(1.D0-D)*(DC*RV/(EPSC-EPSD)))
             ELSE
-             DSDE = ((1.D0-D)*K*(1.D0/M)*(P**((1.D0/M)-1.D0)))
+              B = E+K/M*(1.D0-D)*P**((1.D0/M)-1.D0)-
+     &            SIGP/(1.D0-D)*(DC*RV/(EPSC-EPSD))
+              DSDE = E/B*(K/M*(1.D0-D)*P**((1.D0/M)-1.D0)-
+     &               SIGP/(1.D0-D)*(DC*RV/(EPSC-EPSD)))
             ENDIF
           ELSE
-             IF (OPTION.EQ.'RIGI_MECA_TANG') THEN
-               P = VIM(1)
-               DSDE = ((K*(1.D0/M)*(P**((1.D0/M)-1.D0)))/
-     &    (1.D0+(((K*(1.D0/M))/E)*(P**((1.D0/M)-1.D0)))))
-             ELSE
-              DSDE = (K*(1.D0/M)*(P**((1.D0/M)-1.D0)))
-             END IF
+            IF (OPTION.EQ.'RIGI_MECA_TANG') THEN
+              DSDE = ((K*(1.D0/M)*(P**((1.D0/M)-1.D0)))/
+     &               (1.D0+(((K*(1.D0/M))/E)*(P**((1.D0/M)-1.D0)))))
+            ELSE
+              DSDE = ((K*(1.D0/M)*(P**((1.D0/M)-1.D0)))/
+     &               (1.D0+(((K*(1.D0/M))/E)*(P**((1.D0/M)-1.D0)))))
+            END IF
           END IF
         END IF
 C     CAS RIGI_MECA_ELAS ET FULL_MECA_ELAS AVEC ENDOMMAGEMENT
-C      END IF
+      END IF
       IF(MELAS)  DSDE=(1.D0-D)*DSDE
 
  9999 CONTINUE

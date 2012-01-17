@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 17/01/2012   AUTEUR MACOCCO K.MACOCCO 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -81,14 +81,15 @@ CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
          ),
 
          b_mult_elas     =BLOC(condition="(AsType(RESULTAT) == mult_elas)",
-            NOM_CAS         =SIMP(statut='f',typ='TXM',validators=NoRepeat() ),
+            NOM_CAS         =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**' ),
          ),
 
-
-         EXCIT           =FACT(statut='f',max='**',
+         b_no_mult_elas  =BLOC(condition="(AsType(RESULTAT) != mult_elas)",
+            EXCIT           =FACT(statut='f',max='**',
                CHARGE          =SIMP(statut='f',typ=(char_meca,char_cine_meca)),
                FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE",into=("FIXE",) ),
+                                 ),
          ),
          SYME_CHAR       =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SYME","SANS") ),
 

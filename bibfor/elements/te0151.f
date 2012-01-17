@@ -1,7 +1,7 @@
       SUBROUTINE TE0151 ( OPTION , NOMTE )
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT  REAL*8  (A-H,O-Z)
       CHARACTER*(*)       OPTION , NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
 C TOLE CRP_6
 C     CALCUL
 C       - ENERGIE DE DEFORMATION
@@ -56,11 +56,11 @@ C
       INTEGER CODRES(NBRES)
       CHARACTER*1  STOPZ(3)
       CHARACTER*4  FAMI
-      CHARACTER*8  NOMPAR,NOMRES(NBRES),NOMAIL
+      CHARACTER*8  NOMPAR,NOMRES(NBRES),NOMAIL,FAMIL,POUM
       CHARACTER*16 CH16
       REAL*8       UL(12), UG(12), PGL(3,3), KLC(12,12), KLV(78)
       REAL*8       PGL1(3,3), PGL2(3,3), EPSTHE
-      INTEGER      IADZI,IAZK24
+      INTEGER      IADZI,IAZK24,KPG,SPT
 C     ------------------------------------------------------------------
       DATA NOMRES / 'E' , 'NU' , 'RHO' /
 C     ------------------------------------------------------------------
@@ -78,16 +78,20 @@ C
       FAMI = 'RIGI'
       NPG = 3
       IF (NOMTE.EQ.'MECA_POU_C_T') NPG = 2
-
+C
       CALL MOYTEM(FAMI,NPG,1,'+',VALPAR,IRET)
       CALL VERIFM(FAMI,NPG,1,'+',ZI(LMATER),'ELAS',1,EPSTHE,IRET)
       NBPAR  = 1
       NOMPAR = 'TEMP'
+      FAMIL='FPG1'
+      KPG=1
+      SPT=1
+      POUM='+'
 C
-      CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,VALPAR,2,
-     &              NOMRES,VALRES,CODRES,1)
-      CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,VALPAR,1,
-     &              NOMRES(3),VALRES(3),CODRES(3),1)
+      CALL RCVALB(FAMIL,KPG,SPT,POUM,ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,
+     &              VALPAR,2,NOMRES,VALRES,CODRES,1)
+      CALL RCVALB(FAMIL,KPG,SPT,POUM,ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,
+     &              VALPAR,1,NOMRES(3),VALRES(3),CODRES(3),1)
 C
       E      = VALRES(1)
       XNU    = VALRES(2)

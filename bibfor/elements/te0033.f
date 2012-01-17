@@ -2,10 +2,10 @@
       IMPLICIT  NONE
       CHARACTER*16        OPTION, NOMTE
 C ----------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 15/11/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -57,11 +57,11 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8        EFFGT(32), SIGTOT(24),EFFPG(32)
       REAL*8        T2EV(4), T2VE(4)
       LOGICAL       DKG
-      INTEGER       ICODRE
+      INTEGER       ICODRE,KPG,SPT
       CHARACTER*2   VAL
       CHARACTER*3   NUM
       CHARACTER*4   FAMI
-      CHARACTER*8   NOMRES
+      CHARACTER*8   NOMRES,FAMIL,POUM
       CHARACTER*16  PHENOM
 C     ------------------------------------------------------------------
 C
@@ -120,8 +120,12 @@ C     ----------------------------------
         CALL CODENT(ICOU,'G',NUM)
         CALL CODENT(1,'G',VAL)
         NOMRES = 'C'//NUM//'_V'//VAL
-        CALL RCVALA(ZI(JMATE),' ','ELAS_COQMU',0,' ',R8BID,
-     &       1,NOMRES,EPI,ICODRE,0)
+        FAMIL='FPG1'
+        KPG=1
+        SPT=1
+        POUM='+'
+        CALL RCVALB(FAMIL,KPG,SPT,POUM,ZI(JMATE),' ','ELAS_COQMU',
+     &       0,' ',R8BID,1,NOMRES,EPI,ICODRE,0)
         IF (ICODRE.EQ.0) THEN
           EPTOT=EPTOT+EPI
           GOTO 5

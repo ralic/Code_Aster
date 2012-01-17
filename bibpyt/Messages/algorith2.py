@@ -1,8 +1,8 @@
-#@ MODIF algorith2 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith2 Messages  DATE 17/01/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,20 +25,6 @@ cata_msg = {
 Erreur utilisateur dans la commande CREA_RESU / AFFE :
  Le maillage associé au mot clé CHAM_GD           : %(k1)s
  est différent de celui associé au mot clé MODELE : %(k2)s
-"""),
-
-
-
-3 : _(u"""
- la liste des CHAM_NO n'existe pas
-"""),
-
-4 : _(u"""
- il n'y a aucun CHAM_NO dans la liste
-"""),
-
-5 : _(u"""
- les CHAM_NO n'ont pas tous la même longueur
 """),
 
 6 : _(u"""

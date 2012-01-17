@@ -1,9 +1,9 @@
       SUBROUTINE ECLPGM(MA2,MO,CHAM1,LIGREL,SHRINK,LONMIN,NCH,LISCH)
       IMPLICIT   NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 30/05/2011   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -160,8 +160,7 @@ C    -----------------------------------------------------------------
          NCH2=NCH
          CALL DISMOI('F','NOM_LIGREL',MO,'MODELE',IBID,LIGRMO,IBID)
          DO 30, ICH=1,NCH2
-           IF(LISCH(ICH)(6:9).NE.'ELGA') CALL U2MESS('F',
-     &                                        'CALCULEL2_41')
+           IF(LISCH(ICH)(6:9).NE.'ELGA') CALL U2MESS('F','CALCULEL2_41')
            CALL JENONU(JEXNOM('&CATA.OP.NOMOPT',LISCH(ICH)),OPT)
            IF (OPT.EQ.0) GOTO 30
 
@@ -172,7 +171,7 @@ C    -----------------------------------------------------------------
 
            CALL ALCHML(LIGRMO,LISCH(ICH),NOMPAR,
      &                 'V',CEL,IRET1,' ')
-           IF (IRET1.NE.0) CALL U2MESK('F','CALCULEL5_32',1,LISCH(ICH))
+           IF (IRET1.NE.0) GOTO 30
 
            ICO=ICO+1
            CALL CELFPG(CEL,NOMOBJ,IRET)

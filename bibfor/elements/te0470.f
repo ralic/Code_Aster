@@ -1,8 +1,8 @@
       SUBROUTINE TE0470( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -33,8 +33,8 @@ C .....................................................................C
       INTEGER       NBRES, NDDL
       PARAMETER   ( NBRES = 3 , NDDL = 7)
       CHARACTER*24  CARAC,FF
-      CHARACTER*8   NOMRES(NBRES),ELREFE
-      INTEGER ICODRE(NBRES)
+      CHARACTER*8   NOMRES(NBRES),ELREFE,FAMI,POUM
+      INTEGER ICODRE(NBRES),KPG,SPT
       REAL*8        VALRES(NBRES), TPG, PGL(3,3)
       INTEGER       NNO1,NNO2, NPG1(2,2), NPG2(2,2), NPG, N, NBV
       INTEGER       IMATUU,ICARAC,IFF,IMATE,IGEOM,LORIEN,LSECT,ITYPE
@@ -135,9 +135,13 @@ C     ---------------------------------------------------
       ELSE
          CALL U2MESS('F','ELEMENTS3_98')
       ENDIF
+      FAMI='FPG1'
+      KPG=1
+      SPT=1
+      POUM='+'
       TPG = 0.D0
-      CALL RCVALA(ZI(IMATE),' ',PHENOM,0,'   ',TPG,NBV,NOMRES,VALRES,
-     &             ICODRE,1)
+      CALL RCVALB(FAMI,KPG,SPT,POUM,ZI(IMATE),' ',PHENOM,0,'   ',TPG,
+     &            NBV,NOMRES,VALRES, ICODRE,1)
       RHOPOU  = VALRES(1)
       CALL RCCOMA(ZI(IMATE),'FLUIDE',PHENOM,ICODRE)
       IF (PHENOM.EQ.'FLUIDE') THEN
@@ -147,8 +151,8 @@ C     ---------------------------------------------------
          CALL U2MESS('F','ELEMENTS3_98')
       ENDIF
       TPG = 0.D0
-      CALL RCVALA(ZI(IMATE),' ',PHENOM,0,'   ',TPG,NBV,NOMRES,VALRES,
-     &             ICODRE,1)
+      CALL RCVALB(FAMI,KPG,SPT,POUM,ZI(IMATE),' ',PHENOM,0,'   ',TPG,
+     &            NBV,NOMRES,VALRES, ICODRE,1)
       RHOFLU  = VALRES(1)
 C     ----------------------------------------------------------------
 C     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---

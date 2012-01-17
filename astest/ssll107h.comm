@@ -1,8 +1,8 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/01/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE VALIDATION DE MACR_CARA_POUTRE - POUTRE EN U
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,7 +22,7 @@
 
 DEBUT(CODE=_F(NOM='SSLL107H',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 
-TCARS=MACR_CARA_POUTRE(   GROUP_MA_BORD='LPOU',
+TCARS=MACR_CARA_POUTRE(   GROUP_MA_BORD='LPOU',FORMAT='MED',
      # UNIQUEMENT POUR NE PAS AVOIR DE MATRICE SINGULIERE:
                                NOEUD='N1' )
 
@@ -33,27 +33,27 @@ TCARS=MACR_CARA_POUTRE(   GROUP_MA_BORD='LPOU',
 TEST_TABLE(     TABLE=TCARS,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
                               VALE_K = '.9000002'),
-                NOM_PARA='AIRE',
+                NOM_PARA='A',
                 PRECISION=0.005,
                     VALE=29.5        )
 
 TEST_TABLE(     TABLE=TCARS,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
                               VALE_K = '.9000002'),
-                NOM_PARA='CDG_X',
+                NOM_PARA='CDG_Y',
                 PRECISION=0.002,
                      VALE=6.8612     )
 
 TEST_TABLE(     TABLE=TCARS,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
                               VALE_K = '.9000002'),
-                NOM_PARA='CDG_Y',
+                NOM_PARA='CDG_Z',
                      VALE=10.        )
 
 TEST_TABLE(     TABLE=TCARS,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
                               VALE_K = '.9000002'),
-                NOM_PARA='CT',
+                NOM_PARA='JX',
                 PRECISION=0.004,
                      VALE=2.4583     )
 

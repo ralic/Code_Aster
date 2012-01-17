@@ -10,10 +10,10 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
 C RESPONSABLE GRANET S.GRANET
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -48,10 +48,10 @@ C ======================================================================
       REAL*8        LAMBCT,RHO11,H11,H12,RHO12
       CHARACTER*16  OPTION,THMC
 C    PARAMETRE POUR LA RECUP DES COEF MECA
-      INTEGER      NELAS
+      INTEGER      NELAS,KPG,SPT
       PARAMETER  ( NELAS=4 )
       REAL*8       ELAS(NELAS),YOUNG,ALPHA0,CS,K0,NU
-      CHARACTER*8  NCRA1(NELAS)
+      CHARACTER*8  NCRA1(NELAS),FAMI,POUM
       INTEGER ICODRE(NELAS)
 C ======================================================================
 C --- DONNEES POUR RECUPERER LES CARACTERISTIQUES MECANIQUES -----------
@@ -60,9 +60,12 @@ C ======================================================================
 C =====================================================================
 C ---       RECUPERATION DES COEFFICIENTS MECANIQUES ------------------
 C =====================================================================
-
+         FAMI='FPG1'
+         KPG=1
+         SPT=1
+         POUM='+'
          IF (YAMEC.EQ.1) THEN
-           CALL RCVALA(IMATE,' ','ELAS',1,'TEMP', T,3,
+           CALL RCVALB(FAMI,KPG,SPT,POUM,IMATE,' ','ELAS',1,'TEMP', T,3,
      &                             NCRA1(1),ELAS(1),ICODRE,1)
            YOUNG  = ELAS(1)
            NU     = ELAS(2)

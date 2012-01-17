@@ -3,9 +3,9 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISMTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -49,11 +49,12 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       CHARACTER*24       NOMRES
       CHARACTER*16       COMPOR(3)
-      INTEGER ICODRE
+      CHARACTER*8        FAMI,POUM
+      INTEGER            ICODRE
       REAL*8             ZERO,METAPG(63),MS0,ZALPHA,ZBETA
       REAL*8             TNO0,R8VIDE
       INTEGER            NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO
-      INTEGER            ICOMPO,J,KN
+      INTEGER            ICOMPO,J,KN,KPG,SPT
       INTEGER            IMATE,ITEMPE,IPHASI,IPHASN,NVAL
 C     -----------------------------------------------------------------
 C
@@ -73,7 +74,10 @@ C    ----------------------
       CALL JEVECH('PPHASNOU','E',IPHASN)
 
       ZERO=0.D0
-
+      FAMI='FPG1'
+      KPG=1
+      SPT=1
+      POUM='+'
 
 C     -- ON VERIFIE QUE LES VALEURS INITIALES SONT BIEN INITIALISEES:
       IF (COMPOR(1).EQ.'ACIER') THEN
@@ -94,8 +98,8 @@ C        MATERIAU FERRITIQUE
 C        ---------------------
 C     ON RECALCULE DIRECTEMENT A PARTIR DES TEMPERATURES AUX NOEUDS
             NOMRES = 'MS0'
-            CALL RCVALA(ZI(IMATE),' ','META_ACIER', 1,'INST',0.D0,1,
-     &            NOMRES,MS0,ICODRE,1)
+            CALL RCVALB(FAMI,KPG,SPT,POUM,ZI(IMATE),' ','META_ACIER', 
+     &            1,'INST',0.D0,1,NOMRES,MS0,ICODRE,1)
             TNO0 = ZERO
             DO 101 KN=1,NNO
               TNO0 = ZR(ITEMPE+KN-1)

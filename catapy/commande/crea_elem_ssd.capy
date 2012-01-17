@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 03/10/2011   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
+#& MODIF COMMANDE  DATE 16/01/2012   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -69,6 +69,7 @@ CREA_ELEM_SSD=MACRO(nom="CREA_ELEM_SSD",
 
 # pour le calcul modal
          CALC_FREQ       =FACT(statut='d',min=0,
+             STOP_ERREUR     =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
              OPTION      =SIMP(statut='f',typ='TXM',defaut="PLUS_PETITE",into=("PLUS_PETITE","BANDE","CENTRE","SANS"),
                                    fr="Choix de l option et par consequent du shift du probleme modal" ),
              b_plus_petite =BLOC(condition = "OPTION == 'PLUS_PETITE'",fr="Recherche des plus petites valeurs propres",
@@ -89,6 +90,7 @@ CREA_ELEM_SSD=MACRO(nom="CREA_ELEM_SSD",
              ),
              APPROCHE        =SIMP(statut='f',typ='TXM',defaut="REEL",into=("REEL","IMAG","COMPLEXE"),
                                    fr="Choix du pseudo-produit scalaire pour la resolution du probleme quadratique" ),
+             DIM_SOUS_ESPACE =SIMP(statut='f',typ='I' ),
            ),
 
 

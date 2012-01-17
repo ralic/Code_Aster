@@ -1,14 +1,14 @@
       SUBROUTINE RAIREP(NOMA,IOC,KM,RIGI,NBGR,LIGRMA,NBNO,
-     &  TABNOE,RIGNOE,RIGTO,AMOTO,RIROT)
+     &  TABNOE,RIGNOE,RIGTO,AMOTO,RIROT,NDIM)
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER      IOC, NBGR, NBNO
+      INTEGER      IOC, NBGR, NBNO,NDIM
       CHARACTER*8  NOMA, LIGRMA(NBGR), TABNOE(*),KM
       REAL*8       RIGNOE(*), RIGTO(*), AMOTO(*),RIROT(3)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 16/01/2012   AUTEUR CHEIGNON E.CHEIGNON 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -43,12 +43,12 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       CHARACTER*8  K8B
-      CHARACTER*8  NOMGR, NOMNOE
-      CHARACTER*24 MAGRNO, MANONO, MAGRMA, MANOMA
+      CHARACTER*8  NOMGR, NOMNOE,TYPM
+      CHARACTER*24 MAGRNO, MANONO, MAGRMA, MANOMA,MATYMA
       REAL*8       R8B, ZERO, X(9), Y(9), Z(9), RIGI(6)
       REAL*8       A(3), B(3), C(3), U(3)
       LOGICAL      LFONC, TRANS
-      INTEGER      IARG
+      INTEGER      IARG,APPUI
 C
       CALL JEMARQ()
       ZERO = 0.D0
@@ -64,7 +64,10 @@ C        --- ON ECLATE LE GROUP_NO EN NOEUDS ---
       MANONO = NOMA//'.NOMNOE'
       MAGRMA = NOMA//'.GROUPEMA'
       MANOMA = NOMA//'.CONNEX'
+      MATYMA = NOMA//'.TYPMAIL'
+
       NOEMAX = 0
+
 C
 C     --- DESCRIPTION NOEUDS STRUCTURE ---
       CALL JEVEUO(NOMA//'.COORDO    .VALE','L',JCOOR)
@@ -114,18 +117,46 @@ C
      &  NFG)
       ENDIF
 C
+
+
+      IF (NDIM.EQ.2)THEN
+        APPUI=1
+      ELSE
+C     LA DIMENSION DE L'APPUI N'EST PAS ENCORE DETERMINEE
+        APPUI=-1
+      ENDIF
+
+      CALL JEVEUO(MATYMA,'L',LTYP)
       DO 20 I = 1,NBGR
          CALL JELIRA(JEXNOM(MAGRMA,LIGRMA(I)),'LONUTI',NB,K8B)
          CALL JEVEUO(JEXNOM(MAGRMA,LIGRMA(I)),'L',LDGM)
          DO 22 IN = 0,NB-1
-           CALL JELIRA(JEXNUM(MANOMA,ZI(LDGM+IN)),'LONMAX',NM,K8B)
-           CALL JEVEUO(JEXNUM(MANOMA,ZI(LDGM+IN)),'L',LDNM)
+           NUMA=ZI(LDGM+IN)
+           CALL ASSERT(NUMA.GT.0)
+           CALL JELIRA(JEXNUM(MANOMA,NUMA),'LONMAX',NM,K8B)
+           CALL JEVEUO(JEXNUM(MANOMA,NUMA),'L',LDNM)
+
+           CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(LTYP-1+NUMA)),TYPM)
+           CALL DISMOI('F','DIM_TOPO',TYPM,'TYPE_MAILLE',NTOPO,K8B,IER)
+
+           IF (APPUI.EQ.-1)THEN
+C            LA DIMENSION DE LA PREMIERE MAILLE DEFINIT L'APPUI
+             APPUI=NTOPO
+           ELSEIF ((APPUI.EQ.1).OR.(APPUI.EQ.2))THEN
+             IF (APPUI.NE.NTOPO)THEN
+               CALL U2MESS('F','MODELISA6_35')
+             ENDIF
+           ELSE
+             CALL U2MESS('F','MODELISA6_29')
+           ENDIF
            DO 24 NN = 1, NM
               INOE = ZI(LDNM+NN-1)
               NOEMAX = MAX(NOEMAX,INOE)
  24        CONTINUE
  22      CONTINUE
  20   CONTINUE
+      CALL ASSERT(APPUI.NE.-1)
+
       CALL WKVECT('&&RAIREP.COENO','V V R',NOEMAX,ICOEF)
 C
 C        TABLEAU DE PARTICIPATION DES NOEUDS DE L INTERFACE
@@ -149,35 +180,46 @@ C
            YC = ZERO
            HC = ZERO
            DO 25 NN = 1, NM
-              INOE = ZI(LDNM+NN-1)
-              ZI(IDNO+INOE-1) = ZI(IDNO+INOE-1) + 1
-              X(NN) = ZR(JCOOR+3*(INOE-1)+1-1)
-              Y(NN) = ZR(JCOOR+3*(INOE-1)+2-1)
-              Z(NN) = ZR(JCOOR+3*(INOE-1)+3-1)
-              XC = XC + X(NN)
-              YC = YC + Y(NN)
-              HC = HC + Z(NN)
+             INOE = ZI(LDNM+NN-1)
+             ZI(IDNO+INOE-1) = ZI(IDNO+INOE-1) + 1
+             X(NN) = ZR(JCOOR+3*(INOE-1)+1-1)
+             Y(NN) = ZR(JCOOR+3*(INOE-1)+2-1)
+             Z(NN) = ZR(JCOOR+3*(INOE-1)+3-1)
+             XC = XC + X(NN)
+             YC = YC + Y(NN)
+             HC = HC + Z(NN)
  25        CONTINUE
-           XC = XC/NM
-           YC = YC/NM
-           HC = HC/NM
-           A(1) = X(3) - X(1)
-           A(2) = Y(3) - Y(1)
-           A(3) = Z(3) - Z(1)
-           IF (NM.EQ.3.OR.NM.EQ.6.OR.NM.EQ.7) THEN
-             B(1) = X(2) - X(1)
-             B(2) = Y(2) - Y(1)
-             B(3) = Z(2) - Z(1)
-           ELSEIF (NM.EQ.4.OR.NM.EQ.8.OR.NM.EQ.9) THEN
-             B(1) = X(4) - X(2)
-             B(2) = Y(4) - Y(2)
-             B(3) = Z(4) - Z(2)
+            XC = XC/NM
+            YC = YC/NM
+            HC = HC/NM
+
+           IF (APPUI.EQ.1) THEN
+             A(1) = X(2) - X(1)
+             A(2) = Y(2) - Y(1)
+             A(3) = Z(2) - Z(1)
+             SURF = DDOT(2,A,1,A,1)
+             ZR(ISURMA+IM-1)= SQRT(SURF)
+           ELSEIF (APPUI.EQ.2)THEN
+             A(1) = X(3) - X(1)
+             A(2) = Y(3) - Y(1)
+             A(3) = Z(3) - Z(1)
+             IF (NM.EQ.3.OR.NM.EQ.6.OR.NM.EQ.7) THEN
+               B(1) = X(2) - X(1)
+               B(2) = Y(2) - Y(1)
+               B(3) = Z(2) - Z(1)
+             ELSEIF (NM.EQ.4.OR.NM.EQ.8.OR.NM.EQ.9) THEN
+               B(1) = X(4) - X(2)
+               B(2) = Y(4) - Y(2)
+               B(3) = Z(4) - Z(2)
+             ELSE
+               CALL ASSERT(.FALSE.)
+             ENDIF
+             CALL PROVEC(A,B,C)
+             SURF=DDOT(3,C,1,C,1)
+             ZR(ISURMA+IM-1) = SQRT(SURF)*0.5D0
            ELSE
-             CALL U2MESS('F','MODELISA6_35')
+             CALL ASSERT(.FALSE.)
            ENDIF
-           CALL PROVEC(A,B,C)
-           SURF=DDOT(3,C,1,C,1)
-           ZR(ISURMA+IM-1) = SQRT(SURF)*0.5D0
            IF (LFONC) THEN
              U(1) = XG - XC
              U(2) = YG - YC
@@ -232,12 +274,17 @@ C
          XX = ZR(JCOOR+3*(IJ-1)+1-1) - XG
          YY = ZR(JCOOR+3*(IJ-1)+2-1) - YG
          ZZ = ZR(JCOOR+3*(IJ-1)+3-1) - ZG
-         RIG4 = RIG4 + (RIGI(2)*ZZ**2+RIGI(3)*YY**2)*ZR(ICOEF+IJ-1)
-         RIG5 = RIG5 + (RIGI(1)*ZZ**2+RIGI(3)*XX**2)*ZR(ICOEF+IJ-1)
-         RIG6 = RIG6 + (RIGI(2)*XX**2+RIGI(1)*YY**2)*ZR(ICOEF+IJ-1)
-         RIG45 = RIG45 - RIGI(3)*XX*YY*ZR(ICOEF+IJ-1)
-         RIG46 = RIG46 - RIGI(2)*XX*ZZ*ZR(ICOEF+IJ-1)
-         RIG56 = RIG56 - RIGI(1)*YY*ZZ*ZR(ICOEF+IJ-1)
+         IF (NDIM.EQ.3)THEN
+           RIG4 = RIG4 + (RIGI(2)*ZZ**2+RIGI(3)*YY**2)*ZR(ICOEF+IJ-1)
+           RIG5 = RIG5 + (RIGI(1)*ZZ**2+RIGI(3)*XX**2)*ZR(ICOEF+IJ-1)
+           RIG6 = RIG6 + (RIGI(2)*XX**2+RIGI(1)*YY**2)*ZR(ICOEF+IJ-1)
+           RIG45 = RIG45 - RIGI(3)*XX*YY*ZR(ICOEF+IJ-1)
+           RIG46 = RIG46 - RIGI(2)*XX*ZZ*ZR(ICOEF+IJ-1)
+           RIG56 = RIG56 - RIGI(1)*YY*ZZ*ZR(ICOEF+IJ-1)
+         ELSE
+           RIG3 = RIG3 + (RIGI(2)*XX**2+RIGI(1)*YY**2)*ZR(ICOEF+IJ-1)
+         ENDIF
+
  50   CONTINUE
       NBNO = II
 
@@ -246,6 +293,10 @@ C
 
       IF ( TRANS ) THEN
 C        PAS DE RAIDEUR EN ROTATION SUR LES DISCRETS
+         IF (NDIM.EQ.2)THEN
+           RIGI(3)=ZERO
+           RIG3   =ZERO
+         ENDIF
          RIGI(4) = ZERO
          RIGI(5) = ZERO
          RIGI(6) = ZERO
@@ -256,12 +307,17 @@ C        PAS DE RAIDEUR EN ROTATION SUR LES DISCRETS
          RIROT(2) = ZERO
          RIROT(3) = ZERO
       ELSE
+         RIG3 = RIGI(3) - RIG3
          RIG4 = RIGI(4) - RIG4
          RIG5 = RIGI(5) - RIG5
          RIG6 = RIGI(6) - RIG6
-         RIROT(1) = RIG4
-         RIROT(2) = RIG5
-         RIROT(3) = RIG6
+         IF (NDIM.EQ.3)THEN
+          RIROT(1) = RIG4
+          RIROT(2) = RIG5
+          RIROT(3) = RIG6
+         ELSE
+          RIROT(1) = RIG3
+         ENDIF
       ENDIF
 C
       II = 0
@@ -270,10 +326,17 @@ C
          II = II + 1
          R1 = RIGI(1)*ZR(ICOEF+IJ-1)
          R2 = RIGI(2)*ZR(ICOEF+IJ-1)
-         R3 = RIGI(3)*ZR(ICOEF+IJ-1)
-         R4 = RIG4*ZR(ICOEF+IJ-1)
-         R5 = RIG5*ZR(ICOEF+IJ-1)
-         R6 = RIG6*ZR(ICOEF+IJ-1)
+         IF (NDIM.EQ.3)THEN
+           R3 = RIGI(3)*ZR(ICOEF+IJ-1)
+           R4 = RIG4*ZR(ICOEF+IJ-1)
+           R5 = RIG5*ZR(ICOEF+IJ-1)
+           R6 = RIG6*ZR(ICOEF+IJ-1)
+         ELSE
+           R3 = RIG3*ZR(ICOEF+IJ-1)
+           R4 = ZERO
+           R5 = ZERO
+           R6 = ZERO
+         ENDIF
          CALL JENUNO(JEXNUM(MANONO,IJ),NOMNOE)
          IF (KM(1:1).EQ.'K') THEN
            RIGTO(6*(IJ-1)+1) = R1 + RIGTO(6*(IJ-1)+1)

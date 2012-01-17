@@ -2,10 +2,10 @@
      &                  DSDE2G)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
 C TOLE CRS_1404
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,14 +32,18 @@ C ======================================================================
 C ======================================================================
 C --- VARIABLES LOCALES ------------------------------------------------
 C ======================================================================
-      INTEGER       P,Q,R,L,M,N,ADDER2
+      INTEGER       P,Q,R,L,M,N,ADDER2,KPG,SPT
       REAL*8        VAL(5),ID(NDIM,NDIM)
       INTEGER ICODRE(5)
-      CHARACTER*8   NCRA(5)
+      CHARACTER*8   NCRA(5),FAMI,POUM
 C ======================================================================
 C --- DEFINITION DES DONNEES INITIALES ---------------------------------
 C ======================================================================
       DATA NCRA  / 'A1','A2','A3','A4','A5' /
+      FAMI='FPG1'
+      KPG=1
+      SPT=1
+      POUM='+'
       IF (COMPOR(1).EQ.'ELAS') THEN
          DO 10 P=1,NDIM*NDIM*NDIM
             DO 20 Q=1,NDIM*NDIM*NDIM
@@ -52,8 +56,8 @@ C ======================================================================
  40         CONTINUE
                ID(P,P)=1.0D0
  30      CONTINUE
-         CALL RCVALA(IMATE,' ', 'ELAS_2NDG', 0, ' ', 0.0D0,
-     &                                 5, NCRA(1),VAL(1),ICODRE(1),1)
+         CALL RCVALB(FAMI,KPG,SPT,POUM,IMATE,' ', 'ELAS_2NDG', 0, ' ',
+     &                0.0D0, 5, NCRA(1),VAL(1),ICODRE(1),1)
 
          DO 50 P=1,NDIM
             DO 60 Q=1,NDIM

@@ -3,9 +3,9 @@
      &                  A1    ,A2    ,A3    ,ETAS  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -58,11 +58,11 @@ C
       INTEGER     NBRES
       PARAMETER   (NBRES=4)
       INTEGER ICODRE(NBRES)
-      CHARACTER*8 NOMRES(NBRES)
+      CHARACTER*8 NOMRES(NBRES),FAMI,POUM
       REAL*8      VALRES(NBRES)
 C
       LOGICAL     CPLAN
-      INTEGER     NDIMSI, K, NRAC, JPROL, JVALE, NBVALE
+      INTEGER     NDIMSI, K, NRAC, JPROL, JVALE, NBVALE,KPG,SPT
       REAL*8      SIGMH, EPSPH, EPSDH, S0H, S1H, S0(6), S1(6)
       REAL*8      KRON(6)
       REAL*8      P0, P1, P2, ETA, RAC(2)
@@ -75,7 +75,10 @@ C ----------------------------------------------------------------------
 C
 
 C -- OPTION ET MODELISATION
-
+      FAMI='FPG1'
+      KPG=1
+      SPT=1
+      POUM='+'
       NDIMSI = 2*NDIM
       CPLAN  = (TYPMOD(1).EQ.'C_PLAN  ')
 C
@@ -89,12 +92,10 @@ C -- LECTURE DES CARACTERISTIQUES
         NOMRES(2) = 'NU'
         NOMRES(3) = 'SY'
         NOMRES(4) = 'D_SIGM_EPSI'
-        CALL RCVALA(MATE  ,' '   ,'ELAS',0     ,' '   ,
-     &              0.D0  ,2     ,NOMRES,VALRES,ICODRE,
-     &              2)
-        CALL RCVALA(MATE  ,' '   ,'ECRO_LINE',0        ,' ',
-     &              0.D0  ,2     ,NOMRES(3)  ,VALRES(3),ICODRE(3),
-     &              2)
+        CALL RCVALB(FAMI,KPG,SPT,POUM,MATE ,' '   ,'ELAS',0 ,' ',
+     &              0.D0 ,2 ,NOMRES,VALRES,ICODRE,  2)
+        CALL RCVALB(FAMI,KPG,SPT,POUM,MATE ,' '   ,'ECRO_LINE',0 ,' ',
+     &              0.D0 ,2 ,NOMRES(3)  ,VALRES(3),ICODRE(3), 2)
         YOUNG  = VALRES(1)
         NU     = VALRES(2)
         SY     = VALRES(3)
@@ -103,9 +104,8 @@ C -- LECTURE DES CARACTERISTIQUES
         RP     = SY + H*VIM(1)
 
       ELSE
-        CALL RCVALA(MATE  ,' '   ,'ELAS',0     ,' '   ,
-     &              0.D0  ,1     ,'NU'  ,NU    ,ICODRE,
-     &              2)
+        CALL RCVALB(FAMI,KPG,SPT,POUM,MATE  ,' ','ELAS',0 ,' ' ,
+     &              0.D0 ,1 ,'NU' ,NU   ,ICODRE, 2)
         CALL RCTRAC(MATE  ,1,'SIGM',0.D0  ,JPROL ,
      &              JVALE ,NBVALE   ,YOUNG)
         CALL RCFONC('V'   ,1,JPROL ,JVALE ,NBVALE,

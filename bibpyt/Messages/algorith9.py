@@ -1,8 +1,8 @@
-#@ MODIF algorith9 Messages  DATE 21/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith9 Messages  DATE 17/01/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -89,10 +89,6 @@ cata_msg = {
 
 34 : _(u"""
  les matrices ne possèdent pas toutes la même numérotation
-"""),
-
-35 : _(u"""
-  un VECT_ASSE n'est ni à valeurs réelles, ni à valeurs complexes.
 """),
 
 39 : _(u"""

@@ -2,9 +2,9 @@
      &             ,NBTRC,TPG0,TPG1,TPG2,DT10,DT21,TAMP,METAPG)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -62,13 +62,13 @@ C-----------------------------------------------------------------------
 
 
       CHARACTER*24       NOMRES(11)
-      INTEGER ICODRE(11)
+      INTEGER ICODRE(11),KPG,SPT
       REAL*8             TPOINT,ZERO,TI,TPI
       REAL*8             AC1,AC3,TAUX1,TAUX3,ZEQ1,ZEQ2,Z1,Z2,AR3,EPSI
       REAL*8             CTES(11) ,UN
       REAL*8             ZEQ1I,ZEQ2I,TI1,TI2,TAUX,Z1I
       REAL*8             A, B, C, DELTA
-
+      CHARACTER*8        FAMI,POUM
 
       INTEGER            I,J,NBPAS
       LOGICAL            LREFR
@@ -78,6 +78,10 @@ C-----------------------------------------------------------------------
          ZERO  = 0.D0
          EPSI  = 1.D-10
          UN    = 1.D0
+         FAMI='FPG1'
+         KPG=1
+         SPT=1
+         POUM='+'
 C
 C        --- DETERMINATION DU SENS DE L'EVOLUTION METALLURGIQUE ---
 C
@@ -88,8 +92,8 @@ C
          NOMRES(5) = 'AC3'
          NOMRES(6) = 'TAUX_1'
          NOMRES(7) = 'TAUX_3'
-         CALL RCVALA(MATOS,' ','META_ACIER', 1, 'INST', 0.D0, 7, NOMRES,
-     &                 CTES, ICODRE, 1)
+         CALL RCVALB(FAMI,KPG,SPT,POUM,MATOS,' ','META_ACIER',1, 'INST',
+     &               0.D0, 7, NOMRES,  CTES, ICODRE, 1)
          AR3   = CTES(1)
          AC1   = CTES(4)
          AC3   = CTES(5)
@@ -100,8 +104,8 @@ C
          NOMRES(9) = 'QSR_K'
          NOMRES(10)= 'D10'
          NOMRES(11)= 'WSR_K'
-         CALL RCVALA(MATOS,' ','META_ACIER', 1, 'INST', 0.D0, 4,
-     &                 NOMRES(8),CTES(8), ICODRE(8), 0)
+         CALL RCVALB(FAMI,KPG,SPT,POUM,MATOS,' ','META_ACIER',1,'INST',
+     &                0.D0, 4,  NOMRES(8),CTES(8), ICODRE(8), 0)
 
          IF (ICODRE(8) .EQ. 1) CTES(8) = 0.D0
          IF (ICODRE(9) .EQ. 1) CTES(9) = 0.D0
