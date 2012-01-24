@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 05/07/2011   AUTEUR FERNANDES R.FERNANDES 
+#& MODIF COMMANDE  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -75,6 +75,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                   "3D_FLUIDE",       # RESP. : GREFFET N.GREFFET
                                   "3D_INCO",         # RESP. : MICHEL S.MICHEL
                                   "3D_INCO_UP",      # RESP. : SFAYOLLE
+                                  "3D_INCO_OSGS",    # RESP. : SFAYOLLE
                                   "3D_INCO_GD",      # RESP. : MICHEL S.MICHEL
                                   "3D_SI",           # RESP. : DESROCHES X.DESROCHES
                                   "3D_GRAD_EPSI",    # RESP. : MICHEL S.MICHEL
@@ -90,6 +91,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                   "AXIS_FOURIER",    # RESP. : DESROCHES X.DESROCHES
                                   "AXIS_INCO",       # RESP. : MICHEL S.MICHEL
                                   "AXIS_INCO_UP",    # RESP. : SFAYOLLE
+                                  "AXIS_INCO_OSGS",  # RESP. : SFAYOLLE
                                   "AXIS_INCO_GD",    # RESP. : MICHEL S.MICHEL
                                   "AXIS_SI",         # RESP. : DESROCHES X.DESROCHES
                                   "AXIS_GRAD_VARI",  # RESP. : MICHEL S.MICHEL
@@ -122,6 +124,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                   "D_PLAN_ABSO",     # RESP. : DEVESA G.DEVESA
                                   "D_PLAN_INCO",     # RESP. : MICHEL S.MICHEL
                                   "D_PLAN_INCO_UP",  # RESP. : SFAYOLLE
+                                  "D_PLAN_INCO_OSGS",# RESP. : SFAYOLLE
                                   "D_PLAN_INCO_GD",  # RESP. : MICHEL S.MICHEL
                                   "D_PLAN_SI",       # RESP. : DESROCHES X.DESROCHES
                                   "DIS_T",           # RESP. : FLEJOU J.L.FLEJOU

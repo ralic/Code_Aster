@@ -1,8 +1,8 @@
-#@ MODIF rupture1 Messages  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF rupture1 Messages  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -66,7 +66,7 @@ Veuillez revoir le contenu du mot-clé GROUP_NO ou NOEUD ou FOND_FISS.
 """),
 
 11: _(u"""
-Il faut un mot clé parmi FOND_FISS ou FISSURE pour l'option %(k1)s
+Il faut un mot clé parmi FOND_FISS ou FISSURE.
 Veuillez le renseigner.
 """),
 
@@ -165,18 +165,6 @@ Il faut donner 3 composantes de la direction.
 -> Risque et Conseil :
 Si vous utilisez CALC_THETA/THETA_2D ou CALC_G/THETA en 2d, veuillez fournir
 une valeur nulle pour la 3ème composante.
-"""),
-
-31: _(u"""
-Option non opérationnelle:
-Seule l'option COURONNE est à utiliser dans le cas ou
-on emploie le mot clé THETA_3D ou THETA_2D.
-"""),
-
-32: _(u"""
-Option inexistante:
-Seule l'option BANDE est à utiliser dans le cas ou on emploie
-le mot clé THETA_BANDE .
 """),
 
 33: _(u"""

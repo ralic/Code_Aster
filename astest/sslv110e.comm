@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -109,8 +109,7 @@ FISS11=DEFI_FOND_FISS(MAILLAGE=MA,
 #                           COURONNE 1
 #----------------------------------------------------------------------
 
-THETA1=CALC_THETA(   OPTION='COURONNE',
-                       MODELE=MO,
+THETA1=CALC_THETA(   MODELE=MO,
                       FOND_FISS=FISS1,
                         THETA_3D=_F(  TOUT = 'OUI', 
                                    MODULE_FO = MODUF, 
@@ -135,8 +134,7 @@ GLOC1=CALC_G(         RESULTAT=CHAMDEPL,
 #                           COURONNE 2
 #----------------------------------------------------------------------
 
-THETA2=CALC_THETA(   OPTION='COURONNE',
-                       MODELE=MO,
+THETA2=CALC_THETA(   MODELE=MO,
                       FOND_FISS=FISS1,
                         THETA_3D=_F(  TOUT = 'OUI', 
                                    MODULE_FO = MODUF, 
@@ -161,8 +159,7 @@ GLOC2=CALC_G(         RESULTAT=CHAMDEPL,
 #                           COURONNE 3
 #----------------------------------------------------------------------
 
-THETA3=CALC_THETA(   OPTION='COURONNE',
-                       MODELE=MO,
+THETA3=CALC_THETA(   MODELE=MO,
                       FOND_FISS=FISS1,
                         THETA_3D=_F(  TOUT = 'OUI', 
                                    MODULE_FO = MODUF, 

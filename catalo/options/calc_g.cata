@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+%& MODIF OPTIONS  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
 % RESPONSABLE GENIAUT
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -43,7 +43,6 @@ OPTION__
         PACCELE  DEPL_R
         PCONTGR  SIEF_R
         PBASLOR  NEUT_R
-        PCOURB   NEUT_R
         PPINTTO  NEUT_R
         PCNSETO  NEUT_I
         PHEAVTO  NEUT_I
@@ -58,4 +57,5 @@ OPTION__
         PBASECO  NEUT_R
    OUT__
 PGTHETA G ELEM__
+
 

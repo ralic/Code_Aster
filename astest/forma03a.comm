@@ -1,10 +1,10 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
-# RESPONSABLE PROIX J.M.PROIX
+# MODIF  DATE 23/01/2012   AUTEUR ABBAS M.ABBAS 
+# RESPONSABLE ABBAS M.ABBAS
 # TITRE ENONCE FORMATION PLAQUE TROUEE EN TRACTION EN ELASTICITE
 # forma03a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,72 +24,124 @@ DEBUT(CODE=_F(NOM='FORMA03A',
               NIV_PUB_WEB='INTERNET',
               VISU_EFICAS='OUI',),);
 
-MA=DEFI_MATERIAU(ELAS=_F(E=200000.0,
-                         NU=0.3,),);
 
+# LECTURE DU MAILLAGE
 MAIL=LIRE_MAILLAGE(FORMAT='MED',);
-
-MODE=AFFE_MODELE(MAILLAGE=MAIL,
-                 AFFE=_F(TOUT='OUI',
-                         PHENOMENE='MECANIQUE',
-                         MODELISATION='C_PLAN',),);
 
 MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
                    ORIE_PEAU_2D=_F(GROUP_MA='haut',),);
 
-MATE=AFFE_MATERIAU(MAILLAGE=MAIL,
-                   AFFE=_F(TOUT='OUI',
-                           MATER=MA,),);
+# AFFECTATION DU MODELE (CONTRAINTES PLANES)
+MODE=AFFE_MODELE(MAILLAGE=MAIL,
+                 AFFE=_F(TOUT='OUI',
+                         PHENOMENE='MECANIQUE',
+                         MODELISATION='C_PLAN',),);
 
-CHAR=AFFE_CHAR_MECA(MODELE=MODE,
-                    DDL_IMPO=(_F(GROUP_MA='bas',
+# DEFINITION DU MATERIAU
+ACIER=DEFI_MATERIAU(ELAS=_F(E=200000.0,
+                    NU=0.3,),);
+                    
+CHMATE=AFFE_MATERIAU(MAILLAGE=MAIL,
+                     AFFE=_F(TOUT='OUI',
+                           MATER=ACIER,),);
+
+# CONDITIONS DE SYMETRIE
+CHSYME=AFFE_CHAR_CINE(MODELE=MODE,
+                      MECA_IMPO=(_F(GROUP_MA='bas',
                                  DY=0.0,),
-                              _F(GROUP_MA='gauche',
+                                 _F(GROUP_MA='gauche',
                                  DX=0.0,),),
-                    PRES_REP=_F(GROUP_MA='haut',
-                                PRES=-100.0,),);
+                                );
 
-RESU=MECA_STATIQUE(MODELE=MODE,
-                   CHAM_MATER=MATE,
-                   EXCIT=_F(CHARGE=CHAR,),);
+# CHARGEMENT EN FORCE
+CHFORC=AFFE_CHAR_MECA(MODELE=MODE,
+                      FORCE_CONTOUR=_F(GROUP_MA='haut',
+                                       FY=1.,),);
 
+
+# RAMPE APPLICATION CHARGEMENT
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
+                           1000.,1000.,
+                           ),);
+
+# DISCRETISATION EN TEMPS
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A=10.0,NOMBRE=1,),);
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST,),)
+  
+  
+# CALCUL                     
+RESU=STAT_NON_LINE(MODELE=MODE,
+                   CHAM_MATER=CHMATE,
+                   EXCIT=(_F(CHARGE=CHSYME,),
+                          _F(CHARGE=CHFORC,
+                             FONC_MULT=RAMPE,),),
+                   COMP_INCR=_F(RELATION='ELAS',),
+                   INCREMENT=_F(LIST_INST=DEFLIST,INST_FIN=10.),);
+
+# INTERPOLATION DES CONTRAINTES AUX NOEUDS
 RESU=CALC_ELEM(reuse =RESU,
-
-
                RESULTAT=RESU,
-               OPTION=('SIGM_ELNO','SIEQ_ELNO','SIEQ_ELGA',),
-
-);
+               OPTION=('SIGM_ELNO',),);
 
 RESU=CALC_NO(reuse =RESU,
              RESULTAT=RESU,
-             OPTION=('SIGM_NOEU','SIEQ_NOEU',),);
+             OPTION=('SIGM_NOEU',),);
 
+# INTERPOLATION DES CONTRAINTES EQUIVALENTES AUX NOEUDS
+RESU=CALC_ELEM(reuse =RESU,
+               RESULTAT=RESU,
+               OPTION=('SIEQ_ELGA','SIEQ_ELNO'),);
+
+RESU=CALC_NO(reuse =RESU,
+             RESULTAT=RESU,
+             OPTION=('SIEQ_NOEU',),);
+             
+# IMPRESSION DES RESULTATS
 IMPR_RESU(FORMAT='MED',
-          UNITE=80,
-          RESU=_F(MAILLAGE=MAIL,
-                  RESULTAT=RESU,
-                  NOM_CHAM=('SIGM_NOEU','SIEQ_NOEU','DEPL','SIEQ_ELGA',),),);
+          RESU=_F(RESULTAT=RESU,),);
+          
+          
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='SIGM_NOEU',
+                  NOM_CMP='SIYY',
+                  GROUP_NO='B',
+                  VALE=30.0,
+                  CRITERE='RELATIF',
+                  PRECISION=0.01,
+                  REFERENCE='ANALYTIQUE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='SIGM_NOEU',
+                  NOM_CMP='SIXX',
+                  GROUP_NO='A',
+                  VALE=-10.0,
+                  CRITERE='RELATIF',
+                  PRECISION=0.02,
+                  REFERENCE='ANALYTIQUE',),);
 
 TEST_RESU(RESU=_F(RESULTAT=RESU,
                   NUME_ORDRE=1,
                   NOM_CHAM='SIGM_NOEU',
                   NOM_CMP='SIYY',
                   GROUP_NO='B',
-                  VALE=300.0,
+                  VALE=29.809234113416,
                   CRITERE='RELATIF',
-                  PRECISION=0.03,
-                  REFERENCE='ANALYTIQUE',),);
+                  PRECISION=1.E-8,
+                  REFERENCE='NON_REGRESSION',),);
 
 TEST_RESU(RESU=_F(RESULTAT=RESU,
                   NUME_ORDRE=1,
-                  NOM_CHAM='SIEQ_ELGA',
-                  NOM_CMP='TRIAX',
-                  MAILLE = 'M400',
-                  POINT = 3 ,
-                  VALE=0.401967,
+                  NOM_CHAM='SIGM_NOEU',
+                  NOM_CMP='SIXX',
+                  GROUP_NO='A',
+                  VALE=-9.8213909205095,
                   CRITERE='RELATIF',
+                  PRECISION=1.E-8,
                   REFERENCE='NON_REGRESSION',),);
+
 
 FIN();

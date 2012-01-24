@@ -1,10 +1,10 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
-# RESPONSABLE PROIX J.M.PROIX
-# TITRE TP FORMATION NON LINEAIRE PLAQUE TROUEE EN TRACTION - PILOTAGE
+# MODIF  DATE 23/01/2012   AUTEUR ABBAS M.ABBAS 
+# RESPONSABLE ABBAS M.ABBAS
+# TITRE ENONCE FORMATION PLAQUE TROUEE EN TRACTION EN PLASTICITE - CHARGE LIMITE
 # forma03c.para = tps_job 120 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -24,134 +24,274 @@ DEBUT(CODE=_F(NOM='FORMA03C',
               NIV_PUB_WEB='INTERNET',
               VISU_EFICAS='OUI',),);
 
-M=LIRE_MAILLAGE(FORMAT='MED',
-                VERI_MAIL=_F(),);
+# LECTURE DU MAILLAGE
+MAIL=LIRE_MAILLAGE(FORMAT='MED',);
 
-# PLAQUE TROUEE : CONTRAINTES PLANES
-
-MO=AFFE_MODELE(MAILLAGE=M,
-               VERIF='MAILLE',
-               AFFE=_F(TOUT='OUI',
-                       PHENOMENE='MECANIQUE',
-                       MODELISATION='C_PLAN',),);
+MAIL=MODI_MAILLAGE(reuse =MAIL,
+                   MAILLAGE=MAIL,
+                   ORIE_PEAU_2D=_F(GROUP_MA='haut',),);
+                   
+# AFFECTATION DU MODELE (CONTRAINTES PLANES)
+MODE=AFFE_MODELE(MAILLAGE=MAIL,
+                 AFFE=_F(TOUT='OUI',
+                         PHENOMENE='MECANIQUE',
+                         MODELISATION='C_PLAN',),);
 
 # COURBE DE TRACTION
 CTRAC = LIRE_FONCTION(UNITE=21,
                       NOM_PARA='EPSI',
                       PROL_DROITE='CONSTANT',)
 
-MA=DEFI_MATERIAU(ELAS=_F(E=200000.0,
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=29,
+              COURBE=_F(FONCTION=CTRAC,),
+              TITRE='Courbe de traction',
+              LEGENDE_X='Deformation',
+              LEGENDE_Y='Contrainte (MPa)',);
+              
+              
+# DEFINITION DU MATERIAU
+ACIER =DEFI_MATERIAU(ELAS=_F(E=200000.0,
                          NU=0.3,),
                  TRACTION=_F(SIGM=CTRAC,),);
 
-CM=AFFE_MATERIAU(MAILLAGE=M,
-                 AFFE=_F(TOUT='OUI',
-                         MATER=MA,),);
+CHMATE=AFFE_MATERIAU(MAILLAGE=MAIL,
+                     AFFE=_F(TOUT='OUI',
+                             MATER=ACIER,),);
 
 # CONDITIONS DE SYMETRIE (QUART DE PLAQUE)
-
-CH1=AFFE_CHAR_MECA(MODELE=MO,
-                   FACE_IMPO=(_F(GROUP_MA='bas',
+CHSYME=AFFE_CHAR_CINE(MODELE=MODE,
+                      MECA_IMPO=(_F(GROUP_MA='bas',
                                  DY=0.0,),
-                              _F(GROUP_MA='gauche',
-                                 DX=0.0,),),);
+                                 _F(GROUP_MA='gauche',
+                                 DX=0.0,),),
+                                );
+                                
+# CHARGEMENT EN FORCE
+CHFORC=AFFE_CHAR_MECA(MODELE=MODE,
+                      FORCE_CONTOUR=_F(GROUP_MA='haut',
+                                       FY=1.,),);
 
-# TRACTION REPARTIE SUR LE HAUT
-
-CH2=AFFE_CHAR_MECA(MODELE=MO,
-                   FORCE_CONTOUR=_F(GROUP_MA='haut',
-                                    FY=1.0,),);
-
-# L INSTANT EST EGAL A LA VALEUR DE LA TRACTION SUR LFG
-
-F_DEPL=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
+# RAMPE APPLICATION CHARGEMENT
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                            1000.0,1000.0,
                            ),);
+                           
+
+    
+########################################################################
+#
+# PREMIER CALCUL : RECHERCHE MANUELLE DE LA CHARGE LIMITE
+#
+########################################################################
 
 # DISCRETISATION EN TEMPS
-TFIN = 4.0;
+TFIN  = 243.0;
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=(_F(JUSQU_A=TFIN,
+                                     NOMBRE=10,),
+                                  ),);
 
-# GESTION AUTOMATIQUE DU PAS DE TEMPS : SOUS-DECOUPAGE ET ADAPTATION PAR DEFAUT
-# EN GESTION MANUELLE, ON FAISAIT 160 PAS DE TEMPS POUR 4S -> PAS DE TEMPS DE 0,025 S
-# EN GESTION AUTOMATIQUE, ON IMPOSE SEULEMENT LE 1ER PAS DE TEMPS
-DEF_INST=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='AUTO',
-                                     VALE=(0., 0.025, TFIN),
-                                     PAS_MINI=1.e-6,
-                                     PAS_MAXI=0.5)
-                      )
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST,),
+                        ECHEC=_F(EVENEMENT='ERREUR',
+                                 ACTION='DECOUPE',),)
 
-#PILOTAGE                            
+# CALCUL                                                    
+RESUNL=STAT_NON_LINE(MODELE=MODE,
+                     CHAM_MATER=CHMATE,
+                     EXCIT=(_F(CHARGE=CHSYME,),
+                            _F(CHARGE=CHFORC,
+                               FONC_MULT=RAMPE,),),
+                     COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',),
+                     INCREMENT=_F(LIST_INST=DEFLIST,
+                                  INST_FIN=TFIN,
+                                  ),            
+                     NEWTON=_F(REAC_ITER=1,),
+                     );
 
-RESUNL=STAT_NON_LINE(MODELE=MO,
-                     CHAM_MATER=CM,
-                     EXCIT=(_F(CHARGE=CH1,),
-                            _F(CHARGE=CH2,
+########################################################################
+#
+# POST-TRAITEMENTS STANDARDS
+#
+########################################################################
+
+# INTERPOLATION DES CONTRAINTES AUX NOEUDS
+RESUNL=CALC_ELEM(reuse =RESUNL,
+                 RESULTAT=RESUNL,
+                 OPTION=('SIGM_ELNO',),);
+
+RESUNL=CALC_NO(reuse =RESUNL,
+               RESULTAT=RESUNL,
+               OPTION=('SIGM_NOEU',),);
+          
+# INTERPOLATION DES VARIABLES INTERNES AUX NOEUDS
+RESUNL=CALC_ELEM(reuse =RESUNL,
+                 RESULTAT=RESUNL,
+                 OPTION=('VARI_ELNO'),);
+                              
+RESUNL=CALC_NO(reuse =RESUNL,
+               RESULTAT=RESUNL,
+               OPTION='VARI_NOEU',);
+ 
+########################################################################
+#
+# IMPRESSION DES RESULTATS
+#
+########################################################################
+
+IMPR_RESU(FORMAT='MED',
+          RESU=_F(RESULTAT=RESUNL,),);
+
+#########################################################################
+#
+# DEUXIEME CALCUL : CALCUL AVEC PILOTAGE
+#
+########################################################################
+
+# DISCRETISATION EN TEMPS
+TFINPI  = 6.0;
+L_INST2=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=(_F(JUSQU_A=TFINPI,
+                                     NOMBRE=10,),
+                                  ),);
+
+DEFLIST2 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST2,),
+                        ECHEC=_F(EVENEMENT='ERREUR',
+                                 ACTION='DECOUPE',),)
+
+# CALCUL 
+
+RESUPI=STAT_NON_LINE(MODELE=MODE,
+                     CHAM_MATER=CHMATE,
+                     EXCIT=(_F(CHARGE=CHSYME,),
+                            _F(CHARGE=CHFORC,
                                TYPE_CHARGE='FIXE_PILO',),),
                      COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',),
-                     INCREMENT=_F(LIST_INST=DEF_INST,
-                                  INST_FIN=TFIN,),
+                     INCREMENT=_F(LIST_INST=DEFLIST2,
+                                  INST_FIN=TFINPI,),
                      NEWTON=_F(REAC_ITER=1,),
                      PILOTAGE=_F(TYPE='DDL_IMPO',
                                  COEF_MULT=1.0,
                                  GROUP_NO='G',
                                  NOM_CMP='DY',),
-#                      SUIVI_DDL=(_F(NUME_SUIVI=1,
-#                                    NOM_CHAM='DEPL',
-#                                    NOM_CMP='DY',
-#                                    GROUP_NO='G',),
-#                                 _F(NUME_SUIVI=2,
-#                                    NOM_CHAM='SIEF_ELGA',
-#                                    NOM_CMP='SIYY',
-#                                    VALE_MAX='OUI',),
-#                                 _F(NUME_SUIVI=3,
-#                                    NOM_CHAM='VARI_ELGA',
-#                                    NOM_CMP='V1',
-#                                    VALE_MAX='OUI',),),
-                                   );
+                     );
 
+
+########################################################################
 #
-# INTERPOLATION DES CONTRAINTES ET VARIABLE INTERNES AUX NOEUDS
+# POST-TRAITEMENTS STANDARDS
+#
+########################################################################
 
-RESUNL=CALC_ELEM(reuse =RESUNL,
-                 RESULTAT=RESUNL,
-                 OPTION=('SIGM_ELNO','VARI_ELNO','SIEQ_ELGA',),);
+# INTERPOLATION DES CONTRAINTES AUX NOEUDS
+RESUPI=CALC_ELEM(reuse =RESUPI,
+                 RESULTAT=RESUPI,
+                 OPTION=('SIGM_ELNO',),);
 
-# DEPOUILLEMENTS DES RESULTATS
-# VALEURS MAXI DES CONTRAINTES EQUIVALENTES ET DES VARIABLES INTERNES
+RESUPI=CALC_NO(reuse =RESUPI,
+               RESULTAT=RESUPI,
+               OPTION=('SIGM_NOEU',),);
+          
+# INTERPOLATION DES VARIABLES INTERNES AUX NOEUDS
+RESUPI=CALC_ELEM(reuse =RESUPI,
+                 RESULTAT=RESUPI,
+                 OPTION=('VARI_ELNO'),);
+                              
+RESUPI=CALC_NO(reuse =RESUPI,
+               RESULTAT=RESUPI,
+               OPTION='VARI_NOEU',);
 
-IMPR_RESU(MODELE=MO,
-          RESU=(_F(RESULTAT=RESUNL,
-                   NOM_CHAM='SIEQ_ELGA',
-                   VALE_MAX='OUI',),
-                _F(RESULTAT=RESUNL,
-                   NOM_CHAM='VARI_ELGA',
-                   VALE_MAX='OUI',),),);
+
+########################################################################
+#
+# COURBE FORCE APPLIQUEE  EN FONCTION DU TEMPS (ETA_PILOTAGE)
+#
+########################################################################
+
+
+ETA_PILO=RECU_FONCTION(RESULTAT=RESUPI,
+                       TOUT_ORDRE='OUI',
+                       NOM_PARA_RESU='ETA_PILOTAGE',);
+
+IMPR_FONCTION(FORMAT='TABLEAU',
+              COURBE=_F(FONCTION=ETA_PILO,),
+              UNITE=8,);
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=81,
+              COURBE=_F(FONCTION=ETA_PILO,),
+              TITRE=' Fy(ETA_PILOTAGE) fonction du temps',
+              LEGENDE_X='Temps',
+              LEGENDE_Y='ETA_PILOTAGE',);
+
+########################################################################
+#
+# IMPRESSION DES RESULTATS
+#
+########################################################################
 
 IMPR_RESU(FORMAT='MED',
-          RESU=_F(RESULTAT=RESUNL,),);
+          RESU=_F(RESULTAT=RESUPI,),);
 
-RESUNL=CALC_NO(reuse =RESUNL,
-               RESULTAT=RESUNL,
-               OPTION='SIGM_NOEU',);
-
-SIGBAS=MACR_LIGN_COUPE(RESULTAT=RESUNL,
-                       NOM_CHAM='SIGM_ELNO',
-                       LIGN_COUPE=_F(NB_POINTS=30,
-                                     COOR_ORIG=(10,0,),
-                                     COOR_EXTR=(100,0,),),);
-
-IMPR_TABLE(TABLE=SIGBAS,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=TFIN,),
-           NOM_PARA=('ABSC_CURV','SIYY',),);
-
+# TESTS - CALCUL SANS PILOTAGE       
 TEST_RESU(RESU=_F(RESULTAT=RESUNL,
                   INST=TFIN,
                   NOM_CHAM='SIGM_NOEU',
                   NOM_CMP='SIYY',
                   GROUP_NO='G',
-                  VALE=243.0,
-                  PRECISION=(0.015,0.0001,),
+                  VALE=243.04100195057,
+                  PRECISION=1E-8,
                   REFERENCE='NON_REGRESSION',),);
+                  
+TEST_RESU(RESU=_F(RESULTAT=RESUNL,
+                  INST=TFIN,
+                  NOM_CHAM='SIGM_NOEU',
+                  NOM_CMP='SIYY',
+                  GROUP_NO='G',
+                  VALE=243.,
+                  PRECISION=0.0003,
+                  REFERENCE='ANALYTIQUE',),);
+                                    
+# TESTS - CALCUL AVEC PILOTAGE  
+TEST_RESU(RESU=_F(RESULTAT=RESUPI,
+                  INST=TFINPI,
+                  NOM_CHAM='SIGM_NOEU',
+                  NOM_CMP='SIYY',
+                  GROUP_NO='G',
+                  VALE=243.,
+                  PRECISION=0.003,
+                  REFERENCE='ANALYTIQUE',),);
+   
+TEST_RESU(RESU=_F(RESULTAT=RESUPI,
+                  INST=TFINPI,
+                  NOM_CHAM='SIGM_NOEU',
+                  NOM_CMP='SIYY',
+                  GROUP_NO='G',
+                  VALE=243.04100195057,
+                  PRECISION=0.003,
+                  REFERENCE='AUTRE_ASTER',),);
 
+TEST_RESU(RESU=_F(RESULTAT=RESUPI,
+                  INST=TFINPI,
+                  NOM_CHAM='SIGM_NOEU',
+                  NOM_CMP='SIYY',
+                  GROUP_NO='G',
+                  VALE=243.55023561961,
+                  PRECISION=1E-8,
+                  REFERENCE='NON_REGRESSION',),);  
+                    
+TEST_FONCTION(VALEUR=_F(FONCTION=ETA_PILO,
+                        VALE_PARA=TFINPI,
+                        VALE_REFE=243.,
+                        PRECISION=0.003,
+                        REFERENCE='ANALYTIQUE',
+                        ),);
+                                                       
+TEST_FONCTION(VALEUR=_F(FONCTION=ETA_PILO,
+                        VALE_PARA=TFINPI,
+                        VALE_REFE=243.51621,
+                        PRECISION=1E-8,
+                        REFERENCE='NON_REGRESSION',
+                        ),);
+          
 FIN();

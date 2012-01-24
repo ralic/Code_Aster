@@ -1,9 +1,9 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 24/01/2012   AUTEUR GENIAUT S.GENIAUT 
 # TITRE  FISSURE DE BORD EN ELASTOPLASTICITE DANS UNE PLAQUE
 # ssnp110c.para = tps_job 150 mem_job 192Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -26,7 +26,7 @@ DEBUT(CODE=_F(NOM='SSNP110C',
               NIV_PUB_WEB='INTERNET',
               ),
       DEBUG=_F(SDVERI='OUI',),);
-relation = 'ELAS_VMIS_LINE';
+
 
 MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',);
 
@@ -55,7 +55,7 @@ a = 6;
 # tailles des elements suivant x et y
 hy = (ly / ny);
 hx = (lx / nx);
-hh = sqrt(hy**2+hx**2)
+h = sqrt(hy**2+hx**2)
 
 
 # creation des noeuds servant a bloquer les modes rigides
@@ -92,23 +92,15 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
                               PHENOMENE='MECANIQUE',
                               MODELISATION='C_PLAN',),),);
 
-#LN = FORMULE(VALE='Y',NOM_PARA=('X','Y',),);
-#LT = FORMULE(VALE='X',NOM_PARA=('X','Y',),);
-
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
-#                    DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
-                    DEFI_FISS=_F(
-                                 FORM_FISS = 'DEMI_DROITE',
+                    DEFI_FISS=_F(FORM_FISS = 'DEMI_DROITE',
                                  PFON      =(0. , 0. ,0.),
                                  DTAN      =(1. , 0. ,0.),),);
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
-                         FISSURE=FISS,
-                         INFO=1,);
+                         FISSURE=FISS)
 
-CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
-                      LIAISON_XFEM='OUI',
-                      INFO=1,);
+CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,LIAISON_XFEM='OUI')
 
 #----------------------------------------------
 #                   MATERIAU
@@ -145,74 +137,96 @@ CH=AFFE_CHAR_MECA(MODELE=MODELEK,
                                   COEF_IMPO=0.,),),);
 
 CHF=AFFE_CHAR_MECA(MODELE=MODELEK,
-                   DDL_IMPO=(_F(GROUP_MA='LIG1',
-                                DY=-1.,),
-                             _F(GROUP_MA='LIG3',
-                                DY=1.,),),);
+                   DDL_IMPO=(_F(GROUP_MA='LIG1',DY=-1.,),
+                             _F(GROUP_MA='LIG3',DY= 1.,),),);
 
-RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
-                          1.,1.,
-                          ),PROL_DROITE='LINEAIRE',);
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0.,0.,
+                          1.,1.,),
+                    PROL_DROITE='LINEAIRE',);
 
 #----------------------------------------------
 #                   RESOLUTION
 #----------------------------------------------
-npas = 50;
-
+npas = 1
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.,
-                      INTERVALLE=_F(JUSQU_A=0.1,
-                                    NOMBRE=npas,),);
+                      INTERVALLE=(_F(JUSQU_A=0.02,NOMBRE=npas),
+                                  _F(JUSQU_A=0.04,NOMBRE=npas),
+                                  _F(JUSQU_A=0.06,NOMBRE=npas),
+                                  _F(JUSQU_A=0.08,NOMBRE=npas),
+                                  _F(JUSQU_A=0.10,NOMBRE=npas),
+                                  ),
+                      );
+
+L_ARCH=DEFI_LIST_REEL(DEBUT=0.,
+                      INTERVALLE=(_F(JUSQU_A=0.02,NOMBRE=1),
+                                  _F(JUSQU_A=0.04,NOMBRE=1),
+                                  _F(JUSQU_A=0.06,NOMBRE=1),
+                                  _F(JUSQU_A=0.08,NOMBRE=1),
+                                  _F(JUSQU_A=0.10,NOMBRE=1),
+                                  ),
+                      );
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                     CHAM_MATER=CHAMPMA1,
                     EXCIT=(_F(CHARGE=CHXFEM,),
-                           _F(CHARGE=CHF,
-                              FONC_MULT=RAMPE,),
+                           _F(CHARGE=CHF,FONC_MULT=RAMPE,),
                            _F(CHARGE=CH,),),
-                    COMP_ELAS=_F(RELATION=relation,
-                                 DEFORMATION='PETIT',),
-                    INCREMENT=_F(LIST_INST=L_INST,),
+                    COMP_ELAS=_F(RELATION='ELAS_VMIS_LINE'),
+                    INCREMENT=_F(LIST_INST=L_INST),
+                    ARCHIVAGE=_F(LIST_INST=L_ARCH),
                     NEWTON=_F(REAC_ITER=1,),
-                    CONVERGENCE=_F(RESI_GLOB_RELA=1.E-5,),
-                    SOLVEUR=_F(METHODE='MUMPS',
-                               PCENT_PIVOT=10,),
-                    ARCHIVAGE=_F(LIST_INST=L_INST,
-                                 CHAM_EXCLU='VARI_ELGA',),
-                    INFO=1,);
+                    )
 
 #------------------------------------------------------------------------
 # POST-TRAITEMENT : VISUALISATION DES DEPLACEMENTS
 #------------------------------------------------------------------------
 
-MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK,
-                       );
+MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK)
 
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
                              PHENOMENE='MECANIQUE',
-                             MODELISATION='C_PLAN',),);
+                             MODELISATION='C_PLAN'))
 
 RES_XFEM=POST_CHAM_XFEM(RESULTAT=UTOT1,
-                        MODELE_VISU=MOD_VISU,);
+                        MODELE_VISU=MOD_VISU)
 
-IMPR_RESU(FORMAT='GMSH',
-          UNITE=82,
-          RESU=_F(RESULTAT=RES_XFEM,
-                  NOM_CHAM='DEPL',
-                  NUME_ORDRE=npas,),);
+MAT_VISU=AFFE_MATERIAU(MAILLAGE=MA_XFEM,
+                       AFFE=_F(TOUT='OUI',MATER=MAT))
+
+# CALCUL DE DERA_ELGA A TOUS LES INSTANTS ARCHIVES, SAUF AU DERNIER INSTANT
+RES_XFEM=CALC_ELEM(reuse =RES_XFEM,
+                   RESULTAT=RES_XFEM,
+                   CHAM_MATER=MAT_VISU,
+                   OPTION='DERA_ELGA')
+
+IMPR_RESU(FORMAT='MED', RESU=_F(RESULTAT=RES_XFEM))
+
+# TEST DE DERA_ELGA A L'INSTANT 0.08 (CAR DERA_ELGA N'EST JAMAIS CALCULE AU DERNIER INSTANT)
+TEST_RESU(RESU=_F(RESULTAT=RES_XFEM,
+                  INST=0.08,
+                  TYPE_TEST='MAX',
+                  NOM_CHAM = 'DERA_ELGA',
+                  NOM_CMP = 'DCHA_V',
+                  VALE = 0.57696085978235,
+                  PRECISION=1e-8,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='11.01.06')
+         )
 
 DEPLFIN=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                    OPERATION='EXTR',
                    RESULTAT=RES_XFEM,
                    NOM_CHAM='DEPL',
-                   NUME_ORDRE=npas,);
+                   INST=0.10)
 
 MA_XFEM=DEFI_GROUP(reuse =MA_XFEM,
                    MAILLAGE=MA_XFEM,
                    CREA_GROUP_NO=_F(OPTION='ENV_SPHERE',
                                     NOM='NTEST',
-                                    POINT=(-(a),0.,),
+                                    POINT=(-a,0.,),
                                     RAYON=0.0001,
                                     PRECISION=0.0001,),);
 
@@ -222,7 +236,7 @@ TABDEP=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                GROUP_NO='NTEST',
                                NOM_CMP=('DX','DY',),),);
 
-IMPR_TABLE(TABLE=TABDEP,);
+IMPR_TABLE(TABLE=TABDEP)
 
 # CETTE VALEUR A ETE OBTENUE PAR LA MODELISATION A
 DEPREF = 0.0987568989597;
@@ -245,119 +259,116 @@ TEST_TABLE(TABLE=TABDEP,
            REFERENCE='AUTRE_ASTER',);
 
 #------------------------------------------------------------------------
-# CALCUL DU TAUX DE RESTITUTION DE L ENERGIE G
+# CALCUL DU TAUX DE RESTITUTION DE L ENERGIE G AVEC 2 COURONNES DIFFERENTES
 #------------------------------------------------------------------------
-G_0=CALC_G( THETA=_F(FISSURE=FISS,
-                                   R_INF = 1*hh,
-                                   R_SUP = 4*hh,
-                                     DIRECTION=(1., 0., 0.,),),
-            RESULTAT=UTOT1,
-            TOUT_ORDRE='OUI',
-            COMP_ELAS=_F(RELATION='ELAS_VMIS_LINE',),
-            );
 
-IMPR_TABLE(TABLE=G_0,);
+# couronne 1 entre h et 4h
+G_1=CALC_G(THETA=_F(FISSURE=FISS,
+                    R_INF = 1*h,
+                    R_SUP = 4*h),
+           RESULTAT=UTOT1,
+           COMP_ELAS=_F(RELATION='ELAS_VMIS_LINE'))
 
+IMPR_TABLE(TABLE=G_1)
 
-LISTG = (10, 20,30,40,50);
-G_1=CALC_G( THETA=_F(FISSURE=FISS,
-                                   R_INF = 2*hh,
-                                   R_SUP = 6*hh,
-                                     DIRECTION=(1., 0., 0.,),),
-            RESULTAT=UTOT1,
-            NUME_ORDRE=LISTG,
-            COMP_ELAS=_F(RELATION='ELAS_VMIS_LINE',),
-            );
+# couronne 2 entre 2h et 6h
+G_2=CALC_G(THETA=_F(FISSURE=FISS,
+                    R_INF = 2*h,
+                    R_SUP = 6*h),
+           RESULTAT=UTOT1,
+           COMP_ELAS=_F(RELATION='ELAS_VMIS_LINE'))
 
-IMPR_TABLE(TABLE=G_1,);
+IMPR_TABLE(TABLE=G_2)
 
-TEST_TABLE(TABLE=G_0,
-           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
-                     VALE_I = 10),
+TEST_TABLE(TABLE=G_1,
+           FILTRE=_F(NOM_PARA = 'INST',
+                     VALE = 0.02),
            NOM_PARA='G',
            VALE=3.2908090218925E+00,
            PRECISION=0.04,
            REFERENCE='AUTRE_ASTER', )
 
-TEST_TABLE(TABLE=G_0,
-           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
-                     VALE_I = 20),
+TEST_TABLE(TABLE=G_1,
+           FILTRE=_F(NOM_PARA = 'INST',
+                     VALE = 0.04),
            NOM_PARA='G',
            VALE=1.3603188101422E+01,
            PRECISION=0.04,
            REFERENCE='AUTRE_ASTER', )
 
-TEST_TABLE(TABLE=G_0,
-           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
-                     VALE_I = 30),
+TEST_TABLE(TABLE=G_1,
+           FILTRE=_F(NOM_PARA = 'INST',
+                     VALE = 0.06),
            NOM_PARA='G',
            VALE=3.1970374749380E+01,
            PRECISION=0.04,
            REFERENCE='AUTRE_ASTER', )
 
-TEST_TABLE(TABLE=G_0,
-           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
-                     VALE_I = 40),
+TEST_TABLE(TABLE=G_1,
+           FILTRE=_F(NOM_PARA = 'INST',
+                     VALE = 0.08),
            NOM_PARA='G',
            VALE=5.8993613915841E+01,
            PRECISION=0.04,
            REFERENCE='AUTRE_ASTER', )
 
-TEST_TABLE(TABLE=G_0,
-           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
-                     VALE_I = 50),
+TEST_TABLE(TABLE=G_1,
+           FILTRE=_F(NOM_PARA = 'INST',
+                     VALE = 0.10),
            NOM_PARA='G',
            VALE=9.1415076304037E+01,
            PRECISION=0.04,
            REFERENCE='AUTRE_ASTER',  )
        
-TEST_TABLE(TABLE=G_1,
-           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
-                     VALE_I = 10),
+       
+TEST_TABLE(TABLE=G_2,
+           FILTRE=_F(NOM_PARA = 'INST',
+                     VALE = 0.02),
            NOM_PARA='G',
            VALE=3.2908090218925E+00,
            PRECISION=0.04,
            REFERENCE='AUTRE_ASTER', )
 
-TEST_TABLE(TABLE=G_1,
-           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
-                     VALE_I = 20),
+TEST_TABLE(TABLE=G_2,
+           FILTRE=_F(NOM_PARA = 'INST',
+                     VALE = 0.04),
            NOM_PARA='G',
            VALE=1.3603188101422E+01,
            PRECISION=0.04,
            REFERENCE='AUTRE_ASTER', )
 
-TEST_TABLE(TABLE=G_1,
-           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
-                     VALE_I = 30),
+TEST_TABLE(TABLE=G_2,
+           FILTRE=_F(NOM_PARA = 'INST',
+                     VALE = 0.06),
            NOM_PARA='G',
            VALE=3.1970374749380E+01,
            PRECISION=0.04,
            REFERENCE='AUTRE_ASTER', )
 
-TEST_TABLE(TABLE=G_1,
-           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
-                     VALE_I = 40),
+TEST_TABLE(TABLE=G_2,
+           FILTRE=_F(NOM_PARA = 'INST',
+                     VALE = 0.08),
            NOM_PARA='G',
            VALE=5.8993613915841E+01,
            PRECISION=0.04,
            REFERENCE='AUTRE_ASTER', )
 
-TEST_TABLE(TABLE=G_1,
-           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
-                     VALE_I = 50),
+TEST_TABLE(TABLE=G_2,
+           FILTRE=_F(NOM_PARA = 'INST',
+                     VALE = 0.10),
            NOM_PARA='G',
            VALE=9.1415076304037E+01,
            PRECISION=0.04,
            REFERENCE='AUTRE_ASTER', )
            
-TEST_TABLE(TABLE=G_1,
-           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
-                     VALE_I = 50),
+TEST_TABLE(TABLE=G_2,
+           FILTRE=_F(NOM_PARA = 'INST',
+                     VALE = 0.10),
            NOM_PARA='G',
            VALE=8.94016307693017E+01,
            PRECISION=0.001,
            REFERENCE='NON_REGRESSION', )
+
 
 FIN();
 

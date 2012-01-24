@@ -1,4 +1,4 @@
-#@ MODIF rupture0 Messages  DATE 17/01/2012   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF rupture0 Messages  DATE 24/01/2012   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -229,8 +229,9 @@ Il y a plusieurs causes possibles :
 
 34: _(u"""
 L'hypothèse de lèvres collées n'est pas valide.
-Conseil : il faut utiliser CONFIG_INIT='DECOLLEE'.
-Ou bien vérifier l'utilisation du mot-clé SYME.
+Cela peut être dû au fait :
+ - que seule la lèvre supérieure est modélisée. Dans ce cas, il faut mettre SYME='OUI'.
+ - que les lèvres sont initialement décollées. Dans ce cas, il faut mettre CONFIG_INIT='DECOLLEE'.
 """),
 
 35: _(u"""

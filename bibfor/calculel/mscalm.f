@@ -2,9 +2,9 @@
      &                  NBORDR,MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -557,7 +557,7 @@ C ---- TRAITEMENT DE L EXCENTREMENT POUR OPTIONS DE POST TRAITEMENT
 
             IF (TYPESE.EQ.-1) THEN
               IF (OPTIO2.EQ.'SIEF_ELGA') THEN
-                OPTIO2='DLSI_ELGA_DEPL'
+                CALL ASSERT(.FALSE.)
               ENDIF
             ENDIF
 
@@ -771,9 +771,7 @@ C     POUR LE CALCUL DES OPTIONS SIEF_ELGA ET EFGE_ELNO
                 ENDIF
               ENDIF
               IF (TYPESE.EQ.-1) THEN
-                CHTESE='&&'//NOMPRO//'.TEMP_SENSI'
-                CALL NMDETE(MODEL2,MATE2,CARELE,NCHAR,ZK8(JCHA),TIME,
-     &                      TYPESE,NOPASE,CHTESE,LBID)
+                CALL ASSERT(.FALSE.)
               ELSE
                 CHTESE=' '
               ENDIF
@@ -1647,76 +1645,6 @@ C ---- VERIF SENSIBILITE FIN
   580         CONTINUE
               CALL JEDEMA()
   590       CONTINUE
-C    ------------------------------------------------------------------
-C    -- OPTION "DEDE_ELNO"
-C    ------------------------------------------------------------------
-          ELSEIF (OPTION.EQ.'DEDE_ELNO') THEN
-C ---- VERIF SENSIBILITE
-            IF (TYPESE.NE.-1) THEN
-              CODSEN=2
-            ENDIF
-            IF (CODSEN.NE.0)GOTO 700
-C ---- VERIF SENSIBILITE FIN
-            DO 610,IAUX=1,NBORDR
-              CALL JEMARQ()
-              CALL JERECU('V')
-              IORDR=ZI(JORDR+IAUX-1)
-              CALL MEDOM2(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO,IORDR,
-     &                    NBORDR,'G',NPASS,LIGREL)
-              CALL JEVEUO(KCHA,'L',JCHA)
-              CALL MECARA(CARA,EXICAR,CHCARA)
-              K4BID='DEPL'
-              CALL RSEXC2(1,1,RESUCO,K4BID,IORDR,CHAMGD,OPTION,IRET)
-              IF (IRET.GT.0)GOTO 600
-              CALL RSEXC2(1,1,LERES0,K4BID,IORDR,K24B,OPTION,IRET)
-              IF (IRET.GT.0)GOTO 600
-              CHDESE=K24B
-              CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
-              CALL MSCALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,K24B,
-     &                    K24B,K24B,K24B,K24B,K24B,CHTETA,K24B,K24B,
-     &                    K24B,ZK8(JCHA),' ',ZERO,CZERO,K24B,K24B,
-     &                    CHELEM,K24B,LIGREL,BASE,K24B,K24B,K24B,COMPOR,
-     &                    CHTESE,CHDESE,NOPASE,TYPESE,CHACSE,IRET)
-              IF (IRET.GT.0)GOTO 600
-              CALL RSNOCH(LERES1,OPTION,IORDR,' ')
-  600         CONTINUE
-              CALL JEDEMA()
-  610       CONTINUE
-
-C    ------------------------------------------------------------------
-C    -- OPTION "DESI_ELNO"
-C    ------------------------------------------------------------------
-          ELSEIF (OPTION.EQ.'DESI_ELNO') THEN
-C ---- VERIF SENSIBILITE
-            IF (TYPESE.NE.-1) THEN
-              CODSEN=2
-            ENDIF
-            IF (CODSEN.NE.0)GOTO 700
-C ---- VERIF SENSIBILITE FIN
-            DO 630,IAUX=1,NBORDR
-              CALL JEMARQ()
-              CALL JERECU('V')
-              IORDR=ZI(JORDR+IAUX-1)
-              CALL MEDOM2(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO,IORDR,
-     &                    NBORDR,'G',NPASS,LIGREL)
-              CALL JEVEUO(KCHA,'L',JCHA)
-              CALL RSEXC2(1,1,LERES0,'SIEF_ELGA',IORDR,DLAGSI,
-     &                    OPTION,IRET)
-              IF (IRET.GT.0)GOTO 620
-              CALL RSEXC2(1,1,RESUCO,'SIGM_ELNO',IORDR,CHSIGM,
-     &                    OPTION,IRET)
-              IF (IRET.GT.0)GOTO 620
-              CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
-              CALL MSCALC(OPTION,MODELE,DLAGSI,CHGEOM,MATE,CHCARA,K24B,
-     &                    K24B,K24B,K24B,K24B,CHSIGM,CHTETA,K24B,K24B,
-     &                    K24B,ZK8(JCHA),' ',ZERO,CZERO,K24B,K24B,
-     &                    CHELEM,K24B,LIGREL,BASE,K24B,K24B,K24B,COMPOR,
-     &                    CHTESE,CHDESE,NOPASE,TYPESE,CHACSE,IRET)
-              IF (IRET.GT.0)GOTO 620
-              CALL RSNOCH(LERES1,OPTION,IORDR,' ')
-  620         CONTINUE
-              CALL JEDEMA()
-  630       CONTINUE
 
 C    ------------------------------------------------------------------
 C    -- OPTIONS "DISS_ELGA" ET "DISS_ELNO"

@@ -1,9 +1,9 @@
       SUBROUTINE OP0196()
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
+C MODIF PREPOST  DATE 24/01/2012   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -51,6 +51,7 @@ C     ------------------------------------------------------------------
       CHARACTER*8  MAXFEM,MO,MALINI,RESUCO,RESUX,MODVIS,K8B
       CHARACTER*16 TYSD,NOMCHA
       CHARACTER*19 CNS1,CNS2,CES1,CES2,CEL2,CH,CESVI1,CESVI2,K19
+      CHARACTER*19 COMPS1,COMPS2
       CHARACTER*24 MAILX,MAILC,LICHAM,ORDR,LISTNO,LOGRMA,K24,LISTGR
 C
       CALL JEMARQ()
@@ -109,10 +110,13 @@ C       ----------------------------------------------------------------
         CESVI2   = '&&OP0196.CESVI2'
         CEL2   = '&&OP0196.CEL2'
         LISTNO = '&&OP0196.LISTNO'
+        COMPS1 ='&&OP0196.COMPOR1'
+        COMPS2 ='&&OP0196.COMPOR2'
         CALL XPODIM(MALINI,MAILC,MODVIS,LICHAM,NSETOT+MFTOT,
      &             NNNTOT+NFTOT,NCOTOT+NFCOMF,
      &             LISTNO,CNS1,CNS2,CES1,CES2,CEL2,CESVI1,CESVI2,
-     &             IOR,RESUCO,NBNOC,NBMAC,LOGRMA,K24,MAXFEM,IBID)
+     &             IOR,RESUCO,NBNOC,NBMAC,LOGRMA,K24,MAXFEM,IBID,
+     &             COMPS1,COMPS2)
 
 C       ----------------------------------------------------------------
 C       4. TRAITEMENT DES MAILLES DE MAILC
@@ -121,7 +125,8 @@ C       ----------------------------------------------------------------
         IF (NIV.GT.1) WRITE(IFM,*)' '
         IF (NIV.GT.1) WRITE(IFM,*)'4. XPOMAC'
         CALL XPOMAC(MALINI,MAILC,LISTNO,NBNOC,NBMAC,MAXFEM,K24,
-     &              CNS1,CNS2,CES1,CES2,CESVI1,CESVI2,RESUCO)
+     &              CNS1,CNS2,CES1,CES2,CESVI1,CESVI2,RESUCO,
+     &              COMPS1,COMPS2)
 
 C       ----------------------------------------------------------------
 C       5. TRAITEMENT DES MAILLES DE MAILX
@@ -131,7 +136,7 @@ C       ----------------------------------------------------------------
         IF (NIV.GT.1) WRITE(IFM,*)'5. XPOMAX'
         CALL XPOMAX(MO,MALINI,MAILX,NBNOC,NBMAC,K2B,K8B,MAXFEM,
      &              CNS1,CNS2,CES1,CES2,CESVI1,CESVI2,LISTGR,K24,K24,
-     &              RESUCO,IBID)
+     &              RESUCO,IBID,COMPS1,COMPS2)
 
 C       ----------------------------------------------------------------
 C       6. ENREGISTREMENT DES CHAMPS DE SORTIES
@@ -169,6 +174,15 @@ C         RECUPERATION DU NOM DU CHAMP A ECRIRE : CH
           CALL RSNOCH(RESUX,NOMCHA,IORD,' ')
  20     CONTINUE
 
+C       CARTE DU COMPORTEMENT
+        CALL RSEXCH(RESUCO,'COMPORTEMENT',IORD,K19,IRET)
+        IF (IRET.EQ.0)THEN
+C         RECUPERATION DU NOM DU CHAMP A ECRIRE : CH
+          CALL RSEXCH(RESUX,'COMPORTEMENT',IORD,CH,IRET)
+          CALL CESCAR(COMPS2,CH,'G')
+          CALL RSNOCH(RESUX,'COMPORTEMENT',IORD,' ')
+        ENDIF
+
         IF(TYSD(1:4).EQ.'EVOL') THEN
           CALL RSADPA(RESUCO,'L',1,'INST',IORD,0,JINST1,KBID)
           CALL RSADPA(RESUX ,'E',1,'INST',IORD,0,JINST2,KBID)
@@ -193,6 +207,8 @@ C         RECUPERATION DU NOM DU CHAMP A ECRIRE : CH
         CALL DETRSD('CHAM_ELEM',CEL2)
         CALL DETRSD('CHAM_ELEM_S',CESVI1)
         CALL DETRSD('CHAM_ELEM_S',CESVI2)
+        CALL DETRSD('CHAM_ELEM_S',COMPS1)
+        CALL DETRSD('CHAM_ELEM_S',COMPS2)
 
  10   CONTINUE
 
@@ -205,6 +221,7 @@ C         RECUPERATION DU NOM DU CHAMP A ECRIRE : CH
       IF (IRET.NE.0) CALL JEDETR(LISTGR)
 
       IF (NIV.GT.1) WRITE(IFM,*)'FIN DE POST_CHAM_XFEM'
+
 
       CALL JEDEMA()
 C

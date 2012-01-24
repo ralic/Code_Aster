@@ -5,10 +5,10 @@
      &                  CHVARI,COMPOR,CHTESE,CHDESE,NOPASE,
      &                  TYPESE,CHACSE,CODRET)
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20 CRP_21
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -164,15 +164,6 @@ C ----------------------------------------------------------------------
             LPAIN(1) = 'PTEMPER'
             LPAOUT(1) = 'PDETENO'
             INDMEC = .FALSE.
-         ELSE IF (OPTIO2.EQ.'DEDE_ELNO') THEN
-            LPAIN(1) = 'PDEPLAR'
-            LPAOUT(1) = 'PDEDENO'
-         ELSE IF (OPTIO2.EQ.'DLSI_ELGA_DEPL') THEN
-            LPAIN(1) = 'PDEPLAR'
-            LPAOUT(1) = 'PDLAGSG'
-         ELSE IF (OPTIO2.EQ.'DESI_ELNO') THEN
-            LPAIN(1) = 'PDLAGSI'
-            LPAOUT(1) = 'PDESINO'
          ELSE IF (OPTIO2.EQ.'ENEL_ELGA' .OR.
      &            OPTIO2.EQ.'ENEL_ELNO') THEN
             LPAIN(1) = 'PDEPLAR'
@@ -398,11 +389,7 @@ C         DE DEPLACEMENT : 'NOMUTILI.C00.000000'
          IF (TYPESE.EQ.-1) THEN
 C         -- DERIVEE LAGRANGIENNE
             CALL AJCHCA('PDLAGDE',CHDESE,LPAIN,LCHIN,NBIN,MAXIN,'N')
-            IF (OPTION.EQ.'DLSI_ELGA_DEPL') THEN
-               CALL AJCHCA('PVARCMR',CHTESE,LPAIN,LCHIN,NBIN,MAXIN,'N')
-            ELSE
-               CALL AJCHCA('PDLAGTE',CHTESE,LPAIN,LCHIN,NBIN,MAXIN,'N')
-            ENDIF
+            CALL AJCHCA('PDLAGTE',CHTESE,LPAIN,LCHIN,NBIN,MAXIN,'N')
             CALL AJCHCA('PVECTTH',CHTHET,LPAIN,LCHIN,NBIN,MAXIN,'N')
 
          ELSE IF (TYPESE.EQ.3) THEN

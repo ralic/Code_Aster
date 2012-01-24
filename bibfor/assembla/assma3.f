@@ -8,9 +8,9 @@
      &                  LGTMP2,JVALM,ILINU,IDD,ELLAGR,EXIVF,JDESC,
      &                  JREPE,JPTVOI,JELVOI,CODVOI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 18/01/2011   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ASSEMBLA  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,7 +25,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE PELLET J.PELLET
+C RESPONSABLE PELLET
 C TOLE CRP_21
       IMPLICIT NONE
 C-----------------------------------------------------------------------
@@ -68,6 +68,10 @@ C-----------------------------------------------------------------------
       PARAMETER(NVOIMA=100,NSCOMA=4)
       INTEGER LIVOIS(1:NVOIMA),TYVOIS(1:NVOIMA),NBNOVO(1:NVOIMA)
       INTEGER NBSOCO(1:NVOIMA),LISOCO(1:NVOIMA,1:NSCOMA,1:2)
+      INTEGER NBI1MX,NBI1
+      PARAMETER (NBI1MX=27*27*10*10)
+      INTEGER TI1(NBI1MX)
+      INTEGER TI2(NBI1MX)
 C-----------------------------------------------------------------------
 C     FONCTIONS FORMULES :
 C-----------------------------------------------------------------------
@@ -91,6 +95,7 @@ C-----------------------------------------------------------------------
 C----------------------------------------------------------------------
 
       NBTERM=0
+      NBI1=0
 C     NUMA : NUMERO DE LA MAILLE
       NUMA=ZZLIEL(ILIMA,IGR,IEL)
 
@@ -317,12 +322,15 @@ C     -----------------------------------------------------------
             DO 70 I2=1,NDDL2
               IAD11=ZI(JNUEQ-1+IAD1+POSDD1(K1,I1)-1)
               IAD21=ZI(JNUEQ-1+IAD2+POSDD1(K2,I2)-1)
-              CALL ASRETM(LMASYM,JTMP2,LGTMP2,NBTERM,JSMHC,JSMDI,IAD11,
-     &                    IAD21)
+              NBI1=NBI1+1
+              TI1(NBI1)=IAD11
+              TI2(NBI1)=IAD21
    70       CONTINUE
    80     CONTINUE
    90   CONTINUE
   100 CONTINUE
+      CALL ASSERT(NBI1.LE.NBI1MX)
+      CALL ASRET2(LMASYM,JTMP2,LGTMP2,NBTERM,JSMHC,JSMDI,NBI1,TI1,TI2)
 
 
 C     -- SI LE RESUELEM EST 'VOISIN_VF', IL FAUT ENCORE ASSEMBLER LES

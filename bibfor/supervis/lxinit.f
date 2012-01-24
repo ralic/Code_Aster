@@ -2,9 +2,9 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 19/11/98   AUTEUR SABHHCM C.MASSERET 
+C MODIF SUPERVIS  DATE 24/01/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -119,12 +119,9 @@ C     INITIALISATION DE LA CLASSE 'DELIMITEUR'
       DO 40 I = 1 , NBDELI
          IF ( CLASS(ICHAR(CLDELI(I))) .EQ. KCLASS ) THEN
             CLASS(ICHAR(CLDELI(I))) = CHAR(MXCLAS+I)
-         ELSE
-            CALL LXERR(CLDELI(I),'DEJA DEFINI ET NON REDEFINI')
          ENDIF
   40  CONTINUE
 C
-C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C
       END

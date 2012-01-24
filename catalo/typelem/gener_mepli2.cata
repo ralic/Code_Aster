@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -168,9 +168,9 @@ OPTION__
                                      MVECTUR  PVECTUR
     INDIC_ENER          -1    IN__    OUT__    XXXXXX   XXXXXX
     INDIC_SEUIL         -1    IN__    OUT__    XXXXXX   XXXXXX
-    INIT_MAIL_VOIS      99    IN__   NGEOMER  PGEOMER
+    INIT_MAIL_VOIS      99    IN__  
                               OUT__  EVOISIN  PVOISIN
-    INIT_VARC           99    IN__   NGEOMER  PGEOMER
+    INIT_VARC           99    IN__  
                               OUT__  ZVARCPG  PVARCPR
     MASS_INER           -1    IN__    OUT__    XXXXXX   XXXXXX
     MASS_MECA           120   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC
@@ -184,7 +184,7 @@ OPTION__
                               OUT__  EDCEL_I  PDCEL_I
     PAS_COURANT         404   IN__   CMATERC  PMATERC  NGEOMER  PGEOMER
                               OUT__  ECOURAN  PCOURAN
-    QIRE_ELEM           378   IN__   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  EVOISIN  PVOISIN  CMATERC  PMATERC
+    QIRE_ELEM           378   IN__   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  EVOISIN  PVOISIN 
                                      CREFERI  PFORCEP  CREFERI  PFORCED  CREFERI  PPRESSP  CREFERI  PPRESSD
                                      CPESANR  PPESANRP CPESANR  PPESANRD CROTATR  PROTATRP CROTATR  PROTATRD
                                      EFORCER  PFRVOLUP EFORCER  PFRVOLUD CFORCEF  PFFVOLUD CFORCEF  PFFVOLUP
@@ -215,13 +215,13 @@ OPTION__
                               OUT__  ESIGMPG  PSIGMR   ESIGMPC  PSIGMC
     SIGM_ELNO           4     IN__   ESIGMPG  PCONTRR
                               OUT__  ESIGMNO  PSIEFNOR ESIGMNC  PSIEFNOC
-    SING_ELEM           99    IN__   NGEOMER  PGEOMER
+    SING_ELEM           99    IN__  
                               OUT__  ESINGUL  PSING_R
-    SING_ELNO           99    IN__   ESINGUL  PSING_R
+    SING_ELNO           99    IN__  
                               OUT__  ESINGNO  PSINGNO
-    TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
+    TOU_INI_ELGA        99    IN__  
                               OUT__  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R  EGNEUT_R PNEUT_R EGNEUT_F PNEUT_F
-    TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER
+    TOU_INI_ELNO        99    IN__  
                               OUT__  ECONTNO  PSIEF_R  ENEUR10  PNEUT_R  ENNEUT_F PNEUT_F
     VARI_ELNO           4     IN__   ZVARIPG  PVARIGR
                               OUT__  ZVARINO  PVARINR

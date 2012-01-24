@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -119,7 +119,6 @@ OPTION__
                               OUT__  MVECTDR  PVECTUR
     CARA_GEOM           285   IN__   NGEOMER  PGEOMER
                               OUT__  ECARAGE  PCARAGE
-    CHAR_DLAG_MECAST    -1    IN__    OUT__    XXXXXX   XXXXXX
     CHAR_LIMITE         -1    IN__    OUT__    XXXXXX   XXXXXX
     CHAR_MECA_EPSA_R    421   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPSR  PTEMPSR
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
@@ -149,13 +148,6 @@ OPTION__
                               OUT__  MVECTDR  PVECTUR
     COOR_ELGA           479   IN__   NGEOMER  PGEOMER
                               OUT__  EGGEOP_R PCOORPG
-    DEDE_ELNO           557   IN__   NDEPLAR  PDEPLAR  NDEPLAR  PDLAGDE  NGEOMER  PGEOMER  NDEPLAR  PVECTTH
-                              OUT__  EDEULNO  PDEDENO
-    DESI_ELNO           559   IN__   ECONTNO  PCONTRR  ECONTPG  PDLAGSI  NGEOMER  PGEOMER  NDEPLAR  PVECTTH
-                              OUT__  ECONTNO  PDESINO
-    DLSI_ELGA_DEPL      558   IN__   NDEPLAR  PDEPLAR  NDEPLAR  PDLAGDE  ZVARCPG  PVARCPR  NGEOMER  PGEOMER
-                                     CMATERC  PMATERC  CTEMPSR  PTEMPSR  NDEPLAR  PVECTTH
-                              OUT__  ECONTPG  PDLAGSG
     ECIN_ELEM           -1    IN__    OUT__    XXXXXX   XXXXXX
     ENEL_ELGA           575   IN__   CCAMASS  PCAMASS  ECONTPG  PCONTRR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR
@@ -224,22 +216,18 @@ OPTION__
                                      DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
                                      CMATERC  PMATERC
                                      ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ZVARIPG  PVARIMP
-                                     ZVARIPG  PVARIMR  CITERAT  PITERAT
+                                     ZVARIPG  PVARIMR 
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUNS  PMATUNS  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
-    GRAD_ELGA_THETA     384   IN__   NGEOMER  PGEOMER  NDEPLAR  PTHETAR
-                              OUT__  EGRDUPG  PGRADUR
-    GTHE_ELNO_ELGA      384   IN__   NGEOMER  PGEOMER  NDEPLAR  PTHETAR
-                              OUT__  EGRDUNO  PGRADUR
     INDIC_ENER          490   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTPR  NDEPLAR  PDEPLR   NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ZVARIPG  PVARIPR
                               OUT__  EENEDNO  PENERD1  EENEDNO  PENERD2
     INDIC_SEUIL         490   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTPR  NDEPLAR  PDEPLR   NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ZVARIPG  PVARIPR
                               OUT__  EENEDNO  PENERD1  EENEDNO  PENERD2
-    INIT_MAIL_VOIS      99    IN__   NGEOMER  PGEOMER
+    INIT_MAIL_VOIS      99    IN__  
                               OUT__  EVOISIN  PVOISIN
-    INIT_VARC           99    IN__   NGEOMER  PGEOMER
+    INIT_VARC           99    IN__  
                               OUT__  ZVARCPG  PVARCPR
     MASS_INER           -1    IN__    OUT__    XXXXXX   XXXXXX
     MASS_MECA           -1    IN__    OUT__    XXXXXX   XXXXXX
@@ -254,7 +242,7 @@ OPTION__
     NORME_L2            -1    IN__    OUT__    XXXXXX   XXXXXX
     PAS_COURANT         405   IN__   CMATERC  PMATERC  NGEOMER  PGEOMER
                               OUT__  ECOURAN  PCOURAN
-    PILO_PRED_DEFO      543   IN__   CBORNPI  PBORNPI  CCDTAU   PCDTAU   CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
+    PILO_PRED_DEFO      543   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
                                      NDEPLAR  PDDEPLR  NDEPLAR  PDEPL0R  NDEPLAR  PDEPL1R  NDEPLAR  PDEPLMR
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  CTYPEPI  PTYPEPI  ZVARIPG  PVARIMR
                               OUT__  ECOPILO  PCOPILO
@@ -274,7 +262,7 @@ OPTION__
                                      DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
                                      CMATERC  PMATERC
                                      ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ZVARIPG  PVARIMR
-                                     CITERAT  PITERAT
+                                    
                               OUT__  MMATUNS  PMATUNS
     RIGI_MECA_GE        -1    IN__    OUT__    XXXXXX   XXXXXX
     RIGI_MECA_HYST      -1    IN__    OUT__    XXXXXX   XXXXXX
@@ -298,10 +286,10 @@ OPTION__
     SIGM_ELNO_SENS      -1    IN__    OUT__    XXXXXX   XXXXXX
     SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM
                               OUT__  MMATUUR  PSYM
-    TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
+    TOU_INI_ELGA        99    IN__  
                               OUT__  EDOMGGA  PDOMMAG  EGGEOM_R PGEOM_R  EGINST_R PINST_R  EGNEUT_F PNEUT_F
                                      EGNEUT_R PNEUT_R  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R
-    TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER
+    TOU_INI_ELNO        99    IN__  
                               OUT__  EDOMGNO  PDOMMAG  EDEFONO  PEPSI_R  ENGEOM_R PGEOM_R  ENINST_R PINST_R
                                      ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R  ECONTNO  PSIEF_R  ZVARINO  PVARI_R
     VARI_ELNO           4     IN__   ZVARIPG  PVARIGR

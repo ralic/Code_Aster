@@ -1,12 +1,13 @@
       SUBROUTINE ASRETM(LMASYM,JTMP2,LGTMP2,NBTERM,JSMHC,JSMDI,I1,I2)
       IMPLICIT NONE
       LOGICAL LMASYM
-      INTEGER           JTMP2,LGTMP2,NBTERM,JSMHC,JSMDI,I1,I2
+      INTEGER  JTMP2,LGTMP2,NBTERM,JSMHC,JSMDI,I1,I2
+      INTEGER  IDEB,IFIN,IMIL
 C -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 29/03/2010   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ASSEMBLA  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -56,14 +57,43 @@ C -----------------------------------------------------------------
       END IF
       NCOEFC = ZI(JSMDI+JCO-1) - ICOEFC
 
+
+C     -- CALCUL DE ICOEFL :
+C     ------------------------------------------
       ICOEFL = 0
-      DO 10 I = 1,NCOEFC
-         IF (ZI4(JSMHC-1+ICOEFC+I).EQ.ILI) THEN
-            ICOEFL = I
-            GOTO 20
-         END IF
-10    CONTINUE
+      IF (.FALSE.) THEN
+C     -- RECHERCHE BESTIALE :
+        DO 10 I = 1,NCOEFC
+           IF (ZI4(JSMHC-1+ICOEFC+I).EQ.ILI) THEN
+              ICOEFL = I
+              GOTO 20
+           END IF
+10      CONTINUE
+
+      ELSE
+C       -- RECHERCHE PAR DICHOTOMIE :
+        IDEB=1
+        IFIN=NCOEFC
+11      CONTINUE
+        IF (IFIN-IDEB.LT.5) THEN
+          DO 12 I = IDEB,IFIN
+             IF (ZI4(JSMHC-1+ICOEFC+I).EQ.ILI) THEN
+                ICOEFL = I
+                GOTO 20
+             END IF
+12        CONTINUE
+        ENDIF
+        IMIL=(IDEB+IFIN)/2
+        IF (ZI4(JSMHC-1+ICOEFC+IMIL).GT.ILI) THEN
+          IFIN=IMIL
+        ELSE
+          IDEB=IMIL
+        ENDIF
+        GOTO 11
+      ENDIF
       IF (ICOEFL.EQ.0 )  CALL U2MESS('F','MODELISA_67')
+
+
 20    CONTINUE
 
 C     -- NBTERM COMPTE LES REELS TRAITES:

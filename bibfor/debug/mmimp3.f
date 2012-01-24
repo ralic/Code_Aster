@@ -1,37 +1,37 @@
       SUBROUTINE MMIMP3(IFM   ,NOMA  ,IPTC  ,JVALV ,JTABF )
-C      
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF DEBUG  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF DEBUG  DATE 23/01/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
-      INTEGER      IFM                  
+      INTEGER      IFM
       CHARACTER*8  NOMA
       INTEGER      IPTC
       INTEGER      JVALV,JTABF
-C      
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE CONTACT (METHODE CONTINUE - UTILITAIRE - IMPRESSIONS)
 C
-C AFFICHAGE DE LA CARTE DES ELEMENTS DE CONTACT 
-C      
+C AFFICHAGE DE LA CARTE DES ELEMENTS DE CONTACT
+C
 C ----------------------------------------------------------------------
 C
 C
@@ -61,80 +61,64 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER      CFMMVD,ZTABF  
+      INTEGER      CFMMVD,ZTABF
       INTEGER      NUMMAE,NUMMAM
-      CHARACTER*8  NOMESC,NOMMAI     
+      CHARACTER*8  NOMESC,NOMMAI
       REAL*8       LAMBDA
       REAL*8       COEFAC,COEFAF
-      REAL*8       DELTAT,BETA,GAMMA,THETA
-      REAL*8       ASPERI,COEASP,CN,JEUSUP
-      INTEGER      IFORM,ICOMPL    
+      REAL*8       DELTAT,THETA
+      REAL*8       JEUSUP
+      INTEGER      IFORM
 C
 C ----------------------------------------------------------------------
 C
-      CALL JEMARQ()     
+      CALL JEMARQ()
 C
-      ZTABF  = CFMMVD('ZTABF')          
-C                
+      ZTABF  = CFMMVD('ZTABF')
+C
       LAMBDA = ZR(JVALV-1+13)
       COEFAC = ZR(JVALV-1+16)
       COEFAF = ZR(JVALV-1+19)
-      IFORM  = NINT(ZR(JVALV-1+32))
-      ICOMPL = NINT(ZR(JVALV-1+21))  
-      ASPERI = ZR(JVALV-1+22) 
-      COEASP = ZR(JVALV-1+24)   
-      CN     = ZR(JVALV-1+23)
-      DELTAT = ZR(JVALV-1+33)         
-      BETA   = ZR(JVALV-1+34)
-      GAMMA  = ZR(JVALV-1+35)
-      THETA  = ZR(JVALV-1+36)      
-      JEUSUP = ZR(JVALV-1+14)                     
+      IFORM  = NINT(ZR(JVALV-1+27))
+      DELTAT = ZR(JVALV-1+28)
+      THETA  = ZR(JVALV-1+29)
+      JEUSUP = ZR(JVALV-1+14)
 C
-C --- ACCES A L'ELEMENT EN COURS            
-C 
+C --- ACCES A L'ELEMENT EN COURS
+C
       NUMMAE  = NINT(ZR(JTABF+ZTABF*(IPTC-1)+1))
-      CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMMAE),NOMESC) 
+      CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMMAE),NOMESC)
       NUMMAM  = NINT(ZR(JTABF+ZTABF*(IPTC-1)+2))
-      CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMMAM),NOMMAI)         
+      CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMMAM),NOMMAI)
       WRITE(IFM,1000) IPTC,NOMESC,NOMMAI
 C
 C --- POINT DE CONTACT EN COURS
-C             
-      WRITE(IFM,1001)   
+C
+      WRITE(IFM,1001)
       WRITE(IFM,1002) LAMBDA,COEFAC,COEFAF,JEUSUP
       IF (IFORM.EQ.2) THEN
-        WRITE(IFM,1003) DELTAT,THETA  
+        WRITE(IFM,1003) DELTAT,THETA
       ELSE
-        WRITE(IFM,1004) DELTAT,BETA,GAMMA                         
-      ENDIF    
-      IF (ICOMPL.EQ.1) THEN
-        WRITE(IFM,1005) ASPERI,COEASP,CN              
-      ENDIF           
+        WRITE(IFM,1004) DELTAT
+      ENDIF
 C
 C --- FORMATS AFFICHAGE
 C
  1000 FORMAT (' <CONTACT>     * LA MAILLE DE CONTACT ',I5,
-     &        '(',A8,'/',A8,')')    
- 1001 FORMAT (' <CONTACT>        A POUR PROPRIETES') 
-  
+     &        '(',A8,'/',A8,')')
+ 1001 FORMAT (' <CONTACT>        A POUR PROPRIETES')
+
  1002 FORMAT (' <CONTACT>          - LAMBDA         : ',E10.3,
      &        ' - COEF_AUGM_CONT :  ',E10.3,
-     &        ' - COEF_AUGM_FROT :  ',E10.3,          
-     &        ' - JEU SUPP.      :  ',E10.3) 
-     
+     &        ' - COEF_AUGM_FROT :  ',E10.3,
+     &        ' - JEU SUPP.      :  ',E10.3)
+
  1003 FORMAT (' <CONTACT>          AVEC FORMULATION EN VITESSE  ',
      &        ' - INC. DE TEMPS  :  ',E10.3,
-     &        ' - TEHTA          :  ',E10.3) 
+     &        ' - TEHTA          :  ',E10.3)
  1004 FORMAT (' <CONTACT>          AVEC FORMULATION EN DEPLACEMENT  ',
-     &        ' - INC. DE TEMPS  :  ',E10.3, 
-     &        ' - NEWMARK BETA   :  ',E10.3,
-     &        ' - NEWMARK GAMMA  :  ',E10.3)  
- 1005 FORMAT (' <CONTACT>          AVEC PRISE EN COMPTE DE LA '//
-     &        'COMPLIANCE',
-     &        ' - ASPERITE       :  ',E10.3,
-     &        ' - E_N            :  ',E10.3,
-     &        ' - E_V            :  ',E10.3)           
-C    
+     &        ' - INC. DE TEMPS  :  ',E10.3)
+C
       CALL JEDEMA()
 C
       END

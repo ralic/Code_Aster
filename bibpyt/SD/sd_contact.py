@@ -1,8 +1,8 @@
-#@ MODIF sd_contact SD  DATE 12/12/2011   AUTEUR DESOZA T.DESOZA 
+#@ MODIF sd_contact SD  DATE 23/01/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -41,7 +41,7 @@ class sd_contact(AsBase):
     ztypm = 2
     zmaes = 6
     zcmdf = 6
-    zcmcf = 29
+    zcmcf = 18
     zexcl = 3
     zcmxf = 18
     zmesx = 5

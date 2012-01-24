@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -160,11 +160,11 @@ OPTION__
     CFL_XFEM            118   IN__   NGEOMER  PGEOMER
                               OUT__  E1NEUTR  PLONCAR
     CHAR_LIMITE         -1    IN__    OUT__    XXXXXX   XXXXXX
-    INIT_VARC           99    IN__   NGEOMER  PGEOMER
+    INIT_VARC           99    IN__  
                               OUT__  ZVARCPG  PVARCPR
-    CHAR_MECA_FF2D2D    440   IN__   CFORCEF  PFF2D2D  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  STANO_I  PSTANO
-                                     E6NEUTR  PPINTTO  E18NEUI  PCNSETO  E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA
-                                     N1NEUT_R PLSN     N1NEUT_R PLST
+    CHAR_MECA_FF2D2D    440   IN__   CFORCEF  PFF2D2D  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR 
+                                    
+                                    
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_FR2D2D    440   IN__   NFORCER  PFR2D2D  NGEOMER  PGEOMER  STANO_I  PSTANO
                                      E6NEUTR  PPINTTO  E18NEUI  PCNSETO  E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA
@@ -210,7 +210,7 @@ OPTION__
                                      N1NEUT_R PLST
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUNS  PMATUNS  MMATUUR  PMATUUR
                                      ZVARIPG  PVARIPR  MVECTUR  PVECTUR
-    GEOM_FAC            519   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPLA   E4NEUTR  PPINTER  E3NEUTI  PLONCHA
+    GEOM_FAC            519   IN__   DDL_MECA PDEPLA   E4NEUTR  PPINTER  E3NEUTI  PLONCHA
                                      E4NEUTR  PGESCLO  N1NEUT_R PLST     E1NEUTK  NOMFIS
                               OUT__  E4NEUTR  PNEWGES  E4NEUTR  PNEWGEM  E8NEUTR  PBASESC  E8NEUTR  PBASMAI
     GRAD_NEUT_R         24    IN__   NGEOMER  PGEOMER  N1NEUT_R PNEUTER
@@ -231,9 +231,9 @@ OPTION__
                                      E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN
                                      N1NEUT_R PLST     STANO_I  PSTANO
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
-    REFE_FORC_NODA      542   IN__   NGEOMER  PGEOMER  EREFCO   PREFCO   E6NEUTR  PPINTTO  E18NEUI  PCNSETO
-                                     E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN
-                                     N1NEUT_R PLST
+    REFE_FORC_NODA      542   IN__   NGEOMER  PGEOMER  EREFCO   PREFCO  
+                                    
+                                    
                               OUT__  MVECTUR  PVECTUR
     RICE_TRACEY         -1    IN__    OUT__    XXXXXX   XXXXXX
     RIGI_CONT           533   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  E1NEUTI  PINDCOI
@@ -267,13 +267,13 @@ OPTION__
     TOPOSE              514   IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET
                               OUT__  E6NEUTR  PPINTTO  E18NEUI  PCNSETO  E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA
                                      E10NEUTR PAINTER
-    TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
+    TOU_INI_ELGA        99    IN__  
                               OUT__  EDOMGGA  PDOMMAG  EGGEOM_R PGEOM_R  EGINST_R PINST_R  EGNEUT_F PNEUT_F
                                      EGNEUT_R PNEUT_R  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R
     VERI_JACOBIEN       328   IN__   NGEOMER  PGEOMER
                               OUT__  ECODRET  PCODRET
     WEIBULL             -1    IN__    OUT__    XXXXXX   XXXXXX
-    XCVBCA              532   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  E1NEUTI  PINDCOI
+    XCVBCA              532   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPL_P  E1NEUTI  PINDCOI
                                      N1NEUT_R PLST     E4NEUTR  PPINTER  E10NEUTR PAINTER  E3NEUTI  PCFACE
                                      E3NEUTI  PLONCHA  CONTX_R  PDONCO   E1NEUTI  PGLISS   E1NEUTI  PMEMCON
                                      E8NEUTR PBASECO

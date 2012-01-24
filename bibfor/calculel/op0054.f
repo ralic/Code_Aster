@@ -2,9 +2,9 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 10/10/2011   AUTEUR MACOCCO K.MACOCCO 
+C MODIF CALCULEL  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,13 +44,11 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       INTEGER       NBV, NBR8, NBNO, NOCC2D, NOCC3D, IADRT1
       INTEGER       IADRNO, IMPR, IADRCO, IADRMA, IADRT2, IADRT3,
-     &              IADRT4, IADRT5, ICODE, NOCCTB, IFIC, N1
+     &              IADRT4, IADRT5, ICODE, IFIC, N1
       REAL*8        R8B, DIR(3), RINF, RSUP, ABSC
       LOGICAL       LDIREC, ULEXIS
-      CHARACTER*3   OUINON
       CHARACTER*8   K8B, NOMA, MODELE, FOND, RESU, NOEUD, FORMAT
       CHARACTER*16  TYPE, OPER, FICHIE,VALK(2)
-      CHARACTER*19  OPTION
       CHARACTER*24  TRAV1, TRAV2, TRAV3, TRAV4, STOK4
       CHARACTER*24  OBJ1, NOMNO, COORN, OBJ2
       CHARACTER*24  THETA, GDTETA
@@ -60,21 +58,15 @@ C
       CALL JEMARQ()
       CALL INFMAJ()
 C
-      OPTION = ' '
       LDIREC = .FALSE.
 
 C
       CALL GETRES ( RESU, TYPE, OPER )
 C
-      CALL GETVTX (' ', 'OPTION', 0,IARG, 1, OPTION, NBV )
-C
       CALL GETVID (' ', 'MODELE', 0,IARG, 1, MODELE, NBV )
-C
-      CALL GETVTX (' ', 'GRAD_NOEU_THETA', 0,IARG, 1, OUINON, NBV )
 C
       CALL GETFAC ( 'THETA_3D' , NOCC3D )
       CALL GETFAC ( 'THETA_2D' , NOCC2D )
-      CALL GETFAC ( 'THETA_BANDE' , NOCCTB )
       CALL GETFAC ( 'IMPRESSION' , IMPR )
 C
       IF ( IMPR .NE. 0 ) THEN
@@ -156,15 +148,8 @@ C
 C
 C        --- CALCUL SUIVANT LA METHODE CHOISIE ---
 C
-         IF ( OPTION .EQ. 'COURONNE' ) THEN
-C
-            CALL GCOURO ( 'G', THETA, NOMA, NOMNO,COORN,NBNO,TRAV1,
-     &                   TRAV2,TRAV3,DIR,ZK8(IADRNO),FOND,LDIREC,STOK4)
-C
-         ELSE
-C
-            CALL U2MESS('F','RUPTURE1_31')
-         ENDIF
+         CALL GCOURO ('G', THETA, NOMA, NOMNO,COORN,NBNO,TRAV1,
+     &                TRAV2,TRAV3,DIR,ZK8(IADRNO),FOND,LDIREC,STOK4)
 C
 C        --- IMPRESSION DES OBJETS DECRIVANT LE CHAMP THETA ---
 C
@@ -174,7 +159,7 @@ C
             CALL JEVEUO ( TRAV3, 'L', IADRT3 )
             CALL JEVEUO ( TRAV4, 'L', IADRT4 )
             CALL JEVEUO ( STOK4, 'L', IADRT5 )
-            CALL GIMPTE ( THETA(1:8), OPTION, ZR(IADRT1), ZR(IADRT2),
+            CALL GIMPTE ( THETA(1:8), ZR(IADRT1), ZR(IADRT2),
      &               ZR(IADRT3), ZK8(IADRNO), ZR(IADRT5), ZR(IADRT4),
      &               NBNO, FORMAT, IFIC )
          ENDIF
@@ -202,70 +187,19 @@ C
             CALL U2MESS('F','RUPTURE0_81')
          ENDIF
 C
-         CALL GVER2D ( NOMA, NOCC2D, OPTION, 'THETA_2D',NOMNO,
+         CALL GVER2D ( NOMA, NOCC2D, 'THETA_2D',NOMNO,
      &                 NOEUD, RINF, RSUP, MODULE )
 C
 C        --- CALCUL SUIVANT LA METHODE CHOISIE ---
 C
-         IF ( OPTION .EQ. 'COURONNE' ) THEN
+         CALL GCOU2D ('G',THETA, NOMA, NOMNO, NOEUD, ZR(IADRCO),
+     &                RINF, RSUP, MODULE, LDIREC,DIR )
 C
-            CALL GCOU2D ( 'G',THETA, NOMA, NOMNO, NOEUD, ZR(IADRCO),
-     &                   RINF, RSUP, MODULE, LDIREC,DIR )
-C
-         ELSE
-C
-            CALL U2MESS('F','RUPTURE1_31')
-         ENDIF
-C
-      ENDIF
-C
-C     ==================================================================
-C                          T H E T A _ B A N D E
-C     ==================================================================
-C
-C
-      IF ( NOCCTB .NE. 0 ) THEN
-C
-         CALL GVER2D ( NOMA, NOCCTB, OPTION, 'THETA_BANDE', NOMNO,
-     &                 NOEUD, RINF,  RSUP, MODULE )
-C
-C        --- CALCUL SUIVANT LA METHODE CHOISIE ---
-C
-         IF ( OPTION .EQ. 'BANDE' ) THEN
-C
-            CALL GBAN2D ( THETA, NOMA, ZR(IADRCO), RINF, RSUP, MODULE)
-C
-         ELSE
-C
-            CALL U2MESS('F','RUPTURE1_32')
-         ENDIF
-C
-C        --- IMPRESSION DES OBJETS DECRIVANT LES CHAMPS THETA ---
-C
-         IF ( IMPR .NE. 0 ) THEN
-            NBNO = 1
-            ABSC = 0.D0
-            CALL GIMPTE ( THETA(1:8), OPTION, RINF, RSUP, MODULE,
-     &                    NOEUD, DIR, ABSC, NBNO, FORMAT, IFIC )
-         ENDIF
-C
-      ENDIF
-C
-C --- CALCUL DU CHAMNO DES GRADIENTS DE THETA :
-C     ---------------------------------------
-      IF (OUINON.EQ.'OUI') THEN
-        CALL GGDTET ( GDTETA, THETA, MODELE)
       ENDIF
 C
 C --- AFFECTATION DU CHAMNO THETA A LA S.D. RESU DE TYPE THETA_GEOM :
 C     -------------------------------------------------------------
       CALL RSNOCH( RESU, 'THETA', 0, THETA)
-C
-C --- AFFECTATION DU CHAMNO GRAD_THETA A LA SD. RESU DE TYPE THETA_GEOM:
-C     -----------------------------------------------------------------
-      IF (OUINON.EQ.'OUI') THEN
-        CALL RSNOCH( RESU, 'GRAD_NOEU_THETA', 0, GDTETA)
-      ENDIF
 C
       CALL JEDEMA()
       END

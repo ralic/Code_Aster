@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -189,11 +189,11 @@ OPTION__
     CHAR_LIMITE         -1    IN__    OUT__    XXXXXX   XXXXXX
     CHAR_MECA_PESA_R    441   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR  STANO_I  PSTANO
                                      E36NEUTR PPINTTO  E54NEUI  PCNSETO  E18NEUI  PHEAVTO  E9NEUTI  PLONCHA
-                                     N1NEUT_R PLSN     N1NEUT_R PLST     E22NEUTR PPMILTO  FISNO_I  PFISNO
+                                     N1NEUT_R PLSN     N1NEUT_R PLST     E22NEUTR PPMILTO 
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_ROTA_R    441   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CROTATR  PROTATR  STANO_I  PSTANO
                                      E36NEUTR PPINTTO  E54NEUI  PCNSETO  E18NEUI  PHEAVTO  E9NEUTI  PLONCHA
-                                     N1NEUT_R PLSN     N1NEUT_R PLST     E22NEUTR PPMILTO  FISNO_I  PFISNO
+                                     N1NEUT_R PLSN     N1NEUT_R PLST     E22NEUTR PPMILTO 
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_TEMP_R    99    IN__   CCAMASS  PCAMASS  CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
@@ -229,9 +229,9 @@ OPTION__
                               OUT__  N2NEUT_R PGNEUTR
     INDIC_ENER          -1    IN__    OUT__    XXXXXX   XXXXXX
     INDIC_SEUIL         -1    IN__    OUT__    XXXXXX   XXXXXX
-    INIT_MAIL_VOIS      99    IN__   NGEOMER  PGEOMER
+    INIT_MAIL_VOIS      99    IN__  
                               OUT__  EVOISIN  PVOISIN
-    INIT_VARC           99    IN__   NGEOMER  PGEOMER
+    INIT_VARC           99    IN__  
                               OUT__  ZVARCPG  PVARCPR
     MASS_INER           -1    IN__    OUT__    XXXXXX   XXXXXX
     MOY_NOEU_S          118   IN__   N1NEUT_R PNEUTR
@@ -245,7 +245,7 @@ OPTION__
                                      ZVARCPG  PVARCRR  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
                                      ZVARIPG  PVARIMP  ZVARIPG  PVARIMR  E36NEUTR PPINTTO  E54NEUI  PCNSETO
                                      E18NEUI  PHEAVTO  E9NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN
-                                     N1NEUT_R PLST     STANO_I  PSTANO   E22NEUTR PPMILTO  FISNO_I  PFISNO
+                                     N1NEUT_R PLST     STANO_I  PSTANO   E22NEUTR PPMILTO 
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     REFE_FORC_NODA      -1    IN__    OUT__    XXXXXX   XXXXXX
     RICE_TRACEY         -1    IN__    OUT__    XXXXXX   XXXXXX
@@ -284,7 +284,7 @@ OPTION__
     TOPOSE              514   IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET  N2NEUT_R PGRADLN  FISCO_I PFISCO
                               OUT__  E36NEUTR PPINTTO  E54NEUI  PCNSETO  E18NEUI  PHEAVTO  E9NEUTI  PLONCHA
                                      E15NEUTR PAINTER  E22NEUTR PPMILTO
-    TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
+    TOU_INI_ELGA        99    IN__  
                               OUT__  EDOMGGA  PDOMMAG  EGGEOM_R PGEOM_R  EGINST_R PINST_R  EGNEUT_F PNEUT_F
                                      EGNEUT_R PNEUT_R  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R
     VERI_JACOBIEN       328   IN__   NGEOMER  PGEOMER

@@ -1,9 +1,9 @@
-#@ MODIF lecture Lecture_Cata_Ele  DATE 05/10/2010   AUTEUR SELLENET N.SELLENET 
+#@ MODIF lecture Lecture_Cata_Ele  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,10 +47,6 @@ def lire_cata(nomfic,format='cata'):
                 t0=scan(fcata)
                 fcata.close()
                 t1=parse(t0)
-                ast2=creer_capy(t1)
-                capy=ast2.ast
-                del ast2
-                detruire_kids(capy)
             except :
                 fcata = open(nomfic,"r")
                 print 80*'/'
@@ -58,9 +54,13 @@ def lire_cata(nomfic,format='cata'):
                 print "Impression du morceau (avec ses numéros de lignes):"
                 ilig=0
                 for line in fcata :
-                    ilig=ilig+1; print "%i %s" % (ilig,line)
+                    ilig=ilig+1; print "%i %s" % (ilig,line[:-1])
                 print 80*'/'
-                raise "Erreur_Fatale"
+                raise RuntimeError, "Erreur_Fatale"
+            ast2=creer_capy(t1)
+            capy=ast2.ast
+            del ast2
+            detruire_kids(capy)
         else :
             raise "Erreur_Fatale","format inconnu: "+format
         return capy
@@ -230,8 +230,10 @@ class MonParser(GenericASTBuilder):
         cata        ::=  cata_tm
         cata        ::=  cata_gd
         cata        ::=  cata_ph
-        cata_op     ::=  cmodif ident  OPTION__  IN__      l_opin1    OUT__      l_opou1
-        cata_op     ::=  cmodif ident  comlibr   OPTION__  IN__       l_opin1    OUT__     l_opou1
+        cata_op     ::=  cmodif ident            OPTION__  IN__                 OUT__     l_opou1
+        cata_op     ::=  cmodif ident  comlibr   OPTION__  IN__                 OUT__     l_opou1
+        cata_op     ::=  cmodif ident            OPTION__  IN__      l_opin1    OUT__     l_opou1
+        cata_op     ::=  cmodif ident  comlibr   OPTION__  IN__      l_opin1    OUT__     l_opou1
         cata_tm     ::=  cmodif TYPE_MAILLE__ l_tyma
         cata_gd     ::=  cmodif GRANDEUR_SIMPLE__  l_gdsimp GRANDEUR_ELEMENTAIRE__  l_gdelem
         cata_tg     ::=  cmodif ident TYPE_GENE__  l_entete  modes_locaux options
@@ -787,11 +789,18 @@ class creer_capy(GenericASTTraversal):
 
     def n_cata_op(self, node):
 #                        0      1      2         3         4          5          6         7
-#       cata_op     ::=  cmodif ident  OPTION__  IN__      l_opin1    OUT__      l_opou1
-#       cata_op     ::=  cmodif ident  comlibr   OPTION__  IN__       l_opin1    OUT__     l_opou1
+#       cata_op     ::=  cmodif ident            OPTION__  IN__                 OUT__     l_opou1     #6
+#       cata_op     ::=  cmodif ident  comlibr   OPTION__  IN__                 OUT__     l_opou1     #7
+#       cata_op     ::=  cmodif ident            OPTION__  IN__      l_opin1    OUT__     l_opou1     #7
+#       cata_op     ::=  cmodif ident  comlibr   OPTION__  IN__      l_opin1    OUT__     l_opou1     #8
         node.cmodif=node[0].attr
-        if len(node) == 7 :
-           node.cata_op=(node[1].attr,node[4].l_opin1,node[6].l_opou1,None)
+        if len(node) == 6 :
+           node.cata_op=(node[1].attr,[],node[5].l_opou1,None)
+        elif len(node) == 7 :
+           if node[4].type=="IN__" :
+              node.cata_op=(node[1].attr,[],node[6].l_opou1,node[2].attr)
+           else :
+              node.cata_op=(node[1].attr,node[4].l_opin1,node[6].l_opou1,None)
         elif len(node) == 8 :
            node.cata_op=(node[1].attr,node[5].l_opin1,node[7].l_opou1,node[2].attr)
 

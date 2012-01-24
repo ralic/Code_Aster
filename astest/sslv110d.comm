@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 # sslv110d.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -129,7 +129,7 @@ CHPESA=AFFE_CHAR_MECA(      MODELE=MO,
 #                           COURONNE 1
 #----------------------------------------------------------------------
 
-THETA0=CALC_THETA(   OPTION='COURONNE',   MODELE=MO,  FOND_FISS=FISS1,
+THETA0=CALC_THETA(   MODELE=MO,  FOND_FISS=FISS1,
                         THETA_3D=_F(  TOUT = 'OUI',  MODULE_FO = MODUF,
                                    R_INF_FO = RINF0,  R_SUP_FO = RSUP0)
                                  )
@@ -149,7 +149,7 @@ GLOC0=CALC_G( RESULTAT=RESU,NUME_ORDRE=1,
 #                           COURONNE 2
 #----------------------------------------------------------------------
 
-THETA1=CALC_THETA(   OPTION='COURONNE',   MODELE=MO,  FOND_FISS=FISS1,
+THETA1=CALC_THETA(   MODELE=MO,  FOND_FISS=FISS1,
                         THETA_3D=_F(  TOUT = 'OUI',  MODULE_FO = MODUF,
                                    R_INF_FO = RINF1,  R_SUP_FO = RSUP1)
                                  )
@@ -169,7 +169,7 @@ GLOC1=CALC_G( RESULTAT=RESU,NUME_ORDRE=1,
 #                           COURONNE 3
 #----------------------------------------------------------------------
 
-THETA2=CALC_THETA(   OPTION='COURONNE',   MODELE=MO,  FOND_FISS=FISS1,
+THETA2=CALC_THETA(   MODELE=MO,  FOND_FISS=FISS1,
                         THETA_3D=_F(  TOUT = 'OUI',  MODULE_FO = MODUF,
                                    R_INF_FO = RINF2,  R_SUP_FO = RSUP2)
                                  )

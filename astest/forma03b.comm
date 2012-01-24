@@ -1,10 +1,10 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
-# RESPONSABLE PROIX J.M.PROIX
-# TITRE ENONCE TP2 FORMATION THERMOPLASTICITE PLAQUE TROUEE EN TRACTION
+# MODIF  DATE 23/01/2012   AUTEUR ABBAS M.ABBAS 
+# RESPONSABLE ABBAS M.ABBAS
+# TITRE ENONCE FORMATION PLAQUE TROUEE EN TRACTION EN PLASTICITE
 # forma03b.para = tps_job 110 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -24,16 +24,18 @@ DEBUT(CODE=_F(NOM='FORMA03B',
               NIV_PUB_WEB='INTERNET',
               VISU_EFICAS='OUI',),);
 
-M=LIRE_MAILLAGE(FORMAT='MED',
-                VERI_MAIL=_F(),);
+# LECTURE DU MAILLAGE
+MAIL=LIRE_MAILLAGE(FORMAT='MED',);
 
-# PLAQUE TROUEE : CONTRAINTES PLANES
-
-MO=AFFE_MODELE(MAILLAGE=M,
-               VERIF='MAILLE',
-               AFFE=_F(TOUT='OUI',
-                       PHENOMENE='MECANIQUE',
-                       MODELISATION='C_PLAN',),);
+MAIL=MODI_MAILLAGE(reuse =MAIL,
+                   MAILLAGE=MAIL,
+                   ORIE_PEAU_2D=_F(GROUP_MA='haut',),);
+                   
+# AFFECTATION DU MODELE (CONTRAINTES PLANES)
+MODE=AFFE_MODELE(MAILLAGE=MAIL,
+                 AFFE=_F(TOUT='OUI',
+                         PHENOMENE='MECANIQUE',
+                         MODELISATION='C_PLAN',),);
 
 # COURBE DE TRACTION
 CTRAC = LIRE_FONCTION(UNITE=21,
@@ -46,313 +48,357 @@ IMPR_FONCTION(FORMAT='XMGRACE',
               TITRE='Courbe de traction',
               LEGENDE_X='Deformation',
               LEGENDE_Y='Contrainte (MPa)',);
-
-MA=DEFI_MATERIAU(ELAS=_F(E=200000.0,
+              
+              
+# DEFINITION DU MATERIAU
+ACIER =DEFI_MATERIAU(ELAS=_F(E=200000.0,
                          NU=0.3,),
                  TRACTION=_F(SIGM=CTRAC,),);
 
-CM=AFFE_MATERIAU(MAILLAGE=M,
-                 AFFE=_F(TOUT='OUI',
-                         MATER=MA,),);
+CHMATE=AFFE_MATERIAU(MAILLAGE=MAIL,
+                     AFFE=_F(TOUT='OUI',
+                             MATER=ACIER,),);
 
 # CONDITIONS DE SYMETRIE (QUART DE PLAQUE)
-
-CH1=AFFE_CHAR_MECA(MODELE=MO,
-                   FACE_IMPO=(_F(GROUP_MA='bas',
+CHSYME=AFFE_CHAR_CINE(MODELE=MODE,
+                      MECA_IMPO=(_F(GROUP_MA='bas',
                                  DY=0.0,),
-                              _F(GROUP_MA='gauche',
-                                 DX=0.0,),),);
+                                 _F(GROUP_MA='gauche',
+                                 DX=0.0,),),
+                                );
+                                
+# CHARGEMENT EN FORCE
+CHFORC=AFFE_CHAR_MECA(MODELE=MODE,
+                      FORCE_CONTOUR=_F(GROUP_MA='haut',
+                                       FY=1.,),);
 
-# TRACTION REPARTIE SUR LE HAUT
-
-CH2=AFFE_CHAR_MECA(MODELE=MO,
-                   FORCE_CONTOUR=_F(GROUP_MA='haut',
-                                    FY=1.0,),);
-
-# L INSTANT EST EGAL A LA VALEUR DE LA TRACTION SUR LFG
-
-F_DEPL=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
+# RAMPE APPLICATION CHARGEMENT
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                            1000.0,1000.0,
                            ),);
-
+                           
 # DISCRETISATION EN TEMPS
-Sy = 200.0;
-
-Su = 270.0;
-
-TMAX = (0.9 * Su);
-
-TFIN = 230.0;
-
-TELAS = (Sy / 3.0);
-
+TFIN  = 230.0;
+TELAS = 10.0;
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(_F(JUSQU_A=TELAS,
                                      NOMBRE=1,),
                                   _F(JUSQU_A=TFIN,
-                                     NOMBRE=30,),
-                                  _F(JUSQU_A=TMAX,
-                                     NOMBRE=20,),),);
+                                     NOMBRE=50,),
+                                  ),);
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST,),
-                        ECHEC=_F(ACTION='ITER_SUPPL',
-                                 SUBD_METHODE='MANUEL',
-                                 SUBD_PAS=2,
-                                 SUBD_NIVEAU=20,),)
-
+                        ECHEC=_F(EVENEMENT='ERREUR',
+                                 SUBD_NIVEAU=5,
+                                 ACTION='DECOUPE',),)
+                                 
+########################################################################
+#
 # PREMIER CALCUL : ON RESTE ELASTIQUE
+#
+########################################################################
 
-RESUNL=STAT_NON_LINE(MODELE=MO,
-                     CHAM_MATER=CM,
-                     EXCIT=(_F(CHARGE=CH1,),
-                            _F(CHARGE=CH2,
-                               FONC_MULT=F_DEPL,),),
+RESUNL=STAT_NON_LINE(MODELE=MODE,
+                     CHAM_MATER=CHMATE,
+                     EXCIT=(_F(CHARGE=CHSYME,),
+                            _F(CHARGE=CHFORC,
+                               FONC_MULT=RAMPE,),),
                      COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',),
                      INCREMENT=_F(LIST_INST=DEFLIST,
                                   INST_FIN=TELAS,),);
-
-# CALCUL SANS SOUCI JUSQU'A TFIN
-# SUBDIVISION DU PAS DE TEMPS
-# LE NOMBRE D'ITERATIONS POUR CONVERGER AUGMENTE
-
+                                  
+########################################################################
+#
+# PREMIER CALCUL : PLASTIFICATION
+#
+########################################################################
+                                                             
 RESUNL=STAT_NON_LINE(reuse =RESUNL,
-                     MODELE=MO,
-                     CHAM_MATER=CM,
-                     EXCIT=(_F(CHARGE=CH1,),
-                            _F(CHARGE=CH2,
-                               FONC_MULT=F_DEPL,),),
-                     COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',
-                                  ITER_INTE_MAXI=100,),
+                     MODELE=MODE,
+                     CHAM_MATER=CHMATE,
+                     EXCIT=(_F(CHARGE=CHSYME,),
+                            _F(CHARGE=CHFORC,
+                               FONC_MULT=RAMPE,),),
+                     COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',),
                      ETAT_INIT=_F(EVOL_NOLI=RESUNL,),
                      INCREMENT=_F(LIST_INST=DEFLIST,
                                   INST_FIN=TFIN,
                                   ),
                      NEWTON=_F(REAC_ITER=1,),
-                     RECH_LINEAIRE=_F(ITER_LINE_MAXI=5,),
-                     ARCHIVAGE=_F(LIST_INST=L_INST,),);
+                     );
 
-# AU DELA DE 430. : NON CONVERGENCE
-#ou pivot nul 
-# ON DEPASSE SANS DOUTE LA CHARGE LIMITE
-#Il faut mener le calcul autrement (pilotage) 
+########################################################################
 #
+# POST-TRAITEMENTS STANDARDS
 #
-# INTERPOLATION DES CONTRAINTES ET VARIABLE INTERNES AUX NOEUDS
+########################################################################
 
+# INTERPOLATION DES CONTRAINTES AUX NOEUDS
 RESUNL=CALC_ELEM(reuse =RESUNL,
                  RESULTAT=RESUNL,
-                 OPTION=('SIGM_ELNO','VARI_ELNO','SIEQ_ELGA','DERA_ELGA'),);
+                 OPTION=('SIGM_ELNO',),);
 
-# DEPOUILLEMENTS DES RESULTATS
-# VALEURS MAXI DES CONTRAINTES EQUIVALENTES ET DES VARIABLES INTERNES
-
-IMPR_RESU(MODELE=MO,
-          RESU=(_F(RESULTAT=RESUNL,
-                   NOM_CHAM='SIEQ_ELGA',
-                   VALE_MAX='OUI',),
-                _F(RESULTAT=RESUNL,
-                   NOM_CHAM='VARI_ELGA',
-                   VALE_MAX='OUI',),),);
+RESUNL=CALC_NO(reuse =RESUNL,
+               RESULTAT=RESUNL,
+               OPTION=('SIGM_NOEU',),);
+          
+# INTERPOLATION DES VARIABLES INTERNES AUX NOEUDS
+RESUNL=CALC_ELEM(reuse =RESUNL,
+                 RESULTAT=RESUNL,
+                 OPTION=('VARI_ELNO'),);
+                              
+RESUNL=CALC_NO(reuse =RESUNL,
+               RESULTAT=RESUNL,
+               OPTION='VARI_NOEU',);
+ 
+########################################################################
+#
+# IMPRESSION DES RESULTATS
+#
+########################################################################
 
 IMPR_RESU(FORMAT='MED',
           RESU=_F(RESULTAT=RESUNL,),);
 
-RESUNL=CALC_NO(reuse =RESUNL,
-               RESULTAT=RESUNL,
-               OPTION='SIGM_NOEU',);
-
+#########################################################################
 #
-# COURBE SIYY AU POINT G EN FONCTION DU DEPLACEMENT 
-#######################################################
-
-
-DYG=RECU_FONCTION(RESULTAT=RESUNL,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DY',
-                  GROUP_NO='G',);
-
-SYG=RECU_FONCTION(RESULTAT=RESUNL,
-                  NOM_CHAM='SIGM_NOEU',
-                  NOM_CMP='SIYY',
-                  GROUP_NO='G',);
-
-# COURBES AVEC XMGRACE 
-
-IMPR_FONCTION(FORMAT='XMGRACE',
-              UNITE=82,
-              COURBE=_F(FONC_X=DYG,
-                        FONC_Y=SYG,),
-              TITRE='SigmaYY en fonction de Dy au point G ',
-              LEGENDE_X='Deplacement DY au point G',
-              LEGENDE_Y='Contraine SIGMAYY',);
-
-SIGBAS=MACR_LIGN_COUPE(RESULTAT=RESUNL,
-                       NOM_CHAM='SIGM_ELNO',
-                       LIGN_COUPE=_F(NB_POINTS=30,
-                                     COOR_ORIG=(10,0,),
-                                     COOR_EXTR=(100,0,),),);
-
-IMPR_TABLE(TABLE=SIGBAS,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=TFIN,),
-           NOM_PARA=('ABSC_CURV','SIYY',),);
-
-TEST_RESU(RESU=(_F(RESULTAT=RESUNL,
-                   INST=TELAS,
-                   NOM_CHAM='SIGM_NOEU',
-                   NOM_CMP='SIYY',
-                   GROUP_NO='B',
-                   VALE=(3.0 * TELAS),
-                   PRECISION=0.03,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=RESUNL,
-                   INST=TELAS,
-                   NOM_CHAM='SIGM_NOEU',
-                   NOM_CMP='SIXX',
-                   GROUP_NO='A',
-                   VALE=(-1.0 * TELAS),
-                   PRECISION=0.03,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=RESUNL,
-                   INST=TFIN,
-                   NOM_CHAM='SIGM_NOEU',
-                   NOM_CMP='SIYY',
-                   GROUP_NO='G',
-                   VALE=TFIN,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=RESUNL,
-                   INST=TELAS,
-                   NOM_CHAM='DERA_ELGA',
-                   NOM_CMP='IND_DCHA',
-                   MAILLE='M325',
-                   POINT = 1,
-                   VALE= 1,
-                   REFERENCE='NON_REGRESSION',),
-                _F(RESULTAT=RESUNL,
-                   NUME_ORDRE=30,
-                   NOM_CHAM='DERA_ELGA',
-                   NOM_CMP='IND_DCHA',
-                   MAILLE='M325',
-                   POINT = 1,
-                   VALE=-2.,
-                   REFERENCE='NON_REGRESSION',),),);
-
+# TROISIEME CALCUL : CHARGEMENT PLASTIQUE PUIS DECHARGE ELASTIQUE
 #
-# CHARGE PUIS DECHARGE
-#######################################################
+########################################################################
 
 
 # DISCRETISATION EN TEMPS
-TFIN1 = 200.0;
+TCHAR   = 230.0;
+TDECHAR = 300.0;
 
-TFIN2 = 300.0;
-
-
-F_DEPL2=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
-                            TFIN1,TFIN1,
-                            TFIN2,0.,
+# RAMPE APPLICATION CHARGE PUIS DECHARGE
+RAMPE2=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
+                            TCHAR,TCHAR,
+                            TDECHAR,0.,
                             ),);
-
+                            
+# DISCRETISATION EN TEMPS                            
 L_INST2=DEFI_LIST_REEL(DEBUT=0.0,
                        INTERVALLE=(_F(JUSQU_A=TELAS,
                                       NOMBRE=1,),
-                                   _F(JUSQU_A=TFIN1,
+                                   _F(JUSQU_A=TCHAR,
                                       NOMBRE=30,),
-                                   _F(JUSQU_A=TFIN2,
+                                   _F(JUSQU_A=TDECHAR,
                                       NOMBRE=10,),),);
 
 DEFLIST2 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST2,),
                         ECHEC=_F(EVENEMENT    = 'ERREUR',
-                                 ACTION       = 'DECOUPE',
-                                 SUBD_METHODE = 'MANUEL',
-                                 SUBD_PAS     = 2,
-                                 SUBD_NIVEAU  = 20,),)
+                                 ACTION       = 'DECOUPE',),)
+                                 
+########################################################################
+#
+# TROISIEME CALCUL : CHARGEMENT PLASTIQUE PUIS DECHARGE
+#
+########################################################################
 
-RESUNL2=STAT_NON_LINE(MODELE=MO,
-                      CHAM_MATER=CM,
-                      EXCIT=(_F(CHARGE=CH1,),
-                             _F(CHARGE=CH2,
-                                FONC_MULT=F_DEPL2,),),
+RESUNL2=STAT_NON_LINE(MODELE=MODE,
+                      CHAM_MATER=CHMATE,
+                      EXCIT=(_F(CHARGE=CHSYME,),
+                          _F(CHARGE=CHFORC,
+                             FONC_MULT=RAMPE2,),),
                       COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',),
                       INCREMENT=_F(LIST_INST=DEFLIST2),
                       NEWTON=_F(PREDICTION='ELASTIQUE',
                                 REAC_ITER=1,),
-                      RECH_LINEAIRE=_F(ITER_LINE_MAXI=5,),
                       ARCHIVAGE=_F(LIST_INST=L_INST2,),);
 
-# INTERPOLATION DES CONTRAINTES ET VARIABLE INTERNES AUX NOEUDS
-
+########################################################################
+#
+# POST-TRAITEMENTS STANDARDS
+#
+########################################################################
+# INTERPOLATION DES CONTRAINTES AUX NOEUDS
 RESUNL2=CALC_ELEM(reuse =RESUNL2,
-                  RESULTAT=RESUNL2,
-                  OPTION=('SIGM_ELNO','VARI_ELNO','SIEQ_ELGA',),);
+                 RESULTAT=RESUNL2,
+                 OPTION=('SIGM_ELNO',),);
 
-# DEPOUILLEMENTS DES RESULTATS
-# VALEURS MAXI DES CONTRAINTES EQUIVALENTES ET DES VARIABLES INTERNES
-
-IMPR_RESU(MODELE=MO,
-          RESU=(_F(RESULTAT=RESUNL2,
-                   NOM_CHAM='SIEQ_ELGA',
-                   VALE_MAX='OUI',),
-                _F(RESULTAT=RESUNL2,
-                   NOM_CHAM='VARI_ELGA',
-                   VALE_MAX='OUI',),),);
+RESUNL2=CALC_NO(reuse =RESUNL2,
+               RESULTAT=RESUNL2,
+               OPTION=('SIGM_NOEU',),);
+          
+# INTERPOLATION DES VARIABLES INTERNES AUX NOEUDS
+RESUNL2=CALC_ELEM(reuse =RESUNL2,
+                 RESULTAT=RESUNL2,
+                 OPTION=('VARI_ELNO'),);
+                              
+RESUNL2=CALC_NO(reuse =RESUNL2,
+               RESULTAT=RESUNL2,
+               OPTION='VARI_NOEU',);
+               
+                ########################################################################
+#
+# IMPRESSION DES RESULTATS
+#
+########################################################################
 
 IMPR_RESU(FORMAT='MED',
           RESU=_F(RESULTAT=RESUNL2,),);
 
-RESUNL2=CALC_NO(reuse =RESUNL2,
-                RESULTAT=RESUNL2,
-                OPTION='SIGM_NOEU',);
-
+########################################################################
 #
-# COURBE SIYY AU POINT G EN FONCTION DU DEPLACEMENT 
-#######################################################
+# TESTS - CALCUL CHARGEMENT PLASTIQUE
+# PARTIE ELASTIQUE (IDENTIQUE MODELISATION A)
+#
+########################################################################
 
 
-DYG2=RECU_FONCTION(RESULTAT=RESUNL2,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DY',
-                   GROUP_NO='G',);
-
-SYG2=RECU_FONCTION(RESULTAT=RESUNL2,
-                   NOM_CHAM='SIGM_NOEU',
-                   NOM_CMP='SIYY',
-                   GROUP_NO='G',);
-
-# COURBES AVEC XMGRACE 
-
-IMPR_FONCTION(FORMAT='XMGRACE',
-              UNITE=84,
-              COURBE=_F(FONC_X=DYG2,
-                        FONC_Y=SYG2,),
-              TITRE='SigmaYY en fonction de Dy au point G ',
-              BORNE_X=(0.0,3.0,),
-              BORNE_Y=(0.0,7.0,),
-              GRILLE_X=0.5,
-              GRILLE_Y=1.0,
-              LEGENDE_X='D\xe9placement DY au point G',
-              LEGENDE_Y='Contraine SIGMAYY',);
-
-SIGBAS2=MACR_LIGN_COUPE(RESULTAT=RESUNL2,
-                        NOM_CHAM='SIGM_ELNO',
-                        LIGN_COUPE=_F(NB_POINTS=30,
-                                      COOR_ORIG=(10,0,),
-                                      COOR_EXTR=(100,0,),),);
-
-IMPR_TABLE(TABLE=SIGBAS2,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=TFIN,),
-           NOM_PARA=('ABSC_CURV','SIYY',),);
-
-TEST_RESU(RESU=_F(RESULTAT=RESUNL2,
-                  INST=TFIN2,
+TEST_RESU(RESU=_F(RESULTAT=RESUNL,
+                  NUME_ORDRE=1,
                   NOM_CHAM='SIGM_NOEU',
                   NOM_CMP='SIYY',
-                  GROUP_NO='G',
+                  GROUP_NO='B',
+                  VALE=29.809234113416,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-8,
+                  REFERENCE='AUTRE_ASTER',),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESUNL,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='SIGM_NOEU',
+                  NOM_CMP='SIXX',
+                  GROUP_NO='A',
+                  VALE=-9.8213909205095,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-8,
+                  REFERENCE='AUTRE_ASTER',),);
+                      ########################################################################
+#
+# TESTS - CALCUL CHARGEMENT PLASTIQUE
+# PARTIE PLASTIQUE
+#
+########################################################################
+
+TEST_RESU(RESU=_F(RESULTAT=RESUNL,
+                  NUME_ORDRE=31,
+                  NOM_CHAM='SIGM_NOEU',
+                  NOM_CMP='SIYY',
+                  GROUP_NO='B',
+                  VALE=211.38016437512,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-8,
+                  REFERENCE='NON_REGRESSION',),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESUNL,
+                  NUME_ORDRE=31,
+                  NOM_CHAM='SIGM_NOEU',
+                  NOM_CMP='SIXX',
+                  GROUP_NO='A',
+                  VALE=-147.30118914221,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-8,
+                  REFERENCE='NON_REGRESSION',),);
+                          
+TEST_RESU(RESU=_F(RESULTAT=RESUNL,
+                  NUME_ORDRE=31,
+                  NOM_CHAM='VARI_NOEU',
+                  NOM_CMP='V1',
+                  GROUP_NO='B',
+                  VALE=3.1650583711677E-03,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-8,
+                  REFERENCE='NON_REGRESSION',),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESUNL,
+                  NUME_ORDRE=31,
+                  NOM_CHAM='VARI_NOEU',
+                  NOM_CMP='V2',
+                  GROUP_NO='B',
+                  VALE=1.0,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-8,
+                  REFERENCE='NON_REGRESSION',),);
+                  
+                  
+TEST_RESU(RESU=_F(RESULTAT=RESUNL,
+                  NUME_ORDRE=31,
+                  NOM_CHAM='VARI_NOEU',
+                  NOM_CMP='V1',
+                  GROUP_NO='A',
                   VALE=0.0,
                   CRITERE='ABSOLU',
-                  PRECISION=0.01,
+                  PRECISION=1.E-8,
+                  REFERENCE='NON_REGRESSION',),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESUNL,
+                  NUME_ORDRE=31,
+                  NOM_CHAM='VARI_NOEU',
+                  NOM_CMP='V2',
+                  GROUP_NO='A',
+                  VALE=0.0,
+                  CRITERE='ABSOLU',
+                  PRECISION=1.E-8,
+                  REFERENCE='NON_REGRESSION',),);
+ ########################################################################
+#
+# TESTS - CALCUL CHARGEMENT PLASTIQUE PUIS DECHARGE
+# DECHARGE
+#
+########################################################################
+
+TEST_RESU(RESU=_F(RESULTAT=RESUNL2,
+                  NUME_ORDRE=41,
+                  NOM_CHAM='SIGM_NOEU',
+                  NOM_CMP='SIYY',
+                  GROUP_NO='B',
+                  VALE=-298.10110050242,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-8,
                   REFERENCE='ANALYTIQUE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESUNL2,
+                  NUME_ORDRE=41,
+                  NOM_CHAM='SIGM_NOEU',
+                  NOM_CMP='SIXX',
+                  GROUP_NO='A',
+                  VALE=16.841677073602,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-8,
+                  REFERENCE='ANALYTIQUE',),);
+                          
+TEST_RESU(RESU=_F(RESULTAT=RESUNL2,
+                  NUME_ORDRE=41,
+                  NOM_CHAM='VARI_NOEU',
+                  NOM_CMP='V1',
+                  GROUP_NO='B',
+                  VALE=0.36437022323172,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-8,
+                  REFERENCE='NON_REGRESSION',),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESUNL2,
+                  NUME_ORDRE=41,
+                  NOM_CHAM='VARI_NOEU',
+                  NOM_CMP='V2',
+                  GROUP_NO='B',
+                  VALE=1.5,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-8,
+                  REFERENCE='NON_REGRESSION',),);
+                   
+TEST_RESU(RESU=_F(RESULTAT=RESUNL2,
+                  NUME_ORDRE=41,
+                  NOM_CHAM='VARI_NOEU',
+                  NOM_CMP='V1',
+                  GROUP_NO='A',
+                  VALE=3.5534604597225E-03,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-8,
+                  REFERENCE='NON_REGRESSION',),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESUNL2,
+                  NUME_ORDRE=41,
+                  NOM_CHAM='VARI_NOEU',
+                  NOM_CMP='V2',
+                  GROUP_NO='A',
+                  VALE=-0.,
+                  CRITERE='ABSOLU',
+                  PRECISION=1.E-8,
+                  REFERENCE='NON_REGRESSION',),); 
 
 FIN();

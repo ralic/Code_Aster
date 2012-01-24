@@ -1,9 +1,9 @@
-# MODIF  DATE 12/12/2011   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 23/01/2012   AUTEUR DESOZA T.DESOZA 
 # TITRE BENCHMARK NAFEMS DE VALIDATION DU CONTACT 5 STEEL ROLLER ON RUBBER
 # ssnp157a.para = tps_job 1500 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -24,7 +24,7 @@ DEBUT(CODE=_F(NOM='SSNP157A',NIV_PUB_WEB='INTERNET',),IGNORE_ALARM=('CONTACT3_16
 MESH1=LIRE_MAILLAGE(FORMAT='MED',);
 
 MESH=CREA_MAILLAGE(MAILLAGE=MESH1,
-                   LINE_QUAD=_F(GROUP_MA=('Rubber','Slave','Bottom',),),);
+                   LINE_QUAD=_F(GROUP_MA=('Rubber','Slave','Bottom','gauche','droite',),),);
 
 MESH=MODI_MAILLAGE(reuse=MESH,
                    MAILLAGE=MESH,
@@ -83,7 +83,8 @@ MO=AFFE_MODELE(MAILLAGE=MESH,
                         MODELISATION='D_PLAN',),
                      _F(GROUP_MA='Rubber',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION=('D_PLAN_SI',),),),);
+                        MODELISATION=('D_PLAN_SI',),
+                        ),),);
 
 MA=AFFE_MATERIAU(MAILLAGE=MESH,
                  AFFE=(_F(GROUP_MA='Roller',
@@ -117,14 +118,8 @@ CLUp=AFFE_CHAR_CINE(MODELE=MO,
 # During the loading phase the rubber is keep fixed in the x-direction
 # This suppresses the rigid body motion of the rubber
 CLfix=AFFE_CHAR_CINE(MODELE=MO,
-                   MECA_IMPO=_F(GROUP_MA='Bottom',
+                   MECA_IMPO=_F(GROUP_MA='droite',
                                 DX=0.0,),);
-
-# Once the roller is in rotation, the bottom of the rubber is forced to have the same X-displacement
-# The NAFEMS benchmark is not clear at all regarding this boundary condition
-CLuni=AFFE_CHAR_MECA(MODELE=MO,
-                      LIAISON_UNIF=_F(GROUP_MA='Bottom',
-                                      DDL='DX',),);
 
 # Contact definition
 coef = 1.0E-5
@@ -140,7 +135,6 @@ CON=DEFI_CONTACT(MODELE=MO,
                          #  - at the first time step, contact will be taken into account removing the need to use RESI_GLOB_MAXI in STAT_NON_LINE
                          #  - when putting the roller into rotation, this will ensure the correct continuation of the computation by taking into account pre-existing contact from the previous step
                          CONTACT_INIT='INTERPENETRE',
-                         #CONTACT_INIT='OUI',
                          COULOMB=0.3,
                          # See top : this parameter must be chosen wisely otherwise computation won't converge
                          COEF_FROT=coef,
@@ -167,7 +161,6 @@ RESU=STAT_NON_LINE(INFO=1,
                                 INST_FIN=1.0,
                                 ),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=50,
-                                  #RESI_GLOB_MAXI=1.0E-6,
                                   ),
                    SOLVEUR=_F(METHODE='MULT_FRONT',),
                    NEWTON=_F(MATRICE='TANGENTE',
@@ -181,7 +174,7 @@ RESU=STAT_NON_LINE(reuse =RESU,
                           _F(CHARGE=CLUp,
                              FONC_MULT=Fup,),
                           _F(CHARGE=ROT,),
-                          _F(CHARGE=CLuni,),),
+                          ),
                    CONTACT=CON,
                    COMP_INCR=(_F(RELATION='ELAS',
                                  DEFORMATION='GROT_GDEP',
@@ -253,8 +246,8 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU,
                    NOM_CHAM   = 'DEPL',
                    NOEUD      = 'N281',
                    NOM_CMP    = 'DX',
-                   VALE       = -175.4,
-                   PRECISION  = (0.03,0.001),
+                   VALE       = -175.0,
+                   PRECISION  = (0.02,0.001),
                    REFERENCE  = 'SOURCE_EXTERNE',
                    ),
                 ),);
@@ -264,9 +257,9 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU,
                    NOM_CHAM   = 'DEPL',
                    NOEUD      = 'N281',
                    NOM_CMP    = 'DX',
-                   VALE       = -171.62594903443,
+                   VALE       = -176.93727596068,
                    REFERENCE  = 'NON_REGRESSION',
-                   VERSION    = '11.0.27',
+                   VERSION    = '11.1.5',
                    ),
                 ),);
 

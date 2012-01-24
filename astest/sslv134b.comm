@@ -1,8 +1,8 @@
-# MODIF  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -202,19 +202,18 @@ RAY_SUP1=DEFI_CONSTANTE(VALE=RSUP)
 
 MOD_T1=DEFI_CONSTANTE(   VALE=1.    )
 
-THETA1=CALC_THETA(      OPTION='COURONNE',
-                          MODELE=MO,
-                         FOND_FISS=FISS,
-                        THETA_3D=_F(  TOUT = 'OUI',
-                                   MODULE_FO = MOD_T1,
-                                   R_INF_FO = RAY_INF1,
-                                   R_SUP_FO = RAY_SUP1)
+THETA1=CALC_THETA(  MODELE=MO,
+                    FOND_FISS=FISS,
+                    THETA_3D=_F(TOUT = 'OUI',
+                                MODULE_FO = MOD_T1,
+                                R_INF_FO = RAY_INF1,
+                                R_SUP_FO = RAY_SUP1)
                     )
 
-G0=CALC_G (                     OPTION='CALC_G_GLOB',
-                                RESULTAT=CHAMDEPL,
-                                NUME_ORDRE = 1,
-                                THETA=_F(THETA=THETA1),
+G0=CALC_G (  OPTION='CALC_G_GLOB',
+             RESULTAT=CHAMDEPL,
+             NUME_ORDRE = 1,
+             THETA=_F(THETA=THETA1),
                        )
 
 # VALEUR DE REFERENCE MILIEU INFINI : G=145.6

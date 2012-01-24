@@ -1,8 +1,8 @@
-#@ MODIF macr_cara_poutre_ops Macro  DATE 30/08/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF macr_cara_poutre_ops Macro  DATE 23/01/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,8 +19,8 @@
 # ======================================================================
 # RESPONSABLE JMBHH01 J.M.PROIX
 
-def macr_cara_poutre_ops(self,MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
-                              GROUP_MA,ORIG_INER,**args):
+def macr_cara_poutre_ops(self,MAILLAGE,SYME_Y,SYME_Z,GROUP_MA_BORD,
+                              GROUP_MA,ORIG_INER,TABLE_CARA,**args):
   """
      Ecriture de la macro MACR_CARA_POUTRE
   """
@@ -52,6 +52,7 @@ def macr_cara_poutre_ops(self,MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
   POST_RELEVE_T   =self.get_cmd('POST_RELEVE_T')
   IMPR_TABLE      =self.get_cmd('IMPR_TABLE')
   CREA_TABLE      =self.get_cmd('CREA_TABLE')
+  CALC_TABLE      =self.get_cmd('CALC_TABLE')
   # La macro compte pour 1 dans la numerotation des commandes
   self.set_icmd(1)
 
@@ -83,8 +84,8 @@ def macr_cara_poutre_ops(self,MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
 
   motsimps={}
   if GROUP_MA  : motsimps['GROUP_MA']  = GROUP_MA
-  if SYME_X    : motsimps['SYME_X']    = SYME_X
-  if SYME_Y    : motsimps['SYME_Y']    = SYME_Y
+  if SYME_Y    : motsimps['SYME_X']    = SYME_Y
+  if SYME_Z    : motsimps['SYME_Y']    = SYME_Z
   motsimps['ORIG_INER'] = ORIG_INER
   mfact=_F(TOUT='OUI',**motsimps)
   __cageo=POST_ELEM(MODELE=__nomamo,
@@ -819,6 +820,54 @@ def macr_cara_poutre_ops(self,MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
      nomres=POST_ELEM(MODELE=__nomamo,
                       CHAM_MATER=__nomama,
                       CARA_GEOM=mfact    )
+
+  if TABLE_CARA == "OUI":
+      if GROUP_MA_BORD and not GROUP_MA:
+        nomres=CALC_TABLE(reuse=nomres,TABLE=nomres,
+                    ACTION=( #_F(OPERATION='FILTRE',NOM_PARA='MAILLAGE',CRIT_COMP='VIDE'),
+                            _F(OPERATION='EXTR',NOM_PARA=('LIEU','A','IY','IZ','AY','AZ','EY','EZ','JX','JG','IYR2','IZR2','RY','RZ','RT'))
+                            ))
+      elif GROUP_MA_BORD and GROUP_MA:
+        nomres=CALC_TABLE(reuse=nomres,TABLE=nomres,
+                    ACTION=( #_F(OPERATION='FILTRE',NOM_PARA='MAILLAGE',CRIT_COMP='VIDE'),
+                            _F(OPERATION='EXTR',NOM_PARA=('LIEU','A','IY','IZ','AY','AZ','EY','EZ','JX','IYR2','IZR2','RY','RZ','RT'))
+                            ))
+      else:
+        nomres=CALC_TABLE(reuse=nomres,TABLE=nomres,
+                    ACTION=( #_F(OPERATION='FILTRE',NOM_PARA='MAILLAGE',CRIT_COMP='VIDE'),
+                            _F(OPERATION='EXTR',NOM_PARA=('LIEU','A','IY','IZ','IYR2','IZR2','RY','RZ'))
+                            ))
+  else:
+      if GROUP_MA_BORD and not GROUP_MA:
+        nomres=CALC_TABLE(reuse=nomres,TABLE=nomres,
+                    ACTION=( #_F(OPERATION='FILTRE',NOM_PARA='MAILLAGE',CRIT_COMP='VIDE'),
+                            _F(OPERATION='EXTR',NOM_PARA=('LIEU','ENTITE','A_M','CDG_Y_M','CDG_Z_M','IY_G_M',
+                              'IZ_G_M','IYZ_G_M','Y_MAX','Z_MAX','Y_MIN','Z_MIN','R_MAX',
+                              'A','CDG_Y','CDG_Z','IY_G','IZ_G','IYZ_G','IY',
+                              'IZ','ALPHA','Y_P','Z_P','IY_P','IZ_P','IYZ_P','JX',
+                              'AY','AZ','EY','EZ','PCTY','PCTZ','JG','KY','KZ','IYR2_G',
+                              'IZR2_G','IYR2','IZR2','IYR2_P','IZR2_P','RY','RZ','RT'))
+                              ))
+      elif GROUP_MA_BORD and GROUP_MA:
+        nomres=CALC_TABLE(reuse=nomres,TABLE=nomres,
+                    ACTION=( #_F(OPERATION='FILTRE',NOM_PARA='MAILLAGE',CRIT_COMP='VIDE'),
+                            _F(OPERATION='EXTR',NOM_PARA=('LIEU','ENTITE','A_M','CDG_Y_M','CDG_Z_M','IY_G_M',
+                              'IZ_G_M','IYZ_G_M','Y_MAX','Z_MAX','Y_MIN','Z_MIN','R_MAX',
+                              'A','CDG_Y','CDG_Z','IY_G','IZ_G','IYZ_G','IY',
+                              'IZ','ALPHA','Y_P','Z_P','IY_P','IZ_P','IYZ_P','JX',
+                              'AY','AZ','EY','EZ','PCTY','PCTZ','KY','KZ','IYR2_G',
+                              'IZR2_G','IYR2','IZR2','IYR2_P','IZR2_P','RY','RZ','RT'))
+                              ))
+      else:
+        nomres=CALC_TABLE(reuse=nomres,TABLE=nomres,
+                    ACTION=( #_F(OPERATION='FILTRE',NOM_PARA='MAILLAGE',CRIT_COMP='VIDE'),
+                            _F(OPERATION='EXTR',NOM_PARA=('LIEU','ENTITE','A_M','CDG_Y_M','CDG_Z_M','IY_G_M',
+                              'IZ_G_M','IYZ_G_M','Y_MAX','Z_MAX','Y_MIN','Z_MIN','R_MAX',
+                              'A','CDG_Y','CDG_Z','IY_G','IZ_G','IYZ_G','IY',
+                              'IZ','ALPHA','Y_P','Z_P','IY_P','IZ_P','IYZ_P',
+                              'IYR2_G','IZR2_G','IYR2','IZR2','IYR2_P','IZR2_P','RY','RZ'))
+
+                            ))
   IMPR_TABLE(TABLE=nomres)
 
   return ier

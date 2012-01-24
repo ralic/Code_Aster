@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+%& MODIF OPTIONS  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
 % RESPONSABLE KAZYMYRENKO
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -22,15 +22,9 @@ OPTION__
    IN__
         PGEOMER  GEOM_R
         PMATERC  ADRSJEVE
-        PCOMPOR  COMPOR
         PDEPLMR  DEPL_R
         PDDEPLR  DEPL_R
-        PCONTMR  SIEF_R
-        PVARIMR  VARI_R
-        PTYPEPI  PILO_K
-        PBORNPI  PILO_R
         PCDTAU   PILO_R
-        PCAMASS  CAMASS
         PINDCOI  NEUT_I
         PDONCO   XCONTAC
         PLST     NEUT_R
@@ -45,3 +39,9 @@ OPTION__
         PDEPL1R  DEPL_R
    OUT__
         PCOPILO  PILO_R ELGA__
+
+
+
+
+
+

@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 09/01/2012   AUTEUR PROIX J-M.PROIX 
+%& MODIF COMPELEM  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
 % RESPONSABLE PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -528,6 +528,9 @@ GRANDEUR_SIMPLE__
        DAMG :
        PTOT    : pression totale utilisée pour le chainage vers la mécanique
                  en HM
+       PIX     : projeté du gradient de pression suivantx (méthode OSGS)
+       PIY     : projeté du gradient de pression suivanty (méthode OSGS)
+       PIZ     : projeté du gradient de pression suivantz (méthode OSGS)
 >>
     DEPL_C   = C    DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
                     PRE1     PRE2     TEMP     PHI      DH       H1X      H1Y      H1Z
@@ -546,7 +549,7 @@ GRANDEUR_SIMPLE__
                     V21      V22      V23      V31      V32      V33      PRES11   PRES12
                     PRES13   PRES21   PRES22   PRES23   PRES31   PRES32   PRES33   SIGN
                     SITX     SITY     LH1      SIXX     SIYY     SIZZ     SIXY     DAMG
-                    PTOT
+                    PTOT     PIX      PIY      PIZ
 
 <<  DEPL_F Type:K8 Déplacement (fonction)
        DX, DY, DZ : translation suivant X, Y ET Z (repère global)
@@ -603,6 +606,9 @@ GRANDEUR_SIMPLE__
        DAMG :
        PTOT    : pression totale utilisée pour le chainage vers la mécanique
                  en HM
+       PIX     : projeté du gradient de pression suivantx (méthode OSGS)
+       PIY     : projeté du gradient de pression suivanty (méthode OSGS)
+       PIZ     : projeté du gradient de pression suivantz (méthode OSGS)
 >>
 
     DEPL_F   = K8   DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
@@ -622,7 +628,7 @@ GRANDEUR_SIMPLE__
                     V21      V22      V23      V31      V32      V33      PRES11   PRES12
                     PRES13   PRES21   PRES22   PRES23   PRES31   PRES32   PRES33   SIGN
                     SITX     SITY     LH1      SIXX     SIYY     SIZZ     SIXY     DAMG
-                    PTOT
+                    PTOT     PIX      PIY      PIZ
 
 <<  DEPL_R Type:R Déplacement réel aux noeuds
        DX, DY, DZ : translation suivant X, Y ET Z (repère global)
@@ -679,6 +685,9 @@ GRANDEUR_SIMPLE__
        DAMG :
        PTOT    : pression totale utilisée pour le chainage vers la mécanique
                  en HM
+       PIX     : projeté du gradient de pression suivantx (méthode OSGS)
+       PIY     : projeté du gradient de pression suivanty (méthode OSGS)
+       PIZ     : projeté du gradient de pression suivantz (méthode OSGS)
 >>
     DEPL_R   = R    DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
                     PRE1     PRE2     TEMP     PHI      DH       H1X      H1Y      H1Z
@@ -697,7 +706,7 @@ GRANDEUR_SIMPLE__
                     V21      V22      V23      V31      V32      V33      PRES11   PRES12
                     PRES13   PRES21   PRES22   PRES23   PRES31   PRES32   PRES33   SIGN
                     SITX     SITY     LH1      SIXX     SIYY     SIZZ     SIXY     DAMG
-                    PTOT
+                    PTOT     PIX      PIY      PIZ
 
 <<  DERA_R Type:R indicateurs locaux de décharge et de perte de radialité
        DCHA_V   : indicateur de décharge sur le deviateur des contraintes

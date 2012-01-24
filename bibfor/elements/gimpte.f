@@ -1,15 +1,15 @@
-      SUBROUTINE GIMPTE ( RESU, OPTIOZ, RAYINF, RAYSUP, THETA, NOMNOE,
+      SUBROUTINE GIMPTE ( RESU, RAYINF, RAYSUP, THETA, NOMNOE,
      &                    DIR, ABSC, NBNO, FORMAT, UNIT )
       IMPLICIT   NONE
       INTEGER             NBNO, UNIT
       REAL*8              RAYINF(*), RAYSUP(*), THETA(*),DIR(*),ABSC(*)
       CHARACTER*8         RESU, NOMNOE(*)
-      CHARACTER*(*)       FORMAT, OPTIOZ
+      CHARACTER*(*)       FORMAT
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -42,37 +42,26 @@ C
       REAL*8       RINF, RSUP, MODULE, NX, NY, NZ
       CHARACTER*1  BACS
       CHARACTER*9  IMPNOE
-      CHARACTER*19 OPTION
 C     ------------------------------------------------------------------
 C
       BACS   = CHAR(92)
-      OPTION = OPTIOZ
 C
-      IF (OPTION .EQ.'BANDE') THEN
-        RINF   = RAYINF(1)
-        RSUP   = RAYSUP(1)
-        MODULE = THETA(1)
-        WRITE ( UNIT, 1030) RESU
-        WRITE ( UNIT, 1040)
-        WRITE ( UNIT, 1050) RINF,RSUP,MODULE
-      ELSE
-        WRITE ( UNIT, 1000) RESU
-        WRITE ( UNIT, 1010)
-        DO 10 I = 1 , NBNO
-          IF ( FORMAT(1:5) .EQ. 'AGRAF' ) THEN
-            IMPNOE = BACS//NOMNOE(I)
-          ELSE
-            IMPNOE = NOMNOE(I)
-          ENDIF
-          RINF   = RAYINF(I)
-          RSUP   = RAYSUP(I)
-          MODULE = THETA(I)
-          NX   = DIR((I-1)*3+1)
-          NY   = DIR((I-1)*3+2)
-          NZ   = DIR((I-1)*3+3)
-          WRITE ( UNIT, 1020) ABSC(I),IMPNOE,RINF,RSUP,MODULE,NX,NY,NZ
- 10     CONTINUE
-      ENDIF
+      WRITE ( UNIT, 1000) RESU
+      WRITE ( UNIT, 1010)
+      DO 10 I = 1 , NBNO
+        IF ( FORMAT(1:5) .EQ. 'AGRAF' ) THEN
+          IMPNOE = BACS//NOMNOE(I)
+        ELSE
+          IMPNOE = NOMNOE(I)
+        ENDIF
+        RINF   = RAYINF(I)
+        RSUP   = RAYSUP(I)
+        MODULE = THETA(I)
+        NX   = DIR((I-1)*3+1)
+        NY   = DIR((I-1)*3+2)
+        NZ   = DIR((I-1)*3+3)
+        WRITE ( UNIT, 1020) ABSC(I),IMPNOE,RINF,RSUP,MODULE,NX,NY,NZ
+ 10   CONTINUE
 C
  1000 FORMAT( '==> CHAMP THETA : ',A8,/,'    FOND DE FISSURE' )
  1010 FORMAT(5X,'ABSC_CURV',5X,'NOEUD',9X,'R_INF',10X,'R_SUP',10X,

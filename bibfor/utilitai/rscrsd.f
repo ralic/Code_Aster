@@ -4,9 +4,9 @@
       INTEGER NBORDR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/12/2011   AUTEUR BEAURAIN J.BEAURAIN 
+C MODIF UTILITAI  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -43,7 +43,7 @@ C                      C H A M P _ M E C A N I Q U E
 C     ------------------------------------------------------------------
       PARAMETER (NCMEC1=37)
       PARAMETER (NCMEC2=46)
-      PARAMETER (NCMEC3=37)
+      PARAMETER (NCMEC3=33)
       PARAMETER (NCMUTI=30)
       PARAMETER (NCMECA=NCMEC1+NCMEC2+NCMEC3+NCMUTI)
       CHARACTER*16 CHMEC1(NCMEC1)
@@ -116,8 +116,7 @@ C
 C      '1234567890123456','1234567890123456','1234567890123456',
       DATA CHMEC3/
      & 'EPMQ_ELGA',       'EPMQ_ELNO',       'EPMQ_NOEU',
-     & 'DEDE_ELNO',       'DEDE_NOEU',       'DESI_ELNO',
-     & 'DESI_NOEU',       'EPFP_ELNO',       'EPFP_ELGA',
+     & 'EPFP_ELNO',       'EPFP_ELGA',
      & 'EPFD_ELNO',       'EPFD_ELGA',
      & 'EPVC_ELNO',       'EPVC_ELGA',       'VALE_CONT',
      & 'ETOT_ELGA',       'ETOT_ELNO',       'ETOT_ELEM',

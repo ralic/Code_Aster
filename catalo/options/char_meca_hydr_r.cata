@@ -1,8 +1,8 @@
-%& MODIF OPTIONS  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
+%& MODIF OPTIONS  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
 % RESPONSABLE PELLET
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
-% COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+% COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 % THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 % IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 % THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,14 +26,16 @@ OPTION__
         PMATERC  ADRSJEVE << Champ de matériaux. Concept CHAM_MATER >>
         PVARCPR  VARI_R   <<  PVARCPR : VARIABLES DE COMMANDE  >>
         PVARCRR  VARI_R   <<  PVARCRR : VARIABLES DE COMMANDE  DE REFERENCE>>
-        PCAGNPO  CAGNPO   << Champ de caractéristiques générales pour les poutres. Concept CARA_ELEM >>
-        PCAORIE  CAORIE   << Champ de caractéristiques d'orientation. Concept CARA_ELEM >>
-        PCAGNBA  CAGNBA
+        
+        
         PTEMPSR  INST_R
         PCAMASS  CAMASS
-        PNBSP_I  NBSP_I
-        PFIBRES  CAFI_R   <<Champ des caractéristiques des fibres. Concept CARA_ELEM>>
-        PCOMPOR  COMPOR
-   OUT__
+        OUT__
 PVECTUR VDEP_R RESL__
+
+
+
+
+
+
 

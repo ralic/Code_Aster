@@ -4,7 +4,7 @@
       CHARACTER*(*) RESU,MODELE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/01/2012   AUTEUR CHEIGNON E.CHEIGNON 
+C MODIF UTILITAI  DATE 23/01/2012   AUTEUR CHEIGNON E.CHEIGNON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -94,7 +94,6 @@ C      IF ( IRET .NE. 0 ) GOTO 9999
       IF (K8B(1:3).EQ.'OUI') NDIM = 2
 
       CALL EXLIM3('CARA_GEOM','V',MODELE,LIGREL)
-      PRINT*,'PECAGE TOTO'
 C     --- CALCUL DE L'OPTION ---
       CHELEM = '&&PECAGE.CARA_GEOM'
       LPAIN(1) = 'PGEOMER'

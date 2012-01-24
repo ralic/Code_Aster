@@ -1,9 +1,9 @@
       SUBROUTINE OP0187()
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF PREPOST  DATE 24/01/2012   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -97,7 +97,8 @@ C     ------------------------------------------------------------------
       DIRGRM = '&&OP0187.DIRGRM'
       CALL XPODIM(MALINI,MAILC,K8B,K24B,NSETOT+MFTOT,NNNTOT+NFTOT,
      &            NCOTOT+NFCOMF,LISTNO,K19B,K19B,K19B,K19B,K19B,K19B,
-     &            K19B,IBID,K8B,NBNOC,NBMAC,LOGRMA,DIRGRM,MAXFEM,NGFON)
+     &            K19B,IBID,K8B,NBNOC,NBMAC,LOGRMA,DIRGRM,MAXFEM,NGFON,
+     &            K19B,K19B)
 
 C     ------------------------------------------------------------------
 C     4. TRAITEMENT DES MAILLES DE MAILC
@@ -114,7 +115,7 @@ C     CREATION DU VECTEUR DE REMPLISSAGE DES GROUP_MA
       IF (NBGMA2.GT.0) CALL WKVECT(NIVGRM,'V V I',NBGMA2,JNIVGR)
 
       CALL XPOMAC(MALINI,MAILC,LISTNO,NBNOC,NBMAC,MAXFEM,NIVGRM,
-     &                       K19B,K19B,K19B,K19B,K19B,K19B,K8B)
+     &            K19B,K19B,K19B,K19B,K19B,K19B,K8B,K19B,K19B)
 
 C     ------------------------------------------------------------------
 C     5. TRAITEMENT DES MAILLES DE MAILX
@@ -123,7 +124,8 @@ C     ------------------------------------------------------------------
       IF (NIV.GT.1) WRITE(IFM,*)' '
       IF (NIV.GT.1) WRITE(IFM,*)'5. XPOMAX'
       CALL XPOMAX(MO,MALINI,MAILX,NBNOC,NBMAC,PREFNO,NOGRFI,MAXFEM,
-     &     K19B,K19B,K19B,K19B,K19B,K19B,LISTGR,DIRGRM,NIVGRM,K8B,NGFON)
+     &            K19B,K19B,K19B,K19B,K19B,K19B,LISTGR,DIRGRM,NIVGRM,
+     &            K8B,NGFON,K19B,K19B)
 
 C     ------------------------------------------------------------------
 C     6. TRAITEMENT DES FONDS DE FISSURE

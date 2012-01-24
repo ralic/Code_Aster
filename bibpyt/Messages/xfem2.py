@@ -1,8 +1,8 @@
-#@ MODIF xfem2 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF xfem2 Messages  DATE 24/01/2012   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,9 +28,8 @@ cata_msg = {
 
 
 2 : _(u"""
-  -> Seules les modélisations C_PLAN/D_PLAN sont disponibles pour XFEM.
-  -> Risques et conseils:
-     Veuillez considérer l'une des deux modélisations dans AFFE_MODELE.
+  -> GROT_GDEP n'est pas disponible avec COMP_ELAS.
+  -> Conseils : Utilisez COMP_INCR.
 """),
 
 3 : _(u"""
@@ -49,6 +48,10 @@ cata_msg = {
   -> Risques et conseils:
      Pour ne plus avoir cette alarme, veuillez supprimer le mot-clé MAILLAGE_SAIN
      de la commande %(k1)s.
+"""),
+
+5 : _(u"""
+  -> Avec GROT_GDEP + COMP_INCR, la modélisation axisymétrique n'est pas disponible.
 """),
 
 7 : _(u"""

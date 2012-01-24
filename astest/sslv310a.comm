@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
 # TITRE  MURAKAMI 9.35 FISSURE SEMI-ELLIPTIQUE DEBOUCHANT A LA PEAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -104,8 +104,7 @@ RAY_SUP1=DEFI_CONSTANTE(   VALE=1.25E-3)
 
 MOD_T1=DEFI_CONSTANTE(   VALE=1.    )
 
-THETA1=CALC_THETA(      OPTION='COURONNE',
-                          MODELE=MO,
+THETA1=CALC_THETA(      MODELE=MO,
                          FOND_FISS=FISS1,
                         THETA_3D=_F(  TOUT = 'OUI',
                                    MODULE_FO = MOD_T1,
@@ -142,8 +141,7 @@ RAY_INF2=DEFI_CONSTANTE(   VALE=1.25E-3)
 
 RAY_SUP2=DEFI_CONSTANTE(   VALE=2.E-3)
 
-THETA2=CALC_THETA(      OPTION='COURONNE',
-                          MODELE=MO,
+THETA2=CALC_THETA(       MODELE=MO,
                          FOND_FISS=FISS1,
                         THETA_3D=_F(  TOUT = 'OUI',
                                    MODULE_FO = MOD_T1,
@@ -183,8 +181,7 @@ RAY_INF3=DEFI_CONSTANTE(   VALE=2.E-3)
 RAY_SUP3=DEFI_CONSTANTE(   VALE=2.5E-3)
 
 #
-THETA3=CALC_THETA(      OPTION='COURONNE',
-                        MODELE=MO,
+THETA3=CALC_THETA(      MODELE=MO,
                         FOND_FISS=FISS1,
                         THETA_3D=_F(  TOUT = 'OUI',
                                    MODULE_FO = MOD_T1,

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -114,7 +114,7 @@ OPTION__
                                      MVECTUR  PVECTUR
     INDIC_ENER          -1    IN__     OUT__  XXXXXX   XXXXXX
     INDIC_SEUIL         -1    IN__     OUT__  XXXXXX   XXXXXX
-    INIT_VARC           99    IN__   NGEOMER  PGEOMER
+    INIT_VARC           99    IN__  
                               OUT__  ZVARCPG  PVARCPR
     MASS_INER           -1    IN__     OUT__  XXXXXX   XXXXXX
     MECA_SENS_MATE      -1    IN__     OUT__  XXXXXX   XXXXXX
@@ -141,7 +141,7 @@ OPTION__
                                      ECONTNC  PSIEFNOC
     SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM
                               OUT__  MMATUUR  PSYM
-    TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
+    TOU_INI_ELGA        99    IN__  
                               OUT__  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R  EGNEUT_R PNEUT_R EGNEUT_F PNEUT_F
     VAEX_ELGA           549   IN__   CCOMPOR  PCOMPOR  E1NEUTK  PNOVARI  ZVARIPG  PVARIGR
                               OUT__  E1GNEUT  PVARIGS

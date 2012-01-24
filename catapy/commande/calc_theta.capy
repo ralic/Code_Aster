@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,10 +21,9 @@ CALC_THETA=OPER(nom="CALC_THETA",op=54,sd_prod=theta_geom,reentrant='n',
             UIinfo={"groupes":("Post-traitements","Rupture",)},
                 fr="Définir un champ theta pour le calcul du taux de restitution d'énergie"
                     +" ou des facteurs d'intensité de contraintes",
-         regles=(UN_PARMI('THETA_2D','THETA_3D','THETA_BANDE'),
+         regles=(UN_PARMI('THETA_2D','THETA_3D'),
                  PRESENT_ABSENT('THETA_2D','DIRE_THETA'),
                  EXCLUS('DIRECTION','DIRE_THETA'),),
-         OPTION          =SIMP(statut='f',typ='TXM',defaut="COURONNE",into=("COURONNE","BANDE") ),
          MODELE          =SIMP(statut='o',typ=(modele_sdaster) ),
          THETA_3D        =FACT(statut='f',max='**',
            regles=(UN_PARMI('TOUT','GROUP_NO','NOEUD'),
@@ -53,12 +52,6 @@ CALC_THETA=OPER(nom="CALC_THETA",op=54,sd_prod=theta_geom,reentrant='n',
            R_INF           =SIMP(statut='o',typ='R'),
            R_SUP           =SIMP(statut='o',typ='R'),
          ),
-         THETA_BANDE     =FACT(statut='f',max='**',
-           MODULE          =SIMP(statut='o',typ='R'),
-           R_INF           =SIMP(statut='o',typ='R'),
-           R_SUP           =SIMP(statut='o',typ='R'),
-         ),
-         GRAD_NOEU_THETA =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
          IMPRESSION      =FACT(statut='f',
            UNITE           =SIMP(statut='f',typ='I',defaut=8),
            FORMAT          =SIMP(statut='f',typ='TXM',defaut="EXCEL",into=("EXCEL","AGRAF") ),

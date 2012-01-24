@@ -1,4 +1,4 @@
-# MODIF  DATE 16/01/2012   AUTEUR CHEIGNON E.CHEIGNON 
+# MODIF  DATE 23/01/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE VALIDATION DE POST_ELEM MOT CLE FACTEUR CARA_GEOM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,8 +19,8 @@
 # ======================================================================
 DEBUT( CODE=_F(  NOM = 'SSLL107E',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-TCARA=MACR_CARA_POUTRE(    SYME_X='OUI',
-                                 SYME_Y='OUI'   )
+TCARA=MACR_CARA_POUTRE(    SYME_Y='OUI',
+                                 SYME_Z='OUI'   )
 
 TEST_TABLE(     TABLE=TCARA,
                   FILTRE=_F(  NOM_PARA = 'LIEU',

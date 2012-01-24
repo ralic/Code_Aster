@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -75,7 +75,7 @@ MATRICE__
 OPTION__
     EFGE_ELGA           546   IN__   EEFGEGA  PSIEFR
                               OUT__  EEFGEGA  PEFGER    EEFGEGC  PEFGEC
-    INIT_VARC           99    IN__   NGEOMER  PGEOMER
+    INIT_VARC           99    IN__  
                               OUT__  ZVARCPG  PVARCPR
     ADD_SIGM            581   IN__   EEFGEGA  PEPCON1  EEFGEGA  PEPCON2
                               OUT__  EEFGEGA  PEPCON3
@@ -97,7 +97,7 @@ OPTION__
     CHAR_MECA_SF1D1D    161   IN__   DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  CFORCEF  PFF1D1D  NGEOMER  PGEOMER
                                      CTEMPSR  PTEMPSR
                               OUT__  MVECTUR  PVECTUR
-    CHAR_MECA_SR1D1D    161   IN__   DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  CFORCER  PFR1D1D  NGEOMER  PGEOMER
+    CHAR_MECA_SR1D1D    161   IN__   DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                                      CVENTCX  PVENTCX  NVITER   PVITER
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_TEMP_R    396   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CMATERC  PMATERC
@@ -169,7 +169,7 @@ OPTION__
     SIPO_ELNO           -1    IN__     OUT__  XXXXXX   XXXXXX
     SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM
                               OUT__  MMATUUR  PSYM
-    TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
+    TOU_INI_ELGA        99    IN__  
                               OUT__  EEFGEGA  PSIEF_R  ZVARIPG  PVARI_R  EGNEUT_R PNEUT_R EGNEUT_F PNEUT_F
     VARI_ELNO           4     IN__   ZVARIPG  PVARIGR
                               OUT__  ZVARINO  PVARINR

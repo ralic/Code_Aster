@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 12/12/2011   AUTEUR DESOZA T.DESOZA 
+#& MODIF COMMANDE  DATE 23/01/2012   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -466,14 +466,6 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                                             fr="Paramètres de la méthode pénalisée",
                                                             COEF_PENA_CONT  =SIMP(statut='o',typ='R'),
                                                             ),
-#
-                                          COMPLIANCE      =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ),
-                                          b_compliance=BLOC(condition = "COMPLIANCE == 'OUI' ",
-                                                            fr="Paramètres de la compliance",
-                                                            ASPERITE = SIMP(statut='o',typ='R',),
-                                                            E_N      = SIMP(statut='o',typ='R',),
-                                                            E_V      = SIMP(statut='f',typ='R',defaut=0.E+0),
-                                            ),
 #
                                           b_frottement=BLOC(condition = "FROTTEMENT == 'COULOMB' ",
                                                             fr="Paramètres du frottement de Coulomb",

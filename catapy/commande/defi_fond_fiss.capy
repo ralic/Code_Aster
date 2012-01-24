@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 06/09/2011   AUTEUR GENIAUT S.GENIAUT 
+#& MODIF COMMANDE  DATE 24/01/2012   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -88,9 +88,9 @@ DEFI_FOND_FISS=OPER(nom="DEFI_FOND_FISS",
                     MAILLE   =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
                     ),
     
-    b_levre_inf  = BLOC(condition = "SYME == 'NON'",
+    b_levre_inf  = BLOC(condition = "LEVRE_SUP != None and SYME == 'NON'",
 
-                        LEVRE_INF =FACT(statut='f',max=1,
+                        LEVRE_INF =FACT(statut='o',max=1,
                                         regles=(UN_PARMI('GROUP_MA','MAILLE'),),
                                         GROUP_MA =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
                                         MAILLE   =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),

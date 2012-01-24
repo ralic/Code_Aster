@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -197,7 +197,7 @@ OPTION__
                                      E54NEUTR PBASECO
                               OUT__  EKTHETA  PGTHETA
     CALC_G              288   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPLAR  DDL_MECC PTHETAR  CMATERC  PMATERC
-                                     CCOMPOR  PCOMPOR  G27NEUTR PCOURB   E198NEUR PPINTTO  E768NEUI PCNSETO
+                                     CCOMPOR  PCOMPOR  E198NEUR PPINTTO  E768NEUI PCNSETO
                                      E192NEUI PHEAVTO  E10NEUTI PLONCHA  N9NEUT_R PBASLOR  N1NEUT_R PLSN
                                      N1NEUT_R PLST     ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  EPRESNO  PPRESSR
                                      E18NEUTR PPINTER  E30NEUTR PAINTER  E15NEUTI PCFACE   E3NEUTI  PLONGCO
@@ -229,12 +229,12 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_PESA_R    441   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR  STANO_I  PSTANO
                                      N1NEUT_R PLSN     N1NEUT_R PLST     E198NEUR PPINTTO  E768NEUI PCNSETO
-                                     E192NEUI PHEAVTO  E10NEUTI  PLONCHA  FISNO_I  PFISNO
+                                     E192NEUI PHEAVTO  E10NEUTI  PLONCHA 
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_ROTA_R    441   IN__   DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      CROTATR  PROTATR  STANO_I  PSTANO   N1NEUT_R PLSN     N1NEUT_R PLST
                                      E198NEUR PPINTTO  E768NEUI PCNSETO  E192NEUI PHEAVTO  E10NEUTI  PLONCHA
-                                     FISNO_I  PFISNO
+                                    
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_TEMP_R    99    IN__   CCAMASS  PCAMASS  CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
@@ -259,7 +259,7 @@ OPTION__
                                      N1NEUT_R PLST     STANO_I  PSTANO   FISNO_I  PFISNO   FISNO_I  PHEAVNO
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
-    GEOM_FAC            519   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPLA   E18NEUTR PPINTER  E3NEUTI  PLONCHA
+    GEOM_FAC            519   IN__   DDL_MECA PDEPLA   E18NEUTR PPINTER  E3NEUTI  PLONCHA
                                      E18NEUTR PGESCLO  N1NEUT_R PLST     E1NEUTK  NOMFIS   FISNO_I  PFISNO
                                      E10NEUTI PHEAVFA
                               OUT__  E18NEUTR PNEWGES  E18NEUTR PNEWGEM
@@ -269,7 +269,7 @@ OPTION__
                               OUT__  G27NEUTR PGNEUTR
     INDIC_ENER          -1    IN__    OUT__    XXXXXX   XXXXXX
     INDIC_SEUIL         -1    IN__    OUT__    XXXXXX   XXXXXX
-    INIT_VARC           99    IN__   NGEOMER  PGEOMER
+    INIT_VARC           99    IN__  
                               OUT__  ZVARCPG  PVARCPR
     MASS_INER           -1    IN__    OUT__    XXXXXX   XXXXXX
     MOY_NOEU_S          118   IN__   N1NEUT_R PNEUTR
@@ -283,7 +283,7 @@ OPTION__
                                      ZVARCPG  PVARCRR
                                      ZVARIPG  PVARIMP  ZVARIPG  PVARIMR  E198NEUR PPINTTO  E768NEUI PCNSETO
                                      E192NEUI PHEAVTO  E10NEUTI  PLONCHA  N9NEUT_R PBASLOR  N1NEUT_R PLSN
-                                     N1NEUT_R PLST     STANO_I  PSTANO   FISNO_I  PFISNO
+                                     N1NEUT_R PLST     STANO_I  PSTANO  
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     REFE_FORC_NODA      -1    IN__    OUT__    XXXXXX   XXXXXX
     RICE_TRACEY         -1    IN__    OUT__    XXXXXX   XXXXXX
@@ -323,13 +323,13 @@ OPTION__
     TOPOSE              514   IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET  FISCO_I PFISCO
                               OUT__  E198NEUR PPINTTO  E768NEUI PCNSETO  E192NEUI PHEAVTO  E10NEUTI  PLONCHA
                                      E30NEUTR PAINTER
-    TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
+    TOU_INI_ELGA        99    IN__  
                               OUT__  EDOMGGA  PDOMMAG  EFACY_R  PFACY_R  EGGEOM_R PGEOM_R  EGINST_R PINST_R
                                      EGNEUT_F PNEUT_F  EGNEUT_R PNEUT_R  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R
     VERI_JACOBIEN       328   IN__   NGEOMER  PGEOMER
                               OUT__  ECODRET  PCODRET
     WEIBULL             -1    IN__    OUT__    XXXXXX   XXXXXX
-    XCVBCA              532   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  E1NEUTI  PINDCOI
+    XCVBCA              532   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPL_P  E1NEUTI  PINDCOI
                                      N1NEUT_R PLST     E18NEUTR PPINTER  E30NEUTR PAINTER  E15NEUTI PCFACE
                                      E3NEUTI  PLONCHA  CONTX_R  PDONCO   E1NEUTI  PGLISS   E1NEUTI  PMEMCON
                                      E1NEUTR  PCOHES   E54NEUTR PBASECO  CMATERC  PMATERC  FISNO_I  PFISNO
@@ -343,6 +343,6 @@ OPTION__
                                      E10NEUTI  PLONCHA
                               OUT__  XFGEOM_R PXFGEOM
     XREACL              548   IN__   DDL_MECA PDEPL_P  E30NEUTR PAINTER  E15NEUTI PCFACE   E3NEUTI  PLONCHA
-                                     CONTX_R  PDONCO   E18NEUTR PPINTER  NGEOMER  PGEOMER  N1NEUT_R PLSN 
-                                     N1NEUT_R PLST     E54NEUTR PBASECO  FISNO_I  PHEAVNO
+                                     CONTX_R  PDONCO   E18NEUTR PPINTER  NGEOMER  PGEOMER 
+                                     N1NEUT_R PLST     E54NEUTR PBASECO 
                               OUT__  E1NEUTR  PSEUIL

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -82,7 +82,7 @@ OPTION__
                               OUT__  MMATUUR  PMATUUR  MMATUNS  PMATUNS
     CHAR_MECA_PESA_R    43    IN__   CCADISM  PCADISM  CCAORIE  PCAORIE  CPESANR  PPESANR  CCINFDI  PCINFDI
                               OUT__  MVECTUR  PVECTUR
-    CHAR_MECA_ROTA_R    43    IN__   CROTATR  PROTATR  CCINFDI  PCINFDI
+    CHAR_MECA_ROTA_R    43    IN__   CROTATR  PROTATR 
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_TEMP_R    99    IN__   NGEOMER  PGEOMER
                               OUT__  MVECTUR  PVECTUR
@@ -110,14 +110,14 @@ OPTION__
                                      CCINFDI  PCINFDI
                               OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
-    FULL_MECA_ELAS      47    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  EEFGEGA  PCONTMR
-                                     DDL_MECA PDEPENT  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
+    FULL_MECA_ELAS      47    IN__   CCOMPOR  PCOMPOR  EEFGEGA  PCONTMR
+                                     DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                                      CINSTPR  PINSTPR  CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
-                                     ZVARIPG  PVARIMR  DDL_MECA PVITENT  DDL_MECA PVITPLU  CINSTPR  PINSTMR
-                                     CCINFDI  PCINFDI
+                                     ZVARIPG  PVARIMR  CINSTPR  PINSTMR
+                                    
                               OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
-    INIT_VARC           99    IN__   NGEOMER  PGEOMER
+    INIT_VARC           99    IN__  
                               OUT__  ZVARCPG  PVARCPR
     MASS_FLUI_STRU      41    IN__   CABSCUR  PABSCUR  CCADISM  PCADISM  CCAORIE  PCAORIE  CCINFDI  PCINFDI
                               OUT__  MMATUUR  PMATUUR
@@ -151,23 +151,23 @@ OPTION__
                               OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     REFE_FORC_NODA      39    IN__   EREFCO   PREFCO   CCINFDI  PCINFDI
                               OUT__  MVECTUR  PVECTUR
-    RIGI_FLUI_STRU      41    IN__   CABSCUR  PABSCUR  CCADISK  PCADISK  CCAORIE  PCAORIE  CCINFDI  PCINFDI
+    RIGI_FLUI_STRU      41    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  CCINFDI  PCINFDI
                               OUT__  MMATUUR  PMATUUR
     RIGI_MECA           41    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  CCINFDI  PCINFDI
                               OUT__  MMATUUR  PMATUUR  MMATUNS  PMATUNS
-    RIGI_MECA_ELAS      47    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  EEFGEGA  PCONTMR
-                                     DDL_MECA PDEPENT  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
+    RIGI_MECA_ELAS      47    IN__   CCOMPOR  PCOMPOR  EEFGEGA  PCONTMR
+                                     DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                                      CINSTPR  PINSTPR  CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
-                                     ZVARIPG  PVARIMR  DDL_MECA PVITENT  DDL_MECA PVITPLU  CINSTPR  PINSTMR
-                                     CCINFDI  PCINFDI
+                                     ZVARIPG  PVARIMR  CINSTPR  PINSTMR
+                                    
                               OUT__  MMATUUR  PMATUUR
-    RIGI_MECA_HYST      41    IN__   CCADISK  PCADISK  MMATUUR  PRIGIEL  CCINFDI  PCINFDI
+    RIGI_MECA_HYST      41    IN__   MMATUUR  PRIGIEL  CCINFDI  PCINFDI
                               OUT__  MMATUUC  PMATUUC
     RIGI_MECA_RO        -1    IN__     OUT__  XXXXXX   XXXXXX
-    RIGI_MECA_SENSI     41    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  DDL_MECA PVAPRIN  CCADISK  PSEDISK
+    RIGI_MECA_SENSI     41    IN__   CCAORIE  PCAORIE  DDL_MECA PVAPRIN  CCADISK  PSEDISK
                                      CCINFDI  PCINFDI
                               OUT__  MVECTUR  PVECTUR
-    RIGI_MECA_SENS_C    41    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  NDEPLAC  PVAPRIN  CCADISK  PSEDISK
+    RIGI_MECA_SENS_C    41    IN__   CCAORIE  PCAORIE  NDEPLAC  PVAPRIN  CCADISK  PSEDISK
                                      CCINFDI  PCINFDI
                               OUT__  MVECTUC  PVECTUC
     RIGI_MECA_TANG      47    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  EEFGEGA  PCONTMR
@@ -182,10 +182,10 @@ OPTION__
                               OUT__  EEFGENO  PSIEFNOR EEFGENC  PSIEFNOC
     SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM
                               OUT__  MMATUUR  PSYM
-    TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
+    TOU_INI_ELGA        99    IN__  
                               OUT__  EEFGEGA  PSIEF_R  ZVARIPG  PVARI_R  EGGEOM_R PGEOM_R  EGINST_R PINST_R
                                      EGNEUT_F PNEUT_F  EGNEUT_R PNEUT_R
-    TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER
+    TOU_INI_ELNO        99    IN__  
                               OUT__  EEFGENO  PSIEF_R  ZVARINO  PVARI_R  NGEOMER PGEOM_R  EEINST_R PINST_R
                                      EENEUT_F PNEUT_F  EENEUT_R PNEUT_R
     VARI_ELNO           4     IN__   ZVARIPG  PVARIGR

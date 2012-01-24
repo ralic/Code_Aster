@@ -1,10 +1,11 @@
       SUBROUTINE XPOCO2(MALINI,DIRNO,NBNO,DIRMA,NBMA,
-     &                  CNS1,CNS2,CES1,CES2,CESVI1,CESVI2,RESUCO)
+     &                  CNS1,CNS2,CES1,CES2,CESVI1,CESVI2,RESUCO,
+     &                  COMPS1,COMPS2)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF PREPOST  DATE 24/01/2012   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,6 +26,7 @@ C RESPONSABLE GENIAUT S.GENIAUT
 
       CHARACTER*8   MALINI,RESUCO
       CHARACTER*19  CNS1,CNS2,CES1,CES2,CESVI1,CESVI2
+      CHARACTER*19  COMPS1,COMPS2
       INTEGER       NBNO,DIRNO(NBNO),NBMA,DIRMA(NBMA)
 C
 C   COPIE DES DEPLACMENTS DES NOEUDS DU MAILLAGE MA1
@@ -34,12 +36,16 @@ C   IN
 C       MALINI : NOM DU MAILLAGE SAIN
 C       DIRNO : TABLEAU DE CORRESPONDANCE DES NUMEROS DE NOEUDS
 C       NBNO  : LONGUEUR DE DIRNO
+C       DIRMA : TABLEAU DE CORRESPONDANCE DES NUMEROS DE MAILLES
+C       NBMA  : LONGUEUR DE DIRMA
 C       CNS1   : CHAMP_NO_S DU DEPLACEMENT EN ENTREE
 C       CES1   : CHAMP_ELEM_S DE CONTRAINTES EN ENTREE
 C       RESUCO : NOM DU CONCEPT RESULTAT D'ORIGINE
+C       COMPS1 : CHAM_ELEM_S DU COMPORTEMENT EN ENTREE
 C   OUT
 C       CNS2   : CHAMP_NO_S DU DEPLACEMENT EN SORTIE
 C       CES2   : CHAMP_ELEM_S DE CONTRAINTES EN SORTIE
+C       COMPS2 : CHAM_ELEM_S DU COMPORTEMENT EN SORTIE
 
 
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
@@ -68,13 +74,15 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       CHARACTER*16  TYSD
       INTEGER      IVIEX,IRET
 
+      INTEGER       JRESD1,JRESV1,JRESL1,IADR1
+      INTEGER       JRESD2,JRESV2,JRESL2,IADR2
+
 
       CALL JEMARQ()
-
       CALL DISMOI('F','DIM_GEOM',MALINI,'MAILLAGE',NDIM,K8B,IER)
 
 C     ------------------------------------------------------------------
-C                         DEPLACEMENT
+C                    1.     DEPLACEMENT
 C     ------------------------------------------------------------------
       CALL JEVEUO(CNS1//'.CNSV','L',JCNSV1)
       CALL JEVEUO(CNS1//'.CNSD','L',JCNSD1)
@@ -101,7 +109,7 @@ C
 
       IF (TYSD(1:9).NE.'MODE_MECA') THEN
 C     ------------------------------------------------------------------
-C                          CONTRAINTES
+C                    2.      CONTRAINTES
 C     ------------------------------------------------------------------
         CALL JEVEUO(CES1//'.CESV','L',JCESV1)
         CALL JEVEUO(CES1//'.CESD','L',JCESD1)
@@ -173,5 +181,60 @@ C     ------------------------------------------------------------------
  20       CONTINUE
  10     CONTINUE
       ENDIF
+
+
+C     ------------------------------------------------------------------
+C                      3.  COMPORTEMENT
+C     ------------------------------------------------------------------
+      
+C     RECUPERATION DU CHAM_ELEM_S DU COMPORTEMENT EN ENTREE
+      CALL EXISD('CHAM_ELEM_S',COMPS1,IRET)
+
+C     SI CE CHAMP N'EXISTE PAS ON N'A RIEN A FAIRE
+      IF (IRET.NE.0) THEN
+
+C       RECUP DES INFOS SUR LE CHAM_ELEM_S DU COMPORTEMENT EN ENTREE
+        CALL JEVEUO(COMPS1//'.CESD','L',JRESD1)
+        CALL JEVEUO(COMPS1//'.CESV','L',JRESV1)
+        CALL JEVEUO(COMPS1//'.CESL','L',JRESL1)
+
+C       NB CMP
+        NBCMP = ZI(JRESD1-1+2)
+
+C       VERIF QUE LE CHAMP DE SORTIE A BIEN ETE CREE
+        CALL EXISD('CHAM_ELEM_S',COMPS2,IRET)
+        CALL ASSERT(IRET.NE.0)
+
+C       RECUP DES INFOS SUR LE CHAM_ELEM_S DU COMPORTEMENT EN SORTIE
+        CALL JEVEUO(COMPS2//'.CESD','L',JRESD2)
+        CALL JEVEUO(COMPS2//'.CESV','E',JRESV2)
+        CALL JEVEUO(COMPS2//'.CESL','E',JRESL2)
+
+        DO 300 IMA = 1,NBMA
+  
+          IMA2 = DIRMA(IMA)
+
+C         ON ZAPPE LES MAILLES NON CLASSIQUES
+          IF (IMA2.EQ.0) GOTO 300
+
+          DO 310 ICMP = 1,NBCMP
+
+            CALL CESEXI('C',JRESD1,JRESL1,IMA ,1,1,ICMP,IADR1)
+            CALL CESEXI('C',JRESD2,JRESL2,IMA2,1,1,ICMP,IADR2)
+
+            IF (IADR1.GT.0 ) THEN
+              CALL ASSERT(IADR2.LT.0)
+              ZK16(JRESV2-1-IADR2) = ZK16(JRESV1-1+IADR1)
+              ZL(JRESL2-1-IADR2) = .TRUE.
+           ENDIF
+
+ 310      CONTINUE
+ 300    CONTINUE      
+
+      ENDIF
+      
+C     ------------------------------------------------------------------
+      
+ 999  CONTINUE      
       CALL JEDEMA()
       END
