@@ -1,8 +1,8 @@
-#@ MODIF macr_ascouf_calc_ops Macro  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
+#@ MODIF macr_ascouf_calc_ops Macro  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -737,8 +737,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
                                                     DEGRE=4,)
         elif TYPE_MAILLAGE =='FISS_AXIS_DEB' :
                              motscles['LISSAGE']=_F(LISSAGE_THETA='LAGRANGE',
-                                                    LISSAGE_G='LAGRANGE',
-                                                    DEGRE=4,)
+                                                    LISSAGE_G='LAGRANGE',)
         _nogloc=CALC_G (RESULTAT   =nomres,
                         TOUT_ORDRE ='OUI',
                         THETA=_F( FOND_FISS  =fonfis,

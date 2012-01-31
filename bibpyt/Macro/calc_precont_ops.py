@@ -1,8 +1,8 @@
-#@ MODIF calc_precont_ops Macro  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF calc_precont_ops Macro  DATE 31/01/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -416,8 +416,6 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
                      RECH_LINEAIRE = dRech_lin,
                      CONVERGENCE=dConvergence,
                      SOLVEUR = dSolveur,
-                     ARCHIVAGE = _F(
-                                    DETR_NUME_SUIV = 'OUI' ),
                      INFO  =INFO,
                      TITRE = TITRE,
                      EXCIT =dExcit2,

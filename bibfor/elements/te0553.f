@@ -1,6 +1,6 @@
       SUBROUTINE TE0553(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,6 +61,8 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PMATERC','L',IMATE)
       CALL JEVECH('PMATUUR','E',IMATUU)
+      
+C      WRITE(6,*) 'MARC KHAM ---> TE0553  OPTION=',OPTION
 
       MATER = ZI(IMATE)
       NOMRES(1) = 'E'
@@ -72,10 +74,10 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       POUM='+'
       CALL RCVALB(FAMI,KPG,SPT,POUM,MATER,' ','ELAS',0,' ',R8B,3,
      &            NOMRES,VALRES,ICODRE,1)
+      
       E = VALRES(1)
       NU = VALRES(2)
       RHO = VALRES(3)
-
       LAMBDA = E*NU/ (1.D0+NU)/ (1.D0-2.D0*NU)
       MU = E/2.D0/ (1.D0+NU)
 
@@ -86,21 +88,17 @@ C     VITESSE UNITAIRE DANS LES 3 DIRECTIONS
 
       VITUNI(1,1) = 1.D0
       VITUNI(1,2) = 0.D0
-
       VITUNI(2,1) = 0.D0
       VITUNI(2,2) = 1.D0
-
-      DO 30 I = 1,NNO
-        DO 20 J = 1,2
+      DO 10 I = 1,NNO
+        DO 10 J = 1,2
           DO 10 K = 1,2*NNO
             VECT(I,J,K) = 0.D0
-   10     CONTINUE
-   20   CONTINUE
-   30 CONTINUE
+   10       CONTINUE
 
 C    BOUCLE SUR LES POINTS DE GAUSS
 
-      DO 70 KP = 1,NPG
+      DO 40 KP = 1,NPG
         K = (KP-1)*NNO
         CALL VFF2DN(NDIM,NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),NX,NY,POIDS)
         JAC = SQRT(NX*NX+NY*NY)
@@ -113,8 +111,8 @@ C        --- CALCUL DE LA NORMALE UNITAIRE ---
 C        --- CALCUL DE V.N ---
 
         SCAL = 0.D0
-        DO 60 I = 1,NNO
-          DO 50 J = 1,2
+        DO 40 I = 1,NNO
+          DO 40 J = 1,2
             SCAL = NUX*ZR(IVF+K+I-1)*VITUNI(J,1)
             SCAL = SCAL + NUY*ZR(IVF+K+I-1)*VITUNI(J,2)
 
@@ -122,49 +120,36 @@ C        --- CALCUL DE LA VITESSE NORMALE ET DE LA VITESSE TANGENCIELLE
 
             VNX = NUX*SCAL
             VNY = NUY*SCAL
-
             VTX = ZR(IVF+K+I-1)*VITUNI(J,1)
             VTY = ZR(IVF+K+I-1)*VITUNI(J,2)
-
             VTX = VTX - VNX
             VTY = VTY - VNY
-
 
 C        --- CALCUL DU VECTEUR CONTRAINTE
 
             TAUX = RHOCP*VNX + RHOCS*VTX
             TAUY = RHOCP*VNY + RHOCS*VTY
 
-
 C        --- CALCUL DU VECTEUR ELEMENTAIRE
 
             DO 40 L = 1,NNO
               LL = 2*L - 1
-              VECT(I,J,LL) = VECT(I,J,LL) + TAUX*ZR(IVF+K+L-1)*POIDS*JAC
-              VECT(I,J,LL+1) = VECT(I,J,LL+1) +
-     &                         TAUY*ZR(IVF+K+I-1)*POIDS*JAC
-   40       CONTINUE
-   50     CONTINUE
-   60   CONTINUE
+              VECT(I,J,LL) = VECT(I,J,LL) + TAUX*ZR(IVF+K+L-1)*POIDS
+              VECT(I,J,LL+1)=VECT(I,J,LL+1)+TAUY*ZR(IVF+K+L-1)*POIDS
+   40         CONTINUE
 
-   70 CONTINUE
-
-      DO 100 I = 1,NNO
-        DO 90 J = 1,2
+      DO 80 I = 1,NNO
+        DO 80 J = 1,2
           DO 80 K = 1,2*NNO
             MATR(2* (I-1)+J,K) = VECT(I,J,K)
-   80     CONTINUE
-   90   CONTINUE
-  100 CONTINUE
-
+   80       CONTINUE
 
 C       --- PASSAGE AU STOCKAGE TRIANGULAIRE
 
-      DO 120 I = 1,2*NNO
-        DO 110 J = 1,I
+      DO 100 I = 1,2*NNO
+        DO 100 J = 1,I
           IJ = (I-1)*I/2 + J
           ZR(IMATUU+IJ-1) = MATR(I,J)
-  110   CONTINUE
-  120 CONTINUE
+  100     CONTINUE
 
       END

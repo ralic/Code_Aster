@@ -1,9 +1,9 @@
       SUBROUTINE TE0003(OPTION,NOMTE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 31/01/2012   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -470,7 +470,8 @@ C ---------------- CALCUL DU PREMIER TERME DE L'ERREUR -----------------
 C ----------------------------------------------------------------------
 C
 C ----- CALCUL DU DIAMETRE HK DE LA MAILLE ----
-      CALL UTHK(NOMTE,IGEOM,HK,NDIM,ITAB,IBID,IBID,IBID,TABNIV(3),IFM)
+      CALL UTHK(NOMTE,ZR(IGEOM),HK,NDIM,ITAB,IBID,IBID,IBID,
+     &          TABNIV(3),IFM)
 
 C------------------------------------------------------------------
 C CALCUL DU TERME VOLUMIQUE
@@ -516,7 +517,7 @@ C FONCTIONS DE FORME ET LEURS DERIVEES
         END IF
 
 C CALCUL L'ORIENTATION DE LA MAILLE
-        CALL UTJAC ( L2D, IGEOM, IPG, IDFDE,
+        CALL UTJAC ( L2D, ZR(IGEOM), IPG, IDFDE,
      &                                    TABNIV(5), IFM, NNO, JACOB )
 
 C---------------------------------

@@ -2,7 +2,7 @@
 C RESPONSABLE PROIX J-M.PROIX
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/01/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 30/01/2012   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,7 +33,7 @@ C                     3 : THETA (POUR THM)
 C                     4 : ITER_INTE_PAS
 C                     5 : ALGO_INTE
 C                     .............
-C                     13 PARM_ALPHA  -> ALPHA DE SUSHI (DÉFAUT 1)
+C                     13 PARM_ALPHA  -> ALPHA DE SUSHI (DÃ‰FAUT 1)
 C ----------------------------------------------------------------------
       IMPLICIT NONE
       CHARACTER*1  K1BID
@@ -252,7 +252,8 @@ C
           ENDIF
 C         TOLERANCE POUR LE CRITERE DE RADIALITE
           IF (MOCLEF(I) .EQ. 'COMP_INCR') THEN
-             IF (TYPTGT.EQ.0) THEN
+             IF (TYPTGT.EQ.0 .AND.
+     &           TYMATG(1:16).NE.'TANGENTE_SECANTE') THEN
                 CALL GETVR8(MOCLEF(I),'RESI_RADI_RELA',K,IARG,1,TOLRAD,
      &                      IRET)
                 IF (IRET.NE.0) THEN 

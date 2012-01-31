@@ -1,8 +1,8 @@
-#@ MODIF algorith11 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith11 Messages  DATE 30/01/2012   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -146,22 +146,6 @@ La fréquence minimale doit être plus petite que la fréquence maximale.
 
 73 : _(u"""
 Le paramètre matériau taille limite D10 n'est pas défini.
-"""),
-
-74 : _(u"""
-Échec de la recherche de zéro (nombre maximum d'itérations atteint).
-"""),
-
-75 : _(u"""
-Échec de la recherche de zéro (bornes atteintes).
-"""),
-
-76 : _(u"""
-La valeur de F(XMIN) doit être négative.
-"""),
-
-77 : _(u"""
-Augmentez ITER_INTE_MAXI.
 """),
 
 79 : _(u"""

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE CALCUL DE G THERMO-ELASTIQUE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -144,7 +144,7 @@ CHAM1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',  OPERATION='EXTR',
                  RESULTAT=THETA1, NOM_CHAM='THETA',NUME_ORDRE=0,);
 
 G1=CALC_G(        THETA=_F(THETA=CHAM1),
-                  RESULTAT=RESU,NUME_ORDRE=1,
+                  RESULTAT=RESU,
                   EXCIT=_F(CHARGE=CH,),);
 
 THETA2=CALC_THETA(MODELE=MO,
@@ -155,7 +155,7 @@ THETA2=CALC_THETA(MODELE=MO,
                               R_SUP=4.5,),);
 
 G2=CALC_G(        THETA=_F(THETA=THETA2),
-                  RESULTAT=RESU,NUME_ORDRE=1,
+                  RESULTAT=RESU,
                   EXCIT=_F(CHARGE=CH,),);
 
 THETA3=CALC_THETA(MODELE=MO,
@@ -166,7 +166,7 @@ THETA3=CALC_THETA(MODELE=MO,
                               R_SUP=3.5,),);
 
 G3=CALC_G(        THETA=_F(THETA=THETA3),
-                  RESULTAT=RESU,NUME_ORDRE=1,
+                  RESULTAT=RESU,
                   EXCIT=_F(CHARGE=CH,),);
 
 THETA4=CALC_THETA(MODELE=MO,
@@ -177,7 +177,7 @@ THETA4=CALC_THETA(MODELE=MO,
                               R_SUP=4.5,),);
 
 G4=CALC_G(        THETA=_F(THETA=THETA4),
-                  RESULTAT=RESU,NUME_ORDRE=1,
+                  RESULTAT=RESU,
                   EXCIT=_F(CHARGE=CH,),);
 #--------------------------------------------------------------------
 #            TEST DES RESULTATS DE G                                #

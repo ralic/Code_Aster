@@ -3,12 +3,13 @@
      &                    T0, LCREA, TYPRES,
      &                    MASSE, RIGID, AMORT,
      &                    DEP0, VIT0, ACC0,
+     &                    FEXTE,FAMOR,FLIAI,
      &                    NUMEDD, NUME, NBTYAR, TYPEAR )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -23,6 +24,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_21
 C ----------------------------------------------------------------------
 C
 C       DYNAMIQUE LINEAIRE TRANSITOIRE - CREATION DES RESULTATS
@@ -58,6 +60,7 @@ C
       INTEGER NUME, NBTYAR
 
       REAL*8 DEP0(NEQ), VIT0(NEQ), ACC0(NEQ), T0
+      REAL*8 FEXTE(2*NEQ),FAMOR(2*NEQ),FLIAI(2*NEQ)
 
       CHARACTER*8  MASSE, RIGID, AMORT
       CHARACTER*13 INPSCO
@@ -137,7 +140,8 @@ C
      &                NEQ, ISTOC, IARCHI, TEXTE,
      &                JAUX, IFM, T0,
      &                NBTYAR, TYPEAR, MASSE,
-     &                DEP0, VIT0, ACC0 )
+     &                DEP0, VIT0, ACC0,
+     &                FEXTE(NEQ+1),FAMOR(NEQ+1),FLIAI(NEQ+1) )
 C
         IARCHI = 0
 C

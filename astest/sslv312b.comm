@@ -1,4 +1,4 @@
-# MODIF  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE  MURAKAMI 9.70 FISSURE CIRCULAIRE PERPENDICULAIRE A L'INTERFACE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -89,7 +89,7 @@ THETA1=CALC_THETA(   MODELE=MO,  FOND_FISS=FISS1,
                                    R_SUP_FO = RAY_SUP1)
                     )
 
-G0_C1=CALC_G(  RESULTAT=CHAMDEPL, TOUT_ORDRE='OUI',
+G0_C1=CALC_G(  RESULTAT=CHAMDEPL,
                OPTION='CALC_G_GLOB',THETA=_F(THETA=THETA1), 
             )
 
@@ -99,8 +99,7 @@ G0_C1=CALC_G(  RESULTAT=CHAMDEPL, TOUT_ORDRE='OUI',
 
 GLO1_LE5=CALC_G(  RESULTAT=CHAMDEPL,
                  THETA=_F(FOND_FISS=FISS1, 
-                          R_INF_FO=RAY_INF1,  R_SUP_FO=RAY_SUP1,),
-                       TOUT_ORDRE='OUI',  
+                          R_INF_FO=RAY_INF1,  R_SUP_FO=RAY_SUP1,),  
                        )
 
 #
@@ -125,7 +124,7 @@ THETA2=CALC_THETA(    MODELE=MO,  FOND_FISS=FISS1,
                                    R_SUP_FO = RAY_SUP2)
                     )
 
-G0_C2=CALC_G(  RESULTAT=CHAMDEPL, TOUT_ORDRE='OUI',
+G0_C2=CALC_G(  RESULTAT=CHAMDEPL,
                OPTION='CALC_G_GLOB',THETA=_F(THETA=THETA2),
             )
 
@@ -135,23 +134,18 @@ G0_C2=CALC_G(  RESULTAT=CHAMDEPL, TOUT_ORDRE='OUI',
 
 GLO2_LE5=CALC_G(  RESULTAT=CHAMDEPL,
                   THETA=_F(FOND_FISS=FISS1, 
-                            R_INF_FO=RAY_INF2,  R_SUP_FO=RAY_SUP2,),
-                          TOUT_ORDRE='OUI',)
+                            R_INF_FO=RAY_INF2,  R_SUP_FO=RAY_SUP2,),)
 
 #
 # IMPRESSION DES RESULTATS
 # ------------------------
 
 TEST_TABLE(       TABLE=G0_C1,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
                        NOM_PARA='G',
                            VALE=6.62069E-6,
                       PRECISION=0.01        )
 
 TEST_TABLE(       TABLE=G0_C2,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
                        NOM_PARA='G',
                            VALE=6.62069E-6,
                       PRECISION=0.01        )
@@ -160,70 +154,70 @@ TEST_TABLE(       TABLE=GLO1_LE5,
                    NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                               VALE_K = 'N71'),
-                       VALE=0.260275E-5,
+                       VALE=0.52055E-5,
                   PRECISION=0.12       )
 
 TEST_TABLE(       TABLE=GLO1_LE5,
                    NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                               VALE_K = 'N68'),
-                       VALE=0.26996E-5,
+                       VALE=0.53992E-5,
                   PRECISION=0.13       )
 
 TEST_TABLE(       TABLE=GLO1_LE5,
                    NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                               VALE_K = 'N112'),
-                       VALE=0.34881E-5,
+                       VALE=0.69762E-5,
                   PRECISION=0.08       )
 
 TEST_TABLE(       TABLE=GLO1_LE5,
                    NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                               VALE_K = 'N106'),
-                       VALE=0.32246E-5,
+                       VALE=0.64492E-5,
                   PRECISION=0.08      )
 
 TEST_TABLE(       TABLE=GLO1_LE5,
                    NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                               VALE_K = 'N357'),
-                       VALE=0.31052E-5,
+                       VALE=0.62104E-5,
                   PRECISION=0.12       )
 
 TEST_TABLE(       TABLE=GLO2_LE5,
                    NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                               VALE_K = 'N71'),
-                       VALE=0.260275E-5,
+                       VALE=0.52055E-5,
                   PRECISION=0.12      )
 
 TEST_TABLE(       TABLE=GLO2_LE5,
                    NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                               VALE_K = 'N68'),
-                       VALE=0.26996E-5,
+                       VALE=0.53992E-5,
                   PRECISION=0.13       )
 
 TEST_TABLE(       TABLE=GLO2_LE5,
                    NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                               VALE_K = 'N112'),
-                       VALE=0.34881E-5,
+                       VALE=0.69762E-5,
                   PRECISION=0.08       )
 
 TEST_TABLE(       TABLE=GLO2_LE5,
                    NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                               VALE_K = 'N106'),
-                       VALE=0.32246E-5,
+                       VALE=0.64492E-5,
                   PRECISION=0.08       )
 
 TEST_TABLE(       TABLE=GLO2_LE5,
                    NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                               VALE_K = 'N357'),
-                       VALE=0.31052E-5,
+                       VALE=0.62104E-5,
                   PRECISION=0.12      )
 
 FIN()

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE PLAQUE FISSUREE EN TRACTION (CALCUL DES DERIVEES DE G)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -78,14 +78,11 @@ FOND=DEFI_FOND_FISS(   MAILLAGE=MA,
 
 
 G1=CALC_G(              RESULTAT=CHAMDEPL,
-                        NUME_ORDRE=1,
-                        THETA=_F(THETA=THETA1),
-                        SYME_CHAR='SYME',)
+                        THETA=_F(THETA=THETA1,SYME='OUI'),)
 
 DGE1=CALC_G(            RESULTAT=CHAMDEPL,
-                        THETA=_F(THETA=THETA1),
-                        SENSIBILITE = (YOUNG,),
-                        SYME_CHAR='SYME',)
+                        THETA=_F(THETA=THETA1,SYME='OUI'),
+                        SENSIBILITE = (YOUNG,),)
 
 TEST_TABLE(            TABLE=DGE1,
                        SENSIBILITE = (YOUNG,),
@@ -95,9 +92,8 @@ TEST_TABLE(            TABLE=DGE1,
                        PRECISION=5.E-3     )
 
 DGF1=CALC_G(            RESULTAT=CHAMDEPL,
-                        THETA=_F(THETA=THETA1),
-                        SENSIBILITE = (FORC,),
-                        SYME_CHAR='SYME',)
+                        THETA=_F(THETA=THETA1,SYME='OUI'),
+                        SENSIBILITE = (FORC,),)
 
 TEST_TABLE(            TABLE=DGF1,
                        SENSIBILITE = (FORC,),
@@ -114,7 +110,6 @@ GK1=CALC_G(             RESULTAT=CHAMDEPL,
                                      R_SUP = 30.,
                                      DIRECTION=( 1., 0., 0.,),
                                      FOND_FISS=FOND),
-                        SYME_CHAR='SYME',
                          OPTION='CALC_K_G')
 
 DGKE1=CALC_G(           SENSIBILITE = (YOUNG,),
@@ -123,7 +118,6 @@ DGKE1=CALC_G(           SENSIBILITE = (YOUNG,),
                                      R_SUP = 30.,
                                      DIRECTION=( 1., 0., 0.,),
                                      FOND_FISS=FOND),
-                        SYME_CHAR='SYME',
                         OPTION='CALC_K_G')
 
 TEST_TABLE(            TABLE=DGKE1,
@@ -143,7 +137,6 @@ DGKF1=CALC_G(           SENSIBILITE = (FORC,),
                                      R_SUP = 30.,
                                      DIRECTION=( 1., 0., 0.,),
                                      FOND_FISS=FOND),
-                        SYME_CHAR='SYME',
                         OPTION='CALC_K_G')
 
 
@@ -179,7 +172,6 @@ DGKP1=CALC_G(            SENSIBILITE = (PRES,),
                                      R_SUP = 30.,
                                      DIRECTION=( 1., 0., 0.,),
                                      FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
                          OPTION='CALC_K_G')
 
 
@@ -194,14 +186,11 @@ TEST_TABLE(            TABLE=DGKP1,
 # DEUXIEME COURONNE
 #-----------------------------------------------------------------------
 G2=CALC_G(              RESULTAT=CHAMDEPL,
-                        NUME_ORDRE=1,
-                        THETA=_F(THETA=THETA2),
-                        SYME_CHAR='SYME',)
+                        THETA=_F(THETA=THETA2,SYME='OUI'),)
 
 DGE2=CALC_G(            RESULTAT=CHAMDEPL,
-                        THETA=_F(THETA=THETA2),
-                        SENSIBILITE = (YOUNG,),
-                        SYME_CHAR='SYME',)
+                        THETA=_F(THETA=THETA2,SYME='OUI'),
+                        SENSIBILITE = (YOUNG,),)
 
 TEST_TABLE(             TABLE=DGE2,
                         SENSIBILITE = (YOUNG,),
@@ -211,9 +200,8 @@ TEST_TABLE(             TABLE=DGE2,
                         PRECISION=5.E-3     )
 
 DGF2=CALC_G(            RESULTAT=CHAMDEPL,
-                        THETA=_F(THETA=THETA2),
-                        SENSIBILITE = (FORC,),
-                        SYME_CHAR='SYME',)
+                        THETA=_F(THETA=THETA2,SYME='OUI'),
+                        SENSIBILITE = (FORC,),)
 
 TEST_TABLE(             TABLE=DGF2,
                         SENSIBILITE = (FORC,),
@@ -224,14 +212,11 @@ TEST_TABLE(             TABLE=DGF2,
 
 
 G1P=CALC_G(             RESULTAT=CHAMDEPL,
-                        NUME_ORDRE=1,
-                        THETA=_F(THETA=THETA1),
-                        SYME_CHAR='SYME',)
+                        THETA=_F(THETA=THETA1,SYME='OUI'),)
 
 DGE1P=CALC_G(           RESULTAT=CHAMDEP,
-                        THETA=_F(THETA=THETA1),
-                        SENSIBILITE = (YOUNG,),
-                        SYME_CHAR='SYME',)
+                        THETA=_F(THETA=THETA1,SYME='OUI'),
+                        SENSIBILITE = (YOUNG,),)
 
 
 TEST_TABLE(            TABLE=DGE1P,
@@ -242,9 +227,8 @@ TEST_TABLE(            TABLE=DGE1P,
                        PRECISION=5.E-3     )
 
 DGF1P=CALC_G(          RESULTAT=CHAMDEP,
-                       THETA=_F(THETA=THETA1),
-                       SENSIBILITE = (PRES,),
-                       SYME_CHAR='SYME',)
+                       THETA=_F(THETA=THETA1,SYME='OUI'),
+                       SENSIBILITE = (PRES,),)
 
 
 TEST_TABLE(           TABLE=DGF1P,
@@ -255,15 +239,12 @@ TEST_TABLE(           TABLE=DGF1P,
                       PRECISION=5.E-3     )
 
 G2P=CALC_G(           RESULTAT=CHAMDEPL,
-                      NUME_ORDRE=1,
-                      THETA=_F(THETA=THETA2),
-                      SYME_CHAR='SYME',)
+                      THETA=_F(THETA=THETA2,SYME='OUI'),)
 
 
 DGE2P=CALC_G(          RESULTAT=CHAMDEP,
-                       THETA=_F(THETA=THETA2),
-                       SENSIBILITE = (YOUNG,),
-                       SYME_CHAR='SYME',)
+                       THETA=_F(THETA=THETA2,SYME='OUI'),
+                       SENSIBILITE = (YOUNG,),)
 
 
 TEST_TABLE(            TABLE=DGE2P,
@@ -274,9 +255,8 @@ TEST_TABLE(            TABLE=DGE2P,
                        PRECISION=5.E-3     )
 
 DGF2P=CALC_G(          RESULTAT=CHAMDEP,
-                       THETA=_F(THETA=THETA2),
-                       SENSIBILITE = (PRES,),
-                       SYME_CHAR='SYME',)
+                       THETA=_F(THETA=THETA2,SYME='OUI'),
+                       SENSIBILITE = (PRES,),)
 
 
 TEST_TABLE(            TABLE=DGF2P,

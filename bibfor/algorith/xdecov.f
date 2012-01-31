@@ -1,19 +1,20 @@
       SUBROUTINE XDECOV(NDIM,ELP,NNOP,NNOSE,IT,PINTT,CNSET,
      &                 HEAVT,NCOMP,LSN,FISCO,IGEOM,NFISS,
      &                 IFISS,PINTER,NINTER,NPTS,AINTER,NSE,CNSE,HEAV,
-     &                 NFISC)
+     &                 NFISC,NSEMAX)
       IMPLICIT NONE
 
-      REAL*8        LSN(*),PINTT(*)
+      REAL*8        LSN(*),PINTT(*),PINTER(*),AINTER(*)
       INTEGER       NDIM,NNOP,NNOSE,IT,CNSET(*),HEAVT(*),NCOMP,IGEOM
       INTEGER       NINTER,NPTS,NFISS,IFISS,NSE,CNSE(6,6),FISCO(*),NFISC
-      CHARACTER*24  PINTER,AINTER,HEAV
+      INTEGER       NSEMAX
+      REAL*8        HEAV(*)
       CHARACTER*8   ELP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 31/01/2012   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -43,6 +44,7 @@ C       PINTER   : COORDONNÃ‰ES DES POINTS D'INTERSECTION
 C       NINTER   : NB DE POINTS D'INTERSECTION
 C       NPTS     : NB DE PTS D'INTERSECTION COINCIDANT AVEC UN NOEUD
 C       AINTER   : INFOS ARETE CORRESPONDATE AU PT INTERSECTION
+C       NSEMAX   : NOMBRE DE SOUS-ELT MAX (TETRAS)
 C
 C     SORTIE
 C       NSE      : NOMBRE DE SOUS-ELTS (TETRAS)
@@ -68,7 +70,6 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       REAL*8          XYZ(4,3),AB(3),AC(3),AD(3),VN(3),PS,GEOM(3)
       REAL*8          SOMLSN(NFISC+1),FF(NNOP),RBID,RBID2(NDIM)
-      INTEGER         JPTINT,JAINT,JHEAV
       INTEGER         IN,INH,I,J,AR(12,3),NBAR,ISE,IBID
       INTEGER         A1,A2,A3,A4,A,B,C,NDIME
       CHARACTER*8     TYPMA,ELRESE(3)
@@ -98,9 +99,6 @@ C     NDIME EST DIMENSION DE L'ELEMENT FINI
 C     PAR EXEMPLE, POUR LES ELEMENT DE BORDS D'UN MAILLAGE 3D :
 C     NDIME = 2 ALORS QUE NDIM = 3
 
-      CALL JEVEUO(PINTER,'L',JPTINT)
-      CALL JEVEUO(AINTER,'L',JAINT)
-
       DO 10 IN=1,6
         DO 20 J=1,6
           CNSE(IN,J)=0
@@ -127,8 +125,8 @@ C         1 SEUL ELEMENT
             CNSE(1,IN)=CNSET(NNOSE*(IT-1)+IN)
  90       CONTINUE
         ELSEIF (NINTER .EQ. 2) THEN
-          A1=NINT(ZR(JAINT-1+ZXAIN*(1-1)+1))
-          A2=NINT(ZR(JAINT-1+ZXAIN*(2-1)+1))
+          A1=NINT(AINTER(ZXAIN*(1-1)+1))
+          A2=NINT(AINTER(ZXAIN*(2-1)+1))
           IF (NPTS .EQ. 2) THEN
 C           1 SEUL ELEMENT
             NSE=1
@@ -139,10 +137,10 @@ C           1 SEUL ELEMENT
 C           2 ELEMENTS
             NSE=2
             CALL ASSERT(A1.EQ.0.AND.A2.NE.0)
-            CNSE(1,1)=NINT(ZR(JAINT-1+ZXAIN*(NPTS-1)+2))
+            CNSE(1,1)=NINT(AINTER(ZXAIN*(NPTS-1)+2))
             CNSE(1,2)=102
             CNSE(1,3)=CNSET(NNOSE*(IT-1)+AR(A2,1))
-            CNSE(2,1)=NINT(ZR(JAINT-1+ZXAIN*(NPTS-1)+2))
+            CNSE(2,1)=NINT(AINTER(ZXAIN*(NPTS-1)+2))
             CNSE(2,2)=102
             CNSE(2,3)=CNSET(NNOSE*(IT-1)+AR(A2,2))
           ELSE
@@ -194,7 +192,7 @@ C         1 SEUL ELEMENT
             CNSE(1,IN)=CNSET(NNOSE*(IT-1)+IN)
  95       CONTINUE
         ELSEIF (NINTER .EQ. 1) THEN
-          A1=NINT(ZR(JAINT-1+ZXAIN*(1-1)+1))
+          A1=NINT(AINTER(ZXAIN*(1-1)+1))
           IF (NPTS .EQ. 1) THEN
 C           1 SEUL ELEMENT
             NSE=1
@@ -249,9 +247,9 @@ C         ON A UN SEUL ELEMENT
 
 C         2Â°) AVEC TROIS POINTS D'INTERSECTION
 C         ------------------------------------
-          A1=NINT(ZR(JAINT-1+ZXAIN*(1-1)+1))
-          A2=NINT(ZR(JAINT-1+ZXAIN*(2-1)+1))
-          A3=NINT(ZR(JAINT-1+ZXAIN*(3-1)+1))
+          A1=NINT(AINTER(ZXAIN*(1-1)+1))
+          A2=NINT(AINTER(ZXAIN*(2-1)+1))
+          A3=NINT(AINTER(ZXAIN*(3-1)+1))
 
           IF (NPTS.EQ.3) THEN
 C           ON A UN SEUL ELEMENT
@@ -264,18 +262,18 @@ C           ON A UN SEUL ELEMENT
 C           ON A DEUX SOUS-ELEMENTS
             NSE=2
             CALL ASSERT(A1.EQ.0.AND.A2.EQ.0)
-            CALL ASSERT(NINT(ZR(JAINT-1+2)).GT.0.AND.
-     &                  NINT(ZR(JAINT-1+ZXAIN+2)).GT.0)
+            CALL ASSERT(NINT(AINTER(2)).GT.0.AND.
+     &                  NINT(AINTER(ZXAIN+2)).GT.0)
 
 C           CONNECTIVITE DES NSE PAR RAPPORT AU NUM DE NOEUDS DU PARENT
 C           AVEC 101, 102 ET 103 LES 3 PTS D'INTERSECTION
 C           ON REMPLACE 101 ET 102 PAR LES NUMEROS DES NOEUDS COUPÉS
-            CNSE(1,1)=NINT(ZR(JAINT-1+2))
-            CNSE(1,2)=NINT(ZR(JAINT-1+ZXAIN+2))
+            CNSE(1,1)=NINT(AINTER(2))
+            CNSE(1,2)=NINT(AINTER(ZXAIN+2))
             CNSE(1,3)=103
             CNSE(1,4)=CNSET(NNOSE*(IT-1)+AR(A3,1))
-            CNSE(2,1)=NINT(ZR(JAINT-1+2))
-            CNSE(2,2)=NINT(ZR(JAINT-1+ZXAIN+2))
+            CNSE(2,1)=NINT(AINTER(2))
+            CNSE(2,2)=NINT(AINTER(ZXAIN+2))
             CNSE(2,3)=103
             CNSE(2,4)=CNSET(NNOSE*(IT-1)+AR(A3,2))
 
@@ -283,7 +281,7 @@ C           ON REMPLACE 101 ET 102 PAR LES NUMEROS DES NOEUDS COUPÉS
 C           ON A TROIS SOUS-ELEMENTS
             NSE=3
             CALL ASSERT(A1.EQ.0.AND.A2.NE.0)
-            CALL ASSERT(NINT(ZR(JAINT-1+2)).GT.0)
+            CALL ASSERT(NINT(AINTER(2)).GT.0)
 C           ON SE PLACE DANS LA CONF DE REF (VOIR ALGO)
             DO 30 I=1,2
               DO 40 J=1,2
@@ -295,15 +293,15 @@ C           ON SE PLACE DANS LA CONF DE REF (VOIR ALGO)
  40           CONTINUE
  30         CONTINUE
 C           ON REMPLACE 101 PAR LE NUMERO DU NOEUD COUPÉ
-            CNSE(1,1)=NINT(ZR(JAINT-1+2))
+            CNSE(1,1)=NINT(AINTER(2))
             CNSE(1,2)=102
             CNSE(1,3)=103
             CNSE(1,4)=CNSET(NNOSE*(IT-1)+A)
-            CNSE(2,1)=NINT(ZR(JAINT-1+2))
+            CNSE(2,1)=NINT(AINTER(2))
             CNSE(2,2)=102
             CNSE(2,3)=103
             CNSE(2,4)=CNSET(NNOSE*(IT-1)+C)
-            CNSE(3,1)=NINT(ZR(JAINT-1+2))
+            CNSE(3,1)=NINT(AINTER(2))
             CNSE(3,2)=102
             CNSE(3,3)=CNSET(NNOSE*(IT-1)+B)
             CNSE(3,4)=CNSET(NNOSE*(IT-1)+C)
@@ -350,10 +348,10 @@ C             PROBLEME DE DECOUPAGE Ã€ 3 POINTS
 
 C         2Â°) AVEC QUATRE POINTS D'INTERSECTION
 C          -------------------------------------
-          A1=NINT(ZR(JAINT-1+ZXAIN*(1-1)+1))
-          A2=NINT(ZR(JAINT-1+ZXAIN*(2-1)+1))
-          A3=NINT(ZR(JAINT-1+ZXAIN*(3-1)+1))
-          A4=NINT(ZR(JAINT-1+ZXAIN*(4-1)+1))
+          A1=NINT(AINTER(ZXAIN*(1-1)+1))
+          A2=NINT(AINTER(ZXAIN*(2-1)+1))
+          A3=NINT(AINTER(ZXAIN*(3-1)+1))
+          A4=NINT(AINTER(ZXAIN*(4-1)+1))
 
 C         ON A SIX SOUS-ELEMENTS (DANS TOUS LES CAS ?)
           NSE=6
@@ -398,7 +396,7 @@ C-----------------------------------------------------------------------
  220          CONTINUE
             ELSEIF (INH.GT.100.AND.INH.LT.1000) THEN
               DO 221 J=1,3
-                XYZ(IN,J)=ZR(JPTINT-1+NDIM*(INH-100-1)+J)
+                XYZ(IN,J)=PINTER(NDIM*(INH-100-1)+J)
  221          CONTINUE
             ELSE
               DO 222 J=1,3
@@ -432,12 +430,11 @@ C-----------------------------------------------------------------------
 C             MATRICE DES COORDONNÃ‰ES ET FONCTION HEAVYSIDE
 C             ALGO BOOK III (28/04/04)
 C-----------------------------------------------------------------------
-
-      CALL WKVECT(HEAV,'V V R',NSE*IFISS,JHEAV)
+      CALL ASSERT(NSE.LE.NSEMAX)
       DO 300 ISE=1,NSE
         DO 310 I =1,IFISS-1
 C ----- ON RECOPIE LES VALEURS PRÉCÉDENTES
-          ZR(JHEAV-1+IFISS*(ISE-1)+I)=HEAVT(NCOMP*(I-1)+IT)
+          HEAV(IFISS*(ISE-1)+I)=HEAVT(NCOMP*(I-1)+IT)
  310    CONTINUE
 C ----- ON TRAITE LA FISSURE COURANTE
         CALL VECINI(NFISC+1,0.D0,SOMLSN)
@@ -456,13 +453,13 @@ C           RECUP DE LA GÉOMETRIE
  330          CONTINUE
             ELSEIF (INH.LT.1000) THEN
               DO 340 J=1,NDIM
-                GEOM(J) = ZR(JPTINT-1+NDIM*(INH-101)+J)
+                GEOM(J) = PINTER(NDIM*(INH-101)+J)
  340          CONTINUE
             ENDIF
 C           CALCUL DES FF
 
 
-            CALL REEREF(ELP,AXI, NNOP,IBID,IGEOM,GEOM,IBID,LBID,
+            CALL REEREF(ELP,AXI, NNOP,IBID,ZR(IGEOM),GEOM,IBID,LBID,
      &              NDIM,RBID,RBID, RBID,
      &              IBID,IBID,IBID,IBID,IBID,IBID,RBID,RBID,'NON',
      &              RBID2,FF,RBID,RBID,RBID,RBID)
@@ -484,25 +481,23 @@ C
  360    CONTINUE
 C
         IF (SOMLSN(NFISC+1).LT.0.D0) THEN
-          ZR(JHEAV-1+IFISS*ISE) = -1.D0
+          HEAV(IFISS*ISE) = -1.D0
         ELSEIF (SOMLSN(NFISC+1).GT.0.D0) THEN
-          ZR(JHEAV-1+IFISS*ISE) = +1.D0
+          HEAV(IFISS*ISE) = +1.D0
         ELSE
 C       REMARQUE IMPORTANTE :
 C       SI ON EST SUR UN ELEMENT DE BORD COINCIDANT AVEC L'INTERCE
 C       (NDIME = NDIM - 1 ET NPTS = NINTER = NDIM) ALORS ON NE PEUT PAS
 C       DÃ‰TERMINER DE QUEL COTÃ‰ DE L'INTERFACE ON SE TROUVE, CAR
-C       ON EST TOUJOURS SUR L'INTERFACE. LA VALEUR DE ZR(JHEAV-1+ISE)
+C       ON EST TOUJOURS SUR L'INTERFACE. LA VALEUR DE HEAV(ISE)
 C       EST DONC FAUSSE DANS CE CAS : ON MET 99.
 C       UNE CORRECTION EST FAITE DANS XORIPE LORS DE L'ORIENTATION DES
-C       NORMALES, OU ON EN PROFITE POUR CORRIGER AUSSI ZR(JHEAV-1+ISE)
+C       NORMALES, OU ON EN PROFITE POUR CORRIGER AUSSI HEAV(ISE)
           CALL ASSERT(NDIME.EQ.NDIM-1.AND.NPTS.EQ.NDIM.AND.NSE.EQ.1)
-          ZR(JHEAV-1+IFISS*ISE) = 99.D0
+          HEAV(IFISS*ISE) = 99.D0
         ENDIF
 
  300  CONTINUE
-
-      CALL JEDETR(AINTER)
 
       CALL JEDEMA()
       END

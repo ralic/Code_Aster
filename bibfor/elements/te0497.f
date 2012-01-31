@@ -1,7 +1,7 @@
       SUBROUTINE TE0497(OPTION,NOMTE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 31/01/2012   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -395,7 +395,7 @@ C------------------------------------------------------------------
 C
 C 2.1. --- CALCUL DU DIAMETRE HK DE LA MAILLE ----
 C
-      CALL UTHK(NOMTE,IGEOM,HK,NDIM,ITAB,IBID,IBID,IBID,NIV,IFM)
+      CALL UTHK(NOMTE,ZR(IGEOM),HK,NDIM,ITAB,IBID,IBID,IBID,NIV,IFM)
 C
 C 2.2. --- CALCUL DE LA FORCE DE PESANTEUR ---
 C
@@ -553,7 +553,7 @@ C     REMARQUE : ON APPELLE LE PROGRAMME GENERIQUE POUR LE PREMIER POINT
 C                DE GAUSS, SACHANT QUE L'ORIENTATION NE DOIT PAS CHANGER
 C
       JKP = 1
-      CALL UTJAC(.TRUE.,IGEOM,JKP,IDFDE,0,IBID,NNO,ORIEN)
+      CALL UTJAC(.TRUE.,ZR(IGEOM),JKP,IDFDE,0,IBID,NNO,ORIEN)
 C
 C------------------------------------------------------------------
 C 2.3. CALCUL DES TERMES LIES AUX ARETES
@@ -591,7 +591,7 @@ C
 C --- CALCUL DES NORMALES, TANGENTES ET JACOBIENS AUX POINTS DE L'ARETE
 C
           IAUX = IFA
-          CALL CALNOR ( '2D' , IGEOM,
+          CALL CALNOR ( '2D' , ZR(IGEOM),
      &                  IAUX, NBS, NBNA, ORIEN,
      &                  IBID, IBID, ITAB, IBID, IBID, IBID,
      &                  JACO, NX, NY, R8BID3,

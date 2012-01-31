@@ -1,8 +1,8 @@
       SUBROUTINE ZEROFC(F,XMIN,XMAX,PREC,NITER,DP,IRET,NIT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 30/01/2012   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,76 +22,48 @@ C ======================================================================
       REAL*8             XMIN,XMAX,PREC,DP
 C ----------------------------------------------------------------------
 C     RECHERCHE DU ZERO DE F. ON SAIT QUE VAL0=F(0) < 0 ET F CROISSANTE
-C     APPEL A ZEROCO (METHODE DE CORDE) APRES RECHERCHE DE DPMAX TEL QUE
-C     F(DPMAX) > 0.
+C     APPEL A ZEROCO (METHODE DE CORDE)
 C
 C IN  F       : FONCTION F
 C IN  XMIN    : VALEUR DE X POUR LAQUELLE F(X) < 0 (XMIN = 0 EN GENERAL)
 C IN  XMAX    : ESTIMATION DE LA VALEUR DE X POUR LAQUELLE F > 0
 C IN  PREC    : PRECISION ABSOLUE : LA SOLUTION EST TELLE QUE F(DP)<PREC
-C IN  NITER   : NOMBRE D'ITERATIONS MAXIMUM (ITER_INTE_MAXI)
+C IN  NITER   : NOMBRE D'ITERATIONS MAXIMUM
 C OUT DP      : SOLUTION : ACCROISSEMENT DE LA VARIABLE INTERNE P
 C OUT IRET    : CODE RETOUR : IRET = 0 : OK
-C             :               IRET = 1 : ON NE TROUVE PAS DPMAX
-C             :               IRET = 2 : NITER INSUFFISANT
-C             :               IRET = 3 : F(XMIN) > 0
+C             :               SINON : PB
 C OUT NIT     : NOMBRE D'ITERATIONS NECESSAIRE POUR CONVERGER
 C
       REAL*8  X(4),Y(4),BB,FB,F,YMIN
       INTEGER I,NIT
 C DEB ------------------------------------------------------------------
-      X(1)  = XMIN
-      YMIN  = F(XMIN)
-      IF (ABS(YMIN).LT.PREC) THEN
-         DP = XMIN
-         GOTO 40
-      ELSEIF (YMIN.GT.0.D0) THEN
-         IRET = 3
-         CALL U2MESS('A','ALGORITH11_76')
-         GOTO 9999
-      ENDIF
-      Y(1)  = YMIN
+C
+      NIT  = 0
+      IRET = 1
+      X(1) = XMIN
+      Y(1) = F(XMIN)
+      X(2) = XMAX
+      Y(2) = F(XMAX)
+      X(3) = X(1)
+      Y(3) = Y(1)
+      X(4) = X(2)
+      Y(4) = Y(2)
 
-C     FA < 0 ON CHERCHE DONC BB TEL QUE FB > 0
-      BB = XMAX
-      DO 10 I=1,NITER
-         FB = F(BB)
-         IF ( ABS(FB).LT.PREC) THEN
-            DP=BB
-            NIT=0
-            IRET=0
-            GOTO 40
-         ENDIF
-         IF (FB.GE.0.D0) THEN
-            X(2)  = BB
-            Y(2)  = FB
-            GOTO 30
-         ELSE
-            BB = BB * 10.D0
-         ENDIF
-10    CONTINUE
-         CALL U2MESS('A','ALGORITH8_12')
-         IRET = 1
-         GOTO 9999
-30    CONTINUE
-C     CALCUL DE X(4) SOLUTION EQUATION SCALAIRE F=0
-      X(3)  = X(1)
-      Y(3)  = Y(1)
-      X(4)  = X(2)
-      Y(4)  = Y(2)
       DO 20 I = 1,NITER
-         IF ( ABS(Y(4)).LT.PREC) GOTO 40
-         CALL ZEROCO(X,Y)
-         DP = X(4)
-         Y(4) = F(DP)
+
+C       SOLUTION TROUVEE : ON SORT
+        IF (ABS(Y(4)).LT.PREC) THEN
+          IRET = 0
+          NIT=I
+          GOTO 9999
+        ENDIF
+
+        CALL ZEROCO(X,Y)
+
+        DP = X(4)
+        Y(4) = F(DP)
+
 20    CONTINUE
-      CALL U2MESS('I','ALGORITH8_16')
-      CALL U2MESS('I','ALGORITH11_77')
-      IRET = 2
-      NIT = I
-      GOTO 9999
-40    CONTINUE
-      IRET = 0
+
 9999  CONTINUE
-      NIT = I
       END

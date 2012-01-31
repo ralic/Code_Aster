@@ -1,9 +1,9 @@
       SUBROUTINE CFNODB(CHAR  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 12/12/2011   AUTEUR DESOZA T.DESOZA 
+C MODIF MODELISA  DATE 30/01/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -59,14 +59,13 @@ C
       INTEGER      CFDISI,NZOCO ,NNOCO,IFORM,MMINFI
       CHARACTER*24 NODBL ,NODBL2
       INTEGER      JNODBL,JNODB2
-      CHARACTER*24 CONTNO,SANSNO, PSANS, PBARS, PBARM, PRACC
-      INTEGER      JNOCO ,JSANS ,JPSANS,JPBARS,JPBARM,JPRACC
+      CHARACTER*24 CONTNO,SANSNO, PSANS
+      INTEGER      JNOCO ,JSANS ,JPSANS
       INTEGER      IZONE ,IBID  ,NDOUBL,NVDBL
       INTEGER      IZONEA,IZONEB,NVDBA ,NVDBB
       INTEGER      NBNOE ,JDECNE,NBNOEA,NBNOEB
       INTEGER      NBNOM ,JDECNM,JDECEA,JDECEB
       INTEGER      NSANS ,JDECS ,NSANSA,JDECSA,NSANSB,JDECSB
-      INTEGER      NBARS ,NBARM ,NRACCA,NRACCB
       INTEGER      VALI(3)
 C
 C ----------------------------------------------------------------------
@@ -95,15 +94,6 @@ C
       CALL JEVEUO(SANSNO,'L',JSANS)
       PSANS  = DEFICO(1:16)//'.PSSNOCO'
       CALL JEVEUO(PSANS ,'L',JPSANS)
-C
-      IF (IFORM.EQ.2) THEN
-        PBARS  = DEFICO(1:16)//'.PBANOCO'
-        CALL JEVEUO(PBARS,'L',JPBARS)
-        PBARM  = DEFICO(1:16)//'.PBAMACO'
-        CALL JEVEUO(PBARM,'L',JPBARM)
-        PRACC  = DEFICO(1:16)//'.PRANOCO'
-        CALL JEVEUO(PRACC,'L',JPRACC)
-      ENDIF
 C
 C ----------------------------------------------------------------------
 C
@@ -135,17 +125,7 @@ C --------- NON !
             IF (NVDBL.NE.0) THEN
               VALI(1) = IZONE
               VALI(2) = ABS(NVDBL)
-              IF (IFORM.EQ.1) THEN
-                CALL U2MESI('F','CONTACT2_13',2,VALI)
-              ELSEIF (IFORM.EQ.2) THEN
-                NBARS = ZI(JPBARS+IZONE) - ZI(JPBARS+IZONE-1)
-                NBARM = ZI(JPBARM+IZONE) - ZI(JPBARM+IZONE-1)
-                IF (NBARS.EQ.0.AND.NBARM.EQ.0) THEN
-                  CALL U2MESI('F','CONTACT2_13',2,VALI)
-                ENDIF
-              ELSE
-                CALL ASSERT(.FALSE.)
-              ENDIF
+              CALL U2MESI('F','CONTACT2_13',2,VALI)
             ENDIF
           ELSE
             CALL ASSERT(.FALSE.)
@@ -208,11 +188,7 @@ C ----------------- LES NOEUDS RESTANTS SONT-ILS EXCLUS PAR LA ZONE B ?
                 VALI(1) = IZONEA
                 VALI(2) = IZONEB
                 VALI(3) = ABS(NDOUBL)
-                NRACCA = ZI(JPRACC+IZONEA) - ZI(JPRACC+IZONEA-1)
-                NRACCB = ZI(JPRACC+IZONEB) - ZI(JPRACC+IZONEB-1)
-                IF (NRACCA.EQ.0.AND.NRACCB.EQ.0) THEN
-                  CALL U2MESI('F','CONTACT2_16',3,VALI)
-                ENDIF
+                CALL U2MESI('F','CONTACT2_16',3,VALI)
               ELSE
                 CALL ASSERT(.FALSE.)
               ENDIF

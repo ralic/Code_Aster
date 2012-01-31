@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 17/01/2012   AUTEUR MACOCCO K.MACOCCO 
+#& MODIF COMMANDE  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,6 +52,9 @@ CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
              R_SUP_FO        =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
              MODULE_FO       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
              ),
+           b_no_fond_fiss      =BLOC(condition="FOND_FISS== None",  
+             SYME            =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
+             ),
             ),
 
          RESULTAT        =SIMP(statut='o',typ=(evol_elas,evol_noli,dyna_trans,mode_meca,mult_elas),),
@@ -91,7 +94,6 @@ CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
                TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE",into=("FIXE",) ),
                                  ),
          ),
-         SYME_CHAR       =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SYME","SANS") ),
 
          COMP_ELAS       =C_COMP_ELAS('CALC_G'),
 
@@ -110,10 +112,12 @@ CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
          ),
 
          LISSAGE         =FACT(statut='d',
-           DEGRE           =SIMP(statut='f',typ='I',defaut=5,into=(0,1,2,3,4,5,6,7) ),
            LISSAGE_THETA   =SIMP(statut='f',typ='TXM',defaut="LEGENDRE",into=("LEGENDRE","LAGRANGE","LAGRANGE_REGU"),),
            LISSAGE_G       =SIMP(statut='f',typ='TXM',defaut="LEGENDRE",into=("LEGENDRE","LAGRANGE",
                                  "LAGRANGE_NO_NO","LAGRANGE_REGU"),),
+                b_legen    =BLOC(condition="(LISSAGE_THETA=='LEGENDRE') or (LISSAGE_G=='LEGENDRE')",
+                  DEGRE           =SIMP(statut='f',typ='I',defaut=5,into=(0,1,2,3,4,5,6,7) ),                
+                ),
          ),
 
          OPTION          =SIMP(statut='o',typ='TXM',max=1,defaut='CALC_G',

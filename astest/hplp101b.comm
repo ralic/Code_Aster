@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE FISSURE AU CENTRE D'UNE PLAQUE MINCE RECTANGULAIRE FAISANT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -87,7 +87,6 @@ THETA0=CALC_THETA(       MODELE=MO,
 
 G0=CALC_G(      RESULTAT=DEP,
                         THETA=_F(THETA=THETA0),
-                        SYME_CHAR='SANS',
                         COMP_ELAS=_F( RELATION = 'ELAS',
                                       DEFORMATION = 'PETIT')
                       )
@@ -95,7 +94,6 @@ G0=CALC_G(      RESULTAT=DEP,
 DG0=CALC_G(     RESULTAT=DEP,
                         SENSIBILITE = (FORC),
                         THETA=_F(THETA=THETA0),
-                        SYME_CHAR='SANS',
                         COMP_ELAS=_F( RELATION = 'ELAS',
                                       DEFORMATION = 'PETIT')
                       )

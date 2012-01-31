@@ -1,9 +1,9 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE EPROUVETTE AVEC FISSURE CENTRALE XFEM
 # ssnv192a.para = tps_job 130 mem_job 512Mo mem_aster 50 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -300,10 +300,6 @@ elif fonction == 1 :
 #                   RESOLUTION
 #----------------------------------------------
 
-L_INS1=DEFI_LIST_REEL(DEBUT=0.0,
-                     INTERVALLE=_F(JUSQU_A=3.0,
-                                    NOMBRE=3,),);
-
 RESU1=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMA1,
                    EXCIT=(_F(CHARGE=CHXFEM),
@@ -336,14 +332,12 @@ for i in range(n) :
 
       SIF[k]=CALC_G(RESULTAT=RESU1,
                     OPTION='CALC_K_G',
-                    NUME_ORDRE=1,
                     THETA=_F( FISSURE=FISS,
                               R_INF=RI[i],
                               R_SUP=RS[i],
                               NUME_FOND=ifond),
                     LISSAGE=_F( LISSAGE_THETA='LAGRANGE',
-                                LISSAGE_G='LAGRANGE',
-                                DEGRE=4),
+                                LISSAGE_G='LAGRANGE',),
                   )
 
       IMPR_TABLE(TABLE=SIF[k])
@@ -380,7 +374,6 @@ for j in range(nb_fond) :
                         FISSURE=FISS,
                         MATER=ACIER,
                         RESULTAT=RESU1,
-                        NUME_ORDRE=1,
                         ABSC_CURV_MAXI=0.3,
                         NUME_FOND=ifond,
                         )

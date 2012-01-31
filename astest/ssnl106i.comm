@@ -1,9 +1,9 @@
-# MODIF  DATE 22/08/2011   AUTEUR GREFFET N.GREFFET 
+# MODIF  DATE 31/01/2012   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 # ssnl106i.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,15 +18,37 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
+#
+# ssnl106l.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 # VERSION DYNA_NON_LINE (QUASI_STATIQUE)
 
 
-DEBUT(CODE=_F(NOM='SSNL106I', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='SSNL106I', NIV_PUB_WEB='INTERNET'))
 
-MA=LIRE_MAILLAGE(  )
+#------- MAILLAGE FILAIRE DE LA POUTRE
+
+MA=LIRE_MAILLAGE()
+
+#------- MAILLAGE DE LA SECTION RECTANGULAIRE
+
+MA_RECT=LIRE_MAILLAGE(FORMAT='MED',UNITE=21,INFO=2)
+
+#------- MAILLAGE DE LA SECTION CIRCULAIRE
+
+MA_CERC=LIRE_MAILLAGE(FORMAT='MED',UNITE=22)
+
+GF=DEFI_GEOM_FIBRE(INFO=1,
+                   SECTION =( _F( GROUP_FIBRE='S_RECT',
+                                  MAILLAGE_SECT = MA_RECT, TOUT_SECT = 'OUI',
+                                  COOR_AXE_POUTRE = (0., 0.,),),
+                              _F( GROUP_FIBRE='S_CERC',
+                                  MAILLAGE_SECT = MA_CERC, TOUT_SECT = 'OUI',
+                                  COOR_AXE_POUTRE = (0., 0.,),),
+                             )
+                   )
 
 MO=AFFE_MODELE(        MAILLAGE=MA,
-     AFFE=_F( TOUT = 'OUI', PHENOMENE = 'MECANIQUE',MODELISATION = 'POU_D_TG')
+     AFFE=_F( TOUT = 'OUI', PHENOMENE = 'MECANIQUE',MODELISATION = 'POU_D_TGM')
                         )
 
 CAREL=AFFE_CARA_ELEM(   MODELE=MO,POUTRE=(
@@ -35,8 +57,12 @@ CAREL=AFFE_CARA_ELEM(   MODELE=MO,POUTRE=(
           CARA = (   'R',   ), VALE = (  0.1,)),
           # SECTION RECTANGLE  :
            _F(  GROUP_MA = 'GR1',   SECTION = 'RECTANGLE',
-          CARA = (   'HY', 'HZ',  ), VALE = (  0.2,  0.1, )))
-)
+          CARA = (   'HY', 'HZ',  ), VALE = (  0.2,  0.1, ))),
+                  GEOM_FIBRE=GF,
+                  MULTIFIBRE=(_F(GROUP_MA='GC1',GROUP_FIBRE='S_CERC'),
+                              _F(GROUP_MA='GR1',GROUP_FIBRE='S_RECT'),
+                     )
+                  )
 
 # ------ TRACTION SIMPLE AVEC ECROUISSAGE ------------------------------
 # AFFECTE SUR LA SECTION CERCLE
@@ -44,26 +70,35 @@ CAREL=AFFE_CARA_ELEM(   MODELE=MO,POUTRE=(
 MATC2=DEFI_MATERIAU(   ELAS=_F( E = 2.E11, NU = 0.3,
                               RHO=7850.0),
            ECRO_LINE=_F( D_SIGM_EPSI = 2.E9, SY = 150.E6),
-       VMIS_POUTRE=_F( NP = 4.7124E6,
-                MEY = 1.1781E5, MPY = 2.E5, CAY = 0.84, CBY = 0.002,
-                MEZ = 1.1781E5, MPZ = 2.E5, CAZ = 0.84, CBZ = 0.0002,
-                MPX = 1.E10)
                         )
 
 # AFFECTE SUR LA SECTION RECTANGLE
 
 MATR3=DEFI_MATERIAU(   ELAS=_F( E = 2.E11, NU = 0.3,
                               RHO=7850.0),
-           ECRO_FLEJOU=_F( EP = 2.E10, SY = 150.E6, SU = 160.E6, PUISS = 1.0),
-       VMIS_POUTRE=_F( NP = 3.0E6,
-                MEY = 1.1781E5, MPY = 2.E5, CAY = 0.84, CBY = 0.002,
-                MEZ = 1.1781E5, MPZ = 2.E5, CAZ = 0.84, CBZ = 0.0002,
-                MPX = 1.E10)
+           ECRO_LINE=_F( D_SIGM_EPSI = 0., SY = 150.E6),
                         )
 
-CHMAT1=AFFE_MATERIAU(   MAILLAGE=MA,AFFE=(
-                       _F( GROUP_MA = 'GC1', MATER = MATC2),
-                       _F( GROUP_MA = 'GR1', MATER = MATR3)))
+COMPPMFA=DEFI_COMPOR(GEOM_FIBRE=GF,
+                    MATER_SECT=MATR3,
+                    MULTIFIBRE=(
+                                 _F(GROUP_FIBRE='S_RECT', MATER=MATR3, RELATION='VMIS_ISOT_LINE'),
+                               ),
+                      )
+COMPPMFB=DEFI_COMPOR(GEOM_FIBRE=GF,
+                    MATER_SECT=MATC2,
+                    MULTIFIBRE=(
+                                 _F(GROUP_FIBRE='S_CERC', MATER=MATC2, RELATION='VMIS_ISOT_LINE'),
+                                  ),
+                      )
+CHMAT1=AFFE_MATERIAU(   MAILLAGE=MA,
+                        AFFE=(_F( GROUP_MA = 'GR1', MATER = MATR3),
+                              _F( GROUP_MA = 'GC1', MATER = MATC2)),
+                   AFFE_COMPOR= (
+                                  _F( GROUP_MA = 'GR1', COMPOR = COMPPMFA),
+                                  _F( GROUP_MA = 'GC1', COMPOR = COMPPMFB)))
+
+
 
 CHART=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=(
      _F( GROUP_NO = 'A', DX = 0., DY = 0., DZ = 0., DRX = 0., DRY = 0., DRZ = 0.),
@@ -90,19 +125,19 @@ REST=DYNA_NON_LINE(
                         CHAM_MATER=CHMAT1,
                          CARA_ELEM=CAREL,
 #  On impose explicitement une acceleration initiale nulle car la matrice de masse etant singuliere
-#  a cause du modele POU_D_TG (DDL de gauchissement sans masse), on ne peut calculer une acceleration non nulle :
+#  a cause du modele POU_D_TGM (DDL de gauchissement sans masse), on ne peut calculer une acceleration non nulle :
                          ETAT_INIT=_F(ACCE=ACCE0,),
                              EXCIT=_F(
                 CHARGE = CHART,
                 FONC_MULT = FONCT),COMP_INCR=(
                          _F(
-                RELATION = 'VMIS_POU_LINE',
-                
+                RELATION = 'MULTIFIBRE',
+
                 ITER_INTE_MAXI = 500,
                 GROUP_MA = 'GC1'),
                          _F(
-                RELATION = 'VMIS_POU_FLEJOU',
-                
+                RELATION = 'MULTIFIBRE',
+
                 ITER_INTE_MAXI = 500,
                 GROUP_MA = 'GR1')),
                          INCREMENT=_F(
@@ -116,46 +151,46 @@ REST=DYNA_NON_LINE(
 
 REST=CALC_ELEM( reuse=REST,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
+                  'EFGE_ELNO',),
                           RESULTAT=REST,
               )
-
 REST=CALC_ELEM( reuse=REST,
                      RESULTAT=REST,
                        OPTION='DEGE_ELNO'    )
+#IMPR_RESU(RESU=_F(RESULTAT=REST,NUME_ORDRE=21,NOM_CHAM=('DEGE_ELNO','VARI_ELGA','EFGE_ELNO')))
 
 TEST_RESU(RESU=(_F( RESULTAT = REST,
                  NUME_ORDRE = 11,
-                 NOM_CHAM = 'SIEF_ELNO',
+                 NOM_CHAM = 'EFGE_ELNO',
                  NOEUD = 'R3',
                  MAILLE = 'SR2',
                  NOM_CMP = 'N',
-                 VALE = 3.1230E+6, REFERENCE = 'ANALYTIQUE',
+                 VALE = 3.0E+6, REFERENCE = 'ANALYTIQUE',
                  PRECISION = 1.E-3),
            _F( RESULTAT = REST,
                  NUME_ORDRE = 21,
-                 NOM_CHAM = 'SIEF_ELNO',
+                 NOM_CHAM = 'EFGE_ELNO',
                  NOEUD = 'R3',
                  MAILLE = 'SR2',
                  NOM_CMP = 'N',
-                 VALE = 3.1529E+6, REFERENCE = 'ANALYTIQUE',
+                 VALE = 3.E+6, REFERENCE = 'ANALYTIQUE',
                  PRECISION = 1.E-3),
            _F( RESULTAT = REST,
                  NUME_ORDRE = 11,
-                 NOM_CHAM = 'SIEF_ELNO',
+                 NOM_CHAM = 'EFGE_ELNO',
                  NOEUD = 'C3',
                  MAILLE = 'SC2',
                  NOM_CMP = 'N',
-                 VALE = 4.75951E+6, REFERENCE = 'ANALYTIQUE',
-                 PRECISION = 1.E-3),
+                 VALE = 4.822395E+6, REFERENCE = 'ANALYTIQUE',
+                 PRECISION = 2.5E-2),
            _F( RESULTAT = REST,
                  NUME_ORDRE = 21,
-                 NOM_CHAM = 'SIEF_ELNO',
+                 NOM_CHAM = 'EFGE_ELNO',
                  NOEUD = 'C3',
                  MAILLE = 'SC2',
                  NOM_CMP = 'N',
-                 VALE = 4.80664E+06, REFERENCE = 'ANALYTIQUE',
-                 PRECISION = 1.E-3),
+                 VALE = 4.870141E+06, REFERENCE = 'ANALYTIQUE',
+                 PRECISION = 2.5E-2),
            _F( RESULTAT = REST,
                  NUME_ORDRE = 21,
                  NOM_CHAM = 'DEGE_ELNO',
@@ -166,20 +201,22 @@ TEST_RESU(RESU=(_F( RESULTAT = REST,
                  PRECISION = 1.E-3),
            _F( RESULTAT = REST,
                  NUME_ORDRE = 21,
-                 NOM_CHAM = 'VARI_ELNO',
-                 NOEUD = 'C3',
-                 MAILLE = 'SC2',
-                 NOM_CMP = 'V6',
-                 VALE = 3.00000E+06, REFERENCE = 'NON_REGRESSION',
-                 PRECISION = 1.E-3),
+                 NOM_CHAM = 'VARI_ELGA',
+                 POINT = 1,
+                 SOUS_POINT = 1,
+                 MAILLE = 'SR2',
+                 NOM_CMP = 'V1',
+                 VALE = 1.5E-3, REFERENCE = 'NON_REGRESSION',
+                 PRECISION = 2.E-1),
            _F( RESULTAT = REST,
                  NUME_ORDRE = 21,
-                 NOM_CHAM = 'VARI_ELNO',
-                 NOEUD = 'C3',
+                 NOM_CHAM = 'VARI_ELGA',
+                 POINT = 1,
+                 SOUS_POINT = 1,
                  MAILLE = 'SC2',
-                 NOM_CMP = 'V7',
-                 VALE = 1.02000E+00, REFERENCE = 'NON_REGRESSION',
-                 PRECISION = 1.E-3))
+                 NOM_CMP = 'V1',
+                 VALE = 1.5E-3, REFERENCE = 'ANALYTIQUE',
+                 PRECISION = 1.5E-2))
           )
 
 

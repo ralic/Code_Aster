@@ -3,7 +3,7 @@
       CHARACTER*16      OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 31/01/2012   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,8 +69,9 @@ C --- ------------------------------------------------------------------
       CHARACTER*8    NOMRES(3),K8BID,FAMI,POUM
       INTEGER        IBID,ITYPE,IREP,NBTERM,NNO,NC,NDIM,NDDL,I,IRET,J
       INTEGER        JDR,JDM,LORIEN,JDC,JMA,IACCE,IVECT,LVAPR,LVECT
-      INTEGER        JTMP
-      PARAMETER     (ZERO=0.0D0,UN=1.0D0)
+      INTEGER        NTERMX
+      PARAMETER     (ZERO=0.0D0,UN=1.0D0,NTERMX=144)
+      REAL*8         TEMPO(NTERMX)
       LOGICAL        LBID
 C --- ------------------------------------------------------------------
       CALL JEMARQ()
@@ -402,7 +403,6 @@ C                       VECTEUR DE TRAVAIL, ON FAIT LE PRODUIT
 
 C     MATRICES NON-SYMETRIQUES
       ELSE
-         CALL WKVECT('&&TE0041.TEMPO','V V R',NBTERM,JTMP)
          NDDL = NNO * NC
          DO 7 I = 1,NL2
             MATA3(I) = ZERO
@@ -500,9 +500,9 @@ C --- ---   OPTION DE CALCUL INVALIDE
          IF (IREP.EQ.1) THEN
 C --- ---   REPERE GLOBAL ==> PAS DE ROTATION ---
             DO 21 I = 1,NBTERM
-               ZR(JTMP+I-1) = ZR(JDC+I-1)
+               TEMPO(I) = ZR(JDC+I-1)
                IF (OPTION.EQ.'AMOR_MECA') THEN
-                  ZR(JTMP+I-1) = ZR(JTMP+I-1) + MATA4(I)
+                  TEMPO(I) = TEMPO(I) + MATA4(I)
                ENDIF
 21          CONTINUE
          ELSE IF (IREP.EQ.2)THEN
@@ -512,35 +512,35 @@ C --- ---   LOCAL ==> GLOBAL ---
      &           ZR(LORIEN+2) .EQ. 0.D0 ) THEN
 C --- --- ---  ANGLES NULS  ===>  PAS DE ROTATION ---
                DO 31 I = 1,NBTERM
-                  ZR(JTMP+I-1) = ZR(JDC+I-1)
+                  TEMPO(I) = ZR(JDC+I-1)
                   IF (OPTION.EQ.'AMOR_MECA') THEN
-                     ZR(JTMP+I-1) = ZR(JTMP+I-1) + MATA4(I)
+                     TEMPO(I) = TEMPO(I) + MATA4(I)
                   ENDIF
 31             CONTINUE
             ELSE
 C --- --- --- ANGLES NON NULS  ===>  ROTATION ---
 C              CALL MATROT ( ZR(LORIEN) , PGL )
                IF (NDIM.EQ.3) THEN
-                  CALL UTPPLG ( NNO, NC, PGL, ZR(JDC), ZR(JTMP) )
+                  CALL UTPPLG ( NNO, NC, PGL, ZR(JDC), TEMPO )
                   IF (OPTION.EQ.'AMOR_MECA') THEN
                      DO 26 I = 1,NBTERM
-                        ZR(JTMP+I-1) = ZR(JTMP+I-1) + MATA4(I)
+                        TEMPO(I) = TEMPO(I) + MATA4(I)
 26                   CONTINUE
                   ENDIF
                ELSEIF (NDIM.EQ.2) THEN
-                  CALL UT2PLG ( NNO, NC, PGL, ZR(JDC), ZR(JTMP) )
+                  CALL UT2PLG ( NNO, NC, PGL, ZR(JDC), TEMPO )
                ENDIF
             ENDIF
          ENDIF
 
          DO 27 I = 1,NDDL
             DO 28 J = 1,NDDL
-               ZR(JDM+(I-1)*NDDL+J-1)=ZR(JTMP+(J-1)*NDDL+I-1)
+               ZR(JDM+(I-1)*NDDL+J-1)=TEMPO((J-1)*NDDL+I)
 28          CONTINUE
 27       CONTINUE
       ENDIF
 
 9999  CONTINUE
-      CALL JEDETR('&&TE0041.TEMPO')
+
       CALL JEDEMA()
       END

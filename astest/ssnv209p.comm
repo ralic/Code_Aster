@@ -1,9 +1,9 @@
-# MODIF  DATE 24/10/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/01/2012   AUTEUR DESOZA T.DESOZA 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 # ssnv209p.para = tps_job 500 mem_job 800Mo mem_aster 20 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -131,14 +131,14 @@ CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
 CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                       FORMULATION    = 'XFEM',
                       ITER_FROT_MAXI = 12,
-                      ITER_CONT_MAXI = 5,
+                      ITER_CONT_MAXI = 4,
                       FROTTEMENT     = 'COULOMB',
                       REAC_GEOM      = 'CONTROLE',
-                      NB_ITER_GEOM   = 4,
+                      NB_ITER_GEOM   = 1,
                       ZONE = (_F(INTEGRATION   = 'NOEUD',
-                                 COULOMB       = 1.,   
+                                 COULOMB       = 1.0,   
                                  CONTACT_INIT  = 'OUI',
-                                 GLISSIERE     = 'NON',
+                                 GLISSIERE     = 'OUI',
                                  ALGO_CONT     = 'PENALISATION',
                                  ALGO_FROT     = 'PENALISATION',
                                  COEF_PENA_CONT= 1.E17,
@@ -322,7 +322,7 @@ TEST_TABLE(TABLE=DEP_PPA,
            TYPE_TEST='MAX',
            VALE=-2.3712819136401E-05,
            CRITERE='RELATIF',
-           PRECISION=preci,
+           PRECISION=preci*3,
            REFERENCE='AUTRE_ASTER',);
 
 TEST_TABLE(TABLE=DEP_PPA,
@@ -330,7 +330,7 @@ TEST_TABLE(TABLE=DEP_PPA,
            TYPE_TEST='MIN',
            VALE=-2.3712819136401E-05,
            CRITERE='RELATIF',
-           PRECISION=preci,
+           PRECISION=preci*3,
            REFERENCE='AUTRE_ASTER',);
 
 TEST_TABLE(TABLE=DEP_PPC,

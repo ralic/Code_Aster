@@ -1,8 +1,8 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 30/01/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE BIBLIO_65 FISSURE CENTRALE DANS UN BIMATERIAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -20,246 +20,302 @@
 #       PLAQUE RECTANGULAIRE FINIE SOUMISE A L'ACTION D'UNE TRACTION
 #       THETA = 30 DEGRES
 
-DEBUT( CODE=_F( NOM = 'SSLP311B',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='SSLP311B',NIV_PUB_WEB='INTERNET'))
 
 #
-MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),FORMAT='MED',  )
+MA=LIRE_MAILLAGE(FORMAT='MED',
+                 VERI_MAIL=_F(VERIF='OUI',),);
 
-MO=AFFE_MODELE(  MAILLAGE=MA, 
-      AFFE=_F( TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = 'C_PLAN'))
-
-#
-MAT1=DEFI_MATERIAU(ELAS=_F(  E = 20.E11, NU = 0.3, RHO = 0., ALPHA = 0.))
-
-MAT2=DEFI_MATERIAU(ELAS=_F(  E = 2.E11,  NU = 0.3, RHO = 0., ALPHA = 0.))
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='C_PLAN',),);
 
 #
-CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,AFFE=(
-                           _F(  GROUP_MA = 'VTOT1',  MATER = MAT1),
-                           _F(  GROUP_MA = 'LP3P4',  MATER = MAT1),
-                           _F(  GROUP_MA = 'LP2P3',  MATER = MAT1),
-                           _F(  GROUP_MA = 'VTOT2',  MATER = MAT2),
-                           _F(  GROUP_MA = 'LP7P8',  MATER = MAT2),
-                           _F(  GROUP_MA = 'LP6P7',  MATER = MAT2))
-                       )
+# CE BLOC SERT A VALIDER LA VARIABLE DE COMMANDE ESPACE
+# ON DEFINIT E COMME FONCTION DE L'ESPACE
+#
+CHGEOM=CREA_CHAMP(TYPE_CHAM='NOEU_GEOM_R',
+                  OPERATION='EXTR',
+                  MAILLAGE=MA,
+                  NOM_CHAM='GEOMETRIE',);
+
+def E(x,y) :
+#   a=tan(30deg)
+   a=sqrt(3.)/3.
+   if (y-a*x)  > 0. :  return 20.E11
+   if (y-a*x)  < 0. :  return  2.E11
+
+E_F = FORMULE(NOM_PARA=('X','Y'),VALE='E(X,Y)');
+
+NU_F=DEFI_CONSTANTE(VALE=0.3,);
+
+RHO_F=0.0;
+
+MAT=DEFI_MATERIAU(ELAS_FO=_F(E=E_F,NU=NU_F,RHO=RHO_F,),);
+
+#
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=(_F(GROUP_MA='VTOT1',MATER=MAT),
+                          _F(GROUP_MA='LP3P4',MATER=MAT),
+                          _F(GROUP_MA='LP2P3',MATER=MAT),
+                          _F(GROUP_MA='VTOT2',MATER=MAT),
+                          _F(GROUP_MA='LP7P8',MATER=MAT),
+                          _F(GROUP_MA='LP6P7',MATER=MAT),),
+                    AFFE_VARC=_F(NOM_VARC='GEOM',
+                                 CHAMP_GD=CHGEOM),);
 
 #
 #
-MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA, 
-                     CREA_GROUP_NO=_F( 
-                         GROUP_MA = ( 'LP3P4',  'LP2P3',  
-                                      'LP6P7',  'LP7P8',  ))
-                 )
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=_F(GROUP_MA=('LP3P4','LP2P3','LP6P7','LP7P8',),),);
 
 #
 #
-CH=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=( 
-            _F(  GROUP_NO = 'LP6P7',   DY = 0.),
-                     _F(  GROUP_NO = 'LP7P8',   DY = 0.),
-                     _F(  GROUP_NO = 'P6',      DX = 0.)),FORCE_CONTOUR=(
-            
-                     _F(  GROUP_MA = 'LP3P4',  FY = 100.E6), 
-                     _F(  GROUP_MA = 'LP2P3',  FY = 100.E6))
-
-                          )
+CH=AFFE_CHAR_MECA(MODELE=MO,
+                  DDL_IMPO=(_F(GROUP_NO='LP6P7',
+                               DY=0.,),
+                            _F(GROUP_NO='LP7P8',
+                               DY=0.,),
+                            _F(GROUP_NO='P6',
+                               DX=0.,),),
+                  FORCE_CONTOUR=(_F(GROUP_MA='LP3P4',
+                                    FY=100.E6,),
+                                 _F(GROUP_MA='LP2P3',
+                                    FY=100.E6,),),);
 
 #
-CHAMDEPL=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT, 
-                              EXCIT=_F( CHARGE = CH)
-                          )
+CHDEPL=MECA_STATIQUE(MODELE=MO,
+                     CHAM_MATER=CHMAT,
+                     EXCIT=_F(CHARGE=CH,),);
+
+MAT1=DEFI_MATERIAU(ELAS=_F(E=20.E11,NU = 0.3,RHO=0.,ALPHA=0.,),);
+
+MAT2=DEFI_MATERIAU(ELAS=_F(E=2.E11,NU=0.3,RHO=0.,ALPHA=0.,),);
+
+#
+CHMAT2=AFFE_MATERIAU(MAILLAGE=MA,
+                     AFFE=(_F(GROUP_MA='VTOT1',MATER = MAT1),
+                           _F(GROUP_MA='LP3P4',MATER = MAT1),
+                           _F(GROUP_MA='LP2P3',MATER = MAT1),
+                           _F(GROUP_MA='VTOT2',MATER = MAT2),
+                           _F(GROUP_MA='LP7P8',MATER = MAT2),
+                           _F(GROUP_MA='LP6P7',MATER = MAT2),),);
+
+CHAMDEPL=MECA_STATIQUE(MODELE=MO,
+                       CHAM_MATER=CHMAT2,
+                       EXCIT=_F(CHARGE=CH,),);
+
+#
+# ON VALIDE QUE LES DEUX DEFINITIONS DES MATERIAUX SONT EQUIVALENTES :
+#
+# AVEC DEUX MATERIAUX :
+#
+TEST_RESU(RESU=_F(RESULTAT=CHAMDEPL,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='DEPL',
+                  TYPE_TEST='SOMM_ABS',
+                  VALE=4.0000002676293E+05,
+                  REFERENCE='NON_REGRESSION',),);
+
+TEST_RESU(RESU=_F(RESULTAT=CHAMDEPL,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='SIEF_ELGA',
+                  TYPE_TEST='SOMM_ABS',
+                  VALE=3.6201732221381E+12,
+                  REFERENCE='NON_REGRESSION',),);
+#
+# AVEC UNE FORMULE FONCTION DE L'ESPACE :
+#
+TEST_RESU(RESU=_F(RESULTAT=CHDEPL,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='DEPL',
+                  TYPE_TEST='SOMM_ABS',
+                  VALE=4.0000002676293E+05,
+                  REFERENCE='AUTRE_ASTER',),);
+
+TEST_RESU(RESU=_F(RESULTAT=CHDEPL,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='SIEF_ELGA',
+                  TYPE_TEST='SOMM_ABS',
+                  VALE=3.6201732221381E+12,
+                  CRITERE='RELATIF',
+                  REFERENCE='AUTRE_ASTER',),);
 
 #
 # POINT DROIT
 #
-FOND1=DEFI_FOND_FISS(    MAILLAGE=MA,
-                            FOND_FISS=_F( GROUP_NO = ('P0',)),
-                      )
+FOND1=DEFI_FOND_FISS(MAILLAGE=MA,
+                     FOND_FISS=_F(GROUP_NO='P0',),);
 
 #
-THETA01A=CALC_THETA(    MODELE=MO,
-                          THETA_2D=_F(  GROUP_NO = ('P0',),
-                                     MODULE = 1.,
-                                     R_INF = 0.,
-                                     R_SUP = 0.001875E-2),
-                          DIRECTION=(0.866025404, 0.5, 0.,)
-                      )
+THETA01A=CALC_THETA(MODELE=MO,
+                    DIRECTION=(0.866025404,0.5,0.,),
+                    THETA_2D=_F(GROUP_NO='P0',
+                                MODULE=1.,
+                                R_INF=0.,
+                                R_SUP=0.001875E-2,),);
 
 #
-G01A=CALC_G(    RESULTAT=CHAMDEPL,
-                NUME_ORDRE=1,
-                THETA=_F(THETA=THETA01A),
-                      )
+G01A=CALC_G(THETA=_F(THETA=THETA01A,),
+            RESULTAT=CHAMDEPL,
+            OPTION='CALC_G',);
 
 #
-
-TEST_TABLE(       TABLE=G01A,
-                       NOM_PARA='G',
-                           VALE=8.484177E1,REFERENCE='ANALYTIQUE',
-                      PRECISION=0.05   )
-
-#
-THETA01B=CALC_THETA(    MODELE=MO,
-                          THETA_2D=_F(  GROUP_NO = ('P0',),
-                                     MODULE = 1.,
-                                     R_INF = 0.001875E-2,
-                                     R_SUP = 0.003750E-2),
-                          DIRECTION=(0.866025404, 0.5, 0.,)
-                      )
+TEST_TABLE(TABLE=G01A,
+           NOM_PARA='G',
+           VALE=84.84177,
+           PRECISION=0.05,
+           REFERENCE='ANALYTIQUE',);
 
 #
-G01B=CALC_G(    RESULTAT=CHAMDEPL,
-                NUME_ORDRE=1,
-                THETA=_F(THETA=THETA01B),
-                      )
+THETA01B=CALC_THETA(MODELE=MO,
+                    DIRECTION=(0.866025404,0.5,0.,),
+                    THETA_2D=_F(GROUP_NO='P0',
+                                MODULE=1.,
+                                R_INF=0.001875E-2,
+                                R_SUP=0.003750E-2,),);
 
 #
-
-TEST_TABLE(       TABLE=G01B,
-                       NOM_PARA='G',
-                           VALE=8.484177E1,REFERENCE='ANALYTIQUE',
-                      PRECISION=0.005   )
+G01B=CALC_G(THETA=_F(THETA=THETA01B,),
+            RESULTAT=CHAMDEPL,
+            OPTION='CALC_G',);
 
 #
-THETA01C=CALC_THETA(    MODELE=MO,
-                          THETA_2D=_F(  GROUP_NO = ('P0',),
-                                     MODULE = 1.,
-                                     R_INF = 0.003750E-2,
-                                     R_SUP = 0.005625E-2),
-                          DIRECTION=(0.866025404, 0.5, 0.,)
-                      )
+TEST_TABLE(TABLE=G01B,
+           NOM_PARA='G',
+           VALE=84.84177,
+           PRECISION=0.005,
+           REFERENCE='ANALYTIQUE',);
 
 #
-G01C=CALC_G(    RESULTAT=CHAMDEPL,
-                NUME_ORDRE=1,
-                THETA=_F(THETA=THETA01C),
-                      )
+THETA01C=CALC_THETA(MODELE=MO,
+                    DIRECTION=(0.866025404,0.5,0.,),
+                    THETA_2D=_F(GROUP_NO='P0',
+                                MODULE=1.,
+                                R_INF=0.003750E-2,
+                                R_SUP=0.005625E-2,),);
 
 #
-
-TEST_TABLE(       TABLE=G01C,
-                       NOM_PARA='G',
-                           VALE=8.484177E1,REFERENCE='ANALYTIQUE',
-                      PRECISION=0.005   )
+G01C=CALC_G(THETA=_F(THETA=THETA01C,),
+            RESULTAT=CHAMDEPL,
+            OPTION='CALC_G',);
 
 #
-THETA01D=CALC_THETA(    MODELE=MO,
-                          THETA_2D=_F(  GROUP_NO = ('P0',),
-                                     MODULE = 1.,
-                                     R_INF = 0.005625E-2,
-                                     R_SUP = 0.007500E-2),
-                          DIRECTION=(0.866025404, 0.5, 0.,)
-                      )
+TEST_TABLE(TABLE=G01C,
+           NOM_PARA='G',
+           VALE=84.84177,
+           PRECISION=0.005,
+           REFERENCE='ANALYTIQUE',);
 
 #
-G01D=CALC_G(    RESULTAT=CHAMDEPL,
-                NUME_ORDRE=1,
-                THETA=_F(THETA=THETA01D),
-                      )
+THETA01D=CALC_THETA(MODELE=MO,
+                    DIRECTION=(0.866025404,0.5,0.,),
+                    THETA_2D=_F(GROUP_NO='P0',
+                                MODULE=1.,
+                                R_INF=0.005625E-2,
+                                R_SUP=0.007500E-2,),);
 
 #
+G01D=CALC_G(THETA=_F(THETA=THETA01D,),
+            RESULTAT=CHAMDEPL,
+            OPTION='CALC_G',);
 
-TEST_TABLE(       TABLE=G01D,
-                       NOM_PARA='G',
-                           VALE=8.484177E1,REFERENCE='ANALYTIQUE',
-                      PRECISION=0.005   )
+#
+TEST_TABLE(TABLE=G01D,
+           NOM_PARA='G',
+           VALE=84.84177,
+           PRECISION=0.005,
+           REFERENCE='ANALYTIQUE',);
 
 #
 #
 # POINT GAUCHE
 #
-FOND2=DEFI_FOND_FISS(    MAILLAGE=MA,
-                            FOND_FISS=_F( GROUP_NO = ('P0G',)),
-                       )
+FOND2=DEFI_FOND_FISS(MAILLAGE=MA,
+                     FOND_FISS=_F(GROUP_NO='P0G',),);
 
 #
-THETA02A=CALC_THETA(    MODELE=MO,
-                          THETA_2D=_F(  GROUP_NO = ('P0G',),
-                                     MODULE = 1.,
-                                     R_INF = 0.,
-                                     R_SUP = 0.001875E-2),
-                          DIRECTION=(-0.866025404, -0.5, 0.,)
-                      )
+THETA02A=CALC_THETA(MODELE=MO,
+                    DIRECTION=(-0.866025404,-0.5,0.,),
+                    THETA_2D=_F(GROUP_NO='P0G',
+                                MODULE=1.,
+                                R_INF=0.,
+                                R_SUP=0.001875E-2,),);
 
 #
-G02A=CALC_G(    RESULTAT=CHAMDEPL,
-                NUME_ORDRE=1,
-                THETA=_F(THETA=THETA02A),
-                      )
+G02A=CALC_G(THETA=_F(THETA=THETA02A,),
+            RESULTAT=CHAMDEPL,
+            OPTION='CALC_G',);
 
 #
-
-TEST_TABLE(       TABLE=G02A,
-                       NOM_PARA='G',
-                           VALE=8.001707E1,REFERENCE='ANALYTIQUE',
-                      PRECISION=0.05    )
+TEST_TABLE(TABLE=G02A,
+           NOM_PARA='G',
+           VALE=80.01707,
+           PRECISION=0.05,
+           REFERENCE='ANALYTIQUE',);
 
 #
 #
-THETA02B=CALC_THETA(    MODELE=MO,
-                          THETA_2D=_F(  GROUP_NO = ('P0G',),
-                                     MODULE = 1.,
-                                     R_INF = 0.001875E-2,
-                                     R_SUP = 0.003750E-2),
-                          DIRECTION=(-0.866025404, -0.5, 0.,)
-                      )
+THETA02B=CALC_THETA(MODELE=MO,
+                    DIRECTION=(-0.866025404,-0.5,0.,),
+                    THETA_2D=_F(GROUP_NO='P0G',
+                                MODULE=1.,
+                                R_INF=0.001875E-2,
+                                R_SUP=0.003750E-2,),);
 
 #
-G02B=CALC_G(    RESULTAT=CHAMDEPL,
-                NUME_ORDRE=1,
-                THETA=_F(THETA=THETA02B),
-                     )
+G02B=CALC_G(THETA=_F(THETA=THETA02B,),
+            RESULTAT=CHAMDEPL,
+            OPTION='CALC_G',);
 
 #
-
-TEST_TABLE(       TABLE=G02B,
-                       NOM_PARA='G',
-                           VALE=8.001707E1,REFERENCE='ANALYTIQUE',
-                      PRECISION=0.005   )
+TEST_TABLE(TABLE=G02B,
+           NOM_PARA='G',
+           VALE=80.01707,
+           PRECISION=0.005,
+           REFERENCE='ANALYTIQUE',);
 
 #
 #
-THETA02C=CALC_THETA(    MODELE=MO,
-                          THETA_2D=_F(  GROUP_NO = ('P0G',),
-                                     MODULE = 1.,
-                                     R_INF = 0.003750E-2,
-                                     R_SUP = 0.005625E-2),
-                          DIRECTION=(-0.866025404, -0.5, 0.,)
-                      )
+THETA02C=CALC_THETA(MODELE=MO,
+                    DIRECTION=(-0.866025404,-0.5,0.,),
+                    THETA_2D=_F(GROUP_NO='P0G',
+                                MODULE=1.,
+                                R_INF=0.003750E-2,
+                                R_SUP=0.005625E-2,),);
 
 #
-G02C=CALC_G(    RESULTAT=CHAMDEPL,
-                NUME_ORDRE=1,
-                THETA=_F(THETA=THETA02C),
-                      )
+G02C=CALC_G(THETA=_F(THETA=THETA02C,),
+            RESULTAT=CHAMDEPL,
+            OPTION='CALC_G',);
 
 #
-
-TEST_TABLE(       TABLE=G02C,
-                       NOM_PARA='G',
-                           VALE=8.001707E1,REFERENCE='ANALYTIQUE',
-                      PRECISION=0.005   )
-
-#
-THETA02D=CALC_THETA(    MODELE=MO,
-                          THETA_2D=_F(  GROUP_NO = ('P0G',),
-                                     MODULE = 1.,
-                                     R_INF = 0.005625E-2,
-                                     R_SUP = 0.007500E-2),
-                          DIRECTION=(-0.866025404, -0.5, 0.,)
-                      )
+TEST_TABLE(TABLE=G02C,
+           NOM_PARA='G',
+           VALE=80.01707,
+           PRECISION=0.005,
+           REFERENCE='ANALYTIQUE',);
 
 #
-G02D=CALC_G(    RESULTAT=CHAMDEPL,
-                NUME_ORDRE=1,
-                THETA=_F(THETA=THETA02D),
-                      )
+THETA02D=CALC_THETA(MODELE=MO,
+                    DIRECTION=(-0.866025404,-0.5,0.,),
+                    THETA_2D=_F(GROUP_NO='P0G',
+                                MODULE=1.,
+                                R_INF=0.005625E-2,
+                                R_SUP=0.007500E-2,),);
 
 #
+G02D=CALC_G(THETA=_F(THETA=THETA02D,),
+            RESULTAT=CHAMDEPL,
+            OPTION='CALC_G',);
 
-TEST_TABLE(       TABLE=G02D,
-                       NOM_PARA='G',
-                           VALE=8.001707E1,REFERENCE='ANALYTIQUE',
-                      PRECISION=0.005   )
+#
+TEST_TABLE(TABLE=G02D,
+           NOM_PARA='G',
+           VALE=80.01707,
+           PRECISION=0.005,
+           REFERENCE='ANALYTIQUE',);
 
 FIN()
-

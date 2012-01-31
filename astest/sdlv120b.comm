@@ -1,5 +1,5 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
-# TITRE ABSORPTION D'UNE ONDE DE COMPRESSION DANS UN BARREAU ELASTIQUE
+# MODIF  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
+# TITRE ABSORPTION D UNE ONDE DE COMPRESSION DANS UN BARREAU ELASTIQUE
 # sdlv120b.para = tps_job 980 mem_job 300Mo ncpus 1 liste_test L
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,7 +35,8 @@ MAIL=DEFI_GROUP( reuse=MAIL,   MAILLAGE=MAIL,CREA_GROUP_NO=(
                        _F(  GROUP_MA = 'SOLIDE'))
                      )
 
-MAT1=DEFI_MATERIAU( ELAS=_F(  E = 3.6E+10, RHO = 2400.,  NU = 0.2)
+MAT1=DEFI_MATERIAU( ELAS=_F(  E = 3.6E+10, RHO = 2400.,  NU = 0.2,
+                             AMOR_ALPHA=0., AMOR_BETA=0.,)
                     )
 
 MODELE=AFFE_MODELE(    MAILLAGE=MAIL,AFFE=(
@@ -70,6 +71,14 @@ MASS_ELE=CALC_MATR_ELEM(    MODELE=MODELE,
                               CHAM_MATER=CHAMPMAT,
                               CHARGE=COND_LIM
                             )
+                            
+AMOR_ELE=CALC_MATR_ELEM(    MODELE=MODELE,
+                              OPTION='AMOR_MECA',
+                              CHAM_MATER=CHAMPMAT,
+                              RIGI_MECA = RIGI_ELE,
+                              MASS_MECA = MASS_ELE,                              
+                              CHARGE=COND_LIM
+                            )
 
 VECTELEM=CALC_VECT_ELEM(    OPTION='CHAR_MECA',
                               CHAM_MATER=CHAMPMAT,
@@ -86,12 +95,16 @@ RIGIDITE=ASSE_MATRICE(    MATR_ELEM=RIGI_ELE,
 MASSE=ASSE_MATRICE(    MATR_ELEM=MASS_ELE,
                          NUME_DDL=NUMEDDL
                        )
+                       
+AMORT=ASSE_MATRICE(    MATR_ELEM=AMOR_ELE,
+                         NUME_DDL=NUMEDDL
+                       )
 
 VECTASS=ASSE_VECTEUR(    VECT_ELEM=VECTELEM,
                            NUME_DDL=NUMEDDL
                          )
 
-# --- LECTURE DE LA FONCTION D'EXCITATION ---
+# --- LECTURE DE LA FONCTION D EXCITATION ---
 INCLUDE(   UNITE=11,   INFO=1 )
 
 TEMPLI=DEFI_LIST_REEL(DEBUT=0., INTERVALLE=_F( JUSQU_A = 1.5, NOMBRE = 3000))
@@ -101,6 +114,7 @@ INTLI=DEFI_LIST_ENTI( DEBUT=1, INTERVALLE=_F( JUSQU_A = 3001, PAS = 1))
 DYN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                        MATR_MASS=MASSE,
                        MATR_RIGI=RIGIDITE,
+                       MATR_AMOR=AMORT,
                        EXCIT=_F(  VECT_ASSE = VECTASS,
                                   FONC_MULT = FONC),
 ####CDURAND            ETAT_INIT=_F(  INST_INIT = 0.),

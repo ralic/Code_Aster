@@ -1,4 +1,4 @@
-#@ MODIF xfem2 Messages  DATE 24/01/2012   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF xfem2 Messages  DATE 31/01/2012   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -52,6 +52,11 @@ cata_msg = {
 
 5 : _(u"""
   -> Avec GROT_GDEP + COMP_INCR, la modélisation axisymétrique n'est pas disponible.
+"""),
+
+6 : _(u"""
+  -> Le nombre de fissures est limité à %(i1)d, or vous en avez définies %(i2)d !
+     Veuillez contacter votre assistance technique.
 """),
 
 7 : _(u"""

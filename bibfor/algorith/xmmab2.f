@@ -1,16 +1,16 @@
       SUBROUTINE XMMAB2(NDIM  ,JNNE,NDEPLE,NNC   ,JNNM   ,
      &                  NFAES ,CFACE ,HPG   ,FFC   ,FFE   ,
-     &                  FFM   ,JACOBI,JPCAI, LAMBDA,COEFCR,
-     &                  COEFCP,COEFEC,COEFEF,JEU   ,COEFFR,
+     &                  FFM   ,JACOBI,JPCAI, LAMBDA,
+     &                  COEFFR,
      &                  COEFFP,LPENAF,COEFFF,TAU1  ,TAU2  ,
-     &                  RESE  ,NRESE ,MPROJ ,NORM  ,TYPMAI,
+     &                  RESE  ,NRESE ,MPROJ ,TYPMAI,
      &                  NSINGE,NSINGM,RRE   ,RRM   ,NVIT  ,
-     &                  NCONTA,JDDLE,JDDLM,NFHE,MMAT  )
+     &                  NCONTA,JDDLE,JDDLM,NFHE,MMAT  )   
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 30/01/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -31,9 +31,8 @@ C
       INTEGER  NDIM,NNC,JNNE(3),JNNM(3),NFAES,JPCAI,CFACE(5,3)
       INTEGER  NSINGE,NSINGM,NFHE
       INTEGER  NVIT,NCONTA,NDEPLE,JDDLE(2),JDDLM(2)
-      REAL*8   HPG,FFC(9),FFE(9),FFM(9),JACOBI,NORM(3),COEFCP
-      REAL*8   LAMBDA,COEFFF,COEFFR,RRE,RRM,COEFCR,JEU,COEFFP
-      REAL*8   COEFEC,COEFEF
+      REAL*8   HPG,FFC(8),FFE(8),FFM(8),JACOBI,NORM(3)
+      REAL*8   LAMBDA,COEFFF,COEFFR,RRE,RRM,COEFFP
       REAL*8   TAU1(3),TAU2(3),RESE(3),NRESE,MMAT(336,336),MPROJ(3,3)
       CHARACTER*8  TYPMAI
       LOGICAL  LPENAF
@@ -89,8 +88,8 @@ C
       INTEGER   I,J,K,L,M,II,JJ,INI,INJ,PLI,PLJ,XOULA,IIN,JJN,DDLE
       INTEGER   NNE,NNES,NNM,NNMS,DDLES,DDLEM,DDLMS,DDLMM
       REAL*8    C1(3),C2(3),C3(3),D1(3),D2(3),D3(3),H1(3),H2(3)
-      REAL*8    G(3,3),D(3,3),B(3,3),C(3,3),R(3,3),MP,MB,MBT,MM,MMT
-      REAL*8    F(3,3),TT(3,3)
+      REAL*8    G(3,3),D(3,3),B(3,3),R(3,3),MP,MB,MBT,MM,MMT
+      REAL*8    TT(3,3)
 C ----------------------------------------------------------------------
 C
 C --- INITIALISATIONS
@@ -160,15 +159,7 @@ C
 25      CONTINUE
 24    CONTINUE
 C
-C --- C = (P_B)[P_TAU]*(N)
-C
-      DO 8 I = 1,NDIM
-        DO 9 J = 1,NDIM
-          C(I,J) = B(1,I)*NORM(J)
-9       CONTINUE
-8     CONTINUE
-C
-C --- R = [TAU1,TAU2][K-ID][TAU1,TAU2]
+C --- R = [TAU1,TAU2][ID-K][TAU1,TAU2]
 C
       DO 857 K = 1,NDIM
         R(1,1) = (TAU1(K)-H1(K))*TAU1(K) + R(1,1)
@@ -186,15 +177,8 @@ C
         TT(2,2) = TAU2(I)*TAU2(I) + TT(2,2)
 301   CONTINUE
 C
-      IF(LPENAF) THEN
-        IF(LAMBDA.EQ.0.D0) THEN
-          MP = -COEFCP*COEFFF*HPG*JACOBI/COEFFP
-        ELSE
-          MP = LAMBDA*COEFFF*HPG*JACOBI
-        ENDIF
-      ELSE
-        MP = (LAMBDA-COEFCR*JEU)*COEFFF*HPG*JACOBI
-      ENDIF
+      MP = LAMBDA*COEFFF*HPG*JACOBI
+
       DDLE = DDLES*NNES+DDLEM*(NNE-NNES)
 
       IF (NNM.NE.0) THEN
@@ -204,11 +188,12 @@ C
       DO 70 L = 1,NDIM
         DO 10 K = 1,NDIM
           IF (L.EQ.1) THEN
+C SUPPRESSION DU TERME EN AT DANS LE CAS DU GLISSEMENT
             MB  = 0.D0
-            MBT = COEFFF*HPG*JACOBI*B(L,K)*COEFEC
+            MBT = 0.D0
           ELSE
-            IF(.NOT.LPENAF) MB  = NVIT*HPG*JACOBI*B(L,K)
-            IF(LPENAF)      MB = NVIT*HPG*JACOBI*B(L,K)*COEFEF
+            IF(.NOT.LPENAF) MB  = NVIT*MP*B(L,K)
+            IF(LPENAF)      MB  = 0.D0
             IF(.NOT.LPENAF) MBT = MP*B(L,K)
             IF(LPENAF)      MBT = 0.D0
           ENDIF
@@ -262,8 +247,8 @@ C
             MB  = -MP*COEFFP*D(L,K)
             MBT = -MP*COEFFP*D(L,K)
           ELSE
-            MB  = -MP*COEFFR*D(L,K)+COEFCR*COEFFF*HPG*JACOBI*C(L,K)
-            MBT = -MP*COEFFR*D(L,K)+COEFCR*COEFFF*HPG*JACOBI*C(K,L)
+            MB  = -MP*COEFFR*D(L,K)
+            MBT = -MP*COEFFR*D(L,K)
           ENDIF
           DO 200 I = 1,NDEPLE
             DO 210 J = 1,NDEPLE
@@ -379,12 +364,12 @@ C
         DO 510 K = 1,NDIM
           IF (L.EQ.1) THEN
             MB  = 0.D0
-            MBT = COEFFF*HPG*JACOBI*B(L,K)*COEFEC
+            MBT = 0.D0
           ELSE
-            IF(.NOT.LPENAF)MB  = NVIT*HPG*JACOBI*B(L,K)
-            IF(LPENAF) MB = NVIT*HPG*JACOBI*B(L,K)*COEFEF
+            IF(.NOT.LPENAF)MB  = NVIT*MP*B(L,K)
+            IF(LPENAF)     MB = 0.D0
             IF(.NOT.LPENAF) MBT = MP*B(L,K)
-            IF(LPENAF) MBT = 0.D0
+            IF(LPENAF)      MBT = 0.D0
           ENDIF
           DO 520 I = 1,NNC
             INI=XOULA(CFACE,NFAES,I,JPCAI,TYPMAI,NCONTA)
@@ -410,7 +395,7 @@ C
           IF(LPENAF) THEN
             MB  = -MP*COEFFP*D(L,K)
           ELSE
-            MB  = -MP*COEFFR*D(L,K)+COEFCR*COEFFF*HPG*JACOBI*C(L,K)
+            MB  = -MP*COEFFR*D(L,K)
           ENDIF
           DO 620 I = 1,NDEPLE
             DO 630 J = 1,NDEPLE
@@ -441,10 +426,9 @@ C
               II = PLI+K
               JJ = PLJ+L
               IF(LPENAF) THEN
-                MMAT(II,JJ) = HPG*FFC(I)*FFC(J)*JACOBI*TT(K,L)*
-     &           COEFEF*COEFEF/COEFFP
+                MMAT(II,JJ) = HPG*JACOBI*FFC(I)*FFC(J)*TT(K,L)
               ELSE
-                MMAT(II,JJ) =JACOBI*HPG*FFC(I)*FFC(J)*R(K,L)/COEFFR
+                MMAT(II,JJ) = MP*FFC(I)*FFC(J)*R(K,L)/COEFFR
               ENDIF
 430         CONTINUE
 420       CONTINUE

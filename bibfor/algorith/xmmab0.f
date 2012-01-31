@@ -1,13 +1,13 @@
       SUBROUTINE XMMAB0(NDIM  ,NNC   ,JNNE   ,NFAES ,
-     &                  JPCAI ,HPG   ,FFC   ,JACOBI,COEFCR,
-     &                  LPENAC,COEFEF,TYPMAI,CFACE ,TAU1  ,
+     &                  JPCAI ,HPG   ,FFC   ,JACOBI,
+     &                  LPENAC,TYPMAI,CFACE ,TAU1  ,
      &                  TAU2  ,JDDLE,NCONTA,
-     &                  NFHE,LMULTI,HEAVNO,MMAT  )
+     &                  NFHE,LMULTI,HEAVNO,MMAT  )  
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 30/01/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,7 +26,8 @@ C TOLE CRP_21
 C
       IMPLICIT NONE
       INTEGER  NDIM,NNC,JNNE(3),NFAES,JPCAI,CFACE(5,3),JDDLE(2)
-      REAL*8   HPG,FFC(8),JACOBI,COEFCR,COEFEF
+
+      REAL*8   HPG,FFC(8),JACOBI
       REAL*8   TAU1(3),TAU2(3)
       REAL*8   MMAT(336,336)
       CHARACTER*8  TYPMAI
@@ -97,10 +98,10 @@ C
               JJ = PLJ+K
               IF(LPENAC) THEN
                 MMAT(II,JJ) = HPG*FFC(I)*FFC(J)*
-     &           JACOBI*TT(L,K)*COEFEF
+     &           JACOBI*TT(L,K)
               ELSE
                 MMAT(II,JJ) = HPG*FFC(I)*FFC(J)*
-     &           JACOBI*TT(L,K)/COEFCR
+     &           JACOBI*TT(L,K)
               ENDIF
 281         CONTINUE
 282       CONTINUE

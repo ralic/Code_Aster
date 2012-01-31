@@ -1,15 +1,15 @@
-      SUBROUTINE XINTAR(ELP,NDIM,IA,JTABCO,JTABLS,INTAR)
+      SUBROUTINE XINTAR(ELP,NDIM,IA,TABCO,TABLS,INTAR)
       IMPLICIT NONE
 
-      INTEGER       IA,NDIM,JTABCO,JTABLS
+      INTEGER       IA,NDIM
       CHARACTER*8   ELP
-      REAL*8        INTAR(NDIM)
+      REAL*8        INTAR(NDIM),TABCO(*),TABLS(*)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 31/01/2012   AUTEUR REZETTE C.REZETTE 
 C TOLE CRS_1404
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -30,8 +30,8 @@ C
 C     ENTREE
 C       ELP     : TYPE DE L'ELEMENT
 C       IA      : NUMERO DE L'ARETE REPEREE SUR L'ELEMENT
-C       JTABCO  : COORDONNEES DES NOEUDS DE L'ELEMENT
-C       JTABLS  : VALEUR DES LSN DES NOEUDS DE L'ELEMENT
+C       TABCO   : COORDONNEES DES NOEUDS DE L'ELEMENT
+C       TABLS   : VALEUR DES LSN DES NOEUDS DE L'ELEMENT
 C
 C     SORTIE
 C       INTAR   : COORDONNÉES DES POINTS D'INTERSECTION
@@ -61,19 +61,19 @@ C---------------------------------------------------------------------
         MIN=0.D0
         IF (IA.EQ.1) THEN
 C ARETE 1-2-4
-          C1=ZR(JTABLS-1+2)
-          C2=ZR(JTABLS-1+4)
-          C3=ZR(JTABLS-1+1)
+          C1=TABLS(2)
+          C2=TABLS(4)
+          C3=TABLS(1)
         ELSEIF (IA.EQ.2) THEN
 C ARETE 2-3-5
-          C1=ZR(JTABLS-1+2)
-          C2=ZR(JTABLS-1+5)
-          C3=ZR(JTABLS-1+3)
+          C1=TABLS(2)
+          C2=TABLS(5)
+          C3=TABLS(3)
         ELSEIF (IA.EQ.3) THEN
 C ARETE 3-1-6
-          C1=ZR(JTABLS-1+3)
-          C2=ZR(JTABLS-1+6)
-          C3=ZR(JTABLS-1+1)
+          C1=TABLS(3)
+          C2=TABLS(6)
+          C3=TABLS(1)
         ENDIF
         A = 2*C1-4*C2+2*C3
         B = -C1+4*C2-3*C3
@@ -82,9 +82,9 @@ C ARETE 3-1-6
       ELSEIF(ELP.EQ.'SE3')THEN
         MAX=1.D0
         MIN=-1.D0
-        C1=ZR(JTABLS-1+1)
-        C2=ZR(JTABLS-1+2)
-        C3=ZR(JTABLS-1+3)
+        C1=TABLS(1)
+        C2=TABLS(2)
+        C3=TABLS(3)
         A = C1/2+C2/2-C3
         B = (C2-C1)/2
         C = C3
@@ -94,24 +94,24 @@ C ARETE 3-1-6
         MIN=-1.D0
         IF (IA.EQ.1) THEN
 C ARETE 1-2-5
-          C1=ZR(JTABLS-1+1)
-          C2=ZR(JTABLS-1+2)
-          C3=ZR(JTABLS-1+5)
+          C1=TABLS(1)
+          C2=TABLS(2)
+          C3=TABLS(5)
         ELSEIF (IA.EQ.2) THEN
 C ARETE 2-3-6
-          C1=ZR(JTABLS-1+2)
-          C2=ZR(JTABLS-1+3)
-          C3=ZR(JTABLS-1+6)
+          C1=TABLS(2)
+          C2=TABLS(3)
+          C3=TABLS(6)
         ELSEIF (IA.EQ.3) THEN
 C ARETE 3-4-7
-          C1=ZR(JTABLS-1+4)
-          C2=ZR(JTABLS-1+3)
-          C3=ZR(JTABLS-1+7)
+          C1=TABLS(4)
+          C2=TABLS(3)
+          C3=TABLS(7)
         ELSEIF (IA.EQ.4) THEN
 C ARETE 4-1-8
-          C1=ZR(JTABLS-1+1)
-          C2=ZR(JTABLS-1+4)
-          C3=ZR(JTABLS-1+8)
+          C1=TABLS(1)
+          C2=TABLS(4)
+          C3=TABLS(8)
         ENDIF
         A = C1/2+C2/2-C3
         B = -C1/2+C2/2
@@ -187,7 +187,7 @@ C ARETE 4-1-8
         CALL ASSERT(1.EQ.2)
       ENDIF
 
-      CALL REEREL(ELP,NNO,NDIM,JTABCO,XE,INTAR)
+      CALL REEREL(ELP,NNO,NDIM,TABCO,XE,INTAR)
 
 C---------------------------------------------------------------------
 C     FIN

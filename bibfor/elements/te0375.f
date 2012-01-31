@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 31/01/2012   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -225,7 +225,7 @@ C ----------------------------------------------------------------------
 C
 C 2.1. --- CALCUL DU DIAMETRE HK DE LA MAILLE ----
 C
-      CALL UTHK(NOMTE,IGEOM,HK,NDIM,ITAB,IBID,IBID,IBID,NIV,IFM)
+      CALL UTHK(NOMTE,ZR(IGEOM),HK,NDIM,ITAB,IBID,IBID,IBID,NIV,IFM)
 C
 C 2.2. --- CALCUL DE LA FORCE DE PESANTEUR ---
 C
@@ -420,13 +420,13 @@ CGN      WRITE(IFM,*) '. NPGF =', NPGF
 C
 C ----- CALCUL DU DIAMETRE HF DE LA FACE ----------
 C
-          IBID=0
-          CALL UTHK(NOMTE,IGEOM,HF,IBID,NOE,NNOSF,TYMVOL,IFA,NIV,IFM)
+         IBID=0
+         CALL UTHK(NOMTE,ZR(IGEOM),HF,IBID,NOE,NNOSF,TYMVOL,IFA,NIV,IFM)
 C
 C ------- CALCUL DE NORMALES ET JACOBIENS AUX POINTS DE GAUSS ----------
 C
           IAUX = IFA
-          CALL CALNOR ('3D', IGEOM,
+          CALL CALNOR ('3D', ZR(IGEOM),
      &                  IBID, IBID, IBID, R8BID,
      &                  NNOF, NPGF, NOE, IAUX, TYMVOL, IDFDXF,
      &                  JACO, NX, NY, NZ,

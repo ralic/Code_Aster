@@ -7,9 +7,9 @@ C ----------------------------------------------------------------------
       REAL*8   SOLU
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 30/01/2012   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,16 +26,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_7
 C
-C     RECHERCHE DU ZERO D'UNE FONCTION PAR LA METHODE DE BRENT
-C     (CF. NUMERICAL RECIPES IN FORTRAN P.354) : FONCT(X) = 0.
-C
-C     ON DONNE UN INTERVALLE (X1,X2). S'IL N'ENCADRE PAS DE MANIERE
-C     NON AMBIGUE LA SOLUTION (VALEURS DE SIGNE OPPOSE PRISES PAR LA
-C     FONCTION), ON APPELLE UNE ROUTINE QUI VA CHERCHER UN INTERVALLE
-C     ADMISSIBLE EN ELARGISSANT CELUI-LA.
-C
-C     ENSUITE, LA METHODE UTILISEE COMBINE INTERPOLATION QUADRATIQUE
-C     INVERSE ET BISSECTION.
+C     ROUTINE A RESORBER
 C ----------------------------------------------------------------------
 C
 C IN  : FONCT  : NOM DE LA FONCTION DONT ON CHERCHE LE ZERO.
@@ -49,17 +40,20 @@ C
 C ----------------- DECLARATION DES VARIABLES LOCALES ------------------
 C
       INTEGER SUCCES
-      REAL*8  EPS,A,B,C,D,E,FA,FB,FC,P,Q,R,S,XM,TOL1
+      REAL*8  EPS,A,B,C,D,E,FA,FB,FC,P,Q,R,S,XM,TOL1,XMULT
       PARAMETER (EPS = 1.D-20)
 C
 C ----------------------------------------------------------------------
 C
+C     ROUTINE A RESORBER
+      CALL ASSERT(.FALSE.)
       A = X1
       B = X2
       FA = FONCT(A)
       FB = FONCT(B)
+      XMULT=10.D0
       IF (FA*FB.GT.0.D0) THEN
-         CALL ENCADR (FONCT,X1,X2,F1,F2,NITMAX,SUCCES)
+         CALL ENCADR (FONCT,X1,X2,F1,F2,NITMAX,XMULT,SUCCES)
          IF (SUCCES.EQ.0) GO TO 9995
          A = X1
          B = X2
@@ -151,11 +145,9 @@ C
 C
    10 CONTINUE
 C
-      CALL U2MESS('F','ALGORITH11_74')
       GO TO 9999
 C
  9995 CONTINUE
-      CALL U2MESS('F','ALGORITH11_75')
 C
 C ----------------------------------------------------------------------
 C

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE  MURAKAMI 9.39 FISSURE EN QUART D'ELLIPSE AU COIN D'UN DISQUE
 #
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -148,12 +148,11 @@ RAY_SUP1=DEFI_CONSTANTE(   VALE=0.0025);
 
 
 GLO1=CALC_G(RESULTAT=CHAMDEPL,
-            SYME_CHAR='SYME',
             OPTION='CALC_K_G',
-            TOUT_ORDRE='OUI',
             THETA=_F(FISSURE=FISS1,
                      R_INF_FO=RAY_INF1,
-                     R_SUP_FO=RAY_SUP1,),
+                     R_SUP_FO=RAY_SUP1,
+                     SYME='OUI',),
             LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
                        LISSAGE_G='LAGRANGE',),
             INFO=2,
@@ -365,12 +364,11 @@ CHAMDEP2=MECA_STATIQUE(MODELE=MO,
                       );
 
 GLO2=CALC_G(RESULTAT=CHAMDEP2,
-            SYME_CHAR='SYME',
             OPTION='CALC_K_G',
-            TOUT_ORDRE='OUI',
             THETA=_F(FISSURE=FISS1,
                      R_INF_FO=RAY_INF1,
-                     R_SUP_FO=RAY_SUP1,),
+                     R_SUP_FO=RAY_SUP1,
+                     SYME='OUI',),
             LISSAGE=_F(
                        LISSAGE_THETA='LAGRANGE',
                        LISSAGE_G='LAGRANGE',),
@@ -405,12 +403,11 @@ TEST_TABLE(TABLE=GLO1,
            VERSION='8.2.1', )
 
 GLO3=CALC_G(RESULTAT=CHAMDEP2,
-            SYME_CHAR='SYME',
             OPTION='CALC_K_G',
-            TOUT_ORDRE='OUI',
             THETA=_F(FISSURE=FISS1,
                      R_INF_FO=RAY_INF1,
-                     R_SUP_FO=RAY_SUP1,),
+                     R_SUP_FO=RAY_SUP1,
+                     SYME='OUI',),
             INFO=2,
             );
 
@@ -424,12 +421,11 @@ TEST_TABLE(TABLE=GLO3,
            VERSION='8.2.1', )
 
 GLO4=CALC_G(RESULTAT=CHAMDEP2,
-            SYME_CHAR='SYME',
             OPTION='CALC_K_G',
-            TOUT_ORDRE='OUI',
             THETA=_F(FISSURE=FISS1,
                      R_INF_FO=RAY_INF1,
-                     R_SUP_FO=RAY_SUP1,),
+                     R_SUP_FO=RAY_SUP1,
+                     SYME='OUI',),
             LISSAGE=_F(
                        LISSAGE_THETA='LAGRANGE_REGU',
                        LISSAGE_G='LAGRANGE_REGU',),

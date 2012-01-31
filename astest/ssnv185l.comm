@@ -1,8 +1,8 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -187,8 +187,6 @@ CHF3=AFFE_CHAR_MECA_F(MODELE=MODELEK,
 #                   RESOLUTION
 #----------------------------------------------
 
-L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=1.0,NOMBRE=1,),);
-
 UTOT2=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMA1,
                    EXCIT=(_F(CHARGE=CHXFEM),
@@ -301,7 +299,6 @@ for i in range(0,nbc) :
 
    SIF2[i]=CALC_G(RESULTAT=UTOT2,
                   OPTION='CALC_K_G',
-                  NUME_ORDRE=1,
                   THETA=_F(FISSURE=FISS,
                            R_INF=RI[i],
                            R_SUP=RS[i],),
@@ -313,7 +310,6 @@ for i in range(0,nbc) :
 
    SIF3[i]=CALC_G(RESULTAT=UTOT3,
                   OPTION='CALC_K_G',
-                  NUME_ORDRE=1,
                   THETA=_F(FISSURE=FISS,
                            R_INF=RI[i],
                            R_SUP=RS[i],),

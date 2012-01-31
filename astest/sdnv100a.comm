@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
 # ======================================================================
 # TITRE IMPACT POUTRE AVEC ELEMENTS 3D SUR PLAN RIGIDE
 # sdnv100a.para = tps_job 80 mem_job 64Mo liste_test S
@@ -124,6 +124,7 @@ DEL=0.55
 #
 U=DYNA_NON_LINE(  SOLVEUR=_F(SYME='OUI',),
                   MODELE=MODE,  CHAM_MATER=CM,
+                  ENERGIE=_F(),
            EXCIT=(_F( CHARGE = CH,
                       FONC_MULT = RAMPE
                     ),

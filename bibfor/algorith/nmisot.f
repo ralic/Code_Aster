@@ -3,7 +3,7 @@
      &                   OPTION,SIGP,VIP,DSIDEP,DEMU,CINCO,IRET)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/01/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 30/01/2012   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,7 +70,7 @@ C      COMMONS COMMUNS A NMCRI2 ET NMISOT
       EXTERNAL NMCRI2
 C
       LOGICAL     CPLAN,PLASTI,INCO,DECH
-      REAL*8      DEPSTH(6),VALRES(3),EPSTHE,PM,CO,VAL0
+      REAL*8      DEPSTH(6),VALRES(3),EPSTHE,PM,CO
       REAL*8      DEPSMO,SIGMMO,E,NU,TROISK,RPRIM,RP,AIRERP
       REAL*8      SIELEQ,SIGEPS,SEUIL,DP,COEF,DSDE,SIGY,HYDRM,HYDRP
       REAL*8      KRON(6),DEPSDV(6),SIGMDV(6),SIGPDV(6),SIGDV(6),DUM
@@ -376,7 +376,6 @@ C       -------------------------------------------
               JPROL2 = JPROLP
               JVALE2 = JVALEP
               NBVAL2 = NBVALP
-              VAL0 = NMCRI1(0.D0)
               PRECR = CRIT(3) * SIGY
 C
 C             CALCUL DE L'APPROXIMATION : DP SANS CONTRAINTE PLANE
@@ -391,7 +390,8 @@ C
      &                      NU,PM,RP,RPRIM,AIRERP,SIELEQ,DP0)
               ENDIF
               XAP = DP0
-              CALL ZEROFO(NMCRI1,VAL0,XAP,PRECR,NITER,DP,IRET,IBID)
+              CALL ZEROFR(0,'DEKKER',NMCRI1,0.D0,XAP,PRECR,NITER,
+     &                    DP,IRET,IBID)
               IF(IRET.EQ.1) GOTO 9999
               IF (LINE.GT.0.5D0) THEN
                 RP = SIGY +RPRIM*(PM+DP)
@@ -415,10 +415,10 @@ C               RPRIM(PM+DP0)
                 RPRIM0 = UNSURN*SIGY*COCO * (COCO*(PM+DP0))**(UNSURN-1)
                 DP0 = DP0 / (1+RPRIM0/1.5D0/DEUXMU)
                 XAP   = DP0
-                VAL0  = NMCRI2(0.D0)
                 PRECR = CRIT(3) * SIGY
                 NITER = NINT(CRIT(1))
-                CALL ZEROFO(NMCRI2,VAL0,XAP,PRECR,NITER,DP,IRET,IBID)
+                CALL ZEROFR(0,'DEKKER',NMCRI2,0.D0,XAP,PRECR,NITER,
+     &                      DP,IRET,IBID)
                 IF(IRET.EQ.1) GOTO 9999
                 CALL ECPUIS(E,SIGY,ALFAFA,UNSURN,PM,DP,RP,RPRIM)
               ELSE

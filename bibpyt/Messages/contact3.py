@@ -1,8 +1,8 @@
-#@ MODIF contact3 Messages  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF contact3 Messages  DATE 30/01/2012   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -31,12 +31,6 @@ Le frottement est donc désactivé.
 Conseil : vérifiez que vous avez correctement défini le coefficient de frottement (mot-clé COULOMB) dans chaque zone.
 """),
 
-2 : _(u"""
-  La maille de fond de fissure de type POI1, introduite par le mot-clef MAILLE_FOND ou GROUP_MA_FOND,
-ne correspond pas à une extrémité du segment touchant le fond de fissure.
-
-"""),
-
 3 : _(u"""
   Pour la formulation de contact < %(k1)s > le couple :
   ALGO_CONT : < %(k2)s >
@@ -59,14 +53,6 @@ La direction d'appariement fixe données par le vecteur DIRE_APPA est nulle !
 16 : _(u"""
 Contact méthode continue.
 La méthode d'intégration n'est pas NOEUD, le champ VALE_CONT n'est pas créé.
-"""),
-
-17 : _(u"""
-Contact méthode continue.
-Avec un FOND_FISSURE, il est impossible d'utiliser les options suivantes:
-- LISSAGE = 'OUI' ou/et
-- NORMALE = 'ESCL' ou
-- NORMALE = 'MAIT_ESCL'
 """),
 
 18 : _(u"""

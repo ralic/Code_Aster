@@ -2,12 +2,13 @@
      &                    NEQ, ISTOC, IARCHI, TEXTE,
      &                    ALARM, IFM, TEMPS,
      &                    NBTYAR, TYPEAR, MASSE,
-     &                    DEPL, VITE, ACCE )
+     &                    DEPL, VITE, ACCE,
+     &                    FEXTE,FAMOR,FLIAI )
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -55,6 +56,7 @@ C
       INTEGER NBTYAR
 
       REAL*8 DEPL(NEQ), VITE(NEQ), ACCE(NEQ)
+      REAL*8 FEXTE(NEQ),FAMOR(NEQ),FLIAI(NEQ)
       REAL*8 TEMPS
 
       CHARACTER*8 MASSE
@@ -151,10 +153,22 @@ C
             DO 212 , IAUX = 1, NEQ
               ZR(JAUX+IAUX-1) = VITE(IAUX)
   212       CONTINUE
-          ELSE
+          ELSEIF ( TYPEAR(ITYPE).EQ.'ACCE' ) THEN
             DO 213 ,  IAUX = 1, NEQ
               ZR(JAUX+IAUX-1) = ACCE(IAUX)
   213       CONTINUE
+          ELSEIF ( TYPEAR(ITYPE).EQ.'FORC_EXTE' ) THEN
+            DO 214 ,  IAUX = 1, NEQ
+              ZR(JAUX+IAUX-1) = FEXTE(IAUX)
+  214       CONTINUE
+          ELSEIF ( TYPEAR(ITYPE).EQ.'FORC_AMOR' ) THEN
+            DO 215 ,  IAUX = 1, NEQ
+              ZR(JAUX+IAUX-1) = FAMOR(IAUX)
+  215       CONTINUE
+          ELSEIF ( TYPEAR(ITYPE).EQ.'FORC_LIAI' ) THEN
+            DO 216 ,  IAUX = 1, NEQ
+              ZR(JAUX+IAUX-1) = FLIAI(IAUX)
+  216       CONTINUE
           ENDIF
 C
           CALL JELIBE(CHAMNO)
@@ -167,14 +181,14 @@ C
       ISTOC = 1
 C
       IF ( LGCOMM.EQ.0 ) THEN
-        WRITE(IFM,2000) (TYPEAR(IAUX),IAUX=1,3), IARCHI, TEMPS
+        WRITE(IFM,2000) (TYPEAR(IAUX),IAUX=1,NBTYAR), IARCHI, TEMPS
       ELSE
         WRITE(IFM,2001) TEXTE(1:LGCOMM),
-     &                  (TYPEAR(IAUX),IAUX=1,3), IARCHI, TEMPS
+     &                  (TYPEAR(IAUX),IAUX=1,NBTYAR), IARCHI, TEMPS
       ENDIF
- 2000 FORMAT(1P,3X,'CHAMP(S) STOCKE(S):',3(1X,A4),
+ 2000 FORMAT(1P,3X,'CHAMP(S) STOCKE(S):',3(1X,A4),3(1X,A9),
      &             ' NUME_ORDRE:',I8,' INSTANT:',D12.5)
- 2001 FORMAT(1P,3X,A,1X,'CHAMP(S) STOCKE(S):',3(1X,A4),
+ 2001 FORMAT(1P,3X,A,1X,'CHAMP(S) STOCKE(S):',3(1X,A4),3(1X,A9),
      &             ' NUME_ORDRE:',I8,' INSTANT:',D12.5)
 C
       END

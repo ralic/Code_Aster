@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE TP RUPTURE : PLAQUE EN TRACTION 
 # forma05a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -98,7 +98,6 @@ G=CALC_G(OPTION='CALC_G',
                   R_SUP=RSUP,
                   DIRECTION=(1,0,0)
                   ),
-         SYME_CHAR='SYME'
          )
 
 IMPR_TABLE(TABLE=G)
@@ -110,7 +109,6 @@ GK=CALC_G(OPTION='CALC_K_G',
                    R_SUP=RSUP,
                    DIRECTION=(1,0,0)
                    ),
-          SYME_CHAR='SYME'
           )
 
 IMPR_TABLE(TABLE=GK),
@@ -120,8 +118,7 @@ IMPR_TABLE(TABLE=GK),
 K=POST_K1_K2_K3(MODELISATION='D_PLAN',
                 RESULTAT=RESU,
                 FOND_FISS=FISS,
-                MATER=MA,
-                ABSC_CURV_MAXI=RSUP,)
+                MATER=MA,)
 
 IMPR_TABLE(TABLE=K )
 

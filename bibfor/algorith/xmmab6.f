@@ -1,6 +1,6 @@
       SUBROUTINE XMMAB6(NDIM  ,NNOL ,NNOF, PLA,
      &                  IPGF,IVFF  ,FFC   ,JAC  ,
-     &                  NOEUD ,TAU1,TAU2,COEFEF,
+     &                  NOEUD ,TAU1,TAU2,
      &                  IFA,CFACE,LACT ,
      &                  MMAT )
 
@@ -9,13 +9,13 @@
       INTEGER     CFACE(5,3),IFA
       INTEGER     PLA(27),LACT(8)
       REAL*8      MMAT(216,216)
-      REAL*8      FFC(8),JAC,TAU1(3),TAU2(3),COEFEF
+      REAL*8      FFC(8),JAC,TAU1(3),TAU2(3)
       LOGICAL     NOEUD
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 30/01/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -114,7 +114,7 @@ C
           DO 152 K = 1,NDIM-1
             DO 153 L = 1,NDIM-1
               MMAT(PLI+K,PLJ+L) = MMAT(PLI+K,PLJ+L)+
-     &                            FFI*FFJ*METR(K,L)*JAC*COEFEF
+     &                            FFI*FFJ*METR(K,L)*JAC
 153         CONTINUE
 152       CONTINUE
 151     CONTINUE

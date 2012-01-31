@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
 # TITRE REPONSE TRANSITOIRE D'UN SYSTEME A UNE ACCELERATION IMPOSEE
 # sdld04a.para = tps_job 60 mem_job 164Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -346,6 +346,7 @@ L_INS=DEFI_LIST_REEL(  DEBUT=0.,
                            INTERVALLE=_F(  JUSQU_A = 0.1,  PAS = 0.01))
                            
 TRAN_LI1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                           ENERGIE=_F(),
                            MATR_MASS=MASSE,      MATR_RIGI=RIGIDITE,
                            SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                            INCREMENT=_F( LIST_INST = L_INST),
@@ -381,6 +382,7 @@ L_INS11=DEFI_LIST_REEL(  DEBUT=0.,
                            INTERVALLE=_F(  JUSQU_A = 0.06,  PAS = 0.01))
 
 TRAN_LI2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                             ENERGIE=_F(),
                              MATR_MASS=MASSE,   MATR_RIGI=RIGIDITE,
                              SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                              INCREMENT=_F( LIST_INST = L_INS1),
@@ -393,6 +395,7 @@ L_INS22=DEFI_LIST_REEL(  DEBUT=0.06,
                            INTERVALLE=_F(  JUSQU_A = 0.11,  PAS = 0.01))
                            
 TRAN_LI2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                             ENERGIE=_F(),
                              reuse=TRAN_LI2,   MATR_MASS=MASSE,   MATR_RIGI=RIGIDITE,
                              SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                              INCREMENT=_F( LIST_INST = L_INS2),
@@ -433,6 +436,7 @@ LISTDIF=DEFI_LIST_REEL(  DEBUT=0.,INTERVALLE=(
                            _F(  JUSQU_A = 0.06,   PAS = 0.001),),)
 
 TRAN_LI4=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                             ENERGIE=_F(),
                              MATR_MASS=MASSE,   MATR_RIGI=RIGIDITE,
                              SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',), 
                              INCREMENT=_F( LIST_INST=LISTDIF),
@@ -445,6 +449,7 @@ LIST=DEFI_LIST_REEL(  DEBUT=0.06,
                                     _F(  JUSQU_A = 0.11,  PAS = 0.001),),)
 
 TRAN_LI4=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                          ENERGIE=_F(),
                           reuse=TRAN_LI4,   MATR_MASS=MASSE,   MATR_RIGI=RIGIDITE,
                                SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',), 
 #                             INCREMENT=_F(  PAS = 0.001,
@@ -492,6 +497,7 @@ VITE_INI=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
                      RESULTAT=TRAN_LI2, NOM_CHAM='VITE', INST=0.06  )
 
 TRAN_LI3=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                             ENERGIE=_F(),
                              MATR_MASS=MASSE,   MATR_RIGI=RIGIDITE,
                              ETAT_INIT=_F( DEPL = DEPL_INI,
                                         VITE = VITE_INI),

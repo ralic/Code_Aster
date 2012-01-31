@@ -2,9 +2,9 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 31/01/2012   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -60,18 +60,17 @@ C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8   NOMPAR(4),NOMA,ELREFP,ELRESE(4),ENR,LAG
       CHARACTER*8   K8BID,ELREF
       CHARACTER*16  NOMTE,OPTION
-      CHARACTER*24  COORLO,GEOMLO,COORSE
-      INTEGER       JPINTT,JCNSET,JHEAVT,JLONCH,JCOORS,JLSN,JLST,K
+      INTEGER       JPINTT,JCNSET,JHEAVT,JLONCH,JLSN,JLST,K
       INTEGER       JPMILT,IRESE,NFISS,IFISS,JFISNO,JTAB(7),NCOMP
       INTEGER       IBID,IER,NDIM,NNO,NNOP,NNOPS,NPG,NNOS,KPG
       INTEGER       IPOIDS,IVF,IDFDE,IGEOM,IPRES,ITEMPS,IRES,I,J
       INTEGER       NFH,NFE,NSE,ISE
-      INTEGER       IN,INO,JCORLO,IGEOLO,IADZI,IAZK24,JSTNO
+      INTEGER       IN,INO,IADZI,IAZK24,JSTNO
       INTEGER       IFORC,IRET,IG,POS,NDIME,NDDL,DDLS
       REAL*8        Y(3),XG(4),RBID,FE(4),XE(2),LSNG,LSTG,RG,TG
-      REAL*8        PRES,FF(27),A(3),B(3),C(3),AB(3),AC(3)
+      REAL*8        PRES,FF(27),A(3),B(3),C(3),AB(3),AC(3),COORSE(81)
       REAL*8        ND(3),NORME,NAB,RB1(3),RB2(3),GLOC(2),N(3),CISA
-      REAL*8        AN(3),POIDS,DDOT,FORREP(3),VF, R
+      REAL*8        AN(3),POIDS,DDOT,FORREP(3),VF,R,COORLO(6),GEOMLO(81)
       LOGICAL       LBID,ISMALI,AXI,LTEATT
       REAL*8        RB3,RB4,KSIB,KSIG,DX,DY,DFF(1,3),SEG(3),R8PREM,JAC
       INTEGER       KK
@@ -185,25 +184,18 @@ C     RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT EN NSE SOUS ELEMENT
 C       BOUCLE D'INTEGRATION SUR LES NSE SOUS-ELEMENTS
       DO 110 ISE=1,NSE
 
-C       COORD DU SOUS-ELT EN QUESTION
-        COORSE='&&TE0036.COORSE'
-        CALL WKVECT(COORSE,'V V R',NDIM*NNO,JCOORS)
-
 C       BOUCLE SUR LES SOMMETS DU SOUS-TRIA (DU SOUS-SEG)
         DO 111 IN=1,NNO
           INO=ZI(JCNSET-1+NNO*(ISE-1)+IN)
           DO 112 J=1,NDIM
             IF (INO.LT.1000) THEN
-              ZR(JCOORS-1+NDIM*(IN-1)+J)=ZR(IGEOM-1+NDIM*(INO-1)+J)
+              COORSE(NDIM*(IN-1)+J)=ZR(IGEOM-1+NDIM*(INO-1)+J)
             ELSEIF (INO.GT.1000 .AND. INO.LT.2000) THEN
-              ZR(JCOORS-1+NDIM*(IN-1)+J)=
-     &                             ZR(JPINTT-1+NDIM*(INO-1000-1)+J)
+              COORSE(NDIM*(IN-1)+J)=ZR(JPINTT-1+NDIM*(INO-1000-1)+J)
             ELSEIF (INO.GT.2000 .AND. INO.LT.3000) THEN
-              ZR(JCOORS-1+NDIM*(IN-1)+J)=
-     &                             ZR(JPMILT-1+NDIM*(INO-2000-1)+J)
+              COORSE(NDIM*(IN-1)+J)=ZR(JPMILT-1+NDIM*(INO-2000-1)+J)
            ELSEIF (INO.GT.3000) THEN
-              ZR(JCOORS-1+NDIM*(IN-1)+J)=
-     &                             ZR(JPMILT-1+NDIM*(INO-3000-1)+J)
+              COORSE(NDIM*(IN-1)+J)=ZR(JPMILT-1+NDIM*(INO-3000-1)+J)
             ENDIF
  112      CONTINUE
  111    CONTINUE
@@ -213,13 +205,13 @@ C       ON RENOMME LES SOMMETS DU SOUS-ELEMENT
         CALL VECINI(3,0.D0,B)
         CALL VECINI(3,0.D0,AB)
         DO 113 J=1,NDIM
-          A(J)=ZR(JCOORS-1+NDIM*(1-1)+J)
-          B(J)=ZR(JCOORS-1+NDIM*(2-1)+J)
+          A(J)=COORSE(NDIM*(1-1)+J)
+          B(J)=COORSE(NDIM*(2-1)+J)
           AB(J)=B(J)-A(J)
           IF (.NOT.ISMALI(ELREF).AND.NDIM.EQ.2) THEN
-            C(J)=ZR(JCOORS-1+NDIM*(3-1)+J)
+            C(J)=COORSE(NDIM*(3-1)+J)
           ENDIF
-          IF (NDIM.EQ.3) C(J)=ZR(JCOORS-1+NDIM*(3-1)+J)
+          IF (NDIM.EQ.3) C(J)=COORSE(NDIM*(3-1)+J)
           IF (NDIM.EQ.3) AC(J)=C(J)-A(J)
  113    CONTINUE
 
@@ -232,38 +224,36 @@ C         CREATION DU REPERE LOCAL 2D : (AB,Y)
         ENDIF
 
 C       COORDONNÉES DES SOMMETS DE LA FACETTE DANS LE REPÈRE LOCAL
-        COORLO='&&TE0036.COORLO'
-        CALL WKVECT(COORLO,'V V R',6,JCORLO)
         IF (NDIME.EQ.2) THEN
-          ZR(JCORLO-1+1)=0.D0
-          ZR(JCORLO-1+2)=0.D0
-          ZR(JCORLO-1+3)=NAB
-          ZR(JCORLO-1+4)=0.D0
-          ZR(JCORLO-1+5)=DDOT(3,AC,1,AB,1)
-          ZR(JCORLO-1+6)=DDOT(3,AC,1,Y ,1)
+          COORLO(1)=0.D0
+          COORLO(2)=0.D0
+          COORLO(3)=NAB
+          COORLO(4)=0.D0
+          COORLO(5)=DDOT(3,AC,1,AB,1)
+          COORLO(6)=DDOT(3,AC,1,Y ,1)
         ELSEIF (NDIME.EQ.1) THEN
           IF (ISMALI(ELREF)) THEN
 C         EN LINEAIRE 2D
             CALL NORMEV(AB,NAB)
-            ZR(JCORLO-1+1)=0.D0
-            ZR(JCORLO-1+2)=0.D0
-            ZR(JCORLO-1+3)=NAB
-            ZR(JCORLO-1+4)=0.D0
-            ZR(JCORLO-1+5)=0.D0
-            ZR(JCORLO-1+6)=0.D0
+            COORLO(1)=0.D0
+            COORLO(2)=0.D0
+            COORLO(3)=NAB
+            COORLO(4)=0.D0
+            COORLO(5)=0.D0
+            COORLO(6)=0.D0
             CALL VECINI(3,0.D0,ND)
             ND(1) = AB(2)
             ND(2) = -AB(1)
           ELSEIF (.NOT.ISMALI(ELREF)) THEN
 C         EN QUADRATIQUE 2D
             KSIB=1.D0
-            CALL ABSCVF(NDIM,JCOORS,KSIB,NAB)
-            ZR(JCORLO-1+1)=0.D0
-            ZR(JCORLO-1+2)=0.D0
-            ZR(JCORLO-1+3)=NAB
-            ZR(JCORLO-1+4)=0.D0
-            ZR(JCORLO-1+5)=NAB/2
-            ZR(JCORLO-1+6)=0.D0
+            CALL ABSCVF(NDIM,COORSE,KSIB,NAB)
+            COORLO(1)=0.D0
+            COORLO(2)=0.D0
+            COORLO(3)=NAB
+            COORLO(4)=0.D0
+            COORLO(5)=NAB/2
+            COORLO(6)=0.D0
             SEG(1)=0.D0
             SEG(2)=NAB
             SEG(3)=NAB/2
@@ -272,18 +262,18 @@ C         EN QUADRATIQUE 2D
         ENDIF
 
 C       COORDONNÉES DES NOEUDS DE L'ELREFP DANS LE REPÈRE LOCAL
-        GEOMLO='&&TE0036.GEOMLO'
-        CALL WKVECT(GEOMLO,'V V R',NNOP*NDIME,IGEOLO)
-
+        DO 116 INO=1,NNOP*NDIME
+            GEOMLO(INO)=0.D0
+ 116    CONTINUE
         DO 114 INO=1,NNOP
           DO 115 J=1,NDIM
             N(J)=ZR(IGEOM-1+NDIM*(INO-1)+J)
             AN(J)=N(J)-A(J)
  115      CONTINUE
-          ZR(IGEOLO-1+NDIME*(INO-1)+1)=DDOT(NDIM,AN,1,AB,1)
+          GEOMLO(NDIME*(INO-1)+1)=DDOT(NDIM,AN,1,AB,1)
 
           IF (NDIME.EQ.2)
-     &      ZR(IGEOLO-1+NDIME*(INO-1)+2)=DDOT(NDIM,AN,1,Y ,1)
+     &      GEOMLO(NDIME*(INO-1)+2)=DDOT(NDIM,AN,1,Y ,1)
  114    CONTINUE
 
 C-----------------------------------------------------------------------
@@ -304,10 +294,10 @@ C          CE SERA FAIT PLUS TARD AVEC JAC = JAC X R
 
 C         CALCUL DU POIDS : POIDS = POIDS DE GAUSS * DET(J)
           IF     (NDIME.EQ.2) THEN
-            CALL DFDM2D(NNO,KPG,IPOIDS,IDFDE,ZR(JCORLO),RB1,RB2,POIDS)
+            CALL DFDM2D(NNO,KPG,IPOIDS,IDFDE,COORLO,RB1,RB2,POIDS)
           ELSEIF (NDIME.EQ.1) THEN
             KK = (KPG-1)*NNO
-            CALL DFDM1D(NNO,ZR(IPOIDS-1+KPG),ZR(IDFDE+KK),ZR(JCORLO),
+            CALL DFDM1D(NNO,ZR(IPOIDS-1+KPG),ZR(IDFDE+KK),COORLO,
      &            RB1,RB2,POIDS,RB3,RB4)
           ENDIF
         
@@ -320,7 +310,7 @@ C         COORDONNÉES RÉELLES LOCALES DU POINT DE GAUSS
           DO 210 J=1,NNO
             VF=ZR(IVF-1+NNO*(KPG-1)+J)
             DO 211 K=1,NDIME
-              GLOC(K)=GLOC(K)+VF*ZR(JCORLO-1+2*J+K-2)
+              GLOC(K)=GLOC(K)+VF*COORLO(2*J+K-2)
  211        CONTINUE
  210      CONTINUE
 
@@ -337,8 +327,8 @@ C           CALL ELRFDF(ELREF,KSIG,NDIME*NNO,DFF1,IB1,IB2)
             DX=0.D0
             DY=0.D0
             DO 212 I=1,NNO
-              DX = DX+DFF(1,I)*ZR(JCOORS-1+NDIM*(I-1)+1)
-              DY = DY+DFF(1,I)*ZR(JCOORS-1+NDIM*(I-1)+2)
+              DX = DX+DFF(1,I)*COORSE(NDIM*(I-1)+1)
+              DY = DY+DFF(1,I)*COORSE(NDIM*(I-1)+2)
  212        CONTINUE
             JAC=SQRT(DX*DX+DY*DY)
             IF (ABS(JAC).GT.R8PREM()) THEN
@@ -352,7 +342,7 @@ C           CALL ELRFDF(ELREF,KSIG,NDIME*NNO,DFF1,IB1,IB2)
 
 C         JUSTE POUR CALCULER LES FF AUX NOEUDS DE L'ELREFP
 
-          CALL REEREF(ELREFP,AXI,NNOP,IBID,IGEOLO,GLOC,IBID,.FALSE.,
+          CALL REEREF(ELREFP,AXI,NNOP,IBID,GEOMLO,GLOC,IBID,.FALSE.,
      &                   NDIME,RBID,RBID,RBID,IBID,IBID,IBID,
      &                   IBID,IBID,IBID,RBID,RBID,
      &                  'NON',XE,FF,RBID,RBID,RBID,RBID)
@@ -362,7 +352,7 @@ C         COORDONNES REELLES DU POINT DE GAUSS
           DO 220 I=1,NDIM
             DO 221 IN=1,NNO
               XG(I) = XG(I) + ZR(IVF-1+NNO*(KPG-1)+IN)
-     &                      * ZR(JCOORS-1+NDIM*(IN-1)+I)
+     &                      * COORSE(NDIM*(IN-1)+I)
  221        CONTINUE
  220      CONTINUE
 
@@ -498,10 +488,6 @@ C           TERME SINGULIER
 C-----------------------------------------------------------------------
 C         FIN DE LA BOUCLE SUR LES POINTS DE GAUSS DU SOUS-ELT
 C-----------------------------------------------------------------------
-
-        CALL JEDETR(COORSE)
-        CALL JEDETR(GEOMLO)
-        CALL JEDETR(COORLO)
 
  110  CONTINUE
 

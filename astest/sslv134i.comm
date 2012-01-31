@@ -1,9 +1,9 @@
-# MODIF  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
+# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE CALCUL K_I EN X-FEM AXI-SYMMETRIQUE
 # sslv134i.para = tps_job 150 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -106,7 +106,6 @@ TAB=CALC_G(THETA=_F(FISSURE=FISS,
                     R_INF=0.1,
                     R_SUP=0.3,),
            RESULTAT=RESU,
-           NUME_ORDRE=1,
            COMP_ELAS=_F(RELATION='ELAS',),
            OPTION='CALC_K_G',);
 
@@ -206,7 +205,6 @@ TAB_ROT=CALC_G(THETA=_F(FISSURE=FISS,
                     R_INF=0.1,
                     R_SUP=0.3,),
            RESULTAT=RESU_ROT,
-           NUME_ORDRE=1,
            COMP_ELAS=_F(RELATION='ELAS',),
            OPTION='CALC_K_G',);
 

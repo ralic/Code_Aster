@@ -1,4 +1,4 @@
-# MODIF  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -166,7 +166,6 @@ Gref  = 11.58648
 K1ref =  1.595769E6
 
 GLOC1=CALC_G(           RESULTAT=CHAMDEPL,
-                        NUME_ORDRE = 1,
                         THETA=_F(FOND_FISS=FISS,
                                  R_SUP=RSUP,
                                  R_INF=RINF,),
@@ -212,7 +211,6 @@ THETA1=CALC_THETA(  MODELE=MO,
 
 G0=CALC_G (  OPTION='CALC_G_GLOB',
              RESULTAT=CHAMDEPL,
-             NUME_ORDRE = 1,
              THETA=_F(THETA=THETA1),
                        )
 
@@ -232,7 +230,6 @@ TABL_K1=POST_K1_K2_K3(  MODELISATION='3D',
                         MATER=MAT,
                         FOND_FISS = FISS,
                         RESULTAT = CHAMDEPL,
-                        ABSC_CURV_MAXI=0.35,
                       )
 
 IMPR_TABLE(TABLE=TABL_K1)
@@ -242,7 +239,6 @@ TABL_KTO=POST_K1_K2_K3(  MODELISATION='3D',
               MATER=MAT,
               FOND_FISS = FISS,
               RESULTAT=CHAMDEPL,
-              ABSC_CURV_MAXI = 0.35,
               PREC_VIS_A_VIS = 0.05,
            )
 
@@ -329,7 +325,6 @@ TABL_KTM=POST_K1_K2_K3(MODELISATION='3D',
                        MATER=MAT,
                        FOND_FISS = FISSM,
                        RESULTAT=CHAMDEPL,
-                       ABSC_CURV_MAXI = 0.35,
                        PREC_VIS_A_VIS = 0.05,
            )
 
@@ -361,7 +356,6 @@ TABL_KTN=POST_K1_K2_K3(MODELISATION='3D',
                        MATER=MAT,
                        FOND_FISS = FISSN,
                        RESULTAT=CHAMDEPL,
-                       ABSC_CURV_MAXI = 0.35,
                        PREC_VIS_A_VIS = 0.05,
            )
 
@@ -388,7 +382,6 @@ TABL_K4=POST_K1_K2_K3(MODELISATION='3D',
                       FOND_FISS = FISSN,
                       RESULTAT = CHAMDEPL,
                       GROUP_NO = ('NOFF1','NOFF2',),
-                      ABSC_CURV_MAXI = 0.35,
                       PREC_VIS_A_VIS = 0.05,
                    )
 
@@ -409,7 +402,6 @@ TABL_K5=POST_K1_K2_K3(MODELISATION='3D',
                       RESULTAT = CHAMDEPL,
                       TYPE_MAILLAGE = 'LIBRE',
                       NB_NOEUD_COUPE = 4,
-                      ABSC_CURV_MAXI = 0.31,
                       PREC_VIS_A_VIS = 0.05,
                       )
 
@@ -431,7 +423,6 @@ TABL_K6=POST_K1_K2_K3(MODELISATION='3D',
                       TYPE_MAILLAGE = 'LIBRE',
                       NB_NOEUD_COUPE = 4,
                       GROUP_NO = ('NOFF1','NOFF2',),
-                      ABSC_CURV_MAXI = 0.31,
                       PREC_VIS_A_VIS = 0.05,
                    )
 

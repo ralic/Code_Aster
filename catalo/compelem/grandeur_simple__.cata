@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
+%& MODIF COMPELEM  DATE 30/01/2012   AUTEUR DESROCHE X.DESROCHES 
 % RESPONSABLE PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -1801,6 +1801,7 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        DPRE1P :
        DPRE1M :
        TRIAX  : Taux de triaxialite
+       FSTAB[72]  : Forces de stabilisation
 >>
     SIEF_C   = C    SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     N        VY
        VZ       MT       MFY      MFZ      BX       NXX      NYY      NXY
@@ -1825,9 +1826,9 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        DEPV22   DEPV23   DEPV31   DEPV32   DEPV33   TRSIG    CONT_X   CONT_Y
        CONT_Z   SIG_NX   SIG_NY   SIG_NZ   SIG_N    SIG_TX   SIG_TY   SIG_TZ
        SIG_T1X  SIG_T1Y  SIG_T1Z  SIG_T1   SIG_T2X  SIG_T2Y  SIG_T2Z  SIG_T2
-       LH1P     LH1M     DPRE1P   DPRE1M   TRIAX
+       LH1P     LH1M     DPRE1P   DPRE1M   TRIAX    FSTAB[72]
 
-<<  SIEF_R Type:R Etat de contrainte (ou d'effort interne) (cf. (U .. . .. . .))
+<<  SIEF_R Type:R Etat de contrainte (ou d'effort interne) (cf. (U2.01.04))
        SIXX : sigma_xx contraintes dans un milieu continu
        SIYY : sigma_yy contraintes dans un milieu continu
        SIZZ : sigma_zz contraintes dans un milieu continu
@@ -1943,6 +1944,7 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        DPRE1P :
        DPRE1M :
        TRIAX  : Taux de triaxialite
+       FSTAB[72]  : Forces de stabilisation
 >>
     SIEF_R   = R    SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     N        VY
        VZ       MT       MFY      MFZ      BX       NXX      NYY      NXY
@@ -1967,7 +1969,7 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        DEPV22   DEPV23   DEPV31   DEPV32   DEPV33   TRSIG    CONT_X   CONT_Y
        CONT_Z   SIG_NX   SIG_NY   SIG_NZ   SIG_N    SIG_TX   SIG_TY   SIG_TZ
        SIG_T1X  SIG_T1Y  SIG_T1Z  SIG_T1   SIG_T2X  SIG_T2Y  SIG_T2Z  SIG_T2
-       LH1P     LH1M     DPRE1P   DPRE1M   TRIAX
+       LH1P     LH1M     DPRE1P   DPRE1M   TRIAX    FSTAB[72]
 
 <<  SING_R Type:R grandeurs liée au calcul de carte de taille
        DEGRE : ordre de la singularité

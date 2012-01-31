@@ -1,4 +1,4 @@
-# MODIF  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -176,11 +176,11 @@ THETA0=CALC_THETA(   MODELE=MO,  FOND_FISS=FISS1,
                                    R_INF_FO = RINF0,  R_SUP_FO = RSUP0)
                                  )
 
-G0=CALC_G(  RESULTAT=CHAMDEPL,SYME_CHAR='SYME',
+G0=CALC_G(  RESULTAT=CHAMDEPL,
                        OPTION='CALC_G_GLOB',
-                        THETA=_F(THETA=THETA0), )
+                        THETA=_F(THETA=THETA0,SYME='OUI'), )
 
-G0BIS=CALC_G(  RESULTAT=CHAMDEPL,SYME_CHAR='SYME',
+G0BIS=CALC_G(  RESULTAT=CHAMDEPL,
                        OPTION='CALC_G_GLOB',
                         THETA=_F(FOND_FISS=FISS1,
                                  MODULE_FO = MODUF,
@@ -195,7 +195,6 @@ GLOC0=CALC_G(   RESULTAT=CHAMDEPL,
                                 R_INF_FO = RINF0,
                                 R_SUP_FO = RSUP0),
                        LISSAGE=_F(DEGRE=7),
-                       TOUT_ORDRE='OUI',SYME_CHAR='SYME',
                        )
 
 THETA0M=CALC_THETA(   MODELE=MO,  FOND_FISS=FISS1,
@@ -204,17 +203,14 @@ THETA0M=CALC_THETA(   MODELE=MO,  FOND_FISS=FISS1,
                                      DIRE_THETA=DIRTHE  )
 
 G0M=CALC_G(            RESULTAT=CHAMDEPL,
-                       NUME_ORDRE=1,
-                       SYME_CHAR='SYME',
                        OPTION='CALC_G_GLOB',
-                       THETA=_F(THETA=THETA0M),  )
+                       THETA=_F(THETA=THETA0M,SYME='OUI'),  )
 
 GLOC0M=CALC_G(         RESULTAT=CHAMDEPL,
                        THETA=_F(FOND_FISS=FISS1,
                                R_SUP_FO=RSUP0,
                                R_INF_FO=RINF0,),
                        LISSAGE=_F(DEGRE=7),
-                       TOUT_ORDRE='OUI',SYME_CHAR='SYME',
                        )
 
 
@@ -224,7 +220,6 @@ GLOC0M1=CALC_G(       RESULTAT=CHAMDEPL,
                                R_INF_FO=RINF0,),
                       LISSAGE=_F(LISSAGE_THETA='LAGRANGE_REGU',
                                  LISSAGE_G='LAGRANGE_REGU',),
-                        TOUT_ORDRE='OUI',SYME_CHAR='SYME',
                        )
 
 
@@ -237,16 +232,15 @@ THETA1=CALC_THETA(   MODELE=MO,  FOND_FISS=FISS1,
                                    R_INF_FO = RINF1,  R_SUP_FO = RSUP1)
                                  )
 
-G1=CALC_G(     RESULTAT=CHAMDEPL, NUME_ORDRE=1,SYME_CHAR='SYME',
+G1=CALC_G(     RESULTAT=CHAMDEPL,
                        OPTION='CALC_G_GLOB',
-                     THETA=_F(THETA=THETA1),  )
+                     THETA=_F(THETA=THETA1,SYME='OUI'),  )
 
 GLOC1=CALC_G(  RESULTAT=CHAMDEPL,
                         THETA=_F(FOND_FISS=FISS1,
                                  R_SUP_FO=RSUP1,
                                  R_INF_FO=RINF1,),
                         LISSAGE=_F(DEGRE=7),
-                        NUME_ORDRE=1,SYME_CHAR='SYME',
                        )
 
 THETA1M=CALC_THETA(   MODELE=MO,  FOND_FISS=FISS1,
@@ -254,16 +248,15 @@ THETA1M=CALC_THETA(   MODELE=MO,  FOND_FISS=FISS1,
                                    R_INF_FO = RINF1,  R_SUP_FO = RSUP1),
                                      DIRE_THETA=DIRTHE )
 
-G1M=CALC_G(  RESULTAT=CHAMDEPL, NUME_ORDRE=1,SYME_CHAR='SYME',
+G1M=CALC_G(  RESULTAT=CHAMDEPL,
                        OPTION='CALC_G_GLOB',
-                     THETA=_F(THETA=THETA1M),)
+                     THETA=_F(THETA=THETA1M,SYME='OUI'),)
 
 GLOC1M=CALC_G(    RESULTAT=CHAMDEPL,
                         THETA=_F(FOND_FISS=FISS1,
                                  R_SUP_FO=RSUP1,
                                  R_INF_FO=RINF1,),
                         LISSAGE=_F(DEGRE=7),
-                       NUME_ORDRE=1,SYME_CHAR='SYME',
                      )
 
 
@@ -273,7 +266,6 @@ GLOC1M1=CALC_G(    RESULTAT=CHAMDEPL,
                                  R_INF_FO=RINF1,),
                       LISSAGE=_F(LISSAGE_THETA='LAGRANGE_REGU',
                                  LISSAGE_G='LAGRANGE_REGU',),
-                       NUME_ORDRE=1,SYME_CHAR='SYME',
                      )
 
 
@@ -286,17 +278,14 @@ THETA2=CALC_THETA(   MODELE=MO,  FOND_FISS=FISS1,
                                    R_INF_FO = RINF2,  R_SUP_FO = RSUP2)
                                  )
 
-LISTI=DEFI_LIST_ENTI(   VALE=1  )
 
 G2=CALC_G(     RESULTAT=CHAMDEPL,
-                       NUME_ORDRE=1,
-                      THETA=_F(THETA=THETA2),SYME_CHAR='SYME',
+                      THETA=_F(THETA=THETA2,SYME='OUI'),
                        OPTION='CALC_G_GLOB',
                      )
 
-GLOC2=CALC_G(  RESULTAT=CHAMDEPL,SYME_CHAR='SYME',
+GLOC2=CALC_G(  RESULTAT=CHAMDEPL,
                        THETA=_F(FOND_FISS=FISS1,R_SUP_FO=RSUP2,  R_INF_FO=RINF2),
-                       LIST_ORDRE=LISTI,
                        LISSAGE=_F(DEGRE=7))
 
 THETA2M=CALC_THETA(   MODELE=MO,  FOND_FISS=FISS1,
@@ -305,20 +294,17 @@ THETA2M=CALC_THETA(   MODELE=MO,  FOND_FISS=FISS1,
                                      DIRE_THETA=DIRTHE)
 
 G2M=CALC_G(  RESULTAT=CHAMDEPL,
-                       NUME_ORDRE=1,
-                      THETA=_F(THETA=THETA2M),SYME_CHAR='SYME',
+                      THETA=_F(THETA=THETA2M,SYME='OUI'),
                        OPTION='CALC_G_GLOB',
                      )
 
-GLOC2M=CALC_G(   RESULTAT=CHAMDEPL,SYME_CHAR='SYME',
-                        LIST_ORDRE=LISTI,
+GLOC2M=CALC_G(   RESULTAT=CHAMDEPL,
                        LISSAGE=_F(DEGRE=7),
                        THETA=_F(FOND_FISS=FISS1,R_SUP_FO=RSUP2,  R_INF_FO=RINF2),
                        )
 
 
-GLOC2M1=CALC_G(  RESULTAT=CHAMDEPL, SYME_CHAR='SYME',
-                        LIST_ORDRE=LISTI,
+GLOC2M1=CALC_G(  RESULTAT=CHAMDEPL,
                       LISSAGE=_F(LISSAGE_THETA='LAGRANGE_REGU',
                                  LISSAGE_G='LAGRANGE_REGU',),
                        THETA=_F(FOND_FISS=FISS1,R_SUP_FO=RSUP2,  R_INF_FO=RINF2),

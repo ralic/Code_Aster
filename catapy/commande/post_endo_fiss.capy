@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 30/01/2012   AUTEUR BOTTONI M.BOTTONI 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,8 +24,6 @@
 #  CHAMP SCALAIRE 2D
 
 
-
-
 def post_endo_fiss_prod(self,TABLE,**args) :
     self.type_sdprod(TABLE,table_sdaster)
     return maillage_sdaster
@@ -41,7 +39,7 @@ POST_ENDO_FISS=MACRO(nom="POST_ENDO_FISS",
 
             regles = (UN_PARMI("RESULTAT","CHAM_GD"),
                       ),
-
+            OUVERTURE  = SIMP(statut = 'f', typ = 'TXM', into=('OUI','NON',), defaut = 'NON' ),
             b_resultat = BLOC(condition  = "RESULTAT != None",
                               regles     = (UN_PARMI('NUME_ORDRE','INST'),),
                               NUME_ORDRE = SIMP(statut = 'f', typ = 'I', validators = NoRepeat(), ),
@@ -50,27 +48,29 @@ POST_ENDO_FISS=MACRO(nom="POST_ENDO_FISS",
                                                 fr = "nom du modele a associer au champ",),),
 
             b_champ    = BLOC(condition = "CHAM_GD != None",
-                              MODELE    = SIMP(statut = 'o', typ = modele_sdaster,
+                              MODELE    = SIMP(statut = 'f', typ = modele_sdaster,
                                                fr = "nom du modele a associer au champ",),),
 
             CHAM_GD         = SIMP(statut = 'f',typ = (cham_gd_sdaster)),
             RESULTAT        = SIMP(statut = 'f',typ = (evol_noli)),
             NOM_CMP         = SIMP(statut = 'o',typ='TXM',),
+            #PLAN            = SIMP(statut = 'f',typ='TXM',defaut='XY', into=('XY','XZ','YZ'),),
             NOM_CHAM        = SIMP(statut = 'o', typ = 'TXM',
                                    fr = "nom du champ a post-traiter",),
 
             RECHERCHE = FACT(statut = 'o',min=1,max='**',
-                           regles = (
+                             regles = (
                                        PRESENT_ABSENT('TOUT','GROUP_MA',),
                                     ),
                               LONG_ORTH  = SIMP(statut='o', typ='R'),
                               NB_POINT   = SIMP(statut='f', typ='I', defaut = 500),
                               PAS        = SIMP(statut='o', typ='R', ),
                               LONG_REG   = SIMP(statut='o', typ='R'),
-                              SEUIL      = SIMP(statut='o', typ='R'),
-                              ANGL_MAX   = SIMP(statut='f', typ='R', defaut=180.),
-                              TOUT       = SIMP(statut='f', typ='TXM', into=("OUI",) ),
+                              BORNE_MIN  = SIMP(statut='f', typ='R', defaut=0.5),
+                              ANGL_MAX   = SIMP(statut='f', typ='R', defaut=120.),
+                              TOUT       = SIMP(statut='f', typ='TXM', into=('OUI',) ),
                               GROUP_MA   = SIMP(statut='f', typ=grma,  validators=NoRepeat(), ),
+                              BORNE_MAX  = SIMP(statut='f', typ='R'),
                               ),
                    )
 

@@ -1,8 +1,8 @@
-#@ MODIF post_gp_ops Macro  DATE 10/10/2011   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF post_gp_ops Macro  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -155,10 +155,9 @@ def post_gp_ops(self, **args):
                                           R_INF=dMC['R_INF'],
                                           R_SUP=dMC['R_SUP']),)
 
-         __gtheta = CALC_G(THETA=_F(THETA=__theta),
+         __gtheta = CALC_G(THETA=_F(THETA=__theta, SYME=self['SYME'],),
                            RESULTAT=Resultat,
                            TOUT_ORDRE='OUI',
-                           SYME_CHAR=self['SYME_CHAR'],
                            COMP_ELAS=self['COMP_ELAS'].List_F(),
                            **args)
 
@@ -191,7 +190,6 @@ def post_gp_ops(self, **args):
                                     **dpar_theta),
                            RESULTAT=Resultat,
                            TOUT_ORDRE='OUI',
-                           SYME_CHAR=self['SYME_CHAR'],
                            COMP_ELAS=self['COMP_ELAS'].List_F(),
                            LISSAGE=self['LISSAGE'].List_F(),
                            **args)
@@ -459,14 +457,15 @@ def post_gp_ops(self, **args):
       if is_2D:
          t_enel['DELTAL'] = l_ep_copeaux_tranche
          t_enel.fromfunction('GP', fGp_Etot, ('TOTALE', 'DELTAL'),
-            {'syme'   : self['SYME_CHAR'] != 'SANS',
+            {'syme'   : self['SYME'] != 'NON',
              'R'      : self['RAYON_AXIS'],})
       else:
          ep_tranche=1
          t_enel['MESURE'] = l_ep_copeaux_tranche
          t_enel['DELTAL'] = l_ep_copeaux_tranche_3D*len(l_numord)
+         iret,ibid,syme = aster.dismoi('F','SYME',self['FOND_FISS'].nom,'FOND_FISS')
          t_enel.fromfunction('GP', fGp_Etot, ('TOTALE', 'MESURE'),
-               {'syme'   : self['SYME_CHAR'] != 'SANS',
+               {'syme'   : syme != 'NON',
                 'R'      : ep_tranche })
 
       #if info >= 2:

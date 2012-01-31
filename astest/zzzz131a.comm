@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 31/01/2012   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE VALIDATION DE LA COMMANDE CREA_RESU MOT CLE FACTEUR PERM_CHAM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,8 +17,10 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
+#
+# zzzz131a.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
 
-DEBUT(CODE=_F(NOM='ZZZZ131A', NIV_PUB_WEB='INTERNET'),
+DEBUT(CODE=_F(NOM='ZZZZ131A', NIV_PUB_WEB='INTERNET'), 
 IGNORE_ALARM=('MECANONLINE5_37','MECANONLINE2_37'),
 DEBUG=_F(SDVERI='OUI'))
 
@@ -27,23 +29,42 @@ DEBUG=_F(SDVERI='OUI'))
 
 #   CALCUL SUR PREMIER MAILLAGE
 
-MA1=LIRE_MAILLAGE(FORMAT='MED', )
+MA1=LIRE_MAILLAGE(FORMAT='MED',INFO=2)
 
 MA1=DEFI_GROUP( reuse=MA1,   MAILLAGE=MA1,
                       CREA_GROUP_NO=_F( GROUP_MA = ( 'PBAS1',
-                                                  'PHAUT1',
-                                                  'PBAS2',
-                                                  'PHAUT2', ))
+                                                     'PHAUT1',
+                                                     'PBAS2',
+                                                     'PHAUT2', ))
                   )
 
+
+#------- MAILLAGE DE LA SECTION CIRCULAIRE
+
+MA_CERC=LIRE_MAILLAGE(FORMAT='MED',UNITE=21)
+
+#------- MAILLAGE DE LA SECTION RECTANGULAIRE
+
+MA_RECT=LIRE_MAILLAGE(FORMAT='MED',UNITE=22)
+
+
+GF=DEFI_GEOM_FIBRE(INFO=1,
+                   SECTION =( _F( GROUP_FIBRE='S_RECT',
+                                  MAILLAGE_SECT = MA_RECT, TOUT_SECT = 'OUI',
+                                  COOR_AXE_POUTRE = (0., 0.,),),
+                              _F( GROUP_FIBRE='S_CERC',
+                                  MAILLAGE_SECT = MA_CERC, TOUT_SECT = 'OUI',
+                                  COOR_AXE_POUTRE = (0., 0.,),),
+                             )
+                   )
 #
 MO1=AFFE_MODELE(   MAILLAGE=MA1,AFFE=(
                       _F(  GROUP_MA = ('POU1',),
                              PHENOMENE = 'MECANIQUE',
-                             MODELISATION = 'POU_D_E'),
+                             MODELISATION = 'POU_D_EM'),
                       _F(  GROUP_MA = ('POU2',),
                              PHENOMENE = 'MECANIQUE',
-                             MODELISATION = 'POU_D_TG'))
+                             MODELISATION = 'POU_D_TGM'))
                    )
 
 CARA1=AFFE_CARA_ELEM(     MODELE=MO1,POUTRE=(
@@ -54,33 +75,35 @@ CARA1=AFFE_CARA_ELEM(     MODELE=MO1,POUTRE=(
                           _F(  GROUP_MA = 'POU2',
                                    SECTION = 'RECTANGLE',
                                    CARA = (   'HY', 'HZ',  ),
-                                   VALE = (  0.2,  0.1, )))
+                                   VALE = (  0.2,  0.1, ))),
+                                  GEOM_FIBRE=GF,
+                                  MULTIFIBRE=(_F(GROUP_MA='POU1',GROUP_FIBRE='S_CERC'),
+                                              _F(GROUP_MA='POU2',GROUP_FIBRE='S_RECT'),)
                         )
 
 #
 MAT1_1=DEFI_MATERIAU(
              ELAS=_F( E = 2.E11, NU = 0.3),
              ECRO_LINE=_F( D_SIGM_EPSI = 2.E9, SY = 150.E6),
-             VMIS_POUTRE=_F(
-                NP = 4.7124E6,
-                MEY = 1.1781E5, MPY = 2.E5, CAY = 0.84, CBY = 0.002,
-                MEZ = 1.1781E5, MPZ = 2.E5, CAZ = 0.84, CBZ = 0.0002,
-                MPX = 1.E10)
                           )
 
 MAT1_2=DEFI_MATERIAU(
            ELAS=_F( E = 2.E11, NU = 0.3),
-           ECRO_FLEJOU=_F( EP = 2.E10, SY = 150.E6, SU = 160.E6, PUISS = 1.0),
-           VMIS_POUTRE=_F(
-                NP = 3.0E6,
-                MEY = 1.1781E5, MPY = 2.E5, CAY = 0.84, CBY = 0.002,
-                MEZ = 1.1781E5, MPZ = 2.E5, CAZ = 0.84, CBZ = 0.0002,
-                MPX = 1.E10)
+           ECRO_LINE=_F( D_SIGM_EPSI = 0., SY = 150.E6),
                         )
 
+COMPPMF1=DEFI_COMPOR(GEOM_FIBRE=GF,
+                    MATER_SECT=MAT1_1,
+                    MULTIFIBRE=(
+                                 _F(GROUP_FIBRE='S_CERC', MATER=MAT1_1, RELATION='VMIS_ISOT_LINE'),
+                                 _F(GROUP_FIBRE='S_RECT', MATER=MAT1_2, RELATION='VMIS_ISOT_LINE'),
+                                  ),
+                      )
+
 CHMAT1=AFFE_MATERIAU(   MAILLAGE=MA1,AFFE=(
-                       _F( GROUP_MA = 'POU1', MATER = MAT1_1),
-                       _F( GROUP_MA = 'POU2', MATER = MAT1_2)))
+                       _F( GROUP_MA = ('POU1','POU2'),MATER = MAT1_1)),
+                   AFFE_COMPOR=
+                               _F( TOUT='OUI', COMPOR = COMPPMF1))
 
 CHART1=AFFE_CHAR_MECA(  MODELE=MO1,DDL_IMPO=(
      _F( GROUP_NO = ('PBAS1', 'PBAS2',),
@@ -109,10 +132,10 @@ RESU1=STAT_NON_LINE(
                          CARA_ELEM=CARA1,
                              EXCIT=_F( CHARGE = CHART1,
                                     FONC_MULT = FONCT1),COMP_INCR=(
-                         _F( RELATION = 'VMIS_POU_LINE',
+                         _F( RELATION = 'MULTIFIBRE',
                                     GROUP_MA = 'POU1',
                                     ITER_INTE_MAXI = 500),
-                         _F( RELATION = 'VMIS_POU_FLEJOU',
+                         _F( RELATION = 'MULTIFIBRE',
                                     GROUP_MA = 'POU2',
                                     ITER_INTE_MAXI = 500)),
                          INCREMENT=_F( LIST_INST =
@@ -123,7 +146,7 @@ RESU1=STAT_NON_LINE(
 
 RESU1=CALC_ELEM( reuse=RESU1,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
+                  'EFGE_ELNO',),
                           RESULTAT=RESU1,
               )
 
@@ -135,23 +158,24 @@ TEST_RESU(RESU=(
                  NOM_CHAM = 'DEPL',
                  NOEUD = 'N3',
                  NOM_CMP = 'DX',
-                 VALE = 1.125E-3, REFERENCE = 'NON_REGRESSION',
+                 VALE = 1.125E-3, REFERENCE = 'ANALYTIQUE',
                  PRECISION = 1.E-3),
           _F( RESULTAT = RESU1,
                  NUME_ORDRE = 21,
-                 NOM_CHAM = 'SIEF_ELNO',
+                 NOM_CHAM = 'EFGE_ELNO',
                  NOEUD = 'N3',
                  MAILLE = 'M14',
                  NOM_CMP = 'N',
-                 VALE = 4.73597E+06, REFERENCE = 'NON_REGRESSION',
-                 PRECISION = 1.E-3),
+                 VALE = -4.73595E+06, REFERENCE = 'ANALYTIQUE',
+                 PRECISION = 1.E-2),
            _F( RESULTAT = RESU1,
                  NUME_ORDRE = 21,
-                 NOM_CHAM = 'VARI_ELNO',
-                 NOEUD = 'N3',
+                 NOM_CHAM = 'VARI_ELGA',
                  MAILLE = 'M14',
+                 POINT=1,
+                 SOUS_POINT=1,
                  NOM_CMP = 'V1',
-                 VALE = 3.71247E-04, REFERENCE = 'NON_REGRESSION',
+                 VALE = 3.7125E-04, REFERENCE = 'NON_REGRESSION',
                  PRECISION = 1.E-3),
           # POUTRE POU11
           _F( RESULTAT = RESU1,
@@ -159,22 +183,23 @@ TEST_RESU(RESU=(
                  NOM_CHAM = 'DEPL',
                  NOEUD = 'N6',
                  NOM_CMP = 'DX',
-                 VALE = 1.5E-3, REFERENCE = 'NON_REGRESSION',
+                 VALE = 1.5E-3, REFERENCE = 'ANALYTIQUE',
                  PRECISION = 1.E-3),
           _F( RESULTAT = RESU1,
                  NUME_ORDRE = 21,
-                 NOM_CHAM = 'SIEF_ELNO',
+                 NOM_CHAM = 'EFGE_ELNO',
                  NOEUD = 'N6',
                  MAILLE = 'M17',
                  NOM_CMP = 'N',
-                 VALE = 4.75951E+06, REFERENCE = 'NON_REGRESSION',
+                 VALE = 4.75951E+06, REFERENCE = 'ANALYTIQUE',
                  PRECISION = 2.E-2),
            _F( RESULTAT = RESU1,
                  NUME_ORDRE = 21,
-                 NOM_CHAM = 'VARI_ELNO',
-                 NOEUD = 'N6',
+                 NOM_CHAM = 'VARI_ELGA',
                  MAILLE = 'M17',
                  NOM_CMP = 'V1',
+                 POINT=1,
+                 SOUS_POINT=1,
                  VALE = 7.42500E-04, REFERENCE = 'NON_REGRESSION',
                  PRECISION = 2.E-2),
 
@@ -185,15 +210,25 @@ TEST_RESU(RESU=(
                  NOM_CHAM = 'DEPL',
                  NOEUD = 'N20',
                  NOM_CMP = 'DX',
-                 VALE = 1.12500E-03, REFERENCE = 'NON_REGRESSION',
+                 VALE = 1.12500E-03, REFERENCE = 'ANALYTIQUE',
                  PRECISION = 1.E-3),
            _F( RESULTAT = RESU1,
                  NUME_ORDRE = 21,
-                 NOM_CHAM = 'SIEF_ELNO',
+                 NOM_CHAM = 'EFGE_ELNO',
                  NOEUD = 'N20',
                  MAILLE = 'M10',
                  NOM_CMP = 'N',
-                 VALE = 3.00000E+06, REFERENCE = 'NON_REGRESSION',
+                 VALE = 3.00000E+06, REFERENCE = 'ANALYTIQUE',
+                 PRECISION = 1.E-3),
+            _F( RESULTAT = RESU1,
+                 CRITERE='ABSOLU',
+                 NUME_ORDRE = 21,
+                 NOM_CHAM = 'VARI_ELGA',
+                 MAILLE = 'M10',
+                 NOM_CMP = 'V1',
+                 POINT=1,
+                 SOUS_POINT=1,
+                 VALE = 0.0000E+00, REFERENCE = 'NON_REGRESSION',
                  PRECISION = 1.E-3),
             # POUTRE 21
             _F( RESULTAT = RESU1,
@@ -201,25 +236,26 @@ TEST_RESU(RESU=(
                  NOM_CHAM = 'DEPL',
                  NOEUD = 'N25',
                  NOM_CMP = 'DX',
-                 VALE = 1.500E-03, REFERENCE = 'NON_REGRESSION',
+                 VALE = 1.500E-03, REFERENCE = 'ANALYTIQUE',
                  PRECISION = 1.E-3),
 
            _F( RESULTAT = RESU1,
                  NUME_ORDRE = 21,
-                 NOM_CHAM = 'SIEF_ELNO',
+                 NOM_CHAM = 'EFGE_ELNO',
                  NOEUD = 'N25',
                  MAILLE = 'M46',
                  NOM_CMP = 'N',
-                 VALE = 3.06852E+06, REFERENCE = 'NON_REGRESSION',
-                 PRECISION = 1.E-3),
+                 VALE = 3.03E+06, REFERENCE = 'ANALYTIQUE',
+                 PRECISION = 2.5E-2),
             _F( RESULTAT = RESU1,
                  NUME_ORDRE = 21,
-                 NOM_CHAM = 'VARI_ELNO',
-                 NOEUD = 'N25',
+                 NOM_CHAM = 'VARI_ELGA',
                  MAILLE = 'M46',
                  NOM_CMP = 'V1',
-                 VALE = 2.32869E-04, REFERENCE = 'NON_REGRESSION',
-                 PRECISION = 1.E-3),
+                 POINT=1,
+                 SOUS_POINT=1,
+                 VALE = 2.475E-4, REFERENCE = 'NON_REGRESSION',
+                 PRECISION = 1.E-2),
           ))
 
 #   INITIATION CALCUL SUR SECOND MAILLAGE
@@ -233,14 +269,15 @@ MA2=DEFI_GROUP( reuse=MA2,   MAILLAGE=MA2,
                                                   'PHAUT4', ))
                   )
 
+
 #
 MO2=AFFE_MODELE(   MAILLAGE=MA2,AFFE=(
                       _F(  GROUP_MA = ('POU4',),
                              PHENOMENE = 'MECANIQUE',
-                             MODELISATION = 'POU_D_E'),
+                             MODELISATION = 'POU_D_EM'),
                       _F(  GROUP_MA = ('POU3',),
                              PHENOMENE = 'MECANIQUE',
-                             MODELISATION = 'POU_D_TG'))
+                             MODELISATION = 'POU_D_TGM'))
                    )
 
 CARA2=AFFE_CARA_ELEM(     MODELE=MO2,POUTRE=(
@@ -251,33 +288,36 @@ CARA2=AFFE_CARA_ELEM(     MODELE=MO2,POUTRE=(
                           _F(  GROUP_MA = 'POU3',
                                    SECTION = 'RECTANGLE',
                                    CARA = (   'HY', 'HZ',  ),
-                                   VALE = (  0.2,  0.1, )))
+                                   VALE = (  0.2,  0.1, ))),
+                                  GEOM_FIBRE=GF,
+                                  MULTIFIBRE=(_F(GROUP_MA='POU4',GROUP_FIBRE='S_CERC'),
+                                              _F(GROUP_MA='POU3',GROUP_FIBRE='S_RECT'),)
                         )
 
 #
 MAT2_1=DEFI_MATERIAU(
              ELAS=_F( E = 2.E11, NU = 0.3),
              ECRO_LINE=_F( D_SIGM_EPSI = 2.E9, SY = 150.E6),
-             VMIS_POUTRE=_F(
-                NP = 4.7124E6,
-                MEY = 1.1781E5, MPY = 2.E5, CAY = 0.84, CBY = 0.002,
-                MEZ = 1.1781E5, MPZ = 2.E5, CAZ = 0.84, CBZ = 0.0002,
-                MPX = 1.E10)
                           )
 
 MAT2_2=DEFI_MATERIAU(
            ELAS=_F( E = 2.E11, NU = 0.3),
-           ECRO_FLEJOU=_F( EP = 2.E10, SY = 150.E6, SU = 160.E6, PUISS = 1.0),
-           VMIS_POUTRE=_F(
-                NP = 3.0E6,
-                MEY = 1.1781E5, MPY = 2.E5, CAY = 0.84, CBY = 0.002,
-                MEZ = 1.1781E5, MPZ = 2.E5, CAZ = 0.84, CBZ = 0.0002,
-                MPX = 1.E10)
+             ECRO_LINE=_F( D_SIGM_EPSI = 0., SY = 150.E6),
                         )
 
+COMPPMF2=DEFI_COMPOR(GEOM_FIBRE=GF,
+                    MATER_SECT=MAT2_1,
+                    MULTIFIBRE=(
+                                 _F(GROUP_FIBRE='S_CERC', MATER=MAT2_1, RELATION='VMIS_ISOT_LINE'),
+                                 _F(GROUP_FIBRE='S_RECT', MATER=MAT2_2, RELATION='VMIS_ISOT_LINE'),
+                                  ),
+                      )
+
 CHMAT2=AFFE_MATERIAU(   MAILLAGE=MA2,AFFE=(
-                       _F( GROUP_MA = 'POU4', MATER = MAT2_1),
-                       _F( GROUP_MA = 'POU3', MATER = MAT2_2)))
+                       _F( GROUP_MA = ('POU3','POU4'),MATER = MAT2_1)),
+                   AFFE_COMPOR=
+                               _F( TOUT='OUI', COMPOR = COMPPMF2))
+
 
 CHART2=AFFE_CHAR_MECA(  MODELE=MO2,
      DDL_IMPO=_F( GROUP_NO = ('PBAS3','PBAS4',),
@@ -298,10 +338,10 @@ RESUC=STAT_NON_LINE(
                          CARA_ELEM=CARA2,
                              EXCIT=_F( CHARGE = CHART2,
                                     FONC_MULT = FONCT2),COMP_INCR=(
-                         _F( RELATION = 'VMIS_POU_LINE',
+                         _F( RELATION = 'MULTIFIBRE',
                                     ITER_INTE_MAXI = 500,
                                     GROUP_MA = 'POU4'),
-                         _F( RELATION = 'VMIS_POU_FLEJOU',
+                         _F( RELATION = 'MULTIFIBRE',
                                     ITER_INTE_MAXI = 500,
                                     GROUP_MA = 'POU3')),
                          INCREMENT=_F( LIST_INST = LINST2,
@@ -319,7 +359,7 @@ RESU2=CREA_RESU( reuse=RESU2,   OPERATION='PERM_CHAM', TYPE_RESU='EVOL_NOLI',
                             RESU_INIT=RESU1,
                             #INST_INIT=1.,
                         MAILLAGE_INIT=MA1,
-                        NOM_CHAM=('DEPL', 'SIEF_ELGA', 'VARI_ELGA',),
+                        NOM_CHAM=('DEPL', 'SIEF_ELGA', 'VARI_ELGA','STRX_ELGA'),
                             RESU_FINAL=RESU2,
                         MAILLAGE_FINAL=MA2,
            PERM_CHAM=(
@@ -352,7 +392,7 @@ RESU2=CREA_RESU( reuse=RESU2,   OPERATION='PERM_CHAM', TYPE_RESU='EVOL_NOLI',
 
 RESU2=CALC_ELEM( reuse=RESU2,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
+                  'EFGE_ELNO',),
                           RESULTAT=RESU2,
               )
 
@@ -366,24 +406,25 @@ TEST_RESU(RESU=(
                  NOM_CHAM = 'DEPL',
                  NOEUD = 'N33',
                  NOM_CMP = 'DX',
-                 VALE = 1.125E-3, REFERENCE = 'NON_REGRESSION',
+                 VALE = 1.125E-3, REFERENCE = 'ANALYTIQUE',
                  PRECISION = 1.E-3),
           _F( RESULTAT = RESU2,
                  NUME_ORDRE = NUM2,
-                 NOM_CHAM = 'SIEF_ELNO',
+                 NOM_CHAM = 'EFGE_ELNO',
                  NOEUD = 'N33',
                  MAILLE = 'M57',
                  NOM_CMP = 'N',
-                 VALE = 4.73597E+06, REFERENCE = 'NON_REGRESSION',
-                 PRECISION = 1.E-3),
+                 VALE = 4.73595E+06, REFERENCE = 'ANALYTIQUE',
+                 PRECISION = 1.E-2),
 
            _F( RESULTAT = RESU2,
                  NUME_ORDRE = NUM2,
-                 NOM_CHAM = 'VARI_ELNO',
-                 NOEUD = 'N33',
+                 NOM_CHAM = 'VARI_ELGA',
                  MAILLE = 'M57',
                  NOM_CMP = 'V1',
-                 VALE = 3.71247E-04, REFERENCE = 'NON_REGRESSION',
+                 POINT = 1,
+                 SOUS_POINT = 1,
+                 VALE = 3.7125E-04, REFERENCE = 'NON_REGRESSION',
                  PRECISION = 1.E-3),
 
          # MAILLE DE LA POUTRE POU40
@@ -392,22 +433,23 @@ TEST_RESU(RESU=(
                  NOM_CHAM = 'DEPL',
                  NOEUD = 'N26',
                  NOM_CMP = 'DX',
-                 VALE = 1.50000E-03, REFERENCE = 'NON_REGRESSION',
+                 VALE = 1.50000E-03, REFERENCE = 'ANALYTIQUE',
                  PRECISION = 1.E-3),
           _F( RESULTAT = RESU2,
                  NUME_ORDRE = NUM2,
-                 NOM_CHAM = 'SIEF_ELNO',
+                 NOM_CHAM = 'EFGE_ELNO',
                  NOEUD = 'N26',
                  MAILLE = 'M9',
                  NOM_CMP = 'N',
-                 VALE = 4.75951E+06, REFERENCE = 'NON_REGRESSION',
+                 VALE = 4.75951E+06, REFERENCE = 'ANALYTIQUE',
                  PRECISION = 2.E-2),
           _F( RESULTAT = RESU2,
                  NUME_ORDRE = NUM2,
-                 NOM_CHAM = 'VARI_ELNO',
-                 NOEUD = 'N26',
+                 NOM_CHAM = 'VARI_ELGA',
                  MAILLE = 'M9',
                  NOM_CMP = 'V1',
+                 POINT = 1,
+                 SOUS_POINT = 1,
                  VALE = 7.42500E-04, REFERENCE = 'NON_REGRESSION',
                  PRECISION = 2.E-2),
 
@@ -417,24 +459,25 @@ TEST_RESU(RESU=(
                  NOM_CHAM = 'DEPL',
                  NOEUD = 'N37',
                  NOM_CMP = 'DX',
-                 VALE = 0.0, REFERENCE = 'NON_REGRESSION',
+                 VALE = 0.0, REFERENCE = 'ANALYTIQUE',
                  CRITERE = 'ABSOLU',
                  PRECISION = 1.E-3),
           _F( RESULTAT = RESU2,
                  NUME_ORDRE = NUM2,
-                 NOM_CHAM = 'SIEF_ELNO',
+                 NOM_CHAM = 'EFGE_ELNO',
                  NOEUD = 'N37',
                  MAILLE = 'M31',
                  NOM_CMP = 'N',
-                 VALE = 0.E0, REFERENCE = 'NON_REGRESSION',
+                 VALE = 0.E0, REFERENCE = 'ANALYTIQUE',
                  CRITERE = 'ABSOLU',
                  PRECISION = 1.E-3),
           _F( RESULTAT = RESU2,
                  NUME_ORDRE = NUM2,
-                 NOM_CHAM = 'VARI_ELNO',
-                 NOEUD = 'N37',
+                 NOM_CHAM = 'VARI_ELGA',
                  MAILLE = 'M31',
                  NOM_CMP = 'V1',
+                 POINT = 1,
+                 SOUS_POINT = 1,
                  VALE = 0.E0, REFERENCE = 'NON_REGRESSION',
                  CRITERE = 'ABSOLU',
                  PRECISION = 1.E-3),
@@ -446,15 +489,25 @@ TEST_RESU(RESU=(
                  NOM_CHAM = 'DEPL',
                  NOEUD = 'N21',
                  NOM_CMP = 'DX',
-                 VALE = 1.125E-3, REFERENCE = 'NON_REGRESSION',
+                 VALE = 1.125E-3, REFERENCE = 'ANALYTIQUE',
                  PRECISION = 1.E-3),
            _F( RESULTAT = RESU2,
                  NUME_ORDRE = NUM2,
-                 NOM_CHAM = 'SIEF_ELNO',
+                 NOM_CHAM = 'EFGE_ELNO',
                  NOEUD = 'N21',
                  MAILLE = 'M24',
                  NOM_CMP = 'N',
-                 VALE = 3.00000E+06, REFERENCE = 'NON_REGRESSION',
+                 VALE = 3.00000E+06, REFERENCE = 'ANALYTIQUE',
+                 PRECISION = 1.E-3),
+            _F( RESULTAT = RESU2,
+                 NUME_ORDRE = NUM2,
+                 NOM_CHAM = 'VARI_ELGA',
+                 MAILLE = 'M24',
+                 NOM_CMP = 'V1',
+                 POINT = 1,
+                 SOUS_POINT = 1,
+                 CRITERE = 'ABSOLU',
+                 VALE = 0., REFERENCE = 'NON_REGRESSION',
                  PRECISION = 1.E-3),
            # MAILLE DE LA POUTRE POU31
            _F( RESULTAT = RESU2,
@@ -462,24 +515,25 @@ TEST_RESU(RESU=(
                  NOM_CHAM = 'DEPL',
                  NOEUD = 'N9',
                  NOM_CMP = 'DX',
-                 VALE = 0.0, REFERENCE = 'NON_REGRESSION',
+                 VALE = 0.0, REFERENCE = 'ANALYTIQUE',
                  CRITERE = 'ABSOLU',
                  PRECISION = 1.E-3),
           _F( RESULTAT = RESU2,
                  NUME_ORDRE = NUM2,
-                 NOM_CHAM = 'SIEF_ELNO',
+                 NOM_CHAM = 'EFGE_ELNO',
                  NOEUD = 'N9',
                  MAILLE = 'M16',
                  NOM_CMP = 'N',
-                 VALE = 0.E0, REFERENCE = 'NON_REGRESSION',
+                 VALE = 0.E0, REFERENCE = 'ANALYTIQUE',
                  CRITERE = 'ABSOLU',
                  PRECISION = 1.E-3),
           _F( RESULTAT = RESU2,
                  NUME_ORDRE = NUM2,
-                 NOM_CHAM = 'VARI_ELNO',
-                 NOEUD = 'N9',
+                 NOM_CHAM = 'VARI_ELGA',
                  MAILLE = 'M16',
                  NOM_CMP = 'V1',
+                 POINT = 1,
+                 SOUS_POINT = 1,
                  VALE = 0.E0, REFERENCE = 'NON_REGRESSION',
                  CRITERE = 'ABSOLU',
                  PRECISION = 1.E-3),
@@ -489,34 +543,44 @@ TEST_RESU(RESU=(
                  NOM_CHAM = 'DEPL',
                  NOEUD = 'N15',
                  NOM_CMP = 'DX',
-                 VALE = 1.500E-03, REFERENCE = 'NON_REGRESSION',
+                 VALE = 1.500E-03, REFERENCE = 'ANALYTIQUE',
                  PRECISION = 1.E-3),
 
            _F( RESULTAT = RESU2,
                  NUME_ORDRE = NUM2,
-                 NOM_CHAM = 'SIEF_ELNO',
+                 NOM_CHAM = 'EFGE_ELNO',
                  NOEUD = 'N15',
                  MAILLE = 'M20',
                  NOM_CMP = 'N',
-                 VALE = 3.06852E+06, REFERENCE = 'NON_REGRESSION',
-                 PRECISION = 1.E-3),
+                 VALE = 3.03E+06, REFERENCE = 'ANALYTIQUE',
+                 PRECISION = 2.5E-2),
             _F( RESULTAT = RESU2,
                  NUME_ORDRE = NUM2,
-                 NOM_CHAM = 'VARI_ELNO',
-                 NOEUD = 'N15',
+                 NOM_CHAM = 'VARI_ELGA',
                  MAILLE = 'M20',
                  NOM_CMP = 'V1',
-                 VALE = 2.32869E-04, REFERENCE = 'NON_REGRESSION',
-                 PRECISION = 1.E-3),
+                 POINT = 1,
+                 SOUS_POINT = 1,
+                 VALE = 2.475E-04, REFERENCE = 'NON_REGRESSION',
+                 PRECISION = 1.E-3))
 
-          ))
-ENGENDRE_TEST(FORMAT='OBJET',TOUT='OUI',FORMAT_R='1PE25.18')
+
+          )
+#ENGENDRE_TEST(FORMAT='OBJET',TOUT='OUI',FORMAT_R='1PE25.18')
 
 
 # VALIDATION INFORMATIQUE DE EXTR_RESU:
 
 RESU11=EXTR_RESU(RESULTAT=RESU1,
                 ARCHIVAGE=_F(LIST_INST=LINST11),)
+
+RESU11=CALC_ELEM( reuse=RESU11,
+                            OPTION=(
+                  'DEGE_ELNO',),
+                          RESULTAT=RESU11,
+              )
+
+#IMPR_RESU(RESU=_F(RESULTAT=RESU11))
 
 # POUR COMPLETER LA VALIDATION INFORMATIQUE DE EXTR_RESU : EXTRACTION EN PLACE
 
@@ -531,19 +595,18 @@ DETRUIRE(INFO=1,CONCEPT = _F(NOM=RESU12),)
 DETRUIRE(INFO=1,CONCEPT = _F(NOM=RESU1),)
 
 CALC_NO( reuse=RESU11,RESULTAT=RESU11,
-           OPTION=('SIEF_NOEU','VARI_NOEU'),
+           OPTION=('EFGE_NOEU'),
                   )
 
 TEST_RESU(RESU=(
 
           _F( RESULTAT = RESU11,
                  NUME_ORDRE = 8,
-                 NOM_CHAM = 'SIEF_NOEU',
+                 NOM_CHAM = 'EFGE_NOEU',
                  NOEUD = 'N9',
                  NOM_CMP = 'N',
-                 VALE = 4.00553E+06, REFERENCE = 'NON_REGRESSION',
-                 PRECISION = 1.E-3),
-
+                 VALE = -4.00553E+06, REFERENCE = 'ANALYTIQUE',
+                 PRECISION = 1.E-2),
            ));
 
 

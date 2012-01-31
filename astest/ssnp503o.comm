@@ -1,9 +1,9 @@
-# MODIF  DATE 08/11/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 30/01/2012   AUTEUR DESOZA T.DESOZA 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
 # ssnp503o.para = tps_job 350 mem_job 128Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -93,7 +93,6 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                                  COULOMB       = 0.5,   
                                  CONTACT_INIT  = 'OUI',
                                  GLISSIERE     = 'NON',   
-                                 COEF_ECHELLE  = 1.,
                                  FISS_MAIT     = FISS1,
                                  ALGO_LAGR     = 'VERSION2',
                               ),
@@ -102,7 +101,6 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                                  COULOMB       = 0.5,  
                                  CONTACT_INIT  = 'OUI',
                                  GLISSIERE     = 'NON',   
-                                 COEF_ECHELLE  = 1.,
                                  FISS_MAIT     = FISS2,
                                  ALGO_LAGR     = 'VERSION2',
                               ),

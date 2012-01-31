@@ -1,9 +1,9 @@
       SUBROUTINE TE0367(OPTION,NOMTE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ELEMENTS  DATE 30/01/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -68,9 +68,9 @@ C
       REAL*8       JACOBI,HPG
       CHARACTER*8  TYPMAE,TYPMAM,TYPMAC,TYPMAI,TYPMEC
       INTEGER      INADH,NVIT,LACT(8),NLACT,NINTER
-      REAL*8       GEOPI(9)
+      REAL*8       GEOPI(9),DVITET(3)
       REAL*8       COEFFF,COEFCR,COEFFR,COEFFP
-      REAL*8       COEFCP,COEFEC,COEFEF
+      REAL*8       COEFCP
       REAL*8       RRE,RRM,JEU,R8BID
       REAL*8       RESE(3),NRESE
       REAL*8       DDEPLE(3),DDEPLM(3),DLAGRC,DLAGRF(2)
@@ -147,10 +147,6 @@ C --- SQRT LSN PT ESCLAVE ET MAITRE
       LFROTT   = IFROTT.EQ.3
       LPENAF=((COEFFR.EQ.0.D0).AND.(COEFFP.NE.0.D0))
       LPENAC=((COEFCR.EQ.0.D0).AND.(COEFCP.NE.0.D0))
-      IF(LPENAC)      COEFEC = COEFCP
-      IF(.NOT.LPENAC) COEFEC = ZR(JPCPO-1+32)
-      IF(LPENAF)      COEFEF = COEFFP
-      IF(.NOT.LPENAF) COEFEF = 1.D0
 C
 C --- RECUPERATION DES DONNEES DE LA CARTE CONTACT PINTER (VOIR XMCART)
 C
@@ -256,10 +252,10 @@ C
          CALL XMVEC1(NDIM, NNE, NDEPLE, NNC   ,NNM   ,
      &                  HPG   ,NFAES ,FFC   ,FFE   ,FFM   ,
      &                  JACOBI,DLAGRC,JPCAI ,CFACE ,COEFCR,
-     &                  COEFCP,COEFEC,LPENAC,JEU   ,NORM  ,
+     &                  COEFCP,LPENAC,JEU   ,NORM  ,
      &                  TYPMAI,NSINGE,NSINGM,RRE   ,RRM   ,CONTAC,
      &                  DDLE, DDLM,NFHE  ,NFHM  ,LMULTI,ZI(JHEANO),
-     &                  ZI(JHEAFA),VTMP  )
+     &                  ZI(JHEAFA),VTMP  )     
 
         ELSE IF (INDCO .EQ. 0) THEN
           IF (NVIT.EQ.1) THEN
@@ -268,9 +264,8 @@ C --- CALCUL DU VECTEUR - CAS SANS CONTACT
 C
           CALL XMVEC0(NDIM  ,NNE   ,NNC   ,NFAES ,
      &                  DLAGRC,HPG   ,FFC   ,JACOBI,CFACE ,
-     &                  JPCAI ,COEFCR,COEFCP,COEFEC,LPENAC,TYPMAI,
+     &                  JPCAI ,COEFCR,COEFCP,LPENAC,TYPMAI,
      &                  DDLE,CONTAC,NFHE  ,LMULTI,ZI(JHEANO),VTMP  )
-
           ENDIF
         ELSE
           CALL U2MESS('F','ELEMENTS3_80')
@@ -279,7 +274,8 @@ C
       ELSEIF (OPTION.EQ.'CHAR_MECA_FROT') THEN
 C              ---------------------
         IF (COEFFF.EQ.0.D0) INDCO = 0
-        IF ((DLAGRC.EQ.0.D0).AND.(.NOT.LPENAC)) INDCO = 0
+C ON MET LA SECURITE EN PENALISATION EGALEMENT
+        IF (DLAGRC.EQ.0.D0) INDCO = 0
         IF (IFROTT.NE.3)    INDCO = 0
 
         IF (INDCO.EQ.0) THEN
@@ -289,10 +285,10 @@ C --- CALCUL DU VECTEUR - CAS SANS FROTTEMENT
 C
 
          CALL XMVEF0(NDIM  ,NNE ,NNC   ,NFAES ,
-     &                  JPCAI ,HPG   ,FFC   ,JACOBI,COEFCR,
-     &                  COEFEF,LPENAC,DLAGRF,CFACE ,TYPMAI,
+     &                  JPCAI ,HPG   ,FFC   ,JACOBI,
+     &                  LPENAC,DLAGRF,CFACE ,TYPMAI,
      &                  TAU1  ,TAU2  ,DDLE  ,CONTAC,
-     &                  NFHE  ,LMULTI,ZI(JHEANO),VTMP  )
+     &                  NFHE  ,LMULTI,ZI(JHEANO),VTMP  )     
           ENDIF
         ELSE IF (INDCO.EQ.1) THEN
 C
@@ -308,16 +304,9 @@ C --- ON CALCULE L'ETAT DE CONTACT ADHERENT OU GLISSANT
 C
           CALL TTPRSM(NDIM  ,DDEPLE,DDEPLM,DLAGRF,COEFFR,
      &                TAU1  ,TAU2  ,MPROJT,INADH ,RESE  ,
-     &                NRESE ,COEFFP,LPENAF)
+     &                NRESE ,COEFFP,LPENAF,DVITET)
 C
-C --- CALCUL DU JEU
-C
-
-          CALL XMMJEU(NDIM  ,NNM,NNE,NDEPLE,
-     &                  NSINGE,NSINGM,FFE  ,FFM   ,NORM  ,
-     &                  JGEOM ,JDEPDE,JDEPM ,RRE   ,RRM   ,
-     &                  DDLE  ,DDLM  ,NFHE  ,NFHM  ,LMULTI,
-     &                  ZI(JHEAFA),JEU   )
+C --- CALCUL DU JEU INUTILE
 C
 C --- SI GLISSANT, NORMALISATION RESE
 C
@@ -328,11 +317,10 @@ C
           CALL XMVEF1(NDIM  ,NNE   ,NNM,NDEPLE ,
      &                  NNC,NFAES ,CFACE ,HPG   ,FFC   ,FFE   ,
      &                  FFM   ,JACOBI,JPCAI ,DLAGRC,DLAGRF,
-     &                  COEFFR,COEFFP,COEFEF,LPENAF,COEFFF,TAU1  ,
-     &                  TAU2  ,RESE  ,MPROJT ,COEFCR,COEFCP,
-     &                  JEU   ,TYPMAI,NSINGE,NSINGM,RRE   ,RRM   ,
+     &                  COEFFR,LPENAF,COEFFF,TAU1  ,
+     &                  TAU2  ,RESE  ,MPROJT ,
+     &                  TYPMAI,NSINGE,NSINGM,RRE   ,RRM   ,
      &                  NVIT  ,CONTAC,DDLE,DDLM,NFHE,VTMP  )
-
         ENDIF
       ELSE
         CALL ASSERT(.FALSE.)

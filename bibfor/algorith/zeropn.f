@@ -1,10 +1,10 @@
       SUBROUTINE ZEROPN( KSTOP, DEGRE, AI, RACINE, IER )
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 31/01/2012   AUTEUR REZETTE C.REZETTE 
 C TOLE CRS_1404
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -61,26 +61,23 @@ C =====================================================================
 C =====================================================================
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX ----------------
 C =====================================================================
-      INTEGER      JMAT, II, IER, ICODE, IBID
+      INTEGER      II, IER, ICODE, IBID,DEGMAX
+      PARAMETER   (DEGMAX=4)
       REAL*8       BIDON(2*DEGRE), VBID(2*DEGRE)
-      CHARACTER*24 COMAPO
+      REAL*8       COMAPO(DEGMAX*DEGMAX)
 C =====================================================================
 C --- INITIALISATIONS ET COHERENCES -----------------------------------
 C =====================================================================
-      COMAPO = '&&RESPOL.COMPANION.MATRI'
       IER    = 0
       DO 2 II=1,2*DEGRE
          RACINE(II) = 0.0D0
  2    CONTINUE
 C =====================================================================
-C --- AFFECTATION DES VARIABLES ---------------------------------------
-C =====================================================================
-      CALL WKVECT (COMAPO,'V V R',DEGRE*DEGRE,JMAT)
-C =====================================================================
 C --- INITIALISATION DE LA MATRICE ------------------------------------
 C =====================================================================
-      DO 10 II = 1, DEGRE*DEGRE
-         ZR(JMAT-1+II) = 0.0D0
+      CALL ASSERT(DEGRE.LE.DEGMAX)
+      DO 10 II = 1, DEGMAX*DEGMAX
+         COMAPO(II) = 0.D0
  10   CONTINUE
 C =====================================================================
 C --- CREATION DE LA MATRICE DE TYOPE HESSENBERG ----------------------
@@ -88,13 +85,13 @@ C =====================================================================
 C --- REMPLISSAGE DE LA PREMIERE SOUS DIAGONALE -----------------------
 C =====================================================================
       DO 20 II = 1, DEGRE - 1
-         ZR(JMAT-1+II*(DEGRE+1)) = 1.0D0
+         COMAPO(II*(DEGRE+1)) = 1.0D0
  20   CONTINUE
       DO 30 II = 1, DEGRE
-         ZR(JMAT-1+II*DEGRE) = - AI(II)
+         COMAPO(II*DEGRE) = - AI(II)
  30   CONTINUE
       ICODE = 0
-      CALL VPHQRP(ZR(JMAT),DEGRE,DEGRE,ICODE,RACINE,BIDON,
+      CALL VPHQRP(COMAPO,DEGRE,DEGRE,ICODE,RACINE,BIDON,
      &                                              1,VBID,30,IER,IBID)
 C =====================================================================
       IF (KSTOP.EQ.' ') GOTO 40
@@ -104,6 +101,5 @@ C =====================================================================
       ENDIF
 
  40   CONTINUE
-      CALL JEDETR(COMAPO)
 C =====================================================================
       END

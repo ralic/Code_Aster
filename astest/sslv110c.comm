@@ -1,4 +1,4 @@
-# MODIF  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,7 +35,7 @@ DEBUT(CODE=_F(NOM='SSLV110C', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
 #
 # --------------------------------------------------------------------
 
-MA=LIRE_MAILLAGE(FORMAT='MED',  )
+MA=LIRE_MAILLAGE(FORMAT='MED',)
 
 MO=AFFE_MODELE(  MAILLAGE=MA,
      AFFE=_F(  TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = '3D') )
@@ -110,25 +110,25 @@ THETA0=CALC_THETA(   MODELE=MO,  FOND_FISS=FISS1,
                                    R_INF_FO = RINF0,  R_SUP_FO = RSUP0)
                                  )
 
-G0=CALC_G( RESULTAT=RESU,SYME_CHAR='SYME',
+G0=CALC_G( RESULTAT=RESU,
                        OPTION='CALC_G_GLOB',
-                     THETA=_F(THETA=THETA0),  )
+                     THETA=_F(THETA=THETA0,SYME='OUI'),  )
 
 
-GLOC0=CALC_G( RESULTAT=RESU,SYME_CHAR='SYME',
+GLOC0=CALC_G( RESULTAT=RESU,
                         THETA=_F(FOND_FISS=FISS1,R_SUP_FO=RSUP0,   R_INF_FO=RINF0),
                         LISSAGE=_F(DEGRE=7),
                      )
 
-DGE=CALC_G(RESULTAT=RESU, SYME_CHAR='SYME',
+DGE=CALC_G(RESULTAT=RESU,
                        OPTION='CALC_G_GLOB',
               SENSIBILITE = (YOUNG,),
-                     THETA=_F(THETA=THETA0,))
+                     THETA=_F(THETA=THETA0,SYME='OUI'))
 
-DGF=CALC_G(RESULTAT=RESU, SYME_CHAR='SYME',
+DGF=CALC_G(RESULTAT=RESU,
                        OPTION='CALC_G_GLOB',
               SENSIBILITE = (FZ,),
-                     THETA=_F(THETA=THETA0, ))
+                     THETA=_F(THETA=THETA0,SYME='OUI' ))
 
 #----------------------------------------------------------------------
 #                           COURONNE 2
@@ -139,28 +139,27 @@ THETA1=CALC_THETA(   MODELE=MO,  FOND_FISS=FISS1,
                                    R_INF_FO = RINF1,  R_SUP_FO = RSUP1)
                                  )
 
-G1=CALC_G(RESULTAT=RESU,SYME_CHAR='SYME',
+G1=CALC_G(RESULTAT=RESU,
                        OPTION='CALC_G_GLOB',
-             THETA=_F(THETA=THETA1,))
+             THETA=_F(THETA=THETA1,SYME='OUI'))
 
 
 GLOC1=CALC_G(RESULTAT=RESU,
                        THETA=_F(FOND_FISS=FISS1,R_SUP_FO=RSUP1,R_INF_FO=RINF1,),
-                       SYME_CHAR='SYME',
                        LISSAGE=_F(DEGRE=7),
                        )
 
 DGE1=CALC_G(
-                      RESULTAT=RESU, SYME_CHAR='SYME',
+                      RESULTAT=RESU,
                       OPTION='CALC_G_GLOB',
                       SENSIBILITE = (YOUNG,),
-                      THETA=_F(THETA=THETA1,    ))
+                      THETA=_F(THETA=THETA1,SYME='OUI'))
 
 DGF1=CALC_G(
-                      RESULTAT=RESU, SYME_CHAR='SYME',
+                      RESULTAT=RESU,
                       OPTION='CALC_G_GLOB',
                       SENSIBILITE = (FZ,),
-                      THETA=_F(THETA=THETA1,    ))
+                      THETA=_F(THETA=THETA1,SYME='OUI'))
 
 
 #----------------------------------------------------------------------
@@ -172,27 +171,26 @@ THETA2=CALC_THETA(   MODELE=MO, FOND_FISS=FISS1,
                                    R_INF_FO = RINF2,  R_SUP_FO = RSUP2)
                                  )
 
-G2=CALC_G(   RESULTAT=RESU,  SYME_CHAR='SYME',
+G2=CALC_G(   RESULTAT=RESU,
                        OPTION='CALC_G_GLOB',
-                     THETA=_F(THETA=THETA2,    ))
+                     THETA=_F(THETA=THETA2,SYME='OUI'))
 
 GLOC2=CALC_G(  RESULTAT=RESU,
                        THETA=_F(FOND_FISS=FISS1,R_SUP_FO=RSUP2,R_INF_FO=RINF2),
-                       SYME_CHAR='SYME',
                        LISSAGE=_F(DEGRE=7),
                         )
 
 DGE2=CALC_G(
-                      RESULTAT=RESU, SYME_CHAR='SYME',
+                      RESULTAT=RESU,
                        OPTION='CALC_G_GLOB',
                       SENSIBILITE = (YOUNG,),
-                      THETA=_F(THETA=THETA2,    ))
+                      THETA=_F(THETA=THETA2,SYME='OUI'))
 
 DGF2=CALC_G(
-                      RESULTAT=RESU, SYME_CHAR='SYME',
+                      RESULTAT=RESU,
                        OPTION='CALC_G_GLOB',
                       SENSIBILITE = (FZ,),
-                      THETA=_F(THETA=THETA2,    ))
+                      THETA=_F(THETA=THETA2,SYME='OUI'))
 
 #----------------------------------------------------------------------
 #              TEST DE G SUR LES 3 COURONNES

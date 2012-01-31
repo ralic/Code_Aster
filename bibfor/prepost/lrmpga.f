@@ -3,7 +3,7 @@
      &                 OPTION, PARAM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 09/01/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 30/01/2012   AUTEUR SELLENET N.SELLENET 
 C RESPONSABLE SELLENET N.SELLENET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -176,7 +176,8 @@ C
           CALL MFNNOP(IDFIMD,NOCHMD,EDMAIL,TYGEO(ITYG),NOMAM2,
      &                NUMPT,NUMORD,1,NOMPRF,EDCOMP,NPR,
      &                NOMLOC,NGAULU,N,IRET)
-          IF ( N.NE.0 ) THEN
+          CALL ASSERT(IRET.EQ.0)
+          IF ( N.GT.0 ) THEN
             NBTYEL=NBTYEL+1
             ZK8(JTYMED+NBTYEL-1)=TYELE(ITYG)
             ZI(JNGALU+NBTYEL-1)=NGAULU

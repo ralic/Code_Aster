@@ -1,9 +1,9 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 30/01/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE POUTRE EULER_BERNOULLI MULTIFIBRES (DYNA NON-LINEAIRE)
 # sdnl130a.para = tps_job 380 mem_job 50Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -109,11 +109,89 @@ RERE = DYNA_NON_LINE (MODELE=MOPOU, CHAM_MATER=CHMAT, CARA_ELEM=POUCA,
                              ),
                       COMP_INCR=_F(RELATION='MULTIFIBRE', TOUT='OUI'),
                       INCREMENT=_F(LIST_INST=LINST,
-#                                  NUME_INST_FIN=200,
+                                 NUME_INST_FIN=2,
                       ),
                       CONVERGENCE=_F(RESI_GLOB_RELA=1.E-5, ITER_GLOB_MAXI=350, ARRET='OUI',),
                       ARCHIVAGE=_F( LIST_INST=LINST, ),
                           ) ;
+
+RERE = DYNA_NON_LINE (reuse=RERE,ETAT_INIT=_F(EVOL_NOLI=RERE),
+                      MODELE=MOPOU, CHAM_MATER=CHMAT, CARA_ELEM=POUCA,
+                      SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                                FORMULATION='DEPLACEMENT',),
+                      NEWTON=_F(MATRICE='ELASTIQUE',),
+                      EXCIT=(_F(CHARGE=BLOQUAGE,),
+                             _F(CHARGE=CHASEISM, FONC_MULT=ACCELERO,),
+                             ),
+                      COMP_INCR=_F(RELATION='MULTIFIBRE', TOUT='OUI'),
+                      INCREMENT=_F(LIST_INST=LINST,
+                                 NUME_INST_FIN=250,
+                      ),
+                      CONVERGENCE=_F(RESI_GLOB_RELA=1.E-5, ITER_GLOB_MAXI=350, ARRET='OUI',),
+                      ARCHIVAGE=_F( LIST_INST=LINST, ),
+                          ) ;
+
+
+DEPL=CREA_CHAMP(
+    TYPE_CHAM='NOEU_DEPL_R',
+    OPERATION='EXTR',
+    RESULTAT=RERE,
+    NOM_CHAM='DEPL',
+    NUME_ORDRE= 250 )
+
+VITE=CREA_CHAMP(
+    TYPE_CHAM='NOEU_DEPL_R',
+    OPERATION='EXTR',
+    RESULTAT=RERE,
+    NOM_CHAM='VITE',
+    NUME_ORDRE= 250 )
+
+ACCE=CREA_CHAMP(
+    TYPE_CHAM='NOEU_DEPL_R',
+    OPERATION='EXTR',
+    RESULTAT=RERE,
+    NOM_CHAM='ACCE',
+    NUME_ORDRE= 250 )
+
+
+SIGM=CREA_CHAMP(
+    TYPE_CHAM='ELGA_SIEF_R',
+    OPERATION='EXTR',
+    RESULTAT=RERE,
+    NOM_CHAM='SIEF_ELGA',
+    NUME_ORDRE= 250 )
+
+VARI=CREA_CHAMP(
+    TYPE_CHAM='ELGA_VARI_R',
+    OPERATION='EXTR',
+    RESULTAT=RERE,
+    NOM_CHAM='VARI_ELGA',
+    NUME_ORDRE= 250 )
+
+STRX=CREA_CHAMP(
+    TYPE_CHAM='ELGA_STRX_R',
+    OPERATION='EXTR',
+    RESULTAT=RERE,
+    NOM_CHAM='STRX_ELGA',
+    NUME_ORDRE= 250 )
+
+RERE = DYNA_NON_LINE (reuse=RERE,ETAT_INIT=_F(DEPL=DEPL,VITE=VITE,ACCE=ACCE,SIGM=SIGM,VARI=VARI,STRX=STRX,INST_ETAT_INIT=2.5),
+                      MODELE=MOPOU, CHAM_MATER=CHMAT, CARA_ELEM=POUCA,
+                      SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                                FORMULATION='DEPLACEMENT',),
+                      NEWTON=_F(MATRICE='ELASTIQUE',),
+                      EXCIT=(_F(CHARGE=BLOQUAGE,),
+                             _F(CHARGE=CHASEISM, FONC_MULT=ACCELERO,),
+                             ),
+                      COMP_INCR=_F(RELATION='MULTIFIBRE', TOUT='OUI'),
+                      INCREMENT=_F(LIST_INST=LINST,
+                      ),
+                      CONVERGENCE=_F(RESI_GLOB_RELA=1.E-5, ITER_GLOB_MAXI=350, ARRET='OUI',),
+                      ARCHIVAGE=_F( LIST_INST=LINST, ),
+                          ) ;
+
+T_STRX = CREA_TABLE(RESU=_F(RESULTAT=RERE,NOM_CHAM='STRX_ELGA',NUME_ORDRE=350,TOUT='OUI',TOUT_CMP='OUI'))
+IMPR_TABLE(TABLE=T_STRX)
 
 #
 RERE=CALC_NO(reuse =RERE, RESULTAT=RERE, OPTION='FORC_NODA',

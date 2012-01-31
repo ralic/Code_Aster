@@ -1,4 +1,4 @@
-#@ MODIF sd_contact SD  DATE 23/01/2012   AUTEUR ABBAS M.ABBAS 
+#@ MODIF sd_contact SD  DATE 30/01/2012   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -39,9 +39,9 @@ class sd_contact(AsBase):
     ztole = 3
     ztypn = 2
     ztypm = 2
-    zmaes = 6
+    zmaes = 4
     zcmdf = 6
-    zcmcf = 18
+    zcmcf = 16
     zexcl = 3
     zcmxf = 18
     zmesx = 5
@@ -231,14 +231,6 @@ class sd_contact(AsBase):
 #   Caractéristiques diverses
     CARACF = Facultatif(AsVR(SDNom(nomj='.CONTACT.CARACF') ))
 
-#   Fonctionnalités spécifiques formulation CONTINUE
-    PBARS  = Facultatif(AsVI(SDNom(nomj='.CONTACT.PBANOCO')))
-    BARSNO = Facultatif(AsVI(SDNom(nomj='.CONTACT.BANOCO' )))
-    PBARM  = Facultatif(AsVI(SDNom(nomj='.CONTACT.PBAMACO')))
-    BARSMA = Facultatif(AsVI(SDNom(nomj='.CONTACT.BAMACO' )))
-    PRACC  = Facultatif(AsVI(SDNom(nomj='.CONTACT.PRANOCO')))
-    RACCNO = Facultatif(AsVI(SDNom(nomj='.CONTACT.RANOCO' )))
-
 #   Objets pour l'exclusion des noeuds du frottement seulement
     PFROT  = Facultatif(AsVI(SDNom(nomj='.CONTACT.PSANOFR')))
     FROTNO = Facultatif(AsVI(SDNom(nomj='.CONTACT.SANOFR' )))
@@ -251,13 +243,6 @@ class sd_contact(AsBase):
       if (self.formulation_cont()):
         nzoco,nsuco,nmaco,nnoco,ntnoe,ntmae,ntpt,ntelno = self.dimeCO()
         assert self.CARACF.lonmax == self.zcmcf*nzoco
-
-        assert self.PBARS.lonmax  == nzoco+1
-        assert self.BARSNO.lonmax >= 1
-        assert self.PBARM.lonmax  == nzoco+1
-        assert self.BARSMA.lonmax >= 1
-        assert self.PRACC.lonmax  == nzoco+1
-        assert self.RACCNO.lonmax >= 1
 
         assert self.PFROT.lonmax  == nzoco+1
         assert self.FROTNO.lonmax >= 1

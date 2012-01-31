@@ -12,7 +12,7 @@
       CHARACTER*24        SDM, XNOVAR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 24/01/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF POSTRELE  DATE 30/01/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -135,7 +135,7 @@ C
       ENDIF
 C
       IF ( ZK8(JACC) .EQ. 'DIRECT  ' ) THEN
-         CALL JEVEUO ( NCHEFF//'.LSCHEFF', 'L', JACC )
+         CALL JEVEUO ( JEXNUM(NCHEFF//'.LSCHEFF',1), 'L', JACC )
          NBPAR = NBPAR + 1
          NOPARA(NBPAR) = 'CHAM_GD'
          IK = IK + 1

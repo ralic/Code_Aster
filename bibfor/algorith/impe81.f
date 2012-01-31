@@ -4,9 +4,9 @@
       CHARACTER*19 IMPE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -62,8 +62,9 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       INTEGER      I,J,IER, NBMODE,IADRIF
       INTEGER      LDBLO,LDBLOI,LDDESA,LDDESM,LDDESR,LDREFA,LDREFM
-      INTEGER      LDREFR,LDRESA,LDRESM,LDRESR
+      INTEGER      LDREFR,LDRESA,LDRESM,LDRESR,LDRESI,LDREFI
       INTEGER      NBDEF,NBMODD,NBMODS,NFR,NIM,NTAIL
+      INTEGER      NK,NC,NM,LDBLOK,LDBLOC,LDBLOM
 
       REAL*8       PARTR, PARTI, PARTR0, PARTI0
       REAL*8       AMSO,DPI,FREQ,R8PI 
@@ -71,6 +72,7 @@ C
       CHARACTER*8  K8B, BLANC
       CHARACTER*16 TYPRES, NOMCOM
       CHARACTER*19 IMPINI
+      CHARACTER*19 IMPK,IMPM,IMPC
       INTEGER      IARG
 C
       DATA BLANC /'        '/
@@ -88,7 +90,10 @@ C
       CALL GETVR8(' ','FREQ_EXTR',1,IARG,1,FREQ,NFR)
       CALL GETVR8(' ','AMOR_SOL',1,IARG,1,AMSO,NFR)
       CALL GETVID(' ','MATR_IMPE_INIT',1,IARG,1,IMPINI,NIM)
-      AMSO = 2.D0*AMSO
+      CALL GETVID(' ','MATR_IMPE_RIGI',1,IARG,1,IMPK,NK)
+      CALL GETVID(' ','MATR_IMPE_MASS',1,IARG,1,IMPM,NM)
+      CALL GETVID(' ','MATR_IMPE_AMOR',1,IARG,1,IMPC,NC)
+      IF (NFR.NE.0) AMSO = 2.D0*AMSO
 C
       CALL WKVECT(NOMRES//'.MAEL_RAID_REFE','G V K24',2,LDREFR)
       ZK24(LDREFR) = BASEMO
@@ -126,6 +131,9 @@ C
 C
       CALL JEVEUO(JEXNUM(IMPE//'.VALM',1),'L',LDBLO)
       IF (NIM.NE.0) CALL JEVEUO(JEXNUM(IMPINI//'.VALM',1),'L',LDBLOI)
+      IF (NK.NE.0) CALL JEVEUO(JEXNUM(IMPK//'.VALM',1),'L',LDBLOK)
+      IF (NM.NE.0) CALL JEVEUO(JEXNUM(IMPM//'.VALM',1),'L',LDBLOM)
+      IF (NC.NE.0) CALL JEVEUO(JEXNUM(IMPC//'.VALM',1),'L',LDBLOC)
       DO 30 I = 1 , NBMODE
 C
 C --------- BOUCLE SUR LES INDICES VALIDES DE LA COLONNE I
@@ -133,23 +141,32 @@ C
          DO 40 J = 1 , I
 C
 C
-           IF (I.LE.NBMODD.OR.J.LE.NBMODD) THEN
-             ZR(LDRESR+I*(I-1)/2+J-1) = 0.D0
-             ZR(LDRESA+I*(I-1)/2+J-1) = 0.D0
-           ELSE
+           ZR(LDRESR+I*(I-1)/2+J-1) = 0.D0
+           ZR(LDRESA+I*(I-1)/2+J-1) = 0.D0
+           ZR(LDRESM+I*(I-1)/2+J-1) = 0.D0
+           IF (I.GT.NBMODD.AND.J.GT.NBMODD) THEN
 C
 C ----------- STOCKAGE DANS LE .UALF A LA BONNE PLACE (1 BLOC)
 C
-             PARTR = DBLE(ZC(LDBLO+I*(I-1)/2+J-1))
-             PARTI = DIMAG(ZC(LDBLO+I*(I-1)/2+J-1))
-             ZR(LDRESR+I*(I-1)/2+J-1) = PARTR
-             ZR(LDRESA+I*(I-1)/2+J-1) = (PARTI-AMSO*PARTR)/(DPI*FREQ)
-             IF (NIM.NE.0) THEN
-               PARTR0 = DBLE(ZC(LDBLOI+I*(I-1)/2+J-1))
-               PARTI0 = DIMAG(ZC(LDBLOI+I*(I-1)/2+J-1))
-               ZR(LDRESR+I*(I-1)/2+J-1) = PARTR0
-               ZR(LDRESA+I*(I-1)/2+J-1) = (PARTI-PARTI0)/(DPI*FREQ)
-               ZR(LDRESM+I*(I-1)/2+J-1) = (PARTR0-PARTR)/(DPI*FREQ)**2
+             IF ((NK+NM+NC).EQ.0) THEN
+               PARTR = DBLE(ZC(LDBLO+I*(I-1)/2+J-1))
+               PARTI = DIMAG(ZC(LDBLO+I*(I-1)/2+J-1))
+               ZR(LDRESR+I*(I-1)/2+J-1)=PARTR
+               ZR(LDRESA+I*(I-1)/2+J-1)=(PARTI-AMSO*PARTR)/(DPI*FREQ)
+               IF (NIM.NE.0) THEN
+                 PARTR0 = DBLE(ZC(LDBLOI+I*(I-1)/2+J-1))
+                 PARTI0 = DIMAG(ZC(LDBLOI+I*(I-1)/2+J-1))
+                 ZR(LDRESR+I*(I-1)/2+J-1) = PARTR0
+                 ZR(LDRESA+I*(I-1)/2+J-1) = (PARTI-PARTI0)/(DPI*FREQ)
+                 ZR(LDRESM+I*(I-1)/2+J-1) = (PARTR0-PARTR)/(DPI*FREQ)**2
+               ENDIF
+             ELSE
+               IF (NK.NE.0) 
+     &           ZR(LDRESR+I*(I-1)/2+J-1)=DBLE(ZC(LDBLOK+I*(I-1)/2+J-1))
+               IF (NM.NE.0) 
+     &           ZR(LDRESM+I*(I-1)/2+J-1)=DBLE(ZC(LDBLOM+I*(I-1)/2+J-1))
+               IF (NC.NE.0) 
+     &           ZR(LDRESA+I*(I-1)/2+J-1)=DBLE(ZC(LDBLOC+I*(I-1)/2+J-1))
              ENDIF
            ENDIF
 C
@@ -170,6 +187,11 @@ C
       ZI(LDDESA) = 2
       ZI(LDDESA+1) = NBDEF
       ZI(LDDESA+2) = 2
+C     INER
+      CALL WKVECT(NOMRES//'.MAEL_INER_REFE','G V K24',2,LDREFI)
+      ZK24(LDREFR) = BASEMO
+      ZK24(LDREFR+1) = BLANC
+      CALL WKVECT(NOMRES//'.MAEL_INER_VALE','G V R',3*NBDEF,LDRESI)
 C
       CALL JEDEMA()
       END

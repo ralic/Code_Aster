@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 30/01/2012   AUTEUR DESROCHE X.DESROCHES 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 14/04/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -72,7 +72,7 @@ COEUR1=DEFI_MATERIAU(   ELAS_ORTH=_F( E_L = 4.E+07,
                                      RHO = 50.)
                         )
 
-MULTI1=DEFI_COQU_MULT( COUCHE=(  _F( EPAIS = 0.025,
+MULTI1=DEFI_COMPOSITE( COUCHE=(  _F( EPAIS = 0.025,
                                    MATER = REVET1,
                                    ORIENTATION = 0.),
                            _F( EPAIS = 0.05,

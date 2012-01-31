@@ -1,8 +1,8 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE  MURAKAMI 11.39 FISSURE CIRCULAIRE AU CENTRE D'UNE SPHERE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -192,43 +192,35 @@ THETA0=CALC_THETA(    MODELE=MO,
 #
 G00=CALC_G(
                       RESULTAT=RESU,
-                      NUME_ORDRE=1,
-                      THETA=_F(THETA=THETA0),
+                      THETA=_F(THETA=THETA0,SYME='OUI'),
                       EXCIT=_F(CHARGE=CH,),
-                      SYME_CHAR='SYME'
              )
 
 #
 G01=CALC_G(   
                  RESULTAT=RESU,
-                 NUME_ORDRE=1,
                  THETA=_F(FOND_FISS=FOND,
                           R_INF = 2.5E-5, R_SUP = 5.E-5,
                           DIRECTION=(1., 0., 0.,),),
                  EXCIT=_F(CHARGE=CH,),
-                 SYME_CHAR='SYME'
              )
 
 #
 G02=CALC_G(    
                 RESULTAT=RESU,
-                NUME_ORDRE=1,
                 THETA=_F(FOND_FISS=FOND,
                           R_INF = 5.E-5, R_SUP = 7.5E-5,
                           DIRECTION=(1., 0., 0.,),),
                 EXCIT=_F(CHARGE=CH,),
-                SYME_CHAR='SYME'
             )
 
 #
 G03=CALC_G(   
                  RESULTAT=RESU,
-                 NUME_ORDRE=1,
                  THETA=_F(FOND_FISS=FOND,
                           R_INF = 7.5E-5, R_SUP = 1.E-4,
                           DIRECTION=(1., 0., 0.,),),
                  EXCIT=_F(CHARGE=CH,),
-                 SYME_CHAR='SYME'
             )
 
 #
@@ -262,44 +254,37 @@ TEST_TABLE(       TABLE=G03,
 # CALCUL DE K ET G AVEC CALC_G / OPTION CALC_K_G
 KG00=CALC_G(   
                  RESULTAT=RESU,
-                 NUME_ORDRE=1,
                  OPTION='CALC_K_G',
                  THETA=_F(FOND_FISS=FOND,
                           R_INF = 1.E-6, R_SUP = 2.5E-5,
                           DIRECTION=(1., 0., 0.,),),
                  EXCIT=_F(CHARGE=CH,),
-                 SYME_CHAR='SYME'
              )                     
 KG01=CALC_G(   
                  RESULTAT=RESU,
-                 NUME_ORDRE=1,
                  OPTION='CALC_K_G',
                  THETA=_F(FOND_FISS=FOND,
                           R_INF = 2.5E-5, R_SUP = 5.E-5,
                           DIRECTION=(1., 0., 0.,),),
                  EXCIT=_F(CHARGE=CH,),
-                 SYME_CHAR='SYME'
              )
 KG02=CALC_G(    
                 RESULTAT=RESU,
-                NUME_ORDRE=1,
                  OPTION='CALC_K_G',
                 THETA=_F(FOND_FISS=FOND,
                           R_INF = 5.E-5, R_SUP = 7.5E-5,
                           DIRECTION=(1., 0., 0.,),),
                 EXCIT=_F(CHARGE=CH,),
-                SYME_CHAR='SYME'
             )
             
 KG03=CALC_G(   
                  RESULTAT=RESU,
-                 NUME_ORDRE=1,
                  OPTION='CALC_K_G',
                  THETA=_F(FOND_FISS=FOND,
                           R_INF = 7.5E-5,R_SUP = 1.E-4,
                           DIRECTION=(1., 0., 0.,),),
                  EXCIT=_F(CHARGE=CH,),
-                 SYME_CHAR='SYME',INFO=2,
+                 INFO=2,
             )
 IMPR_TABLE(       TABLE=KG03,)
 #

@@ -1,4 +1,4 @@
-#@ MODIF mecanonline5 Messages  DATE 03/01/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF mecanonline5 Messages  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,6 +23,10 @@ cata_msg = {
 
 1  : _(u"""
 Avec un schéma de type explicite, seule la prédiction TANGENTE est possible
+"""),
+
+2 : _(u"""
+ Le calcul des énergies n'est pas disponible avec le solveur FETI.
 """),
 
 3 : _(u"""
@@ -52,11 +56,19 @@ Avec un schéma de type explicite, seule la prédiction TANGENTE est possible
      renseignez REAC_ITER=1 sous le mot-clé facteur NEWTON.
 """),
 
+6 : _(u"""
+ Le calcul des énergies n'est pas disponible avec le mot-clé PROJ_MODAL.
+"""),
+
 7 : _(u"""
  Étant donné la présence du mot clé AMOR_ALPHA et / ou AMOR_BETA,
  on va assembler la matrice d'amortissement globale de Rayleigh,
  même si ces coefficients sont tous les deux nuls.
  Cette opération engendre un surcoût de calcul.
+"""),
+
+8 : _(u"""
+ Le calcul des énergies n'est pas disponible lorsque MATR_DISTRIBUEE='OUI'.
 """),
 
 9 : _(u"""

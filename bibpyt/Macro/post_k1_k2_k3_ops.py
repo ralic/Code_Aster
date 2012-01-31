@@ -1,4 +1,4 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 17/01/2012   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -464,8 +464,8 @@ def get_direction(Nnoff,ndim,DTANOR,DTANEX,Lnoff,Plev,Pfon,FOND_FISS) :
 
 #---------------------------------------------------------------------------------------------------------------
 
-def get_tab_dep(self,Lnocal,Nnocal,d_coorf,ABSC_CURV_MAXI,dicVP,RESULTAT,MODEL,
-                ListmaS,ListmaI,NB_NOEUD_COUPE,dmax,syme_char) :
+def get_tab_dep(self,Lnocal,Nnocal,d_coorf,dicVP,RESULTAT,MODEL,
+                ListmaS,ListmaI,NB_NOEUD_COUPE,hmax,syme_char,PREC_VIS_A_VIS) :
       """ retourne les tables des deplacements sup et inf pour les noeuds perpendiculaires pour
       tous les points du fond de fissure"""
 
@@ -474,10 +474,12 @@ def get_tab_dep(self,Lnocal,Nnocal,d_coorf,ABSC_CURV_MAXI,dicVP,RESULTAT,MODEL,
 
       MACR_LIGN_COUPE  = self.get_cmd('MACR_LIGN_COUPE')
 
+      dmax = hmax * PREC_VIS_A_VIS
+
       mcfact=[]
       for i in xrange(Nnocal):
          Porig = NP.array(d_coorf[Lnocal[i]] )
-         Pextr = Porig - ABSC_CURV_MAXI*dicVP[Lnocal[i]]
+         Pextr = Porig - hmax * dicVP[Lnocal[i]]
 
          mcfact.append(_F(NB_POINTS=NB_NOEUD_COUPE,
                           COOR_ORIG=(Porig[0],Porig[1],Porig[2],),
@@ -512,8 +514,7 @@ def get_dico_levres(lev,FOND_FISS,ndim,Lnoff,Nnoff):
             UTMESS('F','RUPTURE0_19')
       elif lev == 'inf' :
          Nnorm = FOND_FISS.sdj.INFNORM_NOEU.get()
-         if not Nnorm :
-            UTMESS('F','RUPTURE0_20')
+
       Nnorm = map(S.rstrip,Nnorm)
 #     pourquoi modifie t-on Nnoff dans ce cas, alors que rien n'est fait pour les maillages libres ?
       if Lnoff[0]==Lnoff[-1] and ndim == 3 :
@@ -591,7 +592,7 @@ def get_absfon(Lnoff,Nnoff,d_coor):
 
 #---------------------------------------------------------------------------------------------------------------
 
-def get_noeuds_perp_regle(Lnocal,d_coor,dicoS,dicoI,Lnoff,PREC_VIS_A_VIS,ABSC_CURV_MAXI,syme_char,rmprec,precn):
+def get_noeuds_perp_regle(Lnocal,d_coor,dicoS,dicoI,Lnoff,PREC_VIS_A_VIS,hmax,syme_char):
       """retourne la liste des noeuds du fond (encore ?), la liste des listes des noeuds perpendiculaires"""
       import numpy as NP
       from Utilitai.Utmess     import  UTMESS
@@ -602,6 +603,10 @@ def get_noeuds_perp_regle(Lnocal,d_coor,dicoS,dicoI,Lnoff,PREC_VIS_A_VIS,ABSC_CU
       Lnoinf = [None]*len(Lnocal)
       Nbnofo = 0
       Lnofon = []
+
+      rmprec = hmax * (1.+PREC_VIS_A_VIS/10.)
+      precn = PREC_VIS_A_VIS * hmax
+
       for ino in Lnocal :
          Pfon = NP.array([d_coor[ino][0],d_coor[ino][1],d_coor[ino][2]])
          Tmpsup = []
@@ -1804,10 +1809,6 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
       TYPE_MAILLAGE = []
 
 
-   rmprec = ABSC_CURV_MAXI*(1.+PREC_VIS_A_VIS/10.)
-   precn = PREC_VIS_A_VIS * ABSC_CURV_MAXI
-
-
 #  ------------------------------------------------------------------
 #  I. CAS FOND_FISS
 #  ------------------------------------------------------------------
@@ -1855,6 +1856,19 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 
       iret,ibid,syme_char = aster.dismoi('F','SYME',FOND_FISS.nom,'FOND_FISS')
 
+#     Recuperation de la liste des tailles de maille en chaque noeud du fond
+#     ----------------------------------------------------------------------
+
+      if not ABSC_CURV_MAXI :
+         list_tail = FOND_FISS.sdj.FOND_TAILLE_R.get()
+         hmax = max(list_tail)*4
+         UTMESS('I','RUPTURE0_32',valr=hmax)
+         hmin = min(list_tail)*4
+         if hmax>2*hmin :
+            UTMESS('A','RUPTURE0_17',valr=[hmin,hmax])        
+      else:
+         hmax = ABSC_CURV_MAXI      
+
 #     ------------------------------------------------------------------
 #     I.1 SOUS-CAS MAILLAGE LIBRE
 #     ------------------------------------------------------------------
@@ -1893,10 +1907,9 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
          if len(n_modele)==0 :
             UTMESS('F','RUPTURE0_18')
          MODEL = self.get_concept(n_modele)
-         dmax  = PREC_VIS_A_VIS * ABSC_CURV_MAXI
 
-         (__TlibS,__TlibI) = get_tab_dep(self,Lnocal,Nnocal,d_coorf,ABSC_CURV_MAXI,dicVP,RESULTAT,MODEL,
-                                     ListmaS,ListmaI,NB_NOEUD_COUPE,dmax,syme_char)
+         (__TlibS,__TlibI) = get_tab_dep(self,Lnocal,Nnocal,d_coorf,dicVP,RESULTAT,MODEL,
+                                     ListmaS,ListmaI,NB_NOEUD_COUPE,hmax,syme_char,PREC_VIS_A_VIS)
 
 #        A eclaircir
          Lnofon = Lnocal
@@ -1933,7 +1946,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 
 #        Noeuds LEVRE_SUP et LEVRE_INF
          (Lnofon, Lnosup, Lnoinf) = get_noeuds_perp_regle(Lnocal,d_coor,dicoS,dicoI,Lnoff,
-                                                          PREC_VIS_A_VIS,ABSC_CURV_MAXI,syme_char,rmprec,precn)
+                                                          PREC_VIS_A_VIS,hmax,syme_char)
          Nbnofo = len(Lnofon)
 
 #  ------------------------------------------------------------------

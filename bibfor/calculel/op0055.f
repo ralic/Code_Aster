@@ -2,9 +2,9 @@
       IMPLICIT   NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
+C MODIF CALCULEL  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -42,7 +42,7 @@ C
       CHARACTER*32 JEXNOM
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      INTEGER       IADR1
+      INTEGER       IADR1,JDRVLC,JCNCIN
       INTEGER       NBOCC, NBNOFF
       INTEGER       IBID, IOCC, IDON, IDONN, NDONN
       INTEGER       IRET1, IRET2, IRET, IRETS
@@ -52,7 +52,7 @@ C
       CHARACTER*9   ENTIT(8)
       CHARACTER*13  MOTCL(8)
       CHARACTER*16  TYPRES, OPER
-      CHARACTER*24  VALK(3)
+      CHARACTER*24  VALK(3), NCNCIN
       INTEGER      IARG
 C DEB-------------------------------------------------------------------
 C
@@ -68,6 +68,12 @@ C ---  RECUPERATIONS RELATIVES AU MAILLAGE
 C      -----------------------------------
 C
       CALL GETVID (' ', 'MAILLAGE', 0,IARG, 1, NOMA, NBOCC)
+C
+C ---  RECUPERATION DE LA CONNECTIVITE INVERSE
+C
+      NCNCIN='&&'//NOMPRO//'.CONNECINVERSE'
+      CALL CNCINV (NOMA, IBID, 0, 'V', NCNCIN )
+C
 C
 C     ---------------------------------------------------------------
 C     RECUPERATION DU TYPE DE FOND 
@@ -192,7 +198,7 @@ C     ----------------------------------------
 C
       CALL FONVEC(RESU,NOMA)
 
-
+      CALL JEDETR('&&'//NOMPRO//'.CONNECINVERSE')
 C
 C
 C     ---------------------------------------------------------------

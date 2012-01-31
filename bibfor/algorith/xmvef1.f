@@ -1,15 +1,15 @@
       SUBROUTINE XMVEF1(NDIM  ,JNNE   ,JNNM,NDEPLE ,
      &                  NNC,NFAES ,CFACE ,HPG   ,FFC   ,FFE   ,
      &                  FFM   ,JACOBI,JPCAI ,DLAGRC,DLAGRF,
-     &                  COEFFR,COEFFP,COEFEF,LPENAF,COEFFF,TAU1  ,
-     &                  TAU2  ,RESE  ,MPROJ ,COEFCR,COEFCP,JEU   ,
+     &                  COEFFR,LPENAF,COEFFF,TAU1  ,
+     &                  TAU2  ,RESE  ,MPROJ ,
      &                  TYPMAI,NSINGE,NSINGM,RRE   ,RRM   ,NVIT  ,
-     &                  NCONTA,JDDLE,JDDLM,NFHE,VTMP  )
+     &                  NCONTA,JDDLE,JDDLM,NFHE,VTMP  )  
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 30/01/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -29,9 +29,9 @@ C
       IMPLICIT NONE
       INTEGER  NDIM,NNC,JNNE(3),JNNM(3),NFAES,JPCAI,CFACE(5,3)
       INTEGER  NSINGE,NSINGM,NVIT,JDDLE(2),JDDLM(2),NFHE
-      REAL*8   HPG,FFC(9),FFE(9),FFM(9),JACOBI
-      REAL*8   DLAGRC,DLAGRF(2),COEFCP,COEFEF
-      REAL*8   COEFFF,COEFFR,COEFFP,RRE,RRM,COEFCR,JEU
+      REAL*8   HPG,FFC(8),FFE(8),FFM(8),JACOBI
+      REAL*8   DLAGRC,DLAGRF(2)
+      REAL*8   COEFFF,COEFFR,RRE,RRM
       REAL*8   TAU1(3),TAU2(3),RESE(3),MPROJ(3,3),VTMP(336)
       INTEGER  NCONTA,NDEPLE
       CHARACTER*8  TYPMAI
@@ -126,12 +126,7 @@ C
       DO 10 J = 1,NDIM
         DO 20 I = 1,NDEPLE
 C --- BLOCS ES,CL ; ES,EN ; (ES,SI)
-          IF(LPENAF) THEN
-           VV = JACOBI*HPG*COEFFF*DLAGRC*VECTT(J)*FFE(I)
-          ELSE
-           VV = JACOBI*HPG*COEFFF*
-     &      (DLAGRC-COEFCR*JEU)*VECTT(J)*FFE(I)
-          ENDIF
+          VV = JACOBI*HPG*COEFFF*DLAGRC*VECTT(J)*FFE(I)
           CALL INDENT(I,DDLES,DDLEM,NNES,IIN)
           II = IIN + J
           VTMP(II) = -VV
@@ -143,13 +138,8 @@ C --- BLOCS ES,CL ; ES,EN ; (ES,SI)
    25     CONTINUE
    20   CONTINUE
         DO 30 I = 1,NNM
-          IF(LPENAF) THEN
-            VV = JACOBI*HPG*COEFFF*
+          VV = JACOBI*HPG*COEFFF*
      &       DLAGRC*VECTT(J)*FFM(I)
-          ELSE
-            VV = JACOBI*HPG*COEFFF*
-     &       (DLAGRC-COEFCR*JEU)*VECTT(J)*FFM(I)
-          ENDIF
           CALL INDENT(I,DDLMS,DDLMM,NNMS,IIN)
           II = NDDLE + IIN + J
           VTMP(II) = VV
@@ -166,13 +156,8 @@ C
       DO 60 J = 1,NDIM
         DO 70 I = 1,NDEPLE
 C --- BLOCS ES,SI
-          IF(LPENAF) THEN
-            VV = JACOBI*HPG*COEFFF*
+          VV = JACOBI*HPG*COEFFF*
      &        DLAGRC*VECTT(J)*FFE(I)
-          ELSE
-            VV = JACOBI*HPG*COEFFF*
-     &        (DLAGRC-COEFCR*JEU)*VECTT(J)*FFE(I)
-          ENDIF
           CALL INDENT(I,DDLES,DDLEM,NNES,IIN)
           II = IIN + J
           VTMP(II) = RRE * VV
@@ -189,9 +174,9 @@ C
         DO 50 J = 1,NDIM-1
           II = PLI+J
           IF(LPENAF) THEN
-            VTMP(II) = JACOBI*HPG*TT(J)*FFC(I)*COEFEF/COEFFP
+            VTMP(II) = JACOBI*HPG*TT(J)*FFC(I)
           ELSE
-            VTMP(II) = JACOBI*HPG*TT(J)*FFC(I)/COEFFR
+            VTMP(II) = JACOBI*HPG*TT(J)*FFC(I)*COEFFF*DLAGRC/COEFFR
           ENDIF
    50   CONTINUE
    40 CONTINUE

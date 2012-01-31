@@ -1,8 +1,8 @@
-#@ MODIF soustruc Messages  DATE 21/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF soustruc Messages  DATE 30/01/2012   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -347,10 +347,6 @@ cata_msg={
  ddls non prévus
 """),
 
-78: _(u"""
- erreur dans le maillage
-"""),
-
 79: _(u"""
  le calcul de réponse pour ce type de résultat n'est disponible que sur les MACR_ELEM_STAT obtenus a partir de la mesure
 """),
@@ -388,11 +384,18 @@ cata_msg={
 """),
 
 88: _(u"""
-  Vérifiez votre maillage.
+ Erreur dans le maillage :
 """),
 
 89: _(u"""
-  coordonnée x < 0 pour le noeud  %(k1)s  maille  %(k2)s
+  Pour le noeud %(k1)s de la maille %(k2)s, la coordonnée x est strictement négative (x=%(r1)G).
+"""),
+
+90: _(u"""
+ Or, pour une modélisation axisymétrique, la coordonnée x doit être positive ou nulle.
+ 
+ Conseil :
+  Vérifiez votre maillage.
 """),
 
 93: _(u"""

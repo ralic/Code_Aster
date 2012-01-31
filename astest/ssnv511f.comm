@@ -1,9 +1,9 @@
-# MODIF  DATE 24/10/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/01/2012   AUTEUR DESOZA T.DESOZA 
 # TITRE BLOC DECOUPE PAR DEUX INTERFACES INTERSECTEES AVEC X-FEM
 # ssnv511f.para = tps_job 100 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -66,7 +66,6 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                                  INTEGRATION   = 'NOEUD',
                                  CONTACT_INIT  = 'OUI',
                                  GLISSIERE     = 'NON',
-                                 COEF_ECHELLE  = 1.,
                                  FISS_MAIT     = FISS1,
                                  ALGO_LAGR     = 'VERSION2',
                               ),
@@ -74,7 +73,6 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                                  INTEGRATION   = 'NOEUD',
                                  CONTACT_INIT  = 'OUI',
                                  GLISSIERE     = 'NON',
-                                 COEF_ECHELLE  = 1.,
                                  FISS_MAIT     = FISS2,
                                  ALGO_LAGR     = 'VERSION2',
                               ),
@@ -82,7 +80,6 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                                  INTEGRATION   = 'NOEUD',
                                  CONTACT_INIT  = 'OUI',
                                  GLISSIERE     = 'NON',
-                                 COEF_ECHELLE  = 1.,
                                  FISS_MAIT     = FISS3,
                                  ALGO_LAGR     = 'VERSION2',
                               ),

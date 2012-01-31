@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE PLAQUE FISSUREE EN THERMOELASTICITE (CALCUL DE G,K1,K2)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -155,58 +155,45 @@ FOND=DEFI_FOND_FISS( MAILLAGE=MA,
                      LEVRE_SUP=_F(MAILLE='M388'))
 G1=CALC_G(
                  RESULTAT=RESU,
-                 NUME_ORDRE=1,
-                 THETA=_F(THETA=THETA1),
-                 EXCIT=_F(CHARGE=CH,),
-                 SYME_CHAR='SYME',)
+                 THETA=_F(THETA=THETA1,SYME='OUI'),
+                 EXCIT=_F(CHARGE=CH,),)
 
 GK1=CALC_G(        RESULTAT=RESU,
-                   NUME_ORDRE=1,
                    THETA=_F(R_INF = 10.,
                               R_SUP = 40.,
                               DIRECTION=(1.,0.,0.,),
                               FOND_FISS=FOND),
                     EXCIT=_F(CHARGE=CH,),
-                    SYME_CHAR='SYME',
                     OPTION='CALC_K_G')
 
 G2=CALC_G(        RESULTAT=RESU,
-                  NUME_ORDRE=1,
-                  THETA=_F(THETA=THETA2),
-                  EXCIT=_F(CHARGE=CH,),
-                  SYME_CHAR='SYME',)
+                  THETA=_F(THETA=THETA2,SYME='OUI'),
+                  EXCIT=_F(CHARGE=CH,),)
 
 GK2=CALC_G(          RESULTAT=RESU,
-                     NUME_ORDRE=1,
                      THETA=_F(R_INF = 15.,
                               R_SUP = 45.,
                               DIRECTION=(1.,0.,0.,),
                               FOND_FISS=FOND),
                     EXCIT=_F(CHARGE=CH,),
-                    SYME_CHAR='SYME',
                     OPTION='CALC_K_G')
 
 G3=CALC_G(         RESULTAT=RESU,
-                   NUME_ORDRE=1,
-                   THETA=_F(THETA=THETA3),
-                   EXCIT=_F(CHARGE=CH,),
-                   SYME_CHAR='SYME',)
+                   THETA=_F(THETA=THETA3,SYME='OUI'),
+                   EXCIT=_F(CHARGE=CH,),)
 
 GK3=CALC_G(          RESULTAT=RESU,
-                     NUME_ORDRE=1,
                      THETA=_F(R_INF = 5.0,
                               R_SUP = 47.,
                               DIRECTION=(1.,0.,0.,),
                               FOND_FISS=FOND),
                      EXCIT=_F(CHARGE=CH,),
-                     SYME_CHAR='SYME',
                      OPTION='CALC_K_G')
 
 G4=CALC_G(        RESULTAT=RESU,
                   NUME_ORDRE=1,
-                  THETA=_F(THETA=THETA4),
-                  EXCIT=_F(CHARGE=CH,),
-                  SYME_CHAR='SYME',)
+                  THETA=_F(THETA=THETA4,SYME='OUI'),
+                  EXCIT=_F(CHARGE=CH,),)
 
 GK4=CALC_G(         RESULTAT=RESU,
                     NUME_ORDRE=1,
@@ -215,7 +202,6 @@ GK4=CALC_G(         RESULTAT=RESU,
                               DIRECTION=(1.,0.,0.,),
                               FOND_FISS=FOND),
                     EXCIT=_F(CHARGE=CH,),
-                    SYME_CHAR='SYME',
                     OPTION='CALC_K_G')
 
 TEST_TABLE(       TABLE=G1,

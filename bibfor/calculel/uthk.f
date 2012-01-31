@@ -1,11 +1,11 @@
-      SUBROUTINE UTHK ( NOMTE, IGEOM, HK, NDIM, NOE,
+      SUBROUTINE UTHK ( NOMTE, GEOM, HK, NDIM, NOE,
      >                  NSOMM, TYMVOL, IFA,
      >                  NIV, IFM )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF CALCULEL  DATE 31/01/2012   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,7 +28,7 @@ C      PAR DEFINITION, LE DIAMETRE D'UN ELEMENT EST LA LONGUEUR DU PLUS
 C      GRAND SEGMENT QUE L'ON PEUT INSERER DANS LA MAILLE ASSOCIEE.
 C
 C IN NOMTE  : NOM DU TYPE D'ELEMENT DE K
-C IN IGEOM  : ADRESSE JEVEUX DE LA GEOMETRIE
+C IN GEOM   : LA GEOMETRIE
 C IN NDIM   : DIMENSION DE L'ELEMENT FINI
 C             SI 0, ON EXAMINE UNE FACE D'UN VOLUME
 C   SEULEMENT SI NDIM = 0 (EXAMEN DE FACE DE VOLUME) :
@@ -69,9 +69,9 @@ C CORPS DU PROGRAMME
       IMPLICIT NONE
 
 C DECLARATION PARAMETRES D'APPELS
-      INTEGER IGEOM,NDIM,NOE(9,6,4),NSOMM,IFA,TYMVOL,NIV,IFM
+      INTEGER NDIM,NOE(9,6,4),NSOMM,IFA,TYMVOL,NIV,IFM
       CHARACTER*16 NOMTE
-      REAL*8 HK
+      REAL*8 HK,GEOM(*)
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER            ZI
@@ -112,30 +112,30 @@ C
 C 1.1. ==> QUADRANGLE/TRIANGLE EN 2D
 C
       IF (NDIM.EQ.2) THEN
-        X1 = ZR(IGEOM)
-        Y1 = ZR(IGEOM+1)
-        X2 = ZR(IGEOM+2)
-        Y2 = ZR(IGEOM+3)
-        X3 = ZR(IGEOM+4)
-        Y3 = ZR(IGEOM+5)
+        X1 = GEOM(1)
+        Y1 = GEOM(2)
+        X2 = GEOM(3)
+        Y2 = GEOM(4)
+        X3 = GEOM(5)
+        Y3 = GEOM(6)
         CALL UTTGEL ( NOMTE, NDIM, NOMTE2 )
 C
       ELSEIF (NDIM.EQ.3) THEN
 C
 C 1.2. ==> HEXA/TETRA/PENTA/PYRA
 C
-        X1 = ZR(IGEOM)
-        Y1 = ZR(IGEOM+1)
-        Z1 = ZR(IGEOM+2)
-        X2 = ZR(IGEOM+3)
-        Y2 = ZR(IGEOM+4)
-        Z2 = ZR(IGEOM+5)
-        X3 = ZR(IGEOM+6)
-        Y3 = ZR(IGEOM+7)
-        Z3 = ZR(IGEOM+8)
-        X4 = ZR(IGEOM+9)
-        Y4 = ZR(IGEOM+10)
-        Z4 = ZR(IGEOM+11)
+        X1 = GEOM(1)
+        Y1 = GEOM(2)
+        Z1 = GEOM(3)
+        X2 = GEOM(4)
+        Y2 = GEOM(5)
+        Z2 = GEOM(6)
+        X3 = GEOM(7)
+        Y3 = GEOM(8)
+        Z3 = GEOM(9)
+        X4 = GEOM(10)
+        Y4 = GEOM(11)
+        Z4 = GEOM(12)
         CALL UTTGEL ( NOMTE, NDIM, NOMTE2 )
 C
       ELSEIF (NDIM.EQ.0) THEN
@@ -145,23 +145,23 @@ C
         DO 10 IN = 1,NSOMM
 C
           IINO = NOE(IN,IFA,TYMVOL)
-          I = IGEOM + 3*(IINO-1)
+          I = 3*(IINO-1)+1
           IF (IN.EQ.1) THEN
-            X1 = ZR(I)
-            Y1 = ZR(I+1)
-            Z1 = ZR(I+2)
+            X1 = GEOM(I)
+            Y1 = GEOM(I+1)
+            Z1 = GEOM(I+2)
           ELSEIF (IN.EQ.2) THEN
-            X2 = ZR(I)
-            Y2 = ZR(I+1)
-            Z2 = ZR(I+2)
+            X2 = GEOM(I)
+            Y2 = GEOM(I+1)
+            Z2 = GEOM(I+2)
           ELSEIF (IN.EQ.3) THEN
-            X3 = ZR(I)
-            Y3 = ZR(I+1)
-            Z3 = ZR(I+2)
+            X3 = GEOM(I)
+            Y3 = GEOM(I+1)
+            Z3 = GEOM(I+2)
           ELSEIF (IN.EQ.4) THEN
-            X4 = ZR(I)
-            Y4 = ZR(I+1)
-            Z4 = ZR(I+2)
+            X4 = GEOM(I)
+            Y4 = GEOM(I+1)
+            Z4 = GEOM(I+2)
           ENDIF
 C
    10   CONTINUE
@@ -196,8 +196,8 @@ C
      &         (NOMTE2.EQ.'QS') .OR.
      &         (NOMTE2.EQ.'QL') ) THEN
 C
-        X4 = ZR(IGEOM+6)
-        Y4 = ZR(IGEOM+7)
+        X4 = GEOM(7)
+        Y4 = GEOM(8)
 C
 C       LES DIAGONALES
 C
@@ -236,18 +236,18 @@ C====
 C
       ELSEIF ( NOMTE2.EQ.'HE' ) THEN
 C
-        X5 = ZR(IGEOM+12)
-        Y5 = ZR(IGEOM+13)
-        Z5 = ZR(IGEOM+14)
-        X6 = ZR(IGEOM+15)
-        Y6 = ZR(IGEOM+16)
-        Z6 = ZR(IGEOM+17)
-        X7 = ZR(IGEOM+18)
-        Y7 = ZR(IGEOM+19)
-        Z7 = ZR(IGEOM+20)
-        X8 = ZR(IGEOM+21)
-        Y8 = ZR(IGEOM+22)
-        Z8 = ZR(IGEOM+23)
+        X5 = GEOM(13)
+        Y5 = GEOM(14)
+        Z5 = GEOM(15)
+        X6 = GEOM(16)
+        Y6 = GEOM(17)
+        Z6 = GEOM(18)
+        X7 = GEOM(19)
+        Y7 = GEOM(20)
+        Z7 = GEOM(21)
+        X8 = GEOM(22)
+        Y8 = GEOM(23)
+        Z8 = GEOM(24)
 C
 C DIAGONALES VOLUMIQUES
 C
@@ -300,12 +300,12 @@ C====
 C
       ELSEIF ( NOMTE2.EQ.'PE' ) THEN
 C
-        X5 = ZR(IGEOM+12)
-        Y5 = ZR(IGEOM+13)
-        Z5 = ZR(IGEOM+14)
-        X6 = ZR(IGEOM+15)
-        Y6 = ZR(IGEOM+16)
-        Z6 = ZR(IGEOM+17)
+        X5 = GEOM(13)
+        Y5 = GEOM(14)
+        Z5 = GEOM(15)
+        X6 = GEOM(16)
+        Y6 = GEOM(17)
+        Z6 = GEOM(18)
 C
 C DIAGONALES SURFACIQUES
 C
@@ -339,9 +339,9 @@ C====
 C
       ELSEIF ( NOMTE2.EQ.'PY' ) THEN
 C
-        X5 = ZR(IGEOM+12)
-        Y5 = ZR(IGEOM+13)
-        Z5 = ZR(IGEOM+14)
+        X5 = GEOM(13)
+        Y5 = GEOM(14)
+        Z5 = GEOM(15)
 C
 C DIAGONALES SURFACIQUES
 C

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
 # TITRE ONDE DE CISAILLEMENT DANS UNE COLONNE ELASTIQUE
 # sdlv121a.para = tps_job 190 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -24,8 +24,9 @@
 # ELASTIQUE MODELISE SOUS LA FORME D'UNE COLONNE 1D.
 # CAS 3D
 #=======================================================================
+import numpy as N
 
-DEBUT(CODE=_F( NOM = 'SDLV121A',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F( NOM = 'SDLV121A',NIV_PUB_WEB='INTERNET'));
 
 MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
@@ -104,10 +105,8 @@ LIAISON=AFFE_CHAR_MECA(
 ONDE=AFFE_CHAR_MECA_F(  MODELE=MODELE,
                            
                 ONDE_PLANE=_F( DIRECTION = (0., 0., 1.,), TYPE_ONDE = 'SH', 
-                 FONC_SIGNAL = FONC,
-                 DIST_ORIG = 150.)
-                         )
-
+                 FONC_SIGNAL = FONCT,))
+                 
 RIGI_ELE=CALC_MATR_ELEM(    MODELE=MODELE,
                               OPTION='RIGI_MECA',
                               CHAM_MATER=CHAMPMAT,
@@ -119,7 +118,15 @@ MASS_ELE=CALC_MATR_ELEM(    MODELE=MODELE,
                               CHAM_MATER=CHAMPMAT,
                               CHARGE=LIAISON
                             )
-
+                            
+AMOR_ELE=CALC_MATR_ELEM(    MODELE=MODELE,
+                              OPTION='AMOR_MECA',
+                              CHAM_MATER=CHAMPMAT,
+                              CHARGE=LIAISON,
+                              RIGI_MECA=RIGI_ELE,
+                              MASS_MECA=MASS_ELE,
+                            )
+                            
 VECT_ELE=CALC_VECT_ELEM(     OPTION='CHAR_MECA',
                              CHAM_MATER=CHAMPMAT,
                              CHARGE=LIAISON 
@@ -128,6 +135,10 @@ VECT_ELE=CALC_VECT_ELEM(     OPTION='CHAR_MECA',
 NUMEDDL=NUME_DDL(    MATR_RIGI=RIGI_ELE,   METHODE='LDLT')
 
 RIGIDITE=ASSE_MATRICE(    MATR_ELEM=RIGI_ELE,
+                            NUME_DDL=NUMEDDL
+                          )
+                          
+AMORT=ASSE_MATRICE(    MATR_ELEM=AMOR_ELE,
                             NUME_DDL=NUMEDDL
                           )
 
@@ -147,6 +158,7 @@ DYNA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                         MODELE=MODELE,
                         MATR_MASS=MASSE,
                         MATR_RIGI=RIGIDITE,
+                        MATR_AMOR=AMORT,
                         EXCIT=(
                           _F(  VECT_ASSE = VECAS,
                                COEF_MULT = 1.),
@@ -219,7 +231,7 @@ DYNB=DYNA_NON_LINE(     MODELE=MODELE,
 #                       ETAT_INIT=_F( INST_INIT = 0.),
                         COMP_INCR=_F( RELATION = 'ELAS',
                                       TOUT = 'OUI'),
-                        CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-4),
+                        CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-8),
                         SOLVEUR=_F(  METHODE = 'LDLT', 
                                      STOP_SINGULIER = 'NON'),
                         NEWTON=_F(  MATRICE = 'ELASTIQUE', 
@@ -260,13 +272,13 @@ TEST_FONCTION(VALEUR=(   _F(
                    VALE_PARA = 2.67200E-01,
                    VALE_REFE = 1.00396E-03,
                    CRITERE = 'RELATIF',
-                   PRECISION = 3.E-3),
+                   PRECISION = 7.E-3),
                   _F( 
                    FONCTION = DYNB22,
                    VALE_PARA = 4.40000E-01,
                    VALE_REFE = 9.94928E-04,
                    CRITERE = 'RELATIF',
-                   PRECISION = 2.E-3),
+                   PRECISION = 5.E-3),
                   _F( 
                    FONCTION = DYNB22,
                    VALE_PARA = 7.20000E-01,
@@ -280,7 +292,139 @@ TEST_FONCTION(VALEUR=(   _F(
                    CRITERE = 'ABSOLU',
                    PRECISION = 1.E-10))
                 )
+FIN();
+#
+#     POST-TRAITEMENT
+#
 
-FIN()
+
+# def Defi_Xmcourbe(X,Y,courbe=None,legend='X',color=0,mark=0,):
+# 
+#   def_co={'ABSCISSE': X}
+#   def_co['ORDONNEE'] = Y
+#   def_co['LEGENDE' ] = legend
+#   def_co['COULEUR' ] = color
+#   def_co['MARQUEUR'] = mark
+#   
+#   try:
+#     courbe.append(def_co);
+#   except:
+#     courbe=[def_co,];
+#       
+#   return courbe;
+# # ---
+# 
+# 
+#   
+# Noeud = ['N%d' %(n) for n in range(44,3,-4)];
+# 
+# NB_Noe = len(Noeud);
+# 
+# co_acce,co_vite,co_depl,=None,None,None,;
+# 
+# Comp = 'DY';
+# 
+# RESU =(DYNA,DYNB);
+# 
+# for r in RESU:
+# 
+#  for i in range(NB_Noe):
+# 
+#    cte_acce = i*5.e-1;
+#    cte_vite = i*1.5e-2;
+#    cte_depl = i*5.e-4;
+# 
+#    DEPL=RECU_FONCTION(RESULTAT=r,
+#                       TITRE='ACCE',
+#                       NOM_CHAM='DEPL',
+#                       NOM_CMP=Comp,
+#                       NOEUD=Noeud[i],
+#                       PROL_DROITE='CONSTANT',
+#                       PROL_GAUCHE='CONSTANT',
+#                       INTERPOL='LIN',);
+#                       
+#    VITE=RECU_FONCTION(RESULTAT=r,
+#                       TITRE='VITE',
+#                       NOM_CHAM='VITE',
+#                       NOM_CMP=Comp,
+#                       NOEUD=Noeud[i],
+#                       PROL_DROITE='CONSTANT',
+#                       PROL_GAUCHE='CONSTANT',
+#                       INTERPOL='LIN',);
+#                       
+#    ACCE=RECU_FONCTION(RESULTAT=r,
+#                       TITRE='ACCE',
+#                       NOM_CHAM='ACCE',
+#                       NOM_CMP=Comp,
+#                       NOEUD=Noeud[i],
+#                       PROL_DROITE='CONSTANT',
+#                       PROL_GAUCHE='CONSTANT',
+#                       INTERPOL='LIN',);
+#    
+#    
+#    # ---- Acceleration
+#    #      ------------------------                
+#    time, acce = ACCE.Valeurs();
+#    
+#    acce =N.array(acce);
+#    
+#    acce +=cte_acce;
+#    
+#    co_acce =Defi_Xmcourbe(courbe=co_acce,
+#         X=tuple(time),
+#         Y=tuple(acce),
+#         legend=Noeud[i],
+#         color=0,);
+#         
+#    # ---- Vitesse
+#    #      ------------------------
+#    
+#    time, vite = VITE.Valeurs();
+#    
+#    vite =N.array(vite);
+#    
+#    vite +=cte_vite;
+#    
+#    co_vite =Defi_Xmcourbe(courbe=co_vite,
+#         X=tuple(time),
+#         Y=tuple(vite),
+#         legend=Noeud[i],
+#         color=0,);
+#    
+#    # ---- Deplacement
+#    #      ------------------------
+#    
+#    time, depl = DEPL.Valeurs();
+#    
+#    depl =N.array(depl);
+#    
+#    depl +=cte_depl;
+#    
+#    co_depl =Defi_Xmcourbe(courbe=co_depl,
+#         X=tuple(time),
+#         Y=tuple(depl),
+#         legend=Noeud[i],
+#         color=0,);
+#    
+#    DETRUIRE(CONCEPT=_F(NOM=(ACCE,DEPL,VITE,),),);
+# 
+# Courbes = [co_acce,co_depl,co_vite,];
+# Nom_Fichier= ['co_acce.agr','co_depl.agr','co_vite.agr',];
+# 
+# unit=38
+# for c in range(len(Nom_Fichier)):
+# 
+#   DEFI_FICHIER(ACTION='ASSOCIER',
+#                FICHIER='./REPE_OUT/'+Nom_Fichier[c],
+#                UNITE=unit,);
+#                   
+#   IMPR_FONCTION(FORMAT='XMGRACE',
+#               UNITE=unit,
+#               COURBE=Courbes[c]);
+#                   
+#   DEFI_FICHIER(ACTION='LIBERER',
+#                UNITE=unit,);
+               
+#FIN();
 #
 #

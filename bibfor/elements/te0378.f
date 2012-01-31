@@ -1,7 +1,7 @@
       SUBROUTINE TE0378 (OPTION,NOMTE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 31/01/2012   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -248,7 +248,7 @@ C ----------------------------------------------------------------------
 C
 C 2.1. --- CALCUL DU DIAMETRE HK DE LA MAILLE ----
 C
-      CALL UTHK(NOMTE,IGEOM,HK,NDIM,ITAB,IBID,IBID,IBID,NIV,IFM)
+      CALL UTHK(NOMTE,ZR(IGEOM),HK,NDIM,ITAB,IBID,IBID,IBID,NIV,IFM)
 C
 C 2.2. --- CALCUL DE LA FORCE DE PESANTEUR  ---
 C
@@ -362,20 +362,20 @@ C
 C
 C ------- CALCUL DE L'ORIENTATION DE LA MAILLE -------------------------
 C
-        CALL UTJAC(.TRUE.,IGEOM,IAUX,IDFDE,0,IBID,NNO,ORIEN)
+        CALL UTJAC(.TRUE.,ZR(IGEOM),IAUX,IDFDE,0,IBID,NNO,ORIEN)
 C
 C ------- CALCUL DE LA DIVERGENCE ET DE LA NORME DE SIGMA PB. PRIMAL ---
 C
         IAUX=IVF+(IPG-1)*NNO
         IBID = 1
-        CALL ERMEV2(NNO,IGEOM,ZR(IAUX),IADP,NBCMP,DFDX,DFDY,
+        CALL ERMEV2(NNO,IGEOM,ZR(IAUX),ZR(IADP),NBCMP,DFDX,DFDY,
      &              POIDS,IBID,
      &              DSPX,DSPY,R8BID)
 C
 C ------- CALCUL DE LA DIVERGENCE ET DE LA NORME DE SIGMA PB. DUAL -----
 C
         IBID = 0
-        CALL ERMEV2(NNO,IGEOM,ZR(IAUX),IADD,NBCMP,DFDX,DFDY,
+        CALL ERMEV2(NNO,IGEOM,ZR(IAUX),ZR(IADD),NBCMP,DFDX,DFDY,
      &              POIDS,IBID,
      &              DSDX,DSDY,R8BID)
 C
@@ -497,7 +497,7 @@ C
 C ----- CALCUL DE NORMALES, TANGENTES ET JACOBIENS AUX POINTS DE GAUSS
 C
           IAUX = IFA
-          CALL CALNOR ( '2D' , IGEOM,
+          CALL CALNOR ( '2D' , ZR(IGEOM),
      &                  IAUX, NNOS, NNOF, ORIEN,
      &                  IBID, IBID, ITAB, IBID, IBID, IBID,
      &                  JACO, NX, NY, R8BID3,

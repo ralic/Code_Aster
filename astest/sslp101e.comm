@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE PLAQUE FISSUREE AVEC PRESSION VARIABLE SUR LES LEVRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -107,173 +107,125 @@ FOND=DEFI_FOND_FISS( MAILLAGE=MA,
 # ---- G, K1 ET K2 AVEC CHARGEMENT PRES_REP  ----------------------
 
 GPRES1=CALC_G(      RESULTAT=RESU1,
-                    NUME_ORDRE=1,
-                    THETA=_F(THETA=THETA1),
-                    SYME_CHAR='SYME',)
+                    THETA=_F(THETA=THETA1,SYME='OUI'),)
 
 GKPRES1=CALC_G(     RESULTAT=RESU1,
-                    NUME_ORDRE=1,
                     THETA=_F(  R_INF = 22.04078,
                                R_SUP = 30.,
                                DIRECTION=( 1., 0., 0.,),
                                FOND_FISS=FOND),
-                    SYME_CHAR='SYME',
                     OPTION='CALC_K_G')
 
 GPRES2=CALC_G(      RESULTAT=RESU1,
-                    NUME_ORDRE=1,
-                    THETA=_F(THETA=THETA2),
-                    SYME_CHAR='SYME',)
+                    THETA=_F(THETA=THETA2,SYME='OUI'),)
 
 GKPRES2=CALC_G(     RESULTAT=RESU1,
-                    NUME_ORDRE=1,
                     THETA=_F( R_SUP = 22.04078,
                               R_INF = 15.3061094,
                               DIRECTION=( 1., 0., 0.,),
                               FOND_FISS=FOND),
-                    SYME_CHAR='SYME',
                     OPTION='CALC_K_G')
 
 GPRES3=CALC_G(      RESULTAT=RESU1,
-                    NUME_ORDRE=1,
-                    THETA=_F(THETA=THETA3),
-                    SYME_CHAR='SYME',)
+                    THETA=_F(THETA=THETA3,SYME='OUI'),)
 
 GKPRES3=CALC_G(     RESULTAT=RESU1,
-                    NUME_ORDRE=1,
                     THETA=_F( R_INF = 9.79591846,
                               R_SUP = 15.3061094,
                               DIRECTION=( 1., 0., 0.,),
                               FOND_FISS=FOND),
-                    SYME_CHAR='SYME',
                     OPTION='CALC_K_G')
 
 GPRES4=CALC_G(      RESULTAT=RESU1,
-                    NUME_ORDRE=1,
-                    THETA=_F(THETA=THETA4),
-                    SYME_CHAR='SYME',)
+                    THETA=_F(THETA=THETA4,SYME='OUI'),)
 
 GKPRES4=CALC_G(     RESULTAT=RESU1,
-                    NUME_ORDRE=1,
                     THETA=_F( R_SUP = 9.79591846,
                               R_INF = 5.510197639,
                               DIRECTION=( 1., 0., 0.,) ,
                               FOND_FISS=FOND),
-                    SYME_CHAR='SYME',
                     OPTION='CALC_K_G')
 
 GPRES5=CALC_G(      RESULTAT=RESU1,
-                    NUME_ORDRE=1,
-                    THETA=_F(THETA=THETA5),
-                    SYME_CHAR='SYME',)
+                    THETA=_F(THETA=THETA5,SYME='OUI'),)
 
 GKPRES5=CALC_G(     RESULTAT=RESU1,
-                    NUME_ORDRE=1,
                     THETA=_F( R_INF = 2.448979377,
                               R_SUP = 5.510197639,
                               DIRECTION=( 1., 0., 0.,),
                               FOND_FISS=FOND),
-                    SYME_CHAR='SYME',
                     OPTION='CALC_K_G')
 
 GPRES6=CALC_G(      RESULTAT=RESU1,
-                    NUME_ORDRE=1,
-                    THETA=_F(THETA=THETA6),
-                    SYME_CHAR='SYME',)
+                    THETA=_F(THETA=THETA6,SYME='OUI'),)
 
 GKPRES6=CALC_G(     RESULTAT=RESU1,
-                    NUME_ORDRE=1,
                     THETA=_F(R_SUP = 2.448979377,
                              R_INF = 0.61225116,
                              DIRECTION=( 1., 0., 0.,),
                              FOND_FISS=FOND),
-                    SYME_CHAR='SYME',
                     OPTION='CALC_K_G')
 
 # ---- G, K1 ET K2 AVEC CHARGEMENT FORCE_CONTOUR --------------------
 
 GFCON1=CALC_G(      RESULTAT=RESU2,
-                    NUME_ORDRE=1,
-                    THETA=_F(THETA=THETA1),
-                    SYME_CHAR='SYME',)
+                    THETA=_F(THETA=THETA1,SYME='OUI'),)
 
 GKFCON1=CALC_G(     RESULTAT=RESU2,
-                    NUME_ORDRE=1,
                     THETA=_F(  R_INF = 22.04078,
                                R_SUP = 30.,
                                DIRECTION=( 1., 0., 0.,),
                                FOND_FISS=FOND),
-                    SYME_CHAR='SYME',
                     OPTION='CALC_K_G')
 
 GFCON2=CALC_G(      RESULTAT=RESU2,
-                    NUME_ORDRE=1,
-                    THETA=_F(THETA=THETA1),
-                    SYME_CHAR='SYME',)
+                    THETA=_F(THETA=THETA1,SYME='OUI'),)
 
 GKFCON2=CALC_G(     RESULTAT=RESU2,
-                    NUME_ORDRE=1,
                     THETA=_F( R_SUP = 22.04078,
                                R_INF = 15.3061094,
                                DIRECTION=( 1., 0., 0.,),
                                FOND_FISS=FOND),
-                    SYME_CHAR='SYME',
                     OPTION='CALC_K_G')
 
 GFCON3=CALC_G(      RESULTAT=RESU2,
-                    NUME_ORDRE=1,
-                    THETA=_F(THETA=THETA3),
-                    SYME_CHAR='SYME',)
+                    THETA=_F(THETA=THETA3,SYME='OUI'),)
 
 GKFCON3=CALC_G(     RESULTAT=RESU2,
-                    NUME_ORDRE=1,
                     THETA=_F( R_INF = 9.79591846,
                               R_SUP = 15.3061094,
                               DIRECTION=( 1., 0., 0.,),
                               FOND_FISS=FOND),
-                    SYME_CHAR='SYME',
                     OPTION='CALC_K_G')
 
 GFCON4=CALC_G(      RESULTAT=RESU2,
-                    NUME_ORDRE=1,
-                    THETA=_F(THETA=THETA4),
-                    SYME_CHAR='SYME',)
+                    THETA=_F(THETA=THETA4,SYME='OUI'),)
 
 GKFCON4=CALC_G(     RESULTAT=RESU2,
-                    NUME_ORDRE=1,
                     THETA=_F( R_SUP = 9.79591846,
                               R_INF = 5.510197639,
                               DIRECTION=( 1., 0., 0.,),
                               FOND_FISS=FOND),
-                    SYME_CHAR='SYME',
                     OPTION='CALC_K_G')
 
 GFCON5=CALC_G(      RESULTAT=RESU2,
-                    NUME_ORDRE=1,
-                    THETA=_F(THETA=THETA5),
-                    SYME_CHAR='SYME',)
+                    THETA=_F(THETA=THETA5,SYME='OUI'),)
 
 GKFCON5=CALC_G(     RESULTAT=RESU2,
-                    NUME_ORDRE=1,
                     THETA=_F( R_INF = 2.448979377,
                               R_SUP = 5.510197639,
                               DIRECTION=( 1., 0., 0.,),
                               FOND_FISS=FOND),
-                    SYME_CHAR='SYME',
                     OPTION='CALC_K_G')
 
 GFCON6=CALC_G(      RESULTAT=RESU2,
-                    NUME_ORDRE=1,
-                    THETA=_F(THETA=THETA6),
-                    SYME_CHAR='SYME',)
+                    THETA=_F(THETA=THETA6,SYME='OUI'),)
 
 GKFCON6=CALC_G(     RESULTAT=RESU2,
-                    NUME_ORDRE=1,
                     THETA=_F( R_SUP = 2.448979377,
                               R_INF = 0.61225116,
                               DIRECTION=( 1., 0., 0.,),
                               FOND_FISS=FOND),
-                    SYME_CHAR='SYME',
                     OPTION='CALC_K_G')
 
 TEST_TABLE(       TABLE=GPRES1,

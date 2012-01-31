@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE CALCUL 3D DE G LOCAL FISSURE CIRCULAIRE EN MILIEU INFINI
 # sslv134f.para = tps_job 160 mem_job 200Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -108,7 +108,6 @@ GL1=CALC_G(THETA=_F(FOND_FISS=FOND,
                     R_INF=0.1,
                     R_SUP=1.0,),
            RESULTAT=RESU,
-           #TOUT_ORDRE='OUI',
            NUME_ORDRE=(1,2,3,4),
            LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
                       LISSAGE_G='LAGRANGE',),
@@ -118,7 +117,6 @@ GL2=CALC_G(THETA=_F(FOND_FISS=FOND,
                     R_INF=0.5,
                     R_SUP=1.5,),
            RESULTAT=RESU,
-           #TOUT_ORDRE='OUI',
            NUME_ORDRE=(1,2,3,4),
            TITRE='G_LOCAL AVEC R_INF =  0.50000E-01 ET R_SUP =  1.50000E+00',);
 
@@ -126,7 +124,6 @@ GLBIL1=CALC_G(THETA=_F(FOND_FISS=FOND,
                        R_INF=0.1,
                        R_SUP=1.0,),
               RESULTAT=RESU,
-              #TOUT_ORDRE='OUI',
            NUME_ORDRE=(1,2,3,4),
               LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
                          LISSAGE_G='LAGRANGE',),
@@ -137,7 +134,6 @@ GLBIL2=CALC_G(THETA=_F(FOND_FISS=FOND,
                        R_INF=0.5,
                        R_SUP=1.5,),
               RESULTAT=RESU,
-              #TOUT_ORDRE='OUI',
            NUME_ORDRE=(1,2,3,4),
               OPTION='G_BILI',
               TITRE='G_LOCAL AVEC R_INF =  5.00000E-01 ET R_SUP =  1.50000E+00',);
@@ -146,7 +142,6 @@ GLMAX1=CALC_G(THETA=_F(FOND_FISS=FOND,
                        R_INF=0.1,
                        R_SUP=1.0,),
               RESULTAT=RESU,
-              #TOUT_ORDRE='OUI',
            NUME_ORDRE=(1,2,3,4),
               LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
                          LISSAGE_G='LAGRANGE',),
@@ -170,7 +165,6 @@ GLMAX2=CALC_G(THETA=_F(FOND_FISS=FOND,
                        R_INF=0.5,
                        R_SUP=1.5,),
               RESULTAT=RESU,
-              #TOUT_ORDRE='OUI',
            NUME_ORDRE=(1,2,3,4),
               OPTION='G_MAX',
               BORNES=(
@@ -230,7 +224,7 @@ TEST_TABLE(TABLE=GL1,
                    _F(NOM_PARA='NOEUD',
                       VALE_K='N2667',),),
            NOM_PARA='G',
-           VALE=5.79,
+           VALE=11.58,
            PRECISION=0.008,
            REFERENCE='AUTRE_ASTER',);
 
@@ -242,7 +236,7 @@ TEST_TABLE(TABLE=GLBIL1,
                    _F(NOM_PARA='NOEUD',
                       VALE_K='N2667',),),
            NOM_PARA='G_BILI_LOCAL',
-           VALE=5.79,
+           VALE=11.58,
            PRECISION=0.008,
            REFERENCE='AUTRE_ASTER',);
 
@@ -259,7 +253,7 @@ TEST_TABLE(TABLE=GLMAX1,
                    _F(NOM_PARA='NOEUD',
                       VALE_K='N2667',),),
            NOM_PARA='G',
-           VALE=14.9455246397,
+           VALE=29.891,
            PRECISION=0.006,
            REFERENCE='NON_REGRESSION',);
 
@@ -270,7 +264,7 @@ TEST_TABLE(TABLE=GL2,
                    _F(NOM_PARA='NOEUD',
                       VALE_K='N2667',),),
            NOM_PARA='G',
-           VALE=2.17357612388,
+           VALE=4.3472,
            PRECISION=0.005,
            REFERENCE='NON_REGRESSION',
            VERSION='7.0.17',);
@@ -284,7 +278,7 @@ TEST_TABLE(TABLE=GLBIL2,
                    _F(NOM_PARA='NOEUD',
                       VALE_K='N2667',),),
            NOM_PARA='G_BILI_LOCAL',
-           VALE=2.17357612388,
+           VALE=4.3472,
            PRECISION=0.005,
            REFERENCE='NON_REGRESSION',);
 
@@ -301,7 +295,7 @@ TEST_TABLE(TABLE=GLMAX2,
                    _F(NOM_PARA='NOEUD',
                       VALE_K='N2773',),),
            NOM_PARA='G',
-           VALE=15.0825,
+           VALE=30.165,
            PRECISION=0.005,
            REFERENCE='NON_REGRESSION',);
 

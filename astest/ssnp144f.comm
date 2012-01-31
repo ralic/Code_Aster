@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 30/01/2012   AUTEUR DESOZA T.DESOZA 
 # TITRE ZONE COHESIVE CZM_EXP_REG AVEC X-FEM
 # ssnp144d.para = tps_job 360 mem_job 128Mo ncpus 1 liste_test S
 # ssnp144f.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
@@ -96,7 +96,6 @@ CTXFEM = DEFI_CONTACT(
                      CONTACT_INIT='NON',
                      COEF_FROT=1000.,                                     
                      COEF_CONT=100.,   
-                     COEF_ECHELLE=1.,
                      FISS_MAIT = FISS,
                      ALGO_LAGR='VERSION2',
                      RELATION='CZM_EXP_REG',),),);

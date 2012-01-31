@@ -1,8 +1,8 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 30/01/2012   AUTEUR DESOZA T.DESOZA 
 # TITRE ROTATION D'UNE INCLUSION RIGIDE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -80,7 +80,6 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                                  TOLE_PROJ_EXT = 0.0,   
                                  CONTACT_INIT  = 'OUI',
                                  GLISSIERE     = 'OUI',
-                                 COEF_ECHELLE  = 1.,
                                  FISS_MAIT     = FISS,
                                ALGO_CONT    = 'STANDARD',
                                COEF_CONT    = 100.,
@@ -176,7 +175,9 @@ RES_XFEM=POST_CHAM_XFEM( MODELE_VISU  = MOD_VISU,
 
 LAG=[None]*5
 inst=[0.0,0.25,0.5,0.75,1.0]
-
+valref=[-1.0602901679254E+06,-1.0959568989366E+06,-1.0591207483958E+06,
+-1.085354679982E+06,-1.0602899111508E+06,-1.0959570752656E+06,
+-1.0749924753401E+06,-1.0789908186502E+06]
 a=-9.7799511e-3
 b=0.0880195599
 LAGS_A = E*a-(E*b)/(8*8)
@@ -219,4 +220,19 @@ for i in [1,2,3,4]: #Boucle sur les increments
                  CRITERE='RELATIF',
                  PRECISION=5.5E-2,);
 
+  TEST_TABLE(TABLE=LAG[i],
+                 NOM_PARA='LAGS_C',
+                 TYPE_TEST='MAX',
+                 VALE=valref[2*(i-1)],
+                 REFERENCE ='NON_REGRESSION',
+                 CRITERE='RELATIF',
+                 PRECISION=1.E-6,);
+
+  TEST_TABLE(TABLE=LAG[i],
+                 NOM_PARA='LAGS_C',
+                 TYPE_TEST='MIN',
+                 VALE=valref[2*(i-1)+1],
+                 REFERENCE ='NON_REGRESSION',
+                 CRITERE='RELATIF',
+                 PRECISION=1.E-6,);
 FIN();

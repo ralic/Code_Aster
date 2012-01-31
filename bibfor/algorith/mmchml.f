@@ -2,7 +2,7 @@
      &                  NUMINS)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/01/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 30/01/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,7 +61,7 @@ C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER      NCMP
-      PARAMETER    (NCMP=29)
+      PARAMETER   (NCMP=27)
       INTEGER      CFMMVD,ZTABF
       INTEGER      IPTC,IZONE,NTPC
       CHARACTER*24 JEUSUP
@@ -223,14 +223,12 @@ C ------- USURE
           ZR(JVALV-1+21) = IUSURE
           ZR(JVALV-1+22) = KWEAR
           ZR(JVALV-1+23) = HWEAR
-C ------- EXCLUSION/RACCORDS
+C ------- EXCLUSION
           ZR(JVALV-1+24) = ZR(JTABF+ZTABF*(IPTC-1)+19)
-          ZR(JVALV-1+25) = ZR(JTABF+ZTABF*(IPTC-1)+20)
-          ZR(JVALV-1+26) = ZR(JTABF+ZTABF*(IPTC-1)+21)
 C ------- DYNAMIQUE
-          ZR(JVALV-1+27) = IFORM
-          ZR(JVALV-1+28) = DELTAT
-          ZR(JVALV-1+29) = THETA
+          ZR(JVALV-1+25) = IFORM
+          ZR(JVALV-1+26) = DELTAT
+          ZR(JVALV-1+27) = THETA
 C
           IF (NIV.GE.2) THEN
             CALL MMIMP3(IFM,NOMA,IPTC,JVALV,JTABF)

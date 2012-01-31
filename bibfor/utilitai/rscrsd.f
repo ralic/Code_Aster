@@ -4,7 +4,7 @@
       INTEGER NBORDR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,7 @@ C ----------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C                      C H A M P _ M E C A N I Q U E
 C     ------------------------------------------------------------------
-      PARAMETER (NCMEC1=37)
+      PARAMETER (NCMEC1=41)
       PARAMETER (NCMEC2=46)
       PARAMETER (NCMEC3=33)
       PARAMETER (NCMUTI=30)
@@ -90,7 +90,8 @@ C      '1234567890123456','1234567890123456','1234567890123456',
      & 'EPEQ_ELGA',       'EPEQ_ELNO',       'EPEQ_NOEU',
      & 'ALPH0_ELGA_EPSP', 'ALPHP_ELGA_ALPH0','VARI_NON_LOCAL',
      & 'LANL_ELGA',       'SIRO_ELEM',       'FLHN_ELGA',
-     & 'SIPM_ELNO',       'STRX_ELGA'/
+     & 'SIPM_ELNO',       'STRX_ELGA',       'FORC_EXTE',
+     & 'FORC_AMOR',       'FORC_LIAI',       'FORC_INTE'/
 C
 C      '1234567890123456','1234567890123456','1234567890123456',
       DATA CHMEC2/

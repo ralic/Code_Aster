@@ -1,15 +1,15 @@
       SUBROUTINE DLDIFF ( LCREA,LAMORT,NEQ,IMAT,
      &                    MASSE,RIGID,AMORT,
-     &                    DEP0,VIT0,ACC0,T0,
+     &                    DEP0,VIT0,ACC0,FEXTE,FAMOR,FLIAI,T0,
      &                    NCHAR,NVECA,LIAD,LIFO,
      &                    MODELE,MATE,CARELE,
      &                    CHARGE,INFOCH,FOMULT,NUMEDD,NUME,
-     &                    INPSCO,NBPASE)
+     &                    INPSCO,NBPASE,SOLVEU)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGORITH  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -74,8 +74,10 @@ C
       CHARACTER*13 INPSCO
       CHARACTER*24 MODELE, CARELE, CHARGE, FOMULT, MATE, NUMEDD
       CHARACTER*24 INFOCH, LIFO(*)
+      CHARACTER*19 SOLVEU
 C
       REAL*8 DEP0(*), VIT0(*), ACC0(*), T0
+      REAL*8 FEXTE(*), FAMOR(*), FLIAI(*)
 C
       LOGICAL LAMORT, LCREA
 C
@@ -97,10 +99,10 @@ C    ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ---------------------------
 
       INTEGER NBTYAR
-      PARAMETER ( NBTYAR = 3 )
+      PARAMETER ( NBTYAR = 6 )
       INTEGER IWK0, IWK1, IWK2
       INTEGER NRPASE, NRORES
-      INTEGER IFM, NIV, ETAUSR
+      INTEGER IFM, NIV, ETAUSR, IRET
       INTEGER IDEPL1
       INTEGER IVITE1, IVITE2
       INTEGER IACCE1
@@ -111,7 +113,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ---------------------------
       INTEGER JNBPA, JBINT, JLPAS
       INTEGER NPATOT, NBGRPA, NBPTPA
       INTEGER NBEXCL, NBORDR
-      CHARACTER*4 TYP1(3)
+      CHARACTER*4 TYP1(NBTYAR)
       CHARACTER*8 NOMRES
       CHARACTER*16 TYPRES, NOMCMD, TYPEAR(NBTYAR)
       CHARACTER*19 LISARC
@@ -125,6 +127,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ---------------------------
       CHARACTER*8   VALK
       INTEGER       VALI(2)
       REAL*8        VALR(2)
+      LOGICAL       ENER
 
 C
 C     -----------------------------------------------------------------
@@ -147,13 +150,19 @@ C
       CALL WKVECT('&&DLDIFF.F0'    ,'V V R',NEQ,IWK0  )
       CALL WKVECT('&&DLDIFF.F1'    ,'V V R',NEQ,IWK1  )
       CALL WKVECT('&&DLDIFF.F2'    ,'V V R',NEQ,IWK2  )
-      CALL WKVECT('&&DLDIFF.DEPL1' ,'V V R',NEQ,IDEPL1 )
+      CALL VTCREB('&&DLDIFF.DEPL1',NUMEDD,'V','R',NEQ)
+      CALL JEVEUO('&&DLDIFF.DEPL1     '//'.VALE','E',IDEPL1)
       CALL WKVECT('&&DLDIFF.VITE1' ,'V V R',NEQ,IVITE1 )
       CALL WKVECT('&&DLDIFF.VITE2' ,'V V R',NEQ,IVITE2 )
       CALL WKVECT('&&DLDIFF.ACCE1' ,'V V R',NEQ,IACCE1 )
 C
       DEUXPI = R8DEPI()
       IARCHI = NUME
+      ENER=.FALSE.
+      CALL JEEXIN(SOLVEU(1:8)//'.ENER      .VALE',IRET)
+      IF (IRET.NE.0) THEN
+        ENER=.TRUE.
+      ENDIF
 C
 C 1.4. ==> PARAMETRES D'INTEGRATION
 C
@@ -192,6 +201,9 @@ C
       TYPEAR(1) = 'DEPL'
       TYPEAR(2) = 'VITE'
       TYPEAR(3) = 'ACCE'
+      TYPEAR(4) = 'FORC_EXTE'
+      TYPEAR(5) = 'FORC_AMOR'
+      TYPEAR(6) = 'FORC_LIAI'
       IF ( NBEXCL.EQ.NBTYAR ) THEN
         CALL U2MESS('F','ALGORITH3_14')
       ENDIF
@@ -202,6 +214,12 @@ C
           TYPEAR(2) = '    '
         ELSEIF (TYP1(IAUX).EQ.'ACCE') THEN
           TYPEAR(3) = '    '
+        ELSEIF (TYP1(IAUX).EQ.'FORC_EXTE') THEN
+          TYPEAR(4) = '    '
+        ELSEIF (TYP1(IAUX).EQ.'FORC_AMOR') THEN
+          TYPEAR(5) = '    '
+        ELSEIF (TYP1(IAUX).EQ.'FORC_LIAI') THEN
+          TYPEAR(6) = '    '
         ENDIF
    16 CONTINUE
 C
@@ -245,6 +263,7 @@ C
      &                T0, LCREA, TYPRES,
      &                MASSE, RIGID, AMORT,
      &                DEP0(IAUX), VIT0(IAUX), ACC0(IAUX),
+     &                FEXTE(1),FAMOR(1),FLIAI(1),
      &                NUMEDD, NUME, JAUX, TYPEAR )
 
    21 CONTINUE
@@ -320,10 +339,11 @@ C
           CALL DLDIF0 ( NRPASE, NBPASE, INPSCO,
      &                  NEQ, ISTOC, IARCHI, IFM,
      &                  LAMORT,
-     &                  IMAT, MASSE,
+     &                  IMAT, MASSE, RIGID, AMORT,
      &                  DEP0(IAUX), VIT0(IAUX), ACC0(IAUX),
      &                  ZR(IDEPL1), ZR(IVITE1), ZR(IACCE1), ZR(IVITE2),
-     &                  NCHAR, NVECA, LIAD, LIFO, MODELE,
+     &                  FEXTE(1),FAMOR(1),FLIAI(1),
+     &                  NCHAR, NVECA, LIAD, LIFO, MODELE,ENER,SOLVEU,
      &                  MATE, CARELE, CHARGE, INFOCH, FOMULT, NUMEDD,
      &                  DT, TEMPS,
      &                  ZR(IWK0), ZR(IWK1),
@@ -385,7 +405,8 @@ C
      &                  JAUX, IFM, TEMPS,
      &                  NBEXCL, TYPEAR, MASSE,
      &                  ZR(IDEPL1+IAUX), ZR(IVITE1+IAUX),
-     &                  ZR(IACCE1+IAUX) )
+     &                  ZR(IACCE1+IAUX), FEXTE(1+NEQ),
+     &                  FAMOR(1+NEQ), FLIAI(1+NEQ) )
 C
    42   CONTINUE
 C

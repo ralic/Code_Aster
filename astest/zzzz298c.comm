@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE : VALIDATION INFORMATIQUE DE POST_K1_K2_K3
 # zzzz298c.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -154,7 +154,6 @@ PK1 = POST_K1_K2_K3(MODELISATION='C_PLAN',
                     MATER=MA,
                     RESULTAT=MODE,
                     FOND_FISS=FISS,
-                    ABSC_CURV_MAXI=7.E-5,
                     NUME_ORDRE=(1,2,3,4,5),);
 
 IMPR_TABLE(TABLE=PK1)
@@ -176,7 +175,6 @@ PK2 = POST_K1_K2_K3(MODELISATION='C_PLAN',
                     MATER=MA,
                     RESULTAT=MODE,
                     FOND_FISS=FISS,
-                    ABSC_CURV_MAXI=7.E-5,
                     TOUT_MODE = 'OUI')
 
 IMPR_TABLE(TABLE=PK2)
@@ -198,7 +196,6 @@ PK3 = POST_K1_K2_K3(MODELISATION='C_PLAN',
                     MATER=MA,
                     RESULTAT=MODE,
                     FOND_FISS=FISS,
-                    ABSC_CURV_MAXI=7.E-5,
                     NUME_MODE = 1)
 
 IMPR_TABLE(TABLE=PK3)
@@ -222,7 +219,6 @@ PK4 = POST_K1_K2_K3(MODELISATION='C_PLAN',
                     MATER=MA,
                     RESULTAT=MODE,
                     FOND_FISS=FISS,
-                    ABSC_CURV_MAXI=7.E-5,
                     LIST_MODE = L_MODE)
 
 IMPR_TABLE(TABLE=PK4)
@@ -244,7 +240,6 @@ PK5 = POST_K1_K2_K3(MODELISATION='C_PLAN',
                     MATER=MA,
                     RESULTAT=MODE,
                     FOND_FISS=FISS,
-                    ABSC_CURV_MAXI=7.E-5,
                     FREQ = 3469.13,
                     CRITERE='ABSOLU',
                     PRECISION=1)
@@ -271,7 +266,6 @@ PK6 = POST_K1_K2_K3(MODELISATION='C_PLAN',
                     MATER=MA,
                     RESULTAT=MODE,
                     FOND_FISS=FISS,
-                    ABSC_CURV_MAXI=7.E-5,
                     LIST_FREQ = L_FREQ6,
                     CRITERE='ABSOLU',
                     PRECISION=1)
@@ -294,7 +288,6 @@ PK7 = POST_K1_K2_K3(MODELISATION='C_PLAN',
                     MATER=MA,
                     RESULTAT=MODE,
                     FOND_FISS=FISS,
-                    ABSC_CURV_MAXI=7.E-5,
                     LIST_FREQ = L_FREQ7,
                     CRITERE='ABSOLU',
                     PRECISION=1)

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE PLAQUE FISSUREE AVEC PRESSION LEVRE FISSURE (CALCUL G,K1,K2 )
 # sslp101c.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -107,8 +107,7 @@ FOND=DEFI_FOND_FISS( MAILLAGE=MA,
 )
 
 G1=CALC_G(              RESULTAT=RESU,
-                        THETA=_F(THETA=THETA1),
-                        SYME_CHAR='SYME',)
+                        THETA=_F(THETA=THETA1,SYME='OUI'),)
 
 GK1=CALC_G(                  RESULTAT=RESU,
                              THETA=_F(
@@ -116,12 +115,10 @@ GK1=CALC_G(                  RESULTAT=RESU,
                                  R_SUP = 30.,
                                  DIRECTION=( 1., 0., 0.,),
                                  FOND_FISS=FOND),
-                            SYME_CHAR='SYME',
                             OPTION='CALC_K_G')
 
 G2=CALC_G(                  RESULTAT=RESU,
-                            THETA=_F(THETA=THETA2),
-                            SYME_CHAR='SYME',)
+                            THETA=_F(THETA=THETA2,SYME='OUI'),)
 
 GK2=CALC_G(                  RESULTAT=RESU,
                              THETA=_F(
@@ -129,12 +126,10 @@ GK2=CALC_G(                  RESULTAT=RESU,
                                   R_INF = 15.3061094,
                                   DIRECTION=( 1., 0., 0.,),
                                   FOND_FISS=FOND),
-                             SYME_CHAR='SYME',
                              OPTION='CALC_K_G')
 
 G3=CALC_G(                  RESULTAT=RESU,
-                            THETA=_F(THETA=THETA3),
-                            SYME_CHAR='SYME',)
+                            THETA=_F(THETA=THETA3,SYME='OUI'),)
 
 GK3=CALC_G(                  RESULTAT=RESU,
                              THETA=_F(
@@ -142,12 +137,10 @@ GK3=CALC_G(                  RESULTAT=RESU,
                                   R_SUP = 15.3061094,
                                   DIRECTION=( 1., 0., 0.,),
                                   FOND_FISS=FOND),
-                            SYME_CHAR='SYME',
                             OPTION='CALC_K_G')
 
 G4=CALC_G(                  RESULTAT=RESU,
-                            THETA=_F(THETA=THETA4),
-                            SYME_CHAR='SYME',)
+                            THETA=_F(THETA=THETA4,SYME='OUI'),)
 
 GK4=CALC_G(                  RESULTAT=RESU,
                              THETA=_F(
@@ -155,12 +148,10 @@ GK4=CALC_G(                  RESULTAT=RESU,
                                   R_INF = 5.510197639,
                                   DIRECTION=( 1., 0., 0.,),
                                   FOND_FISS=FOND),
-                             SYME_CHAR='SYME',
                              OPTION='CALC_K_G')
 
 G5=CALC_G(                  RESULTAT=RESU,
-                            THETA=_F(THETA=THETA5),
-                            SYME_CHAR='SYME',)
+                            THETA=_F(THETA=THETA5,SYME='OUI'),)
 
 GK5=CALC_G(                  RESULTAT=RESU,
                              THETA=_F(
@@ -168,12 +159,10 @@ GK5=CALC_G(                  RESULTAT=RESU,
                                   R_SUP = 5.510197639,
                                   DIRECTION=( 1., 0., 0.,),
                                   FOND_FISS=FOND),
-                            SYME_CHAR='SYME',
                             OPTION='CALC_K_G')
 
 G6=CALC_G(                  RESULTAT=RESU,
-                            THETA=_F(THETA=THETA6),
-                            SYME_CHAR='SYME',)
+                            THETA=_F(THETA=THETA6,SYME='OUI'),)
 
 GK6=CALC_G(                  RESULTAT=RESU,
                              THETA=_F(
@@ -181,7 +170,6 @@ GK6=CALC_G(                  RESULTAT=RESU,
                                   R_INF = 0.61225116,
                                   DIRECTION=( 1., 0., 0.,),
                                   FOND_FISS=FOND),
-                            SYME_CHAR='SYME',
                             OPTION='CALC_K_G')
 
 TEST_TABLE(       TABLE=G1,

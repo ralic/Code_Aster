@@ -1,8 +1,8 @@
-#@ MODIF post_k_trans_ops Macro  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF post_k_trans_ops Macro  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -42,7 +42,7 @@ def post_k_trans_ops(self,RESU_TRANS,K_MODAL,TOUT_ORDRE, NUME_ORDRE, LIST_ORDRE,
   # La macro compte pour 1 dans la numerotation des commandes
   self.set_icmd(1)
   
-  # Le concept sortant (de type table_sdaster ou dérivé) est tab
+  # Le concept sortant (de type table_sdaster ou derive) est tab
   self.DeclareOut('tabout', self.sd)
 
 #------------------------------------------------------------------
@@ -78,11 +78,14 @@ def post_k_trans_ops(self,RESU_TRANS,K_MODAL,TOUT_ORDRE, NUME_ORDRE, LIST_ORDRE,
         motscles2['LISSAGE'] = [] 
         if K_MODAL['LISSAGE_G'] == None :  K_MODAL['LISSAGE_G']='LEGENDRE'
         if K_MODAL['LISSAGE_THETA'] == None :  K_MODAL['LISSAGE_THETA']='LEGENDRE'
-        if K_MODAL['DEGRE'] :   K_MODAL['DEGRE'] = 5
-        motscles2['LISSAGE'].append(_F(LISSAGE_G =K_MODAL['LISSAGE_G'],
-                        LISSAGE_THETA =K_MODAL['LISSAGE_G'], 
+        if K_MODAL['LISSAGE_G'] == 'LEGENDRE' :
+           motscles2['LISSAGE'].append(_F(LISSAGE_G =K_MODAL['LISSAGE_G'],
+                        LISSAGE_THETA =K_MODAL['LISSAGE_THETA'], 
                         DEGRE = K_MODAL['DEGRE'] ))
-    
+        else :
+           motscles2['LISSAGE'].append(_F(LISSAGE_G =K_MODAL['LISSAGE_G'],
+                        LISSAGE_THETA =K_MODAL['LISSAGE_THETA'], ))
+
     __kgtheta = CALC_G(       RESULTAT   = resumod,
                             OPTION = 'K_G_MODA',
                             TOUT_MODE = 'OUI',
@@ -100,7 +103,7 @@ def post_k_trans_ops(self,RESU_TRANS,K_MODAL,TOUT_ORDRE, NUME_ORDRE, LIST_ORDRE,
     
 #-----------------------------------------
 #  
-# Verification de cohérence sur le nombre de modes
+# Verification de coherence sur le nombre de modes
 #  
 # RESULTAT TRANSITOIRE
   nomresu=RESU_TRANS.nom
@@ -120,7 +123,7 @@ def post_k_trans_ops(self,RESU_TRANS,K_MODAL,TOUT_ORDRE, NUME_ORDRE, LIST_ORDRE,
       UTMESS('A','RUPTURE0_50',valk=nomresu,vali=n_mode)
 
 #  
-# Traitement des mots clés ORDRE/INST/LIST_INST et LIST_ORDRE
+# Traitement des mots clefs ORDRE/INST/LIST_INST et LIST_ORDRE
 #  
   l0_inst = aster.getvectjev(nomresu.ljust(19)+'.INST')
   l0_ord = aster.getvectjev(nomresu.ljust(19)+'.ORDR')

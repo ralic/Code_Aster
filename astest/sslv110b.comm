@@ -1,4 +1,4 @@
-# MODIF  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -121,15 +121,15 @@ THETA0=CALC_THETA(   MODELE=MO,  FOND_FISS=FISS1,
                                    R_INF_FO = RINF0,  R_SUP_FO = RSUP0)
                                  )
 
-G0=CALC_G(  RESULTAT=RESU,NUME_ORDRE=1,  SYME_CHAR='SYME',
+G0=CALC_G(  RESULTAT=RESU,
                        OPTION='CALC_G_GLOB',
-                    THETA=_F(THETA=THETA0),   EXCIT=_F(CHARGE=CH),  )
+                    THETA=_F(THETA=THETA0,SYME='OUI'),
+                    EXCIT=_F(CHARGE=CH),  )
 
-GLOC0=CALC_G( RESULTAT=RESU,NUME_ORDRE=1,
+GLOC0=CALC_G( RESULTAT=RESU,
                        THETA=_F(FOND_FISS=FISS1,
                                 R_SUP_FO=RSUP0,
                                 R_INF_FO=RINF0,),
-                       SYME_CHAR='SYME',
                        LISSAGE=_F(DEGRE=4,
                                   LISSAGE_THETA='LAGRANGE',),
                        EXCIT=_F(CHARGE=CH),  )
@@ -143,16 +143,15 @@ THETA1=CALC_THETA(   MODELE=MO,  FOND_FISS=FISS1,
                                    R_INF_FO = RINF1,  R_SUP_FO = RSUP1)
                                  )
 
-G1=CALC_G(  RESULTAT=RESU,NUME_ORDRE=1, SYME_CHAR='SYME',
+G1=CALC_G(  RESULTAT=RESU,
             OPTION='CALC_G_GLOB',
-            THETA=_F(THETA=THETA1),
+            THETA=_F(THETA=THETA1,SYME='OUI'),
             EXCIT=_F(CHARGE=CHFONC),  )
 
-GLOC1=CALC_G(  RESULTAT=RESU,NUME_ORDRE=1,
+GLOC1=CALC_G(  RESULTAT=RESU,
                THETA=_F(FOND_FISS=FISS1,
                         R_SUP_FO=RSUP1,
                         R_INF_FO=RINF1,),
-               SYME_CHAR='SYME',
                LISSAGE=_F(DEGRE=4,
                           LISSAGE_THETA='LAGRANGE',),
                EXCIT=_F(CHARGE=CHFONC),  )
@@ -166,15 +165,15 @@ THETA2=CALC_THETA(   MODELE=MO,  FOND_FISS=FISS1,
                                    R_INF_FO = RINF2,  R_SUP_FO = RSUP2)
                                  )
 
-G2=CALC_G(  RESULTAT=RESU,NUME_ORDRE=1, SYME_CHAR='SYME',
+G2=CALC_G(  RESULTAT=RESU,
                        OPTION='CALC_G_GLOB',
-             THETA=_F(THETA=THETA2),   EXCIT=_F(CHARGE=CH), )
+             THETA=_F(THETA=THETA2,SYME='OUI'),
+             EXCIT=_F(CHARGE=CH), )
 
-GLOC2=CALC_G( RESULTAT=RESU,NUME_ORDRE=1,
+GLOC2=CALC_G( RESULTAT=RESU,
                        THETA=_F(FOND_FISS=FISS1,
                                 R_SUP_FO=RSUP2,
                                 R_INF_FO=RINF2,),
-                       SYME_CHAR='SYME',
                        LISSAGE=_F(DEGRE=4,
                                   LISSAGE_THETA='LAGRANGE',),
                        EXCIT=_F(CHARGE=CH), )

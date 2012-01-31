@@ -1,9 +1,9 @@
        SUBROUTINE TE0366(OPTION,NOMTE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ELEMENTS  DATE 30/01/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -15,7 +15,7 @@ C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
 C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
 C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
@@ -69,10 +69,10 @@ C
       REAL*8       JACOBI,HPG
       CHARACTER*8  TYPMAE,TYPMAM,TYPMAC,TYPMAI,TYPMEC
       INTEGER      INADH,NVIT,LACT(8),NLACT,NINTER
-      REAL*8       GEOPI(9)
-      REAL*8       COEFFF,COEFCR,COEFFR,COEFFP,COEFEC
-      REAL*8       COEFCP,RESE(3),NRESE,COEFEF
-      REAL*8       RRE,RRM,JEU,R8BID
+      REAL*8       GEOPI(9),DVITET(3)
+      REAL*8       COEFFF,COEFCR,COEFFR,COEFFP
+      REAL*8       COEFCP,RESE(3),NRESE
+      REAL*8       RRE,RRM,R8BID
       REAL*8       DDEPLE(3),DDEPLM(3),DLAGRC,DLAGRF(2)
       LOGICAL      LPENAF,LESCLX,LMAITX,LCONTX,LPENAC
       INTEGER      CONTAC,IBID,NPTE
@@ -102,7 +102,6 @@ C
       CALL VECINI(3  ,0.D0  ,DDEPLE)
       CALL VECINI(3  ,0.D0  ,DDEPLM)
       DLAGRC = 0.D0
-      JEU    = 0.D0
 C
 C --- RECUPERATION DES DONNEES DE LA CARTE CONTACT 'POINT' (VOIR MMCART)
 C
@@ -144,10 +143,6 @@ C --- SQRT LSN PT ESCLAVE ET MAITRE
 C
       LPENAF=((COEFFR.EQ.0.D0).AND.(COEFFP.NE.0.D0))
       LPENAC=((COEFCR.EQ.0.D0).AND.(COEFCP.NE.0.D0))
-      IF(LPENAC)      COEFEC = COEFCP
-      IF(.NOT.LPENAC) COEFEC = ZR(JPCPO-1+32)
-      IF(LPENAF)      COEFEF = COEFFP
-      IF(.NOT.LPENAF) COEFEF = 1.D0
 C
 C --- RECUPERATION DES DONNEES DE LA CARTE CONTACT PINTER (VOIR XMCART)
 C
@@ -239,10 +234,9 @@ C
           CALL XMMAA1(NDIM  ,NNE, NDEPLE  ,NNC   ,NNM   ,
      &                NFAES ,CFACE ,HPG   ,FFC   ,FFE   ,
      &                FFM   ,JACOBI,JPCAI ,COEFCR,COEFCP,
-     &                COEFEC,LPENAC,NORM  ,TYPMAI,NSINGE,
+     &                LPENAC,NORM  ,TYPMAI,NSINGE,
      &                NSINGM,RRE   ,RRM   ,CONTAC,DDLE,DDLM,
      &                NFHE,NFHM,LMULTI,ZI(JHEANO),ZI(JHEAFA),MMAT  )
-
 C
         ELSE IF (INDCO .EQ. 0) THEN
           IF (NVIT.EQ.1) THEN
@@ -251,8 +245,9 @@ C --- CALCUL DE LA MATRICE C - CAS SANS CONTACT
 C
             CALL XMMAA0(NDIM  ,NNC   ,NNE  ,HPG   ,
      &                  NFAES ,CFACE ,FFC   ,JACOBI,JPCAI ,
-     &                  COEFCR,COEFCP,COEFEC,LPENAC,TYPMAI,
-     &                  DDLE,CONTAC,NFHE,LMULTI,ZI(JHEANO),MMAT  )
+     &                  COEFCR,COEFCP,LPENAC,TYPMAI,
+     &                  DDLE,CONTAC,NFHE,LMULTI,ZI(JHEANO),MMAT  )     
+     
           ENDIF
         ELSE
           CALL ASSERT(.FALSE.)
@@ -268,7 +263,8 @@ C
      &              NFHE  ,LMULTI,ZI(JHEANO),DLAGRC)
 
         IF (COEFFF.EQ.0.D0) INDCO = 0
-        IF ((DLAGRC.EQ.0.D0).AND.(.NOT.LPENAC)) INDCO = 0
+C ON MET LA SECURITE DANS LE CAS PENALISE EGALEMENT
+        IF (DLAGRC.EQ.0.D0) INDCO = 0
         IF (IFROTT.NE.3)    INDCO = 0
 C
         IF (INDCO.EQ.0) THEN
@@ -276,11 +272,12 @@ C
 C
 C --- CALCUL DE LA MATRICE F - CAS SANS FROTTEMENT
 C
+
             CALL XMMAB0(NDIM  ,NNC   ,NNE  ,NFAES ,
-     &                  JPCAI ,HPG   ,FFC   ,JACOBI,COEFCR,
-     &                  LPENAC,COEFEF,TYPMAI,CFACE ,TAU1  ,
+     &                  JPCAI ,HPG   ,FFC   ,JACOBI,
+     &                  LPENAC,TYPMAI,CFACE ,TAU1  ,
      &                  TAU2  ,DDLE,CONTAC,
-     &                  NFHE,LMULTI,ZI(JHEANO),MMAT  )
+     &                  NFHE,LMULTI,ZI(JHEANO),MMAT  )     
           ENDIF
         ELSE IF (INDCO.EQ.1) THEN
 C
@@ -301,18 +298,9 @@ C --- ON CALCULE L'ETAT DE CONTACT ADHERENT OU GLISSANT
 C
           CALL TTPRSM(NDIM  ,DDEPLE,DDEPLM,DLAGRF,COEFFR,
      &                TAU1  ,TAU2  ,MPROJT,INADH ,RESE  ,
-     &                NRESE ,COEFFP,LPENAF)
+     &                NRESE ,COEFFP,LPENAF,DVITET)
 C
-C --- CALCUL DU JEU
-C
-
-          CALL XMMJEU(NDIM  ,NNM,NNE,NDEPLE,
-     &                  NSINGE,NSINGM,FFE   ,FFM   ,NORM  ,
-     &                  JGEOM ,JDEPDE,JDEPM ,RRE   ,RRM   ,
-     &                  DDLE  ,DDLM  ,NFHE  ,NFHM  ,LMULTI,
-     &                  ZI(JHEAFA),JEU   )
-
-
+C --- CALCUL DU JEU INUTILE
 C
           IF (INADH.EQ.1) THEN
 C
@@ -320,12 +308,14 @@ C --- CALCUL DE B, BT, BU - CAS ADHERENT
 C
             CALL XMMAB1(NDIM  ,NNE,NDEPLE,NNC   ,NNM   ,
      &                  NFAES ,CFACE ,HPG ,FFC ,FFE ,
-     &                  FFM   ,JACOBI,JPCAI ,DLAGRC,COEFCR,
-     &                  COEFCP,COEFEC,COEFEF,JEU   ,COEFFR,
+     &                  FFM   ,JACOBI,JPCAI ,DLAGRC,
+     &                  DVITET   ,COEFFR,
      &                  COEFFP,COEFFF,LPENAF,TAU1  ,TAU2  ,
-     &                  RESE  ,MPROJT,NORM  ,TYPMAI,NSINGE,
+     &                  RESE  ,MPROJT,TYPMAI,NSINGE,
      &                  NSINGM,RRE   ,RRM   ,NVIT  ,CONTAC,
-     &                  DDLE,DDLM,NFHE,MMAT  )
+     &                  DDLE,DDLM,NFHE,MMAT  )     
+     
+     
 C
           ELSE IF (INADH.EQ.0) THEN
 C
@@ -333,12 +323,12 @@ C --- CALCUL DE B, BT, BU, F - CAS GLISSANT
 C
             CALL XMMAB2(NDIM  ,NNE,NDEPLE,NNC   ,NNM   ,
      &                  NFAES ,CFACE ,HPG   ,FFC   ,FFE   ,
-     &                  FFM   ,JACOBI,JPCAI, DLAGRC,COEFCR,
-     &                  COEFCP,COEFEC,COEFEF,JEU   ,COEFFR,
+     &                  FFM   ,JACOBI,JPCAI, DLAGRC,
+     &                  COEFFR,
      &                  COEFFP,LPENAF,COEFFF,TAU1  ,TAU2  ,
-     &                  RESE  ,NRESE ,MPROJT,NORM  ,TYPMAI,
+     &                  RESE  ,NRESE ,MPROJT,TYPMAI,
      &                  NSINGE,NSINGM,RRE,RRM,NVIT,CONTAC,
-     &                  DDLE,DDLM,NFHE,MMAT  )
+     &                  DDLE,DDLM,NFHE,MMAT  )     
           END IF
         ELSE
           CALL ASSERT(.FALSE.)

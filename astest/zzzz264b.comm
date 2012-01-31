@@ -1,0 +1,218 @@
+# MODIF  DATE 30/01/2012   AUTEUR BOTTONI M.BOTTONI 
+# TITRE : EXTRACTION DE L'OUVERTURE DE FISSURE, LOI ENDO_SCALAIRE
+# zzzz264b.para = tps_job 300 mem_job 512Mo mem_aster 20 ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+
+DEBUT(CODE=_F(NOM='ZZZZ264B',NIV_PUB_WEB='INTERNET'),);
+
+#Instant pour post_endo_fiss
+listInst = [0.9240, 1.5600, 1.6920312500000005]
+inst     = listInst[2]
+
+delta   = 0.02
+pas     = delta
+lorth   = 10*delta
+lreg    = delta
+seuil   = 0.5
+lim_fpz = 0.8
+
+# -------------------------
+# LECTURE MAILLAGE
+#
+MAIL0 = LIRE_MAILLAGE( UNITE  = 80,
+                       FORMAT = 'MED')
+
+
+# --------------------------------------
+# LECTURE RESULTAT MED
+#
+EVOL1 = LIRE_RESU( TYPE_RESU  = 'EVOL_NOLI',
+                   FORMAT     = 'MED',
+                   INST       = inst,
+                   UNITE      = 80,
+                   MAILLAGE   = MAIL0,
+                   FORMAT_MED = (_F(
+                                     NOM_CHAM_MED ='EVOL1___DEPL',
+                                     NOM_CHAM    = 'DEPL',
+                                    ),
+                                 _F(
+                                     NOM_CHAM_MED ='EVOL1___VARI_NOEU',
+                                     NOM_CHAM    = 'VARI_NOEU',
+                                     NOM_CMP     = ('V1',),
+                                     NOM_CMP_MED = ('V1',),
+                                    ),
+                  ),)
+                                           
+# --------------------------------------
+# CREATION DU CHAMP A POST-TRAITER
+#
+MAIL_LIN = CREA_MAILLAGE(
+                   MAILLAGE  = MAIL0,
+                   QUAD_LINE = _F(TOUT = 'OUI',),
+                   )
+
+DEPL_LIN = PROJ_CHAMP( RESULTAT     = EVOL1,
+                       METHODE      = 'COLLOCATION',
+                       MAILLAGE_1   = MAIL0,
+                       MAILLAGE_2   = MAIL_LIN,
+                       NOM_CHAM     = 'DEPL',
+                       INST         = inst,
+                       DISTANCE_MAX = 1.0E-6,
+                      )
+
+# --------------------------------------
+# TRAITEMENT DE LA FISSURE
+#
+MAFI = POST_ENDO_FISS( TABLE      = CO('TAB_FISS'),
+                       RESULTAT   = DEPL_LIN,
+                       INST       = inst,
+                       OUVERTURE  = 'OUI',
+                       NOM_CHAM   = 'DEPL',
+                       NOM_CMP    = 'VARI',
+                       RECHERCHE  = _F( LONG_ORTH = lorth,
+                                        PAS       = pas,
+                                        LONG_REG  = lreg,
+                                        BORNE_MIN = seuil,
+                                        BORNE_MAX = lim_fpz,
+                                      ),)
+
+MAFI2 = POST_ENDO_FISS( TABLE      = CO('TAB_FIS2'),
+                        RESULTAT   = EVOL1,
+                        INST       = inst,
+                        OUVERTURE  = 'OUI',
+                        NOM_CHAM   = 'VARI_NOEU',
+                        NOM_CMP    = 'V1',
+                        RECHERCHE  = _F( LONG_ORTH = lorth,
+                                         PAS       = pas,
+                                         LONG_REG  = lreg,
+                                         BORNE_MIN = seuil,
+                                         BORNE_MAX = lim_fpz,
+                                       ),)
+
+
+#--------------------------------------
+# TESTS
+#
+DIST = FORMULE(VALE     = 'abs(COORY)',
+               NOM_PARA = ('COORY'),)
+
+# On filtre les tables pour enlever les points proches su bord
+#   ou on sait que la procedure marche moins bien.
+x_ini = 0.06 + 2*pas
+x_fin = 0.94 - 2*pas
+
+TAB_FISS = CALC_TABLE(reuse = TAB_FISS,
+                      TABLE = TAB_FISS,
+                      ACTION= (_F( OPERATION = 'FILTRE',
+                                   NOM_PARA  = 'COORX',
+                                   CRIT_COMP = 'GE',
+                                   VALE      = x_ini,),
+                               _F( OPERATION = 'FILTRE',
+                                   NOM_PARA  = 'COORX',
+                                   CRIT_COMP = 'LE',
+                                   VALE      = x_fin,),
+                               _F( OPERATION = 'OPER',
+                                   FORMULE   = DIST,
+                                   NOM_PARA  = 'DIST',)
+                               ),
+                      )
+
+TAB_FIS2 = CALC_TABLE(reuse = TAB_FIS2,
+                      TABLE = TAB_FIS2,
+                      ACTION= (_F( OPERATION = 'FILTRE',
+                                   NOM_PARA  = 'COORX',
+                                   CRIT_COMP = 'GE',
+                                   VALE      = x_ini,),
+                               _F( OPERATION = 'FILTRE',
+                                   NOM_PARA  = 'COORX',
+                                   CRIT_COMP = 'LE',
+                                   VALE      = x_fin,),
+                               _F( OPERATION = 'OPER',
+                                   FORMULE   = DIST,
+                                   NOM_PARA  = 'DIST',)
+                               ),
+                      )
+
+# Tests analytiques sur les coordonnees du chemin de fissuration
+TEST_TABLE(TABLE     = TAB_FISS,
+           NOM_PARA  = 'DIST',
+           TYPE_TEST = 'MAX',
+           VALE      = 0.,
+           CRITERE   = 'ABSOLU',
+           PRECISION = 1.5*delta,
+           REFERENCE = 'ANALYTIQUE')                       
+
+TEST_TABLE(TABLE     = TAB_FIS2,
+           NOM_PARA  = 'DIST',
+           TYPE_TEST = 'MAX',
+           VALE      = 0.,
+           CRITERE   = 'ABSOLU',
+           PRECISION = 1.5*delta,
+           REFERENCE = 'ANALYTIQUE')
+
+# Tests analytiques sur l'ouverture de fissure
+TEST_TABLE(TABLE     = TAB_FISS,
+           NOM_PARA  = 'OUVERTURE',
+           TYPE_TEST = 'MIN',
+           VALE      = 6.00342E-04,
+           CRITERE   = 'RELATIF',
+           PRECISION = 10.E-2,
+           REFERENCE = 'ANALYTIQUE')
+
+TEST_TABLE(TABLE     = TAB_FIS2,
+           NOM_PARA  = 'OUVERTURE',
+           TYPE_TEST = 'MIN',
+           VALE      = 6.00342E-04,
+           CRITERE   = 'RELATIF',
+           PRECISION = 10.E-2,
+           REFERENCE = 'ANALYTIQUE')
+
+# Tests de non-regression sur l'ouverture de fissure
+TEST_TABLE(TABLE     = TAB_FISS,
+           NOM_PARA  = 'OUVERTURE',
+           TYPE_TEST = 'MIN',
+           VALE      = 6.00342E-04,
+           CRITERE   = 'RELATIF',
+           PRECISION = 5.E-2,
+           REFERENCE = 'NON_REGRESSION')
+
+TEST_TABLE(TABLE     = TAB_FIS2,
+           NOM_PARA  = 'OUVERTURE',
+           TYPE_TEST = 'MIN',
+           VALE      = 6.00342E-04,
+           CRITERE   = 'RELATIF',
+           PRECISION = 5.E-2,
+           REFERENCE = 'NON_REGRESSION')
+ 
+#--------------------------------------
+# IMPRESSION RESULTATS
+#         
+#IMPR_TABLE(TABLE=TAB_FISS)
+#IMPR_TABLE(TABLE=TAB_FIS2)
+
+#IMPR_RESU(FORMAT = 'MED',
+#          UNITE  = 81,
+#          RESU   = ( _F(RESULTAT = EVOL1,),
+#                     _F(MAILLAGE = MAFI,),
+#                     _F(MAILLAGE = MAFI2,),
+#         ),)
+         
+
+FIN()

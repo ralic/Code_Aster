@@ -1,15 +1,15 @@
       SUBROUTINE DLNEWI ( LCREA,LAMORT,IINTEG,NEQ,IMAT,
      &                    MASSE,RIGID,AMORT,
-     &                    DEP0,VIT0,ACC0,T0,
-     &                    NCHAR,NVECA,LIAD,LIFO,MODELE,
+     &                    DEP0,VIT0,ACC0,FEXTE,FAMOR,FLIAI,T0,
+     &                    NCHAR,NVECA,LIAD,LIFO,IENER,MODELE,
      &                    MATE,CARELE,CHARGE,INFOCH,FOMULT,NUMEDD,NUME,
      &                    SOLVEU, CRITER,CHONDP,NONDP,
      &                    INPSCO,NBPASE)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -72,7 +72,7 @@ C CORPS DU PROGRAMME
 
 C DECLARATION PARAMETRES D'APPELS
       INTEGER IINTEG, NEQ, IMAT(3), NCHAR, NVECA, LIAD(*), NUME, NONDP
-      INTEGER NBPASE
+      INTEGER NBPASE, IENER
 C
       CHARACTER*8 MASSE, RIGID, AMORT, CHONDP(NONDP)
       CHARACTER*13 INPSCO
@@ -81,7 +81,7 @@ C
       CHARACTER*24 CRITER
       CHARACTER*24 LIFO(*)
 C
-      REAL*8 DEP0(*), VIT0(*), ACC0(*), T0
+      REAL*8 DEP0(*), VIT0(*), ACC0(*), T0, FEXTE(*), FAMOR(*), FLIAI(*)
 C
       LOGICAL LCREA, LAMORT, LIMPED,LMODST
 
@@ -106,7 +106,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       PARAMETER (NOMPRO = 'DLNEWI')
 
       INTEGER NBTYAR
-      PARAMETER ( NBTYAR = 3 )
+      PARAMETER ( NBTYAR = 6 )
       INTEGER IGRPA, IPEPA
       INTEGER IAUX, IBI,IBMAT, IDDEEQ, IE, IER, IERR
       INTEGER IFIMPE
@@ -127,7 +127,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER NBPTPA, NBV, ND, NEL, NMODAM, NPATOT, NV
       CHARACTER*1 K1BID
       CHARACTER*3 REPK
-      CHARACTER*4 TYP1(3),TYPMAT
+      CHARACTER*4 TYP1(NBTYAR),TYPMAT
       CHARACTER*8 K8B,NOMRES,MATRES,MODSTA
       CHARACTER*8 TYPCST(3),NOMDDL
       CHARACTER*8 MAILLA
@@ -155,7 +155,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*8   VALK
       INTEGER       VALI(2)
       REAL*8        VALR(2)
-      LOGICAL GASYMR, GSYRIE
+      LOGICAL GASYMR, GSYRIE, ENER 
       INTEGER      IARG
 
       DATA NOMDDL/'        '/
@@ -207,9 +207,8 @@ C         'IMPE_ABSO'
         CALL JELIRA(JEXNUM(NOLIG//'.LIEL',IGREL),'LONMAX',NEL,K1BID)
         ITYPEL = ZI(IALIEL-1+NEL)
         CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',ITYPEL),NOMTE)
-        IF ((NOMTE(1:9).EQ.'MEAB_FACE') .OR.
-     &      (NOMTE(1:9).EQ.'MEFA_FACE') .OR.
-     &      (NOMTE(1:6).EQ.'MEPASE') .OR. (NOMTE(1:6).EQ.'MEFASE')) THEN
+        IF ((NOMTE(1:9).EQ.'MEFA_FACE') .OR.
+     &      (NOMTE(1:6).EQ.'MEFASE')) THEN 
           REPK = 'OUI'
           GO TO 1039
         END IF
@@ -247,7 +246,9 @@ C                  1234567890123456789
       CALL WKVECT('&&'//NOMPRO//'.F1','V V R',NEQ,IWK1)
       CALL WKVECT('&&'//NOMPRO//'.F2','V V R',NEQ,IWK2)
       CALL WKVECT('&&'//NOMPRO//'.FORCE2','V V R',NEQ,IFORC2)
-      CALL WKVECT('&&'//NOMPRO//'.DEPL1','V V R',NEQ,IDEPL1)
+C      CALL WKVECT('&&'//NOMPRO//'.DEPL1','V V R',NEQ,IDEPL1)
+      CALL VTCREB('&&'//NOMPRO//'.DEPL1',NUMEDD,'V','R',NEQ)
+      CALL JEVEUO('&&'//NOMPRO//'.DEPL1     '//'.VALE','E',IDEPL1)
       CALL WKVECT('&&'//NOMPRO//'.VITE1','V V R',NEQ,IVITE1)
       CALL WKVECT('&&'//NOMPRO//'.ACCE1','V V R',NEQ,IACCE1)
       VEANEC = '&&VEANEC           '
@@ -321,6 +322,11 @@ C 1.9. ==> INTIALISATIONS DIVERSES
       END IF
       IARCHI = NUME
       LISINS = ' '
+      ENER=.FALSE.
+      CALL JEEXIN(SOLVEU(1:8)//'.ENER      .VALE',IRET)
+      IF (IRET.NE.0) THEN
+        ENER=.TRUE.
+      ENDIF
 
 C 1.10. ==> --- PARAMETRES D'INTEGRATION ---
 
@@ -357,6 +363,9 @@ C
       TYPEAR(1) = 'DEPL'
       TYPEAR(2) = 'VITE'
       TYPEAR(3) = 'ACCE'
+      TYPEAR(4) = 'FORC_EXTE'
+      TYPEAR(5) = 'FORC_AMOR'
+      TYPEAR(6) = 'FORC_LIAI'
       IF ( NBEXCL.EQ.NBTYAR ) THEN
         CALL U2MESS('F','ALGORITH3_14')
       ENDIF
@@ -367,6 +376,12 @@ C
           TYPEAR(2) = '    '
         ELSE IF (TYP1(IAUX).EQ.'ACCE') THEN
           TYPEAR(3) = '    '
+        ELSE IF (TYP1(IAUX).EQ.'FORC_EXTE') THEN
+          TYPEAR(4) = '    '
+        ELSE IF (TYP1(IAUX).EQ.'FORC_AMOR') THEN
+          TYPEAR(5) = '    '
+        ELSE IF (TYP1(IAUX).EQ.'FORC_LIAI') THEN
+          TYPEAR(6) = '    '
         ENDIF
   112 CONTINUE
 
@@ -411,6 +426,7 @@ C
      &                T0, LCREA, TYPRES,
      &                MASSE, RIGID, AMORT,
      &                DEP0(IAUX), VIT0(IAUX), ACC0(IAUX),
+     &                FEXTE(1),FAMOR(1),FLIAI(1),
      &                NUMEDD, NUME, JAUX, TYPEAR )
 
    21 CONTINUE
@@ -519,22 +535,22 @@ C 3.2.4.1. ==> BOUCLE SUR LES CAS STANDARD ET SENSIBLES
           NRPASE = NRORES
           IAUX = 1 + NEQ*NRPASE
           IBID = ZI(JSTOC+IPAS-1)
-
           CALL DLNEW0 ( NRPASE, NBPASE, INPSCO,
      &                  IINTEG, NEQ, ISTOC, IARCHI, IFM,
      &                  NBEXCI, NONDP, NMODAM,
-     &                  LAMORT, LIMPED, LMODST, IMAT, MASSE,
-     &                  NCHAR, NVECA, LIAD, LIFO, MODELE,
+     &                  LAMORT, LIMPED, LMODST, IMAT, MASSE, RIGID,
+     &                  AMORT,NCHAR, NVECA, LIAD, LIFO, MODELE,
      &                  MATE, CARELE, CHARGE, INFOCH, FOMULT, NUMEDD,
      &                  ZR(IDEPLA), ZR(IVITEA), ZR(IACCEA),
      &                  DEP0(IAUX), VIT0(IAUX), ACC0(IAUX),
+     &                  FEXTE(1),FAMOR(1),FLIAI(1),
      &                  ZR(IDEPL1), ZR(IVITE1), ZR(IACCE1),
      &                  ZR(JPSDEL), ZR(JFAMMO), ZR(IFIMPE), ZR(IFONDE),
      &                  ZR(JVIEN), ZR(JVITE), ZR(IVITA1), ZI(JMLTAP),
      &                  A0, A2, A3, A4, A5, A6, A7, A8,
      &                  C0, C1, C2, C3, C4, C5,
      &                  ZK8(JNODEP), ZK8(JNOVIT), ZK8(JNOACC),
-     &                  MATRES, MAPREC, SOLVEU, CRITER, CHONDP,
+     &                  MATRES, MAPREC, SOLVEU, CRITER, CHONDP, ENER,
      &                  VITINI, VITENT, VALMOD, BASMOD,
      &                  VEANEC, VAANEC, VAONDE, VEONDE,
      &                  DT, THETA, TEMPM, TEMPS, IFORC2,
@@ -597,7 +613,8 @@ C
      &                  NEQ, ISTOC, IARCHI, ' ',
      &                  JAUX, IFM, TEMPS,
      &                  NBEXCL, TYPEAR, MASSE,
-     &                  DEP0(IAUX), VIT0(IAUX), ACC0(IAUX) )
+     &                  DEP0(IAUX), VIT0(IAUX), ACC0(IAUX),
+     &                  FEXTE(1),FAMOR(1),FLIAI(1) ) 
 C
    42   CONTINUE
 C

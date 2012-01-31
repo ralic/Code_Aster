@@ -1,9 +1,9 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE BIBLIO_35  FISSURE RADIALE INTERNE DANS UN CYLINDRE EPAIS SOUS PRESSION ET CHARGEMENT THERMIQUE EQUIVALENT A L'AUTOFRETTAGE
 # hplp310b.para = tps_job 80 mem_job 64Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -246,9 +246,7 @@ THETA3=CALC_THETA(    MODELE=MO,
 # ----------
 
 G0_P=CALC_G(    RESULTAT=CHAMDEPP,
-                        THETA=_F(THETA=THETA0),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
+                        THETA=_F(THETA=THETA0,SYME='OUI'),
                     )
 
 GK0_P=CALC_G(    RESULTAT=CHAMDEPP,
@@ -257,8 +255,6 @@ GK0_P=CALC_G(    RESULTAT=CHAMDEPP,
                                    R_SUP = 0.005,
                                    DIRECTION=(1., 0., 0.,),
                                    FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
                          OPTION='CALC_K_G'
                      )
 
@@ -266,9 +262,7 @@ GK0_P=CALC_G(    RESULTAT=CHAMDEPP,
 # ----------
 
 G1_P=CALC_G(    RESULTAT=CHAMDEPP,
-                        THETA=_F(THETA=THETA1),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
+                        THETA=_F(THETA=THETA1,SYME='OUI'),
                     )
 
 GK1_P=CALC_G(    RESULTAT=CHAMDEPP,
@@ -277,8 +271,6 @@ GK1_P=CALC_G(    RESULTAT=CHAMDEPP,
                                    R_SUP = 0.0075,
                                    DIRECTION=(1., 0., 0.,),
                                    FOND_FISS=FOND,),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
                          OPTION='CALC_K_G'
                      )
 
@@ -286,9 +278,7 @@ GK1_P=CALC_G(    RESULTAT=CHAMDEPP,
 # ----------
 
 G2_P=CALC_G(    RESULTAT=CHAMDEPP,
-                        THETA=_F(THETA=THETA2),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
+                        THETA=_F(THETA=THETA2,SYME='OUI'),
                     )
 
 GK2_P=CALC_G(    RESULTAT=CHAMDEPP,
@@ -297,8 +287,6 @@ GK2_P=CALC_G(    RESULTAT=CHAMDEPP,
                                    R_SUP = 0.01,
                                    DIRECTION=(1., 0., 0.,),
                                    FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
                          OPTION='CALC_K_G'
                      )
 
@@ -306,9 +294,7 @@ GK2_P=CALC_G(    RESULTAT=CHAMDEPP,
 # ----------
 
 G3_P=CALC_G(    RESULTAT=CHAMDEPP,
-                        THETA=_F(THETA=THETA3),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
+                        THETA=_F(THETA=THETA3,SYME='OUI'),
                     )
 
 GK3_P=CALC_G(    RESULTAT=CHAMDEPP,
@@ -317,8 +303,6 @@ GK3_P=CALC_G(    RESULTAT=CHAMDEPP,
                                    R_SUP = 0.03,
                                    DIRECTION=(1., 0., 0.,),
                                    FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
                          OPTION='CALC_K_G'
                      )
 
@@ -330,9 +314,7 @@ GK3_P=CALC_G(    RESULTAT=CHAMDEPP,
 # ----------
 
 G0_T=CALC_G(    RESULTAT=CHAMDEPT,
-                        THETA=_F(THETA=THETA0),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
+                        THETA=_F(THETA=THETA0,SYME='OUI'),
                     )
 
 GK0_T=CALC_G(    RESULTAT=CHAMDEPT,
@@ -341,8 +323,6 @@ GK0_T=CALC_G(    RESULTAT=CHAMDEPT,
                                    R_SUP = 0.005,
                                    DIRECTION=(1., 0., 0.,),
                                    FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
                          OPTION='CALC_K_G'
                      )
 
@@ -350,9 +330,7 @@ GK0_T=CALC_G(    RESULTAT=CHAMDEPT,
 # ----------
 
 G1_T=CALC_G(    RESULTAT=CHAMDEPT,
-                        THETA=_F(THETA=THETA1),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
+                        THETA=_F(THETA=THETA1,SYME='OUI'),
                     )
 
 GK1_T=CALC_G(    RESULTAT=CHAMDEPT,
@@ -361,8 +339,6 @@ GK1_T=CALC_G(    RESULTAT=CHAMDEPT,
                                    R_SUP = 0.0075,
                                    DIRECTION=(1., 0., 0.,),
                                    FOND_FISS=FOND,),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
                          OPTION='CALC_K_G'
                      )
 
@@ -370,9 +346,7 @@ GK1_T=CALC_G(    RESULTAT=CHAMDEPT,
 # ----------
 
 G2_T=CALC_G(    RESULTAT=CHAMDEPT,
-                        THETA=_F(THETA=THETA2),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
+                        THETA=_F(THETA=THETA2,SYME='OUI'),
                     )
 
 GK2_T=CALC_G(    RESULTAT=CHAMDEPT,
@@ -381,8 +355,6 @@ GK2_T=CALC_G(    RESULTAT=CHAMDEPT,
                                    R_SUP = 0.01,
                                    DIRECTION=(1., 0., 0.,),
                                    FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
                          OPTION='CALC_K_G'
                      )
 
@@ -390,9 +362,7 @@ GK2_T=CALC_G(    RESULTAT=CHAMDEPT,
 # ----------
 
 G3_T=CALC_G(    RESULTAT=CHAMDEPT,
-                        THETA=_F(THETA=THETA3),
-                        SYME_CHAR='SYME',
-                        NUME_ORDRE=1
+                        THETA=_F(THETA=THETA3,SYME='OUI'),
                     )
 
 GK3_T=CALC_G(    RESULTAT=CHAMDEPT,
@@ -401,8 +371,6 @@ GK3_T=CALC_G(    RESULTAT=CHAMDEPT,
                                    R_SUP = 0.03,
                                    DIRECTION=(1., 0., 0.,),
                                    FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
-                         NUME_ORDRE=1,
                          OPTION='CALC_K_G'
                      )
 
@@ -414,8 +382,7 @@ GK3_T=CALC_G(    RESULTAT=CHAMDEPT,
 # ----------
 
 G0_C=CALC_G(   RESULTAT=CHAMDEP0,
-                        THETA=_F(THETA=THETA0),
-                        SYME_CHAR='SYME',
+                        THETA=_F(THETA=THETA0,SYME='OUI'),
                     )
 
 GK0_C=CALC_G(   RESULTAT=CHAMDEP0,
@@ -424,7 +391,6 @@ GK0_C=CALC_G(   RESULTAT=CHAMDEP0,
                                    R_SUP = 0.005,
                                    DIRECTION=(1., 0., 0.,),
                                    FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
                          OPTION='CALC_K_G'
                      )
 
@@ -432,8 +398,7 @@ GK0_C=CALC_G(   RESULTAT=CHAMDEP0,
 # ----------
 
 G1_C=CALC_G(   RESULTAT=CHAMDEP0,
-                        THETA=_F(THETA=THETA1),
-                        SYME_CHAR='SYME',
+                        THETA=_F(THETA=THETA1,SYME='OUI'),
                     )
 
 GK1_C=CALC_G(   RESULTAT=CHAMDEP0,
@@ -442,7 +407,6 @@ GK1_C=CALC_G(   RESULTAT=CHAMDEP0,
                                    R_SUP = 0.0075,
                                    DIRECTION=(1., 0., 0.,),
                                    FOND_FISS=FOND,),
-                         SYME_CHAR='SYME',
                          OPTION='CALC_K_G'
                      )
 
@@ -450,8 +414,7 @@ GK1_C=CALC_G(   RESULTAT=CHAMDEP0,
 # ----------
 
 G2_C=CALC_G(   RESULTAT=CHAMDEP0,
-                        THETA=_F(THETA=THETA2),
-                        SYME_CHAR='SYME',
+                        THETA=_F(THETA=THETA2,SYME='OUI'),
                     )
 
 GK2_C=CALC_G(   RESULTAT=CHAMDEP0,
@@ -460,7 +423,6 @@ GK2_C=CALC_G(   RESULTAT=CHAMDEP0,
                                    R_SUP = 0.01,
                                    DIRECTION=(1., 0., 0.,),
                                    FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
                          OPTION='CALC_K_G'
                      )
 
@@ -468,8 +430,7 @@ GK2_C=CALC_G(   RESULTAT=CHAMDEP0,
 # ----------
 
 G3_C=CALC_G(   RESULTAT=CHAMDEP0,
-                        THETA=_F(THETA=THETA3),
-                        SYME_CHAR='SYME',
+                        THETA=_F(THETA=THETA3,SYME='OUI'),
                     )
 
 GK3_C=CALC_G(   RESULTAT=CHAMDEP0,
@@ -478,7 +439,6 @@ GK3_C=CALC_G(   RESULTAT=CHAMDEP0,
                                    R_SUP = 0.03,
                                    DIRECTION=(1., 0., 0.,),
                                    FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
                          OPTION='CALC_K_G'
                      )
 
@@ -489,29 +449,21 @@ GK3_C=CALC_G(   RESULTAT=CHAMDEP0,
 
 
 TEST_TABLE(       TABLE=GK0_P,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
                        NOM_PARA='K1',
                            VALE=1.1482,
                       PRECISION=0.02    )
 
 TEST_TABLE(       TABLE=GK1_P,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
                        NOM_PARA='K1',
                            VALE=1.1482,
                       PRECISION=0.02    )
 
 TEST_TABLE(       TABLE=GK2_P,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
                        NOM_PARA='K1',
                            VALE=1.1482,
                       PRECISION=0.02    )
 
 TEST_TABLE(       TABLE=GK3_P,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
                        NOM_PARA='K1',
                            VALE=1.1482,
                       PRECISION=0.02    )
@@ -521,29 +473,21 @@ TEST_TABLE(       TABLE=GK3_P,
 
 
 TEST_TABLE(       TABLE=GK0_T,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
                        NOM_PARA='K1',
                            VALE=-.412369,
                       PRECISION=0.07    )
 
 TEST_TABLE(       TABLE=GK1_T,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
                        NOM_PARA='K1',
                            VALE=-.412369,
                       PRECISION=0.07    )
 
 TEST_TABLE(       TABLE=GK2_T,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
                        NOM_PARA='K1',
                            VALE=-.412369,
                       PRECISION=0.07    )
 
 TEST_TABLE(       TABLE=GK3_T,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
                        NOM_PARA='K1',
                            VALE=-.412369,
                       PRECISION=0.07    )

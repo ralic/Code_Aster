@@ -1,16 +1,16 @@
       SUBROUTINE XMMAB1(NDIM  ,JNNE, NDEPLE  ,NNC   ,JNNM   ,
      &                  NFAES ,CFACE ,HPG   ,FFC   ,FFE   ,
-     &                  FFM   ,JACOBI,JPCAI ,LAMBDA,COEFCR,
-     &                  COEFCP,COEFEC,COEFEF,JEU   ,COEFFR,
+     &                  FFM   ,JACOBI,JPCAI ,LAMBDA,
+     &                  DVITET ,COEFFR,
      &                  COEFFP,COEFFF,LPENAF,TAU1  ,TAU2  ,
-     &                  RESE  ,MPROJ ,NORM  ,TYPMAI,NSINGE,
+     &                  RESE  ,MPROJ ,TYPMAI,NSINGE,
      &                  NSINGM,RRE   ,RRM   ,NVIT  ,NCONTA,
-     &                  JDDLE,JDDLM,NFHE,MMAT  )
+     &                  JDDLE,JDDLM,NFHE,MMAT  )  
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 30/01/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -31,9 +31,8 @@ C
       INTEGER  NDIM,JNNE(3),NNC,JNNM(3),NFAES,JPCAI,CFACE(5,3)
       INTEGER  NSINGE,NSINGM,NCONTA,JDDLE(2),JDDLM(2)
       INTEGER  NVIT,NDEPLE,NFHE
-      REAL*8   HPG,FFC(9),FFE(9),FFM(9),JACOBI,NORM(3),COEFCP,COEFEC
-      REAL*8   COEFEF
-      REAL*8   LAMBDA,COEFFF,COEFFR,COEFFP,RRE,RRM,COEFCR,JEU
+      REAL*8   HPG,FFC(8),FFE(8),FFM(8),JACOBI,DDOT
+      REAL*8   LAMBDA,COEFFF,COEFFR,COEFFP,RRE,RRM,DVITET(3)
       REAL*8   TAU1(3),TAU2(3),RESE(3),MMAT(336,336),MPROJ(3,3)
       CHARACTER*8  TYPMAI
       LOGICAL  LPENAF
@@ -83,8 +82,8 @@ C ----------------------------------------------------------------------
       INTEGER   I, J, K, L, M, II, JJ, INI, PLI,INJ, PLJ
       INTEGER   XOULA,JJN,IIN,DDLE
       INTEGER   NNE,NNES,NNM,NNMS,DDLES,DDLEM,DDLMS,DDLMM
-      REAL*8    E(3,3), A(3,3), C(3,3),MP, MB, MBT ,MM ,MMT
-      REAL*8    TT(3,3)
+      REAL*8    E(3,3), A(3,3), MP, MB, MBT ,MM ,MMT
+      REAL*8    TT(3,3), V(2)
 C ----------------------------------------------------------------------
 C
 C --- INITIALISATIONS
@@ -97,6 +96,8 @@ C
       DDLEM=JDDLE(2)
       DDLMS=JDDLM(1)
       DDLMM=JDDLM(2)
+      V(1)=0
+      V(2)=0
 C
       DO 1 I = 1,3
         DO 2 J = 1,3
@@ -105,6 +106,9 @@ C
           TT(I,J) = 0.D0
 2       CONTINUE
 1     CONTINUE
+      V(1) = DDOT(NDIM,DVITET,1,TAU1,1)
+      IF(NDIM.EQ.3) V(2) = DDOT(NDIM,DVITET,1,TAU2,2)
+C     TT = ID
       DO 301 I = 1,NDIM
         TT(1,1) = TAU1(I)*TAU1(I) + TT(1,1)
         TT(1,2) = TAU1(I)*TAU2(I) + TT(1,2)
@@ -136,26 +140,8 @@ C ---        GT SEMI MULTIPLICATEUR AUGMENTE FROTTEMENT
           A(3,I) = TAU2(K)*MPROJ(K,I) + A(3,I)
 7       CONTINUE
 6     CONTINUE
-C
-C --- C = (P_B)[P_TAU]*(N)
-C
-C --- C = GT TENSORIEL N
-      DO 8 I = 1,NDIM
-        DO 9 J = 1,NDIM
-          C(I,J) = A(1,I)*NORM(J)
-9       CONTINUE
-8     CONTINUE
 C ---- MP = MU*GN*WG*JAC
-C ---- TERME BLOCAGE INITIAL SI PENALISATION
-      IF(LPENAF) THEN
-        IF(LAMBDA.EQ.0.D0) THEN
-           MP = -COEFCP*COEFFF*HPG*JACOBI/COEFFP
-        ELSE
-           MP = LAMBDA*COEFFF*HPG*JACOBI
-        ENDIF
-      ELSE
-        MP = (LAMBDA-COEFCR*JEU)*COEFFF*HPG*JACOBI
-      ENDIF
+      MP = LAMBDA*COEFFF*HPG*JACOBI
 C
       DDLE = DDLES*NNES+DDLEM*(NNE-NNES)
       IF (NNM.NE.0) THEN
@@ -164,12 +150,13 @@ C --------------------- CALCUL DE [A] ET [B] -----------------------
 C
       DO 70 L = 1,NDIM
         DO 10 K = 1,NDIM
+C ROUTINE ADHERENTE, ON GARDE LA CONTRIBUTION A [A]
           IF (L.EQ.1) THEN
             MB  = 0.D0
-            MBT = COEFFF*HPG*JACOBI*A(L,K)*COEFEC
+            MBT = COEFFF*HPG*JACOBI*A(L,K)
           ELSE
-            IF(.NOT.LPENAF) MB = NVIT*HPG*JACOBI*A(L,K)
-            IF(LPENAF)      MB = NVIT*HPG*JACOBI*A(L,K)*COEFEF
+            IF(.NOT.LPENAF) MB = NVIT*MP*A(L,K)
+            IF(LPENAF)      MB = 0.D0
             IF(.NOT.LPENAF) MBT = MP*A(L,K)
             IF(LPENAF)      MBT = 0.D0
           ENDIF
@@ -222,8 +209,8 @@ C
             MB  = -MP*COEFFP*E(L,K)
             MBT = -MP*COEFFP*E(L,K)
           ELSE
-            MB  = -MP*COEFFR*E(L,K)+COEFCR*COEFFF*HPG*JACOBI*C(L,K)
-            MBT = -MP*COEFFR*E(L,K)+COEFCR*COEFFF*HPG*JACOBI*C(K,L)
+            MB  = -MP*COEFFR*E(L,K)
+            MBT = -MP*COEFFR*E(L,K)
           ENDIF
           DO 200 I = 1,NDEPLE
             DO 210 J = 1,NDEPLE
@@ -340,9 +327,9 @@ C
             MB  = 0.D0
             MBT = COEFFF*HPG*JACOBI*A(L,K)
           ELSE
-            IF(.NOT.LPENAF) MB = NVIT*HPG*JACOBI*A(L,K)
-            IF(LPENAF)      MB = NVIT*HPG*JACOBI*A(L,K)*COEFEF
-            IF(.NOT.LPENAF) MBT = MP*A(L,K)*COEFEC
+            IF(.NOT.LPENAF) MB = NVIT*MP*A(L,K)
+            IF(LPENAF)      MB = 0.D0
+            IF(.NOT.LPENAF) MBT = MP*A(L,K)
             IF(LPENAF)      MBT = 0.D0
           ENDIF
           DO 520 I = 1,NNC
@@ -367,9 +354,9 @@ C
       DO 600 K = 1,NDIM
         DO 610 L = 1,NDIM
           IF(LPENAF) THEN
-            MB  = -MP*COEFFR*E(L,K)
+            MB  = -MP*COEFFP*E(L,K)
           ELSE
-            MB  = -MP*COEFFR*E(L,K)+COEFCR*COEFFF*HPG*JACOBI*C(L,K)
+            MB  = -MP*COEFFR*E(L,K)
           ENDIF
           DO 620 I = 1,NDEPLE
             DO 630 J = 1,NDEPLE
@@ -400,13 +387,35 @@ C ---------------SEULEMENT EN METHODE PENALISEE-------------------------
               DO 430 K = 1,NDIM-1
                 II = PLI+L
                 JJ = PLJ+K
-                MMAT(II,JJ) = HPG*FFC(I)*FFC(J)*JACOBI*TT(L,K)
-     &           *COEFEF*COEFEF/COEFFP
+                MMAT(II,JJ) = FFC(I)*FFC(J)*HPG*JACOBI*TT(L,K)
 430           CONTINUE
 420         CONTINUE
 410       CONTINUE
 400     CONTINUE
         ENDIF
+      ENDIF
+C ------------------- CALCUL DE [E] ------------------------------------
+C
+C ------------- COUPLAGE MULTIPLICATEURS CONTACT-FROTTEMENT ------------
+      IF (NVIT.EQ.1) THEN
+        DO 800 I = 1,NNC
+         DO 810 J = 1,NNC
+            INI=XOULA(CFACE,NFAES,I,JPCAI,TYPMAI,NCONTA)
+            CALL XPLMA2(NDIM,NNE,NNES,DDLES,INI,NFHE,PLI)
+            INJ=XOULA(CFACE,NFAES,J,JPCAI,TYPMAI,NCONTA)
+            CALL XPLMA2(NDIM,NNE,NNES,DDLES,INJ,NFHE,PLJ)
+            DO 830 K = 1,NDIM-1
+              II = PLI+K
+              JJ = PLJ
+              IF(LPENAF) THEN
+                MMAT(II,JJ) = 0.D0
+              ELSE
+                MMAT(II,JJ) = -FFC(I)*FFC(J)*COEFFF*HPG*JACOBI*V(K)
+              ENDIF
+830         CONTINUE
+            
+810       CONTINUE
+800     CONTINUE
       ENDIF
 C
       END

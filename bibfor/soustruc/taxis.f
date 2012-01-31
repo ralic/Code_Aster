@@ -1,8 +1,8 @@
       SUBROUTINE TAXIS(NOMA,INDIC,NBMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SOUSTRUC  DATE 30/01/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -50,6 +50,8 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
 C     VARIABLES LOCALES:
 C     ------------------
+      REAL*8 VALR(1)
+      
       CHARACTER*8  K8BID,K8B,K8A
       CHARACTER*24 VALK(2)
 C
@@ -73,14 +75,15 @@ C
                ENDIF
                VALK (1) = K8B
                VALK (2) = K8A
-               CALL U2MESK('F+','SOUSTRUC_89',2,VALK)
+               VALR (1) = ZR(JVALE+3*NUMNO)
+               CALL U2MESG('F+','SOUSTRUC_89',2,VALK,0,0,1,VALR)
                IER  = IER + 1
             ENDIF
  3       CONTINUE
       ENDIF
  2    CONTINUE
       IF ( IER .NE. 0 ) THEN
-         CALL U2MESS('F','SOUSTRUC_78')
+         CALL U2MESS('F','SOUSTRUC_90')
       ENDIF
 C
       CALL JEDEMA()

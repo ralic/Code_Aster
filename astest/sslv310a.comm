@@ -1,4 +1,4 @@
-# MODIF  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE  MURAKAMI 9.35 FISSURE SEMI-ELLIPTIQUE DEBOUCHANT A LA PEAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -114,7 +114,6 @@ THETA1=CALC_THETA(      MODELE=MO,
 
 G0_C1=CALC_G(         OPTION='CALC_G_GLOB',
                       RESULTAT=CHAMDEPL,
-                      NUME_ORDRE=1,
                       THETA=_F(THETA=THETA1),
                        )
 
@@ -122,7 +121,6 @@ G0_C1=CALC_G(         OPTION='CALC_G_GLOB',
 # CALCUL DE G LOCAL AVEC THETA_LEGENDRE
 #
 GLO1_LE5=CALC_G(         RESULTAT=CHAMDEPL,
-                         TOUT_ORDRE='OUI',
                          THETA=_F(FOND_FISS=FISS1,
                                   R_INF_FO=RAY_INF1,
                                   R_SUP_FO=RAY_SUP1),
@@ -141,7 +139,7 @@ RAY_INF2=DEFI_CONSTANTE(   VALE=1.25E-3)
 
 RAY_SUP2=DEFI_CONSTANTE(   VALE=2.E-3)
 
-THETA2=CALC_THETA(       MODELE=MO,
+THETA2=CALC_THETA(      MODELE=MO,
                          FOND_FISS=FISS1,
                         THETA_3D=_F(  TOUT = 'OUI',
                                    MODULE_FO = MOD_T1,
@@ -152,7 +150,6 @@ THETA2=CALC_THETA(       MODELE=MO,
 #
 G0_C2=CALC_G (        OPTION='CALC_G_GLOB',
                       RESULTAT=CHAMDEPL,
-                      NUME_ORDRE=1,
                       THETA=_F(THETA=THETA2),
                        )
 
@@ -160,14 +157,12 @@ G0_C2=CALC_G (        OPTION='CALC_G_GLOB',
 # CALCUL DE G LOCAL AVEC THETA_LEGENDRE
 #
 GLO2_LE5=CALC_G(        RESULTAT=CHAMDEPL,
-                        TOUT_ORDRE='OUI',
                         THETA=_F(FOND_FISS=FISS1, 
                                  R_INF_FO=RAY_INF2,
                                  R_SUP_FO=RAY_SUP2),
                          )
 
 GLOC2=CALC_G(           RESULTAT=CHAMDEPL,
-                        NUME_ORDRE=1,
                         THETA=_F(FOND_FISS=FISS1,
                                  R_INF_FO=RAY_INF2,
                                  R_SUP_FO=RAY_SUP2),
@@ -181,7 +176,7 @@ RAY_INF3=DEFI_CONSTANTE(   VALE=2.E-3)
 RAY_SUP3=DEFI_CONSTANTE(   VALE=2.5E-3)
 
 #
-THETA3=CALC_THETA(      MODELE=MO,
+THETA3=CALC_THETA(     MODELE=MO,
                         FOND_FISS=FISS1,
                         THETA_3D=_F(  TOUT = 'OUI',
                                    MODULE_FO = MOD_T1,
@@ -191,7 +186,6 @@ THETA3=CALC_THETA(      MODELE=MO,
 
 G0_C3=CALC_G(          OPTION='CALC_G_GLOB',
                        RESULTAT=CHAMDEPL,
-                       NUME_ORDRE=1,
                        THETA=_F(THETA=THETA3),
                        )
 
@@ -199,7 +193,6 @@ G0_C3=CALC_G(          OPTION='CALC_G_GLOB',
 # CALCUL DE G LOCAL AVEC THETA_LEGENDRE
 #
 GLO3_LE4=CALC_G(               RESULTAT=CHAMDEPL,
-                               TOUT_ORDRE='OUI',
                                THETA=_F(FOND_FISS=FISS1,
                                         R_INF_FO=RAY_INF3,
                                         R_SUP_FO=RAY_SUP3),
@@ -207,7 +200,6 @@ GLO3_LE4=CALC_G(               RESULTAT=CHAMDEPL,
                          )
 
 GLOC3=CALC_G(                 RESULTAT=CHAMDEPL,
-                              NUME_ORDRE=1,
                               THETA=_F(FOND_FISS=FISS1,
                                        R_INF_FO=RAY_INF3,
                                        R_SUP_FO=RAY_SUP3,),
@@ -226,7 +218,7 @@ TEST_TABLE(       TABLE=GLOC1,
                    NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                               VALE_K = 'N2613'),
-                       VALE=3843.21,
+                       VALE=7686.42,
                   PRECISION=0.2       )
 
 #
@@ -237,7 +229,7 @@ TEST_TABLE(       TABLE=GLOC1,
                    NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                               VALE_K = 'N3203'),
-                       VALE=3338.13,
+                       VALE=6676.26,
                   PRECISION=0.04       )
 
 #
@@ -248,7 +240,7 @@ TEST_TABLE(       TABLE=GLOC1,
                    NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                               VALE_K = 'N4066'),
-                       VALE=2888.99,
+                       VALE=5777.98,
                   PRECISION=0.1       )
 
 #
@@ -259,7 +251,7 @@ TEST_TABLE(       TABLE=GLOC1,
                    NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                               VALE_K = 'N5548'),
-                       VALE=2799.46,
+                       VALE=5598.92,
                   PRECISION=0.1       )
 
 #
@@ -270,7 +262,7 @@ TEST_TABLE(       TABLE=GLOC1,
                    NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                               VALE_K = 'N6180'),
-                       VALE=2850.43,
+                       VALE=5700.86,
                   PRECISION=0.1       )
 
 #
@@ -281,7 +273,7 @@ TEST_TABLE(       TABLE=GLOC1,
                    NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                               VALE_K = 'N6835'),
-                       VALE=2891.32,
+                       VALE=5782.64,
                   PRECISION=0.05       )
 
 #
@@ -292,7 +284,7 @@ TEST_TABLE(       TABLE=GLOC1,
                    NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                               VALE_K = 'N6962'),
-                       VALE=2944.52,
+                       VALE=5889.04,
                   PRECISION=0.06       )
 
 #
@@ -305,7 +297,7 @@ TEST_TABLE(       TABLE=GLOC2,
                    NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                               VALE_K = 'N2613'),
-                       VALE=3843.21,
+                       VALE=7686.42,
                   PRECISION=0.15       )
 
 #
@@ -316,7 +308,7 @@ TEST_TABLE(       TABLE=GLOC2,
                    NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                               VALE_K = 'N3203'),
-                       VALE=3338.13,
+                       VALE=6676.26,
                   PRECISION=0.005       )
 
 #
@@ -327,7 +319,7 @@ TEST_TABLE(       TABLE=GLOC2,
                    NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                               VALE_K = 'N4066'),
-                       VALE=2888.99,
+                       VALE=5777.98,
                   PRECISION=0.05       )
 
 #
@@ -338,7 +330,7 @@ TEST_TABLE(       TABLE=GLOC2,
                    NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                               VALE_K = 'N5548'),
-                       VALE=2799.46,
+                       VALE=5598.92,
                   PRECISION=0.05       )
 
 #
@@ -349,7 +341,7 @@ TEST_TABLE(       TABLE=GLOC2,
                    NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                               VALE_K = 'N6180'),
-                       VALE=2850.43,
+                       VALE=5700.86,
                   PRECISION=0.03       )
 
 #
@@ -360,7 +352,7 @@ TEST_TABLE(       TABLE=GLOC2,
                    NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                               VALE_K = 'N6835'),
-                       VALE=2891.32,
+                       VALE=5782.64,
                   PRECISION=0.1       )
 
 #
@@ -371,7 +363,7 @@ TEST_TABLE(       TABLE=GLOC2,
                    NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                               VALE_K = 'N6962'),
-                       VALE=2944.52,
+                       VALE=5889.04,
                   PRECISION=0.005       )
 
 #
@@ -384,7 +376,7 @@ TEST_TABLE(       TABLE=GLOC3,
                    NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                               VALE_K = 'N2613'),
-                       VALE=3843.21,
+                       VALE=7686.42,
                   PRECISION=0.15       )
 
 #
@@ -395,7 +387,7 @@ TEST_TABLE(       TABLE=GLOC3,
                    NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                               VALE_K = 'N3203'),
-                       VALE=3338.13,
+                       VALE=6676.26,
                   PRECISION=0.005       )
 
 #
@@ -406,7 +398,7 @@ TEST_TABLE(       TABLE=GLOC3,
                    NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                               VALE_K = 'N4066'),
-                       VALE=2888.99,
+                       VALE=5777.98,
                   PRECISION=0.05       )
 
 #
@@ -417,7 +409,7 @@ TEST_TABLE(       TABLE=GLOC3,
                    NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                               VALE_K = 'N5548'),
-                       VALE=2799.46,
+                       VALE=5598.92,
                   PRECISION=0.05       )
 
 #
@@ -428,7 +420,7 @@ TEST_TABLE(       TABLE=GLOC3,
                    NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                               VALE_K = 'N6180'),
-                       VALE=2850.43,
+                       VALE=5700.86,
                   PRECISION=0.03       )
 
 #
@@ -439,7 +431,7 @@ TEST_TABLE(       TABLE=GLOC3,
                    NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                               VALE_K = 'N6835'),
-                       VALE=2891.32,
+                       VALE=5782.64,
                   PRECISION=0.01       )
 
 #
@@ -450,7 +442,7 @@ TEST_TABLE(       TABLE=GLOC3,
                    NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                               VALE_K = 'N6962'),
-                       VALE=2944.52,
+                       VALE=5889.04,
                   PRECISION=0.005       )
 
 #

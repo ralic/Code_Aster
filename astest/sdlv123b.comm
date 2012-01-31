@@ -1,4 +1,4 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
 
 DEBUT(CODE=_F(NOM='SDLV123B',
               NIV_PUB_WEB='INTERNET',),);
@@ -6,7 +6,7 @@ DEBUT(CODE=_F(NOM='SDLV123B',
 # sdlv123b.para = tps_job 300 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -76,6 +76,14 @@ RIGIEL=CALC_MATR_ELEM( MODELE=MODELE,
 MASSEL=CALC_MATR_ELEM( MODELE=MODELE,
                        CHAM_MATER=CHAMPMAT,
                        OPTION='MASS_MECA')
+                       
+AMOR_ELE=CALC_MATR_ELEM(    MODELE=MODELE,
+                              OPTION='AMOR_MECA',
+                              CHAM_MATER=CHAMPMAT,
+                              RIGI_MECA = RIGIEL,
+                              MASS_MECA = MASSEL,                              
+                              CHARGE=CH_P
+                            )
 
 NUMEROTA=NUME_DDL( MATR_RIGI=RIGIEL)
 
@@ -87,10 +95,10 @@ MASSE=ASSE_MATRICE( MATR_ELEM=MASSEL,
                    NUME_DDL=NUMEROTA
                   )
 
+AMORT=ASSE_MATRICE( MATR_ELEM=AMOR_ELE,
+                    NUME_DDL=NUMEROTA
+                  )
 
-INTLI=DEFI_LIST_ENTI(DEBUT=0,
-                     INTERVALLE=_F(JUSQU_A=1000,
-                                   PAS=20,),);
 #-----------------------------------------------------------------------
 # 1 -ER NON AMORTI
 evol=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
@@ -98,6 +106,7 @@ evol=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                        CHAM_MATER=CHAMPMAT,
                        MATR_MASS=MASSE,
                        MATR_RIGI=RIGI,
+                       MATR_AMOR=AMORT,
                        SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                        EXCIT=_F(CHARGE=CH_P,
                                 FONC_MULT=FONC,),
@@ -140,9 +149,8 @@ THETA3=CALC_THETA( MODELE=MODELE,
 G1=CALC_G(          OPTION='CALC_G_GLOB',
                     RESULTAT=evol,
                     TOUT_ORDRE='OUI',
-                    THETA=_F(THETA=THETA1),
+                    THETA=_F(THETA=THETA1,SYME='OUI'),
                     EXCIT=_F(CHARGE=CH_P,),
-                    SYME_CHAR='SYME'
                   )
 
 GL1=CALC_G(         THETA=_F(FOND_FISS=FF,
@@ -151,7 +159,6 @@ GL1=CALC_G(         THETA=_F(FOND_FISS=FF,
                     RESULTAT=evol,
                     TOUT_ORDRE='OUI',
                     EXCIT=_F(CHARGE=CH_P,),
-                    SYME_CHAR='SYME',
                     LISSAGE=_F(LISSAGE_THETA='LAGRANGE',LISSAGE_G='LAGRANGE'),
                   )
 
@@ -165,7 +172,6 @@ GL11=CALC_G(         THETA=_F( DIRECTION=(1.,0.,0.,),
                     RESULTAT=evol,
                     NUME_ORDRE=50,
                     EXCIT=_F(CHARGE=CH_P,),
-                    SYME_CHAR='SYME',
                     LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
                               DEGRE = 2),
                   )
@@ -173,17 +179,15 @@ GL11=CALC_G(         THETA=_F( DIRECTION=(1.,0.,0.,),
 G2=CALC_G(          OPTION='CALC_G_GLOB',
                     RESULTAT=evol,
                     TOUT_ORDRE='OUI',
-                    THETA=_F(THETA=THETA2),
+                    THETA=_F(THETA=THETA2,SYME='OUI'),
                     EXCIT=_F(CHARGE=CH_P,),
-                    SYME_CHAR='SYME'
                   )
 
 G3=CALC_G(          RESULTAT=evol,
                     OPTION='CALC_G_GLOB',
                     TOUT_ORDRE='OUI',
-                    THETA=_F(THETA=THETA3),
+                    THETA=_F(THETA=THETA3,SYME='OUI'),
                     EXCIT=_F(CHARGE=CH_P,),
-                    SYME_CHAR='SYME'
                   )
 
 IMPR_TABLE ( TABLE   = G1  );

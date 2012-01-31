@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE  FISSURE DE BORD EN ELASTOPLASTICITE DANS UNE PLAQUE RECTANGULAIRE FINIE SOUMISE A FLEXION CISAILLANTE - EX SSNP310
 # ssnp110e.para = tps_job 100 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -104,9 +104,9 @@ CHAMDEP=STAT_NON_LINE( MODELE=MO,
     
                      );
 
-G_0=CALC_G( THETA=_F(THETA=THETA0),
+G_0=CALC_G( THETA=_F(THETA=THETA0,SYME='OUI'),
             RESULTAT=CHAMDEP,
-            TOUT_ORDRE='OUI',SYME_CHAR='SYME',
+            TOUT_ORDRE='OUI',
             COMP_ELAS=_F(RELATION='ELAS_VMIS_LINE',),
             );
 
@@ -231,9 +231,9 @@ CHAMDEP2=STAT_NON_LINE( MODELE=MO,
     
                      );
 
-G_0_2=CALC_G( THETA=_F(THETA=THETA0),
+G_0_2=CALC_G( THETA=_F(THETA=THETA0,SYME='OUI'),
             RESULTAT=CHAMDEP2,
-            TOUT_ORDRE='OUI',SYME_CHAR='SYME',
+            TOUT_ORDRE='OUI',
             COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),
             );
 
@@ -352,9 +352,9 @@ CHAMDEP3=STAT_NON_LINE( MODELE=MO,
 #################"
 
 
-G_0_3=CALC_G( THETA=_F(THETA=THETA0),
+G_0_3=CALC_G( THETA=_F(THETA=THETA0,SYME='OUI'),
             RESULTAT=CHAMDEP3,
-            TOUT_ORDRE='OUI',SYME_CHAR='SYME',
+            TOUT_ORDRE='OUI',
             COMP_ELAS=_F(RELATION='ELAS_VMIS_PUIS',),
             );
 
@@ -501,9 +501,9 @@ CHAMDEP4=STAT_NON_LINE( MODELE=MO,
 #################"
 
 
-G_0_4=CALC_G( THETA=_F(THETA=THETA0),
+G_0_4=CALC_G( THETA=_F(THETA=THETA0,SYME='OUI'),
             RESULTAT=CHAMDEP4,
-            TOUT_ORDRE='OUI',SYME_CHAR='SYME',
+            TOUT_ORDRE='OUI',
             COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),
             );
 
@@ -624,9 +624,9 @@ CHAMDEP5=STAT_NON_LINE( MODELE=MO,
 #################"
 
 
-G_0_5=CALC_G( THETA=_F(THETA=THETA0),
+G_0_5=CALC_G( THETA=_F(THETA=THETA0,SYME='OUI'),
             RESULTAT=CHAMDEP5,
-            TOUT_ORDRE='OUI',SYME_CHAR='SYME',
+            TOUT_ORDRE='OUI',
             COMP_ELAS=_F(RELATION='ELAS_VMIS_PUIS',),
             );
 
@@ -716,9 +716,9 @@ TEST_TABLE(TABLE=G_0_5,
 # ======================================================================
 # VALIDATION 2D DE "CALCUL_CONTRAINTE":
 
-G_0BIS=CALC_G( THETA=_F( THETA = THETA0),
+G_0BIS=CALC_G( THETA=_F( THETA = THETA0, SYME='OUI'),
             RESULTAT=CHAMDEP,
-            TOUT_ORDRE='OUI',SYME_CHAR='SYME',
+            TOUT_ORDRE='OUI',
             CALCUL_CONTRAINTE='NON',
             COMP_ELAS=_F(RELATION='ELAS_VMIS_LINE',),
             );

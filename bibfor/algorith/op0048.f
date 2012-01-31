@@ -1,9 +1,9 @@
       SUBROUTINE OP0048()
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -58,8 +58,8 @@ C
 C
       INTEGER NBPASE, NRORES, NVECA, NCHAR
       INTEGER IMAT(3), NUME, NIV, IBID, IFM, IONDP, LADPA
-      INTEGER IALIFO, IAADVE, NONDP
-      INTEGER NEQ, IDEPL0, IVITE0, IACCE0, IWK
+      INTEGER IALIFO, IAADVE, NONDP, IFEXTE, IFAMOR, IFLIAI
+      INTEGER NEQ, IDEPL0, IVITE0, IACCE0, IWK, IENER
       INTEGER IINTEG, NRPASE,IRET
       INTEGER IAUX, JAUX, JORD,NBORD,JCHAR
       INTEGER LRESU,LCRRE,IRESU,NBEXRE,L
@@ -110,21 +110,21 @@ C               12   345678   9012345678901234
       INFCHA = '&&'//NOMPRO//'.INFCHA    '
       CHARGE = '&&'//NOMPRO//'.INFCHA    .LCHA'
       INFOCH = '&&'//NOMPRO//'.INFCHA    .INFC'
-      CHVARC='&&OP0048.VARC'
-      CHVREF='&&OP0048.VREF'
+      CHVARC = '&&OP0048.VARC'
+      CHVREF = '&&OP0048.VREF'
       ALPHA  = 0.D0
       CALPHA = (0.D0 , 0.D0)
       NFON   = 0
       TYPCOE = ' '
       CHAREP = ' '
       CHTIME = ' '
-      K24BLA=' '
-      BASE='G'
+      K24BLA = ' '
+      BASE   = 'G'
 
 C
       LPREM  = .TRUE.
-      LAMORT=.TRUE.
-      AMORT = ' '
+      LAMORT = .TRUE.
+      AMORT  = ' '
       CRITER = '&&RESGRA_GCPC'
 C
 C====
@@ -135,7 +135,7 @@ C
      &              CARAEL, CARELE,
      &              IMAT, MASSE, RIGID, AMORT, LAMORT,
      &              NCHAR, NVECA, INFCHA, CHARGE, INFOCH, FOMULT,
-     &              IAADVE, IALIFO, NONDP, IONDP,
+     &              IAADVE, IALIFO, NONDP, IONDP, IENER,
      &              SOLVEU, IINTEG, T0, NUME,
      &              NBPASE, INPSCO, BASENO )
 C
@@ -148,6 +148,9 @@ C
       CALL WKVECT(BASENO//'.DEPL0' ,'V V R',NEQ*(NBPASE+1),IDEPL0)
       CALL WKVECT(BASENO//'.VITE0' ,'V V R',NEQ*(NBPASE+1),IVITE0)
       CALL WKVECT(BASENO//'.ACCE0' ,'V V R',NEQ*(NBPASE+1),IACCE0)
+      CALL WKVECT(BASENO//'.FEXTE' ,'V V R',2*NEQ,IFEXTE)
+      CALL WKVECT(BASENO//'.FAMOR' ,'V V R',2*NEQ,IFAMOR)
+      CALL WKVECT(BASENO//'.FLIAI' ,'V V R',2*NEQ,IFLIAI)
       CALL WKVECT(BASENO//'.TRAV'  ,'V V R',NEQ,IWK)
 C
       CALL GETFAC('EXCIT_RESU',NBEXRE)
@@ -183,7 +186,8 @@ C
      &                MODELE, NUMEDD,NUME,
      &                SOLVEU, CRITER,
      &                ZR(IDEPL0+IAUX), ZR(IVITE0+IAUX), ZR(IACCE0+IAUX),
-     &                BASENO, ZR(IWK) )
+     &                ZR(IFEXTE+NEQ), ZR(IFAMOR+NEQ),
+     &                ZR(IFLIAI+NEQ), BASENO, ZR(IWK) )
 C
    40 CONTINUE
 C
@@ -195,8 +199,9 @@ C
 C
         CALL DLNEWI(LCREA,LAMORT,IINTEG,NEQ,IMAT,
      &              MASSE,RIGID,AMORT,
-     &              ZR(IDEPL0),ZR(IVITE0),ZR(IACCE0),T0,
-     &              NCHAR,NVECA,ZI(IAADVE),ZK24(IALIFO),
+     &              ZR(IDEPL0),ZR(IVITE0),ZR(IACCE0),ZR(IFEXTE),
+     &              ZR(IFAMOR),ZR(IFLIAI),T0,
+     &              NCHAR,NVECA,ZI(IAADVE),ZK24(IALIFO),IENER,
      &              MODELE,MATE,CARELE,
      &              CHARGE,INFOCH,FOMULT,NUMEDD,NUME,SOLVEU,CRITER,
      &              ZK8(IONDP),NONDP,INPSCO,NBPASE)
@@ -205,8 +210,9 @@ C
 C
         CALL DLNEWI(LCREA,LAMORT,IINTEG,NEQ,IMAT,
      &              MASSE,RIGID,AMORT,
-     &              ZR(IDEPL0),ZR(IVITE0),ZR(IACCE0),T0,
-     &              NCHAR,NVECA,ZI(IAADVE),ZK24(IALIFO),
+     &              ZR(IDEPL0),ZR(IVITE0),ZR(IACCE0),ZR(IFEXTE),
+     &              ZR(IFAMOR),ZR(IFLIAI),T0,
+     &              NCHAR,NVECA,ZI(IAADVE),ZK24(IALIFO),IENER,
      &              MODELE,MATE,CARELE,
      &              CHARGE,INFOCH,FOMULT,NUMEDD,NUME,SOLVEU,CRITER,
      &              ZK8(IONDP),NONDP,INPSCO,NBPASE)
@@ -215,19 +221,23 @@ C
 C
         CALL DLDIFF(LCREA,LAMORT,NEQ,IMAT,
      &              MASSE,RIGID,AMORT,
-     &              ZR(IDEPL0),ZR(IVITE0),ZR(IACCE0),T0,
+     &              ZR(IDEPL0),ZR(IVITE0),ZR(IACCE0),ZR(IFEXTE),
+     &              ZR(IFAMOR),ZR(IFLIAI),T0,
      &              NCHAR,NVECA,ZI(IAADVE),ZK24(IALIFO),
      &              MODELE,MATE,CARELE,
-     &              CHARGE,INFOCH,FOMULT,NUMEDD,NUME,INPSCO,NBPASE)
+     &              CHARGE,INFOCH,FOMULT,NUMEDD,NUME,INPSCO,NBPASE,
+     &              SOLVEU)
 C
       ELSEIF ( IINTEG.EQ.4 ) THEN
 C
         CALL DLADAP(T0,LCREA,LAMORT,NEQ,IMAT,
      &        MASSE,RIGID,AMORT,
-     &        ZR(IDEPL0),ZR(IVITE0),ZR(IACCE0),
+     &        ZR(IDEPL0),ZR(IVITE0),ZR(IACCE0),ZR(IFEXTE),
+     &        ZR(IFAMOR),ZR(IFLIAI),
      &        NCHAR,NVECA,ZI(IAADVE),ZK24(IALIFO),
      &        MODELE,MATE,CARELE,
-     &        CHARGE,INFOCH,FOMULT,NUMEDD,NUME,INPSCO,NBPASE)
+     &        CHARGE,INFOCH,FOMULT,NUMEDD,NUME,INPSCO,NBPASE,
+     &        SOLVEU)
 C
       ENDIF
 C

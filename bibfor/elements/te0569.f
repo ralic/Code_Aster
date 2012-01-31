@@ -1,6 +1,6 @@
       SUBROUTINE TE0569 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -94,49 +94,46 @@ C     VITESSE UNITAIRE DANS LES 3 DIRECTIONS
       VITUNI(3,3) = 1.D0
 
       DO 310 I = 1,NNO
-         DO 311 J = 1,3
-            DO 312 K = 1,3*NNO
-               VECT(I,J,K) = 0.D0
-312         CONTINUE
-311      CONTINUE
+        DO 310 J = 1,3
+          DO 310 K = 1,3*NNO
+            VECT(I,J,K) = 0.D0
 310   CONTINUE
 C
 C     --- CALCUL DES PRODUITS VECTORIELS OMI X OMJ ---
 C
       DO 30 INO = 1 , NNO
-         I = IGEOM + 3*(INO-1) -1
-         DO 32 JNO = 1,NNO
-            J = IGEOM + 3*(JNO-1) -1
-            SX(INO,JNO) = ZR(I+2) * ZR(J+3) - ZR(I+3) * ZR(J+2)
-            SY(INO,JNO) = ZR(I+3) * ZR(J+1) - ZR(I+1) * ZR(J+3)
-            SZ(INO,JNO) = ZR(I+1) * ZR(J+2) - ZR(I+2) * ZR(J+1)
- 32      CONTINUE
- 30   CONTINUE
+        I = IGEOM + 3*(INO-1) -1
+        DO 30 JNO = 1,NNO
+          J = IGEOM + 3*(JNO-1) -1
+          SX(INO,JNO) = ZR(I+2)*ZR(J+3) - ZR(I+3)*ZR(J+2)
+          SY(INO,JNO) = ZR(I+3)*ZR(J+1) - ZR(I+1)*ZR(J+3)
+          SZ(INO,JNO) = ZR(I+1)*ZR(J+2) - ZR(I+2)*ZR(J+1)
+ 30       CONTINUE
 C
 C     --- BOUCLE SUR LES POINTS DE GAUSS ---
 C
-      DO 100 IPG = 1 , NPG1
+      DO 100 IPG = 1,NPG1
          KDEC = (IPG-1)*NNO*NDIM
          LDEC = (IPG-1)*NNO
-C
+
          NX = 0.0D0
          NY = 0.0D0
          NZ = 0.0D0
 C
 C        --- CALCUL DE LA NORMALE AU POINT DE GAUSS IPG ---
 C
-         DO 102 I = 1 , NNO
-            IDEC = (I-1)*NDIM
-            DO 102 J = 1 , NNO
-               JDEC = (J-1)*NDIM
+         DO 102 I = 1,NNO
+           IDEC = (I-1)*NDIM
+           DO 102 J = 1,NNO
+              JDEC = (J-1)*NDIM
            NX = NX + ZR(IDFDX+KDEC+IDEC) * ZR(IDFDY+KDEC+JDEC) * SX(I,J)
            NY = NY + ZR(IDFDX+KDEC+IDEC) * ZR(IDFDY+KDEC+JDEC) * SY(I,J)
            NZ = NZ + ZR(IDFDX+KDEC+IDEC) * ZR(IDFDY+KDEC+JDEC) * SZ(I,J)
- 102     CONTINUE
+ 102       CONTINUE
 C
 C        --- LE JACOBIEN EST EGAL A LA NORME DE LA NORMALE ---
 C
-         JAC = SQRT (NX*NX + NY*NY + NZ*NZ)
+         JAC = SQRT(NX*NX + NY*NY + NZ*NZ)
 C
 C        --- CALCUL DE LA NORMALE UNITAIRE ---
 C
@@ -146,63 +143,56 @@ C
 C
 C        --- CALCUL DE V.N ---
 C
-          DO 110 I = 1,NNO
-             DO 111 J = 1,3
-             SCAL = NUX*ZR(IVF+LDEC+I-1)*VITUNI(J,1)
-             SCAL = SCAL+NUY*ZR(IVF+LDEC+I-1)*VITUNI(J,2)
-             SCAL = SCAL+NUZ*ZR(IVF+LDEC+I-1)*VITUNI(J,3)
+          DO 100 I = 1,NNO
+            DO 100 J = 1,3
+              SCAL = NUX*ZR(IVF+LDEC+I-1)*VITUNI(J,1)
+              SCAL = SCAL+NUY*ZR(IVF+LDEC+I-1)*VITUNI(J,2)
+              SCAL = SCAL+NUZ*ZR(IVF+LDEC+I-1)*VITUNI(J,3)
 C
 C        --- CALCUL DE LA VITESSE NORMALE ET DE LA VITESSE TANGENCIELLE
 C
-                VNX = NUX*SCAL
-                VNY = NUY*SCAL
-                VNZ = NUZ*SCAL
+              VNX = NUX*SCAL
+              VNY = NUY*SCAL
+              VNZ = NUZ*SCAL
 
-                VTX = ZR(IVF+LDEC+I-1)*VITUNI(J,1)
-                VTY = ZR(IVF+LDEC+I-1)*VITUNI(J,2)
-                VTZ = ZR(IVF+LDEC+I-1)*VITUNI(J,3)
+              VTX = ZR(IVF+LDEC+I-1)*VITUNI(J,1)
+              VTY = ZR(IVF+LDEC+I-1)*VITUNI(J,2)
+              VTZ = ZR(IVF+LDEC+I-1)*VITUNI(J,3)
 
-                VTX = VTX - VNX
-                VTY = VTY - VNY
-                VTZ = VTZ - VNZ
+              VTX = VTX - VNX
+              VTY = VTY - VNY
+              VTZ = VTZ - VNZ
 C
 C        --- CALCUL DU VECTEUR CONTRAINTE
 C
-                TAUX = RHOCP*VNX + RHOCS*VTX
-                TAUY = RHOCP*VNY + RHOCS*VTY
-                TAUZ = RHOCP*VNZ + RHOCS*VTZ
+              TAUX = RHOCP*VNX + RHOCS*VTX
+              TAUY = RHOCP*VNY + RHOCS*VTY
+              TAUZ = RHOCP*VNZ + RHOCS*VTZ
 C
 C        --- CALCUL DU VECTEUR ELEMENTAIRE
 C
-                DO 130 L = 1,NNO
-                   LL = 3*L-2
-                   VECT(I,J,LL) = VECT(I,J,LL) +
-     &        TAUX*ZR(IVF+LDEC+L-1)*JAC*ZR(IPOIDS+IPG-1)
-                   VECT(I,J,LL+1) = VECT(I,J,LL+1) +
-     &        TAUY*ZR(IVF+LDEC+L-1)*JAC*ZR(IPOIDS+IPG-1)
-                   VECT(I,J,LL+2) = VECT(I,J,LL+2) +
-     &        TAUZ*ZR(IVF+LDEC+L-1)*JAC*ZR(IPOIDS+IPG-1)
-130             CONTINUE
-111          CONTINUE
-110       CONTINUE
-
-100    CONTINUE
+              DO 100 L = 1,NNO
+                LL = 3*L-2
+                VECT(I,J,LL) = VECT(I,J,LL) +
+     &              TAUX*ZR(IVF+LDEC+L-1)*JAC*ZR(IPOIDS+IPG-1)
+                VECT(I,J,LL+1) = VECT(I,J,LL+1) +
+     &              TAUY*ZR(IVF+LDEC+L-1)*JAC*ZR(IPOIDS+IPG-1)
+                VECT(I,J,LL+2) = VECT(I,J,LL+2) +
+     &              TAUZ*ZR(IVF+LDEC+L-1)*JAC*ZR(IPOIDS+IPG-1)
+100             CONTINUE
 
        DO 400 I = 1,NNO
-          DO 401 J = 1,3
-             DO 402 K = 1,3*NNO
-                MATR(3*(I-1)+J,K) = VECT(I,J,K)
-402          CONTINUE
-401       CONTINUE
+         DO 400 J = 1,3
+           DO 400 K = 1,3*NNO
+             MATR(3*(I-1)+J,K) = VECT(I,J,K)
 400    CONTINUE
 C
 C       --- PASSAGE AU STOCKAGE TRIANGULAIRE
 C
        DO 210 I = 1,3*NNO
-          DO 211 J =1,I
-             IJ = (I-1)*I/2+J
-             ZR(IMATUU+IJ-1) = MATR(I,J)
-211       CONTINUE
-210    CONTINUE
+         DO 210 J =1,I
+           IJ = (I-1)*I/2+J
+           ZR(IMATUU+IJ-1) = MATR(I,J)
+210        CONTINUE
 
        END

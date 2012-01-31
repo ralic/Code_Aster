@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -129,7 +129,7 @@ THETA=CALC_THETA(
                        )
 
 G=CALC_G(  RESULTAT=RESU,OPTION='CALC_G_GLOB',
-           THETA=_F(THETA=THETA),
+           THETA=_F(THETA=THETA, SYME='OUI'),
          );
 
 
@@ -175,7 +175,7 @@ TEST_TABLE(        TABLE=G,
                   NOM_PARA='G',
                    FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
                              VALE_I = 1),
-                      VALE=18.2,
+                      VALE=36.4,
                  PRECISION=0.0041,
                  REFERENCE='AUTRE_ASTER'
             )
@@ -186,7 +186,7 @@ TEST_TABLE(        TABLE=GBIL,FILTRE=(
                     _F(  NOM_PARA = 'NUME_CMP_J',
                              VALE_I = 1)),
                   NOM_PARA='G_BILIN',
-                      VALE=18.2,
+                      VALE=36.4,
                  PRECISION=0.0041,
                  REFERENCE='AUTRE_ASTER'
             )
@@ -195,7 +195,7 @@ TEST_TABLE(        TABLE=G,
                   NOM_PARA='G',
                    FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
                              VALE_I = 2),
-                 VALE=6.86,
+                 VALE=13.72,
                  REFERENCE='AUTRE_ASTER'
             )
 
@@ -205,7 +205,7 @@ TEST_TABLE(        TABLE=GBIL,FILTRE=(
                     _F(  NOM_PARA = 'NUME_CMP_J',
                              VALE_I = 2)),
                   NOM_PARA='G_BILIN',
-                 VALE=6.86,
+                 VALE=13.72,
                  REFERENCE='AUTRE_ASTER'
             )
 
@@ -213,7 +213,7 @@ TEST_TABLE(        TABLE=G,
                   NOM_PARA='G',
                    FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
                              VALE_I = 3),
-                 VALE=47.52,
+                 VALE=95.04,
                  REFERENCE='AUTRE_ASTER'
              )
 
@@ -223,7 +223,7 @@ TEST_TABLE(        TABLE=GBIL,FILTRE=(
                     _F(  NOM_PARA = 'NUME_CMP_J',
                              VALE_I = 3)),
                   NOM_PARA='G_BILIN',
-                 VALE=47.52,
+                 VALE=95.04,
                  REFERENCE='AUTRE_ASTER'
             )
 
@@ -231,7 +231,7 @@ TEST_TABLE(        TABLE=G,
                   NOM_PARA='G',
                    FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
                              VALE_I = 4),
-                      VALE=2.74,
+                      VALE=5.48,
                  REFERENCE='AUTRE_ASTER'
             )
 
@@ -241,7 +241,7 @@ TEST_TABLE(        TABLE=GBIL,FILTRE=(
                     _F(  NOM_PARA = 'NUME_CMP_J',
                              VALE_I = 4)),
                   NOM_PARA='G_BILIN',
-                      VALE=2.74,
+                      VALE=5.48,
                  REFERENCE='AUTRE_ASTER'
             )
 
@@ -251,7 +251,7 @@ TEST_TABLE(        TABLE=GBIL,FILTRE=(
                     _F(  NOM_PARA = 'NUME_CMP_J',
                              VALE_I = 1)),
                   NOM_PARA='G_BILIN',
-                      VALE=1.12E+01,
+                      VALE=22.41,
                  REFERENCE='AUTRE_ASTER',
                  PRECISION=1.5E-3,
             )
@@ -262,7 +262,7 @@ TEST_TABLE(        TABLE=GBIL,FILTRE=(
                     _F(  NOM_PARA = 'NUME_CMP_J',
                              VALE_I = 3)),
                   NOM_PARA='G_BILIN',
-                      VALE=1.141E+01,
+                      VALE=22.82,
                  REFERENCE='AUTRE_ASTER'
             )
 
@@ -276,7 +276,7 @@ TEST_TABLE(        TABLE=GMAX,FILTRE=(
                     _F(  NOM_PARA = 'Q_4',
                              VALE = 0.)),
                   NOM_PARA='G',
-                  VALE=4.7489137403723E+01,
+                  VALE=94.978274807446,
                  REFERENCE='AUTRE_ASTER'
             )
 
@@ -290,7 +290,7 @@ TEST_TABLE(        TABLE=GMAX,FILTRE=(
                     _F(  NOM_PARA = 'Q_4',
                              VALE = 1.)),
                   NOM_PARA='G',
-                      VALE=2.3833162040594E+02,
+                      VALE=476.66324081188,
                  REFERENCE='AUTRE_ASTER'
             )
 

@@ -3,9 +3,9 @@
      &                  MAT,VECT,DDLM,NFISS,JFISNO)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ELEMENTS  DATE 30/01/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -71,10 +71,11 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
 C-----------------------------------------------------------------------
 C---------------- DECLARATION DES VARIABLES LOCALES  -------------------
 
-       INTEGER      JPOS,IER,ISTATU,INO,K,I,J,IELIM,IN
+       INTEGER      IER,ISTATU,INO,K,I,J,IELIM,IN,DDLMAX
        INTEGER      IFH,FISNO(NNO,NFISS)
+       PARAMETER    (DDLMAX=1053)
+       INTEGER      POSDDL(DDLMAX)
        CHARACTER*8  TYENEL
-       CHARACTER*19 POSDDL
        LOGICAL      LELIM,LMULTC
        REAL*8       R8MAEM,DMAX,DMIN,CODIA
 C
@@ -109,8 +110,10 @@ C     APPROCHE (HIX, HIY, HIZ) <-> (LAGI_C,LAGI_F1,LAGI_F2) POUR MULTI-H
       ENDIF
 
 C     REMPLISSAGE DU VECTEUR POS : POSITION DES DDLS A SUPPRIMER
-      POSDDL = '&&XTEDDL.POSDDL'
-      CALL WKVECT(POSDDL,'V V I',NDDL,JPOS)
+      CALL ASSERT(NDDL.LE.DDLMAX)
+      DO 99 INO=1,DDLMAX
+           POSDDL(INO)=0
+  99  CONTINUE
 
 C     VRAI SI ON ELIMINE LES DDLS D'AU MOINS UN NOEUD
       LELIM=.FALSE.
@@ -130,9 +133,9 @@ C         PB DE STATUT DES NOEUDS ENRICHIS
             IF (ISTATU.EQ.0) THEN
 C           ON SUPPRIME LES DDL H
               DO 10 K = 1,NDIM
-                ZI(JPOS-1+IN+NDIM*IFH+K)=1
+                POSDDL(IN+NDIM*IFH+K)=1
 C           ON SUPPRIME LES DDL C SI MULTI-HEAVISIDE AVEC CONTACT
-                IF (LMULTC) ZI(JPOS-1+IN+NDIM*(NFH+IFH)+K)=1
+                IF (LMULTC) POSDDL(IN+NDIM*(NFH+IFH)+K)=1
    10         CONTINUE
               LELIM=.TRUE.
             ENDIF
@@ -150,7 +153,7 @@ C           ON NE SUPPRIME AUCUN DDL
           ELSE IF (ISTATU.EQ.0) THEN
 C           ON SUPPRIME LES DDL E
             DO 20 K = 1,NFE*NDIM
-              ZI(JPOS-1+IN+NDIM*(1+NFH)+K)=1
+              POSDDL(IN+NDIM*(1+NFH)+K)=1
    20       CONTINUE
             LELIM=.TRUE.
           END IF
@@ -168,22 +171,22 @@ C           ON NE SUPPRIME AUCUN DDL
           ELSE IF (ISTATU.EQ.2) THEN
 C           ON SUPPRIME LES DDL H
             DO 30 K = 1,NDIM
-              ZI(JPOS-1+IN+NDIM+K)=1
+              POSDDL(IN+NDIM+K)=1
    30       CONTINUE
             LELIM=.TRUE.
           ELSE IF (ISTATU.EQ.1) THEN
 C           ON SUPPRIME LES DDL E
             DO 40 K = 1,NFE*NDIM
-              ZI(JPOS-1+IN+NDIM*(1+NFH)+K)=1
+              POSDDL(IN+NDIM*(1+NFH)+K)=1
    40       CONTINUE
             LELIM=.TRUE.
           ELSE IF (ISTATU.EQ.0) THEN
 C           ON SUPPRIME LES DDLS H ET E
             DO 50 K = 1,NDIM
-              ZI(JPOS-1+IN+NDIM+K)=1
+              POSDDL(IN+NDIM+K)=1
    50       CONTINUE
             DO 60 K = 1,NFE*NDIM
-              ZI(JPOS-1+IN+NDIM*(1+NFH)+K)=1
+              POSDDL(IN+NDIM*(1+NFH)+K)=1
    60       CONTINUE
             LELIM=.TRUE.
           END IF
@@ -198,7 +201,7 @@ C         ------------------------------
               IF (ISTATU.EQ.0) THEN
 C             ON SUPPRIME LES DDLS LAGS_C, LAGS_F1 ET LAGS_F2
                 DO 70 K = 1,NDIM
-                  ZI(JPOS-1+IN+NDIM*(NFH+NFE+IFH)+K)=1
+                  POSDDL(IN+NDIM*(NFH+NFE+IFH)+K)=1
    70           CONTINUE
                 LELIM=.TRUE.
               ENDIF
@@ -245,7 +248,7 @@ C     POUR LES OPTIONS CONCERNANT DES VECTEURS :
 C        MISE A ZERO DES TERMES I
 
         DO 200 I = 1,NDDL
-          IF (ZI(JPOS-1+I).EQ.0) GOTO 200
+          IF (POSDDL(I).EQ.0) GOTO 200
           IF (OPTION(1:10).EQ.'RIGI_MECA_' .OR.
      &             OPTION.EQ.'RIGI_MECA'   .OR.
      &             OPTION.EQ.'FULL_MECA'   .OR.
@@ -284,8 +287,6 @@ C        MISE A ZERO DES TERMES I
  200    CONTINUE
 
       ENDIF
-
-      CALL JEDETR(POSDDL)
 
       CALL JEDEMA()
       END

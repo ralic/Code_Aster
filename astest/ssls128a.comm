@@ -1,4 +1,4 @@
-# MODIF  DATE 09/01/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/01/2012   AUTEUR DESROCHE X.DESROCHES 
 # TITRE  : CALCUL STATIQUE D'UNE PLAQUE COMPOSEE DE COUCHES
 # ssls128a.para = tps_job 200 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -67,7 +67,7 @@ CARA=AFFE_CARA_ELEM(MODELE=MOD,
                              COQUE_NCOU=16,
                              ANGL_REP=(0.0,0.0,),),);
 
-COMPO=DEFI_COQU_MULT(COUCHE=(_F(EPAIS=0.28,
+COMPO=DEFI_COMPOSITE(COUCHE=(_F(EPAIS=0.28,
                                 MATER=CARBONE,
                                 ORIENTATION=0.0,),
                              _F(EPAIS=0.28,

@@ -1,4 +1,4 @@
-#@ MODIF rupture0 Messages  DATE 24/01/2012   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF rupture0 Messages  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -123,6 +123,20 @@ POST_K1_K2_K3 ne fonctionne que sur des lèvres initialement collées.
    Si les lèvres sont vraiment décollées alors il faut utiliser CALC_G.
 """),
 
+17: _(u"""
+La différence entre la taille maximale et la taille minimale des mailles connectées aux
+noeuds du fond de fissure est importante.
+La taille minimale vaut : %(r1)f 
+La taille maximale vaut : %(r2)f
+-> Risque et Conseil :
+Il a été choisi de multiplier par quatre la taille maximale des mailles connectées aux
+noeuds du fond de fissure pour calculer le paramètre ABSC_CURV_MAXI. Or, si cette taille
+est importante, vous risquez de post-traiter vos résultats sur une zone trop éloignée
+du fond de fissure et d'obtenir des valeurs de facteurs d'intensité moins précises.
+Vérifiez que la valeur de ABSC_CURV_MAXI calculée est licite.
+Sinon, veuillez spécifier directement la valeur de ABSC_CURV_MAXI ou bien revoir 
+le maillage de manière à rendre les mailles proches du fond de fissure de taille homogène.
+"""),
 
 18: _(u"""
 Problème à la récupération du modèle dans la sd résultat fournie.
@@ -139,15 +153,6 @@ Pour un calcul avec POST_K1_K2_K3, la lèvre supérieure de la fissure doit
 LEVRE_SUP. Vérifier la définition du fond de fissure.
 """),
 
-20: _(u"""
-Problème à la récupération des noeuds de la lèvre inférieure :
--> Risque et Conseil :
-Pour un calcul avec POST_K1_K2_K3, la lèvre inférieure de la fissure doit
-être obligatoirement définie dans DEFI_FOND_FISS à l'aide du mot-clé
-LEVRE_INF.
-Si seule la lèvre supérieure est maillée, ne pas oublier de spécifier
-SYME_CHAR = 'SYME' dans POST_K1_K2_K3.
-"""),
 
 21: _(u"""
 Les noeuds ne sont pas en vis-à-vis dans le plan perpendiculaire
@@ -212,7 +217,9 @@ Veuillez vérifier les données, notamment celles du mot-clé DIRECTION.
 Il n'y a pas de mailles de bord connectées au noeud %(k1)s.
 """),
 
-
+32: _(u"""
+Le paramètre ABSC_CURV_MAXI automatiquement choisi vaut : %(r1)f.
+"""),
 
 33: _(u"""
 Problème dans la récupération du saut de déplacement sur les lèvres.

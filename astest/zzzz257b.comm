@@ -1,9 +1,9 @@
-# MODIF  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE ESTIMATEURS D'ERREUR EN QUANTITES D'INTERET POUR LE CALCUL DES FIC
 # zzzz257b.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -32,7 +32,6 @@ DEBUT(CODE=_F(NOM='ZZZZ257B',
 ###Definition de la fissure en dur###
 #####################################
 
-#Absc_curv_maxi
 #Equivalent quatre noeuds sur le maillage initial
 Lfiss = 3.5;
 Dmax = Lfiss / 2.;
@@ -156,8 +155,7 @@ FISS=DEFI_FOND_FISS(MAILLAGE=MAIB,
 POST_K=POST_K1_K2_K3(MODELISATION='C_PLAN',
                      FOND_FISS=FISS,
                      MATER=MATE,
-                     RESULTAT=RESU,
-                     ABSC_CURV_MAXI=Dmax,);
+                     RESULTAT=RESU,);
 
 IMPR_TABLE(TABLE=POST_K,
            UNITE=8,);

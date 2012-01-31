@@ -1,6 +1,6 @@
       SUBROUTINE TE0499(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,11 +38,13 @@ C ......................................................................
       REAL*8 POIDS,NX,NY,VALRES(3),E,NU,LAMBDA,MU,CP,CS
       REAL*8 RHO,TAUX,TAUY,NUX,NUY,SCAL
       REAL*8 SIGMA(2,2),EPSI(2,2),GRAD(2,2)
-      REAL*8 XGG(3),YGG(3),VONDN(2),VONDT(2)
+      REAL*8 VONDN(2),VONDT(2)
       REAL*8 TAONDX,TAONDY,NORX,NORY,DIRX,DIRY,CELE
-      REAL*8 TRACE,PARAM,DIST,NORM,JAC
+      REAL*8 TRACE,NORM,JAC
       INTEGER NNO,KP,NPG,IPOIDS,IVF,IDFDE,IGEOM
-      INTEGER IVECTU,K,I,MATER
+      INTEGER IVECTU,K,I,MATER,IRET,IDNOMA,IADZI,IAZK24
+      INTEGER JMA,JNB,JMAIL,JNBMA
+      CHARACTER*8 NOMAIL
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER ZI
@@ -67,18 +69,31 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CALL JEVECH('PONDPLA','L',IONDE)
       CALL JEVECH('PTEMPSR','L',JINST)
       CALL JEVECH('PVECTUR','E',IVECTU)
+      
+      CALL JEEXIN(ZK24(IONDE+5)(1:19)//'.NBMA',JNB)
+      IF (JNB.EQ.0) GOTO 200
+      
+      CALL JEVEUO(ZK24(IONDE+5)(1:19)//'.NBMA','L',JNB)
+      CALL JEVEUO(ZK24(IONDE+5)(1:19)//'.VALE','L',JMA)
+      CALL TECAEL(IADZI,IAZK24)
+      NOMAIL = ZK24(IAZK24-1+3) (1:8)
 
       DO 10 I = 1,2*NNO
         ZR(IVECTU+I-1) = 0.0D0
-   10 CONTINUE
+   10   CONTINUE
+   
+      DO 11 I=1,ZI(JNB)
+        IF (NOMAIL.EQ.ZK8(JMA+I-1)) GOTO 200
+  11    CONTINUE
+      GOTO 140
+ 200  CONTINUE 
 
 C     --- INITIALISATION DE SIGMA
 
-      DO 30 I = 1,2
+      DO 20 I = 1,2
         DO 20 J = 1,2
-          SIGMA(I,J) = 0.D0
-   20   CONTINUE
-   30 CONTINUE
+          SIGMA(I,J) =0.D0
+   20     CONTINUE
 
       MATER = ZI(IMATE)
       NOMRES(1) = 'E'
@@ -90,11 +105,12 @@ C     --- INITIALISATION DE SIGMA
       POUM='+'
       CALL RCVALB(FAMI,KPG,SPT,POUM,MATER,' ','ELAS',0,' ',R8B,3,
      &            NOMRES,VALRES,ICODRE,1)
+C      CALL RCVALA(MATER,' ','ELAS',0,' ',R8B,3,NOMRES,VALRES,ICODRE,1)
+      
       E = VALRES(1)
       IF (E.LT.1.D-1) GO TO 140
       NU = VALRES(2)
       RHO = VALRES(3)
-
       LAMBDA = E*NU/ (1.D0+NU)/ (1.D0-2.D0*NU)
       MU = E/2.D0/ (1.D0+NU)
 
@@ -108,29 +124,12 @@ C     --- CARACTERISTIQUES DE L'ONDE PLANE
       CALL FOINTE('FM',ZK24(IONDE+3),1,'X',1.D0,TYPER,IER)
       IF (TYPER.EQ.0.D0) TYPE = 'P'
       IF (TYPER.EQ.1.D0) TYPE = 'S'
-      CALL FOINTE('FM',ZK24(IONDE+5),1,'X',1.D0,DIST,IER)
 
 C     --- CALCUL DU VECTEUR DIRECTEUR UNITAIRE DE L'ONDE PLANE
 
-      NORM = SQRT(DIRX**2+DIRY**2)
+      NORM = SQRT(DIRX**2.D0+DIRY**2.D0)
       DIRX = DIRX/NORM
       DIRY = DIRY/NORM
-
-C     COORDONNEES DES POINTS DE GAUSS SUR L'ELEMENT REEL
-
-      DO 40 I = 1,NPG
-        XGG(I) = 0.D0
-        YGG(I) = 0.D0
-   40 CONTINUE
-
-      DO 60 IPG = 1,NPG
-        LDEC = (IPG-1)*NNO
-        DO 50 I = 1,NNO
-          II = 2*I - 1
-          XGG(IPG) = XGG(IPG) + ZR(IGEOM+II-1)*ZR(IVF+LDEC+I-1)
-          YGG(IPG) = YGG(IPG) + ZR(IGEOM+II)*ZR(IVF+LDEC+I-1)
-   50   CONTINUE
-   60 CONTINUE
 
 C     CALCUL DU REPERE ASSOCIE A L'ONDE
       NORX = -DIRY
@@ -147,58 +146,52 @@ C    BOUCLE SUR LES POINTS DE GAUSS
       DO 130 KP = 1,NPG
         K = (KP-1)*NNO
 
-
 C        --- CALCUL DU CHARGEMENT PAR ONDE PLANE
-
-        PARAM = DIRX*XGG(KP) + DIRY*YGG(KP)
-        PARAM = PARAM - CELE*ZR(JINST) + DIST
-        IF (PARAM.LT.0.D0) THEN
-          VALFON = 0.D0
-        ELSE
-          CALL FOINTE('FM',ZK24(IONDE+4),1,'X',PARAM,VALFON,IER)
-        END IF
-
+CKH          ON SUPPOSE QU'ON RECUPERE UNE VITESSE
+        CALL FOINTE('F ',ZK24(IONDE+4),1,'INST',ZR(JINST),VALFON,IER)
+        
+        VALFON = -VALFON/CELE
+C        VALFON = VALFON/CELE
+        
 C        CALCUL DES CONTRAINTES ASSOCIEES A L'ONDE PLANE
-
 C        CALCUL DU GRADIENT DU DEPLACEMENT
         IF (TYPE.EQ.'P') THEN
+        
           GRAD(1,1) = DIRX*VALFON*DIRX
           GRAD(1,2) = DIRY*VALFON*DIRX
-
           GRAD(2,1) = DIRX*VALFON*DIRY
           GRAD(2,2) = DIRY*VALFON*DIRY
-        END IF
-        IF (TYPE.EQ.'S') THEN
+          
+        ELSEIF (TYPE.EQ.'S') THEN
+        
           GRAD(1,1) = DIRX*VALFON*NORX
           GRAD(1,2) = DIRY*VALFON*NORX
-
           GRAD(2,1) = DIRX*VALFON*NORY
           GRAD(2,2) = DIRY*VALFON*NORY
+          
         END IF
 
 C        CALCUL DES DEFORMATIONS
-        DO 80 INDIC1 = 1,2
+        DO 70 INDIC1 = 1,2
           DO 70 INDIC2 = 1,2
-            EPSI(INDIC1,INDIC2) = 5.D-1* (GRAD(INDIC1,INDIC2)+
+            EPSI(INDIC1,INDIC2) = .5D0* (GRAD(INDIC1,INDIC2)+
      &                            GRAD(INDIC2,INDIC1))
-   70     CONTINUE
-   80   CONTINUE
+   70       CONTINUE
 
 C        CALCUL DES CONTRAINTES
         TRACE = 0.D0
         DO 90 INDIC1 = 1,2
           TRACE = TRACE + EPSI(INDIC1,INDIC1)
    90   CONTINUE
-        DO 110 INDIC1 = 1,2
+        DO 100 INDIC1 = 1,2
           DO 100 INDIC2 = 1,2
             IF (INDIC1.EQ.INDIC2) THEN
               SIGMA(INDIC1,INDIC2) = LAMBDA*TRACE +
-     &                               2*MU*EPSI(INDIC1,INDIC2)
+     &                               2.D0*MU*EPSI(INDIC1,INDIC2)
             ELSE
-              SIGMA(INDIC1,INDIC2) = 2*MU*EPSI(INDIC1,INDIC2)
+              SIGMA(INDIC1,INDIC2) = 2.D0*MU*EPSI(INDIC1,INDIC2)
             END IF
-  100     CONTINUE
-  110   CONTINUE
+  100       CONTINUE
 
         CALL VFF2DN(NDIM,NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),NX,NY,POIDS)
 
@@ -227,8 +220,7 @@ C        --- CALCUL DE V.N ---
         IF (TYPE.EQ.'P') THEN
           VONDT(1) = -CELE*VALFON*DIRX
           VONDT(2) = -CELE*VALFON*DIRY
-        END IF
-        IF (TYPE.EQ.'S') THEN
+        ELSEIF (TYPE.EQ.'S') THEN
           VONDT(1) = -CELE*VALFON*NORX
           VONDT(2) = -CELE*VALFON*NORY
         END IF
@@ -258,16 +250,13 @@ C        --- CALCUL DU VECTEUR CONTRAINTE DU A UNE ONDE PLANE
 
 C        --- CALCUL DU VECTEUR ELEMENTAIRE
 
-        DO 120 I = 1,NNO
-          II = 2*I - 1
+        DO 130 I = 1,NNO
+          II = 2*I-1
           ZR(IVECTU+II-1) = ZR(IVECTU+II-1) +
-     &                      (TAUX+COEDIR*TAONDX)*ZR(IVF+K+I-1)*POIDS*JAC
+     &                      (TAUX+COEDIR*TAONDX)*ZR(IVF+K+I-1)*POIDS
           ZR(IVECTU+II+1-1) = ZR(IVECTU+II+1-1) +
-     &                        (TAUY+COEDIR*TAONDY)*ZR(IVF+K+I-1)*POIDS*
-     &                        JAC
-  120   CONTINUE
-
-  130 CONTINUE
+     &                        (TAUY+COEDIR*TAONDY)*ZR(IVF+K+I-1)*POIDS
+  130   CONTINUE
 
   140 CONTINUE
 

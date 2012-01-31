@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
 # TITRE ABSORPTION D UNE ONDE DE COMPRESSION DANS UN BARREAU ELASTIQUE
 # sdlv120a.para = tps_job 420 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -28,20 +28,17 @@
 
 DEBUT(CODE=_F( NOM = 'SDLV120A',NIV_PUB_WEB='INTERNET'))
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED', )
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
 
 MAIL=DEFI_GROUP( reuse=MAIL,   MAILLAGE=MAIL,
                        CREA_GROUP_NO=_F(  GROUP_MA = 'IIMPO')
                      )
 
 MAT1=DEFI_MATERIAU( ELAS=_F(  E = 3.6E+10, RHO = 2400.,  NU = 0.2,
-                             AMOR_ALPHA=0., AMOR_BETA=0.,)
+                             #AMOR_ALPHA=0., AMOR_BETA=0.,
+                             )
                     )
                     
-                    
-MAT2=DEFI_MATERIAU( ELAS=_F(  E = 0.E+9, RHO = 2400.,  NU = 0.2,
-                             AMOR_ALPHA=0., AMOR_BETA=0.,)
-                    )
                                         
 MODELE=AFFE_MODELE(    MAILLAGE=MAIL,AFFE=(
                          _F(  GROUP_MA = 'SOLIDE',
@@ -57,15 +54,6 @@ CHAMPMAT=AFFE_MATERIAU(    MAILLAGE=MAIL,
                           MATER = MAT1)
                            )
                            
-CHAMPMA2=AFFE_MATERIAU(    MAILLAGE=MAIL,
-                   AFFE=(
-                       _F(  GROUP_MA = ('SOLIDE',),
-                          MATER = MAT1),
-                       _F(  GROUP_MA = ('IABSO',),
-                          MATER = MAT2),
-                        ),
-                           )
-                           
                                                       
 COND_LIM=AFFE_CHAR_MECA(    MODELE=MODELE,
                    DDL_IMPO=_F(  GROUP_NO = 'IIMPO',
@@ -78,11 +66,6 @@ RIGI_ELE=CALC_MATR_ELEM(    MODELE=MODELE,
                               CHARGE=COND_LIM
                             )
                             
-RIGI_EL2=CALC_MATR_ELEM(    MODELE=MODELE,
-                              OPTION='RIGI_MECA',
-                              CHAM_MATER=CHAMPMA2,
-                              CHARGE=COND_LIM
-                            )
                             
 MASS_ELE=CALC_MATR_ELEM(    MODELE=MODELE,
                               OPTION='MASS_MECA',
@@ -90,17 +73,12 @@ MASS_ELE=CALC_MATR_ELEM(    MODELE=MODELE,
                               CHARGE=COND_LIM
                             )
                                                         
-MASS_EL2=CALC_MATR_ELEM(    MODELE=MODELE,
-                              OPTION='MASS_MECA',
-                              CHAM_MATER=CHAMPMA2,
-                              CHARGE=COND_LIM
-                            )
                             
 AMOR_ELE=CALC_MATR_ELEM(    MODELE=MODELE,
-                              OPTION='AMOR_MECA_ABSO',
+                              OPTION='AMOR_MECA',
                               CHAM_MATER=CHAMPMAT,
-                              RIGI_MECA = RIGI_EL2,
-                              MASS_MECA = MASS_EL2,                              
+                              RIGI_MECA = RIGI_ELE,
+                              MASS_MECA = MASS_ELE,                              
                               CHARGE=COND_LIM
                             )
                             
@@ -111,35 +89,24 @@ VECTELEM=CALC_VECT_ELEM(    OPTION='CHAR_MECA',
 
 NUMEDDL=NUME_DDL(    MATR_RIGI=RIGI_ELE )
 
-NUMEDD2=NUME_DDL(    MATR_RIGI=RIGI_EL2 )
 
 RIGID=ASSE_MATRICE(    MATR_ELEM=RIGI_ELE,
                          NUME_DDL=NUMEDDL
                           )
                           
-RIGID2=ASSE_MATRICE(    MATR_ELEM=RIGI_EL2,
-                         NUME_DDL=NUMEDD2
-                          )
-
 MASSE=ASSE_MATRICE(    MATR_ELEM=MASS_ELE,
                          NUME_DDL=NUMEDDL
                        )
                        
-MASSE2=ASSE_MATRICE(    MATR_ELEM=MASS_EL2,
-                         NUME_DDL=NUMEDD2
-                       )
                        
 AMORT=ASSE_MATRICE(    MATR_ELEM=AMOR_ELE,
-                         NUME_DDL=NUMEDD2
+                         NUME_DDL=NUMEDDL
                        )
                        
 VECTASS=ASSE_VECTEUR(    VECT_ELEM=VECTELEM,
                            NUME_DDL=NUMEDDL
                          )
                          
-VECTAS2=ASSE_VECTEUR(    VECT_ELEM=VECTELEM,
-                           NUME_DDL=NUMEDD2
-                         )
                          
 # --- LECTURE DE LA FONCTION D EXCITATION ---
 INCLUDE(   UNITE=11,   INFO=1 )
@@ -151,7 +118,7 @@ INTLI=DEFI_LIST_ENTI( DEBUT=1, INTERVALLE=_F( JUSQU_A = 3601, PAS = 1))
 DYN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                          MATR_MASS=MASSE, 
                          MATR_RIGI=RIGID,
-                         # MATR_AMOR=AMORT,
+                         MATR_AMOR=AMORT,
                          EXCIT=_F(  VECT_ASSE = VECTASS,
                                     FONC_MULT = FONC),
 ####CDURAND              ETAT_INIT=_F(  INST_INIT = 0.),
@@ -178,14 +145,15 @@ DXN43=RECU_FONCTION(    LIST_INST=TEMPLI,   PRECISION=1.E-4,
                         NOM_CMP='DX'
                       )
 
+
 TEST_FONCTION(VALEUR=(   
                   _F( 
                    FONCTION = DXN16,
                    VALE_PARA = 5.40000E-01,
-                   VALE_REFE = 9.91868E-04,
+                   VALE_REFE = 9.92620E-04,
                    CRITERE = 'RELATIF',
                    PRECISION = 1.E-3, 
-                   REFERENCE = 'NON_REGRESSION'),                   
+                   REFERENCE = 'AUTRE_ASTER'),                   
                   _F( 
                    FONCTION = DXN16,
                    VALE_PARA = 1.20000E+00,
@@ -198,74 +166,12 @@ TEST_FONCTION(VALEUR=(
 TEST_FONCTION(VALEUR=(   _F( 
                    FONCTION = DXN18,
                    VALE_PARA = 5.40000E-01,
-                   VALE_REFE = 9.91393E-04,
-                   CRITERE = 'RELATIF',
-                   PRECISION = 1.E-3,
-                   REFERENCE = 'NON_REGRESSION'),
-                  _F( 
-                   FONCTION = DXN43,
-                   VALE_PARA = 5.00000E-01,
-                   VALE_REFE = 1.00000E-03,
-                   CRITERE = 'RELATIF',
-                   PRECISION = 1.E-3,
-                   REFERENCE = 'ANALYTIQUE'))
-                )
-DYN2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
-                         MATR_MASS=MASSE2, 
-                         MATR_RIGI=RIGID2,
-                         MATR_AMOR=AMORT,
-                         EXCIT=_F(  VECT_ASSE = VECTAS2,
-                                    FONC_MULT = FONC),
-####CDURAND              ETAT_INIT=_F(  INST_INIT = 0.),
-                         INCREMENT=_F( LIST_INST = TEMPLI),
-####CDURAND              ARCHIVAGE=_F(  LIST_ARCH = INTLI),
-                         SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),  
-                        )
-
-DX2N16=RECU_FONCTION(   LIST_INST=TEMPLI,   PRECISION=1.E-4,
-                        RESULTAT=DYN2,   NOEUD='N16',
-                        NOM_CHAM='DEPL',
-                        NOM_CMP='DX'
-                      )
-
-DX2N18=RECU_FONCTION(   LIST_INST=TEMPLI,   PRECISION=1.E-4,
-                        RESULTAT=DYN2,   NOEUD='N18',
-                        NOM_CHAM='DEPL',
-                        NOM_CMP='DX'
-                      )
-
-DX2N43=RECU_FONCTION(   LIST_INST=TEMPLI,   PRECISION=1.E-4,
-                        RESULTAT=DYN2,   NOEUD='N43',
-                        NOM_CHAM='DEPL',
-                        NOM_CMP='DX'
-                      )
-
-TEST_FONCTION(VALEUR=(   
-                  _F( 
-                   FONCTION = DX2N16,
-                   VALE_PARA = 5.40000E-01,
-                   VALE_REFE = 9.91868E-04,
-                   CRITERE = 'RELATIF',
-                   PRECISION = 1.E-3, 
-                   REFERENCE = 'AUTRE_ASTER'),                   
-                  _F( 
-                   FONCTION = DX2N16,
-                   VALE_PARA = 1.20000E+00,
-                   VALE_REFE = 0.E0,
-                   CRITERE = 'ABSOLU',
-                   PRECISION = 1.E-7,
-                   REFERENCE = 'ANALYTIQUE'))
-                )
-
-TEST_FONCTION(VALEUR=(   _F( 
-                   FONCTION = DX2N18,
-                   VALE_PARA = 5.40000E-01,
-                   VALE_REFE = 9.91393E-04,
+                   VALE_REFE = 9.92161E-04,
                    CRITERE = 'RELATIF',
                    PRECISION = 1.E-3,
                    REFERENCE = 'AUTRE_ASTER'),
                   _F( 
-                   FONCTION = DX2N43,
+                   FONCTION = DXN43,
                    VALE_PARA = 5.00000E-01,
                    VALE_REFE = 1.00000E-03,
                    CRITERE = 'RELATIF',

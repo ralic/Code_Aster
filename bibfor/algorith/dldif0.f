@@ -1,19 +1,21 @@
       SUBROUTINE DLDIF0 ( NRORES, NBPASE, INPSCO,
      &                    NEQ, ISTOC, IARCHI, IFM,
      &                    LAMORT,
-     &                    IMAT, MASSE,
+     &                    IMAT, MASSE, RIGID, AMORT,
      &                    DEP0, VIT0, ACC0,
      &                    DEPL1, VITE1, ACCE1, VITE2,
-     &                    NCHAR, NVECA, LIAD, LIFO, MODELE,
+     &                    FEXTE, FAMOR, FLIAI,
+     &                    NCHAR, NVECA, LIAD, LIFO, MODELE, 
+     &                    ENER, SOLVEU,
      &                    MATE, CARELE, CHARGE, INFOCH, FOMULT, NUMEDD,
      &                    DT, TEMPS,
      &                    TABWK0, TABWK1,
      &                    ARCHIV, NBTYAR, TYPEAR )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -65,7 +67,8 @@ C CORPS DU PROGRAMME
 C DECLARATION PARAMETRES D'APPELS
 C
       INTEGER NRORES, NBPASE
-      INTEGER NEQ, ISTOC, IARCHI, IFM
+      INTEGER NEQ, ISTOC, IARCHI, IFM, IVIT0R
+      INTEGER IFNOBI,IFCIBI
       INTEGER ARCHIV, NBTYAR
       INTEGER IMAT(3)
       INTEGER NCHAR, NVECA, LIAD(*)
@@ -73,16 +76,18 @@ C
       REAL*8 DEP0(*), VIT0(*), ACC0(*)
       REAL*8 DEPL1(NEQ), VITE1(NEQ), ACCE1(NEQ)
       REAL*8 VITE2(NEQ)
+      REAL*8 FEXTE(*),FAMOR(*),FLIAI(*)
       REAL*8 TABWK0(NEQ), TABWK1(NEQ)
       REAL*8 DT, TEMPS
 C
-      CHARACTER*8  MASSE
+      CHARACTER*8  MASSE, RIGID, AMORT
       CHARACTER*13 INPSCO
       CHARACTER*16 TYPEAR(NBTYAR)
       CHARACTER*24 MODELE, MATE, CARELE, CHARGE, INFOCH, FOMULT, NUMEDD
       CHARACTER*24 LIFO(*)
+      CHARACTER*19 SOLVEU,SDENER
 
-      LOGICAL LAMORT
+      LOGICAL LAMORT, ENER
 
 
 C    ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -110,7 +115,7 @@ C
       REAL*8 R8BID
 C
       CHARACTER*8 RESULT
-      CHARACTER*19 FORCE1
+      CHARACTER*19 FORCE1, MASSE1, AMORT1, RIGID1, K19BID
 C
 C====
 C 1. PREALABLES
@@ -150,6 +155,13 @@ C====
      &              MODELE, MATE, CARELE, NUMEDD,
      &              NBPASE, NRORES, INPSCO, ZR(IFORC1) )
 
+      IF (ENER) THEN
+        DO 433, IAUX =1,NEQ
+          FEXTE(IAUX)=FEXTE(IAUX+NEQ)
+          FEXTE(IAUX+NEQ)=ZR(IFORC1+IAUX-1)
+  433   CONTINUE
+      ENDIF
+
       CALL DLFDYN ( IMAT(1),IMAT(3), LAMORT, NEQ,
      &              DEPL1, VITE1, ZR(IFORC1), TABWK0)
 C
@@ -169,6 +181,32 @@ C        --- VITESSE AUX INSTANTS 'TEMPS + DT' ---
 C
    40 CONTINUE
 
+C
+C====
+C 5.  CALCUL DES ENERGIES
+C
+C====
+C
+      IF (ENER) THEN
+        SDENER=SOLVEU(1:8)//'.ENER      '
+        MASSE1=MASSE//'           '
+        AMORT1=AMORT//'           '
+        RIGID1=RIGID//'           '
+        CALL WKVECT('FNODABID','V V R',2*NEQ,IFNOBI)
+        CALL WKVECT('FCINEBID','V V R',2*NEQ,IFCIBI)
+C ON CALCULE LA VITESSE A T N-1 
+        CALL WKVECT('VIT0_TR','V V R',NEQ,IVIT0R)
+        DO 50 IAUX=1,NEQ
+          ZR(IVIT0R-1+IAUX)=VIT0(IAUX)+R8BID*ACC0(IAUX)
+ 50     CONTINUE
+        CALL ENERCA(K19BID, DEP0,ZR(IVIT0R),DEPL1,VITE2,MASSE1,
+     &             AMORT1,RIGID1,FEXTE ,FAMOR ,FLIAI ,
+     &             ZR(IFNOBI) ,ZR(IFCIBI), LAMORT,.TRUE.,.FALSE.,
+     &             SDENER,'&&DLDIFF')
+        CALL JEDETR('FNODABID')
+        CALL JEDETR('FCINEBID')
+        CALL JEDETR('VIT0_TR')
+      ENDIF 
 C====
 C 5. TRANSFERT DES NOUVELLES VALEURS DANS LES ANCIENNES
 C====
@@ -205,7 +243,8 @@ C
      &                NEQ, ISTOC, IARCHI, ' ',
      &                JAUX, IFM, TEMPS,
      &                NBTYAR, TYPEAR, MASSE,
-     &                DEPL1, VITE2, ACCE1 )
+     &                DEPL1, VITE2, ACCE1,
+     &                FEXTE(NEQ+1),FAMOR(NEQ+1),FLIAI(NEQ+1) )
 
       ENDIF
 C

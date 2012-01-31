@@ -1,12 +1,13 @@
       SUBROUTINE XMMAB3(NDIM  ,NNO   ,NNOS  ,NNOL ,NNOF, PLA,
      &                    IPGF,IVFF  ,FFC   ,FFP ,JAC   ,KNP,
-     &                    NFH   ,NOEUD ,SEUIL,COEFEF,TAU1,TAU2,MU,
+     &                    NFH   ,NOEUD ,SEUIL,TAU1,TAU2,MU,
      &                    SINGU ,RR    ,IFA,CFACE,LACT,DDLS  ,DDLM  ,
      &                    LPENAF,MMAT )
+
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/06/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 30/01/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -29,7 +30,7 @@ C TOLE CRP_21
       INTEGER     SINGU,PLA(27),LACT(8)
       REAL*8      MMAT(216,216)
       REAL*8      FFC(8),FFP(27),JAC,TAU1(3),TAU2(3)
-      REAL*8      RR,SEUIL,KNP(3,3),MU,COEFEF
+      REAL*8      RR,SEUIL,KNP(3,3),MU
       LOGICAL     NOEUD,LPENAF
 C ROUTINE CONTACT (METHODE XFEM HPP - CALCUL ELEM.)
 C
@@ -89,7 +90,6 @@ C
 C
 C ----------------------------------------------------------------------
 
-
 C     INITIALISATION
       CALL MATINI(2,3,0.D0,TAUKNP)
 
@@ -129,12 +129,11 @@ C     CALCUL DE TAU.KN.P
           DO 167 L = 1,NFH*NDIM
             MMAT(PLI+K,JN+NDIM+L) =
      &      MMAT(PLI+K,JN+NDIM+L) +
-     &      2.D0*MU*SEUIL*FFI*FFP(J)*TAUKNP(K,L)*JAC*COEFEF
-
+     &      2.D0*MU*SEUIL*FFI*FFP(J)*TAUKNP(K,L)*JAC
             IF(.NOT.LPENAF)THEN
               MMAT(JN+NDIM+L,PLI+K) =
      &        MMAT(JN+NDIM+L,PLI+K) +
-     &        2.D0*MU*SEUIL*FFI*FFP(J)*TAUKNP(K,L)*JAC*COEFEF
+     &        2.D0*MU*SEUIL*FFI*FFP(J)*TAUKNP(K,L)*JAC
             ENDIF
 C
  167      CONTINUE
@@ -143,12 +142,12 @@ C
 C
             MMAT(PLI+K,JN+NDIM*(1+NFH)+L) =
      &      MMAT(PLI+K,JN+NDIM*(1+NFH)+L) +
-     &      2.D0*RR*MU*SEUIL*FFI*FFP(J)*TAUKNP(K,L)*JAC*COEFEF
+     &      2.D0*RR*MU*SEUIL*FFI*FFP(J)*TAUKNP(K,L)*JAC
 C
             IF(.NOT.LPENAF)THEN
               MMAT(JN+NDIM*(1+NFH)+L,PLI+K) =
      &        MMAT(JN+NDIM*(1+NFH)+L,PLI+K) +
-     &        2.D0*RR*MU*SEUIL*FFI*FFP(J)*TAUKNP(K,L)*JAC*COEFEF
+     &        2.D0*RR*MU*SEUIL*FFI*FFP(J)*TAUKNP(K,L)*JAC
             ENDIF
 C
  168      CONTINUE

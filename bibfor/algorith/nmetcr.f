@@ -2,7 +2,7 @@
      &                  DEFICO,RESOCO,SDIETO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/01/2012   AUTEUR BEAURAIN J.BEAURAIN 
+C MODIF ALGORITH  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,14 +65,14 @@ C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX -----------------------------
 C
       INTEGER      ZIOCH,NBMAX
-      PARAMETER    (ZIOCH = 10,NBMAX=18 )
+      PARAMETER    (ZIOCH = 10,NBMAX=22 )
       INTEGER      NBCHAM,NBCHIN,NBCHOU
       CHARACTER*24 IOINFO,IOLCHA,KSTR
       INTEGER      JIOINF,JIOLCH
       INTEGER      ICHAM,ICH
       LOGICAL      NDYNLO,ISFONC,CFDISL
       LOGICAL      LXFCM,LDYNA,LXFFM,LXCZM,LCONT,LNOEU,LMUAP,LSTR
-      LOGICAL      LVIBR,LFLAM,LSTAB
+      LOGICAL      LVIBR,LFLAM,LSTAB,LENER
       INTEGER      IFM,NIV,IBID,IERD
       LOGICAL      CHAACT(NBMAX)
 C
@@ -85,49 +85,63 @@ C -- NOM DU CHAMP DANS LA SD RESULTAT
      &              'INDC_ELEM'   ,'SECO_ELEM'   ,'COHE_ELEM'   ,
      &              'VALE_CONT'   ,'MODE_FLAMB'  ,'DEPL_VIBR'   ,
      &              'DEPL_ABSOLU' ,'VITE_ABSOLU' ,'ACCE_ABSOLU' ,
-     &              'FORC_NODA'   ,'STRX_ELGA'   ,'MODE_STAB'/
+     &              'FORC_NODA'   ,'STRX_ELGA'   ,'MODE_STAB'   ,
+     &              'FORC_EXTE'   ,'FORC_AMOR'   ,'FORC_LIAI'   ,
+     &              'FORC_INTE'/
 C -- NOM DE LA GRANDEUR
       DATA NOMGD   /'DEPL_R','SIEF_R','VARI_R',
      &              'COMPOR','DEPL_R','DEPL_R',
      &              'NEUT_I','NEUT_R','NEUT_R',
      &              'DEPL_R','DEPL_R','DEPL_R',
      &              'DEPL_R','DEPL_R','DEPL_R',
-     &              'DEPL_R','STRX_R','DEPL_R'/
+     &              'DEPL_R','STRX_R','DEPL_R',
+     &              'DEPL_R','DEPL_R','DEPL_R',
+     &              'DEPL_R'/
 C -- MOT-CLEF DANS ETAT_INIT, ' ' SI PAS DE MOT-CLEF
       DATA MOTCEI  /'DEPL','SIGM','VARI',
      &              ' '   ,'VITE','ACCE',
      &              ' '   ,' '   ,' '   ,
      &              ' '   ,' '   ,' '   ,
      &              ' '   ,' '   ,' '   ,
-     &              ' '   ,'STRX ',' '/
+     &              ' '   ,'STRX',' '   ,
+     &              ' '   ,' '   ,' '   ,
+     &              ' '/
 C -- LOCALISATION DU CHAMP
       DATA LOCCHA  /'NOEU','ELGA','ELGA',
      &              'ELGA','NOEU','NOEU',
      &              'ELEM','ELEM','ELEM',
      &              'NOEU','NOEU','NOEU',
      &              'NOEU','NOEU','NOEU',
-     &              'NOEU','ELGA','NOEU'/
+     &              'NOEU','ELGA','NOEU',
+     &              'NOEU','NOEU','NOEU',
+     &              'NOEU'/
 C -- .TRUE. SI CHAMP EST LU DANS ETAT_INIT
       DATA LETIN   /.TRUE. ,.TRUE. ,.TRUE. ,
      &              .FALSE.,.TRUE. ,.TRUE. ,
      &              .TRUE. ,.TRUE. ,.TRUE. ,
      &              .FALSE.,.FALSE.,.FALSE.,
      &              .TRUE. ,.TRUE. ,.TRUE. ,
-     &              .FALSE.,.TRUE. ,.FALSE./
+     &              .FALSE.,.TRUE. ,.FALSE.,
+     &              .TRUE. ,.TRUE. ,.TRUE. ,
+     &              .TRUE./
 C -- .TRUE. SI CHAMP EST ECRIT DANS ARCHIVAGE
       DATA LARCH   /.TRUE. ,.TRUE. ,.TRUE. ,
      &              .TRUE. ,.TRUE. ,.TRUE. ,
      &              .TRUE. ,.TRUE. ,.TRUE. ,
      &              .TRUE. ,.TRUE. ,.TRUE. ,
      &              .TRUE. ,.TRUE. ,.TRUE. ,
-     &              .FALSE.,.TRUE. ,.TRUE./
+     &              .FALSE.,.TRUE. ,.TRUE. ,
+     &              .TRUE. ,.TRUE. ,.TRUE. ,
+     &              .TRUE./
 C -- MOT-CLEF DANS OBSERVATION, ' ' SI PAS DE MOT-CLEF
       DATA MOTCOB  /'DEPL'        ,'SIEF_ELGA'   ,'VARI_ELGA'   ,
      &              ' '           ,'VITE'        ,'ACCE'        ,
      &              ' '           ,' '           ,' '           ,
      &              'VALE_CONT'   ,' '           ,' '           ,
      &              'DEPL_ABSOLU' ,'VITE_ABSOLU' ,'ACCE_ABSOLU' ,
-     &              'FORC_NODA'   ,'STRX_ELGA'   ,' '/
+     &              'FORC_NODA'   ,'STRX_ELGA'   ,' '           ,
+     &              ' '           ,' '           ,' '           ,
+     &              ' '/
 C
 C ----------------------------------------------------------------------
 C
@@ -159,6 +173,7 @@ C
       LFLAM  = ISFONC(FONACT,'CRIT_STAB'  )
       LSTAB  = ISFONC(FONACT,'DDL_STAB'   )
       LVIBR  = ISFONC(FONACT,'MODE_VIBR'  )
+      LENER  = ISFONC(FONACT,'ENERGIE')
       IF (LXFCM) THEN
         LXFFM  = ISFONC(FONACT,'FROT_XFEM')
         LXCZM  = CFDISL(DEFICO,'EXIS_XFEM_CZM')
@@ -236,6 +251,15 @@ C --- POUTRE MULTI_FIBRE
 C
       IF(LSTR) THEN
         CHAACT(17) = .TRUE.
+      ENDIF
+C
+C --- FORCES POUR CALCUL DES ENERGIES
+C
+      IF (LENER) THEN
+        CHAACT(19) = .TRUE.
+        CHAACT(20) = .TRUE.
+        CHAACT(21) = .TRUE.
+        CHAACT(22) = .TRUE.
       ENDIF
 C
 C --- DECOMPTE DES CHAMPS

@@ -1,8 +1,8 @@
-#@ MODIF compor2 Messages  DATE 12/12/2011   AUTEUR PROIX J-M.PROIX 
+#@ MODIF compor2 Messages  DATE 31/01/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -47,11 +47,6 @@ cata_msg={
 6 : _(u"""
    POLYCRISTAL : nombre de phases trop grand (le nombre maximum de phases vaut actuellement 1000).
    Faire une demande d'évolution pour lever cette limitation si nécessaire.
-"""),
-
-7 : _(u"""
-   SIMU_POINT_MAT : le nombre de variables internes dépasse le maximum : <%(i1)i>
-   Faire une demande d'évolution ou modifier NBVIMAX dans OP0033.
 """),
 
 8 : _(u"""

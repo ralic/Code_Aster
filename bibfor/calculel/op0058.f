@@ -1,7 +1,7 @@
       SUBROUTINE OP0058()
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 04/01/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF CALCULEL  DATE 30/01/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -104,7 +104,8 @@ C     --------------------------------------------------------
       ENDIF
 
 C     -- CREATION DU SOLVEUR :
-      SOLVEU = '&&OP0058.SOLVEUR'
+C     ON LUI DONNE LE NOM DE L'OP DE CALC_ERREUR
+      SOLVEU = '&&OP0042.SOLVEUR'
       CALL CRESOL(SOLVEU)
 
       CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO,NUORD)

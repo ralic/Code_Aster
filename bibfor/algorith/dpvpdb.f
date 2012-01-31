@@ -3,9 +3,9 @@
      &                   DP, NBRE, RETCOM)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 30/01/2012   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -46,7 +46,7 @@ C =====================================================================
 C --- LOI DE COMPORTEMENT DE TYPE DRUCKER PRAGER VISCOPLASTIQUE -------
 C --- VISC_DRUC_PRAG --------------------------------------------------
 C --- RESOLUTION NUMERIQUE DE L EQ NON LINEAIRE AVEC BRACKETING ET ----
-C --------------LA METHODE DES CORDES (APPEL A ZEROCO)-----------------
+C --------------LA METHODE DES CORDES
 C =====================================================================
       INTEGER  NITER, I
       INTEGER  SIGNF, SIGNFI

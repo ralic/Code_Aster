@@ -1,7 +1,7 @@
       SUBROUTINE MMIMP3(IFM   ,NOMA  ,IPTC  ,JVALV ,JTABF )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF DEBUG  DATE 23/01/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF DEBUG  DATE 30/01/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,9 +79,9 @@ C
       LAMBDA = ZR(JVALV-1+13)
       COEFAC = ZR(JVALV-1+16)
       COEFAF = ZR(JVALV-1+19)
-      IFORM  = NINT(ZR(JVALV-1+27))
-      DELTAT = ZR(JVALV-1+28)
-      THETA  = ZR(JVALV-1+29)
+      IFORM  = NINT(ZR(JVALV-1+25))
+      DELTAT = ZR(JVALV-1+26)
+      THETA  = ZR(JVALV-1+27)
       JEUSUP = ZR(JVALV-1+14)
 C
 C --- ACCES A L'ELEMENT EN COURS
@@ -115,7 +115,7 @@ C
 
  1003 FORMAT (' <CONTACT>          AVEC FORMULATION EN VITESSE  ',
      &        ' - INC. DE TEMPS  :  ',E10.3,
-     &        ' - TEHTA          :  ',E10.3)
+     &        ' - THETA          :  ',E10.3)
  1004 FORMAT (' <CONTACT>          AVEC FORMULATION EN DEPLACEMENT  ',
      &        ' - INC. DE TEMPS  :  ',E10.3)
 C

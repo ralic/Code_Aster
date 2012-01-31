@@ -1,8 +1,8 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE BIBLIO_73 FISSURE RADIALE INTERNE A L'INTERFACE D'UN BIMATERIAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -158,135 +158,135 @@ THETA4=CALC_THETA(    MODELE=MO,
 # CALCUL DE G_THETA SUR LA COURONNE 0
 # -----------------------------------
 
-G1_C0=CALC_G(            RESULTAT=RES1,NUME_ORDRE=1,
+G1_C0=CALC_G(            RESULTAT=RES1,
                          THETA=_F(THETA=THETA0),
                     )
 
-G2_C0=CALC_G(            RESULTAT=RES2,NUME_ORDRE=1,
+G2_C0=CALC_G(            RESULTAT=RES2,
                          THETA=_F(THETA=THETA0),
                     )
 
-G3_C0=CALC_G(            RESULTAT=RES3,NUME_ORDRE=1,
+G3_C0=CALC_G(            RESULTAT=RES3,
                          THETA=_F(THETA=THETA0),
                     )
 
-G4_C0=CALC_G(            RESULTAT=RES4,NUME_ORDRE=1,
+G4_C0=CALC_G(            RESULTAT=RES4,
                          THETA=_F(THETA=THETA0),
                     )
 
-G5_C0=CALC_G(            RESULTAT=RES5,NUME_ORDRE=1,
+G5_C0=CALC_G(            RESULTAT=RES5,
                          THETA=_F(THETA=THETA0),
                     )
 
-G6_C0=CALC_G(            RESULTAT=RES6,NUME_ORDRE=1,
+G6_C0=CALC_G(            RESULTAT=RES6,
                          THETA=_F(THETA=THETA0),
                     )
 
 # CALCUL DE G_THETA SUR LA COURONNE 1
 # -----------------------------------
 
-G1_C1=CALC_G(           RESULTAT=RES1,NUME_ORDRE=1,
+G1_C1=CALC_G(           RESULTAT=RES1,
                         THETA=_F(THETA=THETA1),
                     )
 
-G2_C1=CALC_G(            RESULTAT=RES2,NUME_ORDRE=1,
+G2_C1=CALC_G(            RESULTAT=RES2,
                          THETA=_F(THETA=THETA1),
                     )
 
-G3_C1=CALC_G(            RESULTAT=RES3,NUME_ORDRE=1,
+G3_C1=CALC_G(            RESULTAT=RES3,
                          THETA=_F(THETA=THETA1),
                     )
 
-G4_C1=CALC_G(            RESULTAT=RES4,NUME_ORDRE=1,
+G4_C1=CALC_G(            RESULTAT=RES4,
                          THETA=_F(THETA=THETA1),
                     )
 
-G5_C1=CALC_G(            RESULTAT=RES5,NUME_ORDRE=1,
+G5_C1=CALC_G(            RESULTAT=RES5,
                          THETA=_F(THETA=THETA1),
                     )
 
-G6_C1=CALC_G(            RESULTAT=RES6,NUME_ORDRE=1,
+G6_C1=CALC_G(            RESULTAT=RES6,
                          THETA=_F(THETA=THETA1),
                     )
 
 # CALCUL DE G_THETA SUR LA COURONNE 2
 # -----------------------------------
 
-G1_C2=CALC_G(           RESULTAT=RES1,NUME_ORDRE=1,
+G1_C2=CALC_G(           RESULTAT=RES1,
                         THETA=_F(THETA=THETA2),
                     )
 
-G2_C2=CALC_G(           RESULTAT=RES2,NUME_ORDRE=1,
+G2_C2=CALC_G(           RESULTAT=RES2,
                         THETA=_F(THETA=THETA2),
                     )
 
-G3_C2=CALC_G(           RESULTAT=RES3,NUME_ORDRE=1,
+G3_C2=CALC_G(           RESULTAT=RES3,
                         THETA=_F(THETA=THETA2),
                     )
 
-G4_C2=CALC_G(           RESULTAT=RES4,NUME_ORDRE=1,
+G4_C2=CALC_G(           RESULTAT=RES4,
                         THETA=_F(THETA=THETA2),
                     )
 
-G5_C2=CALC_G(           RESULTAT=RES5,NUME_ORDRE=1,
+G5_C2=CALC_G(           RESULTAT=RES5,
                         THETA=_F(THETA=THETA2),
                     )
 
-G6_C2=CALC_G(           RESULTAT=RES6,NUME_ORDRE=1,
+G6_C2=CALC_G(           RESULTAT=RES6,
                         THETA=_F(THETA=THETA2),
                     )
 
 # CALCUL DE G_THETA SUR LA COURONNE 3
 # -----------------------------------
 
-G1_C3=CALC_G(           RESULTAT=RES1,NUME_ORDRE=1,
+G1_C3=CALC_G(           RESULTAT=RES1,
                         THETA=_F(THETA=THETA3),
                     )
 
-G2_C3=CALC_G(           RESULTAT=RES2,NUME_ORDRE=1,
+G2_C3=CALC_G(           RESULTAT=RES2,
                         THETA=_F(THETA=THETA3),
                     )
 
-G3_C3=CALC_G(           RESULTAT=RES3,NUME_ORDRE=1,
+G3_C3=CALC_G(           RESULTAT=RES3,
                         THETA=_F(THETA=THETA3),
                     )
 
-G4_C3=CALC_G(           RESULTAT=RES4,NUME_ORDRE=1,
+G4_C3=CALC_G(           RESULTAT=RES4,
                         THETA=_F(THETA=THETA3),
                     )
 
-G5_C3=CALC_G(           RESULTAT=RES5,NUME_ORDRE=1,
+G5_C3=CALC_G(           RESULTAT=RES5,
                         THETA=_F(THETA=THETA3),
                     )
 
-G6_C3=CALC_G(           RESULTAT=RES6,NUME_ORDRE=1,
+G6_C3=CALC_G(           RESULTAT=RES6,
                         THETA=_F(THETA=THETA3),
                     )
 
 # CALCUL DE G_THETA SUR LA COURONNE 4
 # -----------------------------------
 
-G1_C4=CALC_G(    RESULTAT=RES1,NUME_ORDRE=1,
+G1_C4=CALC_G(    RESULTAT=RES1,
                  THETA=_F(THETA=THETA4),
                     )
 
-G2_C4=CALC_G(    RESULTAT=RES2,NUME_ORDRE=1,
+G2_C4=CALC_G(    RESULTAT=RES2,
                  THETA=_F(THETA=THETA4),
                     )
 
-G3_C4=CALC_G(    RESULTAT=RES3,NUME_ORDRE=1,
+G3_C4=CALC_G(    RESULTAT=RES3,
                  THETA=_F(THETA=THETA4),
                     )
 
-G4_C4=CALC_G(    RESULTAT=RES4,NUME_ORDRE=1,
+G4_C4=CALC_G(    RESULTAT=RES4,
                  THETA=_F(THETA=THETA4),
                     )
 
-G5_C4=CALC_G(    RESULTAT=RES5,NUME_ORDRE=1,
+G5_C4=CALC_G(    RESULTAT=RES5,
                  THETA=_F(THETA=THETA4),
                     )
 
-G6_C4=CALC_G(    RESULTAT=RES6,NUME_ORDRE=1,
+G6_C4=CALC_G(    RESULTAT=RES6,
                  THETA=_F(THETA=THETA4),
                     )
 

@@ -2,7 +2,7 @@
      &                   DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/01/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 30/01/2012   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,7 +84,7 @@ C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       LOGICAL     CPLAN,PLASTI
-      REAL*8      DEPSTH(6),VALRES(3),PM,VAL0,XP(6),PLAST,RESU
+      REAL*8      DEPSTH(6),VALRES(3),PM,XP(6),PLAST,RESU
       REAL*8      DEPSMO,SIGMMO,E,NU,TROISK,RPRIM,RP,HP,GP,G1,RPM
       REAL*8      SIELEQ,SIGEPS,SEUIL,DP,COEF,DSDE,SIGY,XM(6),SIGEDV(6)
       REAL*8      KRON(6),DEPSDV(6),SIGMDV(6),SIGPDV(6),SIGDV(6),DUM,CC
@@ -269,7 +269,6 @@ C       -------------------------------------------
                JPROL2 = JPROLP
                JVALE2 = JVALEP
                NBVAL2 = NBVALP
-               VAL0 = NMCRI5(0.D0)
                PRECR = PREC * SIGY
 C
 C             CALCUL DE L'APPROXIMATION : DP SANS CONTRAINTE PLANE
@@ -282,7 +281,8 @@ C
      &                        PM,RP,RPRIM,PRAG,SIELEQ,DP0)
                ENDIF
                XAP = DP0
-               CALL ZEROFO(NMCRI5,VAL0,XAP,PRECR,NITER,DP,IRET,IBID)
+               CALL ZEROFR(0,'DEKKER',NMCRI5,0.D0,XAP,PRECR,NITER,
+     &                     DP,IRET,IBID)
                IF(IRET.EQ.1) GOTO 9999
                IF (LINE.GE.0.5D0) THEN
                   RP = SIGY +RPRIM*(PM+DP)

@@ -1,9 +1,9 @@
-# MODIF  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE : FISSURE CLASSIQUE EN THERMO-ELASTICITE 2D 
 # hsnv132a.para = tps_job 60 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -148,26 +148,22 @@ FOND1=DEFI_FOND_FISS(MAILLAGE=MAILLAGE,
                        )
 
 TABSIF=CALC_G(RESULTAT=UTOT,
-              NUME_ORDRE=1,
               THETA=_F( MODULE = 1.,
                         R_INF = 0.01,
                         R_SUP = 0.05,
                         DIRECTION=(-1., 0., 0.,),
                         FOND_FISS=FOND1),
-              SYME_CHAR='SANS',
               OPTION='CALC_K_G'
               )
 
 IMPR_TABLE(TABLE=TABSIF,);
 
 TABG=CALC_G(RESULTAT=UTOT,
-              NUME_ORDRE=1,
               THETA=_F( MODULE = 1.,
                         R_INF = 0.01,
                         R_SUP = 0.05,
                         DIRECTION=(-1., 0., 0.,),
                         FOND_FISS=FOND1),
-              SYME_CHAR='SANS',
               OPTION='CALC_G'
               )
 
@@ -176,9 +172,7 @@ IMPR_TABLE(TABLE=TABG,);
 PK=POST_K1_K2_K3(MODELISATION='D_PLAN',
                  MATER=ACIER,
                  FOND_FISS = FOND1,
-                 ABSC_CURV_MAXI = 0.05,
                  RESULTAT  = UTOT,
-                 NUME_ORDRE=1,
                 )
 
 IMPR_TABLE(TABLE = PK)

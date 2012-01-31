@@ -1,8 +1,8 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE MURA 11.17 FISSURE SOUS FLUX DE CHALEUR UNIFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -193,14 +193,12 @@ THETA0=CALC_THETA(       MODELE=MO,
 
 #
 G00=CALC_G(           RESULTAT=RESU,
-                      NUME_ORDRE=1,
                       THETA=_F(THETA=THETA0),
                       EXCIT=_F(CHARGE=CH,),
                      )
 
 #
 GK00=CALC_G(          RESULTAT=RESU,
-                      NUME_ORDRE=1,
                       THETA=_F(R_INF = 3.75E-5,
                                R_SUP = 7.50E-5,
                                DIRECTION=(1., 0., 0.,),
@@ -236,14 +234,12 @@ THETA01=CALC_THETA(       MODELE=MO,
 
 #
 G01=CALC_G(        RESULTAT=RESU,
-                   NUME_ORDRE=1,
                    THETA=_F(THETA=THETA01),
                    EXCIT=_F(CHARGE=CH,),
                      )
 
 #
 GK01=CALC_G(        RESULTAT=RESU,
-                    NUME_ORDRE=1,
                     THETA=_F(
                              R_INF = 7.50E-5,
                              R_SUP = 1.125E-4,
@@ -280,14 +276,12 @@ THETA02=CALC_THETA(       MODELE=MO,
 
 #
 G02=CALC_G(        RESULTAT=RESU,
-                   NUME_ORDRE=1,
                    THETA=_F(THETA=THETA02,),
                    EXCIT=_F(CHARGE=CH,),
                      )
 
 #
 GK02=CALC_G(        RESULTAT=RESU,
-                    NUME_ORDRE=1,
                     THETA=_F(
                              R_INF = 1.125E-4,
                              R_SUP = 1.500E-4,
@@ -324,14 +318,12 @@ THETA03=CALC_THETA(       MODELE=MO,
 
 #
 G03=CALC_G(         RESULTAT=RESU,
-                    NUME_ORDRE=1,
                     THETA=_F(THETA=THETA03,),
                     EXCIT=_F(CHARGE=CH,),
                     )
 
 #
 GK03=CALC_G(        RESULTAT=RESU,
-                    NUME_ORDRE=1,
                     THETA=_F(R_INF = 1.500E-4,
                              R_SUP = 1.875E-4,
                              DIRECTION=(1., 0., 0.,),
@@ -367,14 +359,12 @@ THETA04=CALC_THETA(       MODELE=MO,
 
 #
 G04=CALC_G(        RESULTAT=RESU,
-                   NUME_ORDRE=1,
                    THETA=_F(THETA=THETA04),
                    EXCIT=_F(CHARGE=CH,),
                     )
 
 #
 GK04=CALC_G(        RESULTAT=RESU,
-                    NUME_ORDRE=1,
                     THETA=_F(R_INF = 1.875E-4,
                              R_SUP = 2.250E-4,
                              DIRECTION=(1., 0., 0.,),
@@ -410,14 +400,12 @@ THETA05=CALC_THETA(       MODELE=MO,
 
 #
 G05=CALC_G(        RESULTAT=RESU,
-                   NUME_ORDRE=1,
                    THETA=_F(THETA=THETA05),
                    EXCIT=_F(CHARGE=CH,),
                     )
 
 #
 GK05=CALC_G(        RESULTAT=RESU,
-                    NUME_ORDRE=1,
                     THETA=_F(R_INF = 2.250E-4,
                              R_SUP = 3.000E-4,
                              DIRECTION=(1., 0., 0.,),

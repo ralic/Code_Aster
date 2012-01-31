@@ -1,4 +1,4 @@
-# MODIF  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 # sslv134d.para = tps_job 120 mem_job 250Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -143,7 +143,6 @@ GLOC1=CALC_G(THETA=_F(FOND_FISS=FISS,
                       R_INF=RINF,
                       R_SUP=RSUP,),
              RESULTAT=RESU1,
-             NUME_ORDRE=1,
              OPTION='CALC_G',);
 
 TEST_TABLE(TABLE=GLOC1,
@@ -172,7 +171,6 @@ TEST_TABLE(TABLE=GLOC1,
 
 GGLOB1=CALC_G(THETA=_F(THETA=THETA1,),
               RESULTAT=RESU1,
-              NUME_ORDRE=1,
               OPTION='CALC_G_GLOB',);
 
 # VALEUR DE REFERENCE MILIEU INFINI : G=145.6
@@ -187,8 +185,7 @@ TEST_TABLE(TABLE=GGLOB1,
 TABK1A=POST_K1_K2_K3(MODELISATION='3D',
                       MATER=MAT,
                       RESULTAT=RESU1,
-                      FOND_FISS=FISS,
-                      ABSC_CURV_MAXI=0.35,);
+                      FOND_FISS=FISS,);
 
 
 # ---------------
@@ -302,7 +299,6 @@ GLOC3=CALC_G(THETA=_F(FOND_FISS=FISS,
                       R_INF=RINF,
                       R_SUP=RSUP,),
              RESULTAT=RESU3,
-             NUME_ORDRE=1,
              OPTION='CALC_G',);
 
 TEST_TABLE(TABLE=GLOC3,
@@ -331,7 +327,6 @@ TEST_TABLE(TABLE=GLOC3,
 
 GGLOB3=CALC_G(THETA=_F(THETA=THETA1,),
               RESULTAT=RESU3,
-              NUME_ORDRE=1,
               OPTION='CALC_G_GLOB',);
 
 # VALEUR DE REFERENCE MILIEU INFINI :
@@ -347,8 +342,7 @@ TEST_TABLE(TABLE=GGLOB3,
 TABK3A=POST_K1_K2_K3(MODELISATION='3D',
                       MATER=MAT,
                       RESULTAT=RESU3,
-                      FOND_FISS=FISS,
-                      ABSC_CURV_MAXI=0.35,);
+                      FOND_FISS=FISS,);
 
 # ---------------
 
@@ -438,7 +432,6 @@ GLOC13=CALC_G(THETA=_F(FOND_FISS=FISS,
                        R_INF=RINF,
                        R_SUP=RSUP,),
               RESULTAT=RESU13,
-              NUME_ORDRE=1,
               EXCIT=_F(CHARGE=TORSION,),
               OPTION='CALC_G',);
 
@@ -468,7 +461,6 @@ TEST_TABLE(TABLE=GLOC13,
 
 GGLOB13=CALC_G(THETA=_F(THETA=THETA1,),
                RESULTAT=RESU13,
-               NUME_ORDRE=1,
                EXCIT=_F(CHARGE=TORSION,),
                OPTION='CALC_G_GLOB',);
 
@@ -484,8 +476,7 @@ TEST_TABLE(TABLE=GGLOB13,
 TABK13A=POST_K1_K2_K3(MODELISATION='3D',
                        MATER=MAT,
                        RESULTAT=RESU13,
-                       FOND_FISS=FISS,
-                       ABSC_CURV_MAXI=0.35,);
+                       FOND_FISS=FISS,);
 
 # TEST DE K1
 # ---------------

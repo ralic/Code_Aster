@@ -1,4 +1,4 @@
-#@ MODIF algorith9 Messages  DATE 17/01/2012   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith9 Messages  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,6 +20,10 @@
 # RESPONSABLE DELMAS J.DELMAS
 
 cata_msg = {
+
+1 : _(u"""
+ Le calcul des énergies n'est pas disponible pour les calculs de sensibilité.
+ """),
 
 2 : _(u"""
  la méthode de Newmark est programmée sous sa forme implicite:

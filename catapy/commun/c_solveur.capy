@@ -1,7 +1,7 @@
-#& MODIF COMMUN  DATE 11/10/2011   AUTEUR DESOZA T.DESOZA 
+#& MODIF COMMUN  DATE 30/01/2012   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -16,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# RESPONSABLE BOITEAU
+# RESPONSABLE BOITEAU O.BOITEAU
 
 def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
 
@@ -71,9 +71,7 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
    _type   = None
 
 #  Classification ('SD'/'LIN'/'NL')
-   if COMMAND in ('CALC_ELEM',
-                  'CALC_ERREUR',
-                  'CREA_ELEM_SSD',
+   if COMMAND in ('CREA_ELEM_SSD',
                   'DEFI_BASE_MODALE',
                   'DYNA_LINE_HARM',
                   'DYNA_TRAN_MODAL',
@@ -82,7 +80,9 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
                   'MODE_ITER_INV',
                   ):
       _type = 'SD'
-   elif COMMAND in ('CALC_FORC_AJOU',
+   elif COMMAND in ('CALC_ELEM',
+                    'CALC_ERREUR',
+                    'CALC_FORC_AJOU',
                     'CALC_MATR_AJOU',
                     'DYNA_LINE_TRAN',
                     'MACRO_MATR_AJOU',

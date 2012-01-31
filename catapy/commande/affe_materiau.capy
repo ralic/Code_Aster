@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 11/10/2011   AUTEUR MEUNIER S.MEUNIER 
+#& MODIF COMMANDE  DATE 30/01/2012   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,7 +47,7 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
          #  affectation des variables de commande :
          #  --------------------------------------------------
          # un mot clé caché qui ne sert qu'à boucler sur les VARC possibles :
-         LIST_NOM_VARC =SIMP(statut='c',typ='TXM', defaut=("TEMP","CORR","IRRA","HYDR","SECH","EPSA",
+         LIST_NOM_VARC =SIMP(statut='c',typ='TXM', defaut=("TEMP","GEOM","CORR","IRRA","HYDR","SECH","EPSA",
                                                            "M_ACIER","M_ZIRC","NEUT1","NEUT2","PTOT","DIVU",)),
 
          AFFE_VARC    =FACT(statut='f',max='**',
@@ -63,7 +63,7 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
           MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
 
           NOM_VARC        =SIMP(statut='o',typ='TXM',
-#                                     champ dans la doc   into=("TEMP","CORR","IRRA","HYDR_ELNO","META_ELNO","NEUT")
+#                                     champ dans la doc   into=("TEMP","GEOM","CORR","IRRA","HYDR_ELNO","META_ELNO","NEUT")
 #                                     champ dans rscrsd   into=("IRRA","TEMP","HYDR_ELNO","HYDR_NOEU","EPSA_ELNO","META_ELNO",
 #                                                               "PTOT","DIVU")
                                                             ),
@@ -71,7 +71,7 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
           EVOL            =SIMP(statut='f',typ=evol_sdaster,),
 
           B_EVOL          =BLOC(condition="EVOL!=None",
-              NOM_CHAM      =SIMP(statut='f',typ='TXM',into=("TEMP","CORR","IRRA","NEUT"
+              NOM_CHAM      =SIMP(statut='f',typ='TXM',into=("TEMP","CORR","IRRA","NEUT","GEOM",
                                                              "HYDR_ELNO","HYDR_NOEU",
                                                              "META_ELNO","META_NOEU",
                                                              "EPSA_ELNO","EPSA_NOEU","PTOT","DIVU",)),
@@ -105,6 +105,15 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
            CMP_GD          =SIMP(statut='c',typ='TXM',max=1,min=1,defaut=("TEMP",)),
            CMP_VARC        =SIMP(statut='c',typ='TXM',max=1,min=1,defaut=("TEMP",)),
            VALE_DEF        =SIMP(statut='c',typ='R',max=1,min=1,defaut=(0.,)),
+         ),
+
+         #  mots clés cachés pour variable de commande GEOM :
+         #  --------------------------------------------------
+         VARC_GEOM    =FACT(statut='d',
+           NOM_VARC        =SIMP(statut='c',typ='TXM',defaut="GEOM"),
+           GRANDEUR        =SIMP(statut='c',typ='TXM',defaut="GEOM_R"),
+           CMP_GD          =SIMP(statut='c',typ='TXM',max=3,min=3,defaut=("X","Y","Z",)),
+           CMP_VARC        =SIMP(statut='c',typ='TXM',max=3,min=3,defaut=("X","Y","Z",)),
          ),
 
          #  mots clés cachés pour variable de commande PTOT :

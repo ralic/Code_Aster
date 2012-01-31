@@ -3,9 +3,9 @@
       CHARACTER*(*)       RIGID , MASSE , MASINV
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -169,7 +169,7 @@ C
       CALL PTEDDL('NUME_DDL', NUMDDL , MXDDL , NOMDDL , NEQ , ZI(LDDL))
       CALL JEVEUO(MASI//'           .CONL','E',JCONL)
       IF ( TYPMAT .EQ. 'R' ) THEN
-        DO 30 I = 1 , NEQ-1
+        DO 30 I = 0 , NEQ-1
            IF ( ZI(LDDL+I) .NE. 0 ) THEN
               ZR(JCONL+I) = MMAX
            ELSE
@@ -177,7 +177,7 @@ C
            ENDIF
  30     CONTINUE
       ELSE
-        DO 32 I = 1 , NEQ-1
+        DO 32 I = 0 , NEQ-1
            IF ( ZI(LDDL+I) .NE. 0 ) THEN
               ZC(JCONL+I) = CMMAX
            ELSE

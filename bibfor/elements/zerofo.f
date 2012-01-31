@@ -1,8 +1,14 @@
-      SUBROUTINE ZEROFO(F,F0,XAP,EPSI,NITMAX,SOLU,IRET,N)
+      SUBROUTINE ZEROFO(F,X0,XAP,EPSI,NITMAX,SOLU,IRET,N)
+      IMPLICIT NONE
+C
+      REAL*8   F,X0,XAP,EPSI,SOLU
+      INTEGER  NITMAX,IRET,N
+      EXTERNAL F
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 30/01/2012   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,23 +23,16 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
 C
-C     ARGUMENTS:
-C     ----------
-      REAL*8 F,F0,XAP,EPSI,SOLU
-      INTEGER NITMAX,IRET
-      EXTERNAL F
 C TOLE CRP_7
 C ----------------------------------------------------------------------
 C     BUT:
 C         TROUVER UNE RACINE DE L'EQUATION F(X)=0
-C         ON SUPPOSE QUE LA FONCTION F EST CROISSANTE ET QUE F(0)<0
+C         ON SUPPOSE QUE LA FONCTION F EST CROISSANTE ET QUE F(X0)<0
 C
 C     IN:
 C         F  : FONCTION DONT ON CHERCHE LE "ZERO"
-C         F0 : VALEUR DE F AU POINT 0 (CETTE VALEUR EST DONNEE ET NON
-C              CALCULEE PAR LE PROGRAMME PAR ECONOMIE).
+C         X0 : POINT 0
 C         XAP: APPROXIMATION DE LA SOLUTION.
 C        EPSI: TOLERANCE ABSOLU SUR LE ZERO CHERCHE : ABS(F(SOLU))<EPSI
 C      NITMAX: NOMBRE MAXI D'ITERATIONS AUTORISEES.
@@ -46,19 +45,18 @@ C               IRET=1 => ECHEC DANS LA RECHERCHE DE ZERO
 C     N       : NOMBRE D'ITERATIONS REALISEES
 C
 C ----------------------------------------------------------------------
-      REAL*8 FY,FZ,X,Y,Z,A,B
-      INTEGER N,NIT
+      REAL*8  FX,FY,FZ,X,Y,Z,A,B
 C DEB-------------------------------------------------------------------
 C
 C     INITIALISATIONS
 C
-      IRET = 0
+      IRET = 1
       N = 1
-      X = 0.D0
-      FX = F0
+      X = X0
+      FX = F(X0)
       IF (ABS(FX).LT.EPSI) THEN
          Z=0.D0
-         GOTO 90
+         GOTO 800
       ENDIF
       Y = XAP
       FY = F(Y)
@@ -70,7 +68,7 @@ C
         A = X
         B = Y
    20   CONTINUE
-        IF (FX.EQ.FY) GOTO 98
+        IF (FX.EQ.FY) GOTO 999
         Z = Y - (Y-X)*FY/(FY-FX)
         IF (((Z-A)*(Z-B)).GT.0.D0) THEN
           Z = (A+B)/2.D0
@@ -78,8 +76,8 @@ C
 C
         N = N + 1
         FZ = F(Z)
-        IF (ABS(FZ).LT.EPSI) GOTO 90
-        IF (N.GT.NITMAX) GOTO 98
+        IF (ABS(FZ).LT.EPSI) GOTO 800
+        IF (N.GT.NITMAX) GOTO 999
         IF (FZ.LT.0.D0) THEN
           A = Z
         ELSE
@@ -88,12 +86,11 @@ C
         X = Y
         FX = FY
         Y = Z
-C        FY = F(Z)
         FY = FZ
         GOTO 20
       ELSE
-        IF (FY.LT.FX) GOTO 99
-        IF (FX.EQ.FY) GOTO 98
+        IF (FY.LT.FX) GOTO 999
+        IF (FX.EQ.FY) GOTO 999
         Z = Y - (Y-X)*FY/(FY-FX)
         N = N + 1
         X = Y
@@ -101,24 +98,16 @@ C        FY = F(Z)
         Y = Z
         FY = F(Z)
 C
-        IF (ABS(FY).LT.EPSI) GOTO 90
-        IF (N.GT.NITMAX) GOTO 98
+        IF (ABS(FY).LT.EPSI) GOTO 800
+        IF (N.GT.NITMAX) GOTO 999
       ENDIF
       GOTO 10
 C
-   90 CONTINUE
+C     SUCCES
+ 800  CONTINUE
       SOLU=Z
-      GOTO 9999
-C
-   98 CONTINUE
-      IRET=1
-      GOTO 9999
-C
-   99 CONTINUE
+      IRET=0
 
-      CALL ZEROFC(F,X,Y,EPSI,NITMAX,SOLU,IRET,NIT)
-      IF (IRET.NE.0) THEN
-      ENDIF
-C
- 9999 CONTINUE
+C     SORTIE
+ 999  CONTINUE
       END

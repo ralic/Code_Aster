@@ -1,0 +1,497 @@
+# MODIF  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
+# TITRE ONDE DE COMPRESSION DANS UNE COLONNE POROELASTIQUE
+# wdnp102a.para = tps_job 100 mem_job 300Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#
+#=======================================================================
+# CAS_TEST__: WDNP102A
+#
+# PROPAGATION D UNE ONDE DE COMPRESSION DANS UNE COLONNE POROELASTIQUE
+# REFLEXION AU SOMMET ET ABSORPTION DE L ONDE A LA BASE
+# CAS 2D
+#=======================================================================
+
+# Nombre de couches
+# (dont la couche elastique correspondant au BEDROCK)
+nbcouche  = 11;
+
+Kref = 313.1*1.e6;
+Gref = 215.6*1.e6;
+
+YOUNG = 9.*Kref*Gref /(3.*Kref+Gref)
+NU    = (3.*Kref-2.*Gref) /(6.*Kref+2.*Gref)
+
+RHO = 2105.; # Valeur homogeneisee
+
+CS = sqrt(Gref/RHO);
+
+CP = sqrt((Kref+4./3.*Gref)/RHO);
+
+# => Choix Onde S ou P
+
+Onde ='P'
+
+print '>> Onde %s CS= %f CP= %f' %(Onde,CS,CP)
+
+# ------------------------------------------------------------------------------
+
+
+DEBUT(CODE=_F(NOM='WDNP102A',NIV_PUB_WEB='INTERNET',),IGNORE_ALARM=('FACTOR_42','MECANONLINE_69'),);
+
+INV_K_EAU = 1.E-5 ;
+
+VISCOLIQ = DEFI_CONSTANTE(VALE=0.001 );
+
+DVISCOL  = DEFI_CONSTANTE(VALE=0.0   );
+
+KINT     = DEFI_CONSTANTE(VALE=1.E-12);
+
+MA=LIRE_MAILLAGE(FORMAT='MED');
+
+MAIL = CREA_MAILLAGE(MAILLAGE=MA,
+                  CREA_POI1=_F(NOM_GROUP_MA ='RESBAS',
+                                GROUP_MA ='BAS',),);
+
+MAIL = DEFI_GROUP(reuse=MAIL,
+                MAILLAGE=MAIL,
+                INFO=1,
+                CREA_GROUP_NO=(_F(TOUT_GROUP_MA='OUI',),
+                               
+                               _F(NOM='LATBG',
+                                  DIFFE=('LAT_LEFT','BAS',),),
+                               _F(NOM='LATBD',
+                                  DIFFE=('LAT_RIGH','BAS',),),
+                               
+                               _F(NOM='LATHG',
+                                  DIFFE=('LAT_LEFT','HA10',),),
+                               _F(NOM='LATHD',
+                                  DIFFE=('LAT_RIGH','HA10',),),),);
+
+list_group_ma=['ELEM'+str(n) for n in range(nbcouche)];
+
+print '>> list_group_ma=',list_group_ma
+
+MAT1=DEFI_MATERIAU(ELAS=_F(E =YOUNG, NU =NU, RHO =RHO, ALPHA=0.,),
+                   COMP_THM='LIQU_SATU',
+                   THM_INIT=_F(PRE1 = 0.0,
+                               PORO = 0.23),
+                   THM_DIFFU=_F(RHO       = RHO,
+                                BIOT_COEF = 1.0,
+                                PESA_X    = 0.0,
+                                PESA_Y    = -9.81,
+                                PESA_Z    = 0.0,
+                                PERM_IN   = KINT),
+                   THM_LIQU=_F(RHO        = 1000.0,
+                               UN_SUR_K   = INV_K_EAU,
+                               VISC       = VISCOLIQ,
+                               D_VISC_TEMP= DVISCOL));
+                              
+MAT_PAR=DEFI_MATERIAU(ELAS=_F(E =YOUNG, NU =NU, RHO =RHO,),);
+                          
+INCLUDE(UNITE=38,INFO=1);
+
+Paraxia = 'BAS';
+
+MODELE=AFFE_MODELE(MAILLAGE=MAIL,
+                   AFFE=(_F(GROUP_MA = list_group_ma,
+                            PHENOMENE = 'MECANIQUE',
+                            MODELISATION = 'D_PLAN_HM'),
+                         _F(GROUP_MA='RESBAS',
+                            PHENOMENE   ='MECANIQUE',
+                            MODELISATION='2D_DIS_T'),
+                         _F(GROUP_MA = Paraxia,
+                            PHENOMENE = 'MECANIQUE',
+                            MODELISATION = 'D_PLAN_ABSO',),),);
+                            
+CARA=AFFE_CARA_ELEM(MODELE=MODELE,
+                    DISCRET_2D=(_F(GROUP_MA='RESBAS',
+                                  CARA='K_T_D_N',
+                                  VALE=(1.E+14,1.E+14,),),
+                               _F(GROUP_MA='RESBAS',
+                                  CARA='M_T_D_N',
+                                  VALE=0.,),
+                               _F(GROUP_MA='RESBAS',
+                                  CARA='A_T_D_N',
+                                  VALE=(0.,0.,),),),);
+                                  
+CARA1=AFFE_CARA_ELEM(MODELE=MODELE,
+                    DISCRET_2D=(_F(GROUP_MA='RESBAS',
+                                  CARA='K_T_D_N',
+                                  VALE=(1.E+01,1.E+01,),),
+                               _F(GROUP_MA='RESBAS',
+                                  CARA='M_T_D_N',
+                                  VALE=0.,),
+                               _F(GROUP_MA='RESBAS',
+                                  CARA='A_T_D_N',
+                                  VALE=(0.,0.,),),),);
+                                  
+CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                       AFFE=(_F(GROUP_MA = list_group_ma, MATER = MAT1,),
+                             _F(GROUP_MA = Paraxia, MATER = MAT_PAR,),),);
+                             
+LIAISON0=AFFE_CHAR_MECA(MODELE=MODELE,
+                        VERI_NORM='NON',
+                        LIAISON_GROUP=(_F(GROUP_NO_1='LAT_LEFT',
+                                         GROUP_NO_2='LAT_RIGH',
+                                         DDL_1=('DX',),
+                                         DDL_2=('DX',),
+                                         COEF_MULT_1 = 1.,
+                                         COEF_MULT_2 = -1.,
+                                         COEF_IMPO = 0.,),
+                                      _F(GROUP_NO_1='LATHG',
+                                         GROUP_NO_2='LATHD',
+                                         DDL_1=('DY',),
+                                         DDL_2=('DY',),
+                                         COEF_MULT_1 = 1.,
+                                         COEF_MULT_2 = -1.,
+                                         COEF_IMPO = 0.,),),);
+LIAISON=AFFE_CHAR_MECA(MODELE=MODELE,
+                        VERI_NORM='NON',
+                        LIAISON_GROUP=(_F(GROUP_NO_1='LAT_LEFT',
+                                         GROUP_NO_2='LAT_RIGH',
+                                         DDL_1=('DX',),
+                                         DDL_2=('DX',),
+                                         COEF_MULT_1 = 1.,
+                                         COEF_MULT_2 = -1.,
+                                         COEF_IMPO = 0.,),
+                                      _F(GROUP_NO_1='LAT_LEFT',
+                                         GROUP_NO_2='LAT_RIGH',
+                                         DDL_1=('DY',),
+                                         DDL_2=('DY',),
+                                         COEF_MULT_1 = 1.,
+                                         COEF_MULT_2 = -1.,
+                                         COEF_IMPO = 0.,),),);
+
+BLOQ_BAS=AFFE_CHAR_CINE(MODELE=MODELE,
+                    MECA_IMPO=_F(GROUP_MA=('BAS',),DX=0.0,DY=0.0,),);
+                    
+BLOQ_HAU=AFFE_CHAR_MECA(MODELE=MODELE,
+                    DDL_IMPO=_F(GROUP_MA=('HA10',),DY=0.0,),);
+                    
+BLOQ_PRE=AFFE_CHAR_CINE(MODELE=MODELE,
+                    MECA_IMPO=_F(GROUP_MA=('HA10',),PRE1=0.0,),);
+                    
+ONDE=AFFE_CHAR_MECA_F(MODELE=MODELE,
+                      ONDE_PLANE=_F(DIRECTION = (0., 1.,),
+                            TYPE_ONDE = Onde, 
+                            FONC_SIGNAL = vite,
+                            GROUP_MA= 'BAS',),);
+# ---Fin
+
+
+PES =AFFE_CHAR_MECA(MODELE=MODELE,
+                    PESANTEUR=_F(GRAVITE=9.81,
+                                DIRECTION=(0.0,-1.0,0.0,),),);
+
+TANBID=DEFI_LIST_REEL(DEBUT=-1.E-1,
+                      INTERVALLE=_F(JUSQU_A=0., NOMBRE=2,),);  
+
+UBID=STAT_NON_LINE(MODELE=MODELE,
+                 CARA_ELEM=CARA,
+                 CHAM_MATER=CHAMPMAT,
+                 EXCIT=(_F(CHARGE = LIAISON),
+                        _F(CHARGE = PES,),),
+                 COMP_INCR=(_F(RELATION = 'KIT_HM',
+                                RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),
+                                GROUP_MA=list_group_ma,),
+                              _F(RELATION='ELAS',
+                               DEFORMATION='PETIT',
+                               GROUP_MA=Paraxia,
+                               PARM_THETA=0.57,),),
+                 INCREMENT=_F(LIST_INST=TANBID,),
+                 NEWTON=_F(MATRICE='TANGENTE',
+                           REAC_ITER=1,),
+                 CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-10,
+                                ARRET='OUI',),);
+                                
+BIDDEP0=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                OPERATION='EXTR',
+                RESULTAT=UBID,
+                NOM_CHAM='DEPL',
+                INST=0.,
+                INFO=1,);
+               
+UBID=CALC_NO(reuse=UBID,OPTION=('FORC_NODA',),
+            #INST=0.2,
+            RESULTAT=UBID,
+            GROUP_MA='RESBAS',
+            );
+
+FORCE0=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                OPERATION='EXTR',
+                RESULTAT=UBID,
+                NOM_CHAM='FORC_NODA',
+                INST=0.,
+                INFO=1,);
+                
+IMPR_RESU(RESU=_F(CHAM_GD=BIDDEP0));   
+
+# REACT=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+#                 OPERATION='EXTR',
+#                 RESULTAT=DYNB,
+#                 NOM_CHAM='REAC_NODA',
+#                 INST=0.,
+#                 INFO=2,);
+                
+CHFORCE0=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                  OPERATION='ASSE',
+                  CHAM_NO=BIDDEP0,
+                  MODELE=MODELE,
+                  ASSE=(_F(TOUT='OUI',
+                           CHAM_GD=BIDDEP0,
+                           CUMUL='OUI',
+                           COEF_R=0.0,),
+                        _F(TOUT='OUI',
+                           CHAM_GD=FORCE0,
+                           CUMUL='OUI',
+                           COEF_R=-1.0,),),);
+                   
+VFORCE0 = AFFE_CHAR_MECA(MODELE=MODELE,VECT_ASSE=CHFORCE0,INFO=1,);
+
+DYNB=STAT_NON_LINE(MODELE=MODELE,
+                 CHAM_MATER=CHAMPMAT,
+                 CARA_ELEM=CARA1,
+                 EXCIT=(_F(CHARGE = BLOQ_HAU,TYPE_CHARGE='DIDI',),
+                        _F(CHARGE = VFORCE0),
+                        _F(CHARGE = LIAISON0),
+                        _F(CHARGE = PES,),),
+                 COMP_INCR=(_F(RELATION = 'KIT_HM',
+                                RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),
+                                GROUP_MA=list_group_ma,),
+                              _F(RELATION='ELAS',
+                               DEFORMATION='PETIT',
+                               GROUP_MA=Paraxia,
+                               PARM_THETA=0.57,),),
+                 INCREMENT=_F(LIST_INST=TANBID,),
+                 NEWTON=_F(MATRICE='TANGENTE',
+                           REAC_ITER=1,),
+                 CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-10,
+                                ARRET='OUI',),);
+
+BIDDEP=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                OPERATION='EXTR',
+                RESULTAT=DYNB,
+                NOM_CHAM='DEPL',
+                INST=0.,
+                INFO=1,);
+                
+pas_ttfin = 0.001;
+
+TEMLI=DEFI_LIST_REEL(DEBUT=0.,
+                     INTERVALLE=_F(JUSQU_A = 0.3, PAS =pas_ttfin,),);
+
+DYNB=DYNA_NON_LINE(reuse=DYNB,INFO=1,MODELE=MODELE,
+                   CHAM_MATER=CHAMPMAT,
+                   CARA_ELEM=CARA1,
+                   EXCIT=(# Si on bloque, il ne se passe rien ...
+                          _F(CHARGE = BLOQ_HAU,TYPE_CHARGE='DIDI',),
+                          _F(CHARGE = VFORCE0),
+                          _F(CHARGE = LIAISON0),
+                          _F(CHARGE = PES,),
+                          _F(CHARGE = ONDE,),),
+                   ETAT_INIT=_F(EVOL_NOLI=DYNB,
+                                INST=0.,),
+                   COMP_INCR=(_F(RELATION = 'KIT_HM',
+                                RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),
+                                GROUP_MA=list_group_ma,),
+                              _F(RELATION='ELAS',
+                               DEFORMATION='PETIT',
+                               GROUP_MA=Paraxia,
+                               PARM_THETA=0.57,),),
+                   CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-10,
+                                  ITER_GLOB_MAXI = 10,
+                                  ARRET='OUI',),
+                   SOLVEUR=_F(METHODE = 'MUMPS',PCENT_PIVOT=120,),
+                   NEWTON=_F(MATRICE = 'TANGENTE', 
+                             REAC_ITER = 1,),
+                   INCREMENT=_F(LIST_INST = TEMLI,
+                                INST_INIT = 0.,
+                                INST_FIN  = 0.2,),
+                   #ARCHIVAGE=_F(LIST_INST = L_ARCH,),
+                   SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                                   FORMULATION='DEPLACEMENT',),);
+                                   
+
+# TEST DE LA VITESSE
+
+DYNV56=RECU_FONCTION(RESULTAT=DYNB,
+                    NOEUD='N56',
+                    NOM_CHAM='VITE',
+                    NOM_CMP='DY',);
+
+TEST_FONCTION(VALEUR=(_F( 
+                   FONCTION = DYNV56,
+                   VALE_PARA = 6.2E-02,
+                   VALE_REFE = 0.08575917,
+                   CRITERE = 'RELATIF',
+                   PRECISION = 1.E-2, 
+                   REFERENCE = 'NON_REGRESSION'),
+                  _F( 
+                   FONCTION = DYNV56,
+                   VALE_PARA = 1.0E-01,
+                   VALE_REFE = -0.08522978,
+                   CRITERE = 'RELATIF',
+                   PRECISION = 1.E-2,  
+                   REFERENCE = 'NON_REGRESSION'),
+                  _F( 
+                   FONCTION = DYNV56,
+                   VALE_PARA = 1.8E-01,
+                   VALE_REFE = 0.,
+                   CRITERE = 'ABSOLU',
+                   PRECISION = 1.E-5, 
+                   REFERENCE = 'ANALYTIQUE'),
+                ),);
+                
+# TEST DE LA PRESSION HYDRAULIQUE
+
+DYNP56=RECU_FONCTION(RESULTAT=DYNB,
+                    NOEUD='N56',
+                    NOM_CHAM='DEPL',
+                    NOM_CMP='PRE1',);
+                    
+TEST_FONCTION(VALEUR=(_F( 
+                   FONCTION = DYNP56,
+                   VALE_PARA = 6.2E-02,
+                   VALE_REFE = 219.5247,
+                   CRITERE = 'RELATIF',
+                   PRECISION = 1.E-2, 
+                   REFERENCE = 'NON_REGRESSION'),
+                  _F( 
+                   FONCTION = DYNP56,
+                   VALE_PARA = 1.0E-01,
+                   VALE_REFE = 219.05956,
+                   CRITERE = 'RELATIF',
+                   PRECISION = 1.E-2,  
+                   REFERENCE = 'NON_REGRESSION'),
+                  _F( 
+                   FONCTION = DYNP56,
+                   VALE_PARA = 1.8E-01,
+                   VALE_REFE = 149.44342,
+                   CRITERE = 'RELATIF',
+                   PRECISION = 1.E-2, 
+                   REFERENCE = 'NON_REGRESSION'),
+                ),);
+                
+# DYNB=CALC_NO(reuse=DYNB,OPTION=('FORC_NODA','REAC_NODA',),
+#             #INST=0.2,
+#             RESULTAT=DYNB,
+#             #GROUP_MA=Paraxia,
+#             );
+# 
+# Noe=['N1','N106','N211'];
+# 
+# co_forcx =[]; co_forcy =[];
+# 
+# for i,no in enumerate(Noe):
+# 
+#    FORCX=RECU_FONCTION(RESULTAT=DYNB,
+#                       TITRE='FORC_NODA',
+#                       NOM_CHAM='FORC_NODA',
+#                       NOM_CMP='DX',
+#                       NOEUD=no,
+#                       PROL_DROITE='CONSTANT',
+#                       PROL_GAUCHE='CONSTANT',
+#                       INTERPOL='LIN',);
+#                       
+#    FORCY=RECU_FONCTION(RESULTAT=DYNB,
+#                       TITRE='FORC_NODA',
+#                       NOM_CHAM='FORC_NODA',
+#                       NOM_CMP='DY',
+#                       NOEUD=no,
+#                       PROL_DROITE='CONSTANT',
+#                       PROL_GAUCHE='CONSTANT',
+#                       INTERPOL='LIN',);
+#                       
+#    REACX=RECU_FONCTION(RESULTAT=DYNB,
+#                       TITRE='REAC_NODA',
+#                       NOM_CHAM='REAC_NODA',
+#                       NOM_CMP='DX',
+#                       NOEUD=no,
+#                       PROL_DROITE='CONSTANT',
+#                       PROL_GAUCHE='CONSTANT',
+#                       INTERPOL='LIN',);
+#                       
+#    REACY=RECU_FONCTION(RESULTAT=DYNB,
+#                       TITRE='REACC_NODA',
+#                       NOM_CHAM='REAC_NODA',
+#                       NOM_CMP='DY',
+#                       NOEUD=no,
+#                       PROL_DROITE='CONSTANT',
+#                       PROL_GAUCHE='CONSTANT',
+#                       INTERPOL='LIN',);
+#                       
+#    time, forcx = FORCX.Valeurs();
+#    time, forcy = FORCY.Valeurs();
+#    time, reacx = REACX.Valeurs();
+#    time, reacy = REACY.Valeurs();
+#    
+#    def_co_forcx={'ABSCISSE': time}
+#    def_co_forcx['ORDONNEE'] = tuple(forcx)
+#    def_co_forcx['LEGENDE' ] = 'FORC_NODA_X '+no;
+#    def_co_forcx['COULEUR' ] = 0
+#    def_co_forcx['MARQUEUR'] = 0
+#    
+#    def_co_forcy={'ABSCISSE': time}
+#    def_co_forcy['ORDONNEE'] = tuple(forcy)
+#    def_co_forcy['LEGENDE' ] = 'FORC_NODA_Y '+no;
+#    def_co_forcy['COULEUR' ] = 0
+#    def_co_forcy['MARQUEUR'] = 0
+#    
+#    co_forcx.append(def_co_forcx);
+#    co_forcy.append(def_co_forcy);
+#    del(def_co_forcx);
+#    del(def_co_forcy);
+#    
+#    def_co_forcx={'ABSCISSE': time}
+#    def_co_forcx['ORDONNEE'] = tuple(reacx)
+#    def_co_forcx['LEGENDE' ] = 'REAC_NODA_X '+no;
+#    def_co_forcx['COULEUR' ] = i+1
+#    def_co_forcx['MARQUEUR'] = 0
+#    
+#    def_co_forcy={'ABSCISSE': time}
+#    def_co_forcy['ORDONNEE'] = tuple(reacy)
+#    def_co_forcy['LEGENDE' ] = 'REAC_NODA_Y '+no;
+#    def_co_forcy['COULEUR' ] = i+1
+#    def_co_forcy['MARQUEUR'] = 0
+#    
+#    co_forcx.append(def_co_forcx);
+#    co_forcy.append(def_co_forcy);
+#    del(def_co_forcx);
+#    del(def_co_forcy);
+#    
+#    DETRUIRE(CONCEPT=_F(NOM=(FORCX,FORCY,REACX,REACY,),),);
+# 
+# Courbes = [co_forcx,co_forcy,];
+# Nom_Fichier= ['co_forcx.agr','co_forcy.agr',];
+# 
+# unit=38
+# for c in range(len(Nom_Fichier)):
+# 
+#   DEFI_FICHIER(ACTION='ASSOCIER',
+#                FICHIER='./REPE_OUT/'+Nom_Fichier[c],
+#                UNITE=unit,);
+#                   
+#   IMPR_FONCTION(FORMAT='XMGRACE',
+#               UNITE=unit,
+#               COURBE=Courbes[c]);
+#                   
+#   DEFI_FICHIER(ACTION='LIBERER',
+#                UNITE=unit,);
+
+FIN();

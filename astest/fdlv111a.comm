@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
 # TITRE ABSORPTION D'UNE ONDE DE PRESSION DANS UNE COLONNE FLUIDE
 # fdlv111a.para = tps_job 300 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -120,6 +120,7 @@ TEMPLI=DEFI_LIST_REEL(DEBUT=0., INTERVALLE=_F( JUSQU_A = 2.5, NOMBRE = 2000))
 
 DYN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                           MATR_MASS=MASSE,   MATR_RIGI=RIGIDITE,
+                          ENERGIE=_F(),
                           EXCIT=_F(  VECT_ASSE = VECTASS,
                                   FONC_MULT = FONC),
 ####CDURAND###                         ETAT_INIT=_F(  INST_INIT = 0.),
@@ -204,6 +205,7 @@ DYNA=DYNA_NON_LINE(     MODELE=MODELE,   CHAM_MATER=CHAMPMAT,
 #  On impose explicitement une acceleration initiale nulle car la matrice de masse etant singuliere
 #  a cause du modele (u,p,phi), on ne peut calculer une acceleration non nulle :
                         ETAT_INIT=_F(  ACCE = ACCE0,),
+                        ENERGIE=_F(),
                         CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-9),                     
                           COMP_INCR=_F( RELATION = 'ELAS',
                                   TOUT = 'OUI'),

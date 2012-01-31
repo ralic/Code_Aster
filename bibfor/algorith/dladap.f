@@ -1,14 +1,16 @@
       SUBROUTINE DLADAP(TINIT,LCREA,LAMORT,NEQ,IMAT,
      &                  MASSE,RIGID,AMORT,
      &                  DEP0,VIT0,ACC0,
+     &                  FEXTE,FAMOR,FLIAI,
      &                  NCHAR,NVECA,LIAD,LIFO,
      &                  MODELE,MATE,CARELE,
-     &                  CHARGE,INFOCH,FOMULT,NUMEDD,NUME,INPSCO,NBPASE)
+     &                  CHARGE,INFOCH,FOMULT,NUMEDD,NUME,INPSCO,
+     &                  NBPASE,SOLVEU)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/10/2011   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -73,10 +75,12 @@ C DECLARATION PARAMETRES D'APPELS
 
       CHARACTER*8  MASSE, RIGID, AMORT
       CHARACTER*13 INPSCO
+      CHARACTER*19 SOLVEU
       CHARACTER*24 MODELE, CARELE, CHARGE, FOMULT, MATE, NUMEDD
       CHARACTER*24 INFOCH, LIFO(*)
 C
       REAL*8       DEP0(*),VIT0(*),ACC0(*),TINIT
+      REAL*8       FEXTE(*),FAMOR(*),FLIAI(*)
 C
       LOGICAL      LAMORT, LCREA
 
@@ -98,7 +102,7 @@ C    ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ---------------------------
 
       INTEGER NBTYAR
-      PARAMETER ( NBTYAR = 3 )
+      PARAMETER ( NBTYAR = 6 )
       INTEGER NRORES
       INTEGER IFM, NIV, ETAUSR
       INTEGER IAUX, JAUX
@@ -113,10 +117,11 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ---------------------------
       INTEGER NDDL
       INTEGER IWK0
       INTEGER VALI(3)
-      CHARACTER*4   TYP1(3)
+      CHARACTER*4   TYP1(NBTYAR)
       CHARACTER*8   K8B, NOMRES
       CHARACTER*8   VVAR
       CHARACTER*16  TYPRES, NOMCMD,TYPEAR(NBTYAR)
+      CHARACTER*19  SDENER,MASSE1,RIGID1,AMORT1,K19BID
       CHARACTER*24  SOP
       CHARACTER*24  NDEEQ
       REAL*8        TPS1(4),TFIN
@@ -128,13 +133,14 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ---------------------------
       REAL*8 PAS2
       REAL*8 VALR(3)
       REAL*8 R8PREM
-      INTEGER       IWK1,IWK2,IFORC1
+      INTEGER       IWK1,IWK2,IFORC1,IFOR,IRET
       INTEGER       NPER,NRMAX,NR,NPAS,IPAS,IPARCH,IARCHI
       INTEGER       NNC,NBEXCL,NBIPAS,IVERI,NBORDR,NBITER
-      INTEGER       NBPASC
+      INTEGER       NBPASC,IFNOBI,IFCIBI
       INTEGER       ADEEQ
       INTEGER       NRPASE, IBID
       INTEGER      IARG
+      LOGICAL       ENER
 C
 C     -----------------------------------------------------------------
       CALL JEMARQ()
@@ -160,7 +166,8 @@ C
       CALL WKVECT('&&DLADAP.F1'    ,'V V R',NEQ,IWK1  )
       CALL WKVECT('&&DLADAP.F2'    ,'V V R',NEQ,IWK2  )
       CALL WKVECT('&&DLADAP.DEPL','V V R',NEQ,JDEPL)
-      CALL WKVECT('&&DLADAP.DEP2','V V R',NEQ,JDEP2)
+      CALL VTCREB('&&DLADAP.DEP2',NUMEDD,'V','R',NEQ)
+      CALL JEVEUO('&&DLADAP.DEP2      '//'.VALE','E',JDEP2)
       CALL WKVECT('&&DLADAP.VITE','V V R',NEQ,JVITE)
       CALL WKVECT('&&DLADAP.VIT2','V V R',NEQ,JVIT2)
       CALL WKVECT('&&DLADAP.VIP1','V V R',NEQ,JVIP1)
@@ -177,6 +184,11 @@ C
       EPSI = R8PREM()
       NPAS = 0
       IARCHI = NUME
+      ENER=.FALSE.
+      CALL JEEXIN(SOLVEU(1:8)//'.ENER      .VALE',IRET)
+      IF (IRET.NE.0) THEN
+        ENER=.TRUE.
+      ENDIF
 C
 C 1.4. ==> PARAMETRES D'INTEGRATION
 C
@@ -261,6 +273,9 @@ C
       TYPEAR(1) = 'DEPL'
       TYPEAR(2) = 'VITE'
       TYPEAR(3) = 'ACCE'
+      TYPEAR(4) = 'FORC_EXTE'
+      TYPEAR(5) = 'FORC_AMOR'
+      TYPEAR(6) = 'FORC_LIAI'
       CALL GETVIS('ARCHIVAGE','PAS_ARCH',1,IARG,1,IPARCH,IBID)
       IF(IBID .EQ. 0) IPARCH=1
       DTARCH = DTI * IPARCH
@@ -280,6 +295,12 @@ C
           TYPEAR(2) = '    '
         ELSEIF (TYP1(IAUX).EQ.'ACCE') THEN
           TYPEAR(3) = '    '
+        ELSEIF (TYP1(IAUX).EQ.'FORC_EXTE') THEN
+          TYPEAR(4) = '    '
+        ELSEIF (TYP1(IAUX).EQ.'FORC_AMOR') THEN
+          TYPEAR(5) = '    '
+        ELSEIF (TYP1(IAUX).EQ.'FORC_LIAI') THEN
+          TYPEAR(6) = '    '
         ENDIF
    17 CONTINUE
 C
@@ -315,6 +336,7 @@ C
      &                TINIT, LCREA, TYPRES,
      &                MASSE, RIGID, AMORT,
      &                DEP0(IAUX), VIT0(IAUX), ACC0(IAUX),
+     &                FEXTE(1),FAMOR(1),FLIAI(1),
      &                NUMEDD, NUME, JAUX, TYPEAR )
 
    21 CONTINUE
@@ -339,6 +361,12 @@ C
       NRPASE = 0
 C
    30 CONTINUE
+C
+      IF (ENER) THEN
+        DO 434, IAUX=1,NEQ
+          FEXTE(IAUX)=FEXTE(IAUX+NEQ)
+  434   CONTINUE
+      ENDIF
 C
       IF (TEMPS.LT.TFIN) THEN
         ISTOC = 0
@@ -371,6 +399,12 @@ C ------------- CALCUL DU SECOND MEMBRE F*
      &                   LIAD,LIFO,CHARGE,INFOCH,FOMULT,
      &                   MODELE,MATE,CARELE,NUMEDD,
      &                   NBPASE,NRPASE,INPSCO,ZR(IFORC1))
+C
+          IF (ENER) THEN
+            DO 433, IAUX =1,NEQ
+              FEXTE(IAUX+NEQ)=ZR(IFORC1+IAUX-1)
+  433       CONTINUE
+          ENDIF
 C
 C ------------- FORCE DYNAMIQUE F* = F* - K DEP - C VIT
           CALL DLFDYN ( IMAT(1),IMAT(3),LAMORT,NEQ,
@@ -449,16 +483,35 @@ C       --- ARCHIVAGE EVENTUEL DANS L'OBJET SOLUTION ---
      &                    NEQ, ISTOC, IARCHI, ' ',
      &                    JAUX, IFM, TEMP2,
      &                    NBTYAR, TYPEAR, MASSE,
-     &                    ZR(JDEP2), ZR(JVIP2), ZR(JACC2) )
+     &                    ZR(JDEP2), ZR(JVIP2), ZR(JACC2), 
+     &                    FEXTE(1+NEQ),FAMOR(1+NEQ),FLIAI(1+NEQ) )
           ELSE
             TARCHI = TEMPS
             CALL DLARCH ( NRORES, INPSCO,
      &                    NEQ, ISTOC, IARCHI, ' ',
      &                    JAUX, IFM, TEMPS,
      &                    NBTYAR, TYPEAR, MASSE,
-     &                    ZR(JDEPL), ZR(JVIP1), ZR(JACCE) )
+     &                    ZR(JDEPL), ZR(JVIP1), ZR(JACCE),
+     &                    FEXTE,FAMOR,FLIAI ) 
           ENDIF
           TARCH = TARCH + DTARCH
+        ENDIF
+C
+        IF (ENER) THEN
+          SDENER=SOLVEU(1:8)//'.ENER      '
+          MASSE1=MASSE//'           '
+          AMORT1=AMORT//'           '
+          RIGID1=RIGID//'           '
+          CALL WKVECT('FNODABID','V V R',2*NEQ,IFNOBI)
+          CALL WKVECT('FCINEBID','V V R',2*NEQ,IFCIBI)
+C ON CALCULE LA VITESSE A T N-1
+          CALL ENERCA(K19BID, ZR(JDEPL),ZR(JVIP1) ,ZR(JDEP2),
+     &                ZR(JVIP2) , MASSE1,
+     &               AMORT1,RIGID1,FEXTE ,FAMOR ,FLIAI ,
+     &               ZR(IFNOBI),ZR(IFCIBI),LAMORT,.TRUE.,.FALSE.,
+     &               SDENER,'&&DLADAP')
+          CALL JEDETR('FNODABID')
+          CALL JEDETR('FCINEBID')
         ENDIF
 C
 C ------------- TRANSFERT DES NOUVELLES VALEURS DANS LES ANCIENNES
@@ -515,7 +568,8 @@ C
      &                  JAUX, IFM, TEMPS,
      &                  NBTYAR, TYPEAR, MASSE,
      &                  ZR(JDEPL+IAUX), ZR(JVIP1+IAUX),
-     &                  ZR(JACCE+IAUX) )
+     &                  ZR(JACCE+IAUX), FEXTE(NEQ+1),FAMOR(NEQ+1),
+     &                  FLIAI(NEQ+1) )
 C
    42   CONTINUE
 C

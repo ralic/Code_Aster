@@ -1,8 +1,8 @@
-#@ MODIF contact Messages  DATE 07/11/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF contact Messages  DATE 30/01/2012   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -126,10 +126,6 @@ Contact méthode VERIF.
 
 94 : _(u"""
 Contact méthode continue. La modélisation COQUE_3D n'est pas encore compatible avec la formulation 'CONTINUE'.
-"""),
-
-95 : _(u"""
-Contact méthode continue. Les options RACCORD_LINE_QUAD et FOND_FISSURE sont exclusives.
 """),
 
 96 : _(u"""

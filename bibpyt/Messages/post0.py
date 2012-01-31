@@ -1,8 +1,8 @@
-#@ MODIF post0 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF post0 Messages  DATE 30/01/2012   AUTEUR BOTTONI M.BOTTONI 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -134,17 +134,19 @@ La SD RESULTAT ne contient aucun champ au numéro d ordre %(i1)d.
 La SD RESULTAT ne contient aucun champ à l instant %(r1)f.
 """),
 
-33: _(u"""
-Attention : le modèle n'est pas une entrée de la macro-commande et n'appartient pas
-à la structure données résultat.
+33 : _(u"""
+Sur certains points de la fissure %(k1)s le calcul de l'ouverture de fissure n'a pas été possible. Trois situations sont envisageables : 
+      (1) Le point est sur le bord
+      (2) L'endommagement maximal n'a été atteint sur la zone endommagée
+      (3) La valeur BORNE_MAX est trop élevée
 """),
 
 34: _(u"""
-Attention : donner un maillage 2D en entrée
+Pour la commande POST_ENDO_FISS, le maillage doit être contenu dans un plan parallèle aux plans XY, XZ, YZ.
 """),
 
 35: _(u"""
-Attention : le type de champ en entrée ne fait pas partie des champs que la macro-commande peut traiter
+Le champ pour la recherche de l'ouverture de fissure doit être un champ aux noeuds.
 """),
 
 36 : _(u"""
@@ -170,4 +172,19 @@ Assurez vous que :
 En 3D, le mot-clé NORMALE doit être renseigné dans la commande DEFI_FOND_FISS.
 """),
 
+41 : _(u"""
+L'instant ou numéro d'ordre demandé n'existe pas dans le résultat et champ renseignés en entrée de la commande.
+"""),
+
+42 : _(u"""
+Le champ demandé pour la recherche du trajet de fissuration n'existe pas dans le résultat renseigné en entrée de la commande.
+"""),
+
+43 : _(u"""
+Si OUVERTURE='OUI' il est nécessaire de renseigner un concept RESULTAT en entrée de la commande (et pas un CHAM_GD).
+"""),
+
+44 : _(u"""
+Si OUVERTURE='OUI' il est nécessaire de renseigner le mot-clé BORNE_MAX.
+"""),
 }

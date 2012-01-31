@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -23,7 +23,13 @@ MACR_ELEM_DYNA=OPER(nom="MACR_ELEM_DYNA",op=  81,sd_prod=macr_elem_dyna,
                     reentrant='n',
             UIinfo={"groupes":("Matrices et vecteurs","Dynamique",)},
          regles=(EXCLUS('MATR_AMOR','AMOR_REDUIT' ),
-                 PRESENT_ABSENT('MATR_IMPE','MATR_RIGI','MATR_MASS'),),
+                 PRESENT_ABSENT('MATR_IMPE','MATR_IMPE_RIGI'),
+                 PRESENT_ABSENT('MATR_IMPE','MATR_IMPE_MASS'),
+                 PRESENT_ABSENT('MATR_IMPE','MATR_IMPE_AMOR'),
+                 PRESENT_ABSENT('MATR_IMPE','MATR_RIGI','MATR_MASS'),
+                 PRESENT_ABSENT('MATR_IMPE_MASS','MATR_RIGI','MATR_MASS'),
+                 PRESENT_ABSENT('MATR_IMPE_RIGI','MATR_RIGI','MATR_MASS'),
+                 PRESENT_ABSENT('MATR_IMPE_AMOR','MATR_RIGI','MATR_MASS'),),
          BASE_MODALE     =SIMP(statut='o',typ=mode_meca ),
          MATR_RIGI       =SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_depl_c),),
          MATR_MASS       =SIMP(statut='f',typ=matr_asse_depl_r ),
@@ -31,6 +37,9 @@ MACR_ELEM_DYNA=OPER(nom="MACR_ELEM_DYNA",op=  81,sd_prod=macr_elem_dyna,
          AMOR_REDUIT     =SIMP(statut='f',typ='R',max='**'), 
          SANS_GROUP_NO   =SIMP(statut='f',typ=grno ),
          MATR_IMPE       =SIMP(statut='f',typ=matr_asse_gene_c ),
+         MATR_IMPE_RIGI  =SIMP(statut='f',typ=matr_asse_gene_c ),
+         MATR_IMPE_MASS  =SIMP(statut='f',typ=matr_asse_gene_c ),
+         MATR_IMPE_AMOR  =SIMP(statut='f',typ=matr_asse_gene_c ),
          b_matr_impe     =BLOC(condition = "MATR_IMPE != None",
              FREQ_EXTR       =SIMP(statut='o',typ='R' ),
              AMOR_SOL        =SIMP(statut='f',typ='R',defaut=0.E+0 ),

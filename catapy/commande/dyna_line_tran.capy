@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 31/05/2011   AUTEUR NISTOR I.NISTOR 
+#& MODIF COMMANDE  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -128,6 +128,7 @@ DYNA_LINE_TRAN=OPER(nom="DYNA_LINE_TRAN",op=  48,sd_prod=dyna_trans,
 #           PAS_ARCH        =SIMP(statut='f',typ='I' ),
 #           CHAM_EXCLU      =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',into=("DEPL","VITE","ACCE") ),
 #         ),
+         ENERGIE         =FACT(statut='f',max=1),
          ARCHIVAGE       =FACT(statut='f',max=1,
            regles         = (EXCLUS('PAS_ARCH','LIST_INST','INST'),),
            LIST_INST      = SIMP(statut='f',typ=(listr8_sdaster) ),
