@@ -1,44 +1,49 @@
-# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL 3D DE K1 FISSURE CIRCULAIRE EN MILIEU INFINI
 # sslv134h.para = tps_job 280 mem_job 1600Mo mem_aster 33 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # METHODE X-FEM (FISSURE NON MAILLEE)
 
-DEBUT(   CODE=_F( NOM = 'SSLV134H',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(   CODE=_F( NOM = 'SSLV134H',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
+         IGNORE_ALARM=('CALCULEL4_9'),)
+
+# <CALCULEL4_9> : POST_K1_K2_K3 / MACR_LIGN_COUP emet cette alarme pour
+# signaler une imprecision pour les ddls E1X, E1Y, E1Z, ..., E4Z
+# mais ce n'est pas grave car ces ddls ne servent pas au calcul de K1,K2,K3
 
 MA1=LIRE_MAILLAGE(INFO=1,FORMAT='MED',);
 
 MA1=DEFI_GROUP(reuse =MA1,
                     MAILLAGE=MA1,
                     CREA_GROUP_NO=(_F(GROUP_MA='PEAUEXT',),
-                                   _F(GROUP_MA='PEAUINT',), 
+                                   _F(GROUP_MA='PEAUINT',),
                                    _F(GROUP_MA='EXTUBE_S',),
-                                   _F(GROUP_MA='EXTUBE_I',), 
-                                   _F(GROUP_MA='BORD1',), 
-                                   _F(GROUP_MA='BORD2',), 
+                                   _F(GROUP_MA='EXTUBE_I',),
+                                   _F(GROUP_MA='BORD1',),
+                                   _F(GROUP_MA='BORD2',),
                                 ),
                                     );
-  
+
 
 MAT=DEFI_MATERIAU( ELAS=_F(  E = 2.E11,  NU = 0.3, RHO = 0.,
                             ALPHA = 0.))
-                            
+
 MODELEIN=AFFE_MODELE(MAILLAGE=MA1,
                      INFO = 1,
                    AFFE=(_F(GROUP_MA=('TUBE',),
@@ -47,7 +52,7 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MA1,
                          _F(GROUP_MA=('EXTUBE_S','EXTUBE_I',),
                             PHENOMENE='MECANIQUE',
                             MODELISATION='3D',),
-                  ),);        
+                  ),);
 
 MA1=MODI_MAILLAGE(reuse =MA1,
                        MAILLAGE=MA1,
@@ -62,7 +67,7 @@ ray = 2.
 
 # avec l'orientation automatique du fond de fissure
 # on tourne dans l'autre sans, il faudra changer les DTAN_ORIG....
-FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,  
+FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     DEFI_FISS=_F(
                                  FORM_FISS      = 'ELLIPSE',
                                  DEMI_GRAND_AXE = ray,
@@ -87,19 +92,19 @@ CHAR1=AFFE_CHAR_MECA(INFO=1,
                       MODELE=MODELEK,
                      DDL_IMPO=(
                               _F(GROUP_NO='PEAUEXT',
-                                       DX=0.0,),   
+                                       DX=0.0,),
                               _F(GROUP_NO='EXTUBE_I',
                                        DZ=0.0,),
                               _F(GROUP_NO='BORD1',
                                        DY=0.0,),
-                                        ), );   
+                                        ), );
 
 CHAR2=AFFE_CHAR_MECA(INFO=1,
                       MODELE=MODELEK,
                       PRES_REP=(_F(GROUP_MA='EXTUBE_S',
-                                    PRES=-1.E6,), 
+                                    PRES=-1.E6,),
                       ),   );
-                      
+
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       LIAISON_XFEM='OUI',);
 
@@ -112,7 +117,7 @@ UTOT1=MECA_STATIQUE(MODELE=MODELEK,
                    SOLVEUR=_F(PCENT_PIVOT=10,
                             METHODE='MUMPS'),
                    INFO=1,
-                   ); 
+                   );
 
 
 #----------------------------------------------------------------------
@@ -187,7 +192,7 @@ SIFK1=POST_K1_K2_K3(  MODELISATION='3D',
                       RESULTAT=UTOT1,
                       ABSC_CURV_MAXI=0.5,
                       DTAN_EXTR = (0.,1.,0.),
-                      DTAN_ORIG = (-1.,0.,0.),                      
+                      DTAN_ORIG = (-1.,0.,0.),
                       )
 
 IMPR_TABLE(TABLE=SIFK1,);
@@ -206,7 +211,7 @@ SIFK2=POST_K1_K2_K3(  MODELISATION='3D',
 
 IMPR_TABLE(TABLE=SIFK2,);
 
-                    
+
 #----------------------------------------------------------------------
 #              TEST DE K1 EN 1 POINT
 #----------------------------------------------------------------------
@@ -281,7 +286,7 @@ TEST_TABLE(      TABLE=SIFK1,
                  VALE=1.595E+6,
                  PRECISION=0.07,
                  REFERENCE='ANALYTIQUE'      )
-                 
+
 TEST_TABLE(      TABLE=SIFK1,
                  FILTRE=(_F(NOM_PARA = 'PT_FOND',
                             VALE_I = 23),
@@ -300,7 +305,7 @@ TEST_TABLE(      TABLE=SIFK2,
                  VALE=1.595E+6,
                  PRECISION=0.03,
                  REFERENCE='ANALYTIQUE'      )
-                 
+
 
 
 FIN();

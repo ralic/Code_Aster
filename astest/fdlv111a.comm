@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE ABSORPTION D'UNE ONDE DE PRESSION DANS UNE COLONNE FLUIDE
 # fdlv111a.para = tps_job 300 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -6,27 +6,28 @@
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # CAS_TEST__: FDLV111A
 #
 # PROPAGATION D'UNE ONDE DE COMPRESSION DANS UNE COLONNE FLUIDE
-# INFINIE - ABSORPTION DE L'ONDE A LA FRONTIERE DU MAILLAGE 
+# INFINIE - ABSORPTION DE L'ONDE A LA FRONTIERE DU MAILLAGE
 # ELEMENTS FINIS
 # CAS 3D
 #=======================================================================
 
-DEBUT(CODE=_F( NOM = 'FDLV111A',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='FDLV111A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
+# SDVERI='NON' car la verification est trop couteuse en CPU
 
 MAIL=LIRE_MAILLAGE(FORMAT='MED', )
 
@@ -147,21 +148,21 @@ PN47=RECU_FONCTION(    LIST_INST=TEMPLI,   PRECISION=1.E-4,
                         NOM_CMP='PRES'
                       )
 
-TEST_FONCTION(VALEUR=(   _F( 
+TEST_FONCTION(VALEUR=(   _F(
                    FONCTION = PN16,
                    VALE_PARA = 4.71250E-01,
                    VALE_REFE = 7.13737E+03,
                    CRITERE = 'RELATIF',
                    PRECISION = 1.E-3,
                    REFERENCE = 'NON_REGRESSION'),
-                  _F( 
+                  _F(
                    FONCTION = PN16,
                    VALE_PARA = 7.27500E-01,
                    VALE_REFE = -7.08305E+03,
                    CRITERE = 'RELATIF',
                    PRECISION = 1.E-3,
                    REFERENCE = 'NON_REGRESSION'),
-                  _F( 
+                  _F(
                    FONCTION = PN16,
                    VALE_PARA = 1.27375E+00,
                    VALE_REFE = 0.E0,
@@ -170,14 +171,14 @@ TEST_FONCTION(VALEUR=(   _F(
                    REFERENCE = 'ANALYTIQUE'))
                 )
 
-TEST_FONCTION(VALEUR=(   _F( 
+TEST_FONCTION(VALEUR=(   _F(
                    FONCTION = PN18,
                    VALE_PARA = 4.71250E-01,
                    VALE_REFE = 7.13737E+03,
                    CRITERE = 'RELATIF',
                    PRECISION = 1.E-3,
                    REFERENCE = 'NON_REGRESSION'),
-                  _F( 
+                  _F(
                    FONCTION = PN47,
                    VALE_PARA = 3.72500E-01,
                    VALE_REFE = 7.09321E+03,
@@ -188,7 +189,7 @@ TEST_FONCTION(VALEUR=(   _F(
 
 TEMLI=DEFI_LIST_REEL(DEBUT=0., INTERVALLE=_F( JUSQU_A = 1.2, NOMBRE = 400))
 
-TEMLI2=DEFI_LIST_REEL(DEBUT=0.003, 
+TEMLI2=DEFI_LIST_REEL(DEBUT=0.003,
         INTERVALLE=_F( JUSQU_A = 1.2, NOMBRE = 399))
 
 INLI=DEFI_LIST_ENTI( DEBUT=1, INTERVALLE=_F( JUSQU_A = 401, PAS = 1))
@@ -206,11 +207,11 @@ DYNA=DYNA_NON_LINE(     MODELE=MODELE,   CHAM_MATER=CHAMPMAT,
 #  a cause du modele (u,p,phi), on ne peut calculer une acceleration non nulle :
                         ETAT_INIT=_F(  ACCE = ACCE0,),
                         ENERGIE=_F(),
-                        CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-9),                     
+                        CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-9),
                           COMP_INCR=_F( RELATION = 'ELAS',
                                   TOUT = 'OUI'),
 #                         SOLVEUR=_F( STOP_SINGULIER = 'NON'),
-                         NEWTON=_F(  MATRICE = 'ELASTIQUE', 
+                         NEWTON=_F(  MATRICE = 'ELASTIQUE',
                                  REAC_INCR = 0,
                                  REAC_ITER = 0),
                          INCREMENT=_F( LIST_INST = TEMLI),
@@ -237,19 +238,19 @@ PNA47=RECU_FONCTION(    LIST_INST=TEMLI2,   PRECISION=1.E-4,
                         NOM_CMP='PRES'
                       )
 
-TEST_FONCTION(VALEUR=(   _F( 
+TEST_FONCTION(VALEUR=(   _F(
                    FONCTION = PNA16,
                    VALE_PARA = 4.71000E-01,
                    VALE_REFE = 7.11473E+03,
                    CRITERE = 'RELATIF',
                    PRECISION = 9.E-3),
-                  _F( 
+                  _F(
                    FONCTION = PNA16,
                    VALE_PARA = 7.26000E-01,
                    VALE_REFE = -7.00022E+03,
                    CRITERE = 'RELATIF',
                    PRECISION = 2.E-2),
-                  _F( 
+                  _F(
                    FONCTION = PNA16,
                    VALE_PARA = 1.20000E+00,
                    VALE_REFE = 0.E0,
@@ -257,13 +258,13 @@ TEST_FONCTION(VALEUR=(   _F(
                    PRECISION = 50.E0))
                 )
 
-TEST_FONCTION(VALEUR=(   _F( 
+TEST_FONCTION(VALEUR=(   _F(
                    FONCTION = PNA18,
                    VALE_PARA = 4.71000E-01,
                    VALE_REFE = 7.11473E+03,
                    CRITERE = 'RELATIF',
                    PRECISION = 9.E-3),
-                  _F( 
+                  _F(
                    FONCTION = PNA47,
                    VALE_PARA = 3.72000E-01,
                    VALE_REFE = 7.08110E+03,

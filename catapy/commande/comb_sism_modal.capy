@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 06/02/2012   AUTEUR CHANSARD F.CHANSARD 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -89,8 +89,12 @@ COMB_SISM_MODAL=OPER(nom="COMB_SISM_MODAL",op= 109,sd_prod=mode_meca,
          ),
 
          COMB_MODE       =FACT(statut='o',
-           TYPE            =SIMP(statut='o',typ='TXM',into=("SRSS","CQC","DSC","ABS","DPC") ),
+           TYPE            =SIMP(statut='o',typ='TXM',into=("SRSS","CQC","DSC","ABS","DPC","GUPTA") ),
            DUREE           =SIMP(statut='f',typ='R' ),
+         b_gupta =BLOC(condition = "TYPE == 'GUPTA' ",
+           FREQ_1      =SIMP(statut='o',typ='R',),
+           FREQ_2      =SIMP(statut='o',typ='R',),
+         ),      
          ),
          COMB_DIRECTION  =FACT(statut='f',
            TYPE            =SIMP(statut='f',typ='TXM',into=("QUAD","NEWMARK") ),

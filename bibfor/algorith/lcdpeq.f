@@ -1,12 +1,12 @@
-        SUBROUTINE LCDPEQ(VIND, VINF,LOI,NBCOMM,CPMONO,NMAT,NVI,SIG,
-     &  COTHE,COEFF,NFS,NSG,HSR)
+        SUBROUTINE LCDPEQ(VIND, VINF,COMP,NBCOMM,CPMONO,NMAT,NVI,SIG,
+     &  DETOT,EPSD,MATERF)
 
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 06/02/2012   AUTEUR PROIX J-M.PROIX 
 C TOLE CRS_1404
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,82 +21,127 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C       DEFORMATION PLASTIQUE EQUIVALENTE CUMULEE MACROSCOPIQUE
-C       POUR LE MONOCRISTAL
-C       IN  VIND   :  VARIABLES INTERNES A T
-C       IN  VINF   :  VARIABLES INTERNES A T+DT
-C       ----------------------------------------------------------------
-        INTEGER  NVI,NMAT,NBCOMM(NMAT,3),NBPHAS,I,IPHAS,INDFV
-        INTEGER  NUVI,NBFSYS,IFA,IS,NBSYS,NFS,NSG
-        REAL*8   VIND(NVI),VINF(NVI),DVIN(NVI),SIG(6),GRANB(6)
-        REAL*8   EPSEQ,COTHE(NMAT),COEFF(NMAT),E,NU,FV,EXPBP(NSG)
-        REAL*8   SIGG(6),MAXRP,ZE(12),RP,HSR(NFS,NSG,NSG)
-        CHARACTER*16    LOI,CPMONO(5*NMAT+1),LOCA
-      CHARACTER*16 NOMFAM,NECRIS,NECOUL
-C V.I. 1 a 6 reprÈsente la deformation viscoplastique macro
-        EPSEQ=0
-        DO 10 I=1,6
-            DVIN(I)=VINF(I)-VIND(I)
-            EPSEQ=EPSEQ+DVIN(I)*DVIN(I)
-10      CONTINUE
-        EPSEQ = SQRT ( 2.0D0/3.0D0* EPSEQ )
-        CALL R8INIR(12, 0.D0, ZE, 1)
+C     DEFORMATION PLASTIQUE EQUIVALENTE CUMULEE MACROSCOPIQUE
+C     POUR LE MONOCRISTAL
+C     IN  VIND   :  VARIABLES INTERNES A T
+C     IN  VINF   :  VARIABLES INTERNES A T+DT
+C          COMP   :  NOM MODELE DE COMPORTEMENT
+C          NBCOMM :  INDICES DES COEF MATERIAU
+C          CPMONO :  NOMS DES LOIS MATERIAU PAR FAMILLE
+C          NMAT   :  DIMENSION MATER
+C          VIND   :  VARIABLES INTERNES A T
+C          SIG    :  CONTRAINTES A T
+C          DETOT  :  INCREMENT DE  DEFORMATION TOTALE OU DF
+C          EPSD   :  DEFORMATION TOTALE A T OU F A T
+C     VAR  NVI    :  NOMBRE DE VARIABLES INTERNES
+C          VINF   :  VARIABLES INTERNES A T+DT
+C          MATERF :  COEF MATERIAU
+C     ----------------------------------------------------------------
+      INTEGER NVI,NMAT,NBCOMM(NMAT,3),NBPHAS,I,IPHAS,INDFV,NUVI,NS
+      REAL*8  VIND(NVI),VINF(NVI),DVIN(NVI),SIG(6),GRANB(6)
+      REAL*8  EPSEQ,E,NU,FV,SIGG(6)
+      REAL*8  ID(3,3),F(3,3),FPM(3,3),FP(3,3),FE(3,3),DETP,LCNRTE
+      REAL*8  DETOT(*),EPSD(*),PK2(6),DEVI(6),ENDOC
+      REAL*8 MATERF(NMAT,2)
+      CHARACTER*16 LOI,CPMONO(5*NMAT+1),LOCA,COMP(*)
+      DATA    ID/1.D0,0.D0,0.D0, 0.D0,1.D0,0.D0, 0.D0,0.D0,1.D0/    
 
-        NBFSYS=NBCOMM(NMAT,2)
-        MAXRP=-1.D20
-
-         IF (LOI(1:8).EQ.'MONOCRIS') THEN
-            VINF (NVI-1) = VIND (NVI-1) + EPSEQ
-            DO 6 IFA=1,NBFSYS
-               NOMFAM=CPMONO(5*(IFA-1)+1)
-               NECOUL=CPMONO(5*(IFA-1)+3)
-               IF(NECOUL.EQ.'MONO_DD_CFC') THEN
-                  NECRIS=CPMONO(5*(IFA-1)+4)
-                  CALL LCMMSG(NOMFAM,NBSYS,0,ZE,ZE,ZE,ZE,0,ZE)
-                  DO 7 IS=1,NBSYS
-                     CALL LCMMFI(COEFF,IFA,NMAT,NBCOMM,NECRIS,
-     &              IS,NBSYS,VINF(7),ZE,NFS,NSG,HSR,1,EXPBP,RP)
-                     MAXRP=MAX(RP,MAXRP)
-  7               CONTINUE
-                  VINF(NVI-2)=MAXRP
-               ENDIF
-  6         CONTINUE
-         ELSEIF (LOI(1:8).EQ.'POLYCRIS') THEN
-
-            VINF (7) = VIND (7) + EPSEQ
-C           LOCALISATION
-C           RECUPERATION DU NOMBRE DE PHASES
-            NBPHAS=NBCOMM(1,1)
-            LOCA=CPMONO(1)
-C           CALCUL DE  B
-            DO 53 I=1,6
-               GRANB(I)=0.D0
-53          CONTINUE
-            DO 54 I=1,6
-            DO 54 IPHAS=1,NBPHAS
-               INDFV=NBCOMM(1+IPHAS,3)
-               FV=COEFF(INDFV)
-               GRANB(I)=GRANB(I)+FV*VINF(7+6*(IPHAS-1)+I)
-54          CONTINUE
-            NUVI=NVI-6*NBPHAS-1
-            DO 1 IPHAS=1,NBPHAS
-             INDFV=NBCOMM(1+IPHAS,3)
-C            recuperer l'orientation de la phase et la proportion
-             FV=COEFF(INDFV)
-             E=COTHE(1)
-             NU=COTHE(2)
-             CALL LCLOCA(COEFF,E,NU,NMAT,NBCOMM,NBPHAS,SIG,VINF,
-     &               IPHAS,GRANB,LOCA,SIGG)
-               DO 2 I=1,6
-                  VINF(NUVI+6*(IPHAS-1)+I)=SIGG(I)
-   2           CONTINUE
-   1        CONTINUE
+      LOI  = COMP(1)
+      IF (LOI(1:8).EQ.'MONOCRIS')  THEN
+         NVI = NVI +3
+         IF (COMP(3)(1:4).EQ.'SIMO') THEN
+            NVI=NVI+9
          ENDIF
+      ENDIF
 
-         IF (EPSEQ.EQ.0.D0) THEN
-            VINF (NVI) = 0.D0
+C --    DEBUT TRAITEMENT DE VENDOCHAB --
+C --    CALCUL DES CONTRAINTES SUIVANT QUE LE MATERIAU EST
+C --    ENDOMMAGE OU PAS
+
+      IF (LOI(1:8).EQ.'MONOCRIS') THEN      
+  
+         IF (COMP(3)(1:5).NE.'PETIT') THEN
+C           ICI CONTRAIREMENT A LCMMON, NVI EST LE NOMBRE TOTAL DE V.I
+            NS=(NVI-27)/3
+            CALL DCOPY(9,VINF(6+3*NS+1),1,FP,1)
+            CALL MATINV('S',3,FP,FPM,DETP)
+            CALL PMAT(3,DETOT,EPSD,F)
+            CALL PMAT(3,F,FPM,FE)
+C           CALCUL DES CONTRAINTES DE KIRCHOFF
+            CALL DCOPY(6,SIG,1,PK2,1)
+            CALL DSCAL(3,SQRT(2.D0),PK2(4),1)
+            CALL PK2SIG(3,FE,1.D0,PK2,SIG,1)
+C           LES RACINE(2) ATTENDUES PAR NMCOMP :-)       
+            CALL DSCAL(3,SQRT(2.D0),SIG(4),1)
+            CALL DAXPY(9,-1.D0,ID,1,FE,1)
+            CALL DCOPY(9,FE,1,VINF(6+3*NS+10),1)
+            CALL LCGRLA(FP,DEVI)
+            CALL DCOPY(6,DEVI,1,VINF,1)
+            CALL DSCAL(3,SQRT(2.D0),DEVI(4),1) 
+            CALL DAXPY(9,-1.D0,ID,1,FP,1)
+            CALL DCOPY(9,FP,1,VINF(6+3*NS+1),1)
+            EPSEQ = LCNRTE(DEVI)
          ELSE
-            VINF (NVI) = 1.D0
+C           V.I. 1 A 6 REPRÈSENTE LA DEFORMATION VISCOPLASTIQUE MACRO
+            EPSEQ=0
+            DO 10 I=1,6
+                DVIN(I)=VINF(I)-VIND(I)
+                EPSEQ=EPSEQ+DVIN(I)*DVIN(I)
+10          CONTINUE
+            EPSEQ = SQRT ( 2.0D0/3.0D0* EPSEQ )
          ENDIF
+         VINF (NVI-1) = VIND (NVI-1) + EPSEQ
+         
+      ELSEIF (LOI(1:8).EQ.'POLYCRIS') THEN
 
-        END
+C        V.I. 1 A 6 REPRÈSENTE LA DEFORMATION VISCOPLASTIQUE MACRO
+         EPSEQ=0
+         DO 20 I=1,6
+             DVIN(I)=VINF(I)-VIND(I)
+             EPSEQ=EPSEQ+DVIN(I)*DVIN(I)
+20       CONTINUE
+         EPSEQ = SQRT ( 2.0D0/3.0D0* EPSEQ )
+         VINF (7) = VIND (7) + EPSEQ
+C        LOCALISATION
+C        RECUPERATION DU NOMBRE DE PHASES
+         NBPHAS=NBCOMM(1,1)
+         LOCA=CPMONO(1)
+C        CALCUL DE  B
+         DO 53 I=1,6
+            GRANB(I)=0.D0
+53       CONTINUE
+         DO 54 I=1,6
+         DO 54 IPHAS=1,NBPHAS
+            INDFV=NBCOMM(1+IPHAS,3)
+            FV=MATERF(INDFV,2)
+            GRANB(I)=GRANB(I)+FV*VINF(7+6*(IPHAS-1)+I)
+54       CONTINUE
+         NUVI=NVI-6*NBPHAS-1
+         DO 1 IPHAS=1,NBPHAS
+          INDFV=NBCOMM(1+IPHAS,3)
+C         RECUPERER L'ORIENTATION DE LA PHASE ET LA PROPORTION
+          FV=MATERF(INDFV,2)
+          E =MATERF(1,1)
+          NU=MATERF(2,1)
+          CALL LCLOCA(MATERF(1,2),E,NU,NMAT,NBCOMM,NBPHAS,SIG,VINF,
+     &            IPHAS,GRANB,LOCA,SIGG)
+            DO 2 I=1,6
+               VINF(NUVI+6*(IPHAS-1)+I)=SIGG(I)
+   2        CONTINUE
+   1     CONTINUE
+      ENDIF
+
+      IF (EPSEQ.EQ.0.D0) THEN
+         VINF (NVI) = 0.D0
+      ELSE
+         VINF (NVI) = 1.D0
+      ENDIF
+
+      IF (LOI(1:9).EQ.'VENDOCHAB') THEN
+C --    DEBUT TRAITEMENT DE VENDOCHAB --
+C --    CALCUL DE DSDE SUIVANT QUE LE MATERIAU EST ENDOMMAGE OU PAS
+        ENDOC=(1.0D0-VINF(9))
+        MATERF(1,1)=MATERF(1,1)*ENDOC
+      ENDIF
+      
+      END

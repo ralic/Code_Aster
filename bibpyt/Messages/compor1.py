@@ -1,8 +1,8 @@
-#@ MODIF compor1 Messages  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF compor1 Messages  DATE 06/02/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -357,10 +357,6 @@ suivantes : - D_PLAN_GRAD_VARI
 """),
 67 : _(u"""
 Dans la définition du matériau RUPT_DUCT les coefficients de forme de la loi CZM_TRA_MIX doivent vérifier : COEF_EXTR <= COEF_PLAS
-"""),
-
-68 : _(u"""
-Le comportement MONOCRISTAL en grandes déformations SIMO_MIEHE n'est pas compatible avec RUNGE_KUTTA. Utiliser NEWTON.
 """),
 
 69 : _(u"""

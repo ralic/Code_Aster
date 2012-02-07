@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # RESPONSABLE ABBAS M.ABBAS
 # AUTEUR : M. ZARROUG
 # DATE   : 18/12/2000
@@ -9,24 +9,24 @@
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # CAS_TEST__:SSNV104E
 # MODELISATION 2D AXI ELEMENTS LINEAIRES : TRIA3 ET QUAD4
 #
 ######
 
-DEBUT(CODE=_F( NOM = 'SSNV104E',NIV_PUB_WEB='INTERNET'));
+DEBUT(CODE=_F(NOM='SSNV104E',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE(FORMAT='MED',);
 
@@ -50,7 +50,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
 
 CHA1 = DEFI_CONTACT(MODELE         = MO,
                     FORMULATION    = 'CONTINUE',
-                    ITER_CONT_MAXI = 20, 
+                    ITER_CONT_MAXI = 20,
                     ZONE =(
                            _F(
                              GROUP_MA_ESCL = 'CON1',
@@ -58,10 +58,10 @@ CHA1 = DEFI_CONTACT(MODELE         = MO,
                              ALGO_CONT     = 'STANDARD',
                              GLISSIERE     = 'OUI',
                              COEF_CONT     = 10000.,
-                             ),                            
+                             ),
                           ),
                    );
-                    
+
 CHA2=AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=(_F(GROUP_NO='SPHSUP',
                                  DY=-2.0,),
@@ -87,10 +87,10 @@ RESU0=STAT_NON_LINE(MODELE=MO,
                    EXCIT=(
                           _F(CHARGE=CHA2,
                              FONC_MULT=RAMPE)),
-                   CONTACT  = CHA1,          
+                   CONTACT  = CHA1,
                    COMP_ELAS=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=L_INST,),
-                      
+
                    AFFICHAGE=(_F(INFO_RESIDU='OUI',
                                  INFO_TEMPS='OUI',
                                  UNITE=37,),),
@@ -103,10 +103,10 @@ RESU=STAT_NON_LINE(MODELE=MO,
                    EXCIT=(
                           _F(CHARGE=CHA2,
                              FONC_MULT=RAMPE)),
-                   CONTACT  = CHA1,          
+                   CONTACT  = CHA1,
                    COMP_ELAS=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=L_INST,),
-                   
+
                    OBSERVATION=(_F(NOM_CHAM='DEPL',
                                    NOM_CMP='DY',
                                    PAS_OBSE=1,
@@ -114,25 +114,25 @@ RESU=STAT_NON_LINE(MODELE=MO,
                                 _F(NOM_CHAM='SIEF_ELGA',
                                    POINT = 1,
                                    NOM_CMP='SIYY',
-                                   MAILLE='M1',),), 
-                   
+                                   MAILLE='M1',),),
+
                    SUIVI_DDL=(_F(
                                    NOM_CHAM   = 'FORC_NODA',
                                    NOM_CMP    = 'DX',
                                    TOUT = 'OUI',
-                                   EVAL_CHAM='MAX',), 
+                                   EVAL_CHAM='MAX',),
                                 _F(
                                    NOM_CHAM   = 'SIEF_ELGA',
                                    NOM_CMP    = 'SIXX',
                                    MAILLE     = 'M1',
-                                   POINT      = 1,),      
+                                   POINT      = 1,),
                                 _F(
                                    NOM_CHAM   = 'SIEF_ELGA',
                                    NOM_CMP='SIXX',
                                    TOUT = 'OUI',
                                    EVAL_CHAM='MAX',
                                    EVAL_ELGA='MAX',
-                                   )),      
+                                   )),
                    AFFICHAGE=(_F(INFO_RESIDU='OUI',
                                  UNITE=37,),),
                    NEWTON=_F(MATRICE='TANGENTE',

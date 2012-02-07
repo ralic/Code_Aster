@@ -1,8 +1,8 @@
-#@ MODIF macr_adap_mail_ops Macro  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF macr_adap_mail_ops Macro  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -897,6 +897,7 @@ def macr_adap_mail_ops ( self,
 #
   from Accas import _F
   from Macro import creation_donnees_homard
+  import aster_core
   import aster
 #gn  import shutil
 #
@@ -919,7 +920,7 @@ def macr_adap_mail_ops ( self,
   LIRE_MAILLAGE  = self.get_cmd("LIRE_MAILLAGE")
   LIRE_CHAMP     = self.get_cmd("LIRE_CHAMP")
 #
-  repertoire_outils = aster.repout()
+  repertoire_outils = aster_core.get_option('repout')
   Rep_Calc_ASTER = os.getcwd()
   if ( INFO >= 3 ) :
     print "Contenu du repertoire de calcul d'Aster", Rep_Calc_ASTER

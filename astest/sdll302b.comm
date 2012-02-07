@@ -1,41 +1,41 @@
-# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE REPONSE TEMPORELLE D'UNE POUTRE
 # sdll302b.para = tps_job 60 mem_job 400Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
 # A) METHODE DE DEVOGELARE (INTEGRATION SUR BASE MODALE)
 #
 DEBUT( CODE=_F( NOM = 'SDLL302B',NIV_PUB_WEB='INTERNET'),
-         BASE=_F(  FICHIER = 'GLOBALE', 
+         BASE=_F(  FICHIER = 'GLOBALE',
                  LONG_REPE = 30000)
-      )
+,DEBUG=_F(SDVERI='OUI'))
 
 #
 #
 # LIRE ACCELEROGRAMME FFFF EN R11
 #
 CENTROA=LIRE_FONCTION(          UNITE=17,
-                                  NOM_PARA='INST',  
+                                  NOM_PARA='INST',
                                   NOM_RESU='ACCEL_SOL',
                                      TITRE='ACCELE - A ',
                                   INTERPOL='LIN',
-                               PROL_DROITE='EXCLU',  
+                               PROL_DROITE='EXCLU',
                                PROL_GAUCHE='EXCLU'
                            )
 
@@ -53,11 +53,11 @@ DEPLACA=CALC_FONCTION(    INTEGRE=_F( FONCTION = VITESSA,
 
 #
 CENTROB=LIRE_FONCTION(          UNITE=38,
-                                  NOM_PARA='INST',  
+                                  NOM_PARA='INST',
                                   NOM_RESU='ACCEL_SOL',
                                      TITRE='ACCELE - B ',
                                   INTERPOL='LIN',
-                               PROL_DROITE='EXCLU',  
+                               PROL_DROITE='EXCLU',
                                PROL_GAUCHE='EXCLU'
                            )
 
@@ -75,7 +75,7 @@ DEPLACB=CALC_FONCTION(    INTEGRE=_F( FONCTION = VITESSB,
 MA=LIRE_MAILLAGE(  )
 
 #
-MA=DEFI_GROUP( reuse=MA,        MAILLAGE=MA, 
+MA=DEFI_GROUP( reuse=MA,        MAILLAGE=MA,
                            CREA_GROUP_NO=_F( GROUP_MA = ( 'POUTRE',
                                                      ))
                         )
@@ -291,7 +291,7 @@ L_INSTA=DEFI_LIST_REEL(         DEBUT=DEBUTR,
                               INTERVALLE=_F( JUSQU_A = TFIN,
                                           PAS = 0.01)
                           )
-                          
+
 
 REPBASE1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                SCHEMA_TEMPS=_F(SCHEMA='DEVOGE'),
@@ -625,7 +625,7 @@ REP_LIN2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                                            FONC_MULT = CENTROA),
                                    _F(  VECT_ASSE = MONOX2,
                                            FONC_MULT = CENTROB))
- 
+
                            )
 
 #

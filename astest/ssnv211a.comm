@@ -1,31 +1,31 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # ======================================================================
 # TEST DU MODELE VISCOPLASTIQUE VISC_DRUC_PRAG
-# TITRE ETUDE  : ESSAI TRIAXIAL DRAINE AVEC VISC_DRUC_PRAG 
+# TITRE ETUDE  : ESSAI TRIAXIAL DRAINE AVEC VISC_DRUC_PRAG
 # ssnv211a.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # ssnv211a.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 #                CONFINEMENT DE 5 MPa
 # ======================================================================
-DEBUT(   CODE=_F( NOM = 'SSNV211A',NIV_PUB_WEB='INTERNET'),PAR_LOT='OUI' )
+DEBUT(CODE=_F(NOM='SSNV211A',NIV_PUB_WEB='INTERNET'),PAR_LOT='OUI',DEBUG=_F(SDVERI='OUI'))
 
 
 #***********************************************************************
@@ -56,7 +56,7 @@ TEMPS1=DEFI_LIST_REEL(   DEBUT=0.,
 SOL=DEFI_MATERIAU(    ELAS=_F(  E  = 5000.E6,
                                 NU = 0.12  ,
                                 ALPHA = 0.0),
-                                VISC_DRUC_PRAG =_F(    PREF        =   0.1E6,       
+                                VISC_DRUC_PRAG =_F(    PREF        =   0.1E6,
                                              A           =   1.5E-12,
                                              N           =   4.5,
                                              P_PIC       =   0.015,
@@ -110,27 +110,27 @@ COEF1=DEFI_FONCTION(      NOM_PARA='INST',
 U1=STAT_NON_LINE(
                             MODELE=MODELE,
                         CHAM_MATER=CHMAT,EXCIT=(
-                             _F( 
+                             _F(
                 CHARGE = CHAR_U1,
-                FONC_MULT = COEF1), _F( 
+                FONC_MULT = COEF1), _F(
                 CHARGE = CHAR_U2,
-                FONC_MULT = COEF1), _F( 
+                FONC_MULT = COEF1), _F(
                 CHARGE = DEPL_1)),
-                         COMP_INCR=_F( 
+                         COMP_INCR=_F(
                 RELATION = 'VISC_DRUC_PRAG',
                 ),
                 NEWTON=_F(MATRICE = 'TANGENTE',),
-                CONVERGENCE=_F( 
+                CONVERGENCE=_F(
                 RESI_GLOB_RELA = 1.E-6,
                 ITER_GLOB_MAXI = 50),
-                         INCREMENT=_F( 
+                         INCREMENT=_F(
                 LIST_INST = TEMPS1,),
- 
+
                 )
 
 
 
-IMPR_RESU(MODELE=MODELE, 
+IMPR_RESU(MODELE=MODELE,
           RESU=(_F(RESULTAT=U1,INST = 7000.),
                    ),);
 
@@ -194,16 +194,16 @@ COEF2=DEFI_FONCTION(      NOM_PARA='INST',
 #***********************************************************************
 
 
-U2=STAT_NON_LINE( 
+U2=STAT_NON_LINE(
                             MODELE=MODELE,
                         CHAM_MATER=CHMAT,EXCIT=(
-                             _F( 
+                             _F(
                 CHARGE = CHAR_U2,
-                FONC_MULT = COEF1), _F( 
-                CHARGE = DEPL_1), _F( 
+                FONC_MULT = COEF1), _F(
+                CHARGE = DEPL_1), _F(
                 CHARGE = DEPL_2,
                 FONC_MULT = COEF2)),
-                COMP_INCR=_F( 
+                COMP_INCR=_F(
                 RELATION = 'VISC_DRUC_PRAG',),
                 ETAT_INIT=_F(EVOL_NOLI=U1),
                 INCREMENT=_F(LIST_INST=TEMPS2,
@@ -213,7 +213,7 @@ U2=STAT_NON_LINE(
                           #PAS_MINI_ELAS=100,
                           ),
                 ARCHIVAGE = _F(LIST_INST=ARCHI),
-                CONVERGENCE=_F( 
+                CONVERGENCE=_F(
                 RESI_GLOB_RELA = 1.E-6,
                 ITER_GLOB_MAXI = 20)
               )

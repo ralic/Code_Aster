@@ -1,4 +1,4 @@
-# MODIF  DATE 09/01/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE DEMONSTRATION DE LA JOURNE ASTER LIBRE DU 14 OCTOBRE 2003
 # demo001a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -22,7 +22,8 @@
 # TRACE DE COURBE AVEC XMGRACE
 # MAILLAGE GMSH
 # APPEL A STANLEY POUR LE POST_TRAITEMENT
-# RESPONSABLE PROIX J.M.PROIX
+# RESPONSABLE COURTOIS M.COURTOIS
+import aster_core
 
 # Execution interactive : 1=OUI, 0=NON
 interactif  = 0
@@ -52,7 +53,7 @@ MAIL[0]=LIRE_MAILLAGE()
 # VISUALISATION DU MAILLAGE INITIAL A L AIDE DE GMSH
 if interactif == 1:
    # Commande Gmsh (elle ne fait rien si c'est la version batch de Gmsh)
-   cmd_gmsh = os.path.join(aster.repout(),'gmsh')
+   cmd_gmsh = os.path.join(aster_core.get_option('repout'), 'gmsh')
    print 'Lancement de :', cmd_gmsh + ' fort.19'
    os.system(cmd_gmsh + ' fort.19')
 

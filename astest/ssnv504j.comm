@@ -1,22 +1,22 @@
-# MODIF  DATE 12/12/2011   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE   EXTRUSION D'UN LOPIN AVEC LE CONTACT GLISSIERE
 # ssnv504j.para = tps_job 210 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                   
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # CAS_TEST     : SSNV504J
 # MODELISATION : METHODE CONTINUE AVEC GLISSIERE
@@ -27,7 +27,7 @@
 #
 #
 
-DEBUT(CODE=_F(NOM='SSNV504J',NIV_PUB_WEB='INTERNET'));
+DEBUT(CODE=_F(NOM='SSNV504J',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #_____________________________________________________________________
 #
@@ -47,7 +47,7 @@ MAILL1=DEFI_GROUP(reuse   =MAILL1,
                                  _F(GROUP_MA='LOP_SYM2'),
                                  _F(GROUP_MA='LOP_ESC1'),
                                  _F(GROUP_MA='LOP_DDL')));
-                                 
+
 #_____________________________________________________________________
 #
 #                    DEFINITION DU MODELE
@@ -70,7 +70,7 @@ MAILL1=MODI_MAILLAGE(reuse   =MAILL1,
                      MAILLAGE=MAILL1,
                      ORIE_PEAU_3D=_F(GROUP_MA=('LOP_SYM1','LOP_SYM2',
                                                'LOP_ESC1','LOP_ESC2')));
-                     
+
 #_____________________________________________________________________
 #
 #                    DEFINITION DES MATERIAUX
@@ -92,7 +92,7 @@ CM=AFFE_MATERIAU(MAILLAGE=MAILL1,
 #_____________________________________________________________________
 #
 #                    AFFECTATION DES CONDITIONS AUX LIMITES
-#                       ET DU DEPLACEMENT IMPOSE 
+#                       ET DU DEPLACEMENT IMPOSE
 #_____________________________________________________________________
 #
 
@@ -121,17 +121,17 @@ CONTACT  = DEFI_CONTACT(MODELE         = MO,
                              GROUP_MA_ESCL ='LOP_ESC1',
                              CONTACT_INIT  = 'INTERPENETRE',
                              GLISSIERE     = 'OUI',
-                             ),                                                               
+                             ),
                            _F(
                              GROUP_MA_MAIT ='LOP_ESC2',
                              GROUP_MA_ESCL ='FIL_MAI2',
-                             ),  
+                             ),
                           ),
                    );
 
 #_____________________________________________________________________
 #
-#                    DEFINITIONS DES FONCTIONS TEMPORELLES 
+#                    DEFINITIONS DES FONCTIONS TEMPORELLES
 #_____________________________________________________________________
 #
 
@@ -139,7 +139,7 @@ DPLY=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0, 1.0,1.0),
                    PROL_DROITE='LINEAIRE',
                    PROL_GAUCHE='LINEAIRE',);
-                   
+
 FFCT=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0, 1.0,1.0),
                    PROL_DROITE='CONSTANT',
@@ -167,7 +167,7 @@ U=STAT_NON_LINE(MODELE=MO,
                 EXCIT=(_F(CHARGE   =COND_LIM),
                        _F(CHARGE   =DDLIMP,
                           FONC_MULT=DPLY)),
-                CONTACT  = CONTACT,       
+                CONTACT  = CONTACT,
                 COMP_INCR=_F(RELATION='ELAS',
                              TOUT    ='OUI',),
                 INCREMENT=_F(LIST_INST=L_INST,

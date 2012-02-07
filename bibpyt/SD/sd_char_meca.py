@@ -1,4 +1,4 @@
-#@ MODIF sd_char_meca SD  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
+#@ MODIF sd_char_meca SD  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -72,6 +72,7 @@ class sd_char_chme(AsBase):
     PRESS = Facultatif(sd_carte())
     ROTAT = Facultatif(sd_carte())
     SIGIN = Facultatif(sd_carte())
+    SIINT = Facultatif(sd_carte())
     VNOR  = Facultatif(sd_carte())
 
     # si GRAPPE_FLUIDE :

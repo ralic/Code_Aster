@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE SECHAGE EN 2D AXISYMETRIQUE  - QUAD8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT( CODE=_F( NOM = 'HSNA100A',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='HSNA100A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MAGE=LIRE_MAILLAGE(FORMAT='MED', )
 
@@ -84,8 +84,8 @@ RESUTHER=THER_LINEAIRE(          MODELE=MOTH,
                                    SOLVEUR=_F(  METHODE = 'MULT_FRONT',   ),
                                  PARM_THETA=0.57,
                                  ETAT_INIT=_F( VALE = 15.,   ),
-                                 INCREMENT=_F( LIST_INST = LISTTHER,  
-                                            NUME_INST_INIT = 0,   
+                                 INCREMENT=_F( LIST_INST = LISTTHER,
+                                            NUME_INST_INIT = 0,
                                             NUME_INST_FIN = 6,       ),
                                       INFO=1
                          )
@@ -95,10 +95,10 @@ RESUTHER=THER_LINEAIRE(reuse=RESUTHER,          MODELE=MOTH,
                                 CHAM_MATER=CHMAT,
                                    SOLVEUR=_F(  METHODE = 'MULT_FRONT',   ),
                                  PARM_THETA=0.57,
-                                 ETAT_INIT=_F( EVOL_THER = RESUTHER,  
+                                 ETAT_INIT=_F( EVOL_THER = RESUTHER,
                                             NUME_ORDRE = 6,   ),
-                                 INCREMENT=_F( LIST_INST = LISTTHER,  
-                                            NUME_INST_INIT = 6,   
+                                 INCREMENT=_F( LIST_INST = LISTTHER,
+                                            NUME_INST_INIT = 6,
                                             NUME_INST_FIN = 14,      ),
                                       INFO=1
                          )
@@ -222,10 +222,10 @@ RESUSECH=THER_NON_LINE(          MODELE=MOTH,
                                    SOLVEUR=_F( METHODE = 'MULT_FRONT',   ),
                                  PARM_THETA=0.57,
                                  ETAT_INIT=_F( VALE = 105.7,   ),
-                                 INCREMENT=_F( LIST_INST = LISTSECH,  
-                                            NUME_INST_INIT = 0,   
+                                 INCREMENT=_F( LIST_INST = LISTSECH,
+                                            NUME_INST_INIT = 0,
                                             NUME_INST_FIN = 44,       ),
-                              COMP_THER_NL=_F( RELATION = 'SECH_GRANGER',   
+                              COMP_THER_NL=_F( RELATION = 'SECH_GRANGER',
                                             TOUT = 'OUI',            ),
                             EVOL_THER_SECH=RESUTHER,
                              TITRE=( ' CAS TEST &CODE',
@@ -237,12 +237,12 @@ RESUSECH=THER_NON_LINE(reuse=RESUSECH,          MODELE=MOTH,
                                 CHAM_MATER=CHMAT,
                                    SOLVEUR=_F( METHODE = 'MULT_FRONT',   ),
                                  PARM_THETA=0.57,
-                                 ETAT_INIT=_F( EVOL_THER = RESUSECH,  
+                                 ETAT_INIT=_F( EVOL_THER = RESUSECH,
                                             NUME_ORDRE = 32,   ),
-                                 INCREMENT=_F( LIST_INST = LISTSECH,  
-                                            NUME_INST_INIT = 32,   
+                                 INCREMENT=_F( LIST_INST = LISTSECH,
+                                            NUME_INST_INIT = 32,
                                             NUME_INST_FIN = 72,       ),
-                              COMP_THER_NL=_F( RELATION = 'SECH_GRANGER',   
+                              COMP_THER_NL=_F( RELATION = 'SECH_GRANGER',
                                             TOUT = 'OUI',            ),
                             EVOL_THER_SECH=RESUTHER,
                              TITRE=( ' CAS TEST &CODE',
@@ -257,13 +257,13 @@ RESUSECH=THER_NON_LINE(reuse=RESUSECH,          MODELE=MOTH,
 # VALEURS DE REFENCE DU CAS TEST: C.F. DOC DU CAS TEST HSNA100A
 
 TEST_RESU(RESU=(
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   
+          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',
                NUME_ORDRE = 44,
             GROUP_NO = 'A2',  NOM_CMP = 'TEMP', VALE = 104.,  PRECISION = 1.E-2, ),
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   
+          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',
                NUME_ORDRE = 61,
             GROUP_NO = 'A2',  NOM_CMP = 'TEMP', VALE = 95.,   PRECISION = 2.E-2, ),
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',  
+          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',
                NUME_ORDRE = 72,
             GROUP_NO = 'A2',  NOM_CMP = 'TEMP', VALE = 78.,   PRECISION = 1.E-2, ))
            )

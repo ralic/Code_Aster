@@ -1,29 +1,29 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL NON DRAINE AVEC VISC_DRUC_PRAG
 # wtnv138a.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #            VISC_DRUC_PRAG CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 #                AVEC COUPLAGE HYDRAULIQUE  CONFINEMENT DE 8 MPa
 # ======================================================================
-DEBUT(CODE=_F(NOM='WTNV138A',NIV_PUB_WEB='INTERNET'),PAR_LOT='OUI')
+DEBUT(CODE=_F(NOM='WTNV138A',NIV_PUB_WEB='INTERNET'),PAR_LOT='OUI',DEBUG=_F(SDVERI='OUI'))
 #
 BIDON=DEFI_CONSTANTE(    VALE=1.)
 
@@ -70,7 +70,7 @@ SOL=DEFI_MATERIAU(    ELAS=_F(  E     = 1500.E6,
                                 NU    = 0.27,
                                 ALPHA = 1.E-5,
                               ),
-                                VISC_DRUC_PRAG =_F(    PREF        =   0.1E6,        
+                                VISC_DRUC_PRAG =_F(    PREF        =   0.1E6,
                                              A           =   1.5E-12,
                                              N           =   4.5,
                                              P_PIC       =   0.015,
@@ -207,7 +207,7 @@ U1=CALC_NO( reuse=U1,
                   'SIGM_NOEU',  'VARI_NOEU',),
                           RESULTAT=U1,
               )
-                         
+
 TEMPS2=DEFI_LIST_REEL(   DEBUT=7000.,
                          INTERVALLE=(_F(  JUSQU_A = 8000.,       NOMBRE = 100, ),
                                      _F(  JUSQU_A = 9000.,       NOMBRE = 100, ),
@@ -224,7 +224,7 @@ ARCHI=DEFI_LIST_REEL(   DEBUT=7000.,
                                      _F(  JUSQU_A = 11000.,    NOMBRE = 10, ),
                                      _F(  JUSQU_A = 12000.,    NOMBRE = 10, ),
                                      _F(  JUSQU_A = 13000.,    NOMBRE = 10, ),
-                                    
+
                    ))
 
 DEP_V=AFFE_CHAR_MECA(    MODELE=MODELE,
@@ -235,7 +235,7 @@ EVOL_DEV=DEFI_FONCTION(      NOM_PARA='INST',
                            PROL_DROITE='LINEAIRE',
                           PROL_GAUCHE='CONSTANT',
                          VALE=(  7000.0,     -2.4533E-3,
-                                 8000.0,     -0.01,  
+                                 8000.0,     -0.01,
                                  9000.0,     -0.02,
                                 10000.0,     -0.03,
                                 11000.0,     -0.04,

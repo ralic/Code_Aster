@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 #
 # TITRE    ESSAI TRIAXIAL NON DRAINE AVEC LA LOI DE HUJEUX
 # wtnv133b.para = tps_job 200 mem_job 100Mo ncpus 1 liste_test S
@@ -23,7 +23,8 @@
 #          ===============================================
 
 
-DEBUT(CODE=_F(NOM='WTNV133B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'));
+DEBUT(CODE=_F(NOM='WTNV133B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='NON'))
+# SDVERI='NON' car la verification est trop couteuse en CPU
 #PRE_GIBI();
 
 # proprietes hydrauliques

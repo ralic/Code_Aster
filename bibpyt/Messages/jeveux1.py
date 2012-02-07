@@ -1,4 +1,4 @@
-#@ MODIF jeveux1 Messages  DATE 16/01/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF jeveux1 Messages  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -400,7 +400,7 @@ cata_msg = {
 
 63 : _(u"""
 
- L'attribut LONCUM n'est pas accessible pour cette collection.
+ L'attribut %(k1)s n'est pas accessible pour cette collection.
 
 """),
 

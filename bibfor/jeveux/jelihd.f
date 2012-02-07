@@ -1,9 +1,9 @@
       SUBROUTINE JELIHD ( NOMF, FICHDF, CLAS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
-C MODIF JEVEUX  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -121,7 +121,6 @@ C---------- FIN  COMMUNS NORMALISES  JEVEUX ----------------------------
       CHARACTER*4      Z
       PARAMETER      ( Z = 'INIT' )
       CHARACTER*8      KNOM,KNOMF,CVERSB,CVERSU
-      CHARACTER*16     K16BID
       INTEGER          NCAR , ITLEC(1) , ITECR(1)
       PARAMETER      ( NCAR = 11 )
 C ----------------------------------------------------------------------
@@ -137,7 +136,7 @@ C ----------------------------------------------------------------------
       INTEGER          IDOS,KITAB,IDGR,IDT1,IDT2,IDG,JULIST,IUNIFI
       INTEGER          HDFOPF,HDFNBO,HDFOPD,HDFTSD,HDFRSV,HDFRAT
       INTEGER          HDFNOM,HDFTYP,HDFCLD,HDFOPG,HDFCLG,HDFCLF
-      INTEGER          IRET1,IRET2,IRET3,IDCO,IVERS,IUTIL,INIVO,LMARQ
+      INTEGER          IRET1,IRET2,IRET3,IDCO,LMARQ
       EQUIVALENCE     (IK32,K32),(IK8,K8)
       INTEGER          IGENR(1),ITYPE(1),IDOCU(1),IORIG(1),IRNOM(1)
       INTEGER          I,K,KTEMP1,KTEMP2,LON,LON2,IC,LCARAO,IADRS,LONOK
@@ -156,7 +155,6 @@ C ----------------------------------------------------------------------
       INTEGER          KAT(LIDBAS),LSO(LIDBAS),KDY(LIDBAS),LGBL,IADYN
       INTEGER          IRT,IND
       REAL*8           VALR
-      LOGICAL          LEXP
       DATA CIDBAS  / '$$CARA  ' , '$$IADD  ' , '$$GENR  ' , '$$TYPE  ' ,
      &               '$$DOCU  ' , '$$ORIG  ' , '$$RNOM  ' , '$$LTYP  ' ,
      &               '$$LONG  ' , '$$LONO  ' , '$$DATE  ' , '$$LUTI  ' ,
@@ -230,11 +228,7 @@ C
       CALL CODENT(CARA(JCARA(IC) + 8 ),'D ',CVERSB(1:2) )
       CALL CODENT(CARA(JCARA(IC) + 9 ),'D0',CVERSB(4:5) )
       CALL CODENT(CARA(JCARA(IC) + 10),'D0',CVERSB(7:8) )
-      CALL VERSIO ( IVERS , IUTIL , INIVO , K16BID , LEXP )
-      CVERSU = '  .  .  '
-      CALL CODENT(IVERS,'D ',CVERSU(1:2) )
-      CALL CODENT(IUTIL,'D0',CVERSU(4:5) )
-      CALL CODENT(INIVO,'D0',CVERSU(7:8) )
+      CALL GTOPTK('versionD0', CVERSU, IRET1)
       NREMAX(IC) = CARA(JCARA(IC)     )
       NREUTI(IC) = CARA(JCARA(IC) + 1 )
       NRHCOD(IC) = CARA(JCARA(IC) + 2 )

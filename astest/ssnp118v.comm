@@ -1,25 +1,26 @@
-# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE FISSURATION INTERFACE 2D PLAN (QUAD8), LOI CZM_TRA_MIX
 # ssnp118v.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
- 
-DEBUT(CODE=_F( NOM = 'SSNP118V',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),PAR_LOT='OUI',IGNORE_ALARM=('MODELISA4_9','CALCULEL_7'))
+
+DEBUT(CODE=_F(NOM='SSNP118V',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),PAR_LOT='OUI',IGNORE_ALARM=('MODELISA4_9','CALCULEL_7'),DEBUG=_F(SDVERI='NON'))
+# SDVERI='NON' car la verification est trop couteuse en CPU
 # ON IGNORE LES ALARMES SUR LA MAILLE DE JOINT DEGENERE (AVEC DES NOEUDS CONFONDUS)
 
 # PARAMETRES D'INSTANT
@@ -84,7 +85,7 @@ MAT=DEFI_MATERIAU(
                      COEF_EXTR = coee,
                      COEF_PLAS = coep,
                      PENA_LAGR = 100,
-                     RIGI_GLIS = 10,    
+                     RIGI_GLIS = 10,
                     )
             )
 
@@ -99,7 +100,7 @@ CM=AFFE_MATERIAU(
 # AFFECTATION DES ANGLES NAUTIQUES : POSITION DE LA FISSURE DANS LE REPERE GLOBAL
 ORIEN_FI=AFFE_CARA_ELEM(MODELE=MO,INFO=1,
                      MASSIF=(
-           _F(MAILLE='CUBEDEG',ANGL_REP=(30,0,0)),         
+           _F(MAILLE='CUBEDEG',ANGL_REP=(30,0,0)),
                                  ));
 
 
@@ -119,7 +120,7 @@ TRAC_N=AFFE_CHAR_MECA(
     )
   )
 
-# CREATION DE LISTE D'INSTANT POUR CHARGEMENT CYCLIQUE                                  
+# CREATION DE LISTE D'INSTANT POUR CHARGEMENT CYCLIQUE
 LREEL1=DEFI_LIST_REEL(
 
                      DEBUT   = 0.0,
@@ -154,19 +155,19 @@ LREEL1=DEFI_LIST_REEL(
      )
 
 eps=0.0001
-      
-FCT=DEFI_FONCTION(NOM_PARA='INST',VALE=(       0.0,   0.0, 
-                                           tfin/26,  dele/2.,  
+
+FCT=DEFI_FONCTION(NOM_PARA='INST',VALE=(       0.0,   0.0,
+                                           tfin/26,  dele/2.,
                                          2*tfin/26,   0.0,
-                                         3*tfin/26,   -eps,  
+                                         3*tfin/26,   -eps,
                                          4*tfin/26,   0.0,
                                          5*tfin/26,   dele,
-                                         6*tfin/26,   dele + (delp-dele)/2.,              
-                                         7*tfin/26,   dele + (delp-dele)/2.-dele-eps,             
-                                         8*tfin/26,   dele + (delp-dele)/2.,      
-                                         9*tfin/26,   delp,   
+                                         6*tfin/26,   dele + (delp-dele)/2.,
+                                         7*tfin/26,   dele + (delp-dele)/2.-dele-eps,
+                                         8*tfin/26,   dele + (delp-dele)/2.,
+                                         9*tfin/26,   delp,
                                         10*tfin/26,   delp +   (delc-delp)/3.,
-                                        11*tfin/26,   delp +   (delc-delp)/3. -dele*0.8,              
+                                        11*tfin/26,   delp +   (delc-delp)/3. -dele*0.8,
                                         12*tfin/26,   delp +   (delc-delp)/3.,
                                         13*tfin/26,   delp + 2*(delc-delp)/3.,
                                         14*tfin/26,   delp + 2*(delc-delp)/3. -dele*0.5,
@@ -181,9 +182,9 @@ FCT=DEFI_FONCTION(NOM_PARA='INST',VALE=(       0.0,   0.0,
                                         24*tfin/26,   delc*1.1,
                                         25*tfin/26,   delc*1.1,
                                               tfin,   delc*1.1,
- 
-                                                        ),       
-                                 PROL_DROITE='LINEAIRE',);                                                           
+
+                                                        ),
+                                 PROL_DROITE='LINEAIRE',);
 
 
 LISTCY =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =LREEL1 ),
@@ -192,14 +193,14 @@ LISTCY =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =LREEL1 ),
                                  SUBD_PAS     = 4,
                                  SUBD_NIVEAU  = 5,
                                 ),)
-                                
-# CREATION DE LISTE D'INSTANT POUR CHARGEMENT MONOTONE                                  
+
+# CREATION DE LISTE D'INSTANT POUR CHARGEMENT MONOTONE
 
 LREEL2=DEFI_LIST_REEL(DEBUT   = 0.0,INTERVALLE=(
                                                  _F( JUSQU_A =   tfin,    NOMBRE = 10*tfin ),
       ))
-      
-FCTMON=DEFI_FONCTION(NOM_PARA='INST',VALE=( 0.0,   0.0, tfin,   delc*1.1,),  PROL_DROITE='LINEAIRE',);                                                           
+
+FCTMON=DEFI_FONCTION(NOM_PARA='INST',VALE=( 0.0,   0.0, tfin,   delc*1.1,),  PROL_DROITE='LINEAIRE',);
 
 
 LISTMO =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =LREEL2 ),
@@ -269,18 +270,18 @@ U_MON=STAT_NON_LINE(
   ARCHIVAGE = _F(LIST_INST = LREEL2,),
   )
 
-#---------------------------------------------------------------------------------- 
+#----------------------------------------------------------------------------------
 # POST TRAITEMENT
 #-----------------------------------------------------------------------------------
-             
+
 # CALCUL DE LA FORCE NODALE
 U_TRA=CALC_NO(
             reuse =U_TRA,
             RESULTAT=U_TRA,
             OPTION='FORC_NODA',
             );
-          
-# VECTEUR-FORCE NODALE RESULTANTE : (F_X,F_Y) 
+
+# VECTEUR-FORCE NODALE RESULTANTE : (F_X,F_Y)
 TF_N=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='F_PILOTE',
                                RESULTAT=U_TRA,
@@ -288,18 +289,18 @@ TF_N=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                TOUT_ORDRE='OUI',
                                GROUP_NO='DROITE',
                                RESULTANTE=('DX','DY'),),);
-                               
 
-# PROJECTEUR SUR LA NORMALE 
+
+# PROJECTEUR SUR LA NORMALE
 PNOR = FORMULE(VALE='DX*cos(angle)+DY*sin(angle)',
-              NOM_PARA=('DX','DY',),); 
-                           
-# INSERTION D'UNE COLONNE AVEC LA PROJECTION NORMALE DE LA FORCE NODALE                              
+              NOM_PARA=('DX','DY',),);
+
+# INSERTION D'UNE COLONNE AVEC LA PROJECTION NORMALE DE LA FORCE NODALE
 TF_N=CALC_TABLE(reuse =TF_N,
                   TABLE=TF_N,
                   ACTION=_F(OPERATION='OPER',
                             FORMULE=PNOR,
-                            NOM_PARA='F_N',),);                                                           
+                            NOM_PARA='F_N',),);
 
 # DEPLACEMENT DU NOEUD EN_HAUT
 TU_N=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
@@ -309,15 +310,15 @@ TU_N=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               TOUT_ORDRE='OUI',
                               NOEUD='NO2',
                               NOM_CMP=('DX','DY',),),);
-                              
-# INSERTION D'UNE COLONNE AVEC LA PROJECTION NORMALE DE DEPLACEMENT                              
+
+# INSERTION D'UNE COLONNE AVEC LA PROJECTION NORMALE DE DEPLACEMENT
 TU_N=CALC_TABLE(reuse =TU_N,
                     TABLE=TU_N,
                     ACTION=_F(OPERATION='OPER',
                             FORMULE=PNOR,
-                            NOM_PARA='U_N',),);                                     
+                            NOM_PARA='U_N',),);
 
-           
+
 # MANIPULATION POUR IMPRIMER LA COURBE FORCE-DEPLACEMENT AU FORMAT XMGRACE
 FN=RECU_FONCTION(TABLE=TF_N,
                   PARA_X='INST',
@@ -388,7 +389,7 @@ SN=RECU_FONCTION(TABLE=T_SIGN,
 DN2=RECU_FONCTION(TABLE=T_VARI_7,
                   PARA_X='INST',
                   PARA_Y='V7',);
-                  
+
 
 TRESU = CALC_TABLE(reuse = TRESU,
                      TABLE = TRESU,
@@ -398,7 +399,7 @@ TRESU = CALC_TABLE(reuse = TRESU,
                      _F(OPERATION = 'COMB',NOM_PARA  = 'INST',TABLE = T_VARI_4,),
                      _F(OPERATION = 'COMB',NOM_PARA  = 'INST',TABLE = T_VARI_7,),
                      _F(OPERATION = 'COMB',NOM_PARA  = 'INST',TABLE = T_SIGN,),
-                     
+
                                ),
                         );
 
@@ -407,14 +408,14 @@ TRESU = CALC_TABLE(reuse = TRESU,
 #              COURBE=_F(FONC_X=DN2,
 #                        FONC_Y=SN,
 #                        LEGENDE='Ldc CZM ductile',),
-#              BORNE_X=(-0.001,1.3*delc),          
-#              BORNE_Y=(-2*sigc,1.2*sigc),          
+#              BORNE_X=(-0.001,1.3*delc),
+#              BORNE_Y=(-2*sigc,1.2*sigc),
 #              LEGENDE_X='\\xd\\s\\0n',
 #              LEGENDE_Y='SIG\\sn',
 #              TITRE='Reponse Ldc Mode I avec charge-decharge',)
 
 
-#---------------------------------------------------------------------------------- 
+#----------------------------------------------------------------------------------
 # TESTS DES RESULTATS
 #-----------------------------------------------------------------------------------
 
@@ -434,7 +435,7 @@ TEST_RESU(
       ),
     )
   )
-  
+
 TEST_RESU(
   RESU = (
     _F(
@@ -459,7 +460,7 @@ TEST_RESU(
       NOM_CHAM  = 'SIEF_ELGA',
       NOM_CMP   = 'SIGN',
       VALE      = sigc,
-      MAILLE    = 'CUBEDEG', 
+      MAILLE    = 'CUBEDEG',
       POINT     = 1,
       INST      = 9.0,
       ),
@@ -481,7 +482,7 @@ TEST_RESU(
     )
   )
 
-# VERIF MODE II NUL 
+# VERIF MODE II NUL
 TEST_RESU(
   RESU = (
     _F(

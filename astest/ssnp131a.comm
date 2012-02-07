@@ -1,27 +1,27 @@
 
-# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL DU CRITERE ENERGETIQUE GP EN 2D
 # ssnp131a.para = tps_job 800 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE ADBHHFA Y.WADIER
 
-DEBUT(CODE=_F( NOM = 'SSNP131A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'));               
+DEBUT(CODE=_F(NOM='SSNP131A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
 
 # IDENTIFICATION DU GP CRITIQUE A RUPTURE (D'APRES TENACITES KJ CRIT. EXP.)
 # A TEMPERATURE CONSTANTE (35 DEGRES) SUR UNE EPROUVETTE CT
@@ -32,7 +32,7 @@ DEBUT(CODE=_F( NOM = 'SSNP131A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'));
 #       ALORS QUE LE COEFFICIENT DE POISSON EST CONSIDERE
 #       CONSTANT.
 #
-#    * GOUPILLE MAILLEE AFIN DE MIEUX REPRESENTER L'APPLICATION 
+#    * GOUPILLE MAILLEE AFIN DE MIEUX REPRESENTER L'APPLICATION
 #      DU CHARGEMENT (ICI FORCE IMPOSEE)
 #
 #    * CONDITIONS AUX LIMITES (1/2 DE L'EPROUVETTE MAILLE) :
@@ -51,7 +51,7 @@ TPCAL = 100.;
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
               CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
-              
+
 #----------------------------------------------------------------------
 #----------------  AFFECTATION MODELE MECANIQUE    --------------------
 #----------------------------------------------------------------------
@@ -65,7 +65,7 @@ MOD=AFFE_MODELE(MAILLAGE=MA,
 #---------------- DONNEES MECANIQUES ACIER  -------------------
 #----------------------------------------------------------------------
 
-# ECROUISSAGE ISOTROPE NON LINEAIRE 
+# ECROUISSAGE ISOTROPE NON LINEAIRE
 
 CT_100 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
                             VALE = (
@@ -100,13 +100,13 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=214100,
 
 MATGOUP=DEFI_MATERIAU(ELAS=_F(   E=2.E6,
                                  NU=0.3,
-                                 ALPHA = 0.),              
+                                 ALPHA = 0.),
                       ECRO_LINE=_F(D_SIGM_EPSI=200000.,
                                    SY=200000., )
                       );
-                                    
+
 #----------------------------------------------------------------------
-# DEFINITION D UNE RAMPE ET D UNE LISTE D INSTANTS 
+# DEFINITION D UNE RAMPE ET D UNE LISTE D INSTANTS
 # ----------------------------------------------------------------------
 
 RAMPD=DEFI_FONCTION(NOM_PARA='INST',
@@ -134,7 +134,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                             MATER=MATGOUP,),),
                          );
 
- 
+
 #----------------------------------------------------------------------
 # CHARGEMENT ET CONDITIONS LIMITES
 # ----------------------------------------------------------------------
@@ -147,7 +147,7 @@ COND_LIM=AFFE_CHAR_CINE(MODELE=MOD,
 CHAD=AFFE_CHAR_MECA_F(MODELE=MOD,
                       DDL_IMPO=_F(GROUP_NO='PGOUP',
                                       DY=RAMPD,),);
-                
+
 #----------------------------------------------------------------------
 #---------------  RESOLUTION   ------------------
 #----------------------------------------------------------------------

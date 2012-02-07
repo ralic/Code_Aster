@@ -6,9 +6,9 @@
       LOGICAL OK
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -41,7 +41,7 @@ C  OUT  OK         L  : .TRUE. : INO2 APPARTIENT AU TRIA3 I
 C ----------------------------------------------------------------------
       REAL*8 X1,Y1,X2,Y2,X3,Y3,XP,YP
       REAL*8 L1,L2,L3,S
-      REAL*8 V2(2),V3(2),P(2)
+      REAL*8 V2(2),V3(2),P(2),EPSI
 C DEB ------------------------------------------------------------------
       XP=GEOM2(3*(INO2-1)+1)
       YP=GEOM2(3*(INO2-1)+2)
@@ -69,9 +69,12 @@ C DEB ------------------------------------------------------------------
       L2=(P(1)*V3(2)-P(2)*V3(1))/S
       L1=1.D0-L2-L3
 
-      IF (      (L1.GE.0.D0).AND.(L1.LE.1.D0)
-     &     .AND.(L2.GE.0.D0).AND.(L2.LE.1.D0)
-     &     .AND.(L3.GE.0.D0).AND.(L3.LE.1.D0) ) THEN
+C     -- TOLERANCE EPSI POUR EVITER DES DIFFERENCES ENTRE
+C        LES VERSIONS DEBUG ET NODEBUG
+      EPSI=1.D-10
+      IF (      (L1.GE.-EPSI).AND.(L1.LE.1.D0+EPSI )
+     &     .AND.(L2.GE.-EPSI).AND.(L2.LE.1.D0+EPSI )
+     &     .AND.(L3.GE.-EPSI).AND.(L3.LE.1.D0+EPSI ) ) THEN
          OK=.TRUE.
          COBAR2(1)=L1
          COBAR2(2)=L2

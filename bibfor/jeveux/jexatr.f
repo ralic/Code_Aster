@@ -1,8 +1,8 @@
       FUNCTION   JEXATR ( NOMC , NOMA )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 27/06/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -50,7 +50,8 @@ C DEB ------------------------------------------------------------------
 C
       NOM24  = NOMC
       NOMALU = NOMA
-      IF ( NOMALU .NE. 'LONCUM' ) THEN
+      IF ( NOMALU .NE. 'LONCUM' .AND. NOMALU .NE. 'LONMAX'
+     &                          .AND. NOMALU .NE. 'LONUTI') THEN
         CALL U2MESK('F','JEVEUX1_28',1,NOMALU)
       ENDIF
       ICRE = 0
@@ -59,16 +60,32 @@ C
         CALL U2MESS('F','JEVEUX1_29')
       ELSE
         CALL JJALLC ( ICLACO , IDATCO , 'L' , IBACOL )
-        IXIADD = ISZON ( JISZON + IBACOL + IDIADD )
-        IF ( IXIADD .NE. 0 ) THEN
-          CALL U2MESS('F','JEVEUX1_30')
+        IF ( NOMALU .EQ. 'LONCUM') THEN
+          IXIADD = ISZON ( JISZON + IBACOL + IDIADD )
+          IF ( IXIADD .NE. 0 ) THEN
+            CALL U2MESS('F','JEVEUX1_30')
+          ENDIF
+          IXLONO = ISZON ( JISZON + IBACOL + IDLONO )
+          IF ( IXLONO .EQ. 0 ) THEN
+            CALL U2MESK('F','JEVEUX1_63',1,'LONCUM')
+          ENDIF
+          JEXATR = NOM24//CH8
+          NUMATR = IXLONO
+        ELSE IF ( NOMALU .EQ. 'LONMAX') THEN
+          IXLONG = ISZON ( JISZON + IBACOL + IDLONG )
+          IF ( IXLONG .EQ. 0 ) THEN
+            CALL U2MESK('F','JEVEUX1_63',1,'LONMAX')
+          ENDIF
+          JEXATR = NOM24//CH8
+          NUMATR = IXLONG
+        ELSE IF ( NOMALU .EQ. 'LONUTI') THEN
+          IXLUTI = ISZON ( JISZON + IBACOL + IDLUTI )
+          IF ( IXLUTI .EQ. 0 ) THEN
+            CALL U2MESK('F','JEVEUX1_63',1,'LONUTI')
+          ENDIF
+          JEXATR = NOM24//CH8
+          NUMATR = IXLUTI
         ENDIF
-        IXLONO = ISZON ( JISZON + IBACOL + IDLONO )
-        IF ( IXLONO .EQ. 0 ) THEN
-          CALL U2MESS('F','JEVEUX1_63')
-        ENDIF
-        JEXATR = NOM24//CH8
-        NUMATR = IXLONO
       ENDIF
 C DEB ------------------------------------------------------------------
       END

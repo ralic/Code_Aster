@@ -1,9 +1,9 @@
        SUBROUTINE JEIMHD ( FICHDF, CLAS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C RESPONSABLE LEFEBVRE
-C MODIF JEVEUX  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
+C MODIF JEVEUX  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -81,13 +81,13 @@ C ----------------------------------------------------------------------
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOR8 , LOC8
 C ----------------------------------------------------------------------
       CHARACTER*1      KCLAS , GENRI , TYPEI , CLASI
+      CHARACTER*8      K8
       CHARACTER*16     K16
       CHARACTER*24     KATTR(5),NOMATR,KATTRC(5),NOMATC
       PARAMETER      ( NOMATR = 'BASE GLOBALE JEVEUX' )
       PARAMETER      ( NOMATC = 'ATTRIBUTS JEVEUX' )
       CHARACTER*32     CRNOM,NGRP,NOMCOL
       CHARACTER*80     NHDF
-      LOGICAL          LEXP
       REAL*8           RBID
       INTEGER          IC,JULIST,LTYPI,ILONG,LONOI,IADDI(2),IADMI,IADMX
       INTEGER          IDFIC,NBMAX,JCTAB,IDG,IDGC
@@ -115,12 +115,14 @@ C DEB ------------------------------------------------------------------
       ENDIF
       NGRP ='/'
       IDG  = HDFOPG (IDFIC,NGRP)
-      CALL VERSIO (IVERS, IUTIL, INIVO, K16, LEXP )
-      WRITE(KATTR(1),'(A16,I2,''.'',I2,''.'',I2)')
-     &               K16,IVERS,IUTIL,INIVO
-      CALL NODNAM(1,KATTR(2)(1:16),KATTR(3)(1:16),K16)
-      KATTR(2)(17:24) =' '
-      KATTR(3)(17:24) =' '
+      K8 = ' '
+      K16 = ' '
+      CALL GTOPTK('date', K16, IRET)
+      CALL GTOPTK('versionD0', K8, IRET)
+      KATTR(1) = K16//K8
+      CALL GTOPTK('hostname', KATTR(2), IRET)
+      CALL GTOPTK('system', KATTR(3), IRET)
+
       CALL ENLIRD(KATTR(4))
       LOUA = 1
       WRITE(KATTR(5),'(''LBIS='',I2,'' LOIS='',I2,'' LOUA='',I2)')
@@ -194,7 +196,7 @@ C           ON TRAITE UN OBJET SIMPLE
 C         ON TRAITE UNE COLLECTION
             IDATCO = J
             ICLACO = IC
-            NOMCO  = CRNOM
+            NOMCO  = CRNOM(1:24)
             NOMCOL = CRNOM
             INAT   = 2
             CALL JJALLC ( IC , J , 'L' , IBACOL )

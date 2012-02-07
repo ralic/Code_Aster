@@ -1,25 +1,31 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE FISSURE INCLINEE EN 2D AVEC X-FEM, CHARGEMENTS VOLUMIQUES
 # ssnp138b.para = tps_job 120 mem_job 256Mo mem_aster 50 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='SSNP138B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),)
+DEBUT(CODE=_F(NOM='SSNP138B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
+      IGNORE_ALARM=('CALCULEL4_9'),
+      DEBUG=_F(SDVERI='OUI'),)
+
+# <CALCULEL4_9> : POST_K1_K2_K3 / MACR_LIGN_COUP emet cette alarme pour
+# signaler une imprecision pour les ddls E1X, E1Y, E1Z, ..., E4Z
+# mais ce n'est pas grave car ces ddls ne servent pas au calcul de K1,K2,K3
 
 
 #*********************************************************
@@ -95,7 +101,7 @@ L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=1.0,NOMBRE=1,),);
 def LEVSETTAN(x,y,beta) :
      if ( x * cos(beta) + y * sin(beta) ) >= 0. : return   (x * cos(beta) + y * sin(beta)) -  A/2.
      else :  return   (-x * cos(beta) - y * sin(beta)) -  A/2.
-     
+
 #----------------------------------------------
 #         DEBUT DE LA BOUCLE SUR LES ANGLES
 #----------------------------------------------
@@ -114,7 +120,7 @@ UTOT2 = [None]*nbcalc
 PK1 = [None]*nbcalc
 PK2 = [None]*nbcalc
 
-# VALEURS DES SIF POUR LES TESTS DE NON REGRESSION 
+# VALEURS DES SIF POUR LES TESTS DE NON REGRESSION
 #--------------------------------------------------
 
 # K1 SUR LE FOND 1 POUR LES DEUX ANGLES
@@ -136,7 +142,7 @@ TG1CH2 = [None]*(nbcalc)
 SI1CH2 = [None]*(nbcalc)
 SI2CH2 = [None]*(nbcalc)
 
-# BOUCLE SUR LES ANGLES DE LA FISSURE 
+# BOUCLE SUR LES ANGLES DE LA FISSURE
 #--------------------------------------
 for i in range(nbcalc) :
 #
@@ -144,7 +150,7 @@ for i in range(nbcalc) :
 #
 # on passe pas un string pour que l evaluation de la fonction se fasse a chaque pas
   alpha = str(eval('alphaf[i]*pi/180.'))
-  
+
   FISS[i]=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     DEFI_FISS=_F(
                                  FORM_FISS  = 'SEGMENT',
@@ -173,7 +179,7 @@ for i in range(nbcalc) :
                        FACE_IMPO=(_F(GROUP_MA=('LIG3'),DX=0.0,DY=0.0,),),
                        FORCE_INTERNE=(_F(TOUT='OUI',FX=0,FY=-78000))
                        );
-# PESANTEUR                     
+# PESANTEUR
   CH2[i]=AFFE_CHAR_MECA(MODELE=MODELK[i],
                        LIAISON_XFEM='OUI',
                        FACE_IMPO=(_F(GROUP_MA=('LIG3'),DX=0.0,DY=0.0,),),
@@ -193,14 +199,14 @@ for i in range(nbcalc) :
                    CHAM_MATER=CHMA[i],
                    EXCIT=(_F(CHARGE=CH2[i])),
                    INFO=1,);
-                   
 
-# POST-TRAITEMENT : CALCUL DES SIFS 
+
+# POST-TRAITEMENT : CALCUL DES SIFS
 #----------------------------------
 
 # 1) CALCUL AVEC CALC_G POUR L'ANGLE COURANT i
 
-# CAS DU PREMIER CHARGEMENT    
+# CAS DU PREMIER CHARGEMENT
   SI1CH1[i]=CALC_G(RESULTAT=UTOT1[i],
                    INST=0.,
                    OPTION='CALC_K_G',
@@ -228,8 +234,8 @@ for i in range(nbcalc) :
   IMPR_TABLE(TABLE=SI1CH1[i])
   IMPR_TABLE(TABLE=SI2CH1[i])
   IMPR_TABLE(TABLE=TG1CH1[i])
-                 
-# CAS DU DEUXIEME CHARGEMENT    
+
+# CAS DU DEUXIEME CHARGEMENT
   SI1CH2[i]=CALC_G(RESULTAT=UTOT2[i],
                    INST=0.,
                    OPTION='CALC_K_G',
@@ -253,7 +259,7 @@ for i in range(nbcalc) :
                             R_INF=RI,
                             R_SUP=RS,),
                    )
-                 
+
   IMPR_TABLE(TABLE=SI1CH2[i])
   IMPR_TABLE(TABLE=SI2CH2[i])
   IMPR_TABLE(TABLE=TG1CH2[i])
@@ -263,26 +269,26 @@ for i in range(nbcalc) :
              VALE=K1_1[i],
              CRITERE='RELATIF',
              REFERENCE='NON_REGRESSION',);
-            
+
   TEST_TABLE(TABLE=SI2CH1[i],
              NOM_PARA='K1',
              VALE=K1_2[i],
              CRITERE='RELATIF',
              REFERENCE='NON_REGRESSION',);
-            
+
 
   TEST_TABLE(TABLE=SI1CH2[i],
               NOM_PARA='K1',
               VALE=K1_1[i],
               CRITERE='RELATIF',
               REFERENCE='NON_REGRESSION',);
-            
+
   TEST_TABLE(TABLE=SI2CH2[i],
              NOM_PARA='K1',
              VALE=K1_2[i],
              CRITERE='RELATIF',
              REFERENCE='NON_REGRESSION',);
-            
+
   TEST_TABLE(TABLE=TG1CH1[i],
              NOM_PARA='G',
              VALE=GR[i],
@@ -295,7 +301,7 @@ for i in range(nbcalc) :
              CRITERE='RELATIF',
              REFERENCE='AUTRE_ASTER',);
 
-# 2) CALCUL AVEC POST_K1_K2_K3  POUR L'ANGLE COURANT i 
+# 2) CALCUL AVEC POST_K1_K2_K3  POUR L'ANGLE COURANT i
 
   # K1 SUR LE 2EME FOND, POUR LE CHARGEMENT 1
   PK1[i]=POST_K1_K2_K3(MODELISATION='D_PLAN',
@@ -306,7 +312,7 @@ for i in range(nbcalc) :
                        ABSC_CURV_MAXI = RS,
                        RESULTAT  = UTOT1[i],
                       )
-                    
+
   # K1 SUR LE 2EME FOND, POUR LE CHARGEMENT 2
   PK2[i]=POST_K1_K2_K3(MODELISATION='D_PLAN',
                        MATER=ACIER,
@@ -319,21 +325,21 @@ for i in range(nbcalc) :
 
   IMPR_TABLE(TABLE = PK1[i]);
   IMPR_TABLE(TABLE = PK2[i]);
-  
+
   TEST_TABLE(TABLE=PK1[i],
               NOM_PARA='K1',
               VALE=PK[i],
               CRITERE='RELATIF',
               REFERENCE='NON_REGRESSION',
               );
-  
+
   TEST_TABLE(TABLE=PK2[i],
               NOM_PARA='K1',
               VALE=PK[i],
               CRITERE='RELATIF',
               REFERENCE='NON_REGRESSION',
               );
- 
+
 
 #------------------------------------------------------------------------
 # POST-TRAITEMENT : MAILLAGE FISSURE et DEPLACEMENTS POUR LE MAILLAGE FISSURE

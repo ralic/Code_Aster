@@ -1,4 +1,4 @@
-# MODIF  DATE 09/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DE LA MODELISATION AXIS_GRAD_VARI
 # comp005c.para = tps_job 120 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,7 +20,8 @@
 # ======================================================================
 
 
-DEBUT( CODE=_F(NOM='COMP005C',NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'));
+DEBUT(CODE=_F(NOM='COMP005C',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='NON'))
+# SDVERI='NON' car la verification est trop couteuse en CPU
 
 
 MA_L  =  LIRE_MAILLAGE();

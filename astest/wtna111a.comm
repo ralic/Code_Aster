@@ -1,25 +1,25 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE   TEST HM, AXIS , MODELISATION THMC=LIQU_SATU
 # wtna111a.para = tps_job 100 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F( NOM = 'WTNA111A',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='WTNA111A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 tint=1000.
 tfin=3000.
@@ -143,7 +143,7 @@ MAT_M=DEFI_MATERIAU(ELAS=_F(E=200000000.0,
                                    D_VISC_TEMP=DVISCOL,),
                          );
 
-MAT_J=DEFI_MATERIAU(JOINT_BANDIS=_F(K=kni, 
+MAT_J=DEFI_MATERIAU(JOINT_BANDIS=_F(K=kni,
                                      DMAX=ouvm,
                                      GAMMA=2.,),
                        COMP_THM='LIQU_SATU',
@@ -192,7 +192,7 @@ PWELL=AFFE_CHAR_MECA_F(MODELE=MO,
 COMP=AFFE_CHAR_MECA(
    MODELE=MO,
    PRES_REP=(
-      _F(GROUP_MA=('DROITE'),PRES=12.3E6),  
+      _F(GROUP_MA=('DROITE'),PRES=12.3E6),
      ),
    );
 
@@ -210,7 +210,7 @@ FCT_MON = DEFI_FONCTION(
 ####################################
 
 CHAMNO=CREA_CHAMP(MAILLAGE=MA,
-                    OPERATION='AFFE', 
+                    OPERATION='AFFE',
                     TYPE_CHAM='NOEU_DEPL_R',
                     AFFE=(
                            _F(TOUT='OUI',
@@ -240,10 +240,10 @@ CH_X=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='CART_NEUT_R',
 CH_VARI=CREA_CHAMP( OPERATION='ASSE', TYPE_CHAM='ELGA_VARI_R',
                    MODELE=MO,
                    ASSE=(
-           _F( CHAM_GD = CH_X, 
+           _F( CHAM_GD = CH_X,
                GROUP_MA = ('BOUCHON','ROCHE'), NOM_CMP = ('X1',  'X2',  'X3'),NOM_CMP_RESU  = ('V1',  'V2',  'V3')),
-           _F( CHAM_GD = CH_X, 
-               GROUP_MA = 'FISSURE',    
+           _F( CHAM_GD = CH_X,
+               GROUP_MA = 'FISSURE',
                NOM_CMP      = ('X1',  'X2',  'X3',),
                NOM_CMP_RESU = ('V1',  'V2',  'V3',),),
                    ))
@@ -262,7 +262,7 @@ DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =LISTINST ),
 #
 ####################################
 
-U_1=STAT_NON_LINE( 
+U_1=STAT_NON_LINE(
   MODELE     = MO,
   CHAM_MATER = CM,
   CARA_ELEM  = ORIEN_FI,
@@ -270,7 +270,7 @@ U_1=STAT_NON_LINE(
                  _F(CHARGE = LIAISON),
                  _F(CHARGE = COMP),
                  _F(CHARGE = FLUH),
-                 _F(CHARGE = PWELL, 
+                 _F(CHARGE = PWELL,
                     FONC_MULT = FCT_MON),
                ),
   ETAT_INIT=_F(DEPL=CHAMNO,SIGM=SIGINIT,VARI=CH_VARI),
@@ -286,19 +286,19 @@ U_1=STAT_NON_LINE(
                INST_FIN=tfin,),
   NEWTON=_F(MATRICE='TANGENTE',
                           REAC_ITER=1,),
-  CONVERGENCE=_F(ITER_GLOB_MAXI=10,),  
+  CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
   SOLVEUR = _F(METHODE = 'MUMPS', PCENT_PIVOT=100,NPREC=-1),
   );
 
 ####################################
 #   TESTS DE VALIDATION
 #
-#################################### 
+####################################
 
-# TEST PRE1 NS749 ET NS761 A 1000 SEC ET 3000 SEC 
+# TEST PRE1 NS749 ET NS761 A 1000 SEC ET 3000 SEC
 
 TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=25,  
+                  NUME_ORDRE=25,
                   NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
                   NOEUD='NS749',
@@ -306,7 +306,7 @@ TEST_RESU(RESU=_F(RESULTAT=U_1,
                   REFERENCE='NON_REGRESSION',),);
 
 TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=50,  
+                  NUME_ORDRE=50,
                   NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
                   NOEUD='NS749',
@@ -314,7 +314,7 @@ TEST_RESU(RESU=_F(RESULTAT=U_1,
                   REFERENCE='NON_REGRESSION',),);
 
 TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=25,  
+                  NUME_ORDRE=25,
                   NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
                   NOEUD='NS761',
@@ -322,17 +322,17 @@ TEST_RESU(RESU=_F(RESULTAT=U_1,
                   REFERENCE='NON_REGRESSION',),);
 
 TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=50,  
+                  NUME_ORDRE=50,
                   NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
                   NOEUD='NS761',
                   VALE=8.89E+05,
-                  REFERENCE='NON_REGRESSION',),); 
- 
-# TEST DX N25 ET N66 A 1000 SEC ET 3000 SEC 
+                  REFERENCE='NON_REGRESSION',),);
+
+# TEST DX N25 ET N66 A 1000 SEC ET 3000 SEC
 
 TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=25,  
+                  NUME_ORDRE=25,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
                   NOEUD='N25',
@@ -340,7 +340,7 @@ TEST_RESU(RESU=_F(RESULTAT=U_1,
                   REFERENCE='NON_REGRESSION',),);
 
 TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=50,  
+                  NUME_ORDRE=50,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
                   NOEUD='N25',
@@ -348,7 +348,7 @@ TEST_RESU(RESU=_F(RESULTAT=U_1,
                   REFERENCE='NON_REGRESSION',),);
 
 TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=25,  
+                  NUME_ORDRE=25,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
                   NOEUD='N66',
@@ -356,7 +356,7 @@ TEST_RESU(RESU=_F(RESULTAT=U_1,
                   REFERENCE='NON_REGRESSION',),);
 
 TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=50,  
+                  NUME_ORDRE=50,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
                   NOEUD='N66',

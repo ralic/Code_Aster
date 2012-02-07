@@ -1,9 +1,9 @@
-# MODIF  DATE 15/11/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION POST_RELEVE_T 2D EN DIFFERENTS REPERES
 # zzzz136b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,7 +34,8 @@
 #                       D'UN VECTEUR
 #
 
-DEBUT( CODE=_F(  NOM = 'ZZZZ136B',NIV_PUB_WEB='INTERNET'),IMPR_MACRO='OUI' )
+DEBUT(CODE=_F(NOM='ZZZZ136B',NIV_PUB_WEB='INTERNET'),IMPR_MACRO='OUI',DEBUG=_F(SDVERI='NON'))
+# SDVERI='NON' car la verification est trop couteuse en CPU
 
 MA=LIRE_MAILLAGE(  )
 
@@ -103,8 +104,8 @@ RESU=MECA_STATIQUE(        MODELE=MO,
                            CHAM_MATER=CH_MAT,
                                 EXCIT=_F(  CHARGE = CHARGE),
                           )
-CALC_ELEM( reuse=RESU, RESULTAT=RESU,      
-                                
+CALC_ELEM( reuse=RESU, RESULTAT=RESU,
+
                                OPTION='SIGM_ELNO'
                           )
 
@@ -113,7 +114,7 @@ CALC_NO( reuse=RESU, RESULTAT=RESU, OPTION='SIGM_NOEU' )
 
 #######################################################################
 #            I -  VALIDATION POST_RELEVE_T  EN 2D                     #
-#######################################################################   
+#######################################################################
 
 #======================================================================
 #
@@ -975,7 +976,7 @@ IMPR_TABLE(   TABLE=PRIN_NO,
 
 #######################################################################
 #            II -  VALIDATION MACR_LIGN_COUPE  EN 2D                  #
-####################################################################### 
+#######################################################################
 
 #======================================================================
 #
@@ -1009,7 +1010,7 @@ P1L_G=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'LIST1',
 IMPR_TABLE(   TABLE=P1L_G,
                 NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', )
              )
-# --------- 
+# ---------
 
 M1_L=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_ELNO',
                       LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='LOCAL',
@@ -1038,7 +1039,7 @@ IMPR_TABLE(   TABLE=P1_L,
                 NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', )
              )
 
-# --------- 
+# ---------
 
 M1_U=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_ELNO',
                       LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='UTILISATEUR',
@@ -1544,7 +1545,7 @@ O1_TN=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_NOEU',
                       LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='GLOBAL',GROUP_NO='LIST1',
                                       OPERATION='EXTRACTION',TRAC_NOR = 'OUI',
                                       NOM_CMP = ( 'SIXX', 'SIYY', 'SIZZ', 'SIXY', ),
-                                      INTITULE='O1_TN:LISTE DE NOEUDS P1 P2, TRAC_NOR ', 
+                                      INTITULE='O1_TN:LISTE DE NOEUDS P1 P2, TRAC_NOR ',
                                       DISTANCE_MAX=0.001,),)
 
 IMPR_TABLE(   TABLE=O1_TN,

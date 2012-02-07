@@ -1,17 +1,19 @@
       SUBROUTINE ECLA3D ( NOMTE, ELREFA, FAPG, NPG,
      &                    NPOINI, NTERM1, NSOMM1, CSOMM1,
      &                    TYMA, NBNO2, CONNX,
-     &                    MXNBN2, MXNBPG, MXNBPI, MXNBTE )
+     &                    MXNBN2,  MXNBPI, MXNBTE,
+     &                    MXNBSE, NBSEL, CORSEL)
       IMPLICIT   NONE
-      INTEGER      MXNBN2,MXNBPG,MXNBPI,MXNBTE
-      INTEGER      NPG,CONNX(MXNBN2,MXNBPG),NSOMM1(MXNBPI,MXNBTE)
-      INTEGER      NTERM1(MXNBPI),NBNO2(MXNBPG),NPOINI,TYMA(MXNBPG)
+      INTEGER      MXNBN2,MXNBPI,MXNBTE,MXNBSE
+      INTEGER      NPG,CONNX(MXNBN2,MXNBSE),NSOMM1(MXNBPI,MXNBTE)
+      INTEGER      NTERM1(MXNBPI),NBNO2(MXNBSE),NPOINI,TYMA(MXNBSE)
+      INTEGER      NBSEL, CORSEL(MXNBSE)
       REAL*8       CSOMM1(MXNBPI,MXNBTE)
       CHARACTER*16 NOMTE
       CHARACTER*8  ELREFA, FAPG
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,6 +43,7 @@ C
 C     DECOUPAGE DU TE4, T10 :
 C       FPG1  :  4 NOEUDS,  1 TETRA4
 C       FPG4  : 15 NOEUDS,  4 HEXA8
+C       FPG5  : 10 NOEUDS,  4 TETRA4, 2 PYRAM5
 C       FPG15 : 32 NOEUDS, 10 HEXA8 ET 4 PENTA6 ET 1 TETRA4
 C
 C     DECOUPAGE DU PE6, P15, P18 :
@@ -57,7 +60,8 @@ C POINT_I = SOMME COEF(K)*NOEUD(K)  (1<= K <=NTERMES)
 C           NTERMES <= 27 (HEXA27)
 C
 C ---------------------------------------------------------------------
-      INTEGER       K, IHEXA8, IPENT6, ITETR4
+      INTEGER       K, IHEXA8, IPENT6, ITETR4, IPYRA5
+      LOGICAL       LTETRA, LPYRAM
       CHARACTER*32  JEXNOM
       CHARACTER*24 VALK(3)
 
@@ -67,6 +71,10 @@ C ---------------------------------------------------------------------
       CALL JENONU(JEXNOM('&CATA.TM.NOMTM','HEXA8' ),IHEXA8)
       CALL JENONU(JEXNOM('&CATA.TM.NOMTM','PENTA6'),IPENT6)
       CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TETRA4'),ITETR4)
+      CALL JENONU(JEXNOM('&CATA.TM.NOMTM','PYRAM5'),IPYRA5)
+
+      LTETRA=.FALSE.
+      LPYRAM=.FALSE.
 
 C     -----------------------------------------------------------------
 C     HEXAEDRES
@@ -74,7 +82,7 @@ C     -----------------------------------------------------------------
       IF ( ELREFA .EQ. 'HE8' .OR.
      +     ELREFA .EQ. 'H20' .OR.
      +     ELREFA .EQ. 'H27' ) THEN
-C
+
        IF ( FAPG .EQ. 'FPG1' ) THEN
 C           -----------------
          NPOINI   = 8
@@ -470,7 +478,8 @@ C     TETRAEDRES
 C     -----------------------------------------------------------------
       ELSEIF ( ELREFA .EQ. 'TE4' .OR.
      +         ELREFA .EQ. 'T10' ) THEN
-C
+       LTETRA=.TRUE.
+
        IF ( FAPG .EQ. 'FPG1' ) THEN
 C           -----------------
          NPOINI   = 4
@@ -559,7 +568,62 @@ C        -- CONNECTIVITE DES SOUS-ELEMENTS :
          CALL ECLACO(3,MXNBN2,CONNX,NBNO2,  1,7,14,8,5,11,15,12)
          CALL ECLACO(4,MXNBN2,CONNX,NBNO2,  4,8,14,10,9,12,15,13)
 
-C
+
+       ELSEIF ( FAPG .EQ. 'FPG5' ) THEN
+C           -----------------
+         NPOINI = 10
+         DO 301, K = 1, 4
+           TYMA(K)  = ITETR4
+           NBNO2(K) = 4
+ 301     CONTINUE
+         DO 302, K = 5, 6
+           TYMA(K)  = IPYRA5
+           NBNO2(K) = 5
+ 302     CONTINUE
+
+C        -- DEFINITION DES POINT_I :
+         NTERM1(1)=1
+         CALL ECLAN1(1,MXNBPI,NSOMM1,NTERM1,1,0,0,0,0,0,0,0)
+         CALL ECLAC1(1,MXNBPI,CSOMM1,NTERM1,1,0,0,0,0,0,0,0)
+         NTERM1(2)=1
+         CALL ECLAN1(2,MXNBPI,NSOMM1,NTERM1,2,0,0,0,0,0,0,0)
+         CALL ECLAC1(2,MXNBPI,CSOMM1,NTERM1,1,0,0,0,0,0,0,0)
+         NTERM1(3)=1
+         CALL ECLAN1(3,MXNBPI,NSOMM1,NTERM1,3,0,0,0,0,0,0,0)
+         CALL ECLAC1(3,MXNBPI,CSOMM1,NTERM1,1,0,0,0,0,0,0,0)
+         NTERM1(4)=1
+         CALL ECLAN1(4,MXNBPI,NSOMM1,NTERM1,4,0,0,0,0,0,0,0)
+         CALL ECLAC1(4,MXNBPI,CSOMM1,NTERM1,1,0,0,0,0,0,0,0)
+
+
+         NTERM1(5)=2
+         CALL ECLAN1(5,MXNBPI,NSOMM1,NTERM1,1,2,0,0,0,0,0,0)
+         CALL ECLAC1(5,MXNBPI,CSOMM1,NTERM1,1,1,0,0,0,0,0,0)
+         NTERM1(6)=2
+         CALL ECLAN1(6,MXNBPI,NSOMM1,NTERM1,2,3,0,0,0,0,0,0)
+         CALL ECLAC1(6,MXNBPI,CSOMM1,NTERM1,1,1,0,0,0,0,0,0)
+         NTERM1(7)=2
+         CALL ECLAN1(7,MXNBPI,NSOMM1,NTERM1,3,1,0,0,0,0,0,0)
+         CALL ECLAC1(7,MXNBPI,CSOMM1,NTERM1,1,1,0,0,0,0,0,0)
+         NTERM1(8)=2
+         CALL ECLAN1(8,MXNBPI,NSOMM1,NTERM1,1,4,0,0,0,0,0,0)
+         CALL ECLAC1(8,MXNBPI,CSOMM1,NTERM1,1,1,0,0,0,0,0,0)
+         NTERM1(9)=2
+         CALL ECLAN1(9,MXNBPI,NSOMM1,NTERM1,2,4,0,0,0,0,0,0)
+         CALL ECLAC1(9,MXNBPI,CSOMM1,NTERM1,1,1,0,0,0,0,0,0)
+         NTERM1(10)=2
+         CALL ECLAN1(10,MXNBPI,NSOMM1,NTERM1,3,4,0,0,0,0,0,0)
+         CALL ECLAC1(10,MXNBPI,CSOMM1,NTERM1,1,1,0,0,0,0,0,0)
+
+C        -- CONNECTIVITE DES SOUS-ELEMENTS :
+         CALL ECLACO(1,MXNBN2,CONNX,NBNO2,  1,5,7,8,0,0,0,0)
+         CALL ECLACO(2,MXNBN2,CONNX,NBNO2,  2,5,6,9,0,0,0,0)
+         CALL ECLACO(3,MXNBN2,CONNX,NBNO2,  3,7,6,10,0,0,0,0)
+         CALL ECLACO(4,MXNBN2,CONNX,NBNO2,  4,8,10,9,0,0,0,0)
+         CALL ECLACO(5,MXNBN2,CONNX,NBNO2,  5,7,8,9,6,0,0,0)
+         CALL ECLACO(6,MXNBN2,CONNX,NBNO2,  10,7,8,9,6,0,0,0)
+
+
        ELSEIF ( FAPG .EQ. 'FPG15' ) THEN
 C               -----------------
          NPOINI = 32
@@ -711,7 +775,7 @@ C     -----------------------------------------------------------------
       ELSEIF ( ELREFA .EQ. 'PE6' .OR.
      &         ELREFA .EQ. 'P15' .OR.
      &         ELREFA .EQ. 'P18') THEN
-C
+
        IF ( FAPG .EQ. 'FPG1' ) THEN
 C           -----------------
          NPOINI   = 6
@@ -995,12 +1059,187 @@ C        -- CONNECTIVITE DES SOUS-ELEMENTS :
         CALL U2MESK('F', 'CALCULEL5_76', 3, VALK)
        ENDIF
 
+C     -----------------------------------------------------------------
+C     PYRAMIDES
+C     -----------------------------------------------------------------
+      ELSEIF ( ELREFA .EQ. 'PY5' .OR.
+     &         ELREFA .EQ. 'P13') THEN
+       LPYRAM=.TRUE.
+
+       IF ( FAPG .EQ. 'FPG1' ) THEN
+C           -----------------
+         NPOINI   = 5
+         TYMA(1)  = IPYRA5
+         NBNO2(1) = 5
+
+C        -- DEFINITION DES POINT_I :
+         NTERM1(1)=1
+         CALL ECLAN1(1,MXNBPI,NSOMM1,NTERM1,1,0,0,0,0,0,0,0)
+         CALL ECLAC1(1,MXNBPI,CSOMM1,NTERM1,1,0,0,0,0,0,0,0)
+         NTERM1(2)=1
+         CALL ECLAN1(2,MXNBPI,NSOMM1,NTERM1,2,0,0,0,0,0,0,0)
+         CALL ECLAC1(2,MXNBPI,CSOMM1,NTERM1,1,0,0,0,0,0,0,0)
+         NTERM1(3)=1
+         CALL ECLAN1(3,MXNBPI,NSOMM1,NTERM1,3,0,0,0,0,0,0,0)
+         CALL ECLAC1(3,MXNBPI,CSOMM1,NTERM1,1,0,0,0,0,0,0,0)
+         NTERM1(4)=1
+         CALL ECLAN1(4,MXNBPI,NSOMM1,NTERM1,4,0,0,0,0,0,0,0)
+         CALL ECLAC1(4,MXNBPI,CSOMM1,NTERM1,1,0,0,0,0,0,0,0)
+         NTERM1(5)=1
+         CALL ECLAN1(5,MXNBPI,NSOMM1,NTERM1,5,0,0,0,0,0,0,0)
+         CALL ECLAC1(5,MXNBPI,CSOMM1,NTERM1,1,0,0,0,0,0,0,0)
+
+C        -- CONNECTIVITE DES SOUS-ELEMENTS :
+         CALL ECLACO(1,MXNBN2,CONNX,NBNO2,  1,2,3,4,5,0,0,0)
+
+
+       ELSEIF ( FAPG .EQ. 'FPG5' .OR.  FAPG .EQ. 'FPG27') THEN
+C           -----------------------------------------------
+         NPOINI = 19
+         DO 710, K = 1, 4
+           TYMA(K)  = IHEXA8
+           NBNO2(K) = 8
+710      CONTINUE
+         DO 711, K = 5, 8
+           TYMA(K)  = IPYRA5
+           NBNO2(K) = 5
+711      CONTINUE
+
+C        -- DEFINITION DES POINT_I :
+         NTERM1(1)=1
+         CALL ECLAN1(1,MXNBPI,NSOMM1,NTERM1,1,0,0,0,0,0,0,0)
+         CALL ECLAC1(1,MXNBPI,CSOMM1,NTERM1,1,0,0,0,0,0,0,0)
+         NTERM1(2)=1
+         CALL ECLAN1(2,MXNBPI,NSOMM1,NTERM1,2,0,0,0,0,0,0,0)
+         CALL ECLAC1(2,MXNBPI,CSOMM1,NTERM1,1,0,0,0,0,0,0,0)
+         NTERM1(3)=1
+         CALL ECLAN1(3,MXNBPI,NSOMM1,NTERM1,3,0,0,0,0,0,0,0)
+         CALL ECLAC1(3,MXNBPI,CSOMM1,NTERM1,1,0,0,0,0,0,0,0)
+         NTERM1(4)=1
+         CALL ECLAN1(4,MXNBPI,NSOMM1,NTERM1,4,0,0,0,0,0,0,0)
+         CALL ECLAC1(4,MXNBPI,CSOMM1,NTERM1,1,0,0,0,0,0,0,0)
+         NTERM1(5)=1
+         CALL ECLAN1(5,MXNBPI,NSOMM1,NTERM1,5,0,0,0,0,0,0,0)
+         CALL ECLAC1(5,MXNBPI,CSOMM1,NTERM1,1,0,0,0,0,0,0,0)
+
+         NTERM1(6)=2
+         CALL ECLAN1(6,MXNBPI,NSOMM1,NTERM1,1,2,0,0,0,0,0,0)
+         CALL ECLAC1(6,MXNBPI,CSOMM1,NTERM1,1,1,0,0,0,0,0,0)
+         NTERM1(7)=2
+         CALL ECLAN1(7,MXNBPI,NSOMM1,NTERM1,2,3,0,0,0,0,0,0)
+         CALL ECLAC1(7,MXNBPI,CSOMM1,NTERM1,1,1,0,0,0,0,0,0)
+         NTERM1(8)=2
+         CALL ECLAN1(8,MXNBPI,NSOMM1,NTERM1,3,4,0,0,0,0,0,0)
+         CALL ECLAC1(8,MXNBPI,CSOMM1,NTERM1,1,1,0,0,0,0,0,0)
+         NTERM1(9)=2
+         CALL ECLAN1(9,MXNBPI,NSOMM1,NTERM1,4,1,0,0,0,0,0,0)
+         CALL ECLAC1(9,MXNBPI,CSOMM1,NTERM1,1,1,0,0,0,0,0,0)
+
+         NTERM1(10)=2
+         CALL ECLAN1(10,MXNBPI,NSOMM1,NTERM1,1,5,0,0,0,0,0,0)
+         CALL ECLAC1(10,MXNBPI,CSOMM1,NTERM1,1,1,0,0,0,0,0,0)
+         NTERM1(11)=2
+         CALL ECLAN1(11,MXNBPI,NSOMM1,NTERM1,2,5,0,0,0,0,0,0)
+         CALL ECLAC1(11,MXNBPI,CSOMM1,NTERM1,1,1,0,0,0,0,0,0)
+         NTERM1(12)=2
+         CALL ECLAN1(12,MXNBPI,NSOMM1,NTERM1,3,5,0,0,0,0,0,0)
+         CALL ECLAC1(12,MXNBPI,CSOMM1,NTERM1,1,1,0,0,0,0,0,0)
+         NTERM1(13)=2
+         CALL ECLAN1(13,MXNBPI,NSOMM1,NTERM1,4,5,0,0,0,0,0,0)
+         CALL ECLAC1(13,MXNBPI,CSOMM1,NTERM1,1,1,0,0,0,0,0,0)
+
+         NTERM1(14)=3
+         CALL ECLAN1(14,MXNBPI,NSOMM1,NTERM1,1,2,5,0,0,0,0,0)
+         CALL ECLAC1(14,MXNBPI,CSOMM1,NTERM1,1,1,1,0,0,0,0,0)
+         NTERM1(15)=3
+         CALL ECLAN1(15,MXNBPI,NSOMM1,NTERM1,2,3,5,0,0,0,0,0)
+         CALL ECLAC1(15,MXNBPI,CSOMM1,NTERM1,1,1,1,0,0,0,0,0)
+         NTERM1(16)=3
+         CALL ECLAN1(16,MXNBPI,NSOMM1,NTERM1,3,4,5,0,0,0,0,0)
+         CALL ECLAC1(16,MXNBPI,CSOMM1,NTERM1,1,1,1,0,0,0,0,0)
+         NTERM1(17)=3
+         CALL ECLAN1(17,MXNBPI,NSOMM1,NTERM1,4,1,5,0,0,0,0,0)
+         CALL ECLAC1(17,MXNBPI,CSOMM1,NTERM1,1,1,1,0,0,0,0,0)
+
+         NTERM1(18)=4
+         CALL ECLAN1(18,MXNBPI,NSOMM1,NTERM1,1,2,3,4,0,0,0,0)
+         CALL ECLAC1(18,MXNBPI,CSOMM1,NTERM1,1,1,1,1,0,0,0,0)
+
+         NTERM1(19)=5
+         CALL ECLAN1(19,MXNBPI,NSOMM1,NTERM1,1,2,3,4,5,0,0,0)
+         CALL ECLAC1(19,MXNBPI,CSOMM1,NTERM1,1,1,1,1,4,0,0,0)
+
+
+
+C        -- CONNECTIVITE DES SOUS-ELEMENTS :
+         CALL ECLACO(1,MXNBN2,CONNX,NBNO2,  1,6,14,10, 9,18,19,17)
+         CALL ECLACO(2,MXNBN2,CONNX,NBNO2,  2,7,15,11, 6,18,19,14)
+         CALL ECLACO(3,MXNBN2,CONNX,NBNO2,  3,8,16,12, 7,18,19,15)
+         CALL ECLACO(4,MXNBN2,CONNX,NBNO2,  4,9,17,13, 8,18,19,16)
+
+         CALL ECLACO(5,MXNBN2,CONNX,NBNO2,  14,11,15,19, 5,0,0,0)
+         CALL ECLACO(6,MXNBN2,CONNX,NBNO2,  15,12,16,19, 5,0,0,0)
+         CALL ECLACO(7,MXNBN2,CONNX,NBNO2,  16,13,17,19, 5,0,0,0)
+         CALL ECLACO(8,MXNBN2,CONNX,NBNO2,  17,10,14,19, 5,0,0,0)
+
+       ELSE
+        VALK (1) = NOMTE
+        VALK (2) = ELREFA
+        VALK (3) = FAPG
+        CALL U2MESK('F', 'CALCULEL5_76', 3, VALK)
+       ENDIF
+
       ELSE
         VALK (1) = NOMTE
         VALK (2) = ELREFA
         CALL U2MESK('F', 'CALCULEL5_78', 2, VALK)
       ENDIF
 
-      CALL JEDEMA()
 
+C     -- POUR PRESQUE TOUS LES SCHEMAS 3D, IL Y A IDENTITE: KSE -> KPG:
+      NBSEL=NPG
+      DO 5, K=1,NPG
+        CORSEL(K)=K
+ 5    CONTINUE
+
+C     -- EXCEPTION 1
+      IF (LTETRA.AND. FAPG .EQ. 'FPG5') THEN
+        NBSEL=6
+        CORSEL(1)=4
+        CORSEL(2)=3
+        CORSEL(3)=2
+        CORSEL(4)=5
+        CORSEL(5)=1
+        CORSEL(6)=1
+      ENDIF
+
+C     -- EXCEPTION 2
+      IF (LPYRAM.AND. FAPG .EQ. 'FPG5') THEN
+        NBSEL=8
+        CORSEL(1)=1
+        CORSEL(2)=2
+        CORSEL(3)=3
+        CORSEL(4)=4
+
+        CORSEL(5)=5
+        CORSEL(6)=5
+        CORSEL(7)=5
+        CORSEL(8)=5
+      ENDIF
+
+C     -- EXCEPTION 3
+      IF (LPYRAM.AND. FAPG .EQ. 'FPG27') THEN
+        NBSEL=8
+        CORSEL(1)=8
+        CORSEL(2)=9
+        CORSEL(3)=10
+        CORSEL(4)=11
+
+        CORSEL(5)=13
+        CORSEL(6)=14
+        CORSEL(7)=15
+        CORSEL(8)=12
+      ENDIF
+
+      CALL JEDEMA()
       END

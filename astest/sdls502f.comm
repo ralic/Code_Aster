@@ -1,32 +1,32 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
-# RESPONSABLE ADBHHPM P.MASSIN 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 19/05/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD )
-# TITRE  : PLAQUE CARREE SOLIDE SIMPLEMENT SUPPORTEE 
+# TITRE  : PLAQUE CARREE SOLIDE SIMPLEMENT SUPPORTEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #---------------------------------------------------------------------
-#  - CALCUL EN ANALYSE MODALE DYNAMIQUE D'UNE PLAQUE CARREE EPAISSE 
-#    SIMPLEMENT SUPPORTEE 
-#  - MODELISATION AVEC DES ELEMENTS COQUE_3D (QUAD9) 
+#  - CALCUL EN ANALYSE MODALE DYNAMIQUE D'UNE PLAQUE CARREE EPAISSE
+#    SIMPLEMENT SUPPORTEE
+#  - MODELISATION AVEC DES ELEMENTS COQUE_3D (QUAD9)
 #---------------------------------------------------------------------
 #
-DEBUT( CODE=_F( NOM = 'SDLS502F',NIV_PUB_WEB='INTERNET'),);
+DEBUT(CODE=_F(NOM='SDLS502F',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 PLAQ_M=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),FORMAT='MED', );
 
@@ -43,7 +43,7 @@ PLAQ_MA=DEFI_GROUP(reuse =PLAQ_MA,
                 CREA_GROUP_NO=_F(GROUP_MA='BORDS',NOM='BORDS',),);
 #
 #---------------------------------------------------------------------
-#                     CARACTERISTIQUES ELEMENTAIRES 
+#                     CARACTERISTIQUES ELEMENTAIRES
 #---------------------------------------------------------------------
 #
 CARA_ELE=AFFE_CARA_ELEM(   MODELE=MODEL,
@@ -54,7 +54,7 @@ CARA_ELE=AFFE_CARA_ELEM(   MODELE=MODEL,
 
 #
 #---------------------------------------------------------------------
-#                     CARACTERISTIQUES MATERIAUX 
+#                     CARACTERISTIQUES MATERIAUX
 #---------------------------------------------------------------------
 #
 ACIER=DEFI_MATERIAU(   ELAS=_F( E = 2.E+11,
@@ -68,7 +68,7 @@ MAT=AFFE_MATERIAU(   MAILLAGE=PLAQ_MA,
 
 #
 #---------------------------------------------------------------------
-#                     CHARGEMENTS 
+#                     CHARGEMENTS
 #---------------------------------------------------------------------
 #
 CHAR0=AFFE_CHAR_MECA(     MODELE=MODEL,
@@ -77,7 +77,7 @@ CHAR0=AFFE_CHAR_MECA(     MODELE=MODEL,
 
 #
 #---------------------------------------------------------------------
-#                     RESOLUTION 
+#                     RESOLUTION
 #---------------------------------------------------------------------
 #
 M_EL_RIG=CALC_MATR_ELEM(       MODELE=MODEL,
@@ -109,12 +109,12 @@ MODES=MODE_ITER_SIMULT(      MATR_A=M_AS_RIG,
                                MATR_B=M_AS_MAS,
                               METHODE='SORENSEN',
                             CALC_FREQ=_F( OPTION = 'BANDE',
-                                       FREQ = (10., 350.,))   
+                                       FREQ = (10., 350.,))
                           );
 
 #
 #---------------------------------------------------------------------
-#                     VERIFICATION DES RESULTATS 
+#                     VERIFICATION DES RESULTATS
 #---------------------------------------------------------------------
 #
 TEST_RESU(RESU=(

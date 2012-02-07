@@ -1,4 +1,4 @@
-#@ MODIF macr_ecrevisse_ops Macro  DATE 31/01/2012   AUTEUR ABBAS M.ABBAS 
+#@ MODIF macr_ecrevisse_ops Macro  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -56,6 +56,7 @@ def macr_ecrevisse_ops(self,reuse,
    from Utilitai.Utmess import UTMESS, MasquerAlarme, RetablirAlarme
    from Utilitai.Table import Table, merge
    from Accas import _F
+   import aster_core
    import os, aster, copy
 
    ier=0
@@ -112,7 +113,7 @@ def macr_ecrevisse_ops(self,reuse,
        dEtatInit=None
 
    ## Valeur par defaut du mot cle LOGICIEL
-   #if not LOGICIEL: LOGICIEL = os.path.join(aster.repout(), 'ecrevisse')
+   #if not LOGICIEL: LOGICIEL = os.path.join(aster_core.get_option('repout'), 'ecrevisse')
 
    # RECUPERATION DES MOTS-CLES FACTEURS
 

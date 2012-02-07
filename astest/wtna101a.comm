@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # RESPONSABLE FERNANDES R.FERNANDES
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL NON DRAINE AVEC LE MODELE DE TYPE
@@ -23,8 +23,9 @@
 #                DRUCKER-PRAGER A ECROUISSAGE NEGATIF
 #                LINEAIRE POUR UN CONFINEMENT DE 2 MPA  (3D_HM)
 # ======================================================================
-DEBUT(   CODE=_F( NOM = 'WTNA101A',NIV_PUB_WEB='INTERNET'),) 
-                               
+DEBUT(CODE=_F(NOM='WTNA101A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
+# SDVERI='NON' car la verification est trop couteuse en CPU
+
 VISCOLIQ = DEFI_CONSTANTE( VALE=1.E-3)
 
 DVISCOL  = DEFI_CONSTANTE( VALE=0.)

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE COUDE EN FLEXION EN ELASTOPLASTICITE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,7 @@
 # ======================================================================
 # GEOMETRIE PROCHE DU CPP N4
 
-DEBUT(  CODE=_F(  NOM = 'SSNL117A',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SSNL117A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MOMENTMZ=1.
 

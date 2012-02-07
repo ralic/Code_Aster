@@ -1,21 +1,21 @@
-#@ MODIF macr_recal_ops Macro  DATE 19/04/2011   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF macr_recal_ops Macro  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE ASSIRE A.ASSIRE
 
@@ -27,6 +27,7 @@ import glob
 
 import numpy as NP
 
+import aster_core
 debug = False
 
 INFO = 1
@@ -112,7 +113,7 @@ def macr_recal_ops(self,UNITE_ESCL, RESU_EXP, LIST_POIDS, LIST_PARA, RESU_CALC, 
 
    # Reecriture des mots-cles
    if COURBE:
-       RESU_EXP=[] 
+       RESU_EXP=[]
        RESU_CALC=[]
        LIST_POIDS=[]
        LIST_POIDS_DEFAUT=[]
@@ -122,7 +123,7 @@ def macr_recal_ops(self,UNITE_ESCL, RESU_EXP, LIST_POIDS, LIST_PARA, RESU_CALC, 
           LIST_EXP=[]
           LIST_CALC_TMP=[]
           for j in range(len(lpar)):
-             LIST_EXP_TMP=[] 
+             LIST_EXP_TMP=[]
              LIST_EXP_TMP.append(lpar[j])
              LIST_EXP_TMP.append(lval[j])
              LIST_EXP.append(LIST_EXP_TMP)
@@ -135,7 +136,7 @@ def macr_recal_ops(self,UNITE_ESCL, RESU_EXP, LIST_POIDS, LIST_PARA, RESU_CALC, 
           LIST_POIDS_DEFAUT.append(1.)
        if len(LIST_POIDS_TMP)==0 : LIST_POIDS= NP.array(LIST_POIDS_DEFAUT)
        else:                       LIST_POIDS= NP.array(LIST_POIDS_TMP)
- 
+
    if PARA_OPTI:
       j=0
       LIST_PARA=[]
@@ -148,7 +149,7 @@ def macr_recal_ops(self,UNITE_ESCL, RESU_EXP, LIST_POIDS, LIST_PARA, RESU_CALC, 
         LIST_PARA.append(LIST_TMP)
 
 
-   macr_recal(self, UNITE_ESCL, force_list(RESU_EXP, NP.ndarray), LIST_POIDS, force_list(LIST_PARA), force_list(RESU_CALC), 
+   macr_recal(self, UNITE_ESCL, force_list(RESU_EXP, NP.ndarray), LIST_POIDS, force_list(LIST_PARA), force_list(RESU_CALC),
              ITER_MAXI, ITER_FONC_MAXI, RESI_GLOB_RELA,UNITE_RESU,PARA_DIFF_FINI,
              GRAPHIQUE, METHODE, INFO, **args)
 
@@ -157,13 +158,13 @@ def macr_recal_ops(self,UNITE_ESCL, RESU_EXP, LIST_POIDS, LIST_PARA, RESU_CALC, 
 
 
 # --------------------------------------------------------------------------------------------------
-def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC, 
+def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
                ITER_MAXI, ITER_FONC_MAXI, RESI_GLOB_RELA,UNITE_RESU,PARA_DIFF_FINI,
                GRAPHIQUE, METHODE, INFO, **args ):
 
    from Utilitai.Utmess import UTMESS
    if os.environ.has_key('ASTER_ROOT'):  ASTER_ROOT = os.environ['ASTER_ROOT']
-   else:                                 ASTER_ROOT = os.path.join(aster.repout, '..')
+   else:                                 ASTER_ROOT = os.path.join(aster_core.get_option('repout'), '..')
 
    try:
        sys.path.append(os.path.join(ASTER_ROOT, 'ASTK', 'ASTK_SERV', 'lib'))
@@ -237,7 +238,7 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
    if args.has_key('ECART_TYPE'):        ECART_TYPE      = args['ECART_TYPE']
    if args.has_key('ITER_ALGO_GENE'):    ITER_ALGO_GENE  = args['ITER_ALGO_GENE']
    if args.has_key('RESI_ALGO_GENE'):    RESI_ALGO_GENE  = args['RESI_ALGO_GENE']
-   
+
    if args.has_key('GRAINE'):
        UTMESS('A','RECAL0_43')
        GRAINE = args['GRAINE']
@@ -292,7 +293,7 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
        CALCUL_ESCLAVE['mem_aster'] = mem_aster
 
        # Utilisation du mot-cle TEMPS
-       if dESCLAVE.has_key('TEMPS'):    
+       if dESCLAVE.has_key('TEMPS'):
           CALCUL_ESCLAVE['tpsjob'] = int(dESCLAVE['TEMPS']/60)
           CALCUL_ESCLAVE['tpmax']  = int(dESCLAVE['TEMPS'])
        else:
@@ -301,7 +302,7 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
           CALCUL_ESCLAVE['tpmax']  = prof.args['tpmax']
 
        # Utilisation du mot-cle MEMOIRE
-       if dESCLAVE.has_key('MEMOIRE'):    
+       if dESCLAVE.has_key('MEMOIRE'):
           CALCUL_ESCLAVE['memjob']    = int(dESCLAVE['MEMOIRE']*1024)
           # Calcul du parametre memjeveux esclave
           memjeveux                   = int(dESCLAVE['MEMOIRE']/facw)
@@ -389,10 +390,10 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
 
    # OBJET "CALCUL"
    CALCUL_ASTER = reca_calcul_aster.CALCUL_ASTER(
-       jdc             = self, 
+       jdc             = self,
        METHODE         = METHODE,
        UNITE_ESCL      = UNITE_ESCL,
-       UNITE_RESU      = UNITE_RESU, 
+       UNITE_RESU      = UNITE_RESU,
        para            = para,
        reponses        = RESU_CALC,
        PARA_DIFF_FINI  = PARA_DIFF_FINI,
@@ -423,7 +424,7 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
       if (DYNAMIQUE!=None and DYNAMIQUE['APPARIEMENT_MANUEL']=='OUI'): CALCUL_ASTER.graph_mac=True
 
    # Instance de la classe gérant l'affichage des resultats du calcul de l'optimisation
-   Mess = reca_message.Message(para,RESU_EXP,copy.copy(val_init),UNITE_RESU) 
+   Mess = reca_message.Message(para,RESU_EXP,copy.copy(val_init),UNITE_RESU)
    Mess.initialise()
 
 #    # Calcul de F
@@ -562,7 +563,7 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
           fprime = CALCUL_ASTER.calcul_G
           warnflag=0
 
-          if args.has_key('GRADIENT') and args['GRADIENT'] == 'NON_CALCULE': 
+          if args.has_key('GRADIENT') and args['GRADIENT'] == 'NON_CALCULE':
               f      = CALCUL_ASTER.calcul_F
               fprime = None
 
@@ -593,7 +594,7 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
        #-------------------------------------------------------------------------------
        # Methode Levenberg-Marquardt
        #-------------------------------------------------------------------------------
-       elif METHODE in  ['LEVENBERG', 'HYBRIDE']: 
+       elif METHODE in  ['LEVENBERG', 'HYBRIDE']:
 
              #___________________________________________________________
              #
@@ -604,7 +605,7 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
              epsilon = 10.*RESI_GLOB_RELA
              while(iter<ITER_MAXI):
                 iter = iter +1
-                new_val, s, l, Act = reca_algo.Levenberg_bornes(val, Dim, val_init, borne_inf, borne_sup, A, erreur, l, UNITE_RESU) 
+                new_val, s, l, Act = reca_algo.Levenberg_bornes(val, Dim, val_init, borne_inf, borne_sup, A, erreur, l, UNITE_RESU)
 
                 # On teste la variation sur les parametres
                 ecart_para = reca_algo.calcul_norme2( NP.array(new_val) - NP.array(val) )
@@ -719,10 +720,10 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
 
    #_____________________________________________
    #
-   # CREATIONS DE LA LISTE DE REELS CONTENANT 
+   # CREATIONS DE LA LISTE DE REELS CONTENANT
    # LES VALEURS DES PARAMETRES A CONVERGENCE
    #_____________________________________________
 
    nomres = Sortie(LIST_NOM_PARA, LIST_PARA, val, CALCUL_ASTER, Mess)
-   return 
+   return
 

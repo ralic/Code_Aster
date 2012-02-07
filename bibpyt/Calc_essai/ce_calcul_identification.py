@@ -1,21 +1,21 @@
-#@ MODIF ce_calcul_identification Calc_essai  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF ce_calcul_identification Calc_essai  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 
@@ -28,6 +28,7 @@ from numpy import matrix
 import numpy.linalg as linalg
 
 from Calc_essai.cata_ce import Resultat, InterSpectre, nume_ddl_phy, nume_ddl_gene
+import aster_core
 import aster
 from Accas import _F
 
@@ -53,7 +54,7 @@ class CalcEssaiIdentification:
         self.eps = None
         self.mcoeff = 0.
         self.var_opt = 0.
-    
+
         # Variables d'existence des matrices resultats
         self.is_Syy = 0
         self.is_Syy_R = 0
@@ -62,7 +63,7 @@ class CalcEssaiIdentification:
         self.is_Sff = 0
         self.is_Syy_S = 0
         self.is_vs = 0 # Ajout : valeurs singulieres de la matrice C.Phi.Zm1
-    
+
     def set_interspectre(self, intsp):
         """Trouve l'inter-spectre de mesures en fonctionnement"""
         self.inter_spec = intsp
@@ -99,7 +100,7 @@ class CalcEssaiIdentification:
         self.is_SQQ_R = 0
         self.is_Sff = 0
         self.is_Syy_S = 0
-        self.is_vs = 0 
+        self.is_vs = 0
 
         # Extraction des donnees Aster au format matrices python
         try:
@@ -128,7 +129,7 @@ class CalcEssaiIdentification:
             # NB : on ne devrait avoir a les desactiver que pour les
             # operations "sensibles", type SVD, mais en calibre 5, on observe
             # des plantages sur de simples multiplications.
-            aster.matfpe(-1)
+            aster_core.matfpe(-1)
             self.SQQ, self.val_sing, self.regul = resultat.calc_SQQ()
             self.SQQ.nume_gene = nume_ddl_gene(self.res_base)
             self.is_SQQ = 1
@@ -147,7 +148,7 @@ class CalcEssaiIdentification:
             self.is_Syy_S = 1
             self.Syy_S.set_model(self.res_obs)
             self.Syy_S.nume_phy = self.Syy.nume_phy
-            aster.matfpe(1)
+            aster_core.matfpe(1)
 
         except TypeError:
             self.mess.disp_mess("Calcul inverse non complete")
@@ -167,7 +168,7 @@ class CalculInverse:
                  modele_mod,
                  Syy, type_intsp, CPhi, PhiT_B,
                  mess):
-        
+
         # dimensions du probleme
         self.calcturb = calcturb
         self.nb_freq  = len(calcturb.f)               # nombre de pas de frequence
@@ -178,7 +179,7 @@ class CalculInverse:
         self.var_opt  = calcturb.var_opt
 
         self.mess = mess
-        
+
         # matrices inter-spectrales de donnees et de resultats
         self.modele_mod = modele_mod
         self.res_exp = Syy.resu
@@ -187,13 +188,13 @@ class CalculInverse:
         self.Syy = Syy.matr_inte_spec
         self.SQQ = zeros((self.nb_freq,self.nb_mod,self.nb_mod), dtype=complex)
         self.Syy_R = zeros((self.nb_freq,self.nb_mes,self.nb_mes), dtype=complex)
-        self.val_sing = zeros((self.nb_mod,self.nb_freq), dtype=complex)        
+        self.val_sing = zeros((self.nb_mod,self.nb_freq), dtype=complex)
         self.regul = zeros((self.nb_mod,self.nb_freq), dtype=complex)
         self.Syy_S = zeros((self.nb_freq,self.nb_mes,self.nb_mes), dtype=complex)
         self.SQQ_R = zeros((self.nb_freq,self.nb_mod,self.nb_mod), dtype=complex)
         self.Sff = zeros((self.nb_freq,self.nb_act,self.nb_act), dtype=complex)
         self.Z, self.Zm1 = self.calc_Z(type_intsp)
-        
+
 
         # parametres de calcul
         self.alpha   = float(calcturb.alpha)
@@ -205,7 +206,7 @@ class CalculInverse:
         """ Calcul de la matrice d'impedence"""
         Z = zeros((self.nb_freq,self.nb_mod,self.nb_mod), dtype=complex)
         Zm1 = zeros((self.nb_freq,self.nb_mod,self.nb_mod), dtype=complex)
-        
+
         # exposant : selon que l'inter-spectre soit en depl, vite ou acce, on change l'exposant
         if type_intsp == 'DEPL':exp = 0
         elif type_intsp == 'VITE':exp = 1
@@ -226,10 +227,10 @@ class CalculInverse:
                                                                         2*omega*l_omega_i[ind_mod]*l_xsi_i[ind_mod])
 
         self.l_omega_i = l_omega_i
-        
+
         return Z, Zm1
-        
-    
+
+
     def calc_SQQ(self):
         """ Calcul de la matrice d'impedance, affichage des cara modales
         et  calcul des excitations modales : [SQQ(om)] = [Z].[Sqq].[Z]^H"""
@@ -272,7 +273,7 @@ class CalculInverse:
                            frequences = self.f,
                            var_opt    = self.var_opt,
                            mess       = self.mess)
-        
+
         self.mess.disp_mess("Calcul de SQQ : efforts modaux")
 
         # Attention ! SQQ est une instance de Interspectre, self.val_sing est un simple array
@@ -290,7 +291,7 @@ class CalculInverse:
             SQQ_f = matrix(self.SQQ[ind_freq,:,:])
             Syy_R_f = CPhi*Zm1*SQQ_f*Zm1_H*CPhi_H
             self.Syy_R[ind_freq,:,:] = Syy_R_f
-            
+
         Syy_R = InterSpectre(nom        = 'SQQ_R',
                              mat        = self.Syy_R,
                              frequences = self.f,
@@ -298,9 +299,9 @@ class CalculInverse:
                              mess       = self.mess)
 
         self.mess.disp_mess("Calcul de Syy_R : efforts modaux reconstitues")
-        
-        return Syy_R     
-            
+
+        return Syy_R
+
 
     def calc_Sff(self):
         """ Calcul de l'inter-spectre des efforts physiques a partir des
@@ -334,7 +335,7 @@ class CalculInverse:
                 self.mess_err("Sff",{"PhiT_B":str(PhiT_B.shape),"SQQ":str(SQQ_f.shape)})
                 raise TypeError
             self.Sff[ind_freq,:,:] = Sff_f
-        
+
         Sff = InterSpectre(nom        = 'Sff',
                            mat        = self.Sff,
                            frequences = self.f,
@@ -356,7 +357,7 @@ class CalculInverse:
             Sff_f = matrix(self.Sff[ind_freq,:,:])
             SQQ_R_f = PhiT_B*Sff_f*PhiT_B_H
             self.SQQ_R[ind_freq,:,:] = SQQ_R_f
-            
+
         SQQ_R = InterSpectre(nom        = 'SQQ_R',
                              mat        = self.SQQ_R,
                              frequences = self.f,
@@ -364,7 +365,7 @@ class CalculInverse:
                              mess       = self.mess)
 
         self.mess.disp_mess("Calcul de SQQ_R : efforts modaux reconstitues")
-        
+
         return SQQ_R # TODO : le critere d'erreur
 
 
@@ -380,7 +381,7 @@ class CalculInverse:
             SQQ_R_f = matrix(self.SQQ_R[ind_freq,:,:])
             Syy_S_f = CPhi*Zm1_f*SQQ_R_f*Zm1_f_H*CPhi_H
             self.Syy_S[ind_freq,:,:] = Syy_S_f
-            
+
         Syy_S = InterSpectre(nom        = 'Syy_S',
                              mat        = self.Syy_S,
                              frequences = self.f,
@@ -391,7 +392,7 @@ class CalculInverse:
         self.mess.disp_mess(" ")
 
         return Syy_S
-    
+
 
     def choix_alpha(self, alpha,VH,omega):
         """
@@ -408,7 +409,7 @@ class CalculInverse:
         one = array([[1]]*nb_mod)
         vect1 = V*one
         ind = 0
-        
+
         for om in omega_i:
             if omega <= om or m == 0.0:
                 vect.append([vect1[ind,0]*1.])
@@ -417,7 +418,7 @@ class CalculInverse:
             ind = ind+1
         vect = alpha*matrix(vect)
         regul = VH*vect
-        
+
 
         return regul
 

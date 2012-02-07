@@ -1,26 +1,26 @@
-# MODIF  DATE 09/01/2012   AUTEUR CORUS M.CORUS 
+# MODIF  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST INFORMATIQUE QZ ET SORENSEN NON SYMETRIQUES
 # sdll123b.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # ======================================================================
 # CAS TEST INFORMATIQUE DE VALIDATION DES SOLVEURS MODAUX SORENSEN ET QZ
-# EN GENERALISE ET QUADRATIQUE NON SYMETRIQUES (EN STRUCTURE ET EN 
+# EN GENERALISE ET QUADRATIQUE NON SYMETRIQUES (EN STRUCTURE ET EN
 # VALEURS NUMERIQUES)
 # ON TESTE LES 3 APPROCHES DE SORENSEN EN QUADRATIQUE
 # PERIMETRE: MATRICES K, M (ET C EN QUAD) REELLES ET NON SYMETRIQUES
@@ -37,12 +37,13 @@
 #   - EN QUADRATIQUE, VARIANTES DE SORENSEN
 # ======================================================================
 
+import aster_core
 import numpy as NP
 import numpy.linalg as LA
 
 DEBUT( CODE=_F(NOM='SDLL123B', NIV_PUB_WEB='INTERNET'),
-       PAR_LOT='NON')
-aster.matfpe(-1)
+       PAR_LOT='NON', DEBUG=_F(SDVERI='OUI'))
+aster_core.matfpe(-1)
 
 nddl=19*6-4-4
 
@@ -85,8 +86,8 @@ CARELEM=AFFE_CARA_ELEM(MODELE=MODELE,
                                      VALE=(0.,0.,0.,0.,0.,0.,), )
                         )
                         )
-                                 
-                                 
+
+
 
 BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODELE,
                                DDL_IMPO=(
@@ -95,7 +96,7 @@ BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODELE,
                                      DRX=0,
                                      ),
                           ))
-                                    
+
 
 MACRO_MATR_ASSE(MODELE=MODELE,
                 CHAM_MATER=CHMAT,
@@ -113,7 +114,7 @@ MACRO_MATR_ASSE(MODELE=MODELE,
 
 
 
-######################################                    
+######################################
 # TEST GENERALISE REEL SYM ET NON SYM
 ######################################
 sym='oui'
@@ -133,7 +134,7 @@ else:
                               _F(MATR_ASSE=MASSE,    COEF_R=1.,),))
 
 
-# CALCUL VIA SORENSEN                          
+# CALCUL VIA SORENSEN
 MG_SO=MODE_ITER_SIMULT( INFO=1,
                        MATR_A=MATK,
                        MATR_B=MATM,
@@ -277,7 +278,7 @@ TEST_RESU(RESU=(
                 CRITERE = 'ABSOLU', PRECISION = 1.E-4,
                 NUME_ORDRE = 9,  VALE = 0.0E+00, VALE_ABS = 'OUI', REFERENCE='NON_REGRESSION',),
             ),)
-######################################                    
+######################################
 # TEST QUADRATIQUE REEL SYM ET NON SYM
 ######################################
 sym='oui'
@@ -323,7 +324,7 @@ MQ_SOI=MODE_ITER_SIMULT( INFO=1,
                        METHODE='SORENSEN',
                        CALC_FREQ=_F(OPTION='CENTRE',FREQ=1000.,NMAX_FREQ=10,
                        APPROCHE='IMAG',),
-                        )                                                     
+                        )
 # CALCUL VIA QZ
 MQ_QZ=MODE_ITER_SIMULT( INFO=1,
                        MATR_A=MATK1,
@@ -393,12 +394,12 @@ if (variante==1) :
      i=i+1
      if (abs(vp)==0) :
        print i,'zero'
-     else       :       
+     else       :
        vp1r=vp.real
        vp1i=vp.imag/2/pi
        print i,vp1i,-vp1r/abs(vp)
 
-aster.matfpe(+1)
+aster_core.matfpe(+1)
 
 TEST_RESU(RESU=(
 # POUR SORENSEN APPROCHE COMPLEXE

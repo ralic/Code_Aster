@@ -1,8 +1,8 @@
-#@ MODIF Graph Utilitai  DATE 13/12/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Graph Utilitai  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,6 +34,7 @@ from Utilitai.Utmess import UTMESS
 
 # try/except pour utiliser hors aster
 try:
+   import aster_core
    import aster
 except ImportError:
    class fake_aster:
@@ -919,7 +920,7 @@ class TraceXmgrace(TraceGraph):
          self.Fich[0].write('\n'.join(content))
          self._FermFich()
       else:
-         xmgr=os.path.join(aster.repout(),'xmgrace')
+         xmgr=os.path.join(aster_core.get_option('repout'),'xmgrace')
          nfwrk = self.NomFich[0]+'.wrk'
          open(nfwrk, 'w').write('\n'.join(content))
          nfhard = self.NomFich[0]+'.hardcopy'
@@ -936,8 +937,8 @@ class TraceXmgrace(TraceGraph):
                UTMESS('I','GRAPH0_7')
             UTMESS('I','GRAPH0_8', valk=os.environ['DISPLAY'])
          else:
-            if os.path.exists(os.path.join(aster.repout(),'gracebat')):
-               xmgr = os.path.join(aster.repout(),'gracebat')
+            if os.path.exists(os.path.join(aster_core.get_option('repout'),'gracebat')):
+               xmgr = os.path.join(aster_core.get_option('repout'),'gracebat')
             lcmde = '%s -hdevice %s -hardcopy -printfile %s %s' % (xmgr, pilo, nfhard, nfwrk)
          # appel xmgrace
          UTMESS('I','EXECLOGICIEL0_8', valk=lcmde)

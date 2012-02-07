@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 30/08/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -83,7 +83,7 @@ CALC_ERREUR=OPER(nom="CALC_ERREUR",op=42,sd_prod=calc_erreur_prod,reentrant='f',
      b_erre_qi =BLOC(condition = "au_moins_un(OPTION, ('QIRE_ELEM','QIZ1_ELEM','QIZ2_ELEM'))",
                      RESU_DUAL=SIMP(statut='o',typ=resultat_sdaster,fr="Résultat du problème dual"),),
 
-     b_sing    =BLOC(condition= "'SING_ELEM' in OPTION",
+     b_sing    =BLOC(condition= "au_moins_un(OPTION, 'SING_ELEM')",
                     PREC_ERR=SIMP(statut='o',typ='R',val_min= 0.,
                                   fr="Précision demandée pour calculer la carte de taille des éléments"),
                     TYPE_ESTI=SIMP(statut='f',typ='TXM',into=("ERME_ELEM","ERZ1_ELEM","ERZ2_ELEM",

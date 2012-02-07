@@ -1,9 +1,9 @@
-#@ MODIF E_SUPERV Execution  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_SUPERV Execution  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,42 +28,27 @@ import sys
 import os
 import traceback
 import re
+
 from E_utils import copierBase, lierRepertoire, supprimerRepertoire
 from strfunc import convert
 
 class SUPERV:
    usage="""
  USAGE :
+    asteru JDC.py --bibpyt="rep" --commandes="fic_commandes"
+                [--memjeveux=taille_en_Mw | --memory=taille_en_Mo]
+                [-rep_mat repertoire_materiau] [-rep_dex repertoire_datg]
+                [-interact] [-verif]
 
-    pyaster JDC.py -eficas_path "rep" -commandes "fic_commandes" [-memjeveux taille_en_Mw]
-                      [-rep_mat repertoire_materiau] [-rep_dex repertoire_datg]
-                      [-interact] [-verif]
+    L'ancienne syntaxe reste possible pour des raisons de compatibilité :
+       asteru JDC.py -eficas_path "rep" -commandes "fic_commandes" [-memjeveux taille_en_Mw]
+                  [-rep_mat repertoire_materiau] [-rep_dex repertoire_datg]
+                  [-interact] [-verif]
 
-    rep : est le repertoire contenant les paquetages de modules python d'Eficas ;
-    fic_commandes : est le nom du fichier de commandes :
-           - extension ".py" si les commandes sont au format python ;
-           - extension ".comm" si les commandes sont au format Aster, dans ce cas
-             les commandes sont converties dans le fichier dont le nom se termine
-             par .py ;
-           - dans tous les autres cas les commandes sont au format python.
-    repertoire_materiau : est le repertoire contenant la description des materiaux pour INCLUDE_MATERIAU
-    repertoire_datg : est le repertoire contenant les donnees geometriques
-    interact : si présent, indique que le superviseur passera en interactif apres avoir interprété le
-               fichier de commandes fic_commandes
-    verif : si présent indique que seule la phase de vérification sera exécutée
-
-    ATTENTION
-
-    1. Pour le calcul, c'est ASTER V6 qui est utilise, autant pour l'edition de liens
-       de pyaster que pour le catalogue cata.py.
-
-    2. les allocations fortran fort.2, ... doivent avoir ete effectuees dans le shell qui
-       lance python.
  Exemple:
 
-    pyaster JDC.py -eficas_path $(HOME)/Eficas -commandes sslp09a.comm -memjeveux 8
+    asteru JDC.py ---bibpyt=/opt/aster/stable/bibpyt --commandes=sslp09a.comm --memory=128
 """
-#XXX unifier le parser en supprimant celui de asterm.c
 
    def __init__(self):pass
 
@@ -86,69 +71,28 @@ class SUPERV:
       from Noyau.N_info import message, SUPERV
       message.error(SUPERV, *args)
 
+   def register(self):
+      """Enregistre le JDC et les objets nécessaires à aster_core."""
+      import aster_core
+      import E_Core
+      from Utilitai.Utmess import MessageLog
+      aster_core.register(self.jdc, self.coreopts, MessageLog, E_Core)
 
    def getargs(self):
       """
           Récupération des arguments passés à la ligne de commande
       """
-      self.CHEMIN=None
-      self.nomFichierCommandes=None
-      k=0
-      arg_debug=1
-      self.rep_mat=None
-      self.rep_dex=None
-      self.tempsMax=0.
-      self.verif=0
-      self.interact=0
-      self.totalview=0
-      for arg in sys.argv :
-         if sys.argv[k] == '-eficas_path' :
-            self.CHEMIN=sys.argv[k+1]
-            if not os.path.isdir(self.CHEMIN):
-               self.MESSAGE('Ce chemin est introuvable : "'+self.CHEMIN+"'")
-               return 1
-            if  "Accas" not in os.listdir( self.CHEMIN ) :
-               self.MESSAGE( "Ce chemin d'Eficas est ERRONE : '"+`self.CHEMIN`+"'" )
-               return 1
-         elif sys.argv[k] == '-commandes' :
-            self.nomFichierCommandes=sys.argv[k+1]
-            #self.nomFichierCommandes=os.path.abspath(sys.argv[k+1])
-         elif sys.argv[k] == '-tpmax' :
-            self.tempsMax=float(sys.argv[k+1])
-         elif sys.argv[k] == '-rep_mat' :
-            self.rep_mat=sys.argv[k+1]
-            #self.rep_mat=os.path.abspath(sys.argv[k+1])
-         elif sys.argv[k] == '-rep_dex' :
-            self.rep_dex=sys.argv[k+1]
-         elif sys.argv[k] == '-debug' :
-            self.debug=arg_debug
-         elif sys.argv[k] == '-verif' :
-            self.verif=1
-         elif sys.argv[k] == '-interact' :
-            self.interact=1
-         elif sys.argv[k] == '-totalview' :
-            self.totalview=1
-         else :
-            pass
-         k=k+1
-
-      if self.CHEMIN==None :
-         print """JDC.py. Il faut passer un chemin en argument :
-                           python JDC.py -eficas_path chemin"""
-         print self.usage
-         return 1
-      elif self.nomFichierCommandes==None :
-         print """JDC.py. Il faut passer un nom de fichier de commandes en argument :
-                          python JDC.py -commandes nom_fichier"""
-         print self.usage
-         return 1
+      from E_Core import CoreOptions
+      self.coreopts = CoreOptions()
+      self.coreopts.parse_args(sys.argv)
 
    def set_path(self):
       """Ajout des chemins pour les imports
       """
+      bibpyt = self.coreopts.get_option('bibpyt')
       sys.path.insert(0, '.')
-      sys.path.insert(0, self.CHEMIN)
-      sys.path.append(os.path.join(self.CHEMIN,'Cata'))
+      sys.path.insert(0, bibpyt)
+      sys.path.append(os.path.join(bibpyt, 'Cata'))
 
    def set_i18n(self):
        """Met en place les fonctions d'internationalisation."""
@@ -196,8 +140,9 @@ class SUPERV:
       """
          Construit et execute le jeu de commandes
       """
-      f=open(self.nomFichierCommandes,'r')
-      text=f.read()
+      fort1 = self.coreopts.get_option('fort1')
+      f = open(fort1, 'r')
+      text = f.read()
       print "# ------------------------------------------------------------------------------------------"
       print convert(_(u"""# Impression du contenu du fichier de commandes à exécuter :"""))
       print "# ------------------------------------------------------------------------------------------"
@@ -205,14 +150,14 @@ class SUPERV:
       print "# ------------------------------------------------------------------------------------------"
       print "# ------------------------------------------------------------------------------------------"
       f.close()
-      args={}
-      if self.tempsMax:args['tempsMax']=self.tempsMax
-      if self.rep_mat :args['rep_mat'] =self.rep_mat
-      if self.rep_dex :args['rep_dex'] =self.rep_dex
 
-      self.jdc=j=self.JdC(procedure=text,cata=self.cata,nom=self.nomFichierCommandes,
+      args = {}
+      self.jdc = j = self.JdC(procedure=text, cata=self.cata, nom=fort1,
              context_ini=params, **args
            )
+
+      # on enregistre les objets dans aster_core dès que le jdc est créé
+      self.register()
 
       # on transmet le timer au jdc
       j.timer = self.timer
@@ -241,7 +186,7 @@ class SUPERV:
          self.error(">> FIN RAPPORT")
          ier=1
 
-      if self.interact:
+      if self.coreopts.get_option('interact'):
          # Si l'option -interact est positionnée on ouvre un interpreteur interactif
          j.interact()
 
@@ -260,7 +205,8 @@ class SUPERV:
          self.error(">> FIN RAPPORT")
          return 1
 
-      if self.verif:return
+      if self.coreopts.get_option('verif'):
+          return
 
 #     Modification du JDC dans le cas de sensibilité
 #     On détermine si le jdc en cours est concerné par un calcul de sensibilité
@@ -372,20 +318,17 @@ class SUPERV:
            Programme principal. Appelle les methodes internes qui realisent les
            divers traitements
       """
-      ier=self.getargs()
-      if ier:return ier
+      self.getargs()
 
-      if self.totalview == 1:
+      use_totalview = self.coreopts.get_option('totalview')
+      if use_totalview == 1:
          curPID = os.getpid()
          pathOrigine = os.getcwd()
-         pathDestination = pathOrigine+"/tv_"+str(curPID)
-
+         pathDestination = osp.join(pathOrigine, "tv_" + str(curPID))
          # Creation des liens symboliques vers les fichiers du
          # repertoire courant dans un sous repertoire
-         lierRepertoire(pathOrigine,pathDestination,["tv_"])
-
-         copierBase(pathOrigine,pathDestination)
-
+         lierRepertoire(pathOrigine, pathDestination, ["tv_"])
+         copierBase(pathOrigine, pathDestination)
          os.chdir(pathDestination)
 
       self.set_path()
@@ -400,7 +343,7 @@ class SUPERV:
       #ier=self.testeCata();if ier:return ier
       ier = self.Execute(params)
 
-      if self.totalview == 1:
+      if use_totalview == 1:
          supprimerRepertoire(os.getcwd())
 
       return ier

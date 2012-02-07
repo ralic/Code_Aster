@@ -1,22 +1,22 @@
-# MODIF  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
-# TITRE TUBE SOUS PRESSION A TEMPERATURE CONSTANTE 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# TITRE TUBE SOUS PRESSION A TEMPERATURE CONSTANTE
 # hsnv134a.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # AVEC LOI META_LEMA_ANI EN MODELISATION AXI
 # TEST V7.22.134
@@ -40,7 +40,7 @@
 # R0 0.
 # ***return
 
-DEBUT(CODE=_F(NOM='HSNV134A',NIV_PUB_WEB='INTERNET',),);
+DEBUT(CODE=_F(NOM='HSNV134A',NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 MAIL=LIRE_MAILLAGE(UNITE=20,
                    FORMAT='MED',);
@@ -50,10 +50,10 @@ MAIL=MODI_MAILLAGE(reuse =MAIL,
                    ORIE_PEAU_2D=_F(GROUP_MA=('FACE_INT','FACE_SUP',),),);
 
 # PARTIES THERMIQUE ET METALLURGIQUE
-# TEMPERATURE DE 700 DEGRES PARTOUT DANS LE TUBE 
-# ET CONSTANTE AU COURS DU TEMPS 
+# TEMPERATURE DE 700 DEGRES PARTOUT DANS LE TUBE
+# ET CONSTANTE AU COURS DU TEMPS
 # A CETTE TEMPERATURE PAS DE TRANSFORMATION
-                                                                                         
+
 ZIRCALOY=DEFI_MATERIAU(THER=_F(RHO_CP = 2000000.0, LAMBDA = 9999.9),
                        META_ZIRC=_F(
                                   TDEQ = 809.,   K = 1.135E-2,   N = 2.187,
@@ -87,7 +87,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(
                       _F(JUSQU_A=1.1,NOMBRE = 10),
                       _F(JUSQU_A=100.,NOMBRE = 10),),)
-                      
+
 PHASINIT=CREA_CHAMP(OPERATION='AFFE',
                     TYPE_CHAM='CART_VAR2_R',
                     MAILLAGE=MAIL,
@@ -112,7 +112,7 @@ TEMPE=CALC_META(reuse =TEMPE,
 
 # PARTIE MECANIQUE
 # ON DEGENERE LA LOI POUR AVOIR UNE LOI DE VISCOSITE
-# DE TYPE NORTON D OU F1_M=0.D0                                 
+# DE TYPE NORTON D OU F1_M=0.D0
 # CETTE LOI ANISOTROPE AVEC UNE SEULE PHASE ET UNE LOI DE NORTON
 # EST IDENTIQUE A UNE LOI CONTENUE DANS ZMAT
 
@@ -123,10 +123,10 @@ ACIER=DEFI_MATERIAU(ELAS_META=_F(E = 80000.,
                                PHASE_REFE = 'FROID',
                                EPSF_EPSC_TREF = 0.,),
                     META_LEMA_ANI=_F(
-                             F1_A=2.39,    F2_A=0.22,     C_A=9.36,  
-                             F1_M=0.0,    F2_M=0.77E-04,  C_M=0.99E-04,  
-                             F1_N=4.39,    F2_N=2.96,     C_N=6.11,  
-                             F1_Q=19922.8, F2_Q=21023.7,  C_Q=6219., 
+                             F1_A=2.39,    F2_A=0.22,     C_A=9.36,
+                             F1_M=0.0,    F2_M=0.77E-04,  C_M=0.99E-04,
+                             F1_N=4.39,    F2_N=2.96,     C_N=6.11,
+                             F1_Q=19922.8, F2_Q=21023.7,  C_Q=6219.,
                              F_MRR_RR=0.4414,             C_MRR_RR=1.,
                              F_MTT_TT=0.714,              C_MTT_TT=1.,
                              F_MZZ_ZZ=1.,                 C_MZZ_ZZ=1.,
@@ -170,7 +170,7 @@ FMULT=DEFI_FONCTION(NOM_PARA='INST',
                           100.0,9.5,),
                     PROL_DROITE='CONSTANT',
                     PROL_GAUCHE='CONSTANT',);
-                    
+
 U=STAT_NON_LINE(MODELE=MO,
                 CHAM_MATER=CM2,
                 EXCIT=(_F(CHARGE=CHPC,FONC_MULT=FMULT,),
@@ -197,72 +197,72 @@ U=CALC_NO(reuse =U,
 # TEST DES TROIS DEFORMATIONS ET DES TROIS CONTRAINTES
 # COMPARAISON AVEC LA SOLUTION ZMAT
 
-TEST_RESU(RESU=( 
+TEST_RESU(RESU=(
             _F(RESULTAT = U,  NOM_CHAM = 'SIGM_NOEU',
                NUME_ORDRE = 20,  CRITERE = 'ABSOLU', PRECISION = 1.E-03,
                REFERENCE = 'SOURCE_EXTERNE',
-               GROUP_NO = 'NA',  
+               GROUP_NO = 'NA',
                NOM_CMP = 'SIXX', VALE = -9.442),
             _F(RESULTAT = U,  NOM_CHAM = 'SIGM_NOEU',
                NUME_ORDRE = 20,  CRITERE = 'ABSOLU', PRECISION = 1.E-03,
                REFERENCE = 'SOURCE_EXTERNE',
-               GROUP_NO = 'NA',  
+               GROUP_NO = 'NA',
                NOM_CMP = 'SIZZ', VALE = 60.226),
             _F(RESULTAT = U,  NOM_CHAM = 'SIGM_NOEU',
                NUME_ORDRE = 20,  CRITERE = 'ABSOLU', PRECISION = 1.E-03,
                REFERENCE = 'SOURCE_EXTERNE',
-               GROUP_NO = 'NA',  
+               GROUP_NO = 'NA',
                NOM_CMP = 'SIYY', VALE = 26.795),
             _F(RESULTAT = U,  NOM_CHAM = 'EPSI_NOEU',
                NUME_ORDRE = 20,  CRITERE = 'ABSOLU', PRECISION = 1.E-05,
                REFERENCE = 'SOURCE_EXTERNE',
-               GROUP_NO = 'NA',  
+               GROUP_NO = 'NA',
                NOM_CMP = 'EPXX', VALE = -9.49597E-03),
             _F(RESULTAT = U,  NOM_CHAM = 'EPSI_NOEU',
                NUME_ORDRE = 20,  CRITERE = 'ABSOLU', PRECISION = 1.E-05,
                REFERENCE = 'SOURCE_EXTERNE',
-               GROUP_NO = 'NA',  
+               GROUP_NO = 'NA',
                NOM_CMP = 'EPZZ', VALE = 1.35633E-02),
             _F(RESULTAT = U,  NOM_CHAM = 'EPSI_NOEU',
                NUME_ORDRE = 20,  CRITERE = 'ABSOLU', PRECISION = 1.E-05,
                REFERENCE = 'SOURCE_EXTERNE',
-               GROUP_NO = 'NA',  
+               GROUP_NO = 'NA',
                NOM_CMP = 'EPYY', VALE = -3.77690E-03),),);
 
 # NB (CE NOEUD SE SITUE A L EXTERIEUR DU TUBE EN Y=0)
 # TEST DES TROIS DEFORMATIONS ET DES TROIS CONTRAINTES
 # COMPARAISON AVEC LA SOLUTION ZMAT
 
-TEST_RESU(RESU=( 
+TEST_RESU(RESU=(
             _F(RESULTAT = U,  NOM_CHAM = 'SIGM_NOEU',
                NUME_ORDRE = 20,  CRITERE = 'ABSOLU', PRECISION = 1.E-03,
                REFERENCE = 'SOURCE_EXTERNE',
-               GROUP_NO = 'NB',  
+               GROUP_NO = 'NB',
                NOM_CMP = 'SIXX', VALE = 3.28215E-02 ),
             _F(RESULTAT = U,  NOM_CHAM = 'SIGM_NOEU',
                NUME_ORDRE = 20,  CRITERE = 'ABSOLU', PRECISION = 1.E-03,
                REFERENCE = 'SOURCE_EXTERNE',
-               GROUP_NO = 'NB',  
+               GROUP_NO = 'NB',
                NOM_CMP = 'SIZZ', VALE = 64.199),
             _F(RESULTAT = U,  NOM_CHAM = 'SIGM_NOEU',
                NUME_ORDRE = 20,  CRITERE = 'ABSOLU', PRECISION = 1.E-03,
                REFERENCE = 'SOURCE_EXTERNE',
-               GROUP_NO = 'NB',  
+               GROUP_NO = 'NB',
                NOM_CMP = 'SIYY', VALE = 30.771),
             _F(RESULTAT = U,  NOM_CHAM = 'EPSI_NOEU',
                NUME_ORDRE = 20,  CRITERE = 'ABSOLU', PRECISION = 1.E-05,
                REFERENCE = 'SOURCE_EXTERNE',
-               GROUP_NO = 'NB',  
+               GROUP_NO = 'NB',
                NOM_CMP = 'EPXX', VALE = -6.58609E-03),
             _F(RESULTAT = U,  NOM_CHAM = 'EPSI_NOEU',
                NUME_ORDRE = 20,  CRITERE = 'ABSOLU', PRECISION = 1.E-05,
                REFERENCE = 'SOURCE_EXTERNE',
-               GROUP_NO = 'NB',  
+               GROUP_NO = 'NB',
                NOM_CMP = 'EPZZ', VALE = 1.07189E-02),
             _F(RESULTAT = U,  NOM_CHAM = 'EPSI_NOEU',
                NUME_ORDRE = 20,  CRITERE = 'ABSOLU', PRECISION = 1.E-05,
                REFERENCE = 'SOURCE_EXTERNE',
-               GROUP_NO = 'NB',  
+               GROUP_NO = 'NB',
                NOM_CMP = 'EPYY', VALE = -3.77690E-03),),);
-                           
+
 FIN()

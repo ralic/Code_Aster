@@ -1,24 +1,24 @@
-# MODIF  DATE 12/04/2011   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE Validation de AFFE_CHAR_MECA / ARETE_IMPO
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # zzzz286a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
-DEBUT(CODE=_F(NOM='ZZZZ286A', NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='ZZZZ286A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 #======================================================================
 #
 #  Ce test sert a verifier la programmation associee
@@ -33,18 +33,18 @@ DEBUT(CODE=_F(NOM='ZZZZ286A', NIV_PUB_WEB='INTERNET'))
 #                              TETRA4    1041
 #           D
 #             \
-#             |\   \  
+#             |\   \
 #             |  \     \   C
 #             |    \     /\
 #             |      \     \
 #             |       /     \
 #             |         \    \
 #             |    /      \   \
-#             |             \  \ 
+#             |             \  \
 #             | /             \ \
-#             |                 \\ 
+#             |                 \\
 #            A _ _ _ _ _ _ _ _ _ _\ B
-#             
+#
 
 MA=LIRE_MAILLAGE(FORMAT='MED')
 
@@ -160,7 +160,7 @@ CHARG1=AFFE_CHAR_MECA(MODELE=MO,
                       ARETE_IMPO=_F(GROUP_MA='DA',
                                     SANS_GROUP_NO=('D'),
                                     DTAN=0),)
-                                                               
+
 
 RESU1=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CHMAT,
@@ -254,7 +254,7 @@ CHARG3=AFFE_CHAR_MECA(MODELE=MO,
                                      DTAN=F),
                                   _F(GROUP_MA='DC',
                                      SANS_GROUP_NO=('D','C'),
-                                     DTAN=F),),)                                  
+                                     DTAN=F),),)
 
 RESU3=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CHMAT,

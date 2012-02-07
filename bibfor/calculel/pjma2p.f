@@ -1,6 +1,6 @@
       SUBROUTINE PJMA2P(NDIM,MOA2,MA2P,CORRES)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 C RESPONSABLE PELLET J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,30 +18,24 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C
       IMPLICIT   NONE
-
 C ----------------------------------------------------------------------
+C COMMANDE PROJ_CHAMP / METHODE='ECLA_PG'
 C
-C COMMANDE PROJ_CHAMP
-C
+C BUT :  CREER UN MAILLAGE (MA2P) DONT LES NOEUDS SONT POSITIONNES SUR
+C        LES POINTS DE GAUSS D'UN MODELE (MOA2).
+C REMARQUE : ON UTILISE L'OPTION COOR_ELGA CE QUI CORRESPOND EN GENERAL
+C            A LA FAMILLE DE POINTS DE GAUS "RIGI"
 C ----------------------------------------------------------------------
-C 0.1. ==> ARGUMENTS
-C
-
-C MOA2 : MODELE2 DONT ON VEUT EXTRAIRE LES POINTS DE GAUSS
-C CORRES : TABLEAU DE CORRESPONDANCE REMPLI DANS LE .PJEL
-C MA2P : MAILLAGE 2 PRIME (OBTENU A PARTIR DES PG DU MAILLAGE 2)
-
-
+C IN NDIM : 2/3 : DIMENSION DES MAILLES A PROJETER
+C IN MOA2 : MODELE "2"
+C IN/JXOUT MA2P : MAILLAGE 2 PRIME (OBTENU A PARTIR DES PG DU MODELE 2)
+C IN/JXVAR : ON COMPLETE LA SD_CORRESP_2_MAILLA AVEC L'OBJET .PJEL
+C ----------------------------------------------------------------------
       CHARACTER*16 CORRES
       CHARACTER*8 MA2P,MOA2
       INTEGER NDIM
-C
-C 0.2. ==> COMMUNS
-C ----------------------------------------------------------------------
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-C
       CHARACTER*32 JEXNUM
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
@@ -57,18 +51,11 @@ C
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-
       CHARACTER*32 JEXNOM
-C
-C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
-C
-C 0.3. ==> VARIABLES LOCALES
-C
-
-
+C ----------------------------------------------------------------------
       INTEGER NTGEO,IPO,IPG,NUNO2
       INTEGER IBID,IRET,NBNO2P,NNO2,INO2P
-      INTEGER K,J1,J4,IPOI1
+      INTEGER K,J1,J4,IPOI1,IPY5,IPY13
       INTEGER NBMA,NBPT,NBCMP
       INTEGER IMA,IPT,ICMP,IAD,IADIME
       INTEGER JTYPMA,JDIMT,JPO2,JLIMAT,NBMAT,NBTROU,JLITR
@@ -76,13 +63,13 @@ C
       CHARACTER*8 NOM,MAIL2,KBID,NOMA
       CHARACTER*19 CHAMG,CES,CHGEOM,LIGREL
       CHARACTER*24 COODSC,LIMATO,LITROU
-
-
-
+      REAL*8 XMOY(3),RAYO
+C ----------------------------------------------------------------------
       CALL JEMARQ()
 
 C     -- RECUPERATION DU NOM DU MAILLAGE 2
       CALL DISMOI('F','NOM_MAILLA',MOA2,'MODELE',IBID,MAIL2,IRET)
+      CALL JEVEUO(MAIL2//'.TYPMAIL','L',JTYPMA)
 
 C     -- RECUPERATION DU CHAMP DE COORDONNEES DU MAILLAGE 2
       CHGEOM=MAIL2//'.COORDO'
@@ -98,7 +85,7 @@ C     -- ON NE CONSERVE QUE LES MAILLES DU MODELE :
       CALL JEVEUO(MOA2//'.MAILLE','L',JMAIL)
       ICO=0
       DO 10,K=1,NBMAT
-        IF (ZI(JMAIL-1+K).EQ.0) GOTO 10
+        IF (ZI(JMAIL-1+K).EQ.0)GOTO 10
         ICO=ICO+1
         ZI(JLIMAT-1+ICO)=K
    10 CONTINUE
@@ -113,9 +100,10 @@ C     -- ON NE CONSERVE QUE LES MAILLES DE DIMENSION NDIM :
       CALL JEDETR(LITROU)
 
 
-      CHAMG='&&PJMA2P.PGCOOR'
 
-C     -- CALCUL DU CHAMP DE COORDONNEES DES ELGA
+C     1.  CALCUL DU CHAMP DE COORDONNEES DES ELGA (CHAMG):
+C     -------------------------------------------------------
+      CHAMG='&&PJMA2P.PGCOOR'
       CALL CALCUL('S','COOR_ELGA',LIGREL,1,CHGEOM,'PGEOMER',1,CHAMG,
      &            'PCOORPG ','V','OUI')
 
@@ -125,13 +113,50 @@ C     -- TRANSFORMATION DE CE CHAMP EN CHAM_ELEM_S
 
       CALL JEVEUO(CES//'.CESD','L',JCESD)
       CALL JEVEUO(CES//'.CESL','L',JCESL)
-      CALL JEVEUO(CES//'.CESV','L',JCESV)
-
+      CALL JEVEUO(CES//'.CESV','E',JCESV)
       NBMA=ZI(JCESD-1+1)
 
+C     2.1 MODIFICATION DES COORDONNEES DE CERTAINS PG (PYRAM/FPG27)
+C         CAR CES POINTS DE GAUSS SONT EN "DEHORS" DES PYRAMIDES
+C     ----------------------------------------------------------------
+      CALL JENONU(JEXNOM('&CATA.TM.NOMTM','PYRAM5'),IPY5)
+      CALL JENONU(JEXNOM('&CATA.TM.NOMTM','PYRAM13'),IPY13)
+      DO 80,IMA=1,NBMA
+        IF (ZI(JTYPMA-1+IMA).EQ.IPY5 .OR.
+     &      ZI(JTYPMA-1+IMA).EQ.IPY13) THEN
+          NBPT=ZI(JCESD-1+5+4*(IMA-1)+1)
+          IF (NBPT.EQ.27) THEN
+            DO 20,ICMP=1,3
+              XMOY(ICMP)=0.D0
+   20       CONTINUE
+C           -- XMOY : CENTRE DE LA PYRAMIDE :
+            DO 40,IPT=1,15
+              DO 30,ICMP=1,3
+                CALL CESEXI('C',JCESD,JCESL,IMA,IPT,1,ICMP,IAD)
+                CALL ASSERT(IAD.GT.0)
+                XMOY(ICMP)=XMOY(ICMP)+ZR(JCESV-1+IAD)
+   30         CONTINUE
+   40       CONTINUE
+            DO 50,ICMP=1,3
+              XMOY(ICMP)=XMOY(ICMP)/15
+   50       CONTINUE
 
-C     -- CALCUL DE NBNO2P : NOMBRE DE NOEUDS (ET DE MAILLES) DE MA2P
-C     -- CALCUL DE '.PJEF_EL'
+C           -- ON "RAMENE" LES 12 DERNIERS PG VERS LE CENTRE (10%) :
+            DO 70,IPT=16,27
+              DO 60,ICMP=1,3
+                CALL CESEXI('C',JCESD,JCESL,IMA,IPT,1,ICMP,IAD)
+                CALL ASSERT(IAD.GT.0)
+                RAYO=ZR(JCESV-1+IAD)-XMOY(ICMP)
+                ZR(JCESV-1+IAD)=ZR(JCESV-1+IAD)-0.6D0*RAYO
+   60         CONTINUE
+   70       CONTINUE
+          ENDIF
+        ENDIF
+   80 CONTINUE
+
+
+C     2. CALCUL DE NBNO2P : NOMBRE DE NOEUDS (ET DE MAILLES) DE MA2P
+C        CALCUL DE '.PJEF_EL'
 C     ----------------------------------------------------------------
       NBNO2P=0
 
@@ -140,26 +165,25 @@ C     ON CREE UN TABLEAU, POUR CHAQUE JPO2, ON STOCKE DEUX VALEURS :
 C      * LA PREMIERE VALEUR EST LE NUMERO DE LA MAILLE
 C      * LA DEUXIEME VALEUR EST LE NUMERO DU PG DANS CETTE MAILLE
       CALL WKVECT(CORRES//'.PJEF_EL','V V I',NBMA*27*2,JPO2)
-      CALL JEVEUO(MAIL2(1:8)//'.TYPMAIL','L',JTYPMA)
 
       IPO=1
-      DO 30,IMA=1,NBMA
+      DO 100,IMA=1,NBMA
         CALL JEVEUO(JEXNUM('&CATA.TM.TMDIM',ZI(JTYPMA-1+IMA)),'L',JDIMT)
         IF (ZI(JDIMT).EQ.NDIM) THEN
           NBPT=ZI(JCESD-1+5+4*(IMA-1)+1)
-          IF (NBPT.EQ.0) GOTO 30
+          IF (NBPT.EQ.0)GOTO 100
           CALL JENUNO(JEXNUM(MAIL2//'.NOMMAI',IMA),NOMA)
-          DO 20,IPG=1,NBPT
+          DO 90,IPG=1,NBPT
             ZI(JPO2-1+IPO)=IMA
             ZI(JPO2-1+IPO+1)=IPG
             IPO=IPO+2
-   20     CONTINUE
+   90     CONTINUE
           NBNO2P=NBNO2P+NBPT
         ENDIF
-   30 CONTINUE
+  100 CONTINUE
 
 
-C     -- CREATION DU .DIME DU NOUVEAU MAILLAGE
+C     3. CREATION DU .DIME DU NOUVEAU MAILLAGE
 C        IL Y A AUTANT DE MAILLES QUE DE NOEUDS
 C        TOUTES LES MAILLES SONT DES POI1
 C     --------------------------------------------------
@@ -169,7 +193,7 @@ C     --------------------------------------------------
       ZI(IADIME-1+6)=3
 
 
-C     -- CREATION DU .NOMNOE ET DU .NOMMAI DU NOUVEAU MAILLAGE
+C     4. CREATION DU .NOMNOE ET DU .NOMMAI DU NOUVEAU MAILLAGE
 C     ---------------------------------------------------------
       CALL JECREO(MA2P//'.NOMNOE','V N K8')
       CALL JEECRA(MA2P//'.NOMNOE','NOMMAX',NBNO2P,' ')
@@ -178,19 +202,19 @@ C     ---------------------------------------------------------
 
 
       NOM(1:1)='N'
-      DO 40,K=1,NBNO2P
+      DO 110,K=1,NBNO2P
         CALL CODENT(K,'G',NOM(2:8))
         CALL JECROC(JEXNOM(MA2P//'.NOMNOE',NOM))
-   40 CONTINUE
+  110 CONTINUE
       NOM(1:1)='M'
-      DO 50,K=1,NBNO2P
+      DO 120,K=1,NBNO2P
         CALL CODENT(K,'G',NOM(2:8))
         CALL JECROC(JEXNOM(MA2P//'.NOMMAI',NOM))
-   50 CONTINUE
+  120 CONTINUE
 
 
 
-C     -- CREATION DU .CONNEX ET DU .TYPMAIL DU NOUVEAU MAILLAGE
+C     5. CREATION DU .CONNEX ET DU .TYPMAIL DU NOUVEAU MAILLAGE
 C     ----------------------------------------------------------
       CALL JECREC(MA2P//'.CONNEX','V V I','NU','CONTIG','VARIABLE',
      &            NBNO2P)
@@ -201,14 +225,14 @@ C     ----------------------------------------------------------
       CALL JENONU(JEXNOM('&CATA.TM.NOMTM','POI1'),IPOI1)
 
       NUNO2=0
-      DO 60,IMA=1,NBNO2P
+      DO 130,IMA=1,NBNO2P
         ZI(IATYPM-1+IMA)=IPOI1
         NNO2=1
         CALL JECROC(JEXNUM(MA2P//'.CONNEX',IMA))
         CALL JEECRA(JEXNUM(MA2P//'.CONNEX',IMA),'LONMAX',NNO2,KBID)
         NUNO2=NUNO2+1
         ZI(IBID-1+NUNO2)=NUNO2
-   60 CONTINUE
+  130 CONTINUE
 
 
 
@@ -223,27 +247,26 @@ C     --------------------------------------------------
       CALL WKVECT(MA2P//'.COORDO    .VALE','V V R',3*NBNO2P,J1)
 
       INO2P=0
-      DO 90,IMA=1,NBMA
+      DO 160,IMA=1,NBMA
         NBPT=ZI(JCESD-1+5+4*(IMA-1)+1)
         NBCMP=ZI(JCESD-1+5+4*(IMA-1)+3)
-        IF (NBPT.EQ.0) GOTO 90
+        IF (NBPT.EQ.0)GOTO 160
         CALL JEVEUO(JEXNUM('&CATA.TM.TMDIM',ZI(JTYPMA-1+IMA)),'L',JDIMT)
 
         IF (ZI(JDIMT).EQ.NDIM) THEN
           CALL ASSERT(NBCMP.GE.3)
-          DO 80,IPT=1,NBPT
+          DO 150,IPT=1,NBPT
             INO2P=INO2P+1
-            DO 70,ICMP=1,3
+            DO 140,ICMP=1,3
               CALL CESEXI('C',JCESD,JCESL,IMA,IPT,1,ICMP,IAD)
               IF (IAD.GT.0) THEN
                 ZR(J1-1+3*(INO2P-1)+ICMP)=ZR(JCESV-1+IAD)
               ENDIF
-   70       CONTINUE
-   80     CONTINUE
+  140       CONTINUE
+  150     CONTINUE
         ENDIF
-   90 CONTINUE
+  160 CONTINUE
       CALL ASSERT(INO2P.EQ.NBNO2P)
-
 
 
 C     -- CREATION DU .DESC DU NOUVEAU MAILLAGE
@@ -262,7 +285,5 @@ C     --------------------------------------------------
       CALL DETRSD('CHAM_ELEM',CHAMG)
       CALL DETRSD('CHAM_ELEM_S',CES)
 
-
       CALL JEDEMA()
-
       END

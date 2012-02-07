@@ -1,4 +1,4 @@
-# MODIF  DATE 09/01/2012   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECROUISSAGE CINEMATIQUE)
 # ssnp14a.para = tps_job 120 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -25,7 +25,8 @@
 
 DEBUT(CODE=_F(NOM='SSNP14A',
               NIV_PUB_WEB='INTERNET',),
-      );
+DEBUG=_F(SDVERI='NON'))
+# SDVERI='NON' car la verification est trop couteuse en CPU
 
 MA=LIRE_MAILLAGE();
 
@@ -40,21 +41,21 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=195000.,
                     ECRO_LINE=_F(D_SIGM_EPSI=1930.,
                                  SY=181.,),
                     PRAGER=_F(C=2./3.*195000.*1930./(195000.-1930.),),
-                             CIN1_CHAB=_F( 
-                                 R_0 = 181.,   
-                                 R_I = 181.,  
-                                 B = 0.,  
-                                 C_I = 1930.,  
-                                 G_0 = 0.,  
+                             CIN1_CHAB=_F(
+                                 R_0 = 181.,
+                                 R_I = 181.,
+                                 B = 0.,
+                                 C_I = 1930.,
+                                 G_0 = 0.,
                                     ),
-                             CIN2_CHAB=_F( 
-                                 R_0 = 181.,   
-                                 R_I = 181.,  
-                                 B = 0.,  
-                                 C1_I = 1930.*0.5,  
-                                 C2_I = 1930.*0.5,  
-                                 G1_0 = 0.,  
-                                 G2_0 = 0.,  
+                             CIN2_CHAB=_F(
+                                 R_0 = 181.,
+                                 R_I = 181.,
+                                 B = 0.,
+                                 C1_I = 1930.*0.5,
+                                 C2_I = 1930.*0.5,
+                                 G1_0 = 0.,
+                                 G2_0 = 0.,
                                     ),
                     );
 
@@ -127,7 +128,7 @@ U=STAT_NON_LINE(MODELE=MO,
                           FONC_MULT=TAU_F,),),
                 COMP_INCR=_F(RELATION='VMIS_CINE_LINE',),
                 INCREMENT=_F(LIST_INST=L_INST,),
-                NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=3,), 
+                NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=3,),
                 RECH_LINEAIRE=_F(ITER_LINE_MAXI=5,),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=20,),
                   SUIVI_DDL=(
@@ -151,7 +152,7 @@ U=STAT_NON_LINE(MODELE=MO,
                                  TOUT       = 'OUI',
                                  EVAL_ELGA  ='MAX',
                                  EVAL_CHAM ='MAX',),
-                                 ),                
+                                 ),
                 );
 
 
@@ -183,8 +184,8 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=VARI,
                        NOEUD='NO2',
                        NOM_CMP='V2',
                        VALE=-9.132,),)
-                       
-                       
+
+
 TEST_RESU(RESU=(
                 _F(RESULTAT=U,
                    REFERENCE='NON_REGRESSION',
@@ -202,7 +203,7 @@ TEST_RESU(RESU=(
                    MAILLE='CUBE',
                    NOEUD='NO2',
                    VALE=0.0136014,),
-                   
+
                 _F(RESULTAT=U,
                    REFERENCE='NON_REGRESSION',
                    INST=1.0,
@@ -219,7 +220,7 @@ TEST_RESU(RESU=(
                    MAILLE='CUBE',
                    NOEUD='NO2',
                    VALE=16.8688,),
-                   
+
                 _F(RESULTAT=U,
                    REFERENCE='NON_REGRESSION',
                    INST=2.0,
@@ -236,7 +237,7 @@ TEST_RESU(RESU=(
                    MAILLE='CUBE',
                    NOEUD='NO2',
                    VALE=0.01978,),
-                   
+
                 _F(RESULTAT=U,
                    REFERENCE='NON_REGRESSION',
                    INST=3.0,
@@ -253,8 +254,8 @@ TEST_RESU(RESU=(
                    MAILLE='CUBE',
                    NOEUD='NO2',
                    VALE=0.0190853,),
-                   
-# test de DERA             
+
+# test de DERA
                    _F(RESULTAT=U,
                    INST=0.1,
                    NOM_CHAM='DERA_ELGA',
@@ -265,7 +266,7 @@ TEST_RESU(RESU=(
                    CRITERE='RELATIF',
                    PRECISION=0.001,
                    REFERENCE='NON_REGRESSION',),
-                   
+
                 _F(RESULTAT=U,
                    INST=0.1,
                    NOM_CHAM='DERA_ELNO',
@@ -276,7 +277,7 @@ TEST_RESU(RESU=(
                    CRITERE='RELATIF',
                    PRECISION=0.001,
                    REFERENCE='NON_REGRESSION',),
-                   
+
                 _F(RESULTAT=U,
                    REFERENCE='NON_REGRESSION',
                    INST=1.5,
@@ -285,7 +286,7 @@ TEST_RESU(RESU=(
                    MAILLE='CUBE',
                    NOEUD='NO2',
                    VALE=0.0,),
-                   
+
                 _F(RESULTAT=U,
                    REFERENCE='NON_REGRESSION',
                    INST=1.5,
@@ -294,8 +295,8 @@ TEST_RESU(RESU=(
                    MAILLE='CUBE',
                    NOEUD='NO2',
                    VALE=0.0125766,),
-                   
-                   
+
+
                ),);
 
 
@@ -323,7 +324,7 @@ DEFLIST2=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
                                     LIST_INST=L_INST2,),
                        ECHEC=_F(SUBD_NIVEAU=10,SUBD_PAS=4),
                        );
-                       
+
 # VMIS_CINE_LINE
 # --------------
 
@@ -336,7 +337,7 @@ U2=STAT_NON_LINE(MODELE=MO,
                           FONC_MULT=TAU_F,),),
                 COMP_INCR=_F(RELATION='VMIS_CINE_LINE', RESI_RADI_RELA=0.02),
                 INCREMENT=_F(LIST_INST=DEFLIST2,),
-                NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=3,), 
+                NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=3,),
                 RECH_LINEAIRE=_F(ITER_LINE_MAXI=5,),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=20,),
                   SUIVI_DDL=(
@@ -360,13 +361,13 @@ U2=STAT_NON_LINE(MODELE=MO,
                                  TOUT       = 'OUI',
                                  EVAL_ELGA  ='MAX',
                                  EVAL_CHAM ='MAX',),
-                                 ),                
+                                 ),
                 );
-                
+
 U2=CALC_ELEM(reuse =U2,
             RESULTAT=U2,
             OPTION=('VARI_ELNO','EPSI_ELNO','DERA_ELNO',),);
-            
+
 
 # VMIS_ECMI_LINE
 # --------------
@@ -382,7 +383,7 @@ U3=STAT_NON_LINE(MODELE=MO,
                              RESI_RADI_RELA=0.02
                              ),
                 INCREMENT=_F(LIST_INST=DEFLIST2,),
-                NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=3,), 
+                NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=3,),
                 RECH_LINEAIRE=_F(ITER_LINE_MAXI=5,),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=20,),
                   SUIVI_DDL=(
@@ -406,13 +407,13 @@ U3=STAT_NON_LINE(MODELE=MO,
                                  TOUT       = 'OUI',
                                  EVAL_ELGA  ='MAX',
                                  EVAL_CHAM ='MAX',),
-                                 ),                
+                                 ),
                 );
-                
+
 U3=CALC_ELEM(reuse =U3,
             RESULTAT=U3,
             OPTION=('VARI_ELNO','EPSI_ELNO','DERA_ELNO',),);
-            
+
 
 # VMIS_CIN1_CHAB
 # --------------
@@ -432,7 +433,7 @@ U4=STAT_NON_LINE(MODELE=MO,
                              ITER_INTE_MAXI=100,
                              ),
                 INCREMENT=_F(LIST_INST=DEFLIST2,),
-                NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=3,), 
+                NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=3,),
                 RECH_LINEAIRE=_F(ITER_LINE_MAXI=5,),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=20,),
                   SUIVI_DDL=(
@@ -456,114 +457,114 @@ U4=STAT_NON_LINE(MODELE=MO,
                                  TOUT       = 'OUI',
                                  EVAL_ELGA  ='MAX',
                                  EVAL_CHAM ='MAX',),
-                                 ),                
+                                 ),
                 );
-                
+
 U4=CALC_ELEM(reuse =U4,
             RESULTAT=U4,
             OPTION=('VARI_ELNO','EPSI_ELNO','DERA_ELNO',),);
-            
+
 TEST_RESU(RESU=(
                 _F(RESULTAT=U2,INST=1.0,NOM_CHAM='EPSI_ELNO',NOM_CMP='EPXX',MAILLE='CUBE',NOEUD='NO2',
                    REFERENCE='AUTRE_ASTER',VALE=0.0148297,),
-                   
+
                 _F(RESULTAT=U3,INST=1.0,NOM_CHAM='EPSI_ELNO',NOM_CMP='EPXX',MAILLE='CUBE',NOEUD='NO2',
                    REFERENCE='AUTRE_ASTER',VALE=0.0148297,),
-                   
+
                 _F(RESULTAT=U4,INST=1.0,NOM_CHAM='EPSI_ELNO',NOM_CMP='EPXX',MAILLE='CUBE',NOEUD='NO2',
                    REFERENCE='AUTRE_ASTER',VALE=0.0148297,PRECISION=0.01),
-                   
-                   
+
+
                 _F(RESULTAT=U2,INST=1.0,NOM_CHAM='EPSI_ELNO',NOM_CMP='EPXY',MAILLE='CUBE',NOEUD='NO2',
                    REFERENCE='AUTRE_ASTER',VALE=0.0136014,),
-                   
+
                 _F(RESULTAT=U3,INST=1.0,NOM_CHAM='EPSI_ELNO',NOM_CMP='EPXY',MAILLE='CUBE',NOEUD='NO2',
                    REFERENCE='AUTRE_ASTER',VALE=0.0136014,),
-                   
+
                 _F(RESULTAT=U4,INST=1.0,NOM_CHAM='EPSI_ELNO',NOM_CMP='EPXY',MAILLE='CUBE',NOEUD='NO2',
                    REFERENCE='AUTRE_ASTER',VALE=0.0136014,PRECISION=0.01),
-                   
-                   
+
+
                 _F(RESULTAT=U2,INST=1.0,NOM_CHAM='VARI_ELNO',NOM_CMP='V1',  MAILLE='CUBE',NOEUD='NO2',
                    REFERENCE='AUTRE_ASTER',VALE=18.264,),
-                   
+
                 _F(RESULTAT=U2,INST=1.0,NOM_CHAM='VARI_ELNO',NOM_CMP='V4',  MAILLE='CUBE',NOEUD='NO2',
                    REFERENCE='AUTRE_ASTER',VALE=16.8688,),
-                   
-                                   
+
+
                 _F(RESULTAT=U2,INST=2.0,NOM_CHAM='EPSI_ELNO',NOM_CMP='EPXX',MAILLE='CUBE',NOEUD='NO2',
                    REFERENCE='AUTRE_ASTER',VALE=0.0406612,),
-                   
+
                 _F(RESULTAT=U3,INST=2.0,NOM_CHAM='EPSI_ELNO',NOM_CMP='EPXX',MAILLE='CUBE',NOEUD='NO2',
                    REFERENCE='AUTRE_ASTER',VALE=0.0406612,),
-                   
+
                 _F(RESULTAT=U4,INST=2.0,NOM_CHAM='EPSI_ELNO',NOM_CMP='EPXX',MAILLE='CUBE',NOEUD='NO2',
                    REFERENCE='AUTRE_ASTER',VALE=0.0406612,PRECISION=0.01,),
-                   
-                   
+
+
                 _F(RESULTAT=U2,INST=2.0,NOM_CHAM='EPSI_ELNO',NOM_CMP='EPXY',MAILLE='CUBE',NOEUD='NO2',
                    REFERENCE='AUTRE_ASTER',VALE=0.01978,PRECISION=0.01),
-                   
+
                 _F(RESULTAT=U3,INST=2.0,NOM_CHAM='EPSI_ELNO',NOM_CMP='EPXY',MAILLE='CUBE',NOEUD='NO2',
                    REFERENCE='AUTRE_ASTER',VALE=0.01978,PRECISION=0.01),
-                   
+
                 _F(RESULTAT=U4,INST=2.0,NOM_CHAM='EPSI_ELNO',NOM_CMP='EPXY',MAILLE='CUBE',NOEUD='NO2',
                    REFERENCE='AUTRE_ASTER',VALE=0.01978,PRECISION=(0.02,0.0001),),
-                   
-                   
+
+
                 _F(RESULTAT=U2,INST=3.0,NOM_CHAM='EPSI_ELNO',NOM_CMP='EPXX',MAILLE='CUBE',NOEUD='NO2',
                    REFERENCE='AUTRE_ASTER',VALE=0.044151,),
-                   
+
                 _F(RESULTAT=U3,INST=3.0,NOM_CHAM='EPSI_ELNO',NOM_CMP='EPXX',MAILLE='CUBE',NOEUD='NO2',
                    REFERENCE='AUTRE_ASTER',VALE=0.044151,),
-                   
+
                 _F(RESULTAT=U4,INST=3.0,NOM_CHAM='EPSI_ELNO',NOM_CMP='EPXX',MAILLE='CUBE',NOEUD='NO2',
                    REFERENCE='AUTRE_ASTER',VALE=0.0441518,PRECISION=0.02,),
-                   
-                   
+
+
                 _F(RESULTAT=U2,INST=3.0,NOM_CHAM='EPSI_ELNO',NOM_CMP='EPXY',MAILLE='CUBE',NOEUD='NO2',
                    REFERENCE='AUTRE_ASTER',VALE=0.0190853,PRECISION=0.01),
-                   
+
                 _F(RESULTAT=U3,INST=3.0,NOM_CHAM='EPSI_ELNO',NOM_CMP='EPXY',MAILLE='CUBE',NOEUD='NO2',
                    REFERENCE='AUTRE_ASTER',VALE=0.0190853,PRECISION=0.01),
-                   
+
                 _F(RESULTAT=U4,INST=3.0,NOM_CHAM='EPSI_ELNO',NOM_CMP='EPXY',MAILLE='CUBE',NOEUD='NO2',
                    REFERENCE='AUTRE_ASTER',VALE=0.0190853,PRECISION=0.02),
-                   
-                   
-# test de DERA_ELNO / ERR_RADI     
-                   
+
+
+# test de DERA_ELNO / ERR_RADI
+
                 _F(RESULTAT=U2,INST=1.5,NOM_CHAM='DERA_ELNO',NOM_CMP='ERR_RADI',MAILLE='CUBE',NOEUD='NO2',
                    REFERENCE='NON_REGRESSION',VALE=0.011798,),
-                   
+
                 _F(RESULTAT=U3,INST=1.5,NOM_CHAM='DERA_ELNO',NOM_CMP='ERR_RADI',MAILLE='CUBE',NOEUD='NO2',
                    REFERENCE='NON_REGRESSION',VALE=0.011798,),
-                   
+
                 _F(RESULTAT=U4,INST=1.5,NOM_CHAM='DERA_ELNO',NOM_CMP='ERR_RADI',MAILLE='CUBE',NOEUD='NO2',
                    REFERENCE='NON_REGRESSION',VALE=0.011798,),
-                   
-                   
+
+
                 _F(RESULTAT=U2,INST=2.5,NOM_CHAM='DERA_ELNO',NOM_CMP='ERR_RADI',MAILLE='CUBE',NOEUD='NO4',
                    REFERENCE='NON_REGRESSION',VALE=0.01956,),
-                   
+
                 _F(RESULTAT=U3,INST=2.5,NOM_CHAM='DERA_ELNO',NOM_CMP='ERR_RADI',MAILLE='CUBE',NOEUD='NO4',
                    REFERENCE='NON_REGRESSION',VALE=0.01956,),
-                   
+
                 _F(RESULTAT=U4,INST=2.5,NOM_CHAM='DERA_ELNO',NOM_CMP='ERR_RADI',MAILLE='CUBE',NOEUD='NO4',
                    REFERENCE='NON_REGRESSION',VALE=0.01956,),
-                   
+
                ),);
 
-                   
-                   
-                   
-                   
-                   
-                   
-                   
-                   
+
+
+
+
+
+
+
+
 # l'erreur est || dn || / 2 = sin (alpha / 2;)
-            
+
 RADI1=RECU_FONCTION(RESULTAT=U,
                    NOM_CHAM='DERA_ELNO',
                    NOM_CMP='ERR_RADI',
@@ -579,7 +580,7 @@ RADI2=RECU_FONCTION(RESULTAT=U2,
                    NOEUD='NO2',
                    NOM_RESU='X',
                   );
-                  
+
 RADI3=RECU_FONCTION(RESULTAT=U3,
                    NOM_CHAM='DERA_ELNO',
                    NOM_CMP='ERR_RADI',
@@ -587,7 +588,7 @@ RADI3=RECU_FONCTION(RESULTAT=U3,
                    NOEUD='NO2',
                    NOM_RESU='X',
                   );
-                  
+
 RADI4=RECU_FONCTION(RESULTAT=U4,
                    NOM_CHAM='DERA_ELNO',
                    NOM_CMP='ERR_RADI',
@@ -609,6 +610,6 @@ IMPR_FONCTION(FORMAT='XMGRACE',
               LEGENDE_X='Inst',
               LEGENDE_Y='crit erreur',);
 
-              
+
 FIN();
 

@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # ======================================================================
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -94,7 +94,7 @@ POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=table_sdaster,reentrant='f'
                  PRECISION       =SIMP(statut='o',typ='R',),),
            ),
 
-           b_extrema   =BLOC(condition="'EXTREMA' in OPERATION",
+           b_extrema   =BLOC(condition="au_moins_un(OPERATION, 'EXTREMA')",
                              fr="recherche de MIN MAX",
                              regles=(EXCLUS('TOUT_CMP','NOM_CMP'),),
               TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
@@ -106,7 +106,7 @@ POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=table_sdaster,reentrant='f'
               NOM_CMP         =SIMP(statut='f',typ='TXM',max='**'),
            ),
 
-           b_MOYENNE_ARITH   =BLOC(condition="'MOYENNE_ARITH' in OPERATION",
+           b_MOYENNE_ARITH   =BLOC(condition="au_moins_un(OPERATION, 'MOYENNE_ARITH')",
                              fr="moyenne sur des groupes",
                              regles=(EXCLUS('TOUT_CMP','NOM_CMP'),),
               TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),

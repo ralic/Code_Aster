@@ -1,8 +1,8 @@
-#@ MODIF xmgrace Stanley  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF xmgrace Stanley  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,6 +27,7 @@ import os
 from glob import glob
 from subprocess import Popen
 
+import aster_core
 import aster
 from Utilitai.Utmess import UTMESS
 
@@ -37,7 +38,7 @@ class Xmgr :
 
   DEJA_ACTIF = 'Terminal xmgrace deja actif'
 
-  def __init__(self, gr_max = 10, options=None, xmgrace=os.path.join(aster.repout(), 'xmgrace')) :
+  def __init__(self, gr_max = 10, options=None, xmgrace=os.path.join(aster_core.get_option('repout'), 'xmgrace')) :
 
     # Declaration
     global TERMINAL

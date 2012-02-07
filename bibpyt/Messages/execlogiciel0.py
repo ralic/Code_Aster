@@ -1,8 +1,8 @@
-#@ MODIF execlogiciel0 Messages  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF execlogiciel0 Messages  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -182,11 +182,11 @@ Les listes de paramètres (mot-clé NOM_PARA) et de valeurs (mot-clé VALE) doivent
 """),
 
 24 : _(u"""
-Le répertoire contenant les outils externes est trop long (%(i1)d caractères) pour être stocké
-dans la variable prévue (de longueur %(i2)d).
+Le nom du répertoire contenant les outils externes est trop long pour être stocké
+dans la variable prévue (de longueur %(i1)d).
 
 Conseil :
-    - Vous pouvez déplacer/copier les outils dans un autre répertoire plus court
+    - Vous pouvez déplacer/copier les outils dans un autre répertoire de nom plus court
       et utiliser l'argument optionnel "-rep_outils /nouveau/chemin" pour contourner
       le problème.
 """),

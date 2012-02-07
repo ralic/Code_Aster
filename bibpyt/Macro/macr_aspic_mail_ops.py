@@ -1,8 +1,8 @@
-#@ MODIF macr_aspic_mail_ops Macro  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF macr_aspic_mail_ops Macro  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,6 +21,8 @@
 
 import os.path
 from math import sqrt, cos, sin, pi, pow, tan
+
+import aster_core
 
 # Ecriture du fichier GIBI principal (dgib) - ASPID0
 def write_file_dgib_ASPID0(nomFichierDATG,UNITD, EPT1, DET1, D1, D2, EPT2, DET2, ZMAX, H,
@@ -636,7 +638,7 @@ def macr_aspic_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,RAFF_MAIL,TUBULURE,
        if GROS : NC = 3
        else    : NC = 4
 #
-  loc_gibi=aster.repout()
+  loc_gibi=aster_core.get_option('repout')
   logiel = EXEC_MAILLAGE['LOGICIEL'  ]
   UNITD  = EXEC_MAILLAGE['UNITE_DATG']
   UNITS  = EXEC_MAILLAGE['UNITE_MGIB']
@@ -651,7 +653,7 @@ def macr_aspic_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,RAFF_MAIL,TUBULURE,
   nomFichierDATG = 'fort.'+str(UNITD)
 # Nom du fichier de maillage GIBI
   nomFichierGIBI = 'fort.'+str(UNITS)
-  loc_datg = aster.repdex()
+  loc_datg = aster_core.get_option('repdex')
   if SAIN   : write_file_dgib_ASPID0(nomFichierDATG,UNITD, EPT1, DET1, D1, D2, EPT2, DET2, ZMAX, H,
                                      ALPHA, JEU, EPC, DEC, XMAX, TYPMAI, THETA, TYPELE,
                                      ITYPSO, DPENE, NIVMAG,loc_datg)

@@ -1,35 +1,36 @@
-# MODIF  DATE 24/10/2011   AUTEUR GREFFET N.GREFFET 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION ELEMENTAIRE DES SCHEMAS EN TEMPS DANS DYNA_NON_LINE
 # sdld31a.para = tps_job 120 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(  NOM = 'SDLD31A',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='SDLD31A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
+# SDVERI='NON' car la verification est trop couteuse en CPU
 #
 MA=LIRE_MAILLAGE()
 #
 MA=DEFI_GROUP( reuse=MA,
                MAILLAGE=MA,
-               CREA_GROUP_NO=_F( 
+               CREA_GROUP_NO=_F(
                TOUT_GROUP_MA = 'OUI'),);
 #
 MO=AFFE_MODELE( MAILLAGE=MA,
-                AFFE=_F( 
+                AFFE=_F(
                 GROUP_MA = ('RESSORT','MASS',),
                 PHENOMENE = 'MECANIQUE',
                 MODELISATION = 'DIS_T'),);
@@ -40,13 +41,13 @@ CARA_ELE=AFFE_CARA_ELEM(  MODELE=MO,
                           DISCRET=(_F(  CARA = 'K_T_D_L',  REPERE = 'GLOBAL', GROUP_MA = 'RESSORT',
                                         VALE = (KK,  KK,  KK, )),
                                    _F(  CARA = 'M_T_L',  REPERE = 'GLOBAL', GROUP_MA = 'RESSORT',
-                                        VALE = (0,  0,  0, 0,  0,  0, 0,  0,  0, 
+                                        VALE = (0,  0,  0, 0,  0,  0, 0,  0,  0,
                                         0,  0,  0, 0,  0,  0, 0,  0,  0, 0,  0,  0, )),
                                    _F(  CARA = 'M_T_D_N',  GROUP_MA = 'MASS',
                                         VALE = 1.))
                          )
 #
-MATE_BID=DEFI_MATERIAU(ELAS=_F( 
+MATE_BID=DEFI_MATERIAU(ELAS=_F(
                 E = 20000.,
                 RHO=7900.0,
                 NU = 0.49999,
@@ -56,11 +57,11 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,AFFE=
                      _F(GROUP_MA = 'RESSORT', MATER = MATE_BID),);
 #
 pasdt=1.E-2
-# 
+#
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(
                 _F(  JUSQU_A = 20,     PAS = pasdt),
                 ),);
-# 
+#
 LIAISON=AFFE_CHAR_MECA(MODELE=MO,
                        DDL_IMPO=(
                 _F( GROUP_NO = 'A',  DX=0., DY=0., DZ=0. , ),
@@ -86,7 +87,7 @@ tfin = 1.
 #
 #  Solution obtenue avec schema NEWMARK - DEPLACEMENT
 #
-REPNEW=DYNA_NON_LINE( 
+REPNEW=DYNA_NON_LINE(
                 SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
                                FORMULATION='DEPLACEMENT',),
                 MODELE=MO,
@@ -102,13 +103,13 @@ REPNEW=DYNA_NON_LINE(
                 CONVERGENCE=_F(
                                 RESI_GLOB_MAXI = 1.,
                                 ITER_GLOB_MAXI = 10),
-                
+
             );
-            
+
 #
 #  Solution obtenue avec schema NEWMARK - ACCELERATION
 #
-REPACC=DYNA_NON_LINE( 
+REPACC=DYNA_NON_LINE(
                 SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
                                FORMULATION='ACCELERATION',),
                 MODELE=MO,
@@ -122,14 +123,14 @@ REPACC=DYNA_NON_LINE(
                 NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER = 1),
                 CONVERGENCE=_F(RESI_GLOB_MAXI = 1.,
                                 ITER_GLOB_MAXI = 10),
-                
-            );            
+
+            );
 
 #
 #  Solution obtenue avec schema NEWMARK - ACCELERATION et plusieurs poursuites
 #
 tpsr1 = 0.21 * tfin
-REPACCP=DYNA_NON_LINE( 
+REPACCP=DYNA_NON_LINE(
                 SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
                                FORMULATION='ACCELERATION',),
                 MODELE=MO,
@@ -143,8 +144,8 @@ REPACCP=DYNA_NON_LINE(
                 NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER = 1),
                 CONVERGENCE=_F(RESI_GLOB_MAXI = 1.,
                                 ITER_GLOB_MAXI = 10),
-                
-            );            
+
+            );
 #
 tpsr2 = 0.61 * tfin
 REPACCP=DYNA_NON_LINE( reuse=REPACCP,
@@ -164,7 +165,7 @@ REPACCP=DYNA_NON_LINE( reuse=REPACCP,
                 NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER = 1),
                 CONVERGENCE=_F(RESI_GLOB_MAXI = 1.,
                                 ITER_GLOB_MAXI = 1),
-                
+
              );
 #
 REPACCP=DYNA_NON_LINE( reuse=REPACCP,
@@ -184,13 +185,13 @@ REPACCP=DYNA_NON_LINE( reuse=REPACCP,
                 NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER = 1),
                 CONVERGENCE=_F(RESI_GLOB_MAXI = 1.,
                                 ITER_GLOB_MAXI = 1),
-                
+
             );
 
 #
 #  Solution obtenue avec schema THETA-VITESSE
 #
-REPVIT=DYNA_NON_LINE( 
+REPVIT=DYNA_NON_LINE(
                 SCHEMA_TEMPS=_F(SCHEMA='THETA_METHODE',
                                THETA=0.61,
                                FORMULATION='VITESSE',),
@@ -205,14 +206,14 @@ REPVIT=DYNA_NON_LINE(
                 NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER = 1),
                 CONVERGENCE=_F(ITER_GLOB_MAXI = 1,
                 ),
-               
-            );   
-            
-            
+
+            );
+
+
 #
 #  Solution obtenue avec schema THETA-DEPLACEMENT
 #
-REPDEP=DYNA_NON_LINE( 
+REPDEP=DYNA_NON_LINE(
                 SCHEMA_TEMPS=_F(SCHEMA='THETA_METHODE',
                                THETA=0.61,
                                FORMULATION='DEPLACEMENT',),
@@ -225,16 +226,16 @@ REPDEP=DYNA_NON_LINE(
                 COMP_INCR=_F(RELATION = 'ELAS'),
                 INCREMENT=_F(LIST_INST = L_INST,INST_FIN = tfin,),
                 NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER = 1),
-                CONVERGENCE=_F(                
+                CONVERGENCE=_F(
                 ITER_GLOB_MAXI = 1,
                 ),
-                
-            );   
-            
+
+            );
+
 #
 #  Solution obtenue avec schema HHT MODI_EQUI='NON'
 #
-REPACM=DYNA_NON_LINE( 
+REPACM=DYNA_NON_LINE(
                 SCHEMA_TEMPS=_F(SCHEMA='HHT',
                                FORMULATION='DEPLACEMENT',),
                 MODELE=MO,
@@ -248,12 +249,12 @@ REPACM=DYNA_NON_LINE(
                 NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER = 1),
                 CONVERGENCE=_F(RESI_GLOB_MAXI = 1.,
                                 ITER_GLOB_MAXI = 10),
-                
+
              );
 #
 #  Solution obtenue avec schema HHT MODI_EQUI='OUI'
 #
-REPHHT=DYNA_NON_LINE( 
+REPHHT=DYNA_NON_LINE(
                 SCHEMA_TEMPS=_F(SCHEMA='HHT',
                                MODI_EQUI='OUI',
                                FORMULATION='DEPLACEMENT',),
@@ -268,13 +269,13 @@ REPHHT=DYNA_NON_LINE(
                 NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER = 1),
                 CONVERGENCE=_F(RESI_GLOB_MAXI = 1.,
                                 ITER_GLOB_MAXI = 10),
-                
+
              );
 #
 #  Solution obtenue avec schema HHT MODI_EQUI='OUI' et plusieurs poursuites
 #
 tpsr1 = 0.2 * tfin
-REPHHTP=DYNA_NON_LINE( 
+REPHHTP=DYNA_NON_LINE(
                 SCHEMA_TEMPS=_F(SCHEMA='HHT',
                                MODI_EQUI='OUI',
                                FORMULATION='DEPLACEMENT',),
@@ -289,7 +290,7 @@ REPHHTP=DYNA_NON_LINE(
                 NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER = 1),
                 CONVERGENCE=_F(RESI_GLOB_MAXI = 1.,
                                 ITER_GLOB_MAXI = 10),
-                
+
              );
 #
 tpsr2 = 0.6 * tfin
@@ -311,7 +312,7 @@ REPHHTP=DYNA_NON_LINE( reuse=REPHHTP,
                 NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER = 1),
                 CONVERGENCE=_F(RESI_GLOB_MAXI = 1.,
                                 ITER_GLOB_MAXI = 1),
-                
+
              );
 #
 REPHHTP=DYNA_NON_LINE( reuse=REPHHTP,
@@ -332,12 +333,12 @@ REPHHTP=DYNA_NON_LINE( reuse=REPHHTP,
                 NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER = 1),
                 CONVERGENCE=_F(RESI_GLOB_MAXI = 1.,
                                 ITER_GLOB_MAXI = 1),
-                
+
             );
 #
 #  Solution obtenue avec schema KRENK  en vitesse
 #
-REPKRE=DYNA_NON_LINE( 
+REPKRE=DYNA_NON_LINE(
                 SCHEMA_TEMPS=_F(SCHEMA='KRENK',
                                KAPPA=1.22,
                                FORMULATION='VITESSE',),
@@ -352,12 +353,12 @@ REPKRE=DYNA_NON_LINE(
                 NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER = 1),
                 CONVERGENCE=_F(
                 ITER_GLOB_MAXI = 1),
-               
-            );   
+
+            );
 #
 #  Solution obtenue avec schema KRENK  en deplacement
 #
-REPKRD=DYNA_NON_LINE( 
+REPKRD=DYNA_NON_LINE(
                 SCHEMA_TEMPS=_F(SCHEMA='KRENK',
                                KAPPA=1.22,
                                FORMULATION='DEPLACEMENT',),
@@ -372,14 +373,14 @@ REPKRD=DYNA_NON_LINE(
                 NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER = 1),
                 CONVERGENCE=_F(
                 ITER_GLOB_MAXI = 1),
-               
-            );   
-            
+
+            );
+
 tpst1 = tfin * 0.5
-tpst2 = tfin * 0.7 
+tpst2 = tfin * 0.7
 tpst3 = tfin * 1.
-            
-TEST_RESU(RESU=(            
+
+TEST_RESU(RESU=(
                 _F(RESULTAT=REPACC,
                    INST=tpst1,
                    GROUP_NO = 'B',
@@ -435,7 +436,7 @@ TEST_RESU(RESU=(
                    PRECISION=(1.E-3,1.E-7,),
                    ), ),);
 
-TEST_RESU(RESU=(            
+TEST_RESU(RESU=(
                 _F(RESULTAT=REPACCP,
                    INST=tpst1,
                    GROUP_NO = 'B',
@@ -490,9 +491,9 @@ TEST_RESU(RESU=(
                    REFERENCE='SOURCE_EXTERNE',
                    PRECISION=(1.E-3,1.E-7,),
                    ), ),);
-                              
 
-TEST_RESU(RESU=(            
+
+TEST_RESU(RESU=(
                 _F(RESULTAT=REPDEP,
                    INST=tpst1,
                    GROUP_NO = 'B',
@@ -547,8 +548,8 @@ TEST_RESU(RESU=(
                    REFERENCE='SOURCE_EXTERNE',
                    PRECISION=(1.E-3,1.E-7,),
                    ), ),);
-                            
-TEST_RESU(RESU=(            
+
+TEST_RESU(RESU=(
                 _F(RESULTAT=REPVIT,
                    INST=tpst1,
                    GROUP_NO = 'B',
@@ -603,7 +604,7 @@ TEST_RESU(RESU=(
                    REFERENCE='SOURCE_EXTERNE',
                    PRECISION=(1.E-3,1.E-7,),
                    ), ),);
-                            
+
 
 #
 #  Les valeurs de references sont obtenues avec Matlab R2006b
@@ -878,7 +879,7 @@ TEST_RESU(RESU=(
                    VALE=4.175270664768135,
                    REFERENCE='SOURCE_EXTERNE',
                    PRECISION=(1.E-3,1.E-7,),
-                   ),                   
+                   ),
                 _F(RESULTAT=REPKRD,
                    INST=tpst1,
                    GROUP_NO = 'B',
@@ -932,7 +933,7 @@ TEST_RESU(RESU=(
                    VALE=4.175270664768128,
                    REFERENCE='SOURCE_EXTERNE',
                    PRECISION=(1.E-3,1.E-7,),
-                   ),                   
+                   ),
              ),);
 
 FIN();

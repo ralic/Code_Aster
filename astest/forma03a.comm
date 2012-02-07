@@ -1,4 +1,4 @@
-# MODIF  DATE 23/01/2012   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # RESPONSABLE ABBAS M.ABBAS
 # TITRE ENONCE FORMATION PLAQUE TROUEE EN TRACTION EN ELASTICITE
 # forma03a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
@@ -22,7 +22,7 @@
 
 DEBUT(CODE=_F(NOM='FORMA03A',
               NIV_PUB_WEB='INTERNET',
-              VISU_EFICAS='OUI',),);
+VISU_EFICAS='OUI',),DEBUG=_F(SDVERI='OUI'))
 
 
 # LECTURE DU MAILLAGE
@@ -41,7 +41,7 @@ MODE=AFFE_MODELE(MAILLAGE=MAIL,
 # DEFINITION DU MATERIAU
 ACIER=DEFI_MATERIAU(ELAS=_F(E=200000.0,
                     NU=0.3,),);
-                    
+
 CHMATE=AFFE_MATERIAU(MAILLAGE=MAIL,
                      AFFE=_F(TOUT='OUI',
                            MATER=ACIER,),);
@@ -69,9 +69,9 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=10.0,NOMBRE=1,),);
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST,),)
-  
-  
-# CALCUL                     
+
+
+# CALCUL
 RESU=STAT_NON_LINE(MODELE=MODE,
                    CHAM_MATER=CHMATE,
                    EXCIT=(_F(CHARGE=CHSYME,),
@@ -97,12 +97,12 @@ RESU=CALC_ELEM(reuse =RESU,
 RESU=CALC_NO(reuse =RESU,
              RESULTAT=RESU,
              OPTION=('SIEQ_NOEU',),);
-             
+
 # IMPRESSION DES RESULTATS
 IMPR_RESU(FORMAT='MED',
           RESU=_F(RESULTAT=RESU,),);
-          
-          
+
+
 TEST_RESU(RESU=_F(RESULTAT=RESU,
                   NUME_ORDRE=1,
                   NOM_CHAM='SIGM_NOEU',

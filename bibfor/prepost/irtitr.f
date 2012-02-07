@@ -4,7 +4,7 @@
       CHARACTER*(*)     CHAM,NOPASE,NOMA,FORM
       CHARACTER*80      TITRE
 C     ------------------------------------------------------------------
-C MODIF PREPOST  DATE 09/01/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -37,7 +37,7 @@ C     ------------------------------------------------------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
 C     ------------------------------------------------------------------
-      INTEGER       VERS,UTIL,NIVO,NBTITR,JTITR
+      INTEGER       NBTITR,JTITR
       INTEGER       I, IER, IRET
 C
       CHARACTER*1   K1BID
@@ -46,7 +46,6 @@ C
       CHARACTER*19  CHAM19
       CHARACTER*24  DATEUR
       CHARACTER*80  TITSUP(7),STITR
-      LOGICAL       LEXP
 C
       CALL JEMARQ()
       NOMMA=NOMA
@@ -107,11 +106,10 @@ C          - L'IMPRESSION DU MAILLAGE A ETE DEMANDEE
            ENDIF
          ENDIF
          CALL ENLIRD(DATEUR)
-         CALL VERSIO(VERS,UTIL,NIVO,DATE,LEXP)
 C                     12345678901234567890
          TITSUP(1) = ' ASTER V00.00.00 DU '
-         WRITE (TITSUP(1) (9:16),'(I2,''.'',I2,''.'',I2)')
-     &         VERS,UTIL,NIVO
+         CALL GTOPTK('versionD0', TITSUP(1)(9:16), IRET)
+         CALL GTOPTK('date', DATE, IRET)
          TITSUP(1) = TITSUP(1) (1:20)//DATE(1:10)//'  RESULTAT DU '
          TITSUP(1) (45:69) = DATEUR
          TITSUP(4) = ' '

@@ -1,28 +1,28 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # ======================================================================
 # TEST DU MODELE VISCOPLASTIQUE LETK
 # TITRE ETUDE  : ESSAI TRIAXIAL DRAINE AVEC LE MODELE VISCOPLASTIQUE DU CIH LETK
 # ssnv206a.para = tps_job 190 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #                CONFINEMENT DE 5 MPa
 # ======================================================================
-DEBUT(   CODE=_F( NOM = 'SSNV206A',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SSNV206A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #***********************************************************************
 #    MAILLAGE + MODELE
@@ -52,7 +52,7 @@ TEMPS1=DEFI_LIST_REEL(   DEBUT=0.,
 SOL=DEFI_MATERIAU(    ELAS=_F(  E  = 5000.0,
                                 NU = 0.12  ,
                                 ALPHA = 0.0),
-                                LETK =_F(    PA          =   0.1,       
+                                LETK =_F(    PA          =   0.1,
                                              NELAS       =   0. ,
                                              SIGMA_C     =   12.,
                                              H0_EXT      =   1.10292,
@@ -125,26 +125,26 @@ DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS1),
 U1=STAT_NON_LINE(
                             MODELE=MODELE,
                         CHAM_MATER=CHMAT,EXCIT=(
-                             _F( 
+                             _F(
                 CHARGE = CHAR_U1,
-                FONC_MULT = COEF1), _F( 
+                FONC_MULT = COEF1), _F(
                 CHARGE = CHAR_U2,
-                FONC_MULT = COEF1), _F( 
+                FONC_MULT = COEF1), _F(
                 CHARGE = DEPL_1)),
-                         COMP_INCR=_F( 
+                         COMP_INCR=_F(
                 RELATION = 'LETK',
                 ),
-                       CONVERGENCE=_F( 
+                       CONVERGENCE=_F(
                 RESI_GLOB_RELA = 1.E-6,
                 ITER_GLOB_MAXI = 50),
-                         INCREMENT=_F( 
+                         INCREMENT=_F(
                 LIST_INST = DEFLIST1,),
- 
+
                 )
 
 
 
-IMPR_RESU(MODELE=MODELE, 
+IMPR_RESU(MODELE=MODELE,
           RESU=(_F(RESULTAT=U1,INST = 7000.),
                    ),);
 
@@ -223,16 +223,16 @@ COEF2=DEFI_FONCTION(      NOM_PARA='INST',
 #***********************************************************************
 
 
-U2=STAT_NON_LINE( 
+U2=STAT_NON_LINE(
                             MODELE=MODELE,
                         CHAM_MATER=CHMAT,EXCIT=(
-                             _F( 
+                             _F(
                 CHARGE = CHAR_U2,
-                FONC_MULT = COEF1), _F( 
-                CHARGE = DEPL_1), _F( 
+                FONC_MULT = COEF1), _F(
+                CHARGE = DEPL_1), _F(
                 CHARGE = DEPL_2,
                 FONC_MULT = COEF2)),
-                COMP_INCR=_F( 
+                COMP_INCR=_F(
                 RELATION = 'LETK'
                               ),
                 ETAT_INIT=_F(EVOL_NOLI=U1),
@@ -241,7 +241,7 @@ U2=STAT_NON_LINE(
                 NEWTON=_F(MATRICE = 'TANGENTE',
                           REAC_ITER = 1,),
                 ARCHIVAGE = _F(LIST_INST=ARCHI),
-                CONVERGENCE=_F( 
+                CONVERGENCE=_F(
                 RESI_GLOB_RELA = 1.E-6,
                 ITER_GLOB_MAXI = 20)
               )

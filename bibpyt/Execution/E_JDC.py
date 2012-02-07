@@ -1,9 +1,9 @@
-#@ MODIF E_JDC Execution  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_JDC Execution  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -36,10 +36,14 @@ from Noyau.N_ASSD import ASSD
 from Noyau.N_ENTITE import ENTITE
 from Noyau.N_JDC    import MemoryErrorMsg
 from Noyau.N_info import message, SUPERV
+from Noyau import basetype
+
+import aster_core
 import aster
+# for backward compatibility
+aster.__version__ = aster_core.__version__
 from strfunc import convert
 
-from Noyau import basetype
 
 class JDC:
    """
@@ -166,9 +170,9 @@ class JDC:
        aster.affiche('RESULTAT', convert(repr(self.timer)))
        aster.fclose(8)
 
-       tempsMax = self.args.get("tempsMax")
-       if tempsMax != None:
-          cpu_restant = tempsMax - cpu_total_syst - cpu_total_user
+       tpmax = aster_core.get_option("tpmax")
+       if tpmax != None:
+          cpu_restant = tpmax - cpu_total_syst - cpu_total_user
        else:
           cpu_restant = 0.
 

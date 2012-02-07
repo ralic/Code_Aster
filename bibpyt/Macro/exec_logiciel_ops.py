@@ -1,21 +1,21 @@
-#@ MODIF exec_logiciel_ops Macro  DATE 15/03/2011   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF exec_logiciel_ops Macro  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 # RESPONSABLE COURTOIS M.COURTOIS
@@ -45,7 +45,7 @@ debug = False
 def ExecCommand_SSH(scmd, alt_comment='', verbose=False, separated_stderr=True):
    """ Lance une commande distante via SSH
        Recupere les differents problemes liés à SSH
-   """   
+   """
    import aster
    from Utilitai.Utmess     import  UTMESS
    from Utilitai.System     import ExecCommand
@@ -95,6 +95,7 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MACHINE_DISTANTE, MAILLAGE, SALO
    Erreurs<S> dans IMPR_FONCTION pour ne pas perdre la base.
    """
    macro='EXEC_LOGICIEL'
+   import aster_core
    import aster
    from Utilitai.Utmess     import  UTMESS
    from Utilitai.System     import ExecCommand
@@ -181,13 +182,13 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MACHINE_DISTANTE, MAILLAGE, SALO
       if dMCF['FORMAT'] == 'GMSH':
          mode_lancement = CMD_EXTERNE
          cmd = '%(prog)s %(options)s -o %(fichOUT)s %(fichIN)s'
-         d_para['prog'] = osp.join(aster.repout(), 'gmsh')
+         d_para['prog'] = osp.join(aster_core.get_option('repout'), 'gmsh')
          d_para['options'] = ('-3',)
 
       elif dMCF['FORMAT'] == 'GIBI':
          mode_lancement = CMD_EXTERNE
          cmd = '%(prog)s %(options)s %(fichIN)s %(fichOUT)s'
-         d_para['prog'] = osp.join(aster.repout(), 'gibi')
+         d_para['prog'] = osp.join(aster_core.get_option('repout'), 'gibi')
 
       elif dMCF['FORMAT'] == 'SALOME':
          mode_lancement = EXECFILE
@@ -214,7 +215,7 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MACHINE_DISTANTE, MAILLAGE, SALO
       else:                                                                   FICHIERS_SORTIE = []
 
       if dMCF.has_key('SALOME_RUNAPPLI') and dMCF['SALOME_RUNAPPLI'] != None: RUNAPPLI = dMCF['SALOME_RUNAPPLI']
-      else:                                                                   RUNAPPLI = os.path.join( aster.repout(), 'runSalomeScript' )
+      else:                                                                   RUNAPPLI = os.path.join( aster_core.get_option('repout'), 'runSalomeScript' )
 
       if MACHINE_DISTANTE is None:
           if dMCF['SALOME_HOST']: RUNAPPLI += ' -m %s ' % dMCF['SALOME_HOST']
@@ -341,7 +342,7 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MACHINE_DISTANTE, MAILLAGE, SALO
          else:         cmd_salome.append( '%s %s ' % (RUNAPPLI, CHEMIN_SCRIPT) )
 
 
-      if INFO>=2: 
+      if INFO>=2:
          UTMESS('I', 'EXECLOGICIEL0_21',  valk='\n\n'.join(cmd_salome))
 
          f=open(CHEMIN_SCRIPT, 'r')
@@ -439,29 +440,29 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MACHINE_DISTANTE, MAILLAGE, SALO
          traceback.print_exc()
          txt = open(d_para['fichIN'], 'r').read()
          UTMESS('F', 'EXECLOGICIEL0_5', valk=txt)
-      
+
       if not osp.exists(d_para['fichMED']):
          UTMESS('F', 'EXECLOGICIEL0_6', valk=d_para['fichMED'])
       else:
          # copie fichMED vers fichOUT pour pouvoir le récupérer
          shutil.copyfile(d_para['fichMED'], d_para['fichOUT'])
-   
+
    else:
       UTMESS('F','EXECLOGICIEL0_7',valk=mode_lancement)
-   
+
    #----------------------------------------------
    # 4. Conversion du maillage
    if MAILLAGE != None:
       UL = UniteAster()
       umail = UL.Libre(action='ASSOCIER',
                        nom='exec_logiciel.%s2mail' % dMCF['FORMAT'].lower())
-      
+
       if not osp.exists(d_para['fichOUT']):
         UTMESS('F', 'EXECLOGICIEL0_13', valk=dMCF['FORMAT'])
-      
+
       # déclaration du concept maillage en sortie
       self.DeclareOut('mail', dMCF['MAILLAGE'])
-      
+
       lire_mail_opts = {}
       if dMCF['FORMAT'] == 'GMSH':
          PRE_GMSH(UNITE_GMSH     = dMCF['UNITE'],
@@ -478,7 +479,7 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MACHINE_DISTANTE, MAILLAGE, SALO
          etat = UL.Etat(umail, etat='O', TYPE='LIBRE', nom=d_para['fichMED'])
          lire_mail_opts['FORMAT']   = 'MED'
          lire_mail_opts['INFO_MED'] = INFO
-      
+
       mail = LIRE_MAILLAGE(UNITE = umail,
                            INFO  = INFO,
                            **lire_mail_opts)

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE MODELISATION DE LA DIFFUSION DE L AIR DISSOUS DANS L EAU
 # wtnv131b.para = tps_job 250 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,7 +20,7 @@
 # ======================================================================
 
 
-DEBUT(CODE=_F(NOM='WTNV131B',NIV_PUB_WEB='INTERNET'),);
+DEBUT(CODE=_F(NOM='WTNV131B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 ####################################
 #############################
 ############################

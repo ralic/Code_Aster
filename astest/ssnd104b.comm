@@ -1,22 +1,22 @@
-# MODIF  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE ETUDE : ESSAI BIAXIAL DRAINE (MODELISATION D_PLAN)
 # ssnd104b.para = tps_job 360 mem_job 50Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #               AVEC LE MODELE DE TYPE DRUCKER-PRAGER A ECROUISSAGE
 #               NEGATIF LINEAIRE POUR UN CONFINEMENT DE 2 MPA
@@ -24,12 +24,13 @@
 # Dans ce cas de test, on simule un cas avec les deux lois de
 # comportement DRUCKER-PRAGER en condition associee et non-associee
 # =====================================================================
-DEBUT(   CODE=_F( NOM = 'SSND104B',NIV_PUB_WEB='INTERNET')   )
+DEBUT(CODE=_F(NOM='SSND104B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
+# SDVERI='NON' car la verification est trop couteuse en CPU
 
 MAILLAGE = LIRE_MAILLAGE( );
 
 
-MATER3    = DEFI_MATERIAU(                                                                                                   
+MATER3    = DEFI_MATERIAU(
                     ELAS  = _F( E           =  1.0E9,
                                 NU          =  0.3,
                                 RHO         =  2764.0,
@@ -74,7 +75,7 @@ CHAR_UM5 = AFFE_CHAR_MECA( MODELE   = MODELE,
                            PRES_REP = _F(  MAILLE = 'M5',
                                            PRES = 0.0)
                         )
-   
+
 DEPL_M2  = AFFE_CHAR_MECA( MODELE   = MODELE,
                            DDL_IMPO = _F(  MAILLE = 'M2',
                                            DY     = 0.)
@@ -88,22 +89,22 @@ DEPL_M5  = AFFE_CHAR_MECA( MODELE   = MODELE,
 DEPL_M4  = AFFE_CHAR_MECA( MODELE   = MODELE,
                            FACE_IMPO= _F(  MAILLE = 'M4',
                                            DY = 1.)
-                         ) 
+                         )
 
 COEF2    = DEFI_FONCTION(  NOM_PARA    = 'INST',
                            PROL_DROITE = 'CONSTANT',
                            PROL_GAUCHE = 'CONSTANT',
                            VALE=( 1.0,  -0.000,
-                                  2.0,  -0.008,  
+                                  2.0,  -0.008,
                                   3.0,  -0.016,    )
                         )
 
 TEMPS    = DEFI_LIST_REEL( DEBUT       = 1.,
-                           INTERVALLE  = ( 
+                           INTERVALLE  = (
                                            _F(  JUSQU_A = 3.000, NOMBRE = 400, ),),
                           )
-       
-U3       = STAT_NON_LINE( 
+
+U3       = STAT_NON_LINE(
                           MODELE     = MODELE,
                           CHAM_MATER = CHMAT3,
                           EXCIT      = (
@@ -120,17 +121,17 @@ U3       = STAT_NON_LINE(
                                            ITER_GLOB_MAXI = 50),
                          INCREMENT   = _F( LIST_INST      = TEMPS,)
                         )
-       
+
 U3       = CALC_ELEM( reuse      = U3,
                       OPTION     = ('EPSI_ELGA','EPSI_ELNO','SIGM_ELNO','VARI_ELNO'),
                       RESULTAT   = U3,
                     );
-    
-U3       = CALC_NO( reuse    = U3,     
+
+U3       = CALC_NO( reuse    = U3,
                     RESULTAT = U3,
                     OPTION   = ('SIGM_NOEU','VARI_NOEU')
                   )
-  
+
 TEST_RESU( RESU = (
 ###########################
 # --- CONTRAINTE SIYY --- #
@@ -180,7 +181,7 @@ TEST_RESU( RESU = (
                       PRECISION  = 1.E-3,
                       VALE       = 0.0000000000000E+00),
                  _F(  RESULTAT   = U3,
-                      REFERENCE  = 'NON_REGRESSION', 
+                      REFERENCE  = 'NON_REGRESSION',
                       NOEUD      = 'N4',
                       NOM_CHAM   = 'VARI_NOEU',
                       NOM_CMP    = 'V1',
@@ -237,7 +238,7 @@ TEST_RESU( RESU = (
                       NOM_CMP    = 'DY',
                       INST       = 1.5300,
                       PRECISION  = 1.E-3,
-                      VALE       = -4.2399999999999E-03),      
+                      VALE       = -4.2399999999999E-03),
     ))
 #######################################################################
 
@@ -255,7 +256,7 @@ MATER4    = DEFI_MATERIAU(  ELAS      = _F( E           =  1.0E9,
 CHMAT4   = AFFE_MATERIAU(  MAILLAGE = MAILLAGE,
                            AFFE     = _F(  TOUT  = 'OUI',
                                            MATER = MATER4 ));
-U4       = STAT_NON_LINE( 
+U4       = STAT_NON_LINE(
                           MODELE     = MODELE,
                           CHAM_MATER = CHMAT4,
                           EXCIT      = (
@@ -272,16 +273,16 @@ U4       = STAT_NON_LINE(
                                            ITER_GLOB_MAXI = 50),
                          INCREMENT   = _F( LIST_INST      = TEMPS,)
                         )
-       
+
 U4       = CALC_ELEM( reuse      = U4,
                       OPTION     = ('EPSI_ELGA','EPSI_ELNO','SIGM_ELNO','VARI_ELNO'),
                       RESULTAT   = U4,
                     );
-U4       = CALC_NO( reuse    = U4,     
+U4       = CALC_NO( reuse    = U4,
                     RESULTAT = U4,
                     OPTION   = ('SIGM_NOEU','VARI_NOEU')
                   )
-  
+
 TEST_RESU( RESU = (
 ###########################
 # --- CONTRAINTE SIYY --- #
@@ -331,7 +332,7 @@ TEST_RESU( RESU = (
                       PRECISION  = 1.E-3,
                       VALE       = 0.0000000000000E+00),
                  _F(  RESULTAT   = U4,
-                      REFERENCE  = 'NON_REGRESSION', 
+                      REFERENCE  = 'NON_REGRESSION',
                       NOEUD      = 'N4',
                       NOM_CHAM   = 'VARI_NOEU',
                       NOM_CMP    = 'V1',
@@ -388,9 +389,9 @@ TEST_RESU( RESU = (
                       NOM_CMP    = 'DY',
                       INST       = 1.5300,
                       PRECISION  = 1.E-3,
-                      VALE       = -4.2399999999999E-03),      
+                      VALE       = -4.2399999999999E-03),
     ))
-       
+
 FIN();
 
 

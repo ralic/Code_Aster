@@ -1,4 +1,4 @@
-# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL DE G POUR UN PB ELASTOPLASTIQUE : APPROCHE GTP
 # ssnp102a.para = tps_job 80 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -6,17 +6,17 @@
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
 # ********************************************************************
@@ -30,14 +30,14 @@
 # ********************************************************************
 # ********************************************************************
 
-DEBUT(CODE=_F( NOM = 'SSNP102A',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='SSNP102A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 M=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),FORMAT='MED',   )
 
 M=DEFI_GROUP(     reuse=M,        MAILLAGE=M,CREA_GROUP_NO=(
-                          _F( 
+                          _F(
                                           GROUP_MA = 'AB'),
-                          _F( 
+                          _F(
                                           GROUP_MA = 'DE')) )
 
 MO=AFFE_MODELE(            MAILLAGE=M,
@@ -54,7 +54,7 @@ SIGMF=DEFI_FONCTION(    NOM_PARA='EPSI',
 MA=DEFI_MATERIAU(            ELAS=_F(  E = 205800.,
                                         NU = 0.3,
                                         ALPHA = 0.0),
-                             TRACTION=_F(  SIGM = SIGMF), 
+                             TRACTION=_F(  SIGM = SIGMF),
                               PRAGER=_F(C=0.))
 
 CM=AFFE_MATERIAU(        MAILLAGE=M,
@@ -100,12 +100,12 @@ L_INST=DEFI_LIST_REEL(          DEBUT=0.0,
 F=DEFI_FONCTION(      NOM_PARA='INST',
                         PROL_DROITE='LINEAIRE',
                        PROL_GAUCHE='LINEAIRE',
-                               VALE=( 0.0,  0.0, 
-                                      0.5,  1.0, 
-                                      1.0,  0.0, 
-                                      1.5,  1.0, 
-                                      2.0,  0.0, 
-                                      2.5,  1.0, 
+                               VALE=( 0.0,  0.0,
+                                      0.5,  1.0,
+                                      1.0,  0.0,
+                                      1.5,  1.0,
+                                      2.0,  0.0,
+                                      2.5,  1.0,
                                       3.0,  0.0, )
                      )
 
@@ -116,23 +116,23 @@ DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST),
                                  SUBD_PAS_MINI = 0.001,),)
 
 
-UP=STAT_NON_LINE( 
+UP=STAT_NON_LINE(
                             MODELE=MO,
                         CHAM_MATER=CM,
-                             EXCIT=_F( 
+                             EXCIT=_F(
                 CHARGE = CH,
                 FONC_MULT = F),
-                         COMP_INCR=_F( 
+                         COMP_INCR=_F(
                 RELATION = 'VMIS_ISOT_TRAC',
                 DEFORMATION = 'PETIT'),
-                         INCREMENT=_F( 
+                         INCREMENT=_F(
                 LIST_INST = DEFLIST,),
-                         ARCHIVAGE=_F( 
+                         ARCHIVAGE=_F(
                 LIST_INST = L_INST),
-                            NEWTON=_F( 
+                            NEWTON=_F(
                 MATRICE = 'TANGENTE',
                 REAC_ITER = 1),
-                       CONVERGENCE=_F( 
+                       CONVERGENCE=_F(
                 RESI_REFE_RELA=1.,
                 SIGM_REFE     =4.8E-3,
              #   RESI_GLOB_RELA = 1.E-8,
@@ -145,31 +145,31 @@ UP=CALC_ELEM( reuse=UP,
                           RESULTAT=UP,
               )
 
-UP=CALC_ELEM( reuse=UP,   
+UP=CALC_ELEM( reuse=UP,
                       RESULTAT=UP,
                        OPTION=('EPSP_ELNO','EPSI_ELGA')
                   )
 
-              
-UP2=STAT_NON_LINE( 
+
+UP2=STAT_NON_LINE(
                             MODELE=MO,
                         CHAM_MATER=CM,
-                             EXCIT=_F( 
+                             EXCIT=_F(
                 CHARGE = CH,
                 FONC_MULT = F),
-                         COMP_INCR=_F( 
+                         COMP_INCR=_F(
                 RELATION = 'VMIS_ECMI_TRAC',
                 DEFORMATION = 'PETIT'),
-                         INCREMENT=_F( 
+                         INCREMENT=_F(
                 LIST_INST = DEFLIST),
-                         ARCHIVAGE=_F( 
+                         ARCHIVAGE=_F(
                 LIST_INST = L_INST),
-                            NEWTON=_F( 
+                            NEWTON=_F(
                 MATRICE = 'TANGENTE',
                 REAC_ITER = 1),
                        CONVERGENCE=_F(
                 RESI_REFE_RELA=1.,
-                SIGM_REFE     =4.8E-3,                        
+                SIGM_REFE     =4.8E-3,
          #       RESI_GLOB_RELA = 1.E-8,
                 ITER_GLOB_MAXI = 8)
               )
@@ -180,7 +180,7 @@ UP2=CALC_ELEM( reuse=UP2,
                           RESULTAT=UP2,
               )
 
-UP2=CALC_ELEM( reuse=UP2,    
+UP2=CALC_ELEM( reuse=UP2,
                       RESULTAT=UP2,
                        OPTION=('EPSP_ELNO','EPSI_ELGA')
                   )
@@ -273,26 +273,26 @@ THET4=CALC_THETA(       MODELE=MO,
                        DIRECTION=(1.,0.,0.,)
                    )
 
-G1=CALC_G(  
+G1=CALC_G(
             RESULTAT=UP,
             THETA=_F(THETA=THET1,SYME='OUI'),
             COMP_INCR=_F(RELATION = 'VMIS_ISOT_TRAC'),
              );
 
 
-G2=CALC_G(  
+G2=CALC_G(
             RESULTAT=UP,
             THETA=_F(THETA=THET2,SYME='OUI'),
             COMP_INCR=_F(RELATION = 'VMIS_ISOT_TRAC'),
              );
 
-G3=CALC_G(  
+G3=CALC_G(
             RESULTAT=UP,
             THETA=_F(THETA=THET3,SYME='OUI'),
             COMP_INCR=_F(RELATION = 'VMIS_ISOT_TRAC'),
              );
 
-G4=CALC_G(  
+G4=CALC_G(
             RESULTAT=UP,
             THETA=_F(THETA=THET4,SYME='OUI'),
             COMP_INCR=_F(RELATION = 'VMIS_ISOT_TRAC'),

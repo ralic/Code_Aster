@@ -1,27 +1,27 @@
-# MODIF  DATE 30/01/2012   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
 #       CAS_TEST SSNV209B: 2D, ELEMENTS Q4, METHODE XFEM
 
 # SURFACE RIGIDE, CALCULEL2_63 PEUT ETRE IGNOREE
-DEBUT( CODE=_F(  NOM = 'SSNV209B',NIV_PUB_WEB='INTERNET'),IGNORE_ALARM='CALCULEL2_63',)
+DEBUT(CODE=_F(NOM='SSNV209B',NIV_PUB_WEB='INTERNET'),IGNORE_ALARM='CALCULEL2_63',DEBUG=_F(SDVERI='OUI'))
 
 
 #......................................................
@@ -132,14 +132,14 @@ NU_F=DEFI_FONCTION(NOM_PARA='NEUT1',
 E_F=DEFI_FONCTION(NOM_PARA='NEUT1',
                   VALE=(-1.0,1.E16,-1.E-9,1.E16,1.E-9,E,1.0,E));
 
-# def EF(x) : 
-#    if x<0. : return 1.E16 
+# def EF(x) :
+#    if x<0. : return 1.E16
 #    if x>0. : return E
-# 
-# def NF(x) : 
-#    if x<0. : return 0. 
+#
+# def NF(x) :
+#    if x<0. : return 0.
 #    if x>0. : return nu
-# 
+#
 # E_F = FORMULE(NOM_PARA=('NEUT1'),VALE='EF(NEUT1)');
 # NU_F= FORMULE(NOM_PARA=('NEUT1'),VALE='NF(NEUT1)');
 
@@ -164,7 +164,7 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                       FORMULATION    = 'XFEM',
                       FROTTEMENT     = 'COULOMB',
                       ITER_CONT_MAXI = 4,
-                      ITER_FROT_MAXI = 20,                      
+                      ITER_FROT_MAXI = 20,
                       REAC_GEOM      = 'SANS',
                       ZONE=(
                             _F(
@@ -177,9 +177,9 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                                COEF_STAB_CONT = 100000.,
                                ALGO_FROT      = 'AVANCE',
                                COEF_REGU_FROT = 100.,
-                               COEF_STAB_FROT = 100000.,                                   
+                               COEF_STAB_FROT = 100000.,
                                ALGO_LAGR      = 'VERSION2',
-                             ), 
+                             ),
                          ),
                    );
 
@@ -233,7 +233,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                            _F(CHARGE=CHAF,
                               FONC_MULT=RAMPE),
                            ),
-                    CONTACT  = CTXFEM,       
+                    CONTACT  = CTXFEM,
                     COMP_ELAS=_F(RELATION='ELAS',
                                  GROUP_MA='SURF',
                                  ),

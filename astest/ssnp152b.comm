@@ -1,28 +1,28 @@
-# MODIF  DATE 15/11/2011   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # CAS TEST : SSNP152B
 # TITRE INCLUSION DE DEUX COURONNES
 # ssnp152b.para = tps_job 30 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # ELEMENTS LINEAIRES, GRANDES ROTATIONS, DEFORMATIONS PLANES,
 # p=1.0E6, E1=1.0E9, E2=1.0E9, nu1=0.2, nu2=0.2, R1 = 1.0, R2 = 0.6, R3 = 0.2
 
-DEBUT(CODE=_F(NOM='SSNP152B',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='SSNP152B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 PRE_GMSH();
 
@@ -33,7 +33,7 @@ MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),);
 #+----------------------------------------+
 
 MA=DEFI_GROUP(reuse=MA,MAILLAGE=MA,CREA_GROUP_MA=(_F(GROUP_MA='GM100',NOM='C1'),
-                     _F(GROUP_MA='GM101',NOM='C2'),                                          
+                     _F(GROUP_MA='GM101',NOM='C2'),
                      _F(GROUP_MA='GM200',NOM='S1R1'),
                      _F(GROUP_MA='GM300',NOM='S1R2'),
                      _F(GROUP_MA='GM400',NOM='S2R2'),
@@ -46,7 +46,7 @@ MA=MODI_MAILLAGE(reuse=MA,MAILLAGE=MA,ORIE_PEAU_2D=(
             _F(GROUP_MA = 'S1R2',),
             _F(GROUP_MA = 'S2R2',),
             _F(GROUP_MA = 'S2R3',),),);
-            
+
 
 E1=1.0E9
 E2=1.0E9
@@ -199,7 +199,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
                    VALE_ABS   = 'OUI',
                    VALE       = pres_cont*EXP(0.2),
                    PRECISION  = 0.02,),),);
-                   
+
 TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
                    NOM_CHAM   = 'DEPL',
                    NOM_CMP    = 'LAGS_C',
@@ -209,7 +209,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
                    VALE_ABS   = 'OUI',
                    VALE       = pres_cont*EXP(0.3),
                    PRECISION  = 0.02,),),);
-                   
+
 TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
                    NOM_CHAM   = 'DEPL',
                    NOM_CMP    = 'LAGS_C',
@@ -219,7 +219,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
                    VALE_ABS   = 'OUI',
                    VALE       = pres_cont*EXP(0.4),
                    PRECISION  = 0.02,),),);
-                   
+
 TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
                    NOM_CHAM   = 'DEPL',
                    NOM_CMP    = 'LAGS_C',
@@ -229,7 +229,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
                    VALE_ABS   = 'OUI',
                    VALE       = pres_cont*EXP(0.5),
                    PRECISION  = 0.02,),),);
-                   
+
 TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
                    NOM_CHAM   = 'DEPL',
                    NOM_CMP    = 'LAGS_C',
@@ -239,7 +239,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
                    VALE_ABS   = 'OUI',
                    VALE       = pres_cont*EXP(0.6),
                    PRECISION  = 0.02,),),);
-                   
+
 TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
                    NOM_CHAM   = 'DEPL',
                    NOM_CMP    = 'LAGS_C',
@@ -249,7 +249,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
                    VALE_ABS   = 'OUI',
                    VALE       = pres_cont*EXP(0.7),
                    PRECISION  = 0.02,),),);
-                   
+
 TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
                    NOM_CHAM   = 'DEPL',
                    NOM_CMP    = 'LAGS_C',
@@ -259,7 +259,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
                    VALE_ABS   = 'OUI',
                    VALE       = pres_cont*EXP(0.8),
                    PRECISION  = 0.02,),),);
-                   
+
 TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
                    NOM_CHAM   = 'DEPL',
                    NOM_CMP    = 'LAGS_C',
@@ -269,7 +269,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
                    VALE_ABS   = 'OUI',
                    VALE       = pres_cont*EXP(0.9),
                    PRECISION  = 0.02,),),);
-                   
+
 TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
                    NOM_CHAM   = 'DEPL',
                    NOM_CMP    = 'LAGS_C',
@@ -279,7 +279,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
                    VALE_ABS   = 'OUI',
                    VALE       = pres_cont*EXP(1.0),
                    PRECISION  = 0.02,),),);
-                   
+
 TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
                    NOM_CHAM   = 'DEPL',
                    NOM_CMP    = 'LAGS_C',
@@ -289,7 +289,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
                    VALE_ABS   = 'OUI',
                    VALE       = pres_cont*EXP(1.1),
                    PRECISION  = 0.02,),),);
-                   
+
 TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
                    NOM_CHAM   = 'DEPL',
                    NOM_CMP    = 'LAGS_C',
@@ -299,7 +299,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
                    VALE_ABS   = 'OUI',
                    VALE       = pres_cont*EXP(1.2),
                    PRECISION  = 0.02,),),);
-                   
+
 TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
                    NOM_CHAM   = 'DEPL',
                    NOM_CMP    = 'LAGS_C',
@@ -309,7 +309,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
                    VALE_ABS   = 'OUI',
                    VALE       = pres_cont*EXP(1.3),
                    PRECISION  = 0.02,),),);
-                   
+
 TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
                    NOM_CHAM   = 'DEPL',
                    NOM_CMP    = 'LAGS_C',
@@ -319,7 +319,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
                    VALE_ABS   = 'OUI',
                    VALE       = pres_cont*EXP(1.4),
                    PRECISION  = 0.02,),),);
-                   
+
 TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
                    NOM_CHAM   = 'DEPL',
                    NOM_CMP    = 'LAGS_C',
@@ -329,7 +329,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
                    VALE_ABS   = 'OUI',
                    VALE       = pres_cont*EXP(1.5),
                    PRECISION  = 0.02,),),);
-                   
+
 TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
                    NOM_CHAM   = 'DEPL',
                    NOM_CMP    = 'LAGS_C',
@@ -339,7 +339,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
                    VALE_ABS   = 'OUI',
                    VALE       = pres_cont*EXP(1.6),
                    PRECISION  = 0.02,),),);
-                   
+
 TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
                    NOM_CHAM   = 'DEPL',
                    NOM_CMP    = 'LAGS_C',
@@ -349,7 +349,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
                    VALE_ABS   = 'OUI',
                    VALE       = pres_cont*EXP(1.7),
                    PRECISION  = 0.02,),),);
-                   
+
 TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
                    NOM_CHAM   = 'DEPL',
                    NOM_CMP    = 'LAGS_C',
@@ -359,7 +359,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
                    VALE_ABS   = 'OUI',
                    VALE       = pres_cont*EXP(1.8),
                    PRECISION  = 0.02,),),);
-                   
+
 TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
                    NOM_CHAM   = 'DEPL',
                    NOM_CMP    = 'LAGS_C',
@@ -369,7 +369,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
                    VALE_ABS   = 'OUI',
                    VALE       = pres_cont*EXP(1.9),
                    PRECISION  = 0.02,),),);
-                   
+
 TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
                    NOM_CHAM   = 'DEPL',
                    NOM_CMP    = 'LAGS_C',
@@ -379,7 +379,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
                    VALE_ABS   = 'OUI',
                    VALE       = pres_cont*EXP(2.0),
                    PRECISION  = 0.02,),),);
-                   
+
 TEST_RESU(RESU=(_F(RESULTAT   = RESU1,
                    NOM_CHAM   = 'DEPL',
                    NOM_CMP    = 'LAGS_C',
@@ -411,7 +411,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
                    VALE_ABS   = 'OUI',
                    VALE       = pres_cont*EXP(0.2),
                    PRECISION  = 0.02,),),);
-                   
+
 TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
                    NOM_CHAM   = 'DEPL',
                    NOM_CMP    = 'LAGS_C',
@@ -421,7 +421,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
                    VALE_ABS   = 'OUI',
                    VALE       = pres_cont*EXP(0.3),
                    PRECISION  = 0.02,),),);
-                   
+
 TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
                    NOM_CHAM   = 'DEPL',
                    NOM_CMP    = 'LAGS_C',
@@ -431,7 +431,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
                    VALE_ABS   = 'OUI',
                    VALE       = pres_cont*EXP(0.4),
                    PRECISION  = 0.02,),),);
-                   
+
 TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
                    NOM_CHAM   = 'DEPL',
                    NOM_CMP    = 'LAGS_C',
@@ -441,7 +441,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
                    VALE_ABS   = 'OUI',
                    VALE       = pres_cont*EXP(0.5),
                    PRECISION  = 0.02,),),);
-                   
+
 TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
                    NOM_CHAM   = 'DEPL',
                    NOM_CMP    = 'LAGS_C',
@@ -451,7 +451,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
                    VALE_ABS   = 'OUI',
                    VALE       = pres_cont*EXP(0.6),
                    PRECISION  = 0.02,),),);
-                   
+
 TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
                    NOM_CHAM   = 'DEPL',
                    NOM_CMP    = 'LAGS_C',
@@ -461,7 +461,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
                    VALE_ABS   = 'OUI',
                    VALE       = pres_cont*EXP(0.7),
                    PRECISION  = 0.02,),),);
-                   
+
 TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
                    NOM_CHAM   = 'DEPL',
                    NOM_CMP    = 'LAGS_C',
@@ -471,7 +471,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
                    VALE_ABS   = 'OUI',
                    VALE       = pres_cont*EXP(0.8),
                    PRECISION  = 0.02,),),);
-                   
+
 TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
                    NOM_CHAM   = 'DEPL',
                    NOM_CMP    = 'LAGS_C',
@@ -481,7 +481,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
                    VALE_ABS   = 'OUI',
                    VALE       = pres_cont*EXP(0.9),
                    PRECISION  = 0.02,),),);
-                   
+
 TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
                    NOM_CHAM   = 'DEPL',
                    NOM_CMP    = 'LAGS_C',
@@ -491,7 +491,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
                    VALE_ABS   = 'OUI',
                    VALE       = pres_cont*EXP(1.0),
                    PRECISION  = 0.02,),),);
-                   
+
 TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
                    NOM_CHAM   = 'DEPL',
                    NOM_CMP    = 'LAGS_C',
@@ -501,7 +501,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
                    VALE_ABS   = 'OUI',
                    VALE       = pres_cont*EXP(1.1),
                    PRECISION  = 0.02,),),);
-                   
+
 TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
                    NOM_CHAM   = 'DEPL',
                    NOM_CMP    = 'LAGS_C',
@@ -511,7 +511,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
                    VALE_ABS   = 'OUI',
                    VALE       = pres_cont*EXP(1.2),
                    PRECISION  = 0.02,),),);
-                   
+
 TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
                    NOM_CHAM   = 'DEPL',
                    NOM_CMP    = 'LAGS_C',
@@ -521,7 +521,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
                    VALE_ABS   = 'OUI',
                    VALE       = pres_cont*EXP(1.3),
                    PRECISION  = 0.02,),),);
-                   
+
 TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
                    NOM_CHAM   = 'DEPL',
                    NOM_CMP    = 'LAGS_C',
@@ -531,7 +531,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
                    VALE_ABS   = 'OUI',
                    VALE       = pres_cont*EXP(1.4),
                    PRECISION  = 0.02,),),);
-                   
+
 TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
                    NOM_CHAM   = 'DEPL',
                    NOM_CMP    = 'LAGS_C',
@@ -541,7 +541,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
                    VALE_ABS   = 'OUI',
                    VALE       = pres_cont*EXP(1.5),
                    PRECISION  = 0.02,),),);
-                   
+
 TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
                    NOM_CHAM   = 'DEPL',
                    NOM_CMP    = 'LAGS_C',
@@ -551,7 +551,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
                    VALE_ABS   = 'OUI',
                    VALE       = pres_cont*EXP(1.6),
                    PRECISION  = 0.02,),),);
-                   
+
 TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
                    NOM_CHAM   = 'DEPL',
                    NOM_CMP    = 'LAGS_C',
@@ -561,7 +561,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
                    VALE_ABS   = 'OUI',
                    VALE       = pres_cont*EXP(1.7),
                    PRECISION  = 0.02,),),);
-                   
+
 TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
                    NOM_CHAM   = 'DEPL',
                    NOM_CMP    = 'LAGS_C',
@@ -571,7 +571,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
                    VALE_ABS   = 'OUI',
                    VALE       = pres_cont*EXP(1.8),
                    PRECISION  = 0.02,),),);
-                   
+
 TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
                    NOM_CHAM   = 'DEPL',
                    NOM_CMP    = 'LAGS_C',
@@ -581,7 +581,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
                    VALE_ABS   = 'OUI',
                    VALE       = pres_cont*EXP(1.9),
                    PRECISION  = 0.02,),),);
-                   
+
 TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
                    NOM_CHAM   = 'DEPL',
                    NOM_CMP    = 'LAGS_C',
@@ -591,7 +591,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
                    VALE_ABS   = 'OUI',
                    VALE       = pres_cont*EXP(2.0),
                    PRECISION  = 0.02,),),);
-                   
+
 TEST_RESU(RESU=(_F(RESULTAT   = RESU2,
                    NOM_CHAM   = 'DEPL',
                    NOM_CMP    = 'LAGS_C',

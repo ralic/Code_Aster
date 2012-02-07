@@ -1,22 +1,22 @@
-#@ MODIF reca_calcul_aster Macro  DATE 28/03/2011   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF reca_calcul_aster Macro  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 
@@ -35,6 +35,7 @@ import tempfile
 
 import numpy as NP
 
+import aster_core
 from Utilitai.System import ExecCommand
 from Utilitai.Utmess import UTMESS
 
@@ -47,7 +48,7 @@ class CALCUL_ASTER:
 
   def __init__(self, jdc, METHODE,
                           UNITE_ESCL,
-                          UNITE_RESU, 
+                          UNITE_RESU,
                           para,
                           reponses,
                           PARA_DIFF_FINI=1.E-3,
@@ -58,8 +59,8 @@ class CALCUL_ASTER:
                           CALCUL_ESCLAVE=None,
                           INFO=0,
                ):
-  
-  
+
+
       self.METHODE               = METHODE
       self.UNITE_ESCL            = UNITE_ESCL
       self.UNITE_RESU            = UNITE_RESU
@@ -86,7 +87,7 @@ class CALCUL_ASTER:
       self.memjeveux             = CALCUL_ESCLAVE['memjeveux']
 
       self.INFO                  = INFO
- 
+
       # Optionnels
       self.UNITE_GRAPHIQUE       = None
       self.export                = None
@@ -117,7 +118,7 @@ class CALCUL_ASTER:
 
   # ------------------------------------------------------------------------------
   def Set_Parameters(self, **args):
-    for cle in args.keys(): 
+    for cle in args.keys():
        exec( "%s=%s" % (cle, args[cle]) )
 
 
@@ -177,14 +178,14 @@ class CALCUL_ASTER:
             tmp_macr_recal = self.Creation_Temporaire_Esclave()
 
             # Creation du fichier .export de l'esclave
-            self.Creation_Fichier_Export_Esclave(tmp_macr_recal)  
+            self.Creation_Fichier_Export_Esclave(tmp_macr_recal)
 
             # Code_Aster installation
             if  os.environ.has_key('ASTER_ROOT'):
                 ASTER_ROOT = os.environ['ASTER_ROOT']
             else:
                 import aster
-                ASTER_ROOT       = os.path.join(aster.repout(), '..')
+                ASTER_ROOT       = os.path.join(aster_core.get_option('repout'), '..')
             as_run           = os.path.join(ASTER_ROOT, 'bin', 'as_run')
 
             # General
@@ -264,10 +265,10 @@ class CALCUL_ASTER:
 
        # Reset les variables deja calculees par les calculs precedents
        self.reset()
-  
+
        # Calcul pour le jeu de parametre val
        fonctionnelle, gradient = self.calcul_Aster(val, dX=None)
-  
+
        # Calcul de l'erreur par rapport aux donnees experimentale
        E = CALC_ERROR(
            experience          = self.RESU_EXP,
@@ -281,7 +282,7 @@ class CALCUL_ASTER:
 
        # norme de l'erreur
        self.norme = NP.sum( [x**2 for x in self.erreur] )
-  
+
        if debug:
            print "self.reponses=", self.reponses
            print "F=", E.F
@@ -291,11 +292,11 @@ class CALCUL_ASTER:
            print 'erreur=', self.erreur
            print "norme de l'erreur=", self.norme
            print "norme de J (fonctionnelle)=", str(E.J)
-  
-       if self.INFO>=2: 
+
+       if self.INFO>=2:
           UTMESS('I', 'RECAL0_30')
           if self.evaluation_fonction >1: UTMESS('I', 'RECAL0_39', valk=str(self.evaluation_fonction))
-  
+
        if self.vector_output:
           if self.INFO>=2: UTMESS('I', 'RECAL0_35', valr=self.norme)
           return self.erreur
@@ -375,7 +376,7 @@ class CALCUL_ASTER:
               for l in range(len(self.A[:,0])):
                    norme_A_nodim += self.A_nodim[l,c] * self.A_nodim[l,c]
                    norme_A       += self.A[l,c] * self.A[l,c]
-              self.norme_A_nodim[0,c] = math.sqrt( norme_A_nodim ) 
+              self.norme_A_nodim[0,c] = math.sqrt( norme_A_nodim )
               self.norme_A[0,c] = math.sqrt( norme_A )
           return self.norme, self.residu, self.norme_A_nodim, self.norme_A
 
@@ -391,7 +392,7 @@ class CALCUL_ASTER:
       # Si le calcul Aster (et ses derivees) est deja effectue pour val on ne le refait pas
       if not ( (self.val == val) and self.A):
           self.erreur, self.residu, self.A_nodim, self.A = self.calcul_FG(val)
-      return NP.dot(NP.transpose(self.A), self.erreur) 
+      return NP.dot(NP.transpose(self.A), self.erreur)
 
 
   # ------------------------------------------------------------------------------
@@ -437,9 +438,9 @@ class CALCUL_ASTER:
 
      # Chaine user@hostname (pour les calculs distribues et en batch)
      try:         username = prof.param['username'][0]
-     except: 
+     except:
          try:     username = os.getlogin()
-         except:  
+         except:
                   import getpass
                   username = getpass.getuser()
      user_mach_dist = "%s@%s:" % ( username, socket.gethostname() )

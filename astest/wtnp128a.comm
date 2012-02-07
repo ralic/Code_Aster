@@ -1,25 +1,25 @@
-# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE   TEST HM, 2D , MODELISATION THMC=LIQU_SATU
 # wtnp128a.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F( NOM = 'WTNP128A',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='WTNP128A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 sigc=3.25
 gc=0.150
@@ -68,19 +68,19 @@ MA = DEFI_GROUP(reuse = MA,
           _F(NOM = 'I2', GROUP_MA = 'G_2D_35'),
           _F(NOM = 'I3', GROUP_MA = 'G_2D_36'),
           _F(NOM = 'FISSURE' , UNION = ('I1','I2','I3',),),
-          _F(NOM = 'ENTREE',   GROUP_MA = 'G_1D_41'), 
+          _F(NOM = 'ENTREE',   GROUP_MA = 'G_1D_41'),
           _F(NOM = 'SORTIE' , GROUP_MA = 'G_1D_42'),
-          _F(NOM = 'BORD_F',   GROUP_MA = 'G_1D_40'),         
+          _F(NOM = 'BORD_F',   GROUP_MA = 'G_1D_40'),
                         ),
         CREA_GROUP_NO=(
            _F(NOM='BORD_F',GROUP_MA='BORD_F',),
-           _F(NOM='AG',GROUP_MA='G_0D_37',),           
+           _F(NOM='AG',GROUP_MA='G_0D_37',),
            _F(NOM='AD',GROUP_MA='G_0D_38',),
-           _F(NOM='FISSURE',GROUP_MA='FISSURE',),        
-           _F(NOM='I3',GROUP_MA='I3',),                  
-           _F(NOM='I1',GROUP_MA='I1',),          
+           _F(NOM='FISSURE',GROUP_MA='FISSURE',),
+           _F(NOM='I3',GROUP_MA='I3',),
+           _F(NOM='I1',GROUP_MA='I1',),
            _F(NOM='OUVERT',DIFFE=('FISSURE','I3','BORD_F','I1'),),
-           _F(NOM='FERME',DIFFE=('FISSURE','OUVERT','BORD_F',),),                                    
+           _F(NOM='FERME',DIFFE=('FISSURE','OUVERT','BORD_F',),),
        ),);
 
 MA=MODI_MAILLAGE(reuse =MA,
@@ -131,11 +131,11 @@ MAT_2=DEFI_MATERIAU(
                   THM_LIQU=_F(RHO=1000.,
                                    UN_SUR_K=0.,
                                    VISC=VISCOL,
-                                   D_VISC_TEMP=DVISCOL,), 
+                                   D_VISC_TEMP=DVISCOL,),
                   THM_RUPT=_F(OUV_FICT=1.E1,
                               UN_SUR_N=1/3.E-4,
-                                   ),                         
-                  RUPT_FRAG=_F(GC=gc, 
+                                   ),
+                  RUPT_FRAG=_F(GC=gc,
                                SIGM_C=sigc,
                                PENA_ADHERENCE=1.E-3,),
                          );
@@ -156,7 +156,7 @@ MAT_3=DEFI_MATERIAU(
                                    D_VISC_TEMP=DVISCOL,),
                   JOINT_BANDIS=_F(K=kni,
                                   DMAX=ouvm,
-                                  GAMMA=0.,),       
+                                  GAMMA=0.,),
                          );
 
 CM=AFFE_MATERIAU(MAILLAGE=MA,
@@ -185,7 +185,7 @@ LIAISON=AFFE_CHAR_MECA(
   DDL_IMPO= (
     _F(GROUP_MA=('SORTIE',),DX=0.,DY=0.),
     _F(GROUP_NO=('BORD_F','I1'),PRE1=0.),
-    _F(GROUP_MA=('SORTIE',),PRE1=0.),     
+    _F(GROUP_MA=('SORTIE',),PRE1=0.),
     ),
   );
 
@@ -202,13 +202,13 @@ SYM=AFFE_CHAR_MECA(
 PRESS=AFFE_CHAR_MECA(
   MODELE=MO,
   DDL_IMPO=(
-    _F(GROUP_NO  =('OUVERT',),PRE1=pimp,),    
+    _F(GROUP_NO  =('OUVERT',),PRE1=pimp,),
   ),);
 
 IMPER=AFFE_CHAR_CINE(
   MODELE=MO,
   MECA_IMPO=(
-    _F(GROUP_MA=('FISSURE',),LH1=0.),   
+    _F(GROUP_MA=('FISSURE',),LH1=0.),
   ),);
 
 ####################################
@@ -216,7 +216,7 @@ IMPER=AFFE_CHAR_CINE(
 ####################################
 
 CHAMNO=CREA_CHAMP(MAILLAGE=MA,
-                    OPERATION='AFFE', 
+                    OPERATION='AFFE',
                     TYPE_CHAM='NOEU_DEPL_R',
                     AFFE=(
                            _F(GROUP_MA=('I1','I2',),
@@ -235,28 +235,28 @@ CH_X=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='CART_NEUT_R',
            _F( GROUP_MA = ('I1',),   NOM_CMP = ('X1',     'X2',  'X3',),
                                      VALE = (0.,0.,0.)),
            _F( GROUP_MA = ('I2'),   NOM_CMP = ('X1',     'X2',  'X3','X4','X5','X6','X7','X8','X9','X10','X11',),
-                                     VALE = ( dc,1,2,1.,gc,0.,0.,0.,0.,0.,0.)),                             
+                                     VALE = ( dc,1,2,1.,gc,0.,0.,0.,0.,0.,0.)),
            _F( GROUP_MA = ('I3'),   NOM_CMP = ('X1',     'X2',  'X3','X4','X5','X6','X7','X8','X9','X10','X11',),
-                                     VALE = ( 0.,0.,0.,0,0,0.,0.,0.,0.,0.,0.)),                                     
+                                     VALE = ( 0.,0.,0.,0,0,0.,0.,0.,0.,0.,0.)),
                     ),);
 
 CH_VARI=CREA_CHAMP( OPERATION='ASSE', TYPE_CHAM='ELGA_VARI_R',
                    MODELE=MO,
                    ASSE=(
-           _F( CHAM_GD = CH_X, 
+           _F( CHAM_GD = CH_X,
                GROUP_MA = 'BETON', NOM_CMP = ('X1',  ),NOM_CMP_RESU  = ('V1', )),
-           _F( CHAM_GD = CH_X, 
-               GROUP_MA = ('I1',),    
+           _F( CHAM_GD = CH_X,
+               GROUP_MA = ('I1',),
                NOM_CMP      = ('X1',  'X2',  'X3',),
                NOM_CMP_RESU = ('V1',  'V2',  'V3',),),
-           _F( CHAM_GD = CH_X, 
-               GROUP_MA = ('I2'),    
+           _F( CHAM_GD = CH_X,
+               GROUP_MA = ('I2'),
                NOM_CMP      = ('X1',  'X2',  'X3','X4','X5','X6','X7','X8','X9','X10','X11',),
-               NOM_CMP_RESU = ('V1',  'V2',  'V3','V4','V5','V6','V7','V8','V9','V10','V11',),),   
-           _F( CHAM_GD = CH_X, 
-               GROUP_MA = ('I3'),    
+               NOM_CMP_RESU = ('V1',  'V2',  'V3','V4','V5','V6','V7','V8','V9','V10','V11',),),
+           _F( CHAM_GD = CH_X,
+               GROUP_MA = ('I3'),
                NOM_CMP      = ('X1',  'X2',  'X3','X4','X5','X6','X7','X8','X9','X10','X11',),
-               NOM_CMP_RESU = ('V1',  'V2',  'V3','V4','V5','V6','V7','V8','V9','V10','V11',),),               
+               NOM_CMP_RESU = ('V1',  'V2',  'V3','V4','V5','V6','V7','V8','V9','V10','V11',),),
                    ),);
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =LISTINST ),
@@ -267,36 +267,36 @@ DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =LISTINST ),
                   SUBD_PAS  = 5,
                   SUBD_PAS_MINI = 1.E-10,
                   SUBD_NIVEAU=12,
-                                 ),);        
+                                 ),);
 
 ####################################
 ## STAT NON LINE
 ####################################
- 
-U_1=STAT_NON_LINE( 
+
+U_1=STAT_NON_LINE(
   MODELE     = MO,
   CHAM_MATER = CM,
-  CARA_ELEM  = ORIEN_FI, 
+  CARA_ELEM  = ORIEN_FI,
   EXCIT      = (
                  _F(CHARGE = LIAISON),
                  _F(CHARGE = SYM),
                  _F(CHARGE = IMPER),
                  _F(CHARGE = PRESS),
-                 _F(CHARGE = FORCE, 
+                 _F(CHARGE = FORCE,
                     TYPE_CHARGE='FIXE_PILO',),
                ),
-  ETAT_INIT=_F(DEPL=CHAMNO,VARI=CH_VARI),        
+  ETAT_INIT=_F(DEPL=CHAMNO,VARI=CH_VARI),
   COMP_INCR=(_F(RELATION='ELAS',
                GROUP_MA='BETON',),
              _F(RELATION='KIT_HM',
                RELATION_KIT=('CZM_LIN_REG','LIQU_SATU','HYDR_UTIL',),
-               GROUP_MA=('I2',),),  
+               GROUP_MA=('I2',),),
             _F(RELATION='KIT_HM',
                RELATION_KIT=('CZM_EXP_REG','LIQU_SATU','HYDR_UTIL',),
                GROUP_MA=('I3',),),
             _F(RELATION='KIT_HM',
                RELATION_KIT=('JOINT_BANDIS','LIQU_SATU','HYDR_UTIL',),
-               GROUP_MA=('I1',),),               
+               GROUP_MA=('I1',),),
                 ),
   PILOTAGE=(_F(TYPE='DDL_IMPO',
             GROUP_NO='AD',
@@ -308,7 +308,7 @@ U_1=STAT_NON_LINE(
   NEWTON=_F(MATRICE='TANGENTE',
                           REAC_ITER=1,),
   CONVERGENCE=_F(
-                 ITER_GLOB_MAXI=50,),  
+                 ITER_GLOB_MAXI=50,),
   SOLVEUR = _F(METHODE = 'MUMPS', PCENT_PIVOT=100,NPREC=-1),
   );
 
@@ -316,7 +316,7 @@ U_1=STAT_NON_LINE(
 ## TESTS DE VALIDATION
 ####################################
 
-U_1=CALC_NO(reuse=U_1,  
+U_1=CALC_NO(reuse=U_1,
         TOUT_ORDRE='OUI',
         TOUT='OUI',
         OPTION=( 'FORC_NODA'),
@@ -325,7 +325,7 @@ U_1=CALC_NO(reuse=U_1,
 # TEST FY EN 'AD' A 100S, 150S ET 250S
 
 TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=10,  
+                  NUME_ORDRE=10,
                   NOM_CHAM='FORC_NODA',
                   NOM_CMP='DY',
                   GROUP_NO='AD',
@@ -335,7 +335,7 @@ TEST_RESU(RESU=_F(RESULTAT=U_1,
                   REFERENCE='SOURCE_EXTERNE',),);
 
 TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=15,  
+                  NUME_ORDRE=15,
                   NOM_CHAM='FORC_NODA',
                   NOM_CMP='DY',
                   GROUP_NO='AD',
@@ -345,7 +345,7 @@ TEST_RESU(RESU=_F(RESULTAT=U_1,
                   REFERENCE='SOURCE_EXTERNE',),);
 
 TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=25,  
+                  NUME_ORDRE=25,
                   NOM_CHAM='FORC_NODA',
                   NOM_CMP='DY',
                   GROUP_NO='AD',
@@ -357,7 +357,7 @@ TEST_RESU(RESU=_F(RESULTAT=U_1,
 # TEST PRE1  NS5768 A 100S, 150S ET 200S
 
 TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=19,  
+                  NUME_ORDRE=19,
                   NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
                   NOEUD='NS5768',
@@ -367,7 +367,7 @@ TEST_RESU(RESU=_F(RESULTAT=U_1,
                   REFERENCE='SOURCE_EXTERNE',),);
 
 TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=24,  
+                  NUME_ORDRE=24,
                   NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
                   NOEUD='NS5768',
@@ -377,7 +377,7 @@ TEST_RESU(RESU=_F(RESULTAT=U_1,
                   REFERENCE='SOURCE_EXTERNE',),);
 
 TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=29,  
+                  NUME_ORDRE=29,
                   NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
                   NOEUD='NS5768',
@@ -387,7 +387,7 @@ TEST_RESU(RESU=_F(RESULTAT=U_1,
                   REFERENCE='SOURCE_EXTERNE',),);
 
 TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=19,  
+                  NUME_ORDRE=19,
                   NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
                   NOEUD='NS5768',
@@ -395,7 +395,7 @@ TEST_RESU(RESU=_F(RESULTAT=U_1,
                   REFERENCE='NON_REGRESSION',),);
 
 TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=24,  
+                  NUME_ORDRE=24,
                   NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
                   NOEUD='NS5768',
@@ -403,13 +403,13 @@ TEST_RESU(RESU=_F(RESULTAT=U_1,
                   REFERENCE='NON_REGRESSION',),);
 
 TEST_RESU(RESU=_F(RESULTAT=U_1,
-                  NUME_ORDRE=29,  
+                  NUME_ORDRE=29,
                   NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
                   NOEUD='NS5768',
                   VALE=0.2016,
                   REFERENCE='NON_REGRESSION',),);
-                 
+
 ####################################
 ## DONNEES POUR COURBES DOC V
 ####################################
@@ -471,6 +471,6 @@ V_X_04=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
 IMPR_TABLE(TABLE=V_X_04,
            FORMAT='TABLEAU',
            NOM_PARA=('INST','DY',),
-          );               
+          );
 
 FIN();

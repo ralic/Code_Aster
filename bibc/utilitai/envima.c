@@ -1,7 +1,7 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF ENVIMA UTILITAI  DATE 26/09/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF ENVIMA UTILITAI  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -68,9 +68,6 @@ static INTEGER   ISLFIC   = 2000*1024;
 /* ---------------------- fonctions renvoyant un  LOGICAL (int)  */
 /* int = logique : 1=vrai / 0=faux                               */
 
-
-/* -------------------------------------------- MACHINE UTILISEE */
-INTEGER STDCALL(LCRAEM,lcraem)() { return 0; }
 
 /* ----------------------------- fonctions renvoyant un  INTEGER */
 /* -------------------------------------------- LONGUEUR EN BITS */

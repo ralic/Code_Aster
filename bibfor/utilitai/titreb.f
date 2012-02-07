@@ -4,9 +4,9 @@
       INTEGER                   ILIGD,ICOLD,NBTITR,       ILIGS,ICOLS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -53,7 +53,7 @@ C
       CHARACTER*80  CVAL
       CHARACTER*255 CGEN
 C
-      LOGICAL LEXP,LFREQ
+      LOGICAL LFREQ
 C
 C     REMARQUE :  MXPARA DONNE LE NOMBRE DE PARAMETRES DU DEMON
       PARAMETER          (MXDEMO=20)
@@ -164,7 +164,7 @@ C        --- TITRE_MAILLAGE ---
             CALL GETTCO(PARA(1),CGEN)
             IF ( CGEN .EQ. '  ' ) CGEN = 'CHAMP'
             IF ( CGEN(1:16) .EQ. 'MAILLAGE' ) THEN
-               CBID = PARA(1)
+               CBID = PARA(1)(1:16)
             ELSE
                CALL DISMOI('C','NOM_MAILLA',PARA(1),CGEN,IBID,CBID,IERD)
                IF ( IERD .NE. 0 ) GOTO 9000
@@ -187,11 +187,7 @@ C                 ---> LA RECOPIE SE FAIT ICI
 C
 C        --- VERSION  ---
    90    CONTINUE
-            CALL VERSIO(IVERS,IUTIL,INIVO,CBID,LEXP)
-            CGEN(1:8) = '  .  .  '
-            CALL CODENT(IVERS,'D ',CGEN(1:2))
-            CALL CODENT(IUTIL,'D0',CGEN(4:5))
-            CALL CODENT(INIVO,'D0',CGEN(7:8))
+            CALL GTOPTK('versionD0', CGEN(1:8), IRET)
             IGEN = 8
          GOTO 9000
 C
@@ -208,7 +204,7 @@ C        --- NB_ELEM  ---
             CALL GETTCO(PARA(1),CGEN)
             IF ( CGEN .EQ. '  ' ) CGEN = 'CHAMP'
             IF ( CGEN(1:16) .EQ. 'MAILLAGE' ) THEN
-               CBID = PARA(1)
+               CBID = PARA(1)(1:16)
             ELSE
                CALL DISMOI('C','NOM_MAILLA',PARA(1),CGEN,IBID,CBID,IERD)
                IF ( IERD .NE. 0 ) GOTO 9000
@@ -228,7 +224,7 @@ C        --- NB_NOEUD ---
             CALL GETTCO(PARA(1),CGEN)
             IF ( CGEN .EQ. '  ' ) CGEN = 'CHAMP'
             IF ( CGEN(1:16) .EQ. 'MAILLAGE' ) THEN
-               CBID = PARA(1)
+               CBID = PARA(1)(1:16)
             ELSE
                CALL DISMOI('C','NOM_MAILLA',PARA(1),CGEN,IBID,CBID,IERD)
                IF ( IERD .NE. 0 ) GOTO 9000
@@ -248,7 +244,7 @@ C        --- PHENOMENE ---
             CALL GETTCO(PARA(1),CGEN)
             IF ( CGEN .EQ. '  ' ) CGEN = 'CHAMP'
             IF ( CGEN(1:16) .EQ. 'MODELE' ) THEN
-               CBID = PARA(1)
+               CBID = PARA(1)(1:16)
             ELSE
                CALL DISMOI('C','NOM_MODELE',PARA(1),CGEN,IBID,CBID,IERD)
                IF ( IERD .NE. 0 ) GOTO 9000
@@ -267,7 +263,7 @@ C        --- DIMENSION GEOMETRIE ---
             CALL GETTCO(PARA(1),CGEN)
             IF ( CGEN .EQ. '  ' ) CGEN = 'CHAMP'
             IF ( CGEN(1:16) .EQ. 'MAILLAGE' ) THEN
-               CBID = PARA(1)
+               CBID = PARA(1)(1:16)
             ELSE
                CALL DISMOI('C','NOM_MAILLA',PARA(1),CGEN,IBID,CBID,IERD)
                IF ( IERD .NE. 0 ) GOTO 9000

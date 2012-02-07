@@ -1,25 +1,25 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE FONDATION FILANTE AVEC LA LOI DE CAMCLAY EN MECANIQUE DRAINE
 # ssnp136a.para = tps_job 370 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='SSNP136A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'));
+DEBUT(CODE=_F(NOM='SSNP136A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
 
 # CORRESPOND A MU=3846154 PA
 mu = 3846154 ;
@@ -63,7 +63,7 @@ MODMEC1=AFFE_MODELE(INFO=1,
                     AFFE=_F(TOUT='OUI',
                             PHENOMENE='MECANIQUE',
                             MODELISATION='D_PLAN'));
-                                  
+
 MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
                        MAILLAGE=MAILLAGE,
                        ORIE_PEAU_2D=_F(GROUP_MA=('LPATM','APPUI',
@@ -84,10 +84,10 @@ SOL=DEFI_MATERIAU(ELAS=_F(E     =E,
                               #PA        =PATM,
                               KCAM = 0.,
                               PTRAC=0.));
-                   
+
 chmat=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                     AFFE=_F(GROUP_MA='SOL', MATER=SOL));
-                            
+
 TM = -1000000.0
 T0 = 0.
 T12 = 2000000.0
@@ -99,10 +99,10 @@ TEMPS=DEFI_LIST_REEL(DEBUT=T0,
                      INTERVALLE=(_F(JUSQU_A=T1, NOMBRE=10),
                                  _F(JUSQU_A=T2, NOMBRE=10),
                                  _F(JUSQU_A=T3, NOMBRE=80)));
-                                    
+
 TAN0=DEFI_LIST_REEL(DEBUT=TM,
                     INTERVALLE=_F(JUSQU_A=T0, NOMBRE=3));
-                                                          
+
 TAN=DEFI_LIST_REEL(DEBUT=T0,
                    INTERVALLE=(_F(JUSQU_A=T12, NOMBRE=40),
                                _F(JUSQU_A=T1, NOMBRE=16),
@@ -133,7 +133,7 @@ DDLIMP0=AFFE_CHAR_MECA(MODELE=MODMEC1,
 DDLIMP1=AFFE_CHAR_MECA(MODELE=MODMEC1,
                        DDL_IMPO=_F(GROUP_MA='APPUI',
                                    DY=0.));
-                                              
+
 DDLIMP2=AFFE_CHAR_MECA(MODELE=MODMEC1,
                        DDL_IMPO=_F(GROUP_MA='APPUI',
                                    DY=-0.05));
@@ -150,7 +150,7 @@ fevol = FORMULE(VALE='INST/T1', NOM_PARA='INST');
 # DANS LA FONDATION
 #-------------------------------------------------------------------
 
-#  RECUPERATION DU CHAMP DE GEOMETRIE 
+#  RECUPERATION DU CHAMP DE GEOMETRIE
 #  (AUX NOEUDS PUIS AUX POINTS DE GAUSS)
 CHXN=CREA_CHAMP(TYPE_CHAM='NOEU_GEOM_R',
                 OPERATION='EXTR',
@@ -258,71 +258,71 @@ VARINI=CREA_CHAMP(INFO=1,
 #                                    ITER_GLOB_MAXI=10,
 #                                    ARRET='OUI',),
 #                     );
-# 
+#
 # resu0=CALC_ELEM(reuse =resu0,
 #                 RESULTAT=resu0,
 #                 OPTION='SIGM_ELNO');
-# 
+#
 # DETRUIRE(CONCEPT=_F(NOM=('PCRY','PCR1','PCR2','SIEF1',
 #                          'SIEF2','CHXN','CHXG')));
-# 
+#
 # coupe1 = INTE_MAIL_2D(MAILLAGE=MAILLAGE,
 #                       GROUP_MA='SOL',
 #                       DEFI_SEGMENT=_F(ORIGINE  = (1.,10.),
 #                                       EXTREMITE= (1., 0.)));
-#                       
+#
 # coupe2 = INTE_MAIL_2D(MAILLAGE=MAILLAGE,
 #                       GROUP_MA='SOL',
 #                       DEFI_SEGMENT=_F(ORIGINE  = (5.,10.),
 #                                       EXTREMITE= (5., 0.)));
-#                       
+#
 # coupe3 = INTE_MAIL_2D(MAILLAGE=MAILLAGE,
 #                       GROUP_MA='SOL',
 #                       DEFI_SEGMENT=_F(ORIGINE  = (10.,10.),
 #                                       EXTREMITE= (10., 0.)));
-#                                   
+#
 # TAB_DEP1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
 #                               CHEMIN=coupe1,
 #                               RESULTAT=resu0,
 #                               NOM_CHAM='DEPL',
 #                               NOM_CMP=('DX','DY'),
 #                               OPERATION='EXTRACTION'));
-# 
+#
 # TAB_DEP2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
 #                               CHEMIN=coupe2,
 #                               RESULTAT=resu0,
 #                               NOM_CHAM='DEPL',
 #                               NOM_CMP=('DX','DY'),
 #                               OPERATION='EXTRACTION'));
-#                               
+#
 # TAB_DEP3=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
 #                               CHEMIN=coupe3,
 #                               RESULTAT=resu0,
 #                               NOM_CHAM='DEPL',
 #                               NOM_CMP=('DX','DY'),
 #                               OPERATION='EXTRACTION'));
-#                               
+#
 # TAB_SIEF=POST_RELEVE_T(ACTION=_F(INTITULE='SIEF',
 #                              CHEMIN=coupe3,
 #                              RESULTAT=resu0,
 #                              NOM_CHAM='SIGM_ELNO',
 #                              NOM_CMP=('SIXX','SIYY','SIZZ'),
 #                              OPERATION='EXTRACTION'));
-#                              
+#
 # IMPR_TABLE(TABLE=TAB_DEP1,
 #            UNITE=8,);
-#            
+#
 # IMPR_TABLE(TABLE=TAB_DEP2,
 #            UNITE=8,);
-#            
+#
 # IMPR_TABLE(TABLE=TAB_DEP3,
 #            UNITE=8,);
-# 
+#
 # IMPR_TABLE(TABLE=TAB_SIEF,
 #            UNITE=8,);
-          
+
 #FIN();
-                               
+
 #--------------------------------------------------------------------
 #                  TEST D'EQUILIBRE AVEC CAMCLAY
 #--------------------------------------------------------------------
@@ -350,7 +350,7 @@ resu1=STAT_NON_LINE(MODELE    =MODMEC1,
                                    ITER_GLOB_MAXI=10,
                                    ARRET         ='OUI'),
                     );
-                    
+
 resu1=CALC_ELEM(reuse   =resu1,
                 RESULTAT=resu1,
                 OPTION  =('SIGM_ELNO','VARI_ELNO'));
@@ -358,24 +358,24 @@ resu1=CALC_ELEM(reuse   =resu1,
 # DETRUIRE(CONCEPT=_F(NOM=('coupe1','coupe2','coupe3','TAB_DEP1',
 #                          'TAB_DEP2','TAB_DEP3','TAB_SIEF',
 #                          'resu0','SIEFINI','VARINI')));
-# 
+#
 # coupe1 = INTE_MAIL_2D(MAILLAGE=MAILLAGE,
 #                       GROUP_MA='SOL',
 #                       DEFI_SEGMENT=_F(ORIGINE   = (.5,10.),
 #                                       EXTREMITE = (.5, 0.)));
-# 
+#
 # coupe2 = INTE_MAIL_2D(MAILLAGE=MAILLAGE,
 #                       GROUP_MA='SOL',
 #                       DEFI_SEGMENT=_F(ORIGINE   = (5.,10.),
 #                                       EXTREMITE = (5., 0.)));
-#                                                                     
+#
 # TAB_DEPL=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
 #                                  CHEMIN=coupe1,
 #                                  RESULTAT=resu1,
 #                                  NOM_CHAM='DEPL',
 #                                  NOM_CMP='DY',
 #                                  OPERATION='EXTRACTION'));
-#                                
+#
 # TAB_SIEF=POST_RELEVE_T(ACTION=_F(INTITULE='SIEF',
 #                                  CHEMIN=coupe1,
 #                                  RESULTAT=resu1,
@@ -383,32 +383,32 @@ resu1=CALC_ELEM(reuse   =resu1,
 #                                  TOUT_CMP='OUI',
 #                                  #NOM_CMP=('SIXX','SIYY','SIZZ'),
 #                                  OPERATION='EXTRACTION'));
-#                                
+#
 # TAB_VARI=POST_RELEVE_T(ACTION=_F(INTITULE='VARI',
 #                                  CHEMIN=coupe1,
 #                                  RESULTAT=resu1,
 #                                  NOM_CHAM='VARI_ELNO',
 #                                  NOM_CMP=('V1','V3','V4','V5','V6','V7'),
 #                                  OPERATION='EXTRACTION'));
-# 
+#
 # IMPR_TABLE(TABLE=TAB_DEPL,
 #            UNITE=8,);
-# 
+#
 # IMPR_TABLE(TABLE=TAB_SIEF,
 #            UNITE=8,);
-#            
+#
 # IMPR_TABLE(TABLE=TAB_VARI,
 #            UNITE=8,);
-# 
+#
 # DETRUIRE(CONCEPT=_F(NOM=('TAB_VARI','TAB_DEPL','TAB_SIEF')));
-# 
+#
 # TAB_DEPL=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
 #                                  CHEMIN=coupe2,
 #                                  RESULTAT=resu1,
 #                                  NOM_CHAM='DEPL',
 #                                  NOM_CMP='DY',
 #                                  OPERATION='EXTRACTION'));
-#                                
+#
 # TAB_SIEF=POST_RELEVE_T(ACTION=_F(INTITULE='SIEF',
 #                                  CHEMIN=coupe2,
 #                                  RESULTAT=resu1,
@@ -416,23 +416,23 @@ resu1=CALC_ELEM(reuse   =resu1,
 #                                  TOUT_CMP='OUI',
 #                                  #NOM_CMP=('SIXX','SIYY','SIZZ'),
 #                                  OPERATION='EXTRACTION'));
-#                                
+#
 # TAB_VARI=POST_RELEVE_T(ACTION=_F(INTITULE='VARI',
 #                                  CHEMIN=coupe2,
 #                                  RESULTAT=resu1,
 #                                  NOM_CHAM='VARI_ELNO',
 #                                  NOM_CMP=('V1','V3','V4','V5','V6','V7'),
 #                                  OPERATION='EXTRACTION'));
-# 
+#
 # IMPR_TABLE(TABLE=TAB_DEPL,
 #            UNITE=8);
-# 
+#
 # IMPR_TABLE(TABLE=TAB_SIEF,
 #            UNITE=8);
-#            
+#
 # IMPR_TABLE(TABLE=TAB_VARI,
 #            UNITE=8);
-#           
+#
 # FIN();
 
 #--------------------------------------------------------------------
@@ -498,8 +498,8 @@ T_VARI_O=CALC_TABLE(reuse =T_VARI_O,
                           CRIT_COMP = 'GT',
                           VALE    = 0,
                          ),),);
-                         
-                         
+
+
 T_VARI_A=CALC_TABLE(reuse =T_VARI_A,
                TABLE=T_VARI_A,
                ACTION=(_F(
@@ -507,7 +507,7 @@ T_VARI_A=CALC_TABLE(reuse =T_VARI_A,
                           NOM_PARA  = 'NUME_ORDRE',
                           CRIT_COMP = 'GT',
                           VALE    = 0,
-                         ),),);                                                    
+                         ),),);
 IMPR_TABLE(TABLE=T_VARI_O);
 IMPR_TABLE(TABLE=T_VARI_A);
 
@@ -535,7 +535,7 @@ TEST_TABLE(TABLE    =T_VARI_O,
                      VALE     =110000.,
                      PRECISION=100.,
                      CRITERE  ='ABSOLU'));
-                     
+
 TEST_TABLE(TABLE    =T_VARI_O,
            NOM_PARA ='V4',
            VALE     =26060.,
@@ -546,7 +546,7 @@ TEST_TABLE(TABLE    =T_VARI_O,
                      VALE     =120000.,
                      PRECISION=20.,
                      CRITERE  ='ABSOLU'));
-                     
+
 TEST_TABLE(TABLE    =T_VARI_O,
            NOM_PARA ='V4',
            VALE     =29490.,
@@ -557,7 +557,7 @@ TEST_TABLE(TABLE    =T_VARI_O,
                      VALE     =130000.,
                      PRECISION=200.,
                      CRITERE  ='ABSOLU'));
-                     
+
 TEST_TABLE(TABLE    =T_VARI_O,
            NOM_PARA ='V4',
            VALE     =34040.,
@@ -582,7 +582,7 @@ TEST_TABLE(TABLE    =T_VARI_A,
                      VALE     =101900.,
                      PRECISION=10.,
                      CRITERE  ='ABSOLU'));
-                     
+
 
 
 TEST_TABLE(TABLE    =T_VARI_A,
@@ -595,7 +595,7 @@ TEST_TABLE(TABLE    =T_VARI_A,
                      VALE     =100000.,
                      PRECISION=10.,
                      CRITERE  ='ABSOLU'));
-                     
+
 TEST_TABLE(TABLE    =T_VARI_A,
            NOM_PARA ='V4',
            VALE     =10420.,
@@ -606,7 +606,7 @@ TEST_TABLE(TABLE    =T_VARI_A,
                      VALE     =98000.,
                      PRECISION=200.,
                      CRITERE  ='ABSOLU'));
-                     
+
 TEST_TABLE(TABLE    =T_VARI_A,
            NOM_PARA ='V4',
            VALE     =16830.,
@@ -617,7 +617,7 @@ TEST_TABLE(TABLE    =T_VARI_A,
                      VALE     =96000.,
                      PRECISION=200.,
                      CRITERE  ='ABSOLU'));
-                     
+
 TEST_TABLE(TABLE    =T_VARI_A,
            NOM_PARA ='V4',
            VALE     =21870.,
@@ -635,7 +635,7 @@ b_fonda=INTE_MAIL_2D(MAILLAGE=MAILLAGE,
                      GROUP_MA='SOL',
                      DEFI_SEGMENT=_F(ORIGINE  =(0.0,10.0),
                                      EXTREMITE=(1.0,10.0)));
-                     
+
 T_FORCE=POST_RELEVE_T(INFO=1,
                       ACTION=_F(INTITULE ='RESULTANTE',
                                 RESULTAT =resu2,
@@ -650,8 +650,8 @@ T_FORCE=CALC_TABLE(reuse =T_FORCE,
                           NOM_PARA  = 'NUME_ORDRE',
                           CRIT_COMP = 'GT',
                           VALE    = 0,
-                         ),),);  
-                         
+                         ),),);
+
 # DY = -0.005
 TEST_TABLE(TABLE    =T_FORCE,
            NOM_PARA ='SIYY',

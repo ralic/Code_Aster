@@ -1,22 +1,22 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE CONTACT-FROTTANT EN GRANDS GLISSEMENTS
 # ssnp504c.para = tps_job 80 mem_job 256Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
 # CONTACT-FROTTANT EN GRANDS GLISSEMENTS
@@ -24,7 +24,7 @@
 #
 
 DEBUT(CODE=_F(NOM='SSNP504C',
-              NIV_PUB_WEB='INTERNET',),);
+NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 MAILLAG2=LIRE_MAILLAGE(INFO=1,FORMAT='MED',);
 
@@ -42,7 +42,7 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
 MODELE=AFFE_MODELE(MAILLAGE=MAILLAG2,
                      AFFE=(_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='C_PLAN',),),);       
+                              MODELISATION='C_PLAN',),),);
 
 CONT = DEFI_CONTACT(MODELE         = MODELE,
                     FORMULATION    = 'CONTINUE',
@@ -53,17 +53,17 @@ CONT = DEFI_CONTACT(MODELE         = MODELE,
                            _F(
                              GROUP_MA_MAIT = 'L21',
                              GROUP_MA_ESCL = 'L13',
-                             COULOMB       = 0.5, 
-                             TOLE_PROJ_EXT = 0.0,  
-                             CONTACT_INIT  = 'INTERPENETRE',                         
+                             COULOMB       = 0.5,
+                             TOLE_PROJ_EXT = 0.0,
+                             CONTACT_INIT  = 'INTERPENETRE',
                              ),
                            _F(
                              GROUP_MA_MAIT = 'L23',
-                             GROUP_MA_ESCL = 'L31', 
-                             COULOMB       = 0.5, 
-                             TOLE_PROJ_EXT = 0.0,  
-                             CONTACT_INIT  = 'INTERPENETRE',                         
-                             ),                                                          
+                             GROUP_MA_ESCL = 'L31',
+                             COULOMB       = 0.5,
+                             TOLE_PROJ_EXT = 0.0,
+                             CONTACT_INIT  = 'INTERPENETRE',
+                             ),
                           ),
                    );
 
@@ -112,13 +112,13 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                                     NOMBRE=4,),);
 
 UTOT1=STAT_NON_LINE(MODELE=MODELE,
-                   CHAM_MATER=CHAMPMAT,              
+                   CHAM_MATER=CHAMPMAT,
                    EXCIT=(
                           _F(CHARGE=CH1,FONC_MULT=VAR1),
                           _F(CHARGE=CH2,FONC_MULT=VAR2),
-                          ),  
+                          ),
                    CONTACT  = CONT,
-                   NEWTON=_F(REAC_ITER=1,),       
+                   NEWTON=_F(REAC_ITER=1,),
                    COMP_ELAS=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=L_INST,),
                    CONVERGENCE=(_F(ITER_GLOB_MAXI=8,
@@ -150,7 +150,7 @@ for i in [1,2,3,4]: #Boucle sur les increments
               IMPR_FONCTION='NON',
               TRI=_F(NOM_PARA=('COOR_X',),
                      ORDRE='CROISSANT',),);
-   
+
    for j in [0,1,2,3,4]: #Boucle sur les positions testees
       if (vale[i-1] [j] == 0.0):
         precision = 1.0E-12

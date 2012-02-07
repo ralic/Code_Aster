@@ -1,4 +1,4 @@
-#@ MODIF supervis2 Messages  DATE 09/01/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF supervis2 Messages  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,6 +23,15 @@ cata_msg={
 
 1 : _(u"""
 Lecture du fichier %(k1)s..."""),
+
+2 : _(u"""
+    Vous utilisez une vieille version de Code_Aster.
+
+    En mettant à jour votre version, vous bénéficierez des dernières améliorations
+    apportées au code depuis 15 mois.
+    Si vous avez des développements privés, vous risquez d'avoir un travail
+    important de portage si vous ne suivez pas les mises à jour.
+"""),
 
 3 : _(u"""%(k1)-8s %(k2)-16s ignoré"""),
 

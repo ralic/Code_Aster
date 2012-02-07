@@ -1,8 +1,8 @@
-#@ MODIF stanley_engine Stanley  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF stanley_engine Stanley  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -59,6 +59,7 @@ import tempfile
 #import Tix as Tk
 import Tkinter as Tk
 
+import aster_core
 import as_courbes
 import xmgrace
 import gmsh
@@ -324,7 +325,7 @@ class PARAMETRES :
       'machine_salome'        : { 'label': _("Machine de Salome"),                'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Salome'],                   'mode': ['DISTANT'],                 'bulle': _("Machine hebergeant le service graphique Salome."), },
       'machine_salome_login'  : { 'label': _("Login"),                            'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Salome'],   'mode': ['DISTANT'],                 'bulle': _("Login"), },
       'machine_salome_port'   : { 'label': _("Port de Salome"),                   'val': '2810',             'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Salome'],                   'mode': ['LOCAL', 'DISTANT'],        'bulle': _("Port de Salome sur la machine hebergeant le service Salome."), },
-      'machine_salome_runscript' : { 'label': _("Lanceur runSalomeScript"),       'val': os.path.join(aster.repout(), 'runSalomeScript'),             'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Salome'],                   'mode': ['LOCAL', 'DISTANT'],        'bulle': _("Chemin vers le script runSalomeScript (dans l'arborescence de Salome)."), },
+      'machine_salome_runscript' : { 'label': _("Lanceur runSalomeScript"),       'val': os.path.join(aster_core.get_option('repout'), 'runSalomeScript'),             'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Salome'],                   'mode': ['LOCAL', 'DISTANT'],        'bulle': _("Chemin vers le script runSalomeScript (dans l'arborescence de Salome)."), },
 
       'machine_win'           : { 'label': _("Machine Windows/Samba"),            'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['WINDOWS'],                 'bulle': _("Machine hebergeant le partage Windows/Samba."), },
       'partage_win_nom'       : { 'label': _("Nom de partage Windows/Samba"),     'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['WINDOWS'],                 'bulle': _("Nom de partage Windows/Samba"), },
@@ -2845,7 +2846,7 @@ class DRIVER_GRACE(DRIVER_COURBES) :
     else:
       # Ouverture ou rafraichissement du terminal si necessaire
       xmgrace_exe=self.stan.parametres['grace']
-      if not xmgrace_exe.strip(): xmgrace_exe = os.path.join(aster.repout(), 'xmgrace')
+      if not xmgrace_exe.strip(): xmgrace_exe = os.path.join(aster_core.get_option('repout'), 'xmgrace')
 
       if not self.terminal :
          self.terminal = xmgrace.Xmgr(xmgrace=xmgrace_exe)

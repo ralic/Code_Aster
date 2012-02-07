@@ -1,8 +1,8 @@
-#@ MODIF partition Utilitai  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF partition Utilitai  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,6 +19,7 @@
 # ======================================================================
 # RESPONSABLE ASSIRE A.ASSIRE
 
+import aster_core
 import aster
 import string, os, time, sys, UserList, types
 import numpy as NP
@@ -444,8 +445,8 @@ class PARTITION:
     self.OPTIONS        = { 'NB_PART'     : '',
                             'ALGO'        : '',
                             'INFO'        : '',
-                            'rep_metis'   : aster.repout(),
-                            'exe_metis'   : os.path.join(aster.repout(), 'pmetis'),
+                            'rep_metis'   : aster_core.get_option('repout'),
+                            'exe_metis'   : os.path.join(aster_core.get_option('repout'), 'pmetis'),
                             'fichier_in'  : 'fort.66',
                             'fichier_out' : 'fort.68',
                             'elimine_bords': 'OUI',
@@ -510,7 +511,7 @@ class PARTITION:
     self.t00 =  time.clock()
 
     if METHODE:
-      self.OPTIONS['exe_metis'] = os.path.join(aster.repout(), METHODE.lower())
+      self.OPTIONS['exe_metis'] = os.path.join(aster_core.get_option('repout'), METHODE.lower())
     elif LOGICIEL:
       self.OPTIONS['exe_metis'] = LOGICIEL
 

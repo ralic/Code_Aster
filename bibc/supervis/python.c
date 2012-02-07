@@ -1,9 +1,9 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF python supervis  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF python supervis  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS */
 /* RESPONSABLE LEFEBVRE J-P.LEFEBVRE */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -40,6 +40,7 @@
 
 extern DL_EXPORT(int) Py_Main();
 extern void initaster();
+extern void initaster_core();
 extern void initaster_fonctions();
 extern void initmed_fonctions();
 
@@ -65,6 +66,7 @@ main(argc, argv)
     }
     atexit(terminate);
 #endif
+    PyImport_AppendInittab("aster_core",initaster_core);
     PyImport_AppendInittab("aster",initaster);
 
     /* Module définissant des opérations sur les objets fonction_sdaster */

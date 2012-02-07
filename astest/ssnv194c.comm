@@ -1,27 +1,27 @@
-# MODIF  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE : TRACTION SUR UN POLYCRISTAL A 10 GRAINS, AVEC SIMU_POINT_MAT
 # ssnv194c.para = tps_job 150 mem_job 60Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE PROIX J-M.PROIX
 
 DEBUT(CODE=_F(NOM='SSNV194C',
-              NIV_PUB_WEB='INTERNET',));
+NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 
 TFIN = 0.005;
@@ -65,17 +65,17 @@ COMPORT=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER,
 
 
 COMPORP=DEFI_COMPOR(POLYCRISTAL=(
-                        _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(-150.646,33.864,55.646,),),   
-                        _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(-137.138,41.5917,142.138,),), 
+                        _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(-150.646,33.864,55.646,),),
+                        _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(-137.138,41.5917,142.138,),),
                         _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(-166.271,35.46958,171.271,),),
-                        _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(-77.676,15.61819,154.676,),), 
-                        _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(-78.6463,33.864,155.646,),),  
-                        _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(-65.1378,41.5917,142.138,),), 
-                        _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(-94.2711,35.46958,71.271,),), 
+                        _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(-77.676,15.61819,154.676,),),
+                        _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(-78.6463,33.864,155.646,),),
+                        _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(-65.1378,41.5917,142.138,),),
+                        _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(-94.2711,35.46958,71.271,),),
                         _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(-5.67599,15.61819,154.676,),),
-                        _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(-6.64634,33.864,155.646,),),  
+                        _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(-6.64634,33.864,155.646,),),
                         _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(6.86224,41.5917,142.138,),),
-                        ),  
+                        ),
                     LOCALISATION='BETA',DL=0.,DA=0.,
                     );
 
@@ -93,10 +93,10 @@ DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST),
                               _F(EVENEMENT='DELTA_GRANDEUR',
                                  VALE_REF=2.e-5,
                                  NOM_CHAM='VARI_ELGA',
-                                 NOM_CMP ='V3',  
+                                 NOM_CMP ='V3',
                                  SUBD_NIVEAU=10),
                          ))
-                         
+
 SOLNL=SIMU_POINT_MAT(INFO=1,
                    COMP_INCR=_F(
                                 RELATION='POLYCRISTAL',
@@ -111,36 +111,36 @@ SOLNL=SIMU_POINT_MAT(INFO=1,
                              ),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=50,#RESI_GLOB_RELA=1.E-4
                                      ),
-                   MATER      = ACIER,  
-                   
+                   MATER      = ACIER,
+
                    FORMAT_TABLE='CMP_COLONNE',
-                   
+
                    NB_VARI_TABLE=6,
-                   
+
                    INCREMENT=_F(LIST_INST=DEFLIST1),
                    ARCHIVAGE=_F(LIST_INST=LINST),
                    EPSI_IMPOSE=_F(EPZZ=EPSZZ)
-                        );  
-                                              
+                        );
+
 
 IMPR_TABLE(TABLE=SOLNL)
 
 # comparaison a la modelisation A - agregat 10 grains
 TEST_TABLE(TABLE=SOLNL, FILTRE=_F(NOM_PARA='INST',VALE=TFIN),PRECISION=0.09,
            NOM_PARA='SIZZ', VALE=2.79777E+02, REFERENCE='AUTRE_ASTER',)
-           
+
 TEST_TABLE(TABLE=SOLNL, FILTRE=_F(NOM_PARA='INST',VALE=TFIN),PRECISION=0.06,
            NOM_PARA='V3', VALE=3.07316E-03, REFERENCE='AUTRE_ASTER',)
-           
+
 # non regression
 TEST_TABLE(TABLE=SOLNL, FILTRE=_F(NOM_PARA='INST',VALE=TFIN),
            NOM_PARA='SIZZ', VALE=3.011351E+02, REFERENCE='NON_REGRESSION',)
-           
+
 TEST_TABLE(TABLE=SOLNL, FILTRE=_F(NOM_PARA='INST',VALE=TFIN),
            NOM_PARA='V3', VALE=2.926067E-03 , REFERENCE='NON_REGRESSION',)
 
 
-# test de FORMAT_TABLE='CMP_LIGNE'           
+# test de FORMAT_TABLE='CMP_LIGNE'
 
 SOLNL2=SIMU_POINT_MAT(INFO=1,
                    COMP_INCR=_F(
@@ -156,17 +156,17 @@ SOLNL2=SIMU_POINT_MAT(INFO=1,
                              ),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=50,#RESI_GLOB_RELA=1.E-4
                                      ),
-                   MATER      = ACIER,  
-                   
+                   MATER      = ACIER,
+
                    FORMAT_TABLE='CMP_LIGNE',
-                   
+
                    NB_VARI_TABLE=6,
-                   
+
                    INCREMENT=_F(LIST_INST=DEFLIST1),
                    ARCHIVAGE=_F(LIST_INST=LINST),
                    EPSI_IMPOSE=_F(EPZZ=EPSZZ)
-                        );  
-                                              
+                        );
+
 
 IMPR_TABLE(TABLE=SOLNL2)
 
@@ -176,13 +176,13 @@ TEST_TABLE(TABLE=SOLNL2, FILTRE=(
                                 _F(NOM_PARA='CMP',VALE_K='SIZZ'),
                                 ),
            NOM_PARA='VALEUR', PRECISION=0.09,VALE=2.79777E+02, REFERENCE='AUTRE_ASTER',)
-           
+
 TEST_TABLE(TABLE=SOLNL2, FILTRE=(
                                 _F(NOM_PARA='INST',VALE=TFIN),
                                 _F(NOM_PARA='CMP',VALE_K='V3'),
                                 ),
            NOM_PARA='VALEUR', PRECISION=0.06,VALE=3.07316E-03, REFERENCE='AUTRE_ASTER',)
-           
+
 # non regression
 
 TEST_TABLE(TABLE=SOLNL2, FILTRE=(
@@ -190,13 +190,13 @@ TEST_TABLE(TABLE=SOLNL2, FILTRE=(
                                 _F(NOM_PARA='CMP',VALE_K='SIZZ'),
                                 ),
           NOM_PARA='VALEUR', VALE=3.011351E+02, REFERENCE='NON_REGRESSION')
-           
+
 TEST_TABLE(TABLE=SOLNL2, FILTRE=(
                                 _F(NOM_PARA='INST',VALE=TFIN),
                                 _F(NOM_PARA='CMP',VALE_K='V3'),
                                 ),
            NOM_PARA='VALEUR', VALE=2.926067E-03 , REFERENCE='NON_REGRESSION',)
-           
+
 TBEPZZ=CALC_TABLE(TABLE = SOLNL2,
                ACTION =_F(OPERATION='FILTRE',
                           NOM_PARA='CMP',CRIT_COMP='EQ',VALE_K='EPZZ'))
@@ -226,8 +226,8 @@ IMPR_FONCTION(
                         FONC_Y=FSIZZ),
                         ),
             );
-            
+
 FIN()
-           
+
 
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE SECHAGE EN 3D
 # hsna100b.para = tps_job 130 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -27,7 +27,7 @@
 # POINT 6 = GM66
 # POINT 7 = GM68
 
-DEBUT( CODE=_F( NOM = 'HSNA100B',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='HSNA100B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 PRE_GMSH () ;
 MAIL=LIRE_MAILLAGE(FORMAT='ASTER',
                          UNITE=20,
@@ -252,7 +252,7 @@ RESUSECH=THER_NON_LINE(          MODELE=MOTH,
                               COMP_THER_NL=_F( RELATION = 'SECH_GRANGER',
                                             TOUT = 'OUI',            ),
                             EVOL_THER_SECH=RESUTHER,
-                            
+
                              TITRE=( ' CAS TEST &CODE',
                                      '&RL COMMANDE &COMMANDE', )
                          )
@@ -270,7 +270,7 @@ RESUSECH=THER_NON_LINE(reuse=RESUSECH,          MODELE=MOTH,
                               COMP_THER_NL=_F( RELATION = 'SECH_GRANGER',
                                             TOUT = 'OUI',            ),
                             EVOL_THER_SECH=RESUTHER,
-                            
+
                              TITRE=( ' CAS TEST &CODE',
                                      '&RL COMMANDE &COMMANDE', )
                          )

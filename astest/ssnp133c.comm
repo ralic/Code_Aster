@@ -1,25 +1,25 @@
-# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE TEST DES ELEMENTS D'INTERFACE SUR UNE PLAQUE TROUEE
 # ssnp133c.para = tps_job 150 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F( NOM = 'SSNP133C',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT = 'OUI')
+DEBUT(CODE=_F(NOM='SSNP133C',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='OUI',DEBUG=_F(SDVERI='OUI'))
 
 # NB DE PAS DE TEMPS DE CALCUL ET NOMBRE DE PAS DE TEMPS ARCHIVE
 tfin=149
@@ -39,7 +39,7 @@ Sc = 2.E5
 
 MA_0 = LIRE_MAILLAGE(FORMAT='MED')
 
-MA = CREA_MAILLAGE(MAILLAGE  = MA_0, LINE_QUAD = _F(TOUT='OUI')) 
+MA = CREA_MAILLAGE(MAILLAGE  = MA_0, LINE_QUAD = _F(TOUT='OUI'))
 
 MA = DEFI_GROUP(reuse = MA,
        MAILLAGE = MA,
@@ -53,7 +53,7 @@ MA = DEFI_GROUP(reuse = MA,
        CREA_GROUP_NO = (
           _F(NOM = 'P_RIG',    GROUP_MA = 'G_0D_1'),
           _F(GROUP_MA = 'FACE_SUP'),
-          _F(GROUP_MA = 'JOINT'),          
+          _F(GROUP_MA = 'JOINT'),
           _F(NOM = 'SYME_BD',GROUP_MA = 'G_1D_56'),
           _F(NOM = 'SYME_BG',GROUP_MA = 'G_1D_57'),
           _F(NOM = 'SYMETRIE',UNION   = ('SYME_BD', 'SYME_BG')),
@@ -61,7 +61,7 @@ MA = DEFI_GROUP(reuse = MA,
        )
 
 
-# RENUMEROTATION LOCALE DES ELEMENTS D'INTERFACE       
+# RENUMEROTATION LOCALE DES ELEMENTS D'INTERFACE
 MA=MODI_MAILLAGE(reuse =MA,
                    MAILLAGE=MA,
                    ORIE_FISSURE=_F(GROUP_MA='JOINT'),
@@ -82,7 +82,7 @@ MO = AFFE_MODELE(
            MODELISATION = 'PLAN_INTERFACE'),
         ), )
 
-#  REPERE LOCAL DES ELEMENTS D'INTERFACE       
+#  REPERE LOCAL DES ELEMENTS D'INTERFACE
 ORIEN_FI=AFFE_CARA_ELEM(MODELE=MO,
                      MASSIF=(
                              _F(GROUP_MA='JOINT',ANGL_REP=(90., 0. ,0.)),
@@ -104,7 +104,7 @@ BETON = DEFI_MATERIAU(
                                     PENA_LAGR      =100.0,
                                          ),
                          )
-        
+
 CHMAT = AFFE_MATERIAU(
           MAILLAGE = MA,
           AFFE = _F(
@@ -113,14 +113,14 @@ CHMAT = AFFE_MATERIAU(
           ))
 
 #--------------------------------------------------------------
-# DEFINITION DES CHARGEMENTS 
+# DEFINITION DES CHARGEMENTS
 #--------------------------------------------------------------
 
 # ON BLOQUE LES MOUVEMENTS DE CORPS RIGIDE DS LA DIRECTION X AU POINT P_RIG
 RIGIDE = AFFE_CHAR_MECA(
   MODELE   = MO,
   DDL_IMPO = _F(GROUP_NO='P_RIG', DX = 0)
-  ) 
+  )
 
 
 # ON IMPOSE QUE LE PLAN DE SYMETRIE PASSE PAR LA FACE INFERIEURE DES ELEMENTS D'INTERFACE
@@ -136,7 +136,7 @@ SYMETRIE = AFFE_CHAR_CINE(
       DY=0.0,
       ),
     ),  )
-    
+
 # EFFORT IMPOSE SUR LA SURFACE SUPERIEURE DE LA PLAQUE
 TRACTION = AFFE_CHAR_MECA(
   MODELE = MO,
@@ -147,15 +147,15 @@ TRACTION = AFFE_CHAR_MECA(
 #--------------------------------------------------------------
 # REALISATION DU CALCUL
 #--------------------------------------------------------------
-  
+
 INSTANTS = DEFI_LIST_REEL(
                           DEBUT = 0.,
-                          INTERVALLE = (_F(JUSQU_A =  tfin, NOMBRE = nbpas), ), 
+                          INTERVALLE = (_F(JUSQU_A =  tfin, NOMBRE = nbpas), ),
                           )
 
 INS_ARCH = DEFI_LIST_REEL(
                           DEBUT = 0.,
-                          INTERVALLE = (_F(JUSQU_A =  tfin, NOMBRE = nbpas_arch), ), 
+                          INTERVALLE = (_F(JUSQU_A =  tfin, NOMBRE = nbpas_arch), ),
                           )
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INSTANTS ),
@@ -174,7 +174,7 @@ EVOL = STAT_NON_LINE(INFO=1,
   EXCIT = (
     _F(CHARGE = RIGIDE),
     _F(CHARGE = SYMETRIE),
-    _F(CHARGE = TRACTION, 
+    _F(CHARGE = TRACTION,
        TYPE_CHARGE = 'FIXE_PILO',
       )),
   COMP_INCR = (
@@ -204,7 +204,7 @@ EVOL = STAT_NON_LINE(INFO=1,
   ARCHIVAGE = _F(
     LIST_INST      = INS_ARCH
     )
-  ) 
+  )
 
 #--------------------------------------------------------------
 # POST-TRAITEMENT
@@ -223,7 +223,7 @@ FORCE = POST_RELEVE_T(
                                   RESULTAT   =  EVOL,
                                   NOM_CHAM   = 'FORC_NODA',
                                   GROUP_NO   = 'FACE_SUP',
-                                  
+
                                  ),
                      )
 
@@ -240,7 +240,7 @@ TAB_U = POST_RELEVE_T(
 
 UY = RECU_FONCTION ( TABLE  = TAB_U,
                      PARA_X = 'INST',
-                     PARA_Y = 'DY' 
+                     PARA_Y = 'DY'
                    )
 
 FY = RECU_FONCTION ( TABLE  = FORCE,
@@ -310,8 +310,8 @@ IMPR_FONCTION(
                        )
              )
 
-IMPR_TABLE(TABLE=TAB_U)             
-IMPR_TABLE(TABLE=FORCE)             
+IMPR_TABLE(TABLE=TAB_U)
+IMPR_TABLE(TABLE=FORCE)
 
 FIN()
 

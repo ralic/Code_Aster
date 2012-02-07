@@ -1,4 +1,4 @@
-# MODIF  DATE 30/01/2012   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185g.para = tps_job 310 mem_job 1024Mo mem_aster 70 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -19,8 +19,13 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='SSNV185G',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='SSNV185G',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
+      IGNORE_ALARM=('CALCULEL4_9'),DEBUG=_F(SDVERI='OUI'))
 
+
+# <CALCULEL4_9> : POST_K1_K2_K3 / MACR_LIGN_COUP emet cette alarme pour
+# signaler une imprecision pour les ddls E1X, E1Y, E1Z, ..., E4Z
+# mais ce n'est pas grave car ces ddls ne servent pas au calcul de K1,K2,K3
 # MODELISATION G : X-FEM FISSURE NON-COINCIDENTE PUR - COMPRESSION (FACE SUP)
 
 # a : profondeur de la fissure
@@ -83,7 +88,7 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
 
 
 CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
-                      FORMULATION    = 'XFEM',                     
+                      FORMULATION    = 'XFEM',
                       REAC_GEOM      = 'SANS',
                       ZONE=(
                             _F(
@@ -91,7 +96,7 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                                ALGO_LAGR    = 'NON',
                                INTEGRATION  = 'GAUSS',
                                CONTACT_INIT = 'OUI',
-                             ), 
+                             ),
                          ),
                    );
 
@@ -161,7 +166,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    EXCIT=(_F(CHARGE=CHXFEM,),
                           _F(CHARGE=CH1,),
                           _F(CHARGE=CH2,),),
-                   CONTACT  =CTXFEM,       
+                   CONTACT  =CTXFEM,
                    COMP_ELAS=_F(RELATION='ELAS',
                                 GROUP_MA='VOL',),
                    INCREMENT=_F(LIST_INST=L_INS1,
@@ -320,7 +325,7 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
 RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
                         MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT1,
-                        
+
                         INFO          = 2)
 
 FIN();

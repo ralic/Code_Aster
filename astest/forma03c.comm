@@ -1,28 +1,28 @@
-# MODIF  DATE 23/01/2012   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # RESPONSABLE ABBAS M.ABBAS
 # TITRE ENONCE FORMATION PLAQUE TROUEE EN TRACTION EN PLASTICITE - CHARGE LIMITE
 # forma03c.para = tps_job 120 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='FORMA03C',
               NIV_PUB_WEB='INTERNET',
-              VISU_EFICAS='OUI',),);
+VISU_EFICAS='OUI',),DEBUG=_F(SDVERI='OUI'))
 
 # LECTURE DU MAILLAGE
 MAIL=LIRE_MAILLAGE(FORMAT='MED',);
@@ -30,7 +30,7 @@ MAIL=LIRE_MAILLAGE(FORMAT='MED',);
 MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
                    ORIE_PEAU_2D=_F(GROUP_MA='haut',),);
-                   
+
 # AFFECTATION DU MODELE (CONTRAINTES PLANES)
 MODE=AFFE_MODELE(MAILLAGE=MAIL,
                  AFFE=_F(TOUT='OUI',
@@ -48,8 +48,8 @@ IMPR_FONCTION(FORMAT='XMGRACE',
               TITRE='Courbe de traction',
               LEGENDE_X='Deformation',
               LEGENDE_Y='Contrainte (MPa)',);
-              
-              
+
+
 # DEFINITION DU MATERIAU
 ACIER =DEFI_MATERIAU(ELAS=_F(E=200000.0,
                          NU=0.3,),
@@ -66,7 +66,7 @@ CHSYME=AFFE_CHAR_CINE(MODELE=MODE,
                                  _F(GROUP_MA='gauche',
                                  DX=0.0,),),
                                 );
-                                
+
 # CHARGEMENT EN FORCE
 CHFORC=AFFE_CHAR_MECA(MODELE=MODE,
                       FORCE_CONTOUR=_F(GROUP_MA='haut',
@@ -76,9 +76,9 @@ CHFORC=AFFE_CHAR_MECA(MODELE=MODE,
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                            1000.0,1000.0,
                            ),);
-                           
 
-    
+
+
 ########################################################################
 #
 # PREMIER CALCUL : RECHERCHE MANUELLE DE LA CHARGE LIMITE
@@ -96,7 +96,7 @@ DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST,),
                         ECHEC=_F(EVENEMENT='ERREUR',
                                  ACTION='DECOUPE',),)
 
-# CALCUL                                                    
+# CALCUL
 RESUNL=STAT_NON_LINE(MODELE=MODE,
                      CHAM_MATER=CHMATE,
                      EXCIT=(_F(CHARGE=CHSYME,),
@@ -105,7 +105,7 @@ RESUNL=STAT_NON_LINE(MODELE=MODE,
                      COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',),
                      INCREMENT=_F(LIST_INST=DEFLIST,
                                   INST_FIN=TFIN,
-                                  ),            
+                                  ),
                      NEWTON=_F(REAC_ITER=1,),
                      );
 
@@ -123,16 +123,16 @@ RESUNL=CALC_ELEM(reuse =RESUNL,
 RESUNL=CALC_NO(reuse =RESUNL,
                RESULTAT=RESUNL,
                OPTION=('SIGM_NOEU',),);
-          
+
 # INTERPOLATION DES VARIABLES INTERNES AUX NOEUDS
 RESUNL=CALC_ELEM(reuse =RESUNL,
                  RESULTAT=RESUNL,
                  OPTION=('VARI_ELNO'),);
-                              
+
 RESUNL=CALC_NO(reuse =RESUNL,
                RESULTAT=RESUNL,
                OPTION='VARI_NOEU',);
- 
+
 ########################################################################
 #
 # IMPRESSION DES RESULTATS
@@ -159,7 +159,7 @@ DEFLIST2 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST2,),
                         ECHEC=_F(EVENEMENT='ERREUR',
                                  ACTION='DECOUPE',),)
 
-# CALCUL 
+# CALCUL
 
 RESUPI=STAT_NON_LINE(MODELE=MODE,
                      CHAM_MATER=CHMATE,
@@ -191,12 +191,12 @@ RESUPI=CALC_ELEM(reuse =RESUPI,
 RESUPI=CALC_NO(reuse =RESUPI,
                RESULTAT=RESUPI,
                OPTION=('SIGM_NOEU',),);
-          
+
 # INTERPOLATION DES VARIABLES INTERNES AUX NOEUDS
 RESUPI=CALC_ELEM(reuse =RESUPI,
                  RESULTAT=RESUPI,
                  OPTION=('VARI_ELNO'),);
-                              
+
 RESUPI=CALC_NO(reuse =RESUPI,
                RESULTAT=RESUPI,
                OPTION='VARI_NOEU',);
@@ -233,7 +233,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',
 IMPR_RESU(FORMAT='MED',
           RESU=_F(RESULTAT=RESUPI,),);
 
-# TESTS - CALCUL SANS PILOTAGE       
+# TESTS - CALCUL SANS PILOTAGE
 TEST_RESU(RESU=_F(RESULTAT=RESUNL,
                   INST=TFIN,
                   NOM_CHAM='SIGM_NOEU',
@@ -242,7 +242,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESUNL,
                   VALE=243.04100195057,
                   PRECISION=1E-8,
                   REFERENCE='NON_REGRESSION',),);
-                  
+
 TEST_RESU(RESU=_F(RESULTAT=RESUNL,
                   INST=TFIN,
                   NOM_CHAM='SIGM_NOEU',
@@ -251,8 +251,8 @@ TEST_RESU(RESU=_F(RESULTAT=RESUNL,
                   VALE=243.,
                   PRECISION=0.0003,
                   REFERENCE='ANALYTIQUE',),);
-                                    
-# TESTS - CALCUL AVEC PILOTAGE  
+
+# TESTS - CALCUL AVEC PILOTAGE
 TEST_RESU(RESU=_F(RESULTAT=RESUPI,
                   INST=TFINPI,
                   NOM_CHAM='SIGM_NOEU',
@@ -261,7 +261,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESUPI,
                   VALE=243.,
                   PRECISION=0.003,
                   REFERENCE='ANALYTIQUE',),);
-   
+
 TEST_RESU(RESU=_F(RESULTAT=RESUPI,
                   INST=TFINPI,
                   NOM_CHAM='SIGM_NOEU',
@@ -278,20 +278,20 @@ TEST_RESU(RESU=_F(RESULTAT=RESUPI,
                   GROUP_NO='G',
                   VALE=243.55023561961,
                   PRECISION=1E-8,
-                  REFERENCE='NON_REGRESSION',),);  
-                    
+                  REFERENCE='NON_REGRESSION',),);
+
 TEST_FONCTION(VALEUR=_F(FONCTION=ETA_PILO,
                         VALE_PARA=TFINPI,
                         VALE_REFE=243.,
                         PRECISION=0.003,
                         REFERENCE='ANALYTIQUE',
                         ),);
-                                                       
+
 TEST_FONCTION(VALEUR=_F(FONCTION=ETA_PILO,
                         VALE_PARA=TFINPI,
                         VALE_REFE=243.51621,
                         PRECISION=1E-8,
                         REFERENCE='NON_REGRESSION',
                         ),);
-          
+
 FIN();

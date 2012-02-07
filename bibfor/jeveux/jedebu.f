@@ -1,9 +1,9 @@
       SUBROUTINE JEDEBU(NBFI, MXZON, IDB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -115,10 +115,9 @@ C ----------------------------------------------------------------------
       COMMON /IACCED/  IACCE(1)
       COMMON /JIACCE/  JIACCE(N),NBACCE(2*N)
 C --------------------------------- ------------------------------------
-      INTEGER          MXLICI , IPREM  , INIT
+      INTEGER          MXLICI , IPREM  , INIT,    IRET
       INTEGER          ISPBEM , LBISEM , LOISEM , LOLSEM
       INTEGER          LOR8EM , LOC8EM , ISNNEM , IRT
-      REAL*8           MAXBAS
       PARAMETER      ( MXLICI = 67 )
       CHARACTER *(MXLICI) CLICIT
       DATA CLICIT/' ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.$&_abcdefghijkl
@@ -127,8 +126,8 @@ C DEB ------------------------------------------------------------------
 C
 C -----------------  ENVIRONNEMENT MACHINE -----------------------------
       LFIC = LOFIEM()
-      VAL = MAXBAS(-1.0D0)
-      IF (VAL .LE. 0 ) THEN
+      CALL GTOPTR('maxbas', VAL, IRET)
+      IF (VAL .LE. 0 .OR. IRET .NE. 0) THEN
          MFIC = MOFIEM()
       ELSE
          MFIC = NINT(VAL)*1024

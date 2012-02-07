@@ -1,4 +1,4 @@
-# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE BIBLIO_35  FISSURE RADIALE INTERNE DANS UN CYLINDRE EPAIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -9,7 +9,7 @@
 #   SOUS PRESSION ET CHARGEMENT THERMIQUE EQUIVALENT A L'AUTOFRETTAGE
 #
 
-DEBUT( CODE=_F( NOM = 'HPLP310A',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='HPLP310A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE(FORMAT='MED',)
 
@@ -106,7 +106,7 @@ CHCONT = DEFI_CONTACT(MODELE      = MO,
                         GROUP_MA_ESCL = 'LPOP8S',
                              ),
                       )
-                      
+
 
 CH10=AFFE_CHAR_MECA(   MODELE=MO,
               PRES_REP=_F(  GROUP_MA = 'L_EA',   PRES = -1.)
@@ -170,7 +170,7 @@ CHAMDEP0=STAT_NON_LINE(MODELE=MO,
                        EXCIT=(_F( CHARGE = CH10,
                                  FONC_MULT=RAMPE),
                               _F( CHARGE = CL)),
-                       CONTACT  =CHCONT,       
+                       CONTACT  =CHCONT,
                        COMP_ELAS=_F(RELATION = 'ELAS'),
                        NEWTON=_F(MATRICE = 'ELASTIQUE'),
                        INCREMENT=_F(LIST_INST = L_INST,),
@@ -178,7 +178,7 @@ CHAMDEP0=STAT_NON_LINE(MODELE=MO,
                        CONVERGENCE=_F(
                 ITER_GLOB_MAXI = 20),
               )
-              
+
 FOND=DEFI_FOND_FISS(    MAILLAGE=MA,
                          FOND_FISS=_F( GROUP_NO = ('P0',)),
                          SYME='OUI',
@@ -590,7 +590,7 @@ TEST_TABLE(       TABLE=GK2_C,
                       PRECISION=0.045    )
 
 
-                      
+
 # ALPHA = 0.335
 # ------------
 

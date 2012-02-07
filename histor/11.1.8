@@ -1,0 +1,1899 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boyere       BOYERE Emmanuel        DATE 02/06/2012 - 04:39:06
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017054 DU 2011-06-01 16:55:13
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : Phimeca
+TITRE
+    Evolution combinaisons de COMB_SISM_MODAL
+FONCTIONNALITE
+   Objectif :
+   ##########
+   Les réflexions qui ont suivi le traitement de la fiche 15710 à propos de la prise en
+   compte de la correction statique dans COMB_SISM_MODAL ont conduit à revoir l'importance de
+   l'influence des corrélations entre les réponses quasi-statiques des modes de structure
+   dans le calcul de la réponse globale de la structure par la méthode spectrale.
+   Des évolutions potentielles pour COMB_SISM_MODAL ont alors été identifiées.
+   Elles se basent notamment sur les propositions de la NRC et en particulier sur une des
+   méthodes préconisées pour tenir compte du phénomène : la méthode dite de GUPTA.
+   Elle a été programmée dans COMB_SISM_MODAL.
+   
+   Syntaxe :
+   #########
+   On ajoute une méthode à COMB_SISM_MODAL sous le mot-clef facteur COMB_MODE, ainsi que les
+   deux fréquences f1 et f2 qui permettent de paramétrer la méthode.
+   
+   COMB_SISM_MODAL(COMB_MODE=_F(TYPE='GUPTA', FREQ_1=f1, FREQ_2=f2) ...)
+   
+   
+   Validation :
+   ############
+   cas test élémentaire : simple poutre verticale montée sur un ressort soumise à un séisme
+   
+   
+   Documentation :
+   ##############
+   
+   [V2.02.147] SDLL147
+   [U4.84.01] Opérateur COMB_SISM_MODAL
+   [R4.05.03] Réponse sismique par méthode spectrale
+   
+   Développement:
+   ##############
+   
+   - CAPY :
+   
+   On modifie comb_sism_modal.capy pour ajouter la valeur GUPTA au mot-clé COMB_MODE. On
+   rajoute aussi une condition : si GUPTA est renseigne, il faut obligatoirement renseigner
+   FREQ_1 et FREQ_2.
+   
+   
+   - FORTRAN : 
+   
+   Les appels aux routines impactées sont hiérarchisés de la manière suivante :
+   
+   OP0109 => ASCALC => ASCORM
+                    => ASTRON 
+                    => ASSACE
+   		 
+   .OP0109.
+   --------
+   On modifie l'op0109 pour récupérer les valeurs des fréquences FREQ_1 et FREQ_2 dans le
+   fichier de commandes si GUPTA est utilise. 
+   De plus, le calcul s'arrête en erreur fatale si GUPTA est utilisé avec MULTI-APPUI. 
+   
+   .ASCORM.
+   --------
+   C'est la routine ou sont implémentées toutes les méthodes de combinaison des réponses
+   modales (CQC, SRSS, ABS, DSC et DPC). La méthode GUPTA est donc implémentée ici. 
+   Si GUPTA : 
+   .CALCUL DU FACTEUR DE REPONSE RIGIDE, ALPHA, DU MODE I
+   .CALCUL DE LA REPONSE, REPMO1, DU MODE I AVEC ASCARM.f
+   .CALCUL DES PARTIES RIGIDE ET PERIODIQUE DE LA REPONDE DU MODE I A PARTIR DE REPMO1 ET ALPHA
+   .SOMME DES VALEURS ABSOLUES DES REPONSES RIGIDES MODALES : RECMOR
+   .COMBINAISON QUADRATIQUE CQC DES REPONSES MODALES DYNAMIQUES : RECMOP
+   
+   Désormais, on récupère deux vecteurs en sortie de cette routine : RECMOR et RECMOP. 
+   Si la méthode n'est pas GUPTA, RECMOR est un vecteur nul. 
+   
+   .ASTRON.
+   -------- 
+   Cette routine sert a calculer les pseudo-modes. 
+   MONO_APPUI : on somme les pseudo-modes avec RECMOR.
+   MULTI_APPUI : on somme le carre des pseudo-modes avec RECMOP.
+   
+   .ASSACE.
+   --------
+   Cette routine sert a déterminer les accélérations. Concrètement on ne change rien ici. 
+   On recombine juste, pour le MONO_APPUI, en début de routine, partie quasi-statique,
+   RECMOR, et dynamique, RECMOP. 
+   Pour le MUTLI_APPUI on utilise directement RECMOP. 
+   On récupère alors un seul vecteur en sortie, RECMOD, vecteur des réponses modales combinées .
+   
+   .ASCALC.
+   --------
+   C'est la routine qui appel ASCORM, ASSACE et ASTRON. L'ordre des appels a ASSACE et a
+   ASTRON est inverse de façon à pouvoir sommer les pseudo-modes a RECMOR avant de recombiner
+   partie rigide et périodique. 
+   
+   
+   - PYTHON :
+   
+   On modifie seisme.py pour ajouter l'erreur :
+   32: _(u"""
+    Il n'est pas possible d'utiliser la combinaison GUPTA en MULTI_APPUI.
+   """),
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : u4.84.01, r4.05.03, v2.02.147
+VALIDATION
+    nouveau test SDLL147
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 07/02/2012 - 17:08:59
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018187 DU 2012-01-10 08:20:31
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Revoir la lecture des arguments
+FONCTIONNALITE
+   L'objet de cette fiche est de revoir la lecture des arguments de la ligne de commande de
+   l'exécutable Code_Aster et de permettre la récupération d'une option depuis l'ensemble du
+   code.
+   
+   Aujourd'hui la lecture des arguments est faite partiellement à deux endroits dans le main
+   python (E_SUPERV.py) et en C dans asterm.
+   
+   
+   Séparation des fonctions "Superviseur" des autres
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   
+   - création d'un module Python aster_core pour les fonctions fondamentales (encore plus
+   "noyau" que le superviseur), écrit en C pour définir des fonctions appelables depuis le
+   fortran avec son module purement Python (pour les fonctions dont l'écriture est plus
+   naturelle Python, E_Core.py).
+   
+   - dans astermodule.c, on ne laisse que les fonctions liés au Superviseur du langage de
+   commandes (le découpage pourra aller encore plus loin pour faciliter la lisibilité).
+   
+   - les routines utilitaires (fonctions de conversions tableaux C <> listes ou tuples) sont
+   déplacées dans aster_utils.c.
+   
+   
+   E_SUPERV.py (main python)
+   ~~~~~~~~~~~~~~~~~~~~~~~~~
+   
+       - lecture des arguments :
+         lecture avec optparse (module standard en Python 2.6) + un nouvel objet pour stocker
+   les options lues (CoreOptions).
+         Une fonction de compatibilité permet d'accepter les arguments sous l'ancienne forme
+   "-tpmax 60" en les transformant en "--tpmax=60" tels que optparse les attend.
+   
+         Fonctions d'interrogation : GTOPTI, GTOPTR, GTOPRK (GeT OPTion I/R/K).
+   
+         Exemple : CALL GTOPTK('repout', REP, IRET)
+         Code retour 0 si ok, 4 si l'option n'existe pas ou type de valeur incorrect.
+         Pour GTOPTK, la valeur 1 indique que la chaine a été tronquée à la longueur de la
+   variable fortran.
+   
+         - Suppression d'environ 20 fonctions C qui ne servaient qu'à stocker des options
+   dans une variable globale C pour l'interroger plus tard depuis le fortran.
+           Exemple : dans ib0mai ::
+   
+               -      INTDBG = -1
+               -      IF (ISDBGJ(INTDBG) .EQ. 1) THEN
+               -         IDEBUG = 1
+               -      ELSE
+                         IDEBUG = 0
+               -      ENDIF
+               +      CALL GTOPTI('dbgjeveux', IDEBUG, IRET)
+   
+         - Suppression de asterm.
+   
+         - la fonction utclim est remplacée par rdtmax (dans aster_core) qui travaille
+   maintenant avec des réels (car tpmax est en réel). Elle permet de retrancher du temps à la
+   limite de temps maximum.
+   
+       - ajout d'autres "informations" générales de l'exécution : version, date (de la
+   version), hostname, architecture, system, processor, osrelease...
+         Pour simplifier la programmation en fortran, on crée des valeurs pré-formattées :
+   version=11.1.4, versionD0=11.01.04, versMAJ=11, versMIN=1, versSUB=4, versLabel=unstable.
+   
+       - arguments particuliers ajoutés au JDC : rep_dex, rep_mat, tempsMax. On les supprime.
+   On peut y accéder par : aster_core.get_option('repdex' / 'repmat' / 'tpmax')
+   
+       - on ajoute également un accès à certaines variables de compilation (define) :
+   _USE_MPI, _USE_OPENMP, _USE_64_BITS, LONG_INTEGER_BITS, LONG_INTEGER_MOTS.
+   
+       - on ajoute une option --memory en Mo (--memjeveux étant en Mmots).
+   
+       - création de l'objet JDC
+         enregistrement du JDC et du CoreOptions dans le module aster_core. En même temps, on
+   enregistre les objets nécessaires pour appel depuis le fortran : MessageLog (UTMESS),
+   E_Core. Ce qui permet de ne plus faire d'import de module Python depuis le C (E_Global.py
+   est supprimé).
+   
+   
+   Le message d'aide devient ::
+   
+       Usage: ./aster.exe Python/Execution/E_SUPERV.py [-h|--help] [options]
+   
+       Options:
+         -h, --help          show this help message and exit
+         --commandes=FILE    Code_Aster command file
+         --bibpyt=DIR        path to Code_Aster python source files
+         --memjeveux=MEMORY  maximum size of the memory taken by the execution (in
+                             Mw)
+         --memory=MEMORY     maximum size of the memory taken by the execution (in
+                             MB)
+         --tpmax=TPMAX       limit of the time of the execution (in seconds)
+         --max_base=MAXBASE  limit of the size of the results database
+         --dbgjeveux         maximum size of the memory taken by the execution in Mw
+         --num_job=JOBID     job ID of the current execution
+         --mode=MODE         execution mode (interactive or batch)
+         --interact          as 'python -i' works, it allows to enter commands after
+                             the execution of the command file.
+         --rep_outils=DIR    directory of Code_Aster tools (ex. $ASTER_ROOT/outils)
+         --rep_mat=DIR       directory of materials properties
+         --rep_dex=DIR       directory of external datas (geometrical datas or
+                             properties...)
+         --suivi_batch       force to flush of the output after each line
+         --totalview         required to run Code_Aster through the Totalview
+                             debugger
+         --verif             only check the syntax of the command file is done
+   
+   
+   
+   Fonctions déplacées dans aster_core
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   
+   Dans CALC_MC3COEUR, POST_MAC3COEUR ::
+   
+       -    datg = self.jdc.args.get("rep_dex")
+       +    datg = aster_core.get_option("rep_dex")
+   
+   Dans CALC_ESSAI, DYNA_ISS_VARI, MACR_RECAL ::
+   
+       -    aster.matfpe(-1)
+       +    aster_core.matfpe(-1)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    asrest
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018290 DU 2012-01-25 15:22:12
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    une routine fortran pour masquer (temporairement) une alarme
+FONCTIONNALITE
+   Lors d'appels de routines utilitaires, on peut parfois se placer dans un cas qui conduit à
+   l'émission d'une alarme bien que celle-ci ne soit pas pertinente pour l'utilisateur.
+   
+   On restitue une interface vers l'objet qui gère les messages afin d'accéder aux
+   fonctionnalités disponibles pour les macros : MasquerAlarme / RétablirAlarme.
+   
+   On l'utilise comme cela :
+        * CALL UTALRM('OFF', 'CALCULEL5_7') == MasquerAlarme('CALCULEL5_7')
+        * CALL UTALRM('ON', 'CALCULEL5_7') == RetablirAlarme('CALCULEL5_7')
+   
+   Il est de la responsabilité du développeur de faire suivre tout MasquerAlarme (OFF) d'un
+   RetablirAlarme (ON).
+   Les compteurs sont remis à zéro entre chaque commande.
+   
+   Remarque : on n'a pas retenu le nom ALARM qui est un intrinsèque fortran.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : d6.00.01
+VALIDATION
+    test xc3xa9lxc3xa9mentaire
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018341 DU 2012-02-03 09:25:43
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    [FORUM] Impossible d'ajouter POST_RELEVE_T en 11.1
+FONCTIONNALITE
+   Problème
+   ~~~~~~~~
+   
+   Avec eficas 6.4.0 & et le catalogue 11.1 : on ne peut plus ajouter la commande POST_RELEVE_T.
+   
+   
+   Correction
+   ~~~~~~~~~~
+   
+   L'erreur se produit sur l'évaluation de la condition de bloc 'MOYENNE_ARITH' in OPERATION,
+   alors que le mot-clé OPERATION vaut None (non renseigné).
+   Ce qui est "inattendu", c'est que OPERATION est un mot-clé obligatoire mais il n'y a pas
+   de raison que la condition de bloc soit évaluée *après*.
+   
+   La correction la plus sûre est d'utiliser la fonction au_moins_un(OPERATION, 'MOYENNE_ARITH').
+   
+   Vérifier qu'il n'y a pas d'autres catalogues imprudents.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    eficas
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR fernandes    FERNANDES Roméo       DATE 07/02/2012 - 17:09:00
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018274 DU 2012-01-23 17:07:58
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    En NEW11.1.3, le test ssnl128a a dxc3xa9txc3xa9riorxc3xa9 ses perfs
+FONCTIONNALITE
+   En NEW11.1.3 on a modifié l'intégration des lois de grandissement sous irradiation par un
+   appel explicite de la loi depuis le fichier de commande (et non plus développé en fortran
+   dans le source) : NB choix de réalisation fait suite à RTA.
+   
+   L'appel explicite fait dans le fichier de commande se fait via une formule qui
+   effectivement est très consommatrice de temps CPU (cf remarque sur modèle MAC3COEUR avec
+   l'ajout d'un appel à CALC_FONC_INTERP pour réduire ces temps CPU dans SNL). Par
+   conséquent, il est normal que le temps CPU ait augmenté dans une mesure raisonnable 7s -> 17s.
+   
+   Classement SANS SUITE.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR massin       MASSIN Patrick         DATE 02/07/2012 - 01:00:14
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018289 DU 2012-01-25 15:09:15
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Elements quadratiques X-FEM 2D de fond de fissure
+FONCTIONNALITE
+   Introduction des éléments quadratiques X-FEM pour le traitement des fonds de fissure en
+   ouverture.
+   
+   Incidence Informatique:
+   Dans les catalogues gener_medpl2_xt.cata et gener_medpl2_xht.cata, les modifications sont
+   les suivantes :
+   * Extention des longueurs d'objet jeveux, pour retrouver la même longueur que dans le
+   catalogue gener_medpl2_xh.cata déjà validé en quadratique. Champs impactés :: PAINTER
+   (10->15), PPINTER (4->6), PBASECO (8->12), PCNSETO (18->36)
+   * Rajout de l'objet PPMILTO (22) dans les options CALC_G*,FULL_MECA, ERME_ELEM, XFEM_XPG
+   * Modifications du champ des options CHAR_MECA_PRES_R,CHAR_MECA_PRES_F,  en cohérence avec
+   le champ décrit dans le catalogue de ces options 
+   * Rajout des modifications récentes "FPG1=FPG1" dans la description des éléments
+   * Rajout des sous-éléments TR6 dans l'élélment de référence QU8_XT et QU8_XHT
+   
+   Les routines fortran ont subi de légères retouches, principalement pour permettre des
+   jeveux sur les points milieux, avec des éléments de type xt et xht, en cohérence avec les
+   développements dans les catalogues: te0514.f  te0441.f  te0036.f  te0288.f  te0539.f 
+   te0046.f  te0542.f  te0440.f  te0297.f  te0261.f  te0531.f
+   
+   Validation: restitution des cas-test ssnp138c et d
+   Le cas test "ssnp138d" valide les modifications dans les catalogues pour autoriser les
+   éléments quadratiques 2D X-FEM en D_PLAN. On considère une plaque 2D tractée suivant Y. On
+   teste l'ouverture d'une fissure orientée suivant 3 angles (0,30° et 60°). On calcule les
+   facteurs d'intensité de contraintes (KI, KII) à chaque fond de fissure. Ces facteurs sont
+   comparés aux valeurs analytiques dans les test_resu et de manière exhaustive. 
+   Le "ssnp138d" utilise un maillage en tri6 dont on compare les résultats par rapport
+   à la modélisation "ssnp138c" tri3.
+   On restitue ce cas-test avec des éléments quadratiques de type tri6: les qua8
+   auraient été envisageables pour la restitution mais des petits pivots apparaissent 
+   qui nécessiterait la mise en place d'une éliminitation du type de celle proposée par
+   Maximilien Siavelis.
+   En conclusion, on note que les éléments quadratiques donnent des valeurs plus
+   proches des valeurs analytiques attendues.
+   La documentation v6.03.138 est impactée principalement par la comparaison des résultats des
+   cas tests ssnp138c & ssnp138d.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : v6.03.138
+VALIDATION
+    cas test élements quadratiques - xfem
+NB_JOURS_TRAV  : 20.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016991 DU 2011-05-25 09:09:59
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Rapprochement du traitement du contact-frottant X-FEM petits/grands glissements
+FONCTIONNALITE
+   Dans un souci de clarté, on souhaite uniformiser les 
+   algorithmes de contact X-FEM entre grands et petits 
+   glissements.  En grands glissements, M.Siavelis et 
+   M.Guiton ont développé un algorithme optimal en ce qui 
+   concerne la sélection des arêtes à intégrer dans les 
+   équations de contact et de frottement:
+   1) Pour l'équation de contact, on intégre toutes les 
+   arêtes contactantes. On intégre des non contactantes 
+   uniquement si on trouve un groupe d'arêtes vitales 
+   connectées toutes non contactantes. Dans ce cas, on 
+   intégre une seule d'entre elles, choisie arbitrairement.
+   2) Pour l'équation de frottement, on intègre une arête 
+   par ensemble d'arêtes vitales connectées.
+   
+   On insère un § dans la doc pour expliquer la pertinence 
+   de cet algo. On l'implémente pour le petit glissement 
+   également.
+   
+   Réalisation :
+   -------------
+   
+   On crée un cham_elem XARVI suivant le modèle des champs 
+   de contact X-FEM,
+   contenant trois composantes:
+   - le caractère vital de l'arête au sens LBB (une seule 
+   vitale par groupe d'arêtes connectées),
+   - le numéro du groupe,
+   - le numéro de l'arête dans le groupe.
+   On balaye XARVI après chaque actualisation de contact. 
+   Si on trouve un groupe d'arêtes connectées où la vitale 
+   est non contactante, on vérifie qu'aucune arête du même 
+   groupe est contactante. Si c'est le cas, cette 
+   dernière devient vitale au détriment de l'autre.
+   Ceci permet au passage de nettoyer les te puisque la 
+   sélection est désormais traitée en dehors dans des 
+   routines dédiées.
+   
+   Sources modifiées :
+   -------------------
+   
+   xmele3.f, xmelem.f, xpivit.f (création du champ)
+   nmctcc.f, xmmbca.f, xmarvi.f (actualisation)
+   xmmab3.f, xmmab5.f, xmvef3.f (modif intégration 
+   frottement)
+   xmtbca.f, xtarvi.f (grands glissements)
+   nmelcm.f, nmelcv.f, te0533.f, te0534.f 
+   gener_me_xhc.cata, gener_medpl2_xhc.cata,  
+   gener_mecpl2_xhc.cata
+   char_meca_cont.cata, char_meca_frot.cata, 
+   rigi_cont.cata, rigi_frot.cata (passage du champ calculs 
+   élémentaires) 
+   
+   Validation :
+   ------------
+   Cas tests de contact X-FEM en petits glissements.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    Base cas-test
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017620 DU 2011-09-28 08:58:07
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    X-FEM : bug si fissure sur des elements 2D quadratiques
+FONCTIONNALITE
+   Voir fiche évolution 18289.
+   
+   Incidence Informatique:
+   Dans les catalogues gener_medpl2_xt.cata et gener_medpl2_xht.cata, les modifications sont
+   les suivantes :
+   * Extention des longueurs d'objet jeveux, pour retrouver la même longueur que dans le
+   catalogue gener_medpl2_xh.cata déjà validé en quadratique. Champs impactés :: PAINTER
+   (10->15), PPINTER (4->6), PBASECO (8->12), PCNSETO (18->36)
+   * Rajout de l'objet PPMILTO (22) dans les options CALC_G*,FULL_MECA, ERME_ELEM, XFEM_XPG
+   * Modifications du champ des options CHAR_MECA_PRES_R,CHAR_MECA_PRES_F,  en cohérence avec
+   le champ décrit dans le catalogue de ces options 
+   * Rajout des modifications récentes "FPG1=FPG1" dans la description des éléments
+   * Rajout des sous-éléments TR6 dans l'élélment de référence QU8_XT et QU8_XHT
+   
+   Les routines fortran ont subi de légères retouches, principalement pour permettre des
+   jeveux sur les points milieux, avec des éléments de type xt et xht, en cohérence avec les
+   développements dans les catalogues: te0514.f  te0441.f  te0036.f  te0288.f  te0539.f 
+   te0046.f  te0542.f  te0440.f  te0297.f  te0261.f  te0531.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : v6.03.138
+VALIDATION
+    cas-test
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 02/07/2012 - 03:43:24
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015546 DU 2010-09-15 16:34:20
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    [FORUM] Eclatement du TETRA10 xc3xa0 5 points de Gauss avec MACR_ECLA_PG
+FONCTIONNALITE
+   Problème:
+   ---------
+   Certains schémas d'intégration utilisés par les éléments finis ne sont pas traités dans
+   les fonctionnalités : MACR_ECLA_PG et PROJ_CHAMP / ECLA_PG :
+     * TETRA / FPG5
+     * PYRAM / FPG5
+     * PYRAM / FPG27
+                                                                                            
+                                                                  
+   Cette situation est pénalisante (surtout pour PROJ_CHAMP) car il suffit de quelques
+   pyramides dans le maillage pour etre "coincé".
+                                                                                            
+                                                                  
+   Evolutions :
+   ------------
+   1) On rend posible  TETRA / FPG5 :
+      Le tétraèdre est découpé en 6 et le 5ème point de Gauss est affecté à 2 sous-éléments.
+      Validation : zzzz306c
+                                                                                            
+                                                                  
+   2) On rend posible  PYRAM / FPG5 :
+      La pyramide est découpé en 8 et le 5ème point de Gauss est affecté à 4 sous-éléments.
+      Validation : zzzz306e
+                                                                                            
+                                                                  
+   3) Pour le schéma  PYRAM / FPG27, c'est plus difficile :
+      3.1 : Pour la visualisation (MACR_ECLA_PG):
+        * Les 12 points de Gauss PG16, PG17,... PG27 sont en "dehors" de la pyramide ! (de
+   l'ordre de 10% du diamètre de la maille).
+          Il est impossible de les visualiser "géographiquement" car ils se superposent aux
+   éléments adjacents.
+          On décide de les "oublier" pour la visualisation.
+        * Il reste 15 points de Gauss à l'intérieur de l'élément.
+          Mais comme j'ai du mal à "voir" comment découper une pyrammide en 15 (ou plus)
+   sous-éléments simples,
+          je décide de reprendre le découpage en 8 sous-éléments réalisé pour le schéma FPG5.
+          Les 8 points de Gauss les plus représentatifs de ces 8 sous-éléments sont les PG8,
+   PG9, ..., PG15
+          Il faut alors également "oublier" les points de Gauss PG1, ..., PG7 pour la
+   visualisation.
+          Au total, on ne visualise donc que 8 points de Gauss (sur les 27 du schéma).
+                                                                                            
+                                                                  
+      3.2 : Pour la projection (PROJ_CHAMP / ECLA_PG) :
+        Le principe de la méthode est de transformer le champ à projeter en un champ constant
+   sur les sous-éléments utilisés par MACR_ECLA_PG.
+        D'après ce que l'on a vu plus haut, cela veut dire que seuls les valeurs portées par
+   les points de Gauss PG8, ..., PG15 des pyramides du maillage "1" seront utilisées pour la
+   projection.
+        Si dans le maillage "2", il y a des pyramides à 27 points de Gauss, on ne souhaite
+   pas affecter sur les points de Gauss "extérieurs" une valeur trouvée en dehors de
+   l'élément. En effet, dans le cas d'une frontière (par exemple bi-matériau), on risquerait
+   de récupérer une valeur trans-frontalière.
+        Pour ces points extérieurs, on décide de les "ramener" à l'intérieur de la pyramide
+   en les rapprochant du centre.
+                                                                                            
+                                                                  
+      On voit que PROJ_CHAMP / ECLA_PG est très "limite" pour le schéma PYRAM / FPG27, mais
+   c'est un moindre mal qui permet d'utiliser cette fonctionnalité sur des maillages ayant
+   peu de pyramides (dans les zones de raccord difficile).
+                                                                                            
+                                                                  
+      Validation : zzzz306e
+                                                                                            
+                                                                  
+                                                                                            
+                                                                  
+   Impact_documentaire :
+   ---------------------
+   U4.44.14 : commande MACR_ECLA_PG : citer tous les schémas qui sont traités
+   U4.72.05 : commande PROJ_CAHMP   : dire que le schéma PYRAM / FPG27 est imprécis (=>
+   prudence de l'utilisateur).
+   U7.05.11 : IMPR_RESU / CASTEM    : on dit actuellement qu'ECLA_PG est ne marche qu'avec
+   des HEXA8 en 3D
+   V1.01.306 : validation de PROJ_CHAMP / ECLA_PG
+                                                                                            
+                                                                  
+                                                                                            
+                                                                  
+   Validation :
+   ------------
+   zzzz306c,e
+                                                                                            
+                                                                  
+                                                                                            
+                                                                  
+   Problème de l'alarme CALCULEL5_7 :
+   ---------------------------------
+                                                                                            
+                                                                  
+   La fonctionnalité PROJ_CHAMP / ECLA_PG pour les tétraèdres et les pyramides conduit assez
+   souvent à émettre une alarme injustifiée (CALCULEL5_7)  :
+   !---------------------------------------------------------------------------------!
+   !.<A>.<CALCULEL5_7>...............................................................!
+   !.................................................................................!
+   !.Alarme.utilisateur.:............................................................!
+   !...Vous.utilisez.la.commande.PROJ_CHAMP.ou.un.mot.clé.nécessitant.de."projeter"..!
+   !...des.noeuds.sur.des.mailles.(par.exemple.LIAISON_MAIL).........................!
+   !...L'un.des.noeuds.(N26).du.maillage.(&&PJELC2).a.été.projeté.à..................!
+   !...une.distance.D.non.nulle.significative........................................!
+   !...(D>10%.de.la.taille.de.la.maille.la.plus.proche.(M10).du.maillage.(&&PJELC1)).!
+   !---------------------------------------------------------------------------------!
+                                                                                            
+                                                                  
+   Cette alarme n'est pas exploitable par l'utilisateur car elle cite 2 maillages (&&PJELC1
+   et &&PJELC2) que l'utilisateur ne connait pas.
+   Ce sont des maillages fabriqués en sous-terrain par PROJ_CHAMP dont l'un (&&PJELC1) est
+   formé des sous-éléments obtenus par ECLA_PG.
+                                                                                            
+                                                                  
+   De plus, quand on découpe les tétraèdres et les pyramides, on fait parfois apparaitre des
+   hexaèdres dont les faces QUAD4 peuvent etre très gauches.
+   Lorsque ces éléments volumiques à faces QUAD4, sont redécoupés en TETRA4 (1ère étape
+   géométrique linéaire et "grossière" de PROJ_CHAMP), le découpage entre 2 éléments
+   adjacents peut etre non conforme et certains points de &&PJELC2 se retrouvent "loin" (+ de
+   10%)  de leurs mailles associées.
+   Ce problème est spécifique à l'utilisation ECLA_PG + PROJ_CHAMP ; dans un maillage
+   "normal" les faces quadrangulaires sont assez planes.
+                                                                                            
+                                                                  
+   Ce défaut de PROJ_CHAMP / ECLA_PG est difficilement contournable (sans revoir fortement la
+   programmation de PROJ_CHAMP).
+   Pour ne pas alarmer inutilement l'utilisateur (qui ne peut rien faire pour éviter
+   l'alarme), je propose de "masquer" cette alarme.
+                                                                                            
+                                                                  
+   Une demande d'évolution pour cela a été émise (18290). En attendant, je me contente
+   d'ajouter un IGNORE_ALARME
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.44.14  
+U4.72.05  
+U7.05.11  
+V1.01.306
+VALIDATION
+    zzzz306c,e
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018257 DU 2012-01-20 12:41:26
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    Erreur sdveri pour affe_char_meca/sigm_interne
+FONCTIONNALITE
+   Problème :
+   ----------
+   En mode SDVERI='OUI', on est arreté en erreur fatale quand on utilise :
+   XXX=AFFE_CHAR_MECA(MODELE=MODELE, SIGM_INTERNE=_F(SIGM=CH1,),);
+                                                                                            
+                           
+   Correction :
+   ------------
+   Il faut mettre à jour le catalogue python de la sd_char_meca pour y ajouter une carte
+   facultative :
+       SIINT = Facultatif(sd_carte())
+                                                                                            
+                           
+                                                                                            
+                           
+   Impact documentaire :
+   ---------------------
+   D4.06.04 : ajout de la carte .SIINT
+    
+    
+   Liste des fichiers impactés par la correction de la fiche:  18257
+     sd_char_meca.py
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : d4.06.04
+VALIDATION
+    xc3xa9tude jointe
+NB_JOURS_TRAV  : 0.15
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018259 DU 2012-01-20 14:55:58
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Pb de perfs des calculs xc3xa9lxc3xa9mentaires lixc3xa9 xc3xa0 la structure de donnxc3xa9e MAILLAGE
+FONCTIONNALITE
+   Problème :
+   -----------
+   L'étude jointe compare 2 façons d'affecter les caractétisques élémentaires des éléments de
+   coque :
+                                                                                            
+                                                                                     
+   (A) en utilisant AFFE_CARA_ELEM / COQUE / GROUP_MA=
+   (B) en utilisant AFFE_CARA_ELEM / COQUE / MAILLE=
+                                                                                            
+                                                                                     
+   Dans les 2 cas, il y a autant d'occurrences du mot clé facteur COQUE (1800).
+   Pour (A) chaque GROUP_MA contient 1 maille ; la meme que celle donnée avec (B).
+   Mais il pourrait y en avoir plusieurs, cela ne changerait pas le problème.
+                                                                                            
+                                                                                     
+   On s'aperçoit que ces 2 façons de faire conduisent à des performances très différentes
+   lorsque l'on fait des calculs élémentaires.
+   Par exemple, pour le CALC_ELEM de l'étude (sur calibre5) :
+   (A) * CALC_ELEM                :      38.54 :      18.37 :      56.91 :      57.92 *
+   (B) * CALC_ELEM                :       4.90 :       0.13 :       5.03 :       5.10 *
+                                                                                            
+                                                                                     
+                                                                                            
+                                                                                     
+   Analyse :
+   ----------
+   Le profiling du code montre que le surcout de (A) est du à la routine etenca.f
+   (plus précisément le cout du JELIRA de la ligne 153).
+                                                                                            
+                                                                                     
+   Le problème est un problème de structure de données (sd_carte et sd_maillage).
+   Dans cette étude, la carte consommatrice de temps CPU est la carte carelem.CARCOQUE
+                                                                                            
+                                                                                     
+   Pour la solution (A), on stocke dans la carte le nom des GROUP_MA
+   Pour la solution (B), on stocke dans la carte la liste des mailles dans l'objet .LIMA
+                                                                                            
+                                                                                     
+   L'objet .LIMA est une collection JEVEUX contigue. On peut donc y accéder en faisant
+   seulement 2 JEVEUO dans la routine etenca.f (1 jeveuo pour l'objet et 1 jeveuo pour le
+   point de longueur cumulée : lignes 115 et 116)
+   Dans la sd_maillage, on accède aux mailles d'un GROUP_MA en accédant à l'objet
+   maillage.GROUPEMA.
+   Malheureusement, maillage.GROUPEMA est une collection dispersée (ce qui est très pratique
+   pour la commande DEFI_GROUP : on peut facilement créer et détruire des groupes).
+   Comme .GROUPEMA est une collection dispersée, on ne peut faire autrement qu'appeler
+   JELIRA(LONUTI)/JEVEUO pour chaque GROUP_MA.
+                                                                                            
+                                                                                     
+   Il est donc "normal" que (A) coute plus que (B) : 2*1800 appels à jeveux vs. 2 appels
+                                                                                            
+                                                                                     
+                                                                                            
+                                                                                     
+   Evolution réalisée :
+   --------------------
+   J.P. Lefebvre a étendu la fonctionnalité "JEVEUO(JEXATR" pour que l'on puisse récupérer
+   dans un objet jeveux les longueurs (LONUTI ou LONMAX) des objets d'une collection dispersée.
+   Grace à cette nouvelle fonction, on n'a plus besoin de faire 1 JELIRA par GROUP_MA dans la
+   routine etenca.f
+   (en revanche, comme la collection .GROUPEMA reste dispersée, il faut toujours faire 1
+   JEVEUO par GROUP_MA).
+                                                                                            
+                                                                                     
+   Le gain en temps CPU est spectaculaire. On se contente donc de cette "petite" évolution.
+                                                                                            
+                                                                                     
+   Validation :
+   ------------
+   * Sur l'étude jointe, on observe que grace à la modification d'etenca.f, le temps CPU de
+   CALC_ELEM ne dépend presque plus de la façon d'affecter les caractéristiques élémentaires :
+                                                                                            
+                                                                                     
+   Avant :
+   (A) * CALC_ELEM                :      36.42 :      16.91 :      53.33 :      53.38 *
+   (B) * CALC_ELEM                :       4.74 :       0.12 :       4.86 :       4.92 *
+   Après :
+   (A) * CALC_ELEM                :       5.14 :       0.14 :       5.28 :       5.29 *
+   (B) * CALC_ELEM                :       4.76 :       0.11 :       4.87 :       4.86 *
+                                                                                            
+                                                                                     
+                                                                                            
+                                                                                     
+   Impact documentaire :
+   ---------------------
+   D6.02.01 : Gestion mémoire JEVEUX : décrire les nouvelles possibilités de JEXATR
+    
+    
+   Liste des fichiers impactés par la correction de la fiche:  18259
+     etenca.f  jexatr.f
+     jeveux1.py
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : D4.06.01 D6.00.01
+VALIDATION
+    xc3xa9tude fournie
+NB_JOURS_TRAV  : 2.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018265 DU 2012-01-23 13:37:18
+TYPE anomalie concernant Code_Aster (VERSION 10.6)
+TITRE
+    Calcul de FLUX_ELNO inexact en COQUE thermique
+FONCTIONNALITE
+   Problème:
+   ---------
+   Quand on calcule FLUX_ELNO pour les QUAD4 de la modélisation 'COQUE' du phenomene 'THERMIQUE',
+   La valeur du 4ème noeud des éléments est fausse.
+                                                                                            
+                                                                                          
+   Le problème ne se produit pas toujours.
+   Il se produit au moins sur calibre5 avec la version nodebug pour les versions STA10 et NEW11
+                                                                                            
+                                                                                          
+   Correction :
+   ------------
+   La routine te0109 calcule FLUX_ELGA et FLUX_ELNO pour tous les éléments de coque thermique.
+   Dans cette routine, il y a plusieurs boucles de 1 à 3 (en dur) mais c'est normal : on
+   boucle sur les 3 coordonnées de l'espace ou sur les 3 composantes du flux.
+                                                                                            
+                                                                                          
+   Le problème est que le tableau FLUPG est dimensionné à 9 : 3 PG * 3 CMP
+   alors que la routine peut théoriquement traiter des éléments ayant jusqu'à 9 points de Gauss.
+                                                                                            
+                                                                                          
+   Lorsque l'on corrige la dimension de FLUPG : 9 -> 9*3 le problème disparait.
+   
+   Résultats faux :
+   ----------------
+   Les résultats sont faux si on calcule FLUX_ELGA ou FLUX_ELNO pour tous les éléments de
+   coque thermique (modélisation 'COQUE') sauf pour les triangles à 3 noeuds (et 3 points de
+   Gauss).
+    
+    
+   Liste des fichiers impactés par la correction de la fiche:  18265
+     te0109.f
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 10.0
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 11.0
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    xc3xa9tude jointe
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018299 DU 2012-01-26 13:11:36
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Visualisation des champs de donnxc3xa9es sous Salome
+FONCTIONNALITE
+   Problème :
+   ----------
+   L'utilisateur souhaite 2 évolutions de IMPR_RESU / CONCEPT :
+   1) Faire en sorte que les cartes créées dans le fichier MED aient des valeurs "physiques"
+   (à la place des entiers 1, 2, 3, ...)
+   2) Eviter les "trous" dans la liste des valeurs entières citées ci-dessus : par exemple
+   [1,2,7,8]
+                                                                                            
+                                                                                            
+                      
+   Réponses :
+   ----------                    
+   1) Pour la demande 1), on pourrait imaginer une "exception" pour quelques scalaires
+   (épaisseur des coques, aire de la section des poutres, ...) et imprimer ces scalaires dans
+   des cartes dédiées à chaque scalaire.
+   Mais l'objectif du développement de IMPR_RESU / CONCEPT était de pouvoir visualiser de
+   façon systématique (donc avec peu de développements) TOUTES des cartes des structures de
+   données CARA_ELEM, CHAM_MATER et CHARGE.
+   Dans toutes ces cartes, on trouve en général PLUSIEURS composantes, par exemple,
+   l'épaisseur des coques est dans la meme carte que KAPPA le coefficient de cisaillement et
+   EXCENT l'excentrement.
+   Comment représenter par une seule couleur un triplet de nombres ?
+   On décide donc de ne pas donner suite à cette demande.
+                                                                                            
+                        
+   2) Je fais une évolution dans les routines w039c1.f et w039c2.f pour éviter les "trous"
+   dans la numérotations des valeurs entières.
+                                                                                            
+                       
+   Validation :
+   ------------
+   J'ai vérifié (visuellement) dans le cas test zzzz200c que les trous de la numérotation
+   pour la carte CARA_ELE.CARDISCK ont bien été comblés.
+    
+   Liste des fichiers impactés par la correction de la fiche:  18299
+     w039c1.f  w039c2.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    zzzz200c
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018340 DU 2012-02-02 17:48:27
+TYPE express concernant Code_Aster (VERSION 10.5)
+TITRE
+    plus de tests avec SDVERI='OUI'
+FONCTIONNALITE
+   Problème :
+   ----------
+   Il existe encore beaucoup de tests qui n'utilisent pas le mot clé SDVERI='OUI'.
+                                                                                            
+                           
+   Evolution proposée :
+   --------------------
+   1) Je propose d'ajouter SDVERI='OUI' dans 545 tests
+   2) Dans 180 tests pour lesquels le surcout de la vérification est trop important (plus de
+   5s ou plus de 15% du temps CPU du test), je rajoute SDVERI='NON' et un commentaire pour
+   expliquer pourquoi.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    rien de particulier
+NB_JOURS_TRAV  : 0.7
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR proix        PROIX Jean-Michel      DATE 02/06/2012 - 05:36:52
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018206 DU 2012-01-12 09:27:02
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    En NEW11.1.4, le cas-test ssnd112a s'arrxc3xaate par manque de temps sur Rocks.
+FONCTIONNALITE
+   Probleme :
+   ==========
+   
+   En NEW11.1.4, le cas-test ssnd112a s'arrête par manque de temps sur Rocks.
+   TITRE : EFFET DE ROTATION DE RESEAU SUR UN CUBE MONOCRISTALLIN 
+   Le cas-test a été modifié dans cette version par la fiche 18074 (couverture du fortran).
+   En fait ce problème de temps CPU est du à une mauvaise convergence locale, donc de trop
+   nombreuses subdivisions de pas de temps.
+   
+   Solution :
+   ==========
+   Ce test valide le monocristal en grandes déformations. 
+   3 algorithmes sont disponibles et validés dans ce test :
+   - NEWTON_PERT : c'est celui qui converge le mieux (aussi bien localement que globalement)
+   - NEWTON : la convergence locale est moins bonne que NEWTON_PERT, mais la convergence
+   globale est bonne
+   - RUNGE_KUTTA : nouvel algorithme explicite, un peu lent, mais générique.
+   
+   Ceci permet au test SSND112A de tester les 3 méthodes. Mais il reste un travail
+   d'amélioration de robustesse pour NEWTON et de performance pour RUNGE_KUTTA. Ceci fera
+   l'objet d'une évolution future, en cours dans le projet PERFORM.
+   
+   PS. Au passage j'en profite pour simplifier la routine NMVPRK qui gère RUNGE_KUTTA :
+   - les initialisations propres à certaines lois sont regroupées dans NMRKIN
+   - les post-traitements après intégration sont regroupés dans LCDPEQ
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    ssnd112a
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018350 DU 2012-02-06 10:13:42
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    C_PLAN abusif pouir VISC_ISOT_* et HOEK_BROWN
+FONCTIONNALITE
+   Suite à la fiche 18013 (MN11 Menage dans les mot-cles lies a DEBORST) on s'est aperçu que
+   dans 3 catalogues de comportements, il est indiqué abusivement  C_PLAN.
+   
+   Or ces comportements ne sont pas programmés en contraintes planes. Il s'agit de :
+   
+   VISC_ISOT_LINE
+   VISC_ISOT_TRAC
+   HOEK_BROWN
+   
+   On supprime donc C_PLAN de ces catalogues.
+   
+   Pour les comportements VISC_ISOT_*, si un  utilisateur choisissait C_PLAN, il était arrêté.
+   
+   Par contre, pour Hoek et Brown, il y a un risque de résultats faux (pas de vérification
+   dans le fortran).
+   
+   La doc U4.51.11 était fausse seulement pour HOEK et BROWN
+   
+   En résumé, c'était faux si on ne mettait pas DEBORST : le comportement était alors résolu
+   en ignorant la condition SIZZ=0
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 9.4.0
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 9.4.0
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.51.11
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+       C AJOUT supervis/astercore_module    courtois M.COURTOIS         508    508      0
+ CASTEST AJOUT sdll147a                     chansard F.CHANSARD         864    864      0
+ CASTEST AJOUT ssnp138c                       massin P.MASSIN           293    293      0
+ CASTEST AJOUT ssnp138d                       massin P.MASSIN           296    296      0
+ CASTEST AJOUT zzzz306e                       pellet J.PELLET           149    149      0
+ CASTEST MODIF ahlv100m                       pellet J.PELLET           215      2      2
+ CASTEST MODIF ahlv302e                       pellet J.PELLET           142      2      2
+ CASTEST MODIF ascou02a                       pellet J.PELLET            55      3      3
+ CASTEST MODIF ascou03a                       pellet J.PELLET            56      3      3
+ CASTEST MODIF ascou07a                       pellet J.PELLET           237      3      3
+ CASTEST MODIF ascou08a                       pellet J.PELLET           309      3      3
+ CASTEST MODIF ascou12a                       pellet J.PELLET           316      3      3
+ CASTEST MODIF ascou13a                       pellet J.PELLET           291      3      3
+ CASTEST MODIF aspic04a                       pellet J.PELLET           133      3      3
+ CASTEST MODIF cente01a                       pellet J.PELLET           997      3      3
+ CASTEST MODIF comp001i                       pellet J.PELLET           126      3      3
+ CASTEST MODIF comp003a                       pellet J.PELLET           271      4      3
+ CASTEST MODIF comp003b                       pellet J.PELLET           229      4      3
+ CASTEST MODIF comp003c                       pellet J.PELLET           230      4      3
+ CASTEST MODIF comp005a                       pellet J.PELLET           468      4      3
+ CASTEST MODIF comp005c                       pellet J.PELLET           463      3      2
+ CASTEST MODIF comp005d                       pellet J.PELLET           291      3      3
+ CASTEST MODIF comp007a                       pellet J.PELLET           175      4      3
+ CASTEST MODIF comp007b                       pellet J.PELLET           227      4      3
+ CASTEST MODIF comp007c                       pellet J.PELLET           232      4      3
+ CASTEST MODIF comp007d                       pellet J.PELLET           290      4      3
+ CASTEST MODIF comp008a                       pellet J.PELLET           114      4      3
+ CASTEST MODIF comp008b                       pellet J.PELLET           147      4      3
+ CASTEST MODIF comp008c                       pellet J.PELLET           104      4      3
+ CASTEST MODIF comp008d                       pellet J.PELLET           114      4      3
+ CASTEST MODIF comp008e                       pellet J.PELLET           171      4      3
+ CASTEST MODIF comp008f                       pellet J.PELLET           110      4      3
+ CASTEST MODIF comp008g                       pellet J.PELLET           124      4      3
+ CASTEST MODIF comp008h                       pellet J.PELLET           127      4      3
+ CASTEST MODIF comp008i                       pellet J.PELLET           156      4      3
+ CASTEST MODIF comp008j                       pellet J.PELLET           136      4      3
+ CASTEST MODIF comp008k                       pellet J.PELLET           140      4      3
+ CASTEST MODIF comp008l                       pellet J.PELLET           168      4      3
+ CASTEST MODIF comp008m                       pellet J.PELLET           132      4      3
+ CASTEST MODIF comp008n                       pellet J.PELLET           311      4      3
+ CASTEST MODIF comp008o                       pellet J.PELLET           114      4      3
+ CASTEST MODIF comp009a                       pellet J.PELLET           333      3      3
+ CASTEST MODIF comp009b                       pellet J.PELLET           387      4      3
+ CASTEST MODIF comp009c                       pellet J.PELLET           472      4      3
+ CASTEST MODIF comp009d                       pellet J.PELLET           415      4      3
+ CASTEST MODIF comp009f                       pellet J.PELLET           400      4      3
+ CASTEST MODIF comp010a                       pellet J.PELLET           238      3      2
+ CASTEST MODIF comp010b                       pellet J.PELLET           104      4      3
+ CASTEST MODIF comp010c                       pellet J.PELLET           225      4      3
+ CASTEST MODIF comp010d                       pellet J.PELLET           209      4      3
+ CASTEST MODIF comp010e                       pellet J.PELLET           235      3      2
+ CASTEST MODIF comp010f                       pellet J.PELLET           223      4      3
+ CASTEST MODIF comp010g                       pellet J.PELLET           294      4      3
+ CASTEST MODIF comp011a                       pellet J.PELLET           207      4      3
+ CASTEST MODIF comp011b                       pellet J.PELLET           121      4      3
+ CASTEST MODIF comp011c                       pellet J.PELLET           363      4      3
+ CASTEST MODIF comp011d                       pellet J.PELLET           244      4      3
+ CASTEST MODIF comp011e                       pellet J.PELLET           100      4      3
+ CASTEST MODIF comp011f                       pellet J.PELLET           370      4      3
+ CASTEST MODIF demo001a                     courtois M.COURTOIS         305      4      3
+ CASTEST MODIF demo002a                     courtois M.COURTOIS         516      5      2
+ CASTEST MODIF demo003a                       pellet J.PELLET           211      3      3
+ CASTEST MODIF demo006a                     courtois M.COURTOIS         234      5      2
+ CASTEST MODIF distr01a                       pellet J.PELLET           122      3      3
+ CASTEST MODIF epicu01b                       pellet J.PELLET           868      3      3
+ CASTEST MODIF erreu05a                       pellet J.PELLET           106      3      3
+ CASTEST MODIF erreu08a                       pellet J.PELLET           136      3      3
+ CASTEST MODIF erreu09b                       pellet J.PELLET           143      2      2
+ CASTEST MODIF fdlv104a                       pellet J.PELLET           307      3      3
+ CASTEST MODIF fdlv107a                       pellet J.PELLET           664      3      3
+ CASTEST MODIF fdlv110a                       pellet J.PELLET           536      3      3
+ CASTEST MODIF fdlv111a                       pellet J.PELLET           281      3      2
+ CASTEST MODIF feti007a                       pellet J.PELLET           295      2      2
+ CASTEST MODIF feti007b                       pellet J.PELLET           178      2      2
+ CASTEST MODIF forma01a                       pellet J.PELLET           109      3      3
+ CASTEST MODIF forma01b                       pellet J.PELLET           194      3      3
+ CASTEST MODIF forma01c                       pellet J.PELLET           222      3      3
+ CASTEST MODIF forma02c                       pellet J.PELLET           104      3      3
+ CASTEST MODIF forma03a                       pellet J.PELLET           147      2      2
+ CASTEST MODIF forma03b                       pellet J.PELLET           405      3      2
+ CASTEST MODIF forma03c                       pellet J.PELLET           297      2      2
+ CASTEST MODIF forma03d                       pellet J.PELLET           339      2      2
+ CASTEST MODIF forma04a                       pellet J.PELLET           178      3      3
+ CASTEST MODIF forma04b                       pellet J.PELLET           182      3      3
+ CASTEST MODIF forma04c                       pellet J.PELLET           181      3      3
+ CASTEST MODIF forma11b                       pellet J.PELLET           186      2      2
+ CASTEST MODIF forma11d                       pellet J.PELLET           182      2      2
+ CASTEST MODIF forma12a                       pellet J.PELLET            79      3      3
+ CASTEST MODIF forma12b                       pellet J.PELLET           116      4      3
+ CASTEST MODIF forma12e                       pellet J.PELLET           259      3      3
+ CASTEST MODIF forma20a                       pellet J.PELLET           366      2      2
+ CASTEST MODIF forma20b                       pellet J.PELLET           367      2      2
+ CASTEST MODIF forma21a                       pellet J.PELLET           336      2      2
+ CASTEST MODIF forma21b                       pellet J.PELLET           373      2      2
+ CASTEST MODIF gcpc002a                       pellet J.PELLET           493      2      2
+ CASTEST MODIF gcpc002b                       pellet J.PELLET           556      2      2
+ CASTEST MODIF gcpc002c                       pellet J.PELLET           706      2      2
+ CASTEST MODIF hpla100c                       pellet J.PELLET           610      2      2
+ CASTEST MODIF hpla310a                       pellet J.PELLET          1032      2      2
+ CASTEST MODIF hplp310a                       pellet J.PELLET           786      2      2
+ CASTEST MODIF hplp310b                       pellet J.PELLET           793      2      2
+ CASTEST MODIF hplp311g                       pellet J.PELLET           342      2      2
+ CASTEST MODIF hsna100a                       pellet J.PELLET           464      2      2
+ CASTEST MODIF hsna100b                       pellet J.PELLET           531      2      2
+ CASTEST MODIF hsna100c                       pellet J.PELLET           427      2      2
+ CASTEST MODIF hsna100d                       pellet J.PELLET           560      2      2
+ CASTEST MODIF hsna100e                       pellet J.PELLET           561      2      2
+ CASTEST MODIF hsns101a                       pellet J.PELLET           542      3      3
+ CASTEST MODIF hsns101b                       pellet J.PELLET           407      3      3
+ CASTEST MODIF hsns101c                       pellet J.PELLET           443      4      3
+ CASTEST MODIF hsns101d                       pellet J.PELLET           425      3      3
+ CASTEST MODIF hsnv101a                       pellet J.PELLET           424      3      3
+ CASTEST MODIF hsnv101b                       pellet J.PELLET           403      3      3
+ CASTEST MODIF hsnv101c                       pellet J.PELLET           418      3      3
+ CASTEST MODIF hsnv101d                       pellet J.PELLET           638      4      3
+ CASTEST MODIF hsnv103a                       pellet J.PELLET           337      4      3
+ CASTEST MODIF hsnv103b                       pellet J.PELLET           333      4      3
+ CASTEST MODIF hsnv105a                       pellet J.PELLET           461      3      3
+ CASTEST MODIF hsnv120b                       pellet J.PELLET           349      3      3
+ CASTEST MODIF hsnv121d                       pellet J.PELLET           231      3      3
+ CASTEST MODIF hsnv123a                       pellet J.PELLET           338      3      3
+ CASTEST MODIF hsnv124b                       pellet J.PELLET           395      3      3
+ CASTEST MODIF hsnv124c                       pellet J.PELLET           352      3      3
+ CASTEST MODIF hsnv124d                       pellet J.PELLET           352      3      3
+ CASTEST MODIF hsnv125a                       pellet J.PELLET           497      4      3
+ CASTEST MODIF hsnv125b                       pellet J.PELLET           422      4      3
+ CASTEST MODIF hsnv125c                       pellet J.PELLET           624      4      3
+ CASTEST MODIF hsnv125e                       pellet J.PELLET           441      4      3
+ CASTEST MODIF hsnv125f                       pellet J.PELLET           426      4      3
+ CASTEST MODIF hsnv125g                       pellet J.PELLET           467      4      3
+ CASTEST MODIF hsnv126a                       pellet J.PELLET           384      4      3
+ CASTEST MODIF hsnv126b                       pellet J.PELLET           382      4      3
+ CASTEST MODIF hsnv128a                       pellet J.PELLET           379      3      3
+ CASTEST MODIF hsnv134a                       pellet J.PELLET           268      3      3
+ CASTEST MODIF hsnv135a                       pellet J.PELLET           223      3      3
+ CASTEST MODIF miss04a                        pellet J.PELLET           337      2      2
+ CASTEST MODIF miss04b                        pellet J.PELLET           476      3      2
+ CASTEST MODIF mtlp100b                       pellet J.PELLET           732      2      2
+ CASTEST MODIF perf003a                       pellet J.PELLET            52      3      3
+ CASTEST MODIF perf005a                       pellet J.PELLET           103      3      3
+ CASTEST MODIF perf005d                       pellet J.PELLET           111      3      3
+ CASTEST MODIF perfe02a                       pellet J.PELLET           248      3      3
+ CASTEST MODIF plexu01a                       pellet J.PELLET           248      2      2
+ CASTEST MODIF rccm02a                        pellet J.PELLET           343      3      2
+ CASTEST MODIF rccm02c                        pellet J.PELLET           334      3      2
+ CASTEST MODIF rccm03a                        pellet J.PELLET          4173      3      2
+ CASTEST MODIF rccm04a                        pellet J.PELLET           421      3      3
+ CASTEST MODIF rccm05a                        pellet J.PELLET          2028      3      3
+ CASTEST MODIF rccm07a                        pellet J.PELLET           354      3      3
+ CASTEST MODIF rccm09b                        pellet J.PELLET           290      2      2
+ CASTEST MODIF rccm10a                        pellet J.PELLET           365      3      3
+ CASTEST MODIF rccm10b                        pellet J.PELLET           276      3      3
+ CASTEST MODIF rccm11a                        pellet J.PELLET           660      3      3
+ CASTEST MODIF sdld31a                        pellet J.PELLET           939      4      3
+ CASTEST MODIF sdll112b                       pellet J.PELLET           781      3      3
+ CASTEST MODIF sdll11i                        pellet J.PELLET           141      2      2
+ CASTEST MODIF sdll123a                     courtois M.COURTOIS         360      5      4
+ CASTEST MODIF sdll123b                     courtois M.COURTOIS         465      5      4
+ CASTEST MODIF sdll123c                     courtois M.COURTOIS         802      5      4
+ CASTEST MODIF sdll123d                     courtois M.COURTOIS         244      6      5
+ CASTEST MODIF sdll123e                     courtois M.COURTOIS         226      6      5
+ CASTEST MODIF sdll123f                     courtois M.COURTOIS         241      6      6
+ CASTEST MODIF sdll126c                       pellet J.PELLET           194      3      3
+ CASTEST MODIF sdll126d                       pellet J.PELLET           221      3      3
+ CASTEST MODIF sdll130a                       pellet J.PELLET           262      4      3
+ CASTEST MODIF sdll130b                       pellet J.PELLET           299      4      3
+ CASTEST MODIF sdll133a                       pellet J.PELLET           246      2      2
+ CASTEST MODIF sdll135a                       pellet J.PELLET           439      3      2
+ CASTEST MODIF sdll135b                       pellet J.PELLET           438      3      2
+ CASTEST MODIF sdll14c                        pellet J.PELLET           165      2      2
+ CASTEST MODIF sdll302b                       pellet J.PELLET           844      3      3
+ CASTEST MODIF sdll504c                       pellet J.PELLET           532      3      2
+ CASTEST MODIF sdls01f                        pellet J.PELLET           427      2      2
+ CASTEST MODIF sdls01h                        pellet J.PELLET           433      2      2
+ CASTEST MODIF sdls108a                       pellet J.PELLET          2473      2      2
+ CASTEST MODIF sdls114c                       pellet J.PELLET           175      3      3
+ CASTEST MODIF sdls116a                       pellet J.PELLET           161      3      3
+ CASTEST MODIF sdls119a                       pellet J.PELLET           519      3      2
+ CASTEST MODIF sdls121a                       pellet J.PELLET           122      3      3
+ CASTEST MODIF sdls121b                       pellet J.PELLET           111      3      3
+ CASTEST MODIF sdls121c                       pellet J.PELLET           115      3      3
+ CASTEST MODIF sdls502f                       pellet J.PELLET           183      3      3
+ CASTEST MODIF sdls505a                       pellet J.PELLET           289      2      2
+ CASTEST MODIF sdlv123a                       pellet J.PELLET           249      2      2
+ CASTEST MODIF sdlv123b                       pellet J.PELLET           267      2      2
+ CASTEST MODIF sdlv402a                       pellet J.PELLET           359      4      3
+ CASTEST MODIF sdlx02a                        pellet J.PELLET           452      2      2
+ CASTEST MODIF sdlx02e                        pellet J.PELLET           162      2      2
+ CASTEST MODIF sdlx301b                       pellet J.PELLET           178      2      2
+ CASTEST MODIF sdnd100c                       pellet J.PELLET           147      4      3
+ CASTEST MODIF sdnd102b                       pellet J.PELLET           683      4      3
+ CASTEST MODIF sdnd102d                       pellet J.PELLET           248      4      3
+ CASTEST MODIF sdnd104a                       pellet J.PELLET           677      3      3
+ CASTEST MODIF sdnl102a                       pellet J.PELLET           200      3      3
+ CASTEST MODIF sdnl103a                       pellet J.PELLET           196      3      3
+ CASTEST MODIF sdnl105c                       pellet J.PELLET           623      3      3
+ CASTEST MODIF sdnl105d                       pellet J.PELLET           564      4      3
+ CASTEST MODIF sdnl111f                       pellet J.PELLET           211      3      3
+ CASTEST MODIF sdns01a                        pellet J.PELLET           701      3      2
+ CASTEST MODIF sdns105a                       pellet J.PELLET           299      3      3
+ CASTEST MODIF sdns106a                       pellet J.PELLET           371      4      3
+ CASTEST MODIF sdns106e                       pellet J.PELLET           308      3      3
+ CASTEST MODIF sdns106f                       pellet J.PELLET           388      3      3
+ CASTEST MODIF sdns107b                       pellet J.PELLET           424      3      3
+ CASTEST MODIF sdnv100a                       pellet J.PELLET           390      2      2
+ CASTEST MODIF sdnv100b                       pellet J.PELLET           281      2      2
+ CASTEST MODIF sdnv100c                       pellet J.PELLET           276      2      2
+ CASTEST MODIF sdnv100d                       pellet J.PELLET           367      2      2
+ CASTEST MODIF sdnv100e                       pellet J.PELLET           323      2      2
+ CASTEST MODIF sdnv100f                       pellet J.PELLET           403      3      2
+ CASTEST MODIF sdnv100h                       pellet J.PELLET           254      2      2
+ CASTEST MODIF sdnv100i                       pellet J.PELLET           373      2      2
+ CASTEST MODIF sdnv103c                       pellet J.PELLET           246      3      3
+ CASTEST MODIF sdnv103e                       pellet J.PELLET           207      3      3
+ CASTEST MODIF sdnv103f                       pellet J.PELLET           278      2      2
+ CASTEST MODIF sdnv103g                       pellet J.PELLET           242      2      2
+ CASTEST MODIF sdnv103h                       pellet J.PELLET           292      3      3
+ CASTEST MODIF sdnv103j                       pellet J.PELLET           237      3      3
+ CASTEST MODIF sdnv104a                       pellet J.PELLET           234      3      2
+ CASTEST MODIF shll101e                       pellet J.PELLET           363      2      2
+ CASTEST MODIF shll101f                       pellet J.PELLET           362      2      2
+ CASTEST MODIF shls200a                       pellet J.PELLET           577      3      3
+ CASTEST MODIF ssll106b                       pellet J.PELLET           568      2      2
+ CASTEST MODIF ssll106d                       pellet J.PELLET           594      2      2
+ CASTEST MODIF sslp105a                       pellet J.PELLET           550      2      2
+ CASTEST MODIF sslp200a                       pellet J.PELLET          1473      3      3
+ CASTEST MODIF sslp305a                       pellet J.PELLET            83      2      2
+ CASTEST MODIF sslp314b                       pellet J.PELLET           238      2      2
+ CASTEST MODIF sslp319d                       pellet J.PELLET           281      7      3
+ CASTEST MODIF sslp321b                       pellet J.PELLET           227      4      3
+ CASTEST MODIF ssls108a                       pellet J.PELLET           187      2      2
+ CASTEST MODIF ssls119c                       pellet J.PELLET           100      2      2
+ CASTEST MODIF ssls119f                       pellet J.PELLET            99      2      2
+ CASTEST MODIF ssls120e                       pellet J.PELLET           196      2      2
+ CASTEST MODIF ssls129a                       pellet J.PELLET           900      3      3
+ CASTEST MODIF ssls502d                       pellet J.PELLET           272      2      2
+ CASTEST MODIF sslv04n                        pellet J.PELLET           177      3      3
+ CASTEST MODIF sslv110e                       pellet J.PELLET           354      2      2
+ CASTEST MODIF sslv134a                       pellet J.PELLET           362      3      2
+ CASTEST MODIF sslv134d                       pellet J.PELLET           583      2      2
+ CASTEST MODIF sslv134h                       pellet J.PELLET           312      7      2
+ CASTEST MODIF sslv134i                       pellet J.PELLET           243      8      4
+ CASTEST MODIF sslv135a                       pellet J.PELLET          1307      2      2
+ CASTEST MODIF sslv135b                       pellet J.PELLET          1284      2      2
+ CASTEST MODIF sslv135c                       pellet J.PELLET           795      2      2
+ CASTEST MODIF sslv135d                       pellet J.PELLET           795      2      2
+ CASTEST MODIF sslv135e                       pellet J.PELLET           847      2      2
+ CASTEST MODIF sslv135i                       pellet J.PELLET          1406      2      2
+ CASTEST MODIF sslv135j                       pellet J.PELLET          1399      2      2
+ CASTEST MODIF sslv135p                       pellet J.PELLET           404      2      2
+ CASTEST MODIF sslv139a                       pellet J.PELLET           182      3      3
+ CASTEST MODIF sslv139b                       pellet J.PELLET           228      3      3
+ CASTEST MODIF sslv139c                       pellet J.PELLET           135      3      3
+ CASTEST MODIF sslv153a                       pellet J.PELLET           413      3      3
+ CASTEST MODIF sslv200a                       pellet J.PELLET          1101      3      3
+ CASTEST MODIF sslv307a                       pellet J.PELLET           628      2      2
+ CASTEST MODIF sslx102c                       pellet J.PELLET           105      3      3
+ CASTEST MODIF ssna102d                       pellet J.PELLET           311      3      3
+ CASTEST MODIF ssna102f                       pellet J.PELLET           308      3      3
+ CASTEST MODIF ssna102g                       pellet J.PELLET           251      3      3
+ CASTEST MODIF ssna104a                       pellet J.PELLET           146      3      3
+ CASTEST MODIF ssna104b                       pellet J.PELLET           149      2      2
+ CASTEST MODIF ssna105a                       pellet J.PELLET           232      4      3
+ CASTEST MODIF ssna105b                       pellet J.PELLET           230      3      3
+ CASTEST MODIF ssna106a                       pellet J.PELLET           120      3      3
+ CASTEST MODIF ssna107b                       pellet J.PELLET           160      4      3
+ CASTEST MODIF ssna108a                       pellet J.PELLET           309      2      2
+ CASTEST MODIF ssna109a                       pellet J.PELLET           692      4      3
+ CASTEST MODIF ssna111a                       pellet J.PELLET           243      2      2
+ CASTEST MODIF ssna115a                       pellet J.PELLET           310      3      3
+ CASTEST MODIF ssna115b                       pellet J.PELLET           254      3      3
+ CASTEST MODIF ssna115c                       pellet J.PELLET           328      3      3
+ CASTEST MODIF ssna116b                       pellet J.PELLET           468      3      3
+ CASTEST MODIF ssna120a                       pellet J.PELLET           363      3      3
+ CASTEST MODIF ssna122a                       pellet J.PELLET           358      3      3
+ CASTEST MODIF ssna122b                       pellet J.PELLET           358      3      3
+ CASTEST MODIF ssna122c                       pellet J.PELLET           305      3      3
+ CASTEST MODIF ssna122d                       pellet J.PELLET           305      3      3
+ CASTEST MODIF ssna302a                       pellet J.PELLET           603      2      2
+ CASTEST MODIF ssna302b                       pellet J.PELLET           585      2      2
+ CASTEST MODIF ssna303a                       pellet J.PELLET           254      3      3
+ CASTEST MODIF ssna303b                       pellet J.PELLET           255      3      3
+ CASTEST MODIF ssnd101a                       pellet J.PELLET           541      4      3
+ CASTEST MODIF ssnd101b                       pellet J.PELLET           310      4      3
+ CASTEST MODIF ssnd104a                       pellet J.PELLET           378      4      3
+ CASTEST MODIF ssnd104b                       pellet J.PELLET           397      4      3
+ CASTEST MODIF ssnd105a                       pellet J.PELLET           210      4      3
+ CASTEST MODIF ssnd105b                       pellet J.PELLET           538      4      3
+ CASTEST MODIF ssnd105c                       pellet J.PELLET           541      4      3
+ CASTEST MODIF ssnd107a                       pellet J.PELLET           246      4      3
+ CASTEST MODIF ssnd108a                       pellet J.PELLET           252      4      3
+ CASTEST MODIF ssnd109a                       pellet J.PELLET           243      3      3
+ CASTEST MODIF ssnd111a                       pellet J.PELLET           301      3      3
+ CASTEST MODIF ssnd112a                        proix J-M.PROIX          777    169     22
+ CASTEST MODIF ssnd113a                       pellet J.PELLET           134      3      3
+ CASTEST MODIF ssnd113b                       pellet J.PELLET           143      3      3
+ CASTEST MODIF ssnl106d                       pellet J.PELLET           359      3      2
+ CASTEST MODIF ssnl106e                       pellet J.PELLET           386      3      2
+ CASTEST MODIF ssnl106f                       pellet J.PELLET           375      2      2
+ CASTEST MODIF ssnl117a                       pellet J.PELLET           207      2      2
+ CASTEST MODIF ssnl121a                       pellet J.PELLET           577      2      2
+ CASTEST MODIF ssnl121b                       pellet J.PELLET           577      2      2
+ CASTEST MODIF ssnl124a                       pellet J.PELLET           577      2      2
+ CASTEST MODIF ssnl126a                       pellet J.PELLET            99      2      2
+ CASTEST MODIF ssnl126b                       pellet J.PELLET           175      2      2
+ CASTEST MODIF ssnl127c                       pellet J.PELLET           466      3      3
+ CASTEST MODIF ssnl127d                       pellet J.PELLET           460      3      3
+ CASTEST MODIF ssnl127e                       pellet J.PELLET           397      3      3
+ CASTEST MODIF ssnl128a                       pellet J.PELLET           553      2      2
+ CASTEST MODIF ssnl128c                       pellet J.PELLET           562      2      2
+ CASTEST MODIF ssnl128d                       pellet J.PELLET           462      2      2
+ CASTEST MODIF ssnl129a                       pellet J.PELLET           359      3      3
+ CASTEST MODIF ssnl129b                       pellet J.PELLET           353      3      3
+ CASTEST MODIF ssnl129c                       pellet J.PELLET           351      3      3
+ CASTEST MODIF ssnl129d                       pellet J.PELLET           333      3      3
+ CASTEST MODIF ssnl129e                       pellet J.PELLET           329      3      3
+ CASTEST MODIF ssnl129f                       pellet J.PELLET           327      3      3
+ CASTEST MODIF ssnl134a                       pellet J.PELLET           429      3      3
+ CASTEST MODIF ssnl135a                       pellet J.PELLET           742      2      2
+ CASTEST MODIF ssnl135b                       pellet J.PELLET           741      2      2
+ CASTEST MODIF ssnl135c                       pellet J.PELLET           744      2      2
+ CASTEST MODIF ssnl136b                       pellet J.PELLET           366      3      3
+ CASTEST MODIF ssnl502c                       pellet J.PELLET           370      3      2
+ CASTEST MODIF ssnl502d                       pellet J.PELLET           513      4      3
+ CASTEST MODIF ssnp101b                       pellet J.PELLET           238      4      3
+ CASTEST MODIF ssnp102a                       pellet J.PELLET           480      2      2
+ CASTEST MODIF ssnp102b                       pellet J.PELLET           382      2      2
+ CASTEST MODIF ssnp110a                       pellet J.PELLET           295      2      2
+ CASTEST MODIF ssnp110b                       pellet J.PELLET           269      2      2
+ CASTEST MODIF ssnp110e                       pellet J.PELLET           811      2      2
+ CASTEST MODIF ssnp113a                       pellet J.PELLET           208      4      3
+ CASTEST MODIF ssnp113b                       pellet J.PELLET           230      3      2
+ CASTEST MODIF ssnp116a                       pellet J.PELLET           681      3      3
+ CASTEST MODIF ssnp117a                       pellet J.PELLET           235      3      3
+ CASTEST MODIF ssnp117b                       pellet J.PELLET           652      4      3
+ CASTEST MODIF ssnp118b                       pellet J.PELLET           601      3      3
+ CASTEST MODIF ssnp118h                       pellet J.PELLET           531      2      2
+ CASTEST MODIF ssnp118k                       pellet J.PELLET           274      2      2
+ CASTEST MODIF ssnp118l                       pellet J.PELLET           271      2      2
+ CASTEST MODIF ssnp118m                       pellet J.PELLET           578      3      3
+ CASTEST MODIF ssnp118n                       pellet J.PELLET           775      3      3
+ CASTEST MODIF ssnp118o                       pellet J.PELLET           793      3      3
+ CASTEST MODIF ssnp118p                       pellet J.PELLET           505      3      3
+ CASTEST MODIF ssnp118q                       pellet J.PELLET           342      3      3
+ CASTEST MODIF ssnp118r                       pellet J.PELLET           345      3      3
+ CASTEST MODIF ssnp118s                       pellet J.PELLET           351      3      3
+ CASTEST MODIF ssnp118t                       pellet J.PELLET           413      3      2
+ CASTEST MODIF ssnp118u                       pellet J.PELLET           413      3      2
+ CASTEST MODIF ssnp118v                       pellet J.PELLET           653      4      3
+ CASTEST MODIF ssnp118w                       pellet J.PELLET           624      3      2
+ CASTEST MODIF ssnp118x                       pellet J.PELLET           624      3      2
+ CASTEST MODIF ssnp121a                       pellet J.PELLET           204      3      3
+ CASTEST MODIF ssnp121e                       pellet J.PELLET           241      3      3
+ CASTEST MODIF ssnp121f                       pellet J.PELLET           238      3      3
+ CASTEST MODIF ssnp121i                       pellet J.PELLET           255      3      3
+ CASTEST MODIF ssnp123b                       pellet J.PELLET           210      3      3
+ CASTEST MODIF ssnp124a                       pellet J.PELLET           288      3      3
+ CASTEST MODIF ssnp124b                       pellet J.PELLET           288      3      3
+ CASTEST MODIF ssnp124c                       pellet J.PELLET           293      4      3
+ CASTEST MODIF ssnp125a                       pellet J.PELLET           513      2      2
+ CASTEST MODIF ssnp125b                       pellet J.PELLET           424      2      2
+ CASTEST MODIF ssnp126a                       pellet J.PELLET           387      4      3
+ CASTEST MODIF ssnp127b                       pellet J.PELLET           144      2      2
+ CASTEST MODIF ssnp130e                       pellet J.PELLET           242      2      2
+ CASTEST MODIF ssnp130f                       pellet J.PELLET           241      2      2
+ CASTEST MODIF ssnp131a                       pellet J.PELLET           179      2      2
+ CASTEST MODIF ssnp132a                       pellet J.PELLET           209      3      3
+ CASTEST MODIF ssnp133a                       pellet J.PELLET           303      4      3
+ CASTEST MODIF ssnp133b                       pellet J.PELLET           299      3      3
+ CASTEST MODIF ssnp133c                       pellet J.PELLET           317      3      3
+ CASTEST MODIF ssnp133d                       pellet J.PELLET           259      3      3
+ CASTEST MODIF ssnp136a                       pellet J.PELLET           726      2      2
+ CASTEST MODIF ssnp138b                       pellet J.PELLET           374      9      3
+ CASTEST MODIF ssnp140a                       pellet J.PELLET           176      3      3
+ CASTEST MODIF ssnp140b                       pellet J.PELLET           177      3      3
+ CASTEST MODIF ssnp140c                       pellet J.PELLET           179      3      3
+ CASTEST MODIF ssnp140d                       pellet J.PELLET           201      4      3
+ CASTEST MODIF ssnp140e                       pellet J.PELLET           185      3      3
+ CASTEST MODIF ssnp142a                       pellet J.PELLET           401      3      3
+ CASTEST MODIF ssnp142c                       pellet J.PELLET           267      3      3
+ CASTEST MODIF ssnp142d                       pellet J.PELLET           262      3      3
+ CASTEST MODIF ssnp142e                       pellet J.PELLET           325      3      3
+ CASTEST MODIF ssnp142f                       pellet J.PELLET           374      3      3
+ CASTEST MODIF ssnp143a                       pellet J.PELLET           293      3      3
+ CASTEST MODIF ssnp144a                       pellet J.PELLET           513      3      2
+ CASTEST MODIF ssnp144b                       pellet J.PELLET           516      3      2
+ CASTEST MODIF ssnp144c                       pellet J.PELLET           534      3      2
+ CASTEST MODIF ssnp144d                       pellet J.PELLET           532      3      2
+ CASTEST MODIF ssnp144e                       pellet J.PELLET           523      3      2
+ CASTEST MODIF ssnp144f                       pellet J.PELLET           525      3      2
+ CASTEST MODIF ssnp144g                       pellet J.PELLET           520      3      2
+ CASTEST MODIF ssnp144h                       pellet J.PELLET           522      3      2
+ CASTEST MODIF ssnp144i                       pellet J.PELLET           515      3      2
+ CASTEST MODIF ssnp144j                       pellet J.PELLET           517      3      2
+ CASTEST MODIF ssnp144k                       pellet J.PELLET           513      3      2
+ CASTEST MODIF ssnp144l                       pellet J.PELLET           313      2      2
+ CASTEST MODIF ssnp145a                       pellet J.PELLET           187      3      3
+ CASTEST MODIF ssnp145b                       pellet J.PELLET           190      3      3
+ CASTEST MODIF ssnp145c                       pellet J.PELLET           190      3      3
+ CASTEST MODIF ssnp146a                       pellet J.PELLET           297      3      3
+ CASTEST MODIF ssnp147a                       pellet J.PELLET           237      3      3
+ CASTEST MODIF ssnp147b                       pellet J.PELLET           238      3      3
+ CASTEST MODIF ssnp148a                       pellet J.PELLET           325      3      3
+ CASTEST MODIF ssnp14a                        pellet J.PELLET           615      3      2
+ CASTEST MODIF ssnp152a                       pellet J.PELLET           629      3      3
+ CASTEST MODIF ssnp152b                       pellet J.PELLET           605      3      3
+ CASTEST MODIF ssnp152e                       pellet J.PELLET           183      2      2
+ CASTEST MODIF ssnp154a                       pellet J.PELLET           304      3      3
+ CASTEST MODIF ssnp154b                       pellet J.PELLET           304      3      3
+ CASTEST MODIF ssnp154c                       pellet J.PELLET           323      3      3
+ CASTEST MODIF ssnp154e                       pellet J.PELLET           293      3      3
+ CASTEST MODIF ssnp154f                       pellet J.PELLET           293      3      3
+ CASTEST MODIF ssnp154g                       pellet J.PELLET           301      3      3
+ CASTEST MODIF ssnp156a                       pellet J.PELLET            99      3      3
+ CASTEST MODIF ssnp156c                       pellet J.PELLET           106      3      3
+ CASTEST MODIF ssnp156d                       pellet J.PELLET           106      3      3
+ CASTEST MODIF ssnp15b                        pellet J.PELLET           559      4      3
+ CASTEST MODIF ssnp306a                       pellet J.PELLET           173      2      4
+ CASTEST MODIF ssnp501a                       pellet J.PELLET           250      3      3
+ CASTEST MODIF ssnp501c                       pellet J.PELLET           248      2      2
+ CASTEST MODIF ssnp502a                       pellet J.PELLET           255      3      3
+ CASTEST MODIF ssnp502b                       pellet J.PELLET           257      3      3
+ CASTEST MODIF ssnp502c                       pellet J.PELLET           252      3      3
+ CASTEST MODIF ssnp503a                       pellet J.PELLET           169      3      3
+ CASTEST MODIF ssnp503c                       pellet J.PELLET           165      3      3
+ CASTEST MODIF ssnp503e                       pellet J.PELLET           183      3      3
+ CASTEST MODIF ssnp503g                       pellet J.PELLET           186      3      3
+ CASTEST MODIF ssnp503i                       pellet J.PELLET           186      3      3
+ CASTEST MODIF ssnp504a                       pellet J.PELLET           174      3      3
+ CASTEST MODIF ssnp504c                       pellet J.PELLET           173      3      3
+ CASTEST MODIF ssnp504e                       pellet J.PELLET           241      3      3
+ CASTEST MODIF ssns101a                       pellet J.PELLET           349      3      3
+ CASTEST MODIF ssns101b                       pellet J.PELLET           243      3      3
+ CASTEST MODIF ssns101c                       pellet J.PELLET           309      3      3
+ CASTEST MODIF ssns102a                       pellet J.PELLET           322      3      3
+ CASTEST MODIF ssns102b                       pellet J.PELLET           309      3      3
+ CASTEST MODIF ssns106b                       pellet J.PELLET          1647      4      3
+ CASTEST MODIF ssns106c                       pellet J.PELLET          1882      4      3
+ CASTEST MODIF ssns106d                       pellet J.PELLET           600      3      2
+ CASTEST MODIF ssns106e                       pellet J.PELLET           560      3      2
+ CASTEST MODIF ssns106g                       pellet J.PELLET           450      3      3
+ CASTEST MODIF ssns106h                       pellet J.PELLET           910      4      3
+ CASTEST MODIF ssns106j                       pellet J.PELLET          1415      4      3
+ CASTEST MODIF ssns108a                       pellet J.PELLET           477      3      3
+ CASTEST MODIF ssns109a                       pellet J.PELLET           331      3      3
+ CASTEST MODIF ssns109c                       pellet J.PELLET           330      3      3
+ CASTEST MODIF ssns109d                       pellet J.PELLET           330      3      3
+ CASTEST MODIF ssnv101c                       pellet J.PELLET           415      3      3
+ CASTEST MODIF ssnv104e                       pellet J.PELLET           460      2      2
+ CASTEST MODIF ssnv104f                       pellet J.PELLET           503      2      2
+ CASTEST MODIF ssnv104j                       pellet J.PELLET           364      3      3
+ CASTEST MODIF ssnv108a                       pellet J.PELLET           315      2      2
+ CASTEST MODIF ssnv112a                       pellet J.PELLET           319      3      3
+ CASTEST MODIF ssnv112e                       pellet J.PELLET           287      3      3
+ CASTEST MODIF ssnv115d                       pellet J.PELLET           203      2      2
+ CASTEST MODIF ssnv115e                       pellet J.PELLET           202      2      2
+ CASTEST MODIF ssnv115f                       pellet J.PELLET           217      2      2
+ CASTEST MODIF ssnv118c                       pellet J.PELLET           189      3      3
+ CASTEST MODIF ssnv126b                       pellet J.PELLET           330      3      3
+ CASTEST MODIF ssnv126c                       pellet J.PELLET           502      3      3
+ CASTEST MODIF ssnv126d                       pellet J.PELLET           393      3      3
+ CASTEST MODIF ssnv127f                       pellet J.PELLET           440      2      2
+ CASTEST MODIF ssnv127h                       pellet J.PELLET           459      2      2
+ CASTEST MODIF ssnv128a                       pellet J.PELLET           507      3      3
+ CASTEST MODIF ssnv128b                       pellet J.PELLET           444      3      3
+ CASTEST MODIF ssnv128c                       pellet J.PELLET           451      3      3
+ CASTEST MODIF ssnv128d                       pellet J.PELLET           454      3      3
+ CASTEST MODIF ssnv128e                       pellet J.PELLET           419      3      3
+ CASTEST MODIF ssnv128g                       pellet J.PELLET           282      3      3
+ CASTEST MODIF ssnv128h                       pellet J.PELLET           393      3      3
+ CASTEST MODIF ssnv128j                       pellet J.PELLET           389      3      3
+ CASTEST MODIF ssnv128l                       pellet J.PELLET           258      3      3
+ CASTEST MODIF ssnv128m                       pellet J.PELLET           259      2      2
+ CASTEST MODIF ssnv128n                       pellet J.PELLET           178      3      3
+ CASTEST MODIF ssnv128o                       pellet J.PELLET           268      3      3
+ CASTEST MODIF ssnv128p                       pellet J.PELLET           185      3      3
+ CASTEST MODIF ssnv128q                       pellet J.PELLET           194      2      2
+ CASTEST MODIF ssnv128r                       pellet J.PELLET           181      3      3
+ CASTEST MODIF ssnv128s                       pellet J.PELLET           216      3      3
+ CASTEST MODIF ssnv128t                       pellet J.PELLET           219      3      3
+ CASTEST MODIF ssnv128u                       pellet J.PELLET           254      3      3
+ CASTEST MODIF ssnv128v                       pellet J.PELLET           213      3      3
+ CASTEST MODIF ssnv128w                       pellet J.PELLET           235      3      3
+ CASTEST MODIF ssnv128x                       pellet J.PELLET           179      3      3
+ CASTEST MODIF ssnv129b                       pellet J.PELLET           220      2      2
+ CASTEST MODIF ssnv129d                       pellet J.PELLET           221      2      2
+ CASTEST MODIF ssnv135a                       pellet J.PELLET          1562      3      2
+ CASTEST MODIF ssnv136a                       pellet J.PELLET           459      3      2
+ CASTEST MODIF ssnv138a                       pellet J.PELLET           224      3      3
+ CASTEST MODIF ssnv138b                       pellet J.PELLET           322      3      3
+ CASTEST MODIF ssnv138c                       pellet J.PELLET           201      3      3
+ CASTEST MODIF ssnv138e                       pellet J.PELLET           327      3      3
+ CASTEST MODIF ssnv139a                       pellet J.PELLET           263      2      2
+ CASTEST MODIF ssnv139b                       pellet J.PELLET           276      2      2
+ CASTEST MODIF ssnv140a                       pellet J.PELLET           162      2      2
+ CASTEST MODIF ssnv140b                       pellet J.PELLET           174      2      2
+ CASTEST MODIF ssnv140c                       pellet J.PELLET           155      2      2
+ CASTEST MODIF ssnv141a                       pellet J.PELLET           185      2      2
+ CASTEST MODIF ssnv142a                       pellet J.PELLET           197      3      3
+ CASTEST MODIF ssnv142d                       pellet J.PELLET           238      3      3
+ CASTEST MODIF ssnv143a                       pellet J.PELLET           324      3      3
+ CASTEST MODIF ssnv144a                       pellet J.PELLET           911      2      2
+ CASTEST MODIF ssnv145a                       pellet J.PELLET           217      2      2
+ CASTEST MODIF ssnv145b                       pellet J.PELLET           185      2      2
+ CASTEST MODIF ssnv145c                       pellet J.PELLET           198      2      2
+ CASTEST MODIF ssnv154a                       pellet J.PELLET           356      3      3
+ CASTEST MODIF ssnv154b                       pellet J.PELLET           370      4      3
+ CASTEST MODIF ssnv155a                       pellet J.PELLET           370      4      3
+ CASTEST MODIF ssnv157a                       pellet J.PELLET           128      2      2
+ CASTEST MODIF ssnv157b                       pellet J.PELLET           129      2      2
+ CASTEST MODIF ssnv157c                       pellet J.PELLET           138      2      2
+ CASTEST MODIF ssnv157d                       pellet J.PELLET           133      2      2
+ CASTEST MODIF ssnv157e                       pellet J.PELLET           133      2      2
+ CASTEST MODIF ssnv157f                       pellet J.PELLET           134      2      2
+ CASTEST MODIF ssnv157g                       pellet J.PELLET           132      2      2
+ CASTEST MODIF ssnv157h                       pellet J.PELLET           136      2      2
+ CASTEST MODIF ssnv157k                       pellet J.PELLET           138      2      2
+ CASTEST MODIF ssnv158a                       pellet J.PELLET           744      3      3
+ CASTEST MODIF ssnv160c                       pellet J.PELLET           286      4      3
+ CASTEST MODIF ssnv160d                       pellet J.PELLET           342      4      3
+ CASTEST MODIF ssnv160e                       pellet J.PELLET           195      3      3
+ CASTEST MODIF ssnv164a                       pellet J.PELLET          1084      4      3
+ CASTEST MODIF ssnv166a                       pellet J.PELLET           291      3      2
+ CASTEST MODIF ssnv168b                       pellet J.PELLET           335      4      3
+ CASTEST MODIF ssnv168c                       pellet J.PELLET           345      3      2
+ CASTEST MODIF ssnv168d                       pellet J.PELLET           346      3      2
+ CASTEST MODIF ssnv169a                       pellet J.PELLET           242      3      3
+ CASTEST MODIF ssnv169b                       pellet J.PELLET           203      3      3
+ CASTEST MODIF ssnv169c                       pellet J.PELLET           216      3      3
+ CASTEST MODIF ssnv169e                       pellet J.PELLET           244      3      3
+ CASTEST MODIF ssnv169f                       pellet J.PELLET           243      3      3
+ CASTEST MODIF ssnv169h                       pellet J.PELLET           247      3      3
+ CASTEST MODIF ssnv171c                        proix J-M.PROIX          395      7      8
+ CASTEST MODIF ssnv172a                        proix J-M.PROIX         1401      2      1
+ CASTEST MODIF ssnv174a                       pellet J.PELLET           277      3      3
+ CASTEST MODIF ssnv174b                       pellet J.PELLET           290      3      3
+ CASTEST MODIF ssnv176e                       pellet J.PELLET           391      4      3
+ CASTEST MODIF ssnv177a                     courtois M.COURTOIS         259      5      4
+ CASTEST MODIF ssnv184a                       pellet J.PELLET           449      3      2
+ CASTEST MODIF ssnv184b                       pellet J.PELLET           446      3      2
+ CASTEST MODIF ssnv184c                       pellet J.PELLET           436      2      2
+ CASTEST MODIF ssnv185g                       pellet J.PELLET           331      7      2
+ CASTEST MODIF ssnv187d                       pellet J.PELLET           291      3      3
+ CASTEST MODIF ssnv189a                       pellet J.PELLET           135      2      2
+ CASTEST MODIF ssnv189c                       pellet J.PELLET           144      2      2
+ CASTEST MODIF ssnv190a                       pellet J.PELLET           308      3      3
+ CASTEST MODIF ssnv190b                       pellet J.PELLET           390      3      3
+ CASTEST MODIF ssnv193a                       pellet J.PELLET           295      3      3
+ CASTEST MODIF ssnv194b                       pellet J.PELLET           209      4      3
+ CASTEST MODIF ssnv194c                       pellet J.PELLET           233      3      3
+ CASTEST MODIF ssnv197d                       pellet J.PELLET           492      3      3
+ CASTEST MODIF ssnv199a                       pellet J.PELLET           337      3      3
+ CASTEST MODIF ssnv199b                       pellet J.PELLET           340      3      3
+ CASTEST MODIF ssnv199c                       pellet J.PELLET           341      3      3
+ CASTEST MODIF ssnv199d                       pellet J.PELLET           340      3      3
+ CASTEST MODIF ssnv199e                       pellet J.PELLET           363      3      3
+ CASTEST MODIF ssnv199g                       pellet J.PELLET           403      3      3
+ CASTEST MODIF ssnv202a                       pellet J.PELLET           331      2      2
+ CASTEST MODIF ssnv204a                       pellet J.PELLET           631      4      3
+ CASTEST MODIF ssnv204b                       pellet J.PELLET           348      4      3
+ CASTEST MODIF ssnv204c                       pellet J.PELLET           351      4      3
+ CASTEST MODIF ssnv205a                       pellet J.PELLET           610      3      3
+ CASTEST MODIF ssnv206a                       pellet J.PELLET           334      3      3
+ CASTEST MODIF ssnv207a                       pellet J.PELLET           265      2      2
+ CASTEST MODIF ssnv209a                       pellet J.PELLET           232      3      3
+ CASTEST MODIF ssnv209b                       pellet J.PELLET           617      2      2
+ CASTEST MODIF ssnv209c                       pellet J.PELLET           487      2      2
+ CASTEST MODIF ssnv209d                       pellet J.PELLET           512      2      2
+ CASTEST MODIF ssnv209f                       pellet J.PELLET           269      3      3
+ CASTEST MODIF ssnv209i                       pellet J.PELLET           190      3      3
+ CASTEST MODIF ssnv209k                       pellet J.PELLET           495      2      2
+ CASTEST MODIF ssnv209m                       pellet J.PELLET           518      2      2
+ CASTEST MODIF ssnv211a                       pellet J.PELLET           283      3      3
+ CASTEST MODIF ssnv212a                       pellet J.PELLET           292      3      3
+ CASTEST MODIF ssnv213a                       pellet J.PELLET           346      2      2
+ CASTEST MODIF ssnv214a                       pellet J.PELLET           279      4      3
+ CASTEST MODIF ssnv215a                       pellet J.PELLET           298      4      3
+ CASTEST MODIF ssnv216a                       pellet J.PELLET           327      2      2
+ CASTEST MODIF ssnv217a                       pellet J.PELLET           235      3      3
+ CASTEST MODIF ssnv217b                       pellet J.PELLET           231      3      3
+ CASTEST MODIF ssnv221a                       pellet J.PELLET           236      3      3
+ CASTEST MODIF ssnv221b                       pellet J.PELLET           205      3      3
+ CASTEST MODIF ssnv501a                       pellet J.PELLET           477      3      3
+ CASTEST MODIF ssnv501c                       pellet J.PELLET           490      3      3
+ CASTEST MODIF ssnv503b                       pellet J.PELLET           406      3      3
+ CASTEST MODIF ssnv503c                       pellet J.PELLET           405      3      3
+ CASTEST MODIF ssnv503d                       pellet J.PELLET           402      3      3
+ CASTEST MODIF ssnv503e                       pellet J.PELLET           538      3      3
+ CASTEST MODIF ssnv503f                       pellet J.PELLET           520      3      3
+ CASTEST MODIF ssnv503g                       pellet J.PELLET           538      3      3
+ CASTEST MODIF ssnv503i                       pellet J.PELLET           536      3      3
+ CASTEST MODIF ssnv504a                       pellet J.PELLET           322      3      3
+ CASTEST MODIF ssnv504b                       pellet J.PELLET           272      3      3
+ CASTEST MODIF ssnv504c                       pellet J.PELLET           222      3      3
+ CASTEST MODIF ssnv504d                       pellet J.PELLET           302      2      2
+ CASTEST MODIF ssnv504e                       pellet J.PELLET           244      3      3
+ CASTEST MODIF ssnv504f                       pellet J.PELLET           295      3      3
+ CASTEST MODIF ssnv504h                       pellet J.PELLET           235      3      3
+ CASTEST MODIF ssnv504i                       pellet J.PELLET           213      3      3
+ CASTEST MODIF ssnv504j                       pellet J.PELLET           255      3      3
+ CASTEST MODIF ssnv505b                       pellet J.PELLET           186      3      3
+ CASTEST MODIF ssnv505c                       pellet J.PELLET           187      3      3
+ CASTEST MODIF ssnv505e                       pellet J.PELLET           185      3      3
+ CASTEST MODIF ssnv505f                       pellet J.PELLET           296      3      3
+ CASTEST MODIF ssnv506a                       pellet J.PELLET           290      3      3
+ CASTEST MODIF ssnv506b                       pellet J.PELLET           281      3      3
+ CASTEST MODIF ssnv506e                       pellet J.PELLET           237      3      3
+ CASTEST MODIF supv001a                       pellet J.PELLET            64      3      3
+ CASTEST MODIF tpla07a                        pellet J.PELLET           256      3      3
+ CASTEST MODIF tplv101c                       pellet J.PELLET           158      3      3
+ CASTEST MODIF ttnl04a                        pellet J.PELLET           366      2      2
+ CASTEST MODIF ttnl302b                       pellet J.PELLET           249      2      2
+ CASTEST MODIF ttnl303b                       pellet J.PELLET           162      2      2
+ CASTEST MODIF ttnp201a                       pellet J.PELLET           107      3      3
+ CASTEST MODIF ttnp201b                       pellet J.PELLET           110      3      3
+ CASTEST MODIF ttnp201c                       pellet J.PELLET           109      3      3
+ CASTEST MODIF umat001a                       pellet J.PELLET           215      3      3
+ CASTEST MODIF umat001b                       pellet J.PELLET           242      3      3
+ CASTEST MODIF wtna101a                       pellet J.PELLET           370      3      2
+ CASTEST MODIF wtna101b                       pellet J.PELLET           368      3      2
+ CASTEST MODIF wtna101c                       pellet J.PELLET           372      2      2
+ CASTEST MODIF wtna102e                       pellet J.PELLET           321      3      3
+ CASTEST MODIF wtna102g                       pellet J.PELLET           333      4      4
+ CASTEST MODIF wtna102h                       pellet J.PELLET           330      4      4
+ CASTEST MODIF wtna110a                       pellet J.PELLET           436      4      3
+ CASTEST MODIF wtna110b                       pellet J.PELLET           426      4      3
+ CASTEST MODIF wtna110c                       pellet J.PELLET           455      4      3
+ CASTEST MODIF wtna110d                       pellet J.PELLET           445      4      3
+ CASTEST MODIF wtna111a                       pellet J.PELLET           367      2      2
+ CASTEST MODIF wtnl100a                       pellet J.PELLET           572      2      2
+ CASTEST MODIF wtnl100c                       pellet J.PELLET           745      2      2
+ CASTEST MODIF wtnl102a                       pellet J.PELLET           214      3      3
+ CASTEST MODIF wtnl102b                       pellet J.PELLET           212      3      3
+ CASTEST MODIF wtnp103a                       pellet J.PELLET           286      3      3
+ CASTEST MODIF wtnp112b                       pellet J.PELLET           253      2      2
+ CASTEST MODIF wtnp112c                       pellet J.PELLET           292      2      2
+ CASTEST MODIF wtnp112d                       pellet J.PELLET           237      2      2
+ CASTEST MODIF wtnp112f                       pellet J.PELLET           291      2      2
+ CASTEST MODIF wtnp112g                       pellet J.PELLET           310      2      2
+ CASTEST MODIF wtnp112h                       pellet J.PELLET           280      2      2
+ CASTEST MODIF wtnp116c                       pellet J.PELLET           241      2      2
+ CASTEST MODIF wtnp118a                       pellet J.PELLET           306      2      2
+ CASTEST MODIF wtnp118b                       pellet J.PELLET           304      2      2
+ CASTEST MODIF wtnp118c                       pellet J.PELLET           309      2      2
+ CASTEST MODIF wtnp119a                       pellet J.PELLET           448      4      3
+ CASTEST MODIF wtnp119b                       pellet J.PELLET           436      4      3
+ CASTEST MODIF wtnp119c                       pellet J.PELLET           445      4      3
+ CASTEST MODIF wtnp119d                       pellet J.PELLET           433      4      3
+ CASTEST MODIF wtnp126a                       pellet J.PELLET           419      2      2
+ CASTEST MODIF wtnp126b                       pellet J.PELLET           417      2      2
+ CASTEST MODIF wtnp128a                       pellet J.PELLET           476      3      3
+ CASTEST MODIF wtnp128b                       pellet J.PELLET           443      3      3
+ CASTEST MODIF wtnp128c                       pellet J.PELLET           362      3      3
+ CASTEST MODIF wtnp128d                       pellet J.PELLET           376      3      3
+ CASTEST MODIF wtnp129a                       pellet J.PELLET           426      4      3
+ CASTEST MODIF wtnv100b                       pellet J.PELLET           651      3      2
+ CASTEST MODIF wtnv123c                       pellet J.PELLET           832      3      2
+ CASTEST MODIF wtnv124a                       pellet J.PELLET           557      2      2
+ CASTEST MODIF wtnv125a                       pellet J.PELLET           484      3      3
+ CASTEST MODIF wtnv126a                       pellet J.PELLET           853      3      2
+ CASTEST MODIF wtnv128a                       pellet J.PELLET           536      2      2
+ CASTEST MODIF wtnv128b                       pellet J.PELLET           529      3      2
+ CASTEST MODIF wtnv129a                       pellet J.PELLET           537      3      2
+ CASTEST MODIF wtnv129b                       pellet J.PELLET           539      3      2
+ CASTEST MODIF wtnv131a                       pellet J.PELLET           345      2      2
+ CASTEST MODIF wtnv131b                       pellet J.PELLET           284      2      2
+ CASTEST MODIF wtnv133a                       pellet J.PELLET           623      2      2
+ CASTEST MODIF wtnv133b                       pellet J.PELLET           608      3      2
+ CASTEST MODIF wtnv134b                       pellet J.PELLET           522      3      3
+ CASTEST MODIF wtnv136a                       pellet J.PELLET           441      3      2
+ CASTEST MODIF wtnv136b                       pellet J.PELLET           427      3      2
+ CASTEST MODIF wtnv136d                       pellet J.PELLET           448      3      2
+ CASTEST MODIF wtnv137a                       pellet J.PELLET           333      3      2
+ CASTEST MODIF wtnv138a                       pellet J.PELLET           346      2      2
+ CASTEST MODIF zmat008a                       pellet J.PELLET           219      3      3
+ CASTEST MODIF zzzz115a                       pellet J.PELLET           398      2      2
+ CASTEST MODIF zzzz118c                       pellet J.PELLET            37      3      3
+ CASTEST MODIF zzzz120a                     courtois M.COURTOIS         688      7      6
+ CASTEST MODIF zzzz120b                     courtois M.COURTOIS         671      7      6
+ CASTEST MODIF zzzz132a                       pellet J.PELLET           203      3      3
+ CASTEST MODIF zzzz136b                       pellet J.PELLET          1770      4      3
+ CASTEST MODIF zzzz159a                       pellet J.PELLET           113      3      3
+ CASTEST MODIF zzzz159b                       pellet J.PELLET           122      3      3
+ CASTEST MODIF zzzz159c                       pellet J.PELLET           128      4      3
+ CASTEST MODIF zzzz159d                       pellet J.PELLET           124      4      3
+ CASTEST MODIF zzzz159e                       pellet J.PELLET           177      4      3
+ CASTEST MODIF zzzz159f                       pellet J.PELLET           165      3      3
+ CASTEST MODIF zzzz175a                       pellet J.PELLET           307      4      3
+ CASTEST MODIF zzzz175b                       pellet J.PELLET           308      3      3
+ CASTEST MODIF zzzz180a                       pellet J.PELLET           874      3      3
+ CASTEST MODIF zzzz189a                       pellet J.PELLET           297      2      2
+ CASTEST MODIF zzzz200c                       pellet J.PELLET           509      2      2
+ CASTEST MODIF zzzz216a                       pellet J.PELLET           280      3      3
+ CASTEST MODIF zzzz218a                       pellet J.PELLET           358      4      3
+ CASTEST MODIF zzzz231a                       pellet J.PELLET           260      3      3
+ CASTEST MODIF zzzz231b                       pellet J.PELLET           158      3      3
+ CASTEST MODIF zzzz231c                       pellet J.PELLET           143      3      3
+ CASTEST MODIF zzzz233a                       pellet J.PELLET           102      3      3
+ CASTEST MODIF zzzz237a                       pellet J.PELLET           400      3      3
+ CASTEST MODIF zzzz237b                       pellet J.PELLET           270      3      3
+ CASTEST MODIF zzzz241a                       pellet J.PELLET           309      2      2
+ CASTEST MODIF zzzz264a                       pellet J.PELLET           137      2      2
+ CASTEST MODIF zzzz268a                       pellet J.PELLET           216      2      2
+ CASTEST MODIF zzzz272a                       pellet J.PELLET           432      3      3
+ CASTEST MODIF zzzz272b                       pellet J.PELLET           496      3      3
+ CASTEST MODIF zzzz281a                       pellet J.PELLET           108      3      3
+ CASTEST MODIF zzzz285a                       pellet J.PELLET           185      3      3
+ CASTEST MODIF zzzz285b                       pellet J.PELLET           185      3      3
+ CASTEST MODIF zzzz285c                       pellet J.PELLET           188      3      3
+ CASTEST MODIF zzzz285d                       pellet J.PELLET           188      3      3
+ CASTEST MODIF zzzz285e                       pellet J.PELLET           189      3      3
+ CASTEST MODIF zzzz285f                       pellet J.PELLET           189      3      3
+ CASTEST MODIF zzzz286a                       pellet J.PELLET           290      3      3
+ CASTEST MODIF zzzz289a                       pellet J.PELLET           146      2      2
+ CASTEST MODIF zzzz289b                       pellet J.PELLET           146      2      2
+ CASTEST MODIF zzzz289c                       pellet J.PELLET           146      2      2
+ CASTEST MODIF zzzz292a                       pellet J.PELLET           167      3      3
+ CASTEST MODIF zzzz293a                       pellet J.PELLET           206      3      3
+ CASTEST MODIF zzzz293b                       pellet J.PELLET           208      3      3
+ CASTEST MODIF zzzz293c                       pellet J.PELLET           201      3      3
+ CASTEST MODIF zzzz293d                       pellet J.PELLET           201      3      3
+ CASTEST MODIF zzzz294a                       pellet J.PELLET           633      3      3
+ CASTEST MODIF zzzz294b                       pellet J.PELLET           326      3      3
+ CASTEST MODIF zzzz294c                       pellet J.PELLET           434      3      3
+ CASTEST MODIF zzzz294d                       pellet J.PELLET            88      3      3
+ CASTEST MODIF zzzz295a                       pellet J.PELLET           436      3      3
+ CASTEST MODIF zzzz295b                       pellet J.PELLET           436      3      3
+ CASTEST MODIF zzzz295c                       pellet J.PELLET           464      3      3
+ CASTEST MODIF zzzz296a                       pellet J.PELLET           196      3      3
+ CASTEST MODIF zzzz298c                       pellet J.PELLET           309      2      2
+ CASTEST MODIF zzzz299a                       pellet J.PELLET            89      3      3
+ CASTEST MODIF zzzz299b                       pellet J.PELLET            86      3      3
+ CASTEST MODIF zzzz306c                       pellet J.PELLET           108     29      1
+CATALOGU MODIF typelem/gener_mecpl2_xht       massin P.MASSIN           318     58     54
+CATALOGU MODIF typelem/gener_mecpl2_xt        massin P.MASSIN           319     53     43
+CATALOGU MODIF typelem/gener_medpl2_xht       massin P.MASSIN           312     59     54
+CATALOGU MODIF typelem/gener_medpl2_xt        massin P.MASSIN           313     59     50
+CATALOPY MODIF commande/calc_erreur         courtois M.COURTOIS         100      3      3
+CATALOPY MODIF commande/comb_sism_modal     chansard F.CHANSARD         132      7      3
+CATALOPY MODIF commande/info_exec_aster     courtois M.COURTOIS          37      3      3
+CATALOPY MODIF commande/post_releve_t       courtois M.COURTOIS         170      4      4
+       C MODIF supervis/astermodule         courtois M.COURTOIS        3176     40    799
+       C MODIF supervis/aster_utils         courtois M.COURTOIS         466    331     11
+       C MODIF supervis/python              courtois M.COURTOIS          79      4      2
+       C MODIF supervis/spec_osci           courtois M.COURTOIS         170      4      5
+       C MODIF utilitai/envima              courtois M.COURTOIS         193      2      5
+       C MODIF utilitai/rmfile              courtois M.COURTOIS          75     15     13
+       C MODIF utilitai/uttrst              courtois M.COURTOIS          36      4      5
+       C SUPPR utilitai/asterm              courtois M.COURTOIS         348      0    348
+       C SUPPR utilitai/iniast              courtois M.COURTOIS          55      0     55
+       C SUPPR utilitai/isdbgj              courtois M.COURTOIS          38      0     38
+       C SUPPR utilitai/isinte              courtois M.COURTOIS          38      0     38
+       C SUPPR utilitai/issuiv              courtois M.COURTOIS          39      0     39
+       C SUPPR utilitai/iverif              courtois M.COURTOIS          38      0     38
+       C SUPPR utilitai/lsegjv              courtois M.COURTOIS          36      0     36
+       C SUPPR utilitai/maxbas              courtois M.COURTOIS          36      0     36
+       C SUPPR utilitai/mejvdy              courtois M.COURTOIS          35      0     35
+       C SUPPR utilitai/memjob              courtois M.COURTOIS          34      0     34
+       C SUPPR utilitai/memjvx              courtois M.COURTOIS          37      0     37
+       C SUPPR utilitai/mjvsmo              courtois M.COURTOIS          36      0     36
+       C SUPPR utilitai/mjvxmo              courtois M.COURTOIS          35      0     35
+       C SUPPR utilitai/segjvx              courtois M.COURTOIS          36      0     36
+       C SUPPR utilitai/utclim              courtois M.COURTOIS          37      0     37
+       C SUPPR utilitai/uttlim              courtois M.COURTOIS          53      0     53
+       C SUPPR utilitai/vparjv              courtois M.COURTOIS          36      0     36
+ FORTRAN AJOUT algorith/lcrkin                 proix J-M.PROIX          127    127      0
+ FORTRAN AJOUT algorith/lcrksg                 proix J-M.PROIX           74     74      0
+ FORTRAN MODIF algeline/ascorm              chansard F.CHANSARD         357    115     16
+ FORTRAN MODIF algeline/preml1              courtois M.COURTOIS         431      7      7
+ FORTRAN MODIF algorith/asacce              chansard F.CHANSARD         139     22      6
+ FORTRAN MODIF algorith/ascalc              chansard F.CHANSARD         337     27     23
+ FORTRAN MODIF algorith/astron              chansard F.CHANSARD         164     12      9
+ FORTRAN MODIF algorith/calcfe                 proix J-M.PROIX          148      4      4
+ FORTRAN MODIF algorith/gerpas                 proix J-M.PROIX          236     13      8
+ FORTRAN MODIF algorith/lc0000                 proix J-M.PROIX          717      6      6
+ FORTRAN MODIF algorith/lc0031                 proix J-M.PROIX           62      6      6
+ FORTRAN MODIF algorith/lc0032                 proix J-M.PROIX           56      7      7
+ FORTRAN MODIF algorith/lc0037                 proix J-M.PROIX           35     10      8
+ FORTRAN MODIF algorith/lcafyd                 proix J-M.PROIX          129      3      3
+ FORTRAN MODIF algorith/lcdpec                 proix J-M.PROIX          209      4      4
+ FORTRAN MODIF algorith/lcdpeq                 proix J-M.PROIX          147     82     37
+ FORTRAN MODIF algorith/lcmmkg                 proix J-M.PROIX          157      5      5
+ FORTRAN MODIF algorith/lcmmlc                 proix J-M.PROIX          127     20      3
+ FORTRAN MODIF algorith/lcmmon                 proix J-M.PROIX          177     78     72
+ FORTRAN MODIF algorith/nmdocc                 proix J-M.PROIX          285      4     10
+ FORTRAN MODIF algorith/nmvprk                 proix J-M.PROIX          231     31    114
+ FORTRAN MODIF algorith/op0109              chansard F.CHANSARD         450     14      4
+ FORTRAN MODIF algorith/rdif01                 proix J-M.PROIX          112      7      7
+ FORTRAN MODIF algorith/rk21co                 proix J-M.PROIX          111      7      7
+ FORTRAN MODIF calculel/cnsimp                pellet J.PELLET           192      7      2
+ FORTRAN MODIF calculel/ecla2d                pellet J.PELLET           442    100     96
+ FORTRAN MODIF calculel/ecla3d                pellet J.PELLET          1245    250     11
+ FORTRAN MODIF calculel/eclaty                pellet J.PELLET           115     33     26
+ FORTRAN MODIF calculel/eclpgc                pellet J.PELLET           316     20     17
+ FORTRAN MODIF calculel/eclpgm                pellet J.PELLET           422     30     28
+ FORTRAN MODIF calculel/etenca                pellet J.PELLET           201     21     13
+ FORTRAN MODIF calculel/pj2da1                pellet J.PELLET            88      9      6
+ FORTRAN MODIF calculel/pj3da1                pellet J.PELLET            99      8      4
+ FORTRAN MODIF calculel/pjma2p                pellet J.PELLET           289     82     61
+ FORTRAN MODIF elements/te0036                massin P.MASSIN           510      3      2
+ FORTRAN MODIF elements/te0046                massin P.MASSIN           183      3      2
+ FORTRAN MODIF elements/te0109                pellet J.PELLET           248      2      3
+ FORTRAN MODIF elements/te0261                massin P.MASSIN           130      4      3
+ FORTRAN MODIF elements/te0288                massin P.MASSIN           251      3      2
+ FORTRAN MODIF elements/te0297                massin P.MASSIN           229      4      3
+ FORTRAN MODIF elements/te0440                massin P.MASSIN           168      3      2
+ FORTRAN MODIF elements/te0441                massin P.MASSIN           187      3      2
+ FORTRAN MODIF elements/te0514                massin P.MASSIN           409      4      3
+ FORTRAN MODIF elements/te0539                massin P.MASSIN           333      4      3
+ FORTRAN MODIF elements/te0542                massin P.MASSIN           115      4      3
+ FORTRAN MODIF jeveux/jedebu                courtois M.COURTOIS         246      5      6
+ FORTRAN MODIF jeveux/jeimhd                courtois M.COURTOIS         335     12     10
+ FORTRAN MODIF jeveux/jeinif                courtois M.COURTOIS         614      6     13
+ FORTRAN MODIF jeveux/jelihd                courtois M.COURTOIS         595      4     10
+ FORTRAN MODIF jeveux/jexatr                  pellet J.PELLET            91     21      4
+ FORTRAN MODIF prepost/irmdes               courtois M.COURTOIS         131     13     42
+ FORTRAN MODIF prepost/irtitr               courtois M.COURTOIS         126      4      6
+ FORTRAN MODIF prepost/w039c1                 pellet J.PELLET           199     11      7
+ FORTRAN MODIF prepost/w039c2                 pellet J.PELLET           104      9      9
+ FORTRAN MODIF supervis/ex0000              courtois M.COURTOIS         347      6      6
+ FORTRAN MODIF supervis/ex0100              courtois M.COURTOIS         347      5      5
+ FORTRAN MODIF supervis/ib0mai              courtois M.COURTOIS          76     12     25
+ FORTRAN MODIF supervis/ibmain              courtois M.COURTOIS          51      4      4
+ FORTRAN MODIF supervis/ibtcpu              courtois M.COURTOIS          95     17     16
+ FORTRAN MODIF utilitai/fetskp              courtois M.COURTOIS         535      7      7
+ FORTRAN MODIF utilitai/titreb              courtois M.COURTOIS         537      9     13
+ FORTRAN SUPPR utilitai/errlic              courtois M.COURTOIS          69      0     69
+ FORTRAN SUPPR utilitai/lmemex              courtois M.COURTOIS          34      0     34
+ FORTRAN SUPPR utilitai/nodnam              courtois M.COURTOIS          40      0     40
+ FORTRAN SUPPR utilitai/origin              courtois M.COURTOIS          36      0     36
+       H AJOUT include/aster_core           courtois M.COURTOIS          56     56      0
+       H AJOUT include/aster_module         courtois M.COURTOIS          40     40      0
+       H MODIF include/aster                courtois M.COURTOIS          76      2      9
+       H MODIF include/aster_fort           courtois M.COURTOIS         172      5     65
+       H MODIF include/aster_utils          courtois M.COURTOIS          54     19      5
+  PYTHON AJOUT Execution/E_Core             courtois M.COURTOIS         381    381      0
+  PYTHON MODIF Calc_essai/ce_calcul_identification   courtois M.COURTOIS         434      5      4
+  PYTHON MODIF Calc_essai/outils_ihm        courtois M.COURTOIS        1887      5      4
+  PYTHON MODIF Cata/ops                     courtois M.COURTOIS         477      3      4
+  PYTHON MODIF Comportement/hoek_brown         proix J-M.PROIX           40      3      3
+  PYTHON MODIF Comportement/visc_isot_line      proix J-M.PROIX           38      3      3
+  PYTHON MODIF Comportement/visc_isot_trac      proix J-M.PROIX           38      3      3
+  PYTHON MODIF Execution/E_JDC              courtois M.COURTOIS         391     10      6
+  PYTHON MODIF Execution/E_SUPERV           courtois M.COURTOIS         361     40     97
+  PYTHON MODIF Execution/i18n               courtois M.COURTOIS          65      3      3
+  PYTHON MODIF Mac3coeur/calc_mac3coeur_ops   courtois M.COURTOIS         364      4      3
+  PYTHON MODIF Mac3coeur/post_mac3coeur_ops   courtois M.COURTOIS         471      4      3
+  PYTHON MODIF Macro/dyna_iss_vari_ops      courtois M.COURTOIS         606      5      4
+  PYTHON MODIF Macro/exec_logiciel_ops      courtois M.COURTOIS         489      6      5
+  PYTHON MODIF Macro/include_materiau_ops   courtois M.COURTOIS         154      9      7
+  PYTHON MODIF Macro/macr_adap_mail_ops     courtois M.COURTOIS        1547      4      3
+  PYTHON MODIF Macro/macr_ascouf_mail_ops   courtois M.COURTOIS        2632      5      4
+  PYTHON MODIF Macro/macr_aspic_mail_ops    courtois M.COURTOIS         908      6      4
+  PYTHON MODIF Macro/macr_ecre_calc_ops     courtois M.COURTOIS         580      5      4
+  PYTHON MODIF Macro/macr_ecrevisse_ops     courtois M.COURTOIS         724      3      2
+  PYTHON MODIF Macro/macro_miss_3d_ops      courtois M.COURTOIS         172      4      4
+  PYTHON MODIF Macro/macr_recal_ops         courtois M.COURTOIS         729      4      3
+  PYTHON MODIF Macro/reca_algo              courtois M.COURTOIS         297      5      4
+  PYTHON MODIF Macro/reca_calcul_aster      courtois M.COURTOIS         545      4      3
+  PYTHON MODIF Macro/recal                  courtois M.COURTOIS        1539      6      5
+  PYTHON MODIF Messages/compor1                proix J-M.PROIX          371      2      6
+  PYTHON MODIF Messages/execlogiciel0       courtois M.COURTOIS         194      5      5
+  PYTHON MODIF Messages/jeveux1               pellet J.PELLET           439      2      2
+  PYTHON MODIF Messages/seisme              chansard F.CHANSARD         189     10      2
+  PYTHON MODIF Messages/supervis2           courtois M.COURTOIS         155     10      1
+  PYTHON MODIF Miss/miss_calcul             courtois M.COURTOIS         315      4      3
+  PYTHON MODIF SD/sd_char_meca                pellet J.PELLET           109      2      1
+  PYTHON MODIF Stanley/stanley_engine       courtois M.COURTOIS        3359      5      4
+  PYTHON MODIF Stanley/xmgrace              courtois M.COURTOIS         268      4      3
+  PYTHON MODIF Utilitai/Graph               courtois M.COURTOIS        1210      6      5
+  PYTHON MODIF Utilitai/partition           courtois M.COURTOIS        1325      6      5
+  PYTHON MODIF Utilitai/Utmess              courtois M.COURTOIS         722      5      4
+  PYTHON SUPPR Execution/E_Global           courtois M.COURTOIS           0      0      0
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   10        2788      2788             +2788
+ MODIF :  841      312870      4466    4172      +294
+ SUPPR :   22        1146              1146     -1146
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  873      316804      7254    5318     +1936 

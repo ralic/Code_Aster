@@ -1,4 +1,4 @@
-#@ MODIF include_materiau_ops Macro  DATE 04/01/2012   AUTEUR SELLENET N.SELLENET 
+#@ MODIF include_materiau_ops Macro  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,10 +18,6 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE COURTOIS M.COURTOIS
-
-import os.path as osp
-import pprint
-from math import pow
 
 """Macro-commande INCLUDE_MATERIAU
 
@@ -48,15 +44,21 @@ Définition des mots-clés et fonctions utilisables dans les catalogues :
 On définit ici la liste des commandes utilisables dans un matériau.
 """
 
+import os.path as osp
+import pprint
+from math import pow
+
+import aster_core
+
 EXTR = 'extraction'
 FTEMP = 'temp_eval'
 FCOEF = 'coef_unit'
 DEFI_MOTSCLES = 'defi_motscles'
 MOTSCLES = 'motscles'
-COMMANDES = [ 
-    'DEFI_LIST_REEL', 'DEFI_FONCTION', 'DEFI_CONSTANTE', 'DEFI_NAPPE', 
-    'FORMULE', 'CALC_FONCTION', 'CALC_FONC_INTERP', 
-    'DETRUIRE', 
+COMMANDES = [
+    'DEFI_LIST_REEL', 'DEFI_FONCTION', 'DEFI_CONSTANTE', 'DEFI_NAPPE',
+    'FORMULE', 'CALC_FONCTION', 'CALC_FONC_INTERP',
+    'DETRUIRE',
 ]
 
 def build_context(unite, temp):
@@ -100,8 +102,8 @@ def include_materiau_ops(self, NOM_AFNOR, TYPE_MODELE, VARIANTE, TYPE_VALE,
     self.DeclareOut('MAT', self.sd)
 
     bnmat = ''.join([NOM_AFNOR, '_', TYPE_MODELE, '_', VARIANTE, '.', TYPE_VALE])
-    rep_mat = self.jdc.args.get("rep_mat")
-    fmat = osp.join(rep_mat, bnmat)
+    repmat = aster_core.get_option("repmat")
+    fmat = osp.join(repmat, bnmat)
     if not osp.exists(fmat):
         UTMESS('F', 'FICHIER_1', valk=fmat)
 

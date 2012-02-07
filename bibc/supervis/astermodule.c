@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 09/01/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -24,19 +24,17 @@
 #include <ctype.h>
 
 #include "aster.h"
+#include "aster_module.h"
+#include "aster_core.h"
 #include "aster_fort.h"
 #include "aster_utils.h"
 
-/* --- declarations des interfaces des fonctions de ce fichier --- */
+/*
+ *   PRIVATE FUNCTIONS
+ *
+ */
 
-static PyObject *aster_argv( _UNUSED  PyObject *self, _IN PyObject *args ) ;
-
-int EstPret( _IN char *chaine , _IN STRING_SIZE longueur ) ;
-void AfficheChaineFortran( _IN char *chaine , _IN STRING_SIZE longueur ) ;
 void TraiteMessageErreur( _IN char* ) ;
-void PRE_myabort( _IN const char *nomFichier , _IN const int numeroLigne , _IN const char *message ) ;
-#define MYABORT(message) PRE_myabort( __FILE__ , __LINE__ , message )
-
 
 void convert( _IN int nval, _IN PyObject *tup, _OUT INTEGER *val) ;
 void convertxt( _IN int nval, _IN PyObject *tup, _OUT char *val, _IN STRING_SIZE taille) ;
@@ -50,9 +48,6 @@ PyObject * MakeTupleInt(long nbval, INTEGER* kval);
 PyObject * MakeListInt(long nbval, INTEGER* kval);
 PyObject * MakeTupleFloat(long nbval,DOUBLE* kval);
 PyObject * MakeListFloat(long nbval,DOUBLE* kval);
-
-/* --- FIN declarations des interfaces des fonctions de ce fichier --- */
-
 
 
 #define _UTILISATION_SETJMP_
@@ -137,7 +132,6 @@ static int jeveux_status = 0;
 /* commande (la commande courante) est definie par les fonctions aster_debut et aster_oper */
 static PyObject *commande       = (PyObject*)0 ;
 static PyObject *pile_commandes = (PyObject*)0 ;
-static PyObject *static_module  = (PyObject*)0 ;
 static PyObject *except_module = NULL;
 
 /* NomCas est initialise dans aster_debut() */
@@ -146,8 +140,6 @@ static PyObject *except_module = NULL;
    pas encore NomCas qui sera initialise lors de l'appel a RecupNomCas */
 static char *NomCas          = "        ";
 
-/* ------------------------------------------------------------------ */
-#define CALL_ISJVUP() F_FUNC(ISJVUP, isjvup)()
 
 INTEGER F_FUNC(ISJVUP, isjvup)()
 {
@@ -155,8 +147,6 @@ INTEGER F_FUNC(ISJVUP, isjvup)()
    return (INTEGER)jeveux_status;
 }
 
-
-/* ------------------------------------------------------------------ */
 void F_FUNC(XFINI,xfini)(_IN INTEGER *code)
 {
    /* XFINI est n'appelé que par JEFINI avec code=19 (=CodeFinAster) */
@@ -165,7 +155,7 @@ void F_FUNC(XFINI,xfini)(_IN INTEGER *code)
 
    TraiteErreur(*code);
 }
-/* ------------------------------------------------------------------ */
+
 
 void initExceptions(PyObject *dict)
 {
@@ -279,19 +269,14 @@ void PRE_myabort( _IN const char *nomFichier , _IN const int numeroLigne , _IN c
         char *chaine = (char*)0 ;
         int longueur = 0 ;
         void *malloc(size_t size);
-                                                        ASSERT(numeroLigne>0);
-                                                        ASSERT(((int)log10((float)numeroLigne))<=5);
-                                                        ASSERT(nomFichier!=(char*)0) ;
         longueur += strlen( nomFichier ) ;
         longueur += 1 ; /* pour le blanc de separation */
         longueur += 5 ; /* pour le numero de la ligne */
         longueur += 3 ; /* pour les deux points entre deux blancs */
-                                                        ASSERT(message!=(const char*)0);
         longueur += ( message != (const char*)0 ) ? strlen( message ) : 0 ;
         longueur += 1 ; /* pour le caractere de fin de chaine */
 
         chaine = (char*)(malloc(longueur*sizeof(char))) ;
-                                                        ASSERT(chaine!=(char*)0);
         sprintf( chaine , "%s %u : %s" , nomFichier , numeroLigne , message ) ;
         TraiteMessageErreur( chaine ) ;
 
@@ -320,7 +305,6 @@ void DEFSSPPPPP(GETLTX,getltx,_IN char *motfac,_IN STRING_SIZE lfac,
 
         mfc = MakeCStrFromFStr(motfac,lfac);
                                                         ASSERT(mfc!=(char*)0);
-                                                        ASSERT(EstPret(motcle,lcle)!=0);
         mcs = MakeCStrFromFStr(motcle,lcle);
                                                         ASSERT(mcs!=(char*)0);
         ioc=(int)*iocc ;
@@ -359,7 +343,6 @@ void DEFSP(GETFAC,getfac,_IN char *nomfac, _IN STRING_SIZE lfac, _OUT INTEGER *o
         */
         PyObject *res  = (PyObject*)0 ;
         char *mfc;
-                                                        ASSERT(EstPret(nomfac,lfac)!=0);
                                                         ASSERT(commande!=(PyObject*)0);
         mfc = MakeCStrFromFStr(nomfac, lfac);
         res=PyObject_CallMethod(commande,"getfac","s",mfc);
@@ -373,187 +356,6 @@ void DEFSP(GETFAC,getfac,_IN char *nomfac, _IN STRING_SIZE lfac, _OUT INTEGER *o
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
         FreeStr(mfc);
         return ;
-}
-
-
-/* ------------------------------------------------------------------ */
-void convc8( _IN int nval, _IN PyObject *tup, _OUT DOUBLE *val)
-{
-        /*
-                  tup est un tuple de tuples internes, chaque tuple
-                interne contenant le type et les deux parties du complexe.
-        */
-        int    i = 0 ;
-        int    k = 0 ;
-        int conv_un_c8( _IN PyObject *tup, _OUT DOUBLE *val) ;
-                                                                    ASSERT(PyTuple_Check(tup)) ;
-        if(nval != 0){
-                PyObject *v = (PyObject*)0 ;
-                                                                    ASSERT(nval>0) ;
-                for(i=0;i<nval;i++){
-                        v=PyTuple_GetItem(tup,i);
-                        k += conv_un_c8( v , val+k ) ;
-                }
-        }
-        return ;
-}
-
-/* ------------------------------------------------------------------ */
-int conv_un_c8( _IN PyObject *tup, _OUT DOUBLE *val)
-{
-
-        /* Enrichissement des complexes stockes dans val a partir du tuple tup */
-
-        char *repres = (char*)0 ; /* representation "RI" (reelle/imaginaire) ou "MP" (module phase) */
-        double x = 0.0 ;
-        double y = 0.0 ;
-        double *rho = &x ;
-        double *theta = &y ;
-        if(PyComplex_Check(tup)||PyFloat_Check(tup)||PyLong_Check(tup)||PyInt_Check(tup)){
-           /* On est dans le cas d'un objet Python complexe */
-           /* representation : partie reelle/partie imaginaire */
-           *val    =(DOUBLE)PyComplex_RealAsDouble(tup)  ;
-           *(val+1)=(DOUBLE)PyComplex_ImagAsDouble(tup)  ;
-        }
-        else if(PyTuple_Check(tup)){
-           /* On est dans le cas d'un complexe représenté par un triplet : "RI" ou "MP",x,y */
-           if(!PyArg_ParseTuple(tup,"sdd",&repres,&x,&y))
-                     MYABORT("erreur dans la partie Python");
-                                                                                     ASSERT((strcmp(repres,"RI")==0)||(strcmp(repres,"MP")==0)) ;
-           if (strcmp(repres,"RI")==0){
-                /* representation : partie reelle/partie imaginaire */
-                *val    =(DOUBLE)x ;
-                *(val+1)=(DOUBLE)y ;
-           }
-           else{
-                /* representation RHO,THETA (les angles sont fournis en degres) */
-                *val    =(DOUBLE)(*rho * cos( *theta /180. * R8PI()) );
-                *(val+1)=(DOUBLE)(*rho * sin( *theta /180. * R8PI()) );
-           }
-        }
-        else {
-           MYABORT("erreur dans la partie Python");
-        }
-        return 2 ;
-}
-
-
-/* ------------------------------------------------------------------ */
-void convr8( _IN int nval, _IN PyObject *tup, _OUT DOUBLE *val)
-{
-        /* Convertit un Tuple en tableau de double */
-        int i;
-        PyObject *v = (PyObject*)0 ;
-        if(nval == 0)return;
-        if (!PyTuple_Check(tup)){
-                printf("tup : ");
-                PyObject_Print(tup, stdout, 0);
-                printf("\n ");
-                MYABORT("erreur sur le type : devrait etre un tuple");
-        }
-        for(i=0;i<nval;i++){
-                v=PyTuple_GetItem(tup,i);
-                val[i]=(DOUBLE)PyFloat_AsDouble(v);
-        }
-        return ;
-}
-
-
-/* ------------------------------------------------------------------ */
-void convert( _IN int nval, _IN PyObject *tup, _OUT INTEGER *val)
-{
-    /* Convertit un Tuple en tableau d entier */
-    int i;
-    PyObject *v = (PyObject*)0 ;
-    if(nval == 0)return;
-    if (!PyTuple_Check(tup)){
-        printf("tup : ");
-        PyObject_Print(tup, stdout, 0);
-        printf("\n ");
-        MYABORT("erreur sur le type : devrait etre un tuple");
-    }
-    for(i=0;i<nval;i++){
-        v=PyTuple_GetItem(tup,i);
-        val[i]=(INTEGER)PyInt_AsLong(v);
-    }
-    return ;
-}
-
-
-/* ------------------------------------------------------------------ */
-void convertxt( _IN int nval, _IN PyObject *tup, _OUT char *val, _IN STRING_SIZE taille)
-{
-    /* Convertit un Tuple en tableau de chaines
-     * Pour retour au Fortran : le tableau existe deja (val)
-     *  nval   : indique le nombre d'elements du tuple a convertir
-     *  tup    : est le tuple Python a convertir
-     *  val    : est le tableau de chaines Fortran a remplir
-     *  taille : indique la taille des chaines
-     */
-    PyObject *v  = (PyObject*)0 ;
-    int i;
-    char *s      = (char*)0 ;
-                                                               ASSERT(PyTuple_Check(tup)) ;
-    if(nval != 0){
-                                                               ASSERT(nval>0) ;
-                                                               ASSERT(taille>0) ;
-        if (!PyTuple_Check(tup)){
-            printf("tup : ");
-            PyObject_Print(tup, stdout, 0);
-            printf("\n ");
-            MYABORT("erreur sur le type : devrait etre un tuple");
-        }
-        for(i=0;i<nval;i++){
-            v=PyTuple_GetItem(tup,i);
-            /*                               v=PySequence_GetItem(tup,i); */
-            s=PyString_AsString(v);
-            if(s == NULL){
-                printf("s : ");
-                PyObject_Print(v, stdout, 0);
-                printf("\n ");
-                MYABORT("erreur sur le type : devrait etre une string");
-            }
-
-            /* le fortran attend des chaines de caracteres completees par des blancs */
-            SetTabFStr(val, i, s, taille);
-        }
-    }
-}
-
-
-/* ------------------------------------------------------------------ */
-void converltx( _IN int nval, _IN PyObject *tup, _OUT char *val, _IN STRING_SIZE taille)
-{
-    /* Convertit une Liste  en tableau de chaines
-     * Pour retour au Fortran : le tableau existe deja (val)
-     */
-    PyObject *v = (PyObject*)0 ;
-    int i;
-    char *s = (char*)0 ;
-
-    if(nval != 0){
-        if (!PyList_Check(tup)){
-            printf("tup : ");
-            PyObject_Print(tup, stdout, 0);
-            printf("\n ");
-            MYABORT("erreur sur le type : devrait etre une liste");
-        }
-        for(i=0;i<nval;i++){
-            v=PyList_GetItem(tup,i);
-            /* v=PySequence_GetItem(tup,i); */
-            s=PyString_AsString(v);
-            if(s == NULL){
-                printf("s : ");
-                PyObject_Print(v, stdout, 0);
-                printf("\n ");
-                MYABORT("erreur sur le type : devrait etre une string");
-            }
-
-            /* le fortran attend des chaines de caracteres completees par des blancs */
-            SetTabFStr(val, i, s, taille);
-        }
-    }
-    return ;
 }
 
 
@@ -585,7 +387,6 @@ void F_FUNC(GETRAN,getran)(_OUT DOUBLE *rval)
     return ;
 }
 
-
 /* ------------------------------------------------------------------ */
 void DEFP(INIRAN,iniran,_IN INTEGER *jump)
 {
@@ -599,7 +400,6 @@ void DEFP(INIRAN,iniran,_IN INTEGER *jump)
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
         return ;
 }
-
 
 /* ------------------------------------------------------------------ */
 void DEFSS(GETTCO,gettco,_IN char *nomobj, _IN STRING_SIZE lnom,
@@ -625,7 +425,6 @@ void DEFSS(GETTCO,gettco,_IN char *nomobj, _IN STRING_SIZE lnom,
         nomType=PyString_AsString(res);
                                                               ASSERT(nomType!=(char*)0) ;
         CopyCStrToFStr(typobj, nomType, ltyp);
-                                                              ASSERT(EstPret(typobj,ltyp)) ;
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
         FreeStr(mcs);
         return ;
@@ -859,7 +658,6 @@ void DEFSSPPPPP(GETVC8,getvc8,_IN char *motfac,_IN STRING_SIZE lfac,
         int ioc        = 0 ;
         char *mfc      = (char*)0 ;
         char *mcs      = (char*)0 ;
-                                                        ASSERT(EstPret(motcle,lcle)!=0);
         mfc = MakeCStrFromFStr(motfac,lfac);
                                                         ASSERT(mfc!=(char*)0);
         mcs = MakeCStrFromFStr(motcle,lcle);
@@ -932,7 +730,6 @@ void DEFSSPPPPP(GETVR8,getvr8,_IN char *motfac,_IN STRING_SIZE lfac,
         int ioc        = 0 ;
         char *mfc      = (char*)0 ;
         char *mcs      = (char*)0 ;
-                                                        ASSERT(EstPret(motcle,lcle)!=0);
         mfc = MakeCStrFromFStr(motfac,lfac); /* conversion chaine fortran en chaine C */
                                                         ASSERT(mfc!=(char*)0);
         mcs = MakeCStrFromFStr(motcle,lcle);
@@ -974,100 +771,6 @@ void DEFSSPPPPP(GETVR8,getvr8,_IN char *motfac,_IN STRING_SIZE lfac,
         return ;
 }
 
-
-/* ------------------------------------------------------------------ */
-void DEFSSPSPPPP(UTPRIN,utprin, _IN char *typmess, _IN STRING_SIZE ltype,
-                                _IN char *idmess, _IN STRING_SIZE lidmess,
-                                _IN INTEGER *nbk, _IN char *valk, _IN STRING_SIZE lvk,
-                                _IN INTEGER *nbi, _IN INTEGER *vali,
-                                _IN INTEGER *nbr, _IN DOUBLE *valr)
-{
-   /*
-      Interface Fortran/Python pour l'affichage des messages
-   */
-        PyObject *tup_valk,*tup_vali,*tup_valr,*res;
-        char *kvar;
-        int i;
-
-        tup_valk = PyTuple_New( (Py_ssize_t)*nbk ) ;
-        for(i=0;i<*nbk;i++){
-           kvar = valk + i*lvk;
-           PyTuple_SetItem( tup_valk, i, PyString_FromStringAndSize(kvar,(Py_ssize_t)lvk) ) ;
-        }
-
-        tup_vali = PyTuple_New( (Py_ssize_t)*nbi ) ;
-        for(i=0;i<*nbi;i++){
-           PyTuple_SetItem( tup_vali, i, PyInt_FromLong((long)vali[i]) ) ;
-        }
-
-        tup_valr = PyTuple_New( (Py_ssize_t)*nbr ) ;
-        for(i=0;i<*nbr;i++){
-           PyTuple_SetItem( tup_valr, i, PyFloat_FromDouble((double)valr[i]) ) ;
-        }
-
-        res=PyObject_CallMethod(static_module,"MessageLog","s#s#OOO",typmess,ltype,idmess,lidmess,tup_valk,tup_vali,tup_valr);
-        if (!res) {
-           MYABORT("erreur lors de l'appel a MessageLog");
-        }
-
-        Py_DECREF(tup_valk);
-        Py_DECREF(tup_vali);
-        Py_DECREF(tup_valr);
-        Py_DECREF(res);
-}
-
-/* ------------------------------------------------------------------ */
-void DEFPP(CHKMSG,chkmsg, _IN INTEGER *info_alarm, _OUT INTEGER *iret)
-{
-   /*
-      Interface Fortran/Python pour la vérification que tout s'est bien
-      passé, destinée à etre appelée dans FIN ou au cours d'une commande.
-      Argument IN :
-         info_alarm = 1  on vérifie si les alarmes ignorées ont été émises ou non.
-                    = 0  on ne fait pas cette vérif
-      Retourne :
-         iret = 0   tout est ok
-         iret > 0   erreur
-   */
-   PyObject *res, *mess_log;
-
-   mess_log = PyObject_GetAttrString(static_module, "MessageLog");
-   if (!mess_log) {
-      MYABORT("erreur lors de l'acces a l'objet MessageLog.");
-   }
-
-   res = PyObject_CallMethod(mess_log, "check_counter", "i", (int)*info_alarm);
-   if (!res) {
-      MYABORT("erreur lors de l'appel a la methode MessageLog.check_counter");
-   }
-   *iret = (INTEGER)PyLong_AsLong(res);
-
-   Py_DECREF(res);
-   Py_DECREF(mess_log);
-}
-
-/* ------------------------------------------------------------------ */
-void DEFSSP(CHEKSD,cheksd,_IN char *nomsd,_IN STRING_SIZE lnom,
-                          _IN char *typsd,_IN STRING_SIZE ltyp,
-                         _OUT INTEGER *iret)
-{
-   /*
-      Interface Fortran/C pour vérifier que la structure de données `nomsd`
-      est conforme au type `typsd`.
-
-      Exemple d'appel :
-         CALL CHEKSD('MA', 'sd_maillage', IRET)
-   */
-   PyObject *res;
-
-   res = PyObject_CallMethod(static_module,"checksd","s#s#",nomsd,lnom,typsd,ltyp);
-   if (!res) {
-      MYABORT("erreur lors de l'appel a la methode CHECKSD");
-   }
-   *iret = (INTEGER)PyLong_AsLong(res);
-
-   Py_DECREF(res);
-}
 
 /* ------------------------------------------------------------------ */
 void DEFSPSPPSP(FIINTF,fiintf,_IN char *nomfon,_IN STRING_SIZE lfon,
@@ -1159,7 +862,6 @@ void DEFSSPPPPP(GETVIS,getvis,_IN char *motfac,_IN STRING_SIZE lfac,
         char *mfc      = (char*)0 ;
         char *mcs      = (char*)0 ;
                                                         ASSERT((*iocc>0)||(FStrlen(motfac,lfac)==0));
-                                                        ASSERT(EstPret(motcle,lcle)!=0);
         mfc = MakeCStrFromFStr(motfac,lfac); /* conversion chaine fortran en chaine C */
                                                         ASSERT(mfc!=(char*)0);
         mcs = MakeCStrFromFStr(motcle,lcle);
@@ -1244,7 +946,6 @@ void DEFSSPPPPP(GETVLS,getvls,_IN char *motfac,_IN STRING_SIZE lfac,
         char *mfc      = (char*)0 ;
         char *mcs      = (char*)0 ;
                                                         ASSERT((*iocc>0)||(FStrlen(motfac,lfac)==0));
-                                                        ASSERT(EstPret(motcle,lcle)!=0);
         mfc = MakeCStrFromFStr(motfac,lfac); /* conversion chaine fortran en chaine C */
                                                         ASSERT(mfc!=(char*)0);
         mcs = MakeCStrFromFStr(motcle,lcle);
@@ -1445,162 +1146,6 @@ void DEFSSPPPSP(GETVID,getvid,_IN char *motfac,_IN STRING_SIZE lfac,
         FreeStr(mfc);
         FreeStr(mcs);
         return ;
-}
-
-/* ------------------------------------------------------------------ */
-PyObject * MakeTupleString(long nbval,char *kval,STRING_SIZE lkval,INTEGER *lval)
-{
-   /*
-            Entrees:
-               nbval nombre de chaines dans kval
-               kval  tableau de nbval chaines FORTRAN
-               lkval longueur des chaines FORTRAN (compilateur)
-               lval  longueur des nbval chaines FORTRAN (utilisateur)
-            Sorties:
-               RETOUR fonction : tuple de string Python de longueur nbval
-            Fonction:
-               Convertir un tableau de chaines FORTRAN en un tuple de string Python de meme longueur
-   */
-    int i;
-    int len;
-    char *deb=kval;
-    PyObject *tupl;
-    tupl = PyTuple_New((Py_ssize_t)nbval);
-    for(i=0;i<nbval;i++){
-     if (lval) {
-        len = (int)lval[i];
-     } else {
-        len = lkval;
-     }
-     if( PyTuple_SetItem(tupl,i,PyString_FromStringAndSize(deb,FStrlen(deb,len)))) {
-        Py_DECREF(tupl);
-        return NULL;
-     }
-     deb=deb+lkval;
-    }
-    return tupl;
-}
-
-/* ------------------------------------------------------------------ */
-PyObject * MakeListString( long nbval,char *kval,STRING_SIZE lkval )
-{
-   /*
-            Entrees:
-               nbval nombre de chaines dans kval
-               kval  tableau de nbval chaines FORTRAN
-               lkval longueur des chaines FORTRAN (compilateur)
-            Sorties:
-               RETOUR fonction : tuple de string Python de longueur nbval les espaces terminant la
-               chaine sont supprimes
-            Fonction:
-               Convertir un tableau de chaines FORTRAN en un tuple de string Python de meme longueur
-   */
-   int i;
-   char *deb=kval;
-   PyObject *l=PyList_New((Py_ssize_t)nbval);
-   for(i=0;i<nbval;i++){
-      if( PyList_SetItem(l,i,PyString_FromStringAndSize(deb,FStrlen(deb,lkval)))) {
-         Py_DECREF(l);
-         return NULL;
-      }
-      deb=deb+lkval;
-   }
-   return l;
-}
-
-
-/* ------------------------------------------------------------------ */
-PyObject * MakeTupleInt(long nbval,INTEGER* kval)
-{
-   /*
-            Entrees:
-               nbval nombre d'entiers dans kval
-               kval  tableau de nbval INTEGER FORTRAN
-            Sorties:
-               RETOUR fonction : tuple de int Python de longueur nbval
-            Fonction:
-               Convertir un tableau de INTEGER FORTRAN en un tuple de int Python de meme longueur
-   */
-    int i;
-    PyObject * tupl;
-    tupl = PyTuple_New((Py_ssize_t)nbval);
-    for(i=0;i<nbval;i++){
-        if(PyTuple_SetItem(tupl,i,PyInt_FromLong((long)kval[i]))) {
-            Py_DECREF(tupl);
-            return NULL;
-        }
-    }
-    return tupl;
-}
-
-/* ------------------------------------------------------------------ */
-PyObject * MakeListInt(long nbval,INTEGER* kval)
-{
-   /*
-            Entrees:
-               nbval nombre d'entiers dans kval
-               kval  tableau de nbval INTEGER FORTRAN
-            Sorties:
-               RETOUR fonction : liste de int Python de longueur nbval
-            Fonction:
-               Convertir un tableau de INTEGER FORTRAN en une liste de int Python de meme longueur
-   */
-   int i;
-   PyObject *l=PyList_New((Py_ssize_t)nbval);
-   for(i=0;i<nbval;i++){
-      if (PyList_SetItem(l,i,PyInt_FromLong((long)kval[i]))) {
-         Py_DECREF(l);
-         return NULL;
-      }
-   }
-   return l;
-}
-
-/* ------------------------------------------------------------------ */
-PyObject * MakeTupleFloat(long nbval,DOUBLE * kval)
-{
-   /*
-            Entrees:
-               nbval nombre de reels dans kval
-               kval  tableau de nbval double FORTRAN
-            Sorties:
-               RETOUR fonction : tuple de float Python de longueur nbval
-            Fonction:
-               Convertir un tableau de double FORTRAN en un tuple de float Python de meme longueur
-   */
-    int i;
-    PyObject * tupl;
-    tupl = PyTuple_New((Py_ssize_t)nbval);
-    for(i=0;i<nbval;i++){
-        if(PyTuple_SetItem(tupl,i,PyFloat_FromDouble((double)kval[i]))) {
-            Py_DECREF(tupl);
-            return NULL;
-        }
-    }
-    return tupl;
-}
-
-/* ------------------------------------------------------------------ */
-PyObject * MakeListFloat(long nbval,DOUBLE * kval)
-{
-   /*
-            Entrees:
-               nbval nombre de reels dans kval
-               kval  tableau de nbval double FORTRAN
-            Sorties:
-               RETOUR fonction : list de float Python de longueur nbval
-            Fonction:
-               Convertir un tableau de double FORTRAN en une liste de float Python de meme longueur
-   */
-   int i;
-   PyObject *l=PyTuple_New((Py_ssize_t)nbval);
-   for(i=0;i<nbval;i++){
-      if(PyList_SetItem(l,i,PyFloat_FromDouble((double)kval[i]))) {
-         Py_DECREF(l);
-         return NULL;
-      }
-   }
-   return l;
 }
 
 
@@ -2616,75 +2161,6 @@ PyObject *args;
 }
 
 /* ------------------------------------------------------------------ */
-INTEGER DEFS(JDCGET,jdcget,char *attr, STRING_SIZE l_attr)
-{
-/*
-   Permet de récupérer la valeur entière d'un attribut du jdc.
-*/
-   PyObject *jdc, *val;
-   INTEGER value;
-
-   jdc = PyObject_GetAttrString(commande, "jdc");
-   if (jdc == NULL)
-      MYABORT("Impossible de recuperer l'attribut 'jdc' !");
-
-   val = PyObject_CallMethod(jdc, "get_jdc_attr", "s#", attr, l_attr);
-   if (val == NULL){
-      printf("attribut inexistant dans le jdc : '%s'\n\n", attr);
-      MYABORT("erreur dans JDCGET");
-   }
-
-   if (!PyInt_Check(val))
-      MYABORT("Seuls les attributs de type entier peuvent etre recuperes !");
-
-   value = (INTEGER)PyInt_AsLong(val);
-
-   Py_XDECREF(jdc);
-   Py_XDECREF(val);
-
-   return value;
-}
-
-/* ------------------------------------------------------------------ */
-void DEFSP(JDCSET,jdcset,char *attr, STRING_SIZE l_attr, INTEGER *value)
-{
-/*
-   Permet de positionner la valeur entière d'un attribut du jdc à `value`.
-*/
-   PyObject *jdc, *res;
-
-   jdc = PyObject_GetAttrString(commande, "jdc");
-   if (jdc == NULL)
-      MYABORT("Impossible de recuperer l'attribut 'jdc' !");
-
-   res = PyObject_CallMethod(jdc, "set_jdc_attr", "s#i", attr, l_attr, (int)*value);
-   if (res == NULL)
-      MYABORT("erreur dans JDCSET");
-
-   Py_XDECREF(jdc);
-   Py_XDECREF(res);
-}
-
-/* ------------------------------------------------------------------ */
-PyObject* GetJdcAttr(_IN char *attribut)
-{
-/*
-   Retourne un attribut du 'jdc' en tant que PyObject.
-*/
-   PyObject *jdc, *objattr;
-
-   jdc = PyObject_GetAttrString(commande, "jdc");
-   if (jdc == NULL)
-      MYABORT("Impossible de recuperer l'attribut 'jdc' !");
-
-   objattr = PyObject_GetAttrString(jdc, attribut);
-   /* traiter l'erreur "objattr == NULL" dans l'appelant */
-
-   Py_XDECREF(jdc);
-   return objattr;
-}
-
-/* ------------------------------------------------------------------ */
 static PyObject * aster_onFatalError(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
@@ -2764,72 +2240,6 @@ PyObject *args;
         return Py_None;
 }
 
-
-/* ------------------------------------------------------------------ */
-static PyObject *repmat_value = Py_None ;
-
-void put_repmat(_IN char *value)
-{
-    repmat_value = PyString_FromString(value);
-}
-
-static PyObject * aster_repmat(self, args)
-PyObject *self; /* Not used */
-PyObject *args;
-{
-    Py_INCREF( repmat_value );
-    return repmat_value;
-}
-
-/* ------------------------------------------------------------------ */
-static PyObject *repout_value = Py_None ;
-
-void put_repout(_IN char *value)
-{
-    repout_value = PyString_FromString(value);
-}
-
-static PyObject * aster_repout(self, args)
-PyObject *self; /* Not used */
-PyObject *args;
-{
-    Py_INCREF( repout_value );
-    return repout_value;
-}
-
-void DEFSP(REPOU2,repou2, char *nomrep, STRING_SIZE lnomrep, INTEGER *lon)
-{
-/*
-   Permet de récupérer la valeur de repout depuis le fortran.
-   Rempli 'nomrep' sur au plus 'lnomrep' caractères et retourne la longueur
-   exacte de 'nomrep' dans 'lon'.
-   Si lon > lnomrep, l'appelant devrait émettre un message d'erreur.
-   Exemple : repout='/opt/aster/outils' donc lon=17
-   * si lnomrep=12, nomrep='/opt/aster/o'
-   * si lnomrep=20, nomrep='/opt/aster/outils  '
-*/
-    char *repout;
-    repout = PyString_AsString( repout_value );
-    CopyCStrToFStr(nomrep, repout, lnomrep);
-    *lon = (INTEGER)strlen(repout);
-    return;
-}
-
-/* ------------------------------------------------------------------ */
-static PyObject *repdex_value = Py_None ;
-
-void put_repdex(_IN char *value)
-{
-    repdex_value = PyString_FromString(value);
-}
-
-static PyObject * aster_repdex(self, args)
-PyObject *self; /* Not used */
-PyObject *args;
-{
-    Py_INCREF( repdex_value );
-    return repdex_value;
-}
 
 /* ------------------------------------------------------------------ */
 static PyObject * aster_gcncon(self, args)
@@ -2962,32 +2372,6 @@ PyObject *args;
     FreeStr(Fres);
     FreeStr(repk);
     return res;
-}
-
-/* ---------------------------------------------------------------------- */
-static char matfpe_doc[] =
-"Interface d'appel a la routine C matfpe.\n"
-"   usage: matfpe(actif)\n"
-"     matfpe(-1) : on desactive l'interception des erreurs numeriques,\n"
-"     matfpe(1)  : on active l'interception des erreurs numeriques.\n";
-
-static PyObject * aster_matfpe(self, args)
-PyObject *self; /* Not used */
-PyObject *args;
-{
-   int iactif;
-   INTEGER actif;
-
-   if (!PyArg_ParseTuple(args, "i:matfpe", &iactif)) return NULL;
-
-   if (iactif >= -1  && iactif <= 1) {
-      actif = (INTEGER)iactif;
-      CALL_MATFPE(&actif);
-   } else {
-      MYABORT("Valeur incorrecte : seuls -1 et 1 sont valides.");
-   }
-   Py_INCREF( Py_None ) ;
-   return Py_None;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -3245,12 +2629,6 @@ PyObject *args;
    if (!PyArg_ParseTuple(args, "i",&idbg)) return NULL;
    dbg = (INTEGER)idbg;
 
-   /* initialisation de la variable `static_module` */
-   static_module = PyImport_ImportModule("Execution.E_Global");
-   if (! static_module) {
-      MYABORT("Impossible d'importer le module E_Global !");
-   }
-
    fflush(stderr) ;
    fflush(stdout) ;
 
@@ -3260,21 +2638,6 @@ PyObject *args;
    jeveux_status = 1;
 
 return PyInt_FromLong((long)ier);
-}
-
-/* ------------------------------------------------------------------ */
-void F_FUNC(PRHEAD,prhead)()
-{
-   /*
-      Interface Fortran/Python pour l'affichage des informations systèmes
-      en début d'exécution
-   */
-   PyObject *res;
-   res = PyObject_CallMethod(static_module, "print_header", NULL);
-   if (!res) {
-      MYABORT("erreur lors de l'appel a la fonction E_Global.print_header");
-   }
-   Py_DECREF(res);
 }
 
 /* ------------------------------------------------------------------ */
@@ -3714,196 +3077,11 @@ void DEFSSSP(LCTEST, lctest, _IN char *compor, STRING_SIZE lcompor,
 /* ----------   FIN catalogue de loi de comportement   -------------- */
 /* ------------------------------------------------------------------ */
 
-
-
 /* ------------------------------------------------------------------ */
 static PyObject *aster_argv( _UNUSED  PyObject *self, _IN PyObject *args )
 {
-        /*
-        A partir des arguments passes au script python, construction du
-        tableau de chaines de caracteres C "char** argv" et initialisation
-        de "argc" : la taille de ce tableau.
-        Puis appel de Code_Aster en passant ces informations en argument.
-        */
-        int        k       = 0 ;
-        long       argc    = 0 ;
-        PyObject  *liste   = NULL ;
-        PyObject  *string  = NULL ;
-        char     **argv    = NULL ;
-
-        void asterm( long , char** ) ;
-        void *malloc(size_t size);
-        /*
-           la fonction aster_argv recoit un tuple d'arguments (ici de taille 1°
-           dans lequel est stockee la liste, qui est extraite par l'appel a
-           PyArg_ParseTuple.
-        */
-        if (!PyArg_ParseTuple(args, "O" , &liste )) return NULL;
-        /*  Allocation dynamique de argv : on ajoute un argument NULL */
-
-        argc=PyList_GET_SIZE(liste) ;
-
-        argv = (char**)malloc((1+argc)*sizeof(char*)) ;
-        argv[argc]=(char*)0 ;
-
-        /* conversion de chaque element de la liste en une chaine */
-        for ( k=0 ; (long)k<argc ; k++ ){
-                string=PyList_GetItem(liste,k) ;
-                                                                ASSERT(string!=NULL);
-                                                                ASSERT(PyString_Check(string));
-                argv[k]=PyString_AsString( string ) ;
-                                                                ASSERT(argv[k]!=NULL);
-        }
-
-        /* Passage des arguments a Code_Aster */
-        asterm(argc,argv) ;
-                                                                ASSERT(argv) ;
-        free(argv);
-        argv=(char**)0 ;
-
         Py_INCREF( Py_None ) ;
         return Py_None;
-}
-
-
-/* ------------------------------------------------------------------ */
-/* List of functions defined in the module */
-
-static PyMethodDef aster_methods[] = {
-                {"onFatalError", aster_onFatalError, METH_VARARGS},
-                {"fclose",       aster_fclose,       METH_VARARGS},
-                {"ulopen",       aster_ulopen,       METH_VARARGS},
-                {"affiche",      aster_affich,       METH_VARARGS},
-                {"init",         aster_init,         METH_VARARGS},
-                {"debut",        aster_debut,        METH_VARARGS},
-                {"poursu",       aster_poursu,       METH_VARARGS},
-                {"oper",         aster_oper,         METH_VARARGS},
-                {"opsexe",       aster_opsexe,       METH_VARARGS},
-                {"impers",       aster_impers,       METH_VARARGS},
-                {"repmat",       aster_repmat,       METH_VARARGS},
-                {"repout",       aster_repout,       METH_VARARGS},
-                {"repdex",       aster_repdex,       METH_VARARGS},
-                {"mdnoma",       aster_mdnoma,       METH_VARARGS},
-                {"mdnoch",       aster_mdnoch,       METH_VARARGS},
-                {"rcvale",       aster_rcvale,       METH_VARARGS, rcvale_doc},
-                {"dismoi",       aster_dismoi,       METH_VARARGS, dismoi_doc},
-                {"matfpe",       aster_matfpe,       METH_VARARGS, matfpe_doc},
-                {"argv",         aster_argv,         METH_VARARGS},
-                {"prepcompcham", aster_prepcompcham, METH_VARARGS},
-                {"getvectjev",   aster_getvectjev,   METH_VARARGS, getvectjev_doc},
-                {"putvectjev",   aster_putvectjev,   METH_VARARGS, putvectjev_doc},
-                {"putcolljev",   aster_putcolljev,   METH_VARARGS, putcolljev_doc},
-                {"getcolljev",   aster_getcolljev,   METH_VARARGS, getcolljev_doc},
-                {"GetResu",      aster_GetResu,      METH_VARARGS},
-                {"co_register_jev", aster_co_register_jev, METH_VARARGS},
-                {"jeveux_getobjects", jeveux_getobjects, METH_VARARGS},
-                {"jeveux_getattr", jeveux_getattr,   METH_VARARGS},
-                {"jeveux_exists", jeveux_exists,     METH_VARARGS},
-                {"jeinfo",       aster_jeinfo,       METH_VARARGS, jeinfo_doc},
-                {"get_nom_concept_unique", aster_gcncon, METH_VARARGS},
-                {NULL,                NULL}/* sentinel */
-};
-
-
-/* ------------------------------------------------------------------ */
-void initvers(PyObject *dict)
-{
-    PyObject *v;
-    INTEGER vers,util,nivo;
-    INTEGER exploi;
-    char *date;
-    char rev[8];
-    date = MakeBlankFStr(16);
-
-    CALL_VERSIO(&vers,&util,&nivo,date,&exploi);
-    sprintf(rev,"%ld.%ld.%ld", (long)vers, (long)util, (long)nivo);
-    PyDict_SetItemString(dict, "__version__", v = PyString_FromString(rev));
-    FreeStr(date);
-    Py_XDECREF(v);
-}
-
-
-/* Initialization function for the module (*must* be called initaster) */
-static char aster_module_documentation[] =
-"C implementation of the Python aster module\n"
-"\n"
-;
-
-#ifdef _SHARED
-PyMODINIT_FUNC initaster(void)
-#else
-DL_EXPORT(void) initaster()
-#endif
-{
-        PyObject *m = (PyObject*)0 ;
-        PyObject *d = (PyObject*)0 ;
-
-        /* Create the module and add the functions */
-        m = Py_InitModule3("aster", aster_methods, aster_module_documentation);
-
-        /* Add some symbolic constants to the module */
-        d = PyModule_GetDict(m);
-
-        initvers(d);
-        initExceptions(d);
-
-        /* Initialisation de la pile d appel des commandes */
-        pile_commandes = PyList_New(0);
-}
-
-
-
-/* ------------------------------------------------------------------ */
-void AfficheChaineFortran( _IN char *chaine , _IN STRING_SIZE longueur )
-{
-        /* Traitement des chaines fortran : pour le deboguage uniquement*/
-        static FILE *strm ; /* le stream de sortie pointe sur la stderr */
-        strm=stderr;
-
-        if ( longueur ){
-                int k=0 ;
-                fprintf( strm , "'" ) ;
-                for ( k=0 ; k<((longueur<=512)?longueur:512) ; k++ ){
-                        fprintf( strm , "%c" , chaine[k] ) ;
-                }
-                fprintf( strm , "'\n" ) ;
-                fflush(strm) ;
-        }
-        return ;
-}
-
-int EstPret( _IN char *chaine , _IN STRING_SIZE longueur )
-{
-        /*
-        Fonction  : EstPret
-        Intention
-                dit si "chaine" destinee a etre exploitee par un module fortran,
-                est une commande ASTER i.e. si elle est composee uniquement de lettres,
-                de chiffres, de _ et de caracteres blancs et si elle contient un
-                caractere non blanc.
-        */
-        int pret     = 0 ;
-        int k        = 0 ;
-        int taille   = 0 ;
-
-        taille = ( longueur < 1024 ) ? FStrlen( chaine , longueur ) : 1024 ;
-        if ( (int)taille >= 0 ){
-                pret = 1 ;
-                if( isalpha(chaine[0]) ){
-                        for( k=0 ; pret==1 && k<(int)longueur ; k++ ){
-                                pret = ( EstValide(chaine[k] ) ) ? 1 : 0 ;
-                                if ( pret != 1 ){
-                                        fprintf( stderr , "CARACTERE %d INVALIDE '%c' %d\n" , (int)k , chaine[k] , (int)chaine[k]) ;
-                                }
-                        }
-                }
-                else{
-                        fprintf( stderr , "PREMIER CARACTERE INVALIDE '%c' %d\n" , chaine[0] , (int)chaine[0]) ;
-                }
-                if ( pret != 1 ){
-                }
-        }
-        return pret ;
 }
 
 
@@ -3933,3 +3111,66 @@ void DEFP(GETCMC,getcmc,INTEGER *icmc)
         *icmc = (INTEGER)PyInt_AsLong(res);
         Py_DECREF(res);
 }
+
+/* List of functions defined in the module */
+static PyMethodDef aster_methods[] = {
+                {"onFatalError", aster_onFatalError, METH_VARARGS},
+                {"fclose",       aster_fclose,       METH_VARARGS},
+                {"ulopen",       aster_ulopen,       METH_VARARGS},
+                {"affiche",      aster_affich,       METH_VARARGS},
+                {"init",         aster_init,         METH_VARARGS},
+                {"debut",        aster_debut,        METH_VARARGS},
+                {"poursu",       aster_poursu,       METH_VARARGS},
+                {"oper",         aster_oper,         METH_VARARGS},
+                {"opsexe",       aster_opsexe,       METH_VARARGS},
+                {"impers",       aster_impers,       METH_VARARGS},
+                {"mdnoma",       aster_mdnoma,       METH_VARARGS},
+                {"mdnoch",       aster_mdnoch,       METH_VARARGS},
+                {"rcvale",       aster_rcvale,       METH_VARARGS, rcvale_doc},
+                {"dismoi",       aster_dismoi,       METH_VARARGS, dismoi_doc},
+                {"argv",         aster_argv,         METH_VARARGS},
+                {"prepcompcham", aster_prepcompcham, METH_VARARGS},
+                {"getvectjev",   aster_getvectjev,   METH_VARARGS, getvectjev_doc},
+                {"putvectjev",   aster_putvectjev,   METH_VARARGS, putvectjev_doc},
+                {"putcolljev",   aster_putcolljev,   METH_VARARGS, putcolljev_doc},
+                {"getcolljev",   aster_getcolljev,   METH_VARARGS, getcolljev_doc},
+                {"GetResu",      aster_GetResu,      METH_VARARGS},
+                {"co_register_jev", aster_co_register_jev, METH_VARARGS},
+                {"jeveux_getobjects", jeveux_getobjects, METH_VARARGS},
+                {"jeveux_getattr", jeveux_getattr,   METH_VARARGS},
+                {"jeveux_exists", jeveux_exists,     METH_VARARGS},
+                {"jeinfo",       aster_jeinfo,       METH_VARARGS, jeinfo_doc},
+                {"get_nom_concept_unique", aster_gcncon, METH_VARARGS},
+                {NULL,                NULL}/* sentinel */
+};
+
+
+/* Initialization function for the module (*must* be called initaster) */
+static char aster_module_documentation[] =
+"C implementation of the Python aster module\n"
+"\n"
+;
+
+#ifdef _SHARED
+PyMODINIT_FUNC initaster(void)
+#else
+DL_EXPORT(void) initaster()
+#endif
+{
+    PyObject *aster = (PyObject*)0 ;
+    PyObject *dict = (PyObject*)0 ;
+
+    /* Create the module and add the functions */
+    aster = Py_InitModule3("aster", aster_methods, aster_module_documentation);
+
+    /* Add some symbolic constants to the module */
+    dict = PyModule_GetDict(aster);
+
+    // fill later when (after the arguments have been read)
+    PyModule_AddObject(aster, "__version__", Py_None);
+    initExceptions(dict);
+
+    /* Initialisation de la pile d appel des commandes */
+    pile_commandes = PyList_New(0);
+}
+

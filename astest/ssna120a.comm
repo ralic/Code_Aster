@@ -1,25 +1,25 @@
-# MODIF  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE EPROUVETTE AE 2D AXIS AVEC ELEMENTS D'INTERFACE (QUAD8) ET LOI DE RUPTURE DUCTILE CZM_TRA_MIX
 # ssna120a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
- 
-DEBUT(CODE=_F( NOM = 'SSNA120A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),PAR_LOT='OUI')
+
+DEBUT(CODE=_F(NOM='SSNA120A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),PAR_LOT='OUI',DEBUG=_F(SDVERI='OUI'))
 
 #-----------------------------------------------------------
 # PARAMETRES DE LA ZONE COHESIVE
@@ -27,7 +27,7 @@ DEBUT(CODE=_F( NOM = 'SSNA120A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),PAR_LO
 tenac = 130.0
 sigc  = 1200.0
 
-# VALEURS DES COEFFICIENTS DE FORME DE LA LOI CZM 
+# VALEURS DES COEFFICIENTS DE FORME DE LA LOI CZM
 # CHOISIES DE TELLE SORTE QUE DELE = 0.01 ET DELP = 0.07
 coee=0.06382978723404
 coep=0.44680851063830
@@ -70,7 +70,7 @@ ORIEN_FI=AFFE_CARA_ELEM(MODELE=MO,
                      MASSIF=( _F(GROUP_MA='joint',ANGL_REP=(90, 0 ,0)), ));
 
 #-----------------------------------------------------------
-# RELATION CONTRAINTE-DEFORMATION DE L'EPROUVETTE CT  
+# RELATION CONTRAINTE-DEFORMATION DE L'EPROUVETTE CT
 #-------------------------------------------------------------
 SIGM_F=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(0.0025,495.,
                            0.01,530.,
@@ -169,7 +169,7 @@ UP=STAT_NON_LINE(MODELE=MO,
                  COMP_INCR=(_F(RELATION='VMIS_ISOT_TRAC',
                                DEFORMATION='PETIT_REAC',
                                GROUP_MA='cylind'),
-                            _F(RELATION = 'CZM_TRA_MIX', 
+                            _F(RELATION = 'CZM_TRA_MIX',
                                GROUP_MA = 'joint',),),
                  INCREMENT=_F(LIST_INST=LINST,),
                  CONVERGENCE = _F(
@@ -219,7 +219,7 @@ contra1=CALC_TABLE(TABLE=contra,
                           NOM_PARA='NDX',),);
 
 #-----------------------------------------------------------
-# FORCE APPLIQUEE SUR L'EPROUVETTE 
+# FORCE APPLIQUEE SUR L'EPROUVETTE
 #-------------------------------------------------------------
 force1=CALC_TABLE(TABLE=force,
                 ACTION=_F(OPERATION='OPER',
@@ -227,7 +227,7 @@ force1=CALC_TABLE(TABLE=force,
                           NOM_PARA='FR',),);
 
 #-----------------------------------------------------------
-# TEST SUR LE CONTRACTION DU DIAMETRE 
+# TEST SUR LE CONTRACTION DU DIAMETRE
 # ----------------------------------------------------------
 TEST_TABLE(TABLE=contra1,
            NOM_PARA='NDX',
@@ -237,7 +237,7 @@ TEST_TABLE(TABLE=contra1,
            REFERENCE='NON_REGRESSION',);
 
 #-----------------------------------------------------------
-# TEST SUR LA FORCE 
+# TEST SUR LA FORCE
 # ----------------------------------------------------------
 TEST_TABLE(TABLE=force1,
            NOM_PARA='FR',
@@ -247,7 +247,7 @@ TEST_TABLE(TABLE=force1,
            REFERENCE='NON_REGRESSION',);
 
 #-----------------------------------------------------------
-# TEST SUR LE CONTRACTION DU DIAMETRE 
+# TEST SUR LE CONTRACTION DU DIAMETRE
 # ----------------------------------------------------------
 TEST_TABLE(TABLE=contra1,
            NOM_PARA='NDX',
@@ -257,7 +257,7 @@ TEST_TABLE(TABLE=contra1,
            REFERENCE='NON_REGRESSION',);
 
 #-----------------------------------------------------------
-# TEST SUR LA FORCE 
+# TEST SUR LA FORCE
 # ----------------------------------------------------------
 TEST_TABLE(TABLE=force1,
            NOM_PARA='FR',
@@ -267,8 +267,8 @@ TEST_TABLE(TABLE=force1,
            REFERENCE='NON_REGRESSION',);
 
 #-----------------------------------------------------------
-# TEST SUR LE CONTRACTION DU DIAMETRE 
-# EN COMPARANT AVEC LES RESULTATS ISSUS 
+# TEST SUR LE CONTRACTION DU DIAMETRE
+# EN COMPARANT AVEC LES RESULTATS ISSUS
 # D'UN CALCUL DE COMPORTEMENT ROUSSELIER
 # ----------------------------------------------------------
 TEST_TABLE(TABLE=contra1,
@@ -280,8 +280,8 @@ TEST_TABLE(TABLE=contra1,
            REFERENCE='AUTRE_ASTER',);
 
 #-----------------------------------------------------------
-# TEST SUR LA FORCE 
-# EN COMPARANT AVEC LES RESULTATS ISSUS 
+# TEST SUR LA FORCE
+# EN COMPARANT AVEC LES RESULTATS ISSUS
 # D'UN CALCUL DE COMPORTEMENT ROUSSELIER
 # ----------------------------------------------------------
 TEST_TABLE(TABLE=force1,
@@ -293,8 +293,8 @@ TEST_TABLE(TABLE=force1,
            REFERENCE='AUTRE_ASTER',);
 
 #-----------------------------------------------------------
-# TEST SUR LE CONTRACTION DU DIAMETRE 
-# EN COMPARANT AVEC LES RESULTATS ISSUS 
+# TEST SUR LE CONTRACTION DU DIAMETRE
+# EN COMPARANT AVEC LES RESULTATS ISSUS
 # D'UN CALCUL DE COMPORTEMENT ROUSSELIER
 # ----------------------------------------------------------
 TEST_TABLE(TABLE=contra1,
@@ -306,8 +306,8 @@ TEST_TABLE(TABLE=contra1,
            REFERENCE='AUTRE_ASTER',);
 
 #-----------------------------------------------------------
-# TEST SUR LA FORCE 
-# EN COMPARANT AVEC LES RESULTATS ISSUS 
+# TEST SUR LA FORCE
+# EN COMPARANT AVEC LES RESULTATS ISSUS
 # D'UN CALCUL DE COMPORTEMENT ROUSSELIER
 # ----------------------------------------------------------
 TEST_TABLE(TABLE=force1,
@@ -319,8 +319,8 @@ TEST_TABLE(TABLE=force1,
            REFERENCE='AUTRE_ASTER',);
 
 #-----------------------------------------------------------
-# TEST SUR LE CONTRACTION DU DIAMETRE 
-# EN COMPARANT AVEC LES RESULTATS ISSUS 
+# TEST SUR LE CONTRACTION DU DIAMETRE
+# EN COMPARANT AVEC LES RESULTATS ISSUS
 # D'UN CALCUL DE COMPORTEMENT ROUSSELIER
 # ----------------------------------------------------------
 TEST_TABLE(TABLE=contra1,
@@ -332,8 +332,8 @@ TEST_TABLE(TABLE=contra1,
            REFERENCE='AUTRE_ASTER',);
 
 #-----------------------------------------------------------
-# TEST SUR LA FORCE 
-# EN COMPARANT AVEC LES RESULTATS ISSUS 
+# TEST SUR LA FORCE
+# EN COMPARANT AVEC LES RESULTATS ISSUS
 # D'UN CALCUL DE COMPORTEMENT ROUSSELIER
 # ----------------------------------------------------------
 TEST_TABLE(TABLE=force1,
@@ -345,7 +345,7 @@ TEST_TABLE(TABLE=force1,
            REFERENCE='AUTRE_ASTER',);
 
 #-----------------------------------------------------------
-# RELATION ENTRE LE CONTRACTION DU DIAMETRE 
+# RELATION ENTRE LE CONTRACTION DU DIAMETRE
 # ET LA FORCE
 # ----------------------------------------------------------
 frcontra=CALC_TABLE(TABLE=contra1,

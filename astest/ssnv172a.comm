@@ -1,5 +1,5 @@
 
-# MODIF  DATE 09/01/2012   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 06/02/2012   AUTEUR PROIX J-M.PROIX 
 # TITRE COMPORTEMENTS ELASTOVISCOPLASTIQUES MONOCRISTALLINS
 # RESPONSABLE JMBHH01 J.M.PROIX
 # ssnv172a.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test R
@@ -710,6 +710,7 @@ EXPLORTH=STAT_NON_LINE(MODELE=TROISD,
                                    DEFORMATION='PETIT',
                                    ALGO_INTE='RUNGE_KUTTA',
                                    TOUT='OUI',),),
+                      NEWTON=_F(PREDICTION='ELASTIQUE'),
                      INCREMENT=(_F(LIST_INST=LINST,),),
                     );
 

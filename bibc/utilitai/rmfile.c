@@ -1,7 +1,7 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF RMFILE UTILITAI  DATE 19/05/2011   AUTEUR SELLENET N.SELLENET */
+/* MODIF RMFILE UTILITAI  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -20,25 +20,25 @@
 /* rm ou del suivant les plates-formes                    */
 /* si info  = 1 mode bavard                               */
 /* si info != 1 mode silencieux                           */
- 
+
 
 #include "aster.h"
 
 
 void DEFSP(RMFILE, rmfile, char *nom1, STRING_SIZE lnom1, INTEGER *info)
 {
-   char nomcmd[85];char *ncmd;
-   long i,l,ldeb,num;
+   char nomcmd[256];char *ncmd;
+   long i,l,ldeb;
    int ier;
 
    if (lnom1 > 80) { lnom1 = 80; }
 #if defined _POSIX
-   num = fflush(stderr);
-   num = fflush(stdout);
-   ncmd = "rm ";
-   ldeb = 3;
+   fflush(stderr);
+   fflush(stdout);
+   ncmd = "rm -f ";
+   ldeb = 6;
 #else
-   num = _flushall();
+   _flushall();
    ncmd = "del ";
    ldeb = 4;
 #endif
@@ -57,17 +57,19 @@ void DEFSP(RMFILE, rmfile, char *nom1, STRING_SIZE lnom1, INTEGER *info)
      nomcmd[i+ldeb] ='\0';
      ldeb = ldeb+i-1;
    }
-   if ( *info == 1 ) { 
+   if ( *info == 1 ) {
    fprintf(stdout,"\n\nLancement de la commande ->%s<-\n\n",nomcmd);
                      }
    ier=system(nomcmd);
-   if ( ier == -1 ) {
+   if ( ier == -1 ){
+      if ( *info == 1 ) {
         perror("\n<rmfile> code retour system");
-   } 
+      }
+   }
 #if defined _POSIX
-   num = fflush(stderr);
-   num = fflush(stdout);
+   fflush(stderr);
+   fflush(stdout);
 #else
-   num = _flushall();
+   _flushall();
 #endif
 }

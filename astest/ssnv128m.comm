@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE CONTACT AVEC FROTTEMENT D'UNE PLAQUE SUR UN PLAN RIGIDE
 # ssnv128m.para = tps_job 210 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -6,17 +6,17 @@
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 #
 #
 # ======================================================================
@@ -27,7 +27,7 @@
 # UNITES   : NEWTON , METRE , SECONDE (N,M,S)
 #
 
-DEBUT(CODE=_F(NOM = 'SSNV128M',NIV_PUB_WEB='INTERNET'));
+DEBUT(CODE=_F(NOM='SSNV128M',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #......................................................................
 #  CALCUL TEST ELEMENTS FINIS DE CONTACT 2D QUAD4
@@ -73,7 +73,7 @@ CHA2 = DEFI_CONTACT(MODELE         = MO,
                     FROTTEMENT     = 'COULOMB',
                     REAC_GEOM      = 'CONTROLE',
                     NB_ITER_GEOM   = 2,
-                    ITER_CONT_MAXI = 4, 
+                    ITER_CONT_MAXI = 4,
                     ITER_FROT_MAXI = 10,
                     ZONE =(
                            _F(
@@ -84,10 +84,10 @@ CHA2 = DEFI_CONTACT(MODELE         = MO,
                              ALGO_CONT     = 'STANDARD',
                              COEF_CONT     = 1.,
                              ALGO_FROT     = 'STANDARD',
-                             COEF_FROT     = 1., 
+                             COEF_FROT     = 1.,
                              CONTACT_INIT  = 'INTERPENETRE',
-                             SEUIL_INIT    = 1.E-1,                                                         
-                             ),                            
+                             SEUIL_INIT    = 1.E-1,
+                             ),
                           ),
                    );
 
@@ -106,7 +106,7 @@ U4M=STAT_NON_LINE(MODELE=MO,
                 CHAM_MATER=CHMAT,
                 EXCIT=(_F(CHARGE = CHA1, FONC_MULT = RAMPE),
                        ),
-                CONTACT  = CHA2,       
+                CONTACT  = CHA2,
                 COMP_ELAS=_F(RELATION = 'ELAS'),
                 NEWTON=_F(REAC_ITER=1),
                 INCREMENT=_F(LIST_INST = L_INST),
@@ -199,7 +199,7 @@ U4L=STAT_NON_LINE(MODELE=MO,
                 CHAM_MATER=CHMAT,
                 EXCIT=(_F(CHARGE = CHA1, FONC_MULT = RAMPE),
                        ),
-                CONTACT  = CHA2,       
+                CONTACT  = CHA2,
                 COMP_ELAS=_F(RELATION = 'ELAS'),
                 SOLVEUR=_F(METHODE = 'LDLT', RENUM = 'SANS'),
                 NEWTON=_F(REAC_ITER=1),
@@ -208,7 +208,7 @@ U4L=STAT_NON_LINE(MODELE=MO,
                                ITER_GLOB_MAXI = 20,
                                RESI_GLOB_RELA = 1.0E-5),
                 INFO=1);
-           
+
 TEST_RESU(RESU=(_F(RESULTAT   = U4L,
                    INST       = 1.0,
                    NOM_CHAM   = 'DEPL',

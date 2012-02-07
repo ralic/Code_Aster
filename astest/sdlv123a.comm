@@ -1,7 +1,7 @@
-# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 
 DEBUT(CODE=_F(NOM='SDLV123A',
-              NIV_PUB_WEB='INTERNET',),);
+NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 # TITRE DYNAMIQUE D'UNE FISSURE FINIE STATIONNAIRE DANS UN MILIEU
 # sdlv123a.para = tps_job 280 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -78,12 +78,12 @@ RIGIEL=CALC_MATR_ELEM( MODELE=MODELE,
 MASSEL=CALC_MATR_ELEM( MODELE=MODELE,
                        CHAM_MATER=CHAMPMAT,
                        OPTION='MASS_MECA')
-                       
+
 AMOR_ELE=CALC_MATR_ELEM(    MODELE=MODELE,
                               OPTION='AMOR_MECA',
                               CHAM_MATER=CHAMPMAT,
                               RIGI_MECA = RIGIEL,
-                              MASS_MECA = MASSEL,                              
+                              MASS_MECA = MASSEL,
                               CHARGE=CH_P
                             )
 

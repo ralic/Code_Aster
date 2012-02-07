@@ -1,8 +1,8 @@
-#@ MODIF dyna_iss_vari_ops Macro  DATE 26/07/2011   AUTEUR ZENTNER I.ZENTNER 
+#@ MODIF dyna_iss_vari_ops Macro  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -33,6 +33,7 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
    import numpy as NP
    from numpy import linalg
    from math import pi, ceil, sqrt, floor, log, tanh
+   import aster_core
    import aster
    from Accas import _F
    from Utilitai.Table import Table
@@ -102,7 +103,7 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
 #         NB_FREQ= int(floor(len(vale_fre)/2)+1)  # signal nombre pair: N/2+1
          OMF =1./(2.*DT)
          FREQ_INIT=0.0
-         FREQ_COUP=  ((NB_FREQ-1)*PAS)      
+         FREQ_COUP=  ((NB_FREQ-1)*PAS)
         # liste des frequences complete
          l_freq_sig=[]
          for k in range(NB_FREQ):
@@ -204,7 +205,7 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
 
 # MODEL fonction de cohérence
    MODEL = MATR_COHE['TYPE']
-   print 'MODEL :',   MODEL 
+   print 'MODEL :',   MODEL
 
 
 #   # PARAMETRE nom_champ
@@ -235,8 +236,8 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
       XX=noe_interf[:,0]
       YY=noe_interf[:,1]
 #
- 
-      if MODEL=='MITA_LUCO' :  
+
+      if MODEL=='MITA_LUCO' :
   # PARAMETRES fonction de cohérence
          VITE_ONDE = MATR_COHE['VITE_ONDE']
          alpha = MATR_COHE['PARA_ALPHA']
@@ -272,10 +273,10 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
 #
   #---------------------------------------------------------
       # On desactive temporairement les FPE qui pourraient etre generees (a tord!) par blas
-      aster.matfpe(-1)
+      aster_core.matfpe(-1)
       eig, vec =linalg.eig(COHE)
       vec = NP.transpose(vec)   # les vecteurs sont en colonne dans numpy
-      aster.matfpe(1)
+      aster_core.matfpe(1)
       eig=eig.real
       vec=vec.real
       # on rearrange selon un ordre decroissant
@@ -570,11 +571,11 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
          for  k,freqk in enumerate(l_freq_sig):
             coef_a=(vale_re[k]+vale_im[k]*1.j)
   #  ------------ interpolation du vecteur POD  VEC (NB_FREQ, nbmodt)
-            if  freqk >= FREQ_FIN:              
+            if  freqk >= FREQ_FIN:
   #              print  k, freqk, vale_i,  'FREQ_FIN: ', FREQ_FIN
                VEC_real=VEC[-1]*0.0
-               VEC_imag=VEC[-1]*0.0                             
-            else:      
+               VEC_imag=VEC[-1]*0.0
+            else:
                vale_i=NP.searchsorted(abscisse, freqk)
 #         print  freqk, vale_i,  abscisse[vale_i-1], abscisse[vale_i]
                if vale_i ==0:

@@ -1,10 +1,10 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # RESPONSABLE SFAYOLLE S.FAYOLLE
 # TITRE  : ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
 # ssns106g.para = tps_job 120 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,7 +27,7 @@
 #            CHARGEMENT   : CYCLIQUE CISAILLEMENT
 
 DEBUT(CODE=_F(NOM='SSNS106G',
-              NIV_PUB_WEB='INTERNET',),);
+NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 EP = 0.1;
 
@@ -275,7 +275,7 @@ TDXA4=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                               GROUP_NO='A4',
                               NOM_CMP='DX',),
                              ),
-                              
+
                               );
 
 TDXA4=CALC_TABLE(reuse =TDXA4,
@@ -293,7 +293,7 @@ TDXA4_G=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                                 NOM_CHAM='DEPL',
                                 GROUP_NO='A4',
                                 NOM_CMP='DX',),),);
-                                
+
 TDXA4_G=CALC_TABLE(reuse =TDXA4_G,
                TABLE=TDXA4_G,
                ACTION=(_F(
@@ -302,14 +302,14 @@ TDXA4_G=CALC_TABLE(reuse =TDXA4_G,
                           CRIT_COMP = 'GT',
                           VALE    = 0,
                          ),),);
-                         
+
 TFYA4=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                               INTITULE='A4FY',
                               RESULTAT=RESU1,
                               NOM_CHAM='FORC_NODA',
                               GROUP_NO='A4',
                               NOM_CMP='DY',),),);
-                              
+
 TFYA4=CALC_TABLE(reuse =TFYA4,
                TABLE=TFYA4,
                ACTION=(_F(
@@ -318,14 +318,14 @@ TFYA4=CALC_TABLE(reuse =TFYA4,
                           CRIT_COMP = 'GT',
                           VALE    = 0,
                          ),),);
-                         
+
 TFYA4_G=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                                 INTITULE='A4FY',
                                 RESULTAT=RESU_G,
                                 NOM_CHAM='FORC_NODA',
                                 GROUP_NO='A4',
                                 NOM_CMP='DY',),),);
-                                
+
 TFYA4_G=CALC_TABLE(reuse =TFYA4_G,
                TABLE=TFYA4_G,
                ACTION=(_F(

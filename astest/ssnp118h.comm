@@ -1,25 +1,25 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE FISSURATION INTERFACE 3D (HEXA20), LOIS CZM_OUV_MIX ET CZM_TAC_MIX
 # ssnp118h.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F( NOM = 'SSNP118H',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),)
+DEBUT(CODE=_F(NOM='SSNP118H',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),DEBUG=_F(SDVERI='OUI'))
 
 tfin=10
 nbpas=10
@@ -32,12 +32,12 @@ MA=LIRE_MAILLAGE(FORMAT='MED', )
 
 
 MO=AFFE_MODELE(
-          
+
                 MAILLAGE=MA,
                 VERIF='MAILLE',
-                  
+
                 AFFE= (
-                _F( 
+                _F(
                         MAILLE = ('CUBE','DROITE'),
                         PHENOMENE = 'MECANIQUE',
                         MODELISATION = '3D'
@@ -49,37 +49,37 @@ MO=AFFE_MODELE(
                    )
                  )
               )
-              
+
 
 MAT=DEFI_MATERIAU(
-              
-     ELAS=_F( 
+
+     ELAS=_F(
               E =  young,
               NU = 0.0),
      RUPT_FRAG = _F(
                      GC = Gc,
                      SIGM_C = Sc,
                      PENA_LAGR = 100,
-                     RIGI_GLIS = 10,    
+                     RIGI_GLIS = 10,
                     )
             )
 
 
 CM=AFFE_MATERIAU(
-              
+
                MAILLAGE=MA,
-               AFFE=_F( 
+               AFFE=_F(
                        TOUT = 'OUI',
                        MATER = MAT),
               )
-              
+
 # AFFECTATION DES ANGLES NAUTIQUES : POSITION DE LA FISSURE DANS LE REPERE GLOBAL
-              
+
 ORIEN_FI=AFFE_CARA_ELEM(MODELE=MO,
                      MASSIF=(
-           _F(MAILLE='CUBEDEG',ANGL_REP=(30,0,0)),         
+           _F(MAILLE='CUBEDEG',ANGL_REP=(30,0,0)),
                                  ));
-                                 
+
 
 LIAISON=AFFE_CHAR_MECA(
   MODELE=MO,
@@ -92,13 +92,13 @@ LIAISON=AFFE_CHAR_MECA(
 TRAC_N=AFFE_CHAR_MECA(
   MODELE=MO,
   FACE_IMPO= (
-    _F(MAILLE='DROITE', DX=2.16506350946110, DY= 1.250, DZ=0 ), 
+    _F(MAILLE='DROITE', DX=2.16506350946110, DY= 1.250, DZ=0 ),
     )
   )
 
 
 L_INST=DEFI_LIST_REEL(
-              
+
                      DEBUT   = -1.,
      INTERVALLE=(
       _F( JUSQU_A = 0,       NOMBRE = 1 ),
@@ -114,12 +114,12 @@ FCT = DEFI_FONCTION(
   PROL_DROITE = 'LINEAIRE'
   )
 
-  
-#----------------------------------------------------------------------------------  
+
+#----------------------------------------------------------------------------------
 # CALCUL AVEC CHARGEMENT EN MODE I AVEC LOI CZM_OUV_MIX
 #-----------------------------------------------------------------------------------
 
-U_OUV=STAT_NON_LINE( 
+U_OUV=STAT_NON_LINE(
   MODELE     = MO,
   CHAM_MATER = CM,
   CARA_ELEM  = ORIEN_FI,
@@ -132,7 +132,7 @@ U_OUV=STAT_NON_LINE(
              MAILLE = 'CUBEDEG', ),
           _F(RELATION = 'ELAS',
              MAILLE = 'CUBE',),
-          ),               
+          ),
   INCREMENT  = _F(LIST_INST = L_INST, INST_FIN = 0.),
   CONVERGENCE = _F(
     RESI_REFE_RELA = 1.E-6,
@@ -145,7 +145,7 @@ U_OUV=STAT_NON_LINE(
   )
 
 STAT_NON_LINE(reuse = U_OUV,
-  ETAT_INIT  = _F(EVOL_NOLI = U_OUV), 
+  ETAT_INIT  = _F(EVOL_NOLI = U_OUV),
   MODELE     = MO,
   CHAM_MATER = CM,
   CARA_ELEM  = ORIEN_FI,
@@ -166,7 +166,7 @@ STAT_NON_LINE(reuse = U_OUV,
              MAILLE = 'CUBEDEG', ),
           _F(RELATION = 'ELAS',
              GROUP_MA = 'G_CUBE',),
-          ),               
+          ),
   INCREMENT  = _F(LIST_INST = L_INST),
   CONVERGENCE = _F(
     RESI_REFE_RELA = 1.E-6,
@@ -180,12 +180,12 @@ STAT_NON_LINE(reuse = U_OUV,
   )
 
 
-  
-#----------------------------------------------------------------------------------  
+
+#----------------------------------------------------------------------------------
 # CALCUL AVEC CHARGEMENT EN MODE I AVEC LOI CZM_TAC_MIX
 #-----------------------------------------------------------------------------------
 
-U_TAC=STAT_NON_LINE( 
+U_TAC=STAT_NON_LINE(
   MODELE     = MO,
   CHAM_MATER = CM,
   CARA_ELEM  = ORIEN_FI,
@@ -198,7 +198,7 @@ U_TAC=STAT_NON_LINE(
              MAILLE = 'CUBEDEG', ),
           _F(RELATION = 'ELAS',
              MAILLE = 'CUBE',),
-          ),               
+          ),
   INCREMENT  = _F(LIST_INST = L_INST, INST_FIN = 0.),
   CONVERGENCE = _F(
     RESI_REFE_RELA = 1.E-6,
@@ -211,7 +211,7 @@ U_TAC=STAT_NON_LINE(
   )
 
 STAT_NON_LINE(reuse = U_TAC,
-  ETAT_INIT  = _F(EVOL_NOLI = U_TAC), 
+  ETAT_INIT  = _F(EVOL_NOLI = U_TAC),
   MODELE     = MO,
   CHAM_MATER = CM,
   CARA_ELEM  = ORIEN_FI,
@@ -232,7 +232,7 @@ STAT_NON_LINE(reuse = U_TAC,
              MAILLE = 'CUBEDEG', ),
           _F(RELATION = 'ELAS',
              GROUP_MA = 'G_CUBE',),
-          ),               
+          ),
   INCREMENT  = _F(LIST_INST = L_INST),
   CONVERGENCE = _F(
     RESI_REFE_RELA = 1.E-6,
@@ -247,9 +247,9 @@ STAT_NON_LINE(reuse = U_TAC,
 
 
 
-#---------------------------------------------------------------------------------- 
+#----------------------------------------------------------------------------------
 # TESTS CALCUL MODE I AVEC LOI CZM_OUV_MIX
-#---------------------------------------------------------------------------------- 
+#----------------------------------------------------------------------------------
 
 FDX_OUV=RECU_FONCTION( RESULTAT=U_OUV,
               NOM_CHAM='DEPL',NOM_CMP='DX',GROUP_NO='TOUTSEUL')
@@ -311,7 +311,7 @@ TEST_RESU(
       NOM_CHAM  = 'SIEF_ELGA',
       NOM_CMP   = 'SIGN',
       VALE      = 3.47849E-01,
-      MAILLE    = 'CUBEDEG', 
+      MAILLE    = 'CUBEDEG',
       POINT     = 1,
       INST      = 9.00001E+00,
       ),
@@ -331,7 +331,7 @@ TEST_RESU(
       ),
     )
   )
-  
+
 TEST_RESU(
   RESU = (
     _F(
@@ -379,9 +379,9 @@ TEST_RESU(
     )
   )
 
-#---------------------------------------------------------------------------------- 
+#----------------------------------------------------------------------------------
 # TESTS CALCUL MODE I AVEC LOI CZM_TAC_MIX
-#---------------------------------------------------------------------------------- 
+#----------------------------------------------------------------------------------
 
 FDX_TAC=RECU_FONCTION( RESULTAT=U_TAC,
               NOM_CHAM='DEPL',NOM_CMP='DX',GROUP_NO='TOUTSEUL')
@@ -443,7 +443,7 @@ TEST_RESU(
       NOM_CHAM  = 'SIEF_ELGA',
       NOM_CMP   = 'SIGN',
       VALE      = 3.47849E-01,
-      MAILLE    = 'CUBEDEG', 
+      MAILLE    = 'CUBEDEG',
       POINT     = 1,
       INST      = 9.00001E+00,
       ),
@@ -463,7 +463,7 @@ TEST_RESU(
       ),
     )
   )
-  
+
 TEST_RESU(
   RESU = (
     _F(
@@ -518,12 +518,12 @@ IMPR_TABLE(TABLE=TETA_OUV)
 
 IMPR_RESU(
   FORMAT   = 'RESULTAT',
-  RESU=_F(   
+  RESU=_F(
           RESULTAT = U_OUV, MAILLE  = 'CUBEDEG',
     ))
-    
-IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_OUV,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ')))),  
-IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_TAC,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ')))),  
+
+IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_OUV,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ')))),
+IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_TAC,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ')))),
 
 FIN()
 

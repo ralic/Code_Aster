@@ -1,23 +1,23 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 #
 # TITRE FATIGUE, AMPLITUDE CONSTANTE, TEST  DES GRANDEURS
 # sslv135p.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # sslv135i.para = tps_job 60 mem_job 800Mo ncpus 1 liste_test S
 #
@@ -36,34 +36,34 @@
 #               P1              P2
 #               o--------------o
 #              /I             /I
-#        P5   / I        P6  / I             
-#            o--+-----------o  I 
-#            I  I   Face5   I  I  Face4      
-#  Face3     I  I (derri.)  I  I (cote d.)   
-# (cote g.)  I  I           I  I             
-#            I  I  P3       I  I P4          
-#            I  o-----------I--o      - x    
-#            I /            I /              
-#         P7 I/          P8 I/               
-#            o--------------o                
-#                                            
+#        P5   / I        P6  / I
+#            o--+-----------o  I
+#            I  I   Face5   I  I  Face4
+#  Face3     I  I (derri.)  I  I (cote d.)
+# (cote g.)  I  I           I  I
+#            I  I  P3       I  I P4
+#            I  o-----------I--o      - x
+#            I /            I /
+#         P7 I/          P8 I/
+#            o--------------o
+#
 #          /       Face2
 #         z      (dessous)
 #
 #
 #    CHARGEMENT     FX(T) <=> +      FY(T) <=> x
 #
-#            I 
-#            I                 x 
-#            I 
+#            I
+#            I                 x
+#            I
 #   1.0E+4 N I     +        x     x
 #            I  +     +        3s     4s
-#           -I-----I-----I-----I-----I-----> T 
+#           -I-----I-----I-----I-----I-----> T
 #            I    1s    2s  +     +
 #            I  x     x        +
-#            I                  
-#  -2.0E+4 N I     x 
-#            I 
+#            I
+#  -2.0E+4 N I     x
+#            I
 #
 #
 # L'AMPLITUDE DE FX(T) = 2.0E+4 N, SA VALEUR MOYENNE = 0.0
@@ -82,7 +82,7 @@
 #
 #
 #
-DEBUT( CODE   =_F( NOM = 'sslv135p', NIV_PUB_WEB = 'INTERNET' ));
+DEBUT(CODE=_F(NOM='sslv135p',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 CUBE = LIRE_MAILLAGE(FORMAT='MED', )
 
@@ -135,7 +135,7 @@ CUBE=DEFI_GROUP(reuse = CUBE,
 WHOL=DEFI_FONCTION(       NOM_PARA='SIGM',
                             INTERPOL='LOG',
                           PROL_DROITE='LINEAIRE',
-                         PROL_GAUCHE='LINEAIRE', 
+                         PROL_GAUCHE='LINEAIRE',
                          VALE=(  138.,    1000000.,
                                  152.,     500000.,
                                  165.,     200000.,
@@ -193,7 +193,7 @@ MAT   = AFFE_MATERIAU    ( MAILLAGE    =   CUBE,
                            AFFE        =_F ( TOUT       = 'OUI',
                                              MATER      = ACIER,
                                              ))
-          
+
 # CHARGEMENT SELON LES 2 AXES X ET Y
 # ----------------------------------
 
@@ -203,7 +203,7 @@ TR_CS  = AFFE_CHAR_MECA (
                           _F( GROUP_MA= 'FACE2' ,DY=0.) ),
            DDL_IMPO     =(_F( GROUP_NO= 'P3' , DZ=0.) ),
            FORCE_FACE   =(_F( GROUP_MA= 'FACE4', FX=2.),
-#                          _F( GROUP_MA= 'FACE1', FY=-2.) 
+#                          _F( GROUP_MA= 'FACE1', FY=-2.)
                           )
                          );
 
@@ -227,7 +227,7 @@ SOL_NL = STAT_NON_LINE ( TITRE      =
                                         SIGM_REFE     =4.8E-3,
                              #   RESI_GLOB_RELA = 1.E-8,
                                         ITER_GLOB_MAXI = 50),
-                                        
+
                        SOLVEUR=_F(METHODE = 'MULT_FRONT'),
                                                          )
 
@@ -246,35 +246,35 @@ SOL_NL = CALC_NO( reuse    = SOL_NL,
                   GROUP_MA = ('FACE1_3D', 'FACE2_3D', 'FACE3_3D'),
                   OPTION   = ('SIGM_NOEU','EPSI_NOEU', 'EPSP_NOEU',)
                 )
-                
-TABSIGM=POST_RELEVE_T(ACTION=_F(INTITULE='SIGMA_XX', 
-                                NOEUD = 'N1', 
-                                RESULTAT=SOL_NL, 
+
+TABSIGM=POST_RELEVE_T(ACTION=_F(INTITULE='SIGMA_XX',
+                                NOEUD = 'N1',
+                                RESULTAT=SOL_NL,
                                 TOUT_ORDRE='OUI',
                                 TOUT_CMP='OUI',
                                 NOM_CHAM = 'SIGM_NOEU',
                                 OPERATION='EXTRACTION',),);
 IMPR_TABLE(TABLE=TABSIGM);
 
-TABEPS=POST_RELEVE_T(ACTION=_F(INTITULE='EPS_XX', 
-                                NOEUD = 'N1', 
-                                RESULTAT=SOL_NL, 
+TABEPS=POST_RELEVE_T(ACTION=_F(INTITULE='EPS_XX',
+                                NOEUD = 'N1',
+                                RESULTAT=SOL_NL,
                                 TOUT_ORDRE='OUI',
                                 TOUT_CMP='OUI',
                                 NOM_CHAM='EPSI_NOEU' ,
                                 OPERATION='EXTRACTION',),);
-IMPR_TABLE(TABLE=TABEPS); 
+IMPR_TABLE(TABLE=TABEPS);
 
-TABEPSP=POST_RELEVE_T(ACTION=_F(INTITULE='EPSP_XX', 
-                                NOEUD = 'N1', 
-                                RESULTAT=SOL_NL, 
+TABEPSP=POST_RELEVE_T(ACTION=_F(INTITULE='EPSP_XX',
+                                NOEUD = 'N1',
+                                RESULTAT=SOL_NL,
                                 TOUT_ORDRE='OUI',
                                 TOUT_CMP='OUI',
                                 NOM_CHAM='EPSP_NOEU' ,
                                 OPERATION='EXTRACTION',),);
-IMPR_TABLE(TABLE=TABEPSP); 
+IMPR_TABLE(TABLE=TABEPSP);
 
-NBPR = 14   
+NBPR = 14
 CRIT= [None]*NBPR
 FATN= [None]*NBPR
 FATM= [None]*NBPR
@@ -283,72 +283,72 @@ CRIT[0] =   FORMULE(
            NOM_PARA='DEPSPE',
            VALE= '''DEPSPE'''
            )
-           
+
 CRIT[1] =   FORMULE(
            NOM_PARA='EPSPR1',
            VALE= '''EPSPR1'''
-           ) 
-           
+           )
+
 CRIT[2] =   FORMULE(
            NOM_PARA='SIGNM1',
            VALE= '''SIGNM1'''
-           ) 
-           
+           )
+
 CRIT[3] =   FORMULE(
            NOM_PARA='DENDIE',
            VALE= '''DENDIE'''
            )
-           
+
 CRIT[4] =   FORMULE(
            NOM_PARA='APHYDR',
            VALE= '''APHYDR'''
-           )                           
+           )
 CRIT[5] =   FORMULE(
            NOM_PARA='DENDIS',
            VALE= '''DENDIS'''
-           ) 
-            
+           )
+
 CRIT[6] =   FORMULE(
            NOM_PARA='DENDIE',
            VALE= '''DENDIE'''
-           ) 
-           
+           )
+
 CRIT[7] =   FORMULE(
            NOM_PARA='DSIGEQ',
            VALE= '''DSIGEQ'''
            )
-           
+
 CRIT[8] =   FORMULE(
            NOM_PARA='SIGPR1',
            VALE= '''SIGPR1'''
-           ) 
+           )
 
 CRIT[9] =   FORMULE(
            NOM_PARA='EPSNM1',
            VALE= '''EPSNM1'''
-           ) 
-           
+           )
+
 CRIT[10] =   FORMULE(
            NOM_PARA='INVA2S',
            VALE= '''INVA2S'''
-           ) 
-           
+           )
+
 CRIT[11] =   FORMULE(
            NOM_PARA='DSITRE',
            VALE= '''DSITRE'''
-           ) 
+           )
 
 CRIT[12] =   FORMULE(
            NOM_PARA='DEPTRE',
            VALE= '''DEPTRE'''
-           ) 
-           
+           )
+
 CRIT[13] =   FORMULE(
            NOM_PARA='EPSPAC',
            VALE= '''EPSPAC'''
-           )  
-                                                                                                                                    
-RESU = [7.5E-4, 8.75E-4, 200, 0.45, 66.66666, 0.173333, 0.45, 200, 100, 1.75E-3 , 1.616666E-3, 50, 6.0625E-4,3.67423E-3]        
+           )
+
+RESU = [7.5E-4, 8.75E-4, 200, 0.45, 66.66666, 0.173333, 0.45, 200, 100, 1.75E-3 , 1.616666E-3, 50, 6.0625E-4,3.67423E-3]
 
 for i in range(1,NBPR) :
 #
@@ -365,7 +365,7 @@ for i in range(1,NBPR) :
                            FORMULE_GRDEQ   = CRIT[i],
                            COURBE_GRD_VIE  = 'WOHLER'
                          )
-                                           
+
 
 
     TEST_RESU(CHAM_NO=(  _F( CHAM_GD = FATN[i],
@@ -376,7 +376,7 @@ for i in range(1,NBPR) :
                             VALE = RESU[i] ),
                        )
               )
-              
+
 # TEST CRITERE FORMULE AVEC 'DOMA_NOEUD',
 #########################################NOEUD
     FATM[i]=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',

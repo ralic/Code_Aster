@@ -1,8 +1,7 @@
-/* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF UTTLIM UTILITAI  DATE 19/05/2011   AUTEUR SELLENET N.SELLENET */
+/* MODIF aster_module include  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -17,37 +16,25 @@
 /* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
-/* ------------------------------------------------------------------ */
-/* temps (sec)  maxi pour ce processus                      */
-extern char g_tpmax[];
+/* RESPONSABLE COURTOIS */
+
+#ifndef ASTER_MODULE_H
+#define ASTER_MODULE_H
 
 #include "aster.h"
+/*
+ *   PUBLIC FUNCTIONS
+ *
+ */
 
-#ifdef _USE_RLIMIT
-#include <sys/resource.h>
-#endif
+extern void PRE_myabort( _IN const char *nomFichier , _IN const int numeroLigne , _IN const char *message ) ;
+#define MYABORT(message) PRE_myabort( __FILE__ , __LINE__ , message )
 
-void DEFP(UTTLIM, uttlim, DOUBLE *t_lim)
-{
-   long long itpm;
-   DOUBLE tmax;
-#ifdef _USE_RLIMIT
-   struct rlimit rlp;
+#define CALL_ISJVUP() F_FUNC(ISJVUP, isjvup)()
+extern INTEGER F_FUNC(ISJVUP, isjvup)();
+
+extern void F_FUNC(XFINI,xfini)(_IN INTEGER *);
+
+
+/* FIN ASTER_MODULE_H */
 #endif
-   tmax = ((DOUBLE) LONG_MAX)/2;
-   if (strlen(g_tpmax) > 0) {
-      sscanf(g_tpmax,"%Ld",&itpm);
-      *t_lim = (DOUBLE)itpm;
-   }
-   else {
-#ifdef _USE_RLIMIT
-      getrlimit(RLIMIT_CPU,&rlp);
-      *t_lim = (DOUBLE)rlp.rlim_max;
-#else
-      *t_lim = tmax;
-#endif
-   }
-   if (*t_lim > tmax) {
-      *t_lim = tmax;
-   }
-}

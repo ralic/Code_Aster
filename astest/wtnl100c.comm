@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # ======================================================================
 # TITRE  - CONSOLIDATION TERZAGHI 2D Q8
 # wtnl100c.para = tps_job 90 mem_job 128Mo ncpus 1 liste_test R
@@ -21,7 +21,7 @@
 # ======================================================================
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='WTNL100C',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON',),);
+DEBUT(CODE=_F(NOM='WTNL100C',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON',),DEBUG=_F(SDVERI='OUI'))
 
 MAIL=LIRE_MAILLAGE(FORMAT='MED',);
 
@@ -194,7 +194,7 @@ PRE  = [None]*nbinst;
 PREB = [None]*nbinst;
 
 for k in range(nbinst) :
-  
+
   PRE[k]=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                     OPERATION='EXTR',
                     RESULTAT=RESU1,
@@ -210,7 +210,7 @@ motcle2['AFFE']=[]
 for k in range(nbinst) :
 
   PREB[k] =CO('PREB_%d' % (k))
- 
+
   motcle1['MAJ_CHAM'].append(
   _F(TYPE_CHAM='NOEU_DEPL_R',CHAM_GD  = PRE[k],
                                   CHAM_MAJ = PREB[k],),);

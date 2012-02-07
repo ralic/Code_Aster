@@ -1,26 +1,26 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 # sdnv103f.para = tps_job 120 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #       CAS-TEST SDNV103D (3D), METHODE CONTINUE
 
-DEBUT(CODE=_F( NOM = 'SDNV103F',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='SDNV103F',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #PRE_GIBI()
 
@@ -67,14 +67,14 @@ CH2 = DEFI_CONTACT(MODELE         = MODE,
                    FROTTEMENT     = 'COULOMB',
                    REAC_GEOM      = 'CONTROLE',
                    ALGO_RESO_CONT = 'NEWTON',
-                   NB_ITER_GEOM   = 2,  
-                                   
+                   NB_ITER_GEOM   = 2,
+
                    ZONE        =_F(
                               GROUP_MA_MAIT='RIGID',
                               GROUP_MA_ESCL='SZZ',
                               COULOMB = 0.25,
                                  ),
-                   )  
+                   )
 
 VIT_0=CREA_CHAMP( OPERATION='AFFE',
                   TYPE_CHAM='NOEU_DEPL_R',
@@ -116,7 +116,7 @@ RESU=DYNA_NON_LINE(MODELE=MODE,
                    CHAM_MATER=CHMAT,
                    EXCIT=_F(CHARGE=CH,
                             ),
-                   CONTACT = CH2,         
+                   CONTACT = CH2,
                    ETAT_INIT=_F(VITE = VIT_0,
                                 ),
                    COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',

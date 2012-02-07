@@ -1,30 +1,30 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE REPONSE TRANSITOIRE D'UNE DALLE EN BETON ARME EN GRILLE_EXCENTRE QUAD4
 # sdns107b.para = tps_job 220 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE SFAYOLLE S.FAYOLLE
 
 DEBUT(CODE=_F(NOM='SDNS107B',
-              NIV_PUB_WEB='INTERNET',),);
+NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 #-----------------------------------------------------------------------
-# VALIDATION DES GRILLES EXCENTREE SUR POUTRE CONSOLE 
+# VALIDATION DES GRILLES EXCENTREE SUR POUTRE CONSOLE
 #-----------------------------------------------------------------------
 
 MAILL1=LIRE_MAILLAGE(FORMAT='MED',);
@@ -204,7 +204,7 @@ fin = 0.1;
 n = 100;
 
 
-# Chargement: definition de la fonction sinusoidale                                
+# Chargement: definition de la fonction sinusoidale
 FREQ = 20.0;
 
 
@@ -331,31 +331,31 @@ TEST_TABLE(TABLE=REAC,
 #=============================================================================================
 #import numpy as NP
 # VIT = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
-#        OPERATION='EXTR',                  
+#        OPERATION='EXTR',
 #        NUME_ORDRE=n,
 #        RESULTAT = RESU,
 #        NOM_CHAM = 'VITE'
 #       )
-# 
+#
 # VITX = VIT.EXTR_COMP('DX',[]).valeurs
 # VITY = VIT.EXTR_COMP('DY',[]).valeurs
 # VITZ = VIT.EXTR_COMP('DZ',[]).valeurs
 # VITRX = VIT.EXTR_COMP('DRX',[]).valeurs
 # VITRY = VIT.EXTR_COMP('DRY',[]).valeurs
 # VITRZ = VIT.EXTR_COMP('DRZ',[]).valeurs
-# 
+#
 # VIT2X = VITX + .03*VITRY
 # VIT2Y = VITY - .03*VITRX
 # VIT2Z = VITZ
-# 
+#
 # VIT3X = VITX - .03*VITRY
 # VIT3Y = VITY + .03*VITRX
 # VIT3Z = VITZ
-# 
+#
 # EPYTB = 25.*NP.add.reduce(VITX**2+VITY**2+VITZ**2)
 # #EPYTA = 0.
 # EPYTA = 39.*NP.add.reduce(VIT2X**2+VIT2Y**2+VIT2Z**2)+39.*NP.add.reduce(VIT3X**2+VIT3Y**2+VIT3Z**2)
-# 
+#
 # EPYTA = EPYTA/1536/2
 # EPYTB = EPYTB/1536/2
 # EPYT = (EPYTA+EPYTB)
@@ -376,47 +376,47 @@ IMPR = 0;
 
 #    PILO = 'INTERACTIF';
 
-PILO = 'PNG';                                 
+PILO = 'PNG';
 
-IMPR_FONCTION(FORMAT='XMGRACE',               
-              PILOTE=PILO,                    
-              UNITE=32,                       
-              COURBE=_F(FONCTION=DZ,          
-                        LEGENDE='DZ',         
-                        COULEUR=2,            
-                        FREQ_MARQUEUR=0,),    
-              TITRE='DEPLACEMENT',);          
+IMPR_FONCTION(FORMAT='XMGRACE',
+              PILOTE=PILO,
+              UNITE=32,
+              COURBE=_F(FONCTION=DZ,
+                        LEGENDE='DZ',
+                        COULEUR=2,
+                        FREQ_MARQUEUR=0,),
+              TITRE='DEPLACEMENT',);
 
-IMPR_FONCTION(FORMAT='XMGRACE',               
-              PILOTE=PILO,                    
-              UNITE=30,                       
-              COURBE=_F(FONCTION=FZ,          
-                        LEGENDE='FZ',         
-                        COULEUR=1,            
-                        FREQ_MARQUEUR=0,),    
-              TITRE='FORCE',);                
+IMPR_FONCTION(FORMAT='XMGRACE',
+              PILOTE=PILO,
+              UNITE=30,
+              COURBE=_F(FONCTION=FZ,
+                        LEGENDE='FZ',
+                        COULEUR=1,
+                        FREQ_MARQUEUR=0,),
+              TITRE='FORCE',);
 
-IMPR_FONCTION(FORMAT='XMGRACE',               
-              PILOTE=PILO,                    
-              UNITE=31,                       
-              COURBE=_F(FONCTION=RZ,          
-                        LEGENDE='RZ',         
-                        COULEUR=1,            
-                        FREQ_MARQUEUR=0,),    
-              TITRE='REACTION',);             
+IMPR_FONCTION(FORMAT='XMGRACE',
+              PILOTE=PILO,
+              UNITE=31,
+              COURBE=_F(FONCTION=RZ,
+                        LEGENDE='RZ',
+                        COULEUR=1,
+                        FREQ_MARQUEUR=0,),
+              TITRE='REACTION',);
 
-IMPR_TABLE(TABLE=INER,);                      
+IMPR_TABLE(TABLE=INER,);
 
-IMPR_TABLE(TABLE=DEPL,);                      
+IMPR_TABLE(TABLE=DEPL,);
 
-IMPR_TABLE(TABLE=FORC,);                      
+IMPR_TABLE(TABLE=FORC,);
 
-IMPR_TABLE(TABLE=REAC,);                      
+IMPR_TABLE(TABLE=REAC,);
 
-IMPR_TABLE(TABLE=EPOT,);                      
+IMPR_TABLE(TABLE=EPOT,);
 
-IMPR_TABLE(TABLE=ECIN,);                      
-    
+IMPR_TABLE(TABLE=ECIN,);
+
 
 FIN();
 

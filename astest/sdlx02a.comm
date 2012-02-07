@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE PROBLEME DE HOVGAARD: CALCUL MODAL ET CALCUL SPECTRAL
 # ======================================================================
 # sdlx02a.para = tps_job 60 mem_job 400Mo ncpus 1 liste_test R
@@ -6,21 +6,21 @@
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
 
-DEBUT( CODE=_F(  NOM = 'SDLX02A',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SDLX02A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MAILLAGE=LIRE_MAILLAGE(FORMAT='MED', )
 
@@ -105,46 +105,46 @@ MODE_DIA=CALC_ELEM(reuse=MODE_DIA,  RESULTAT=MODE_DIA,
 MODE_DIA=CALC_NO(reuse=MODE_DIA,  RESULTAT=MODE_DIA,
                  OPTION='REAC_NODA', )
 
-TEST_RESU(RESU=( 
-       _F( RESULTAT = MODE,      NUME_MODE = 1,  PRECISION = 0.006, 
+TEST_RESU(RESU=(
+       _F( RESULTAT = MODE,      NUME_MODE = 1,  PRECISION = 0.006,
                              PARA = 'FREQ',  VALE = 10.39),
-       _F( RESULTAT = MODE,      NUME_MODE = 2,  PRECISION = 0.006, 
+       _F( RESULTAT = MODE,      NUME_MODE = 2,  PRECISION = 0.006,
                              PARA = 'FREQ',  VALE = 20.02),
-       _F( RESULTAT = MODE,      NUME_MODE = 3,  PRECISION = 0.005, 
+       _F( RESULTAT = MODE,      NUME_MODE = 3,  PRECISION = 0.005,
                              PARA = 'FREQ',  VALE = 25.45),
-       _F( RESULTAT = MODE,      NUME_MODE = 4,  PRECISION = 0.030, 
+       _F( RESULTAT = MODE,      NUME_MODE = 4,  PRECISION = 0.030,
                              PARA = 'FREQ',  VALE = 48.32),
-       _F( RESULTAT = MODE,      NUME_MODE = 5,  PRECISION = 0.016, 
+       _F( RESULTAT = MODE,      NUME_MODE = 5,  PRECISION = 0.016,
                              PARA = 'FREQ',  VALE = 52.60),
-       _F( RESULTAT = MODE,      NUME_MODE = 6,  PRECISION = 0.029, 
+       _F( RESULTAT = MODE,      NUME_MODE = 6,  PRECISION = 0.029,
                              PARA = 'FREQ',  VALE = 84.81),
-       _F( RESULTAT = MODE,      NUME_MODE = 7,  PRECISION = 0.035, 
+       _F( RESULTAT = MODE,      NUME_MODE = 7,  PRECISION = 0.035,
                              PARA = 'FREQ',  VALE = 87.16),
-       _F( RESULTAT = MODE,      NUME_MODE = 8,  PRECISION = 0.007, 
+       _F( RESULTAT = MODE,      NUME_MODE = 8,  PRECISION = 0.007,
                              PARA = 'FREQ',  VALE = 129.31),
-       _F( RESULTAT = MODE,      NUME_MODE = 9,  PRECISION = 0.001, 
+       _F( RESULTAT = MODE,      NUME_MODE = 9,  PRECISION = 0.001,
                              PARA = 'FREQ',  VALE = 131.69)) )
 
 #
 
-TEST_RESU(RESU=( 
-       _F( RESULTAT = MODE_DIA,  NUME_MODE = 1,  PRECISION = 0.005, 
+TEST_RESU(RESU=(
+       _F( RESULTAT = MODE_DIA,  NUME_MODE = 1,  PRECISION = 0.005,
                              PARA = 'FREQ',  VALE = 10.18),
-       _F( RESULTAT = MODE_DIA,  NUME_MODE = 2,  PRECISION = 0.005, 
+       _F( RESULTAT = MODE_DIA,  NUME_MODE = 2,  PRECISION = 0.005,
                              PARA = 'FREQ',  VALE = 19.54),
-       _F( RESULTAT = MODE_DIA,  NUME_MODE = 3,  PRECISION = 0.005, 
+       _F( RESULTAT = MODE_DIA,  NUME_MODE = 3,  PRECISION = 0.005,
                              PARA = 'FREQ',  VALE = 25.47),
-       _F( RESULTAT = MODE_DIA,  NUME_MODE = 4,  PRECISION = 0.008, 
+       _F( RESULTAT = MODE_DIA,  NUME_MODE = 4,  PRECISION = 0.008,
                              PARA = 'FREQ',  VALE = 48.09),
-       _F( RESULTAT = MODE_DIA,  NUME_MODE = 5,  PRECISION = 0.010, 
+       _F( RESULTAT = MODE_DIA,  NUME_MODE = 5,  PRECISION = 0.010,
                              PARA = 'FREQ',  VALE = 52.86),
-       _F( RESULTAT = MODE_DIA,  NUME_MODE = 6,  PRECISION = 0.011, 
+       _F( RESULTAT = MODE_DIA,  NUME_MODE = 6,  PRECISION = 0.011,
                              PARA = 'FREQ',  VALE = 75.94),
-       _F( RESULTAT = MODE_DIA,  NUME_MODE = 7,  PRECISION = 0.010, 
+       _F( RESULTAT = MODE_DIA,  NUME_MODE = 7,  PRECISION = 0.010,
                              PARA = 'FREQ',  VALE = 80.11),
-       _F( RESULTAT = MODE_DIA,  NUME_MODE = 8,  PRECISION = 0.015, 
+       _F( RESULTAT = MODE_DIA,  NUME_MODE = 8,  PRECISION = 0.015,
                              PARA = 'FREQ',  VALE = 122.34),
-       _F( RESULTAT = MODE_DIA,  NUME_MODE = 9,  PRECISION = 0.015, 
+       _F( RESULTAT = MODE_DIA,  NUME_MODE = 9,  PRECISION = 0.015,
                              PARA = 'FREQ',  VALE = 123.15)) )
 
 #
@@ -201,12 +201,12 @@ SISM_SPE=COMB_SISM_MODAL(  MODE_MECA=MODE_DIA,
                            CORR_FREQ='NON',
                            MONO_APPUI = 'OUI',
                            EXCIT=_F( TRI_SPEC = 'OUI',
-                                     SPEC_OSCI = ( SPECT_XY,  SPECT_XY, 
+                                     SPEC_OSCI = ( SPECT_XY,  SPECT_XY,
                                                 SPECT_XY, ),
                            ECHELLE = ( 1.,  1.,  0.5, )),
                            COMB_MODE=_F(  TYPE = 'SRSS'),
                            COMB_DIRECTION=_F(  TYPE = 'QUAD'),
-                           OPTION=( 'DEPL',  'EFGE_ELNO', 
+                           OPTION=( 'DEPL',  'EFGE_ELNO',
                                       'REAC_NODA', )
                             )
 
@@ -362,12 +362,12 @@ SISM_SIS=COMB_SISM_MODAL(  MODE_MECA=MODE_DIA,
                            MASS_INER=TABL_MAS,
                            MONO_APPUI = 'OUI',
                            EXCIT=_F( TRI_SPEC = 'OUI',
-                                     SPEC_OSCI = ( SPECT_XY,  SPECT_XY, 
+                                     SPEC_OSCI = ( SPECT_XY,  SPECT_XY,
                                                 SPECT_Z,  ),
                                      ECHELLE = ( 1.,  1.,  1., )),
                            COMB_MODE=_F(  TYPE = 'SRSS'),
                            COMB_DIRECTION=_F(  TYPE = 'QUAD'),
-                           OPTION=( 'DEPL',  'EFGE_ELNO', 
+                           OPTION=( 'DEPL',  'EFGE_ELNO',
                                       'REAC_NODA', )
                             )
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 #
 # TITRE AILETTE FISSUREE AVEC CONTACT
 # demo002a.para = tps_job 70 mem_job 128Mo ncpus 1 liste_test S
@@ -19,6 +19,9 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
+# RESPONSABLE COURTOIS M.COURTOIS
+import aster_core
+
 # ILLUSTRATION  DE DYNA_NON_LINE ET DE POST_TRAITEMENT NUMERIQUE
 # TRACE DE COURBE AVEC XMGRACE
 
@@ -76,7 +79,7 @@ launch_GMSH      = 0
 # Emplacement de l'executable gmsh
 # executable_GMSH  = "/home/mabbas/GMSH/gmsh-batch"
 import os
-executable_GMSH  = os.path.join(aster.repout(),'gmsh')
+executable_GMSH  = os.path.join(aster_core.get_option('repout'), 'gmsh')
 
 # Executer XMGRACE en interactif: 1=OUI, 0=NON
 launch_XMGRACE   = 0

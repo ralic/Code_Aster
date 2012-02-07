@@ -3,14 +3,14 @@
      &                   NFS,NSG,TOUTMS, NVI,    NMAT,    Y,
      &                   KP,    EE,      A,       H, PGL,NBPHAS,COTHE,
      &                   COEFF, DCOTHE,  DCOEFF,  E,      NU,
-     &                   ALPHA, COEL, X,       PAS,     SIGI,   EPSD,
+     &                   ALPHA, COEL, X,       PAS,  SIGI,NEPS,EPSD,
      &                   DETOT,NHSR,NUMHSR,HSR,ITMAX,TOLER,IRET)
       IMPLICIT NONE
 C     ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 06/02/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -62,7 +62,7 @@ C         DETOT   :  INCREMENT DE DEFORMATION TOTALE
 C     ----------------------------------------------------------------
 
       INTEGER KPG,KSP,NMAT,IMAT , NBCOMM(NMAT,3),KP,NVI,I,NFS,NSG
-      INTEGER NBPHAS,ITMAX,IRET,NHSR,NUMHSR(*)
+      INTEGER NBPHAS,ITMAX,IRET,NHSR,NUMHSR(*),NEPS
       CHARACTER*16 COMP(*),CPMONO(5*NMAT+1)
       CHARACTER*8 MOD
       CHARACTER*(*)   FAMI
@@ -76,7 +76,7 @@ C     ----------------------------------------------------------------
       REAL*8 COEFF(NMAT),DCOEFF(NMAT)
       REAL*8 EE(NVI),A(NVI)
 C      POUR GAGNER EN TEMPS CPU
-      REAL*8 TOUTMS(NBPHAS,NFS,NSG,7)
+      REAL*8 TOUTMS(*)
 C
       DO 1 I=1,NVI
         EE(I)=0.D0
@@ -86,7 +86,7 @@ C
         CALL RDIF01(FAMI,KPG,KSP,COMP,MOD,IMAT,MATCST,NBCOMM,
      &              CPMONO,NFS,NSG,TOUTMS,
      &              NVI,NMAT,Y,COTHE,COEFF,DCOTHE,DCOEFF,PGL,NBPHAS,
-     &              E,NU,ALPHA,COEL,X,PAS,SIGI,EPSD,DETOT,F,
+     &              E,NU,ALPHA,COEL,X,PAS,SIGI,NEPS,EPSD,DETOT,F,
      &              NHSR,NUMHSR,HSR,ITMAX, TOLER, IRET)
         DO 10 I=1,NVI
           A(I)=F(I)
@@ -101,7 +101,7 @@ C
       CALL RDIF01(FAMI,KPG,KSP,COMP,MOD,IMAT,MATCST,NBCOMM,
      &            CPMONO,NFS,NSG,TOUTMS,
      &            NVI,NMAT,Y,COTHE,COEFF,DCOTHE,DCOEFF,PGL,NBPHAS,
-     &            E,NU,ALPHA,COEL,X,PAS,SIGI,EPSD,DETOT,F,
+     &            E,NU,ALPHA,COEL,X,PAS,SIGI,NEPS,EPSD,DETOT,F,
      &            NHSR,NUMHSR,HSR,ITMAX, TOLER, IRET)
       HS2=0.5D0*H
       DO 12 I=1,NVI

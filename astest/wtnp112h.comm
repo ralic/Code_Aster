@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # ======================================================================
 # TITRE RESATURATION D UNE COLONNE TEST HMD, 2D ,
 # wtnp112h.para = tps_job 130 mem_job 128Mo ncpus 1 liste_test S
@@ -23,7 +23,7 @@
 #                         TEST31 ALLIANCES
 # ======================================================================
 
-DEBUT(CODE=_F( NOM = 'WTNP112H',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='WTNP112H',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 ####################################
 #   OPERATIONS SUR LE MAILLAGE

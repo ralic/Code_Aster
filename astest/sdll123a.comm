@@ -1,29 +1,30 @@
-# MODIF  DATE 09/01/2012   AUTEUR CORUS M.CORUS 
+# MODIF  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FREQUENCES D'UNE LIGNE D'ARBRE SIMPLIFIEE (AMORTISSEMENT GYROSCOPIQUE)
 # sdll123a.para = tps_job 120 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
+import aster_core
 import numpy as NP
 import numpy.linalg as LA
 
 DEBUT( CODE=_F(NOM='SDLL123A', NIV_PUB_WEB='INTERNET'),
-       PAR_LOT='NON')
+       PAR_LOT='NON', DEBUG=_F(SDVERI='OUI'))
 
 MAIL=LIRE_MAILLAGE()
 
@@ -64,8 +65,8 @@ CARELEM=AFFE_CARA_ELEM(MODELE=MODELE,
                                      VALE=(0.,0.,0.,0.,0.,0.,), )
                         )
                         )
-                                 
-                                 
+
+
 
 BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODELE,
                                DDL_IMPO=(
@@ -73,7 +74,7 @@ BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODELE,
                                      DX=0, DY=0, DZ=0,
                                      ),
                           ))
-                                    
+
 
 MACRO_MATR_ASSE(MODELE=MODELE,
                 CHAM_MATER=CHMAT,
@@ -92,7 +93,7 @@ MACRO_MATR_ASSE(MODELE=MODELE,
 mas=MASSE.EXTR_MATR()
 rig=RIGIDITE.EXTR_MATR()
 
-                    
+
 MODES=MODE_ITER_SIMULT(MATR_A=RIGIDITE,
                        MATR_B=MASSE,
                        CALC_FREQ=_F(OPTION='BANDE',
@@ -119,7 +120,7 @@ TEST_TABLE(TABLE=NBMOD02,REFERENCE='ANALYTIQUE',
            NOM_PARA='NB_MODE', VALE_I=3)
 TEST_TABLE(TABLE=NBMOD03,REFERENCE='ANALYTIQUE',
            NOM_PARA='NB_MODE', VALE_I=7)
-           
+
 # METHODE APM VARIANTE LDLT  (RESULTATS ATTENDUS 1, 3 ET 7)
 # (ICI ON RENTRE LES BORNES EN PULSATION)
 w1=(2*pi*f1)**2
@@ -209,7 +210,7 @@ gyro=GYOM.EXTR_MATR()
 #-- Par construction, les contraintes lineaires sont
 #-- stockees dans la matrice de rigidite. Les lignes
 #-- ind_lag1 correspondent aux equations de Lagranges (contraintes)
-#-- les lignes ind_nolag correspondent aux equations sur 
+#-- les lignes ind_nolag correspondent aux equations sur
 #-- les DDL physiques
 
 nom_nume='NUMEDDL'
@@ -223,10 +224,10 @@ for i1 in range(len(Nume)) :
     ind_nolag.append(i1)
   if (Nume[i1] < -0.5) & (Nume[i1] > -1.5):
     ind_lag1.append(i1)
- 
+
 #-- On recupere la matrice des contraintes "rig[ind_lag1][:,ind_nolag]"
 #-- et on la complete par des zeros.
-#-- On determine le noyau par decomposition QR de la matrice 
+#-- On determine le noyau par decomposition QR de la matrice
 #-- des contraintes.
 #-- Si on ne rempli pas de zeros, le QR est fait "a l'economie"
 #-- et la matrice Q n'est pas complete.
@@ -258,9 +259,9 @@ for i1 in range(len(R)) :
 massP=NP.dot(NP.transpose(Q[:][:,indz]),NP.dot(mas[ind_nolag][:,ind_nolag],Q[:][:,indz]))
 raidP=NP.dot(NP.transpose(Q[:][:,indz]),NP.dot(rig[ind_nolag][:,ind_nolag],Q[:][:,indz]))
 gyroP=NP.dot(NP.transpose(Q[:][:,indz]),NP.dot(gyro[ind_nolag][:,ind_nolag],Q[:][:,indz]))
- 
- 
-#-- On assemble le probleme quadratique generalise pour 
+
+
+#-- On assemble le probleme quadratique generalise pour
 #-- la recherche des valeurs propres
 
 sha= massP.shape
@@ -271,7 +272,7 @@ HPRIME[0:nddl,0:nddl]=NP.dot(-massI,gyroP)
 HPRIME[0:nddl,nddl:2*nddl]=NP.dot(-massI,raidP)
 HPRIME[nddl:2*nddl,0:nddl]=NP.identity(nddl)
 
-aster.matfpe(-1)
+aster_core.matfpe(-1)
 vprime=LA.eigvals(HPRIME)/2./NP.pi
 vpreal=list(vprime.imag)
 vpreal.sort()
@@ -283,7 +284,7 @@ for vp in vpreal:
    i=i+1
  j=j+1
  dij=j-i
-aster.matfpe(+1)
+aster_core.matfpe(+1)
 
 
 FREQROT=CREA_TABLE(

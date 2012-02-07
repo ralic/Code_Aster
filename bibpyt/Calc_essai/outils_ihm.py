@@ -1,8 +1,8 @@
-#@ MODIF outils_ihm Calc_essai  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF outils_ihm Calc_essai  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,6 +22,7 @@
 
 from Tkinter import *
 
+import aster_core
 import aster
 import string
 import os
@@ -1570,14 +1571,14 @@ class CalcEssaiXmgr(Xmgr):
     avec la version Stanley)."""
 
     def __init__(self, xmgr_idx, gr_max = 10, options=None,
-                       xmgrace=os.path.join(aster.repout(), 'xmgrace')):
+                       xmgrace=os.path.join(aster_core.get_option('repout'), 'xmgrace')):
 
         self.gr_max   = gr_max        # nombre de graphes
         self.gr_act   = 0             # numero du graphe actif
         self.sets     = [0]*gr_max    # nombre de sets par graphe
         self.nom_pipe = 'xmgr%i.pipe' % xmgr_idx  # nom du pipe de communication
         if xmgrace == "/xmgrace":
-            print "Pbl with atser repout ", aster.repout()
+            print "Pbl with aster repout ", aster_core.get_option('repout')
             self.xmgrace = "/usr/bin/xmgrace"
         else:
             self.xmgrace  = xmgrace

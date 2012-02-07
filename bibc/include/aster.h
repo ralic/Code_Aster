@@ -1,7 +1,7 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF aster include  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF aster include  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -44,11 +44,6 @@
 typedef int Py_ssize_t;
 #endif
 
-/* Fonction retournant PI en R8 */
-#define R8PI() F_FUNC(R8PI,r8pi)()
-extern DOUBLE STDCALL(R8PI,r8pi)();
-
-
 /* pour preciser quel fichier affiche les  messages et les valeurs */
 #define INTERRUPTION(code) { ICI ; fprintf(stderr,"INTERRUPTION - code retour %d\n",code) ;abort() ; }
 #define ICI fflush(stdout);fprintf( stderr, "%s  %d : " , __FILE__ , __LINE__  ) ; fflush(stderr) ;
@@ -59,7 +54,6 @@ extern DOUBLE STDCALL(R8PI,r8pi)();
 #else
 #define ASSERT(condition)
 #endif
-
 
 #define PRINTERR if(PyErr_Occurred()){ \
             fprintf(stderr,"Warning: une exception n'a pas ete traitée\n"); \
@@ -75,11 +69,6 @@ extern DOUBLE STDCALL(R8PI,r8pi)();
 #ifdef _WINDOWS
 #define strdup _strdup
 #endif
-
-/* functions to store global attrs */
-void put_repmat(_IN char *);
-void put_repout(_IN char *);
-void put_repdex(_IN char *);
 
 /* -------------------------------------
    --           FIN  aster.h          --

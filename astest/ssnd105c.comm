@@ -1,28 +1,29 @@
-# MODIF  DATE 23/05/2011   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE TRACTION AVEC MEMOIRE MAXI D'ECROUISSAGE AXIS
 # ssnd105c.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='SSND105C',
               NIV_PUB_WEB='INTERNET',),
               # IGNORE_ALARM=('ELEMENTS4_74',),
-              );
+DEBUG=_F(SDVERI='NON'))
+# SDVERI='NON' car la verification est trop couteuse en CPU
 
 CUBE=LIRE_MAILLAGE();
 
@@ -61,7 +62,7 @@ ACIER2=DEFI_MATERIAU(ELAS=_F(E=200000.,
                                   C2_I=65000.,
                                   G1_0=50.,
                                   G2_0=1300.,),
-                     MEMO_ECRO=_F( 
+                     MEMO_ECRO=_F(
                                   MU =MU,
                                   Q_M=Q_M,
                                   Q_0=Q_0,
@@ -115,7 +116,7 @@ LINST=DEFI_LIST_REEL(DEBUT=0.,
                                  _F(JUSQU_A=T2,
                                     NOMBRE=10,),),);
 
-# cycles en deformation imposee                                 
+# cycles en deformation imposee
 TINI = T2;
 
 DT = 5.0;
@@ -138,12 +139,12 @@ def epsimp(INST):
     if t1 <= DT/2. :
         epsi=vit*t1+epsmoy
     else :
-        t2=t1-DT/2.        
-        t3=t2 - 2*DT*int(t2/2/DT) 
+        t2=t1-DT/2.
+        t3=t2 - 2*DT*int(t2/2/DT)
         if t3 <= DT :
             epsi = EPSMAX - vit*t3
         else :
-            epsi = EPSMIN + vit*(t3-DT)    
+            epsi = EPSMIN + vit*(t3-DT)
     return epsi
 
 epsi = FORMULE(NOM_PARA='INST',VALE='epsimp(INST)');
@@ -195,13 +196,13 @@ VISCMEMO=STAT_NON_LINE(MODELE=MOD2D,
                                  NOM_CHAM   ='VARI_ELGA',
                                  TOUT       = 'OUI',
                                  EVAL_ELGA  ='MAX',
-                                 EVAL_CHAM ='MAX',),   
+                                 EVAL_CHAM ='MAX',),
                               _F(NOM_CMP    ='SIXX',
                                  NOM_CHAM   ='SIEF_ELGA',
                                  TOUT       = 'OUI',
                                  EVAL_ELGA  ='MAX',
-                                 EVAL_CHAM ='MAX',),   
-                                 ), 
+                                 EVAL_CHAM ='MAX',),
+                                 ),
                        );
 
 VISCMEMO=STAT_NON_LINE(reuse =VISCMEMO,
@@ -216,8 +217,8 @@ VISCMEMO=STAT_NON_LINE(reuse =VISCMEMO,
                        INCREMENT=_F(LIST_INST=LINST2,
                                     INST_FIN=TFIN,),
                        NEWTON=_F(REAC_ITER=1,),
-                       
-                       
+
+
                        SUIVI_DDL=(_F(  NOM_CMP='V1',
                                        NOM_CHAM='VARI_ELGA',
                                        TOUT       = 'OUI',
@@ -239,8 +240,8 @@ VISCMEMO=STAT_NON_LINE(reuse =VISCMEMO,
                                        EVAL_CHAM='MAX',
                                        EVAL_ELGA='MAX',),
                                     ),
-                                       
-                                       
+
+
                       );
 
 #   V1 = p
@@ -264,11 +265,11 @@ VISCOCH=STAT_NON_LINE(MODELE=MOD2D,
                       NEWTON=_F(PREDICTION='ELASTIQUE',
                                 REAC_ITER=1,),
                       RECH_LINEAIRE=_F(ITER_LINE_MAXI=5,),
-                      
+
                       SUIVI_DDL=(_F(
                                     NOM_CMP='V1',
                                     TOUT='OUI',
-                                    NOM_CHAM='VARI_ELGA',  
+                                    NOM_CHAM='VARI_ELGA',
                                     EVAL_CHAM='MAX',
                                        EVAL_ELGA='MAX',),
                                  _F(
@@ -278,7 +279,7 @@ VISCOCH=STAT_NON_LINE(MODELE=MOD2D,
                                     EVAL_CHAM='MAX',
                                     EVAL_ELGA='MAX',),
                                 ),
-                      
+
                       );
 
 VISCOCH=STAT_NON_LINE(reuse =VISCOCH,
@@ -293,11 +294,11 @@ VISCOCH=STAT_NON_LINE(reuse =VISCOCH,
                       INCREMENT=_F(LIST_INST=LINST2,
                                    INST_FIN=TFIN,),
                       NEWTON=_F(REAC_ITER=1,),
-                      
+
                       SUIVI_DDL=(_F(
                                     NOM_CMP='V1',
                                     TOUT       = 'OUI',
-                                    NOM_CHAM='VARI_ELGA',  
+                                    NOM_CHAM='VARI_ELGA',
                                     EVAL_CHAM='MAX',
                                     EVAL_ELGA='MAX',),
                                  _F(
@@ -307,7 +308,7 @@ VISCOCH=STAT_NON_LINE(reuse =VISCOCH,
                                     EVAL_CHAM='MAX',
                                     EVAL_ELGA='MAX',),
                                 ),
-                      
+
                       );
 
 #################################
@@ -346,24 +347,24 @@ FSIXX2=RECU_FONCTION(RESULTAT=VISCOCH,
                      MAILLE='MA1',INTERPOL='LIN',
                      POINT=1,);
 
-TEST_RESU(RESU=( 
+TEST_RESU(RESU=(
            _F(RESULTAT = VISCMEMO,
               INST = T1,
-             NOM_CHAM = 'SIEF_ELGA',  
+             NOM_CHAM = 'SIEF_ELGA',
              REFERENCE = 'ANALYTIQUE',
-             MAILLE = 'MA1',  
-             POINT = 1,  
-             NOM_CMP = 'SIYY',  
+             MAILLE = 'MA1',
+             POINT = 1,
+             NOM_CMP = 'SIYY',
              VALE = -220.,  ),
 
-           _F(  RESULTAT = VISCMEMO, 
+           _F(  RESULTAT = VISCMEMO,
              INST = T2,
-             NOM_CHAM = 'SIEF_ELGA',  
-             REFERENCE = 'ANALYTIQUE',  
-             CRITERE='ABSOLU', 
-             MAILLE = 'MA1',  
-             POINT = 1,  
-             NOM_CMP = 'SIYY',  
+             NOM_CHAM = 'SIEF_ELGA',
+             REFERENCE = 'ANALYTIQUE',
+             CRITERE='ABSOLU',
+             MAILLE = 'MA1',
+             POINT = 1,
+             NOM_CMP = 'SIYY',
              VALE = 0.,  ),
 
                 ) )
@@ -452,7 +453,7 @@ VMISCIN2=STAT_NON_LINE(MODELE=MOD2D,
                        SUIVI_DDL=(_F(
                                     NOM_CMP='V1',
                                     TOUT       = 'OUI',
-                                    NOM_CHAM='VARI_ELGA',  
+                                    NOM_CHAM='VARI_ELGA',
                                     EVAL_CHAM='MAX',
                                     EVAL_ELGA='MAX',),
                                  _F(
@@ -478,7 +479,7 @@ VMISCIN2=STAT_NON_LINE(reuse =VMISCIN2,
                        SUIVI_DDL=(_F(
                                     NOM_CMP='V1',
                                     TOUT       = 'OUI',
-                                    NOM_CHAM='VARI_ELGA',  
+                                    NOM_CHAM='VARI_ELGA',
                                     EVAL_CHAM='MAX',
                                     EVAL_ELGA='MAX',),
                                  _F(
@@ -488,8 +489,8 @@ VMISCIN2=STAT_NON_LINE(reuse =VMISCIN2,
                                     EVAL_CHAM='MAX',
                                     EVAL_ELGA='MAX',),
                                 ),
-                                       
-                                       
+
+
                                        );
 
 

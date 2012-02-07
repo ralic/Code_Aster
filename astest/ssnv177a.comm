@@ -1,8 +1,8 @@
-# MODIF  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST DE WILLAM AVEC LA LOI ENDO_ORTH_BETON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,6 +40,7 @@
 DEBUT(CODE=_F(NOM='SSNV177A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),
       PAR_LOT='NON')
 
+import aster_core
 import numpy as NP
 import numpy.linalg as LA
 from math import pi, acos
@@ -195,7 +196,7 @@ print 'nb = ',nb
 
 # on desactive temporairement l'interception des floating point exceptions
 # levees par blas/lapack (bug libMKL)
-aster.matfpe(-1)
+aster_core.matfpe(-1)
 
 tenseurD=NP.zeros((2,2))
 tenseurD[0,0]=D_xx.valeurs[0]
@@ -229,7 +230,7 @@ refe_defi = 135.7160
 refe_endo = 23.0825
 
 # on reactive
-aster.matfpe(1)
+aster_core.matfpe(1)
 
 ROT_EPSI=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(1.,angle_defi),

@@ -1,34 +1,35 @@
-# MODIF  DATE 30/08/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE TEST DU MULTI-APPUIS SUR UN SYSTEME MASSES-RESSORTS NON LINEAIRE
 # sdnd102b.para = tps_job 430 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # ----------------------------------------------------------------------
 # COMPARAISON DE LA REPONSE D UN SYSTEME A UN DDL BUTANT CONTRE UNE
-# PAROI FIXE ET CELLE DE DEUX SYSTEMES A UN DDL   L'UN SOUMIS A GAMMA 
+# PAROI FIXE ET CELLE DE DEUX SYSTEMES A UN DDL   L'UN SOUMIS A GAMMA
 # L'AUTRE SOUMIS A -GAMMA  POUVANT BUTER L'UN CONTRE L'AUTRE
 #
 # CALCUL TRANSITOIRE DIRECT AVEC DYNA_NON_LINE
 # ----------------------------------------------------------------------
-# 
+#
 
 DEBUT(CODE=_F(NOM='SDND102B',
-              NIV_PUB_WEB='INTERNET',),);
+NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'))
+# SDVERI='NON' car la verification est trop couteuse en CPU
 
 MAILLAGE=LIRE_MAILLAGE();
 
@@ -161,7 +162,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
 #
 #=======================================================================
 # 1/ ON ETUDIE LE SYSTEME A 1 DDL
-#       ACCE_IMPO = ACCELER1 (SIN(OMEGAA*T)) EN X=0 
+#       ACCE_IMPO = ACCELER1 (SIN(OMEGAA*T)) EN X=0
 #----------------------------------------------------------------------
 #
 # MODELISATION
@@ -267,7 +268,7 @@ TRAN_DY=DYNA_NON_LINE(MODELE=MODELE,INFO=1,
                       SOLVEUR=_F(METHODE='LDLT',
                                  RENUM='RCMK',),
                       CONVERGENCE=_F(RESI_GLOB_RELA=1.E-8,
-                                     ITER_GLOB_MAXI=20,),        
+                                     ITER_GLOB_MAXI=20,),
                       OBSERVATION=(_F(NOM_CMP='DX',
                                       NOEUD='NO1',
                                       NOM_CHAM='DEPL_ABSOLU',
@@ -309,7 +310,7 @@ TRAN_DY=DYNA_NON_LINE(MODELE=MODELE,INFO=1,
                                     EVAL_CHAM='MIN',
                                     NOM_CHAM='VITE',),
                                 ),
-                      ARCHIVAGE=_F(LIST_INST=L_INST2,), 
+                      ARCHIVAGE=_F(LIST_INST=L_INST2,),
 );
 
 TEST_RESU(RESU=_F(RESULTAT    = TRAN_DY,
@@ -322,7 +323,7 @@ TEST_RESU(RESU=_F(RESULTAT    = TRAN_DY,
                    REFERENCE  = 'NON_REGRESSION',
                    VERSION    = '11.0.11',
              ),)
-             
+
 TEST_RESU(RESU=_F(RESULTAT    = TRAN_DY,
                    INST       = 0.01,
                    NOM_CHAM   = 'VITE_ABSOLU',
@@ -358,39 +359,39 @@ TEST_TABLE(TABLE=TAB_OBS,
                       CRIT_COMP='EQ',
                       VALE_K='DEPL_ABSOLU',),
                    _F(NOM_PARA='NOM_OBJET',
-                     VALE_K='VALEUR',),     
+                     VALE_K='VALEUR',),
                    _F(NOM_PARA='INST',
                       CRIT_COMP='EQ',
                       VALE=0.01,),),
            NOM_PARA='VALE',
            VALE=-1.4888774372446E-04,
            REFERENCE='NON_REGRESSION',);
-           
+
 TEST_TABLE(TABLE=TAB_OBS,
            FILTRE=(_F(NOM_PARA='NOM_CHAM',
                       CRIT_COMP='EQ',
                       VALE_K='VITE_ABSOLU',),
                    _F(NOM_PARA='NOM_OBJET',
-                     VALE_K='VALEUR',),     
+                     VALE_K='VALEUR',),
                    _F(NOM_PARA='INST',
                       CRIT_COMP='EQ',
                       VALE=0.01,),),
            NOM_PARA='VALE',
            VALE=-0.012875905370012,
            REFERENCE='NON_REGRESSION',);
-           
+
 TEST_TABLE(TABLE=TAB_OBS,
            FILTRE=(_F(NOM_PARA='NOM_CHAM',
                       CRIT_COMP='EQ',
                       VALE_K='ACCE_ABSOLU',),
                    _F(NOM_PARA='NOM_OBJET',
-                     VALE_K='VALEUR',),     
+                     VALE_K='VALEUR',),
                    _F(NOM_PARA='INST',
                       CRIT_COMP='EQ',
                       VALE=0.01,),),
            NOM_PARA='VALE',
            VALE=0.58778525229247,
-           REFERENCE='NON_REGRESSION',);           
+           REFERENCE='NON_REGRESSION',);
 
 #
 #=======================================================================
@@ -400,7 +401,7 @@ TEST_TABLE(TABLE=TAB_OBS,
 #----------------------------------------------------------------------
 #
 # MODELISATION
-#         
+#
 
 BICHOC=AFFE_MODELE(MAILLAGE=MAILLAGE,
                    AFFE=(_F(GROUP_MA=('RESSORTS','RESSORT2',),

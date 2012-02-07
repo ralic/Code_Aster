@@ -1,0 +1,864 @@
+# MODIF  DATE 06/02/2012   AUTEUR CHANSARD F.CHANSARD 
+
+# TITRE SIMPLE POUTRE VERTICALE MONTEE SUR UN RESSORT SOUMISE A UN SEISME
+# sdll147a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='SDLL147A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'));
+
+MAIL=LIRE_MAILLAGE();
+
+MAIL=DEFI_GROUP(reuse =MAIL,  
+                MAILLAGE=MAIL,
+                CREA_GROUP_NO=_F(GROUP_MA='SOL',),);
+
+MODELE=AFFE_MODELE(MAILLAGE=MAIL,
+                   AFFE=(_F(GROUP_MA=('BATI','RADIER',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='POU_D_E',),
+                         _F(GROUP_MA='SOL', 
+                            PHENOMENE='MECANIQUE', 
+                            MODELISATION='DIS_T',),),);
+
+BETAMOU=DEFI_MATERIAU(ELAS=_F(E=350E6,        
+                              NU=0.2,
+                              RHO=2500.0,),);
+
+BETADUR=DEFI_MATERIAU(ELAS=_F(E=350E8,
+                              NU=0.2,
+                              RHO=2500.0,),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=(_F(GROUP_MA='RADIER',
+                             MATER=BETADUR,),
+                          _F(GROUP_MA='BATI',
+                             MATER=BETAMOU,),),);
+
+raideur=1E+13
+amor=.07
+
+CARELEM=AFFE_CARA_ELEM(MODELE=MODELE,
+                       POUTRE=_F(GROUP_MA=('RADIER','BATI',),
+                                 SECTION='CERCLE',
+                                 CARA=('R','EP',),
+                                 VALE=(10.,1.,),),
+                       DISCRET=(_F(CARA='K_T_D_L', 
+                                   GROUP_MA='SOL', 
+                                   VALE=(raideur,raideur,raideur,),),
+                                _F(CARA='M_T_D_L', 
+                                   GROUP_MA=('SOL',),
+                                   VALE=0.0,),),);
+
+BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODELE,
+                        DDL_IMPO=(_F(GROUP_NO='O', 
+                                     DX=0.0, 
+                                     DZ=0.0,),
+                                  _F(GROUP_NO='R', 
+                                     DRY=0.0, ),
+                                  _F(TOUT='OUI', 
+                                     DY=0.0, 
+                                     DRX=0.0, 
+                                     DRZ=0.0),),);
+
+MACRO_MATR_ASSE(MODELE=MODELE,
+                CHAM_MATER=CHMAT,
+                CARA_ELEM=CARELEM,
+                CHARGE=BLOQUAGE,
+                NUME_DDL=CO('NUMEDDL'),
+                MATR_ASSE=(_F(MATRICE=CO('RIGIDITE'),
+                              OPTION='RIGI_MECA',),
+                           _F(MATRICE=CO('MASSE'),
+                              OPTION='MASS_MECA',),),);
+
+MODECA=MODE_ITER_SIMULT(MATR_A=RIGIDITE,
+                        MATR_B=MASSE,
+                        VERI_MODE =_F( SEUIL = 1.E-4),
+                        CALC_FREQ=_F(OPTION='BANDE', 
+                                     FREQ=(0.,60,),),);
+
+
+MODECA=NORM_MODE(reuse=MODECA, 
+                 MODE=MODECA, 
+                 NORME='MASS_GENE',);
+
+
+MODER = EXTR_MODE(IMPRESSION=_F(CUMUL='OUI'), 
+                  FILTRE_MODE=(_F(MODE=MODECA, 
+                                  FREQ_MIN=0, 
+                                  FREQ_MAX=60,),),);
+                                    
+MODES = EXTR_MODE(IMPRESSION=_F(CUMUL='OUI'), 
+                  FILTRE_MODE=(_F(MODE=MODER, 
+                                  CRIT_EXTR='MASS_EFFE_UN', 
+                                  SEUIL=.00001,),),);
+
+MODES=CALC_ELEM(reuse=MODES,
+                RESULTAT=MODES,
+                OPTION=('SIEF_ELGA',),);
+                                    
+MODES=CALC_NO(reuse=MODES,
+              RESULTAT=MODES,   
+              OPTION='REAC_NODA');                                    
+
+CORRSTA = MODE_STATIQUE(MATR_RIGI=RIGIDITE,
+                        MATR_MASS=MASSE,
+                        PSEUDO_MODE=_F(AXE=('X','Y','Z',),),);
+
+CORRSTA=CALC_ELEM(reuse=CORRSTA,
+                  RESULTAT=CORRSTA,
+                  OPTION=('SIEF_ELGA',),);
+
+CORRSTA=CALC_NO(reuse=CORRSTA,  
+                RESULTAT=CORRSTA,
+                OPTION='REAC_NODA');
+
+MODESTA1=MODE_STATIQUE( MATR_RIGI=RIGIDITE,
+                        MATR_MASS=MASSE,
+                        MODE_STAT=_F(NOEUD='N0',
+                                     AVEC_CMP='DX',),);
+
+SPECTRE=DEFI_NAPPE(NOM_PARA='AMOR',
+                  PARA=(1.0E-2,0.07,0.1,0.3,),
+                   NOM_PARA_FONC='FREQ',
+                   DEFI_FONCTION=(_F(VALE=(0.2,1.0E-2,0.56,0.15,4.61,1.24,14.0,1.24,40.,2.5E-1,),
+                                     INTERPOL='LOG',
+                                     PROL_DROITE='CONSTANT',
+                                     PROL_GAUCHE='CONSTANT',),
+                                  _F(VALE=(0.2,9.75E-3,0.51,6.45E-2,4.58,5.74E-1,14.0,5.74E-1,40.,2.5E-1,),
+                                     INTERPOL='LOG',
+                                     PROL_DROITE='CONSTANT',
+                                     PROL_GAUCHE='CONSTANT',),
+                                  _F(VALE=(0.2,9.42E-3,0.46,5.03E-2,4.54,4.94E-1,14.0,4.94E-1,40.,2.5E-1,),
+                                     INTERPOL='LOG',
+                                     PROL_DROITE='CONSTANT',
+                                     PROL_GAUCHE='CONSTANT',),
+                                  _F(VALE=(0.2,8.40E-3,0.28,1.60E-2,4.26,2.47E-1,14.0,2.47E-1,40.,2.5E-1,),
+                                     INTERPOL='LOG',
+                                     PROL_DROITE='CONSTANT',
+                                     PROL_GAUCHE='CONSTANT',),),);
+
+
+REPGUP=COMB_SISM_MODAL(MODE_MECA=MODES,
+                       MODE_CORR=CORRSTA,
+                       AMOR_REDUIT=amor,
+                       EXCIT=_F(TRI_SPEC='OUI',
+                                SPEC_OSCI=(SPECTRE,SPECTRE,SPECTRE,),),
+                       MONO_APPUI='OUI',
+                       COMB_DIRECTION=_F(TYPE='QUAD',),
+                       COMB_MODE=_F(TYPE='GUPTA',
+                                    FREQ_1=14.6,
+                                    FREQ_2=40.,),
+                       OPTION=('ACCE_ABSOLU','DEPL','REAC_NODA',));
+### 
+### TEST_RESU 
+### 
+ 
+TEST_RESU(RESU=_F(RESULTAT=MODECA, 
+                  PARA='FREQ', 
+                  NUME_MODE=1, 
+                  VALE=1.5491943226358, 
+                  REFERENCE='NON_REGRESSION', 
+                  VERSION='11.1.6',),); 
+ 
+TEST_RESU(RESU=_F(RESULTAT=MODECA, 
+                  PARA='FREQ', 
+                  NUME_MODE=2, 
+                  VALE=3.107551438801, 
+                  REFERENCE='NON_REGRESSION', 
+                  VERSION='11.1.6',),); 
+ 
+TEST_RESU(RESU=_F(RESULTAT=MODECA, 
+                  PARA='FREQ', 
+                  NUME_MODE=3, 
+                  VALE=9.3245300415725, 
+                  REFERENCE='NON_REGRESSION', 
+                  VERSION='11.1.6',),); 
+ 
+TEST_RESU(RESU=_F(RESULTAT=MODECA, 
+                  PARA='FREQ', 
+                  NUME_MODE=4, 
+                  VALE=9.5870612490701, 
+                  REFERENCE='NON_REGRESSION', 
+                  VERSION='11.1.6',),); 
+ 
+TEST_RESU(RESU=_F(RESULTAT=MODECA, 
+                  PARA='FREQ', 
+                  NUME_MODE=5, 
+                  VALE=15.547112609525, 
+                  REFERENCE='NON_REGRESSION', 
+                  VERSION='11.1.6',),); 
+ 
+TEST_RESU(RESU=_F(RESULTAT=MODECA, 
+                  PARA='FREQ', 
+                  NUME_MODE=6, 
+                  VALE=21.778952588689, 
+                  REFERENCE='NON_REGRESSION', 
+                  VERSION='11.1.6',),); 
+ 
+TEST_RESU(RESU=_F(RESULTAT=MODECA, 
+                  PARA='FREQ', 
+                  NUME_MODE=7, 
+                  VALE=26.36518615935, 
+                  REFERENCE='NON_REGRESSION', 
+                  VERSION='11.1.6',),); 
+ 
+TEST_RESU(RESU=_F(RESULTAT=MODECA, 
+                  PARA='FREQ', 
+                  NUME_MODE=8, 
+                  VALE=28.023559687023, 
+                  REFERENCE='NON_REGRESSION', 
+                  VERSION='11.1.6',),); 
+ 
+TEST_RESU(RESU=_F(RESULTAT=MODECA, 
+                  PARA='FREQ', 
+                  NUME_MODE=9, 
+                  VALE=34.284194672867, 
+                  REFERENCE='NON_REGRESSION', 
+                  VERSION='11.1.6',),); 
+ 
+TEST_RESU(RESU=_F(RESULTAT=MODECA, 
+                  PARA='FREQ', 
+                  NUME_MODE=10, 
+                  VALE=40.56369329853, 
+                  REFERENCE='NON_REGRESSION', 
+                  VERSION='11.1.6',),); 
+ 
+TEST_RESU(RESU=_F(RESULTAT=MODECA, 
+                  PARA='FREQ', 
+                  NUME_MODE=11, 
+                  VALE=46.864148730311, 
+                  REFERENCE='NON_REGRESSION', 
+                  VERSION='11.1.6',),); 
+ 
+TEST_RESU(RESU=_F(RESULTAT=MODECA, 
+                  PARA='FREQ', 
+                  NUME_MODE=12, 
+                  VALE=50.060463212131, 
+                  REFERENCE='NON_REGRESSION', 
+                  VERSION='11.1.6',),); 
+ 
+TEST_RESU(RESU=_F(RESULTAT=MODECA, 
+                  PARA='FREQ', 
+                  NUME_MODE=13, 
+                  VALE=53.18629486166, 
+                  REFERENCE='NON_REGRESSION', 
+                  VERSION='11.1.6',),); 
+ 
+TEST_RESU(RESU=_F(RESULTAT=MODECA, 
+                  PARA='FREQ', 
+                  NUME_MODE=14, 
+                  VALE=59.528203850076, 
+                  REFERENCE='NON_REGRESSION', 
+                  VERSION='11.1.6',),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   NOM_CHAM='DEPL', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='H', 
+                   NOM_CMP='DX', 
+                   VALE=3.2396432663129E-03, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   CRITERE='ABSOLU', 
+                   NOM_CHAM='DEPL', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='H', 
+                   NOM_CMP='DY', 
+                   VALE=0.0E+00, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   NOM_CHAM='DEPL', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='H', 
+                   NOM_CMP='DZ', 
+                   VALE=1.3091056936155E-03, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   CRITERE='ABSOLU', 
+                   NOM_CHAM='DEPL', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='H', 
+                   NOM_CMP='DRX', 
+                   VALE=0.0E+00, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   NOM_CHAM='DEPL', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='H', 
+                   NOM_CMP='DRY', 
+                   VALE=1.4915675244137E-04, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   CRITERE='ABSOLU', 
+                   NOM_CHAM='DEPL', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='H', 
+                   NOM_CMP='DRZ', 
+                   VALE=7.0064923216241E-46, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   NOM_CHAM='DEPL', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='R', 
+                   NOM_CMP='DX', 
+                   VALE=9.4449003235868E-08, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   CRITERE='ABSOLU', 
+                   NOM_CHAM='DEPL', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='R', 
+                   NOM_CMP='DY', 
+                   VALE=2.0194839173658E-28, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   NOM_CHAM='DEPL', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='R', 
+                   NOM_CMP='DZ', 
+                   VALE=1.5182762043245E-07, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   CRITERE='ABSOLU', 
+                   NOM_CHAM='DEPL', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='R', 
+                   NOM_CMP='DRX', 
+                   VALE=1.2621774483536E-29, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   CRITERE='ABSOLU', 
+                   NOM_CHAM='DEPL', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='R', 
+                   NOM_CMP='DRY', 
+                   VALE=1.5358175191567E-25, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   CRITERE='ABSOLU', 
+                   NOM_CHAM='DEPL', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='R', 
+                   NOM_CMP='DRZ', 
+                   VALE=0.0E+00, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   NOM_CHAM='DEPL', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='S', 
+                   NOM_CMP='DX', 
+                   VALE=9.056974877545E-06, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   CRITERE='ABSOLU', 
+                   NOM_CHAM='DEPL', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='S', 
+                   NOM_CMP='DY', 
+                   VALE=0.0E+00, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   NOM_CHAM='DEPL', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='S', 
+                   NOM_CMP='DZ', 
+                   VALE=7.2126964195151E-06, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   CRITERE='ABSOLU', 
+                   NOM_CHAM='DEPL', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='S', 
+                   NOM_CMP='DRX', 
+                   VALE=0.0E+00, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   NOM_CHAM='DEPL', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='S', 
+                   NOM_CMP='DRY', 
+                   VALE=1.6632972701712E-06, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   CRITERE='ABSOLU', 
+                   NOM_CHAM='DEPL', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='S', 
+                   NOM_CMP='DRZ', 
+                   VALE=2.8025969286496E-45, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   CRITERE='ABSOLU', 
+                   NOM_CHAM='DEPL', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='O', 
+                   NOM_CMP='DX', 
+                   VALE=2.5849394142282E-26, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   CRITERE='ABSOLU', 
+                   NOM_CHAM='DEPL', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='O', 
+                   NOM_CMP='DY', 
+                   VALE=4.3790577010151E-47, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   CRITERE='ABSOLU', 
+                   NOM_CHAM='DEPL', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='O', 
+                   NOM_CMP='DZ', 
+                   VALE=5.1698788284564E-26, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   NOM_CHAM='ACCE_ABSOLU', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='H', 
+                   NOM_CMP='DX', 
+                   VALE=0.66650215509216, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   NOM_CHAM='ACCE_ABSOLU', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='H', 
+                   NOM_CMP='DY', 
+                   VALE=0.25000000000000, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   NOM_CHAM='ACCE_ABSOLU', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='H', 
+                   NOM_CMP='DZ', 
+                   VALE=0.61489268760658, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   NOM_CHAM='ACCE_ABSOLU', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='H', 
+                   NOM_CMP='DRX', 
+                   VALE=0.0E+00, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   NOM_CHAM='ACCE_ABSOLU', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='H', 
+                   NOM_CMP='DRY', 
+                   VALE=0.12203199217951, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   NOM_CHAM='ACCE_ABSOLU', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='H', 
+                   NOM_CMP='DRZ', 
+                   VALE=0.0E+00, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   NOM_CHAM='ACCE_ABSOLU', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='R', 
+                   NOM_CMP='DX', 
+                   VALE=0.24879675464209, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   NOM_CHAM='ACCE_ABSOLU', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='R', 
+                   NOM_CMP='DY', 
+                   VALE=0.25000000000000, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   NOM_CHAM='ACCE_ABSOLU', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='R', 
+                   NOM_CMP='DZ', 
+                   VALE=0.24941080125292, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   NOM_CHAM='ACCE_ABSOLU', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='R', 
+                   NOM_CMP='DRX', 
+                   VALE=0.0E+00, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   NOM_CHAM='ACCE_ABSOLU', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='R', 
+                   NOM_CMP='DRY', 
+                   VALE=0.0E+00, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   NOM_CHAM='ACCE_ABSOLU', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='R', 
+                   NOM_CMP='DRZ', 
+                   VALE=0.0E+00, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   NOM_CHAM='ACCE_ABSOLU', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='S', 
+                   NOM_CMP='DX', 
+                   VALE=0.20128061437786, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   NOM_CHAM='ACCE_ABSOLU', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='S', 
+                   NOM_CMP='DY', 
+                   VALE=0.25000000000000, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   NOM_CHAM='ACCE_ABSOLU', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='S', 
+                   NOM_CMP='DZ', 
+                   VALE=0.22473145378803, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   NOM_CHAM='ACCE_ABSOLU', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='S', 
+                   NOM_CMP='DRX', 
+                   VALE=0.0E+00, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   NOM_CHAM='ACCE_ABSOLU', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='S', 
+                   NOM_CMP='DRY', 
+                   VALE=0.011827974442827, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   NOM_CHAM='ACCE_ABSOLU', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='S', 
+                   NOM_CMP='DRZ', 
+                   VALE=0.0E+00, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   NOM_CHAM='ACCE_ABSOLU', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='O', 
+                   NOM_CMP='DX', 
+                   VALE=0.25000000000000, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   NOM_CHAM='ACCE_ABSOLU', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='O', 
+                   NOM_CMP='DY', 
+                   VALE=0.25000000000000, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   NOM_CHAM='ACCE_ABSOLU', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='O', 
+                   NOM_CMP='DZ', 
+                   VALE=0.25000000000000, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   CRITERE='ABSOLU', 
+                   NOM_CHAM='REAC_NODA', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='H', 
+                   NOM_CMP='DX', 
+                   VALE=3.32338062257E-04, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   NOM_CHAM='REAC_NODA', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='H', 
+                   NOM_CMP='DY', 
+                   VALE=9326.6031903447, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   CRITERE='ABSOLU', 
+                   NOM_CHAM='REAC_NODA', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='H', 
+                   NOM_CMP='DZ', 
+                   VALE=9.6944351594654E-08, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   NOM_CHAM='REAC_NODA', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='H', 
+                   NOM_CMP='DRX', 
+                   VALE=777.21693252872, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   CRITERE='ABSOLU', 
+                   NOM_CHAM='REAC_NODA', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='H', 
+                   NOM_CMP='DRY', 
+                   VALE=8.6738098496576E-05, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   CRITERE='ABSOLU', 
+                   NOM_CHAM='REAC_NODA', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='H', 
+                   NOM_CMP='DRZ', 
+                   VALE=4.7590811433221E-14, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   CRITERE='ABSOLU', 
+                   NOM_CHAM='REAC_NODA', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='R', 
+                   NOM_CMP='DX', 
+                   VALE=6.0472578414485E-05, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   NOM_CHAM='REAC_NODA', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='R', 
+                   NOM_CMP='DY', 
+                   VALE=9326.6031903447, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   CRITERE='ABSOLU', 
+                   NOM_CHAM='REAC_NODA', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='R', 
+                   NOM_CMP='DZ', 
+                   VALE=2.6406108097108E-08, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   NOM_CHAM='REAC_NODA', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='R', 
+                   NOM_CMP='DRX', 
+                   VALE=777.21693252872, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   NOM_CHAM='REAC_NODA', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='R', 
+                   NOM_CMP='DRY', 
+                   VALE=1.918737445123E+07, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   CRITERE='ABSOLU', 
+                   NOM_CHAM='REAC_NODA', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='R', 
+                   NOM_CMP='DRZ', 
+                   VALE=4.7590811433221E-14, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   CRITERE='ABSOLU', 
+                   NOM_CHAM='REAC_NODA', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='S', 
+                   NOM_CMP='DX', 
+                   VALE=2.8288137175073E-03, 
+                   PRECISION = 5.E-03,
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   NOM_CHAM='REAC_NODA', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='S', 
+                   NOM_CMP='DY', 
+                   VALE=18653.206380689, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   CRITERE='ABSOLU', 
+                   NOM_CHAM='REAC_NODA', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='S', 
+                   NOM_CMP='DZ', 
+                   VALE=7.390788273137E-07, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   CRITERE='ABSOLU', 
+                   NOM_CHAM='REAC_NODA', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='S', 
+                   NOM_CMP='DRX', 
+                   VALE=1.037732263534E-46, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   CRITERE='ABSOLU', 
+                   NOM_CHAM='REAC_NODA', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='S', 
+                   NOM_CMP='DRY', 
+                   VALE=6.8951915167171E-04, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   CRITERE='ABSOLU', 
+                   NOM_CHAM='REAC_NODA', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='S', 
+                   NOM_CMP='DRZ', 
+                   VALE=4.4598563106069E-31, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   NOM_CHAM='REAC_NODA', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='O', 
+                   NOM_CMP='DX', 
+                   VALE=7.9546079370747E+05, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   CRITERE='ABSOLU', 
+                   NOM_CHAM='REAC_NODA', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='O', 
+                   NOM_CMP='DY', 
+                   VALE=2.0194839173658E-15, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+TEST_RESU(RESU=(_F(RESULTAT=REPGUP, 
+                   NOM_CHAM='REAC_NODA', 
+                   NUME_ORDRE=4, 
+                   GROUP_NO='O', 
+                   NOM_CMP='DZ', 
+                   VALE=1.4820469624222E+06, 
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION='11.1.6',),),); 
+ 
+FIN() 

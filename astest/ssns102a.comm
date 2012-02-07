@@ -1,27 +1,27 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE ANNEAU AVEC RAIDISSEUR SOUS PRESSION EXTERNE
 # ssns102a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 
-DEBUT(CODE=_F(NOM='SSNS102A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'))
+DEBUT(CODE=_F(NOM='SSNS102A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
 
 interactif=0
 impr_gmsh=0
@@ -36,7 +36,7 @@ MODMECA=AFFE_MODELE(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
                             PHENOMENE='MECANIQUE',
                             MODELISATION='SHB',),);
-                            
+
 
 MAIL=MODI_MAILLAGE(MAILLAGE=MAIL,reuse=MAIL,
                    ORIE_PEAU_3D=_F(GROUP_MA='SUEXTEXT',),
@@ -60,9 +60,9 @@ CHARCL=AFFE_CHAR_MECA(MODELE=MODMECA,
 #                                _F(GROUP_MA='SUSUP',
 #                                   DZ=0.0,),
                                 ),)
-                                
-# perturbation  
-                              
+
+# perturbation
+
 CHARGT=AFFE_CHAR_MECA(MODELE=MODMECA,
                       FORCE_NODALE=(_F(GROUP_NO='P4',
                                       FX=-500.,),
@@ -70,8 +70,8 @@ CHARGT=AFFE_CHAR_MECA(MODELE=MODMECA,
                                       FX=-500.,),
                                       ),
                                     )
-                                    
-                                    
+
+
 CHARGP=AFFE_CHAR_MECA(MODELE=MODMECA,
                       PRES_REP=_F(GROUP_MA='SUEXTEXT',
                                    PRES=5.57493E+6,),);
@@ -110,7 +110,7 @@ SIGMA_1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
 #
 ###### MATRICE DE RIGIDITE GEOMETRIQUE ELEMENTAIRE
 #
-RIGELG_1=CALC_MATR_ELEM( MODELE=MODMECA, 
+RIGELG_1=CALC_MATR_ELEM( MODELE=MODMECA,
                          OPTION='RIGI_GEOM',
                          SIEF_ELGA=SIGMA_1 )
 
@@ -126,19 +126,19 @@ MOD_1=MODE_ITER_SIMULT( MATR_A=MATASS_1,
                         CALC_FREQ =_F (OPTION ='PLUS_PETITE',
                                        NMAX_FREQ = 1,),
                         )
-                        
-# REFERENCE CODE INCA INSA LYON                        
+
+# REFERENCE CODE INCA INSA LYON
 TEST_RESU(RESU=(
                  _F(RESULTAT=MOD_1, NUME_MODE=1, PARA='CHAR_CRIT',REFERENCE='SOURCE_EXTERNE',
                    VALE=-1.275226, PRECISION=0.03,),
                    ),)
 
-if impr_gmsh==1 :                   
+if impr_gmsh==1 :
    IMPR_RESU( MODELE=MODMECA,
               FORMAT='GMSH',UNITE=55,
               RESU=_F( RESULTAT=MOD_1,
                        NOM_CHAM='DEPL', ), );
-                   
+
 
 D_FONC=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(0.0,0.0,10000.0,10000.0,),);
@@ -166,7 +166,7 @@ NONLIN=STAT_NON_LINE(MODELE=MODMECA,
                               FONC_MULT=D_FONC,),
                             _F(CHARGE=CHARGP,
                             #  TYPE_CHARGE='SUIV',
-                              FONC_MULT=D_FONC,),), 
+                              FONC_MULT=D_FONC,),),
                      COMP_INCR=_F(RELATION='ELAS',
                                   DEFORMATION='GROT_GDEP',
                                   TOUT='OUI',),
@@ -180,7 +180,7 @@ NONLIN=STAT_NON_LINE(MODELE=MODMECA,
                      CONVERGENCE=_F(RESI_GLOB_RELA=1E-06,
                                     ITER_GLOB_MAXI=155,),);
 
-if impr_gmsh==1 :                   
+if impr_gmsh==1 :
    IMPR_RESU( MODELE=MODMECA,
               FORMAT='GMSH', UNITE=56,
           RESU=(_F( RESULTAT=NONLIN, INST=0.9,
@@ -221,11 +221,11 @@ _F(FONCTION=FETA,REFERENCE='NON_REGRESSION', VALE_PARA =5.996E-01,VALE_REFE=-3.8
 _F(FONCTION=FETA,REFERENCE='NON_REGRESSION', VALE_PARA =6.987E-01,VALE_REFE=-4.5156722735406E-03 ),
 _F(FONCTION=FETA,REFERENCE='NON_REGRESSION', VALE_PARA =7.964E-01,VALE_REFE=-5.2005744161021E-03 ),
 _F(FONCTION=FETA,REFERENCE='NON_REGRESSION', VALE_PARA =8.909E-01,VALE_REFE=-5.9087716001036E-03 ),
-),)                                                     
+),)
 
 
  # solution de reference INCA SANS PRESSION SUIVEUSE
-          
+
 INCA=DEFI_FONCTION(NOM_PARA='INST',INTERPOL='LIN',PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                    VALE=(
 1.000E-01, -6.414E-04,
@@ -252,7 +252,7 @@ INCA=DEFI_FONCTION(NOM_PARA='INST',INTERPOL='LIN',PROL_DROITE='CONSTANT',PROL_GA
 1.194E+00, -1.774E-02,
 1.196E+00, -1.866E-02,
 1.197E+00, -1.959E-02,
-),);                                                     
+),);
 
 TEST_FONCTION(VALEUR=(
 _F(FONCTION=FETA,REFERENCE='NON_REGRESSION', VALE_PARA =1.000E-01,VALE_REFE=-6.3028071937186E-04 ),
@@ -276,8 +276,8 @@ _F(FONCTION=FETA,REFERENCE='SOURCE_EXTERNE', VALE_PARA =5.996E-01,VALE_REFE=-3.9
 _F(FONCTION=FETA,REFERENCE='SOURCE_EXTERNE', VALE_PARA =6.987E-01,VALE_REFE=-4.688E-03 ,PRECISION=0.06),
 _F(FONCTION=FETA,REFERENCE='SOURCE_EXTERNE', VALE_PARA =7.964E-01,VALE_REFE=-5.443E-03 ,PRECISION=0.06),
 _F(FONCTION=FETA,REFERENCE='SOURCE_EXTERNE', VALE_PARA =8.909E-01,VALE_REFE=-6.256E-03 ,PRECISION=0.06),
-),)                                                     
-                         
+),)
+
 IMPR_FONCTION(UNITE=8,
             FORMAT='TABLEAU',
             COURBE=(_F(FONCTION=INCA,),
@@ -285,8 +285,8 @@ IMPR_FONCTION(UNITE=8,
 
 
 DIFF=CALC_FONCTION(COMB=(
-                          _F(  FONCTION = FETA, COEF =  1.), 
-                          _F(  FONCTION = INCA, COEF = -1.), 
+                          _F(  FONCTION = FETA, COEF =  1.),
+                          _F(  FONCTION = INCA, COEF = -1.),
                           ) )
 
 IMPR_FONCTION(UNITE=8,
@@ -317,6 +317,6 @@ _F(FONCTION=DIFF,REFERENCE='SOURCE_EXTERNE', VALE_PARA =9.3E-01,VALE_REFE=0.,PRE
 _F(FONCTION=DIFF,REFERENCE='SOURCE_EXTERNE', VALE_PARA =9.4E-01,VALE_REFE=0.,PRECISION=TOLE,CRITERE='ABSOLU',),
 _F(FONCTION=DIFF,REFERENCE='SOURCE_EXTERNE', VALE_PARA =9.5E-01,VALE_REFE=0.,PRECISION=TOLE,CRITERE='ABSOLU',),
 _F(FONCTION=DIFF,REFERENCE='SOURCE_EXTERNE', VALE_PARA =9.6E-01,VALE_REFE=0.,PRECISION=TOLE,CRITERE='ABSOLU',),
-            ),)                                         
+            ),)
 
 FIN();

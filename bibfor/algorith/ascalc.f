@@ -2,18 +2,19 @@
      +                    NORDR, KNOMSY, NBOPT, NDIR, MONOAP, MUAPDE,
      +                    NBSUP, NSUPP, TYPCMO, TEMPS, COMDIR, TYPCDI,
      +                    TRONC, AMORT, SPECTR, ASSPEC, NOMSUP, REASUP,
-     +                    DEPSUP, TCOSUP, CORFRE )
+     +                    DEPSUP, TCOSUP, CORFRE, F1GUP, F2GUP)
       IMPLICIT  NONE
       INTEGER       NDIR(*),TCOSUP(*),NORDR(*),NSUPP(*)
       REAL*8        AMORT(*),SPECTR(*),ASSPEC(*),DEPSUP(*),REASUP(*)
+      REAL*8        F1GUP, F2GUP
       CHARACTER*(*) RESU,MASSE,MOME,PSMO,STAT,TYPCMO,TYPCDI,
      +              KNOMSY(*),NOMSUP(*)
       LOGICAL       MONOAP, MUAPDE, COMDIR, TRONC, CORFRE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 06/02/2012   AUTEUR CHANSARD F.CHANSARD 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -66,6 +67,8 @@ C IN  : REASUP : VECTEUR DES REACTIONS MODALES AUX SUPPORTS
 C IN  : DEPSUP : VECTEUR DES DEPLACEMENTS DES SUPPORTS
 C IN  : TCOSUP : TYPE DE RECOMBINAISON DES SUPPORTS
 C IN  : CORFRE : =.TRUE.  , CORRECTION DES FREQUENCES
+C IN  : F1GUP  : FREQUENCE F1 POUR LA METHODE DE GUPTA 
+C IN  : F2GUP  : FREQUENCE F2 POUR LA METHODE DE GUPTA
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
@@ -84,11 +87,11 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32       JEXNOM, JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER       IBID, ID, IOPT, IRET, JCREP, JDIR, JMOD, JREP1,
-     &              JTABS, JVAL, NBMODE, NBOPT, NBPARA, NBPARI, NBPARK,
-     &              NBPARR, NBSUP, NDEPL, NEQ, JREP2, NBDIS(NBSUP),
-     &              NOC,IOC,JNOE1,N1,NNO,IS,INO,IGR,NGR,JGRN,JDGN,IER
-     &              ,NCOMPT,NINTRA
+      INTEGER       IBID, ID, IOPT, IRET, JCRER, JCREP, JDIR, JMOD,
+     &              JREP1, JTABS, JVAL, NBMODE, NBOPT, NBPARA, NBPARI,
+     &              NBPARK, NBPARR, NBSUP, NDEPL, NEQ, JREP2,
+     &              NBDIS(NBSUP), NOC, IOC, JNOE1, N1, NNO, IS, INO,
+     &              IGR, NGR, JGRN, JDGN, IER, NCOMPT, NINTRA
       PARAMETER     ( NBPARA = 5 )
       REAL*8        TEMPS
       LOGICAL       PRIM, SECON, GLOB
@@ -98,7 +101,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*15  MOTFA1
       CHARACTER*16  NOMSY, NOMSY2, NOPARA(NBPARA)
       CHARACTER*19  KVEC, KVAL
-      CHARACTER*24  KVX1, KVX2, KVE2, KVE3, KVE4, OBJ1, OBJ2
+      CHARACTER*24  KVX1, KVX2, KVE2, KVE3, KVE4, KVE5, OBJ1, OBJ2
       INTEGER      IARG
 C
       DATA  NOPARA /        'OMEGA2'          , 'MASS_GENE'       ,
@@ -110,9 +113,10 @@ C
       KVAL = '&&ASCALC.GRAN_MODAL'
       KVX1 = '&&ASCALC.REP_MO1'
       KVX2 = '&&ASCALC.REP_MO2'
-      KVE2 = '&&ASCALC.C_REP_MOD'
+      KVE2 = '&&ASCALC.C_REP_MOD_PER'
       KVE3 = '&&ASCALC.REP_DIR'
       KVE4 = '&&ASCALC.TABS'
+      KVE5 = '&&ASCALC.C_REP_MOD_RIG'
       CALL DISMOI('F','NOM_NUME_DDL',MASSE,'MATR_ASSE',IBID,NUME,IRET)
 C
       CALL GETFAC ( 'COMB_DEPL_APPUI', NDEPL )
@@ -247,6 +251,7 @@ C     --- BOUCLE SUR LES OPTIONS DE CALCUL "NOMSY" ---
          CALL WKVECT(KVE2, 'V V R',3*NEQ*NINTRA,JCREP)
          CALL WKVECT(KVE3, 'V V R',       3*NEQ,JDIR )
          CALL WKVECT(KVE4, 'V V R',   NBSUP*NEQ,JTABS)
+         CALL WKVECT(KVE5, 'V V R',3*NEQ*NINTRA,JCRER)
 C
 C        ---------------------------------------------------------------
 C                        REPONSE PRIMAIRE OU GLOBAL
@@ -262,11 +267,10 @@ C              --- COMBINAISON DES REPONSES MODALES ---
 C
                CALL ASCORM ( MONOAP, TYPCMO, NBSUP, NSUPP, NEQ,
      +                       NBMODE, ZR(JREP1), ZR(JREP2), AMORT,
-     +                       ZR(JVAL), ID, TEMPS, ZR(JCREP), ZR(JTABS),
-     +                       NOMSY, ZR(JMOD), REASUP, SPECTR, CORFRE,
-     +                       MUAPDE, TCOSUP, NINTRA, NBDIS)
-
-
+     +                       ZR(JVAL), ID, TEMPS, ZR(JCRER), ZR(JCREP),
+     +                       ZR(JTABS),NOMSY, ZR(JMOD), REASUP, SPECTR, 
+     +                       CORFRE, MUAPDE, TCOSUP, NINTRA, NBDIS, 
+     +                       F1GUP, F2GUP)
 C
 C              --- PRISE EN COMPTE DES EFFETS D'ENTRAINEMENT ---
 C              --- DANS LE CAS DE CALCUL DE REPONSE GLOBALE  ---
@@ -277,13 +281,6 @@ C
      +                          ZR(JCREP),NINTRA, NBDIS)
                ENDIF
 C
-C              ----CALCUL DE L ACCELERATION ABSOLUE
-C
-               CALL ASACCE ( NOMSY, MONOAP, MUAPDE, NBSUP, NEQ, NBMODE,
-     +                       ID, NUME, ZR(JMOD), ZR(JVAL), SPECTR,
-     +                       ZR(JCREP) )
-
-C
 C              --- PRISE EN COMPTE DE LA TRONCATURE ---
 C              --- DANS LE CAS DE CALCUL DE REPONSE GLOBALE  ---
 
@@ -291,8 +288,14 @@ C              --- DANS LE CAS DE CALCUL DE REPONSE GLOBALE  ---
                   CALL ASTRON ( NOMSY, PSMO, MONOAP, MUAPDE, NBSUP,
      +                          NSUPP, NEQ, NBMODE, ID, ZR(JMOD),
      +                          ZR(JVAL), SPECTR, NOMSUP, REASUP,
-     +                          ZR(JCREP) )
+     +                          ZR(JCRER), ZR(JCREP) )
                ENDIF
+C
+C              ----CALCUL DE L ACCELERATION ABSOLUE
+C
+               CALL ASACCE ( NOMSY, MONOAP, MUAPDE, NBSUP, NEQ, NBMODE,
+     +                       ID, NUME, ZR(JMOD), ZR(JVAL), SPECTR,
+     +                       ZR(JCRER), ZR(JCREP), NBDIS )
 C
 C              --- CALCUL DES RECOMBINAISONS PAR DIRECTIONS---
                CALL ASDIR ( MONOAP, MUAPDE, ID, NEQ, NBSUP, NSUPP,
@@ -326,6 +329,7 @@ C
          CALL JEDETR ( KVE2 )
          CALL JEDETR ( KVE3 )
          CALL JEDETR ( KVE4 )
+         CALL JEDETR ( KVE5 )
 
  10   CONTINUE
 C

@@ -1,29 +1,29 @@
-# MODIF  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE TEST EN 3D VMIS_ISOT_PUIS UTILISANT SIMU_POINT_MAT
 # comp001i.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 
 from Utilitai.veri_matr_tang import VERI_MATR_TANG
 
 
-DEBUT(CODE=_F(NOM='COMP001I',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='OUI',IMPR_MACRO='NON');
+DEBUT(CODE=_F(NOM='COMP001I',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='OUI',IMPR_MACRO='NON',DEBUG=_F(SDVERI='OUI'))
 
 # DEFINITION DES DEUX MATERIAUX EQUIVALENT POUR UNE INTERCOMPARAISON
 
@@ -48,7 +48,7 @@ ACIER[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG_Pa,
                                  SY=SY_Pa,
                                  ),
                                  );
-                                 
+
 #unite en MPa
 ACIER[1]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
                                NU=POISSON),
@@ -57,7 +57,7 @@ ACIER[1]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
                                  SY=SY,
                                  ),
                    )
-                                 
+
 # courbe de traction equivalente
 
 # courbe R(p)
@@ -70,7 +70,7 @@ LISTE=DEFI_LIST_REEL(DEBUT=0.,INFO=1,
 Rdep2=CALC_FONC_INTERP(FONCTION=Rdep,
                        LIST_PARA=LISTE,
                        NOM_PARA='p');
-                       
+
 # transforamtion en courbe Sigma=F(epsilon)
 
 TRdep=CREA_TABLE(FONCTION=_F(FONCTION=Rdep2,PARA=('p','SIGM')))
@@ -87,16 +87,16 @@ ACIER2[1]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
                     TRACTION=_F(SIGM=Ftrac),);
 
 FtracPa=CALC_FONCTION(COMB=(
-                          _F( FONCTION = Ftrac, COEF =  C_Pa), 
+                          _F( FONCTION = Ftrac, COEF =  C_Pa),
                           ) );
 
 ACIER2[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG_Pa,
                             NU=POISSON),
                     TRACTION=_F(SIGM=FtracPa),);
-                    
-                    
-             
-                    
+
+
+
+
 compor1='ELAS_VMIS_PUIS'
 compor2='ELAS_VMIS_TRAC'
 
@@ -105,9 +105,9 @@ TEST_COMPOR(OPTION='MECA',
               COMP_ELAS=_F(RELATION=compor1,),
               NEWTON=_F(REAC_ITER=1),
               LIST_MATER=ACIER,
-              LIST_NPAS=4*[1] + [1, 5, 25],              
+              LIST_NPAS=4*[1] + [1, 5, 25],
               VARI_TEST=('V1','VMIS','TRACE'),
-              #LIST_TOLE=4*[1.E-10] + [1.E-1] + 2*[1.E-2] + [1.E-8]  
+              #LIST_TOLE=4*[1.E-10] + [1.E-1] + 2*[1.E-2] + [1.E-8]
               YOUNG=YOUNG,POISSON=POISSON,
               )
 
@@ -116,9 +116,9 @@ TEST_COMPOR(OPTION='MECA',
               COMP_ELAS=_F(RELATION=compor2,),
               NEWTON=_F(REAC_ITER=1),
               LIST_MATER=ACIER2,
-              LIST_NPAS=4*[1] + [1, 5, 25],              
+              LIST_NPAS=4*[1] + [1, 5, 25],
               VARI_TEST=('V1','VMIS','TRACE'),
-              #LIST_TOLE=4*[1.E-10] + [1.E-1] + 2*[1.E-2] + [1.E-8]  
+              #LIST_TOLE=4*[1.E-10] + [1.E-1] + 2*[1.E-2] + [1.E-8]
               YOUNG=YOUNG,POISSON=POISSON,
               )
 

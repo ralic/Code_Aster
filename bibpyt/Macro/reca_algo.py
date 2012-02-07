@@ -1,22 +1,22 @@
-#@ MODIF reca_algo Macro  DATE 26/05/2010   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF reca_algo Macro  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 import os
@@ -26,6 +26,7 @@ import numpy as NP
 import numpy.linalg as linalg
 
 try:
+  import aster_core
   import aster
   from Cata.cata import INFO_EXEC_ASTER
   from Cata.cata import DETRUIRE
@@ -62,7 +63,7 @@ class Dimension:
       for i in range(dim):
          self.D[i][i] = self.val_init[i]
       self.inv_D=linalg.inv(self.D)
-   
+
 
 # ------------------------------------------------------------------------------
    def adim_sensi(self, A):
@@ -148,7 +149,7 @@ def Levenberg_bornes(val, Dim, val_init, borne_inf, borne_sup, A, erreur, l, ul_
       On resoud le système par contraintes actives:
          Q.dval + s + d =0
          soumis à :
-         borne_inf < dval < borne_sup 
+         borne_inf < dval < borne_sup
                  0 <  s
                  s.(borne_inf - dval)=0
                  s.(borne_sup - dval)=0
@@ -163,7 +164,7 @@ def Levenberg_bornes(val, Dim, val_init, borne_inf, borne_sup, A, erreur, l, ul_
    Act=NP.array([], dtype=int)
    k=0
    done=0
-   # Increment des parametres 
+   # Increment des parametres
    dval=NP.zeros(dim)
    while done <1 :
       k=k+1
@@ -220,7 +221,7 @@ def Levenberg_bornes(val, Dim, val_init, borne_inf, borne_sup, A, erreur, l, ul_
              res.write('\n\nborne_inf= '+NP.array2string(borne_inf,array_output=1,separator=','))
              res.write('\n\nborne_sup= '+NP.array2string(borne_sup,array_output=1,separator=','))
              UTMESS('F','RECAL0_18')
-             return 
+             return
    newval=copy.copy(val+dval)
    return newval,s,l,Act
 
@@ -262,7 +263,7 @@ def test_convergence(gradient_init, erreur, A, s):
       epsilon = NP.dot(gradient,gradient)/NP.dot(gradient_init,gradient_init)
    except:
        UTMESS('F', "RECAL0_19")
-       return 
+       return
    epsilon = epsilon**0.5
    return epsilon
 
@@ -272,7 +273,7 @@ def test_convergence(gradient_init, erreur, A, s):
 def calcul_etat_final(para, A, iter, max_iter, prec, residu, Messg):
    """
       Fonction appelée quand la convergence est atteinte
-      on calcule le Hessien et les valeurs propres et vecteurs 
+      on calcule le Hessien et les valeurs propres et vecteurs
       propre associés au Hessien
       A    = sensibilite
       At*A = hessien
@@ -283,13 +284,13 @@ def calcul_etat_final(para, A, iter, max_iter, prec, residu, Messg):
       Hessien = NP.dot(NP.transpose(A),A)
 
       # Desactive temporairement les FPE qui pourraient etre generees (a tord!) par blas
-      aster.matfpe(-1)
-      valeurs_propres,vecteurs_propres = linalg.eig(Hessien) 
+      aster_core.matfpe(-1)
+      valeurs_propres,vecteurs_propres = linalg.eig(Hessien)
       vecteurs_propres=NP.transpose(vecteurs_propres)  # numpy et Numeric n'ont pas la meme convention
       sensible=NP.nonzero(NP.greater(abs(valeurs_propres/max(abs(valeurs_propres))),1.E-1))[0]
       insensible=NP.nonzero(NP.less(abs(valeurs_propres/max(abs(valeurs_propres))),1.E-2))[0]
       # Reactive les FPE
-      aster.matfpe(1)
+      aster_core.matfpe(1)
 
       Messg.affiche_calcul_etat_final(para,Hessien,valeurs_propres,vecteurs_propres,sensible,insensible)
 

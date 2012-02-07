@@ -1,18 +1,19 @@
       SUBROUTINE ASTRON ( NOMSY, PSMO, MONOAP, MUAPDE, NBSUP, NSUPP,
      +                    NEQ, NBMODE, ID, VECMOD, PARMOD, SPECTR,
-     +                    NOMSUP, REASUP, REPDIR )
+     +                    NOMSUP, REASUP, RECMOR, RECMOP )
       IMPLICIT  NONE
       INTEGER           NBSUP, NSUPP(*), NEQ, NBMODE, ID
       REAL*8            VECMOD(NEQ,*),PARMOD(NBMODE,*),SPECTR(*),
-     +                  REASUP(NBSUP,NBMODE,*),REPDIR(NBSUP,NEQ,*)
+     +                  REASUP(NBSUP,NBMODE,*),RECMOP(NBSUP,NEQ,*),
+     +                  RECMOR(NBSUP,NEQ,*)
       CHARACTER*16      NOMSY
       CHARACTER*(*)     PSMO, NOMSUP(NBSUP,*)
       LOGICAL           MONOAP, MUAPDE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 06/02/2012   AUTEUR CHANSARD F.CHANSARD 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -46,7 +47,8 @@ C IN  : PARMOD : VECTEUR DES PARAMETRES MODAUX
 C IN  : SPECTR : TABLEAU DES VALEURS DU SPECTRE
 C IN  : NOMSUP : VECTEUR DES NOMS DES SUPPORTS
 C IN  : REASUP : VECTEUR DES REACTIONS MODALES AUX SUPPORTS
-C OUT : REPDIR : VECTEUR DES RECOMBINAISONS MODALES
+C OUT : RECMOP : VECTEUR DES COMBINAISONS DES REPONSES PERIO DES MODES
+C OUT : RECMOR : VECTEUR DES COMBINAISONS DES REPONSES RIGIDES DES MODES
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
@@ -65,7 +67,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER       IBID, IM, IN, IORDR, IRET, IS, JMOD, JVALE, NBTROU
-      INTEGER       IND
+      INTEGER       IND, IOC
       REAL*8        R8B, GAMMA0, RNI, UN, XXX
       COMPLEX*16    CBID
       CHARACTER*8   K8B, NOEU, CMP, NOMCMP(3)
@@ -110,11 +112,12 @@ C
             GAMMA0 = SPECTR(IND)
             DO 34 IN = 1,NEQ
                XXX = GAMMA0 * ( ZR(JVALE+IN-1) - ZR(JMOD+IN-1) )
-               REPDIR(NBSUP,IN,ID) = REPDIR(NBSUP,IN,ID) + XXX*XXX
+               RECMOR(NBSUP,IN,ID) = RECMOR(NBSUP,IN,ID) + XXX
  34         CONTINUE
             CALL JEDETR('&&ASTRON.VECTEUR_MODA')
 C
          ELSE
+C 
             CMP = NOMCMP(ID)
             DO 40 IS = 1,NSUPP(ID)
                NOEU   = NOMSUP(IS,ID)
@@ -143,12 +146,12 @@ C              --- CONTRIBUTION MODALE ---
                IF ( MUAPDE ) THEN
                   DO 42 IN = 1,NEQ
                      XXX = GAMMA0 * ( ZR(JVALE+IN-1) - ZR(JMOD+IN-1) )
-                     REPDIR(IS,IN,ID) = REPDIR(IS,IN,ID) + XXX*XXX
+                     RECMOP(IS,IN,ID) = RECMOP(IS,IN,ID) + XXX*XXX
  42               CONTINUE
                ELSE
                   DO 44 IN = 1,NEQ
                      XXX = GAMMA0 * ( ZR(JVALE+IN-1) - ZR(JMOD+IN-1) )
-                     REPDIR(1,IN,ID) = REPDIR(1,IN,ID) + XXX*XXX
+                     RECMOP(1,IN,ID) = RECMOP(1,IN,ID) + XXX*XXX
  44               CONTINUE
                ENDIF
                CALL JEDETR('&&ASTRON.VECTEUR_MODA')

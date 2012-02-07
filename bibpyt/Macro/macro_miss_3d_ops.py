@@ -1,8 +1,8 @@
-#@ MODIF macro_miss_3d_ops Macro  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF macro_miss_3d_ops Macro  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,6 +27,7 @@ def macro_miss_3d_ops(self,UNITE_IMPR_ASTER,UNITE_OPTI_MISS,
   """
      Ecriture de la macro MACRO_MISS_3D
   """
+  import aster_core
   import aster
   from Accas import _F
   from Utilitai.Utmess        import UTMESS
@@ -43,8 +44,7 @@ def macro_miss_3d_ops(self,UNITE_IMPR_ASTER,UNITE_OPTI_MISS,
 
   DEFI_FICHIER(ACTION='LIBERER',UNITE=UNITE_IMPR_ASTER)
 
-  import aster
-  loc_fic=aster.repout()
+  loc_fic=aster_core.get_option('repout')
   tv = aster.__version__.split('.')
   if len(tv) < 3:
       tv.extend(['x']*(3-len(tv)))

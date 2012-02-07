@@ -1,4 +1,4 @@
-# MODIF  DATE 09/01/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # RESPONSABLE MASSIN P.MASSIN
 # TITRE  : CYLINDRE ORTHOTROPE LONG SOUMIS A UNE LIGNE DE CHARGE
 # ssls502d.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
@@ -26,7 +26,7 @@
 #---------------------------------------------------------------------
 
 DEBUT(CODE=_F(NOM='SSLS502D',
-              NIV_PUB_WEB='INTERNET',),);
+NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 MAIL=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI',),FORMAT='MED',);
 

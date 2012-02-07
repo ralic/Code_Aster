@@ -1,17 +1,19 @@
       SUBROUTINE ASACCE ( NOMSY, MONOAP, MUAPDE, NBSUP, NEQ, NBMODE,
-     &                    ID, NUME, VECMOD, PARMOD, SPECTR, RECMOD )
+     &                    ID, NUME, VECMOD, PARMOD, SPECTR, RECMOR, 
+     &                    RECMOD, NBDIS)
       IMPLICIT  NONE
-      INTEGER           NBSUP, NEQ, NBMODE, ID
+      INTEGER           NBSUP, NEQ, NBMODE, ID, NBDIS(NBSUP)
       REAL*8            VECMOD(NEQ,*), PARMOD(NBMODE,*),
-     &                  SPECTR(*), RECMOD(NBSUP,NEQ,*)
+     &                  SPECTR(*), RECMOD(NBSUP,NEQ,*),
+     &                  RECMOR(NBSUP,NEQ,*)
       CHARACTER*16      NOMSY
       CHARACTER*(*)     NUME
       LOGICAL           MONOAP, MUAPDE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 06/02/2012   AUTEUR CHANSARD F.CHANSARD 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -42,7 +44,10 @@ C IN  : ID     : LA DIRECTION DE CALCUL
 C IN  : VECMOD : VECTEUR DES DEFORMEES MODALES
 C IN  : PARMOD : VECTEUR DES PARAMETRES MODAUX
 C IN  : SPECTR : VECTEUR DES SPECTRES
+C IN  : RECMOD : VECTEUR DES COMBINAISONS DES REPONSES PERIO DES MODES
+C IN  : RECMOR : VECTEUR DES COMBINAISONS DES REPONSES RIGIDES DES MODES
 C OUT : RECMOD : VECTEUR DES RECOMBINAISONS MODALES
+C IN  : NBDIS  : APPARTENANCE DES SUPPORTS AUX INTRAGROUPES
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
@@ -61,7 +66,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
-      INTEGER       IM, IN, IS, JMOD, JUNI
+      INTEGER       IM, IN, IS, JMOD, JUNI, IOC
       REAL*8        GAMMA0, XXX
       CHARACTER*8    NOMCMP(3)
 C     ------------------------------------------------------------------
@@ -69,6 +74,17 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
+C
+      IF (MONOAP) THEN
+C       SOMME DES CARRES DES REPONSES PERIO ET RIGIDES
+        DO 93 IN = 1,NEQ
+          IOC = NBDIS(1)
+C         VALEUR DE IOC REFERENCE A ASCORM.F 	  
+          RECMOD(IOC,IN,ID) = RECMOD(IOC,IN,ID)+
+     +    (RECMOR(IOC,IN,ID)*RECMOR(IOC,IN,ID))
+ 93     CONTINUE    
+      ENDIF 
+C     
       IF (NOMSY(1:4).EQ.'ACCE') THEN
          IF (MONOAP) THEN
             IS=NBSUP

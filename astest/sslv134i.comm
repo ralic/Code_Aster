@@ -1,30 +1,34 @@
-# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL K_I EN X-FEM AXI-SYMMETRIQUE
 # sslv134i.para = tps_job 150 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='SSLV134I', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),
-      IGNORE_ALARM=('CALCULEL2_63')
+      IGNORE_ALARM=('CALCULEL2_63','CALCULEL4_9'),
       );
 
-# <CALCULEL2_63> : DANS UN MODELE, IL EXISTE DES ELEMENTS DE TYPE "BORD" QUI N'ONT PAS DE VOISIN AVEC RIGIDITE
-#  LE MODELE PROVOQUANT CES ALARMES NE SERT QU'A LA VISUALISATION
+# <CALCULEL4_9> : POST_K1_K2_K3 / MACR_LIGN_COUP emet cette alarme pour
+# signaler une imprecision pour les ddls E1X, E1Y, E1Z, ..., E4Z
+# mais ce n'est pas grave car ces ddls ne servent pas au calcul de K1,K2,K3
+
+# <CALCULEL2_63> : dans un modele, il existe des elements de type "bord" qui n'ont pas de voisin avec rigidite
+#  le modele provoquant ces alarmes ne sert qu'a la visualisation
 
 MAIL=LIRE_MAILLAGE(FORMAT='MED',);
 
@@ -39,11 +43,11 @@ MAIL=MODI_MAILLAGE(reuse =MAIL,
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
                 CREA_GROUP_NO=_F(GROUP_MA=('FACE','haut','bas', 'BD',),),);
-                         
+
 MODE=AFFE_MODELE(  MAILLAGE=MAIL,
                       AFFE=_F(GROUP_MA=('FACE','haut','bas', 'BD',),
                               PHENOMENE = 'MECANIQUE',
-                              MODELISATION = 'AXIS',), );                         
+                              MODELISATION = 'AXIS',), );
 LT = FORMULE(VALE='X-2',
              NOM_PARA='X',);
 
@@ -62,11 +66,11 @@ MODEX=MODI_MODELE_XFEM(MODELE_IN=MODE,
 CHAR=AFFE_CHAR_MECA(MODELE=MODEX,
                     DDL_IMPO=(  _F(GROUP_NO='C',
                                  DY=0.0,),
-                                 ),   
+                                 ),
                     LIAISON_XFEM='OUI',
                     FORCE_CONTOUR=(
                                 _F(  GROUP_MA = 'haut',  FY = 1.E6,),
-                                _F(  GROUP_MA = 'bas', FY = -1.E6,),),                              
+                                _F(  GROUP_MA = 'bas', FY = -1.E6,),),
                     );
 
 MATE=AFFE_MATERIAU(MAILLAGE=MAIL,
@@ -78,17 +82,17 @@ RESU=MECA_STATIQUE(MODELE=MODEX,
                    CHAM_MATER=MATE,
                    EXCIT=(_F(CHARGE=CHAR),
                             ),
-                   ); 
+                   );
 # IMPR_RESU(RESU=_F(RESULTAT=RESU,),);
 
 
 # -------------------------------------------------------------
 #            POST-TRAITEMENT POUR LA VISUALISATION X-FEM
 # -------------------------------------------------------------
-# 
+#
 MA_XFEM=POST_MAIL_XFEM(
                        MODELE        = MODEX)
- 
+
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F( GROUP_MA=('FACE','haut','bas', 'BD',),
                               PHENOMENE='MECANIQUE',
@@ -117,7 +121,7 @@ SIF=POST_K1_K2_K3(MODELISATION='AXIS',
                     RESULTAT=RESU,
                     ABSC_CURV_MAXI=0.3,
                     );
-                    
+
 IMPR_TABLE(TABLE=SIF,);
 # ---------------
 # VALEUR DE REFERENCE MILIEU INFINI :
@@ -136,8 +140,8 @@ TEST_TABLE(       TABLE=TAB,
                    REFERENCE='ANALYTIQUE',
                    VALE=K1_REF,
                  PRECISION=0.04        )
-                 
-                
+
+
 # VALEUR DE REFERENCE OBETNUS DE FISSURE MAILLE DANS SSLV134C (DE CALC_G)
 G_REF=11.7803
 K1_REF=1.6431E6
@@ -154,9 +158,9 @@ TEST_TABLE(       TABLE=TAB,
                    REFERENCE='AUTRE_ASTER',
                    VALE=K1_REF,
                  PRECISION=0.008        )
-                 
+
 # -------------------------------------------------------------
-#            POUR VALIDER LA FORCE CONTRIGUGE 
+#            POUR VALIDER LA FORCE CONTRIGUGE
 # -------------------------------------------------------------
 # LA VITESSE DE TOTATIO EST 150 TRS/MINUTE
 VAL_ROT = 15.708
@@ -164,30 +168,30 @@ VAL_ROT = 15.708
 CHAR_ROT= AFFE_CHAR_MECA(MODELE=MODEX,
                         DDL_IMPO=(  _F(GROUP_NO='C',
                                  DY=0.0,),
-                                 ), 
-                                   
+                                 ),
+
                         LIAISON_XFEM='OUI',
-                        
+
                         FORCE_CONTOUR=(
                                 _F(  GROUP_MA = 'haut',  FY = 1.E6,),
                                 _F(  GROUP_MA = 'bas', FY = -1.E6,),
-                                ),   
+                                ),
                         ROTATION=_F(VITESSE = VAL_ROT,
                                         AXE = (0.,1.,0.,),
                                      CENTRE =(0.,0.,0.,),
-                                  ),                            
-                    );                         
-                          
-                                               
+                                  ),
+                    );
+
+
 RESU_ROT=MECA_STATIQUE(MODELE=MODEX,
                    CHAM_MATER=MATE,
                    EXCIT=(_F(CHARGE=CHAR_ROT),
                             ),
                    INFO=1,
-                   ); 
+                   );
 
 MA_XROT=POST_MAIL_XFEM(MODELE        = MODEX);
- 
+
 MOD_XROT=AFFE_MODELE(MAILLAGE=MA_XROT,
                      AFFE=_F( GROUP_MA=('FACE'),
                               PHENOMENE='MECANIQUE',
@@ -216,7 +220,7 @@ SIF_ROT=POST_K1_K2_K3(MODELISATION='AXIS',
                     RESULTAT=RESU_ROT,
                     ABSC_CURV_MAXI=0.3,
                     );
-                    
+
 IMPR_TABLE(TABLE=SIF_ROT,);
 
 # VALEUR DE REFERENCE OBETNUS DE FISSURE MAILLE DANS SSLV134C (DE CALC_G)

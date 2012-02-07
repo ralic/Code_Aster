@@ -1,8 +1,8 @@
-#@ MODIF macr_ascouf_mail_ops Macro  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF macr_ascouf_mail_ops Macro  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,6 +24,7 @@ from math import sqrt,cos,sin,pi,tan,log,fabs,ceil,fmod,floor
 import string
 
 try:
+   import aster_core
    import aster
    from Utilitai.Utmess     import  UTMESS
 except:
@@ -2317,7 +2318,7 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
         = ASCPRE(MCL_SOUS_EPAIS,RM,RC,ALPHA,SYME,LTCHAR,LTCLIM)
 #
 #
-  loc_gibi=aster.repout()
+  loc_gibi=aster_core.get_option('repout')
   logiel = EXEC_MAILLAGE['LOGICIEL'  ]
   UNITD  = EXEC_MAILLAGE['UNITE_DATG']
   UNITP  = EXEC_MAILLAGE['UNITE_MGIB']
@@ -2332,7 +2333,7 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
   nomFichierDATG = 'fort.'+str(UNITD)
 # Nom du fichier de maillage GIBI
   nomFichierGIBI = 'fort.'+str(UNITP)
-  loc_datg = aster.repdex()
+  loc_datg = aster_core.get_option('repdex')
 #
   if FISS_COUDE!=None:
 #   procedure coude fissure (MOT-CLE FISS_COUDE)

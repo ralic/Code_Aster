@@ -3,7 +3,7 @@
       LOGICAL             LLDBG
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 09/01/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,12 +30,12 @@ C     ------- COMMUN DEBUG SUPERVISEUR ---------------------------------
 C     ------------------------------------------------------------------
       EXTERNAL LXDELI
 C     ------------------------------------------------------------------
-      INTEGER     ISSUIV, ISUI
+      INTEGER     ISSUIV, IRET
 C
       LDBG=LLDBG
 C     --- BUFFERISATION EN CAS DE SUIVI INTERACTIF
-      ISUI=-1
-      IF ( ISSUIV(ISUI) .GT. 0) THEN
+      CALL GTOPTI('suivi_batch', ISSUIV, IRET)
+      IF ( ISSUIV .GT. 0 .AND. IRET .EQ. 0 ) THEN
           CALL FASTER()
       ENDIF
 C

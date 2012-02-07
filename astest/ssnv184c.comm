@@ -1,21 +1,21 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
-# TITRE : ESSAI TRIAXIAL 3D AVEC LE MODELE DE HOEK-BROWN 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# TITRE : ESSAI TRIAXIAL 3D AVEC LE MODELE DE HOEK-BROWN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #                POUR UN CONFINEMENT DE 25 MPA
 # ======================================================================
@@ -23,7 +23,7 @@
 # ======================================================================
 
 DEBUT(   CODE=_F(NOM = 'SSNV184C',
-      NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI')   )
+NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),DEBUG=_F(SDVERI='OUI'))
 
 #***********************************************************************
 #    MAILLAGE + MODELE
@@ -36,7 +36,7 @@ MODELE   = AFFE_MODELE( MAILLAGE =     MAILLAGE,
                                        PHENOMENE    = 'MECANIQUE',
                                        MODELISATION = '3D')
                       )
-        
+
 MAILLAGE = MODI_MAILLAGE( reuse        = MAILLAGE,
                           MAILLAGE     = MAILLAGE,
                           ORIE_PEAU_3D = _F( GROUP_MA = ('HAUT',
@@ -54,9 +54,9 @@ MAILLAGE = MODI_MAILLAGE( reuse        = MAILLAGE,
 TEMPS1   = DEFI_LIST_REEL( DEBUT      = 0.,
                            INTERVALLE = _F( JUSQU_A = 2.0, NOMBRE = 1 )
                           )
-     
+
 TEMPS2=DEFI_LIST_REEL(   DEBUT=2.,
-                            INTERVALLE=(_F(  JUSQU_A = 6.0,   NOMBRE = 120 ),                                               
+                            INTERVALLE=(_F(  JUSQU_A = 6.0,   NOMBRE = 120 ),
                     ))
 
 
@@ -91,13 +91,13 @@ CHMAT    = AFFE_MATERIAU(  MAILLAGE = MAILLAGE,
 #***********************************************************************
 
 PR_LATE=AFFE_CHAR_MECA(    MODELE=MODELE,
-                              PRES_REP=_F(   GROUP_MA = ( 'DEVANT','DROITE' ),  
-                                          PRES = 1.,  
+                              PRES_REP=_F(   GROUP_MA = ( 'DEVANT','DROITE' ),
+                                          PRES = 1.,
                                     )
                        )
 
 PR_V=AFFE_CHAR_MECA(    MODELE=MODELE,
-                             PRES_REP=_F(   GROUP_MA = 'HAUT',    PRES = 1.,  
+                             PRES_REP=_F(   GROUP_MA = 'HAUT',    PRES = 1.,
                                     )
                         )
 
@@ -112,16 +112,16 @@ COEF1    = DEFI_FONCTION( NOM_PARA    = 'INST',
                           VALE=( 0.0,  0.0,
                                  2.0,  25.0,)
                         )
-                        
+
 #***********************************************************************
 #    CALCUL DE LA SOLUTION DEFINISSANT L ETAT INITIAL
 #***********************************************************************
 
-U1=STAT_NON_LINE( 
+U1=STAT_NON_LINE(
                   MODELE     = MODELE,
                   CHAM_MATER = CHMAT,
                     EXCIT      = ( _F( CHARGE       = PR_LATE,
-                                     FONC_MULT    = COEF1),                                     
+                                     FONC_MULT    = COEF1),
                                      _F( CHARGE       = PR_V,
                                      FONC_MULT    = COEF1),
                                      _F( CHARGE       = DEP_SYM)),
@@ -179,46 +179,46 @@ VAR_INI = CREA_CHAMP( OPERATION = 'EXTR',
 #    CALCUL DE LA SOLUTION : SIMULATION DE L ESSAI TRIAXIAL
 #***********************************************************************
 
-U2=STAT_NON_LINE( 
+U2=STAT_NON_LINE(
                     MODELE=MODELE,
                     CHAM_MATER=CHMAT,
                       EXCIT      = ( _F( CHARGE       = PR_LATE,
-                         FONC_MULT    = COEF1), 
+                         FONC_MULT    = COEF1),
                       _F( CHARGE       = DEP_SYM),
                       _F( CHARGE       = DEP_V,
                           FONC_MULT    = COEF2)),
-                        COMP_INCR=_F( 
+                        COMP_INCR=_F(
                 RELATION = 'HOEK_BROWN',
                 RESI_INTE_RELA = 1.E-8,
                 ITER_INTE_MAXI = 100,
                 ITER_INTE_PAS  = -10,),
-                         ETAT_INIT=_F( 
+                         ETAT_INIT=_F(
                 SIGM = SIG_INI,
                 VARI = VAR_INI),
-                         INCREMENT=_F( 
+                         INCREMENT=_F(
                 LIST_INST = TEMPS2,
                 INST_FIN=4.7),
                             NEWTON=_F(
                 MATRICE = 'TANGENTE',
                 REAC_ITER = 1,
                 ),
-                       CONVERGENCE=_F( 
+                       CONVERGENCE=_F(
                 RESI_GLOB_RELA = 1.E-8,
                 ITER_GLOB_MAXI = 100),
               )
-    
+
 
 U2       = CALC_ELEM( reuse      = U2,
                       OPTION     = ('SIGM_ELNO','VARI_ELNO'),
                       RESULTAT   = U2,
                     );
-      
-U2       = CALC_NO( reuse    = U2,     
+
+U2       = CALC_NO( reuse    = U2,
                     RESULTAT = U2,
                     OPTION   = ( 'SIGM_NOEU', 'VARI_NOEU')
                   )
-       
-                       
+
+
 #------------------------------------
 #    TEST_RESU AU POINT D (NOEUD N8)
 #------------------------------------
@@ -352,7 +352,7 @@ TEST_RESU(RESU=(
                       NOM_CMP    = 'DX',
                       NUME_ORDRE = 24,
                       PRECISION  = 1.E-3,
-                      VALE       = 2.63445E-03),                      
+                      VALE       = 2.63445E-03),
                  _F(  RESULTAT   = U2,
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '8.1.0',
@@ -426,7 +426,7 @@ TEST_RESU(RESU=(
                       NOM_CMP    = 'DZ',
                       NUME_ORDRE = 81,
                       PRECISION  = 1.E-3,
-                      VALE       = -27.E-03),                                                  
+                      VALE       = -27.E-03),
 )
 )
 

@@ -1,30 +1,28 @@
-# MODIF  DATE 16/01/2012   AUTEUR BEAURAIN J.BEAURAIN 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DU CRITERE DE FLAMBEMENT PAR RECHERCHE SELECTIVE DES VALEURS PROPRES
 # ssnp306a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 
 DEBUT(CODE=_F(NOM='SSNP306A',
               NIV_PUB_WEB='INTERNET',),
-              DEBUG=_F(JXVERI='OUI'),
-              
-              );
+              DEBUG=_F(JXVERI='OUI',SDVERI='OUI'))
 
 
 MAILLAGE =  LIRE_MAILLAGE()
@@ -53,11 +51,11 @@ COEF1    = DEFI_FONCTION( NOM_PARA    = 'INST',
                           VALE=( 0.0,  0.0,
                                  1.0,  2.0E-6,)
                          )
-                     
+
 
 #***********************************************************************
-#    CALCUL NON-LOCAL AVEC SUIVI DES MODES PROPRES 
-#***********************************************************************                                                               
+#    CALCUL NON-LOCAL AVEC SUIVI DES MODES PROPRES
+#***********************************************************************
 
 
 MO     = AFFE_MODELE(MAILLAGE=MAILLAGE,
@@ -70,33 +68,33 @@ MO     = AFFE_MODELE(MAILLAGE=MAILLAGE,
 CH_U1  = AFFE_CHAR_CINE( MODELE   = MO,
                          MECA_IMPO= ( _F( MAILLE = 'M7', DY = 1.,),),
                         )
-                         
+
 CH_U2  = AFFE_CHAR_CINE( MODELE   = MO,
                          MECA_IMPO= ( _F(GROUP_NO ='DEMI_Y', DY = 0.5,),),
-                        )               
+                        )
 
 CH_U3  = AFFE_CHAR_CINE( MODELE   = MO,
-                         MECA_IMPO= ( _F( MAILLE = 'M3', DY = 0.,),),            
+                         MECA_IMPO= ( _F( MAILLE = 'M3', DY = 0.,),),
                         )
- 
+
 CH_U4  = AFFE_CHAR_CINE( MODELE   = MO,
-                         MECA_IMPO= ( _F(NOEUD ='N1', DX = 0.,),),                                         
-                        )                                                             
-                                                                                           
+                         MECA_IMPO= ( _F(NOEUD ='N1', DX = 0.,),),
+                        )
+
 
 EVOL   = STAT_NON_LINE( MODELE     = MO,INFO=2,
                         CHAM_MATER = CHMAT,
                         EXCIT      = (_F( CHARGE       = CH_U1,
                                           FONC_MULT    = COEF1),
                                       _F( CHARGE       = CH_U2,
-                                          FONC_MULT    = COEF1),                                  
-                                      _F( CHARGE       = CH_U3),        
-                                      _F( CHARGE       = CH_U4),                                                                                                                                                             
-                                      ),                                                                                            
+                                          FONC_MULT    = COEF1),
+                                      _F( CHARGE       = CH_U3),
+                                      _F( CHARGE       = CH_U4),
+                                      ),
                         CRIT_STAB  = _F( RIGI_GEOM  = 'NON',
-                                         DDL_EXCLUS = ('VARI','LAG_GV'),                                   
+                                         DDL_EXCLUS = ('VARI','LAG_GV'),
                                          NB_FREQ    = 1 ,
-                                         ), 
+                                         ),
                         COMP_INCR  = _F( TOUT           = 'OUI',
                                          RELATION       = 'ENDO_ISOT_BETON',
                                         ),
@@ -104,14 +102,14 @@ EVOL   = STAT_NON_LINE( MODELE     = MO,INFO=2,
                                          REAC_ITER      = 1,),
                         CONVERGENCE= _F( RESI_GLOB_MAXI = 1.E-8,
                                          ITER_GLOB_MAXI = 50,),
-                        INCREMENT  = _F( LIST_INST      = TEMPS1,          
+                        INCREMENT  = _F( LIST_INST      = TEMPS1,
                                         ),
-                      )     
+                      )
 
 
 #***********************************************************************
 #    TEST COMPARAISON AVEC D_PLAN
-#*********************************************************************** 
+#***********************************************************************
 
 
 TEST_RESU(RESU=_F(RESULTAT=EVOL,
@@ -119,57 +117,57 @@ TEST_RESU(RESU=_F(RESULTAT=EVOL,
                   PARA='CHAR_CRIT',
                   VALE=1641.67786584879,
                   PRECISION=2.0E-3),
-          );      
-          
+          );
+
 TEST_RESU(RESU=_F(RESULTAT=EVOL,
                   NUME_ORDRE=40,
                   PARA='CHAR_CRIT',
                   VALE=1641.67786584879,
                   PRECISION=2.0E-3),
-          )                    
-          
+          )
+
 TEST_RESU(RESU=_F(RESULTAT=EVOL,
                   NUME_ORDRE=50,
                   PARA='CHAR_CRIT',
                   VALE=1553.500265,
                   PRECISION=2.0E-3),
-          )          
-          
+          )
+
 TEST_RESU(RESU=_F(RESULTAT=EVOL,
                   NUME_ORDRE=60,
                   PARA='CHAR_CRIT',
                   VALE=1380.694904,
                   PRECISION=2.0E-3),
-          )          
-                    
+          )
+
 TEST_RESU(RESU=_F(RESULTAT=EVOL,
                   NUME_ORDRE=70,
                   PARA='CHAR_CRIT',
                   VALE=1248.744197,
                   PRECISION=2.0E-3),
-          )          
-          
+          )
+
 TEST_RESU(RESU=_F(RESULTAT=EVOL,
                   NUME_ORDRE=80,
                   PARA='CHAR_CRIT',
                   VALE=1142.931769,
                   PRECISION=2.0E-3),
-          )          
-                    
+          )
+
 TEST_RESU(RESU=_F(RESULTAT=EVOL,
                   NUME_ORDRE=90,
                   PARA='CHAR_CRIT',
                   VALE=1055.044717,
                   PRECISION=2.0E-3),
-          )              
-                      
+          )
+
 TEST_RESU(RESU=_F(RESULTAT=EVOL,
                   NUME_ORDRE=100,
                   PARA='CHAR_CRIT',
                   VALE=980.1202150,
                   PRECISION=2.0E-3),
-          )            
-                                                                                
+          )
+
 
 FIN();
 

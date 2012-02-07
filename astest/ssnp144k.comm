@@ -1,4 +1,4 @@
-# MODIF  DATE 30/01/2012   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE ZONE COHESIVE CZM_EXP_REG AVEC X-FEM
 # ssnp144d.para = tps_job 360 mem_job 128Mo ncpus 1 liste_test S
 # ssnp144k.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
@@ -20,7 +20,8 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='SSNP144K',NIV_PUB_WEB='INTERNET',),);
+DEBUT(CODE=_F(NOM='SSNP144K',NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'))
+# SDVERI='NON' car la verification est trop couteuse en CPU
 #----------------------------------------------
 #                MAILLAGE : ssnp144k.mgib
 #----------------------------------------------
@@ -78,14 +79,14 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     DEFI_FISS=_F(FONC_LN=LN,),
                     GROUP_MA_ENRI='VOL',
                     INFO=1,);
-                                        
+
 #-------------------------------------------------
 #                   CONTACT
 #-------------------------------------------------
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
-                         CONTACT='P1P1',                         
+                         CONTACT='P1P1',
                          );
 
 CTXFEM = DEFI_CONTACT(
@@ -100,14 +101,14 @@ CTXFEM = DEFI_CONTACT(
                      FISS_MAIT = FISS,
                      ALGO_LAGR='VERSION2',
                      RELATION='CZM_EXP_REG',),),);
-                       
+
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       LIAISON_XFEM='OUI',
                       CONTACT_XFEM=CTXFEM,
                       INFO=2,);
-                      
 
-           
+
+
 #----------------------------------------------
 #                   MATERIAU
 #----------------------------------------------
@@ -155,10 +156,10 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.,
 LINST=[0.5 , 0.75 , 2. , 3.5 , 4.5 , 5.5 , 7. , 9.5 , 12 , 15 ]
 
 LCOEF=[1.83335E6 ,-1.83335E6 , 1.83335E6 , 1000.54574726 ,
--1000. , 1000. , 1000. , -1000., 1000. , 1000. ]   
-nbc=len(LINST)                                 
+-1000. , 1000. , 1000. , -1000., 1000. , 1000. ]
+nbc=len(LINST)
 #----------------MODE-I------------------------
- 
+
 DEPZ1 = 1.;
 
 CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
@@ -198,7 +199,7 @@ CH22=AFFE_CHAR_MECA(MODELE=MODELEK,
                                         COEF_MULT_1=  1.,
                                         COEF_MULT_2=  -0.5,
                                         COEF_IMPO= 0.,),),);
-                                                    
+
 #--------------------------------------------------------
 #                       CALCUL - MODE I
 #--------------------------------------------------------
@@ -208,7 +209,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                     EXCIT=(_F(CHARGE=CHXFEM,),
                            _F(CHARGE=CH1,
                               TYPE_CHARGE='FIXE_PILO',),),
-                    CONTACT =  CTXFEM,  
+                    CONTACT =  CTXFEM,
                     COMP_ELAS=_F(RELATION='ELAS',
                                  GROUP_MA='VOL',),
                     INCREMENT=_F(LIST_INST=L_INST,
@@ -235,7 +236,7 @@ for i in range(1,nbc) :
                     EXCIT=(_F(CHARGE=CHXFEM,),
                            _F(CHARGE=CH1,
                               TYPE_CHARGE='FIXE_PILO',),),
-                    CONTACT = CTXFEM,  
+                    CONTACT = CTXFEM,
                     COMP_ELAS=_F(RELATION='ELAS',
                                  GROUP_MA='VOL',),
                     INCREMENT=_F(LIST_INST=L_INST,
@@ -264,7 +265,7 @@ UTOT2=STAT_NON_LINE(MODELE=MODELEK,
                            _F(CHARGE=CH22,),
                            _F(CHARGE=CH21,
                               TYPE_CHARGE='FIXE_PILO',),),
-                    CONTACT =  CTXFEM,  
+                    CONTACT =  CTXFEM,
                     COMP_ELAS=_F(RELATION='ELAS',
                                  GROUP_MA='VOL',),
                     INCREMENT=_F(LIST_INST=L_INST,
@@ -280,7 +281,7 @@ UTOT2=STAT_NON_LINE(MODELE=MODELEK,
                     SOLVEUR=_F(METHODE='MUMPS',
                                PCENT_PIVOT=50,),
                     ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                    INFO=1,); 
+                    INFO=1,);
 
 for i in range(1,nbc) :
    UTOT2=STAT_NON_LINE(
@@ -292,7 +293,7 @@ for i in range(1,nbc) :
                            _F(CHARGE=CH22,),
                            _F(CHARGE=CH21,
                               TYPE_CHARGE='FIXE_PILO',),),
-                    CONTACT =  CTXFEM,  
+                    CONTACT =  CTXFEM,
                     COMP_ELAS=_F(RELATION='ELAS',
                                  GROUP_MA='VOL',),
                     INCREMENT=_F(LIST_INST=L_INST,
@@ -341,7 +342,7 @@ LLAG=[3.66296853301E+05,
  4.68628108785798E+03,
  2.8117686527187E+04,
  7.18731177854856E+02]
- 
+
 LDEP=[2.72724793411E-07 ,
  1.36362396705E-07 ,
  8.18174380233E-07 ,
@@ -362,13 +363,13 @@ TAB20 = [None]*nbc
 TAB30 = [None]*nbc
 TAB40 = [None]*nbc
 #--------------------------------------------------------
-#                           MODE I    
+#                           MODE I
 #--------------------------------------------------------
 SAUT=FORMULE(NOM_PARA=('DZP','DZM'),
              VALE='DZP-DZM',);
-             
+
 for i in range(0,nbc) :
-                                   
+
    TAB1[i]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                    GROUP_NO=('NFISSU',),
                                    RESULTAT=RESXFEM1,
@@ -382,9 +383,9 @@ for i in range(0,nbc) :
                                 CRIT_COMP='REGEXP',
                                 VALE_K='NM',),
                                _F(OPERATION='RENOMME',
-                                NOM_PARA=('DZ','DZM'),), 
+                                NOM_PARA=('DZ','DZM'),),
                                ),);
-                                                               
+
    TAB3[i]=CALC_TABLE(TABLE=TAB1[i],
                       ACTION=(_F(OPERATION='FILTRE',
                                 NOM_PARA='NOEUD',
@@ -393,7 +394,7 @@ for i in range(0,nbc) :
                              _F(OPERATION='RENOMME',
                                 NOM_PARA=('DZ','DZP'),),
                               ),);
-                                
+
    TAB4[i]=CALC_TABLE(TABLE=TAB2[i],
                       ACTION=(_F(OPERATION='COMB',
                                 TABLE=TAB3[i],
@@ -401,8 +402,8 @@ for i in range(0,nbc) :
                               _F(OPERATION='OPER',
                                 FORMULE=SAUT,
                                 NOM_PARA='SAUZ',),
-                              ),);                            
-                                                           
+                              ),);
+
    TEST_TABLE(TABLE=TAB1[i],
               NOM_PARA='LAGS_C',
               TYPE_TEST='MAX',
@@ -410,15 +411,15 @@ for i in range(0,nbc) :
               CRITERE='RELATIF',
               PRECISION=TOLE,
               REFERENCE='ANALYTIQUE',);
-           
+
    TEST_TABLE(TABLE=TAB1[i],
               NOM_PARA='LAGS_C',
               TYPE_TEST='MIN',
               VALE=LLAG[i],
               CRITERE='RELATIF',
               PRECISION=TOLE,
-              REFERENCE='ANALYTIQUE',); 
-                        
+              REFERENCE='ANALYTIQUE',);
+
    TEST_TABLE(TABLE=TAB4[i],
               NOM_PARA='SAUZ',
               TYPE_TEST='MAX',
@@ -426,23 +427,23 @@ for i in range(0,nbc) :
               CRITERE='RELATIF',
               PRECISION=TOLE,
               REFERENCE='ANALYTIQUE',);
-           
+
    TEST_TABLE(TABLE=TAB4[i],
               NOM_PARA='SAUZ',
               TYPE_TEST='MIN',
               VALE=LDEP[i],
               CRITERE='RELATIF',
               PRECISION=TOLE,
-              REFERENCE='ANALYTIQUE',);  
+              REFERENCE='ANALYTIQUE',);
 
 #--------------------------------------------------------
-#                           MODE II    
+#                           MODE II
 #--------------------------------------------------------
 SAUTX=FORMULE(NOM_PARA=('DXP','DXM'),
              VALE='DXP-DXM',);
-             
+
 for i in range(0,nbc) :
-                                   
+
    TAB10[i]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                    GROUP_NO=('NFISSU',),
                                    RESULTAT=RESXFEM2,
@@ -456,9 +457,9 @@ for i in range(0,nbc) :
                                 CRIT_COMP='REGEXP',
                                 VALE_K='NM',),
                                _F(OPERATION='RENOMME',
-                                NOM_PARA=('DX','DXM'),), 
+                                NOM_PARA=('DX','DXM'),),
                                ),);
-                                                               
+
    TAB30[i]=CALC_TABLE(TABLE=TAB10[i],
                       ACTION=(_F(OPERATION='FILTRE',
                                 NOM_PARA='NOEUD',
@@ -467,7 +468,7 @@ for i in range(0,nbc) :
                              _F(OPERATION='RENOMME',
                                 NOM_PARA=('DX','DXP'),),
                               ),);
-                                
+
    TAB40[i]=CALC_TABLE(TABLE=TAB20[i],
                       ACTION=(_F(OPERATION='COMB',
                                 TABLE=TAB30[i],
@@ -475,7 +476,7 @@ for i in range(0,nbc) :
                               _F(OPERATION='OPER',
                                 FORMULE=SAUTX,
                                 NOM_PARA='SAUX',),
-                              ),);                            
+                              ),);
    TEST_TABLE(TABLE=TAB10[i],
               NOM_PARA='LAGS_F1',
               TYPE_TEST='MAX',
@@ -484,7 +485,7 @@ for i in range(0,nbc) :
               CRITERE='RELATIF',
               PRECISION=TOLE,
               REFERENCE='ANALYTIQUE',);
-           
+
    TEST_TABLE(TABLE=TAB10[i],
               NOM_PARA='LAGS_F1',
               TYPE_TEST='MIN',
@@ -492,8 +493,8 @@ for i in range(0,nbc) :
               VALE=LLAG[i],
               CRITERE='RELATIF',
               PRECISION=TOLE,
-              REFERENCE='ANALYTIQUE',); 
-                        
+              REFERENCE='ANALYTIQUE',);
+
    TEST_TABLE(TABLE=TAB40[i],
               NOM_PARA='SAUX',
               TYPE_TEST='MAX',
@@ -501,7 +502,7 @@ for i in range(0,nbc) :
               CRITERE='RELATIF',
               PRECISION=TOLE,
               REFERENCE='ANALYTIQUE',);
-           
+
    TEST_TABLE(TABLE=TAB40[i],
               NOM_PARA='SAUX',
               TYPE_TEST='MIN',

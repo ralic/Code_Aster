@@ -1,21 +1,21 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE ETUDE  : ESSAI TRIAXIAL DRAINE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # ECHANTILLON 3D TOURNE D UN ANGLE DE PI/6
 # PAR RAPPORT A L AXE X
@@ -26,7 +26,8 @@
 #------------------------------------
 #
 #
-DEBUT(  CODE=_F( NOM = 'SSNV155A',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SSNV155A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
+# SDVERI='NON' car la verification est trop couteuse en CPU
 
 #***********************************************************************
 #    MAILLAGE + MODELE
@@ -106,25 +107,25 @@ COEF1=DEFI_FONCTION(      NOM_PARA='INST',
 #***********************************************************************
 
 
-U1=STAT_NON_LINE( 
+U1=STAT_NON_LINE(
                             MODELE=MODELE,
                         CHAM_MATER=CHMAT,EXCIT=(
-                             _F( 
+                             _F(
                 CHARGE = CHAR_U1,
-                FONC_MULT = COEF1), _F( 
+                FONC_MULT = COEF1), _F(
                 CHARGE = CHAR_U2,
-                FONC_MULT = COEF1), _F( 
+                FONC_MULT = COEF1), _F(
                 CHARGE = DEPL_1)),
-                         COMP_INCR=_F( 
+                         COMP_INCR=_F(
                 RELATION = 'CJS',
                 RESI_INTE_RELA = 1.E-6,
                 ITER_INTE_MAXI = 50),
-                            NEWTON=_F( 
+                            NEWTON=_F(
                 MATRICE = 'ELASTIQUE'),
-                       CONVERGENCE=_F( 
+                       CONVERGENCE=_F(
                 RESI_GLOB_RELA = 1.E-4,
                 ITER_GLOB_MAXI = 50),
-                         INCREMENT=_F( 
+                         INCREMENT=_F(
                 LIST_INST = TEMPS1)
               )
 
@@ -139,24 +140,24 @@ NOM_CHAM='VARI_ELGA', RESULTAT=U1,
 U1=STAT_NON_LINE( reuse=U1,
                             MODELE=MODELE,
                         CHAM_MATER=CHMAT,EXCIT=(
-                             _F( 
+                             _F(
                 CHARGE = CHAR_U1,
-                FONC_MULT = COEF1), _F( 
+                FONC_MULT = COEF1), _F(
                 CHARGE = CHAR_U2,
-                FONC_MULT = COEF1), _F( 
+                FONC_MULT = COEF1), _F(
                 CHARGE = DEPL_1)),
-                         COMP_INCR=_F( 
+                         COMP_INCR=_F(
                 RELATION = 'CJS',
                 RESI_INTE_RELA = 1.E-6,),
-                            NEWTON=_F( 
+                            NEWTON=_F(
                 MATRICE = 'TANGENTE'),
-                       CONVERGENCE=_F( 
+                       CONVERGENCE=_F(
                 RESI_GLOB_RELA = 1.E-6,
                 ITER_GLOB_MAXI = 20),
-                         ETAT_INIT=_F( 
+                         ETAT_INIT=_F(
                 SIGM = SIG_INI1,
                 VARI = VAR_INI1),
-                         INCREMENT=_F( 
+                         INCREMENT=_F(
                 LIST_INST = TEMPS11)
               )
 
@@ -206,26 +207,26 @@ COEF2=DEFI_FONCTION(      NOM_PARA='INST',
 #***********************************************************************
 
 
-U2=STAT_NON_LINE( 
+U2=STAT_NON_LINE(
                             MODELE=MODELE,
                         CHAM_MATER=CHMAT,EXCIT=(
-                             _F( 
+                             _F(
                 CHARGE = CHAR_U1,
-                FONC_MULT = COEF1), _F( 
-                CHARGE = DEPL_1), _F( 
+                FONC_MULT = COEF1), _F(
+                CHARGE = DEPL_1), _F(
                 CHARGE = DEPL_2,
                 FONC_MULT = COEF2)),
-                         COMP_INCR=_F( 
+                         COMP_INCR=_F(
                 RELATION = 'CJS',
                 RESI_INTE_RELA = 1.E-6),
-                         ETAT_INIT=_F( 
+                         ETAT_INIT=_F(
                 SIGM = SIG_INI,
                 VARI = VAR_INI),
-                         INCREMENT=_F( 
+                         INCREMENT=_F(
                 LIST_INST = TEMPS2),
-                            NEWTON=_F( 
+                            NEWTON=_F(
                 MATRICE = 'TANGENTE'),
-                       CONVERGENCE=_F( 
+                       CONVERGENCE=_F(
                 RESI_GLOB_RELA = 1.E-6,
                 ITER_GLOB_MAXI = 20)
               )

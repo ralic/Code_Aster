@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # ======================================================================
 # TITRE RESATURATION D UNE COLONNE TEST HMD, 2D , MODELISATION THMC=LIQU_GAZ_ATM
 #       TEST31 ALLIANCES
@@ -21,7 +21,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-DEBUT(CODE=_F( NOM = 'WTNP112D',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='WTNP112D',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #
 ####################################

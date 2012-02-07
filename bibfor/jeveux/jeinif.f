@@ -1,9 +1,9 @@
       SUBROUTINE JEINIF ( STI, STO, NOMF, CLAS, NREP, NBLOC, LBLOC )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
-C MODIF JEVEUX  DATE 08/11/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,7 +18,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_18 CRP_20 CRS_508 
+C TOLE CRP_18 CRP_20 CRS_508
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER                                   NREP, NBLOC, LBLOC
       CHARACTER*(*)       STI, STO, NOMF, CLAS
@@ -43,11 +43,10 @@ C
       CHARACTER *32    NOMUTI , NOMOS ,         NOMOC , BL32
       COMMON /NOMCJE/  NOMUTI , NOMOS , NOMCO , NOMOC , BL32
 C ----------------------------------------------------------------------
-      LOGICAL LEXP
 C ----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
      &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
@@ -99,14 +98,13 @@ C ----------------------------------------------------------------------
 C
       INTEGER          IPGC,KDESMA(2),LGD,LGDUTI,KPOSMA(2),LGP,LGPUTI
       COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
-      INTEGER          LDYN , LGDYN , NBDYN , NBFREE 
-      COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE 
+      INTEGER          LDYN , LGDYN , NBDYN , NBFREE
+      COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
 C ----------------------------------------------------------------------
       CHARACTER*1      KCLAS
       CHARACTER*4      Z
       PARAMETER      ( Z = 'INIT' )
       CHARACTER*8      KNOM,KNOMF,KSTIN,KSTOU,CVERSB,CVERSU
-      CHARACTER*16     K16BID
       CHARACTER*24     VALK(3)
       INTEGER          NCAR , ITLEC(1) , ITECR(1) , IADADD(2), LGBL
       INTEGER          VALI(7),IRT,IND
@@ -114,7 +112,7 @@ C ----------------------------------------------------------------------
       PARAMETER      ( NCAR = 11 )
 C ----------------------------------------------------------------------
       LOGICAL          LENRG
-      INTEGER          LIDBAS      , LIDEFF 
+      INTEGER          LIDBAS      , LIDEFF
       PARAMETER      ( LIDBAS = 20 , LIDEFF = 15 )
       CHARACTER*8      CIDBAS(LIDBAS)
       INTEGER          KAT(LIDBAS) , LSO(LIDBAS) , KDY(LIDBAS)
@@ -136,18 +134,18 @@ C
       KNOMF = NOMF
 C
       CALL ASSERT (KNOMF .NE. '        ' .AND. LEN(NOMF) .LE. 8)
-      CALL ASSERT (KCLAS .NE. ' ' ) 
+      CALL ASSERT (KCLAS .NE. ' ' )
       CALL ASSERT (INDEX (CLASSE,KCLAS) .EQ. 0)
 C
       CALL ASSERT (KSTIN .EQ. 'DEBUT   ' .OR. KSTIN .EQ. 'POURSUIT' .OR.
      &             KSTIN .EQ. 'DUMMY   ')
-      CALL ASSERT (KSTOU .EQ. 'SAUVE   ' .OR. KSTOU .EQ. 'DETRUIT ') 
-      CALL ASSERT (KSTIN .NE. 'DUMMY   ' .OR. KSTOU .NE. 'SAUVE   ') 
-      CALL ASSERT (NREP .GT. 0) 
-      CALL ASSERT (LBLOC .GT. 0) 
+      CALL ASSERT (KSTOU .EQ. 'SAUVE   ' .OR. KSTOU .EQ. 'DETRUIT ')
+      CALL ASSERT (KSTIN .NE. 'DUMMY   ' .OR. KSTOU .NE. 'SAUVE   ')
+      CALL ASSERT (NREP .GT. 0)
+      CALL ASSERT (LBLOC .GT. 0)
 C
       IC = INDEX (CLASSE , ' ')
-      CALL ASSERT (IC .GT. 0) 
+      CALL ASSERT (IC .GT. 0)
       NOMFIC(IC) = KNOMF
       NOMBAS(IC) = KNOM
       KSTINI(IC) = KSTIN
@@ -164,11 +162,11 @@ C
       NOMCO  = '$$$$$$$$$$$$$$$$$$$$$$$$'
       NOMOC  = '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'
 
-C --- ON INTERDIT L'APPEL A JJLDYN LORS DE L'ALLOCATION 
+C --- ON INTERDIT L'APPEL A JJLDYN LORS DE L'ALLOCATION
 C --- DYNAMIQUE  (ET LES APPELS RECURSIFS)
 C
       LDYNOL = LDYN
-      IF ( LDYN .EQ. 1 ) THEN  
+      IF ( LDYN .EQ. 1 ) THEN
         LDYN   = 2
       ENDIF
 
@@ -180,7 +178,7 @@ C
           IF ( IC .EQ. 1 ) THEN
             CALL U2MESG('A','JEVEUX_64',1,NOMBAS(IC),1,NREMAX(IC),
      &                   0,VALR)
-          ELSE 
+          ELSE
             CALL U2MESG('A','JEVEUX_65',1,NOMBAS(IC),1,NREMAX(IC),
      &                   0,VALR)
           ENDIF
@@ -216,11 +214,11 @@ C
 C
         LGBL = NREMAX(IC)*LOIS
         CALL JJALLS (LGBL,IC,'V','I',LOIS,Z,INDIR,IADRS,KAT(17),KDY(17))
-        JINDIR(IC) = IADRS - 1 
+        JINDIR(IC) = IADRS - 1
         CALL JJECRS(KAT(17),KDY(17),IC,17,0,'E',IMARQ(JMARQ(IC)+2*17-1))
         DO 345 IND = 1 , NREMAX(IC)
           INDIR(JINDIR(IC)+IND) = IND
- 345    CONTINUE                     
+ 345    CONTINUE
 C
         LGBL = 1024*LONGBL(IC)*LOIS
         CALL JJALLS (LGBL,IC,'V','I',LOIS,Z,ITLEC,IADRS ,KITLEC(IC),
@@ -258,10 +256,9 @@ C
         CARA(JCARA(IC) +3 ) = NBLMAX(IC)
         CARA(JCARA(IC) +4 ) = NBLUTI(IC)
         CARA(JCARA(IC) +5 ) = LONGBL(IC)
-        CALL VERSIO ( IVERS , IUTIL , INIVO , K16BID , LEXP )
-        CARA(JCARA(IC) +8 ) = IVERS
-        CARA(JCARA(IC) +9 ) = IUTIL
-        CARA(JCARA(IC) +10) = INIVO
+        CALL GTOPTI('versMAJ', CARA(JCARA(IC) +8 ), IRET)
+        CALL GTOPTI('versMIN', CARA(JCARA(IC) +9 ), IRET)
+        CALL GTOPTI('versSUB', CARA(JCARA(IC) +10), IRET)
         LON = 2 * NREMAX(IC) * LOIS
         CALL JJALLS (LON,IC,'V','I',LOIS,Z,IADD,IADRS,KAT( 2),KDY(2))
         JIADD(IC) = IADRS - 1
@@ -378,7 +375,7 @@ C
           IADM(JIADM(IC)+2*I-1) = KAT(I)
           IADM(JIADM(IC)+2*I  ) = KDY(I)
     5   CONTINUE
-    
+
         DO 10 I=2,LIDEFF
           IADD (JIADD(IC)+2*I-1) = 0
           IADD (JIADD(IC)+2*I  ) = 0
@@ -395,7 +392,7 @@ C
         CALL JJALLS (LCARAO,IC,'V','I',LOIS,Z,CARA,IADRS,KAT(1),KDY(1))
         JCARA(IC) = IADRS
 C
-C  ---- L'ECRITURE DU STATUT ET DE L'ETAT SERA DE NOUVEAU EFFECTUEE 
+C  ---- L'ECRITURE DU STATUT ET DE L'ETAT SERA DE NOUVEAU EFFECTUEE
 C ----- LORSQUE LES DIMENSIONS AURONT ETE RELUES
 C
         CALL JJECRS (KAT(1),KDY(1),IC,1,0,'E',VALI)
@@ -405,11 +402,7 @@ C
         CALL CODENT(CARA(JCARA(IC) + 8 ),'D ',CVERSB(1:2) )
         CALL CODENT(CARA(JCARA(IC) + 9 ),'D0',CVERSB(4:5) )
         CALL CODENT(CARA(JCARA(IC) + 10),'D0',CVERSB(7:8) )
-        CALL VERSIO ( IVERS , IUTIL , INIVO , K16BID , LEXP )
-        CVERSU = '  .  .  '
-        CALL CODENT(IVERS,'D ',CVERSU(1:2) )
-        CALL CODENT(IUTIL,'D0',CVERSU(4:5) )
-        CALL CODENT(INIVO,'D0',CVERSU(7:8) )
+        CALL GTOPTK('versionD0', CVERSU, IRET)
         NREMAX(IC) = CARA(JCARA(IC)     )
         NREUTI(IC) = CARA(JCARA(IC) + 1 )
         NRHCOD(IC) = CARA(JCARA(IC) + 2 )
@@ -469,7 +462,7 @@ C
 C
         NBENRG(IC) = MIN ( LFIC/(LONGBL(IC)*LOIS) , NBLMA2 )
 C
-C ----- NOUVEL OPEN DE LA BASE 
+C ----- NOUVEL OPEN DE LA BASE
         NBEXT = (NBLUTI(IC)/NBENRG(IC))+1
         DO 100 K = 0,NBEXT-1
           CALL JXOUVR (IC , K+1)
@@ -482,7 +475,7 @@ C
         CALL JJECRS(KAT(17),KDY(17),IC,17,0,'E',IMARQ(JMARQ(IC)+2*17-1))
         DO 567 IND = 1 , NREMAX(IC)
           INDIR(JINDIR(IC)+IND) = IND
- 567    CONTINUE        
+ 567    CONTINUE
 C
         LGBL = 1024*LONGBL(IC)*LOIS
         CALL JJALLS (LGBL,IC,'V','I',LOIS,Z,ITLEC,IADRS ,KITLEC(IC),
@@ -512,7 +505,7 @@ C
         CALL JJECRS(KAT(2),KDY(2),IC,2,0,'E',IMARQ(JMARQ(IC)+2*2-1))
 C
         CALL JXLIRO ( IC , KAT( 2) , IADADD  , 2*LON )
-C       
+C
         LON2 = 3*NBLMA2 * LOIS
         CALL JJALLS(LON2,IC,'V','I',LOIS,Z,IUSADI,IADRS,KAT(14),KDY(14))
         DO 231 L=1,NBLMA2
@@ -530,7 +523,7 @@ C
           IADD(JIADD(IC)+2*14  ) = 0
           CALL JXECRO(IC,KAT(14),IADD(JIADD(IC)+2*14-1),LON2,0,14)
         ENDIF
-C 
+C
         LON1 = NBLMA1 * LOIS
         CALL JXLIRO ( IC , KAT(15) , IADD(JIADD(IC)+2*15-1) , LON1 )
         IF ( LENRG ) THEN

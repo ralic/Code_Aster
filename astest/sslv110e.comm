@@ -1,21 +1,21 @@
-# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # TEST SSLV110E (non documente)
 # CALCUL DE G ET G LOCAL PAR LES METHODES 'LEGENDRE' ET 'LAGRANGE'
@@ -23,14 +23,14 @@
 #
 #
 
-DEBUT(  CODE=_F( NOM = 'SSLV110E',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='SSLV110E',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #
 # --------------------------------------------------------------------
 
 MA=LIRE_MAILLAGE(FORMAT='MED',  )
 
-MO=AFFE_MODELE(  MAILLAGE=MA, 
+MO=AFFE_MODELE(  MAILLAGE=MA,
                     AFFE=_F(  TOUT = 'OUI',
                            PHENOMENE = 'MECANIQUE',
                            MODELISATION = '3D', ) )
@@ -39,34 +39,34 @@ MA=MODI_MAILLAGE( reuse=MA,   MAILLAGE=MA,
                         ORIE_PEAU_3D=_F(  GROUP_MA = 'GRPRES',  )
                       )
 
-MAT=DEFI_MATERIAU( ELAS=_F(  E = 210000.,  
+MAT=DEFI_MATERIAU( ELAS=_F(  E = 210000.,
                             NU = 0.3,    ))
 
 CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
-                       AFFE=_F(  TOUT = 'OUI', 
+                       AFFE=_F(  TOUT = 'OUI',
                               MATER = MAT, ))
 
 # ------------------------------------------------------------------
 #    --- STRUCTURE EN APPUI SIMPLE AVEC PRESSION SUR LES LEVRES
 
 CH=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=(
-                     _F(  GROUP_NO = 'MACSYM',    DZ = 0.,  ), 
-                              _F(  GROUP_NO = 'ELISYM',    DX = 0.,  ), 
-                              _F(  GROUP_NO = 'GRNINF',    DY = 0.,  )), 
+                     _F(  GROUP_NO = 'MACSYM',    DZ = 0.,  ),
+                              _F(  GROUP_NO = 'ELISYM',    DX = 0.,  ),
+                              _F(  GROUP_NO = 'GRNINF',    DY = 0.,  )),
                      PRES_REP=_F(  GROUP_MA = 'GRPRES',  PRES = 1.,  ) )
 
 PRESF = FORMULE(NOM_PARA=('X','Y','Z'),VALE='1.')
 FORCF = FORMULE(NOM_PARA=('X','Y','Z'),VALE='1.')
 
-CHFONC=AFFE_CHAR_MECA_F(  MODELE=MO, 
-                            PRES_REP=_F(  GROUP_MA = 'GRPRES', 
+CHFONC=AFFE_CHAR_MECA_F(  MODELE=MO,
+                            PRES_REP=_F(  GROUP_MA = 'GRPRES',
                                        PRES = PRESF,  )    )
 
 CHFACER=AFFE_CHAR_MECA(  MODELE=MO,
                           FORCE_FACE=_F(  GROUP_MA = 'GRPRES',  FZ = 1.,))
 
-CHFACEF=AFFE_CHAR_MECA_F(  MODELE=MO, 
-                             FORCE_FACE=_F(  GROUP_MA = 'GRPRES', 
+CHFACEF=AFFE_CHAR_MECA_F(  MODELE=MO,
+                             FORCE_FACE=_F(  GROUP_MA = 'GRPRES',
                                           FZ = FORCF,   )      )
 
 CHAMDEPL=MECA_STATIQUE(   MODELE=MO,
@@ -111,9 +111,9 @@ FISS11=DEFI_FOND_FISS(MAILLAGE=MA,
 
 THETA1=CALC_THETA(   MODELE=MO,
                       FOND_FISS=FISS1,
-                        THETA_3D=_F(  TOUT = 'OUI', 
-                                   MODULE_FO = MODUF, 
-                                   R_INF_FO = RINF1,  
+                        THETA_3D=_F(  TOUT = 'OUI',
+                                   MODULE_FO = MODUF,
+                                   R_INF_FO = RINF1,
                                    R_SUP_FO = RSUP1,  )
                      )
 
@@ -135,9 +135,9 @@ GLOC1=CALC_G(         RESULTAT=CHAMDEPL,
 
 THETA2=CALC_THETA(   MODELE=MO,
                       FOND_FISS=FISS1,
-                        THETA_3D=_F(  TOUT = 'OUI', 
-                                   MODULE_FO = MODUF, 
-                                   R_INF_FO = RINF2,  
+                        THETA_3D=_F(  TOUT = 'OUI',
+                                   MODULE_FO = MODUF,
+                                   R_INF_FO = RINF2,
                                    R_SUP_FO = RSUP2,  )
                      )
 
@@ -159,9 +159,9 @@ GLOC2=CALC_G(         RESULTAT=CHAMDEPL,
 
 THETA3=CALC_THETA(   MODELE=MO,
                       FOND_FISS=FISS1,
-                        THETA_3D=_F(  TOUT = 'OUI', 
-                                   MODULE_FO = MODUF, 
-                                   R_INF_FO = RINF3,  
+                        THETA_3D=_F(  TOUT = 'OUI',
+                                   MODULE_FO = MODUF,
+                                   R_INF_FO = RINF3,
                                    R_SUP_FO = RSUP3,  )
                      )
 
@@ -248,7 +248,7 @@ TEST_TABLE(       TABLE=G3,
 
 
 TEST_TABLE(      TABLE=GLOC1,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',  
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'NO1099',      ),
                  NOM_PARA='G',
                       VALE=7.164E-5,
@@ -256,7 +256,7 @@ TEST_TABLE(      TABLE=GLOC1,
                  REFERENCE='ANALYTIQUE'      )
 
 TEST_TABLE(      TABLE=GLOC2,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',  
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'NO1099',      ),
                  NOM_PARA='G',
                       VALE=7.164E-5,
@@ -264,7 +264,7 @@ TEST_TABLE(      TABLE=GLOC2,
                  REFERENCE='ANALYTIQUE'      )
 
 TEST_TABLE(      TABLE=GLOC3,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',  
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'NO1099',      ),
                  NOM_PARA='G',
                       VALE=6.7196177910176E-05,
@@ -272,7 +272,7 @@ TEST_TABLE(      TABLE=GLOC3,
                  REFERENCE='ANALYTIQUE'      )
 
 TEST_TABLE(      TABLE=GLOC4,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',  
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'NO1099',      ),
                  NOM_PARA='G',
                       VALE=7.164E-5,
@@ -280,7 +280,7 @@ TEST_TABLE(      TABLE=GLOC4,
                  REFERENCE='ANALYTIQUE'      )
 
 TEST_TABLE(      TABLE=GLOC5,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',  
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'NO1099',      ),
                  NOM_PARA='G',
                       VALE=7.164E-5,
@@ -288,7 +288,7 @@ TEST_TABLE(      TABLE=GLOC5,
                  REFERENCE='ANALYTIQUE'      )
 
 TEST_TABLE(      TABLE=GLOC55,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',  
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'NO1099',      ),
                  NOM_PARA='G',
                       VALE=1.5234E-5,
@@ -296,7 +296,7 @@ TEST_TABLE(      TABLE=GLOC55,
                  REFERENCE='NON_REGRESSION'      )
 
 TEST_TABLE(      TABLE=GLOC6,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',  
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'NO1099',      ),
                  NOM_PARA='G',
                      VALE=7.164E-5,
@@ -309,42 +309,42 @@ TEST_TABLE(      TABLE=GLOC6,
 
 
 TEST_TABLE(      TABLE=GLOC1,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',  
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'NO1179',      ),
                  NOM_PARA='G',
                       VALE=5.21E-5,
                  PRECISION=5.E-2      )
 
 TEST_TABLE(      TABLE=GLOC2,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',  
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'NO1179',      ),
                  NOM_PARA='G',
                       VALE=5.21E-5,
                  PRECISION=5.E-2      )
 
 TEST_TABLE(      TABLE=GLOC3,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',  
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'NO1179',      ),
                  NOM_PARA='G',
                       VALE=5.21E-5,
                  PRECISION=5.E-2      )
 
 TEST_TABLE(      TABLE=GLOC4,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',  
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'NO1179',      ),
                  NOM_PARA='G',
                       VALE=5.21E-5,
                  PRECISION=5.E-2      )
 
 TEST_TABLE(      TABLE=GLOC5,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',  
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'NO1179',      ),
                  NOM_PARA='G',
                       VALE=5.21E-5,
                  PRECISION=7.E-2      )
 
 TEST_TABLE(      TABLE=GLOC6,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',  
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'NO1179',      ),
                  NOM_PARA='G',
                       VALE=5.21E-5,

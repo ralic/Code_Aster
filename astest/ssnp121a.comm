@@ -1,31 +1,31 @@
-# MODIF  DATE 12/12/2011   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE CONTACT DE DEUX PLAQUES
 # ssnp121a.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # CAS_TEST__:SSNP121A
 # ECRASEMENT DE DEUX BLOCS
 # MODELISATION 2D DP ELEMENTS LINEAIRES
 #
 
-DEBUT(CODE=_F( NOM = 'SSNP121A',NIV_PUB_WEB='INTERNET'),IGNORE_ALARM='CONTACT3_16',)
+DEBUT(CODE=_F(NOM='SSNP121A',NIV_PUB_WEB='INTERNET'),IGNORE_ALARM='CONTACT3_16',DEBUG=_F(SDVERI='OUI'))
 MA=LIRE_MAILLAGE(FORMAT='MED',);
-MA=DEFI_GROUP( reuse=MA,MAILLAGE=MA,CREA_GROUP_NO=( 
+MA=DEFI_GROUP( reuse=MA,MAILLAGE=MA,CREA_GROUP_NO=(
                        _F(  GROUP_MA = 'AB',),
                        _F(  GROUP_MA = 'CD',),
                        _F(  GROUP_MA = 'EF',),
@@ -42,24 +42,24 @@ MO=AFFE_MODELE(
                      MODELISATION='D_PLAN',),),
                                 );
 #--------------------------------------------------
-MAT2=DEFI_MATERIAU(ELAS=_F(E = 20.0E+05, 
+MAT2=DEFI_MATERIAU(ELAS=_F(E = 20.0E+05,
                            NU = 0.,)
                           );
 #
-MAT1=DEFI_MATERIAU(ELAS=_F( E = 20.0E+05, 
+MAT1=DEFI_MATERIAU(ELAS=_F( E = 20.0E+05,
                             NU = 0.,),
                           );
-                          
+
 CHMAT=AFFE_MATERIAU(
                             MAILLAGE=MA,
                             AFFE=(
-                           _F( 
+                           _F(
                                  GROUP_MA = ('PLAQUE1'),
-                                 MATER = MAT2, 
+                                 MATER = MAT2,
                                 ),
-                           _F( 
-                                 GROUP_MA = ('PLAQUE2'), 
-                                 MATER = MAT1, 
+                           _F(
+                                 GROUP_MA = ('PLAQUE2'),
+                                 MATER = MAT1,
                                 ),),
                            )
 #--------------------------------------------------------
@@ -74,7 +74,7 @@ CHA2 = DEFI_CONTACT(MODELE         = MO,
                     REAC_GEOM      = 'CONTROLE',
                     NB_ITER_GEOM   = 2,
                     ZONE =_F(
-                             GROUP_MA_ESCL = 'AB',      
+                             GROUP_MA_ESCL = 'AB',
                              GROUP_MA_MAIT = 'EF',
                              INTEGRATION   = 'SIMPSON',
                              ORDRE_INT     = 4,
@@ -82,8 +82,8 @@ CHA2 = DEFI_CONTACT(MODELE         = MO,
                              COEF_CONT     = 1000.,
                              CONTACT_INIT  = 'NON',
                           ),
-                   ) 
-                    
+                   )
+
 
 #-----------------------------------------------------------
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
@@ -104,7 +104,7 @@ RESU=STAT_NON_LINE (
                    EXCIT      =(
                                _F(CHARGE=CHA1,
                                 FONC_MULT=FONC,),),
-                   CONTACT    = CHA2,            
+                   CONTACT    = CHA2,
                    COMP_ELAS  =_F(
                                 RELATION='ELAS'),
                    NEWTON     =_F(MATRICE='TANGENTE',
@@ -117,8 +117,8 @@ RESU=STAT_NON_LINE (
                                  ),
                    SOLVEUR     =_F(
                                METHODE='LDLT',
-                               RENUM='SANS',),              
-                   );              
+                               RENUM='SANS',),
+                   );
 
 
 RESU=CALC_ELEM( reuse=RESU,
@@ -129,14 +129,14 @@ RESU=CALC_NO( reuse=RESU,
                 RESULTAT=RESU,
                 OPTION=('SIGM_NOEU','SIEQ_NOEU')
               );
-              
-SIELNO=CREA_CHAMP(  OPERATION='EXTR', 
+
+SIELNO=CREA_CHAMP(  OPERATION='EXTR',
                     TYPE_CHAM='ELNO_SIEF_R',
                     NOM_CHAM='SIGM_ELNO',
                     RESULTAT=RESU,
                     NUME_ORDRE=1
                        );
-              
+
 TEST_RESU(   RESU=_F(  RESULTAT = RESU,
                      NUME_ORDRE = 1,
                       NOEUD = 'N14',

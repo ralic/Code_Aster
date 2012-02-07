@@ -1,21 +1,21 @@
-#@ MODIF calc_mac3coeur_ops Mac3coeur  DATE 13/12/2011   AUTEUR FOUCAULT A.FOUCAULT 
+#@ MODIF calc_mac3coeur_ops Mac3coeur  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE FERNANDES R.FERNANDES
 
@@ -23,6 +23,7 @@ import os.path as osp
 import string
 from pprint import pformat
 
+import aster_core
 from Cata.cata import MACRO, SIMP, table_sdaster
 from mac3coeur_coeur import CoeurFactory
 
@@ -42,7 +43,7 @@ def calc_mac3coeur_ops(self, **args):
     DETRUIRE         = self.get_cmd('DETRUIRE')
 
     self.set_icmd(1)
-    datg = self.jdc.args.get("rep_dex")
+    datg = aster_core.get_option("repdex")
     coeur_factory = CoeurFactory(datg)
 
     _typ_coeur   = self['TYPE_COEUR']
@@ -73,11 +74,11 @@ def calc_mac3coeur_ops(self, **args):
        _unit_eftx = _DEFORMATION['UNITE_THYC']
        nomfich=UL.Nom(_unit_eftx)
        # 1er cycle
-       
+
        _CH_TRNO,_CH_TRFX,_HYDR_1,_FOHYDR_1=_coeur.lire_resu_thyc(_MO_N,nomfich)
-       
+
        _fluence   = _DEFORMATION['NIVE_FLUENCE']
-       
+
        _AVEC_CONTACT = 'OUI'
        _SANS_CONTACT = 'NON'
 
@@ -113,11 +114,11 @@ def calc_mac3coeur_ops(self, **args):
                                               _F(GROUP_NO = 'P_CUV',            DX=0.,  DY=0.,  DZ=0. )),
                                  LIAISON_SOLIDE = cl_liaison_solide,
                                 );
-       
+
        _F_EMBO = AFFE_CHAR_MECA( MODELE = _MO_N, FORCE_NODALE = _F(GROUP_NO='PEBO_S',FX=(-1.),),);
 
        self.DeclareOut('RESUC1',self.sd)
-       
+
        RESUC1 = STAT_NON_LINE(
                       MODELE      = _MO_N,
                       CHAM_MATER  = _AF_MAC,
@@ -245,7 +246,7 @@ def calc_mac3coeur_ops(self, **args):
        lisdep = []
        lisvar = []
        lisdet = []
-       
+
        indice = 0
 
        _BIDON = STAT_NON_LINE( MODELE     = _MO_NP1,
@@ -331,7 +332,7 @@ def calc_mac3coeur_ops(self, **args):
                     AFFE      = _F(CHAM_GD=_RES_VAR,INST=0.0,MODELE=_MO_NP1,));
 
        DETRUIRE(CONCEPT=tuple(lisdet))
-       
+
        _MVDEPL = CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R', NOM_CHAM ='DEPL', RESULTAT = _RESU_F)
 
        _MA_NP1 = MODI_MAILLAGE( reuse = _MA_NP1, MAILLAGE = _MA_NP1, DEFORME = _F( OPTION = 'TRAN', DEPL = _MVDEPL))

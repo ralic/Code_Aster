@@ -1,31 +1,31 @@
-# MODIF  DATE 25/10/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION EFFET DE MEMOIRE VISC_CIN2_MEMO
 # ssnd111a.para = tps_job 300 mem_job 128Mo mem_aster 20 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #DEBUT(PAR_LOT='OUI')
-DEBUT(CODE=_F(NOM='SSND111A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'));
+DEBUT(CODE=_F(NOM='SSND111A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
 
 #  parametres constants
 
 R0__ = 97.82907013
-GAMA1__ = 3079.148555 
-GAMA2__ = 178.6588221    
+GAMA1__ = 3079.148555
+GAMA2__ = 178.6588221
 C1INF__ = 182392.4371
 C2INF__ = 16679.65460
 
@@ -39,7 +39,7 @@ eta__ = 0.135
 PETITB__ = 51.31782615
 AINF__ = 0.5817571069
 UNETA__ = 1./156.8607050
-EXP_N__ = 6.835707681  
+EXP_N__ = 6.835707681
 MU__ = 10.00231083
 
 ACIER2=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
@@ -86,7 +86,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
 
 # --- On importe le chargement ------------------------------------------------------------------------
 
-# cycle stabilise 0.3%  
+# cycle stabilise 0.3%
 EPS03=LIRE_FONCTION(UNITE=33,NOM_PARA='INST',INDIC_PARA=[1,1], INDIC_RESU=[1,2],PROL_DROITE='LINEAIRE',);
 
 #lt3 = EPS03.Absc()
@@ -151,7 +151,7 @@ R03VE=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='VISCOCHAB',ITER_INTE_MAXI=50,RESI_IN
                  NEWTON=_F(REAC_ITER=1),
                  EPSI_IMPOSE=_F(EPYY=EPS03,),
                                 );
-# p, q, xi_yy, xi_zz                                
+# p, q, xi_yy, xi_zz
 #IMPR_TABLE(TABLE=R03VE,NOM_PARA=('INST','EPYY','SIYY','V27','V26','V20','V21'))
 
 R03E = CALC_TABLE( TABLE=R03VE,
@@ -165,7 +165,7 @@ f03yE=RECU_FONCTION(TABLE=R03E,PARA_X='INST',PARA_Y='SIYY');
 
 
 
-# --- On compare les trois simulations 
+# --- On compare les trois simulations
 IMPR_FONCTION(FORMAT='XMGRACE',UNITE=40,
                   COURBE=(
                    _F(LEGENDE='EPS0.3%, CIN2_MEMO, ETA='+str(eta__),
@@ -185,7 +185,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',UNITE=40,
                   ),
                   ),
                   TITRE='EPS=0.3%',
-                                    );          
+                                    );
 
 
 qvi=RECU_FONCTION(TABLE=R03MV,PARA_X='INST',PARA_Y='V15');
@@ -215,7 +215,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',UNITE=41,
                   ),
                   ),
                   TITRE='EPS=0.3%',
-                                    );          
+                                    );
 
 IMPR_FONCTION(FORMAT='XMGRACE',UNITE=42,
                   COURBE=(
@@ -233,7 +233,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',UNITE=42,
                   ),
                   ),
                   TITRE='EPS=0.3%',
-                                    );          
+                                    );
 
 
 # test de VISCOCHAB explicite = SIDOLO : non regression

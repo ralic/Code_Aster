@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # ======================================================================
 # TITRE IMPACT POUTRE AVEC ELEMENTS 3D SUR PLAN RIGIDE
 # sdnv100a.para = tps_job 80 mem_job 64Mo liste_test S
@@ -11,7 +11,7 @@
 #CAS_TEST__: SDNV100A
 # METHODE DE CONTACT : PENALISATION
 
-DEBUT( CODE=_F(  NOM = 'SDNV100A',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SDNV100A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MAILL=LIRE_MAILLAGE(FORMAT='MED', )
 
@@ -22,11 +22,11 @@ MAILL=DEFI_GROUP( reuse=MAILL,
                       )
                     )
 
-MODE=AFFE_MODELE( 
+MODE=AFFE_MODELE(
             MAILLAGE=MAILL,
             VERIF='MAILLE',
             AFFE=(
-           _F(   TOUT = 'OUI', 
+           _F(   TOUT = 'OUI',
                  PHENOMENE = 'MECANIQUE',MODELISATION = '3D',),
                  ),
            )
@@ -35,11 +35,11 @@ MAILL=MODI_MAILLAGE( reuse=MAILL,   MAILLAGE=MAILL,
                           ORIE_PEAU_3D=_F(  GROUP_MA = ('SSOL', 'FACEINF',), )
                         )
 
-ACIER=DEFI_MATERIAU( 
+ACIER=DEFI_MATERIAU(
                 ELAS=_F( E = 2.E11, NU = 0.,  RHO = 8000.)
                         )
 
-ACONTA=DEFI_MATERIAU( 
+ACONTA=DEFI_MATERIAU(
                       ELAS=_F(
                                E   = 1.E16,
                                NU  = 0.0  ,
@@ -47,20 +47,20 @@ ACONTA=DEFI_MATERIAU(
                              )
            )
 
-CM=AFFE_MATERIAU( 
+CM=AFFE_MATERIAU(
             MAILLAGE=MAILL,AFFE=(
            _F( GROUP_MA = 'POUTRE',  MATER = ACIER ),
            _F( GROUP_MA = 'VSOL'  ,  MATER = ACONTA),
                                 )
                  )
 
-CH=AFFE_CHAR_MECA( 
+CH=AFFE_CHAR_MECA(
             MODELE=MODE,DDL_IMPO=(
            _F(  TOUT = 'OUI', DX = 0., DY = 0.),
            _F(  GROUP_NO = 'VSOL',  DX = 0., DY = 0., DZ = 0.),
                                  )
            )
-           
+
 F_DIST_E=DEFI_CONSTANTE(VALE=0.)
 
 
@@ -69,7 +69,7 @@ CH2     = DEFI_CONTACT(MODELE         = MODE,
                        REAC_GEOM      = 'CONTROLE',
                        NB_ITER_GEOM   = 2,
                        FROTTEMENT     = 'COULOMB',
-                       
+
                        ZONE =_F(
                              ALGO_CONT      = 'PENALISATION',
                              ALGO_FROT      = 'PENALISATION',
@@ -129,7 +129,7 @@ U=DYNA_NON_LINE(  SOLVEUR=_F(SYME='OUI',),
                       FONC_MULT = RAMPE
                     ),
                  ),
-           CONTACT     = CH2,      
+           CONTACT     = CH2,
            ETAT_INIT   =_F(DEPL = CHAMP2,VITE = CHAMP1),
            COMP_ELAS   =_F( RELATION = 'ELAS',),
            INCREMENT   =_F( INST_INIT = 0.,LIST_INST = L_INST),
@@ -340,7 +340,7 @@ TEST_RESU( RESU=(_F(  RESULTAT = U,
                      PRECISION = 1.E-3,
                      NOM_CHAM = 'DEPL',
                      NOM_CMP = 'DZ',
-                     VALE = -4.074E-3,),  
+                     VALE = -4.074E-3,),
                 _F(  RESULTAT = U,
                      NUME_ORDRE = 40,
                      NOEUD = 'N100',
@@ -348,7 +348,7 @@ TEST_RESU( RESU=(_F(  RESULTAT = U,
                      PRECISION = 1.E-3,
                      NOM_CHAM = 'VITE',
                      NOM_CMP = 'DZ',
-                     VALE = 95.06,),  
+                     VALE = 95.06,),
                 _F(  RESULTAT = U,
                      NUME_ORDRE = 60,
                      NOEUD = 'N5',
@@ -356,7 +356,7 @@ TEST_RESU( RESU=(_F(  RESULTAT = U,
                      PRECISION = 1.E-3,
                      NOM_CHAM = 'VITE',
                      NOM_CMP = 'DZ',
-                     VALE = 104.31,),  
+                     VALE = 104.31,),
                 _F(  RESULTAT = U,
                      NUME_ORDRE = 65,
                      NOEUD = 'N5',
@@ -364,7 +364,7 @@ TEST_RESU( RESU=(_F(  RESULTAT = U,
                      PRECISION = 1.E-3,
                      NOM_CHAM = 'VITE',
                      NOM_CMP = 'DZ',
-                     VALE = 103.64,),  
+                     VALE = 103.64,),
                      ),)
 #
 # Test de l energie cinetique
@@ -373,17 +373,17 @@ TEST_RESU( RESU=(_F(  RESULTAT = U,
 TEST_TABLE(      TABLE=ECITPS,
                    FILTRE=(_F(  NOM_PARA = 'LIEU', VALE_K = 'MAILL',),
                            _F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 1,),),
-                   REFERENCE='ANALYTIQUE',  
-                   NOM_PARA='TOTALE', 
-                   VALE=3.20000E+03, 
+                   REFERENCE='ANALYTIQUE',
+                   NOM_PARA='TOTALE',
+                   VALE=3.20000E+03,
                    PRECISION=0.0001)
 
 TEST_TABLE(      TABLE=ECITPS,
                    FILTRE=(_F(  NOM_PARA = 'LIEU', VALE_K = 'MAILL',),
                            _F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 70,),),
-                   REFERENCE='NON_REGRESSION',VERSION='8.1.15',  
-                   NOM_PARA='TOTALE', 
-                   VALE=2.93438E+03, 
+                   REFERENCE='NON_REGRESSION',VERSION='8.1.15',
+                   NOM_PARA='TOTALE',
+                   VALE=2.93438E+03,
                    PRECISION=0.0001)
 
 FIN();

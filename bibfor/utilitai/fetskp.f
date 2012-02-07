@@ -1,7 +1,7 @@
       SUBROUTINE FETSKP()
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 09/01/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,7 @@ C DECLARATION VARIABLES LOCALES
      &              IFM,NIV,NBLIEN,NBPART,RENUM3,IDMA,IULM2,MABORD,VAL,
      &              RANG,NBPROC,VERSCO,N1,N2,N3,IER,IAUX,
      &              IAUX2
-      INTEGER       VALI(2)
+      INTEGER       VALI(2), IRET, LXLGUT
       REAL*8        TMPS(6)
       CHARACTER*8   MA,K8BID,GRPEMA,KTMP,NOM,MOD,SDBORD,
      &              VERIF,KTMP2,METH,BORD,K8NB,KERSCO
@@ -336,12 +336,12 @@ C
         JNOM(3)=KTMP
         CALL GETVTX(' ','LOGICIEL' ,0,IARG,1,REP,ERR)
         IF ( ERR .EQ. 0 ) THEN
-          CALL REPOU2(REP, LREP)
-          IF (LREP .GT. LEN(REP)) THEN
-            VALI(1) = LREP
-            VALI(2) = LEN(REP)
-            CALL U2MESI('F', 'EXECLOGICIEL0_24', 2, VALI)
+          CALL GTOPTK('repout', REP, IRET)
+          IF (IRET .NE. 0) THEN
+            VALI(1) = LEN(REP)
+            CALL U2MESI('F', 'EXECLOGICIEL0_24', 1, VALI)
           ENDIF
+          LREP = LXLGUT(REP)
           IF ( METH .EQ. 'PMETIS  ') THEN
             JNOM(1)=REP(1:LREP)//'/pmetis'
           ELSEIF ( METH .EQ. 'KMETIS  ') THEN

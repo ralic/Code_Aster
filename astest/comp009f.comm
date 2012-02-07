@@ -1,32 +1,33 @@
-# MODIF  DATE 18/01/2011   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE : VARIATION TEMPERATURE DANS LE COMPORTEMENT PINTO_MENEGOTTO
 # comp009f.para = tps_job 120 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # CAS-TEST DE REFERENCE : SSNL112E
-#===================================================================== 
+#=====================================================================
 
-DEBUT(CODE=_F(NOM='COMP009F',NIV_PUB_WEB='INTERNET'),PAR_LOT='OUI')
+DEBUT(CODE=_F(NOM='COMP009F',NIV_PUB_WEB='INTERNET'),PAR_LOT='OUI',DEBUG=_F(SDVERI='NON'))
+# SDVERI='NON' car la verification est trop couteuse en CPU
 
 MA=LIRE_MAILLAGE();
 
-import numpy as N             
+import numpy as N
 
 epsi=1.E-10
 
@@ -50,7 +51,7 @@ Nbvari=8
 
 
 YOUN=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(TREF, 2.E11,
-                                         500., 1.E11,                                   
+                                         500., 1.E11,
                                            ),);
 ALPH=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(TREF, 1.E-4,
                                          500., 2.E-4,
@@ -98,7 +99,7 @@ NCAL =20
 time = 0.
 linst=[0.]
 for i in range(NCAL):
-          timem = time           
+          timem = time
           time = timem + tmax/NCAL
           linst.append(time)
 L_INST=DEFI_LIST_REEL( VALE=linst)
@@ -137,12 +138,12 @@ LIAISON=AFFE_CHAR_MECA(MODELE=MOMECA,
                                     DY=0.0,
                                     DZ=0.0,),
                                     ),);
-                                    
+
 U=STAT_NON_LINE(MODELE=MOMECA,
                 CHAM_MATER=CHMTH,
                 CARA_ELEM=CARAELEM,
                 EXCIT=(_F(CHARGE=LIAISON,),
-                    ),          
+                    ),
                 COMP_INCR=_F(RELATION=compor,
       ),
                 INCREMENT=_F(LIST_INST=L_INST,),
@@ -151,7 +152,7 @@ U=STAT_NON_LINE(MODELE=MOMECA,
 );
 
 TABU=CREA_TABLE(
-                 RESU=_F(RESULTAT=U, 
+                 RESU=_F(RESULTAT=U,
                          TOUT='OUI',
                          TOUT_CMP='OUI',
                          NOM_CHAM='SIEF_ELGA',),
@@ -208,31 +209,31 @@ def verif(VAL_CAL,VAL_REF):
    else :
       diff=abs (VAL_CAL - VAL_REF)
    return diff
-   
+
 VERIF=FORMULE(NOM_PARA=('VAL_REF', 'VAL_CAL'),VALE='verif(VAL_CAL,VAL_REF)')
             #  VALE='abs (VAL_CAL - VAL_REF)/max(VAL_REF')
 
 
 for i in range(1,NCAL+1):
-          
-          timem = time 
-          
+
+          timem = time
+
          # time = timem + tmax/NCAL
           time =linst[i]
-            
+
           Ti = T0 + time/tmax * (Tmax - T0)
-          
+
           Tm = T0 + timem/tmax * (Tmax - T0)
-          
+
           # deformation mecanique imposee correspondant a la deformation thermique du premier calcul
-          
+
           epsimp =DEFI_CONSTANTE(VALE=-ALPH(Ti)*(Ti - TREF));
 
           print 'i=',i, ' instant=', time, ' Temperature=',Ti
-          
+
           # variation des coef du comportement avec la temperature
-          # correction eventuelle des valeurs initiales du temps ti 
-                                    
+          # correction eventuelle des valeurs initiales du temps ti
+
           MATER[i]=DEFI_MATERIAU(ELAS =_F(E=YOUN(Ti), NU=0., ALPHA=0.),
                                          PINTO_MENEGOTTO=_F(SY        = 2.E8,
                                                             EPSI_ULTM = 3.E-2,
@@ -250,7 +251,7 @@ for i in range(1,NCAL+1):
 
           list = DEFI_LIST_REEL(DEBUT=timem,
                       INTERVALLE=(_F(JUSQU_A=time,NOMBRE=1,),),);
-          
+
           CHMTH[i]=AFFE_MATERIAU(MAILLAGE=MA,
                       AFFE=_F(TOUT='OUI',
                               MATER=MATER[i],),);
@@ -264,14 +265,14 @@ for i in range(1,NCAL+1):
                                     DX=0.0,
                                     DY=0.0,),
                                     ),);
-                                    
+
           CHRGE[i]=AFFE_CHAR_MECA_F(MODELE=MOMECA,
                        DDL_IMPO=(_F(NOEUD='N7',
                                     DZ=epsimp,),),);
-                                    
-         
+
+
           if i == 1 :
- 
+
               RESU[i]=STAT_NON_LINE(MODELE=MOMECA,
                                  CHAM_MATER=CHMTH[i],
                                  CARA_ELEM=CARAELEM,
@@ -310,7 +311,7 @@ for i in range(1,NCAL+1):
                              NEWTON=_F(REAC_INCR=1,
                              REAC_ITER=1,),
                             );
-  
+
               DETRUIRE ( CONCEPT =  _F (NOM =EM),);
               DETRUIRE ( CONCEPT =  _F (NOM =SM1),);
               DETRUIRE ( CONCEPT =  _F (NOM =SM),);
@@ -340,20 +341,20 @@ for i in range(1,NCAL+1):
                                RESULTAT  = RESU[i],
                                NOM_CHAM  = 'SIEF_ELGA',
                                NUME_ORDRE = 1)
- 
+
           VM = CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
                            OPERATION='EXTR',
                            RESULTAT=RESU[i],
                            NOM_CHAM='VARI_ELGA',
-                           NUME_ORDRE=1,  );                                                                   
-          
+                           NUME_ORDRE=1,  );
+
           DETRUIRE ( CONCEPT =  _F (NOM =epsimp),);
           DETRUIRE ( CONCEPT =  _F (NOM =list),);
           DETRUIRE ( CONCEPT =  _F (NOM =CHRGE[i]),);
           DETRUIRE ( CONCEPT =  _F (NOM =LIAISON2),);
 
           IMPR_RESU(RESU=(_F(RESULTAT=RESU[i])))
-          
+
           SN3[i]=POST_RELEVE_T(ACTION=_F(INTITULE='N_N3',
                                 NOEUD='N3',
                                 RESULTAT=RESU[i],
@@ -377,7 +378,7 @@ for i in range(1,NCAL+1):
                                 _F(OPERATION='EXTR',NOM_PARA=('INST',NOMPARA, 'VAL_CAL'),),
                                 _F(OPERATION='RENOMME',NOM_PARA=(NOMPARA, 'VAL_REF'),),
                                 _F(OPERATION='OPER',NOM_PARA='DIFF',FORMULE=VERIF),
-                                   ),)                  
+                                   ),)
 
           DETRUIRE ( CONCEPT =  _F (NOM =TCOMPR),);
           NOMPARA='V1'
@@ -389,11 +390,11 @@ for i in range(1,NCAL+1):
                                 _F(OPERATION='EXTR',NOM_PARA=('INST',NOMPARA, 'VAL_CAL'),),
                                 _F(OPERATION='RENOMME',NOM_PARA=(NOMPARA, 'VAL_REF'),),
                                 _F(OPERATION='OPER',NOM_PARA='DIFF',FORMULE=VERIF),
-                                   ),)                  
+                                   ),)
 
           TEST_TABLE( TABLE   = TCOMPR,NOM_PARA  = 'DIFF',
               TYPE_TEST = 'MAX',VALE      = 0.,CRITERE   = 'ABSOLU',PRECISION = 1.E-6,
-              REFERENCE = 'AUTRE_ASTER',)                            
+              REFERENCE = 'AUTRE_ASTER',)
           DETRUIRE ( CONCEPT =  _F (NOM =TCOMPR),);
 
 FIN();

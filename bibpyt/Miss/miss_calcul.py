@@ -1,8 +1,8 @@
-#@ MODIF miss_calcul Miss  DATE 23/05/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF miss_calcul Miss  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,6 +32,7 @@ import shutil
 import traceback
 import os.path as osp
 
+import aster_core
 import aster
 from Cata.cata import MACR_ELEM_DYNA, IMPR_MACR_ELEM
 
@@ -88,7 +89,7 @@ class CALCUL_MISS(object):
         self._dbg_trace("Start")
         copie_fichier(self._fichier_tmp("in"), osp.join(self.param['_WRKDIR'], "MISS.IN"))
 
-        cmd = osp.join(aster.repout(), "run_miss3d") + " " + self.param['VERSION']
+        cmd = osp.join(aster_core.get_option('repout'), "run_miss3d") + " " + self.param['VERSION']
         try:
             os.chdir(self.param['_WRKDIR'])
             if self.verbose:

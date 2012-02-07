@@ -1,7 +1,7 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF aster_utils include  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF aster_utils include  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -16,6 +16,7 @@
 /* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
+/* RESPONSABLE COURTOIS */
 
 #ifndef ASTER_UTILS_H
 #define ASTER_UTILS_H
@@ -23,18 +24,31 @@
 #include "aster.h"
 
 STRING_SIZE FStrlen( char *, STRING_SIZE );
-
 char * MakeCStrFromFStr( char *, STRING_SIZE );
 char * MakeFStrFromCStr( char *, STRING_SIZE );
 void   CopyCStrToFStr( char *, char *, STRING_SIZE );
-
 char * MakeTabFStr( int, STRING_SIZE );
 void   SetTabFStr( char *, int, char *, STRING_SIZE );
-
 void   BlankStr( char *, STRING_SIZE );
 char * MakeBlankFStr( STRING_SIZE );
 void   FreeStr( char * );
 
 void _check_string_length( STRING_SIZE );
+
+
+extern void convc8( _IN int, _IN PyObject *, _OUT DOUBLE *);
+extern int conv_un_c8( _IN PyObject *, _OUT DOUBLE *);
+extern void convr8( _IN int, _IN PyObject *, _OUT DOUBLE *);
+extern void convert( _IN int, _IN PyObject *, _OUT INTEGER *);
+extern void convertxt( _IN int, _IN PyObject *, _OUT char *, _IN STRING_SIZE);
+extern void converltx( _IN int, _IN PyObject *, _OUT char *, _IN STRING_SIZE);
+
+
+extern PyObject * MakeTupleString(long, char *, STRING_SIZE, INTEGER *);
+extern PyObject * MakeListString(long, char *, STRING_SIZE);
+extern PyObject * MakeTupleInt(long, INTEGER *);
+extern PyObject * MakeListInt(long, INTEGER*);
+extern PyObject * MakeTupleFloat(long, DOUBLE *);
+extern PyObject * MakeListFloat(long, DOUBLE *);
 
 #endif

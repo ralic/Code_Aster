@@ -1,5 +1,5 @@
 
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 #
 # TITRE CONTACT DE DEUX SPHERES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -14,7 +14,7 @@
 
 
 DEBUT(CODE=_F(NOM='SSNV104F',
-              NIV_PUB_WEB='INTERNET',),);
+NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE(FORMAT='MED',);
 
@@ -96,7 +96,7 @@ RESU2=STAT_NON_LINE(MODELE=MO,
                     CHAM_MATER=CHMAT,
                     EXCIT=_F(CHARGE=CHAR,
                              FONC_MULT=RAMPE,),
-                    CONTACT  = CHA2,         
+                    CONTACT  = CHA2,
                     COMP_ELAS=_F(RELATION='ELAS',),
                     INCREMENT=_F(LIST_INST=L_INST,
                                  NUME_INST_FIN=10,),
@@ -198,7 +198,7 @@ RESU3=STAT_NON_LINE(MODELE=MO,
                     CHAM_MATER=CHMAT,
                     EXCIT=_F(CHARGE=CHAR,
                              FONC_MULT=RAMPE,),
-                             CONTACT  = CHA3,       
+                             CONTACT  = CHA3,
                     COMP_ELAS=_F(RELATION='ELAS',),
                     INCREMENT=_F(LIST_INST=L_INST,
                                  NUME_INST_FIN=10,),
@@ -299,7 +299,7 @@ RESU4=STAT_NON_LINE(MODELE=MO,INFO=2,
                     CHAM_MATER=CHMAT,
                     EXCIT=_F(CHARGE=CHAR,
                              FONC_MULT=RAMPE,),
-                    CONTACT  = CHA4,                
+                    CONTACT  = CHA4,
                     COMP_ELAS=_F(RELATION='ELAS',),
                     INCREMENT=_F(LIST_INST=L_INST,
                                  NUME_INST_FIN=10,),

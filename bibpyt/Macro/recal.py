@@ -1,8 +1,8 @@
-#@ MODIF recal Macro  DATE 23/05/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF recal Macro  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -43,6 +43,7 @@ import numpy as NP
 
 # Importation de commandes Aster
 try:
+   import aster_core
    import aster
    import Macro
    from Accas import _F
@@ -164,7 +165,7 @@ def make_include_files(UNITE_INCLUDE, calcul, parametres):
 #       raise "Le mode INCLUSION doit etre lance depuis Aster"
 
    try:
-       ASTER_ROOT = os.path.join(aster.repout, '..')
+       ASTER_ROOT = os.path.join(aster_core.get_option('repout'), '..')
        sys.path.append(os.path.join(ASTER_ROOT, 'ASTK', 'ASTK_SERV', 'lib'))
        sys.path.append(os.path.join(ASTER_ROOT, 'lib', 'python%s.%s' % (sys.version_info[0], sys.version_info[1] ) , 'site-packages'))
    except: pass
@@ -706,7 +707,7 @@ class CALCULS_ASTER:
         # Import des modules python d'ASTK
         # ----------------------------------------------------------------------------
         if not ASTER_ROOT:
-            try:    ASTER_ROOT = os.path.join(aster.repout, '..')
+            try:    ASTER_ROOT = os.path.join(aster_core.get_option('repout'), '..')
             except: pass
         try:
             sys.path.append(os.path.join(ASTER_ROOT, 'ASTK', 'ASTK_SERV', 'lib'))
@@ -998,7 +999,7 @@ class CALCULS_ASTER:
        the index of the end of the command.
        """
        if not self.ASTER_ROOT:
-           try:    ASTER_ROOT = os.path.join(aster.repout, '..')
+           try:    ASTER_ROOT = os.path.join(aster_core.get_option('repout'), '..')
            except: pass
        try:
            sys.path.append(os.path.join(ASTER_ROOT, 'ASTK', 'ASTK_SERV', 'lib'))

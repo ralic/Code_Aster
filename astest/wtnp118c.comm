@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE - REEEQUILIBRAGE GRAVITAIRE D UNE COLONNE - MODELISATION THH2D
 # wtnp118c.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -21,7 +21,7 @@
 
 #******************************************************************************************
 #  MODELISATION THH2D 1D , LOI LIQU_AD_GAZ_VAPE
-DEBUT(CODE=_F( NOM = 'WTNP118C',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='WTNP118C',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #
 ####################################

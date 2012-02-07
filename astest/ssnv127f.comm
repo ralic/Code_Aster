@@ -1,21 +1,21 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE DANS UN ALESAGE AVEC CONTACT ET FROTTEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # ======================================================================
 # CAS_TEST__:SSNV127F meme modelisation que le SSNV127F,
@@ -27,22 +27,22 @@
 #
 # TEST ISSU DE LA VALIDATION INDEPENDANTE CONTACT FROTTEMENT
 # LES ELEMENTS DE BORD SONT DES SEG2
-# 
+#
 
-DEBUT(CODE=_F( NOM = 'SSNV127F',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'));
+DEBUT(CODE=_F(NOM='SSNV127F',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),DEBUG=_F(SDVERI='OUI'))
 
 
 
-#_____________________________________________________________________ 
-#                                                       
-#                    LECTURE DE SSNV127F.MGIB           
-#_____________________________________________________________________ 
-#                                                       
+#_____________________________________________________________________
+#
+#                    LECTURE DE SSNV127F.MGIB
+#_____________________________________________________________________
+#
 #
 
 
 SSNV127F=LIRE_MAILLAGE(FORMAT='MED',);
-#                                                       
+#
 #
 
 
@@ -60,8 +60,8 @@ SSNV127F=DEFI_GROUP(reuse =SSNV127F,
                                       NOM='RELEVE',
                                       GROUP_NO_ORIG='A1',
                                       GROUP_NO_EXTR='B2',),),);
-                                      
-                                      
+
+
 # POUR ELIMINER LES NOEUDS COMMUNS AUX SURFACES DE CONTACT
 SSNV127F=DEFI_GROUP(reuse=SSNV127F,
                     MAILLAGE=SSNV127F,
@@ -69,12 +69,12 @@ SSNV127F=DEFI_GROUP(reuse=SSNV127F,
                                    _F(GROUP_MA='BCC2',),
                                    _F(INTERSEC=('BCC1','BCC2',),
                                       NOM='BCC_SGN'),),)
-#                                                       
-#_____________________________________________________________________ 
-#                                                       
-#                    DEFINITION DU MODELE               
-#_____________________________________________________________________ 
-#                                                       
+#
+#_____________________________________________________________________
+#
+#                    DEFINITION DU MODELE
+#_____________________________________________________________________
+#
 #
 
 
@@ -92,29 +92,29 @@ SSNV127F=MODI_MAILLAGE(reuse =SSNV127F,
                        MAILLAGE=SSNV127F,
                        ORIE_PEAU_2D=_F(GROUP_MA='BCC2',),
                       );
-#_____________________________________________________________________ 
-#                                                       
-#                    DEFINITION DES MATERIAUX           
-#_____________________________________________________________________ 
-#                                                       
+#_____________________________________________________________________
+#
+#                    DEFINITION DES MATERIAUX
+#_____________________________________________________________________
+#
 #
 
 
 MAT1=DEFI_MATERIAU(ELAS=_F(E=2.10000000000E11,
                            NU=0.29999999999999999,),);
-#                                                       
+#
 #
 
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=SSNV127F,
                     AFFE=_F(GROUP_MA='SURFF',
                             MATER=MAT1,),);
-#_____________________________________________________________________ 
-#                                                       
-#                    AFFECTATION DES CONDITIONS AUX LIMITES            
-#                       ET DU CHARGEMENT                
-#_____________________________________________________________________ 
-#                                                       
+#_____________________________________________________________________
+#
+#                    AFFECTATION DES CONDITIONS AUX LIMITES
+#                       ET DU CHARGEMENT
+#_____________________________________________________________________
+#
 #
 
 
@@ -136,7 +136,7 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
                                  DX=0.0,),),
                     FORCE_NODALE=_F(GROUP_NO='O2',
                                     FY=-9.37500E5,),);
-#                                                       
+#
 #
 
 CHA2 = DEFI_CONTACT(MODELE         = MO,
@@ -144,21 +144,21 @@ CHA2 = DEFI_CONTACT(MODELE         = MO,
                     FROTTEMENT     = 'COULOMB',
                     REAC_GEOM      = 'CONTROLE',
                     NB_ITER_GEOM   = 3,
-                    ALGO_RESO_CONT = 'NEWTON',                   
+                    ALGO_RESO_CONT = 'NEWTON',
                     ZONE =(
                            _F(
                              GROUP_MA_ESCL = 'BCC2',
                              GROUP_MA_MAIT = 'BCC1',
                              COULOMB       = 0.4,
                              SANS_GROUP_NO = 'BCC_SGN',
-                             ),                            
+                             ),
                           ),
                    );
-#_____________________________________________________________________ 
-#                                                       
-#               DEFINITION DES FONCTIONS TEMPORELLES    
-#_____________________________________________________________________ 
-#                                                       
+#_____________________________________________________________________
+#
+#               DEFINITION DES FONCTIONS TEMPORELLES
+#_____________________________________________________________________
+#
 #
 
 
@@ -170,11 +170,11 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST',
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
                                     NOMBRE=1,),);
-#_____________________________________________________________________ 
-#                                                       
-#                            RESOLUTION                 
-#_____________________________________________________________________ 
-#                                                       
+#_____________________________________________________________________
+#
+#                            RESOLUTION
+#_____________________________________________________________________
+#
 #
 
 
@@ -183,7 +183,7 @@ U=STAT_NON_LINE(MODELE=MO,
                 EXCIT=(_F(CHARGE=CHA1,
                           FONC_MULT=RAMPE,),
                        ),
-                CONTACT = CHA2,       
+                CONTACT = CHA2,
                 COMP_ELAS=_F(RELATION='ELAS',),
                 INCREMENT=_F(LIST_INST=L_INST,),
                 NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1),
@@ -217,11 +217,11 @@ IMPR_TABLE(TABLE=TPRESS)
 IMPR_TABLE(TABLE=TCONT)
 
 
-#_____________________________________________________________________ 
-#                                                       
-# TEST DE LA CONFORMITE AVEC LA SOLUTION DE REFERENCE ANALYTIQUE       
-#_____________________________________________________________________ 
-#                                                       
+#_____________________________________________________________________
+#
+# TEST DE LA CONFORMITE AVEC LA SOLUTION DE REFERENCE ANALYTIQUE
+#_____________________________________________________________________
+#
 #
 
 

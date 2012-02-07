@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE CIRCULAIRE SOUMISE A PRESSION
 # ssna302b.para = tps_job 430 mem_job 200Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -23,7 +23,7 @@
 #                    DE LA CHARGE
 #.....................................................................
 
-DEBUT(   CODE=_F(  NOM = 'SSNA302B',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='SSNA302B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MAYA=LIRE_MAILLAGE(FORMAT='MED', )
 

@@ -1,31 +1,32 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CALCUL MODAL POUTRE MULTIFIBRE AVEC GYROSCOPIE
 # sdll123d.para = tps_job 900 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE TORKHANI M.TORKHANI
 #
 
+import aster_core
 import numpy as NP
 import numpy.linalg as LA
 
 DEBUT( CODE=_F(NOM='SDLL123D', NIV_PUB_WEB='INTERNET'),
-       PAR_LOT='NON')
+       PAR_LOT='NON', DEBUG=_F(SDVERI='OUI'))
 
 INCLUDE(UNITE=66)
 
@@ -84,8 +85,8 @@ CARELEM=AFFE_CARA_ELEM(MODELE=MODELE,
                         MULTIFIBRE=(_F(GROUP_MA=('ROTOR'),
                                        GROUP_FIBRE=('SECTIO')),
                         ))
-                                 
-                                 
+
+
 
 BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODELE,
                                DDL_IMPO=(
@@ -93,9 +94,9 @@ BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODELE,
                                      DX=0, DY=0, DZ=0, DRX=0,
                                      ),
                           ))
-                                    
 
-                    
+
+
 MACRO_MATR_ASSE(MODELE=MODELE,
                 CHAM_MATER=CHMAT,
                 CARA_ELEM=CARELEM,
@@ -125,7 +126,7 @@ for ddd in d:
    print i,ddd
    i=i+1
 print "\n"
-                    
+
 MODES=MODE_ITER_SIMULT(MATR_A=RIGIDITE,
                        MATR_B=MASSE,
                        CALC_FREQ=_F(OPTION='BANDE',
@@ -153,7 +154,7 @@ HPRIME=NP.zeros((nddl*2,nddl*2))
 HPRIME[0:nddl,0:nddl]=NP.dot(gyro,masI)
 HPRIME[0:nddl,nddl:2*nddl]=NP.dot(rig,masI)
 HPRIME[nddl:2*nddl,0:nddl]=-NP.identity(nddl)
-aster.matfpe(-1)
+aster_core.matfpe(-1)
 print 'valeurs propres primes'
 vprime=LA.eigvals(HPRIME)/2./NP.pi
 vpreal=list(vprime.imag)
@@ -166,7 +167,7 @@ for vp in vpreal:
   i=i+1
  j=j+1
  dij=j-i
-aster.matfpe(+1)
+aster_core.matfpe(+1)
 
 
 FREQROT=CREA_TABLE(

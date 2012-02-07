@@ -1,7 +1,7 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF spec_osci supervis  DATE 19/05/2011   AUTEUR SELLENET N.SELLENET */
+/* MODIF spec_osci supervis  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -17,12 +17,11 @@
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 #include "aster.h"
+#include "aster_fort.h"
 
 /*
 #define __DEBUG__
 */
-double STDCALL(R8PI, r8pi)();
-
 void calc_SPEC_OSCI( int nbpts, double* vale_x, double* vale_y,
                      int len_f, double* l_freq, int len_a, double* l_amor,
                      double* spectr )
@@ -31,7 +30,7 @@ void calc_SPEC_OSCI( int nbpts, double* vale_x, double* vale_y,
    double   pas, DELTAT, eps, ecart;
    double   XSI, XSI2, W, W2, UNSW2, WDT, COSWDT, SINWDT, A, B, C, D, E, F;
    double   EXPXWT, EXPSA, D1, D2, D3, V2, V3, F1, F2, FSDT, DEUXPI;
-   
+
    eps = 1.e-6;
 
 #ifdef __DEBUG__
@@ -49,11 +48,11 @@ void calc_SPEC_OSCI( int nbpts, double* vale_x, double* vale_y,
       i++;
    }
 
-   DEUXPI = (double)(2. * F_FUNC(R8PI, r8pi)());
+   DEUXPI = (double)(2. * CALL_R8PI());
 #ifdef __DEBUG__
    printf("2*pi : %lf\n", DEUXPI);
 #endif
-      
+
    /* le pas est constant */
    if (ecart < eps)
    {

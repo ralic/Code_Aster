@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE Maillage adaptatif mecanique sur une poutre en flexion
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -98,7 +98,7 @@ RESV    = [None]*nb_calc1
 #-------------------------------------------------------------------
 #                       CALCUL ASTER PROPREMENT DIT
 #-------------------------------------------------------------------
-DEBUT(CODE=_F(NOM = 'FORMA20A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='NON');
+DEBUT(CODE=_F(NOM='FORMA20A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='NON',DEBUG=_F(SDVERI='OUI'))
 
 # DEFINITION DU MATERIAU
 ACIER=DEFI_MATERIAU(ELAS=_F(E=210.E3,
@@ -165,7 +165,7 @@ for num_calc in range(0,nb_calc1) :
                        INCREMENT=_F(LIST_INST=L_INST),);
 
    DEPLA[num_calc]=EXTR_RESU(RESULTAT=RESV[num_calc],ARCHIVAGE=_F(NUME_ORDRE=1,),);
-   
+
 # POST_TRAITEMENT POUR OBTENIR LES CONTRAINTES AUX NOEUDS ET LES
 # DEUX TYPES D'INDICATEURS D'ERREUR EN MECANIQUE (ZZ1 ET RESIDU).
    DEPLA[num_calc]=CALC_ELEM(reuse=DEPLA[num_calc],

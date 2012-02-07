@@ -1,4 +1,4 @@
-# MODIF  DATE 09/01/2012   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 06/02/2012   AUTEUR PROIX J-M.PROIX 
 # TITRE : EFFET DE ROTATION DE RESEAU SUR UN CUBE MONOCRISTALLIN 
 # ssnd112a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -21,8 +21,6 @@
 
 DEBUT(CODE=_F(NOM='SSND112A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'));
 
-
-import numpy as NP
 
 import numpy as NP
 
@@ -119,10 +117,27 @@ COEF=DEFI_FONCTION(NOM_PARA='INST',
                    PROL_GAUCHE='LINEAIRE',
                    );
 
+t1=0.0005
+t2=0.002
 tmax=0.2
-t1=0.001
-t2=0.02
 
+
+LINSTDDE=DEFI_LIST_REEL(DEBUT=0.0,
+                       INTERVALLE=(
+                                   _F(JUSQU_A=t1,
+                                      NOMBRE=50,),
+                                  ),
+                      );
+                      
+LIS2DDE=DEFI_LIST_INST(INFO=1,
+                        DEFI_LIST=_F(LIST_INST=LINSTDDE,
+                                     METHODE='MANUEL',
+                                     ),
+                        ECHEC=_F(SUBD_NIVEAU=10,
+                                 SUBD_PAS=10,
+                                 ),
+                        );
+                        
 LINSTDD=DEFI_LIST_REEL(DEBUT=0.0,
                        INTERVALLE=(
                                    _F(JUSQU_A=t1,
@@ -134,17 +149,16 @@ LINSTDD=DEFI_LIST_REEL(DEBUT=0.0,
                                   ),
                       );
 
+
 LIS2DD=DEFI_LIST_INST(INFO=1,
                         DEFI_LIST=_F(LIST_INST=LINSTDD,
                                      METHODE='MANUEL',
-                                    # METHODE='AUTO',
-                                    # PAS_MINI=10.**-6,
                                      ),
                         ECHEC=_F(SUBD_NIVEAU=10,
                                  SUBD_PAS=10,
                                  ),
                         );
-
+                        
 # densites de dislocation initiales (cf zzzz130a)
 nb_syst = 12
 
@@ -204,8 +218,10 @@ ORIEN=AFFE_CARA_ELEM(MODELE=TROISD,
                                 VALE=(0.,pena,0.,),),
                      );
                      
+
+# premiere resolution : explicite. tes de SIMO_MIEHE + MONOCRISTAL + RUNGE_KUTTA
                      
-SOLNL=STAT_NON_LINE(MODELE = TROISD,
+SOLEXPL=STAT_NON_LINE(MODELE = TROISD,
                     CHAM_MATER = MAT,
                     CARA_ELEM = ORIEN,
                     ETAT_INIT = _F(VARI=VAIN11,),
@@ -217,12 +233,61 @@ SOLNL=STAT_NON_LINE(MODELE = TROISD,
                                _F(
                                   RELATION='MONOCRISTAL',COMPOR=COMPORDD,
                                   DEFORMATION='SIMO_MIEHE',
-                                  ITER_INTE_MAXI=200,
+                                  ALGO_INTE='RUNGE_KUTTA',
                                   TOUT='OUI',),
                                _F(RELATION='ELAS',
                                   GROUP_MA=('PX1'),),
                               ),
-                     INCREMENT=(_F(LIST_INST=LIS2DD, INST_FIN=t1),),
+                     INCREMENT=(_F(LIST_INST=LIS2DDE, INST_FIN=t1),),
+                     
+                     NEWTON=(_F(REAC_ITER=0,REAC_INCR=0,PREDICTION='EXTRAPOL'),),
+                     CONVERGENCE=_F(ITER_GLOB_MAXI=20),
+                     ARCHIVAGE=_F(LIST_INST=LINSTDD),
+                     
+                     SUIVI_DDL=( _F(NOM_CMP    ='V7',
+                                   NOM_CHAM   ='VARI_ELGA',
+                                   GROUP_MA   ='VOL',
+                                   EVAL_ELGA  ='MAX',
+                                   EVAL_CHAM  ='MAX',),
+                               _F(NOM_CMP    ='V31',
+                                  NOM_CHAM   ='VARI_ELGA',
+                                  GROUP_MA   ='VOL',
+                                  EVAL_ELGA  ='MAX',
+                                  EVAL_CHAM  ='MAX',),
+                               _F(NOM_CMP    ='V40',
+                                  NOM_CHAM   ='VARI_ELGA',
+                                  GROUP_MA   ='VOL',
+                                  EVAL_ELGA  ='MAX',
+                                  EVAL_CHAM  ='MAX',),
+                               _F(NOM_CMP    ='SIZZ',
+                                  NOM_CHAM   ='SIEF_ELGA',
+                                  GROUP_MA   ='VOL',
+                                  EVAL_ELGA  ='MAX',
+                                  EVAL_CHAM  ='MAX',),
+                                 ),
+                    );
+                    
+# deuxieme resolution : implicite. test de SIMO_MIEHE + MONOCRISTAL + NEWTON
+# pas de reprise car les variables internes ne correspondent pas tout a fait : 
+# FE puis FP pour l'implicite, FP puis FE pour l'explicite. A faire evoluer
+
+SOLIMPN=STAT_NON_LINE(MODELE = TROISD,
+                    ETAT_INIT = _F(VARI=VAIN11,),
+                    CHAM_MATER = MAT,
+                    CARA_ELEM = ORIEN,
+                    EXCIT=(_F(CHARGE=TRAC,
+                              FONC_MULT=COEF,
+                              ),
+                          ),
+                    COMP_INCR=(
+                               _F(
+                                  RELATION='MONOCRISTAL',COMPOR=COMPORDD,
+                                  DEFORMATION='SIMO_MIEHE',
+                                  TOUT='OUI',),
+                               _F(RELATION='ELAS',
+                                  GROUP_MA=('PX1'),),
+                              ),
+                     INCREMENT=(_F(LIST_INST=LIS2DDE, INST_FIN=t1),),
                      
                      NEWTON=(_F(REAC_ITER=1,PREDICTION='EXTRAPOL'),),
                      CONVERGENCE=_F(ITER_GLOB_MAXI=20),
@@ -251,9 +316,12 @@ SOLNL=STAT_NON_LINE(MODELE = TROISD,
                                  ),
                     );
                     
+# troisieme resolution : implicite. test de SIMO_MIEHE + MONOCRISTAL + NEWTON_PERT
 
-SOLNL=STAT_NON_LINE(reuse=SOLNL, 
-                    ETAT_INIT=_F(EVOL_NOLI=SOLNL),
+
+SOLNL=STAT_NON_LINE(
+                   # ETAT_INIT=_F(EVOL_NOLI=SOLNL),reuse=SOLNL, 
+                    ETAT_INIT = _F(VARI=VAIN11,),
                     MODELE = TROISD,
                     CHAM_MATER = MAT,
                     CARA_ELEM = ORIEN,
@@ -309,11 +377,7 @@ nbnum=100
 pas=20
 ORD_MED = DEFI_LIST_ENTI(VALE = range(pas,nbnum+pas,pas),);
 
-IMPR_RESU(FORMAT='MED',
-          RESU=_F(RESULTAT=SOLNL,
-                  LIST_ORDRE=ORD_MED,
-                 ),
-          );
+IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=SOLNL,LIST_ORDRE=ORD_MED,),);
 
 #IMPR_RESU(RESU=_F(RESULTAT=SOLNL))
 
@@ -487,7 +551,7 @@ TEST_FONCTION(VALEUR=_F(FONCTION=gamma[9],
 TEST_FONCTION(VALEUR=_F(FONCTION=rho[9],
                         NOM_PARA='INST',
                         VALE_PARA=tdep,
-                        VALE_REFE=9.513E-08,
+                        VALE_REFE=9.334E-08,
                         PRECISION=0.01,
                         REFERENCE='NON_REGRESSION',),
                         );
@@ -495,7 +559,7 @@ TEST_FONCTION(VALEUR=_F(FONCTION=rho[9],
 TEST_FONCTION(VALEUR=_F(FONCTION=gamma[9],
                         NOM_PARA='INST',
                         VALE_PARA=tdep,
-                        VALE_REFE=7.444E-04 ,
+                        VALE_REFE=7.101E-04,
                         PRECISION=0.01,
                         REFERENCE='NON_REGRESSION',),
                         );
@@ -551,7 +615,7 @@ TEST_FONCTION(VALEUR=_F(FONCTION=gamma[9],
                         NOM_PARA='INST',
                         VALE_PARA=tmax,
                         VALE_REFE=0.01041,
-                        PRECISION=0.06,
+                        PRECISION=0.07,
                         REFERENCE='AUTRE_ASTER',),
                         );
 
@@ -586,7 +650,7 @@ TEST_FONCTION(VALEUR=_F(FONCTION=sigDIR,
 TEST_FONCTION(VALEUR=_F(FONCTION=rho[1],
                         NOM_PARA='INST',
                         VALE_PARA=tmax,
-                        VALE_REFE=1.42257E-05 ,
+                        VALE_REFE=1.42490E-05 ,
                         REFERENCE='NON_REGRESSION',),
                         );
 
@@ -615,7 +679,7 @@ TEST_FONCTION(VALEUR=_F(FONCTION=gamma[9],
 TEST_FONCTION(VALEUR=_F(FONCTION=rho[12],
                         NOM_PARA='INST',
                         VALE_PARA=tmax,
-                        VALE_REFE=1.30596E-05,
+                        VALE_REFE=1.30735E-05,
                         REFERENCE='NON_REGRESSION',),
                         );
 
@@ -626,5 +690,88 @@ TEST_FONCTION(VALEUR=_F(FONCTION=gamma[12],
                         REFERENCE='NON_REGRESSION',),
                         );
 
+
+
+
+
+
+
+SOLEXPL = CALC_ELEM(reuse= SOLEXPL,
+                  RESULTAT = SOLEXPL,
+                  TOUT_ORDRE = 'OUI',
+                  OPTION   =('EPSG_ELGA',),
+                  );
+
+SOLIMPN = CALC_ELEM(reuse= SOLIMPN,
+                  RESULTAT = SOLIMPN,
+                  TOUT_ORDRE = 'OUI',
+                  OPTION   =('EPSG_ELGA',),
+                  );
+
+
+
+# test des resultats explicite et newton
+tdep=t1
+
+sigDIRE=RECU_FONCTION(RESULTAT=SOLEXPL,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIZZ',
+                   MAILLE='CUBE',
+                   POINT=numpg,
+                   INTERPOL='LIN');
+                   
+epsDIRE=RECU_FONCTION(RESULTAT=SOLEXPL,
+                   NOM_CHAM='EPSG_ELGA',
+                   NOM_CMP='EPZZ',
+                   MAILLE='CUBE',
+                   POINT=numpg,
+                   INTERPOL='LIN');
+                   
+sigDIRN=RECU_FONCTION(RESULTAT=SOLIMPN,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIZZ',
+                   MAILLE='CUBE',
+                   POINT=numpg,
+                   INTERPOL='LIN');
+                   
+epsDIRN=RECU_FONCTION(RESULTAT=SOLIMPN,
+                   NOM_CHAM='EPSG_ELGA',
+                   NOM_CMP='EPZZ',
+                   MAILLE='CUBE',
+                   POINT=numpg,
+                   INTERPOL='LIN');
+
+TEST_FONCTION(VALEUR=_F(FONCTION=epsDIRE,
+                        NOM_PARA='INST',
+                        VALE_PARA=tdep,
+                        VALE_REFE=5.001250E-04,
+                        PRECISION=0.001,
+                        REFERENCE='AUTRE_ASTER',),
+                        );
+
+TEST_FONCTION(VALEUR=_F(FONCTION=sigDIRE,
+                        NOM_PARA='INST',
+                        VALE_PARA=tdep,
+                        VALE_REFE=86.551696,
+                        PRECISION=0.011,
+                        REFERENCE='AUTRE_ASTER',),
+                        );
+                        
+TEST_FONCTION(VALEUR=_F(FONCTION=epsDIRN,
+                        NOM_PARA='INST',
+                        VALE_PARA=tdep,
+                        VALE_REFE=5.001250E-04,
+                        PRECISION=0.001,
+                        REFERENCE='AUTRE_ASTER',),
+                        );
+
+TEST_FONCTION(VALEUR=_F(FONCTION=sigDIRN,
+                        NOM_PARA='INST',
+                        VALE_PARA=tdep,
+                        VALE_REFE=86.551696,
+                        PRECISION=0.011,
+                        REFERENCE='AUTRE_ASTER',),
+                        );
+                        
 
 FIN()

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE SUR APPUI SOUMISE A UNE ACCELERATION DE RICKER (METHODE TEMPS-FREQUENCE)
 # sdls119a.para = tps_job 300 mem_job 1000Mo mem_aster 80 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -18,7 +18,8 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-DEBUT(CODE=_F(NOM='SDLS119A', NIV_PUB_WEB='INTERNET',));
+DEBUT(CODE=_F(NOM='SDLS119A',NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'))
+# SDVERI='NON' car la verification est trop couteuse en CPU
 #
 import aster
 #
@@ -226,7 +227,7 @@ FFACCE=CALC_FONCTION( FFT=_F( FONCTION = accel2, METHODE='COMPLET',) );
 #
 EVOL0=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                       MATR_MASS=masse, MATR_RIGI=rigidite,
-                      SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',BETA =1.0,GAMMA =1.5,), 
+                      SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',BETA =1.0,GAMMA =1.5,),
                       INCREMENT=_F( LIST_INST = L_INST),
                       ARCHIVAGE=_F( PAS_ARCH=10),
                       EXCIT=_F( VECT_ASSE=FASSE, COEF_MULT = 1.0,),

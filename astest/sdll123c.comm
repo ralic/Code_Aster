@@ -1,4 +1,4 @@
-# MODIF  DATE 09/01/2012   AUTEUR CORUS M.CORUS 
+# MODIF  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FREQUENCES D'UNE LIGNE D'ARBRE SIMPLIFIEE (AMORTISSEMENT GYROSCOPIQUE)
 # sdll123c.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -21,6 +21,7 @@
 # CAS_TEST__:SDLL123C
 #
 
+import aster_core
 import numpy as NP
 import numpy.linalg as LA
 
@@ -135,8 +136,8 @@ def EXTR_MATR(matrrr,option) :
                 return rig11
 
 DEBUT( CODE=_F(NOM='SDLL123C', NIV_PUB_WEB='INTERNET'),
-       PAR_LOT='NON')
-aster.matfpe(-1)
+       PAR_LOT='NON', DEBUG=_F(SDVERI='OUI'))
+aster_core.matfpe(-1)
 
 nddl=15*6-42
 
@@ -699,7 +700,7 @@ if (variante==1) :
        vp1i=vp.imag/2/pi
        print i,vp1i,-vp1r/abs(vp)
 
-aster.matfpe(+1)
+aster_core.matfpe(+1)
 
 TEST_RESU(RESU=(
 # POUR SORENSEN APPROCHE COMPLEXE
