@@ -1,9 +1,9 @@
-# MODIF  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
 # TITRE SYSTEME 2 MASSES 2 RESSORTS  A 6 DDL (+ 2 AMORTISSEURS DISCRETS)
 # sdld325a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -133,21 +133,21 @@ MODES=MODE_ITER_SIMULT(  MATR_A=MATRRIGI,
 # ------------------------------
 #
 #
-MACRO_PROJ_BASE(  BASE=MODES,
-                  STOCKAGE = 'PLEIN',
-                  MATR_ASSE_GENE=(
-                   _F( 
-                                   MATRICE = CO("MASSEGEN"),
-                                   MATR_ASSE = MATRMASS), 
-                   _F( 
-                                   MATRICE = CO("RIGIDGEN"),
-                                   MATR_ASSE = MATRRIGI),
-                   _F( 
-                                   MATRICE = CO("AMORTGEN"), 
-                                   MATR_ASSE = MATRAMOR,)),
-                   VECT_ASSE_GENE=_F( 
-                                   VECTEUR = CO("EFFOGENE"),
-                                   VECT_ASSE = VECTASS) )
+PROJ_BASE(  BASE=MODES,
+            STOCKAGE = 'PLEIN',
+            MATR_ASSE_GENE=(
+             _F( 
+                             MATRICE = CO("MASSEGEN"),
+                             MATR_ASSE = MATRMASS), 
+             _F( 
+                             MATRICE = CO("RIGIDGEN"),
+                             MATR_ASSE = MATRRIGI),
+             _F( 
+                             MATRICE = CO("AMORTGEN"), 
+                             MATR_ASSE = MATRAMOR,)),
+             VECT_ASSE_GENE=_F( 
+                             VECTEUR = CO("EFFOGENE"),
+                             VECT_ASSE = VECTASS) )
 
 #
 # DEFINITION DE L'EXCITATION EN FONCTION DU TEMPS

@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 19/12/2011   AUTEUR BOYERE E.BOYERE 
+#& MODIF COMMANDE  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -131,12 +131,12 @@ DYNA_TRAN_MODAL=OPER(nom="DYNA_TRAN_MODAL",op=  74,sd_prod=tran_gene,
                     PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,),),
                b_prec_abso=BLOC(condition="(CRITERE=='ABSOLU')",
                     PRECISION       =SIMP(statut='o',typ='R',),),
-         ),
+         ),         
 
          EXCIT           =FACT(statut='f',max='**',
            regles=(UN_PARMI('FONC_MULT','COEF_MULT','ACCE'),
                    UN_PARMI('VECT_ASSE','NUME_ORDRE',),
-                   PRESENT_PRESENT('ACCE','VITE','DEPL'),
+                   PRESENT_PRESENT('ACCE','VITE','DEPL'),                   
 #                   PRESENT_ABSENT('NUME_ORDRE','VECT_ASSE','COEF_MULT'),
                    EXCLUS('MULT_APPUI','CORR_STAT'),
                    PRESENT_PRESENT('MULT_APPUI','ACCE'),),
@@ -161,6 +161,11 @@ DYNA_TRAN_MODAL=OPER(nom="DYNA_TRAN_MODAL",op=  74,sd_prod=tran_gene,
            D_FONC_DT       =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule) ),
            D_FONC_DT2      =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule) ),
          ),),
+         EXCIT_RESU      =FACT(statut='f',max='**',
+           RESULTAT        =SIMP(statut='o',typ=tran_gene ),
+           COEF_MULT       =SIMP(statut='f',typ='R',defaut=1.0 ),
+         ),
+
          CHOC            =FACT(statut='f',max='**',
            regles=(UN_PARMI('MAILLE','GROUP_MA','NOEUD_1','GROUP_NO_1' ),
                    EXCLUS('NOEUD_2','GROUP_NO_2'),

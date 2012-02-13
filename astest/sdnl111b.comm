@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
 # TITRE IMPACT DE DEUX POUTRES ELASTIQUES AVEC BI_CERC_INT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -97,19 +97,19 @@ VITIPHYS=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_DEPL_R',
 
 #
 ##
-MACRO_PROJ_BASE(  BASE=MODES,
-                  STOCKAGE='DIAG',
-                  MATR_ASSE_GENE=(
-                   _F(
-                                   MATRICE = CO("MASSEPRO"),
-                                   MATR_ASSE = MATRMASS),
-                   _F(
-                                   MATRICE = CO("RIGIPROJ"),
-                                   MATR_ASSE = MATRRIGI)),
-                   VECT_ASSE_GENE=_F(
-                                   VECTEUR = CO("VITINI"),
-                                   VECT_ASSE = VITIPHYS,
-                                   TYPE_VECT = 'VITE')
+PROJ_BASE(  BASE=MODES,
+            STOCKAGE='DIAG',
+            MATR_ASSE_GENE=(
+             _F(
+                             MATRICE = CO("MASSEPRO"),
+                             MATR_ASSE = MATRMASS),
+             _F(
+                             MATRICE = CO("RIGIPROJ"),
+                             MATR_ASSE = MATRRIGI)),
+             VECT_ASSE_GENE=_F(
+                             VECTEUR = CO("VITINI"),
+                             VECT_ASSE = VITIPHYS,
+                             TYPE_VECT = 'VITE')
 )
 
 #

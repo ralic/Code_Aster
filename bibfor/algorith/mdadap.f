@@ -11,7 +11,7 @@
      &                   COEFM,LIAD,INUMOR,IDESCF,
      &                   NOFDEP,NOFVIT,NOFACC,NOMFON,PSIDEL,MONMOT,
      &                   NBPAL,DTSTO,TCF,VROTAT,PRDEFF,METHOD,
-     &                   NOMRES)
+     &                   NOMRES,NBEXCI)
 C
       IMPLICIT     REAL*8 (A-H,O-Z)
 C
@@ -36,7 +36,7 @@ C
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/01/2012   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGORITH  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -98,6 +98,7 @@ C IN  : NOFDEP : NOM DE LA FONCTION DEPL_IMPO
 C IN  : NOFVIT : NOM DE LA FONCTION VITE_IMPO
 C IN  : PSIDEL : TABLEAU DE VALEURS DE PSI*DELTA
 C IN  : MONMOT : = OUI SI MULTI-APPUIS
+C IN  : NBEXCI : NBRE D'EXCITATIONS (SOUS LE MC EXCIT ET EXCIT_RESU)
 C ----------------------------------------------------------------------
 C
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -287,10 +288,9 @@ C
 C
 C     --- FORCES EXTERIEURES ---
 C
-      CALL GETFAC('EXCIT',NBEXCI)
       IF (NBEXCI.NE.0) THEN
-         CALL MDFEX2 (TINIT,NEQGEN,NBEXCI,IDESCF,NOMFON,COEFM,LIAD,
-     &                INUMOR,ZR(JFEXT))
+         CALL MDFEXT (TINIT,R8BID1,NEQGEN,NBEXCI,IDESCF,NOMFON,COEFM,
+     &                LIAD,INUMOR,1,ZR(JFEXT))
       ENDIF
 C
 C    COUPLAGE AVEC EDYOS
@@ -427,8 +427,8 @@ C
  20      CONTINUE
          IF (NBEXCI.NE.0) THEN
             R8VAL = TEMPS+DT2
-            CALL MDFEX2(R8VAL,NEQGEN,NBEXCI,IDESCF,NOMFON,COEFM,LIAD,
-     &                  INUMOR,ZR(JFEXT))
+            CALL MDFEXT(R8VAL,R8BID1,NEQGEN,NBEXCI,IDESCF,NOMFON,COEFM,
+     &                  LIAD,INUMOR,1,ZR(JFEXT))
          ENDIF
 C
          IF (LFLU) THEN

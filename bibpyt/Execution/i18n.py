@@ -1,4 +1,4 @@
-#@ MODIF i18n Execution  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF i18n Execution  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,6 +17,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
+# RESPONSABLE COURTOIS M.COURTOIS
 
 """
 Internationalization support for Code_Aster.
@@ -45,7 +46,7 @@ class Language():
     def __init__(self):
         """Initialization"""
         self.localedir = os.environ.get('ASTER_LOCALEDIR') or \
-            osp.join(os.environ.get('ASTER_ROOT'), 'share', 'locale')
+            osp.join(os.environ.get('ASTER_ROOT', ''), 'share', 'locale')
         self.domain = 'aster_%s' % version_shortname()
         self.current_lang = self.default_lang = get_language()
 

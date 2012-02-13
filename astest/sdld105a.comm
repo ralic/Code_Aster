@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
 # TITRE REPONSE TRANSITOIRE D UN SYSTEME MASSES-RESSORTS A UN SEISME AVEC CORRECTION STATIQUE
 # sdld105a.para = tps_job 180 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -129,14 +129,14 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.,
 # CALCULS TRANSITOIRES PAR SYNTHESE MODALE
 #-----------------------------------------------------------------------
 
-MACRO_PROJ_BASE(BASE=MODE_EXT,
-                STOCKAGE='DIAG',
-                MATR_ASSE_GENE=(_F(MATRICE=CO('MASS_GEN'),
-                                   MATR_ASSE=MASSE,),
-                                _F(MATRICE=CO('RIGI_GEN'),
-                                   MATR_ASSE=RIGIDITE,),),
-                VECT_ASSE_GENE=_F(VECTEUR=CO('VECT_X'),
-                                  VECT_ASSE=MONO_X,),);
+PROJ_BASE(BASE=MODE_EXT,
+          STOCKAGE='DIAG',
+          MATR_ASSE_GENE=(_F(MATRICE=CO('MASS_GEN'),
+                             MATR_ASSE=MASSE,),
+                          _F(MATRICE=CO('RIGI_GEN'),
+                             MATR_ASSE=RIGIDITE,),),
+          VECT_ASSE_GENE=_F(VECTEUR=CO('VECT_X'),
+                            VECT_ASSE=MONO_X,),);
 
 
 TRAN_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
@@ -216,13 +216,13 @@ N02_DXC3=RECU_FONCTION(RESU_GENE=TRA_GCS,
 # CALCUL SUR BASE MODALE COMPLETE
 #-----------------------------------------------------------------------
 
-MACRO_PROJ_BASE(BASE=MODE_MEC,
-                MATR_ASSE_GENE=(_F(MATRICE=CO('MASS_COM'),
-                                   MATR_ASSE=MASSE,),
-                                _F(MATRICE=CO('RIGI_COM'),
-                                   MATR_ASSE=RIGIDITE,),),
-                VECT_ASSE_GENE=_F(VECTEUR=CO('VECT_COM'),
-                                  VECT_ASSE=MONO_X,),);
+PROJ_BASE(BASE=MODE_MEC,
+          MATR_ASSE_GENE=(_F(MATRICE=CO('MASS_COM'),
+                             MATR_ASSE=MASSE,),
+                          _F(MATRICE=CO('RIGI_COM'),
+                             MATR_ASSE=RIGIDITE,),),
+          VECT_ASSE_GENE=_F(VECTEUR=CO('VECT_COM'),
+                            VECT_ASSE=MONO_X,),);
 
 
 TRAN_COM=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',

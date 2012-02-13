@@ -1,9 +1,9 @@
-#@ MODIF E_MACRO_ETAPE Execution  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_MACRO_ETAPE Execution  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -89,9 +89,6 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
             cr.fatal("Erreurs à l'exécution de la macro %s" % self.nom)
             raise EOFError
 
-         self.setmode(1)
-         E_ETAPE.ETAPE.Exec(self)
-         self.setmode(2)
          E_ETAPE.ETAPE.Exec(self)
 
          if self.icmd!=None :
@@ -156,9 +153,6 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
         cr.fatal("Erreurs dans la construction de la macro %s" % self.nom)
         raise EOFError
 
-      self.setmode(1)
-      E_ETAPE.ETAPE.Exec(self)
-      self.setmode(2)
       E_ETAPE.ETAPE.Exec(self)
 
 
@@ -196,9 +190,6 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
            raise EOFError
 
          # La macro de type INCLUDE doit etre executee avant ses sous etapes
-         self.setmode(1)
-         E_ETAPE.ETAPE.Exec(self)
-         self.setmode(2)
          E_ETAPE.ETAPE.Exec(self)
 
          if has_etapes:

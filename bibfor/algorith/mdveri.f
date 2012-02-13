@@ -2,9 +2,9 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,12 +21,34 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C     VERIFICATION DE PREMIER NIVEAU
-C ----------------------------------------------------------------------
+
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8    ZK8
+      CHARACTER*16          ZK16
+      CHARACTER*24                  ZK24
+      CHARACTER*32                          ZK32
+      CHARACTER*80                                  ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      CHARACTER*32     JEXNOM
+
+C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER       I,NBCHOC,NBREDE,NBREVI
-      CHARACTER*8   NOMRES,METHOD,AMOGEN,K8BID,OUINON
+      INTEGER       I,NBCHOC,NBREDE,NBREVI,IBID,JREF1,JREF2
+      REAL*8        R8BID
+      CHARACTER*8   NOMRES,METHOD,AMOGEN,K8BID,OUINON,CHANNO
+      CHARACTER*8   MATR1,MATR2,BASEMO
+      CHARACTER*24  REF1,REF2
       CHARACTER*16  TYPRES,NOMCMD
-      INTEGER      IARG
+      INTEGER       IARG
 C
 C-----------------------------------------------------------------------
 C
@@ -96,4 +118,30 @@ C
          CALL U2MESS('E','ALGORITH5_78')
       ENDIF
 C
+C     COHERENCE MATRICES
+      CALL GETVID(' ','MATR_MASS',0,IARG,1,MATR1,IBID)
+      CALL GETVID(' ','MATR_RIGI',0,IARG,1,MATR2,IBID)
+      CALL JEVEUO(MATR1//'           .REFA','L',JREF1)
+      CALL JEVEUO(MATR2//'           .REFA','L',JREF2)
+      REF1=ZK24(JREF1)
+      REF2=ZK24(JREF2)
+      IF (REF1(1:8).NE.REF2(1:8)) THEN
+        CALL U2MESS('E','ALGORITH5_42')
+      ENDIF
+C
+C     COHERENCE EXCITATIONS SOUS LE MC EXCIT/VECT_ASSE ET LES MATRICES
+      BASEMO=REF1(1:8)
+      DO 21 I=1,NBEXC
+        CALL GETVID('EXCIT','VECT_ASSE',I,IARG,IBID,CHANNO,NM)
+        IF (NM .NE. 0) THEN
+          CALL JEVEUO(CHANNO//'           .REFE','L',JREF1)
+          REF1=ZK24(JREF1)
+          IF (REF1(1:8).NE.BASEMO) THEN
+            CALL U2MESS('E','ALGORITH5_42')
+          ENDIF
+        ENDIF
+  21  CONTINUE
+        
+      
+
       END

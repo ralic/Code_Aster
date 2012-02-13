@@ -1,12 +1,11 @@
-      SUBROUTINE EXPASS( JXVRF , IPASS , ICMDEB , IERTOT )
+      SUBROUTINE EXPASS( JXVRF )
       IMPLICIT REAL*8 (A-H,O-Z)
       LOGICAL            JXVRF
-      INTEGER                  IPASS , ICMDEB , IERTOT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,11 +24,6 @@ C     EXECUTION D'UNE PASSE SPECIFIQUE D'OPERATEURS
 C     ------------------------------------------------------------------
 C IN  JXVRF  : LOGICAL : DOIT ON FAIRE JXVERI (INFO DEPUIS MCSIMP JXVERI
 C                        SOUS DEBUT, TRANSMIS PAR LE JDC).
-C IN  IPASS  : IS : INDICATEUR DE LA PASSE
-C         = 1  DEMANDE DE VERIFICATION SUPPLEMENTAIRE  --- SANS CALCUL -
-C         = 2  EXECUTION DE L'OPERATEUR
-C IN  ICMDEB : IS : NUMERO D'ORDRE DE LA PREMIERE COMMANDE A EXCECUTER
-C OUT IERTOT : IS : NOMBRE D'ERREURS RENCONTREES DANS LA PASSE
 C     ------------------------------------------------------------------
 C     ROUTINE(S) UTILISEE(S) :
 C         -
@@ -57,65 +51,24 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C     --- VARIABLES LOCALES --------------------------------------------
-      CHARACTER*4   CH4, CI4
-      CHARACTER*24 VALK(3)
-      CHARACTER*8   NOMRES
-      CHARACTER*16  CONCEP , NOMCMD
-      LOGICAL       LDBG
+      CHARACTER*8  NOMRES
+      CHARACTER*16 CONCEP , NOMCMD
+      LOGICAL      LDBG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
       LDBG  = .FALSE.
-      IF ( IPASS .EQ. 1 ) THEN
-         ICOND = 1
-      ELSEIF ( IPASS .EQ. 2 ) THEN
-         ICOND = 0
-         LDBG  = JXVRF
+      LDBG  = JXVRF
+C
+      CALL GCUOPR( 0 ,ICMDCT )
+      CALL EXECOP()
+      IF ( LDBG ) THEN
+         CALL GETRES(NOMRES,CONCEP,NOMCMD)
+         CALL JXVERI(' ')
       ENDIF
 C
-      ICMD  =  ICMDEB
-      IFIN  =  0
-      IERTOT = 0
-         IERCMD = 0
-         IF (IPASS .EQ. 2 ) CALL GCUOPR( 0 ,ICMDCT )
-         CALL EXECOP( ICMD , ICOND , IERTOT , IERCMD , IFIN )
-         IF ( LDBG ) THEN
-            CALL GETRES(NOMRES,CONCEP,NOMCMD)
-            CALL JXVERI(' ')
-         ENDIF
-C
-         IF ( IPASS .EQ. 1 ) THEN
-C           --- VERIFICATIONS SUPPLEMENTAIRES ---
-            CALL GETRES(NOMRES,CONCEP,NOMCMD)
-            CALL CODENT( ICMD ,'D0',CI4)
-            IF ( IERCMD .NE. 0 ) THEN
-               IERTOT = IERTOT + IERCMD
-               IERCM2=ABS(IERCMD)
-               CALL CODENT(IERCM2,'D',CH4)
-                VALK(1) = CI4
-                VALK(2) = NOMCMD
-                VALK(3) = CH4
-                CALL U2MESK('E','SUPERVIS_4', 3 ,VALK)
-            ENDIF
-C
-         ELSEIF( IPASS .EQ. 2 ) THEN
-C           --- EXECUTIONS ---
-            IF ( IERCMD .NE. 0 ) THEN
-               IERTOT = IERCMD
-               CALL GETRES(NOMRES,CONCEP,NOMCMD)
-               CALL U2MESK('E','SUPERVIS_5',1,NOMCMD)
-               IFIN = 1
-            ELSE
-               CALL GCUOPR( 1 ,ICMDCT)
-            ENDIF
-C
-         ENDIF
-      IF ( IFIN .EQ. 0 ) THEN
-         ICMD = ICMD + 1
-      ELSEIF ( IPASS.EQ.1 .AND. IERTOT.NE.0 ) THEN
-         IPASS = 2
-         ICOND = 0
-      ENDIF
+C     --- EXECUTIONS ---
+      CALL GCUOPR( 1 ,ICMDCT)
 C
       CALL JEDEMA()
       END

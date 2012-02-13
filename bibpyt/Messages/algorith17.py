@@ -1,8 +1,8 @@
-#@ MODIF algorith17 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith17 Messages  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,8 +52,9 @@ cata_msg={
 """),
 
 8 : _(u"""
-  Il manque le NUME_DDL pour le résultat. Le mot-clé NUME_REF doit être
-  renseigne.
+  Il manque le nume_ddl pour le résultat. Propositions :
+   - renseigner le mot-clé NUME_REF dans DEFI_BASE_MODALE,
+   - utiliser les mots-clés MATR_A et MATR_B dans CREA_RESU.
 """),
 
 9 : _(u"""L'équation d'évolution de l'endommagement n'admet pas de solution réelle  """),
@@ -95,4 +96,15 @@ cata_msg={
   Conseil : vérifiez la cohérence des modèles.
 """),
 
+18 : _(u"""
+  La base de modes associée au résultat généralisé sous le mot-clé
+  EXCIT_RESU %(i1)d n'est pas la même que celle utilisée pour la
+  fabrication des matrices généralisées.
+"""),
+
+19 : _(u"""
+  La projection d'un resultat non réel sur une base de mode (de type
+  résultat harmonique) n'est pas possible. Vous pouvez demander
+  l'évolution.
+"""),
 }

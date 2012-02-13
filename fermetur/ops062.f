@@ -1,6 +1,5 @@
-      SUBROUTINE OPS062( ICMD, ICOND, IER )
+      SUBROUTINE OPS062( )
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER             ICMD, ICOND, IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C MODIF FERMETUR DATE 03/08/95  AUTEUR GIBHHCM C.MASSERET

@@ -1,8 +1,8 @@
-#@ MODIF endo_carre Comportement  DATE 26/04/2011   AUTEUR PROIX J-M.PROIX 
+#@ MODIF endo_carre Comportement  DATE 13/02/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -28,7 +28,7 @@ loi = LoiComportement(
    nb_vari        = 2,
    nom_vari       = ('VARI', 'INDICAT'),
    mc_mater       = ('ELAS', 'ECRO_PARA', 'NON_LOCAL'),
-   modelisation   = ('3D', 'AXIS', 'C_PLAN', 'D_PLAN','GRADVARI','GRADEPSI','GDVARINO'),
+   modelisation   = ('3D', 'AXIS',  'D_PLAN','GRADVARI','GRADEPSI','GDVARINO'),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
    nom_varc       = ('TEMP', 'SECH', 'HYDR'),
    algo_inte         = ('ANALYTIQUE',),

@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 13/02/2012   AUTEUR KHAM M.KHAM 
 # TITRE ONDE DE COMPRESSION DANS UNE COLONNE POROELASTIQUE
 # wdnp102b.para = tps_job 300 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -53,7 +53,7 @@ print '>> Onde %s CS= %f CP= %f' %(Onde,CS,CP)
 # ------------------------------------------------------------------------------
 
 
-DEBUT(CODE=_F(NOM='WDNP102B',NIV_PUB_WEB='INTERNET',),IGNORE_ALARM=('FACTOR_42','MECANONLINE_69'),);
+DEBUT(CODE=_F(NOM='WDNP102B',NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'),);
 
 INV_K_EAU = 1.E-5 ;
 
@@ -301,7 +301,16 @@ BIDDEP=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                 NOM_CHAM='DEPL',
                 INST=0.,
                 INFO=1,);
-                
+
+INIZERO=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                   OPERATION='ASSE',
+                   MODELE=MODELE,
+                   PROL_ZERO='OUI',
+                   ASSE=(_F(TOUT   ='OUI',
+                            CHAM_GD=BIDDEP,
+                            CUMUL  ='OUI',
+                            COEF_R =0.0,),),);
+                            
 pas_ttfin = 0.001;
 
 TEMLI=DEFI_LIST_REEL(DEBUT=0.,
@@ -316,8 +325,8 @@ DYNB=DYNA_NON_LINE(reuse=DYNB,INFO=1,MODELE=MODELE,
                           _F(CHARGE = LIAISON0),
                           _F(CHARGE = PES,),
                           _F(CHARGE = ONDE,),),
-                   ETAT_INIT=_F(EVOL_NOLI=DYNB,
-                                INST=0.,),
+                   ETAT_INIT=_F(EVOL_NOLI=DYNB, INST=0.,
+                                VITE=INIZERO, ACCE=INIZERO,),
                    COMP_INCR=(_F(RELATION = 'KIT_HM',
                                 RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),
                                 GROUP_MA=list_group_ma,),
@@ -350,14 +359,14 @@ TEST_FONCTION(VALEUR=(_F(
                    VALE_PARA = 6.2E-02,
                    VALE_REFE = 0.08575917,
                    CRITERE = 'RELATIF',
-                   PRECISION = 1.E-2, 
+                   PRECISION = 1.E-3, 
                    REFERENCE = 'NON_REGRESSION'),
                   _F( 
                    FONCTION = DYNV56,
                    VALE_PARA = 1.0E-01,
                    VALE_REFE = -0.08522978,
                    CRITERE = 'RELATIF',
-                   PRECISION = 1.E-2,  
+                   PRECISION = 1.E-3,  
                    REFERENCE = 'NON_REGRESSION'),
                   _F( 
                    FONCTION = DYNV56,
@@ -380,167 +389,22 @@ TEST_FONCTION(VALEUR=(_F(
                    VALE_PARA = 6.2E-02,
                    VALE_REFE = 219.5247,
                    CRITERE = 'RELATIF',
-                   PRECISION = 1.E-2, 
+                   PRECISION = 1.E-3, 
                    REFERENCE = 'NON_REGRESSION'),
                   _F( 
                    FONCTION = DYNP56,
                    VALE_PARA = 1.0E-01,
                    VALE_REFE = 219.05956,
                    CRITERE = 'RELATIF',
-                   PRECISION = 1.E-2,  
+                   PRECISION = 1.E-3,  
                    REFERENCE = 'NON_REGRESSION'),
                   _F( 
                    FONCTION = DYNP56,
                    VALE_PARA = 1.8E-01,
                    VALE_REFE = 149.44342,
                    CRITERE = 'RELATIF',
-                   PRECISION = 1.E-2, 
+                   PRECISION = 1.E-3, 
                    REFERENCE = 'NON_REGRESSION'),
                 ),);
-                   
-# DYNB=CALC_NO(reuse=DYNB,OPTION=('FORC_NODA','REAC_NODA',),
-#             #INST=0.2,
-#             RESULTAT=DYNB,
-#             #GROUP_MA=Paraxia,
-#             );
-# 
-# # N421: sommet
-# # N216: milieu bas
-# # N211: BAS
-# Noe=['N421','N216','N211'];
-# 
-# co_forcx =[]; co_forcy =[]; co_forcz =[];
-# 
-# for i,no in enumerate(Noe):
-# 
-#    FORCX=RECU_FONCTION(RESULTAT=DYNB,
-#                       TITRE='FORC_NODA',
-#                       NOM_CHAM='FORC_NODA',
-#                       NOM_CMP='DX',
-#                       NOEUD=no,
-#                       PROL_DROITE='CONSTANT',
-#                       PROL_GAUCHE='CONSTANT',
-#                       INTERPOL='LIN',);
-#                       
-#    FORCY=RECU_FONCTION(RESULTAT=DYNB,
-#                       TITRE='FORC_NODA',
-#                       NOM_CHAM='FORC_NODA',
-#                       NOM_CMP='DY',
-#                       NOEUD=no,
-#                       PROL_DROITE='CONSTANT',
-#                       PROL_GAUCHE='CONSTANT',
-#                       INTERPOL='LIN',);
-#                       
-#    FORCZ=RECU_FONCTION(RESULTAT=DYNB,
-#                       TITRE='FORC_NODA',
-#                       NOM_CHAM='FORC_NODA',
-#                       NOM_CMP='DZ',
-#                       NOEUD=no,
-#                       PROL_DROITE='CONSTANT',
-#                       PROL_GAUCHE='CONSTANT',
-#                       INTERPOL='LIN',);
-#                       
-#    REACX=RECU_FONCTION(RESULTAT=DYNB,
-#                       TITRE='REAC_NODA',
-#                       NOM_CHAM='REAC_NODA',
-#                       NOM_CMP='DX',
-#                       NOEUD=no,
-#                       PROL_DROITE='CONSTANT',
-#                       PROL_GAUCHE='CONSTANT',
-#                       INTERPOL='LIN',);
-#                       
-#    REACY=RECU_FONCTION(RESULTAT=DYNB,
-#                       TITRE='REACC_NODA',
-#                       NOM_CHAM='REAC_NODA',
-#                       NOM_CMP='DY',
-#                       NOEUD=no,
-#                       PROL_DROITE='CONSTANT',
-#                       PROL_GAUCHE='CONSTANT',
-#                       INTERPOL='LIN',);
-#                       
-#    REACZ=RECU_FONCTION(RESULTAT=DYNB,
-#                       TITRE='REACC_NODA',
-#                       NOM_CHAM='REAC_NODA',
-#                       NOM_CMP='DZ',
-#                       NOEUD=no,
-#                       PROL_DROITE='CONSTANT',
-#                       PROL_GAUCHE='CONSTANT',
-#                       INTERPOL='LIN',);
-#                       
-#    time, forcx = FORCX.Valeurs();
-#    time, forcy = FORCY.Valeurs();
-#    time, forcz = FORCZ.Valeurs();
-#    time, reacx = REACX.Valeurs();
-#    time, reacy = REACY.Valeurs();
-#    time, reacz = REACZ.Valeurs();
-#    
-#    def_co_forcx={'ABSCISSE': time}
-#    def_co_forcx['ORDONNEE'] = tuple(forcx)
-#    def_co_forcx['LEGENDE' ] = 'FORC_NODA_X '+no;
-#    def_co_forcx['COULEUR' ] = 0
-#    def_co_forcx['MARQUEUR'] = 0
-#    
-#    def_co_forcy={'ABSCISSE': time}
-#    def_co_forcy['ORDONNEE'] = tuple(forcy)
-#    def_co_forcy['LEGENDE' ] = 'FORC_NODA_Y '+no;
-#    def_co_forcy['COULEUR' ] = 0
-#    def_co_forcy['MARQUEUR'] = 0
-#    
-#    def_co_forcz={'ABSCISSE': time}
-#    def_co_forcz['ORDONNEE'] = tuple(forcz)
-#    def_co_forcz['LEGENDE' ] = 'FORC_NODA_Z '+no;
-#    def_co_forcz['COULEUR' ] = 0
-#    def_co_forcz['MARQUEUR'] = 0
-#    
-#    co_forcx.append(def_co_forcx);
-#    co_forcy.append(def_co_forcy);
-#    co_forcz.append(def_co_forcz);
-#    del(def_co_forcx);
-#    del(def_co_forcy);
-#    del(def_co_forcz);
-#    
-#    def_co_forcx={'ABSCISSE': time}
-#    def_co_forcx['ORDONNEE'] = tuple(reacx)
-#    def_co_forcx['LEGENDE' ] = 'REAC_NODA_X '+no;
-#    def_co_forcx['COULEUR' ] = i+1
-#    def_co_forcx['MARQUEUR'] = 0
-#    
-#    def_co_forcy={'ABSCISSE': time}
-#    def_co_forcy['ORDONNEE'] = tuple(reacy)
-#    def_co_forcy['LEGENDE' ] = 'REAC_NODA_Y '+no;
-#    def_co_forcy['COULEUR' ] = i+1
-#    def_co_forcy['MARQUEUR'] = 0
-#    
-#    def_co_forcz={'ABSCISSE': time}
-#    def_co_forcz['ORDONNEE'] = tuple(reacz)
-#    def_co_forcz['LEGENDE' ] = 'REAC_NODA_Z '+no;
-#    def_co_forcz['COULEUR' ] = i+1
-#    def_co_forcz['MARQUEUR'] = 0
-#    
-#    co_forcx.append(def_co_forcx);
-#    co_forcy.append(def_co_forcy);
-#    co_forcz.append(def_co_forcz);
-#    del(def_co_forcx);
-#    del(def_co_forcy);
-#    del(def_co_forcz);
-#    
-#    DETRUIRE(CONCEPT=_F(NOM=(FORCX,FORCY,FORCZ,REACX,REACY,REACZ,),),);
-# 
-# Courbes = [co_forcx,co_forcy,co_forcz,];
-# Nom_Fichier= ['co_forcx.agr','co_forcy.agr','co_forcz.agr',];
-# 
-# unit=38
-# for c in range(len(Nom_Fichier)):
-# 
-#   DEFI_FICHIER(ACTION='ASSOCIER',
-#                FICHIER='./REPE_OUT/'+Nom_Fichier[c],
-#                UNITE=unit,);
-#                   
-#   IMPR_FONCTION(FORMAT='XMGRACE',
-#               UNITE=unit,
-#               COURBE=Courbes[c]);
-#                   
-#   DEFI_FICHIER(ACTION='LIBERER',
-#                UNITE=unit,);
 
 FIN();

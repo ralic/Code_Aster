@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -2047,15 +2047,10 @@ PyObject *args;
 {
         PyObject *temp;
         INTEGER jxvrf=1 ; /* FORTRAN_TRUE */
-        INTEGER iertot=0 ;
-        INTEGER cmd=0 ;
-        INTEGER pass=0 ;
-        int ipass=0, icmd=0, ijxvrf;
+        int ijxvrf;
 
-        if (!PyArg_ParseTuple(args, "Oiii",&temp,&ijxvrf,&ipass,&icmd)) return NULL;
+        if (!PyArg_ParseTuple(args, "Oi",&temp,&ijxvrf)) return NULL;
         jxvrf = (INTEGER)ijxvrf;
-        pass = (INTEGER)ipass;
-        cmd = (INTEGER)icmd;
         /* On empile le nouvel appel */
         commande=empile(temp);
 
@@ -2072,10 +2067,11 @@ PyObject *args;
 
         try(1){
                 /*  appel du sous programme expass pour verif ou exec */
-                CALL_EXPASS (&jxvrf,&pass,&cmd,&iertot);
+                CALL_EXPASS (&jxvrf);
                 /* On depile l appel */
                 commande = depile();
-                return PyInt_FromLong((long)iertot); /*  retour de la fonction oper sous la forme d un entier */
+                Py_INCREF(Py_None);
+                return Py_None;
         }
         finally{
                 /* On depile l appel */
@@ -2092,16 +2088,10 @@ PyObject *self; /* Not used */
 PyObject *args;
 {
         PyObject *temp;
-        INTEGER ier=0 ;
-        INTEGER cmd=0 ;
         INTEGER oper=0 ;
-        INTEGER pass=0 ;
-        int ipass=0, icmd=0, ioper=0;
-        char *cmdusr;
+        int ioper=0;
 
-        if (!PyArg_ParseTuple(args, "Oiii",&temp,&icmd,&ipass,&ioper)) return NULL;
-        pass=(INTEGER)ipass;
-        cmd=(INTEGER)icmd;
+        if (!PyArg_ParseTuple(args, "Oi",&temp,&ioper)) return NULL;
         oper=(INTEGER)ioper;
 
         /* On empile le nouvel appel */
@@ -2119,12 +2109,11 @@ PyObject *args;
 
         try(1){
                 /*  appel du sous programme opsexe */
-                cmdusr = MakeBlankFStr(80);
-                CALL_OPSEXE (&cmd,&pass,&oper,cmdusr,&ier);
-                FreeStr(cmdusr);
+                CALL_OPSEXE (&oper);
                 /* On depile l appel */
                 commande = depile();
-                return PyInt_FromLong((long)ier); /*  retour de la fonction oper sous la forme d un entier */
+                Py_INCREF(Py_None);
+                return Py_None;
         }
         finally{
                 /* On depile l appel */
@@ -2490,16 +2479,11 @@ PyObject *args;
         */
         PyObject *temp = (PyObject*)0 ;
         PyObject *concepts = (PyObject*)0 ;
-        int ipass=0;
-        INTEGER pass;
-        INTEGER lot=1 ; /* FORTRAN_TRUE */
-        INTEGER ier=0 ;
         INTEGER lonuti=0 ;
         static int nbPassages=0 ;
                                                                 ASSERT((nbPassages==1)||(commande==(PyObject*)0));
         nbPassages++ ;
-        if (!PyArg_ParseTuple(args, "Oi",&temp,&ipass)) return NULL;
-        pass = (INTEGER)ipass;
+        if (!PyArg_ParseTuple(args, "O",&temp)) return NULL;
 
         /* On empile le nouvel appel */
         commande=empile(temp);
@@ -2511,42 +2495,33 @@ PyObject *args;
                             etre traitee avant\n");
             PyErr_Clear();
         }
-
         fflush(stderr) ;
         fflush(stdout) ;
-
         try(1){
                 /*  appel de la commande debut (effectue dans POURSU) */
                 /*  La routine fortran POURSU traite aussi le cas     */
                 /*  de la poursuite de calcul (en retour lonuti       */
                 /*  contient le nombre de concepts crees dans le      */
                 /*  calcul precedent)                                 */
-
-                CALL_POURSU (&pass,&ier,&lonuti);
-
+                CALL_POURSU(&lonuti);
 
                 /* recuperation de la liste des concepts dans une     */
                 /* string python                                      */
-
                 concepts=PyString_FromStringAndSize(NULL, (Py_ssize_t)(lonuti*80) );
                 CALL_GCCPTS (PyString_AsString(concepts), 80);
         }
         finally{
                 /* On depile l appel */
                 commande = depile();
-
                 /* une exception a ete levee, elle est destinee a etre traitee dans JDC.py */
                 TraitementFinAster( exception_status ) ;
-
                 return NULL;
         }
-
         /* On recupere le nom du cas */
         if(RecupNomCas() == -1){
           /* Erreur a la recuperation */
           /* On depile l appel */
           commande = depile();
-
           return NULL;
         }
         else{
@@ -2554,8 +2529,8 @@ PyObject *args;
           commande = depile();
 
           /*  retour de la fonction poursu sous la forme
-           *  d'un tuple de trois entiers et un objet */
-          return Py_BuildValue("(iiiN)", (int)lot, (int)ier, (int)lonuti, concepts );
+           *  d'un tuple d'un entier et un objet */
+          return Py_BuildValue("(iN)", (int)lonuti, concepts );
         }
 }
 
@@ -2565,15 +2540,10 @@ PyObject *self; /* Not used */
 PyObject *args;
 {
         PyObject *temp = (PyObject*)0 ;
-        int ipass=0;
-        INTEGER pass;
-        INTEGER lot=1 ; /* FORTRAN_TRUE */
-        INTEGER ier=0 ;
         static int nbPassages=0 ;
                                                                 ASSERT((nbPassages==1)||(commande==(PyObject*)0));
         nbPassages++ ;
-        if (!PyArg_ParseTuple(args, "Oi",&temp,&ipass)) return NULL;
-        pass = (INTEGER)ipass;
+        if (!PyArg_ParseTuple(args, "O",&temp)) return NULL;
 
         /* On empile le nouvel appel */
         commande=empile(temp);
@@ -2591,7 +2561,7 @@ PyObject *args;
 
         try(1){
                 /*  appel de la commande debut */
-                CALL_DEBUT (&pass,&ier);
+                CALL_DEBUT();
         }
         finally{
                 /* On depile l appel */
@@ -2612,8 +2582,8 @@ PyObject *args;
         else{
           /* On depile l appel */
           commande = depile();
-          /*  retour de la fonction debut sous la forme d un tuple de deux entiers */
-          return Py_BuildValue("(ii)", (int)lot, (int)ier );
+          Py_INCREF(Py_None);
+          return Py_None;
         }
 }
 

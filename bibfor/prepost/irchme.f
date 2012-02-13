@@ -1,15 +1,13 @@
-      SUBROUTINE IRCHME ( IFI, CHANOM, NBCMDU, NOMMED, NOMO, PARTIE,
-     &                    LRESU, NORESU, NOSIMP, NOPASE, NOMSYM,
-     &                    TYPECH, NUMORD,
-     &                    NBCMP,  NOMCMP,
-     &                    NBNOEC, LINOEC, NBMAEC, LIMAEC,
-     &                    CODRET )
+      SUBROUTINE IRCHME ( IFICHI, CHANOM, MODELE, PARTIE, NOCHMD,
+     &                    NORESU, NOSIMP, NOPASE, NOMSYM, TYPECH,
+     &                    NUMORD, NBRCMP, NOMCMP, NBNOEC, LINOEC,
+     &                    NBMAEC, LIMAEC, LVARIE, CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 13/02/2012   AUTEUR SELLENET N.SELLENET 
 C RESPONSABLE SELLENET N.SELLENET
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,22 +25,18 @@ C ======================================================================
 C        IMPRESSION DU CHAMP CHANOM NOEUD/ELEMENT ENTIER/REEL
 C        AU FORMAT MED
 C     ENTREES:
-C        IFI    : UNITE LOGIQUE D'IMPRESSION DU CHAMP
+C        IFICHI : UNITE LOGIQUE D'IMPRESSION DU CHAMP
 C        CHANOM : NOM ASTER DU CHAM A ECRIRE
-C        NBCMDU : NOMBRE DE CHAMP MED UTILISATEUR
-C        NOMMED : NOM CHAMP MED UTILISATEUR
-C        NOMO   : NOM DU MODELE
+C        MODELE : NOM DU MODELE
 C        PARTIE : IMPRESSION DE LA PARTIE IMAGINAIRE OU REELLE POUR
 C                  UN CHAMP COMPLEXE AU FORMAT CASTEM OU GMSH OU MED
-C        LRESU  : .TRUE.  : INDIQUE IMPRESSION D'UN CONCEPT RESULTAT
-C                 .FALSE. : IMPRESSION D'UN CHAMP GRANDEUR
 C        NORESU : NOM DU RESULTAT D'OU PROVIENT LE CHAMP A IMPRIMER.
 C        NOSIMP : NOM SIMPLE ASSOCIE AU CONCEPT NORESU SI SENSIBILITE
 C        NOPASE : NOM DU PARAMETRE SENSIBLE
 C        NOMSYM : NOM SYMBOLIQUE DU CHAMP
 C        TYPECH : TYPE DU CHAMP
 C        NUMORD : NUMERO D'ORDRE DU CHAMP DANS LE RESULTAT_COMPOSE.
-C        NBCMP  : NOMBRE DE COMPOSANTES A ECRIRE
+C        NBRCMP : NOMBRE DE COMPOSANTES A ECRIRE
 C        NOMCMP : NOMS DES COMPOSANTES A ECRIRE
 C        NBNOEC : NOMBRE DE NOEUDS A ECRIRE (O, SI TOUS LES NOEUDS)
 C        LINOEC : LISTE DES NOEUDS A ECRIRE SI EXTRAIT
@@ -72,14 +66,13 @@ C
       CHARACTER*16 NOMSYM
       CHARACTER*19 CHANOM
       CHARACTER*24 NOCELK
-      CHARACTER*(*) NOMMED
-      CHARACTER*(*) NOMCMP(*),NOMO,PARTIE
+      CHARACTER*(*) NOMCMP(*),MODELE,PARTIE
 C
-      LOGICAL LRESU
-C
-      INTEGER NUMORD, NBCMP, IFI, IRET
-      INTEGER NBNOEC, NBMAEC, NBCMDU, ICELK
+      INTEGER NUMORD, NBRCMP, IFICHI, IRET
+      INTEGER NBNOEC, NBMAEC, ICELK
       INTEGER LINOEC(*), LIMAEC(*)
+C
+      LOGICAL LVARIE
 C
       INTEGER CODRET
 C
@@ -99,21 +92,15 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX --------------------------
 C
 C 0.3. ==> VARIABLES LOCALES
 C
-      INTEGER LXLGUT
-C
       INTEGER EDNONO
       PARAMETER (EDNONO=-1)
       INTEGER EDNOPT
       PARAMETER (EDNOPT=-1)
 C
-      INTEGER IFM, NIVINF
-      INTEGER NUMPT
-      INTEGER LNOCHM
-      INTEGER IAUX,I
+      INTEGER IFM,NIVINF,NUMPT,IAUX
 C
-      CHARACTER*8 SAUX08
+      CHARACTER*8 SAUX08,MODEL1
       CHARACTER*24 VALK(1)
-      CHARACTER*8 MODELE
       CHARACTER*64 NOCHMD
 C
       REAL*8 INSTAN
@@ -138,17 +125,6 @@ C
         SAUX08 = NORESU
       ELSE
         SAUX08 = NOSIMP
-      ENDIF
-C
-      IF (NBCMDU.EQ.0) THEN
-        CALL MDNOCH ( NOCHMD, LNOCHM,
-     &              LRESU, SAUX08, NOMSYM, NOPASE, CODRET )
-      ELSE
-        DO 10 I=1,64
-          NOCHMD(I:I) = ' '
- 10     CONTINUE
-        I = LXLGUT(NOMMED)
-        NOCHMD(1:I) = NOMMED(1:I)
       ENDIF
 C
       IF ( CODRET.EQ.0 ) THEN
@@ -179,30 +155,30 @@ C 1.2. ==> INSTANT CORRESPONDANT AU NUMERO D'ORDRE
 C
       IF ( CODRET.EQ.0 ) THEN
 C
-      IF ( LRESU ) THEN
-         INSTAN=999.999D0
-C        -- DANS UN EVOL_NOLI, IL PEUT EXISTER INST ET FREQ.
-C           ON PREFERE INST :
-         CALL JENONU(JEXNOM(NORESU//'           .NOVA','INST'),IRET)
-         IF ( IRET.NE.0 ) THEN
-           CALL RSADPA ( NORESU, 'L', 1, 'INST', NUMORD, 0, IAUX,
-     &                   SAUX08 )
-           INSTAN = ZR(IAUX)
-         ELSE
-           CALL JENONU(JEXNOM(NORESU//'           .NOVA','FREQ'),IRET)
-           IF ( IRET.NE.0 ) THEN
+        IF ( NORESU.NE.' ' ) THEN
+          INSTAN=999.999D0
+C         -- DANS UN EVOL_NOLI, IL PEUT EXISTER INST ET FREQ.
+C            ON PREFERE INST :
+          CALL JENONU(JEXNOM(NORESU//'           .NOVA','INST'),IRET)
+          IF ( IRET.NE.0 ) THEN
+            CALL RSADPA ( NORESU, 'L', 1, 'INST', NUMORD, 0, IAUX,
+     &                    SAUX08 )
+            INSTAN = ZR(IAUX)
+          ELSE
+            CALL JENONU(JEXNOM(NORESU//'           .NOVA','FREQ'),IRET)
+            IF ( IRET.NE.0 ) THEN
               CALL RSADPA ( NORESU, 'L', 1, 'FREQ', NUMORD, 0, IAUX,
-     &                   SAUX08 )
+     &                      SAUX08 )
               INSTAN = ZR(IAUX)
-           ELSE
+            ELSE
               CALL JENONU(JEXNOM(NORESU//'           .NOVA',
      &                    'CHAR_CRIT'),IRET)
               IF ( IRET.NE.0 ) THEN
-                  CALL RSADPA ( NORESU, 'L', 1, 'CHAR_CRIT', NUMORD, 0,
-     &                     IAUX,SAUX08 )
-                  INSTAN = ZR(IAUX)
+                CALL RSADPA ( NORESU, 'L', 1, 'CHAR_CRIT', NUMORD, 0,
+     &                        IAUX,SAUX08 )
+                INSTAN = ZR(IAUX)
               ENDIF
-           ENDIF
+            ENDIF
         ENDIF
         NUMPT = NUMORD
 C
@@ -220,32 +196,32 @@ C
       IF ( CODRET.EQ.0 ) THEN
 C
         IF(TYPECH(1:4).NE.'ELGA')THEN
-          MODELE = ' '
+          MODEL1 = ' '
         ELSE
-          IF ( LRESU ) THEN
+          IF ( NORESU.NE.' ' ) THEN
             CALL RSADPA ( NORESU, 'L', 1, 'MODELE', NUMORD, 0, IAUX,
      &                  SAUX08 )
-            MODELE = ZK8(IAUX)
+            MODEL1 = ZK8(IAUX)
           ELSE
-            IF ( NOMO.EQ.' ' ) THEN
+            IF ( MODELE.EQ.' ' ) THEN
               NOCELK = CHANOM//'.CELK'
               CALL JEVEUO(NOCELK,'L',ICELK)
-              MODELE = ZK24(ICELK)
+              MODEL1 = ZK24(ICELK)
             ELSE
-              MODELE = NOMO
+              MODEL1 = MODELE
             ENDIF
           ENDIF
-          CALL JEEXIN ( MODELE//'.MAILLE', IRET)
+          CALL JEEXIN ( MODEL1//'.MAILLE', IRET)
           IF(IRET.EQ.0)THEN
             VALK (1) = CHANOM
             CALL U2MESG('F', 'MED_82',1,VALK,0,0,0,0.D0)
           ENDIF
         ENDIF
 C
-      IF ( NIVINF.GT.1 ) THEN
-        WRITE (IFM,13001) MODELE
+        IF ( NIVINF.GT.1 ) THEN
+          WRITE (IFM,13001) MODEL1
 13001 FORMAT(2X,'MODELE ASSOCIE AU CHAMP : ',A)
-      ENDIF
+        ENDIF
       ENDIF
 C
 C====
@@ -254,22 +230,34 @@ C====
 C
       IF ( CODRET.EQ.0 ) THEN
 C
-      IF ( TYPECH(1:4).EQ.'NOEU' ) THEN
-        CALL IRCNME ( IFI, NOCHMD, CHANOM, TYPECH, MODELE,
-     &                NBCMP, NOMCMP, PARTIE,
-     &                NUMPT, INSTAN, NUMORD,
-     &                NBNOEC, LINOEC,
-     &                CODRET )
-      ELSE IF ( TYPECH(1:2).EQ.'EL' ) THEN
-        CALL IRCEME ( IFI, NOCHMD, CHANOM, TYPECH, MODELE,
-     &                NBCMP, NOMCMP, PARTIE,
-     &                NUMPT, INSTAN, NUMORD,
-     &                NBMAEC, LIMAEC,
-     &                CODRET )
-      ELSE
-        CODRET = 1
-        CALL U2MESK('A','MED_92',1,TYPECH(1:4))
-      ENDIF
+        IF ( TYPECH(1:4).EQ.'NOEU' ) THEN
+          CALL IRCNME ( IFICHI, NOCHMD, CHANOM, TYPECH, MODEL1,
+     &                  NBRCMP, NOMCMP, PARTIE,
+     &                  NUMPT, INSTAN, NUMORD,
+     &                  NBNOEC, LINOEC,
+     &                  CODRET )
+        ELSE IF ( TYPECH(1:2).EQ.'EL' ) THEN
+C
+C         SI ON EST DANS LE CAS VARI ET QU'ON A DEMANDE L'EXPLOSION
+C         DU CHAMP SUIVANT LE COMPORTEMENT, ON DOIT RAJOUTER 
+C         CERTAINS TRAITEMENT
+          IF ( (NOMSYM(1:5).EQ.'VARI_').AND.LVARIE ) THEN
+            CALL IRVARI ( IFICHI, NOCHMD, CHANOM, TYPECH, MODEL1,
+     &                    NBRCMP, NOMCMP, PARTIE,
+     &                    NUMPT, INSTAN, NUMORD,
+     &                    NBMAEC, LIMAEC, NORESU,
+     &                    CODRET )
+          ELSE
+            CALL IRCEME ( IFICHI, NOCHMD, CHANOM, TYPECH, MODEL1,
+     &                    NBRCMP, NOMCMP, ' ', PARTIE,
+     &                    NUMPT, INSTAN, NUMORD,
+     &                    NBMAEC, LIMAEC,
+     &                    CODRET )
+          ENDIF
+        ELSE
+          CODRET = 1
+          CALL U2MESK('A','MED_92',1,TYPECH(1:4))
+        ENDIF
 C
       ENDIF
 C

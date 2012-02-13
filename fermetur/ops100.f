@@ -1,4 +1,4 @@
-      SUBROUTINE OPS100( ICMD, ICOND, IER )
+      SUBROUTINE OPS100( )
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER             ICMD, ICOND, IER
 C     ------------------------------------------------------------------

@@ -1,8 +1,8 @@
-#@ MODIF sd_fonction SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF sd_fonction SD  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,6 +17,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
+# RESPONSABLE COURTOIS M.COURTOIS
 
 from SD import *
 from SD.sd_titre import sd_titre
@@ -115,14 +116,14 @@ class sd_fonction_aster(sd_titre):
             nbpt=len(vale)/2
             assert len(vale)==2*nbpt, (vale,self)
             if nbpt > 1 :
-                assert sdu_monotone(vale[:nbpt]) in (1,),(nbpt,vale,self)
+                assert sdu_monotone(vale[:nbpt]) in (-1, 1), (nbpt,vale,self)
 
         elif typfon=='FONCT_C' :
             nbpt=len(vale)/3
             assert len(vale)==3*nbpt, (vale,self)
             if nbpt > 1 :
-                # print "AJACOT fonction=",self
-                assert sdu_monotone(vale[:nbpt]) in (1,),(nbpt,vale,self)
+                #print "AJACOT fonction=",self
+                assert sdu_monotone(vale[:nbpt]) in (-1, 1), (nbpt,vale,self)
 
         elif typfon=='NAPPE' :
             nbfonc=len(vale.keys())
@@ -131,7 +132,7 @@ class sd_fonction_aster(sd_titre):
                 nbpt=len(val1)/2
                 assert len(val1)==2*nbpt, (val1,self)
                 if nbpt > 1 :
-                    assert sdu_monotone(val1[:nbpt]) in (1,),(nbpt,val1,self)
+                    assert sdu_monotone(val1[:nbpt]) in (-1, 1), (nbpt,val1,self)
 
 
     def check_NAPPE(self,checker) :
@@ -144,7 +145,7 @@ class sd_fonction_aster(sd_titre):
 
         para=self.PARA.get()
         if len(para) > 1 :
-            assert sdu_monotone(para) in (1,),(para,self)
+            assert sdu_monotone(para) in (0, 1), (para,self)
         vale=self.VALE.get()
         assert  len(para)==len(vale.keys()),self
 

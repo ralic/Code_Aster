@@ -2,7 +2,7 @@
      &                  EPSM,DEPS,VIM,SIGP,VIP,DSDE,CRILDC,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/01/2012   AUTEUR CHEIGNON E.CHEIGNON 
+C MODIF MODELISA  DATE 13/02/2012   AUTEUR CHEIGNON E.CHEIGNON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -199,11 +199,9 @@ C              DCONV = (ABS(FD/FDINI) .LE. RESI)
         INDI = VIP(3)
       ENDIF
 
-      IF ((OPTION.EQ.'RIGI_MECA_TANG').OR.
-     &    (OPTION.EQ.'FULL_MECA')) THEN
-        IF (INDI.LT.0.5D0) THEN
+      IF (INDI.LT.0.5D0) THEN
           DSDE = E
-        ELSE
+      ELSE
           IF (D.GT.0.D0) THEN
             IF (OPTION.EQ.'RIGI_MECA_TANG') THEN
               B = E+K/M*(1.D0-D)*P**((1.D0/M)-1.D0)-
@@ -224,8 +222,8 @@ C              DCONV = (ABS(FD/FDINI) .LE. RESI)
               DSDE = ((K*(1.D0/M)*(P**((1.D0/M)-1.D0)))/
      &               (1.D0+(((K*(1.D0/M))/E)*(P**((1.D0/M)-1.D0)))))
             END IF
-          END IF
-        END IF
+      END IF
+
 C     CAS RIGI_MECA_ELAS ET FULL_MECA_ELAS AVEC ENDOMMAGEMENT
       END IF
       IF(MELAS)  DSDE=(1.D0-D)*DSDE

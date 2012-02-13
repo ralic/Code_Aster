@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 09/01/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF UTILITAI  DATE 13/02/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,7 @@ C
       INTEGER NDIM
       INTEGER NTO,NNU,JLIST,NBORDR,NBNOCH,NVAR
       INTEGER NBVARI,JNUME,NP,ICH,NIS
-      INTEGER IRET,NFOR,NBTITR,JTITR,LL
+      INTEGER IRET,NFOR,LL
       INTEGER I,LONG,IER
       INTEGER LORDR,IORD,NC
       INTEGER IBID,NBV,NBTROU
@@ -263,21 +263,6 @@ C- ON VERIFIE SI LE CHAMP DEMANDE EST COMPATIBLE AVEC LE TYPE DE RESUTAT
       IF (FORM.EQ.'IDEAS') THEN
 C     =========================
 C
-        CALL JEEXIN(NOMA//'           .TITR',IRET)
-        IF (IRET.EQ.0) THEN
-          CALL U2MESS('A','UTILITAI2_87')
-        ELSE
-          CALL JEVEUO(NOMA//'           .TITR','L',JTITR)
-          CALL JELIRA(NOMA//'           .TITR','LONMAX',NBTITR,K8BID)
-          IF (NBTITR.GE.1) THEN
-            IF (ZK80(JTITR) (10:31).NE.'AUTEUR=INTERFACE_IDEAS') THEN
-              CALL U2MESS('A','UTILITAI2_87')
-            END IF
-          ELSE
-            CALL U2MESS('A','UTILITAI2_87')
-          END IF
-        END IF
-C
 C     --- LECTURE
 C
         CALL LRIDEA(RESU,TYPRES,LINOCH,NBNOCH,NOMCMD,LISTR8,LISTIS,
@@ -287,21 +272,6 @@ C     --- FIN LECTURE
 C
       ELSE IF (FORM.EQ.'IDEAS_DS58') THEN
 C     ================================
-C
-        CALL JEEXIN(NOMA//'           .TITR',IRET)
-        IF (IRET.EQ.0) THEN
-          CALL U2MESS('A','UTILITAI2_87')
-        ELSE
-          CALL JEVEUO(NOMA//'           .TITR','L',JTITR)
-          CALL JELIRA(NOMA//'           .TITR','LONMAX',NBTITR,K8BID)
-          IF (NBTITR.GE.1) THEN
-            IF (ZK80(JTITR) (10:31).NE.'AUTEUR=INTERFACE_IDEAS') THEN
-              CALL U2MESS('A','UTILITAI2_87')
-            END IF
-          ELSE
-            CALL U2MESS('A','UTILITAI2_87')
-          END IF
-        END IF
 C
 C     --- LECTURE
 C

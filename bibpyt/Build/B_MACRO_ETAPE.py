@@ -1,9 +1,9 @@
-#@ MODIF B_MACRO_ETAPE Build  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_MACRO_ETAPE Build  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -113,7 +113,6 @@ class MACRO_ETAPE(B_ETAPE.ETAPE):
             # la numérotation globale
             # un incrément de None indique que la commande ne sera pas numérotée.
             self.set_icmd(1)
-            ier=self.codex.opsexe(self,self.icmd,-1,-self.definition.op)
 
          if ier:
             self.cr.fatal("Erreur dans la macro "+self.nom+'\n'+'ligne : '+str(self.appel[0])+' fichier : '+self.appel[1])
@@ -129,16 +128,6 @@ class MACRO_ETAPE(B_ETAPE.ETAPE):
          self.cr.fatal("Erreur dans la macro "+self.nom+'\n'+string.join(l))
 
       return ier
-
-   def setmode(self,mode):
-      """
-         Met le mode d execution a 1 ou 2
-         1 = verification par le module Fortran correspondant a la commande
-         2 = execution du module Fortran
-      """
-      if mode in (1,2):
-        for e in self.etapes:e.setmode(mode)
-        self.modexec=mode
 
    def gcncon(self,type):
       """

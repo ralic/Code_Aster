@@ -3,9 +3,9 @@
       CHARACTER*16 OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 13/02/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -63,7 +63,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER JGANO,NBSIGM,NDIM,NNO,I,NNOS,IPOIDS,IVF,NBNOMX,
      &        NBCONT,NPG1,NBSIG,IGAU,ISIG,INO,IGEOM,IDIM,ITEMPS,
      &        IMATE,JSIG,IDENER,IDFDE,IDEPL,IDEPLM,IDEPMM,
-     &        IDSIG,IDSIGM,MXCMEL,IRET
+     &        IDSIG,IDSIGM,MXCMEL,IRET,IDENEM
       PARAMETER (NBNOMX=27)
       PARAMETER (NBCONT=6)
       PARAMETER (MXCMEL=162)
@@ -302,29 +302,49 @@ C ---- ELASTIQUE EN SORTIE
 C      -------------------
       CALL JEVECH('PENERDR','E',IDENER)
 
-C ---- OPTIONS ENEL_ELGA ET ETOT_ELGA
+C ---- OPTIONS ENEL_* ET ETOT_*
 C      ==============================
-      IF (OPTION(6:9).EQ.'ELGA') THEN
-        DO 120 IGAU = 1,NPG1
-          ZR(IDENER+IGAU-1) = ENERPG(IGAU)
-  120   CONTINUE
+      IF (OPTION(1:4).EQ.'ETOT') THEN
+        CALL JEVECH('PENERDM','L',IDENEM)
+        IF (OPTION(6:9).EQ.'ELGA') THEN
+          DO 120 IGAU = 1,NPG1
+            ZR(IDENER+IGAU-1)=ZR(IDENEM+IGAU-1)+ENERPG(IGAU)
+  120     CONTINUE
 
-C ---- OPTION ENEL_ELNO ET ETOT_ELNO
-C      =======================================
-      ELSE IF (OPTION(6:9).EQ.'ELNO') THEN
+C ----   OPTION ENEL_ELNO ET ETOT_ELNO
+C        =======================================
+        ELSE IF (OPTION(6:9).EQ.'ELNO') THEN
 
 C ----   DENSITE D'ENERGIE DE DEFORMATION AUX NOEUDS
 C        -------------------------------------------
-        CALL PPGAN2(JGANO,1,1,ENERPG,ENERNO)
+          CALL PPGAN2(JGANO,1,1,ENERPG,ENERNO)
 
-        DO 130 INO = 1,NNO
-          ZR(IDENER+INO-1) = ENERNO(INO)
-  130   CONTINUE
+          DO 130 INO = 1,NNO
+            ZR(IDENER+INO-1)=ZR(IDENEM+INO-1)+ENERNO(INO)
+  130     CONTINUE
 
-C ---- OPTION ETOT_ELEM
-C      ================
-      ELSE IF (OPTION(6:9).EQ.'ELEM') THEN
-        ZR(IDENER) = ENELEM
+C ----   OPTION ETOT_ELEM
+C        ================
+        ELSE IF (OPTION(6:9).EQ.'ELEM') THEN
+          ZR(IDENER) = ZR(IDENEM)+ENELEM
+        END IF
+      ELSE
+        IF (OPTION(6:9).EQ.'ELGA') THEN
+          DO 220 IGAU = 1,NPG1
+            ZR(IDENER+IGAU-1) = ENERPG(IGAU)
+  220     CONTINUE
+
+C ----   OPTION ENEL_ELNO ET ETOT_ELNO
+C        =======================================
+        ELSE IF (OPTION(6:9).EQ.'ELNO') THEN
+
+C ----     DENSITE D'ENERGIE DE DEFORMATION AUX NOEUDS
+C          -------------------------------------------
+          CALL PPGAN2(JGANO,1,1,ENERPG,ENERNO)
+
+          DO 230 INO = 1,NNO
+            ZR(IDENER+INO-1) = ENERNO(INO)
+  230     CONTINUE
+        END IF
       END IF
-
       END

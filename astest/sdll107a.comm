@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
 # TITRE CALCUL TEMPOREL POUTRE SOUS EXCITATION ALEATOIRE AVEC DSP
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1704,21 +1704,21 @@ TEST_FONCTION(TABL_INTSP=(
                )
 
 ##
-MACRO_PROJ_BASE(  BASE=MODES,
-                  STOCKAGE='DIAG',
-                  MATR_ASSE_GENE=(
-                   _F(
-                                   MATRICE = CO("MASSEPRO"),
-                                   MATR_ASSE = B),
-                   _F(
-                                   MATRICE = CO("RIGIPROJ"),
-                                   MATR_ASSE = A)),VECT_ASSE_GENE=(
-                   _F(
-                                   VECTEUR = CO("EFPROJ1"),
-                                   VECT_ASSE = VECTAS1),
-                   _F(
-                                   VECTEUR = CO("EFPROJ2"),
-                                   VECT_ASSE = VECTAS2))
+PROJ_BASE(  BASE=MODES,
+            STOCKAGE='DIAG',
+            MATR_ASSE_GENE=(
+             _F(
+                             MATRICE = CO("MASSEPRO"),
+                             MATR_ASSE = B),
+             _F(
+                             MATRICE = CO("RIGIPROJ"),
+                             MATR_ASSE = A)),VECT_ASSE_GENE=(
+             _F(
+                             VECTEUR = CO("EFPROJ1"),
+                             VECT_ASSE = VECTAS1),
+             _F(
+                             VECTEUR = CO("EFPROJ2"),
+                             VECT_ASSE = VECTAS2))
 )
 
 #

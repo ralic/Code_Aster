@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 04/01/2012   AUTEUR SELLENET N.SELLENET 
+#& MODIF COMMANDE  DATE 13/02/2012   AUTEUR SELLENET N.SELLENET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -97,7 +97,7 @@ CALC_CHAMP=OPER(nom="CALC_CHAMP",op=52,sd_prod=calc_champ_prod,reentrant='f',
                              fr="Options pour le calcul d'energies",
                              into=(
                                    "ENEL_ELGA","ENEL_ELNO","ENEL_NOEU",
-                                   #"ETOT_ELGA","ETOT_ELNO",           "ETOT_ELEM",
+                                   "ETOT_ELGA","ETOT_ELNO",           "ETOT_ELEM",
                                    "DISS_ELGA","DISS_ELNO","DISS_NOEU",
                                                                        "EPOT_ELEM",
                                                                        "ECIN_ELEM",
@@ -106,8 +106,7 @@ CALC_CHAMP=OPER(nom="CALC_CHAMP",op=52,sd_prod=calc_champ_prod,reentrant='f',
          CRITERES     = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
                              fr="Options pour le calcul de criteres",
                              into=(
-                                   #"SIEQ_ELNO","SIEQ_NOEU",
-                                   "SIEQ_ELGA",
+                                   "SIEQ_ELGA","SIEQ_ELNO","SIEQ_NOEU",
                                    "EPEQ_ELGA","EPEQ_ELNO","EPEQ_NOEU",
                                    "EPMQ_ELGA","EPMQ_ELNO",
                                    "ENDO_ELGA","ENDO_ELNO","ENDO_NOEU",
@@ -150,7 +149,7 @@ CALC_CHAMP=OPER(nom="CALC_CHAMP",op=52,sd_prod=calc_champ_prod,reentrant='f',
          ENERGIE      = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
                              fr="Options pour le calcul d'energies",
                              into=(
-                                   #"ETOT_ELGA","ETOT_ELNO",           "ETOT_ELEM",
+                                   "ETOT_ELGA","ETOT_ELNO",           "ETOT_ELEM",
                                    "ENEL_ELGA","ENEL_ELNO","ENEL_NOEU",
                                    "DISS_ELGA","DISS_ELNO",
                                   ),
@@ -159,8 +158,7 @@ CALC_CHAMP=OPER(nom="CALC_CHAMP",op=52,sd_prod=calc_champ_prod,reentrant='f',
          CRITERES     = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
                              fr="Options pour le calcul de criteres",
                              into=(
-                                   #"SIEQ_ELNO","SIEQ_NOEU",
-                                   "SIEQ_ELGA",
+                                   "SIEQ_ELGA","SIEQ_ELNO","SIEQ_NOEU",
                                    "EPEQ_ELGA","EPEQ_ELNO","EPEQ_NOEU",
                                    "EPMQ_ELGA","EPMQ_ELNO","EPMQ_NOEU",
                                    "ENDO_ELGA","ENDO_ELNO","ENDO_NOEU",

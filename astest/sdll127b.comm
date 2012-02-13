@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
 # TITRE CALCUL MODAL D'UN ARBRE A SECTION CIRCULAIRE VARIABLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -10168,14 +10168,14 @@ OM=4000.*pi/30.
 GYOM=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYASS, COEF_R=OM,),
                             _F(MATR_ASSE=AMOR, COEF_R=1.,),))
 
-MACRO_PROJ_BASE(BASE=MODES,
-                STOCKAGE='PLEIN',
-                MATR_ASSE_GENE=(_F(MATRICE=CO('MAGE'),
-                                   MATR_ASSE=MASSE,),
-                                _F(MATRICE=CO('RIGE'),
-                                   MATR_ASSE=RIGIDITE,),
-                                _F(MATRICE=CO('OMGE'),
-                                   MATR_ASSE=GYOM,),),);
+PROJ_BASE(BASE=MODES,
+          STOCKAGE='PLEIN',
+          MATR_ASSE_GENE=(_F(MATRICE=CO('MAGE'),
+                             MATR_ASSE=MASSE,),
+                          _F(MATRICE=CO('RIGE'),
+                             MATR_ASSE=RIGIDITE,),
+                          _F(MATRICE=CO('OMGE'),
+                             MATR_ASSE=GYOM,),),);
 
 MOD2ETAG=MODE_ITER_SIMULT(MATR_A=RIGE,
                           MATR_B=MAGE,

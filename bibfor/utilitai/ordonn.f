@@ -1,13 +1,12 @@
-      SUBROUTINE ORDONN(NOMFON,NOMCMD,IRET)
+      SUBROUTINE ORDONN(NOMFON,IRET)
       IMPLICIT NONE
       CHARACTER*19 NOMFON
-      CHARACTER*16 NOMCMD
       INTEGER      IRET
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,7 +31,6 @@ C        SI ELLES SONT DECROISSANTES
 C ----------------------------------------------------------------------
 C IN     : NOMFON : FONCTION A VERIFIER
 C             (LES VALEURS SONT EN IN/OUT)
-C IN     : NOMCMD : COMMANDE APPELANTE (POUR MESSAGE D'ERREUR)
 C IN     : IRET   : SI 1, ON S'ARRETE EN <F> SI ABSC. NON MONOTONES
 C                   SI 0, ON FORCE LE TRI
 C ----------------------------------------------------------------------
@@ -52,22 +50,25 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                 ZK80
       COMMON/KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ----------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
-      INTEGER      IVAL,LPROL,IMES
+      INTEGER      IVAL,LPROL
       INTEGER      IPAR,NBPARA
       INTEGER      NBVAL,NBPTS,IER,I
+      LOGICAL      ISNAP,INV
+      CHARACTER*1  CODMES
       CHARACTER*16 TYPFON
       CHARACTER*24 CHVAL,CHBID
-      CHARACTER*24 VALK(3)
-      CHARACTER*32 JEXNUM,MESS
+      CHARACTER*32 JEXNUM
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
-      IMES=0
       CHVAL=NOMFON//'.VALE'
       CALL JEVEUO(NOMFON//'.PROL','L',LPROL)
-      TYPFON = ZK24(LPROL)
+      TYPFON = ZK24(LPROL)(1:16)
 C
+      ISNAP = .FALSE.
+      INV = .FALSE.
+      CODMES = ' '
 C     --------------------------------------------
       IF(TYPFON.EQ.'CONSTANT')THEN
 C        ON N'A RIEN A FAIRE
@@ -76,7 +77,6 @@ C     --------------------------------------------
 C        ON N'A RIEN A FAIRE
 C     --------------------------------------------
       ELSEIF(TYPFON.EQ.'FONCTION')THEN
-         MESS='de la fonction'
          CALL JEVEUO(CHVAL,'E',IVAL)
          CALL JELIRA(CHVAL,'LONUTI',NBVAL,CHBID)
          NBPTS=NBVAL/2
@@ -85,19 +85,22 @@ C     --------------------------------------------
          CALL FOVERF(ZR(IVAL),NBPTS,IER)
          IF(IER.EQ.0)THEN
             IF(IRET.EQ.1)THEN
-               IMES=4
+               CODMES = 'F'
                GOTO 999
             ELSE
-               IMES=2
+               CODMES = 'A'
                CALL UTTRIF(ZR(IVAL),NBPTS,TYPFON)
             ENDIF
-         ELSEIF(IER.LT.0)THEN
-            IMES=1
+         ELSEIF(IER.EQ.-2)THEN
+            CODMES = 'A'
+            INV = .TRUE.
             CALL ORDON1(ZR(IVAL),NBPTS)
+         ELSEIF(IER.EQ.1 .OR. IER.EQ.-1) THEN
+            CODMES = 'F'
+            GOTO 999
          ENDIF
 C     --------------------------------------------
       ELSEIF(TYPFON.EQ.'FONCT_C')THEN
-         MESS='de la fonction'
          CALL JEVEUO(CHVAL,'E',IVAL)
          CALL JELIRA(CHVAL,'LONUTI',NBVAL,CHBID)
          NBPTS=NBVAL/3
@@ -106,19 +109,23 @@ C     --------------------------------------------
          CALL FOVERF(ZR(IVAL),NBPTS,IER)
          IF(IER.EQ.0)THEN
             IF(IRET.EQ.1)THEN
-               IMES=4
+               CODMES = 'F'
                GOTO 999
             ELSE
-               IMES=2
+               CODMES = 'A'
                CALL UTTRIF(ZR(IVAL),NBPTS,TYPFON)
             ENDIF
-         ELSEIF(IER.LT.0)THEN
-            IMES=1
+         ELSEIF(IER.EQ.-2)THEN
+            CODMES = 'A'
+            INV = .TRUE.
             CALL ORDON2(ZR(IVAL),NBPTS)
+         ELSEIF(IER.EQ.1 .OR. IER.EQ.-1) THEN
+            CODMES = 'F'
+            GOTO 999
          ENDIF
 C     --------------------------------------------
       ELSEIF(TYPFON.EQ.'NAPPE')THEN
-         MESS='d''une fonction de la nappe'
+         ISNAP=.TRUE.
          CALL JEVEUO(NOMFON//'.PARA','E',IPAR)
          CALL JELIRA(NOMFON//'.PARA','LONUTI',NBPARA,CHBID)
          IER=0
@@ -139,15 +146,19 @@ C        VERIFIER CHAQUE FONCTION COMME CI-DESSUS
             CALL FOVERF(ZR(IVAL),NBPTS,IER)
             IF(IER.EQ.0)THEN
                IF(IRET.EQ.1)THEN
-                  IMES=4
+                  CODMES = 'F'
                   GOTO 999
                ELSE
-                  IMES=2
+                  CODMES = 'A'
                   CALL UTTRIF(ZR(IVAL),NBPTS,TYPFON)
                ENDIF
-            ELSEIF(IER.LT.0)THEN
-               IMES=1
+            ELSEIF(IER.EQ.-2)THEN
+               CODMES = 'A'
+               INV = .TRUE.
                CALL ORDON1(ZR(IVAL),NBPTS)
+            ELSEIF(IER.EQ.1 .OR. IER.EQ.-1) THEN
+               CODMES = 'F'
+               GOTO 999
             ENDIF
   99        CONTINUE
  100     CONTINUE
@@ -157,18 +168,18 @@ C     --------------------------------------------
       ENDIF
 C
  999  CONTINUE
-      IF(IMES.EQ.4)THEN
-         VALK (1) = MESS
-         VALK (2) = NOMFON
-         CALL U2MESK('F', 'UTILITAI6_57',2,VALK)
-      ELSEIF(IMES.EQ.2)THEN
-         VALK (1) = MESS
-         VALK (2) = NOMFON
-         CALL U2MESK('A', 'UTILITAI6_58',2,VALK)
-      ELSEIF(IMES.EQ.1)THEN
-         VALK (1) = MESS
-         VALK (2) = NOMFON
-         CALL U2MESK('A', 'UTILITAI6_59',2,VALK)
+C
+      IF (.NOT. ISNAP) THEN
+         CALL U2MESK(CODMES//'+', 'FONCT0_62', 1, NOMFON)
+      ELSE
+         CALL U2MESK(CODMES//'+', 'FONCT0_63', 1, NOMFON)
+      ENDIF
+      IF ( CODMES .EQ. 'F' ) THEN
+         CALL U2MESS(CODMES, 'FONCT0_64')
+      ELSEIF ( CODMES .EQ. 'A' .AND. .NOT. INV ) THEN
+         CALL U2MESS(CODMES, 'FONCT0_65')
+      ELSEIF ( CODMES .EQ. 'A' .AND. INV ) THEN
+         CALL U2MESS(CODMES, 'FONCT0_66')
       ENDIF
       CALL JEDEMA()
       END

@@ -1,10 +1,10 @@
       SUBROUTINE OP0090()
       IMPLICIT NONE
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,7 +47,7 @@ C                       --- CAS D'UN RESULTAT ---
 C     -----------------------------------------------------------------
       CALL GETVID(' ','RESULTAT ',0,IARG,1,RESU,NRES)
       IF (NRES.NE.0) THEN
-        CALL RFRESU(IER)
+        CALL RFRESU()
         GO TO 10
       ENDIF
 

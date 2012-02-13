@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE POUTRE EN FLAMBEMENT
 # ssnl502d.para = tps_job 90 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -278,6 +278,7 @@ IMPR_TABLE(TABLE=TAB_COMB,);
 DX_ETA=RECU_FONCTION(TABLE=TAB_COMB,
                      PARA_X='ETA_PILO',
                      PARA_Y='DX',
+                     FILTRE=_F(NOM_PARA='ETA_PILO', CRIT_COMP='NE', VALE=0.),
                      INTERPOL='LIN',
                      PROL_DROITE='CONSTANT',
                      PROL_GAUCHE='CONSTANT',);
@@ -285,6 +286,7 @@ DX_ETA=RECU_FONCTION(TABLE=TAB_COMB,
 DY_ETA=RECU_FONCTION(TABLE=TAB_COMB,
                      PARA_X='ETA_PILO',
                      PARA_Y='DY',
+                     FILTRE=_F(NOM_PARA='ETA_PILO', CRIT_COMP='NE', VALE=0.),
                      INTERPOL='LIN',
                      PROL_DROITE='CONSTANT',
                      PROL_GAUCHE='CONSTANT',);
@@ -292,6 +294,7 @@ DY_ETA=RECU_FONCTION(TABLE=TAB_COMB,
 MZ_ETA=RECU_FONCTION(TABLE=TAB_COMB,
                      PARA_X='ETA_PILO',
                      PARA_Y='MFZ',
+                     FILTRE=_F(NOM_PARA='ETA_PILO', CRIT_COMP='NE', VALE=0.),
                      INTERPOL='LIN',
                      PROL_DROITE='CONSTANT',
                      PROL_GAUCHE='CONSTANT',);

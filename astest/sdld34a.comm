@@ -1,27 +1,28 @@
-# MODIF  DATE 14/11/2011   AUTEUR BERRO H.BERRO 
+# MODIF  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
 # TITRE LACHER D'UN SIMPLE MASSE-RESSORT
 # sdld34a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='SDLD34A',
               NIV_PUB_WEB='INTERNET',
-              VISU_EFICAS='OUI',),);
+VISU_EFICAS='OUI',),DEBUG=_F(SDVERI='NON'))
+# SDVERI='NON' car la verification est trop couteuse en CPU
 
 # MISE EN DONNEES
 tfin = 3.0;
@@ -60,7 +61,7 @@ CARELEM=AFFE_CARA_ELEM(MODELE=MODELE,
                                    GROUP_MA='N',
                                    VALE=m,),),);
 
-# CONDITIONS AUX LIMITES 
+# CONDITIONS AUX LIMITES
 
 BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODELE,
                         DDL_IMPO=_F(GROUP_NO='N',
@@ -97,7 +98,7 @@ TRANSI=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                       MODELE=MODELE,
                       MATR_MASS=MASSE,
                       MATR_RIGI=RIGIDITE,
-                      SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',), 
+                      SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                       ETAT_INIT=_F(DEPL=DEPLINI,),
                       SOLVEUR=_F(METHODE='LDLT',),
 #                      INCREMENT=_F(LIST_INST=LINST,),);
@@ -108,13 +109,13 @@ DX_DIS2=RECU_FONCTION(RESULTAT=TRANSI,
                       NOM_CHAM='DEPL',
                       NOM_CMP='DX',
                       GROUP_NO='N',);
-                      
+
 TRANSIV=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                       MODELE=MODELE,
                       MATR_MASS=MASSE,
                       MATR_RIGI=RIGIDITE,
                       TITRE='VITESSE DE LA MASSE A T = 1.5S',
-                      SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',), 
+                      SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                       ETAT_INIT=_F(DEPL=DEPLINI,),
                       SOLVEUR=_F(METHODE='LDLT',),
                       INCREMENT=_F(PAS=pdt,
@@ -123,7 +124,7 @@ TRANSIV=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                                    CHAM_EXCLU=('DEPL','ACCE'),
                                    CRITERE='ABSOLU',
                                    PRECISION=1E-6,),
-                      INFO=1,);                    
+                      INFO=1,);
 
 VX_DIS2=RECU_FONCTION(RESULTAT=TRANSIV,
                       NOM_CHAM='VITE',
@@ -134,7 +135,7 @@ TRANSX=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                       MODELE=MODELE,
                       MATR_MASS=MASDIAG,
                       MATR_RIGI=RIGIDITE,
-                      SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',), 
+                      SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),
                       ETAT_INIT=_F(DEPL=DEPLINI,),
                       SOLVEUR=_F(METHODE='LDLT',),
                       INCREMENT=_F(PAS=pdt,
@@ -145,13 +146,13 @@ DXXDIS2=RECU_FONCTION(RESULTAT=TRANSX,
                       NOM_CHAM='DEPL',
                       NOM_CMP='DX',
                       GROUP_NO='N',);
-         
+
 MODES=MODE_ITER_SIMULT(MATR_A=RIGIDITE,
                        MATR_B=MASSE,
                        METHODE='QZ',
                        CALC_FREQ=_F(OPTION='TOUT',),);
 
-MACRO_PROJ_BASE(BASE=MODES,
+PROJ_BASE(BASE=MODES,
                 STOCKAGE='DIAG',
                 MATR_ASSE_GENE=(_F(MATRICE=CO('MAGE'),
                                    MATR_ASSE=MASSE,),
@@ -167,7 +168,7 @@ TRANSMO=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                         MATR_RIGI=RIGE,
                         ETAT_INIT=_F(DEPL=DIGE,),
                         INCREMENT=_F(INST_FIN=tfin,
-                                     PAS=pdt,),);                                 
+                                     PAS=pdt,),);
 
 DXGEDIS2=RECU_FONCTION(RESU_GENE=TRANSMO,
                        NOM_CHAM='DEPL',
@@ -187,8 +188,8 @@ TRANSMOV=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                      NUME_FIN=300,),
                         ARCHIVAGE=_F(INST=1.5,
                                      CRITERE='ABSOLU',
-                                     PRECISION=1E-6,),);  
-                                     
+                                     PRECISION=1E-6,),);
+
 VXGEDIS2=RECU_FONCTION(RESU_GENE=TRANSMOV,
                        NOM_CHAM='VITE',
                        NOM_CMP='DX',

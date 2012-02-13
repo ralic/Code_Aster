@@ -1,6 +1,6 @@
-# MODIF  DATE 06/02/2012   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 13/02/2012   AUTEUR PROIX J-M.PROIX 
 # TITRE : EFFET DE ROTATION DE RESEAU SUR UN CUBE MONOCRISTALLIN 
-# ssnd112a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
+# ssnd112a.para = tps_job 120 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +19,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='SSND112A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'));
+DEBUT(CODE=_F(NOM='SSND112A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'));
 
 
 import numpy as NP

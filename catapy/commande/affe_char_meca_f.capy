@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
+#& MODIF COMMANDE  DATE 13/02/2012   AUTEUR KHAM M.KHAM 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -430,10 +430,11 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
          ONDE_PLANE      =FACT(statut='f',max='**',
            fr="Impose un chargement sismique par onde plane dont la valeur est fournie par l'intermédiaire"
                +" d'un concept fonction",
+           regles=(AU_MOINS_UN('GROUP_MA','MAILLE'),
+                   PRESENT_ABSENT('GROUP_MA','MAILLE'),),
            DIRECTION       =SIMP(statut='o',typ='R',max='**'),
            TYPE_ONDE       =SIMP(statut='o',typ='TXM' ),
            FONC_SIGNAL     =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule) ),
-#           DIST_ORIG       =SIMP(statut='o',typ='R' ),
            MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
          ),

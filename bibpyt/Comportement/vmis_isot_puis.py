@@ -1,8 +1,8 @@
-#@ MODIF vmis_isot_puis Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF vmis_isot_puis Comportement  DATE 13/02/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -29,7 +29,7 @@ par une courbe de traction analytique avec une loi puissance""",
    nb_vari        = 2,
    nom_vari       = ('DEFPLCUM', 'INDICAT'),
    mc_mater       = ('ELAS', 'ECRO_PUIS'),
-   modelisation   = ('3D', 'AXIS', 'C_PLAN', 'D_PLAN', '1D'),
+   modelisation   = ('3D', 'AXIS', 'C_PLAN', 'D_PLAN' ),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP', 'SIMO_MIEHE','GDEF_HYPO_ELAS'),
    nom_varc       = ('TEMP', 'SECH', 'HYDR'),
    algo_inte         = ('DEKKER',),

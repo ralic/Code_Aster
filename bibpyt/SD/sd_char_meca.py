@@ -1,4 +1,4 @@
-#@ MODIF sd_char_meca SD  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_char_meca SD  DATE 13/02/2012   AUTEUR KHAM M.KHAM 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -72,8 +72,9 @@ class sd_char_chme(AsBase):
     PRESS = Facultatif(sd_carte())
     ROTAT = Facultatif(sd_carte())
     SIGIN = Facultatif(sd_carte())
-    SIINT = Facultatif(sd_carte())
     VNOR  = Facultatif(sd_carte())
+    ONDPL = Facultatif(sd_carte())
+    ONDPR = Facultatif(sd_carte())
 
     # si GRAPPE_FLUIDE :
     GRFLU = Facultatif(sd_char_grflu())
@@ -89,8 +90,7 @@ class sd_char_chme(AsBase):
     VEISS = Facultatif(AsVK8(lonmax=6, ))
     EVOL_CHAR  = Facultatif(AsVK8(SDNom(nomj='.EVOL.CHAR'), lonmax=1, ))
     TEMPE_TEMP = Facultatif(AsVK8(SDNom(nomj='.TEMPE.TEMP'), lonmax=1, ))
-
-
+    
 class sd_char_meca(AsBase):
     nomj = SDNom(fin=8)
 

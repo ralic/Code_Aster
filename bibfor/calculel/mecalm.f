@@ -2,10 +2,10 @@
      &                  NBORDR,MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 13/02/2012   AUTEUR SELLENET N.SELLENET 
 C TOLE CRP_20
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -75,7 +75,7 @@ C     --- VARIABLES LOCALES ---
       INTEGER IFM,NIV
       INTEGER NUORD
       INTEGER LREFE,LVALE
-      INTEGER IORDR,JORDR,IORDRM
+      INTEGER IORDR,JORDR
       INTEGER IRET,IRET1,IRET2,IRET3,IRET4,IRET5,IERD,IRETER
       INTEGER NH,NBOPT,NEQ,NBCHRE
       INTEGER IADOU,IADIN,IPUIS
@@ -88,28 +88,24 @@ C     --- VARIABLES LOCALES ---
       INTEGER JDIM,JCOOR,JTYPE,LTYMO,NPASS
       INTEGER NNOEM,NELEM,NDIM,NNCP
 
-      CHARACTER*1 BASE
       CHARACTER*4 TYPE
       CHARACTER*8 K8B,NOMA
-      CHARACTER*8 CARELE,KIORD,KIORDM
-      CHARACTER*8 BLAN8
+      CHARACTER*8 CARELE
       CHARACTER*19 PFCHNO
       CHARACTER*16 NOMCMD,OPTION,TYPES,K16B
       CHARACTER*16 BLAN16,TYPEMO
       CHARACTER*19 LERES1
-      CHARACTER*19 CHDYNR,MASSE,REFE,COMPOR
+      CHARACTER*19 CHDYNR,MASSE,REFE
       CHARACTER*19 CHERRS,CHENES,CHSINS,CHSINN
       CHARACTER*19 CHVARC
       CHARACTER*24 CHENEG,CHSING,CHERR1,CHERR2,CHERR3,CHERR4
       CHARACTER*24 CHAMGD,CHSIG,CHSIGN
-      CHARACTER*24 CHEPS,CHDEPL,CHACSE
+      CHARACTER*24 CHDEPL
       CHARACTER*24 CHGEOM,CHCARA(18)
       CHARACTER*24 CHNUMC,CHHARM,CHELEM,SOP
-      CHARACTER*24 LIGREL,K24B
+      CHARACTER*24 LIGREL
       CHARACTER*24 NOMPAR
       CHARACTER*24 LESOPT
-      CHARACTER*24 CHTESE,CHSIGM,CHDESE,CHSIC
-      CHARACTER*24 CHDEPM
       CHARACTER*24 LIGRMO
       CHARACTER*24 BLAN24
       CHARACTER*24 VALKM(2)
@@ -121,11 +117,9 @@ C     --- VARIABLES LOCALES ---
       COMPLEX*16 CCOEF
 
       LOGICAL EXIPOU,EXIPLA,EXICAR
-      REAL*8 ZERO,UN
-      PARAMETER(ZERO=0.D0,UN=1.D0)
+      REAL*8 UN
+      PARAMETER(UN=1.D0)
 
-      COMPLEX*16 CZERO
-      PARAMETER(CZERO=(0.D0,0.D0))
       INTEGER      IARG
 
       CALL JEMARQ()
@@ -144,16 +138,11 @@ C               123456789012345678901234
       CHNUMC=BLAN24
       CHHARM=BLAN24
       CHSIG=BLAN24
-      CHSIC=BLAN24
-      CHEPS=BLAN24
       CHDYNR=BLAN24(1:19)
       CHDEPL=BLAN24
       CHELEM=BLAN24
-      COMPOR=BLAN24(1:19)
       SOP=BLAN24
-      K24B=BLAN24
       CHVARC='&&'//NOMPRO//'.CHVARC'
-      BASE='G'
       COEF=UN
 
 C     COMPTEUR DE PASSAGES DANS LA COMMANDE (POUR MEDOM2.F)
@@ -276,7 +265,6 @@ C
 C=======================================================================
 
 
-      BLAN8=' '
       LERES1=RESUC1
 
 C    ------------------------------------------------------------------
@@ -339,7 +327,7 @@ C               "EPSG_ELGA","EPSG_ELNO","EPSI_ELGA","EPSI_ELNO",
 C               "EPSP_ELGA","EPSP_ELNO","EPTU_ELNO",
 C               "EPVC_ELGA","EPVC_ELNO","FLHN_ELGA","INDL_ELGA",
 C               "PDIL_ELGA","PRME_ELNO",
-C               "SIEF_ELGA","SIEQ_ELGA","SIPM_ELNO",
+C               "SIEF_ELGA","SIEQ_ELGA","SIEQ_ELNO","SIPM_ELNO",
 C               "SIPO_ELNO","SIRO_ELEM",
 C               "VAEX_ELGA","VAEX_ELNO","VARC_ELGA",
 C               "VARI_ELNO",
@@ -395,89 +383,6 @@ C    ------------------------------------------------------------------
             CALL JEDEMA()
   160     CONTINUE
 
-C    ------------------------------------------------------------------
-C    -- OPTIONS "SIEQ_ELNO"
-C    ------------------------------------------------------------------
-        ELSEIF (OPTION.EQ.'SIEQ_ELNO') THEN
-          DO 200,IAUX=1,NBORDR
-            CALL JEMARQ()
-            CALL JERECU('V')
-            IORDR=ZI(JORDR+IAUX-1)
-            CHEPS=' '
-            CHSIG=' '
-            CHSIC=' '
-            CALL MEDOM2(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO,IORDR,
-     &                  NBORDR,'G',NPASS,LIGREL)
-            CALL JEVEUO(KCHA,'L',JCHA)
-            CALL MECARA(CARA,EXICAR,CHCARA)
-            IF (OPTION.EQ.'SIEQ_ELNO') THEN
-              IF (TYSD.EQ.'FOURIER_ELAS') THEN
-                CALL U2MESK('F','CALCULEL6_83',1,OPTION)
-              ENDIF
-              CALL RSEXCH(RESUCO,'SIEF_ELGA',IORDR,CHSIG,IRET1)
-              CALL RSEXCH(RESUCO,'SIGM_ELNO',IORDR,CHSIC,IRET3)
-C
-              IF (IRET1.GT.0 .AND. IRET3.GT.0) THEN
-                VALKM(1)=OPTION
-                VALKM(2)=TYSD
-                CALL U2MESK('A','CALCULEL3_8',2,VALKM)
-                CALL JEDEMA
-                GOTO 660
-
-              ENDIF
-              IF (TYSD.EQ.'EVOL_ELAS' .OR. TYSD.EQ.'DYNA_TRANS' .OR.
-     &            TYSD.EQ.'MULT_ELAS' .OR. (TYSD.EQ.'MODE_MECA'.AND.
-     &            TYPEMO(1:8).EQ.'MODE_DYN') .OR.
-     &            TYSD.EQ.'COMB_FOURIER' .OR.
-     &            TYSD.EQ.'FOURIER_ELAS') THEN
-
-C             -- POUR COMB_FOURIER, IL PEUT NE PAS EXISTER SIEF_ELGA:
-                IF (TYSD.EQ.'COMB_FOURIER' .AND. IRET1.GT.0) THEN
-                  CALL U2MESS('F','CALCULEL3_55')
-                ENDIF
-
-C          CHAMP D'ENTREE POUR COQUES
-                IF (EXIPLA) THEN
-                  IF (IRET3.GT.0) THEN
-                    VALKM(1)=OPTION
-                    VALKM(2)=TYSD
-                    CALL U2MESK('A','CALCULEL3_9',2,VALKM)
-                    CALL JEDEMA
-                    GOTO 660
-
-                  ELSE
-                    CALL RSEXCH(RESUCO,'SIGM_ELNO',IORDR,CHSIC,K)
-                  ENDIF
-                ENDIF
-              ELSEIF (TYSD.EQ.'EVOL_NOLI') THEN
-                IF (IRET1.LE.0) THEN
-                  CALL RSEXCH(RESUCO,'SIEF_ELGA',IORDR,CHSIG,K)
-                ENDIF
-                IF (EXIPLA) THEN
-                  IF (IRET3.GT.0) THEN
-                    VALKM(1)=OPTION
-                    VALKM(2)=TYSD
-                    CALL U2MESK('A','CALCULEL3_9',2,VALKM)
-                    CALL JEDEMA
-                    GOTO 660
-
-                  ELSE
-                    CALL RSEXCH(RESUCO,'SIGM_ELNO',IORDR,CHSIC,K)
-                  ENDIF
-                ENDIF
-              ENDIF
-            ENDIF
-            CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
-            CALL MECALC(OPTION,MODELE,K24B,CHGEOM,MATE,CHCARA,K24B,K24B,
-     &                  K24B,CHNUMC,K24B,CHSIG,CHEPS,CHSIC,K24B,K24B,
-     &                  ZK8(JCHA),K24B,ZERO,CZERO,K24B,K24B,CHELEM,K24B,
-     &                  LIGREL,BASE,K24B,K24B,K24B,COMPOR,CHTESE,CHDESE,
-     &                  BLAN8,0,CHACSE,IRET)
-            IF (IRET.GT.0)GOTO 190
-            CALL RSNOCH(LERES1,OPTION,IORDR,' ')
-  190       CONTINUE
-            CALL JEDEMA()
-  200     CONTINUE
 C    ------------------------------------------------------------------
 C    -- OPTIONS DES INDICATEURS D'ERREURS
 C    ------------------------------------------------------------------
@@ -705,94 +610,6 @@ C 5 - DESTRUCTION DES CHAM_ELEM_S
   270       CONTINUE
             CALL JEDEMA()
   280     CONTINUE
-C     ------------------------------------------------------------------
-C     --- OPTIONS DE CALCUL DES DENSITES D'ENERGIE TOTALE
-C     ------------------------------------------------------------------
-        ELSEIF (OPTION.EQ.'ETOT_ELGA' .OR.
-     &          OPTION.EQ.'ETOT_ELNO' .OR.
-     &          OPTION.EQ.'ETOT_ELEM') THEN
-          DO 380,IAUX=1,NBORDR
-            CALL JEMARQ()
-            CALL JERECU('V')
-            IORDR=ZI(JORDR+IAUX-1)
-            CALL MEDOM2(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO,IORDR,
-     &                  NBORDR,'G',NPASS,LIGREL)
-            CALL JEVEUO(KCHA,'L',JCHA)
-            CALL MECARA(CARA,EXICAR,CHCARA)
-
-C ---       RECUPERATION DES CONTRAINTES DE L'INSTANT COURANT :
-C           -------------------------------------------------
-            CALL RSEXC2(1,1,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,IRET)
-            IF (IRET.GT.0) THEN
-              CALL CODENT(IORDR,'G',KIORD)
-              VALKM(1)=RESUCO
-              VALKM(2)=KIORD
-              CALL U2MESK('A','CALCULEL3_17',2,VALKM)
-              GOTO 370
-
-            ENDIF
-
-C ---       SI LE NUMERO D'ORDRE COURANT EST SUPERIEUR A 1, ON
-C ---       RECUPERE LES CONTRAINTES DE L'INSTANT PRECEDENT :
-C           -----------------------------------------------
-            IF ((IAUX.GT.1) .AND. (CONCEP.NE.'MODE_MECA')) THEN
-              IORDRM=ZI(JORDR+IAUX-2)
-              CALL RSEXC2(1,1,RESUCO,'SIEF_ELGA',IORDRM,CHSIGM,OPTION,
-     &                    IRET1)
-              IF (IRET1.GT.0) THEN
-                CALL CODENT(IORDRM,'G',KIORDM)
-                VALKM(1)=RESUCO
-                VALKM(2)=KIORDM
-                CALL U2MESK('A','CALCULEL3_17',2,VALKM)
-                GOTO 370
-
-              ENDIF
-            ENDIF
-
-C ---       RECUPERATION DU CHAMP DE DEPLACEMENT DE L'INSTANT COURANT :
-C           ---------------------------------------------------------
-            CALL RSEXC2(1,1,RESUCO,'DEPL',IORDR,CHDEPL,OPTION,IRET1)
-            IF (IRET1.GT.0) THEN
-              CALL CODENT(IORDR,'G',KIORD)
-              VALKM(1)=RESUCO
-              VALKM(2)=KIORD
-              CALL U2MESK('A','CALCULEL3_11',2,VALKM)
-              GOTO 370
-
-            ENDIF
-
-C ---       SI LE NUMERO D'ORDRE COURANT EST SUPERIEUR A 1, ON
-C ---       RECUPERE LES DEPLACEMENTS DE L'INSTANT PRECEDENT :
-C           ------------------------------------------------
-            IF ((IAUX.GT.1) .AND. (CONCEP.NE.'MODE_MECA')) THEN
-              CALL RSEXC2(1,1,RESUCO,'DEPL',IORDRM,CHDEPM,OPTION,IRET1)
-              IF (IRET1.GT.0) THEN
-                CALL CODENT(IORDRM,'G',KIORDM)
-                VALKM(1)=RESUCO
-                VALKM(2)=KIORDM
-                CALL U2MESK('A','CALCULEL3_11',2,VALKM)
-                GOTO 370
-
-              ENDIF
-            ENDIF
-
-            CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
-
-            IF (CONCEP.EQ.'MODE_MECA' .AND.
-     &          TYPEMO(1:8).EQ.'MODE_DYN') THEN
-              CALL ENETOT(OPTION,1,LIGREL,CHGEOM,CHDEPL,CHDEPM,CHSIG,
-     &                    CHSIGM,CHELEM)
-            ELSE
-
-              CALL ENETOT(OPTION,IAUX,LIGREL,CHGEOM,CHDEPL,CHDEPM,CHSIG,
-     &                    CHSIGM,CHELEM)
-            ENDIF
-
-            CALL RSNOCH(RESUCO,OPTION,IORDR,' ')
-  370       CONTINUE
-            CALL JEDEMA()
-  380     CONTINUE
-          CALL DETRSD('CHAMP_GD','&&ENETOT.CHAMELEM2')
 
 C      -----------------------------------------------------------------
 

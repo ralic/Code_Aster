@@ -1,8 +1,8 @@
-#@ MODIF granger_fp_indt Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF granger_fp_indt Comportement  DATE 13/02/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -28,7 +28,7 @@ loi = LoiComportement(
    nb_vari        = 55,
    nom_vari       = ('VG1','VG2','VG3','VG4','VG5','VG6','VG7','VG8','VG9','VG10','VG11','VG12','VG13','VG14','VG15','VG16','VG17','VG18','VG19','VG20','VG21','VG22','VG23','VG24','VG25','VG26','VG27','VG28','VG29','VG30','VG31','VG32','VG33','VG34','VG35','VG36','VG37','VG38','VG39','VG40','VG41','VG42','VG43','VG44','VG45','VG46','VG47','VG48','VG49','VG50','VG51','VG52','VG53','VG54','VG55'),
    mc_mater       = ('ELAS', 'V_GRANGER_FP'),
-   modelisation   = ('3D', 'AXIS', 'D_PLAN','C_PLAN'),
+   modelisation   = ('3D', 'AXIS', 'D_PLAN'),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
    nom_varc       = ('TEMP', 'SECH', 'HYDR'),
    algo_inte         = ('ANALYTIQUE',),

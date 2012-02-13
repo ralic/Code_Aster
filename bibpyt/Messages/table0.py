@@ -1,8 +1,8 @@
-#@ MODIF table0 Messages  DATE 13/12/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF table0 Messages  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -170,6 +170,17 @@ La table '%(k1)s' est composée de %(i1)d lignes x %(i2)d colonnes.
 
 Son titre est :
 %(k2)s
+"""),
+
+45 : _(u"""
+Erreur de type lors de la lecture de la table :
+
+Exception : %(k1)s
+
+Conseil :
+    Cette erreur se produit quand on relit au FORMAT='TABLEAU' une table qui a été
+    imprimée au FORMAT='ASTER' car la deuxième ligne contient des types et non des valeurs.
+    Si c'est le cas, utilisez LIRE_TABLE au FORMAT='ASTER'.
 """),
 
 }

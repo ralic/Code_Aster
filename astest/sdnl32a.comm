@@ -1,8 +1,8 @@
-# MODIF  DATE 16/08/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
 # TITRE IMPACT D'UNE POUTRE ARTICULEE SUR APPUI ELASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -93,19 +93,19 @@ MAILLAGE=POUTRE,
                                _F(  NOEUD = 'NO11',
                                  NOM_CMP = 'DY',   VALE = -2.96786)) )
 
-MACRO_PROJ_BASE(  BASE=MODES,
-                  STOCKAGE='DIAG',
-                  MATR_ASSE_GENE=(
-                   _F(
-                                   MATRICE = CO("MASSEGEN"),
-                                   MATR_ASSE = MATRMASS),
-                   _F(
-                                   MATRICE = CO("RIGIDGEN"),
-                                   MATR_ASSE = MATRRIGI)),
-                   VECT_ASSE_GENE=_F(
-                                   VECTEUR = CO("VITINI"),
-                                   VECT_ASSE = VITIPHYS,
-                                   TYPE_VECT = 'VITE')
+PROJ_BASE(  BASE=MODES,
+            STOCKAGE='DIAG',
+            MATR_ASSE_GENE=(
+             _F(
+                             MATRICE = CO("MASSEGEN"),
+                             MATR_ASSE = MATRMASS),
+             _F(
+                             MATRICE = CO("RIGIDGEN"),
+                             MATR_ASSE = MATRRIGI)),
+             VECT_ASSE_GENE=_F(
+                             VECTEUR = CO("VITINI"),
+                             VECT_ASSE = VITIPHYS,
+                             TYPE_VECT = 'VITE')
 )
 
 PLAN=DEFI_OBSTACLE(  TYPE='PLAN_Y' )

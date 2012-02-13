@@ -1,8 +1,8 @@
-#@ MODIF supervis Messages  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF supervis Messages  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,20 +34,8 @@ cata_msg={
      être réalisés en POURSUITE.
 """),
 
-2: _(u"""
- Arrêt sur erreur(s) utilisateur
-"""),
-
 3: _(u"""
  Erreur programmeur : %(k1)s non appariés.
-"""),
-
-4: _(u"""
- Commande n  %(k1)s  :  "%(k2)s"  :   %(k3)s  erreur(s) détectée(s)
-"""),
-
-5: _(u"""
- Erreur(s) à l'exécution de "%(k1)s" : arrêt immédiat du programme.
 """),
 
 7: _(u"""
@@ -178,10 +166,6 @@ Fermeture des bases jeveux afin de permettre la POURSUITE ultérieure du calcul.
 61: _(u"""
   La commande a un numéro non appelable dans cette version
   Le numéro erroné est : %(i1)d
-"""),
-
-62: _(u"""
-  Les messages d'erreurs précédent concerne la commande :
 """),
 
 63: _(u"""

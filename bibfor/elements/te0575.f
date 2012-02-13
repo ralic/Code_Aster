@@ -3,9 +3,9 @@
       CHARACTER*16      OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 13/02/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -62,7 +62,8 @@ C
       PARAMETER          (MXCMEL = 162)
       PARAMETER          (NBNOMX = 27)
       PARAMETER          (NBCONT =  6)
-      INTEGER            NBSIGM, IHARMO, NH, IDIM, IRET, NBSP
+      INTEGER            NBSIGM, IHARMO, NH, IDIM, IRET, NBSP, INO
+      INTEGER            IDENEM
       REAL*8             EPSI(NBCONT), EPSIM(NBCONT), DELTA(NBCONT)
       REAL*8             INSTAN, NHARM, REPERE(7)
       REAL*8             ENERPG(NBNOMX), EPSS(MXCMEL)
@@ -318,30 +319,55 @@ C ---- ELASTIQUE EN SORTIE
 C      -------------------
       CALL JEVECH('PENERDR','E',IDENER)
 C
-C --- OPTIONS ENEL_ELGA ET ETOT_ELGA
+C --- OPTIONS ENEL_* ET ETOT_*
 C     ==============================
-      IF (OPTION(6:9).EQ.'ELGA') THEN
-         DO 100 IGAU = 1, NPG
-           ZR(IDENER+IGAU-1) = ENERPG(IGAU)
- 100     CONTINUE
+      IF (OPTION(1:4).EQ.'ETOT') THEN
+        CALL JEVECH('PENERDM','L',IDENEM)
+        IF (OPTION(6:9).EQ.'ELGA') THEN
+          DO 100 IGAU = 1, NPG
+            ZR(IDENER+IGAU-1)=ZR(IDENEM+IGAU-1)+ENERPG(IGAU)
+ 100      CONTINUE
 C
-C --- OPTION ENEL_ELNO ET ETOT_ELNO
-C     =======================================
-      ELSEIF (OPTION(6:9).EQ.'ELNO') THEN
-        IF (NPG.EQ.1) THEN
-           DO 110 I = 1, NNOS
-              ZR(IDENER+I-1) = ENERPG(1)
- 110       CONTINUE
-        ELSE
-          NCMP = 1
-          NBSP = 1
-          CALL PPGAN2 ( JGANO, NBSP, NCMP, ENERPG, ZR(IDENER) )
+C ---   OPTION ETOT_ELNO
+C       =======================================
+        ELSEIF (OPTION(6:9).EQ.'ELNO') THEN
+          IF (NPG.EQ.1) THEN
+            DO 110 I = 1, NNOS
+              ZR(IDENER+I-1)=ZR(IDENEM+I-1)+ENERPG(1)
+ 110        CONTINUE
+          ELSE
+            NCMP = 1
+            NBSP = 1
+            CALL PPGAN2 ( JGANO, NBSP, NCMP, ENERPG, ZR(IDENER) )
+            DO 130 INO = 1,NNO
+              ZR(IDENER+INO-1)=ZR(IDENEM+INO-1)+ZR(IDENER+INO-1)
+ 130        CONTINUE
         ENDIF
 C
-C --- OPTION ETOT_ELEM
-C     ================
-      ELSEIF (OPTION(6:9).EQ.'ELEM') THEN
-        ZR(IDENER) = ENELEM
+C ---   OPTION ETOT_ELEM
+C       ================
+        ELSEIF (OPTION(6:9).EQ.'ELEM') THEN
+          ZR(IDENER) = ZR(IDENEM)+ENELEM
+        ENDIF
+      ELSE
+        IF (OPTION(6:9).EQ.'ELGA') THEN
+          DO 200 IGAU = 1, NPG
+            ZR(IDENER+IGAU-1) = ENERPG(IGAU)
+ 200      CONTINUE
+C
+C --- OPTION ENEL_ELNO
+C     =======================================
+        ELSEIF (OPTION(6:9).EQ.'ELNO') THEN
+          IF (NPG.EQ.1) THEN
+            DO 210 I = 1, NNOS
+              ZR(IDENER+I-1) = ENERPG(1)
+ 210        CONTINUE
+          ELSE
+            NCMP = 1
+            NBSP = 1
+            CALL PPGAN2 ( JGANO, NBSP, NCMP, ENERPG, ZR(IDENER) )
+          ENDIF
+        ENDIF
       ENDIF
 C
       END

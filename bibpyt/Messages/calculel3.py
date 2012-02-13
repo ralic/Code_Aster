@@ -1,4 +1,4 @@
-#@ MODIF calculel3 Messages  DATE 03/01/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calculel3 Messages  DATE 13/02/2012   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -309,12 +309,6 @@ Risques & conseils :
 
 54 : _(u"""
  longueurs des modes locaux incompatibles entre eux.
-"""),
-
-55 : _(u"""
-Erreur utilisateur dans CALC_ELEM:
-  Pour pouvoir calculer SIEQ_ELNO sur un concept de type COMB_FOURIER,
-  il faut avoir calculé au préalable l'option 'SIEF_ELGA'
 """),
 
 57 : _(u"""

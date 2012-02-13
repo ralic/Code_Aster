@@ -1,4 +1,4 @@
-# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 13/02/2012   AUTEUR SELLENET N.SELLENET 
 # TITRE ESTIMATEURS D'ERREUR EN QUANTITES D'INTERET POUR LE CALCUL DES FIC
 # zzzz257a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -200,6 +200,11 @@ RESUDUAL=CALC_ERREUR(reuse =RESUDUAL,
                      OPTION=('ERME_ELEM',
                              'ERZ1_ELEM',
                              'ERZ2_ELEM',),);
+
+TABII=RECU_TABLE(CO=RESUDUAL,
+                 NOM_TABLE='ESTI_GLOB',);
+
+IMPR_TABLE(TABLE=TABII);
 
 # ---------------------------
 # estimation de l'erreur en quantite d'interet

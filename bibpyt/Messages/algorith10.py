@@ -1,8 +1,8 @@
-#@ MODIF algorith10 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith10 Messages  DATE 13/02/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -137,19 +137,6 @@ cata_msg = {
 
 52 : _(u"""
  la porosité initiale F0 ne peut être négative
-"""),
-
-53 : _(u"""
- Problème2, variables de pilotages
-"""),
-
-54 : _(u"""
- erreur d'intégration dans Runge-Kutta
- trop d'itération.
-"""),
-
-55 : _(u"""
- erreur d intégration dans Runge-Kutta
 """),
 
 56 : _(u"""

@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF spec_osci supervis  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF spec_osci supervis  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */

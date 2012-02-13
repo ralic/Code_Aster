@@ -2,9 +2,9 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -37,14 +37,15 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER LVALE,LXLGUT,LG1,LG2,IDDL,INOEUD,NCH,NVERI1
-      INTEGER NVERI2,N1,IRET,IVARI
+      INTEGER LVALE,LXLGUT,LG1,LG2,IDDL,INOEUD,NCH
+      INTEGER N1,IRET,IVARI
       INTEGER NM,NGM,NPOINT,NP,NN
       INTEGER NGN,IBID,IE,NC,IFM,NIV,NUSP
       REAL*8 EPSI,VALR
       COMPLEX*16 VALC
       CHARACTER*1 TYPE
       CHARACTER*24 VALK(2)
+      CHARACTER*4 TYPCH2
       CHARACTER*8 K8B,CRIT,MAILLE,NOMA,INTRES
       CHARACTER*8 NOEUD,CMP,NOGMA,NOGNO,NOMGD
       CHARACTER*16 NOMCMD,TYPCON,TYPCHA
@@ -76,9 +77,6 @@ C
       CALL GETVIS(' ','POINT',0,IARG,1,NPOINT,NP)
       CALL GETVTX(' ','NOEUD',0,IARG,1,NOEUD,NN)
       CALL GETVTX(' ','GROUP_NO',0,IARG,1,NOGNO,NGN)
-
-      NVERI1 = NM + NGM
-      NVERI2 = NN + NP + NGN
 C
 C     -----------------------------------------------------------------
 C                      --- CAS D'UN CHAM_GD ---
@@ -117,9 +115,6 @@ C       ----------------------------------
 C     -----------------------------------
 C ---  VERIFICATION DE LA PRESENCE DES MOTS CLE GROUP_MA (OU MAILLE)
 C ---  ET GROUP_NO (OU NOEUD OU POINT) DANS LE CAS D'UN CHAM_ELEM
-          IF (NVERI1.EQ.0 .OR. NVERI2.EQ.0) THEN
-            CALL U2MESS('F', 'UTILITAI6_15')
-          END IF
           IF (NGM.NE.0) THEN
             CALL UTNONO(' ',NOMA,'MAILLE',NOGMA,MAILLE,IRET)
             IF (IRET.EQ.10) THEN
@@ -138,6 +133,21 @@ C ---  ET GROUP_NO (OU NOEUD OU POINT) DANS LE CAS D'UN CHAM_ELEM
               CALL U2MESG('A', 'SOUSTRUC_87',1,VALK,0,0,0,0.D0)
             END IF
           END IF
+          CALL DISMOI('F','TYPE_CHAMP',CHAM19,'CHAMP',IBID,TYPCH2,IE)
+          IF ( TYPCH2.EQ.'ELEM' ) THEN
+            NPOINT = 1
+            NUSP = 1
+            NOEUD = ' '
+            IF ( MAILLE.EQ.' ' )
+     &        CALL U2MESS('F', 'CHAMPS_11')
+          ELSEIF ( TYPCH2.EQ.'ELNO' ) THEN
+            NUSP = 1
+            IF ( MAILLE.EQ.' ' .OR. (NOEUD.EQ.' ' .AND. NPOINT.EQ.0) )
+     &        CALL U2MESS('F', 'CHAMPS_12')
+          ELSE
+            IF ( MAILLE.EQ.' ' .OR. NPOINT.EQ.0 )
+     &        CALL U2MESS('F', 'CHAMPS_13')
+          ENDIF
           CALL DISMOI('F','NOM_GD',CHAM19,'CHAM_ELEM',IBID,NOMGD,IE)
           CALL DISMOI('F','TYPE_SCA',NOMGD,'GRANDEUR',IBID,TYPE,IE)
           IF (TYPE.NE.'R') THEN
@@ -161,7 +171,7 @@ C     -----------------------------------------------------------------
 C
 C     --- VERIFICATION QU'ON A BIEN CREER UNE FONCTION ---
 C         ET REMISE DES ABSCISSES EN ORDRE CROISSANT
-      CALL ORDONN(NOMFON,NOMCMD,0)
+      CALL ORDONN(NOMFON,0)
 C
       CALL TITRE
       IF (NIV.GT.1) CALL FOIMPR(NOMFON,NIV,IFM,0,K8B)

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 13/02/2012   AUTEUR SELLENET N.SELLENET 
 # TITRE TUYAUTERIE COMPORTANT UN COUDE - ELEMENTS COQUES DKT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -148,7 +148,7 @@ for k in range(1,10):
                      OPTION=('SIGM_ELNO',),)
 
    RESU2[k]=POST_CHAMP(RESULTAT=RESU[k],
-                       EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                       EXTR_COQUE=_F(NOM_CHAM=('SIEF_ELGA','SIGM_ELNO',),
                                      NUME_COUCHE=1,
                                      NIVE_COUCHE='SUP',),);
    RESU2[k]=CALC_ELEM(reuse=RESU2[k],RESULTAT=RESU2[k],

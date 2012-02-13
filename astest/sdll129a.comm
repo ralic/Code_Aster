@@ -1,9 +1,9 @@
-# MODIF  DATE 11/10/2011   AUTEUR TORKHANI M.TORKHANI 
+# MODIF  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
 # TITRE CAMPBELL POUR UN ROTOR AVEC PALIERS A CARACTERISTIQUES VARIABLES
 # sdll129a.para = tps_job 900 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -480,19 +480,19 @@ for kk in range(0,nbV,1) :
    GYOM[kk]=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYAS[kk], COEF_R=OM,),
                                    _F(MATR_ASSE=AMOR[kk], COEF_R=1.,),))
 
-   MACRO_PROJ_BASE(BASE=MODES,
-                STOCKAGE='PLEIN',
-                MATR_ASSE_GENE=(_F(MATRICE=MAGE[kk],
-                                   MATR_ASSE=MASS[kk],),
-                                _F(MATRICE=RIGE[kk],
-                                   MATR_ASSE=RIGI[kk],),
-                                _F(MATRICE=AMGE[kk],
-                                   MATR_ASSE=AMOR[kk],),
-                                _F(MATRICE=GYGE[kk],
-                                   MATR_ASSE=GYAS[kk],),
-                                _F(MATRICE=OMGE[kk],
-                                   MATR_ASSE=GYOM[kk],),),);
-   
+   PROJ_BASE(BASE=MODES,
+             STOCKAGE='PLEIN',
+             MATR_ASSE_GENE=(_F(MATRICE=MAGE[kk],
+                               MATR_ASSE=MASS[kk],),
+                            _F(MATRICE=RIGE[kk],
+                               MATR_ASSE=RIGI[kk],),
+                            _F(MATRICE=AMGE[kk],
+                               MATR_ASSE=AMOR[kk],),
+                            _F(MATRICE=GYGE[kk],
+                               MATR_ASSE=GYAS[kk],),
+                            _F(MATRICE=OMGE[kk],
+                               MATR_ASSE=GYOM[kk],),),);
+     
    _mod1[kk]=MODE_ITER_SIMULT(MATR_A=RIGI[kk],
                                MATR_B=MASS[kk],
                                MATR_C=GYOM[kk],

@@ -1,8 +1,8 @@
-#@ MODIF utilitai8 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utilitai8 Messages  DATE 13/02/2012   AUTEUR BERRO H.BERRO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -280,6 +280,18 @@ de type valide
 65 : _(u"""
   Vous définissez une charge mécanique sur un modèle thermique !
   Le MODELE doit être de type mécanique.
+"""),
+
+66 : _(u"""
+  Le MACR_ELEM_DYNA a été créé avec une base modale qui entre-temps a été
+  modifiée/enrichie. Le nombre d'équations dans le MACR_ELEM_DYNA ne 
+  correspond plus au nombre de vecteurs de projection modale.
+  
+  -> Conseil: Pour mettre à jour le MACR_ELEM_DYNA, il faut d'abord détruire 
+              le concept associé et le récréer ensuite avec la nouvelle base modale.
+  
+  Nombre d'équations dans le MACR_ELEM_DYNA      = %(i1)d
+  Nombre de vecteurs de projection modale        = %(i2)d
 """),
 
 }

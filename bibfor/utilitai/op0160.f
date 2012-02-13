@@ -2,9 +2,9 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 13/02/2012   AUTEUR BERRO H.BERRO 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,11 +21,27 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     OPERATEUR   IMPR_MACR_ELEM
 C     ------------------------------------------------------------------
-      INTEGER       VERSIO, N1, IFIC
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER          ZI
+      COMMON  /IVARJE/ ZI(1)
+      REAL*8           ZR
+      COMMON  /RVARJE/ ZR(1)
+      COMPLEX*16       ZC
+      COMMON  /CVARJE/ ZC(1)
+      LOGICAL          ZL
+      COMMON  /LVARJE/ ZL(1)
+      CHARACTER*8      ZK8
+      CHARACTER*16            ZK16
+      CHARACTER*24                    ZK24
+      CHARACTER*32                            ZK32
+      CHARACTER*80                                    ZK80
+      COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER       VERSIO, N1, IFIC, VALI(2)
       LOGICAL       ULEXIS
-      CHARACTER*8   FORMAT, MACREL
+      CHARACTER*8   FORMAT, MACREL, BASEMO, K8B
       CHARACTER*16  FICHIE
-      INTEGER      IARG
+      INTEGER      IARG, JREFE, NBMODT, NBVECT, JDESM
 C     ------------------------------------------------------------------
       CALL INFMAJ()
 C
@@ -34,9 +50,27 @@ C
 C
       CALL GETVID ( ' ', 'MACR_ELEM_DYNA', 1,IARG,1, MACREL, N1 )
 C
+C     ----- VERIFICATION QUE LA BASE MODALE EST A JOUR -----
+
+C     1. RECUPERATION DU NOMBRE DES MODES -----
+      CALL JEVEUO(MACREL//'.MAEL_REFE','L',JREFE)
+      BASEMO = ZK24(JREFE)(1:8)
+      CALL JELIRA(BASEMO//'           .ORDR','LONMAX',NBMODT,K8B)
+      
+C     2. RECUPERATION DU NOMBRE DE VECTEURS DE BASE -----
+      CALL JEVEUO(MACREL//'.DESM','L',JDESM)
+      NBVECT = ZI(JDESM+3)
+      
+C     3. VERIFICATION QUE LA BASE MODALE EST A JOUR -----
+      IF (NBVECT.NE.NBMODT) THEN
+       VALI(1) = NBVECT
+       VALI(2) = NBMODT
+       CALL U2MESI('F', 'UTILITAI8_66',2,VALI)
+      ENDIF
+C     ------------------------------------------------------------------
+
       CALL GETVTX ( ' ', 'FORMAT', 1,IARG,1, FORMAT, N1 )
 C
-C     ------------------------------------------------------------------
       IF ( FORMAT .EQ. 'IDEAS' ) THEN
 
          CALL GETVIS ( ' ', 'VERSION', 1,IARG,1, VERSIO, N1 )

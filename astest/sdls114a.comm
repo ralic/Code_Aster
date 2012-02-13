@@ -1,4 +1,4 @@
-# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES
 # sdls114a.para = tps_job 240 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -21,7 +21,8 @@
 #        PAR RECOMBINAISON MODALE SUR UNE PLAQUE FISSUREE
 
 
-DEBUT(CODE=_F( NOM = 'SDLS114A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'))
+DEBUT(CODE=_F(NOM='SDLS114A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='NON'))
+# SDVERI='NON' car la verification est trop couteuse en CPU
 
 # DEFINITION DES PARAMETRES DU CALCUL
 n_mode = 15
@@ -119,7 +120,7 @@ MA_ASS=ASSE_MATRICE(MATR_ELEM=MMASSE,
 
 AMO_ASS=ASSE_MATRICE(MATR_ELEM=MAMOR,
                     NUME_DDL=NUM,);
-                    
+
 VE_ASS=ASSE_VECTEUR(VECT_ELEM=VCHA,
                     NUME_DDL=NUM,);
 
@@ -164,9 +165,9 @@ IMPR_TABLE(TABLE =GLMO1);
 FISS=DEFI_FOND_FISS(MAILLAGE=M,
                    FOND_FISS=_F(GROUP_NO = 'PF',),
                    LEVRE_SUP=_F(  GROUP_MA = 'LEVSUP'),
-                   LEVRE_INF=_F(  GROUP_MA = 'LEVINF'),                  
+                   LEVRE_INF=_F(  GROUP_MA = 'LEVINF'),
                   );
-                                 
+
 
 T1_K = POST_K1_K2_K3(MODELISATION='C_PLAN',
                            MATER=MA,
@@ -193,7 +194,7 @@ for i in range(0,5) :
               REFERENCE = 'NON_REGRESSION',
               VERSION='11.00.04'
              )
-             
+
    TEST_TABLE(TABLE=T1_K,
               NOM_PARA='K1',
               FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
@@ -209,7 +210,7 @@ for i in range(0,5) :
 # CALCUL TRANSITOIRE EN COORDONNEES MODALES
 ##############################################
 
-MACRO_PROJ_BASE(BASE=MODE,
+PROJ_BASE(BASE=MODE,
                 STOCKAGE='DIAG',
                 MATR_ASSE_GENE=(_F(MATRICE=CO('MASS_GE'),
                                    MATR_ASSE=MA_ASS,),

@@ -1,8 +1,8 @@
-#@ MODIF TableReader Utilitai  DATE 13/12/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF TableReader Utilitai  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,6 +21,7 @@
 
 import os
 import re
+from pprint import pformat
 
 try:
     import aster
@@ -29,7 +30,7 @@ except ImportError:
     error = StandardError
 
 from Utilitai.Table import Table
-from Utilitai.string_utils import maximize_lines
+from Utilitai.string_utils import cut_long_lines, maximize_lines
 from Utilitai.utils import set_debug, _printDBG
 
 # Aster type : regular expression
@@ -83,6 +84,10 @@ class TableReader(object):
                 dico[para] = convert(valk)
         return dico
 
+    def is_comment(self, line):
+        """Tell if 'line' is a comment"""
+        return False
+
     def read_line_i(self, i, line):
         """Read a line."""
         raise NotImplementedError('must be defined in a derivated class')
@@ -108,19 +113,26 @@ class TableReaderFree(TableReader):
         stat = [[], ]
         nbcol = 0
         curblock = 0
+        curblock_hasvalue = False
         for i, line in enumerate(all_lines):
             cur = len(msplit(line, self.sep))
-            if nbcol > 1 and cur < nbcol:
+            if self.is_comment(line) and not curblock_hasvalue:
+                # only comments in this block
+                cur = 0
+            elif nbcol > 1 and cur < nbcol:
                 # less fields = new block
                 _printDBG("Nouveau bloc à la ligne ", i)
                 if curblock >= nblock and not self.debug:
                     break
                 curblock += 1
+                curblock_hasvalue = False
                 stat.append([])
             nbcol = cur
             stat[curblock].append((nbcol, line))
+            if not self.is_comment(line):
+                curblock_hasvalue = True
         nbtab = len(stat)
-        _printDBG("Nombre de blocs lus :", nbtab)
+        _printDBG("Nombre de blocs lus :", nbtab, pformat(stat))
         if nblock > nbtab:
             raise error('TABLE0_10', None, (nblock, nbtab))
         return stat[nblock - 1]
@@ -131,11 +143,12 @@ class TableReaderFree(TableReader):
         self.lines = []
         ltit = []
         for i, line in stat:
-            if i == nbcol:
+            if i == nbcol and not self.is_comment(line):
                 self.lines.append(line)
             else:
                 ltit.append(line)
-        self.title = os.linesep.join(maximize_lines(ltit, 80, ' '))
+        ltit = cut_long_lines(os.linesep.join(ltit), 80)
+        self.title = os.linesep.join(maximize_lines(ltit.splitlines(), 80, ' '))
         _printDBG("TITLE:", self.title)
         _printDBG("LINES:", '\n', self.lines)
         return nbcol
@@ -161,6 +174,17 @@ class TableReaderFree(TableReader):
         self.tab = Table(para=para, titr=self.title)
         self.read_all_lines()
         return self.tab
+
+
+class TableReaderTableau(TableReaderFree):
+    """Table reader in TABLEAU format."""
+    id_vide = '-'
+
+    def is_comment(self, line):
+        """Tell if 'line' is a comment"""
+        #_printDBG('is_comment : %s : %s' % (line.startswith('#'), line))
+        return line.startswith('#')
+
 
 
 class TableReaderAster(TableReader):
@@ -236,6 +260,8 @@ def TableReaderFactory(text, fmt, separator, debug=False):
     """Return the appropriate reader."""
     if fmt == 'ASTER':
         return TableReaderAster(text, separator, debug)
+    elif fmt == 'TABLEAU':
+        return TableReaderTableau(text, separator, debug)
     else:
         return TableReaderFree(text, separator, debug)
 

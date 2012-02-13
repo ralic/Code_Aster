@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
 # TITRE REPONSE TRANSITOIRE D'UN POTEAU ENCASTRE LIBRE (FORCE IMPOSEE)
 # sdll06b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -112,18 +112,18 @@ L_RECU=DEFI_LIST_REEL(  DEBUT=0.01,INTERVALLE=(
 
 #-----------------------------------------------------------------------
 #
-MACRO_PROJ_BASE(  BASE=MODE_MEC,
-                  STOCKAGE='DIAG',
-                  MATR_ASSE_GENE=(
-                   _F(
-                                   MATRICE = CO("MASS_GEN"),
-                                   MATR_ASSE = MASSE),
-                   _F(
-                                   MATRICE = CO("RIGI_GEN"),
-                                   MATR_ASSE = RIGIDITE)),
-                   VECT_ASSE_GENE=_F(
-                                   VECTEUR = CO("VECT_X"),
-                                   VECT_ASSE = VECTEUR)
+PROJ_BASE(  BASE=MODE_MEC,
+            STOCKAGE='DIAG',
+            MATR_ASSE_GENE=(
+             _F(
+                             MATRICE = CO("MASS_GEN"),
+                             MATR_ASSE = MASSE),
+             _F(
+                             MATRICE = CO("RIGI_GEN"),
+                             MATR_ASSE = RIGIDITE)),
+             VECT_ASSE_GENE=_F(
+                             VECTEUR = CO("VECT_X"),
+                             VECT_ASSE = VECTEUR)
 )
 
 #

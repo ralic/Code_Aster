@@ -1,9 +1,9 @@
-#@ MODIF codex Build  DATE 30/05/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF codex Build  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -48,31 +48,29 @@ def init(debug):
 def impers():
    return None
 
-def opsexe(cmd,icmd,ipass,op):
+def opsexe(cmd,op):
    """
       Fonction d'execution de l'ops d'une macro
       cmd est l'objet Python representant de la commande
-      ipass indique la passe d'execution :
-           -1 pour la construction de la macro
       op est le numero de la macro
       icmd le numero de la commande dans le jeu de commandes
    """
-   #print "codex.opsexe : ",cmd.nom,cmd,icmd,ipass,op
+   #print "codex.opsexe : ",cmd.nom,cmd,op
    ops[op](cmd)
    return 0
 
-def oper(cmd,jxvrf,ipass,icmd):
+def oper(cmd,jxvrf):
    """
       Fonction d'execution de l'operateur d'un operateur ou d'une
       procedure
    """
-   #print "codex.oper : ",cmd.nom,icmd,ipass,jxvrf
+   #print "codex.oper : ",cmd.nom,jxvrf
 
-def debut(cmd,lot):
+def debut(cmd):
    """
       Fonction d'execution de la macro-commande debut
    """
-   print "codex.debut : ",cmd,lot
+   print "codex.debut : ",cmd
    concept,type_concept,nom_cmd=cmd.getres()
    print "codex.debut : ",concept,type_concept,nom_cmd
    taille=cmd.getfac("IMPRESSION  ")
@@ -95,13 +93,13 @@ def debut(cmd,lot):
 
    print cmd.getoper()
 
-   lot=cmd.getvtx("","PAR_LOT",1,1,1)
+   cmd.getvtx("","PAR_LOT",1,1,1)
    print "MCS: ",cmd.getvtx("DEBUG","ENVIMA",1,1,1)
    print "MCS: ",cmd.getvtx("MEMOIRE","GESTION",1,1,1)
    print "MCS: ",cmd.getvis("MEMOIRE","TYPE_ALLOCATION",1,1,1)
    print "MCS: ",cmd.getvr8("MEMOIRE","PARTITION",1,1,1)
 
-   return lot,0
+   return
 
 def ops1(cmd):
    """

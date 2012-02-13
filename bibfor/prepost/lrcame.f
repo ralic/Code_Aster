@@ -8,7 +8,7 @@
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 30/01/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 13/02/2012   AUTEUR SELLENET N.SELLENET 
 C RESPONSABLE SELLENET N.SELLENET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -480,7 +480,7 @@ C
         ENDIF
         CALL U2MESS('F','MED_37')
       ENDIF
-C NSELLENET
+C
 C====
 C 0. TRAITEMENT PARTICULIER POUR LES CHAMPS ELGA
 C====
@@ -525,7 +525,6 @@ C
         CALL JEVEUO ( CHAMES//'.CESL', 'E', ADSL )
       ENDIF
       NBVATO = ZI(ADSD-1+1)
-C NSELLENET
 C
 C=====================================================================
 C 3. TRAITEMENT DES CHAMPS AUX NOEUDS                             ====

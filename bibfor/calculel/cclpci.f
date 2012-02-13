@@ -9,9 +9,9 @@ C     --- ARGUMENTS ---
       CHARACTER*16 OPTION
       CHARACTER*24 LICHIN(*),LIGREL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 15/11/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 13/02/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -104,7 +104,7 @@ C       SD RESULTAT
      &       (ZK24(IAOPLO+3*IPARA-3).EQ.'RESU') ) THEN
           IF ( ZK24(IAOPLO+3*IPARA-1).EQ.'NP1' ) THEN
             DECAL = 1
-          ELSEIF ( ZK24(IAOPLO+3*IPARA-1).EQ.'NM1' ) THEN
+          ELSEIF ( ZK24(IAOPLO+3*IPARA-1)(1:3).EQ.'NM1' ) THEN
             DECAL = -1
           ELSE
             DECAL = 0
@@ -118,14 +118,24 @@ C       SD RESULTAT
             IF ( (OPTION.EQ.OPTIO2) ) THEN
 C             CAS OU UN CHAMP DEPEND DE LUI MEME A L'INSTANT N-1
 C             EXEMPLE : ENDO_ELGA
-              CALL RSEXCH(RESUOU,OPTIO2,NUMORD+DECAL,NOCHIN,IERD)
-              CALL ALCHML(LIGREL,OPTIO2,LIPAIN(NBPAIN),
-     &                    'G',NOCHIN,IERD,' ')
-              IF (IERD.GT.0) THEN
-                CALL U2MESK('A','CALCULEL3_19',1,OPTION)
-                GO TO 10
+              IF ( ZK24(IAOPLO+3*IPARA-1).EQ.'NM1T' ) THEN
+                NOCHIN='&&CALCOP.INT_0'
+                CALL ALCHML(LIGREL,OPTIO2,LIPAIN(NBPAIN),
+     &                      'V',NOCHIN,IERD,' ')
+                IF (IERD.GT.0) THEN
+                  CALL U2MESK('A','CALCULEL3_19',1,OPTION)
+                  GO TO 10
+                ENDIF
+              ELSE
+                CALL RSEXCH(RESUOU,OPTIO2,NUMORD+DECAL,NOCHIN,IERD)
+                CALL ALCHML(LIGREL,OPTIO2,LIPAIN(NBPAIN),
+     &                      'G',NOCHIN,IERD,' ')
+                IF (IERD.GT.0) THEN
+                  CALL U2MESK('A','CALCULEL3_19',1,OPTION)
+                  GO TO 10
+                ENDIF
+                CALL RSNOCH(RESUOU,OPTIO2,NUMORD+DECAL,' ')
               ENDIF
-              CALL RSNOCH(RESUOU,OPTIO2,NUMORD+DECAL,' ')
             ELSE
               NOCHIN = ' '
             ENDIF

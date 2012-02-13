@@ -17,13 +17,13 @@ FYE=CALC_VECT_ELEM(OPTION='CHAR_MECA',
 FY=ASSE_VECTEUR(VECT_ELEM=FYE,
                 NUME_DDL=NUMEDDL,);
 
-MACRO_PROJ_BASE(BASE=MODES,
-                MATR_ASSE_GENE=(_F(MATRICE=CO('MASPRO'),
-                                   MATR_ASSE=MASSE,),
-                                _F(MATRICE=CO('RIPRO'),
-                                   MATR_ASSE=RIGIDITE,),),
-                VECT_ASSE_GENE=_F(VECTEUR=CO('FYPRO'),
-                                  VECT_ASSE=FY,),);
+PROJ_BASE(BASE=MODES,
+          MATR_ASSE_GENE=(_F(MATRICE=CO('MASPRO'),
+                             MATR_ASSE=MASSE,),
+                          _F(MATRICE=CO('RIPRO'),
+                             MATR_ASSE=RIGIDITE,),),
+          VECT_ASSE_GENE=_F(VECTEUR=CO('FYPRO'),
+                            VECT_ASSE=FY,),);
 tfi = 2.0;
 
 pas = 0.0001;

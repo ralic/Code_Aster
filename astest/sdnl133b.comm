@@ -1,9 +1,9 @@
-# MODIF  DATE 19/12/2011   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
 # TITRE ROTOR FISSURE TOURNANT SOUMIS A UN MOMENT DE FLEXION
 # sdnl133b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -135,16 +135,16 @@ BMOD=DEFI_BASE_MODALE(RITZ=_F(MODE_MECA=(MODEF,MODES,),),
                       NUME_REF=NUD,);
 
 
-MACRO_PROJ_BASE(  BASE=BMOD,
-                  STOCKAGE='PLEIN',
-                  MATR_ASSE_GENE=(
-                   _F(
-                                   MATRICE = CO("MASSEGEN"),
-                                   MATR_ASSE = MASSAF),
-                   _F(
-                                   MATRICE = CO("RIGIDGEN"),
-                                   MATR_ASSE = RIGIAF)),
-                   )
+PROJ_BASE(  BASE=BMOD,
+            STOCKAGE='PLEIN',
+            MATR_ASSE_GENE=(
+             _F(
+                             MATRICE = CO("MASSEGEN"),
+                             MATR_ASSE = MASSAF),
+             _F(
+                             MATRICE = CO("RIGIDGEN"),
+                             MATR_ASSE = RIGIAF)),
+             )
 
 
 CHA_FX=AFFE_CHAR_MECA(MODELE=MODELE,
@@ -204,19 +204,19 @@ RAMP=DEFI_FONCTION(NOM_PARA='INST',
                          ),);
 
 
-MACRO_PROJ_BASE(  BASE=BMOD,
-                  STOCKAGE='PLEIN',
-                  MATR_ASSE_GENE=(
-                   _F(
-                                   MATRICE = CO("MASGEN"),
-                                   MATR_ASSE = MASSAF),
-                   _F(
-                                   MATRICE = CO("RIGGEN"),
-                                   MATR_ASSE = RIGIAF)),
-                   VECT_ASSE_GENE=(
-                                  _F( VECTEUR = CO("VAGFZ"), VECT_ASSE = VASFZ,),
-                                  _F( VECTEUR = CO("VAGFX"), VECT_ASSE = VASFX,),
-                   ))
+PROJ_BASE(  BASE=BMOD,
+            STOCKAGE='PLEIN',
+            MATR_ASSE_GENE=(
+             _F(
+                             MATRICE = CO("MASGEN"),
+                             MATR_ASSE = MASSAF),
+             _F(
+                             MATRICE = CO("RIGGEN"),
+                             MATR_ASSE = RIGIAF)),
+             VECT_ASSE_GENE=(
+                            _F( VECTEUR = CO("VAGFZ"), VECT_ASSE = VASFZ,),
+                            _F( VECTEUR = CO("VAGFX"), VECT_ASSE = VASFX,),
+             ))
 
 
 TRANGEN = DYNA_VIBRA   (     MATR_MASS=MASGEN,   MATR_RIGI=RIGGEN,

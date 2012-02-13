@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 06/02/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF compor1 Messages  DATE 13/02/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -145,9 +145,16 @@ Erreur numérique (overflow) : la plasticité cumulée devient très grande.
   un nombre de coefficients incorrect :: il en faut 1, ou 4, ou 6.
 """),
 
-
 26: _(u"""
  LETK - lklmat :: paramètres de la loi LETK non cohérents
+"""),
+
+27 : _(u"""
+  comportement cristallin  : les coefficients matériau ne peuvent dépendre de la température.
+"""),
+
+28 : _(u"""
+  comportement cristallin homogénéisé : les coefficients matériau ne peuvent dépendre de la température.
 """),
 
 29: _(u"""

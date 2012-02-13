@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 30/01/2012   AUTEUR DESROCHE X.DESROCHES 
+%& MODIF TYPELEM  DATE 13/02/2012   AUTEUR SELLENET N.SELLENET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -353,13 +353,13 @@ OPTION__
     ERME_ELNO           379   IN__   EERREUR  PERREUR
                               OUT__  EERRENO  PERRENO
     ETOT_ELEM           576   IN__   ECONTPG  PCONTMR  ECONTPG  PCONTPR  DDL_MECA PDEPLM   DDL_MECA PDEPLR
-                                     NGEOMER  PGEOMER
+                                     NGEOMER  PGEOMER  EENEDNO  PENERDM
                               OUT__  EENEDNO  PENERDR
     ETOT_ELGA           576   IN__   ECONTPG  PCONTMR  ECONTPG  PCONTPR  DDL_MECA PDEPLM   DDL_MECA PDEPLR
-                                     NGEOMER  PGEOMER
+                                     NGEOMER  PGEOMER  EENEDPG  PENERDM
                               OUT__  EENEDPG  PENERDR
     ETOT_ELNO           576   IN__   ECONTPG  PCONTMR  ECONTPG  PCONTPR  DDL_MECA PDEPLM   DDL_MECA PDEPLR
-                                     NGEOMER  PGEOMER
+                                     NGEOMER  PGEOMER  EENEDNN  PENERDM
                               OUT__  EENEDNN  PENERDR
     FORC_NODA           395   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC

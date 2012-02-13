@@ -1,8 +1,8 @@
-#@ MODIF med Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF med Messages  DATE 13/02/2012   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -455,8 +455,19 @@ cata_msg = {
 """),
 
 83 : _(u"""
-  -  valeurs lues dans le fichier        : %(i1)d
-  -  valeurs non affectées dans le champ : %(i2)d
+Le nombre de valeurs lues dans le fichier MED est différent du nombre de valeurs réellement
+ affectées dans le champ :
+  - valeurs lues dans le fichier        : %(i1)d
+  - valeurs non affectées dans le champ : %(i2)d
+
+Risques :
+  Soit le modèle n'est pas adapté au champ que vous souhaitez lire, auquel cas vous risquez
+   d'obtenir des résultats faux. Soit le modèle est constitué d'un mélange de modélisations
+   qui ne portent pas les mêmes composantes sur les différents éléments du maillage auquel
+   cas, cette alarme n'est pas légitime.
+
+Conseil :
+  Vérifiez la cohérence du modèle et du fichier MED.
 """),
 
 84 : _(u"""

@@ -1,9 +1,9 @@
-#@ MODIF E_ETAPE Execution  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_ETAPE Execution  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -70,7 +70,6 @@ class ETAPE:
       # On n'execute pas les etapes qui n'ont pas de numero d'operateur associé
       if self.definition.op is None :return 0
 
-      assert(type(self.modexec)==int),"type(self.modexec)="+`type(self.modexec)`
       assert(type(self.definition.op)==int),"type(self.definition.op)="+`type(self.definition.op)`
 
       ier=0
@@ -81,21 +80,21 @@ class ETAPE:
       # produit un affichage en double.
       if self.icmd is not None:
           # appel de la methode oper dans le module codex
-          if (self.modexec == 2) and (self.definition.op_init==None):
+          if self.definition.op_init is None:
              self.AfficheTexteCommande()
              if self.sd and self.jdc.sdveri:
                 l_before = checksd.get_list_objects()
 
           self.jdc.timer.Stop(' . part Superviseur')
           self.jdc.timer.Start(' . part Fortran', num=1.2e6)
-          ier=self.codex.oper(self,self.jdc.jxveri,self.modexec,self.icmd)
+          self.codex.oper(self, self.jdc.jxveri)
           self.jdc.timer.Stop(' . part Fortran')
           self.jdc.timer.Start(' . part Superviseur')
 
           # enregistrement des concepts sensibles en attente
           self.jdc.memo_sensi.register_sensi()
 
-          if (self.modexec == 2) and (self.definition.op_init==None):
+          if self.definition.op_init is None:
              # marque le concept comme calculé
              if self.sd:
                self.sd.executed = 1
@@ -117,13 +116,11 @@ class ETAPE:
              # affichage du texte de la commande
              self.AfficheFinCommande()
       else:
-          if self.modexec == 2:
-             # affichage du texte de la commande
-             self.AfficheTexteCommande()
+          self.AfficheTexteCommande()
 
       if CONTEXT.debug :
-           prbanner(" fin d execution de l operateur %s numero %s " % (self.definition.nom,
-                                                                       self.definition.op))
+          prbanner(" fin d execution de l operateur %s numero %s " % (self.definition.nom,
+                                                                      self.definition.op))
       return ier
 
    def AfficheTexteCommande( self, sortie=sys.stdout ) :
@@ -142,7 +139,7 @@ class ETAPE:
 
       # impression du fichier .code : compte rendu des commandes et
       # mots clés activés par l'ETAPE
-      if self.jdc.fico!=None :
+      if self.jdc.fico != None:
         v=genpy.genpy(defaut='avec',simp='into')
         self.accept(v)
         chaine = ' %-10s%-20s' % (self.jdc.fico, self.nom)
@@ -184,6 +181,8 @@ class ETAPE:
          # commande_formatee
          v=genpy.genpy(defaut='avec')
          self.accept(v)
+         if self.jdc.ctree:
+            self.accept(self.jdc.ctree)
          commande_formatee = v.formate_etape()
          aster.affiche('MESSAGE', convert(commande_formatee))
 
@@ -251,10 +250,6 @@ class ETAPE:
       #try:
       if True:
          self.Build()
-
-         self.setmode(1)
-         self.Exec()
-         self.setmode(2)
          try:
             self.Exec()
          except self.codex.error:
@@ -293,10 +288,6 @@ class ETAPE:
       if True:
          # Construction des sous-commandes
          self.Build()
-
-         self.setmode(1)
-         self.Exec()
-         self.setmode(2)
          self.Exec()
       #except:
          #self.reset_current_step()

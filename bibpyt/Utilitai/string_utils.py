@@ -1,21 +1,21 @@
-#@ MODIF string_utils Utilitai  DATE 23/05/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF string_utils Utilitai  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE COURTOIS M.COURTOIS
 
@@ -50,20 +50,6 @@ def clean_string(chaine):
     return ''.join(txt)
 
 # existe dans asrun.mystring
-def maximize_lines(l_fields, maxlen, sep):
-    """Construit des lignes dont la longueur est au plus de `maxlen` caractères.
-    Les champs sont assemblés avec le séparateur `sep`.
-    """
-    newlines = []
-    while len(l_fields) > 0:
-        cur = []
-        while len(l_fields) > 0 \
-              and len(sep.join(cur + [l_fields[0],])) <= maxlen:
-            cur.append(l_fields.pop(0))
-        newlines.append(sep.join(cur))
-    newlines = [l for l in newlines if l != '']
-    return newlines
-
 def cut_long_lines(txt, maxlen, sep=os.linesep,
                    l_separ=(' ', ',', ';', '.', ':')):
     """Coupe les morceaux de `txt` (isolés avec `sep`) de plus de `maxlen`
@@ -75,8 +61,12 @@ def cut_long_lines(txt, maxlen, sep=os.linesep,
     for line in l_lines:
         if len(line) > maxlen:
             l_sep = list(l_separ)
-            line = cut_long_lines(line, maxlen, l_sep[0], l_sep[1:])
-            line = maximize_lines(line, maxlen, l_sep[0])
+            if len(l_sep) == 0:
+                newlines.extend(force_split(line, maxlen))
+                continue
+            else:
+                line = cut_long_lines(line, maxlen, l_sep[0], l_sep[1:])
+                line = maximize_lines(line, maxlen, l_sep[0])
             newlines.extend(line)
         else:
             newlines.append(line)
@@ -85,6 +75,34 @@ def cut_long_lines(txt, maxlen, sep=os.linesep,
         newlines = os.linesep.join(newlines)
     return newlines
 
+def maximize_lines(l_fields, maxlen, sep):
+    """Construit des lignes dont la longueur est au plus de `maxlen` caractères.
+    Les champs sont assemblés avec le séparateur `sep`.
+    """
+    newlines = []
+    if len(l_fields) == 0:
+        return newlines
+    # ceinture
+    assert max([len(f) for f in l_fields]) <= maxlen, 'lignes trop longues : %s' % l_fields
+    while len(l_fields) > 0:
+        cur = []
+        while len(l_fields) > 0 and len(sep.join(cur + [l_fields[0],])) <= maxlen:
+            cur.append(l_fields.pop(0))
+        # bretelle
+        assert len(cur) > 0, l_fields
+        newlines.append(sep.join(cur))
+    newlines = [l for l in newlines if l != '']
+    return newlines
+
+def force_split(txt, maxlen):
+    """Force le découpage de la ligne à 'maxlen' caractères.
+    """
+    l_res = []
+    while len(txt) > maxlen:
+        l_res.append(txt[:maxlen])
+        txt = txt[maxlen:]
+    l_res.append(txt)
+    return l_res
 
 def copy_text_to(text, files):
     """Imprime le texte dans les fichiers.

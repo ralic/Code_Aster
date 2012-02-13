@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
 # TITRE REPONSE TRANSITOIRE D'UN POTEAU ENCASTRE LIBRE (ACCELERA. IMPO)
 # sdll06a.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -92,13 +92,13 @@ MONO_X=CALC_CHAR_SEISME(   MATR_MASS=MASSE,   DIRECTION=( 1., 0., 0.,),
 #
 # PROJECTION DES MATRICES M ET K SUR LA BASE MODALE
 #---------------------------------------------------
-MACRO_PROJ_BASE( BASE=MODE_MEC,
-                 STOCKAGE='DIAG',
-                 MATR_ASSE_GENE=(
-                _F(  MATRICE = CO("MASS_GEN"),  MATR_ASSE = MASSE),
-                _F(  MATRICE = CO("RIGI_GEN"),  MATR_ASSE = RIGIDITE)),
-                VECT_ASSE_GENE=_F(  VECTEUR = CO("VECT_X"),  VECT_ASSE = MONO_X) 
-               )
+PROJ_BASE( BASE=MODE_MEC,
+           STOCKAGE='DIAG',
+           MATR_ASSE_GENE=(
+          _F(  MATRICE = CO("MASS_GEN"),  MATR_ASSE = MASSE),
+          _F(  MATRICE = CO("RIGI_GEN"),  MATR_ASSE = RIGIDITE)),
+          VECT_ASSE_GENE=_F(  VECTEUR = CO("VECT_X"),  VECT_ASSE = MONO_X) 
+         )
 
 #
 # CALCUL TRANSITOIRE PAR SUPERPOSITION MODALE

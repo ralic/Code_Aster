@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
 # TITRE  VIBRATION D'UNE POUTRE AVEC IMPACT MULTI-POINTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -280,14 +280,14 @@ NDDLGEN2 = NUME_DDL_GENE(BASE= BASEMODA,
 # ---------------------
 # PROJECTION DANS LA BASSE MODALE
 
-MACRO_PROJ_BASE(BASE=BASEMODA,
-                MATR_ASSE_GENE=(_F(MATRICE  =CO('RIGIPRO2'),
-                                   MATR_ASSE=MATR),
-                                _F(MATRICE  =CO('MASSPRO2'),
-                                   MATR_ASSE=MATM),
-                                _F(MATRICE  =CO('AMORPRO2'),
-                                   MATR_ASSE=MATA)),
-                STOCKAGE='PLEIN');
+PROJ_BASE(BASE=BASEMODA,
+          MATR_ASSE_GENE=(_F(MATRICE  =CO('RIGIPRO2'),
+                             MATR_ASSE=MATR),
+                          _F(MATRICE  =CO('MASSPRO2'),
+                             MATR_ASSE=MATM),
+                          _F(MATRICE  =CO('AMORPRO2'),
+                             MATR_ASSE=MATA)),
+          STOCKAGE='PLEIN');
                 
 VECTPRO2=PROJ_VECT_BASE(BASE         =BASEMODA,
                         VECT_ASSE    =VECT,

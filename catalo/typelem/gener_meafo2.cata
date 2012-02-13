@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 13/02/2012   AUTEUR SELLENET N.SELLENET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -132,13 +132,13 @@ OPTION__
     SIEQ_ELNO           330   IN__   ECONTPG  PCONTRR
                               OUT__  ECOEQNO  PCONTEQ
     ETOT_ELEM           575   IN__   ECONTPG  PCONTMR  ECONTPG  PCONTPR  DDL_MECA PDEPLM   DDL_MECA PDEPLR
-                                     NGEOMER  PGEOMER  CHARMON  PHARMON
+                                     NGEOMER  PGEOMER  CHARMON  PHARMON  EENEDNO  PENERDM
                               OUT__  EENEDNO  PENERDR
     ETOT_ELGA           575   IN__   ECONTPG  PCONTMR  ECONTPG  PCONTPR  DDL_MECA PDEPLM   DDL_MECA PDEPLR
-                                     NGEOMER  PGEOMER  CHARMON  PHARMON
+                                     NGEOMER  PGEOMER  CHARMON  PHARMON  EENEDPG  PENERDM
                               OUT__  EENEDPG  PENERDR
     ETOT_ELNO           575   IN__   ECONTPG  PCONTMR  ECONTPG  PCONTPR  DDL_MECA PDEPLM   DDL_MECA PDEPLR
-                                     NGEOMER  PGEOMER  CHARMON  PHARMON
+                                     NGEOMER  PGEOMER  CHARMON  PHARMON  EENEDNN  PENERDM
                               OUT__  EENEDNN  PENERDR
     FORC_NODA           117   IN__   ECONTPG  PCONTMR  NGEOMER  PGEOMER  CHARMON  PHARMON
                               OUT__  MVECTUR  PVECTUR

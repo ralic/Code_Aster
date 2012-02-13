@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
+#& MODIF COMMANDE  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -261,6 +261,11 @@ regles=(ENSEMBLE('BASE_ELAS_FLUI','NUME_VITE_FLUI'),),
                   D_FONC_DT2      =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule) ),
           ),
          ),
+         EXCIT_RESU       =FACT(statut='f',max='**',
+           RESULTAT     =SIMP(statut='o',typ=tran_gene ),
+           COEF_MULT       =SIMP(statut='f',typ='R',defaut=1.0 ),
+                                ),
+
         ),
         b_excit_line_tran =BLOC(condition="TYPE_CALCUL == 'TRAN' and BASE_CALCUL == 'PHYS'",
          EXCIT           =FACT(statut='f',max='**',
@@ -453,16 +458,6 @@ regles=(ENSEMBLE('BASE_ELAS_FLUI','NUME_VITE_FLUI'),),
          ),
          ),
         );
-
-
-
-
-
-
-
-
-
-
 
 
 

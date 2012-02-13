@@ -1,4 +1,4 @@
-#@ MODIF E_JDC Execution  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_JDC Execution  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -37,6 +37,7 @@ from Noyau.N_ENTITE import ENTITE
 from Noyau.N_JDC    import MemoryErrorMsg
 from Noyau.N_info import message, SUPERV
 from Noyau import basetype
+from concept_dependency import ConceptDependenciesVisitor
 
 import aster_core
 import aster
@@ -58,6 +59,7 @@ class JDC:
    def __init__(self):
       self.info_level = 1
       self.timer_fin = None
+      self.ctree = None
 
    def Exec(self):
       """
@@ -104,7 +106,6 @@ class JDC:
 
       self.g_context={}
       ier=0
-
       try:
          for e in self.etapes:
              if CONTEXT.debug : print e,e.nom,e.isactif()
@@ -179,15 +180,20 @@ class JDC:
        texte_final = _(u"""
 
   <I> Informations sur les temps d'exécution
-      Temps cpu total ..............    %10.2f s
-      Temps cpu user total .........    %10.2f s
-      Temps cpu systeme total ......    %10.2f s
-      Temps cpu restant ............    %10.2f s
+      Temps cpu total                   %10.2f s
+      Temps cpu user total              %10.2f s
+      Temps cpu systeme total           %10.2f s
+      Temps cpu restant                 %10.2f s
 """) % (cpu_total_user+cpu_total_syst, cpu_total_user, cpu_total_syst, cpu_restant)
 
        aster.affiche('MESSAGE', convert(texte_final))
        if self.fico is None:
            aster.affiche('MESSAGE', convert(repr(self.timer)))
+       if self.ctree:
+          txt = self.ctree.get_stats(level=2)
+          aster.affiche('MESSAGE', convert(txt))
+          cnt = self.ctree.write('fort.2')
+
        aster.fclose(6)
        # fichier d'info
        txt = "%10.2f %10.2f %10.2f %10.2f\n" \
@@ -343,6 +349,9 @@ class JDC:
          except EOFError:
             pass
 
+   def init_ctree(self):
+      """Initialise l'arbre de dépendances."""
+      self.ctree = ConceptDependenciesVisitor()
 
    def get_liste_etapes(self):
       liste=[]

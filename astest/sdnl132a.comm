@@ -1,11 +1,11 @@
-# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
 DEBUT(CODE=_F(NOM='SDNL132A',NIV_PUB_WEB='INTERNET'),
       DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM='ALGELINE3_66')
 # TITRE PENDULE RIGIDE AVEC CONTACT ET FROTTEMENT
 # sdnl132a.para = tps_job 60 mem_job 200Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -112,16 +112,16 @@ freq=DEFI_LIST_REEL(DEBUT=0.0,
                     INTERVALLE=_F(JUSQU_A=50.0,
                                   NOMBRE=100,),);
 
-MACRO_PROJ_BASE(BASE=mode,
-                STOCKAGE='DIAG',
-                MATR_ASSE_GENE=(_F(MATRICE=CO('K_ASS'),
-                                   MATR_ASSE=K,),
-                                _F(MATRICE=CO('M_ASS'),
-                                   MATR_ASSE=M,),),
-                VECT_ASSE_GENE=(_F(VECTEUR=CO('F_ASS'),
-                                   VECT_ASSE=ass_f,),
-                                _F(VECTEUR=CO('CL_ASS'),
-                                   VECT_ASSE=ass_cl,),),);
+PROJ_BASE(BASE=mode,
+          STOCKAGE='DIAG',
+          MATR_ASSE_GENE=(_F(MATRICE=CO('K_ASS'),
+                             MATR_ASSE=K,),
+                          _F(MATRICE=CO('M_ASS'),
+                             MATR_ASSE=M,),),
+          VECT_ASSE_GENE=(_F(VECTEUR=CO('F_ASS'),
+                             VECT_ASSE=ass_f,),
+                          _F(VECTEUR=CO('CL_ASS'),
+                             VECT_ASSE=ass_cl,),),);
 
 f_sin = FORMULE(VALE='sin((INST-0.5)*2*pi)',
                 NOM_PARA='INST',);

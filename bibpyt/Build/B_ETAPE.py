@@ -1,9 +1,9 @@
-#@ MODIF B_ETAPE Build  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_ETAPE Build  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -81,15 +81,6 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
         # On demande d incrementer le compteur de la commande de 1
         self.set_icmd(1)
         return 0
-
-    def setmode(self, mode):
-        """
-            Met le mode d execution a 1 ou 2
-            1 = verification par le module Fortran correspondant a la commande
-            2 = execution du module Fortran
-        """
-        if mode in (1, 2):
-            self.modexec = mode
 
     def getres(self):
         """

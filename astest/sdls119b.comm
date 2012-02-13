@@ -1,0 +1,568 @@
+# MODIF  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
+# TITRE PLAQUE SUR APPUI SOUMISE A UNE ACCELERATION DE RICKER (METHODE TEMPS-FREQUENCE)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# sdls119b.para = tps_job 300 mem_job 1000Mo mem_aster 80 ncpus 1 liste_test R
+
+DEBUT(CODE=_F(NOM='SDLS119B', NIV_PUB_WEB='INTERNET',));
+#
+import aster
+#
+mail = LIRE_MAILLAGE( VERI_MAIL = _F( VERIF = 'OUI' ) , );
+#
+mail = DEFI_GROUP( reuse = mail ,
+                   MAILLAGE = mail ,
+                   CREA_GROUP_NO = ( _F( GROUP_MA = 'DBAS' , ) ,
+                                     _F( GROUP_MA = 'RES0' , ) ,
+                                     _F( GROUP_MA = 'RESL' , ) ,
+                                     _F( GROUP_MA = 'RESS' , ) ,
+                                     _F( GROUP_MA = 'RESB' , ) , ) , );
+#
+mode = AFFE_MODELE( MAILLAGE = mail ,
+                    AFFE = (
+                             _F( GROUP_MA = ( 'RESS' , ) ,
+                                 PHENOMENE = 'MECANIQUE',
+                                 MODELISATION = 'DIS_T') ,
+                             _F( GROUP_MA = ( 'RESL' , ) ,
+                                 PHENOMENE = 'MECANIQUE',
+                                 MODELISATION = 'DIS_T') ,
+                            _F( GROUP_MA = ( 'RES0' , ) ,
+                                 PHENOMENE = 'MECANIQUE',
+                                 MODELISATION = 'DIS_T') ,
+                             _F( GROUP_MA = ( 'DAL1' , ) ,
+                                 PHENOMENE = 'MECANIQUE',
+                                 MODELISATION = 'DKT') ,
+                             _F( GROUP_MA = 'RESH' ,
+                                 PHENOMENE = 'MECANIQUE' ,
+                                 MODELISATION = 'DIS_T' , ) , ) , );
+#
+kressort = 1.E8 ;
+kressorG = 1.E15 ;
+#
+cara = AFFE_CARA_ELEM( MODELE = mode ,
+                       DISCRET = ( _F( GROUP_MA = 'RESH' ,
+                                          REPERE = 'LOCAL' ,
+                                          CARA = 'K_T_D_L' ,
+                                          VALE = ( 1.0 , 0.0 ,0.0 , ) , ) ,
+                                    _F( GROUP_MA = 'RESH' ,
+                                          REPERE = 'LOCAL' ,
+                                          CARA = 'A_T_D_L' ,
+                                          VALE = ( 0.0 , 0.0 ,0.0 , ) , ) ,
+                                    _F( GROUP_MA = 'RESH' ,
+                                          REPERE = 'LOCAL' ,
+                                          CARA = 'M_T_L' ,
+                                          VALE = ( 0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                          0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,) , ) ,
+                                    _F( GROUP_MA = 'RESL' ,
+                                          REPERE = 'LOCAL' ,
+                                          CARA = 'K_T_D_L' ,
+                                          VALE = ( kressorG , kressorG ,kressorG , ) , ) ,
+                                    _F( GROUP_MA = 'RESL' ,
+                                          REPERE = 'LOCAL' ,
+                                          CARA = 'A_T_D_L' ,
+                                          VALE = ( 0. , 0. ,0. , ) , ) ,
+                                    _F( GROUP_MA = 'RESL' ,
+                                          REPERE = 'LOCAL' ,
+                                          CARA = 'M_T_L' ,
+                                          VALE = ( 0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                          0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,) , ) ,
+                                      _F( GROUP_MA = 'RESS' ,
+                                          REPERE = 'LOCAL' ,
+                                          CARA = 'K_T_D_L' ,
+                                          VALE = ( kressort , kressorG , kressorG ,) , ) ,
+                                    _F( GROUP_MA = 'RESS' ,
+                                          REPERE = 'LOCAL' ,
+                                          CARA = 'M_T_L' ,
+                                          VALE = ( 0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                          0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,) , ) ,
+                                      _F( GROUP_MA = 'RES0' ,
+                                           REPERE = 'GLOBAL' ,
+                                           CARA = 'M_T_D_N' ,
+                                           VALE = 1.e-1 , ) ,
+                                     ),
+                       COQUE=        _F( GROUP_MA = 'DAL1' ,
+                                          A_CIS=0.833333333,
+                                          EPAIS=1.,),
+                                           );
+
+rhob = 2500. ;
+#
+mat1 = DEFI_MATERIAU( ELAS = _F( E   = 1.4E8 ,
+                                 NU  = 0.3  ,
+                                 RHO = rhob  ,
+                                 AMOR_ALPHA = 0.005 ,
+                                 AMOR_BETA = 0.1 , ) , );
+#
+matbid = DEFI_MATERIAU( ELAS = _F( E   = 1.E12 ,
+                                 NU  = 0.3  ,
+                                 RHO = rhob  , ) , );
+#
+matres = DEFI_MATERIAU( DIS_CONTACT = _F( RIGI_NOR = kressorG ,
+                                          DIST_1 = 1.e-6 ,
+                                          DIST_2 = 1.e-6,
+                                        ), );
+
+chmat = AFFE_MATERIAU( MAILLAGE = mail ,
+                    AFFE =( _F( GROUP_MA = 'DAL1' ,
+                                MATER = mat1 ),
+                            _F( GROUP_MA = 'RESL' ,
+                                MATER = matres ),
+                            _F( GROUP_MA = 'RESS' ,
+                                MATER = matbid ),
+                            _F( GROUP_MA = 'RESH' ,
+                                MATER = matbid ),
+                            _F( GROUP_MA = 'RES0' ,
+                                MATER = matbid ),
+                                 ) , );
+# contact
+depimp = AFFE_CHAR_MECA( MODELE = mode ,
+                         DDL_IMPO=( _F(  GROUP_NO =
+                                         ( 'R1' , 'R2' , ) ,
+                                         LIAISON = 'ENCASTRE' , ) ,
+                                    _F(  GROUP_NO = 'RESB' ,
+                                         DX = 0. , DY = 0. , DZ = 0.) ,
+                                    _F(  GROUP_NO = 'RES0' ,
+                                         DZ = 0. ) ,
+                                    _F(  GROUP_MA =
+                                          ( 'DAL1'  , ) ,
+                                          DZ = 0., DRY = 0. ,) ,
+                                          ) , );
+
+
+#
+MACRO_MATR_ASSE( MODELE = mode ,
+                 CARA_ELEM = cara ,
+                 CHARGE = depimp ,
+                 CHAM_MATER = chmat ,
+                 NUME_DDL = CO("NUM") ,
+                 SOLVEUR = _F( METHODE = 'LDLT' , ) ,
+                 MATR_ASSE = ( _F(  MATRICE = CO("rigidite"),
+                                                OPTION = 'RIGI_MECA' , ) ,
+                                         _F(  MATRICE = CO("masse"),
+                                                OPTION = 'MASS_MECA' , ),
+                                         _F(  MATRICE = CO("amorto"),
+                                                OPTION = 'AMOR_MECA' , ) , ) , );
+#
+MODES=MODE_ITER_SIMULT(MATR_A=rigidite,
+                       MATR_B=masse,
+                       CALC_FREQ=_F(NMAX_FREQ=20,),
+                       VERI_MODE=_F(STOP_ERREUR='OUI',
+                                    STURM='OUI',),);
+
+chpesa = AFFE_CHAR_MECA(  MODELE = mode ,
+                          PESANTEUR = _F(GRAVITE=9.81 ,
+                                       DIRECTION=(0.0 , -1.0 , 0. ,  ) , ),);
+#
+mono_x = CALC_CHAR_SEISME( MATR_MASS = masse ,
+                           DIRECTION=( 1. , 0. , 0. ,) ,
+                           MONO_APPUI = 'OUI' , );
+#
+chseism = AFFE_CHAR_MECA( MODELE = mode ,
+                          VECT_ASSE = mono_x , );
+#
+INCLUDE( UNITE = 22 );
+#
+#
+
+FELEM=CALC_VECT_ELEM(OPTION='CHAR_MECA',
+                     CHAM_MATER=chmat, CARA_ELEM = cara ,
+                     CHARGE=chpesa,
+                     );
+
+FASSE=ASSE_VECTEUR(VECT_ELEM=FELEM,
+                   NUME_DDL=NUM,);
+
+L_INST=DEFI_LIST_REEL(DEBUT=-0.01,
+                      INTERVALLE=_F(JUSQU_A=0.0,
+                                    NOMBRE=10,),);
+
+
+TEMPL2C=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A=5.00,
+                                    NOMBRE=5000,),);
+
+accel2t = CALC_FONCTION(LIST_PARA=TEMPL2C,
+                       COMB = _F( FONCTION = accel , COEF = 1. ,) , );
+
+TEMPL2H=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A=20.47,
+                                    NOMBRE=2047,),);
+
+accel2 = CALC_FONCTION(LIST_PARA=TEMPL2H,
+                       COMB = _F( FONCTION = accel , COEF = 1. ,) , );
+
+fo1 = DEFI_FONCTION ( NOM_PARA= 'INST',
+         VALE= ( 0., 1., 100., 1., ) );
+
+
+FUN=CALC_FONCTION(
+                   LIST_PARA=TEMPL2H,
+                   COMB=_F(FONCTION=fo1,
+                           COEF=1.0,),
+                 );
+#
+
+pasf =1.0/20.48 ;
+
+fmax = 25.0 ;
+
+listfreq = DEFI_LIST_REEL(DEBUT=0.0,
+                          INTERVALLE=_F(JUSQU_A=fmax, PAS=pasf),
+                          );
+
+
+FFUN=CALC_FONCTION( FFT=_F( FONCTION = FUN, METHODE='COMPLET',) );
+FFACCE=CALC_FONCTION( FFT=_F( FONCTION = accel2t, METHODE='COMPLET',) );
+
+
+# PROJECTION DES MATRICES ET DES EXCITATIONS SUR BASE MODALE
+PROJ_BASE(BASE=MODES,
+          STOCKAGE='DIAG',
+          MATR_ASSE_GENE=(_F(MATRICE=CO('mgene'),
+                             MATR_ASSE=masse),
+                          _F(MATRICE=CO('kgene'),
+                             MATR_ASSE=rigidite),
+                          _F(MATRICE=CO('cgene'),
+                             MATR_ASSE=amorto),),
+          VECT_ASSE_GENE=(_F(VECTEUR=CO('fgene'),
+                             VECT_ASSE=FASSE),
+                          _F(VECTEUR=CO('monogene'),
+                             VECT_ASSE=mono_x),),
+          );
+#
+
+EVOL0gen=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                    MATR_MASS=mgene, MATR_RIGI=kgene,
+                    SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',BETA =1.0,GAMMA =1.5,), 
+                    INCREMENT=_F( LIST_INST = L_INST),
+                    ARCHIVAGE=_F( PAS_ARCH=10),
+                    EXCIT=_F( VECT_ASSE=fgene, COEF_MULT = 1.0,),
+                   );
+
+EVOL0=REST_GENE_PHYS(RESU_GENE=EVOL0gen,NOM_CHAM=('DEPL','VITE'))
+
+DEP0=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+                 RESULTAT= EVOL0, INST=0.0,NUME_DDL=NUM,
+                 NOM_CHAM = 'DEPL');
+
+
+VIT0=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+                 RESULTAT= EVOL0, INST=0.0,NUME_DDL=NUM,
+                 NOM_CHAM = 'VITE');
+#
+
+# PROJECTION DE L'ETAT INIT
+PROJ_BASE(BASE=MODES,
+          STOCKAGE='DIAG',
+          VECT_ASSE_GENE=(_F(VECTEUR=CO('depgene'),
+                             VECT_ASSE=DEP0),
+                          _F(VECTEUR=CO('vitgene'),
+                             VECT_ASSE=VIT0),),
+          );
+
+
+
+NF = 3
+
+for k in range(1,NF):
+
+  if k==1:
+
+    EVOLgen=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                       MATR_MASS=mgene, MATR_RIGI=kgene,
+                       MATR_AMOR=cgene,
+                       SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
+                       ETAT_INIT=_F(DEPL=depgene, VITE=vitgene,),
+                       INCREMENT=_F(LIST_INST=TEMPL2C,),
+                       ARCHIVAGE=_F(PAS_ARCH=2,),
+                       EXCIT=(
+                              _F( VECT_ASSE=fgene, COEF_MULT = 1.0,),
+                              _F( VECT_ASSE=monogene, FONC_MULT = accel2t,),
+                             ),
+                      );
+
+    EVOL=REST_GENE_PHYS(RESU_GENE=EVOLgen,NOM_CHAM='DEPL');
+
+    EVOLH = DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
+                       MATR_MASS=masse, MATR_RIGI=rigidite,
+                       MATR_AMOR=amorto,
+                       LIST_FREQ = listfreq,
+                       EXCIT=(
+                            _F( VECT_ASSE=FASSE, FONC_MULT_C= FFUN,),
+                            _F( VECT_ASSE=mono_x, FONC_MULT_C= FFACCE,),
+                             ),
+                      );
+
+    EVOLT = REST_SPEC_TEMP( RESULTAT = EVOLH ,
+                          METHODE = 'PROL_ZERO' ,
+                          SYMETRIE = 'NON' ,
+                          TOUT_CHAM = 'OUI'  );
+
+    IMPR_RESU(FORMAT='RESULTAT',UNITE=8,
+              RESU=_F(RESULTAT=EVOL,GROUP_NO='P3',NOM_CMP='DX'))
+
+# on teste REST_SPEC_TEMP sur un calcul lineaire simple
+
+    TEST_RESU(RESU=(
+     _F(   RESULTAT = EVOL,
+           GROUP_NO='P3', NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
+            CRITERE = ('RELATIF','RELATIF',),
+            PRECISION = (1.E-3,1.E-4,),
+            INST = 2.330,         VALE = -4.58502E-02,
+            REFERENCE = 'NON_REGRESSION', ),
+     _F(   RESULTAT = EVOL,
+           GROUP_NO='P3', NOM_CHAM = 'DEPL', NOM_CMP = 'DY',
+            CRITERE = ('RELATIF','RELATIF',),
+            PRECISION = (1.E-3,1.E-4,),
+            INST = 2.330,         VALE = 5.65006E-03,
+            REFERENCE = 'NON_REGRESSION', ),
+     _F(   RESULTAT = EVOLT,
+           GROUP_NO='P3', NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
+            CRITERE = ('RELATIF','RELATIF',),
+            PRECISION = (1.E-2,1.E-4,),
+            INST = 2.330,         VALE = -2.79247E-01,
+            REFERENCE = 'NON_REGRESSION', ),
+     _F(   RESULTAT = EVOLT,
+           GROUP_NO='P3', NOM_CHAM = 'DEPL', NOM_CMP = 'DY',
+            CRITERE = ('RELATIF','RELATIF',),
+            PRECISION = (1.E-3,1.E-4,),
+            INST = 2.330,         VALE = 7.08851E-02,
+            REFERENCE = 'NON_REGRESSION', ),
+     _F(   RESULTAT = EVOLT,
+           GROUP_NO='P3', NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
+            CRITERE = ('RELATIF','RELATIF',),
+            PRECISION = (1.E-2,1.E-4,),
+            INST = 2.330,         VALE = -2.79247E-01,
+            REFERENCE = 'AUTRE_ASTER', ),
+     _F(   RESULTAT = EVOLT,
+           GROUP_NO='P3', NOM_CHAM = 'DEPL', NOM_CMP = 'DY',
+            CRITERE = ('RELATIF','RELATIF',),
+            PRECISION = (1.E-3,1.E-4,),
+            INST = 2.330,         VALE = 7.08851E-02,
+            REFERENCE = 'AUTRE_ASTER', ),
+
+                                                               )
+    );
+
+
+
+  else:
+
+    resunl = CALC_FORC_NONL( RESULTAT = EVOL , TOUT_ORDRE = 'OUI'    ,
+                        CHAM_MATER=chmat, CARA_ELEM=cara, MODELE=mode,
+                  COMP_INCR = ( _F( RELATION = 'ELAS',
+                                    GROUP_MA = ( 'DAL1' ,
+                                     'RESH','RESS','RES0', ),) ,
+                                _F( RELATION = 'DIS_CHOC' ,
+                                    GROUP_MA = 'RESL' , ) ,
+                                        ) ,
+                       );
+
+    PROJ_BASE(BASE=MODES,
+              STOCKAGE='DIAG',
+              RESU_GENE=_F(RESULTAT=CO('resupro'),
+                           RESU=resunl),
+             );
+
+    DETRUIRE(INFO=1,CONCEPT=_F(NOM=(EVOL,EVOLgen)));
+
+
+    EVOLgen=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
+                       MATR_MASS=mgene, MATR_RIGI=kgene,
+                       MATR_AMOR=cgene,
+                       SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
+                       ETAT_INIT=_F(DEPL=depgene, VITE=vitgene,),
+                       INCREMENT=_F(LIST_INST=TEMPL2C,),
+                       ARCHIVAGE=_F(PAS_ARCH=2,),
+                       EXCIT=(
+                              _F( VECT_ASSE=fgene, COEF_MULT = 1.0,),
+                              _F( VECT_ASSE=monogene, FONC_MULT = accel2t,),
+                             ),
+                      EXCIT_RESU=(
+                              _F( RESULTAT = resupro, COEF_MULT = -1.0,),
+                                 ),
+                     );
+    
+    EVOL=REST_GENE_PHYS(RESU_GENE=EVOLgen,NOM_CHAM='DEPL');
+
+    DETRUIRE(INFO=1,CONCEPT=_F(NOM=resunl));
+
+    resunlt = CALC_FORC_NONL( RESULTAT = EVOLT , TOUT_ORDRE = 'OUI',
+                       CHAM_MATER=chmat, CARA_ELEM=cara, MODELE=mode,
+                  COMP_INCR = ( _F( RELATION = 'ELAS',
+                                    GROUP_MA = ( 'DAL1' ,
+                                     'RESH','RESS','RES0', ),) ,
+                                _F( RELATION = 'DIS_CHOC' ,
+                                    GROUP_MA = 'RESL' , ) ,
+                                        ) ,
+                       );
+
+    DETRUIRE(INFO=1,CONCEPT=_F(NOM=EVOLH));
+
+    resunlf = REST_SPEC_TEMP( RESULTAT = resunlt ,
+                          METHODE = 'PROL_ZERO' ,
+                          SYMETRIE = 'NON' ,
+                          NOM_CHAM = 'DEPL' ,  );
+
+    EVOLH = DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
+                         MATR_MASS=masse, MATR_RIGI=rigidite,
+                         MATR_AMOR=amorto,
+                         LIST_FREQ = listfreq,
+                         EXCIT=(
+                            _F( VECT_ASSE=FASSE, FONC_MULT_C= FFUN,),
+                            _F( VECT_ASSE=mono_x, FONC_MULT_C= FFACCE,),
+                                ),
+                         EXCIT_RESU=(
+                                 _F( RESULTAT = resunlf,
+                                     COEF_MULT_C= -1.0 -0.0j,),
+                                 ),
+                        );
+
+    DETRUIRE(INFO=1,CONCEPT=_F(NOM=EVOLT));
+
+    EVOLT = REST_SPEC_TEMP( RESULTAT = EVOLH ,
+                          METHODE = 'PROL_ZERO' ,
+                          SYMETRIE = 'NON' ,
+                          TOUT_CHAM = 'OUI'  );
+
+    DETRUIRE(INFO=1,CONCEPT=_F(NOM=resunlt));
+
+    DETRUIRE(INFO=1,CONCEPT=_F(NOM=resunlf));
+
+
+## fin boucle NF
+
+TEST_RESU(RESU=(
+    _F(   RESULTAT = EVOL,
+          GROUP_NO='P3', NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
+            CRITERE = ('RELATIF','RELATIF',),
+            PRECISION = (1.E-3,1.E-4,),
+            INST = 2.340,         VALE = -4.80269E-02,
+            REFERENCE = 'NON_REGRESSION', ),
+    _F(   RESULTAT = EVOL,
+          GROUP_NO='P3', NOM_CHAM = 'DEPL', NOM_CMP = 'DY',
+            CRITERE = ('RELATIF','RELATIF',),
+            PRECISION = (1.E-3,1.E-4,),
+            INST = 2.340,         VALE = 6.41502E-03,
+            REFERENCE = 'NON_REGRESSION', ),
+    _F(   RESULTAT = EVOLT,
+          GROUP_NO='P3', NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
+            CRITERE = ('RELATIF','RELATIF',),
+            PRECISION = (1.E-2,1.E-4,),
+            INST = 2.340,         VALE = -3.62710E-01,
+            REFERENCE = 'NON_REGRESSION', ),
+    _F(   RESULTAT = EVOLT,
+          GROUP_NO='P3', NOM_CHAM = 'DEPL', NOM_CMP = 'DY',
+            CRITERE = ('RELATIF','RELATIF',),
+            PRECISION = (1.E-3,1.E-4,),
+            INST = 2.340,         VALE = 9.64485E-02,
+            REFERENCE = 'NON_REGRESSION', ),
+    _F(   RESULTAT = EVOLT,
+          GROUP_NO='P3', NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
+            CRITERE = ('RELATIF','RELATIF',),
+            PRECISION = (1.E-2,1.E-4,),
+            INST = 2.340,         VALE = -3.62710E-01,
+            REFERENCE = 'AUTRE_ASTER', ),
+    _F(   RESULTAT = EVOLT,
+          GROUP_NO='P3', NOM_CHAM = 'DEPL', NOM_CMP = 'DY',
+            CRITERE = ('RELATIF','RELATIF',),
+            PRECISION = (2.E-3,1.E-4,),
+            INST = 2.340,         VALE = 9.64485E-02,
+            REFERENCE = 'AUTRE_ASTER', ),)
+   );
+
+          
+#
+# Calcul de la solution de reference en passant par la FFT (python) de CALC_FONCTION :
+#
+dephx = RECU_FONCTION(RESULTAT=EVOLH, TOUT_ORDRE='OUI',
+                       NOM_CHAM='DEPL', NOM_CMP='DX',
+                       GROUP_NO='P3',
+                       NOM_PARA='FREQ',
+                       );
+dephy = RECU_FONCTION(RESULTAT=EVOLH, TOUT_ORDRE='OUI',
+                       NOM_CHAM='DEPL', NOM_CMP='DY',
+                       GROUP_NO='P3',
+                       NOM_PARA='FREQ',
+                       );
+#
+depx=CALC_FONCTION( FFT=_F( FONCTION = dephx, METHODE='PROL_ZERO',SYME='NON',));
+depy=CALC_FONCTION( FFT=_F( FONCTION = dephy, METHODE='PROL_ZERO',SYME='NON',));
+#
+tabx = CREA_TABLE( FONCTION = _F(FONCTION=depx,PARA=('INST','DX')));
+taby = CREA_TABLE( FONCTION = _F(FONCTION=depy,PARA=('INST','DY')));
+#
+# Si on accepte un PAR_LOT=NON, alors on peut avoir directement la valeur a tester ainsi :
+#valx = tabx['DX',235]
+#valy = taby['DY',235]
+#Pour un instant valant :
+#tx = tabx['INST',235]
+#ty = taby['INST',235]
+#print 'VALX(',tx,')=',valx
+#print 'VALY(',ty,')=',valy
+#
+# Avec PAR_LOT=OUI, il faut faire ce qui suit :
+#
+tevolx=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                               RESULTAT=EVOLT,
+                               NOM_CHAM='DEPL',
+                               INST=2.34,
+                               GROUP_NO='P3',
+                               NOM_CMP = 'DX',
+                               INTITULE='EVOLT DEPX',
+                               ),);
+tevoly=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                               RESULTAT=EVOLT,
+                               NOM_CHAM='DEPL',
+                               INST=2.34,
+                               GROUP_NO='P3',
+                               NOM_CMP = 'DY',
+                               INTITULE='EVOLT DEPY',
+                               ),);
+#
+tabxx = CREA_TABLE( FONCTION = _F(FONCTION=depx,PARA=('INST','DEPX')));
+tabyy = CREA_TABLE( FONCTION = _F(FONCTION=depy,PARA=('INST','DEPY')));
+#
+tabx2 = CALC_TABLE(TABLE = tabxx,
+                   ACTION=_F(OPERATION = 'FILTRE',NOM_PARA = 'INST',CRIT_COMP = 'EQ',
+                             VALE = 2.34,));
+taby2 = CALC_TABLE(TABLE = tabyy,
+                   ACTION=_F(OPERATION = 'FILTRE',NOM_PARA = 'INST',CRIT_COMP = 'EQ',
+                             VALE = 2.34,));
+#
+tcompx=CALC_TABLE(TABLE = tevolx,
+                  ACTION=_F(OPERATION = 'COMB', TABLE = tabx2, NOM_PARA = ('INST',)),);
+tcompy=CALC_TABLE(TABLE = tevoly,
+                  ACTION=_F(OPERATION = 'COMB', TABLE = taby2, NOM_PARA = ('INST',)),);
+#
+DIFFDX = FORMULE(NOM_PARA=('DX','DEPX'),VALE='(DX - DEPX)');
+tresx = CALC_TABLE(TABLE = tcompx,
+                   ACTION = _F(OPERATION = 'OPER',FORMULE=DIFFDX,NOM_PARA='DELTA_DX'),);
+DIFFDY = FORMULE(NOM_PARA=('DY','DEPY'),VALE='(DY - DEPY)');
+tresy = CALC_TABLE(TABLE = tcompy,
+                   ACTION = _F(OPERATION = 'OPER',FORMULE=DIFFDY,NOM_PARA='DELTA_DY'),);
+#
+# On compare ce qui vient de REST_SPEC_TEMP au resultat de CALC_FONCTION (option FFT) :
+#
+TEST_TABLE(TABLE=tresx,NOM_PARA='DELTA_DX',
+           REFERENCE='AUTRE_ASTER', CRITERE='ABSOLU', PRECISION=1.0E-10,VALE=0.);
+TEST_TABLE(TABLE=tresy,NOM_PARA='DELTA_DY',
+           REFERENCE='AUTRE_ASTER', CRITERE='ABSOLU', PRECISION=1.0E-10,VALE=0.);
+#
+
+FIN();

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/02/2012   AUTEUR PROIX J-M.PROIX 
 # TITRE VALIDATION MONOCRISTAL CHARGEMENT CYCLIQUE
 # ssnd109a.para = tps_job 150 mem_job 60Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -74,13 +74,18 @@ DEFLIST1=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LINST,),
                         );
 
 IMPL1=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='MONOCRISTAL',
-                                  COMPOR=CMP_MONO,),
+                                  COMPOR=CMP_MONO,
+                                  #ALGO_INTE='NEWTON_PERT',
+                                  ),
                      MATER=ACIER,
-                     INCREMENT=_F(LIST_INST=LINST,),
+                   #  SUPPORT='ELEMENT',
+                    # INCREMENT=_F(LIST_INST=LINST,),
+                     INCREMENT=_F(LIST_INST=DEFLIST1,),
                      NEWTON=_F(MATRICE='TANGENTE',
                                REAC_ITER=1,),
                      ARCHIVAGE=_F(LIST_INST=LARCH,),
-                     EPSI_IMPOSE=_F(EPXX=COEF,),);
+                     EPSI_IMPOSE=_F(EPXX=COEF,),
+                     INFO=1);
 
 REPONSE1=CALC_TABLE(TABLE=IMPL1,
                     ACTION=_F(OPERATION='EXTR',
@@ -103,7 +108,8 @@ EXPL2=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='MONOCRISTAL',
                      NEWTON=_F(MATRICE='TANGENTE',
                                REAC_ITER=1,),
                      ARCHIVAGE=_F(LIST_INST=LARCH,),
-                     EPSI_IMPOSE=_F(EPXX=COEF,),);
+                     EPSI_IMPOSE=_F(EPXX=COEF,),
+                     INFO=1);
 
 REPONSE2=CALC_TABLE(TABLE=EXPL2,
                     ACTION=_F(OPERATION='EXTR',

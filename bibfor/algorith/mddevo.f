@@ -9,7 +9,7 @@
      &                   IREDST,DREDST,
      &                   COEFM,LIAD,INUMOR,IDESCF,
      &                   NOFDEP,NOFVIT,NOFACC,NOMFON,PSIDEL,MONMOT,
-     &                   NOMRES)
+     &                   NOMRES,NBEXCI)
 C
       IMPLICIT     REAL*8 (A-H,O-Z)
 C
@@ -20,7 +20,7 @@ C
      &             DREDST(*),DPLRED(*),DPLREV(*),
      &             DPLMOD(NBCHOC,NBMODE,*)
       CHARACTER*8  BASEMO,NOECHO(*),FONRED(*),FONREV(*),NOMRES,MONMOT
-      CHARACTER*8 FBID(2)
+      CHARACTER*8  FBID(2)
       LOGICAL      LPSTO
 C
       REAL*8       COEFM(*),PSIDEL(*)
@@ -29,7 +29,7 @@ C
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/01/2012   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGORITH  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,6 +81,7 @@ C IN  : NOFDEP : NOM DE LA FONCTION DEPL_IMPO
 C IN  : NOFVIT : NOM DE LA FONCTION VITE_IMPO
 C IN  : PSIDEL : TABLEAU DE VALEURS DE PSI*DELTA
 C IN  : MONMOT : = OUI SI MULTI-APPUIS
+C IN  : NBEXCI : NBRE D'EXCITATIONS (SOUS LE MC EXCIT ET EXCIT_RESU)
 C ----------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
@@ -184,10 +185,9 @@ C     --- CONDITIONS INITIALES ---
       ENDIF
 C
 C     --- FORCES EXTERIEURES ---
-      CALL GETFAC('EXCIT',NBEXCI)
       IF (NBEXCI.NE.0) THEN
-         CALL MDFEX2 (TINIT,NBMODE,NBEXCI,IDESCF,NOMFON,COEFM,LIAD,
-     &                INUMOR,ZR(JFEX2))
+         CALL MDFEXT (TINIT,R8BID2,NBMODE,NBEXCI,IDESCF,NOMFON,COEFM,
+     &                LIAD,INUMOR,1,ZR(JFEX2))
       ENDIF
 C
 C     --- CONTRIBUTION DES FORCES NON LINEAIRES ---
@@ -253,8 +253,8 @@ C     --- FORCES EXTERIEURES ---
             ZR(JFEX3+IF) = ZERO
  20      CONTINUE
          IF (NBEXCI.NE.0) THEN
-           CALL MDFEX2 (TEMPS,NBMODE,NBEXCI,IDESCF,NOMFON,COEFM,LIAD,
-     &                  INUMOR,ZR(JFEX3))
+           CALL MDFEXT (TEMPS,R8BID2,NBMODE,NBEXCI,IDESCF,NOMFON,COEFM,
+     &                  LIAD,INUMOR,1,ZR(JFEX3))
          ENDIF
 C
 C        --- CONTRIBUTION DES FORCES NON LINEAIRES ---
@@ -291,8 +291,8 @@ C        --- FORCES EXTERIEURES ---
  35      CONTINUE
          TEMPS = TEMPS + DT1
          IF (NBEXCI.NE.0) THEN
-           CALL MDFEX2 (TEMPS,NBMODE,NBEXCI,IDESCF,NOMFON,COEFM,LIAD,
-     &                  INUMOR,ZR(JFEX4))
+           CALL MDFEXT (TEMPS,R8BID2,NBMODE,NBEXCI,IDESCF,NOMFON,COEFM,
+     &                  LIAD,INUMOR,1,ZR(JFEX4))
          ENDIF
 C        --- CONTRIBUTION DES FORCES NON LINEAIRES ---
          CALL MDFNLI(NBMODE,ZR(JDEP4),ZR(JVIT4),ZR(JBID1),

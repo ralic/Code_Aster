@@ -1,8 +1,8 @@
-#@ MODIF utilitai6 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utilitai6 Messages  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -76,12 +76,6 @@ cata_msg = {
  valeur à interpoler : %(r1)f
  borne inférieure    : %(r2)f
  borne supérieure    : %(r3)f
-"""),
-
-15 : _(u"""
- il faut donner :
-    - une MAILLE ou un GROUP_MA
-    - un NOEUD ou un GROUP_NO ou un point
 """),
 
 16 : _(u"""
@@ -179,18 +173,6 @@ cata_msg = {
  statistiques recalage :
  nombre d'itérations  = %(i1)d
  convergence atteinte = %(r1)f
-"""),
-
-57 : _(u"""
- les abscisses %(k1)s %(k2)s ne sont pas monotones.
-"""),
-
-58 : _(u"""
- les abscisses %(k1)s %(k2)s ont été réordonnées.
-"""),
-
-59 : _(u"""
- l'ordre des abscisses %(k1)s %(k2)s a été inversé.
 """),
 
 60 : _(u"""

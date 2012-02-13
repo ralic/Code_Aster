@@ -1,15 +1,16 @@
-      SUBROUTINE MDFEXT (NVECT,BASEMO,TYPBAS,NEQGEN,
-     &                                          TINIT,NBPAS,DT,FEXT,IER)
+      SUBROUTINE MDFEXT (TINIT,DT,NEQGEN,NBEXCI,IDESCF,NOMFON,COEFM,
+     &                   LIAD,INUMOR,NBPAS,F)
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER            NVECT,              NEQGEN,  NBPAS,        IER
-      REAL*8                                    TINIT, DT,FEXT(NEQGEN,*)
-      CHARACTER*8              BASEMO
-      CHARACTER*16                    TYPBAS
+      INTEGER            NEQGEN,NBEXCI,NBPAS
+      INTEGER            IDESCF(*),LIAD(*),INUMOR(*)
+      REAL*8             TINIT,DT,T,COEFM(*),F(NEQGEN,*)
+      CHARACTER*8        NOMFON(*)
+
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,15 +28,17 @@ C ======================================================================
 C
 C     CALCULE LES FORCES EXTERIEURES A CHAQUE PAS DE TEMPS
 C     ------------------------------------------------------------------
-C IN  : NVECT  : NOMBRE DE CHARGEMENTS
-C IN  : BASEMO : NOM DU CONCEPT BASE MODALE
-C IN  : TYPBAS : TYPE DE LA BASE ('MODE_MECA' 'BASE_MODA' 'MODELE_GENE')
+C IN  : TINIT  : PAS DE TEMPS INITIAL POUR LE BLOC DE CALCUL
 C IN  : NEQGEN : NOMBRE D'EQUATIONS GENERALISEES
-C IN  : TINIT  : TEMPS INITIAL
+C IN  : NBEXCI : NOMBRE D'EXCITATION (MC EXCIT ET EXCIT_RESU)
+C IN  : IDESCF : TYPE D'EXCITATION (VECT_ASSE/NUME_ORDRE,FONC_MULT/
+C                COEF_MULT)
+C IN  : NOMFON : NOM DES FONC_MULT (QUAND IL Y EN A)
+C IN  : COEFM  : VALEUR DU COEF_MULT
+C IN  : LIAD   : VALEUR DU VECT_ASSE
+C IN  : NUMOR  : NUME_ORDRE DU MODE EXCITE
 C IN  : NBPAS  : NOMBRE DE PAS DE CALCUL
-C IN  : DT     : PAS DE TEMPS
-C OUT : FEXT   : TABLEAU DES FORCES EXTERIEURES A CHAQUE PAS DE TEMPS
-C OUT : IER    : CODE RETOUR
+C OUT : F      : TABLEAU DES FORCES EXTERIEURES A CHAQUE PAS DE TEMPS
 C ----------------------------------------------------------------------
 C
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -57,77 +60,36 @@ C
 C
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER       I, J, K
-      REAL*8        UN, T, ALPHA
-      CHARACTER*19  CHANNO, FONCT
-      LOGICAL       LFORC
-      INTEGER      IARG
+      INTEGER       IER
+      CHARACTER*4   NOMPAR
 C
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
-      IER = 0
-      LFORC = .FALSE.
-      CALL GETVIS('EXCIT','NUME_ORDRE',1,IARG,0,IBID,NF)
-      LFORC = NF .NE. 0
-C
-C LE TEST SUIVANT EST REALISE DANS MDGENE POUR LA SOUS-STRUCTURATION
-C
-      IF (.NOT.LFORC.AND.TYPBAS.NE.'MODELE_GENE     ') THEN
-        DO 10 I = 1, NVECT
-          CALL GETVID('EXCIT','VECT_ASSE',I,IARG,1,CHANNO,L)
-          CALL JEVEUO(CHANNO//'.REFE','L',JREF1)
-          IF (ZK24(JREF1)(1:8).NE.BASEMO) THEN
-            IER = IER + 1
-            CALL U2MESS('E','ALGORITH5_42')
-          ENDIF
-          CALL JEVEUO(CHANNO//'.DESC','L',JDES1)
-          IF (ZI(JDES1+1).NE.NEQGEN) THEN
-            IER = IER + 1
-          CALL U2MESS('E','ALGORITH5_43')
-          ENDIF
-  10    CONTINUE
-      ENDIF
-C
-      IF (IER.NE.0) GOTO 9999
-C
-      UN = 1.D0
-      DO 20 I = 1,NVECT
-         T = TINIT
-         IF (LFORC) THEN
-           CALL GETVID('EXCIT','FONC_MULT',I,IARG,1,FONCT,N1)
-           CALL GETVIS('EXCIT','NUME_ORDRE',I,IARG,1,NUMOR,N2)
-           IF(NUMOR.GT.NEQGEN) CALL U2MESS('F','ALGORITH5_76')
-         ELSE
-           CALL GETVID('EXCIT','VECT_ASSE',I,IARG,1,CHANNO,N1)
-           CALL JEVEUO(CHANNO//'.VALE','L',JVALE)
-C
-           CALL GETVID('EXCIT','FONC_MULT',I,IARG,1,FONCT ,N1)
-         ENDIF
-         IF (N1.NE.0) THEN
-            DO 30 K = 1,NBPAS
-               CALL FOINTE('F',FONCT,1,'INST',T,ALPHA,IER)
-               IF (LFORC) THEN
-                  FEXT(NUMOR,K) = ALPHA
-               ELSE
-                 DO 32 J = 1,NEQGEN
-                   FEXT(J,K) = FEXT(J,K) + ALPHA * ZR(JVALE+J-1)
- 32              CONTINUE
-               ENDIF
-               T = TINIT + ( K * DT )
+
+      NOMPAR='INST'
+      DO 20 I = 1 , NBEXCI
+        T=TINIT
+        DO 10 K = 1,NBPAS
+          IF (IDESCF(I).EQ.1) THEN
+            CALL FOINTE('F ',NOMFON(I),1,NOMPAR,T,ALPHA,IER)
+            DO 30 J = 1,NEQGEN
+              F(J,K) = F(J,K) + ALPHA * ZR(LIAD(I)+J-1)
  30         CONTINUE
-C
-         ELSE
-            ALPHA = UN
-            CALL GETVR8('EXCIT','COEF_MULT',I,IARG,1,ALPHA,L)
-            DO 50 J = 1,NEQGEN
-               DO 52 K = 1,NBPAS
-                  FEXT(J,K) = FEXT(J,K) + ALPHA * ZR(JVALE+J-1)
- 52            CONTINUE
- 50         CONTINUE
-         ENDIF
+          ELSEIF(IDESCF(I).EQ.2) THEN
+            CALL FOINTE('F ',NOMFON(I),1,NOMPAR,T,ALPHA,IER)
+            F(INUMOR(I),K)=F(INUMOR(I),K)+ALPHA
+          ELSEIF(IDESCF(I).EQ.3) THEN
+            DO 40 J = 1,NEQGEN
+              F(J,K) = F(J,K) + COEFM(I)* ZR(LIAD(I)+J-1)
+ 40         CONTINUE
+          ELSEIF(IDESCF(I).EQ.4) THEN
+            F(INUMOR(I),K)=F(INUMOR(I),K)+COEFM(I)
+          ENDIF
+          T = TINIT + ( K*DT )
+ 10     CONTINUE
  20   CONTINUE
- 9999 CONTINUE
+
 C
       CALL JEDEMA()
       END

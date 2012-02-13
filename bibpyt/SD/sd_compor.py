@@ -1,8 +1,8 @@
-#@ MODIF sd_compor SD  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
+#@ MODIF sd_compor SD  DATE 13/02/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -85,11 +85,6 @@ class sd_compor(AsBase):
             MONO_isot =cprk[5*k+3]
             MONO_cine =cprk[5*k+4]
             sd2=sd_mater(mater) ; sd2.check(checker)
-            assert famil in ('BASAL','BCC24','PRISMATIQUE','OCTAEDRIQUE','PYRAMIDAL1',
-                            'PYRAMIDAL2','CUBIQUE1','CUBIQUE2','MACLAGE','UNIAXIAL')
-            assert ecoul in ('MONO_VISC1','MONO_VISC2','MONO_VISC3')
-            assert MONO_isot in ('MONO_ISOT1','MONO_ISOT2')
-            assert MONO_cine in ('MONO_CINE1','MONO_CINE2')
 
 
 

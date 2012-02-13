@@ -1,4 +1,4 @@
-#@ MODIF E_SUPERV Execution  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_SUPERV Execution  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -264,14 +264,6 @@ class SUPERV:
          print ">> JDC.py : FIN RAPPORT"
          return 1
 
-
-      j.setmode(1)
-      ier=j.Exec()
-      if ier :
-         self.MESSAGE("ERREUR A LA VERIFICATION FORTRAN - INTERRUPTION")
-         return 1
-
-      j.setmode(2)
       try:
          ier=j.Exec()
          if ier :

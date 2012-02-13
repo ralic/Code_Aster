@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES 
 # sdls114b.para = tps_job 210 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -215,16 +215,16 @@ for i in range(0,5) :
 # CALCUL TRANSITOIRE EN COORDONNEES MODALES
 ##############################################
 
-MACRO_PROJ_BASE(BASE=MODE,
-                STOCKAGE='DIAG',
-                MATR_ASSE_GENE=(_F(MATRICE=CO('MASS_GE'),
-                                   MATR_ASSE=MA_ASS,),
-                                _F(MATRICE=CO('RIGI_GE'),
-                                   MATR_ASSE=RIG_ASS,),
-                                _F(MATRICE=CO('AMOR_GE'),
-                                   MATR_ASSE=AMO_ASS,),), 
-                VECT_ASSE_GENE=_F(VECTEUR=CO('CHA_ASS'),
-                                  VECT_ASSE=VE_ASS,),);
+PROJ_BASE(BASE=MODE,
+          STOCKAGE='DIAG',
+          MATR_ASSE_GENE=(_F(MATRICE=CO('MASS_GE'),
+                             MATR_ASSE=MA_ASS,),
+                          _F(MATRICE=CO('RIGI_GE'),
+                             MATR_ASSE=RIG_ASS,),
+                          _F(MATRICE=CO('AMOR_GE'),
+                             MATR_ASSE=AMO_ASS,),), 
+          VECT_ASSE_GENE=_F(VECTEUR=CO('CHA_ASS'),
+                            VECT_ASSE=VE_ASS,),);
 
 
 

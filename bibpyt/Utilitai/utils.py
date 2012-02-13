@@ -1,8 +1,8 @@
-#@ MODIF utils Utilitai  DATE 17/08/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utils Utilitai  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,7 +17,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-
+# RESPONSABLE COURTOIS M.COURTOIS
 
 """
 Module fournissant quelques fonctions utilitaires.
@@ -27,6 +27,7 @@ import os
 import time
 
 from Utilitai.string_utils import maximize_lines
+from Execution.strfunc import convert
 
 try:
    import aster
@@ -48,7 +49,7 @@ def _print(*args):
         if type(arg) not in (str, unicode):
             arg = repr(arg)
         l_str.append(arg)
-    text = " ".join(l_str)
+    text = convert(" ".join(l_str))
     if aster_exists:
         aster.affiche('MESSAGE', text)
     else:

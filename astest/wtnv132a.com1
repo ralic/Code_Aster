@@ -45,31 +45,27 @@ for n in range(nbcouche):
   cle.append('ELEMEN'+str(n));
   noeu_depl[cle[n]] = [0.0]*n_pas_temps_max
 
-  v = RECU_FONCTION(TABLE  = T_DEP[n],
-                    PARA_X = 'INST',
-                    PARA_Y = 'DZ');
-                 
-  t,dz         = v.Valeurs();
+  tab = T_DEP[n].EXTR_TABLE()
+  t = tab.INST.values()
+  dz = tab.DZ.values()
 
   n_pas_temps  = int(len(t)/(n+1));
-  
+
   n_pas_incr_0 = n_pas_incr
   n_pas_incr  += n_pas_temps
-  
+
   list_pas_temps.append(n_pas_incr-2);
-  
+
   noeu_depl['TEMPS'] += t[::n+1]
   noeu_tass_0.append(dz[(n+1)*n_pas_temps-1]);
 
   # -->30: début boucle for
   for m in range(n+1):
-  
+
     noeu_depl[cle[m]][n_pas_incr_0:n_pas_incr] = dz[m::n+1]
-      
+
   # <--30: fin boucle for
-  
-  DETRUIRE(CONCEPT=_F(NOM=(v)));
-  
+
 # <--20: fin boucle for
 
 
@@ -99,7 +95,7 @@ noeu_tass   = dict();
 
 # -->100: début boucle for
 for n in range(n_pas_temps-1):
-  
+
   noeu_tass['TEMPS'+str(n)] = [ ]
 
 # <--100: fin boucle for
@@ -107,15 +103,15 @@ for n in range(n_pas_temps-1):
 
 # -->300: début boucle for
 for n in range(n_pas_temps-1):
-  
+
   # -->40: début boucle for
   for m in range(nbcouche):
-  
+
     tass_value = 0.
     if noeu_depl[cle[m]][n+1] != 0. : tass_value = noeu_depl[cle[m]][n+1] - noeu_tass_0[m]
 
     noeu_tass['TEMPS'+str(n)].append(tass_value);
-    
+
   # <--40: fin boucle for
 
 # <--300: fin boucle for
@@ -132,33 +128,33 @@ n_pas_temps= len(list_pas_temps);
 
 # -->200: début boucle for
 for n in range(n_pas_temps):
-  
+
   def_courbe={'ABSCISSE': noeu_tass['TEMPS'+str(list_pas_temps[n])]}
   def_courbe['ORDONNEE'] = range(1,nbcouche+1)
   def_courbe['LEGENDE' ] = 'TEMPS'+str(list_pas_temps[n]);
   def_courbe['COULEUR' ] = list_pas_temps[n]+1
   def_courbe['MARQUEUR'] = list_pas_temps[n]+1
-  
+
   COURBE.append(def_courbe);
-  
+
   l_cote=DEFI_LIST_REEL(TITRE = 'COTE',
                         VALE  = def_courbe['ORDONNEE']);
-                            
+
   l_tass=DEFI_LIST_REEL(TITRE = 'TASSEMENT',
                         VALE  = def_courbe['ABSCISSE']);
-                        
+
   tass[n]=DEFI_FONCTION(NOM_PARA  = 'Z',
                         NOM_RESU  = 'TASSEMENT',
                         VALE_PARA = l_cote,
                         VALE_FONC = l_tass);
-  
+
   IMPR_FONCTION(FORMAT ='TABLEAU',
                 UNITE  =8,
                 COURBE =_F(FONCTION=tass[n]));
-  
+
   del(def_courbe);
   DETRUIRE(CONCEPT=_F(NOM=(l_cote,l_tass)));
-  
+
 # <--200: fin boucle for
 
 IMPR_FONCTION(FORMAT='XMGRACE',
@@ -184,7 +180,7 @@ TEST_FONCTION(VALEUR=(
  _F(FONCTION=tass[9],VALE_PARA=2.,VALE_REFE=-3.049E-2,PRECISION= 2.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
  _F(FONCTION=tass[10],VALE_PARA=2.,VALE_REFE=-3.473E-2,PRECISION=2.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
              ));
-    
+
 
 # tassement de la deuxième couche
 TEST_FONCTION(VALEUR=(

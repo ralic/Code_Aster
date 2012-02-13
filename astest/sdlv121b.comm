@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 13/02/2012   AUTEUR KHAM M.KHAM 
 # TITRE ONDE DE CISAILLEMENT DANS UNE COLONNE ELASTIQUE
 # sdlv121b.para = tps_job 120 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -96,7 +96,7 @@ LIAISON=AFFE_CHAR_MECA(
 ONDE=AFFE_CHAR_MECA_F(  MODELE=MODELE,
                            
                 ONDE_PLANE=_F( DIRECTION = (0., 1.,), TYPE_ONDE = 'S', 
-                 FONC_SIGNAL = FONCT,#GROUP_MA='ABSO'
+                 FONC_SIGNAL = FONCT,GROUP_MA='ABSO'
                  ),
                          )
 

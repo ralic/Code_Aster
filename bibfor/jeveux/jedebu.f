@@ -1,6 +1,6 @@
       SUBROUTINE JEDEBU(NBFI, MXZON, IDB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -126,7 +126,7 @@ C DEB ------------------------------------------------------------------
 C
 C -----------------  ENVIRONNEMENT MACHINE -----------------------------
       LFIC = LOFIEM()
-      CALL GTOPTR('maxbas', VAL, IRET)
+      CALL GTOPTR('maxbase', VAL, IRET)
       IF (VAL .LE. 0 .OR. IRET .NE. 0) THEN
          MFIC = MOFIEM()
       ELSE

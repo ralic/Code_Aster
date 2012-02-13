@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF aster_fort include  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF aster_fort include  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -29,13 +29,13 @@
  * *********************************************************************/
 
 /* routines UTILITAIRES */
-#define CALL_R8VIDE STDCALL(R8VIDE,r8vide)
+#define CALL_R8VIDE F_FUNC(R8VIDE,r8vide)
 extern DOUBLE CALL_R8VIDE();
 
-#define CALL_R8PI() STDCALL(R8PI,r8pi)()
+#define CALL_R8PI() F_FUNC(R8PI,r8pi)()
 extern DOUBLE CALL_R8PI();
 
-#define CALL_ISNNEM STDCALL(ISNNEM,isnnem)
+#define CALL_ISNNEM() F_FUNC(ISNNEM,isnnem)()
 extern INTEGER CALL_ISNNEM();
 
 #define CALL_ULOPEN(a,b,c,d,e) CALLPSSSS(ULOPEN,ulopen,a,b,c,d,e)
@@ -52,11 +52,11 @@ extern void DEFP(MATFPE, matfpe, INTEGER *);
 
 
 /* routines SUPERVISEUR */
-#define CALL_EXPASS(a,b,c,d)  CALLPPPP(EXPASS,expass,a,b,c,d)
-extern void DEFPPPP(EXPASS,expass, INTEGER* , INTEGER* , INTEGER* , INTEGER*);
+#define CALL_EXPASS(a)  CALLP(EXPASS,expass,a)
+extern void DEFP(EXPASS,expass, INTEGER*);
 
-#define CALL_OPSEXE(a,b,c,d,e)  CALLPPPSP(OPSEXE,opsexe,a,b,c,d,e)
-extern void DEFPPPSP(OPSEXE,opsexe,INTEGER* , INTEGER* , INTEGER* , char *,STRING_SIZE ,INTEGER* ) ;
+#define CALL_OPSEXE(a)  CALLP(OPSEXE,opsexe,a)
+extern void DEFP(OPSEXE,opsexe, INTEGER*) ;
 
 #define CALL_IMPERS() F_FUNC(IMPERS,impers)()
 extern void STDCALL(IMPERS,impers)();
@@ -67,14 +67,14 @@ extern void DEFSSP(ONERRF,onerrf,char *,STRING_SIZE, _OUT char *,STRING_SIZE, _O
 #define CALL_GCNCON(a,b) CALLSS(GCNCON,gcncon,a,b)
 extern void DEFSS(GCNCON,gcncon,char *,STRING_SIZE,char *,STRING_SIZE);
 
-#define CALL_DEBUT(a,b)  F_FUNC(DEBUT,debut)(a,b)
-extern void STDCALL(DEBUT,debut)(INTEGER* , INTEGER* );
+#define CALL_DEBUT() F_FUNC(DEBUT,debut)()
+extern void STDCALL(DEBUT,debut)();
 
-#define CALL_IBMAIN(a)  F_FUNC(IBMAIN,ibmain)(a)
-extern void STDCALL(IBMAIN,ibmain)(INTEGER*);
+#define CALL_IBMAIN(a) CALLP(IBMAIN,ibmain,a)
+extern void DEFP(IBMAIN,ibmain, INTEGER*);
 
-#define CALL_POURSU(a,b,c) F_FUNC(POURSU,poursu)(a,b,c)
-extern void STDCALL(POURSU,poursu)(INTEGER* , INTEGER* ,INTEGER*) ;
+#define CALL_POURSU(a) CALLP(POURSU,poursu,a)
+extern void DEFP(POURSU,poursu,INTEGER*) ;
 
 #define CALL_GCCPTS(a,la) F_FUNC(GCCPTS,gccpts)(a,la)
 extern void DEFS(GCCPTS,gccpts,char *, STRING_SIZE );

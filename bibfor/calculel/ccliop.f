@@ -6,9 +6,9 @@ C     --- ARGUMENTS ---
       CHARACTER*16 OPTION
       CHARACTER*24 NOLIOP
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 13/02/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -79,7 +79,7 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       LOGICAL      OPAJOU
 
       CHARACTER*1  ISODEP(100)
-      CHARACTER*3  LOPDEP(100)
+      CHARACTER*4  LOPDEP(100)
       CHARACTER*16 LOPTIO(100),OPTIO2,CUROPT
       CHARACTER*24 NOLORI,NOLDEP,NOLIIN,NOLISD
       CHARACTER*32 JEXNUM,JEXNOM
@@ -160,8 +160,8 @@ C           ON EVITE QU'UNE OPTION DEPENDE D'ELLE MEME
                 ISODEP(IOP) = '+'
               ELSEIF ( ZK24(IAOPLO+3*IPARA-1).EQ.'NM1' ) THEN
                 ISODEP(IOP) = '-'
-              ELSE
-                CALL ASSERT(.FALSE.)
+C              ELSE
+C                CALL ASSERT(.FALSE.)
               ENDIF
               GOTO 20
             ENDIF
@@ -179,11 +179,11 @@ C             REMPLISSAGE DE LA LISTE DE DEPENDANCES DES OPTIONS
               LOPDEP(NOPOUT) = ZK24(IAOPLO+3*IPARA-1)
               OPAJOU = .TRUE.
               ISODEP(NOPOUT) = ' '
-            ELSEIF ( ((OPTIO2.EQ.'DEPL').OR.
-     &                (OPTIO2.EQ.'SIEF_ELGA').OR.
-     &                (OPTIO2.EQ.'VARI_ELGA')).AND.
-     &               ((ZK24(IAOPLO+3*IPARA-1).EQ.'NP1').OR.
-     &                (ZK24(IAOPLO+3*IPARA-1).EQ.'NM1')) ) THEN
+            ELSEIF( ((OPTIO2.EQ.'DEPL').OR.
+     &               (OPTIO2.EQ.'SIEF_ELGA').OR.
+     &               (OPTIO2.EQ.'VARI_ELGA')).AND.
+     &              ((ZK24(IAOPLO+3*IPARA-1).EQ.'NP1').OR.
+     &               (ZK24(IAOPLO+3*IPARA-1)(1:3).EQ.'NM1')) ) THEN
               NOPOUT = NOPOUT+1
               LOPTIO(NOPOUT) = OPTIO2
 C             REMPLISSAGE DE LA LISTE DE DEPENDANCES DES OPTIONS

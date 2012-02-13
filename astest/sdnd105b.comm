@@ -1,9 +1,9 @@
-# MODIF  DATE 14/11/2011   AUTEUR BERRO H.BERRO 
+# MODIF  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
 # TITRE CHOC DE DEUX MASSES AU COMPORTEMENT FLAMBAGE PLASTIQUE
 # sdnd105b.para = tps_job 120 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -91,14 +91,14 @@ MODE_MEC=MODE_ITER_SIMULT(  MATR_A=RIGIDITE,  MATR_B=MASSE,
 #-----------------------------------------------------------------------
 
 
-MACRO_PROJ_BASE(  BASE=MODE_MEC,
-                  STOCKAGE='DIAG',
-                  MATR_ASSE_GENE=(
-                     _F(  MATRICE = CO("MASS_GEN"),
-                                      MATR_ASSE = MASSE),
-                     _F(  MATRICE = CO("RIGI_GEN"),
-                                      MATR_ASSE = RIGIDITE))
-                                          )
+PROJ_BASE(  BASE=MODE_MEC,
+            STOCKAGE='DIAG',
+            MATR_ASSE_GENE=(
+               _F(  MATRICE = CO("MASS_GEN"),
+                                MATR_ASSE = MASSE),
+               _F(  MATRICE = CO("RIGI_GEN"),
+                                MATR_ASSE = RIGIDITE))
+                                    )
 
 #
 

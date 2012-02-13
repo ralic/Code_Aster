@@ -6,10 +6,10 @@
       CHARACTER*16  NOMCHA
       CHARACTER*19  NOMFON,RESU
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -56,14 +56,15 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*1 TYPE
-      CHARACTER*24 VALK(2)
-      CHARACTER*8 K8B,NOMA,NOGD,NOMACC
+      CHARACTER*4 TYPCH2
+      CHARACTER*8 K8B,NOMA,NOGD,NOMACC,NOEUZ
       CHARACTER*16 NOMCMD,TYPCON,TYPCHA,TYPRES
       CHARACTER*19 LISTR,PROFCH,PROFC2,CH1,CH2
+      CHARACTER*24 VALK(2)
       REAL*8 DIMAG
       REAL*8 VALR(2)
       COMPLEX*16 VALC1,VALC2
-      LOGICAL NVERI1,NVERI2,NVERI3
+      INTEGER NPOINZ,NUSPZ
       INTEGER      IARG
 C     ------------------------------------------------------------------
 
@@ -283,16 +284,27 @@ C           -------------------------
 C               ----- EXTRACTION SUR UN "CHAM_ELEM" -----
 
       ELSE IF (TYPCHA(1:9).EQ.'CHAM_ELEM') THEN
-
+        NOEUZ = NOEUD
+        NPOINZ = NPOINT
+        NUSPZ = NUSP
 C ---    VERIFICATION DE LA PRESENCE DES MOTS CLE GROUP_MA (OU MAILLE)
 C ---    ET GROUP_NO (OU NOEUD OU POINT) DANS LE CAS D'UN CHAM_ELEM
 C        -------------------------------------------------------------
-        NVERI1 = MAILLE .EQ. ' '
-        NVERI2 = NOEUD .EQ. ' '
-        NVERI3 = NPOINT .EQ. 0
-        IF (NVERI1 .OR. (NVERI2.AND.NVERI3)) THEN
-          CALL U2MESS('F', 'UTILITAI6_15')
-        END IF
+        CALL DISMOI('F','TYPE_CHAMP',CH1,'CHAMP',IBID,TYPCH2,IE)
+        IF ( TYPCH2.EQ.'ELEM' ) THEN
+          NPOINZ = 1
+          NUSPZ = 1
+          NOEUZ = ' '
+          IF ( MAILLE.EQ.' ' )
+     &      CALL U2MESS('F', 'CHAMPS_11')
+        ELSEIF ( TYPCH2.EQ.'ELNO' ) THEN
+          NUSPZ = 1
+          IF ( MAILLE.EQ.' ' .OR. (NOEUD.EQ.' ' .AND. NPOINT.EQ.0) )
+     &      CALL U2MESS('F', 'CHAMPS_12')
+        ELSE
+          IF ( MAILLE.EQ.' ' .OR. NPOINT.EQ.0 )
+     &      CALL U2MESS('F', 'CHAMPS_13')
+        ENDIF
         CALL DISMOI('F','NOM_MAILLA',CH1,'CHAM_ELEM',IBID,NOMA,IE)
         CALL DISMOI('F','NOM_GD',CH1,'CHAM_ELEM',IBID,NOGD,IE)
         CALL DISMOI('F','TYPE_SCA',NOGD,'GRANDEUR',IBID,TYPE,IE)
@@ -346,7 +358,7 @@ C           -------------------------
           END IF
 
           IF (RBASE.EQ.0.0D0) THEN
-            CALL UTCH19(CH1,NOMA,MAILLE,NOEUD,NPOINT,NUSP,IVARI,CMP,
+            CALL UTCH19(CH1,NOMA,MAILLE,NOEUZ,NPOINZ,NUSPZ,IVARI,CMP,
      &                  TYPE,VALR1,VALC1,IRET)
             CALL ASSERT(IRET.EQ.0)
             ZR(LVAR+IORDR) = RVAL
@@ -363,10 +375,10 @@ C           -------------------------
           R1 = (ZR(JLIR8-1+I2)-RVAL)/RBASE
           R2 = (RVAL-ZR(JLIR8-1+I1))/RBASE
 
-          CALL UTCH19(CH1,NOMA,MAILLE,NOEUD,NPOINT,NUSP,IVARI,CMP,TYPE,
+          CALL UTCH19(CH1,NOMA,MAILLE,NOEUZ,NPOINZ,NUSPZ,IVARI,CMP,TYPE,
      &                VALR1,VALC1,IRET)
           CALL ASSERT (IRET.EQ.0)
-          CALL UTCH19(CH2,NOMA,MAILLE,NOEUD,NPOINT,NUSP,IVARI,CMP,TYPE,
+          CALL UTCH19(CH2,NOMA,MAILLE,NOEUZ,NPOINZ,NUSPZ,IVARI,CMP,TYPE,
      &                VALR2,VALC2,IRET)
           CALL ASSERT (IRET.EQ.0)
 

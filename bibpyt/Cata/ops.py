@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ops Cata  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -60,6 +60,7 @@ def commun_DEBUT_POURSUITE(jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, 
    jdc.info_level = INFO
    if CODE != None:
       jdc.fico = CODE['NOM']
+      jdc.init_ctree()
    if LANG:
        from Execution.i18n import localization
        localization.install(LANG)
@@ -111,11 +112,11 @@ def build_debut(self,**args):
    # le numéro de l'operateur associé (getoper)
    self.definition.op=0
    self.set_icmd(1)
-   lot,ier=self.codex.debut(self,1)
+   self.codex.debut(self)
    # On remet op a None juste apres pour eviter que la commande DEBUT
    # ne soit executée dans la phase d'execution
    self.definition.op=None
-   return ier
+   return 0
 
 def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO, **args):
    """
@@ -138,7 +139,7 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO, 
      # le sous programme fortran appelé par self.codex.poursu demande le numéro
      # de l'operateur (GCECDU->getoper), on lui donne la valeur 0
      self.definition.op=0
-     lot,ier,lonuti,concepts=self.codex.poursu(self,1)
+     lonuti,concepts = self.codex.poursu(self)
      # Par la suite pour ne pas executer la commande pendant la phase
      # d'execution on le remet à None
      self.definition.op=None
@@ -309,7 +310,7 @@ def build_include(self,**args):
    self.set_icmd(None)
    icmd=0
    # On n'execute pas l'ops d'include en phase BUILD car il ne sert a rien.
-   #ier=self.codex.opsexe(self,icmd,-1,1)
+   #ier=self.codex.opsexe(self,1)
    return ier
 
 def build_detruire(self,d):
@@ -378,7 +379,7 @@ def build_procedure(self,**args):
     # On ne numérote pas une macro PROCEDURE (incrément=None)
     self.set_icmd(None)
     icmd=0
-    #ier=self.codex.opsexe(self,icmd,-1,3)
+    #ier=self.codex.opsexe(self,3)
     return ier
 
 def build_DEFI_FICHIER(self,**args):
@@ -388,7 +389,7 @@ def build_DEFI_FICHIER(self,**args):
     ier=0
     self.set_icmd(1)
     icmd=0
-    ier=self.codex.opsexe(self,icmd,-1,26)
+    ier=self.codex.opsexe(self,26)
     return ier
 
 def build_formule(self, d):

@@ -1,9 +1,9 @@
-# MODIF  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 13/02/2012   AUTEUR PROIX J-M.PROIX 
 # TITRE VALIDATION MONOCRISTAL LOI ECP_CFC SUR POLYCRISTAL 
 # ssnd110c.para = tps_job 60 mem_job 60Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -19,7 +19,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='SSND110C',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'));
+DEBUT(CODE=_F(NOM='SSND110C',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'));
 
 
 from numpy.linalg import norm
@@ -106,9 +106,9 @@ CMP_MONO=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIERECP,
                                     FAMI_SYST_GLIS='OCTAEDRIQUE',
                                     ),);
 
-NBGR=40.
+NBGR=40
 
-FVOL=1/NBGR                                   
+FVOL=1.0/NBGR                                   
 
 CMP_POLY=DEFI_COMPOR(POLYCRISTAL=(
   _F(MONOCRISTAL=CMP_MONO,FRAC_VOL=FVOL,ANGL_EULER=(-149.676,15.61819,154.676,),),
@@ -196,7 +196,7 @@ angles=[0.,0.,0.]
 
 nbvari=7+NBGR*(6+3*12+6)+1
 avari = zeros(nbvari)
-for p in range(NBGR):
+for p in range(int(NBGR)):
    for i in range(12):
       avari[7+48*p+(6+i*3)]=RHO_0
 

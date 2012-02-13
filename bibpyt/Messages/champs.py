@@ -1,8 +1,8 @@
-#@ MODIF champs Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF champs Messages  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -63,5 +63,28 @@ cata_msg={
     Numéro d'ordre %(i1)4d : %(i2)d noeuds ont été affectés (%(i3)d noeuds dans le maillage).
 """),
 
+11 : _(u"""
+ Pour extraire la valeur d'un champ constant par élément (type ELEM), il est nécessaire de fournir
+ un nom de maille ou un groupe de mailles.
+
+ Conseil:
+   - Renseignez un des mots-clés MAILLE ou GROUP_MA.
+"""),
+
+12 : _(u"""
+ Pour extraire la valeur d'un champ par élément aux noeuds (type ELNO), il est nécessaire de fournir
+ un nom de maille ou un groupe de mailles et un nom de noeud ou un groupe de noeuds.
+
+ Conseil:
+   - Renseignez un des mots-clés MAILLE ou GROUP_MA et un des mots-clés NOEUD, GROUP_NO ou POINT.
+"""),
+
+13 : _(u"""
+ Pour extraire la valeur d'un champ par élément aux points de Gauss (type ELGA), il est nécessaire
+ de fournir un nom de maille ou un groupe de mailles et le numéro de point de Gauss.
+
+ Conseil:
+   - Renseignez un des mots-clés MAILLE ou GROUP_MA et le mot-clé POINT.
+"""),
 
 }
