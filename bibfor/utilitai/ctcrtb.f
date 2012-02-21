@@ -7,9 +7,9 @@
       CHARACTER*24 NKCHA,NKCMP
       LOGICAL      TOUCMP
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 30/05/2011   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 20/02/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -74,22 +74,35 @@ C
 C     ----------------------------------------------------
 C --- 1. DETERMINATION DU NOMBRE DE PARAMETRES DE LA TABLE
 C     ----------------------------------------------------
+      KK=0
       IF(RESU.EQ.' ')THEN
-           NBPARA=3
+        KK=KK+1
       ELSE
-           NBPARA=5
+        KK=KK+2
       ENDIF
 
-      IF(TYCH(1:2).EQ.'EL')NBPARA=NBPARA+1
-      IF(TYCH.EQ.'ELGA')NBPARA=NBPARA+1
-      IF(RESU.NE.' ' .AND. TYPAC.NE.'ORDRE')THEN
-          NBPARA=NBPARA+1
+      IF(RESU.NE.' ')THEN
+        IF(TYPAC.NE.'ORDRE')THEN
+          KK=KK+1
+        ENDIF
+        KK=KK+1
       ENDIF
-      IF(NDIM.EQ.2)THEN
-          NBPARA=NBPARA+1
+
+      IF(TYCH(1:2).EQ.'EL')THEN
+         KK=KK+1
+      ENDIF
+      IF(TYCH.EQ.'ELNO' .OR. TYCH.EQ.'NOEU')THEN
+         KK=KK+1
+      ELSEIF(TYCH.EQ.'ELGA')THEN
+         KK=KK+2
+      ENDIF
+
+      KK=KK+1
+      IF(NDIM.GE.2)THEN
+         KK=KK+1
       ENDIF
       IF(NDIM.EQ.3)THEN
-          NBPARA=NBPARA+2
+         KK=KK+1
       ENDIF
       N=NBCMP
       CALL JEVEUO(NKCHA,'L',JKCHA)
@@ -110,7 +123,24 @@ C     ----------------------------------------------------
            ENDIF
          ENDIF
  60   CONTINUE
-      NBPARA=NBPARA+N
+
+      IF(TOUCMP)THEN
+          IF(TYCH.EQ.'NOEU')THEN
+             DO 190 J=1,N
+                KK=KK+1
+ 190         CONTINUE
+          ELSE IF(TYCH(1:2).EQ.'EL')THEN
+             DO 191 J=1,N
+                KK=KK+1
+ 191         CONTINUE
+          ENDIF
+      ELSE
+          DO 195 J=1,N
+              KK=KK+1
+ 195      CONTINUE
+      ENDIF
+      NBPARA=KK
+
 
 C    ------------------------------------------------------------------
 C --- 2. DETERMINATION DES NOMS ET DES TYPES DES PARAMETRES DE LA TABLE

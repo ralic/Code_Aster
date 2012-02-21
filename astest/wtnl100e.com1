@@ -86,14 +86,9 @@ RESU_TOT=STAT_NON_LINE(MODELE=MODE[nbadap],
 ####print dico['ERRE_TPS_GLOB']
 ####print "Derniere valeur de ERRE_TPS_GLOB = ", dico['ERRE_TPS_GLOB'][-1]
 
-RESU_TOT=CALC_ELEM(reuse =RESU_TOT,
-                  RESULTAT=RESU_TOT,
-                  LIST_INST=LI,
-                  OPTION='SIEF_ELNO',);
-
 RESU_TOT=CALC_ERREUR(reuse =RESU_TOT,
                      RESULTAT=RESU_TOT,
-                     LIST_INST=LI_BIS,
+                     LIST_INST=LI,
                      OPTION=('ERME_ELEM','ERME_ELNO',),);
 
 RESU_TOT=CALC_NO(reuse =RESU_TOT,

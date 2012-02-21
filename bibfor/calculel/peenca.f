@@ -5,9 +5,9 @@
       REAL*8                       VR(LONG)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 21/02/2012   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -124,11 +124,16 @@ C              --- TOTALE ---
             INUM = 0
             DO 42 J = 1,NBGR
                MODE=ZI(JCELD-1+ZI(JCELD-1+4+J) +2)
-               IF (MODE .EQ.0 ) GOTO 42
+               NEL = NBELEM(LIGREL,J)
+
+               IF (MODE .EQ.0 ) THEN 
+                    INUM = INUM + NEL + 1
+                    GOTO 42
+               ENDIF
                LONGT = DIGDEL(MODE)
                ICOEF=MAX(1,ZI(JCELD-1+4))
                LONGT = LONGT * ICOEF
-               NEL = NBELEM(LIGREL,J)
+
                IDECGR=ZI(JCELD-1+ZI(JCELD-1+4+J)+8)
                DO 44 K = 1,NEL
                   IEL = ZI(JLIGR+INUM+K-1)

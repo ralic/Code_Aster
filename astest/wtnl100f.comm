@@ -1,9 +1,9 @@
-# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 21/02/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE CONSOLIDATION TERZAGHI 2D Q8
 # wtnl100f.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -59,10 +59,6 @@ T2_FIN = 500.
 LI1=DEFI_LIST_REEL(DEBUT=0.0,
                    INTERVALLE=_F(JUSQU_A= T1_FIN,
                                  NOMBRE=25,),);
-
-LI1_BIS=DEFI_LIST_REEL(DEBUT=10.0,
-                       INTERVALLE=_F(JUSQU_A= T1_FIN,
-                                     NOMBRE=24,),);
 
 LI2=DEFI_LIST_REEL(DEBUT= T1_FIN,
                    INTERVALLE=_F(JUSQU_A= T2_FIN,
@@ -174,15 +170,9 @@ for k in range(1,nbadap+1):
 
 ####dico = RESU_00.LIST_PARA()
 
-
-  RESU[k]=CALC_ELEM(reuse =RESU[k],
-                    RESULTAT=RESU[k],
-                    LIST_INST=LI1,
-                    OPTION='SIEF_ELNO',);
-
   RESU[k]=CALC_ERREUR(reuse =RESU[k],
                       RESULTAT=RESU[k],
-                      LIST_INST=LI1_BIS,
+                      LIST_INST=LI1,
                       OPTION=('ERME_ELEM','ERME_ELNO',),);
 
   RESU[k]=CALC_NO(reuse =RESU[k],

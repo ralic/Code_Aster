@@ -1,8 +1,8 @@
-#@ MODIF post_bordet_ops Macro  DATE 30/08/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF post_bordet_ops Macro  DATE 21/02/2012   AUTEUR MACOCCO K.MACOCCO 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -57,16 +57,6 @@ def post_bordet_ops(self, TOUT, GROUP_MA, INST, PRECISION, CRITERE, NUME_ORDRE,
 
    self.DeclareOut('tabout', self.sd)
 
- #
- #Recuperation du champ materiau compris dans le resultat
- #
-   iret,ibid,__nom_cham_mater = aster.dismoi('F','CHAM_MATER',RESULTAT.nom,'RESULTAT')
-#   if (len(__nom_cham_mater) == 0) or (len(__nom_cham_mater) > 1)  :
-   if (__nom_cham_mater.strip() == "#PLUSIEURS") or (__nom_cham_mater.strip() == "#AUCUN") :
-        print 'ON EST LA'
-        UTMESS('F','RUPTURE1_58')
-   else :
-        __cham_mater = self.get_concept(__nom_cham_mater.strip())
 #
 #Recuperation du modele a partir du resultat
    iret,ibid,__n_modele = aster.dismoi('F','MODELE',RESULTAT.nom,'RESULTAT')
@@ -108,7 +98,6 @@ def post_bordet_ops(self, TOUT, GROUP_MA, INST, PRECISION, CRITERE, NUME_ORDRE,
 
  #Volume point de gauss
    __VOL_PG=CALC_CHAM_ELEM(MODELE=__model,
-                      CHAM_MATER=__cham_mater,
                       TOUT='OUI',
                       OPTION='COOR_ELGA',);
    if GROUP_MA:

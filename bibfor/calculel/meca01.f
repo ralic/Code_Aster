@@ -5,7 +5,7 @@
      &                    CHVARC, TYPESE, NPASS , CODRET )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/02/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF CALCULEL  DATE 21/02/2012   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -235,7 +235,8 @@ C
             IBID = IORDR+1-JAUX
 C
             IF ( IBID.LT.0 ) THEN
-              CALL U2MESK('F','INDICATEUR_3',1,NOMPRO)
+              CALL U2MESK('I','INDICATEUR_3',1,NOMPRO)
+              GOTO 2299
             ENDIF
 C
             CALL RSADPA(RESUCO,'L',1,'INST',IBID,0,IAINST,K8B)
@@ -423,6 +424,11 @@ C
 C
           CALL JERECU('V')
           IORDR = ZI(JORDR+IAUX-1)
+          IF ( IORDR.EQ.0 ) THEN
+             CALL JEDEMA()
+             GOTO 11
+          ENDIF
+          
           CALL RSEXC2(1,1,RESUCO,'ERME_ELEM',IORDR,CHERRE,
      &                OPTION,IRET1)
 C

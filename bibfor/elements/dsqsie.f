@@ -1,26 +1,27 @@
-      SUBROUTINE DSQSIE (FAMI  ,XYZL  ,PGL   ,DEPL  ,NBCOU ,
+      SUBROUTINE DSQSIE (OPTION,FAMI  ,XYZL  ,PGL   ,DEPL  ,NBCOU ,
      &                   CDL   )
       IMPLICIT  NONE
       CHARACTER*4   FAMI
+      CHARACTER*16  OPTION
       REAL*8        XYZL(3,*),PGL(3,*), DEPL(*), CDL(*)
       INTEGER       NBCOU
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 20/02/2012   AUTEUR CHEIGNON E.CHEIGNON 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C     RELATION ELAS_COQUE/ELAS_COQMU
@@ -66,13 +67,13 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8      H(3,3),D1I(2,2),D2I(2,4)
       REAL*8      BF(3,NDDLFL*NNOMAI),BM(3,NDDLME*NNOMAI)
       REAL*8      SM(3),SF(3),HFT2(2,6),HLT2(4,6)
-      REAL*8      EPS(3),SIG(3),CIST(2)
+      REAL*8      EPS(3),SIG(3),CIST(2),DCIS(2)
       REAL*8      QSI,ETA,CARAQ4(25),T2EV(4),T2VE(4),T1VE(9)
       REAL*8      AN(4,12),BC(2,12),BCM(2,8),HMFT2(2,6)
       REAL*8      BFA(3,4),BFB(3,12),BFN(3,12)
       REAL*8      BCA(2,4),BCB(2,12),BCN(2,12)
       REAL*8      JACOB(5),HICOU
-      LOGICAL     COUPMF
+      LOGICAL     COUPMF,LCALCT
 C     ------------------------------------------------------------------
 C
       CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
@@ -113,6 +114,12 @@ C              ---------------------
 C
 C  BOUCLE SUR LES POINTS D INTEGRATION
 C
+      IF (OPTION.EQ.'EPSI_ELGA')THEN
+        LCALCT=.FALSE.
+      ELSE
+        LCALCT=.TRUE.
+      ENDIF
+
       DO 300 IE = 1,NPG
         QSI = ZR(ICOOPG-1+NDIM*(IE-1)+1)
         ETA = ZR(ICOOPG-1+NDIM*(IE-1)+2)
@@ -185,7 +192,7 @@ C             --------------------------------
 C             -- EN MULTICOUCHES
 C             -- ON CALCULE TOUT D'UN COUP
               INIV = IG - 2
-              CALL DXDMUL(.TRUE.,ICOU,INIV,T1VE,T2VE,H,D1I,D2I,
+              CALL DXDMUL(LCALCT,ICOU,INIV,T1VE,T2VE,H,D1I,D2I,
      &                    ZIC,HICOU)
             ENDIF
 C
@@ -193,11 +200,7 @@ C
               EPS(I) = SM(I) + ZIC*SF(I)
               SIG(I) = 0.D0
  370        CONTINUE
-            DO 390 I = 1,3
-              DO 380 J = 1,3
-                SIG(I) = SIG(I) + H(I,J)*EPS(J)
- 380          CONTINUE
- 390        CONTINUE
+
 C
 C ---       CALCUL DU PRODUIT HF.T2 :
 C           ------------------------
@@ -229,25 +232,46 @@ C             ------ VT = BC.DEPF --------------------------------------
                 VT(I) = VT(I) + BC(I,J)*DEPF(J)
  222          CONTINUE
  220        CONTINUE
+
+            IF (OPTION.EQ.'EPSI_ELGA')THEN
+C           ------ DCIS = DCI.VT --------------------------------------
+              DCIS(1) = DCI(1,1)*VT(1) + DCI(1,2)*VT(2)
+              DCIS(2) = DCI(2,1)*VT(1) + DCI(2,2)*VT(2)
+              CDL(ICPG+1) = EPS(1)
+              CDL(ICPG+2) = EPS(2)
+              CDL(ICPG+3) = 0.D0
+C           --- PASSAGE DE LA DISTORSION A LA DEFORMATION DE CIS. ------
+              CDL(ICPG+4) = EPS(3)/2.D0
+              CDL(ICPG+5) = DCIS(1)/2.D0
+              CDL(ICPG+6) = DCIS(2)/2.D0
+            ELSE
+C           SIEF_ELGA
+              DO 390 I = 1,3
+                DO 380 J = 1,3
+                  SIG(I) = SIG(I) + H(I,J)*EPS(J)
+ 380            CONTINUE
+ 390          CONTINUE
+
 C             ------ CIST = D1I.VT ( + D2I.LAMBDA SI MULTICOUCHES ) ----
-            CIST(1) = D1I(1,1)*VT(1) + D1I(1,2)*VT(2)
-            CIST(2) = D1I(2,1)*VT(1) + D1I(2,2)*VT(2)
-            IF (MULTIC.GT.0) THEN
+              CIST(1) = D1I(1,1)*VT(1) + D1I(1,2)*VT(2)
+              CIST(2) = D1I(2,1)*VT(1) + D1I(2,2)*VT(2)
+              IF (MULTIC.GT.0) THEN
 C             ------- CALCUL DU PRODUIT HL.T2 ------------------------
-              CALL DSXHLT ( DF, JACOB(2), HLT2 )
-              CALL DSQLXY(QSI,ETA,HLT2,AN,DEPF,CARAQ4(13),LAMBDA)
-              DO 252 J = 1,4
-                CIST(1) = CIST(1) + D2I(1,J)*LAMBDA(J)
-                CIST(2) = CIST(2) + D2I(2,J)*LAMBDA(J)
- 252          CONTINUE
-            END IF
+                CALL DSXHLT ( DF, JACOB(2), HLT2 )
+                CALL DSQLXY(QSI,ETA,HLT2,AN,DEPF,CARAQ4(13),LAMBDA)
+                DO 252 J = 1,4
+                  CIST(1) = CIST(1) + D2I(1,J)*LAMBDA(J)
+                  CIST(2) = CIST(2) + D2I(2,J)*LAMBDA(J)
+ 252            CONTINUE
+              END IF
 C
-            CDL(ICPG+1) = SIG(1)
-            CDL(ICPG+2) = SIG(2)
-            CDL(ICPG+3) = 0.D0
-            CDL(ICPG+4) = SIG(3)
-            CDL(ICPG+5) = CIST(1)
-            CDL(ICPG+6) = CIST(2)
+              CDL(ICPG+1) = SIG(1)
+              CDL(ICPG+2) = SIG(2)
+              CDL(ICPG+3) = 0.D0
+              CDL(ICPG+4) = SIG(3)
+              CDL(ICPG+5) = CIST(1)
+              CDL(ICPG+6) = CIST(2)
+            ENDIF
  500      CONTINUE
  400    CONTINUE
  300  CONTINUE

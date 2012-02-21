@@ -1,7 +1,7 @@
       SUBROUTINE CAZOCP(CHAR  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/01/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 21/02/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -120,6 +120,39 @@ C
         CALL ASSERT(.FALSE.)
       ENDIF
 C
+C --- ALGORITHMES GENERAUX
+C
+      IF (LCTCC) THEN
+        CALL GETVTX(' ','ALGO_RESO_CONT',1 ,IARG,1,ALGOCO,NOC)
+        IF (LFROT) THEN
+          CALL GETVTX(' ','ALGO_RESO_FROT',1 ,IARG,1,ALGOFR,NOC)
+        ENDIF
+      ENDIF
+      IF (LXFCM) THEN
+        ALGOCO = 'POINT_FIXE'
+        IF (ZI(JPARCI+1-1).EQ.0) THEN
+          ALGOFR = 'POINT_FIXE'
+        ELSE
+          ALGOFR = 'NEWTON'
+        ENDIF
+      ENDIF
+      IF (LCTCD) THEN
+        ALGOCO = 'POINT_FIXE'
+        ALGOFR = 'POINT_FIXE'
+      ENDIF
+C
+      IF (ALGOCO.EQ.'POINT_FIXE') THEN
+        ZI(JPARCI+27-1) = 0
+      ELSEIF (ALGOCO.EQ.'NEWTON') THEN
+        ZI(JPARCI+27-1) = 1
+      ENDIF
+C
+      IF (ALGOFR.EQ.'POINT_FIXE') THEN
+        ZI(JPARCI+28-1) = 0
+      ELSEIF (ALGOFR.EQ.'NEWTON') THEN
+        ZI(JPARCI+28-1) = 1
+      ENDIF
+C
 C --- PARAMETRES BOUCLE CONTACT
 C
       IF (LCTCD) THEN
@@ -127,26 +160,18 @@ C
         ZI(JPARCI+5-1)  = REACCA
         ZI(JPARCI+10-1) = -1
       ELSEIF (LCTCC.OR.LXFCM) THEN
-        CALL GETVTX(' ','ITER_CONT_TYPE',1 ,IARG,1,TYPCON,NOC)
-        IF (TYPCON.EQ.'MULT') THEN
-          REACCA = 4
-          CALL GETVIS(' ','ITER_CONT_MULT',1 ,IARG,1,REACCA,NOC)
-          ZI(JPARCI+5-1)  = REACCA
-          ZI(JPARCI+10-1) = -1
-        ELSEIF (TYPCON.EQ.'MAXI') THEN
-          REACCA = 30
-          CALL GETVIS(' ','ITER_CONT_MAXI',1 ,IARG,1,REACCA,NOC)
-          ZI(JPARCI+10-1)  = REACCA
-          ZI(JPARCI+5-1) = -1
-        ELSE
-          CALL ASSERT(.FALSE.)
-        ENDIF
-        IF (LCTCC) THEN
-          CALL GETVTX(' ','ALGO_RESO_CONT',1 ,IARG,1,ALGOCO,NOC)
-          IF (ALGOCO.EQ.'POINT_FIXE') THEN
-            ZI(JPARCI+27-1) = 0
-          ELSEIF (ALGOCO.EQ.'NEWTON') THEN
-            ZI(JPARCI+27-1) = 1
+        IF (ALGOCO.EQ.'POINT_FIXE') THEN
+          CALL GETVTX(' ','ITER_CONT_TYPE',1 ,IARG,1,TYPCON,NOC)
+          IF (TYPCON.EQ.'MULT') THEN
+            REACCA = 4
+            CALL GETVIS(' ','ITER_CONT_MULT',1 ,IARG,1,REACCA,NOC)
+            ZI(JPARCI+5-1)  = REACCA
+            ZI(JPARCI+10-1) = -1
+          ELSEIF (TYPCON.EQ.'MAXI') THEN
+            REACCA = 30
+            CALL GETVIS(' ','ITER_CONT_MAXI',1 ,IARG,1,REACCA,NOC)
+            ZI(JPARCI+10-1) = REACCA
+            ZI(JPARCI+5-1)  = -1
           ELSE
             CALL ASSERT(.FALSE.)
           ENDIF
@@ -158,7 +183,27 @@ C
 C --- PARAMETRES BOUCLE FROTTEMENT
 C
       IF (LFROT) THEN
-        IF (LCTCC.OR.LXFCM) THEN
+        IF (LCTCC) THEN
+          IF (ALGOFR.EQ.'POINT_FIXE') THEN
+            CALL GETVTX(' ','REAC_FROT',1 ,IARG,1,REAC,NOC)
+            IF (REAC .EQ. 'AUTOMATIQUE') THEN
+              ZI(JPARCI+20-1) = -1
+              CALL GETVIS(' ','ITER_FROT_MAXI',1 ,IARG,1,REACBS,NOC)
+              ZI(JPARCI+7-1) = REACBS
+              CALL GETVR8(' ','RESI_FROT',1 ,IARG,1,RESIFR,NOC)
+              ZR(JPARCR+2-1) = RESIFR
+            ELSEIF (REAC .EQ. 'CONTROLE') THEN
+              CALL GETVIS(' ','NB_ITER_FROT',1 ,IARG,1,NBREAC,NOC)
+              ZI(JPARCI+20-1) = NBREAC
+              ZR(JPARCR+2-1) = RESIFR
+            ELSE
+              CALL ASSERT(.FALSE.)
+            ENDIF
+          ELSE
+            CALL GETVR8(' ','RESI_FROT',1 ,IARG,1,RESIFR,NOC)
+            ZR(JPARCR+2-1) = RESIFR
+          ENDIF
+        ELSEIF (LXFCM) THEN
           CALL GETVTX(' ','REAC_FROT',1 ,IARG,1,REAC,NOC)
           IF (REAC .EQ. 'AUTOMATIQUE') THEN
             ZI(JPARCI+20-1) = -1
@@ -172,23 +217,6 @@ C
             ZR(JPARCR+2-1) = RESIFR
           ELSE
             CALL ASSERT(.FALSE.)
-          ENDIF
-          IF (LCTCC) THEN
-            CALL GETVTX(' ','ALGO_RESO_FROT',1 ,IARG,1,ALGOFR,NOC)
-            IF (ALGOFR.EQ.'POINT_FIXE') THEN
-              ZI(JPARCI+28-1) = 0
-            ELSEIF (ALGOFR.EQ.'NEWTON') THEN
-              ZI(JPARCI+28-1) = 1
-            ELSE
-              CALL ASSERT(.FALSE.)
-            ENDIF
-          ENDIF
-          IF (LXFCM) THEN
-            IF (ZI(JPARCI+1-1).EQ.0) THEN
-              ZI(JPARCI+28-1) = 0
-            ELSE
-              ZI(JPARCI+28-1) = 1
-            ENDIF
           ENDIF
         ENDIF
       ELSE

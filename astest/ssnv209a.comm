@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 # ssnv209a.para = tps_job 120 mem_job 128Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -95,7 +95,6 @@ CHA2 = DEFI_CONTACT(MODELE         = MO,
                     FROTTEMENT     = 'COULOMB',
                     ITER_GEOM_MAXI = 3,
                     ITER_CONT_MAXI = 4,
-                    ITER_FROT_MAXI = 10,
                     ZONE =(
                            _F(
                              GROUP_MA_MAIT = 'LBATI',

@@ -5,7 +5,7 @@
       CHARACTER*8         NOMA
       
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ELEMENTS  DATE 21/02/2012   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -55,9 +55,9 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER       ADRA, AR(12,3)
       INTEGER       IATYMA, IAR, IBID, IMA, INO1, INO2, IRET, ITYP
-      INTEGER       JCNCIN, JCONX1, JCONX2, JCOOR, JDRVLC
+      INTEGER       JCNCIN, JCONX1, JCONX2, JCOOR, JDRVLC, K
       INTEGER       NBAR, NBMACA, NDIME, NNO, NNO1, NNO2, NUMAC
-      REAL*8        COOR(3), VECT(3), P
+      REAL*8        COOR(3), DDOT, VECT(3), P
       CHARACTER*8   K8B, TYPE
       CHARACTER*24  NCNCIN
 C     -----------------------------------------------------------------
@@ -70,7 +70,7 @@ C     RECUPERATION DES DONNEES SUR LE MAILLAGE
       CALL JEVEUO( NOMA//'.TYPMAIL','L', IATYMA )
       CALL JEVEUO( NOMA//'.COORDO    .VALE','L', JCOOR )
 
-C     RECUPERATION DES COORDONNNES DE NA      
+C     RECUPERATION DES COORDONNNES DE NA
       COOR(1) = ZR(JCOOR-1 + (NA-1)*3 + 1)
       COOR(2) = ZR(JCOOR-1 + (NA-1)*3 + 2)
       COOR(3) = ZR(JCOOR-1 + (NA-1)*3 + 3)
@@ -90,15 +90,15 @@ C
 C       NUMERO DE LA MAILLE
         NUMAC = ZI(JCNCIN-1 + ADRA+IMA-1)
         ITYP = IATYMA-1+NUMAC
-        CALL JENUNO( JEXNUM('&CATA.TM.NOMTM',ZI(ITYP)), TYPE )        
+        CALL JENUNO( JEXNUM('&CATA.TM.NOMTM',ZI(ITYP)), TYPE )     
         CALL DISMOI('F','DIM_TOPO',TYPE,'TYPE_MAILLE',NDIME,K8B,IRET)
-        
+
 C       ON ZAPPE LES MAILLES DE BORDS
         IF (NDIME.NE.NDIM) GOTO 10
 
         CALL CONARE(TYPE,AR,NBAR)
 
-C       BOUCLE SUR LE NOMBRE D'ARETES DE LA MAILLE NUMAC        
+C       BOUCLE SUR LE NOMBRE D'ARETES DE LA MAILLE NUMAC
         DO 100 IAR=1,NBAR
 
            INO1 = AR(IAR,1)
@@ -107,24 +107,24 @@ C       BOUCLE SUR LE NOMBRE D'ARETES DE LA MAILLE NUMAC
            NNO2 = ZI(JCONX1-1 + ZI(JCONX2+NUMAC-1) +INO2-1)
 
            IF (NA.EQ.NNO1) THEN
-              NNO=NNO2            
+              NNO=NNO2
            ELSE IF (NA.EQ.NNO2) THEN
               NNO=NNO1
            ELSE
               GOTO 100
            ENDIF
 
-C          VECTEUR REPRESENTANT L'ARETE NA-NNO           
-           VECT(1) = ZR(JCOOR-1+ (NNO-1)*3+1) - COOR(1)
-           VECT(2) = ZR(JCOOR-1+ (NNO-1)*3+2) - COOR(2)
-           VECT(3) = ZR(JCOOR-1+ (NNO-1)*3+3) - COOR(3)
-           
-C          PROJECTION DE L'ARETE SUR LE VECTEUR TANGENT 
-           P = VECT(1)*VECDIR(1)+VECT(2)*VECDIR(2)+VECT(3)*VECDIR(3) 
+C          VECTEUR REPRESENTANT L'ARETE NA-NNO
+           DO 110 K=1,NDIM
+              VECT(K) = ZR(JCOOR-1+ (NNO-1)*3+K) - COOR(K)
+ 110       CONTINUE
+
+C          PROJECTION DE L'ARETE SUR LE VECTEUR TANGENT
+           P = DDOT(NDIM,VECT,1,VECDIR,1)
            P = ABS(P)
 
            IF (P.GE.HMAX) HMAX = P
-           
+
  100      CONTINUE
 
  10   CONTINUE

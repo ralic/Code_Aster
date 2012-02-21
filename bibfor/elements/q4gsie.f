@@ -1,26 +1,27 @@
-      SUBROUTINE Q4GSIE (FAMI  ,XYZL  ,PGL   ,DEPL  ,NBCOU ,
+      SUBROUTINE Q4GSIE (OPTION,FAMI  ,XYZL  ,PGL   ,DEPL  ,NBCOU ,
      &                   CDL   )
       IMPLICIT  NONE
       CHARACTER*4   FAMI
+      CHARACTER*16  OPTION
       REAL*8        XYZL(3,*),PGL(3,*), DEPL(*), CDL(*)
       INTEGER       NBCOU
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/10/2011   AUTEUR DESOZA T.DESOZA 
+C MODIF ELEMENTS  DATE 20/02/2012   AUTEUR CHEIGNON E.CHEIGNON 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C     RELATION ELAS_COQUE/ELAS_COQMU
@@ -71,7 +72,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8      BC(2,12)
       REAL*8      BCDF(2)
       REAL*8      JACOB(5),HICOU
-      LOGICAL     COUPMF
+      LOGICAL     COUPMF,LCALCT
 C     ------------------------------------------------------------------
 C
       CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
@@ -110,6 +111,12 @@ C              ---------------------
 C
 C  BOUCLE SUR LES POINTS D INTEGRATION
 C
+      IF (OPTION.EQ.'EPSI_ELGA')THEN
+        LCALCT=.FALSE.
+      ELSE
+        LCALCT=.TRUE.
+      ENDIF
+
       DO 300 IE = 1,NPG
         QSI = ZR(ICOOPG-1+NDIM*(IE-1)+1)
         ETA = ZR(ICOOPG-1+NDIM*(IE-1)+2)
@@ -174,7 +181,7 @@ C             --------------------------------
 C             -- EN MULTICOUCHES
 C             -- ON CALCULE TOUT D'UN COUP
               INIV = IG - 2
-              CALL DXDMUL(.TRUE.,ICOU,INIV,T1VE,T2VE,H,D1I,D2I,
+              CALL DXDMUL(LCALCT,ICOU,INIV,T1VE,T2VE,H,D1I,D2I,
      &                    ZIC,HICOU)
             ENDIF
 C
@@ -182,41 +189,55 @@ C
               EPS(I) = SM(I) + ZIC*SF(I)
               SIG(I) = 0.D0
  370        CONTINUE
-            DO 390 I = 1,3
-              DO 380 J = 1,3
-                SIG(I) = SIG(I) + H(I,J)*EPS(J)
- 380          CONTINUE
- 390        CONTINUE
-
 C         ------ VT = DC.BC.DEPF -------------------------------------
-        VT(1) = 0.D0
-        VT(2) = 0.D0
-        BCDF(1) = 0.D0
-        BCDF(2) = 0.D0
-        DO 230 J = 1,12
-          BCDF(1) = BCDF(1) + BC(1,J)*DEPF(J)
-          BCDF(2) = BCDF(2) + BC(2,J)*DEPF(J)
- 230    CONTINUE
-        VT(1) = DC(1,1)*BCDF(1) + DC(1,2)*BCDF(2)
-        VT(2) = DC(2,1)*BCDF(1) + DC(2,2)*BCDF(2)
-C         ------ CIST = D1I.VT ( + D2I.LAMBDA SI MULTICOUCHES ) ------
-        CIST(1) = D1I(1,1)*VT(1) + D1I(1,2)*VT(2)
-        CIST(2) = D1I(2,1)*VT(1) + D1I(2,2)*VT(2)
-        IF (MULTIC.GT.0) THEN
-          CALL Q4GLXY(HLT2, DEPF, LAMBDA)
-          DO 246 J = 1,4
-            CIST(1) = CIST(1) + D2I(1,J)*LAMBDA(J)
-            CIST(2) = CIST(2) + D2I(2,J)*LAMBDA(J)
- 246      CONTINUE
-        END IF
+            VT(1) = 0.D0
+            VT(2) = 0.D0
+            BCDF(1) = 0.D0
+            BCDF(2) = 0.D0
+            DO 230 J = 1,12
+              BCDF(1) = BCDF(1) + BC(1,J)*DEPF(J)
+              BCDF(2) = BCDF(2) + BC(2,J)*DEPF(J)
+ 230        CONTINUE
+            VT(1) = DC(1,1)*BCDF(1) + DC(1,2)*BCDF(2)
+            VT(2) = DC(2,1)*BCDF(1) + DC(2,2)*BCDF(2)
 
+            IF (OPTION.EQ.'EPSI_ELGA') THEN
+C           ------ DCIS = DCI.VT --------------------------------------
+              CDL(ICPG+1) = EPS(1)
+              CDL(ICPG+2) = EPS(2)
+              CDL(ICPG+3) = 0.D0
+C           --- PASSAGE DE LA DISTORSION A LA DEFORMATION DE CIS. ------
+              CDL(ICPG+4) = EPS(3)/2.D0
+              CDL(ICPG+5) = BCDF(1)/2.D0
+              CDL(ICPG+6) = BCDF(2)/2.D0
+
+            ELSE
+C             SIEF_ELGA
+
+              DO 390 I = 1,3
+                DO 380 J = 1,3
+                  SIG(I) = SIG(I) + H(I,J)*EPS(J)
+ 380            CONTINUE
+ 390          CONTINUE
+
+C         ------ CIST = D1I.VT ( + D2I.LAMBDA SI MULTICOUCHES ) ------
+              CIST(1) = D1I(1,1)*VT(1) + D1I(1,2)*VT(2)
+              CIST(2) = D1I(2,1)*VT(1) + D1I(2,2)*VT(2)
+              IF (MULTIC.GT.0) THEN
+                CALL Q4GLXY(HLT2, DEPF, LAMBDA)
+                DO 246 J = 1,4
+                  CIST(1) = CIST(1) + D2I(1,J)*LAMBDA(J)
+                  CIST(2) = CIST(2) + D2I(2,J)*LAMBDA(J)
+ 246            CONTINUE
+              END IF
 C
-            CDL(ICPG+1) = SIG(1)
-            CDL(ICPG+2) = SIG(2)
-            CDL(ICPG+3) = 0.D0
-            CDL(ICPG+4) = SIG(3)
-            CDL(ICPG+5) = CIST(1)
-            CDL(ICPG+6) = CIST(2)
+              CDL(ICPG+1) = SIG(1)
+              CDL(ICPG+2) = SIG(2)
+              CDL(ICPG+3) = 0.D0
+              CDL(ICPG+4) = SIG(3)
+              CDL(ICPG+5) = CIST(1)
+              CDL(ICPG+6) = CIST(2)
+            ENDIF
  500      CONTINUE
  400    CONTINUE
  300  CONTINUE

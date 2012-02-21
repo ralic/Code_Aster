@@ -1,4 +1,4 @@
-# MODIF  DATE 30/01/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 21/02/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE ESTIMATEUR D'ERREUR SUR UNE PLAQUE TROUEE EN TRACTION
 # sslv111c.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -109,11 +109,6 @@ RESU=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CM,
                    EXCIT=(_F(CHARGE=CH1,),
                           _F(CHARGE=CH2,),),);
-
-RESU=CALC_ELEM(reuse =RESU,
-               RESULTAT=RESU,
-               TOUT_ORDRE='OUI',
-               OPTION='SIGM_ELNO',);
 
 RESU=CALC_ERREUR(reuse =RESU,
                  RESULTAT=RESU,

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2012   AUTEUR ABBAS M.ABBAS 
 # RESPONSABLE ABBAS M.ABBAS
 # AUTEUR : M. ZARROUG
 # DATE   : 18/12/2000
@@ -133,7 +133,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
                                    EVAL_CHAM='MAX',
                                    EVAL_ELGA='MAX',
                                    )),
-                   AFFICHAGE=(_F(INFO_RESIDU='OUI',
+                   AFFICHAGE=(_F(INFO_RESIDU='NON',
                                  UNITE=37,),),
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=1),

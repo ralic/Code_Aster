@@ -1,9 +1,10 @@
-      SUBROUTINE MCOPCE(NDIM  ,ALIAS ,NNO   ,KSI1  ,KSI2  ,
-     &                  COOR  ,GEOM  )
+      SUBROUTINE MCOPCE(NDIM  ,ALIAS ,NNO   ,NCMP  ,KSI1  ,
+     &                  KSI2  ,COOR  ,GEOM  )
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/06/2009   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 21/02/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -18,19 +19,19 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
       IMPLICIT NONE
-      INTEGER      NDIM,NNO
+      INTEGER      NDIM,NNO,NCMP
       CHARACTER*8  ALIAS
-      REAL*8       KSI1
-      REAL*8       KSI2
+      REAL*8       KSI1,KSI2
       REAL*8       COOR(27),GEOM(3)
 C      
 C ----------------------------------------------------------------------
 C
 C ROUTINE CONTACT (METHODE CONTINUE - APPARIEMENT - UTILITAIRE)
 C
-C CALCUL DES COORDONNEES D'UN NOEUD SUR UNE MAILLE A PARTIR
-C DE SES COORDONNEES PARAMETRIQUES 
+C CALCUL DE LA VALEUR D'UN CHAMP SUR 
 C
 C ----------------------------------------------------------------------
 C
@@ -43,25 +44,8 @@ C IN  KSI2   : COORDONNEE PARAMETRIQUE ETA DU PROJETE
 C OUT GEOM   : COORDONNEES DU NOEUD
 C
 C ----------------------------------------------------------------------
+C A RESORBER
 C
-      INTEGER      I,J
-      REAL*8       FF(9)
-C
-C-----------------------------------------------------------------------
-C
-C --- INITIALISATIONS
-C
-      DO 10 I = 1,3
-        GEOM(I) = 0.D0
-   10 CONTINUE
-C
-C --- COORDONNEES DU PROJETE
-C
-      CALL MMNONF(NDIM,NNO,ALIAS,KSI1,KSI2,FF)
-      DO 40 I = 1,3
-        DO 30 J = 1,NNO
-          GEOM(I) = FF(J)*COOR((J-1)*3+I) + GEOM(I)
-   30   CONTINUE
-   40 CONTINUE
+      CALL ASSERT(.FALSE.)
 C
       END

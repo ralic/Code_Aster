@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 21/02/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE CYLINDRE MINCE SOUS SON POIDS PROPRE (AXIS)
 # ssls09c.para = tps_job 60 mem_job 128Mo mem_aster 95 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -99,10 +99,6 @@ DEF=STAT_NON_LINE(MODELE=MODELE,
                   NEWTON=_F(REAC_ITER=1,),
                   SOLVEUR=_F(METHODE='MUMPS',
                              PCENT_PIVOT=10,),);
-
-DEF=CALC_ELEM(reuse =DEF,
-              RESULTAT=DEF,
-              OPTION='SIGM_ELNO',);
 
 DEF=CALC_ERREUR(reuse =DEF,
                 RESULTAT=DEF,

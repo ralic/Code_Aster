@@ -1,8 +1,8 @@
-#@ MODIF discretisation Messages  DATE 07/11/2011   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF discretisation Messages  DATE 21/02/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -93,19 +93,19 @@ La liste d'instants n'est pas strictement croissante.
 """),
 
 89 : _(u"""
-Instant initial introuvable dans la liste d'instants (LIST_INST).
+L'instant initial est introuvable dans la liste d'instants (LIST_INST).
+Risque & Conseil :
+   Vérifiez le mot-clé INST_INIT (ou NUME_INST_INIT), en tenant compte de la précision (mot-clé PRECISION).
 """),
 
 92 : _(u"""
- NUME_INST_INIT est plus grand que NUME_INST_FIN
+On ne peut faire le calcul car l'instant final donné est égal au dernier instant stocké dans la structure de données RESULTAT. Il n'y a qu'un incrément disponible alors qu'il faut au moins deux pas de temps dans les opérateurs non-linéaires.  
 """),
 
 94 : _(u"""
-  -> Instant final introuvable dans la liste d'instants (LIST_INST)
-     Dans ce cas, Aster considère pour instant final, le dernier de la liste fournie.
-  -> Risque & Conseil :
-         Vérifiez le mot-clé INST_FIN (ou NUME_INST_FIN),
-         en tenant compte de la précision (mot-clé PRECISION).
+L'instant final est introuvable dans la liste d'instants (LIST_INST).
+Risque & Conseil :
+   Vérifiez le mot-clé INST_FIN (ou NUME_INST_FIN), en tenant compte de la précision (mot-clé PRECISION).
 """),
 
 

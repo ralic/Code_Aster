@@ -5,9 +5,9 @@
       CHARACTER*24        LESOPT
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 21/02/2012   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,12 +26,10 @@ C
 C    CETTE ROUTINE AJOUTE DES OPTIONS DE CALCUL DANS CALC_ELEM SI
 C    CELLES-CI ONT ETE OMISES :
 C
-C    SI EPTU_ELNO ALORS EPSI_ELGA
 C    SI ERZ1_ELEM ALORS SIEF_ELGA PUIS SIZ1_NOEU
 C    SI SIZ1_NOEU ALORS SIEF_ELGA
 C    SI ERZ2_ELEM ALORS SIEF_ELGA PUIS SIZ2_NOEU
 C    SI SIZ2_NOEU ALORS SIEF_ELGA
-C    SI DERA_ELNO ALORS DERA_ELGA
 C    SI ERME_ELEM ALORS SIGM_ELNO ou SIEF_ELNO
 C    SI ERTH_ELEM ALORS FLUX_ELNO
 C
@@ -52,18 +50,19 @@ C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                         ZK80
       COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      INTEGER        JOPT, JOPT2, IEPSI, IERZ1, IERZ2, INOZ1, INOZ2,
-     &              I, J, NBOPT2, INDK16, IRET, IDERA, ISIGM, IFISS
+      INTEGER       J, JOPT, JOPT2
+      INTEGER       I, INDK16, IRET, IRXFEM, NBOPT2
+      INTEGER       IERZ1, IERZ2, INOZ1, INOZ2, IERTH, IERME      
       CHARACTER*16  TYSD
       CHARACTER*24  LESOP2
+      LOGICAL       YATHM, PERMAN
+
 C DEB ------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
       CALL GETTCO ( RESUCO, TYSD )
       CALL JEVEUO(LESOPT,'L',JOPT)
-C
-      IEPSI = INDK16( ZK16(JOPT), 'EPTU_ELNO', 1, NBOPT )
 C
       IERZ1 = INDK16( ZK16(JOPT), 'ERZ1_ELEM', 1, NBOPT )
 C
@@ -73,11 +72,11 @@ C
 C
       INOZ2 = INDK16( ZK16(JOPT), 'SIZ2_NOEU', 1, NBOPT )
 C
-      IDERA = INDK16( ZK16(JOPT), 'DERA_ELNO', 1, NBOPT )
+      IERTH = INDK16( ZK16(JOPT), 'ERTH_ELEM', 1, NBOPT )
 C
-      ISIGM = INDK16( ZK16(JOPT), 'SIGM_ELNO', 1, NBOPT )
-
-      IF (IEPSI+IERZ1+IERZ2+INOZ1+INOZ2+IDERA+ISIGM.EQ.0) THEN
+      IERME = INDK16( ZK16(JOPT), 'ERME_ELEM', 1, NBOPT )
+C
+      IF (IERZ1+IERZ2+INOZ1+INOZ2+IERTH+IERME.EQ.0) THEN
         GOTO 9999
       ENDIF
 C
@@ -87,31 +86,34 @@ C
       CALL WKVECT ( LESOPT , 'V V K16' , NBOPT+20 , JOPT )
       CALL JEVEUO ( LESOP2 , 'L', JOPT2 )
 C
-      CALL JEEXIN(MODELE(1:8)//'.FISS',IFISS)
-C
       NBOPT2 = 1
 C
-      IF (IEPSI.NE.0) THEN
-        ZK16(JOPT+NBOPT2-1) = 'EPSI_ELGA'
-        NBOPT2 = NBOPT2 + 1
-        ZK16(JOPT+NBOPT2-1) = 'EPTU_ELNO'
-        NBOPT2 = NBOPT2 + 1
+C     EST-CE DU XFEM ?
+      CALL EXIXFE(MODELE, IRXFEM)
+      IF (IRXFEM.NE.0)THEN
+         CALL RSCHEX ( RESUCO, 'SISE_ELNO', IRET )
+         IF ( IRET .EQ. 0 ) THEN
+            ZK16(JOPT+NBOPT2-1) = 'SISE_ELNO'
+            NBOPT2 = NBOPT2 + 1
+         ENDIF
       ENDIF
 C
-      IF (IDERA.NE.0) THEN
-        ZK16(JOPT+NBOPT2-1) = 'DERA_ELGA'
-        NBOPT2 = NBOPT2 + 1
-        ZK16(JOPT+NBOPT2-1) = 'DERA_ELNO'
-        NBOPT2 = NBOPT2 + 1
-      ENDIF
-C
-      IF (ISIGM.NE.0) THEN
-        IF (IFISS.NE.0) THEN
-          ZK16(JOPT+NBOPT2-1) = 'SISE_ELNO'
-          NBOPT2 = NBOPT2 + 1
-          ZK16(JOPT+NBOPT2-1) = 'SIGM_ELNO'
-          NBOPT2 = NBOPT2 + 1
-        ENDIF
+      IF (IERME.NE.0) THEN
+C        EST-CE DE LA THM ?
+         CALL EXITHM ( MODELE, YATHM, PERMAN)
+         IF (YATHM) THEN
+            CALL RSCHEX ( RESUCO, 'SIEF_ELNO', IRET )
+            IF ( IRET .EQ. 0 ) THEN
+               ZK16(JOPT+NBOPT2-1) = 'SIEF_ELNO'
+               NBOPT2 = NBOPT2 + 1
+            ENDIF            
+         ELSE
+            CALL RSCHEX ( RESUCO, 'SIGM_ELNO', IRET )
+            IF ( IRET .EQ. 0 ) THEN
+               ZK16(JOPT+NBOPT2-1) = 'SIGM_ELNO'
+               NBOPT2 = NBOPT2 + 1
+            ENDIF
+         ENDIF
       ENDIF
 C
       IF( ( IERZ1 .NE. 0 ).OR.
@@ -129,17 +131,27 @@ C
       ENDIF
 C
       IF ( IERZ1 .NE. 0 ) THEN
-         ZK16(JOPT+NBOPT2-1) = 'SIZ1_NOEU'
-         NBOPT2 = NBOPT2 + 1
-         ZK16(JOPT+NBOPT2-1) = 'ERZ1_ELEM'
-         NBOPT2 = NBOPT2 + 1
+         CALL RSCHEX ( RESUCO, 'SIZ1_NOEU', IRET )
+         IF ( IRET .EQ. 0 ) THEN
+            ZK16(JOPT+NBOPT2-1) = 'SIZ1_NOEU'
+            NBOPT2 = NBOPT2 + 1
+         ENDIF
       ENDIF
 C
       IF ( IERZ2 .NE. 0 ) THEN
-         ZK16(JOPT+NBOPT2-1) = 'SIZ2_NOEU'
-         NBOPT2 = NBOPT2 + 1
-         ZK16(JOPT+NBOPT2-1) = 'ERZ2_ELEM'
-         NBOPT2 = NBOPT2 + 1
+         CALL RSCHEX ( RESUCO, 'SIZ2_NOEU', IRET )
+         IF ( IRET .EQ. 0 ) THEN
+            ZK16(JOPT+NBOPT2-1) = 'SIZ2_NOEU'
+            NBOPT2 = NBOPT2 + 1
+         ENDIF
+      ENDIF
+C
+      IF ( IERTH .NE. 0) THEN
+         CALL RSCHEX ( RESUCO, 'FLUX_ELNO', IRET )
+         IF ( IRET .EQ. 0 ) THEN
+            ZK16(JOPT+NBOPT2-1) = 'FLUX_ELNO'
+            NBOPT2 = NBOPT2 + 1
+         ENDIF
       ENDIF
 C
       NBOPT2 = NBOPT2 - 1

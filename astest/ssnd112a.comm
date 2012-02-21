@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2012   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 21/02/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE : EFFET DE ROTATION DE RESEAU SUR UN CUBE MONOCRISTALLIN 
 # ssnd112a.para = tps_job 120 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -240,7 +240,7 @@ SOLEXPL=STAT_NON_LINE(MODELE = TROISD,
                               ),
                      INCREMENT=(_F(LIST_INST=LIS2DDE, INST_FIN=t1),),
                      
-                     NEWTON=(_F(REAC_ITER=0,REAC_INCR=0,PREDICTION='EXTRAPOL'),),
+                     NEWTON=(_F(REAC_ITER=0,REAC_INCR=0,PREDICTION='EXTRAPOLE'),),
                      CONVERGENCE=_F(ITER_GLOB_MAXI=20),
                      ARCHIVAGE=_F(LIST_INST=LINSTDD),
                      
@@ -289,7 +289,7 @@ SOLIMPN=STAT_NON_LINE(MODELE = TROISD,
                               ),
                      INCREMENT=(_F(LIST_INST=LIS2DDE, INST_FIN=t1),),
                      
-                     NEWTON=(_F(REAC_ITER=1,PREDICTION='EXTRAPOL'),),
+                     NEWTON=(_F(REAC_ITER=1,PREDICTION='EXTRAPOLE'),),
                      CONVERGENCE=_F(ITER_GLOB_MAXI=20),
                      ARCHIVAGE=_F(LIST_INST=LINSTDD),
                      
@@ -338,7 +338,7 @@ SOLNL=STAT_NON_LINE(
                               ),
                      INCREMENT=(_F(LIST_INST=LIS2DD, INST_FIN=tmax),),
                      
-                     NEWTON=(_F(REAC_ITER=1,PREDICTION='EXTRAPOL'),),
+                     NEWTON=(_F(REAC_ITER=1,PREDICTION='EXTRAPOLE'),),
                       
                      ARCHIVAGE=_F(LIST_INST=LINSTDD),
                      

@@ -5,9 +5,9 @@
       REAL*8            VR(2)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 21/02/2012   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -190,8 +190,11 @@ C
             DO 20 J = 1,NBGR
                MODE1 = ZI(JCELD1-1+ZI(JCELD1-1+4+J) +2)
                MODE2 = ZI(JCELD2-1+ZI(JCELD2-1+4+J) +2)
-               IF ((MODE1.EQ.0 ).OR.(MODE2.EQ.0)) GOTO 20
                NEL = NBELEM(LIGREL,J)
+               IF ((MODE1.EQ.0 ).OR.(MODE2.EQ.0)) THEN
+                  INUM = INUM + NEL + 1
+                  GOTO 20
+               ENDIF
                IDECG1 = ZI(JCELD1-1+ZI(JCELD1-1+4+J)+8)
                IDECG2 = ZI(JCELD2-1+ZI(JCELD2-1+4+J)+8)
                DO 22 K = 1,NEL

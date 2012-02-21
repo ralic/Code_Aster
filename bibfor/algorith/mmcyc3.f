@@ -1,0 +1,185 @@
+      SUBROUTINE MMCYC3(RESOCO,IPTC  ,NOMPT ,INDCO ,INDFR ,
+     &                  RESNEW)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 21/02/2012   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C TOLE CRP_6
+C
+      IMPLICIT     NONE
+      CHARACTER*24 RESOCO
+      INTEGER      IPTC
+      CHARACTER*16 NOMPT
+      INTEGER      INDCO,INDFR
+      REAL*8       RESNEW(3)
+C
+C ----------------------------------------------------------------------
+C
+C ROUTINE CONTACT (METHODE CONTINUE)
+C
+C DETECTION DU CYCLE DE TYPE GLISSANT AVANT/ARRIERE
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  RESOCO : SD DE RESOLUTION DU CONTACT
+C IN  INDCO  : STATUT DE CONTACT
+C IN  INDFR  : STATUT DE FROTTEMENT
+C IN  NOMPT  : NOM DU POINT DE CONTACT
+C IN  IPTC   : NUMERO DE LA LIAISON DE CONTACT
+C IN  RESNEW : MULTIPLICATEUR AUGMENTE DU FROTTEMENT (NORMALISE)
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C
+      CHARACTER*24 CYCLIS,CYCNBR,CYCTYP,CYCPOI,CYCGLI
+      INTEGER      JCYLIS,JCYNBR,JCYTYP,JCYPOI,JCYGLI
+      INTEGER      CCYCLE
+      LOGICAL      DETECT
+      REAL*8       RESOLD(3)
+      REAL*8       R8PREM,R8RDDG,NOOR1,NOOR2,DDOT
+      REAL*8       ANGLE,PROSCA,VAL,ANGTOL
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C
+C --- INITIALISATIONS
+C
+      DETECT = .FALSE.
+      ANGTOL = 1.D0
+C
+C --- ACCES OBJETS
+C
+      CYCLIS = RESOCO(1:14)//'.CYCLIS'
+      CYCNBR = RESOCO(1:14)//'.CYCNBR'
+      CYCTYP = RESOCO(1:14)//'.CYCTYP'
+      CYCPOI = RESOCO(1:14)//'.CYCPOI'
+      CALL JEVEUO(CYCLIS,'E',JCYLIS)
+      CALL JEVEUO(CYCNBR,'E',JCYNBR)
+      CALL JEVEUO(CYCTYP,'E',JCYTYP)
+      CALL JEVEUO(CYCPOI,'E',JCYPOI)
+      CYCGLI = RESOCO(1:14)//'.CYCGLI'
+      CALL JEVEUO(CYCGLI,'E',JCYGLI)
+C
+C --- ETAT PRECEDENT
+C
+      CCYCLE = ZI(JCYLIS-1+4*(IPTC-1)+3)
+C
+C --- PAS DE CONTACT: FIN DU CYCLE DIRECTEMENT
+C
+      IF (INDCO.EQ.0) THEN
+        ZI(JCYLIS-1+4*(IPTC-1)+3)   = 0
+        ZI(JCYNBR-1+4*(IPTC-1)+3)   = 0
+        ZI(JCYTYP-1+4*(IPTC-1)+3)   = 0
+        ZK16(JCYPOI-1+4*(IPTC-1)+3) = ' '
+        ZR(JCYGLI-1+3*(IPTC-1)+1)   = 0.D0
+        ZR(JCYGLI-1+3*(IPTC-1)+2)   = 0.D0
+        ZR(JCYGLI-1+3*(IPTC-1)+3)   = 0.D0
+        GOTO 99
+      ENDIF
+C
+C --- ADHERENT: FIN DE CYCLE DIRECTEMENT
+C
+      IF (INDFR.EQ.0) THEN
+        ZI(JCYLIS-1+4*(IPTC-1)+3)   = 0
+        ZI(JCYNBR-1+4*(IPTC-1)+3)   = 0
+        ZI(JCYTYP-1+4*(IPTC-1)+3)   = 0
+        ZK16(JCYPOI-1+4*(IPTC-1)+3) = ' '
+        ZR(JCYGLI-1+3*(IPTC-1)+1)   = 0.D0
+        ZR(JCYGLI-1+3*(IPTC-1)+2)   = 0.D0
+        ZR(JCYGLI-1+3*(IPTC-1)+3)   = 0.D0
+        GOTO 99
+      ENDIF
+C
+C --- ETAT PRECEDENT ADHERENT: FIN DE CYCLE DIRECTEMENT
+C
+      IF (CCYCLE.EQ.1) THEN
+        ZI(JCYLIS-1+4*(IPTC-1)+3)   = INDFR
+        ZI(JCYNBR-1+4*(IPTC-1)+3)   = 0
+        ZI(JCYTYP-1+4*(IPTC-1)+3)   = 0
+        ZK16(JCYPOI-1+4*(IPTC-1)+3) = ' '
+        ZR(JCYGLI-1+3*(IPTC-1)+1)   = 0.D0
+        ZR(JCYGLI-1+3*(IPTC-1)+2)   = 0.D0
+        ZR(JCYGLI-1+3*(IPTC-1)+3)   = 0.D0
+        GOTO 99
+      ENDIF
+C
+C --- MISE A JOUR
+C
+      CALL ASSERT(INDFR.EQ.1)
+      CALL ASSERT(CCYCLE.EQ.0)
+C
+C --- DETECTION D'UN CYCLE
+C
+      RESOLD(1) = ZR(JCYGLI-1+3*(IPTC-1)+1)
+      RESOLD(2) = ZR(JCYGLI-1+3*(IPTC-1)+2)
+      RESOLD(3) = ZR(JCYGLI-1+3*(IPTC-1)+3)
+      CALL NORMEV(RESOLD,NOOR1)
+      CALL NORMEV(RESNEW,NOOR2)
+C
+C --- CALCUL DE L'ANGLE
+C
+      PROSCA = DDOT(3,RESNEW,1,RESOLD,1)
+      DETECT = .FALSE.
+      IF (ABS(NOOR1*NOOR2).GT.R8PREM()) THEN
+        VAL = PROSCA/(NOOR1*NOOR2)
+        IF (VAL.GT.1.D0) VAL = 1.D0
+        IF (VAL.LT.-1.D0) VAL = -1.D0
+        ANGLE  = ACOS(VAL)
+        ANGLE  = ANGLE*R8RDDG()
+        IF (ABS(ANGLE-180.D0).LE.ANGTOL) THEN
+          DETECT = .TRUE.
+        ENDIF
+      ENDIF
+C
+C --- SAUVEGARDE DU CYCLE
+C
+      ZR(JCYGLI-1+3*(IPTC-1)+1) = RESNEW(1)
+      ZR(JCYGLI-1+3*(IPTC-1)+2) = RESNEW(2)
+      ZR(JCYGLI-1+3*(IPTC-1)+3) = RESNEW(3)
+      ZI(JCYLIS-1+4*(IPTC-1)+3) = 0
+C
+C --- OK
+C
+      IF (DETECT) THEN
+        ZI(JCYTYP-1+4*(IPTC-1)+3)   = 1
+        ZK16(JCYPOI-1+4*(IPTC-1)+3) = NOMPT
+      ENDIF
+C
+  99  CONTINUE
+C
+      CALL JEDEMA()
+      END

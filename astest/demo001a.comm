@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 21/02/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE DEMONSTRATION DE LA JOURNE ASTER LIBRE DU 14 OCTOBRE 2003
 # demo001a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -92,10 +92,6 @@ for k in range(3):
    RESUELAS=MECA_STATIQUE(CHAM_MATER=CM,MODELE=MO,
                        EXCIT=(_F(CHARGE=SYMETRIE,),
                               _F(CHARGE=FPILO),),);
-
-   RESUELAS=CALC_ELEM(reuse =RESUELAS,
-                 OPTION=('SIGM_ELNO',),
-                 RESULTAT=RESUELAS);
 
    RESUELAS=CALC_ERREUR(reuse =RESUELAS,
                  OPTION=('ERME_ELEM','ERME_ELNO'),

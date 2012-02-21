@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/02/2012   AUTEUR SELLENET N.SELLENET 
+#& MODIF COMMANDE  DATE 20/02/2012   AUTEUR SELLENET N.SELLENET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -58,15 +58,10 @@ CALC_CHAMP=OPER(nom="CALC_CHAMP",op=52,sd_prod=calc_champ_prod,reentrant='f',
 
      EXCIT       = FACT(statut='f',max='**',
                         fr="Charges contenant les temperatures, les efforts repartis pour les poutres...",
-                        regles=(EXCLUS('FONC_MULT','FONC_MULT_C','COEF_MULT','COEF_MULT_C'),),
-         CHARGE       = SIMP(statut='o',typ=(char_meca,char_cine_meca) ),
-         FONC_MULT    = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-         FONC_MULT_C  = SIMP(statut='f',typ=fonction_c),
-         COEF_MULT    = SIMP(statut='f',typ='R'),
-         COEF_MULT_C  = SIMP(statut='f',typ='C'),
-         PHAS_DEG     = SIMP(statut='f',typ='R'),
-         PUIS_PULS    = SIMP(statut='f',typ='I'),
-         TYPE_CHARGE  = SIMP(statut='f',typ='TXM',defaut="FIXE",into=("FIXE",),),),
+                        regles=(EXCLUS('FONC_MULT','COEF_MULT',),),
+         CHARGE       = SIMP(statut='o',typ=(char_meca,char_cine_meca),),
+         FONC_MULT    = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),),
+         COEF_MULT    = SIMP(statut='f',typ='R'),),
 
      # Bloc lineaire
      b_lineaire  = BLOC(condition = "AsType(RESULTAT) in (evol_elas,dyna_trans,dyna_harmo,mode_meca,\

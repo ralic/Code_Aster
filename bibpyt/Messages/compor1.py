@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 13/02/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF compor1 Messages  DATE 20/02/2012   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -324,7 +324,7 @@ Le franchissement du seuil de fluage ne se fait pas dans la tolérance donnée dan
 pour la loi IRRAD3M, par le mot clef TOLER_ET.
    Tolérance sur le franchissement du seuil : <%(r1)E>
    Erreur sur le franchissement du seuil    : <%(r2)E>
-La subdivision du pas de temps au niveau global est déclenchée.
+La subdivision du pas de temps est déclenchée.
 Il faut pour cela l'autoriser avec le mot clef SUBD_METHODE de la commande STAT_NON_LINE.
 """),
 

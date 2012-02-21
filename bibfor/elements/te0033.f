@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       CHARACTER*16        OPTION, NOMTE
 C ----------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 20/02/2012   AUTEUR CHEIGNON E.CHEIGNON 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -65,6 +65,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*16  PHENOM
 C     ------------------------------------------------------------------
 C
+
       IF (OPTION(6:9).EQ.'ELNO') THEN
         FAMI = 'NOEU'
       ELSE
@@ -75,6 +76,7 @@ C
       IF (OPTION.NE.'SIEF_ELGA' .AND.
      &    OPTION.NE.'EFGE_ELNO' .AND.
      &    OPTION.NE.'EPSI_ELNO' .AND.
+     &    OPTION.NE.'EPSI_ELGA' .AND.
      &    OPTION.NE.'DEGE_ELNO' .AND.
      &    OPTION.NE.'DEGE_ELGA') THEN
 CC OPTION DE CALCUL INVALIDE
@@ -209,16 +211,16 @@ C
 
         IF ( NOMTE.EQ.'MEDKTR3' .OR.
      &       NOMTE.EQ.'MEDKTG3' ) THEN
-           CALL DKTSIE(FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
+           CALL DKTSIE(OPTION,FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
         ELSE IF (NOMTE.EQ.'MEDSTR3' ) THEN
-           CALL DSTSIE(FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
+           CALL DSTSIE(OPTION,FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
         ELSE IF (NOMTE.EQ.'MEDKQU4' .OR.
      &           NOMTE.EQ.'MEDKQG4' ) THEN
-           CALL DKQSIE(FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
+           CALL DKQSIE(OPTION,FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
         ELSE IF (NOMTE.EQ.'MEDSQU4' ) THEN
-           CALL DSQSIE(FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
+           CALL DSQSIE(OPTION,FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
         ELSE IF (NOMTE.EQ.'MEQ4QU4' ) THEN
-           CALL Q4GSIE(FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
+           CALL Q4GSIE(OPTION,FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
         END IF
 C
         CALL RCCOMA ( ZI(JMATE), 'ELAS', PHENOM, ICODRE )
@@ -232,6 +234,32 @@ C       ON NE SAIT PAS TRAITER LE CAS ELAS_COQUE
         ENDIF
 C
 C               ----------------------------
+      ELSE IF ( OPTION(1:9) .EQ. 'EPSI_ELGA' ) THEN
+C               ----------------------------
+        CALL JEVECH('PDEFORR','E',JSIGM)
+C
+        IF (DKG) THEN
+          NBCOU = 1
+        ELSE
+          CALL JEVECH('PNBSP_I','L',JNBSPI)
+          NBCOU = ZI(JNBSPI)
+          IF (NBCOU.LE.0) CALL U2MESS('F','ELEMENTS_46')
+        ENDIF
+        IF ( NOMTE.EQ.'MEDKTR3' .OR.
+     &       NOMTE.EQ.'MEDKTG3' ) THEN
+           CALL DKTSIE(OPTION,FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
+        ELSE IF (NOMTE.EQ.'MEDSTR3' ) THEN
+           CALL DSTSIE(OPTION,FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
+        ELSE IF (NOMTE.EQ.'MEDKQU4' .OR.
+     &           NOMTE.EQ.'MEDKQG4' ) THEN
+           CALL DKQSIE(OPTION,FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
+        ELSE IF (NOMTE.EQ.'MEDSQU4' ) THEN
+           CALL DSQSIE(OPTION,FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
+        ELSE IF (NOMTE.EQ.'MEQ4QU4' ) THEN
+           CALL Q4GSIE(OPTION,FAMI,XYZL,PGL,DEPL,NBCOU,ZR(JSIGM))
+        END IF
+
+        CALL DXSIRO(NP*NBCOU*3,T2VE,ZR(JSIGM),ZR(JSIGM))
       ELSE IF ( OPTION(1:9) .EQ. 'EFGE_ELNO' ) THEN
 C               ----------------------------
 C ---     CALCUL DES EFFORTS GENERALISES VRAIS

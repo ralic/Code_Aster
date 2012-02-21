@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 # ssnv209i.para = tps_job 40 mem_job 32Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -91,7 +91,6 @@ CHAF=AFFE_CHAR_MECA_F(MODELE=MO,
 # ==================================================
 CHA2   = DEFI_CONTACT(MODELE         = MO,
                       FORMULATION    = 'CONTINUE',
-                      ITER_FROT_MAXI = 10,
                       ITER_CONT_MAXI = 30,
                       ITER_GEOM_MAXI = 3,
                       FROTTEMENT     = 'COULOMB',

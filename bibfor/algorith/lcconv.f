@@ -1,12 +1,12 @@
         SUBROUTINE LCCONV ( LOI,  YD,DY, DDY,  NR, ITMAX, TOLER, ITER,
      &          INTG, NMAT, MATER, R, RINI,EPSTR,TYPESS, ESSAI,
-     &          ICOMP, IRTETI)
+     &          ICOMP, IRET)
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/12/2011   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 20/02/2012   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,82 +21,66 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C       ----------------------------------------------------------------
-C       ROUTINE D AIGUILLAGE
-C       ----------------------------------------------------------------
-C       CONTROLE DE LA CONVERGENCE DE LA METHODE DE NEWTON (LCPLNL):
+C     ----------------------------------------------------------------
+C     ROUTINE D AIGUILLAGE
+C     ----------------------------------------------------------------
+C     CONTROLE DE LA CONVERGENCE DE LA METHODE DE NEWTON (LCPLNL):
 C
-C                       - CONTROLE DU NOMBRE D ITERATIONS
-C                       - CONTROLE DE LA PRECISION DE CONVERGENCE
-C                       - CONTROLE DE LA VALIDITE SOLUTION A CONVERGENCE
-C                       - CONTROLE DES RE-INTEGRATIONS EVENTUELLES
-C                       - CONTROLE DU REDECOUPAGE DU PAS DE TEMPS
+C                     - CONTROLE DU NOMBRE D ITERATIONS
+C                     - CONTROLE DE LA PRECISION DE CONVERGENCE
+C                     - CONTROLE DE LA VALIDITE SOLUTION A CONVERGENCE
+C                     - CONTROLE DES RE-INTEGRATIONS EVENTUELLES
+C                     - CONTROLE DU REDECOUPAGE DU PAS DE TEMPS
 C
-C       ----------------------------------------------------------------
-C       IN  LOI    :  MODELE DE COMPORTEMENT
-C           TYPESS :  TYPE DE SOLUTION D ESSAI POUR DY(DEPEND DU MODELE)
-C                      > VOIR XXXCVG ET XXXINI
-C           ESSAI  :  VALEUR SOLUTION D ESSAI
-C           ITMAX  :  NB MAXI D ITERATIONS LOCALES
-C           TOLER  :  TOLERANCE A CONVERGENCE
-C           ITER   :  NUMERO ITERATION COURANTE
-C           INTG   :  NUMERO INTEGRATION COURANTE
-C           NR     :  DIMENSION DY DDY
-C           DY     :  VECTEUR SOLUTION = ( DSIG DVIN (DEPS3) )
-C           DDY    :  VECTEUR CORRECTION SUR LA SOLUTION
-C           ICOMP  :  COMPTEUR POUR LE REDECOUPAGE DU PAS DE TEMPS
-C       OUT IRTETI = 0:  CONVERGENCE
-C           IRTETI = 1:  ITERATION SUIVANTE
-C           IRTETI = 2:  RE-INTEGRATION
-C           IRTETI = 3:  REDECOUPAGE DU PAS DE TEMPS
-C       ----------------------------------------------------------------
-        INTEGER         TYPESS, ITMAX,  ITER,   INTG, NR,  ICOMP
-        INTEGER         IRTET, IRTETI, NMAT
-        REAL*8          TOLER,ESSAI, DDY(*), DY(*),R(*),RINI(*),YD(*)
-        REAL*8          MATER(NMAT,2), EPSTR(6)
-        CHARACTER*16    LOI
-C       ----------------------------------------------------------------
+C     ----------------------------------------------------------------
+C     IN  LOI    :  MODELE DE COMPORTEMENT
+C         TYPESS :  TYPE DE SOLUTION D ESSAI POUR DY(DEPEND DU MODELE)
+C                    > VOIR XXXCVG ET XXXINI
+C         ESSAI  :  VALEUR SOLUTION D ESSAI
+C         ITMAX  :  NB MAXI D ITERATIONS LOCALES
+C         TOLER  :  TOLERANCE A CONVERGENCE
+C         ITER   :  NUMERO ITERATION COURANTE
+C         INTG   :  NUMERO INTEGRATION COURANTE
+C         NR     :  DIMENSION DY DDY
+C         DY     :  VECTEUR SOLUTION = ( DSIG DVIN (DEPS3) )
+C         DDY    :  VECTEUR CORRECTION SUR LA SOLUTION
+C         ICOMP  :  COMPTEUR POUR LE REDECOUPAGE DU PAS DE TEMPS
 C
-         IRTETI = 0
-
+C     OUT IRET = 0:  CONVERGENCE
+C         IRET = 1:  ITERATION SUIVANTE
+C         IRET = 2:  RE-INTEGRATION
+C         IRET = 3:  REDECOUPAGE DU PAS DE TEMPS
+C     ----------------------------------------------------------------
+      INTEGER         TYPESS, ITMAX,  ITER,   INTG, NR,  ICOMP
+      INTEGER         IRTET, IRET, NMAT
+      REAL*8          TOLER,ESSAI, DDY(*), DY(*),R(*),RINI(*),YD(*)
+      REAL*8          MATER(NMAT,2), EPSTR(6)
+      CHARACTER*16    LOI
+C     ----------------------------------------------------------------
+C
       IF ( LOI(1:9) .EQ. 'VISCOCHAB' ) THEN
-         CALL CVMCVG (       DY,     DDY,   NR, ITMAX,  TOLER, ITER,
-     &                 INTG, TYPESS, ESSAI, ICOMP, IRTET)
-         IF ( IRTET.GT.0 ) GOTO (1,2,3), IRTET
+
+         CALL CVMCVG (DY,DDY,NR,ITMAX,TOLER,ITER,
+     &                INTG,TYPESS,ESSAI,ICOMP,IRET)
 C
       ELSEIF ( LOI(1:8) .EQ. 'MONOCRIS' ) THEN
-         CALL LCMMCV ( YD, DY, DDY, NR, ITMAX,  TOLER, ITER,
-     &          R,RINI,EPSTR,IRTET)
-         IF ( IRTET.GT.0 ) GOTO (1,2,3,4), IRTET
+
+         CALL LCMMCV (YD,DY,DDY,NR,ITMAX,TOLER,ITER,
+     &                R,RINI,EPSTR,IRET)
+
       ELSEIF ( LOI(1:7) .EQ. 'IRRAD3M' ) THEN
-         CALL IRRCVG ( DY, DDY, NR, NMAT, MATER, ITMAX, TOLER, ITER,
-     &                 R, RINI, IRTET)
-         IF ( IRTET.GT.0 ) GOTO (1,2,3,4), IRTET
+
+         CALL IRRCVG (DY,DDY,NR,NMAT,MATER,ITMAX,TOLER,ITER,
+     &                R,RINI,IRET)
+     
       ELSEIF ( LOI(1:15) .EQ. 'BETON_BURGER_FP' ) THEN
-         CALL BURCVG ( NR, ITMAX, TOLER, ITER,DY,
-     &                 R, RINI, IRTET)
-         IF ( IRTET.GT.0 ) GOTO (1,2,3,4), IRTET
+
+         CALL BURCVG (NR,ITMAX,TOLER,ITER,DY,
+     &                R,RINI,IRET)
+     
       ENDIF
-C CONVERGENCE, TOUT VA BIEN
-      IRTETI = 0
-      GOTO 9999
-C
- 1    CONTINUE
-C      =1 ITERATIONS SUPPLEMENTAIRE (ITER<ITMAX)
-      IRTETI = 1
-      GOTO 9999
-C
- 2    CONTINUE
-      IRTETI = 2
-      GOTO 9999
-C
- 3    CONTINUE
-C       =3 ITMAX ATTEINT : redecoupage local si demande.
-      IRTETI = 3
-      GOTO 9999
- 4    CONTINUE
-C       =4 ITMAX ATTEINT : redecoupage du pas de temps global
-      IRTETI = 4
-      GOTO 9999
- 9999 CONTINUE
+
+      CALL ASSERT(IRET.GE.0)
+      CALL ASSERT(IRET.LE.3)
+
       END

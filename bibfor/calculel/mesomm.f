@@ -6,9 +6,9 @@
       COMPLEX*16 VC(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 21/02/2012   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -173,7 +173,7 @@ C        -- (CAS DES CHAM_ELEM):
             INUM = 0
             DO 80 J = 1,NBGR
               MODE = ZI(JCELD-1+ZI(JCELD-1+4+J)+2)
-              IF (MODE.EQ.0) GO TO 80
+              IF (MODE.EQ.0) GO TO 79
               NEL = NBELEM(LIGREL,J)
               IDECGR = ZI(JCELD-1+ZI(JCELD-1+4+J)+8)
               DO 70 K = 1,NEL
@@ -190,6 +190,7 @@ C        -- (CAS DES CHAM_ELEM):
    60           CONTINUE
                 GO TO 90
    70         CONTINUE
+   79         CONTINUE
               INUM = INUM + NEL + 1
    80       CONTINUE
    90     CONTINUE
@@ -228,7 +229,7 @@ C        -- (CAS DES RESUELEM):
             NUMEL1 = 0
             DO 150 J = 1,NBGR
               MODE = ZI(JCELD-1+ZI(JCELD-1+4+J)+2)
-              IF (MODE.EQ.0) GO TO 150
+              IF (MODE.EQ.0) GO TO 149
               CALL JAEXIN(JEXNUM(CHAMP2//'.RESL',J),IEXI)
               IF (IEXI.EQ.0) GOTO 150
               CALL JEVEUO(JEXNUM(CHAMP2//'.RESL',J),'L',IAVALE)
@@ -250,6 +251,7 @@ C        -- (CAS DES RESUELEM):
                 CALL JELIBE(JEXNUM(CHAMP2//'.RESL',J))
                 GO TO 160
   140         CONTINUE
+  149         CONTINUE
               INUM = INUM + NEL + 1
   150       CONTINUE
   160     CONTINUE

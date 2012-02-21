@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 21/02/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE PARALLELIPIPEDE SOUS SON PROPRE POIDS (HEXA8 FIN)
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -81,7 +81,7 @@ DEP2=MECA_STATIQUE(     MODELE=MO,     CHAM_MATER=CHMAT,EXCIT=(
 CALC_ELEM(     reuse=DEP2,
                          RESULTAT=DEP2,        NUME_ORDRE=1,
 
-   OPTION=( 'EPOT_ELEM', 'SIGM_ELNO',   ))
+   OPTION=( 'EPOT_ELEM',   ))
 
 CALC_ERREUR(     reuse=DEP2,
                          RESULTAT=DEP2,        NUME_ORDRE=1,

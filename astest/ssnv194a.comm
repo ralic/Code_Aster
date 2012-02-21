@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 21/02/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE : TRACTION SUR UN AGREGAT A 10 GRAINS, ACIER BAINITIQUE
 # RESPONSABLE JMBHH01 J.M.PROIX
 # ssnv194a.para = tps_job 900 mem_job 128Mo ncpus 1 liste_test S
@@ -140,7 +140,7 @@ SOLNL=STAT_NON_LINE(MODELE=TROISD,
                                  ),
                     INCREMENT=_F(LIST_INST=LINST,
                                  ),
-                    NEWTON=_F(PREDICTION='EXTRAPOL',
+                    NEWTON=_F(PREDICTION='EXTRAPOLE',
                               REAC_ITER=1,),
                     INFO=1,
                     )
@@ -244,7 +244,7 @@ SOLNL_CI=STAT_NON_LINE(MODELE=TROISD,
                                  ),
                     INCREMENT=_F(LIST_INST=LINST,
                                  ),
-                    NEWTON=_F(PREDICTION='EXTRAPOL',
+                    NEWTON=_F(PREDICTION='EXTRAPOLE',
                               REAC_ITER=1,),
                     INFO=1,
                     )

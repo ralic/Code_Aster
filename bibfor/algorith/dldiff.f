@@ -7,7 +7,7 @@
      &                    INPSCO,NBPASE,SOLVEU)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 20/02/2012   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -201,9 +201,15 @@ C
       TYPEAR(1) = 'DEPL'
       TYPEAR(2) = 'VITE'
       TYPEAR(3) = 'ACCE'
-      TYPEAR(4) = 'FORC_EXTE'
-      TYPEAR(5) = 'FORC_AMOR'
-      TYPEAR(6) = 'FORC_LIAI'
+      IF (ENER) THEN
+        TYPEAR(4) = 'FORC_EXTE'
+        TYPEAR(5) = 'FORC_AMOR'
+        TYPEAR(6) = 'FORC_LIAI'
+      ELSE
+        TYPEAR(4) = '         '
+        TYPEAR(5) = '         '
+        TYPEAR(6) = '         '
+      ENDIF
       IF ( NBEXCL.EQ.NBTYAR ) THEN
         CALL U2MESS('F','ALGORITH3_14')
       ENDIF
@@ -214,12 +220,6 @@ C
           TYPEAR(2) = '    '
         ELSEIF (TYP1(IAUX).EQ.'ACCE') THEN
           TYPEAR(3) = '    '
-        ELSEIF (TYP1(IAUX).EQ.'FORC_EXTE') THEN
-          TYPEAR(4) = '    '
-        ELSEIF (TYP1(IAUX).EQ.'FORC_AMOR') THEN
-          TYPEAR(5) = '    '
-        ELSEIF (TYP1(IAUX).EQ.'FORC_LIAI') THEN
-          TYPEAR(6) = '    '
         ENDIF
    16 CONTINUE
 C

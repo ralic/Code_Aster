@@ -3,9 +3,9 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 10/10/2011   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ELEMENTS  DATE 21/02/2012   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -266,9 +266,9 @@ C
         ELSE
           CALL JEVEUO(FOND//'.BASEFOND','L',JVECT)
           DO 23 I=1,NBNOFF
-            ZR(IN2+(I-1)*3+1-1) = ZR(JVECT-1+6*(I-1)+1)
-            ZR(IN2+(I-1)*3+2-1) = ZR(JVECT-1+6*(I-1)+2)
-            ZR(IN2+(I-1)*3+3-1) = ZR(JVECT-1+6*(I-1)+3)
+            ZR(IN2+(I-1)*3+1-1) = ZR(JVECT-1+6*(I-1)+4)
+            ZR(IN2+(I-1)*3+2-1) = ZR(JVECT-1+6*(I-1)+5)
+            ZR(IN2+(I-1)*3+3-1) = ZR(JVECT-1+6*(I-1)+6)
 23        CONTINUE
         ENDIF
 C

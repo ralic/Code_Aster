@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE : TRACTION SUR UN POLYCRISTAL A 10 GRAINS, ACIER BAINITIQUE
 # ssnv194b.para = tps_job 150 mem_job 60Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -152,7 +152,7 @@ SOLNL=STAT_NON_LINE(MODELE=TROISD,
                                   TOUT='OUI',
                                   RESI_INTE_RELA=1.E-6
                                   ),),
-                     NEWTON=(_F(PREDICTION='EXTRAPOL',
+                     NEWTON=(_F(PREDICTION='EXTRAPOLE',
                                 MATRICE='ELASTIQUE',
                                 REAC_ITER=0,),),
                      CONVERGENCE=(_F(ITER_GLOB_MAXI=50,

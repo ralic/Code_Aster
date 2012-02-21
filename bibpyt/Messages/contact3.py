@@ -1,4 +1,4 @@
-#@ MODIF contact3 Messages  DATE 30/01/2012   AUTEUR DESOZA T.DESOZA 
+#@ MODIF contact3 Messages  DATE 21/02/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -94,18 +94,13 @@ Le vecteur normal est nul au niveau du noeud %(k1)s.
 Le vecteur normal est nul au niveau de la maille %(k1)s.
 """),
 
-28 : _(u"""
-Le statut du contact a changé %(i1)d fois au point de contact numéro %(i2)d sur la maille esclave %(k1)s
-Présence de flip-flop.
-"""),
-
 31 : _(u"""
 Les vecteurs tangents sont nuls au niveau quand on projette le noeud esclave
 %(k1)s sur la maille %(k2)s
 """),
 
 32: _(u"""
- Le mot-clef DIST_POUT ne fonctionne qu'avec des sections circulaires définies dans AFFE_CARA_ELEM.
+Le mot-clef DIST_POUT ne fonctionne qu'avec des sections circulaires définies dans AFFE_CARA_ELEM.
  """),
 
 35 : _(u"""
@@ -115,7 +110,7 @@ Les vecteurs tangents sont nuls au niveau quand on projette le noeud esclave
 
 
 37: _(u"""
- La section de la poutre n'est pas constante sur l'élément. On prend la moyenne.
+La section de la poutre n'est pas constante sur l'élément. On prend la moyenne.
  """),
 
 

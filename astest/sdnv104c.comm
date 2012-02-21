@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 21/02/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE REPONSE DYNAMIQUE D'UN PATIN FROTTANT RIGIDE SOUMIS A UNE PRESSION ET UNE fORCE DE RAPPEL
 # sdnv104c.para = tps_job 890 mem_job 128Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -108,7 +108,6 @@ CTACC = DEFI_CONTACT(MODELE       = MODE,
                      FORMULATION  = 'CONTINUE',
                      FROTTEMENT   = 'COULOMB',
                      ITER_GEOM_MAXI = 5,
-                     ITER_FROT_MAXI = 10,
                      ZONE        =_F(
                               APPARIEMENT  = 'MAIT_ESCL',
                               GROUP_MA_MAIT='LMAI',

@@ -1,10 +1,10 @@
 
-# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 21/02/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE HYDRO-MECANIQUE PERMANENT ET INDICATEUR D'ERREUR
 # wtnp116b.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -212,21 +212,15 @@ RESU_00=STAT_NON_LINE(MODELE=MODE_00,
                       INCREMENT=_F(LIST_INST=LISTINST,),);
 #
 # 3.5. Calcul des indicateurs d'erreur en residu
-# 3.5.1. Contraintes aux noeuds par elements
-
-RESU_00=CALC_ELEM(reuse =RESU_00,
-                  RESULTAT=RESU_00,
-                  INST=400000.0,
-                  OPTION='SIEF_ELNO',);
 #
-# 3.5.2. Indicateurs aux elements et aux noeuds par elements
+# 3.5.1. Indicateurs aux elements et aux noeuds par elements
 
 RESU_00=CALC_ERREUR(reuse =RESU_00,
                     RESULTAT=RESU_00,
                     INST=400000.0,
                     OPTION=('ERME_ELEM','ERME_ELNO',),);
 #
-# 3.5.3. Transfert sur les noeuds
+# 3.5.2. Transfert sur les noeuds
 
 RESU_00=CALC_NO(reuse =RESU_00,
                 RESULTAT=RESU_00,
@@ -414,21 +408,14 @@ RESU_01=STAT_NON_LINE(MODELE=MODE_01,
                       INCREMENT=_F(LIST_INST=LISTINST,),);
 #
 # 7.5. Calcul des indicateurs d'erreur en residu
-# 7.5.1. Contraintes aux noeuds par elements
-
-RESU_01=CALC_ELEM(reuse =RESU_01,
-                  RESULTAT=RESU_01,
-                  INST=400000.0,
-                  OPTION='SIEF_ELNO',);
-#
-# 7.5.2. Indicateurs aux elements et aux noeuds par elements
+# 7.5.1. Indicateurs aux elements et aux noeuds par elements
 
 RESU_01=CALC_ERREUR(reuse =RESU_01,
                     RESULTAT=RESU_01,
                     INST=400000.0,
                     OPTION=('ERME_ELEM','ERME_ELNO',),);
 #
-# 7.5.3. Transfert sur les noeuds
+# 7.5.2. Transfert sur les noeuds
 
 RESU_01=CALC_NO(reuse =RESU_01,
                 RESULTAT=RESU_01,

@@ -1,0 +1,57 @@
+      LOGICAL FUNCTION ISCYCL(CCYCLE,LONGCY)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 21/02/2012   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
+      IMPLICIT     NONE
+      INTEGER      CCYCLE,LONGCY
+C
+C ----------------------------------------------------------------------
+C
+C ROUTINE CONTACT (METHODE CONTINUE)
+C
+C DETECTION D'UN CYCLE
+C
+C ----------------------------------------------------------------------
+C
+C
+C CETTE ROUTINE DETECTE UN CYCLE DE TYPE 0/1 SUR UNE LONGUEUR DONNEE
+C
+C CYCLE LONGUEUR 3: 0 1 0 -> 4
+C                   1 0 1 -> 10
+C
+C IN  CCYCLE : ENTIER CODE REPRESENTANT LE CYCLE
+C IN  LONGCY : LONGUEUR DU CYCLE
+C
+C ----------------------------------------------------------------------
+C
+      ISCYCL = .FALSE.
+      IF (LONGCY.EQ.3) THEN
+        IF ((CCYCLE.EQ.4).OR.(CCYCLE.EQ.10)) ISCYCL = .TRUE.
+      ELSEIF (LONGCY.EQ.4) THEN
+        IF ((CCYCLE.EQ.20).OR.(CCYCLE.EQ.10)) ISCYCL = .TRUE.
+      ELSEIF (LONGCY.EQ.15) THEN
+        IF ((CCYCLE.EQ.21844).OR.(CCYCLE.EQ.43690)) ISCYCL = .TRUE.
+      ELSEIF (LONGCY.EQ.20) THEN
+        IF ((CCYCLE.EQ.1398100).OR.(CCYCLE.EQ.699050)) ISCYCL = .TRUE.
+      ELSE
+        CALL ASSERT(.FALSE.)
+      ENDIF
+      END

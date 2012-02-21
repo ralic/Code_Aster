@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2012   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 21/02/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE VALIDATION MONOCRISTAL LOI DD_CC 
 # ssnd110b.para = tps_job 60 mem_job 60Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -157,7 +157,7 @@ EXPLDD=SIMU_POINT_MAT(INFO=1,
                                     ITER_INTE_MAXI=100,
                                     TOUT='OUI',),),
                       INCREMENT=(_F(LIST_INST=LIS2DD,),),
-                      NEWTON=(_F(PREDICTION='EXTRAPOL',
+                      NEWTON=(_F(PREDICTION='EXTRAPOLE',
                                  MATRICE='ELASTIQUE',
                                  ),),
                       CONVERGENCE=(_F( ITER_GLOB_MAXI=100,),),

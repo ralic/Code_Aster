@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 20/02/2012   AUTEUR SELLENET N.SELLENET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -60,15 +60,10 @@ CALC_ERREUR=OPER(nom="CALC_ERREUR",op=42,sd_prod=calc_erreur_prod,reentrant='f',
      CARA_ELEM       =SIMP(statut='f',typ=cara_elem),
      EXCIT           =FACT(statut='f',max='**',
                            fr="Charges contenant les températures, les efforts répartis pour les poutres...",
-                           regles=(EXCLUS('FONC_MULT','FONC_MULT_C','COEF_MULT','COEF_MULT_C'),),
-                    CHARGE          =SIMP(statut='o',typ=(char_meca,char_cine_meca) ),
-                    FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                    FONC_MULT_C     =SIMP(statut='f',typ=fonction_c),
-                    COEF_MULT       =SIMP(statut='f',typ='R'),
-                    COEF_MULT_C     =SIMP(statut='f',typ='C'),
-                    PHAS_DEG        =SIMP(statut='f',typ='R'),
-                    PUIS_PULS       =SIMP(statut='f',typ='I'),
-                    TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE",into=("FIXE",),),),
+                           regles=(EXCLUS('FONC_MULT','COEF_MULT',),),
+                    CHARGE          =SIMP(statut='o',typ=(char_meca,char_cine_meca),),
+                    FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),),
+                    COEF_MULT       =SIMP(statut='f',typ='R'),),
 #-----------------------------------------------------------------------
 
      OPTION =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',

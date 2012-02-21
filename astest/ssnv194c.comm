@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE : TRACTION SUR UN POLYCRISTAL A 10 GRAINS, AVEC SIMU_POINT_MAT
 # ssnv194c.para = tps_job 150 mem_job 60Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -106,7 +106,7 @@ SOLNL=SIMU_POINT_MAT(INFO=1,
                                 ),
                    NEWTON=_F(
                              MATRICE='ELASTIQUE',
-                             PREDICTION='EXTRAPOL',
+                             PREDICTION='EXTRAPOLE',
                              REAC_ITER=0
                              ),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=50,#RESI_GLOB_RELA=1.E-4
@@ -151,7 +151,7 @@ SOLNL2=SIMU_POINT_MAT(INFO=1,
                                 ),
                    NEWTON=_F(
                              MATRICE='ELASTIQUE',
-                             PREDICTION='EXTRAPOL',
+                             PREDICTION='EXTRAPOLE',
                              REAC_ITER=0
                              ),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=50,#RESI_GLOB_RELA=1.E-4

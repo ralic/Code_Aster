@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 21/02/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE TEST DE L'ESTIMATEUR D'ERREUR EN QUANTITE D'INTERET
 # sslv113d.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -80,11 +80,6 @@ RESUPRIM=MECA_STATIQUE(MODELE=MO,
                        CHAM_MATER=CM,
                        EXCIT=_F(CHARGE=CHARPRIM,),);
 
-RESUPRIM=CALC_ELEM(reuse =RESUPRIM,
-                   RESULTAT=RESUPRIM,
-                   TOUT_ORDRE='OUI',
-                   OPTION='SIGM_ELNO',);
-
 RESUPRIM=CALC_ERREUR(reuse =RESUPRIM,
                    RESULTAT=RESUPRIM,
                    TOUT_ORDRE='OUI',
@@ -115,11 +110,6 @@ CHARDUAL=AFFE_CHAR_MECA(MODELE=MO,
 RESUDUAL=MECA_STATIQUE(MODELE=MO,
                        CHAM_MATER=CM,
                        EXCIT=_F(CHARGE=CHARDUAL,),);
-
-RESUDUAL=CALC_ELEM(reuse =RESUDUAL,
-                   RESULTAT=RESUDUAL,
-                   TOUT_ORDRE='OUI',
-                   OPTION='SIGM_ELNO',);
 
 RESUDUAL=CALC_ERREUR(reuse =RESUDUAL,
                    RESULTAT=RESUDUAL,

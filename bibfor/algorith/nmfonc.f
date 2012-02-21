@@ -4,7 +4,7 @@
      &                  FONACT)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 21/02/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -100,6 +100,7 @@ C
       CHARACTER*24 SENSNB,METRES,PRECON
       INTEGER      JSENSN
       LOGICAL      ISFONC,LSTAT,LDYNA,LGROT,LENDO,LARRNO
+      LOGICAL      LNEWTC,LNEWTF
       INTEGER      IFM,NIV
       INTEGER      IARG,NSTA
 C
@@ -167,7 +168,7 @@ C
       ENDIF
 C
 C --- PROJ_MODAL
-C 
+C
       IF (LDYNA) THEN
         CALL GETFAC('PROJ_MODAL',NOCC)
         IF (NOCC.NE.0) THEN
@@ -178,7 +179,7 @@ C
 C --- MATR_DISTRIBUEE
 C
       MATDIS='NON'
-      CALL GETVTX('SOLVEUR','MATR_DISTRIBUEE',1,IARG,1,MATDIS,NMATDI)  
+      CALL GETVTX('SOLVEUR','MATR_DISTRIBUEE',1,IARG,1,MATDIS,NMATDI)
       IF (MATDIS.EQ.'OUI') THEN
         FONACT(52) = 1
       ENDIF
@@ -214,7 +215,6 @@ C --- CONTACT / FROTTEMENT
 C
       IF (LCONT) THEN
         IFORM  = CFDISI(DEFICO,'FORMULATION')
-
         IF (IFORM.EQ.2) THEN
           FONACT(5)  = 1
           FONACT(17) = CFDISI(DEFICO,'ALL_INTERPENETRE')
@@ -244,12 +244,24 @@ C --- CONTACT/FROTTEMENT
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF
-
+      ENDIF
+C
+C --- MODE ALL VERIF
+C
+      IF (LCONT) THEN
+        LALLV  = CFDISL(DEFICO,'ALL_VERIF')
+        IF (LALLV) THEN
+          FONACT(38) = 1
+        ENDIF
       ENDIF
 C
 C --- BOUCLES EXTERNES CONTACT / FROTTEMENT
 C
       IF (LCONT) THEN
+C
+        LBOUCG = .FALSE.
+        LBOUCF = .FALSE.
+        LBOUCC = .FALSE.
 C
 C ----- BOUCLE SUR GEOMETRIE
 C
@@ -257,18 +269,11 @@ C
 C
 C ----- BOUCLE SUR FROTTEMENT
 C
-        LBOUCF = CFDISL(DEFICO,'FROT_BOUCLE')
-        IF (LFROT.AND.(.NOT.LBOUCF)) THEN
-          FONACT(47) = 1
-        ENDIF
+        IF (LFROT) LBOUCF = CFDISL(DEFICO,'FROT_BOUCLE')
 C
 C ----- BOUCLE SUR CONTACT
 C
         LBOUCC = CFDISL(DEFICO,'CONT_BOUCLE')
-        IF (IFORM.EQ.1) THEN
-          LBOUCC = .FALSE.
-          LBOUCF = .FALSE.
-        ENDIF
 C
 C ----- TOUTES LES ZONES EN VERIF -> PAS DE BOUCLES
 C
@@ -278,7 +283,13 @@ C
           LBOUCG = .FALSE.
           LBOUCF = .FALSE.
         ENDIF
-        IF (.NOT.LFROT) LBOUCF = .FALSE.
+C
+C ----- CONTACT DISCRET -> PAS DE BOUCLES CONT/FROT
+C        
+        IF (IFORM.EQ.1) THEN
+          LBOUCC = .FALSE.
+          LBOUCF = .FALSE.
+        ENDIF
 C
 C ----- BOUCLES EXTERNES
 C
@@ -292,19 +303,23 @@ C
           FONACT(33) = 1
         ENDIF
 C
-        IF ((FONACT(31).EQ.1).OR.
-     &      (FONACT(32).EQ.1).OR.
-     &      (FONACT(33).EQ.1)) THEN
+        IF (LBOUCG.OR.LBOUCF.OR.LBOUCC) THEN
           FONACT(34) = 1
         ENDIF
       ENDIF
 C
-C --- MODE ALL VERIF
+C --- NEWTON GENERALISE
 C
       IF (LCONT) THEN
-        LALLV  = CFDISL(DEFICO,'ALL_VERIF')
-        IF (LALLV) THEN
-          FONACT(38) = 1
+        IF (IFORM.EQ.2) THEN
+          LNEWTF = .FALSE.
+          LNEWTC = .FALSE.
+          IF (LFROT) THEN
+            IF (.NOT.LBOUCF) LNEWTF = .TRUE.
+          ENDIF
+          IF (.NOT.LBOUCC) LNEWTC = .TRUE.
+          IF (LNEWTF) FONACT(47) = 1
+          IF (LNEWTC) FONACT(53) = 1
         ENDIF
       ENDIF
 C
@@ -518,8 +533,15 @@ C
 C --- AFFICHAGE
 C
       IF (NIV.GE.2) THEN
-        IF (ISFONC(FONACT,'ENERGIE')) THEN
-          WRITE (IFM,*) '<MECANONLINE> ...... ENERGIE'
+C
+C ----- METHODES DE RESOLUTION
+C
+        IF (ISFONC(FONACT,'IMPLEX')) THEN
+          WRITE (IFM,*) '<MECANONLINE> ...... METHODE IMPLEX'
+          NBFONC = NBFONC + 1
+        ENDIF
+        IF (ISFONC(FONACT,'NEWTON_KRYLOV')) THEN
+          WRITE (IFM,*) '<MECANONLINE> ...... METHODE NEWTON_KRYLOV'
           NBFONC = NBFONC + 1
         ENDIF
         IF (ISFONC(FONACT,'RECH_LINE')) THEN
@@ -530,10 +552,22 @@ C
           WRITE (IFM,*) '<MECANONLINE> ...... PILOTAGE'
           NBFONC = NBFONC + 1
         ENDIF
-        IF (ISFONC(FONACT,'IMPLEX')) THEN
-          WRITE (IFM,*) '<MECANONLINE> ...... IMPLEX'
+        IF (ISFONC(FONACT,'DEBORST')) THEN
+          WRITE (IFM,*) '<MECANONLINE> ...... METHODE DEBORST'
           NBFONC = NBFONC + 1
         ENDIF
+        IF (ISFONC(FONACT,'SOUS_STRUC')) THEN
+          WRITE (IFM,*) '<MECANONLINE> ...... CALCUL PAR SOUS-'//
+     &                    'STRUCTURATION'
+          NBFONC = NBFONC + 1
+        ENDIF
+        IF (ISFONC(FONACT,'PROJ_MODAL')) THEN
+          WRITE (IFM,*) '<MECANONLINE> ...... CALCUL PAR PROJECTION'//
+     &                    ' MODALE'
+          NBFONC = NBFONC + 1
+        ENDIF
+C
+C ----- CONTACT
 C
         IF (ISFONC(FONACT,'CONTACT')) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... CONTACT'
@@ -572,20 +606,24 @@ C
      &                  'NEWTON GENERALISE'
           NBFONC = NBFONC + 1
         ENDIF
-        IF (ISFONC(FONACT,'DIS_CHOC')) THEN
-          WRITE (IFM,*) '<MECANONLINE> ...... ELEMENTS DIS_CHOC '
+        IF (ISFONC(FONACT,'CONT_NEWTON')) THEN
+          WRITE (IFM,*) '<MECANONLINE> ...... CONTACT AVEC '//
+     &                  'NEWTON GENERALISE'
           NBFONC = NBFONC + 1
         ENDIF
-C
-        IF (ISFONC(FONACT,'ELT_CONTACT')) THEN
-          WRITE (IFM,*) '<MECANONLINE> ...... ELEMENTS DE CONTACT'
+        IF (ISFONC(FONACT,'CONT_ALL_VERIF')) THEN
+          WRITE (IFM,*) '<MECANONLINE> ...... CONTACT SANS '//
+     &                  'CALCUL SUR TOUTES LES ZONES'
           NBFONC = NBFONC + 1
         ENDIF
-        IF (ISFONC(FONACT,'ELT_FROTTEMENT')) THEN
-          WRITE (IFM,*) '<MECANONLINE> ...... ELEMENTS DE FROTTEMENT'
+        IF (ISFONC(FONACT,'CONTACT_INIT')) THEN
+          WRITE (IFM,*) '<MECANONLINE> ...... CONTACT INITIAL '
           NBFONC = NBFONC + 1
         ENDIF
-C
+        IF (ISFONC(FONACT,'LIAISON_UNILATER')) THEN
+          WRITE (IFM,*) '<MECANONLINE> ...... LIAISON UNILATERALE'
+          NBFONC = NBFONC + 1
+        ENDIF
         IF (ISFONC(FONACT,'FROT_DISCRET')) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... FROTTEMENT DISCRET'
           NBFONC = NBFONC + 1
@@ -598,51 +636,81 @@ C
           WRITE (IFM,*) '<MECANONLINE> ...... FROTTEMENT XFEM'
           NBFONC = NBFONC + 1
         ENDIF
+C
+C ----- ELEMENTS FINIS
+C
+        IF (ISFONC(FONACT,'ELT_CONTACT')) THEN
+          WRITE (IFM,*) '<MECANONLINE> ...... ELEMENTS DE CONTACT'
+          NBFONC = NBFONC + 1
+        ENDIF
+        IF (ISFONC(FONACT,'ELT_FROTTEMENT')) THEN
+          WRITE (IFM,*) '<MECANONLINE> ...... ELEMENTS DE FROTTEMENT'
+          NBFONC = NBFONC + 1
+        ENDIF
+        IF (ISFONC(FONACT,'DIS_CHOC')) THEN
+          WRITE (IFM,*) '<MECANONLINE> ...... ELEMENTS DIS_CHOC '
+          NBFONC = NBFONC + 1
+        ENDIF
+        IF (ISFONC(FONACT,'GD_ROTA')) THEN
+          WRITE (IFM,*) '<MECANONLINE> ...... ELEMENTS DE STRUCTURES'//
+     &                  ' EN GRANDES ROTATIONS'
+          NBFONC = NBFONC + 1
+        ENDIF
         IF (ISFONC(FONACT,'XFEM')) THEN
-          WRITE (IFM,*) '<MECANONLINE> ...... XFEM'
+          WRITE (IFM,*) '<MECANONLINE> ...... ELEMENTS XFEM'
           NBFONC = NBFONC + 1
         ENDIF
-        IF (ISFONC(FONACT,'DEBORST')) THEN
-          WRITE (IFM,*) '<MECANONLINE> ...... METHODE DEBORST'
-          NBFONC = NBFONC + 1
-        ENDIF
+C
+C ----- CONVERGENCE
+C
         IF (ISFONC(FONACT,'RESI_REFE')) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... CONVERGENCE PAR RESI_REFE'
           NBFONC = NBFONC + 1
         ENDIF
-        IF (ISFONC(FONACT,'FETI')) THEN
-          WRITE (IFM,*) '<MECANONLINE> ...... METHODE FETI'
+        IF (ISFONC(FONACT,'RESI_COMP')) THEN
+          WRITE (IFM,*) '<MECANONLINE> ...... CONVERGENCE PAR RESI_COMP'
           NBFONC = NBFONC + 1
         ENDIF
-        IF (ISFONC(FONACT,'LIAISON_UNILATER')) THEN
-          WRITE (IFM,*) '<MECANONLINE> ...... LIAISON UNILATERALE'
-          NBFONC = NBFONC + 1
-        ENDIF
+C
+C ----- CHARGEMENTS
+C
         IF (ISFONC(FONACT,'FORCE_SUIVEUSE')) THEN
-          WRITE (IFM,*) '<MECANONLINE> ...... FORCE SUIVEUSE'
+          WRITE (IFM,*) '<MECANONLINE> ...... CHARGEMENTS SUIVEURS'
           NBFONC = NBFONC + 1
         ENDIF
         IF (ISFONC(FONACT,'DIDI')) THEN
-          WRITE (IFM,*) '<MECANONLINE> ...... CHARGEMENT DIDI'
+          WRITE (IFM,*) '<MECANONLINE> ...... CHARGEMENTS DE '//
+     &                  'DIRICHLET DIFFERENTIEL'
           NBFONC = NBFONC + 1
         ENDIF
         IF (ISFONC(FONACT,'DIRI_CINE')) THEN
-          WRITE (IFM,*) '<MECANONLINE> ...... CHARGEMENT CINEMATIQUE'
+          WRITE (IFM,*) '<MECANONLINE> ...... CHARGEMENTS '//
+     &                  'CINEMATIQUES PAR ELIMINATION'
           NBFONC = NBFONC + 1
         ENDIF
+        IF (ISFONC(FONACT,'LAPLACE')) THEN
+          WRITE (IFM,*) '<MECANONLINE> ...... CHARGEMENTS '//
+     &                  'DE LAPLACE'
+          NBFONC = NBFONC + 1
+        ENDIF
+C
+C ----- MODELISATION
+C
         IF (ISFONC(FONACT,'MACR_ELEM_STAT')) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... MACRO-ELEMENTS STATIQUES'
           NBFONC = NBFONC + 1
         ENDIF
-        IF (ISFONC(FONACT,'GD_ROTA')) THEN
-          WRITE (IFM,*) '<MECANONLINE> ...... STRUCTURES EN GRANDES'//
-     &                  'ROTATIONS'
+        IF (ISFONC(FONACT,'THM')) THEN
+          WRITE (IFM,*) '<MECANONLINE> ...... MODELISATION THM'
           NBFONC = NBFONC + 1
         ENDIF
-        IF (ISFONC(FONACT,'SENSIBILITE')) THEN
-          WRITE (IFM,*) '<MECANONLINE> ...... CALCUL AVEC SENSIBILITE'
+        IF (ISFONC(FONACT,'ENDO_NO')) THEN
+          WRITE (IFM,*) '<MECANONLINE> ...... MODELISATION GVNO'
           NBFONC = NBFONC + 1
         ENDIF
+C
+C ----- POST-TRAITEMENTS
+C
         IF (ISFONC(FONACT,'CRIT_STAB')) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... CALCUL CRITERE FLAMBEMENT'
           NBFONC = NBFONC + 1
@@ -655,31 +723,63 @@ C
           WRITE (IFM,*) '<MECANONLINE> ...... CALCUL MODES VIBRATOIRES'
           NBFONC = NBFONC + 1
         ENDIF
-        IF (ISFONC(FONACT,'SOUS_STRUC')) THEN
-          WRITE (IFM,*) '<MECANONLINE> ...... CALCUL PAR SOUS-'//
-     &                    'STRUCTURATION'
+        IF (ISFONC(FONACT,'SENSIBILITE')) THEN
+          WRITE (IFM,*) '<MECANONLINE> ...... CALCUL AVEC SENSIBILITE'
+          NBFONC = NBFONC + 1
+        ENDIF
+        IF (ISFONC(FONACT,'ENERGIE')) THEN
+          WRITE (IFM,*) '<MECANONLINE> ...... CALCUL DES ENERGIES'
+          NBFONC = NBFONC + 1
+        ENDIF
+        IF (ISFONC(FONACT,'ERRE_TEMPS')) THEN
+          WRITE (IFM,*) '<MECANONLINE> ...... CALCUL ERREUR TEMPS EN'//
+     &                  ' THM'
           NBFONC = NBFONC + 1
         ENDIF
         IF (ISFONC(FONACT,'EXI_VARC')) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... VARIABLES DE COMMANDE'
           NBFONC = NBFONC + 1
         ENDIF
-        IF (ISFONC(FONACT,'THM')) THEN
-          WRITE (IFM,*) '<MECANONLINE> ...... MODELISATION THM'
-          NBFONC = NBFONC + 1
-        ENDIF
-        IF (ISFONC(FONACT,'ENDO_NO')) THEN
-          WRITE (IFM,*) '<MECANONLINE> ...... MODELISATION GVNO'
-          NBFONC = NBFONC + 1
-        ENDIF
+
         IF (ISFONC(FONACT,'REUSE')) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... CONCEPT RE-ENTRANT'
           NBFONC = NBFONC + 1
         ENDIF
-        IF (ISFONC(FONACT,'NEWTON_KRYLOV')) THEN
-          WRITE (IFM,*) '<MECANONLINE> ...... METHODE NEWTON_KRYLOV'
+C
+        IF (ISFONC(FONACT,'FETI')) THEN
+          WRITE (IFM,*) '<MECANONLINE> ...... SOLVEUR FETI'
           NBFONC = NBFONC + 1
         ENDIF
+        IF (ISFONC(FONACT,'LDLT')) THEN
+          WRITE (IFM,*) '<MECANONLINE> ...... SOLVEUR LDLT'
+          NBFONC = NBFONC + 1
+        ENDIF
+        IF (ISFONC(FONACT,'MULT_FRONT')) THEN
+          WRITE (IFM,*) '<MECANONLINE> ...... SOLVEUR MULT_FRONT'
+          NBFONC = NBFONC + 1
+        ENDIF
+        IF (ISFONC(FONACT,'GCPC')) THEN
+          WRITE (IFM,*) '<MECANONLINE> ...... SOLVEUR GCPC'
+          NBFONC = NBFONC + 1
+        ENDIF
+        IF (ISFONC(FONACT,'MUMPS')) THEN
+          WRITE (IFM,*) '<MECANONLINE> ...... SOLVEUR MUMPS'
+          NBFONC = NBFONC + 1
+        ENDIF
+        IF (ISFONC(FONACT,'PETSC')) THEN
+          WRITE (IFM,*) '<MECANONLINE> ...... SOLVEUR PETSC'
+          NBFONC = NBFONC + 1
+        ENDIF
+        IF (ISFONC(FONACT,'LDLT_SP')) THEN
+          WRITE (IFM,*) '<MECANONLINE> ...... PRECONDITIONNEUR LDLT_SP'
+          NBFONC = NBFONC + 1
+        ENDIF
+        IF (ISFONC(FONACT,'MATR_DISTRIBUEE')) THEN
+          WRITE (IFM,*) '<MECANONLINE> ...... MATRICE GLOBALE '//
+     &                  'DISTRIBUEE'
+          NBFONC = NBFONC + 1
+        ENDIF
+C
         IF (NBFONC.EQ.0) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... <AUCUNE>'
         ENDIF

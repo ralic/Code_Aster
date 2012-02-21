@@ -1,9 +1,9 @@
       SUBROUTINE IMPREF(ICOD  ,SDSUIV,TITRE ,FORMA )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/02/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,7 +34,7 @@ C RETOURNE LES INFOS PAR DEFAUT D'UNE COLONNE DU TABLEAU DE CONVERGENCE
 C
 C ----------------------------------------------------------------------
 C
-C 
+C
 C  - LE TITRE DE LA COLONNE (SUR 3 LIGNES)
 C  - LE TYPE DE LA COLONNE
 C
@@ -64,12 +64,12 @@ C
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
-C 
+C
       INTEGER      ZDEF
       PARAMETER    (ZDEF=32)
       INTEGER      J,ISUIV
       CHARACTER*16 TITCOL(3,ZDEF)
-      INTEGER      FORCOL(ZDEF)      
+      INTEGER      FORCOL(ZDEF)
       CHARACTER*24 DDLTIT
       INTEGER      JDDLTI
 
@@ -209,23 +209,21 @@ C
      &                           '                ',
      &                           '                '/
       DATA FORCOL(23) /2/
-
-
-      DATA (TITCOL(J,24),J=1,3)/ '                ',
-     &                           '                ',
-     &                           '                '/
-      DATA FORCOL(24) /2/
-
-
+C
+      DATA (TITCOL(J,24),J=1,3)/ '     CONTACT    ',
+     &                           '      INFOS     ',
+     &                           '    CYCLAGES    '/
+      DATA FORCOL(24) /3/
+C
       DATA (TITCOL(J,25),J=1,3)/ '      SEUIL     ',
      &                           '    FROTTEMENT  ',
-     &                           '     COULOMB    '/    
+     &                           '     COULOMB    '/
       DATA FORCOL(25) /2/
 
 
       DATA (TITCOL(J,26),J=1,3)/ '      SEUIL     ',
      &                           '    FROTTEMENT  ',
-     &                           '    MAX. LIEU   '/      
+     &                           '    MAX. LIEU   '/
       DATA FORCOL(26) /3/
 
 
@@ -262,8 +260,8 @@ C
       DATA FORCOL(32) /2/
 C
 C ----------------------------------------------------------------------
-C 
-      CALL JEMARQ()  
+C
+      CALL JEMARQ()
 C
       IF (ICOD.GT.32) THEN
         WRITE(6,*) 'ICOD:',ICOD
@@ -273,7 +271,7 @@ C
       IF (ICOD.LT.0) THEN
         ISUIV    = -ICOD
         DDLTIT   = SDSUIV(1:14)//'     .TITR'
-        CALL JEVEUO(DDLTIT,'L',JDDLTI)   
+        CALL JEVEUO(DDLTIT,'L',JDDLTI)
         TITRE(1) = ZK16(JDDLTI+3*(ISUIV-1)+1-1)
         TITRE(2) = ZK16(JDDLTI+3*(ISUIV-1)+2-1)
         TITRE(3) = ZK16(JDDLTI+3*(ISUIV-1)+3-1)

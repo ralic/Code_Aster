@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/01/2012   AUTEUR DESOZA T.DESOZA 
+#& MODIF COMMANDE  DATE 21/02/2012   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -116,16 +116,18 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                  ),
 
            b_bouc_cont_cont=BLOC(condition = "FORMULATION == 'CONTINUE' ",
-                                 ITER_CONT_TYPE = SIMP(statut='f',typ='TXM',defaut="MAXI",
-                                                      into=("MULT","MAXI")),
-                                 b_bouc_cont_mult = BLOC(condition = "ITER_CONT_TYPE=='MULT'",
-                                   ITER_CONT_MULT = SIMP(statut='f',typ='I',defaut = 4),
-                                   ),
-                                 b_bouc_cont_maxi = BLOC(condition = "ITER_CONT_TYPE=='MAXI'",
-                                   ITER_CONT_MAXI = SIMP(statut='f',typ='I',defaut = 30),
-                                   ),
                                  ALGO_RESO_CONT = SIMP(statut='f',typ='TXM',defaut="POINT_FIXE",
                                                       into=("POINT_FIXE","NEWTON")),
+                                 b_algo_reso_contPF = BLOC(condition = "ALGO_RESO_CONT=='POINT_FIXE'",
+                                   ITER_CONT_TYPE = SIMP(statut='f',typ='TXM',defaut="MAXI",
+                                                      into=("MULT","MAXI")),
+                                   b_bouc_cont_mult = BLOC(condition = "ITER_CONT_TYPE=='MULT'",
+                                     ITER_CONT_MULT = SIMP(statut='f',typ='I',defaut = 4),
+                                     ),
+                                   b_bouc_cont_maxi = BLOC(condition = "ITER_CONT_TYPE=='MAXI'",
+                                     ITER_CONT_MAXI = SIMP(statut='f',typ='I',defaut = 30),
+                                     ),
+                                   )    
                                  ),
 
            b_bouc_cont_xfem=BLOC(condition = "FORMULATION == 'XFEM' ",
@@ -142,21 +144,28 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
 # PARAMETRE GENERAL : BOUCLE DE FROTTEMENT
 
            b_bouc_frot_cont= BLOC(condition = "FROTTEMENT=='COULOMB' and FORMULATION == 'CONTINUE' ",
-                                  REAC_FROT =SIMP(statut='f',
+                                  
+                                  ALGO_RESO_FROT = SIMP(statut='f',typ='TXM',defaut="NEWTON",
+                                                      into=("POINT_FIXE","NEWTON",)),
+                                                      
+                                  b_algo_reso_frotPF = BLOC(condition = "ALGO_RESO_FROT=='POINT_FIXE'",
+                                    REAC_FROT =SIMP(statut='f',
                                                   typ='TXM',
                                                   defaut="AUTOMATIQUE",
                                                   into=("AUTOMATIQUE","CONTROLE",),
                                                   ),
-                                  b_automatique = BLOC(condition = "REAC_FROT == 'AUTOMATIQUE' ",
-                                                       ITER_FROT_MAXI = SIMP(statut='f',typ='I',defaut=10),
-                                                       RESI_FROT      = SIMP(statut='f',typ='R',defaut=0.0001),
+                                    b_automatique = BLOC(condition = "REAC_FROT == 'AUTOMATIQUE' ",
+                                                         ITER_FROT_MAXI = SIMP(statut='f',typ='I',defaut=10),
+                                                         RESI_FROT      = SIMP(statut='f',typ='R',defaut=0.0001),
                                     ),
-                                  b_controle    = BLOC(condition = "REAC_FROT == 'CONTROLE' ",
-                                                       NB_ITER_FROT   = SIMP(statut='f',typ='I',defaut = 2),
+                                    b_controle    = BLOC(condition = "REAC_FROT == 'CONTROLE' ",
+                                                         NB_ITER_FROT   = SIMP(statut='f',typ='I',defaut = 2),
                                     ),
-                                  ALGO_RESO_FROT = SIMP(statut='f',typ='TXM',defaut="NEWTON",
-                                                      into=("POINT_FIXE","NEWTON",)),
-
+                                  ),                    
+                                  b_algo_reso_frotNE = BLOC(condition = "ALGO_RESO_FROT=='NEWTON'",
+                                    
+                                    RESI_FROT      = SIMP(statut='f',typ='R',defaut=0.0001),
+                                  ),
                                   ),
 
 

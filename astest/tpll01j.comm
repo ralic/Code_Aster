@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 21/02/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE Calcul d'indicateur d'erreur en thermique lineaire
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -70,11 +70,6 @@ for k in range(nbcalc):
            CHAM_MATER=MATE[k], EXCIT=_F( CHARGE = CHA1[k]))
 
 # Calcul de l'indicateur d'erreur
-   RESU[k]=CALC_ELEM( reuse=RESU[k],
-              TOUT='OUI',
-               RESULTAT=RESU[k],
-#              INFO=2,
-              OPTION=('FLUX_ELNO',),)
 
    RESU[k]=CALC_ERREUR( reuse=RESU[k],
               TOUT='OUI',

@@ -1,16 +1,16 @@
       SUBROUTINE FONNO6 (RESU,NOMA,NDIM,INA,NBNOSE,ISEG,NSEG,NOE,INDR,
-     &                   NBNOEL,IFL,VNOR,VDIR,BASSEG)
+     &                   NBNOEL,IFL,VNOR,VDIR,BASSEG,VECT,SENS)
       IMPLICIT NONE
       CHARACTER*8         RESU, NOMA
       INTEGER             NDIM,INA,NBNOSE,ISEG,NOE(4,4)
       INTEGER             INDR(2),NBNOEL,IFL,NSEG
-      REAL*8              VDIR(2,3),VNOR(2,3)
+      REAL*8              VDIR(2,3),VNOR(2,3),VECT(3),SENS
       CHARACTER*19        BASSEG
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 10/10/2011   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ELEMENTS  DATE 21/02/2012   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,7 +25,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C
+C TOLE CRS_1404
 C     ----------------------------------------------------------------
 C     BUTS :
 C        - VERIFIER LA COHERENCE DES 2 VECTEURS DIRECTION
@@ -79,8 +79,8 @@ C
       INTEGER       ILEV,ITANO,ITANE
       INTEGER       NBLEV,NN
       REAL*8        S,NDIR,NNOR,ALPHA,R8PI,ANGMAX,BETA,DDOT
-      REAL*8        VECDIR(3),VECNOR(3),VNPREC(3)
-      REAL*8        TRIGOM
+      REAL*8        VECDIR(NDIM),VECNOR(NDIM),VNPREC(NDIM)
+      REAL*8        TRIGOM,P
       CHARACTER*6   SYME
       CHARACTER*8   K8B, TYPE
       PARAMETER    (ANGMAX=2.5D0)
@@ -215,10 +215,22 @@ C     CAS OU IL FAUT PRENDRE LA MOYENNE DES 2 VECTEURS
      &                + (VNOR(1,2)+VNOR(2,2))**2
      &                + (VNOR(1,3)+VNOR(2,3))**2   )
 
-        DO 310 I=1,3
+        DO 310 I=1,NDIM
           VECDIR(I) = (VDIR(1,I)+VDIR(2,I))/NDIR
-          VECNOR(I) = (VNOR(1,I)+VNOR(2,I))/NNOR
+          VECNOR(I) = SENS*(VNOR(1,I)+VNOR(2,I))/NNOR
  310    CONTINUE
+
+C       LE VECTEUR NORMALE DOIT ALLER DE LA LEVRE INF
+C       VERS LA LEVRE SUP
+        IF ((ISEG.EQ.1) .AND. (ILEV.NE.0)) THEN
+          P = DDOT(NDIM,VECNOR,1,VECT,1)
+          IF (P .LT. 0.D0) THEN
+            SENS = -1.D0
+            DO 320 I=1,NDIM
+              VECNOR(I) = SENS*VECNOR(I)
+ 320        CONTINUE
+          ENDIF
+        ENDIF
 
 C     CAS OU IL NE FAUT PRENDRE QU'UN SEUL VECTEUR
       ELSEIF (SYME.EQ.'OUI') THEN
@@ -233,10 +245,22 @@ C     CAS OU IL NE FAUT PRENDRE QU'UN SEUL VECTEUR
      &                + VNOR(IFL,2)**2
      &                + VNOR(IFL,3)**2  )
 
-        DO 320 I=1,3
+        DO 330 I=1,NDIM
           VECDIR(I) = VDIR(IFL,I)/NDIR
-          VECNOR(I) = VNOR(IFL,I)/NNOR
- 320     CONTINUE
+          VECNOR(I) = SENS*VNOR(IFL,I)/NNOR
+ 330    CONTINUE
+
+C       LE VECTEUR NORMALE DOIT ALLER DE LA LEVRE INF
+C       VERS LA LEVRE SUP
+        IF ((ISEG.EQ.1) .AND. (ILEV.NE.0)) THEN
+          P = DDOT(NDIM,VECNOR,1,VECT,1)
+          IF (P .LT. 0.D0) THEN
+            SENS = -1.D0
+            DO 340 I=1,NDIM
+              VECNOR(I) = SENS*VECNOR(I)
+ 340        CONTINUE
+          ENDIF
+        ENDIF
 
       ENDIF
 
@@ -246,29 +270,29 @@ C     ----------------------------------------------------------------
 
 C     SI DTAN_ORIG EST DONNE, ON VERIFIE QU'IL EST DANS LE BON SENS
       IF (ITANO.NE.0.AND.ISEG.EQ.1) THEN
-        S = DDOT(3,ZR(JTANO),1,VECDIR,1)
+        S = DDOT(NDIM,ZR(JTANO),1,VECDIR,1)
         IF (S.LE.0.D0) CALL U2MESR('A','RUPTURE0_35',3,VECDIR)
-        DO 410 I=1,3
+        DO 410 I=1,NDIM
           VECDIR(I) = ZR(JTANO-1+I)
- 410     CONTINUE
+ 410    CONTINUE
       ENDIF
 
 C     SI DTAN_EXTR EST DONNE, ON VERIFIE QU'IL EST DANS LE BON SENS
       IF (ITANE.NE.0.AND.ISEG.EQ.NSEG) THEN
-        S = DDOT(3,ZR(JTANE),1,VECDIR,1)
+        S = DDOT(NDIM,ZR(JTANE),1,VECDIR,1)
         IF (S.LE.0.D0) CALL U2MESR('A','RUPTURE0_36',3,VECDIR)
-        DO 420 I=1,3
+        DO 420 I=1,NDIM
           VECDIR(I) = ZR(JTANE-1+I)
- 420     CONTINUE
+ 420    CONTINUE
       ENDIF
 
 
 C     5) ECRITURE DE LA BASE PAR SEGMENT DU FOND
 C     -------------------------------------------
 
-        DO 510 I=1,3
-          ZR(JBASSE-1+6*(ISEG-1)+I)   = VECDIR(I)
-          ZR(JBASSE-1+6*(ISEG-1)+I+3) = VECNOR(I)
+        DO 510 I=1,NDIM
+          ZR(JBASSE-1+2*NDIM*(ISEG-1)+I)      = VECNOR(I)
+          ZR(JBASSE-1+2*NDIM*(ISEG-1)+I+NDIM) = VECDIR(I)
  510    CONTINUE
 
 
@@ -278,10 +302,10 @@ C     ---------------------------------------------------------
 C
       IF (ISEG.GT.1) THEN
 C       RECUP DU VECTEUR NORMAL PRECEDENT
-        DO 610 I=1,3
-          VNPREC(I) = ZR(JBASSE-1+6*(ISEG-2)+I+3)
+        DO 610 I=1,NDIM
+          VNPREC(I) = ZR(JBASSE-1+2*NDIM*(ISEG-2)+I)
  610    CONTINUE
-        S = DDOT(3,VECNOR,1,VNPREC,1)
+        S = DDOT(NDIM,VECNOR,1,VNPREC,1)
         BETA = TRIGOM('ACOS',S)*180.D0/R8PI()
         IF (ABS(BETA).GT.10.D0) CALL U2MESS('A','RUPTURE0_61')
       ENDIF

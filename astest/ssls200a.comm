@@ -1,4 +1,4 @@
-# MODIF  DATE 09/01/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/02/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE NON-REGRESSION THERMO-ELASTICITE POUR TOUTES COQUES SURFACIQUES
 # RESPONSABLE PELLET J.PELLET
 # ssls200a.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test R
@@ -163,7 +163,7 @@ MESTAT=MECA_STATIQUE(MODELE=MO,
 
 MESTAT=CALC_ELEM(reuse =MESTAT,
                  RESULTAT=MESTAT,
-                 OPTION=('SIEF_ELGA','SIGM_ELNO','EPSI_ELNO','EFGE_ELNO',),);
+                 OPTION=('SIEF_ELGA','SIGM_ELNO','EPSI_ELNO','EFGE_ELNO','EPSI_ELGA'),);
 
 MESTAT2=POST_CHAMP(RESULTAT=MESTAT,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
@@ -184,62 +184,32 @@ MESTAT2=CALC_NO(reuse =MESTAT2,
 
 ENGENDRE_TEST(CO=MESTAT,);
 
-TEST_RESU(RESU=(_F(RESULTAT=MESTAT,
-                   NUME_ORDRE=1,
-                   NOM_CHAM='DEPL',
-                   TYPE_TEST='SOMM_ABS',
-                   VALE=43695.191085325,
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='11.0.7',),
-                _F(RESULTAT=MESTAT,
-                   NUME_ORDRE=1,
-                   NOM_CHAM='EFGE_ELNO',
-                   TYPE_TEST='SOMM_ABS',
-                   VALE=172671.402159,
-                   PRECISION=0.0040,
-                   REFERENCE='NON_REGRESSION',),
-                _F(RESULTAT=MESTAT,
-                   NUME_ORDRE=1,
-                   NOM_CHAM='EPSI_ELNO',
-                   TYPE_TEST='SOMM_ABS',
-                   VALE=29086.9233306,
-                   PRECISION=0.0007,
-                   REFERENCE='NON_REGRESSION',),
-                _F(RESULTAT=MESTAT,
-                   NUME_ORDRE=1,
-                   NOM_CHAM='EPSI_NOEU',
-                   TYPE_TEST='SOMM_ABS',
-                   VALE=9360.65222995,
-                   PRECISION=0.0005,
-                   REFERENCE='NON_REGRESSION',),
-                _F(RESULTAT=MESTAT,
-                   NUME_ORDRE=1,
-                   NOM_CHAM='SIEF_ELGA',
-                   TYPE_TEST='SOMM_ABS',
-                   VALE=1.2938618571158E+06,
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='11.0.7',),
-                _F(RESULTAT=MESTAT2,
-                   NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_ELNO',
-                   TYPE_TEST='SOMM_ABS',
-                   VALE=225807.085034,
-                   PRECISION=0.0006,
-                   REFERENCE='NON_REGRESSION',),
-                _F(RESULTAT=MESTAT2,
-                   NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_NOEU',
-                   TYPE_TEST='SOMM_ABS',
-                   VALE=56853.4965839,
-                   PRECISION=0.00055,
-                   REFERENCE='NON_REGRESSION',),
-                _F(RESULTAT=MESTAT,
-                   NUME_ORDRE=1,
-                   NOM_CHAM='DEGE_ELNO',
-                   TYPE_TEST='SOMM_ABS',
-                   VALE=24435.24051536,
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='11.0.7',),),);
+TEST_RESU(RESU=(
+          _F( RESULTAT= MESTAT  , NOM_CHAM= 'DEPL', NUME_ORDRE=      1,
+              REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
+              TYPE_TEST= 'SOMM_ABS', VALE=  4.3695191085311E+04 ),
+          _F( RESULTAT= MESTAT  , NOM_CHAM= 'EFGE_ELNO', NUME_ORDRE=      1,
+              REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
+              TYPE_TEST= 'SOMM_ABS', VALE=  1.7258610574198E+05 ),
+          _F( RESULTAT= MESTAT  , NOM_CHAM= 'EPSI_ELGA', NUME_ORDRE=      1,
+              REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
+              TYPE_TEST= 'SOMM_ABS', VALE=  8.2678128326671E+04 ),
+          _F( RESULTAT= MESTAT  , NOM_CHAM= 'EPSI_ELNO', NUME_ORDRE=      1,
+              REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
+              TYPE_TEST= 'SOMM_ABS', VALE=  2.9073111133851E+04 ),
+          _F( RESULTAT= MESTAT  , NOM_CHAM= 'EPSI_NOEU', NUME_ORDRE=      1,
+              REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
+              TYPE_TEST= 'SOMM_ABS', VALE=  9.3577816424933E+03 ),
+          _F( RESULTAT= MESTAT  , NOM_CHAM= 'SIEF_ELGA', NUME_ORDRE=      1,
+              REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
+              TYPE_TEST= 'SOMM_ABS', VALE=  1.2938618571158E+06 ),
+          _F( RESULTAT= MESTAT  , NOM_CHAM= 'SIGM_ELNO', NUME_ORDRE=      1,
+              REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
+              TYPE_TEST= 'SOMM_ABS', VALE=  1.4210693808160E+06 ),
+          _F( RESULTAT= MESTAT  , NOM_CHAM= 'DEGE_ELNO', NUME_ORDRE=      1,
+              REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
+              TYPE_TEST= 'SOMM_ABS', VALE=  2.4435240515360E+04 ),
+          ),)
 
 # ----------------------------------------------------------------------
 
@@ -402,6 +372,8 @@ IMPR_RESU(FORMAT='MED',
           RESU=_F(MAILLAGE=MA,
                   RESULTAT=MESTAT,
                   NOM_CHAM='SIEF_ELGA',),);
+
+IMPR_RESU(RESU=_F(RESULTAT=MESTAT,NOM_CHAM=('EPSI_ELGA','EPSI_ELNO')))
 
 FIN();
 

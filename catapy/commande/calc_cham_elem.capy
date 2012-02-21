@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 21/02/2012   AUTEUR MACOCCO K.MACOCCO 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -23,7 +23,6 @@ CALC_CHAM_ELEM=OPER(nom="CALC_CHAM_ELEM",op=38,sd_prod=cham_elem,
                     reentrant='n',
             UIinfo={"groupes":("Résultats et champs","Post-traitements",)},
          MODELE          =SIMP(statut='o',typ=modele_sdaster),
-         CHAM_MATER      =SIMP(statut='o',typ=cham_mater),
          CARA_ELEM       =SIMP(statut='f',typ=cara_elem),
 
          regles=(EXCLUS('TOUT','GROUP_MA',),EXCLUS('TOUT','MAILLE',),),
@@ -43,13 +42,12 @@ CALC_CHAM_ELEM=OPER(nom="CALC_CHAM_ELEM",op=38,sd_prod=cham_elem,
 
          b_thermique  =BLOC(condition="OPTION in ('FLUX_ELNO','FLUX_ELGA',)",
            TEMP            =SIMP(statut='o',typ=(cham_no_sdaster,)),
+           CHAM_MATER      =SIMP(statut='o',typ=cham_mater),
          ),
 
          b_acoustique  =BLOC(condition="OPTION in ('PRAC_ELNO',)",
            PRES            =SIMP(statut='o',typ=(cham_no_sdaster,)),
          ),
-
-
 
          EXCIT           =FACT(statut='f',max='**',
                regles=(EXCLUS('FONC_MULT','COEF_MULT', ),),

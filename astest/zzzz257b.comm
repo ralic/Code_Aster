@@ -1,4 +1,4 @@
-# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 21/02/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE ESTIMATEURS D'ERREUR EN QUANTITES D'INTERET POUR LE CALCUL DES FIC
 # zzzz257b.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -160,9 +160,6 @@ POST_K=POST_K1_K2_K3(MODELISATION='C_PLAN',
 IMPR_TABLE(TABLE=POST_K,
            UNITE=8,);
 
-RESU=CALC_ELEM(reuse =RESU,
-               RESULTAT=RESU,
-               OPTION=('SIGM_ELNO',),);
 
 RESU=CALC_ERREUR(reuse =RESU,
                  RESULTAT=RESU,
@@ -188,10 +185,6 @@ RESUDUAL=MECA_STATIQUE(MODELE=MODL,
                        CHAM_MATER=CHMAT,
                        EXCIT=(_F(CHARGE=BLOC,),
                               _F(CHARGE=CHARDUAL,),),);
-
-RESUDUAL=CALC_ELEM(reuse =RESUDUAL,
-                   RESULTAT=RESUDUAL,
-                   OPTION=('SIGM_ELNO',),);
 
 RESUDUAL=CALC_ERREUR(reuse =RESUDUAL,
                      RESULTAT=RESUDUAL,

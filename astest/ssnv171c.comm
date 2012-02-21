@@ -1,4 +1,4 @@
-# MODIF  DATE 06/02/2012   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 21/02/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE VALIDATION MONOCRISTAL ET POLYCRISTAL
 # RESPONSABLE JMBHH01 J.M.PROIX
 # VALIDATION DEFORMATION PLASTIQUE EQUIVALENTE CUMULEE
@@ -105,7 +105,7 @@ MONOEXPL=STAT_NON_LINE(MODELE=TROISD,
                                     ALGO_INTE='RUNGE_KUTTA',),
                        INCREMENT=_F(LIST_INST=LINST,),
                        CONVERGENCE=_F(ITER_GLOB_MAXI=100,),
-                       NEWTON=_F(PREDICTION='EXTRAPOL',
+                       NEWTON=_F(PREDICTION='EXTRAPOLE',
                                  MATRICE='ELASTIQUE',
                                  REAC_ITER=0,),);
 
@@ -323,7 +323,7 @@ POLYEXPL=STAT_NON_LINE(MODELE=TROISD,
                        INCREMENT=_F(LIST_INST=LINST,),
                        CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
                                       ITER_GLOB_MAXI=100,),
-                       NEWTON=_F(PREDICTION='EXTRAPOL',
+                       NEWTON=_F(PREDICTION='EXTRAPOLE',
                                  MATRICE='ELASTIQUE',
                                  REAC_ITER=0,),);
 

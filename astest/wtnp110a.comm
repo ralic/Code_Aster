@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 21/02/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE  - ECOULEMENT ORTHOTROPE SATURE EN 2D
 # wtnp110a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -188,11 +188,11 @@ U0=STAT_NON_LINE(MODELE=MODELE,
 U0=CALC_ELEM(reuse =U0,
              RESULTAT=U0,
              TOUT_ORDRE='OUI',
-             OPTION=('SIEF_ELNO','VARI_ELNO',),);
+             OPTION=('VARI_ELNO',),);
 
 U0=CALC_ERREUR(reuse =U0,
                RESULTAT=U0,
-               LIST_INST=INSTERR,
+               LIST_INST=INST1,
                OPTION=('ERME_ELEM','ERME_ELNO',),);
 
 U0=CALC_NO(reuse =U0,
