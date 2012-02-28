@@ -1,8 +1,8 @@
-#@ MODIF algorith3 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith3 Messages  DATE 27/02/2012   AUTEUR ALARCON A.ALARCON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -71,7 +71,9 @@ On arrête de le réduire, car le nombre de réductions a atteint %(i1)d, qui est l
 """),
 
 18 : _(u"""
- La liste des instants de calcul ne doit contenir qu'un seul pas 
+ La liste des instants de calcul ne doit contenir qu'un seul pas
+ Conseil: si vous avez défini une liste d'instants manuellement par des valeurs discrètes,
+ veillez à ce que le pas soit constant dans tout l'intervale.
 """),
 
 19 : _(u"""

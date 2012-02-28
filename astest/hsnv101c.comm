@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 27/02/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE THERMO_METALLO_MECANIQUE DECOUPLEE EN TRACTION SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -271,7 +271,7 @@ U=STAT_NON_LINE(
                 RELATION_KIT = ('ACIER',)),
                          INCREMENT=_F(
                 LIST_INST = L_INST,
-                NUME_INST_FIN = 140),
+                NUME_INST_FIN = 70),
                             NEWTON=_F(
                 MATRICE = 'TANGENTE',
                 REAC_ITER = 1),

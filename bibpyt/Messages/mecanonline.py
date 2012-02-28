@@ -1,8 +1,8 @@
-#@ MODIF mecanonline Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF mecanonline Messages  DATE 27/02/2012   AUTEUR GREFFET N.GREFFET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -102,5 +102,13 @@ cata_msg = {
 
 86 : _(u"""
    Arrêt par échec du traitement de la collision.
+"""),
+
+87 : _(u"""
+   Arrêt par détection d'instabilité (mot-clé CRIT_STAB dans STAT_NON_LINE / DYNA_NON_LINE).
+   La charge critique correspondante est accessible de deux manières :
+     - dans le fichier de message,
+     - dans la SD résultat EVOL_NOLI, elle correspond au paramètre CHAR_CRIT.
+   La base globale est sauvegardée. Elle contient les pas archivés avant l'arrêt.
 """),
 }

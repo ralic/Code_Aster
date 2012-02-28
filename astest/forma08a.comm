@@ -1,0 +1,274 @@
+# MODIF  DATE 22/02/2012   AUTEUR BARGELLI R.BARGELLINI 
+# TITRE TP RUPTURE : POUTRE DCB 3D ELASTIQUE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# forma08a.para = tps_job 400 mem_job 128Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#FICHIER DE COMMANDE DU TP FORMATION ASTER AVANCE
+#TP MECANIQUE DE LA RUPTURE, EXERCICE 5 : ZONES COHESIVES
+DEBUT(CODE=_F( NOM = 'FORMA08A',NIV_PUB_WEB='INTERNET'),PAR_LOT='OUI')
+
+# MODELIDATION A : ELEMENTS JOINTS
+
+# CE FICHIER EST LA VERSION CORRIGEE DU 5EME EXERCICE DES TPS
+# POUR LA PREPARATION DES TPS, FOURNIR EGALEMENT UNE VERSION A TROUS DE CE FICHIER :
+# - REMPLACER LES PARAMETRES INITIAUX PAR UNE VALEUR BIDON (EX. : 999)
+# - ENLEVER LES GROUP_MA DES AFFE_CHAR_MECA, AFFE_MATERIAU
+# - ENLEVER LE COMP_INCR DE STAT_NON_LINE
+# - SUPPRIMER LES TEST_TABLE
+
+tfin = 10
+nbarch = 10*tfin
+
+young = 100
+nu=0.
+tenac = 0.9
+sigc  = 3
+pen=0.00001
+
+ri_gli=10
+pen_lag=100
+
+dc=2*tenac/sigc
+
+deply = 1.0
+deplx = 0.0
+deplz = 0.0
+
+# LECTURE DU MAILLAGE
+MA  =  LIRE_MAILLAGE(
+                    FORMAT='MED',
+                    )
+
+
+
+#ORIENTATION DES MAILLES SUR LESQUELLES ON AFFECTE LA CZM
+MA=MODI_MAILLAGE(reuse =MA,
+                   MAILLAGE=MA,
+                   ORIE_FISSURE=_F(GROUP_MA='DCB_J'),
+                   INFO=2
+                   )
+
+#AFFECTATION DU MODELE
+MO=AFFE_MODELE(
+
+                MAILLAGE=MA,
+                AFFE= (
+                _F(
+                        GROUP_MA = ('DCB_1','DCB_2'),
+                        PHENOMENE = 'MECANIQUE',
+                        MODELISATION = '3D'
+                     ),
+                _F(
+                        GROUP_MA = 'DCB_J',
+                        PHENOMENE = 'MECANIQUE',
+                        MODELISATION = '3D_JOINT'
+                       ),
+
+                 )
+              )
+
+## AFFECTATION DES ANGLES NAUTIQUES : POSITION DE LA FISSURE DANS LE REPERE GLOBAL
+## POUR LES ELEMENTS D'INTERFACE UNIQUEMENT
+#
+#ORIEN_FI=AFFE_CARA_ELEM(MODELE=MO,
+#                     MASSIF=(
+#                             _F(GROUP_MA='DCB_J',ANGL_REP=(-90, 0 ,-90)),
+#                                 ));
+
+#DEFINITION ET AFFECTATION DU MATERIAU
+ACIER=DEFI_MATERIAU(
+
+     ELAS=_F(
+              E =  young,
+              NU = nu),
+     RUPT_FRAG = _F(
+                     GC = tenac,
+                     SIGM_C = sigc,
+                     PENA_ADHERENCE=pen,
+                     PENA_LAGR = pen_lag,
+                     RIGI_GLIS = ri_gli,
+                    )
+            )
+
+
+CM=AFFE_MATERIAU(
+
+               MAILLAGE=MA,
+               AFFE=_F(
+                       GROUP_MA = ('DCB_1','DCB_2','DCB_J'),
+                       MATER = ACIER),
+              )
+
+
+
+#CONDITIONS DE CHARGEMENT ET LIMITES
+SYMETRIE = AFFE_CHAR_MECA(
+  MODELE = MO,
+  DDL_IMPO = (
+               _F(GROUP_MA='JOINT_B',DY=0)
+             ))
+
+
+TRACTION = AFFE_CHAR_MECA(
+ MODELE = MO,
+
+  FACE_IMPO= (
+      _F(GROUP_MA  = 'DCB_GB' , DY = deply ,
+                                DX = deplx ,
+                                DZ = deplz ),
+         ))
+
+#DEFINITION DES INSTANTS DE CALCUL 
+DEF_LIST=DEFI_LIST_REEL(
+
+                     DEBUT   = 0,
+     INTERVALLE=(
+
+      _F( JUSQU_A = 10  ,   NOMBRE = 200 ),
+
+      )
+     )
+L_INST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =DEF_LIST ,),
+                                ECHEC=_F(SUBD_METHODE='MANUEL',
+                                         SUBD_PAS=10,),)
+
+
+INS_ARCH=DEFI_LIST_REEL(
+
+                     DEBUT   = 0,
+     INTERVALLE=(
+
+      _F( JUSQU_A = tfin  ,   NOMBRE = nbarch),
+
+      )
+     )
+FCT = DEFI_FONCTION(
+  NOM_PARA = 'INST',
+  VALE     = (-1,0 ,  0,0.0001,tfin,tfin  ),
+                )
+
+#REALISATION DU CALCUL MECANIQUE
+U=STAT_NON_LINE(
+  MODELE     = MO,
+  CHAM_MATER = CM,
+  EXCIT      = (
+                 _F(CHARGE = SYMETRIE),
+                 _F(CHARGE = TRACTION ,
+                    FONC_MULT=FCT,
+                    ),
+               ),
+  COMP_INCR  = (
+                _F(RELATION = 'ELAS'      , GROUP_MA = ('DCB_1','DCB_2')),
+                _F(RELATION = 'CZM_EXP_REG',    GROUP_MA = 'DCB_J', ),
+#                _F(RELATION = 'CZM_LIN_REG',    GROUP_MA = 'DCB_J', ),
+                ),
+  INCREMENT  = _F(LIST_INST = L_INST,
+                  INST_FIN = tfin,
+                 ),
+  NEWTON     = _F(MATRICE    = 'TANGENTE'  , REAC_ITER=1 ,
+                   ),
+
+  CONVERGENCE = _F(
+                   RESI_GLOB_RELA = 5.E-5,
+                   ITER_GLOB_MAXI = 20,
+                  ),
+  SOLVEUR = _F(METHODE = 'MUMPS', PCENT_PIVOT=30, NPREC=-1),
+  ARCHIVAGE = _F(
+    LIST_INST     = INS_ARCH
+  ))
+
+
+##########################################################################
+# POST-TRAITEMENT
+##########################################################################
+#CALCUL DES FORCES NODALES
+U = CALC_NO(reuse = U,
+
+
+  RESULTAT = U,
+  OPTION = 'FORC_NODA',
+  GROUP_MA='DCB_1'
+  )
+
+
+# RELEVE DU DEPLACEMENT IMPOSE
+DEP_IMP = POST_RELEVE_T(
+ ACTION = _F(
+   INTITULE     = 'U_PILOTE',
+   OPERATION    = 'EXTRACTION',
+   GROUP_NO     = 'NO7',
+   NOM_CHAM     = 'DEPL',
+   NOM_CMP      = 'DY',
+   RESULTAT     =  U,
+   TOUT_ORDRE   = 'OUI',
+    ))
+
+# RELEVE DE LA FORCE RESULTANTE DANS LA DIRECTION Y:
+FRES = POST_RELEVE_T(
+ ACTION = _F(
+   INTITULE     = 'F_RESULTANTE',
+   OPERATION    = 'EXTRACTION',
+   GROUP_NO     = 'DCB_GB',
+   NOM_CHAM     = 'FORC_NODA',
+   RESULTANTE   = 'DY',
+   RESULTAT     =  U,
+   TOUT_ORDRE   = 'OUI',
+    ))
+# IMPRESSION DES RESULTATS POUR TRACE COURBES f/deP
+IMPR_TABLE(TABLE = DEP_IMP)
+IMPR_TABLE(TABLE = FRES)
+
+# IMPRESSION DU RESULTAT POUR VISUALISATION MED
+IMPR_RESU(  FORMAT  = 'MED',
+  RESU=_F(RESULTAT=U),
+  RESTREINT=_F(GROUP_MA=('DCB_1','DCB_2',)),
+  UNITE=80
+         )
+##########################################################################
+# TEST
+##########################################################################
+#         
+TEST_TABLE(TABLE=FRES,
+           NOM_PARA='DY',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=10.0,),
+           VALE=4.86,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE' )
+
+FIN(FORMAT_HDF='OUI')
+
+

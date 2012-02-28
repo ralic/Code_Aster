@@ -2,9 +2,9 @@
      &                  VALR  ,VALI  ,VALK  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 27/02/2012   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -175,7 +175,6 @@ C     ------------------------------------------------------------------
             ELSEIF (VALK.EQ.'OUI') THEN
               ZR(JLINR-1+7) = 1
             ELSE
-              WRITE(6,*) 'VALK: ',VALK
               CALL ASSERT(.FALSE.)
             ENDIF
           ENDIF
@@ -233,21 +232,24 @@ C     ------------------------------------------------------------------
             IF (VALI.EQ.4) VALK = 'COLLISION'
             IF (VALI.EQ.5) VALK = 'INTERPENETRATION'
             IF (VALI.EQ.6) VALK = 'DIVE_RESI'
+            IF (VALI.EQ.7) VALK = 'INSTABILITE'
           ELSEIF (GETSET.EQ.'E') THEN
             IF (VALK.EQ.'DIVE_ITER') THEN
-              ZR(JEEVR-1+LEEVR*(IECHEC-1)+1) = 0
+              ZR(JEEVR-1+LEEVR*(IECHEC-1)+1) = 0.D0
             ELSEIF (VALK.EQ.'DIVE_ERRE') THEN
-              ZR(JEEVR-1+LEEVR*(IECHEC-1)+1) = 1
+              ZR(JEEVR-1+LEEVR*(IECHEC-1)+1) = 1.D0
             ELSEIF (VALK.EQ.'DELTA_GRANDEUR') THEN
-              ZR(JEEVR-1+LEEVR*(IECHEC-1)+1) = 2
+              ZR(JEEVR-1+LEEVR*(IECHEC-1)+1) = 2.D0
             ELSEIF (VALK.EQ.'COMP_NCVG') THEN
-              ZR(JEEVR-1+LEEVR*(IECHEC-1)+1) = 3
+              ZR(JEEVR-1+LEEVR*(IECHEC-1)+1) = 3.D0
             ELSEIF (VALK.EQ.'COLLISION') THEN
-              ZR(JEEVR-1+LEEVR*(IECHEC-1)+1) = 4
+              ZR(JEEVR-1+LEEVR*(IECHEC-1)+1) = 4.D0
             ELSEIF (VALK.EQ.'INTERPENETRATION') THEN
-              ZR(JEEVR-1+LEEVR*(IECHEC-1)+1) = 5            
+              ZR(JEEVR-1+LEEVR*(IECHEC-1)+1) = 5.D0            
             ELSEIF (VALK.EQ.'DIVE_RESI') THEN
-              ZR(JEEVR-1+LEEVR*(IECHEC-1)+1) = 6        
+              ZR(JEEVR-1+LEEVR*(IECHEC-1)+1) = 6.D0        
+            ELSEIF (VALK.EQ.'INSTABILITE') THEN
+              ZR(JEEVR-1+LEEVR*(IECHEC-1)+1) = 7.D0       
             ELSE
               CALL ASSERT(.FALSE.)
             ENDIF
@@ -261,6 +263,7 @@ C     ------------------------------------------------------------------
             IF (VALI.EQ.2) VALK = 'ITER_SUPPL'
             IF (VALI.EQ.3) VALK = 'AUTRE_PILOTAGE'
             IF (VALI.EQ.4) VALK = 'ADAPT_COEF_PENA'
+            IF (VALI.EQ.5) VALK = 'CONTINUE'
           ELSEIF (GETSET.EQ.'E') THEN
             IF (VALK.EQ.'ARRET') THEN
               ZR(JEEVR-1+LEEVR*(IECHEC-1)+2) = 0.D0
@@ -272,6 +275,8 @@ C     ------------------------------------------------------------------
               ZR(JEEVR-1+LEEVR*(IECHEC-1)+2) = 3.D0
             ELSEIF (VALK.EQ.'ADAPT_COEF_PENA') THEN
               ZR(JEEVR-1+LEEVR*(IECHEC-1)+2) = 4.D0             
+            ELSEIF (VALK.EQ.'CONTINUE') THEN
+              ZR(JEEVR-1+LEEVR*(IECHEC-1)+2) = 5.D0
             ELSE
               CALL ASSERT(.FALSE.)
             ENDIF

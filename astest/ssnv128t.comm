@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2012   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 27/02/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT AVEC FROTTEMENT ET USURE D'UNE PLAQUE SUR UN PLAN RIGIDE
 # ssnv128t.para = tps_job 380 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -23,9 +23,8 @@
 # UNITES   : NEWTON , METRE , SECONDE (N,M,S)
 #
 
-DEBUT(CODE=_F(NOM='SSNV128T',NIV_PUB_WEB='INTERNET'),IGNORE_ALARM=('CONTACT3_86'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='SSNV128T',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-# <CONTACT3_86> : CONTACT FORCE: L'USURE A DU MAL A CONVERGE EN MODE POINT FIXE
 
 #......................................................................
 #  CALCUL TEST USURE DE TYPE ARCHARD METHODE CONTINUE
@@ -76,17 +75,12 @@ CHA2=AFFE_CHAR_MECA(MODELE=MO,
 CHA4 = DEFI_CONTACT(MODELE         = MO,
                     FORMULATION    = 'CONTINUE',
                     FROTTEMENT     = 'COULOMB',
-                    REAC_FROT      = 'CONTROLE',
-                    NB_ITER_FROT   = 4,
                     REAC_GEOM      = 'CONTROLE',
                     NB_ITER_GEOM   = 2,
-                    ALGO_RESO_FROT = 'POINT_FIXE',
                     ZONE =(
                            _F(
                              GROUP_MA_MAIT = 'LBATIR',
                              GROUP_MA_ESCL = 'LCONTAR',
-                             APPARIEMENT   = 'MAIT_ESCL',
-                             NORMALE       = 'MAIT',
                              TOLE_PROJ_EXT = 1.0,
                              SANS_GROUP_NO = ('PPS',),
                              ALGO_CONT     = 'STANDARD',
@@ -95,7 +89,6 @@ CHA4 = DEFI_CONTACT(MODELE         = MO,
                              COEF_FROT     = 1.E5,
                              COULOMB       = 1.0,
                              CONTACT_INIT  = 'INTERPENETRE',
-                             SEUIL_INIT    = 0.0,
                              USURE         = 'ARCHARD',
                              K             = 1.0E-12,
                              H             = 1.0,
@@ -107,10 +100,13 @@ CHA4 = DEFI_CONTACT(MODELE         = MO,
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_GAUCHE='LINEAIRE',
                     PROL_DROITE='LINEAIRE',
-                    VALE=(0.0,0.0,1.0,1.0));
+                    VALE=(0.0,0.0,0.04,1.0));
 
 LINST=DEFI_LIST_REEL(DEBUT=0.,
-                      INTERVALLE=_F(JUSQU_A = 1.0, NOMBRE = 100));
+                      INTERVALLE=(_F(JUSQU_A = 0.01, NOMBRE = 15),
+                                  _F(JUSQU_A = 0.04, NOMBRE = 10),)   
+                      
+                      );
 L_INST=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
                                   LIST_INST=LINST,),
                      ECHEC=_F(EVENEMENT='ERREUR',
@@ -152,7 +148,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = U4M,
                    NOM_CHAM   = 'DEPL',
                    NOEUD      = 'N2',
                    NOM_CMP    = 'LAGS_C',
-                   VALE       = -1.0320670288207E+06,
+                   VALE       = -4.3321619030336E+07,
                    PRECISION  = 1.E-3,
                    REFERENCE  = 'NON_REGRESSION',
                    VERSION    = '11.0.33',
@@ -162,7 +158,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = U4M,
                    NOM_CHAM   = 'DEPL',
                    NOEUD      = 'N4',
                    NOM_CMP    = 'LAGS_C',
-                   VALE       = -1.7349972246643E+06,
+                   VALE       = -4.2414093265756E+07,
                    PRECISION  = 1.E-3,
                    REFERENCE  = 'NON_REGRESSION',
                    VERSION    = '11.0.33',
@@ -172,7 +168,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = U4M,
                    NOM_CHAM   = 'DEPL',
                              NOEUD      = 'N10',
                    NOM_CMP    = 'LAGS_C',
-                   VALE       = -1.9809190113253E+06,
+                   VALE       = -4.8181099102611E+07,
                    PRECISION  = 1.E-3,
                    REFERENCE  = 'NON_REGRESSION',
                    VERSION    = '11.0.33',
@@ -182,7 +178,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = U4M,
                    NOM_CHAM   = 'DEPL',
                    NOEUD      = 'N30',
                    NOM_CMP    = 'LAGS_C',
-                   VALE       = -2.31615618917E+06,
+                   VALE       = -5.1443181269474E+07,
                    PRECISION  = 1.E-3,
                    REFERENCE  = 'NON_REGRESSION',
                    VERSION    = '11.0.33',
@@ -192,7 +188,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = U4M,
                    NOM_CHAM   = 'DEPL',
                    NOEUD      = 'N32',
                    NOM_CMP    = 'LAGS_C',
-                   VALE       = -1.3426590279068E+07,
+                   VALE       = -1.6967408492751E+08,
                    PRECISION  = 1.E-3,
                    REFERENCE  = 'NON_REGRESSION',
                    VERSION    = '11.0.33',

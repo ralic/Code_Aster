@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
+#& MODIF COMMANDE  DATE 27/02/2012   AUTEUR GREFFET N.GREFFET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -122,9 +122,12 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
            COEF_DIM_ESPACE =SIMP(statut='f',typ='I',max=1,val_min=2,defaut=5),
            CHAR_CRIT       =SIMP(statut='f',typ='R',min=2,max=2,defaut=(-10.0,10),
                             fr="Valeur des deux charges critiques délimitant la bande de recherche en HPP"),
-           RIGI_GEOM   =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
-           TYPE        =SIMP(statut='f',typ='TXM',defaut="FLAMBEMENT",into=("FLAMBEMENT","STABILITE")),
-           b_rigi_geom =BLOC(condition="(RIGI_GEOM=='NON')",
+           RIGI_GEOM    =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
+           MODI_RIGI    =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
+           TYPE         =SIMP(statut='f',typ='TXM',defaut="FLAMBEMENT",into=("FLAMBEMENT","STABILITE")),
+           PREC_INSTAB   =SIMP(statut='f',typ='R',defaut=1.E-6,max=1,),
+           SIGNE         =SIMP(statut='f',typ='TXM',defaut=("POSITIF_NEGATIF"),into=("NEGATIF","POSITIF","POSITIF_NEGATIF"),max=1,),
+           b_rigi_geom  =BLOC(condition="(RIGI_GEOM=='NON')",
               DDL_EXCLUS      =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=40,
                                     into=('DX','DY','DZ','DRX','DRY','DRZ','GRX','PRES','PHI',
                                           'TEMP','PRE1','PRE2','UI2','UI3','VI2','VI3','WI2','WI3','UO2',
@@ -135,7 +138,7 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
                                           'E3X','E3Y','E3Z','E4X','E4Y','E4Z','LAGS_C','V11','V12','V13','V21','V22',
                                           'V23','V31','V32','V33','PRES11','PRES12','PRES13','PRES21','PRES22','PRES23',
                                           'PRES31','PRES32','PRES33','VARI','LAG_GV','DAMG')),),
-           b_type_stab =BLOC(condition= "TYPE == 'STABILITE' and RIGI_GEOM == 'NON'",
+           b_type_stab  =BLOC(condition= "TYPE == 'STABILITE' and RIGI_GEOM == 'NON'",
               DDL_STAB        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),min=1,max=40,
                                     into=('DX','DY','DZ','DRX','DRY','DRZ','GRX','PRES','PHI',
                                           'TEMP','PRE1','PRE2','UI2','UI3','VI2','VI3','WI2','WI3','UO2',

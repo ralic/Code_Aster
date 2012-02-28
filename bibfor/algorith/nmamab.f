@@ -1,7 +1,7 @@
       SUBROUTINE NMAMAB(MODELE,LAMOR)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 27/02/2012   AUTEUR DEVESA G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -66,7 +66,9 @@ C ----------------------------------------------------------------------
         ITYPEL = ZI(IALIEL-1+NEL)
         CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',ITYPEL),NOMTE)
         IF ((NOMTE(1:9).EQ.'MEAB_FACE') .OR.
-     &      (NOMTE(1:6).EQ.'MEPASE')) THEN
+     &      (NOMTE(1:6).EQ.'MEPASE') .OR.
+     &      (NOMTE(1:8).EQ.'MECA_DIS') .OR.
+     &      (NOMTE(1:11).EQ.'MECA_2D_DIS')) THEN
           REPK = 'OUI'
           GO TO 20
         END IF

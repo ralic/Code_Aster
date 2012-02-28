@@ -1,0 +1,903 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR abbas        ABBAS Mickael          DATE 02/27/2012 - 05:29:57
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018458 DU 2012-02-23 15:12:02
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    CTC1 - Fin de la convergence forcée pour le contact continu
+FONCTIONNALITE
+   Problématique
+   =============
+   
+   Le développement du Newton généralisé dans le contact nous permet de nous débarrasser du
+   contact "forcé".
+   
+   Ce mode consiste à forcer la convergence sur les contraintes actives quand on est en
+   frottement.
+   
+   Cette approche nous semblait depuis longtemps extrêmement douteuse.
+   
+   Seuls deux cas tests sont encore dans ce mode: ssnv128t et ssnv128u
+   Deux cas-tests d'usure (!)
+   
+   Solution
+   ========
+   
+   On bascule ces cas en Newton généralisé et on arrange un peu la liste d'instants pour une
+   meilleure convergence (pas de découpe)
+   Ca change toutes les valeurs de référence (de NON_REGRESSION), ce dont on a l'habitude
+   avec l'usure. Ce qui implique deux hypothèses:
+   1/ l'usure est traitée de manière pseudo-explicite, ce qui indique que les valeurs
+   dépendent du chemin de convergence
+   2/ le mode "forcé" était VRAIMENT est très mauvaise idée.
+   
+   C'est plus probablement le cas 1 qu'il faut considérer, car le basculement des autres
+   tests qui étaient en convergence forcée n'a pas donné de tels écarts.
+   
+   On passe la convergence "forcée" en erreur fatale désormais, sauf pour XFEM (voir issue18459)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : v6.04.128
+VALIDATION
+    ssnv128
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018442 DU 2012-02-22 14:18:48
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    En NEW11.01.10, le cas-test hsnv101c s’arrête en erreur fatale sur Aster4, Rocks, Calibre5 et Calibre7.
+FONCTIONNALITE
+   Problème
+   ========
+   
+   En NEW11.01.10, le cas-test hsnv101c s’arrête en erreur fatale sur Aster4, Rocks, Calibre5
+   et Calibre7. 
+   
+   Le problème est lié à la fiche issue18412.
+   
+   Solution
+   ========
+   
+   La transformation de l'alarme DISCRETISATION_94 en erreur fatale casse le test.
+   Il suffit de modifier  NUME_INST_FIN=140 en NUME_INST_FIN=70 pour corriger
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    hsnv101c
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR alarcon      ALARCON Albert         DATE 02/27/2012 - 03:08:37
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018143 DU 2011-12-28 11:23:47
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    DYNA_TRAN_MODAL : probleme avec LIST_INST
+FONCTIONNALITE
+   ========================
+   DESCRIPTION DU PROBLEME
+   ========================
+   
+   Lorsque l'on fait un calcul transitoire linéaire par superposition modale avec les schémas
+   d'intégration d'Euler, Newmark et Devoge, il est nécessaire d'avoir un seul pas de calcul
+   ( constant ) dans l'intervale d'intégration. 
+   La sousroutine MDPTEM cherche à obtenir, entre autres, l'information sur le pas de temps à
+   partir de la sd_listr8 issue de DEFI_LIST_REEL. En particulier, elle vérifie qu'elle
+   contienne un seul intervalle avec un seul pas de temps.
+   Lorsque l'on crée cette liste de réels avec DEBUT, JUSQU_A et INTERVALLE, la sd_listr8
+   stocke en effet le temps initial, final, le pas dans l'intervalle et N (le nombre de réels
+   que contient la liste).
+   En revanche,  quand on donne la liste de N réels à la main avec VALE, DEFI_LIST _REELS
+   stocke  les dans  sd_listr8 comme si on avait N-1 intervalles et calcule un pas pour
+   chaque intervalle.
+   En conséquence, quelque soit le contenu de DEFI_LIST_REEL  défini avec VALE, MDPTEM envoie
+   le message 'F','ALGORITH3_18'
+   
+   ========================
+   RESOLUTION
+   ========================
+   
+   On modifie MDPTEM pour qu'il regarde combien d'intervales contient la liste de réels.
+   Si un seul → on fait comme avant
+   Si plus d'un → on choisit le plus petit de la liste et on vérifie que tous les autres sont
+   égaux, à une tolérance près (erreur relative inférieur à 1D-6). Si vérifié on continue,
+   sinon erreur fatale → 'F','ALGORITH3_18'
+   On propose également de modifier le message d'erreur en ajoutant
+   
+   La liste des instants de calcul ne doit contenir qu'un seul pas
+   Conseil: si vous avez defini une liste d'instants de calcul manuellement par des valeurs
+   discretes, veillez a ce que le  pas soit constant dans tout l'intervalle. 
+   
+   ========================
+   VALIDATION
+   ========================
+   
+   As_tout avec tous les cas test Dyna_Vibra
+   Je propose de modifier  le cas test sdld103a en définissant les instants de calcul avec
+   DEFI_LIST_REEL option VALE , même si c'est pas la manière « canonique » de faire,  cela
+   permet de couvrir cette eventualité.
+   Par ailleurs, j'ai vérifié si l'erreur se reproduit avec une telle définition d'instants
+   pour un calcul en base physique (DYNA_LINE_TRAN) mais cela est bien pris en compte et le
+   calcul s'effectue correctement.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sdld103a
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR bargelli     BARGELLINI Renaud      DATE 22/02/2012 - 13:15:09
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015102 DU 2010-05-21 06:35:40
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    FPE avec _INCO_GD/SIMO_MIEHE
+FONCTIONNALITE
+   PROBLEME :
+   
+   La cin�matique de SIMO_MIEHE n'est pas de type "ceinture et bretelles" : il est possible que le 
+   jacobien devienne n�gatif temporairement, et cela peut engendrer des FPE.
+   
+   
+   SOLUTIONS :
+   1/ Rejet�e : mettre une valeur absolue : on risque de faire des erreurs
+   2/ R�alis�e : engendrer un red�coupage global du pas de temps si le jacobien devient n�gatif
+   
+   
+   RISQUES POTENTIELS (NON CONSTATES sur les exemples trait�s) :
+   Red�coupage local suppl�mentaire non n�cessaire.
+   Mais en pratique, on constate que quand le jacobien devient n�gatif, il est assez rare que le calcul 
+   converge finalement.
+   
+   IMPACTS SOURCE :
+   nifint.f (pour �tre en accord avec la partie SIMO_MIEHE non d�di�e � INCO_GD, qui utilise nmgpfi)
+   
+   IMPACT DOC : N�ant
+   
+   Cas test lanc�s :
+   tout ceux qui comportent SIMO_MIEHE (49 au total)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    cas test
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018121 DU 2011-12-19 13:41:47
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    RUPT : mise au propre des TP de formation avancee rupture + CZM
+FONCTIONNALITE
+   "PROBLEME"
+   
+   Passer les TP de la formation Aster en cas test. L'exercice 5 (CZM) de la formation avanc�e Rupture 
+   n'est pas encore pass�e en cas_test
+   
+   "RESOLUTION"
+   
+   On cr�� le cas test FORMA08, d�clin� en 2 mod�lisations (a et b) pour utiliser des �l�ments JOINT et 
+   INTERFACE.
+   
+   IMPACT DOC
+   V6.04.XXX (nom pas encore donn�, mais doc �crite)
+   
+   IMPACT DEV
+   Aucun
+   
+   REMARQUE : les fichiers .comm sont disponibles en version STA10. Me dire o� les mettre.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : V6.04.0000
+VALIDATION
+    forma08
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR devesa       DEVESA Georges         DATE 02/27/2012 - 03:02:21
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018307 DU 2012-01-30 12:09:07
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    Dégradation du temps de sdls108a en 11.1.5.
+FONCTIONNALITE
+   Problème: le test sdls108a a vu depuis la 11.1.5 son temps passer d'une valeur entre 
+   15 et 16 secondes à une autre valeur entre 19 et 20 secondes. Soit un delta moyen de 
+   4 secondes.
+   
+   En fait, le plus gros de l'écart s'explique par le passage de lecture du maillage au 
+   format MED depuis cette version. En effet, on est passé de 1 seconde juste pour le 
+   format Aster classique à un temps compris entre 4 et 4.5 secondes pour le format 
+   MED. Selon des spécialistes, cela s'expliquerait par la lecture nécessaire pour ce 
+   test d'un très grand nombre de groupes.
+   Le reliquat d'écart d'une demi-seconde environ est plus difficile à expliquer. Il 
+   semblerait peut-être lié à l'ajout de SDVERI=OUI. Cependant, les variations plutôt 
+   positives de temps de calcul dues à cet ajout demeurent dans l'intervalle de 
+   variation du temps du cas test et on ne saurait être catégorique à cet égard.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    test sdls108
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018330 DU 2012-02-02 14:36:57
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    Pb SDVERI avec LIRE_FORC_MISS
+FONCTIONNALITE
+   Problème: l'objet JEVEUX lié à la SD vecteur généralisé créée par LIRE_FORC_MISS est 
+   incorrect :    'forc               .DESC'    Message : Attribut incorrect DOCU
+   ''!='VGEN' !
+   
+   Il manque dans la routine OP0179 une instruction affectant la valeur 'VGEN' pour 
+   l'attribut DOCU de l'extension d'objet .DESC :
+   
+   CALL JEECRA(RESU//'.DESC','DOCU',0,'VGEN')
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    test fdlv112b
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018353 DU 2012-02-06 14:34:29
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    Couverture de code : AFFE_CHAR_MECA      FORCE_SOL
+FONCTIONNALITE
+   Problème : Suite à la restitution de la fiche 17680, le test de couverture de la 
+   version 11.1.7 indique le défaut suivant : 
+   AFFE_CHAR_MECA      FORCE_SOL           GROUP_NO_INTERF
+   AFFE_CHAR_MECA      FORCE_SOL           UNITE_RESU_FORC
+   
+   Le test MISS03B actuel utilise FORCE_SOL avec un lieu d'interface sol-structure 
+   défini par le mot clé SUPER_MAILLE. Les forces sismiques y sont définies par une 
+   charge de vecteur assemblé mono-appui calculé par Code_Aster. La charge définie par 
+   FORCE_SOL et la charge sismique sont introduites par 2 occurences du mot clé EXCIT 
+   dans une résolution dynamique en repère relatif.
+   
+   On ajoute une nouvelle modélisation C afin de compléter le test MISS03B par une 
+   nouvelle résolution dynamique comprenant une seule occurence du mot clé EXCIT avec 
+   une charge FORCE_SOL où on définit à la fois le lieu d'interface sol-structure par 
+   le mot clé GROUP_NO_INTERF ainsi que la force sismique via le mot-clé 
+   UNITE_RESU_FORC représentant l'unité qui contient l'évolution temporelle des forces 
+   sismiques sur l'interface calculées par MISS3D. 
+   Cette résolution dynamique s'opère en repère absolu.
+   
+   Les spectres maximaux en accélération au sommet et à la base de la structure sont 
+   comparés pour les 2 résolutions des modélisation B et C par des références 
+   AUTRE_ASTER. Les écarts restent dans des valeurs très acceptables pour des méthodes 
+   différentes.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V1.10.122
+VALIDATION
+    cas test MISS03B
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018322 DU 2012-02-02 10:23:17
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    En NEW11.1.7, le cas-test miss06b est NOOK sur Aster4, Calibre5 et Calibre7.
+FONCTIONNALITE
+   Problème : En NEW11.1.7, le cas-test miss06b est NOOK sur Aster4, Calibre5 et 
+   Calibre7. C'est également le cas en NEW10.6.3
+   
+   Le problème ne vient donc pas de la restitution de la fiche 17680 qui a été faite 
+   uniquement en V11. Il a à voir avec la restitution de Mickaël de la fiche 18049 qui 
+   a corrigé la prédiction quand on découpe le pas de temps.
+   Et en effet, quand on compare les fichiers messages avant et après correction, on 
+   constate que jusqu'au temps 2.79 s, tant qu'on ne subdivise pas, les précisions et 
+   résidus des itérations de Newton sont exactement les mêmes. Après cette première 
+   subdivision, ils ne sont plus jamais les mêmes et on a alors des chemins de 
+   convergence différents : ainsi, avant correction on ne subdivise pas au temps 2.83 s 
+   alors que c'est le cas après correction. En dynamique avec choc, ces chemins de 
+   convergence différents peuvent aussi induire des mouvements un peu différents, 
+   surtout localement puisque le test du décollement vertical à la base ne passe 
+   plus (à un peu plus de 3%) alors que le test sur l'amplitude horizontale du 
+   mouvement au sommet passe encore (à moins de 1%). 
+   La correction de Mickaël étant judicieuse, les nouveaux résultats deviennent alors 
+   une nouvelle référence. Le test MISS06B est corrigé en conséquence en V10 et V11.
+   On en profite en V11 pour introduire une modification du test résolvant une anomalie 
+   de traitement évoquée déjà dans la fiche 14960 sur l'association discrets et 
+   amortissement dans DYNA_NON_LINE. En effet, pour prendre en compte l'amortissement 
+   des discrets, il faut comme dans ce cas test introduire un coefficient AMOR_ALPHA 
+   d'amortissement de Rayleigh nul, ce qui donnerait des résultats différents si on 
+   n'en mettait pas : ce qui n'est pas normal. Grâce à la résolution concomitante de la 
+   fiche 18392 faisant suite au nouveau traitement d'AMOR_MECA dans DYNA_NON_LINE du 
+   fait de la restitution de la fiche 17924 par Marc Kham, on n'a plus besoin pour ce 
+   test de mettre AMOR_ALPHA nul dans un matériau afin de prendre en compte 
+   l'amortissement.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V1.10.125
+VALIDATION
+    test MISS06B
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018392 DU 2012-02-10 16:37:33
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    Dégradation du temps de wdnp101a et b en 11.1.7.
+FONCTIONNALITE
+   Le problème ne vient pas de la restitution de la fiche 17680 en NEW11.1.7. Il a à 
+   voir avec la restitution de Marc de la fiche 17924 qui introduit un opérateur 
+   AMOR_MECA dans DYNA_NON_LINE afin de remplacer l'évaluation de la force 
+   d'amortissement correctrice au second membre pour des éléments de frontière 
+   absorbante.
+   Comme on se place pour les tests wdnp101* dans un cas de forte non-linéarité de 
+   comportement où les itérations de Newton sont davantage dues à cette non-linéarité 
+   qu'à l'équilibre de la force d'amortissement correctrice, on ne gagne pas tellement 
+   d'itérations comme dans un cas quasi-linéaire. Par contre, on est obligé d'assembler 
+   systématiquement une matrice d'amortissement à chaque pas. En effet, on est obligé 
+   d'utiliser AMOR_RAYL_RIGI = TANGENTE car, circonstance aggravante, avec les 
+   modélisations *HM on ne peut calculer que RIGI_MECA_TANG. L'option RIGI_MECA n'étant 
+   pas prévue pour ce type d'élément.
+   On a été conduit à cela car dans la programmation actuelle de la routine NMINMC, 
+   pour calculer une seule fois AMOR_MECA, il faut calculer au préalable RIGI_MECA.
+   Il faut donc maintenant désactiver cette obligation en liant le calcul d'AMOR_MECA à 
+   la présence d'un amortissement quelle qu'en soit la source : Rayleigh, absorbants, 
+   discrets... On aura alors LAMOR vraie.
+   Par contre, RIGI_MECA avec LELAS vraie ne doit être nécessaire que si on a un 
+   amortissement de Rayleigh. Il faut donc créer une nouvelle variable logique LAMRA.
+   Le calcul de RIGI_MECA intervient donc dans NMINMC si LAMRA vraie et LKTAN 
+   (AMOR_RAYL_RIGI = 'TANGENTE') fausse alors que celui de AMOR_MECA intervient si 
+   LAMOR vraie et LKTAN fausse. On supprime donc l'ASSERT liant LAMOR et LELAS car si 
+   LAMRA est vraie, LAMOR l'est aussi mais pas forcément la réciproque. 
+   On crée cette variable dans NDLECT et on l'utilise donc dans NMINMC avec des impacts 
+   sur NMAMAB, NDYNLO et NDCRDY.
+   Il a fallu également corriger un effet de biais dans la routine TE0050 car quand on 
+   fait appel à AMOR_MECA sans passer par RIGI_MECA pour les éléments nécessitant cette 
+   routine, on forçait systématiquement la matrice de sortie à être non symétrique avec 
+   le paramètre PMATUNS (cf. la restitution en 10.0.5 pour les modèles non locaux et 
+   des éléments à gradient), ce qui n'était pas admis dans les catalogues des éléments 
+   les plus courants.   
+   On rétablit ainsi au moins les performances des tests WDNP101*. 
+   En outre, cf. la fiche 18322, on n'a plus besoin maintenant d'imposer la prise en 
+   compte exclusive d'amortissements autres que Rayleigh, au moins pour les absorbants 
+   et les discrets, en imposant un coefficient AMOR_ALPHA nul dans un matériau.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    tests WDNP101
+NB_JOURS_TRAV  : 2.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017975 DU 2011-11-28 10:15:02
+TYPE aide utilisation concernant Code_Aster (VERSION 10.5)
+TITRE
+    Affectation de discret A_T_D_N en présence de K_TR_D_N
+FONCTIONNALITE
+   Problème : 
+   Pour la prise en compte de l'ISS via l'introduction de ressorts et d'amortisseurs 
+   discrets par RIGI_PARASOl d'AFFE_CARA_ELEM, on veut modéliser les ressorts par des 
+   K_TR_D_N (6 ddls)et les amortisseurs sont introduits par des A_T_D_N (3 ddls). En 
+   effet, si on a des amortisseurs en rotation, RIGI_PARASOL (peut) tapisse(r) des 
+   valeurs négatives d'amortissement pour les amortisseurs élémentaires, d'où la 
+   nécessité d'introduire des amortisseurs en translation uniquement.
+   Mais, il y alors conflit entre les K_TR (6ddls) et les A_T (3ddls) appliqués sur les
+   noeuds. Quel type de modélisation affectée dans AFFE_MODELE ?
+   
+   Réponse :
+   Une fiche précédente (16585) a démontré le danger qu'il y aurait à mélanger les 
+   affectations DIS_T et DIS_TR dans le même modèle avec RIGI_PARASOL.
+   Il vaut donc mieux rester homogène avec uniquement des DIS_TR car il est tout-à-fait 
+   possible de représenter des valeurs raideurs/amortissements globales en DIS_T par 
+   des valeurs raideurs/amortissements globales DIS_TR.
+   Pour cela, il faut utiliser les impressions de RIGI_PARASOL qui indiquent les 
+   contributions globales en rotation apportées par les raideurs/amortissements 
+   réparties en translation. En fait avec une modélisation DIS_TR on répartit ensuite 
+   la différence entre les raideurs/amortissements globales en rotation introduites par 
+   l'utilisateur et les fameuses contributions globales en rotation apportées par les 
+   raideurs/amortissements réparties en translation.
+   Si RIGI_PARASOL tapisse des valeurs négatives d'amortissement pour les amortisseurs 
+   élémentaires, ce n'est pas une fatalité, c'est tout simplement que les contributions 
+   des amortissements de translation sont supérieures aux amortissements globaux de 
+   rotation d'origine.
+   Donc, pour avoir l'équivalent de raideurs/amortissements de translations globales 
+   pures à répartir avec DIS_T, il faut avec DIS_TR introduire comme 
+   raideurs/amortissements globales en rotation la contribution exacte des valeurs de 
+   translation donnée par RIGI_PARASOL.
+   Pour indication, le premier test élémentaire d'introduction de données DIS_T a été 
+   validé ainsi par comparaison avec des données DIS_TR équivalentes.
+   Par rapport à ce que demande Salim, ce n'est pas si simple d'affecter différemment 
+   les amortissements et les rigidités tout en distinguant le mode d'affectation des 
+   valeurs globales en rotation, soit les valeurs brutes, soit ces valeurs auxquelles 
+   on aurait retranché les contributions des valeurs en translation.
+   Actuellement, on traite les caractéristiques de manière homogène pour 
+   l'amortissement et la rigidité en répartissant les valeurs de rotation nettes en 
+   déduisant donc des valeurs brutes les contributions des valeurs en translation. Par 
+   contre, on entre en données de RIGI_PARASOL les valeurs brutes sans déduction.
+   Pour affecter des valeurs nettes nulles localement, il faut donc 
+   entrer les contributions exactes au signe près des valeurs en translation et pour 
+   les connaître, il faut avoir au préalable lancé la commande AFFE_CARA_ELEM. 
+   Pour faire ce que demande Salim, il faudrait un traitement particulier pour chaque 
+   caractéristique en affectant soit des valeurs nettes, soit des valeurs brutes. De 
+   plus, le cas qu'il évoque : valeurs brutes non nulles pour K_* et valeurs nettes 
+   nulles pour A_* est un cas très particulier car pourquoi ne pourrait-on pas avoir 
+   des valeurs nettes non nulles et positives pour A_* et de même on pourrait également 
+   ne pas vouloir de valeurs nettes négatives pour K*.
+   Pour traiter tous les cas, il faudrait donc ajouter un mot clé supplémentaire avec 
+   une liste de caractères indiquant pour chaque caractéristique calculée si on entre 
+   comme valeurs globales de rotation des valeurs nettes ou brutes selon que l'on 
+   déduit ou pas les contributions des valeurs en translation. Si on ne met rien, on 
+   reste dans le cas actuel.
+   Tout est possible mais il faudrait au préalable émettre une fiche d'évolution en 
+   bonne et due forme car cette évolution ne serait pas sans impact de syntaxe 
+   notamment mais aussi bien sûr de validation et de source.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    étude
+NB_JOURS_TRAV  : 1.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR massin       MASSIN Patrick         DATE 02/28/2012 - 05:06:39
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018327 DU 2012-02-02 13:05:53
+TYPE anomalie concernant Code_Aster (VERSION 11.1)
+TITRE
+    En NEW11.01.07, le cas-test ssnv209j s’arrête en erreur fatale sur Aster4 et Rocks.
+FONCTIONNALITE
+   Anomalie:
+   ---------
+   
+   En NEW11.01.07, le cas-test ssnv209j s’arrête en erreur fatale sur Aster4 et Rocks. 
+   
+   Solution:
+   ---------
+   
+   En cause la modification de la linéarisation du seuil de frottement de la fiche 18182, qui
+   rend la convergence plus lente, mais aussi plus robuste. Le test passe si on autorise plus
+   d'itérations ou si on passe RESI_GLOB_RELA de 1.10-8 à 1.10-6, solution que l'on préfère
+   dans le but de ne pas allonger le cas test.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    non régression
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018388 DU 2012-02-10 14:40:07
+TYPE anomalie concernant Code_Aster (VERSION 11.1)
+TITRE
+    En NEW11.01.08, 50 cas-tests CONTACT+XFEM s’arrêtent anormalement sur Calibre7.
+FONCTIONNALITE
+   Anomalie:
+   ---------
+   
+   En NEW11.01.08, 50 cas-tests CONTACT+XFEM s’arrêtent anormalement sur Calibre7.
+   
+   Solution:
+   ---------
+   
+   Comme spécifié dans la fiche 17575, il s'agit d'un défaut d'initialisation des tableaux
+   LACT et FFP, respectivement dans les routines te0533.f et te0534.f. On réalise cette
+   initialisation, puis on vérifie que cela répare les tests en question.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    non régression
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018387 DU 2012-02-10 14:26:38
+TYPE anomalie concernant Code_Aster (VERSION 11.1)
+TITRE
+    En NEW11.01.08, le cas-test ssnv508b est NOOK sur Aster4, Rocks, Calibre5 et Calibre7.
+FONCTIONNALITE
+   Anomalie:
+   ---------
+   
+   En NEW11.01.08, le cas-test ssnv508b est NOOK sur Aster4, Rocks, Calibre5 et Calibre7. 
+   
+   Solution:
+   ---------
+   
+   Il s'agit d'une coquille dans le te0036.f suite à la restitution de la fiche 18289, il
+   fallait écrire ligne 175:
+   IF(IER.EQ.0...
+   au lieu de:
+   IF(IBID.EQ.0...
+   
+   Le test est réparé avec cette correction
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    non régression
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018384 DU 2012-02-10 14:11:16
+TYPE anomalie concernant Code_Aster (VERSION 11.1)
+TITRE
+    En NEW11.01.08, le cas-test ssnv209n s’arrête en erreur fatale sur Aster4, Rocks, Calibre5 et Calibre7.
+FONCTIONNALITE
+   Anomalie:
+   ---------
+   
+   En NEW11.01.08, le cas-test ssnv209n s’arrête en erreur fatale sur Aster4, Rocks, Calibre5
+   et Calibre7. 
+   
+   Solution:
+   ---------
+   
+   Il s'agit d'une coquille dans le te0036.f suite à la restitution de la fiche 18289, il
+   fallait écrire ligne 175:
+   IF(IER.EQ.0...
+   au lieu de:
+   IF(IBID.EQ.0...
+   
+   Le test est réparé avec cette correction
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    non régression
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR greffet      GREFFET Nicolas        DATE 27/02/2012 - 15:13:08
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017619 DU 2011-09-28 08:55:36
+TYPE evolution concernant Code_Aster (VERSION 10.5)
+TITRE
+    Anomalie CRIT_FLAMB avec pr?sence d'?l?ment 3D_FLUIDE
+FONCTIONNALITE
+   Objectif :
+   pouvoir mener une analyse de stabilit? (au sens flambement) au cours d'un transitoire
+   (dans DNL) sur un mod?le coupl? fluide-structure (mod?lisation (u,p,phi)).
+   De plus, on souhaite pouvoir s'arr?ter proprement si une instabilit? est d?tect?e (cf.
+   fiche 14849 qui serait donc reprise partiellement ici).
+   
+   
+   Analyse du probl?me :
+   d'une part, en fluide-structure, la matrice de raideur est singuli?re au niveau des DDL
+   fluides, c'est intrins?que ? la formulation. Si on tente de mener une analyse de stabilit?
+   sur cette matrice, alors l'algo ne tournera pas : la matrice ?tant tr?s singuli?re.
+   D'autre part, actuellement, si une instabilit? est constat?e, le calcul DNL ou SNL
+   continuera tant qu'il arrive ? converger : l'info d'instabilit? ne sera r?cup?rable qu'?
+   la fin du calcul.
+   
+   
+   Solution :
+   l'analyse de stabilit? ne doit porter que sur les DDL de structure : il faut donc modifier
+   la matrice de raideur pour lever la singularit? sans modifier la patrie structure.
+   Remarque : l'option DDL_EXCLUS d?j? existante ne suffit pas car elle n'agit que sur le
+   second membre et ne modifie pas la matrice de raideur.
+   Pour sortir proprement suite ? la d?tection d'une instabilit?, on va g?rer une exception
+   suppl?mentaire (du type de celle pour l'arr?t par manque de temps CPU) : la base sera donc
+   ferm?e proprement et donc reexploitable.
+   
+   
+   Strat?gie d?velopp?e :
+   On remplace les termes de la matrice de masse portant sur les DDL autre que structure par
+   1 sur la diagonale et 0 ailleurs, y compris pour les Lagrange correspondant ? ces DDL. La
+   routine utilitaire qui g?re cela s'appelle MATIDE (merci ? Jacques pour son aide). Ce
+   traitement sera ? faire sur la matrice de raideur mais aussi sur la raideur g?om?trique si
+   on l'utilise.
+   
+   Syntaxe :
+   Pour sp?cifier les DDL ? ne pas consid?rer on se sert du mot-cl? existant DDL_EXCLUS.
+   Sous CRIT_STAB on rajoute :
+        MODI_RIGI    =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
+   Si il vaut NON alors on a le fonctionnement d?j? existant o? on ne modifie pas la matrice.
+   Si il vaut OUI alors on fait la modification.
+   
+   Pour la gestion d'arr?t propre en cas d'instabilit? d?tect?e :
+   Solution bas?e sur la logique DEFI_LIST_INST : 
+   on rajoute un nouvel ECHEC = 'INSTABILITE' avec deux actions possibles :
+   - ACTION = 'ARRET' : pour s'arr?ter proprement (idem action 'ARRET' dans d'autres echecs)
+   et ?mettre un message clair.
+   - ACTION = 'CONTINUE' (d?faut) : on continue le calcul sans tenir compte de la valeur du
+   crit?re de stabilit?. 
+   Sous CRIT_STAB, on a deux mot-cl?s en plus :
+        PREC_INSTAB   =SIMP(statut='f',typ='R',defaut=1.E-6,max=1,),
+        SIGNE         =SIMP(statut='f',typ='TXM',defaut=("POSITIF_NEGATIF"),into=
+                        ("NEGATIF","POSITIF","POSITIF_NEGATIF"),max=1,),
+   PREC_INSTAB : pr?cision relative (par rapport ? la plus petite valeur non nulle sur la
+   diagonale de la matrice de raideur dans le cas sans raideur g?om?trique) de la d?tection
+   d'instabilit?.
+   SIGNE : utile pour les cas avec raideur g?om?trique. Normalement, on est instable si la
+   charge critique vaut 1 ou -1. Mais dans certains cas, on peut d?douaner le cas n?gatif ou
+   positif, ce que l'on fait avec SIGNE. Si on met POSITIF, alors on ne sera d?clar? instable
+   que pour la valeur 1 et inversement -1 pour NEGATIF.
+   
+   L'instabilit? d?clenche alors le message suivant :
+   
+     
+   !----------------------------------------------------------------------------------------------!
+      ! <EXCEPTION> <MECANONLINE_87>                                                        
+           !
+      !                                                                                     
+           !
+      !    Arr?t par d?tection d'instabilit? (mot-cl? CRIT_STAB dans STAT_NON_LINE /
+   DYNA_NON_LINE). !
+      !    La charge critique correspondante est accessible de deux mani?res :              
+           !
+      !      - dans le fichier de message,                                                  
+           !
+      !      - dans la SD r?sultat EVOL_NOLI, elle correspond au param?tre CHAR_CRIT.       
+           !
+      !    La base globale est sauvegard?e. Elle contient les pas archiv?s avant l'arr?t.   
+           !
+     
+   !----------------------------------------------------------------------------------------------!
+   
+   Et on peut ensuite r?cup?rer la base.
+   
+   
+   
+   
+   Impact :
+   nouvelles routines utilitaires :
+   matide.f
+   echmat.f : nouvelle routine extraite de assma1.f pour mutualisation
+   
+   modifications :
+   assma1.f
+   dfllac.f
+   dfllec.f
+   dfllsv.f
+   nmcrer.f
+   nmcrsd.f
+   nmdopo.f
+   nmecsd.f
+   nmerge.f
+   nmerim.f
+   nmerro.f
+   nmevev.f
+   nmflal.f
+   nmflam.f
+   nmflma.f
+   nmlesd.f
+   nmop45.f
+   nmpost.f
+   nmspec.f
+   utdidt.f
+   op0070.f : juste pour g?rer l'exception li?e ? l'instabilit? si on demande   
+              l'arr?t. On rajoute donc apr?s la ligne 322 :
+          CALL NMERGE(SDERRO,'GET','STB',INSTAB)
+          IF (INSTAB) GOTO 1000
+   
+   
+   mecanonline.py : nouveau message ci-dessus
+   E_Exception.py : rajout d'une exception 31 pour l'arr?t en instabilit? : 
+   diff :
+   112,114d111
+   < class InstabiliteError(error):
+   <     """D?tection d'instabilit?"""
+   < 
+   159d155
+   < ST.register(31, "InstabiliteError", InstabiliteError)
+   
+   
+   dyna_non_line.capy
+   stat_non_line.capy
+   calc_ifs_dnl.capy (appel de DNL)
+   defi_list_inst.capy
+   
+   
+   
+   
+   Validation :
+   modification du cas-test fluide-structure fdnv100a. On compare la charge critique (qui
+   vaut environ 2.477 sans raideur g?om?trique, donc on serait instable en tendant vers 0) ?
+   celle obtenue pour le m?me mod?le mais sans fluide. On doit retrouver la m?me valeur car
+   le probl?me est ?lastique lin?aire et le fluide n'interviendrait ici que sur la raideur
+   g?om?trique. Ce cas-test prend un peu plus de temps CPU  car on rajoute un appel ? DNL sur
+   un autre mod?le. Comme on passe par les m?mes routines pour SNL et comme on ne peut faire
+   de fluide-structure en statique, pas de cas-test compl?mentaire avec SNL.
+   L'arr?t propre est valid? avec le nouveau cas-test erreu10a (inspir? de ssll105d qui
+   pr?sente une isntabilit? de flambage) avec un try / except. Cela oblige ? passer en
+   PAR_LOT='NON' comme pour les autres tests erreu.
+   
+   
+   
+   Pas de risque de r?sultat faux avant cette restitution car le calcul de charge critique
+   plante forc?ment. Le report en STA serait assez lourd.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.51.03, U4.53.01, R7.05.01, V8.03.100, V1.01.308, U2.06.11, U2.08.04, D6.00.01
+VALIDATION
+    fdnv100a, erreu10a
+NB_JOURS_TRAV  : 22.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR sellenet     SELLENET Nicolas       DATE 02/27/2012 - 04:45:50
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018463 DU 2012-02-24 12:03:11
+TYPE express concernant Code_Aster (VERSION 10.5)
+TITRE
+    Bugs dans CALCOP
+FONCTIONNALITE
+   Problème :
+   ----------
+   En modifiant le catalogue d'EPSI_ELNO pour que cette option dépende d'EPSI_ELGA, Josselin
+   a découvert 2 bugs dans le mécanisme de CALCOP.
+   
+   
+   Analyse :
+   ---------
+   C'est sur le test sdls113a que le problème apparait. Dans ce test, on demande le calcul
+   d'EPSI_ELNO puis d'EPSI_ELGA. On plante sur le calcul d'EPSI_ELGA.
+   
+   Le calcul d'EPSI_ELNO déclenche le calcul d'EPSI_ELGA qui se retrouve sur la base globale.
+   Dans un second temps, on cherche à recalculer EPSI_ELGA car l'option est demandée par
+   l'utilisateur. Ce n'est pas possible car elle existe déjà.
+   
+   Ce problème est dû à CCLORD qui construit mal la liste des numéros d'ordre. Dans le
+   deuxième passage, la liste devrait être vide mais elle ne l'est pas car jusqu'à présent
+   lorsque l'option était demandée par l'utilisateur, on forcait le calcul. Il faut corriger
+   cela.
+   
+   Deuxième point, dans CALCOP, le critère pour noter (RSNOCH) un champ dans un sd_resultat
+   est lié au fait que l'option est demandée ou pas par l'utilisateur. À l'heure actuelle, le
+   test réalisé dans CALCOP n'est pas correct, il faut le modifier.
+   
+   
+   Solution :
+   ----------
+   On modifie CCLORD et CALCOP.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sdls113a avec catalogue d'EPSI_ELNO modifie
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT erreu10a                      greffet N.GREFFET          119    119      0
+ CASTEST AJOUT forma08a                     bargelli R.BARGELLINI       274    274      0
+ CASTEST AJOUT forma08b                     bargelli R.BARGELLINI       293    293      0
+ CASTEST AJOUT miss03c                        devesa G.DEVESA          1002   1002      0
+ CASTEST MODIF fdnv100a                      greffet N.GREFFET          480    162     20
+ CASTEST MODIF hsnv101c                        abbas M.ABBAS            418      2      2
+ CASTEST MODIF miss06b                        devesa G.DEVESA           836      7      7
+ CASTEST MODIF sdld103a                      alarcon A.ALARCON          689     24      6
+ CASTEST MODIF ssla200b                     sellenet N.SELLENET        1359      5      5
+ CASTEST MODIF ssls200a                     sellenet N.SELLENET         381      2      2
+ CASTEST MODIF sslv135f                     sellenet N.SELLENET         564      1      6
+ CASTEST MODIF ssnv128t                        abbas M.ABBAS            217     12     16
+ CASTEST MODIF ssnv128u                        abbas M.ABBAS            247     16     23
+ CASTEST MODIF ssnv209j                        ferte G.FERTE            370      2      2
+CATALOPY MODIF commande/calc_ifs_dnl         greffet N.GREFFET          289     28      7
+CATALOPY MODIF commande/defi_list_inst       greffet N.GREFFET          444     13      3
+CATALOPY MODIF commande/dyna_non_line        greffet N.GREFFET          264      7      4
+CATALOPY MODIF commande/stat_non_line        greffet N.GREFFET          178      4      1
+ FORTRAN AJOUT calculel/echmat               greffet N.GREFFET          141    141      0
+ FORTRAN AJOUT calculel/matide               greffet N.GREFFET          232    232      0
+ FORTRAN MODIF algeline/nmop45               greffet N.GREFFET          475      4      4
+ FORTRAN MODIF algorith/dfllac               greffet N.GREFFET           96      4      2
+ FORTRAN MODIF algorith/dfllec               greffet N.GREFFET          265      5      5
+ FORTRAN MODIF algorith/dfllsv               greffet N.GREFFET          210      6      2
+ FORTRAN MODIF algorith/mdptem               alarcon A.ALARCON          321     17      4
+ FORTRAN MODIF algorith/ndcrdy                devesa G.DEVESA           128      2      2
+ FORTRAN MODIF algorith/ndlect                devesa G.DEVESA           492      8      6
+ FORTRAN MODIF algorith/nifint              bargelli R.BARGELLINI       467      9      2
+ FORTRAN MODIF algorith/nmamab                devesa G.DEVESA            82      4      2
+ FORTRAN MODIF algorith/nmcrer               greffet N.GREFFET          111      3      3
+ FORTRAN MODIF algorith/nmcrsd               greffet N.GREFFET          103      2      2
+ FORTRAN MODIF algorith/nmdopo               greffet N.GREFFET          364     31      5
+ FORTRAN MODIF algorith/nmecsd               greffet N.GREFFET          159      9      1
+ FORTRAN MODIF algorith/nmerge               greffet N.GREFFET          166      9      3
+ FORTRAN MODIF algorith/nmerim               greffet N.GREFFET           92      5      3
+ FORTRAN MODIF algorith/nmerro               greffet N.GREFFET          147      6      3
+ FORTRAN MODIF algorith/nmevev               greffet N.GREFFET          178      5      3
+ FORTRAN MODIF algorith/nmflal               greffet N.GREFFET          191      9      3
+ FORTRAN MODIF algorith/nmflam               greffet N.GREFFET          319     68     10
+ FORTRAN MODIF algorith/nmflma               greffet N.GREFFET          380     33     11
+ FORTRAN MODIF algorith/nminmc                devesa G.DEVESA           213      5      4
+ FORTRAN MODIF algorith/nmlesd               greffet N.GREFFET          167      9      1
+ FORTRAN MODIF algorith/nmpost               greffet N.GREFFET          191      2      2
+ FORTRAN MODIF algorith/nmspec               greffet N.GREFFET          172      5      5
+ FORTRAN MODIF algorith/op0070               greffet N.GREFFET          375     10      2
+ FORTRAN MODIF algorith/op0179                devesa G.DEVESA           237      3      2
+ FORTRAN MODIF algorith/utdidt               greffet N.GREFFET          642     15     10
+ FORTRAN MODIF assembla/assma1               greffet N.GREFFET          168      6     39
+ FORTRAN MODIF calculel/calcop              sellenet N.SELLENET         300     10      2
+ FORTRAN MODIF calculel/cclord              sellenet N.SELLENET         198      8      3
+ FORTRAN MODIF elements/te0036                 ferte G.FERTE            510      2      2
+ FORTRAN MODIF elements/te0050                devesa G.DEVESA           192     15      8
+ FORTRAN MODIF elements/te0534                 ferte G.FERTE            550      2      1
+ FORTRAN MODIF utilitai/ndynlo                devesa G.DEVESA           269      3      1
+  PYTHON AJOUT Messages/calcchamp           sellenet N.SELLENET          34     34      0
+  PYTHON MODIF Execution/E_Exception         greffet N.GREFFET          167      6      2
+  PYTHON MODIF Messages/algorith3            alarcon A.ALARCON          259      4      2
+  PYTHON MODIF Messages/mecanonline          greffet N.GREFFET          114     10      2
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    7        2095      2095             +2095
+ MODIF :   51       16206       639     268      +371
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   58       18301      2734     268     +2466 

@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/01/2012   AUTEUR DESOZA T.DESOZA 
+C MODIF ELEMENTS  DATE 28/02/2012   AUTEUR FERTE G.FERTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,6 +88,7 @@ C.......................................................................
 
 C --- INITIALISATIONS
 C
+      CALL VECINI(27,0.D0,FFP)       
       DO 5 I  = 1,8
         LACT(I) = 0
  5    CONTINUE

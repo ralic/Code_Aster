@@ -1,10 +1,10 @@
-# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 27/02/2012   AUTEUR SELLENET N.SELLENET 
 # TITRE TEST DE NON-REGRESSION ASTER : MECANIQUE LINEAIRE AXIS_SI
 # RESPONSABLE PELLET J.PELLET
 # ssla200b.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -990,17 +990,17 @@ TEST_RESU(RESU=( _F(  RESULTAT = MSLI2,    INST = 11.5,
 # --------------------------------------------------------------------
 # POUR TESTER LE CALCUL DE REAC_NODA SUR UN GROUP_MA :
 # ----------------------------------------------------
-CALC_ELEM( reuse=MSLI2, OPTION='SIEF_ELGA',
-                          RESULTAT=MSLI2,
-                      MAILLE=('M11','M12','M14',),
-                       NUME_ORDRE=3 )
+MSLI3=CALC_ELEM( OPTION='SIEF_ELGA',
+                 RESULTAT=MSLI2,
+                 MAILLE=('M11','M12','M14',),
+                 NUME_ORDRE=3 )
 
-TEST_RESU(RESU=( _F(  RESULTAT = MSLI2,    NUME_ORDRE = 3,
+TEST_RESU(RESU=( _F(  RESULTAT = MSLI3,    NUME_ORDRE = 3,
                      NOM_CHAM = 'SIEF_ELGA',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.5E-10,
               VALE= 1.00289608131983E+02       ),
-                   _F(  RESULTAT = MSLI2,    NUME_ORDRE = 3,
+                   _F(  RESULTAT = MSLI3,    NUME_ORDRE = 3,
                      NOM_CHAM = 'SIEF_ELGA',
                      TYPE_TEST = 'SOMM',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.5E-10,

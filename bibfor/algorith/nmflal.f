@@ -1,9 +1,9 @@
       SUBROUTINE NMFLAL(OPTION,COMPOR,SDPOST,MOD45  ,DEFO  ,
      &                  NFREQ ,CDSP, TYPMAT,OPTMOD,BANDE  ,
-     &                  NDDLE ,DDLEXC,NSTA,DDLSTA)
+     &                  NDDLE ,DDLEXC,NSTA,DDLSTA,MODRIG)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/01/2012   AUTEUR BEAURAIN J.BEAURAIN 
+C MODIF ALGORITH  DATE 27/02/2012   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -27,7 +27,7 @@ C
       CHARACTER*16 OPTMOD,OPTION
       CHARACTER*4  MOD45
       INTEGER      NFREQ,DEFO,NDDLE,NSTA,CDSP    
-      CHARACTER*16 TYPMAT
+      CHARACTER*16 TYPMAT,MODRIG
       REAL*8       BANDE(2)
       CHARACTER*19 SDPOST
 C 
@@ -158,8 +158,12 @@ C
         
         IF (DEFO.EQ.0) THEN
           OPTMOD = 'BANDE'
+          CALL NMLESD('POST_TRAITEMENT',SDPOST,'OPTION_EXTR_FLAM',
+     &              IBID             ,R8BID ,OPTMOD)
         ELSEIF (DEFO.EQ.1) THEN
           OPTMOD = 'PLUS_PETITE'         
+          CALL NMLESD('POST_TRAITEMENT',SDPOST,'OPTION_EXTR_FLAM',
+     &              IBID             ,R8BID ,OPTMOD)
         ELSE
           CALL ASSERT(.FALSE.)  
         ENDIF
@@ -176,6 +180,8 @@ C
      &              NSTA             ,R8BID ,K24BID)     
         CALL NMLESD('POST_TRAITEMENT',SDPOST,'NOM_DDL_STAB',
      &              IBID             ,R8BID ,DDLSTA)
+        CALL NMLESD('POST_TRAITEMENT',SDPOST,'MODI_RIGI',
+     &              IBID             ,R8BID ,MODRIG)      
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF     

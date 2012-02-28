@@ -10,7 +10,7 @@
       CHARACTER*24       LISINS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
+C MODIF ALGORITH  DATE 27/02/2012   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -143,11 +143,24 @@ C     RECUPERATION de DT et TFIN
             CALL JEVEUO(LI//'           .VALE','L',JVALE)
             CALL JELIRA(LI//'           .VALE','LONUTI',NBINST,K1BID)
             CALL JELIRA(LI//'           .NBPA','LONUTI',NBGRPA,K1BID)
-            IF (NBGRPA.NE.1) THEN
-              CALL U2MESS('F','ALGORITH3_18')
-            ENDIF  
-            DTU = ZR (JLPAS)
-            TFIN = ZR (JBINT+1)
+            
+            IF (NBGRPA.EQ.1) THEN
+               DTU = ZR (JLPAS)
+               TFIN = ZR (JBINT+1)
+            ELSE 
+C              CHOIX DTU PLUS PETIT DE LA LISTE
+               DTU = ZR(JLPAS)
+               DO 32 J=1,NBGRPA-1
+                   DTU =  MIN(DTU,ZR(JLPAS+J))
+ 32            CONTINUE  
+C              TEST PAS DE TEMPS CONSTANT SI PLUSIEURS INTERVALLES
+               DO 33 I = 1,NBGRPA-1
+                   IF ((ABS(ZR(JLPAS+I)-DTU)).GE.(1.D-6*DTU)) THEN
+                      CALL U2MESS('F','ALGORITH3_18')
+                   ENDIF   
+ 33            CONTINUE
+               TFIN = ZR (JBINT+NBGRPA)
+            ENDIF
             CALL GETVIS('INCREMENT','NUME_FIN',1,IARG,1,NUMEF,N1)
             IF ( N1 .EQ. 0 ) THEN
                CALL GETVR8('INCREMENT','INST_FIN',1,IARG,1,TFIN,N1)

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
+# MODIF  DATE 27/02/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE SYSTEME MASSES-RESSORTS LINEAIRE MULTI-SUPPORTE (TRANSLATION)
 # sdld103a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -87,11 +87,23 @@ MODE_STA=MODE_STATIQUE(  MATR_RIGI=RIGIDITE,   MATR_MASS=MASSE,
                          MODE_STAT=_F(  TOUT = 'OUI', AVEC_CMP = 'DX') )
 
 #
-# DESCRIPTION DES PAS DE CALCUL
-#------------------------------
+# DESCRIPTION DES PAS DES FONCTIONS:
+#-----------------------------------
 L_INST=DEFI_LIST_REEL(  DEBUT=0.,
                         INTERVALLE=_F(  JUSQU_A = 1., PAS = 0.0001) )
 
+ 
+#
+# DEFINITION DES PAS DE CALCUL AVEC UNE LISTE D'INSTANTS
+# (ceci n'est pas la forme canonique de definir la liste d'instants
+# mais permet de couvrir cette maniere d'utiliser DEFI_LIST_REEL)
+#------------------------------
+
+list_py=[0.001*ii for ii in range(1001)]
+
+L_INST2=DEFI_LIST_REEL(VALE=(list_py))
+L_INST3=DEFI_LIST_REEL(VALE=(3.,4.,6.))
+IMPR_CO(CONCEPT=_F(NOM=L_INST3))
 #
 # DESCRIPTION DES ACCELEROGRAMMES:
 #---------------------------------
@@ -170,6 +182,11 @@ PROJ_BASE(BASE=MODE_MEC,
            _F( VECTEUR = CO("VECT_X2"), VECT_ASSE = MULT_X2))
                           )
 
+
+
+
+
+
 #
 # CALCUL TRANSITOIRE SUR BASE PHYSIQUE
 # -------------------------------------------
@@ -188,7 +205,7 @@ TRAN_PHY=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                            MODE_STAT=MODE_STA,
                            VITE = VITESSE2, DEPL = DEPLACE2),),
                      ARCHIVAGE=_F(  PAS_ARCH = 100, CHAM_EXCLU=('VITE','ACCE',),),
-                     INCREMENT=_F(  INST_INIT = 0., INST_FIN = 1.0, PAS = 0.001 ),
+                     INCREMENT=_F(  LIST_INST=L_INST2,),
                     )
                     
 #
@@ -209,7 +226,8 @@ TRAN_GEE=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                         MODE_STAT=MODE_STA,
                         VITE = VITESSE2, DEPL = DEPLACE2)),
                  ARCHIVAGE=_F(  PAS_ARCH = 1),
-                 INCREMENT=_F(  INST_INIT = 0., INST_FIN = 1.0, PAS = 0.001)
+                 INCREMENT=_F(  LIST_INST=L_INST2,),
+
                 )
 
 #
@@ -228,7 +246,7 @@ TRAN_GED=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                         MODE_STAT=MODE_STA,
                         VITE = VITESSE2, DEPL = DEPLACE2)),
                  ARCHIVAGE=_F(  PAS_ARCH = 1),
-                 INCREMENT=_F(  INST_INIT = 0., INST_FIN = 1.0, PAS = 0.001)
+                 INCREMENT=_F(  LIST_INST=L_INST2,),
                 )
 
 #
