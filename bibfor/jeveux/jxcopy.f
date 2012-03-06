@@ -5,10 +5,10 @@
       CHARACTER*8         NOMIN  , NOMOUT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 06/03/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -62,11 +62,16 @@ C
       INTEGER          NRHCOD    , NREMAX    , NREUTI
       COMMON /ICODJE/  NRHCOD(N) , NREMAX(N) , NREUTI(N)
       REAL *8          SVUSE,SMXUSE   
-      COMMON /STATJE/  SVUSE,SMXUSE  
+      COMMON /STATJE/  SVUSE,SMXUSE
+      CHARACTER*128    REPGLO,REPVOL
+      COMMON /BANVJE/  REPGLO,REPVOL
+      INTEGER          LREPGL,LREPVO
+      COMMON /BALVJE/  LREPGL,LREPVO  
 C     ------------------------------------------------------------------
       CHARACTER*1      KCLAS
       CHARACTER*8      NOMBA1,NOMBA2,NOM
-      INTEGER          ITP(1),JITP,IADITP,LGBL1,LGBL2,INFO
+      CHARACTER*128    NOML1,NOML2
+      INTEGER          ITP(1),JITP,IADITP,LGBL1,LGBL2,INFO,L1,L2
 C DEB ------------------------------------------------------------------
       NOMIN  = NOMINZ
       CLASIN = CLSINZ
@@ -82,8 +87,15 @@ C
       LBLOC= LONGBL(ICI)
       NOM = NOMOUT(1:4)//'.?  '
       CALL LXMINS (NOM)
+      IF ( NOM(1:4) .EQ. 'glob' ) THEN
+        NOML1=REPGLO(1:LREPGL)//'/'//NOM
+      ELSE IF ( NOM(1:4) .EQ. 'vola' ) THEN
+        NOML1=REPVOL(1:LREPVO)//'/'//NOM
+      ELSE
+        NOML1='./'//NOM
+      ENDIF
       INFO = 1
-      CALL RMFILE (NOM,INFO)
+      CALL RMFILE (NOML1,INFO)
       CALL JEINIF ( 'DEBUT', 'SAUVE', NOMOUT, KCLAS, NREP, NBLOC, LBLOC)
       ICO = INDEX ( CLASSE , KCLAS)
       NOMBA1 = NOMFIC(ICI)(1:4)//'.   '
@@ -100,16 +112,37 @@ C
         CALL JXOUVR(ICO,K+1)
         IEXT(ICO) = IEXT(ICO) + 1
  50   CONTINUE
+C
+      IF ( NOMBA1(1:4) .EQ. 'glob' ) THEN
+        NOML1=REPGLO(1:LREPGL)//'/'//NOMBA1
+        L1=LREPGL+1
+      ELSE IF ( NOMBA1(1:4) .EQ. 'vola' ) THEN
+        NOML1=REPVOL(1:LREPVO)//'/'//NOMBA1
+        L1=LREPVO+1
+      ELSE
+        NOML1='./'//NOMBA1
+        L1=2        
+      ENDIF
+      IF ( NOMBA2(1:4) .EQ. 'glob' ) THEN
+        NOML2=REPGLO(1:LREPGL)//'/'//NOMBA2
+        L2=LREPGL+1
+      ELSE IF ( NOMBA2(1:4) .EQ. 'vola' ) THEN
+        NOML2=REPVOL(1:LREPVO)//'/'//NOMBA2
+        L2=LREPVO+1
+      ELSE
+        NOML2='./'//NOMBA2
+        L2=2        
+      ENDIF
       DO 100 K=1,NBLUTI(ICI)
         NUMEXT = (K-1)/NBENRG(ICI)
         IADLOC =  K - (NUMEXT*NBENRG(ICI))
-        CALL CODENT(NUMEXT+1,'G',NOMBA1(6:7))
-        CALL READDR (NOMBA1,ISZON(JISZON+IADITP),LGBL1,IADLOC,IERR)
+        CALL CODENT(NUMEXT+1,'G',NOML1(L1+6:L1+7))
+        CALL READDR (NOML1,ISZON(JISZON+IADITP),LGBL1,IADLOC,IERR)
         IF (IERR .NE. 0 ) THEN
           CALL U2MESS('F','JEVEUX_47')
         ENDIF
-        CALL CODENT(NUMEXT+1,'G',NOMBA2(6:7))
-        CALL WRITDR ( NOMBA2, ISZON(JISZON + IADITP),
+        CALL CODENT(NUMEXT+1,'G',NOML2(L2+6:L2+7))
+        CALL WRITDR ( NOML2, ISZON(JISZON + IADITP),
      &                LGBL2, IADLOC, -1, IB, IERR )
         IF (IERR .NE. 0 ) THEN
           CALL U2MESS('F','JEVEUX_48')
@@ -122,9 +155,9 @@ C
       CLASSE(ICO:ICO) = ' '
       CLASSE(ICI:ICI) = ' '
       DO 300 K=1,NBEXT
-         CALL CODENT(K,'G',NOMBA2(6:7))
-         CALL CODENT(K,'G',NOMBA1(6:7))
-         CALL CPFILE ('M',NOMBA2,NOMBA1)
+        CALL CODENT(K,'G',NOML2(L2+6:L2+7))
+        CALL CODENT(K,'G',NOML1(L1+6:L1+7))
+        CALL CPFILE ('M',NOML2,NOML1)
  300  CONTINUE
 C FIN ------------------------------------------------------------------
       END

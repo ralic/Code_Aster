@@ -1,8 +1,8 @@
       SUBROUTINE JXFERM ( ICLAS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 06/03/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,15 +32,27 @@ C     ------------------------------------------------------------------
       COMMON /KBASJE/  NOMBAS(N)
       INTEGER          IDN    , IEXT    , NBENRG
       COMMON /IEXTJE/  IDN(N) , IEXT(N) , NBENRG(N)
+      CHARACTER*128    REPGLO,REPVOL
+      COMMON /BANVJE/  REPGLO,REPVOL
+      INTEGER          LREPGL,LREPVO
+      COMMON /BALVJE/  LREPGL,LREPVO
 C     ------------------------------------------------------------------
       CHARACTER*8     NOM
+      CHARACTER*128   NOM128
       INTEGER         IER
 C DEB ------------------------------------------------------------------
       IER = 0
       NOM = NOMFIC(ICLAS)(1:4)//'.   '
       DO 1 K = 1,IEXT(ICLAS)
         CALL CODENT(K,'G',NOM(6:7))
-        CALL CLOSDR ( NOM , IER )
+        IF ( NOM(1:4) .EQ. 'glob' ) THEN
+          NOM128=REPGLO(1:LREPGL)//'/'//NOM
+        ELSE IF ( NOM(1:4) .EQ. 'vola' ) THEN
+          NOM128=REPVOL(1:LREPVO)//'/'//NOM
+        ELSE
+          NOM128='./'//NOM
+        ENDIF
+        CALL CLOSDR ( NOM128 , IER )
         IF ( IER .NE. 0 ) THEN
           CALL U2MESK('F','JEVEUX_11',1,NOMBAS(ICLAS))
         ENDIF

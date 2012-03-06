@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE  MODELISATION DE L'AMORCAGE DE FISSURE AVEC LE MODELE ENDO_HETEROGENE
 # ssnp147a.para = tps_job 30 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -221,9 +221,9 @@ TEST_RESU(RESU=(  _F(
                )
             )
 
-EVOEL = CALC_NO(reuse = EVOEL,
+EVOEL = CALC_CHAMP(reuse = EVOEL,
                 RESULTAT = EVOEL,
-                OPTION   = ( 'VARI_NOEU')
+                VARI_INTERNE='VARI_NOEU'
                )
 
 IMPR_RESU(FORMAT='MED',

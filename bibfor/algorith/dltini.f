@@ -5,7 +5,7 @@
      &                    NRPASE, INPSCO )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 05/03/2012   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -122,6 +122,21 @@ C        --- RECUPERATION DES CHAMPS DEPL VITE ET ACCE ---
          ELSE
             CALL JEVEUO(CHAMP//'.VALE','L',JVALE)
             CALL DCOPY(NEQ,ZR(JVALE),1,ACCINI,1)
+         ENDIF
+         CALL RSEXCH(DYNA1,'FORC_EXTE',NUME,CHAMP,IRET)
+         IF (IRET .EQ . 0 ) THEN
+           CALL JEVEUO(CHAMP//'.VALE','L',JVALE)
+           CALL DCOPY(NEQ,ZR(JVALE),1,FEXINI,1)
+         ENDIF
+         CALL RSEXCH(DYNA1,'FORC_AMOR',NUME,CHAMP,IRET)
+         IF (IRET .EQ . 0 ) THEN
+           CALL JEVEUO(CHAMP//'.VALE','L',JVALE)
+           CALL DCOPY(NEQ,ZR(JVALE),1,FAMINI,1)
+         ENDIF
+         CALL RSEXCH(DYNA1,'FORC_LIAI',NUME,CHAMP,IRET)
+         IF (IRET .EQ . 0 ) THEN
+           CALL JEVEUO(CHAMP//'.VALE','L',JVALE)
+           CALL DCOPY(NEQ,ZR(JVALE),1,FLIINI,1)
          ENDIF
 C
 C        --- CREE-T-ON UNE NOUVELLE STRUCTURE ? ---

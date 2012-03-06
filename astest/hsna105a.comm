@@ -1,0 +1,609 @@
+# MODIF  DATE 05/03/2012   AUTEUR SFAYOLLE S.FAYOLLE 
+# TITRE Expansion d'un cylindre creux infini avec prise en compte des dissipations thermiques dues aux deformations mecaniques
+# hsna105a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE SFAYOLLE S.FAYOLLE
+
+DEBUT(CODE=_F(NOM='HSNA105A', NIV_PUB_WEB='INTERNET'),PAR_LOT='NON',);
+
+TFIN = 20.
+NB_PAS = 20
+TREF=293.0
+LDC='VMIS_JOHN_COOK'
+VARI_DISS='V5'
+
+###################################################################
+#      MISE EN PLACE DES MODELES ET DES DONNEES DU CALCUL         #
+###################################################################
+
+#Maillage mecanique quadratique
+MAIL_MEC=LIRE_MAILLAGE(FORMAT='MED',);
+
+MAIL_MEC=DEFI_GROUP(reuse=MAIL_MEC,
+                    MAILLAGE=MAIL_MEC,
+                    CREA_GROUP_NO=(_F(TOUT_GROUP_MA='OUI',),),);
+
+#Maillage thermique lineaire
+MAIL_THE=LIRE_MAILLAGE(FORMAT='MED',
+                       UNITE=21,);
+
+MAIL_THE=DEFI_GROUP(reuse=MAIL_THE,
+                    MAILLAGE=MAIL_THE,
+                    CREA_GROUP_NO=(_F(TOUT_GROUP_MA='OUI',),),);
+
+E=DEFI_FONCTION(NOM_PARA='TEMP',
+                VALE=(0.0   ,2.069e11,
+                      10000.,2.069e11,),);
+
+NU=DEFI_FONCTION(NOM_PARA='TEMP',
+                 VALE=(0.0    ,0.29,
+                       10000.0,0.29,),);
+
+ALPHA=DEFI_FONCTION(NOM_PARA='TEMP',
+                    VALE=(0.0    ,1.5E-5,
+                          10000.0,1.5E-5,),);
+
+LAMBDA=DEFI_FONCTION(NOM_PARA='TEMP',
+                     VALE=(0.0   ,45., 
+                           10000.,45.,),);
+
+RHO_CP=DEFI_FONCTION(NOM_PARA='TEMP',
+                     VALE=(0.0   ,3.59e6,
+                           10000.,3.59e6,),);
+
+MATER=DEFI_MATERIAU(ELAS_FO=_F(E=E,
+                               NU=NU,
+                               RHO=7800.0,
+                               TEMP_DEF_ALPHA=TREF,
+                               ALPHA=ALPHA,),
+                    ECRO_COOK=_F(A=5.E100,
+                                 B=2.e10,
+                                 N_PUIS=1.0,),
+                    THER_NL=_F(LAMBDA=LAMBDA,
+                               RHO_CP=RHO_CP,),);
+
+Fcond=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0.  ,0.,
+                          TFIN,1.,),);
+
+L_REEL=DEFI_LIST_REEL(DEBUT=0,
+                      INTERVALLE=_F(JUSQU_A=TFIN,
+                                    NOMBRE=NB_PAS,),);
+
+L_INST=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
+                                   LIST_INST=L_REEL,),
+                      ECHEC=_F(SUBD_NIVEAU=5,
+                               SUBD_METHODE='MANUEL',
+                               SUBD_PAS=4,
+                               EVENEMENT='ERREUR',
+                               SUBD_PAS_MINI=0.0,
+                               ACTION='DECOUPE'),);
+
+#Modele thermique
+#Elements lumpes pour gerer les chocs thermiques
+MOD_THE=AFFE_MODELE(MAILLAGE=MAIL_THE,
+                    AFFE=_F(TOUT='OUI',
+                            PHENOMENE='THERMIQUE',
+                            MODELISATION='AXIS_DIAG',),);
+
+CH_THE=AFFE_CHAR_THER(MODELE=MOD_THE,
+                      ECHANGE=_F(GROUP_MA=('BAS','HAUT','INTERNE'),
+                                 COEF_H=0.0,
+                                 TEMP_EXT=TREF,),
+                      TEMP_IMPO=_F(GROUP_MA='EXTERNE',
+                                   TEMP=TREF,),);
+
+#Affectation champ de temperature initial
+MAT_THE=AFFE_MATERIAU(MAILLAGE=MAIL_THE,
+                      AFFE=_F(TOUT='OUI',
+                              MATER=MATER,),);
+
+#Modele mecanique
+#Elements sous-integres pour gerer l'incompressibilite
+MOD_MEC=AFFE_MODELE(MAILLAGE=MAIL_MEC,
+                    AFFE=_F(TOUT='OUI',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION=('AXIS_SI',),),);
+
+#Definition des chargements mecaniques
+CH_MEC=AFFE_CHAR_MECA(MODELE=MOD_MEC,
+                      DDL_IMPO=(_F(GROUP_MA='BAS',
+                                   DY=0.0,),
+                                _F(GROUP_MA='HAUT',
+                                   DY=0.0,),
+                                _F(GROUP_MA='INTERNE',
+                                   DX=0.02,),),);
+
+###################################################################
+#    COUPLAGE THERMOMECANIQUE COUPLE PAR SCHEMA ETAGE ISOTROPE    #
+###################################################################
+#L'enchainement des routines est generique et peut etre reutilise tel quel
+#Remarque : En cas de redecoupage de pas de temps en mecanique
+#           il est necessaire de sommer les champs de dissipations ce qui
+#           implique de nombreuses operations sur les champs. Il est 
+#           donc preferable de bien choisir sa discretisation temporelle
+#           pour ne pas trop perdre en performance
+
+#1 Calcul de l'etat thermique initial
+THER0=THER_NON_LINE(MODELE=MOD_THE,
+                    CHAM_MATER=MAT_THE,
+                    EXCIT=(_F(CHARGE=CH_THE,),),
+                    INCREMENT=_F(LIST_INST=L_REEL,
+                                 NUME_INST_FIN=1),
+                    ETAT_INIT=_F(VALE=TREF,),);
+
+#2 Calcul thermomecanique
+NBPAS=len(L_REEL.Valeurs());
+
+for k in range (1,NBPAS):
+#2.1 Premier pas de chargement  
+  if (k==1):
+#2.1.1 Projection du champ de temperature definit sur le maillage thermique
+#      sur le maillage mecanique
+    __a=PROJ_CHAMP(METHODE='AUTO',
+                   RESULTAT=THER0,
+                   MAILLAGE_1=MAIL_THE,
+                   MAILLAGE_2=MAIL_MEC,);
+
+#2.1.2 Utilisation AFFE_VARC pour la dependance des parametres materiaux
+#      vis a vis de la temperature
+    __b=AFFE_MATERIAU(MAILLAGE=MAIL_MEC,
+                      AFFE=_F(TOUT='OUI',
+                              MATER=MATER,),
+                      AFFE_VARC=_F(NOM_VARC='TEMP',
+                                   EVOL=__a,
+                                   VALE_REF=TREF,),);
+
+#2.1.3 Calcul mecanique du premier pas de temps
+    RESU_MEC=STAT_NON_LINE(MODELE=MOD_MEC,
+                           CHAM_MATER=__b,
+                           INCREMENT=_F(LIST_INST=L_INST,
+                                        NUME_INST_FIN=k,),
+                           NEWTON=_F(MATRICE='TANGENTE',
+                                     REAC_ITER=1,),
+                           CONVERGENCE=_F(ITER_GLOB_MAXI=20,),
+                           COMP_INCR=_F(RELATION=LDC,
+                                        DEFORMATION='GDEF_LOG',),
+                           EXCIT=_F(CHARGE=CH_MEC,
+                                    FONC_MULT=Fcond,),);
+
+#2.1.4 Creation d'un champ de deplacement par extraction
+    __dep=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                     OPERATION='EXTR',
+                     RESULTAT=RESU_MEC,
+                     NOM_CHAM='DEPL',
+                     INST=L_REEL.Valeurs()[k],);
+
+#2.1.5 Projection du champ de deplacement definit sur le maillage mecanique
+#      sur le maillage thermique
+    __depth=PROJ_CHAMP(METHODE='AUTO',
+                       CHAM_GD=__dep,
+                       MAILLAGE_1=MAIL_MEC,
+                       MAILLAGE_2=MAIL_THE,);
+
+    l_para=RESU_MEC.LIST_VARI_ACCES();
+    nb_nu_ord=len(l_para['NUME_ORDRE']);
+    
+    if (nb_nu_ord==2):
+#2.1.6 Creation d'un champ de variables internes aux points de Gauss par extraction du champ 
+      __ch1=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
+                       OPERATION='EXTR',
+                       RESULTAT=RESU_MEC,
+                       NOM_CHAM='VARI_ELGA',
+                       INST=L_REEL.Valeurs()[k],);
+
+#2.1.7 Creation d'un champ de type source thermique par assemblage 
+#      du champ de dissipation mecanique (variable interne V5 de VMIS_JOHN_COOK)
+      __ch2=CREA_CHAMP(TYPE_CHAM='ELGA_SOUR_R',
+                       OPERATION='ASSE',
+                       MODELE=MOD_MEC,
+                       ASSE=_F(TOUT='OUI',
+                               CHAM_GD=__ch1,
+                               NOM_CMP=VARI_DISS,
+                               NOM_CMP_RESU=('SOUR'),),);
+    elif (nb_nu_ord>2):
+#2.1.6 Creation d'un champ de variables internes aux points de Gauss par sommation des
+#      champs de dissipations sur tous les numeros d'ordres entre t_n et t_n+1
+      __chnu1=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
+                         OPERATION='EXTR',
+                         RESULTAT=RESU_MEC,
+                         NOM_CHAM='VARI_ELGA',
+                         NUME_ORDRE=1,);
+
+      __chnu2=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
+                         OPERATION='EXTR',
+                         RESULTAT=RESU_MEC,
+                         NOM_CHAM='VARI_ELGA',
+                         NUME_ORDRE=2,);
+
+      __chtot=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
+                         OPERATION='ASSE',
+                         MODELE=MOD_MEC,
+                         ASSE=(_F(CHAM_GD=__chnu1,
+                                  TOUT='OUI',
+                                  CUMUL='OUI',
+                                  COEF_R=l_para['INST'][1]-l_para['INST'][0],),
+                               _F(CHAM_GD=__chnu2,
+                                  TOUT='OUI',
+                                  CUMUL='OUI',
+                                  COEF_R=l_para['INST'][2]-l_para['INST'][1],),),);
+
+      DETRUIRE(CONCEPT=_F(NOM=(__chnu1,__chnu2,),),
+               INFO=1,);
+
+      for NUME_ORDRE in range (3,nb_nu_ord):
+        __chnu1=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
+                           OPERATION='EXTR',
+                           RESULTAT=RESU_MEC,
+                           NOM_CHAM='VARI_ELGA',
+                           NUME_ORDRE=NUME_ORDRE,);
+
+        __chnu2=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
+                           OPERATION='ASSE',
+                           MODELE=MOD_MEC,
+                           ASSE=_F(CHAM_GD=__chtot,
+                                   TOUT='OUI',),);
+
+        DETRUIRE(CONCEPT=_F(NOM=(__chtot,),),
+                 INFO=1,);                           
+
+        __chtot=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
+                           OPERATION='ASSE',
+                           MODELE=MOD_MEC,
+                           ASSE=(_F(CHAM_GD=__chnu1,
+                                    CUMUL='OUI',
+                                    TOUT='OUI',
+                                    COEF_R=l_para['INST'][NUME_ORDRE]-l_para['INST'][NUME_ORDRE-1],),
+                                 _F(CHAM_GD=__chnu2,
+                                    CUMUL='OUI',
+                                    TOUT='OUI',),),);
+
+        DETRUIRE(CONCEPT=_F(NOM=(__chnu1,__chnu2,),),
+                 INFO=1,);
+
+      __ch1=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
+                       OPERATION='ASSE',
+                       MODELE=MOD_MEC,
+                       ASSE=_F(CHAM_GD=__chtot,
+                               TOUT='OUI',
+                               COEF_R=1./(L_REEL.Valeurs()[k]-L_REEL.Valeurs()[k-1]),),);
+
+      DETRUIRE(CONCEPT=_F(NOM=(__chtot,),),
+               INFO=1,);
+                 
+#2.1.7 Creation d'un champ de type source thermique par assemblage 
+#      du champ de dissipation mecanique (variable interne V5 de VMIS_JOHN_COOK)
+      __ch2=CREA_CHAMP(TYPE_CHAM='ELGA_SOUR_R',
+                       OPERATION='ASSE',
+                       MODELE=MOD_MEC,
+                       ASSE=_F(TOUT='OUI',
+                               CHAM_GD=__ch1,
+                               NOM_CMP=VARI_DISS,
+                               NOM_CMP_RESU=('SOUR'),),);
+
+#2.1.8 Projection du champ source definit sur le maillage mecanique
+#      sur le maillage thermique
+    __champ=PROJ_CHAMP(METHODE='AUTO',
+                       CHAM_GD=__ch2,
+                       MODELE_1=MOD_MEC,
+                       MODELE_2=MOD_THE,)
+
+#2.1.9 Definition du champ source comme condition aux limites pour le calcul thermique
+    __source=AFFE_CHAR_THER(MODELE=MOD_THE,
+                            SOURCE=_F(SOUR_CALCULEE=__champ),);
+
+#2.1.10 Modification du maillage thermique pour qu'il soit representatif 
+#       de la deformee du maillage mecanique
+    MAIL_THE=MODI_MAILLAGE(reuse=MAIL_THE,
+                           MAILLAGE=MAIL_THE,
+                           DEFORME=_F(OPTION='TRAN',
+                                      DEPL=__depth,),);
+
+#2.1.11 Calcul thermique du premier pas de temps
+    RESU_TH=THER_NON_LINE(ETAT_INIT=_F(VALE=TREF,),
+                          CHAM_MATER=MAT_THE,
+                          MODELE=MOD_THE,
+                          EXCIT=(_F(CHARGE=CH_THE,),
+                                 _F(CHARGE=__source,),),
+                          INCREMENT=_F(LIST_INST=L_REEL,
+                                       NUME_INST_FIN=k,),);
+
+#2.1.12 Creation d'un champ representant la temperature au numero d'ordre 0 par extraction
+    __t0=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                    OPERATION='EXTR',
+                    RESULTAT=RESU_TH,
+                    NOM_CHAM='TEMP',
+                    INST=L_REEL.Valeurs()[k-1],);
+
+#2.1.13 Creation d'un champ representant la temperature au numero d'ordre 1 par extraction                     
+    __t1=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                    OPERATION='EXTR',
+                    RESULTAT=RESU_TH,
+                    NOM_CHAM='TEMP',
+                    INST=L_REEL.Valeurs()[k],);
+
+#2.1.14 Creation d un evol_ther a partir des champs au numero d ordre 0 et 1
+#       pour lequel on modifie les numeros d'ordres 0 --> 1 et 1 --> 2
+#       Cette etape est necessaire car il faut que le champ de temperature soit definit
+#       au pas de temps k + 1 pour que le calcul mecanique puisse a etre realise
+    __thd=CREA_RESU(TYPE_RESU='EVOL_THER',
+                    NOM_CHAM='TEMP',
+                    OPERATION='AFFE',
+                    AFFE=(_F(CHAM_GD=__t0,
+                             INST=L_REEL.Valeurs()[k],),
+                          _F(CHAM_GD=__t1,
+                             INST=L_REEL.Valeurs()[k+1],),),);
+
+#2.2 Pas de chargement suivant
+  if (k>1) and (k<NBPAS):
+    
+    DETRUIRE(CONCEPT=_F(NOM=(__ch1,__ch2,__champ,__a,__b,),),
+             INFO=1,);
+
+#2.2.1 Creation d un champ de deplacement par combinaison correspondant a l inverse
+#      du champ de daplcement a l instant k
+    __demth=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                       OPERATION='COMB',
+                       COMB=_F(CHAM_GD=__depth,
+                               COEF_R=-1.0,),);
+
+#2.2.2 Modification du maillage thermique pour le remettre dans sa configuration initiale
+    MAIL_THE=MODI_MAILLAGE(reuse=MAIL_THE,
+                           MAILLAGE=MAIL_THE,
+                           DEFORME=_F(OPTION='TRAN',
+                                      DEPL=__demth,),);
+
+#2.2.3 Projection du champ de temperature definit sur le maillage thermique
+#      sur le maillage mecanique
+    __a=PROJ_CHAMP(METHODE='AUTO',
+                   RESULTAT=__thd,
+                   MAILLAGE_1=MAIL_THE,
+                   MAILLAGE_2=MAIL_MEC,);
+
+#2.2.4 Utilisation AFFE_VARC pour la dependance des parametres materiaux
+#      vis a vis de la temperature
+    __b=AFFE_MATERIAU(MAILLAGE=MAIL_MEC,
+                      AFFE=_F(TOUT='OUI',
+                              MATER=MATER,),
+                      AFFE_VARC=_F(NOM_VARC='TEMP',
+                                   EVOL=__a,
+                                   VALE_REF=TREF,),);
+
+    nb_nu_orb=len(RESU_MEC.LIST_VARI_ACCES()['NUME_ORDRE']);
+
+#2.2.5 Calcul mecanique du pas de temps k
+    RESU_MEC=STAT_NON_LINE(reuse=RESU_MEC,
+                           ETAT_INIT=_F(EVOL_NOLI=RESU_MEC),
+                           MODELE=MOD_MEC,
+                           CHAM_MATER=__b,
+                           INCREMENT=_F(LIST_INST=L_INST,
+                                        NUME_INST_FIN=k,),
+                           NEWTON=_F(MATRICE='TANGENTE',
+                                     REAC_ITER=1,),
+                           CONVERGENCE=_F(ITER_GLOB_MAXI=20,),
+                           COMP_INCR=_F(RELATION=LDC,
+                                        DEFORMATION='GDEF_LOG',),
+                           EXCIT=_F(CHARGE=CH_MEC,
+                                    FONC_MULT=Fcond,),);
+
+    DETRUIRE(CONCEPT=_F(NOM=(__dep,__depth,),),
+             INFO=1,);
+
+#2.2.6 Creation d'un champ de deplacement par extraction
+    __dep=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                     OPERATION='EXTR',
+                     RESULTAT=RESU_MEC,
+                     NOM_CHAM='DEPL',
+                     INST=L_REEL.Valeurs()[k],);
+
+#2.2.7 Projection du champ de deplacement definit sur le maillage mecanique
+#      sur le maillage thermique
+    __depth=PROJ_CHAMP(METHODE='AUTO',
+                       CHAM_GD=__dep,
+                       MAILLAGE_1=MAIL_MEC,
+                       MAILLAGE_2=MAIL_THE,);
+
+    l_para=RESU_MEC.LIST_VARI_ACCES();
+    nb_nu_ord=len(l_para['NUME_ORDRE']);
+    dnb_nu_or=nb_nu_ord-nb_nu_orb
+
+    if (dnb_nu_or==1):
+#2.2.8 Creation d'un champ de variables internes aux points de Gauss par extraction du champ 
+      __ch1=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
+                       OPERATION='EXTR',
+                       RESULTAT=RESU_MEC,
+                       NOM_CHAM='VARI_ELGA',
+                       INST=L_REEL.Valeurs()[k],);      
+
+#2.2.9 Creation d'un champ de type source thermique par assemblage 
+#      du champ de dissipation mecanique (variable interne V5 de VMIS_JOHN_COOK)
+      __ch2=CREA_CHAMP(TYPE_CHAM='ELGA_SOUR_R',
+                       OPERATION='ASSE',
+                       MODELE=MOD_MEC,
+                       ASSE=_F(TOUT='OUI',
+                               CHAM_GD=__ch1,
+                               NOM_CMP=VARI_DISS,
+                               NOM_CMP_RESU=('SOUR'),),);
+
+    elif (dnb_nu_or>1):
+#2.2.8 Creation d'un champ de variables internes aux points de Gauss par sommation des
+#      champs de dissipations sur tous les numeros d'ordres entre t_n et t_n+1
+      __chnu1=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
+                         OPERATION='EXTR',
+                         RESULTAT=RESU_MEC,
+                         NOM_CHAM='VARI_ELGA',
+                         NUME_ORDRE=l_para['NUME_ORDRE'][-dnb_nu_or],);
+
+      __chnu2=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
+                         OPERATION='EXTR',
+                         RESULTAT=RESU_MEC,
+                         NOM_CHAM='VARI_ELGA',
+                         NUME_ORDRE=l_para['NUME_ORDRE'][-dnb_nu_or+1],);
+
+      __chtot=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
+                         OPERATION='ASSE',
+                         MODELE=MOD_MEC,
+                         ASSE=(_F(CHAM_GD=__chnu1,
+                                  TOUT='OUI',
+                                  CUMUL='OUI',
+                                  COEF_R=(l_para['INST'][-dnb_nu_or]-l_para['INST'][-dnb_nu_or-1]),),
+                               _F(CHAM_GD=__chnu2,
+                                  TOUT='OUI',
+                                  CUMUL='OUI',
+                                  COEF_R=(l_para['INST'][-dnb_nu_or+1]-l_para['INST'][-dnb_nu_or]),),),);
+
+      DETRUIRE(CONCEPT=_F(NOM=(__chnu1,__chnu2,),),
+               INFO=1,);
+
+      for NUME_ORDRE in range (3,dnb_nu_or+1):
+        __chnu1=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
+                           OPERATION='EXTR',
+                           RESULTAT=RESU_MEC,
+                           NOM_CHAM='VARI_ELGA',
+                           NUME_ORDRE=l_para['NUME_ORDRE'][-dnb_nu_or+NUME_ORDRE-1],);
+
+        __chnu2=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
+                           OPERATION='ASSE',
+                           MODELE=MOD_MEC,
+                           ASSE=_F(CHAM_GD=__chtot,
+                                   TOUT='OUI',),);
+
+        DETRUIRE(CONCEPT=_F(NOM=(__chtot,),),
+                 INFO=1,);                           
+
+        __chtot=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
+                           OPERATION='ASSE',
+                           MODELE=MOD_MEC,
+                           ASSE=(_F(CHAM_GD=__chnu1,
+                                    TOUT='OUI',
+                                    CUMUL='OUI',
+                                    COEF_R=l_para['INST'][-dnb_nu_or+NUME_ORDRE-1]-l_para['INST'][-dnb_nu_or+NUME_ORDRE-2],),
+                                 _F(CHAM_GD=__chnu2,
+                                    TOUT='OUI',
+                                    CUMUL='OUI',),),);
+
+        DETRUIRE(CONCEPT=_F(NOM=(__chnu1,__chnu2,),),
+                 INFO=1,);
+
+      __ch1=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
+                       OPERATION='ASSE',
+                       MODELE=MOD_MEC,
+                       ASSE=_F(CHAM_GD=__chtot,
+                               TOUT='OUI',
+                               COEF_R=1./(L_REEL.Valeurs()[k]-L_REEL.Valeurs()[k-1]),),);
+
+      DETRUIRE(CONCEPT=_F(NOM=(__chtot,),),
+               INFO=1,);
+               
+#2.2.9 Creation d'un champ de type source thermique par assemblage 
+#      du champ de dissipation mecanique (variable interne V5 de VMIS_JOHN_COOK)
+      __ch2=CREA_CHAMP(TYPE_CHAM='ELGA_SOUR_R',
+                       OPERATION='ASSE',
+                       MODELE=MOD_MEC,
+                       ASSE=_F(TOUT='OUI',
+                               CHAM_GD=__ch1,
+                               NOM_CMP=VARI_DISS,
+                               NOM_CMP_RESU=('SOUR'),),);
+
+    DETRUIRE(CONCEPT=_F(NOM=(__source,__demth,__t0,__t1,__thd),),
+             INFO=1,);
+
+#2.2.10 Projection du champ source definit sur le maillage mecanique
+#       sur le maillage thermique
+    __champ=PROJ_CHAMP(METHODE='AUTO',
+                       CHAM_GD=__ch2,
+                       MODELE_1=MOD_MEC,
+                       MODELE_2=MOD_THE,);
+
+#2.2.11 Definition du champ source comme condition aux limites pour le calcul thermique
+    __source=AFFE_CHAR_THER(MODELE=MOD_THE,
+                            SOURCE=_F(SOUR_CALCULEE=__champ),);
+
+#2.2.12 Modification du maillage thermique pour qu'il soit representatif 
+#       de la deformee du maillage mecanique
+    MAIL_THE=MODI_MAILLAGE(reuse=MAIL_THE,
+                           MAILLAGE=MAIL_THE,
+                           DEFORME=_F(OPTION='TRAN',
+                                      DEPL=__depth,),);
+
+#2.2.13 Calcul thermique du pas de temps k
+    RESU_TH=THER_NON_LINE(reuse=RESU_TH,
+                          ETAT_INIT=_F(EVOL_THER=RESU_TH,
+                                       INST=L_REEL.Valeurs()[k-1],),
+                          CHAM_MATER=MAT_THE,
+                          MODELE=MOD_THE,
+                          EXCIT=(_F(CHARGE=CH_THE,),
+                                 _F(CHARGE=__source,),),
+                          INCREMENT=_F(LIST_INST=L_REEL,
+                                       NUME_INST_FIN=k,),);
+
+    if (k>1) and (k<NBPAS-1):
+
+#2.2.14 Creation d'un champ representant la temperature au numero d'ordre k-1 par extraction
+      __t0=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                      OPERATION='EXTR',
+                      RESULTAT=RESU_TH,
+                      NOM_CHAM='TEMP',
+                      INST=L_REEL.Valeurs()[k-1],);
+
+#2.2.15 Creation d'un champ representant la temperature au numero d'ordre k par extraction  
+      __t1=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                      OPERATION='EXTR',
+                      RESULTAT=RESU_TH,
+                      NOM_CHAM='TEMP',
+                      INST=L_REEL.Valeurs()[k],);
+
+#2.2.16 Creation d un evol_ther a partir des champs au numero d ordre k-1 et k
+#       pour lequel on modifie les numeros d'ordres k-1 --> k et k --> k+1
+      __thd=CREA_RESU(TYPE_RESU='EVOL_THER',
+                      NOM_CHAM='TEMP',
+                      OPERATION='AFFE',
+                      AFFE=(_F(CHAM_GD=__t0,
+                              INST=L_REEL.Valeurs()[k],),
+                            _F(CHAM_GD=__t1,
+                              INST=L_REEL.Valeurs()[k+1],),),);
+
+###################################################################
+#           FIN DU CALCUL AVEC COUPLAGE THERMOMECANIQUE           #
+###################################################################
+
+###################################################################
+#             POST-TRAITEMENTS ET TESTS DE VALIDATION             #
+###################################################################
+
+TRESUTH=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                                INTITULE='TB_1',
+                                RESULTAT=RESU_TH,
+                                NOM_CHAM='TEMP',
+                                TOUT_ORDRE='OUI',
+                                GROUP_NO='NO_INT',
+                                NOM_CMP='TEMP',),);
+
+IMPR_TABLE(TABLE=TRESUTH,
+           FORMAT='ASTER',);
+
+TEST_TABLE(TABLE=TRESUTH,
+           NOM_PARA='TEMP',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=6.,),
+           VALE=-31.5+TREF,
+           PRECISION=2.E-3,
+           REFERENCE='SOURCE_EXTERNE',);
+
+FIN();

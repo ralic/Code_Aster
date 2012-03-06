@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE EN C.P. (TEST DES FORCES NODALES)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -125,8 +125,8 @@ DEPLA=MECA_STATIQUE(   MODELE=MO,
 
 F1=DEFI_CONSTANTE(  VALE=1.)
 
-DEPLA=CALC_NO( reuse=DEPLA,   RESULTAT=DEPLA,
-               OPTION='REAC_NODA',
+DEPLA=CALC_CHAMP( reuse=DEPLA,   RESULTAT=DEPLA,
+               FORCE='REAC_NODA',
                      )
 
 #-----------------------------------------------------------------------

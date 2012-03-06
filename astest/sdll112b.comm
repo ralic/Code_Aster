@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE  CHEMINEE SOUS EXCITATION SISMIQUE MULTI-SUPPORTEE
 # sdll112b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -97,12 +97,12 @@ MODE=CALC_CHAMP(reuse=MODE,
                      RESULTAT=MODE,          CONTRAINTE=('SIEF_ELGA'),
                   )
 
-MODE=CALC_NO(  reuse=MODE,  RESULTAT=MODE,
-                       OPTION='FORC_NODA',
+MODE=CALC_CHAMP(  reuse=MODE,  RESULTAT=MODE,
+                       FORCE='FORC_NODA',
                   )
 
-MODE=CALC_NO(  reuse=MODE,  RESULTAT=MODE,
-                       OPTION='REAC_NODA',
+MODE=CALC_CHAMP(  reuse=MODE,  RESULTAT=MODE,
+                       FORCE='REAC_NODA',
                   )
 
 #
@@ -262,12 +262,12 @@ MODE_ST1=CALC_CHAMP(reuse=MODE_ST1,
                      RESULTAT=MODE_ST1,      CONTRAINTE=('SIEF_ELGA'),
                   )
 
-MODE_ST1=CALC_NO(  reuse=MODE_ST1,  RESULTAT=MODE_ST1,
-                       OPTION='FORC_NODA',
+MODE_ST1=CALC_CHAMP(  reuse=MODE_ST1,  RESULTAT=MODE_ST1,
+                       FORCE='FORC_NODA',
                   )
 
-MODE_ST1=CALC_NO(  reuse=MODE_ST1,  RESULTAT=MODE_ST1,
-                       OPTION='REAC_NODA',
+MODE_ST1=CALC_CHAMP(  reuse=MODE_ST1,  RESULTAT=MODE_ST1,
+                       FORCE='REAC_NODA',
                   )
 
 #-----------------------------------------
@@ -515,12 +515,12 @@ MODE_STA=CALC_CHAMP(reuse=MODE_STA,
                      RESULTAT=MODE_STA,      CONTRAINTE=('SIEF_ELGA'),
                   )
 
-MODE_STA=CALC_NO(  reuse=MODE_STA,  RESULTAT=MODE_STA,
-                       OPTION='FORC_NODA',
+MODE_STA=CALC_CHAMP(  reuse=MODE_STA,  RESULTAT=MODE_STA,
+                       FORCE='FORC_NODA',
                   )
 
-MODE_STA=CALC_NO(  reuse=MODE_STA,  RESULTAT=MODE_STA,
-                       OPTION='REAC_NODA',
+MODE_STA=CALC_CHAMP(  reuse=MODE_STA,  RESULTAT=MODE_STA,
+                       FORCE='REAC_NODA',
                   )
 
 #

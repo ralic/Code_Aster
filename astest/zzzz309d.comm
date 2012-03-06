@@ -1,0 +1,170 @@
+# MODIF  DATE 06/03/2012   AUTEUR COLOMBO D.COLOMBO 
+# TITRE VALIDATION DES OPTIONS TOPOLOGIQUES ZONE_MAJ ET TORE DANS DEFI_GROUP 
+# zzzz309d.para = tps_job 300 mem_job 512Mo liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='ZZZZ309D', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),)
+
+mesh = LIRE_MAILLAGE(FORMAT='MED')
+meshgr = LIRE_MAILLAGE(FORMAT='MED',UNITE=40)
+
+mesh = DEFI_GROUP(reuse=mesh,
+                  MAILLAGE=mesh,
+                  CREA_GROUP_NO=_F(NOM='all',
+                                   OPTION='ENV_SPHERE',
+                                   POINT=(5.,5.,5.),
+                                   RAYON=10.,
+                                   PRECISION=10.,),)
+
+grille = DEFI_GRILLE(MAILLAGE=meshgr)
+
+modele=AFFE_MODELE(MAILLAGE=mesh,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='3D',),)
+
+mgrille=AFFE_MODELE(GRILLE=grille,
+                    AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='3D',),)
+
+Alu=DEFI_MATERIAU(ELAS=_F(E=70000,NU=0.34,),);
+
+ChAlu=AFFE_MATERIAU(MAILLAGE=mesh,
+                    MODELE=modele,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=Alu,),
+                    );
+
+fiss = DEFI_FISS_XFEM(MODELE=modele,
+                      MODELE_GRILLE=mgrille,
+                      DEFI_FISS=_F(FORM_FISS='DEMI_PLAN',
+                                   PFON=(5.,4.,0.),
+                                   NORMALE=(1.,0.,0.),
+                                   DTAN=(0.,1.,0.),),)
+
+SIF10=CREA_TABLE(LISTE=(_F(LISTE_R=(1.,1.,1.,1.,1.,1.,1.,1.,1.,1.),PARA='K1'),
+                        _F(LISTE_R=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.),PARA='K2'),
+                        _F(LISTE_R=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.),PARA='K3'),
+                        _F(LISTE_R=(1.,1.,1.,1.,1.,1.,1.,1.,1.,1.),PARA='G'),
+                        _F(LISTE_R=(1.,1.,1.,1.,1.,1.,1.,1.,1.,1.),PARA='G_IRWIN'),
+                        _F(LISTE_R=(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0),PARA='BETA'),
+                        _F(LISTE_I=(1,1,1,1,1,1,1,1,1,1),PARA='NUME_FOND'),
+                        _F(LISTE_I=(1,1,1,1,1,1,1,1,1,1),PARA='NUME_ORDRE'),
+                        _F(LISTE_I=(1,2,3,4,5,6,7,8,9,10),PARA='NUM_PT'),))
+
+modX=MODI_MODELE_XFEM(MODELE_IN=modele,FISSURE=fiss,INFO=1,);
+
+fissP = CO('fissP')
+
+PROPA_FISS(MODELE=modX,
+           FISSURE=_F(FISS_ACTUELLE=fiss,
+                      FISS_PROPAGEE=fissP,
+                      NB_POINT_FOND=10,
+                      TABLE=SIF10,),
+           METHODE_PROPA='GEOMETRIQUE',
+           DA_MAX=1.,
+           ZONE_MAJ='TORE',
+           RAYON_TORE=4.,
+           LOI_PROPA=_F(LOI='PARIS',
+                        C=1.,
+                        M=3.,
+                        N=0.,
+                        MATER=Alu),
+           RAYON=1.,
+           COMP_LINE=_F(COEF_MULT_MINI=0.,
+                        COEF_MULT_MAXI=1.,),
+           );
+
+mesh = DEFI_GROUP(reuse=mesh,
+                  MAILLAGE=mesh,
+                  CREA_GROUP_NO=_F(NOM='nveri',
+                                   OPTION='FISS_XFEM',
+                                   FISSURE=fissP,
+                                   TYPE_GROUP='ZONE_MAJ',),)
+
+chveri = CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                    MAILLAGE=mesh,
+                    OPERATION='AFFE',
+                    AFFE=(_F(TOUT='OUI',
+                             NOM_CMP='X1',
+                             VALE=0.,),
+                          _F(GROUP_NO='nveri',
+                             NOM_CMP='X1',
+                             VALE=1.,),),)
+
+mesh = DEFI_GROUP(reuse=mesh,
+                  MAILLAGE=mesh,
+                  CREA_GROUP_NO=_F(NOM='N1',
+                                   OPTION='ENV_CYLINDRE',
+                                   POINT=(5.,4.,0.),
+                                   RAYON=0.01,
+                                   VECT_NORMALE=(0.,0.,1.),
+                                   PRECISION=2.,),)
+
+mesh = DEFI_GROUP(reuse=mesh,
+                  MAILLAGE=mesh,
+                  CREA_GROUP_MA=_F(NOM='M1',
+                                   OPTION='APPUI',
+                                   GROUP_NO='N1',
+                                   TYPE_APPUI='AU_MOINS_UN',),)
+
+mesh = DEFI_GROUP(reuse=mesh,
+                  MAILLAGE=mesh,
+                  CREA_GROUP_NO=_F(NOM='Ngrexact',
+                                   GROUP_MA='M1',),)
+
+chexact = CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                     MAILLAGE=mesh,
+                     OPERATION='AFFE',
+                     AFFE=(_F(TOUT='OUI',
+                              NOM_CMP='X1',
+                              VALE=0.,),
+                           _F(GROUP_NO='Ngrexact',
+                              NOM_CMP='X1',
+                              VALE=1.,),),)
+
+# TEST
+
+chcomb = CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                    OPERATION='COMB',
+                    COMB=(_F(CHAM_GD=chveri, COEF_R=1.,),
+                          _F(CHAM_GD=chexact, COEF_R=-1.,),),)
+
+tab = CREA_TABLE(RESU=_F(CHAM_GD=chcomb,
+                         TOUT='OUI',
+                         TOUT_CMP='OUI',),)
+
+TEST_TABLE(TABLE=tab,
+           NOM_PARA='X1',
+           TYPE_TEST='MIN',
+           PRECISION=1E-10,
+           CRITERE='ABSOLU',
+           VALE=0.,
+           REFERENCE='ANALYTIQUE',)
+
+TEST_TABLE(TABLE=tab,
+           NOM_PARA='X1',
+           TYPE_TEST='MAX',
+           PRECISION=1E-10,
+           CRITERE='ABSOLU',
+           VALE=0.,
+           REFERENCE='ANALYTIQUE',)
+
+FIN()

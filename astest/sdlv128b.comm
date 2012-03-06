@@ -1,9 +1,9 @@
-# MODIF  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE  EXPANSION MODALE SUR UN TUBE 3D A PARTIR DE MESURES EXTENSIOMETRIQUES
 # sdlv128b.para = tps_job 300 mem_job 600Mo mem_aster 40 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -152,10 +152,10 @@ MODEAIR = CALC_CHAMP( reuse    = MODEAIR,
                       DEFORMATION=('EPSI_ELNO')
                     );
 
-MODEAIR = CALC_NO( reuse      = MODEAIR,
+MODEAIR = CALC_CHAMP( reuse      = MODEAIR,
                    RESULTAT   = MODEAIR,
                    GROUP_MA   = 'TUBE_MA',
-                   OPTION     = 'EPSI_NOEU'
+                   DEFORMATION='EPSI_NOEU'
                   );
 
 

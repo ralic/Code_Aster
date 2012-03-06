@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR IDOUX L.IDOUX 
 # ======================================================================
 # TITRE IMPACT POUTRE AVEC ELEMENTS 3D SUR PLAN RIGIDE
 # sdnv100a.para = tps_job 80 mem_job 64Mo liste_test S
@@ -139,6 +139,50 @@ U=DYNA_NON_LINE(  SOLVEUR=_F(SYME='OUI',),
            CONVERGENCE =_F(ITER_GLOB_MAXI = 20),
            INFO = 1,
            )
+
+ENER=RECU_TABLE(CO=U,NOM_TABLE='PARA_CALC',);
+
+IMPR_TABLE(TABLE=ENER);
+
+TEST_TABLE(TABLE=ENER,
+           NOM_PARA='ENER_CIN',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=14e-5,),
+           PRECISION=1e-8,
+           VALE=-265.61970899411,
+           REFERENCE = 'NON_REGRESSION');
+
+TEST_TABLE(TABLE=ENER,
+           NOM_PARA='ENER_TOT',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=14e-5,),
+           PRECISION=1e-8,
+           VALE=12.150682708322,
+           REFERENCE = 'NON_REGRESSION');
+
+TEST_TABLE(TABLE=ENER,
+           NOM_PARA='TRAV_AMOR',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=14e-5,),
+           PRECISION=1e-8,
+           VALE=0.0,
+           REFERENCE = 'NON_REGRESSION');
+
+TEST_TABLE(TABLE=ENER,
+           NOM_PARA='TRAV_LIAI',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=14e-5,),
+           PRECISION=1e-8,
+           VALE=-0.59234613044326,
+           REFERENCE = 'NON_REGRESSION');
+
+TEST_TABLE(TABLE=ENER,
+           NOM_PARA='DISS_SCH',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=14e-5,),
+           PRECISION=1e-8,
+           VALE=254.06137241623,
+           REFERENCE = 'NON_REGRESSION');
 
 #############
 ############# CONTRAINTES SIEF_ELGA OBTENUES DU RESULTAT

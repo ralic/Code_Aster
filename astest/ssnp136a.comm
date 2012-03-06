@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE FONDATION FILANTE AVEC LA LOI DE CAMCLAY EN MECANIQUE DRAINE
 # ssnp136a.para = tps_job 370 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -465,8 +465,8 @@ resu2=CALC_ELEM(reuse   =resu2,
                 OPTION  =('SIGM_ELNO','VARI_ELNO'),
                 RESULTAT=resu2);
 
-resu2=CALC_NO(reuse   =resu2,
-              OPTION  ='VARI_NOEU',
+resu2=CALC_CHAMP(reuse   =resu2,
+              VARI_INTERNE='VARI_NOEU',
               RESULTAT=resu2);
 
 

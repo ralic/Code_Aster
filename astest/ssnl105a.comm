@@ -1,10 +1,10 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 #
 # TITRE CADRE DE BARRES HAUBANE.
 # ssnl105a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -107,7 +107,7 @@ RESU1=CALC_ELEM( reuse=RESU1,
                           RESULTAT=RESU1,
               )
 
-RESU1=CALC_NO(reuse=RESU1,  OPTION='FORC_NODA',
+RESU1=CALC_CHAMP(reuse=RESU1,  FORCE='FORC_NODA',
                         RESULTAT=RESU1)
 
 TEST_RESU(RESU=(
@@ -116,7 +116,7 @@ TEST_RESU(RESU=(
            _F(  RESULTAT = RESU1,          NUME_ORDRE = 2,
 CRITERE = 'ABSOLU',        PRECISION = 0.,
              PARA = 'ITER_GLOB',        VALE_I = 2),
-           
+
            ))
 
 TEST_RESU(RESU=(

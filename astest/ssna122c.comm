@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE BENCHMARK NAFEMS DE VALIDATION DU CONTACT 2 PUNCH (ROUNDED EDGES)
 # ssna122c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -132,9 +132,9 @@ RESU=CALC_ELEM(reuse =RESU,
                  RESULTAT=RESU,
                  OPTION=('SIEF_ELNO',),);
 
-RESU=CALC_NO(reuse =RESU,
+RESU=CALC_CHAMP(reuse =RESU,
                RESULTAT=RESU,
-               OPTION=('SIEF_NOEU','FORC_NODA','REAC_NODA',));
+               CONTRAINTE='SIEF_NOEU',FORCE=('FORC_NODA','REAC_NODA'));
 
 # Calcul avec frottement
 
@@ -158,9 +158,9 @@ RESUFr=CALC_ELEM(reuse =RESUFr,
                  RESULTAT=RESUFr,
                  OPTION=('SIEF_ELNO',),);
 
-RESUFr=CALC_NO(reuse =RESUFr,
+RESUFr=CALC_CHAMP(reuse =RESUFr,
                RESULTAT=RESUFr,
-               OPTION=('SIEF_NOEU','FORC_NODA','REAC_NODA',));
+               CONTRAINTE='SIEF_NOEU',FORCE=('FORC_NODA','REAC_NODA'));
 
 
 IMPR_RESU(MODELE=MO,

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE REPONSE HARMONIQUE CYLINDRE EN D.P. (PENTA6 HEXA8)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -481,9 +481,9 @@ TEST_RESU(RESU=(
        PRECISION=0.03,),
       ),)
 
-DYNAH=CALC_NO(reuse =DYNAH,
+DYNAH=CALC_CHAMP(reuse =DYNAH,
               RESULTAT=DYNAH,
-              OPTION='SIGM_NOEU',);
+              CONTRAINTE='SIGM_NOEU',);
 
 TEST_RESU(RESU=(
      _F(RESULTAT=DYNAH,

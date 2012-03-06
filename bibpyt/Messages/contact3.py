@@ -1,4 +1,4 @@
-#@ MODIF contact3 Messages  DATE 21/02/2012   AUTEUR ABBAS M.ABBAS 
+#@ MODIF contact3 Messages  DATE 05/03/2012   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -52,7 +52,7 @@ La direction d'appariement fixe données par le vecteur DIRE_APPA est nulle !
 
 16 : _(u"""
 Contact méthode continue.
-La méthode d'intégration n'est pas NOEUD, le champ VALE_CONT n'est pas créé.
+La méthode d'intégration n'est pas 'AUTO', le champ VALE_CONT n'est pas créé.
 """),
 
 18 : _(u"""

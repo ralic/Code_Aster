@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES
 # sdls114a.para = tps_job 240 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -249,11 +249,11 @@ RESUDYNA =CALC_CHAMP(reuse =RESUDYNA ,
                    CONTRAINTE=('SIEF_ELGA'),
                    RESULTAT=RESUDYNA ,);
 
-RESUDYNA =CALC_NO(reuse =RESUDYNA ,
+RESUDYNA =CALC_CHAMP(reuse =RESUDYNA ,
                    MODELE=MO,
                    CHAM_MATER=CM,
                    RESULTAT=RESUDYNA ,
-                   OPTION='REAC_NODA',);
+                   FORCE='REAC_NODA',);
 
 KT1 = POST_K_TRANS(RESU_TRANS = RES_DYNA,
                    K_MODAL = _F(TABL_K_MODA =GLMO1,

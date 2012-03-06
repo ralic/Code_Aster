@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE TUYAUTERIE SOUMISE A UNE EXCITATION EN DEPLACEMENT,
 # sdlx300a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -245,14 +245,14 @@ MODE1=CALC_ELEM( reuse=MODE1,
                      )
 
 #
-MODE1=CALC_NO( reuse=MODE1,            RESULTAT=MODE1,
-                           OPTION='FORC_NODA',
+MODE1=CALC_CHAMP( reuse=MODE1,            RESULTAT=MODE1,
+                           FORCE='FORC_NODA',
 
                    )
 
 #
-MODE1=CALC_NO( reuse=MODE1,            RESULTAT=MODE1,
-                           OPTION='REAC_NODA',
+MODE1=CALC_CHAMP( reuse=MODE1,            RESULTAT=MODE1,
+                           FORCE='REAC_NODA',
 
                    )
 

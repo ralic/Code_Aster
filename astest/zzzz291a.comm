@@ -1,22 +1,22 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DE POST_ELEM NORME EN 3D
 # zzzz291a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 import math
 DEBUT(CODE=_F( NOM = 'ZZZZ291A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),PAR_LOT='NON',);
@@ -39,7 +39,7 @@ DEBUT(CODE=_F( NOM = 'ZZZZ291A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),P
 
 MA=LIRE_MAILLAGE(FORMAT='MED');
 
-MA=DEFI_GROUP(MAILLAGE=MA,reuse=MA, 
+MA=DEFI_GROUP(MAILLAGE=MA,reuse=MA,
               CREA_GROUP_MA=(
                              _F(NOM='CUBE',TOUT='OUI'),
                              _F(NOM='1D',UNION=('AE','DA','HE','DH','AB',
@@ -49,7 +49,7 @@ MA=DEFI_GROUP(MAILLAGE=MA,reuse=MA,
                              _F(NOM='3D',  DIFFE=('CUBE','1D2D',),),
                             ),)
 
-MA=DEFI_GROUP(MAILLAGE=MA,reuse=MA, 
+MA=DEFI_GROUP(MAILLAGE=MA,reuse=MA,
               DETR_GROUP_MA=_F(NOM=('1D2D','1D'),),)
 
 MA=MODI_MAILLAGE(reuse=MA,  MAILLAGE=MA,
@@ -74,39 +74,39 @@ CHARG=AFFE_CHAR_MECA(MODELE=MO,
 
 RESU=MECA_STATIQUE(MODELE=MO, CHAM_MATER=CHMAT, EXCIT=_F(CHARGE=CHARG,),);
 RESU=CALC_ELEM(reuse=RESU, RESULTAT=RESU, OPTION='SIGM_ELNO')
-RESU=CALC_NO(reuse=RESU, RESULTAT=RESU, OPTION='SIGM_NOEU')
+RESU=CALC_CHAMP(reuse=RESU, RESULTAT=RESU, CONTRAINTE='SIGM_NOEU')
 
 
 # Extraction des champs (DEPL, SIGM_ELNO, SIEF_ELGA)
 
-DEPL=CREA_CHAMP(OPERATION='EXTR', 
+DEPL=CREA_CHAMP(OPERATION='EXTR',
                 TYPE_CHAM='NOEU_DEPL_R',
-                NOM_CHAM='DEPL',  
-                NUME_ORDRE=1, 
+                NOM_CHAM='DEPL',
+                NUME_ORDRE=1,
                 RESULTAT=RESU);
 
-SIGA=CREA_CHAMP(OPERATION='EXTR', 
+SIGA=CREA_CHAMP(OPERATION='EXTR',
                 TYPE_CHAM='ELGA_SIEF_R',
-                NOM_CHAM='SIEF_ELGA',  
-                NUME_ORDRE=1, 
+                NOM_CHAM='SIEF_ELGA',
+                NUME_ORDRE=1,
                 RESULTAT=RESU);
 
-SIGELNO=CREA_CHAMP(OPERATION='EXTR', 
+SIGELNO=CREA_CHAMP(OPERATION='EXTR',
                    TYPE_CHAM='ELNO_SIEF_R',
-                   NOM_CHAM='SIGM_ELNO',  
-                   NUME_ORDRE=1, 
+                   NOM_CHAM='SIGM_ELNO',
+                   NUME_ORDRE=1,
                    RESULTAT=RESU);
 
-SIGNOEU=CREA_CHAMP(OPERATION='EXTR', 
+SIGNOEU=CREA_CHAMP(OPERATION='EXTR',
                    TYPE_CHAM='NOEU_SIEF_R',
-                   NOM_CHAM='SIGM_NOEU',  
-                   NUME_ORDRE=1, 
+                   NOM_CHAM='SIGM_NOEU',
+                   NUME_ORDRE=1,
                    RESULTAT=RESU);
 
-DEPLELGA=CREA_CHAMP(OPERATION='DISC', 
+DEPLELGA=CREA_CHAMP(OPERATION='DISC',
                     TYPE_CHAM='ELGA_DEPL_R',
-                    PROL_ZERO='OUI', 
-                    CHAM_GD=DEPL, 
+                    PROL_ZERO='OUI',
+                    CHAM_GD=DEPL,
                     MODELE=MO, );
 
 
@@ -171,35 +171,35 @@ TEMPBB=CREA_CHAMP(OPERATION='EVAL',
 
 
 
-#  Integration de chaque champ 
+#  Integration de chaque champ
 
-Norme00=POST_ELEM(MODELE=MO, 
+Norme00=POST_ELEM(MODELE=MO,
                   CHAM_GD=TEMP00,
                   CHAM_MATER=CHMAT,
                   INTEGRALE=_F(NOM_CHAM='DEPL', NOM_CMP='X1', GROUP_MA='3D'),);
 
-Norme01=POST_ELEM(MODELE=MO, 
+Norme01=POST_ELEM(MODELE=MO,
                   CHAM_GD=TEMP00,
                   CHAM_MATER=CHMAT,
                   INTEGRALE=_F(NOM_CHAM='DEPL', NOM_CMP='X1', GROUP_MA='CUBE'),);
 
-Norme02=POST_ELEM(MODELE=MO, 
+Norme02=POST_ELEM(MODELE=MO,
                   CHAM_GD=TEMP00,
                   CHAM_MATER=CHMAT,
                   INTEGRALE=_F(NOM_CHAM='DEPL', NOM_CMP='X1', GROUP_MA='3D'),);
 
-Norme03=POST_ELEM(MODELE=MO, 
+Norme03=POST_ELEM(MODELE=MO,
                   CHAM_GD=TEMP00,
                   CHAM_MATER=CHMAT,
                   INTEGRALE=_F(NOM_CHAM='DEPL', NOM_CMP='X1', GROUP_MA='2D'),);
 
-Norme11=POST_ELEM(MODELE=MO, 
+Norme11=POST_ELEM(MODELE=MO,
                   CHAM_GD=TEMPAA,
                   CHAM_MATER=CHMAT,
                   INTEGRALE=_F(NOM_CHAM='SIEF_ELGA',NOM_CMP='X1', GROUP_MA='CUBE'),);
 
 
-Norme22=POST_ELEM(MODELE=MO, 
+Norme22=POST_ELEM(MODELE=MO,
                   CHAM_GD=TEMPBB,
                   CHAM_MATER=CHMAT,
                   INTEGRALE=_F(NOM_CHAM='SIGM_ELNO', NOM_CMP='X1', GROUP_MA='CUBE'),);
@@ -227,36 +227,36 @@ Norm22=math.sqrt(Norme22['INTE_X1',1]);
 
 TB3=POST_ELEM(NORME=_F(TYPE_NORM='L2',
                        TOUT='OUI',
-                       CHAM_GD=DEPL, 
+                       CHAM_GD=DEPL,
                        MODELE=MO),)
 
 TB4=POST_ELEM(NORME=_F(TYPE_NORM='L2',
                        GROUP_MA='CUBE',
-                       CHAM_GD=DEPL, 
+                       CHAM_GD=DEPL,
                        MODELE=MO),)
 
 NDEPL3D=POST_ELEM(NORME=_F(TYPE_NORM='L2',
                        GROUP_MA='CUBE',
                        CHAM_GD=DEPL,
-                       TYPE_MAILLE='3D', 
+                       TYPE_MAILLE='3D',
                        MODELE=MO),)
 
 TB6=POST_ELEM(NORME=_F(TYPE_NORM='L2',
                        GROUP_MA='CUBE',
                        CHAM_GD=DEPL,
-                       TYPE_MAILLE='2D', 
+                       TYPE_MAILLE='2D',
                        MODELE=MO),)
 
 # champ SIEF_ELGA
 
 TBA1=POST_ELEM(NORME=_F(TYPE_NORM='L2',
                         TOUT='OUI',
-                        CHAM_GD=SIGA, 
+                        CHAM_GD=SIGA,
                         MODELE=MO),)
 
 TBA2=POST_ELEM(NORME=_F(TYPE_NORM='L2',
                         GROUP_MA='CUBE',
-                        CHAM_GD=SIGA, 
+                        CHAM_GD=SIGA,
                         MODELE=MO),)
 
 # champ SIEF_ELGA (apres interpolation aux noeuds)
@@ -274,7 +274,7 @@ TBA4=POST_ELEM(NORME=_F(TYPE_NORM='L2',
 NSIEGA=POST_ELEM(NORME=_F(TYPE_NORM='L2',
                         GROUP_MA='CUBE',
                         CHAM_GD=SIGA,
-                        TYPE_MAILLE='3D', 
+                        TYPE_MAILLE='3D',
                         MODELE=MO),)
 
 
@@ -282,12 +282,12 @@ NSIEGA=POST_ELEM(NORME=_F(TYPE_NORM='L2',
 
 TBB1=POST_ELEM(NORME=_F(TYPE_NORM='L2',
                         TOUT='OUI',
-                        CHAM_GD=SIGELNO, 
+                        CHAM_GD=SIGELNO,
                         MODELE=MO),)
 
 TBB2=POST_ELEM(NORME=_F(TYPE_NORM='L2',
                         GROUP_MA='CUBE',
-                        CHAM_GD=SIGELNO, 
+                        CHAM_GD=SIGELNO,
                         MODELE=MO),)
 
 # champ SIGM_ELNO (apres interpolation aux noeuds)
@@ -305,13 +305,13 @@ TBB4=POST_ELEM(NORME=_F(TYPE_NORM='L2',
 NSIGNO=POST_ELEM(NORME=_F(TYPE_NORM='L2',
                         GROUP_MA='CUBE',
                         CHAM_GD=SIGELNO,
-                        TYPE_MAILLE='3D', 
+                        TYPE_MAILLE='3D',
                         MODELE=MO),)
 
 TBB6=POST_ELEM(NORME=_F(TYPE_NORM='L2',
                         GROUP_MA='CUBE',
                         CHAM_GD=SIGNOEU,
-                        TYPE_MAILLE='2D', 
+                        TYPE_MAILLE='2D',
                         MODELE=MO),)
 
 #  tests
@@ -441,7 +441,7 @@ TEST_TABLE(TABLE=TBB6,
 
 
 #  VERIFICATION DE LA PRISE EN COMPTE DU FILTRAGE DES ELEMENTS FINIS
-#  
+#
 # ======================================================================
 
 # Definition du probleme mixte 3D/coque
@@ -473,10 +473,10 @@ NSIGMIX=POST_ELEM(NORME=_F(TYPE_NORM='L2',
                            MODELE=MOMIX),)
 
 # Calcul de la norme L2 par POST_ELEM/INTEGRALE
-SIGNOMIX=CREA_CHAMP(OPERATION='EXTR', 
+SIGNOMIX=CREA_CHAMP(OPERATION='EXTR',
                     TYPE_CHAM='ELGA_SIEF_R',
-                    NOM_CHAM='SIEF_ELGA',  
-                    NUME_ORDRE=1, 
+                    NOM_CHAM='SIEF_ELGA',
+                    NUME_ORDRE=1,
                     RESULTAT=RESUMIX);
 
 F3DSIG=CREA_CHAMP(OPERATION='AFFE',

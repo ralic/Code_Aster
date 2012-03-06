@@ -1,9 +1,9 @@
-# MODIF  DATE 20/12/2011   AUTEUR BEAURAIN J.BEAURAIN 
+# MODIF  DATE 05/03/2012   AUTEUR DESOZA T.DESOZA 
 # TITRE INDENTATION ELASTOPLASTIQUE D UN DEMI-PLAN
 # ssnv506f.para = tps_job 780 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -105,17 +105,11 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST',
 
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(_F(JUSQU_A=0.01,
-                                    NOMBRE=8,),
-                                 _F(JUSQU_A=0.02,
-                                    NOMBRE=8,),
-                                 _F(JUSQU_A=0.03,
-                                    NOMBRE=1,),
-                                 _F(JUSQU_A=0.04,
-                                    NOMBRE=2,),
+                                    NOMBRE=10,),
                                  _F(JUSQU_A=0.1,
-                                    PAS=0.01,),
+                                    NOMBRE=18,),
                                  _F(JUSQU_A=1.0,
-                                    NOMBRE=18,),),);
+                                    NOMBRE=9,),),);
 
 #---------------------------------------------------------------------
 #              AFFECTATION DES CONDITIONS AUX LIMITES
@@ -131,15 +125,12 @@ DPLIMPO=AFFE_CHAR_MECA(MODELE=MO,
                                     DX=0.,),
                                  _F(GROUP_NO=('SBXY'),
                                     DZ=0.,),),
-#                       LIAISON_DDL=_F(GROUP_NO=('S','E'),
-#                                      DDL=('DY','DY'),
-#                                      COEF_MULT=(1.0,-1.0),
-#                                      COEF_IMPO=0.,),
                                     );
 
 CONT = DEFI_CONTACT(MODELE         = MO,
                     FORMULATION    = 'CONTINUE',
                     ALGO_RESO_CONT = 'NEWTON',
+                    LISSAGE        = 'OUI',
                     ZONE =(
                            _F(
                               GROUP_MA_MAIT='SMAI',
@@ -148,6 +139,7 @@ CONT = DEFI_CONTACT(MODELE         = MO,
                           ),
                    );
 
+DEFLIST=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LINST),),
 
 #----------------------------------------------------------------------
 #                         RESOLUTION
@@ -163,20 +155,30 @@ SSNV506=STAT_NON_LINE(MODELE=MO,
                                     GROUP_MA='BATI'),
                        COMP_ELAS=_F(RELATION='ELAS',
                                     GROUP_MA='SMAI',),
-                       INCREMENT=_F(LIST_INST=LINST,
+                       INCREMENT=_F(LIST_INST=DEFLIST,
 # ON NE VA PAS PLUS LOIN CAR LE TEMPS DU TEST EST DEJA GRAND
                                     INST_FIN=0.02,
                                     ),
                        METHODE='NEWTON_KRYLOV',
-                       SOLVEUR=_F(METHODE='GCPC',PRE_COND='LDLT_SP',PCENT_PIVOT=20),
-
+                       SOLVEUR=_F(METHODE='GCPC',
+                                  PRE_COND='LDLT_INC',
+                                  RENUM='SANS',
+                                  #PRE_COND='LDLT_SP',
+                                  #NMAX_ITER=300,
+                                  #PCENT_PIVOT=20,
+                                  #REAC_PRECOND=15,
+                                  ),
                        NEWTON=_F(MATRICE='TANGENTE',
                                  REAC_ITER=1,
                                  ),
-                       CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-06,
-                                      ITER_GLOB_MAXI=15,
-                                      ARRET='OUI',),
-                       INFO=1,);
+                       CONVERGENCE=_F(ITER_GLOB_MAXI=15,
+                       ),
+                       INFO=2,
+                       #INFO_DBG=('MECA_NON_LINE','FACTORISATION',),
+                       #INFO_DBG=('FACTORISATION',),
+                       #INFO_DBG=('APPARIEMENT',),
+                       INFO_DBG=('APPARIEMENT','FACTORISATION',),
+                       );
 
 #----------------------------------------------------------------------
 #                         POST TRAITEMENT
@@ -186,10 +188,6 @@ SSNV506=CALC_NO(reuse =SSNV506,
                  RESULTAT=SSNV506,
                  OPTION='REAC_NODA',
                  );
-
-LINST2=DEFI_LIST_REEL(DEBUT=0.0,
-                     INTERVALLE=_F(JUSQU_A=1.,
-                                   NOMBRE=10,),);
 
 TAB_REAC=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
                                  GROUP_NO='SESC',
@@ -252,8 +250,8 @@ TEST_TABLE(TABLE=TAB_REAC,
            NOM_PARA='DY',
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.02),
-           VALE=-3.691544E+05,
-           VERSION='9.2.20',
+           VALE=-3.6493430274394E+05,
+           VERSION='11.1.9',
            REFERENCE='NON_REGRESSION',);
 
 # TEST_TABLE(TABLE=TAB_REAC,

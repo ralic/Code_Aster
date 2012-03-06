@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE MODELISATION DE LA DIFFUSION DE L AIR DISSOUS DANS L EAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -236,9 +236,9 @@ U0=CALC_ELEM( reuse=U0,
               RESULTAT=U0,
             )
 
-U0=CALC_NO(  reuse=U0,
+U0=CALC_CHAMP(  reuse=U0,
              RESULTAT=U0,
-             OPTION=( 'SIGM_NOEU','SIEQ_NOEU')
+             CONTRAINTE='SIGM_NOEU',CRITERES='SIEQ_NOEU'
           )
 
 IMPR_RESU(RESU=_F(RESULTAT=U0,NOM_CHAM='SIEQ_ELNO'))

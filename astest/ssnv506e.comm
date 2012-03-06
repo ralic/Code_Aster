@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE INDENTATION ELASTOPLASTIQUE D'UN DEMI-PLAN
 # ssnv506e.para = tps_job 220 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -133,9 +133,9 @@ U=STAT_NON_LINE(MODELE=MO,
 #                         POST TRAITEMENT
 #------------------------------------------------------------------
 
-U=CALC_NO(reuse =U,
+U=CALC_CHAMP(reuse =U,
           RESULTAT=U,
-          OPTION='REAC_NODA',);
+          FORCE='REAC_NODA',);
 
 LINST2=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=1.,

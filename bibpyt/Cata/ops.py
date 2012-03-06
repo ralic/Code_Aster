@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ops Cata  DATE 06/03/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,6 +26,8 @@ import cPickle as pickle
 import re
 from math import sqrt, pi, atan2, tan, log, exp
 
+import os.path as osp
+
 # Modules Eficas
 import Accas
 from Accas import ASSD
@@ -34,6 +36,7 @@ from Noyau.N_info import message, SUPERV
 
 try:
    import aster
+   import aster_core
    aster_exists = True
    # Si le module aster est présent, on le connecte
    # au JDC
@@ -128,7 +131,12 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO, 
 
    commun_DEBUT_POURSUITE(self.jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO)
 
-   if (self.codex and os.path.isfile("glob.1") or os.path.isfile("bhdf.1")):
+   if self.codex:
+     if aster_exists:
+        repglob = aster_core.get_option("repglob")
+        glob1 = osp.join(repglob, "glob.1")
+        if not os.path.isfile(glob1) and not os.path.isfile("bhdf.1"):
+          UTMESS('F','SUPERVIS_89')
      # Le module d'execution est accessible et glob.1 est present
      # Pour eviter de rappeler plusieurs fois la sequence d'initialisation
      # on memorise avec l'attribut fichier_init que l'initialisation
@@ -224,8 +232,6 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO, 
      # POURSUITE
      if hasattr(self,'fichier_init'):
         return
-     if aster_exists:
-        UTMESS('F','SUPERVIS_89')
      self.make_poursuite()
 
 def get_pickled_context():

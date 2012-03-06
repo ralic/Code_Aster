@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE CYLINDRE THERMOELASTICITE LINEAIRE - TEST UMAT AXIS GDEF_LOG
 # umat001b.para = tps_job 120 mem_job 300Mo ncpus 1 liste_test S
@@ -117,9 +117,9 @@ RESU = CALC_ELEM( reuse= RESU,
                   RESULTAT = RESU,
                   OPTION = ('SIGM_ELNO','EPSG_ELGA'),
                   )
-RESU = CALC_NO ( reuse= RESU,
+RESU = CALC_CHAMP ( reuse= RESU,
                   RESULTAT = RESU,
-                  OPTION = 'SIGM_NOEU',
+                  CONTRAINTE='SIGM_NOEU',
                   )
 
 TEST_RESU(
@@ -187,9 +187,9 @@ RESUMAT = CALC_ELEM( reuse= RESUMAT,
                   RESULTAT = RESUMAT,
                   OPTION = ('SIGM_ELNO','EPSG_ELGA'),
                   )
-RESUMAT = CALC_NO ( reuse= RESUMAT,
+RESUMAT = CALC_CHAMP ( reuse= RESUMAT,
                   RESULTAT = RESUMAT,
-                  OPTION = 'SIGM_NOEU',
+                  CONTRAINTE='SIGM_NOEU',
                   )
 
 IMPR_RESU(RESU=_F(RESULTAT=RESUMAT,VALE_MAX='OUI',VALE_MIN='OUI',NUME_ORDRE=38))

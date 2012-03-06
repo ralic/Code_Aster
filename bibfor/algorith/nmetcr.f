@@ -2,7 +2,7 @@
      &                  DEFICO,RESOCO,SDIETO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 05/03/2012   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,7 +65,7 @@ C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX -----------------------------
 C
       INTEGER      ZIOCH,NBMAX
-      PARAMETER    (ZIOCH = 10,NBMAX=22 )
+      PARAMETER    (ZIOCH = 10,NBMAX=20 )
       INTEGER      NBCHAM,NBCHIN,NBCHOU
       CHARACTER*24 IOINFO,IOLCHA,KSTR
       INTEGER      JIOINF,JIOLCH
@@ -86,8 +86,7 @@ C -- NOM DU CHAMP DANS LA SD RESULTAT
      &              'VALE_CONT'   ,'MODE_FLAMB'  ,'DEPL_VIBR'   ,
      &              'DEPL_ABSOLU' ,'VITE_ABSOLU' ,'ACCE_ABSOLU' ,
      &              'FORC_NODA'   ,'STRX_ELGA'   ,'MODE_STAB'   ,
-     &              'FORC_EXTE'   ,'FORC_AMOR'   ,'FORC_LIAI'   ,
-     &              'FORC_INTE'/
+     &              'FORC_AMOR'   ,'FORC_LIAI'/
 C -- NOM DE LA GRANDEUR
       DATA NOMGD   /'DEPL_R','SIEF_R','VARI_R',
      &              'COMPOR','DEPL_R','DEPL_R',
@@ -95,8 +94,7 @@ C -- NOM DE LA GRANDEUR
      &              'DEPL_R','DEPL_R','DEPL_R',
      &              'DEPL_R','DEPL_R','DEPL_R',
      &              'DEPL_R','STRX_R','DEPL_R',
-     &              'DEPL_R','DEPL_R','DEPL_R',
-     &              'DEPL_R'/
+     &              'DEPL_R','DEPL_R'/
 C -- MOT-CLEF DANS ETAT_INIT, ' ' SI PAS DE MOT-CLEF
       DATA MOTCEI  /'DEPL','SIGM','VARI',
      &              ' '   ,'VITE','ACCE',
@@ -104,8 +102,7 @@ C -- MOT-CLEF DANS ETAT_INIT, ' ' SI PAS DE MOT-CLEF
      &              ' '   ,' '   ,' '   ,
      &              ' '   ,' '   ,' '   ,
      &              ' '   ,'STRX',' '   ,
-     &              ' '   ,' '   ,' '   ,
-     &              ' '/
+     &              ' '   ,' '/
 C -- LOCALISATION DU CHAMP
       DATA LOCCHA  /'NOEU','ELGA','ELGA',
      &              'ELGA','NOEU','NOEU',
@@ -113,8 +110,7 @@ C -- LOCALISATION DU CHAMP
      &              'NOEU','NOEU','NOEU',
      &              'NOEU','NOEU','NOEU',
      &              'NOEU','ELGA','NOEU',
-     &              'NOEU','NOEU','NOEU',
-     &              'NOEU'/
+     &              'NOEU','NOEU'/
 C -- .TRUE. SI CHAMP EST LU DANS ETAT_INIT
       DATA LETIN   /.TRUE. ,.TRUE. ,.TRUE. ,
      &              .FALSE.,.TRUE. ,.TRUE. ,
@@ -122,8 +118,7 @@ C -- .TRUE. SI CHAMP EST LU DANS ETAT_INIT
      &              .FALSE.,.FALSE.,.FALSE.,
      &              .TRUE. ,.TRUE. ,.TRUE. ,
      &              .FALSE.,.TRUE. ,.FALSE.,
-     &              .TRUE. ,.TRUE. ,.TRUE. ,
-     &              .TRUE./
+     &              .TRUE. ,.TRUE./
 C -- .TRUE. SI CHAMP EST ECRIT DANS ARCHIVAGE
       DATA LARCH   /.TRUE. ,.TRUE. ,.TRUE. ,
      &              .TRUE. ,.TRUE. ,.TRUE. ,
@@ -131,8 +126,7 @@ C -- .TRUE. SI CHAMP EST ECRIT DANS ARCHIVAGE
      &              .TRUE. ,.TRUE. ,.TRUE. ,
      &              .TRUE. ,.TRUE. ,.TRUE. ,
      &              .FALSE.,.TRUE. ,.TRUE. ,
-     &              .TRUE. ,.TRUE. ,.TRUE. ,
-     &              .TRUE./
+     &              .TRUE. ,.TRUE./
 C -- MOT-CLEF DANS OBSERVATION, ' ' SI PAS DE MOT-CLEF
       DATA MOTCOB  /'DEPL'        ,'SIEF_ELGA'   ,'VARI_ELGA'   ,
      &              ' '           ,'VITE'        ,'ACCE'        ,
@@ -140,8 +134,7 @@ C -- MOT-CLEF DANS OBSERVATION, ' ' SI PAS DE MOT-CLEF
      &              'VALE_CONT'   ,' '           ,' '           ,
      &              'DEPL_ABSOLU' ,'VITE_ABSOLU' ,'ACCE_ABSOLU' ,
      &              'FORC_NODA'   ,'STRX_ELGA'   ,' '           ,
-     &              ' '           ,' '           ,' '           ,
-     &              ' '/
+     &              ' '           ,' '/
 C
 C ----------------------------------------------------------------------
 C
@@ -258,8 +251,6 @@ C
       IF (LENER) THEN
         CHAACT(19) = .TRUE.
         CHAACT(20) = .TRUE.
-        CHAACT(21) = .TRUE.
-        CHAACT(22) = .TRUE.
       ENDIF
 C
 C --- DECOMPTE DES CHAMPS

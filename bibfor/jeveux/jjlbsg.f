@@ -1,8 +1,8 @@
       SUBROUTINE JJLBSG (IC, ID, IOC, IBACOL, IADMI, IADYN, LTOT) 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
+C MODIF JEVEUX  DATE 06/03/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -29,7 +29,7 @@ C IN    IOC   : IDENTIFICATUER DE COLLECTION
 C IN IBACOL   ; ADDRESSE DU DESCRIPTEUR DE COLLECTION
 C IN  IADMI   : ADDRESSE DE L'OBJET A LIBERER
 C IN  IADYN   : ADDRESSE DYNAMIQUE DE L'OBJET A LIBERER
-C IN   LTOT   : LONGUEUR EN ENTIERS LIBEREE
+C OUT   LTOT  : LONGUEUR EN ENTIERS LIBEREE
 C
 C ----------------------------------------------------------------------
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
@@ -78,7 +78,6 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       INTEGER        IDM, ISD, ISF, IL, LTYPI, LGS, IADDI(2),NBIOAV(2)
 C      
-      LTOT = 0 
       NBIOAV(1) = NBACCE(2*IC-1)
       NBIOAV(2) = NBACCE(2*IC  )
 C           
@@ -107,7 +106,7 @@ C
               IADD( JIADD(IC)+2*ID-1 ) = IADDI(1)
               IADD( JIADD(IC)+2*ID   ) = IADDI(2)
             ENDIF
-            LGS = ISZON(JISZON+IADMI-4) - IADMI + 5
+            LGS = ISZON(JISZON+IADMI-4) - IADMI + 4
             MCDYN = MCDYN - LGS*LOIS
             MLDYN = MLDYN + LGS*LOIS
             CALL HPDEALLC ( IADYN , NBFREE , IBID )
@@ -154,7 +153,7 @@ C
                 ISZON(JISZON + IBIADD -1 + 2*IOC-1) = IADDI(1)
                 ISZON(JISZON + IBIADD -1 + 2*IOC  ) = IADDI(2)
               ENDIF
-              LGS = ISZON(JISZON+IADMI-4) - IADMI + 5
+              LGS = ISZON(JISZON+IADMI-4) - IADMI + 4
               MCDYN = MCDYN - LGS*LOIS
               MLDYN = MLDYN + LGS*LOIS
               CALL HPDEALLC ( IADYN , NBFREE , IBID )

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI HYDROSTATIQUE SUIVI D UN TRIAXIAL A SUCCION FIXE
 # wtnv123a.para = tps_job 70 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -340,49 +340,43 @@ U1=CALC_ELEM(  reuse=U1,
                   RESULTAT=U1,
                         )
 
-U1=CALC_NO(  reuse=U1,     RESULTAT=U1,
-                       OPTION=( 'SIGM_NOEU',
-                       'VARI_NOEU',
-                           ),
+U1=CALC_CHAMP(  reuse=U1,     RESULTAT=U1,
+                       CONTRAINTE='SIGM_NOEU',VARI_INTERNE='VARI_NOEU',
                 )
 
 PCR=CALC_ELEM(RESULTAT=U1,
-              OPTION='VAEX_ELNO',
-              NOM_VARI='PCR'
+              OPTION='VAEX_ELNO',NOM_VARI='PCR'
               );
-PCR=CALC_NO(reuse=PCR,
+PCR=CALC_CHAMP(reuse=PCR,
             RESULTAT=PCR,
-            OPTION='VAEX_NOEU'
+            VARI_INTERNE='VAEX_NOEU',NOM_VARI='PCR'
             );
 
 INDETA=CALC_ELEM(RESULTAT=U1,
-                 OPTION='VAEX_ELNO',
-                 NOM_VARI='IND_ETA'
+                 OPTION='VAEX_ELNO',NOM_VARI='IND_ETA'
                  );
 
-INDETA=CALC_NO(reuse=INDETA,
+INDETA=CALC_CHAMP(reuse=INDETA,
                RESULTAT=INDETA,
-               OPTION='VAEX_NOEU'
+               VARI_INTERNE='VAEX_NOEU',NOM_VARI='IND_ETA'
                );
 
 SEUIL=CALC_ELEM(RESULTAT=U1,
-                OPTION='VAEX_ELNO',
-                NOM_VARI='SEUIL_HYD'
+                OPTION='VAEX_ELNO',NOM_VARI='SEUIL_HYD'
                 );
 
-SEUIL=CALC_NO(reuse=SEUIL,
+SEUIL=CALC_CHAMP(reuse=SEUIL,
               RESULTAT=SEUIL,
-              OPTION='VAEX_NOEU'
+              VARI_INTERNE='VAEX_NOEU',NOM_VARI='SEUIL_HYD'
               );
 
 INDHYD=CALC_ELEM(RESULTAT=U1,
-                 OPTION='VAEX_ELNO',
-                 NOM_VARI='IND_HYD'
+                 OPTION='VAEX_ELNO',NOM_VARI='IND_HYD'
                  );
 
-INDHYD=CALC_NO(reuse=INDHYD,
+INDHYD=CALC_CHAMP(reuse=INDHYD,
                RESULTAT=INDHYD,
-               OPTION='VAEX_NOEU'
+               VARI_INTERNE='VAEX_NOEU',NOM_VARI='IND_HYD'
                );
 
 #
@@ -393,7 +387,7 @@ INDHYD=CALC_NO(reuse=INDHYD,
 TEST_RESU(RESU=(
 
 # PRESSION CRITIQUE
- 
+
                 _F(    RESULTAT=PCR,
                        NUME_ORDRE=1,
                        NOM_CHAM='VAEX_ELNO',

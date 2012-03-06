@@ -7,7 +7,7 @@
      &                    INPSCO,NBPASE,SOLVEU)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2012   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 05/03/2012   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -102,7 +102,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ---------------------------
       PARAMETER ( NBTYAR = 6 )
       INTEGER IWK0, IWK1, IWK2
       INTEGER NRPASE, NRORES
-      INTEGER IFM, NIV, ETAUSR, IRET
+      INTEGER IFM, NIV, ETAUSR
       INTEGER IDEPL1
       INTEGER IVITE1, IVITE2
       INTEGER IACCE1
@@ -159,8 +159,8 @@ C
       DEUXPI = R8DEPI()
       IARCHI = NUME
       ENER=.FALSE.
-      CALL JEEXIN(SOLVEU(1:8)//'.ENER      .VALE',IRET)
-      IF (IRET.NE.0) THEN
+      CALL GETFAC('ENERGIE',IAUX)
+      IF (IAUX.NE.0) THEN
         ENER=.TRUE.
       ENDIF
 C

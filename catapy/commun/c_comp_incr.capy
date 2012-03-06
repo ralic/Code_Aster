@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 09/01/2012   AUTEUR PROIX J-M.PROIX 
+#& MODIF COMMUN  DATE 05/03/2012   AUTEUR PROIX J-M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -110,16 +110,21 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
 
            DEFORMATION       =SIMP(statut='f',typ='TXM',defaut="PETIT",
                                    into=("PETIT","PETIT_REAC","GROT_GDEP","SIMO_MIEHE","GDEF_HYPO_ELAS","GREEN_REAC","GDEF_LOG")),
-           ALGO_C_PLAN       =SIMP(statut='f',typ='TXM',defaut="ANALYTIQUE",into=("DEBORST","ANALYTIQUE",)),
-           RESI_DEBO_MAXI    =SIMP(statut='f',typ='R',fr="Critère d'arret absolu pour assurer la condition de contraintes planes",),
+           
+           # gestion des contraintes planes par la méthode itérative
 
-           b_resideborst     =BLOC(condition = " RESI_DEBO_MAXI == None ",
-                                      fr="Critère d'arret relatif pour assurer la condition de contraintes planes",
-               RESI_DEBO_RELA   =SIMP(statut='f',typ='R',defaut= 1.0E-6),
+              RESI_CPLAN_MAXI    =SIMP(statut='f',typ='R',
+                                      fr="Critère d'arret absolu pour assurer la condition de contraintes planes"),
+                                      
+                   b_resi_cplan  =BLOC(condition = " RESI_CPLAN_MAXI == None ",
+                   
+              RESI_CPLAN_RELA   =SIMP(statut='f',typ='R',defaut= 1.0E-6,
+                                      fr="Critère d'arret relatif pour assurer la condition de contraintes planes"),
                                   ),
-
-           ALGO_1D           =SIMP(statut='f',typ='TXM',defaut="ANALYTIQUE",into=("DEBORST","ANALYTIQUE",)),
-           ITER_MAXI_DEBORST =SIMP(statut='f',typ='I',defaut= 1),
+                                  
+              ITER_CPLAN_MAXI =SIMP(statut='f',typ='I',defaut= 1,
+                                      fr="Nombre d'itérations maxi pour assurer la condition de contraintes planes"),
+           #  
            RESI_INTE_RELA    =SIMP(statut='f',typ='R',defaut= 1.0E-6),
            ITER_INTE_MAXI    =SIMP(statut='f',typ='I',defaut= 20 ),
 

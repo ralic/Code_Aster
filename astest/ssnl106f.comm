@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # RESPONSABLE PROIX J.M.PROIX
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 # ssnl106f.para = tps_job 140 mem_job 300Mo ncpus 1 liste_test S
@@ -165,9 +165,9 @@ REST2=POST_CHAMP(RESULTAT=REST,
                  EXTR_COQUE=_F(NOM_CHAM='VARI_ELNO',
                                NUME_COUCHE=1,
                                NIVE_COUCHE='SUP',),);
-REST=CALC_NO(reuse =REST,
+REST=CALC_CHAMP(reuse =REST,
              RESULTAT=REST,
-             OPTION='REAC_NODA',
+             FORCE='REAC_NODA',
              );
 
 DXB=RECU_FONCTION(RESULTAT=REST,
@@ -307,9 +307,9 @@ RESM2=POST_CHAMP(RESULTAT=RESM,
                  EXTR_COQUE=_F(NOM_CHAM='VARI_ELNO',
                                NUME_COUCHE=1,
                                NIVE_COUCHE='SUP',),);
-RESM=CALC_NO(reuse =RESM,
+RESM=CALC_CHAMP(reuse =RESM,
              RESULTAT=RESM,
-             OPTION='REAC_NODA',
+             FORCE='REAC_NODA',
              );
 
 ME = 4642.17;

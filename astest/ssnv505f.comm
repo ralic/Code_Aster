@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE CONTACT DE DEUX POUTRES EN PETITES DEFORMATIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -160,10 +160,10 @@ ULAG=STAT_NON_LINE(MODELE=MODE,
                 ARCHIVAGE=_F(LIST_INST=L_ARCH),
                 INFO=1,);
 
-ULAG=CALC_NO(reuse =ULAG,
+ULAG=CALC_CHAMP(reuse =ULAG,
           RESULTAT=ULAG,
 
-          OPTION='FORC_NODA',
+          FORCE='FORC_NODA',
 
 
          );
@@ -222,10 +222,10 @@ UCON=STAT_NON_LINE(MODELE=MODE,
                 ARCHIVAGE=_F(LIST_INST=L_ARCH),
                 INFO=1,);
 
-UCON=CALC_NO(reuse =UCON,
+UCON=CALC_CHAMP(reuse =UCON,
           RESULTAT=UCON,
 
-          OPTION='FORC_NODA',
+          FORCE='FORC_NODA',
 
 
          );

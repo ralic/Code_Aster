@@ -1,9 +1,9 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 05/03/2012   AUTEUR PROIX J-M.PROIX 
 # TITRE ROCKING OF A 2D BLOCK RESTING ON A GROUND TABLE
 # sdnv105c.para = tps_job 2020 mem_job 1024Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -14,7 +14,7 @@
 # MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
 # GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PaUBLIC LICENSE
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
@@ -255,8 +255,7 @@ u_pesa=DYNA_NON_LINE(MODELE=MO,
                             _F(CHARGE=CL_fix_t)),
                      CONTACT  = CHA_conp,
                      COMP_INCR=_F(RELATION='ELAS',
-                                  DEFORMATION='GROT_GDEP',
-                                  ALGO_C_PLAN='ANALYTIQUE'),
+                                  DEFORMATION='GROT_GDEP',),
                      INCREMENT=_F(LIST_INST=L_INST_p,
                                   INST_FIN=-0.825),
                      SCHEMA_TEMPS=_F(SCHEMA='HHT',
@@ -302,8 +301,7 @@ u_ini_la=DYNA_NON_LINE(MODELE=MO,
                                  FONC_MULT=ramp_ila)),
                        CONTACT  = CHA_conp,
                        COMP_INCR=_F(RELATION='ELAS',
-                                    DEFORMATION='GROT_GDEP',
-                                    ALGO_C_PLAN='ANALYTIQUE'),
+                                    DEFORMATION='GROT_GDEP'),
                        ETAT_INIT=_F(EVOL_NOLI=u_pesa,
                                     INST=-1.05,
                                     PRECISION=1e-05),
@@ -340,8 +338,7 @@ u_lacher=DYNA_NON_LINE(MODELE=MO, CHAM_MATER=CHMAT,
                               ),
                        CONTACT  =CHA_cont,
                        COMP_INCR=_F(RELATION='ELAS',
-                                    DEFORMATION='GROT_GDEP',
-                                    ALGO_C_PLAN='ANALYTIQUE'),
+                                    DEFORMATION='GROT_GDEP'),
                        ETAT_INIT=_F(DEPL = Ini_depl,
                                     VITE = Ini_vit0),
                        INCREMENT=_F(LIST_INST=L_INST_c,
@@ -365,8 +362,7 @@ u_lacher=DYNA_NON_LINE(reuse =u_lacher, MODELE=MO,
                               ),
                        CONTACT  =CHA_cont,
                        COMP_INCR=_F(RELATION='ELAS',
-                                    DEFORMATION='GROT_GDEP',
-                                    ALGO_C_PLAN='ANALYTIQUE'),
+                                    DEFORMATION='GROT_GDEP'),
                        ETAT_INIT=_F(EVOL_NOLI=u_lacher,
                                     INST=0.0025,
                                     PRECISION=1e-07),
@@ -392,8 +388,7 @@ u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                               ),
                        CONTACT  =CHA_cont,
                        COMP_INCR=_F(RELATION='ELAS',
-                                    DEFORMATION='GROT_GDEP',
-                                    ALGO_C_PLAN='ANALYTIQUE'),
+                                    DEFORMATION='GROT_GDEP',),
                        ETAT_INIT=_F(EVOL_NOLI=u_lacher,
                                     INST=TC1M,
                                     PRECISION=1e-07),
@@ -428,8 +423,7 @@ u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                               ),
                        CONTACT  =CHA_cont,
                        COMP_INCR=_F(RELATION='ELAS',
-                                    DEFORMATION='GROT_GDEP',
-                                    ALGO_C_PLAN='ANALYTIQUE'),
+                                    DEFORMATION='GROT_GDEP',),
                        ETAT_INIT=_F(EVOL_NOLI=u_lacher,
                                     INST=TC1P,
                                     PRECISION=1e-07),
@@ -459,8 +453,7 @@ u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                               ),
                        CONTACT  =CHA_cont,
                        COMP_INCR=_F(RELATION='ELAS',
-                                    DEFORMATION='GROT_GDEP',
-                                    ALGO_C_PLAN='ANALYTIQUE'),
+                                    DEFORMATION='GROT_GDEP',),
                        ETAT_INIT=_F(EVOL_NOLI=u_lacher,
                                     INST=TC2M,
                                     PRECISION=1e-07),
@@ -483,17 +476,12 @@ u_lacher=DYNA_NON_LINE(reuse =u_lacher,
 # # # # # # # # # # # #
 
 u_lacher=CALC_CHAMP(reuse =u_lacher,
-
-
                    RESULTAT=u_lacher,
                    TOUT_ORDRE='OUI',
-                    CONTRAINTE=('SIGM_ELNO'));
+                    CONTRAINTE=('SIGM_ELNO'),
+                    FORCE=('FORC_NODA'),
+                    );
 
-u_lacher=CALC_NO(reuse =u_lacher,
-                 RESULTAT=u_lacher,
-                 TOUT_ORDRE='OUI',
-                 OPTION='FORC_NODA',
-                          );
 
 #B_tr_ext=POST_ELEM(TRAV_EXT=_F(),
 #                   RESULTAT=u_lacher,

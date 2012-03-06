@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE ETUDE  : ESSAI TRIAXIAL DRAINE
 # ssnv135a.para = tps_job 210 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -212,9 +212,9 @@ U2=CALC_ELEM( reuse=U2,     RESULTAT=U2,
                         OPTION=('EPSI_ELNO', )
                 )
 
-U2=CALC_NO(  reuse=U2,     RESULTAT=U2,
+U2=CALC_CHAMP(  reuse=U2,     RESULTAT=U2,
                    NUME_ORDRE=(10, 20, 40, 60, 100,),
-                       OPTION=('EPSI_NOEU', 'SIGM_NOEU', )
+                       DEFORMATION='EPSI_NOEU',CONTRAINTE='SIGM_NOEU'
                )
 
 #-------------------------
@@ -549,9 +549,9 @@ V2=CALC_ELEM( reuse=V2,     RESULTAT=V2,
                         OPTION=('EPSI_ELNO', )
                 )
 
-V2=CALC_NO(  reuse=V2,     RESULTAT=V2,
+V2=CALC_CHAMP(  reuse=V2,     RESULTAT=V2,
                    NUME_ORDRE=(10, 20, 40, 60, 100,),
-                       OPTION=('EPSI_NOEU', 'SIGM_NOEU', )
+                       DEFORMATION='EPSI_NOEU',CONTRAINTE='SIGM_NOEU'
                )
 
 #-------------------------
@@ -886,9 +886,9 @@ W2=CALC_ELEM( reuse=W2,     RESULTAT=W2,
                         OPTION=('EPSI_ELNO', )
                 )
 
-W2=CALC_NO(  reuse=W2,     RESULTAT=W2,
+W2=CALC_CHAMP(  reuse=W2,     RESULTAT=W2,
                     NUME_ORDRE=(10, 20, 40, 60, 100,),
-                       OPTION=('EPSI_NOEU', 'SIGM_NOEU', )
+                       DEFORMATION='EPSI_NOEU',CONTRAINTE='SIGM_NOEU'
                )
 
 #-------------------------
@@ -1171,9 +1171,9 @@ W3=CALC_ELEM( reuse=W3,     RESULTAT=W3,
                         OPTION=('EPSI_ELNO', )
                 )
 
-W3=CALC_NO(  reuse=W3,     RESULTAT=W3,
+W3=CALC_CHAMP(  reuse=W3,     RESULTAT=W3,
                     NUME_ORDRE=(10, 20, 40,),
-                       OPTION=('EPSI_NOEU', 'SIGM_NOEU', )
+                       DEFORMATION='EPSI_NOEU',CONTRAINTE='SIGM_NOEU'
                )
 
 #-------------------------
@@ -1389,9 +1389,9 @@ W4=CALC_ELEM( reuse=W4,     RESULTAT=W4,
                         OPTION=('EPSI_ELNO', )
                 )
 
-W4=CALC_NO(  reuse=W4,     RESULTAT=W4,
+W4=CALC_CHAMP(  reuse=W4,     RESULTAT=W4,
                     NUME_ORDRE=(10, 20, 40,),
-                       OPTION=('EPSI_NOEU', 'SIGM_NOEU', )
+                       DEFORMATION='EPSI_NOEU',CONTRAINTE='SIGM_NOEU'
                )
 
 #-------------------------

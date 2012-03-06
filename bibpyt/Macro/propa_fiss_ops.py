@@ -1,8 +1,8 @@
-#@ MODIF propa_fiss_ops Macro  DATE 01/12/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF propa_fiss_ops Macro  DATE 06/03/2012   AUTEUR COLOMBO D.COLOMBO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -463,6 +463,8 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
       Fissmult = fiss0.sdj.FONDMULT.get()
       Nbfiss = len(Fissmult)/2
 
+      FondmultK = [None]*len(Fissmult)
+
 # Recuperation des K et calcul de DeltaK
       SIF = Fiss['TABLE']
       nbinst = 1
@@ -485,48 +487,69 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
       DKeq[numfis] = [None]*nbptfon
       BETA[numfis] = [None]*nbptfon
 
+      posFondmultK = 0
+
 # Lorsque le calcul porte sur plusieurs instants
       if nbinst > 1 :
-        for k in range(nbptfon) :
-          if (dime == 2) : __tmp = __tabp
-          if (dime == 3) :
-              if __tabp.PT_FOND :
-                  __tmp = __tabp.PT_FOND==(k+1)
+        postabfiss = 0
+
+        for z in range(Nbfiss) :
+          if ('NUME_FOND' in __tabp.values()) :
+              __tabfiss = __tabp.NUME_FOND == (z+1)
+              luntabfiss = len(__tabfiss['NUME_FOND'])/nbinst
+          else :
+             __tabfiss = __tabp
+             luntabfiss = len(__tabfiss['K1'])/nbinst
+
+          if posFondmultK == 0 :
+            FondmultK[posFondmultK] = 1
+            FondmultK[posFondmultK+1] = luntabfiss
+          else:
+            FondmultK[posFondmultK] = FondmultK[posFondmultK-1] + dime - 2
+            FondmultK[posFondmultK+1] = FondmultK[posFondmultK]+luntabfiss-1
+          posFondmultK = posFondmultK+2
+ 
+          for k in range(luntabfiss) :
+            if (dime == 2) : __tmp = __tabfiss
+            if (dime == 3) :
+              if ('PT_FOND' in __tabfiss.values()) :
+                  __tmp = __tabfiss.PT_FOND==(k+1)
                   indice_k = k
               else:
-                  __tmp = __tabp.NUM_PT==(k+1)
+                  __tmp = __tabfiss.NUM_PT==(k+1)
                   indice_k = 0
-          if ('ABSC_CURV' in __tmp.values()):
-              abscisse_curv_courante = __tmp.values()['ABSC_CURV'][indice_k]
-          else:
-              abscisse_curv_courante = 0.
-          ddkeq = NP.sqrt(YOUNG)*(NP.sqrt(max(__tmp.values()['G']))
-                       - NP.sqrt(min(__tmp.values()['G'])))
-          rminmax = NP.sqrt(min(__tmp.values()['G'])) / NP.sqrt(max(__tmp.values()['G']))
-          DKeq[numfis][k] = [abscisse_curv_courante, ddkeq ]
-          RmM[numfis][k]  =   [abscisse_curv_courante, rminmax ]
-          if ('BETA' in __tmp.values()):
-               dbeta = max(__tmp.values()['BETA'])-min(__tmp.values()['BETA'])
-               if dbeta > (5./180.*3.1415) :
-                   UTMESS('F','XFEM2_72')
-               BETA[numfis][k] = [abscisse_curv_courante, __tmp.values()['BETA'][0] ]
-          else:
-               if (dime == 2) :
-                  k1 = __tmp.values()['K1'][k]
-                  k2 = __tmp.values()['K2'][k]
-                  BETA[numfis][k]=[0., betaf(k1,k2)]
-               else:
-                  k1 = __tmp.values()['K1']
-                  k2 = __tmp.values()['K2']
-                  betat = [0.]*nbinst
-                  for jt in range(nbinst) :
-                      betat[jt] = betaf(k1[jt],k2[jt])
-# ANGLE BETA NE DOIT PAS TROP VARIER ENTRE LES PAS DE TEMPS
-                  dbeta = max(betat) - min(betat)
-                  if dbeta > (5./180.*3.1415) :
+              if ('ABSC_CURV' in __tmp.values()):
+                 abscisse_curv_courante = __tmp.values()['ABSC_CURV'][indice_k]
+              else:
+                 abscisse_curv_courante = 0.
+              ddkeq = NP.sqrt(YOUNG)*(NP.sqrt(max(__tmp.values()['G']))
+                         - NP.sqrt(min(__tmp.values()['G'])))
+              rminmax = NP.sqrt(min(__tmp.values()['G'])) / NP.sqrt(max(__tmp.values()['G']))
+              DKeq[numfis][postabfiss] = [abscisse_curv_courante, ddkeq ]
+              RmM[numfis][postabfiss]  = [abscisse_curv_courante, rminmax ]
+              if ('BETA' in __tmp.values()):
+                 dbeta = max(__tmp.values()['BETA'])-min(__tmp.values()['BETA'])
+                 if dbeta > (5./180.*3.1415) :
                      UTMESS('F','XFEM2_72')
-          VMAX0 = dadN(coef_C,coef_N,coef_M,DKeq[numfis][k][1],RmM[numfis][k][1])
-          VMAX = max(VMAX,VMAX0 )
+                 BETA[numfis][postabfiss] = [abscisse_curv_courante, __tmp.values()['BETA'][0] ]
+              else:
+                 if (dime == 2) :
+                    k1 = __tmp.values()['K1'][k]
+                    k2 = __tmp.values()['K2'][k]
+                    BETA[numfis][postabfiss]=[0., betaf(k1,k2)]
+                 else:
+                    k1 = __tmp.values()['K1']
+                    k2 = __tmp.values()['K2']
+                    betat = [0.]*nbinst
+                    for jt in range(nbinst) :
+                        betat[jt] = betaf(k1[jt],k2[jt])
+# ANGLE BETA NE DOIT PAS TROP VARIER ENTRE LES PAS DE TEMPS
+                    dbeta = max(betat) - min(betat)
+                    if dbeta > (5./180.*3.1415) :
+                       UTMESS('F','XFEM2_72')
+              VMAX0 = dadN(coef_C,coef_N,coef_M,DKeq[numfis][postabfiss][1],RmM[numfis][postabfiss][1])
+              VMAX = max(VMAX,VMAX0 )
+              postabfiss = postabfiss+1
 # Lorsque le calcul porte un seul instant
       else :
         if COMP_LINE == None :
@@ -538,32 +561,53 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
            CMAX = COMP_LINE['COEF_MULT_MAXI']
         if (min(__tab1['G']) < 0.) :
            UTMESS('F','RUPTURE1_46')
+ 
+        postabfiss = 0
 
-        for k in range(nbptfon) :
-          if (dime == 3) :
-              if __tabp.PT_FOND :
-                  indice_k = k
-          else:
-                  indice_k = 0
-          if ('ABSC_CURV' in __tabp.para) :
-              abscisse_curv_courante = __tab1['ABSC_CURV'][k]
-          else:
-              abscisse_curv_courante = 0.
-          DKeq[numfis][k] =   [abscisse_curv_courante, NP.sqrt(YOUNG)*NP.sqrt(__tab1['G'][k]) ]
-          RmM[numfis][k]  =   [abscisse_curv_courante, CMIN/CMAX ]
-          if ('BETA' in __tab1.values()):
-               BETA[numfis][k] = [abscisse_curv_courante, __tab1['BETA'][0] ]
-          else:
-              k1 = __tab1['K1'][indice_k]
-              k2 = __tab1['K2'][indice_k]
-              BETA[numfis][indice_k]=[abscisse_curv_courante, betaf(k1,k2)]
-          VMAX0 = dadN(coef_C,coef_N,coef_M,DKeq[numfis][k][1],RmM[numfis][k][1])
-          VMAX = max(VMAX,VMAX0 )
+        for z in range(Nbfiss) :
+          if ('NUME_FOND' in __tabp.values()) :
+             __tabfiss = __tabp.NUME_FOND == (z+1)
+             luntabfiss = len(__tabfiss['NUME_FOND'])
+          else :
+             __tabfiss = __tabp
+             luntabfiss = len(__tabfiss['K1'])/nbinst
 
+          if posFondmultK == 0 :
+            FondmultK[posFondmultK] = 1
+            FondmultK[posFondmultK+1] = luntabfiss
+          else:
+            FondmultK[posFondmultK] = FondmultK[posFondmultK-1] + dime - 2
+            FondmultK[posFondmultK+1] = FondmultK[posFondmultK]+luntabfiss-1
+          posFondmultK = posFondmultK+2
+ 
+          for k in range(luntabfiss) :
+             if (dime == 3) :
+                if __tabfiss.PT_FOND :
+                    indice_k = k
+             else:
+                    indice_k = 0
+             if ('ABSC_CURV' in __tabfiss.para) :
+                abscisse_curv_courante = __tabfiss.values()['ABSC_CURV'][k]
+             else:
+                abscisse_curv_courante = 0.
+
+             DKeq[numfis][postabfiss] =   [abscisse_curv_courante, NP.sqrt(YOUNG)*NP.sqrt(__tabfiss.values()['G'][k]) ]
+             RmM[numfis][postabfiss]  =   [abscisse_curv_courante, CMIN/CMAX ]
+             if ('BETA' in __tabfiss.values()):
+                BETA[numfis][postabfiss] = [abscisse_curv_courante, __tabfiss.values()['BETA'][k] ]
+             else:
+                k1 = __tabfiss.values()['K1'][indice_k]
+                k2 = __tabfiss.values()['K2'][indice_k]
+                BETA[numfis][postabfiss]=[abscisse_curv_courante, betaf(k1,k2)]
+             VMAX0 = dadN(coef_C,coef_N,coef_M,DKeq[numfis][postabfiss][1],RmM[numfis][postabfiss][1])
+             VMAX = max(VMAX,VMAX0 )
+             postabfiss = postabfiss+1
 
       numfis = numfis + 1
 
 # CALCUL DU NOMBRE DE CYCLES EQUIVALENTS
+    if (VMAX < NP.finfo(NP.float).eps) :
+           UTMESS('F','XFEM2_84')
     NBCYCL = Damax / VMAX
     print 'AVANCE MAXIMALE DU FOND DE FISSURE',Damax
     print 'NOMBRE DE CYCLES DE FATIGUE',NBCYCL
@@ -735,8 +779,8 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
              Zf =  mm[numfis].cn[numptfo[j][i]][2]
              C = [Xf,Yf,Zf]
              VPVNi = InterpolBaseFiss(abscf[j][i],Basefo[6*(Fondmult[2*j]-1):6*Fondmult[2*j+1]], Listfo[4*(Fondmult[2*j]-1):4*Fondmult[2*j+1]])
-             DKeqloc = InterpolationLineaire(abscf[j][i], DKeq[numfis][Fondmult[2*j]-1:Fondmult[2*j+1]])
-             Rloc  = InterpolationLineaire(abscf[j][i], RmM[numfis][Fondmult[2*j]-1:Fondmult[2*j+1]])
+             DKeqloc = InterpolationLineaire(abscf[j][i], DKeq[numfis][FondmultK[2*j]-1:FondmultK[2*j+1]])
+             Rloc  = InterpolationLineaire(abscf[j][i], RmM[numfis][FondmultK[2*j]-1:FondmultK[2*j+1]])
              if DKeqloc<=0 :
                UTMESS('F','RUPTURE1_49')
              # Tangentes aux extremites
@@ -749,7 +793,7 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
                VPVNi[4] = Vextr[1]
                VPVNi[5] = Vextr[2]
              # Calcul des points propages
-             beta = InterpolationLineaire(abscf[j][i], BETA[numfis])
+             beta = InterpolationLineaire(abscf[j][i], BETA[numfis][FondmultK[2*j]-1:FondmultK[2*j+1]])
              Vloc = NBCYCL*dadN(coef_C,coef_N,coef_M,DKeqloc,Rloc)
              Xf2 = Xf + (VPVNi[3]*cos(beta)+VPVNi[0]*sin(beta))*Vloc
              Yf2 = Yf + (VPVNi[4]*cos(beta)+VPVNi[1]*sin(beta))*Vloc
@@ -806,8 +850,8 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
                 Yf =  mm[numfis].cn[numptfo[j][i]][1]
                 Zf =  mm[numfis].cn[numptfo[j][i]][2]
                 VPVNi = InterpolBaseFiss(abscf[j][i],Basefo[6*(Fondmult[2*j]-1):6*Fondmult[2*j+1]], Listfo[4*(Fondmult[2*j]-1):4*Fondmult[2*j+1]])
-                DKeqloc = InterpolationLineaire(abscf[j][i], DKeq[numfis][Fondmult[2*j]-1:Fondmult[2*j+1]])
-                Rloc  = InterpolationLineaire(abscf[j][i], RmM[numfis][Fondmult[2*j]-1:Fondmult[2*j+1]])
+                DKeqloc = InterpolationLineaire(abscf[j][i], DKeq[numfis][FondmultK[2*j]-1:FondmultK[2*j+1]])
+                Rloc  = InterpolationLineaire(abscf[j][i], RmM[numfis][FondmultK[2*j]-1:FondmultK[2*j+1]])
                 if DKeqloc <= 0 :
                   UTMESS('F','RUPTURE1_49')
                 # Tangentes aux extremites
@@ -820,7 +864,7 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
                   VPVNi[4] = Vextr[1]
                   VPVNi[5] = Vextr[2]
                 # Calcul des points propages
-                beta = InterpolationLineaire(abscf[j][i], BETA[numfis])
+                beta = InterpolationLineaire(abscf[j][i], BETA[numfis][FondmultK[2*j]-1:FondmultK[2*j+1]])
                 Vloc = NBCYCL*dadN(coef_C,coef_N,coef_M,DKeqloc,Rloc)
                 Xf2 = Xf + (VPVNi[3]*cos(beta)+VPVNi[0]*sin(beta))*Vloc
                 Yf2 = Yf + (VPVNi[4]*cos(beta)+VPVNi[1]*sin(beta))*Vloc

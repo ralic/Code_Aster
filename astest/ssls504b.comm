@@ -1,4 +1,4 @@
-# MODIF  DATE 30/01/2012   AUTEUR DESROCHE X.DESROCHES 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # RESPONSABLE DESROCHE X.DESROCHES
 # TITRE  : PLAQUE CARREE COMPOSITE A 3 COUCHES SIMPLEMENT SUPPORTEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -147,9 +147,9 @@ C2_M=POST_CHAMP(RESULTAT=RESU,
                 EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=2,
                                    NIVE_COUCHE='MOY',),);
-C2_M=CALC_NO(reuse =C2_M,
+C2_M=CALC_CHAMP(reuse =C2_M,
              RESULTAT=C2_M,
-             OPTION='SIGM_NOEU',);
+             CONTRAINTE='SIGM_NOEU',);
 
 SIG_C2_M=CREA_CHAMP(RESULTAT=C2_M,
                     OPERATION='EXTR',
@@ -161,9 +161,9 @@ C2_S=POST_CHAMP(RESULTAT=RESU,
                 EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=2,
                                    NIVE_COUCHE='SUP',),);
-C2_S=CALC_NO(reuse =C2_S,
+C2_S=CALC_CHAMP(reuse =C2_S,
               RESULTAT=C2_S,
-              OPTION='SIGM_NOEU',);
+              CONTRAINTE='SIGM_NOEU',);
 
 SIG_C2_S=CREA_CHAMP(RESULTAT=C2_S,
                     OPERATION='EXTR',
@@ -177,9 +177,9 @@ C3_S=POST_CHAMP(RESULTAT=RESU,
                 EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=3,
                                    NIVE_COUCHE='SUP',),);
-C3_S=CALC_NO(reuse =C3_S,
+C3_S=CALC_CHAMP(reuse =C3_S,
              RESULTAT=C3_S,
-             OPTION='SIGM_NOEU',);
+             CONTRAINTE='SIGM_NOEU',);
 
 SIG_C3_S=CREA_CHAMP(RESULTAT=C3_S,
                     OPERATION='EXTR',

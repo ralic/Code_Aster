@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE EN INCOMPRESSIBLE GRANDES DEFORMATIONS (TRIA6 QUAD8) PLAN
 # ssnv112c.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -91,9 +91,9 @@ EVOL=CALC_ERREUR(reuse =EVOL,
                  RESULTAT=EVOL,
                  OPTION=('ERME_ELEM','ERME_ELNO',),);
 
-EVOL=CALC_NO(reuse =EVOL,
+EVOL=CALC_CHAMP(reuse =EVOL,
              RESULTAT=EVOL,
-             OPTION=('SIGM_NOEU','SIEQ_NOEU',),);
+             CONTRAINTE='SIGM_NOEU',CRITERES='SIEQ_NOEU');
 
 #---------------------------------------------------------------
 #    POSTTRAITEMENT

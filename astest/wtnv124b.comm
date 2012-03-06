@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # ======================================================================
 # TITRE DESATURATION -CONSOLIDATION AVEC LE MODELE DE BARCELONE
 # wtnv124b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
@@ -90,13 +90,13 @@ SOL=DEFI_MATERIAU(    ELAS=_F(  E = 18.E6,    NU = 0.3,
                     BARCELONE=_F(MU       = 7.76E6,
                                 PORO     = 0.14,
                                 LAMBDA   = 0.2,
-                                KAPA     = 0.02,           
+                                KAPA     = 0.02,
                                 M        = 1.,
                                 PRES_CRIT= 2.E5,
                                 PA       = 1.E5,
                                 R=0.75,
                                 BETA=12.5E-6,
-                                KC=0.6,           
+                                KC=0.6,
                                 PC0_INIT=3.E5,
                                 KAPAS=0.008,
                                 LAMBDAS=0.08,),
@@ -327,10 +327,8 @@ U1=CALC_ELEM(  reuse=U1,
                   RESULTAT=U1,
                         )
 
-U1=CALC_NO(  reuse=U1,     RESULTAT=U1,
-                       OPTION=( 'SIGM_NOEU',
-                       'VARI_NOEU',
-                           ),
+U1=CALC_CHAMP(  reuse=U1,     RESULTAT=U1,
+                       CONTRAINTE='SIGM_NOEU',VARI_INTERNE='VARI_NOEU',
                 )
 
 #-------------------------

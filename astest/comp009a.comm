@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE : VARIATION TEMPERATURE DANS LE COMPORTEMENT BARRE 'ELAS' sous COMP_INCR
 # comp009a.para = tps_job 120 mem_job 64Mo ncpus 1 liste_test S
@@ -141,10 +141,9 @@ U=CALC_ELEM(reuse =U,
                OPTION=('SIEF_ELNO',
                        ),);
 
-U=CALC_NO(reuse =U,
+U=CALC_CHAMP(reuse =U,
                RESULTAT=U,
-               OPTION=('SIEF_NOEU',
-                       ),);
+               CONTRAINTE='SIEF_NOEU');
 
 SIGN3=POST_RELEVE_T(ACTION=_F(INTITULE='N_N3',
                                 NOEUD='N3',
@@ -278,10 +277,9 @@ for i in range(NCAL):
            OPTION=('SIEF_ELNO',
                    ),);
 
-          RESU[i]=CALC_NO(reuse =RESU[i],
+          RESU[i]=CALC_CHAMP(reuse =RESU[i],
            RESULTAT=RESU[i],
-           OPTION=('SIEF_NOEU',
-                   ),);
+           CONTRAINTE='SIEF_NOEU');
 
           EM  = CREA_CHAMP(  TYPE_CHAM = 'NOEU_DEPL_R',
                                OPERATION = 'EXTR',

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE LA LOI JOINT_MECA_FROT SUR LES ELEMENTS DE JOINT QUAD4
 # ssnp118p.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -175,9 +175,9 @@ U_F=STAT_NON_LINE(
 #-----------------------------------------------------------------------------------
 
 # CALCUL DE LA FORCE NODALE
-U_F=CALC_NO(reuse =U_F,
+U_F=CALC_CHAMP(reuse =U_F,
             RESULTAT=U_F,
-            OPTION='FORC_NODA',
+            FORCE='FORC_NODA',
             );
 # VECTEUR-FORCE NODALE RESULTANTE : (F_X,F_Y)
 TFORCE=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
@@ -364,14 +364,14 @@ U_2=CALC_CHAMP(reuse =U_2,
                VARI_INTERNE=('VARI_ELNO'),
               );
 # CALCUL DE L'OUVERTURE TANGENTIEL DU JOINT AUX NOEUDS
-U_2=CALC_NO(reuse =U_2,
+U_2=CALC_CHAMP(reuse =U_2,
             RESULTAT=U_2,
-            OPTION='VARI_NOEU',
+            VARI_INTERNE='VARI_NOEU',
             );
 # CALCUL DE LA FORCE NODALE
-U_2=CALC_NO(reuse =U_2,
+U_2=CALC_CHAMP(reuse =U_2,
             RESULTAT=U_2,
-            OPTION='FORC_NODA',
+            FORCE='FORC_NODA',
             );
 # FORCE NODALE RESULTANTE  SELONS DIRECTIONS X ET Y : (F_X,F_Y)
 TFORCET=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',

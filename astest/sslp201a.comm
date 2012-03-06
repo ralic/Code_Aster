@@ -1,10 +1,10 @@
-# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE NON-REGRESSION ASTER : MECANIQUE LINEAIRE 2D C_PLAN
 # RESPONSABLE PELLET J.PELLET
 # sslp201a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -345,7 +345,7 @@ CHMEC=AFFE_CHAR_MECA(           MODELE=MO,
                                VERI_NORM='NON',
                                PESANTEUR=_F(GRAVITE=9.8,
                                             DIRECTION=(0.3,  0.1, -0.4,),),
-                               ROTATION=_F(VITESSE = 0.069631062,  
+                               ROTATION=_F(VITESSE = 0.069631062,
                                            AXE =(0., 0.,   1.,),),
 #  ----  MAILLES 2D
                            FORCE_INTERNE=_F(  MAILLE = ('M42', 'M77',),
@@ -671,8 +671,7 @@ CALC_ELEM( reuse=MSLI2,
                           RESULTAT=MSLI2,
                        NUME_ORDRE=(1, 2, 3,) )
 
-CALC_NO( reuse=MSLI2,       OPTION=( 'EPSI_NOEU', 'SIEQ_NOEU',
-                                  'EPEQ_NOEU', 'SIGM_NOEU', ),
+CALC_CHAMP( reuse=MSLI2,DEFORMATION='EPSI_NOEU',CRITERES=('SIEQ_NOEU','EPEQ_NOEU'),CONTRAINTE='SIGM_NOEU',
                        RESULTAT=MSLI2,
                       PRECISION=1.000000000E-03,
                         CRITERE='ABSOLU',

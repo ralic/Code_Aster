@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DE LA LOI ENDO_SCALAIRE MODELISATION GRAD_VARI
 # ssnp146a.para = tps_job 70 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -196,17 +196,17 @@ EVOL0 = CALC_CHAMP(reuse    = EVOL0,
                  RESULTAT = EVOL0,
                   VARI_INTERNE=('VARI_ELNO'),)
 
-EVOL0 = CALC_NO(reuse    = EVOL0,
+EVOL0 = CALC_CHAMP(reuse    = EVOL0,
                RESULTAT = EVOL0,
-               OPTION   = 'VARI_NOEU',)
+               VARI_INTERNE='VARI_NOEU',)
 
 EVOL1 = CALC_CHAMP(reuse    = EVOL1,
                  RESULTAT = EVOL1,
                   VARI_INTERNE=('VARI_ELNO'),)
 
-EVOL1 = CALC_NO(reuse    = EVOL1,
+EVOL1 = CALC_CHAMP(reuse    = EVOL1,
                RESULTAT = EVOL1,
-               OPTION   = 'VARI_NOEU',)
+               VARI_INTERNE='VARI_NOEU',)
 
 # -----------------------------------------------------
 #     EXTRACTION SUR LA FACE DROITE DU QUADGRANGLE

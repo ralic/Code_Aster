@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE TEST DES ELEMENTS D'INTERFACE SUR UNE PLAQUE TROUEE
 # ssnp133c.para = tps_job 150 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -210,8 +210,8 @@ EVOL = STAT_NON_LINE(INFO=1,
 # POST-TRAITEMENT
 #--------------------------------------------------------------
 
-CALC_NO( reuse    = EVOL,
-         OPTION   = 'FORC_NODA',
+CALC_CHAMP( reuse    = EVOL,
+         FORCE='FORC_NODA',
          RESULTAT =  EVOL,
        )
 

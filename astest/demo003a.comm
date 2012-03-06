@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 #
 # TITRE INDENTATION D'UN MASSIF PAR UN POINCON
 # demo003a.para = tps_job 310 mem_job 64Mo ncpus 1 liste_test S
@@ -127,8 +127,8 @@ DEFI_FICHIER(ACTION='LIBERER',UNITE=37);
 
 # On calcule la force de reaction du massif
 # attention : la force est en n/radian
-RESU=CALC_NO(reuse =RESU,
-             OPTION='REAC_NODA',
+RESU=CALC_CHAMP(reuse =RESU,
+             FORCE='REAC_NODA',
              RESULTAT=RESU,);
 
 TAB_FORC=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',

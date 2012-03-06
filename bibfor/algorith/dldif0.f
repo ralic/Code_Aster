@@ -13,7 +13,7 @@
      &                    ARCHIV, NBTYAR, TYPEAR )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 05/03/2012   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -187,8 +187,8 @@ C 5.  CALCUL DES ENERGIES
 C
 C====
 C
+      SDENER=SOLVEU(1:8)//'.ENER      '
       IF (ENER) THEN
-        SDENER=SOLVEU(1:8)//'.ENER      '
         MASSE1=MASSE//'           '
         AMORT1=AMORT//'           '
         RIGID1=RIGID//'           '
@@ -247,5 +247,9 @@ C
      &                FEXTE(NEQ+1),FAMOR(NEQ+1),FLIAI(NEQ+1) )
 
       ENDIF
+C===
+C 8. ARCHIVAGE DES PARAMETRES
+C===
+      CALL NMARPC(RESULT,SDENER,TEMPS)
 C
       END

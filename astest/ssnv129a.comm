@@ -1,4 +1,4 @@
-# MODIF  DATE 09/01/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE  CONTACT ENTRE DEUX PLAQUES EN APPUI SIMPLE
 # ssnv129a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -132,9 +132,9 @@ RESUPOS=POST_CHAMP(RESULTAT=RESU,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                  NUME_COUCHE=1,
                                  NIVE_COUCHE='INF',),);
-RESUPOS=CALC_NO(reuse =RESUPOS,
+RESUPOS=CALC_CHAMP(reuse =RESUPOS,
                 RESULTAT=RESUPOS,
-                OPTION='SIGM_NOEU',);
+                CONTRAINTE='SIGM_NOEU',);
 
 IMPR_RESU(MODELE=MO,
           FORMAT='GMSH',

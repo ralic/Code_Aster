@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE  - CONSOLIDATION TERZAGHI 2D Q8
 # wtnl100a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -147,9 +147,9 @@ RESU1=CALC_ELEM( reuse      = RESU1,
 
               );
 
-RESU1= CALC_NO( reuse    = RESU1,
+RESU1= CALC_CHAMP( reuse    = RESU1,
                    RESULTAT = RESU1,
-                   OPTION   = ( 'SIGM_NOEU', 'VARI_NOEU','SIEQ_NOEU')
+                   CONTRAINTE='SIGM_NOEU',VARI_INTERNE='VARI_NOEU',CRITERES='SIEQ_NOEU'
                   )
 
 SIGMA2=POST_RELEVE_T(ACTION=_F(INTITULE='SIGMA',

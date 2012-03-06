@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 05/03/2012   AUTEUR PROIX J-M.PROIX 
 # TITRE ORIENTATION CIRCONFERENTIELLE DE GRILLES D'ARMATURES PAR AFFE_CARA_ELEM
 # zzzz189b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -100,7 +100,6 @@ RESU=STAT_NON_LINE(MODELE=MODEL,
                    EXCIT=(_F(CHARGE=CHARGE,),
                           _F(CHARGE=FORCE,),),
                    COMP_INCR=_F(RELATION='ELAS',
-                               # ALGO_1D='DEBORST',
                                 ),
                    INCREMENT=_F(LIST_INST=TEMPS1,),);
 

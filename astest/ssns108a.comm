@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PROIX J-M.PROIX 
 # TITRE SIMULATION DE L'ESSAI SAFE
 # ssns108a.para = tps_job 270 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -38,7 +38,6 @@ Pas = 1.5E-3
 Tmax = 0.0495
 ResiDB=1.E-4
 
-ALGO_C_PLAN = 'DEBORST'
 
 #-----------------------------------------------------------------------
 #              MAILLAGE
@@ -339,25 +338,22 @@ comp_incr.append({'GROUP_MA' : gr_armature,
 
 comp_incr.append({'GROUP_MA' : ('MUR_QUAD'),
                   'RELATION' : LOI_COMPORTEMENT,
-                  'ALGO_C_PLAN' : ALGO_C_PLAN,
-                  'RESI_DEBO_MAXI' : ResiDB,
-                  'ITER_MAXI_DEBORST' : Nmaxdb,
+                  'RESI_CPLAN_MAXI' : ResiDB,
+                  'ITER_CPLAN_MAXI' : Nmaxdb,
                   'TYPE_MATR_TANG' : TANG_SEC,
                 })
 
 comp_incr.append({'GROUP_MA' : ('F1_QUAD'),
                   'RELATION' : LOI_COMPORTEMENT,
-                  'ALGO_C_PLAN' : ALGO_C_PLAN,
-                  'ITER_MAXI_DEBORST' : Nmaxdb,
-                  'RESI_DEBO_MAXI' : ResiDB,
+                  'ITER_CPLAN_MAXI' : Nmaxdb,
+                  'RESI_CPLAN_MAXI' : ResiDB,
                   'TYPE_MATR_TANG' : TANG_SEC,
                   })
 
 comp_incr.append({'GROUP_MA' : ('F2_QUAD'),
                   'RELATION' : LOI_COMPORTEMENT,
-                  'ALGO_C_PLAN' : ALGO_C_PLAN,
-                  'ITER_MAXI_DEBORST' : Nmaxdb,
-                  'RESI_DEBO_MAXI' : ResiDB,
+                  'ITER_CPLAN_MAXI' : Nmaxdb,
+                  'RESI_CPLAN_MAXI' : ResiDB,
                   'TYPE_MATR_TANG' : TANG_SEC,
                   })
 
@@ -395,14 +391,9 @@ RESU = STAT_NON_LINE (
 
 GROUPES =  MURS + gr_armature
 
-RESU = CALC_NO(reuse = RESU,
-
-
-
-    RESULTAT   =  RESU,
-    OPTION     = ('FORC_NODA','REAC_NODA',),
-    GROUP_MA   = GROUPES,
-    );
+RESU=CALC_CHAMP(reuse =RESU,RESULTAT=RESU,GROUP_MA=GROUPES,
+             FORCE=('FORC_NODA','REAC_NODA',),);
+             
 
 IMPR_RESU(FORMAT='MED',
           RESU=_F(MAILLAGE=MA,

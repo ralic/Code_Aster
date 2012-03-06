@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # DATE     : 03/08/2001
 # AUTEUR   : F. LEBOUVIER (DELTACAD)
 # TITRE    : PATIN GLISSANT SUR UN PLAN RIGIDE
@@ -164,9 +164,9 @@ U_NOR=STAT_NON_LINE(MODELE=MODE,
                     CONVERGENCE=_F(ITER_GLOB_MAXI=30,),
                     INFO=1,);
 
-U_NOR=CALC_NO(reuse =U_NOR,
+U_NOR=CALC_CHAMP(reuse =U_NOR,
               RESULTAT=U_NOR,
-              OPTION='REAC_NODA',
+              FORCE='REAC_NODA',
              );
 # CHARGEMENT 2
 U_99=STAT_NON_LINE(MODELE=MODE,
@@ -187,9 +187,9 @@ U_99=STAT_NON_LINE(MODELE=MODE,
                               METHODE='LDLT',),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=1500,),);
 
-U_99=CALC_NO(reuse =U_99,
+U_99=CALC_CHAMP(reuse =U_99,
              RESULTAT=U_99,
-             OPTION='REAC_NODA',
+             FORCE='REAC_NODA',
              );
 # CHARGEMENT 3
 U_101=STAT_NON_LINE(MODELE=MODE,
@@ -211,9 +211,9 @@ U_101=STAT_NON_LINE(MODELE=MODE,
                     CONVERGENCE=_F(ITER_GLOB_MAXI=1500,),
                     );
 
-U_101=CALC_NO(reuse =U_101,
+U_101=CALC_CHAMP(reuse =U_101,
               RESULTAT=U_101,
-              OPTION='REAC_NODA',
+              FORCE='REAC_NODA',
             );
 #---------------------------------------------------------------------
 #                         VERIFICATION DES RESULTATS

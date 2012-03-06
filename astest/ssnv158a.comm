@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL DRAINE AVEC LE MODELE DE LAIGLE
 # ssnv158a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
@@ -208,10 +208,10 @@ U2=CALC_ELEM( reuse      = U2,
               RESULTAT   = U2,
               )
 
-U2=CALC_NO(  reuse      = U2,
+U2=CALC_CHAMP(  reuse      = U2,
              RESULTAT   = U2,
              TOUT_ORDRE = 'OUI',
-             OPTION     = ('SIGM_NOEU',),
+             CONTRAINTE='SIGM_NOEU',
                )
 
 #-------------------------
@@ -480,10 +480,10 @@ U3=CALC_ELEM( reuse      = U3,
               RESULTAT   = U3,
               )
 
-U3=CALC_NO(  reuse      = U3,
+U3=CALC_CHAMP(  reuse      = U3,
              RESULTAT   = U3,
              TOUT_ORDRE = 'OUI',
-             OPTION     = ('SIGM_NOEU',),
+             CONTRAINTE='SIGM_NOEU',
                )
 
 #-------------------------
@@ -631,10 +631,10 @@ U4=CALC_ELEM( reuse      = U4,
               RESULTAT   = U4,
               )
 
-U4=CALC_NO(  reuse      = U4,
+U4=CALC_CHAMP(  reuse      = U4,
              RESULTAT   = U4,
              TOUT_ORDRE = 'OUI',
-             OPTION     = ('SIGM_NOEU',),
+             CONTRAINTE='SIGM_NOEU',
                )
 
 #-------------------------

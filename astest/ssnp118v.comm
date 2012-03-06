@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE FISSURATION INTERFACE 2D PLAN (QUAD8), LOI CZM_TRA_MIX
 # ssnp118v.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -275,10 +275,10 @@ U_MON=STAT_NON_LINE(
 #-----------------------------------------------------------------------------------
 
 # CALCUL DE LA FORCE NODALE
-U_TRA=CALC_NO(
+U_TRA=CALC_CHAMP(
             reuse =U_TRA,
             RESULTAT=U_TRA,
-            OPTION='FORC_NODA',
+            FORCE='FORC_NODA',
             );
 
 # VECTEUR-FORCE NODALE RESULTANTE : (F_X,F_Y)

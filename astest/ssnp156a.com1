@@ -236,6 +236,24 @@ CALC_PMF=CALC_TABLE(reuse=CALC_PMF,
                               NOM_PARA='MLAGS_C',
                               FORMULE=MOINS_UN,),),);
 
+CALC_GLI=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                                 INTITULE='Glissement tangentiel',
+                                 RESULTAT=RESU,
+                                 INST=1.0,
+                                 NOM_CHAM='VALE_CONT',
+                                 GROUP_NO='Cont_S',
+                                 NOM_CMP='GLIX',),);
+
+M_UN_GLI=FORMULE(NOM_PARA='GLIX',VALE='-1.0*GLIX',);
+CALC_GLI=CALC_TABLE(reuse=CALC_GLI,
+                   TABLE=CALC_GLI,
+                   ACTION=(_F(OPERATION='OPER',
+                              NOM_PARA='ANGLE',
+                              FORMULE=CONV_DEG,),
+                           _F(OPERATION='OPER',
+                              NOM_PARA='M_GLIX',
+                              FORMULE=M_UN_GLI,),),);
+
 PS_FONCF=RECU_FONCTION(TABLE=CALC_PSF,
                       PARA_X='ANGLE',
                       PARA_Y='MLAGS_C',);
@@ -251,6 +269,10 @@ PST_FONC=RECU_FONCTION(TABLE=CALC_PSF,
 PMT_FONC=RECU_FONCTION(TABLE=CALC_PMF,
                       PARA_X='ANGLE',
                       PARA_Y='LAGS_F1',);
+
+GLI_TANG=RECU_FONCTION(TABLE=CALC_GLI,
+                       PARA_X='ANGLE',
+                       PARA_Y='M_GLIX',);
 
 # ===========================================
 
@@ -330,13 +352,29 @@ IMPR_FONCTION(FORMAT='XMGRACE',
               LEGENDE_X='Angle (degre)',
               LEGENDE_Y='Contrainte (N/mm2)',
               );
+
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=34,
+              COURBE=_F(FONCTION=GLI_TANG,
+                        LEGENDE='Esclave',
+                        MARQUEUR=0,),
+              TITRE='Glissement tangentiel',
+              BORNE_X=(0,180,),
+              BORNE_Y=(-0.35,0.05,),
+              ECHELLE_X='LIN',
+              ECHELLE_Y='LIN',
+              GRILLE_X=30,
+              GRILLE_Y=0.05,
+              LEGENDE_X='Abscisse curviligne (mm)',
+              LEGENDE_Y='Glissement (mm)',);
+
 # ===========================================
 
 IMPR_RESU(MODELE=MO,
           FORMAT='MED',
           UNITE=80,
-          RESU=_F(RESULTAT=RESU,NOM_CHAM=('DEPL','FORC_NODA','SIEQ_ELGA',),),);
-
+          RESU=_F(RESULTAT=RESU,NOM_CHAM=('DEPL','FORC_NODA','SIEQ_ELGA','VALE_CONT',),),);
 # ===========================================
 # Tests
 

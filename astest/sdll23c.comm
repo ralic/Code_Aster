@@ -1,9 +1,9 @@
-# MODIF  DATE 16/08/2011   AUTEUR DESROCHE X.DESROCHES 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE ENCASTREE-LIBRE: REPONSE SPECTRALE
 # sdll23c.para = tps_job 60 mem_job 270Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -91,8 +91,8 @@ MODE_MEC=CALC_ELEM(reuse=MODE_MEC,  RESULTAT=MODE_MEC,
                          'EFGE_ELNO', 'SIPO_ELNO'),
                          )
 
-MODE_MEC=CALC_NO(reuse=MODE_MEC,  RESULTAT=MODE_MEC,
-                   OPTION='REAC_NODA',
+MODE_MEC=CALC_CHAMP(reuse=MODE_MEC,  RESULTAT=MODE_MEC,
+                   FORCE='REAC_NODA',
                       TOUT_ORDRE='OUI' )
 
 TEST_RESU(RESU=( _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
@@ -146,16 +146,16 @@ MODE_STA=CALC_ELEM(reuse=MODE_STA,  RESULTAT=MODE_STA,
                       OPTION='SIEF_ELGA',
                          )
 
-MODE_STA=CALC_NO(reuse=MODE_STA,  RESULTAT=MODE_STA,
-                  OPTION='REAC_NODA',
+MODE_STA=CALC_CHAMP(reuse=MODE_STA,  RESULTAT=MODE_STA,
+                  FORCE='REAC_NODA',
                       NOEUD_CMP=('ACCE', 'X',))
 
-MODE_STA=CALC_NO(reuse=MODE_STA,  RESULTAT=MODE_STA,
-                  OPTION='REAC_NODA',
+MODE_STA=CALC_CHAMP(reuse=MODE_STA,  RESULTAT=MODE_STA,
+                  FORCE='REAC_NODA',
                       NOEUD_CMP=('ACCE', 'Y',))
 
-MODE_STA=CALC_NO(reuse=MODE_STA,  RESULTAT=MODE_STA,
-                   OPTION='REAC_NODA',
+MODE_STA=CALC_CHAMP(reuse=MODE_STA,  RESULTAT=MODE_STA,
+                   FORCE='REAC_NODA',
                       NOEUD_CMP=('ACCE', 'Z',))
 
 ACCE_X=DEFI_FONCTION(  NOM_PARA='FREQ',        INTERPOL='LOG',

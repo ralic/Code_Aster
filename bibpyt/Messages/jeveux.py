@@ -1,4 +1,4 @@
-#@ MODIF jeveux Messages  DATE 09/01/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF jeveux Messages  DATE 06/03/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -50,10 +50,6 @@ Conseil :
 8 : _(u"""
  La base  %(k1)s  a été constituée avec la version  %(k2)s
  et vous utilisez la version  %(k3)s
-"""),
-
-9 : _(u"""
- Suppression de la partition mémoire
 """),
 
 10 : _(u"""
@@ -174,12 +170,6 @@ Conseil :
      de %(i1)d a %(i2)d
 """),
 
-37 : _(u"""
-     La valeur du rapport entre partitions ne convient pas,
-     la longueur de la partition 1 doit être au minimum de %(i1)d mots
-     soit environ %(i2)d %%
-"""),
-
 38 : _(u"""
      Numéro d'objet invalide %(i1)d
 """),
@@ -218,14 +208,6 @@ Conseil :
 
 48 : _(u"""
  Erreur lors de l'écriture d'un enregistrement sur le fichier d'accès direct.
-"""),
-
-49 : _(u"""
- Taille de la zone à allouer invalide %(i1)d < 0 .
-"""),
-
-50 : _(u"""
- Allocation dynamique impossible.
 """),
 
 51 : _(u"""

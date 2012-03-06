@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE SOUS STRUCTURATION DYNAMIQUE : PLAQUE MINCE LIBRE ET ENCASTREE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -122,9 +122,9 @@ MODES_L1=CALC_ELEM( reuse=MODES_L1,
                       TOUT_ORDRE='OUI',
                           OPTION='SIEF_ELGA',
                          RESULTAT=MODES_L1 )
-MODES_L1=CALC_NO(reuse =MODES_L1,
+MODES_L1=CALC_CHAMP(reuse =MODES_L1,
               RESULTAT=MODES_L1,
-              OPTION='FORC_NODA');
+              FORCE='FORC_NODA');
 
 #
 MODES_L2=MODE_ITER_SIMULT(     MATR_A=RAID_L,

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE EPROUVETTE ENTAILLEE ELASTOPLASTIQUE EN GRANDES DEFORMATIONS
 # ssna303a.para = tps_job 300 mem_job 64Mo mem_aster 50 ncpus 1 liste_test S
@@ -90,9 +90,9 @@ UR=CALC_ELEM(reuse =UR,
              RESULTAT=UR,
              OPTION=('SIGM_ELNO','VARI_ELNO',),);
 
-UR=CALC_NO(reuse =UR,
+UR=CALC_CHAMP(reuse =UR,
            RESULTAT=UR,
-           OPTION='REAC_NODA',);
+           FORCE='REAC_NODA',);
 
 # DEUXIEME CALCUL : GDEF_HYPO_ELAS
 # ------------------------------------------------------------
@@ -115,9 +115,9 @@ UL=CALC_ELEM(reuse =UL,
              RESULTAT=UL,
              OPTION=('SIGM_ELNO','VARI_ELNO',),);
 
-UL=CALC_NO(reuse =UL,
+UL=CALC_CHAMP(reuse =UL,
            RESULTAT=UL,
-           OPTION='REAC_NODA',);
+           FORCE='REAC_NODA',);
 
 IMPR_RESU(FORMAT='MED',
           RESU=(_F(RESULTAT=UL,),

@@ -1,7 +1,7 @@
       SUBROUTINE OP0048()
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 05/03/2012   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,7 +59,7 @@ C
       INTEGER NBPASE, NRORES, NVECA, NCHAR
       INTEGER IMAT(3), NUME, NIV, IBID, IFM, IONDP, LADPA
       INTEGER IALIFO, IAADVE, NONDP, IFEXTE, IFAMOR, IFLIAI
-      INTEGER NEQ, IDEPL0, IVITE0, IACCE0, IWK, IENER
+      INTEGER NEQ, IDEPL0, IVITE0, IACCE0, IWK
       INTEGER IINTEG, NRPASE,IRET
       INTEGER IAUX, JAUX, JORD,NBORD,JCHAR
       INTEGER LRESU,LCRRE,IRESU,NBEXRE,L
@@ -135,7 +135,7 @@ C
      &              CARAEL, CARELE,
      &              IMAT, MASSE, RIGID, AMORT, LAMORT,
      &              NCHAR, NVECA, INFCHA, CHARGE, INFOCH, FOMULT,
-     &              IAADVE, IALIFO, NONDP, IONDP, IENER,
+     &              IAADVE, IALIFO, NONDP, IONDP,
      &              SOLVEU, IINTEG, T0, NUME,
      &              NBPASE, INPSCO, BASENO )
 C
@@ -201,7 +201,7 @@ C
      &              MASSE,RIGID,AMORT,
      &              ZR(IDEPL0),ZR(IVITE0),ZR(IACCE0),ZR(IFEXTE),
      &              ZR(IFAMOR),ZR(IFLIAI),T0,
-     &              NCHAR,NVECA,ZI(IAADVE),ZK24(IALIFO),IENER,
+     &              NCHAR,NVECA,ZI(IAADVE),ZK24(IALIFO),
      &              MODELE,MATE,CARELE,
      &              CHARGE,INFOCH,FOMULT,NUMEDD,NUME,SOLVEU,CRITER,
      &              ZK8(IONDP),NONDP,INPSCO,NBPASE)
@@ -212,7 +212,7 @@ C
      &              MASSE,RIGID,AMORT,
      &              ZR(IDEPL0),ZR(IVITE0),ZR(IACCE0),ZR(IFEXTE),
      &              ZR(IFAMOR),ZR(IFLIAI),T0,
-     &              NCHAR,NVECA,ZI(IAADVE),ZK24(IALIFO),IENER,
+     &              NCHAR,NVECA,ZI(IAADVE),ZK24(IALIFO),
      &              MODELE,MATE,CARELE,
      &              CHARGE,INFOCH,FOMULT,NUMEDD,NUME,SOLVEU,CRITER,
      &              ZK8(IONDP),NONDP,INPSCO,NBPASE)

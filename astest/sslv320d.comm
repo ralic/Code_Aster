@@ -1,9 +1,9 @@
-# MODIF  DATE 22/11/2011   AUTEUR COLOMBO D.COLOMBO 
+# MODIF  DATE 06/03/2012   AUTEUR COLOMBO D.COLOMBO 
 # TITRE PROPAGATION PLANE D UNE FISSURE 3D SE DIVISANT ET FUSIONNANT AVEC X-FEM
 # sslv320d.para = tps_job 350 mem_job 2000Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -20,58 +20,68 @@
 # ======================================================================
 # RESPONSABLE COLOMBO D.COLOMBO
 
-DEBUT(CODE=_F(NOM='SSLV320D', NIV_PUB_WEB='INTERNET'),IGNORE_ALARM=('XFEM_69'),
+DEBUT(CODE=_F(NOM='SSLV320D', NIV_PUB_WEB='INTERNET'),IGNORE_ALARM=('XFEM_69','HOMARD0_9'),
       DEBUG=_F(SDVERI='OUI'),)
 
 # XFEM_69 EST IGNORE PARCE QUE CETTE ALARME NE S'APPLIQUE PAS A CE CAS TEST
 # COMME DECRIT DANS LE MESSAGE D'ALARME LUI-MEME
-      
-# METHODE GEOMETRIQUE
+# ON IGNORE L'ALARM HOMARD0_9 CAR ON SAIT BIEN CE QU'ON FAIT ;-)
 
-#  MAILLAGE 10X10
-SIF10=CREA_TABLE(LISTE=(_F(LISTE_R=(1.,1.,1.,1.,1.,1.,1.,1.,1.,1.),PARA='K1'),
-                        _F(LISTE_R=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.),PARA='K2'),
-                        _F(LISTE_R=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.),PARA='K3'),
-                        _F(LISTE_R=(1.,1.,1.,1.,1.,1.,1.,1.,1.,1.),PARA='G'),
-                        _F(LISTE_R=(1.,1.,1.,1.,1.,1.,1.,1.,1.,1.),PARA='G_IRWIN'),
-                        _F(LISTE_R=(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0),PARA='BETA'),
-                        _F(LISTE_I=(1,1,1,1,1,1,1,1,1,1),PARA='NUME_FOND'),
-                        _F(LISTE_I=(1,1,1,1,1,1,1,1,1,1),PARA='NUME_ORDRE'),
-                        _F(LISTE_I=(1,2,3,4,5,6,7,8,9,10),PARA='NUM_PT'),))
+# METHODE MAILLAGE
 
-#  MAILLAGE 20X20
-SIF20=CREA_TABLE(LISTE=(_F(LISTE_R=(1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,
-                                    1.,1.,1.,1.,1.,1.,1.,1.,1.,1.),PARA='K1'),
-                        _F(LISTE_R=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
-                                    0.,0.,0.,0.,0.,0.,0.,0.,0.,0.),PARA='K2'),
-                        _F(LISTE_R=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
-                                    0.,0.,0.,0.,0.,0.,0.,0.,0.,0.),PARA='K3'),
-                        _F(LISTE_R=(1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,
-                                    1.,1.,1.,1.,1.,1.,1.,1.,1.,1.),PARA='G'),
-                        _F(LISTE_R=(1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,
-                                    1.,1.,1.,1.,1.,1.,1.,1.,1.,1.),PARA='G_IRWIN'),
-                        _F(LISTE_R=(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
-                                    0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0),PARA='BETA'),
-                        _F(LISTE_I=(1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2),PARA='NUME_FOND'),
-                        _F(LISTE_I=(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1),PARA='NUME_ORDRE'),
-                        _F(LISTE_I=(1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10),PARA='NUM_PT'),))
+# NUMBER OF PROPAGATION STEPS
+nbcalc = 3
+# INITIAL CRACK LENGTH
+a0 = 4.0
+
+Mod = [None]*(nbcalc+1)
+FISS = [None]*(nbcalc+1)
+MaFi = [None]*(nbcalc+1)
+MATOT = [None]*(nbcalc+1)
+LSN = [None]*(nbcalc+1)
+LST = [None]*(nbcalc+1)
+
+MeshH = [None]*(nbcalc+1)
+ModH = [None]*(nbcalc+1)
+FISSH = [None]*(nbcalc+1)
+LSNH = [None]*(nbcalc+1)
+LSTH = [None]*(nbcalc+1)
+
+MODX = [None]*(nbcalc+1)
+CHXFM = [None]*(nbcalc+1)
+
+# UN FOND
+SIF=CREA_TABLE(LISTE=(_F(LISTE_R=(1.,1.),PARA='K1'),
+                        _F(LISTE_R=(0.,0.),PARA='K2'),
+                        _F(LISTE_R=(0.,0.),PARA='K3'),
+                        _F(LISTE_R=(1.,1.),PARA='G'),
+                        _F(LISTE_R=(1.,1.),PARA='G_IRWIN'),
+                        _F(LISTE_R=(0.0,0.0),PARA='BETA'),
+                        _F(LISTE_I=(1,1),PARA='NUME_FOND'),
+                        _F(LISTE_I=(1,1),PARA='NUME_ORDRE'),
+                        _F(LISTE_I=(1,2),PARA='NUM_PT'),
+                        _F(LISTE_R=(0.,30.),PARA='ABSC_CURV'),))
+
+# DEUX FONDS
+SIF2=CREA_TABLE(LISTE=(_F(LISTE_R=(1.,1.,1.,1.),PARA='K1'),
+                       _F(LISTE_R=(0.,0.,0.,0.),PARA='K2'),
+                       _F(LISTE_R=(0.,0.,0.,0.),PARA='K3'),
+                       _F(LISTE_R=(1.,1.,1.,1.),PARA='G'),
+                       _F(LISTE_R=(1.,1.,1.,1.),PARA='G_IRWIN'),
+                       _F(LISTE_R=(0.0,0.0,0.0,0.0),PARA='BETA'),
+                       _F(LISTE_I=(1,1,2,2),PARA='NUME_FOND'),
+                       _F(LISTE_I=(1,1,1,1),PARA='NUME_ORDRE'),
+                       _F(LISTE_I=(1,2,1,2),PARA='NUM_PT'),
+                       _F(LISTE_R=(0.,15.,0.,15.),PARA='ABSC_CURV'),))
+
 
 #----------------------------------------------
 #                 MAILLAGE
 #----------------------------------------------
 
-nbcalc = 3
+MA=LIRE_MAILLAGE(INFO=1,
+                 FORMAT='MED',);
 
-MeshSEB=LIRE_MAILLAGE(INFO=1,FORMAT='MED', UNITE=20,);
-
-#----------------------------------------------
-#                   MODELE
-#----------------------------------------------
-
-ModSEB=AFFE_MODELE(MAILLAGE=MeshSEB,
-                   AFFE=(_F(TOUT='OUI',
-                               PHENOMENE='MECANIQUE',
-                               MODELISATION='3D',),),);
 
 #----------------------------------------------
 #                   MATERIAU
@@ -81,91 +91,49 @@ E=70656
 nu=0.34
 Alu=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,),);
 
-ChAlu=AFFE_MATERIAU(MAILLAGE=MeshSEB,
-                       MODELE=ModSEB,
-                       AFFE=_F(TOUT = 'OUI',
-                                MATER=Alu,
-                                ),
-                             );
 
 #----------------------------------------------
 #              FISSURE INITIALE
 #----------------------------------------------
 
-a0 = 4.0
-
-FISS = [None]*nbcalc
-
-FISS[0]=DEFI_FISS_XFEM(MODELE=ModSEB,
-                        GROUP_MA_ENRI='All',
-                        DEFI_FISS=_F(
-                                  FORM_FISS='DEMI_PLAN',
-                                  PFON=(30.,4.,5.),
-                                  NORMALE=(0.,0.,1.),
-                                  DTAN=(0.,1.,0.),
-                       ),);
+MaFi[0]=CO('MaFi_0')
+MATOT[0]=CO('MATOT_0')
+PROPA_FISS(METHODE_PROPA='INITIALISATION',
+           MAIL_STRUC=MA,
+           MAIL_FISS = MaFi[0],
+           MAIL_TOTAL = MATOT[0],
+           FORM_FISS='DEMI_PLAN',
+           GROUP_MA_FISS='FISS',
+           GROUP_MA_FOND='FOND',
+           INFO=1,
+           POINT_ORIG = (0., a0, 5.),
+           POINT_EXTR = (30., a0, 5.),
+           DTAN = (0., 1., 0.),
+           NB_POINT_FOND=10,
+           );
 
 #----------------------------------------------
-#                  PROPAGATION
+#                   MODELE
 #----------------------------------------------
 
-# Nombre refinement Homard
-infit=2
+Mod=AFFE_MODELE(MAILLAGE=MATOT[0],
+                AFFE=(_F(GROUP_MA=('All',),
+                         PHENOMENE='MECANIQUE',
+                         MODELISATION='3D',),),);
 
-MODX = [None]*nbcalc
-CHXFM = [None]*nbcalc
-RESU = [None]*nbcalc
-SIF=[None]*(nbcalc*5)
+#----------------------------------------------
+#           CREATION DES LEVEL SET
+#----------------------------------------------
 
-LSN = [None]*nbcalc
-LST = [None]*nbcalc
-GLSN = [None]*nbcalc
-GLST = [None]*nbcalc
-GRGLSN = [None]*nbcalc
-GRGLST = [None]*nbcalc
-MAXFEM =[None]*nbcalc
-MOVISU = [None]*nbcalc
-DEPL = [None]*nbcalc
-SIF_MO=[None]*nbcalc
-
-Mesh = [None]*nbcalc
-Mod = [None]*nbcalc
-
-LSNGR = [None]*nbcalc
-LSTGR = [None]*nbcalc
+FISS[0]=DEFI_FISS_XFEM(MODELE=Mod,
+                       DEFI_FISS=_F(GROUP_MA_FISS='FISS_'+str(0),
+                                    GROUP_MA_FOND='FOND_'+str(0)),
+                       ORIE_FOND=_F(PFON_INI  = (30.0,a0,5.0),
+                                    VECT_ORIE = (0.,0.,1.0),
+                                    POINT_ORIG= (15.0,0.,5.0),),
+                        );
 
 
-CHERR=[None]*infit
-MeshH = [None]*nbcalc
-ModH = [None]*nbcalc
-FISSH = [None]*nbcalc
-LSNH = [None]*nbcalc
-LSTH = [None]*nbcalc
-
-FiH = [None]*infit
-MeH = [None]*infit
-MoH = [None]*infit
-LSNHT = [None]*infit
-LSTHT = [None]*infit
-LSTGR=[None]*infit
-LSNGR=[None]*infit
-LSNGR=[None]*infit
-
-# AVANCE IMPOSEE
-da=12.0
-
-L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
-RI = 0.2
-RS = 1.0
-
-Mesh[0]=MeshSEB
-Mod[0]=ModSEB
-
-rayon_raff = 2.0*RS
-rayon_deraff = rayon_raff+1.0*da
-rayon_calcG_fitt = rayon_raff+da
-
-# Levelset au debut de la propagation
 LSN[0]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                   OPERATION='EXTR',
                   FISSURE=FISS[0],
@@ -175,101 +143,113 @@ LST[0]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                   FISSURE=FISS[0],
                   NOM_CHAM='LTNO',);
 
-IMPR_RESU(FORMAT='MED',
-          UNITE=80,
-          RESU=_F(CHAM_GD=LSN[0],),);
-IMPR_RESU(FORMAT='MED',
-          UNITE=80,
-          RESU=_F(CHAM_GD=LST[0],),);
+#----------------------------------------------
+#                  PROPAGATION
+#----------------------------------------------
 
+# AVANCEE IMPOSEE
+da=12.0
+
+L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
+RI = 0.2
+RS = 1.0
+
+# NUMBER OF REFINEMENT STEPS BY HOMARD
+infit = 2
+rayon_raff = 2.0*RS
+rayon_deraff = rayon_raff+1.0*da
+rayon_calcG_fitt = rayon_raff+da
+
+MeH = [None]*(infit+1)
+LSNHT = [None]*(infit+1)
+LSTHT = [None]*(infit+1)
+CHERR = [None]*(infit+1)
+
+NBFOND=[1,2,1]
 
 for i in range(nbcalc) :
 
-
-   CHERR[0] = RAFF_XFEM(FISSURE=FISS[i])
-   MoH[0] = Mod[i]
-   LSNHT[0] = LSN[i]
-   LSTHT[0] = LST[i]
+#  STEP 1: MESH REFINEMENT
 
    for j in range(infit) :
 
       if (j == 0) :
-         FiH[0] = FISS[i]
-         if ( i == 0 ):
-            MeH[0] = Mesh[0]
-         else:
-            MeH[0] = MeshH[i-1]
+         LSNHT[0] = LSN[i]
+         LSTHT[0] = LST[i]
+         CHERR[0] = RAFF_XFEM(FISSURE=FISS[i])
 
-      if ( j < infit-1 ):
+# creation des listes des groupes surfaciques et lineiques correspondants a la fissure
+         list_FISS = []
+         list_FOND = []
+         for k in range(i+1) :
+           list_FISS.append('FISS_'+str(k))
+           list_FOND.append('FOND_'+str(k))
+           for l in range(NBFOND[i]) :
+             list_FOND.append('FD_'+str(k)+'_'+str(l)) 
+# destruction des groupes surfaciques et lineiques correspondants a la fissure
+         MATOT[i]=DEFI_GROUP(reuse=MATOT[i],
+                             MAILLAGE=MATOT[i],
+                             DETR_GROUP_MA=(_F(NOM=list_FISS),
+                                            _F(NOM=list_FOND),),);
+         MeH[0] =MATOT[i]
 
-         MeH[j+1]=CO('MeH_%d'%(j+1))
-         LSNHT[j+1]=CO('LSNHT_%d'%(j+1))
-         LSTHT[j+1]=CO('LSTHT_%d'%(j+1))
-         CHERR[j+1]=CO('CHERR_%d' % (j+1))
+      MeH[j+1]=CO('MeH_%d'%(j+1))
+      LSNHT[j+1]=CO('LSNHT_%d'%(j+1))
+      LSTHT[j+1]=CO('LSTHT_%d'%(j+1))
+      CHERR[j+1]=CO('CHERR_%d'%(j+1))
 
-         MACR_ADAP_MAIL(ADAPTATION='RAFF_DERA',
-                        MAILLAGE_N=MeH[j],
-                        MAILLAGE_NP1=MeH[j+1],
-                        CHAM_GD=CHERR[j],
-                        USAGE_CMP='RELATIF',
-                        CRIT_RAFF_ABS=-1*rayon_raff,
-                        CRIT_DERA_ABS=-1*rayon_deraff,
-                        NIVE_MAX=infit,
-                        ELEMENTS_NON_HOMARD='IGNORER',
-                     MAJ_CHAM=(_F(TYPE_CHAM='NOEU_NEUT_R',
-                                  CHAM_GD  = LSNHT[j],
-                                  CHAM_MAJ = LSNHT[j+1]),
-                               _F(TYPE_CHAM='NOEU_NEUT_R',
-                                  CHAM_GD  = LSTHT[j],
-                                  CHAM_MAJ = LSTHT[j+1]),
-                               _F(TYPE_CHAM='NOEU_NEUT_R',
-                                  CHAM_GD  = CHERR[j],
-                                  CHAM_MAJ = CHERR[j+1]),), 
-                       );     
+      MACR_ADAP_MAIL(ADAPTATION='RAFF_DERA',
+                     MAILLAGE_N=MeH[j],
+                     MAILLAGE_NP1=MeH[j+1],
+                     CHAM_GD=CHERR[j],
+                     USAGE_CMP='RELATIF',
+                     CRIT_RAFF_ABS=-1*rayon_raff,
+                     CRIT_DERA_ABS=-1*rayon_deraff,
+                     NIVE_MAX=infit,
+                     ELEMENTS_NON_HOMARD='IGNORER',
+                     MAJ_CHAM=(_F(CHAM_GD=LSNHT[j],
+                                  TYPE_CHAM='NOEU_NEUT_R',
+                                  CHAM_MAJ=LSNHT[j+1],),
+                               _F(CHAM_GD=LSTHT[j],
+                                  TYPE_CHAM='NOEU_NEUT_R',
+                                  CHAM_MAJ=LSTHT[j+1],),
+                               _F(CHAM_GD=CHERR[j],
+                                  TYPE_CHAM='NOEU_NEUT_R',
+                                  CHAM_MAJ=CHERR[j+1],),),
+                     ); 
+ 
+   MeshH[i] = ASSE_MAILLAGE(MAILLAGE_1 = MeH[j+1],
+                            MAILLAGE_2 = MaFi[i],
+                            OPERATION='SUPERPOSE')    
 
-      else:
+   ModH[i] = AFFE_MODELE(MAILLAGE=MeshH[i],
+                         AFFE=(_F(GROUP_MA=('All',),
+                         PHENOMENE='MECANIQUE',
+                         MODELISATION='3D',),),);
 
-         MeshH[i]=CO('MeshH_%d'%(i))
-         LSNH[i]=CO('LSNH_%d'%(i))
-         LSTH[i]=CO('LSTH_%d'%(i))
+   FISSH[i] = DEFI_FISS_XFEM(MODELE=ModH[i],
+                             DEFI_FISS=_F(GROUP_MA_FISS='FISS_'+str(i),
+                                          GROUP_MA_FOND='FOND_'+str(i)),
+                             GROUP_MA_ENRI='All',
+                             ORIE_FOND=_F(PFON_INI  = (30.0,a0,5.0),
+                                          VECT_ORIE = (0.,0.,1.0),
+                                          POINT_ORIG= (15.0,0.,5.0),),)
 
-         MACR_ADAP_MAIL(ADAPTATION='RAFF_DERA',
-                        MAILLAGE_N=MeH[j],
-                        MAILLAGE_NP1=MeshH[i],
-                        CHAM_GD=CHERR[infit-1],
-                        USAGE_CMP='RELATIF',
-                        CRIT_RAFF_ABS=-1*rayon_raff,
-                        CRIT_DERA_ABS=-1*rayon_deraff,
-                        NIVE_MAX=infit,
-                        ELEMENTS_NON_HOMARD='IGNORER',
-                        MAJ_CHAM=(_F(CHAM_GD=LSNHT[j],
-                                     TYPE_CHAM='NOEU_NEUT_R',
-                                     CHAM_MAJ=LSNH[i],),
-                                  _F(CHAM_GD=LSTHT[j],
-                                     TYPE_CHAM='NOEU_NEUT_R',
-                                     CHAM_MAJ=LSTH[i],),),
-                       );   
+   LSNH[i]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                       OPERATION='EXTR',
+                       FISSURE=FISSH[i],
+                       NOM_CHAM='LNNO',);
+   LSTH[i]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                       OPERATION='EXTR',
+                       FISSURE=FISSH[i],
+                       NOM_CHAM='LTNO',);
 
-         ModH[i] = AFFE_MODELE(MAILLAGE=MeshH[i],
-                               AFFE=(_F(TOUT='OUI',
-                               PHENOMENE='MECANIQUE',
-                               MODELISATION='3D',),),);
-
-         FISSH[i] = DEFI_FISS_XFEM(MODELE=ModH[i],
-                                   DEFI_FISS=_F(CHAM_NO_LSN=LSNH[i],
-                                                CHAM_NO_LST=LSTH[i],),
-                                   GROUP_MA_ENRI='All',
-                                   ORIE_FOND=_F(PFON_INI   = (30.0,4.0+(i+1)*da,5.0),
-                                                VECT_ORIE  = (0.0,0.0,1.0),
-                                                POINT_ORIG = (15.0,0.0,5.0),),);
-
-   DETRUIRE(CONCEPT=_F(NOM=CHERR[0],))          
-
-   for j in range(1,infit) :
+   for j in range(0,infit+1) :
       DETRUIRE(CONCEPT=_F(NOM=MeH[j],))
       DETRUIRE(CONCEPT=_F(NOM=LSNHT[j],))
       DETRUIRE(CONCEPT=_F(NOM=LSTHT[j],))
       DETRUIRE(CONCEPT=_F(NOM=CHERR[j],))
+
 
 #  STEP 2: RESOLUTION OF THE REFINED MODEL
 
@@ -278,72 +258,84 @@ for i in range(nbcalc) :
                         AFFE=_F(TOUT = 'OUI',
                                 MATER=Alu,),);
 
-
    MODX[i]=MODI_MODELE_XFEM(MODELE_IN=ModH[i],FISSURE=FISSH[i],INFO=1,);
 
    CHXFM[i]=AFFE_CHAR_MECA(MODELE=MODX[i],LIAISON_XFEM='OUI',INFO=1,);
 
    DETRUIRE(CONCEPT=_F(NOM=MatRaf,),INFO=1,)
 
+
+
 # STEP 3: CRACK PROPAGATION ON THE REFINED MODEL
 
-   if ( i != (nbcalc-1) ) :
+   MATOT[i+1]=CO('MATOT_%d'%(i+1));
+   MaFi[i+1]=CO('MaFi_%d'%(i+1));
 
-      FISS[i+1] = CO('FISS_%d'%(i+1))
-
-      if ( i == 1 ) :
-         PROPA_FISS(MODELE=MODX[i],
+   if ( i == 1 ) :
+      PROPA_FISS(
+                 METHODE_PROPA='MAILLAGE',
+                 MAIL_STRUC = MA,
+                 MAIL_TOTAL = MATOT[i+1],
+                 ITERATION = i+1,
                  FISSURE=_F(FISS_ACTUELLE=FISSH[i],
-                            FISS_PROPAGEE=FISS[i+1],
-                            NB_POINT_FOND=(10,10),
-                            TABLE=SIF20,
-                           ),
-                 METHODE_PROPA='GEOMETRIQUE',
+                            MAIL_ACTUEL =  MaFi[i],
+                            MAIL_PROPAGE = MaFi[i+1],
+                            TABLE=SIF2,),
                  DA_MAX=da,
-                 ZONE_MAJ='TOUT',
                  LOI_PROPA=_F(LOI='PARIS',
-                              C=1.,
-                              M=3.,
+                              C=3.,
+                              M=1.1E-8,
                               N=0.,
                               MATER=Alu),
-                  RAYON=4.5,
-                  COMP_LINE=_F(COEF_MULT_MINI=0.,
-                               COEF_MULT_MAXI=1.,),
-               );
+                 COMP_LINE=_F(COEF_MULT_MINI=0.,
+                              COEF_MULT_MAXI=1.,),
+                 INFO=1,);
 
-      else:
+   else :
 
-         PROPA_FISS(MODELE=MODX[i],
+      PROPA_FISS(
+                 METHODE_PROPA='MAILLAGE',
+                 MAIL_STRUC = MA,
+                 MAIL_TOTAL = MATOT[i+1],
+                 ITERATION = i+1,
                  FISSURE=_F(FISS_ACTUELLE=FISSH[i],
-                            FISS_PROPAGEE=FISS[i+1],
-                            NB_POINT_FOND=10,
-                            TABLE=SIF10,
-                           ),
-                 METHODE_PROPA='GEOMETRIQUE',
+                            MAIL_ACTUEL =  MaFi[i],
+                            MAIL_PROPAGE = MaFi[i+1],
+                            TABLE=SIF,),
                  DA_MAX=da,
-                 ZONE_MAJ='TOUT',
                  LOI_PROPA=_F(LOI='PARIS',
-                              C=1.,
-                              M=3.,
+                              C=3.,
+                              M=1.1E-8,
                               N=0.,
                               MATER=Alu),
-                  RAYON=4.5,
-                  COMP_LINE=_F(COEF_MULT_MINI=0.,
-                               COEF_MULT_MAXI=1.,),
-               );
+                 COMP_LINE=_F(COEF_MULT_MINI=0.,
+                              COEF_MULT_MAXI=1.,),
+                 INFO=1,);
+      
+   DETRUIRE(CONCEPT=_F(NOM=Mod,)); 
+   Mod=AFFE_MODELE(MAILLAGE=MATOT[i+1],
+                   AFFE=_F(GROUP_MA=('All'),
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='3D',),);
 
+   if ( i < nbcalc-1 ) :
+      FISS[i+1]=DEFI_FISS_XFEM(MODELE=Mod,
+                               DEFI_FISS=_F(GROUP_MA_FISS='FISS_'+str(i+1),
+                                            GROUP_MA_FOND='FOND_'+str(i+1)),
+                               ORIE_FOND=_F(PFON_INI  = (30.0,a0,5.0),
+                                            VECT_ORIE = (0.,0.,1.0),
+                                            POINT_ORIG= (15.0,0.,5.0),),
+                               );
+
+      
       LSN[i+1]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
-                        OPERATION='EXTR',
-                        FISSURE=FISS[i+1],
-                        NOM_CHAM='LNNO',);
+                          OPERATION='EXTR',
+                          FISSURE=FISS[i+1],
+                          NOM_CHAM='LNNO',);
       LST[i+1]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
-                        OPERATION='EXTR',
-                        FISSURE=FISS[i+1],
-                        NOM_CHAM='LTNO',);
- 
-      DETRUIRE(CONCEPT=_F(NOM=MODX[i],))
-      DETRUIRE(CONCEPT=_F(NOM=CHXFM[i],))
-      DETRUIRE(CONCEPT=_F(NOM=ModH[i],))
+                          OPERATION='EXTR',
+                          FISSURE=FISS[i+1],
+                          NOM_CHAM='LTNO',);
 
 #----------------------------------------------
 #         POST TRAITEMENT
@@ -393,4 +385,4 @@ TEST_TABLE(TABLE=TB_FOND2,
                PRECISION=0.01,
                REFERENCE='ANALYTIQUE',);    
 
-FIN();
+FIN();  

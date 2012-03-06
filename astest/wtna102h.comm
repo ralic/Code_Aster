@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE MODELISATION DE LA DIFFUSION DE L AIR DISSOUS DANS L EAU
 # wtna102h.para = tps_job 110 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -275,9 +275,9 @@ U0=CALC_ELEM(reuse =U0,
              OPTION=('SIEF_ELNO','VARI_ELNO'),
              RESULTAT=U0,);
 
-U0   = CALC_NO    (  reuse =U0,
+U0   = CALC_CHAMP    (  reuse =U0,
                        TOUT_ORDRE='OUI',
-                       OPTION       = 'VARI_NOEU',
+                       VARI_INTERNE='VARI_NOEU',
                        RESULTAT     = U0   ,);
 
 TEST_RESU(RESU=_F(RESULTAT=U0,

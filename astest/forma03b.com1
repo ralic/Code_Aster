@@ -8,12 +8,12 @@ TFIN  = 230.0;
 #                  VARIABLES INTERNES
 #
 ########################################################################
-              
+
 # CONTRAINTES EQUIVALENTES AUX POINTS DE GAUSS
 RESUNL=CALC_ELEM(reuse =RESUNL,
                  RESULTAT=RESUNL,
-                 OPTION=('SIEQ_ELGA',),); 
- 
+                 OPTION=('SIEQ_ELGA',),);
+
 IMPR_RESU(MODELE=MODE,
           RESU=(_F(RESULTAT=RESUNL,
                    NOM_CHAM='SIEQ_ELGA',
@@ -21,13 +21,13 @@ IMPR_RESU(MODELE=MODE,
                 _F(RESULTAT=RESUNL,
                    NOM_CHAM='VARI_ELGA',
                    VALE_MAX='OUI',),),);
-                   
+
 ########################################################################
 #
 # POST-TRAITEMENT: COURBE SIYY AU POINT G EN FONCTION DU DEPLACEMENT
 #
 ########################################################################
-                   
+
 # EXTRACTION VALEURS
 DYG=RECU_FONCTION(RESULTAT=RESUNL,
                   NOM_CHAM='DEPL',
@@ -39,7 +39,7 @@ SYG=RECU_FONCTION(RESULTAT=RESUNL,
                   NOM_CMP='SIYY',
                   GROUP_NO='G',);
 
-# COURBES AVEC XMGRACE 
+# COURBES AVEC XMGRACE
 IMPR_FONCTION(FORMAT='XMGRACE',
               UNITE=81,
               BORNE_X   = ( 0.,2.5),
@@ -145,23 +145,23 @@ IMPR_FONCTION(FORMAT    = 'XMGRACE',
 
 ########################################################################
 #
-# POST-TRAITEMENT: COURBE FORCE RESULTANTE EN HAUT EN FONCTION 
+# POST-TRAITEMENT: COURBE FORCE RESULTANTE EN HAUT EN FONCTION
 #                  DU DEPLACEMENT
 #
 ########################################################################
 
 # CALCUL DES FORCES NODALES
-RESUNL=CALC_NO(reuse =RESUNL,
+RESUNL=CALC_CHAMP(reuse =RESUNL,
                RESULTAT=RESUNL,
-               OPTION='FORC_NODA',
+               FORCE='FORC_NODA',
                );
-               
+
 # EXTRACTION VALEURS
 DYG2=RECU_FONCTION(RESULTAT=RESUNL,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
                   GROUP_NO='G',);
-                                 
+
 # CREATION DU CHEMIN
 LH=INTE_MAIL_2D(MAILLAGE=MAIL,
                 DEFI_CHEMIN=_F(GROUP_MA='haut',),);

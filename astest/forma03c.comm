@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # RESPONSABLE ABBAS M.ABBAS
 # TITRE ENONCE FORMATION PLAQUE TROUEE EN TRACTION EN PLASTICITE - CHARGE LIMITE
 # forma03c.para = tps_job 120 mem_job 32Mo ncpus 1 liste_test S
@@ -120,18 +120,18 @@ RESUNL=CALC_ELEM(reuse =RESUNL,
                  RESULTAT=RESUNL,
                  OPTION=('SIGM_ELNO',),);
 
-RESUNL=CALC_NO(reuse =RESUNL,
+RESUNL=CALC_CHAMP(reuse =RESUNL,
                RESULTAT=RESUNL,
-               OPTION=('SIGM_NOEU',),);
+               CONTRAINTE='SIGM_NOEU');
 
 # INTERPOLATION DES VARIABLES INTERNES AUX NOEUDS
 RESUNL=CALC_ELEM(reuse =RESUNL,
                  RESULTAT=RESUNL,
                  OPTION=('VARI_ELNO'),);
 
-RESUNL=CALC_NO(reuse =RESUNL,
+RESUNL=CALC_CHAMP(reuse =RESUNL,
                RESULTAT=RESUNL,
-               OPTION='VARI_NOEU',);
+               VARI_INTERNE='VARI_NOEU',);
 
 ########################################################################
 #
@@ -188,18 +188,18 @@ RESUPI=CALC_ELEM(reuse =RESUPI,
                  RESULTAT=RESUPI,
                  OPTION=('SIGM_ELNO',),);
 
-RESUPI=CALC_NO(reuse =RESUPI,
+RESUPI=CALC_CHAMP(reuse =RESUPI,
                RESULTAT=RESUPI,
-               OPTION=('SIGM_NOEU',),);
+               CONTRAINTE='SIGM_NOEU');
 
 # INTERPOLATION DES VARIABLES INTERNES AUX NOEUDS
 RESUPI=CALC_ELEM(reuse =RESUPI,
                  RESULTAT=RESUPI,
                  OPTION=('VARI_ELNO'),);
 
-RESUPI=CALC_NO(reuse =RESUPI,
+RESUPI=CALC_CHAMP(reuse =RESUPI,
                RESULTAT=RESUPI,
-               OPTION='VARI_NOEU',);
+               VARI_INTERNE='VARI_NOEU',);
 
 
 ########################################################################

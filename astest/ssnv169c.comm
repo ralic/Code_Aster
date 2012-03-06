@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2012   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 05/03/2012   AUTEUR PROIX J-M.PROIX 
 # TITRE COUPLAGE FLUAGE PROPRE (MODELE UMLV) ET ENDO_ISOT_BETON
 # ssnv169c.para = tps_job 90 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -148,7 +148,6 @@ U=STAT_NON_LINE( MODELE=MO,
        COMP_INCR=_F(
                  RELATION = 'KIT_DDI',
                  RELATION_KIT=('BETON_UMLV_FP','ENDO_ISOT_BETON'),
-                               ALGO_C_PLAN = 'DEBORST',
                                ITER_INTE_MAXI = 1000),
                  INCREMENT=_F(LIST_INST = L_INST,
                               NUME_INST_FIN = 104),

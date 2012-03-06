@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE EPROUVETTE AE 2D AXIS AVEC ELEMENTS D'INTERFACE (QUAD8) ET LOI DE RUPTURE DUCTILE CZM_TRA_MIX
 # ssna120a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -186,9 +186,9 @@ UP=STAT_NON_LINE(MODELE=MO,
 #-----------------------------------------------------------
 # CALCUL DE CHAMPS COMPLEMENTAIRES
 #-------------------------------------------------------------
-UP=CALC_NO(reuse =UP,
+UP=CALC_CHAMP(reuse =UP,
              RESULTAT=UP,
-             OPTION=('REAC_NODA',),);
+             FORCE='REAC_NODA');
 
 contra=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                 INTITULE='Contraction diametrale',

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL NON DRAINE
 # wtnv100b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
@@ -219,9 +219,9 @@ U2=CALC_ELEM( reuse=U2,     RESULTAT=U2,
                         OPTION=('EPSI_ELNO', )
                 )
 
-U2=CALC_NO(  reuse=U2,     RESULTAT=U2,
+U2=CALC_CHAMP(  reuse=U2,     RESULTAT=U2,
                     NUME_ORDRE=(5, 10, 20, 40, 60, 100,),
-                       OPTION=('EPSI_NOEU', 'SIGM_NOEU', )
+                       DEFORMATION='EPSI_NOEU',CONTRAINTE='SIGM_NOEU'
                 )
 
 #-------------------------

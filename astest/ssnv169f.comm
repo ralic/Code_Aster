@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PROIX J-M.PROIX 
 
 # TITRE COUPLAGE FLUAGE PROPRE (MODELE UMLV) ET MAZARS
 # ssnv169f.para = tps_job 120 mem_job 128Mo ncpus 1 liste_test S
@@ -184,8 +184,7 @@ RESU = STAT_NON_LINE(CHAM_MATER = CAR_MAT,
                      COMP_INCR = _F(RELATION = 'KIT_DDI',
                                     RELATION_KIT = ('BETON_UMLV_FP', 'MAZARS'),
                                     DEFORMATION = 'PETIT',
-                                    GROUP_MA = 'Q',
-                                    ALGO_C_PLAN = 'DEBORST',),
+                                    GROUP_MA = 'Q',),
                      INCREMENT = _F(LIST_INST = DEFLIST,
                                     INST_FIN = 5250000.,
                                     ),

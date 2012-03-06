@@ -1,10 +1,10 @@
-# MODIF  DATE 07/11/2011   AUTEUR NICOLAS G.NICOLAS 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE TEST DE HOMARD AVEC DES QUADRANGLES
 # zzzz121d.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -196,9 +196,9 @@ RESU_0=CALC_ERREUR(reuse =RESU_0,
 #
 # 3.6. Calcul de la contrainte a comparer
 
-RESU_0=CALC_NO(reuse =RESU_0,
+RESU_0=CALC_CHAMP(reuse =RESU_0,
                RESULTAT=RESU_0,
-               OPTION='SIGM_NOEU',);
+               CONTRAINTE='SIGM_NOEU',);
 #
 # 3.7. Impressions pour creer la base du cas-test homard sfr_mix_2d_zzzz121d_d1 a l'iteration 0
 ##IMPR_RESU(
@@ -278,9 +278,9 @@ RESU_1=CALC_ERREUR(reuse =RESU_1,
 #
 # 5.6. Calcul de la contrainte a comparer
 
-RESU_1=CALC_NO(reuse =RESU_1,
+RESU_1=CALC_CHAMP(reuse =RESU_1,
                RESULTAT=RESU_1,
-               OPTION='SIGM_NOEU',);
+               CONTRAINTE='SIGM_NOEU',);
 #
 # 5.7. Impressions pour creer la base du cas-test homard sfr_mix_2d_zzzz121d_d1 a l'iteration 1
 ##IMPR_RESU(
@@ -366,9 +366,9 @@ RESU_2=CALC_ERREUR(reuse =RESU_2,
 #
 # 7.6. Calcul de la contrainte a comparer
 
-RESU_2=CALC_NO(reuse =RESU_2,
+RESU_2=CALC_CHAMP(reuse =RESU_2,
                RESULTAT=RESU_2,
-               OPTION='SIGM_NOEU',);
+               CONTRAINTE='SIGM_NOEU',);
 #
 # 7.7. Impressions pour creer la base du cas-test homard sfr_mix_2d_zzzz121d_d1 a l'iteration 2
 ##IMPR_RESU(
@@ -442,9 +442,9 @@ RESU_3=CALC_ELEM(reuse =RESU_3,
 #
 # 9.6. Calcul de la contrainte a comparer
 
-RESU_3=CALC_NO(reuse =RESU_3,
+RESU_3=CALC_CHAMP(reuse =RESU_3,
                RESULTAT=RESU_3,
-               OPTION='SIGM_NOEU',);
+               CONTRAINTE='SIGM_NOEU',);
 #
 # N. Tests de non regression
 

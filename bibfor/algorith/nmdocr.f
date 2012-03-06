@@ -2,7 +2,7 @@
 C RESPONSABLE PROIX J-M.PROIX
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/01/2012   AUTEUR SFAYOLLE S.FAYOLLE 
+C MODIF ALGORITH  DATE 05/03/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -172,14 +172,14 @@ C         CPLAN DEBORST  ET COMP1D DEBORST SEULEMENT EN COMP_INCR
           TSRETU=-1.D0
           TYPTGT = 0
           IF ( MOCLEF(I).EQ. 'COMP_INCR') THEN
-             CALL GETVIS(MOCLEF(I),'ITER_MAXI_DEBORST',
+             CALL GETVIS(MOCLEF(I),'ITER_CPLAN_MAXI',
      &                   K,IARG,1,ITDEBO,IRET)
-             CALL GETVR8(MOCLEF(I),'RESI_DEBO_MAXI',K,IARG,1,
+             CALL GETVR8(MOCLEF(I),'RESI_CPLAN_MAXI',K,IARG,1,
      &                   RESID,IRET)
              IF (IRET.NE.0) THEN
                 RESID=-RESID
              ELSE
-                CALL GETVR8(MOCLEF(I),'RESI_DEBO_RELA',K,IARG,1,
+                CALL GETVR8(MOCLEF(I),'RESI_CPLAN_RELA',K,IARG,1,
      &                      RESID,IRET)
              ENDIF
              EXITS = GETEXM(MOCLEF(I),'TYPE_MATR_TANG')

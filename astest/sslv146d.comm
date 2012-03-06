@@ -1,9 +1,9 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 05/03/2012   AUTEUR PROIX J-M.PROIX 
 # TITRE CUBE PLEIN RENFORCE PAR DES ARMATURES SOUS CHARGEMENT TRIAXIAL TRIA6 GRILLE_MEMBRANE
 # sslv146d.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -146,7 +146,6 @@ LEDEP=STAT_NON_LINE(
                 ),
                          COMP_INCR=_F(
                 RELATION = 'ELAS',
-                ALGO_1D = 'DEBORST'
                 ),
                          INCREMENT=_F(
                 LIST_INST = ZLIST,
@@ -155,22 +154,20 @@ LEDEP=STAT_NON_LINE(
               )
 
 
-LEDEP=CALC_ELEM( reuse = LEDEP,
-                 OPTION     = ('EPSI_ELGA','EPSI_ELNO','SIGM_ELNO', 'VARI_ELNO',),
-                 RESULTAT   = LEDEP,
-               )
 
-LEDEP=CALC_NO(reuse = LEDEP,
-              RESULTAT = LEDEP,
-              OPTION   = ('FORC_NODA',),
-              )
+LEDEP=CALC_CHAMP(reuse =LEDEP,RESULTAT=LEDEP,
+             FORCE=('FORC_NODA'),
+             CONTRAINTE=('SIGM_ELNO'),
+             DEFORMATION=('EPSI_ELGA','EPSI_ELNO'),
+             VARI_INTERNE=('VARI_ELNO'),
+             )
+
 #
 # -------------------------------------------------
 # POST TRAITEMENT DES RESULTATS
 # -------------------------------------------------
 #
 
-#IMPR_RESU(RESU=_F(RESULTAT=LEDEP))
 TEST_RESU(RESU=(
 
             _F( RESULTAT = LEDEP,

@@ -1,4 +1,4 @@
-# MODIF  DATE 09/01/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE  CONTACT MAILLE TRIA7, MODELISATION COQUE_3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -157,9 +157,9 @@ RESUPOS=POST_CHAMP(RESULTAT=RESU,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                  NUME_COUCHE=1,
                                  NIVE_COUCHE='INF',),);
-RESUPOS=CALC_NO(reuse =RESUPOS,
+RESUPOS=CALC_CHAMP(reuse =RESUPOS,
                 RESULTAT=RESUPOS,
-                OPTION='SIGM_NOEU');
+                CONTRAINTE='SIGM_NOEU');
 
 TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    NUME_ORDRE=5,

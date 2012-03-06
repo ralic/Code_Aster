@@ -1,6 +1,6 @@
       SUBROUTINE JEDEBU(NBFI, MXZON, IDB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 06/03/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -102,6 +102,10 @@ C ----------------------------------------------------------------------
       COMMON /IEXTJE/  IDN(N) , IEXT(N) , NBENRG(N)
       INTEGER          LFIC,MFIC
       COMMON /FENVJE/  LFIC,MFIC
+      CHARACTER*128    REPGLO,REPVOL
+      COMMON /BANVJE/  REPGLO,REPVOL
+      INTEGER          LREPGL,LREPVO
+      COMMON /BALVJE/  LREPGL,LREPVO
       INTEGER          LUNDEF,IDEBUG
       COMMON /UNDFJE/  LUNDEF,IDEBUG
       INTEGER          LDYN , LGDYN , NBDYN , NBFREE
@@ -118,6 +122,7 @@ C --------------------------------- ------------------------------------
       INTEGER          MXLICI , IPREM  , INIT,    IRET
       INTEGER          ISPBEM , LBISEM , LOISEM , LOLSEM
       INTEGER          LOR8EM , LOC8EM , ISNNEM , IRT
+      REAL*8           R8BID
       PARAMETER      ( MXLICI = 67 )
       CHARACTER *(MXLICI) CLICIT
       DATA CLICIT/' ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.$&_abcdefghijkl
@@ -131,6 +136,26 @@ C -----------------  ENVIRONNEMENT MACHINE -----------------------------
          MFIC = MOFIEM()
       ELSE
          MFIC = NINT(VAL)*1024
+      ENDIF
+      CALL GTOPTK('repglob', REPGLO, IRET)
+      IF (IRET .NE. 0) THEN
+        REPGLO='. '
+        LREPGL=1
+      ELSE
+        LREPGL=INDEX(REPGLO,' ') - 1
+        IF (LREPGL .GT. 119 ) THEN
+          CALL U2MESG ( 'F' ,'JEVEUX1_69',1,REPGLO,1,LREPGL,0,R8BID)
+        ENDIF
+      ENDIF
+      CALL GTOPTK('repvola', REPVOL, IRET)
+      IF (IRET .NE. 0) THEN
+        REPVOL='. '
+        LREPVO=1
+      ELSE
+        LREPVO=INDEX(REPVOL,' ') - 1
+        IF (LREPVO .GT. 119 ) THEN
+          CALL U2MESG ( 'F' ,'JEVEUX1_70',1,REPVOL,1,LREPVO,0,R8BID)
+        ENDIF
       ENDIF
       LBIS = LBISEM()
       LOR8 = LOR8EM()

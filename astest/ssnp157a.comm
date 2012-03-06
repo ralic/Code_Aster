@@ -1,4 +1,4 @@
-# MODIF  DATE 23/01/2012   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 05/03/2012   AUTEUR DESOZA T.DESOZA 
 # TITRE BENCHMARK NAFEMS DE VALIDATION DU CONTACT 5 STEEL ROLLER ON RUBBER
 # ssnp157a.para = tps_job 1500 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -127,8 +127,8 @@ CON=DEFI_CONTACT(MODELE=MO,
                  FORMULATION='CONTINUE',
                  FROTTEMENT='COULOMB',
                  ITER_GEOM_MAXI=50,
-                 ITER_FROT_MAXI=50,
-                 ALGO_RESO_FROT='POINT_FIXE',
+                 ALGO_RESO_CONT='NEWTON',
+                 ALGO_RESO_FROT='NEWTON',
                  ZONE=_F(GROUP_MA_MAIT='Master',
                          GROUP_MA_ESCL='Slave',
                          # This removes any rigid-body motion :

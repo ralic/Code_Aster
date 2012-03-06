@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DE LA MODELISATION 3D_GRAD_VARI AVEC PILOTAGE
 # comp005d.para = tps_job 70 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -211,11 +211,11 @@ for j in range(0,len(comportement)):
 
 
 
-    U[i] = CALC_NO(
+    U[i] = CALC_CHAMP(
                 reuse = U[i],
 
                 RESULTAT  =U[i],
-                OPTION    =('SIGM_NOEU','VARI_NOEU','FORC_NODA'),
+                CONTRAINTE='SIGM_NOEU',VARI_INTERNE='VARI_NOEU',FORCE='FORC_NODA',
                 );
 
 

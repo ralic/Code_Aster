@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE MODELISATION HM D'UN BARREAU SATURE EN LIQUIDE COMPRESSIBLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -125,9 +125,9 @@ RESU1=CALC_ELEM( reuse      = RESU1,
               RESULTAT   = RESU1,
               );
 
-RESU1= CALC_NO( reuse    = RESU1,
+RESU1= CALC_CHAMP( reuse    = RESU1,
                    RESULTAT = RESU1,
-                   OPTION   = ( 'SIEF_NOEU', 'VARI_NOEU','SIEQ_NOEU')
+                   CONTRAINTE='SIEF_NOEU',VARI_INTERNE='VARI_NOEU',CRITERES='SIEQ_NOEU'
                   )
 
 #########################

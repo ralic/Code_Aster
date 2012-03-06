@@ -1,4 +1,4 @@
-# MODIF  DATE 09/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DE LA MODELISATION D_PLAN_GRAD_VARI
 # comp005b.para = tps_job 140 mem_job 128Mo mem_aster 50 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -208,11 +208,11 @@ for j in range(0,len(comportement)):
 
 
 
-    U[i] = CALC_NO(
+    U[i] = CALC_CHAMP(
                 reuse = U[i],
 
                 RESULTAT  =U[i],
-                OPTION    =('SIGM_NOEU','VARI_NOEU','FORC_NODA'),
+                CONTRAINTE='SIGM_NOEU',VARI_INTERNE='VARI_NOEU',FORCE='FORC_NODA',
                 );
 
 
@@ -396,11 +396,11 @@ for i in range(0,len(modelisation)):
 
 
 
-  U[i] = CALC_NO(
+  U[i] = CALC_CHAMP(
               reuse = U[i],
 
               RESULTAT  =U[i],
-              OPTION    =('SIGM_NOEU','VARI_NOEU','FORC_NODA'),
+              CONTRAINTE='SIGM_NOEU',VARI_INTERNE='VARI_NOEU',FORCE='FORC_NODA',
               );
 
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 
 # TITRE TESTS DE CONTACT POUR LES ELEMENTS QUADRATIQUES
 # ssnv167b.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
@@ -61,13 +61,13 @@ CHCO1=DEFI_CONTACT(MODELE       = MO,
                   FORMULATION  = 'DISCRETE',
                   REAC_GEOM    = 'CONTROLE',
                   NB_ITER_GEOM = 5,
-                  
+
                   ZONE=(
                         _F(
                           GROUP_MA_MAIT = 'CONT2',
                           GROUP_MA_ESCL = 'CONT1',
-                         ),                         
-                       ),  
+                         ),
+                       ),
                   )
 
 
@@ -88,10 +88,10 @@ SOL1 = STAT_NON_LINE( SOLVEUR=_F(SYME='OUI',),
                          LIST_INST = LIST,),)
 
 
-SOL1=CALC_NO(reuse =SOL1,
+SOL1=CALC_CHAMP(reuse =SOL1,
               RESULTAT=SOL1,
 
-              OPTION='REAC_NODA',);
+              FORCE='REAC_NODA',);
 
 
 TEST_RESU(RESU=(

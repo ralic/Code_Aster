@@ -1,9 +1,9 @@
       SUBROUTINE NMCRPC(RESULT)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 05/03/2012   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -35,12 +35,14 @@ C IN  RESULT : NOM SD RESULTAT
 C
       INTEGER      IFM,NIV,IRET
       INTEGER      NBPAR
-      PARAMETER   (NBPAR=1)
+      PARAMETER   (NBPAR=7)
       CHARACTER*2  TYPPAR(NBPAR)
-      CHARACTER*8  NOMPAR(NBPAR)
+      CHARACTER*10 NOMPAR(NBPAR)
       CHARACTER*19 TABLPC
-      DATA         NOMPAR / 'INST' /
-      DATA         TYPPAR /  'R'   /
+      DATA         NOMPAR / 'INST'      ,'TRAV_EXT  ','ENER_CIN'  ,
+     &                      'ENER_TOT'  ,'TRAV_AMOR ','TRAV_LIAI' ,
+     &                      'DISS_SCH'/
+      DATA         TYPPAR / 'R' ,'R' ,'R' ,'R' ,'R' ,'R' ,'R'/
 C
 C ----------------------------------------------------------------------
 C

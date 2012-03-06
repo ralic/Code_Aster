@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE NON REGRESSION SUR QUART DE VIROLE CYLINDRIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -91,8 +91,8 @@ CALC_ELEM( reuse= RESP ,RESULTAT= RESP ,
                             OPTION=('EPSI_ELNO', 'SIGM_ELNO',)
                         )
 
-CALC_NO( reuse=RESP,   RESULTAT=RESP,
-                      OPTION='SIGM_NOEU'
+CALC_CHAMP( reuse=RESP,   RESULTAT=RESP,
+                      CONTRAINTE='SIGM_NOEU'
                  )
 
 TEST_RESU(RESU=(
@@ -249,8 +249,8 @@ CALC_ELEM( reuse= RESQ ,RESULTAT= RESQ ,
                             OPTION=('EPSI_ELNO', 'SIGM_ELNO',)
                         )
 
-CALC_NO( reuse=RESQ,   RESULTAT=RESQ,
-                     OPTION=('EPSI_NOEU', 'SIGM_NOEU',)
+CALC_CHAMP( reuse=RESQ,   RESULTAT=RESQ,
+                     DEFORMATION='EPSI_NOEU',CONTRAINTE='SIGM_NOEU'
                  )
 
 TEST_RESU(RESU=(

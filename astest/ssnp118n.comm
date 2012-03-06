@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE LA LOI JOINT_MECA_RUPT SUR LES ELEMENTS DE JOINT HEXA8
 # ssnp118n.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -189,9 +189,9 @@ U_1=STAT_NON_LINE(
 #-----------------------------------------------------------------------------------
 
 # CALCUL DE LA FORCE NODALE
-U_1=CALC_NO(reuse =U_1,
+U_1=CALC_CHAMP(reuse =U_1,
             RESULTAT=U_1,
-            OPTION='FORC_NODA',
+            FORCE='FORC_NODA',
 
 
             );

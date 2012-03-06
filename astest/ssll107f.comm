@@ -1,4 +1,4 @@
-# MODIF  DATE 23/01/2012   AUTEUR CHEIGNON E.CHEIGNON 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DE MACR_CARA_POUTRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -228,9 +228,9 @@ MEST5=MECA_STATIQUE(MODELE=MO,
                     EXCIT=_F(CHARGE=CHARG5,),
                     );
 
-MEST5=CALC_NO(reuse =MEST5,
+MEST5=CALC_CHAMP(reuse =MEST5,
               RESULTAT=MEST5,
-              OPTION='FORC_NODA',);
+              FORCE='FORC_NODA',);
 
 MEST6=MECA_STATIQUE(MODELE=MO,
                     CHAM_MATER=CHMAT,
@@ -238,9 +238,9 @@ MEST6=MECA_STATIQUE(MODELE=MO,
                     EXCIT=_F(CHARGE=CHARG5,),
                     );
 
-MEST6=CALC_NO(reuse =MEST6,
+MEST6=CALC_CHAMP(reuse =MEST6,
               RESULTAT=MEST6,
-              OPTION='FORC_NODA',);
+              FORCE='FORC_NODA',);
 
 
 # VALEUR DE REFERENCE

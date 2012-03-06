@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE LA LOI JOINT_MECA_RUPT SUR LES ELEMENTS DE JOINT HYME QUAD8
 # ssnp118s.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -217,9 +217,9 @@ U_HM=STAT_NON_LINE(
 #-----------------------------------------------------------------------------------
 
 # CALCUL DE LA FORCE NODALE
-U_HM=CALC_NO(reuse =U_HM,
+U_HM=CALC_CHAMP(reuse =U_HM,
             RESULTAT=U_HM,
-            OPTION='FORC_NODA',
+            FORCE='FORC_NODA',
             MAILLE='CUBE',
             );
 # VECTEUR-FORCE NODALE RESULTANTE : (F_X,F_Y)

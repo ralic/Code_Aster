@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 05/03/2012   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -104,7 +104,6 @@ C ----------------------------------------------------------------------
       INTEGER      IUMOY,IUPMUM,IUMOYZ,IUPMUZ
       INTEGER      IVMOY,IVPMVM,IVMOYZ,IVPMVZ
       INTEGER      IKUMOY,IKUMOZ,IMUMOY,IMUMOZ,IFMOY,IDESC
-      INTEGER      ICV,IKU,IDEPL1,IVITE1,IKUZ
       CHARACTER*24 NUMEDD
       CHARACTER*19 DEPPLU
       CHARACTER*11 FORMA
@@ -267,6 +266,8 @@ C LAGRANGES PORTES PAR LA MATRICE DE RIGIDITE
             ZR(IFMOY-1+IAUX)=ZR(IKUMOZ-1+IAUX)-ZR(IKUMOY-1+IAUX)
   60      CONTINUE
           COEFL=1.D0
+C ON PEUT NE PAS AVOIR DE BLOCAGE ET NE JAMAIS CALCULER DE LAGRANGE 
+C NI DE COEFFICIENT DE MISE A L ECHELLE
           CALL JEEXIN(RIGID//'.CONL',IRET)
           IF (IRET.NE.0) THEN
             CALL JEVEUO(RIGID//'.CONL','L',JCONL)
@@ -299,12 +300,8 @@ C --------------------------------------------------------------------
 C LIAI : ENERGIE DISSIPEE PAR LES LIAISONS
 C - UNIQUEMENT IMPE_ABSO POUR DYNA_LINE_TRAN
 C --------------------------------------------------------------------
-      LIAI=0.D0
       DO 100 IAUX=1,NEQ
         ZR(IFMOY-1+IAUX)=(FLIAI(IAUX)+FLIAI(IAUX+NEQ))*5.D-1
-        IF (FLIAI(IAUX+NEQ).GT.LIAI) THEN
-          LIAI=FLIAI(IAUX+NEQ)
-        ENDIF
  100  CONTINUE
       LIAI=DDOT(NEQ,ZR(IUPMUZ),1,ZR(IFMOY),1)
 C --------------------------------------------------------------------
@@ -347,7 +344,7 @@ C --------------------------------------------------------------------
         NBCOL=NBCOL+2
       ENDIF
       ZR(IENER-1+5)=ZR(IENER-1+5)+LIAI
-      IF (ZR(IENER-1+5).NE.0) THEN
+      IF ((ZR(IENER-1+5).NE.0.D0).OR.(LIAI.NE.0.D0)) THEN
         NBCOL=NBCOL+1
       ENDIF
 C --------------------------------------------------------------------

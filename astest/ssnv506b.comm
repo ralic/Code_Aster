@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE INDENTATION ELASTOPLASTIQUE D'UN DEMI-PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -147,9 +147,9 @@ U=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
 #                         POST TRAITEMENT
 #------------------------------------------------------------------
 
-U=CALC_NO(reuse =U,
+U=CALC_CHAMP(reuse =U,
           RESULTAT=U,
-          OPTION='REAC_NODA',
+          FORCE='REAC_NODA',
 
 
           );

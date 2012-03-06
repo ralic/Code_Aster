@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PROIX J-M.PROIX 
 # TITRE REPONSE TRANSITOIRE D'UNE DALLE EN BETON ARME EN GRILLE_EXCENTRE QUAD4
 # sdns107b.para = tps_job 220 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -233,7 +233,6 @@ RESU=DYNA_NON_LINE(MODELE=LEMOD,
                              FONC_MULT=FMULT,),
                           _F(CHARGE=CHAR2,),),
                    COMP_INCR=_F(RELATION='ELAS',
-                               # ALGO_1D='DEBORST',
                                 TOUT='OUI',),
                    INCREMENT=_F(LIST_INST=LINST,),
                    SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
@@ -242,9 +241,12 @@ RESU=DYNA_NON_LINE(MODELE=LEMOD,
                                 ),);
 
 
-RESU=CALC_NO(reuse =RESU,
-             RESULTAT=RESU,
-             OPTION=('FORC_NODA','REAC_NODA',),);
+RESU=CALC_CHAMP(reuse =RESU,
+                   RESULTAT=RESU,
+                   TOUT_ORDRE='OUI',
+                    FORCE=('FORC_NODA','REAC_NODA'),
+                   );
+
 
 EPOT=POST_ELEM(ENER_POT=_F(TOUT='OUI',),
                RESULTAT=RESU,);

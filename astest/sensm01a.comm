@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE validation des commandes DEFI_PARA_SENSI et MEMO_NOM_SENSI en MECA_STATIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -92,9 +92,9 @@ CALC_SENSI( reuse = REMS, RESULTAT = REMS, SENSIBILITE = (PSX,PSY) ,
                  );
 
 
-REMS = CALC_NO( reuse      =  REMS         ,
+REMS = CALC_CHAMP( reuse      =  REMS         ,
               RESULTAT   =  REMS         ,
-              OPTION     = ('REAC_NODA',),
+              FORCE='REAC_NODA',
               );
 
 CALC_SENSI( reuse = REMS,RESULTAT = REMS , SENSIBILITE = (PSX,PSY) ,

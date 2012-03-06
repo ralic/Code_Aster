@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE PROPAGATION DYNAMIQUE D'UNE FISSURE
 # sdns105a.para = tps_job 180 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -182,9 +182,9 @@ evol = CALC_ELEM   (   reuse      = evol    ,
                        RESULTAT   = evol    ,);
 
 
-evol   = CALC_NO    (  reuse      = evol,
+evol   = CALC_CHAMP    (  reuse      = evol,
                        TOUT_ORDRE = 'OUI'    ,
-                       OPTION     = 'VARI_NOEU',
+                       VARI_INTERNE='VARI_NOEU',
                        RESULTAT   = evol   ,);
 
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE TROUEE COMPLETE ET LOI CZM_EXP_REG
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -173,8 +173,8 @@ EVOL = STAT_NON_LINE(
 # POST-TRAITEMENT
 #--------------------------------------------------------------
 
-CALC_NO( reuse    = EVOL,
-         OPTION   = 'FORC_NODA',
+CALC_CHAMP( reuse    = EVOL,
+         FORCE='FORC_NODA',
          RESULTAT =  EVOL,
        )
 

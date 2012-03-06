@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE  MINCE ENCASTREE SOUMISE A UN GRADIENT THERMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -76,8 +76,8 @@ MESTAT=MECA_STATIQUE(      MODELE=MOD,
                        CARA_ELEM=CARA,
                           )
 
-MESTAT=CALC_NO( reuse=MESTAT, RESULTAT=MESTAT,
-                OPTION='FORC_NODA'
+MESTAT=CALC_CHAMP( reuse=MESTAT, RESULTAT=MESTAT,
+                FORCE='FORC_NODA'
                    )
 
 MESTAT=CALC_ELEM( reuse=MESTAT, RESULTAT=MESTAT,

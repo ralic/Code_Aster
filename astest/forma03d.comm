@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE ABBAS M.ABBAS
 # TITRE ENONCE FORMATION PLAQUE TROUEE EN TRACTION EN PLASTICITE - RECALAGE PARAMETRES
 # forma03d.para = tps_job 300 mem_job 64Mo ncpus 1 liste_test S
@@ -195,8 +195,7 @@ RESUNL=STAT_NON_LINE(MODELE=MO,
                      EXCIT=(_F(CHARGE=CH1,),
                             _F(CHARGE=CH2,
                                FONC_MULT=F_DEPL,),),
-                     COMP_INCR=_F(RELATION='VMIS_CIN1_CHAB',
-                                  ALGO_C_PLAN='DEBORST',),
+                     COMP_INCR=_F(RELATION='VMIS_CIN1_CHAB',),
                      INCREMENT=_F(LIST_INST=L_INST,
                                   INST_FIN=TELAS,),);
 
@@ -211,7 +210,6 @@ RESUNL=STAT_NON_LINE(reuse =RESUNL,
                             _F(CHARGE=CH2,
                                FONC_MULT=F_DEPL,),),
                      COMP_INCR=_F(RELATION='VMIS_CIN1_CHAB',
-                                  ALGO_C_PLAN='DEBORST',
                                   ITER_INTE_MAXI=100,),
                      ETAT_INIT=_F(EVOL_NOLI=RESUNL,),
                      INCREMENT=_F(LIST_INST=L_INST,
@@ -223,9 +221,12 @@ RESUNL=STAT_NON_LINE(reuse =RESUNL,
 
 
 # INTERPOLATION DES CONTRAINTES ET VARIABLE INTERNES AUX NOEUDS
-RESUNL=CALC_ELEM(reuse =RESUNL,
-                 RESULTAT=RESUNL,
-                 OPTION=('SIGM_ELNO','VARI_ELNO','SIEQ_ELGA',),);
+
+RESUNL=CALC_CHAMP(reuse =RESUNL,RESULTAT=RESUNL,
+             CONTRAINTE=('SIGM_ELNO','SIGM_NOEU'),
+             CRITERES=('SIEQ_ELGA'),
+             VARI_INTERNE=('VARI_ELNO'),
+             )
 
 # DEPOUILLEMENTS DES RESULTATS
 # VALEURS MAXI DES CONTRAINTES EQUIVALENTES ET DES VARIABLES INTERNES
@@ -241,9 +242,6 @@ IMPR_RESU(MODELE=MO,
 IMPR_RESU(FORMAT='MED',
           RESU=_F(RESULTAT=RESUNL,),);
 
-RESUNL=CALC_NO(reuse =RESUNL,
-               RESULTAT=RESUNL,
-               OPTION='SIGM_NOEU',);
 
 #
 # COURBE SIYY AU POINT G EN FONCTION DU DEPLACEMENT

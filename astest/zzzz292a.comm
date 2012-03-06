@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION ELEMENTAIRE DE SANS_GROUP_NO_FR
 # zzzz292a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -87,9 +87,9 @@ RESU=STAT_NON_LINE(MODELE=MO,
                               RENUM='MDA',),
                    INFO=1,);
 
-RESU=CALC_NO(reuse =RESU,
+RESU=CALC_CHAMP(reuse =RESU,
              RESULTAT=RESU,
-             OPTION='FORC_NODA',);
+             FORCE='FORC_NODA',);
 
 IMPR_RESU(UNITE=8,
           RESU=(_F(RESULTAT=RESU,

@@ -1,4 +1,4 @@
-#@ MODIF E_Core Execution  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_Core Execution  DATE 06/03/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -119,6 +119,12 @@ class CoreOptions(object):
         parser.add_option('--rep_dex', dest='repdex', type='str', metavar='DIR',
             action='store',
             help="directory of external datas (geometrical datas or properties...)")
+        parser.add_option('--rep_glob', dest='repglob', type='str', metavar='DIR',
+            action='store',default='.',
+            help="directory of the results database")
+        parser.add_option('--rep_vola', dest='repvola', type='str', metavar='DIR',
+            action='store',default='.',
+            help="directory of the temporary database")
 
         parser.add_option('--suivi_batch', dest='suivi_batch',
             action='store_true', default=False,
@@ -347,7 +353,7 @@ def _bwc_arguments(argv):
         return argv
     long_opts = (
         'eficas_path', 'commandes', 'num_job', 'mode',
-        'rep_outils', 'rep_mat', 'rep_dex',
+        'rep_outils', 'rep_mat', 'rep_dex', 'rep_vola', 'rep_glob', 
         'memjeveux', 'tpmax', 'memory', 'max_base',
     )
     # boolean options

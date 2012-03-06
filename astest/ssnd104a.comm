@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE ETUDE : ESSAI BIAXIAL DRAINE (MODELISATION D_PLAN)
 # ssnd104a.para = tps_job 310 mem_job 50Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -130,9 +130,9 @@ U1       = CALC_ELEM( reuse      = U1,
                       OPTION     = ('EPSI_ELGA','EPSI_ELNO','SIGM_ELNO','VARI_ELNO'),
                       RESULTAT   = U1,
                     );
-U1       = CALC_NO( reuse    = U1,
+U1       = CALC_CHAMP( reuse    = U1,
                     RESULTAT = U1,
-                    OPTION   = ('SIGM_NOEU','VARI_NOEU')
+                    CONTRAINTE='SIGM_NOEU',VARI_INTERNE='VARI_NOEU'
                   )
 
 TEST_RESU( RESU = (
@@ -272,9 +272,9 @@ U2       = CALC_ELEM( reuse      = U2,
                       OPTION     = ('EPSI_ELGA','EPSI_ELNO','SIGM_ELNO','VARI_ELNO'),
                       RESULTAT   = U2,
                     );
-U2       = CALC_NO( reuse    = U2,
+U2       = CALC_CHAMP( reuse    = U2,
                     RESULTAT = U2,
-                    OPTION   = ('SIGM_NOEU','VARI_NOEU')
+                    CONTRAINTE='SIGM_NOEU',VARI_INTERNE='VARI_NOEU'
                   )
 
 TEST_RESU( RESU = (

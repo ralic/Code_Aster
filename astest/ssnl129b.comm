@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE : VALIDATION DE LA LOI VISC_ISOT_TRAC SUR ESSAI DE TRACTION
 # ssnl129b.para = tps_job 90 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -139,9 +139,9 @@ UL=CALC_CHAMP(reuse =UL,
              RESULTAT=UL,
               CONTRAINTE=('SIGM_ELNO'),);
 
-UL=CALC_NO(reuse =UL,
+UL=CALC_CHAMP(reuse =UL,
            RESULTAT=UL,
-           OPTION='REAC_NODA',);
+           FORCE='REAC_NODA',);
 # ------------------------------------------------------------
 
 #  DEUXIEME CALCUL : VITESSE MOYENNE  10E1 s-1
@@ -184,9 +184,9 @@ UM=CALC_CHAMP(reuse =UM,
              RESULTAT=UM,
               CONTRAINTE=('SIGM_ELNO'),);
 
-UM=CALC_NO(reuse =UM,
+UM=CALC_CHAMP(reuse =UM,
            RESULTAT=UM,
-           OPTION='REAC_NODA');
+           FORCE='REAC_NODA');
 
 # ------------------------------------------------------------
 
@@ -230,9 +230,9 @@ UR=CALC_CHAMP(reuse =UR,
              RESULTAT=UR,
               CONTRAINTE=('SIGM_ELNO'),);
 
-UR=CALC_NO(reuse =UR,
+UR=CALC_CHAMP(reuse =UR,
            RESULTAT=UR,
-           OPTION='REAC_NODA');
+           FORCE='REAC_NODA');
 
 #-----------------------------------------------------------
 # IMPRESSION DES RESULTATS AU FORMAT 'POST_RELEVE'

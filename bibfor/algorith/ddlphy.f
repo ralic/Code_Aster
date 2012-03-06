@@ -1,7 +1,7 @@
       SUBROUTINE DDLPHY (DEPPLU,NEQ,VECT,DESC)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 05/03/2012   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -104,12 +104,12 @@ C           A EXCLURE OU CONSERVER
                 GARDER=.FALSE.
               ENDIF
 22          CONTINUE
+C           ADRESSE DU DDL DANS LE .VALE           
+            IVAL = ZI(JNUEQ - 1 +  INUEQ - 1 + POS)
+            DESC(IVAL) = ZK8(JNOCMP-1+JAUX)
             IF (GARDER) THEN
-C             ADRESSE DU DDL DX DANS LE .VALE           
-              IVAL = ZI(JNUEQ - 1 +  INUEQ - 1 + POS)
               VECT(IVAL) = ZR(IVECT2-1+IVAL)
             ENDIF
-            DESC(IVAL) = ZK8(JNOCMP-1+JAUX)
           ENDIF
 21      CONTINUE
 20    CONTINUE

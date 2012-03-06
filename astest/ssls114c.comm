@@ -1,4 +1,4 @@
-# MODIF  DATE 09/01/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE NON REGRESSION SUR QUART DE VIROLE CYLINDRIQUE - DKT - DST
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -93,25 +93,25 @@ RESPMOY=POST_CHAMP(RESULTAT=RESP,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
                                    NIVE_COUCHE='MOY',),);
-RESPMOY=CALC_NO(reuse=RESPMOY,
+RESPMOY=CALC_CHAMP(reuse=RESPMOY,
                 RESULTAT=RESPMOY,
-                OPTION='SIGM_NOEU',);
+                CONTRAINTE='SIGM_NOEU',);
 
 RESPINF=POST_CHAMP(RESULTAT=RESP,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
                                    NIVE_COUCHE='INF',),);
-RESPINF=CALC_NO(reuse=RESPINF,
+RESPINF=CALC_CHAMP(reuse=RESPINF,
                 RESULTAT=RESPINF,
-                OPTION='SIGM_NOEU',);
+                CONTRAINTE='SIGM_NOEU',);
 
 RESPSUP=POST_CHAMP(RESULTAT=RESP,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
                                    NIVE_COUCHE='SUP',),);
-RESPSUP=CALC_NO(reuse=RESPSUP,
+RESPSUP=CALC_CHAMP(reuse=RESPSUP,
                 RESULTAT=RESPSUP,
-                OPTION='SIGM_NOEU',);
+                CONTRAINTE='SIGM_NOEU',);
 
 TEST_RESU(RESU=(
 
@@ -229,25 +229,25 @@ RESFMOY=POST_CHAMP(RESULTAT=RESF,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
                                    NIVE_COUCHE='MOY',),);
-RESFMOY=CALC_NO(reuse=RESFMOY,
+RESFMOY=CALC_CHAMP(reuse=RESFMOY,
                 RESULTAT=RESFMOY,
-                OPTION='SIGM_NOEU',);
+                CONTRAINTE='SIGM_NOEU',);
 
 RESFINF=POST_CHAMP(RESULTAT=RESF,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
                                    NIVE_COUCHE='INF',),);
-RESFINF=CALC_NO(reuse=RESFINF,
+RESFINF=CALC_CHAMP(reuse=RESFINF,
                 RESULTAT=RESFINF,
-                OPTION='SIGM_NOEU',);
+                CONTRAINTE='SIGM_NOEU',);
 
 RESFSUP=POST_CHAMP(RESULTAT=RESF,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
                                    NIVE_COUCHE='SUP',),);
-RESFSUP=CALC_NO(reuse=RESFSUP,
+RESFSUP=CALC_CHAMP(reuse=RESFSUP,
                 RESULTAT=RESFSUP,
-                OPTION='SIGM_NOEU',);
+                CONTRAINTE='SIGM_NOEU',);
 
 TEST_RESU(RESU=(
 
@@ -374,25 +374,25 @@ RESGMOY=POST_CHAMP(RESULTAT=RESG,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
                                    NIVE_COUCHE='MOY',),);
-RESGMOY=CALC_NO(reuse=RESGMOY,
+RESGMOY=CALC_CHAMP(reuse=RESGMOY,
                 RESULTAT=RESGMOY,
-                OPTION='SIGM_NOEU',);
+                CONTRAINTE='SIGM_NOEU',);
 
 RESGINF=POST_CHAMP(RESULTAT=RESG,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
                                    NIVE_COUCHE='INF',),);
-RESGINF=CALC_NO(reuse=RESGINF,
+RESGINF=CALC_CHAMP(reuse=RESGINF,
                 RESULTAT=RESGINF,
-                OPTION='SIGM_NOEU',);
+                CONTRAINTE='SIGM_NOEU',);
 
 RESGSUP=POST_CHAMP(RESULTAT=RESG,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
                                    NIVE_COUCHE='SUP',),);
-RESGSUP=CALC_NO(reuse=RESGSUP,
+RESGSUP=CALC_CHAMP(reuse=RESGSUP,
                 RESULTAT=RESGSUP,
-                OPTION='SIGM_NOEU',);
+                CONTRAINTE='SIGM_NOEU',);
 
 TEST_RESU(RESU=(
 

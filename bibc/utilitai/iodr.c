@@ -1,8 +1,8 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF IODR utilitai  DATE 19/05/2011   AUTEUR SELLENET N.SELLENET */
+/* MODIF IODR utilitai  DATE 06/03/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -20,7 +20,8 @@
 
 #include "aster.h"
 
-#define MAX_FAC 100
+#define MAX_FAC 256
+#define LONG_NOM_FIC 129
 
 static FILE *fpfile[MAX_FAC];
 static long   nenr[MAX_FAC];
@@ -51,7 +52,7 @@ long  open_fac ( char *nom )
    if (ifac < 0) {
       /* Creation */
       if (nbFAC < MAX_FAC) {
-         nomFAC[nbFAC]=(char *) malloc(10);
+         nomFAC[nbFAC]=(char *) malloc(LONG_NOM_FIC);
          strcpy(nomFAC[nbFAC],nom);
          fpfile[nbFAC]=NULL;
          nenr[nbFAC]=-1;
@@ -88,7 +89,7 @@ void DEFSPPPP(OPENDR, opendr, char *dfname, STRING_SIZE len_dfname, INTEGER *ind
                          INTEGER *indic, INTEGER *ierr)
 {
     long iu,nbread;
-    char fname[24];
+    char fname[LONG_NOM_FIC];
 
     *ierr = 0;
     strcpyF2C(fname,dfname);
@@ -121,7 +122,7 @@ void DEFSPPPP(OPENDR, opendr, char *dfname, STRING_SIZE len_dfname, INTEGER *ind
 void DEFSP(CLOSDR, closdr, char *dfname, STRING_SIZE len_dfname, INTEGER *ierr)
 {
     long iu;
-    char fname[24];
+    char fname[LONG_NOM_FIC];
 
     *ierr = 0;
     strcpyF2C(fname,dfname);
@@ -145,7 +146,7 @@ void DEFSPPPP(READDR, readdr, char *dfname, STRING_SIZE len_dfname, void *buf,
     long offset;
     long iu,nbseek;
     INTEGER nbval;
-    char fname[24];
+    char fname[LONG_NOM_FIC];
 
     *ierr = 0;
     strcpyF2C(fname,dfname);
@@ -178,7 +179,7 @@ void DEFSPPPPPP(WRITDR, writdr, char *dfname, STRING_SIZE len_dfname, void *buf,
     long offset;
     long iu,nbseek,nbwrite;
     INTEGER nbval;
-    char fname[24];
+    char fname[LONG_NOM_FIC];
 
 
     *ierr = 0;

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # RESPONSABLE FERNANDES R.FERNANDES
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL NON DRAINE AVEC LE MODELE DE TYPE
@@ -199,9 +199,9 @@ U2       = CALC_ELEM( reuse      = U2,
                       RESULTAT   = U2,
                     );
 
-U2       = CALC_NO( reuse    = U2,
+U2       = CALC_CHAMP( reuse    = U2,
                     RESULTAT = U2,
-                    OPTION   = ( 'SIGM_NOEU', 'VARI_NOEU')
+                    CONTRAINTE='SIGM_NOEU',VARI_INTERNE='VARI_NOEU'
                   )
 
 #

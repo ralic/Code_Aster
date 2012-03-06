@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DE LA LOI HYPER-ELASTIQUE SUR UNE LANIERE - C_PLAN
 # ssnv189c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -90,9 +90,9 @@ IMPR_RESU(MODELE=modmeca,
                   NOM_CMP=('SIXX','SIYY',),),);
 
 
-RESU=CALC_NO(reuse =RESU,
+RESU=CALC_CHAMP(reuse =RESU,
              RESULTAT=RESU,
-             OPTION='FORC_NODA',
+             FORCE='FORC_NODA',
 
              );
 

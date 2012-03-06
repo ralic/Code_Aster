@@ -1,9 +1,9 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE FISSURE INCLINEE EN 2D AVEC X-FEM
 # ssnp138a.para = tps_job 360 mem_job 256Mo mem_aster 50 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -97,7 +97,7 @@ L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=1.0,NOMBRE=1,),);
 def LEVSETTAN(x,y,beta) :
      if ( x * cos(beta) + y * sin(beta) ) >= 0. : return   (x * cos(beta) + y * sin(beta)) -  A/2.
      else :  return   (-x * cos(beta) - y * sin(beta)) -  A/2.
-     
+
 #----------------------------------------------
 #         DEBUT DE LA BOUCLE SUR LES ANGLES
 #----------------------------------------------
@@ -125,7 +125,7 @@ for i in range(nbcalc) :
 #
 # on passe pas un string pour que l evaluation de la fonction se fasse a chaque pas
   alpha = str(eval('alphaf[i]*pi/180.'))
-  
+
 #  LN[i]=FORMULE(NOM_PARA=('X','Y'),VALE='Y*cos('+alpha+')-X*sin('+alpha+')');
 #  LT[i]=FORMULE(NOM_PARA=('X','Y'),VALE='LEVSETTAN(X,Y,'+alpha+')');
 
@@ -168,7 +168,7 @@ for i in range(nbcalc) :
                    INFO=1,);
 
 #
-# POST-TRAITEMENT : CALCUL DES SIFS 
+# POST-TRAITEMENT : CALCUL DES SIFS
 #
 
 # SOLUTION ANALYTIQUE (handbook tada p42)
@@ -199,7 +199,7 @@ for i in range(nbcalc) :
                             R_INF=RI[j],
                             R_SUP=RS[j],),
                    INFO=2);
-                   
+
     IMPR_TABLE(TABLE=SIF_1[k],);
     IMPR_TABLE(TABLE=SIF_2[k],);
     IMPR_TABLE(TABLE=TG_1[k],);
@@ -210,14 +210,14 @@ for i in range(nbcalc) :
               CRITERE='RELATIF',
               PRECISION=0.02,
               REFERENCE='ANALYTIQUE',);
-              
+
     TEST_TABLE(TABLE=SIF_2[k],
               NOM_PARA='K1',
               VALE=K1REF,
               CRITERE='RELATIF',
               PRECISION=0.02,
               REFERENCE='ANALYTIQUE',);
-              
+
     TEST_TABLE(TABLE=TG_1[k],
               NOM_PARA='G',
               VALE=GREF,
@@ -264,7 +264,7 @@ for i in range(nbcalc) :
                     )
 
   IMPR_TABLE(TABLE = PK[i])
-  
+
   TEST_TABLE(TABLE=PK[i],
               NOM_PARA='K1',
               VALE=K1REF,
@@ -279,7 +279,7 @@ for i in range(nbcalc) :
               CRITERE='RELATIF',
               PRECISION=0.02,
               REFERENCE='ANALYTIQUE');
-  
+
   else :
     TEST_TABLE(TABLE=PK[i],
               NOM_PARA='K2',
@@ -287,8 +287,8 @@ for i in range(nbcalc) :
               CRITERE='ABSOLU',
               PRECISION=K1REF/1000.,
               REFERENCE='ANALYTIQUE');
-  
- 
+
+
 
 #------------------------------------------------------------------------
 # POST-TRAITEMENT : MAILLAGE FISSURE et DEPLACEMENTS POUR LE MAILLAGE FISSURE
@@ -306,16 +306,16 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
 
 RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT2[i],
-                        
+
                         INFO          = 2)
 
 RES_XFEM=CALC_ELEM(reuse =RES_XFEM,
                    RESULTAT=RES_XFEM,
                    OPTION=('SIEQ_ELGA','SIEQ_ELNO'));
 
-RES_XFEM=CALC_NO(reuse =RES_XFEM,
+RES_XFEM=CALC_CHAMP(reuse =RES_XFEM,
                  RESULTAT=RES_XFEM,
-                 OPTION=('SIEQ_NOEU'));
+                 CRITERES='SIEQ_NOEU');
 
 IMPR_RESU(FORMAT='GMSH',RESU=(_F(MAILLAGE=MA_XFEM,RESULTAT=RES_XFEM,NOM_CHAM='DEPL',NOM_CMP=('DX','DY')),
                               _F(RESULTAT=RES_XFEM,NOM_CHAM='SIEQ_NOEU',NOM_CMP='VMIS'),

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # RESPONSABLE PROIX J.M.PROIX
 # TITRE TUBE DROIT SOUMIS A PLUSIEURS CHARGEMENTS ELEMENT TUYAU_6M MACRO_ELAS_MULT
 # ssll106c.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test R
@@ -710,9 +710,9 @@ CALC_ELEM( reuse= REST ,RESULTAT= REST ,
                           'EFGE_ELNO', )
                         )
 
-CALC_NO(reuse=REST,
+CALC_CHAMP(reuse=REST,
 
-              OPTION='FORC_NODA',
+              FORCE='FORC_NODA',
                  RESULTAT=REST
          )
 

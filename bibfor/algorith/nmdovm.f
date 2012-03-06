@@ -1,8 +1,8 @@
       SUBROUTINE NMDOVM(MODELE,MESMAI,NBMA,CES2,COMCOD,COMP,TXCP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 05/03/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,11 +28,11 @@ C ----------------------------------------------------------------------
 C IN MODELE   : LE MODELE
 C IN MESMAI   : LISTE DES MAILLES AFFECTEES
 C IN NBMA     : NOMRE DE CES MAILLES (0 SIGNIFIE : TOUT)
-C IN CES2     :  CHAMELEM SIMPLE ISSU DE COMPOR, DEFINIR SUR LES
+C IN CES2     :  CHAMELEM SIMPLE ISSU DE COMPOR, DEFINI SUR LES
 C                ELEMENTS QUI CALCULENT FULL_MECA
-C IN  COMCOD  : COMPORTMENT PYTHON AFFECTE AUX MAILLES MESMAI
-C IN  COMP    : COMPORTMENT LU ACTUELLEMENT AFFECTE AUX MAILLES MESMAI
-C IN  TXCP    : TYPE DE CONTRAINTES PLANES : ANALYTIQUE OU DEBORST
+C IN  COMCOD  : COMPORTEMENT PYTHON AFFECTE AUX MAILLES MESMAI
+C IN  COMP    : COMPORTEMENT LU ACTUELLEMENT AFFECTE AUX MAILLES MESMAI
+C OUT TXCP    : TYPE DE CONTRAINTES PLANES : ANALYTIQUE OU DEBORST
 C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       INTEGER ZI
@@ -74,7 +74,7 @@ C
 
 C a faire : verifier les perf
 C SI CPLAN OU 1D ON NE PLANTE PAS MAIS ON PASSE EN DEBORST
-      TX='A'
+      TX='I'
 
       LIGREL = MODELE(1:8)//'.MODELE    .LIEL'
       CALL JEVEUO(LIGREL(1:19)//'.REPE','L',IREPE)
@@ -112,44 +112,28 @@ C           NUMERO DU GREL CONTENANT LA MAILLE IMA
             CALL JELIRA(JEXNUM(LIGREL,NUGREL),'LONMAX',NBMAGL,K24BID)
             NUTYEL = ZI(IGREL+NBMAGL-1)
             CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',NUTYEL),NOTYPE)
+
+C           LECTURE DE TYPMOD DANS LE CATALOGUE PHENOMENE_MDOELISATION
             CALL TEATTR(NOTYPE,'C','TYPMOD',TYPMOD,IRET)
             IF (IRET.NE.0) GOTO 40
 
 C           Dans le grel il y a TYPMOD=C_PLAN
-C            IF(LTEATT(NOTYPE,'TYPMOD','C_PLAN')) THEN
             IF(TYPMOD(1:6).EQ.'C_PLAN') THEN
                CALL LCTEST(COMCOD,'MODELISATION','C_PLAN',IRETT)
-               IF (TXCP.EQ.'DEBORST') THEN
-                  IF (IRETT.NE.0) THEN
-                     TEXTE(1)='C_PLAN'
-                     TEXTE(2)=COMP
-                     CALL U2MESG(TX,'COMPOR1_52',2,TEXTE,0,0,0,0.D0)
-                  ENDIF
-               ELSE
-                  IF (IRETT.EQ.0) THEN
-                     TEXTE(1)='C_PLAN'
-                     TEXTE(2)=COMP
-                     CALL U2MESG(TX,'COMPOR1_47',2,TEXTE,0,0,0,0.D0)
-                     TXCP='DEBORST'
-                  ENDIF
+               IF (IRETT.EQ.0) THEN
+                  TEXTE(1)='C_PLAN'
+                  TEXTE(2)=COMP
+                  CALL U2MESG(TX,'COMPOR1_47',2,TEXTE,0,0,0,0.D0)
+                  TXCP='DEBORST'
                ENDIF
 C           Dans le grel il y a TYPMOD=COMP1D
-C            IF(LTEATT(NOTYPE,'TYPMOD','COMP1D')) THEN
             ELSEIF(TYPMOD(1:6).EQ.'COMP1D') THEN
                CALL LCTEST(COMCOD,'MODELISATION','1D',IRETT)
-               IF (TXCP.EQ.'DEBORST') THEN
-                  IF (IRETT.NE.0) THEN
-                     TEXTE(1)='1D'
-                     TEXTE(2)=COMP
-                     CALL U2MESG(TX,'COMPOR1_53',2,TEXTE,0,0,0,0.D0)
-                  ENDIF
-               ELSE
-                  IF (IRETT.EQ.0) THEN
-                     TEXTE(1)='1D'
-                     TEXTE(2)=COMP
-                     CALL U2MESG(TX,'COMPOR1_48',2,TEXTE,0,0,0,0.D0)
-                     TXCP='DEBORST'
-                  ENDIF
+               IF (IRETT.EQ.0) THEN
+                  TEXTE(1)='1D'
+                  TEXTE(2)=COMP
+                  CALL U2MESG(TX,'COMPOR1_48',2,TEXTE,0,0,0,0.D0)
+                  TXCP='DEBORST'
                ENDIF
 C           Dans le grel il y a TYPMOD=COMP3D
             ELSEIF(TYPMOD(1:6).EQ.'COMP3D') THEN
@@ -164,7 +148,7 @@ C           Dans le grel il y a TYPMOD=COMP3D
                IF (IRETT.EQ.0) THEN
                   TEXTE(1)=TYPMOD
                   TEXTE(2)=COMP
-                  CALL U2MESG(TX,'COMPOR1_49',2,TEXTE,0,0,0,0.D0)
+                  CALL U2MESG('A','COMPOR1_49',2,TEXTE,0,0,0,0.D0)
                ENDIF
             ENDIF
 

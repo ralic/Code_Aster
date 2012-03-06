@@ -1,25 +1,25 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 #
 # TITRE FATIGUE, CHARGEMENT CYCLIQUE : TRACTION-COMPRESSION + CISAILLEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # AVEC LE CRITERE EN FORMULE POUR RETROUVER LE CAS TEST sslv135g
-# 
+#
 # sslv135n.para = tps_job 60 mem_job 800Mo ncpus 1 liste_test S
 #----------------------------------------------------------------------
 #    Cas test sslv135n : cube 3D
@@ -246,27 +246,27 @@ MAT2  = AFFE_MATERIAU    ( MAILLAGE    =   CUBE,
                            AFFE        =_F ( TOUT       = 'OUI',
                                              MATER      = ACIER2,
                                              ))
-# POUR RETROUVER MATAKE_AC  
+# POUR RETROUVER MATAKE_AC
 # ----------------------------------
-                                           
+
 CRIT_FAT =   FORMULE(
            NOM_PARA=('DTAUMA','NORMAX'),
            VALE=''' 1.5*( DTAUMA + max(0,NORMAX) ) '''
            )
-           
+
 WHOL_F =   FORMULE(
            NOM_PARA=('NBRUP'),
            VALE=''' 4098.3*(NBRUP**(-0.2693)) '''
            )
 
-                                             
-# POUR RETROUVER DANGVAN_MODI_AV  
+
+# POUR RETROUVER DANGVAN_MODI_AV
 # ----------------------------------
 CRIT_FA2 =   FORMULE(
            NOM_PARA=('TAUPR_1','TAUPR_2','PHYDR_1','PHYDR_2'),
            VALE=''' 1.5*( abs(TAUPR_1-TAUPR_2)/2.0 + max(0,PHYDR_1, PHYDR_2) ) '''
            )
-           
+
 WHOL_F2 =   FORMULE(
            NOM_PARA=('NBRUP'),
            VALE=''' 4098.3*(NBRUP**(-0.2693)) '''
@@ -294,8 +294,8 @@ WHOL_Fb=DEFI_FONCTION(   NOM_PARA='SIGM',
                                  1186.325173,  1.0E+02,
                                  1429.687173,  5.0E+01,
                                  1829.643475,  2.0E+01,
-                                 2204.975387,  1.0E+01,                 
-                              )  
+                                 2204.975387,  1.0E+01,
+                              )
                           )
 # CHARGEMENT SELON LES 2 AXES Y ET Z
 # ----------------------------------
@@ -345,7 +345,7 @@ SOL_NL = STAT_NON_LINE ( TITRE      =
                         INCREMENT  =_F ( LIST_INST    = LINST, ),
                         NEWTON     =_F ( MATRICE      = 'ELASTIQUE',
                                          REAC_INCR    = 0 ))
-                                         
+
 SOL_NL = CALC_ELEM( reuse    = SOL_NL,
                     RESULTAT = SOL_NL,
                     OPTION   = (
@@ -354,12 +354,12 @@ SOL_NL = CALC_ELEM( reuse    = SOL_NL,
                                 'EPSI_ELNO')
                   )
 
-SOL_NL = CALC_NO( reuse    = SOL_NL,
+SOL_NL = CALC_CHAMP( reuse    = SOL_NL,
                   RESULTAT = SOL_NL,
                   TOUT = 'OUI',
                   GROUP_MA = ('FACE1_3D', 'FACE2_3D', 'FACE3_3D','CUBE'),
-                  OPTION   = ('SIGM_NOEU','EPSI_NOEU')
-                ) 
+                  CONTRAINTE='SIGM_NOEU',DEFORMATION='EPSI_NOEU'
+                )
 
 # CALCUL DE LA FATIGUE SUR L'ENSEMBLE DE LA STRUCTURE AUX NOUEDS
 # -----------------------------------------------------------------------
@@ -376,7 +376,7 @@ FATNLN00=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
                        FORMULE_GRDEQ   = CRIT_FAT,
                        COURBE_GRD_VIE  = 'WOHLER'
                      )
-                     
+
 FATNLN01=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
                        OPTION        = 'DOMA_NOEUD',
                        TYPE_CHARGE   = 'PERIODIQUE',
@@ -404,7 +404,7 @@ FATNLN02=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
                        COURBE_GRD_VIE  = 'FORM_VIE',
                        FORMULE_VIE = WHOL_F
                        )
-                       
+
 # CALCUL DE LA FATIGUE SUR L'ENSEMBLE DE LA STRUCTURE AUX POINTS DE GAUSS
 # -----------------------------------------------------------------------
 FATI_NL0=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
@@ -418,7 +418,7 @@ FATI_NL0=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
                       FORMULE_GRDEQ   = CRIT_FAT,
                       COURBE_GRD_VIE  = 'WOHLER',
                     )
-                    
+
 FATI_NL1=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
                       OPTION        = 'DOMA_ELGA',
                       TYPE_CHARGE   = 'PERIODIQUE',
@@ -431,7 +431,7 @@ FATI_NL1=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
                       COURBE_GRD_VIE  = 'FORM_VIE',
                       FORMULE_VIE     = WHOL,
                     )
-                    
+
 FATI_NL2=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
                       OPTION        = 'DOMA_ELGA',
                       TYPE_CHARGE   = 'PERIODIQUE',
@@ -1469,7 +1469,7 @@ TEST_RESU(CHAM_NO=( _F( CHAM_GD = FATNLN02,
                         VALE = 9.8775850589871E-05 )
                 )
           )
-   
+
 ######################################################################
 # AMPLITUDE VARIABLE
 ######################################################################
@@ -1504,7 +1504,7 @@ FAT_LNO1=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
                       FORMULE_VIE     = WHOL,
                       PROJECTION    = 'UN_AXE',
                     )
-                    
+
 FAT_LNO2=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
                       OPTION        = 'DOMA_NOEUD',
                       TYPE_CHARGE   = 'NON_PERIODIQUE',
@@ -1517,12 +1517,12 @@ FAT_LNO2=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
                       COURBE_GRD_VIE  = 'FORM_VIE',
                       FORMULE_VIE     = WHOL_F,
                       PROJECTION    = 'UN_AXE',
-                    )  
+                    )
 
 # ----------------------------------------------------------------------
 # TEST DE LA FATIGUE SUR LES FACE 1, 2 ET 3 DE LA STRUCTURE AUX NOEUDS
 # ----------------------------------------------------------------------
-                                      
+
 TEST_RESU(CHAM_NO=( _F( CHAM_GD = FAT_LNO0,
                         NOM_CMP = 'VNM1X',
                         NOEUD = 'N214',
@@ -1614,5 +1614,5 @@ TEST_RESU(CHAM_NO=( _F( CHAM_GD = FAT_LNO2,
                         VALE = 6.1692384350833E-05 ),
                 )
           )
-          
+
 FIN()

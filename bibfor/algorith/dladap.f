@@ -8,7 +8,7 @@
      &                  NBPASE,SOLVEU)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2012   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 05/03/2012   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -118,7 +118,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ---------------------------
       INTEGER IWK0
       INTEGER VALI(3)
       CHARACTER*4   TYP1(NBTYAR)
-      CHARACTER*8   K8B, NOMRES
+      CHARACTER*8   K8B, NOMRES, RESULT
       CHARACTER*8   VVAR
       CHARACTER*16  TYPRES, NOMCMD,TYPEAR(NBTYAR)
       CHARACTER*19  SDENER,MASSE1,RIGID1,AMORT1,K19BID
@@ -133,13 +133,13 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ---------------------------
       REAL*8 PAS2
       REAL*8 VALR(3)
       REAL*8 R8PREM
-      INTEGER       IWK1,IWK2,IFORC1,IFOR,IRET
+      INTEGER       IWK1,IWK2,IFORC1,IRET
       INTEGER       NPER,NRMAX,NR,NPAS,IPAS,IPARCH,IARCHI
       INTEGER       NNC,NBEXCL,NBIPAS,IVERI,NBORDR,NBITER
       INTEGER       NBPASC,IFNOBI,IFCIBI
       INTEGER       ADEEQ
       INTEGER       NRPASE, IBID
-      INTEGER      IARG
+      INTEGER       IARG
       LOGICAL       ENER
 C
 C     -----------------------------------------------------------------
@@ -185,7 +185,7 @@ C
       NPAS = 0
       IARCHI = NUME
       ENER=.FALSE.
-      CALL JEEXIN(SOLVEU(1:8)//'.ENER      .VALE',IRET)
+      CALL GETFAC('ENERGIE',IRET)
       IF (IRET.NE.0) THEN
         ENER=.TRUE.
       ENDIF
@@ -497,8 +497,8 @@ C       --- ARCHIVAGE EVENTUEL DANS L'OBJET SOLUTION ---
           TARCH = TARCH + DTARCH
         ENDIF
 C
+        SDENER=SOLVEU(1:8)//'.ENER      '
         IF (ENER) THEN
-          SDENER=SOLVEU(1:8)//'.ENER      '
           MASSE1=MASSE//'           '
           AMORT1=AMORT//'           '
           RIGID1=RIGID//'           '
@@ -513,6 +513,13 @@ C ON CALCULE LA VITESSE A T N-1
           CALL JEDETR('FNODABID')
           CALL JEDETR('FCINEBID')
         ENDIF
+C
+C ------------- ARCHIVAGE DES PARAMETRES
+      IAUX = NRORES
+      JAUX = 3
+      CALL PSNSLE ( INPSCO, IAUX, JAUX, RESULT )
+C
+      CALL NMARPC(RESULT,SDENER,TEMPS)
 C
 C ------------- TRANSFERT DES NOUVELLES VALEURS DANS LES ANCIENNES
         TEMPS = TEMP2

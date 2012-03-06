@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE DETERMINATION DES CHARGES DE RUINE DE LA CONSOLE MEKELEC
 # ssnl135a.para = tps_job 600 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -669,10 +669,10 @@ MEKEFOR=STAT_NON_LINE(MODELE=MO,
 #                   CONTRAINTE=('SIGM_ELNO'),);
 # ----------------------------------------------------
 
-#MEKEFOR=CALC_NO(reuse =MEKEFOR,
+#MEKEFOR=CALC_CHAMP(reuse =MEKEFOR,
 #                RESULTAT=MEKEFOR,
 #                TOUT_ORDRE='OUI',
-#                OPTION='FORC_NODA',
+#                FORCE='FORC_NODA',
 #                MODELE=MO,
 #                CHAM_MATER=CHMAT,
 #                CARA_ELEM=CAREL,);

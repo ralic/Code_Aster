@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE MODELISATION TUYAU_3M 3NOEUDS POUTRE DROITE ANALYSE HARMONIQUE
 # shll101e.para = tps_job 60 mem_job 160Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -138,8 +138,8 @@ DYNA_F=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
 DYNA_F=CALC_ELEM(reuse=DYNA_F,
                         RESULTAT=DYNA_F,  OPTION='EFGE_ELNO',
 )
-DYNA_F=CALC_NO(reuse=DYNA_F,
-                          RESULTAT=DYNA_F,  OPTION='EFGE_NOEU',
+DYNA_F=CALC_CHAMP(reuse=DYNA_F,
+                          RESULTAT=DYNA_F,  CONTRAINTE='EFGE_NOEU',
 )
 TEST_RESU(RESU=(   _F(  RESULTAT = DYNA_F,             NUME_ORDRE = 1,
                                           GROUP_NO='B',
@@ -191,8 +191,8 @@ DYNA_FL=CALC_ELEM(reuse=DYNA_FL,
                          RESULTAT=DYNA_FL,  OPTION='EFGE_ELNO',
 )
 #
-DYNA_FL=CALC_NO(reuse=DYNA_FL,
-                          RESULTAT=DYNA_FL,  OPTION='EFGE_NOEU',
+DYNA_FL=CALC_CHAMP(reuse=DYNA_FL,
+                          RESULTAT=DYNA_FL,  CONTRAINTE='EFGE_NOEU',
 )
 TEST_RESU(RESU=(   _F(  RESULTAT = DYNA_FL,           NUME_ORDRE = 1,
                                          GROUP_NO='B',
@@ -258,8 +258,8 @@ DYNA_AF=CALC_ELEM(reuse=DYNA_AF,
                          RESULTAT=DYNA_AF,  OPTION='EFGE_ELNO',
 )
 #
-DYNA_AF=CALC_NO(reuse=DYNA_AF,
-                          RESULTAT=DYNA_AF,  OPTION='EFGE_NOEU',
+DYNA_AF=CALC_CHAMP(reuse=DYNA_AF,
+                          RESULTAT=DYNA_AF,  CONTRAINTE='EFGE_NOEU',
 )
 TEST_RESU(RESU=(   _F(  RESULTAT = DYNA_AF,           NUME_ORDRE = 1,
                                          GROUP_NO='B',
@@ -320,8 +320,8 @@ DYNA_AFL=CALC_ELEM(reuse=DYNA_AFL,
                           RESULTAT=DYNA_AFL,  OPTION='EFGE_ELNO',
 )
 #
-DYNA_AFL=CALC_NO(reuse=DYNA_AFL,
-                          RESULTAT=DYNA_AFL,  OPTION='EFGE_NOEU',
+DYNA_AFL=CALC_CHAMP(reuse=DYNA_AFL,
+                          RESULTAT=DYNA_AFL,  CONTRAINTE='EFGE_NOEU',
 )
 #
 TEST_RESU(RESU=(   _F(  RESULTAT = DYNA_AFL,          NUME_ORDRE = 1,

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE FORMATION AVANCEE CONTACT DE HERTZ
 # forma04a.para = tps_job 60 mem_job 64Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -87,9 +87,9 @@ STNL=CALC_ELEM(reuse =STNL,
                RESULTAT=STNL,
                OPTION=('SIEQ_ELGA','SIEQ_ELNO','SIEF_ELNO',),);
 
-STNL=CALC_NO(reuse =STNL,
+STNL=CALC_CHAMP(reuse =STNL,
              RESULTAT=STNL,
-             OPTION=('SIEF_NOEU','SIEQ_NOEU',),);
+             CONTRAINTE='SIEF_NOEU',CRITERES='SIEQ_NOEU');
 
 # -- Groupe de noeuds oriente depuis le centre de la zone de contact esclave
 

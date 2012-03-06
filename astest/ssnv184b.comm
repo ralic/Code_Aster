@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # ======================================================================
 # TITRE ETUDE : ESSAI TRIAXIAL 3D AVEC LE MODELE DE HOEK-BROWN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -212,9 +212,9 @@ U2       = CALC_ELEM( reuse      = U2,
                       RESULTAT   = U2,
                     );
 
-U2       = CALC_NO( reuse    = U2,
+U2       = CALC_CHAMP( reuse    = U2,
                     RESULTAT = U2,
-                    OPTION   = ( 'SIGM_NOEU', 'VARI_NOEU')
+                    CONTRAINTE='SIGM_NOEU',VARI_INTERNE='VARI_NOEU'
                   )
 
 #-------------------------------------

@@ -1,4 +1,4 @@
-#@ MODIF jeveux1 Messages  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF jeveux1 Messages  DATE 06/03/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -155,30 +155,6 @@ cata_msg = {
 
 """),
 
-23 : _(u"""
-
- Le type de recherche %(k1)s invalide.
-
-"""),
-
-24 : _(u"""
-
- La taille des segments de valeurs %(i1)d invalide.
-
-"""),
-
-25 : _(u"""
-
- La taille de la partition %(r1)f invalide.
-
-"""),
-
-26 : _(u"""
-
- Le type de parcours de la segmentation mémoire %(r1)f est invalide, les valeurs possibles sont 1, 2, 3 ou 4.
-
-"""),
-
 27 : _(u"""
 
  Le paramètre d'accès %(r1)f est invalide, la valeur doit être E ou L.
@@ -237,12 +213,6 @@ cata_msg = {
 
  Impossible d'insérer le nom %(k1)s dans le répertoire de noms %(k2)s, il y trop de collisions avec
  la fonction de hashage.
-
-"""),
-
-37 : _(u"""
-
- La valeur du rapport entre les partitions est invalide, %(r1)f n'est pas comprise entre 0.0 et 1.0.
 
 """),
 
@@ -338,12 +308,6 @@ cata_msg = {
 
 """),
 
-53 : _(u"""
-
-  La zone mémoire à libérer est déjà marquée libre.
-
-"""),
-
 54 : _(u"""
 
   Un écrasement amont est détecté, la zone mémoire (adresse %(i1)d) a été utilisée devant l'adresse autorisée %(i1)d.
@@ -436,4 +400,14 @@ cata_msg = {
  
 """),
 
-}
+69 : _(u"""
+
+ Le nom de répertoire associé à la base Globale est trop long %(k1)s, il comporte %(i1)d caractères, il ne doit pas dépasser 119.
+ 
+"""),
+
+70 : _(u"""
+
+ Le nom de répertoire associé à la base Volatile est trop long %(k1)s, il comporte %(i1)d caractères, il ne doit pas dépasser 119.
+ 
+"""),}

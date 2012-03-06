@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR SFAYOLLE S.FAYOLLE 
 # RESPONSABLE COURTOIS M.COURTOIS
 # TITRE : VARIATION TEMPERATURE DANS LE COMPORTEMENT 'VMIS_JOHN_COOK'
 # comp008o.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test R
@@ -43,7 +43,7 @@ NCAL = 10
 compor='VMIS_JOHN_COOK'
 
 # Nombre de variable interne
-NB_VARI = 4
+NB_VARI = 5
 
 #=====================================================================
 #               MATERIAU  FONCTION  DE  LA  TEMPERATURE

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 21/02/2012   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 05/03/2012   AUTEUR PROIX J-M.PROIX 
 # TITRE COMPORTEMENTS ELASTOVISCOPLASTIQUES MONOCRISTALLINS 2D
 # ssnv172b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -97,7 +97,7 @@ SOLCHAB=STAT_NON_LINE(MODELE=MODEL2D,
                       EXCIT=(_F(CHARGE=TRAC,
                                 FONC_MULT=COEF,
                                 TYPE_CHARGE='FIXE_CSTE',),),
-                      COMP_INCR=(_F(RELATION='VISC_CIN1_CHAB',ALGO_C_PLAN='DEBORST',
+                      COMP_INCR=(_F(RELATION='VISC_CIN1_CHAB',
                                     DEFORMATION='PETIT',
                                     ITER_INTE_MAXI=100,
                                     TOUT='OUI',),),
@@ -137,7 +137,7 @@ IMPL1=STAT_NON_LINE(MODELE=MODEL2D,INFO=1,
                      EXCIT=(_F(CHARGE=TRAC,
                                FONC_MULT=COEF,
                                TYPE_CHARGE='FIXE_CSTE',),),
-                     COMP_INCR=(_F(RELATION='MONOCRISTAL',ALGO_C_PLAN='DEBORST',
+                     COMP_INCR=(_F(RELATION='MONOCRISTAL',
                                    COMPOR=COMPOR1,
                                    DEFORMATION='PETIT',
                                    ITER_INTE_MAXI=100,
@@ -169,7 +169,7 @@ EXPL1=STAT_NON_LINE(MODELE=MODEL2D,
                     EXCIT=(_F(CHARGE=TRAC,
                               FONC_MULT=COEF,
                               TYPE_CHARGE='FIXE_CSTE',),),
-                    COMP_INCR=(_F(RELATION='MONOCRISTAL',ALGO_C_PLAN='DEBORST',
+                    COMP_INCR=(_F(RELATION='MONOCRISTAL',
                                   COMPOR=COMPOR1,
                                   DEFORMATION='PETIT',
                                   ALGO_INTE='RUNGE_KUTTA',

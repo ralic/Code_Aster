@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE SFAYOLLE S.FAYOLLE
 # TITRE  : ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
 # ssns106e.para = tps_job 120 mem_job 64Mo ncpus 1 liste_test R
@@ -238,21 +238,17 @@ RESU_R=STAT_NON_LINE(MODELE=MO,
                             _F(CHARGE=COND_1,
                                FONC_MULT=chf1,),),
                      COMP_INCR=(_F(RELATION='ENDO_ISOT_BETON',
-                                   ALGO_C_PLAN='DEBORST',
                                    GROUP_MA='DALLE',),
                                 _F(RELATION='GRILLE_ISOT_LINE',
-                                   ALGO_C_PLAN='ANALYTIQUE',
                                    GROUP_MA=('ACIER1L','ACIER2L','ACIER1T','ACIER2T',),),),
                      INCREMENT=_F(LIST_INST=DEFLIST,
                                   PRECISION=0.1,),
                      NEWTON=_F(REAC_ITER=1,),
                      CONVERGENCE=_F(ITER_GLOB_MAXI=25,),);
 
-RESU_R=CALC_NO(reuse =RESU_R,
-               RESULTAT=RESU_R,
-               PRECISION=1.E-3,
-               OPTION='FORC_NODA',);
-
+RESU_R=CALC_CHAMP(reuse =RESU_R,RESULTAT=RESU_R,PRECISION=1.E-3,
+             FORCE=('FORC_NODA',),)
+             
 RESU_G=STAT_NON_LINE(MODELE=MO_G,
                      CHAM_MATER=MATER,
                      CARA_ELEM=CAEL_G,
@@ -266,14 +262,10 @@ RESU_G=STAT_NON_LINE(MODELE=MO_G,
                      NEWTON=_F(REAC_ITER=1,),
                      CONVERGENCE=_F(ITER_GLOB_MAXI=25,),);
 
-RESU_G=CALC_CHAMP(reuse =RESU_G,
-                 RESULTAT=RESU_G,
-                  VARI_INTERNE=('VARI_ELNO'),);
-
-RESU_G=CALC_NO(reuse =RESU_G,
-               RESULTAT=RESU_G,
-               PRECISION=1.E-3,
-               OPTION=('FORC_NODA','VARI_NOEU',),);
+RESU_G=CALC_CHAMP(reuse =RESU_G,RESULTAT=RESU_G,PRECISION=1.E-3,
+             FORCE=('FORC_NODA',),
+             VARI_INTERNE=('VARI_ELNO','VARI_NOEU',),
+             )
 
 TFN_B_R=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                 INTITULE='B_FN',

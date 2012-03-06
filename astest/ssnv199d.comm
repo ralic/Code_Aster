@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE DCB EN 3D AVEC DES ELEMENTS DE JOINT PENTA6 CZM_LIN_REG
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -225,11 +225,11 @@ U=STAT_NON_LINE(reuse=U,
   ))
 
 
-U = CALC_NO(reuse = U,
+U = CALC_CHAMP(reuse = U,
 
 
   RESULTAT = U,
-  OPTION = 'FORC_NODA',
+  FORCE='FORC_NODA',
   GROUP_MA='DCB_1'
   )
 

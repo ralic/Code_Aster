@@ -14,7 +14,7 @@
      &                    IFORC2, TABWK1, TABWK2, ARCHIV,NBTYAR,TYPEAR )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 05/03/2012   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -178,7 +178,6 @@ C               123456789012345678901234
       IF (IRET.EQ.0) THEN
         CALL VTCREB(CHAMN2,NUMEDD,'V','R',NEQ)
       END IF
-
 C====
 C 2. DEPLACEMENT, VITESSE ET ACCELERATIONS A
 C====
@@ -414,8 +413,8 @@ C====
 C 8. CALCUL DES ENERGIES
 C====
 C
+      SDENER=SOLVEU(1:8)//'.ENER      '
       IF (ENER) THEN
-        SDENER=SOLVEU(1:8)//'.ENER      '
         MASSE1=MASSE//'           '
         AMORT1=AMORT//'           '
         RIGID1=RIGID//'           '
@@ -495,5 +494,7 @@ C
      &                FEXTE(NEQ+1),FAMOR(NEQ+1),FLIAI(NEQ+1))
 C
       ENDIF
+C
+      CALL NMARPC(RESULT,SDENER,TEMPS)
 C
       END

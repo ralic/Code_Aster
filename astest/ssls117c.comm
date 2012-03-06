@@ -1,4 +1,4 @@
-# MODIF  DATE 30/01/2012   AUTEUR DESROCHE X.DESROCHES 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # RESPONSABLE DESROCHE X.DESROCHES
 # TITRE PLAQUE STRATIFIEE EN FLEXION - DST -
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -234,16 +234,16 @@ EFSUP=CALC_ELEM(GROUP_MA='PLAQ2',
                 RESULTAT=MESTAT,
                 );
 
-CALC_NO(reuse =EFINF,
+CALC_CHAMP(reuse =EFINF,
               RESULTAT=EFINF,
-              OPTION='EFGE_NOEU',
+              CONTRAINTE='EFGE_NOEU',
 
 
               GROUP_MA='PLAQ1',);
 
-CALC_NO(reuse =EFSUP,
+CALC_CHAMP(reuse =EFSUP,
               RESULTAT=EFSUP,
-              OPTION='EFGE_NOEU',
+              CONTRAINTE='EFGE_NOEU',
 
 
               GROUP_MA='PLAQ2',);
@@ -321,9 +321,9 @@ CALC_ELEM( reuse= MESTAT1 ,RESULTAT= MESTAT1 ,
            OPTION='EFGE_ELNO',
            );
 
-CALC_NO(reuse =MESTAT1,
+CALC_CHAMP(reuse =MESTAT1,
                 RESULTAT=MESTAT1,
-                OPTION='EFGE_NOEU',
+                CONTRAINTE='EFGE_NOEU',
                 );
 
 DEP1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE TEST DES ELEMENTS A DISCONTINUITE SUR UNE PLAQUE TROUEE
 # ssnp133b.para = tps_job 100 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -197,8 +197,8 @@ EVOL = STAT_NON_LINE(
 # POST-TRAITEMENT
 #--------------------------------------------------------------
 
-CALC_NO( reuse    = EVOL,
-         OPTION   = 'FORC_NODA',
+CALC_CHAMP( reuse    = EVOL,
+         FORCE='FORC_NODA',
          RESULTAT =  EVOL,
        )
 

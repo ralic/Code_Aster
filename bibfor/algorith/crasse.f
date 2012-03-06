@@ -2,9 +2,9 @@
       IMPLICIT  NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 06/03/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,16 +40,18 @@ C
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+      CHARACTER*32 JEXNOM,JEXNUM
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
-      INTEGER        IRET, NBFAC, IOCC,NBORD2,NBORD1,IORD2,IORD1
+      INTEGER       IRET, NBFAC, IOCC,NBORD2,NBORD1,IORD2,IORD1
       INTEGER       KORD1,IAD,JORD1,JORD2,N1
       REAL*8        INST1,INST2,TRANS
       CHARACTER*8   K8B, RESU2, RESU1
-      CHARACTER*16  TYPE,OPER
+      CHARACTER*16  TYPE,OPER,CHTER
       CHARACTER*19  NOMCH,CHAM1,RESU19
-      INTEGER      IARG
+      INTEGER       IARG,NBCHAM,KCH
+      LOGICAL       EXIST
 
 C ----------------------------------------------------------------------
       CALL JEMARQ()
@@ -74,7 +76,7 @@ C     --------------------------------
       ELSE
          IORD2=0
       ENDIF
-
+      
 
 C       BOUCLE SUR LES OCCURRENCES DE ASSE :
 C       -----------------------------------------------------------
@@ -84,31 +86,42 @@ C       -----------------------------------------------------------
         RESU19=RESU1
         CALL JELIRA(RESU19//'.ORDR','LONUTI',NBORD1,K8B)
         CALL JEVEUO(RESU19//'.ORDR','L',JORD1)
+      
+        CALL JEEXIN(RESU19//'.DESC',IRET)
+        CALL JELIRA(RESU19//'.DESC','NOMUTI',NBCHAM,K8B)
 
-
+        EXIST = .TRUE.
 C       BOUCLE SUR LES CHAMPS 'TEMP' DE RESU1 ET RECOPIE DANS RESU2:
 C       -----------------------------------------------------------
         DO 110, KORD1=1,NBORD1
+          IORD1 = ZI(JORD1-1+KORD1)      
+          IF(EXIST) IORD2 = IORD2 + 1
+          EXIST = .FALSE.
+          DO 115 KCH=1,NBCHAM
+             CALL JENUNO (JEXNUM(RESU19//'.DESC',KCH),CHTER)
 
-C         1- RECUPERATION DU CHAMP : CHAM1
-          IORD1=ZI(JORD1-1+KORD1)
-          CALL RSEXCH(RESU1, 'TEMP', IORD1, CHAM1, IRET )
-          CALL ASSERT (IRET.EQ.0)
+C            1- RECUPERATION DU CHAMP : CHAM1
 
-C         2- STOCKAGE DE CHAM1 :
-          IORD2 = IORD2 + 1
-          CALL RSEXCH(RESU2, 'TEMP', IORD2, NOMCH, IRET )
-          IF ( IRET .EQ. 110 )  CALL RSAGSD ( RESU2, 0 )
-          CALL COPISD('CHAMP_GD','G',CHAM1,NOMCH)
-          CALL RSNOCH(RESU2, 'TEMP', IORD2, ' ' )
+             CALL RSEXCH(RESU1, CHTER, IORD1, CHAM1, IRET )
+             IF (IRET.NE.0) GOTO 115
 
-C         3- STOCKAGE DE L'INSTANT ASSOCIE A CHAM1 :
+C            2- STOCKAGE DE CHAM1 :
+
+             CALL RSEXCH(RESU2, CHTER, IORD2, NOMCH, IRET )
+             IF ( IRET .EQ. 110 )  CALL RSAGSD ( RESU2, 0 )
+             CALL COPISD('CHAMP_GD','G',CHAM1,NOMCH)
+             CALL RSNOCH(RESU2, CHTER, IORD2, ' ' )
+             EXIST = .TRUE.
+
+ 115       CONTINUE
+ 
+C          3- STOCKAGE DE L'INSTANT ASSOCIE A CHAM1 :
+
            CALL RSADPA(RESU1,'L',1,'INST',IORD1,0,IAD,K8B)
            INST1=ZR(IAD)
            INST2=INST1+TRANS
            CALL RSADPA (RESU2,'E',1,'INST',IORD2,0,IAD,K8B)
            ZR(IAD)=INST2
-
 
  110    CONTINUE
         CALL JEDETR('&&OP0124.NUME_ORDR1')

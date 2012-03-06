@@ -1,4 +1,4 @@
-#@ MODIF modelisa8 Messages  DATE 16/01/2012   AUTEUR CHEIGNON E.CHEIGNON 
+#@ MODIF modelisa8 Messages  DATE 05/03/2012   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -293,10 +293,9 @@ La maille %(k1)s est mal orientée. Utilisez la commande MODI_MAILLAGE pour orien
  Il y a un conflit dans les vis-à-vis des noeuds. Le noeud  %(k1)s est
  à la fois le vis-à-vis du noeud %(k2)s et du noeud %(k3)s.
 
- Risques & conseils :
-   Vérifiez les groupes en vis-à-vis, il se peut que les maillages soient incompatibles.
-   Il faut également s'assurer que la distance entre les deux maillages soit du même
-   ordre de grandeur que la longueur caractéristique du maillage (distance entre deux noeuds).
+ Conseils :
+   - Si la distance entre les deux surfaces à apparier est grande devant leurs dimensions, précisez l'isométrie qui permet de les superposer par l'intermédiaire des mots-clés CENTRE, ANGL_NAUT et TRAN.
+   - Si les maillages sont incompatibles, utilisez plutôt le chargement LIAISON_MAIL.
 """),
 
 79 : _(u"""

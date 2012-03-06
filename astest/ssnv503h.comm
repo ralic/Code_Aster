@@ -1,9 +1,9 @@
-# MODIF  DATE 12/12/2011   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE    : PATIN GLISSANT SUR UN PLAN RIGIDE
 # ssnv503h.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -115,7 +115,7 @@ PTAN_101=AFFE_CHAR_MECA(MODELE=MODE,
 CTAC = DEFI_CONTACT(MODELE         = MODE,
                     FORMULATION    = 'CONTINUE',
                     FROTTEMENT     = 'COULOMB',
-                    
+
                     ZONE =(
                            _F(
                              GROUP_MA_ESCL = 'LESC',
@@ -123,7 +123,7 @@ CTAC = DEFI_CONTACT(MODELE         = MODE,
                              COULOMB       = 0.3,
                              COEF_FROT     = 1E-5,
                              CONTACT_INIT  = 'NON',
-                             ),                            
+                             ),
                           ),
                    );
 
@@ -150,7 +150,7 @@ U_NOR=STAT_NON_LINE(MODELE=MODE,
                     EXCIT=(_F(CHARGE=PNOR,
                               FONC_MULT=RAMPE,),
                            _F(CHARGE=COND_LIM,),),
-                    CONTACT  = CTAC,       
+                    CONTACT  = CTAC,
                     COMP_INCR=_F(RELATION='ELAS',
                                  TOUT='OUI',),
                     INCREMENT=_F(LIST_INST=L_INST,),
@@ -159,9 +159,9 @@ U_NOR=STAT_NON_LINE(MODELE=MODE,
                     CONVERGENCE=_F(ITER_GLOB_MAXI=30,),
                     INFO=1,);
 
-U_NOR=CALC_NO(reuse =U_NOR,
+U_NOR=CALC_CHAMP(reuse =U_NOR,
               RESULTAT=U_NOR,
-              OPTION='REAC_NODA',
+              FORCE='REAC_NODA',
 
               );
 
@@ -174,7 +174,7 @@ U_99=STAT_NON_LINE(MODELE=MODE,
                           _F(CHARGE=PTAN_99,
                              FONC_MULT=RAMPE,),
                           _F(CHARGE=COND_LIM,),),
-                   CONTACT  = CTAC,           
+                   CONTACT  = CTAC,
                    COMP_INCR=_F(RELATION='ELAS',
                                 TOUT='OUI',),
                    INCREMENT=_F(LIST_INST=L_INST,),
@@ -182,9 +182,9 @@ U_99=STAT_NON_LINE(MODELE=MODE,
                              REAC_ITER=1,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=1500,),);
 
-U_99=CALC_NO(reuse =U_99,
+U_99=CALC_CHAMP(reuse =U_99,
              RESULTAT=U_99,
-             OPTION='REAC_NODA',
+             FORCE='REAC_NODA',
 
               );
 
@@ -197,7 +197,7 @@ U_101=STAT_NON_LINE(MODELE=MODE,
                            _F(CHARGE=PTAN_101,
                               FONC_MULT=RAMPE,),
                            _F(CHARGE=COND_LIM,),),
-                    CONTACT  = CTAC,           
+                    CONTACT  = CTAC,
                     COMP_INCR=_F(RELATION='ELAS',
                                  TOUT='OUI',),
                     INCREMENT=_F(LIST_INST=L_INST,),
@@ -206,9 +206,9 @@ U_101=STAT_NON_LINE(MODELE=MODE,
                     CONVERGENCE=_F(ITER_GLOB_MAXI=1500,),
                     );
 
-U_101=CALC_NO(reuse =U_101,
+U_101=CALC_CHAMP(reuse =U_101,
               RESULTAT=U_101,
-              OPTION='REAC_NODA',
+              FORCE='REAC_NODA',
 
               );
 

@@ -7,9 +7,9 @@
       INTEGER      NBMAF,JDLIMA,JCONX1,JCONX2,JCOOR
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/11/2011   AUTEUR COLOMBO D.COLOMBO 
+C MODIF ALGORITH  DATE 06/03/2012   AUTEUR COLOMBO D.COLOMBO 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -82,7 +82,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8       A(3),B(3),C(3),AB(3),AC(3),VN(3),VNREF(3),PS,DDOT,
      &             NORME
       INTEGER      JSENS,NLAYER,LAYER,I,J,NMAABS,NBNOMA,INOMA,JELNO,
-     &             NBELNO,ELJ,NUMELM
+     &             NBELNO,ELJ,NUMELM,NMAASS
       CHARACTER*19 CNXINV
       CHARACTER*8  K8B
 
@@ -177,23 +177,23 @@ C                       NO. ASSIGN IT THE LAYER NUMBER
 
 C                       CALCULATE THE NORMAL TO THE ELEMENT USING THE
 C                       FIRST THREE NODES DEFINING IT
-                        NMAABS = ZI(JDLIMA-1+NUMELM)
-                        NBNOMA = ZI(JCONX2+NMAABS)-ZI(JCONX2+NMAABS-1)
+                        NMAASS = ZI(JDLIMA-1+NUMELM)
+                        NBNOMA = ZI(JCONX2+NMAASS)-ZI(JCONX2+NMAASS-1)
 
                         INOMA=1
-                        NUNO=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+INOMA-1)
+                        NUNO=ZI(JCONX1-1+ZI(JCONX2+NMAASS-1)+INOMA-1)
                         A(1)=ZR(JCOOR-1+3*(NUNO-1)+1)
                         A(2)=ZR(JCOOR-1+3*(NUNO-1)+2)
                         A(3)=ZR(JCOOR-1+3*(NUNO-1)+3)
 
                         INOMA=2
-                        NUNO=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+INOMA-1)
+                        NUNO=ZI(JCONX1-1+ZI(JCONX2+NMAASS-1)+INOMA-1)
                         B(1)=ZR(JCOOR-1+3*(NUNO-1)+1)
                         B(2)=ZR(JCOOR-1+3*(NUNO-1)+2)
                         B(3)=ZR(JCOOR-1+3*(NUNO-1)+3)
 
                         INOMA=3
-                        NUNO=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+INOMA-1)
+                        NUNO=ZI(JCONX1-1+ZI(JCONX2+NMAASS-1)+INOMA-1)
                         C(1)=ZR(JCOOR-1+3*(NUNO-1)+1)
                         C(2)=ZR(JCOOR-1+3*(NUNO-1)+2)
                         C(3)=ZR(JCOOR-1+3*(NUNO-1)+3)

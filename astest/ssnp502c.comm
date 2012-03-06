@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE ECRASEMENT D'UN ANNEAU ENTRE DEUX PLAQUES AVEC FROTTEMENT.
 # ssnp502c.para = tps_job 100 mem_job 200Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -144,16 +144,16 @@ RESU=CALC_CHAMP(reuse =RESU,
                 CONTRAINTE=('SIGM_ELNO'),
                RESULTAT=RESU,);
 
-RESU=CALC_NO(reuse =RESU,
+RESU=CALC_CHAMP(reuse =RESU,
              RESULTAT=RESU,
-             OPTION='REAC_NODA',
+             FORCE='REAC_NODA',
 
 
              );
 
-RESU=CALC_NO(reuse =RESU,
+RESU=CALC_CHAMP(reuse =RESU,
              RESULTAT=RESU,
-             OPTION='SIGM_NOEU',
+             CONTRAINTE='SIGM_NOEU',
                        );
 
 

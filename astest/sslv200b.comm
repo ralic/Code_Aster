@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2012   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE NON-REGRESSION D ASTER : MECANIQUE LINEAIRE 3D_SI
 # RESPONSABLE PELLET J.PELLET
 # sslv200b.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test R
@@ -593,9 +593,8 @@ CALC_ELEM( reuse= MSLIN ,RESULTAT= MSLIN ,
                                    'EPEQ_ELGA',  )
                         )
 
-CALC_NO( reuse=MSLIN,  RESULTAT=MSLIN,
-         OPTION=( 'EPSI_NOEU', 'SIEQ_NOEU',
-                  'EPEQ_NOEU', 'SIGM_NOEU', ),
+CALC_CHAMP( reuse=MSLIN,  RESULTAT=MSLIN,
+         DEFORMATION='EPSI_NOEU',CRITERES=('SIEQ_NOEU','EPEQ_NOEU'),CONTRAINTE='SIGM_NOEU',
         )
 
 

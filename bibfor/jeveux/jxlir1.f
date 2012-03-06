@@ -1,9 +1,9 @@
       SUBROUTINE JXLIR1 (IC, CARALU)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C RESPONSABLE LEFEBVRE
-C MODIF JEVEUX  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
+C MODIF JEVEUX  DATE 06/03/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -36,6 +36,10 @@ C ----------------------------------------------------------------------
      &                 DN2(N)
       CHARACTER*8      NOMBAS
       COMMON /KBASJE/  NOMBAS(N)
+      CHARACTER*128    REPGLO,REPVOL
+      COMMON /BANVJE/  REPGLO,REPVOL
+      INTEGER          LREPGL,LREPVO
+      COMMON /BALVJE/  LREPGL,LREPVO
       INTEGER          LBIS , LOIS , LOLS , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOR8 , LOC8
 C     ------------------------------------------------------------------
@@ -44,24 +48,32 @@ C     ------------------------------------------------------------------
       INTEGER          INDEX(LINDEX),TAMPON(NP2)
       LOGICAL          LEXIST
       CHARACTER*8      NOM
+      CHARACTER*128    NOM128
 C DEB ------------------------------------------------------------------
       IERR = 0
       NOM = NOMFIC(IC)(1:4)//'.   '
       CALL CODENT(1,'G',NOM(6:7))
-      INQUIRE (FILE=NOM,EXIST=LEXIST)
+      IF ( NOM(1:4) .EQ. 'glob' ) THEN
+        NOM128=REPGLO(1:LREPGL)//'/'//NOM
+      ELSE IF ( NOM(1:4) .EQ. 'vola' ) THEN
+        NOM128=REPVOL(1:LREPVO)//'/'//NOM
+      ELSE
+        NOM128='./'//NOM
+      ENDIF      
+      INQUIRE (FILE=NOM128,EXIST=LEXIST)
       IF ( .NOT. LEXIST) THEN
         CALL U2MESK('F','JEVEUX_12',1,NOMBAS(IC))
       ENDIF
-      CALL OPENDR ( NOM , INDEX , LINDEX , 0 , IERR )
+      CALL OPENDR ( NOM128 , INDEX , LINDEX , 0 , IERR )
 C
 C   SUR CRAY L'APPEL A READDR EST EFFECTUE AVEC UNE LONGUEUR EN
 C   ENTIER, A MODIFIER LORSQUE L'ON PASSERA AUX ROUTINES C
 C
-      CALL READDR ( NOM , TAMPON, NP2*LOIS , 1 , IERR )
+      CALL READDR ( NOM128 , TAMPON, NP2*LOIS , 1 , IERR )
       IF ( IERR .NE. 0 ) THEN
          CALL U2MESK('F','JEVEUX_13',1,NOMBAS(IC))
       ENDIF
-      CALL CLOSDR ( NOM , IERR )
+      CALL CLOSDR ( NOM128 , IERR )
       IF ( IERR .NE. 0 ) THEN
          CALL U2MESK('F','JEVEUX_14',1,NOMBAS(IC))
       ENDIF

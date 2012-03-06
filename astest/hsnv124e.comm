@@ -1,9 +1,9 @@
-# MODIF  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 05/03/2012   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE TEST PHI2AS NUMERO 1 MODELISATION BARRE ECROUISSAGE CINEMATIQUE LINEAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -241,7 +241,7 @@ U2=STAT_NON_LINE(MODELE=MOMECA,
                  EXCIT=(_F(CHARGE=LIAISON,),
                         _F(CHARGE=PRESSION,
                            FONC_MULT=COEF,),),
-                 COMP_INCR=_F(RELATION='VMIS_ECMI_LINE',ALGO_1D='DEBORST'),
+                 COMP_INCR=_F(RELATION='VMIS_ECMI_LINE'),
                  INCREMENT=_F(LIST_INST=LINST,),
                  NEWTON=_F(REAC_INCR=1,
                            REAC_ITER=1,),
@@ -327,9 +327,7 @@ U3=STAT_NON_LINE(MODELE=MOMECA,
                  COMP_INCR=_F(RELATION='VMIS_CIN1_CHAB',
                                 RESI_INTE_RELA=9.9999999999999995E-07,
                                 ITER_INTE_MAXI=50,
-                                ITER_INTE_PAS=0,
-                                
-                                ALGO_1D='DEBORST'),
+                                ITER_INTE_PAS=0,),
                  INCREMENT=_F(LIST_INST=LINST,),
                      RECH_LINEAIRE=_F(ITER_LINE_MAXI = 8),
                  NEWTON=_F(REAC_INCR=1,

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE PROBLEME DE HOVGAARD: CALCUL MODAL ET CALCUL SPECTRAL
 # ======================================================================
 # sdlx02a.para = tps_job 60 mem_job 400Mo ncpus 1 liste_test R
@@ -102,8 +102,8 @@ MODE_DIA=NORM_MODE(reuse=MODE_DIA,   MODE=MODE_DIA,   NORME='TRAN_ROTA',)
 MODE_DIA=CALC_ELEM(reuse=MODE_DIA,  RESULTAT=MODE_DIA,
                          OPTION=( 'SIEF_ELGA', 'EFGE_ELNO', ),)
 
-MODE_DIA=CALC_NO(reuse=MODE_DIA,  RESULTAT=MODE_DIA,
-                 OPTION='REAC_NODA', )
+MODE_DIA=CALC_CHAMP(reuse=MODE_DIA,  RESULTAT=MODE_DIA,
+                 FORCE='REAC_NODA', )
 
 TEST_RESU(RESU=(
        _F( RESULTAT = MODE,      NUME_MODE = 1,  PRECISION = 0.006,
@@ -168,8 +168,8 @@ IMPR_TABLE ( TABLE = T_RELE,
 MODE_STA=CALC_ELEM(reuse=MODE_STA,  RESULTAT=MODE_STA,
                          OPTION=( 'SIEF_ELGA', 'EFGE_ELNO', ), )
 
-MODE_STA=CALC_NO(reuse=MODE_STA,  RESULTAT=MODE_STA,
-                    OPTION='REAC_NODA',)
+MODE_STA=CALC_CHAMP(reuse=MODE_STA,  RESULTAT=MODE_STA,
+                    FORCE='REAC_NODA',)
 
 #
 

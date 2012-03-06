@@ -3,7 +3,7 @@
      &                   OPTION,SIGP,VIP,DSIDEP,DEMU,CINCO,IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/01/2012   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 05/03/2012   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -27,7 +27,7 @@ C RESPONSABLE SFAYOLLE S.FAYOLLE
 
       REAL*8 CRIT(6),INSTAM,INSTAP
       REAL*8 DEPS(6),DEUXMU,DEMU,CINCO
-      REAL*8 SIGM(6),VIM(4),SIGP(6),VIP(4),DSIDEP(6,6)
+      REAL*8 SIGM(6),VIM(5),SIGP(6),VIP(5),DSIDEP(6,6)
 
       CHARACTER*(*) FAMI
       CHARACTER*8   TYPMOD(*)
@@ -81,6 +81,7 @@ C
       REAL*8 RAC2,XAP
       REAL*8 SIGPMO,DINST
       REAL*8 ACOOK,BCOOK,CCOOK,NPUIS,MPUIS,EPSP0,TROOM,TMELT
+      REAL*8 ALPHA, DIRR, DTE, DGDTSG, DKDTSK, KHI, TPDSDT, EPSPET
 
       INTEGER     CODRET(8)
       CHARACTER*6 EPSA(6)
@@ -159,6 +160,13 @@ C
       ENDIF
       CALL VERIFT(FAMI,KPG,KSP,'T',IMATE,'ELAS',1,EPSTHE,IRET0)
 
+      IF (IRET4.EQ.0) THEN
+        NOMRES(1)='ALPHA'
+         CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',0.D0,
+     +                 1,NOMRES(1),VALRES(1),CODRET(1), 0 )
+        IF ( CODRET(1) .NE. 0 ) VALRES(1) = 0.D0
+        ALPHA = VALRES(1)
+      ENDIF
 C
 C     -- 3 RECUPERATION DES CARACTERISTIQUES
 C     ---------------------------------------
@@ -296,12 +304,46 @@ C
 C         -- 7.2 CALCUL DE SIGP :
 C         -----------------------
 
+          SIELEQ = 0.D0
           SIGPMO = SIGMMO + CO*TROISK*DEPSMO
           DO 160 K = 1,NDIMSI
             SIGPDV(K) = SIGMDV(K) + DEUXMU * DEPSDV(K)
             SIGPDV(K) = SIGPDV(K)*RP/(RP+1.5D0*DEUXMU*DP)
-            SIGP(K)  = SIGPDV(K) + SIGPMO*KRON(K)
+            SIELEQ    = SIELEQ + SIGPDV(K)**2
+            SIGP(K)   = SIGPDV(K) + SIGPMO*KRON(K)
  160      CONTINUE
+          SIELEQ = SQRT(1.5D0*SIELEQ)
+C
+C         -- 7.3 CALCUL DES DISSIPATIONS :
+C         --------------------------------
+C         -- 7.3.1 CALCUL DES DISSIPATIONS IRREVERSIBLES :
+C         ------------------------------------------------
+C         FACTEUR DE TAYLOR-QUINNEY
+          KHI = 0.9D0
+          DIRR = KHI * SIELEQ * DP/DINST
+C
+C         -- 7.3.2 CALCUL DES DISSIPATIONS THERMOELASTIQUE :
+C         --------------------------------------------------
+          DTE  = 0.D0
+          IF((E.NE.EM).OR.(NU.NE.NUM))THEN
+            DGDTSG = (DEUXMU-DEUMUM)/(TP-TM)/DEUXMU
+            DKDTSK = (TROISK-TROIKM)/(TP-TM)/TROISK
+          ELSE
+            DGDTSG = 0.D0
+            DKDTSK = 0.D0
+          ENDIF
+          
+          DO 180 K = 1, NDIMSI
+            IF(PLASTI)THEN
+              EPSPET = (DEPS(K)-3.D0*SIGPDV(K)*DP/(2.D0*SIELEQ))/DINST
+            ELSE
+              EPSPET = DEPS(K)
+            ENDIF
+            TPDSDT=TP*(DGDTSG*SIGP(K)
+     &            +KRON(K)*((DKDTSK-DGDTSG)*SIGPMO-TROISK*ALPHA))
+            DTE = DTE + TPDSDT*EPSPET
+ 180      CONTINUE
+          VIP(5) = DTE + DIRR
 C
         ENDIF
       ENDIF

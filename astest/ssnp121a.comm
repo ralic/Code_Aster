@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE CONTACT DE DEUX PLAQUES
 # ssnp121a.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -125,9 +125,9 @@ RESU=CALC_ELEM( reuse=RESU,
                   RESULTAT=RESU,
                   OPTION=('SIGM_ELNO','SIEQ_ELNO')
                 );
-RESU=CALC_NO( reuse=RESU,
+RESU=CALC_CHAMP( reuse=RESU,
                 RESULTAT=RESU,
-                OPTION=('SIGM_NOEU','SIEQ_NOEU')
+                CONTRAINTE='SIGM_NOEU',CRITERES='SIEQ_NOEU'
               );
 
 SIELNO=CREA_CHAMP(  OPERATION='EXTR',

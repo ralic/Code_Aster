@@ -1,8 +1,8 @@
-#@ MODIF gran_irra_log Comportement  DATE 13/12/2011   AUTEUR FOUCAULT A.FOUCAULT 
+#@ MODIF gran_irra_log Comportement  DATE 05/03/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -32,7 +32,7 @@ loi = LoiComportement(
    nb_vari        = 3,
    nom_vari       = ('EPSPEQ','IRVECU','EPSGRD'),
    mc_mater       = ('GRAN_IRRA_LOG'),
-   modelisation   = ('3D', 'AXIS', 'D_PLAN','CONT_1D'),
+   modelisation   = ('3D', 'AXIS', 'D_PLAN','1D'),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
    nom_varc       = ('TEMP', 'IRRA'),
    algo_inte         = ('ANALYTIQUE',),

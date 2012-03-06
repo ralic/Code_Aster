@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE  REPONSE SISMIQUE D'UNE POUTRE EN BETON ARME RECTANGULAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -167,11 +167,11 @@ U1=CALC_CHAMP(reuse =U1,
                 CONTRAINTE=('SIEF_ELGA'),
                RESULTAT=U1,);
 
-U1=CALC_NO(reuse =U1,
+U1=CALC_CHAMP(reuse =U1,
 
              RESULTAT=U1,
              TOUT_ORDRE='OUI',
-             OPTION='REAC_NODA',
+             FORCE='REAC_NODA',
 
 
              TOUT='OUI',);

@@ -1,9 +1,9 @@
       SUBROUTINE JXLIRB ( IC , IADDI , IADMO , LSO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
-C MODIF JEVEUX  DATE 27/06/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 06/03/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -22,7 +22,7 @@ C TOLE CRP_18 CRP_6 CRS_508
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER             IC , IADDI , IADMO , LSO
 C ----------------------------------------------------------------------
-C LECTURE D'UN BLOC DU FICHIER D4ACCES DIRECT ASSOCIE A UNE BASE
+C LECTURE D'UN BLOC DU FICHIER D'ACCES DIRECT ASSOCIE A UNE BASE
 C   
 C
 C IN  IC    : CLASSE ASSOCIEE
@@ -55,6 +55,10 @@ C
      +                 DN2(N)
       CHARACTER*8      NOMBAS
       COMMON /KBASJE/  NOMBAS(N)
+      CHARACTER*128    REPGLO,REPVOL
+      COMMON /BANVJE/  REPGLO,REPVOL
+      INTEGER          LREPGL,LREPVO
+      COMMON /BALVJE/  LREPGL,LREPVO
       INTEGER          IDN    , IEXT    , NBENRG
       COMMON /IEXTJE/  IDN(N) , IEXT(N) , NBENRG(N)
       COMMON /IACCED/  IACCE(1)
@@ -62,6 +66,7 @@ C
 C     ------------------------------------------------------------------
       LOGICAL          LRAB
       CHARACTER*8      NOM
+      CHARACTER*128    NOM128
       INTEGER          LGBL,VALI(3)
 C DEB ------------------------------------------------------------------
       IERR = 0
@@ -75,8 +80,15 @@ C
           NUMEXT = (IADDI+I-2)/NBENRG(IC)
           IADLOC = (IADDI+I-1)-(NUMEXT*NBENRG(IC))
           CALL CODENT(NUMEXT+1,'G',NOM(6:7))
+          IF ( NOM(1:4) .EQ. 'glob' ) THEN
+            NOM128=REPGLO(1:LREPGL)//'/'//NOM
+          ELSE IF ( NOM(1:4) .EQ. 'vola' ) THEN
+            NOM128=REPVOL(1:LREPVO)//'/'//NOM
+          ELSE
+            NOM128='./'//NOM
+          ENDIF
           JIECR = (JK1ZON+IADMO-1+LGBL*(I-1))/LOIS+1
-          CALL READDR ( NOM, ISZON(JIECR), LGBL, IADLOC, IERR )
+          CALL READDR ( NOM128, ISZON(JIECR), LGBL, IADLOC, IERR )
           IF ( IERR .NE. 0 ) THEN
             VALI(1) = IADDI+I-1
             VALI(2) = NUMEXT
@@ -90,11 +102,18 @@ C
           NUMEXT = (IADDI+NBLENT-1)/NBENRG(IC)
           IADLOC = (IADDI+NBLENT)-(NUMEXT*NBENRG(IC))
           CALL CODENT(NUMEXT+1,'G',NOM(6:7))
+          IF ( NOM(1:4) .EQ. 'glob' ) THEN
+            NOM128=REPGLO(1:LREPGL)//'/'//NOM
+          ELSE IF ( NOM(1:4) .EQ. 'vola' ) THEN
+            NOM128=REPVOL(1:LREPVO)//'/'//NOM
+          ELSE
+            NOM128='./'//NOM
+          ENDIF
           JIECR = (JK1ZON+IADMO-1+LSO-LGBL)/LOIS+1
           IF ( LSO .LT. LGBL ) THEN
             JIECR = (JK1ZON+IADMO-1)/LOIS+1
           ENDIF 
-          CALL READDR ( NOM, ISZON(JIECR), LGBL, IADLOC, IERR )
+          CALL READDR ( NOM128, ISZON(JIECR), LGBL, IADLOC, IERR )
           IF ( IERR .NE. 0 ) THEN
             VALI(1) = IADDI+I-1
             VALI(2) = NUMEXT

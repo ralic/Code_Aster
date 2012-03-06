@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/03/2012   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE SFAYOLLE S.FAYOLLE
 # TITRE  ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
 # ssns106j.para = tps_job 120 mem_job 64Mo ncpus 1 liste_test S
@@ -391,23 +391,18 @@ RESU_R1=STAT_NON_LINE(MODELE=MO,
                              _F(CHARGE=COND_1,
                                 FONC_MULT=chf1,),),
                       COMP_INCR=(_F(RELATION='ENDO_ISOT_BETON',
-                                    ALGO_C_PLAN='DEBORST',
-                                    ITER_MAXI_DEBORST=10,
+                                    ITER_CPLAN_MAXI=10,
                                     GROUP_MA='DALLE',),
                                  _F(RELATION='GRILLE_ISOT_LINE',
                                     DEFORMATION='PETIT',
-                                    ALGO_1D='ANALYTIQUE',
                                     GROUP_MA=('ACIER1L','ACIER2L','ACIER1T','ACIER2T',),),),
                       INCREMENT=_F(LIST_INST=DEFLIST2,
                                    PRECISION=0.1,),
                       NEWTON=_F(REAC_ITER=1,),
                       CONVERGENCE=_F(ITER_GLOB_MAXI=25,),);
 
-RESU_R1=CALC_NO(reuse =RESU_R1,
-                RESULTAT=RESU_R1,
-                PRECISION=1.E-3,
-                OPTION='FORC_NODA',
-                          );
+RESU_R1=CALC_CHAMP(reuse =RESU_R1,RESULTAT=RESU_R1,PRECISION=1.E-3,
+             FORCE=('FORC_NODA',),);
 
 RESU_G1=STAT_NON_LINE(MODELE=MO_G,
                       CHAM_MATER=MATER,
@@ -424,15 +419,10 @@ RESU_G1=STAT_NON_LINE(MODELE=MO_G,
                       CONVERGENCE=_F(ITER_GLOB_MAXI=25,),);
 
 RESU_G1=CALC_CHAMP(reuse =RESU_G1,
-
+                  FORCE=('FORC_NODA'),
                   RESULTAT=RESU_G1,
-                   VARI_INTERNE=('VARI_ELNO'),);
+                   VARI_INTERNE=('VARI_ELNO','VARI_NOEU'),);
 
-RESU_G1=CALC_NO(reuse =RESU_G1,
-                RESULTAT=RESU_G1,
-                PRECISION=1.E-3,
-                OPTION=('FORC_NODA','VARI_NOEU',),
-                          );
 
 RESU_L1=STAT_NON_LINE(MODELE=MO_L,
                       CHAM_MATER=CHMAT,
@@ -447,12 +437,10 @@ RESU_L1=STAT_NON_LINE(MODELE=MO_L,
                                 REAC_ITER=1,),
                       CONVERGENCE=_F(ITER_GLOB_MAXI=25,),);
 
-RESU_L1=CALC_NO(reuse =RESU_L1,
-                RESULTAT=RESU_L1,
-                OPTION='FORC_NODA',);
 
 RESU_L1=CALC_CHAMP(reuse =RESU_L1,
                   RESULTAT=RESU_L1,
+                  FORCE=('FORC_NODA'),
                    DEFORMATION=('DEGE_ELNO'),);
 
 # ---------------------POST-TRAITEMENT--------------------------

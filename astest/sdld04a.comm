@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
+# MODIF  DATE 05/03/2012   AUTEUR IDOUX L.IDOUX 
 # TITRE REPONSE TRANSITOIRE D'UN SYSTEME A UNE ACCELERATION IMPOSEE
 # sdld04a.para = tps_job 60 mem_job 164Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -355,6 +355,57 @@ TRAN_LI1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                      EXCIT=_F(  VECT_ASSE = MONO_X,  FONC_MULT = ACCELERO)
                            )
 
+ENERLI1=RECU_TABLE(CO=TRAN_LI1,NOM_TABLE='PARA_CALC',);
+
+IMPR_TABLE(TABLE=ENERLI1);
+
+TEST_TABLE(TABLE=ENERLI1,
+           NOM_PARA='TRAV_EXT',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.06,),
+           PRECISION=1e-8,
+           VALE=297.98917705174,
+           REFERENCE = 'NON_REGRESSION');
+
+TEST_TABLE(TABLE=ENERLI1,
+           NOM_PARA='ENER_TOT',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.06,),
+           PRECISION=1e-8,
+           VALE=18.890174787929,
+           REFERENCE = 'NON_REGRESSION');
+
+TEST_TABLE(TABLE=ENERLI1,
+           NOM_PARA='ENER_CIN',
+           FILTRE=_F(NOM_PARA='INST',   
+                     VALE=0.06,),
+           PRECISION=1e-8,
+           VALE=279.09900226382,
+           REFERENCE = 'NON_REGRESSION');
+
+TEST_TABLE(TABLE=ENERLI1,
+           NOM_PARA='TRAV_EXT',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.11,),
+           PRECISION=1e-8,
+           VALE=10343.480087248,
+           REFERENCE = 'NON_REGRESSION');
+
+TEST_TABLE(TABLE=ENERLI1,
+           NOM_PARA='ENER_TOT',
+           FILTRE=_F(NOM_PARA='INST',   
+                     VALE=0.11,),
+           PRECISION=1e-8,
+           VALE=1718.1508336655,
+           REFERENCE = 'NON_REGRESSION');
+
+TEST_TABLE(TABLE=ENERLI1,
+           NOM_PARA='ENER_CIN',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.11,),
+           PRECISION=1e-8,
+           VALE=8625.3292535832,
+           REFERENCE = 'NON_REGRESSION');
 
 N04_DX_2=RECU_FONCTION(
                          NOEUD='N04',   NOM_CMP='DX',   NOM_CHAM='DEPL',
@@ -406,6 +457,58 @@ TRAN_LI2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                                             NUME_ORDRE = 6,),
                      EXCIT=_F(  VECT_ASSE = MULT_X, FONC_MULT = ACCELERO)
                            )
+
+ENERLI2=RECU_TABLE(CO=TRAN_LI2,NOM_TABLE='PARA_CALC',);
+
+IMPR_TABLE(TABLE=ENERLI2);
+
+TEST_TABLE(TABLE=ENERLI2,
+           NOM_PARA='TRAV_EXT',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.06,),
+           PRECISION=1e-8,
+           VALE=297.98917705174,
+           REFERENCE = 'NON_REGRESSION');
+
+TEST_TABLE(TABLE=ENERLI2,
+           NOM_PARA='ENER_TOT',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.06,),
+           PRECISION=1e-8,
+           VALE=18.890174787929,
+           REFERENCE = 'NON_REGRESSION');
+
+TEST_TABLE(TABLE=ENERLI2,
+           NOM_PARA='ENER_CIN',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.06,),
+           PRECISION=1e-8,
+           VALE=279.09900226382,
+           REFERENCE = 'NON_REGRESSION');
+
+TEST_TABLE(TABLE=ENERLI2,
+           NOM_PARA='TRAV_EXT',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.11,),
+           PRECISION=1e-8,
+           VALE=10045.490910196,
+           REFERENCE = 'NON_REGRESSION');
+
+TEST_TABLE(TABLE=ENERLI2,
+           NOM_PARA='ENER_TOT',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.11,),
+           PRECISION=1e-8,
+           VALE=1699.2606588776,
+           REFERENCE = 'NON_REGRESSION');
+
+TEST_TABLE(TABLE=ENERLI2,
+           NOM_PARA='ENER_CIN',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.11,),
+           PRECISION=1e-8,
+           VALE=8346.2302513194,
+           REFERENCE = 'NON_REGRESSION');
 
 DEPL_0_1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
                      RESULTAT=TRAN_LI2, NOM_CHAM='DEPL', INST=0.10  )
@@ -464,6 +567,58 @@ TRAN_LI4=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                      EXCIT=_F(  VECT_ASSE = MULT_X, FONC_MULT = ACCELERO)
                            )
 
+ENERLI4=RECU_TABLE(CO=TRAN_LI4,NOM_TABLE='PARA_CALC',);
+
+IMPR_TABLE(TABLE=ENERLI4);
+
+TEST_TABLE(TABLE=ENERLI4,
+           NOM_PARA='TRAV_EXT',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.06,),
+           PRECISION=1e-8,
+           VALE=297.83780745174,
+           REFERENCE = 'NON_REGRESSION');
+
+TEST_TABLE(TABLE=ENERLI4,
+           NOM_PARA='ENER_TOT',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.06,),
+           PRECISION=1e-8,
+           VALE=18.868804672244,
+           REFERENCE = 'NON_REGRESSION');
+
+TEST_TABLE(TABLE=ENERLI4,
+           NOM_PARA='ENER_CIN',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.06,),
+           PRECISION=1e-8,
+           VALE=279.13238261395,
+           REFERENCE = 'NON_REGRESSION');
+
+TEST_TABLE(TABLE=ENERLI4,
+           NOM_PARA='TRAV_EXT',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.11,),
+           PRECISION=1e-8,
+           VALE=9981.5172542499,
+           REFERENCE = 'NON_REGRESSION');
+
+TEST_TABLE(TABLE=ENERLI4,
+           NOM_PARA='ENER_TOT',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.11,),
+           PRECISION=1e-8,
+           VALE=1677.4128729798,
+           REFERENCE = 'NON_REGRESSION');
+
+TEST_TABLE(TABLE=ENERLI4,
+           NOM_PARA='ENER_CIN',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.11,),
+           PRECISION=1e-8,
+           VALE=8305.2841327718,
+           REFERENCE = 'NON_REGRESSION');
+
 DEPLB0_1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
                      RESULTAT=TRAN_LI4, NOM_CHAM='DEPL', INST=0.10  )
 
@@ -506,6 +661,34 @@ TRAN_LI3=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                              ARCHIVAGE=_F(  PAS_ARCH = 10),
                      EXCIT=_F(  VECT_ASSE = MULT_X,  FONC_MULT = ACCELERO)
                            )
+
+ENERLI3=RECU_TABLE(CO=TRAN_LI3,NOM_TABLE='PARA_CALC',);
+
+IMPR_TABLE(TABLE=ENERLI3);
+
+TEST_TABLE(TABLE=ENERLI3,
+           NOM_PARA='TRAV_EXT',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.11,),
+           PRECISION=1e-8,
+           VALE=10045.490910196,
+           REFERENCE = 'NON_REGRESSION');
+
+TEST_TABLE(TABLE=ENERLI3,
+           NOM_PARA='ENER_TOT',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.11,),
+           PRECISION=1e-8,
+           VALE=1699.2606588776,
+           REFERENCE = 'NON_REGRESSION');
+
+TEST_TABLE(TABLE=ENERLI3,
+           NOM_PARA='ENER_CIN',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.11,),
+           PRECISION=1e-8,
+           VALE=8346.2302513197,
+           REFERENCE = 'NON_REGRESSION');
 
 TEST_RESU(RESU=(
            _F(  RESULTAT = TRAN_LI3,  NUME_ORDRE = 0,  NOM_CHAM = 'ACCE',

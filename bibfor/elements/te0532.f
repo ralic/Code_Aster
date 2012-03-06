@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/01/2012   AUTEUR DESOZA T.DESOZA 
+C MODIF ELEMENTS  DATE 06/03/2012   AUTEUR FERTE G.FERTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,6 +87,9 @@ C......................................................................
       CALL VECINI(27,0.D0,FFPC)
       CALL VECINI(27,0.D0,FFP)
       CALL VECINI(8,0.D0,FFC)
+      DO 1 I=1,8
+        LACT(I)=0
+1     CONTINUE
 
       CALL ELREF1(ELREF)
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
@@ -281,11 +284,10 @@ C            DANS LE CAS LINEAIRE
              ELSEIF (CONTAC.EQ.4) THEN
                CALL XMOFFC(LACT,NLACT,NNO,FFP,FFC)
              ENDIF
-C
-C            CALCUL DE RR = SQRT(DISTANCE AU FOND DE FISSURE)
-C
+             DN = 0.D0
+             LST=0.D0
+             REAC = 0.D0
              IF (SINGU.EQ.1) THEN
-               LST=0.D0
                DO 112 I=1,NNO
                  LST=LST+ZR(JLST-1+I)*FFP(I)
 112            CONTINUE
@@ -303,14 +305,11 @@ C            CALCUL COMPOSANTE NORMALE SAUT DE DEPLACEMENT
                ZI(JOUT2-1+60*(IFISS-1)+ISSPG) = 0
                ZI(JOUT3-1+60*(IFISS-1)+ISSPG) = 0
              ELSE
-             
-               DN = 0.D0
                DO 143 J = 1,NDIM
                  DN = DN + SAUT(J)*ND(J)
  143           CONTINUE
 
 C              CALCUL DE LA REACTION A PARTIR DES LAMBDA DE DEPPLU
-               REAC = 0.D0
                DO 150 I = 1,NNOL
                  PLI=PLA(I)
                  IF (NOEUD) THEN
