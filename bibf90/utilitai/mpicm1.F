@@ -1,8 +1,8 @@
       SUBROUTINE MPICM1(OPTMPI,TYPSCA,NBV,VI,VR)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF MPICM1 UTILITAI  DATE 12/12/2011   AUTEUR DESOZA T.DESOZA 
+!& MODIF MPICM1 UTILITAI  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
 ! ==================================================================
-! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR
 ! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS
@@ -18,9 +18,10 @@
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ==================================================================
 !----------------------------------------------------------------------
-!    - FONCTION REALISEE : SUR-COUCHE MPI
+!  FONCTION REALISEE : SUR-COUCHE MPI
 !
-!      FAIRE UN ECHANGE BCAST/REDUCE/ALL_REDUCE SUR UN VECTEUR FORTRAN
+!  FAIRE UN ECHANGE BCAST/REDUCE/ALL_REDUCE SUR UN VECTEUR FORTRAN
+!  (OU BIEN FAIRE UNE SIMPLE "BARRIERE" POUR SYNCHRONISER LES PROCS)
 !
 ! ARGUMENTS D'APPELS
 ! IN OPTMPI :
@@ -28,11 +29,12 @@
 !      /'MPI_MIN'  == 'ALLREDUCE + MIN'
 !      /'MPI_SUM'  == 'ALLREDUCE + SUM'
 !
+!      /'BARRIER'  == 'BARRIER'
 !      /'REDUCE'   == 'REDUCE + SUM' : TOUS -> 0
 !      /'BCAST'    == 'BCAST'        : 0    -> TOUS
 !
-! IN   TYPSCA : /'I' /'R'
-! IN   NBV    : LONGUEUR DU VECTEUR VI, VR
+! IN   TYPSCA : /'I' /'R'  (SI OPTMPI /= 'BARRIER')
+! IN   NBV    : LONGUEUR DU VECTEUR VI, VR  (SI OPTMPI /= 'BARRIER')
 ! IN   VI(*)  : VECTEUR D'ENTIERS A ECHANGER (SI TYPSCA='I')
 ! IN   VR(*)  : VECTEUR DE REELS A ECHANGER  (SI TYPSCA='R')
 !----------------------------------------------------------------------
@@ -91,7 +93,18 @@
 !     -- S'IL N'Y A QU'UN SEUL PROC, IL N'Y A RIEN A FAIRE :
       CALL MPI_COMM_SIZE(MPI_COMM_WORLD,NBPRO4,IERMPI)
       CALL MPIERR(IERMPI)
-      IF (NBPRO4.EQ.1) GOTO 999
+      IF (NBPRO4.EQ.1) GOTO 9999
+
+
+
+      IF (OPTMPI.EQ.'BARRIER') THEN
+!     ---------------------------------
+        CALL MPI_BARRIER(MPI_COMM_WORLD,IERMPI)
+        CALL MPIERR(IERMPI)
+        GOTO 9999
+      ENDIF
+
+
 
 !     -- SCALAIRE :
 !     -------------
@@ -153,6 +166,7 @@
         ENDIF
         CALL MPIERR(IERMPI)
 
+
       ELSE IF (OPTMPI.EQ.'REDUCE') THEN
 !     ---------------------------------
         IF (TYPSC1.EQ.'R') THEN
@@ -176,6 +190,7 @@
           CALL ASSERT(.FALSE.)
         ENDIF
         CALL MPIERR(IERMPI)
+
 
       ELSE IF (OPTMPI(1:4).EQ.'MPI_') THEN
 !     ---------------------------------
@@ -208,7 +223,7 @@
         CALL JEDETR('&&MPICM1.TRAV')
       ENDIF
 
-  999 CONTINUE
+ 9999 CONTINUE
 ! --- COMPTEUR
       CALL UTTCPU('CPU.CMPI.1','FIN',' ')
       CALL JEDEMA()

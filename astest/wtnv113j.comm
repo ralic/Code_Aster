@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE TEST THMS 3D, MODELISATION THMC=LIQU_SATU
 # wtnv113j.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -163,7 +163,7 @@ CHARHO=AFFE_CHAR_MECA(   MODELE=MODELE,
                                    ),)
 
 RESU0=STAT_NON_LINE(   MODELE=MODELE,
-            SOLVEUR=_F( METHODE = 'LDLT'),
+            SOLVEUR=_F( METHODE = 'MUMPS', PCENT_PIVOT=200),
                           CHAM_MATER=CHMAT0,
                           EXCIT=_F( CHARGE = CHARHO),
                           COMP_INCR=_F( RELATION = 'KIT_THM',PARM_THETA=1.,
@@ -188,13 +188,13 @@ RESU0=STAT_NON_LINE(   MODELE=MODELE,
                                        EVAL_ELGA='MIN',
                                        EVAL_CHAM='MIN',
                                        GROUP_MA = 'VOLUME',
-                                       ),                                          
+                                       ),
                                     _F(NOM_CMP='SIZZ',
                                        NOM_CHAM='SIEF_ELGA',
                                        EVAL_ELGA='MIN',
                                        EVAL_CHAM='MIN',
                                        GROUP_MA = 'VOLUME',
-                                       ), 
+                                       ),
                                     _F(NOM_CMP='SIP',
                                        NOM_CHAM='SIEF_ELGA',
                                        EVAL_ELGA='MIN',
@@ -258,7 +258,7 @@ TEST_RESU(
              PRECISION = 1.E-1,
              REFERENCE='AUTRE_ASTER',)
            )
-####          
+####
 
 TAB_OBS=RECU_TABLE(CO=RESU0,
                    NOM_TABLE='OBSERVATION',);
@@ -276,18 +276,18 @@ TEST_TABLE(TABLE=TAB_OBS,
                       VALE_K='MIN',),
                    _F(NOM_PARA='NOM_CMP',
                       CRIT_COMP='EQ',
-                      VALE_K='SIP',), 
+                      VALE_K='SIP',),
                    _F(NOM_PARA='POINT',
                       CRIT_COMP='EQ',
                       VALE_I=1,),
                    _F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=16,),  
+                     VALE_I=16,),
                    ),
            NOM_PARA='VALE',
            VALE=2886.7983561532,
            PRECISION = 1E-8,
            REFERENCE='NON_REGRESSION',);
-           
+
 TEST_TABLE(TABLE=TAB_OBS,
            FILTRE=(_F(NOM_PARA='NOM_CHAM',
                       CRIT_COMP='EQ',
@@ -302,13 +302,13 @@ TEST_TABLE(TABLE=TAB_OBS,
                       CRIT_COMP='EQ',
                       VALE_K='MIN',),
                    _F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=16,), 
+                     VALE_I=16,),
                    ),
            NOM_PARA='VALE',
            VALE=-4999.9526983562,
            PRECISION = 1E-8,
            REFERENCE='NON_REGRESSION',);
-           
+
 TEST_TABLE(TABLE=TAB_OBS,
            FILTRE=(_F(NOM_PARA='NOM_CHAM',
                       CRIT_COMP='EQ',
@@ -323,15 +323,15 @@ TEST_TABLE(TABLE=TAB_OBS,
                       CRIT_COMP='EQ',
                       VALE_K='MIN',),
                    _F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=16,), 
+                     VALE_I=16,),
                    ),
            NOM_PARA='VALE',
-           VALE=-9.74094E-18,
+           VALE=0.,
            CRITERE='ABSOLU',
-           PRECISION = 1E-15,
-           REFERENCE='NON_REGRESSION',); 
-           
-           
+           PRECISION = 1E-12,
+           REFERENCE='NON_REGRESSION',);
+
+
 TEST_TABLE(TABLE=TAB_OBS,
            FILTRE=(_F(NOM_PARA='NOM_CHAM',
                       CRIT_COMP='EQ',
@@ -346,19 +346,19 @@ TEST_TABLE(TABLE=TAB_OBS,
                       CRIT_COMP='EQ',
                       VALE_K='MIN',),
                    _F(NOM_PARA='NUME_ORDRE',
-                     VALE_I=16,), 
+                     VALE_I=16,),
                    ),
            NOM_PARA='VALE',
-           VALE=-6.21766E-17,
+           VALE=0.,
            CRITERE='ABSOLU',
-           PRECISION=1E-15,
-           REFERENCE='NON_REGRESSION',);            
-           
-                     
+           PRECISION=1E-12,
+           REFERENCE='NON_REGRESSION',);
+
+
 IMPR_RESU(FORMAT='RESULTAT',
           RESU=_F(RESULTAT=RESU0,NUME_ORDRE=16,),)
-                     
-    
-                   
+
+
+
 FIN()
 #

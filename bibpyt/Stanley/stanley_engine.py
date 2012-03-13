@@ -1,4 +1,4 @@
-#@ MODIF stanley_engine Stanley  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF stanley_engine Stanley  DATE 13/03/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -541,7 +541,7 @@ Ce mode est indisponible car Salome n'existe pas encore sous Windows.
     if 'DISPLAY' in os.environ.keys():
         display  = os.environ['DISPLAY']
         mdisplay = os.environ['DISPLAY'].split(':')[0]
-    else: raise "Erreur! Pas de DISPLAY defini!"   # Ce cas est normalement impossible car Stanley doit avoir un DISPLAY pour pouvoir s'ouvrir
+    else: raise Exception("Erreur! Pas de DISPLAY defini!")   # Ce cas est normalement impossible car Stanley doit avoir un DISPLAY pour pouvoir s'ouvrir
 
     # Local ou Distant ?
     if (mdisplay is ['localhost', '127.0.0.1']) or (hostname == mdisplay[0:len(hostname)]) or (hostname in ['localhost', '127.0.0.1']) or (hostname == self.dparam['machine_salome']['val']):
@@ -880,7 +880,7 @@ class ETAT_GEOM:
     elif geom in self.poin :
       return 'POINT'
     else :
-      raise geom + " n'appartient pas a la SD ETAT_GEOM"
+      raise Exception(geom + " n'appartient pas a la SD ETAT_GEOM")
 
 
   def Oriente(self, ligne) :
@@ -893,7 +893,7 @@ class ETAT_GEOM:
     """
 
     if ligne not in self.lign :
-      raise "ce n'est pas un chemin (mailles 1D)"
+      raise Exception("ce n'est pas un chemin (mailles 1D)")
 
     if ligne in self.orie.keys() :
       num = self.orie[ligne]
@@ -932,7 +932,7 @@ class ETAT_GEOM:
    # Verification qu'il n'y a pas de noms de group en commun
     for gp in ma.mail.keys() :
       if gp in self.mail.keys() :
-        raise "Nom de groupe en commun ("+gp+") : fusion impossible"
+        raise Exception("Nom de groupe en commun ("+gp+") : fusion impossible")
 
     self.volu = self.volu + ma.volu
     self.surf = self.surf + ma.surf
@@ -1142,7 +1142,7 @@ class ETAT_RESU:
 
     etapes = self.Etapes_calcul(nom_cham, numeros)
     if not etapes :
-      raise 'Le champ ' + nom_cham + ' est inaccessible'
+      raise Exception('Le champ ' + nom_cham + ' est inaccessible')
 
     for nom_cham in etapes[1:] :
       try:
@@ -1389,7 +1389,7 @@ class SELECTION:
         t_geom.append(string.ljust(nom_group,8) + " (0D)")
       self.interface.geom.Change(t_geom)
 
-    else : raise 'ERREUR_DVP'
+    else : raise Exception('ERREUR_DVP')
     self.Refresh()
 
 

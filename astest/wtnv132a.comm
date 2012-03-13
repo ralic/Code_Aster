@@ -1,4 +1,4 @@
-# MODIF  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 12/03/2012   AUTEUR FOUCAULT A.FOUCAULT 
 # TITRE CONSTRUCTION PAR COUCHES EN HYDROMECANIQUE DRAINE AVEC LA LOI DE HUJEUX
 # wtnv132a.para = tps_job 1000 mem_job 512Mo mem_aster 25 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -52,7 +52,7 @@ vari_cart_cc = [-PCO/2,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO] ;
 list_no_later_dro = ['N46','N47','N48','N49','N50','N51','N52','N53',
                      'N54','N55','N187'];
 
-DEBUT(CODE=_F(NOM='WTNV132A', NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'), PAR_LOT='OUI', DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='WTNV132A', NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'), IGNORE_ALARM='CALCULEL4_9',PAR_LOT='OUI', DEBUG=_F(SDVERI='OUI'))
 
 VISCOLIQ = DEFI_CONSTANTE(VALE=0.001 );
 
@@ -369,6 +369,14 @@ IMPR_TABLE(TABLE=T_VAR[1]);
 #         -------------------------
 
 
+# Hauteur successive de la colonne au fur et a mesure de la construction
+Height = [2,4,6,8,10,12,14,16,18,20,22];
+
+# DEFINITION FONCTION PROJECTION SUIVANT Z
+def PROJ(x,Hauteur) :
+    if x<=Hauteur : return x
+    if x>Hauteur  : return Hauteur
+
 list_noeu_haut=list_no_later_dro[:2]
 
 # -->10: Boucle sur la pose des couches 3 a nbcouche
@@ -496,6 +504,91 @@ for n in range(1,nbcouche-1):
                       ASSE=(_F(GROUP_MA=list_group_ma[:n+1],
                                CHAM_GD=DEP[n-1],),),);
 
+    FX = FORMULE(NOM_PARA=('X'),VALE='X')
+    FY = FORMULE(NOM_PARA=('Y'),VALE='Y')
+    FZ = FORMULE(NOM_PARA=('Z'),VALE='PROJ(Z,%f)'%Height[n])
+
+    DEPL_PJ = PROJ_CHAMP(INFO = 2,
+                         PROJECTION = 'OUI',
+                         METHODE    = 'COLLOCATION',
+                         MODELE_1   = MOD[n-1],
+                         MODELE_2   = MOD[n],
+                         CHAM_GD    = DEP[n-1],
+                         VIS_A_VIS  = _F(GROUP_MA_1 = list_group_ma[:n+1],
+                                         GROUP_MA_2 = list_group_ma[:n+2],
+                                         TRANSF_GEOM_2 = (FX, FY, FZ),
+                                           ),
+                           );
+
+    CH_BID = CREA_CHAMP(INFO=2,
+                         TYPE_CHAM='NOEU_DEPL_R',                        
+                         OPERATION='ASSE',
+                         MODELE = MOD[n],
+                         ASSE=_F(GROUP_MA=list_group_ma[:n+2],
+                                CHAM_GD = DEPL_PJ,
+                                NOM_CMP = ('DX','DY','DZ'),
+                         ),
+                         );
+
+
+
+    Z1 = Height[n+1];
+    Z0 = Height[n];
+
+    DXN = FORMULE(NOM_PARA=('DX','Z'),VALE='DX*(%f-Z)/(%f-%f)'%(Z1,Z1,Z0))
+    DYN = FORMULE(NOM_PARA=('DY','Z'),VALE='DY*(%f-Z)/(%f-%f)'%(Z1,Z1,Z0))
+    DZN = FORMULE(NOM_PARA=('DZ','Z'),VALE='DZ*(%f-Z)/(%f-%f)'%(Z1,Z1,Z0))
+
+    CH_GEOM = CREA_CHAMP(INFO=2,
+                         TYPE_CHAM = 'NOEU_GEOM_R',
+                         MAILLAGE = MA, 
+                         OPERATION='EXTR',
+                         NOM_CHAM = 'GEOMETRIE',
+                         )
+                         
+
+    CH_FONC = CREA_CHAMP(INFO=2,
+                         TYPE_CHAM='NOEU_NEUT_F',                        
+                         OPERATION='AFFE',
+                         MODELE = MOD[n],
+                         AFFE=(_F(GROUP_MA=list_group_ma[n+1],
+                                  VALE_F = (DXN,DYN,DZN),
+                                  NOM_CMP= ('X1','X2','X3')),
+                               ),);
+
+    CH_EVAL = CREA_CHAMP(INFO=2,
+                         TYPE_CHAM='NOEU_NEUT_R',                        
+                         OPERATION='EVAL',
+                         CHAM_F = CH_FONC,
+                         CHAM_PARA = (DEPL_PJ,CH_GEOM),
+                               );
+
+    CH_DEPL = CREA_CHAMP(INFO=2,
+                         TYPE_CHAM='NOEU_DEPL_R',                        
+                         OPERATION='ASSE',
+                         MODELE = MOD[n],
+                         ASSE=_F(GROUP_MA=list_group_ma[n+1],
+                                CHAM_GD = CH_EVAL,
+                                NOM_CMP = ('X1','X2','X3'),
+                                NOM_CMP_RESU = ('DX','DY','DZ'),
+                         ),
+                         );
+
+    DEPL_IN=CREA_CHAMP(INFO=2,
+                      TYPE_CHAM='NOEU_DEPL_R',
+                      OPERATION='ASSE',
+                      MODELE=MOD[n],
+                      PROL_ZERO='OUI',
+                      ASSE=(_F(GROUP_MA=list_group_ma[:n+1],
+                               CHAM_GD=INIDEP,
+                               CUMUL='OUI',
+                               COEF_R=1.0),
+                            _F(GROUP_MA=list_group_ma[n+1],
+                               CHAM_GD=CH_DEPL,
+                               CUMUL='NON',
+                               COEF_R=1.0,),
+                               ),);
+
     INISIG=CREA_CHAMP(INFO=1,
                       TYPE_CHAM='ELGA_SIEF_R',
                       OPERATION='ASSE',
@@ -573,7 +666,7 @@ for n in range(1,nbcouche-1):
                                RELATION='KIT_HM',
                                RELATION_KIT=('HUJEUX','LIQU_SATU','HYDR_UTIL'),
                                GROUP_MA=list_group_ma[1:n+2])),
-                 ETAT_INIT=_F(DEPL=INIDEP,
+                 ETAT_INIT=_F(DEPL=DEPL_IN,
                               SIGM=INISIG,
                               VARI=INIVAR),
                  INCREMENT=_F(LIST_INST=DEFLIST,
@@ -666,7 +759,10 @@ for n in range(1,nbcouche-1):
 #     IMPR_TABLE(TABLE=T_SIG[n+1]);
 #     IMPR_TABLE(TABLE=T_VAR[n+1]);
 
-    DETRUIRE(CONCEPT=_F(NOM=(INIVAR,FONCH,PESHAU,PESBAS,),),);
+    DETRUIRE(CONCEPT=_F(NOM=(INIVAR,FONCH,PESHAU,PESBAS,
+                             DEPL_IN,DEPL_PJ,FX,FY,FZ,
+                             CH_FONC,CH_EVAL,CH_GEOM,DXN,DYN,DZN,
+                             CH_DEPL,CH_BID),),);
 
 # <--10: fin boucle for
 

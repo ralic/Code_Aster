@@ -1,8 +1,8 @@
-#@ MODIF sd_spectre SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF sd_spectre SD  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,6 +32,7 @@ types_possibles=[  # liste des divers types de spectres :
         'SPEC_LONG_COR_4',
         'SPEC_CORR_CONV_1',
         'SPEC_CORR_CONV_2',
+        'SPEC_CORR_CONV_3',
         'SPEC_FONC_FORME',
         'SPEC_EXCI_POINT',]
 
@@ -70,7 +71,7 @@ class sd_spectre(sd_titre):
         type = self.u_type()
         if itype==1 : assert type in ('SPEC_LONG_COR_1', 'SPEC_CORR_CONV_1')  ,vain
         if itype==2 : assert type in ('SPEC_LONG_COR_2', 'SPEC_CORR_CONV_2')  ,vain
-        if itype==3 : assert type in ('SPEC_LONG_COR_3',)   ,vain
+        if itype==3 : assert type in ('SPEC_LONG_COR_3', 'SPEC_CORR_CONV_3')   ,vain
         if itype==4 : assert type in ('SPEC_LONG_COR_4',)   ,vain
         if itype==11 : assert type in ('SPEC_FONC_FORME',)  ,vain
         if itype==21 : assert type in ('SPEC_EXCI_POINT',)  ,vain
@@ -172,6 +173,9 @@ class sd_spectre(sd_titre):
             assert vate[4] in ('GENERALE', 'CORCOS', 'AU_YANG')
             assert vate[6] == 'COEF_VITE_FLUI_O'
 
+        elif type == 'SPEC_CORR_CONV_3' :
+        #---------------------------------
+            sd2=sd_fonction(vate[1]) ; sd2.check()
 
 
     def check_VAVF(self,checker):

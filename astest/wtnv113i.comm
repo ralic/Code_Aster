@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE TEST THMD 3D, MODELISATION THMC=LIQU_SATU
 # wtnv113i.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -163,7 +163,7 @@ CHARHO=AFFE_CHAR_MECA(   MODELE=MODELE,
                                    ),)
 
 RESU0=STAT_NON_LINE(   MODELE=MODELE,
-            SOLVEUR=_F( METHODE = 'LDLT'),
+            SOLVEUR=_F( METHODE = 'MUMPS', PCENT_PIVOT=200),
                           CHAM_MATER=CHMAT0,
                           EXCIT=_F( CHARGE = CHARHO),
                           COMP_INCR=_F( RELATION = 'KIT_THM',PARM_THETA=1.,

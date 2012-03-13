@@ -1,4 +1,4 @@
-#@ MODIF E_JDC Execution  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_JDC Execution  DATE 13/03/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -39,10 +39,7 @@ from Noyau.N_info import message, SUPERV
 from Noyau import basetype
 from concept_dependency import ConceptDependenciesVisitor
 
-import aster_core
 import aster
-# for backward compatibility
-aster.__version__ = aster_core.__version__
 from strfunc import convert
 
 
@@ -147,7 +144,7 @@ class JDC:
    def affiche_fin_exec(self):
        """ Cette methode affiche les statistiques de temps finales.
        """
-
+       import aster_core
        ###############################################################
        #impression des statistiques de temps d'execution des commandes
        ###############################################################

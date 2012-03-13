@@ -1,4 +1,4 @@
-#@ MODIF E_Core Execution  DATE 06/03/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF E_Core Execution  DATE 13/03/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,6 +28,8 @@ Ces fonctions sont indépendantes des étapes (sinon elles seraient dans
 B_ETAPE/E_ETAPE) et des concepts/ASSD.
 """
 
+# This package modify the sys.path
+
 import sys
 import os.path as osp
 import time
@@ -35,10 +37,8 @@ from datetime import datetime
 import platform
 from optparse import OptionParser
 
-# Pas d'import des autres packages au plus haut niveau
+# Pas d'import des autres packages d'aster
 # car le premier import de ce module est fait avant l'ajout des paths.
-import aster_core
-from strfunc import convert
 
 def check_value(option, opt, value, parser):
     """Callback to check some values."""
@@ -52,22 +52,17 @@ def check_value(option, opt, value, parser):
             parser.error("option '%s' expects an existing file" % opt)
     setattr(parser.values, option.dest, value)
 
-def set_memory(option, opt, value, parser):
-    """Callback for memory options."""
-    mem = None
-    if opt == '--memory':
-        mem = value
-    elif opt == '--memjeveux':
-        mem = value * aster_core.LONG_INTEGER_MOTS
-    setattr(parser.values, option.dest, mem)
-
-
 class CoreOptions(object):
     """Classe de stockage des arguments et options de la ligne de commande
     afin de permettre une interrogation ultérieure depuis n'importe quelle
     partie du code.
     On centralise également le stockage d'informations de base comme le nom
     de la machine, la plate-forme, etc.
+
+    :Attention: ``sys.path`` est modifiée juste après le l'interprétation de
+                la ligne de commande. La liste est enrichie avec la valeur de
+                ``--bibpyt`` (ajouté en debut de list).
+                "." et "bibpyt/Cata"  sont aussi ajoutés.
     """
     doc = """usage: ./%%prog %s [-h|--help] [options]""" % sys.argv[0]
 
@@ -86,11 +81,9 @@ class CoreOptions(object):
             action='callback', callback=check_value,
             help="path to Code_Aster python source files")
 
-        parser.add_option('--memjeveux', dest='memory', type='float',
-            action='callback', callback=set_memory,
+        parser.add_option('--memjeveux', dest='memjeveux', type='float', action='store',
             help="maximum size of the memory taken by the execution (in Mw)")
-        parser.add_option('--memory', dest='memory', type='float',
-            action='callback', callback=set_memory,
+        parser.add_option('--memory', dest='memory', type='float', action='store',
             help="maximum size of the memory taken by the execution (in MB)")
         parser.add_option('--tpmax', dest='tpmax', type='float', action='store',
             help="limit of the time of the execution (in seconds)")
@@ -120,10 +113,10 @@ class CoreOptions(object):
             action='store',
             help="directory of external datas (geometrical datas or properties...)")
         parser.add_option('--rep_glob', dest='repglob', type='str', metavar='DIR',
-            action='store',default='.',
+            action='store', default='.',
             help="directory of the results database")
         parser.add_option('--rep_vola', dest='repvola', type='str', metavar='DIR',
-            action='store',default='.',
+            action='store', default='.',
             help="directory of the temporary database")
 
         parser.add_option('--suivi_batch', dest='suivi_batch',
@@ -140,14 +133,24 @@ class CoreOptions(object):
         """Analyse les arguments de la ligne de commmande."""
         argv = _bwc_arguments(argv)
         self.opts, self.args = self.parser.parse_args(argv[1:])
+        self.set_path()
         self.default_values()
         self.init_info()
         if self._dbg:
             print 'options   :', self.opts
             print 'arguments :', self.args
 
+    def set_path(self):
+        sys.path.insert(0, '.')
+        bibpyt = self.get_option('bibpyt')
+        if bibpyt:
+            sys.path.insert(0, bibpyt)
+            sys.path.append(osp.join(bibpyt, 'Cata'))
+
     def init_info(self):
         """Stocke les informations générales (machine, os...)."""
+        import aster_core
+        import aster
         # hostname
         self.info['hostname'] = platform.node()
         # ex. i686/x86_64
@@ -164,14 +167,14 @@ class CoreOptions(object):
             self.info[attr] = None
         self.info['versMAJ'] = self.info['versMIN'] = self.info['versSUB'] = 0
         if self.opts.bibpyt:
-            properties = osp.join(self.opts.bibpyt, 'Accas', 'properties.py')
-            d = {}
-            execfile(properties, d)
+            from Accas import properties
             for attr in ('version', 'date', 'exploit'):
-                self.info[attr] = d.get(attr)
+                self.info[attr] = getattr(properties, attr)
             vers = self.info['version']
             if vers:
                 aster_core.__version__ = vers
+                # for backward compatibility
+                aster.__version__ = aster_core.__version__
                 lv = vers.split('.')
                 try:
                     self.info['versMAJ'] = int(lv.pop(0))
@@ -196,6 +199,9 @@ class CoreOptions(object):
             if limcpu < 0:
                 limcpu = int(1.e18)
             self.opts.tpmax = limcpu
+        if not self.opts.memory and self.opts.memjeveux:
+            import aster_core # depend on self.opts.bibpyt (see parse_args)
+            self.opts.memory = self.opts.memjeveux * aster_core.LONG_INTEGER_MOTS
 
     def sub_tpmax(self, tsub):
         """Soustrait `tsub` au temps cpu maximum."""
@@ -209,11 +215,19 @@ class CoreOptions(object):
         else:
             value = self.info.get(option, default)
         if type(value) in (str, unicode):
+            from strfunc import convert
             value = convert(value)
         if self._dbg:
             print "<CoreOptions.get_option> option=%r value=%r" % (option, value)
         return value
 
+def getargs(argv=None):
+    """
+    Récupération des arguments passés à la ligne de commande
+    """
+    coreopts = CoreOptions()
+    coreopts.parse_args(argv or sys.argv)
+    return coreopts
 
 def checksd(nomsd, typesd):
     """Vérifie la validité de la SD `nom_sd` (nom jeveux) de type `typesd`.
@@ -301,6 +315,7 @@ def version_shortname():
 def print_header():
     """Appelé par entete.F pour afficher des informations sur
     la machine."""
+    import aster_core
     from i18n import localization
     from Utilitai.Utmess import UTMESS
     _init_labels()
@@ -353,7 +368,7 @@ def _bwc_arguments(argv):
         return argv
     long_opts = (
         'eficas_path', 'commandes', 'num_job', 'mode',
-        'rep_outils', 'rep_mat', 'rep_dex', 'rep_vola', 'rep_glob', 
+        'rep_outils', 'rep_mat', 'rep_dex', 'rep_vola', 'rep_glob',
         'memjeveux', 'tpmax', 'memory', 'max_base',
     )
     # boolean options

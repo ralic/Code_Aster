@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,9 @@ C     -- ON MET A JOUR LE COMMON INF001 :
       NIVUTI = 1
       NIVPGM = 1
       UNITE  = IUNIFI('MESSAGE')
+
+C     -- ON INITIALISE LA VARIABLE IACTIF D'UN COMMON DE CALCUL:
+      CALL MECOEL(0)
 
       IF ( NUOPER .LT. 0 ) THEN
         NUOP2 = ABS(NUOPER)

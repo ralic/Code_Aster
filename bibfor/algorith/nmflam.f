@@ -6,7 +6,7 @@
      &                  MEASSE,VEELEM,SDERRO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/02/2012   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGORITH  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,15 +40,15 @@ C
       CHARACTER*24 MATE
       CHARACTER*24 CARCRI,COMREF
       INTEGER      FONACT(*)
-C 
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE MECA_NON_LINE (ALGORITHME)
 C
 C CALCUL DE MODES
-C      
+C
 C ----------------------------------------------------------------------
-C      
+C
 C
 C IN  OPTION : TYPE DE CALCUL
 C              'FLAMBSTA' MODES DE FLAMBEMENT EN STATIQUE
@@ -106,7 +106,7 @@ C
       INTEGER      NDDLE ,NSTA,LJEVE2,CDSP
       REAL*8       BANDE(2),R8BID,R8VIDE,PREC
       REAL*8       FREQM,FREQV,FREQA,FREQR,R8MAEM,FREQR0
-      REAL*8       CSTA,R8PREM,MINMAT,MAXMAT,COEFMT
+      REAL*8       CSTA,R8PREM,MINMAT,MAXMAT
       CHARACTER*4  MOD45
       CHARACTER*8  SDMODE,SDSTAB
       CHARACTER*8  SYME
@@ -124,14 +124,14 @@ C
 C --- INITIALISATIONS
 C
       CALL JEVEUO(SOLVEU(1:19)//'.SLVK','E',ISLVK)
-      MATGEO = '&&NMFLAM.MAGEOM'      
+      MATGEO = '&&NMFLAM.MAGEOM'
       MATAS2 = '&&NMFLAM.MATASS'
 C
 C --- NOM DE LA SD DE STOCKAGE DES MODES
 C
-      SDMODE  = '&&NM45BI' 
+      SDMODE  = '&&NM45BI'
       SDSTAB  = '&&NM45SI'
-C  
+C
 C --- RECUPERATION DES OPTIONS
 C
       CALL NMFLAL(OPTION,COMPOR,SDPOST,MOD45  ,DEFO  ,
@@ -141,7 +141,7 @@ C
 C --- ON FORCE LA MATRICE TANGENTE EN SYMETRIQUE A CAUSE DE SORENSEN
 C
       SYME   = ZK24(ISLVK+5-1)(1:8)
-      ZK24(ISLVK+5-1) = 'OUI'    
+      ZK24(ISLVK+5-1) = 'OUI'
 C
 C --- CALCUL DE LA MATRICE TANGENTE ASSEMBLEE ET DE LA MATRICE GEOM.
 C
@@ -154,11 +154,11 @@ C
       CALL ASSERT(LDCCVG.EQ.0)
 C
 C --- RETABLISSEMENTS VALEURS
-C 
+C
       ZK24(ISLVK+5-1) = SYME(1:3)
 C
 C --- CALCUL DES MODES PROPRES
-C    
+C
 C  ON DIFFERENCIE NFREQ (DONNEE UTILISATEUR) DE NFREQC
 C  QUI EST LE NB DE FREQ TROUVEES PAR L'ALGO DANS NMOP45
 C
@@ -176,10 +176,10 @@ C --- SELECTION DU MODE DE PLUS PETITE FREQUENCE
 C
       IF ( MOD45 .EQ. 'VIBR' ) THEN
         VARACC = 'FREQ'
-      ELSEIF ( MOD45 .EQ. 'FLAM' ) THEN  
+      ELSEIF ( MOD45 .EQ. 'FLAM' ) THEN
         VARACC = 'CHAR_CRIT'
       ELSE
-        CALL ASSERT(.FALSE.)  
+        CALL ASSERT(.FALSE.)
       ENDIF
       FREQM  = R8MAEM()
       NUMORD = 0
@@ -197,7 +197,7 @@ C        FREQA = FREQV
       IF (NSTA.NE.0) THEN
         CALL RSADPA(SDSTAB,'L',1,'CHAR_STAB',1,0,LJEVE2,K16BID)
         CSTA = ZR(LJEVE2)
-      ENDIF  
+      ENDIF
 C
 C --- NOM DU MODE
 C
@@ -226,14 +226,14 @@ C --- AFFICHAGE DES MODES
 C
       IF ( MOD45 .EQ. 'VIBR' ) THEN
         CALL NMIMPR(SDIMPR,'IMPR','IMPR_MODE_VIBR',K24BID,FREQR ,NUMORD)
-      ELSEIF ( MOD45 .EQ. 'FLAM' ) THEN 
+      ELSEIF ( MOD45 .EQ. 'FLAM' ) THEN
         CALL NMIMPR(SDIMPR,'IMPR','IMPR_MODE_FLAM',K24BID,FREQR ,NUMORD)
         IF (NSTA.NE.0) THEN
           CALL NMIMPR(SDIMPR,'IMPR','IMPR_MODE_STAB',K24BID,CSTA  ,1)
-        ENDIF          
+        ENDIF
       ELSE
         CALL ASSERT(.FALSE.)
-      ENDIF     
+      ENDIF
 C
 C --- ARRET PROPRE SI INSTABILITE
 C
@@ -262,24 +262,24 @@ C
      &                    IBID             ,PREC ,K24BID)
               IF (OPTRIG.EQ.'RIGI_GEOM_NON' ) THEN
                 LDIST = .FALSE.
-                CALL ECHMAT(MATAS2,LDIST,MINMAT,MAXMAT,COEFMT)
+                CALL ECHMAT(MATAS2,LDIST,MINMAT,MAXMAT)
                 IF (((FREQR0*FREQR).LT.0.D0).OR.
-     &                 (ABS(FREQR).LT.(PREC*MINMAT))) 
-     &             CALL NMERGE(SDERRO,'SET','STB',INSTAB)  
+     &                 (ABS(FREQR).LT.(PREC*MINMAT)))
+     &             CALL NMERGE(SDERRO,'SET','STB',INSTAB)
               ELSE
                 CALL NMLESD('POST_TRAITEMENT',SDPOST,'SIGN_INSTAB',
      &                      IBID             ,R8BID ,SIGN)
                 VALTST = .FALSE.
                 IF (SIGN.EQ.'POSITIF') THEN
-                  VALTST = 
+                  VALTST =
      &               ((FREQR.GE.0.D0).AND.(ABS(FREQR).LT.(1.D0+PREC)))
                 ELSEIF (SIGN.EQ.'NEGATIF') THEN
-                  VALTST = 
+                  VALTST =
      &               ((FREQR.LE.0.D0).AND.(ABS(FREQR).LT.(1.D0+PREC)))
                 ELSEIF (SIGN.EQ.'POSITIF_NEGATIF') THEN
                   VALTST = (ABS(FREQR).LT.(1.D0+PREC))
                 ELSE
-                  CALL ASSERT(.FALSE.)  
+                  CALL ASSERT(.FALSE.)
                 ENDIF
                 IF ( VALTST) CALL NMERGE(SDERRO,'SET','STB',INSTAB)
               ENDIF
@@ -292,28 +292,28 @@ C --- MODE SELECTIONNE ECRIT DANS SDPOST
 C
       IF ( MOD45 .EQ. 'VIBR' ) THEN
         CALL NMECSD('POST_TRAITEMENT',SDPOST,'SOLU_FREQ_VIBR',
-     &              IBID             ,FREQR ,K24BID) 
+     &              IBID             ,FREQR ,K24BID)
         CALL NMECSD('POST_TRAITEMENT',SDPOST,'SOLU_NUME_VIBR',
      &              NUMORD           ,R8BID ,K24BID)
-      ELSEIF ( MOD45 .EQ. 'FLAM' ) THEN  
+      ELSEIF ( MOD45 .EQ. 'FLAM' ) THEN
         CALL NMECSD('POST_TRAITEMENT',SDPOST,'SOLU_FREQ_FLAM',
-     &              IBID             ,FREQR ,K24BID) 
+     &              IBID             ,FREQR ,K24BID)
         CALL NMECSD('POST_TRAITEMENT',SDPOST,'SOLU_NUME_FLAM',
-     &              NUMORD           ,R8BID ,K24BID)    
+     &              NUMORD           ,R8BID ,K24BID)
         IF (NSTA.NE.0) THEN
           CALL NMECSD('POST_TRAITEMENT',SDPOST,'SOLU_FREQ_STAB',
-     &                IBID             ,CSTA  ,K24BID) 
+     &                IBID             ,CSTA  ,K24BID)
           CALL NMECSD('POST_TRAITEMENT',SDPOST,'SOLU_NUME_STAB',
-     &                1                ,R8BID ,K24BID)    
-        ENDIF        
+     &                1                ,R8BID ,K24BID)
+        ENDIF
       ELSE
-        CALL ASSERT(.FALSE.)  
-      ENDIF 
+        CALL ASSERT(.FALSE.)
+      ENDIF
 C
 C --- DESTRUCTION DE LA SD DE STOCKAGE DES MODES
 C
       CALL JEDETC('G',SDMODE,1)
       CALL JEDETC('G',SDSTAB,1)
-      
+
       CALL JEDEMA()
       END

@@ -1,8 +1,8 @@
-#@ MODIF modelisa Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa Messages  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -518,6 +518,18 @@ cata_msg = {
 
 98 : _(u"""
  type de coefficient inconnu: %(k1)s
+"""),
+
+99 : _(u"""
+Problème :
+  Une relation linéaire entre ddls a un second membre de type "fonction".
+  On ne peut pas la normaliser (afin que son plus grand coefficient soit 1.) car on ne sait pas "diviser" une fonction par un réel.
+
+  Le plus grand coefficient de la relation est très différent de 1.  (<1.d-3 ou > 1.d3).
+  Cette équation (non-normalisée) peut conduire à des difficultés numériques lors de la résolution des systèmes linéaires.
+
+Conseil :
+  Utilisez le solveur Mumps afin de contrôler la qualité de la résolutions des systèmes linéaires.
 """),
 
 }

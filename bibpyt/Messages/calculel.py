@@ -1,4 +1,4 @@
-#@ MODIF calculel Messages  DATE 09/01/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel Messages  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -213,10 +213,10 @@ Conseil :
  pour toute valeur du temps.
 """),
 
-29 : _(u"""
-Erreur de programmation :
- Option de calcul élémentaire inconnue au catalogue :  %(k1)s
-"""),
+
+
+
+
 
 30 : _(u"""
 Erreur utilisateur :

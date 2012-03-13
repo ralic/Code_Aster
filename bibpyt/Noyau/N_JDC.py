@@ -1,9 +1,9 @@
-#@ MODIF N_JDC Noyau  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_JDC Noyau  DATE 13/03/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -345,7 +345,7 @@ Causes possibles :
       o=self.sds_dict.get(sdnom,None)
       if isinstance(o,ASSD):
          raise AsException("Nom de concept deja defini : %s" % sdnom)
-      if self._reserved_kw.get(sdnom) == 1:
+      if sdnom in self._reserved_kw:
          raise AsException("Nom de concept invalide. '%s' est un mot-clé réservé." % sdnom)
 
       # ATTENTION : Il ne faut pas ajouter sd dans sds car il s y trouve deja.
@@ -559,10 +559,9 @@ Causes possibles :
    def _build_reserved_kw_list(self):
        """Construit la liste des mots-clés réservés (interdits pour le
        nommage des concepts)."""
-       wrk = set()
+       self._reserved_kw = set()
        for cat in self.cata:
-           wrk.update([kw for kw in dir(cat) if len(kw) <= 8 and kw == kw.upper()])
-       wrk.difference_update(['OPER', 'MACRO', 'BLOC', 'SIMP', 'FACT', 'FORM',
-                              'GEOM', 'MCSIMP', 'MCFACT'])
-       self._reserved_kw = {}.fromkeys(wrk, 1)
+           self._reserved_kw.update([kw for kw in dir(cat) if len(kw) <= 8 and kw == kw.upper()])
+       self._reserved_kw.difference_update(['OPER', 'MACRO', 'BLOC', 'SIMP', 'FACT', 'FORM',
+                                            'GEOM', 'MCSIMP', 'MCFACT'])
 

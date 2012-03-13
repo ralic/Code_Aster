@@ -4,9 +4,9 @@
       CHARACTER*8 NOMA,NOMO
 C RESPONSABLE PELLET J.PELLET
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -84,6 +84,7 @@ C     ------------------------------------------------
       TYPEMO=' '
       DO 10 I=1,NBGREL
         CALL JELIRA(JEXNUM(LIGREL//'.LIEL',I),'LONMAX',NMGREL,K8B)
+        IF (NMGREL.EQ.1) GOTO 9
         NUTYPE=ZI(JDLI+NUMVEC+NMGREL-2)
         IF (NUTYPE.EQ.0) GOTO 10
 
@@ -100,7 +101,6 @@ C     ------------------------------------------------
           CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',NUTYPM),TYPEMA)
 
           IF (TYPELE.EQ.'MECA_HEXS8') CALL U2MESS('A','ELEMENTS4_74')
-
           CALL DISMOI('F','PHEN_MODE',TYPELE,'TYPE_ELEM',IBID,PHEMOD,
      &                IBID)
           TYPEMO=PHEMOD(17:32)
@@ -110,6 +110,7 @@ C     ------------------------------------------------
           ZK8(JTYPMA-1+NUTYPE)=TYPEMA
         ENDIF
 
+   9    CONTINUE
         NUMVEC=NUMVEC+NMGREL
    10 CONTINUE
 
@@ -135,6 +136,7 @@ C     ---------------------------------------------------
         TYPEMO=' '
         DO 40 I=1,NBGREL
           CALL JELIRA(JEXNUM(LIGREL//'.LIEL',I),'LONMAX',NMGREL,K8B)
+          IF (NMGREL.EQ.1) GOTO 39
           NUMAIL=ZI(JDLI+NUMVEC-1)
           IF (NUMAIL.LT.0) THEN
             NUTYPM=NTYPOI
@@ -175,6 +177,7 @@ C     ---------------------------------------------------
               TABMAI(JC)=NOMAIL
             ENDIF
    30     CONTINUE
+   39     CONTINUE
           NUMVEC=NUMVEC+NMGREL
    40   CONTINUE
         WRITE(IFM,9050)

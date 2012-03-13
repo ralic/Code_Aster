@@ -5,9 +5,9 @@
       CHARACTER*24 NOMC(DIM)
       CHARACTER*80 NOML(DIM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 12/12/2011   AUTEUR DESOZA T.DESOZA 
+C MODIF UTILITAI  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -55,29 +55,26 @@ C     -- SI L'UTILISATEUR NE VEUT PAS DE MESURE, NBMESU=0
 
 C     ON ECRIT LES DONNEES DANS LE TABLEAU D1 :
 C     -----------------------------------------------------
-      D1(1)='CPU.RESO.1|P|#1 Resolution des systemes lineaires'
-      D1(2)='CPU.RESO.2|S|#1.1 Numerotation, connectivite de la matrice'
-      D1(3)='CPU.RESO.3|S|#1.2 Factorisation symbolique'
-      D1(4)='CPU.RESO.4|S|#1.3 Factorisation numerique (ou precond.)'
-      D1(5)='CPU.RESO.5|S|#1.4 Resolution'
+      D1(1)='CPU.RESO.1|P|1#Resolution des systemes lineaires'
+      D1(2)='CPU.RESO.2|S|1.1#Numerotation, connectivite de la matrice'
+      D1(3)='CPU.RESO.3|S|1.2#Factorisation symbolique'
+      D1(4)='CPU.RESO.4|S|1.3#Factorisation numerique (ou precond.)'
+      D1(5)='CPU.RESO.5|S|1.4#Resolution'
 
-      D1(6) ='CPU.CALC.1|P|#2 Calculs elementaires et assemblages'
-      D1(7) ='CPU.CALC.2|S|#2.1 Routine calcul'
-      D1(8) ='CPU.CALC.3|S|#2.1.1 Routines te00ij'
-      D1(9) ='CPU.ASSE.1|S|#2.2 Assemblages'
-      D1(10)='CPU.ASSE.2|S|#2.2.1 Assemblage matrices'
-      D1(11)='CPU.ASSE.3|S|#2.2.2 Assemblage seconds membres'
+      D1(6) ='CPU.CALC.1|P|2#Calculs elementaires et assemblages'
+      D1(7) ='CPU.CALC.2|S|2.1#Routine calcul'
+      D1(8) ='CPU.CALC.3|S|2.1.1#Routines te00ij'
+      D1(9) ='CPU.ASSE.1|S|2.2#Assemblages'
+      D1(10)='CPU.ASSE.2|S|2.2.1#Assemblage matrices'
+      D1(11)='CPU.ASSE.3|S|2.2.2#Assemblage seconds membres'
 
 C     -- LES 2 MESURES SUIVANTES SONT SPECIALES : ON S'INTERDIT DE
 C        FAIRE APPEL A JEVEUX. VOIR UTTCPU.F, UTTCPR.F
 C        C'EST LEUR NOM QUI EST CONNU DE TOUS : 'CPU.MEMD.1/2'
-      D1(12)='CPU.MEMD.1|P|#3 Dechargement de la memoire sur disque'
-      D1(13)='CPU.MEMD.2|P|#3 ??? libre pour mesure interne jeveux'
+      D1(12)='CPU.MEMD.1|P|3#Dechargement de la memoire sur disque'
+      D1(13)='CPU.MEMD.2|P|3#??? libre pour mesure interne jeveux'
 
-      D1(14)='CPU.CMPI.1|P|#4 Communications MPI'
-
-C     D1(15) ='CPU.CALC.4|S|#2.1.1.1 Routine extrai'
-C     D1(16) ='CPU.CALC.5|S|#2.1.1.2 ...'
+      D1(14)='CPU.CMPI.1|P|4#Communications MPI'
 
       NBMESU=14
       CALL ASSERT(NBMAX.GE.NBMESU)

@@ -1,8 +1,8 @@
-#@ MODIF calc_europlexus_ops Macro  DATE 19/10/2011   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF calc_europlexus_ops Macro  DATE 13/03/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -899,7 +899,7 @@ class EUROPLEXUS:
     # DEFINITION REPERES ORTHOTROPIE QUI DOIT ETRE APRES LES SUPPORTS
     for gma in self.gmaGLRC :
         if gma not in self.dicOrthotropie :
-            raise "Erreur : %s non affecte par un repere d'orthotropie : ajouter le mot-cle 'VECTEUR' dans AFFE_CARA_ELEM"% gma
+            raise Exception("Erreur : %s non affecte par un repere d'orthotropie : ajouter le mot-cle 'VECTEUR' dans AFFE_CARA_ELEM"% gma)
         vale = self.dicOrthotropie[gma]
         epx[MODULE].append('COMP ORTS %s %s %s'%(vale[0],vale[1],vale[2]))
         epx[MODULE].append(3*' '+'LECT')

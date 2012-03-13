@@ -1,8 +1,8 @@
-#@ MODIF sd_ligrel SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF sd_ligrel SD  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,6 +19,8 @@
 # ======================================================================
 
 from SD import *
+
+from SD.sd_maillage  import sd_maillage
 
 class sd_ligrel(AsBase):
     nomj = SDNom(fin=19)
@@ -49,11 +51,11 @@ class sd_ligrel(AsBase):
     def check_LGRF(self,checker):
         if not self.exists() : return
         lgrf=self.LGRF.get_stripped()
-        from SD.sd_maillage import sd_maillage
         sd2=sd_maillage(lgrf[0]); sd2.check(checker)
-        if lgrf[1] != '' :
-           from SD.sd_partition import sd_partition
-           sd2=sd_partition(lgrf[1]); sd2.check(checker)
+        # assert lgrf[1] != ''   # on ne sait pas toujours "remonter" à un modèle (lgphmo.f)
+        # Je n'arrive pas à importer sd_modele (cyclage des imports):
+        # from SD.sd_modele    import sd_modele
+        # sd2=sd_modele.sd_modele(lgrf[1]); sd2.check(checker)
 
 
     def check_presence(self,checker):

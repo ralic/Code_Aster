@@ -3,10 +3,10 @@
       INTEGER REPI,IERD
       CHARACTER*(*) QUESTI,REPKZ,NOMOBZ
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 11/10/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF UTILITAI  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,13 +52,14 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER DIMGE(3)
       LOGICAL MELANG,LTEATT
       CHARACTER*1  K1BID
-      CHARACTER*8  KBID,CALCRI,MAILLA,NOMACR
+      CHARACTER*8  KBID,CALCRI,MAILLA,NOMACR,MODELE
       CHARACTER*16 NOMTE,PHENOM,NOMODL,TYVOIS
       CHARACTER*19 NOMOB
       CHARACTER*32 REPK
-      INTEGER JLGRF,IRET,NBGREL,IGREL,JLIEL,NEL,ITYPEL,JSSSA,N1
-      INTEGER IGE2,IGR,IAGREL,ITE,IGE1,IGE3,IRET2,NBGR
-      INTEGER JNOMAC,NBSM,ISM,IANBNO,IANOMO,IBID,DIMGE1
+      INTEGER JLGRF,IRET,NBGREL,IGREL,NEL,ITYPEL,JSSSA,N1
+      INTEGER IGE2,IGR,JLIEL,ITE,IGE1,IGE3,NBGR
+      INTEGER IEXI,IEXI2,JPART
+      INTEGER JNOMAC,NBSM,ISM,JNBNO,IBID,DIMGE1
 C DEB ------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -74,23 +75,31 @@ C     --------------------------------
 C     --------------------------------
       ELSEIF (QUESTI.EQ.'PARTITION') THEN
 C     --------------------------------
+        REPK=' '
         CALL JEVEUO(NOMOB//'.LGRF','L',JLGRF)
-        REPK = ZK8(JLGRF-1+2)
+        MODELE=ZK8(JLGRF-1+2)
+        IF (MODELE.NE.' ') THEN
+          CALL JEEXIN(MODELE//'.PARTIT',IEXI)
+          IF (IEXI.GT.0) THEN
+            CALL JEVEUO(MODELE//'.PARTIT','L',JPART)
+            REPK = ZK8(JPART-1+1)
+          ENDIF
+        ENDIF
 
 C     -----------------------------------
       ELSE IF (QUESTI.EQ.'EXI_ELEM') THEN
 C     -----------------------------------
-        CALL JEEXIN(NOMOB//'.LIEL',IRET)
+        CALL JEEXIN(NOMOB//'.LIEL',IEXI)
         REPK = 'NON'
-        IF (IRET.GT.0) REPK = 'OUI'
+        IF (IEXI.GT.0) REPK = 'OUI'
 
 
 C     -----------------------------------------------------------------
       ELSEIF ((QUESTI.EQ.'EXI_VF') ) THEN
 C     -----------------------------------------------------------------
         REPK = 'NON'
-        CALL JEEXIN(NOMOB//'.LIEL',IRET)
-        IF (IRET.GT.0) THEN
+        CALL JEEXIN(NOMOB//'.LIEL',IEXI)
+        IF (IEXI.GT.0) THEN
           CALL JELIRA(NOMOB//'.LIEL','NUTIOC',NBGREL,K1BID)
           DO 11,IGREL = 1,NBGREL
             CALL JEVEUO(JEXNUM(NOMOB//'.LIEL',IGREL),'L',JLIEL)
@@ -108,8 +117,8 @@ C     -----------------------------------------------------------------
       ELSEIF ((QUESTI.EQ.'BESOIN_VOISIN') ) THEN
 C     -----------------------------------------------------------------
         REPK = 'NON'
-        CALL JEEXIN(NOMOB//'.LIEL',IRET)
-        IF (IRET.GT.0) THEN
+        CALL JEEXIN(NOMOB//'.LIEL',IEXI)
+        IF (IEXI.GT.0) THEN
           CALL JELIRA(NOMOB//'.LIEL','NUTIOC',NBGREL,K1BID)
           DO 12,IGREL = 1,NBGREL
             CALL JEVEUO(JEXNUM(NOMOB//'.LIEL',IGREL),'L',JLIEL)
@@ -136,8 +145,8 @@ C     -----------------------------------------------------------------
      &        ) THEN
 
 C     -----------------------------------------------------------------
-        CALL JEEXIN(NOMOB//'.LIEL',IRET)
-        IF (IRET.GT.0) THEN
+        CALL JEEXIN(NOMOB//'.LIEL',IEXI)
+        IF (IEXI.GT.0) THEN
           CALL JELIRA(NOMOB//'.LIEL','NUTIOC',NBGREL,K1BID)
           REPK = 'NON'
           DO 10,IGREL = 1,NBGREL
@@ -249,8 +258,8 @@ C     ------------------------------------------
      &         (QUESTI.EQ.'NB_SS_ACTI'  ) .OR.
      &         (QUESTI.EQ.'NB_NL_MAILLA') ) THEN
 C     ------------------------------------------
-         CALL JEEXIN(NOMOB//'.SSSA',IRET)
-         IF (IRET.EQ.0) THEN
+         CALL JEEXIN(NOMOB//'.SSSA',IEXI)
+         IF (IEXI.EQ.0) THEN
            REPI=0
          ELSE
            CALL JEVEUO(NOMOB//'.SSSA','L',JSSSA)
@@ -281,17 +290,17 @@ C     -----------------------------------
 C     -----------------------------------
         REPI = 0
         IGE2 = 0
-        CALL JEEXIN(NOMOB//'.LIEL',IRET)
-        IF (IRET.GT.0) THEN
+        CALL JEEXIN(NOMOB//'.LIEL',IEXI)
+        IF (IEXI.GT.0) THEN
           CALL JELIRA(NOMOB//'.LIEL','NUTIOC',NBGR,K1BID)
           DIMGE(1) = 0
           DIMGE(2) = 0
           DIMGE(3) = 0
           MELANG = .FALSE.
           DO 20,IGR = 1,NBGR
-            CALL JEVEUO(JEXNUM(NOMOB//'.LIEL',IGR),'L',IAGREL)
+            CALL JEVEUO(JEXNUM(NOMOB//'.LIEL',IGR),'L',JLIEL)
             CALL JELIRA(JEXNUM(NOMOB//'.LIEL',IGR),'LONMAX',N1,K1BID)
-            ITE = ZI(IAGREL-1+N1)
+            ITE = ZI(JLIEL-1+N1)
             CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',ITE),NOMTE)
             CALL DISMTE(QUESTI,NOMTE,IGE1,REPK,IERD)
             CALL ASSERT((IGE1.GE.0) .AND. (IGE1.LE.3))
@@ -307,8 +316,8 @@ C     -----------------------------------
           END IF
         END IF
 C        -- SI IL EXISTE DES MACRO-ELEMENTS, IL FAUT EN TENIR COMPTE :
-        CALL JEEXIN(NOMOB//'.SSSA',IRET2)
-        IF (IRET2.GT.0) THEN
+        CALL JEEXIN(NOMOB//'.SSSA',IEXI2)
+        IF (IEXI2.GT.0) THEN
           CALL JELIRA(NOMOB//'.SSSA','LONMAX',N1,KBID)
           CALL JEVEUO(NOMOB//'.SSSA','L',JSSSA)
           CALL JEVEUO(NOMOB//'.LGRF','L',JLGRF)
@@ -332,8 +341,8 @@ C        -- SI IL EXISTE DES MACRO-ELEMENTS, IL FAUT EN TENIR COMPTE :
 C     ----------------------------------
       ELSE IF (QUESTI.EQ.'NB_GREL') THEN
 C     ----------------------------------
-        CALL JEEXIN(NOMOB//'.LIEL',IRET)
-        IF (IRET.GT.0) THEN
+        CALL JEEXIN(NOMOB//'.LIEL',IEXI)
+        IF (IEXI.GT.0) THEN
           CALL JELIRA(NOMOB//'.LIEL','NUTIOC',REPI,K1BID)
         ELSE
           REPI = 0
@@ -342,8 +351,8 @@ C     ----------------------------------
 C     ------------------------------------
       ELSE IF (QUESTI.EQ.'NB_MA_SUP') THEN
 C     ------------------------------------
-        CALL JEEXIN(NOMOB//'.NEMA',IRET)
-        IF (IRET.GT.0) THEN
+        CALL JEEXIN(NOMOB//'.NEMA',IEXI)
+        IF (IEXI.GT.0) THEN
           CALL JELIRA(NOMOB//'.NEMA','NUTIOC',REPI,K1BID)
         ELSE
           REPI = 0
@@ -352,27 +361,14 @@ C     ------------------------------------
 C     -----------------------------------------
       ELSE IF (QUESTI.EQ.'NB_NO_SUP') THEN
 C     -----------------------------------------
-        CALL JEVEUO(NOMOB//'.NBNO','L',IANBNO)
-        REPI = ZI(IANBNO)
+        CALL JEVEUO(NOMOB//'.NBNO','L',JNBNO)
+        REPI = ZI(JNBNO)
 
 C     -------------------------------------
       ELSE IF (QUESTI.EQ.'NOM_MODELE') THEN
 C     -------------------------------------
-
-C        -- DANGER : CETTE QUESTION EST RESOLUE DE FACON SALE
-C           ON UTILISE UNE CONVENTION DE NOM NON ECRITE ..
-
-        IF (NOMOB(9:19).EQ.'.MODELE') THEN
-C           -- C'EST UN LIGREL DE MODELE
-          REPK = NOMOB(1:8)
-        ELSE IF (NOMOB(14:19).EQ.'.LIGRE') THEN
-C           -- C'EST UN LIGREL DE CHARGE
-          CALL JEVEUO(NOMOB(1:13)//'.MODEL.NOMO','L',IANOMO)
-          REPK = ZK8(IANOMO)
-        ELSE
-C           -- CE N'EST NI UN LIGREL DE CHARGE, NI UN LIGREL DE MODELE
-          REPK = ' '
-        END IF
+        CALL JEVEUO(NOMOB//'.LGRF','L',JLGRF)
+        REPK=ZK8(JLGRF-1+2)
 
 C     ------------------------------------
       ELSE IF (QUESTI.EQ.'PHENOMENE') THEN

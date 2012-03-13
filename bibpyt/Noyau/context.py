@@ -1,9 +1,9 @@
-#@ MODIF context Noyau  DATE 15/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF context Noyau  DATE 13/03/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -37,7 +37,7 @@ def set_current_step(step):
       Fonction qui permet de changer la valeur de l'étape courante
    """
    global _root
-   if _root : raise "Impossible d'affecter _root. Il devrait valoir None"
+   if _root : raise Exception("Impossible d'affecter _root. Il devrait valoir None")
    _root=step
    message.debug(SUPERV, "current_step = %s", step and step.nom, stack_id=-1)
 
@@ -59,7 +59,7 @@ def set_current_cata(cata):
       Fonction qui permet de changer l'objet catalogue courant
    """
    global _cata
-   if _cata : raise "Impossible d'affecter _cata. Il devrait valoir None"
+   if _cata : raise Exception("Impossible d'affecter _cata. Il devrait valoir None")
    _cata=cata
 
 def get_current_cata():

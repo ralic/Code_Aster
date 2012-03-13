@@ -4,9 +4,9 @@
       CHARACTER*(*)      MODELZ, BASEZ, LIGREZ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,9 +28,6 @@ C IN  : MODELZ : NOM DU MODELE REFERENCANT LES MAILLES DE LISMAI
 C                DES GRELS
 C IN  : BASEZ  : BASE SUR-LAQUELLE ON CREE LE LIGREL
 C OUT : LIGREZ : LIGREL A CREER
-C     ------------------------------------------------------------------
-C     ASTER INFORMATIONS:
-C       02/11/03 (OB): MODIF. POUR FETI: RAJOUT 'DOCU' POUR 'NOMA'.
 C----------------------------------------------------------------------
 
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -52,12 +49,11 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       CHARACTER*1     BASE
-      CHARACTER*8     MODELE,NOMA,NOMAIL,PARTIT
-      CHARACTER*16    PHENO
+      CHARACTER*8     MODELE,NOMA,NOMAIL
       CHARACTER*19    LIGREL,LIGRMO
       CHARACTER*24    CPTLIE
       INTEGER         I,J,IB,IE,LONT,NUMVEC,NUMAIL,IGREL,NBMAM
-      INTEGER         LCLIEL,ADLIEL,JREPE,JDNB,JLGRF,IADM,JDLI
+      INTEGER         LCLIEL,ADLIEL,JREPE,JDNB,IADM,JDLI
       INTEGER         JTYP,JNEL,TYPELE,TYPEL1,NBTYEL,ITYPE,NMEL
 C     ------------------------------------------------------------------
 
@@ -69,12 +65,11 @@ C     ------------------------------------------------------------------
 
 C --- MAILLAGE ASSOCIE AU MODELE
 C     --------------------------
-      CALL DISMOI('F','NOM_MAILLA',MODELE,'MODELE',IB,NOMA  ,IE)
+      CALL DISMOI('F','NOM_MAILLA',MODELE,'MODELE',IB,NOMA,IE)
 
 C --- LIGREL DU MODELE
 C     ----------------
       CALL DISMOI('F','NOM_LIGREL',MODELE,'MODELE',IB,LIGRMO,IE)
-      CALL DISMOI('F','PARTITION',LIGRMO,'LIGREL',IB,PARTIT,IE)
 C
       CALL JEVEUO(LIGRMO//'.REPE','L',JREPE)
       CALL JEVEUO(JEXATR(LIGRMO//'.LIEL','LONCUM'),'L',LCLIEL)
@@ -85,14 +80,9 @@ C     ----------
       CALL WKVECT(LIGREL//'.NBNO',BASE//' V I',1,JDNB)
       ZI(JDNB) = 0
 
-C --- OBJET LGRF
-C     ----------
-      CALL WKVECT(LIGREL//'.LGRF',BASE//' V K8',2,JLGRF)
-      ZK8(JLGRF-1+1) = NOMA
-      ZK8(JLGRF-1+2) = PARTIT
-C
-      CALL JELIRA(MODELE(1:8)//'.MODELE    .LGRF','DOCU',IB,PHENO)
-      CALL JEECRA(LIGREL//'.LGRF','DOCU',IB,PHENO)
+C --- OBJET .LGRF
+C     ------------
+      CALL JEDUPO(LIGRMO//'.LGRF',BASE,LIGREL//'.LGRF',.FALSE.)
 
 C --- TYPE D'ELEMENT ET NOMBRE DE MAILLES PAR TYPE
 C     --------------------------------------------

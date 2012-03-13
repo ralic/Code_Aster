@@ -3,9 +3,9 @@
       IMPLICIT REAL*8(A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ASSEMBLA  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -76,12 +76,12 @@ C ---------------------------------------------------------------------
       CHARACTER*8 MA,MO,MO2,NOGDSI,NOGDCO
       CHARACTER*8 KBID,PARTIT
       CHARACTER*14 NUDEV
-      CHARACTER*19 VECAS,VPROF,VECEL
-      CHARACTER*24 KMAILA,K24PRN,KNULIL,KVELIL,KVEREF,KVEDSC,RESU,NOMLI,
+      CHARACTER*19 VECAS,VPROF,VECEL,RESU
+      CHARACTER*24 KMAILA,K24PRN,KNULIL,KVELIL,KVEREF,KVEDSC,NOMLI,
      &             KNEQUA,KVALE
       CHARACTER*1 K1BID
       INTEGER ADMODL,LCMODL,NBEC,IEXI
-      LOGICAL LDIST
+      LOGICAL LDIST,LDGREL
 C ----------------------------------------------------------------------
 C     FONCTIONS LOCALES D'ACCES AUX DIFFERENTS CHAMPS DES
 C     S.D. MANIPULEES DANS LE SOUS PROGRAMME
@@ -95,7 +95,6 @@ C --- DEBUT ------------------------------------------------------------
 C-----RECUPERATION DU NIVEAU D'IMPRESSION
 
       CALL INFNIV(IFM,NIV)
-C     IFM = IUNIFI('MESSAGE')
 C----------------------------------------------------------------------
 
 C --- VERIF DE MOTCLE:
@@ -116,7 +115,8 @@ C
 C ------------------------------------------------------------------
 C     -- SI LES CALCULS ONT ETE "DISTRIBUES" :
 C        CALCUL DE :
-C           * LDIST : .TRUE. : LES CALCULS ONT ETE DISTRIBUES
+C           * LDIST  : .TRUE. : LES CALCULS ONT ETE DISTRIBUES
+C           * LDGREL : .TRUE. : LES CALCULS ONT ETE DISTRIBUES PAR GREL
 C           * JNUMSD : ADRESSE DE PARTIT//'.NUPROC.MAILLE'
 C
 C     -- IL EXISTE TROIS FORMES DE CALCUL DISTRIBUE BASES SUR UNE PARTI
@@ -144,14 +144,18 @@ C            LFETI='F',LDIST='T'
 C
 C ------------------------------------------------------------------
       LDIST=.FALSE.
+      LDGREL=.FALSE.
       RANG=0
       NBPROC=1
-      PARTIT=' '
       CALL PARTI0(NBVEC,TLIVEC,PARTIT)
       IF (PARTIT.NE.' ') THEN
         LDIST=.TRUE.
+        CALL JEVEUO(PARTIT//'.PRTK','L',JPRTK)
+        LDGREL=ZK24(JPRTK-1+1).EQ.'GROUP_ELEM'
         CALL MPICM0(RANG,NBPROC)
-        CALL JEVEUO(PARTIT//'.NUPROC.MAILLE','L',JNUMSD)
+        IF (.NOT.LDGREL)THEN
+          CALL JEVEUO(PARTIT//'.NUPROC.MAILLE','L',JNUMSD)
+        ENDIF
       ENDIF
 
 
@@ -273,22 +277,26 @@ C     ------------------------
           CALL JELIRA(VECEL//'.RELR','LONUTI ',NBRESU,K1BID)
           DO 80 IRESU=1,NBRESU
             RESU=ZK24(IDLRES+IRESU-1)
-            CALL JEVEUO(RESU(1:19)//'.NOLI','L',IAD)
+            CALL JEVEUO(RESU//'.NOLI','L',IAD)
             NOMLI=ZK24(IAD)
 
             CALL JENONU(JEXNOM(KVELIL,NOMLI),ILIVE)
             CALL JENONU(JEXNOM(KNULIL,NOMLI),ILINU)
+
             DO 70 IGR=1,ZI(IADLIE+3*(ILIVE-1))
-              CALL JAEXIN(JEXNUM(RESU(1:19)//'.RESL',IGR),IEXI)
+              IF (LDGREL.AND.MOD(IGR,NBPROC).NE.RANG) GOTO 70
+
+C             -- IL SE PEUT QUE LE GREL IGR SOIT VIDE :
+              CALL JAEXIN(JEXNUM(RESU//'.RESL',IGR),IEXI)
               IF (IEXI.EQ.0) GOTO 70
 
-              CALL JEVEUO(RESU(1:19)//'.DESC','L',IDDESC)
+              CALL JEVEUO(RESU//'.DESC','L',IDDESC)
               MODE=ZI(IDDESC+IGR+1)
               IF (MODE.GT.0) THEN
                 NNOE=NBNO(MODE)
                 NEL=ZI(ZI(IADLIE+3*(ILIVE-1)+2)+IGR)-
      &              ZI(ZI(IADLIE+3*(ILIVE-1)+2)+IGR-1)-1
-                CALL JEVEUO(JEXNUM(RESU(1:19)//'.RESL',IGR),'L',IDRESL)
+                CALL JEVEUO(JEXNUM(RESU//'.RESL',IGR),'L',JRESL)
                 NCMPEL=DIGDEL(MODE)
 
                 DO 60 IEL=1,NEL
@@ -296,7 +304,7 @@ C     ------------------------
      &                 ZI(ZI(IADLIE+3*(ILIVE-1)+2)+IGR-1)+IEL-1)
                   R=RCOEF
 
-                  IF (LDIST) THEN
+                  IF (LDIST.AND..NOT.LDGREL) THEN
                     IF (NUMA.GT.0) THEN
                       IF (ZI(JNUMSD-1+NUMA).NE.RANG) GOTO 60
                     ENDIF
@@ -343,13 +351,13 @@ C     ------------------------
                           ZR(JVALE-1+ZI(IANUEQ-1+IAD1+ZI(IAPSDL-1+I1)-
      &                      1))=MIN(ZR(JVALE-1+ZI(IANUEQ-1+IAD1+
      &                          ZI(IAPSDL-1+I1)-1)),
-     &                          ZR(IDRESL+(IEL-1)*NCMPEL+IL-1)*R)
+     &                          ZR(JRESL+(IEL-1)*NCMPEL+IL-1)*R)
    30                   CONTINUE
                       ENDIF
    50               CONTINUE
                   ENDIF
    60           CONTINUE
-                CALL JELIBE(JEXNUM(RESU(1:19)//'.RESL',IGR))
+                CALL JELIBE(JEXNUM(RESU//'.RESL',IGR))
               ENDIF
    70       CONTINUE
    80     CONTINUE

@@ -1,4 +1,4 @@
-# MODIF  DATE 27/02/2012   AUTEUR GREFFET N.GREFFET 
+# MODIF  DATE 12/03/2012   AUTEUR GREFFET N.GREFFET 
 # RESPONSABLE GREFFET
 #
 # TITRE GESTION EXCEPTION INSTABILITE (CAS-TEST INSPIRE PAR SSLL105)
@@ -84,6 +84,10 @@ fmt_raison='-'*80+"""
 """+'-'*80+'\n'
 
 
+#
+#  On teste avec l'arret sur valeur de charge critique -1 ou +1 : 
+#  sous CRIT_STAB on met SIGNE = 'POSITIF_NEGATIF'
+#
 is_ok = 0
 try :
   res2L_A=STAT_NON_LINE(MODELE=modele,
@@ -97,7 +101,7 @@ try :
                   INCREMENT=_F(LIST_INST=list2,),
                   NEWTON=_F(MATRICE='TANGENTE',),
                   SOLVEUR=_F(METHODE='LDLT'),
-                  CRIT_STAB=_F(CHAR_CRIT=(-2., 0.),),
+                  CRIT_STAB=_F(CHAR_CRIT=(-2., 0.),SIGNE='POSITIF_NEGATIF',),
                   );
 except aster.error,err:
    print fmt_raison % str(err)
@@ -112,6 +116,75 @@ TEST_TABLE(TABLE=TAB1,
            FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
            NOM_PARA='BOOLEEN',
            VALE_I=1,
+           REFERENCE='ANALYTIQUE',)
+#
+#  On teste avec l'arret sur valeur de charge critique -1 :
+#  sous CRIT_STAB on met SIGNE = 'NEGATIF'
+#
+is_ok = 0
+try :
+  res2L_AN=STAT_NON_LINE(MODELE=modele,
+                  CHAM_MATER=ch_mat,
+                  CARA_ELEM=cara_pou,
+                  EXCIT=(_F(CHARGE=encast,),
+                         _F(CHARGE=effort2,
+                            FONC_MULT=fonc,),),
+                  COMP_INCR=_F(RELATION='ELAS',
+                               DEFORMATION='PETIT',),
+                  INCREMENT=_F(LIST_INST=list2,),
+                  NEWTON=_F(MATRICE='TANGENTE',),
+                  SOLVEUR=_F(METHODE='LDLT'),
+                  CRIT_STAB=_F(CHAR_CRIT=(-2., 0.),SIGNE='NEGATIF',),
+                  );
+except aster.error,err:
+   print fmt_raison % str(err)
+   # on verifie que l'erreur fatale est bien celle que l'on attendait :
+   if err.id_message == "MECANONLINE_87":
+      is_ok = 1
+# TEST_RESU
+TAB1N=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
+                        _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
+
+TEST_TABLE(TABLE=TAB1N,
+           FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
+           NOM_PARA='BOOLEEN',
+           VALE_I=1,
+           REFERENCE='ANALYTIQUE',)
+
+#DETRUIRE(CONCEPT=_F(NOM=(res2L_A, TAB1),),)
+
+#
+#  On teste avec l'absence d'arret sur valeur de charge critique -1 :
+#  sous CRIT_STAB on met SIGNE = 'POSITIF'
+#
+is_ok = 0
+try :
+  res2L_AP=STAT_NON_LINE(MODELE=modele,
+                  CHAM_MATER=ch_mat,
+                  CARA_ELEM=cara_pou,
+                  EXCIT=(_F(CHARGE=encast,),
+                         _F(CHARGE=effort2,
+                            FONC_MULT=fonc,),),
+                  COMP_INCR=_F(RELATION='ELAS',
+                               DEFORMATION='PETIT',),
+                  INCREMENT=_F(LIST_INST=list2,),
+                  NEWTON=_F(MATRICE='TANGENTE',),
+                  SOLVEUR=_F(METHODE='LDLT'),
+                  CRIT_STAB=_F(CHAR_CRIT=(-2., 0.),SIGNE='POSITIF',),
+                  );
+except aster.error,err:
+   print fmt_raison % str(err)
+   # on verifie que l'erreur fatale est bien celle que l'on attendait :
+   if err.id_message == "MECANONLINE_87":
+      is_ok = 1
+# TEST_RESU
+TAB1P=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
+                        _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
+
+TEST_TABLE(TABLE=TAB1P,
+           FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
+           NOM_PARA='BOOLEEN',
+           VALE_I=0,
            REFERENCE='ANALYTIQUE',)
 
 #DETRUIRE(CONCEPT=_F(NOM=(res2L_A, TAB1),),)

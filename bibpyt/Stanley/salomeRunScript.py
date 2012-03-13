@@ -1,8 +1,8 @@
-#@ MODIF salomeRunScript Stanley  DATE 23/05/2011   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF salomeRunScript Stanley  DATE 13/03/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -65,7 +65,7 @@ def MakeTempScript(SALOMESCRIPT, **args):
       fw.close()
 
    except Exception, e:
-      raise "Erreur : \n%s" % e
+      raise Exception("Erreur : \n%s" % e)
 
    if debug: print "tmpfile: %s" % tmpfile
 
@@ -144,10 +144,10 @@ if __name__ == '__main__':
 
 
    if not root_astest:
-      raise "Impossible de detecter le repertoire Aster. Remplir la variable root_astest."
+      raise Exception("Impossible de detecter le repertoire Aster. Remplir la variable root_astest.")
 
    if not salomeScript:
-      raise "Impossible de detecter le script Salome. Remplir la variable salomeScript."
+      raise Exception("Impossible de detecter le script Salome. Remplir la variable salomeScript.")
 
 
    # Les fichiers de donnes sont des fichiers du test zzzz141a

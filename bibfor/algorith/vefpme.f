@@ -7,9 +7,9 @@
       REAL*8 PARTPS(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 13/03/2012   AUTEUR SIAVELIS M.SIAVELIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -60,15 +60,15 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
       PARAMETER (NBCHMX=13)
       INTEGER JCHAR,JINF,JTYP
-      INTEGER IBID,IRET,NCHAR,K,ICHA,NUMCHM
+      INTEGER IBID,IRET,NCHAR,K,ICHA,NUMCHM,IER,NCHIN
       CHARACTER*5 SUFFIX
       CHARACTER*6 NOMLIG(NBCHMX),NOMPAF(NBCHMX),NOMPAR(NBCHMX)
       CHARACTER*6 NOMOPF(NBCHMX),NOMOPR(NBCHMX)
       CHARACTER*7 NOMCMP(3)
-      CHARACTER*8 NOMCHA,LPAIN(13),LPAOUT(1),K8BID,NEWNOM
+      CHARACTER*8 NOMCHA,LPAIN(27),LPAOUT(1),K8BID,NEWNOM
       CHARACTER*16 OPTION
       CHARACTER*24 CHGEOM,CHCARA(18),CHTIME,LIGREL
-      CHARACTER*24 LIGRMO,LIGRCH,LCHIN(13),LCHOUT(1)
+      CHARACTER*24 LIGRMO,LIGRCH,LCHIN(27),LCHOUT(1)
       CHARACTER*24 CHARGE,INFCHA
       LOGICAL EXIGEO,EXICAR,BIDON
       COMPLEX*16 CBID
@@ -176,12 +176,54 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
               CALL GCNCO2(NEWNOM)
               LCHOUT(1) (10:16) = NEWNOM(2:8)
               CALL CORICH('E',LCHOUT(1),ICHA,IBID)
+
+C           POUR LES ELEMENTS X-FEM
+              CALL EXIXFE(MODELE,IER)
+              NCHIN = 13
+              IF (IER.NE.0) THEN
+                WRITE(6,*) 'ON PASSE DANS VEFPME'
+                LPAIN(NCHIN + 1) = 'PPINTTO'
+                LCHIN(NCHIN + 1) = MODELE(1:8)//'.TOPOSE.PIN'
+                LPAIN(NCHIN + 2) = 'PCNSETO'
+                LCHIN(NCHIN + 2) = MODELE(1:8)//'.TOPOSE.CNS'
+                LPAIN(NCHIN + 3) = 'PHEAVTO'
+                LCHIN(NCHIN + 3) = MODELE(1:8)//'.TOPOSE.HEA'
+                LPAIN(NCHIN + 4) = 'PLONCHA'
+                LCHIN(NCHIN + 4) = MODELE(1:8)//'.TOPOSE.LON'
+                LPAIN(NCHIN + 5) = 'PLSN'
+                LCHIN(NCHIN + 5) = MODELE(1:8)//'.LNNO'
+                LPAIN(NCHIN + 6) = 'PLST'
+                LCHIN(NCHIN + 6) = MODELE(1:8)//'.LTNO'
+                LPAIN(NCHIN + 7) = 'PSTANO'
+                LCHIN(NCHIN + 7) = MODELE(1:8)//'.STNO'
+                LPAIN(NCHIN + 8) = 'PPMILTO'
+                LCHIN(NCHIN + 8) = MODELE(1:8)//'.TOPOSE.PMI'
+                LPAIN(NCHIN + 9) = 'PFISNO'
+                LCHIN(NCHIN + 9) = MODELE(1:8)//'.FISSNO'
+                NCHIN = NCHIN + 9
+                IF (OPTION.EQ.'CHAR_MECA_PRES_R'.OR.
+     &              OPTION.EQ.'CHAR_MECA_PRES_F') THEN
+                  LPAIN(NCHIN + 1) = 'PPINTER'
+C                  LCHIN(NCHIN + 1) = MODELE(1:8)//'.TOPOFAC.PI'
+                  LCHIN(NCHIN + 1) = MODELE(1:8)//'.TOPOFAC.OE'
+                  LPAIN(NCHIN + 2) = 'PAINTER'
+                  LCHIN(NCHIN + 2) = MODELE(1:8)//'.TOPOFAC.AI'
+                  LPAIN(NCHIN + 3) = 'PCFACE'
+                  LCHIN(NCHIN + 3) = MODELE(1:8)//'.TOPOFAC.CF'
+                  LPAIN(NCHIN + 4) = 'PLONGCO'
+                  LCHIN(NCHIN + 4) = MODELE(1:8)//'.TOPOFAC.LO'
+                  LPAIN(NCHIN + 5) = 'PBASECO'
+                  LCHIN(NCHIN + 5) = MODELE(1:8)//'.TOPOFAC.BA'
+                  NCHIN = NCHIN + 5
+                ENDIF
+              ENDIF
+
               IF (NOMLIG(K).EQ.'.VEASS') THEN
                 CALL JEVEUO(LCHIN(1),'L',JLCHIN)
                 CALL COPISD('CHAMP_GD','V',ZK8(JLCHIN),LCHOUT(1))
               ELSE
-                CALL CALCUL('S',OPTION,LIGREL,13,LCHIN,LPAIN,1,LCHOUT,
-     &                    LPAOUT,'V','OUI')
+                CALL CALCUL('S',OPTION,LIGREL,NCHIN,LCHIN,LPAIN,1,
+     &                      LCHOUT,LPAOUT,'V','OUI')
               ENDIF
               CALL REAJRE(LVECHP,LCHOUT(1),'V')
             END IF

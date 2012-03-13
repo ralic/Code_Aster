@@ -2,9 +2,9 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,7 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE                            VABHHTS J.PELLET
+C RESPONSABLE PELLET J.PELLET
 C     ARGUMENTS:
 C     ----------
       INTEGER DG1(*),DG2(*),DEB1,DEB2,INO,NNO
@@ -58,9 +58,6 @@ C ----------------------------------------------------------------------
       COMMON /CAII01/IGD,NEC,NCMPMX,IACHIN,IACHLO,IICHIN,IANUEQ,LPRNO,
      &       ILCHLO,ITYPGD
 
-      LOGICAL CHANGE
-      INTEGER CMP,IND1,IND2
-      INTEGER NEC2,NECOLD
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /IVARJE/ZI(1)
       COMMON /RVARJE/ZR(1)
@@ -77,113 +74,138 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
 C    -------------------------------------------------------------------
-      PARAMETER (NEC2=12)
-      INTEGER DG1OLD(NEC2),DG2OLD(NEC2),POSCMP(NEC2*30)
-      INTEGER IEQ,I
+      LOGICAL CHANGE
+      INTEGER CMP,IND1,NEC2,NSAV,KSAV
+      PARAMETER(NEC2=12)
+      PARAMETER(NSAV=5)
+      INTEGER IND2(NSAV),NECOLD(NSAV)
+      INTEGER DG1OLD(NEC2,NSAV),DG2OLD(NEC2,NSAV),POSCMP(NEC2*30,NSAV)
+      INTEGER IEQ,I,K,KK,KK1
       SAVE DG1OLD,DG2OLD,POSCMP,IND2,NECOLD
-      DATA DG1OLD/NEC2*0/
-      DATA DG2OLD/NEC2*0/
-      DATA NECOLD/0/
+      DATA NECOLD/NSAV*0/
 
+C----------------------------------------------------------------------
+C     1. ON REGARDE SI ON NE TROUVE PAS UN POSCMP(*,KSAV) QUI CONVIENT.
+C        (CALCUL DE KSAV)
+C     -----------------------------------------------------------------
+      DO 20,K=1,NSAV
+        IF (NEC.NE.NECOLD(K))GOTO 20
+        CHANGE=.FALSE.
+        DO 10,I=1,NEC
+          IF (DG1(I).NE.DG1OLD(I,K))CHANGE=.TRUE.
+          IF (DG2(I).NE.DG2OLD(I,K))CHANGE=.TRUE.
+   10   CONTINUE
+        IF (CHANGE)GOTO 20
+C       -- ON A TROUVE UN KSAV CONVENABLE :
+        KSAV=K
+        GOTO 80
 
-C     -- ON REGARDE S'IL FAUT REMPLIR POSCMP OU SI ON PEUT UTILISER
-C        LE TABLEAU REMPLI PRECEDEMMENT :
-      CHANGE = .FALSE.
-      IF (NEC.NE.NECOLD) CHANGE = .TRUE.
-      DO 10,I = 1,NEC
-        IF (DG1(I).NE.DG1OLD(I)) CHANGE = .TRUE.
-        IF (DG2(I).NE.DG2OLD(I)) CHANGE = .TRUE.
-   10 CONTINUE
-
-      IF (.NOT.CHANGE) GO TO 40
-
-C     -- ON PLACE LE "ASSERT" ICI POUR NE LE FAIRE QUE SI CHANGE=.TRUE.
-      CALL ASSERT(NEC.LE.NEC2)
-
-      DO 20,I = 1,NEC
-        DG1OLD(I) = DG1(I)
-        DG2OLD(I) = DG2(I)
-        NECOLD = NEC
    20 CONTINUE
 
 
+C----------------------------------------------------------------
+C     -- ON PLACE LE "ASSERT" ICI POUR LE FAIRE MOINS SOUVENT
+      CALL ASSERT(NEC.LE.NEC2)
 
-C     1. REMPLISSAGE DE POSCMP:
-C     -------------------------
-      IND1 = 0
-      IND2 = 0
-      DO 30 CMP = 1,NCMPMX
-        IF (EXISDG(DG1,CMP)) IND1 = IND1 + 1
+C     2.1 ON DECALE LES TABLEAUX VERS LE "FOND" :
+C         ET ON AJOUTE LES NOUVELLES VALEURS EN KSAV=1
+C     ------------------------------------------------
+      DO 50,K=NSAV-1,1,-1
+        DO 30,I=1,NECOLD(K)
+          DG1OLD(I,K+1)=DG1OLD(I,K)
+          DG2OLD(I,K+1)=DG2OLD(I,K)
+   30   CONTINUE
+        DO 40,I=1,IND2(K)
+          POSCMP(I,K+1)=POSCMP(I,K)
+   40   CONTINUE
+        IND2(K+1)=IND2(K)
+        NECOLD(K+1)=NECOLD(K)
+   50 CONTINUE
+
+      KSAV=1
+      NECOLD(KSAV)=NEC
+      DO 60,I=1,NEC
+        DG1OLD(I,KSAV)=DG1(I)
+        DG2OLD(I,KSAV)=DG2(I)
+   60 CONTINUE
+
+
+C     2.2 REMPLISSAGE DE POSCMP(KSAV):
+C     -------------------------------
+      IND1=0
+      IND2(KSAV)=0
+      DO 70 CMP=1,NCMPMX
+        IF (EXISDG(DG1,CMP))IND1=IND1+1
         IF (EXISDG(DG2,CMP)) THEN
-          IND2 = IND2 + 1
+          IND2(KSAV)=IND2(KSAV)+1
           IF (EXISDG(DG1,CMP)) THEN
-            POSCMP(IND2) = IND1
+            POSCMP(IND2(KSAV),KSAV)=IND1
           ELSE
-            POSCMP(IND2) = 0
-          END IF
-        END IF
-   30 CONTINUE
+            POSCMP(IND2(KSAV),KSAV)=0
+          ENDIF
+        ENDIF
+   70 CONTINUE
 
 
-   40 CONTINUE
 
-
-C     2. RECOPIE DES VALEURS DANS LE CHAMP_LOCAL :
+C----------------------------------------------------------------
+   80 CONTINUE
+C     3. RECOPIE DES VALEURS DANS LE CHAMP_LOCAL :
 C     --------------------------------------------
-
-      DO 50 CMP = 1,IND2
-        IF (POSCMP(CMP).GT.0) THEN
-          IEQ = DEB1 - 1 + POSCMP(CMP)
-          IF (LPRNO.EQ.1) IEQ = ZI(IANUEQ-1+IEQ)
+      DO 90 CMP=1,IND2(KSAV)
+        IF (POSCMP(CMP,KSAV).GT.0) THEN
+          IEQ=DEB1-1+POSCMP(CMP,KSAV)
+          IF (LPRNO.EQ.1)IEQ=ZI(IANUEQ-1+IEQ)
 
           IF (.NOT.CUMUL) THEN
             IF (ITYPGD.EQ.1) THEN
-              ZR(IACHLO-1+DEB2-1+CMP) = ZR(IACHIN-1+IEQ)
-            ELSE IF (ITYPGD.EQ.2) THEN
-              ZC(IACHLO-1+DEB2-1+CMP) = ZC(IACHIN-1+IEQ)
-            ELSE IF (ITYPGD.EQ.3) THEN
-              ZI(IACHLO-1+DEB2-1+CMP) = ZI(IACHIN-1+IEQ)
-            ELSE IF (ITYPGD.EQ.4) THEN
-              ZK8(IACHLO-1+DEB2-1+CMP) = ZK8(IACHIN-1+IEQ)
-            ELSE IF (ITYPGD.EQ.5) THEN
-              ZK16(IACHLO-1+DEB2-1+CMP) = ZK16(IACHIN-1+IEQ)
-            ELSE IF (ITYPGD.EQ.6) THEN
-              ZK24(IACHLO-1+DEB2-1+CMP) = ZK24(IACHIN-1+IEQ)
+              ZR(IACHLO-1+DEB2-1+CMP)=ZR(IACHIN-1+IEQ)
+            ELSEIF (ITYPGD.EQ.2) THEN
+              ZC(IACHLO-1+DEB2-1+CMP)=ZC(IACHIN-1+IEQ)
+            ELSEIF (ITYPGD.EQ.3) THEN
+              ZI(IACHLO-1+DEB2-1+CMP)=ZI(IACHIN-1+IEQ)
+            ELSEIF (ITYPGD.EQ.4) THEN
+              ZK8(IACHLO-1+DEB2-1+CMP)=ZK8(IACHIN-1+IEQ)
+            ELSEIF (ITYPGD.EQ.5) THEN
+              ZK16(IACHLO-1+DEB2-1+CMP)=ZK16(IACHIN-1+IEQ)
+            ELSEIF (ITYPGD.EQ.6) THEN
+              ZK24(IACHLO-1+DEB2-1+CMP)=ZK24(IACHIN-1+IEQ)
             ELSE
               CALL ASSERT(.FALSE.)
-            END IF
+            ENDIF
 
           ELSE
             IF (ITYPGD.EQ.1) THEN
-              ZR(IACHLO-1+DEB2-1+CMP) = ZR(IACHLO-1+DEB2-1+CMP) +
-     &                                  ZR(IACHIN-1+IEQ)
-            ELSE IF (ITYPGD.EQ.2) THEN
-              ZC(IACHLO-1+DEB2-1+CMP) = ZC(IACHLO-1+DEB2-1+CMP) +
-     &                                  ZC(IACHIN-1+IEQ)
+              ZR(IACHLO-1+DEB2-1+CMP)=ZR(IACHLO-1+DEB2-1+CMP)+
+     &                                ZR(IACHIN-1+IEQ)
+            ELSEIF (ITYPGD.EQ.2) THEN
+              ZC(IACHLO-1+DEB2-1+CMP)=ZC(IACHLO-1+DEB2-1+CMP)+
+     &                                ZC(IACHIN-1+IEQ)
             ELSE
               CALL ASSERT(.FALSE.)
-            END IF
-          END IF
+            ENDIF
+          ENDIF
 
 
           IF (CUMUL) THEN
             IF (INO.EQ.1) THEN
-              ZL(ILCHLO-1+DEB2-1+CMP) = .TRUE.
+              ZL(ILCHLO-1+DEB2-1+CMP)=.TRUE.
             ELSE
-            END IF
+            ENDIF
           ELSE
-            ZL(ILCHLO-1+DEB2-1+CMP) = .TRUE.
-          END IF
+            ZL(ILCHLO-1+DEB2-1+CMP)=.TRUE.
+          ENDIF
 
         ELSE
-          ZL(ILCHLO-1+DEB2-1+CMP) = .FALSE.
-        END IF
-   50 CONTINUE
+          ZL(ILCHLO-1+DEB2-1+CMP)=.FALSE.
+        ENDIF
+   90 CONTINUE
 
 
+C----------------------------------------------------------------
       IF (CUMUL) THEN
-        IF (INO.EQ.NNO) DEB2 = DEB2 + IND2
+        IF (INO.EQ.NNO)DEB2=DEB2+IND2(KSAV)
       ELSE
-        DEB2 = DEB2 + IND2
-      END IF
+        DEB2=DEB2+IND2(KSAV)
+      ENDIF
       END

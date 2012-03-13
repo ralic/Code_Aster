@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/03/2012   AUTEUR SIAVELIS M.SIAVELIS 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 # ssnv209c.para = tps_job 200 mem_job 200Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -231,7 +231,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                               FONC_MULT=RAMPE),
                            ),
                     CONTACT  = CTXFEM,
-                    COMP_ELAS=_F(RELATION='ELAS',
+                    COMP_INCR=_F(RELATION='ELAS',
                                  GROUP_MA='SURF',
                                  ),
                     INCREMENT=_F(LIST_INST=L_INS1,

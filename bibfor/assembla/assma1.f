@@ -1,7 +1,7 @@
       SUBROUTINE ASSMA1(MATAS,LDIST)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 27/02/2012   AUTEUR GREFFET N.GREFFET 
+C MODIF ASSEMBLA  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -125,7 +125,13 @@ C     -- S'IL N'Y A PAS DE LAGRANGE, IL N'Y A RIEN A FAIRE :
 
 C 2.  CALCUL DU COEFFICIENT DE CONDITIONNEMENT DES LAGRANGES (RCOEF)
 C -------------------------------------------------------------------
-      CALL ECHMAT(MAT19,LDIST,RMIN,RMAX,RCOEF)
+      CALL ECHMAT(MAT19,LDIST,RMIN,RMAX)
+C     -- PARFOIS, LA MATRICE EST == 0.
+      IF (RMAX.EQ.0.D0) THEN
+        RCOEF=1.D0
+      ELSE
+        RCOEF=0.5D0*(RMIN+RMAX)
+      ENDIF
 
 C ---------------------------------------------------------------
       CALL WKVECT(MAT19//'.CONL',BASE1//' V R',NG,JCONL)
@@ -164,5 +170,4 @@ C ---------------------------------------------------------------
 
    40 CONTINUE
       CALL JEDEMA()
-
       END

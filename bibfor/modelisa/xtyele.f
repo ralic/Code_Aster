@@ -1,8 +1,8 @@
       SUBROUTINE XTYELE(NOMA,MODELX,TRAV,NFISS,FISS,CONTAC,NDIM,LINTER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/10/2011   AUTEUR MACOCCO K.MACOCCO 
+C MODIF MODELISA  DATE 13/03/2012   AUTEUR SIAVELIS M.SIAVELIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -59,6 +59,7 @@ C
       REAL*8      R8MAEM,R8PREM,MINLSN,MINLST,MAXLSN,LSN
       REAL*8      DDOT,LSNA,LSTA,LSNB,LSTB,LSTC
       REAL*8      A(NDIM),B(NDIM),AB(NDIM),C(NDIM),AC(NDIM)
+      REAL*8      CMIN(NDIM),LONGAR,M(NDIM),PADIST,RBID
       INTEGER     NMAENR,JINDIC,KK,JGRP,JCOOR,NBMA
       INTEGER     JLSN,JLST,JMASUP,JTMDIM,JTYPMA,JCONX1,JCONX2
       INTEGER     NBCOUP,NBCOU2,IBID,IFISS,ITYPMA,JTAB,JNBPT,JNBPT2
@@ -66,6 +67,7 @@ C
       INTEGER     INO,INO2,NNGL,NNOT(3),NNO,NNO2,IMA,IMA2
       INTEGER     I,J,K
       INTEGER     AR(12,3),IA,NUNOA,NUNOB,STNA,STNB
+      INTEGER     FA(6,4),IBID3(12,3),NBF,IFQ,CODRET,ILSN,ILST,IGEOM
       CHARACTER*2  CH2
       CHARACTER*8  TYPMA,K8BID,NOMAIL
       CHARACTER*19 CLSN,CLST,CNXINV,CSTN(NFISS)
@@ -279,10 +281,53 @@ C
                     CALL ASSERT(DDOT(NDIM,AB,1,AB,1).GT.R8PREM())
                     LSTC = LSTA + (LSTB-LSTA) * DDOT(NDIM,AB,1,AC,1)
      &                                    / DDOT(NDIM,AB,1,AB,1)
-                    IF (LSTC.LT.MINLST) MINLST=LSTC
+                    IF (LSTC.LT.MINLST) THEN
+                      MINLST=LSTC
+                      DO 420 K=1,NDIM
+                        CMIN(K)=C(K)
+ 420                  CONTINUE
+                    ENDIF
                   ENDIF
  400            CONTINUE
                 IF (MINLST.GE.0) LCONT =.FALSE.
+                IF (LCONT) THEN
+C --- ON VERIFIE LA TOLERANCE AVEC LES PT DE FOND DE FISSURE
+                  CALL CONFAC(TYPMA,IBID3,IBID,FA,NBF)
+C     ON SE RECREE UN ENVIRONNEMENT COMME DANS UN TE
+C                 POUR LSN, LST ET IGEOM
+C                 AFIN DE POUVOIR APPELER INTFAC
+                  CALL WKVECT('&&XTYELE.LSN','V V R',NNO,ILSN)
+                  CALL WKVECT('&&XTYELE.LST','V V R',NNO,ILST)
+                  CALL WKVECT('&&XTYELE.IGEOM','V V R',NNO*NDIM,IGEOM)
+                  DO 430 INO=1,NNO
+                    NNGL=ZI(JCONX1-1+ZI(JCONX2+IMA-1)+INO-1)
+                    ZR(ILSN-1+INO) = ZR(JLSN-1+NNGL)
+                    ZR(ILST-1+INO) = ZR(JLST-1+NNGL)
+                    DO 440 J=1,NDIM
+                      ZR(IGEOM-1+NDIM*(INO-1)+J) =
+     &                ZR(JCOOR-1+3*(NNGL-1)+J)
+ 440                CONTINUE
+ 430              CONTINUE
+C --- BOUCLE SUR LES FACES
+                  DO 450 IFQ=1,NBF
+                    CALL INTFAC(IFQ,FA,NNO,ZR(ILST),ZR(ILSN),NDIM,'NON',
+     &                          IBID,IBID,IGEOM,M,RBID,RBID,CODRET)
+                    IF (CODRET.EQ.1) THEN
+C     LONGUEUR CARACTERISTIQUE
+                      DO 460 J=1,NDIM
+                        A(J) =  ZR(IGEOM-1+NDIM*(FA(IFQ,1)-1)+J)
+                        B(J) =  ZR(IGEOM-1+NDIM*(FA(IFQ,2)-1)+J)
+                        C(J) =  ZR(IGEOM-1+NDIM*(FA(IFQ,3)-1)+J)
+ 460                  CONTINUE
+                      LONGAR=(PADIST(NDIM,A,B)+PADIST(NDIM,A,C))/2.D0
+                      IF (PADIST(NDIM,M,CMIN).LT.(LONGAR*1.D-6))
+     &                  LCONT =.FALSE.
+                    ENDIF
+ 450              CONTINUE
+                  CALL JEDETR('&&XTYELE.LSN')
+                  CALL JEDETR('&&XTYELE.LST')
+                  CALL JEDETR('&&XTYELE.IGEOM')
+                ENDIF
               ENDIF
  110          CONTINUE
 C

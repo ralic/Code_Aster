@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 13/03/2012   AUTEUR SIAVELIS M.SIAVELIS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -151,10 +151,10 @@ MODE_LOCAL__
                                         EPNMAX1  EPNMOY1  SIGEQ1   NBRUP1   ENDO1    DTAUM2
                                         VNM2X    VNM2Y    VNM2Z    SINMAX2  SINMOY2  EPNMAX2
                                         EPNMOY2  SIGEQ2   NBRUP2   ENDO2    )
-    EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        )
+    EGGEOM_R = GEOM_R   ELGA__ XFEM    (X        Y        Z        )
     EGINST_R = INST_R   ELGA__ RIGI    (INST     )
-    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30]    )
-    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30]    )
+    EGNEUT_F = NEUT_F   ELGA__ XFEM    (X[30]    )
+    EGNEUT_R = NEUT_R   ELGA__ XFEM    (X[30]    )
     EKTHETA  = G        ELEM__         (GTHETA   FIC1      FIC2      FIC3
                                         K1    K2   K3   BETA     )
     EGTHETA  = G        ELEM__         (GTHETA         )

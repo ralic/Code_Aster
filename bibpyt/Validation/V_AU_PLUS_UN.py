@@ -1,9 +1,9 @@
-#@ MODIF V_AU_PLUS_UN Validation  DATE 09/11/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF V_AU_PLUS_UN Validation  DATE 13/03/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -57,4 +57,4 @@ class AU_PLUS_UN:
             dico[arg] = dico.get(arg, 0) + 1
          return dico
       else :
-         raise "Erreur ce n'est ni un dictionnaire ni une liste", args
+         raise Exception("Erreur ce n'est ni un dictionnaire ni une liste %s" % args)

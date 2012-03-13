@@ -1,9 +1,9 @@
-#@ MODIF asojb Noyau  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF asojb Noyau  DATE 13/03/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -238,12 +238,12 @@ class OJB(AsBase):
         else:
             return []
 
-    def foreachattr(self, callable, *args, **kwargs):
+    def foreachattr(self, callback, *args, **kwargs):
         klass = self.__class__
         for k in dir(klass):
             v = getattr( klass, k )
             if isinstance(v, JeveuxAttr):
-                callable( k, v, *args, **kwargs )
+                callback( k, v, *args, **kwargs )
 
     def check(self, checker=None):
         if checker is None:

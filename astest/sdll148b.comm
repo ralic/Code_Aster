@@ -1,0 +1,168 @@
+# MODIF  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
+# TITRE DEFINITION D'UN INTER-SPECTRE D'EXCITATION ANALYTIQUE
+# sdll148b.para = tps_job 120 mem_job 128Mo ncpus 1 liste_test R
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE BODEL
+
+
+DEBUT( CODE=_F( NOM = 'SDLL148B',NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+
+#--------------------------------------------
+# MODELISATION B : EXCITATION DE TYPE CORCOS
+#--------------------------------------------
+
+TUBE=LIRE_MAILLAGE(FORMAT='MED')
+
+MODELE=AFFE_MODELE(  MAILLAGE=TUBE,
+                     AFFE=_F(  GROUP_MA = 'MC',
+                               PHENOMENE = 'MECANIQUE',
+                               MODELISATION = 'POU_D_T'))
+
+
+CARA=AFFE_CARA_ELEM( MODELE=MODELE,
+                     POUTRE=_F(  GROUP_MA = 'MC',
+                                 SECTION = 'CERCLE',
+                                 CARA = ( 'R','EP',),
+                                 VALE = ( 7.939000E-03,
+                                          3.176000E-03, )))
+
+
+MAT=DEFI_MATERIAU(  ELAS=_F( E = 2.200000E+11,
+                             RHO = 8.330000E+03,
+                             NU = 3.000000E-01))
+
+CHMAT=AFFE_MATERIAU(   MAILLAGE=TUBE,
+                       AFFE=_F(  TOUT = 'OUI',
+                                 MATER = MAT))
+
+CHDDL=AFFE_CHAR_MECA(  MODELE=MODELE,
+                       DDL_IMPO=(_F(  GROUP_NO = 'EXTREMIT', 
+                                      DX=0.0,DY=0.0,DZ=0.0,DRY=0.0),
+                                 _F(  GROUP_NO = 'MC', 
+                                      DZ=0.0,)))
+
+MELR=CALC_MATR_ELEM( MODELE=MODELE,
+                     CHARGE=CHDDL,
+                     CARA_ELEM=CARA,
+                     CHAM_MATER=CHMAT,
+                     OPTION='RIGI_MECA' )
+
+MELM=CALC_MATR_ELEM( MODELE=MODELE,
+                     CHARGE=CHDDL,
+                     CARA_ELEM=CARA,
+                     CHAM_MATER=CHMAT,
+                     OPTION='MASS_MECA' )
+
+NUM=NUME_DDL( MATR_RIGI=MELR )
+
+
+MATRR=ASSE_MATRICE( MATR_ELEM=MELR,
+                    NUME_DDL=NUM )
+
+MATRM=ASSE_MATRICE( MATR_ELEM=MELM,
+                     NUME_DDL=NUM )
+
+MODES=MODE_ITER_SIMULT( MATR_A=MATRR,
+                        MATR_B=MATRM,
+                        CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
+                                      NMAX_FREQ=2),
+                        VERI_MODE=_F(STOP_ERREUR='NON',
+                                     STURM='NON'),)
+
+MODES=NORM_MODE(reuse=MODES,MODE=MODES,AVEC_CMP='DX')
+
+
+#--------------------------------------------------------------------#
+# VERSION B : MODELE DE CORCOS : LONGUEUR DE CORRELATION
+# ET AMPLITUDE DU SPECTRE DEPENDANT DE LA FREQUENCE. CONVECTION VERS
+# L'AVAL DE LA POUTRE SELON LA VITESSE DE L'ECOULEMENT
+#--------------------------------------------------------------------#
+
+import numpy as NP
+freq0 = 100.0 # frequence de coupure du spectre S0
+freq1 = 50.0  # frequence de coupure de la longueur de correlation
+Uc = 3.5      # vitesse de convection
+i = complex(0,1)
+pi = NP.pi
+rho = 0.2
+alpha = 0.0
+def distance(x1,y1,z1,x2,y2,z2):
+    return NP.sqrt((x2-x1)**2+(y2-y1)**2+(z2-z1)**2)
+
+def correl(puls):
+    return exp(-puls/freq1)
+SXX = FORMULE(NOM_PARA=('X1','Y1','Z1','X2','Y2','Z2','FREQ'),
+              VALE_C='exp(-FREQ/freq0)*exp(distance(X1,Y1,Z1,X2,Y2,Z2)/correl(FREQ))*complex(cos(2*pi*FREQ*(Y2-Y1)/Uc),sin(2*pi*FREQ*(Y2-Y1)/Uc))',)
+
+
+SYY = FORMULE(NOM_PARA=('X1','Y1','Z1','X2','Y2','Z2','FREQ'),
+              VALE_C='exp(-FREQ/freq0)*exp(distance(X1,Y1,Z1,X2,Y2,Z2)/correl(FREQ))*complex(cos(2*pi*FREQ*(Y2-Y1)/Uc),sin(2*pi*FREQ*(Y2-Y1)/Uc))');
+
+SXY = FORMULE(NOM_PARA=('X1','Y1','Z1','X2','Y2','Z2','FREQ'),
+              VALE_C='rho*exp(-FREQ/freq0)*exp(distance(X1,Y1,Z1,X2,Y2,Z2)/correl(FREQ))*complex(cos(2*pi*FREQ*(Y2-Y1)/Uc),sin(2*pi*FREQ*(Y2-Y1)/Uc))');
+
+# SYX = CONJUGUE DE SXY
+SYX = FORMULE(NOM_PARA=('X1','Y1','Z1','X2','Y2','Z2','FREQ'),
+              VALE_C='rho*exp(-FREQ/freq0)*exp(distance(X1,Y1,Z1,X2,Y2,Z2)/correl(FREQ))*complex(cos(2*pi*FREQ*(Z2-Z1)/Uc),-sin(2*pi*FREQ*(Z2-Z1)/Uc))');
+
+# INTER-SPECTRE AVEC EFFORTS X ET Y CORRELES
+INTESPEC=CREA_TABLE(LISTE=(_F(LISTE_K=('SXX','SYY','SXY','SYX'),PARA='FONCTION_C'),
+                           _F(LISTE_K=('DX','DY','DX','DY'),PARA='NUME_ORDRE_I'),
+                           _F(LISTE_K=('DX','DY','DY','DX'),PARA='NUME_ORDRE_J'),),
+                    TYPE_TABLE='TABLE_FONCTION',
+                    TITRE='EXCITATION FLUIDE TURBULENTE');
+
+
+SPECTRE1=DEFI_SPEC_TURB( SPEC_CORR_CONV_3=_F( TABLE_FONCTION = INTESPEC ),);
+
+
+SPPROJ=PROJ_SPEC_BASE( SPEC_TURB=SPECTRE1,
+                       MODELE_INTERFACE=MODELE,
+                       GROUP_MA='BAS',
+                       NB_POIN=2,
+                       FREQ_INIT= 1 ,
+                       FREQ_FIN= 2 ,
+                       TOUT_CMP='NON',
+                       MODE_MECA=MODES );
+
+
+#--------------------
+# TEST DES RESULTATS
+#--------------------
+
+# POUR LA MODELISATION B, LE CALCUL DES INTEGRALES A LA MAIN N'EST
+# PAS POSSIBLE. ON SE BASE SUR DES VALEURS DE NON REGRESSION.
+vale_i=[1,1,2]
+vale_j=[1,2,2]
+vale_refe=[0.110,-0.110+0.01534j,0.110]
+for ind in range(3):
+    TEST_FONCTION(TABL_INTSP=_F(INTE_SPEC=SPPROJ,
+                                NUME_ORDRE_I=vale_i[ind],
+                                NUME_ORDRE_J=vale_j[ind],
+                                PRECISION=1.0E-2,
+                                VALE_PARA=1.0,
+                                VALE_REFE_C=vale_refe[ind],
+                                REFERENCE='NON_REGRESSION'));
+
+
+
+
+
+FIN( )
+#

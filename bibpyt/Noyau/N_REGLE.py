@@ -1,9 +1,9 @@
-#@ MODIF N_REGLE Noyau  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_REGLE Noyau  DATE 13/03/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -61,7 +61,7 @@ class REGLE:
           s'il vaut 0, la règle n'est pas vérifiée et le texte joint contient
          un commentaire de la non validité.
       """
-      raise "NotImplemented : class REGLE should be derived"
+      raise NotImplementedError('class REGLE should be derived')
 
    def liste_to_dico(self,args):
       """
@@ -81,6 +81,6 @@ class REGLE:
           dico[arg]=0
         return dico
       else :
-        raise "Erreur ce n'est ni un dictionnaire ni une liste",args
+        raise Exception("Erreur ce n'est ni un dictionnaire ni une liste %s" % args)
 
 

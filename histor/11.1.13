@@ -1,0 +1,2418 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 13/03/2012 - 16:28:44
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018408 DU 2012-02-14 15:08:45
+TYPE express concernant Code_Aster (VERSION 10.5)
+TITRE
+    sdnl133b sera cassé en 11.1.9
+FONCTIONNALITE
+   A cause d'un conflit de notation, le test sdnl133b n'a pas pu être restitué dans 
+   le cadre de issue18331.
+   Les test sdnl131a est dans le même cas.
+   
+   Il s'agit de supprimer des "non" fonctions (abscisses doubles).
+   Si c'était pour une impression, il faut imprimer directement des colonnes de la 
+   table.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sdnl133b
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018421 DU 2012-02-15 12:07:14
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    Lancement totalview parallèle cassé
+FONCTIONNALITE
+   Dans E_SUPERV.py, il manque un "import os.path as osp" pour pouvoir utiliser 
+   totalview en parallèle.
+   
+   On corrige.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    ras
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018518 DU 2012-03-07 10:40:14
+TYPE express concernant Code_Aster (VERSION 10.5)
+TITRE
+    [FORUM] patches superviseur : lisibilitxc3xa9, simplification
+FONCTIONNALITE
+   Contribution Logilab
+   
+   Plusieurs patches appliqués concernant des modules du superviseur.
+   Ils participent à la lisibilité et la simplification du code.
+   
+   Le patch qui apporte le plus de modification concerne la levée d'exceptions sous 
+   forme de chaine de caractères qui est dépréciée en python 2.7.
+     raise "texte erreur" => raise Exception("texte erreur")
+   
+   Clarification des imports entre E_SUPERV (main) et E_Core (lecture des arguments).
+   
+   Découpage de la fonction principale d'execution dans E_SUPERV.py en petites 
+   méthodes, plus facilement adaptables (par exemple pour le traitement spécifique au 
+   lancement avec totalview).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    asrest
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018531 DU 2012-03-09 14:34:15
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    Messages supprimxc3xa9s par erreur en 9.1.14, appelants nettoyxc3xa9s en 9.3.12
+FONCTIONNALITE
+   Lors du chantier sur les catalogues de messages, en 9.1.14, on a supprimé un 
+   paquet de messages non utilisés. Or le script utilisé à l'époque ne voyait pas 
+   les messages dont l'identifiant était découpé sur 2 lignes.
+   Plus tard en 9.3.12, on a supprimé les CALL U2MESS sur des messages qui 
+   n'existaient pas.
+   
+   La plupart ont été remplacés par des CALL ASSERT.
+   
+   bibfor/algeline/op0144.f => assert
+   358:-     &2_84')
+   
+   bibfor/algorith/conori.f => assert
+   10040:-     &2_32')
+   
+   vechth.f => assert
+   55521:-     &LEL4_75')
+   
+   barych.f => assert
+   57453:-     &L_26')
+   
+   cnsces.f => assert
+   57474:-     &L_61')
+   
+   pj2dfb.f => assert
+   58204:-     &RITH_19')
+   
+   pj3dfb.f => assert
+   58226:-     &GORITH_19')
+   
+   te0597.f => assert
+   58418:-     &NTS4_50')
+   
+   afrela.f => corrigé par issue18509
+   58880:-     &LISA_99')
+   
+   ircers.f => ok conservé
+   61645:-     &OST_83')
+   
+   thaclm.f => appel au message d'alarme supprimé !
+   58265:-     &LEL5_1')
+   --> on restaure le message sous CALCULEL5_2 :
+     2 : _(u"""
+     Attention : les numéros d'ordre ne sont pas contigus.
+     """),
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    asrest
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desroche     DESROCHES Xavier       DATE 03/12/2012 - 03:25:13
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017432 DU 2011-08-26 10:44:25
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    AR01 validation de MODI_REPERE / COQUE
+FONCTIONNALITE
+   Validation de MODI_REPERE sur les coques.
+   
+   Le nouveau repère REPERE='COQUE' dans MODI_REPERE n'était pas encore testé car on ne 
+   pouvait pas calculer tous les champs avec CALC_CHAMP.
+   C'est maintenant chose faite (sauf pour EPSI_ELNO encore calculé par CALC_ELEM)
+   
+   3 cas-tests ont été modifiés :
+   
+   ssnp15c : éléments DKT. teste les changements de repère sur les champs :
+        TYPE_CHAM='TENS_3D'     champs 'SIGM_ELNO' 'EPSI_ELNO' 
+        TYPE_CHAM='COQUE_GENE'  champs 'EFGE_ELNO' 'DEGE_ELNO' 
+   
+   sslx100b : éléments DST. teste les changements de repère sur les champs :
+        TYPE_CHAM='TENS_3D'     champs 'SIGM_ELNO'
+        TYPE_CHAM='COQUE_GENE'  champs 'EFGE_ELNO' 
+   
+   ssnp15d : éléments COQUE_3D. teste les changements de repère sur les champs :
+        TYPE_CHAM='TENS_3D'     champs 'SIGM_ELGA' 'SIGM_ELNO' 'EPSI_ELNO' 
+        TYPE_CHAM='COQUE_GENE'  champs 'EFGE_ELNO'
+   
+   Dans ces cas-tests, on part d'un repère initial quelconque (défini dans 
+   AFFE_CARA_ELEM) et on remet dans MODI_REPERE le repère défini dans le fichier de
+   commande précédent. Les résultats doivent être identiques et peuvent être comparés.
+   (les valeurs des TEST_RESU ne changent pas)
+   
+   Corrections dans les routines te0443 dxrep2 vdrep2 (erreurs de signe) et suppression 
+   d'un write dans dxsit2.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    ssnp15c sslx100b ssnp15d
+NB_JOURS_TRAV  : 5.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR flejou       FLEJOU Jean Luc        DATE 03/12/2012 - 02:34:01
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018444 DU 2012-02-22 14:46:53
+TYPE anomalie concernant Code_Aster (VERSION 11.1)
+TITRE
+    En NEW11.01.10, les cas-test ssnv190a et b sont NOOK sur Aster4, Rocks, Calibre5 et Calibre7.
+FONCTIONNALITE
+   Explication :
+   La politique des codes retours des lois de comportement et leur traitement au niveau des
+   "te" n'était pas très claire lors de l'implémentation d'IRRAD3M (il y a 6 ans). 
+   De nombreuses évolutions ont été réalisées sur la subdivisoin des pas de temps.
+   Les dernières évolutions, ont fait que les temps CPU de certains cas test ont augmentés.
+   
+   Les cas tests ssnv190a,b sont réalisés pour forcer la subdivision des pas au niveau global.
+   On trouve dans ces cas tests, dans STAT_NON_LINE :
+            RELATION='IRRAD3M',ITER_INTE_PAS = -100, ITER_INTE_MAXI = 120,
+   Avant le code retour était mal géré, en cas de pb de convergence sur la LdC on déclenchait
+   une subdivision au niveau global, or quand ITER_INTE_PAS est négatif on doit faire un
+   découpage du pas de temps sur le point de Gauss qui pose problème, et si cela ne
+   fonctionne pas on déclenche la subdivison globale.
+   
+   
+   Maintenant on déclenche le découpage au niveau local (c'est normal car ITER_INTE_PAS est
+   négatif). Dans ce cas le trajet de chargement n'est pas le même sur tous les points de
+   Gauss (certain découpe et pas d'autre), la conséquence c'est que la matrice tangente n'est
+   pas la même que celle obtenue par une subdivision globale des pas de temps. On a donc des
+   différences dans les TEST_RESU.
+   
+   On met donc ITER_INTE_PAS=0 dans les cas tests pour déclencher la subdivision comme avant.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    Passage des cas tests
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR foucault     FOUCAULT Alexandre     DATE 03/12/2012 - 02:30:51
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018456 DU 2012-02-23 13:33:52
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Méthodologie de construction par couches des barrages
+FONCTIONNALITE
+   MISE EN CONTEXTE:
+   -----------------
+   La méthodologie de construction par couches adoptée dans le Code_Aster pour la simulation
+   progressive de construction d'une digue en terre est aujourd'hui capitalisée dans les
+   cas-tests WTNV132 de la base de cas-tests. Ces cas-tests simulent la construction par
+   couches d'une colonne de sol 1D.
+   
+   PROBLÈME RENCONTRÉ:
+   -------------------
+   Suite au stage de G.Wernert [CR-AMA.11.221], cette méthodologie de construction par
+   couches a été mise en défaut pour l'emploi en "surcharge" des milieux du second gradient
+   de dilatation (méthode de régularisation par gradient des déformations volumiques). En
+   effet, après étude du profil des déformations verticales dans la structure, la continuité
+   des déformations n'est pas respectée à chaque nouvelle couche posée (voir figure
+   ci-jointe, référencée comme METH-1).
+   Ce résultat est dû aux champs de déplacement initial affecté au nouvel élément posé. Seuls
+   les nœuds à l'interface avec les couches de sol précédemment posées voient un déplacement
+   non nul. Les déformations ne sont pas initialement constantes dans l'élément.  
+   
+   SOLUTION PROPOSÉE:
+   ------------------
+   1)G.Wernert a proposé initialement de reprendre les tassements cumulés des couches
+   inférieurs et d'affecter le tassement cumulé de la zone d'interface à l'ensemble des nœuds
+   de la nouvelle couche de sol posé.
+   Cette méthodologie permet de retrouver des champs de déformations à évolution linéaire au
+   cœur de la structure, mais la côte géométrique demandé par l'utilisateur pour la nouvelle
+   couche de sol posé n'est plus respectée. Les résultats obtenus avec cette option sont
+   référencés sur la figure comme METH-2.
+   
+   2)Pour corriger la faiblesse de la nouvelle méthodologie, on peut via l'option CREA_CHAMP
+   de FONCTIONS affecter un champ de déplacements linéairement variables dans la nouvelle
+   couche posée. Cette variation évolue entre des déplacements nuls pour la ligne d'horizon
+   supérieure de la nouvelle couche de sol posé et la valeur du tassement précédemment obtenu
+   à l'interface entre le nouvel élément et les couches précédemment posés.
+   
+   IMPACT POUR LE CODE-ASTER:
+   --------------------------
+   Ce travail ne nécessite aucun développement mais la méthodologie doit être capitalisée
+   dans la base de cas-tests du Code_Aster.
+   
+   Les modélisations A, B et C du cas-test WTNV132 sont modifiés pour tenir compte des
+   modifications proposées.
+   Les modélisations A et B du cas-test WDNP101 sont également modifiés pour les mêmes raisons.
+   
+   PJ: On trouvera en pièce jointe 3 fichiers. 
+   1)Le premier fichier reprend les résultats obtenus avec le cas-test WTNV132 amélioré
+   suivant les méthodes proposées. (methode3_wtnv132ab.jpg);
+   2)Le maillage utilisé pour l'application à l'échelle d'une digue (maillage2.jpg);
+   3)Les résultats obtenus pour une digue élastique suivant les 3 méthodologies
+   décrites.(methode3_digue_ab.jpg);
+   
+   Les références affichant "DDIL" sont le fruit de modélisations réalisées avec D_PLAN_DIL
+   en surplus (cad incluant la méthode de 2nd gradient de dilatation).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : V7.31.132,V7.34.101, U2.04.08
+VALIDATION
+    WTNV132,WDNP101
+NB_JOURS_TRAV  : 10.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR greffet      GREFFET Nicolas        DATE 12/03/2012 - 14:27:45
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018457 DU 2012-02-23 14:59:09
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    probleme de redemarrage d'un calcul en multi-appui (sdnd102b)
+FONCTIONNALITE
+   Probl?me : 
+   la reprise d'un calcul DNL avec du multi-appuis plante.
+   Cela peut ?tre mis en ?vidence en coupant en deux la r?solution transitoire du cas-test
+   sdnd102b.
+   
+   
+   Analyse :
+   lors de l'initialisation de la reprise, DNL va planter (erreur JEVEUX_26) en essayant de
+   manipuler le champ DEPABS qui correspond au d?placement absolu.
+   Si on teste en STA10 ?a marchait, mais c'?tait d?j? cass? en STA11.
+   
+   
+   Solution :
+   les champs absolus sont bien sauvegard? ? chaque pas, le probl?me vient du red?marrage.
+   En pratique, ? l'initialisation, dans NMCRCH, on ne cr?e plus les vecteurs associ?s aux
+   champs absolus (d?placement, vitesse et acc?l?ration), je ne sais pas trop pourquoi cette
+   modification avait ?t? faite.
+   On retrouve des traces de ?a dans la fiche 17382, mais entre le texte de la fiche et ce
+   qui a ?t? restitu? il y a une incoh?rence.
+   J'ai remis cette cr?ation (dans le cas multi-appuis seulement) et la poursuite passe.
+   
+   
+   Validation :
+   on modifie sdnd102b pour tester cette reprise.
+   
+   
+   Impact :
+   nmcrch.f
+   sdnd102.comm
+   
+   Pas d'impact doc et pas de report en V10 car c'est OK.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sdnd102b
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018502 DU 2012-03-05 13:31:40
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    Couverture de code : DYNA_NON_LINE avec CRIT_FLAMB
+FONCTIONNALITE
+   L'objectif et de compl?ter la validation de CRIT_STAB, suite ? la fiche 17619
+   
+   Pour cela on va enrichir deux cas-tests :
+   erreu10a (gestion de l'arr?t en cas d'instabilit?) :
+   on ne testait l'arr?t que pour SIGNE='POSITIF_NEGATIF' (valeur par d?faut), on rajoute un
+   test pour SIGNE = 'NEGATIF' (on doit s'arr?ter car la valeur -1 est effectivement atteinte)
+   un test pour SIGNE = 'POSITIF' (on ne doit pas s'arr?ter cette fois).
+   
+   ssll105d : ce cas-test propose une structure instable (mod?le r?utilis? dans erreu10a).
+   On va en profiter pour tester l'option o? on force ? continuer en cas d'instabilit?.
+   Pour cela on ajoute un DEFI_LIST_INST avec :
+   ECHEC=_F(EVENEMENT='INSTABILITE',ACTION='CONTINUE',),
+   
+   
+   Remarque : suite ? ces modifications, le cas-test erreu10a prendra plus de temps CPU : on
+   fait trois appels ? DNL au lieu d'un.
+   Le surco?t sur ssll105d sera plus mod?r? car on passe juste pas DEFI_LIST_INST en plus.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : V1.01.308, V3.01.105
+VALIDATION
+    erreu10a, ssll105d
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018267 DU 2012-01-23 14:29:26
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    Modxc3xa9lisations fluides et champs de sortie
+FONCTIONNALITE
+   Question :
+   Est-il normal que les ?l?ments ci-dessous ne produisent ni champ de contraintes et de
+   variables internes?
+   Voir fiche issue18099 :
+         2D_FLUIDE     ['PVECTUR', 'PCODRET', 0        , 0]
+         2D_FLUI_PESA  ['PVECTUR', 'PCODRET', 0        , 0]
+         3D_FLUIDE     ['PVECTUR', 'PCODRET', 0        , 0]
+   Par suite, qu'en est-il des options RAPH_MECA ou FULL_MECA de ces ?l?ments ?
+   
+   
+   Analyse :
+   ces ?l?ments fluides ne peuvent avoir qu'un comportement lin?aire et ne portent que les
+   DDL suivants :
+   - pression PRES,
+   - potentiel (scalaire) de d?placement PHI
+   - d?placement vertical (scalaire) DH pour l'?l?ment de surface libre.
+   Il n'y a donc pas de tenseur de contrainte ni de d?formation, encore moins de variables
+   internes. C'est la formulation qui veut ?a.
+   Ces ?l?ments peuvent ?tre utilis?s avec les op?rateurs lin?aires dynamique mais aussi avec
+   DYNA_NON_LINE (mais pas STAT_NON_LINE car la matrice de raideur est intrins?quement
+   singuli?re).
+   Les ?l?ments fluides sont forc?ment coupl?s ? des ?l?ments de structure, au moins dans DNL.
+   Au niveau matriciel, les ?l?ments fluides apportent des contributions ? la matrice de
+   masse, mais aussi ? la raideur par des termes lin?aires.
+   
+   Dans les catalogues des ?l?ments associ?s :
+   gener_me2fl2.cata  gener_me2fp2.cata  gener_me3fl3.cata
+   on a les options RAPH_MECA et FULL_MECA mais qui sont un peu "d?tourn?es" : le probl?me
+   dans le fluide reste lin?aire et il n'y a pas de contrainte.
+   De m?me, en sortie ces options renvoient un CODRET, pour faire comme tout le monde mais ce
+   code est toujours 0.
+   
+   
+   Solution :
+   sur le probl?me global, comme on a forc?ment un domaine structure, il existera forc?ment
+   des ?l?ments qui savent calculer les contraintes et les d?formations : le fait que les
+   ?l?ments fluides ne contribuent pas ? ces grandeurs n'est pas bloquant pour les crit?res
+   en r?sidu ou l'utilisation d'EVENT-DRIVEN.
+   J'ai essay? de retirer les CODRET qui n'ont pas de sens, mais ?a plante dans DNL car on
+   attend un code retour pour tous les ?l?ments. Donc je laisse ce code retour qui sera
+   toujours OK sur le fluide.
+   Afin de garder une trace de ces explications je rajoute des commentaires dans les trois
+   catalogues d'?l?ments.
+   
+   
+   Impact :
+   gener_me2fl2.cata 
+   gener_me2fp2.cata 
+   gener_me3fl3.cata
+   
+   Pas d'impact doc, ni sur la validation.
+   Report facile en V10 si on veut mais pas de risque de r?sultat faux.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sans objet
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR lefebvre     LEFEBVRE Jean-Pierre   DATE 12/03/2012 - 13:10:29
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018527 DU 2012-03-09 11:56:55
+TYPE express concernant Code_Aster (VERSION 10.5)
+TITRE
+    suppression de la routine jjlibp
+FONCTIONNALITE
+   Lors de la mise à jour 11.1.12 la routine JJLIBP n'a pas pu être supprimée car CRP a détecté son 
+   usage dans la routine JEPREG qui fait partie de la bibliothèque debug. 
+   Je modifie JEPREG, supprime JJLIBP et rétabli les messages python de jeveux1.py.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    liste restreinte
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 03/13/2012 - 11:31:34
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018344 DU 2012-02-03 10:37:18
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Amxc3xa9lioration du speed-up de l'assemblage des seconds membres
+FONCTIONNALITE
+   Problème :
+   ----------
+   Dans le CR-AMA 11.267, N. Sellenet a remarqué que le speed-up de l'assemblage des seconds
+   membres est très mauvais (paragraphe 4.1).
+   Il faudrait améliorer les choses.
+                                                                                            
+                                                
+   Analyse :
+   ---------
+   Je pense que le mauvais speed-up mesuré dans le CR-AMA 11.267 est du à un défaut des
+   mesures de temps en mode parallèle.
+   (rubriques "#2 Calculs elementaires et assemblages")
+                                                                                            
+                                                
+   En effet, jusqu'à présent, il n'y a pas de communication MPI "bloquante" pendant les
+   calculs élémentaires. Du coup, si on enchaine un calcul élémentaire de second membre et
+   son assemblage, la 1ere (et seule !) communication bloquante est le AllReduce sur le
+   cham_no résultat de l'assemblage. Le déséquilibre de charge des calculs élémentaires est
+   donc attribué (à tort) à l'assemblage qui suit ces calculs.
+                                                                                            
+                                                
+   Tentative d'évolution :
+   -----------------------
+   Par ailleurs, j'ai cru (à tort) que le défaut de speed-up de l'assemblage était du au fait
+   que la collection .RESL des vect_elem est dispersée, ce qui nécessite autant d'appels à
+   MPI_ALLREDUCE qu'il ya de GRELS dans le ligre.
+                                                                                            
+                                                
+   J'ai tenté de modifier la structure de données resuelem (pour les vecteurs) pour que la
+   correction .RESL soit contigue.
+   L'effet sur l'assemblage est nul !
+                                                                                            
+                                                
+   En revanche, en discutant avec Th. De Soza de la "scalabilité mémoire" des calculs
+   élémentaires (voir fiche express 18496), nous nous sommes rendu compte que si la
+   collection .RESL est dispersée et si on utilise le parallélisme 'GROUP_ELEM', les objets
+   de la collection .RESL ne sont pas tous alloués sur tous les processeurs : l'objet
+   .RESL(igrel) n'est alloué que sur le processeur qui calcule le GREL igrel.
+   Cette collection dispersée est donc une forme de structure de données naturellement
+   "distribuée".
+                                                                                            
+                                                
+   Conclusions :
+   ------------
+     * Cette fiche est sans suite : il ne fat pas modifier la collection .RESL
+     * Un bilan plus "juste" du speed-up des calculs élémentaires et des assemblages (sans le
+   défaut relevé ci-dessus) est présenté dans la fiche 18345 :
+       Sur le problème 1, on constate un speed-up de 2.7 (sur 8 procs). C'est mieux que le
+   spped-up de 1. annoncé dans le CR-AMA, mais ce n'est quand meme pas formidable !  Il
+   faudra donc se repencher sur ce faible speed-up.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    essais perso
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018345 DU 2012-02-03 12:09:51
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Amxc3xa9liorer le speed-up des calculs xc3xa9lxc3xa9mentaires sur les mailles tardives.
+FONCTIONNALITE
+   1. Problème :
+   ------------
+   Dans le cadre du CR AMA 11.267, N. Sellenet a montré que le speed-up des calculs
+   élémentaires est fortement dégradé s'il existe de nombreuses C.L. dualisées.
+   En effet, les éléments finis qui sont affectés sur les mailles "tardives" ne sont jamais
+   distribués entre les différents processeurs (ils sont tous traités par le processeur 0).
+                                                                                            
+                                                                                   
+   L'objet de cette fiche est d'améliorer le parallélisme des calculs élémentaires (et des
+   assemblages) pour ces éléments "tardifs".
+                                                                                            
+                                                                                   
+                                                                                            
+                                                                                   
+   2. Evolutions proposées :
+   -------------------------
+   2.1 AFFE_MODELE / PARTITION / PARALLELISME = 'GROUP_ELEM' permet maintenant de paraléliser
+   aussi les calculs élémentaires (et les assemblages) pour les éléments "tardifs" (par
+   exemple : éléments de dualisation des C.L. et éléments de la méthode "continue" pour le
+   contact).
+   2.2 L'utilisateur peut maintenant choisir la taille des GRELS des ligrels (modèle,
+   charges, ...).
+       Pour cela, il dispose du mot clé : DEBUT(MEMOIRE=_F(TAILLE_GROUP_ELEM=1000),
+       A priori, plus le nombre d'éléments par GREL est important, plus le parallélisme
+   ('GROUP_ELEM') sera efficace, mais plus le code aura besoin de mémoire.
+       La valeur par défaut est 1000.
+   2.3 Dans une exécution parallèle, l'adaptation de la taille des GRELS dans les ligrels
+   (routine adalig.f) tient compte du souhait de l'utilisateur (mot clé DEBUT /
+   TAILLE_GROUP_ELEM = nbelgr) mais aussi du nombre de processeurs disponibles au moment de
+   la création des ligrels (commandes AFFE_MODELE, AFFE_CHAR_XXX, ...) :
+         * Le nombre de GRELS est toujours un multiple du nombre de processeurs,
+         * Chaque GREL contient au plus nbelgr éléments,
+         * Tous les GRELS d'un ligrel ont le meme nombre d'éléments (à 1 près).
+        Attention : maintenant, un GREL peut etre vide (0 élément)
+        Cette "adaptation" des GRELS est optimale pour le parallélisme 'GROUP_ELEM', en
+   supposant que les couts de calcul des éléments d'un meme type sont identiques (ce qui est
+   faux pour les comportements non-linéaires).
+                                                                                            
+                                                                                   
+      Remarque importante :
+      L'adaptation de la taille des GRELS (et donc de leur nombre) est faite au moment de la
+   création des ligrels (AFFE_MODELE et AFFE_CHAR_XXX). Lors d'une "poursuite" avec un nombre
+   de processeurs différents, l'adaptation peut ne plus etre optimale.
+      Si par exemple, le calcul initial (et donc l'équilibrage) est fait sur 5 processeurs et
+   que la répartition conduise à 10 GRELS, une poursuite faite sur 3 processeurs sera moins
+   efficace car l'un des processeurs devra traiter 4 GRELS alors que les autres n'en
+   traiteront que 3.
+                                                                                            
+                                                                                   
+                                                                                            
+                                                                                   
+   3. Problèmes de structure de données :
+   -------------------------------------
+                                                                                            
+                                                                                   
+   3.1 sd_modele et sd_ligrel :
+   On souhaite que le parallélisme (GROUP_ELEM) des calculs élémentaires et des assemblages
+   soit aussi possible pour les éléments "tardifs" (en particulier pour les éléments de
+   Lagrange des charges).
+                                                                                            
+                                                                                   
+   L'utilisateur peut choisir (dans les commandes AFFE_MODELE et MODI_MODELE) le type du
+   parallélisme (CENTRALISE / MAIL_DISPERSE / MAIL_CONTIGU / GROUP_ELEM).
+                                                                                            
+                                                                                   
+   Mais la structure de donnée "in" de la routine calcul.f (comme assmam.f et assvec.f) est
+   un ligrel.
+   Il est donc fondamental que l'on sache "remonter" du nom du ligrel au nom de la partition
+   attachée au modèle et ceci pour TOUS les ligrels :
+     * le ligrel du modèle,
+     * les ligrels de charge,
+     * les ligrels (temporaires) créés par les routines exlim*.f (par exemple si l'on fait
+   CALC_CHAMP + GROUP_MA),
+     * le ligrel "tardif" des éléments de contact de la méthode continue,
+     * ...
+                                                                                            
+                                                                                   
+   Jusqu'à présent, on avait fait les choix :
+     * ligrmo.LGRF(2) -> nom de la partition.
+     * Le champ LGRF(2) est transmis d'un ligrel à un autre lors d'une restriction (routine
+   exlim*.f).
+     Les seuls ligrels "partionnés" sont donc ceux issus du modèle.
+                                                                                            
+                                                                                   
+   Un première idée pour que l'on puisse remonter à la partition pour un ligrel de charge est
+   de renseigner ligrch.LGRF(2).
+   On peut le faire dans les commandes AFFE_CHAR_XXXX car on connait le nom du modèle associé
+   à la charge.
+   Mais cette solution n'est pas bonne lorsqu'on utilise MODI_MODELE : on modifie la
+   partition du modèle sans mettre à jour celle des ligrels de charge. D'où un risque
+   d'incohérence.
+                                                                                            
+                                                                                   
+   Nous proposons une autre solution en modifiant deux SD :
+    * sd_modele :
+       ajout de l'objet .PARTIT   S V K8 long=1
+                         V(1) -> nom de la partition  (si elle est existe)
+    * sd_ligrel :
+       .LGRF(2) : On stocke le nom du modèle associé au ligrel (à la place du nom de la
+   partition)
+                  Ce nom de modèle est quasi obligatoire. Il doit exister pour tous les
+   ligrels sur lesquels on souhaite faire des calculs parallèles (modèle, charge,
+   "restreint", ...)
+                                                                                            
+                                                                                   
+   3.2 Modifications de la sd_partition :
+     * si GROUP_ELEM :
+        * on ne calcule plus l'objet .NUPROC.NUMAIL (car il ne sert à rien)
+        * On supprime l'objet .NUPROC.LIGREL
+        * On supprime l'objet .NUPROC.GREL
+     * On ajoute l'objet .PRTI V I   long=1
+                V(1) = nbproc (>1) : nombre de processeurs)
+     * On ajoute l'objet .PRTK V K24 long=2
+                V(1) = /'GROUP_ELEM'
+                       /'MAIL_CONTIGU'
+                       /'MAIL_DISPERSE'
+                       /'SOUS_DOMAINE'
+                V(2) =  / nom de la sd_feti si V(1)='SOUS_DOMAINE'
+                        / ' ' sinon
+    Remarque :
+      On ne cree pas de sd_partition si :
+        * il n'y a qu'un seul proc (en séquentiel par exemple)
+        * il n'y a pas d'éléments finis dans le modèle (seulement des macro-éléments)
+        * si PARALLELISME='CENTRALISE'
+                                                                                            
+                                                                                   
+                                                                                            
+                                                                                   
+   Validation :
+   ------------
+   Nouveau test MPI zzzz307a  V1.01.307 (à restituer sur 4 procs)
+   Dans ce test informatique, on valide la bonne programmation du parallélisme pour les
+   calculs élémentaires et les assemblages.
+   Le test combine TOUTES les possibilités croisées correspondant à :
+     * PARTITION/PARALLELISME='CENTRALISE'/'GROUP_ELEM'/'MAIL_CONTIGU'/'MAIL_DISPERSE'
+     * MATR_DISTRIBUE='OUI'/'NON'
+     * ELIM_LAGR2='OUI'/'NON'
+     * Conditions cinematiques : dualisees / eliminees / "a cheval" sur plusieurs processeurs
+                                                                                            
+                                                                                   
+                                                                                            
+                                                                                   
+   ================================================================================
+   Performances :
+   --------------
+                                                                                            
+                                                                                   
+   Remarque : Dans ce paragraphe, on mesure les "gains " apportés par les 2 fiches 18345 et 18346
+                                                                                            
+                                                                                   
+   Problème 1 :
+   ~~~~~~~~~~~~
+                                                                                            
+                                                                                   
+   1) On prend un problème qui utilise beaucoup de d'éléments de Lagrange : une plaque carrée
+   NxN modélisée en DKT pour laquelle on "bloque" TOUS les ddls DZ, DRX, DRY et DRZ
+   2) On choisit la dimension du problème N modeste (N=100) pour que la résolution du système
+   linéaire ne soit pas trop importante.
+   3) La commande de calcul est STAT_NON_LINE. Le comportement est non-linéaire mais "facile"
+   (VMIS_ISOT_LINE)
+      On calcule 2 pas de temps. Il y a 12 itérations de Newton.
+   4) On "truande" le code (STAT_NON_LINE) pour pouvoir "mettre l'accent" sur les calculs
+   élémentaires et les assemblages :
+      On décide de boucler (inutilement) 100 fois sur les routines calcul, assmam et assvec.
+      Cela fait "ressortir" le cout de ces traitements.
+                                                                                            
+                                                                                   
+                                                                                            
+                                                                                   
+   Avant :
+   -------
+   1 proc :
+   #2 Calculs elementaires et assemblages            CPU (USER+SYST/SYST/ELAPS):   1534.03  
+      0.89   1561.38
+   #2.1 Routine calcul                               CPU (USER+SYST/SYST/ELAPS):   1312.02  
+      0.79   1334.59
+   #2.1.1 Routines te00ij                            CPU (USER+SYST/SYST/ELAPS):    795.49  
+      0.07    808.76
+   #2.2 Assemblages                                  CPU (USER+SYST/SYST/ELAPS):    222.01  
+      0.10    226.79
+   #2.2.1 Assemblage matrices                        CPU (USER+SYST/SYST/ELAPS):    178.20  
+      0.10    181.61
+   #2.2.2 Assemblage seconds membres                 CPU (USER+SYST/SYST/ELAPS):     43.81  
+      0.00     45.18
+   #4 Communications MPI                             CPU (USER+SYST/SYST/ELAPS):      0.07  
+      0.01      0.07
+                                                                                            
+                                                                                   
+   8 procs :
+   #2 Calculs elementaires et assemblages            CPU (USER+SYST/SYST/ELAPS):    766.09  
+      3.13    770.86
+       (moyenne    diff. procs)                      CPU (USER+SYST/SYST/ELAPS):    769.06  
+      3.61    770.84
+       (ecart-type diff. procs)                      CPU (USER+SYST/SYST/ELAPS):      1.22  
+      0.45      0.01
+   #2.1 Routine calcul                               CPU (USER+SYST/SYST/ELAPS):    670.68  
+      2.89    675.03
+       (moyenne    diff. procs)                      CPU (USER+SYST/SYST/ELAPS):    673.62  
+      3.11    675.02
+       (ecart-type diff. procs)                      CPU (USER+SYST/SYST/ELAPS):      1.19  
+      0.37      0.01
+   #2.1.1 Routines te00ij                            CPU (USER+SYST/SYST/ELAPS):    103.62  
+      0.02    104.02
+       (moyenne    diff. procs)                      CPU (USER+SYST/SYST/ELAPS):    124.60  
+      0.05    124.67
+       (ecart-type diff. procs)                      CPU (USER+SYST/SYST/ELAPS):     35.67  
+      0.02     35.46
+   #2.2 Assemblages                                  CPU (USER+SYST/SYST/ELAPS):     95.40  
+      0.24     95.83
+       (moyenne    diff. procs)                      CPU (USER+SYST/SYST/ELAPS):     95.44  
+      0.50     95.83
+       (ecart-type diff. procs)                      CPU (USER+SYST/SYST/ELAPS):      0.15  
+      0.11      0.01
+   #2.2.1 Assemblage matrices                        CPU (USER+SYST/SYST/ELAPS):     50.82  
+      0.08     50.85
+       (moyenne    diff. procs)                      CPU (USER+SYST/SYST/ELAPS):     50.80  
+      0.36     50.85
+       (ecart-type diff. procs)                      CPU (USER+SYST/SYST/ELAPS):      0.13  
+      0.13      0.00
+   #2.2.2 Assemblage seconds membres                 CPU (USER+SYST/SYST/ELAPS):     44.57  
+      0.16     44.98
+       (moyenne    diff. procs)                      CPU (USER+SYST/SYST/ELAPS):     44.63  
+      0.13     44.98
+       (ecart-type diff. procs)                      CPU (USER+SYST/SYST/ELAPS):      0.06  
+      0.03      0.01
+   #4 Communications MPI                             CPU (USER+SYST/SYST/ELAPS):    100.38  
+      1.18    100.35
+       (moyenne    diff. procs)                      CPU (USER+SYST/SYST/ELAPS):    108.06  
+      1.52    108.19
+       (ecart-type diff. procs)                      CPU (USER+SYST/SYST/ELAPS):     42.28  
+      0.48     42.21
+                                                                                            
+                                                                                   
+   16 procs : (*)
+   #2 Calculs elementaires et assemblages            CPU (USER+SYST/SYST/ELAPS):    711.22  
+      5.13    711.55
+       (moyenne    diff. procs)                      CPU (USER+SYST/SYST/ELAPS):    710.88  
+      4.80    711.56
+       (ecart-type diff. procs)                      CPU (USER+SYST/SYST/ELAPS):      0.31  
+      0.58      0.05
+   #2.1 Routine calcul                               CPU (USER+SYST/SYST/ELAPS):    616.27  
+      5.01    616.62
+       (moyenne    diff. procs)                      CPU (USER+SYST/SYST/ELAPS):    615.98  
+      4.25    616.64
+       (ecart-type diff. procs)                      CPU (USER+SYST/SYST/ELAPS):      0.25  
+      0.53      0.05
+   #2.1.1 Routines te00ij                            CPU (USER+SYST/SYST/ELAPS):     63.69  
+      0.03     63.72
+       (moyenne    diff. procs)                      CPU (USER+SYST/SYST/ELAPS):     73.60  
+      0.07     72.93
+       (ecart-type diff. procs)                      CPU (USER+SYST/SYST/ELAPS):     17.39  
+      0.03     17.26
+   #2.2 Assemblages                                  CPU (USER+SYST/SYST/ELAPS):     94.98  
+      0.12     94.93
+       (moyenne    diff. procs)                      CPU (USER+SYST/SYST/ELAPS):     94.89  
+      0.55     94.93
+       (ecart-type diff. procs)                      CPU (USER+SYST/SYST/ELAPS):      0.11  
+      0.33      0.00
+   #2.2.1 Assemblage matrices                        CPU (USER+SYST/SYST/ELAPS):     46.59  
+      0.06     46.55
+       (moyenne    diff. procs)                      CPU (USER+SYST/SYST/ELAPS):     46.55  
+      0.48     46.55
+       (ecart-type diff. procs)                      CPU (USER+SYST/SYST/ELAPS):      0.03  
+      0.32      0.00
+   #2.2.2 Assemblage seconds membres                 CPU (USER+SYST/SYST/ELAPS):     48.38  
+      0.06     48.38
+       (moyenne    diff. procs)                      CPU (USER+SYST/SYST/ELAPS):     48.34  
+      0.07     48.38
+       (ecart-type diff. procs)                      CPU (USER+SYST/SYST/ELAPS):      0.09  
+      0.03      0.00
+   #4 Communications MPI                             CPU (USER+SYST/SYST/ELAPS):     59.96  
+      1.82     59.99
+       (moyenne    diff. procs)                      CPU (USER+SYST/SYST/ELAPS):     79.85  
+      1.57     79.81
+       (ecart-type diff. procs)                      CPU (USER+SYST/SYST/ELAPS):     22.15  
+      0.56     22.16
+                                                                                            
+                                                                                   
+   (*) Pour réaliser ce calcul, j'ai du modifier la taille des GRELS dans la routine adalig.f
+   (1000 -> 500).
+       Sinon, le calcul s'arrete en expliquant qu'il n'y a pas assez de GRELS pour le nombre
+   de processeurs.
+                                                                                            
+                                                                                   
+                                                                                            
+                                                                                   
+   Après :
+   -------
+   1 proc :
+   #2      Calculs elementaires et assemblages               CPU (USER+SYST/SYST/ELAPS):  
+   1108.13      1.01   1109.17
+   #2.1    Routine calcul                                    CPU (USER+SYST/SYST/ELAPS):   
+   872.97      0.76    873.71
+   #2.1.1  Routines te00ij                                   CPU (USER+SYST/SYST/ELAPS):   
+   768.22      0.06    766.44
+   #2.2    Assemblages                                       CPU (USER+SYST/SYST/ELAPS):   
+   235.15      0.24    235.44
+   #2.2.1  Assemblage matrices                               CPU (USER+SYST/SYST/ELAPS):   
+   193.51      0.23    193.76
+   #2.2.2  Assemblage seconds membres                        CPU (USER+SYST/SYST/ELAPS):    
+   41.67      0.01     41.67
+   #4      Communications MPI                                CPU (USER+SYST/SYST/ELAPS):    
+    0.06      0.00      0.07
+                                                                                            
+                                                                                   
+   8 procs :
+   #2      Calculs elementaires et assemblages               CPU (USER+SYST/SYST/ELAPS):   
+   191.23      1.56    193.48
+   #2          (MOYENNE    DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):   
+   189.70      1.63    193.46
+   #2          (ECART-TYPE DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+    2.66      0.18      0.02
+   #2.1    Routine calcul                                    CPU (USER+SYST/SYST/ELAPS):   
+   147.58      1.07    148.05
+   #2.1        (MOYENNE    DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):   
+   146.58      1.03    148.03
+   #2.1        (ECART-TYPE DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+    1.60      0.10      0.02
+   #2.1.1  Routines te00ij                                   CPU (USER+SYST/SYST/ELAPS):    
+   99.70      0.00    100.15
+   #2.1.1      (MOYENNE    DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):   
+   100.93      0.04    101.04
+   #2.1.1      (ECART-TYPE DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+    1.39      0.03      1.25
+   #2.2    Assemblages                                       CPU (USER+SYST/SYST/ELAPS):    
+   43.63      0.49     45.42
+   #2.2        (MOYENNE    DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+   43.10      0.60     45.41
+   #2.2        (ECART-TYPE DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+    1.13      0.12      0.01
+   #2.2.1  Assemblage matrices                               CPU (USER+SYST/SYST/ELAPS):    
+   29.10      0.09     29.75
+   #2.2.1      (MOYENNE    DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+   28.53      0.15     29.75
+   #2.2.1      (ECART-TYPE DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+    1.09      0.09      0.00
+   #2.2.2  Assemblage seconds membres                        CPU (USER+SYST/SYST/ELAPS):    
+   14.52      0.39     15.67
+   #2.2.2      (MOYENNE    DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+   14.57      0.44     15.66
+   #2.2.2      (ECART-TYPE DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+    0.13      0.03      0.01
+   #4      Communications MPI                                CPU (USER+SYST/SYST/ELAPS):    
+   29.17      0.88     29.52
+   #4          (MOYENNE    DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+   26.08      0.87     26.95
+   #4          (ECART-TYPE DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+    3.28      0.18      2.95
+                                                                                            
+                                                                                   
+   16 procs :
+   #2      Calculs elementaires et assemblages               CPU (USER+SYST/SYST/ELAPS):   
+   126.16      1.46    126.88
+   #2          (MOYENNE    DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):   
+   124.36      1.25    126.85
+   #2          (ECART-TYPE DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+    3.63      0.19      0.10
+   #2.1    Routine calcul                                    CPU (USER+SYST/SYST/ELAPS):    
+   91.32      1.01     91.82
+   #2.1        (MOYENNE    DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+   90.48      0.95     91.79
+   #2.1        (ECART-TYPE DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+    1.84      0.10      0.06
+   #2.1.1  Routines te00ij                                   CPU (USER+SYST/SYST/ELAPS):    
+   51.04      0.01     51.40
+   #2.1.1      (MOYENNE    DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+   50.38      0.02     50.53
+   #2.1.1      (ECART-TYPE DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+    0.50      0.02      0.50
+   #2.2    Assemblages                                       CPU (USER+SYST/SYST/ELAPS):    
+   34.85      0.45     35.04
+   #2.2        (MOYENNE    DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+   33.86      0.30     35.04
+   #2.2        (ECART-TYPE DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+    1.87      0.11      0.05
+   #2.2.1  Assemblage matrices                               CPU (USER+SYST/SYST/ELAPS):    
+   21.29      0.37     21.68
+   #2.2.1      (MOYENNE    DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+   20.44      0.22     21.68
+   #2.2.1      (ECART-TYPE DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+    1.89      0.09      0.01
+   #2.2.2  Assemblage seconds membres                        CPU (USER+SYST/SYST/ELAPS):    
+   13.55      0.07     13.36
+   #2.2.2      (MOYENNE    DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+   13.42      0.08     13.36
+   #2.2.2      (ECART-TYPE DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+    0.24      0.05      0.05
+   #4      Communications MPI                                CPU (USER+SYST/SYST/ELAPS):    
+   44.30      1.45     44.34
+   #4          (MOYENNE    DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+   42.79      1.02     42.88
+   #4          (ECART-TYPE DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+    5.78      0.27      5.11
+                                                                                            
+                                                                                   
+   Améliorations : comparaison avant / après (#2 elapsed):
+   --------------------------------------------------------
+              Avant      Après       Gain
+    1 proc    1561.38   1109.17      29%
+    8 procs    770.86    193.46      75%
+   16 procs    711.56    126.85      82%
+                                                                                            
+                                                                                   
+                                                                                            
+                                                                                   
+   Speed-up global pour les calculs élémentaires et les assemblages (#2 elapsed):
+   ------------------------------------------------------------------------------
+   avant : 2.0 (sur  8 procs)
+   avant : 2.2 (sur 16 procs)
+   après : 5.7 (sur  8 procs)
+   après : 8.7 (sur 16 procs)
+                                                                                            
+                                                                                   
+                                                                                            
+                                                                                   
+   Problème 2 :
+   ~~~~~~~~~~~~
+   Il s'agit d'un test de contact FORMULATION='CONTINUE' fourni parTh. De Soza  (contactplaque).
+   Le maillage utilisé est contactplaque-tresgros.med
+   La mémoire totale est de 1960 Mo.
+   Les temps "avant" et "après" sont mesurés en plaçant une barrière MPI au début et à la fin
+   des routines calcul, assmam et assvec.
+                                                                                            
+                                                                                   
+   Avant :
+   -------
+   1 proc :
+   #1 Resolution des systemes lineaires              CPU (USER+SYST/SYST/ELAPS):    833.02  
+     97.19   1190.48
+   #1.1 Numerotation, connectivite de la matrice     CPU (USER+SYST/SYST/ELAPS):      3.17  
+      0.45      4.51
+   #1.2 Factorisation symbolique                     CPU (USER+SYST/SYST/ELAPS):      5.73  
+      0.44     10.49
+   #1.3 Factorisation numerique (ou precond.)        CPU (USER+SYST/SYST/ELAPS):    779.53  
+     64.17   1114.96
+   #1.4 Resolution                                   CPU (USER+SYST/SYST/ELAPS):     44.59  
+     32.13     60.52
+   #2 Calculs elementaires et assemblages            CPU (USER+SYST/SYST/ELAPS):    256.79  
+     14.31    363.16
+   #2.1 Routine calcul                               CPU (USER+SYST/SYST/ELAPS):    191.14  
+     12.96    273.28
+   #2.1.1 Routines te00ij                            CPU (USER+SYST/SYST/ELAPS):    105.47  
+      0.02    147.22
+   #2.2 Assemblages                                  CPU (USER+SYST/SYST/ELAPS):     65.65  
+      1.35     89.88
+   #2.2.1 Assemblage matrices                        CPU (USER+SYST/SYST/ELAPS):     62.82  
+      1.29     86.53
+   #2.2.2 Assemblage seconds membres                 CPU (USER+SYST/SYST/ELAPS):      2.83  
+      0.06      3.35
+   #3 Dechargement de la memoire sur disque          CPU (USER+SYST/SYST/ELAPS):     44.85  
+     44.60     79.22
+   #4 Communications MPI                             CPU (USER+SYST/SYST/ELAPS):      0.00  
+      0.00      0.00
+                                                                                            
+                                                                                   
+   8 procs :
+   #1 Resolution des systemes lineaires              CPU (USER+SYST/SYST/ELAPS):    886.71  
+    187.67   1583.50
+       (moyenne    diff. procs)                      CPU (USER+SYST/SYST/ELAPS):    885.33  
+    185.87   1631.70
+       (ecart-type diff. procs)                      CPU (USER+SYST/SYST/ELAPS):      5.60  
+      4.83     65.54
+   #1.1 Numerotation, connectivite de la matrice     CPU (USER+SYST/SYST/ELAPS):      2.47  
+      0.35      2.51
+       (moyenne    diff. procs)                      CPU (USER+SYST/SYST/ELAPS):      2.52  
+      0.38      2.56
+       (ecart-type diff. procs)                      CPU (USER+SYST/SYST/ELAPS):      0.07  
+      0.03      0.08
+   #1.2 Factorisation symbolique                     CPU (USER+SYST/SYST/ELAPS):      6.76  
+      1.72      8.15
+       (moyenne    diff. procs)                      CPU (USER+SYST/SYST/ELAPS):      6.77  
+      1.80      8.08
+       (ecart-type diff. procs)                      CPU (USER+SYST/SYST/ELAPS):      0.02  
+      0.05      0.10
+   #1.3 Factorisation numerique (ou precond.)        CPU (USER+SYST/SYST/ELAPS):    829.84  
+    157.34   1517.08
+       (moyenne    diff. procs)                      CPU (USER+SYST/SYST/ELAPS):    830.41  
+    157.15   1561.43
+       (ecart-type diff. procs)                      CPU (USER+SYST/SYST/ELAPS):      4.66  
+      4.10     63.02
+   #1.4 Resolution                                   CPU (USER+SYST/SYST/ELAPS):     47.64  
+     28.26     55.75
+       (moyenne    diff. procs)                      CPU (USER+SYST/SYST/ELAPS):     45.63  
+     26.55     59.62
+       (ecart-type diff. procs)                      CPU (USER+SYST/SYST/ELAPS):      1.78  
+      1.37      4.04
+   #2 Calculs elementaires et assemblages            CPU (USER+SYST/SYST/ELAPS):    198.91  
+     19.19    270.05
+       (moyenne    diff. procs)                      CPU (USER+SYST/SYST/ELAPS):    174.35  
+     22.31    270.06
+       (ecart-type diff. procs)                      CPU (USER+SYST/SYST/ELAPS):      9.39  
+      1.26      0.01
+   #2.1 Routine calcul                               CPU (USER+SYST/SYST/ELAPS):    156.08  
+     18.37    227.39
+       (moyenne    diff. procs)                      CPU (USER+SYST/SYST/ELAPS):    132.35  
+     20.87    227.39
+       (ecart-type diff. procs)                      CPU (USER+SYST/SYST/ELAPS):      9.07  
+      1.07      0.00
+   #2.1.1 Routines te00ij                            CPU (USER+SYST/SYST/ELAPS):     43.73  
+      0.01     43.73
+       (moyenne    diff. procs)                      CPU (USER+SYST/SYST/ELAPS):     43.72  
+      0.01     43.85
+       (ecart-type diff. procs)                      CPU (USER+SYST/SYST/ELAPS):      0.18  
+      0.02      0.20
+   #2.2 Assemblages                                  CPU (USER+SYST/SYST/ELAPS):     42.84  
+      0.82     42.66
+       (moyenne    diff. procs)                      CPU (USER+SYST/SYST/ELAPS):     42.01  
+      1.44     42.67
+       (ecart-type diff. procs)                      CPU (USER+SYST/SYST/ELAPS):      0.39  
+      0.26      0.01
+   #2.2.1 Assemblage matrices                        CPU (USER+SYST/SYST/ELAPS):     40.17  
+      0.69     40.09
+       (moyenne    diff. procs)                      CPU (USER+SYST/SYST/ELAPS):     39.82  
+      1.23     40.10
+       (ecart-type diff. procs)                      CPU (USER+SYST/SYST/ELAPS):      0.21  
+      0.24      0.01
+   #2.2.2 Assemblage seconds membres                 CPU (USER+SYST/SYST/ELAPS):      2.66  
+      0.13      2.57
+       (moyenne    diff. procs)                      CPU (USER+SYST/SYST/ELAPS):      2.18  
+      0.22      2.58
+       (ecart-type diff. procs)                      CPU (USER+SYST/SYST/ELAPS):      0.20  
+      0.04      0.01
+   #3 Dechargement de la memoire sur disque          CPU (USER+SYST/SYST/ELAPS):    165.57  
+    150.18    929.48
+       (moyenne    diff. procs)                      CPU (USER+SYST/SYST/ELAPS):    167.68  
+    152.15   1003.24
+       (ecart-type diff. procs)                      CPU (USER+SYST/SYST/ELAPS):      4.03  
+      3.73     67.26
+   #4 Communications MPI                             CPU (USER+SYST/SYST/ELAPS):    187.17  
+      2.72    187.30
+       (moyenne    diff. procs)                      CPU (USER+SYST/SYST/ELAPS):    138.95  
+      2.33    139.09
+       (ecart-type diff. procs)                      CPU (USER+SYST/SYST/ELAPS):     65.08  
+      0.77     64.98
+                                                                                            
+                                                                                   
+   Après :
+   -------
+   1 proc :
+   #1      Resolution des systemes lineaires                 CPU (USER+SYST/SYST/ELAPS):   
+   834.30    101.24    873.99
+   #1.1    Numerotation, connectivite de la matrice          CPU (USER+SYST/SYST/ELAPS):    
+    2.80      0.40      2.81
+   #1.2    Factorisation symbolique                          CPU (USER+SYST/SYST/ELAPS):    
+    6.17      1.06      7.57
+   #1.3    Factorisation numerique (ou precond.)             CPU (USER+SYST/SYST/ELAPS):   
+   776.60     64.51    812.53
+   #1.4    Resolution                                        CPU (USER+SYST/SYST/ELAPS):    
+   48.73     35.27     51.08
+   #2      Calculs elementaires et assemblages               CPU (USER+SYST/SYST/ELAPS):   
+   191.36      4.74    201.09
+   #2.1    Routine calcul                                    CPU (USER+SYST/SYST/ELAPS):   
+   128.04      3.87    134.28
+   #2.1.1  Routines te00ij                                   CPU (USER+SYST/SYST/ELAPS):   
+   102.34      0.00    106.70
+   #2.2    Assemblages                                       CPU (USER+SYST/SYST/ELAPS):    
+   63.32      0.87     66.80
+   #2.2.1  Assemblage matrices                               CPU (USER+SYST/SYST/ELAPS):    
+   60.62      0.85     64.11
+   #2.2.2  Assemblage seconds membres                        CPU (USER+SYST/SYST/ELAPS):    
+    2.70      0.02      2.69
+   #3      Dechargement de la memoire sur disque             CPU (USER+SYST/SYST/ELAPS):    
+   47.87     47.58     49.80
+   #4      Communications MPI                                CPU (USER+SYST/SYST/ELAPS):    
+    0.01      0.00      0.00
+                                                                                            
+                                                                                   
+   8 procs :
+   #1      Resolution des systemes lineaires                 CPU (USER+SYST/SYST/ELAPS):   
+   871.22    175.02   1351.80
+   #1          (MOYENNE    DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):   
+   889.57    190.47   1640.06
+   #1          (ECART-TYPE DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+    8.32      7.26    113.43
+   #1.1    Numerotation, connectivite de la matrice          CPU (USER+SYST/SYST/ELAPS):    
+    2.52      0.30      4.57
+   #1.1        (MOYENNE    DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+    2.46      0.34      3.73
+   #1.1        (ECART-TYPE DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+    0.04      0.04      0.99
+   #1.2    Factorisation symbolique                          CPU (USER+SYST/SYST/ELAPS):    
+    6.82      1.88      8.36
+   #1.2        (MOYENNE    DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+    6.82      1.85      8.36
+   #1.2        (ECART-TYPE DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+    0.03      0.04      0.03
+   #1.3    Factorisation numerique (ou precond.)             CPU (USER+SYST/SYST/ELAPS):   
+   791.04    123.52   1233.63
+   #1.3        (MOYENNE    DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):   
+   802.26    132.70   1417.44
+   #1.3        (ECART-TYPE DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+    4.78      4.03     72.17
+   #1.4    Resolution                                        CPU (USER+SYST/SYST/ELAPS):    
+   70.84     49.32    105.23
+   #1.4        (MOYENNE    DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+   78.03     55.58    210.53
+   #1.4        (ECART-TYPE DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+    3.98      3.37     41.85
+   #2      Calculs elementaires et assemblages               CPU (USER+SYST/SYST/ELAPS):    
+   29.98      2.61     30.41
+   #2          (MOYENNE    DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+   29.97      3.75     30.42
+   #2          (ECART-TYPE DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+    0.16      0.51      0.00
+   #2.1    Routine calcul                                    CPU (USER+SYST/SYST/ELAPS):    
+   20.45      1.80     20.82
+   #2.1        (MOYENNE    DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+   20.50      3.06     20.82
+   #2.1        (ECART-TYPE DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+    0.05      0.51      0.00
+   #2.1.1  Routines te00ij                                   CPU (USER+SYST/SYST/ELAPS):    
+   12.46      0.02     12.63
+   #2.1.1      (MOYENNE    DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+   12.64      0.03     12.71
+   #2.1.1      (ECART-TYPE DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+    0.09      0.02      0.09
+   #2.2    Assemblages                                       CPU (USER+SYST/SYST/ELAPS):    
+    9.53      0.81      9.59
+   #2.2        (MOYENNE    DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+    9.47      0.70      9.60
+   #2.2        (ECART-TYPE DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+    0.13      0.17      0.00
+   #2.2.1  Assemblage matrices                               CPU (USER+SYST/SYST/ELAPS):    
+    8.74      0.72      8.81
+   #2.2.1      (MOYENNE    DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+    8.72      0.61      8.81
+   #2.2.1      (ECART-TYPE DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+    0.08      0.17      0.00
+   #2.2.2  Assemblage seconds membres                        CPU (USER+SYST/SYST/ELAPS):    
+    0.79      0.09      0.79
+   #2.2.2      (MOYENNE    DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+    0.75      0.09      0.79
+   #2.2.2      (ECART-TYPE DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+    0.05      0.01      0.00
+   #3      Dechargement de la memoire sur disque             CPU (USER+SYST/SYST/ELAPS):   
+   140.83    127.85    612.76
+   #3          (MOYENNE    DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):   
+   153.25    139.53    897.40
+   #3          (ECART-TYPE DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+    5.83      5.53    111.85
+   #4      Communications MPI                                CPU (USER+SYST/SYST/ELAPS):   
+   412.46      5.69    412.65
+   #4          (MOYENNE    DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):   
+   120.46      2.40    120.58
+   #4          (ECART-TYPE DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):   
+   114.81      1.29    114.84
+                                                                                            
+                                                                                   
+                                                                                            
+                                                                                   
+   Améliorations : comparaison avant / après (#2 elapsed) :
+   --------------------------------------------------------
+              Avant      Après       Gain
+    1 proc    363.16     201.09       45%
+    8 procs   270.05      30.42       89%
+                                                                                            
+                                                                                   
+                                                                                            
+                                                                                   
+   Speed-up global pour les calculs élémentaires et les assemblages (#2 elapsed):
+   ------------------------------------------------------------------------------
+   avant : 1.34  (sur  8 procs)
+   après : 6.61  (sur  8 procs)
+                                                                                            
+                                                                                   
+   Remarque :
+   Pour ces calculs, le temps de déchargement de la mémoire est parfois important, ce qui
+   entraine des temps elapsed fortement majorés en parallèle.
+   Comme ces déchargements peuvent avoir lieu aléatoirement dans n'importe quelle partie du
+   code, il n'est pas "juste" de les affecter à une fonctionnalité précise.
+   C'est pourquoi nous présentons ci-dessous les chiffres d'amélioration et de speed-up
+   calculés avec les temps USER+SYST
+                                                                                            
+                                                                                   
+   Améliorations : comparaison avant / après (#2 USER+SYST) :
+   ----------------------------------------------------------
+              Avant      Après       Gain
+    1 proc    256.79     191.36      25%
+    8 procs   174.35      29.97      83%
+                                                                                            
+                                                                                   
+                                                                                            
+                                                                                   
+   Speed-up global pour les calculs élémentaires et les assemblages (#2 USER+SYST):
+   --------------------------------------------------------------------------------
+   avant : 1.48  (sur  8 procs)
+   après : 6.39  (sur  8 procs)
+                                                                                            
+                                                                                   
+                                                                                            
+                                                                                   
+   ================================================================================
+   Détails :
+   ----------
+   1) Toutes les lignes correspondant aux mesures de temps en parallèle avec calcul de
+   moyenne et écart-type sont maintenant "préfixées" par le numéro de la rubrique.
+      Cela facilite les "greps" dans le fichier .mess.
+   Par exemple :
+   #2      Calculs elementaires et assemblages               CPU (USER+SYST/SYST/ELAPS):    
+   66.66      0.91     67.03
+   #2          (MOYENNE    DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+   66.24      0.95     67.03
+   #2          (ECART-TYPE DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+    0.53      0.04      0.01
+   #2.1    Routine calcul                                    CPU (USER+SYST/SYST/ELAPS):    
+   66.11      0.89     66.40
+   #2.1        (MOYENNE    DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+   65.68      0.92     66.39
+   #2.1        (ECART-TYPE DIFF. PROCS)                      CPU (USER+SYST/SYST/ELAPS):    
+    0.55      0.04      0.01
+                                                                                            
+                                                                                   
+   2) J'ajoute une opération 'BARRIER' dans la routine mpicm1.F pour pouvoir synchroniser
+   volontairement les processeurs (sans échanger de valeurs).
+                                                                                            
+                                                                                   
+   3) Pour que les mesures de temps faites dans calcul.f, assvec.f et assmam.f soient
+   compréhensibles par l'utilisateur, il est important que les déséquilibres de temps soient
+   imputés au VRAIS coupables.
+      En effet, jusqu'à présent, les calculs élémentaires d'un calcul STAT_NON_LINE ne font
+   aucune communication MPI : les resuelem (vecteurs et matrices élémentaires) et les
+   cham_elem ne sont jamais "MPI_COMPLET". Ce n'est qu'à la fin des assemblages que l'on fait
+   un "ALL_REDUCE" sur les seconds membres (et sur la matrice si MATR_DISTRIBUEE='NON').
+      Si les calculs élémentaires sont déséquilibrés, le temps d'attente entre les
+   processeurs sera attribué (à tort) à l'assemblage.
+                                                                                            
+                                                                                   
+   4) Pour le parallélisme 'GROUP_ELEM', dans les assemblages (matrices et vecteurs), on
+   "saute" maintenant des GRELS entiers, alors que jusqu'à présent, on se contentait de
+   "sauter" les éléments non traités par le processeur. Ceci améliore a priori les
+   performances CPU et mémoire.
+                                                                                            
+                                                                                   
+   5) Pour accélérer 2 petites routines utilitaires utilisées abondamment par calcul.f
+   (typele, nbelem), on "dédouble" la programmation avec IF (IACTIF.EQ.1) ... ELSE ...
+      Ces 2 routines sont alors plus rapides quand elles sont appelées par calcul.f car elles
+   bénéficient des adresses JEVEUX conservées dans les COMMON de calcul.f
+                                                                                            
+                                                                                   
+   6) Je modifie le calcul du coefficient de conditionnement des Lagranges (routine echmat.f) :
+      Plutot que de calculer la moyenne arithmétique des coeeficients "min" et "max" de la
+   diagonale des ddls physiques, je prend maintenant la valeur "max".
+      L'ordre de grandeur est le meme, mais l'avantage du "max" est que le coefficient de
+   conditionnement est maintenant le meme en séquentiel et en parallèle si MATR_DISTRIBUE='OUI'.
+      Jusqu'à présent, en parallèle, on prenait le "max" (sur les processeurs) des moyennes
+   "(max+min)/2"
+                                                                                            
+                                                                                   
+                                                                                            
+                                                                                   
+                                                                                            
+                                                                                   
+   ================================================================================
+   Impact documentaire :
+   ---------------------
+   D4.05.01  : Modification de la sd_partition.
+   D4.06.02  : Modification de sd_modele et sd_ligrel.
+   V1.01.307 : nouveau test
+   U4.11.01  : commande DEBUT     : ajout du mot clé TAILLE_GROUP_ELEM
+   U4.11.03  : commande POURSUITE : ajout du mot clé TAILLE_GROUP_ELEM
+                                                                                            
+                                                                                   
+   Liste des fichiers impactés par les fiches:  18345 et 18346
+     accep1.f  adalig.f  ajlipa.f  alligr.f  assma3.f  assmam.f
+     assmiv.f  assvec.f  calcul.f  cfcrma.f  charac.f  charme.f
+     charth.f  copisd.f  craglc.f  crelgt.f  cresol.f  crsolv.f
+     crsvfe.f  crsvl3.f  crsvld.f  crsvmu.f  debca1.f  debcal.f
+     detrsd.f  dismlg.f  echmat.f  execop.f  exlim1.f  ibdbgs.f
+     jevtbl.f  lgtlgr.f  liglma.f  manopg.f  mecoel.f  mefist.f
+     mmligr.f  nbelem.f  nmctcl.f  nugllo.f  op0018.f  op0113.f
+     op0127.f  promor.f  prosmo.f  ssdege.f  strmag.f  trigd.f
+     typele.f  ualfcr.f  uttcpi.f  uttcpl.f  w18imp.f  xmligr.f
+     mpicm1.F
+     sd_ligrel.py     sd_modele.py     sd_partition.py
+     debut.capy      poursuite.capy
+     zzzz307a.comm
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : D4.05.01 D4.06.02 V1.01.307 U4.11.01 U4.11.03
+VALIDATION
+    zzzz307a
+NB_JOURS_TRAV  : 12.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018346 DU 2012-02-03 12:22:05
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Amxc3xa9lioration du mxc3xa9canisme de "cache" pour la routine trigd.f
+FONCTIONNALITE
+   Problème :
+   ----------
+   Dans le cadre du CR AMA 11.267, N. Sellenet a montré que les performances de la routine
+   trigd.f (appelée par exchno.f) sont mauvaises lorsque les noeuds des éléments ne portent
+   pas tous les mêmes composantes.
+   C'est par exemple le cas du champ de déplacement des éléments de dualisation des
+   conditions aux limites (Lagrange).
+                          
+   L'objet de cette fiche est d'améliorer le mécanisme de "cache" de trigd pour ne pas être
+   trop pénalisé avec de tels champs.
+                          
+   Cette fiche bénéficiera également aux modélisations THM, XFEM ou "incompressibles" ainsi
+   qu'aux éléments de contact de la méthode CONTINUE.
+                         
+   Evolution :
+   -----------
+   On modifie la routine trigd.f pour étendre le mécanisme de "cache":
+   On conserve maintenant en mémoire 5 "configurations" d'entiers codés, correspondant à des
+   types de noeuds différents.
+                          
+   Validation :
+   ------------
+   Test :
+    * un cube maillé en 11x11x11 HEXA8
+    * On "boucle" 50 fois sur l'appel à exchno.f (pour faire ressortir le cout de cette routine)
+    * le calcul est un calcul STAT_NON_LINE / ELAS avec 10 itérations de Newton (forcées)
+    * on compare la modélisation '3D' (tous les noeuds portent les memes ddls)
+      et la modélisation '3D_INCO' (tous les noeuds ne portent pas les memes ddls)
+                                                                                            
+                                                                                            
+                     
+   Avant :
+   -------
+   MODELISATION='3D'
+   #2.1 Routine calcul     CPU (USER+SYST/SYST/ELAPS):      6.45      0.35      6.73
+   #2.1.1 Routines te00ij  CPU (USER+SYST/SYST/ELAPS):      2.51      0.02      2.60
+                                                                                       
+                           
+   MODELISATION='3D_INCO'
+   #2.1 Routine calcul     CPU (USER+SYST/SYST/ELAPS):     16.80      0.20     17.07
+   #2.1.1 Routines te00ij  CPU (USER+SYST/SYST/ELAPS):      3.58      0.04      3.66
+                                                                                            
+                           
+   On voit que '3D_INCO' est plus couteux que '3D' :
+     +1.06s pour te00ij (après tout, pourquoi pas ?)
+     +9.28s pour la préparation des te00ij (à cause de la routine exchno.f)
+                                                                                            
+                           
+   Après :
+   -------
+   MODELISATION='3D'
+   #2.1 Routine calcul       CPU (USER+SYST/SYST/ELAPS):      6.40      0.34      6.64
+   #2.1.1 Routines te00ij    CPU (USER+SYST/SYST/ELAPS):      2.59      0.02      2.63
+                                                                                            
+                         
+   MODELISATION='3D_INCO'
+   #2.1 Routine calcul       CPU (USER+SYST/SYST/ELAPS):      8.06      0.10      8.20
+   #2.1.1 Routines te00ij    CPU (USER+SYST/SYST/ELAPS):      3.66      0.03      3.64
+                                                                                            
+                        
+   On voit que :
+     * Le cout de te00ij n'a pas changé (ce qui est normal !)
+     * La préparation des te00ij pour 3D ne coute pas plus cher qu'avant l'évolution.
+       (pourtant, elle devrait couter un petit peu plus).
+     * Le surcout 3D_INCO/3D pour la préparation de te00ij est maintenant faible (0.55).
+       C'est ce que l'on voulait.
+                        
+   Liste des fichiers impactés par la correction de la fiche:  18346
+     trigd.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    essai perso
+NB_JOURS_TRAV  : 1.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018461 DU 2012-02-23 16:18:41
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    Bug dans COPISD
+FONCTIONNALITE
+   Problème :
+   ----------
+   Mickael Abbas a remarqué une faute de frappe dans la routine copisd.f :
+           CALL JEDUP1(K191//'.REPA',BAS2,K192//'.REPE')
+                                                                                            
+                         
+   Correction :
+   ------------
+   On corrige la faute.
+   Maintenant :
+           CALL JEDUP1(K191//'.REPE',BAS2,K192//'.REPE')
+                                                                                            
+                         
+   Analyse, Résultats faux ? :
+   ---------------------------
+   Cette erreur a pour effet que l'on ne dupplique pas l'objet (facultatif) .REPE des ligrel.
+   Il n'y a qu'une seule routine qui dupplique un ligrel : op0030.f (DEFI_CONTACT).
+                                                                                            
+                         
+   L'objet .REPE n'existe que si le ligrel concerne des mailles du maillage (physiques).
+   Dans DEFI_CONTACT, le ligrel ne contient que des mailles tardives. Il ne contient pas
+   d'objet .REPE.
+                                                                                            
+                         
+   L'erreur est donc sans conséquence.
+    
+   Liste des fichiers impactés par la correction de la fiche:  18461
+     copisd.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    rien de particulier
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018509 DU 2012-03-06 11:49:13
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    AFFE_CHAR_XXX_F + LIAISON_DDL : le second membre n'est pas normalisxc3xa9 quand il s'agit d'une fonction
+FONCTIONNALITE
+   Problème :
+   ----------
+   E. Cheignon a remarqué qu'AFFE_CHAR_MECA_F engendre parfois des relations 
+   linéaires fausses.
+   Ce qui entraine des résultats faux !
+                                                                                            
+                                                                  
+   Analyse :
+   ---------
+   Il manque en effet une ligne dans la routine afrela.f pour remettre RCOEF=1. 
+   quand le
+   second membre est de type "fonction" :
+         ELSE IF (TYPVAL.EQ.'FONC') THEN
+   C       -- ON ALARME SI LRCOEF EST TROP DIFFERENT DE 1.
+           IF ((RCOEF.GT.1.D3) .OR. (RCOEF.LT.1.D-3))
+        &     CALL U2MESS('A','MODELISA_99')
+   C       -- ON NE PEUT PAS "DIVISER" LE SECOND MEMBRE (FONCTION) !
+           RCOEF=1.D0     <--- ligne manquante !!!
+         END IF
+                                                                                            
+                                                                  
+   Cette erreur existe apparemment depuis toujours.
+                                                                                            
+                                                                  
+   Correction :
+   ------------
+   Je corrige afrela.f pour ajouter RCOEF=1.D0
+                                                                                            
+                                                                  
+   Détail :
+   --------
+   J'en profite pour remettre l'alarme MODELISA_99 supprimée par erreur (voir fiche 
+   18531).
+   Cette alarme explique qu'il y a un danger quand on écrit une relation linéaire 
+   avec un
+   second membre "fonction" si les coefficients du 1er membre (réels) sont très 
+   différents de
+   1. :
+                                                                                            
+                                                                  
+   !--------------------------------------------------------------------------------
+   -----------------------------------------------------!
+   !.<A>.
+   <MODELISA_99>....................................................................
+   ...............................................!
+   !................................................................................
+   .....................................................!
+   !.Problème.:.....................................................................
+   .....................................................!
+   !...Une.relation.linéaire.entre.ddls.a.un.second.membre.de.type."fonction".......
+   .....................................................!
+   !...On.ne.peut.pas.la.normaliser.
+   (afin.que.son.plus.grand.coefficient.soit.1.).car.on.ne.sait.pas."diviser".une.fo
+   nction.par.un.réel..!
+   !................................................................................
+   .....................................................!
+   !...Le.plus.grand.coefficient.de.la.relation.est.très.différent.de.1...(<1.d-
+   3.ou.>.1.d3).............................................!
+   !...Cette.équation.(non-
+   normalisée).peut.conduire.à.des.difficultés.numériques.lors.de.la.résolution.des.
+   systèmes.linéaires...........!
+   !................................................................................
+   .....................................................!
+   !.Conseil.:......................................................................
+   .....................................................!
+   !...Utilisez.le.solveur.Mumps.afin.de.contrôler.la.qualité.de.la.résolutions.des.
+   systèmes.linéaires...................................!
+   !--------------------------------------------------------------------------------
+   -----------------------------------------------------!
+                                                                                            
+                                                                  
+   Résultats faux :
+   ----------------
+   Malheureusement, cette erreur conduit systématiquement a des résultats faux.
+   Les conditions de résultats faux sont :
+      * Utilisation d'AFFE_CHAR_MECA_F (ou AFFE_CHAR_THER_F) avec le mot-clé 
+   LIAISON_DDL (ou
+   LIAISON_GROUP ou LIAISON_OBLIQUE)
+      * Le second membre de la liaison entre ddls (mot-clé COEF_IMPO) est une 
+   fonction
+   différente de 0.
+      * Le plus grand coefficient de la liaison entre dlls (mot-clé COEF_MULT) est 
+   différent
+   de 1.
+    
+    
+   Liste des fichiers impactés par la correction de la fiche:  18509
+     afrela.f
+     modelisa.py
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 10.0
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 11.0
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    xc3xa9tude fournie
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR assire       ASSIRE Aimery          DATE 03/13/2012 - 11:31:36
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018116 DU 2011-12-16 22:32:00
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    [FORUM] AFFE_CHAR_MECA / RBE3 rigid body elements
+FONCTIONNALITE
+   Contexte :
+   ----------
+   
+   Le modèle de liaison RBE3, bien connue dans le domaine du dimensionnement automobile de
+   structures assemblées (automobile, aéronautique…), permet de répartir les forces et
+   moments exercés sur un nœud maître à un ensemble de nœuds esclaves, en prenant en compte
+   le centre de gravité de l’ensemble de nœuds esclaves, les degrés de libertés activés par
+   l’utilisateur, et les poids associés.
+   
+   Il s'agit de relations permettant de spécifier la valeur de certains degrés de libertés
+   d'un nœud maître comme étant la moyenne pondérée de certains déplacements et de certaines
+   rotations de nœuds esclaves.
+   
+   Les relations linéaires produites sont telles que les efforts vus par le nœud maître sont
+   distribués aux nœuds esclaves proportionnellement à leur distance au centre de gravité des
+   nœuds esclaves. D'éventuelles pondérations supplémentaires fournies par l'utilisateur
+   peuvent être prises en compte. Pour plus de précisions, on pourra se reporter à la doc de
+   référence R3.03.08.
+   
+   Ce développement provient de l'externe : il a été financé par Arcelor-Mittal et réalisé
+   par Alneos. La propriété des sources est reversée à EDF pour intégration dans Aster.
+   
+   
+   Syntaxe :
+   ---------
+   
+   LIAISON_RBE3=_F(.
+   .♦./.GROUP_NO_MAIT=gno,....[gr_noeud]
+   .../.NOEUD_MAIT=no,........[noeud]
+   .♦.DDL_MAIT=ddl_mait,......[l_Kn]
+   .♦../.GROUP_NO_ESCL=lgno,..[l_gr_noeud]
+   ..../.NOEUD_ESCL=lno.,.....[l_noeud].
+   .♦.DDL_ESCL=.ddl,..........[l_Kn]
+   .◊.COEF_ESCL=,.............[l_R]
+   .◊.NUME_LAGR.=./.'NORMAL',.[DEFAUT]
+   .............../.'APRES',
+   )
+   
+   
+   Cas-tests :
+   -----------
+   6 nouveaux cas-test :
+   
+   - liaison de type RBE3 entre une plaque et un discret (3D + DKT) -> V3.03.136 - SSLS136
+   - liaison de type RBE3 entre un cube et un discret (3D) -> V3.04.157 - SSLV157
+   - liaison de type RBE3 entre un carré et un discret (2D) -> V3.02.113 - SSLP113
+   
+   Comparaison par rapport à Nastran et/ou par rapport aux mêmes relations exprimées
+   explicitement par un LIAISON_DDL.
+   
+   
+   Documentation : 
+   ---------------
+   R3.03.08, U4.44.01, V3.03.136, V3.04.157, V3.02.113
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R3.03.08,U4.44.01,V3.03.136,V3.04.157,V3.02.113
+VALIDATION
+    SSLS136, SSLV157, SSLP113
+NB_JOURS_TRAV  : 20.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR bodel        BODEL Charles          DATE 03/13/2012 - 11:31:36
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013439 DU 2009-05-20 11:14:44
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Evolution sur DEFI_SPEC_TURB et PROJ_SPEC_BASE
+FONCTIONNALITE
+   CONTEXTE ET OBJECTIFS :
+   ----------------------- 
+   Les fonctionnalites actuellement disponibles de DEFI_SPEC_TURB ne permettent de 
+   definir que des inter-spectres figes selon des theories qu'on ne discute pas ici.
+   De maniere a s'adapter a des cas de figure differents, et dans la perspective de 
+   proposer des outils les plus polyvalents possibles, on propose de definir une 
+   nouvelle option pour definir un inter-spectre d'excitation base sur des fonctions 
+   analytiques.
+   
+   REALISATION :
+   -------------
+   On ne touche pas aux options existantes de DEFI_SPEC_TURB. Les cas-tests 
+   utilisant 
+   cet operateur (ainsi que PROJ_SPEC_BASE) sont testes.
+   
+   On developpe une option SPEC_CORR_CONV_3, qui permet de definir un spectre par 
+   une formule analytique (ou tabulee par une fonction python) de la forme 
+   f(X1,Y1,Z1,X2,Y2,Z2,FREQ). 
+   Par la suite, l'operateur PROJ_SPEC_BASE projette l'inter-spectre defini sur une 
+   base 
+   de modes : 
+     SQQ(mode1,mode2,FREQ) =  
+   int(int(phi(X1,Y1,...,mode1).f(X1,Y1,...FREQ).phi(X1,...,mode1),dX1,dY1,...,dX2..
+   .))
+   
+   
+   La syntaxe des commandes se fait comme suit : 
+   
+   SXX = FORMULE(NOM_PARA=('X1','Y1','Z1','X2','Y2','Z2','FREQ'),
+                 VALE_C='f1(X1,Y1,Z1,X2,Y2,Z2,FREQ)',)
+   
+   SYY = FORMULE(NOM_PARA=('X1','Y1','Z1','X2','Y2','Z2','FREQ'),
+                 VALE_C='f2(X1,Y1,Z1,X2,Y2,Z2,FREQ)');
+   
+   SXY = FORMULE(NOM_PARA=('X1','Y1','Z1','X2','Y2','Z2','FREQ'),
+                 VALE_C='f3(X1,Y1,Z1,X2,Y2,Z2,FREQ)');
+   
+   # SYX = CONJUGUE DE SXY
+   SYX = FORMULE(NOM_PARA=('X1','Y1','Z1','X2','Y2','Z2','FREQ'),
+                 VALE_C='f4(X1,Y1,Z1,X2,Y2,Z2,FREQ)');
+   
+   # INTER-SPECTRE AVEC EFFORTS X ET Y CORRELES
+   INTESPEC=CREA_TABLE(LISTE=(_F(LISTE_K=
+   ('SXX','SYY','SXY','SYX'),PARA='FONCTION_C'),
+                              _F(LISTE_K=('DX','DY','DX','DY'),PARA='NUME_ORDRE_I'),
+                              _F(LISTE_K=
+   ('DX','DY','DY','DX'),PARA='NUME_ORDRE_J'),),
+                       TYPE_TABLE='TABLE_FONCTION',
+                       TITRE='EXCITATION FLUIDE TURBULENTE');
+   
+   SPECTRE1=DEFI_SPEC_TURB( SPEC_CORR_CONV_3=_F( TABLE_FONCTION = INTESPEC ),);
+   
+   SPPROJ=PROJ_SPEC_BASE( SPEC_TURB=SPECTRE1,
+                          MODELE_INTERFACE=MODELE,
+                          GROUP_MA='BAS',
+                          NB_POIN=2,
+                          FREQ_INIT= 10 ,
+                          FREQ_FIN= 20 ,
+                          TOUT_CMP='NON',
+                          GROUP_MA='GR1',
+                          MODE_MECA=MODES );
+   
+   Par exemple, la fonction f1 peut etre definie selon un modele de CORCOS : 
+   f1 = exp(-
+   FREQ/freq0)*exp(distance(X1,Y1,Z1,X2,Y2,Z2)/correl(FREQ))*complex(cos(2*pi*FREQ*
+   (Y2-
+   Y1)/Uc),sin(2*pi*FREQ*(Y2-Y1)/Uc))
+   
+   La double integration se fait par somme sur les points de Gauss. On interpole la 
+   valeur des modes propres definis aux noeuds sur les points de Gauss. 
+   On cree pour cela deux nouvelles grandeurs dans gener_mepdt1.cata. : 
+    - EDEPLRPG : deplacement reel aux points de Gauss
+    - EDEPLCPG : deplacement complexe aux points de Gauss.
+   Dans tou_ini_elga.cata, on ajoute l'option de calcul PDEPL_C (idem que PDEPL_R)
+   
+   Les concepts manipules ne sont pas specifiques a l'IFS. C'est generalisable au 
+   cas du 
+   seisme par exemple, pour definir une excitation se proprageant.
+   
+   Inconvenient : la double boucle d'integration (a laquelle il faut ajouter une 
+   boucle 
+   sur les modes et sur les pas de frequence) est tres gourmande en CPU. Il faut se 
+   restreindre a des petits modeles (quelques centaines de DDL). Le stockage memoire 
+   n'est quant a lui pas enorme puisqu'on n'a qu'a stocker une matrice de modes 
+   propres 
+   intermaidiaire supplementaire. Le resultat final est un inter-spectre modal, donc 
+   de 
+   taille fortement reduite par rapport a l'inter-spectre physique qu'il serait 
+   impossible de stocker (matrice pleine de taille NBDDLxNBDDLxNBFREQ).
+   
+   Deux cas-tests sont ajoutes : sdll148a (validation analytique) et sdll148b 
+   (validation 
+   par non-regression).
+   
+   Modifications et ajouts : 
+    - bibfor : modif de op0145.f (DEFI_SPEC_TURB), de sfifj.f (PROJ_SPEC_BASE),
+    - bibfor : ajout de accep2.f (prepatation du calcul dans PSB), evalis.f 
+   (premiere 
+   boucle de calcul) et de evali2.f (2e boucle de calcul),
+    - cata : modif de gener_mepdt1.cata et de tou_ini_elga.cata,
+    - bibpyt : ajout de messages dans Modelisa10.py, modif de sd_spectre.py pour 
+   prendre 
+   en compte la nouvelle option.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.44.31,U4.63.14,V2.02.148
+VALIDATION
+    sdll148a, sdll148b
+NB_JOURS_TRAV  : 25.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 03/13/2012 - 11:31:36
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018539 DU 2012-03-13 09:22:45
+TYPE express concernant Code_Aster (VERSION 10.5)
+TITRE
+    11 Tests NOOK suite fiche 18509
+FONCTIONNALITE
+   Problème :
+   ----------
+   Suite à la correction de la fiche 18509 11 tests sont devenus NOOK :
+                                                                                            
+                           
+   ssla200a  ssla200b  sslp200a  sslp200b  sslp201a  sslp201b
+   sslv200a  sslv200b  ttna200a  ttnp200a  wtnv113j
+                                                                                            
+                           
+   Analyse :
+   ------------
+   Dans ces tests (de non-regression), on utilise des fonctionnalités donnant des résultats
+   faux :
+   / AFFE_CHAR_THER_F + LIAISON_DDL (avec coefficients de la relation > 1.)
+   / AFFE_CHAR_MECA_F + LIAISON_DDL (avec coefficients de la relation > 1.)
+   / AFFE_CHAR_MECA_F + LIAISON_GROUP (avec coefficients de la relation > 1.)
+   / AFFE_CHAR_MECA_F + LIAISON_OBLIQUE (=> coefficients de la relation < 1.)
+                                                                                            
+                           
+   Correction :
+   ------------
+   Comme ces tests sont tous des tests de pure non-régression, je ne me pose pas de question
+   et je remplace toutes les valeurs attendues par les nouvelles valeurs obtenues.
+   Au passage, je réduits la précision de ces tests : 1.e-9 
+   
+   Resultats faux : voir réponse à la fiche 18509.
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 10.0
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 11.0
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    tests incriminés
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR siavelis     SIAVELIS Maximilien    DATE 03/13/2012 - 11:07:14
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018149 DU 2012-01-04 09:22:50
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    X-FEM : pivot nul multi-Heaviside avec contact et xc3xa9lxc3xa9ment de bord
+FONCTIONNALITE
+   On obtient aléatoirement des pivots nuls lorsque des éléments de bord sont déclarés dans un modèle X-FEM avec contact et que ces 
+   éléments de bord sont traversés par plusieurs fissures. Les relations liés à la LBB sont fausses lorsque les mailles de bord sont 
+   parcourues avant les mailles volumiques.
+   
+   EXPLICATION : 
+   La routine xlags2 utilise la SD MODELE//'.NOXFEM' pour retrouver une maille X-FEM associée à un noeud. Si cette maille X-FEM est 
+   un élément de bord, le champ specifique au contact multi-Heaviside MODELE//'.HEAVNO' n'existe pas (car pas de contact pour les 
+   mailles de bord). On croit alors qu'il ne s'agit pas d'un noeud multi-Heaviside et la valeur 1 est associé par defaut comme numéro de 
+   ddl de Lagrange pour l'imposition des relations.
+   Avec l'ancien maillage, le problème n'apparaissait pas car on parcourait les mailles volumiques avant les mailles de bord. Ainsi la SD 
+   MODELE//'.NOXFEM' était bien renseignée avec des mailles volumique.
+   
+   SOLUTION : 
+   Il ne faut pas remplir la SD MODELE//'.NOXFEM' avec des éléments de bord. On corrige cela en blindant lors de la creation de ce 
+   champ dans MODI_MODELE_XFEM.
+   
+   IMPACT : xconno.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    ssnv510 et format MED
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018447 DU 2012-02-22 16:48:08
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    X-FEM : bug tolxc3xa9rance pour l'enrichissement jonction dans xstano
+FONCTIONNALITE
+   Il s'agit d'une tolérance qui permet d'éviter les petits pivots mais qui
+   provoque des plantages dans certains cas de figure avec contact.
+   
+   SOLUTION : On enlève cette tolérance car le ddl est éliminé par le critère de rigidité.
+   
+   IMPACT : xstano.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    ssnv511 ssnv512 ssnv513
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018448 DU 2012-02-22 16:51:14
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    X-FEM : erreur dans CREA_CHAMP pour l'initialisation des contraintes
+FONCTIONNALITE
+   Si on essaye de créer un champ pour l'initialisation des contraintes avec X-FEM, comme cela est fait dans le cas test 
+   zzzz130a.comm, on obtient l'erreur suivante :
+   
+     SIGINI=CREA_CHAMP(INFO=1,
+                       ASSE=_F(NOM_CMP_RESU=('SIXX','SIYY','SIZZ',),
+                               NOM_CMP=('X1','X2','X3',),
+                               CUMUL='NON',
+                               CHAM_GD=SIG2,
+                               COEF_R=1.0,
+                               TOUT='OUI'),
+                       TYPE_CHAM='ELGA_SIEF_R',
+                       PROL_ZERO='OUI',
+                       OPERATION='ASSE',
+                       MODELE=MODELEK,
+                       );
+   
+      
+      !------------------------------------------------------------------------------!
+      ! <F> <CALCULEL_57>                                                            !
+      !                                                                              !
+      !  Erreur Utilisateur :                                                        !
+      !    On cherche Ã  transformer un champ simple en CHAM_ELEM.                    !
+      !    Le nombre de "points" (points de Gauss ou noeuds) du champ simple (4) est !
+      !    diffÃ©rent du nombre de points attendu pour le CHAM_ELEM (72) :            !
+      !      - maille              :  M157                                           !
+      !      - nom du CHAM_ELEM    :  SIGINI                                         !
+      !      - nom du champ simple :  &&CHPASS.CHS3                                  !
+      !                                                                              !
+      !                                                                              !
+      ! Cette erreur est fatale. Le code s'arrÃªte.                                   !
+      !------------------------------------------------------------------------------!
+      
+   Liste des appels successifs (option -traceback)
+   Image              PC                Routine            Line        Source             
+   asteru             0000000003407B7A  Unknown               Unknown  Unknown
+   asteru             00000000034066F5  Unknown               Unknown  Unknown
+   asteru             0000000003358756  Unknown               Unknown  Unknown
+   asteru             000000000330CDBB  Unknown               Unknown  Unknown
+   asteru             000000000057B872  trabck_                    34  trabck.F
+   asteru             00000000005744AC  u2mesg_                    83  u2mesg.f
+   asteru             0000000000C613BB  cescel_                   662  cescel.f
+   asteru             00000000006C2B16  chpass_                   297  chpass.f
+   asteru             00000000005DA0B0  op0195_                   202  op0195.f
+   asteru             0000000000594BB7  ex0100_                   333  ex0100.f
+   asteru             0000000000565178  execop_                    63  execop.f
+   asteru             0000000000540082  expass_                    64  expass.f
+   asteru             0000000000524567  aster_oper               2070  astermodule.c
+   asteru             0000000001B30905  Unknown               Unknown  Unknown
+   asteru             0000000001B31200  Unknown               Unknown  Unknown
+   asteru             0000000001B31200  Unknown               Unknown  Unknown
+   asteru             0000000001B31200  Unknown               Unknown  Unknown
+   asteru             0000000001B31200  Unknown               Unknown  Unknown
+   asteru             0000000001B31200  Unknown               Unknown  Unknown
+   asteru             0000000001B32321  Unknown               Unknown  Unknown
+   asteru             0000000001B304B2  Unknown               Unknown  Unknown
+   asteru             0000000001B31200  Unknown               Unknown  Unknown
+   asteru             0000000001B32321  Unknown               Unknown  Unknown
+   asteru             0000000001B323F2  Unknown               Unknown  Unknown
+   asteru             0000000001B525CE  Unknown               Unknown  Unknown
+   asteru             0000000001B527E4  Unknown               Unknown  Unknown
+   asteru             0000000001B604BD  Unknown               Unknown  Unknown
+   asteru             000000000051FFC1  main                       77  python.c
+   libc.so.6          00007FFB7B860C8D  Unknown               Unknown  Unknown
+   asteru             000000000051FE69  Unknown               Unknown  Unknown
+   Segmentation fault (core dumped)
+   
+   EXPLICATION :
+   Le champ SIG2 n'a pas été créé avec le bon nombre de point de Gauss. En effet quelque soit l'opération effectuée dans 
+   CREA_CHAMP avec les TYPE_CHAM 'ELGA_NEUT_F', 'ELGA_GEOM_R' ou 'ELGA_NEUT_R', on prend en compte les points de 
+   Gauss de l'élément parent au lieu des points de gauss des sous-éléments. Ici on a de la chance de planter dans ce CREA_CHAMP 
+   qui repère une incohérence entre la taille de ELGA_SIEF_R (72) et de ELGA_NEUT_R (4) mais notons que le problème vient du
+   CREA_CHAMP précédent créant SIG2 qui ne repère aucune anomalie.
+   
+   SOLUTION :
+   Il faut modifier tous les catalogues X-FEM (sauf les éléments de bords) et déclarer la famille XFEM et non RIGI pour les 3 champs 
+   correspondants EGGEOM_R, EGNEUT_F et EGNEUT_R :
+   
+   < EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        )
+   > EGGEOM_R = GEOM_R   ELGA__ XFEM    (X        Y        Z        )
+   
+   < EGNEUT_F = NEUT_F   ELGA__ RIGI    (X
+   > EGNEUT_F = NEUT_F   ELGA__ XFEM    (X
+   
+   < EGNEUT_R = NEUT_R   ELGA__ RIGI    (X
+   > EGNEUT_R = NEUT_R   ELGA__ XFEM    (X
+   
+   Pour info : la famille RIGI est toujours présente dans les catalogues. Après confirmation par Samuel, elle n'est pas utilisée et il 
+   faudrait faire un nettoyage. Cependant, Patrick souhaite la conserver pour de futurs développements qui visent à faire appel à cette 
+   famille pour l'intégration. On utiliserait un shéma d'ordre plus élevé dans les éléments coupés mais la position et le nombre de points 
+   ne dépendrait pas du découpage. Le but serait de gagner en performance mais aussi d'aller vers la propa en plasticité.
+   
+   IMPACT : gener_me*_x*.cata
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    test perso
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018449 DU 2012-02-22 16:55:28
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    X-FEM : résultats faux avec bi-materiau et COMP_INCR
+FONCTIONNALITE
+   Il est possible avec X-FEM de définir un matériau différent de part et d'autre de la discontinuité.
+   Cela fonctionne avec COMP_ELAS (voir cas test ssnv209) mais pas avec COMP_INCR (on obtient des résultats faux).
+   
+   Le problème est dans l'appel à NMCOMP qui se fait avec la famille et le point de gauss du sous élément alors
+   que pour connaitre l'emplacement du point par rapport à la discontinuité, le champ neutre de la level set est
+   interpolé à partir des noeuds de l'élément parent.
+   
+   SOLUTION :
+   Il faut utliser la famille et le point de gauss dans l'élément parent :
+   
+   < CALL NMCOMP('RIGI',KPG,1,2,TYPMOD,IMATE,COMPOR,CRIT,
+   > CALL NMCOMP('XFEM',IDECPG+KPG,1,2,TYPMOD,IMATE,COMPOR,CRIT,
+   
+   On valide l'approche en passant le cas test ssnv209c de COMP_ELAS à COMP_INCR
+   
+   IMPACT : xnmgr.cata xnmgr2.cata xnmgr3.cata xnmpl.f xnmpl2.f xnmpl3.f, ssnv209c
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 9.2.14
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 10.2
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.04.209
+VALIDATION
+    ssnv209
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018450 DU 2012-02-22 17:08:26
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    X-FEM : bug jonction dans DEFI_FISS_XFEM
+FONCTIONNALITE
+   Lors de la définition d'un branchement avec le mot clé JONCTION dans l'opérateur DEFI_FISS_XFEM, on obtient parfois des 
+   écrasements mémoire dans la routine xinlsj.
+   
+   SOLUTION :
+   La structure '&&XINLSJ.LICMP' est sous-dimensionée, on corrige en modifiant et en déplaçant la ligne :
+   < CALL WKVECT('&&XINLSJ.LICMP' ,'G V K8' ,2*NFISS,JNCMP)
+   > CALL WKVECT('&&XINLSJ.LICMP' ,'V V K8' ,2*NFISS,JNCMP)
+   
+   On en profite pour déclarer les vecteurs '&&XINLSJ.LICMP' et '&&XINLSJ.FISS' en volatile plutôt qu'en global car ils sont détruits à la fin 
+   de la routine. En faisant un grep dans le fortran X-FEM, il n'y a a priori pas d'autre endroit où on appelle wkvect en global pour des 
+   vecteurs temporaires.
+   
+   IMPACT : xinlsj.f
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 10.3.3
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 10.3.3
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    ssnv511 ssnv512 ssnv513
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018451 DU 2012-02-22 17:25:23
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    X-FEM :problxc3xa8me pilotage sur condition de Neumann avec X-FEM
+FONCTIONNALITE
+   Si on essaie de piloter un chargement de Neumann (PRES_REP dans AFFE_CHAR_MECA par exemple) faisant intervenir des 
+   éléments X-FEM, on plante salement dans STAT_NON_LINE.
+   Le problème est que la routine vefpme n'a pas été prévu pour X-FEM. On plante donc dans les TE car les chargements ne sont pas 
+   déclarés.
+   
+   SOLUTION :
+   Il faut ajouter les SD XFEM en entrée de calcul dans la routine vefpme, de la même manière que cela est fait dans vechme
+   
+   IMPACT : vefpme.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    test perso
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018468 DU 2012-02-27 15:55:41
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    X-FEM : problxc3xa8me de pivot nul en fond de fissure avec contact
+FONCTIONNALITE
+   Si on modifie légèrement la level set tangente, par exemple si on remplace dans le cas test ssnp503m :
+   
+   < LT2=FORMULE(NOM_PARA=('X','Y'),VALE='X-3');
+   > LT2=FORMULE(NOM_PARA=('X','Y'),VALE='X-3.000001+0.01*(Y-6.5)');
+   
+   on obtient un pivot nul sur des Lagranges en fonds de fissure.
+   
+   EXPLICATION :
+   Ces Lagranges ne fond pas intervenir de facettes de contact et ne devraient pas etre introduits. Il existe en effet un élément de fond de 
+   fissure qui est déclaré avec contact dans xtyele, mais pour lequel aucune facette de contact n'est ensuite créée dans te te0510. Cela 
+   est lié à la tolérance sur la proximité des points d'intersection dans xpoajn qui est de 10^{-6} fois la longueur d'arête.
+   
+   SOLUTION :
+   Il faut tenir compte de cette tolérance dans la routine xtyele. On vérifie à ce niveau que le point d'intersection n'est pas trop proche des 
+   points de fond de fissure en faisant appel à intfac. Le contact est désactivé sur une maille de fond qui est hors tolérance.
+   
+   IMPACT : xtyele
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    ssnp503m
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018469 DU 2012-02-27 16:17:06
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    X-FEM : bug dimension du maillage dans PROPA_XFEM
+FONCTIONNALITE
+   On plante salement dans PROPA_XFEM en 2D avec un maillage gmsh.
+   
+   EXPLICATION :
+   On récupère ndim=3 au lieu de ndim=2 dans l'op0010.
+   
+   SOLUTION :
+   il faut récupérer la dimension avec DISMOI et non NOMA//'.DIME' :
+   < CALL JEVEUO(NOMA//'.DIME','L',JDIME)
+   < NDIM  = ZI(JDIME-1+6)
+   > DISMOI('F','DIM_GEOM',NOMA,'MAILLAGE',NDIM,K8BID,IRET)
+   En effet dans le cas ou la composante Z existe mais est nulle pour tous les noeuds, DISMOI retourne ndim=2.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    test perso + cas tests X-FEM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR tardieu      TARDIEU Nicolas        DATE 03/12/2012 - 01:28:30
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015210 DU 2010-06-15 12:06:15
+TYPE evolution concernant Documentation (VERSION )
+TITRE
+    MN01 - Doc U2 adaptation de maillage en non_linxc3xa9aire
+FONCTIONNALITE
+   L'objet de cette fiche est de produire une documentation qui décrit le processus
+   d'adaptation de maillage au cours du transitoire non-linéaire.
+   On met en avant les différentes phases essentielles de ce processus, à savoir l'adaptation
+   du maillage, la projection des champs (on insiste sur l'intérêt de la projection aux
+   points d'intégration) puis le ré-équilibrage des champs projetés. 
+   On insiste tout particulièrement sur ce point qui permet d'obtenir un ensemble de champs
+   mécanique cohérents au sens de l'équilibre et de la loi de comportement, ce qui offre une
+   certaine garantie de pouvoir continuer le transitoire.
+   Cette documentation s'appuie sur un nouveau cas test, SSNP158 v6.03.158, qui met en œuvre
+   cette démarche sur le test de la plaque trouée en élasto-plasticité.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : v6.03.158,u2.08.09
+VALIDATION
+    Passage du test
+NB_JOURS_TRAV  : 10.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018485 DU 2012-03-01 12:35:16
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    forma01c est en VISU_EFICAS='OUI'
+FONCTIONNALITE
+   Problème :
+   forma01c est en VISU_EFICAS='OUI' alors qu'il contient une boucle en python
+   
+   Solution :
+   On passe le test en VISU_EFICAS='NON' et, comme signalé par SG, on supprime PAR_LOT='NON'.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    Sans objet
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT sdll148a                       pellet J.PELLET           145    145      0
+ CASTEST AJOUT sdll148b                       pellet J.PELLET           168    168      0
+ CASTEST AJOUT sslp113a                       pellet J.PELLET           102    102      0
+ CASTEST AJOUT sslp113b                       pellet J.PELLET           124    124      0
+ CASTEST AJOUT ssls136a                       pellet J.PELLET           116    116      0
+ CASTEST AJOUT ssls136b                       pellet J.PELLET           134    134      0
+ CASTEST AJOUT sslv157a                       pellet J.PELLET           102    102      0
+ CASTEST AJOUT sslv157b                       pellet J.PELLET           135    135      0
+ CASTEST AJOUT ssnp158a                      tardieu N.TARDIEU          336    336      0
+ CASTEST AJOUT ssnp158b                      tardieu N.TARDIEU          175    175      0
+ CASTEST AJOUT zzzz307a                       pellet J.PELLET            94     94      0
+ CASTEST MODIF erreu10a                      greffet N.GREFFET          192     75      2
+ CASTEST MODIF forma01c                      tardieu N.TARDIEU          222      3      3
+ CASTEST MODIF sdll110a                       pellet J.PELLET           539      2      1
+ CASTEST MODIF sdll110b                       pellet J.PELLET           488      2      1
+ CASTEST MODIF sdll110c                       pellet J.PELLET           489      2      1
+ CASTEST MODIF sdll110d                       pellet J.PELLET           516      2      1
+ CASTEST MODIF sdll110e                       pellet J.PELLET           516      2      1
+ CASTEST MODIF sdll115a                       pellet J.PELLET          1445      5      1
+ CASTEST MODIF sdll115b                       pellet J.PELLET           807      5      3
+ CASTEST MODIF sdll116a                       pellet J.PELLET          4991      2      1
+ CASTEST MODIF sdll117a                       pellet J.PELLET          1429      5      1
+ CASTEST MODIF sdll501a                       pellet J.PELLET           499      2      1
+ CASTEST MODIF sdll502a                       pellet J.PELLET           491      2      1
+ CASTEST MODIF sdll503a                       pellet J.PELLET           329      2      1
+ CASTEST MODIF sdll503b                       pellet J.PELLET           365      2      1
+ CASTEST MODIF sdll503c                       pellet J.PELLET           465      2      1
+ CASTEST MODIF sdll504a                       pellet J.PELLET           518      2      1
+ CASTEST MODIF sdll504b                       pellet J.PELLET           533      2      1
+ CASTEST MODIF sdll504c                       pellet J.PELLET           533      2      1
+ CASTEST MODIF sdll505a                       pellet J.PELLET           412      2      1
+ CASTEST MODIF sdll506a                       pellet J.PELLET           490      2      1
+ CASTEST MODIF sdll507a                       pellet J.PELLET           350      3      2
+ CASTEST MODIF sdll508a                       pellet J.PELLET           352      3      2
+ CASTEST MODIF sdll508b                       pellet J.PELLET           352      3      2
+ CASTEST MODIF sdll508c                       pellet J.PELLET           359      3      2
+ CASTEST MODIF sdls105a                       pellet J.PELLET           323      5      2
+ CASTEST MODIF sdls105b                       pellet J.PELLET           300      3      2
+ CASTEST MODIF sdls107a                       pellet J.PELLET           404      2      1
+ CASTEST MODIF sdnd102b                      greffet N.GREFFET          827    148      4
+ CASTEST MODIF sdnl112a                       pellet J.PELLET           301      2      1
+ CASTEST MODIF sdnl112b                       pellet J.PELLET           558      2      1
+ CASTEST MODIF sdnl112c                       pellet J.PELLET           628      2      1
+ CASTEST MODIF sdnl131a                     courtois M.COURTOIS         997      1      8
+ CASTEST MODIF sdnl133b                     courtois M.COURTOIS         314      3     22
+ CASTEST MODIF sdnl136a                       pellet J.PELLET           657      2      1
+ CASTEST MODIF ssla200a                       pellet J.PELLET          1330    236    235
+ CASTEST MODIF ssla200b                       pellet J.PELLET          1360    249    248
+ CASTEST MODIF ssll105d                      greffet N.GREFFET          160      6      3
+ CASTEST MODIF sslp200a                       pellet J.PELLET          1471    259    259
+ CASTEST MODIF sslp200b                       pellet J.PELLET          1525    257    257
+ CASTEST MODIF sslp201a                       pellet J.PELLET          1216    203    203
+ CASTEST MODIF sslp201b                       pellet J.PELLET          1464    237    237
+ CASTEST MODIF sslv200a                       pellet J.PELLET          1099    176    177
+ CASTEST MODIF sslv200b                       pellet J.PELLET          1060    153    153
+ CASTEST MODIF sslx100b                     desroche X.DESROCHES        320    100      7
+ CASTEST MODIF ssnp15c                      desroche X.DESROCHES        652    250    232
+ CASTEST MODIF ssnp15d                      desroche X.DESROCHES        523    238    196
+ CASTEST MODIF ssnv102c                       pellet J.PELLET           240      4      4
+ CASTEST MODIF ssnv190a                       flejou J-L.FLEJOU         308      3      3
+ CASTEST MODIF ssnv190b                       flejou J-L.FLEJOU         390      3      3
+ CASTEST MODIF ssnv209c                     siavelis M.SIAVELIS         487      2      2
+ CASTEST MODIF supv002a                     courtois M.COURTOIS         139     11      7
+ CASTEST MODIF ttna200a                       pellet J.PELLET           620     20     20
+ CASTEST MODIF ttnp200a                       pellet J.PELLET           615     23     22
+ CASTEST MODIF wdnp101a                     foucault A.FOUCAULT        1060     96      5
+ CASTEST MODIF wdnp101b                     foucault A.FOUCAULT         867     97      5
+ CASTEST MODIF wtnv111a                       pellet J.PELLET           201      3      5
+ CASTEST MODIF wtnv111b                       pellet J.PELLET           186      3      3
+ CASTEST MODIF wtnv113i                       pellet J.PELLET           237      2      2
+ CASTEST MODIF wtnv113j                       pellet J.PELLET           364      6      6
+ CASTEST MODIF wtnv132a                     foucault A.FOUCAULT         772    100      4
+ CASTEST MODIF wtnv132b                     foucault A.FOUCAULT         635    108      5
+ CASTEST MODIF wtnv132c                     foucault A.FOUCAULT         689     94      4
+ CASTEST MODIF zzzz100a                     courtois M.COURTOIS        2033      3      4
+CATALOGU MODIF options/tou_ini_elga           pellet J.PELLET            40      2      2
+CATALOGU MODIF typelem/gener_me2fl2          greffet N.GREFFET          128     11      1
+CATALOGU MODIF typelem/gener_me2fp2          greffet N.GREFFET          126     12      1
+CATALOGU MODIF typelem/gener_me3fl3          greffet N.GREFFET          143     11      1
+CATALOGU MODIF typelem/gener_me_xh          siavelis M.SIAVELIS         345      4      4
+CATALOGU MODIF typelem/gener_me_xhc         siavelis M.SIAVELIS         344      4      4
+CATALOGU MODIF typelem/gener_me_xhh         siavelis M.SIAVELIS         336      4      4
+CATALOGU MODIF typelem/gener_me_xhhc        siavelis M.SIAVELIS         348      4      4
+CATALOGU MODIF typelem/gener_me_xht         siavelis M.SIAVELIS         344      4      4
+CATALOGU MODIF typelem/gener_me_xhtc        siavelis M.SIAVELIS         334      4      4
+CATALOGU MODIF typelem/gener_me_xt          siavelis M.SIAVELIS         346      4      4
+CATALOGU MODIF typelem/gener_me_xtc         siavelis M.SIAVELIS         329      4      4
+CATALOGU MODIF typelem/gener_meax_2_xh      siavelis M.SIAVELIS         313      4      4
+CATALOGU MODIF typelem/gener_meax_2_xht     siavelis M.SIAVELIS         297      2      2
+CATALOGU MODIF typelem/gener_meax_2_xt      siavelis M.SIAVELIS         293      4      4
+CATALOGU MODIF typelem/gener_mecpl2_xh      siavelis M.SIAVELIS         333      4      4
+CATALOGU MODIF typelem/gener_mecpl2_xhc     siavelis M.SIAVELIS         328      4      4
+CATALOGU MODIF typelem/gener_mecpl2_xhh     siavelis M.SIAVELIS         298      4      4
+CATALOGU MODIF typelem/gener_mecpl2_xhhc    siavelis M.SIAVELIS         324      4      4
+CATALOGU MODIF typelem/gener_mecpl2_xht     siavelis M.SIAVELIS         318      4      4
+CATALOGU MODIF typelem/gener_mecpl2_xhtc    siavelis M.SIAVELIS         289      4      4
+CATALOGU MODIF typelem/gener_mecpl2_xt      siavelis M.SIAVELIS         319      4      4
+CATALOGU MODIF typelem/gener_mecpl2_xtc     siavelis M.SIAVELIS         284      4      4
+CATALOGU MODIF typelem/gener_medpl2_xh      siavelis M.SIAVELIS         325      4      4
+CATALOGU MODIF typelem/gener_medpl2_xhc     siavelis M.SIAVELIS         326      4      4
+CATALOGU MODIF typelem/gener_medpl2_xhh     siavelis M.SIAVELIS         299      4      4
+CATALOGU MODIF typelem/gener_medpl2_xhhc    siavelis M.SIAVELIS         326      4      4
+CATALOGU MODIF typelem/gener_medpl2_xht     siavelis M.SIAVELIS         312      4      4
+CATALOGU MODIF typelem/gener_medpl2_xhtc    siavelis M.SIAVELIS         290      4      4
+CATALOGU MODIF typelem/gener_medpl2_xt      siavelis M.SIAVELIS         313      4      4
+CATALOGU MODIF typelem/gener_medpl2_xtc     siavelis M.SIAVELIS         283      4      4
+CATALOGU MODIF typelem/gener_mepdt1           pellet J.PELLET           284      4      2
+CATALOPY MODIF commande/affe_char_meca        pellet J.PELLET           801     15      2
+CATALOPY MODIF commande/debut                 pellet J.PELLET           105      3      2
+CATALOPY MODIF commande/defi_spec_turb        pellet J.PELLET           112     10      7
+CATALOPY MODIF commande/poursuite             pellet J.PELLET           110      3      2
+CATALOPY MODIF commande/proj_spec_base        pellet J.PELLET            44      9      5
+ FORTRAN AJOUT modelisa/accep2                pellet J.PELLET           146    146      0
+ FORTRAN AJOUT modelisa/carbe3                pellet J.PELLET           580    580      0
+ FORTRAN AJOUT modelisa/evali2                pellet J.PELLET           208    208      0
+ FORTRAN AJOUT modelisa/evalis                pellet J.PELLET           175    175      0
+ FORTRAN MODIF algeline/crsvld                pellet J.PELLET           103      3      3
+ FORTRAN MODIF algeline/mefist                pellet J.PELLET           556      3      3
+ FORTRAN MODIF algorith/ajlipa                pellet J.PELLET           326     45     57
+ FORTRAN MODIF algorith/cfcrma                pellet J.PELLET           260      3      3
+ FORTRAN MODIF algorith/cresol                pellet J.PELLET           171      6      8
+ FORTRAN MODIF algorith/crsolv                pellet J.PELLET           106      3      3
+ FORTRAN MODIF algorith/crsvfe                pellet J.PELLET           276      3      3
+ FORTRAN MODIF algorith/crsvl3                pellet J.PELLET           130      4      5
+ FORTRAN MODIF algorith/crsvmu                pellet J.PELLET           258     30     21
+ FORTRAN MODIF algorith/mmligr                pellet J.PELLET           298     12     16
+ FORTRAN MODIF algorith/nmcrch               greffet N.GREFFET          448     16      2
+ FORTRAN MODIF algorith/nmctcl                pellet J.PELLET           111      3      3
+ FORTRAN MODIF algorith/nmflam                pellet J.PELLET           319      3      3
+ FORTRAN MODIF algorith/op0010              siavelis M.SIAVELIS         886      4      6
+ FORTRAN MODIF algorith/op0113                pellet J.PELLET           226     16     14
+ FORTRAN MODIF algorith/op0127                pellet J.PELLET            97      3      3
+ FORTRAN MODIF algorith/strmag                pellet J.PELLET           268      4      4
+ FORTRAN MODIF algorith/vefpme              siavelis M.SIAVELIS         239     49      7
+ FORTRAN MODIF algorith/xconno              siavelis M.SIAVELIS         239     10      5
+ FORTRAN MODIF algorith/xinlsj              siavelis M.SIAVELIS         202      4      4
+ FORTRAN MODIF algorith/xmligr                pellet J.PELLET           254      6      5
+ FORTRAN MODIF algorith/xnmgr               siavelis M.SIAVELIS         204      3      3
+ FORTRAN MODIF algorith/xnmgr2              siavelis M.SIAVELIS         421      4      4
+ FORTRAN MODIF algorith/xnmgr3              siavelis M.SIAVELIS         438      4      4
+ FORTRAN MODIF algorith/xnmpl               siavelis M.SIAVELIS         205      3      3
+ FORTRAN MODIF algorith/xnmpl2              siavelis M.SIAVELIS         418      4      4
+ FORTRAN MODIF algorith/xnmpl3              siavelis M.SIAVELIS         384      4      4
+ FORTRAN MODIF algorith/xstano              siavelis M.SIAVELIS         300      3      4
+ FORTRAN MODIF assembla/assma1                pellet J.PELLET           173      8      3
+ FORTRAN MODIF assembla/assma3                pellet J.PELLET           395      7      7
+ FORTRAN MODIF assembla/assmam                pellet J.PELLET           854     37     12
+ FORTRAN MODIF assembla/assmiv                pellet J.PELLET           378     22     14
+ FORTRAN MODIF assembla/assvec                pellet J.PELLET           987     91    101
+ FORTRAN MODIF assembla/nugllo                pellet J.PELLET           320    146    199
+ FORTRAN MODIF assembla/promor                pellet J.PELLET           496     32     22
+ FORTRAN MODIF assembla/ualfcr                pellet J.PELLET           153      3      3
+ FORTRAN MODIF calculel/calcul                pellet J.PELLET           560     50     51
+ FORTRAN MODIF calculel/debca1                pellet J.PELLET           245    133     13
+ FORTRAN MODIF calculel/debcal                pellet J.PELLET           322    127    213
+ FORTRAN MODIF calculel/echmat                pellet J.PELLET           127     15     29
+ FORTRAN MODIF calculel/liglma                pellet J.PELLET            91      2      3
+ FORTRAN MODIF calculel/manopg                pellet J.PELLET           373      4      5
+ FORTRAN MODIF calculel/mecoel                pellet J.PELLET           347     20     10
+ FORTRAN MODIF calculel/nbelem                pellet J.PELLET            73     37     29
+ FORTRAN MODIF calculel/thaclm              courtois M.COURTOIS         492      7      3
+ FORTRAN MODIF calculel/trigd                 pellet J.PELLET           211     96     74
+ FORTRAN MODIF calculel/typele                pellet J.PELLET            77     26     19
+ FORTRAN MODIF debug/jepreg                 lefebvre J-P.LEFEBVRE       209      3      7
+ FORTRAN MODIF elements/dxrep2              desroche X.DESROCHES         78      3      3
+ FORTRAN MODIF elements/dxsit2              desroche X.DESROCHES        195      2      3
+ FORTRAN MODIF elements/te0443              desroche X.DESROCHES        217      2      2
+ FORTRAN MODIF elements/vdrep2              desroche X.DESROCHES        174      3      3
+ FORTRAN MODIF modelisa/accep1                pellet J.PELLET           283     12     12
+ FORTRAN MODIF modelisa/adalig                pellet J.PELLET           226    122     74
+ FORTRAN MODIF modelisa/afrela                pellet J.PELLET           427      6      4
+ FORTRAN MODIF modelisa/alligr                pellet J.PELLET           132      5      5
+ FORTRAN MODIF modelisa/charac                pellet J.PELLET            95     26      9
+ FORTRAN MODIF modelisa/charme                pellet J.PELLET           332     31     14
+ FORTRAN MODIF modelisa/charth                pellet J.PELLET           151      9     11
+ FORTRAN MODIF modelisa/craglc                pellet J.PELLET           133      4      7
+ FORTRAN MODIF modelisa/crelgt                pellet J.PELLET           151      3      3
+ FORTRAN MODIF modelisa/exlim1                pellet J.PELLET           158      8     18
+ FORTRAN MODIF modelisa/lgtlgr                pellet J.PELLET           339      3     20
+ FORTRAN MODIF modelisa/op0018                pellet J.PELLET           617      4      3
+ FORTRAN MODIF modelisa/op0145                pellet J.PELLET           357     10      5
+ FORTRAN MODIF modelisa/prosmo                pellet J.PELLET           386      3      3
+ FORTRAN MODIF modelisa/sfifj                 pellet J.PELLET           348    102     55
+ FORTRAN MODIF modelisa/w18imp                pellet J.PELLET           197      6      3
+ FORTRAN MODIF modelisa/xtyele              siavelis M.SIAVELIS         387     48      3
+ FORTRAN MODIF postrele/rvpste              courtois M.COURTOIS         135      3      3
+ FORTRAN MODIF soustruc/ssdege                pellet J.PELLET           167      3      3
+ FORTRAN MODIF supervis/ex0000                pellet J.PELLET           346      3      4
+ FORTRAN MODIF supervis/ex0100                pellet J.PELLET           346      3      4
+ FORTRAN MODIF supervis/execop                pellet J.PELLET           104      4      1
+ FORTRAN MODIF supervis/ibdbgs                pellet J.PELLET           140      7      6
+ FORTRAN MODIF supervis/jevtbl                pellet J.PELLET            38     15      7
+ FORTRAN MODIF utilitai/copisd                pellet J.PELLET           427      3      3
+ FORTRAN MODIF utilitai/detrsd                pellet J.PELLET           666      4      2
+ FORTRAN MODIF utilitai/dismlg                pellet J.PELLET           396     40     44
+ FORTRAN MODIF utilitai/uttcpi                pellet J.PELLET           208     16     10
+ FORTRAN MODIF utilitai/uttcpl                pellet J.PELLET            99     17     20
+ FORTRAN SUPPR jeveux/jjlibp                lefebvre M.ADMINISTRATEUR    122      0    122
+FORTRAN90 MODIF utilitai/mpicm1                pellet J.PELLET           231     22      7
+  PYTHON MODIF Build/B_utils                courtois M.COURTOIS         217      4      4
+  PYTHON MODIF Cata/ops                     courtois M.COURTOIS         485      6      5
+  PYTHON MODIF Execution/E_Core             courtois M.COURTOIS         402     39     24
+  PYTHON MODIF Execution/E_JDC              courtois M.COURTOIS         397      2      5
+  PYTHON MODIF Execution/E_SUPERV           courtois M.COURTOIS         398    104     59
+  PYTHON MODIF Lecture_Cata_Ele/imprime     courtois M.COURTOIS        1361      8      8
+  PYTHON MODIF Lecture_Cata_Ele/lecture     courtois M.COURTOIS        1169      3      3
+  PYTHON MODIF Macro/calc_europlexus_ops    courtois M.COURTOIS        2577      3      3
+  PYTHON MODIF Macro/recal                  courtois M.COURTOIS        1555     51     35
+  PYTHON MODIF Messages/calculel              pellet J.PELLET           447      5      5
+  PYTHON MODIF Messages/calculel2           courtois M.COURTOIS         483      4      4
+  PYTHON MODIF Messages/calculel5             pellet J.PELLET           367      1     10
+  PYTHON MODIF Messages/jeveux1             lefebvre J-P.LEFEBVRE       413      1      1
+  PYTHON MODIF Messages/modelisa              pellet J.PELLET           535     14      2
+  PYTHON MODIF Messages/modelisa10            pellet J.PELLET            91     33      1
+  PYTHON MODIF Noyau/N_ENTITE               courtois M.COURTOIS         148      6      4
+  PYTHON MODIF Noyau/N_JDC                  courtois M.COURTOIS         567      6      7
+  PYTHON MODIF Noyau/N_REGLE                courtois M.COURTOIS          86      4      4
+  PYTHON MODIF Noyau/N_VALIDATOR            courtois M.COURTOIS        1379      3      3
+  PYTHON MODIF Noyau/asojb                  courtois M.COURTOIS         347      4      4
+  PYTHON MODIF Noyau/context                courtois M.COURTOIS          77      4      4
+  PYTHON MODIF SD/sd_ligrel                   pellet J.PELLET            94      8      6
+  PYTHON MODIF SD/sd_modele                   pellet J.PELLET            69     12      5
+  PYTHON MODIF SD/sd_partition                pellet J.PELLET            45     22      6
+  PYTHON MODIF SD/sd_spectre                  pellet J.PELLET           202      7      3
+  PYTHON MODIF Stanley/salomeRunScript      courtois M.COURTOIS         207      5      5
+  PYTHON MODIF Stanley/salomeVisu           courtois M.COURTOIS         412      3      3
+  PYTHON MODIF Stanley/salomeVisuPylo       courtois M.COURTOIS         500      3      3
+  PYTHON MODIF Stanley/stanley_engine       courtois M.COURTOIS        3359      7      7
+  PYTHON MODIF Templates/salomeGetStudies   courtois M.COURTOIS          49      3      3
+  PYTHON MODIF Templates/salomeScript       courtois M.COURTOIS         277     11     11
+  PYTHON MODIF Utilitai/sup_gmsh            courtois M.COURTOIS        1416     38     38
+  PYTHON MODIF Validation/V_AU_PLUS_UN      courtois M.COURTOIS          60      3      3
+  PYTHON MODIF Validation/V_JDC             courtois M.COURTOIS          95      6     15
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   15        2740      2740             +2740
+ MODIF :  217       99501      5541    4217     +1324
+ SUPPR :    1         122               122      -122
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  233      102363      8281    4339     +3942 

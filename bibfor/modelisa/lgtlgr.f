@@ -1,9 +1,9 @@
       SUBROUTINE LGTLGR (BASEZ, LIGREY, LIGREZ)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -74,7 +74,6 @@ C --- ON VERIFIE SI LE LIGREL EXISTE ,S'IL N'EXISTE PAS, ON
 C --- S'ARRETE EN ERREUR FATALE :
 C     -------------------------
       CALL JEEXIN(LIGRET//'.LGRF',IRET)
-C
       CALL ASSERT(IRET.NE.0)
 C
 C --- NUMERO DU TYPE ASSOCIE A DES MAILLES TARDIVES :
@@ -108,14 +107,6 @@ C --- TABLEAU DE POINTEURS DANS LA LISTE DES NOEUDS :
 C     ---------------------------------------------
       CALL JEVEUO(LIGRET//'.PONO','L',IDPONO)
 C
-C --- NOM DU MAILLAGE :
-C     ---------------
-      CALL JEVEUO(LIGRET//'.LGRF','L',IDNOMA)
-C
-C --- NOMBRE DE MAILLES TARDIVES :
-C     --------------------------
-      CALL JEVEUO(LIGRET//'.MATA','L',IDMATA)
-C
 C --- VECTEUR DE LA LISTE DES NOEUDS CUMULES DU LIGRET :
 C     ------------------------------------------------
       CALL JEVEUO(LIGRET//'.LINO','L',IDLINO)
@@ -127,10 +118,6 @@ C
 C --- NOMBRE D'AFFECTATIONS DE NOEUDS AU LIGRET :
 C     -----------------------------------------
       CALL JEVEUO(LIGRET//'.APNO','L',IDAPNO)
-C
-C --- NOMBRE DE MAILLES AFFECTEES AU LIGRET :
-C     -------------------------------------
-      CALL JEVEUO(LIGRET//'.NBMA','L',IDNBMA)
 C
       NBAPMA = ZI(IDAPMA)
       NBAPNO = ZI(IDAPNO)
@@ -178,12 +165,8 @@ C       -------------------------------
 C
 C ---   CREATION DE L'OBJET LIGREL.LGRF :
 C       -------------------------------
-        CALL JEEXIN(LIGREL//'.LGRF',IRET)
-        IF (IRET.EQ.0) THEN
-          CALL WKVECT(LIGREL//'.LGRF',BASE//' V K8',2,JDNOMA)
-          ZK8(JDNOMA) = ZK8(IDNOMA)
-          CALL JEECRA(LIGREL//'.LGRF','DOCU',IBID,'MECA')
-        ENDIF
+        CALL JEDUPO(LIGRET//'.LGRF','V',LIGREL//'.LGRF',.FALSE.)
+        CALL JEECRA(LIGREL//'.LGRF','DOCU',IBID,'MECA')
 C
         NUTYP1 = ZI(IDLITY)
         K = 0

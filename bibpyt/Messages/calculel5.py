@@ -1,4 +1,4 @@
-#@ MODIF calculel5 Messages  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel5 Messages  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,17 +33,8 @@ Conseils :
   la commande PROJ_CHAMP.
 """),
 
-3 : _(u"""
-Erreur Utilisateur :
-  On cherche à regrouper des éléments finis en "paquets" de façon à ce que la taille de leurs
-  matrices élémentaires ne puisse pas dépasser la taille des blocs définis dans :
-  DEBUT / MEMOIRE / TAILLE_BLOC
 
-  Malheureusement, la taille indiquée ne permet même pas de mettre un élément dans le paquet.
 
-Conseil :
-  Il faut augmenter la valeur du paramètre  DEBUT / MEMOIRE / TAILLE_BLOC
-"""),
 
 4 : _(u"""
  !! problème création CHAM_ELEM nul dans alchml !!

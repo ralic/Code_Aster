@@ -1,8 +1,8 @@
-#@ MODIF sup_gmsh Utilitai  DATE 26/05/2010   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF sup_gmsh Utilitai  DATE 13/03/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -99,10 +99,10 @@ def Progress(L,**para) :
       dx = res/(a-N*x**(N-1))
       x = x+dx
 
-    raise 'Solution failure'
+    raise Exception('Solution failure')
 
   else :
-    raise 'Unknown parameters'
+    raise Exception('Unknown parameters')
 
 
 
@@ -223,7 +223,7 @@ class Geometric :
     try :
       self.type = types[self.__class__]
     except KeyError :
-      raise 'Unknown object type'
+      raise Exception('Unknown object type')
 
 
   def Is_point(self) :
@@ -304,11 +304,11 @@ class Geometric :
       return
 
     if not self.Is_same_dimension(obj) :
-      raise 'Coincidence impossible : objects are not of the same dimension'
+      raise Exception('Coincidence impossible : objects are not of the same dimension')
 
     correspond = self.Geometric_coincide(obj)
     if not correspond :
-      raise 'The objects are not geometrically coincident'
+      raise Exception('The objects are not geometrically coincident')
 
     self.Deep_coincide(obj,correspond)
     self.relation = obj
@@ -340,7 +340,7 @@ class Geometric :
 
 
   def Object_meshing(self,num) :
-    raise "Creation of the Gmsh source not implemented"
+    raise Exception("Creation of the Gmsh source not implemented")
 
 
 
@@ -455,11 +455,11 @@ class Line(Geometric) :
     Geometric.__init__(self)
 
     if len(points) <=1 :
-      raise "There should be at least two points"
+      raise Exception("There should be at least two points")
 
     for point in points :
       if not point.Is_point() :
-        raise "Arguments should be points"
+        raise Exception("Arguments should be points")
 
     self.points = list(points)
     self.attractor = None
@@ -469,7 +469,7 @@ class Line(Geometric) :
 
     nb_points = len(self.points)
     if nb_points <> len(obj.points) :
-      raise 'To coincide, lines should have the same number of points'
+      raise Exception('To coincide, lines should have the same number of points')
 
    # same order of points
     info = range(nb_points)
@@ -523,7 +523,7 @@ class Line(Geometric) :
   def __rmul__(self,base) :
 
     if len(self.points) > 2 :
-      raise "Support (right argument) should be a straight line"
+      raise Exception("Support (right argument) should be a straight line")
 
     if self.points[0] in base.points :
       supp_orig = 0
@@ -532,7 +532,7 @@ class Line(Geometric) :
       supp_orig = 1
       supp_extr = 0
     else :
-      raise "No common point"
+      raise Exception("No common point")
 
     if self.points[supp_orig] == base.points[0] :
       base_orig = 0
@@ -666,8 +666,8 @@ class Surface(Geometric) :
   # Check Assumptions
     for line in lines :
       if not line.Is_line() :
-        raise "Arguments should be lines : " + repr(line)
-    if lines == 0 : raise "There should be at least one line"
+        raise Exception("Arguments should be lines : " + repr(line))
+    if lines == 0 : raise Exception("There should be at least one line")
     self.Boundary()
 
 
@@ -684,14 +684,14 @@ class Surface(Geometric) :
       elif lb.points[0] in [la.points[0], la.points[-1]] :
         orie.append(-1)
       else :
-        raise "This is not a loop"
+        raise Exception("This is not a loop")
 
   # checking the boundary is closed
     if orie[0]  ==  1 : pi = self.lines[0].points[0]
     if orie[0]  == -1 : pi = self.lines[0].points[-1]
     if orie[-1] ==  1 : pf = self.lines[-1].points[-1]
     if orie[-1] == -1 : pf = self.lines[-1].points[0]
-    if pi <> pf : raise "The loop is not closed"
+    if pi <> pf : raise Exception("The loop is not closed")
 
     return orie
 
@@ -711,7 +711,7 @@ class Surface(Geometric) :
 
     for hole in holes :
       if not hole.Is_surface() :
-        raise "Holes should be surfaces"
+        raise Exception("Holes should be surfaces")
     self.holes = list(holes)
 
 
@@ -724,10 +724,10 @@ class Surface(Geometric) :
     """
 
     if len(self.lines) <> len(obj.lines) :
-      raise 'To coincide, surfaces should have the same number of border lines'
+      raise Exception('To coincide, surfaces should have the same number of border lines')
 
     if len(self.holes) <> len(obj.holes) :
-      raise 'To coincide, surfaces should have the same number of internal holes'
+      raise Exception('To coincide, surfaces should have the same number of internal holes')
 
    # Coincidence of the surface holes
     hole_order = []
@@ -782,10 +782,10 @@ class Surface(Geometric) :
     self.ruled = 1
 
     if len(self.lines) not in [3,4] :
-      raise "Ruled surfaces require 3 or 4 edges"
+      raise Exception("Ruled surfaces require 3 or 4 edges")
 
     if self.holes :
-      raise "Holes are forbidden for ruled surfaces"
+      raise Exception("Holes are forbidden for ruled surfaces")
 
 
   def Translate(self,x,y,z=0) :
@@ -816,13 +816,13 @@ class Surface(Geometric) :
 
     for line in self.lines :
       if not line.md.transfinite :
-        raise "Transfinite surfaces require transfinite edges"
+        raise Exception("Transfinite surfaces require transfinite edges")
 
     if (
       self.lines[0].md.number <> self.lines[2].md.number or
       self.lines[1].md.number <> self.lines[3].md.number
     ) :
-      raise "Coupled edges should have the same number of elements"
+      raise Exception("Coupled edges should have the same number of elements")
 
 
 
@@ -931,8 +931,8 @@ class Volume(Geometric) :
   # Check Assumptions
     for surface in surfaces :
       if not surface.Is_surface() :
-        raise "Arguments should be surfaces : " + repr(surface)
-    if len(surfaces) < 2 : raise "There should be at least two surfaces"
+        raise Exception("Arguments should be surfaces : " + repr(surface))
+    if len(surfaces) < 2 : raise Exception("There should be at least two surfaces")
     self.Boundary()
 
 
@@ -945,7 +945,7 @@ class Volume(Geometric) :
   # each edge has to appear twice in the list of edges
     for edge in edges :
       if edges.count(edge) <> 2 :
-        raise "The surface loop is not closed : each edge should appear twice"
+        raise Exception("The surface loop is not closed : each edge should appear twice")
 
 
   def Edge(self) :
@@ -961,7 +961,7 @@ class Volume(Geometric) :
 
     for hole in holes :
       if not hole.Is_volume() :
-        raise "Holes should be volumes"
+        raise Exception("Holes should be volumes")
     self.holes = list(holes)
 
 
@@ -974,10 +974,10 @@ class Volume(Geometric) :
     """
 
     if len(self.surfaces) <> len(obj.surfaces) :
-      raise 'To coincide, volumes should have the same number of border surfaces'
+      raise Exception('To coincide, volumes should have the same number of border surfaces')
 
     if len(self.holes) <> len(obj.holes) :
-      raise 'To coincide, volumes should have the same number of internal holes'
+      raise Exception('To coincide, volumes should have the same number of internal holes')
 
    # Coincidence of the surface holes
     hole_order = []
@@ -1029,13 +1029,13 @@ class Volume(Geometric) :
   def Transfinite(self) :
 
     if len(self.surfaces) == 5 :
-      raise "Not implemented"
+      raise Exception("Not implemented")
 
     if len(self.surfaces) not in [5,6] :
-      raise "Transfinite volumes require 5 or 6 faces"
+      raise Exception("Transfinite volumes require 5 or 6 faces")
 
     if self.holes :
-      raise "Holes are forbidden for transfinite volumes"
+      raise Exception("Holes are forbidden for transfinite volumes")
 
     self.md.transfinite = 1
 
@@ -1256,9 +1256,9 @@ class Mesh :
 
   # Checking the name
     if type(name) <> type(' ') :
-      raise 'First argument should be the name of the physical'
+      raise Exception('First argument should be the name of the physical')
     if name in self.physicals.keys() :
-      raise 'Physical '+name+' already exists'
+      raise Exception('Physical '+name+' already exists')
 
   # treating the case of list of lists parameters
     l_obj = []
@@ -1271,14 +1271,14 @@ class Mesh :
   # Checking all objects are geometric
     for obj in l_obj :
       if not Is_Geometric(obj) :
-        raise "Non geometrical object : " + repr(obj) + " Physical = " + name
+        raise Exception("Non geometrical object : " + repr(obj) + " Physical = " + name)
 
     cl = l_obj[0].Base_class()
   # Checking all objects are of the same dimension
   #  ref_dim = l_obj[0]
   #  for obj in l_obj[1:] :
   #    if not ref_dim.Is_same_dimension(obj) :
-  #      raise "All objects are not of the same dimension : " + repr(obj)
+  #      raise Exception("All objects are not of the same dimension : " + repr(obj))
 
   # Creation of the objects if necessary
     for obj in l_obj :
@@ -1401,7 +1401,7 @@ class Mesh :
     DEFI_FICHIER(ACTION='LIBERER',UNITE = UNITE_MAILLAGE)
 
     if MODI_QUAD == 'OUI' and self.order == 2 :
-      raise 'The finite elements are already of second order'
+      raise Exception('The finite elements are already of second order')
 
     if MODI_QUAD == 'OUI' and self.order <> 2 :
       SMESH_01 = CREA_MAILLAGE(

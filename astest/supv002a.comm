@@ -1,4 +1,4 @@
-# MODIF  DATE 09/01/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 13/03/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST DES MESSAGES - INTERNATIONALISATION
 # supv002a.para = tps_job 180 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -19,6 +19,10 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE COURTOIS M.COURTOIS
+
+# Note: aspell is required to pass this testcase.
+#       If this message is emitted: No word lists can be found for the language "XX",
+#       you must also install the dictionnary for the language "XX".
 
 DEBUT(CODE=_F(NOM='SUPV002A', NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'),
       PAR_LOT='OUI')
@@ -74,7 +78,7 @@ TEST_TABLE(TABLE=tabw,
            NOM_PARA='NBWARN',
            VALE_I=0,
            CRITERE='ABSOLU',
-           PRECISION=336.1,
+           PRECISION=330.1,
            REFERENCE='NON_REGRESSION',)
 
 # Mots-cles inconnus du dictionnaire malgre tout acceptes pour le moment
@@ -93,7 +97,7 @@ previous_errors = set([
     'IM', 'INFOG', 'JECROC', 'JENONU', 'JENUNO', 'JEXNOM', 'JEXNUM', 'JM', 'JUVECA', 'K.PHI',
     'K.U', 'KMOD', 'KSIB', 'KTILDA', 'Kcam', "L'elrefe", 'LCDPPA', 'LIBRARY', 'LIGREL',
     'LIGRELs', 'LMAT', 'LONCUM', 'LONT', 'LTNT', 'MOLOC', 'Map', 'NBCMP', 'NBCYCL', 'NBDDL',
-    'NBMECA', 'NBNOCO', 'NBNOEUD', 'NBPOIN', 'NBRUP', 'NBSIGM', 'NBVIMAX', 'NDDL', 'NDS',
+    'NBMECA', 'NBNOCO', 'NBNOEUD', 'NBPOIN', 'NBRUP', 'NBSIGM', 'NDDL', 'NDS',
     'NEMA', 'NEQ', 'NEQUA', 'NMCOMP', 'NMCONV', 'NMHUJ', 'NMVPIR', 'NMXINS', 'NNOE', 'NOCART',
     'NOCP', 'NODE', 'NOMLI', 'NOSOLVE', 'NPQ', 'NSEUIL', 'NUEQ', 'NUME.LILI', 'NUMER',
     'NUMERO.F', 'NUMERO.f', 'NUTIOC', 'NV', 'NVI', 'NVIMAX', 'NaN', 'OMEGA', 'OPENDR',
@@ -103,19 +107,19 @@ previous_errors = set([
     'SOCIE', 'SOLVE', 'SPD', 'SQRT', 'SSP', 'STOGI', 'SV', 'Scalar', 'TBLIVA', 'TGU', 'TGV',
     'TRIA-QUAD', 'TYPB', 'TYPEKE', 'TYPL', 'TYPVF', 'Tmax', 'UMC', 'UMOY', 'UNILATER',
     'USASTE.F', 'UTTCPU', 'VALF', 'VCINE', 'VITG', 'VPSTOR', 'WORKD', 'WRITDR', 'XMIN',
-    'XOUS', 'YM', 'ZEDGAR', 'abs', 'acearp', 'alchml', 'alfint', 'apetsc.F', 'appariable',
+    'XOUS', 'YM', 'ZEDGAR', 'abs', 'acearp', 'alchml', 'alfint', 'apetsc.F',
     'autor', 'breakdown', 'cabl', 'cagnba', 'cata', 'chckma', 'chno', 'chvari', 'clcplq.f',
     'coefal', 'coefam', 'coefra', 'coefrl', 'cuon', 'cupn', 'cvon', 'cvpn', "d'ACIER",
     'deltat', 'dfdi', 'eO', 'efferm', 'effoco', 'efouvr', 'elem', 'elrefa', 'elrefe', 'ep',
     'er', 'error', 'etanca', 'etenca', 'exchml.f', 'exe', 'export',
-    'fait-il', 'flag', 'flip-flop', 'floating', 'fointa', 'fonree', 'gl', 'grels', 'hexa',
+    'flag', 'floating', 'fointa', 'fonree', 'gl', 'grels', 'hexa',
     'i.e', 'icoret', 'indn', 'inpsco', 'ipos', 'kapa', 'kr', "l'AXE", "l'EVOL", 'lg',
     'ligrel', 'lkcaln', 'lkdhds', 'lkds', 'lklmat', 'lmat', 'longt', 'lumpe', 'majpad',
     'materiau.nomrc', 'matns', 'mdump', 'medconforme', 'medimport', 'mem', 'memjeveux',
     'modelisation', 'nadm', 'nbmmai', 'nbmmax', 'nbtyp', 'ncmp', 'nmaxcmp', 'nmaxocl',
     'nmocl', 'nomres', 'nomta', 'nomte', 'nomtyp', 'nosimp', 'not', 'nt', 'number', 'nume',
-    'numeli', 'overflow', 'phenomene', 'pnosym', 'porte-t-il', 'post', 'pr', 'precont',
-    'raymin', 'rayon-raymin', 'rcmaco', 'relcom', 'rembobinage', 'respecte-t-elle',
+    'numeli', 'overflow', 'phenomene', 'pnosym', 'post', 'pr', 'precont',
+    'raymin', 'rayon-raymin', 'rcmaco', 'relcom',
     'resuelem', 'resultat', 'rhocp', 'rof', 'rsexch', 'runSalomeScript', 'sch', 'sd',
     'skin.pos', 'svp', 'tbliva', 'texxxx.f', 'tmax', 'tmin', 'typelem', 'typesd',
     'typf', 'typgeo', 'uttcpu', 'uttrif', 'vari', 'vect', 'xxx', 'xxxxxx.py'])

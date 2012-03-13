@@ -1,4 +1,4 @@
-#@ MODIF E_SUPERV Execution  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_SUPERV Execution  DATE 13/03/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -26,10 +26,14 @@
 # Modules Python
 import sys
 import os
+import os.path as osp
 import traceback
 import re
 
-from E_utils import copierBase, lierRepertoire, supprimerRepertoire
+# Pas d'import des autres packages d'aster car l'import de ce module est
+# fait avant l'ajout des paths. Les autres imports seront possibles une fois
+# les arguments de la ligne de commande parsés.
+import E_Core
 from strfunc import convert
 
 class SUPERV:
@@ -50,7 +54,9 @@ class SUPERV:
     asteru JDC.py ---bibpyt=/opt/aster/stable/bibpyt --commandes=sslp09a.comm --memory=128
 """
 
-   def __init__(self):pass
+   def __init__(self):
+       self.jdc = None
+       self.timer = None
 
    def MESSAGE(self,chaine):
       """
@@ -74,17 +80,8 @@ class SUPERV:
    def register(self):
       """Enregistre le JDC et les objets nécessaires à aster_core."""
       import aster_core
-      import E_Core
       from Utilitai.Utmess import MessageLog
       aster_core.register(self.jdc, self.coreopts, MessageLog, E_Core)
-
-   def getargs(self):
-      """
-          Récupération des arguments passés à la ligne de commande
-      """
-      from E_Core import CoreOptions
-      self.coreopts = CoreOptions()
-      self.coreopts.parse_args(sys.argv)
 
    def set_path(self):
       """Ajout des chemins pour les imports
@@ -92,7 +89,7 @@ class SUPERV:
       bibpyt = self.coreopts.get_option('bibpyt')
       sys.path.insert(0, '.')
       sys.path.insert(0, bibpyt)
-      sys.path.append(os.path.join(bibpyt, 'Cata'))
+      sys.path.append(osp.join(bibpyt, 'Cata'))
 
    def set_i18n(self):
        """Met en place les fonctions d'internationalisation."""
@@ -136,7 +133,7 @@ class SUPERV:
          self.error(">> Catalogue de commandes : FIN RAPPORT")
          return 1
 
-   def Execute(self, params):
+   def InitJDC(self, params):
       """
          Construit et execute le jeu de commandes
       """
@@ -152,10 +149,15 @@ class SUPERV:
       f.close()
 
       args = {}
-      self.jdc = j = self.JdC(procedure=text, cata=self.cata, nom=fort1,
+      self.jdc = self.JdC(procedure=text, cata=self.cata, nom=fort1,
              context_ini=params, **args
            )
 
+   def CompileJDC(self):
+      """Compile the JDC content (byte-compile).
+      Python syntax errors will be detected here."""
+      assert self.jdc is not None, 'jdc must be initialized (call Init(...) before)'
+      j = self.jdc
       # on enregistre les objets dans aster_core dès que le jdc est créé
       self.register()
 
@@ -175,6 +177,14 @@ class SUPERV:
          j.supprime()
          return 1
 
+   def ExecCompileJDC(self):
+      """Execute the JDC :
+      - with PAR_LOT='OUI', only the ETAPE objects are built ;
+      - with PAR_LOT='NON', the operators are immediatly called after its ETAPE
+        object is created.
+      """
+      assert self.jdc is not None, 'jdc must be initialized (call Init(...) before)'
+      j = self.jdc
       j.timer.Start(" . exec_compile")
       j.exec_compile()
       j.timer.Stop(" . exec_compile")
@@ -189,14 +199,14 @@ class SUPERV:
       if self.coreopts.get_option('interact'):
          # Si l'option -interact est positionnée on ouvre un interpreteur interactif
          j.interact()
+      return ier
 
-      if j.par_lot == 'NON':
-         print convert(_(u"""--- Fin de l'exécution"""))
-         return ier
-
-      # Verification de la validite du jeu de commande
+   def CheckCata(self):
+      """Check Code_Aster syntax (using cata.py)."""
+      assert self.jdc is not None, 'jdc must be initialized (call Init(...) before)'
+      j = self.jdc
       j.timer.Start(" . report")
-      cr=j.report()
+      cr = j.report()
       j.timer.Stop(" . report")
       if not cr.estvide():
          self.error("ERREUR A LA VERIFICATION SYNTAXIQUE - INTERRUPTION")
@@ -205,14 +215,16 @@ class SUPERV:
          self.error(">> FIN RAPPORT")
          return 1
 
-      if self.coreopts.get_option('verif'):
-          return
-
-#     Modification du JDC dans le cas de sensibilité
-#     On détermine si le jdc en cours est concerné par un calcul de sensibilité
-#     . Si c'est le cas, on crée un nouveau jdc. On controle ce nouveau jdc. Si tout
-#       va bien, on remplace l'objet qui contenait le jdc initial par le nouveau.
-#     . Sinon, on ne fait rien.
+   def ChangeJDC(self):
+      """Modify the JDC object depending on the called features.
+      Only for sensitivity yet."""
+      assert self.jdc is not None, 'jdc must be initialized (call Init(...) before)'
+      j = self.jdc
+      # Modification du JDC dans le cas de sensibilité
+      # On détermine si le jdc en cours est concerné par un calcul de sensibilité
+      # . Si c'est le cas, on crée un nouveau jdc. On controle ce nouveau jdc. Si tout
+      #   va bien, on remplace l'objet qui contenait le jdc initial par le nouveau.
+      # . Sinon, on ne fait rien.
       codret, est_sensible = j.is_sensible()
       if codret == 0 :
         if est_sensible :
@@ -228,21 +240,26 @@ class SUPERV:
               print ">> JDC.py : FIN RAPPORT"
       if codret == 0 :
         if est_sensible :
-            #ne pas appeler la methode supprime car on ne copie pas les etapes (risque de perte d'informations)
-            #j.supprime()
-            j = new_j
+            # ne pas appeler la methode supprime car on ne copie pas les etapes
+            # (risque de perte d'informations)
+            # j.supprime()
+            self.jdc = new_j
       else :
         self.MESSAGE("ERREUR AU DECODAGE DES SENSIBILITES - INTERRUPTION")
         return 1
       # fin des initialisations
       j.timer.Stop("init (jdc)")
-      #ier= self.ParLot( j )
-      ier= self.ParLotMixte( j )
+
+   def Execute(self, params):
+      """Execution of the JDC object."""
+      ier = self.ParLotMixte()
       return ier
 
-
-   def ParLot(self,j):
-
+   def ParLot(self):
+      """Execute the JDC calling Build and Exec methods."""
+      # not used for Code_Aster
+      assert self.jdc is not None, 'jdc must be initialized (call Init(...) before)'
+      j = self.jdc
       try:
          ier=j.Build()
          if ier or not j.cr.estvide():
@@ -263,7 +280,6 @@ class SUPERV:
          print cr
          print ">> JDC.py : FIN RAPPORT"
          return 1
-
       try:
          ier=j.Exec()
          if ier :
@@ -276,11 +292,11 @@ class SUPERV:
          traceback.print_exc()
          return 1
 
-
-   def ParLotMixte(self,j):
-       """
-       """
+   def ParLotMixte(self):
+       """Execute the JDC using BuildExec"""
        from Noyau.N_JDC    import MemoryErrorMsg
+       assert self.jdc is not None, 'jdc must be initialized (call Init(...) before)'
+       j = self.jdc
        j.set_par_lot("NON")
        try:
            j.BuildExec()
@@ -291,7 +307,6 @@ class SUPERV:
                print ">> JDC.py : DEBUT RAPPORT"
                print j.cr
                print ">> JDC.py : FIN RAPPORT"
-
            return ier
        except MemoryError:
            self.MESSAGE("ERREUR INOPINEE - INTERRUPTION")
@@ -305,15 +320,11 @@ class SUPERV:
            traceback.print_exc()
            return 1
 
-   def main(self, params={}):
-      """
-           Programme principal. Appelle les methodes internes qui realisent les
-           divers traitements
-      """
-      self.getargs()
-
-      use_totalview = self.coreopts.get_option('totalview')
-      if use_totalview == 1:
+   def InitEnv(self):
+      """Initialize the environment (language & encoding, paths...)"""
+      # import after getting opts as is may change sys.path
+      from E_utils import copierBase, lierRepertoire
+      if self.coreopts.get_option('totalview') == 1:
          curPID = os.getpid()
          pathOrigine = os.getcwd()
          pathDestination = osp.join(pathOrigine, "tv_" + str(curPID))
@@ -323,28 +334,62 @@ class SUPERV:
          copierBase(pathOrigine, pathDestination)
          os.chdir(pathDestination)
 
-      self.set_path()
       self.set_i18n()
-
       ier = self.init_timer()
       if ier:return ier
-
       ier=self.imports()
       if ier:return ier
 
-      #ier=self.testeCata();if ier:return ier
-      ier = self.Execute(params)
-
-      if use_totalview == 1:
+   def Finish(self):
+      """Allow to call cleanup functions."""
+      from E_utils import supprimerRepertoire
+      if self.coreopts.get_option('totalview') == 1:
          supprimerRepertoire(os.getcwd())
 
-      return ier
+   def main(self, params={}, coreopts=None):
+      """
+           Programme principal. Appelle les methodes internes qui realisent les
+           divers traitements
+      """
+      if not coreopts:
+          coreopts = E_Core.getargs()
+      self.coreopts = coreopts
+
+      ier = self.InitEnv()
+      if ier:
+         return ier
+      #ier=self.testeCata();if ier:return ier
+      self.InitJDC(params)
+      ier = self.CompileJDC()
+      if ier:
+         return ier
+      ier = self.ExecCompileJDC()
+      if ier:
+         return ier
+
+      if self.jdc.par_lot == 'NON':
+         print convert(_(u"""--- Fin de l'exécution"""))
+         return ier
+
+      ier = self.CheckCata()
+      if ier:
+         return ier
+      if self.coreopts.get_option('verif'):
+         return ier
+      ier = self.ChangeJDC()
+      if ier:
+         return ier
+      ier = self.Execute(params)
+      self.Finish()
+      return ier or 0
 
 
 def main():
-    appli=SUPERV()
-    ier=appli.main()
+    """Main."""
+    appli = SUPERV()
+    ier = appli.main(coreopts=E_Core.getargs(sys.argv))
     sys.exit(ier)
+
 
 if __name__ == '__main__':
    main()

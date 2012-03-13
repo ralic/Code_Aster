@@ -1,4 +1,4 @@
-#@ MODIF recal Macro  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF recal Macro  DATE 13/03/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -162,7 +162,7 @@ def make_include_files(UNITE_INCLUDE, calcul, parametres):
 #       from Accas import _F
 #       from Cata.cata import *
 #    except ImportError:
-#       raise "Le mode INCLUSION doit etre lance depuis Aster"
+#       raise Exception("Le mode INCLUSION doit etre lance depuis Aster")
 
    try:
        ASTER_ROOT = os.path.join(aster_core.get_option('repout'), '..')
@@ -346,7 +346,7 @@ def Ecriture_Derivees(output_file, derivees):
    except: pass
 
    # on cherche a imprimer la gradient calcule a partir de Fcalc
-   if type(derivees) in [list, tuple]:
+   if isinstance(derivees, (list, tuple)):
        t = []
        for l in derivees:
           l = str(l).replace('[', '').replace(']', '')
@@ -354,7 +354,7 @@ def Ecriture_Derivees(output_file, derivees):
        txt = '\n'.join(t)
 
    # On cherche a imprimer la matrice des sensibilite (A ou A_nodim)
-   elif type(derivees) == NP.ndarray:
+   elif isinstance(derivees, NP.ndarray):
        t = []
        a = derivees
        for c in range(len(a[0,:])):
@@ -363,7 +363,7 @@ def Ecriture_Derivees(output_file, derivees):
            t.append( l )
        txt = '\n'.join(t)
 
-   else: raise "Wrong type for gradient !"
+   else: raise Exception("Wrong type for gradient !")
 
    # Ecriture
    f=open(output_file, 'w')
@@ -538,7 +538,7 @@ class CALCULS_ASTER:
         # Erreur d'aiguillage
         # ----------------------------------------------------------------------------
         else:
-           raise "Erreur : mode %s inconnu!" % self.LANCEMENT
+           raise Exception("Erreur : mode %s inconnu!" % self.LANCEMENT)
 
 
         #sys.exit()
@@ -566,7 +566,7 @@ class CALCULS_ASTER:
          import cata
          from Cata.cata import *
      except Exception, e:
-         raise "Le mode INCLUDE doit etre lance depuis Aster : \nErreur : " % e
+         raise Exception("Le mode INCLUDE doit etre lance depuis Aster : \nErreur : %s" % e)
 
 
      list_params = self.list_params
@@ -1146,10 +1146,13 @@ class CALC_ERROR:
          N+1 calculs distribues
       """
 
-      if not dX and not pas: raise "Need 'dX' or 'pas' parameter."
-      if     dX and     pas: raise "Need 'dX' or 'pas' parameter, not both."
+      if not dX and not pas:
+         raise Exception("Need 'dX' or 'pas' parameter.")
+      if dX and pas:
+         raise Exception("Need 'dX' or 'pas' parameter, not both.")
       if pas: dX = len(val)*[pas]
-      if len(dX) != len(val): raise "Error : 'dX' and 'val' parameters aren't compatible (lenght are not equal).\ndX = %s\nval = %s" % (str(dx), str(val))
+      if len(dX) != len(val):
+         raise Exception("Error : 'dX' and 'val' parameters aren't compatible (lenght are not equal).\ndX = %s\nval = %s" % (dx, val))
 
       reponses  = self.calcul
       resu_exp  = self.experience
@@ -1326,15 +1329,16 @@ if __name__ == '__main__':
         else:
            liste = glob.glob('*.export')
            export = liste[0]
-        if not os.path.isfile(export): raise "Export file : is missing!"
+        if not os.path.isfile(export):
+           raise Exception("Export file : is missing!")
 
 
         # Code_Aster installation
         ASTER_ROOT = None
         if options.aster_root:                  ASTER_ROOT = options.aster_root
         elif os.environ.has_key('ASTER_ROOT'):  ASTER_ROOT = os.environ['ASTER_ROOT']
-        if not ASTER_ROOT: raise "ASTER_ROOT is missing! Set it by --aster_root flag or environment variable ASTER_ROOT"
-        if not os.path.isdir(ASTER_ROOT): raise "Wrong directory for ASTER_ROOT : %s" % ASTER_ROOT
+        if not ASTER_ROOT: raise Exception("ASTER_ROOT is missing! Set it by --aster_root flag or environment variable ASTER_ROOT")
+        if not os.path.isdir(ASTER_ROOT): raise Exception("Wrong directory for ASTER_ROOT : %s" % ASTER_ROOT)
         os.environ['ASTER_ROOT'] = ASTER_ROOT
 #         sys.path.append(get_absolute_path(os.path.join(ASTER_ROOT, 'STA10.1', 'bibpyt' )))
 #         from Utilitai.Utmess import UTMESS
@@ -1354,7 +1358,7 @@ if __name__ == '__main__':
 
         # Import des modules supplementaires
         if options.SOURCES_ROOT:
-             if not os.path.isdir(options.SOURCES_ROOT): raise "Wrong directory for sources_root : %s" % options.SOURCES_ROOT
+             if not os.path.isdir(options.SOURCES_ROOT): raise Exception("Wrong directory for sources_root : %s" % options.SOURCES_ROOT)
              else:
                  sys.path.insert(0, options.SOURCES_ROOT)
                  sys.path.insert(0, os.path.join(options.SOURCES_ROOT, 'sources'))
@@ -1365,22 +1369,27 @@ if __name__ == '__main__':
             try:
                 if info>=1: print "Read MR parameters file : %s" % options.mr_parameters
                 execfile(options.mr_parameters)
-            except: raise "Wrong file for MR Parameters: %s" % options.mr_parameters
-        else: raise "MR Parameters file needed ! Use --mr_parameters flag"
+            except: raise Exception("Wrong file for MR Parameters: %s" % options.mr_parameters)
+        else: raise Exception("MR Parameters file needed ! Use --mr_parameters flag")
         parametres = globals().get('parametres',  None)
         calcul     = globals().get('calcul',      None)
         experience = globals().get('experience',  None)
         poids      = globals().get('poids',       None)
 
-        if not parametres:  raise "MR Parameters file need to define 'parametres' variable"
-        if not calcul:      raise "MR Parameters file need to define 'calcul' variable"
-        if type(parametres)  != list: raise "Wrong type for 'parametres' variable in MR parameters file : %s"  % options.mr_parameters
-        if type(calcul)      != list: raise "Wrong type for 'calcul' variable in MR parameters file : %s"      % options.mr_parameters
+        if not parametres:  raise Exception("MR Parameters file need to define 'parametres' variable")
+        if not calcul:      raise Exception("MR Parameters file need to define 'calcul' variable")
+        if not isinstance(parameters, list):
+           raise Exception("Wrong type for 'parametres' variable in MR parameters file : %s"  % options.mr_parameters)
+        if not isinstance(calcul, list):
+           raise Exception("Wrong type for 'calcul' variable in MR parameters file : %s"      % options.mr_parameters)
 
         if options.objective == 'error':
-             if type(experience) != list: raise "For error objective output, the 'experience' variable must be a list of arrays"
-             if type(poids) not in [list, tuple, NP.ndarray]: raise "The 'poids' variable must be a list or an array"
-             if len(poids) != len(experience): raise "'experience' and 'poids' lists must have the same lenght"
+             if not isinstance(experience, list):
+                raise Exception("For error objective output, the 'experience' variable must be a list of arrays")
+             if not isinstance(poids, (list, tuple, NP.ndarray)):
+                raise Exception("The 'poids' variable must be a list or an array")
+             if len(poids) != len(experience):
+                raise Exception("'experience' and 'poids' lists must have the same lenght")
 
 
         # MACR_RECAL parameters
@@ -1391,8 +1400,10 @@ if __name__ == '__main__':
 
         # X0 : read from commandline flag or from file
         if not os.path.isfile(options.input_file): options.input_file = None
-        if not (options.input or  options.input_file): raise "Missing input parameters"
-        if     (options.input and options.input_file): raise "Error : please use only one choice for input parameters definition"
+        if not (options.input or options.input_file):
+           raise Exception("Missing input parameters")
+        if (options.input and options.input_file):
+           raise Exception("Error : please use only one choice for input parameters definition")
 
         if options.input_file:
             try:
@@ -1400,7 +1411,7 @@ if __name__ == '__main__':
                 options.input = f.read()
                 f.close()
             except:
-                raise "Can't read input parameters file : %s" % options.input_file
+                raise Exception("Can't read input parameters file : %s" % options.input_file)
 
         # Extract X0 from text
         try:
@@ -1408,18 +1419,22 @@ if __name__ == '__main__':
             txt = txt.replace(',', ' ')
             txt = txt.replace(';', ' ')
             X0 = [ float(x) for x in txt.split() ]
-            if type(X0) != list: raise "Wrong string for input parameters : %s" % options.input
+            if not isinstance(X0,list):
+               raise Exception("Wrong string for input parameters : %s" % options.input)
         except:
-            raise "Can't decode input parameters string : %s.\n It should be a comma separated list." % options.input
+            raise Exception("Can't decode input parameters string : %s.\n It should be a comma separated list." % options.input)
 
 
         # dX : read from commandline flag or from file
         dX = None
         if options.gradient_type == 'no':
-            if (options.input_step or  options.input_step_file): raise "You must set 'gradient_type' to another choice than 'no' or remove input step parameters from commandline"
+           if (options.input_step or  options.input_step_file):
+              raise Exception("You must set 'gradient_type' to another choice than 'no' or remove input step parameters from commandline")
         else:
-            if not (options.input_step or  options.input_step_file): raise "Missing input step parameters"
-            if     (options.input_step and options.input_step_file): raise "Error : please use only one choice for input step parameters definition"
+            if not (options.input_step or  options.input_step_file):
+               raise Exception("Missing input step parameters")
+            if (options.input_step and options.input_step_file):
+               raise Exception("Error : please use only one choice for input step parameters definition")
 
             if options.input_step_file:
                 try:
@@ -1427,7 +1442,7 @@ if __name__ == '__main__':
                     options.input_step = f.read()
                     f.close()
                 except:
-                    raise "Can't read file for discretisation step : %s" % options.input_step_file
+                    raise Exception("Can't read file for discretisation step : %s" % options.input_step_file)
 
             # Extract dX from text
             try:
@@ -1435,9 +1450,10 @@ if __name__ == '__main__':
                 txt = txt.replace(',', ' ')
                 txt = txt.replace(';', ' ')
                 dX = [ float(x) for x in txt.split() ]
-                if type(dX) != list: raise "Wrong string for discretisation step : %s" % options.input_step
+                if not isinstance(dX, list):
+                   raise Exception("Wrong string for discretisation step : %s" % options.input_step)
             except:
-                raise "Can't decode input parameters string : %s.\n It should be a comma separated list." % options.input_step
+                raise Exception("Can't decode input parameters string : %s.\n It should be a comma separated list." % options.input_step)
 
 
 
@@ -1509,7 +1525,7 @@ if __name__ == '__main__':
             fonctionnelle = erreur
             if   gradient_type == 'normal': gradient = A
             elif gradient_type == 'adim':   gradient = A_nodim
-            else: raise "??"
+            else: raise Exception("??")
 
 
 

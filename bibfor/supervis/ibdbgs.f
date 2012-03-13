@@ -2,9 +2,9 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,8 +44,8 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- DEBUT COMMON DE DEBUG JEVEUX
       INTEGER          LUNDEF,IDEBUG
       COMMON /UNDFJE/  LUNDEF,IDEBUG
-      REAL*8           TBLOC
-      COMMON /RTBLJE/  TBLOC
+      REAL*8           TBLOC,TGREL
+      COMMON /RTBLJE/  TBLOC,TGREL
 
 C     -- COMMON MESTP1 POUR MESURE_TEMPS
       INTEGER          MTPNIV,MTPSTA
@@ -53,8 +53,7 @@ C     -- COMMON MESTP1 POUR MESURE_TEMPS
 
 C ----------------------------------------------------------------------
       CHARACTER*3  REPONS
-      INTEGER L,NCODE,NDBG
-      INTEGER      IARG
+      INTEGER L,NCODE,NDBG,IARG,I1
 C
 C     --- OPTIONS PAR DEFAUT ---
       CALL JEMARQ()
@@ -134,6 +133,8 @@ C     -- MEMOIRE  :
 C     -----------------------------------------------------
 
       CALL GETVR8('MEMOIRE','TAILLE_BLOC',1,IARG,1,TBLOC,L)
+      CALL GETVIS('MEMOIRE','TAILLE_GROUP_ELEM',1,IARG,1,I1,L)
+      TGREL=DBLE(I1)
 
       CALL JEDEMA()
       END

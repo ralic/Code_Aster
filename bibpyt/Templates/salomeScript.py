@@ -1,8 +1,8 @@
-#@ MODIF salomeScript Templates  DATE 23/05/2011   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF salomeScript Templates  DATE 13/03/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -43,8 +43,8 @@ CHOIX       = 'DEPL'
 
 #%=================================================================%
 
-if CHOIX not in ['DEPL','ISO','GAUSS','COURBE', 'ON_DEFORMED']: raise "Erreur de type de visualisation!"
-if not os.path.isfile(INPUTFILE1): raise "Fichier %s non present!" % INPUTFILE1
+if CHOIX not in ['DEPL','ISO','GAUSS','COURBE', 'ON_DEFORMED']: raise Exception("Erreur de type de visualisation!")
+if not os.path.isfile(INPUTFILE1): raise Exception("Fichier %s non present!" % INPUTFILE1)
 
 
 #%====================Initialisation Salome================================%
@@ -82,7 +82,7 @@ else:
 
 
 myViewManager = myVisu.GetViewManager()
-if myViewManager is None : raise "Erreur de creation de study"
+if myViewManager is None : raise Exception("Erreur de creation de study")
 
 
 #%===================Construction courbe======================%
@@ -104,7 +104,7 @@ if CHOIX=='COURBE':
 
 else :
      myResult = myVisu.ImportFile(INPUTFILE1)
-     if myResult is None : raise "Erreur de fichier MED"
+     if myResult is None : raise Exception("Erreur de fichier MED")
 
      MAILLAGE = myResult.GetMeshNames()[0]
      LISTE_CHAMP_CELL = myResult.GetFields(MAILLAGE,VISU.CELL)
@@ -118,7 +118,7 @@ else :
      # Si on a plusieurs instants, on a visualisation de type Presentation animee
 
      if CHOIX =='ON_DEFORMED' :
-         if LISTE_CHAMP_NODE ==[] : raise "Erreur de champ"
+         if LISTE_CHAMP_NODE ==[] : raise Exception("Erreur de champ")
          TYPE_ENTITE=VISU.NODE
          NOM_CHAMP = LISTE_CHAMP_NODE[0]
          NUM_INST = myResult.GetTimeStampNumbers(MAILLAGE,TYPE_ENTITE,NOM_CHAMP)[0]
@@ -157,7 +157,7 @@ else :
 
      if CHOIX == 'DEPL' :
          TYPE_ENTITE=VISU.NODE
-         if LISTE_CHAMP_NODE ==[] : raise "Erreur de champ"
+         if LISTE_CHAMP_NODE ==[] : raise Exception("Erreur de champ")
          NOM_CHAMP = LISTE_CHAMP_NODE[0]
          NUM_INST = myResult.GetTimeStampNumbers(MAILLAGE,TYPE_ENTITE,NOM_CHAMP)[0]
          L_INST = myResult.GetTimeStampNumbers(MAILLAGE,TYPE_ENTITE,NOM_CHAMP)
@@ -183,7 +183,7 @@ else :
 
      if CHOIX == 'GAUSS' :
          TYPE_ENTITE=VISU.CELL
-         if LISTE_CHAMP_CELL ==[] : raise "Erreur de champ"
+         if LISTE_CHAMP_CELL ==[] : raise Exception("Erreur de champ")
          NOM_CHAMP = LISTE_CHAMP_CELL[0]
          NUM_INST = myResult.GetTimeStampNumbers(MAILLAGE,TYPE_ENTITE,NOM_CHAMP)[0]
          L_INST = myResult.GetTimeStampNumbers(MAILLAGE,TYPE_ENTITE,NOM_CHAMP)
@@ -214,7 +214,7 @@ else :
      if CHOIX == 'ISO' :
          if  LISTE_CHAMP_CELL ==[] : 
              TYPE_ENTITE = VISU.NODE
-             if  LISTE_CHAMP_NODE == [] : raise "Erreur de champ"
+             if  LISTE_CHAMP_NODE == [] : raise Exception("Erreur de champ")
              NOM_CHAMP = LISTE_CHAMP_NODE[0]
          else :
              TYPE_ENTITE=VISU.CELL
@@ -259,7 +259,7 @@ else :
     else :
         if myView1.GetType() != VISU.TVIEW3D :
              myView1 = myViewManager.Create3DView()
-             if myView1 is None : raise "Erreur de vue VTK"
+             if myView1 is None : raise Exception("Erreur de vue VTK")
 
     if nINST == 1 :
         myView1.DisplayOnly(resu[nCMP-1])

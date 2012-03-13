@@ -1,9 +1,9 @@
-#@ MODIF V_JDC Validation  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF V_JDC Validation  DATE 13/03/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -81,24 +81,15 @@ class JDC(V_MCCOMPO.MCCOMPO):
         return self.valid
 
    def verif_regles(self):
-      """ 
-         Effectue la vérification de validité des règles du jeu de commandes 
       """
-      l_noms_etapes=self.get_l_noms_etapes()
+      Effectue la vérification de validité des règles du jeu de commandes
+      """
+      noms_etapes = [etape.nom for etape in self.etapes]
       texte_global = ''
       test_global = 1
-      for regle in self.regles :
-        texte,test = regle.verif(l_noms_etapes)
+      for regle in self.regles:
+        texte, test = regle.verif(noms_etapes)
         texte_global = texte_global + texte
         test_global = test_global*test
-      return texte_global,test_global
-
-   def get_l_noms_etapes(self):
-      """ 
-          Retourne la liste des noms des étapes de self 
-      """
-      l=[]
-      for etape in self.etapes:
-        l.append(etape.nom)
-      return l
+      return texte_global, test_global
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
 # TITRE TEST THM, 3D, MASSIF POREUX SATURE CHAUFFE PAR UN FLUX
 # wtnv111a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -150,10 +150,8 @@ CHAR0=AFFE_CHAR_MECA(   MODELE=MODELE,
                                    FLUN_HYDR1 = 0.)
                   );
 
-MESTAT=STAT_NON_LINE(
-                            MODELE=MODELE,
-                           SOLVEUR=_F(
-                METHODE = 'LDLT'),
+MESTAT=STAT_NON_LINE( MODELE=MODELE,
+                SOLVEUR=_F( METHODE = 'MUMPS', PCENT_PIVOT=200),
                         CHAM_MATER=CHMAT0,
                              EXCIT=_F(
                 CHARGE = CHAR0),

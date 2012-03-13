@@ -1,8 +1,8 @@
-#@ MODIF sd_partition SD  DATE 28/06/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_partition SD  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,8 +22,24 @@ from SD import *
 
 class sd_partition(AsBase):
     nomj = SDNom(fin=8)
-    NUPROC_MAILLE = AsVI(SDNom(nomj='.NUPROC.MAILLE'))
-    # si partition 'GROUP_ELEM' :
-    NUPROC_GREL   = Facultatif(AsVI(SDNom(nomj='.NUPROC.GREL')))
-    NUPROC_LIGREL = Facultatif(AsVK24(SDNom(nomj='.NUPROC.LIGREL'),LONMAX=1))
+    PRTI = AsVI(lonmax=1)
+    PRTK = AsVK24(lonmax=2)
 
+    # si PRTK(1) /= 'GROUP_ELEM' :
+    NUPROC_MAILLE = Facultatif(AsVI(SDNom(nomj='.NUPROC.MAILLE')))
+
+
+    def check_1(self,checker):
+        prti=self.PRTI.get()
+        assert prti[0] > 0 , prti
+
+        prtk=self.PRTK.get_stripped()
+        assert prtk[0] in ('SOUS_DOMAINE','GROUP_ELEM','MAIL_DISPERSE', 'MAIL_CONTIGU')  , prtk
+
+        if  prtk[0] == 'SOUS_DOMAINE' :
+            assert prtk[1] != ''  , prtk
+        else :
+            assert prtk[1] == ''  , prtk
+
+        if  prtk[0] != 'GROUP_ELEM' :
+            assert self.NUPROC_MAILLE.exists

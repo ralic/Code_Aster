@@ -1,6 +1,6 @@
-# MODIF  DATE 16/01/2012   AUTEUR BEAURAIN J.BEAURAIN 
+# MODIF  DATE 12/03/2012   AUTEUR GREFFET N.GREFFET 
 # TITRE FLAMBEMENT NON LINEAIRE POUTRE EN L
-# ssll105d.para = tps_job 200 mem_job 100Mo ncpus 1 liste_test R
+# ssll105d.para = tps_job 200 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,9 +56,12 @@ encast=AFFE_CHAR_MECA(MODELE=modele,
 fonc=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,1.0,1.0,),);
 
-list=DEFI_LIST_REEL(DEBUT=0.0,
+list0=DEFI_LIST_REEL(DEBUT=0.0,
                     INTERVALLE=_F(JUSQU_A=1.0,
                                   NOMBRE=10,),);
+list=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = list0,),
+                    ECHEC=_F(EVENEMENT='INSTABILITE',ACTION='CONTINUE',),);
+
 
 effort=AFFE_CHAR_MECA(MODELE=modele,
                       FORCE_NODALE=_F(GROUP_NO='C',

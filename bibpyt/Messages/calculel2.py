@@ -1,4 +1,4 @@
-#@ MODIF calculel2 Messages  DATE 04/01/2012   AUTEUR SELLENET N.SELLENET 
+#@ MODIF calculel2 Messages  DATE 13/03/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -424,9 +424,9 @@ Conseils :
     sur la maille incriminée ?
 """),
 
-
-
-
+78 : _(u"""
+Attention : les numéros d'ordre ne sont pas contigus.
+"""),
 
 81: _(u"""
  pas de champ de géométrie

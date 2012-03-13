@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
+#& MODIF COMMANDE  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,7 +29,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
                              'LIAISON_GROUP','LIAISON_UNIF','FLUX_THM_REP','LIAISON_SOLIDE',
                              'LIAISON_ELEM','ONDE_FLUI','LIAISON_CHAMNO','VECT_ASSE','LIAISON_COQUE',
                              'LIAISON_MAIL','LIAISON_CYCL','FORCE_TUYAU',
-                             'EFFE_FOND','EVOL_CHAR','DDL_POUTRE','FORCE_SOL',),
+                             'EFFE_FOND','EVOL_CHAR','DDL_POUTRE','FORCE_SOL','LIAISON_RBE3',),
                          ),
          VERI_NORM       =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
          MODELE          =SIMP(statut='o',typ=(modele_sdaster) ),
@@ -447,6 +447,19 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
              NUME_LAGR       =SIMP(statut='f',typ='TXM',defaut="NORMAL",into=("NORMAL","APRES") ),
            ),
 
+         LIAISON_RBE3    =FACT(statut='f',max='**',
+            fr="""Modélise des relations linéaires de type RBE3 entre 
+                les degrés de liberté d'un noeud maître et des noeuds esclaves.""",
+            regles          =(UN_PARMI('GROUP_NO_MAIT','NOEUD_MAIT'), UN_PARMI('GROUP_NO_ESCL','NOEUD_ESCL'),),
+            GROUP_NO_MAIT   =SIMP(statut='f',typ=grno,max=1),
+            NOEUD_MAIT      =SIMP(statut='f',typ=no  ,max=1),
+            DDL_MAIT        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),min=1,max=6,into=('DX','DY','DZ','DRX','DRY','DRZ')),
+            GROUP_NO_ESCL   =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
+            NOEUD_ESCL      =SIMP(statut='f',typ=no  ,validators=NoRepeat(),min=1,max='**'),
+            DDL_ESCL        =SIMP(statut='o',typ='TXM',min=1,max='**'),
+            COEF_ESCL       =SIMP(statut='f',typ='R',min=1,max='**'),
+            NUME_LAGR       =SIMP(statut='f',typ='TXM',defaut="NORMAL",into=("NORMAL","APRES") ),
+         ),
 
          LIAISON_INTERF  =FACT(statut='f',max='**',
              fr="Définit une relation linéaire entre les DDLs d'interface à partir d'un MACRELEM",

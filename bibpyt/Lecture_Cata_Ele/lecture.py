@@ -1,4 +1,4 @@
-#@ MODIF lecture Lecture_Cata_Ele  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF lecture Lecture_Cata_Ele  DATE 13/03/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -56,13 +56,13 @@ def lire_cata(nomfic,format='cata'):
                 for line in fcata :
                     ilig=ilig+1; print "%i %s" % (ilig,line[:-1])
                 print 80*'/'
-                raise RuntimeError, "Erreur_Fatale"
+                raise Exception("Erreur_Fatale")
             ast2=creer_capy(t1)
             capy=ast2.ast
             del ast2
             detruire_kids(capy)
         else :
-            raise "Erreur_Fatale","format inconnu: "+format
+            raise Exception("Erreur_Fatale format inconnu: %s" % format)
         return capy
 
 

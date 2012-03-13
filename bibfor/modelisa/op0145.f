@@ -1,9 +1,9 @@
       SUBROUTINE OP0145()
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -42,19 +42,19 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      INTEGER       IBID, DIM
+      INTEGER       IBID, DIM, IARG
       REAL*8        R8B
       COMPLEX*16    C16B
       CHARACTER*1   TYPSPE
       CHARACTER*8   K8B,K8BID,INTSPE,CAELEM,MODELE,NOMZON
-      CHARACTER*16  CONCEP, CMD, NOMMCF, MCFAC(8)
+      CHARACTER*16  CONCEP, CMD, NOMMCF, MCFAC(9)
       CHARACTER*19  NOMU
       CHARACTER*24  VAIN, VARE, VATE, NNOE
-      INTEGER      IARG
 C
       DATA MCFAC /'SPEC_LONG_COR_1','SPEC_LONG_COR_2',
      &            'SPEC_LONG_COR_3','SPEC_LONG_COR_4',
      &            'SPEC_CORR_CONV_1','SPEC_CORR_CONV_2',
+     &            'SPEC_CORR_CONV_3',
      &            'SPEC_FONC_FORME','SPEC_EXCI_POINT'/
 C ----------------------------------------------------------------------
       CALL JEMARQ()
@@ -209,6 +209,8 @@ C
            ZK16(LNOM+3)    ='METHODE         '
            ZK16(LNOM+4)    ='COEF_VITE_FLUI_A'
            ZK16(LNOM+5)    ='COEF_VITE_FLUI_O'
+        ELSEIF(NOMMCF.EQ.'SPEC_CORR_CONV_3') THEN
+           ZK16(LNOM)      ='TABLE_FONCTION  '
         ELSEIF(NOMMCF.EQ.'SPEC_FONC_FORME') THEN
            ZK16(LNOM)      ='INTE_SPEC       '
            ZK16(LNOM+1)    ='FONCTION        '
@@ -238,6 +240,9 @@ C
             ZK16(LVATE+IMC) = NOMZON
           ELSEIF(ZK16(LNOM+IMC-1).EQ.'FONCTION        ') THEN
             CALL GETVID(NOMMCF,'FONCTION',1,IARG,1,NOMZON,IBID)
+            ZK16(LVATE+IMC) = NOMZON
+          ELSEIF(ZK16(LNOM+IMC-1).EQ.'TABLE_FONCTION  ') THEN
+            CALL GETVID(NOMMCF,'TABLE_FONCTION',1,IARG,1,NOMZON,IBID)
             ZK16(LVATE+IMC) = NOMZON
           ELSEIF(ZK16(LNOM+IMC-1).NE.'                ') THEN
              IMCI = IMCI + 1

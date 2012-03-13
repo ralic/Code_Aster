@@ -1,8 +1,8 @@
-#@ MODIF sd_modele SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF sd_modele SD  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,10 +22,9 @@ from SD import *
 
 from SD.sd_ligrel    import sd_ligrel
 from SD.sd_maillage  import sd_maillage
-from SD.sd_prof_chno import sd_prof_chno
-from SD.sd_carte     import sd_carte
 from SD.sd_xfem      import sd_modele_xfem
 from SD.sd_l_table   import sd_l_table
+from SD.sd_partition import sd_partition
 
 
 
@@ -36,6 +35,7 @@ class sd_modele(AsBase):
     MODELE = sd_ligrel()
     NOEUD = Facultatif(AsVI())
     MAILLE = Facultatif(AsVI())
+    PARTIT = Facultatif(AsVK8(lonmax=1))
 
     # une sd_modele peut avoir une "sd_l_table" contenant des grandeurs caractéristiques de l'étude :
     lt = Facultatif(sd_l_table(SDNom(nomj='')))
@@ -56,7 +56,14 @@ class sd_modele(AsBase):
 
 
     def check_maillage(self,checker) :
-        # on est obligé de checker le maillage pour permettre la creation de la sd_voisinage
+        # on est obligé de re-checker le maillage pour permettre la creation de la sd_voisinage
         lgrf=self.MODELE.LGRF.get_stripped()
         sd2 = sd_maillage(lgrf[0]); sd2.check(checker)
+
+    def check_PARTIT(self,checker) :
+        if self.PARTIT.exists :
+           partit=self.PARTIT.get_stripped()
+           if partit[0] != '' :
+              sd2 = sd_partition(partit[0])
+              sd2.check(checker)
 

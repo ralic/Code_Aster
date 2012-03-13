@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,6 +43,8 @@ MODE_LOCAL__
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
     NDEPLAC  = DEPL_C   ELNO__ IDEN__  (DX       DY       DZ       DRX      DRY      DRZ      )
     DDL_MECA = DEPL_R   ELNO__ IDEN__  (DX       DY       DZ       DRX      DRY      DRZ      )
+    EDEPLRPG = DEPL_R   ELGA__ RIGI    (DX       DY       DZ       DRX      DRY      DRZ      )
+    EDEPLCPG = DEPL_C   ELGA__ RIGI    (DX       DY       DZ       DRX      DRY      DRZ      )
     ECOURAN  = NEUT_R   ELEM__         (X1       )
     NVITER   = DEPL_R   ELNO__ IDEN__  (DX       DY       DZ       )
     EENEDNO  = ENER_R   ELEM__         (TOTALE   TRAC_COM TORSION  FLEX_Y   FLEX_Z   )
@@ -273,7 +275,7 @@ OPTION__
                               OUT__  MMATUUR  PSYM
     TOU_INI_ELGA        99    IN__  
                               OUT__  EEFGEGA  PSIEF_R  ZVARIPG  PVARI_R  EGGEOM_R PGEOM_R  EGINST_R PINST_R
-                                     EGNEUT_R PNEUT_R  EGNEUT_F PNEUT_F
+                                     EGNEUT_R PNEUT_R  EGNEUT_F PNEUT_F  EDEPLRPG PDEPL_R  EDEPLCPG PDEPL_C
     TOU_INI_ELNO        99    IN__  
                               OUT__  EEFGENO  PSIEF_R  ZVARINO  PVARI_R  NGEOMER PGEOM_R  EEINST_R PINST_R
                                      EENEUT_F PNEUT_F  EENEUT_R PNEUT_R

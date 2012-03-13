@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 06/03/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF ops Cata  DATE 13/03/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,12 +21,11 @@
 
 # Modules Python
 import os
+import os.path as osp
 import traceback
 import cPickle as pickle
 import re
 from math import sqrt, pi, atan2, tan, log, exp
-
-import os.path as osp
 
 # Modules Eficas
 import Accas
@@ -63,7 +62,9 @@ def commun_DEBUT_POURSUITE(jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, 
    jdc.info_level = INFO
    if CODE != None:
       jdc.fico = CODE['NOM']
-      jdc.init_ctree()
+      # protection eficas
+      if hasattr(jdc, 'init_ctree'):
+         jdc.init_ctree()
    if LANG:
        from Execution.i18n import localization
        localization.install(LANG)
@@ -135,7 +136,7 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO, 
      if aster_exists:
         repglob = aster_core.get_option("repglob")
         glob1 = osp.join(repglob, "glob.1")
-        if not os.path.isfile(glob1) and not os.path.isfile("bhdf.1"):
+        if not osp.isfile(glob1) and not osp.isfile("bhdf.1"):
           UTMESS('F','SUPERVIS_89')
      # Le module d'execution est accessible et glob.1 est present
      # Pour eviter de rappeler plusieurs fois la sequence d'initialisation
@@ -241,7 +242,7 @@ def get_pickled_context():
        précédente étude. Un fichier pick.1 doit être présent dans le répertoire de travail
     """
     fpick = 'pick.1'
-    if not os.path.isfile(fpick):
+    if not osp.isfile(fpick):
        return None
 
     # Le fichier pick.1 est présent. On essaie de récupérer les objets python sauvegardés

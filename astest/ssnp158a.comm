@@ -1,0 +1,336 @@
+# MODIF  DATE 12/03/2012   AUTEUR TARDIEU N.TARDIEU 
+# TITRE ADAPTATION DE MAILLAGE EN NON-LINEAIRE
+# ssnp158a.para = tps_job 200 mem_job 500Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='SSNP158A',NIV_PUB_WEB='INTERNET',),
+      IMPR_MACRO='NON',IGNORE_ALARM='SUPERVIS_1',);
+
+NbIncr=20
+DT=10./NbIncr
+Depl=0.2
+
+MA=[None]*(NbIncr+1)
+MO=[None]*(NbIncr+1)
+DEP=[None]*(NbIncr+1)
+VAR=[None]*(NbIncr+1)
+ERR=[None]*(NbIncr+1)
+VMI=[None]*(NbIncr+1)
+
+MA[0]=LIRE_MAILLAGE(FORMAT='MED',);
+FRONT=LIRE_MAILLAGE(FORMAT='MED',UNITE=21);
+
+MO[0]=AFFE_MODELE(MAILLAGE=MA[0],
+               VERIF='MAILLE',
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='C_PLAN',),);
+
+# -----------------------------------------------------------------------------
+#  CREATION DES OBJETS DE L'ETUDE (MODELE, CHARGEMENTS, ...)
+# -----------------------------------------------------------------------------
+# COURBE DE TRACTION
+CTRAC=DEFI_FONCTION(VALE=(1.00000E-03,  2.00000E+02,  
+                          6.00000E-03,  2.15275E+02,  
+                          1.10000E-02,  2.27253E+02,  
+                          1.60000E-02,  2.36630E+02,  
+                          2.10000E-02,  2.43964E+02,  
+                          2.60000E-02,  2.49694E+02,  
+                          3.10000E-02,  2.54168E+02,  
+                          3.60000E-02,  2.57659E+02,  
+                          4.10000E-02,  2.60382E+02,  
+                          4.60000E-02,  2.62506E+02,  
+                          5.10000E-02,  2.64161E+02,  
+                          5.60000E-02,  2.65451E+02,  
+                          6.10000E-02,  2.66457E+02,  
+                          6.60000E-02,  2.67240E+02,  
+                          7.10000E-02,  2.67850E+02,  
+                          7.60000E-02,  2.68325E+02,  
+                          8.10000E-02,  2.68696E+02,  
+                          8.60000E-02,  2.68984E+02,  
+                          9.10000E-02,  2.69209E+02,  
+                          9.60000E-02,  2.69384E+02,  
+                          1.01000E-01,  2.69520E+02,  
+                          1.06000E-01,  2.69626E+02,  
+                          1.11000E-01,  2.69709E+02,  
+                          1.16000E-01,  2.69773E+02,  
+                          1.21000E-01,  2.69823E+02,  
+                          1.26000E-01,  2.69862E+02,  
+                          1.31000E-01,  2.69893E+02,  
+                          1.36000E-01,  2.69917E+02,  
+                          1.41000E-01,  2.69935E+02,  
+                          1.46000E-01,  2.69949E+02,  
+                          1.51000E-01,  2.69961E+02,  
+                          1.56000E-01,  2.69969E+02,  
+                          1.61000E-01,  2.69976E+02,  
+                          1.66000E-01,  2.69981E+02,  
+                          1.71000E-01,  2.69986E+02,  
+                          1.76000E-01,  2.69989E+02,  
+                          1.81000E-01,  2.69991E+02,  
+                          1.86000E-01,  2.69993E+02,  
+                          1.91000E-01,  2.69994E+02,  
+                          1.96000E-01,  2.69996E+02,  
+                          2.00000E-01,  2.69996E+02,  
+                          ),
+                    NOM_PARA='EPSI',
+                    PROL_DROITE='CONSTANT',);
+
+MATE=DEFI_MATERIAU(ELAS=_F(E=200000.0,
+                           NU=0.3,),
+                   TRACTION=_F(SIGM=CTRAC,),);
+
+CM=AFFE_MATERIAU(MAILLAGE=MA[0],
+                 AFFE=_F(TOUT='OUI',
+                         MATER=MATE,),);
+
+CH1=AFFE_CHAR_CINE(MODELE=MO[0],
+                   MECA_IMPO=(_F(GROUP_MA='bas',    DY=0.0,),
+                              _F(GROUP_MA='gauche', DX=0.0,),
+                              _F(GROUP_MA='haut',   DY=Depl,)),);
+
+
+F_DEPL=DEFI_FONCTION(NOM_PARA='INST',
+                     VALE=(0.0,  0.0,
+                           10.0, 1.0,
+                           ),);
+
+INST=DEFI_LIST_REEL(DEBUT=0.0,
+                    INTERVALLE=_F(JUSQU_A=10.0,
+                                  NOMBRE=NbIncr,),);
+
+L_INST=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='AUTO',
+                                   LIST_INST=INST,
+                                   PAS_MINI=0.001,));
+
+
+
+# -----------------------------------------------------------------------------
+#  BOUCLE POUR EVOLUTION EN TEMPS
+# -----------------------------------------------------------------------------
+for iNumPas in range(0,NbIncr):
+
+      # -----------------------------------------------------------------------------
+      #  RESOLUTION PAS (iNumPas)*DT->(iNumPas+1)*DT
+      # -----------------------------------------------------------------------------
+      if iNumPas==0:
+           RESUNL=STAT_NON_LINE(MODELE=MO[iNumPas],
+                                 CHAM_MATER=CM,
+                                 EXCIT=(_F(CHARGE=CH1,
+                                           FONC_MULT=F_DEPL,),),
+                                 COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',),
+                                 ARCHIVAGE=_F(LIST_INST=INST),
+                                 METHODE='NEWTON_KRYLOV',
+                                 INCREMENT=_F(LIST_INST=L_INST,
+                                              INST_INIT=iNumPas*DT,
+                                              INST_FIN=(iNumPas+1)*DT,),
+                                 NEWTON=_F(REAC_ITER=1,),
+                                 SOLVEUR=_F(METHODE='GCPC',PRE_COND='LDLT_SP',),
+                                 CONVERGENCE=_F(ITER_GLOB_MAXI=30,),);
+      else:
+           RESUNL=STAT_NON_LINE(MODELE=MO[iNumPas],
+                                 CHAM_MATER=CM,
+                                 EXCIT=(_F(CHARGE=CH1,
+                                           FONC_MULT=F_DEPL,),),
+                                 COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',),
+                                 ETAT_INIT=_F(EVOL_NOLI=EQUILIB,
+                                              INST_ETAT_INIT=iNumPas*DT,),
+                                 ARCHIVAGE=_F(LIST_INST=INST),
+                                 METHODE='NEWTON_KRYLOV',
+                                 INCREMENT=_F(LIST_INST=L_INST,
+                                              INST_INIT=iNumPas*DT,
+                                              INST_FIN=(iNumPas+1)*DT,),
+                                 NEWTON=_F(REAC_ITER=1,),
+                                 SOLVEUR=_F(METHODE='GCPC',PRE_COND='LDLT_SP',),
+                                 CONVERGENCE=_F(ITER_GLOB_MAXI=30,),);
+                            
+      RESUNL=CALC_CHAMP(reuse =RESUNL,
+                        RESULTAT=RESUNL,
+                        CONTRAINTE='SIEF_NOEU',
+                        CRITERES='SIEQ_ELNO',
+                        VARI_INTERNE='VARI_NOEU',);
+
+      RESUNL=CALC_ERREUR(reuse=RESUNL,
+                         RESULTAT=RESUNL,
+                         SOLVEUR=_F(METHODE='GCPC',PRE_COND='LDLT_INC',),
+                         OPTION=('ERZ1_ELEM',),);
+                         
+      VAR[iNumPas]=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='NOEU_VAR2_R', NOM_CHAM='VARI_NOEU', RESULTAT=RESUNL, INST=(iNumPas+1)*DT)
+      DEP[iNumPas]=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R', NOM_CHAM='DEPL',      RESULTAT=RESUNL, INST=(iNumPas+1)*DT)
+      ERR[iNumPas]=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='ELEM_ERRE_R', NOM_CHAM='ERZ1_ELEM', RESULTAT=RESUNL, INST=(iNumPas+1)*DT)
+      VMI[iNumPas]=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R', NOM_CHAM='SIEQ_ELNO', RESULTAT=RESUNL, INST=(iNumPas+1)*DT)
+      
+      baseUL=100
+      DEFI_FICHIER(ACTION='ASSOCIER',UNITE=baseUL+iNumPas,FICHIER='./REPE_OUT/erre_iter_%02i.med' %iNumPas)
+      IMPR_RESU(FORMAT='MED',UNITE=baseUL+iNumPas,RESU=_F(CHAM_GD=ERR[iNumPas], NOM_CMP='ERREST',))
+      DEFI_FICHIER(ACTION='LIBERER',UNITE=baseUL+iNumPas)
+      
+      baseUL=200
+      DEFI_FICHIER(ACTION='ASSOCIER',UNITE=baseUL+iNumPas,FICHIER='./REPE_OUT/vari_iter_%02i.med' %iNumPas)
+      IMPR_RESU(FORMAT='MED',UNITE=baseUL+iNumPas,RESU=_F(CHAM_GD=VAR[iNumPas], NOM_CMP='V1',))
+      DEFI_FICHIER(ACTION='LIBERER',UNITE=baseUL+iNumPas)
+      
+      baseUL=300
+      DEFI_FICHIER(ACTION='ASSOCIER',UNITE=baseUL+iNumPas,FICHIER='./REPE_OUT/depl_iter_%02i.med' %iNumPas)
+      IMPR_RESU(FORMAT='MED',UNITE=baseUL+iNumPas,RESU=_F(CHAM_GD=DEP[iNumPas], NOM_CMP=('DX','DY'),))
+      DEFI_FICHIER(ACTION='LIBERER',UNITE=baseUL+iNumPas)
+   
+      baseUL=400
+      DEFI_FICHIER(ACTION='ASSOCIER',UNITE=baseUL+iNumPas,FICHIER='./REPE_OUT/sieq_iter_%02i.med' %iNumPas)
+      IMPR_RESU(FORMAT='MED',UNITE=baseUL+iNumPas,RESU=_F(CHAM_GD=VMI[iNumPas], NOM_CMP=('VMIS'),))
+      DEFI_FICHIER(ACTION='LIBERER',UNITE=baseUL+iNumPas)
+   
+      
+      # -----------------------------------------------------------------------------
+      #  ADAPTATION DE MAILLAGE + PROJECTION DES CHAMPS
+      # -----------------------------------------------------------------------------
+      VARI1=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='ELGA_VARI_R', NOM_CHAM='VARI_ELGA', RESULTAT=RESUNL, INST=(iNumPas+1)*DT)
+      SIGM1=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R', NOM_CHAM='SIEF_ELGA', RESULTAT=RESUNL, INST=(iNumPas+1)*DT)
+      
+      #  ADAPTATION DE MAILLAGE A PROPREMENT PARLER
+      # --------------------------------------------
+      MA[iNumPas+1]=CO('MA_%d' % (iNumPas+1))
+      MACR_ADAP_MAIL(MAILLAGE_N=MA[iNumPas],
+                     MAILLAGE_NP1=MA[iNumPas+1],
+                     ADAPTATION='RAFF_DERA',
+                     RESULTAT_N=RESUNL,
+                     NOM_CHAM='ERZ1_ELEM',
+                     NOM_CMP='ERREST',
+                     CRIT_RAFF_PE=0.04,
+                     CRIT_DERA_PE=0.4,
+                     NUME_ORDRE=1,
+                     NIVE_MAX=4,
+                     MAILLAGE_FRONTIERE=FRONT,
+                     MAJ_CHAM=(_F(CHAM_MAJ=CO('DEPL2'),
+                                  TYPE_CHAM='NOEU_DEPL_R',
+                                  RESULTAT=RESUNL,
+                                  NOM_CHAM='DEPL',
+                                  NUME_ORDRE=1,),),);
+
+      DETRUIRE(CONCEPT=(_F(NOM=RESUNL),
+                        _F(NOM=CM),
+                        _F(NOM=CH1),
+               ),INFO=1)
+      
+      #  PROJECTION DES CHAMPS (ON A BESOIN DU MODELE SUR LE NOUVEAU MAILLAGE)
+      # ----------------------------------------------------------------------
+      MO[iNumPas+1]=AFFE_MODELE(MAILLAGE=MA[iNumPas+1],
+                      AFFE=_F(TOUT='OUI',
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='C_PLAN',),);
+                              
+      VARI2=PROJ_CHAMP(CHAM_GD=VARI1,MODELE_1=MO[iNumPas], MODELE_2=MO[iNumPas+1],METHODE='ECLA_PG')
+      SIGM2=PROJ_CHAMP(CHAM_GD=SIGM1,MODELE_1=MO[iNumPas], MODELE_2=MO[iNumPas+1],METHODE='ECLA_PG')
+      
+      # -----------------------------------------------------------------------------
+      #  EQUILIBRAGE PAS (iNumPas)*DT->(iNumPas+1)*DT
+      # -----------------------------------------------------------------------------
+
+      CM=AFFE_MATERIAU(MAILLAGE=MA[iNumPas+1],
+                       AFFE=_F(TOUT='OUI',
+                               MATER=MATE,),);
+
+      CH1=AFFE_CHAR_CINE(MODELE=MO[iNumPas+1],
+                         MECA_IMPO=(_F(GROUP_MA='bas',    DY=0.0,),
+                                    _F(GROUP_MA='gauche', DX=0.0,),
+                                    _F(GROUP_MA='haut',   DY=Depl,)),);
+
+      if iNumPas>0:
+         DETRUIRE(CONCEPT=_F(NOM=EQUILIB),INFO=1,)
+      
+      EQUILIB=STAT_NON_LINE(MODELE=MO[iNumPas+1],
+                            CHAM_MATER=CM,
+                            EXCIT=(_F(CHARGE=CH1,
+                                      FONC_MULT=F_DEPL,),),
+                            COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',),
+                            ETAT_INIT=_F(DEPL=DEPL2,
+                                         SIGM=SIGM2,
+                                         VARI=VARI2,),
+                            ARCHIVAGE=_F(LIST_INST=INST),
+                            METHODE='NEWTON_KRYLOV',
+                            INCREMENT=_F(LIST_INST=L_INST,
+                                         INST_INIT=iNumPas*DT,
+                                         INST_FIN=(iNumPas+1)*DT,),
+                            NEWTON=_F(REAC_ITER=1,PREDICTION='ELASTIQUE'),
+                            SOLVEUR=_F(METHODE='GCPC',PRE_COND='LDLT_SP',),
+                            );
+
+
+      # -----------------------------------------------------------------------------
+      #  NETTOYAGE
+      # -----------------------------------------------------------------------------
+      DETRUIRE(CONCEPT=(_F(NOM=SIGM1),
+                        _F(NOM=SIGM2),
+                        _F(NOM=VARI1),
+                        _F(NOM=VARI2),
+                        _F(NOM=DEPL2),
+                        ),
+               INFO=1,)
+
+
+EQUILIB=CALC_CHAMP(reuse=EQUILIB,
+                  RESULTAT=EQUILIB,
+                  CONTRAINTE='SIGM_NOEU',
+                  VARI_INTERNE='VARI_NOEU',);
+
+     
+TEST_RESU(RESU=(_F(RESULTAT=EQUILIB,
+                   INST=10.,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOM_CMP='SIYY',
+                   GROUP_NO='B',
+                   VALE=250.41027791083,
+                   PRECISION=(0.4E-2,1.E-6),
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=EQUILIB,
+                   INST=10.,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOM_CMP='SIXX',
+                   GROUP_NO='A',
+                   VALE=-214.5870608019,
+                   PRECISION=(6.E-2,1.E-6),
+                   REFERENCE='AUTRE_ASTER',),))
+
+TEST_RESU(RESU=(_F(RESULTAT=EQUILIB,
+                   INST=10.,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOM_CMP='SIYY',
+                   GROUP_NO='B',
+                   VALE=250.32093034864,
+                   PRECISION=1.E-6,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=EQUILIB,
+                   INST=10.,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOM_CMP='SIXX',
+                   GROUP_NO='A',
+                   VALE=-202.1034233214,
+                   PRECISION=1.E-6,
+                   REFERENCE='NON_REGRESSION',),))
+
+SIGBAS2=MACR_LIGN_COUPE(RESULTAT=EQUILIB,
+                        INST=10.,
+                        NOM_CHAM='VARI_NOEU',
+                        LIGN_COUPE=_F(NB_POINTS=30,
+                                      COOR_ORIG=(0,30,),
+                                      COOR_EXTR=(100,30,),),);
+
+IMPR_TABLE(TABLE=SIGBAS2,
+           NOM_PARA=('ABSC_CURV','V1',),);
+
+FIN();

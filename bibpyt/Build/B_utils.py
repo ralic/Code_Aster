@@ -1,9 +1,9 @@
-#@ MODIF B_utils Build  DATE 17/08/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_utils Build  DATE 13/03/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -169,8 +169,8 @@ def ReorganisationDe( texte , LongueurSousChaine=80 ) :
                 if ( len(uneChaine) > LongueurSousChaine ) :
                         sys.stderr.write("ERREUR detectee dans Decoupe\n" )
                         print ">",uneChaine,"<"
-                        raise "Decoupe : chaine depassant la limite de "+`LongueurSousChaine`+\
-                        ' caracteres'
+                        raise Exception("Decoupe : chaine depassant la limite de %s caractères"
+                                        % LongueurSousChaine)
                 apres = apres + uneChaine.ljust(LongueurSousChaine)
 
         return apres

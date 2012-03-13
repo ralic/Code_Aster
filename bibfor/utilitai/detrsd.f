@@ -3,9 +3,9 @@
       CHARACTER*(*) TYPESD,NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -115,6 +115,8 @@ C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'PARTITION') THEN
 C     -------------------------------------------
         PARTIT = NOMSD
+        CALL JEDETR(PARTIT//'.PRTI')
+        CALL JEDETR(PARTIT//'.PRTK')
         CALL JEDETR(PARTIT//'.NUPROC.MAILLE')
 
 C     ------------------------------------------------------------------

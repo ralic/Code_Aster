@@ -1,9 +1,9 @@
-      SUBROUTINE EX0100( NUOPER, IER )
+      SUBROUTINE EX0100( NUOPER )
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER            NUOPER, IER
+      INTEGER            NUOPER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,6 @@ C
      +       81, 82, 83, 84, 85, 86, 87, 88, 89 , 90,
      +       91, 92, 93, 94, 95, 96, 97, 98, 99 ,100 ) NUOPER - 0100 + 1
 C     ------------------------------------------------------------------
-        IER = 1
         VALI = NUOPER
         CALL U2MESG('E', 'SUPERVIS_50',0,' ',1,VALI,0,0.D0)
       GOTO 9999

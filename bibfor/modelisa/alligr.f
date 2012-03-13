@@ -6,9 +6,9 @@
       CHARACTER*(*)                                 LIGRCZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/06/2009   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -55,7 +55,7 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------- FIN COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER       NFONO, NECHP, NTOT, LONLIG, LONEMA, NBGREL,
-     +              NBMATA, IDNBNO, IDLGNS, NBET, JNOMA
+     +              NBMATA, IDNBNO, IDLGNS, NBET, JLGRF
       INTEGER       NBT1(10), LLIG, LNEMA, NGREL
       CHARACTER*8   TYPMCL(2)
       CHARACTER*16  MOCLEF, MOCLES(2)
@@ -120,8 +120,8 @@ C     --- CREATION DU LIGREL DE CHARGE SI NECESSAIRE ---
      +                                              'VARIABLE', NBMATA)
          LONEMA = MAX(LONEMA,1)
          CALL JEECRA (LIGRCH//'.NEMA', 'LONT', LONEMA, ' ')
-         CALL WKVECT (LIGRCH//'.LGRF', 'G V K8',2, JNOMA)
-         ZK8(JNOMA) = NOMA
+         CALL WKVECT (LIGRCH//'.LGRF', 'G V K8',2, JLGRF)
+         ZK8(JLGRF) = NOMA
          CALL WKVECT (LIGRCH//'.NBNO', 'G V I',1,IDNBNO)
          ZI(IDNBNO) = 0
          CALL WKVECT(LIGRCH//'.LGNS','G V I',2*LONEMA,IDLGNS)

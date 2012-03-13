@@ -1,4 +1,4 @@
-#@ MODIF imprime Lecture_Cata_Ele  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF imprime Lecture_Cata_Ele  DATE 13/03/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -55,7 +55,7 @@ def impr_cata(capy,nomfic,format,seq='oui'):
                 os.mkdir(nomfic)
             except : pass
         else:
-            raise "Erreur"
+            raise Exception("Erreur")
 
         if format == 'cata' :
             ut.menage_capy(capy)
@@ -66,7 +66,7 @@ def impr_cata(capy,nomfic,format,seq='oui'):
         elif format == 'ojb' :
             imprime_ojb(fimpr,capy)
         else :
-            raise "Erreur_Fatale"
+            raise Exception("Erreur_Fatale")
         if seq=="oui": fimpr.close()
         ERR.fini()
 
@@ -317,7 +317,7 @@ def impr_moloc_opt(file,modlocs,opts,format):
                 for (en,point) in moloc[5]:
                     file.write(" "*33+en+"   (");imprime_lk8(format,file,point,6,decal1=0,decaln=40,retour=0);
                     file.write(")\n")
-        else : raise "erreur"
+        else: raise Exception("erreur")
 
     file.write( "\nVECTEUR__ " +"\n")
     for moloc in MLVEs:
@@ -573,7 +573,7 @@ def imprime_ojb(file,capy):
            DESCRIGD.ecri_co(nom=nogd,indice=5,valeur=igd2+1)
            tsca1=TYPEGD.valeurs[igd1]
            tsca2=TYPEGD.valeurs[igd2]
-           if tsca1 != tsca2 : raise "Erreur types incompatibles."
+           if tsca1 != tsca2 : raise Exception("Erreur types incompatibles.")
            tscal=tsca1
 
        if len(gd.gdelem)==1 :
@@ -751,7 +751,7 @@ def imprime_ojb(file,capy):
 
        notm=entete[1]
        nutm=NOMTM.jenonu(nom=notm)
-       if nutm == 0 : raise 'Erreur: nom de type_maille inconnu: '+ notm
+       if nutm == 0 : raise Exception('Erreur: nom de type_maille inconnu: %s' % notm)
        nno=NBNO.lit_co(nom=notm,indice=1)
 
 
@@ -916,13 +916,13 @@ def imprime_ojb(file,capy):
            MODELOC.ecri_co(nom=nomolo2,indice=2,valeur=igd)
            nbsca1=MODELOC.lit_co(nom=note2+molo1,indice=3)
            nbsca2=MODELOC.lit_co(nom=note2+molo2,indice=3)
-           if molo2 != molo1 and type_matrice != 5 : raise "Erreur"
+           if molo2 != molo1 and type_matrice != 5 : raise Exception("Erreur")
            if type_matrice == 4 :
                nbscal=nbsca1*(nbsca1+1)/2
            elif type_matrice == 5 :
                nbscal=nbsca1*nbsca2
            else:
-               raise "Erreur"
+               raise Exception("Erreur")
            MODELOC.ecri_co(nom=nomolo2,indice=3,valeur=nbscal)
            MODELOC.ecri_co(nom=nomolo2,indice=4,valeur=NOMMOLOC.jenonu(note2+molo1))
            MODELOC.ecri_co(nom=nomolo2,indice=5,valeur=NOMMOLOC.jenonu(note2+molo2))

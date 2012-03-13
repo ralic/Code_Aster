@@ -4,10 +4,10 @@
       CHARACTER*1 BASE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 30/05/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ASSEMBLA  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
 C RESPONSABLE PELLET J.PELLET
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -46,7 +46,7 @@ C     ------------------------------------------------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C----------------------------------------------------------------------
       CHARACTER*14 NU
-      LOGICAL LFETI
+      LOGICAL LFETI,LDIST,LDGREL,LMADIS
       CHARACTER*19 NOMLIG
       INTEGER IMAIL,J,ICONX1,ICONX2,ILI,IGREL,IADLIE,IEL,IADNEM
       INTEGER ZZCONX,ZZNBNE,ZZLIEL,ZZNGEL,ZZNSUP,ZZNELG,NUNOEL,L,IDPRN1
@@ -55,7 +55,7 @@ C----------------------------------------------------------------------
       INTEGER IDDL,JDDL,IAMAIL,JSMHC,NCOEF,JSMDE,IGD,NBSS
       INTEGER IASSSA,IERD,IADEQU,NLILI,NEQU,IIMAX,JNOIP,JSUIV,MXDDLT
       INTEGER IMA,NDDLT,JALM,JSMDI,NEL,NEC,NBSMA,ITYPEL
-      INTEGER NNOV,NUMAV,KVOIS,RANG,JNUMSD,IMD,NUMPRO,JSMH1
+      INTEGER NNOV,NUMAV,KVOIS,RANG,JNUMSD,IMD,JSMH1,JPRTK
 
       CHARACTER*8 PARTIT
       REAL*8  VALR(2)
@@ -148,12 +148,21 @@ C     -- FETI OR NOT FETI ?
       CALL DISMOI('F','NUM_GD_SI',NU,'NUME_DDL',IGD,KBID,IER)
       CALL DISMOI('F','NOM_MAILLA',NU,'NUME_DDL',IBID,MA,IER)
 
-C---- RECHERCHE DU TABLEAU PARTITION
+C---- QUEL TYPE DE PARTITION ?
+C     LDIST=.TRUE.  : LES CALCULS ELEMENTAIRES SONT DISTRIBUES
+C     LDGREL=.TRUE. : PARTITION DE TYPE 'GROUP_ELEM'
       CALL DISMOI('F','NOM_LIGREL',MO,'MODELE',IBID,NOMLIG,IER)
       CALL DISMOI('F','PARTITION',NOMLIG,'LIGREL',IBID,PARTIT,IER)
+      CALL MPICM0(RANG,NBPROC)
+      LDIST=.FALSE.
+      LDGREL=.FALSE.
       IF (PARTIT.NE.' ') THEN
-        CALL MPICM0(RANG,NBPROC)
-        CALL JEVEUO(PARTIT//'.NUPROC.MAILLE','L',JNUMSD)
+        LDIST=.TRUE.
+        CALL JEVEUO(PARTIT//'.PRTK','L',JPRTK)
+        LDGREL=ZK24(JPRTK-1+1).EQ.'GROUP_ELEM'
+        IF (.NOT.LDGREL) THEN
+          CALL JEVEUO(PARTIT//'.NUPROC.MAILLE','L',JNUMSD)
+        ENDIF
       ENDIF
 
       CALL JEEXIN(MA//'.CONNEX',IRET)
@@ -175,15 +184,16 @@ C---- RECHERCHE DU TABLEAU PARTITION
 
       CALL JEVEUO(NU//'     .ADNE','E',IADNEM)
       CALL JEVEUO(NU//'     .ADLI','E',IADLIE)
+
+C     -- CAS MATR_DISTRIBUE='OUI' => LMADIS=.TRUE.
       CALL JEEXIN(NU//'.NUML.DELG',IMD)
-      IF ( IMD.EQ.0 ) THEN
+      LMADIS=(IMD.NE.0)
+      IF ( .NOT.LMADIS ) THEN
         CALL JEVEUO(NU//'.NUME.NEQU','L',IADEQU)
         CALL JELIRA(NU//'.NUME.PRNO','NMAXOC',NLILI,KBID)
         CALL JEVEUO(NU//'.NUME.PRNO','L',IDPRN1)
         CALL JEVEUO(JEXATR(NU//'.NUME.PRNO','LONCUM'),'L',IDPRN2)
         CALL JEVEUO(NU//'.NUME.NUEQ','L',JNUEQ)
-        RANG=0
-        JNUMSD=-1
       ELSE
         CALL JEVEUO(NU//'.NUML.NEQU','L',IADEQU)
         CALL JELIRA(NU//'.NUME.PRNO','NMAXOC',NLILI,KBID)
@@ -256,61 +266,64 @@ C       1. TRAITEMENT DES ELEMENTS FINIS CLASSIQUES:
 C       --------------------------------------------
         IF (EXIVF.EQ.'NON') THEN
         DO 80 IGR=1,ZZNGEL(ILI)
+          IF (LMADIS) THEN
+            IF (LDGREL.AND.MOD(IGR,NBPROC).NE.RANG) GOTO 80
+          ENDIF
           NEL=ZZNELG(ILI,IGR)
           DO 70 IEL=1,NEL
             NDDLT=0
             NUMA=ZZLIEL(ILI,IGR,IEL)
+
             IF (NUMA.GT.0) THEN
-              IF (JNUMSD.EQ.-1) THEN
-                NUMPRO=0
-              ELSE
-                NUMPRO=ZI(JNUMSD+NUMA-1)
-              ENDIF
-              IF ( NUMPRO.EQ.RANG ) THEN
 C             -- MAILLES DU MAILLAGE :
-                NNOE=ZZNBNE(NUMA)
-                DO 30 K1=1,NNOE
-                  N1=ZZCONX(NUMA,K1)
-                  IAD1=ZZPRNO(1,N1,1)
-                  NDDL1=ZZPRNO(1,N1,2)
-                  IF (MXDDLT.LT.(NDDLT+NDDL1)) THEN
-                    MXDDLT=2*(NDDLT+NDDL1)
-                    CALL JUVECA('&&PROMOR.ANCIEN.LM',MXDDLT)
-                    CALL JEVEUO('&&PROMOR.ANCIEN.LM','E',JALM)
-                  ENDIF
-                  DO 20 IDDL=1,NDDL1
-                    ZI(JALM+NDDLT+IDDL-1)=ZI(JNUEQ-1+IAD1+IDDL-1)
-   20             CONTINUE
-                  NDDLT=NDDLT+NDDL1
-   30           CONTINUE
+              IF (LMADIS.AND.LDIST.AND..NOT.LDGREL) THEN
+                IF (ZI(JNUMSD+NUMA-1).NE.RANG) GOTO 70
               ENDIF
 
+              NNOE=ZZNBNE(NUMA)
+              DO 30 K1=1,NNOE
+                N1=ZZCONX(NUMA,K1)
+                IAD1=ZZPRNO(1,N1,1)
+                NDDL1=ZZPRNO(1,N1,2)
+                IF (MXDDLT.LT.(NDDLT+NDDL1)) THEN
+                  MXDDLT=2*(NDDLT+NDDL1)
+                  CALL JUVECA('&&PROMOR.ANCIEN.LM',MXDDLT)
+                  CALL JEVEUO('&&PROMOR.ANCIEN.LM','E',JALM)
+                ENDIF
+                DO 20 IDDL=1,NDDL1
+                  ZI(JALM+NDDLT+IDDL-1)=ZI(JNUEQ-1+IAD1+IDDL-1)
+   20           CONTINUE
+                NDDLT=NDDLT+NDDL1
+   30         CONTINUE
+
             ELSE
-              IF ( RANG.EQ.0 ) THEN
 C             -- MAILLES TARDIVES :
-                NUMA=-NUMA
-                NNOE=ZZNSUP(ILI,NUMA)
-                DO 50 K1=1,NNOE
-                  N1=ZZNEMA(ILI,NUMA,K1)
-                  IF (N1.LT.0) THEN
-                    N1=-N1
-                    IAD1=ZZPRNO(ILI,N1,1)
-                    NDDL1=ZZPRNO(ILI,N1,2)
-                  ELSE
-                    IAD1=ZZPRNO(1,N1,1)
-                    NDDL1=ZZPRNO(1,N1,2)
-                  ENDIF
-                  IF (MXDDLT.LT.(NDDLT+NDDL1)) THEN
-                    MXDDLT=2*(NDDLT+NDDL1)
-                    CALL JUVECA('&&PROMOR.ANCIEN.LM',MXDDLT)
-                    CALL JEVEUO('&&PROMOR.ANCIEN.LM','E',JALM)
-                  ENDIF
-                  DO 40 IDDL=1,NDDL1
-                    ZI(JALM+NDDLT+IDDL-1)=ZI(JNUEQ-1+IAD1+IDDL-1)
-   40             CONTINUE
-                  NDDLT=NDDLT+NDDL1
-   50           CONTINUE
+              IF (LMADIS.AND.LDIST.AND..NOT.LDGREL) THEN
+                IF (RANG.NE.0) GOTO 70
               ENDIF
+
+              NUMA=-NUMA
+              NNOE=ZZNSUP(ILI,NUMA)
+              DO 50 K1=1,NNOE
+                N1=ZZNEMA(ILI,NUMA,K1)
+                IF (N1.LT.0) THEN
+                  N1=-N1
+                  IAD1=ZZPRNO(ILI,N1,1)
+                  NDDL1=ZZPRNO(ILI,N1,2)
+                ELSE
+                  IAD1=ZZPRNO(1,N1,1)
+                  NDDL1=ZZPRNO(1,N1,2)
+                ENDIF
+                IF (MXDDLT.LT.(NDDLT+NDDL1)) THEN
+                  MXDDLT=2*(NDDLT+NDDL1)
+                  CALL JUVECA('&&PROMOR.ANCIEN.LM',MXDDLT)
+                  CALL JEVEUO('&&PROMOR.ANCIEN.LM','E',JALM)
+                ENDIF
+                DO 40 IDDL=1,NDDL1
+                  ZI(JALM+NDDLT+IDDL-1)=ZI(JNUEQ-1+IAD1+IDDL-1)
+   40           CONTINUE
+                NDDLT=NDDLT+NDDL1
+   50         CONTINUE
             ENDIF
 
 C           -- TRI EN ORDRE CROISSANT POUR L'INSERTION DES COLONNES
@@ -395,9 +408,6 @@ C       ----------------------------------------------------
    71     CONTINUE
    81   CONTINUE
 
-
-
-
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF
@@ -441,7 +451,7 @@ C       ---------------------------------------------
         ENDIF
   140 CONTINUE
 
-      IF ( (NEQX.NE.NEQU).AND.(IMD.EQ.0) ) THEN
+      IF ( (NEQX.NE.NEQU).AND.(.NOT.LMADIS) ) THEN
         VALI(1)=NEQU
         VALI(2)=NEQX
         CALL U2MESG('F','ASSEMBLA_65',0,' ',2,VALI,0,0.D0)
@@ -474,9 +484,9 @@ C     -- CREATION ET REMPLISSAGE DE .SMDE
       IF (NIV.GE.1) THEN
         VALI(1) = NEQU
         VALI(2) = NCOEF
-        VALI(3) = 2*NCOEF-NEQU   
+        VALI(3) = 2*NCOEF-NEQU
         VALR(1) = (100.D0*NCOEF) / (NEQU*NEQU/2.D0)
-        VALR(2) = 100.D0*(2.D0*NCOEF-NEQU) / (NEQU*NEQU)    
+        VALR(2) = 100.D0*(2.D0*NCOEF-NEQU) / (NEQU*NEQU)
         CALL U2MESG('I','FACTOR_2',0,' ',3,VALI,2,VALR)
       ENDIF
 
