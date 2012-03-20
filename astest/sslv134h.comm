@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/03/2012   AUTEUR GENIAUT S.GENIAUT 
 # TITRE CALCUL 3D DE K1 FISSURE CIRCULAIRE EN MILIEU INFINI
 # sslv134h.para = tps_job 280 mem_job 1600Mo mem_aster 33 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -129,9 +129,7 @@ SIFTH1=CALC_G( RESULTAT=UTOT1,
                OPTION='CALC_K_G',
                THETA = _F(R_INF=0.2,
                           R_SUP=0.8,
-                          FISSURE=FISS,
-                          DTAN_EXTR=(0.,1.,0.),
-                          DTAN_ORIG=(-1.,0.,0.),),);
+                          FISSURE=FISS,),);
 
 IMPR_TABLE(TABLE=SIFTH1,);
 
@@ -141,9 +139,7 @@ SIFTH2=CALC_G(    RESULTAT=UTOT1,
                   THETA = _F(R_INF=0.2,
                              R_SUP=0.8,
                              FISSURE=FISS,
-                             NB_POINT_FOND = 24,
-                             DTAN_EXTR=(0.,1.,0.),
-                             DTAN_ORIG=(-1.,0.,0.),),);
+                             NB_POINT_FOND = 24,),);
 IMPR_TABLE(TABLE=SIFTH2,);
 
 # LISSAGE LAGRANGE
@@ -153,9 +149,7 @@ SIFTH3=CALC_G(  RESULTAT=UTOT1,
                              LISSAGE_G='LAGRANGE',),
                 THETA = _F(R_INF=0.2,
                            R_SUP=0.8,
-                           FISSURE=FISS,
-                           DTAN_EXTR=(0.,1.,0.),
-                           DTAN_ORIG=(-1.,0.,0.),),);
+                           FISSURE=FISS,),);
 IMPR_TABLE(TABLE=SIFTH3,);
 
 # LISSAGE LAGRANGE + REPARTITION UNIFORME DE 24 POINTS
@@ -166,9 +160,7 @@ SIFTH4=CALC_G(  RESULTAT=UTOT1,
                 THETA = _F(R_INF=0.2,
                            R_SUP=0.8,
                            FISSURE=FISS,
-                           NB_POINT_FOND = 24,
-                           DTAN_EXTR=(0.,1.,0.),
-                           DTAN_ORIG=(-1.,0.,0.),),);
+                           NB_POINT_FOND = 24,),);
 IMPR_TABLE(TABLE=SIFTH4,);
 
 # LISSAGE LAGRANGE + REPARTITION UNIFORME DE 10 POINTS
@@ -179,9 +171,7 @@ SIFTH5=CALC_G(  RESULTAT=UTOT1,
                 THETA = _F(R_INF=0.2,
                            R_SUP=0.8,
                            FISSURE=FISS,
-                           NB_POINT_FOND = 10,
-                           DTAN_EXTR=(0.,1.,0.),
-                           DTAN_ORIG=(-1.,0.,0.),),);
+                           NB_POINT_FOND = 10,),);
 IMPR_TABLE(TABLE=SIFTH5,);
 
 
@@ -191,8 +181,6 @@ SIFK1=POST_K1_K2_K3(  MODELISATION='3D',
                       MATER=MAT,
                       RESULTAT=UTOT1,
                       ABSC_CURV_MAXI=0.5,
-                      DTAN_EXTR = (0.,1.,0.),
-                      DTAN_ORIG = (-1.,0.,0.),
                       )
 
 IMPR_TABLE(TABLE=SIFK1,);
@@ -205,8 +193,6 @@ SIFK2=POST_K1_K2_K3(  MODELISATION='3D',
                       MATER=MAT,
                       RESULTAT=UTOT1,
                       ABSC_CURV_MAXI=0.5,
-                      DTAN_EXTR = (0.,1.,0.),
-                      DTAN_ORIG = (-1.,0.,0.),
                       )
 
 IMPR_TABLE(TABLE=SIFK2,);

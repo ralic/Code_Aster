@@ -2,10 +2,10 @@
       IMPLICIT NONE
       CHARACTER*16 OPTION,NOMTE
 C     ----------------------------------------------------------------
-C MODIF ELEMENTS  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 19/03/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -88,7 +88,7 @@ C     -- CAS DES ELEMENTS "DKT"
 C     ------------------------------------------------------------
       ELSE IF ( (NOMTE.EQ.'MEDKQU4') .OR. (NOMTE.EQ.'MEDKTR3') .OR.
      &          (NOMTE.EQ.'MEDSQU4') .OR. (NOMTE.EQ.'MEDSTR3') .OR.
-     &          (NOMTE.EQ.'MEQ4QU4') ) THEN
+     &          (NOMTE.EQ.'MEQ4QU4') .OR. (NOMTE.EQ.'MET3TR3')) THEN
         IF (JNBSP.NE.0) THEN
           NBCOU = ZI(JNBSP-1+1)
           NPGH = 3

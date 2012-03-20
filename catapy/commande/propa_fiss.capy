@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 20/09/2011   AUTEUR COLOMBO D.COLOMBO 
+#& MODIF COMMANDE  DATE 20/03/2012   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -99,8 +99,6 @@ PROPA_FISS=MACRO(nom="PROPA_FISS",
                                 FISS_ACTUELLE  = SIMP(statut='o',typ=fiss_xfem,max=1),
                                 MAIL_PROPAGE  = SIMP(statut='f',typ=CO,max=1),
                                 TABLE          = SIMP(statut='o',typ=table_sdaster,max=1),
-                                DTAN_ORIG      = SIMP(statut='f',typ='R',max=3),
-                                DTAN_EXTR      = SIMP(statut='f',typ='R',max=3),
                                                     ),
                MAIL_TOTAL        = SIMP(statut='o',typ=CO),
                COMP_LINE = FACT(statut='f',max=1,

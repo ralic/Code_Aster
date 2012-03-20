@@ -5,9 +5,9 @@
       CHARACTER*8         NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 19/03/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -69,14 +69,18 @@ C --- RECUPERATION DES COORDONNEES DES NOEUDS DE L'ELEMENT :
 C     ----------------------------------------------------
       CALL JEVECH('PGEOMER','L',JGEOM)
 C
-      IF (NOMTE.EQ.'MEDKTR3 ' .OR. NOMTE.EQ.'MEDSTR3 ' .OR.
-     &    NOMTE.EQ.'MEDKTG3 ') THEN
+      IF (NOMTE.EQ.'MEDKTR3 ' .OR. 
+     &    NOMTE.EQ.'MEDSTR3 ' .OR.
+     &    NOMTE.EQ.'MEDKTG3 ' .OR.
+     &    NOMTE.EQ.'MET3TR3 ' .OR.
+     &    NOMTE.EQ.'MET3GG3') THEN
          NNO = 3
          CALL DXTPGL(ZR(JGEOM),PGL)
       ELSE IF (NOMTE.EQ.'MEDKQU4 ' .OR.
      &         NOMTE.EQ.'MEDKQG4 ' .OR.
      &         NOMTE.EQ.'MEDSQU4 ' .OR.
-     &         NOMTE.EQ.'MEQ4QU4 ') THEN
+     &         NOMTE.EQ.'MEQ4QU4 ' .OR.
+     &         NOMTE.EQ.'MEQ4GG4 ' ) THEN
          NNO = 4
          CALL DXQPGL(ZR(JGEOM),PGL)
       ELSE

@@ -1,4 +1,4 @@
-# MODIF  DATE 05/03/2012   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 19/03/2012   AUTEUR IDOUX L.IDOUX 
 # TITRE ABSORPTION D'UNE ONDE DE PRESSION DANS UNE COLONNE FLUIDE
 # fdlv111a.para = tps_job 300 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -130,15 +130,25 @@ DYN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                          SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                         )
 
+# --- TEST SUR LES ENERGIES ---------------------------------------------------
+#     LA PRECISION RELATIVE EST DIMINUEE POUR LES TEST A T = 1.2 PAR RAPPORT
+#     AUX TESTS A T = 0.6 CAR LA MULTITUDE DE PAS DE TEMPS ENTRAINE DES ECARTS.
+#     LA DISSIPATION DU SCHEMA EST TESTEE EN ABSOLU.
+
 ENER1=RECU_TABLE(CO=DYN,NOM_TABLE='PARA_CALC',);
 
 IMPR_TABLE(TABLE=ENER1);
+
+PRECREL1 = 1.E-7 
+PRECREL2 = 2.E-5
+PRECABS1 = 2.E-3
+PRECABS2 = 3.5E-1 
 
 TEST_TABLE(TABLE=ENER1,
            NOM_PARA='TRAV_EXT',
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.6,),
-           PRECISION=1e-8,
+           PRECISION=PRECREL1,
            VALE=16174.217088701,
            REFERENCE = 'NON_REGRESSION');
 
@@ -146,7 +156,7 @@ TEST_TABLE(TABLE=ENER1,
            NOM_PARA='ENER_CIN',
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.6,),
-           PRECISION=1e-8,
+           PRECISION=PRECREL1,
            VALE=8708.2334180757,
            REFERENCE = 'NON_REGRESSION');
 
@@ -154,7 +164,7 @@ TEST_TABLE(TABLE=ENER1,
            NOM_PARA='ENER_TOT',
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.6,),
-           PRECISION=1e-8,
+           PRECISION=PRECREL1,
            VALE=1643.199893199,
            REFERENCE = 'NON_REGRESSION');
 
@@ -162,7 +172,7 @@ TEST_TABLE(TABLE=ENER1,
            NOM_PARA='TRAV_AMOR',
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.6,),
-           PRECISION=1e-8,
+           PRECISION=PRECREL1,
            VALE=0.0,
            REFERENCE = 'NON_REGRESSION');
 
@@ -170,7 +180,7 @@ TEST_TABLE(TABLE=ENER1,
            NOM_PARA='TRAV_LIAI',
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.6,),
-           PRECISION=1e-8,
+           PRECISION=PRECREL1,
            VALE=5822.7834393976,
            REFERENCE = 'NON_REGRESSION');
 
@@ -178,7 +188,8 @@ TEST_TABLE(TABLE=ENER1,
            NOM_PARA='DISS_SCH',
            FILTRE=_F(NOM_PARA='INST',
                       VALE=0.6,),
-           PRECISION=1e-8,
+           PRECISION=PRECABS1,
+           CRITERE='ABSOLU',
            VALE=3.3802828030925E-04,
            REFERENCE = 'NON_REGRESSION');
 
@@ -186,7 +197,7 @@ TEST_TABLE(TABLE=ENER1,
            NOM_PARA='TRAV_EXT',
            FILTRE=_F(NOM_PARA='INST',
                       VALE=1.2,),
-           PRECISION=1e-8,
+           PRECISION=PRECREL2,
            VALE=25960.433417725,
            REFERENCE = 'NON_REGRESSION');
 
@@ -194,7 +205,7 @@ TEST_TABLE(TABLE=ENER1,
            NOM_PARA='ENER_CIN',
            FILTRE=_F(NOM_PARA='INST',
                       VALE=1.2,),
-           PRECISION=1e-8,
+           PRECISION=PRECREL2,
            VALE=2.1890298685735,
            REFERENCE = 'NON_REGRESSION');
 
@@ -203,14 +214,14 @@ TEST_TABLE(TABLE=ENER1,
            FILTRE=_F(NOM_PARA='INST',
                       VALE=1.2,),
            VALE=0.13511580972602,
-           PRECISION=1e-8,
+           PRECISION=PRECREL2,
            REFERENCE = 'NON_REGRESSION');
 
 TEST_TABLE(TABLE=ENER1,
            NOM_PARA='TRAV_AMOR',
            FILTRE=_F(NOM_PARA='INST',
                       VALE=1.2,),
-           PRECISION=1e-8,
+           PRECISION=PRECREL2,
            VALE=0.0,
            REFERENCE = 'NON_REGRESSION');
 
@@ -218,7 +229,7 @@ TEST_TABLE(TABLE=ENER1,
            NOM_PARA='TRAV_LIAI',
            FILTRE=_F(NOM_PARA='INST',
                       VALE=1.2,),
-           PRECISION=1e-8,
+           PRECISION=PRECREL2,
            VALE=25958.109544435,
            REFERENCE = 'NON_REGRESSION');
 
@@ -226,9 +237,34 @@ TEST_TABLE(TABLE=ENER1,
            NOM_PARA='DISS_SCH',
            FILTRE=_F(NOM_PARA='INST',
                       VALE=1.2,),
-           PRECISION=1e-8,
+           PRECISION=PRECABS1,
+           CRITERE='ABSOLU',
            VALE=-2.7238871660872E-04,
            REFERENCE = 'NON_REGRESSION');
+
+# TESTS DE NON REGRESSION SUPPLEMENTAIRES 
+
+TEST_RESU(RESU=_F(RESULTAT=DYN,NUME_ORDRE=960,NOM_CHAM='VITE',REFERENCE='NON_REGRESSION',NOEUD='N46',NOM_CMP='DY',VALE=-1.4148495367254e-05,PRECISION=1e-7),)
+
+DYN = CALC_CHAMP (reuse = DYN,
+  RESULTAT = DYN,
+  FORCE='FORC_NODA'
+   )
+
+TRAVAIL = POST_ELEM(
+  RESULTAT = DYN,
+  TRAV_EXT = _F()
+  )
+
+TEST_TABLE(TABLE=TRAVAIL,
+           NOM_PARA='TRAV_REEL',
+           FILTRE=_F(NOM_PARA='INST',
+                      VALE=1.2,),
+           PRECISION=2e-6,
+           VALE=1.3511580957683e-1,
+           REFERENCE = 'NON_REGRESSION');
+
+# --- FIN TEST SUR LES ENERGIES -----------------------------------------------
 
 PN16=RECU_FONCTION(    LIST_INST=TEMPLI,   PRECISION=1.E-4,
                         RESULTAT=DYN,   NOEUD='N16',
@@ -320,6 +356,11 @@ DYNA=DYNA_NON_LINE(     MODELE=MODELE,   CHAM_MATER=CHAMPMAT,
                                 FORMULATION='DEPLACEMENT',),
                         )
 
+# --- TEST SUR LES ENERGIES ---------------------------------------------------
+#     LA PRECISION RELATIVE EST DIMINUEE POUR LES TEST A T = 1.2 PAR RAPPORT
+#     AUX TESTS A T = 0.6 CAR LA MULTITUDE DE PAS DE TEMPS ENTRAINE DES ECARTS.
+#     LA DISSIPATION DU SCHEMA EST TESTEE EN ABSOLU.
+
 ENER=RECU_TABLE(CO=DYNA,NOM_TABLE='PARA_CALC',);
 
 IMPR_TABLE(TABLE=ENER);
@@ -328,7 +369,7 @@ TEST_TABLE(TABLE=ENER,
            NOM_PARA='TRAV_EXT',
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.6,),
-           PRECISION=1e-8,
+           PRECISION=PRECREL1,
            VALE=16182.45409801,
            REFERENCE = 'NON_REGRESSION');
 
@@ -336,7 +377,7 @@ TEST_TABLE(TABLE=ENER,
            NOM_PARA='ENER_CIN',
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.6,),
-           PRECISION=1e-8,
+           PRECISION=PRECREL1,
            VALE=8544.6318426999,
            REFERENCE = 'NON_REGRESSION');
 
@@ -344,7 +385,7 @@ TEST_TABLE(TABLE=ENER,
            NOM_PARA='ENER_TOT',
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.6,),
-           PRECISION=1e-8,
+           PRECISION=PRECREL1,
            VALE=1659.4161904773,
            REFERENCE = 'NON_REGRESSION');
 
@@ -352,7 +393,7 @@ TEST_TABLE(TABLE=ENER,
            NOM_PARA='TRAV_AMOR',
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.6,),
-           PRECISION=1e-8,
+           PRECISION=PRECREL1,
            VALE=0.0,
            REFERENCE = 'NON_REGRESSION');
 
@@ -360,7 +401,7 @@ TEST_TABLE(TABLE=ENER,
            NOM_PARA='TRAV_LIAI',
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.6,),
-           PRECISION=1e-8,
+           PRECISION=PRECREL1,
            VALE=5978.7388102876,
            REFERENCE = 'NON_REGRESSION');
 
@@ -368,7 +409,8 @@ TEST_TABLE(TABLE=ENER,
            NOM_PARA='DISS_SCH',
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.6,),
-           PRECISION=1e-8,
+           PRECISION=PRECABS2,
+           CRITERE='ABSOLU',
            VALE=-0.33274545480380,
            REFERENCE = 'NON_REGRESSION');
 
@@ -376,7 +418,7 @@ TEST_TABLE(TABLE=ENER,
            NOM_PARA='TRAV_EXT',
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.2,),
-           PRECISION=1e-8,
+           PRECISION=PRECREL2,
            VALE=25878.0513871,
            REFERENCE = 'NON_REGRESSION');
 
@@ -384,7 +426,7 @@ TEST_TABLE(TABLE=ENER,
            NOM_PARA='ENER_CIN',
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.2,),
-           PRECISION=1e-8,
+           PRECISION=PRECREL2,
            VALE=0.40519354754296,
            REFERENCE = 'NON_REGRESSION');
 
@@ -392,7 +434,7 @@ TEST_TABLE(TABLE=ENER,
            NOM_PARA='ENER_TOT',
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.2,),
-           PRECISION=1e-8,
+           PRECISION=PRECREL2,
            VALE=0.031421263947149,
            REFERENCE = 'NON_REGRESSION');
 
@@ -400,7 +442,7 @@ TEST_TABLE(TABLE=ENER,
            NOM_PARA='TRAV_AMOR',
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.2,),
-           PRECISION=1e-8,
+           PRECISION=PRECREL2,
            VALE=0.0,
            REFERENCE = 'NON_REGRESSION');
 
@@ -408,7 +450,7 @@ TEST_TABLE(TABLE=ENER,
            NOM_PARA='TRAV_LIAI',
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.2,),
-           PRECISION=1e-8,
+           PRECISION=PRECREL2,
            VALE=25877.467642007,
            REFERENCE = 'NON_REGRESSION');
 
@@ -416,10 +458,12 @@ TEST_TABLE(TABLE=ENER,
            NOM_PARA='DISS_SCH',
            FILTRE=_F(NOM_PARA='INST',
                      VALE=1.2,),
-           PRECISION=1e-8,
+           PRECISION=PRECABS2,
+           CRITERE='ABSOLU',
            VALE=0.14713028172853,
            REFERENCE = 'NON_REGRESSION');
                       
+# --- FIN TEST SUR LES ENERGIES -----------------------------------------------
 
 PNA16=RECU_FONCTION(    LIST_INST=TEMLI2,   PRECISION=1.E-4,
                         RESULTAT=DYNA,   NOEUD='N16',

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/03/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 19/03/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST DES MESSAGES - INTERNATIONALISATION
 # supv002a.para = tps_job 180 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -59,28 +59,6 @@ warns = checker.get_warnings() + """\nNumber of unknown words : %d""" % nbwrn
 nberr = checker.count_errors()
 errors = checker.get_errors() + """\nNumber of errors : %d""" % nberr
 
-if nberr > 0:
-    UTMESS('A', 'SUPERVIS2_5', valk=("'CheckMessages'", errors, ""))
-if nbwrn > 0:
-    UTMESS('A', 'SUPERVIS2_5', valk=("'CheckMessages'", warns, ""))
-#mods = checker.get_modules()
-
-tab = CREA_TABLE(LISTE=_F(PARA='NBERR', LISTE_I=nberr))
-
-TEST_TABLE(TABLE=tab,
-           NOM_PARA='NBERR',
-           VALE_I=0,
-           REFERENCE='ANALYTIQUE',)
-
-tabw = CREA_TABLE(LISTE=_F(PARA='NBWARN', LISTE_I=nbwrn))
-
-TEST_TABLE(TABLE=tabw,
-           NOM_PARA='NBWARN',
-           VALE_I=0,
-           CRITERE='ABSOLU',
-           PRECISION=330.1,
-           REFERENCE='NON_REGRESSION',)
-
 # Mots-cles inconnus du dictionnaire malgre tout acceptes pour le moment
 # L'objectif est bien sur de reduire cette liste !
 # Permet d'afficher la liste des nouveaux mots interdits ajoutes.
@@ -127,6 +105,7 @@ previous_errors = set([
 current_errors = checker.get_unknown_words()
 new = list(set(current_errors).difference(previous_errors))
 new.sort()
+nbnew = len(new)
 correct = list(previous_errors.difference(current_errors))
 correct.sort()
 print "--- List of unknown words : "
@@ -135,5 +114,34 @@ print "--- List of new errors :"
 print new
 print "--- List of removed errors (please update previous_errors) :"
 print correct
+
+if nberr > 0:
+    UTMESS('A', 'SUPERVIS2_5', valk=("'CheckMessages'", errors, ""))
+if nbwrn > 0:
+    UTMESS('A', 'SUPERVIS2_5', valk=("'CheckMessages'", warns, ""))
+#mods = checker.get_modules()
+
+tab = CREA_TABLE(LISTE=_F(PARA='NBERR', LISTE_I=nberr))
+
+TEST_TABLE(TABLE=tab,
+           NOM_PARA='NBERR',
+           VALE_I=0,
+           REFERENCE='ANALYTIQUE',)
+
+tnew = CREA_TABLE(LISTE=_F(PARA='NBNEW_ERR', LISTE_I=nbnew))
+
+TEST_TABLE(TABLE=tnew,
+           NOM_PARA='NBNEW_ERR',
+           VALE_I=0,
+           REFERENCE='ANALYTIQUE',)
+
+tabw = CREA_TABLE(LISTE=_F(PARA='NBWARN', LISTE_I=nbwrn))
+
+TEST_TABLE(TABLE=tabw,
+           NOM_PARA='NBWARN',
+           VALE_I=0,
+           CRITERE='ABSOLU',
+           PRECISION=330.1,
+           REFERENCE='NON_REGRESSION',)
 
 FIN()

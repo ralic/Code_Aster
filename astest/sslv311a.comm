@@ -1,4 +1,4 @@
-# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 20/03/2012   AUTEUR GENIAUT S.GENIAUT 
 # TITRE  MURAKAMI 9.39 FISSURE EN QUART D'ELLIPSE AU COIN D'UN DISQUE
 #
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -352,6 +352,7 @@ TEST_TABLE(TABLE=GLO1,
 ###################################
 # VERIFICATION : SOLUTION IDENTIQUE AVEC ROTATION
 ###################################
+
 CH3=AFFE_CHAR_MECA(MODELE=MO,
                   ROTATION=_F(VITESSE = 500., 
                               AXE = (0., 0., 1.,),),
@@ -363,82 +364,58 @@ CHAMDEP2=MECA_STATIQUE(MODELE=MO,
                               _F( CHARGE = CH3))
                       );
 
+# lissage de lagrange
 GLO2=CALC_G(RESULTAT=CHAMDEP2,
             OPTION='CALC_K_G',
             THETA=_F(FISSURE=FISS1,
                      R_INF_FO=RAY_INF1,
                      R_SUP_FO=RAY_SUP1,
                      SYME='OUI',),
-            LISSAGE=_F(
-                       LISSAGE_THETA='LAGRANGE',
+            LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
                        LISSAGE_G='LAGRANGE',),
-            INFO=2,
-           );
+            )
 
 TEST_TABLE(TABLE=GLO2,
            NOM_PARA='K1',
-           FILTRE=_F(  NOM_PARA = 'NUM_PT',
-                       VALE_I = 1),
-           VALE=5.7517947737795E+07,
-           PRECISION=1.E-6,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION='8.2.14', )
+           FILTRE=_F(NOM_PARA = 'NUM_PT',
+                     VALE_I = 1),
+           VALE=566.E+5,
+           PRECISION=0.10,
+           REFERENCE = 'ANALYTIQUE')
 
-TEST_TABLE(TABLE=GLO1,
+TEST_TABLE(TABLE=GLO2,
            NOM_PARA='K1',
-           FILTRE=_F(  NOM_PARA = 'NUM_PT',
-                       VALE_I = 8),
-           VALE=8.0514485705379E+07,
-           PRECISION=1.E-6,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION='8.2.1', )
+           FILTRE=_F(NOM_PARA = 'NUM_PT',
+                     VALE_I = 8),
+           VALE=791.E+5,
+           PRECISION=0.03,
+           REFERENCE = 'ANALYTIQUE')
 
-TEST_TABLE(TABLE=GLO1,
+TEST_TABLE(TABLE=GLO2,
            NOM_PARA='K1',
-           FILTRE=_F(  NOM_PARA = 'NUM_PT',
-                       VALE_I = 17),
-           VALE=9.7192350527728E+07,
-           PRECISION=1.E-6,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION='8.2.1', )
+           FILTRE=_F(NOM_PARA = 'NUM_PT',
+                     VALE_I = 17),
+           VALE=964.E+5,
+           PRECISION=0.03,
+           REFERENCE = 'ANALYTIQUE')
 
-GLO3=CALC_G(RESULTAT=CHAMDEP2,
-            OPTION='CALC_K_G',
-            THETA=_F(FISSURE=FISS1,
-                     R_INF_FO=RAY_INF1,
-                     R_SUP_FO=RAY_SUP1,
-                     SYME='OUI',),
-            INFO=2,
-            );
-
-TEST_TABLE(TABLE=GLO3,
-           NOM_PARA='K1',
-           FILTRE=_F(  NOM_PARA = 'NUM_PT',
-                       VALE_I = 17),
-           VALE=1.3409470680406E+08,
-           PRECISION=1.E-6,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION='8.2.1', )
-
+# lissage de lagrange Regu
 GLO4=CALC_G(RESULTAT=CHAMDEP2,
             OPTION='CALC_K_G',
             THETA=_F(FISSURE=FISS1,
                      R_INF_FO=RAY_INF1,
                      R_SUP_FO=RAY_SUP1,
                      SYME='OUI',),
-            LISSAGE=_F(
-                       LISSAGE_THETA='LAGRANGE_REGU',
+            LISSAGE=_F(LISSAGE_THETA='LAGRANGE_REGU',
                        LISSAGE_G='LAGRANGE_REGU',),
-            INFO=2,
-            );
+            )
 
 TEST_TABLE(TABLE=GLO4,
            NOM_PARA='K1',
-           FILTRE=_F(  NOM_PARA = 'NUM_PT',
-                       VALE_I = 17),
-           VALE=9.4704379334266E+07,
-           PRECISION=0.001,
-           REFERENCE = 'NON_REGRESSION',
-           VERSION='8.03.09', );
+           FILTRE=_F(NOM_PARA = 'NUM_PT',
+                     VALE_I = 17),
+           VALE=964.E+5,
+           PRECISION=0.03,
+           REFERENCE = 'ANALYTIQUE')
 
-FIN();
+FIN()

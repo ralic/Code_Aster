@@ -3,10 +3,11 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 19/12/2011   AUTEUR SFAYOLLE S.FAYOLLE 
+C MODIF ELEMENTS  DATE 19/03/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+C TOLE CRP_20
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -97,33 +98,47 @@ C            UM:     DEPLACEMENT (MEMBRANE) "-"
 C            UF:     DEPLACEMENT (FLEXION)  "-"
 C           DUM:     INCREMENT DEPLACEMENT (MEMBRANE)
 C           DUF:     INCREMENT DEPLACEMENT (FLEXION)
-      REAL*8 EPS(3),KHI(3),DEPS(6),DKHI(3),N(3),M(3)
+      REAL*8 EPS(3),KHI(3),GAM(2),DEPS(6),DKHI(3),DGAM(2),N(3),M(3),Q(2)
 C            EPS:    DEFORMATION DE MEMBRANE "-"
 C            DEPS:   INCREMENT DE DEFORMATION DE MEMBRANE
 C            KHI:    DEFORMATION DE FLEXION  "-" (COURBURE)
 C            DKHI:   INCREMENT DE DEFORMATION DE FLEXION (COURBURE)
+C            GAM :   DISTORSIONS TRANSVERSES
+C            DGAM :  INCREMENT DES DISTORSIONS TRANSVERSES
 C            N  :    EFFORT NORMAL "+"
 C            M  :    MOMENT FLECHISSANT "+"
+C            Q  :    CISAILLEMENT TRANSVERSE
 C
       REAL*8 EFFINT(32)
 C            EFFINT : EFFORTS DANS LE REPERE DE L'ELEMENT
-      REAL*8 DF(9),DM(9),DMF(9)
-C            DF :    MATRICE DE RIGIDITE TANGENTE MATERIELLE (FLEXION)
-C            DM :    MATRICE DE RIGIDITE TANGENTE MATERIELLE (MEMBRANE)
-C            DMF:    MATRICE DE RIGIDITE TANGENTE MATERIELLE (COUPLAGE)
-      REAL*8 BF(3,3*4),BM(3,2*4), BMQ(2,3)
+      REAL*8 DF(9),DM(9),DMF(9),DCC(2,2),DC(2,2)
+      REAL*8 DFF(9),DMM(9),DMFF(9)
+C            DF :    MATRICE DE RIGIDITE TANGENTE MATERIELLE  (FLEXION)
+C            DM :    MATRICE DE RIGIDITE TANGENTE MATERIELLE  (MEMBRANE)
+C            DMF:    MATRICE DE RIGIDITE TANGENTE MATERIELLE  (COUPLAGE)
+C            DC:     MATRICE DE RIGIDITE ELASTIQUE MATERIELLE 
+C                                                         (CISAILLEMENT)
+C
+      REAL*8 DCI(4),DMC(6),DFC(6)
+C
+      REAL*8 BF(3,3*4),BM(3,2*4), BMQ(2,3),BC(2,3*4)
 C            BF :    MATRICE "B" (FLEXION)
 C            BM :    MATRICE "B" (MEMBRANE)
-      REAL*8 FLEX(3*4,3*4),MEMB(2*4,2*4)
+C            BC :    MATRICE "B" (CISAILLEMENT)
+      REAL*8 FLEX(3*4,3*4),MEMB(2*4,2*4),KC(3*4,3*4),FLEXI(3*4,3*4)
       REAL*8 MEFL(2*4,3*4),WORK(3,3*4)
 C           MEMB:    MATRICE DE RIGIDITE DE MEMBRANE
 C           FLEX:    MATRICE DE RIGIDITE DE FLEXION
 C           WORK:    TABLEAU DE TRAVAIL
 C           MEFL:    MATRICE DE COUPLAGE MEMBRANE-FLEXION
 C           LE MATERIAU EST SUPPOSE HOMOGENE
+C
+      REAL*8 T2EV(4),T2VE(4),T1VE(9)
 
       LOGICAL LEUL,LRGM
       LOGICAL LBID, VECTEU, MATRIC
+      LOGICAL Q4GG
+      LOGICAL COUPMF
 
       INTEGER CODRET
       INTEGER NDIM, NNO, NNOS, NPG, IPOIDS, ICOOPG, IVF, IDFDX
@@ -133,7 +148,8 @@ C           LE MATERIAU EST SUPPOSE HOMOGENE
       INTEGER NBVAR, IPG
       INTEGER I, J, K, L
       INTEGER ICPG, ICPV, T(2,2)
-      INTEGER ICARA, JTAB(7)
+      INTEGER ICARA, JTAB(7), NBSIG
+      INTEGER MULTIC
 
       REAL*8 XYZL(3,4), KTAN((6*4)*(6*4+1)/2), BTSIG(6,4)
       REAL*8 UL(6,4), DUL(6,4), PGL(3,3), CRIT(*)
@@ -142,10 +158,10 @@ C           LE MATERIAU EST SUPPOSE HOMOGENE
       REAL*8 R8BID
 C ATTENTION LA TAILLE DE ECP DEPEND DU NOMBRE DE VARIABLE INTERNE
 C LORS DE L AJOUT DE VARIABLE INTERNE IL FAUT INCREMENTER ECR ET ECRP
-      REAL*8 EPST(6), EP, SURFGP, SIG(6), DSIG(8), ECR(24), ECRP(24)
+      REAL*8 EPST(6), EP, SURFGP, SIG(8), DSIG(8), ECR(24), ECRP(24)
       REAL*8 EPSM(6), QSI, ETA, CTOR
       REAL*8 CARAT3(21), JACOB(5), CARAQ4(25)
-      REAL*8 MATR(50), SIGM(6),ALFMC
+      REAL*8 MATR(50), SIGM(8),ALFMC
 
       CHARACTER*8 K8BID
       CHARACTER*16 OPT, NOMTE, COMPOR(*)
@@ -156,12 +172,23 @@ C LORS DE L AJOUT DE VARIABLE INTERNE IL FAUT INCREMENTER ECR ET ECRP
 
       CODRET = 0
 
+C
+      NBSIG = 6
+      Q4GG  = .FALSE.
+      IF(NOMTE(1:8).EQ.'MEQ4GG4 ' .OR.
+     &   NOMTE(1:8).EQ.'MET3GG3 ' ) THEN
+         Q4GG  = .TRUE.
+         NBSIG = 8
+       ENDIF
+
       VECTEU = ((OPT.EQ.'FULL_MECA') .OR. (OPT.EQ.'RAPH_MECA'))
       MATRIC = ((OPT.EQ.'FULL_MECA') .OR. (OPT(1:9).EQ.'RIGI_MECA'))
       LRGM = OPT.EQ.'RIGI_MECA     '
 
       IF ( NOMTE(1:8).NE.'MEDKTG3 ' .AND.
-     &     NOMTE(1:8).NE.'MEDKQG4 ' ) THEN
+     &     NOMTE(1:8).NE.'MEDKQG4 ' .AND.
+     &     NOMTE(1:8).NE.'MEQ4GG4 ' .AND.
+     &     NOMTE(1:8).NE.'MET3GG3 ' ) THEN
         CALL U2MESK('F','ELEMENTS_14',1,NOMTE(1:8))
       ENDIF
 
@@ -201,6 +228,7 @@ C     GRANDEURS GEOMETRIQUES :
 C     MISES A ZERO :
 
       IF (MATRIC) THEN
+        CALL R8INIR((3*NNO)* (3*NNO),0.D0,FLEXI,1)
         CALL R8INIR((3*NNO)* (3*NNO),0.D0,FLEX,1)
         CALL R8INIR((2*NNO)* (2*NNO),0.D0,MEMB,1)
         CALL R8INIR((2*NNO)* (3*NNO),0.D0,MEFL,1)
@@ -230,8 +258,8 @@ C     PARTITION DU DEPLACEMENT EN MEMBRANE/FLEXION :
 
 C     INTEGRATION SUR LA SURFACE DE L'ELEMENT:
 
-C     CONTRAINTE 2D : NXX,NYY,NXY,MXX,MYY,MXY
-      NBCON = 8
+C     CONTRAINTE 2D : NXX,NYY,NXY,MXX,MYY,MXY,QX,QY
+         NBCON = 8
 
 C     NBVAR: NOMBRE DE VARIABLES INTERNES (2D) LOI COMPORTEMENT
       IF(LRGM)  THEN
@@ -250,9 +278,11 @@ C     BOUCLE SUR LES POINTS DE GAUSS DE LA SURFACE:
         CALL R8INIR(24,0.D0,ECRP,1)
         CALL R8INIR(3,0.D0,N,1)
         CALL R8INIR(3,0.D0,M,1)
+        CALL R8INIR(2,0.D0,Q,1)
         CALL R8INIR(9,0.D0,DF,1)
         CALL R8INIR(9,0.D0,DM,1)
         CALL R8INIR(9,0.D0,DMF,1)
+        CALL R8INIR(4,0.D0,DC,1)
 
         QSI = ZR(ICOOPG-1+NDIM*(IPG-1)+1)
         ETA = ZR(ICOOPG-1+NDIM*(IPG-1)+2)
@@ -269,18 +299,32 @@ C     BOUCLE SUR LES POINTS DE GAUSS DE LA SURFACE:
           CALL DXQBM(QSI,ETA,JACOB(2),BM)
           CALL DKQBF(QSI,ETA,JACOB(2),CARAQ4,BF)
           POIDS = ZR(IPOIDS+IPG-1)*JACOB(1)
+        ELSE IF(NOMTE(1:8).EQ.'MEQ4GG4 ') THEN
+          CALL JQUAD4(XYZL,QSI,ETA,JACOB)
+          CALL DXQBM(QSI,ETA,JACOB(2),BM)
+          CALL DSQBFB(QSI,ETA,JACOB(2),BF)
+          CALL Q4GBC(QSI,ETA,JACOB(2),CARAQ4,BC)
+          POIDS = ZR(IPOIDS+IPG-1)*JACOB(1)
+        ELSE IF(NOMTE(1:8).EQ.'MET3GG3 ') THEN
+          CALL DXTBM ( CARAT3(9), BM )
+          CALL DSTBFB ( CARAT3(9) , BF )
+          CALL T3GBC(XYZL,QSI,ETA,BC)
+          POIDS = CARAT3(8)
         ENDIF
-
+C
         CALL PMRVEC('ZERO',3,2*NNO,BM,UM,EPS)
         CALL PMRVEC('ZERO',3,2*NNO,BM,DUM,DEPS)
         CALL PMRVEC('ZERO',3,3*NNO,BF,UF,KHI)
         CALL PMRVEC('ZERO',3,3*NNO,BF,DUF,DKHI)
+        IF(Q4GG) THEN
+          CALL PMRVEC('ZERO',2,3*NNO,BC,UF,GAM)
+          CALL PMRVEC('ZERO',2,3*NNO,BC,DUF,DGAM)
+        ENDIF
 
         CALL JEVECH('PCACOQU','L',ICARA)
 
 C     EPAISSEUR TOTALE :
         EP = ZR(ICARA)
-
 C     EULER_ALMANSI - TERMES QUADRATIQUES
         IF(LEUL) THEN
           CALL R8INIR(6,0.D0,BMQ,1)
@@ -308,28 +352,71 @@ C     EULER_ALMANSI - TERMES QUADRATIQUES
 
         IF(.NOT. LRGM) THEN
           DO 70, I = 1,3
-            EPST(I) = EPS(I) + DEPS(I)
+            EPST(I)     = EPS(I) + DEPS(I)
             EPST(3 + I) = KHI(I) + DKHI(I)
             DEPS(3 + I) = DKHI(I)
  70       CONTINUE
 
           DO 73, I = 1,3
-            EPSM(I) = EPS(I)
+            EPSM(I)   = EPS(I)
             EPSM(I+3) = KHI(I)
  73       CONTINUE
 
-          DO 77, I = 1,6
-            SIG(I) = ZR(ICONTM-1 + ICPG + I)
+          DO 77, I = 1,NBSIG
+            SIG(I)  = ZR(ICONTM-1 + ICPG + I)
             SIGM(I) = SIG(I)
  77       CONTINUE
         ENDIF
-
-        IF (COMPOR(1)(1:11).EQ. 'GLRC_DAMAGE') THEN
+        IF (COMPOR(1)(1:4).EQ. 'ELAS') THEN
+           CALL DXMATE('RIGI',DFF,DMM,DMFF,DCC,DCI,DMC,DFC,NNO,PGL,
+     &                  MULTIC,COUPMF,T2EV,T2VE,T1VE)
+           CALL R8INIR(36,0.D0,DSIDEP,1)
+C -- MEMBRANE
+           DSIDEP(1,1) = DMM(1)
+           DSIDEP(2,1) = DMM(2)
+           DSIDEP(1,2) = DMM(4)
+           DSIDEP(2,2) = DMM(5)
+           DSIDEP(3,3) = DMM(9)
+C -- FLEXION
+           DSIDEP(4,4) = DFF(1)
+           DSIDEP(5,4) = DFF(2)
+           DSIDEP(4,5) = DFF(4)
+           DSIDEP(5,5) = DFF(5)
+           DSIDEP(6,6) = DFF(9)
+C
+C - CALCUL DE L'ACCROISSEMENT DE CONTRAINTE
+C
+          DO 753, I = 1,6
+            DSIG(I) = 0.D0
+            DO 754, J = 1,6
+              DSIG(I) = DSIG(I)+DSIDEP(I,J)*DEPS(J)
+ 754        CONTINUE
+ 753      CONTINUE
+C
+C CALCUL DE L'ACCOISSEMENT EFFORT CISAILLEMENT
+C
+C   
+          IF(Q4GG) THEN
+            DSIG(7) = DCC(1,1)*DGAM(1)
+            DSIG(8) = DCC(2,2)*DGAM(2)
+          ENDIF
+C
+          DO 851, I = 1,NBSIG
+            SIG(I) = SIG(I) + DSIG(I)
+851       CONTINUE
+C
+        ELSE IF (COMPOR(1)(1:11).EQ. 'GLRC_DAMAGE') THEN
           DO 75, I = 1,NBVAR
             ECR(I) = ZR(IVARIM-1 + ICPV + I)
  75       CONTINUE
 
           CALL MAGLRC (ZI(IMATE),MATR,DELAS,ECR)
+          IF(Q4GG) THEN
+            DCC(1,1) = MATR(6)*EP/(2.D0*(1.D0+MATR(7)))*5.D0/6.D0
+            DCC(2,2) = DCC(1,1)
+            DCC(1,2) = 0.D0
+            DCC(2,1) = 0.D0
+          ENDIF
 
 C   AIRE DE SURFACE APPARTENANT AU POINT DE G.
           SURFGP = POIDS
@@ -346,9 +433,15 @@ C   AIRE DE SURFACE APPARTENANT AU POINT DE G.
             ECRP(I) = ECR(I)
  80       CONTINUE
 
-          DO 85, I = 1,6
+          IF(Q4GG) THEN
+            DSIG(7) = DCC(1,1)*DGAM(1)
+            DSIG(8) = DCC(2,2)*DGAM(2)
+          ENDIF
+
+          DO 85, I = 1,NBSIG
             SIG(I) = SIG(I) + DSIG(I)
  85       CONTINUE
+
         ELSEIF (COMPOR(1)(1:7).EQ. 'GLRC_DM') THEN
           IF(.NOT. LRGM) THEN
             DO 8510, I = 1,NBVAR
@@ -365,7 +458,6 @@ C     ENDOMMAGEMENT SEULEMENT
             CALL LCGLDM(EPSM,DEPS,ECR,OPT,SIG,ECRP,DSIDEP,T,
      &                  LAMBDA,DEUXMU,LAMF,DEUMUF,GT,GC,GF,
      &                  SEUIL,ALPHA,ALFMC,CRIT,CODRET)
-
         ELSEIF (COMPOR(1)(1:7).EQ. 'KIT_DDI') THEN
 C     ENDOMMAGEMENT PLUS PLASTICITE
 
@@ -388,7 +480,7 @@ C     ENDOMMAGEMENT PLUS PLASTICITE
             ZR(IVARIP-1 + ICPV + I) = ECRP(I)
  8520     CONTINUE
 
-          DO 8530, I = 1,6
+          DO 8530, I = 1,8
             ZR(ICONTP-1 + ICPG + I) = SIG(I)
  8530     CONTINUE
         ENDIF
@@ -400,6 +492,9 @@ C     EFFORTS RESULTANTS (N ET M)
             N(I) = ZR(ICONTP-1+ICPG+I)
             M(I) = ZR(ICONTP-1+ICPG+I+3)
    90     CONTINUE
+          DO 95 I= 1,2
+            Q(I) = ZR(ICONTP-1+ICPG+I+6)
+   95     CONTINUE
         END IF
 
 C     CALCUL DES MATRICES TANGENTES MATERIELLES (DM,DF,DMF):
@@ -409,22 +504,34 @@ C     CALCUL DES MATRICES TANGENTES MATERIELLES (DM,DF,DMF):
           DO 96 I = 1, 3
             DO 97 J = 1, 3
               L = L + 1
-              DM(L) = DM(L) + POIDS*DSIDEP(J,I)
+              DM(L) = DM(L)  + POIDS*DSIDEP(J,I)
               DMF(L)= DMF(L) + POIDS*DSIDEP(J,I+3)
               DF(L) = DF(L)  + POIDS*DSIDEP(J+3,I+3)
    97       CONTINUE
    96     CONTINUE
         END IF
-
+C
+        IF(Q4GG) THEN
+           DC(1,1) = POIDS*DCC(1,1)
+           DC(2,2) = DC(1,1)
+           DC(1,2) = 0.D0
+           DC(2,1) = 0.D0
+        ENDIF
+C
 C     CALCUL DE DIV(SIGMA) ET RECOPIE DE N ET M DANS 'PCONTPR':
 
-C     BTSIG = BTSIG + BFT*M + BMT*N
+C     BTSIG = BTSIG + BFT*M + BMT*N + BCT*Q
         IF (VECTEU) THEN
           DO 100,K = 1,3
             EFFINT((IPG-1)*8+K)   = N(K)
             EFFINT((IPG-1)*8+3+K) = M(K)
   100     CONTINUE
-
+C
+          IF(Q4GG) THEN
+             DO 105,K = 1,2
+               EFFINT((IPG-1)*8+6+K) = Q(K)
+  105        CONTINUE
+          ENDIF
           DO 120,INO = 1,NNO
             DO 110,K = 1,3
               BTSIG(1,INO) = BTSIG(1,INO) +
@@ -438,21 +545,38 @@ C     BTSIG = BTSIG + BFT*M + BMT*N
               BTSIG(4,INO) = BTSIG(4,INO) -
      &                       BF(K,3* (INO-1)+3)*M(K)*POIDS
   110       CONTINUE
-  120     CONTINUE
+C
+C PRISE EN COMPTE DI CISAILLEMENT
+C
+          IF(Q4GG) THEN
+            DO 115,K = 1,2
+              BTSIG(3,INO) = BTSIG(3,INO) +
+     &                       BC(K,3* (INO-1)+1)*Q(K)*POIDS
+              BTSIG(5,INO) = BTSIG(5,INO) +
+     &                       BC(K,3* (INO-1)+2)*Q(K)*POIDS
+              BTSIG(4,INO) = BTSIG(4,INO) -
+     &                       BC(K,3* (INO-1)+3)*Q(K)*POIDS
+  115       CONTINUE
+         ENDIF
+  120    CONTINUE
         END IF
-
 C     CALCUL DE LA MATRICE TANGENTE :
 
 C     KTANG = KTANG + BFT*DF*BF + BMT*DM*BM + BMT*DMF*BF
+C                   + BCT*DC*BC
         IF (MATRIC) THEN
 C     MEMBRANE :
           CALL UTBTAB('CUMU',3,2*NNO,DM,BM,WORK,MEMB)
 
 C     FLEXION :
-          CALL UTBTAB('CUMU',3,3*NNO,DF,BF,WORK,FLEX)
+          CALL UTBTAB('CUMUL',3,3*NNO,DF,BF,WORK,FLEX)
 
+C     CISAILLEMENT:
+          IF(Q4GG) THEN
+            CALL UTBTAB('CUMUL',2,3*NNO,DC,BC,WORK,FLEX)
+          ENDIF
 C     COUPLAGE:
-          CALL UTCTAB('CUMU',3,3*NNO,2*NNO,DMF,BF,BM,WORK,MEFL)
+          CALL UTCTAB('CUMUL',3,3*NNO,2*NNO,DMF,BF,BM,WORK,MEFL)
         END IF
 
 C     FIN BOUCLE SUR LES POINTS DE GAUSS
@@ -460,12 +584,15 @@ C     FIN BOUCLE SUR LES POINTS DE GAUSS
 
 C     ACCUMULATION DES SOUS MATRICES DANS KTAN :
       IF (MATRIC) THEN
-        IF(NOMTE(1:8).EQ.'MEDKTG3 ') THEN
+        IF(NOMTE(1:8).EQ.'MEDKTG3 ' .OR. 
+     &     NOMTE(1:8).EQ.'MET3GG3 ') THEN
+
           CALL DXTLOC(FLEX,MEMB,MEFL,CTOR,KTAN)
-        ELSE IF(NOMTE(1:8).EQ.'MEDKQG4 ') THEN
+
+        ELSE IF(NOMTE(1:8).EQ.'MEDKQG4 ' .OR.
+     &          NOMTE(1:8).EQ.'MEQ4GG4 ') THEN
           CALL DXQLOC(FLEX,MEMB,MEFL,CTOR,KTAN)
         ENDIF
       END IF
-
 
       END

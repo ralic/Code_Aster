@@ -1,0 +1,589 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 19/03/2012 - 14:16:45
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018551 DU 2012-03-14 17:45:11
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    En NEW11.1.13, le cas-test supv002a est NOOK sur Aster4.
+FONCTIONNALITE
+   Le test est NOOK de 3 : 3 erreurs supplémentaires lors du passage du dictionnaire.
+   
+   La semaine précédente, on a resserré la tolérance de 336 à 330.
+   Mais dans le même temps, 3 nouvelles erreurs ont été ajoutées !
+   
+   Pour éviter cela, on ajoute un TEST_TABLE supplémentaire sur le nombre de nouvelles 
+   erreurs à 0.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    supv002a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018542 DU 2012-03-14 09:05:41
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    Plantage dans la vxc3xa9rification syntaxique
+FONCTIONNALITE
+   Curieux, c'est le même problème qui celui relevé sur POST_ELEM ou POST_RELEVE_T au 
+   moment de la stabilisation.
+   On évalue une condition de BLOC "'valeur' in OPTION" alors que OPTION n'est pas 
+   renseigné.
+   Le jeu de commandes n'aurait pas été validé car OPTION est obligatoire mais il se 
+   trouve que, ici, la condition de BLOC est évaluée avant la présence obligatoire de 
+   OPTION donc le message n'est pas sympa pour l'utilisateur.
+   
+   On corrige au moins le catalogue de CALC_ELEM + vérification qu'il n'y en a pas 
+   d'autres.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    fichier fourni
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT Samuel         DATE 20/03/2012 - 08:46:33
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018548 DU 2012-03-14 16:47:31
+TYPE express concernant Code_Aster (VERSION 11.2)
+TITRE
+    X-FEM : sslv110f se refait une beaute
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   Le cas-test sslv110f : fissure semi-elliptique avec milieu infini, modélisée par X-FEM
+   présente plusieurs défauts :
+   - les valeurs calculées de K1 le long du fond ne sont pas très précises :
+   avec CALC_G, on atteint plus de 8% d'erreur par rapport à la solution analytique, et aec
+   POST_K1_K2_k3 on atteint plus de 9%.
+   Cette erreur varie en fonction des points du fond.
+   - le maillage provient d'une procédure gibi d'insertion d'un bloc raffiné en HEXA dans un
+   cube (ou un tube), créée en 2007 par AUSY. Cette procédure est certes intéressante, mais
+   son utilisation à grande échelle pose des problèmes de documentation, de capitalisation et
+   de pérennisation. 
+   - la position de la structure et de la fissure ne sont pas exactement celles du teste de
+   référence (décalage en X), ce qui ne facilite pas les comparaison.
+   - une portion de 180° d'ellipse est modélisée, alors que les symétries du problèmes
+   permettent de ne modéliser d'une portion de 90°.
+   - les conditions de symétrie sur les noeuds X-FEM et étaient traitées de manière bizarre.
+   
+   Pour toutes ces raisons, on souhaite revoir complètement ce test. 
+   cela permettra notamment d'utiliser le raffinement automatique en fond de fissure tel que
+   préconisé dans la doc U2.
+   
+   
+   Solution :
+   ----------
+   
+   On part d'un maillage peu raffiné et on le raffine avec Homard tel que préconisé dans la
+   doc U2.05.01 (procédure désormais standard, utilisé dans sslv155c, dans le futur wizard
+   Crack Analysis...).
+   On ne modélise d'un quart de la structure.
+   On obtient des erreurs inférieures à 2% pour CALC_G et inférieures à 6% pour POST_K1_K2_K3
+   avec les paramètres standards de post-traitement (couronnes 2h-4h).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V3.04.110
+VALIDATION
+    sslv110f
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017281 DU 2011-07-11 14:49:21
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : Phimeca
+TITRE
+    X-FEM : calcul automatique de la bonne base locale aux extremites du fond
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   Sur certaines études de propagation, DTAN_ORIG et DTAN_EXTR sont indispensables pour mener
+   à bien un calcul de propagation.
+   Or lorsque la fissure se propage, il est souvent impossible de prédire ces 2 vecteurs.
+   
+   Pourtant une valeur erroné de la base locale en fond de fissure sur les points extremités
+   du fond peut avoir une lourde conséquence sur les valeurs de G et K (surtout si le lissage
+   de LEGENDRE est utilisé).
+   
+   Il faudrait que  DTAN_ORIG et DTAN_EXTR soient calculés automatiquement avec les
+   intersections des bords libres de la structure avec la fissure.
+   
+   Le but de cette fiche est donc de calculer automatiquement la bonne base locale aux points
+   extrémités du fond de fissure dans DEFI_FISS_XFEM, c-a-d en prenant en compte les bords de
+   la structure et sans avoir besoin que l'utilisateur donne des mot-clés.
+   
+   -> suppression des mot-clés DTAN_EXTR et DTAN_ORIG dans CALC_G et POST_K1_K2_K3 pour X-FEM
+   et dans PROPA_FISS.
+   Pour rappel, pour les fissures maillées, DTAN_ORIG et DTAN_EXTR existent aussi et sont
+   définis par l'utilisateur dans DEFI_FOND_FISS.
+   
+   Remarque :
+   Il faut noter que DTAN_* ne corrige pas la base locale aux points de Gauss des éléments
+   utilisée pour la définition des vecteurs des modes I, II et III. Cela pourrait être fait
+   dans une autre fiche si nécessaire.
+   
+   
+   Solution :
+   ----------
+   
+   Dans DEFI_FISS_XFEM, lors de la recherche des points du fond de fissure, si le point
+   trouvé est un bord appartenant au bord de la structure, alors on détermine les mailles de
+   bords connectées et on en déduit une normale puis un vecteur dans la direction de propagation.
+   Ce vecteur sera stocké classiquement en 1ere et derniere place de l'objet BASEFOND (le cas
+   des fonds multiples est aussi traité).
+   Les mot-clé DTAN_ORIG et DTAN_EXTR spécifique à X-FEM (dans CALC_G et POST_K1_K2_K3) sont
+   donc supprimés.
+   
+   
+   Détails de la réalisation dans DEFI_FISS_XFEM :
+   -----------------------------------------------
+   
+   ---->Ce qui est fait pour l'instant:
+   -------------------------------------
+   
+   Dans xptfon:
+   1. on fait une boucle sur les mailles connectées au fond de fissure. 
+   2. pour chaque maille, on boucle sur les faces.
+   3. pour chacune de ces faces, on détecte s'il y a une intersection avec le fond de fissure.
+      Ensuite, si cette face possède un point du fond de fissure, on stocke dans la sd les
+   coordonnées du  
+      point ainsi que le vecteur normal au plan de la fissure(VNOR) et le vecteur de
+   direction de propagation 
+     (VDIR) qui lui sont associés.
+   
+   ---->Ce qui a été ajouté:
+   -------------------------
+   1. Lors de la détection d'une face de bord, on calcule la normale de cette face dans la
+   nouvelle routine 
+      xnorme et on la stocke.
+   
+   2. Après la boucle sur les faces, si au moins une face de bord a été détectée dans la
+   maille, on rentre 
+      dans la nouvelle routine xextre pour calculer le ou les nouveau(x) vecteur(s) de
+   direction de 
+      propagation.
+   
+   ---->Formule pour calculer VDIR:
+   --------------------------------
+   VDIR = N^VNOR
+   Le vecteur de direction de propagation est calculé par le produit vectoriel de la normale
+   de la face avec 
+   le vecteur normal (au plan de la fissure).
+   
+   ---->3 cas ont dû être traités:
+   -----------------------------------
+   
+   -------
+   - CAS 1: la maille possède 2 points du fond qui sont sur des faces de bord (ex: cas-test
+   hsnv132c où le 
+            fond de fissure traverse une seule maille).
+   -------
+   Pour chaque point, le vecteur de direction de propagation est automatiquement recalculé.
+   
+   
+   -------
+   - CAS 2: la maille possède 1 point du fond sur une face de bord
+   -------
+   soit VDIR_OLD le vecteur de direction de propagation "d'origine":
+   
+   Pour résumé:
+   --
+   On ignore les normales pour lesquelles on a N.VDIR_OLD<0 et on calcule VDIR qu'avec les
+   normales pour 
+   lesquelles on a N.VDIR_OLD>0.
+   
+   
+   
+   Explication:
+   --
+   Plusieurs mailles et donc plusieurs faces de bords peuvent posséder le même point du fond.
+   On peut donc 
+   trouver plusieurs vecteurs de direction pour un point.
+   Mais ils ne sont pas tous bons à considérer...
+   
+   A/ On prend l'exemple d'une structure cubique maillée avec des hexaèdres:
+   -> si les faces ont toutes leur normale dans la même direction (ex: le point se situe au
+   milieu d'une face 
+      du cube à l'intersections de 4 hexaèdres): 
+      on calcule un nouveau VDIR pour chaque face et à la fin, on fait la moyenne des
+   vecteurs calculés.
+   
+   B/ On prend l'exemple d'une structure cubique maillée avec des tétraèdres:
+   -> si les faces ont des normales allant dans des directions différentes (ex: le point se
+   situe sur une 
+      arête du cube à l'intersections de 6 tétraèdres):
+      On ignore les normales avec N.VDIR_OLD<0 et on ajoute dans la base les VDIR calculés
+   avec les normales 
+      pour lesquelles on a N.VDIR_OLD>0.
+   --
+   
+   -------
+   - CAS 3: la maille possède un point sur plusieurs faces de bord  (ex: Ex: cube maillé en
+   hexaèdres où un 
+            point du fond de fissure est sur un de ses sommets et donc sur un sommet d'hexaèdre)
+   -------
+   
+   On recalcule le vecteur de direction qu'avec la face pour laquelle on a le maximum des
+   N.VDIR_OLD 
+   (max(N.VDIR_OLD))
+   
+   
+   
+   
+   Realisation dans les commandes POST_K1_K2_K3, CALC_G, PROPA_FISS:
+   --------------------------------------------------------------------
+   - Suppression de DTAN_EXTR et de DTAN_ORIG dans les CAPY.
+   
+   - Dans gcour3 (CALC_G): la correction de la direction du champ THETA faite aux extrémités
+   est désormais 
+     faite automatiquement
+    (avant cette correction n'était faite que si DTAN_EXTR et de DTAN_ORIG étaient mentionnés
+   dans CALC_G).
+   
+   - Toute mention et gestion de DTAN_EXTR et de DTAN_ORIG dans post_k1_k2_k3_ops.py a été
+   supprimée (ce qui 
+     a nécessité la suppression des messages d'alarme RUPTURE1_33 et RUPTURE1_34)
+   
+   - dans propa_fiss_ops DTAN_EXTR et DTAN_ORIG ne sont plus transférés à CALC_G
+   
+   
+   Impacts:
+   --------
+   
+   Fortran:
+   -
+   xptfon
+   création xnorme, xextre et cengra (calcul du centre de gravité d'une maille 3D)
+   gcour3
+   
+   PY:
+   -
+   post_k1_k2_k3_ops
+   rupture1
+   propa_fiss_ops
+   
+   
+   CAPY:
+   -
+   post_k1_k2_k3
+   propa_fiss
+   calc_g
+   
+   DOC:
+   -
+   u4.82.03
+   u4.82.05
+   u4.82.11
+   v3.04.155
+   v3.04.156
+   
+   CAS_TESTS:
+   -
+   ascou01a
+   forma07b
+   sslv154a
+   sslv317a
+   ssnv185d
+   ssnv185s
+   sslv110f
+   sslv154b
+   sslv319a
+   ssnv185f
+   ssnv185t
+   hplv103a
+   sslv155c
+   sslv319b
+   ssnv185n
+   zzzz298b
+   sslv134f
+   sslv311a
+   ssnv185b
+   ssnv185p
+   sslv134h
+   sslv314b
+   ssnv185c
+   ssnv185r
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : u2.05.02 u4.82.03 u4.82.05 u4.82.11 v3.04.155 v3.04.156
+VALIDATION
+    cas-tests defi_fiss_xfem
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR idoux        IDOUX Ludovic          DATE 03/19/2012 - 03:23:05
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018523 DU 2012-03-08 13:51:37
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    En NEW11.01.12, le cas-test fdlv111a est NOOK sur Rocks, Calibre5 et Calibre7.
+FONCTIONNALITE
+   ==========
+   Problème |
+   ==========
+   
+   Le cas-test fdlv111a est NOOK sur Rocks, Calibre 5 et Calibre 7.
+   
+   =========
+   Analyse |
+   =========
+   
+   Les tests de non régression concernent le calcul des termes du bilan d'énergie (chantier
+   calcul des énergies récemment restitué). Les valeurs de non régression ont été obtenues
+   sur aster4, et les tests avec une précision sévère de 1e-8 ne passent pas sur les autres
+   machines.
+   
+   Valgrind n'a rien détecté de particulier.
+   
+   En faisant tourner le calcul avec INFO=2 (pour le calcul avec DYNA_NON_LINE) et en
+   comparant à l'oeil les vecteurs solution (pour le calcul avec DYNA_LINE_TRAN), on observe
+   des écarts dans les solutions entre les machines. Par exemple, les termes de force
+   diffèrent à la 7ème ou 8ème décimale.
+   
+   Le calcul des énergies n'est qu'un post-traitement qui utilise les vecteurs solution pour
+   calculer le travail extérieur, l'énergie cinétique, etc ... En conséquence, des écarts
+   entre les machines sur les vecteurs solution entraîne forcément des écarts sur le calcul
+   des termes d'énergie. Ajoutons à cela que les deux calculs (DYNA_NON_LINE et
+   DYNA_LINE_TRAN) font 1000 ou 2000 pas de temps, ce qui amplifie d'autant les écarts.
+   
+   Il n'y a donc pas d'anomalie particulière. Les erreurs sont toutes légèrement supérieures
+   à la tolérance. On la relâche un peu, et tout passe bien.
+   
+   Un seul terme mérite une attention particulière : le terme de dissipation du schéma
+   numérique. Par construction, il est très petit, donc on arrive facilement à des écarts de
+   100% en relatif. En fait, ce terme devrait être testé en absolu, ce qui dorénavant fait.
+   
+   ==========
+   Solution |
+   ==========
+   
+   On relâche légèrement la tolérance. Le terme de dissipation est testé en absolu et non
+   plus en relatif.
+   
+   ========
+   Impact |
+   ========
+   
+   uniquement le jeu de donnée fdlv111a.comm
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    non rxc3xa9gression
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR moulin       MOULIN Stéphane       DATE 03/19/2012 - 02:34:52
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017977 DU 2011-11-28 10:49:17
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+    Développement de Q4GG et T3GG en linéaire matériau
+FONCTIONNALITE
+   1. Objectif
+   -----------
+   L'objectif de cette fiche et de la fiche 17976 est de développer la modélisation 
+   Q4GG, en
+   reprenant la démarche de la modélisation DKTG (modélisation DKT coque mince 
+   utilisant une
+   loi de comportement globale GLRC_DAMAGE), mais basée sur Q4G (coque épaisse) avec 
+   une base
+   QUAD4 et TRIA3 et appelant la loi GLRC_DAMAGE. 
+   
+   Cette modélisation permettra de répondre à la problématique d'interopérabilité 
+   entre
+   Code_Aster et EUROPLEXUS pour la mise en place de chaînage de calculs explicites 
+   et
+   implicites.
+   
+   Rq: Cette fiche ne traite que le comportement ELAS.
+   
+   2. Options développées
+   ----------------------
+     -> Matrice de rigidité
+          . RIGI_MECA, FULL_MECA, RAPH_MECA
+     -> Matrice masse et amortissement 
+          . MASS_MECA, MASS_MECA_DIAG, MASS_MECA_EXPLI
+          . AMOR_MECA	   
+     -> Post_traitement
+          . MASS_INER,
+          . DEGE_ELNO, DEGE_ELGA
+          . EFGE_ELNO, EFGE_ELGA
+          . FORC_NODA,
+          . ENEL_ELGA, ENEL_ELNO
+          . ECIN_ELEM, EPOT_ELEM, ENER_ELAS
+   	  
+   
+   3. Validation
+   -------------
+   3.1 Statique
+   - SSLS118 "Plaque carrée posée soumise a une pression sinusoïdale"
+   on ajoute trois nouveaux cas-tests (QUAD4, TRIA3 et mélange QUAD4/TRIA3) 
+   - SSLS126 – "Flexion d'une dalle en béton armé (modèle GLRC_DAMAGE) appuyée sur 
+   deux
+   cotés: régime de poutre élastique"
+   On ajoute deux nouveaux cas-tests (TRIA3,QUAD4) avec la modélisation Q4GG, 
+   comportement ELAS
+   - SSLS127 – "Flexion d'une dalle en béton armé (modèle GLRC_DAMAGE) appuyée sur 4 
+   cotés:
+   régime de plaque élastique"
+   On ajoute deux nouveaux cas-tests (TRIA3,QUAD4) avec la modélisation Q4GG 
+   comportement ELAS
+   3.2 Dynamique
+   - Cas-test SDLS123 - "Poutre droite avec amortissement de Rayleigh"
+   Ce nouveau cas-test est décrit dans la note théorique du T3GS (Ref. H-T62-2008-
+   00080-FR)
+   On ajoute deux nouveaux cas-tests dynamiques avec comparaison avec Europlexus
+   
+   3.3 Autres validation
+     -> tests perso 
+     -> liste restriente
+     
+   4. Documentation
+   ----------------
+   Mise à Jour :
+   -> Doc V
+    - U3.12.01 : Modélisation DKT-DST-Q4G-DKTG
+    - U2.02.01 : Notice d'utilisation des éléments de plaques et coques et coques 
+   volumiques
+    - U4.41.01 : AFFE_MODELE
+   -> Doc V   
+    - SSLS118 [V3.03.118] : ajout de 3 nouvelles modélisations
+    - SSLS126 [V3.03.126] : ajout de 2 nouvelles modélisations
+    - SSLS127 [V3.03.127] : ajout de 2 nouvelles modélisations
+    - SDLS123 [V2.03.123] : ajout de 2 nouvelles modélisations
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : r3.07.03 U3.12.01,U2.02.01,U4.41.01,V3.03.118,V3.03.126,V3.03.127,V2.03.123
+VALIDATION
+    4 cas-tests
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT sdls123a                    lebouvier F.LEBOUVIER        194    194      0
+ CASTEST AJOUT sdls123b                    lebouvier F.LEBOUVIER        190    190      0
+ CASTEST AJOUT ssls118s                    lebouvier F.LEBOUVIER        843    843      0
+ CASTEST AJOUT ssls118t                    lebouvier F.LEBOUVIER        912    912      0
+ CASTEST AJOUT ssls118u                    lebouvier F.LEBOUVIER        914    914      0
+ CASTEST AJOUT ssls126c                    lebouvier F.LEBOUVIER        248    248      0
+ CASTEST AJOUT ssls126d                    lebouvier F.LEBOUVIER        254    254      0
+ CASTEST AJOUT ssls127c                    lebouvier F.LEBOUVIER        251    251      0
+ CASTEST AJOUT ssls127d                    lebouvier F.LEBOUVIER        251    251      0
+ CASTEST MODIF ascou01a                      geniaut S.GENIAUT          306      3      3
+ CASTEST MODIF fdlv111a                        idoux L.IDOUX            526     69     25
+ CASTEST MODIF hplv103a                      geniaut S.GENIAUT          450      1     10
+ CASTEST MODIF sslv110f                      geniaut S.GENIAUT          261    201    127
+ CASTEST MODIF sslv134f                      geniaut S.GENIAUT          320      1      1
+ CASTEST MODIF sslv134h                      geniaut S.GENIAUT          298      6     20
+ CASTEST MODIF sslv154a                      geniaut S.GENIAUT          255      1      3
+ CASTEST MODIF sslv154b                      geniaut S.GENIAUT          245      1      5
+ CASTEST MODIF sslv155c                      geniaut S.GENIAUT          305      2      6
+ CASTEST MODIF sslv311a                      geniaut S.GENIAUT          421     27     50
+ CASTEST MODIF sslv314b                      geniaut S.GENIAUT          223      7     17
+ CASTEST MODIF sslv317a                      geniaut S.GENIAUT          479      6      6
+ CASTEST MODIF sslv319a                      geniaut S.GENIAUT          566      3     34
+ CASTEST MODIF sslv319b                      geniaut S.GENIAUT          532      2     32
+ CASTEST MODIF ssnv185b                      geniaut S.GENIAUT          367      1      3
+ CASTEST MODIF ssnv185c                      geniaut S.GENIAUT          485      2      4
+ CASTEST MODIF ssnv185d                      geniaut S.GENIAUT          285      1      3
+ CASTEST MODIF ssnv185f                      geniaut S.GENIAUT          236      1      3
+ CASTEST MODIF ssnv185n                      geniaut S.GENIAUT          357      1      3
+ CASTEST MODIF ssnv185p                      geniaut S.GENIAUT          400      1      3
+ CASTEST MODIF ssnv185r                      geniaut S.GENIAUT          241      1      3
+ CASTEST MODIF ssnv185s                      geniaut S.GENIAUT          207      3      3
+ CASTEST MODIF ssnv185t                      geniaut S.GENIAUT          176      3      3
+ CASTEST MODIF supv002a                     courtois M.COURTOIS         147     31     23
+ CASTEST MODIF zzzz298b                      geniaut S.GENIAUT          169      2      9
+CATALOGU MODIF compelem/phenomene_modelisation__  lebouvier F.LEBOUVIER       1873      8      1
+CATALOGU MODIF typelem/gener_medkg1        lebouvier F.LEBOUVIER        255      7      1
+CATALOGU MODIF typelem/gener_medkt2        lebouvier F.LEBOUVIER        429     13      1
+CATALOPY MODIF commande/affe_modele        lebouvier F.LEBOUVIER        277      2      1
+CATALOPY MODIF commande/calc_elem           courtois M.COURTOIS         436      7      7
+CATALOPY MODIF commande/calc_g               geniaut S.GENIAUT          156      2      6
+CATALOPY MODIF commande/post_k1_k2_k3        geniaut S.GENIAUT          109      1      3
+CATALOPY MODIF commande/propa_fiss           geniaut S.GENIAUT          156      2      4
+ FORTRAN AJOUT algorith/cengra               geniaut S.GENIAUT           85     85      0
+ FORTRAN AJOUT algorith/xextre               geniaut S.GENIAUT          198    198      0
+ FORTRAN AJOUT algorith/xnorme               geniaut S.GENIAUT          106    106      0
+ FORTRAN AJOUT elements/t3gb               lebouvier F.LEBOUVIER         83     83      0
+ FORTRAN AJOUT elements/t3gbc              lebouvier F.LEBOUVIER        110    110      0
+ FORTRAN AJOUT elements/t3gcod             lebouvier F.LEBOUVIER        158    158      0
+ FORTRAN AJOUT elements/t3gedg             lebouvier F.LEBOUVIER        212    212      0
+ FORTRAN AJOUT elements/t3grig             lebouvier F.LEBOUVIER        157    157      0
+ FORTRAN MODIF algorith/gcour3               geniaut S.GENIAUT          343     11     25
+ FORTRAN MODIF algorith/xptfon               geniaut S.GENIAUT          285     90     35
+ FORTRAN MODIF elements/bsthpl             lebouvier F.LEBOUVIER        105      9      5
+ FORTRAN MODIF elements/dxbmat             lebouvier F.LEBOUVIER         66      6      3
+ FORTRAN MODIF elements/dxbsig             lebouvier F.LEBOUVIER        128      5      4
+ FORTRAN MODIF elements/dxeffi             lebouvier F.LEBOUVIER        162      4      3
+ FORTRAN MODIF elements/dxefgm             lebouvier F.LEBOUVIER         65      5      2
+ FORTRAN MODIF elements/dxefnt             lebouvier F.LEBOUVIER        168      4      4
+ FORTRAN MODIF elements/dxglrc             lebouvier F.LEBOUVIER        598    155     28
+ FORTRAN MODIF elements/dxsith             lebouvier F.LEBOUVIER        142      4      3
+ FORTRAN MODIF elements/te0031             lebouvier F.LEBOUVIER        424     21      3
+ FORTRAN MODIF elements/te0033             lebouvier F.LEBOUVIER        332      8      2
+ FORTRAN MODIF elements/te0185             lebouvier F.LEBOUVIER        152      4      4
+ FORTRAN MODIF elements/te0409             lebouvier F.LEBOUVIER        365     17      7
+ FORTRAN MODIF elements/te0412             lebouvier F.LEBOUVIER        319      8      6
+ FORTRAN MODIF elements/te0496             lebouvier F.LEBOUVIER        158      3      3
+ FORTRAN MODIF modelisa/op0019             lebouvier F.LEBOUVIER        493      6      5
+  PYTHON MODIF Macro/post_k1_k2_k3_ops       geniaut S.GENIAUT         2071      6     28
+  PYTHON MODIF Macro/propa_fiss_ops          geniaut S.GENIAUT         1228      1     21
+  PYTHON MODIF Messages/algorith3           courtois M.COURTOIS         259      2      2
+  PYTHON MODIF Messages/modelisa            courtois M.COURTOIS         537      6      4
+  PYTHON MODIF Messages/modelisa10          courtois M.COURTOIS          91      2      2
+  PYTHON MODIF Messages/rupture1             geniaut S.GENIAUT          342      2     18
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   17        5166      5166             +5166
+ MODIF :   56       20781       798     640      +158
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   73       25947      5964     640     +5324 

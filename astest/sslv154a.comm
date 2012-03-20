@@ -1,4 +1,4 @@
-# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 20/03/2012   AUTEUR GENIAUT S.GENIAUT 
 # TITRE  FISSURE CIRCULAIRE EN MODE MIXTE
 # sslv154a.para = tps_job 120 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -125,8 +125,6 @@ RINF = 0.1
 
 # Methode G-theta
 CG=CALC_G(THETA=_F(FISSURE=FISSX,
-                   DTAN_ORIG=(1,0,0,),
-                   DTAN_EXTR=(-1,0,0,),
                    R_INF=RINF,
                    R_SUP=RSUP),
           RESULTAT=RESU,

@@ -1,0 +1,194 @@
+# MODIF  DATE 19/03/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# AUTEUR : F. LEBOUVIER (DeltaCAD)
+#  TITRE  : POUTRE DROITE AVEC AMORTISSEMENT DE RAYLEIGH
+# sdls123a.para = tps_job 600 mem_job 1024Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#
+#  DETAILS : MODELISATION Q4GG
+#            Mailles QUAD4
+
+DEBUT(CODE=_F(NOM='SDLS123A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+# Carateristiques de la dalle
+
+EP = 1.0;         # Epaisseur
+R0 = 0.2          # Position du lit d'armature
+young = 3.5E10
+nu =0.2
+
+MATER=DEFI_MATERIAU(
+                     ELAS = _F(E          = young,
+                               NU         = nu,  
+                               RHO        = 2500.,
+                               AMOR_ALPHA = 6.69E-5, 
+                               AMOR_BETA  = 20.06),
+                    );
+
+
+MAILL=LIRE_MAILLAGE(FORMAT='MED')
+
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MAILL,
+                          AFFE=_F(  TOUT = 'OUI',   MATER = MATER) )
+
+MODEL=AFFE_MODELE(  MAILLAGE=MAILL,    VERIF='MAILLE',
+                        AFFE=_F( TOUT = 'OUI',   MODELISATION = 'Q4GG',
+                              PHENOMENE = 'MECANIQUE') )
+
+CINE=AFFE_CHAR_MECA(   MODELE=MODEL,DDL_IMPO=
+              _F( GROUP_MA = 'Bords', DX = 0.,   DY  = 0.,   DZ = 0.,
+                                     DRX = 0.,   DRY = 0.,  DRZ = 0.,))
+
+
+PRES=AFFE_CHAR_MECA(   MODELE=MODEL,
+                    FORCE_COQUE=_F(  TOUT = 'OUI',   PRES = 1.E5)   )
+
+
+CARELEM=AFFE_CARA_ELEM( MODELE=MODEL,
+                        COQUE=_F( GROUP_MA  = 'Poutre',
+                                  INER_ROTA = 'OUI',
+                                  EPAIS     =  EP) )
+
+INER=POST_ELEM(MASS_INER=_F(TOUT='OUI',),
+               MODELE=MODEL,
+               CHAM_MATER=CHMAT,
+               CARA_ELEM=CARELEM,);
+
+IMPR_TABLE(TABLE=INER)
+
+
+F_PRES=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,    0.0,
+                                           0.0001, 1.0,
+                                           1.0,    1.0,
+
+                           ),);
+
+#-------------------------------------------------------------------------
+#-------------------------------------------------------------------------
+#
+# DYNA_NON_LINE: CALCUL EXPLICIT AVEC AMORTISSEMENT DE RAYLEIGH
+#
+#-------------------------------------------------------------------------
+#-------------------------------------------------------------------------
+
+LIST=DEFI_LIST_REEL(DEBUT=0.0,
+#                     INTERVALLE=_F(JUSQU_A=2.7E-2,
+                     INTERVALLE=_F(JUSQU_A=1.001E-2,
+                                   PAS=1e-06,),);
+
+
+DYNA_AMO = DYNA_NON_LINE( MODELE=MODEL,
+                      CHAM_MATER= CHMAT,
+                      CARA_ELEM = CARELEM,
+                      COMP_INCR=_F(RELATION ='ELAS',),
+                      INCREMENT=_F(LIST_INST = LIST),
+                      EXCIT=(_F(CHARGE=PRES,),
+                             _F(CHARGE=CINE,),),
+                      NEWTON=_F(MATRICE='TANGENTE',
+                                REAC_ITER=1,
+                                REAC_INCR=1,),
+                      SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENT',
+                                FORMULATION='ACCELERATION',),
+                      );
+'''
+DAMO_DEP=RECU_FONCTION(RESULTAT=DYNA_AMO,
+                     NOM_CHAM='DEPL',
+                     NOM_CMP='DZ',
+                     NOEUD='N9',);
+
+IMPR_FONCTION(COURBE=(_F(FONCTION=DAMO_DEP,),),);
+
+DAMO_VIT=RECU_FONCTION(RESULTAT=DYNA_AMO,
+                     NOM_CHAM='VITE',
+                     NOM_CMP='DZ',
+                     NOEUD='N9',);
+
+IMPR_FONCTION(COURBE=(_F(FONCTION=DAMO_VIT,),),);
+
+DAMO_ACC=RECU_FONCTION(RESULTAT=DYNA_AMO,
+                     NOM_CHAM='ACCE',
+                     NOM_CMP='DZ',
+                     NOEUD='N9',);
+
+IMPR_FONCTION(COURBE=(_F(FONCTION=DAMO_ACC,),),);
+'''
+
+# ------------------------------
+# VERIFICATION DES DEPLACEMENTS
+# ------------------------------
+
+# INSTANT = 0.010009s
+# EUROPLEXUS (Q4GSGLRC) t=0.01000948, DZ=-1.496814E-3
+
+TEST_RESU(RESU=(
+           _F( RESULTAT = DYNA_AMO,
+               NUME_ORDRE = 10010,
+               NOM_CHAM = 'DEPL',
+               CRITERE = 'RELATIF',
+               PRECISION = 0.015,
+               NOEUD = 'N9',
+               NOM_CMP = 'DZ',
+               VALE = -1.496814E-3,
+               REFERENCE = 'SOURCE_EXTERNE'),
+             ),
+          );
+
+# --------------------------
+# VERIFICATION DES VITESSES
+# --------------------------
+
+# INSTANT = 0.010009s
+# EUROPLEXUS (Q4GSGLRC) t=0.01000948, DZ=-1.573645E-1
+
+TEST_RESU(RESU=(
+           _F( RESULTAT = DYNA_AMO,
+               NUME_ORDRE = 10010,
+               NOM_CHAM = 'VITE',
+               CRITERE = 'RELATIF',
+               PRECISION = 0.025,
+               NOEUD = 'N9',
+               NOM_CMP = 'DZ',
+               VALE = -1.573645E-1,
+               REFERENCE = 'SOURCE_EXTERNE'),
+             ),
+          );
+
+
+# -------------------------------
+# VERIFICATION DES ACCELERATIONS
+# -------------------------------
+
+# INSTANT = 0.010009s
+# EUROPLEXUS (Q4GSGLRC) t=0.01000948, DZ=34.18668
+
+TEST_RESU(RESU=(
+           _F( RESULTAT = DYNA_AMO,
+               NUME_ORDRE = 10010,
+               NOM_CHAM = 'ACCE',
+               CRITERE = 'RELATIF',
+               PRECISION = 0.085,
+               NOEUD = 'N9',
+               NOM_CMP = 'DZ',
+               VALE = 34.18668,
+               REFERENCE = 'SOURCE_EXTERNE'),
+             ),
+          );
+
+
+FIN()

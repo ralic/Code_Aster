@@ -1,4 +1,4 @@
-# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 20/03/2012   AUTEUR GENIAUT S.GENIAUT 
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 # sslv110f.para = tps_job 450 mem_job 1200Mo mem_aster 40 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,168 +20,242 @@
 # ======================================================================
 # METHODE X-FEM (FISSURE NON MAILLEE)
 
-DEBUT(   CODE=_F( NOM = 'SSLV110F',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F( NOM = 'SSLV110F',NIV_PUB_WEB='INTERNET'),
+      DEBUG=_F(SDVERI='OUI'),
+      IGNORE_ALARM=('CALCULEL2_63','MODELISA3_31','CALCULEL5_7','CALCULEL4_9'))
 
-MA1=LIRE_MAILLAGE(INFO=1,FORMAT='MED',);
-MA1=DEFI_GROUP(reuse =MA1,
-                    MAILLAGE=MA1,
-                    CREA_GROUP_NO=(_F(GROUP_MA='PEAUEXT',),
-                                   _F(GROUP_MA='PEAUINT',), 
-                                   _F(GROUP_MA='EXTUBE_S',),
-                                   _F(GROUP_MA='EXTUBE_I',), 
-                                   _F(GROUP_MA='BORD1',), 
-                                   _F(GROUP_MA='BORD2',), 
-                                   _F(INTERSEC=('BORD1','EXTUBE_I',),
-                                       NOM = 'GR_CLY'),
-                                ),
-                                    );
+# explication des alarmes ignorees :
+# <CALCULEL2_63> : DANS UN MODELE, IL EXISTE DES ELEMENTS DE TYPE "BORD" QUI N'ONT PAS DE VOISIN AVEC RIGIDITE
+#  LE MODELE PROVOQUANT CES ALARMES NE SERT QU'A LA VISUALISATION
+# <MODELISA3_31> : CERTAINS NOEUDS DES MAILLES SUR LESQUELLES ON IMPOSE DNOR=0 SONT SITUES A L'ANGLE DE LA
+#                  STURCTURES, LEUR VECTEUR NORMAL MOYEN PREND DONC EN COMPTE DES MAILLES SITUEES A 90 DEGRES
+#                  C'EST TOUT A FAIT NORMAL.
+# <CALCULEL5_7> ET <CALCULEL4_9> : ALARMES DANS POST_K1_K2_K3 DU A LA PROJECTION (fiche 18070)
 
 
-MAT=DEFI_MATERIAU( ELAS=_F(  E = 210000.,  NU = 0.3, RHO = 0.,
-                            ALPHA = 0.))
+# para de la fissure
+# demi grand axe et demi petit axe
+a=25.
+b= 6.
+
+
+# maillage initial : 'grossier' / 'raffine'
+typ_ma ='grossier'
+
+
+if typ_ma == 'grossier' :
+
+   #------------------------------------------------------------------------------------------
+   #                      raffinement du maillage intial
+   #------------------------------------------------------------------------------------------
+
+   # taille des mailles initiales
+   h0=12.5
+
+   # taille cible des mailles apres raffinement 
+   hc = b/9
+
+   # nombre de niveau de raffinements
+   # attention, en python log = ln (logarithme neperien)
+   n = (log(h0)-log(hc))/log(2)
+   nb_raff = int(n)+1
+   print '***INFO*** : nb_raff = ',nb_raff
+
+   # taille des mailles apres raffinement
+   h = h0/(2.**nb_raff)
+   print '***INFO*** : h = ',h
+
+   # rayon du disque de raffinement
+   r_raff = 5*h
+
+   # initialisation
+   MA    = [None]*(nb_raff+1)
+   MO    = [None]*nb_raff
+   CHERR = [None]*nb_raff
+   FISS  = [None]*nb_raff 
+
+   i_raff=0   
+   MA[i_raff]=LIRE_MAILLAGE(FORMAT='MED')
+
+   MA[i_raff]=MODI_MAILLAGE(reuse =MA[i_raff],
+                            MAILLAGE=MA[i_raff],
+                            ORIE_PEAU_3D=_F(GROUP_MA=('M_HAUT','M_BAS','SYM_X','SYM_Y')))
+
+   # boucle de raffinements
+   for i_raff in range(nb_raff) :
+
+      MO[i_raff]=AFFE_MODELE(MAILLAGE=MA[i_raff],
+                             AFFE=_F(TOUT='OUI',
+                                     PHENOMENE='MECANIQUE',
+                                     MODELISATION='3D'))
+
+      FISS[i_raff]=DEFI_FISS_XFEM(MODELE=MO[i_raff],
+                                  DEFI_FISS=_F(FORM_FISS      = 'ELLIPSE',
+                                               DEMI_GRAND_AXE = a,
+                                               DEMI_PETIT_AXE = b,
+                                               CENTRE         = (0.,0.,0.),
+                                               VECT_X         = (1.,0.,0.),
+                                               VECT_Y         = (0.,1.,0.),
+                                               ),
+                                  )
+
+      # evaluation de l'erreur       
+      CHERR[i_raff]=RAFF_XFEM(FISSURE=FISS[i_raff])
+
+      # definition du type du maillage n+1
+      MA[i_raff+1]=CO('MA_%d' % (i_raff+1))
+
+      # valeur du critere de raffinement
+      # le coef 1.1 permet d'amorcer le raff des le debut
+      crit = -max(r_raff , 1.1*h0/(2.**i_raff) )
+
+      MACR_ADAP_MAIL(ADAPTATION         = 'RAFFINEMENT',
+                     CHAM_GD            = CHERR[i_raff],
+                     CRIT_RAFF_ABS      = crit,
+                     USAGE_CMP          = 'RELATIF', 
+                     MAILLAGE_N         = MA[i_raff],
+                     MAILLAGE_NP1       = MA[i_raff+1],
+                     ELEMENTS_NON_HOMARD= 'IGNORER')
+
+   assert(nb_raff == i_raff+1)
+
+   # impression du dernier maillage
+   IMPR_RESU(FORMAT='MED',UNITE=81,RESU=_F(MAILLAGE=MA[nb_raff]))
+
+elif typ_ma == 'raffine' :
+
+   nb_raff=0
+   h = 0.3
+   MA = [None]*(nb_raff+1)   
+   MA[nb_raff]=LIRE_MAILLAGE(FORMAT='MED')
+
+#------------------------------------------------------------------------------------------
+#                   calcul mecanique
+#------------------------------------------------------------------------------------------
+
+MAT=DEFI_MATERIAU(ELAS=_F(E=210000.,NU=0.3))
                             
-MODELEIN=AFFE_MODELE(MAILLAGE=MA1,
-                     INFO = 1,
-                   AFFE=(_F(GROUP_MA=('TUBE',),
-                            PHENOMENE='MECANIQUE',
-                            MODELISATION='3D',),
-                         _F(GROUP_MA=('EXTUBE_S','EXTUBE_I',),
-                            PHENOMENE='MECANIQUE',
-                            MODELISATION='3D',),
-                  ),);        
-
-MA1=MODI_MAILLAGE(reuse =MA1,
-                       MAILLAGE=MA1,
-                       ORIE_PEAU_3D=_F(GROUP_MA=('EXTUBE_S','EXTUBE_I',),),
-              );
-
+# attention, il est imperatif de ne definir des elements finis que sur ces groupes,
+# car le maillage contient des mailles de faces situees dans le plan median de la structure
+# sur lesquelles il ne faut surtout par creer d'elements (de bords...)                            
+MO_SAIN=AFFE_MODELE(MAILLAGE=MA[nb_raff],
+                     AFFE=_F(GROUP_MA=('VOL','M_HAUT','M_BAS','SYM_X','SYM_Y'),
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='3D'))
 
 # PARAMETRES DE LA FISSURE
-x0 = 290.8
-y0 = 0.
-z0 = 100.1
-yi = y0 - 25. 
 
-FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,  
-                    DEFI_FISS=_F(
-                                 FORM_FISS      = 'ELLIPSE',
-                                 DEMI_GRAND_AXE = 25,
-                                 DEMI_PETIT_AXE = 6,
-                                 CENTRE         = (x0, y0, z0),
-                                 VECT_X         = (0. , 1. , 0. ),
-                                 VECT_Y         = (1., 0. , 0. ),
+FISS=DEFI_FISS_XFEM(MODELE=MO_SAIN,  
+                    DEFI_FISS=_F(FORM_FISS      = 'ELLIPSE',
+                                 DEMI_GRAND_AXE = a,
+                                 DEMI_PETIT_AXE = b,
+                                 CENTRE         = (0.,0.,0.),
+                                 VECT_X         = (1.,0.,0.),
+                                 VECT_Y         = (0.,1.,0.),
                                  ),
-                    ORIE_FOND=_F(PFON_INI  = (x0, yi, z0),
-                                 VECT_ORIE = (0. , 0. , 1. ),
-                                 POINT_ORIG = (0., 0., 0.),),
-                    INFO=1,);
+                    )
 
-MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
-                         FISSURE=FISS,
-                         INFO=1,
-                         );
+MODX=MODI_MODELE_XFEM(MODELE_IN=MO_SAIN,
+                      FISSURE=FISS)
 
-CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MA1,
-                       MODELE=MODELEK,
-                       AFFE=(_F(TOUT = 'OUI',
-                                MATER=MAT,),
-                             ),);
-CHAR1=AFFE_CHAR_MECA(INFO=1,
-                      MODELE=MODELEK,
-                     DDL_IMPO=(
-                              _F(GROUP_NO='PEAUEXT',
-                                       DX=0.0,),   
-                              _F(GROUP_NO='EXTUBE_I',
-                                       DZ=0.0,),
-                              _F(GROUP_NO='GR_CLY',
-                                       DY=0.0,),
-                                        ), );   
+CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MA[nb_raff],
+                       MODELE=MODX,
+                       AFFE=_F(TOUT='OUI',
+                               MATER=MAT))
 
-CHAR2=AFFE_CHAR_MECA(INFO=1,
-                      MODELE=MODELEK,
-                      PRES_REP=(_F(GROUP_MA='EXTUBE_S',
-                                    PRES=-1.0,), 
-                      ),   );
-CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
-                      LIAISON_XFEM='OUI',);
+CH_BLO=AFFE_CHAR_MECA(MODELE=MODX,
+                      FACE_IMPO=_F(GROUP_MA=('SYM_X','SYM_Y'),DNOR=0.),   
+                      DDL_IMPO=_F(GROUP_NO='P4',DZ=0.))
 
-UTOT1=MECA_STATIQUE(MODELE=MODELEK,
+CH_PRE=AFFE_CHAR_MECA(MODELE=MODX,
+                      PRES_REP=_F(GROUP_MA=('M_HAUT','M_BAS'),
+                                  PRES=-1.))
+
+RESU=MECA_STATIQUE(MODELE=MODX,
                    CHAM_MATER=CHAMPMAT,
-                   EXCIT=(_F(CHARGE=CHAR1),
-                          _F(CHARGE=CHAR2),
-                          _F(CHARGE=CHXFEM),
-                          ),
-                   INFO=1,
-                   ); 
+                   EXCIT=(_F(CHARGE=CH_BLO),
+                          _F(CHARGE=CH_PRE)))
 
-SIFTH=CALC_G(  RESULTAT=UTOT1,
-                  OPTION='CALC_K_G',
-                  THETA = _F(R_INF=0.5,
-                        R_SUP=2.,
-                        FISSURE=FISS,),);
-IMPR_TABLE(TABLE=SIFTH,);
 
-SIFK1=POST_K1_K2_K3(  MODELISATION='3D',
-                        FISSURE=FISS,
-                        INFO=2,
-                        MATER=MAT,
-                        RESULTAT=UTOT1,
-                        ABSC_CURV_MAXI=1.5,
-                        DTAN_EXTR = (0.,1.,0.),
-                        DTAN_ORIG = (0.,-1.,0.),)
+#------------------------------------------------------------------------------------------
+#                   post-traitements
+#------------------------------------------------------------------------------------------
+
+# visu
+MA_XFEM=POST_MAIL_XFEM(MODELE=MODX)
+
+MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
+                     AFFE=_F(TOUT='OUI',
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='3D')) 
+
+RES_XFEM=POST_CHAM_XFEM(MODELE_VISU= MOD_VISU,
+                        RESULTAT=RESU)
+
+IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=RES_XFEM))
+
+# calcul de G et K
+CG=CALC_G(RESULTAT=RESU,
+          OPTION='CALC_K_G',
+          THETA=_F(R_INF=2*h,
+                   R_SUP=4*h,
+                   FISSURE=FISS))
+
+IMPR_TABLE(TABLE=CG)
+
+# on ne post-traite que un nombre limite de points pour gagner en temps de calcul
+PK=POST_K1_K2_K3(MODELISATION='3D',
+                 FISSURE=FISS,
+                 MATER=MAT,
+                 RESULTAT=RESU,
+                 NB_POINT_FOND=20,
+                 ABSC_CURV_MAXI=4*h)
                       
-IMPR_TABLE(TABLE = SIFK1,)
-
+IMPR_TABLE(TABLE=PK)
 
 #----------------------------------------------------------------------
 #              TEST DE K1 EN 2 POINTS
 #----------------------------------------------------------------------
 
-TEST_TABLE(      TABLE=SIFTH,
-                   FILTRE=(_F(  NOM_PARA = 'NUM_PT',
-                            VALE_I = 1),
-                           ),
-                 NOM_PARA='K1',
-                      VALE=1.9929E+00,
-                 PRECISION=5.E-2  ,
-                      REFERENCE='ANALYTIQUE'      )
+# abscisse curviligne max
+# le perimetre d'un quart d'ellipse est pi * int( sqrt(a^2 * cos(t)^2 + b^2 * sin(t)^2) , t=0..pi/2)
+s_max = 26.7
 
-TEST_TABLE(      TABLE=SIFTH,
-                   FILTRE=(_F(  NOM_PARA = 'NUM_PT',
-                            VALE_I = 21),
-                          ),
-                 NOM_PARA='K1',
-                      VALE=4.068E+00,
-                 PRECISION=10.E-2  ,
-                      REFERENCE='ANALYTIQUE'      )
+# calc_g
+TEST_TABLE(TABLE=CG,
+           FILTRE=_F(NOM_PARA = 'ABSC_CURV',
+                     VALE = 0.),
+           NOM_PARA='K1',
+           VALE=1.9929E+00,
+           PRECISION=0.02,
+           REFERENCE='ANALYTIQUE')
 
-TEST_TABLE(      TABLE=SIFTH,
-                   FILTRE=(_F(  NOM_PARA = 'NUM_PT',
-                            VALE_I = 21),
-                          ),
-                 NOM_PARA='K1',
-                      VALE=3.7537E+00,
-                 PRECISION=1.E-3  ,
-                      REFERENCE='NON_REGRESSION'      )
-                                            
-TEST_TABLE(      TABLE=SIFK1,
-                   FILTRE=(_F(  NOM_PARA = 'PT_FOND',
-                            VALE_I = 1),
-                            ),
-                 NOM_PARA='K1',
-                      VALE=1.9929E+00,
-                 PRECISION=8.E-2  ,
-                      REFERENCE='ANALYTIQUE'      )
+TEST_TABLE(TABLE=CG,
+           FILTRE=_F(NOM_PARA = 'ABSC_CURV',
+                     VALE = s_max),
+           NOM_PARA='K1',
+           VALE=4.068E+00,
+           PRECISION=0.02,
+           REFERENCE='ANALYTIQUE')
 
-TEST_TABLE(      TABLE=SIFK1,
-                   FILTRE=(_F(  NOM_PARA = 'PT_FOND',
-                            VALE_I = 21),
-                           ),
-                   NOM_PARA='K1',
-                      VALE=4.068E+00,
-                 PRECISION=15.E-2  ,
-                      REFERENCE='ANALYTIQUE'      )
+# post_k1_k2_k3                                      
+TEST_TABLE(TABLE=PK,
+           FILTRE=_F(NOM_PARA = 'ABSC_CURV',
+                     VALE = 0.),
+           NOM_PARA='K1',
+           VALE=1.9929E+00,
+           PRECISION=0.06,
+           REFERENCE='ANALYTIQUE')
+
+TEST_TABLE(TABLE=PK,
+           FILTRE=_F(NOM_PARA = 'ABSC_CURV',
+                     VALE = s_max),
+           NOM_PARA='K1',
+           VALE=4.068E+00,
+           PRECISION=0.06,
+           REFERENCE='ANALYTIQUE')
 
 
-FIN();   
+
+FIN()
 

@@ -1,4 +1,4 @@
-#@ MODIF rupture1 Messages  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF rupture1 Messages  DATE 20/03/2012   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -167,23 +167,7 @@ Si vous utilisez CALC_THETA/THETA_2D ou CALC_G/THETA en 2d, veuillez fournir
 une valeur nulle pour la 3ème composante.
 """),
 
-33: _(u"""
-La tangente à l'origine n'est pas orthogonale à la normale au plan de la fissure.
-Normale au plan :  (%(r1)f,%(r2)f,%(r3)f)
--> Risque et Conseil :
-La tangente à l'origine DTAN_ORIG est nécessairement dans le plan de la fissure,
-donc orthogonale à la normale au plan, calculée à partir des fonctions de niveaux
-(level-set) qui définissent la fissure. Vérifier les données.
-"""),
 
-34: _(u"""
-La tangente à l'extrémité n'est pas orthogonale à la normale au plan de la fissure.
-Normale au plan :  (%(r1)f,%(r2)f,%(r3)f)
--> Risque et Conseil :
-La tangente à l'extrémité DTAN_EXTR est nécessairement dans le plan de la fissure,
-donc orthogonale à la normale au plan, calculée à partir des fonctions de niveaux
-(level-set) qui définissent la fissure. Vérifier les données.
-"""),
 
 35: _(u"""
 Les directions normales au plan de la fissure entre les points %(i1)d et %(i2)d successifs du fond forment un angle

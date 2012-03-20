@@ -5,9 +5,9 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 20/03/2012   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -84,16 +84,14 @@ C
       INTEGER           LNOFF,IADRT1,IADRT2,IADRT3,ITHETA,IADRCO,JMIN
       INTEGER           IERD,IMODU,NBRE,IRET,NUMA,NDIMTE,JGT
       INTEGER           NBNO,IFON,I,IDESC,IREFE,J,JRESU,K,JGTL
-      INTEGER           NORIG,NEXTR,JORIG,JEXTR,JBAS
 C
-      REAL*8            XI1,YI1,ZI1,XJ1,YJ1,ZJ1,ZRBID
+      REAL*8            XI1,YI1,ZI1,XJ1,YJ1,ZJ1
       REAL*8            XIJ,YIJ,ZIJ,EPS,D, GRTX,GRTY,GRTZ
       REAL*8            XM,YM,ZM,XIM,YIM,ZIM,S,DMIN,SMIN,XN,YN,ZN
       REAL*8            RII,RSI,ALPHA,VALX,VALY,VALZ,NORM2,R8MAEM
       REAL*8            GRTX0,GRTY0,GRTZ0,GRTX1,GRTY1,GRTZ1
 C
       LOGICAL           THLAGR,MILIEU, DEBUG,THLAG2,PAIR
-      INTEGER      IARG
 C
       CALL JEMARQ()
 
@@ -113,18 +111,6 @@ C
       CALL JEVEUO(BASFON,'L',JBAS)
 
 C          -----------------------
-      CALL GETVR8 ('THETA','DTAN_ORIG',1,IARG,0,ZRBID,NORIG)
-      IF(NORIG.NE.0) THEN
-        NORIG = -NORIG
-        CALL WKVECT('&&GCOUR3.DTAN_ORIG','V V R8',3,JORIG)
-        CALL GETVR8 ('THETA','DTAN_ORIG',1,IARG,3,ZR(JORIG),NORIG)
-      ENDIF
-      CALL GETVR8 ('THETA','DTAN_EXTR',1,IARG,0,ZRBID,NEXTR)
-      IF(NEXTR.NE.0) THEN
-        NEXTR = -NEXTR
-        CALL WKVECT('&&GCOUR3.DTAN_EXTR','V V R8',3,JEXTR)
-        CALL GETVR8 ('THETA','DTAN_EXTR',1,IARG,3,ZR(JEXTR),NEXTR)
-      ENDIF
 
 C     RÉCUPÉRATION DES GRADIENTS DE LST
       CNSGT='&&GCOUR3.CNSGT'
@@ -298,10 +284,10 @@ C               DISTANCE MN
                   ENDIF
 
 C                 CORRECTION DE LA DIRECTION A L ORIGINE
-                  IF ((JMIN .EQ. 1) .AND. (NORIG.NE.0) ) THEN
-                    GRTX0=ZR(JORIG+1-1)* ZR(IMODU)
-                    GRTY0=ZR(JORIG+2-1)* ZR(IMODU)
-                    GRTZ0=ZR(JORIG+3-1)* ZR(IMODU)
+                  IF (JMIN .EQ. 1) THEN
+                    GRTX0=ZR(JBAS+4-1)* ZR(IMODU)
+                    GRTY0=ZR(JBAS+5-1)* ZR(IMODU)
+                    GRTZ0=ZR(JBAS+6-1)* ZR(IMODU)
                     GRTX1=ZR(JBAS+(2-1)*6+4-1)* ZR(IMODU+1)
                     GRTY1=ZR(JBAS+(2-1)*6+5-1)* ZR(IMODU+1)
                     GRTZ1=ZR(JBAS+(2-1)*6+6-1)* ZR(IMODU+1)
@@ -322,13 +308,13 @@ C                 CORRECTION DE LA DIRECTION A L ORIGINE
                   ENDIF
 
 C                 CORRECTION DE LA DIRECTION A L ETREMITE
-                  IF ((JMIN .EQ. (LNOFF-1)) .AND. (NEXTR.NE.0) ) THEN
+                  IF (JMIN .EQ. (LNOFF-1)) THEN
                     GRTX0=ZR(JBAS+(LNOFF-1-1)*6+4-1)* ZR(IMODU)
                     GRTY0=ZR(JBAS+(LNOFF-1-1)*6+5-1)* ZR(IMODU)
                     GRTZ0=ZR(JBAS+(LNOFF-1-1)*6+6-1)* ZR(IMODU)
-                    GRTX1=ZR(JEXTR+1-1)* ZR(IMODU+1)
-                    GRTY1=ZR(JEXTR+2-1)* ZR(IMODU+1)
-                    GRTZ1=ZR(JEXTR+3-1)* ZR(IMODU+1)
+                    GRTX1=ZR(JBAS+(LNOFF-1)*6+4-1)* ZR(IMODU+1)
+                    GRTY1=ZR(JBAS+(LNOFF-1)*6+5-1)* ZR(IMODU+1)
+                    GRTZ1=ZR(JBAS+(LNOFF-1)*6+6-1)* ZR(IMODU+1)
                     VALX =((1-SMIN) * GRTX0 + SMIN * GRTX1)
                     VALY =((1-SMIN) * GRTY0 + SMIN * GRTY1)
                     VALZ =((1-SMIN) * GRTZ0 + SMIN * GRTZ1)

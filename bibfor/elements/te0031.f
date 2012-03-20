@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION , NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 19/03/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,7 +25,8 @@ C     CALCUL DES OPTIONS DES ELEMENTS DE PLAQUE
 C          -----------------------------------------------------------
 C                                              TRIANGLE  QUADRANGLE
 C        LINEAIRE          KIRCHOFF  (MINCE)        DKT       DST
-C                 AVEC CISAILLEMENT  (EPAISSE)      DKQ    DSQ ET Q4G
+C                 AVEC CISAILLEMENT  (EPAISSE)      DST       DSQ 
+C                                                   Q4G       T3G
 C
 C        RIGI_MECA       MASS_MECA
 C        RIGI_MECA_SENSI RIGI_MECA_SENS_C
@@ -66,6 +67,7 @@ C
       INTEGER      IVECT,NDDL,NVEC,IRET,ICONTP
       INTEGER      ICOU, NBCOU,JNBSPI, IRET1, VALI(2)
       INTEGER      IBID
+      INTEGER      N1, N2, NI
       LOGICAL      LCQHOM
       CHARACTER*2  VAL
       CHARACTER*3  NUM
@@ -180,6 +182,8 @@ C
           CALL DSQRIG(NOMTE,XYZL,OPTION,PGL,MATLOC,ENER)
         ELSE IF (NOMTE.EQ.'MEQ4QU4') THEN
           CALL Q4GRIG(NOMTE,XYZL,OPTION,PGL,MATLOC,ENER)
+        ELSE IF (NOMTE.EQ.'MET3TR3') THEN
+          CALL T3GRIG(NOMTE,XYZL,OPTION,PGL,MATLOC,ENER)
         END IF
 
         IF (OPTION(11:14).EQ.'SENS') THEN
@@ -273,7 +277,21 @@ C     ------------------------------------------
           DO 30 I = 1,NDIM
             ZR(JMATR-1+I) = MATLOC(I)
    30     CONTINUE
-
+          IF (OPTION.EQ.'MASS_MECA_EXPLI') THEN
+C     CORRECTION DES TERMES CORRESPONDANT AU DDL 6
+C     NON PREVU PAR LA THEORIE DKT. ON RAJOUTE
+C     UN TERME DIAGONAL NON ZERO EGAL A CELUI DU DDL 5.
+C     CETTE CORRECTION A ETE INSPIRE PAR LA DEMARCHE DANS EUROPLEXUS
+            DO 35 J = 1,NNO
+              N1 = 6*(J-1) + 5
+              N2 = 6*(J-1) + 4
+              NI = 6*J
+              NDIM = (NI + 1)*NI/2
+              N1   = (N1 + 1)*N1/2
+              N2   = (N2 + 1)*N2/2
+              ZR(JMATR-1+NDIM)=(ZR(JMATR-1+N1)+ZR(JMATR-1+N2))*0.5D0
+   35       CONTINUE
+          ENDIF
         END IF
 C
 C

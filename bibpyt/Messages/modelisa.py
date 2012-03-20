@@ -1,4 +1,4 @@
-#@ MODIF modelisa Messages  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF modelisa Messages  DATE 19/03/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -523,13 +523,15 @@ cata_msg = {
 99 : _(u"""
 Problème :
   Une relation linéaire entre ddls a un second membre de type "fonction".
-  On ne peut pas la normaliser (afin que son plus grand coefficient soit 1.) car on ne sait pas "diviser" une fonction par un réel.
+  On ne peut pas la normaliser (afin que son plus grand coefficient soit 1.) car on ne
+  sait pas "diviser" une fonction par un réel.
 
   Le plus grand coefficient de la relation est très différent de 1.  (<1.d-3 ou > 1.d3).
-  Cette équation (non-normalisée) peut conduire à des difficultés numériques lors de la résolution des systèmes linéaires.
+  Cette équation (non normalisée) peut conduire à des difficultés numériques lors de
+  la résolution des systèmes linéaires.
 
 Conseil :
-  Utilisez le solveur Mumps afin de contrôler la qualité de la résolutions des systèmes linéaires.
+  Utilisez le solveur MUMPS afin de contrôler la qualité de la résolutions des systèmes linéaires.
 """),
 
 }

@@ -5,9 +5,9 @@
       INTEGER             IND
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 19/03/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -73,7 +73,8 @@ C     --------------------------------------------------------
      &        NOMTE.NE.'MEDSTR3 ' .AND.
      &        NOMTE.NE.'MEDKQU4 ' .AND.
      &        NOMTE.NE.'MEDSQU4 ' .AND.
-     &        NOMTE.NE.'MEQ4QU4 ' ) THEN
+     &        NOMTE.NE.'MEQ4QU4 ' .AND.
+     &        NOMTE.NE.'MET3TR3 ' ) THEN
          CALL U2MESK('F','ELEMENTS_34',1,NOMTE)
       END IF
 

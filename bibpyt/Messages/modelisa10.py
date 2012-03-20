@@ -1,4 +1,4 @@
-#@ MODIF modelisa10 Messages  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF modelisa10 Messages  DATE 19/03/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -64,7 +64,7 @@ Le groupe d'esclaves %(k1)s est vide.
 """),
 
 9 : _(u"""
-Le groupe du noeud maitre %(k1)s contient %(i1)d noeuds alors qu'il en faut un seul.
+Le groupe du noeud maître %(k1)s contient %(i1)d noeuds alors qu'il en faut un seul.
 """),
 
 10 : _(u"""

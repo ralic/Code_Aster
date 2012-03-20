@@ -1,4 +1,4 @@
-#@ MODIF propa_fiss_ops Macro  DATE 06/03/2012   AUTEUR COLOMBO D.COLOMBO 
+#@ MODIF propa_fiss_ops Macro  DATE 20/03/2012   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -760,8 +760,6 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
 # Recuperation des informations importantes pour la propagation
         Basefo = fiss0.sdj.BASEFOND.get()
         Listfo = fiss0.sdj.FONDFISS.get()
-        Vorig = Fiss['DTAN_ORIG']
-        Vextr = Fiss['DTAN_EXTR']
         if (Damax ==None) :
            DKmax = 1
         if (coef_C ==None) :
@@ -783,15 +781,6 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
              Rloc  = InterpolationLineaire(abscf[j][i], RmM[numfis][FondmultK[2*j]-1:FondmultK[2*j+1]])
              if DKeqloc<=0 :
                UTMESS('F','RUPTURE1_49')
-             # Tangentes aux extremites
-             if (inofo == 0) and (Vorig != None) :
-               VPVNi[3] = Vorig[0]
-               VPVNi[4] = Vorig[1]
-               VPVNi[5] = Vorig[2]
-             if (j == Nbfond-1) and (i == FmAct[2*j+1]-FmAct[2*j]) and (Vextr != None) :
-               VPVNi[3] = Vextr[0]
-               VPVNi[4] = Vextr[1]
-               VPVNi[5] = Vextr[2]
              # Calcul des points propages
              beta = InterpolationLineaire(abscf[j][i], BETA[numfis][FondmultK[2*j]-1:FondmultK[2*j+1]])
              Vloc = NBCYCL*dadN(coef_C,coef_N,coef_M,DKeqloc,Rloc)
@@ -854,15 +843,6 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
                 Rloc  = InterpolationLineaire(abscf[j][i], RmM[numfis][FondmultK[2*j]-1:FondmultK[2*j+1]])
                 if DKeqloc <= 0 :
                   UTMESS('F','RUPTURE1_49')
-                # Tangentes aux extremites
-                if (inofo == 0) and (Vorig != None) :
-                  VPVNi[3] = Vorig[0]
-                  VPVNi[4] = Vorig[1]
-                  VPVNi[5] = Vorig[2]
-                if (j == Nbfond-1) and (i == FmAct[2*j+1]-FmAct[2*j]) and (Vextr != None) :
-                  VPVNi[3] = Vextr[0]
-                  VPVNi[4] = Vextr[1]
-                  VPVNi[5] = Vextr[2]
                 # Calcul des points propages
                 beta = InterpolationLineaire(abscf[j][i], BETA[numfis][FondmultK[2*j]-1:FondmultK[2*j+1]])
                 Vloc = NBCYCL*dadN(coef_C,coef_N,coef_M,DKeqloc,Rloc)

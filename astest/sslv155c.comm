@@ -1,9 +1,9 @@
-# MODIF  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/03/2012   AUTEUR GENIAUT S.GENIAUT 
 # TITRE  FISSURE LENTILLE EN TRACTION
 # sslv155c.para = tps_job 300 mem_job 1024Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -182,8 +182,6 @@ IMPR_RESU(FORMAT='MED',UNITE=81,RESU=_F(RESULTAT=RE_VISU))
 # post-traitement en mecanique de la rupture
 CGX=CALC_G(THETA=_F(FISSURE=FISSX,
                     NB_POINT_FOND=30,
-                    DTAN_ORIG=(cos(alpha),sin(alpha),0          ),
-                    DTAN_EXTR=(       0. ,sin(alpha),-cos(alpha)),
                     R_INF=2*h,
                     R_SUP=5*h,),
            RESULTAT=RESU,
@@ -198,8 +196,6 @@ IMPR_TABLE(TABLE=CGX)
 
 PK=POST_K1_K2_K3(MODELISATION='3D',
                  FISSURE=FISSX,
-                 DTAN_ORIG=(cos(alpha),sin(alpha),0          ),
-                 DTAN_EXTR=(       0. ,sin(alpha),-cos(alpha)),
                  NB_POINT_FOND=30,
                  MATER=ACIER,
                  RESULTAT=RESU,

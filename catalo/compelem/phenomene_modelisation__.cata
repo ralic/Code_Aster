@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
+%& MODIF COMPELEM  DATE 19/03/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -538,9 +538,16 @@ PHENOMENE_MODELISATION__
               MAILLE__ QUAD4     ELEMENT__ MEDSQU4
               MAILLE__ SEG2      ELEMENT__ MEBODST
 
-       MODELISATION__ 'Q4G'              DIM__ 2 3   CODE__ 'Q4G'
+      MODELISATION__ 'Q4G'              DIM__ 2 3   CODE__ 'Q4G'
               ATTRIBUT__  NBSIGM=X6  TYPMOD=C_PLAN
               MAILLE__ QUAD4     ELEMENT__ MEQ4QU4
+              MAILLE__ TRIA3     ELEMENT__ MET3TR3
+              MAILLE__ SEG2      ELEMENT__ MEBOQ4G
+
+       MODELISATION__ 'Q4GG'             DIM__ 2 3   CODE__ 'Q4S'
+              ATTRIBUT__  NBSIGM=X6
+              MAILLE__ QUAD4     ELEMENT__ MEQ4GG4
+              MAILLE__ TRIA3     ELEMENT__ MET3GG3
               MAILLE__ SEG2      ELEMENT__ MEBOQ4G
 
        MODELISATION__ 'AXIS'             DIM__ 2 2   CODE__ 'AX_'

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 20/03/2012   AUTEUR GENIAUT S.GENIAUT 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185p.para = tps_job 270 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -279,8 +279,6 @@ for i in range(0,nbc) :
 PK=POST_K1_K2_K3(MODELISATION='3D',
                      MATER=ACIER,
                      FISSURE = FISS,
-                     DTAN_ORIG = (0,-1,0),
-                     DTAN_EXTR = (0,-1,0),
                      RESULTAT  = UTOT1,
                      ABSC_CURV_MAXI = 1.5,
                      NB_NOEUD_COUPE = 6,

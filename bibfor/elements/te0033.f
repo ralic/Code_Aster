@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       CHARACTER*16        OPTION, NOMTE
 C ----------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 20/02/2012   AUTEUR CHEIGNON E.CHEIGNON 
+C MODIF ELEMENTS  DATE 19/03/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -189,6 +189,8 @@ C               ----------------------------
           CALL DSQCOD(XYZL,PGL,IC,INIV,DEPL,SIGTOT)
         ELSE IF (NOMTE.EQ.'MEQ4QU4') THEN
           CALL Q4GCOD(XYZL,PGL,IC,INIV,DEPL,SIGTOT)
+        ELSE IF (NOMTE.EQ.'MET3GG3') THEN
+          CALL T3GCOD(XYZL,PGL,IC,INIV,DEPL,SIGTOT)
         END IF
 
 C ---     PASSAGE DES DEFORMATIONS  DU REPERE INTRINSEQUE
@@ -291,8 +293,12 @@ C               ----------------------------
           CALL DKQEDG(XYZL,OPTION,PGL,DEPL,EFFGT)
         ELSE IF (NOMTE.EQ.'MEDSQU4' ) THEN
           CALL DSQEDG(XYZL,OPTION,PGL,DEPL,EFFGT)
-        ELSE IF (NOMTE.EQ.'MEQ4QU4' ) THEN
+        ELSE IF (NOMTE.EQ.'MEQ4QU4'.OR.
+     &           NOMTE.EQ.'MEQ4GG4' ) THEN
           CALL Q4GEDG(XYZL,OPTION,PGL,DEPL,EFFGT)
+        ELSE IF (NOMTE.EQ.'MET3TR3'.OR.
+     &           NOMTE.EQ.'MET3GG3') THEN
+          CALL T3GEDG(XYZL,OPTION,PGL,DEPL,EFFGT)
         END IF
 C
 C ---     PASSAGE DES DEFORMATIONS GENERALISEES DU REPERE INTRINSEQUE

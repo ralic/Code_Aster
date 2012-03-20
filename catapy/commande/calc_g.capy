@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
+#& MODIF COMMANDE  DATE 20/03/2012   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,13 +31,9 @@ CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
            THETA           =SIMP(statut='f',typ=(theta_geom,cham_no_sdaster),),
            FOND_FISS       =SIMP(statut='f',typ=fond_fiss,max=1),
            FISSURE         =SIMP(statut='f',position='global',typ=fiss_xfem,max=1),
-           DTAN_ORIG       =SIMP(statut='f',typ='R',max='**'),
-           DTAN_EXTR       =SIMP(statut='f',typ='R',max='**'),
            NB_POINT_FOND   =SIMP(statut='f',typ='I',val_min=2),
            regles=(EXCLUS('FOND_FISS','FISSURE'),
-                 EXCLUS('FOND_FISS','NB_POINT_FOND'),
-                 EXCLUS('FOND_FISS','DTAN_ORIG'),
-                 EXCLUS('FOND_FISS','DTAN_EXTR'),),
+                 EXCLUS('FOND_FISS','NB_POINT_FOND'),),
           b_theta        =BLOC(condition="THETA == None",fr="calcul de theta",
             regles=(UN_PARMI('R_INF','R_INF_FO'),
                  PRESENT_PRESENT('R_INF','R_SUP'),

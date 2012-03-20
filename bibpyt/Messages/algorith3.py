@@ -1,4 +1,4 @@
-#@ MODIF algorith3 Messages  DATE 27/02/2012   AUTEUR ALARCON A.ALARCON 
+#@ MODIF algorith3 Messages  DATE 19/03/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -73,7 +73,7 @@ On arrête de le réduire, car le nombre de réductions a atteint %(i1)d, qui est l
 18 : _(u"""
  La liste des instants de calcul ne doit contenir qu'un seul pas
  Conseil: si vous avez défini une liste d'instants manuellement par des valeurs discrètes,
- veillez à ce que le pas soit constant dans tout l'intervale.
+ veillez à ce que le pas soit constant dans tout l'intervalle.
 """),
 
 19 : _(u"""

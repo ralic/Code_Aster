@@ -1,4 +1,4 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 21/02/2012   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 20/03/2012   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -715,7 +715,7 @@ def get_coor_xfem(args,FISSURE,ndim):
 
 #---------------------------------------------------------------------------------------------------------------
 
-def get_direction_xfem(Nnoff,Vpropa,Coorfo,DTAN_ORIG,DTAN_EXTR,ndim) :
+def get_direction_xfem(Nnoff,Vpropa,Coorfo,ndim) :
       """retourne la direction de propagation, la normale a la surface de la fissure,
       et l'abscisse curviligne en chaque point du fond"""
       import numpy as NP
@@ -727,16 +727,8 @@ def get_direction_xfem(Nnoff,Vpropa,Coorfo,DTAN_ORIG,DTAN_EXTR,ndim) :
 
       i = 0
       if ndim == 3 :
-         if DTAN_ORIG != None :
-            VDIR[0] = NP.array(DTAN_ORIG)
-            VDIR[0] = VDIR[0]/NP.sqrt(VDIR[0][0]**2+VDIR[0][1]**2+VDIR[0][2]**2)
-            VNOR[0] = NP.array([Vpropa[0],Vpropa[1],Vpropa[2]])
-            verif = NP.dot(NP.transpose(VDIR[0]),VNOR[0])
-            if abs(verif) > 0.01:
-               UTMESS('A','RUPTURE1_33',valr=[VNOR[0][0],VNOR[0][1],VNOR[0][2]])
-         else :
-            VNOR[0] = NP.array([Vpropa[0],Vpropa[1],Vpropa[2]])
-            VDIR[0] = NP.array([Vpropa[3+0],Vpropa[3+1],Vpropa[3+2]])
+         VNOR[0] = NP.array([Vpropa[0],Vpropa[1],Vpropa[2]])
+         VDIR[0] = NP.array([Vpropa[3+0],Vpropa[3+1],Vpropa[3+2]])
          for i in xrange(1,Nnoff-1):
             absf = Coorfo[4*i+3]
             absfon.append(absf)
@@ -748,15 +740,9 @@ def get_direction_xfem(Nnoff,Vpropa,Coorfo,DTAN_ORIG,DTAN_EXTR,ndim) :
          i = Nnoff-1
          absf =  Coorfo[4*i+3]
          absfon.append(absf)
-         if DTAN_EXTR != None :
-            VDIR[i] = NP.array(DTAN_EXTR)
-            VNOR[i] = NP.array([Vpropa[6*i],Vpropa[6*i+1],Vpropa[6*i+2]])
-            verif = NP.dot(NP.transpose(VDIR[i]),VNOR[i])
-            if abs(verif) > 0.01:
-               UTMESS('A','RUPTURE1_34',valr=[VNOR[i][0],VNOR[i][1],VNOR[i][2]])
-         else :
-            VNOR[i] = NP.array([Vpropa[6*i],Vpropa[6*i+1],Vpropa[6*i+2]])
-            VDIR[i] = NP.array([Vpropa[3+6*i],Vpropa[3+6*i+1],Vpropa[3+6*i+2]])
+
+         VNOR[i] = NP.array([Vpropa[6*i],Vpropa[6*i+1],Vpropa[6*i+2]])
+         VDIR[i] = NP.array([Vpropa[3+6*i],Vpropa[3+6*i+1],Vpropa[3+6*i+2]])
       elif ndim == 2 :
          for i in range(0,Nnoff):
             VDIR[i] = NP.array([Vpropa[2+4*i],Vpropa[3+4*i],0.])
@@ -804,7 +790,7 @@ def get_sens_tangente_xfem(self,ndim,Nnoff,Coorfo,VDIR,ABSC_CURV_MAXI,__RESX,dma
 
 #---------------------------------------------------------------------------------------------------------------
 
-def get_sauts_xfem(self,Nnoff,Coorfo,VDIR,sens,DTAN_ORIG,DTAN_EXTR,ABSC_CURV_MAXI,NB_NOEUD_COUPE,dmax,__RESX) :
+def get_sauts_xfem(self,Nnoff,Coorfo,VDIR,sens,ABSC_CURV_MAXI,NB_NOEUD_COUPE,dmax,__RESX) :
       """retourne la table des sauts"""
       from Accas import _F
       import numpy as NP
@@ -814,12 +800,7 @@ def get_sauts_xfem(self,Nnoff,Coorfo,VDIR,sens,DTAN_ORIG,DTAN_EXTR,ABSC_CURV_MAX
       mcfact=[]
       for i in xrange(Nnoff):
          Porig = NP.array([Coorfo[4*i],Coorfo[4*i+1],Coorfo[4*i+2]])
-         if i==0 and DTAN_ORIG!=None :
-            Pextr = Porig - ABSC_CURV_MAXI*VDIR[i]
-         elif i==(Nnoff-1) and DTAN_EXTR!=None :
-            Pextr = Porig - ABSC_CURV_MAXI*VDIR[i]
-         else :
-            Pextr = Porig + ABSC_CURV_MAXI*VDIR[i]*sens
+         Pextr = Porig + ABSC_CURV_MAXI*VDIR[i]*sens
 
          mcfact.append(_F(NB_POINTS=NB_NOEUD_COUPE,
                           COOR_ORIG=(Porig[0],Porig[1],Porig[2],),
@@ -1900,8 +1881,6 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
       iret,ibid,nom_ma = aster.dismoi('F','NOM_MAILLA',RESULTAT.nom,'RESULTAT')
       MAILLAGE = self.get_concept(nom_ma.strip())
 
-      DTAN_ORIG = args['DTAN_ORIG']
-      DTAN_EXTR = args['DTAN_EXTR']
       dmax  = PREC_VIS_A_VIS * ABSC_CURV_MAXI
 
       (xcont,MODEL) = verif_resxfem(self,RESULTAT)
@@ -1916,15 +1895,14 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
       (Coorfo, Vpropa, Nnoff) = get_coor_xfem(args,FISSURE,ndim)
 
 #     Calcul de la direction de propagation en chaque point du fond
-      (VDIR,VNOR,absfon) = get_direction_xfem(Nnoff,Vpropa,Coorfo,DTAN_ORIG,DTAN_EXTR,ndim)
+      (VDIR,VNOR,absfon) = get_direction_xfem(Nnoff,Vpropa,Coorfo,ndim)
 
 #     Sens de la tangente
       sens = get_sens_tangente_xfem(self,ndim,Nnoff,Coorfo,VDIR,ABSC_CURV_MAXI,__RESX,dmax)
 
 #     Extraction des sauts sur la fissure
       NB_NOEUD_COUPE = args['NB_NOEUD_COUPE']
-      TTSo = get_sauts_xfem(self,Nnoff,Coorfo,VDIR,sens,
-                            DTAN_ORIG,DTAN_EXTR,ABSC_CURV_MAXI,NB_NOEUD_COUPE,dmax,__RESX)
+      TTSo = get_sauts_xfem(self,Nnoff,Coorfo,VDIR,sens,ABSC_CURV_MAXI,NB_NOEUD_COUPE,dmax,__RESX)
 
       Lnofon = []
       Nbnofo = Nnoff
