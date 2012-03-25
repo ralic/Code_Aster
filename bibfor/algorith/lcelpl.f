@@ -1,10 +1,10 @@
         SUBROUTINE LCELPL(MOD,LOI,NMAT,MATERD,MATERF,TIMED,TIMEF,
-     &                    NVI,VIND,VINF,NR,YD,YF,SIGF,DRDY)
+     &                    DEPS,NVI,VIND,VINF,NR,YD,YF,SIGD,SIGF,DRDY)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/12/2011   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -41,7 +41,8 @@ C     TIMEF  :  INSTANT T+DT
 C     IDPLAS :  INDICATEUR PLASTIQUE
 C     NVI    :  NOMBRE VARIABLES INTERNES
 C     VIND   :  VARIABLES INTERNES A T
-C     SIGMF  :  CONTRAINTES A T+DT
+C     SIGD   :  CONTRAINTES A T
+C     SIGF   :  CONTRAINTES A T+DT
 C     NR     :  NB EQUATION SYSTEME INTEGRE A RESOUDRE
 C     YD     :  VECTEUR SOLUTION A T 
 C     YF     :  VECTEUR SOLUTION A T+DT 
@@ -49,11 +50,15 @@ C  OUT
 C     VINF   :  VARIABLES INTERNES A T+DT
 C     DRDY   :  MATRICE JACOBIENNE POUR BETON_BURGER_FP
 C ----------------------------------------------------------------
+C     ------------------------------------------------------------
+      COMMON /TDIM/   NDT  , NDI
+C     ------------------------------------------------------------
       CHARACTER*16 LOI
-      INTEGER      NMAT,NVI,NR,I,J
+      INTEGER      NMAT,NVI,NR,I,J,NDI,NDT
       REAL*8       MATERD(NMAT,2),MATERF(NMAT,2)
       REAL*8       VINF(NVI),VIND(NVI),DY(NR),DRDY(NR,NR)
-      REAL*8       TIMED,TIMEF,DT,YD(NR),YF(NR),SIGF(6)
+      REAL*8       TIMED,TIMEF,DT,YD(NR),YF(NR)
+      REAL*8       DEPS(6),SIGF(6),SIGD(6)
       CHARACTER*8  MOD
 C ----------------------------------------------------------------
       IF (LOI(1:7).EQ.'IRRAD3M') THEN
@@ -70,6 +75,11 @@ C ----------------------------------------------------------------
  10      CONTINUE
          CALL BURJAC ( MOD, NMAT, MATERD,MATERF,NVI,VIND,
      &                 TIMED,TIMEF,YD,YF,DY,NR,DRDY)
+      ELSEIF(LOI(1:4).EQ.'LETK')THEN
+         CALL LCEQVN( NVI-3, VIND , VINF )
+         VINF(5) = 0.D0
+         VINF(6) = 0.D0
+         VINF(7) = 0.D0
       ELSE
 C
 C --- CAS GENERAL :
@@ -77,4 +87,5 @@ C        VINF  = VIND ,  ETAT A T+DT = VINF(NVI) = 0 = ELASTIQUE
          CALL LCEQVN( NVI-1, VIND , VINF )
          VINF(NVI) = 0.0D0
       ENDIF
+
       END

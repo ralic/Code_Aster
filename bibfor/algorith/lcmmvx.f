@@ -1,12 +1,12 @@
       SUBROUTINE LCMMVX (SIGF,VIN,NMAT,MATERF,NBCOMM,
      &                   CPMONO,PGL,NVI,HSR,NFS,NSG,TOUTMS,TIMED,
-     &                   TIMEF,SEUIL)
+     &                   TIMEF,DEPS,SEUIL)
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -45,19 +45,22 @@ C     ----------------------------------------------------------------
       INTEGER         NMAT, NVI, NSFA, NSFV,IEXP, NFS, NSG
       INTEGER         NBFSYS,I,NUVI,IFA,NBSYS,IS
       INTEGER         NBCOMM(NMAT,3),IRET
-      REAL*8          SIGF(6),VIN(NVI),RP,HSR(NSG,NSG)
-      REAL*8          MATERF(NMAT*2),SEUIL,DT,DY(NVI),ALPHAM
-      REAL*8          MS(6),NG(3),Q(3,3),TIMED,TIMEF,LG(3)
-      REAL*8          TAUS,DGAMMA,DALPHA,DP,EXPBP(NSG)
+      REAL*8          SIGF(6),VIN(NVI),RP,HSR(NSG,NSG),DEPS(6)
+      REAL*8          DDOT,MATERF(NMAT*2),SEUIL,DT,DY(NVI),ALPHAM
+      REAL*8          MS(6),NG(3),Q(3,3),TIMED,TIMEF,LG(3),DEPSDT
+      REAL*8          TAUS,DGAMMA,DALPHA,DP,EXPBP(NSG),DEPST(6)
       REAL*8          PGL(3,3),CRIT,SGNS,TOUTMS(NFS,NSG,6),GAMMAM
       CHARACTER*16    CPMONO(5*NMAT+1)
       CHARACTER*16    NOMFAM,NECOUL,NECRIS
+      COMMON /DEPS6/DEPSDT
 C
-      NBFSYS=NBCOMM(NMAT,2)
-      CALL R8INIR(NVI,0.D0, DY, 1)
-
       SEUIL=-1.D0
       DT=TIMEF-TIMED
+      NBFSYS=NBCOMM(NMAT,2)
+      CALL R8INIR(NVI,0.D0, DY, 1)
+      CALL DCOPY(6,DEPS,1,DEPST,1)
+      DEPSDT=SQRT(DDOT(6,DEPST,1,DEPST,1)/1.5D0)/DT
+
 C     NSFV : debut de la famille IFA dans les variables internes
       NSFV=6
 C     NSFA : debut de la famille IFA dans DY et YD, YF

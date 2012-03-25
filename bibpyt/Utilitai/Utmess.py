@@ -1,4 +1,4 @@
-#@ MODIF Utmess Utilitai  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Utmess Utilitai  DATE 26/03/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -387,9 +387,10 @@ Exception : %s
             ieff += 1
             if self._ignored_alarm.get(idmess) is not None:
                 mark = '(*)'
-            dictmess = self.get_message('I', 'CATAMESS_90', valk=(mark, idmess),
-                                     vali=self.count_alarm_tot.get(idmess, 0))
-            self.add_to_buffer(dictmess)
+            nb = self.count_alarm_tot.get(idmess, 0)
+            if nb > 0:
+                dictmess = self.get_message('I', 'CATAMESS_90', valk=(mark, idmess), vali=nb)
+                self.add_to_buffer(dictmess)
         if ieff == 0:
             dictmess = self.get_message('I', 'CATAMESS_92')
             self.add_to_buffer(dictmess)

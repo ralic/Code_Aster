@@ -1,10 +1,11 @@
-      SUBROUTINE LCESGV (FAMI  , KPG   , KSP   , NDIM  , TYPMOD, 
+      SUBROUTINE LCESGV (FAMI  , KPG   , KSP   , NEPS  , TYPMOD, 
      &                   OPTION, MAT   , EPSM  , DEPS  , VIM   ,
-     &                   NONLOC, SIG   , VIP   , DSIDEP, IRET  )
+     &                   ITEMAX, PRECVG, SIG   , VIP   , 
+     &                   DSIDEP, IRET  )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -23,14 +24,14 @@ C ======================================================================
       CHARACTER*8   TYPMOD
       CHARACTER*16  OPTION
       CHARACTER*(*) FAMI
-      INTEGER       NDIM, MAT, IRET, KPG, KSP
-      REAL*8        EPSM(7), DEPS(7), VIM(*), NONLOC(2)
-      REAL*8        VIP(*), SIG(*), DSIDEP(6,6,4)
+      INTEGER       NEPS, MAT, IRET, KPG, KSP,ITEMAX
+      REAL*8        EPSM(NEPS), DEPS(NEPS), VIM(*), PRECVG
+      REAL*8        VIP(*), SIG(NEPS), DSIDEP(NEPS,NEPS)
 C ----------------------------------------------------------------------
 C           ENDOMMAGEMENT FRAGILE A GRADIENT DE VARIABLE INTERNE :
 C                       ENDO_SCALAIRE AVEC GRAD_VARI
 C ----------------------------------------------------------------------
-C IN  NDIM    DIMENSION DE L'ESPACE
+C IN  NEPS    DIMENSION DES DEFORMATIONS GENERALISEES
 C IN  TYPMOD  TYPE DE MODELISATION
 C IN  OPTION  OPTION DE CALCUL
 C               RIGI_MECA_TANG, RIGI_MECA_ELAS
@@ -40,28 +41,33 @@ C IN  MAT     NATURE DU MATERIAU
 C IN  EPSM    CHAMP DE DEFORMATION EN T- ET PHIM=EPSM(7)
 C IN  DEPS    INCREMENT DU CHAMP DE DEFORMATION ET DPHI=DEPS(7)
 C IN  VIM     VARIABLES INTERNES EN T-
-C IN  R       COEFFICIENT DE PENALISATION
+C IN  NONLOC  INUTILISE
+C IN  ITEMAX  NBR MAXI D'ITERATIONS POUR RESOLUTION EQUATION SCALAIRE
+C IN  PRECVG  CRITERE DE CVG : A ET A+PRECVG ENCADRENT LA SOLUTION
 C OUT VIP     DENSITE DE FISSURATION 
 C OUT SIG     CONTRAINTE 
-C OUT DSIDEP  MATRICES TANGENTES
-C OUT IRET    CODE RETOUR (0=OK, 1=PAS DE CVG, 2=INCR ENDO TROP GRAND)
+C OUT DSIDEP  MATRICE TANGENTE
+C OUT IRET    CODE RETOUR (0=OK, 1=ECHEC CVG)
 C ----------------------------------------------------------------------
-      LOGICAL CPLAN, RIGI, RESI, ELAS, EXTEMP
-      INTEGER NDIMSI, IJ, KL, ETAT,VRET
-      REAL*8  LCESRF,DDOT,KRON(6),VAL(6),ALPHA,TEMP,TREF,EPSTH
-      REAL*8  LAMBDA,DEUXMU,WY,RIGMIN,DDMAXI
-      REAL*8   EPS(6), TREPS, EPSEPS, SIGEL(6)
-      REAL*8  A,DRDA,DRDAE,DFDAE,DRDAS,DFDAS,GEL,GSAT
-      REAL*8  RA,FD,D2RDA2,D2FDA2,DGDA,H
+      LOGICAL CPLAN, RIGI, RESI, ELAS
+      INTEGER NDIM,NDIMSI,I,IJ, KL, ETAT
+      REAL*8  LCESVF,LCESRF,KRON(6)
+      REAL*8  PHI,LAG,APG,GRAD(3)
+      REAL*8  COPLAN,COR33,VPLAN(6),EPS(6),SIGEL(6),TREPS,EPSDV(6)
+      REAL*8  SIGMA(6),A,DRDA,G,DRDAE,DRDAS,GEL,GSAT,KTG(6,6,4)
+      REAL*8  RA,FD,D2RDA2,DGDA,GAMEPS,DGAMDE(6),COEFG
       CHARACTER*1 POUM
-      INTEGER K2(6),REP
-      CHARACTER*8 NOM(6)
 C ----------------------------------------------------------------------
-      REAL*8 GAMMA,DRDA0,DFDA0,WEPS,PHI,R
-      COMMON /LCES/ GAMMA,DRDA0,DFDA0,WEPS,PHI,R
+      REAL*8 LAMBDA,DEUXMU,TROISK,RIGMIN,PC,PR,EPSTH
+      COMMON /LCEE/ LAMBDA,DEUXMU,TROISK,RIGMIN,PC,PR,EPSTH
+C ----------------------------------------------------------------------
+      REAL*8 PK,PM,PP
+      COMMON /LCES/ PK,PM,PP
+C ----------------------------------------------------------------------
+      REAL*8 PCT,PCH,PCS
+      COMMON /LCER/ PCH,PCT,PCS
 C ----------------------------------------------------------------------
       DATA KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
-      DATA NOM/'E','NU','SY','GAMMA','COEF_RIG','DD_MAXI'/
 C ----------------------------------------------------------------------
 
 
@@ -76,76 +82,62 @@ C -- OPTIONS DE CALCUL
       ELAS  = OPTION(11:14).EQ.'ELAS'
       RIGI  = OPTION(1:4).EQ.'RIGI' .OR. OPTION(1:4).EQ.'FULL'
       RESI  = OPTION(1:4).EQ.'FULL' .OR. OPTION(1:4).EQ.'RAPH'
+      NDIM  = (NEPS-2)/3
       NDIMSI = 2*NDIM
       IRET   = 0
+      POUM='-'
+      IF (RESI) POUM='+'
+
 
 C -- LECTURE DES CARACTERISTIQUES MATERIAU
 
-      PHI = NONLOC(1)   
-      R   = NONLOC(2)
-
-      CALL RCVALA(MAT,' ','ELAS',         0,' ',0.D0,2,NOM(1),
-     &            VAL(1),K2,2)
-      CALL RCVALA(MAT,' ','ENDO_SCALAIRE',0,' ',0.D0,4,NOM(3),
-     &            VAL(3),K2,2)
-
-C      NU     = VAL(2)
-      LAMBDA = VAL(1)*VAL(2) / (1-2*VAL(2)) / (1+VAL(2))
-      DEUXMU = VAL(1) / (1.D0+VAL(2))
-      WY     = VAL(3)**2 / (2*VAL(1))
-      GAMMA  = VAL(4)
-      RIGMIN = VAL(5)
-      DDMAXI = VAL(6)
-
-      DRDA0  = LCESRF(2,0.D0)
-      DFDA0  = -WY*DRDA0
-
-C    PARAMETRES FACULTATIFS : TEMPERATURES 
-      IF (RESI) THEN 
-        POUM = '+'
-      ELSE
-        POUM = '-'
-      END IF
-
-      CALL RCVALA(MAT,' ','ELAS',0,' ',0.D0,1,'ALPHA',ALPHA,
-     &            REP,0)
-      EXTEMP = REP.EQ.0
-
-      IF (EXTEMP) THEN
-        CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,VRET)
-        CALL RCVARC('F','TEMP',POUM, FAMI,KPG,KSP,TEMP,VRET)
-        EPSTH = ALPHA*(TEMP-TREF)
-      ELSE
-        EPSTH = 0
-      END IF
+      CALL LCERMA(MAT,FAMI,KPG,KSP,POUM)
       
 
 C -- DEFORMATIONS COURANTES
 
-      CALL DCOPY(NDIMSI, EPSM,1, EPS,1)
-      IF (RESI) CALL DAXPY(NDIMSI,1.D0,DEPS,1,EPS,1)
+C    DEFORMATION, ENDOMMAGEMENT, LAGRANGE ET GRADIENT
+      CALL DCOPY(NDIMSI, EPSM,          1, EPS,1)
+      CALL DCOPY(NDIM,   EPSM(NDIMSI+3),1, GRAD,1)
+      APG  = EPSM(NDIMSI+1)
+      LAG  = EPSM(NDIMSI+2)
+      
+      IF (RESI) THEN
+        CALL DAXPY(NDIMSI,1.D0,DEPS,1,EPS,1)
+        CALL DAXPY(NDIM,1.D0,DEPS(NDIMSI+3),1,GRAD,1)
+        APG  = APG + DEPS(NDIMSI+1)
+        LAG  = LAG + DEPS(NDIMSI+2)
+      END IF
+
+      PHI= LAG + PR*APG
 
 C    DEFORMATIONS MECANIQUES
       EPS(1) = EPS(1) - EPSTH
       EPS(2) = EPS(2) - EPSTH
       EPS(3) = EPS(3) - EPSTH
-      
-C -- ENERGIE DE DEFORMATION ET CONTRAINTE ELASTIQUE
 
-      TREPS  = EPS(1)+EPS(2)+EPS(3)
-      EPSEPS = DDOT(NDIMSI,EPS,1,EPS,1)
-      WEPS   = 0.5D0 * (LAMBDA*TREPS**2 + DEUXMU*EPSEPS)
-      DO 5 IJ = 1,NDIMSI
+C    CONTRAINTES PLANES
+      IF (CPLAN) THEN
+        COPLAN = -LAMBDA / (LAMBDA + DEUXMU)
+        EPS(3) = COPLAN*(EPS(1)+EPS(2))
+      END IF
+
+
+C -- PSEUDO-ENERGIE DE DEFORMATION ET CONTRAINTE ELASTIQUE
+
+      CALL LCERVF(0,NDIMSI,EPS,TREPS,EPSDV,GAMEPS,DGAMDE)
+
+      DO 15 IJ = 1,NDIMSI
         SIGEL(IJ) = LAMBDA*TREPS*KRON(IJ) + DEUXMU*EPS(IJ)
- 5    CONTINUE        
+ 15   CONTINUE        
 
 
 C ----------------------------------------------------------------------
 C                     CALCUL DE L'ENDOMMAGEMENT
 C ----------------------------------------------------------------------
 
-      A    = VIM(1)
-      ETAT = VIM(2)
+      A      = VIM(1)
+      ETAT   = NINT(VIM(2))
 
       IF (.NOT.RESI) GOTO 5000
       
@@ -156,20 +148,19 @@ C    ESTIMATION DU CRITERE
 
 C    PREDICTION ELASTIQUE
 
-      DRDAE = LCESRF(2,A)
-      DFDAE = LCESRF(3,A)
-      GEL  = DRDAE*WEPS + DFDAE - PHI + R*A
+      DRDAE = LCESVF(1,A)
+      GEL   = DRDAE*GAMEPS + PK - PHI + PR*A
+
       IF (GEL.GE.0) THEN
         ETAT = 0
         GOTO 2000
       END IF
       
-
+      
 C    PREDICTION SATUREE
 
-      DRDAS = LCESRF(2,1.D0)
-      DFDAS = LCESRF(3,1.D0)
-      GSAT  = DRDAS*WEPS + DFDAS - PHI + R
+      DRDAS = LCESVF(1,1.D0)
+      GSAT  = DRDAS*GAMEPS + PK - PHI + PR
       IF (GSAT.LE.0) THEN
         ETAT = 2
         A    = 1.D0
@@ -179,7 +170,9 @@ C    PREDICTION SATUREE
          
 C    RESOLUTION DE L'EQUATION G(A)=0
       ETAT = 1
-      A = LCESRF(6,A)
+      A = LCESRF(A,GAMEPS,PR,PK-PHI,PRECVG,ITEMAX,IRET)
+      IF (IRET.NE.0) GOTO 9999
+      
 C    PROJECTION DE A+ ENTRE A- ET 1.D0
       IF (A.LE.VIM(1)) THEN
         A = VIM(1)
@@ -192,17 +185,14 @@ C    STOCKAGE DES CONTRAINTES ET DES VARIABLES INTERNES
 
  2000 CONTINUE
  
-      RA = LCESRF(1,A)
+      RA = LCESVF(0,A)
       DO 20 IJ = 1,NDIMSI
-        SIG(IJ) = RA*SIGEL(IJ)
+        SIGMA(IJ) = RA*SIGEL(IJ)
  20   CONTINUE
 
       VIP(1) = A
       VIP(2) = ETAT
       VIP(3) = 1.D0-RA
-
-C    TEST DE L'INCREMENT D'ENDOMMAGEMENT
-      IF (VIP(1)-VIM(1) .GT. DDMAXI) IRET = 2
 
  5000 CONTINUE
  
@@ -211,58 +201,81 @@ C ----------------------------------------------------------------------
 C                     CALCUL DES MATRICES TANGENTES
 C ----------------------------------------------------------------------
 
-      IF (.NOT. RIGI) GOTO 9999
+      IF (.NOT. RIGI) GOTO 8000
 
-      CALL R8INIR(36*4, 0.D0, DSIDEP,1)
+      CALL R8INIR(36*4, 0.D0, KTG,1)
    
    
 C -- CONTRIBUTION ELASTIQUE
 
-      RA = LCESRF(1,A)
+      RA = LCESVF(0,A)
       FD = MAX(RA, RIGMIN)
       DO 80 IJ=1,3
         DO 90 KL=1,3
-          DSIDEP(IJ,KL,1) = FD*LAMBDA
+          KTG(IJ,KL,1) = FD*LAMBDA
  90     CONTINUE
  80   CONTINUE
       DO 100 IJ=1,NDIMSI
-        DSIDEP(IJ,IJ,1) = DSIDEP(IJ,IJ,1) + FD*DEUXMU
+        KTG(IJ,IJ,1) = KTG(IJ,IJ,1) + FD*DEUXMU
  100  CONTINUE
+
+
+C -- CORRECTION DISSIPATIVE
+     
+      
+      IF (ETAT.EQ.1 .AND. .NOT.ELAS) THEN
+
+        CALL LCERVF(1,NDIMSI,EPS,TREPS,EPSDV,GAMEPS,DGAMDE)
+        DRDA   = LCESVF(1,A)
+        D2RDA2 = LCESVF(2,A)
+        DGDA   = D2RDA2*GAMEPS+PR 
+        COEFG  = DRDA**2 / DGDA
+      
+        DO 200 IJ = 1,NDIMSI
+          DO 210 KL = 1,NDIMSI
+            KTG(IJ,KL,1) = KTG(IJ,KL,1) - COEFG*SIGEL(IJ)*DGAMDE(KL)
+ 210      CONTINUE
+          KTG(IJ,1,2) =  DRDA/DGDA * SIGEL(IJ)
+          KTG(IJ,1,3) = -DRDA/DGDA * DGAMDE(IJ)
+ 200    CONTINUE         
+        KTG(1,1,4) = 1/DGDA
+        
+      END IF
 
 
 C -- CORRECTION POUR LES CONTRAINTES PLANES
 
       IF (CPLAN) THEN
-        DO 130 IJ=1,NDIMSI
-          IF (IJ.EQ.3) GOTO 130
-          DO 140 KL=1,NDIMSI
-            IF (KL.EQ.3) GO TO 140
-            DSIDEP(IJ,KL,1)=DSIDEP(IJ,KL,1)
-     &      - 1.D0/DSIDEP(3,3,1)*DSIDEP(IJ,3,1)*DSIDEP(3,KL,1)
- 140      CONTINUE
+
+        COR33 = COPLAN**2*KTG(3,3,1)
+        DO 130 IJ = 1,NDIMSI
+          VPLAN(IJ) = COPLAN * KTG(IJ,3,1)
  130    CONTINUE
+        DO 140 IJ = 1,NDIMSI
+          KTG(IJ,1,1) = KTG(IJ,1,1) + VPLAN(IJ)
+          KTG(IJ,2,1) = KTG(IJ,2,1) + VPLAN(IJ)
+          KTG(1,IJ,1) = KTG(1,IJ,1) + VPLAN(IJ)
+          KTG(2,IJ,1) = KTG(2,IJ,1) + VPLAN(IJ)
+ 140    CONTINUE
+        KTG(1,1,1) = KTG(1,1,1) + COR33
+        KTG(1,2,1) = KTG(1,2,1) + COR33
+        KTG(2,1,1) = KTG(2,1,1) + COR33
+        KTG(2,2,1) = KTG(2,2,1) + COR33
+
+        KTG(1,1,2) = KTG(1,1,2) + COPLAN*KTG(3,1,2)
+        KTG(2,1,2) = KTG(2,1,2) + COPLAN*KTG(3,1,2)
+        KTG(1,1,3) = KTG(1,1,3) + COPLAN*KTG(3,1,3)
+        KTG(2,1,3) = KTG(2,1,3) + COPLAN*KTG(3,1,3)
+
       ENDIF
 
 
-C -- CORRECTION DISSIPATIVE
-      IF (ETAT.NE.1 .OR. ELAS) GOTO 9999
-      
-      DRDA   = LCESRF(2,A)
-C      DFDA   = LCESRF(3,A)
-      D2RDA2 = LCESRF(4,A)
-      D2FDA2 = LCESRF(5,A)
-      DGDA   = D2RDA2*WEPS+D2FDA2+R 
-      H      = DRDA**2 / DGDA
-      
-      DO 200 IJ = 1,NDIMSI
-        DO 210 KL = 1,NDIMSI
-          DSIDEP(IJ,KL,1) = DSIDEP(IJ,KL,1) - H*SIGEL(IJ)*SIGEL(KL)
- 210    CONTINUE
-        DSIDEP(IJ,1,2) =  DRDA/DGDA * SIGEL(IJ)
-        DSIDEP(IJ,1,3) = -DSIDEP(IJ,1,2)
- 200  CONTINUE         
-      DSIDEP(1,1,4) = 1/DGDA
+C -- PRISE EN CHARGE DES TERMES DU LAGRANGIEN AUGMENTE
 
-            
+ 8000 CONTINUE
+      CALL LCGRAD(RESI,RIGI,NDIM,NDIMSI,NEPS,SIGMA,APG,LAG,GRAD,
+     &  A,PR,PC,KTG,SIG,DSIDEP)
+
+      
  9999 CONTINUE
       END

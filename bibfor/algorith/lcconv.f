@@ -4,7 +4,7 @@
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2012   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,7 @@ C         IRET = 2:  RE-INTEGRATION
 C         IRET = 3:  REDECOUPAGE DU PAS DE TEMPS
 C     ----------------------------------------------------------------
       INTEGER         TYPESS, ITMAX,  ITER,   INTG, NR,  ICOMP
-      INTEGER         IRTET, IRET, NMAT
+      INTEGER         IRET, NMAT
       REAL*8          TOLER,ESSAI, DDY(*), DY(*),R(*),RINI(*),YD(*)
       REAL*8          MATER(NMAT,2), EPSTR(6)
       CHARACTER*16    LOI
@@ -75,8 +75,11 @@ C
      
       ELSEIF ( LOI(1:15) .EQ. 'BETON_BURGER_FP' ) THEN
 
-         CALL BURCVG (NR,ITMAX,TOLER,ITER,DY,
-     &                R,RINI,IRET)
+         CALL BURCVG (NR,ITMAX,TOLER,ITER,DY,R,RINI,IRET)
+     
+      ELSEIF ( LOI(1:4) .EQ. 'LETK' ) THEN
+
+         CALL LKICVG (NR,ITMAX,TOLER,ITER,R,IRET)
      
       ENDIF
 

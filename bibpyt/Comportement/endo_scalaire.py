@@ -1,8 +1,8 @@
-#@ MODIF endo_scalaire Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF endo_scalaire Comportement  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -22,7 +22,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'ENDO_SCALAIRE',
-   doc = """Comportement elastique-fragile, a endommagement scalaire et 
+   doc = """Comportement elastique-fragile, a endommagement scalaire, seuil elliptique et 
    ecrouissage isotrope lineaire negatif - R5.03.18""",
    num_lc         = 46,
    nb_vari        = 3,
@@ -31,7 +31,7 @@ loi = LoiComportement(
    modelisation   = ('3D', 'AXIS', 'D_PLAN', 'GRADVARI'),
    deformation    = ('PETIT',),
    nom_varc       = ('TEMP',),
-   algo_inte         = ('ANALYTIQUE',),
+   algo_inte      = ('NEWTON',),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
    proprietes     = None,
 )

@@ -2,7 +2,7 @@
      &                    SIGD,SIGF,VIND,VINF,NBPHAS,IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/02/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -108,18 +108,16 @@ C     INITIALISATION DE NBPHAS
       NBPHAS=NBCOMM(1,1)
 
       IF (LOI(1:8).EQ.'MONOCRIS')  THEN
-         NVI = NVI-3
          IF (COMP(3)(1:4).EQ.'SIMO') THEN
             IF (OPT.NE.'RAPH_MECA') THEN
                CALL U2MESS('F','ALGORITH8_91')
             ENDIF
-            NVI=NVI-9
-            NS=(NVI-15)/3
-            CALL DCOPY(9,VIND(6+3*NS+1),1,FP,1)
+            CALL DCOPY(9,VIND(NVI-3-18+1),1,FP,1)
             CALL DAXPY(9,1.D0,ID,1,FP,1)
-            CALL DCOPY(9,FP,1,VINF(6+3*NS+1),1)
-            
+            CALL DCOPY(9,FP,1,VINF(NVI-3-18+1),1)
+            NVI=NVI-9
          ENDIF
+         NVI = NVI-3
       ENDIF
 C
 

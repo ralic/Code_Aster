@@ -2,9 +2,9 @@
      &                    MODNUM, NUANOM, NUMNOA )
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 12/07/2011   AUTEUR DESOZA T.DESOZA 
+C MODIF MODELISA  DATE 26/03/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -103,7 +103,7 @@ C     (LIE A LORDRE DEFINI DANS LE CATALOGUE TYPE_MAILLE.CATA)
      &              'SE3TR3  ','SE3TR6  ','SE3QU4  ','SE3QU8  ',
      &              'SE3QU9  '/
       DATA NUMMED  /1,         102,       0,         103,
-     &              0,         0,
+     &              0,         104,
      &                         203,       0,         206,
      &              0,         207,       204,       0,
      &              208,       0,         209,       0,

@@ -3,7 +3,7 @@
      &          TAMPON,COMP,SIGF,DF,NR,MOD, CODRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/02/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -51,17 +51,17 @@ C VAR VINF   :  VARIABLES INTERNES A L'INSTANT ACTUEL
 
 C     ----------------------------------------------------------------
       INTEGER  NMAT,NDT,I,J,NBCOMM(NMAT,3),NBSYS,IFA,IS,NBFSYS,ITMAX
-      INTEGER  NUVI,ITER,NVI,IRET,IR,NR,NS,NSFA,NSFV,IFL,NUECOU,CODRET
-      INTEGER  NFS,NSG
+      INTEGER  NUVI,ITER,NVI,IRET,IR,NR,NSFA,NSFV,IFL,NUECOU,CODRET
+      INTEGER  NFS,NSG,IRR
       REAL*8   VIND(*),VINF(*),DY(*),MATERF(NMAT*2)
       REAL*8   LCNRTE, EPSEQ,PGL(3,3),MUS(6),NG(3),DGAMMA,DP,DALPHA
       REAL*8   DEVI(6),TOUTMS(NFS,NSG,6),TOLER,HSR(NSG,NSG)
       REAL*8   TAUS,FKOOH(6,6),MSNS(3,3),YD(*),IDEN(3,3)
       REAL*8   CRIT, SGNS, DT,OMP(3),QM(3,3),FP(3,3)
       REAL*8   SICL,LG(3),TAMPON(*),RP,R8MIEM
-      REAL*8   PK2(6),DF(3,3),ID6(6),EXPBP(NSG)
-      REAL*8   FETFE6(6),GAMSNS(3,3),FE(3,3),SIGF(6)
-      CHARACTER*16 CPMONO(5*NMAT+1),NOMFAM,COMP(*)
+      REAL*8   PK2(6),DF(3,3),ID6(6),EXPBP(NSG),XI
+      REAL*8   FETFE6(6),GAMSNS(3,3),FE(3,3),SIGF(6),RHOIRR(12)
+      CHARACTER*16 CPMONO(5*NMAT+1),NOMFAM,COMP(*),NECOUL
       CHARACTER*8 MOD
       DATA IDEN/1.D0,0.D0,0.D0, 0.D0,1.D0,0.D0, 0.D0,0.D0,1.D0/
       DATA ID6/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
@@ -108,8 +108,17 @@ C        ROTATION RESEAU
          IFL=NBCOMM(IFA,1)           
          NUECOU=NINT(MATERF(NMAT+IFL))
          NOMFAM=CPMONO(5*(IFA-1)+1)       
+         NECOUL=CPMONO(5*(IFA-1)+3)
          
          CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MUS,NG,LG,0,QM)
+         
+         IF (NECOUL.EQ.'MONO_DD_CC_IRRA') THEN
+            CALL DCOPY(12, VIND(NSFV+3*NBSYS+1),1,RHOIRR,1)
+            IRR=1
+            XI=MATERF(NMAT+IFL+22)
+         ELSE
+            IRR=0
+         ENDIF
          
          DO 7 IS=1,NBSYS
          
@@ -152,10 +161,18 @@ C              ROTATION RESEAU - CALCUL DE OMEGAP
                OMP(3)=OMP(3)+DGAMMA*0.5D0*(NG(1)*LG(2)-NG(2)*LG(1))
             ENDIF
             
+            IF(IRR.EQ.1) THEN
+               RHOIRR(IS)=RHOIRR(IS)*EXP(-XI*DP)
+            ENDIF
   7      CONTINUE
   
+         IF(IRR.EQ.1) THEN
+            CALL DCOPY(12, RHOIRR,1,VINF(NSFV+3*NBSYS+1),1)         
+         ENDIF
+         
          NSFA=NSFA+NBSYS
          NSFV=NSFV+NBSYS*3
+         
                                 
   6   CONTINUE
             
@@ -166,8 +183,7 @@ C     ROTATION RESEAU DEBUT
 C ROTATION RESEAU FIN      
 
       IF (COMP(3)(1:5).NE.'PETIT') THEN
-         NS=NR-NDT
-         CALL CALCFE(NR,NDT,VIND,DF,GAMSNS,FE,FP,IRET)             
+         CALL CALCFE(NR,NDT,NVI,VIND,DF,GAMSNS,FE,FP,IRET)             
          IF (IRET.GT.0) GOTO 9999       
          
 C        CALCUL DES CONTRAINTES DE KIRCHOFF
@@ -179,14 +195,14 @@ C les racine(2) attendues par NMCOMP :-)
          CALL DSCAL(3,SQRT(2.D0),SIGF(4),1)
 
          CALL DAXPY(9,-1.D0,IDEN,1,FE,1)
-         CALL DCOPY(9,FE,1,VINF(6+3*NS+10),1)
+         CALL DCOPY(9,FE,1,VINF(NVI-3-18+10),1)
 
          CALL LCGRLA ( FP,DEVI)
          CALL DCOPY(6,DEVI,1,VINF,1)
          CALL DSCAL(3,SQRT(2.D0),DEVI(4),1)
          
          CALL DAXPY(9,-1.D0,IDEN,1,FP,1)
-         CALL DCOPY(9,FP,1,VINF(6+3*NS+1),1)
+         CALL DCOPY(9,FP,1,VINF(NVI-3-18+1),1)
          
          EPSEQ = LCNRTE(DEVI)
          VINF (NVI-1) = EPSEQ
@@ -198,7 +214,6 @@ C les racine(2) attendues par NMCOMP :-)
          EPSEQ = LCNRTE(DEVI)
          VINF (NVI-1) = VIND (NVI-1) + EPSEQ
       ENDIF
-
       
       VINF(NVI-2) = SICL
                                                

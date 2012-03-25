@@ -1,8 +1,9 @@
-# MODIF  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 26/03/2012   AUTEUR TRAN V-X.TRAN 
 # TITRE  CRITERES DE FATIGUE CROSSLAND ET DANG VAN PAPADOPOULOS
+# ET CRITERE EN FORMULE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -61,16 +62,33 @@ MAT0=DEFI_MATERIAU(    FATIGUE=_F(  WOHLER = WHOL,
                                    D0 = 540.97,
                                    TAU0 = 352.)  )
 
-#
+######################################################
 #-----------------------------------------------------------------------
-TAB_1=POST_FATIGUE(    CHARGEMENT='PERIODIQUE',
+TAB_1=POST_FATIGUE(      CHARGEMENT='MULTIAXIAL',
+                         TYPE_CHARGE = 'PERIODIQUE',
                          HISTOIRE=_F(  SIGM_XX = TAUN1,
                                        SIGM_YY = TAUN3,
                                        SIGM_ZZ = TAUN3,
                                        SIGM_XY = TAUN2,
                                        SIGM_XZ = TAUN3,
-                                       SIGM_YZ = TAUN3),
+                                       SIGM_YZ = TAUN3,
+                                       
+                                       EPS_XX  = TAUN3,
+                                       EPS_YY  = TAUN3,
+                                       EPS_ZZ  = TAUN3,
+                                       EPS_XY  = TAUN3,
+                                       EPS_XZ  = TAUN3,
+                                       EPS_YZ  = TAUN3,
+                                       
+                                       EPSP_XX  = TAUN3,
+                                       EPSP_YY  = TAUN3,
+                                       EPSP_ZZ  = TAUN3,
+                                       EPSP_XY  = TAUN3,
+                                       EPSP_XZ  = TAUN3,
+                                       EPSP_YZ  = TAUN3,                          
+                                     ),
                           CRITERE='CROSSLAND',
+                          DOMMAGE='WOHLER',
                             MATER=MAT0                 )
 
 TEST_TABLE(        TABLE=TAB_1,
@@ -90,13 +108,30 @@ TEST_TABLE(        TABLE=TAB_1,
 
 #
 #-----------------------------------------------------------------------
-TAB_2=POST_FATIGUE(    CHARGEMENT='PERIODIQUE',
+TAB_2=POST_FATIGUE(      CHARGEMENT='MULTIAXIAL',
+                         TYPE_CHARGE = 'PERIODIQUE',
                          HISTOIRE=_F(  SIGM_XX = TAUN1,
                                        SIGM_YY = TAUN3,
                                        SIGM_ZZ = TAUN3,
                                        SIGM_XY = TAUN2,
                                        SIGM_XZ = TAUN3,
-                                       SIGM_YZ = TAUN3),
+                                       SIGM_YZ = TAUN3,
+                                       
+                                       EPS_XX  = TAUN3,
+                                       EPS_YY  = TAUN3,
+                                       EPS_ZZ  = TAUN3,
+                                       EPS_XY  = TAUN3,
+                                       EPS_XZ  = TAUN3,
+                                       EPS_YZ  = TAUN3,
+
+                                       EPSP_XX  = TAUN3,
+                                       EPSP_YY  = TAUN3,
+                                       EPSP_ZZ  = TAUN3,
+                                       EPSP_XY  = TAUN3,
+                                       EPSP_XZ  = TAUN3,
+                                       EPSP_YZ  = TAUN3, 
+                                       ),
+                          DOMMAGE='WOHLER',
                           CRITERE='PAPADOPOULOS',
                             MATER=MAT0                 )
 
@@ -117,13 +152,29 @@ TEST_TABLE(        TABLE=TAB_2,
 
 #
 #-----------------------------------------------------------------------
-TAB_3=POST_FATIGUE(    CHARGEMENT='PERIODIQUE',
+TAB_3=POST_FATIGUE(      CHARGEMENT='MULTIAXIAL',
+                         TYPE_CHARGE = 'PERIODIQUE',
                          HISTOIRE=_F(  SIGM_XX = TAUN1,
                                        SIGM_YY = TAUN3,
                                        SIGM_ZZ = TAUN3,
                                        SIGM_XY = TAUN2,
                                        SIGM_XZ = TAUN3,
-                                       SIGM_YZ = TAUN3),
+                                       SIGM_YZ = TAUN3,
+                                       
+                                       EPS_XX  = TAUN3,
+                                       EPS_YY  = TAUN3,
+                                       EPS_ZZ  = TAUN3,
+                                       EPS_XY  = TAUN3,
+                                       EPS_XZ  = TAUN3,
+                                       EPS_YZ  = TAUN3,
+                                       
+                                       EPSP_XX  = TAUN3,
+                                       EPSP_YY  = TAUN3,
+                                       EPSP_ZZ  = TAUN3,
+                                       EPSP_XY  = TAUN3,
+                                       EPSP_XZ  = TAUN3,
+                                       EPSP_YZ  = TAUN3,
+                                       ),
                           CRITERE='PAPADOPOULOS',
                           DOMMAGE='WOHLER',
                             MATER=MAT0                 )
@@ -142,6 +193,241 @@ TEST_TABLE(        TABLE=TAB_3,
                  NOM_PARA='VALE_CRITERE',
                      VALE=-8.281,
                 PRECISION=1.E-3                )
+############################################################
+
+# POUR RETROUVER LE CRITERE DANG VAN - PAPADOPOULOUS
+# b = TAU0 = 352
+# a = (TAU0-D0/SQRT(3))/D0/3 = 0.22
+CRIT_FAT =   FORMULE(
+           NOM_PARA=('DTAUMA','PHYDRM'),
+           VALE=''' (DTAUMA + 0.22*PHYDRM) - 352 '''
+           )
+           
+# POUR RETROUVER LE CRITERE CROSSLAND
+# b = TAU0 = 352
+# a = (TAU0-D0/SQRT(3))/D0/3 = 0.22
+CRIT_FA2 =   FORMULE(
+           NOM_PARA=('DSIGEQ','PHYDRM'),
+           VALE=''' (DSIGEQ/1.732 + 0.22*PHYDRM) - 352 '''
+           )
+
+WHOL_F =   FORMULE(
+           NOM_PARA=('NBRUP'),
+           VALE=''' 4098.3*(NBRUP**(-0.2693)) '''
+           )
+
+###WHOL_Fb EST UNE FONCTION TABULEE DE WHOL_F
+###ON LANCE WHOL_Fb POUR OBTENIR LES VALEURS DE REFERENCE DE ENDO
+
+WHOL_Fb=DEFI_FONCTION(   NOM_PARA='SIGM',
+                         INTERPOL='LOG',
+                         PROL_DROITE='LINEAIRE',
+                         PROL_GAUCHE='LINEAIRE',
+                         VALE=(   99.40397376,  1.0E+06,
+                                 119.7956424,  5.0E+05,
+                                 153.3085836,  2.0E+05,
+                                 184.75821,  1.0E+05,
+                                 222.6593931,  5.0E+04,
+                                 284.948563,  2.0E+04,
+                                 326.955129,  1.2E+04,
+                                 343.4027321,  1.0E+04,
+                                 413.8481526,  5.0E+03,
+                                 529.6225539,  2.0E+03,
+                                 638.2689916,  1.0E+03,
+                                 769.2030912,  5.0E+02,
+                                 984.3883634,  2.0E+02,
+                                 1186.325173,  1.0E+02,
+                                 1429.687173,  5.0E+01,
+                                 1829.643475,  2.0E+01,
+                                 2204.975387,  1.0E+01,              
+                              )  
+                          )
+## -----------------------------------------------------------------------
+TAB_1a=POST_FATIGUE(   CHARGEMENT='MULTIAXIAL',
+                       HISTOIRE=_F(  SIGM_XX = TAUN1,
+                                     SIGM_YY = TAUN3,
+                                     SIGM_ZZ = TAUN3,
+                                     SIGM_XY = TAUN2,
+                                     SIGM_XZ = TAUN3,
+                                     SIGM_YZ = TAUN3,
+                                     
+                                     EPS_XX  = TAUN3,
+                                     EPS_YY  = TAUN3,
+                                     EPS_ZZ  = TAUN3,
+                                     EPS_XY  = TAUN3,
+                                     EPS_XZ  = TAUN3,
+                                     EPS_YZ  = TAUN3,
+                                     
+                                     EPSP_XX  = TAUN3,
+                                     EPSP_YY  = TAUN3,
+                                     EPSP_ZZ  = TAUN3,
+                                     EPSP_XY  = TAUN3,
+                                     EPSP_XZ  = TAUN3,
+                                     EPSP_YZ  = TAUN3,
+                                     ),
+                       TYPE_CHARGE = 'PERIODIQUE',
+                       CRITERE='FORMULE_CRITERE',
+                       FORMULE_GRDEQ = CRIT_FAT,
+                       DOMMAGE='WOHLER',
+                       MATER=MAT0                 )
+                       
+IMPR_TABLE(TABLE = TAB_1a) 
+
+TEST_TABLE(     TABLE=TAB_1a,
+                NOM_PARA='PHYDRM',
+                VALE=137.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(     TABLE=TAB_1a,
+                NOM_PARA='DTAUMA',
+                VALE=313.579,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(     TABLE=TAB_1a,
+                NOM_PARA='VALE_CRITERE',
+                VALE=-8.281,
+                PRECISION=1.E-3                )
+
+TAB_1b=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
+                       HISTOIRE=_F(  SIGM_XX = TAUN1,
+                                     SIGM_YY = TAUN3,
+                                     SIGM_ZZ = TAUN3,
+                                     SIGM_XY = TAUN2,
+                                     SIGM_XZ = TAUN3,
+                                     SIGM_YZ = TAUN3,
+                                     
+                                     EPS_XX  = TAUN3,
+                                     EPS_YY  = TAUN3,
+                                     EPS_ZZ  = TAUN3,
+                                     EPS_XY  = TAUN3,
+                                     EPS_XZ  = TAUN3,
+                                     EPS_YZ  = TAUN3,
+                                     
+                                     EPSP_XX  = TAUN3,
+                                     EPSP_YY  = TAUN3,
+                                     EPSP_ZZ  = TAUN3,
+                                     EPSP_XY  = TAUN3,
+                                     EPSP_XZ  = TAUN3,
+                                     EPSP_YZ  = TAUN3,
+                                     ),
+                       TYPE_CHARGE = 'PERIODIQUE',
+                       CRITERE='FORMULE_CRITERE',
+                       FORMULE_GRDEQ = CRIT_FAT,
+                       DOMMAGE='FORM_VIE',
+                       FORMULE_VIE = WHOL_F,
+                       MATER=MAT0                 )
+                       
+IMPR_TABLE(TABLE = TAB_1b) 
+
+TEST_TABLE(     TABLE=TAB_1b,
+                NOM_PARA='PHYDRM',
+                VALE=137.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(     TABLE=TAB_1b,
+                NOM_PARA='DTAUMA',
+                VALE=313.579,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(     TABLE=TAB_1b,
+                NOM_PARA='VALE_CRITERE',
+                VALE=-8.281,
+                PRECISION=1.E-3                )
+
+TAB_1c=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
+                       HISTOIRE=_F(  SIGM_XX = TAUN1,
+                                     SIGM_YY = TAUN3,
+                                     SIGM_ZZ = TAUN3,
+                                     SIGM_XY = TAUN2,
+                                     SIGM_XZ = TAUN3,
+                                     SIGM_YZ = TAUN3,
+                                     
+                                     EPS_XX  = TAUN3,
+                                     EPS_YY  = TAUN3,
+                                     EPS_ZZ  = TAUN3,
+                                     EPS_XY  = TAUN3,
+                                     EPS_XZ  = TAUN3,
+                                     EPS_YZ  = TAUN3,
+
+                                     EPSP_XX  = TAUN3,
+                                     EPSP_YY  = TAUN3,
+                                     EPSP_ZZ  = TAUN3,
+                                     EPSP_XY  = TAUN3,
+                                     EPSP_XZ  = TAUN3,
+                                     EPSP_YZ  = TAUN3,
+                                       ),
+                       TYPE_CHARGE = 'PERIODIQUE',
+                       CRITERE='FORMULE_CRITERE',
+                       FORMULE_GRDEQ = CRIT_FAT,
+                       DOMMAGE='FORM_VIE',
+                       FORMULE_VIE = WHOL_Fb,
+                       MATER=MAT0                 )
+                       
+IMPR_TABLE(TABLE = TAB_1c) 
+
+TEST_TABLE(     TABLE=TAB_1c,
+                NOM_PARA='PHYDRM',
+                VALE=137.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(     TABLE=TAB_1c,
+                NOM_PARA='DTAUMA',
+                VALE=313.579,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(     TABLE=TAB_1c,
+                NOM_PARA='VALE_CRITERE',
+                VALE=-8.281,
+                PRECISION=1.E-3                )
+#
+# #-----------------------------------------------------------------------
+TAB_2a=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
+                       HISTOIRE=_F(  SIGM_XX = TAUN1,
+                                     SIGM_YY = TAUN3,
+                                     SIGM_ZZ = TAUN3,
+                                     SIGM_XY = TAUN2,
+                                     SIGM_XZ = TAUN3,
+                                     SIGM_YZ = TAUN3,
+                                     
+                                     EPS_XX  = TAUN3,    
+                                     EPS_YY  = TAUN3,
+                                     EPS_ZZ  = TAUN3,
+                                     EPS_XY  = TAUN3,
+                                     EPS_XZ  = TAUN3,
+                                     EPS_YZ  = TAUN3,
+
+                                     EPSP_XX  = TAUN3,
+                                     EPSP_YY  = TAUN3,
+                                     EPSP_ZZ  = TAUN3,
+                                     EPSP_XY  = TAUN3,
+                                     EPSP_XZ  = TAUN3,
+                                     EPSP_YZ  = TAUN3,
+                                                       ),
+                       TYPE_CHARGE = 'PERIODIQUE',
+                       CRITERE='FORMULE_CRITERE',
+                       FORMULE_GRDEQ = CRIT_FA2,
+                       DOMMAGE='WOHLER',
+                       MATER=MAT0                 )
+                       
+IMPR_TABLE(TABLE = TAB_2a) 
+
+TEST_TABLE(     TABLE=TAB_2a,
+                NOM_PARA='PHYDRM',
+                VALE=137.,
+                PRECISION=1.E-5                )
+
+# VALE=313.579*SQRT(3)=
+TEST_TABLE(     TABLE=TAB_2a,
+                NOM_PARA='DSIGEQ',
+                VALE=543.1348,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(     TABLE=TAB_2a,
+                NOM_PARA='VALE_CRITERE',
+                VALE=-8.281,
+                PRECISION=2.E-3                )
+
+#
 
 FIN()
 #

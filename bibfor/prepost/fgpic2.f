@@ -1,9 +1,9 @@
         SUBROUTINE FGPIC2( METHOD,RTRV,POINT,NPOINT,PIC,NPIC)
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 26/03/2012   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -41,7 +41,7 @@ C       ----------------------------------------------------------------
 C     ----------------------------------------------------------------
 C -   EXTRACTION DES PICS POUR RAINFLOW=PIC LE PLUS GRAND EN DEBUT
 C     ----------------------------------------------------------------
-      IF ( METHOD.EQ.'RAINFLOW' ) THEN
+      IF (( METHOD.EQ.'RAINFLOW' ) .OR.( METHOD.EQ.'RFLO_MAX' ))  THEN
 
 C -     RECHERCHE DU POINT LE PLUS GRAND EN VALEUR ABSOLUE
 

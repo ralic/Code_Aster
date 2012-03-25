@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/02/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -145,7 +145,7 @@ C              --- LE VECTEUR ---
                CALL JELIBE(VALE)
                CALL RSNOCH(RESU,'DEPL',IMODE,' ')
 C              --- LES PARAMETRES ---
-              CALL RGNDAS('NUME_DDL',NUME,IEQ,NOMNOE,NOMCMP,K8B,K8B,K8B)
+              CALL RGNDAS(NUME,IEQ,NOMNOE,NOMCMP,K8B,K8B,K8B)
                CALL RSADPA(RESU,'E',1,'NOEUD_CMP',IMODE,0,LNOM,K8B)
                ZK16(LNOM) = NOMNOE//NOMCMP
                CALL RSADPA(RESU,'E',1,'NUME_DDL',IMODE,0,LNUME,K8B)
@@ -197,7 +197,7 @@ C              --- LE VECTEUR ---
                CALL RSNOCH(RESU,'DEPL',IMODE,' ')
 C
 C              --- LES PARAMETRES ---
-              CALL RGNDAS('NUME_DDL',NUME,IEQ,NOMNOE,NOMCMP,K8B,K8B,K8B)
+              CALL RGNDAS(NUME,IEQ,NOMNOE,NOMCMP,K8B,K8B,K8B)
                CALL RSADPA(RESU,'E',1,'NOEUD_CMP',IMODE,0,LNOM,K8B)
                ZK16(LNOM) = NOMNOE//NOMCMP
                CALL RSADPA(RESU,'E',1,'NUME_DDL',IMODE,0,LNUME,K8B)
@@ -249,7 +249,7 @@ C              --- LE VECTEUR ---
                CALL RSNOCH(RESU,'DEPL',IMODE,' ')
 C
 C              --- LES PARAMETRES ---
-              CALL RGNDAS('NUME_DDL',NUME,IEQ,NOMNOE,NOMCMP,K8B,K8B,K8B)
+              CALL RGNDAS(NUME,IEQ,NOMNOE,NOMCMP,K8B,K8B,K8B)
                CALL RSADPA(RESU,'E',1,'NOEUD_CMP',IMODE,0,LNOM,K8B)
                ZK16(LNOM) = NOMNOE//NOMCMP
                CALL RSADPA(RESU,'E',1,'NUME_DDL',IMODE,0,LNUME,K8B)

@@ -5,9 +5,9 @@
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -35,7 +35,7 @@ C       VAR DEPS   :  INCREMENT DE DEFORMATION
 C       OUT SIGF   :  CONTRAINTE A T+DT
 C           VINF   :  VARIABLES INTERNES A T+DT
 C       ----------------------------------------------------------------
-        INTEGER         NMAT , NDT    , NDI , NVI
+        INTEGER         NMAT ,  NVI
 C
         REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2)
         REAL*8          THETA
@@ -46,14 +46,14 @@ C
         CHARACTER*8     MOD
         CHARACTER*16    LOI
         CHARACTER*3     MATCST
-C       ----------------------------------------------------------------
-        COMMON /TDIM/   NDT  , NDI
-C       --------------------------------------------------------------
 C
       IF   (LOI(1:8)   .EQ. 'ROUSS_PR'  .OR.
      &      LOI(1:10)  .EQ. 'ROUSS_VISC'    ) THEN
          CALL RSLLIN ( MOD , NMAT, MATERD, MATERF, MATCST,
      &                 DEPS, SIGD, VIND, SIGF, THETA )
+      ELSEIF(LOI(1:4).EQ.'LETK')THEN
+C        ELASTICITE NON LINEAIRE ISOTROPE POUR LETK
+         CALL LKSIGE (MOD,NMAT,MATERD,DEPS,SIGD,SIGF)
       ELSE
 C        ELASTICITE LINEAIRE ISOTROPE OU ANISOTROPE
          CALL LCELIN(MOD, NMAT, MATERD, MATERF,

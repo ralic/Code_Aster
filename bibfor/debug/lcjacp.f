@@ -1,13 +1,13 @@
       SUBROUTINE LCJACP(FAMI,KPG,KSP,LOI,TOLER,ITMAX,MOD,IMAT,
      &                    NMAT,MATERD,MATERF,NR,NVI,
-     &                    TIMED,TIMEF, DEPS,EPSD,VIND,YD,YF,
+     &                    TIMED,TIMEF, DEPS,EPSD,VIND,VINF,YD,YF,
      &                    COMP,NBCOMM,CPMONO,PGL,NFS,NSG,TOUTMS,HSR,
      &                    DY,R,DRDY,VERJAC,DRDYB,IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF DEBUG  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF DEBUG  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -43,6 +43,7 @@ C     VAR DEPS   :  INCREMENT DE DEFORMATION
 C     IN  EPSD   :  DEFORMATION A T
 C         SIGD   :  CONTRAINTE A T
 C         VIND   :  VARIABLES INTERNES A T
+C         VINF   :  VARIABLES INTERNES A T+DT
 C         YD     :  VARIABLES A T   = ( SIGD  VIND  (EPSD3)   )
 C         YF     :  VARIABLES A T+DT= ( SIGF  VINF  (EPSF3)   )
 C         COMP   :  COMPORTEMENT
@@ -62,7 +63,7 @@ C ----------------------------------------------------------------------
       INTEGER NMAT,NBCOMM(NMAT,3),NR,IMPR,VALI(2),NFS,NSG
       INTEGER IMAT,I,J,ITMAX,IRET,KPG,KSP,NVI,VERJAC
 
-      REAL*8 TOLER,EPSD(6),DEPS(6),VIND(NVI),TIMED,TIMEF,ERR
+      REAL*8 TOLER,EPSD(6),DEPS(6),VIND(NVI),VINF(NVI),TIMED,TIMEF,ERR
 
 C     DIMENSIONNEMENT DYNAMIQUE (MERCI F90)
       REAL*8 DY(NR),R(NR),DRDYB(NR,NR),RINI(NR),DYINI(NR),RP(NR),RM(NR)
@@ -90,11 +91,22 @@ C ----------------------------------------------------------------------
       DO 1003 I=7,NR
         NORMD2=NORMD2+DYINI(I)*DYINI(I)
  1003 CONTINUE
+ 
+      IF (NORMD1.LT.R8MIEM()) THEN
+         DO 1007 I=1,6
+            NORMD1=NORMD1+YD(I)*YD(I)
+ 1007    CONTINUE      
+      ENDIF
+      IF (NORMD2.LT.R8MIEM()) THEN
+         DO 1008 I=7,NR
+            NORMD2=NORMD2+YD(I)*YD(I)
+ 1008    CONTINUE
+      ENDIF
 
       EPS0=1.D-7
       EPS1=EPS0
       EPS2=EPS0
-      IF (NORMD1.GT.R8MIEM()) THEN
+      IF (NORMD1.GT.R8MIEM()) THEN      
          EPS1=EPS1*SQRT(NORMD1)
       ENDIF
       IF (NORMD2.GT.R8MIEM()) THEN
@@ -111,7 +123,7 @@ C ----------------------------------------------------------------------
          CALL LCSOVN ( NR , YD , DYP , YFP )
          CALL LCRESI ( FAMI,KPG,KSP,LOI,MOD,IMAT,NMAT,MATERD,MATERF,
      &           COMP,NBCOMM,CPMONO,PGL,NFS,NSG,TOUTMS,HSR,NR,NVI,VIND,
-     &              ITMAX, TOLER,TIMED,TIMEF,YD,YFP,DEPS,EPSD,DYP,RP,
+     &           VINF,ITMAX, TOLER,TIMED,TIMEF,YD,YFP,DEPS,EPSD,DYP,RP,
      &              IRET )
          IF (IRET.GT.0) THEN
             GOTO 9999
@@ -125,7 +137,7 @@ C ----------------------------------------------------------------------
          CALL LCSOVN ( NR , YD , DYM , YFM )
          CALL LCRESI ( FAMI,KPG,KSP,LOI,MOD,IMAT,NMAT,MATERD,MATERF,
      &           COMP,NBCOMM,CPMONO,PGL,NFS,NSG,TOUTMS,HSR,NR,NVI,VIND,
-     &              ITMAX, TOLER,TIMED,TIMEF,YD,YFM,DEPS,EPSD,DYM,RM,
+     &           VINF,ITMAX, TOLER,TIMED,TIMEF,YD,YFM,DEPS,EPSD,DYM,RM,
      &              IRET )
          IF (IRET.GT.0) THEN
             GOTO 9999
@@ -157,8 +169,6 @@ C COMPARAISON DRDY ET DRDYB
            IF(ABS(DRDYB(I,J)).GT.(1.D-9*MAXTGT)) THEN
               ERR=ABS(DRDY(I,J)-DRDYB(I,J))/DRDYB(I,J)
            IF (ERR.GT.1.D-3) THEN
-C              write(9,'(A1,E12.5,A5,2(1X,I2),3(A7,E10.3))') 't',TIMEF,
-C     &' i,j',i,j,' erjac ',err,' DRDYB ',DRDYB(I,J),' DRDY ',DRDY(I,J)
               VALI(1) = I
               VALI(2) = J
 

@@ -1,4 +1,4 @@
-#@ MODIF algorith17 Messages  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
+#@ MODIF algorith17 Messages  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -56,8 +56,6 @@ cata_msg={
    - renseigner le mot-clé NUME_REF dans DEFI_BASE_MODALE,
    - utiliser les mots-clés MATR_A et MATR_B dans CREA_RESU.
 """),
-
-9 : _(u"""L'équation d'évolution de l'endommagement n'admet pas de solution réelle  """),
 
 10 : _(u"""
   La loi de comportement mécanique %(k1)s n'est pas compatible avec les

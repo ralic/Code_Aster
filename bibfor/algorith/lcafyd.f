@@ -2,7 +2,7 @@
 C RESPONSABLE PROIX J-M.PROIX
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/02/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,7 +38,7 @@ C     ----------------------------------------------------------------
       INTEGER         NDT,NVI,NMAT,NDI,NS,I,NBCOMM(NMAT,3),NR
       REAL*8          YD(*),MATERF(NMAT,2),VIND(*),FE(3,3)
       REAL*8          ID(3,3),HOOKF(6,6),EPSEGL(6)
-      REAL*8          EISP, EPSFI(6),YOUNG
+      REAL*8          EISP, EPSFI(6)
       CHARACTER*16    LOI,COMP(*)
       CHARACTER*8     MOD
       COMMON /TDIM/   NDT  , NDI
@@ -50,8 +50,11 @@ C     INITIALISATION DE YD EN IMPLICITE
       IF (LOI(1:8).EQ.'MONOCRIS') THEN
 C ATTENTION !         NS=(NVI-8)/3
          NS=NR-NDT
-         IF ((MATERF(NBCOMM(1,1),2).EQ.4).OR.
-     &       (MATERF(NBCOMM(1,1),2).EQ.5)) THEN
+         IF ((MATERF(NBCOMM(1,1),2).EQ.4)
+     &       .OR.(MATERF(NBCOMM(1,1),2).EQ.5)
+     &       .OR.(MATERF(NBCOMM(1,1),2).EQ.6)
+     &       .OR.(MATERF(NBCOMM(1,1),2).EQ.7)
+     &                                    ) THEN
 C            KOCKS-RAUCH ET DD_CFC : VARIABLE PRINCIPALE=DENSITE DISLOC
              CALL ASSERT(NBCOMM(NMAT,2).EQ.1)
              DO 102 I=1,NS
@@ -63,11 +66,12 @@ C           AUTRES COMPORTEMENTS MONOCRISTALLINS
                YD(NDT+I)=VIND(6+3*(I-1)+2)
  103        CONTINUE
          ENDIF
+         
 
          IF (COMP(3)(1:5).NE.'PETIT') THEN
 C les 9 variables internes  de 6+3*ns+1 à 6+3*ns+9
 C REPRESENTENT FE - ID       
-            CALL DCOPY(9,VIND(6+3*NS+10),1,FE,1)
+            CALL DCOPY(9,VIND(NVI-3-18+10),1,FE,1)
             CALL DAXPY(9,+1.D0,ID,1,FE,1)
             CALL LCGRLA(FE,EPSEGL)
             IF (MATERF(NMAT,2).EQ.0) THEN
@@ -119,6 +123,14 @@ C ===    ============================================================
            YD(NDT+I) = EPSFI(I)
  210     CONTINUE
 
+      ELSEIF(LOI(1:4) .EQ. 'LETK')THEN
+C --- INITIALISATION A ZERO DU MULTIPLICATEUR PLASTIQUE
+         YD(NDT+1) = 0.D0
+C --- INITIALISATION A XIP 
+         YD(NDT+2) = VIND(1)
+C --- INITIALISATION A XIVP 
+         YD(NDT+3) = VIND(3)
+         
       ELSE
 C     CAS GENERAL :
 C        TOUTES LES VARIABLES INTERNES SONT RECOPIES

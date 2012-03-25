@@ -7,7 +7,7 @@
       REAL*8 PARTPS(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/03/2012   AUTEUR SIAVELIS M.SIAVELIS 
+C MODIF ALGORITH  DATE 26/03/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -181,7 +181,6 @@ C           POUR LES ELEMENTS X-FEM
               CALL EXIXFE(MODELE,IER)
               NCHIN = 13
               IF (IER.NE.0) THEN
-                WRITE(6,*) 'ON PASSE DANS VEFPME'
                 LPAIN(NCHIN + 1) = 'PPINTTO'
                 LCHIN(NCHIN + 1) = MODELE(1:8)//'.TOPOSE.PIN'
                 LPAIN(NCHIN + 2) = 'PCNSETO'

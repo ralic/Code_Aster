@@ -1,14 +1,14 @@
         SUBROUTINE LCRESI( FAMI, KPG, KSP, LOI, TYPMOD, IMAT, NMAT,
      3                     MATERD, MATERF, COMP, NBCOMM, CPMONO,
-     1         PGL,NFS,NSG,TOUTMS,HSR, NR, NVI,VIND,ITMAX, TOLER,
+     1         PGL,NFS,NSG,TOUTMS,HSR, NR, NVI,VIND,VINF,ITMAX, TOLER,
      &   TIMED, TIMEF, YD,YF, DEPS, EPSD, DY, R, IRET )
         IMPLICIT   NONE
 C TOLE CRP_21
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/12/2011   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -38,6 +38,8 @@ C           TIMED  :  INSTANT  T
 C           TIMEF  :  INSTANT  T+DT
 C           DEPS   :  INCREMENT DE DEFORMATION
 C           EPSD   :  DEFORMATION A T
+C           VIND   :  VARIABLES INTERNES A T
+C           VINF   :  VARIABLES INTERNES A T+DT
 C           YD     :  VARIABLES A T      =    ( SIGD  VIND  (EPSD3)  )
 C           YF     :  VARIABLES A T + DT =    ( SIGF  VINF  (EPS3F)  )
 C           DY     :  SOLUTION           =    ( DSIG  DVIN  (DEPS3)  )
@@ -46,7 +48,7 @@ C       ----------------------------------------------------------------
 C
         INTEGER  IMAT, NMAT, NR, NVI, KPG, KSP, ITMAX, IRET, NFS,NSG
         REAL*8          DEPS(6)  , EPSD(6), VIND(*), TOLER
-        REAL*8          R(*) , YD(*) ,  YF(*), DY(*)
+        REAL*8          R(*) , YD(*) ,  YF(*), DY(*),VINF(*)
         REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2)
         REAL*8          TIMED, TIMEF
         CHARACTER*8     TYPMOD
@@ -75,6 +77,9 @@ C
       ELSEIF ( LOI(1:15)  .EQ. 'BETON_BURGER_FP' ) THEN
          CALL BURRES ( TYPMOD,NMAT,MATERD,MATERF,TIMED,TIMEF,
      1                 NVI,VIND,YD,YF,DEPS,DY,NR,R )
+      ELSEIF ( LOI(1:4)  .EQ. 'LETK' ) THEN
+         CALL LKRESI ( TYPMOD,NMAT,MATERF,TIMED,TIMEF,
+     &                 NVI,VIND,VINF,YD,YF,DEPS,NR,R )
       ENDIF
-C
+
       END

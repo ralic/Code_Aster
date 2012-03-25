@@ -2,7 +2,7 @@
 C RESPONSABLE PROIX J-M.PROIX
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/03/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,6 +49,15 @@ C ----------------------------------------------------------------------
       REAL*8  ALPHA,ALGOR,TOLRAD
       INTEGER EXITS,GETEXM
       LOGICAL CPLAN,EXICP
+C
+      INTEGER DIMAKI,DIMANV
+C    DIMAKI = DIMENSION MAX DE LA LISTE DES RELATIONS KIT
+      PARAMETER (DIMAKI=9)
+C    DIMANV = DIMENSION MAX DE LA LISTE DU NOMBRE DE VAR INT EN THM
+      PARAMETER (DIMANV=4)
+      INTEGER NBKIT,NBNVI(DIMANV),NCOMEL,NVMETA,NUMLC
+      CHARACTER*16 NOMKIT(DIMAKI),LCOMEL(5),MECA,MECACO
+
 C      
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       INTEGER        ZI
@@ -114,6 +123,8 @@ C     MOTS CLES FACTEUR
 
 C       NOMBRE D'OCCURRENCES
         DO 150 K = 1,NBOCC
+        
+          NCOMEL=1
 
           CALL RELIEM(MODELE,NOMA,'NU_MAILLE',MOCLEF(I),K,2,MOCLES,
      &                TYPMCL,MESMAI,NBMA)
@@ -128,10 +139,26 @@ C           SI ALGO_INTE EST RENSEIGNE : VERIF QUE CET ALGO EST POSSIBLE
 C           AVEC LA LOI DE COMPORTEMENT
             CALL LCTEST(COMCOD,'ALGO_INTE',ALGO,IRETT)
             IF (IRETT.EQ.0) THEN
-                TEXTE(1)=ALGO
-                TEXTE(2)='ALGO_INTE'
-                TEXTE(3)=COMP
-                CALL U2MESK('F','COMPOR1_45',3,TEXTE)
+                IF((COMP(1:6).EQ.'KIT_HM')
+     &         .OR.(COMP(1:7).EQ.'KIT_THM'))THEN
+                  CALL NMDOKI(MOCLEF(I),MODELE,COMP,K,DIMAKI,NBKIT,
+     &                        NOMKIT,NBNVI,NCOMEL,LCOMEL,NUMLC,NVMETA)
+C --- LE COMPORTEMENT MECANIQUE EST STOCKE AU 5EME RANG DE LCOMEL
+                  MECA = LCOMEL(NCOMEL)
+                  CALL LCCREE(1, MECA, MECACO)
+                  CALL LCTEST(MECACO,'ALGO_INTE',ALGO,IRETT)
+                  IF (IRETT.EQ.0) THEN
+                    TEXTE(1)=ALGO
+                    TEXTE(2)='ALGO_INTE'
+                    TEXTE(3)=COMP
+                    CALL U2MESK('F','COMPOR1_45',3,TEXTE)
+                  ENDIF
+                ELSE
+                    TEXTE(1)=ALGO
+                    TEXTE(2)='ALGO_INTE'
+                    TEXTE(3)=COMP
+                    CALL U2MESK('F','COMPOR1_45',3,TEXTE)
+                ENDIF
             ENDIF
           ELSE
 C           RECUP DE ALGO_INTE D'APRES LE CATALOGUE DE LA
@@ -171,6 +198,7 @@ C         CPLAN DEBORST  ET COMP1D DEBORST SEULEMENT EN COMP_INCR
           TSAMPL=-1.D0
           TSRETU=-1.D0
           TYPTGT = 0
+          TYMATG=' '
           IF ( MOCLEF(I).EQ. 'COMP_INCR') THEN
              CALL GETVIS(MOCLEF(I),'ITER_CPLAN_MAXI',
      &                   K,IARG,1,ITDEBO,IRET)

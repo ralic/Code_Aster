@@ -2,10 +2,10 @@
      &             NBVAL,VALRES,NMAT,ITBINT,NFS,NSG,HSRI,NBSYS)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
 C TOLE CRS_1404
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -35,12 +35,12 @@ C         NBVAL  :  NOMBRE DE COEF MATERIAU LUS
 C     ----------------------------------------------------------------
       INTEGER         KPG,KSP,NMAT,I,IMAT,NBVAL,NBCOEF,ITBINT,NFS,NSG
       INTEGER         IRET2,NBHSR,NBSYS,J
-      REAL*8          VALRES(NMAT),HSRI(NSG,NSG),H
+      REAL*8          VALRES(NMAT),HSRI(NSG,NSG),H,E,NU,MU
       REAL*8          TEMPF,VALH(6),VALLUE(NMAT)
       CHARACTER*8     NOMRES(NMAT)
       INTEGER ICODRE(NMAT)
       CHARACTER*(*)   FAMI,POUM
-      CHARACTER*16    NMATER, NECOUL, NECRIS
+      CHARACTER*16    NMATER, NECOUL, NECRIS,PHENOM
 C     ----------------------------------------------------------------
 C
       IF (NECOUL.EQ.'MONO_VISC1') THEN
@@ -71,8 +71,7 @@ C         PAR CONVENTION ECOU_VISC2 A LE NUMERO 2
           VALRES(1)=2
 
       ENDIF
-      IF ((NECOUL.EQ.'MONO_DD_CFC').OR.
-     &    (NECOUL.EQ.'MONO_DD_CC')) THEN
+      IF (NECOUL.EQ.'MONO_DD_CFC') THEN
           NBVAL=6
           NOMRES(1)='TAU_F'
           NOMRES(2)='GAMMA0'
@@ -108,6 +107,64 @@ C         PAR CONVENTION ECOU_ECP_CFC A LE NUMERO 6
           NBVAL=NBVAL+1
           VALRES(NBVAL)=0.D0
           
+      ENDIF
+      IF (NECOUL(1:10).EQ.'MONO_DD_CC') THEN
+          NBVAL=18
+          NOMRES(1)='B'
+          NOMRES(2)='GH'
+          NOMRES(3)='DELTAG0'
+          NOMRES(4)='TAU_0'
+          NOMRES(5)='D'
+          NOMRES(6)='GAMMA0'
+          NOMRES(7)='N'
+          NOMRES(8)='BETA'
+          NOMRES(9)='Y_AT'
+          NOMRES(10)='D_LAT'
+          NOMRES(11)='K_F'
+          NOMRES(12)='K_SELF'
+          NOMRES(13)='TAU_F'
+          NOMRES(14)='RHO_MOB'
+          NOMRES(15)='K_BOLTZ'
+          NOMRES(16)='DELTA1'
+          NOMRES(17)='DELTA2'
+          NOMRES(18)='DEPDT'
+          CALL RCVALB (FAMI,KPG,KSP,POUM,IMAT,NMATER, NECOUL,0,' ',0.D0,
+     &                 NBVAL,NOMRES, VALLUE,ICODRE,1)
+     
+C         CALCUL ET STOCKAGE DE MU
+          CALL RCCOMA(IMAT,'ELAS',PHENOM,ICODRE)
+
+          IF (PHENOM.EQ.'ELAS') THEN
+             CALL RCVALB(FAMI,KPG,KSP,POUM,IMAT,' ','ELAS',0,' ', 0.D0,
+     &                   1,'E',E,ICODRE,1)
+             CALL RCVALB(FAMI,KPG,KSP,POUM,IMAT,' ','ELAS',0,' ', 0.D0,
+     &                   1,'NU',NU,ICODRE,1)
+             MU=E/(2.0D0+2.0D0*NU)
+          ELSE
+             CALL RCVALB(FAMI,KPG,KSP,POUM,IMAT,' ',PHENOM,0,' ', 0.D0,
+     &                   1,'G_LN',MU,ICODRE,1)
+          ENDIF
+          CALL RCVARC('F','TEMP',POUM,FAMI,KPG,KSP,TEMPF,IRET2)
+          NBVAL=NBVAL+1
+          VALLUE(NBVAL)=TEMPF
+          NBVAL=NBVAL+1
+          VALLUE(NBVAL)=MU
+          NBVAL=NBVAL+1
+          VALLUE(NBVAL)=0.D0
+          IF (NECOUL.EQ.'MONO_DD_CC_IRRA') THEN
+             VALLUE(NBVAL)=1.D0
+             NOMRES(1)='A_IRRA'
+             NOMRES(2)='XI_IRRA'
+             CALL RCVALB (FAMI,KPG,KSP,POUM,IMAT,NMATER, NECOUL,0,' ',
+     &                 0.D0,2,NOMRES,VALLUE(NBVAL+1),ICODRE,1)
+             NBVAL=NBVAL+2
+          ENDIF
+          CALL LCEQVN ( NBVAL , VALLUE  , VALRES(2) )
+C         PAR CONVENTION ECOU_DD_CC A LE NUMERO 7
+          NBVAL=NBVAL+1
+          VALRES(1)=7
+          NBVAL=NBVAL+1
+          VALRES(NBVAL)=0.D0
       ENDIF
       
       IF (NECOUL.EQ.'MONO_DD_KR') THEN

@@ -8,7 +8,7 @@
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -244,6 +244,19 @@ C --- End
      &               TINI,T,TREF,DEPS,VINTM,VINTP,
      &               CONGEP(ADCOME),DSDEME,RETCOM)
       ENDIF
+      IF (MECA.EQ.'LETK') THEN
+        COMPLG(1) = 'LETK'
+        WRITE (COMPLG(2),'(I16)') NVIMEC
+        MECTRU = .TRUE.
+        TINI = T - DT
+        NUMLC=35
+        CP=.FALSE.
+        CALL REDECE('RIGI',1,1,NDIM,TYPMOD,IMATE,COMPLG,CRIT,INSTAM,
+     &          INSTAP,6,DEFGEM(ADDEME+NDIM),DEPS,
+     &          6,CONGEM(ADCOME),VINTM,OPTION,ANGMA1,1,R8BID,
+     &          CP,NUMLC,TINI,T,TREF,
+     &              CONGEP(ADCOME),VINTP,36,DSDEME,1,R8BID,RETCOM)
+      ENDIF
       IF (MECTRU) THEN
          IF ((OPTION(1:9).EQ.'RIGI_MECA').OR.
      &       (OPTION(1:9).EQ.'FULL_MECA')) THEN
@@ -265,39 +278,6 @@ C ======================================================================
  206           CONTINUE
             ENDIF
          ENDIF
-      ENDIF
-C ======================================================================
-C --- LOI L&K -----------------------------------------------------
-C ======================================================================
-      IF (MECA.EQ.'LETK') THEN
-        TINI = T - DT
-        CALL LKCOMP(TYPMOD,  IMATE,
-     &              INSTAM, INSTAP,
-     &              TINI,T, TREF,
-     &              DEPS,
-     &              CONGEM(ADCOME), VINTM, OPTION,
-     &              CONGEP(ADCOME), VINTP,
-     &              DSDEME,RETCOM)
-        IF ((OPTION(1:9).EQ.'RIGI_MECA').OR.
-     &      (OPTION(1:9).EQ.'FULL_MECA')) THEN
-          DO 302 I = 1 , 2*NDIM
-           DO 303 J = 1 , 2*NDIM
-            DSDE(ADCOME+I-1,ADDEME+NDIM+J-1)=DSDEME(I,J)
-  303     CONTINUE
-  302     CONTINUE
-C ======================================================================
-C --- LA DEPENDANCE DES CONTRAINTES / T = -ALPHA0 * DEPENDANCE ---------
-C --- PAR RAPPORT A TRACE DE DEPS ( APPROXIMATION) ---------------------
-C ======================================================================
-         IF (YATE.EQ.1) THEN
-            DO 306 I=1,3
-                  DSDE(ADCOME-1+I,ADDETE)=-ALPHA0*
-     &            (DSDE(ADCOME-1+I,ADDEME+NDIM-1+1)+
-     &             DSDE(ADCOME-1+I,ADDEME+NDIM-1+2)+
-     &             DSDE(ADCOME-1+I,ADDEME+NDIM-1+3))/3.D0
- 306        CONTINUE
-         ENDIF
-        ENDIF
       ENDIF
 C ======================================================================
 C --- LOI VISC_DRUC_PRAG -----------------------------------------------

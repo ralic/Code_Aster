@@ -1,8 +1,8 @@
-#@ MODIF letk Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF letk Comportement  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -17,23 +17,22 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE ELGHARIB J.ELGHARIB
+# RESPONSABLE FOUCAULT A.FOUCAULT
 
 from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'LETK',
    doc = """Relation de comportement pour la modélisation élasto visco plastique des roches suivant le modèle de Laigle et Kleine, cf. [R7.01.24].
-   L'opérateur tangent n'étant pas validé, il est possible d'utiliser la matrice de perturbation sous le mot clé TYPE_MATR_TANG.
    L'opérateur relatif à la prédiction élastique est celui de l'élasticité non linéaire spécifique à la loi.""",
    num_lc         = 35,
    nb_vari        = 7,
-   nom_vari       = ('EPSPEQ','EPSPDEV','EPSVPEQ','EPSVPDEV','INDICDIL','INDIVISC','INDIPLAS'),
+   nom_vari       = ('XIP','GAMMAP','XIVP','GAMMAVP','INDICDIL','INDIVISC','INDIPLAS'),
    mc_mater       = ('ELAS','LETK'),
    modelisation   = ('3D', 'AXIS', 'D_PLAN', 'THM'),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
    nom_varc       = ('TEMP'),
-   algo_inte         = 'NEWTON',
+   algo_inte         = ('NEWTON_PERT','SPECIFIQUE'),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
    proprietes     = ' ',
 )

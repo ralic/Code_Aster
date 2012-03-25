@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 19/03/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+%& MODIF COMPELEM  DATE 26/03/2012   AUTEUR PELLET J.PELLET 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -24,6 +24,9 @@ PHENOMENE_MODELISATION__
 % Définition des ATTRIBUTS :
 % --------------------------
 %
+%  1) Les 7 attributs suivants sont AUTOMATIQUES
+%     (et donc il ne faut pas les re-définir dans les catalogues) :
+%  --------------------------------------------------------------------------------------------
 %  ALIAS8 : chaine formée par concaténation de 3 codes  :
 %           ALIAS(1:2) : code du phénomène
 %           ALIAS(3:5) : code de la modélisation
@@ -31,20 +34,55 @@ PHENOMENE_MODELISATION__
 %
 %           exemple :   MEFL_HEXA8 => ALIAS8=ME3FLHE8
 %
-%
 %  DIM_TOPO_MODELI : dimension "topologique" de la modélisation a laquelle appartient
 %                    l'élément.
+%                      - 3 pour les éléments isoparamétrques 3D
+%                      - 2 pour les éléments isoparamétrques 2D
 %                      - 2 pour plaques et coques en 3D
 %                      - 1 pour les poutres ou pour les coques en 2D
 %                      - ...
+%       Cet attribut est obtenu a partir du paramètre DIM__(1) de la modélisation
+%       Convention importante : Pour les modélisations "discrètes" ([2D_]DIS_xxx), on choisit DIM_TOPO_MODELI=-1
+%
 %  DIM_COOR_MODELI : dimension de l'espace du maillage
 %                    (nombre de coordonnées des points de l'espace) : 2 ou 3
+%           Cet attribut est obtenu a partir du paramètre DIM__(2) de la modélisation
+%        remarque : DIM_COOR_MODELI >=  DIM_TOPO_MODELI
 %
 %  DIM_TOPO_MAILLE : dimension topologique de la maille.
 %                     POI1 : X0 ; SEG: X1 ; TRIA/QUAD : X2 ; HEXA:X3 ; ...
 %        remarque : on est obligé de mettre une lettre (j'ai choisi "X" sans raison particulière)
 %                   pour que le lecteur de catalogue ne prenne pas cette valeur pour un entier.
+%           Cet attribut est obtenu a partir du paramètre DIM__ du catalogue des types de mailles
 %
+%  DISCRET = 'OUI'
+%       La modélisation de l'élément est "discrète" ([2D_]DIS_xxx)
+%       On reconnait les modélisations "discrètes" au fait que DIM__(1)=-1
+%       Les éléments d'une modélisations discrète sont TOUS "principaux" (voir PRINCIPAL).
+%
+%  PRINCIPAL = 'OUI' :
+%       L'élément est "principal" pour la modélisation (i.e. ce n'est pas un élément de "bord").
+%       La dimension toplogique de sa maille (DIM_TOPO_MAILLE) est identique a celle de sa
+%       modélisation (DIM_TOPO_MODELI)
+%       Pour les modélisations "discrètes" ([2D_]DIS_xxx), TOUS les éléments sont principaux.
+%
+%
+%  BORD = 'OUI' :
+%       L'élément "borde" un élément "principal" (de dimension topologique supérieure)
+%       La dimension toplogique de sa maille (DIM_TOPO_MAILLE) est strictement inférieure a
+%       celle de sa modélisation (DIM_TOPO_MODELI).
+%       Un élément de "bord" sert a en général a appliquer des efforts sur l'élément principal qu'il
+%       borde. Il fait partie de la meme modélisation que l'élément principal.
+%       Il n'a pas de sens sans un élément principal a coté de lui.
+%       Ses noeuds sont en principe ceux d'une face (ou d'une arrete) de son élément principal.
+%       Il ne calcule pas de "rigidité".
+%
+%       Un élément de coque "plaqué" sur un élément de volume n'est pas un élément de bord.
+%
+
+%
+%  2) Les attributs définis par les responsables d'éléments finis :
+%  --------------------------------------------------------------------------------------------
 %
 %  AXIS =  'OUI' : l'élément est axisymétrique.
 %          C'est a dire qu'il est maillé en 2D mais qu'il représente en réalité un "anneau" de
@@ -89,23 +127,6 @@ PHENOMENE_MODELISATION__
 %           ELEMJOIN l'élément utilise des comportements d'éléments de joints (CZM sur des modélisations *_JOINT)
 %           INTERFAC l'élément utilise des comportements d'éléments d'interface (CZM sur des modélisations *_INTERFACE)
 %           ELEMDISC l'élément utilise des comportements d'éléments a discontinuité interne
-%
-%  PRINCIPAL =  'OUI' :
-%       l'élément est "principal" pour la modélisation (i.e. ce n'est pas un élément de "bord").
-%       La dimension toplogique de sa maille (DIM_TOPO_MAILLE)
-%       est en principe identique a celle de sa modélisation (DIM_TOPO_MODELI)
-%
-%
-%  BORD =  'OUI' :
-%        l'élément "borde" un élément "principal" (de dimension topologique supérieure)
-%        Il sert a en général a appliquer des efforts sur l'élément principal qu'il
-%        borde. Il fait partie de la meme modélisation que l'élément principal.
-%        Il n'a pas de sens sans un élément principal a coté de lui.
-%        Ses noeuds sont en principe ceux d'une face (ou d'une arrete) de son élément
-%        principal
-%
-%        Un élément de coque "plaqué" sur un élément de volume n'est pas un élément de bord.
-%
 %
 %  TUYAU  =  'OUI' :  l'élément est un élément de "tuyau".
 %  GRILLE =  'OUI' :  l'élément est un élément de "grille".
@@ -1085,19 +1106,19 @@ PHENOMENE_MODELISATION__
               ATTRIBUT__  TUYAU=OUI NBSIGM=X6 TYPMOD=C_PLAN
               MAILLE__ SEG3      ELEMENT__ MET6SEG3
 
-       MODELISATION__ 'DIS_T'            DIM__ 0 3   CODE__ 'DIT'
+       MODELISATION__ 'DIS_T'            DIM__ -1 3   CODE__ 'DIT'
               MAILLE__ SEG2      ELEMENT__ MECA_DIS_T_L
               MAILLE__ POI1      ELEMENT__ MECA_DIS_T_N
 
-       MODELISATION__ '2D_DIS_T'         DIM__ 0 2   CODE__ '2DT'
+       MODELISATION__ '2D_DIS_T'         DIM__ -1 2   CODE__ '2DT'
               MAILLE__ SEG2      ELEMENT__ MECA_2D_DIS_T_L
               MAILLE__ POI1      ELEMENT__ MECA_2D_DIS_T_N
 
-       MODELISATION__ 'DIS_TR'           DIM__ 0 3   CODE__ 'DTR'
+       MODELISATION__ 'DIS_TR'           DIM__ -1 3   CODE__ 'DTR'
               MAILLE__ SEG2      ELEMENT__ MECA_DIS_TR_L
               MAILLE__ POI1      ELEMENT__ MECA_DIS_TR_N
 
-       MODELISATION__ '2D_DIS_TR'        DIM__ 0 2   CODE__ '2TR'
+       MODELISATION__ '2D_DIS_TR'        DIM__ -1 2   CODE__ '2TR'
               MAILLE__ SEG2      ELEMENT__ MECA_2D_DIS_TR_L
               MAILLE__ POI1      ELEMENT__ MECA_2D_DIS_TR_N
 
@@ -1738,7 +1759,6 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG3      ELEMENT__ THCASE3
 
        MODELISATION__ '3D'               DIM__ 3 3   CODE__ '3D_'
-              ATTRIBUT__  DIM_TOPO_MAILLE=X3
               MAILLE__ HEXA8     ELEMENT__ THER_HEXA8
               MAILLE__ PENTA6    ELEMENT__ THER_PENTA6
               MAILLE__ TETRA4    ELEMENT__ THER_TETRA4
@@ -1755,7 +1775,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ TRIA6     ELEMENT__ THER_FACE6
 
        MODELISATION__ '3D_DIAG'          DIM__ 3 3   CODE__ '3DD'
-              ATTRIBUT__  LUMPE=OUI  DIM_TOPO_MAILLE=X3
+              ATTRIBUT__  LUMPE=OUI
               MAILLE__ HEXA8     ELEMENT__ THER_HEXA8_D
               MAILLE__ PENTA6    ELEMENT__ THER_PENTA6_D
               MAILLE__ TETRA4    ELEMENT__ THER_TETRA4_D

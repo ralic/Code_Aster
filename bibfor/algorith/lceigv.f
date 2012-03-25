@@ -1,10 +1,11 @@
-      SUBROUTINE LCEIGV (FAMI,KPG,KSP,NDIM, TYPMOD,IMATE,COMPOR,EPSM,
-     &                   DEPS,VIM,NONLOC,OPTION,SIG,VIP,DSIDEP)
+      SUBROUTINE LCEIGV (FAMI,KPG,KSP,NEPS,IMATE,COMPOR,EPSM,
+     &                   DEPS,VIM,OPTION,SIG,VIP,DSIDEP)
+
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/11/2011   AUTEUR BOTTONI M.BOTTONI 
+C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,20 +23,18 @@ C ======================================================================
 
 
       IMPLICIT NONE
-      CHARACTER*8        TYPMOD(2)
       CHARACTER*16       COMPOR(*),OPTION
       CHARACTER*(*)      FAMI
-      INTEGER            NDIM, IMATE, KSP, KPG
-      REAL*8             NONLOC(2),EPSM(6), DEPS(6), VIM(2)
-      REAL*8             SIG(6), VIP(2), DSIDEP(6,6,4)
+      INTEGER            NEPS, IMATE, KSP, KPG
+      REAL*8             NONLOC(2),EPSM(NEPS), DEPS(NEPS), VIM(2)
+      REAL*8             SIG(NEPS), VIP(2), DSIDEP(NEPS,NEPS) 
 C ----------------------------------------------------------------------
 C     LOI DE COMPORTEMENT ENDO_ISOT_BETON (NON LOCAL GRAD_VARI)
 C
 C IN  FAMI    : FAMILLE DE POINT DE GAUSS
 C IN  KPG     : POINT DE GAUSS CONSIDERE
 C IN  KSP     :
-C IN  NDIM    : DIMENSION DE L'ESPACE
-C IN  TYPMOD  : TYPE DE MODELISATION
+C IN  NEPS    : DIMENSION DES DEFORMATIONS ET DES CONTRAINTES GENERALI.
 C IN  IMATE   : NATURE DU MATERIAU
 C IN  COMPOR  : COMPORTEMENT :  (1) = TYPE DE RELATION COMPORTEMENT
 C                               (2) = NB VARIABLES INTERNES / PG
@@ -59,8 +58,8 @@ C OUT DSIDEP  : MATRICE TANGENTE
 C ----------------------------------------------------------------------
 C LOC EDFRC1  COMMON CARACTERISTIQUES DU MATERIAU (AFFECTE DANS EDFRMA)
       LOGICAL     RIGI, RESI,ELAS, COUP,SECANT
-      INTEGER     NDIMSI, K, L, I, J, M, N, T(3,3),IRET,NRAC
-      REAL*8      EPS(6),  TREPS, SIGEL(6), KRON(6)
+      INTEGER     NDIM,NDIMSI, K, L, I, J, M, N, T(3,3),IRET,NRAC,IOK(2)
+      REAL*8      EPS(6),  TREPS, SIGEL(6), SIGMA(6), KRON(6)
       REAL*8      RAC2
       REAL*8      RIGMIN,TOLD, FD, D, ENER
       REAL*8      TR(6), RTEMP2
@@ -72,10 +71,13 @@ C LOC EDFRC1  COMMON CARACTERISTIQUES DU MATERIAU (AFFECTE DANS EDFRMA)
       REAL*8      COEF1,COEF2,COEF3
       REAL*8      DDOT
       REAL*8      HYDRM,HYDRP,SECHM,SECHP,SREF
-      REAL*8      R
+      REAL*8      R,C,GRAD(3),KTG(6,6,4),APG,LAG,VALNL(2)
+      CHARACTER*1 POUM
+      CHARACTER*8 NOMNL(2)
       PARAMETER  (RIGMIN = 1.D-5)
       PARAMETER  (TOLD = 1.D-6)
       DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
+      DATA NOMNL /'C_GRAD_VARI','PENA_LAGR'/
 
 C ----------------------------------------------------------------------
 
@@ -87,9 +89,12 @@ C -- OPTION ET MODELISATION
       RESI  = (OPTION(1:4).EQ.'RAPH' .OR. OPTION(1:4).EQ.'FULL')
       COUP  = (OPTION(6:9).EQ.'COUP')
       IF (COUP) RIGI=.TRUE.
+      NDIM   = (NEPS-2)/3
       NDIMSI = 2*NDIM
       RAC2=SQRT(2.D0)
       SECANT=.FALSE.
+      POUM='-'
+      IF (RESI) POUM='+'
 
       CALL RCVARC(' ','HYDR','-',FAMI,KPG,KSP,HYDRM,IRET)
       IF (IRET.NE.0) HYDRM=0.D0
@@ -102,11 +107,17 @@ C -- OPTION ET MODELISATION
       CALL RCVARC(' ','SECH','REF',FAMI,KPG,KSP,SREF,IRET)
       IF (IRET.NE.0) SREF=0.D0
 
+
 C -- INITIALISATION
 
       CALL LCEIB1 (FAMI,KPG,KSP,IMATE,COMPOR,NDIM,EPSM,
      &             SREF,SECHM,HYDRM,T, LAMBDA,DEUXMU,EPSTH,
      &             KDESS,BENDO,GAMMA,SEUIL)
+     
+      CALL RCVALB(FAMI,KPG,KSP,POUM,IMATE,' ','NON_LOCAL',0,' ',0.D0,
+     &  2,NOMNL,VALNL,IOK,2)
+      C = VALNL(1)
+      R = VALNL(2)
 
 
 C -- MAJ DES DEFORMATIONS ET PASSAGE AUX DEFORMATIONS REELLES 3D
@@ -118,12 +129,23 @@ C -- MAJ DES DEFORMATIONS ET PASSAGE AUX DEFORMATIONS REELLES 3D
      &                                 - KDESS * (SREF-SECHP)
      &                                 - BENDO *  HYDRP     )
  10     CONTINUE
+        APG  = EPSM(NDIMSI+1) + DEPS(NDIMSI+1)
+        LAG  = EPSM(NDIMSI+2) + DEPS(NDIMSI+2)
+        DO 11 K = 1,NDIM
+          GRAD(K) = EPSM(NDIMSI+2+K) + DEPS(NDIMSI+2+K)
+
+ 11     CONTINUE
       ELSE
         DO 40 K=1,NDIMSI
           EPS(K) = EPSM(K) - (  EPSTH(1)
      &                       - KDESS * (SREF-SECHM)
      &                       - BENDO *  HYDRM  )     * KRON(K)
 40      CONTINUE
+        APG  = EPSM(NDIMSI+1)
+        LAG  = EPSM(NDIMSI+2)
+        DO 41 K = 1,NDIM
+          GRAD(K) = EPSM(NDIMSI+2+K)
+ 41     CONTINUE
       ENDIF
 
       DO 45 K=4,NDIMSI
@@ -135,8 +157,8 @@ C -- MAJ DES DEFORMATIONS ET PASSAGE AUX DEFORMATIONS REELLES 3D
 46      CONTINUE
       ENDIF
 
-      PHI = NONLOC(1)
-      R   = NONLOC(2)
+      PHI= LAG + R*APG
+
 
 C -- DIAGONALISATION DES DEFORMATIONS
 
@@ -258,18 +280,18 @@ C -- CALCUL DES CONTRAINTES
       SIGP(I)=LAMBDD*TREPS+DEUMUD(I)*EPSP(I)
  201  CONTINUE
 
-      CALL R8INIR(6,0.D0,SIG,1)
+      CALL R8INIR(6,0.D0,SIGMA,1)
       DO 1010 I=1,3
         RTEMP=SIGP(I)
-        SIG(1)=SIG(1)+VECP(1,I)*VECP(1,I)*RTEMP
-        SIG(2)=SIG(2)+VECP(2,I)*VECP(2,I)*RTEMP
-        SIG(3)=SIG(3)+VECP(3,I)*VECP(3,I)*RTEMP
-        SIG(4)=SIG(4)+VECP(1,I)*VECP(2,I)*RTEMP
-        SIG(5)=SIG(5)+VECP(1,I)*VECP(3,I)*RTEMP
-        SIG(6)=SIG(6)+VECP(2,I)*VECP(3,I)*RTEMP
+        SIGMA(1)=SIGMA(1)+VECP(1,I)*VECP(1,I)*RTEMP
+        SIGMA(2)=SIGMA(2)+VECP(2,I)*VECP(2,I)*RTEMP
+        SIGMA(3)=SIGMA(3)+VECP(3,I)*VECP(3,I)*RTEMP
+        SIGMA(4)=SIGMA(4)+VECP(1,I)*VECP(2,I)*RTEMP
+        SIGMA(5)=SIGMA(5)+VECP(1,I)*VECP(3,I)*RTEMP
+        SIGMA(6)=SIGMA(6)+VECP(2,I)*VECP(3,I)*RTEMP
 1010  CONTINUE
       DO 18 K=4,NDIMSI
-        SIG(K)=RAC2*SIG(K)
+        SIGMA(K)=RAC2*SIGMA(K)
 18    CONTINUE
 
 
@@ -302,7 +324,7 @@ C -- CALCUL DE LA MATRICE TANGENTE
 
       IF (OPTION(11:14).EQ.'ELAS') SECANT=.TRUE.
         CALL R8INIR(36, 0.D0, DSPDEP, 1)
-        CALL R8INIR(36*4, 0.D0, DSIDEP, 1)
+        CALL R8INIR(36*4, 0.D0, KTG, 1)
 
         IF (FD.LT.RIGMIN) THEN
           IF (TREPS.GE.0.D0) THEN
@@ -370,7 +392,7 @@ C -- CALCUL DE LA MATRICE TANGENTE
        RTEMP2=RTEMP2+VECP(I,3)*VECP(J,1)*VECP(K,3)*VECP(L,1)*DSPDEP(5,5)
        RTEMP2=RTEMP2+VECP(I,2)*VECP(J,3)*VECP(K,2)*VECP(L,3)*DSPDEP(6,6)
        RTEMP2=RTEMP2+VECP(I,3)*VECP(J,2)*VECP(K,3)*VECP(L,2)*DSPDEP(6,6)
-          DSIDEP(T(I,J),T(K,L),1)=DSIDEP(T(I,J),T(K,L),1)+RTEMP2*RTEMP4
+          KTG(T(I,J),T(K,L),1)=KTG(T(I,J),T(K,L),1)+RTEMP2*RTEMP4
                ENDIF
 23            CONTINUE
 22          CONTINUE
@@ -379,7 +401,7 @@ C -- CALCUL DE LA MATRICE TANGENTE
 
        DO 26 I=1,6
          DO 27 J=I+1,6
-           DSIDEP(I,J,1)=DSIDEP(J,I,1)
+           KTG(I,J,1)=KTG(J,I,1)
 27       CONTINUE
 26     CONTINUE
 
@@ -427,7 +449,7 @@ C seulement sur la partie meca/meca
           IF (.NOT.SECANT) THEN
             DO 200 K = 1,NDIMSI
               DO 210 L = 1, NDIMSI
-               DSIDEP(K,L,1)=DSIDEP(K,L,1)-COEF1*COEF2*SIGEL(K)*SIGEL(L)
+               KTG(K,L,1)=KTG(K,L,1)-COEF1*COEF2*SIGEL(K)*SIGEL(L)
  210          CONTINUE
  200        CONTINUE
           ENDIF
@@ -436,15 +458,17 @@ C seulement sur la partie meca/meca
 C les autres termes ne sont pas annules car ils permettent de faire
 C converger sur la regularisation
           DO 220 K = 1,NDIMSI
-             DSIDEP(K,1,3) = COEF2*SIGEL(K)
-             DSIDEP(K,1,2) = - DSIDEP(K,1,3)
+             KTG(K,1,3) = COEF2*SIGEL(K)
+             KTG(K,1,2) = - KTG(K,1,3)
  220      CONTINUE
-          DSIDEP(1,1,4) = COEF3
+          KTG(1,1,4) = COEF3
 
 
         ENDIF
 
 
  9000 CONTINUE
+      CALL LCGRAD(RESI,RIGI,NDIM,NDIMSI,NEPS,SIGMA,APG,LAG,GRAD,
+     &  D,R,C,KTG,SIG,DSIDEP)
 
       END

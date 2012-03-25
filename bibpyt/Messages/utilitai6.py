@@ -1,4 +1,4 @@
-#@ MODIF utilitai6 Messages  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utilitai6 Messages  DATE 26/03/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -196,10 +196,8 @@ cata_msg = {
  contrainte de référence = %(r3)f
 """),
 
-68 : _(u"""
- type de numérotation non connue
- numérotation: %(k1)s
-"""),
+
+
 
 72 : _(u"""
  trop de mailles dans le GROUP_MA

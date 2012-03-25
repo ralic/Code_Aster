@@ -8,7 +8,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/02/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -106,5 +106,12 @@ C         PAS DE VARIATION DES COEF AVEC LA TEMPERATURE
           CALL RKDVEC(FAMI,KPG,KSP,MOD,IMAT,MATCST,NVI,VINI,COEFT,E,NU,
      &                ALPHA,X,DTIME,NMAT,COEL,SIGI,EPSD,DETOT,
      &                DVIN)
+        ELSE  IF (LOI(1:8).EQ.'HAYHURST') THEN
+          NCOE=15
+            CALL COEFFT(NCOE,COTHE,COEFF,DCOTHE,DCOEFF,X,DTIME,COEFT,
+     &                E,NU,ALPHA,NMAT,COEL)
+          CALL RKDHAY(FAMI,KPG,KSP,MOD,IMAT,MATCST,NVI,VINI,COEFT,E,NU,
+     &                ALPHA,X,DTIME,NMAT,COEL,SIGI,EPSD,DETOT,
+     &                DVIN, IRET)
         END IF
         END

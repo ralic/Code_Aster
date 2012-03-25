@@ -2,7 +2,7 @@
      &                  NBORDR,MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 26/03/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -1245,106 +1245,6 @@ C ---- VERIF SENSIBILITE FIN
   320         CONTINUE
               CALL JEDEMA()
   330       CONTINUE
-
-
-
-
-C     ------------------------------------------------------------------
-C     --- OPTIONS DE CALCUL DES DENSITES D'ENERGIE TOTALE
-C     ------------------------------------------------------------------
-          ELSEIF (OPTION.EQ.'ETOT_ELGA' .OR.
-     &            OPTION.EQ.'ETOT_ELNO' .OR.
-     &            OPTION.EQ.'ETOT_ELEM') THEN
-C ---- VERIF SENSIBILITE
-            IF (TYPESE.NE.0) THEN
-              CODSEN=1
-            ENDIF
-            IF (CODSEN.NE.0)GOTO 700
-C ---- VERIF SENSIBILITE FIN
-            DO 390,IAUX=1,NBORDR
-              CALL JEMARQ()
-              CALL JERECU('V')
-              IORDR=ZI(JORDR+IAUX-1)
-              CALL MEDOM2(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO,IORDR,
-     &                    NBORDR,'G',NPASS,LIGREL)
-              CALL JEVEUO(KCHA,'L',JCHA)
-              CALL MECARA(CARA,EXICAR,CHCARA)
-
-C ---       RECUPERATION DES CONTRAINTES DE L'INSTANT COURANT :
-C           -------------------------------------------------
-              CALL RSEXC2(1,1,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,
-     &                    IRET)
-              IF (IRET2.GT.0) THEN
-                CALL CODENT(IORDR,'G',KIORD)
-                VALKM(1)=RESUCO
-                VALKM(2)=KIORD
-                CALL U2MESK('A','CALCULEL3_17',2,VALKM)
-                GOTO 380
-
-              ENDIF
-
-C ---       SI LE NUMERO D'ORDRE COURANT EST SUPERIEUR A 1, ON
-C ---       RECUPERE LES CONTRAINTES DE L'INSTANT PRECEDENT :
-C           -----------------------------------------------
-              IF ((IAUX.GT.1) .AND. (CONCEP.NE.'MODE_MECA')) THEN
-                IORDRM=ZI(JORDR+IAUX-2)
-                CALL RSEXC2(1,1,RESUCO,'SIEF_ELGA',IORDRM,CHSIGM,OPTION,
-     &                      IRET1)
-                IF (IRET1.GT.0) THEN
-                  CALL CODENT(IORDRM,'G',KIORDM)
-                  VALKM(1)=RESUCO
-                  VALKM(2)=KIORDM
-                  CALL U2MESK('A','CALCULEL3_17',2,VALKM)
-                  GOTO 380
-
-                ENDIF
-              ENDIF
-
-C ---       RECUPERATION DU CHAMP DE DEPLACEMENT DE L'INSTANT COURANT :
-C           ---------------------------------------------------------
-              CALL RSEXC2(1,1,RESUCO,'DEPL',IORDR,CHDEPL,OPTION,IRET1)
-              IF (IRET1.GT.0) THEN
-                CALL CODENT(IORDR,'G',KIORD)
-                VALKM(1)=RESUCO
-                VALKM(2)=KIORD
-                CALL U2MESK('A','CALCULEL3_11',2,VALKM)
-                GOTO 380
-
-              ENDIF
-
-C ---       SI LE NUMERO D'ORDRE COURANT EST SUPERIEUR A 1, ON
-C ---       RECUPERE LES DEPLACEMENTS DE L'INSTANT PRECEDENT :
-C           ------------------------------------------------
-              IF ((IAUX.GT.1) .AND. (CONCEP.NE.'MODE_MECA')) THEN
-                CALL RSEXC2(1,1,RESUCO,'DEPL',IORDRM,CHDEPM,OPTION,
-     &                      IRET1)
-                IF (IRET1.GT.0) THEN
-                  CALL CODENT(IORDRM,'G',KIORDM)
-                  VALKM(1)=RESUCO
-                  VALKM(2)=KIORDM
-                  CALL U2MESK('A','CALCULEL3_11',2,VALKM)
-                  GOTO 380
-
-                ENDIF
-              ENDIF
-
-              CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
-
-              IF (CONCEP.EQ.'MODE_MECA' .AND.
-     &            TYPEMO(1:8).EQ.'MODE_DYN') THEN
-                CALL ENETOT(OPTION,1,LIGREL,CHGEOM,CHDEPL,CHDEPM,CHSIG,
-     &                      CHSIGM,CHELEM)
-              ELSE
-
-                CALL ENETOT(OPTION,IAUX,LIGREL,CHGEOM,CHDEPL,CHDEPM,
-     &                      CHSIG,CHSIGM,CHELEM)
-              ENDIF
-
-              CALL RSNOCH(RESUCO,OPTION,IORDR,' ')
-  380         CONTINUE
-              CALL JEDEMA()
-  390       CONTINUE
-            CALL DETRSD('CHAMP_GD','&&ENETOT.CHAMELEM2')
 C     ------------------------------------------------------------------
 C     --- OPTIONS DE CALCUL DE:
 C     ---   * TAUX DE TRIAXIALITE DES CONTRAINTES,

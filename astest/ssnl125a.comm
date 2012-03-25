@@ -1,4 +1,4 @@
-# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
 # TITRE VALIDATION DE LA LOI D ENDOMMAGEMENT FRAGILE
 # ssnl125a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -28,11 +28,19 @@ Gf      = 0.1
 D       = 50.
 
 wy      = 0.5*Sy**2/E
-p       = 0.75*Gf/(D*wy)
-m       = 2.
-gamma   = p/m - 1
+k       = 0.75*Gf/D
+gamma   = 0.375*Gf/(D*wy)-1
+m       = 2*(1+gamma)
+p       = (gamma**2-1)/m
 C       = 0.375*Gf*D
-pena    = 1.E3 * p * wy
+pena    = 1.E3 * k
+
+troisk = E/(1-2*NU)
+deuxmu = E/(1+NU)
+
+volu = 0.5*troisk/deuxmu
+comp = 0
+
 
 DEBUT(CODE=_F(NOM='SSNL125A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),
       MESURE_TEMPS=_F(MOYENNE='NON'),)
@@ -41,7 +49,7 @@ DEBUT(CODE=_F(NOM='SSNL125A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),
 #                 MAILLAGE ET MODELE
 # -----------------------------------------------------
 
-MA =  LIRE_MAILLAGE(FORMAT='MED',)
+MA =  LIRE_MAILLAGE(FORMAT='MED')
 
 # ytest1 et ytest2 : ordonnees des points auxquels on releve les grandeurs testees
 
@@ -82,7 +90,7 @@ MO = AFFE_MODELE(MAILLAGE = MA,
 # -----------------------------------------------------
 
 FRAG = DEFI_MATERIAU(ELAS          = _F(E=E, NU=NU,),
-                     ENDO_SCALAIRE = _F(SY=Sy, GAMMA=gamma),
+                     ENDO_SCALAIRE = _F(K=k,M=m,P=p,C_COMP=0,C_VOLU=1),
                      NON_LOCAL     = _F(C_GRAD_VARI = C, PENA_LAGR = pena),)
 
 CHMAT = AFFE_MATERIAU(MAILLAGE = MA,
@@ -130,7 +138,8 @@ CINE = AFFE_CHAR_MECA_F(MODELE   = MO,
 # -----------------------------------------------------
 
 EVOL = STAT_NON_LINE(SOLVEUR     = _F(METHODE = 'MUMPS',
-                                      PCENT_PIVOT = 300),
+                                      PCENT_PIVOT = 300,
+                                      SYME = 'OUI',),
                      MODELE      = MO,
                      CHAM_MATER  = CHMAT,
                      EXCIT       = (_F(CHARGE = CINE,
@@ -144,8 +153,9 @@ EVOL = STAT_NON_LINE(SOLVEUR     = _F(METHODE = 'MUMPS',
                      CONVERGENCE = _F(ITER_GLOB_MAXI = 20,
                                       RESI_REFE_RELA = 1.e-6,
                                       SIGM_REFE = Sy,
-                                      LAGR_REFE = p*wy,
-                                      VARI_REFE = 1.,),)
+                                      LAGR_REFE = k,
+                                      VARI_REFE = 1.,
+                                      ),)
 
 # -----------------------------------------------------
 #    EXTRAPOLATION DES VARIABLES INTERNES AUX NOEUDS

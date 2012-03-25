@@ -1,9 +1,9 @@
       SUBROUTINE LRMPGA(NROFIC,LIGREL,NOCHMD,NBMA,PGMAIL,PGMMIL,
-     &                 NTYPEL,NPGMAX,INDPG,NUMPT, NUMORD,
-     &                 OPTION, PARAM)
+     &                  NTYPEL,NPGMAX,INDPG,NUMPT, NUMORD,
+     &                  OPTION, PARAM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/02/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 26/03/2012   AUTEUR SELLENET N.SELLENET 
 C RESPONSABLE SELLENET N.SELLENET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -137,16 +137,16 @@ C  ======================================
 C
 C     INITIALISATIONS
       DO 5 I=1,NBMA
-         PGMAIL(I)=0
+        PGMAIL(I)=0
  5    CONTINUE
 
 C     NOM DU FICHIER MED
       CALL ULISOG(NROFIC, KFIC, SAUX01)
       IF ( KFIC(1:1).EQ.' ' ) THEN
-         CALL CODENT ( NROFIC, 'G', SAUX08 )
-         NOFIMD = 'fort.'//SAUX08
+        CALL CODENT ( NROFIC, 'G', SAUX08 )
+        NOFIMD = 'fort.'//SAUX08
       ELSE
-         NOFIMD = KFIC(1:200)
+        NOFIMD = KFIC(1:200)
       ENDIF
 
 C     OUVERTURE DU FICHIER MED
@@ -162,7 +162,7 @@ C      LA LISTE DES PAS DE TEMPS (BOUCLE 39)
       CALL WKVECT('&&LRMPGA_TYPGEO_TYPG_MED','V V K8',NTYGEO,JTYMED)
       NBTYEL=0
       IF ( NIVINF.GT.1 ) THEN
-         WRITE(IFM, 2001)
+        WRITE(IFM, 2001)
       ENDIF
 C
       CALL MFNCO2(IDFIMD,NOCHMD,NCMP,IRET)
@@ -194,7 +194,7 @@ C
       CALL JEDETR('&&LRMPGA.CUNIT')
 C
       IF(NBTYEL.EQ.0)THEN
-         CALL U2MESG ('F', 'MED_77', 1, NOCHMD, 1, NROFIC, 0, RBID)
+        CALL U2MESG ('F', 'MED_77', 1, NOCHMD, 1, NROFIC, 0, RBID)
       ENDIF
 
 
@@ -229,75 +229,77 @@ C       NOMBRE D'ELEMENTS DU GREL : NBMAG-1
 C       MODE LOCAL ASSOCIE AU PARAMETRE PARAM DE L'OPTION OPTION
         IMOD = MODAT2(IOPT, NUMTE, PARAM)
         IF(IMOD.EQ.0)THEN
-            NBPG = 0
+           NBPG = 0
         ELSE
-            CALL JEVEUO(JEXNUM('&CATA.TE.MODELOC', IMOD), 'L', JMOD)
-C           CHAMP ELGA
-            CALL ASSERT(ZI(JMOD-1+1).EQ.3)
+          CALL JEVEUO(JEXNUM('&CATA.TE.MODELOC', IMOD), 'L', JMOD)
+C         CHAMP ELGA
+          CALL ASSERT(ZI(JMOD-1+1).EQ.3)
 
-            IGRD = ZI(JMOD-1+2)
-            CALL JEVEUO(JEXNUM('&CATA.GD.DESCRIGD',IGRD),'L',IADGD)
-            NEC = ZI(IADGD-1+3)
-C           NUMERO ET NOM DE LA FAMILLE GLOBALE DE PTS GAUSS
-            NUFGPG = ZI(JMOD-1+4+NEC+1)
-            CALL JENUNO(JEXNUM('&CATA.TM.NOFPG',NUFGPG),NOFGPG)
-            ELREF= NOFGPG(1:8)
-            FAPG = NOFGPG(9:16)
-C           NOMBRE DE PG : NBPG
-            CALL JEVEUO('&CATA.TM.TMFPG', 'L', JTMFPG)
-            NBPG=ZI(JTMFPG+NUFGPG-1)
+          IGRD = ZI(JMOD-1+2)
+          CALL JEVEUO(JEXNUM('&CATA.GD.DESCRIGD',IGRD),'L',IADGD)
+          NEC = ZI(IADGD-1+3)
+C         NUMERO ET NOM DE LA FAMILLE GLOBALE DE PTS GAUSS
+          NUFGPG = ZI(JMOD-1+4+NEC+1)
+          CALL JENUNO(JEXNUM('&CATA.TM.NOFPG',NUFGPG),NOFGPG)
+          ELREF= NOFGPG(1:8)
+          FAPG = NOFGPG(9:16)
+C         NOMBRE DE PG : NBPG
+          CALL JEVEUO('&CATA.TM.TMFPG', 'L', JTMFPG)
+          NBPG=ZI(JTMFPG+NUFGPG-1)
 C
-            IF ( NIVINF.GT.1 ) THEN
-               WRITE(IFM,2003) NOMTE, FAPG
+          IF ( NIVINF.GT.1 ) THEN
+            WRITE(IFM,2003) NOMTE, FAPG
+          ENDIF
+
+C         ON PARCOURT LES ELEMENTS DE REFERENCE MED
+          DO 800 J=1,NBTYEL
+
+C         SI LES ELEMENTS DE REFERENCE ASTER/MED CORRESPONDENT :
+            IF(ZK8(JTYMED+J-1)(1:3).EQ.ELREF) THEN
+C
+C             VERIFICATION DU NOMBRE DE PG ASTER/MED
+C             COMPARAISON DES COORDONNEES DES PG ASTER/MED
+              CALL WKVECT('&&LRMPGA_PERMUT','V V I',NBPG,JPERM)
+              CALL LRVCPG(IDFIMD,NBPG,ZI(JNGALU+J-1),
+     &               ELREF,ZK8(JTYMED+J-1),FAPG,NLOC,ZI(JPERM),
+     &               NUTYMA,CODRET)
+              NBPGM = ZI(JNGALU+J-1)
+
+C             SI LE NBRE PT GAUSS INCORRECT ET PAS DE <F>,
+C             NBPG=0 : RIEN A ECRIRE DANS LRCMVE
+              IF ( CODRET.EQ.4 ) THEN
+                NBPG = 0
+C             SI PERMUTATIONS AU NIVEAU DES PG ASTER/MED :
+              ELSE IF(CODRET.EQ.1)THEN
+C  ===>         REMPLISSAGE DU TABLEAU INDPG: CAS OU L'ON A
+C               UNE PERMUTATION DANS LES PG MED/ASTER
+                DO 220 IPGM=1,NBPG
+                  INDPG(NUTYMA,IPGM)=ZI(JPERM+IPGM-1)
+ 220            CONTINUE
+              ELSE
+C  ===>         SINON REMPLISSAGE DU TABLEAU INDPG: CAS OU L'ON A :
+C              - ABSENCE DE LOCALISATION
+C              - L UN DES PG MED N A PAS ETE IDENTIFIE A UN PG ASTER
+C              - LES PG ASTER/MED CORRESPONDENT
+                DO 145 IPG=1,NBPG
+                  INDPG(NUTYMA,IPG)=IPG
+ 145            CONTINUE
+              ENDIF
+C
+C             DESTRUCTION DU TABLEAU TEMPORAIRE
+              CALL JEDETR('&&LRMPGA_PERMUT')
+C
             ENDIF
-
-C           ON PARCOURT LES ELEMENTS DE REFERENCE MED
-            DO 800 J=1,NBTYEL
-
-C           SI LES ELEMENTS DE REFERENCE ASTER/MED CORRESPONDENT :
-               IF(ZK8(JTYMED+J-1)(1:3).EQ.ELREF) THEN
 C
-C                 VERIFICATION DU NOMBRE DE PG ASTER/MED
-C                 COMPARAISON DES COORDONNEES DES PG ASTER/MED
-                  CALL WKVECT('&&LRMPGA_PERMUT','V V I',NBPG,JPERM)
-                  CALL LRVCPG(IDFIMD,NBPG,ZI(JNGALU+J-1),
-     &                   ELREF,ZK8(JTYMED+J-1),FAPG,NLOC,ZI(JPERM),
-     &                   NUTYMA,CODRET)
-                  NBPGM = ZI(JNGALU+J-1)
+ 800      CONTINUE
 
-C                 SI LE NBRE PT GAUSS INCORRECT ET PAS DE <F>,
-C                 NBPG=0 : RIEN A ECRIRE DANS LRCMVE
-                  IF ( CODRET.EQ.4 ) THEN
-                     NBPG = 0
-C                 SI PERMUTATIONS AU NIVEAU DES PG ASTER/MED :
-                  ELSE IF(CODRET.EQ.1)THEN
-C  ===>              REMPLISSAGE DU TABLEAU INDPG: CAS OU L'ON A
-C                    UNE PERMUTATION DANS LES PG MED/ASTER
-                     DO 220 IPGM=1,NBPG
-                        INDPG(NUTYMA,IPGM)=ZI(JPERM+IPGM-1)
- 220                 CONTINUE
-                  ELSE
-C  ===>              SINON REMPLISSAGE DU TABLEAU INDPG: CAS OU L'ON A :
-C                  - ABSENCE DE LOCALISATION
-C                  - L UN DES PG MED N A PAS ETE IDENTIFIE A UN PG ASTER
-C                  - LES PG ASTER/MED CORRESPONDENT
-                     DO 145 IPG=1,NBPG
-                        INDPG(NUTYMA,IPG)=IPG
- 145                 CONTINUE
-                  ENDIF
-C
-C                 DESTRUCTION DU TABLEAU TEMPORAIRE
-                  CALL JEDETR('&&LRMPGA_PERMUT')
-C
-               ENDIF
-C
- 800        CONTINUE
-
-C       REMPLISSAGE DU TABLEAU PGMAIL : PGMAIL(NUM_MAILLE_ASTER)=NBRE_PG
-        DO 301 IMA=1,NBMAG-1
-           PGMAIL(ZI(IGR+IMA-1))=NBPG
-           PGMMIL(ZI(IGR+IMA-1))=NBPGM
-301    CONTINUE
+C      REMPLISSAGE DU TABLEAU PGMAIL : PGMAIL(NUM_MAILLE_ASTER)=NBRE_PG
+          IF ( ZI(IGR).GT.0 ) THEN
+            DO 301 IMA=1,NBMAG-1
+              PGMAIL(ZI(IGR+IMA-1))=NBPG
+              PGMMIL(ZI(IGR+IMA-1))=NBPGM
+301         CONTINUE
+          ENDIF
 C
         ENDIF
 C

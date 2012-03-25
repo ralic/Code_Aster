@@ -1,0 +1,432 @@
+# MODIF  DATE 26/03/2012   AUTEUR TRAN V-X.TRAN 
+#
+# TITRE CRITERES EN FORMULE POUR POST_FATIGUE
+# szlz107b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(  CODE=_F(  NOM = 'SZLZ107B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+### COMME ON VEUT RETROUVER LE MEME RESULTAT AVEC CALC_FATIGUE, IL FAUT ENLEVR LA PARTIE
+### DE CHARGEMENT MONOTONE
+SIGMXX=DEFI_FONCTION(    NOM_PARA='INST',
+                          VALE=(  
+#                                   0     ,  0     ,
+#                                   0.25  ,  50    ,
+#                                   0.5   ,  100   ,
+#                                   0.75  ,  150   ,
+                                  
+                                  1     ,  200   ,
+                                  1.25  ,  150   ,
+                                  1.5   ,  100   ,
+                                  1.75  ,  50    ,
+                                  2     ,  0     ,
+                                  2.25  ,  -50   ,
+                                  2.5   ,  -100  ,
+                                  2.75  ,  -150  ,
+                                  3     ,  -200  ,
+                                  3.25  ,  -150  ,
+                                  3.5   ,  -100  ,
+                                  3.75  ,  -50   ,
+                                  4     ,  0     ,
+                                  4.25  ,  50    ,
+                                  4.5   ,  100   ,
+                                  4.75  ,  150   ,
+                                  5     ,  200   ,
+                                  
+                                  )  )
+
+ZERO  =DEFI_FONCTION(    NOM_PARA='INST',
+                          VALE=(  
+#                                   0     ,  0     ,
+#                                   0.25  ,  0    ,
+#                                   0.5   ,  0   ,
+#                                   0.75  ,  0   ,
+                                  
+                                  1     ,  0   ,
+                                  1.25  ,  0   ,
+                                  1.5   ,  0   ,
+                                  1.75  ,  0    ,
+                                  2     ,  0     ,
+                                  2.25  ,  0   ,
+                                  2.5   ,  0  ,
+                                  2.75  ,  0  ,
+                                  3     ,  0  ,
+                                  3.25  ,  0  ,
+                                  3.5   ,  0  ,
+                                  3.75  ,  0   ,
+                                  4     ,  0     ,
+                                  4.25  ,  0    ,
+                                  4.5   ,  0   ,
+                                  4.75  ,  0   ,
+                                  5     ,  0   ,
+                                  
+                                  )  )
+
+EPSTXX=DEFI_FONCTION(    NOM_PARA='INST',
+                          VALE=(  
+#                                   0     ,   0       ,
+#                                   0.25  ,   0.00025 ,
+#                                   0.5   ,   0.0005  ,
+#                                   0.75  ,   0.00075 ,
+                                  
+                                  1     ,   0.00175 ,
+                                  1.25  ,   0.0015  ,
+                                  1.5   ,   0.00125 ,
+                                  1.75  ,   0.001   ,
+                                  2     ,   0.00075 ,
+                                  2.25  ,   0.0005  ,
+                                  2.5   ,   0.00025 ,
+                                  2.75  ,  -0.00075 ,
+                                  3     ,  -0.00175 ,
+                                  3.25  ,  -0.0015  ,
+                                  3.5   ,  -0.00125 ,
+                                  3.75  ,  -0.001   ,
+                                  4     ,  -0.00075 ,
+                                  4.25  ,  -0.0005  ,
+                                  4.5   ,  -0.00025 ,
+                                  4.75  ,   0.00075 ,
+                                  5     ,   0.00175 ,                                 
+                                  )  )
+                                  
+EPSTYY=DEFI_FONCTION(    NOM_PARA='INST',
+                          VALE=(  
+#                                   0     ,0         ,
+#                                   0.25  ,-0.000075 ,
+#                                   0.5   ,-0.00015  ,
+#                                   0.75  ,-0.000225 ,
+#                                   
+                                  1     ,-0.000675 ,
+                                  1.25  ,-0.0006   ,
+                                  1.5   ,-0.000525 ,
+                                  1.75  ,-0.00045  ,
+                                  2     ,-0.000375 ,
+                                  2.25  ,-0.0003   ,
+                                  2.5   ,-0.000225 ,
+                                  2.75  ,0.000225  ,
+                                  3     ,0.000675  ,
+                                  3.25  ,0.0006    ,
+                                  3.5   ,0.000525  ,
+                                  3.75  ,0.00045   ,
+                                  4     ,0.000375  ,
+                                  4.25  ,0.0003    ,
+                                  4.5   ,0.000225  ,
+                                  4.75  ,-0.000225 ,
+                                  5     ,-0.000675 ,
+                                  
+                                  )  )
+
+EPSTZZ=DEFI_FONCTION(    NOM_PARA='INST',
+                          VALE=(  
+#                                   0     ,0         ,
+#                                   0.25  ,-0.000075 ,
+#                                   0.5   ,-0.00015  ,
+#                                   0.75  ,-0.000225 ,
+                                  
+                                  1     ,-0.000675 ,
+                                  1.25  ,-0.0006   ,
+                                  1.5   ,-0.000525 ,
+                                  1.75  ,-0.00045  ,
+                                  2     ,-0.000375 ,
+                                  2.25  ,-0.0003   ,
+                                  2.5   ,-0.000225 ,
+                                  2.75  ,0.000225  ,
+                                  3     ,0.000675  ,
+                                  3.25  ,0.0006    ,
+                                  3.5   ,0.000525  ,
+                                  3.75  ,0.00045   ,
+                                  4     ,0.000375  ,
+                                  4.25  ,0.0003    ,
+                                  4.5   ,0.000225  ,
+                                  4.75  ,-0.000225 ,
+                                  5     ,-0.000675 ,
+                                  
+                                  )  )
+
+EPSPXX=DEFI_FONCTION(    NOM_PARA='INST',
+                          VALE=(  
+#                                   0     , 0        ,
+#                                   0.25  , 0        ,
+#                                   0.5   , 0        ,
+#                                   0.75  , 0        ,
+#                                   
+                                  1     , 0.00075  ,
+                                  1.25  , 0.00075  ,
+                                  1.5   , 0.00075  ,
+                                  1.75  , 0.00075  ,
+                                  2     , 0.00075  ,
+                                  2.25  , 0.00075  ,
+                                  2.5   , 0.00075  ,
+                                  2.75  , 0        ,
+                                  3     , -0.00075 ,
+                                  3.25  , -0.00075 ,
+                                  3.5   , -0.00075 ,
+                                  3.75  , -0.00075 ,
+                                  4     , -0.00075 ,
+                                  4.25  , -0.00075 ,
+                                  4.5   , -0.00075 ,
+                                  4.75  , 0        ,
+                                  5     , 0.00075  ,
+                                  
+                                  )  )
+                                  
+EPSPYY=DEFI_FONCTION(    NOM_PARA='INST',
+                          VALE=(  
+#                                   0     , 0        ,
+#                                   0.25  , 0         ,
+#                                   0.5   , 0        ,
+#                                   0.75  , 0        ,
+#                                   
+                                  1     ,-0.000375 ,
+                                  1.25  ,-0.000375 ,
+                                  1.5   ,-0.000375 ,
+                                  1.75  ,-0.000375 ,
+                                  2     ,-0.000375 ,
+                                  2.25  ,-0.000375 ,
+                                  2.5   ,-0.000375 ,
+                                  2.75  ,-0        ,
+                                  3     ,0.000375  ,
+                                  3.25  ,0.000375  ,
+                                  3.5   ,0.000375  ,
+                                  3.75  ,0.000375  ,
+                                  4     ,0.000375  ,
+                                  4.25  ,0.000375  ,
+                                  4.5   ,0.000375  ,
+                                  4.75  ,0        ,
+                                  5     ,-0.000375 ,
+                                  
+                                  )  )
+
+EPSPZZ=DEFI_FONCTION(    NOM_PARA='INST',
+                          VALE=(  
+#                                   0     , 0         ,
+#                                   0.25  , 0        ,
+#                                   0.5   , 0        ,
+#                                   0.75  , 0        ,
+                                  
+                                  1     ,-0.000375 ,                                  
+                                  1.25  ,-0.000375 ,
+                                  1.5   ,-0.000375 ,
+                                  1.75  ,-0.000375 ,
+                                  2     ,-0.000375 ,
+                                  2.25  ,-0.000375 ,
+                                  2.5   ,-0.000375 ,
+                                  2.75  , 0        ,
+                                  3     ,0.000375  ,
+                                  3.25  ,0.000375  ,
+                                  3.5   ,0.000375  ,
+                                  3.75  ,0.000375  ,
+                                  4     ,0.000375  ,
+                                  4.25  ,0.000375  ,
+                                  4.5   ,0.000375  ,
+                                  4.75  , 0        ,
+                                  5     ,-0.000375 ,
+                                  
+                                  )  )
+                                                                                  
+WHOL=DEFI_FONCTION(       NOM_PARA='SIGM',
+                            INTERPOL='LOG',
+                          PROL_DROITE='LINEAIRE',
+                         PROL_GAUCHE='LINEAIRE',
+                         VALE=(   138.,    1000000.,
+                                  152.,     500000.,
+                                  165.,     200000.,
+                                  180.,     100000.,
+                                  200.,      50000.,
+                                  250.,      20000.,
+                                  295.,      12000.,
+                                  305.,      10000.,
+                                  340.,       5000.,
+                                  430.,       2000.,
+                                  540.,       1000.,
+                                  690.,        500.,
+                                  930.,        200.,
+                                 1210.,        100.,
+                                 1590.,         50.,
+                                 2210.,         20.,
+                                 2900.,         10.,    )  )
+
+MAT0=DEFI_MATERIAU(    FATIGUE=_F(  WOHLER = WHOL,
+                                   D0 = 540.97,
+                                   TAU0 = 352.)  )
+
+#
+# POUR RETROUVER LE CRITERE DANG VAN - PAPADOPOULOUS
+# b = TAU0 = 352
+# a = (TAU0-D0/SQRT(3))/D0/3 = 0.22
+CRIT_FAT =   FORMULE(
+           NOM_PARA=('DTAUMA','PHYDRM'),
+           VALE=''' (DTAUMA + 0.22*PHYDRM) - 352 '''
+           )
+           
+# POUR RETROUVER LE CRITERE CROSSLAND
+# b = TAU0 = 352
+# a = (TAU0-D0/SQRT(3))/D0/3 = 0.22
+CRIT_FA2 =   FORMULE(
+           NOM_PARA=('DSIGEQ','PHYDRM'),
+           VALE=''' (DSIGEQ/1.732 + 0.22*PHYDRM) - 352 '''
+           )
+
+WHOL_F =   FORMULE(
+           NOM_PARA=('NBRUP'),
+           VALE=''' 4098.3*(NBRUP**(-0.2693)) '''
+           )
+
+###WHOL_Fb EST UNE FONCTION TABULEE DE WHOL_F
+###ON LANCE WHOL_Fb POUR OBTENIR LES VALEURS DE REFERENCE DE ENDO
+
+WHOL_Fb=DEFI_FONCTION(   NOM_PARA='SIGM',
+                         INTERPOL='LOG',
+                         PROL_DROITE='LINEAIRE',
+                         PROL_GAUCHE='LINEAIRE',
+                         VALE=(   99.40397376,  1.0E+06,
+                                 119.7956424,  5.0E+05,
+                                 153.3085836,  2.0E+05,
+                                 184.75821,  1.0E+05,
+                                 222.6593931,  5.0E+04,
+                                 284.948563,  2.0E+04,
+                                 326.955129,  1.2E+04,
+                                 343.4027321,  1.0E+04,
+                                 413.8481526,  5.0E+03,
+                                 529.6225539,  2.0E+03,
+                                 638.2689916,  1.0E+03,
+                                 769.2030912,  5.0E+02,
+                                 984.3883634,  2.0E+02,
+                                 1186.325173,  1.0E+02,
+                                 1429.687173,  5.0E+01,
+                                 1829.643475,  2.0E+01,
+                                 2204.975387,  1.0E+01,              
+                              )  
+                          )
+## -----------------------------------------------------------------------
+
+NBPR = 13
+CRIT = [None]*NBPR
+FATN = [None]*NBPR
+FATM = [None]*NBPR
+NPAR = [None]*NBPR
+CRIT[0] =   FORMULE(
+           NOM_PARA='DEPSPE',
+           VALE= '''DEPSPE'''
+           )
+
+CRIT[1] =   FORMULE(
+           NOM_PARA='EPSPR1',
+           VALE= '''EPSPR1'''
+           )
+
+CRIT[2] =   FORMULE(
+           NOM_PARA='SIGNM1',
+           VALE= '''SIGNM1'''
+           )
+
+CRIT[3] =   FORMULE(
+           NOM_PARA='APHYDR',
+           VALE= '''APHYDR'''
+           )
+CRIT[4] =   FORMULE(
+           NOM_PARA='DENDIS',
+           VALE= '''DENDIS'''
+           )
+
+CRIT[5] =   FORMULE(
+           NOM_PARA='DENDIE',
+           VALE= '''DENDIE'''
+           )
+
+CRIT[6] =   FORMULE(
+           NOM_PARA='DSIGEQ',
+           VALE= '''DSIGEQ'''
+           )
+
+CRIT[7] =   FORMULE(
+           NOM_PARA='SIGPR1',
+           VALE= '''SIGPR1'''
+           )
+
+CRIT[8] =   FORMULE(
+           NOM_PARA='EPSNM1',
+           VALE= '''EPSNM1'''
+           )
+
+CRIT[9] =   FORMULE(
+           NOM_PARA='INVA2S',
+           VALE= '''INVA2S'''
+           )
+
+CRIT[10] =   FORMULE(
+           NOM_PARA='DSITRE',
+           VALE= '''DSITRE'''
+           )
+
+CRIT[11] =   FORMULE(
+           NOM_PARA='DEPTRE',
+           VALE= '''DEPTRE'''
+           )
+
+CRIT[12] =   FORMULE(
+           NOM_PARA='EPSPAC',
+           VALE= '''EPSPAC'''
+           )
+
+RESU = [7.5E-4, 8.75E-4, 200, 66.66666, 0.173333, 0.45, 200, 100, 1.75E-3 , 1.616666E-3, 50, 6.0625E-4,3.67423E-3]
+NPAR = ['DEPSPE', 'EPSPR1', 'SIGNM1', 'APHYDR', 'DENDIS','DENDIE', 'DSIGEQ','SIGPR1', 'EPSNM1','INVA2S','DSITRE','DEPTRE', 'EPSPAC' ]
+for i in range(NBPR) :
+#
+# TEST CRITERE FORMULE 
+#########################################NOEUD
+    FATN[i]=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
+                       HISTOIRE=_F(  
+                                     SIGM_XX = SIGMXX,
+                                     SIGM_YY = ZERO,
+                                     SIGM_ZZ = ZERO,
+                                     SIGM_XY = ZERO,
+                                     SIGM_XZ = ZERO,
+                                     SIGM_YZ = ZERO,
+                                     
+                                     EPS_XX  = EPSTXX,
+                                     EPS_YY  = EPSTYY,
+                                     EPS_ZZ  = EPSTZZ,
+                                     EPS_XY  = ZERO,
+                                     EPS_XZ  = ZERO,
+                                     EPS_YZ  = ZERO,
+                                     
+                                     EPSP_XX  = EPSPXX,
+                                     EPSP_YY  = EPSPYY,
+                                     EPSP_ZZ  = EPSPZZ,
+                                     EPSP_XY  = ZERO,
+                                     EPSP_XZ  = ZERO,
+                                     EPSP_YZ  = ZERO,
+                                     
+                                     ),
+                       TYPE_CHARGE = 'PERIODIQUE',
+                       CRITERE='FORMULE_CRITERE',
+                       FORMULE_GRDEQ = CRIT[i],
+                       DOMMAGE='WOHLER',
+                       MATER=MAT0                 )
+                       
+    IMPR_TABLE(TABLE = FATN[i]) 
+
+    TEST_TABLE(     TABLE=FATN[i],
+                NOM_PARA = NPAR[i],
+                VALE=RESU[i],
+                PRECISION=1.E-5                )
+
+
+FIN()
+#

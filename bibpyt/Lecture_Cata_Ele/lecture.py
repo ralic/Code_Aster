@@ -1,4 +1,4 @@
-#@ MODIF lecture Lecture_Cata_Ele  DATE 13/03/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF lecture Lecture_Cata_Ele  DATE 26/03/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -681,8 +681,8 @@ class creer_capy(GenericASTTraversal):
 
         if len(node[6].attr) != 5 :
            ERR.mess('E',"le code d'une modélisation doit avoir 3 caractères exactement: "+node[6].attr)
-        if not node[3].attr in ("0","1","2","3")  :
-           ERR.mess('E',"la 1eme dimension doit etre celle des élements 'principaux' (0,1,2, ou 3) : "+node[3].attr)
+        if not node[3].attr in ("-1","0","1","2","3")  :
+           ERR.mess('E',"la 1eme dimension doit etre celle des élements 'principaux' (-1,0,1,2, ou 3) : "+node[3].attr)
         if not node[4].attr in ("2","3")  :
            ERR.mess('E',"la 2eme dimension doit etre celle de l'espace (2 ou 3) : "+node[4].attr)
         ERR.contexte("","RAZ")

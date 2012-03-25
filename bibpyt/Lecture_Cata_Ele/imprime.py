@@ -1,4 +1,4 @@
-#@ MODIF imprime Lecture_Cata_Ele  DATE 13/03/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF imprime Lecture_Cata_Ele  DATE 26/03/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -405,22 +405,23 @@ def imprime_ojb(file,capy):
 
    #=========================================================================================
    # XXUTIL:
-   # Bouts de code peuvent servir aux développeurs pour générer des fichiers de "doc" :
+   # Bouts de code povant servir aux développeurs pour générer des fichiers pratiques pour les scripts :
    # Ces bouts de code sont placés ici, après le "degenerise" et avant les "del cata"
-   if 0 :
+   xxut1=False
+   if xxut1 :
       nomfic="/local00/home/lvabhhts/U/liCMP.txt"
       impr_CMP(nomfic,capy) # pour imprimer tous les 6-uplets ( OPTION  TYPELEM  IN/OUT  PARAM   GRANDEUR  CMP )
-   if 0 :
+   if xxut1 :
       nomfic="/local00/home/lvabhhts/U/param_options.txt"
       # le fichier produit est moins gros que liCMP mais surtout il contient les paramètres RESL
       impr_param_options(nomfic,capy) # pour imprimer tous les 5-uplets ( OPTION  TYPELEM  IN/OUT  PARAM  GRANDEUR)
-   if 0 :
+   if xxut1 :
       nomfic="/local00/home/lvabhhts/U/PbOptions.txt"
       PbOptions(nomfic,capy) # pour imprimer le nom des parametres inutilises des options
-   if 0 :
+   if xxut1 :
       nomfic="/local00/home/lvabhhts/U/nomte_nomtm.txt"
-      nomte_nomtm(nomfic,capy) # pour imprimer les couples (type_elem, type_maille)
-   if 0 :
+      nomte_nomtm(nomfic,capy) # pour imprimer les lignes (type_elem, type_maille, attribut1, attribut2, ... )
+   if xxut1 :
       nomfic="/local00/home/lvabhhts/U/numte_lnomte.txt"
       numte_lnomte(nomfic,capy) # pour imprimer les lignes (te00ij -> (type_elem1, type_elem2, ...)
    #=========================================================================================
@@ -728,7 +729,7 @@ def imprime_ojb(file,capy):
    lnofpgl= lifpgl.keys(); lnofpgl.sort()
    for nofpgl in lnofpgl:
       NOFPG_LISTE.ajout_nom(nofpgl)
-      l1=lifpgl[nofpgl] ; n1=len(l1); print l1
+      l1=lifpgl[nofpgl] ; n1=len(l1)
       FPG_LISTE.cree_oc(nom=nofpgl,long=n1)
       for kk in range(n1):
          FPG_LISTE.ecri_co(nom=nofpgl,indice=kk+1,valeur=l1[kk])
@@ -1105,6 +1106,7 @@ def degenerise(capy):
 def get_liattr(capy,cata):
 #     retourne la liste des attributs d'un type_element :
 #     (y compris les attributs définis au niveau des modélisations)
+#     (y compris les attributs définis AUTOMATIQUEMENT)
 #---------------------------------------------------------------------------
       entete,modlocs,opts=cata.cata_te
       note  = entete[0]
@@ -1113,12 +1115,18 @@ def get_liattr(capy,cata):
       # recherche d'informations sur le type de maille : codtma (K3) + dimension topologique
       for tm in capy.tm.ltm :
          if not tm[0]==tyma1 : continue
-         dimtma=tm[2]
+         dimtma=int(tm[2])
          codtma=tm[3]
+         assert dimtma in (0,1,2,3) , dimtma
 
       dicattr={}
 
       # attributs définis pour toute la modélisation :
+      # pour les type_element appartenant à plusieurs modélisations,
+      # c'est la dernière modélisation qui impose sa loi (dans quel ordre ?).
+      # si cette loi est embetante, il faut redéfinir l'attribut au niveau du type_element
+
+      lattr_AUTO=['ALIAS8','DIM_TOPO_MODELI','DIM_COOR_MODELI','DIM_TOPO_MAILLE','PRINCIPAL','BORD','DISCRET']
       for (ph,lmod,codph) in capy.ph.l_pheno:
           for (mod,laffe,codmod,(d1,d2),lattrib) in lmod:
              # la modélisation inclut-elle le type_element note ?
@@ -1127,18 +1135,34 @@ def get_liattr(capy,cata):
                 if tyel==note : trouve=1
 
              if trouve :
-                # pour les type_element appartenant à plusieurs modélisations,
-                # c'est la dernière modélisation qui impose sa loi (dans quel ordre ?).
-                # si cette loi est embetante, il faut redéfinir l'attribut au niveau du type_element
+                d1=int(d1); d2=int(d2)
+                assert d1 in (-1,0,1,2,3) ,d1
+                assert d2 in (0,1,2,3)    ,d2
+                # On ajoute les attributs définis AUTOMATIQUEMENT (ceux de lattr_AUTO) :
                 dicattr['ALIAS8']=str(codph)[1:3]+str(codmod)[1:4]+str(codtma)[1:4]
                 dicattr['DIM_TOPO_MAILLE']=str(dimtma)
-                assert d1 <= d2 , ("dimensions incohérentes :",d1,d2)
                 dicattr['DIM_TOPO_MODELI']=str(d1)
                 dicattr['DIM_COOR_MODELI']=str(d2)
+
+                # le cas d1 == -1 est particulier : il est réservé aux modélisations discrètes DIS_xxx
+                if d1 == -1 :
+                   dicattr['DISCRET']='OUI'
+                   dicattr['PRINCIPAL']='OUI'
+                else :
+                   dicattr['DISCRET']='NON'
+                   if  d1 > d2  : ERR.mess('E',"Pb. pour les dimensions DIM__ x y de la modelisation:"+mod)
+                   if dimtma > d1 : ERR.mess('E',"Pb. pour la dimension de la maille:"+tyma+ "de la modelisation:"+mod)
+                   if dimtma ==  d1 :
+                      dicattr['PRINCIPAL']='OUI'
+                      dicattr['BORD']='NON'
+                   else :
+                      dicattr['PRINCIPAL']='NON'
+                      dicattr['BORD']='OUI'
 
                 if lattrib :
                    for k in range(len(lattrib)) :
                       no_attr =lattrib[k][0]
+                      if no_attr in lattr_AUTO : ERR.mess('E',"Il est interdit de redéfinir l'attribut:"+no_attr)
                       val_attr=lattrib[k][1]
                       dicattr[no_attr]=val_attr
 
@@ -1148,6 +1172,7 @@ def get_liattr(capy,cata):
       if lattrib :
             for k in range(len(lattrib)) :
                no_attr =lattrib[k][0]
+               if no_attr in lattr_AUTO and dicattr.has_key(no_attr) : ERR.mess('E',"Il est interdit de redéfinir l'attribut:"+no_attr)
                val_attr=lattrib[k][1]
                dicattr[no_attr]=val_attr
 
@@ -1350,12 +1375,19 @@ def numte_lnomte(nomfic,capy):
 
 #----------------------------------------------------------------------------------
 def nomte_nomtm(nomfic,capy):
-# pour imprimer les couples (type_element, type_maille)
+# pour imprimer les lignes (type_elem, type_maille, attribut1, attribut2, ... )
 #-----------------------------------------------------------------------------------
    file = open(nomfic,"w")
    dico={}
    for cata in capy.te:
        entete,modlocs,opts=cata.cata_te
-       note=entete[0]
-       notm=entete[1]
-       file.write(note+' '+notm+'\n')
+       note="%-16s" % entete[0]
+       notm="%-8s"  % entete[1]
+       liattr=get_liattr(capy,cata)
+       n1=len(liattr)
+       assert 2*(n1/2)==n1, n1
+       l1=" "
+       for k in range(n1/2):
+          x1="%-17s" % (liattr[2*k]+"="+liattr[2*k+1],)
+          l1=l1+x1+" "
+       file.write(note+' '+notm+l1+'\n')

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -102,7 +102,7 @@ MODE_LOCAL__
     EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30])
     CREFERI  = NEUT_I   ELEM__         (X[12]      )
     ECOURAN  = NEUT_R   ELEM__         (X1       )
-    CCONSTR  = NEUT_R   ELEM__         (X1       )
+    CCONSTR  = NEUT_R   ELEM__         (X[30]    )
     CSOUSOP  = NEUT_K24 ELEM__         (Z1       )
     CALPHAR  = NEUT_R   ELEM__         (X1       )
     EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30])
@@ -120,13 +120,14 @@ MODE_LOCAL__
     ESIGMPC  = SIEF_C   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ)
     ESIGMNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ)
     ESIGMNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ)
-    ECONTPG  = SIEF_R   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     DISS)
+    ECONTPG  = SIEF_R   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     
+                                        SIGV_A   SIGV_L   SIGV_GX  SIGV_GY  SIGV_GZ)
     ECONTPC  = SIEF_C   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ECOEQPG  = SIEF_R   ELGA__ RIGI    (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG
                                         VECT_1_X VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z
                                         VECT_3_X VECT_3_Y VECT_3_Z )
-    ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     DISS)
-    ECONTNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     DISS)
+    ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ)
+    ECONTNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ)
     ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG  )
     EDERAPG  = DERA_R   ELGA__ RIGI    (DCHA_V   DCHA_T   RADI_V   ERR_RADI   )
     EDERANO  = DERA_R   ELNO__ IDEN__  (DCHA_V   DCHA_T   RADI_V   ERR_RADI   )
@@ -237,19 +238,19 @@ OPTION__
                                      DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR
                                      CTEMPSR  PINSTPR  CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
                                      ZVARCPG  PVARCRR  ZVARIPG  PVARIMP  ZVARIPG  PVARIMR
-                              OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
-                                     MVECTUR  PVECTUR
+                              OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUUR  PMATUUR  MMATUNS  PMATUNS
+                                     ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     INDIC_ENER          -1    IN__    OUT__    XXXXXX   XXXXXX
     INDIC_SEUIL         -1    IN__    OUT__    XXXXXX   XXXXXX
     INIT_MAIL_VOIS      -1    IN__    OUT__    XXXXXX   XXXXXX
     INIT_VARC           99    IN__  
                               OUT__  ZVARCPG  PVARCPR
     MASS_INER           -1    IN__    OUT__    XXXXXX   XXXXXX
-    MASS_MECA           545   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC
+    MASS_MECA           562   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC
                               OUT__  MMATUUR  PMATUUR
-    MASS_MECA_DIAG      545   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC
+    MASS_MECA_DIAG      562   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC
                               OUT__  MMATUUR  PMATUUR
-    MASS_MECA_EXPLI     545   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC
+    MASS_MECA_EXPLI     562   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC
                               OUT__  MMATUUR  PMATUUR
     MECA_SENS_MATE      -1    IN__    OUT__    XXXXXX   XXXXXX
     MECA_SENS_RAPH      -1    IN__    OUT__    XXXXXX   XXXXXX
@@ -259,9 +260,8 @@ OPTION__
     NORME_L2            -1    IN__    OUT__    XXXXXX   XXXXXX
     PAS_COURANT         404   IN__   CMATERC  PMATERC  NGEOMER  PGEOMER
                               OUT__  ECOURAN  PCOURAN
-    PILO_PRED_DEFO      518   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
-                                     DDL_MECA PDDEPLR  DDL_MECA PDEPL0R  DDL_MECA PDEPL1R  DDL_MECA PDEPLMR
-                                     NGEOMER  PGEOMER  CMATERC  PMATERC  CTYPEPI  PTYPEPI  ZVARIPG  PVARIMR
+    PILO_PRED_DEFO      518   IN__   CCDTAU   PCDTAU   DDL_MECA PDDEPLR  DDL_MECA PDEPL0R  DDL_MECA PDEPL1R
+                                     DDL_MECA PDEPLMR  NGEOMER  PGEOMER  CTYPEPI  PTYPEPI
                               OUT__  ECOPILO  PCOPILO
     PILO_PRED_ELAS      518   IN__   CBORNPI  PBORNPI  CCDTAU   PCDTAU   CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
                                      DDL_MECA PDDEPLR  DDL_MECA PDEPL0R  DDL_MECA PDEPL1R  DDL_MECA PDEPLMR
@@ -282,7 +282,7 @@ OPTION__
                                      DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR
                                      CTEMPSR  PINSTPR  CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
                                      ZVARCPG  PVARCRR  ZVARIPG  PVARIMR
-                              OUT__  MMATUUR  PMATUUR
+                              OUT__  MMATUNS PMATUNS MMATUUR  PMATUUR
     RIGI_MECA_GE        -1    IN__    OUT__    XXXXXX   XXXXXX
     RIGI_MECA_HYST      -1    IN__    OUT__    XXXXXX   XXXXXX
     RIGI_MECA_RO        -1    IN__    OUT__    XXXXXX   XXXXXX
@@ -293,7 +293,6 @@ OPTION__
                                      CTEMPSR  PINSTPR  CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
                                      ZVARCPG  PVARCRR  ZVARIPG  PVARIMR
                               OUT__  MMATUNS PMATUNS MMATUUR  PMATUUR
-    SYME_MDNS_R         -1    IN__    OUT__    XXXXXX   XXXXXX
     SIEF_ELGA           -1    IN__    OUT__    XXXXXX   XXXXXX
     SIEF_ELGA_SENS      -1    IN__    OUT__    XXXXXX   XXXXXX
     SIEF_ELNO           4     IN__   ECONTPG  PCONTRR
@@ -303,6 +302,8 @@ OPTION__
     SIGM_ELNO           4     IN__   ESIGMPG  PCONTRR
                               OUT__  ESIGMNO  PSIEFNOR ESIGMNC  PSIEFNOC
     SIGM_ELNO_SENS      -1    IN__    OUT__    XXXXXX   XXXXXX
+    SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM
+                              OUT__  MMATUUR  PSYM
     SING_ELEM           99    IN__  
                               OUT__  ESINGUL  PSING_R
     SING_ELNO           99    IN__  

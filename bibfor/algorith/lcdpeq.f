@@ -3,7 +3,7 @@
 
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/02/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -37,13 +37,14 @@ C     VAR  NVI    :  NOMBRE DE VARIABLES INTERNES
 C          VINF   :  VARIABLES INTERNES A T+DT
 C          MATERF :  COEF MATERIAU
 C     ----------------------------------------------------------------
-      INTEGER NVI,NMAT,NBCOMM(NMAT,3),NBPHAS,I,IPHAS,INDFV,NUVI,NS
+      INTEGER NVI,NMAT,NBCOMM(NMAT,3),NBPHAS,I,IPHAS,INDFV,NUVI,NS,IFA
+      INTEGER IFL, IRR, IS, NBFSYS, NBSYS, NSFA, NSFV,NUECOU
       REAL*8  VIND(NVI),VINF(NVI),DVIN(NVI),SIG(6),GRANB(6)
-      REAL*8  EPSEQ,E,NU,FV,SIGG(6)
+      REAL*8  EPSEQ,E,NU,FV,SIGG(6),MUS(6),NG(3),LG(3),PGL(3,3)
       REAL*8  ID(3,3),F(3,3),FPM(3,3),FP(3,3),FE(3,3),DETP,LCNRTE
-      REAL*8  DETOT(*),EPSD(*),PK2(6),DEVI(6),ENDOC
-      REAL*8 MATERF(NMAT,2)
-      CHARACTER*16 LOI,CPMONO(5*NMAT+1),LOCA,COMP(*)
+      REAL*8  DETOT(*),EPSD(*),PK2(6),DEVI(6),ENDOC,DP,XI,QM(3,3)
+      REAL*8  MATERF(NMAT,2),RHOIRR(12)
+      CHARACTER*16 LOI,CPMONO(5*NMAT+1),LOCA,COMP(*),NECOUL,NOMFAM
       DATA    ID/1.D0,0.D0,0.D0, 0.D0,1.D0,0.D0, 0.D0,0.D0,1.D0/    
 
       LOI  = COMP(1)
@@ -54,16 +55,44 @@ C     ----------------------------------------------------------------
          ENDIF
       ENDIF
 
-C --    DEBUT TRAITEMENT DE VENDOCHAB --
-C --    CALCUL DES CONTRAINTES SUIVANT QUE LE MATERIAU EST
-C --    ENDOMMAGE OU PAS
-
       IF (LOI(1:8).EQ.'MONOCRIS') THEN      
+  
+         NBFSYS=NBCOMM(NMAT,2)
+C        NSFA : debut de la famille IFA dans DY et YD
+         NSFA=6
+C        NSFV : debut de la famille IFA dans les variables internes
+         NSFV=6
+         DO 6 IFA=1,NBFSYS
+            IFL=NBCOMM(IFA,1)
+C            NUECOU=NINT(MATERF(IFL,2))
+            NOMFAM=CPMONO(5*(IFA-1)+1)
+            NECOUL=CPMONO(5*(IFA-1)+3)
+            CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MUS,NG,LG,0,QM)
+            IF (NECOUL.EQ.'MONO_DD_CC_IRRA') THEN
+               CALL DCOPY(12, VIND(NSFV+3*NBSYS+1),1,RHOIRR,1)
+               XI=MATERF(IFL+22,2)
+               IRR=1
+            ELSE
+               IRR=0
+            ENDIF
+            DO 7 IS=1,NBSYS
+C              VARIABLES INTERNES PAR SYSTEME DE GLISSEMENT
+               NUVI=NSFV+3*(IS-1)+3
+               DP=VINF(NUVI)
+               IF(IRR.EQ.1) THEN
+                  RHOIRR(IS)=RHOIRR(IS)*EXP(-XI*DP)
+               ENDIF
+  7         CONTINUE
+            IF(IRR.EQ.1) THEN
+               CALL DCOPY(12, RHOIRR,1,VINF(NSFV+3*NBSYS+1),1)
+            ENDIF
+            NSFA=NSFA+NBSYS
+            NSFV=NSFV+NBSYS*3
+  6      CONTINUE
   
          IF (COMP(3)(1:5).NE.'PETIT') THEN
 C           ICI CONTRAIREMENT A LCMMON, NVI EST LE NOMBRE TOTAL DE V.I
-            NS=(NVI-27)/3
-            CALL DCOPY(9,VINF(6+3*NS+1),1,FP,1)
+            CALL DCOPY(9,VINF(NVI-3-18+1 ),1,FP,1)
             CALL MATINV('S',3,FP,FPM,DETP)
             CALL PMAT(3,DETOT,EPSD,F)
             CALL PMAT(3,F,FPM,FE)
@@ -74,12 +103,12 @@ C           CALCUL DES CONTRAINTES DE KIRCHOFF
 C           LES RACINE(2) ATTENDUES PAR NMCOMP :-)       
             CALL DSCAL(3,SQRT(2.D0),SIG(4),1)
             CALL DAXPY(9,-1.D0,ID,1,FE,1)
-            CALL DCOPY(9,FE,1,VINF(6+3*NS+10),1)
+            CALL DCOPY(9,FE,1,VINF(NVI-3-18+10),1)
             CALL LCGRLA(FP,DEVI)
             CALL DCOPY(6,DEVI,1,VINF,1)
             CALL DSCAL(3,SQRT(2.D0),DEVI(4),1) 
             CALL DAXPY(9,-1.D0,ID,1,FP,1)
-            CALL DCOPY(9,FP,1,VINF(6+3*NS+1),1)
+            CALL DCOPY(9,FP,1,VINF(NVI-3-18+1 ),1)
             EPSEQ = LCNRTE(DEVI)
          ELSE
 C           V.I. 1 A 6 REPRÈSENTE LA DEFORMATION VISCOPLASTIQUE MACRO
@@ -137,11 +166,24 @@ C         RECUPERER L'ORIENTATION DE LA PHASE ET LA PROPORTION
          VINF (NVI) = 1.D0
       ENDIF
 
+C --    DEBUT TRAITEMENT DE VENDOCHAB --
+C --    CALCUL DES CONTRAINTES SUIVANT QUE LE MATERIAU EST
+C --    ENDOMMAGE OU PAS
+
       IF (LOI(1:9).EQ.'VENDOCHAB') THEN
 C --    DEBUT TRAITEMENT DE VENDOCHAB --
 C --    CALCUL DE DSDE SUIVANT QUE LE MATERIAU EST ENDOMMAGE OU PAS
         ENDOC=(1.0D0-VINF(9))
         MATERF(1,1)=MATERF(1,1)*ENDOC
+      ENDIF
+     
+      IF (LOI(1:8).EQ.'HAYHURST') THEN
+C --    DEBUT TRAITEMENT DE HAYHURST --
+C --    CALCUL DE DSDE SUIVANT QUE LE MATERIAU EST
+C --    ENDOMMAGE OU PAS
+        ENDOC=(1.0D0-VINF(11))
+        MATERF(1,1)=MATERF(1,1)*ENDOC
+C --    FIN   TRAITEMENT DE HAYHURST --
       ENDIF
       
       END

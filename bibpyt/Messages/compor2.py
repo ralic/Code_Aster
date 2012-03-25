@@ -1,4 +1,4 @@
-#@ MODIF compor2 Messages  DATE 31/01/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF compor2 Messages  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -127,6 +127,15 @@ Noms des variables internes :"""),
 
 24: _(u"""   V%(i1)d : %(k1)s"""),
 
+25: _(u"""
+Pour les noms des variables internes du MONOCRISTAL, voir DEFI_COMPOR."""),
+
+26: _(u"""
+MONOCRISTAL : en grandes déformations, il y a 18 variables internes supplémentaires :
+Le tableau des variables internes comporte, avant les 3 dernières variables internes habituelles :
+FP : (1,1),(1,2),(1,3),(2,1),(2,2),(2,3),(3,1),(3,2),(3,3),
+FE : (1,1),(1,2),(1,3),(2,1),(2,2),(2,3),(3,1),(3,2),(3,3),
+"""),
 
 
 }

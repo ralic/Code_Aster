@@ -1,4 +1,4 @@
-# MODIF  DATE 19/03/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 26/03/2012   AUTEUR DESROCHE X.DESROCHES 
 # AUTEUR : F. LEBOUVIER (DeltaCAD)
 #  TITRE  : FLEXION D'UNE DALLE EN BETON ARME (MODELE GLRC) APPUYEE SUR 2 COTES:
 # ssls126c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
@@ -183,15 +183,6 @@ RESU=CALC_ELEM(reuse=RESU,
                      RESULTAT=RESU,
               );
 
-RESU=CALC_ELEM(reuse=RESU,
-             REPE_COQUE =_F( NUME_COUCHE=1,
-                             NIVE_COUCHE='INF',),
-            OPTION=(
-                    'EPSI_ELNO',
-                    ),
-                     RESULTAT=RESU,
-              );
-
 TEST_RESU(RESU=(
            _F( RESULTAT = RESU,
                NUME_ORDRE = 1,
@@ -227,20 +218,6 @@ TEST_RESU(RESU=(
                MAILLE='M266',
                NOM_CMP = 'KXX',
                VALE = 7.21E-4,
-               REFERENCE = 'ANALYTIQUE'),
-             ),
-        );
-
-TEST_RESU(RESU=(
-           _F( RESULTAT = RESU,
-               NUME_ORDRE = 1,
-               NOM_CHAM = 'EPSI_ELNO',
-               CRITERE = 'RELATIF',
-               PRECISION = 0.030,
-               GROUP_NO = 'A1',
-               MAILLE='M266',
-               NOM_CMP = 'EPXX',
-               VALE = -0.4326E-4,
                REFERENCE = 'ANALYTIQUE'),
              ),
         );

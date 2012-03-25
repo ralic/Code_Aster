@@ -2,7 +2,7 @@
      &                  NOMCMP,NCMPMA,MECA,NOMCMD)
 C RESPONSABLE PROIX J-M.PROIX
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/03/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -103,6 +103,7 @@ C ======================================================================
       TYPMCL(1) = 'GROUP_MA'
       TYPMCL(2) = 'MAILLE'
       MESMAI = '&&NMDOCC'//'.MES_MAILLES'
+      TXCP='ANALYTIQUE'
 
 C ======================================================================
 C                       REMPLISSAGE DE LA CARTE COMPOR :
@@ -150,7 +151,7 @@ C         APPEL A LCINFO POUR RECUPERER LE NOMBRE DE VARIABLES INTERNES
           CALL LCINFO(COMCOD, NUMLC, NBVARI)
           
 C         NOMS DES VARIABLES INTERNES
-          IF ((NBVARI.GT.0).AND.(INDIMP.EQ.1)) THEN
+          IF (INDIMP.EQ.1) THEN
             CALL IMVARI(MOCLEF(I),K,NCOMEL, LCOMEL,COMCOD,NBVARI,TAVARI)
           ENDIF
 

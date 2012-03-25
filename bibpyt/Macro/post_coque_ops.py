@@ -1,8 +1,8 @@
-#@ MODIF post_coque_ops Macro  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF post_coque_ops Macro  DATE 26/03/2012   AUTEUR DESROCHE X.DESROCHES 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -37,6 +37,7 @@ def post_coque_ops(self,RESULTAT,COOR_POINT,CHAM,NUME_ORDRE,INST,
     CREA_CHAMP      =self.get_cmd('CREA_CHAMP')
     CREA_TABLE      =self.get_cmd('CREA_TABLE')
     IMPR_TABLE      =self.get_cmd('IMPR_TABLE')
+    CALC_TABLE      =self.get_cmd('CALC_TABLE')
     CALC_ELEM       =self.get_cmd('CALC_ELEM')
 
 
@@ -102,7 +103,6 @@ def post_coque_ops(self,RESULTAT,COOR_POINT,CHAM,NUME_ORDRE,INST,
                                  COOR_EXTR=lst,
                                  DISTANCE_MAX=10.0,),)
       __tabl=MACR_LIGN_COUPE(RESULTAT=RESULTAT,**motscles)
-      IMPR_TABLE(TABLE=__tabl)
 
     if CHAM=='DEFORMATION' :
       motscles['LIGN_COUPE']=[]
@@ -120,7 +120,6 @@ def post_coque_ops(self,RESULTAT,COOR_POINT,CHAM,NUME_ORDRE,INST,
                                  COOR_EXTR=lst,
                                  DISTANCE_MAX=10.0,),)
       __tabl=MACR_LIGN_COUPE(RESULTAT=RESULTAT,**motscles)
-#      print 'MACR_LIGN_COUPE DEFORMATION effectue'
 
     tab2=__tabl.EXTR_TABLE()
     if NUME_ORDRE:
@@ -137,16 +136,10 @@ def post_coque_ops(self,RESULTAT,COOR_POINT,CHAM,NUME_ORDRE,INST,
          tab4.append(ligne)
     tab4=tab4[tab2.para]
 #
-#  on cree une table(eps3D) bidon qu'on va surcharger
+#  on cree une table(dege) bidon qu'on va surcharger
 #
     if CHAM=='DEFORMATION' :
-      if NUME_ORDRE :
-        CALC_ELEM(RESULTAT=RESULTAT,reuse=RESULTAT,OPTION='EPSI_ELNO',
-                  NUME_ORDRE=NUME_ORDRE)
-      else :
-        CALC_ELEM(RESULTAT=RESULTAT,reuse=RESULTAT,OPTION='EPSI_ELNO',
-                  INST=INST)
-      motscles['NOM_CHAM']   ='EPSI_ELNO'
+      motscles['NOM_CHAM']   ='DEGE_ELNO'
       motscles['LIGN_COUPE']=[]
       tabz=[]
       iocc=0
@@ -162,9 +155,27 @@ def post_coque_ops(self,RESULTAT,COOR_POINT,CHAM,NUME_ORDRE,INST,
                                  COOR_EXTR=lst,
                                  DISTANCE_MAX=10.0,),)
       __tabeps=MACR_LIGN_COUPE(RESULTAT=RESULTAT,**motscles)
-#      print 'MACR_LIGN_COUPE DEFORMATION 3D effectue'
-#      print 'tabz',tabz
-      tabep2=__tabeps.EXTR_TABLE()
+      __teps=CALC_TABLE(TABLE=__tabeps,
+                  ACTION=(
+                  _F(OPERATION='RENOMME',
+                             NOM_PARA=('EXX','EPXX')),
+                  _F(OPERATION='RENOMME',
+                             NOM_PARA=('EYY','EPYY')),
+                  _F(OPERATION='RENOMME',
+                             NOM_PARA=('EXY','EPZZ')),
+                  _F(OPERATION='RENOMME',
+                             NOM_PARA=('KXX','EPXY')),
+                  _F(OPERATION='RENOMME',
+                             NOM_PARA=('KYY','EPXZ')),
+                  _F(OPERATION='RENOMME',
+                             NOM_PARA=('KXY','EPYZ')),
+                  _F(OPERATION='EXTR',
+NOM_PARA=('INTITULE','NOM_CHAM','NUME_ORDRE','INST','ABSC_CURV',
+          'COOR_X','COOR_Y','COOR_Z',
+           'EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ',)),
+                   ),)
+
+      tabep2=__teps.EXTR_TABLE()
       if NUME_ORDRE:
         tabep3=(tabep2.NUME_ORDRE==NUME_ORDRE)
       else:
@@ -178,29 +189,20 @@ def post_coque_ops(self,RESULTAT,COOR_POINT,CHAM,NUME_ORDRE,INST,
         if(ilig%2)==0:
           tabep4.append(ligne)
       tabep4=tabep4[tabep2.para]
-#      print tabep4
 
       iligout=0
       for ligout in tabep4 :
         iligout=iligout+1
-#        print 'iligout=',iligout
         iligin=0
         for ligin in tab4 :
           iligin=iligin+1
           if(iligout==iligin) :
-#            print 'ligout avant',ligout
-#            print 'ligin keys',ligin.keys()
-#            print 'ligin',ligin
             ligout['EPXX']=ligin['EXX']+ligin['KXX']*tabz[iligout-1]
             ligout['EPYY']=ligin['EYY']+ligin['KYY']*tabz[iligout-1]
             ligout['EPXY']=ligin['EXY']+ligin['KXY']*tabz[iligout-1]
             ligout['EPZZ']=0.0
             ligout['EPXZ']=ligin['GAX']*0.5
             ligout['EPYZ']=ligin['GAY']*0.5
-#            print 'ligout apres',ligout
-
-#      print tabep4
-
 
     if CHAM=='EFFORT' :
       dprod = tab4.dict_CREA_TABLE()

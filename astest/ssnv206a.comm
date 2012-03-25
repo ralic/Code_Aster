@@ -1,4 +1,4 @@
-# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
 # ======================================================================
 # TEST DU MODELE VISCOPLASTIQUE LETK
 # TITRE ETUDE  : ESSAI TRIAXIAL DRAINE AVEC LE MODELE VISCOPLASTIQUE DU CIH LETK
@@ -132,6 +132,7 @@ U1=STAT_NON_LINE(
                 FONC_MULT = COEF1), _F(
                 CHARGE = DEPL_1)),
                          COMP_INCR=_F(
+                ALGO_INTE='SPECIFIQUE',
                 RELATION = 'LETK',
                 ),
                        CONVERGENCE=_F(
@@ -233,6 +234,7 @@ U2=STAT_NON_LINE(
                 CHARGE = DEPL_2,
                 FONC_MULT = COEF2)),
                 COMP_INCR=_F(
+                ALGO_INTE='SPECIFIQUE',
                 RELATION = 'LETK'
                               ),
                 ETAT_INIT=_F(EVOL_NOLI=U1),

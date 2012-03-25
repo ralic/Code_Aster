@@ -1,8 +1,8 @@
-# MODIF  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 26/03/2012   AUTEUR TRAN V-X.TRAN 
 # TITRE  LOIS DE TAHERI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -290,6 +290,59 @@ TEST_TABLE(        TABLE=TAB_4,
 TEST_TABLE(        TABLE=TAB_4,
                  NOM_PARA='DOMM_CUMU',
                      VALE=6.6095E-5,
+                PRECISION=1.E-5                )
+
+
+TAB_5=POST_FATIGUE(        CHARGEMENT='UNIAXIAL',
+                             HISTOIRE=_F(  EPSI = TAUN1),
+                             COMPTAGE='RAINFLOW_MAX',
+                              DOMMAGE='TAHERI_MANSON',
+                          TAHERI_FONC=F_EPS,
+                         TAHERI_NAPPE=F_EPSMAX,
+                                MATER=MAT0,
+                                CUMUL='LINEAIRE',
+                                 INFO=2                   )
+
+IMPR_TABLE (TABLE = TAB_5)
+
+TEST_TABLE(        TABLE=TAB_5,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 1),
+                 NOM_PARA='DOMMAGE',
+                     VALE=4.E-05,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_5,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 2),
+                 NOM_PARA='DOMMAGE',
+                     VALE=1.E-5,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_5,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 3),
+                 NOM_PARA='DOMMAGE',
+                     VALE=1.E-5,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_5,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 4),
+                 NOM_PARA='DOMMAGE',
+                     VALE=1.33333E-05,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_5,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 5),
+                 NOM_PARA='DOMMAGE',
+                     VALE=1.E-5,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_5,
+                 NOM_PARA='DOMM_CUMU',
+                     VALE=8.33333E-5,
                 PRECISION=1.E-5                )
 
 #

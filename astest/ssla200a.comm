@@ -1,4 +1,4 @@
-# MODIF  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 26/03/2012   AUTEUR SELLENET N.SELLENET 
 # TITRE TEST DE NON-REGRESSION ASTER : MECANIQUE LINEAIRE AXISYMETRIQUE
 # RESPONSABLE PELLET J.PELLET
 # ssla200a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
@@ -980,21 +980,21 @@ TEST_RESU(RESU=( _F(  RESULTAT = MSLI2,    INST = 11.5,
 # --------------------------------------------------------------------
 # POUR TESTER LE CALCUL DE REAC_NODA SUR UN GROUP_MA :
 # ----------------------------------------------------
-CALC_ELEM( reuse=MSLI2,           OPTION='SIEF_ELGA',
-                          RESULTAT=MSLI2,
-                      MAILLE=('M11','M12','M14',),
-                       NUME_ORDRE=3 )
+MSLI3=CALC_ELEM( OPTION='SIEF_ELGA',
+                 RESULTAT=MSLI2,
+                 MAILLE=('M11','M12','M14',),
+                 NUME_ORDRE=3 )
 
-TEST_RESU(RESU=( _F(  RESULTAT = MSLI2,    NUME_ORDRE = 3,
+TEST_RESU(RESU=( _F(  RESULTAT = MSLI3,    NUME_ORDRE = 3,
                      NOM_CHAM = 'SIEF_ELGA',
                      TYPE_TEST = 'SOMM_ABS',
-       REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-9,
-              VALE=  1.6655181412311E+04     ),
-                   _F(  RESULTAT = MSLI2,    NUME_ORDRE = 3,
+       REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
+              VALE= 9.7886006390193E+01     ),
+                   _F(  RESULTAT = MSLI3,    NUME_ORDRE = 3,
                      NOM_CHAM = 'SIEF_ELGA',
                      TYPE_TEST = 'SOMM',
-       REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-9,
-              VALE=  2.3251717095766E+03     ))
+       REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
+              VALE= 8.3497014835607E+01     ))
             )
 
 CALC_NO( reuse=MSLI2,       OPTION='REAC_NODA',

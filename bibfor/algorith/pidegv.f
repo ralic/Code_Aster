@@ -1,0 +1,71 @@
+      SUBROUTINE PIDEGV(NEPS,TAU,EPSM,EPSP,EPSD,COPILO)
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+
+      IMPLICIT NONE
+      INTEGER  NEPS
+      REAL*8   TAU,EPSM(NEPS),EPSD(NEPS),EPSP(NEPS)
+      REAL*8   COPILO(2,2)
+C ----------------------------------------------------------------------
+C     PILOTAGE DEFORMATION POUR MODELISATION GRAD_VARI
+C ----------------------------------------------------------------------
+C IN  NEPS    DIMENSION DES DEFORMATIONS (3*NDIM+2)
+C IN  TAU     INCREMENT DE PILOTAGE
+C IN  EPSM    CHAMP DE DEFORMATION EN T- 
+C IN  EPSP    INCREMENT FIXE
+C IN  EPSD    INCREMENT PILOTE
+C OUT COPILO  COEFFICIENTS DE PILOTAGE : 
+C               F := COPILO(1,1)+COPILO(2,1)*ETA = TAU
+C               F := COPILO(1,2)+COPILO(2,2)*ETA = TAU
+C ----------------------------------------------------------------------
+      INTEGER NDIM,NDIMSI,NRAC,I
+      REAL*8  EPSMNO,P0,P1,P2,RAC(2)
+      REAL*8  DDOT,DNRM2,R8GAEM
+C ----------------------------------------------------------------------
+
+C -- INITIALISATION
+
+      NDIM   = (NEPS-2)/3
+      NDIMSI = 2*NDIM
+
+
+C -- COEFFICIENTS DE PILOTAGE
+
+      EPSMNO      = DNRM2(NDIMSI,EPSM,1)
+      
+      IF (EPSMNO.GT.1.D0/R8GAEM()) THEN
+        COPILO(1,1) = DDOT(NDIMSI, EPSM,1, EPSP,1)/EPSMNO
+        COPILO(2,1) = DDOT(NDIMSI, EPSM,1, EPSD,1)/EPSMNO
+
+      ELSE
+ 
+C      PREMIER PAS : PILOTAGE PAR LA NORME DE L'INCREMENT 
+        P2=DDOT(NDIMSI,EPSD,1,EPSD,1)
+        P1=DDOT(NDIMSI,EPSD,1,EPSP,1)*2
+        P0=DDOT(NDIMSI,EPSP,1,EPSP,1)
+        CALL ZEROP2(P1/P2,(P0-TAU**2)/P2,RAC,NRAC)
+
+        DO 10 I=1,NRAC
+          COPILO(2,I) = 0.5D0*(2*P2*RAC(I)+P1)/TAU
+          COPILO(1,I) = TAU**2-RAC(I)*COPILO(2,I)
+ 10     CONTINUE
+
+        END IF
+      END

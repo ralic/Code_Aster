@@ -1,8 +1,7 @@
-      SUBROUTINE MCOPCE(NDIM  ,ALIAS ,NNO   ,NCMP  ,KSI1  ,
-     &                  KSI2  ,COOR  ,GEOM  )
-C
+      REAL*8 FUNCTION LCESVF(MODE,A) 
+
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/02/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -19,33 +18,50 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C RESPONSABLE ABBAS M.ABBAS
-C
-      IMPLICIT NONE
-      INTEGER      NDIM,NNO,NCMP
-      CHARACTER*8  ALIAS
-      REAL*8       KSI1,KSI2
-      REAL*8       COOR(27),GEOM(3)
-C      
+
+      IMPLICIT NONE      
+      INTEGER MODE
+      REAL*8  A
 C ----------------------------------------------------------------------
-C
-C ROUTINE CONTACT (METHODE CONTINUE - APPARIEMENT - UTILITAIRE)
-C
-C CALCUL DE LA VALEUR D'UN CHAMP SUR 
-C
+C  CALCUL DES FONCTIONS R(A) POUR LA ENDO_SCALAIRE AVEC GRAD_VARI
 C ----------------------------------------------------------------------
-C
-C
-C IN  NDIM   : DIMENSION DU MAILLAGE
-C IN  ALIAS  : TYPE DE LA MAILLE
-C IN  NNO    : NOMBRE DE NOEUDS DE LA MAILLE
-C IN  KSI1   : COORDONNEE PARAMETRIQUE KSI DU PROJETE
-C IN  KSI2   : COORDONNEE PARAMETRIQUE ETA DU PROJETE
-C OUT GEOM   : COORDONNEES DU NOEUD
-C
+C  MODE    FONCTION RECHERCHEE
+C           0: R(A)
+C           1: DRDA(A)
+C           2: D2RDA2(A)
+C  A       VALEUR DE L'ARGUMENT A
 C ----------------------------------------------------------------------
-C A RESORBER
-C
+      REAL*8 N,D,DN,DD,D2N,D2D
+C ----------------------------------------------------------------------
+      REAL*8 PK,PM,PP
+      COMMON /LCES/ PK,PM,PP
+C ----------------------------------------------------------------------
+      
+      N = (1-A)**2
+      D = 1+(PM-2)*A+(1+PP*PM)*A**2
+      
+      IF (MODE.EQ.0) THEN
+        LCESVF = N/D
+        GOTO 9999
+      END IF
+      
+      DN = -2*(1-A)
+      DD = PM-2 + 2*(1+PP*PM)*A 
+      
+      IF (MODE.EQ.1) THEN
+        LCESVF = (DN*D-DD*N)/D**2
+        GOTO 9999
+      END IF
+      
+      D2N = 2
+      D2D = 2*(1+PM*PP)
+
+      IF (MODE.EQ.2) THEN
+        LCESVF = ((D2N*D-N*D2D)*D+2*DD*(N*DD-DN*D))/D**3
+        GOTO 9999
+      END IF
+      
       CALL ASSERT(.FALSE.)
-C
+        
+ 9999 CONTINUE      
       END

@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 26/03/2012   AUTEUR TRAN V-X.TRAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,7 +21,7 @@ POST_FATIGUE=OPER(nom="POST_FATIGUE",op=136,sd_prod=table_sdaster,reentrant='n',
             UIinfo={"groupes":("Post-traitements","Rupture",)},
                   fr="Calculer en un point, le dommage de fatigue subi par une structure soumise à une histoire de chargement",
 
-         CHARGEMENT = SIMP(statut='o',typ='TXM',into=("UNIAXIAL","PERIODIQUE","QUELCONQUE")),
+         CHARGEMENT = SIMP(statut='o',typ='TXM',into=("UNIAXIAL","MULTIAXIAL","QUELCONQUE")),
 
          b_uniaxial = BLOC( condition = "CHARGEMENT=='UNIAXIAL'",
                       regles=(PRESENT_PRESENT('CORR_KE','MATER'),
@@ -31,7 +31,7 @@ POST_FATIGUE=OPER(nom="POST_FATIGUE",op=136,sd_prod=table_sdaster,reentrant='n',
                                  regles=(UN_PARMI('SIGM','EPSI'),),
                                  SIGM  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                  EPSI  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),),
-             COMPTAGE       = SIMP(statut='o',typ='TXM',into=("RAINFLOW","RCCM","NATUREL")),
+             COMPTAGE       = SIMP(statut='o',typ='TXM',into=("RAINFLOW","RAINFLOW_MAX","RCCM","NATUREL")),
              DELTA_OSCI     = SIMP(statut='f',typ='R',defaut= 0.0E+0),
              COEF_MULT      = FACT(statut='f',
                                  KT    = SIMP(statut='o',typ='R'),),
@@ -45,16 +45,42 @@ POST_FATIGUE=OPER(nom="POST_FATIGUE",op=136,sd_prod=table_sdaster,reentrant='n',
              CUMUL          = SIMP(statut='f',typ='TXM',into=("LINEAIRE",)),
          ),
 
-         b_periodique = BLOC( condition = "CHARGEMENT=='PERIODIQUE'",
+         b_multiaxial = BLOC( condition = "CHARGEMENT=='MULTIAXIAL'",
              HISTOIRE       = FACT(statut='o',
-                                 SIGM_XX  = SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                 SIGM_YY  = SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                 SIGM_ZZ  = SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                 SIGM_XY  = SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                 regles=(AU_MOINS_UN('SIGM_XX','SIGM_YY','SIGM_ZZ','SIGM_XY','SIGM_XZ','SIGM_YZ',
+                                 'EPS_XX','EPS_YY','EPS_ZZ','EPS_XY','EPS_XZ','EPS_YZ',
+                                 'EPSP_XX','EPSP_YY','EPSP_ZZ','EPSP_XY','EPSP_XZ','EPSP_YZ'),),
+                                 SIGM_XX  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                 SIGM_YY  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                 SIGM_ZZ  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                 SIGM_XY  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                  SIGM_XZ  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                 SIGM_YZ  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),),
-             CRITERE        = SIMP(statut='o',typ='TXM',into=("CROSSLAND","PAPADOPOULOS")),
-             DOMMAGE        = SIMP(statut='f',typ='TXM',into=("WOHLER",)),
+                                 SIGM_YZ  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                 
+                                 EPS_XX  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                 EPS_YY  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                 EPS_ZZ  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                 EPS_XY  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                 EPS_XZ  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                 EPS_YZ  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                 
+                                 EPSP_XX  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                 EPSP_YY  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                 EPSP_ZZ  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                 EPSP_XY  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                 EPSP_XZ  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                 EPSP_YZ  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                               ),
+             TYPE_CHARGE    = SIMP(statut='o',typ='TXM',into=("PERIODIQUE","NON_PERIODIQUE")),                  
+             CRITERE        = SIMP(statut='o',typ='TXM',into=("CROSSLAND","PAPADOPOULOS","FORMULE_CRITERE")),            
+             DOMMAGE         = SIMP(statut='f',typ='TXM',into=("WOHLER","MANSON_C","FORM_VIE") ), 
+             
+             b_fati_pf      = BLOC(condition = "(CRITERE == 'FORMULE_CRITERE')",
+                                FORMULE_GRDEQ   = SIMP(statut='o',typ=(fonction_sdaster,formule) ),
+                              ),                              
+             b_fati_pfvie    = BLOC(condition = "(DOMMAGE == 'FORM_VIE')",
+                                FORMULE_VIE   =SIMP(statut='o',typ=(fonction_sdaster,formule) ),
+                               ),
              MATER          = SIMP(statut='o',typ=mater_sdaster),
              COEF_CORR      = SIMP(statut='f',typ='R'),
          ),

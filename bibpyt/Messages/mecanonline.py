@@ -1,4 +1,4 @@
-#@ MODIF mecanonline Messages  DATE 27/02/2012   AUTEUR GREFFET N.GREFFET 
+#@ MODIF mecanonline Messages  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -46,7 +46,15 @@ cata_msg = {
 """),
 
 60 : _(u"""
- Le pilotage de type PRED_ELAS nécessite ETA_PILO_MIN et ETA_PILO_MAX pour la loi ENDO_ISOT_BETON
+ Le pilotage de type PRED_ELAS nécessite ETA_PILO_R_MIN et ETA_PILO_R_MAX pour la loi %(k1)s
+"""),
+
+61 : _(u"""
+ Le pilotage de type DEFORMATION n'est pas disponible pour la modelisation %(k1)s
+"""),
+
+62 : _(u"""
+ Pilotage: SELECTION='MIXTE' incompatible avec ACTION='AUTRE_PILOTAGE' dans DEFI_LIST_INST
 """),
 
 69 : _(u"""

@@ -1,0 +1,241 @@
+# MODIF  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
+# TITRE  TEST LOI DE COMPORTEMENT HAYHURST
+# comp002l.para = tps_job 120 mem_job 128Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='COMP002L',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),IMPR_MACRO='NON');
+
+
+#########################################################
+######### DEFINITION DES PARAMETRES MATERIAUX ###########
+#########################################################
+
+#temperature de travail en degres Celsius
+Tdegc=600;
+
+#ATTENTION : f en h-1 et non en %/h
+feps=5.2e7;
+Qeps=3e5;
+aK = -3.3e-2;
+bK = 38.5;
+fA = 9e4;
+QA = 2e5;
+f0 = 3.5e-2;
+Q0 = -4.85e4;
+
+#parametres vitesse de sollicitation
+vitesse = 1.e-5
+
+t_0 = 5.e-2/(8.0*vitesse)
+# liste d'archivage
+temps_ar=DEFI_LIST_REEL( VALE =[t_0*i for i in range(9)],)
+
+#quelques calculs intermediaires
+ep0val=feps*exp(-Qeps/(8.314*(Tdegc+273.)));
+Kcoef=aK*(Tdegc+273.)+bK;
+A0 = fA*exp(-QA/(8.314*(Tdegc+273.)));
+sig0val = f0*exp(-Q0/(8.314*(Tdegc+273.)));
+
+#Kcoef=Kcoef*100.
+
+# def des materiaux
+ACIER = [None]*2
+#unite en Pa
+C_Pa = 1.e+6
+
+POISSON=0.3
+YOUNG=145000.0
+YOUNG_Pa = YOUNG * C_Pa
+Kcoef_Pa = Kcoef * C_Pa
+H1= 30000.0
+H2=-280.
+H1_Pa= H1* C_Pa
+H2_Pa= H2* C_Pa
+sig0Pa=sig0val* C_Pa
+kc=1.e-10
+
+
+#unite en MPa
+ACIER[1]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
+                               NU=0.3,),
+                   HAYHURST=_F(EPS0=ep0val,
+                               K=Kcoef,
+                               H1=H1,
+                               H2=H2,
+                               DELTA1=1.0,
+                               DELTA2=0.0,
+                               H1ST=0.33,
+                               H2ST=1.0,
+                               KC=kc,
+                               BIGA = A0,
+                               SIG0 = sig0val,
+                               ALPHAD=0.5,
+                               S_EQUI_D=1.,
+                               ),);
+
+#unite en MPa
+ACIER[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG_Pa,
+                               NU=0.3,),
+                   HAYHURST=_F(EPS0=ep0val,
+                               K=Kcoef_Pa,
+                               H1=H1_Pa,
+                               H2=H2_Pa,
+                               DELTA1=1.0,
+                               DELTA2=0.0,
+                               H1ST=0.33,
+                               H2ST=1.0,
+                               KC=kc,
+                               BIGA = A0,
+                               SIG0 = sig0Pa,
+                               ALPHAD=0.5,
+                               S_EQUI_D=1.,
+                               ),);
+
+
+compor='HAYHURST'
+
+
+INCLUDE(UNITE=92)
+
+#Discretisation du calcul
+# 10 calculs en tout : changement d'unite, thermique, symetrie, rotation, N1, N5, ... , N3125
+N_pas = 4*[10] + [10, 30, 60, 125, 625, 3125]
+N_cas = len(N_pas)
+
+label_cal=['_Pa_','_Th_','_sym_','_rot_'] + 6* ['_N']
+prec_ecart=4*[1.E-4]+ [1.E-4] + [0.8] +(N_cas-4)*[11.E-2]   
+
+ch_param =['V7','VMIS','TRACE','SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ',]
+ch_param2=['V7','VMIS','TRACE']
+
+# nombre de calculs a effectuer
+Ncal = 7
+
+RESU=[None]*Ncal
+R_SI=[None]*len(ch_param)
+TMP_S=[None]
+
+
+#pointeur materiau [0, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+P_imat = [0] + [1] + (N_cas-2)*[1]
+
+# pointeur deformation [0, 0, 1, 2, 0, 0, 0, 0, 0, 0]
+# 0 : ref
+# 1 : sym
+# 2 : rot
+P_idef = 2*[0] + [1] + [2] + (N_cas-4)*[0]
+
+#pointeur Option thermique ['NON', 'OUI', 'NON', 'NON', 'NON', 'NON', 'NON', 'NON', 'NON', 'NON']
+P_opt_ther = ["NON", "OUI"] + (N_cas-2)*["NON"]
+
+# conditions du calcul thermique
+(inst_th, temp_th) = (3.0*t_0, 100.)
+
+
+#Boucle sur l'ensemble des calculs
+for i in range(Ncal):
+
+   N = N_pas[i]
+   imat = P_imat[i]
+   idef = P_idef[i]
+   eps_imp = V_EPS[idef]
+   opt_ther = P_opt_ther[i]
+   temps=DEFI_LIST_REEL(DEBUT=0.0,
+                        INTERVALLE=(_F(JUSQU_A=1.0*t_0,NOMBRE=N,),
+                                    _F(JUSQU_A=2.0*t_0,NOMBRE=N,),
+                                    _F(JUSQU_A=3.0*t_0,NOMBRE=N,),
+                                    _F(JUSQU_A=4.0*t_0,NOMBRE=N,),
+                                    _F(JUSQU_A=5.0*t_0,NOMBRE=N,),
+                                    _F(JUSQU_A=6.0*t_0,NOMBRE=N,),
+                                    _F(JUSQU_A=7.0*t_0,NOMBRE=N,),
+                                    _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),);
+
+   DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = temps,),)
+   # Resout le pb a deformation imposee
+   RESU[i]=SIMU_POINT_MAT(
+                          COMP_INCR=_F(RELATION=compor,RESI_INTE_RELA=1.E-6),
+                          NEWTON=_F(PREDICTION='EXTRAPOLE',
+                               MATRICE='ELASTIQUE',
+                               REAC_ITER=0,),
+                          MATER       = ACIER[imat],  
+                          ARCHIVAGE   =_F(LIST_INST = temps),
+                          INCREMENT   =_F(LIST_INST=DEFLIST,),
+                          EPSI_IMPOSE =_F(EPXX=eps_imp[0], EPYY=eps_imp[1], EPZZ=eps_imp[2],
+                                          EPXY=eps_imp[3], EPXZ=eps_imp[4], EPYZ=eps_imp[5]),
+                         INFO=1);
+
+   R_SI=RENOMME(i,N_pas,label_cal,ch_param,RESU,R_SI)
+
+   DETRUIRE ( CONCEPT = _F (NOM = temps,),)
+   DETRUIRE ( CONCEPT = _F (NOM = DEFLIST,),)
+        
+
+# TEST_RESU sur les erreurs relatives 
+prec_zero=[1.E-10, 0.01, 0.01, 0.01]
+
+TEST_ECART(ch_param2,label_cal,N_pas,Ncal,ch_param,R_SI,prec_ecart,prec_zero)
+                
+for i in range(Ncal):
+   IMPR_TABLE(TABLE=R_SI[i])
+        
+
+IMPR_TABLE(TABLE=RESU[0])
+
+
+                
+# TESTS DE NON REGRESSION DES QUANTITES SIGNIFICATIVES
+TEST_TABLE(TABLE=RESU[0],
+           NOM_PARA='V7',VALE=7.32522901424E-03,
+           FILTRE=_F(NOM_PARA='INST',VALE=t_0),
+           REFERENCE='NON_REGRESSION',);     
+
+TEST_TABLE(TABLE=RESU[0],
+           NOM_PARA='V11',VALE=0.88559611039819,
+           FILTRE=_F(NOM_PARA='INST',VALE=t_0),
+           REFERENCE='NON_REGRESSION',);     
+
+TEST_TABLE(TABLE=RESU[0],
+           NOM_PARA='VMIS',VALE=1.99483908727E+07,
+           FILTRE=_F(NOM_PARA='INST',VALE=t_0),
+           REFERENCE='NON_REGRESSION',);     
+           
+TEST_TABLE(TABLE=RESU[0],
+           NOM_PARA='SIXX',VALE=1.5303240987744E+08,
+           FILTRE=_F(NOM_PARA='INST',VALE=t_0),
+           REFERENCE='NON_REGRESSION',);     
+
+
+FIN()
+
+# quand il y aura une matrice tangente:
+
+tabresu=TEST_COMPOR(OPTION='MECA',INFO=2,
+                   COMP_INCR=_F(RELATION=compor,RESI_INTE_RELA=1.E-6),
+                     NEWTON=_F(PREDICTION='EXTRAPOLE',
+                               MATRICE='ELASTIQUE',
+                               REAC_ITER=0,),
+              LIST_MATER=ACIER,
+              LIST_NPAS=4*[10] + [10, 15, 25],              
+              VARI_TEST=('V7','V8','V9','V11','VMIS','TRACE'),
+              LIST_TOLE=4*[1.E-10] + [5.] + [2.] + [1.E-2]+ [1.E-4],
+              YOUNG=YOUNG,POISSON=0.3,
+              )
+
+IMPR_TABLE(TABLE=tabresu)
+

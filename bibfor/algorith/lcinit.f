@@ -2,13 +2,13 @@
      1                      NMAT,MATERD,MATERF,TIMED,TIMEF,
      2                      NR, NVI, YD,     EPSD,   DEPS, DY,
      3                      COMP,NBCOMM, CPMONO, PGL,NFS,NSG,TOUTMS,
-     4                      VIND,SIGD, EPSTR)
+     4                      VIND,SIGD, SIGF,EPSTR)
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/12/2011   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -45,6 +45,7 @@ C           YD     :  VARIABLES A T   = ( SIG  VIN  (EPS3)  )
 C           NVI    :  NOMBRE VARIABLES INTERNES
 C           VIND   :  VECTEUR VARIABLES INTERNES A T
 C           NR     :  DIMENSION VECTEUR INCONNUES
+C           SIGF   :  PREDICTION ELASTIQUE DES CONTRAINTES (LCELAS)
 C       VAR DEPS   :  INCREMENT DE DEFORMATION
 C       OUT DY     :  SOLUTION ESSAI  = ( DSIG DVIN (DEPS3) )
 C       ----------------------------------------------------------------
@@ -57,7 +58,7 @@ C TOLE CRP_21
         REAL*8          TIMED, TIMEF
         REAL*8          PGL(3,3)
         REAL*8          VIND(*),SIGD(6),EPSTR(6)
-        REAL*8          TOUTMS(NFS,NSG,6)
+        REAL*8          TOUTMS(NFS,NSG,6),SIGF(6)
         CHARACTER*(*)   FAMI
         CHARACTER*8     MOD
         CHARACTER*16    LOI
@@ -79,6 +80,8 @@ C
       ELSEIF     ( LOI(1:15) .EQ. 'BETON_BURGER_FP' ) THEN
          CALL BURINI(NMAT,MATERD,MATERF,TIMED,TIMEF,NVI,
      &               VIND,NR,YD,DEPS,DY)
+      ELSEIF     ( LOI(1:4) .EQ. 'LETK' ) THEN
+         CALL LKLINI(SIGF,NR,YD,DY)
       ELSE
 C        SOLUTION INITIALE = ZERO
          CALL VECINI ( NR  , 0.D0 , DY )

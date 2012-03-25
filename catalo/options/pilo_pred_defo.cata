@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
+%& MODIF OPTIONS  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
 % RESPONSABLE KAZYMYRENKO
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -30,6 +30,7 @@ OPTION__
         PDEPL0R  DEPL_R
         PDEPL1R  DEPL_R
         PTYPEPI  PILO_K
+        PCDTAU   PILO_R
         OUT__
         PCOPILO  PILO_R ELGA__
 

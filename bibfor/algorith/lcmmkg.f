@@ -1,7 +1,7 @@
-      SUBROUTINE LCMMKG(ZINV,VIND,VINF,NMAT,MATERF,MOD,NR,DSDE)
+      SUBROUTINE LCMMKG(ZINV,NVI,VIND,VINF,NMAT,MATERF,MOD,NR,DSDE)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/02/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,7 +24,7 @@ C
       REAL*8 DR1DF(3,3,3,3),DR1DF6(6,3,3),ZINV(6,6),DSDF(6,3,3)
       REAL*8 FET(3,3),FETFE(3,3),EEL(6),HOOKE(6,6),S6(6),S(3,3)
       REAL*8 DTAUDF(3,3,3,3),MATERF(*),SFET(3,3)
-      INTEGER NR, NDT, NS, NDI,I,J,K,L,M,N,NMAT,IND(3,3)
+      INTEGER NR, NDT, NDI,I,J,K,L,M,N,NMAT,IND(3,3),NVI
       COMMON /TDIM/ NDT,NDI
       CHARACTER*8     MOD
 C     ------------------------------------------------------------------
@@ -40,13 +40,12 @@ C     ------------------------------------------------------------------
       IND(2,3)=6
       IND(3,2)=6
        
-      NS=NR-NDT
-      CALL DCOPY(9,VIND(6+3*NS+10),1,FEM,1)
+      CALL DCOPY(9,VIND(NVI-3-18+10),1,FEM,1)
       CALL DAXPY(9,1.D0,ID,1,FEM,1)
-      CALL DCOPY(9,VINF(6+3*NS+10),1,FEP,1)
+      CALL DCOPY(9,VINF(NVI-3-18+10),1,FEP,1)
       CALL DAXPY(9,1.D0,ID,1,FEP,1)
       
-      CALL DCOPY(9,VINF(6+3*NS+1),1,FPP,1)
+      CALL DCOPY(9,VINF(NVI-3-18+1),1,FPP,1)
       CALL DAXPY(9,1.D0,ID,1,FPP,1)
       CALL MATINV('S',3,FPP,FPPINV,DET)
 

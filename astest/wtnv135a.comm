@@ -1,4 +1,4 @@
-# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
 # ======================================================================
 # TITRE ETUDE ESSAI TRIAXIAL DRAINE AVEC LE MODELE VISCOPLASTIQUE DU CIH : LETK
 # wtnv135a.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
@@ -199,6 +199,7 @@ U1=STAT_NON_LINE(
                 CHARGE = P0,
                 )),
                          COMP_INCR=_F(
+                ALGO_INTE='SPECIFIQUE',
                 RELATION = 'KIT_HM',
                 RELATION_KIT = (
                   'LETK',        'LIQU_SATU',
@@ -283,6 +284,7 @@ U2=STAT_NON_LINE(
                 ),
                 ),
                          COMP_INCR=_F(
+                ALGO_INTE='SPECIFIQUE',
                 RELATION = 'KIT_HM',
                 RELATION_KIT = (
                   'LETK',        'LIQU_SATU',

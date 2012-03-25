@@ -1,6 +1,6 @@
       SUBROUTINE JEDETV()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 06/03/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 26/03/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C TOLE CRP_18 CRS_508 CRS_512 CRS_505
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
@@ -94,8 +94,9 @@ C
         CALL U2MESR ('A','JEVEUX1_64',3,VALR)
       ENDIF
 C
-      DO 150 JIDO = LIDBAS+1 , NREMAX(IC)
+      DO 150 JIDO = 1 , NREMAX(IC)
         IDO = INDIR(JINDIR(IC)+JIDO)
+        IF (IDO .LE. LIDBAS) GOTO 150
         CRNOM = RNOM(JRNOM(IC)+IDO)
         IF ( CRNOM(1:1) .EQ. '?' .OR.
      &       CRNOM(25:32) .NE. '     ' ) GOTO 150
@@ -184,8 +185,9 @@ C
       ENDIF
  150  CONTINUE
 C
-      DO 250 JIDO = LIDBAS+1 , NREMAX(IC)
+      DO 250 JIDO = 1 , NREMAX(IC)
         IDO = INDIR(JINDIR(IC)+JIDO)
+        IF (IDO .LE. LIDBAS) GOTO 250
         CRNOM = RNOM(JRNOM(IC)+IDO)
         IF ( CRNOM(1:1) .EQ. '?' .OR.
      &       CRNOM(25:32) .NE. '      ' ) GOTO 250

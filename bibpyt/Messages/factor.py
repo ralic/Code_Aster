@@ -1,8 +1,8 @@
-#@ MODIF factor Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF factor Messages  DATE 26/03/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -37,30 +37,63 @@ Le nombre de termes non nuls est susceptible de varier si l'on utilise le contac
 ou la méthode XFEM avec contact.
 """),
 
+
+
 10: _(u"""
-(Solveur linéaire LDLT ou MULT_FRONT) Matrice non factorisable !
-  On sait en plus que:
-   - pivot presque nul à la ligne : %(i1)d,
-   - nombre de décimales perdues  : %(i2)d.
+Problème : la matrice n'est pas factorisable :
+  Lors de la factorisation de la matrice, on a rencontré un problème
+  (pivot nul ou presque nul) à la ligne %(i1)d
+  Le degré de liberté associé à cette ligne est de type : (%(k4)s)
+  Le nombre de décimales "perdues" pour cette ligne est : %(i2)d.
+  Ce nombre de décimales perdues est lié au degré de singularité de la matrice. Plus il est grand,
+  plus le système est singulier. Quand il dépasse 8, on considère que l'on a perdu 50%% de la précision
+  sur les nombres réels (qui ont 15 décimales environ).
 
-  -> Conseil & Risque :
-     Vérifiez votre mise en données (absence ou surabondance de conditions limites,
-     caractéristiques matériaux licites...).
-     Si vous avez déjà validé cette mise en données, vous pouvez essayer a la place le
-     solveur linéaire MUMPS (mot-clé SOLVEUR/METHODE='MUMPS').
+  Les différents types du degré de liberté sont :
+    * (A) : Degré liberté physique associé au noeud : %(k1)s et à la composante : %(k2)s.
+    * (B) : Degré de liberté de Lagrange associé au blocage : (%(k3)s).
+    * (C) : Degré de liberté de Lagrange associé à une relation linéaire entre plusieurs degrés de liberté.
+            La liste des noeuds impliqués dans cette relation linéaire est imprimée ci-dessus.
+    * (D) : Degré de liberté d'un système "généralisé".
+            Nom du noeud : %(k5)s
+            Composante   : %(k6)s
+            Information complémentaire (éventuellement)   : %(k7)s
+
+Conventions :
+  Ce message peut être émis dans des situations différentes pour lesquelles on ne connaît
+  pas toutes les informations imprimées ci-dessus.
+  On adopte alors les conventions suivantes :
+    * Si le numéro de la ligne est -999 :
+        Soit la matrice est vraiment singulière et la factorisation n'a pu aller jusqu'au bout.
+        Soit on ne sait pas attribuer la singularité de la matrice à une ligne de la matrice.
+    * Si le nombre de décimales perdues est -999 :
+        On ne sait pas déterminer la perte de décimales sur la ligne incriminée,
+
+Risques et conseils :
+   * Si la ligne correspond a un degré de liberté physique (A), il s'agit probablement d'un mouvement
+     de corps rigide mal bloqué.
+     Vérifiez les conditions aux limites.
+     Si vous faites du contact, il ne faut pas que la structure ne "tienne" que par le contact.
+     Vérifiez également les caractéristiques matériaux (module d'Young, ...).
+
+   * Si la ligne correspond a un degré de liberté de Lagrange (B) ou (C), il s'agit sans doute d'une condition
+     limite redondante.
+     En particulier, il se peut que la relation linéaire surabondante provienne des conditions de contact.
+     Peut-être devriez vous exclure certains noeuds des conditions de contact
+     (mots clés SANS_NOEUD et SANS_GROUP_NO).
+
+   * Si le solveur utilisé est LDLT ou MULT_FRONT, vous pouvez utiliser le solveur MUMPS
+     car celui-ci est le seul à pouvoir factoriser les matrices qui ne sont pas définies positives.
+
+   * Il se peut aussi que ce phénomène soit tout à fait normal avec X-FEM si la fissure passe
+     très près d'un noeud.
+     Si le nombre de décimales perdues n'est pas trop grand (max 10 décimales),
+     vous pouvez relancer le calcul en augmentant le nombre de décimales perdues autorisé :
+     mot-clé NPREC du mot clé facteur SOLVEUR.
+     Sinon, contactez l'équipe de développement.
+
 """),
 
-11: _(u"""
-(Solveur linéaire LDLT ou MULT_FRONT) Matrice non factorisable !
-  On sait en plus que:
-   - pivot vraiment nul à la ligne : %(i1)d.
-
-  -> Conseil & Risque :
-     Vérifiez votre mise en données (absence ou surabondance de conditions limites,
-     caractéristiques matériaux licites...).
-     Si vous avez déjà validé cette mise en données, vous pouvez essayer a la place le
-     solveur linéaire MUMPS (mot-clé SOLVEUR/METHODE='MUMPS').
-"""),
 
 13: _(u"""
 Solveur FETI :
@@ -69,106 +102,7 @@ Solution :
   Il faut changer de solveur.
 """),
 
-20: _(u"""
-(Solveur linéaire LDLT ou MULT_FRONT) Matrice non factorisable !
-  On sait en plus que:
-   - pivot est presque nul à la ligne %(i1)d pour le noeud %(k1)s et
-     la composante %(k2)s,
-   - nombre de décimales perdues : %(i2)d.
 
-  -> Conseil & Risque :
-     Il s'agit peut être d'un mouvement de corps rigide mal bloqué.
-     Vérifiez les conditions aux limites.
-     Si vous faites du contact, il ne faut pas que la structure ne "tienne" que par le contact.
-"""),
-
-21: _(u"""
-(Solveur linéaire LDLT ou MULT_FRONT) Matrice non factorisable !
-  On sait en plus que:
-   - pivot est presque nul à la ligne %(i1)d pour le noeud %(k1)s et
-     la composante %(k2)s.
-
-  -> Conseil & Risque :
-     Vérifiez votre mise en données (absence ou surabondance de conditions limites,
-     caractéristiques matériaux licites...).
-     Si vous avez déjà validé cette mise en données, vous pouvez essayer a la place le
-     solveur linéaire MUMPS (mot-clé SOLVEUR/METHODE='MUMPS').
-"""),
-
-22: _(u"""
-(Solveur linéaire LDLT ou MULT_FRONT) Matrice non factorisable !
-  On sait en plus que:
-   - le pivot est presque nul à la ligne %(i1)d pour le noeud %(k1)s et
-     la composante %(k2)s,
-   - nombre de décimales perdues : %(i2)d.
-
-  -> Conseil & Risque :
-     Il s'agit peut être d'un mouvement de corps rigide mal bloqué.
-     Vérifiez les conditions aux limites.
-     Si vous faites du contact, il ne faut pas que la structure ne "tienne" que par le contact.
-
-     Il se peut aussi que ce phénomène soit tout à fait normal avec X-FEM si la fissure passe
-     très près d'un noeud.
-     Si le nombre de décimales n'est pas trop grand (max 10 décimales)
-     vous pouvez relancer le calcul en augmentant le nombre de décimales perdues autorisé :
-     mot-clé NPREC dans le bloc SOLVEUR. Sinon, contactez l'équipe de développement.
-
-"""),
-
-30: _(u"""
-(Solveur linéaire LDLT ou MULT_FRONT) Matrice non factorisable !
-  On sait en plus que:
-   - pivot presque nul à la ligne : %(i1)d,
-   - nombre de décimales perdues  : %(i2)d.
-
-  -> Conseil & Risque :
-     Il s'agit sans doute d'une relation linéaire entre ddls surabondante.
-     La liste des noeuds concernés par cette relation est imprimée ci-dessus dans le fichier MESSAGE.
-     Il faut vérifier de plus près les conditions aux limites cinématiques.
-     En particulier, il se peut que la relation linéaire surabondante provienne des conditions de contact.
-     Peut-être devriez vous exclure certains noeuds des conditions de contact
-     (mots clés SANS_NOEUD et SANS_GROUP_NO).
-"""),
-
-31: _(u"""
-(Solveur linéaire LDLT ou MULT_FRONT) Matrice non factorisable !
-  On sait en plus que:
-   - pivot vraiment nul à la ligne : %(i1)d.
-
-  -> Conseil & Risque :
-     Il s'agit sans doute d'une relation linéaire entre ddls surabondante.
-     La liste des noeuds concernés par cette relation est imprimée ci-dessus dans le fichier MESSAGE.
-     Vérifiez votre mise en données (conditions limites, caractéristiques matériaux...),
-     En particulier, il se peut que la relation linéaire surabondante provienne des conditions de contact.
-     Peut-être devriez vous exclure certains noeuds des conditions de contact
-     (mots clés SANS_NOEUD et SANS_GROUP_NO).
-     Si vous avez déjà validé cette mise en données, vous pouvez essayer a la place le
-     solveur linéaire MUMPS (mot-clé SOLVEUR/METHODE='MUMPS').
-"""),
-
-40: _(u"""
-(Solveur linéaire LDLT ou MULT_FRONT) Matrice non factorisable !
-  On sait en plus que:
-   - pivot presque nul à la ligne : %(i1)d,
-   - nombre de décimales perdues  : %(i2)d.
-
-  -> Conseil & Risque :
-     Il s'agit sans doute d'une relation de blocage surabondante.
-     Blocage concerné : %(k4)s.
-"""),
-
-41: _(u"""
-(Solveur linéaire LDLT ou MULT_FRONT) Matrice non factorisable !
-  On sait en plus que:
-  - pivot vraiment nul à la ligne : %(i1)d.
-
-  -> Conseil & Risque :
-     Il s'agit sans doute d'une relation de blocage surabondante.
-     blocage concerné : %(k4)s.
-     Sinon, vérifiez votre mise en données (conditions limites, caractéristiques matériaux...).
-     Si vous avez déjà validé cette mise en données, vous pouvez essayer a la place le
-     solveur linéaire MUMPS (mot-clé SOLVEUR/METHODE='MUMPS').
-"""),
 
 42: _(u"""
 Matrice non factorisable :
@@ -178,6 +112,8 @@ Conseil :
   Il peut s'agir d'une erreur de programmation ou d'un problème de mise en données (blocage
   absent ou surabondant).
 """),
+
+
 50: _(u"""
  Solveur MUMPS :
    -> Vous avez demandé comme numéroteur RENUM = '%(k1)s', or MUMPS en a
@@ -362,63 +298,8 @@ Attention:
   Cette désactivation peut nuire à certains type de calculs (modal, option CRIT_FLAMB...).
 """),
 
-75: _(u"""
-(solveur linéaire MUMPS) Matrice non factorisable !
-  On sait en plus que:
-    - pivot presque nul à la ligne : %(i1)d.
-
-  -> Conseil & Risque :
-     Vérifiez votre mise en données (absence ou surabondance de conditions limites,
-     caractéristiques matériaux licites...).
-"""),
-
-76: _(u"""
-(solveur linéaire MUMPS) Matrice non factorisable !
-
-  -> Conseil & Risque :
-     Vérifiez votre mise en données (absence ou surabondance de conditions limites,
-     caractéristiques matériaux licites...).
-"""),
-
-77: _(u"""
-(solveur linéaire MUMPS) Matrice non factorisable !
-  On sait en plus que:
-   - pivot est presque nul à la ligne %(i1)d pour le noeud %(k1)s et
-     la composante %(k2)s.
-
-  -> Conseil & Risque :
-     Il s'agit peut être d'un mouvement de corps rigide mal bloqué.
-     Vérifiez les conditions aux limites.
-     Si vous faites du contact, il ne faut pas que la structure ne "tienne" que par le contact.
-"""),
-
-78: _(u"""
-(solveur linéaire MUMPS) Matrice non factorisable !
-  On sait en plus que:
-   - pivot presque nul à la ligne : %(i1)d.
 
 
-  -> Conseil & Risque :
-     Il s'agit peut être d'un mouvement de corps rigide mal bloqué.
-     Vérifiez les conditions aux limites.
-     Si vous faites du contact, il ne faut pas que la structure ne "tienne" que par le contact.
-
-     Il se peut aussi que ce phénomène soit tout à fait normal avec X-FEM si la fissure passe
-     très près d'un noeud.
-     Si le nombre de décimal n'est pas trop grand (max 10 décimales)
-     vous pouvez relancer le calcul en augmentant le nombre de décimales perdues autorisé :
-     mot-clé NPREC dans  le bloc SOLVEUR. Sinon, contactez l'équipe de développement.
-"""),
-
-79: _(u"""
-(solveur linéaire MUMPS) Matrice non factorisable !
-  On sait en plus que:
-   - pivot presque nul à la ligne : %(i1)d.
-
-  -> Conseil & Risque :
-     Il s'agit sans doute d'une relation de blocage surabondante.
-     Blocage concerné : %(k4)s.
-"""),
 
 80: _(u"""
 (solveur linéaire MUMPS) Problème de paramétrage du solveur !
@@ -431,38 +312,7 @@ Attention:
       Utilisez le solveur linéaire MUMPS avec TYPE_RESOL='AUTO'.
 """),
 
-81: _(u"""
-(solveur linéaire MUMPS) Matrice non factorisable !
-  On sait en plus que:
-   - pivot presque nul à la ligne : %(i1)d.
 
-  -> Conseil & Risque :
-     Il s'agit sans doute d'une relation linéaire entre ddls surabondante.
-     La liste des noeuds concernés par cette relation est imprimée ci-dessus dans le fichier MESSAGE.
-     Il faut vérifier de plus près les conditions aux limites cinématiques.
-     En particulier, il se peut que la relation linéaire surabondante provienne des conditions de contact.
-     Peut-être devriez vous exclure certains noeuds des conditions de contact
-     (mots clés SANS_NOEUD et SANS_GROUP_NO).
-"""),
-
-82: _(u"""
-(solveur linéaire MUMPS) Matrice non factorisable !
-
-  -> Conseil & Risque :
-     Il s'agit sans doute d'une relation linéaire entre ddls surabondante.
-     La liste des noeuds concernés par cette relation est imprimée ci-dessus dans le fichier MESSAGE.
-     Vérifiez votre mise en données (conditions limites, caractéristiques matériaux...),
-     En particulier, il se peut que la relation linéaire surabondante provienne des conditions de contact.
-     Peut-être devriez vous exclure certains noeuds des conditions de contact
-     (mots clés SANS_NOEUD et SANS_GROUP_NO).
-"""),
-
-83: _(u"""
-(solveur linéaire MUMPS) Matrice non factorisable !
-
-  -> Conseil & Risque :
-     Vérifiez votre mise en données (conditions limites, caractéristiques matériaux...).
-"""),
 
 84: _(u"""
 (solveur linéaire MUMPS) Problème de paramétrage du solveur !

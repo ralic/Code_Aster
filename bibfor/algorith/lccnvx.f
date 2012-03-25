@@ -1,13 +1,13 @@
         SUBROUTINE LCCNVX ( FAMI, KPG, KSP, LOI, IMAT, NMAT, MATERD,
-     &                      MATERF,SIGD,SIGF,DEPS,VIND, NBCOMM,CPMONO, 
-     &                      PGL,NVI,VP,VECP,HSR,NFS,NSG,TOUTMS,
+     &                      MATERF,SIGD,SIGF,DEPS,VIND, VINF,NBCOMM, 
+     &                      CPMONO,PGL,NVI,VP,VECP,HSR,NFS,NSG,TOUTMS,
      &                      TIMED,TIMEF,NR,YD,YF,TOLER,SEUIL)
         IMPLICIT  NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/12/2011   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,6 +34,7 @@ C --- : SIGD   :  CONTRAINTE A T ---------------------------------------
 C --- : SIGF   :  CONTRAINTE A T+DT ------------------------------------
 C --- : DEPS   :  INCRMEENT DE DEFORMATION -----------------------------
 C --- : VIND   :  VARIABLES INTERNES A T -------------------------------
+C --- : VINF   :  VARIABLES INTERNES A T +DT----------------------------
 C --- : IMAT   :  ADRESSE DU MATERIAU CODE -----------------------------
 C --- : NMAT   :  DIMENSION MATER --------------------------------------
 C --- : TOLER  :  TOLERANCE DE CONVERGENCE LOCALE-----------------------
@@ -54,7 +55,7 @@ C ======================================================================
         INTEGER         NMAT , IMAT, NVI, KPG, KSP,NFS,NSG,NR
         CHARACTER*(*)   FAMI
         REAL*8          MATERF(NMAT,2),MATERD(NMAT,2),SEUIL
-        REAL*8          TIMED,TIMEF,TOLER,DEPS(6)
+        REAL*8          TIMED,TIMEF,TOLER,DEPS(6),VINF(*)
         REAL*8          SIGD(6),SIGF(6),VIND(*),HSR(NSG,NSG)
         CHARACTER*16    LOI
         INTEGER         NBCOMM(NMAT,3)
@@ -83,7 +84,7 @@ C ======================================================================
 C ======================================================================
       ELSEIF ( LOI(1:8)  .EQ. 'MONOCRIS') THEN
          CALL LCMMVX (SIGF, VIND, NMAT, MATERF, NBCOMM, CPMONO, PGL,
-     &                NVI,HSR, NFS,NSG,TOUTMS,TIMED,TIMEF,SEUIL)
+     &                NVI,HSR, NFS,NSG,TOUTMS,TIMED,TIMEF,DEPS,SEUIL)
 C ======================================================================
       ELSEIF ( LOI(1:7)  .EQ. 'IRRAD3M') THEN
          CALL IRRCVX ( FAMI, KPG, KSP, NMAT, MATERF, SIGF, VIND, SEUIL)
@@ -93,6 +94,9 @@ C ======================================================================
 C --- LE FLUAGE EST CONSIDERE POUR TOUT TYPE DE SOLLICITATION MECANIQUE
          CALL BURCVX(TYPMOD,NMAT,MATERD,MATERF,TIMED,TIMEF,
      &               NVI,VIND,NR,SIGD,DEPS,YD,YF,TOLER,SEUIL)
+C ======================================================================
+      ELSEIF ( LOI(1:4)  .EQ. 'LETK') THEN
+         CALL LKCNVX (SIGF,NVI,VIND,NMAT,MATERF,SEUIL,VINF)
 C ======================================================================
       ENDIF
 C ======================================================================

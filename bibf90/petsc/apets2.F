@@ -1,9 +1,9 @@
       SUBROUTINE APETS2(KPTSC)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF APETS2 PETSC  DATE 26/07/2011   AUTEUR DESOZA T.DESOZA 
+!& MODIF APETS2 PETSC  DATE 26/03/2012   AUTEUR DESOZA T.DESOZA 
 ! ================================================================== 
-! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG 
+! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      
 ! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     
@@ -18,6 +18,7 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     
 ! ================================================================== 
+! RESPONSABLE DESOZA T.DESOZA
       INTEGER      KPTSC
 !----------------------------------------------------------------
 !
@@ -28,11 +29,11 @@
 #ifdef _HAVE_PETSC
 
 !================================================================
-#include "include/finclude/petsc.h"
-#include "include/finclude/petscvec.h"
-#include "include/finclude/petscmat.h"
-#include "include/finclude/petscksp.h"
-#include "include/finclude/petscpc.h"
+#include "finclude/petscsys.h"
+#include "finclude/petscvec.h"
+#include "finclude/petscmat.h"
+#include "finclude/petscksp.h"
+#include "finclude/petscpc.h"
 !================================================================
 ! --- DECLARATIONS NORMALISEES JEVEUX ---------------------------
       INTEGER ZI

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 19/03/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+%& MODIF TYPELEM  DATE 26/03/2012   AUTEUR DESROCHE X.DESROCHES 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -176,10 +176,7 @@ OPTION__
     EPOT_ELEM           409   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                               OUT__  EENEDNO  PENERDR
-    EPSI_ELNO           33    IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
-                                     CNUMCOR  PNUMCOR  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR
-                              OUT__  EDEFONO  PDEFORR
-                                     EDEFONC  PDEFORC
+    EPSI_ELNO           -1    IN__     OUT__  XXXXXX   XXXXXX
     FORC_NODA           409   IN__   CCACOQU  PCACOQU  EEFGEGA  PCONTMR  NGEOMER  PGEOMER  CMATERC  PMATERC
                               OUT__  MVECTUR  PVECTUR
     FULL_MECA           409   IN__   CCACOQU  PCACOQU  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  EEFGEGA  PCONTMR

@@ -1,0 +1,221 @@
+        SUBROUTINE RKDHAY( FAMI,KPG,KSP,MOD,   IMAT,  MATCST,
+     &                     NVI,   VINI,  COEFT,
+     &                     E, NU, ALPHA, X,     DTIME,NMAT,COEL,SIGI,
+     &                     EPSD, DETOT,
+     &                     DVIN, IRET)
+        IMPLICIT NONE
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C TOLE CRP_21
+C ==================================================================
+C      MODELE VISCOPLASTIQUE A ECROUISSAGE ISOTROPE COUPLE A DE
+C      L ENDOMMAGEMENT ISOTROPE
+C ==================================================================
+C INTEGRATION DE LA LOI (HAYHURST) PAR UNE METHODE DE RUNGE KUTTA
+C
+C     CETTE ROUTINE FOURNIT LA DERIVEE DE L ENSEMBLE DES VARIABLES
+C     INTERNES DU MODELE
+C       IN  FAMI    :  FAMILLE DE POINT DE GAUSS (RIGI,MASS,...)
+C           KPG,KSP :  NUMERO DU (SOUS)POINT DE GAUSS
+C           MOD     :  TYPE DE MODELISATION
+C           IMAT    :  ADRESSE DU MATERIAU CODE
+C           MATCST  :  OUI SI MATERIAU CONSTANT
+C           NVI     :  NOMBRE DE VARIABLES INTERNES
+C           VINI    :  VARIABLES INTERNES A T
+C           COEFT   :  COEFFICIENTS MATERIAU INELASTIQUE A T
+C           E,NU    :  COEFFICIENTS MATERIAU ELASTIQUE A T
+C           ALPHA   :  COEFFICIENT DE DILATATION THERMIQUE
+C           X       :  INTERVALE DE TEMPS ADAPTATIF
+C           DTIME   :  INTERVALE DE TEMPS
+C           NMAT    :  DIMENSION MAXI DE COEFT ET COEL
+C           COEL    :  COEFFICIENTS MATERIAU ELASTIQUE A T
+C           SIGI    :  CONTRAINTES A L'INSTANT COURANT, AVEC SQRT(2)
+C           EPSD    :  DEFORMATION TOTALE A T, , AVEC SQRT(2)
+C           DETOT   :  INCREMENT DE DEFORMATION TOTALE, , AVEC SQRT(2)
+C     OUT:
+C           DVIN    :  DERIVEES DES VARIABLES INTERNES A T
+C           IRET    :  CODE RETOUR =0 SI OK, =1 SI PB
+C     ----------------------------------------------------------------
+      CHARACTER*8 MOD
+      CHARACTER*3     MATCST
+C
+      CHARACTER*(*)   FAMI
+      INTEGER         IMAT, IRET, ITENS, NDI, NMAT, NVI
+      INTEGER         KPG,KSP,NDT,NDIM
+C
+      REAL*8 E, NU, ALPHA,X, DTIME
+      REAL*8 COEFT(NMAT),COEL(NMAT),VINI(NVI),DVIN(NVI)
+      REAL*8 E0,SMX(6), SIGI(6),    EPSD(6),    DETOT(6)
+      REAL*8 EVI(6),    ECROU(2), H,   DMG,  DMGMI
+      REAL*8 DEVI(6),DEVCUM,   DECROU(2), DDMG, DDMGMI
+      REAL*8 ZE, TD, SINN, GRJ0
+      REAL*8 EPS0, PK, H1, H2, DELTA1, DELTA2, H1ST, H2ST, PKC
+      REAL*8 SIG0, BIGA, ALPHAD
+      REAL*8 TRSIG, GRJ2V, GRJ1, EPSI, TERME1, SHMAX, SEQUI
+      REAL*8 EQUI(17),R8MIEM,RMIN,R8PREM, SEQUID
+C     ----------------------------------------------------------------
+      PARAMETER(ZE=0.0D0)
+      PARAMETER(TD=1.5D0)
+C
+      COMMON /TDIM/   NDT,    NDI
+C     ----------------------------------------------------------------
+
+C -- TEMPERATURE
+C
+      IF (MOD(1:2).EQ.'3D')THEN
+         NDIM=3
+      ELSE
+         NDIM=2
+      ENDIF
+      IRET=0
+      RMIN=R8MIEM()
+      SHMAX=50.D0
+C
+C --    COEFFICIENTS MATERIAU INELASTIQUES
+C
+      EPS0   = COEFT(1)
+      PK     = COEFT(2)
+      H1     = COEFT(3)
+      H2     = COEFT(4)
+      DELTA1 = COEFT(5)
+      DELTA2 = COEFT(6)
+      H1ST   = COEFT(7)
+      H2ST   = COEFT(8)
+      BIGA   = COEFT(9)
+      SIG0   = COEFT(10)
+      PKC    = COEFT(11)
+      ALPHAD = COEFT(12)
+      SEQUID = COEFT(13)
+      
+C --  VARIABLES INTERNES
+C
+      DO 5 ITENS=1,6
+        EVI(ITENS) = VINI(ITENS)
+    5 CONTINUE
+      DO 7 ITENS=1,2
+        ECROU(ITENS) = VINI(ITENS+7)
+    7 CONTINUE
+
+      DMG  = VINI(11)
+      DMGMI = VINI(10)
+      H=ECROU(1)+ECROU(2)
+
+C----------------------------------------------------------------
+      E0=E
+      E=E0*(1.D0-DMG)
+      CALL CALSIG(FAMI,KPG,KSP,EVI,MOD,E,NU,ALPHA,X,DTIME,EPSD,
+     &              DETOT,NMAT,COEL,SIGI)
+      E=E0
+      CALL DCOPY(6,SIGI,1,SMX,1)      
+C
+C------------CALCUL DES INVARIANTS DE CONTRAINTE  -------
+C     attention FGEQUI ne prend pas en compte les SQRT(2)
+      CALL DSCAL(3,1.D0/SQRT(2.D0),SMX(4),1)
+      CALL FGEQUI(SMX,'SIGM_DIR',NDIM,EQUI)
+C     on retablit le tenseur
+      CALL DSCAL(3,SQRT(2.D0),SMX(4),1)
+      TRSIG=EQUI(16)
+      GRJ0=MAX(EQUI(3),EQUI(4))
+      GRJ0=MAX(GRJ0,EQUI(5))
+      GRJ1= TRSIG
+      GRJ2V=EQUI(1)
+      IF(SEQUID.EQ.0.D0) THEN
+         SEQUI=GRJ0
+      ELSE
+         SEQUI=GRJ1
+      ENDIF
+C------------ CALCUL DU TENSEUR DEVIATORIQUE DES CONTRAINTES ---
+      DO 10 ITENS=1,6
+        IF (ITENS.LE.3) SMX(ITENS)=SMX(ITENS)-GRJ1/3.D0
+   10 CONTINUE
+C
+C----- EQUATION DONNANT LA DERIVEE DU MICROENDOMMAG
+      DDMGMI=(PKC/3)*((1-DMGMI)**4)
+C
+C----- EQUATION DONNANT LA DERIVEE DE LA DEF VISCO PLAST
+C----- CUMULEE
+C
+      TERME1=(GRJ2V*(1-H))/(PK*(1-DMGMI)*(1-DMG))
+      IF (TERME1.LT.SHMAX) THEN
+         DEVCUM=EPS0*(SINH(TERME1))
+      ELSE
+         IRET=1
+         GOTO 9999
+      ENDIF
+C
+C----- EQUATION DONNANT LA DERIVEE DE H
+C
+      EPSI=R8PREM()*PK
+      IF (GRJ2V .LE. EPSI) THEN
+C       DIVISION PAR ZERO EVITEE
+        DECROU(1)=ZE
+        DECROU(2)=ZE
+      ELSE
+        IF (ECROU(1).LE.(H1ST-RMIN)) THEN
+          DECROU(1)=(H1/GRJ2V)*(H1ST-(DELTA1*ECROU(1)))*DEVCUM
+          DECROU(2)=(H2/GRJ2V)*(H2ST-(DELTA2*ECROU(2)))*DEVCUM
+        ELSE
+           IRET=1
+           GOTO 9999
+        ENDIF
+      ENDIF
+C
+C
+C----- EQUATION DONNANT LA DERIVEE DE L ENDOMMAGEMENT
+C
+      IF (SEQUI .GE. ZE) THEN
+        SINN=ALPHAD*SEQUI+((1.D0-ALPHAD)*GRJ2V)
+      ELSE
+        SINN=(1.D0-ALPHAD)*GRJ2V
+      ENDIF
+      IF ((SINN/SIG0).LT.SHMAX) THEN
+         DDMG=BIGA*SINH(SINN/SIG0)
+      ELSE
+         IRET=1
+         GOTO 9999
+      ENDIF
+C     
+C------ EQUATION DONNANT LA DERIVEE DE LA DEF VISCO PLAST
+C
+      IF (GRJ2V .LE. EPSI) THEN
+        DO 33 ITENS=1,6
+          DEVI(ITENS)=ZE
+   33   CONTINUE
+      ELSE   
+      DO 12 ITENS=1,6
+        DEVI(ITENS)=TD*DEVCUM*SMX(ITENS)/GRJ2V
+   12 CONTINUE
+      ENDIF
+C
+C --    DERIVEES DES VARIABLES INTERNES
+C
+      DO 30 ITENS=1,6
+        DVIN(ITENS)      = DEVI(ITENS)
+   30 CONTINUE
+        DVIN(7)  = DEVCUM
+        DVIN(8)  = DECROU(1)
+        DVIN(9)  = DECROU(2)
+        DVIN(10) = DDMGMI
+        DVIN(11) = DDMG
+C VARIABLE INTERNE INUTILE CAR ON Y STOCKE L'INDICATEUR DE PLASTICITE 
+C DANS LCDPEC
+        DVIN(12) = ZE
+C
+ 9999 CONTINUE
+      END
