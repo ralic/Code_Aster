@@ -1,5 +1,5 @@
 
-# MODIF  DATE 21/02/2012   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 02/04/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE COMPORTEMENTS ELASTOVISCOPLASTIQUES MONOCRISTALLINS
 # RESPONSABLE JMBHH01 J.M.PROIX
 # ssnv172a.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test R
@@ -922,6 +922,8 @@ POLYZ3=STAT_NON_LINE(MODELE=TROISD,INFO=1,
                                    TOUT='OUI',),),
                      INCREMENT=(_F(LIST_INST=LINST3,),),
                      NEWTON=(_F(PREDICTION='EXTRAPOLE'),),
+                     CONVERGENCE=_F(ITER_GLOB_MAXI=11,
+                                    ITER_GLOB_ELAS=25),
                      ARCHIVAGE=_F(LIST_INST=LINST3,),
                                      );
 
@@ -1115,6 +1117,7 @@ IMPLZ4=STAT_NON_LINE(MODELE=TROISD,INFO=1,
                                    ITER_INTE_PAS=10,
                                    TOUT='OUI',),),
                      INCREMENT=(_F(LIST_INST=LINST3,),),
+                     CONVERGENCE=_F(ITER_GLOB_MAXI=11,),
                      NEWTON=(_F(REAC_ITER=1,PREDICTION='EXTRAPOLE'),),
                      ARCHIVAGE=_F(LIST_INST=LINST3,),
                   SUIVI_DDL=(_F(NOM_CMP    ='V1',
@@ -1202,6 +1205,7 @@ POLYZ5=STAT_NON_LINE(MODELE=TROISD,INFO=1,
                                    TOUT='OUI',),),
                      INCREMENT=(_F(LIST_INST=LINST3,),),
                      NEWTON=(_F(PREDICTION='EXTRAPOLE'),),
+                     CONVERGENCE=_F(ITER_GLOB_MAXI=11,),
                      ARCHIVAGE=_F(LIST_INST=LINST3,),
                   SUIVI_DDL=(_F(NOM_CMP    ='V1',
                                  NOM_CHAM   ='VARI_ELGA',
@@ -1285,7 +1289,7 @@ IMPLKR=STAT_NON_LINE(MODELE=TROISD,
                                 REAC_ITER=1,),),
                      ARCHIVAGE=_F(LIST_INST=LINST3,),
                      CONVERGENCE=(_F(RESI_GLOB_RELA=1e-06,
-                                     ITER_GLOB_MAXI=10,),),);
+                                     ITER_GLOB_MAXI=11,),),);
 
 IMPLKR=CALC_ELEM(reuse =IMPLKR,
                  RESULTAT=IMPLKR,
@@ -1325,8 +1329,7 @@ EXPLKR=STAT_NON_LINE(MODELE=TROISD,
                      INCREMENT=(_F(LIST_INST=LINST3C,),),
                      NEWTON=(_F(PREDICTION='EXTRAPOLE',
                                MATRICE='ELASTIQUE'),),
-                     CONVERGENCE=(_F(#RESI_GLOB_RELA=1e-08,
-                                     ITER_GLOB_MAXI=10,),),
+                     CONVERGENCE=(_F(ITER_GLOB_MAXI=11,),),
                      ARCHIVAGE=_F(LIST_INST=LINST3,),
                                      )
 
@@ -1368,8 +1371,7 @@ EXPLKRP=STAT_NON_LINE(MODELE=TROISD,
                      INCREMENT=(_F(LIST_INST=LINST3C,),),
                      NEWTON=(_F(PREDICTION='EXTRAPOLE',
                                MATRICE='ELASTIQUE'),),
-                     CONVERGENCE=(_F(#RESI_GLOB_RELA=1e-08,
-                                     ITER_GLOB_MAXI=10,),),
+                     CONVERGENCE=(_F(ITER_GLOB_MAXI=11,),),
                      ARCHIVAGE=_F(LIST_INST=LINST3,),
                                      )
 

@@ -3,9 +3,9 @@
       CHARACTER*(*) CHIN,CHOU,BASE,CELMOD,TYPE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 03/04/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,7 +20,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE VABHHTS J.PELLET
+C RESPONSABLE PELLET J.PELLET
 C -----------------------------------------------------------------
 C  BUT : CHANGER LE SUPPORT GEOMETRIQUE D'UN CHAMP
 C -----------------------------------------------------------------
@@ -181,7 +181,7 @@ C     ----------------------------------------------------------------
           CALL CELFPG(CHIN,'&&CHPCHD.CELFPG',IRET)
 
         ELSEIF (CAS(1:4).EQ.'CART') THEN
-          CALL CARCES(CHIN,'ELNO',' ','V',CES1,IRET)
+          CALL CARCES(CHIN,'ELNO',' ','V',CES1,'A',IRET)
 
         ELSE
           CALL ASSERT(.FALSE.)
@@ -200,7 +200,7 @@ C     ----------------------------------------------------------------
         CALL ASSERT(LIGREL.NE.' ')
 
         CES1 = '&&CHPCHD.CES1'
-        CALL CARCES(CHIN,CAS(7:10),CESMOD,'V',CES1,IB)
+        CALL CARCES(CHIN,CAS(7:10),CESMOD,'V',CES1,'A',IB)
 
         CALL CESCEL(CES1,LIGREL,OPTION,PARAM,PROL0,NNCP,BASE,CHOU,'F',
      &              IBID)

@@ -5,9 +5,9 @@
       CHARACTER*(*)       CHAMPZ, TYPEMZ, LITROZ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/04/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -103,7 +103,7 @@ C
      &     DOCU .EQ. 'CART' ) THEN
 C          ----------------
          IF ( DOCU .EQ. 'CART' ) THEN
-            CALL  CARCES ( CHAMP, 'ELEM', K8B, 'V', CHTRA1, IERD )
+            CALL CARCES ( CHAMP, 'ELEM', K8B, 'V', CHTRA1, 'A', IERD )
          ELSE
             CALL CELCES ( CHAMP, 'V', CHTRA1 )
          ENDIF

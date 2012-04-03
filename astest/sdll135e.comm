@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 03/04/2012   AUTEUR SELLENET N.SELLENET 
 
 # TITRE  :  REPONSE DYNAMIQUE D UNE POUTRE-TUYAU ENCASTREE LIBRE
 # sdll135e.para = tps_job 400 mem_job 64Mo ncpus 1 liste_test S
@@ -101,20 +101,17 @@ DYNATRAF=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                         ARCHIVAGE=_F(PAS_ARCH=100,),);
 
 DYNATRAF=CALC_ELEM(reuse =DYNATRAF,
-
-
-
                    RESULTAT=DYNATRAF,
                    OPTION=('SIEF_ELGA','SIEF_ELNO',),);
 
-DYNATRAF=CALC_NO(reuse =DYNATRAF,
-                 RESULTAT=DYNATRAF,
-                 OPTION='REAC_NODA',
-                 MODELE=MODELE,
-                 CHAM_MATER=CHMAT,
-                 CARA_ELEM=CARAC,
-                 EXCIT=(_F(CHARGE=CHARFX,),
-                        _F(CHARGE=CL,),),);
+DYNATRAF=CALC_CHAMP(reuse =DYNATRAF,
+                    RESULTAT=DYNATRAF,
+                    FORCE='REAC_NODA',
+                    MODELE=MODELE,
+                    CHAM_MATER=CHMAT,
+                    CARA_ELEM=CARAC,
+                    EXCIT=(_F(CHARGE=CHARFX,),
+                           _F(CHARGE=CL,),),);
 
 
 DYNANOLI=DYNA_NON_LINE(
@@ -138,15 +135,14 @@ DYNANOLI=CALC_ELEM(reuse =DYNANOLI,
 
                    RESULTAT=DYNANOLI,
                    OPTION=('SIEF_ELNO',),);
-DYNANOLI=CALC_NO(reuse =DYNANOLI,
-                 RESULTAT=DYNANOLI,
-                 OPTION='REAC_NODA',
-                 MODELE=MODELE,
-                 CHAM_MATER=CHMAT,
-                 CARA_ELEM=CARAC,
-                 EXCIT=(_F(CHARGE=CHARFX,),
-                        _F(CHARGE=CL,),),
-                        );
+DYNANOLI=CALC_CHAMP(reuse =DYNANOLI,
+                    RESULTAT=DYNANOLI,
+                    FORCE='REAC_NODA',
+                    MODELE=MODELE,
+                    CHAM_MATER=CHMAT,
+                    CARA_ELEM=CARAC,
+                    EXCIT=(_F(CHARGE=CHARFX,),
+                           _F(CHARGE=CL,),),);
 
 
 

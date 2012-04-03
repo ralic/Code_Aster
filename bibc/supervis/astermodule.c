@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 03/04/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -3114,18 +3114,14 @@ static PyMethodDef aster_methods[] = {
                 {NULL,                NULL}/* sentinel */
 };
 
-
+#ifndef _WITHOUT_PYMOD_
 /* Initialization function for the module (*must* be called initaster) */
 static char aster_module_documentation[] =
 "C implementation of the Python aster module\n"
 "\n"
 ;
 
-#ifdef _SHARED
 PyMODINIT_FUNC initaster(void)
-#else
-DL_EXPORT(void) initaster()
-#endif
 {
     PyObject *aster = (PyObject*)0 ;
     PyObject *dict = (PyObject*)0 ;
@@ -3143,4 +3139,5 @@ DL_EXPORT(void) initaster()
     /* Initialisation de la pile d appel des commandes */
     pile_commandes = PyList_New(0);
 }
+#endif
 

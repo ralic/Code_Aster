@@ -1,8 +1,8 @@
-#@ MODIF contact2 Messages  DATE 12/12/2011   AUTEUR DESOZA T.DESOZA 
+#@ MODIF contact2 Messages  DATE 02/04/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -21,13 +21,6 @@
 
 cata_msg={
 
-1 : _(u"""
-   Échec lors du traitement du contact.
-"""),
-
-2 : _(u"""
-   Échec : la matrice de contact est singulière.
-"""),
 
 3 : _(u"""
   Toutes vos zones de contact sont en mode RESOLUTION='NON'.

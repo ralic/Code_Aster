@@ -1,5 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
-
+# MODIF  DATE 03/04/2012   AUTEUR SELLENET N.SELLENET 
 # TITRE  :  REPONSE DYNAMIQUE D UNE POUTRE-TUYAU ENCASTREE LIBRE
 # sdll135d.para = tps_job 2770 mem_job 384Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -112,15 +111,15 @@ DYNATRAF=CALC_ELEM(reuse =DYNATRAF,
                   RESULTAT=DYNATRAF,
                   OPTION=('SIEF_ELGA','EFGE_ELNO'),);
 
-DYNATRAF=CALC_NO(reuse =DYNATRAF,
-                RESULTAT=DYNATRAF,
-                OPTION='REAC_NODA',
-                MODELE=MODELE,
-                EXCIT=(_F(CHARGE=CHARFX,),
-                     _F(CHARGE=CL,),),
-                CHAM_MATER=CHMAT,
-                GROUP_MA=('MAILF','MAILI'),
-                CARA_ELEM=CARAC,);
+DYNATRAF=CALC_CHAMP(reuse =DYNATRAF,
+                    RESULTAT=DYNATRAF,
+                    FORCE='REAC_NODA',
+                    MODELE=MODELE,
+                    EXCIT=(_F(CHARGE=CHARFX,),
+                           _F(CHARGE=CL,),),
+                    CHAM_MATER=CHMAT,
+                    GROUP_MA=('MAILF','MAILI'),
+                    CARA_ELEM=CARAC,);
 
 # TEST SUR LES DEPLACEMENTS
 
@@ -341,15 +340,15 @@ DYNATRAM=CALC_ELEM(reuse =DYNATRAM,
                    RESULTAT=DYNATRAM,
                    OPTION=('SIEF_ELGA','EFGE_ELNO',),);
 
-DYNATRAM=CALC_NO(reuse =DYNATRAM,
-                 RESULTAT=DYNATRAM,
-                 OPTION=('REAC_NODA','FORC_NODA'),
-                 MODELE=MODELE,
-                 GROUP_MA=('MAILF','MAILI'),
-                 CHAM_MATER=CHMAT,
-                 CARA_ELEM=CARAC,
-                 EXCIT=(_F(CHARGE=CHARMX,),
-                        _F(CHARGE=CL,),),);
+DYNATRAM=CALC_CHAMP(reuse =DYNATRAM,
+                    RESULTAT=DYNATRAM,
+                    FORCE=('REAC_NODA','FORC_NODA'),
+                    MODELE=MODELE,
+                    GROUP_MA=('MAILF','MAILI'),
+                    CHAM_MATER=CHMAT,
+                    CARA_ELEM=CARAC,
+                    EXCIT=(_F(CHARGE=CHARMX,),
+                           _F(CHARGE=CL,),),);
 
 
 

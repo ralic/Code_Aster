@@ -3,7 +3,7 @@
      &                   OPTION,SIGP,VIP,DSIDEP,DEMU,CINCO,IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/03/2012   AUTEUR SFAYOLLE S.FAYOLLE 
+C MODIF ALGORITH  DATE 02/04/2012   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -337,7 +337,7 @@ C         --------------------------------------------------
             IF(PLASTI)THEN
               EPSPET = (DEPS(K)-3.D0*SIGPDV(K)*DP/(2.D0*SIELEQ))/DINST
             ELSE
-              EPSPET = DEPS(K)
+              EPSPET = DEPS(K)/DINST
             ENDIF
             TPDSDT=TP*(DGDTSG*SIGP(K)
      &            +KRON(K)*((DKDTSK-DGDTSG)*SIGPMO-TROISK*ALPHA))

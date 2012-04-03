@@ -1,4 +1,4 @@
-#@ MODIF calc_precont_ops Macro  DATE 31/01/2012   AUTEUR ABBAS M.ABBAS 
+#@ MODIF calc_precont_ops Macro  DATE 03/04/2012   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -45,7 +45,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
   AFFE_CHAR_MECA   = self.get_cmd('AFFE_CHAR_MECA')
   DEFI_LIST_REEL   = self.get_cmd('DEFI_LIST_REEL')
   STAT_NON_LINE    = self.get_cmd('STAT_NON_LINE')
-  CALC_NO          = self.get_cmd('CALC_NO')
+  CALC_CHAMP       = self.get_cmd('CALC_CHAMP')
   CREA_CHAMP       = self.get_cmd('CREA_CHAMP')
   DEFI_FONCTION    = self.get_cmd('DEFI_FONCTION')
   RECU_TABLE       = self.get_cmd('RECU_TABLE')
@@ -321,10 +321,10 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
                          INFO     =INFO,
                          TITRE = TITRE,  )
 
-  __EV1 = CALC_NO( reuse    = __EV1,
-                   RESULTAT = __EV1,
-                  # GROUP_MA = __GROUP_MA_A,
-                   OPTION = 'FORC_NODA' )
+  __EV1 = CALC_CHAMP ( reuse    = __EV1,
+                       RESULTAT = __EV1,
+                     # GROUP_MA = __GROUP_MA_A,
+                         FORCE  = 'FORC_NODA' )
 
   __REA = CREA_CHAMP (
                      TYPE_CHAM = 'NOEU_DEPL_R',

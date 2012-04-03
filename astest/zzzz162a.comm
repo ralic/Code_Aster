@@ -1,4 +1,4 @@
-# MODIF  DATE 30/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 03/04/2012   AUTEUR SELLENET N.SELLENET 
 # TITRE VALIDATION LIRE_RESU AU FORMAT MED
 # zzzz162a.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -392,14 +392,10 @@ U=STAT_NON_LINE(MODELE=MOMECA,
                 CONVERGENCE=_F(RESI_GLOB_RELA=1.E-8,
                                ITER_GLOB_MAXI=10,),);
 
-U=CALC_ELEM(reuse =U,
-            RESULTAT=U,
-            OPTION=('SIGM_ELNO','VARI_ELNO',),);
-
-
-U=CALC_NO(reuse =U,
-            RESULTAT=U,
-            OPTION=('SIGM_NOEU','VARI_NOEU',),);
+U=CALC_CHAMP(reuse =U,
+             RESULTAT=U,
+             CONTRAINTE=('SIGM_ELNO','SIGM_NOEU',),
+             VARI_INTERNE=('VARI_ELNO','VARI_NOEU'),);
 
 
 IMPR_RESU(FORMAT='MED', UNITE=71, RESU=_F(RESULTAT=U,),);
@@ -871,13 +867,15 @@ RESHYD=CREA_RESU(OPERATION='AFFE',
                  NOM_CHAM='HYDR_ELNO',
                  AFFE=(
                  _F(CHAM_GD=HELNO0,
+                    MODELE=MOTHER,
                     INST=0.0,),
                  _F(CHAM_GD=HELNO1,
+                    MODELE=MOTHER,
                     INST=90,),),);
 
-RESHYD=CALC_NO(reuse =RESHYD,
-               RESULTAT=RESHYD,
-               OPTION='HYDR_NOEU',);
+RESHYD=CALC_CHAMP(reuse =RESHYD,
+                  RESULTAT=RESHYD,
+                  THERMIQUE='HYDR_NOEU',);
 
 IMPR_RESU(FORMAT='MED',
           UNITE=72,

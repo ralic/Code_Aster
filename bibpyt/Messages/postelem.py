@@ -1,8 +1,8 @@
-#@ MODIF postelem Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF postelem Messages  DATE 02/04/2012   AUTEUR BARGELLI R.BARGELLINI 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -39,6 +39,10 @@ cata_msg={
  Avec le mot-clé RESULTAT, il faut renseigner NOM_CHAM pour identifier le champ sur lequel réaliser le post-traitement.
 """),
 
+5: _(u"""
+ En présence de déformation thermique, le calcul de l'énergie élastique de SIMO_MIEHE est interdit. Voir R5.03.21
+"""),
+
 11: _(u"""
  Un instant demandé dans POST_ELEM, option TRAV_EXT n'est pas présent dans le résultat <%(k1)s>.
 """),
@@ -50,6 +54,7 @@ cata_msg={
 13: _(u"""
  Impossible de trouver les forces nodales <FORC_NODA> de numéro d'ordre %(i1)d dans POST_ELEM, option TRAV_EXT.
 """),
+
 
 }
 

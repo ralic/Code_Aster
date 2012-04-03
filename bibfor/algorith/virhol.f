@@ -6,9 +6,9 @@
       REAL*8        CLIQ,SIGNE,ALPLIQ,RHO11,RHO11M
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 02/04/2012   AUTEUR GRANET S.GRANET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -27,26 +27,11 @@ C ======================================================================
 C --- CALCUL ET STOCKAGE DE LA VARIABLE INTERNE DE LA MASSE ------------
 C --- VOLUMIQUE DE L EAU -----------------------------------------------
 C ======================================================================
-      INTEGER       IADZI,IAZK24,UMESS,IUNIFI
+      INTEGER       IADZI,IAZK24,IUNIFI
       REAL*8        VARBIO,EPXMAX
       PARAMETER    (EPXMAX = 5.D0)
       CHARACTER*8   NOMAIL
 C ======================================================================
-C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      INTEGER ZI
-      COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
-      COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
-      COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C ======================================================================
 C --- CALCUL DES ARGUMENTS EN EXPONENTIELS -----------------------------
@@ -54,12 +39,7 @@ C --- ET VERIFICATION DE LA COHERENCE ----------------------------------
 C ======================================================================
       VARBIO = (DP2-SIGNE*DP1-DPAD)*CLIQ - 3.D0*ALPLIQ*DT
       IF (VARBIO.GT.EPXMAX) THEN
-         UMESS  = IUNIFI('MESSAGE')
-         CALL TECAEL(IADZI,IAZK24)
-         NOMAIL = ZK24(IAZK24-1+3) (1:8)
-         WRITE (UMESS,9001) 'VIRHOL','VARBIO > EXPMAX A LA MAILLE: ',
-     &                                                            NOMAIL
-         RETCOM = 1
+         RETCOM = 2
          GO TO 30
       ENDIF
       VINTP(ADVIHY+VIHRHO) =

@@ -1,9 +1,9 @@
-#@ MODIF N_MCCOMPO Noyau  DATE 30/08/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_MCCOMPO Noyau  DATE 03/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -279,7 +279,7 @@ class MCCOMPO(N_OBJECT.OBJECT):
       # on cherche dans les mots cles presents, le mot cle de nom key
       # s'il est là on retourne sa valeur (méthode get_val)
       for child in self.mc_liste:
-        if child.nom == key : return child.get_val()
+        if child.nom == key : return child.get_valeur()
       #  Si on n a pas trouve de mot cle present on retourne le defaut
       #  eventuel pour les mots cles accessibles dans la definition
       #  a ce niveau

@@ -1,8 +1,8 @@
-#@ MODIF chainage_meca_hydr Macro  DATE 17/10/2011   AUTEUR MEUNIER S.MEUNIER 
+#@ MODIF chainage_meca_hydr Macro  DATE 03/04/2012   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -30,7 +30,7 @@ def CHAINAGE_MECA_HYDR(self,args,motscles):
     CALC_ELEM       = self.get_cmd('CALC_ELEM')
     CREA_CHAMP      = self.get_cmd('CREA_CHAMP')
     CREA_RESU       = self.get_cmd('CREA_RESU')
-    CALC_NO         = self.get_cmd('CALC_NO')
+    CALC_CHAMP      = self.get_cmd('CALC_CHAMP')
     PROJ_CHAMP      = self.get_cmd('PROJ_CHAMP')
     
     b_info = False
@@ -229,15 +229,17 @@ def CHAINAGE_MECA_HYDR(self,args,motscles):
                        TYPE_RESU='EVOL_NOLI',
                        NOM_CHAM='EPSI_ELNO',
                        AFFE=(_F(CHAM_GD=__defvm,
+                                MODELE=__modele,
                                 INST=instm,),
                              _F(CHAM_GD=__defvp,
+                                MODELE=__modele,
                                 INST=instp,),),);
     
-    __defvr1=CALC_NO(reuse=__defvr1,
-                     RESULTAT=__defvr1,
-                     OPTION='EPSI_NOEU',
-                     LIST_INST=__listinst,
-                     TOUT='OUI',);
+    __defvr1=CALC_CHAMP(reuse=__defvr1,
+                        RESULTAT=__defvr1,
+                        DEFORMATION='EPSI_NOEU',
+                        LIST_INST=__listinst,
+                        TOUT='OUI',);
 
     __epsrpro=PROJ_CHAMP(RESULTAT=__defvr1,
                            NOM_CHAM='EPSI_NOEU',

@@ -1,8 +1,8 @@
-#@ MODIF chainage_thm_ops Macro  DATE 11/10/2011   AUTEUR MEUNIER S.MEUNIER 
+#@ MODIF chainage_thm_ops Macro  DATE 03/04/2012   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -70,7 +70,6 @@ def chainage_thm_ops(self,TYPE_CHAINAGE,**args):
   CREA_CHAMP      = self.get_cmd('CREA_CHAMP')
 
   CALC_ELEM       = self.get_cmd('CALC_ELEM')
-  CALC_NO         = self.get_cmd('CALC_NO')
   CREA_RESU       = self.get_cmd('CREA_RESU')
   DEFI_LIST_REEL  = self.get_cmd('DEFI_LIST_REEL')
 

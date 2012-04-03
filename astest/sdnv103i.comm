@@ -1,9 +1,9 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 02/04/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 # sdnv103i.para = tps_job 300 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -21,10 +21,11 @@
 
 DEBUT(CODE=_F(NOM='SDNV103I',
               NIV_PUB_WEB='INTERNET',),
-      IGNORE_ALARM='CONTACT_8',        
+      IGNORE_ALARM=('CONTACT_8','CONTACT3_98'),        
               );
 
-# IGNORE ALARM: ON UTILISE DES QUAD8 EN CONTACT
+# IGNORE ALARM: CONTACT_8: ON UTILISE DES QUAD8 EN CONTACT
+# IGNORE ALARM: CONTACT3_98: DETECTION CONTACT RASANT
 
 MA=LIRE_MAILLAGE(FORMAT='MED',);
 
@@ -84,7 +85,6 @@ CHCONT  = DEFI_CONTACT(MODELE         = MODE,
                        
                        ZONE =_F(
                              ALGO_CONT      = 'PENALISATION',
-                           #  ALGO_CONT      = 'LAGRANGIEN',
                              ALGO_FROT      = 'PENALISATION',
                              COULOMB        = 0.25,
                              E_N            = 100.E3,
@@ -136,7 +136,7 @@ DEFLIST =DEFI_LIST_INST(  DEFI_LIST=_F(LIST_INST = temps,),
                                EVENEMENT       = 'INTERPENETRATION',
                                PENE_MAXI       = 1E-5,
                                ACTION          = 'ADAPT_COEF_PENA',
-                               COEF_MAXI       = 1E9,  
+                               COEF_MAXI       = 1E10,  
                               ),                                 
                           ),
                           INFO = 2,
@@ -229,7 +229,7 @@ TEST_RESU(RESU=(
           CRITERE   = 'RELATIF', 
           PRECISION = 1.E-10,
           NOM_CMP   = 'DX',    
-          VALE      = 1.4063438784607, 
+          VALE      = 1.4464242806669, 
           REFERENCE = 'NON_REGRESSION',
           VERSION   = '11.0.21' ),
           
@@ -251,7 +251,7 @@ TEST_RESU(RESU=(
           CRITERE   = 'RELATIF', 
           PRECISION = 1.E-10,
           NOM_CMP   = 'DX',    
-          VALE      = 86542.670132459, 
+          VALE      = 83900.271694816, 
           REFERENCE = 'NON_REGRESSION',
           VERSION   = '11.0.21' ),
           

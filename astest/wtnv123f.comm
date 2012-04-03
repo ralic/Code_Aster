@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 03/04/2012   AUTEUR SELLENET N.SELLENET 
 # TITRE ESSAI HYDROSTATIQUE SUIVI D UN TRIAXIAL A SUCCION FIXE
 # wtnv123f.para = tps_job 200 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -286,58 +286,26 @@ U1=STAT_NON_LINE(ETAT_INIT = _F(SIGM=SIGINIT,DEPL=DEPINIT),
 
 
 
-U1=CALC_ELEM(  reuse=U1,
-                  OPTION=('SIGM_ELNO',
-                          'VARI_ELNO',
-                          ),
-                  RESULTAT=U1,
-                        )
+U1=CALC_CHAMP(reuse=U1,
+              RESULTAT=U1,
+              CONTRAINTE=('SIGM_ELNO','SIGM_NOEU',),
+              VARI_INTERNE=('VARI_ELNO','VARI_NOEU',),);
 
-U1=CALC_NO(  reuse=U1,     RESULTAT=U1,
-                       OPTION=( 'SIGM_NOEU',
-                       'VARI_NOEU',
-                           ),
-                )
+PCR=CALC_CHAMP(RESULTAT=U1,
+               VARI_INTERNE=('VAEX_ELNO','VAEX_NOEU'),
+               NOM_VARI='PCR');
 
-PCR=CALC_ELEM(RESULTAT=U1,
-              OPTION='VAEX_ELNO',
-              NOM_VARI='PCR'
-              );
+INDETA=CALC_CHAMP(RESULTAT=U1,
+                  VARI_INTERNE=('VAEX_ELNO','VAEX_NOEU'),
+                  NOM_VARI='IND_ETA');
 
-PCR=CALC_NO(reuse=PCR,
-            RESULTAT=PCR,
-            OPTION='VAEX_NOEU'
-            );
+SEUIL=CALC_CHAMP(RESULTAT=U1,
+                 VARI_INTERNE=('VAEX_ELNO','VAEX_NOEU'),
+                 NOM_VARI='SEUIL_HYD');
 
-INDETA=CALC_ELEM(RESULTAT=U1,
-                 OPTION='VAEX_ELNO',
-                 NOM_VARI='IND_ETA'
-                 );
-
-INDETA=CALC_NO(reuse=INDETA,
-               RESULTAT=INDETA,
-               OPTION='VAEX_NOEU'
-               );
-
-SEUIL=CALC_ELEM(RESULTAT=U1,
-                OPTION='VAEX_ELNO',
-                NOM_VARI='SEUIL_HYD'
-                );
-
-SEUIL=CALC_NO(reuse=SEUIL,
-              RESULTAT=SEUIL,
-              OPTION='VAEX_NOEU'
-              );
-
-INDHYD=CALC_ELEM(RESULTAT=U1,
-                 OPTION='VAEX_ELNO',
-                 NOM_VARI='IND_HYD'
-                 );
-
-INDHYD=CALC_NO(reuse=INDHYD,
-               RESULTAT=INDHYD,
-               OPTION='VAEX_NOEU'
-               );
+INDHYD=CALC_CHAMP(RESULTAT=U1,
+                  VARI_INTERNE=('VAEX_ELNO','VAEX_NOEU'),
+                  NOM_VARI='IND_HYD');
 
 #
 #-------------------------

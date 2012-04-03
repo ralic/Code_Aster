@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/04/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 # sdnv103h.para = tps_job 300 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -110,37 +110,37 @@ VIT_0=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                     VALE=(0.,0.,0.,),),),);
 
 
-NPAS_IMPA   = 10
-NPAS_POST   = 10
-IMPACT_THEORIQUE = 1.0E-6
-IMPACT = 1.0*IMPACT_THEORIQUE
-IFIN   = +2.0E-5
+NPAS_IMPA   = 11
+IFIN   = +1.0E-5
 
 
 temps=DEFI_LIST_REEL(DEBUT=-1.E-5,
-                      INTERVALLE=(_F(JUSQU_A=IMPACT,
-                                     NOMBRE = NPAS_IMPA,),
-                                  _F(JUSQU_A=IFIN,
-                                     NOMBRE=NPAS_POST,),),);
+                      INTERVALLE=(_F(JUSQU_A=IFIN,
+                                     NOMBRE=NPAS_IMPA,),   
+                                   ),);
 
-DEFLIST =DEFI_LIST_INST(  DEFI_LIST=_F(LIST_INST = temps,),
+
+
+# TEST EN MODE DEFI_LIST_INST MANUEL
+
+DEF_MANU =DEFI_LIST_INST(  DEFI_LIST=_F(LIST_INST = temps,),
                           ECHEC    =(
                             _F(
-                               EVENEMENT       = 'ERREUR',
-                               ACTION          = 'DECOUPE',
-                               SUBD_METHODE    = 'MANUEL',
+                               EVENEMENT        = 'ERREUR',
+                               ACTION           = 'DECOUPE',
+                               SUBD_METHODE     = 'MANUEL',
                               ),
                             _F(
-                               EVENEMENT       = 'COLLISION',
-                               ACTION          = 'DECOUPE',
-                               SUBD_METHODE    = 'AUTO',
-                               PREC_COLLISION  = 5E-2,
+                               EVENEMENT        = 'COLLISION',
+                               ACTION           = 'DECOUPE',
+                               SUBD_METHODE     = 'AUTO',
+                               DELTAT_COLLISION = 2.E-8,
+                               DUREE_DECOUPE    = 1.5E-6,
                               ),
                           ),
-                          INFO = 1,
                         )
 
-RESU=DYNA_NON_LINE(MODELE=MODE,
+RESU1=DYNA_NON_LINE(MODELE=MODE,
                    CHAM_MATER=CHMAT,
                    EXCIT=_F(CHARGE=CH,),
                    CONTACT = CHCONT,
@@ -152,85 +152,87 @@ RESU=DYNA_NON_LINE(MODELE=MODE,
                                  DEFORMATION='PETIT',
                                  GROUP_MA='VOL_RIG',),),
                    ETAT_INIT=_F(VITE=VIT_0,),
-                   INCREMENT=_F(LIST_INST=DEFLIST,),
+                   INCREMENT=_F(LIST_INST=DEF_MANU,),
                    SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
                                  FORMULATION='DEPLACEMENT',
                                  BETA=0.49,GAMMA=0.9,),
                    NEWTON=_F(REAC_INCR=1,
                              REAC_ITER=1,),
-                   SOLVEUR=_F(SYME='OUI',
-                              METHODE='LDLT',),
+                   SOLVEUR=_F(SYME='OUI',),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1.E-06,
                                   ITER_GLOB_MAXI=20,),
                                 );
+#
+### POST-TRAITEMENTS
+#
 
-TABJEU = POST_RELEVE_T (ACTION = _F(GROUP_NO='B1',
+CONTB1_1=POST_RELEVE_T (ACTION = _F(GROUP_NO='B1',
                                  INTITULE = 'MESSAGE',
-                                 RESULTAT = RESU,
+                                 RESULTAT = RESU1,
                                  TOUT_CMP='OUI',
                                  NOM_CHAM   = 'VALE_CONT',
                                  OPERATION = 'EXTRACTION'))
 
-DEPL_A2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL EN A2',
+DEPLA2_1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL EN A2',
                                 GROUP_NO='A2',
-                                RESULTAT=RESU,
+                                RESULTAT=RESU1,
                                 NOM_CHAM='DEPL',
                                 NOM_CMP='DY',
                                 OPERATION='EXTRACTION',),);
 
-VITE_A2=POST_RELEVE_T(ACTION=_F(INTITULE='VITE EN A2',
+VITEA2_1=POST_RELEVE_T(ACTION=_F(INTITULE='VITE EN A2',
                                 GROUP_NO='A2',
-                                RESULTAT=RESU,
+                                RESULTAT=RESU1,
                                 NOM_CHAM='VITE',
                                 NOM_CMP='DY',
                                 OPERATION='EXTRACTION',),);
 
-DEPL_A1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL EN A1',
+DEPLA1_1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL EN A1',
                                 GROUP_NO='A1',
-                                RESULTAT=RESU,
+                                RESULTAT=RESU1,
                                 NOM_CHAM='DEPL',
                                 NOM_CMP='DY',
                                 OPERATION='EXTRACTION',),);
 
 
-VITE_A1=POST_RELEVE_T(ACTION=_F(INTITULE='CITE EN A1',
+VITEA1_1=POST_RELEVE_T(ACTION=_F(INTITULE='VITE EN A1',
                                 GROUP_NO='A1',
-                                RESULTAT=RESU,
+                                RESULTAT=RESU1,
                                 NOM_CHAM='VITE',
                                 NOM_CMP='DY',
                                 OPERATION='EXTRACTION',),);
 
-DEPL_B1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL EN B1',
+DEPLB1_1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL EN B1',
                                 GROUP_NO='B1',
-                                RESULTAT=RESU,
+                                RESULTAT=RESU1,
                                 NOM_CHAM='DEPL',
                                 NOM_CMP='DZ',
                                 OPERATION='EXTRACTION',),);
 
-VITE_B1=POST_RELEVE_T(ACTION=_F(INTITULE='VITE EN B1',
+VITEB1_1=POST_RELEVE_T(ACTION=_F(INTITULE='VITE EN B1',
                                 GROUP_NO='B1',
-                                RESULTAT=RESU,
+                                RESULTAT=RESU1,
                                 NOM_CHAM='VITE',
                                 NOM_CMP='DZ',
                                 OPERATION='EXTRACTION',),);
 
 #
-# TESTS DE DEPLACEMENTS ET VITESSES
+### TESTS DE DEPLACEMENTS ET VITESSES
 #
 
 TEST_RESU(RESU=(
-     _F(  RESULTAT  = RESU,
+     _F(  RESULTAT  = RESU1,
           INST      = IFIN,
           NOM_CHAM  = 'DEPL',
           GROUP_NO  = 'B1',
           CRITERE   = 'RELATIF',
           PRECISION = 1.E-10,
           NOM_CMP   = 'DX',
-          VALE      = 1.358839837768,
+          VALE      = 0.75715311454588,
           REFERENCE = 'NON_REGRESSION',
           VERSION   = '11.0.21' ),
 
-     _F(  RESULTAT  = RESU,
+     _F(  RESULTAT  = RESU1,
           INST      = IFIN,
           NOM_CHAM  = 'DEPL',
           GROUP_NO  = 'A2',
@@ -241,18 +243,18 @@ TEST_RESU(RESU=(
           REFERENCE = 'NON_REGRESSION',
           VERSION   = '11.0.21' ),
 
-     _F(  RESULTAT  = RESU,
+     _F(  RESULTAT  = RESU1,
           INST      = IFIN,
           NOM_CHAM  = 'VITE',
           GROUP_NO  = 'B1',
           CRITERE   = 'RELATIF',
           PRECISION = 1.E-10,
           NOM_CMP   = 'DX',
-          VALE      = 85594.222358217,
+          VALE      = 78447.637401481,
           REFERENCE = 'NON_REGRESSION',
           VERSION   = '11.0.21' ),
 
-     _F(  RESULTAT  = RESU,
+     _F(  RESULTAT  = RESU1,
           INST      = IFIN,
           NOM_CHAM  = 'VITE',
           GROUP_NO  = 'A2',
@@ -265,11 +267,12 @@ TEST_RESU(RESU=(
         ),);
 
 #
-# TESTS SUR LE CONTACT
+### TESTS SUR LE CONTACT
 #
 
-TEST_TABLE(TABLE=TABJEU,
+TEST_TABLE(TABLE     = CONTB1_1,
            FILTRE    =_F(NOM_PARA = 'INST',
+                         PRECISION=1.E-10,
                          VALE = IFIN,),
            NOM_PARA  = 'JEU',
            CRITERE   = 'ABSOLU',
@@ -278,15 +281,238 @@ TEST_TABLE(TABLE=TABJEU,
            REFERENCE = 'NON_REGRESSION',
            VERSION   = '11.0.21' )
 
-TEST_TABLE(TABLE     = TABJEU,
+TEST_TABLE(TABLE     = CONTB1_1,
            FILTRE    =_F(NOM_PARA = 'INST',
+                         PRECISION=1.E-10,
                          VALE = IFIN,),
            NOM_PARA  = 'R',
            CRITERE   = 'RELATIF',
            PRECISION = 1.E-10,
-           VALE      = 71.911715701554,
+           VALE      = 289.96538798755,
+           REFERENCE = 'NON_REGRESSION',
+           VERSION   = '11.0.21' )
+           
+           
+#
+### COURBES
+#
+
+F_DY_1=RECU_FONCTION( RESULTAT=RESU1,
+                      NOM_CHAM='DEPL',
+                      GROUP_NO='B1',
+                      NOM_CMP='DZ',);
+IMPR_FONCTION(FORMAT='XMGRACE',
+          UNITE=39,
+          COURBE=(
+       _F(FONCTION=F_DY_1),),);
+
+
+
+F_VY_1=RECU_FONCTION( RESULTAT=RESU1,
+                      NOM_CHAM='VITE',
+                      GROUP_NO='B1',
+                      NOM_CMP='DZ',);
+IMPR_FONCTION(FORMAT='XMGRACE',
+          UNITE=40,
+          COURBE=(
+       _F(FONCTION=F_VY_1),),);
+           
+           
+
+# TEST EN MODE DEFI_LIST_INST AUTOMATIQUE
+
+DEF_AUTO = DEFI_LIST_INST(  DEFI_LIST=_F(LIST_INST = temps,
+                                       METHODE='AUTO',),
+                          ECHEC    =(
+                            _F(
+                               EVENEMENT        = 'ERREUR',
+                               ACTION           = 'DECOUPE',
+                               SUBD_METHODE     = 'MANUEL',
+                              ),
+                            _F(
+                               EVENEMENT        = 'COLLISION',
+                               ACTION           = 'DECOUPE',
+                               SUBD_METHODE     = 'AUTO',
+                               DELTAT_COLLISION = 2.E-8,
+                               DUREE_DECOUPE    = 1.5E-6,
+                              ),
+                          ),
+                        )
+
+RESU2=DYNA_NON_LINE(MODELE=MODE,
+                   CHAM_MATER=CHMAT,
+                   EXCIT=_F(CHARGE=CH,),
+                   CONTACT = CHCONT,
+                   COMP_INCR=(_F(
+                                 RELATION='VMIS_ISOT_LINE',
+                                 DEFORMATION='SIMO_MIEHE',
+                                 TOUT='OUI',),
+                              _F(RELATION='ELAS',
+                                 DEFORMATION='PETIT',
+                                 GROUP_MA='VOL_RIG',),),
+                   ETAT_INIT=_F(VITE=VIT_0,),
+                   INCREMENT=_F(LIST_INST=DEF_AUTO,),
+                   SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                                 FORMULATION='DEPLACEMENT',
+                                 BETA=0.49,GAMMA=0.9,),
+                   NEWTON=_F(REAC_INCR=1,
+                             REAC_ITER=1,),
+                   SOLVEUR=_F(SYME='OUI',),
+                   CONVERGENCE=_F(RESI_GLOB_RELA=1.E-06,
+                                  ITER_GLOB_MAXI=20,),
+                                );
+#
+### POST-TRAITEMENTS
+#
+
+CONTB1_2=POST_RELEVE_T (ACTION = _F(GROUP_NO='B1',
+                                 INTITULE = 'MESSAGE',
+                                 RESULTAT = RESU2,
+                                 TOUT_CMP='OUI',
+                                 NOM_CHAM   = 'VALE_CONT',
+                                 OPERATION = 'EXTRACTION'))
+
+DEPLA2_2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL EN A2',
+                                GROUP_NO='A2',
+                                RESULTAT=RESU2,
+                                NOM_CHAM='DEPL',
+                                NOM_CMP='DY',
+                                OPERATION='EXTRACTION',),);
+
+VITEA2_2=POST_RELEVE_T(ACTION=_F(INTITULE='VITE EN A2',
+                                GROUP_NO='A2',
+                                RESULTAT=RESU2,
+                                NOM_CHAM='VITE',
+                                NOM_CMP='DY',
+                                OPERATION='EXTRACTION',),);
+
+DEPLA1_2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL EN A1',
+                                GROUP_NO='A1',
+                                RESULTAT=RESU2,
+                                NOM_CHAM='DEPL',
+                                NOM_CMP='DY',
+                                OPERATION='EXTRACTION',),);
+
+
+VITEA1_2=POST_RELEVE_T(ACTION=_F(INTITULE='VITE EN A1',
+                                GROUP_NO='A1',
+                                RESULTAT=RESU2,
+                                NOM_CHAM='VITE',
+                                NOM_CMP='DY',
+                                OPERATION='EXTRACTION',),);
+
+DEPLB1_2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL EN B1',
+                                GROUP_NO='B1',
+                                RESULTAT=RESU2,
+                                NOM_CHAM='DEPL',
+                                NOM_CMP='DZ',
+                                OPERATION='EXTRACTION',),);
+
+VITEB1_2=POST_RELEVE_T(ACTION=_F(INTITULE='VITE EN B1',
+                                GROUP_NO='B1',
+                                RESULTAT=RESU2,
+                                NOM_CHAM='VITE',
+                                NOM_CMP='DZ',
+                                OPERATION='EXTRACTION',),);
+
+#
+### TESTS DE DEPLACEMENTS ET VITESSES
+#
+
+TEST_RESU(RESU=(
+     _F(  RESULTAT  = RESU2,
+          INST      = IFIN,
+          NOM_CHAM  = 'DEPL',
+          GROUP_NO  = 'B1',
+          CRITERE   = 'RELATIF',
+          PRECISION = 1.E-10,
+          NOM_CMP   = 'DX',
+          VALE      = 0.75961887541710,
+          REFERENCE = 'NON_REGRESSION',
+          VERSION   = '11.0.21' ),
+
+     _F(  RESULTAT  = RESU2,
+          INST      = IFIN,
+          NOM_CHAM  = 'DEPL',
+          GROUP_NO  = 'A2',
+          CRITERE   = 'ABSOLU',
+          PRECISION = 1.E-10,
+          NOM_CMP   = 'DY',
+          VALE      = 0.0000000000000E+00,
+          REFERENCE = 'NON_REGRESSION',
+          VERSION   = '11.0.21' ),
+
+     _F(  RESULTAT  = RESU2,
+          INST      = IFIN,
+          NOM_CHAM  = 'VITE',
+          GROUP_NO  = 'B1',
+          CRITERE   = 'RELATIF',
+          PRECISION = 1.E-10,
+          NOM_CMP   = 'DX',
+          VALE      = 86687.032089558,
+          REFERENCE = 'NON_REGRESSION',
+          VERSION   = '11.0.21' ),
+
+     _F(  RESULTAT  = RESU2,
+          INST      = IFIN,
+          NOM_CHAM  = 'VITE',
+          GROUP_NO  = 'A2',
+          CRITERE   = 'ABSOLU',
+          PRECISION = 1.E-10,
+          NOM_CMP   = 'DY',
+          VALE      = 0.0000000000000E+00,
+          REFERENCE = 'NON_REGRESSION',
+          VERSION   = '11.0.21' ),
+        ),);
+
+#
+### TESTS SUR LE CONTACT
+#
+
+TEST_TABLE(TABLE     = CONTB1_2,
+           FILTRE    =_F(NOM_PARA = 'INST',
+                         PRECISION=1.E-10,
+                         VALE = IFIN,),
+           NOM_PARA  = 'JEU',
+           CRITERE   = 'ABSOLU',
+           PRECISION = 1.E-15,
+           VALE      = 0.0000000000000E+00,
            REFERENCE = 'NON_REGRESSION',
            VERSION   = '11.0.21' )
 
+TEST_TABLE(TABLE     = CONTB1_2,
+           FILTRE    =_F(NOM_PARA = 'INST',
+                         PRECISION=1.E-10,
+                         VALE = IFIN,),
+           NOM_PARA  = 'R',
+           CRITERE   = 'RELATIF',
+           PRECISION = 1.E-10,
+           VALE      = 277.99589251312,
+           REFERENCE = 'NON_REGRESSION',
+           VERSION   = '11.0.21' )
+
+#
+### COURBES
+#
+
+F_DY_2=RECU_FONCTION( RESULTAT=RESU2,
+                      NOM_CHAM='DEPL',
+                      GROUP_NO='B1',
+                      NOM_CMP='DZ',);
+IMPR_FONCTION(FORMAT='XMGRACE',
+          UNITE=41,
+          COURBE=(
+       _F(FONCTION=F_DY_2),),);
+
+
+
+F_VY_2=RECU_FONCTION( RESULTAT=RESU2,
+                      NOM_CHAM='VITE',
+                      GROUP_NO='B1',
+                      NOM_CMP='DZ',);
+IMPR_FONCTION(FORMAT='XMGRACE',
+          UNITE=42,
+          COURBE=(
+       _F(FONCTION=F_VY_2),),);
 
 FIN();

@@ -1,4 +1,4 @@
-#@ MODIF mecanonline6 Messages  DATE 03/01/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF mecanonline6 Messages  DATE 02/04/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -59,20 +59,8 @@ cata_msg = {
   Le mode de flambement de numéro d'ordre %(i1)d a pour charge critique %(r1)19.12e
 """),
 
-25 : _(u"""
-  Critère(s) de convergence atteint(s)
-"""),
-
-26 : _(u"""
-  Pas de critère(s) de convergence
-"""),
-
-27 : _(u"""
-  Convergence forcée (mode ARRET='NON')
-"""),
-
-28 : _(u"""
-  <*> Attention ! Convergence atteinte avec RESI_GLOB_MAXI valant %(r1)19.12e pour cause de chargement presque nul.
+12 : _(u"""
+  Le mode de stabilité de numéro d'ordre %(i1)d a pour charge critique %(r1)19.12e
 """),
 
 29 : _(u"""
@@ -84,7 +72,7 @@ cata_msg = {
 """),
 
 31 : _(u"""
- <Erreur> Le nombre maximum d'itérations est atteint
+ <Erreur> Le nombre maximum d'itérations de Newton est atteint
 """),
 
 32 : _(u"""
@@ -92,7 +80,7 @@ cata_msg = {
 """),
 
 33 : _(u"""
- <Erreur> La matrice de contact est singulière
+ <Erreur> Il n'y a pas assez de temps CPU pour continuer les pas de temps
 """),
 
 34 : _(u"""
@@ -103,19 +91,67 @@ cata_msg = {
  <Erreur> Il n'y a pas assez de temps CPU pour continuer les itérations de Newton
 """),
 
-36 : _(u"""    Le résidu de type <%(k1)s> vaut %(r1)19.12e au noeud et degré de liberté <%(k2)s>"""),
+36 : _(u"""
+ <Erreur> Arrêt demandé par l'utilisateur.
+"""),
 
 37 : _(u"""
-  Le pilotage a échoué. On recommence en utilisant la solution rejetée initialement.
+ <Erreur> On dépasse le nombre de boucles de point fixe de géométrie.
  """),
 
 38 : _(u"""
- <Erreur> Échec dans le traitement de la collision.
-"""),
+ <Erreur> On dépasse le nombre de boucles de point fixe de frottement.
+ """),
 
 39 : _(u"""
-  Le mode de stabilité de numéro d'ordre %(i1)d a pour charge critique %(r1)19.12e
+ <Erreur> On dépasse le nombre de boucles de point fixe de contact.
+ """),
+
+40 : _(u"""
+ <Erreur> Instabilité détectée.
+ """),
+
+41 : _(u"""
+ <Erreur> Collision détectée.
+ """),
+
+42 : _(u"""
+ <Erreur> Interpénétration détectée.
+ """),
+
+50 : _(u"""
+ <Action> On recommence le pas de temps en utilisant la solution de pilotage rejetée initialement.
+ """),
+
+51 : _(u"""
+ <Action> On arrête le calcul.
+ """),
+
+52 : _(u"""
+ <Action> On recommence le pas de temps en ayant adapté le coefficient de pénalisation.
+ """),
+
+53 : _(u"""
+ <Erreur> On ne peut plus adapter le coefficient de pénalisation (on atteint COEF_MAXI).
+ """),
+
+54 : _(u"""
+          Sur la zone <%(i1)d>, le coefficient de pénalisation adapté vaut <%(r1)13.6G>.
+ """),
+
+60 : _(u"""
+  Critère(s) de convergence atteint(s)
 """),
+
+61 : _(u"""
+      Attention ! Convergence atteinte avec RESI_GLOB_RELA car on est au premier instant avec RESI_COMP_RELA.
+"""),
+
+62 : _(u"""
+      Attention ! Convergence atteinte avec RESI_GLOB_MAXI au lieu de RESI_GLOB_RELA pour cause de chargement presque nul.
+"""),
+
+70 : _(u"""    Le résidu de type <%(k1)s> vaut %(r1)19.12e au noeud et degré de liberté <%(k2)s>"""),
 
 
 }

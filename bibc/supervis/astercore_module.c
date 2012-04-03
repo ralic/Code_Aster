@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astercore_module supervis  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astercore_module supervis  DATE 03/04/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -468,7 +468,7 @@ static PyMethodDef methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-
+#ifndef _WITHOUT_PYMOD_
 PyMODINIT_FUNC initaster_core(void)
 {
     aster_core = Py_InitModule("aster_core", methods);
@@ -505,4 +505,5 @@ PyMODINIT_FUNC initaster_core(void)
     // fill later (after the arguments have been read)
     PyModule_AddObject(aster_core, "__version__", Py_None);
 }
+#endif
 

@@ -1,9 +1,9 @@
-# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 03/04/2012   AUTEUR SELLENET N.SELLENET 
 # TITRE VALIDATION DE PROJ_MESU_MODAL : CAS 3D, BASE (MODE_MECA)
 # sdlv122a.para = tps_job 120 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -129,8 +129,9 @@ MODES=CALC_ELEM( reuse=MODES,    RESULTAT=MODES,
                           OPTION='SIGM_ELNO'                    )
 
 #
-MODES=CALC_NO( reuse=MODES,    RESULTAT=MODES,
-                        OPTION='SIGM_NOEU'                      )
+MODES=CALC_CHAMP(reuse=MODES,
+                 RESULTAT=MODES,
+                 CONTRAINTE='SIGM_NOEU',);
 
 #
 # DEFINITION DU MAILLAGE DE MESURE
@@ -293,9 +294,10 @@ REPONS=CALC_ELEM( RESULTAT=REPONSE,
                             OPTION='EPSI_ELNO'                  )
 
 #
-REPONS=CALC_NO( reuse=REPONS,   RESULTAT=REPONS,
-                      LIST_INST=LTEMPS,
-                         OPTION='EPSI_NOEU'                     )
+REPON2=CALC_CHAMP(RESULTAT=REPONS,
+                  MODELE=MODELE,
+                  LIST_INST=LTEMPS,
+                  DEFORMATION='EPSI_NOEU',);
 
 #
 REPON=CALC_ELEM( RESULTAT=REPONSE,
@@ -305,9 +307,10 @@ REPON=CALC_ELEM( RESULTAT=REPONSE,
                             OPTION='SIGM_ELNO'                  )
 
 #
-REPON=CALC_NO( reuse=REPON,   RESULTAT=REPON,
-                      LIST_INST=LTEMPS,
-                         OPTION='SIGM_NOEU'                     )
+REPON=CALC_CHAMP(reuse=REPON,
+                 RESULTAT=REPON,
+                 LIST_INST=LTEMPS,
+                 CONTRAINTE='SIGM_NOEU',);
 
 SIXX4=POST_RELEVE_T(ACTION=_F(INTITULE='SIXX4',
                       GROUP_NO=('NRES4'),
@@ -450,32 +453,32 @@ TEST_RESU(RESU=(  _F( RESULTAT = REPONSE,      GROUP_NO = 'NRES2',
                    CRITERE = 'RELATIF',    PRECISION = 21.1E-2,
                    NUME_ORDRE = 250,          VALE = -6.35452E+02),
 #
-         _F( RESULTAT = REPONS,          GROUP_NO = 'NRES2',
+         _F( RESULTAT = REPON2,          GROUP_NO = 'NRES2',
                NOM_CHAM = 'EPSI_NOEU', NOM_CMP = 'EPXX',
                CRITERE = 'RELATIF',        PRECISION = 1.E-2,
                NUME_ORDRE = 90,               VALE = 1.95725E-04),
 #
-         _F( RESULTAT = REPONS,          GROUP_NO = 'NRES2',
+         _F( RESULTAT = REPON2,          GROUP_NO = 'NRES2',
                NOM_CHAM = 'EPSI_NOEU', NOM_CMP = 'EPXX',
                CRITERE = 'RELATIF',        PRECISION = 1.E-2,
                NUME_ORDRE = 170,              VALE = 3.01529E-04),
 #
-         _F( RESULTAT = REPONS,          GROUP_NO = 'NRES2',
+         _F( RESULTAT = REPON2,          GROUP_NO = 'NRES2',
                NOM_CHAM = 'EPSI_NOEU', NOM_CMP = 'EPXX',
                CRITERE = 'RELATIF',        PRECISION = 1.E-2,
                NUME_ORDRE = 250,              VALE = 5.42212E-05),
 #
-         _F( RESULTAT = REPONS,          GROUP_NO = 'NRES4',
+         _F( RESULTAT = REPON2,          GROUP_NO = 'NRES4',
                NOM_CHAM = 'EPSI_NOEU', NOM_CMP = 'EPXX',
                CRITERE = 'RELATIF',        PRECISION = 1.E-2,
                NUME_ORDRE = 90,               VALE = 1.82211E-04),
 #
-         _F( RESULTAT = REPONS,          GROUP_NO = 'NRES4',
+         _F( RESULTAT = REPON2,          GROUP_NO = 'NRES4',
                NOM_CHAM = 'EPSI_NOEU', NOM_CMP = 'EPXX',
                CRITERE = 'RELATIF',        PRECISION = 1.E-2,
                NUME_ORDRE = 170,              VALE = 2.61105E-04),
 #
-         _F( RESULTAT = REPONS,          GROUP_NO = 'NRES4',
+         _F( RESULTAT = REPON2,          GROUP_NO = 'NRES4',
                NOM_CHAM = 'EPSI_NOEU', NOM_CMP = 'EPXX',
                CRITERE = 'RELATIF',        PRECISION = 1.E-2,
                NUME_ORDRE = 250,              VALE = 1.68078E-04),

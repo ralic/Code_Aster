@@ -3,9 +3,9 @@
       CHARACTER*(*)  MODELE, CARTE, CHELEM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/04/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -62,7 +62,7 @@ C --- ------------------------------------------------------------------
 C --- PASSAGE PAR UN CHAM_ELEM_S
       K8B = ' '
       CHELMS = '&&CHRPAN.ELEM_S  '
-      CALL CARCES ( CARTE, 'ELEM', K8B, 'V', CHELMS, IRET )
+      CALL CARCES ( CARTE, 'ELEM', K8B, 'V', CHELMS, 'A', IRET )
 C
       CALL JEVEUO ( CHELMS//'.CESK', 'L', ICESK )
       CALL JEVEUO ( CHELMS//'.CESC', 'L', ICESC )

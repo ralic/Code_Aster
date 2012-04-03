@@ -1,4 +1,4 @@
-#@ MODIF algorith10 Messages  DATE 13/02/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF algorith10 Messages  DATE 02/04/2012   AUTEUR GRANET S.GRANET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -216,9 +216,6 @@ cata_msg = {
  pour une loi de couplage de type  %(k1)s
 """),
 
-91 : _(u"""
- problème dans la définition de la saturation
-"""),
 
 93 : _(u"""
  il faut un nom de champ

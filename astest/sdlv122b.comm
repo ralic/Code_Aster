@@ -1,9 +1,9 @@
-# MODIF  DATE 03/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 03/04/2012   AUTEUR SELLENET N.SELLENET 
 # TITRE VALIDATION DE PROJ_MESU_MODAL : CAS 3D, BASE : BASE_MODALE
 # sdlv122b.para = tps_job 100 mem_job 250Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -146,8 +146,9 @@ BASE=CALC_ELEM( reuse=BASE,    RESULTAT=BASE,
                          OPTION='SIGM_ELNO'                     )
 
 #
-BASE=CALC_NO( reuse=BASE,    RESULTAT=BASE,
-                       OPTION='SIGM_NOEU'                       )
+BASE=CALC_CHAMP(reuse=BASE,
+                RESULTAT=BASE,
+                CONTRAINTE='SIGM_NOEU',);
 
 #
 # DEFINITION DU MAILLAGE DE MESURE
@@ -216,40 +217,41 @@ REPONS=CALC_ELEM(RESULTAT=REPONSE,
                             OPTION='SIGM_ELNO'                  )
 
 #
-REPONS=CALC_NO( reuse=REPONS,   RESULTAT=REPONS,
-                      LIST_INST=LTEMPS,
-                         OPTION='SIGM_NOEU'                     )
+REPON2=CALC_CHAMP(RESULTAT=REPONS,
+                  MODELE=MODELE,
+                  LIST_INST=LTEMPS,
+                  CONTRAINTE='SIGM_NOEU',);
 
 #
 # TEST DES RESULTATS
 # ==================
 TEST_RESU(RESU=(
-         _F( RESULTAT = REPONS,          GROUP_NO = 'NRES3',
+         _F( RESULTAT = REPON2,          GROUP_NO = 'NRES3',
                NOM_CHAM = 'SIGM_NOEU', NOM_CMP = 'SIXX',
                CRITERE = 'RELATIF',        PRECISION = 1.E-2,
                NUME_ORDRE = 90,               VALE = 3.41647E+07),
 #
-         _F( RESULTAT = REPONS,          GROUP_NO = 'NRES3',
+         _F( RESULTAT = REPON2,          GROUP_NO = 'NRES3',
                NOM_CHAM = 'SIGM_NOEU', NOM_CMP = 'SIXX',
                CRITERE = 'RELATIF',        PRECISION = 1.E-2,
                NUME_ORDRE = 170,              VALE = 8.04567E+07),
 #
-         _F( RESULTAT = REPONS,          GROUP_NO = 'NRES3',
+         _F( RESULTAT = REPON2,          GROUP_NO = 'NRES3',
                NOM_CHAM = 'SIGM_NOEU', NOM_CMP = 'SIXX',
                CRITERE = 'RELATIF',        PRECISION = 1.E-2,
                NUME_ORDRE = 250,              VALE = 4.25077E+07),
 #
-         _F( RESULTAT = REPONS,          GROUP_NO = 'NRES4',
+         _F( RESULTAT = REPON2,          GROUP_NO = 'NRES4',
                NOM_CHAM = 'SIGM_NOEU', NOM_CMP = 'SIXX',
                CRITERE = 'RELATIF',        PRECISION = 1.E-2,
                NUME_ORDRE = 90,               VALE = 4.64966E+07),
 #
-         _F( RESULTAT = REPONS,          GROUP_NO = 'NRES4',
+         _F( RESULTAT = REPON2,          GROUP_NO = 'NRES4',
                NOM_CHAM = 'SIGM_NOEU', NOM_CMP = 'SIXX',
                CRITERE = 'RELATIF',        PRECISION = 1.E-2,
                NUME_ORDRE = 170,              VALE = 6.67109E+07),
 #
-         _F( RESULTAT = REPONS,          GROUP_NO = 'NRES4',
+         _F( RESULTAT = REPON2,          GROUP_NO = 'NRES4',
                NOM_CHAM = 'SIGM_NOEU', NOM_CMP = 'SIXX',
                CRITERE = 'RELATIF',        PRECISION = 1.E-2,
                NUME_ORDRE = 250,              VALE = 4.29307E+07)))

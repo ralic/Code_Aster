@@ -1,4 +1,4 @@
-# MODIF  DATE 30/01/2012   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 03/04/2012   AUTEUR SELLENET N.SELLENET 
 # TITRE PLAQUE TROUEE ASYMETRIQUE, INTERFACE XFEM CONFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -208,10 +208,9 @@ EVOL = STAT_NON_LINE(
 # POST-TRAITEMENT
 #--------------------------------------------------------------
 
-CALC_NO( reuse    = EVOL,
-         OPTION   = 'FORC_NODA',
-         RESULTAT =  EVOL
-       )
+EVOL=CALC_CHAMP(reuse =EVOL,
+                RESULTAT=EVOL,
+                FORCE='FORC_NODA',);
 
 FORCE = POST_RELEVE_T(
                       ACTION = _F(

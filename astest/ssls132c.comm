@@ -1,4 +1,4 @@
-# MODIF  DATE 05/03/2012   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 03/04/2012   AUTEUR SELLENET N.SELLENET 
 # TITRE PLAQUE CONSOLE EN FLEXION TRIA3 GRILLE_EXCENTREE POIDS_PROPRE
 # ssls132c.para = tps_job 70 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -168,10 +168,9 @@ LEDEP=CALC_ELEM( reuse = LEDEP,
                  RESULTAT   = LEDEP,
                )
 
-LEDEP=CALC_NO(reuse = LEDEP,
-              RESULTAT = LEDEP,
-              OPTION   = ('FORC_NODA','REAC_NODA',),
-              )
+LEDEP=CALC_CHAMP(reuse =LEDEP,
+                 RESULTAT=LEDEP,
+                 FORCE=('FORC_NODA','REAC_NODA'),);
 
 #
 # -------------------------------------------------

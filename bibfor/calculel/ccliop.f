@@ -6,7 +6,7 @@ C     --- ARGUMENTS ---
       CHARACTER*16 OPTION
       CHARACTER*24 NOLIOP
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/02/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF CALCULEL  DATE 03/04/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -124,16 +124,19 @@ C
 C       CAS D'UNE OPTION AUX NOEUDS
         IF ( CUROPT(6:9).EQ.'NOEU' ) THEN
           OPTIO2 = OPTION(1:5)//'ELNO'
-          NOPOUT = NOPOUT+1
-          LOPTIO(NOPOUT) = OPTIO2
-          IF ( .NOT.OPAJOU ) THEN
-            LOPOR1(IOP) = NOPOUT
-            LOPOR2(IOP) = 0
+          CALL JENONU(JEXNOM('&CATA.OP.NOMOPT',OPTIO2),OPT)
+          IF ( OPT.NE.0 ) THEN
+            NOPOUT = NOPOUT+1
+            LOPTIO(NOPOUT) = OPTIO2
+            IF ( .NOT.OPAJOU ) THEN
+              LOPOR1(IOP) = NOPOUT
+              LOPOR2(IOP) = 0
+            ENDIF
+            LOPOR1(NOPOUT) = 0
+            LOPOR2(NOPOUT) = 0
+            LOPDEP(NOPOUT) = 'N'
+            OPAJOU = .TRUE.
           ENDIF
-          LOPOR1(NOPOUT) = 0
-          LOPOR2(NOPOUT) = 0
-          LOPDEP(NOPOUT) = 'N'
-          OPAJOU = .TRUE.
 C
 C       CAS D'UNE OPTION AUX ELEMENTS
         ELSE

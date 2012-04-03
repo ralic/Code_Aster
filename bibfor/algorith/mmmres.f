@@ -1,7 +1,7 @@
       SUBROUTINE MMMRES(NOMA  ,INST  ,DEFICO,RESOCO,DEPPLU,
-     &                  DEPDEL,VEASSE,CNSINR,CNSPER)
+     &                  DEPDEL,SDDISC,VEASSE,CNSINR,CNSPER)
 C
-C MODIF ALGORITH  DATE 05/03/2012   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 02/04/2012   AUTEUR ABBAS M.ABBAS 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,7 +25,7 @@ C
       IMPLICIT     NONE
       CHARACTER*8  NOMA
       REAL*8       INST(*)
-      CHARACTER*19 CNSINR,CNSPER
+      CHARACTER*19 CNSINR,CNSPER,SDDISC
       CHARACTER*19 VEASSE(*)
       CHARACTER*24 DEFICO,RESOCO
       CHARACTER*19 DEPDEL,DEPPLU
@@ -40,7 +40,8 @@ C ----------------------------------------------------------------------
 C
 C
 C IN  DEFICO : SD DE DEFINITION DU CONTACT
-C IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+C IN  RESOCO : SD DE RESOLUTION DU CONTACT
+C IN  SDDISC : SD DISCRETISATION TEMPORELLE
 C IN  DEPDEL : INCREMENT DE DEPLACEMENT CUMULE
 C IN  DEPPLU : DEPLACEMENT COURANT
 C IN  NOMA   : NOM DU MAILLAGE
@@ -97,11 +98,12 @@ C
       CHARACTER*24 TABFIN,APJEU
       INTEGER      JTABF ,JAPJEU
       CHARACTER*24 JEUSUR
-      INTEGER      JUSU  
+      INTEGER      JUSU
       INTEGER      CFDISI
-      REAL*8       DELTAT,EPS
+      REAL*8       DELTAT,EPS,VALRAS
       INTEGER      IFM,NIV
       LOGICAL      CFDISL,MMINFL,LFROT,LUSUR,LVERI,LNOEU
+      LOGICAL      LCOLLI,LAFFLE
       INTEGER      JCNSVR,JCNSLR,JCNSVP,JCNSLP
       PARAMETER (EPS=1.D-6)
 C ----------------------------------------------------------------------
@@ -114,11 +116,11 @@ C
       CALL INFNIV(IFM,NIV)
 C
 C --- TYPE DE CONTACT
-C      
+C
       LFROT  = CFDISL(DEFICO,'FROTTEMENT')
 C
 C --- INITIALISATIONS
-C       
+C
       NZOCO  = CFDISI(DEFICO,'NZOCO' )
       NDIMG  = CFDISI(DEFICO,'NDIM' )
       DELTAT = INST(2)
@@ -129,6 +131,12 @@ C
       IF (.NOT.LNOEU) THEN
         GOTO 999
       ENDIF
+C
+C --- CONTACT AFFLEURANT EN MODE COLLISION
+C
+      LAFFLE = .FALSE.
+      VALRAS = 1.D-3
+      CALL ISEVEN(SDDISC,'COLLISION',LCOLLI)
 C
 C --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
 C
@@ -141,7 +149,7 @@ C
 C
       ZTABF  = CFMMVD('ZTABF')
       ZPERC  = CFMMVD('ZPERC')
-      ZRESU  = CFMMVD('ZRESU') 
+      ZRESU  = CFMMVD('ZRESU')
 C
 C --- NOM DES OBJETS LOCAUX
 C
@@ -167,12 +175,12 @@ C
       CALL MMMRED(NDIMG ,LFROT ,DEPDEL,DEPCN ,NDD1  )
 C
 C --- CALCULER LES GLISSEMENTS
-C  
+C
       CALL MMMREG(NOMA  ,DEFICO,RESOCO,DEPCN ,NDD1  ,
-     &            GLIE  ,GLIM  )     
+     &            GLIE  ,GLIM  )
       CALL JEVEUO(GLIE  ,'L',JGLIE )
       CALL JEVEUO(GLIM  ,'L',JGLIM )
-C      
+C
 C --- ACCES AU CHAM_NO_S POUR LES DEPLACEMENTS/LAGRANGES
 C
       CALL JEVEUO(DEPCN(1:19)//'.CNSV','L',JDEPDE)
@@ -211,37 +219,37 @@ C
       DO 10 IZONE = 1,NZOCO
 C
 C --- OPTIONS SUR LA ZONE DE CONTACT
-C             
+C
         LVERI  = MMINFL(DEFICO,'VERIF' ,IZONE )
-        LUSUR  = MMINFL(DEFICO,'USURE' ,IZONE )        
+        LUSUR  = MMINFL(DEFICO,'USURE' ,IZONE )
         NBMAE  = MMINFI(DEFICO,'NBMAE' ,IZONE )
         JDECME = MMINFI(DEFICO,'JDECME',IZONE )
         LFROT  = MMINFL(DEFICO,'FROTTEMENT_ZONE',IZONE)
-C 
+C
 C ----- MODE VERIF: ON SAUTE LES POINTS
-C  
+C
         IF (LVERI) THEN
           GOTO 25
         ENDIF
 C
 C ----- BOUCLE SUR LES MAILLES ESCLAVES
-C      
+C
         DO 20 IMAE = 1,NBMAE
 C
 C ------- POSITION DE LA MAILLE ESCLAVE
 C
-          POSMAE = JDECME + IMAE        
+          POSMAE = JDECME + IMAE
 C
 C ------- NOMBRE DE POINTS SUR LA MAILLE ESCLAVE
-C            
-          CALL MMINFM(POSMAE,DEFICO,'NPTM',NPTM  )         
+C
+          CALL MMINFM(POSMAE,DEFICO,'NPTM',NPTM  )
 C
 C ------- BOUCLE SUR LES POINTS
-C      
+C
           DO 30 IPTM = 1,NPTM
 C
 C --------- INIT
-C          
+C
             GLI  = 0.D0
             GLI1 = 0.D0
             GLI2 = 0.D0
@@ -254,14 +262,14 @@ C
             RN   = 0.D0
             RNX  = 0.D0
             RNY  = 0.D0
-            RNZ  = 0.D0          
+            RNZ  = 0.D0
 C
 C --------- INFOS
-C  
+C
             NUMNOE  = NINT(ZR(JTABF+ZTABF*(IPTC-1)+24))
-            IF (NUMNOE.LE.0) THEN 
+            IF (NUMNOE.LE.0) THEN
               GOTO 99
-            ENDIF           
+            ENDIF
             CONT    = ZR(JTABF+ZTABF*(IPTC-1)+22)
 C
 C --------- RECUPERATION DES FORCES NODALES DE CONTACT
@@ -275,14 +283,20 @@ C
               ELSEIF (NDIMG.EQ.2) THEN
                 RNX = ZR(JCONT-1+2*(NUMNOE-1)+1)
                 RNY = ZR(JCONT-1+2*(NUMNOE-1)+2)
-                RN  = SQRT(RNX**2+RNY**2)              
+                RN  = SQRT(RNX**2+RNY**2)
               ELSE
                 CALL ASSERT(.FALSE.)
-              ENDIF 
+              ENDIF
 C
-C --------- FROTTEMENT 
-C      
-              IF (LFROT) THEN                               
+C ----------- CONTACT AFFLEURANT ?
+C
+              IF (RN.LE.VALRAS) THEN
+                LAFFLE = .TRUE.
+              ENDIF
+C
+C --------- FROTTEMENT
+C
+              IF (LFROT) THEN
 C
 C ------------- CALCUL DU GLISSEMENT
 C
@@ -310,7 +324,7 @@ C
                 ENDIF
 C
 C ------------- GLISSANT OU ADHERENT
-C            
+C
                 IF (LAGSF.GE.0.999D0) THEN
 C
 C --------------- GLISSANT
@@ -346,14 +360,14 @@ C
                 LAGSF   = 0.D0
                 CONT    = 2.D0
               ENDIF
-            ENDIF  
+            ENDIF
 C
 C --------- REACTIONS TOTALES
 C
             RX     = RNX + RTAX + RTGX
             RY     = RNY + RTAY + RTGY
             RZ     = RNZ + RTAZ + RTGZ
-            R      = SQRT(RX**2.D0+RY**2.D0+RZ**2.D0)  
+            R      = SQRT(RX**2.D0+RY**2.D0+RZ**2.D0)
 C
 C --------- CALCUL DES PERCUSSIONS
 C
@@ -379,8 +393,8 @@ C
               ZR(JCNSVR+ZRESU*(NUMNOE-1)+20-1) = ZR(JUSU-1+IPTC)
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+20-1) = .TRUE.
             ENDIF
-            
-            
+
+
             IF (NDIMG.EQ.3) THEN
               ZR(JCNSVR+ZRESU*(NUMNOE-1)+3 -1) = RN
               ZR(JCNSVR+ZRESU*(NUMNOE-1)+4 -1) = RNX
@@ -398,10 +412,10 @@ C
               ZR(JCNSVR+ZRESU*(NUMNOE-1)+16-1) = RX
               ZR(JCNSVR+ZRESU*(NUMNOE-1)+17-1) = RY
               ZR(JCNSVR+ZRESU*(NUMNOE-1)+18-1) = RZ
-              ZR(JCNSVR+ZRESU*(NUMNOE-1)+19-1) = R 
+              ZR(JCNSVR+ZRESU*(NUMNOE-1)+19-1) = R
               ZR(JCNSVR+ZRESU*(NUMNOE-1)+21-1) = IMP
               ZR(JCNSVR+ZRESU*(NUMNOE-1)+22-1) = IMPX
-              ZR(JCNSVR+ZRESU*(NUMNOE-1)+23-1) = IMPY  
+              ZR(JCNSVR+ZRESU*(NUMNOE-1)+23-1) = IMPY
               ZR(JCNSVR+ZRESU*(NUMNOE-1)+24-1) = IMPZ
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+3 -1) = .TRUE.
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+4 -1) = .TRUE.
@@ -409,7 +423,7 @@ C
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+6 -1) = .TRUE.
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+7 -1) = .TRUE.
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+8 -1) = .TRUE.
-              ZL(JCNSLR+ZRESU*(NUMNOE-1)+9 -1) = .TRUE.              
+              ZL(JCNSLR+ZRESU*(NUMNOE-1)+9 -1) = .TRUE.
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+10-1) = .TRUE.
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+11-1) = .TRUE.
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+12-1) = .TRUE.
@@ -429,29 +443,29 @@ C
               ZR(JCNSVR+ZRESU*(NUMNOE-1)+4 -1) = RNX
               ZR(JCNSVR+ZRESU*(NUMNOE-1)+5 -1) = RNY
               ZR(JCNSVR+ZRESU*(NUMNOE-1)+7 -1) = GLI1
-              ZR(JCNSVR+ZRESU*(NUMNOE-1)+9 -1) = GLI              
+              ZR(JCNSVR+ZRESU*(NUMNOE-1)+9 -1) = GLI
               ZR(JCNSVR+ZRESU*(NUMNOE-1)+10-1) = RTAX
               ZR(JCNSVR+ZRESU*(NUMNOE-1)+11-1) = RTAY
               ZR(JCNSVR+ZRESU*(NUMNOE-1)+13-1) = RTGX
               ZR(JCNSVR+ZRESU*(NUMNOE-1)+14-1) = RTGY
               ZR(JCNSVR+ZRESU*(NUMNOE-1)+16-1) = RX
               ZR(JCNSVR+ZRESU*(NUMNOE-1)+17-1) = RY
-              ZR(JCNSVR+ZRESU*(NUMNOE-1)+19-1) = R 
+              ZR(JCNSVR+ZRESU*(NUMNOE-1)+19-1) = R
               ZR(JCNSVR+ZRESU*(NUMNOE-1)+21-1) = IMP
               ZR(JCNSVR+ZRESU*(NUMNOE-1)+22-1) = IMPX
-              ZR(JCNSVR+ZRESU*(NUMNOE-1)+23-1) = IMPY              
+              ZR(JCNSVR+ZRESU*(NUMNOE-1)+23-1) = IMPY
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+3 -1) = .TRUE.
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+4 -1) = .TRUE.
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+5 -1) = .TRUE.
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+7 -1) = .TRUE.
-              ZL(JCNSLR+ZRESU*(NUMNOE-1)+9 -1) = .TRUE.              
+              ZL(JCNSLR+ZRESU*(NUMNOE-1)+9 -1) = .TRUE.
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+10-1) = .TRUE.
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+11-1) = .TRUE.
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+13-1) = .TRUE.
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+14-1) = .TRUE.
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+16-1) = .TRUE.
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+17-1) = .TRUE.
-              ZL(JCNSLR+ZRESU*(NUMNOE-1)+19-1) = .TRUE. 
+              ZL(JCNSLR+ZRESU*(NUMNOE-1)+19-1) = .TRUE.
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+21-1) = .TRUE.
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+22-1) = .TRUE.
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+23-1) = .TRUE.
@@ -463,20 +477,20 @@ C --------- ARCHIVAGE DES RESULTATS DANS LE CHAM_NO_S VALE_PERC
 C
             ZR(JCNSVP+ZPERC*(NUMNOE-1)+1-1) = IMP
             ZR(JCNSVP+ZPERC*(NUMNOE-1)+2-1) = IMPX
-            ZR(JCNSVP+ZPERC*(NUMNOE-1)+3-1) = IMPY     
+            ZR(JCNSVP+ZPERC*(NUMNOE-1)+3-1) = IMPY
             ZL(JCNSLP+ZPERC*(NUMNOE-1)+1-1) = .TRUE.
             ZL(JCNSLP+ZPERC*(NUMNOE-1)+2-1) = .TRUE.
             ZL(JCNSLP+ZPERC*(NUMNOE-1)+3-1) = .TRUE.
-            
+
             IF (NDIMG.EQ.3) THEN
               ZR(JCNSVP+ZPERC*(NUMNOE-1)+4-1) = IMPZ
               ZL(JCNSLP+ZPERC*(NUMNOE-1)+4-1) = .TRUE.
             ENDIF
-  99        CONTINUE          
+  99        CONTINUE
 C
 C --------- LIAISON DE CONTACT SUIVANTE
 C
-            IPTC   = IPTC + 1 
+            IPTC   = IPTC + 1
   30      CONTINUE
   20    CONTINUE
   25    CONTINUE
@@ -494,6 +508,12 @@ C
       CALL DETRSD('CHAMP',DEPCN)
       CALL JEDETR(GLIE)
       CALL JEDETR(GLIM)
+C
+C --- ALARME SI CONTACT AFFLEURANT EN MODE DETECTION COLLISION
+C
+      IF (LAFFLE.AND.LCOLLI) THEN
+        CALL U2MESS('A','CONTACT3_98')
+      ENDIF
 C
   999 CONTINUE
       CALL JEDEMA()

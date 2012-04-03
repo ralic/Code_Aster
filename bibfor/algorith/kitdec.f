@@ -7,10 +7,10 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 11/10/2011   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 02/04/2012   AUTEUR GRANET S.GRANET 
 C RESPONSABLE GRANET S.GRANET
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -61,7 +61,7 @@ C ======================================================================
      +           RBID33, RBID34, RBID35,RBID36, RBID37, RBID38,
      +           RBID39, RBID40, RBID41,RBID42, RBID43, RBID44, RBID45,
      +           RBID46, RBID47,RBID48, RBID49, RBID50,RBID51,
-     +           R3BID,  RBID52,RINSTP)
+     +           R3BID,  RBID52,RINSTP,RETCOM)
 C ======================================================================
 C --- CALCUL DES VARIABLES ---------------------------------------------
 C ======================================================================

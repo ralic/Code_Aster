@@ -7,10 +7,10 @@
      &                       )
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 02/04/2012   AUTEUR GRANET S.GRANET 
 C RESPONSABLE GRANET S. GRANET
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -64,9 +64,9 @@ C
 C *********************************************************************
 C CALCUL DES DERIVEES PARTIELLES DES PRESSIONS
 C
-       DP11P1 = 1.D0/((RHO12*R*T/RHO11/KH)-1.D0)
-       DP11P2 = (R*T/KH - 1.D0)/((RHO12*R*T/RHO11/KH)-1.D0)
-       DP12P1 = 1.D0/(R*T/KH-(RHO11/RHO12))
+       DP11P1 = RHO11*KH/(RHO12*R*T-RHO11*KH)
+       DP11P2 = RHO11*KH*(R*T/KH - 1.D0)/(RHO12*R*T-RHO11*KH)
+       DP12P1 = RHO12/(RHO12*R*T/KH-(RHO11))
        DP12P2 = (R*T/KH-1.D0)*DP12P1
        DP21P1 = - DP12P1
        DP21P2 = 1.D0 - DP12P2
@@ -143,8 +143,8 @@ C
 C *********************************************************************
 C CALCUL DES DERIVEES PARTIELLES DES PRESSIONS
 C
-       DP11P1 = 1.D0/((RHO12*R*T/RHO11/KH)-1.D0)
-       DP11P2 = (R*T/KH - 1.D0)/((RHO12*R*T/RHO11/KH)-1.D0)
+       DP11P1 = RHO11*KH/(RHO12*R*T-RHO11*KH)
+       DP11P2 = RHO11*KH*(R*T/KH - 1.D0)/(RHO12*R*T-RHO11*KH)
        DP12P1 = ZERO
        DP12P2 = ZERO
        DP21P1 = - DP12P1
@@ -155,8 +155,8 @@ C
        IF ((YATE.EQ.1)) THEN
          L = (H12-H11)
 C
-         DP11T = (-L*R*RHO12/KH+PAD/T)/
-     &     ((RHO12*R*T/RHO11/KH)-1)
+         DP11T = (-L*R*RHO12/KH+PAD/T)*RHO11*KH/
+     &     (RHO12*R*T-RHO11*KH)
          DP12T = ZERO
          DP21T =  - DP12T
          DP22T =  - DP11T

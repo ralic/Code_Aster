@@ -1,4 +1,4 @@
-#@ MODIF contact3 Messages  DATE 05/03/2012   AUTEUR DESOZA T.DESOZA 
+#@ MODIF contact3 Messages  DATE 02/04/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -169,23 +169,6 @@ Utilisez NORMALE='FIXE' ou NORMALE='VECT_Y' dans DEFI_CONTACT.
 La maille %(k1)s est de type 'POI1', elle ne peut pas être une maille maître.
 """),
 
-81 : _(u"""
-Contact.
-  -> Il y a trop de réactualisations géométriques.
-  -> Conseils :
-     - Activez le lissage dans la commande DEFI_CONTACT.
-     - Augmentez le mot-clé ITER_GEOM_MAXI dans la commande DEFI_CONTACT.
-     - Vérifiez votre maillage (orientation des surfaces, définition des zones de contact).
-     - Découpez plus finement le pas de temps.
-"""),
-
-85 : _(u"""
-Contact méthode continue.
- Il y a échec de la boucle des contraintes actives lors du traitement du contact.
-  -> Conseil :
-     - Augmentez le mot-clé ITER_CONT_MAXI (ou ITER_CONT_MULT) dans la commande DEFI_CONTACT.
-"""),
-
 86 : _(u"""
 Contact méthode continue.
   -> Il y a convergence forcée sur la boucle des contraintes actives lors du traitement du contact.
@@ -194,14 +177,6 @@ Contact méthode continue.
      Il y a des risques que le problème soit un peu moins bien traité.
      Vérifiez bien que vous n'avez pas d'interpénétration au niveau des zones de contact.
      S'il y a des interpénétrations intempestives, découpez plus finement le pas de temps."""),
-
-87 : _(u"""
-Contact méthode continue.
-  -> Il y a trop de réactualisations pour le seuil de frottement.
-  -> Conseils :
-     - Augmentez le mot-clé ITER_FROT_MAXI dans la commande DEFI_CONTACT.
-     - Découpez plus finement le pas de temps."""),
-
 
 96 : _(u"""
 Contact.
@@ -226,5 +201,19 @@ Contact formulation continue.
        Si vous avez volontairement négligé la non-linéarité de frottement (pour des raisons
        de performance), nous vous invitons à vérifier la validité de vos résultats.
 """),
+
+98 : _(u"""
+Contact et détection de collision.
+    Le contact semble "rasant", c'est-à-dire que le jeu est nul mais que la pression de contact est quasiment 
+    nulle également.
+    -> Risque & Conseil :
+      La découpe automatique du pas de temps ne sera probablement pas efficace. Si vous constatez de fortes oscillations
+      de la vitesse ou du déplacement au point de contact pour cet instant de calcul malgré l'activation du mode de
+      traitement automatique de la collision, vous pouvez essayer d'éviter l'instant pour lequel le contact "rasant"
+      apparaît de deux manières différentes:
+       - changer la discrétisation en temps initiale
+       - changer la valeur de SUBD_INST
+"""),
+
 
 }

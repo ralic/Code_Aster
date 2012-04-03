@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/04/2012   AUTEUR ABBAS M.ABBAS 
 # ======================================================================
 # TITRE CAS-TEST POUR LA VALIDATION DE l'OPTION INDL_ELGA POUR ----
 # ssnp125a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
@@ -157,7 +157,7 @@ try :
                             REAC_ITER = 1,),
                  ETAT_INIT   = _F( SIGM  = SIGINIT,),
                  CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-6,
-                                 ITER_GLOB_MAXI =  20,),
+                                 ITER_GLOB_MAXI =  26,),
                            );
 except aster.NonConvergenceError:
      print """\nProbleme de convergence pour cause de localisation\n"""

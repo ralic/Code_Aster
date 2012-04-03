@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF med_aster_module supervis  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF med_aster_module supervis  DATE 03/04/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -19,8 +19,6 @@
 /* RESPONSABLE SELLENET N.SELLENET */
 #include <Python.h>
 
-#include "aster.h"
-#include "aster_fort.h"
 #include "aster_utils.h"
 
 #ifndef _DISABLE_MED
@@ -82,6 +80,7 @@ PyObject *args;
    return listeChamps;
 }
 
+#ifndef _WITHOUT_PYMOD_
 static PyMethodDef methods[] = {
    {"get_nom_champ_med", aster_nom_ch_med, METH_VARARGS},
    { NULL, NULL, 0, NULL }
@@ -92,4 +91,5 @@ PyMODINIT_FUNC initmed_fonctions(void)
 {
    Py_InitModule("med_aster", methods);
 }
+#endif
 #endif

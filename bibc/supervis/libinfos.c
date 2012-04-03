@@ -1,7 +1,7 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF libinfos supervis  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF libinfos supervis  DATE 03/04/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -52,6 +52,8 @@ void DEFPPP(LIMEDV,limedv, _OUT INTEGER *major, _OUT INTEGER *minor, _OUT INTEGE
 #ifndef _DISABLE_MED
     med_int n1=0, n2=0, n3=0;
     ier = (int)MEDlibraryNumVersion( &n1, &n2, &n3 );
+#else
+    unsigned int n1=0, n2=0, n3=0;
 #endif
     *major = (INTEGER)n1;
     *minor = (INTEGER)n2;

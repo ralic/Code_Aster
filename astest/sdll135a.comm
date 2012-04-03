@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/04/2012   AUTEUR SELLENET N.SELLENET 
 
 # TITRE  :  REPONSE DYNAMIQUE D UNE POUTRE-TUYAU ENCASTREE LIBRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -115,14 +115,14 @@ DYNATRAF=CALC_ELEM(reuse =DYNATRAF,
                    RESULTAT=DYNATRAF,
                    OPTION=('SIEF_ELGA','SIEF_ELNO',),);
 
-DYNATRAF=CALC_NO(reuse =DYNATRAF,
-                 RESULTAT=DYNATRAF,
-                 OPTION='REAC_NODA',
-                 MODELE=MODELE,
-                 CHAM_MATER=CHMAT,
-                 CARA_ELEM=CARAC,
-                 EXCIT=(_F(CHARGE=CHARFX,),
-                        _F(CHARGE=CL,),),);
+DYNATRAF=CALC_CHAMP(reuse =DYNATRAF,
+                    RESULTAT=DYNATRAF,
+                    FORCE='REAC_NODA',
+                    MODELE=MODELE,
+                    CHAM_MATER=CHMAT,
+                    CARA_ELEM=CARAC,
+                    EXCIT=(_F(CHARGE=CHARFX,),
+                           _F(CHARGE=CL,),),);
 
 # TEST DU CHAMP DE DEPLACEMENT SUR LE NOEUD EXTREMITE
 
@@ -342,14 +342,14 @@ DYNATRAM=CALC_ELEM(reuse =DYNATRAM,
                    RESULTAT=DYNATRAM,
                    OPTION=('SIEF_ELGA','SIEF_ELNO',),);
 
-DYNATRAM=CALC_NO(reuse =DYNATRAM,
-                 RESULTAT=DYNATRAM,
-                 OPTION='REAC_NODA',
-                 MODELE=MODELE,
-                 CHAM_MATER=CHMAT,
-                 CARA_ELEM=CARAC,
-                 EXCIT=(_F(CHARGE=CHARMX,),
-                        _F(CHARGE=CL,),),);
+DYNATRAM=CALC_CHAMP(reuse =DYNATRAM,
+                    RESULTAT=DYNATRAM,
+                    FORCE='REAC_NODA',
+                    MODELE=MODELE,
+                    CHAM_MATER=CHMAT,
+                    CARA_ELEM=CARAC,
+                    EXCIT=(_F(CHARGE=CHARMX,),
+                           _F(CHARGE=CL,),),);
 
 # TEST SUR LES DEPLACEMENTS
 

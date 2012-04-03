@@ -1,9 +1,9 @@
       SUBROUTINE PERMVG(VG,S,KRL,DKLDS,KRG,DKGDS)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 02/04/2012   AUTEUR GRANET S.GRANET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -37,22 +37,6 @@ C
       INTEGER       IADZI,IAZK24,UMESS,IUNIFI
       CHARACTER*8  NOMAIL
 C ======================================================================
-C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      INTEGER ZI
-      COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
-      COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
-      COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
 
       N    = VG(1)
@@ -73,20 +57,6 @@ C
       S1MAX=(SMAX-SR)/(1.D0-SR)
       S1MIN=1.D0-SMAX
       SMIN=SR+(1.D0-SR)*S1MIN
-      IF (S.GT.1.00001D0) THEN
-         UMESS  = IUNIFI('MESSAGE')
-         CALL TECAEL(IADZI,IAZK24)
-         NOMAIL = ZK24(IAZK24-1+3) (1:8)
-         WRITE (UMESS,9001) 'PERMVG',' SAT > 1 A LA MAILLE: ',
-     +                                                           NOMAIL
-      ENDIF
-      IF (S1.LE.0.D0) THEN
-         UMESS  = IUNIFI('MESSAGE')
-         CALL TECAEL(IADZI,IAZK24)
-         NOMAIL = ZK24(IAZK24-1+3) (1:8)
-         WRITE (UMESS,9001) 'PERMVG',' SAT > SR A LA MAILLE: ',
-     +                                                           NOMAIL
-      ENDIF
 C
 C NB : SMAX < SMIN PUISQUE SMAX = S(PCMAX) etc ..
 C
@@ -126,8 +96,6 @@ C  REGUL KG(S)  GAUCHE
         DKGDS=AR
       ENDIF
 
-C      KRL = KRL + 1.E-6
-C      KRG = KRG + 1.E-6
 C =====================================================================
  9001 FORMAT (A8,2X,A30,2X,A8)
 C ======================================================================

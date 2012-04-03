@@ -1,7 +1,7 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF fonctions_module supervis  DATE 19/05/2011   AUTEUR SELLENET N.SELLENET */
+/* MODIF fonctions_module supervis  DATE 03/04/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -142,6 +142,7 @@ PyObject* _INFO( PyObject* self, PyObject* args )
 
 
 
+#ifndef _WITHOUT_PYMOD_
 static PyMethodDef methods[] = {
    { "SPEC_OSCI", SPEC_OSCI, METH_VARARGS, "Operation SPEC_OSCI de CALC_FONCTION" },
 #ifdef __DEBUG__
@@ -156,3 +157,4 @@ PyMODINIT_FUNC initaster_fonctions(void)
    Py_InitModule("aster_fonctions", methods);
    import_array();
 }
+#endif

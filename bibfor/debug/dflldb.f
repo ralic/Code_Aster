@@ -1,22 +1,22 @@
       SUBROUTINE DFLLDB(SDLIST,IFM  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF DEBUG  DATE 19/09/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF DEBUG  DATE 02/04/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
       IMPLICIT NONE
@@ -70,7 +70,7 @@ C --- TAILLE DES VECTEURS
 C
       LEEVR  = DFLLVD('LEEVR')
       LEEVK  = DFLLVD('LEEVK')
-      LESUR  = DFLLVD('LESUR') 
+      LESUR  = DFLLVD('LESUR')
 C
 C --- ACCES SDS
 C
@@ -87,10 +87,10 @@ C --- GESTION DE LA LISTE D'INSTANTS
 C
       IF (ZR(JLINR-1+1).EQ.1.D0) THEN
         WRITE(IFM,*) '<DEFILISTINST> GESTION MANUELLE '//
-     &               'DE LA LISTE D''INSTANTS' 
+     &               'DE LA LISTE D''INSTANTS'
       ELSEIF (ZR(JLINR-1+1).EQ.2.D0) THEN
         WRITE(IFM,*) '<DEFILISTINST> GESTION AUTOMATIQUE '//
-     &               'DE LA LISTE D''INSTANTS'       
+     &               'DE LA LISTE D''INSTANTS'
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF
@@ -107,7 +107,7 @@ C
         WRITE(IFM,*) '<DEFILISTINST> PARAMETRES DE LA GESTION  '//
      &               'AUTOMATIQUE DE LA LISTE D''INSTANTS'
         WRITE(IFM,*) '<DEFILISTINST> ... PAS MINI   : ',PASMIN
-        WRITE(IFM,*) '<DEFILISTINST> ... PAS MAXI   : ',PASMAX        
+        WRITE(IFM,*) '<DEFILISTINST> ... PAS MAXI   : ',PASMAX
         WRITE(IFM,*) '<DEFILISTINST> ... NB_PAS_MAXI: ',NBPAMX
       ENDIF
 C
@@ -121,43 +121,43 @@ C
         CALL JEVEUO(LISEVK,'L',JEEVK )
         CALL JEVEUO(LISESU,'L',JESUR )
         WRITE(IFM,*) '<DEFILISTINST> GESTION DES EVENEMENTS (',
-     &               NECHEC,' EVENEMENTS)'    
+     &               NECHEC,' EVENEMENTS)'
         DO 10 IECHEC = 1,NECHEC
           WRITE(IFM,*) '<DEFILISTINST> ... EVENEMENT : ',IECHEC
           IF (ZR(JEEVR-1+LEEVR*(IECHEC-1)+1).EQ.0.D0) THEN
-            WRITE(IFM,*) '<DEFILISTINST> ...... DIVE_ERRE'
+            WRITE(IFM,*) '<DEFILISTINST> ...... ERRE'
           ELSEIF (ZR(JEEVR-1+LEEVR*(IECHEC-1)+1).EQ.1.D0) THEN
-            WRITE(IFM,*) '<DEFILISTINST> ...... DIVE_ITER'
-          ELSEIF (ZR(JEEVR-1+LEEVR*(IECHEC-1)+1).EQ.2.D0) THEN
             WRITE(IFM,*) '<DEFILISTINST> ...... DELTA_GRANDEUR'
             WRITE(IFM,*) '<DEFILISTINST> ......... CHAMP      :',
      &         ZK16(JEEVK-1+LEEVK*(IECHEC-1)+1)
             WRITE(IFM,*) '<DEFILISTINST> ......... COMPOSANTE :',
      &         ZK16(JEEVK-1+LEEVK*(IECHEC-1)+2)
             WRITE(IFM,*) '<DEFILISTINST> ......... COMPARATEUR:',
-     &         ZK16(JEEVK-1+LEEVK*(IECHEC-1)+3)           
-          ELSEIF (ZR(JEEVR-1+LEEVR*(IECHEC-1)+1).EQ.3.D0) THEN
-            WRITE(IFM,*) '<DEFILISTINST> ...... COMP_NCVG'
-          ELSEIF (ZR(JEEVR-1+LEEVR*(IECHEC-1)+1).EQ.4.D0) THEN
+     &         ZK16(JEEVK-1+LEEVK*(IECHEC-1)+3)
+          ELSEIF (ZR(JEEVR-1+LEEVR*(IECHEC-1)+1).EQ.2.D0) THEN
             WRITE(IFM,*) '<DEFILISTINST> ...... COLLISION'
-          ELSEIF (ZR(JEEVR-1+LEEVR*(IECHEC-1)+1).EQ.5.D0) THEN
+          ELSEIF (ZR(JEEVR-1+LEEVR*(IECHEC-1)+1).EQ.3.D0) THEN
             WRITE(IFM,*) '<DEFILISTINST> ...... INTERPENETRATION'
             WRITE(IFM,*) '<DEFILISTINST> ......... PENE_MAXI  :',
-     &         ZR(JEEVR-1+LEEVR*(IECHEC-1)+6)          
+     &         ZR(JEEVR-1+LEEVR*(IECHEC-1)+6)
+          ELSEIF (ZR(JEEVR-1+LEEVR*(IECHEC-1)+1).EQ.4.D0) THEN
+            WRITE(IFM,*) '<DEFILISTINST> ...... DIVE_RESI'
+          ELSEIF (ZR(JEEVR-1+LEEVR*(IECHEC-1)+1).EQ.5.D0) THEN
+            WRITE(IFM,*) '<DEFILISTINST> ...... INSTABILITE'
           ELSE
-            CALL ASSERT(.FALSE.)  
-          ENDIF         
+            CALL ASSERT(.FALSE.)
+          ENDIF
 C
 C ------- ACTION
 C
           IF (ZR(JEEVR-1+LEEVR*(IECHEC-1)+2).EQ.0.D0) THEN
             WRITE(IFM,*) '<DEFILISTINST> ...... ARRET DU CALCUL'
-            
+
           ELSEIF (ZR(JEEVR-1+LEEVR*(IECHEC-1)+2).EQ.1.D0) THEN
             WRITE(IFM,*) '<DEFILISTINST> ...... DECOUPE DU PAS'//
      &                   ' DE TEMPS'
             CALL DFLLD2(SDLIST,IFM  ,IECHEC)
-     
+
           ELSEIF (ZR(JEEVR-1+LEEVR*(IECHEC-1)+2).EQ.2.D0) THEN
             WRITE(IFM,*) '<DEFILISTINST> ...... AUGMENTATION'//
      &                   ' DU NOMBRE D''ITERATIONS DE NEWTON'
@@ -165,60 +165,62 @@ C
      &                   ' PERMETTANT',
      &                   NINT(ZR(JESUR-1+LESUR*(IECHEC-1)+7)),
      &                   ' % D''ITERATIONS EN PLUS'
-     
+
             IF (ZR(JESUR-1+LESUR*(IECHEC-1)+1).EQ.0.D0) THEN
               WRITE(IFM,*) '<DEFILISTINST> ....... SANS '//
      &                     ' PERMETTRE UN DECOUPAGE EN CAS D''ECHEC'
-            
-            
+
             ELSEIF (ZR(JESUR-1+LESUR*(IECHEC-1)+1).EQ.1.D0) THEN
               WRITE(IFM,*) '<DEFILISTINST> ....... EN'//
      &                     ' PERMETTANT UN DECOUPAGE EN CAS D''ECHEC'
               CALL DFLLD2(SDLIST,IFM  ,IECHEC)
-              
+
             ELSEIF (ZR(JESUR-1+LESUR*(IECHEC-1)+1).EQ.2.D0) THEN
               WRITE(IFM,*) '<DEFILISTINST> ....... EN'//
      &                     ' PERMETTANT UN DECOUPAGE EN CAS D''ECHEC'
               CALL DFLLD2(SDLIST,IFM  ,IECHEC)
             ELSE
               CALL ASSERT(.FALSE.)
-            ENDIF     
-     
-              
+            ENDIF
+
+
           ELSEIF (ZR(JEEVR-1+LEEVR*(IECHEC-1)+2).EQ.3.D0) THEN
             WRITE(IFM,*) '<DEFILISTINST> ...... CHANGEMENT'//
      &                   ' DE LA SOLUTION DE PILOTAGE'
             IF (ZR(JESUR-1+LESUR*(IECHEC-1)+1).EQ.0.D0) THEN
               WRITE(IFM,*) '<DEFILISTINST> ....... SANS '//
      &                     ' PERMETTRE UN DECOUPAGE EN CAS D''ECHEC'
-            
-            
+
+
             ELSEIF (ZR(JESUR-1+LESUR*(IECHEC-1)+1).EQ.1.D0) THEN
               WRITE(IFM,*) '<DEFILISTINST> ....... EN'//
      &                     ' PERMETTANT UN DECOUPAGE EN CAS D''ECHEC'
               CALL DFLLD2(SDLIST,IFM  ,IECHEC)
-            ENDIF     
+            ENDIF
           ELSEIF (ZR(JEEVR-1+LEEVR*(IECHEC-1)+2).EQ.4.D0) THEN
             WRITE(IFM,*) '<DEFILISTINST> ...... ADAPTATION'//
      &                   ' DU COEFFICIENT DE PENALISATION'
             WRITE(IFM,*) '<DEFILISTINST> ......... EN'//
      &                   ' PERMETTANT UN COEF. MAXI DE: ',
      &                   ZR(JESUR-1+LESUR*(IECHEC-1)+8)
-          
+
+          ELSEIF (ZR(JEEVR-1+LEEVR*(IECHEC-1)+2).EQ.5.D0) THEN
+            WRITE(IFM,*) '<DEFILISTINST> ...... ON CONTINUE LE CALCUL'
+
           ELSE
-            CALL ASSERT(.FALSE.)  
-          ENDIF 
+            CALL ASSERT(.FALSE.)
+          ENDIF
   10    CONTINUE
-      
-      ENDIF      
+
+      ENDIF
 C
 C --- ADAPTATION
 C
       IF (NADAPT.GT.0) THEN
         WRITE(IFM,*) '<DEFILISTINST> SCHEMAS D''ADAPTATION DU'//
      &               ' PAS DE TEMPS  (',
-     &               NADAPT,' ADAPTATIONS)'    
-      ENDIF    
+     &               NADAPT,' ADAPTATIONS)'
+      ENDIF
 C
       CALL JEDEMA()
       END

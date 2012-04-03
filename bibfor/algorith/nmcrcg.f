@@ -1,0 +1,111 @@
+      SUBROUTINE NMCRCG(FONACT,SDCONV)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 02/04/2012   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
+      IMPLICIT     NONE
+      CHARACTER*24 SDCONV
+      INTEGER      FONACT(*)
+C
+C ----------------------------------------------------------------------
+C
+C ROUTINE MECA_NON_LINE (ALGORITHME)
+C
+C CREATION ET INITIALISATION DE LA SD CONVERGENCE
+C
+C ----------------------------------------------------------------------
+C
+C IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
+C OUT SDCONV : SD GESTION DE LA CONVERGENCE
+C
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+C
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+C
+      INTEGER      NRESI
+      PARAMETER    (NRESI=5)
+C
+      CHARACTER*24 CNVTYP,CNVLIE,CNVVAL,CNVACT,CNVNCO
+      INTEGER      JCNVTY,JCNVLI,JCNVVA,JCNVAC,JCNVNC
+      LOGICAL      ISFONC,LNEWTF
+C     LOGICAL      LNEWTG
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C
+C --- FONCTIONNALITES ACTIVEES
+C
+      LNEWTF = ISFONC(FONACT,'FROT_NEWTON')
+C      LNEWTG = ISFONC(FONACT,'GEOM_NEWTON')
+C
+C --- LISTE ET VALEURS DES TESTS DE CONVERGENCE
+C
+      CNVTYP = SDCONV(1:19)//'.TYPE'
+      CNVLIE = SDCONV(1:19)//'.LIEU'
+      CNVVAL = SDCONV(1:19)//'.VALE'
+      CNVACT = SDCONV(1:19)//'.ACTI'
+      CNVNCO = SDCONV(1:19)//'.NCOL'
+      CALL WKVECT(CNVTYP,'V V K16',NRESI,JCNVTY)
+      CALL WKVECT(CNVLIE,'V V K16',NRESI,JCNVLI)
+      CALL WKVECT(CNVVAL,'V V R'  ,NRESI,JCNVVA)
+      CALL WKVECT(CNVACT,'V V L'  ,NRESI,JCNVAC)
+      CALL WKVECT(CNVNCO,'V V K16',NRESI,JCNVNC)
+C
+C --- TYPE DES RESIDUS
+C
+      ZK16(JCNVTY-1+1) = 'RESI_GLOB_RELA'
+      ZK16(JCNVTY-1+2) = 'RESI_GLOB_MAXI'
+      ZK16(JCNVTY-1+3) = 'RESI_GLOB_REFE'
+      ZK16(JCNVTY-1+4) = 'RESI_COMP_RELA'
+      ZK16(JCNVTY-1+5) = 'RESI_FROT'
+C      ZK16(JCNVTY-1+6) = 'RESI_GEOM'
+C
+C --- NOM DES COLONNES
+C
+      ZK16(JCNVNC-1+1) = 'RESI_RELA'
+      ZK16(JCNVNC-1+2) = 'RESI_MAXI'
+      ZK16(JCNVNC-1+3) = 'RESI_REFE'
+      ZK16(JCNVNC-1+4) = 'RESI_COMP'
+      ZK16(JCNVNC-1+5) = 'FROT_NEWT'
+C      ZK16(JCNVNC-1+6) = ' '
+C
+C --- RESIDUS ACTIVES POUR LES TESTS DE CONVERGENCE
+C
+      IF (LNEWTF) ZL(JCNVAC-1+5) = .TRUE.
+C      IF (LNEWTG) ZL(JCNVAC-1+6) = .TRUE.
+C
+      CALL JEDEMA()
+      END

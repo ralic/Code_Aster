@@ -1,8 +1,8 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 03/04/2012   AUTEUR SELLENET N.SELLENET 
 # TITRE  :  MODELISATION D UNE COQUE DOUBLEMENT SINUSOIDALE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -98,14 +98,10 @@ SNL1=STAT_NON_LINE(MODELE=MODELE,
                    INCREMENT=_F(LIST_INST=LIST,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1e-08,),);
 
-SNL1=CALC_ELEM(reuse =SNL1,
-               RESULTAT=SNL1,
-               OPTION='EFGE_ELNO',);
-
-SNL1=CALC_NO(reuse =SNL1,
+SNL1=CALC_CHAMP(reuse =SNL1,
              RESULTAT=SNL1,
-             OPTION=('FORC_NODA','EFGE_NOEU'),
-             );
+             CONTRAINTE=('EFGE_ELNO','EFGE_NOEU'),
+             FORCE='FORC_NODA',);
 
 SNL3=STAT_NON_LINE(MODELE=MODELE,
                    CHAM_MATER=CHMAT,
@@ -116,14 +112,10 @@ SNL3=STAT_NON_LINE(MODELE=MODELE,
                    INCREMENT=_F(LIST_INST=LIST,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1e-08,),);
 
-SNL3=CALC_ELEM(reuse =SNL3,
-               RESULTAT=SNL3,
-               OPTION='EFGE_ELNO',);
-
-SNL3=CALC_NO(reuse =SNL3,
-             RESULTAT=SNL3,
-             OPTION=('FORC_NODA','EFGE_NOEU'),
-             );
+SNL3=CALC_CHAMP(reuse =SNL3,
+                RESULTAT=SNL3,
+                CONTRAINTE=('EFGE_ELNO','EFGE_NOEU'),
+                FORCE='FORC_NODA',);
 
 PSNL1=POST_RELEVE_T(ACTION=(_F(INTITULE='PSNL1_GAUCHE',
                               GROUP_NO='GAUCHE',
@@ -332,14 +324,10 @@ RESU1=MECA_STATIQUE(MODELE=MODELE,
                     EXCIT=(_F(CHARGE=CC,),
                            _F(CHARGE=FORCEX,),),);
 
-RESU1=CALC_ELEM(reuse =RESU1,
-                RESULTAT=RESU1,
-                OPTION=('EFGE_ELNO'),);
-
-RESU1=CALC_NO(reuse =RESU1,
-              RESULTAT=RESU1,
-              OPTION=('FORC_NODA','EFGE_NOEU',),
-              );
+RESU1=CALC_CHAMP(reuse =RESU1,
+                 RESULTAT=RESU1,
+                 CONTRAINTE=('EFGE_ELNO','EFGE_NOEU',),
+                 FORCE='FORC_NODA',);
 
 RESU3=MECA_STATIQUE(MODELE=MODELE,
                     CHAM_MATER=CHMAT,
@@ -347,14 +335,10 @@ RESU3=MECA_STATIQUE(MODELE=MODELE,
                     EXCIT=(_F(CHARGE=CC,),
                            _F(CHARGE=FORCEZ,),),);
 
-RESU3=CALC_ELEM(reuse =RESU3,
-                RESULTAT=RESU3,
-                OPTION='EFGE_ELNO',);
-
-RESU3=CALC_NO(reuse =RESU3,
-              RESULTAT=RESU3,
-              OPTION=('FORC_NODA','EFGE_NOEU',),
-              );
+RESU3=CALC_CHAMP(reuse =RESU3,
+                 RESULTAT=RESU3,
+                 CONTRAINTE=('EFGE_ELNO','EFGE_NOEU',),
+                 FORCE='FORC_NODA',);
 
 PSL1=POST_RELEVE_T(ACTION=(_F(INTITULE='PSL1_GAUCHE',
                               GROUP_NO='GAUCHE',

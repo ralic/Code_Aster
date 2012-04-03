@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
+# MODIF  DATE 02/04/2012   AUTEUR TRAN V-X.TRAN 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES 
 # sdls114b.para = tps_job 210 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -248,7 +248,8 @@ RES_DYNA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
 
 
 KT1 = POST_K_TRANS(RESU_TRANS = RES_DYNA,
-                  K_MODAL = _F(RESU_MODA = MODE,
+                   MODELISATION='3D',
+                   K_MODAL = _F(RESU_MODA = MODE,
                               FISSURE=FF2,
                               R_INF=9.E-5,
                               R_SUP=3.E-4, 
@@ -269,6 +270,7 @@ TEST_TABLE(TABLE=KT1,
 
 
 KT2 = POST_K_TRANS(RESU_TRANS = RES_DYNA,
+                   MODELISATION='3D',
                   NUME_ORDRE = 2500,
                   K_MODAL = _F(TABL_K_MODA =GLMO1,
                               FISSURE=FF2,),);

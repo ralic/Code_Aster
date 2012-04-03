@@ -8,9 +8,9 @@
      >                   DFICKS,INSTAP)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 02/04/2012   AUTEUR GRANET S.GRANET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,7 +32,7 @@ C =====================================================================
 C --- BUT : RECUPERER LES DONNEES MATERIAUX THM -----------------------
 C =====================================================================
       IMPLICIT NONE
-      INTEGER       IMATE
+      INTEGER       IMATE,RETCOM
       REAL*8        T, P1, P2, PHI, PVP
       REAL*8        RGAZ, BIOT, SATUR, DSATUR, PESA(3)
       REAL*8        PERMFH, PERMLI, DPERML, PERMGZ, DPERMS, DPERMP
@@ -102,6 +102,7 @@ C =====================================================================
       RBID48=0.D0
       RBID49=0.D0
       RBID50=0.D0
+      RETCOM=0
       IF (THMC.EQ.'LIQU_SATU') THEN
          CALL THMRCP( 'FINALE  ', IMATE, THMC, MECA, HYDR, THER,
      +                RBID1, RBID2, RBID3, RBID4, RBID5, T, RBID6,
@@ -114,7 +115,7 @@ C =====================================================================
      +                LAMBT, DLAMBT, RBID35, RBID36, RBID37,RBID38,
      +                RBID39, RBID40,RBID45,RBID46,RBID47,RBID48,
      +                RBID49,RBID50,LAMBCT,ISOT,
-     >                RBID50,INSTAP)
+     >                RBID50,INSTAP,RETCOM)
       ELSE IF (THMC.EQ.'GAZ') THEN
          CALL THMRCP( 'FINALE  ', IMATE, THMC, MECA, HYDR, THER,
      +                   RBID1, RBID2, RBID3, RBID4, RBID5, T, RBID6,
@@ -127,7 +128,7 @@ C =====================================================================
      +                 MAMOLG, RBID28, LAMBT, DLAMBT, VISCG,
      +                 DVISCG, RBID37,RBID38, RBID39,RBID40,RBID45,
      +                 RBID46,RBID47,RBID48,RBID49,RBID50,LAMBCT,ISOT,
-     >                 RBID50,INSTAP)
+     >                 RBID50,INSTAP,RETCOM)
       ELSE IF (THMC.EQ.'LIQU_VAPE') THEN
          CALL THMRCP( 'FINALE  ', IMATE, THMC, MECA, HYDR, THER,
      +                 RBID1, RBID2, RBID3, RBID4, RBID5, T, P1,
@@ -141,7 +142,7 @@ C =====================================================================
      +                 DVISCL, RBID19, RBID20, LAMBT,DLAMBT, RBID23,
      +                 RBID24, MAMOLV, RBID25,VISCG,DVISCG, RBID45,
      +                 RBID46,RBID47,RBID48,RBID49,RBID50,LAMBCT,ISOT,
-     >                  RBID50,INSTAP)
+     >                  RBID50,INSTAP,RETCOM)
       ELSE IF (THMC.EQ.'LIQU_VAPE_GAZ') THEN
          CALL THMRCP( 'FINALE  ', IMATE, THMC, MECA, HYDR, THER,
      +                 RBID1, RBID2, RBID3, RBID4, RBID5, T, P1,
@@ -156,7 +157,7 @@ C =====================================================================
      +                 MAMOLG, RBID19, LAMBT,DLAMBT,VISCG, DVISCG,
      +                 MAMOLV, RBID25,RBID26,RBID27,RBID45,
      +                 RBID46,RBID47,RBID48,RBID49,RBID50,LAMBCT,ISOT,
-     >                 DFICKS,INSTAP)
+     >                 DFICKS,INSTAP,RETCOM)
       ELSE IF (THMC.EQ.'LIQU_AD_GAZ_VAPE') THEN
          CALL THMRCP( 'FINALE  ', IMATE, THMC, MECA, HYDR, THER,
      +                 RBID1, RBID2, RBID3, RBID4, RBID5, T, P1,
@@ -171,7 +172,7 @@ C =====================================================================
      +                 DVISCL, MAMOLG, RBID19, LAMBT,DLAMBT,VISCG,
      +                 DVISCG, MAMOLV, RBID25,RBID26, RBID27,FICKAD,
      +                 DFADT,RBID47,RBID48,PAD,RBID50,LAMBCT,ISOT,
-     >                 DFICKS,INSTAP)
+     >                 DFICKS,INSTAP,RETCOM)
 
       ELSE IF (THMC.EQ.'LIQU_AD_GAZ') THEN
          CALL THMRCP( 'FINALE  ', IMATE, THMC, MECA, HYDR, THER,
@@ -187,7 +188,7 @@ C =====================================================================
      +                 DVISCL, MAMOLG, RBID19, LAMBT,DLAMBT,VISCG,
      +                 DVISCG, RBID50, RBID25,RBID26, RBID27,FICKAD,
      +                 DFADT,RBID47,RBID48,PAD,RBID50,LAMBCT,ISOT,
-     >                 DFICKS,INSTAP)
+     >                 DFICKS,INSTAP,RETCOM)
       ELSE IF (THMC.EQ.'LIQU_GAZ') THEN
          CALL THMRCP( 'FINALE  ', IMATE, THMC, MECA, HYDR, THER,
      +                 RBID1, RBID2, RBID3, RBID4, RBID5, T, P1,
@@ -202,7 +203,7 @@ C =====================================================================
      +                 MAMOLG, RBID19, LAMBT,DLAMBT,VISCG, DVISCG,
      +                 MAMOLV, RBID25,RBID26,RBID27,RBID45,
      +                 RBID46,RBID47,RBID48,RBID49,RBID50,LAMBCT,ISOT,
-     >                 RBID50,INSTAP)
+     >                 RBID50,INSTAP,RETCOM)
       ELSE IF (THMC.EQ.'LIQU_GAZ_ATM') THEN
          CALL THMRCP( 'FINALE  ', IMATE, THMC, MECA, HYDR, THER,
      +                 RBID1, RBID2, RBID3, RBID4, RBID5, T, P1,
@@ -217,7 +218,7 @@ C =====================================================================
      +                 RBID20, RBID19, LAMBT,DLAMBT,RBID23, RBID24,
      +                 MAMOLV, RBID25,RBID26, RBID27,RBID45,
      +                 RBID46,RBID47,RBID48,RBID49,RBID50,LAMBCT,ISOT,
-     >                 RBID50,INSTAP)
+     >                 RBID50,INSTAP,RETCOM)
       ENDIF
 C =====================================================================
       END

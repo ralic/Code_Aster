@@ -1,4 +1,4 @@
-#@ MODIF utilitai8 Messages  DATE 13/02/2012   AUTEUR BERRO H.BERRO 
+#@ MODIF utilitai8 Messages  DATE 03/04/2012   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -59,6 +59,13 @@ cata_msg = {
 
 9 : _(u"""
    Numéro d'ordre :  %(i1)d             instant :  %(r1)g
+"""),
+
+10 : _(u"""
+ Le modèle est manquant.
+
+ Conseil :
+  Il faut remplir le mot-clé MODELE si la commande utilisée le permet.
 """),
 
 

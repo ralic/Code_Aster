@@ -1,10 +1,10 @@
-      SUBROUTINE NMPILA(NUMEDD,SDPILO,ISXFE,DTAU  ,DEPDEL,DDEPL0,
-     &                  DDEPL1,NBEFFE,ETA   ,PILCVG)
+      SUBROUTINE NMPILA(NUMEDD,SDPILO,ISXFE ,DTAU  ,DEPDEL,
+     &                  DDEPL0,DDEPL1,NBEFFE,ETA   ,PILCVG)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/02/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 02/04/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,22 +19,22 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE MABBAS M.ABBAS
+C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
       INTEGER      PILCVG,NBEFFE
       CHARACTER*19 SDPILO
       CHARACTER*24 NUMEDD
-      CHARACTER*19 DDEPL0,DDEPL1,DEPDEL     
+      CHARACTER*19 DDEPL0,DDEPL1,DEPDEL
       REAL*8       DTAU, ETA(2)
       LOGICAL      ISXFE
-C 
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE MECA_NON_LINE (ALGORITHME - PILOTAGE - CALCUL DE ETA)
 C
 C RESOLUTION DE L'EQUATION DE PILOTAGE PAR LONGUEUR D'ARC
-C      
+C
 C ----------------------------------------------------------------------
 C
 C
@@ -47,7 +47,11 @@ C IN  DDEPL1 : INCREMENT DE DEPLACEMENT K-1.F_PILO
 C IN  DTAU   : SECOND MEMBRE DE L'EQUATION DE PILOTAGE
 C OUT NBEFFE : NOMBRE DE SOLUTIONS EFFECTIVES
 C OUT ETA    : ETA_PILOTAGE
-C OUT PILCVG : CODE RETOUR (0 = OK, 1 = PAS DE SOLUTION)
+C OUT PILCVG : CODE DE CONVERGENCE POUR LE PILOTAGE
+C                -1 : PAS DE CALCUL DU PILOTAGE
+C                 0 : CAS DU FONCTIONNEMENT NORMAL
+C                 1 : PAS DE SOLUTION
+C                 2 : BORNE ATTEINTE -> FIN DU CALCUL
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ---------------------------
 C
@@ -69,12 +73,12 @@ C
 C ---------- FIN  DECLARATIONS  NORMALISEES  JEVEUX -------------------
 
       INTEGER      I, J ,NRAC
-      REAL*8       R0, D0, R1, D1, R2, DTAU2, RAC(2),SIGN
+      REAL*8       R0, D0, R1, D1, R2, DTAU2, RAC(2)
       INTEGER      JDEP0,JDEP1,JDEPDE,JCOEF,JCOEE
       INTEGER      NEQ,IRET
-      CHARACTER*8  K8BID      
+      CHARACTER*8  K8BID
       INTEGER      IFM,NIV
-      CHARACTER*19 CHAPIL,CHAPIC      
+      CHARACTER*19 CHAPIL,CHAPIC
 C
 C ----------------------------------------------------------------------
 C
@@ -85,21 +89,17 @@ C --- AFFICHAGE
 C
       IF (NIV.GE.2) THEN
         WRITE (IFM,*) '<PILOTAGE> ...... PILOTAGE PAR LONGUEUR D''ARC'
-      ENDIF 
+      ENDIF
 C
 C --- INITIALISATIONS
 C
-      PILCVG = 0
-      IF(ISXFE) THEN
-      SIGN = DTAU/ABS(DTAU)
-      SIGN = 1.D0
-      ENDIF
-      DTAU2 = DTAU**2
-      R0    = - DTAU2
-      R1    = 0.D0
-      R2    = 0.D0
+      PILCVG = -1
+      DTAU2  = DTAU**2
+      R0     = - DTAU2
+      R1     = 0.D0
+      R2     = 0.D0
       CALL DISMOI('F','NB_EQUA',NUMEDD,'NUME_DDL',NEQ,K8BID,IRET)
-C      
+C
 C --- ACCES OBJETS JEVEUX
 C
       CALL JEVEUO(DDEPL0(1:19)//'.VALE','L',JDEP0)
@@ -111,76 +111,77 @@ C
       CHAPIC = SDPILO(1:14)//'.PLCI'
       CALL JEVEUO(CHAPIC(1:19)//'.VALE','L',JCOEE)
       ENDIF
-      
-
 C
 C --- CALCUL DES COEFFICIENTS DU POLYNOME DE DEGRE 2
+C
       IF(ISXFE) THEN
-      DO 20 I = 1, NEQ
-        IF(ZR(JCOEE+I-1).EQ.0.D0) THEN
-          R0 = R0 + ZR(JCOEF+I-1)**2*
-     &      (ZR(JDEPDE+I-1)+ZR(JDEP0+I-1))**2
-          R1 = R1 + SIGN*ZR(JCOEF+I-1)**2*
-     &      (ZR(JDEPDE+I-1)+ZR(JDEP0+I-1))*ZR(JDEP1+I-1)
-          R2 = R2 + ZR(JCOEF+I-1)**2*
-     &       ZR(JDEP1+I-1) * ZR(JDEP1+I-1)
-        ELSE
-          D0  = 0.D0
-          D1  = 0.D0         
-          DO 30 J = I+1, NEQ
-             IF(ZR(JCOEE+I-1).EQ.ZR(JCOEE+J-1)) THEN    
-                D0 = D0 + 
-     &       ZR(JCOEF+I-1)*(ZR(JDEPDE+I-1)+ZR(JDEP0+I-1))+   
-     &       ZR(JCOEF+J-1)*(ZR(JDEPDE+J-1)+ZR(JDEP0+J-1))
+        DO 20 I = 1, NEQ
+          IF(ZR(JCOEE+I-1).EQ.0.D0) THEN
+            R0 = R0 + ZR(JCOEF+I-1)**2*
+     &          (ZR(JDEPDE+I-1)+ZR(JDEP0+I-1))**2
+            R1 = R1 + ZR(JCOEF+I-1)**2*
+     &          (ZR(JDEPDE+I-1)+ZR(JDEP0+I-1))*ZR(JDEP1+I-1)
+            R2 = R2 + ZR(JCOEF+I-1)**2*
+     &           ZR(JDEP1+I-1) * ZR(JDEP1+I-1)
+          ELSE
+            D0  = 0.D0
+            D1  = 0.D0
+            DO 30 J = I+1, NEQ
+              IF (ZR(JCOEE+I-1).EQ.ZR(JCOEE+J-1)) THEN
+                D0 = D0 +
+     &               ZR(JCOEF+I-1)*(ZR(JDEPDE+I-1)+ZR(JDEP0+I-1))+
+     &               ZR(JCOEF+J-1)*(ZR(JDEPDE+J-1)+ZR(JDEP0+J-1))
                 D1 = D1 + ZR(JCOEF+I-1)*ZR(JDEP1+I-1)+
      &               ZR(JCOEF+J-1)*ZR(JDEP1+J-1)
-             ENDIF
- 30       CONTINUE 
-          R0 = R0 + D0**2
-          R1 = R1 + SIGN*D1*D0
-          R2 = R2 + D1**2         
-        ENDIF
- 20   CONTINUE
+              ENDIF
+ 30         CONTINUE
+            R0 = R0 + D0**2
+            R1 = R1 + D1*D0
+            R2 = R2 + D1**2
+          ENDIF
+ 20     CONTINUE
       ELSE
-         DO 10 I = 1, NEQ
-           R0 = R0 + ZR(JCOEF+I-1) * 
-     &      (ZR(JDEPDE+I-1)+ZR(JDEP0+I-1))**2
-           R1 = R1 + ZR(JCOEF+I-1) * 
-     &      (ZR(JDEPDE+I-1)+ZR(JDEP0+I-1))*ZR(JDEP1+I-1)
-           R2 = R2 + ZR(JCOEF+I-1) *
-     &       ZR(JDEP1+I-1) * ZR(JDEP1+I-1)
- 10      CONTINUE
+        DO 10 I = 1, NEQ
+          R0 = R0 + ZR(JCOEF+I-1) *
+     &        (ZR(JDEPDE+I-1)+ZR(JDEP0+I-1))**2
+          R1 = R1 + ZR(JCOEF+I-1) *
+     &        (ZR(JDEPDE+I-1)+ZR(JDEP0+I-1))*ZR(JDEP1+I-1)
+          R2 = R2 + ZR(JCOEF+I-1) *
+     &         ZR(JDEP1+I-1) * ZR(JDEP1+I-1)
+ 10     CONTINUE
       ENDIF
- 
+
       R1 = 2.D0*R1
       IF (R2.EQ.0) THEN
         CALL ASSERT(.FALSE.)
-      ENDIF 
+      ENDIF
       IF (NIV.GE.2) THEN
         WRITE (IFM,*) '<PILOTAGE> ....EQUATION X2+BX+C: ',R1/R2,R0/R2
-      ENDIF          
+      ENDIF
 C
 C --- RESOLUTION DE L'EQUATION DE DEGRE DEUX
-
+C
       CALL ZEROP2(R1/R2,R0/R2,RAC,NRAC)
-C         
+C
       IF (NRAC.EQ.0) THEN
         PILCVG    = 1
-      ELSE IF (NRAC.EQ.1) THEN
+      ELSEIF (NRAC.EQ.1) THEN
+        PILCVG    = 0
         NBEFFE    = 1
         ETA(1)    = RAC(1)
       ELSE
+        PILCVG    = 0
         NBEFFE    = 2
         ETA(1)    = RAC(1)
         ETA(2)    = RAC(2)
-      END IF
+      ENDIF
 C
 C --- AFFICHAGE
-C      
+C
       IF (NIV.GE.2) THEN
         WRITE (IFM,*) '<PILOTAGE> ...... SOLUTIONS: ',NRAC,RAC
-      ENDIF        
+      ENDIF
 C
-      CALL JEDEMA()      
+      CALL JEDEMA()
 C
       END

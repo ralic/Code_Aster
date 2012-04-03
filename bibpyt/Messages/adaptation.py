@@ -1,8 +1,8 @@
-#@ MODIF adaptation Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF adaptation Messages  DATE 02/04/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,7 +28,7 @@ cata_msg={
 """),
 
 2: _(u"""
-    Pour la méthode d'adaptation de type <%(k1)s>, le pas de temps calculé vaut <%(r1)E>.
+    Pour la méthode d'adaptation de type <%(k1)s>, le pas de temps calculé vaut <%(r1)19.12e>.
 """),
 
 3: _(u"""
@@ -36,24 +36,28 @@ cata_msg={
 """),
 
 4: _(u"""
-    Aucun critère d'adaptation n'est vérifié. On garde le pas de temps <%(r1)E>.
+    Aucun critère d'adaptation n'est vérifié. On garde le pas de temps <%(r1)19.12e>.
 """),
 
 5: _(u"""
-    Sur tous les critères d'adaptation, le plus petit pas de temps vaut <%(r1)E>.
+    Sur tous les critères d'adaptation, le plus petit pas de temps vaut <%(r1)19.12e>.
 """),
 
 6: _(u"""
-    Après ajustement sur les points de passage obligatoires, le plus petit pas de temps vaut <%(r1)E>.
+    Après ajustement sur les points de passage obligatoires, le plus petit pas de temps vaut <%(r1)19.12e>.
+"""),
+
+10 : _(u"""
+    On maintient la découpe du pas de temps à <%(r1)19.12e>.
 """),
 
 11 : _(u"""
-    La valeur du pas de temps retenu (%(r1)f) est inférieure à PAS_MINI.
+    La valeur du pas de temps retenu <%(r1)19.12e> est inférieure à PAS_MINI.
 """),
 
 12 : _(u"""
-    La valeur du pas de temps (%(r1)E) est supérieure à PAS_MAXI (%(r2)E).
-    On limite le pas de temps à PAS_MAXI (%(r2)E).
+    La valeur du pas de temps <%(r1)19.12e> est supérieure à PAS_MAXI <%(r2)19.12e>.
+    On limite le pas de temps à PAS_MAXI <%(r2)19.12e>.
 """),
 
 13 : _(u"""

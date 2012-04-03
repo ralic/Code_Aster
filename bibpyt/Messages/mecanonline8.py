@@ -1,8 +1,8 @@
-#@ MODIF mecanonline8 Messages  DATE 12/12/2011   AUTEUR DESOZA T.DESOZA 
+#@ MODIF mecanonline8 Messages  DATE 02/04/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -29,7 +29,7 @@ cata_msg = {
     * Nombre d'itérations de Newton               : %(i2)d
     * Nombre de factorisations de la matrice      : %(i3)d
     * Nombre d'intégrations du comportement       : %(i4)d
-    * Nombre de résolutions K.U=F                 : %(i5)d
+    * Nombre de résolutions                       : %(i5)d
 """),
 
 2 : _(u"""    * Nombre d'itérations de recherche linéaire   : %(i1)d"""),
@@ -64,7 +64,7 @@ cata_msg = {
 
 54 : _(u"""    * Temps total intégration comportement        : %(k1)s"""),
 
-55 : _(u"""    * Temps total résolution K.U=F                : %(k1)s"""),
+55 : _(u"""    * Temps total résolution                      : %(k1)s"""),
 
 56 : _(u"""    * Temps résolution contact                    : %(k1)s"""),
 

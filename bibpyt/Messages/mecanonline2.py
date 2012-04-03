@@ -1,8 +1,8 @@
-#@ MODIF mecanonline2 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF mecanonline2 Messages  DATE 02/04/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -21,16 +21,6 @@
 
 cata_msg = {
 
-1 : _(u"""
- L'erreur précédente est fatale.
- Conseils:
-   - S'il s'agit d'un manque de temps CPU, augmentez le.
-   - Vérifiez votre modèle 
-   - Essayez d'activer la gestion des événements (découpe du pas de temps par exemple) dans la commande DEFI_LIST_INST.
- 
- La base globale est sauvegardée. Elle contient les pas archivés avant l'arrêt.
-"""),
-
 3 : _(u"""
 
  Le résidu global converge plus vite que la condition des contraintes planes. 
@@ -44,6 +34,8 @@ cata_msg = {
  sous le mot-clé TYPE_CHARGE = 'SUIV' n'est pas une Charge SUIVEUSE.
 """),
 
+
+
 27 : _(u"""
  La prédiction par DEPL_CALCULE à l'instant de calcul %(r1)f à partir du concept %(k1)s n'a pas pu être construite.
  Explications possibles :
@@ -54,12 +46,8 @@ cata_msg = {
  - vérifiez que le concept fourni sous le mot-clé EVOL_NOLI contient suffisamment d'instants pour interpoler le champ souhaité
 """),
 
-36 : _(u"""
- Erreur dans la découpe initiale des pas.
-"""),
-
 37 : _(u"""
- Attention, ARRET=NON donc poursuite du calcul sans avoir eu convergence.
+    ARRET=NON donc poursuite du calcul sans avoir eu convergence.
 """),
 
 67 : _(u"""
@@ -94,7 +82,10 @@ cata_msg = {
      Valeur minimum de abs( %(k2)s - %(k5)s_REF) : %(r2)f sur la maille : %(k4)s
 """),
 
-
+96 : _(u"""
+ Le résidu RESI_COMP_RELA est inutilisable au premier instant de calcul (pas de référence)
+ On bascule automatiquement en RESI_GLOB_RELA.
+"""),
 
 97 : _(u"""
   -> Les variables de commandes initiales induisent des contraintes 

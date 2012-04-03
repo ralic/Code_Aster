@@ -1,8 +1,8 @@
-#@ MODIF itersupp Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF itersupp Messages  DATE 02/04/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -24,33 +24,34 @@
 cata_msg={
 
 1: _(u"""
-  On tente d'autoriser des itérations de Newton supplémentaires.
+ <Action> On tente d'autoriser des itérations de Newton supplémentaires.
 """),
 
 2: _(u"""
-  On ne peux pas tenter d'autoriser des itérations de Newton supplémentaires car on dépasse déjà le nombre d'itérations maximum autorisé <%(i1)d>.
+ <Action> On ne peux pas tenter d'autoriser des itérations de Newton supplémentaires car on dépasse déjà le nombre
+          d'itérations maximum autorisé <%(i1)d>.
 """),
 
 3: _(u"""
-    On estime qu'on va pouvoir converger en <%(i1)d> itérations de Newton.
+          On estime qu'on va pouvoir converger en <%(i1)d> itérations de Newton.
 """),
 
 4: _(u"""
-    L'extrapolation des résidus donne un nombre d'itérations inférieur à ITER_GLOB_ELAS et ITER_GLOB_MAXI.
-    Cela peut se produire si vous avez donné ITER_GLOB_ELAS inférieur à ITER_GLOB_MAXI et que l'extrapolation du nombre d'itérations 
-    est faite en régime élastique.
+          L'extrapolation des résidus donne un nombre d'itérations inférieur à ITER_GLOB_ELAS et ITER_GLOB_MAXI.
+          Cela peut se produire si vous avez donné ITER_GLOB_ELAS inférieur à ITER_GLOB_MAXI et que l'extrapolation du
+          nombre d'itérations est faite en régime élastique.
 """),
 
 5: _(u"""
-    L'extrapolation des résidus donne un nombre d'itérations <%(i1)d> supérieur au maximum autorisé <%(i2)d>
+          L'extrapolation des résidus donne un nombre d'itérations <%(i1)d> supérieur au maximum autorisé <%(i2)d>
 """),
 
 6: _(u"""
-    Échec dans la tentative d'autoriser des itérations de Newton supplémentaires.
+ <Action> Échec dans la tentative d'autoriser des itérations de Newton supplémentaires.
 """),
 
 7: _(u"""
-    On peut autoriser des itérations de Newton supplémentaires.
+ <Action> On autorise des itérations de Newton supplémentaires.
 """),
 
 }

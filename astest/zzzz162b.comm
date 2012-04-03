@@ -1,9 +1,9 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 03/04/2012   AUTEUR SELLENET N.SELLENET 
 # TITRE VALIDATION LIRE_RESU AU FORMAT MED
 # zzzz162b.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -279,13 +279,15 @@ RESHYD=CREA_RESU(OPERATION='AFFE',
                  NOM_CHAM='HYDR_ELNO',
                  AFFE=(
                  _F(CHAM_GD=HELNO0,
+                    MODELE=MOTHER,
                     INST=0.0,),
                  _F(CHAM_GD=HELNO1,
+                    MODELE=MOTHER,
                     INST=90,),),);
 
-RESHYD=CALC_NO(reuse =RESHYD,
-               RESULTAT=RESHYD,
-               OPTION='HYDR_NOEU',);
+RESHYD=CALC_CHAMP(reuse =RESHYD,
+                  RESULTAT=RESHYD,
+                  THERMIQUE='HYDR_NOEU',);
 
 IMPR_RESU(FORMAT='MED',
           UNITE=72,

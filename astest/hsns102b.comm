@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 03/04/2012   AUTEUR SELLENET N.SELLENET 
 # TITRE PLAQUE EN BETON ARME CHAUFFEE
 # hsns102b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -194,14 +194,13 @@ DEP=STAT_NON_LINE(  MODELE=LEMOD,
                     CONVERGENCE=_F(RESI_GLOB_MAXI = 1.E-3,
                                    ITER_GLOB_MAXI = 30,),
                                    )
-DEPB=CALC_ELEM(
-                OPTION     = ('SIGM_ELNO',),
-                RESULTAT   = DEP,
-                GROUP_MA='GEOB'
-                 )
-DEPB=CALC_NO(reuse = DEPB,
-             RESULTAT=DEPB,
-             OPTION='SIGM_NOEU',)
+DEPB=CALC_ELEM(OPTION='SIGM_ELNO',
+               RESULTAT=DEP,
+               GROUP_MA='GEOB',);
+
+DEPB=CALC_CHAMP(reuse =DEPB,
+                RESULTAT=DEPB,
+                CONTRAINTE='SIGM_NOEU',);
 
 
 # -------------------------------------------------
@@ -242,9 +241,9 @@ DEPA=CALC_ELEM(
                 RESULTAT   = DEP,
                 GROUP_MA='GEOA')
 
-DEPA=CALC_NO(reuse=DEPA,
-             RESULTAT=DEPA,
-            OPTION='SIGM_NOEU',)
+DEPA=CALC_CHAMP(reuse=DEPA,
+                RESULTAT=DEPA,
+                CONTRAINTE='SIGM_NOEU',);
 
 TEST_RESU(
           RESU=(

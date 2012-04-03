@@ -1,4 +1,4 @@
-#@ MODIF mecanonline Messages  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF mecanonline Messages  DATE 02/04/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -50,7 +50,7 @@ cata_msg = {
 """),
 
 61 : _(u"""
- Le pilotage de type DEFORMATION n'est pas disponible pour la modelisation %(k1)s
+ Le pilotage de type DEFORMATION n'est pas disponible pour la modélisation %(k1)s
 """),
 
 62 : _(u"""
@@ -91,32 +91,5 @@ cata_msg = {
 
 
 
-82 : _(u"""
-   Arrêt pour cause de matrice non inversible.
-"""),
 
-83 : _(u"""
-   Arrêt : absence de convergence avec le nombre d'itérations requis.
-"""),
-
-84 : _(u"""
-   Arrêt par échec dans le pilotage.
-"""),
-
-85 : _(u"""
-   Arrêt : absence de convergence au numéro d'instant : %(i1)d
-                                  lors de l'itération : %(i2)d
-"""),
-
-86 : _(u"""
-   Arrêt par échec du traitement de la collision.
-"""),
-
-87 : _(u"""
-   Arrêt par détection d'instabilité (mot-clé CRIT_STAB dans STAT_NON_LINE / DYNA_NON_LINE).
-   La charge critique correspondante est accessible de deux manières :
-     - dans le fichier de message,
-     - dans la SD résultat EVOL_NOLI, elle correspond au paramètre CHAR_CRIT.
-   La base globale est sauvegardée. Elle contient les pas archivés avant l'arrêt.
-"""),
 }

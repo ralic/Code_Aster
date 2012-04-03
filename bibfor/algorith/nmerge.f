@@ -1,7 +1,7 @@
-      SUBROUTINE NMERGE(SDERRO,QUESTI,TYPERR,VALUEL)
+      SUBROUTINE NMERGE(SDERRO,NOMEVT,LACTIV)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/02/2012   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGORITH  DATE 02/04/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,38 +20,23 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
-      IMPLICIT NONE
+      IMPLICIT      NONE
       CHARACTER*24  SDERRO
-      CHARACTER*3   QUESTI
-      CHARACTER*3   TYPERR
-      LOGICAL       VALUEL
-C 
+      CHARACTER*9   NOMEVT
+      LOGICAL       LACTIV
+C
 C ----------------------------------------------------------------------
 C
-C ROUTINE MECA_NON_LINE (ALGORITHME - UTILITAIRE)
+C ROUTINE MECA_NON_LINE (SD ERREUR)
 C
-C GESTION DE LA SD ERREUR
-C      
+C DIT SI UN EVENEMENT EST DECLENCHE
+C
 C ----------------------------------------------------------------------
-C 
 C
-C IN  SDERRO : SD ERREUR
-C IN  QUESTI : ACTION A REALISER
-C               'SET' - ACTIVE UN CODE ERREUR
-C               'GET' - DIT SI LE CODE ERREUR EST ACTIF
-C IN  TYPERR : TYPE ERREUR
-C               'LDC' - ERR. INTEG. COMPORTEMENT
-C               'PIL' - ERR. PILOTAGE
-C               'FAC' - ERR. FACTORISATION
-C               'CC1' - ERR. CONTACT DISCRET 1
-C               'CC2' - ERR. CONTACT DISCRET 2
-C               'ALL' - AU MOINS UNE DE CES ERREUR
-C               'TIN' - TEMPS CPU BCLE. NEWTON INSUFFISANT
-C               'TIP' - TEMPS CPU BCLE. TEMPS INSUFFISANT
-C               'ITX' - MAXIMUM ITERATION DE NEWTON
-C               'RES' - DIVERGENCE DU RESIDU
-C               'CCC' - ERR. CONTACT COLLISION
-C               'CCP' - ERR. CONTACT PENETRATION
+C
+C IN  SDERRO : SD GESTION DES ERREURS
+C IN  NOMEVT : NOM DE L'EVENEMENT (VOIR LA LISTE DANS NMCRER)
+C OUT LACTIV : .TRUE. SI EVENEMENT ACTIVE
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C
@@ -71,96 +56,41 @@ C
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
-C     
-      CHARACTER*24 ERRCOD
-      INTEGER      JECOD   
-      INTEGER      I              
+C
+      INTEGER      ZEVEN
+      INTEGER      IEVEN,ICODE
+      CHARACTER*24 ERRINF
+      INTEGER      JEINF
+      CHARACTER*24 ERRENO,ERRAAC
+      INTEGER      JEENOM,JEEACT
+      CHARACTER*16 NEVEN
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
-C --- ACCES SD ERROR
+C --- INITIALISATIONS
 C
-      ERRCOD = SDERRO(1:19)//'.CODE'              
-      CALL JEVEUO(ERRCOD,'E',JECOD)    
-C  
-      IF (QUESTI.EQ.'GET') THEN
-        IF (TYPERR.EQ.'LDC') THEN
-          VALUEL = ZL(JECOD+1-1)
-        ELSEIF (TYPERR.EQ.'PIL') THEN
-          VALUEL = ZL(JECOD+2-1)
-        ELSEIF (TYPERR.EQ.'FAC') THEN
-          VALUEL = ZL(JECOD+3-1)
-        ELSEIF (TYPERR.EQ.'CC1') THEN
-          VALUEL = ZL(JECOD+4-1)
-        ELSEIF (TYPERR.EQ.'CC2') THEN
-          VALUEL = ZL(JECOD+5-1)
-        ELSEIF (TYPERR.EQ.'CCC') THEN
-          VALUEL = ZL(JECOD+6-1)
-        ELSEIF (TYPERR.EQ.'CCP') THEN
-          VALUEL = ZL(JECOD+7-1)           
+      LACTIV = .FALSE.
 C
-        ELSEIF (TYPERR.EQ.'TIN') THEN
-          VALUEL = ZL(JECOD+8-1)
-        ELSEIF (TYPERR.EQ.'TIP') THEN
-          VALUEL = ZL(JECOD+9-1)
-        ELSEIF (TYPERR.EQ.'ITX') THEN
-          VALUEL = ZL(JECOD+10-1)
-        ELSEIF (TYPERR.EQ.'RES') THEN
-          VALUEL = ZL(JECOD+11-1)
-        ELSEIF (TYPERR.EQ.'STB') THEN
-          VALUEL = ZL(JECOD+12-1)
+C --- ACCES SD
 C
-        ELSEIF (TYPERR.EQ.'ALL') THEN
-          VALUEL = .FALSE.
-C   Pourquoi arret a 7 ???
-          DO 10 I = 1,7
-C          DO 10 I = 1,12
-            VALUEL = VALUEL.OR.ZL(JECOD+I-1)
- 10       CONTINUE 
-        ELSE
-          CALL ASSERT(.FALSE.)
+      ERRINF = SDERRO(1:19)//'.INFO'
+      CALL JEVEUO(ERRINF,'L',JEINF)
+      ZEVEN  = ZI(JEINF-1+1)
+C
+      ERRENO = SDERRO(1:19)//'.ENOM'
+      ERRAAC = SDERRO(1:19)//'.EACT'
+      CALL JEVEUO(ERRENO,'L',JEENOM)
+      CALL JEVEUO(ERRAAC,'L',JEEACT)
+C
+      DO 15 IEVEN = 1,ZEVEN
+        NEVEN  = ZK16(JEENOM-1+IEVEN)
+        IF (NEVEN.EQ.NOMEVT) THEN
+          ICODE  = ZI(JEEACT-1+IEVEN)
+          IF (ICODE.EQ.1) LACTIV = .TRUE.
         ENDIF
-C                            
-      ELSEIF (QUESTI.EQ.'SET') THEN
-        IF (TYPERR.EQ.'LDC') THEN
-          ZL(JECOD+1-1) = VALUEL
-        ELSEIF (TYPERR.EQ.'PIL') THEN
-          ZL(JECOD+2-1) = VALUEL
-        ELSEIF (TYPERR.EQ.'FAC') THEN
-          ZL(JECOD+3-1) = VALUEL
-        ELSEIF (TYPERR.EQ.'CC1') THEN
-          ZL(JECOD+4-1) = VALUEL
-        ELSEIF (TYPERR.EQ.'CC2') THEN
-          ZL(JECOD+5-1) = VALUEL
-        ELSEIF (TYPERR.EQ.'CCC') THEN
-          ZL(JECOD+6-1) = VALUEL
-        ELSEIF (TYPERR.EQ.'CCP') THEN
-          ZL(JECOD+7-1) = VALUEL  
-C        
-        ELSEIF (TYPERR.EQ.'TIN') THEN
-          ZL(JECOD+8-1) = VALUEL
-        ELSEIF (TYPERR.EQ.'TIP') THEN
-          ZL(JECOD+9-1) = VALUEL
-        ELSEIF (TYPERR.EQ.'ITX') THEN
-          ZL(JECOD+10-1) = VALUEL
-        ELSEIF (TYPERR.EQ.'RES') THEN
-          ZL(JECOD+11-1) = VALUEL
-        ELSEIF (TYPERR.EQ.'STB') THEN
-          ZL(JECOD+12-1) = VALUEL
-C
-        ELSE
-          CALL ASSERT(.FALSE.)
-        ENDIF
-C
-      ELSEIF (QUESTI.EQ.'INI') THEN
-        DO 15 I=1,12
-          ZL(JECOD+I-1) = .FALSE.
- 15     CONTINUE               
-      ELSE
-        CALL ASSERT(.FALSE.)
-      ENDIF
+ 15   CONTINUE
 C
       CALL JEDEMA()
       END

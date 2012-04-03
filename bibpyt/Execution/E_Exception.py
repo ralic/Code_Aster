@@ -1,4 +1,4 @@
-#@ MODIF E_Exception Execution  DATE 27/02/2012   AUTEUR GREFFET N.GREFFET 
+#@ MODIF E_Exception Execution  DATE 02/04/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -105,12 +105,24 @@ class ArretCPUError(error):
 
 class PilotageError(error):
     """Echec du pilotage"""
+    
+class BoucleGeometrieError(error): 
+    """Echec dans la boucle de point fixe sur la géométrie"""
+
+class BoucleFrottementError(error): 
+    """Echec dans la boucle de point fixe sur le seuil de frottement"""
+
+class BoucleContactError(error):    
+    """Echec dans la boucle de point fixe sur le statut de contact"""
 
 class CollisionError(error):
     """Echec de la détection de la collision"""
 
 class InstabiliteError(error):
     """Détection d'instabilité"""
+
+class InterpenetrationError(error):
+    """Echec lors de l'adaptation du coefficient de pénalisation"""
 
 class ExceptionsStore(object):
     """Class to store the exceptions of 'aster' module.
@@ -155,8 +167,12 @@ ST.register(26, "TraitementContactError", TraitementContactError)
 ST.register(27, "MatriceContactSinguliereError", MatriceContactSinguliereError)
 ST.register(28, "ArretCPUError", ArretCPUError)
 ST.register(29, "PilotageError", PilotageError)
-ST.register(30, "CollisionError", CollisionError)
-ST.register(31, "InstabiliteError", InstabiliteError)
+ST.register(30, "BoucleGeometrieError", BoucleGeometrieError)
+ST.register(31, "BoucleFrottementError", BoucleFrottementError)
+ST.register(32, "BoucleContactError", BoucleContactError)
+ST.register(33, "CollisionError", CollisionError)
+ST.register(34, "InstabiliteError", InstabiliteError)
+ST.register(35, "InterpenetrationError", InterpenetrationError)
 
 def add_to_dict_module(dictmodule):
     """Wrapper to ExceptionsStore method to simplify call from astermodule."""

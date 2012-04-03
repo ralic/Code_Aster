@@ -9,12 +9,12 @@
      &                 VISCL, DVISCL, MAMOLG, CPG, LAMBT,DLAMBT,
      &                 VISCG, DVISCG,MAMOLV,CPVG,VISCVG,DVISVG,FICKAD,
      &                 DFADT, CPAD, KH, PAD,EM, LAMBCT,
-     &                 ISOT,DFICKS,INSTAP)
+     &                 ISOT,DFICKS,INSTAP,RETCOM)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/10/2011   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 02/04/2012   AUTEUR GRANET S.GRANET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -36,8 +36,9 @@ C TOLE CRP_21
 C =====================================================================
 C --- BUT : RECUPERER LES DONNEES MATERIAUX THM -----------------------
 C =====================================================================
+C OUT RETCOM : RETOUR LOI DE COMPORTEMENT
       IMPLICIT NONE
-      INTEGER       IMATE
+      INTEGER       IMATE,RETCOM
       REAL*8        T0, P10, P20, PHI0, PVP0, T, P1, P2, PHI, PVP
       REAL*8        RGAZ, RHOD, CPD, BIOT, SATM, SATUR, DSATUR, PESA(3)
       REAL*8        PERMFH, PERMLI, DPERML, PERMGZ, DPERMS, DPERMP
@@ -126,7 +127,7 @@ C
       REAL*8      VAL35(DIM35+1),VAL36(DIM36),VAL37(DIM37),VAL38(DIM38)
       REAL*8      VAL40(DIM40),VAL41(DIM41),VAL42(DIM42),VAL43(DIM43)
       REAL*8      VAL39(DIM39),VALPAR(DIMPAR), COND(NCON), R8VIDE
-      REAL*8      VG(DIMVG),FPESA,R8PREM
+      REAL*8      VG(DIMVG),FPESA,R8PREM,UN,ZERO
 
 C
       INTEGER ICODRE(NRESMA)
@@ -507,6 +508,11 @@ C =====================================================================
 C =====================================================================
 C --- CAS DE L'INITIALISATION -----------------------------------------
 C =====================================================================
+C
+      RETCOM = 0
+      UN = 1.D0
+      ZERO=0.D0
+
       IF (ETAPE.EQ.'INITIALI') THEN
          DO 10 II = 1, DIM1
             VAL1(II) = 0.0D0
@@ -663,8 +669,9 @@ C =====================================================================
             CPL     = VAL7(4)
             MAMOLV  = VAL8(1)
             CPVG    = VAL8(2)
-            IF (SATM.GT.1.0D0.OR.SATM.LT.0.0D0) THEN
-               CALL U2MESS('F','ALGORITH10_91')
+            IF (SATM.GT.UN.OR.SATM.LT.ZERO) THEN
+               RETCOM = 2
+               GOTO 500
             ENDIF
          ELSE IF (THMC.EQ.'LIQU_VAPE_GAZ') THEN
 C =====================================================================
@@ -734,11 +741,13 @@ C
             CPG     = VAL11(2)
             MAMOLV  = VAL12(1)
             CPVG    = VAL12(2)
-            IF (SATM.GT.1.0D0.OR.SATM.LT.0.0D0) THEN
-               CALL U2MESS('F','ALGORITH10_91')
+            IF (SATM.GT.UN.OR.SATM.LT.ZERO) THEN
+               RETCOM = 2
+               GOTO 500
             ENDIF
-            IF (SATUR.GT.1.0D0.OR.SATUR.LT.0.0D0) THEN
-               CALL U2MESS('F','ALGORITH10_91')
+            IF (SATUR.GT.UN.OR.SATUR.LT.ZERO) THEN
+               RETCOM = 2
+               GOTO 500
             ENDIF
          ELSE IF (THMC.EQ.'LIQU_AD_GAZ_VAPE') THEN
 C =====================================================================
@@ -820,11 +829,13 @@ C =====================================================================
             CPVG    = VAL38(2)
             CPAD    = VAL39(1)
             KH      = VAL39(2)
-            IF (SATM.GT.1.0D0.OR.SATM.LT.0.0D0) THEN
-               CALL U2MESS('F','ALGORITH10_91')
+            IF (SATM.GT.UN.OR.SATM.LT.ZERO) THEN
+               RETCOM = 2
+               GOTO 500
             ENDIF
-            IF (SATUR.GT.1.0D0.OR.SATUR.LT.0.0D0) THEN
-               CALL U2MESS('F','ALGORITH10_91')
+            IF (SATUR.GT.UN.OR.SATUR.LT.ZERO) THEN
+               RETCOM = 2
+               GOTO 500
             ENDIF
             
 
@@ -901,11 +912,13 @@ C =====================================================================
             CPG     = VAL37(2)
             CPAD    = VAL39(1)
             KH      = VAL39(2)
-            IF (SATM.GT.1.0D0.OR.SATM.LT.0.0D0) THEN
-               CALL U2MESS('F','ALGORITH10_91')
+            IF (SATM.GT.UN.OR.SATM.LT.ZERO) THEN
+               RETCOM = 2
+               GOTO 500
             ENDIF
-            IF (SATUR.GT.1.0D0.OR.SATUR.LT.0.0D0) THEN
-               CALL U2MESS('F','ALGORITH10_91')
+            IF (SATUR.GT.UN.OR.SATUR.LT.ZERO) THEN
+               RETCOM = 2
+               GOTO 500
             ENDIF            
  
             
@@ -970,11 +983,13 @@ C =====================================================================
             CPL     = VAL14(4)
             MAMOLG  = VAL15(1)
             CPG     = VAL15(2)
-            IF (SATM.GT.1.0D0.OR.SATM.LT.0.0D0) THEN
-               CALL U2MESS('F','ALGORITH10_91')
+            IF (SATM.GT.UN.OR.SATM.LT.ZERO) THEN
+               RETCOM = 2
+               GOTO 500
             ENDIF
-            IF (SATUR.GT.1.0D0.OR.SATUR.LT.0.0D0) THEN
-               CALL U2MESS('F','ALGORITH10_91')
+            IF (SATUR.GT.UN.OR.SATUR.LT.ZERO) THEN
+               RETCOM = 2
+               GOTO 500
             ENDIF
          ELSE IF (THMC.EQ.'LIQU_GAZ_ATM') THEN
 C =====================================================================
@@ -1018,11 +1033,13 @@ C =====================================================================
             UNSURK  = VAL17(2)
             ALPHA   = VAL17(3)
             CPL     = VAL17(4)
-            IF (SATM.GT.1.0D0.OR.SATM.LT.0.0D0) THEN
-               CALL U2MESS('F','ALGORITH10_91')
+            IF (SATM.GT.UN.OR.SATM.LT.ZERO) THEN
+               RETCOM = 2
+               GOTO 500
             ENDIF
-            IF (SATUR.GT.1.0D0.OR.SATUR.LT.0.0D0) THEN
-               CALL U2MESS('F','ALGORITH10_91')
+            IF (SATUR.GT.UN.OR.SATUR.LT.ZERO) THEN
+               RETCOM = 2
+               GOTO 500
             ENDIF
          ENDIF
       ELSE IF (ETAPE.EQ.'SATURATI') THEN
@@ -1036,8 +1053,9 @@ C =====================================================================
          ELSE
                CALL U2MESS('F','ALGORITH16_95')
          ENDIF
-         IF (SATUR.GT.1.0D0.OR.SATUR.LT.0.0D0) THEN
-               CALL U2MESS('F','ALGORITH10_91')
+            IF (SATUR.GT.UN.OR.SATUR.LT.ZERO) THEN
+               RETCOM = 2
+               GOTO 500
          ENDIF
       ELSE IF (ETAPE.EQ.'FINALE') THEN
 C =====================================================================
@@ -1368,8 +1386,9 @@ C DEFINIE DANS LE FICHIER DE COMMANDE
             ISOT(4) = VAL22(24)
             ISOT(5) = VAL22(25)
             ISOT(6) = VAL22(26)
-            IF (SATUR.GT.1.0D0.OR.SATUR.LT.0.0D0) THEN
-               CALL U2MESS('F','ALGORITH10_91')
+            IF (SATUR.GT.UN.OR.SATUR.LT.ZERO) THEN
+               RETCOM = 2
+               GOTO 500
             ENDIF
          ELSE IF (THMC.EQ.'LIQU_VAPE_GAZ') THEN
 C =====================================================================
@@ -1558,8 +1577,9 @@ C
             ISOT(4) = VAL25(30)
             ISOT(5) = VAL25(31)
             ISOT(6) = VAL25(32)
-            IF (SATUR.GT.1.0D0.OR.SATUR.LT.0.0D0) THEN
-               CALL U2MESS('F','ALGORITH10_91')
+            IF (SATUR.GT.UN.OR.SATUR.LT.ZERO) THEN
+               RETCOM = 2
+               GOTO 500
             ENDIF
             
          ELSE IF (THMC.EQ.'LIQU_AD_GAZ_VAPE') THEN
@@ -1779,8 +1799,9 @@ C
             ISOT(4) = VAL40(35)
             ISOT(5) = VAL40(36)
             ISOT(6) = VAL40(37)
-            IF (SATUR.GT.1.0D0.OR.SATUR.LT.0.0D0) THEN
-               CALL U2MESS('F','ALGORITH10_91')
+            IF (SATUR.GT.UN.OR.SATUR.LT.ZERO) THEN
+               RETCOM = 2
+               GOTO 500
             ENDIF
 
          ELSE IF (THMC.EQ.'LIQU_AD_GAZ') THEN
@@ -1970,8 +1991,9 @@ C
             ISOT(4) = VAL40(35)
             ISOT(5) = VAL40(36)
             ISOT(6) = VAL40(37)
-            IF (SATUR.GT.1.0D0.OR.SATUR.LT.0.0D0) THEN
-               CALL U2MESS('F','ALGORITH10_91')
+            IF (SATUR.GT.UN.OR.SATUR.LT.ZERO) THEN
+               RETCOM = 2
+               GOTO 500
             ENDIF
             
             
@@ -2113,8 +2135,9 @@ C DEFINIE DANS LE FICHIER DE COMMANDE
             ISOT(4) = VAL29(24)
             ISOT(5) = VAL29(25)
             ISOT(6) = VAL29(26)
-            IF (SATUR.GT.1.0D0.OR.SATUR.LT.0.0D0) THEN
-               CALL U2MESS('F','ALGORITH10_91')
+            IF (SATUR.GT.UN.OR.SATUR.LT.ZERO) THEN
+               RETCOM = 2
+               GOTO 500
             ENDIF
          ELSE IF (THMC.EQ.'LIQU_GAZ_ATM') THEN
 C =====================================================================
@@ -2226,8 +2249,9 @@ C DEFINIE DANS LE FICHIER DE COMMANDE
             ISOT(4) = VAL32(20)
             ISOT(5) = VAL32(21)
             ISOT(6) = VAL32(22)
-            IF (SATUR.GT.1.0D0.OR.SATUR.LT.0.0D0) THEN
-               CALL U2MESS('F','ALGORITH10_91')
+            IF (SATUR.GT.UN.OR.SATUR.LT.ZERO) THEN
+               RETCOM = 2
+               GOTO 500
             ENDIF
          ENDIF
          IF (HYDR.EQ.'HYDR') THEN
@@ -2241,10 +2265,13 @@ C DEFINIE DANS LE FICHIER DE COMMANDE
             FICK   = COND(7)
             DFICKT = COND(8)
             DFICKG = COND(9)
-            IF (SATUR.GT.1.0D0.OR.SATUR.LT.0.0D0) THEN
-               CALL U2MESS('F','ALGORITH10_91')
+            IF (SATUR.GT.UN.OR.SATUR.LT.ZERO) THEN
+               RETCOM = 2
+               GOTO 500
             ENDIF
          ENDIF
       ENDIF
+ 500  CONTINUE
+
 C =====================================================================
       END

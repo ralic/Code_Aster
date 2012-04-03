@@ -1,8 +1,8 @@
-#@ MODIF mecanonline3 Messages  DATE 21/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF mecanonline3 Messages  DATE 02/04/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -91,11 +91,11 @@ Contact méthode continue et pilotage sont incompatibles
 """),
 
 94 : _(u"""
- LIAISON_UNILATER et PILOTAGE sont des fonctionnalités incompatibles
+ Le contact de type liaison unilatérale (sans appariement) et le pilotage sont des fonctionnalités incompatibles
 """),
 
 95 : _(u"""
- LIAISON_UNILATER et recherche linéaire peuvent poser des problèmes de convergence
+ Le contact de type liaison unilatérale (sans appariement) et la recherche linéaire peuvent poser des problèmes de convergence
 """),
 
 96 : _(u"""

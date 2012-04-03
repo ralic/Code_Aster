@@ -1,9 +1,9 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 02/04/2012   AUTEUR TRAN V-X.TRAN 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES POUR UNE MODE PROPRE
 # sdls114d.para = tps_job 480 mem_job 256Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -26,11 +26,13 @@ DEBUT(CODE=_F( NOM = 'SDLS114D',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'))
 # DEFINITION DES PARAMETRES DU CALCUL
 tau = 0.001
 n_mode = 10
-tfin = 0.005
+tfin = 0.004
 pas = 5E-7
 nbpas = 100
 
-M = LIRE_MAILLAGE(FORMAT='MED',);
+PRE_GIBI();
+
+M = LIRE_MAILLAGE();
 
 MODELIN=AFFE_MODELE(MAILLAGE=M,
                AFFE=(_F(GROUP_MA = ('VOL'),
@@ -90,7 +92,20 @@ CHAR=AFFE_CHAR_MECA(MODELE=MO,
                                   FZ=-0.4E+6,)
                                   
                                   ,);
-
+ROTAT=AFFE_CHAR_MECA(MODELE=MO,
+                     ROTATION=_F(VITESSE=157.08,
+                                 AXE=(0.0,1.0,0.0,),
+                                 CENTRE=(0.0,0.0,0.0,),
+                                 ),
+                     );
+                     
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0.0,0.0,
+                          tau,1.0,
+                          0.2, 1.0,),
+                    PROL_DROITE='CONSTANT',
+                    PROL_GAUCHE='LINEAIRE',);
+                    
 ##################################
 #  CONSTRUCTION DES MATRICES
 ##################################
@@ -105,8 +120,17 @@ MMASSE=CALC_MATR_ELEM(OPTION='MASS_MECA',
                       CHAM_MATER=CM,
                       CHARGE=BLOCAGE,);
 
+MAMOR=CALC_MATR_ELEM(OPTION='AMOR_MECA',
+                     MODELE=MO,
+                     RIGI_MECA = MRIGI,
+                     MASS_MECA = MMASSE,
+                     CHAM_MATER=CM,
+                     CHARGE=BLOCAGE,);
+                     
 VCHA=CALC_VECT_ELEM(OPTION='CHAR_MECA',
-                    CHARGE =(BLOCAGE, CHAR),);
+                    CHARGE =(BLOCAGE, CHAR, ROTAT),
+                    CHAM_MATER=CM,
+                    );
 
 
 NUM=NUME_DDL(MODELE= MO,
@@ -118,6 +142,12 @@ RIG_ASS=ASSE_MATRICE(MATR_ELEM=MRIGI,
 MA_ASS=ASSE_MATRICE(MATR_ELEM=MMASSE,
                     NUME_DDL=NUM,);
 
+AMO_ASS=ASSE_MATRICE(MATR_ELEM=MAMOR,
+                    NUME_DDL=NUM,);
+                    
+VE_ASS=ASSE_VECTEUR(VECT_ELEM=VCHA,
+                    NUME_DDL=NUM,);
+                    
 ###################################
 #  CALCUL DES MODES PROPRES ET DES K MODAUX
 ###################################
@@ -138,11 +168,51 @@ GLMO1=CALC_G(OPTION='K_G_MODA',
              THETA=_F( FISSURE=FF2,
                        R_INF=1.E-3,
                        R_SUP=3.E-3,),
-             LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
-                        LISSAGE_G='LAGRANGE',),
+#              LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
+#                         LISSAGE_G='LAGRANGE',),
             );
             
-#IMPR_TABLE(TABLE=GLMO1)
+IMPR_TABLE(TABLE=GLMO1)
+
+##############################################
+# CALCUL TRANSITOIRE EN COORDONNEES MODALES
+##############################################
+
+PROJ_BASE(BASE=MODE,
+#                STOCKAGE='DIAG',
+                MATR_ASSE_GENE=(_F(MATRICE=CO('MASS_GE'),
+                                   MATR_ASSE=MA_ASS,),
+                                _F(MATRICE=CO('RIGI_GE'),
+                                   MATR_ASSE=RIG_ASS,),
+                                _F(MATRICE=CO('AMOR_GE'),
+                                   MATR_ASSE=AMO_ASS,),),
+                VECT_ASSE_GENE=_F(VECTEUR=CO('CHA_ASS'),
+                                  VECT_ASSE=VE_ASS,),);
+
+RES_DYNA=DYNA_VIBRA(TYPE_CALCUL='TRAN',
+                    BASE_CALCUL='GENE',
+                    SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+                    MATR_MASS=MASS_GE,
+                    MATR_RIGI=RIGI_GE,
+                    MATR_AMOR=AMOR_GE,
+                    INFO = 2,
+                    INCREMENT=_F(INST_INIT=0.,
+                                 INST_FIN=tfin,
+                                 VERI_PAS = 'OUI',
+                                 PAS=pas,),
+                    EXCIT=_F(VECT_ASSE=CHA_ASS,
+                            FONC_MULT=RAMPE,),
+                    ARCHIVAGE=_F(PAS_ARCH = 200,),
+                    IMPRESSION = _F(TOUT='OUI',),);
+
+KT1 = POST_K_TRANS(RESU_TRANS = RES_DYNA,
+                   MODELISATION='3D',
+                   K_MODAL = _F(TABL_K_MODA =GLMO1,
+                                FISSURE=FF2, 
+                               ),
+                   );
+
+IMPR_TABLE(TABLE=KT1, TRI=_F(NOM_PARA=('ABSC_CURV','INST'),ORDRE='CROISSANT'),)
 
                           
 ######################################################                       
@@ -152,16 +222,78 @@ GLMO1=CALC_G(OPTION='K_G_MODA',
 # la reference est obtenue par fissure maillee (SDLS114B)
 # on test uniquement sur le point au milieu du fond de fissure
 
-TEST_TABLE(TABLE=GLMO1,
+TEST_TABLE(TABLE=KT1,
            NOM_PARA='K1',
-           FILTRE=(_F(NOM_PARA = 'NUME_MODE',
-                      VALE_I = 1),
+           FILTRE=(_F(NOM_PARA = 'INST',
+                      VALE = 4.00000E-03),
                    _F(NOM_PARA = 'NUM_PT',
-                      VALE_I = 3),  
+                      VALE_I = 2),  
                    ),
-           VALE=4.79E+09,
-           PRECISION=0.08,
+           VALE=9.23749E+05,
+           PRECISION=0.025,
            REFERENCE = 'AUTRE_ASTER',
           );
-                        
-FIN();         
+
+TEST_TABLE(TABLE=KT1,
+           NOM_PARA='K2',
+           FILTRE=(_F(NOM_PARA = 'INST',
+                      VALE = 4.00000E-03),
+                   _F(NOM_PARA = 'NUM_PT',
+                      VALE_I = 2),  
+                   ),
+           VALE=6.59147E+04,
+           PRECISION=0.09,
+           REFERENCE = 'AUTRE_ASTER',
+          );
+
+TEST_TABLE(TABLE=KT1,
+           NOM_PARA='K3',
+           FILTRE=(_F(NOM_PARA = 'INST',
+                      VALE = 4.00000E-03),
+                   _F(NOM_PARA = 'NUM_PT',
+                      VALE_I = 2),  
+                   ),
+           VALE=-4.21525E+05,
+           PRECISION=0.015,
+           REFERENCE = 'AUTRE_ASTER',
+          );
+          
+# ##############################################
+# # CALCUL TRANSITOIRE EN COORDONNEES PHYSIQUES
+# ##############################################
+# 
+# CES COMMANDES ONT ETE UTILISEE POUR OBTENIR LES VALEURS DE REFERENCES 
+#                           
+# RES_DYN2=DYNA_VIBRA(TYPE_CALCUL='TRAN',
+#                     BASE_CALCUL='PHYS',
+# #                    SCHEMA_TEMPS=_F(SCHEMA='EULER',),
+#                     MATR_MASS=MA_ASS,
+#                     MATR_RIGI=RIG_ASS,
+#                     MATR_AMOR=AMO_ASS,
+#                     INFO = 2,
+#                     INCREMENT=_F(INST_INIT=0.,
+#                                  INST_FIN=tfin,
+# #                                 VERI_PAS = 'OUI',
+#                                  PAS=pas,),
+#                     EXCIT=_F(VECT_ASSE=VE_ASS,
+#                             FONC_MULT=RAMPE,),
+#                     ARCHIVAGE=_F(PAS_ARCH = 200,),
+# #                    IMPRESSION = _F(TOUT='OUI',),
+#                     );
+#                      
+# GLMO2 = CALC_G(  RESULTAT=RES_DYN2,
+#                  OPTION='CALC_K_G',
+#                  THETA=_F( FISSURE=FF2,
+#                                    R_INF=1.E-3,
+#                                    R_SUP=3.E-3,
+# 
+#                                    ),
+#                  EXCIT= ( _F(  CHARGE= (CHAR),
+#                                FONC_MULT=RAMPE,),
+#                           _F(  CHARGE= (ROTAT),
+#                                FONC_MULT=RAMPE,),
+#                            )
+#                          );
+# IMPR_TABLE(TABLE=GLMO2, TRI=_F(NOM_PARA=('ABSC_CURV','INST'),ORDRE='CROISSANT'),);                       
+   
+FIN();     

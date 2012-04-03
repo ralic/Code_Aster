@@ -1,4 +1,4 @@
-#@ MODIF discretisation Messages  DATE 21/02/2012   AUTEUR ABBAS M.ABBAS 
+#@ MODIF discretisation Messages  DATE 02/04/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -72,14 +72,6 @@ Conseils :
 40 : _(u"""
   Le solveur <%(k1)s> ne permet pas la détection de singularité.
   La découpe du pas de temps en cas d'erreur (pivot nul) n'est donc pas possible.
-"""),
-
-50 : _(u"""
-  Déclenchement de l'événement <%(k1)s>
-"""),
-
-51 : _(u"""
-  Traitement de l'action pour l'événement <%(k1)s>
 """),
 
 86 : _(u"""

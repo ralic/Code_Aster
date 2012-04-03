@@ -1,8 +1,8 @@
-#@ MODIF extrapolation Messages  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF extrapolation Messages  DATE 02/04/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -24,25 +24,25 @@
 cata_msg={
 
 1: _(u"""
-    On tente une extrapolation linéaire sur les résidus.
+          On tente une extrapolation linéaire sur les résidus.
 """),
 
 2: _(u"""
-    L'extrapolation sur les résidus n'est pas possible.
-    On utilise un autre résidu que RESI_GLOB_RELA ou RESI_GLOB_MAXI pour l'évaluation de la convergence.
-    Ce n'est pas prévu.
+          L'extrapolation sur les résidus n'est pas possible.
+          On utilise un autre résidu que RESI_GLOB_RELA ou RESI_GLOB_MAXI pour l'évaluation de la convergence.
+          Ce n'est pas prévu.
 """),
 
 3: _(u"""
-    L'extrapolation sur les résidus n'est pas possible car il n'y a pas assez de valeurs pour la faire.
+          L'extrapolation sur les résidus n'est pas possible car il n'y a pas assez de valeurs pour la faire.
 """),
 
 10: _(u"""
-    L'extrapolation sur les résidus a échoué.
+          L'extrapolation sur les résidus a échoué.
 """),
 
 11: _(u"""
-    L'extrapolation sur les résidus a réussi.
+          L'extrapolation sur les résidus a réussi.
 """),
 
 }

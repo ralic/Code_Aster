@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 03/04/2012   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 # RESPONSABLE LEFEBVRE J.P.LEFEBVRE
 DEBUT=MACRO(nom="DEBUT",
-            op=OPS("ops.build_debut"),
+            op=OPS("Cata.ops.build_debut"),
             repetable='n',
             UIinfo={"groupes":("Gestion du travail",)},
             fr="Ouverture d'une étude. Allocation des ressources mémoire et disque et fichiers",

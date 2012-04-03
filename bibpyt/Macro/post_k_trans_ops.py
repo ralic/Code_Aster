@@ -1,4 +1,4 @@
-#@ MODIF post_k_trans_ops Macro  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF post_k_trans_ops Macro  DATE 02/04/2012   AUTEUR TRAN V-X.TRAN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,8 +18,8 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-def post_k_trans_ops(self,RESU_TRANS,K_MODAL,TOUT_ORDRE, NUME_ORDRE, LIST_ORDRE, 
-                 INST, LIST_INST,INFO,**args):          
+def post_k_trans_ops(self,RESU_TRANS,MODELISATION, K_MODAL,TOUT_ORDRE, NUME_ORDRE,  
+                 LIST_ORDRE, INST, LIST_INST,INFO,**args):          
   """
      Ecriture de la macro post_k_trans
   """
@@ -42,13 +42,25 @@ def post_k_trans_ops(self,RESU_TRANS,K_MODAL,TOUT_ORDRE, NUME_ORDRE, LIST_ORDRE,
   # La macro compte pour 1 dans la numerotation des commandes
   self.set_icmd(1)
   
-  # Le concept sortant (de type table_sdaster ou derive) est tab
+  # Le concept sortant (de type table_sdaster ou dérivé) est tab
   self.DeclareOut('tabout', self.sd)
 
 #------------------------------------------------------------------
   TABK = K_MODAL['TABL_K_MODA']
+  
+  if MODELISATION=='3D':
+      DIME = 3
+  else :
+      DIME = 2
   F2D = K_MODAL['FOND_FISS']
-  F3D = K_MODAL['FISSURE']
+  F3D = []
+  if DIME == 3 :
+    F3D = K_MODAL['FISSURE']
+  
+  F2Db = []
+  if DIME == 2 :  
+    F2Db = K_MODAL['FISSURE']
+  
 #
 # Calcul du tableau des K modaux
 #
@@ -63,7 +75,10 @@ def post_k_trans_ops(self,RESU_TRANS,K_MODAL,TOUT_ORDRE, NUME_ORDRE, LIST_ORDRE,
     mcthet = {}
     if F2D != None :    mcthet['FOND_FISS'] = F2D
     if thet != None :   mcthet['THETA'] = thet
-    if F3D != None :   mcthet['FISSURE'] = F3D
+    if F3D != None :   
+      if DIME == 3: mcthet['FISSURE'] = F3D
+    if F2Db != None :   
+      if DIME == 2: mcthet['FISSURE'] = F2Db       
     if K_MODAL['DIRECTION']!=None :  mcthet['DIRECTION'] = K_MODAL['DIRECTION']
     if K_MODAL['DIRE_THETA']!=None: mcthet['DIRE_THETA'] = K_MODAL['DIRE_THETA']
     if K_MODAL['R_SUP']!=None : mcthet['R_SUP'] = K_MODAL['R_SUP']
@@ -85,7 +100,7 @@ def post_k_trans_ops(self,RESU_TRANS,K_MODAL,TOUT_ORDRE, NUME_ORDRE, LIST_ORDRE,
         else :
            motscles2['LISSAGE'].append(_F(LISSAGE_G =K_MODAL['LISSAGE_G'],
                         LISSAGE_THETA =K_MODAL['LISSAGE_THETA'], ))
-
+    
     __kgtheta = CALC_G(       RESULTAT   = resumod,
                             OPTION = 'K_G_MODA',
                             TOUT_MODE = 'OUI',
@@ -99,11 +114,13 @@ def post_k_trans_ops(self,RESU_TRANS,K_MODAL,TOUT_ORDRE, NUME_ORDRE, LIST_ORDRE,
 # Recuperation du tableau des K modaux
 #
   else :
-    __kgtheta=TABK
     
+    __kgtheta=TABK
+  
+   
 #-----------------------------------------
 #  
-# Verification de coherence sur le nombre de modes
+# Verification de cohérence sur le nombre de modes
 #  
 # RESULTAT TRANSITOIRE
   nomresu=RESU_TRANS.nom
@@ -113,17 +130,19 @@ def post_k_trans_ops(self,RESU_TRANS,K_MODAL,TOUT_ORDRE, NUME_ORDRE, LIST_ORDRE,
   if F2D : 
     n_mode = len((__kgtheta.EXTR_TABLE())['K1'])
     nbno = 1
+  if F2Db : 
+    n_mode = len((__kgtheta.EXTR_TABLE())['K1'])
+    nbno = 1
   if F3D : 
     n_mode = max((__kgtheta.EXTR_TABLE())['NUME_MODE'].values()['NUME_MODE'])
     nbno = max((__kgtheta.EXTR_TABLE())['NUM_PT'].values()['NUM_PT'])
     labsc = (__kgtheta.EXTR_TABLE())['ABSC_CURV'].values()['ABSC_CURV'][0:nbno]
-      
   if nmodtr != n_mode : 
       n_mode = min(nmodtr,n_mode)
       UTMESS('A','RUPTURE0_50',valk=nomresu,vali=n_mode)
-
+ 
 #  
-# Traitement des mots clefs ORDRE/INST/LIST_INST et LIST_ORDRE
+# Traitement des mots clés ORDRE/INST/LIST_INST et LIST_ORDRE
 #  
   l0_inst = aster.getvectjev(nomresu.ljust(19)+'.INST')
   l0_ord = aster.getvectjev(nomresu.ljust(19)+'.ORDR')
@@ -217,6 +236,12 @@ def post_k_trans_ops(self,RESU_TRANS,K_MODAL,TOUT_ORDRE, NUME_ORDRE, LIST_ORDRE,
   v = aster.__version__
   titre = 'ASTER %s - CONCEPT CALCULE PAR POST_K_TRANS LE &DATE A &HEURE \n'%v
   if F2D :
+    tabout = CREA_TABLE(LISTE = (_F(LISTE_I =l_ord, PARA = 'NUME_ORDRE'),
+                           _F(LISTE_R =l_inst, PARA = 'INST'),
+                           _F(LISTE_R =K1t, PARA = k1),
+                           _F(LISTE_R =K2t, PARA = k2),),
+                        TITRE = titre,  );
+  if F2Db :
     tabout = CREA_TABLE(LISTE = (_F(LISTE_I =l_ord, PARA = 'NUME_ORDRE'),
                            _F(LISTE_R =l_inst, PARA = 'INST'),
                            _F(LISTE_R =K1t, PARA = k1),

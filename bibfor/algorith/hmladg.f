@@ -8,9 +8,9 @@
      +                  RHO11,PHI0,SAT,RETCOM,THMC,BIOT,RINSTP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/10/2011   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 02/04/2012   AUTEUR GRANET S.GRANET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -104,7 +104,7 @@ C =====================================================================
      +             RBID27, RBID28, RBID29, MAMOLG, CP21, RBID32,
      +             RBID33, RBID34, RBID35, RBID36, RBID37,RBID38,
      +             RBID39, RBID45, RBID46, CP22,   KH,    RBID49,
-     >             EM,RBID50,R3BID,RBID51,RINSTP)
+     >             EM,RBID50,R3BID,RBID51,RINSTP,RETCOM)
 C ======================================================================
 C --- INITIALISATIONS --------------------------------------------------
 C ======================================================================

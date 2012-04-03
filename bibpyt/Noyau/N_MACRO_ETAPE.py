@@ -1,9 +1,9 @@
-#@ MODIF N_MACRO_ETAPE Noyau  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_MACRO_ETAPE Noyau  DATE 03/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -636,11 +636,14 @@ Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co
       """
       # Le contexte global est forme par concatenation du contexte
       # du parent de self et de celui de l'etape elle meme (self)
-      d=self.parent.get_global_contexte()
-      d.update(self.g_context)
-      # en PAR_LOT='OUI', les concepts n'étant pas dans jdc.g_context,
-      # on demande au parent le contexte courant.
-      d.update(self.parent.get_contexte_avant(self))
+      # Pour les concepts, cela ne doit rien changer. Mais pour les constantes,
+      # les valeurs de get_contexte_avant sont moins récentes que dans
+      # get_global_contexte. On prend donc la précaution de ne pas écraser
+      # ce qui y est déjà.
+      d = self.parent.get_global_contexte()
+      d.update( self.g_context )
+      d.update( [(k, v) for k, v in self.parent.get_contexte_avant(self).items()
+                        if d.get(k) is None] )
       return d
 
    def get_contexte_courant(self, etape_fille_du_jdc=None):

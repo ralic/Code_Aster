@@ -1,8 +1,8 @@
       SUBROUTINE TE0490(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 02/04/2012   AUTEUR BARGELLI R.BARGELLINI 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -56,17 +56,24 @@ C            .V         EST LE VOLUME DU GROUPE DE MAILLES TRAITE
 C
 C -----------------------------------------------------------------
 C
+C -----------------------------------------------------------------
+
 C  OPTION ENER_ELAS : CALCUL DE L'ENERGIE DE DEFORMATION ELASTIQUE
 C  ================   DETERMINEE PAR L'EXPRESSION SUIVANTE :
-C
-C  EN HPP :
+
+C  EN HPP
 C   ENELAS =  SOMME_VOLUME((SIG_T*(1/D)*SIG).DV)
 C
-C        OU  .SIG       EST LE TENSEUR DES CONTRAINTES
+C        OU  .SIG       EST LE TENSEUR DES CONTRAINTES DE CAUCHY
 C            .D         EST LE TENSEUR DE HOOKE
 C
-C EN GRANDES DEFORMATIONS SIMO MIEHE POUR ELAS OU VMIS_ISOT
-C   ENERLAS = ENERGIE LIBRE VOIR NOTE HI-74/98/006/0
+C  EN GRANDES DEFORMATIONS SIMO MIEHE POUR ELAS OU VMIS_ISOT
+C   ENERLAS = ENERGIE ELASTIQUE SPECIFIQUE 
+C           = K(0.5(J^2-1)-lnJ)+0.5mu(tr(J^(-2/3)be)-3)
+C  EN GRANDES DEFORMATIONS GDEF_LOG
+C   ENERELAS = SOMME_VOLUME((T_T*(1/D)*T).DV) 
+C        OU  .T       EST LE TENSEUR DES CONTRAINTES DU FORMALISME
+C            .D         EST LE TENSEUR DE HOOKE
 C -----------------------------------------------------------------
 C
 C  OPTION ENER_TOTALE : CALCUL DE L'ENERGIE DE DEFORMATION TOTALE
@@ -119,13 +126,13 @@ C
       REAL*8             EPSIM(NBSGM),DELTA(NBSGM),SIGMM(NBSGM)
       REAL*8             EPSI(NBSGM),EPSSM(MXCMEL),EPSS(MXCMEL)
       REAL*8             REPERE(7), INSTAN, NHARM,INTEG,INTEG1
-      REAL*8             EPSM(MXCMEL),INTEG2
+      REAL*8             EPSM(MXCMEL),INTEG2, BE(6)
       REAL*8             NU, K, INDIGL,XYZ(3),RESU
       INTEGER            NBSIGM, IRET,IDIM
       REAL*8             F(3,3),R,EPS(6)
       LOGICAL            GRAND, AXI
       REAL*8             MU,TROISK,JAC,TAU(6),TRTAU,EQTAU,DVTAU(6)
-      REAL*8             JE2,JE3,Q,D,SOL,TRBE
+      REAL*8             JE2,JE3,Q,D,SOL,TRBE,TLOG(6)
       INTEGER            I,JTAB(7)
       REAL*8             KR(6),PDTSCA(6), TRAV(81), RBID
       LOGICAL            LTEATT
@@ -345,7 +352,6 @@ C --- CALCUL DU JACOBIEN AU POINT D'INTEGRATION COURANT :
 
 
 C --- CALCUL DE L'ENERGIE ELASTIQUE AU POINT D'INTEGRATION COURANT
-
 C --- CAS EN GRANDES DEFORMATIONS SIMO_MIEHE
 
         IF ( (ZK16(IDCOMP+2)(1:10).EQ.'SIMO_MIEHE').AND.
@@ -357,7 +363,6 @@ C --- CAS EN GRANDES DEFORMATIONS SIMO_MIEHE
          JAC=F(1,1)*(F(2,2)*F(3,3)-F(2,3)*F(3,2))
      &     -F(2,1)*(F(1,2)*F(3,3)-F(1,3)*F(3,2))
      &     +F(3,1)*(F(1,2)*F(2,3)-F(1,3)*F(2,2))
-
 C --- CALCUL DE TAU TEL QUE TAU=JAC*SIGMA
 
          TAU(5)=0.D0
@@ -379,22 +384,50 @@ C --- CALCUL DE LA TRACE DE TAU- TAU EQUIVALENT ET TAU DEVIATORIQUE
 
 C --- CALCUL DE LA TRACE DES DEFORMATIONS ELASTIQUES BE
 
-         JE2=(EQTAU**2.D0)/(2.D0*(MU**2.D0))
-         JE3=DVTAU(1)*(DVTAU(2)*DVTAU(3)-DVTAU(6)*DVTAU(6))
-     &     -DVTAU(4)*(DVTAU(4)*DVTAU(3)-DVTAU(5)*DVTAU(6))
-     &     +DVTAU(5)*(DVTAU(4)*DVTAU(6)-DVTAU(5)*DVTAU(2))
-         JE3=JE3/(MU**3.D0)
-         Q=(1.D0-JE3)/2.D0
-         D=(Q**2.D0)-((JE2**3.D0)/27.D0)
-         SOL=((Q+(D**(1.D0/2.D0)))**(1.D0/3.D0))
-     &   +((Q-(D**(1.D0/2.D0)))**(1.D0/3.D0))
+         CALL DCOPY(6,ZR(IDVARI+(IGAU-1)*NBVARI+1),1,BE,1)
+         TRBE=BE(1)+BE(2)+BE(3)
+         TRBE=JAC**(-2.D0/3.D0)*(3.D0-2.D0*TRBE)
+         
+C --- ATTENTION, EN PRESENCE DE THERMIQUE, CA MET LE BAZARD...          
+         IF (EPSTHE.NE.0) CALL U2MESS('F','POSTELEM_5')         
+         ENELAS = TROISK* (JAC*JAC/2.D0-1.D0/2.D0-LOG(JAC))/
+     &               3.D0 + MU* (TRBE-3.D0)/2.D0
 
-         TRBE = 3.0D0*SOL
+C --- CAS EN GRANDES DEFORMATIONS GDEF_LOG
 
-         ENELAS = -TROISK*EPSTHE*(JAC-1.D0/JAC)/2.D0
-     &           +TROISK*(JAC*JAC/2.D0-1.D0/2.D0-LOG(JAC))/6.D0
-     &           +MU*(TRBE-3.D0)/2.D0
+          ELSEIF ((ZK16(IDCOMP+2) (1:8).EQ.'GDEF_LOG')) THEN
 
+            MU = E/ (2.D0* (1.D0+NU))
+            TROISK = E/ (1.D0-2.D0*NU)
+
+            JAC = F(1,1)* (F(2,2)*F(3,3)-F(2,3)*F(3,2)) -
+     &            F(2,1)* (F(1,2)*F(3,3)-F(1,3)*F(3,2)) +
+     &            F(3,1)* (F(1,2)*F(2,3)-F(1,3)*F(2,2))
+
+                      
+            C1 = (UN+NU)/E
+            C2 = NU/E
+                        
+            CALL DCOPY(6,ZR(IDVARI+(IGAU-1)*NBVARI+NBVARI-6),1,TLOG,1)
+            
+C --- CAS DES CONTRAINTES PLANES :            
+            IF (LTEATT(' ','C_PLAN','OUI')) THEN
+               TRT=TLOG(1)+TLOG(2)
+            
+               ENELAS = UNDEMI*
+     &            (TLOG(1)*(C1*TLOG(1)-C2*TRT)
+     &           + TLOG(2)*(C1*TLOG(2)-C2*TRT)
+     &           + DEUX*TLOG(4)*C1*TLOG(4))
+C --- CAS AXI ET DEFORMATIONS PLANES :
+            ELSE
+               TRT=TLOG(1)+TLOG(2)+TLOG(3)
+         
+                ENELAS = UNDEMI
+     &          *(TLOG(1)*(C1*TLOG(1)-C2*TRT)
+     &          +TLOG(2)*(C1*TLOG(2)-C2*TRT)
+     &          +TLOG(3)*(C1*TLOG(3)-C2*TRT)
+     &          +DEUX*TLOG(4)*C1*TLOG(4))
+            ENDIF              
 C --- EN HPP SI ON CONSIDERE LE MATERIAU ISOTROPE
 C --- E_ELAS = 1/2*SIGMA*1/D*SIGMA :
 
