@@ -1,4 +1,4 @@
-# MODIF  DATE 20/03/2012   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 11/04/2012   AUTEUR LADIER A.LADIER 
 # TITRE  FISSURE CIRCULAIRE EN MODE MIXTE
 # sslv154a.para = tps_job 120 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -104,10 +104,7 @@ MA=DEFI_GROUP(reuse =MA,
                                GROUP_NO_EXTR='NFF2',),);
 
 FISS=DEFI_FOND_FISS(MAILLAGE=MA,
-                    FOND_FISS=_F(GROUP_NO='NFF3',
-                                 DTAN_ORIG=( 1.,0.,0.,),
-                                 DTAN_EXTR=(-1.,0.,0.,),
-                               ),
+                    FOND_FISS=_F(GROUP_NO='NFF3',),
                     LEVRE_SUP=_F(GROUP_MA='LEVSUP',),
                     LEVRE_INF=_F(GROUP_MA='LEVINF',),
                     );
@@ -234,7 +231,7 @@ TEST_TABLE(TABLE=PK,
            NOM_PARA='K2',
            VALE=k2ref_0,
            CRITERE='RELATIF',
-           PRECISION=0.07,
+           PRECISION=0.05,
            REFERENCE='ANALYTIQUE')
 
 # test de KIII au milieu du fond (angle = 90 avec + ou -0.5 degre)
@@ -248,7 +245,7 @@ TEST_TABLE(TABLE=PK,
            NOM_PARA='K3',
            VALE=-k3ref_90,
            CRITERE='RELATIF',
-           PRECISION=0.07,
+           PRECISION=0.05,
            REFERENCE='ANALYTIQUE')
             
 

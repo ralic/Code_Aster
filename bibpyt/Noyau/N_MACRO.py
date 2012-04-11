@@ -1,9 +1,9 @@
-#@ MODIF N_MACRO Noyau  DATE 30/08/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_MACRO Noyau  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -31,8 +31,8 @@ import types,string,traceback
 
 import N_ENTITE
 import N_MACRO_ETAPE
-import N_OPS
 import nommage
+from strfunc import ufmt
 
 class MACRO(N_ENTITE.ENTITE):
    """
@@ -167,20 +167,13 @@ class MACRO(N_ENTITE.ENTITE):
       """
           Méthode de vérification des attributs de définition
       """
-      if self.op is not None and (type(self.op) != types.IntType or self.op > 0) :
-        self.cr.fatal("L'attribut 'op' doit etre un entier signé : %s" %`self.op`)
-      if self.proc is not None and not isinstance(self.proc, N_OPS.OPS):
-        self.cr.fatal("L'attribut op doit etre une instance d'OPS : %s" % `self.proc`)
-      if type(self.regles) != types.TupleType :
-        self.cr.fatal("L'attribut 'regles' doit etre un tuple : %s" %`self.regles`)
-      if type(self.fr) != types.StringType :
-        self.cr.fatal("L'attribut 'fr' doit etre une chaine de caractères : %s" %`self.fr`)
-      if type(self.docu) != types.StringType :
-        self.cr.fatal("L'attribut 'docu' doit etre une chaine de caractères : %s" %`self.docu` )
-      if type(self.nom) != types.StringType :
-        self.cr.fatal("L'attribut 'nom' doit etre une chaine de caractères : %s" %`self.nom`)
-      if self.reentrant not in ('o','n','f'):
-        self.cr.fatal("L'attribut 'reentrant' doit valoir 'o','n' ou 'f' : %s" %`self.reentrant`)
+      self.check_op(valmax=0)
+      self.check_proc()
+      self.check_regles()
+      self.check_fr()
+      self.check_docu()
+      self.check_nom()
+      self.check_reentrant()
       self.verif_cata_regles()
 
    def supprime(self):

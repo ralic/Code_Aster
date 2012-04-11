@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 10/04/2012   AUTEUR KAZYMYRE K.KAZYMYRENKO 
 # TITRE LOI ENDO_ORTHO_BETON NON LOCALE A DEFO REGULARISEES SUR BARREAU 2D DPLAN
 # ssnp127b.para = tps_job 180 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -109,7 +109,7 @@ EVOL1=STAT_NON_LINE(reuse=EVOL1,
                                  GROUP_MA = ('GMA10',),
                                  ETA_PILO_R_MIN=0.,
                                  ETA_PILO_MIN=0.4,
-                                 ETA_PILO_MAX=100.,),
+                                 ETA_PILO_R_MAX=100.,),
                        );
 
 TEST_RESU(RESU=(  _F(

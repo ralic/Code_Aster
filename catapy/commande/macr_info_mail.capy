@@ -1,8 +1,8 @@
-#& MODIF COMMANDE  DATE 07/11/2011   AUTEUR NICOLAS G.NICOLAS 
+#& MODIF COMMANDE  DATE 11/04/2012   AUTEUR NICOLAS G.NICOLAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,8 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE GNICOLAS G.NICOLAS
-
-
+#
 MACR_INFO_MAIL=MACRO(nom="MACR_INFO_MAIL",
                      op=OPS('Macro.macr_adap_mail_ops.macr_adap_mail_ops'),
                      docu="U7.03.02",UIinfo={"groupes":("Maillage",)},
@@ -30,27 +29,13 @@ MACR_INFO_MAIL=MACRO(nom="MACR_INFO_MAIL",
 #
   INFO = SIMP(statut='f',typ='I',defaut=1,into=(1,2,3,4)),
 #
-# 2. Version de HOMARD
-#
-  VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V10_3",
-                        into=("V10_3", "V10_N", "V10_N_PERSO"),
-                        fr="Version de HOMARD",
-                        ang="HOMARD release"),
-#
-# 3. Langue des messages issus de HOMARD
-#
-  LANGUE = SIMP(statut='f',typ='TXM',defaut="FRANCAIS",
-                into=("FRANCAIS","FRENCH","ANGLAIS","ENGLISH",),
-                fr="Langue des messages issus de HOMARD.",
-                ang="Language for HOMARD messages." ),
-#
-# 4. Le nom du maillage a analyser
+# 2. Le nom du maillage a analyser
 #
   MAILLAGE = SIMP(statut='o',typ=maillage_sdaster,
                   fr="Maillage à analyser.",
                   ang="Mesh to be checked." ),
 #
-# 5. Suivi d'une frontiere
+# 3. Suivi d'une frontiere
 #
   MAILLAGE_FRONTIERE = SIMP(statut='f',typ=maillage_sdaster,
                            fr="Maillage de la frontiere à suivre",
@@ -66,44 +51,79 @@ MACR_INFO_MAIL=MACRO(nom="MACR_INFO_MAIL",
 #
                     ) ,
 #
-# 6. Les options ; par defaut, on controle tout, sauf l'interpénétration
-# 6.1. Nombre de noeuds et mailles
+# 4. Les options ; par defaut, on controle tout, sauf l'interpénétration
+# 4.1. Nombre de noeuds et mailles
 #
   NOMBRE         = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON"),
                         fr="Nombre de noeuds et de mailles du maillage",
                         ang="Number of nodes and meshes in the mesh" ),
 #
-# 6.2. Determination de la qualite des mailles du maillage
+# 4.2. Determination de la qualite des mailles du maillage
 #
   QUALITE        = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON"),
                         fr="Qualité du maillage",
                         ang="Quality of the mesh" ),
 #
-# 6.3. Connexite du maillage
+# 4.3. Connexite du maillage
 #
   CONNEXITE      = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON"),
                         fr="Connexité du maillage.",
                         ang="Connexity of the mesh." ),
 #
-# 6.4. Taille des sous-domaines du maillage
+# 4.4. Taille des sous-domaines du maillage
 #
   TAILLE         = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON"),
                         fr="Tailles des sous-domaines du maillage.",
                         ang="Sizes of mesh sub-domains." ),
 #
-# 6.5. Controle de la non-interpénétration des mailles
+# 4.5. Controle de la non-interpénétration des mailles
 #
   INTERPENETRATION=SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
                         fr="Controle de la non interpénétration des mailles.",
                         ang="Overlapping checking." ),
 #
-# 6.6. Propriétés du maillage de calcul
+# 4.6. Propriétés du maillage de calcul
 #
   PROP_CALCUL    = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON"),
                         fr="Propriétés du maillage de calcul.",
                         ang="Properties of the calculation mesh." ),
 #
-# 7. Unite logique d'un fichier à ajouter a HOMARD.Configuration
+# 4.7. Determination des diametres des mailles du maillage
+#
+  DIAMETRE       = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON"),
+                        fr="Diamètre du maillage",
+                        ang="Diameters of the mesh" ),
+#
+# 5. Les options avancées
+# 5.1. Langue des messages issus de HOMARD
+#
+  LANGUE = SIMP(statut='f',typ='TXM',defaut="FRANCAIS",
+                into=("FRANCAIS","FRENCH","ANGLAIS","ENGLISH",),
+                fr="Langue des messages issus de HOMARD.",
+                ang="Language for HOMARD messages." ),
+#
+# 5.2. Gestion des mailles autres que celles compatibles avec HOMARD
+#       "REFUSER" : elles sont refusées (defaut)
+#       "IGNORER" : elles sont ignorées
+#
+  ELEMENTS_NON_HOMARD = SIMP(statut='f',typ='TXM',defaut="REFUSER",into=("REFUSER","IGNORER"),
+                             fr="Acceptation de mailles incompatibles avec HOMARD",
+                             ang="Incompatible meshes for HOMARD" ),
+#
+# 5.3. Version de HOMARD
+#
+  VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V10_4",
+                        into=("V10_4", "V10_N", "V10_N_PERSO"),
+                        fr="Version de HOMARD",
+                        ang="HOMARD release"),
+#
+# 5.4. Exécutable pilotant HOMARD
+#
+  LOGICIEL = SIMP(statut='f',typ='TXM',
+                  fr="Logiciel pilotant HOMARD",
+                  ang="HOMARD software"),
+#
+# 5.5. Unite logique d'un fichier à ajouter a HOMARD.Configuration
 #
   b_unite = BLOC( condition = " (VERSION_HOMARD == 'V10_N') or \
                                 (VERSION_HOMARD == 'V10_N_PERSO') " ,
@@ -116,12 +136,5 @@ MACR_INFO_MAIL=MACRO(nom="MACR_INFO_MAIL",
 #
   ) ,
 #
-# 8. Gestion des mailles autres que celles compatibles avec HOMARD
-#       "REFUSER" : elles sont refusées (defaut)
-#       "IGNORER" : elles sont ignorées
-#
-  ELEMENTS_NON_HOMARD = SIMP(statut='f',typ='TXM',defaut="REFUSER",into=("REFUSER","IGNORER"),
-                             fr="Acceptation de mailles incompatibles avec HOMARD",
-                             ang="Incompatible meshes for HOMARD" ),
 )  ;
 

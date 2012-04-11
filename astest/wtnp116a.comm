@@ -1,5 +1,5 @@
 
-# MODIF  DATE 21/02/2012   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 10/04/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE HYDRO-MECANIQUE PERMANENT ET INDICATEUR D'ERREUR
 # wtnp116a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -213,10 +213,10 @@ RESU_00=CALC_ERREUR(reuse =RESU_00,
 #
 # 3.5.2. Transfert sur les noeuds
 
-RESU_00=CALC_NO(reuse =RESU_00,
-                RESULTAT=RESU_00,
-                INST=400000.0,
-                OPTION='ERME_NOEU',);
+RESU_00=CALC_ERREUR(reuse =RESU_00,
+                    RESULTAT=RESU_00,
+                    INST=400000.0,
+                    OPTION='ERME_NOEU',);
 #
 # 4. Tests par rapport aux valeurs de reference
 
@@ -392,10 +392,10 @@ RESU_01=CALC_ERREUR(reuse =RESU_01,
 #
 # 7.5.2. Transfert sur les noeuds
 
-RESU_01=CALC_NO(reuse =RESU_01,
-                RESULTAT=RESU_01,
-                INST=400000.0,
-                OPTION='ERME_NOEU',);
+RESU_01=CALC_ERREUR(reuse =RESU_01,
+                    RESULTAT=RESU_01,
+                    INST=400000.0,
+                    OPTION='ERME_NOEU',);
 #
 # 8. Tests par rapport aux valeurs de reference
 

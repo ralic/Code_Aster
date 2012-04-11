@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 10/04/2012   AUTEUR DELMAS J.DELMAS 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE INDICATEUR D'ERREUR MAILLES VOLUMIQUES ET FONCTIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -129,9 +129,9 @@ SOLUPR=CALC_ELEM(reuse =SOLUPR,
 
 );
 
-SOLUPR=CALC_NO(reuse =SOLUPR,
-               RESULTAT=SOLUPR,
-               OPTION='ERME_NOEU',);
+SOLUPR=CALC_ERREUR(reuse =SOLUPR,
+                   RESULTAT=SOLUPR,
+                   OPTION='ERME_NOEU',);
 
 # B.2.2. Erreur en quantite d'interet
 # B.2.2.1. Chargement dual
@@ -177,20 +177,16 @@ SOLUDU=CALC_ELEM(reuse =SOLUDU,
 
 );
 
-SOLUDU=CALC_NO(reuse =SOLUDU,
-               RESULTAT=SOLUDU,
-               OPTION='ERME_NOEU',);
+SOLUDU=CALC_ERREUR(reuse =SOLUDU,
+                   RESULTAT=SOLUDU,
+                   OPTION='ERME_NOEU',);
 
 # B.3. Calcul de l'estimateur d'erreur en quantite d'interet
 
-SOLUPR=CALC_ELEM(reuse =SOLUPR,
-                 RESULTAT=SOLUPR,
-                 OPTION=('QIRE_ELEM','QIRE_ELNO',),
-                 RESU_DUAL=SOLUDU,);
-
-SOLUPR=CALC_NO(reuse =SOLUPR,
-               RESULTAT=SOLUPR,
-               OPTION='QIRE_NOEU',);
+SOLUPR=CALC_ERREUR(reuse =SOLUPR,
+                   RESULTAT=SOLUPR,
+                   OPTION='QIRE_NOEU',
+                   RESU_DUAL=SOLUDU,);
 
 # B.4. Test de non regression
 
@@ -301,13 +297,7 @@ SOLUPR=CALC_ELEM(reuse =SOLUPR,
 
 SOLUPR=CALC_ERREUR(reuse =SOLUPR,
                    RESULTAT=SOLUPR,
-                   OPTION=('ERME_ELEM','ERME_ELNO',),
-
-);
-
-SOLUPR=CALC_NO(reuse =SOLUPR,
-               RESULTAT=SOLUPR,
-               OPTION='ERME_NOEU',);
+                   OPTION='ERME_NOEU',);
 
 # C.2.2. Erreur en quantite d'interet
 # C.2.2.1. Chargement dual
@@ -352,20 +342,16 @@ SOLUDU=CALC_ERREUR(reuse =SOLUDU,
 
 );
 
-SOLUDU=CALC_NO(reuse =SOLUDU,
-               RESULTAT=SOLUDU,
-               OPTION='ERME_NOEU',);
+SOLUDU=CALC_ERREUR(reuse =SOLUDU,
+                   RESULTAT=SOLUDU,
+                   OPTION='ERME_NOEU',);
 
 # C.3. Calcul de l'estimateur d'erreur en quantite d'interet
 
 SOLUPR=CALC_ERREUR(reuse =SOLUPR,
                    RESULTAT=SOLUPR,
-                   OPTION=('QIRE_ELEM','QIRE_ELNO',),
+                   OPTION=('QIRE_ELEM','QIRE_ELNO','QIRE_NOEU',),
                    RESU_DUAL=SOLUDU,);
-
-SOLUPR=CALC_NO(reuse =SOLUPR,
-               RESULTAT=SOLUPR,
-               OPTION='QIRE_NOEU',);
 
 # C.4. Test de non regression
 

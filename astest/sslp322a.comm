@@ -1,9 +1,9 @@
-# MODIF  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
+# MODIF  DATE 10/04/2012   AUTEUR GENIAUT S.GENIAUT 
 # TITRE PROPAGATION D'UNE FISSURE X-FEM DANS UNE PLAQUE EN FLEXION 3 POINTS AVEC 3 TROUS
 # sslp322a.para = tps_job 800 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -23,22 +23,24 @@
 
 DEBUT(CODE=_F(NOM='SSLP322A', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
 
-PRE_GMSH();
+PRE_GMSH()
 
 #----------------------------------------------
 #                 MAILLAGE
 #----------------------------------------------
-MAILLAG1=LIRE_MAILLAGE();
+
+MA_INI=LIRE_MAILLAGE()
 
 #Nb de pas de propagation
-NPAS = 40
+NPAS = 35
 
 #Pas de propagation
 DA = 0.1 
 
 # RAYONS INFERIEUR ET SUPERIEUR DES COURONNES D'INTEGRATION POUR CALC_G
-RI = 0.1 
-RS = 0.2 
+# RQ : ce choix n'est pas optimal car on se rapproche des trous a une distance de moins de 0.1
+RI = 0.1
+RS = 0.2
 
 #longueur de fissure initiale
 xinit = 5. 
@@ -47,20 +49,23 @@ yinit = 1.5
 #----------------------------------------------
 #                   MODELE
 #----------------------------------------------
-MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
-                    MAILLAGE=MAILLAG1,
-                    CREA_GROUP_NO=(_F(NOM='P1',GROUP_NO='GM2',),
-                                    _F(NOM='P2',GROUP_NO='GM3'),
-                                    _F(NOM='P3',GROUP_NO='GM4'),),
-                    CREA_GROUP_MA=(_F(NOM='Surface',GROUP_MA='GM1'),),);
+MA_INI=DEFI_GROUP(reuse =MA_INI,
+                  MAILLAGE=MA_INI,
+                  CREA_GROUP_NO=(_F(NOM='P1',GROUP_NO='GM2',),
+                                 _F(NOM='P2',GROUP_NO='GM3'),
+                                 _F(NOM='P3',GROUP_NO='GM4'),),
+                  CREA_GROUP_MA=(_F(NOM='Surface',GROUP_MA='GM1')))
                     
+IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(MAILLAGE=MA_INI))
+
 MODEL = [None]*(NPAS+1)
 MODE = [None]*(NPAS+1)
 MOD = [None]*(NPAS+1)
-MOD[0]=AFFE_MODELE(MAILLAGE=MAILLAG1,
-                      AFFE=(_F(GROUP_MA=('Surface',),
-                               PHENOMENE='MECANIQUE',
-                               MODELISATION='D_PLAN',),),);
+
+MOD[0]=AFFE_MODELE(MAILLAGE=MA_INI,
+                      AFFE=_F(GROUP_MA='Surface',
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='D_PLAN'))
 
 #----------------------------------------------
 #                   MATERIAU
@@ -69,165 +74,141 @@ MOD[0]=AFFE_MODELE(MAILLAGE=MAILLAG1,
 E=205000E6
 nu=0.3
 
-ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,),);
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu))
 
 #----------------------------------------------
 #                FISSURE INITIALE
 #----------------------------------------------
 
 FISS = [None]*(NPAS+2)
-MAT    = [None]*(NPAS+2)
-MAX    = [None]*(NPAS+2)
+MAT  = [None]*(NPAS+2)
+MAX  = [None]*(NPAS+2)
 MAX[0]=CO('MAX_0')
 MAT[0]=CO('MAT_0')
 
 # Initialisation
 PROPA_FISS(METHODE_PROPA='INITIALISATION',
-         MAIL_STRUC=MAILLAG1,
-         MAIL_FISS = MAX[0],
-         MAIL_TOTAL = MAT[0],
-         FORM_FISS='DEMI_DROITE',
-         INFO=2,
-         PFON = (xinit, yinit, 0.),
-         DTAN = (0., 1., 0.),
-         );
+           MAIL_STRUC=MA_INI,
+           MAIL_FISS = MAX[0],
+           MAIL_TOTAL = MAT[0],
+           FORM_FISS='DEMI_DROITE',
+           INFO=2,
+           PFON = (xinit, yinit, 0.),
+           DTAN = (0., 1., 0.),
+           )
 
-#----------------------------------------------
-#         PROPAGATION SUR 3 PAS DE TEMPS
-#----------------------------------------------
-
-CHXFE = [None]*(NPAS+1)
-RESU = [None]*(NPAS+1)
-RESV = [None]*(NPAS+1)
-SIF = [None]*(NPAS+1)
-LSN = [None]*(NPAS+1)
-LST = [None]*(NPAS+1)
+RESU  = [None]*(NPAS+1)
+RESV  = [None]*(NPAS+1)
+SIF   = [None]*(NPAS+1)
+LSN   = [None]*(NPAS+1)
+LST   = [None]*(NPAS+1)
 CHAMA = [None]*(NPAS+1)
 CHRIG = [None]*(NPAS+1)
 
-L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
-#K1ref                
-K1REF=[4.90334E-01 , 5.41640E-01 , 5.71159E-01 , 5.88275E-01 , 6.08267E-01 , 6.34446E-01 , 6.62529E-01 , 7.00625E-01 , 
-       7.24360E-01 , 7.61906E-01 , 7.98333E-01 , 8.43360E-01 , 8.50898E-01 , 9.18127E-01 , 9.41997E-01 , 9.11535E-01 , 
-       8.26790E-01 , 7.51207E-01 , 7.76455E-01 , 8.92135E-01 , 1.00055 ,     1.07243 ,     1.13317 , 1.19467 , 1.25416 , 
-       1.30160 , 1.38627 , 1.41962 , 1.51335 , 1.59619 , 1.68528 , 1.77266 , 1.80261 , 1.79629 , 1.57594 , 1.07025 , 
-       1.15541 , 1.70310 , 1.88524 , 2.04897 , 2.07763]
-#K2ref
-K2REF=[0.0721799 , -0.00788629 , 0.020395 , -0.00730899 , 0.0142656 , -0.00416308 , 0.0112357 , -0.00392016 , 0.0116545 , 
-       0.00541977 , 0.013873 , 0.0134975 , 0.0258931 , 0.0186766 , 0.0331647 , 0.0394655 , 0.0124498 , -0.0387776 , 
-      -0.065342 , -0.043764 , -0.00378366 , 0.00736243 , 0.00354359 , 0.00150953 , 0.0130222 , -0.00582469 , -0.0019916 ,
-       0.00321799 , -0.0135809 , -0.0180281 , -0.038018 , -0.0469986 , -0.0643632 , -0.131492 , -0.0726746 , 0.0724684 ,
-       0.206227 , 0.0251084 , 0.0361146 , -0.042545 , 0.0348514]
-  
+ 
 for i in range(NPAS+1) :
     
     MODEL[i]=AFFE_MODELE(MAILLAGE=MAT[i],
-                      AFFE=(_F(GROUP_MA=('Surface',),
-                               PHENOMENE='MECANIQUE',
-                               MODELISATION='D_PLAN',),
-                            ),);
+                      AFFE=_F(GROUP_MA='Surface',
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='D_PLAN')
+                            )
  
                                                                        
-    FISS[i]=DEFI_FISS_XFEM(DEFI_FISS=_F(GROUP_MA_FISS='FISS_'+str(i),
-                                    GROUP_MA_FOND='FOND_'+str(i),),
-                   MODELE=MODEL[i],                         
-            );               
+    FISS[i]=DEFI_FISS_XFEM(MODELE=MODEL[i],    
+                           DEFI_FISS=_F(GROUP_MA_FISS='FISS_'+str(i),
+                                        GROUP_MA_FOND='FOND_'+str(i))
+                           )              
                                              
-    MODE[i]=MODI_MODELE_XFEM(MODELE_IN=MODEL[i],FISSURE=FISS[i],);
-
-    CHXFE[i]=AFFE_CHAR_MECA(MODELE=MODE[i],LIAISON_XFEM='OUI',);
+    MODE[i]=MODI_MODELE_XFEM(MODELE_IN=MODEL[i],FISSURE=FISS[i])
 
     CHAMA[i]=AFFE_MATERIAU(MAILLAGE=MAT[i],
-                       MODELE=MODE[i],
-                       AFFE=_F(TOUT = 'OUI',
-                                MATER=ACIER,
-                                ),
-                             );
+                           MODELE=MODE[i],
+                           AFFE=_F(TOUT = 'OUI',
+                                   MATER=ACIER)
+                           )
                                                                       
     CHRIG[i]=AFFE_CHAR_MECA(MODELE=MODE[i],
-                      DDL_IMPO=( _F(GROUP_NO=('P1',), DX=0.0, DY=0.0),_F(GROUP_NO=('P2',), DY=0.0)),
-                      FORCE_NODALE=_F(GROUP_NO=('P3',),FY=-1.,),
-                                    );
+                            DDL_IMPO=(_F(GROUP_NO='P1',DX=0.,DY=0.),
+                                      _F(GROUP_NO='P2',DY=0.)),
+                            FORCE_NODALE=_F(GROUP_NO='P3',FY=-1.),
+                            )
 
     RESV[i]=MECA_STATIQUE(MODELE=MODE[i],
-                         CHAM_MATER=CHAMA[i],
-                         EXCIT=(_F(CHARGE=CHXFE[i],),
-                                _F(CHARGE=CHRIG[i],),),
-                         );
+                          CHAM_MATER=CHAMA[i],
+                          EXCIT=_F(CHARGE=CHRIG[i]))
        
-    SIF[i]=CALC_G        (RESULTAT=RESV[i],
-                         OPTION='CALC_K_G',
-                         THETA=_F( FISSURE=FISS[i],
-                                   R_INF=RI,
-                                   R_SUP=RS,),
-                         );
-
-    IMPR_TABLE(TABLE=SIF[i]);
-         
- #TEST DE KI PAR RAPPORT A KI MAILLAGE
-    TEST_TABLE(TABLE=SIF[i],
-               NOM_PARA='K1',
-               TYPE_TEST='MAX',
-               VALE=K1REF[i],
-               CRITERE='RELATIF',
-               PRECISION=0.015,
-               REFERENCE='NON_REGRESSION',);
-                              
-# TEST DE KII PAR RAPPORT A KII MAILLAGE
-    TEST_TABLE(TABLE=SIF[i],
-               NOM_PARA='K2',
-               TYPE_TEST='MAX',
-               VALE=K2REF[i],
-               CRITERE='ABSOLU',
-               PRECISION=3*(10**(-2)),
-               REFERENCE='AUTRE_ASTER',);
+    SIF[i]=CALC_G(RESULTAT=RESV[i],
+                  OPTION='CALC_K_G',
+                  THETA=_F(FISSURE=FISS[i],
+                           R_INF=RI,
+                           R_SUP=RS)
+                  )         
                
     if ( i != NPAS+1 ) :
         MAX[i+1]=CO('MAX_%d' %(i+1));
         MAT[i+1]=CO('MAT_%d'%(i+1));
         PROPA_FISS(METHODE_PROPA='MAILLAGE',
-            MAIL_STRUC=MAILLAG1,
-            MAIL_TOTAL = MAT[i+1],
-            ITERATION = i+1,
-            FISSURE=_F(MAIL_ACTUEL = MAX[i],
-                  MAIL_PROPAGE = MAX[i+1],
-                  FISS_ACTUELLE = FISS[i],
-                  TABLE = SIF[i],
-                  ),
-            DA_MAX=DA,
-            LOI_PROPA = _F(LOI='PARIS',
-                           M=1,N=1,C=1,
-                           MATER=ACIER,   ),
-            COMP_LINE=_F(COEF_MULT_MINI=0.,
-                         COEF_MULT_MAXI=1.,
-                        ),
-            );
+                   MAIL_STRUC=MA_INI,
+                   MAIL_TOTAL = MAT[i+1],
+                   ITERATION = i+1,
+                   FISSURE=_F(MAIL_ACTUEL = MAX[i],
+                              MAIL_PROPAGE = MAX[i+1],
+                              FISS_ACTUELLE = FISS[i],
+                              TABLE = SIF[i],
+                              ),
+                   DA_MAX=DA,
+                   LOI_PROPA = _F(LOI='PARIS',
+                                  M=1,N=1,C=1,
+                                  MATER=ACIER,   ),
+                   COMP_LINE=_F(COEF_MULT_MINI=0.,
+                                COEF_MULT_MAXI=1.,
+                               ),
+                   )
+                
+        IMPR_RESU(FORMAT='MED',UNITE=81,RESU=_F(MAILLAGE=MAX[i+1]))
 
 #----------------------------------------------
-#         EDITION DE FICHIERS MED
+#         VISU
 #----------------------------------------------
+
 for i in range(NPAS+1) :
+
     MAXFE = [None]*(NPAS+1)
     MOVIS = [None]*(NPAS+1)
-    DEPL = [None]*(NPAS+1)
-
+    DEPL  = [None]*(NPAS+1)
 
     MAXFE[i]=POST_MAIL_XFEM(MODELE=MODE[i]);
 
     MOVIS[i]=AFFE_MODELE(MAILLAGE=MAXFE[i],
                          AFFE=_F(TOUT='OUI',
                                  PHENOMENE='MECANIQUE',
-                                 MODELISATION='D_PLAN',),) 
+                                 MODELISATION='D_PLAN')) 
 
-    DEPL[i]=POST_CHAM_XFEM(
-                          MODELE_VISU   = MOVIS[i],
-                          RESULTAT=RESV[i],
-                          );
+    DEPL[i]=POST_CHAM_XFEM(MODELE_VISU=MOVIS[i],
+                           RESULTAT=RESV[i])
 
-    DEFI_FICHIER(UNITE=30,);
-    IMPR_RESU(   FORMAT='MED',
-             UNITE=30,
-             RESU=_F(RESULTAT=DEPL[i],),);
+    IMPR_RESU(FORMAT='MED',UNITE=82,RESU=_F(RESULTAT=DEPL[i]))
              
+
+# TEST DE KI ET KII AU DERNIER PAS
+# les valeurs de reference ont ete obtenues sur aster4 en NEW11.1.17
+TEST_TABLE(TABLE=SIF[NPAS],
+           NOM_PARA='K1',
+           TYPE_TEST='MAX',
+           VALE=1.1420451212627,
+           CRITERE='RELATIF',
+           PRECISION=1e-4,
+           REFERENCE='NON_REGRESSION')
+                          
+# TEST DE KII PAR RAPPORT A KII MAILLAGE
+TEST_TABLE(TABLE=SIF[NPAS],
+           NOM_PARA='K2',
+           TYPE_TEST='MAX',
+           VALE=-0.057066778149687,
+           CRITERE='RELATIF',
+           PRECISION=1e-4,
+           REFERENCE='NON_REGRESSION')
+
 
 FIN();

@@ -4,7 +4,7 @@
      &                  VTEMP,VHYDR,TMPCHI,TMPCHF,VEC2ND,VEC2NI,
      &                  MATASS,MAPREC,CNDIRP,CNCHCI,MEDIRI,COMPOR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 10/04/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -95,8 +95,11 @@ C 0.3. ==> VARIABLES LOCALES
      &             NIV
       COMPLEX*16   CBID
       CHARACTER*1  TYPRES
+      CHARACTER*2  CODRET
       CHARACTER*4  TYPCAL
       CHARACTER*8  K8BID,NOMCMP(6)
+      CHARACTER*14 COM
+      CHARACTER*19 CHVREF, CHVARC
       CHARACTER*16 K16BID, OPTION, NOMCMD
       CHARACTER*24 LIGRMO,MERIGI,MEMASS,MEDIRI,TLIMAT(3),BIDON,VEDIRI,
      &             VECHTP,VETNTP,VETNTI,VADIRP,VACHTP,VECHTN,VACHTN,
@@ -119,6 +122,7 @@ C ----------------------------------------------------------------------
 
       CALL JEMARQ()
       CALL INFNIV(IFM,NIV)
+      CHVARC = '&&NXACMV.CHVARC'
 
 C====
 C 1. PREALABLE
@@ -153,6 +157,9 @@ C ======================================================================
 C 1.      VECTEURS (CHARGEMENTS) CONTRIBUANT AU SECOND MEMBRE
 C            REACTUALISES AU DEBUT DE CHAQUE PAS DE TEMPS
 C ======================================================================
+
+C     VARIABLES DE COMMANDE
+      CALL VRCINS(MODELE,MATE,CARELE,TPSTHE(1),CHVARC,CODRET)
 
       IF (REASVT) THEN
 

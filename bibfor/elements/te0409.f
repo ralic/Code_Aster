@@ -1,7 +1,7 @@
       SUBROUTINE TE0409(OPTION,NOMTE)
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 19/03/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 10/04/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,6 +23,7 @@ C ======================================================================
       CHARACTER*16 OPTION, NOMTE
 C
 C   CALCUL DES OPTIONS DES ELEMENTS DE PLAQUE POUR LA MODELISATION DKTG
+C   ET LA MODELISATION Q4GG
 C     -----------------------------------------------------------------
 C                            TRIANGLE  QUADRANGLE
 C        KIRCHOFF  (MINCE)      DKT       DKQ

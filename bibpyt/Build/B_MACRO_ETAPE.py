@@ -1,4 +1,4 @@
-#@ MODIF B_MACRO_ETAPE Build  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_MACRO_ETAPE Build  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -23,7 +23,8 @@
 """
 
 # Modules Python
-import string, traceback,sys
+import traceback
+import sys
 import types
 
 # Modules EFicas
@@ -58,7 +59,7 @@ class MACRO_ETAPE(B_ETAPE.ETAPE):
       # et doit l'ajouter au cr de l'etape parent pour construire un
       # compte-rendu hierarchique
       self.cr=self.CR(debut='Etape : '+self.nom + '    ligne : '+`self.appel[0]` + '    fichier : '+`self.appel[1]`,
-                       fin = 'Fin Etape : '+self.nom)
+                      fin = 'Fin Etape : '+self.nom)
 
       self.parent.cr.add(self.cr)
       try:
@@ -115,17 +116,18 @@ class MACRO_ETAPE(B_ETAPE.ETAPE):
             self.set_icmd(1)
 
          if ier:
-            self.cr.fatal("Erreur dans la macro "+self.nom+'\n'+'ligne : '+str(self.appel[0])+' fichier : '+self.appel[1])
+            self.cr.fatal(_(u"Erreur dans la macro %s\nligne : %s fichier : "),
+                self.nom, self.appel[0], self.appel[1])
 
       except AsException,e:
          ier=1
-         self.cr.fatal("Erreur dans la macro "+self.nom+'\n'+str(e))
+         self.cr.fatal(_(u"Erreur dans la macro %s\n%s"), self.nom, e)
       except (EOFError,self.jdc.UserError):
          raise
       except:
          ier=1
          l=traceback.format_exception(sys.exc_info()[0],sys.exc_info()[1],sys.exc_info()[2])
-         self.cr.fatal("Erreur dans la macro "+self.nom+'\n'+string.join(l))
+         self.cr.fatal(_(u"Erreur dans la macro %s\n%s"), self.nom, ' '.join(l))
 
       return ier
 
@@ -146,7 +148,7 @@ class MACRO_ETAPE(B_ETAPE.ETAPE):
             Delivrer un nom de concept non encore utilise et unique
       """
       ### self.jdc.nsd=self.jdc.nsd+1 #CD : ca me semble inutile
-      return type + "9" + string.zfill(str(self.jdc.nsd),6)
+      return type + "9" + str(self.jdc.nsd).zfill(6)
 
    def DeclareOut(self,nom,concept):
       """

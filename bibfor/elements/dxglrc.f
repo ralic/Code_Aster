@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 19/03/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 10/04/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 C TOLE CRP_20
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -87,6 +87,7 @@ C   - FLEXION  : KHIXX,KHIYY,2*KHIXY
 C  CMPS D' EFFORTS COQUE :
 C   - MEMBRANE : NXX,NYY,NXY
 C   - FLEXION  : MXX,MYY,MXY
+C   - CISAILLEMENT : QX , QY
 C --------------------------------------------------------------------
 C            NPG:    NOMBRE DE POINTS DE GAUSS PAR ELEMENT
 C            NC :    NOMBRE DE COTES DE L'ELEMENT
@@ -169,9 +170,7 @@ C LORS DE L AJOUT DE VARIABLE INTERNE IL FAUT INCREMENTER ECR ET ECRP
 
       CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
      &                                         IVF,IDFDX,IDFD2,JGANO)
-
       CODRET = 0
-
 C
       NBSIG = 6
       Q4GG  = .FALSE.

@@ -1,24 +1,24 @@
-#@ MODIF V_ETAPE Validation  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF V_ETAPE Validation  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-#                                                                       
-#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+#
+#
 # ======================================================================
 
 
@@ -31,13 +31,15 @@
    utilisée par héritage multiple pour composer les traitements.
 """
 # Modules Python
-import string,types,sys
+import types
+import sys
 import traceback
 
 # Modules EFICAS
 import V_MCCOMPO
 from Noyau.N_Exception import AsException
 from Noyau.N_utils import AsType
+from Noyau.strfunc import ufmt
 
 class ETAPE(V_MCCOMPO.MCCOMPO):
    """
@@ -47,15 +49,16 @@ class ETAPE(V_MCCOMPO.MCCOMPO):
        """ Cette methode teste la validite des mots cles de l'etape """
        for child in self.mc_liste :
            if not child.isvalid():
-              return 0 
+              return 0
        return 1
 
    def valid_regles(self,cr):
        """ Cette methode teste la validite des regles de l'etape """
        text_erreurs,test_regles = self.verif_regles()
        if not test_regles :
-          if cr == 'oui' : self.cr.fatal(string.join(("Règle(s) non respectée(s) :", text_erreurs)))
-          return 0 
+          if cr == 'oui' :
+              self.cr.fatal(_(u"Règle(s) non respectée(s) : %s"), text_erreurs)
+          return 0
        return 1
 
    def valid_sdnom(self,cr):
@@ -65,17 +68,18 @@ class ETAPE(V_MCCOMPO.MCCOMPO):
           if self.jdc and self.jdc.definition.code == 'ASTER' and len(self.sd.nom) > 8 :
              #  le nom de la sd doit avoir une longueur <= 8 caractères pour ASTER
              if cr == 'oui' :
-                self.cr.fatal("Le nom de concept %s est trop long (8 caractères maxi)" %self.sd.nom)
+                self.cr.fatal(_(u"Le nom de concept %s est trop long (8 caractères maxi)"),
+                    self.sd.nom)
              valid = 0
-          if string.find(self.sd.nom,'sansnom') != -1 :
+          if self.sd.nom.find('sansnom') != -1 :
              # la SD est 'sansnom' : --> erreur
              if cr == 'oui' :
-                self.cr.fatal("Pas de nom pour le concept retourné")
+                self.cr.fatal(_(u"Pas de nom pour le concept retourné"))
              valid = 0
-          elif string.find(self.sd.nom,'SD_') != -1 :
+          elif self.sd.nom.find('SD_') != -1 :
              # la SD est 'SD_' cad son nom = son id donc pas de nom donné par utilisateur : --> erreur
              if cr == 'oui' :
-                self.cr.fatal("Pas de nom pour le concept retourné")
+                self.cr.fatal(_(u"Pas de nom pour le concept retourné"))
              valid = 0
        return valid
 
@@ -90,11 +94,11 @@ class ETAPE(V_MCCOMPO.MCCOMPO):
        old_valid=self.get_valid()
        self.valid = valid
        self.state = 'unchanged'
-       if not old_valid or old_valid != self.valid : 
+       if not old_valid or old_valid != self.valid :
            self.init_modif_up()
 
    def isvalid(self,sd='oui',cr='non'):
-      """ 
+      """
          Methode pour verifier la validité de l'objet ETAPE. Cette méthode
          peut etre appelée selon plusieurs modes en fonction de la valeur
          de sd et de cr.
@@ -119,7 +123,7 @@ class ETAPE(V_MCCOMPO.MCCOMPO):
 
         if self.reste_val != {}:
           if cr == 'oui' :
-            self.cr.fatal("Mots cles inconnus :" + string.join(self.reste_val.keys(),','))
+            self.cr.fatal(_(u"Mots clés inconnus : %s"), ','.join(self.reste_val.keys()))
           valid=0
 
         if sd == "non":
@@ -130,12 +134,14 @@ class ETAPE(V_MCCOMPO.MCCOMPO):
 
         if self.definition.reentrant == 'n' and self.reuse:
           # Il ne peut y avoir de concept reutilise avec un OPER non reentrant
-          if cr == 'oui' : self.cr.fatal('Operateur non reentrant : ne pas utiliser reuse ')
+          if cr == 'oui' :
+              self.cr.fatal(_(u'Opérateur non réentrant : ne pas utiliser reuse'))
           valid=0
 
         if self.sd == None:
           # Le concept produit n'existe pas => erreur
-          if cr == 'oui' : self.cr.fatal("Concept retourné non défini")
+          if cr == 'oui' :
+              self.cr.fatal(_(u"Concept retourné non défini"))
           valid = 0
         else:
           valid = valid * self.valid_sdnom(cr)
@@ -148,7 +154,7 @@ class ETAPE(V_MCCOMPO.MCCOMPO):
         return self.valid
 
    def update_sdprod(self,cr='non'):
-      """ 
+      """
            Cette méthode met à jour le concept produit en fonction des conditions initiales :
 
             1. Il n'y a pas de concept retourné (self.definition.sd_prod == None)
@@ -168,23 +174,26 @@ class ETAPE(V_MCCOMPO.MCCOMPO):
           # Erreur pendant le calcul du type retourné
           if CONTEXT.debug:traceback.print_exc()
           self.sd=None
-          if cr == 'oui' : 
+          if cr == 'oui' :
              l=traceback.format_exception(sys.exc_info()[0],
-                                           sys.exc_info()[1],
-                                           sys.exc_info()[2])
-             self.cr.fatal('Impossible d affecter un type au résultat\n'+string.join(l[2:]))
+                                          sys.exc_info()[1],
+                                          sys.exc_info()[2])
+             self.cr.fatal(_(u'Impossible d affecter un type au résultat\n %s'), ' '.join(l[2:]))
           return 0
       # on teste maintenant si la SD est r\351utilis\351e ou s'il faut la cr\351er
       valid=1
       if self.reuse:
         if AsType(self.reuse) != sd_prod:
-          if cr == 'oui' : self.cr.fatal('Type de concept reutilise incompatible avec type produit')
+          if cr == 'oui' :
+              self.cr.fatal(_(u'Type de concept réutilisé incompatible avec type produit'))
           valid= 0
         if self.sdnom!='':
            if self.sdnom[0] != '_' and self.reuse.nom != self.sdnom:
              # Le nom de la variable de retour (self.sdnom) doit etre le meme que celui du concept reutilise (self.reuse.nom)
-             if cr == 'oui' : 
-                self.cr.fatal('Concept reutilise : le nom de la variable de retour devrait etre %s et non %s' %(self.reuse.nom,self.sdnom))
+             if cr == 'oui' :
+                self.cr.fatal(_(u'Concept réutilisé : le nom de la variable de '
+                                     u'retour devrait être %s et non %s'),
+                                   self.reuse.nom, self.sdnom)
              valid= 0
         if valid:self.sd=self.reuse
       else:
@@ -192,23 +201,25 @@ class ETAPE(V_MCCOMPO.MCCOMPO):
           # Que faut il faire de l eventuel ancien sd ?
           self.sd = None
         else:
-          if self.sd: 
+          if self.sd:
              # Un sd existe deja, on change son type
              if CONTEXT.debug:print "changement de type:",self.sd,sd_prod
              if self.sd.__class__ != sd_prod:
                self.sd.change_type(sd_prod)
-          else: 
+          else:
              # Le sd n existait pas , on ne le crée pas
-             if cr == 'oui' : self.cr.fatal("Concept retourné non défini")
-             valid=0 
+             if cr == 'oui' :
+                 self.cr.fatal(_(u"Concept retourné non défini"))
+             valid=0
         if self.definition.reentrant == 'o':
-           if cr == 'oui' : self.cr.fatal('Commande obligatoirement reentrante : specifier reuse=concept')
-           valid=0 
+           if cr == 'oui' :
+               self.cr.fatal(_(u'Commande obligatoirement réentrante : spécifier reuse=concept'))
+           valid=0
       return valid
 
 
    def report(self):
-      """ 
+      """
           Methode pour generation d un rapport de validite
       """
       self.cr=self.CR(debut='Etape : '+self.nom \
@@ -220,9 +231,8 @@ class ETAPE(V_MCCOMPO.MCCOMPO):
         self.isvalid(cr='oui')
       except AsException,e:
         if CONTEXT.debug : traceback.print_exc()
-        self.cr.fatal(string.join(('Etape :',self.nom,
-                              'ligne :',`self.appel[0]`,
-                              'fichier :',`self.appel[1]`,str(e))))
+        self.cr.fatal(_(u'Etape : %s ligne : %r fichier : %r %s'),
+            self.nom, self.appel[0], self.appel[1], e)
       for child in self.mc_liste:
         self.cr.add(child.report())
       return self.cr

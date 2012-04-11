@@ -1,9 +1,9 @@
-#@ MODIF N_BLOC Noyau  DATE 30/08/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_BLOC Noyau  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,6 +34,7 @@ import N_ENTITE
 import N_MCBLOC
 from N_Exception import AsException
 from N_types import force_list
+from strfunc import ufmt
 
 class BLOC(N_ENTITE.ENTITE):
    """
@@ -92,19 +93,11 @@ class BLOC(N_ENTITE.ENTITE):
          Cette méthode vérifie si les attributs de définition sont valides.
          Les éventuels messages d'erreur sont écrits dans l'objet compte-rendu (self.cr).
       """
-      if type(self.fr) != types.StringType :
-        self.cr.fatal("L'attribut 'fr' doit etre une chaine de caractères : %s" %`self.fr`)
-      if type(self.docu) != types.StringType :
-        self.cr.fatal("L'attribut 'docu' doit etre une chaine de caractères : %s" %`self.docu`)
-      if type(self.regles) != types.TupleType :
-        self.cr.fatal("L'attribut 'regles' doit etre un tuple : %s" %`self.regles` )
-      if self.statut not in ['f','o'] :
-        self.cr.fatal("L'attribut 'statut' doit valoir 'o' ou 'f' : %s" %`self.statut` )
-      if self.condition != None :
-        if type(self.condition) != types.StringType :
-          self.cr.fatal("L'attribut 'condition' doit etre une chaine de caractères : %s" %`self.condition`)
-      else:
-        self.cr.fatal("La condition ne doit pas valoir None !")
+      self.check_fr()
+      self.check_docu()
+      self.check_regles()
+      self.check_statut(into=('f', 'o'))
+      self.check_condition()
       self.verif_cata_regles()
 
    def verif_presence(self,dict,globs):

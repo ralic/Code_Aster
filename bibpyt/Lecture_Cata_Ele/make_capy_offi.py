@@ -1,8 +1,8 @@
-#@ MODIF make_capy_offi Lecture_Cata_Ele  DATE 01/03/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF make_capy_offi Lecture_Cata_Ele  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,114 +19,105 @@
 # ======================================================================
 
 
-####################################################################################################
-# script à appeler à la fin de la procédure majnew
-#      apres la mise à jour de vers/catalo/*/*.cata
-#
-# ce script fabrique une version "capy" des catalogues d'éléments officiels
-# pour que la procédure ccat92 de surcharge des catalogues soit plus rapide en CPU
-####################################################################################################
-usage= '''
-   usage :
-     python   make_capy_offi.py  rep_scripts  rep_trav  rep_cata_offi  nom_capy_offi
-
-     rep_scripts  : nom du répertoire principal où se trouvent les scripts python d'aster (répertoire Eficas en général)
-
-     rep_trav     : répertoire de travail  : ce répertoire NE DOIT PAS exister au préalable
-
-     rep_cata_offi: nom du répertoire ou se trouvent les sources .cata officiels : VERS/catalo
-                    le script connait l'arborescence de catalo :  /typelem /options /compelem
-
-     nom_capy_offi: nom du fichier offi.capy produit : /VERS/catobj/cata_ele.pickled
 '''
-####################################################################################################
+script à appeler à la fin de la procédure majnew
+     apres la mise à jour de vers/catalo/*/*.cata
+
+ce script fabrique une version "capy" des catalogues d'éléments officiels
+pour que la procédure ccat92 de surcharge des catalogues soit plus rapide en
+CPU
+'''
 
 import sys
-import os  
+import os
+import os.path as osp
 import glob
-import string
 import traceback
+import tempfile
+import shutil
+import optparse
 
+def parse_args(argv=None):
+    '''Parse the command line and return (rep_cata_offi, nom_capy_offi)'''
+    usage = ('This script build a pickled version of the elements catalog '
+             'that speed up the ccat92 procedure that overwrite the catalog')
+    parser = optparse.OptionParser(usage=usage)
+    parser.add_option('--bibpyt', dest='rep_scripts', metavar='FOLDER',
+                      help="path to Code_Aster python source files")
+    parser.add_option('-i', '--input', dest='rep_cata_offi', metavar='FOLDER',
+                      help='path to .cata files')
+    parser.add_option('-o', '--output', dest='nom_capy_offi', metavar='FILE',
+                      default='cata_ele.pickled',
+                      help='file path use as output (default: %default)')
 
-def main(rep_trav, rep_cata_offi, nom_capy_offi):
+    opts, args = parser.parse_args(argv)
+    if len(args) == 4 and opts.rep_cata_offi is None: # legacy style
+        opts.rep_scripts = args[0]
+        opts.rep_cata_offi = args[2]
+        opts.nom_capy_offi = args[3]
+    if opts.rep_scripts is not None:
+        sys.path.insert(0, osp.abspath(opts.rep_scripts))
+    if opts.rep_cata_offi is None or not osp.isdir(opts.rep_cata_offi):
+        parser.error(
+            'You must provide the top folder that contains elements catalog'
+            ' declaration files. Subfolder will be deduced '
+            '(compelem/  options/  typele/)')
+
+    return opts.rep_cata_offi, opts.nom_capy_offi
+
+###############################################################################
+
+def main(rep_cata_offi, nom_capy_offi):
+    """
+    Script pour construire le catalogue officiel
+    (Il travaille dans un sandbox)
+    """
+    nom_capy_offi = osp.abspath(nom_capy_offi)
+    rep_cata_offi = osp.abspath(rep_cata_offi)
+    
+    trav = tempfile.mkdtemp(prefix='make_capy_offi_')
+    dirav = os.getcwd()
+    os.chdir(trav)
+    try:
+        _main(rep_cata_offi, nom_capy_offi)
+    except:
+        print 60*'-'+' debut trace back'
+        traceback.print_exc(file=sys.stdout)
+        print 60*'-'+' fin   trace back'
+        raise
+    finally:
+        os.chdir(dirav)
+        shutil.rmtree(trav)
+    print "(I/U) creation du fichier '%s' terminee." % nom_capy_offi
+
+def _main(rep_cata_offi, nom_capy_offi):
     """Script pour construire le catalogue officiel cata_ele.picked"""
     from Lecture_Cata_Ele.lecture import lire_cata
-    from Lecture_Cata_Ele.imprime import impr_cata
     import Lecture_Cata_Ele.utilit as utilit
 
-    # nom_capy_offi :
-    #----------------
-    nom_capy_offi=os.path.abspath(nom_capy_offi)
-
-    # rep_cata_offi :
-    #----------------
-    rep_cata_offi=os.path.abspath(rep_cata_offi)
-
-    # rep_trav :
-    #--------------
-    trav=os.path.abspath(rep_trav)
-    dirav=os.getcwd()
-    if os.path.isdir(trav) :
-        print trav+" ne doit pas exister."; raise StandardError
-    else:
-        os.mkdir(trav)
-        os.chdir(trav)
-    try :
-        try :
-            # concaténation des catalogues :
-            #-------------------------------
-            toucata=open('tou.cata','w')
-            for soucat in ["compelem","options","typelem"] :
-                lisfic= glob.glob(os.path.join(rep_cata_offi,soucat,"*.cata"))
-                for nomfic in lisfic:
-                    cata= open(nomfic,'r')
-                    texte=cata.read()
+    # concaténation des catalogues
+    #-----------------------------
+    with open('tou.cata', 'w') as toucata:
+        for soucat in ("compelem", "options", "typelem"):
+            lisfic = glob.glob(osp.join(rep_cata_offi, soucat, "*.cata"))
+            for nomfic in lisfic:
+                with open(nomfic) as cata:
+                    texte = cata.read()
                     toucata.write(texte)
-                    cata.close()
-            toucata.close()
-            
-            # lecture des catalogues :
-            #-------------------------------
-            # pour ne pas utiliser trop de mémoire, on splite le fichier pour la lecture :
-            liste_morceaux=utilit.cata_split('tou.cata',"morceau",5000)
-            
-            capy=lire_cata(liste_morceaux[0])
-            for k in range(len(liste_morceaux)-1) :
-               capy2 =lire_cata(liste_morceaux[k+1])
-               utilit.concat_capy(capy,capy2)
-            
-            utilit.write_capy(capy,nom_capy_offi)
-    
-        except  :
-            print 60*'-'+' debut trace back'
-            traceback.print_exc(file=sys.stdout)
-            print 60*'-'+' fin   trace back'
-            raise Exception
 
-    finally:    
-        # ménage :
-        #------------------------
-        os.chdir(dirav)
-        import shutil
-        shutil.rmtree(trav)
-        
-        print "(I/U) creation du fichier cata_ele.pickled terminee."
+    # lecture des catalogues
+    #-----------------------
+    # pour ne pas utiliser trop de mémoire, on splite le fichier pour
+    # la lecture :
+    liste_morceaux = utilit.cata_split('tou.cata', 'morceau', 5000)
+
+    capy = lire_cata(liste_morceaux[0])
+    for k in range(len(liste_morceaux)-1) :
+        capy2 = lire_cata(liste_morceaux[k + 1])
+        utilit.concat_capy(capy, capy2)
+
+    utilit.write_capy(capy, nom_capy_offi)
+
 
 if __name__ == '__main__':
-
-    if len(sys.argv) !=5 :
-        print usage
-        raise StandardError
-
-    # rep_scripts :
-    #--------------
-    scripts=os.path.abspath(sys.argv[1])
-    if os.path.isdir(scripts) :
-        sys.path[:0]=[scripts]
-    else:
-        print scripts+" doit etre le répertoire principal des sources *.py (Eficas en général)" ; raise StandardError
-
-    main(*sys.argv[2:])
-
-
-
+    main(*parse_args())

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 10/04/2012   AUTEUR KAZYMYRE K.KAZYMYRENKO 
 # TITRE LOIS NON LOCALES A DEFORMATIONS REGULARISEES SUR BARREAU 3D
 # ssnv157d.para = tps_job 90 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -108,7 +108,7 @@ EVOL1=STAT_NON_LINE(reuse=EVOL1,
                                  GROUP_MA = ('GMA34',),
                                  ETA_PILO_R_MIN=0.,
                                  ETA_PILO_MIN=1.,
-                                 ETA_PILO_MAX=100.,),
+                                 ETA_PILO_R_MAX=100.,),
                        );
 
 

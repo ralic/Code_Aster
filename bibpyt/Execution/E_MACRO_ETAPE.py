@@ -1,4 +1,4 @@
-#@ MODIF E_MACRO_ETAPE Execution  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_MACRO_ETAPE Execution  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -26,6 +26,7 @@ import aster
 import string
 from Noyau.N__F import _F
 from Noyau.N_info import message, SUPERV
+from strfunc import ufmt
 
 class MACRO_ETAPE(E_ETAPE.ETAPE):
    """
@@ -86,7 +87,7 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
 
          if ier > 0 :
             # On termine le traitement
-            cr.fatal("Erreurs à l'exécution de la macro %s" % self.nom)
+            cr.fatal(_(u"Erreurs à l'exécution de la macro %s"), self.nom)
             raise EOFError
 
          E_ETAPE.ETAPE.Exec(self)
@@ -150,7 +151,7 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
 
       if ier > 0 :
         # On termine le traitement
-        cr.fatal("Erreurs dans la construction de la macro %s" % self.nom)
+        cr.fatal(_(u"Erreurs dans la construction de la macro %s"), self.nom)
         raise EOFError
 
       E_ETAPE.ETAPE.Exec(self)
@@ -168,8 +169,9 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
       # (compte-rendu) pour stocker les erreurs eventuelles
       # et doit l'ajouter au cr de l'etape parent pour construire un
       # compte-rendu hierarchique
-      self.cr=self.CR(debut='Etape : '+self.nom + '    ligne : '+`self.appel[0]` + '    fichier : '+`self.appel[1]`,
-                       fin = 'Fin Etape : '+self.nom)
+      self.cr=self.CR(debut='Etape : '+self.nom + '    ligne : '+`self.appel[0]` + \
+                            '    fichier : '+`self.appel[1]`,
+                      fin = 'Fin Etape : '+self.nom)
 
       self.parent.cr.add(self.cr)
 
@@ -186,7 +188,7 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
 
          if ier > 0 :
            # On termine le traitement
-           self.cr.fatal("Erreurs dans la construction de la macro %s" % self.nom)
+           self.cr.fatal(_(u"Erreurs dans la construction de la macro %s"), self.nom)
            raise EOFError
 
          # La macro de type INCLUDE doit etre executee avant ses sous etapes

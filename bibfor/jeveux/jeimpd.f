@@ -1,9 +1,9 @@
-      SUBROUTINE JEIMPD ( CUNIT , CLAS , CMESS )
+      SUBROUTINE JEIMPD ( UNIT , CLAS , CMESS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
-C MODIF JEVEUX  DATE 27/06/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 10/04/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,12 +20,13 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_18 CRS_508 CRS_512
       IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*(*)       CUNIT , CLAS , CMESS
+      INTEGER           UNIT  
+      CHARACTER*(*)            CLAS , CMESS
 C ---------------------------------------------------------------------
 C ROUTINE UTILISATEUR D'IMPRESSION DE LA LISTE DES OBJETS PRESENTS SUR
 C LE FICHIER D'ACCES DIRECT ASSOCIE A UNE BASE
 C
-C IN  CUNIT  : NOM LOCAL DU FICHIER DES IMPRESSIONS
+C IN  UNIT  : NUMERO D'UNITE LOGIQUE ASSOCIE AU FICHIER D'IMPRESSION
 C IN  CLAS   : CLASSE ASSOCIEE A LA BASE ( ' ' : TOUTES LES CLASSES )
 C IN  CMESS  : MESSAGE D'INFORMATION
 C ---------------------------------------------------------------------
@@ -92,8 +93,7 @@ C DEB -----------------------------------------------------------------
       IPGC = -2
       LENTE = .TRUE.
       KCLAS = CLAS ( 1: MIN(1,LEN(CLAS)))
-      JULIST = IUNIFI ( CUNIT )
-      IF ( JULIST .EQ. 0 ) GOTO 9999
+      IF ( UNIT .LE. 0 ) GOTO 9999
       IF ( KCLAS .EQ. ' ' ) THEN
          NCLA1 = 1
          NCLA2 = INDEX ( CLASSE , '$' ) - 1
@@ -105,24 +105,24 @@ C DEB -----------------------------------------------------------------
       DO 10 I = NCLA1 , NCLA2
         CLASI = CLASSE(I:I)
         IF ( CLASI .NE. ' ' ) THEN
-          WRITE (JULIST,'(''1'',4A)' ) ('--------------------',K=1,4)
-          WRITE(JULIST,*)'                                  '
-          WRITE (JULIST,'(1X,2A)' )
+          WRITE (UNIT,'(''1'',4A)' ) ('--------------------',K=1,4)
+          WRITE(UNIT,*)'                                  '
+          WRITE (UNIT,'(1X,2A)' )
      +          '       CONTENU DE LA BASE ',CLASI     ,
      +          '        ', CMESS(1:MIN(72,LEN(CMESS)))
-          WRITE(JULIST,*)' NOM DE LA BASE               : ',NOMBAS(I)
-          WRITE(JULIST,*)' NB D''ENREGISTREMENTS MAXIMUM : ',NBLMAX(I)
+          WRITE(UNIT,*)' NOM DE LA BASE               : ',NOMBAS(I)
+          WRITE(UNIT,*)' NB D''ENREGISTREMENTS MAXIMUM : ',NBLMAX(I)
           LGBL=1024*LONGBL(I)*LOIS
-          WRITE(JULIST,*)
+          WRITE(UNIT,*)
      +               ' LONGUEUR D''ENREGISTREMENT (OCTETS): ',LGBL
-          WRITE(JULIST,*)'                                  '
-          WRITE (JULIST,'(    1X,4A)' ) ('--------------------',K=1,4)
+          WRITE(UNIT,*)'                                  '
+          WRITE (UNIT,'(    1X,4A)' ) ('--------------------',K=1,4)
           KJ = 1
           DO 5 J = 1 , NREMAX(I)
             CRNOM = RNOM(JRNOM(I)+J)
             IF ( CRNOM(1:1) .EQ. '?' ) GOTO 5
             IF ( MOD(KJ,25) .EQ. 1 .AND. LENTE ) THEN
-               WRITE ( JULIST , '(/,A,A/)' )
+               WRITE ( UNIT , '(/,A,A/)' )
      +     '---- NUM ------------- NOM ---------------- G T -L-'
      +     ,' -LOTY- -IADD- --LIADD- NB AC'
               LENTE = .FALSE.
@@ -138,7 +138,7 @@ C DEB -----------------------------------------------------------------
             LCOL = .FALSE.
             LIADD =        IADD(JIADD(I)+2*J)
             IACC   =       IACCE(JIACCE(I)+IIADD)
-            WRITE(JULIST , 1001) J,CRNOM,CGENR,CTYPE,ILTYP,
+            WRITE(UNIT , 1001) J,CRNOM,CGENR,CTYPE,ILTYP,
      +                           ILONO,IIADD,LIADD,IACC
  6          CONTINUE
             IF ( CGENR .EQ. 'X' ) THEN
@@ -159,7 +159,7 @@ C DEB -----------------------------------------------------------------
                 KIADD    = ISZON ( JISZON + IBIADD - 1 + 2*KOC-1 )
                 IF ( KIADD .EQ. 0 ) GOTO 50
                 IF ( MOD(KJ,25) .EQ. 1 .AND. LENTE ) THEN
-                  WRITE ( JULIST , '(/,A,A/)' )
+                  WRITE ( UNIT , '(/,A,A/)' )
      +            '---- NUM ------------- NOM -------------- E G T -L-'
      +           ,' -LOTY- -IADD- --LIADD- NB AC'
                   LENTE = .FALSE.
@@ -176,7 +176,7 @@ C DEB -----------------------------------------------------------------
                 KJ = KJ + 1
                 LENTE = .TRUE.
                 WRITE( CRNOM(25:32) , '(I8)' ) KOC
-                WRITE(JULIST,1001) J,CRNOM,CGEN2,CTYPE,ILTYP,
+                WRITE(UNIT,1001) J,CRNOM,CGEN2,CTYPE,ILTYP,
      +                             ILONO,IIADD,LIADD,IACC
  50           CONTINUE
  51           CONTINUE
@@ -185,7 +185,7 @@ C DEB -----------------------------------------------------------------
               ENDIF
             ENDIF
     5     CONTINUE
-          WRITE ( JULIST , '(/)' )
+          WRITE ( UNIT , '(/)' )
         ENDIF
    10 CONTINUE
  9999 CONTINUE

@@ -1,25 +1,25 @@
-# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST MONOCRISTAL  3D UTILISANT SIMU_POINT_MAT
 # comp002j.para = tps_job 300 mem_job 512Mo mem_aster 20 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-from Utilitai.veri_matr_tang import VERI_MATR_TANG
+from Contrib.veri_matr_tang import VERI_MATR_TANG
 
 DEBUT(CODE=_F(NOM='COMP002J',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
 );
@@ -73,7 +73,7 @@ ELAS_ORTH=_F(   E_L   = EL*C_Pa  ,
                               H=H),
                 MONO_CINE1=_F(D=D),
                                  );
-                                 
+
 #unite en MPa
 ACIER[1]=DEFI_MATERIAU(
 ELAS_ORTH=_F(   E_L   = EL,
@@ -117,7 +117,7 @@ COMP1[1]=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER[1],
 Ncal = 5
 N_pas = 2*[1] + [1, 5, 25]
 nbequi=2
-# les differents calculs effectues 
+# les differents calculs effectues
 label_cal=['_Pa_','_rot_'] + 3* ['_N']
 #pointeur materiau
 P_imat = [0] + [1] + (Ncal-2)*[1]
@@ -139,7 +139,7 @@ angle0=0.
 angles=[angle0,angle2] + (Ncal-2)*[angle0]
 
 # les precisions sur chaque TEST_RESU
-prec_ecart=[3.E-2]+[2.E-8] + [50.E-2] + [11.E-2] + [1.E-10]   
+prec_ecart=[3.E-2]+[2.E-8] + [50.E-2] + [11.E-2] + [1.E-10]
 prec_tgt=2.e-2
 prec_zero=[1.E-10, 0.01, 0.01]
 
@@ -155,15 +155,15 @@ INCLUDE(UNITE=91)
 # definition du chargement 3D
 INCLUDE(UNITE=93)
 
-    
+
 ##################################################################################
 #  TEST 3D
 ##################################################################################
-                                 
-# les quantites extraites du calcul 
+
+# les quantites extraites du calcul
 ch_param=['V44','VMIS','TRACE','SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ']
 
-# resultats 
+# resultats
 RESU=[None]*Ncal
 R_SI=[None]*len(ch_param)
 TMP_S=[None]
@@ -201,25 +201,25 @@ for i in range(Ncal):
                    NEWTON=_F(MATRICE='TANGENTE',#PREDICTION='ELASTIQUE',
                              REAC_ITER=1,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=10,RESI_GLOB_RELA=1.E-8),
-                   MATER      = ACIER[imat],  
+                   MATER      = ACIER[imat],
                    ARCHIVAGE = _F(LIST_INST = temps_ar),
 #                   INCREMENT=_F(LIST_INST=DEFLIST),
                    INCREMENT=_F(LIST_INST=temps),
                    EPSI_IMPOSE=_F(EPXX=eps_def[0], EPYY=eps_def[1], EPZZ=eps_def[2],
                                   EPXY=eps_def[3], EPXZ=eps_def[4], EPYZ=eps_def[5]),
-                        ); 
-        #IMPR_TABLE(TABLE=RESU[i])                       
+                        );
+        #IMPR_TABLE(TABLE=RESU[i])
         DETRUIRE(CONCEPT=_F(NOM=temps))
         DETRUIRE(CONCEPT=_F(NOM=DEFLIST))
 
 # On renomme les composantes en fonction de  l'ordre de discretisation
         R_SI=RENOMME(i,N_pas,label_cal,ch_param,RESU,R_SI)
-        
-# impressions                
+
+# impressions
 for i in range(len(ch_param)):
         IMPR_TABLE(TABLE=R_SI[i])
-        
-# TEST_RESU sur les erreurs relatives 
+
+# TEST_RESU sur les erreurs relatives
 TEST_ECART(ch_param2,label_cal,N_pas,Ncal,nbequi,R_SI,prec_ecart,prec_zero,coef_para)
 
 
@@ -227,17 +227,17 @@ TEST_ECART(ch_param2,label_cal,N_pas,Ncal,nbequi,R_SI,prec_ecart,prec_zero,coef_
 TEST_TABLE(TABLE=R_SI[0],
            NOM_PARA='V44_Pa_1',VALE=3.29182E-02,
            FILTRE=_F(NOM_PARA='INST',VALE=8.0*t_0),
-           REFERENCE='NON_REGRESSION',);     
+           REFERENCE='NON_REGRESSION',);
 
 TEST_TABLE(TABLE=R_SI[1],
            NOM_PARA='VMIS_Pa_1',VALE=3.31336E+08,
            FILTRE=_F(NOM_PARA='INST',VALE=8.0*t_0),
-           REFERENCE='NON_REGRESSION',);     
+           REFERENCE='NON_REGRESSION',);
 
 TEST_TABLE(TABLE=R_SI[3],
            NOM_PARA='SIXX_Pa_1',VALE=2.07949E+07,
            FILTRE=_F(NOM_PARA='INST',VALE=8.0*t_0),
-           REFERENCE='NON_REGRESSION',);     
+           REFERENCE='NON_REGRESSION',);
 
 for i in range(Ncal):
     DETRUIRE ( CONCEPT = _F (NOM = RESU[i]))
@@ -246,7 +246,7 @@ for i in range(len(ch_param)):
 
 
 
-###############################################################################                                 
+###############################################################################
 
 
 # Test de la matrice tangente sur le calcul le plus fin
@@ -269,7 +269,7 @@ DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = Linst,),
                                          SUBD_NIVEAU=2,),)
 
 RESU_TGT=SIMU_POINT_MAT(
-                   COMP_INCR=_F(RELATION=compor,                
+                   COMP_INCR=_F(RELATION=compor,
                                 TYPE_MATR_TANG='VERIFICATION',
                                 VALE_PERT_RELA=1.E-5,
                                 COMPOR=COMP1[imat],
@@ -280,7 +280,7 @@ RESU_TGT=SIMU_POINT_MAT(
                    MASSIF=_F(ANGL_REP=(angles[0])),
                    NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
-                   MATER      = ACIER[1],  
+                   MATER      = ACIER[1],
                  #  INCREMENT=_F(LIST_INST=DEFLIST,),
                    INCREMENT=_F(LIST_INST=Linst,),
                    EPSI_IMPOSE=_F(EPXX=eps_def[0], EPYY=eps_def[1], EPZZ=eps_def[2],
@@ -290,8 +290,8 @@ RESU_TGT=SIMU_POINT_MAT(
 
 DIFF_MAT=VERI_MATR_TANG()
 
-###############################################################################                                 
-# impressions                
+###############################################################################
+# impressions
 
 IMPR_TABLE(TABLE=DIFF_MAT)
 
@@ -302,7 +302,7 @@ TEST_TABLE(TABLE=DIFF_MAT,
            VALE=0.,
            CRITERE='ABSOLU',
            PRECISION=prec_tgt,
-           REFERENCE='ANALYTIQUE',);     
+           REFERENCE='ANALYTIQUE',);
 
 
 

@@ -1,4 +1,4 @@
-#@ MODIF utils Utilitai  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utils Utilitai  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

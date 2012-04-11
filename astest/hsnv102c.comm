@@ -1,8 +1,8 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 10/04/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE THERMO_METALLO_MECANIQUE COUPLEE EN TRACTION SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -154,13 +154,12 @@ TEMPE=THER_LINEAIRE(        MODELE=MOTH,
 
                         )
 
-TEMPE=CALC_META( reuse=TEMPE,  MODELE=MOTH,
-                     CHAM_MATER=CHMAT,
-                     RESULTAT=TEMPE,
-                     ETAT_INIT=_F( META_INIT_ELNO = PHASINIT),
-                     COMP_INCR=_F(  RELATION = 'ACIER',
-                                 TOUT = 'OUI'),
-                   )
+TEMPE=CALC_META(reuse=TEMPE,
+                RESULTAT=TEMPE,
+                ETAT_INIT=_F(META_INIT_ELNO=PHASINIT),
+                COMP_INCR=_F(RELATION='ACIER',
+                             TOUT='OUI'),
+                OPTION='META_ELNO',);
 
 FBM1=DEFI_FONCTION(      NOM_PARA='TEMP',
                             PROL_DROITE='LINEAIRE',

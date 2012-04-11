@@ -1,4 +1,4 @@
-# MODIF  DATE 09/01/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 10/04/2012   AUTEUR SELLENET N.SELLENET 
 # TITRE NON REGRESSION SUR QUART DE VIROLE CYLINDRIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -167,17 +167,17 @@ RESP=MECA_STATIQUE(         MODELE=MO,    CHAM_MATER=CM,
 
                         )
 
-RESP=CALC_ELEM(reuse= RESP,
-               RESULTAT= RESP ,
-               OPTION='SIGM_ELNO',);
+RESP=CALC_CHAMP(reuse= RESP,
+                RESULTAT= RESP ,
+                CONTRAINTE='SIGM_ELNO',);
 
 RESPMOY=POST_CHAMP(RESULTAT=RESP,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
                                    NIVE_COUCHE='MOY',),);
-RESPMOY=CALC_NO(reuse=RESPMOY,
-                RESULTAT=RESPMOY,
-                OPTION='SIGM_NOEU',);
+RESPMOY=CALC_CHAMP(reuse=RESPMOY,
+                   RESULTAT=RESPMOY,
+                   CONTRAINTE='SIGM_NOEU',);
 
 
 TEST_RESU(RESU=(
@@ -224,33 +224,33 @@ RESF=MECA_STATIQUE(    MODELE=MO,           CHAM_MATER=CM,EXCIT=(
 
                         )
 
-RESF=CALC_ELEM(reuse= RESF,
-               RESULTAT= RESF ,
-               OPTION='SIGM_ELNO',);
+RESF=CALC_CHAMP(reuse= RESF,
+                RESULTAT= RESF ,
+                CONTRAINTE='SIGM_ELNO',);
 
 RESFMOY=POST_CHAMP(RESULTAT=RESF,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
                                    NIVE_COUCHE='MOY',),);
-RESFMOY=CALC_NO(reuse=RESFMOY,
-                RESULTAT=RESFMOY,
-                OPTION='SIGM_NOEU',);
+RESFMOY=CALC_CHAMP(reuse=RESFMOY,
+                   RESULTAT=RESFMOY,
+                   CONTRAINTE='SIGM_NOEU',);
 
 RESFINF=POST_CHAMP(RESULTAT=RESF,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
                                    NIVE_COUCHE='INF',),);
-RESFINF=CALC_NO(reuse=RESFINF,
-                RESULTAT=RESFINF,
-                OPTION='SIGM_NOEU',);
+RESFINF=CALC_CHAMP(reuse=RESFINF,
+                   RESULTAT=RESFINF,
+                   CONTRAINTE='SIGM_NOEU',);
 
 RESFSUP=POST_CHAMP(RESULTAT=RESF,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
                                    NIVE_COUCHE='SUP',),);
-RESFSUP=CALC_NO(reuse=RESFSUP,
-                RESULTAT=RESFSUP,
-                OPTION='SIGM_NOEU',);
+RESFSUP=CALC_CHAMP(reuse=RESFSUP,
+                   RESULTAT=RESFSUP,
+                   CONTRAINTE='SIGM_NOEU',);
 
 
 TEST_RESU(RESU=(
@@ -322,33 +322,33 @@ RESG=MECA_STATIQUE(    MODELE=MO,        CHAM_MATER=CM,
 
                         )
 
-RESG=CALC_ELEM(reuse= RESG,
-               RESULTAT= RESG ,
-               OPTION='SIGM_ELNO',);
+RESG=CALC_CHAMP(reuse= RESG,
+                RESULTAT= RESG ,
+                CONTRAINTE='SIGM_ELNO',);
 
 RESGMOY=POST_CHAMP(RESULTAT=RESG,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
                                    NIVE_COUCHE='MOY',),);
-RESGMOY=CALC_NO(reuse=RESGMOY,
-                RESULTAT=RESGMOY,
-                OPTION='SIGM_NOEU',);
+RESGMOY=CALC_CHAMP(reuse=RESGMOY,
+                   RESULTAT=RESGMOY,
+                   CONTRAINTE='SIGM_NOEU',);
 
 RESGINF=POST_CHAMP(RESULTAT=RESG,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
                                    NIVE_COUCHE='INF',),);
-RESGINF=CALC_NO(reuse=RESGINF,
-                RESULTAT=RESGINF,
-                OPTION='SIGM_NOEU',);
+RESGINF=CALC_CHAMP(reuse=RESGINF,
+                   RESULTAT=RESGINF,
+                   CONTRAINTE='SIGM_NOEU',);
 
 RESGSUP=POST_CHAMP(RESULTAT=RESG,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
                                    NIVE_COUCHE='SUP',),);
-RESGSUP=CALC_NO(reuse=RESGSUP,
-                RESULTAT=RESGSUP,
-                OPTION='SIGM_NOEU',);
+RESGSUP=CALC_CHAMP(reuse=RESGSUP,
+                   RESULTAT=RESGSUP,
+                   CONTRAINTE='SIGM_NOEU',);
 
 TEST_RESU(RESU=(
 
@@ -419,33 +419,35 @@ RESM=MECA_STATIQUE(    MODELE=MO,        CHAM_MATER=CM,
 
                         )
 
-RESM=CALC_ELEM(reuse= RESM,
-               RESULTAT= RESM ,
-               OPTION='SIGM_ELNO',);
+RESM=CALC_CHAMP(reuse= RESM,
+                RESULTAT= RESM ,
+                CONTRAINTE='SIGM_ELNO',);
 
 RESMMOY=POST_CHAMP(RESULTAT=RESM,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
-                                   NUME_COUCHE=1,
-                                   NIVE_COUCHE='MOY',),);
-RESMMOY=CALC_NO(reuse=RESMMOY,
-                RESULTAT=RESMMOY,
-                OPTION='SIGM_NOEU',);
+                                 NUME_COUCHE=1,
+                                 NIVE_COUCHE='MOY',),);
+RESMMOY=CALC_CHAMP(reuse=RESMMOY,
+                   RESULTAT=RESMMOY,
+                   CONTRAINTE='SIGM_NOEU',);
 
 RESMINF=POST_CHAMP(RESULTAT=RESM,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
-                                   NUME_COUCHE=1,
-                                   NIVE_COUCHE='INF',),);
-RESMINF=CALC_NO(reuse=RESMINF,
-                RESULTAT=RESMINF,
-                OPTION='SIGM_NOEU',);
+                                 NUME_COUCHE=1,
+                                 NIVE_COUCHE='INF',),);
+
+RESMINF=CALC_CHAMP(reuse=RESMINF,
+                   RESULTAT=RESMINF,
+                   CONTRAINTE='SIGM_NOEU',);
 
 RESMSUP=POST_CHAMP(RESULTAT=RESM,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
-                                   NUME_COUCHE=1,
-                                   NIVE_COUCHE='SUP',),);
-RESMSUP=CALC_NO(reuse=RESMSUP,
-                RESULTAT=RESMSUP,
-                OPTION='SIGM_NOEU',);
+                                 NUME_COUCHE=1,
+                                 NIVE_COUCHE='SUP',),);
+
+RESMSUP=CALC_CHAMP(reuse=RESMSUP,
+                   RESULTAT=RESMSUP,
+                   CONTRAINTE='SIGM_NOEU',);
 
 TEST_RESU(RESU=(
 

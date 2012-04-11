@@ -1,7 +1,7 @@
-# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 10/04/2012   AUTEUR TRAN V-X.TRAN 
 #
-# TITRE FATIGUE, AMPLITUDE CONSTANTE, TEST  DES GRANDEURS
-# sslv135p.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
+# TITRE FATIGUE, AMPLITUDE VARIABLE, TEST  DES GRANDEURS EN CONTRAINTE
+# sslv135p.para = tps_job 360 mem_job 600Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,20 +19,19 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# sslv135i.para = tps_job 60 mem_job 800Mo ncpus 1 liste_test S
+# tps_job 360 mem_job 600Mo ncpus 1 liste_test R
 #
 #----------------------------------------------------------------------
-#    Cas test sslv135i : cube 3D
+#    Cas test sslv135p : cube 3D
 #                        Essai de chargement cyclique bi-axial
-#                        critere en formule
+#                        criteres en formule
 #----------------------------------------------------------------------
 #        Unites : Newton , Millimetre , Seconde (N,MM,S,->Mpa)
 #----------------------------------------------------------------------
 #
 #               y       a
 #               I<------------->                     a = 10 mm
-#                     Face1                                    2
-#                   (dessus)                         S = 100 mm
+#                     Face1 (dessus)               S = 100 mm2
 #               P1              P2
 #               o--------------o
 #              /I             /I
@@ -54,36 +53,28 @@
 #    CHARGEMENT     FX(T) <=> +      FY(T) <=> x
 #
 #            I
-#            I                 x
+# 12.0E+4 N  I     +           
 #            I
-#   1.0E+4 N I     +        x     x
-#            I  +     +        3s     4s
-#           -I-----I-----I-----I-----I-----> T
-#            I    1s    2s  +     +
-#            I  x     x        +
-#            I
-#  -2.0E+4 N I     x
+#            I  +     +            
+#            I               *      
+#           -I-----I-----I-----I--+--I-----> T
+#            I  * 1s  *  2s       
+# -2.0E+4 N  I     *       +   +
+# -9.0E+4 N  I               +
+#            I     
 #            I
 #
 #
-# L'AMPLITUDE DE FX(T) = 2.0E+4 N, SA VALEUR MOYENNE = 0.0
-# L'AMPLITUDE DE FY(T) = 4.0E+4 N, SA VALEUR MOYENNE = 0.0
 # A L'INSTANT 0S, FX(T) = 0.0 N  ET  FY(T) = 0.0 N
-# A L'INSTANT 1S, FX(T) = 1.0E+4 N  ET  FY(T) = -2.0E+4 N
+# A L'INSTANT 1S, FX(T) = 12.0E+4 N  ET  FY(T) = -2.0E+4 N
 # A L'INSTANT 2S, FX(T) = 0.0 N  ET  FY(T) = 0.0 N
-# A L'INSTANT 3S, FX(T) = -1.0E+4 N  ET  FY(T) = 2.0E+4 N
-# A L'INSTANT 4S, FX(T) = 0.0 N  ET  FY(T) = 0.0 N
+# A L'INSTANT 2.75S, FX(T) = -9.0E+4 N  ET  FY(T) = 1.5E+4 N
+# A L'INSTANT 3.5S, FX(T) = 0.0 N  ET  FY(T) = 0.0 N
 #
-#----------------------------------------------------------------------
-#
-# DANS CE CAS TEST NOUS TESTONS LE CRITERE EN FORMULE AUX POINTS DE GAUSS
-# ET AUX NOEUDS
-#----------------------------------------------------------------------
-#
-#
-#
-DEBUT(CODE=_F(NOM='sslv135p',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
+DEBUT(CODE=_F(NOM='sslv135p',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
+               IGNORE_ALARM=('PREPOST4_27'))
+               
 CUBE = LIRE_MAILLAGE(FORMAT='MED', )
 
 CUBE=DEFI_GROUP(reuse = CUBE,
@@ -153,7 +144,6 @@ WHOL=DEFI_FONCTION(       NOM_PARA='SIGM',
                                 1590.,         50.,
                                 2210.,         20.,
                                 2900.,         10.,  )  )
-
 #               _____________________________
 #              I                             I
 #              I     AMPLITUDE CONSTANTE     I
@@ -166,22 +156,21 @@ COEF   = DEFI_FONCTION ( NOM_PARA    ='INST',
                           VALE        =( 0.,    0.,
                                          1.,  100.,
                                          2.,    0.,
-                                         3., -100.,
-                                         4.,    0.,
-                                         5.,  100.,
+                                         2.75, 75.,
+                                         3.5,   0.,
                                         )
                        )
 
 ACIER   = DEFI_MATERIAU   ( ELAS           =_F( E         = 200000.,
                                                 NU        = .3,
                                                 ALPHA     = 0. ),
-                            ECRO_LINE=_F( SY=  150, D_SIGM_EPSI = 50000),
+                            ECRO_LINE=_F( SY=  900, D_SIGM_EPSI = 50000),
                             FATIGUE        =_F( WOHLER    = WHOL, ),
-
                           )
 
+
 LINST = DEFI_LIST_REEL   ( DEBUT      =  0.,
-                           INTERVALLE =_F (JUSQU_A= 5, NOMBRE = 20  )
+                           INTERVALLE =_F (JUSQU_A= 3.5, NOMBRE = 28  )
                                          );
 
 TROISD   = AFFE_MODELE    ( MAILLAGE   =    CUBE,
@@ -194,22 +183,25 @@ MAT   = AFFE_MATERIAU    ( MAILLAGE    =   CUBE,
                                              MATER      = ACIER,
                                              ))
 
+WHOL_F =   FORMULE(
+           NOM_PARA=('NBRUP'),
+           VALE=''' 4098.3*(NBRUP**(-0.2693)) '''
+           )
+
 # CHARGEMENT SELON LES 2 AXES X ET Y
 # ----------------------------------
-
 TR_CS  = AFFE_CHAR_MECA (
            MODELE       =  TROISD,
            FACE_IMPO    =(_F( GROUP_MA= 'FACE3' ,DX=0.),
                           _F( GROUP_MA= 'FACE2' ,DY=0.) ),
            DDL_IMPO     =(_F( GROUP_NO= 'P3' , DZ=0.) ),
-           FORCE_FACE   =(_F( GROUP_MA= 'FACE4', FX=2.),
-#                          _F( GROUP_MA= 'FACE1', FY=-2.)
+           FORCE_FACE   =(_F( GROUP_MA= 'FACE4', FX=12),
+                          _F( GROUP_MA= 'FACE1', FY=-8.)
                           )
                          );
 
 # CALCUL AVEC STAT_NON_LINE
 # -------------------------
-
 SOL_NL = STAT_NON_LINE ( TITRE      =
                 'TEST TRACTION-COMPRESSION ALTERNEE - PLAN CRITIQUE',
                         MODELE     =   TROISD,
@@ -217,7 +209,7 @@ SOL_NL = STAT_NON_LINE ( TITRE      =
                         EXCIT      =_F ( CHARGE       = TR_CS,
                                          FONC_MULT    = COEF,
                                          TYPE_CHARGE  = 'FIXE_CSTE'),
-                       COMP_INCR  =_F ( RELATION     = 'VMIS_CINE_LINE',
+                        COMP_INCR  =_F ( RELATION     = 'VMIS_CINE_LINE',
                                         DEFORMATION  = 'PETIT',
                                         TOUT         = 'OUI'    ),
                        INCREMENT  =_F ( LIST_INST    = LINST, ),
@@ -225,12 +217,9 @@ SOL_NL = STAT_NON_LINE ( TITRE      =
                                         REAC_ITER = 1),
                        CONVERGENCE=_F(  RESI_REFE_RELA=1.,
                                         SIGM_REFE     =4.8E-3,
-                             #   RESI_GLOB_RELA = 1.E-8,
                                         ITER_GLOB_MAXI = 50),
-
                        SOLVEUR=_F(METHODE = 'MULT_FRONT'),
                                                          )
-
 SOL_NL = CALC_ELEM( reuse    = SOL_NL,
                     RESULTAT = SOL_NL,
                     OPTION   = ('EPSI_ELGA',
@@ -239,166 +228,420 @@ SOL_NL = CALC_ELEM( reuse    = SOL_NL,
                                 'EPSP_ELGA',
                                 'EPSP_ELNO')
                   )
-
+                
 SOL_NL = CALC_CHAMP( reuse    = SOL_NL,
                   RESULTAT = SOL_NL,
                   TOUT = 'OUI',
-                  GROUP_MA = ('FACE1_3D', 'FACE2_3D', 'FACE3_3D'),
+                  GROUP_MA = ('FACE1_3D', 'FACE2_3D', 'FACE3_3D', 'CUBE'),
                   CONTRAINTE='SIGM_NOEU',DEFORMATION=('EPSI_NOEU','EPSP_NOEU'),
                 )
-
-TABSIGM=POST_RELEVE_T(ACTION=_F(INTITULE='SIGMA_XX',
+TABSIGM1=POST_RELEVE_T(ACTION=_F(INTITULE='SIGMA_XX',
                                 NOEUD = 'N1',
                                 RESULTAT=SOL_NL,
                                 TOUT_ORDRE='OUI',
                                 TOUT_CMP='OUI',
                                 NOM_CHAM = 'SIGM_NOEU',
                                 OPERATION='EXTRACTION',),);
-IMPR_TABLE(TABLE=TABSIGM);
+IMPR_TABLE(TABLE=TABSIGM1);
 
-TABEPS=POST_RELEVE_T(ACTION=_F(INTITULE='EPS_XX',
+TABEPS1=POST_RELEVE_T(ACTION=_F(INTITULE='EPS_XX',
                                 NOEUD = 'N1',
                                 RESULTAT=SOL_NL,
                                 TOUT_ORDRE='OUI',
                                 TOUT_CMP='OUI',
                                 NOM_CHAM='EPSI_NOEU' ,
                                 OPERATION='EXTRACTION',),);
-IMPR_TABLE(TABLE=TABEPS);
+IMPR_TABLE(TABLE=TABEPS1);
 
-TABEPSP=POST_RELEVE_T(ACTION=_F(INTITULE='EPSP_XX',
+TABEPSP1=POST_RELEVE_T(ACTION=_F(INTITULE='EPSP_XX',
                                 NOEUD = 'N1',
                                 RESULTAT=SOL_NL,
                                 TOUT_ORDRE='OUI',
                                 TOUT_CMP='OUI',
                                 NOM_CHAM='EPSP_NOEU' ,
                                 OPERATION='EXTRACTION',),);
-IMPR_TABLE(TABLE=TABEPSP);
+IMPR_TABLE(TABLE=TABEPSP1);
 
-NBPR = 14
-CRIT= [None]*NBPR
-FATN= [None]*NBPR
-FATM= [None]*NBPR
-
-CRIT[0] =   FORMULE(
-           NOM_PARA='DEPSPE',
-           VALE= '''DEPSPE'''
+CRIT1 =   FORMULE(
+           NOM_PARA=('SIPR1_1','SIPR1_2'),
+           VALE= '''abs((SIPR1_1-SIPR1_2)/2)'''
            )
 
-CRIT[1] =   FORMULE(
-           NOM_PARA='EPSPR1',
-           VALE= '''EPSPR1'''
+CRIT2 =   FORMULE(
+           NOM_PARA=('SITN1_1','SITN1_2'),
+           VALE= '''abs((SITN1_1-SITN1_2)/2)'''
            )
 
-CRIT[2] =   FORMULE(
-           NOM_PARA='SIGNM1',
-           VALE= '''SIGNM1'''
+CRIT3 =   FORMULE(
+           NOM_PARA=('SIPN1_1','SIPN1_2'),
+           VALE= '''(SIPN1_1-SIPN1_2)/2'''
            )
 
-CRIT[3] =   FORMULE(
-           NOM_PARA='DENDIE',
-           VALE= '''DENDIE'''
+CRIT4 =   FORMULE(
+           NOM_PARA=('SIGEQ_1','SIGEQ_2'),
+           VALE= '''(SIGEQ_1-SIGEQ_2)/2'''
            )
 
-CRIT[4] =   FORMULE(
-           NOM_PARA='APHYDR',
-           VALE= '''APHYDR'''
-           )
-CRIT[5] =   FORMULE(
-           NOM_PARA='DENDIS',
-           VALE= '''DENDIS'''
-           )
-
-CRIT[6] =   FORMULE(
-           NOM_PARA='DENDIE',
-           VALE= '''DENDIE'''
-           )
-
-CRIT[7] =   FORMULE(
-           NOM_PARA='DSIGEQ',
-           VALE= '''DSIGEQ'''
-           )
-
-CRIT[8] =   FORMULE(
-           NOM_PARA='SIGPR1',
-           VALE= '''SIGPR1'''
-           )
-
-CRIT[9] =   FORMULE(
-           NOM_PARA='EPSNM1',
-           VALE= '''EPSNM1'''
-           )
-
-CRIT[10] =   FORMULE(
-           NOM_PARA='INVA2S',
-           VALE= '''INVA2S'''
-           )
-
-CRIT[11] =   FORMULE(
-           NOM_PARA='DSITRE',
-           VALE= '''DSITRE'''
-           )
-
-CRIT[12] =   FORMULE(
-           NOM_PARA='DEPTRE',
-           VALE= '''DEPTRE'''
-           )
-
-CRIT[13] =   FORMULE(
-           NOM_PARA='EPSPAC',
-           VALE= '''EPSPAC'''
-           )
-
-RESU = [7.5E-4, 8.75E-4, 200, 0.45, 66.66666, 0.173333, 0.45, 200, 100, 1.75E-3 , 1.616666E-3, 50, 6.0625E-4,3.67423E-3]
-
-for i in range(1,NBPR) :
-#
-# TEST CRITERE FORMULE AVEC 'DOMA_NOEUD',
+# TEST DU CRTIERE 1 AVEC 'DOMA_NOEUD' 
+#          avec la FORMULE DE BASQUIN
 #########################################NOEUD
-    FATN[i]=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
+FATNWF1=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
                            OPTION        = 'DOMA_NOEUD',
-                           TYPE_CHARGE   = 'PERIODIQUE',
+                           TYPE_CHARGE   = 'NON_PERIODIQUE',
                            RESULTAT      = SOL_NL,
                            CHAM_MATER    = MAT,
                            GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),
                            MAILLAGE      = CUBE,
                            CRITERE       = 'FORMULE_CRITERE',
-                           FORMULE_GRDEQ   = CRIT[i],
-                           COURBE_GRD_VIE  = 'WOHLER'
+                           FORMULE_GRDEQ   = CRIT1,
+                           COURBE_GRD_VIE  = 'FORM_VIE',
+                           FORMULE_VIE = WHOL_F,
+                           PROJECTION    = 'UN_AXE'
                          )
 
-
-
-    TEST_RESU(CHAM_NO=(  _F( CHAM_GD = FATN[i],
-                            NOM_CMP = 'SIGEQ1',
+TEST_RESU(CHAM_NO=(  _F( CHAM_GD = FATNWF1,
+                            NOM_CMP = 'ENDO1',
                             NOEUD = 'N1',
                             REFERENCE = 'ANALYTIQUE',
-                            PRECISION = 2.0E-6,
-                            VALE = RESU[i] ),
+                            PRECISION = 1.0E-5,
+                            VALE = 1.0707149E-3 ),
                        )
               )
 
-# TEST CRITERE FORMULE AVEC 'DOMA_NOEUD',
+# TEST DU CRTIERE 1 AVEC 'DOMA_ELGA' 
+#          avec la FORMULE DE BASQUIN
 #########################################NOEUD
-    FATM[i]=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
+FATMWF1=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
                          OPTION        = 'DOMA_ELGA',
-                         TYPE_CHARGE   = 'PERIODIQUE',
+                         TYPE_CHARGE   = 'NON_PERIODIQUE',
                          MAILLAGE      = CUBE,
                          GROUP_MA      = ('CUBE'),
                          RESULTAT      = SOL_NL,
                          CHAM_MATER    = MAT,
                          CRITERE       = 'FORMULE_CRITERE',
-                         FORMULE_GRDEQ   = CRIT[i],
-                         COURBE_GRD_VIE  = 'WOHLER'
+                         FORMULE_GRDEQ   = CRIT1,
+                         COURBE_GRD_VIE  = 'FORM_VIE',
+                         FORMULE_VIE = WHOL_F,
+                         PROJECTION    = 'UN_AXE'
                        )
 
-    TEST_RESU(CHAM_ELEM=( _F(CHAM_GD = FATM[i],
-                             NOM_CMP = 'SIGEQ1',
+TEST_RESU(CHAM_ELEM=( _F(CHAM_GD = FATMWF1,
+                             NOM_CMP = 'ENDO1',
                              MAILLE = 'M60',
                              POINT = 3,
                              REFERENCE = 'ANALYTIQUE',
-                             PRECISION = 2.0E-6,
-                             VALE = RESU[i] ),
+                             PRECISION = 1.0E-5,
+                             VALE = 1.0707149E-3 ),
                           )
               )
 
+# TEST DU CRTIERE 1 AVEC 'DOMA_NOEUD' 
+#      par INTERPOLATION de la COURBE DE WOHLER
+#########################################NOEUD
+FATNW1=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
+                           OPTION        = 'DOMA_NOEUD',
+                           TYPE_CHARGE   = 'NON_PERIODIQUE',
+                           RESULTAT      = SOL_NL,
+                           CHAM_MATER    = MAT,
+                           GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),
+                           MAILLAGE      = CUBE,
+                           CRITERE       = 'FORMULE_CRITERE',
+                           FORMULE_GRDEQ   = CRIT1,
+                           COURBE_GRD_VIE  = 'WOHLER',
+                           PROJECTION    = 'UN_AXE'
+                         )
+
+TEST_RESU(CHAM_NO=(  _F( CHAM_GD = FATNW1,
+                            NOM_CMP = 'ENDO1',
+                            NOEUD = 'N1',
+                            REFERENCE = 'ANALYTIQUE',
+                            PRECISION = 2.0E-5,
+                            VALE = 1.9212572E-3  ),
+                       )
+              )
+
+# TEST DU CRTIERE 1 AVEC 'DOMA_ELGA'  
+#      par INTERPOLATION de la COURBE DE WOHLER
+#########################################NOEUD
+FATMW1=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
+                         OPTION        = 'DOMA_ELGA',
+                         TYPE_CHARGE   = 'NON_PERIODIQUE',
+                         MAILLAGE      = CUBE,
+                         GROUP_MA      = ('CUBE'),
+                         RESULTAT      = SOL_NL,
+                         CHAM_MATER    = MAT,
+                         CRITERE       = 'FORMULE_CRITERE',
+                         FORMULE_GRDEQ   = CRIT1,
+                         COURBE_GRD_VIE  = 'WOHLER',
+                         PROJECTION    = 'UN_AXE'
+                       )
+
+TEST_RESU(CHAM_ELEM=( _F(CHAM_GD = FATMW1,
+                             NOM_CMP = 'ENDO1',
+                             MAILLE = 'M60',
+                             POINT = 3,
+                             REFERENCE = 'ANALYTIQUE',
+                             PRECISION = 1.0E-5,
+                             VALE = 1.9212572E-3  ),
+                          )
+              )
+
+# TEST DU CRTIERE 2 AVEC 'DOMA_NOEUD'
+#          avec la FORMULE DE BASQUIN
+#########################################NOEUD
+FATNWF2=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
+                           OPTION        = 'DOMA_NOEUD',
+                           TYPE_CHARGE   = 'NON_PERIODIQUE',
+                           RESULTAT      = SOL_NL,
+                           CHAM_MATER    = MAT,
+                           GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),
+                           MAILLAGE      = CUBE,
+                           CRITERE       = 'FORMULE_CRITERE',
+                           FORMULE_GRDEQ   = CRIT2,
+                           COURBE_GRD_VIE  = 'FORM_VIE',
+                           FORMULE_VIE = WHOL_F,
+                           PROJECTION    = 'UN_AXE'
+                         )
+
+TEST_RESU(CHAM_NO=(  _F( CHAM_GD = FATNWF2,
+                            NOM_CMP = 'ENDO1',
+                            NOEUD = 'N1',
+                            REFERENCE = 'ANALYTIQUE',
+                            PRECISION = 1.0E-5,
+                            VALE = 1.0707149E-3 ),
+                       )
+              )
+
+# TEST DU CRTIERE 2 AVEC 'DOMA_ELGA' 
+#          avec la FORMULE DE BASQUIN
+#########################################NOEUD
+FATMWF2=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
+                         OPTION        = 'DOMA_ELGA',
+                         TYPE_CHARGE   = 'NON_PERIODIQUE',
+                         MAILLAGE      = CUBE,
+                         GROUP_MA      = ('CUBE'),
+                         RESULTAT      = SOL_NL,
+                         CHAM_MATER    = MAT,
+                         CRITERE       = 'FORMULE_CRITERE',
+                         FORMULE_GRDEQ   = CRIT2,
+                         COURBE_GRD_VIE  = 'FORM_VIE',
+                         FORMULE_VIE = WHOL_F,
+                         PROJECTION    = 'UN_AXE'
+                       )
+
+TEST_RESU(CHAM_ELEM=( _F(CHAM_GD = FATMWF2,
+                             NOM_CMP = 'ENDO1',
+                             MAILLE = 'M60',
+                             POINT = 3,
+                             REFERENCE = 'ANALYTIQUE',
+                             PRECISION = 1.0E-5,
+                             VALE = 1.0707149E-3 ),
+                          )
+              )
+
+# TEST DU CRTIERE 2 AVEC 'DOMA_NOEUD'
+#      par INTERPOLATION de la COURBE DE WOHLER
+#########################################NOEUD
+FATNW2=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
+                           OPTION        = 'DOMA_NOEUD',
+                           TYPE_CHARGE   = 'NON_PERIODIQUE',
+                           RESULTAT      = SOL_NL,
+                           CHAM_MATER    = MAT,
+                           GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),
+                           MAILLAGE      = CUBE,
+                           CRITERE       = 'FORMULE_CRITERE',
+                           FORMULE_GRDEQ   = CRIT2,
+                           COURBE_GRD_VIE  = 'WOHLER',
+                           PROJECTION    = 'UN_AXE'
+                         )
+
+TEST_RESU(CHAM_NO=(  _F( CHAM_GD = FATNW2,
+                            NOM_CMP = 'ENDO1',
+                            NOEUD = 'N1',
+                            REFERENCE = 'ANALYTIQUE',
+                            PRECISION = 2.0E-5,
+                            VALE = 1.9212572E-3 ),
+                       )
+              )
+
+# TEST DU CRTIERE 2 AVEC 'DOMA_ELGA' 
+#      par INTERPOLATION de la COURBE DE WOHLER
+#########################################NOEUD
+FATMW2=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
+                         OPTION        = 'DOMA_ELGA',
+                         TYPE_CHARGE   = 'NON_PERIODIQUE',
+                         MAILLAGE      = CUBE,
+                         GROUP_MA      = ('CUBE'),
+                         RESULTAT      = SOL_NL,
+                         CHAM_MATER    = MAT,
+                         CRITERE       = 'FORMULE_CRITERE',
+                         FORMULE_GRDEQ   = CRIT2,
+                         COURBE_GRD_VIE  = 'WOHLER',
+                         PROJECTION    = 'UN_AXE'
+                       )
+
+TEST_RESU(CHAM_ELEM=( _F(CHAM_GD = FATMW2,
+                             NOM_CMP = 'ENDO1',
+                             MAILLE = 'M60',
+                             POINT = 3,
+                             REFERENCE = 'ANALYTIQUE',
+                             PRECISION = 1.0E-5,
+                             VALE = 1.9212572E-3 ),
+                          )
+              )
+
+# TEST DU CRTIERE 3 AVEC 'DOMA_NOEUD' 
+#          avec la FORMULE DE BASQUIN
+#########################################NOEUD
+FATN_WF3=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
+                           OPTION        = 'DOMA_NOEUD',
+                           TYPE_CHARGE   = 'NON_PERIODIQUE',
+                           RESULTAT      = SOL_NL,
+                           CHAM_MATER    = MAT,
+                           GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),
+                           MAILLAGE      = CUBE,
+                           CRITERE       = 'FORMULE_CRITERE',
+                           FORMULE_GRDEQ   = CRIT3,
+                           COURBE_GRD_VIE  = 'FORM_VIE',
+                           FORMULE_VIE = WHOL_F,
+                           PROJECTION    = 'UN_AXE'
+                         )
+
+TEST_RESU(CHAM_NO=(  _F( CHAM_GD = FATN_WF3,
+                            NOM_CMP = 'ENDO1',
+                            NOEUD = 'N1',
+                            REFERENCE = 'ANALYTIQUE',
+                            PRECISION = 1.0E-5,
+                            VALE = 1.0707149E-3 ),
+                       )
+              )
+
+# TEST DU CRTIERE 3 AVEC 'DOMA_NOEUD' 
+#      par INTERPOLATION de la COURBE DE WOHLER
+#########################################NOEUD
+FATN_W3=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
+                           OPTION        = 'DOMA_NOEUD',
+                           TYPE_CHARGE   = 'NON_PERIODIQUE',
+                           RESULTAT      = SOL_NL,
+                           CHAM_MATER    = MAT,
+                           GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),
+                           MAILLAGE      = CUBE,
+                           CRITERE       = 'FORMULE_CRITERE',
+                           FORMULE_GRDEQ   = CRIT3,
+                           COURBE_GRD_VIE  = 'WOHLER',
+                           PROJECTION    = 'UN_AXE'
+                         )
+
+TEST_RESU(CHAM_NO=(  _F( CHAM_GD = FATN_W3,
+                            NOM_CMP = 'ENDO1',
+                            NOEUD = 'N1',
+                            REFERENCE = 'ANALYTIQUE',
+                            PRECISION = 2.0E-5,
+                            VALE = 1.9212572E-3 ),
+                       )
+              )
+
+# TEST DU CRTIERE 4 'DOMA_NOEUD' 
+#          avec la FORMULE DE BASQUIN
+#########################################NOEUD
+FATNWF4=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
+                           OPTION        = 'DOMA_NOEUD',
+                           TYPE_CHARGE   = 'NON_PERIODIQUE',
+                           RESULTAT      = SOL_NL,
+                           CHAM_MATER    = MAT,
+                           GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),
+                           MAILLAGE      = CUBE,
+                           CRITERE       = 'FORMULE_CRITERE',
+                           FORMULE_GRDEQ   = CRIT4,
+                           COURBE_GRD_VIE  = 'FORM_VIE',
+                           FORMULE_VIE = WHOL_F,
+                           PROJECTION    = 'UN_AXE'
+                         )
+
+TEST_RESU(CHAM_NO=(  _F( CHAM_GD = FATNWF4,
+                            NOM_CMP = 'ENDO1',
+                            NOEUD = 'N1',
+                            REFERENCE = 'ANALYTIQUE',
+                            PRECISION = 1.0E-5,
+                            VALE = 4.287285E-3 ),
+                       )
+              )
+
+# TEST DU CRTIERE 4 AVEC 'DOMA_ELGA' 
+#          avec la FORMULE DE BASQUIN
+#########################################NOEUD
+FATMWF4=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
+                         OPTION        = 'DOMA_ELGA',
+                         TYPE_CHARGE   = 'NON_PERIODIQUE',
+                         MAILLAGE      = CUBE,
+                         GROUP_MA      = ('CUBE'),
+                         RESULTAT      = SOL_NL,
+                         CHAM_MATER    = MAT,
+                         CRITERE       = 'FORMULE_CRITERE',
+                         FORMULE_GRDEQ   = CRIT4,
+                         COURBE_GRD_VIE  = 'FORM_VIE',
+                         FORMULE_VIE = WHOL_F,
+                         PROJECTION    = 'UN_AXE'
+                       )
+
+TEST_RESU(CHAM_ELEM=( _F(CHAM_GD = FATMWF4,
+                             NOM_CMP = 'ENDO1',
+                             MAILLE = 'M60',
+                             POINT = 3,
+                             REFERENCE = 'ANALYTIQUE',
+                             PRECISION = 1.0E-5,
+                             VALE = 4.287285E-3 ),
+                          )
+              )
+
+# TEST DU CRTIERE 4 'DOMA_NOEUD'
+#      par INTERPOLATION de la COURBE DE WOHLER
+#########################################NOEUD
+FATNW4=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
+                           OPTION        = 'DOMA_NOEUD',
+                           TYPE_CHARGE   = 'NON_PERIODIQUE',
+                           RESULTAT      = SOL_NL,
+                           CHAM_MATER    = MAT,
+                           GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),
+                           MAILLAGE      = CUBE,
+                           CRITERE       = 'FORMULE_CRITERE',
+                           FORMULE_GRDEQ   = CRIT4,
+                           COURBE_GRD_VIE  = 'WOHLER',
+                           PROJECTION    = 'UN_AXE'
+                         )
+
+TEST_RESU(CHAM_NO=(  _F( CHAM_GD = FATNW4,
+                            NOM_CMP = 'ENDO1',
+                            NOEUD = 'N1',
+                            REFERENCE = 'ANALYTIQUE',
+                            PRECISION = 2.0E-5,
+                            VALE = 5.8175699E-3 ),
+                       )
+              )
+
+# TEST DU CRTIERE 4 'DOMA_ELGA' 
+#      par INTERPOLATION de la COURBE DE WOHLER
+#########################################NOEUD
+FATMW4=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
+                         OPTION        = 'DOMA_ELGA',
+                         TYPE_CHARGE   = 'NON_PERIODIQUE',
+                         MAILLAGE      = CUBE,
+                         GROUP_MA      = ('CUBE'),
+                         RESULTAT      = SOL_NL,
+                         CHAM_MATER    = MAT,
+                         CRITERE       = 'FORMULE_CRITERE',
+                         FORMULE_GRDEQ   = CRIT4,
+                         COURBE_GRD_VIE  = 'WOHLER',
+                         PROJECTION    = 'UN_AXE'
+                       )
+
+TEST_RESU(CHAM_ELEM=( _F(CHAM_GD = FATMW4,
+                             NOM_CMP = 'ENDO1',
+                             MAILLE = 'M60',
+                             POINT = 3,
+                             REFERENCE = 'ANALYTIQUE',
+                             PRECISION = 1.0E-5,
+                             VALE = 5.8175699E-3 ),
+                          )
+              )
 FIN( )

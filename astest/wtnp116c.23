@@ -240,12 +240,9 @@ TEST_RESU(RESU=_F(RESULTAT=RESUM4,
                   PRECISION=0.0001,
                   REFERENCE='ANALYTIQUE',),);
 
-RESUM1A=CALC_ELEM(reuse=RESUM1A,
-            RESULTAT=RESUM1A,
-            OPTION=('EPVC_ELGA','VARC_ELGA','EPVC_ELNO',),)
-
-RESUM1A=CALC_NO(reuse=RESUM1A,
-          RESULTAT=RESUM1A,
-          OPTION=('EPVC_NOEU'),)
+RESUM1A=CALC_CHAMP(reuse=RESUM1A,
+                   RESULTAT=RESUM1A,
+                   DEFORMATION=('EPVC_ELGA','EPVC_ELNO','EPVC_NOEU',),
+                   VARI_INTERNE=('VARC_ELGA',),);
 
 FIN();

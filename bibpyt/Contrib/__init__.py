@@ -1,8 +1,8 @@
-#@ MODIF __init__ Contrib  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF __init__ Contrib  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,3 +17,11 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
+
+"""
+Ce package contient des outils qui ne sont pas officiellement supportés.
+Ils peuvent toutefois être utiles pour certaines applications.
+
+Il n'y a pas d'engagement de qualité les concernant. Vous devez procéder
+à toutes les validations nécessaires avant de les utiliser dans une étude.
+"""

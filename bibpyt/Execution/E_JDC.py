@@ -1,4 +1,4 @@
-#@ MODIF E_JDC Execution  DATE 13/03/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_JDC Execution  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -37,10 +37,11 @@ from Noyau.N_ENTITE import ENTITE
 from Noyau.N_JDC    import MemoryErrorMsg
 from Noyau.N_info import message, SUPERV
 from Noyau import basetype
+
+from strfunc import convert
 from concept_dependency import ConceptDependenciesVisitor
 
 import aster
-from strfunc import convert
 
 
 class JDC:
@@ -91,8 +92,8 @@ class JDC:
       CONTEXT.set_current_step(self)
 
       # On reinitialise le compte-rendu self.cr
-      self.cr=self.CR(debut="CR d'execution de JDC en MIXTE",
-                     fin  ="fin CR d'execution de JDC en MIXTE")
+      self.cr=self.CR(debut=_(u"CR d'execution de JDC en MIXTE"),
+                      fin  =_(u"fin CR d'execution de JDC en MIXTE"))
 
       self.timer.Start(" . build")
       ret=self._Build()
@@ -267,7 +268,7 @@ class JDC:
        """
        d={}
        for key,value in context.items():
-           if key in ('aster','__builtins__') :continue
+           if key in ('aster', '__builtins__') :continue
            if type(value) in (types.ModuleType,types.ClassType,types.FunctionType) :
               continue
            if issubclass(type(value), basetype.MetaType):
@@ -295,19 +296,19 @@ class JDC:
        if isinstance(exc_val, self.codex.error):
           # erreur utilisateur levee et pas trappee, on ferme les bases en appelant la commande FIN
           self.codex.impers()
-          self.cr.exception("<S> Exception utilisateur levee mais pas interceptee.\n"
-                            "Les bases sont fermees.\n"
-                            "Type de l'exception : " + exc_val.__class__.__name__ + "\n" \
-                            + str(exc_val))
+          self.cr.exception(ufmt(_(u"<S> Exception utilisateur levee mais pas interceptee.\n"
+                                   u"Les bases sont fermees.\n"
+                                   u"Type de l'exception : %s\n%s"), \
+                                 exc_val.__class__.__name__ , exc_val))
           self.fini_jdc(exc_val)
 
 
    def abort_jdc(self):
       """ Cette methode termine le JDC par un abort
       """
-      print ">> JDC.py : DEBUT RAPPORT"
+      print convert(_(u">> JDC.py : DEBUT RAPPORT"))
       print self.cr
-      print ">> JDC.py : FIN RAPPORT"
+      print convert(_(u">> JDC.py : FIN RAPPORT"))
       os.abort()
 
 
@@ -360,8 +361,8 @@ class JDC:
          Retourne la valeur d'un des attributs "aster"
       """
       if attr not in self.l_jdc_attr:
-         self.cr.exception("Erreur de programmation :\n"\
-                           "attribut '%s' non autorisé" % attr)
+         self.cr.exception(ufmt(_(u"Erreur de programmation :\n"
+                                  u"attribut '%s' non autorisé"), attr))
       return getattr(self, attr)
 
    def set_jdc_attr(self, attr, value):
@@ -369,11 +370,11 @@ class JDC:
          Positionne un des attributs "aster"
       """
       if attr not in self.l_jdc_attr:
-         self.cr.exception("Erreur de programmation :\n"\
-                           "attribut '%s' non autorisé" % attr)
+         self.cr.exception(ufmt(_(u"Erreur de programmation :\n"
+                                  u"attribut '%s' non autorisé"), attr))
       if type(value) not in (int, long):
-         self.cr.exception("Erreur de programmation :\n"\
-                           "valeur non entière : %s" % str(value))
+         self.cr.exception(ufmt(_(u"Erreur de programmation :\n"
+                                  u"valeur non entière : %s"), value))
       setattr(self, attr, value)
 
 

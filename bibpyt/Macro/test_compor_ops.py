@@ -1,8 +1,8 @@
-#@ MODIF test_compor_ops Macro  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF test_compor_ops Macro  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -366,7 +366,7 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMP_INCR,COMP_ELAS,LIST_MATE
  # ajouter l'option MECA (tests comp001,002), l'option HYDR, etc..
   from Accas import _F
   import numpy as NP
-  from Utilitai.veri_matr_tang import VERI_MATR_TANG
+  from Contrib.veri_matr_tang import VERI_MATR_TANG
   self.update_const_context({'ERREUR' : ERREUR})
 
   ier=0

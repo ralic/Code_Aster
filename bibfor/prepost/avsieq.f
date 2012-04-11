@@ -2,9 +2,9 @@
      &                   VSIEQ )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/09/2011   AUTEUR TRAN V-X.TRAN 
+C MODIF PREPOST  DATE 10/04/2012   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -63,7 +63,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ------------------------------------------------------------------
       INTEGER    IORDR, ADRS, J
-      REAL*8     SIG(6),LCIV2S
+      REAL*8     SIG(6),LCIV2S, EQUI(17)
 C     ------------------------------------------------------------------
 C
 C234567                                                              012
@@ -76,8 +76,9 @@ C
          DO 35 J = 1, 6 
             SIG(J) = VWORK(ADRS + J )        
 35       CONTINUE 
-         
-         VSIEQ(IORDR) = LCIV2S(SIG)
+
+         CALL FGEQUI(SIG,'SIGM',3,EQUI)
+         VSIEQ(IORDR) =  EQUI(1) 
          
  10   CONTINUE
 C

@@ -1,26 +1,26 @@
-# MODIF  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE TRACTIONS-ROTATIONS MULTIPLES GDEF EN 3D VMIS ISOTROPE C.L. CPLAN
 # ssnd106c.para = tps_job 120 mem_job 64Mo mem_aster 50 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-from Utilitai.veri_matr_tang import VERI_MATR_TANG
+from Contrib.veri_matr_tang import VERI_MATR_TANG
 
 DEBUT(CODE=_F(NOM = 'SSND106C',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'));
 
@@ -35,7 +35,7 @@ modele=AFFE_MODELE(MAILLAGE=MA,
 
 #definir le materiau
 
-A7=DEFI_FONCTION(NOM_PARA='EPSI',PROL_DROITE='LINEAIRE', 
+A7=DEFI_FONCTION(NOM_PARA='EPSI',PROL_DROITE='LINEAIRE',
     VALE=( 1.0E-3       ,200.,
           2.E-3        ,202., ))
 
@@ -85,7 +85,7 @@ clim_tra=AFFE_CHAR_MECA(MODELE=modele,
                                      DX=0.0,
                                      ),),);
 F_trac=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,tfintrac,1.0,),PROL_DROITE='LINEAIRE',);
-# pour la rotation 
+# pour la rotation
 ClFixe=AFFE_CHAR_MECA(MODELE=modele,DDL_IMPO=(
                         _F(GROUP_NO='NAXE',DX=0.0,DZ=0.0),
                         _F(GROUP_MA='FY0', DY=0.0,),
@@ -109,25 +109,25 @@ for icomp,comp in enumerate(compor) :
                    EXCIT=_F(CHARGE=clim_tra, FONC_MULT=F_trac,),
                    COMP_INCR=_F(RELATION=comp[0],DEFORMATION=comp[1],TYPE_MATR_TANG='VERIFICATION',),
                    INCREMENT=_F(LIST_INST=DEFLIST1),
-                   NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,PREDICTION='TANGENTE',),                           
+                   NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,PREDICTION='TANGENTE',),
                              );
 
     DIFF_MAT=VERI_MATR_TANG()
     DETRUIRE(CONCEPT=_F(NOM=(DIFF_MAT)),INFO=1)
-    
+
     # increments de rotation puis traction
-    for incr in range(nbincr): 
-        
+    for incr in range(nbincr):
+
         tini=dureetrac+ dureetracrot*incr
         tfinrot=dureetracrot+dureetracrot*incr
         tfintrac=dureetrac+dureetracrot+dureetracrot*incr
         # appel a la macro dans INCLUDE
         icl+=1
         Rota2[icl]=CHAR_ROTA(ANGLE_DEGRES=angle_degres,TINI=tini,TFIN=tfinrot,RESU=resu[icomp],MAIL=MA)
-        
+
         Linst2=DEFI_LIST_REEL(DEBUT=tini,INTERVALLE=_F(JUSQU_A=tfinrot,NOMBRE=npasrota),);
         DEFLIST2 = DEFI_LIST_INST(DEFI_LIST=_F(METHODE   ='MANUEL',LIST_INST = Linst2,))
- 
+
         resu[icomp]=STAT_NON_LINE(reuse =resu[icomp],
                            MODELE=modele,CHAM_MATER=mat,
                            EXCIT=(_F(CHARGE=Rota2[icl],TYPE_CHARGE='DIDI',),
@@ -150,7 +150,7 @@ for icomp,comp in enumerate(compor) :
         Ftra2[icl]=DEFI_FONCTION(NOM_PARA='INST',VALE=(tfinrot,0.,tfintrac,1.,),PROL_DROITE='LINEAIRE',);
         Linst2=DEFI_LIST_REEL(DEBUT=tfinrot,INTERVALLE=_F(JUSQU_A=tfintrac,NOMBRE=npastrac[icomp]),)
         DEFLIST2 = DEFI_LIST_INST(DEFI_LIST=_F(METHODE   ='MANUEL',LIST_INST = Linst2,))
- 
+
         resu[icomp]=STAT_NON_LINE(reuse = resu[icomp],MODELE=modele,CHAM_MATER=mat,
                            EXCIT=(_F(CHARGE=Trac2[icl],TYPE_CHARGE='DIDI',FONC_MULT=Ftra2[icl]),),
                            COMP_INCR=_F(RELATION=comp[0], DEFORMATION=comp[1],
@@ -164,7 +164,7 @@ for icomp,comp in enumerate(compor) :
         DETRUIRE(CONCEPT=_F(NOM=(Linst2,DEFLIST2)),INFO=1)
     DETRUIRE(CONCEPT=_F(NOM=(Linst1,DEFLIST1)),INFO=1)
 
-                             
+
     resu[icomp]=CALC_ELEM(reuse =resu[icomp], RESULTAT=resu[icomp],
                OPTION=('SIEQ_ELGA','EPSG_ELGA'));
 
@@ -200,9 +200,9 @@ IMPR_FONCTION(FORMAT='XMGRACE',UNITE=38,
                    _F(FONCTION=vmis[1],LEGENDE=compor[1][0]+compor[1][1]),
                    _F(FONCTION=vmis[2],LEGENDE=compor[2][0]+compor[2][1]),
                    ),
-                  TITRE='courbes_vmis_isotrope');          
+                  TITRE='courbes_vmis_isotrope');
 DEFI_FICHIER(ACTION='LIBERER',UNITE=38)
-    
+
 
 DEFI_FICHIER( UNITE=38, FICHIER='./REPE_OUT/courbes_epsg_isotrope.agr')
 IMPR_FONCTION(FORMAT='XMGRACE',UNITE=38,
@@ -211,9 +211,9 @@ IMPR_FONCTION(FORMAT='XMGRACE',UNITE=38,
                    _F(FONCTION=epsg[1],LEGENDE=compor[1][0]+compor[1][1]),
                    _F(FONCTION=epsg[2],LEGENDE=compor[2][0]+compor[2][1]),
                    ),
-                  TITRE='courbes_epsg_isotrope');          
+                  TITRE='courbes_epsg_isotrope');
 DEFI_FICHIER(ACTION='LIBERER',UNITE=38)
-    
+
 
 FIN()
-              
+

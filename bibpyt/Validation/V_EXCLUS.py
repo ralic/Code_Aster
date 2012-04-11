@@ -1,9 +1,9 @@
-#@ MODIF V_EXCLUS Validation  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF V_EXCLUS Validation  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -45,7 +45,7 @@ class EXCLUS:
       for mc in self.mcs:
         if args.has_key(mc):count=count+1
       if count > 1:
-          text= "- Il ne faut qu un mot cle parmi : "+`self.mcs`+'\n'
+          text= u"- Il ne faut qu un mot clé parmi : "+`self.mcs`+'\n'
           return text,0
       return text,1
 

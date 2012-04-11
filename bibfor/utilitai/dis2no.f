@@ -1,9 +1,12 @@
-      SUBROUTINE NMGVDD(NDIM,NNO1,NNO2,IU,IA,IL)
+      REAL*8 FUNCTION DIS2NO(GEOM, INO1, INO2)
+      IMPLICIT  NONE
+      INTEGER          INO1,INO2
+      REAL*8           GEOM(*)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
+C MODIF UTILITAI  DATE 11/04/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -18,40 +21,26 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-
-       IMPLICIT NONE
-
-       INTEGER NDIM,NNO1,NNO2,IU(3,27),IA(NNO2),IL(NNO2)
-C ----------------------------------------------------------------------
 C
-C     POSITION DES INDICES POUR LES DEGRES DE LIBERTE
+C     BUT : CALCULER LA DISTANCE ENTRE 2 NOEUDS
+C           A PARTIR DES NUMEROS DES NOEUDS
 C
-C IN  NDIM    : DIMENSION DES ELEMENTS 
-C IN  NNO1    : NOMBRE DE NOEUDS (FAMILLE U)
-C IN  NNO2    : NOMBRE DE NOEUDS (FAMILLE A,L)
-C ----------------------------------------------------------------------
+C IN   GEOM   : VALEURS DES COORDONNEES DES NOEUDS DU MAILLAGE
+C IN   INO1   : INDICE DU PREMIER NOEUD
+C IN   INO2   : INDICE DU DEUXIEME NOEUDS
+C OUT  DIS2NO : DISTANCE ENTRE LES 2 NOEUDS
+C
+C---------------------------------------------------------------------
+C
+      REAL*8  A(3),B(3),PADIST
+      INTEGER I
+C
+C---------------------------------------------------------------------
       
-      INTEGER N,I,OS
-
-C ----------------------------------------------------------------------
-
-      
-C      ELEMENT P1 - CONTINU
-
-        DO 110 N = 1,NNO2
-          DO 120 I = 1,NDIM
-            IU(I,N) = I + (N-1)*(NDIM+2)
- 120      CONTINUE
-          IA(N) = 1 + NDIM + (N-1)*(NDIM+2)
-          IL(N) = 2 + NDIM + (N-1)*(NDIM+2)
- 110    CONTINUE
-        OS = (2+NDIM)*NNO2
-        DO 140 N = 1,NNO1-NNO2
-          DO 150 I = 1,NDIM
-            IU(I,N+NNO2) = I + (N-1)*NDIM + OS
- 150      CONTINUE
- 140    CONTINUE
-
-
- 
+      DO 10 I = 1,3
+        A(I) = GEOM(3*(INO1-1)+I)
+        B(I) = GEOM(3*(INO2-1)+I)
+ 10   CONTINUE
+      DIS2NO = PADIST(3,A,B)
+C
       END

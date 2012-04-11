@@ -3,7 +3,7 @@
       REAL*8        XYZL(3,*), PGL(3,*), DEPL(*), EDGL(*)
       CHARACTER*16  OPTION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 19/03/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 10/04/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -100,8 +100,6 @@ C     ------- CALCUL DE LA MATRICE BFB -------------------------------
 C     ---- CALCUL DE LA MATRICE BC ----------------------------------
 C
       IF (OPTION(1:4).EQ.'DEGE') THEN
-          QSI = ZR(ICOOPG-1+NDIM*(IE-1)+1)
-          ETA = ZR(ICOOPG-1+NDIM*(IE-1)+2)
           QSI = 1.D0/3.D0
           ETA = QSI
           CALL T3GBC(XYZL,  QSI, ETA, BC)
@@ -140,10 +138,6 @@ C
       ELSE
         DO 180 IE = 1,NE
 C           ------ VT = DC.BC.DEPF -------------------------------------
-
-          QSI = ZR(ICOOPG-1+NDIM*(IE-1)+1)
-          ETA = ZR(ICOOPG-1+NDIM*(IE-1)+2)
-
 C     ---- CALCUL DE LA MATRICE BC ----------------------------------
           QSI = 1.D0/3.D0
           ETA = QSI

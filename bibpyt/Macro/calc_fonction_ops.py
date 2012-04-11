@@ -1,8 +1,8 @@
-#@ MODIF calc_fonction_ops Macro  DATE 17/08/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calc_fonction_ops Macro  DATE 10/04/2012   AUTEUR ZENTNER I.ZENTNER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,12 +22,12 @@
 import os
 import copy
 import traceback
-
+import math
 
 def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
                       SPEC_OSCI,ABS,COMB,COMB_C,COMPOSE,EXTRACTION,
                       ENVELOPPE,FRACTILE,ASSE,CORR_ACCE,PUISSANCE,INVERSE,
-                      REGR_POLYNOMIALE,
+                      REGR_POLYNOMIALE,DSP,
                       NOM_PARA,NOM_RESU,INTERPOL,PROL_DROITE,
                       PROL_GAUCHE,NOM_PARA_FONC,INTERPOL_FONC,PROL_DROITE_FONC,
                       PROL_GAUCHE_FONC,INFO,**args):
@@ -326,6 +326,63 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
          for iamor in range(len(l_amor)) :
             l_fonc.append(t_fonction(l_freq,spectr[iamor,ideb,:]/SPEC_OSCI['NORME'],para_fonc))
          __ex=t_nappe(vale_para,l_fonc,para)
+      ###
+      if (DSP != None):
+        deuxpi = 2. * math.pi
+        __ff = DSP['FONCTION'].convert()
+        wmin = 1.001
+        wcoup = deuxpi * DSP['FREQ_COUP']
+        duree = min(10., DSP['DUREE'])
+        ksi = DSP['AMOR_REDUIT']
+        pesanteur = DSP['NORME']
+        fract = DSP['FRACT']
+        if DSP['LIST_FREQ'] != None:
+            l_freq = DSP['LIST_FREQ'].Valeurs()
+        elif DSP['FREQ'] != None:
+            l_freq = DSP['FREQ']
+        else:
+            l_freq = __ff.vale_x
+        sro = __ff.evalfonc(l_freq) * pesanteur
+        ctxt.f = sro.nom
+        assert 0< fract < 1.0, 'invalid value for FRACT'
+        assert 0 < ksi < 1, 'invalid value for AMOR_REDUIT'
+        def coefn(wn, T, p):
+            vo = wn / (2. * math.pi)
+            return vo * T / ( -math.log(p) )
+        def peak2(p, T, wn, ksi):
+            delta = math.sqrt(4. * ksi / math.pi)
+            deuxn = 2. * coefn(wn, T, p)
+            sexp = - math.pow(delta, 1.2) * math.sqrt(math.pi * math.log(deuxn))
+            return 2. * math.log( deuxn * ( 1. - math.exp(sexp)) )
+
+        valw = sro.vale_x * deuxpi
+ #       if max(valw) > wmin:
+ #           pass
+        nbfreq = len(valw)
+        valg = NP.zeros(nbfreq)
+        sumg = 0.        
+        ZPA=__ff.vale_y[-1]
+        for n in range(nbfreq):
+            wn = valw[n]
+            if wn <= wmin:
+                valg[n]=0.0
+            else:
+ 
+              valsro = sro.vale_y[n]
+              if wn > wcoup:
+                 valsro = ZPA
+
+              npi2 = peak2(fract, duree, wn, ksi)
+              v1 = 1./(wn*(math.pi/(2.*ksi)-2.))
+              v2 = (valsro**2)/npi2;
+            #v3=2*trapz(w(1:ii-1),Gw)
+              Gw = t_fonction(valw, valg, para=__ff.para)
+              v3 = 2. * Gw.trapeze(0.0)(wn)
+              valg[n] = v1*(v2-v3)
+              if valg[n]<0.0:
+                 valg[n]=0.0
+        valf = valw / deuxpi
+        __ex = t_fonction(valf, valg * deuxpi, para=__ff.para)
       ###
       if (LISS_ENVELOP!= None):
          __ff=LISS_ENVELOP['NAPPE'].convert()

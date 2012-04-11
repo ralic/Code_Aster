@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 10/04/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE TREMPE D UN BARREAU INFINI A SECTION CARREE
 # mtlp100a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -641,12 +641,12 @@ TEMPE=CALC_META(reuse =TEMPE,
                 RESULTAT=TEMPE,
                 ETAT_INIT=_F(META_INIT_ELNO=PHASINIT,),
                 COMP_INCR=_F(RELATION='ACIER',
-                             TOUT='OUI',),)
+                             TOUT='OUI',),
+                OPTION='META_ELNO',);
 
-
-TEMPE=CALC_ELEM(reuse =TEMPE,
+TEMPE=CALC_META(reuse =TEMPE,
                 RESULTAT=TEMPE,
-                OPTION=('DURT_ELNO',),);
+                OPTION='DURT_ELNO',);
 
 TEMPE1=EXTR_RESU(RESULTAT=TEMPE,
                  ARCHIVAGE=_F(INST=(0.0,200.0,),),);
@@ -670,13 +670,8 @@ TEMPE1=CALC_META(reuse =TEMPE1,
                  ETAT_INIT=_F(EVOL_THER=TEMPE1,
                               INST_INIT=200.0,),
                  COMP_INCR=_F(RELATION='ACIER',
-                              TOUT='OUI',) );
-
-
-TEMPE1=CALC_ELEM(reuse =TEMPE1,
-                 RESULTAT=TEMPE1,
-                 INST=(300.0,410.0,),
-                 OPTION=('DURT_ELNO',),);
+                              TOUT='OUI',),
+                 OPTION=('META_ELNO','DURT_ELNO',),);
 
 TEST_RESU(RESU=(_F(RESULTAT=TEMPE1,
                    INST=300.0,

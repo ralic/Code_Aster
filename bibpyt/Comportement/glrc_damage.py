@@ -1,8 +1,8 @@
-#@ MODIF glrc_damage Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF glrc_damage Comportement  DATE 10/04/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -34,7 +34,7 @@ loi = LoiComportement(
    nb_vari        = 19,
    nom_vari       = ('EPSP1','EPSP2','EPSP3','KHIP1','KHIP2','KHIP3','DISSPLAS','ENDOFL+','ENDOFL-','DISSENDO','ANGL1','ANGL2','ANGL3','XMEMB1','XMEMB2','XMEMB3','XFLEX1','XFLEX2','XFLEX3'),
    mc_mater       = ('GLRC_DAMAGE','GLRC_ACIER'),
-   modelisation   = ('DKTG'),
+   modelisation   = ('DKTG','Q4GG'),
    deformation    = ('PETIT', 'GROT_GDEP'),
    nom_varc       = ('TEMP'),
    algo_inte         = ('NEWTON',),

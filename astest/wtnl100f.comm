@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2012   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 10/04/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE CONSOLIDATION TERZAGHI 2D Q8
 # wtnl100f.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -175,10 +175,10 @@ for k in range(1,nbadap+1):
                       LIST_INST=LI1,
                       OPTION=('ERME_ELEM','ERME_ELNO',),);
 
-  RESU[k]=CALC_NO(reuse =RESU[k],
-                    RESULTAT=RESU[k],
-                    INST=T1_FIN,
-                    OPTION='ERME_NOEU',);
+  RESU[k]=CALC_ERREUR(reuse =RESU[k],
+                      RESULTAT=RESU[k],
+                      INST=T1_FIN,
+                      OPTION='ERME_NOEU',);
 
   if ( k == 1 ) :
     TEST_RESU( RESU = (

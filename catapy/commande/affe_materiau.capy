@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/01/2012   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 10/04/2012   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -62,11 +62,8 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
           GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
           MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
 
-          NOM_VARC        =SIMP(statut='o',typ='TXM',
-#                                     champ dans la doc   into=("TEMP","GEOM","CORR","IRRA","HYDR_ELNO","META_ELNO","NEUT")
-#                                     champ dans rscrsd   into=("IRRA","TEMP","HYDR_ELNO","HYDR_NOEU","EPSA_ELNO","META_ELNO",
-#                                                               "PTOT","DIVU")
-                                                            ),
+          NOM_VARC        =SIMP(statut='o',typ='TXM', into=("TEMP","GEOM","CORR","IRRA","HYDR","SECH","EPSA",
+                               "M_ACIER","M_ZIRC","NEUT1","NEUT2","PTOT","DIVU",)),
           CHAMP_GD        =SIMP(statut='f',typ=cham_gd_sdaster,),
           EVOL            =SIMP(statut='f',typ=evol_sdaster,),
 

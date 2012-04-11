@@ -1,4 +1,4 @@
-# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 11/04/2012   AUTEUR LADIER A.LADIER 
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -97,8 +97,7 @@ RSUP3=DEFI_FONCTION(  NOM_PARA='ABSC',  VALE=( 0., 5.484,  26.69, 6.25,  ))
 FISS1=DEFI_FOND_FISS(MAILLAGE=MA,
                      SYME='OUI',
                      FOND_FISS=_F(GROUP_NO = 'FONFIS',
-                                  DTAN_ORIG=( 0.,  1.,  0.,),
-                                  DTAN_EXTR=( 1.,  0.,  0.,)),
+                                  DTAN_ORIG=( 0.,  1.,  0.,),),
                      LEVRE_SUP=_F(  GROUP_MA = 'GRPRES'),)
 
 #----------------------------------------------------------------------

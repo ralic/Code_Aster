@@ -3,9 +3,9 @@
      &                   VMAX, OMIN, OMAX, NOMCRI, NOMMAT, NOMFOR,GDREQ)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/09/2011   AUTEUR TRAN V-X.TRAN 
+C MODIF PREPOST  DATE 10/04/2012   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -82,7 +82,7 @@ C     ------------------------------------------------------------------
       REAL*8       VETPR(NBORDR), VSITN(NBORDR)
       REAL*8       VEPPR(NBORDR), VSIPN(NBORDR)
       REAL*8       VSIEQ(NBORDR), VETEQ(NBORDR)
-      LOGICAL      FORDEF, PLACRI
+      LOGICAL      FORDEF
       CHARACTER*8  NOMPF(30), NOMPAR(30)
       CHARACTER*16 TYPCHA
       CHARACTER*24 CHNOM, CBID
@@ -118,16 +118,16 @@ C RECUPERER LA LISTE DE GRANDEURS ACTIVES
 C VOIR SI LE CRITERE DU TYPE DE PLANE CRITIQUE
 C SI OUI, ON TOURNE NVVECT, SI NON ON NVEC=1
      
-      PLACRI = .FALSE.
-      DO 30 J = 1, 8
-         IF (PARACT(J) .EQ. 1) THEN 
-            PLACRI = .TRUE.
-            GOTO 31
-         ENDIF
-
-30    CONTINUE
-
-31    CONTINUE   
+C       PLACRI = .FALSE.
+C       DO 30 J = 1, 8
+C          IF (PARACT(J) .EQ. 1) THEN 
+C             PLACRI = .TRUE.
+C             GOTO 31
+C          ENDIF
+C 
+C 30    CONTINUE
+C 
+C 31    CONTINUE   
   
 C-----------------------------------------------------------------------
 C CALCULER LES GRANDEURS
@@ -263,7 +263,7 @@ C RECUPERER LES NOMS DE PARAMETRES FOURNIS PAR L'UTILISATEUR
                VALPAR(28) = 0.D0
                VALPAR(29) = 0.D0
                VALPAR(30) = 0.D0  
-                          
+               
                DO 75 J = 1, NP
                   DO 65 IPAR = 1, NPARMA
                      IF (NOMPF(J).EQ.NOMPAR(IPAR)) THEN
@@ -279,9 +279,9 @@ C RECUPERER LES NOMS DE PARAMETRES FOURNIS PAR L'UTILISATEUR
                          
  20      CONTINUE
          
-         IF ( .NOT. PLACRI) THEN
-            GOTO 99
-         ENDIF
+C         IF ( .NOT. PLACRI) THEN
+C            GOTO 99
+C         ENDIF
          
  10   CONTINUE
  

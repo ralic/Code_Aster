@@ -1,4 +1,4 @@
-#@ MODIF N_VALIDATOR Noyau  DATE 13/03/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_VALIDATOR Noyau  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -139,6 +139,12 @@ class TypeProtocol(PProtocol):
                  if (len(typ) > 2 and typ[2] == "Sauvegarde") or isinstance(obj, type("")):
                      return obj
                  else : raise ValError("%s n'est pas un fichier valide" % repr(obj))
+            elif type_permis == 'Repertoire':
+                import os
+                if os.path.isdir(obj):
+                    return obj
+                else:
+                    raise ValError(u"%s n'est pas un répertoire valide" % repr(obj))
             elif type(type_permis) == types.ClassType or isinstance(type_permis,type):
                 try:
                     if self.is_object_from(obj,type_permis): return obj
@@ -151,7 +157,7 @@ class TypeProtocol(PProtocol):
                     help = str(err)
             else:
                 print "Type non encore géré %s" %`type_permis`
-        raise ValError("%s (de type %s) n'est pas d'un type autorisé: %s %s" % (repr(obj),type(obj),typ, help))
+        raise ValError(u"%s (de type %s) n'est pas d'un type autorisé: %s %s" % (repr(obj),type(obj),typ, help))
 
     def is_complexe(self,valeur):
         """ Retourne 1 si valeur est un complexe, 0 sinon """

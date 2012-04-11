@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/04/2012   AUTEUR SELLENET N.SELLENET 
+#& MODIF COMMANDE  DATE 10/04/2012   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,7 +32,9 @@ CALC_CHAMP=OPER(nom="CALC_CHAMP",op=52,sd_prod=calc_champ_prod,reentrant='f',
                              fr="Resultat d'une commande globale"),
 
      regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','FREQ','NUME_MODE',
-                    'NOEUD_CMP','LIST_INST','LIST_FREQ','LIST_ORDRE','NOM_CAS'),),
+                    'NOEUD_CMP','LIST_INST','LIST_FREQ','LIST_ORDRE','NOM_CAS'),
+#             PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),
+             ),
      TOUT_ORDRE       = SIMP(statut='f',typ='TXM',into=("OUI",) ),
      NUME_ORDRE       = SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
      NUME_MODE        = SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
@@ -195,7 +197,6 @@ CALC_CHAMP=OPER(nom="CALC_CHAMP",op=52,sd_prod=calc_champ_prod,reentrant='f',
                              fr="Options pour le calcul de champs en thermique",
                              into=(
                                    "FLUX_ELGA","FLUX_ELNO","FLUX_NOEU",
-                                               "DURT_ELNO","DURT_NOEU",
                                    "SOUR_ELGA",
                                                            "HYDR_NOEU",
                                   ),

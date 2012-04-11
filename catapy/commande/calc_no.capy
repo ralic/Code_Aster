@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 10/04/2012   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,6 +28,7 @@ CALC_NO=OPER(nom="CALC_NO",op= 106,sd_prod=calc_no_prod,reentrant='f',
 
          regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','FREQ','NUME_MODE',
                         'NOEUD_CMP','LIST_INST','LIST_FREQ','LIST_ORDRE','NOM_CAS'),
+                 PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),
                  ),
          TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
          NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
@@ -47,7 +48,6 @@ CALC_NO=OPER(nom="CALC_NO",op= 106,sd_prod=calc_no_prod,reentrant='f',
          OPTION          =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                                into=("FORC_NODA","REAC_NODA",
                                      "DERA_NOEU",
-                                     "DURT_NOEU",
                                      "EFGE_NOEU",
                                      "ENDO_NOEU",
                                      "ENEL_NOEU",
@@ -57,7 +57,6 @@ CALC_NO=OPER(nom="CALC_NO",op= 106,sd_prod=calc_no_prod,reentrant='f',
                                      "EPSP_NOEU"     ,
                                      "EPVC_NOEU","EPFD_NOEU","EPFP_NOEU","EPFP_NOEU",
                                      "EPMQ_NOEU","EPEQ_NOEU","SIEQ_NOEU",
-                                     "ERME_NOEU","ERTH_NOEU","QIRE_NOEU",
                                      "FLUX_NOEU",
                                      "HYDR_NOEU",
                                      "INTE_NOEU",
@@ -66,7 +65,8 @@ CALC_NO=OPER(nom="CALC_NO",op= 106,sd_prod=calc_no_prod,reentrant='f',
                                      "SIEF_NOEU",
                                      "SIGM_NOEU",
                                      "SIPO_NOEU",
-                                     "VAEX_NOEU","VARI_NOEU","DISS_NOEU",) ),
+                                     "VAEX_NOEU","VARI_NOEU","DISS_NOEU",
+                                     "ERME_NOEU",) ),
 
 
          MODELE          =SIMP(statut='f',typ=modele_sdaster),

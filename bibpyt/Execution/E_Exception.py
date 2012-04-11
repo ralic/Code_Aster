@@ -1,4 +1,4 @@
-#@ MODIF E_Exception Execution  DATE 02/04/2012   AUTEUR ABBAS M.ABBAS 
+#@ MODIF E_Exception Execution  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -105,14 +105,14 @@ class ArretCPUError(error):
 
 class PilotageError(error):
     """Echec du pilotage"""
-    
-class BoucleGeometrieError(error): 
+
+class BoucleGeometrieError(error):
     """Echec dans la boucle de point fixe sur la géométrie"""
 
-class BoucleFrottementError(error): 
+class BoucleFrottementError(error):
     """Echec dans la boucle de point fixe sur le seuil de frottement"""
 
-class BoucleContactError(error):    
+class BoucleContactError(error):
     """Echec dans la boucle de point fixe sur le statut de contact"""
 
 class CollisionError(error):

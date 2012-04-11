@@ -1,4 +1,4 @@
-# MODIF  DATE 26/03/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 10/04/2012   AUTEUR SELLENET N.SELLENET 
 # TITRE TEST DE NON-REGRESSION ASTER : MECANIQUE LINEAIRE AXISYMETRIQUE
 # RESPONSABLE PELLET J.PELLET
 # ssla200a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
@@ -477,7 +477,7 @@ MSLIN=MECA_STATIQUE(        MODELE=MO,
                                    FONC_MULT = FO11),
                            LIST_INST=LR1,  )
 
-CALC_ELEM( reuse= MSLIN ,RESULTAT= MSLIN ,
+MSLIN=CALC_ELEM( reuse= MSLIN ,RESULTAT= MSLIN ,
                            LIST_INST=LR1,
                            OPTION=(
                             'SIGM_ELNO',
@@ -489,14 +489,10 @@ CALC_ELEM( reuse= MSLIN ,RESULTAT= MSLIN ,
                                     'EPMQ_ELGA',
                                      ) )
 
-CALC_NO( reuse=MSLIN,       OPTION=(
-                                  'EPEQ_NOEU',
-                                  'EPMQ_NOEU',),
-                       RESULTAT=MSLIN,
-                      PRECISION=1.000000000E-03,
-                        CRITERE='ABSOLU',
-                     NUME_ORDRE=2
-                      )
+MSLIN=CALC_CHAMP(reuse=MSLIN,
+                 RESULTAT=MSLIN,
+                 NUME_ORDRE=2,
+                 CRITERES=('EPEQ_NOEU','EPMQ_NOEU',),);
 
 #ENGENDRE_TEST (  CO = MSLIN )
 
@@ -710,7 +706,7 @@ MSLI2=MECA_STATIQUE(        MODELE=MO,
 #   POST_TRAITEMENT DU CALCUL
 # ----------------------------------------------------------------------
 CALC_ELEM( reuse=MSLI2,
-                           OPTION=( 'SIEF_ELGA', 'SIGM_ELNO',
+                           OPTION=( 'SIGM_ELNO',
                                     'EPME_ELGA',
                                     'EPME_ELNO', 'EPOT_ELEM',
                                     'EPSG_ELGA', 'EPSG_ELNO',
@@ -721,13 +717,14 @@ CALC_ELEM( reuse=MSLI2,
                           RESULTAT=MSLI2,
                        NUME_ORDRE=(1, 2, 3,) )
 
-CALC_NO( reuse=MSLI2,       OPTION=( 'EPSI_NOEU', 'SIEQ_NOEU',
-                                  'EPEQ_NOEU', 'SIGM_NOEU',
-                                  'EPMQ_NOEU',),
-                       RESULTAT=MSLI2,
-                      PRECISION=1.000000000E-03,
-                        CRITERE='ABSOLU',
-                           INST=11.5   )
+MSLI2=CALC_CHAMP(reuse=MSLI2,
+                 RESULTAT=MSLI2,
+                 PRECISION=1.000000000E-03,
+                 CRITERE='ABSOLU',
+                 INST=11.5,
+                 DEFORMATION='EPSI_NOEU',
+                 CRITERES=('SIEQ_NOEU','EPEQ_NOEU','EPMQ_NOEU',),
+                 CONTRAINTE='SIGM_NOEU',);
 
 #ENGENDRE_TEST (  CO = MSLI2, )
 
@@ -980,27 +977,12 @@ TEST_RESU(RESU=( _F(  RESULTAT = MSLI2,    INST = 11.5,
 # --------------------------------------------------------------------
 # POUR TESTER LE CALCUL DE REAC_NODA SUR UN GROUP_MA :
 # ----------------------------------------------------
-MSLI3=CALC_ELEM( OPTION='SIEF_ELGA',
+
+MSLI2=CALC_CHAMP(reuse=MSLI2,
                  RESULTAT=MSLI2,
-                 MAILLE=('M11','M12','M14',),
-                 NUME_ORDRE=3 )
-
-TEST_RESU(RESU=( _F(  RESULTAT = MSLI3,    NUME_ORDRE = 3,
-                     NOM_CHAM = 'SIEF_ELGA',
-                     TYPE_TEST = 'SOMM_ABS',
-       REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-              VALE= 9.7886006390193E+01     ),
-                   _F(  RESULTAT = MSLI3,    NUME_ORDRE = 3,
-                     NOM_CHAM = 'SIEF_ELGA',
-                     TYPE_TEST = 'SOMM',
-       REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-10,
-              VALE= 8.3497014835607E+01     ))
-            )
-
-CALC_NO( reuse=MSLI2,       OPTION='REAC_NODA',
-                       RESULTAT=MSLI2,
-                      MAILLE=('M11','M14',),
-                       NUME_ORDRE=3 )
+                 MAILLE=('M11','M14',),
+                 NUME_ORDRE=3,
+                 FORCE='REAC_NODA',);
 
 TEST_RESU(RESU=( _F(  RESULTAT = MSLI2,    NUME_ORDRE = 3,
                      NOM_CHAM = 'REAC_NODA',

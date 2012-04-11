@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
+C MODIF CALCULEL  DATE 11/04/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,8 @@ C
       CHARACTER*9   ENTIT(8)
       CHARACTER*13  MOTCL(8)
       CHARACTER*16  TYPRES, OPER
-      CHARACTER*24  VALK(3), NCNCIN
+      CHARACTER*19  CNXINV
+      CHARACTER*24  VALK(3)
       INTEGER      IARG
 C DEB-------------------------------------------------------------------
 C
@@ -71,8 +72,8 @@ C
 C
 C ---  RECUPERATION DE LA CONNECTIVITE INVERSE
 C
-      NCNCIN='&&'//NOMPRO//'.CONNECINVERSE'
-      CALL CNCINV (NOMA, IBID, 0, 'V', NCNCIN )
+      CNXINV='&&'//NOMPRO//'.CNXINV'
+      CALL CNCINV (NOMA, IBID, 0, 'V', CNXINV )
 C
 C
 C     ---------------------------------------------------------------
@@ -157,7 +158,7 @@ C
           CALL JEEXIN ('&&'//NOMPRO//'.NOEUD',    IRET1 )
           CALL JEEXIN ('&&'//NOMPRO//'.GROUP_NO', IRET2 )
           IF ((IRET1.NE.0).OR.(IRET2.NE.0)) THEN
-            CALL FONNOE ( RESU, NOMA, NOMPRO, TYPFON, NBNOFF)
+            CALL FONNOE ( RESU, NOMA, CNXINV, NOMPRO, TYPFON, NBNOFF)
           ENDIF
 C
 C        SI LE MOT CLE FACTEUR EST MAILLE OU GROUP_MA
@@ -196,9 +197,9 @@ C     MOTS CLES FACTEUR : DTAN_EXTR, DTAN_ORIG
 C                         VECT_GRNO_ORIG, VECT_GRNO_EXTR
 C     ----------------------------------------
 C
-      CALL FONVEC(RESU,NOMA)
+      CALL FONVEC(RESU,NOMA,CNXINV)
 
-      CALL JEDETR('&&'//NOMPRO//'.CONNECINVERSE')
+      CALL JEDETR(CNXINV)
 C
 C
 C     ---------------------------------------------------------------

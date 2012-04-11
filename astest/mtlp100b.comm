@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 10/04/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE TREMPE D'UN BARREAU INFINI A SECTION CARREE (3D)
 # mtlp100b.para = tps_job 160 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -632,13 +632,14 @@ TEMPE=THER_LINEAIRE(        MODELE=MOTH,
                             ETAT_INIT=_F(  VALE = 700.)
                        )
 
-TEMPE=CALC_META( reuse=TEMPE,       MODELE=MOTH,
-                         RESULTAT=TEMPE,
-                       CHAM_MATER=CHMAT,
-                        ETAT_INIT=_F( META_INIT_ELNO = PHASINIT),
-                        COMP_INCR=_F(  RELATION = 'ACIER',
-                                    TOUT = 'OUI'),
-                   )
+TEMPE=CALC_META(reuse=TEMPE,
+                MODELE=MOTH,
+                RESULTAT=TEMPE,
+                CHAM_MATER=CHMAT,
+                ETAT_INIT=_F(META_INIT_ELNO=PHASINIT),
+                COMP_INCR=_F(RELATION='ACIER',
+                             TOUT='OUI'),
+                OPTION='META_ELNO',);
 
 TEMPE=THER_LINEAIRE( reuse=TEMPE,       MODELE=MOTH,
                            CHAM_MATER=CHMAT,
@@ -651,21 +652,23 @@ TEMPE=THER_LINEAIRE( reuse=TEMPE,       MODELE=MOTH,
                                         NUME_ORDRE = 40)
                         )
 
-TEMPE=CALC_META( reuse=TEMPE,   MODELE=MOTH,
-                         RESULTAT=TEMPE,
-                       CHAM_MATER=CHMAT,
-                        ETAT_INIT=_F(  EVOL_THER = TEMPE,
-                                    NUME_INIT = 40),
-                        COMP_INCR=_F(  RELATION = 'ACIER',
-                                    TOUT = 'OUI'),
-                   )
+TEMPE=CALC_META(reuse=TEMPE,
+                MODELE=MOTH,
+                RESULTAT=TEMPE,
+                CHAM_MATER=CHMAT,
+                ETAT_INIT=_F(EVOL_THER=TEMPE,
+                             NUME_INIT=40),
+                COMP_INCR=_F(RELATION='ACIER',
+                             TOUT = 'OUI'),
+                OPTION='META_ELNO',);
+                   
+TEMPE=CALC_META(reuse=TEMPE,
+                MODELE=MOTH,
+                RESULTAT=TEMPE,
+                CHAM_MATER=CHMAT,
+                OPTION='DURT_ELNO',);
+                   
 
-
-TEMPE=CALC_ELEM( reuse=TEMPE,
-                         RESULTAT=TEMPE,
-                           OPTION=('DURT_ELNO',),
-                             INST=( 30.0,  140.0,  300.0,  410.0, )
-                   )
 
 TEST_RESU(RESU=(
 

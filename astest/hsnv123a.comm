@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 10/04/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE THERMO_METALLO_MECANIQUE EDGAR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -80,14 +80,14 @@ TEMPE=CREA_RESU(    OPERATION='AFFE', TYPE_RESU='EVOL_THER',
                                 LIST_INST = LR8)
                     )
 
-TEMPE=CALC_META( reuse=TEMPE,  MODELE=MOTH,
-                     CHAM_MATER=CHMAT,
-                     RESULTAT=TEMPE,
-                     ETAT_INIT=_F( META_INIT_ELNO = PHASINIT),
-                     COMP_INCR=_F(  RELATION = 'ZIRC',
-                                 TOUT = 'OUI'),
-
-                   )
+TEMPE=CALC_META(reuse=TEMPE,
+                MODELE=MOTH,
+                CHAM_MATER=CHMAT,
+                RESULTAT=TEMPE,
+                ETAT_INIT=_F(META_INIT_ELNO=PHASINIT),
+                COMP_INCR=_F(RELATION='ZIRC',
+                             TOUT='OUI'),
+                OPTION='META_ELNO',);
 
 YOUNG=DEFI_CONSTANTE( VALE=200000.)
 

@@ -1,10 +1,9 @@
-      SUBROUTINE T3GB ( CARAT3, XYZL, IGAU, BMAT )
+      SUBROUTINE T3GB ( CARAT3, XYZL, BMAT )
       IMPLICIT  NONE
-      INTEGER   IGAU
       REAL*8    XYZL(3,1), CARAT3(*), BMAT(6,1)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 19/03/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 10/04/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -32,8 +31,6 @@ C     ------------------------------------------------------------------
 C     IN  XYZL(3,NNO)   : COORDONNEES DES CONNECTIVITES DE L'ELEMENT
 C                         DANS LE REPERE LOCAL DE L'ELEMENT
 C     IN  IGAU          : INDICE DU POINT D'INTEGRATION
-C     OUT JACGAU        : PRODUIT JACOBIEN*POIDS AU POINT D'INTEGRATION
-C                         COURANT
 C     OUT BMAT(6,1)     : MATRICE (B) AU POINT D'INTEGRATION COURANT
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER            ZI
@@ -57,11 +54,6 @@ C ------------------------------------------------------------------
 C
       CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
      +                                         IVF,IDFDX,IDFD2,JGANO)
-C
-C --- COORDONNEES DU POINT D'INTEGRATION COURANT :
-C     ------------------------------------------
-      QSI = ZR(ICOOPG-1+NDIM*(IGAU-1)+1)
-      ETA = ZR(ICOOPG-1+NDIM*(IGAU-1)+2)
 C
 C --- CALCUL DE LA MATRICE B_MEMBRANE NOTEE, ICI, (BM)
 C     ------------------------------------------------

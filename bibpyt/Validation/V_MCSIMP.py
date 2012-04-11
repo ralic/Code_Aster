@@ -1,24 +1,24 @@
-#@ MODIF V_MCSIMP Validation  DATE 11/10/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF V_MCSIMP Validation  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-#                                                                       
-#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+#
+#
 # ======================================================================
 
 """
@@ -30,7 +30,6 @@
    utilisée par héritage multiple pour composer les traitements.
 """
 # Modules Python
-import string,types
 import traceback
 
 # Modules EFICAS
@@ -38,6 +37,7 @@ from Noyau import N_CR
 from Noyau.N_Exception import AsException
 from Noyau.N_VALIDATOR import ValError,TypeProtocol,CardProtocol,IntoProtocol
 from Noyau.N_VALIDATOR import listProto
+from Noyau.strfunc import ufmt
 
 class MCSIMP:
    """
@@ -46,7 +46,7 @@ class MCSIMP:
       a part quelques changements cosmétiques et des chagements pour la
       faire fonctionner de facon plus autonome par rapport à l'environnement
       EFICAS
- 
+
       A mon avis, il faudrait aller plus loin et réduire les dépendances
       amont au strict nécessaire.
 
@@ -59,7 +59,7 @@ class MCSIMP:
    """
 
    CR=N_CR.CR
-   
+
    def __init__(self):
       self.state='undetermined'
       self.typeProto=TypeProtocol("type",typ=self.definition.type)
@@ -99,14 +99,14 @@ class MCSIMP:
         #  verification presence
         if self.isoblig() and v == None :
           if cr == 'oui' :
-            self.cr.fatal(string.join(("Mot-clé : ",self.nom," obligatoire non valorisé")))
+            self.cr.fatal(_(u"Mot-clé : %s obligatoire non valorisé"), self.nom)
           valid = 0
 
         lval=listProto.adapt(v)
         if lval is None:
            valid=0
            if cr == 'oui' :
-              self.cr.fatal("None n'est pas une valeur autorisée")
+              self.cr.fatal(_(u"None n'est pas une valeur autorisée"))
         else:
            # type,into ...
            #typeProto=TypeProtocol("type",typ=self.definition.type)
@@ -125,18 +125,18 @@ class MCSIMP:
                        typeProto.adapt(val)
                except ValError,e:
                    valid=0
-                   self.cr.fatal(str(e))
+                   self.cr.fatal(unicode(e))
                try:
                    for val in lval:
                        intoProto.adapt(val)
                except ValError,e:
                    valid=0
-                   self.cr.fatal(str(e))
+                   self.cr.fatal(unicode(e))
                try:
                    cardProto.adapt(lval)
                except ValError,e:
                    valid=0
-                   self.cr.fatal(str(e))
+                   self.cr.fatal(unicode(e))
                #
                # On verifie les validateurs s'il y en a et si necessaire (valid == 1)
                #
@@ -144,10 +144,11 @@ class MCSIMP:
                    try:
                        self.definition.validators.convert(lval)
                    except ValError,e:
-                       self.cr.fatal(string.join(("Mot-clé",self.nom,"invalide :",str(e),"\nCritere de validite:",self.definition.validators.info())))
+                       self.cr.fatal(_(u"Mot-clé %s invalide : %s\nCritère de validité: %s"),
+                            self.nom, str(e), self.definition.validators.info())
                        valid=0
            else:
-               #si pas de cr demande, on sort a la toute premiere erreur 
+               #si pas de cr demande, on sort a la toute premiere erreur
                try:
                    for val in lval:
                        typeProto.adapt(val)
@@ -170,7 +171,7 @@ class MCSIMP:
 
    def init_modif_up(self):
       """
-         Propage l'état modifié au parent s'il existe et n'est l'objet 
+         Propage l'état modifié au parent s'il existe et n'est l'objet
          lui-meme
       """
       if self.parent and self.parent != self :
@@ -179,14 +180,14 @@ class MCSIMP:
    def report(self):
       """ génère le rapport de validation de self """
       self.cr=self.CR()
-      self.cr.debut = "Mot-clé simple : "+self.nom
-      self.cr.fin = "Fin Mot-clé simple : "+self.nom
+      self.cr.debut = u"Mot-clé simple : "+self.nom
+      self.cr.fin = u"Fin Mot-clé simple : "+self.nom
       self.state = 'modified'
       try:
         self.isvalid(cr='oui')
       except AsException,e:
         if CONTEXT.debug : traceback.print_exc()
-        self.cr.fatal(string.join(("Mot-clé simple : ",self.nom,str(e))))
+        self.cr.fatal(_(u"Mot-clé simple : %s %s"), self.nom, e)
       return self.cr
 
 

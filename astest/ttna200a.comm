@@ -1,6 +1,6 @@
-# MODIF  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 10/04/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE TEST DE NON-REGRESSION D'ASTER : THERMIQUE AXIS
-# RESPONSABLE VABHHTS J.PELLET
+# RESPONSABLE PELLET J.PELLET
 # ttna200a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -396,12 +396,12 @@ THL10=CALC_ELEM(reuse=THL10,
                                    'FLUX_ELGA',  ),
                     RESULTAT=THL10               )
 
-THL10=CALC_META( reuse=THL10,  MODELE=MO,
-                     CHAM_MATER=CHMAT,
-                       RESULTAT=THL10,
-                      ETAT_INIT=_F( META_INIT_ELNO = CARTE),
-                      COMP_INCR=_F( RELATION = 'ACIER', TOUT = 'OUI'),
-                   )
+THL10=CALC_META(reuse=THL10,
+                RESULTAT=THL10,
+                ETAT_INIT=_F(META_INIT_ELNO=CARTE),
+                COMP_INCR=_F(RELATION='ACIER',
+                             TOUT = 'OUI'),
+                OPTION='META_ELNO',);
 
 #     -  THERMIQUE NON LINEAIRE
 #        ----------------------
@@ -424,12 +424,14 @@ THNL6=THER_NON_LINE(        MODELE=MO,
                            ETAT_INIT=_F( VALE = 0.),
                           OPTION=( 'FLUX_ELGA', 'FLUX_ELNO',))
 
-THNL6=CALC_META( reuse=THNL6,  MODELE=MO,
-                     CHAM_MATER=CHMATNL,
-                       RESULTAT=THNL6,
-                      ETAT_INIT=_F( META_INIT_ELNO = CARTE),
-                      COMP_INCR=_F( RELATION = 'ACIER', TOUT = 'OUI'),
-                   )
+THNL6=CALC_META(reuse=THNL6,
+                MODELE=MO,
+                CHAM_MATER=CHMATNL,
+                RESULTAT=THNL6,
+                OPTION='META_ELNO',
+                ETAT_INIT=_F(META_INIT_ELNO=CARTE),
+                COMP_INCR=_F(RELATION='ACIER',
+                             TOUT = 'OUI'),);
 
 ENGENDRE_TEST (  CO = (THNL1, THNL6, THL10) )
 

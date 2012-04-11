@@ -4,9 +4,9 @@
      &                    TAU   ,COPILO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/03/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 10/04/2012   AUTEUR KAZYMYRE K.KAZYMYRENKO 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -85,7 +85,7 @@ C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER  NDIMSI
-      REAL*8   R8VIDE
+      REAL*8   R8GAEM
 C
 C ----------------------------------------------------------------------
 C
@@ -113,10 +113,9 @@ C
 
       ELSEIF (COMPOR(1).EQ.'ENDO_ISOT_BETON') THEN
         CALL DAXPY(NDIMSI, 1.D0, EPSM,1, EPSP,1)
-
-        IF (ETAMIN.EQ.R8VIDE() .OR. ETAMAX.EQ.R8VIDE()) THEN
-          CALL U2MESS('F','PILOTAGE_89')
-        ENDIF  
+        
+        IF (ETAMIN.EQ.-R8GAEM() .OR. ETAMAX.EQ.R8GAEM())
+     &      CALL U2MESG('F','MECANONLINE_60',1,COMPOR(1),0,0,0,0.D0)
 
         CALL PIPEDS(NDIM         ,TYPMOD,TAU   ,MATE  ,VIM(1,KPG),
      &              EPSM         ,EPSP  ,EPSD  ,ETAMIN,ETAMAX    ,
@@ -125,10 +124,9 @@ C
 
       ELSEIF (COMPOR(1).EQ.'ENDO_ORTH_BETON') THEN
         CALL DAXPY(NDIMSI, 1.D0, EPSM,1, EPSP,1)
-
-        IF (ETAMIN.EQ.R8VIDE() .OR. ETAMAX.EQ.R8VIDE()) THEN
-          CALL U2MESS('F','PILOTAGE_90')
-        ENDIF  
+        
+        IF (ETAMIN.EQ.-R8GAEM() .OR. ETAMAX.EQ.R8GAEM())
+     &      CALL U2MESG('F','MECANONLINE_60',1,COMPOR(1),0,0,0,0.D0)
 
         CALL PIPEDO(NDIM         ,TYPMOD,TAU   ,MATE  ,VIM(1,KPG),
      &              EPSM         ,EPSP  ,EPSD  ,ETAMIN,ETAMAX    ,

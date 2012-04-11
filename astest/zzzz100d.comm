@@ -1,10 +1,10 @@
-# MODIF  DATE 11/10/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 10/04/2012   AUTEUR ZENTNER I.ZENTNER 
 # RESPONSABLE ZENTNER I.ZENTNER
 # TITRE CALCUL DES INDICES DE NOCIVITE D'UN SEISME
 # zzzz100d.para = tps_job 60 mem_job 50Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -423,6 +423,114 @@ TEST_TABLE(      TABLE=RMS4,
 
 #
 # FIN VALIDATION CORR_ACCE
+##--------------------------------------------------------
+
+##--------------------------------------------------------
+# ------------------ TEST DSP ----------------------------
+FCOUP = 60.
+SRO_7 = [0.0001, 0.0, 0.2, 9.75E-3, 0.51, 6.45E-2, 4.58, 5.74E-1, 14.0, 5.74E-1, 40., 2.5E-1, 60., 2.5E-1]
+amort = 0.07
+T = 10.
+
+import numpy as NP
+from math import pi
+
+sro=DEFI_FONCTION(NOM_PARA='FREQ',
+                  VALE=SRO_7,
+                  #INTERPOL='LOG',
+                  PROL_DROITE='CONSTANT',
+                  PROL_GAUCHE='CONSTANT',);
+
+
+FR_DSP = CALC_FONCTION(DSP=_F(FONCTION=sro,
+          FREQ=NP.arange(0., FCOUP, 1./4./pi),
+          FREQ_COUP=FCOUP, AMOR_REDUIT=amort,
+          DUREE=T, NORME=10.,
+          FRACT=0.5,),
+          INTERPOL='LIN',)
+
+
+F_DSP = CALC_FONCTION(COMB_C=(_F(FONCTION=FR_DSP,
+         COEF_C = 1.+0.j), ),)
+
+#
+#IMPR_FONCTION(UNITE=29,
+#              FORMAT='XMGRACE',
+#              COURBE=_F(FONCTION=FR_DSP,),)
+#
+#
+DEF_SPEC=DEFI_INTE_SPEC(DIMENSION=1,
+                        PAR_FONCTION=_F(NUME_ORDRE_I=1,
+                                        NUME_ORDRE_J=1,
+                                        FONCTION=F_DSP,),);
+
+POST_DSP=POST_DYNA_ALEA(INTE_SPEC=DEF_SPEC, TOUT_ORDRE = 'OUI',
+                        OPTION = 'DIAG', INFO=2,);
+
+TRAJ=GENE_FONC_ALEA(INTE_SPEC=DEF_SPEC,
+                    FREQ_INIT=0.0, FREQ_FIN=FCOUP, 
+                    NB_POIN=2**12, INFO=2,);
+
+FTRAJ=RECU_FONCTION(TABLE=TRAJ,
+                   NOM_PARA_TABL='FONCTION',
+                   FILTRE=_F(NOM_PARA='NUME_ORDRE', VALE_I=1,),);
+
+RMS=INFO_FONCTION(RMS=_F(FONCTION=FTRAJ,),);
+ECT=INFO_FONCTION(ECART_TYPE=_F(FONCTION=FTRAJ,),);
+#  
+#
+#
+##------------TESTS--------------------------------------------
+sigma=0.799
+m0=0.6394
+m1=34.19
+m2=2841.8
+frapp=10.61
+
+TEST_TABLE(TABLE=POST_DSP,
+                       FILTRE=(
+                 _F(  NOM_PARA = 'NUME_ORDRE_I',  VALE_I = 1),
+                 _F(  NOM_PARA = 'NUME_ORDRE_J',   VALE_I = 1)),
+                   NOM_PARA='ECART', VALE=sigma ,
+                   CRITERE = 'RELATIF', REFERENCE='SOURCE_EXTERNE',PRECISION=1.E-03,);
+TEST_TABLE(TABLE=POST_DSP,
+                       FILTRE=(
+                 _F(  NOM_PARA = 'NUME_ORDRE_I',  VALE_I = 1),
+                 _F(  NOM_PARA = 'NUME_ORDRE_J',   VALE_I = 1)),
+                   NOM_PARA='FREQ_APPAR', VALE=frapp ,
+                   CRITERE = 'RELATIF', PRECISION=1.E-03,);
+TEST_TABLE(TABLE=POST_DSP,
+                       FILTRE=(
+                 _F(  NOM_PARA = 'NUME_ORDRE_I',  VALE_I = 1),
+                 _F(  NOM_PARA = 'NUME_ORDRE_J',   VALE_I = 1)),
+                   NOM_PARA='LAMBDA_00', VALE=m0 ,
+                   CRITERE = 'RELATIF', PRECISION=1.E-03,);
+TEST_TABLE(TABLE=POST_DSP,
+                       FILTRE=(
+                 _F(  NOM_PARA = 'NUME_ORDRE_I',  VALE_I = 1),
+                 _F(  NOM_PARA = 'NUME_ORDRE_J',   VALE_I = 1)),
+                   NOM_PARA='LAMBDA_01', VALE=m1 ,
+                   CRITERE = 'RELATIF', PRECISION=1.E-03,);
+
+TEST_TABLE(TABLE=POST_DSP,
+                       FILTRE=(
+                 _F(  NOM_PARA = 'NUME_ORDRE_I',  VALE_I = 1),
+                 _F(  NOM_PARA = 'NUME_ORDRE_J',   VALE_I = 1)),
+                   NOM_PARA='LAMBDA_02', VALE=m2 ,
+                   CRITERE = 'RELATIF', PRECISION=1.E-03,);
+
+TEST_TABLE(      TABLE=ECT,
+                 NOM_PARA='ECART_TYPE',
+                 REFERENCE='SOURCE_EXTERNE',
+                 VALE=sigma  , PRECISION=1.E-3)
+
+TEST_TABLE(      TABLE=RMS,
+                 NOM_PARA='RMS',
+                 REFERENCE='SOURCE_EXTERNE',
+                 VALE=sigma  , PRECISION=1.E-3)
+
+#
+# FIN VALIDATION DSP
 ##--------------------------------------------------------
 
 #

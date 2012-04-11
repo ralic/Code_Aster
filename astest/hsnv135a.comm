@@ -1,4 +1,4 @@
-# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 10/04/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE TUBE SOUS PRESSION A TEMPERATURE VARIABLE
 # hsnv135a.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -98,12 +98,7 @@ TEMPE=CALC_META(reuse =TEMPE,
                 ETAT_INIT=_F(META_INIT_ELNO=PHASINIT,),
                 COMP_INCR=_F(RELATION='ZIRC',
                              TOUT='OUI',),
-                OPTION='META_ELNO',);
-
-TEMPE=CALC_NO(reuse =TEMPE,
-          RESULTAT=TEMPE,
-                OPTION='META_NOEU',);
-
+                OPTION=('META_ELNO','META_NOEU',),);
 
 # PARTIE MECANIQUE
 

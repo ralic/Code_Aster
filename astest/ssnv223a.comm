@@ -1,4 +1,4 @@
-# MODIF  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 10/04/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE VALIDATION LOI ENDO_SCALAIRE ET DU PILOTAGE PRED_ELAS POUR LA MODELISATION D_PLAN_GRAD_VARI 
 # ssnv223a.para = tps_job 70 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -166,15 +166,9 @@ tfin_pilo = 6.
 #    EXTRAPOLATION DES VARIABLES INTERNES AUX NOEUDS
 # -----------------------------------------------------
 
-CALC_CHAMP(reuse = EVOL,
-  RESULTAT = EVOL,
-  VARI_INTERNE=('VARI_ELNO'),
-  )
-
-CALC_NO(reuse = EVOL,
-  RESULTAT = EVOL,
-  OPTION   = 'VARI_NOEU',
-  )
+EVOL=CALC_CHAMP(reuse =EVOL,
+                RESULTAT=EVOL,
+                VARI_INTERNE=('VARI_ELNO','VARI_NOEU',),);
 
 # -----------------------------------------------------
 #     EXTRACTION SUR LA FACE DROITE DU QUADGRANGLE

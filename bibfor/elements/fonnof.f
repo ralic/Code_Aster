@@ -1,12 +1,14 @@
-      SUBROUTINE FONNOF ( RESU, NOMA, TYPFON, NBNOFF)
+      SUBROUTINE FONNOF ( RESU, NOMA, TYPFON, NBNOFF )
+
       IMPLICIT   NONE
+
       CHARACTER*8         NOMA,RESU
       CHARACTER*6         TYPFON
       INTEGER             NBNOFF
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 10/10/2011   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ELEMENTS  DATE 11/04/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -22,16 +24,15 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C-----------------------------------------------------------------------
-C FONCTION REALISEE:
+C FONCTION REALISEE (OPERATEUR DEFI_FOND_FISS) :
 C
-C     OPERATEUR DEFI_FOND_FISS : RECUPERATION DES NOEUDS DES LEVRES
-C                               SUR DES DIRECTIONS NORMALES AU FOND
+C      REMPLISSAGE DES OBJETS .SUPNORM.NOEU ET .INFNORM.NOEU
 C
 C     ENTREES:
 C        RESU       : NOM DU CONCEPT RESULTAT DE L'OPERATEUR
 C        NOMA       : NOM DU MAILLAGE
 C        TYPFON     : TYPE DE FOND 
-C                     IL PEUT VALOIR OUVERT/FERME/INF/SUP
+C                     IL PEUT VALOIR OUVERT/FERME/INOFF/SUP
 C        NBNOFF     : NOMBRE DE NOEUDS EN FOND DE FISSURE
 C-----------------------------------------------------------------------
 
@@ -52,20 +53,17 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
       CHARACTER*32     JEXNOM, JEXNUM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
-      INTEGER       NBMA,JLIMA,IM,N1,IDCOOR,NBNOE,IRET,JSUP,JNOLS,INOLS
-      INTEGER       IDLINO,NBNOLS,JCOORS,IN,NBNOFT,INF,IFM,NIV,JNOFO
-      INTEGER       NUMORI,NO1, NO2, NO3,JINTS,NBTRLS,IERA,JTGOR,JTGEX
+      INTEGER       NBMA,JLIMA,IM,N1,IGEOM,NBNOE,IRET,JSUP,JNOLS,INOLS
+      INTEGER       IDLINO,NBNOLS,JCOORS,IN,NBNOFT,INOFF,IFM,NIV,JNOFO
+      INTEGER       NUNO,JINTS,NBTRLS,IERA
       INTEGER       NUMFIN,ISYM,INOLI,JINF,JNOLI,NBNOLI,JCOORI,JINTI
       INTEGER       NBTRLI,INO,INOS,NBS,NUMUN,JTS,JTI,NBI,INOI
-      INTEGER       JNOFOS,IRLEV
-      REAL*8        X0(3),X1, X2, Y1, Y2, Z1, Z2,D,VECNOR(3),VP(3),DMIN
-      REAL*8        TGOR(3),D1,D2,TGEX(3),DMAX,PREC,PRECO,PS,VECTAN(3)
-      REAL*8        PRECN
+      INTEGER       JNOFOS,IRLEV,JBASLO,NDIM,IARG
+      REAL*8        X0(3),X1, X2, Y1, Y2, Z1, Z2,D,VPLAN(3),DMIN
+      REAL*8        DMAX,PREC,PRECO,PS,VECTAN(3),PRECN
       CHARACTER*6   NOMPRO
       CHARACTER*8   K8B,CRITN
-      CHARACTER*24  MSUP,MINF,FONNOE,NOMNOE,FONTOR,FONTEX
-      LOGICAL       EXTGOR,EXTGEX
-      INTEGER      IARG
+      CHARACTER*24  MSUP,MINF,FONNOE,NOMNOE
 
 C DEB-------------------------------------------------------------------
 
@@ -82,8 +80,9 @@ C     ------------------------------------------------------------------
 
       CALL GETVR8 ( ' ', 'PREC_NORM', 1,IARG,1, PRECN, N1 )
 
-      CALL JEVEUO ( NOMA//'.COORDO    .VALE', 'L', IDCOOR )
+      CALL JEVEUO ( NOMA//'.COORDO    .VALE', 'L', IGEOM )
       CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NBNOE,K8B,IRET)
+      CALL DISMOI('F','DIM_GEOM',NOMA,'MAILLAGE',NDIM,K8B,IRET)
       NOMNOE = NOMA//'.NOMNOE'
       FONNOE = RESU//'.FOND.NOEU'
       CALL JEEXIN(FONNOE,IRLEV)
@@ -96,50 +95,18 @@ C     ------------------------------------------------------------------
         CALL JEVEUO ( FONNOE, 'L', JNOFOS )
       ENDIF
 
+C     BASE LOCALE EN FOND DE FISSURE
+      CALL JEVEUO(RESU//'.BASEFOND','L',JBASLO)
 
 C     ------------------------------------------------------------------
 C                  VECTEUR RESULTAT
 C     ------------------------------------------------------------------
+
       CALL WKVECT(RESU//'.SUPNORM.NOEU','G V K8',NBNOFF*20,INOLS)
 
       CALL JEEXIN(RESU//'.LEVREINF.MAIL',ISYM)
-      IF(ISYM.NE.0) THEN
+      IF (ISYM.NE.0) THEN
         CALL WKVECT(RESU//'.INFNORM.NOEU','G V K8',NBNOFF*20,INOLI)
-      ENDIF
-
-C     ------------------------------------------------------------------
-C                   TANGENTES AUX EXTREMITES
-C     ------------------------------------------------------------------
-      FONTOR = RESU//'.DTAN_ORIGINE'
-      CALL JEEXIN ( FONTOR, IRET )
-      IF (IRET.EQ.0) THEN
-         EXTGOR = .FALSE.
-      ELSE
-         EXTGOR = .TRUE.
-         CALL JEVEUO ( FONTOR, 'L', JTGOR )
-         TGOR(1) = ZR(JTGOR)
-         TGOR(2) = ZR(JTGOR+1)
-         TGOR(3) = ZR(JTGOR+2)
-      ENDIF
-
-      FONTEX = RESU//'.DTAN_EXTREMITE'
-      CALL JEEXIN ( FONTEX, IRET )
-      IF (IRET.EQ.0) THEN
-         EXTGEX = .FALSE.
-      ELSE
-         EXTGEX = .TRUE.
-         CALL JEVEUO ( FONTEX, 'L', JTGEX )
-         TGEX(1) = ZR(JTGEX)
-         TGEX(2) = ZR(JTGEX+1)
-         TGEX(3) = ZR(JTGEX+2)
-      ENDIF
-C
-C ------ CAS DU FOND_FERME: LE PREMIER ET LE DERNIER NOEUD SONT
-C                           IDENTIQUES
-      IF ( TYPFON .EQ. 'FERME') THEN
-         NBNOFT = NBNOFF - 1
-      ELSE
-         NBNOFT = NBNOFF
       ENDIF
 
 C     ------------------------------------------------------------------
@@ -164,9 +131,9 @@ C     ------------------------------------------------------------------
 
       CALL WKVECT ('&&PKFOND_COOR_LEV_SUP', 'V V R', 3*NBNOLS, JCOORS )
       DO 11 IN = 1 , NBNOLS
-         ZR(JCOORS-1+3*(IN-1)+1) = ZR(IDCOOR-1+3*(ZI(JNOLS-1+IN)-1)+1)
-         ZR(JCOORS-1+3*(IN-1)+2) = ZR(IDCOOR-1+3*(ZI(JNOLS-1+IN)-1)+2)
-         ZR(JCOORS-1+3*(IN-1)+3) = ZR(IDCOOR-1+3*(ZI(JNOLS-1+IN)-1)+3)
+         ZR(JCOORS-1+3*(IN-1)+1) = ZR(IGEOM-1+3*(ZI(JNOLS-1+IN)-1)+1)
+         ZR(JCOORS-1+3*(IN-1)+2) = ZR(IGEOM-1+3*(ZI(JNOLS-1+IN)-1)+2)
+         ZR(JCOORS-1+3*(IN-1)+3) = ZR(IGEOM-1+3*(ZI(JNOLS-1+IN)-1)+3)
  11   CONTINUE
 
       CALL JEDETR ( '&&'//NOMPRO//'_TRAV' )
@@ -193,9 +160,9 @@ C     ------------------------------------------------------------------
 
         CALL WKVECT ('&&PKFOND_COOR_LEV_INF', 'V V R', 3*NBNOLI,JCOORI)
         DO 21 IN = 1 , NBNOLI
-          ZR(JCOORI-1+3*(IN-1)+1) = ZR(IDCOOR-1+3*(ZI(JNOLI-1+IN)-1)+1)
-          ZR(JCOORI-1+3*(IN-1)+2) = ZR(IDCOOR-1+3*(ZI(JNOLI-1+IN)-1)+2)
-          ZR(JCOORI-1+3*(IN-1)+3) = ZR(IDCOOR-1+3*(ZI(JNOLI-1+IN)-1)+3)
+          ZR(JCOORI-1+3*(IN-1)+1) = ZR(IGEOM-1+3*(ZI(JNOLI-1+IN)-1)+1)
+          ZR(JCOORI-1+3*(IN-1)+2) = ZR(IGEOM-1+3*(ZI(JNOLI-1+IN)-1)+2)
+          ZR(JCOORI-1+3*(IN-1)+3) = ZR(IGEOM-1+3*(ZI(JNOLI-1+IN)-1)+3)
  21     CONTINUE
         CALL JEDETR (  '&&'//NOMPRO//'_TRAV' )
       ENDIF
@@ -204,126 +171,40 @@ C     ------------------------------------------------------------------
 C        BOUCLE SUR LES NOEUDS DU FOND DE FISSURE
 C     ------------------------------------------------------------------
 
-      DO 200 INF = 1 , NBNOFT
-         CALL JENONU(JEXNOM(NOMNOE,ZK8(JNOFO-1 + INF)), NUMORI )
 C
-C ------ DETERMINATION DU PLAN PASSANT PAR UN NOEUD N_I DU FOND DE
-C        FISSURE ET UN VECTEUR NORMAL
+C ------ CAS DU FOND_FERME: LE PREMIER ET LE DERNIER NOEUD SONT
+C                           IDENTIQUES
+      IF ( TYPFON .EQ. 'FERME') THEN
+         NBNOFT = NBNOFF - 1
+      ELSE
+         NBNOFT = NBNOFF
+      ENDIF
 
-         X0(1) =  ZR(IDCOOR-1+3*(NUMORI-1)+1)
-         X0(2) =  ZR(IDCOOR-1+3*(NUMORI-1)+2)
-         X0(3) =  ZR(IDCOOR-1+3*(NUMORI-1)+3)
 
-         IF ( INF .EQ. 1 ) THEN
-            IF ( EXTGOR ) THEN
-               CALL JENONU(JEXNOM(NOMNOE,ZK8(JNOFO-1 + INF)), IN )
-               X1 = ZR(IDCOOR-1+3*(IN-1)+1)
-               Y1 = ZR(IDCOOR-1+3*(IN-1)+2)
-               Z1 = ZR(IDCOOR-1+3*(IN-1)+3)
-               CALL JENONU(JEXNOM(NOMNOE,ZK8(JNOFO-1 + INF+1)), IN )
-               X2 = ZR(IDCOOR-1+3*(IN-1)+1)
-               Y2 = ZR(IDCOOR-1+3*(IN-1)+2)
-               Z2 = ZR(IDCOOR-1+3*(IN-1)+3)
-               D = SQRT( (X2-X1)**2 + (Y2-Y1)**2 + (Z2-Z1)**2 )
-               VECNOR(1) = (X2-X1) / D
-               VECNOR(2) = (Y2-Y1) / D
-               VECNOR(3) = (Z2-Z1) / D
-               CALL PROVEC ( VECNOR, TGOR, VP )
-               CALL PROVEC ( VP, TGOR, VECNOR )
-            ELSE
-               CALL JENONU(JEXNOM(NOMNOE,ZK8(JNOFO-1 + INF)), IN )
-               X2 = ZR(IDCOOR-1+3*(IN-1)+1)
-               Y2 = ZR(IDCOOR-1+3*(IN-1)+2)
-               Z2 = ZR(IDCOOR-1+3*(IN-1)+3)
-               CALL JENONU(JEXNOM(NOMNOE,ZK8(JNOFO-1 + INF+1)), IN )
-               X1 = ZR(IDCOOR-1+3*(IN-1)+1)
-               Y1 = ZR(IDCOOR-1+3*(IN-1)+2)
-               Z1 = ZR(IDCOOR-1+3*(IN-1)+3)
-               D = SQRT( (X2-X1)**2 + (Y2-Y1)**2 + (Z2-Z1)**2 )
-               IF ( TYPFON .EQ. 'OUVERT') THEN
-                 D1 = SQRT( (X2-X1)**2 + (Y2-Y1)**2 + (Z2-Z1)**2 )
-                 VECNOR(1) = (X2-X1) / D1
-                 VECNOR(2) = (Y2-Y1) / D1
-                 VECNOR(3) = (Z2-Z1) / D1
-               ELSE
-                 CALL JENONU(JEXNOM(NOMNOE,ZK8(JNOFO-1+NBNOFF-1)), NO1 )
-                 CALL JENONU(JEXNOM(NOMNOE,ZK8(JNOFO-1+INF)), NO2 )
-                 CALL JENONU(JEXNOM(NOMNOE,ZK8(JNOFO-1+INF+1)), NO3 )
-                 CALL PKFON1 ( ZR(IDCOOR), VECNOR, NO1, NO2, NO3 )
-                 CALL JENONU(JEXNOM(NOMNOE,ZK8(JNOFO-1+NBNOFF-1)), IN )
-                 X1 = ZR(IDCOOR-1+3*(IN-1)+1)
-                 Y1 = ZR(IDCOOR-1+3*(IN-1)+2)
-                 Z1 = ZR(IDCOOR-1+3*(IN-1)+3)
-                 D1 = SQRT( (X2-X1)**2 + (Y2-Y1)**2 + (Z2-Z1)**2 )
-                 D  = MIN(D,D1)
-               ENDIF
-            ENDIF
-         ELSEIF ( INF .EQ. NBNOFF ) THEN
-            IF ( EXTGEX ) THEN
-               CALL JENONU(JEXNOM(NOMNOE,ZK8(JNOFO-1 + INF-1)), IN )
-               X1 = ZR(IDCOOR-1+3*(IN-1)+1)
-               Y1 = ZR(IDCOOR-1+3*(IN-1)+2)
-               Z1 = ZR(IDCOOR-1+3*(IN-1)+3)
-               CALL JENONU(JEXNOM(NOMNOE,ZK8(JNOFO-1 + INF)), IN )
-               X2 = ZR(IDCOOR-1+3*(IN-1)+1)
-               Y2 = ZR(IDCOOR-1+3*(IN-1)+2)
-               Z2 = ZR(IDCOOR-1+3*(IN-1)+3)
-               D = SQRT( (X2-X1)**2 + (Y2-Y1)**2 + (Z2-Z1)**2 )
-               VECNOR(1) = (X2-X1) / D
-               VECNOR(2) = (Y2-Y1) / D
-               VECNOR(3) = (Z2-Z1) / D
-               CALL PROVEC ( VECNOR, TGEX, VP )
-               CALL PROVEC ( VP, TGEX, VECNOR )
-            ELSE
-               CALL JENONU(JEXNOM(NOMNOE,ZK8(JNOFO-1 + INF-1)), IN )
-               X2 = ZR(IDCOOR-1+3*(IN-1)+1)
-               Y2 = ZR(IDCOOR-1+3*(IN-1)+2)
-               Z2 = ZR(IDCOOR-1+3*(IN-1)+3)
-               CALL JENONU(JEXNOM(NOMNOE,ZK8(JNOFO-1 + INF)), IN )
-               X1 = ZR(IDCOOR-1+3*(IN-1)+1)
-               Y1 = ZR(IDCOOR-1+3*(IN-1)+2)
-               Z1 = ZR(IDCOOR-1+3*(IN-1)+3)
-               D = SQRT( (X2-X1)**2 + (Y2-Y1)**2 + (Z2-Z1)**2 )
-               IF ( TYPFON .EQ. 'OUVERT') THEN
-                 D1 = SQRT( (X2-X1)**2 + (Y2-Y1)**2 + (Z2-Z1)**2 )
-                 VECNOR(1) = (X2-X1) / D1
-                 VECNOR(2) = (Y2-Y1) / D1
-                 VECNOR(3) = (Z2-Z1) / D1
-               ELSE
-                 CALL JENONU(JEXNOM(NOMNOE,ZK8(JNOFO-1+INF-1)), NO1 )
-                 CALL JENONU(JEXNOM(NOMNOE,ZK8(JNOFO-1+INF)), NO2 )
-                 CALL JENONU(JEXNOM(NOMNOE,ZK8(JNOFO-1+1  )), NO3 )
-                 CALL PKFON1 ( ZR(IDCOOR), VECNOR, NO1, NO2, NO3 )
-                 CALL JENONU(JEXNOM(NOMNOE,ZK8(JNOFO-1+NBNOFF-1)), IN )
-                 X1 = ZR(IDCOOR-1+3*(IN-1)+1)
-                 Y1 = ZR(IDCOOR-1+3*(IN-1)+2)
-                 Z1 = ZR(IDCOOR-1+3*(IN-1)+3)
-                 D1 = SQRT( (X2-X1)**2 + (Y2-Y1)**2 + (Z2-Z1)**2 )
-                 D  = MIN(D,D1)
-               ENDIF
-            ENDIF
-         ELSE
-            CALL JENONU(JEXNOM(NOMNOE,ZK8(JNOFO-1+INF-1)), NO1 )
-            CALL JENONU(JEXNOM(NOMNOE,ZK8(JNOFO-1+INF)),   NO2 )
-            CALL JENONU(JEXNOM(NOMNOE,ZK8(JNOFO-1+INF+1)), NO3 )
-            CALL PKFON1 ( ZR(IDCOOR), VECNOR, NO1, NO2, NO3 )
-            CALL JENONU(JEXNOM(NOMNOE,ZK8(JNOFO-1+INF-1)), IN )
-            X1 = ZR(IDCOOR-1+3*(IN-1)+1)
-            Y1 = ZR(IDCOOR-1+3*(IN-1)+2)
-            Z1 = ZR(IDCOOR-1+3*(IN-1)+3)
-            CALL JENONU(JEXNOM(NOMNOE,ZK8(JNOFO-1+INF)), IN )
-            X2 = ZR(IDCOOR-1+3*(IN-1)+1)
-            Y2 = ZR(IDCOOR-1+3*(IN-1)+2)
-            Z2 = ZR(IDCOOR-1+3*(IN-1)+3)
-            D1 = SQRT( (X2-X1)**2 + (Y2-Y1)**2 + (Z2-Z1)**2 )
-            CALL JENONU(JEXNOM(NOMNOE,ZK8(JNOFO-1+INF+1)), IN )
-            X1 = ZR(IDCOOR-1+3*(IN-1)+1)
-            Y1 = ZR(IDCOOR-1+3*(IN-1)+2)
-            Z1 = ZR(IDCOOR-1+3*(IN-1)+3)
-            D2 = SQRT( (X2-X1)**2 + (Y2-Y1)**2 + (Z2-Z1)**2 )
-            D  = MIN(D1,D2)
+      DO 200 INOFF = 1 , NBNOFT
+      
+C        DETERMINATION DU PLAN ORTHOGONAL AU FOND DE FISSURE 
+C        ET PASSANT PAR LE NOEUD COURANT
+
+         CALL JENONU(JEXNOM(NOMNOE,ZK8(JNOFO-1+INOFF)),NUNO)
+
+         X0(1) =  ZR(IGEOM-1+3*(NUNO-1)+1)
+         X0(2) =  ZR(IGEOM-1+3*(NUNO-1)+2)
+         X0(3) =  ZR(IGEOM-1+3*(NUNO-1)+3)
+
+C        VPLAN = VECTEUR ORTHOGONAL AU PLAN RECHERCHE
+         CALL DFFTAN(NDIM,ZR(JBASLO),INOFF,VPLAN)
+
+C        D = LONGUEUR DU SEGMENT DU FOND DE FISSURE 
+         IF (NDIM.EQ.3) THEN
+           CALL DFFLON(ZR(IGEOM),ZK8(JNOFO),NOMNOE,INOFF,NBNOFF,TYPFON,
+     &                 D)
+         ELSEIF (NDIM.EQ.2) THEN
+C          D N'A PAS DE SENS EN 2D, ON PREND ALORS UNE VALEUR CARACT
+           D = SQRT(X0(1)**2+X0(2)**2)
          ENDIF
 
+C        PREC = PRECISION POUR LA RECHERCHE DES NOEUDS DES LEVRES
          PREC = D * PRECN
 
 C ------ CALCUL DE L'INTERSECTION DU PLAN AVEC LES NOEUDS DES MAILLES
@@ -331,7 +212,7 @@ C        DEFINISSANT LA LEVRE INFERIEURE - SAUVEGARDE
 
          IF(ISYM.NE.0) THEN
            CALL WKVECT ( '&&PKFOND_INTERS_INF', 'V V I', NBNOE, JINTI )
-           CALL CGNOP0 ( NBNOLI, ZR(JCOORI), X0, VECNOR, PREC, NBTRLI,
+           CALL CGNOP0 ( NBNOLI, ZR(JCOORI), X0, VPLAN, PREC, NBTRLI,
      &                 ZI(JINTI))
            IF ( NBTRLI .LE. 2 ) THEN
              CALL JEDETR ( '&&PKFOND_INTERS_INF' )
@@ -340,24 +221,24 @@ C        DEFINISSANT LA LEVRE INFERIEURE - SAUVEGARDE
            CALL WKVECT ( '&&PKFOND_TRAV_INF', 'V V I', NBTRLI, JTI )
 
 C ---- ORDRE DES NOEUDS
-           NUMFIN = NUMORI
+           NUMFIN = NUNO
            DMAX = 0.D0
            DMIN = 100.D0
            NBI = 1
            INOI = 1
-           ZI(JTI-1 + INOI) = NUMORI
-           X1 = ZR(IDCOOR-1+3*(NUMORI-1)+1)
-           Y1 = ZR(IDCOOR-1+3*(NUMORI-1)+2)
-           Z1 = ZR(IDCOOR-1+3*(NUMORI-1)+3)
+           ZI(JTI-1 + INOI) = NUNO
+           X1 = ZR(IGEOM-1+3*(NUNO-1)+1)
+           Y1 = ZR(IGEOM-1+3*(NUNO-1)+2)
+           Z1 = ZR(IGEOM-1+3*(NUNO-1)+3)
 C
 C identification noeuds sur bon cote de la levre (cas fond ferme)
 C a partir du noeud le plus proche du fond
            DO 310 IN = 1 , NBTRLI
              INO = JNOLI+ZI(JINTI-1 + IN)-1
-             IF ( ZI(INO) .EQ. NUMORI ) GOTO 310
-             X2 = ZR(IDCOOR-1+3*(ZI(INO)-1)+1)
-             Y2 = ZR(IDCOOR-1+3*(ZI(INO)-1)+2)
-             Z2 = ZR(IDCOOR-1+3*(ZI(INO)-1)+3)
+             IF ( ZI(INO) .EQ. NUNO ) GOTO 310
+             X2 = ZR(IGEOM-1+3*(ZI(INO)-1)+1)
+             Y2 = ZR(IGEOM-1+3*(ZI(INO)-1)+2)
+             Z2 = ZR(IGEOM-1+3*(ZI(INO)-1)+3)
              D = SQRT( (X2-X1)**2 + (Y2-Y1)**2 + (Z2-Z1)**2 )
              IF  (D .LT. DMIN) THEN
                DMIN = D
@@ -365,16 +246,16 @@ C a partir du noeud le plus proche du fond
              ENDIF
 310        CONTINUE
 
-           VECTAN(1) = ZR(IDCOOR-1+3*(NUMUN-1)+1)-X1
-           VECTAN(2) = ZR(IDCOOR-1+3*(NUMUN-1)+2)-Y1
-           VECTAN(3) = ZR(IDCOOR-1+3*(NUMUN-1)+3)-Z1
+           VECTAN(1) = ZR(IGEOM-1+3*(NUMUN-1)+1)-X1
+           VECTAN(2) = ZR(IGEOM-1+3*(NUMUN-1)+2)-Y1
+           VECTAN(3) = ZR(IGEOM-1+3*(NUMUN-1)+3)-Z1
 
            DO 320 IN = 1 , NBTRLI
              INO = JNOLI+ZI(JINTI-1 + IN)-1
-             IF ( ZI(INO) .EQ. NUMORI ) GOTO 320
-             X2 = ZR(IDCOOR-1+3*(ZI(INO)-1)+1)
-             Y2 = ZR(IDCOOR-1+3*(ZI(INO)-1)+2)
-             Z2 = ZR(IDCOOR-1+3*(ZI(INO)-1)+3)
+             IF ( ZI(INO) .EQ. NUNO ) GOTO 320
+             X2 = ZR(IGEOM-1+3*(ZI(INO)-1)+1)
+             Y2 = ZR(IGEOM-1+3*(ZI(INO)-1)+2)
+             Z2 = ZR(IGEOM-1+3*(ZI(INO)-1)+3)
              D = SQRT( (X2-X1)**2 + (Y2-Y1)**2 + (Z2-Z1)**2 )
              PS=(X2-X1)*VECTAN(1)+(Y2-Y1)*VECTAN(2)+(Z2-Z1)*VECTAN(3)
              IF ( PS .GE. 0.D0 ) THEN
@@ -389,12 +270,12 @@ C a partir du noeud le plus proche du fond
 320        CONTINUE
 
            PRECO = PREC*10
-           CALL OREINO ( NOMA, ZI(JTI), NBI, NUMORI,
-     &             NUMFIN,ZR(IDCOOR),CRITN,PRECO,IERA,IRET)
+           CALL OREINO ( NOMA, ZI(JTI), NBI, NUNO,
+     &             NUMFIN,ZR(IGEOM),CRITN,PRECO,IERA,IRET)
 
            DO 330 IN = 1 , MIN(NBI,20)
              CALL JENUNO(JEXNUM(NOMNOE,ZI(JTI-1+IN)),
-     &                          ZK8(INOLI-1 + 20*(INF-1)+IN))
+     &                          ZK8(INOLI-1 + 20*(INOFF-1)+IN))
  330       CONTINUE
 
            CALL JEDETR ( '&&PKFOND_INTERS_INF' )
@@ -405,7 +286,7 @@ C ------ CALCUL DE L'INTERSECTION DU PLAN AVEC LES NOEUDS DES MAILLES
 C        DEFINISSANT LA LEVRE SUPERIEURE - SAUVEGARDE
 
          CALL WKVECT ( '&&PKFOND_INTERS_SUP', 'V V I', NBNOE, JINTS )
-         CALL CGNOP0 ( NBNOLS, ZR(JCOORS), X0, VECNOR, PREC, NBTRLS,
+         CALL CGNOP0 ( NBNOLS, ZR(JCOORS), X0, VPLAN, PREC, NBTRLS,
      &                 ZI(JINTS))
          IF ( NBTRLS .LE. 2 ) THEN
            CALL JEDETR ( '&&PKFOND_INTERS_SUP' )
@@ -415,26 +296,26 @@ C        DEFINISSANT LA LEVRE SUPERIEURE - SAUVEGARDE
 
 C ---- ORDRE DES NOEUDS
          IF (IRLEV.EQ.0) THEN
-           CALL JENONU(JEXNOM(NOMNOE,ZK8(JNOFOS-1 + INF)), NUMORI )
+           CALL JENONU(JEXNOM(NOMNOE,ZK8(JNOFOS-1 + INOFF)), NUNO )
          ENDIF
-         NUMFIN = NUMORI
+         NUMFIN = NUNO
          DMAX = 0.D0
          DMIN = 100.D0
          NBS = 1
          INOS = 1
-         ZI(JTS-1 + INOS) = NUMORI
-         X1 = ZR(IDCOOR-1+3*(NUMORI-1)+1)
-         Y1 = ZR(IDCOOR-1+3*(NUMORI-1)+2)
-         Z1 = ZR(IDCOOR-1+3*(NUMORI-1)+3)
+         ZI(JTS-1 + INOS) = NUNO
+         X1 = ZR(IGEOM-1+3*(NUNO-1)+1)
+         Y1 = ZR(IGEOM-1+3*(NUNO-1)+2)
+         Z1 = ZR(IGEOM-1+3*(NUNO-1)+3)
 C
 C identification noeuds sur bon cote de la levre (cas fond ferme)
 C a partir du noeud le plus proche du fond
          DO 210 IN = 1 , NBTRLS
            INO = JNOLS+ZI(JINTS-1 + IN)-1
-           IF ( ZI(INO) .EQ. NUMORI ) GOTO 210
-           X2 = ZR(IDCOOR-1+3*(ZI(INO)-1)+1)
-           Y2 = ZR(IDCOOR-1+3*(ZI(INO)-1)+2)
-           Z2 = ZR(IDCOOR-1+3*(ZI(INO)-1)+3)
+           IF ( ZI(INO) .EQ. NUNO ) GOTO 210
+           X2 = ZR(IGEOM-1+3*(ZI(INO)-1)+1)
+           Y2 = ZR(IGEOM-1+3*(ZI(INO)-1)+2)
+           Z2 = ZR(IGEOM-1+3*(ZI(INO)-1)+3)
            D = SQRT( (X2-X1)**2 + (Y2-Y1)**2 + (Z2-Z1)**2 )
            IF  (D .LT. DMIN) THEN
                DMIN = D
@@ -442,16 +323,16 @@ C a partir du noeud le plus proche du fond
            ENDIF
 210      CONTINUE
 
-         VECTAN(1) = ZR(IDCOOR-1+3*(NUMUN-1)+1)-X1
-         VECTAN(2) = ZR(IDCOOR-1+3*(NUMUN-1)+2)-Y1
-         VECTAN(3) = ZR(IDCOOR-1+3*(NUMUN-1)+3)-Z1
+         VECTAN(1) = ZR(IGEOM-1+3*(NUMUN-1)+1)-X1
+         VECTAN(2) = ZR(IGEOM-1+3*(NUMUN-1)+2)-Y1
+         VECTAN(3) = ZR(IGEOM-1+3*(NUMUN-1)+3)-Z1
 
          DO 220 IN = 1 , NBTRLS
            INO = JNOLS+ZI(JINTS-1 +IN)-1
-           IF ( ZI(INO) .EQ. NUMORI ) GOTO 220
-           X2 = ZR(IDCOOR-1+3*(ZI(INO)-1)+1)
-           Y2 = ZR(IDCOOR-1+3*(ZI(INO)-1)+2)
-           Z2 = ZR(IDCOOR-1+3*(ZI(INO)-1)+3)
+           IF ( ZI(INO) .EQ. NUNO ) GOTO 220
+           X2 = ZR(IGEOM-1+3*(ZI(INO)-1)+1)
+           Y2 = ZR(IGEOM-1+3*(ZI(INO)-1)+2)
+           Z2 = ZR(IGEOM-1+3*(ZI(INO)-1)+3)
            D = SQRT( (X2-X1)**2 + (Y2-Y1)**2 + (Z2-Z1)**2 )
            PS=(X2-X1)*VECTAN(1)+(Y2-Y1)*VECTAN(2)+(Z2-Z1)*VECTAN(3)
            IF ( PS .GE. 0.D0 ) THEN
@@ -465,17 +346,16 @@ C a partir du noeud le plus proche du fond
            ENDIF
 220      CONTINUE
          PRECO = PREC*10
-         CALL OREINO ( NOMA, ZI(JTS), NBS, NUMORI,
-     &             NUMFIN,ZR(IDCOOR),CRITN,PRECO,IERA,IRET)
+         CALL OREINO ( NOMA, ZI(JTS), NBS, NUNO,
+     &             NUMFIN,ZR(IGEOM),CRITN,PRECO,IERA,IRET)
 
          DO 230 IN = 1 , MIN(NBS,20)
            CALL JENUNO(JEXNUM(NOMNOE,ZI(JTS-1 + IN)),
-     &                          ZK8(INOLS-1 + 20*(INF-1)+IN))
+     &                          ZK8(INOLS-1 + 20*(INOFF-1)+IN))
 230      CONTINUE
 
          CALL JEDETR ( '&&PKFOND_INTERS_SUP' )
          CALL JEDETR ( '&&PKFOND_TRAV_SUP' )
-
 
  200  CONTINUE
 

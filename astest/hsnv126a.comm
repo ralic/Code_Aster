@@ -1,4 +1,4 @@
-# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 10/04/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE  THERMO_METALLO_MECANIQUE EN TRACTION SIMPLE
 # hsnv126a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -140,14 +140,14 @@ TEMPE=CREA_RESU( OPERATION='AFFE', TYPE_RESU='EVOL_THER',
                  NOM_CHAM='TEMP',
                  AFFE=_F( CHAM_GD = CHTH, LIST_INST = LIST_T))
 
-TEMPE=CALC_META( reuse=TEMPE,  MODELE=MOTH,
-                     CHAM_MATER=CHMAT,
-                     RESULTAT=TEMPE,
-                     ETAT_INIT=_F( META_INIT_ELNO = PHASINIT),
-                     COMP_INCR=_F(  RELATION = 'ACIER',
-                                 TOUT = 'OUI'),
-
-                   )
+TEMPE=CALC_META(reuse=TEMPE,
+                RESULTAT=TEMPE,
+                MODELE=MOTH,
+                CHAM_MATER=CHMAT,
+                ETAT_INIT=_F(META_INIT_ELNO=PHASINIT),
+                COMP_INCR=_F(RELATION='ACIER',
+                             TOUT='OUI'),
+                OPTION='META_ELNO',);
 
 # CALCUL MECANIQUE
 

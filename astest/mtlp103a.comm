@@ -1,9 +1,9 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 10/04/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE TREMPE D'UN BARREAU CYLINDRIQUE EN 16MND5
 # mtlp103a.para = tps_job 400 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -527,29 +527,13 @@ PHASINIT=CREA_CHAMP(TYPE_CHAM='CART_VAR2_R',
 
 # RESOLUTION METALLURGIQUE
 
-TEMPE=CALC_META(reuse =TEMPE,
-        MODELE=MOTH,
-        CHAM_MATER=MAT,
-        RESULTAT=TEMPE,
-        ETAT_INIT=_F(META_INIT_ELNO=PHASINIT,),
-        COMP_INCR=_F(RELATION='ACIER',),
-        OPTION='META_ELNO',);
-
-TEMPE=CALC_NO(reuse =TEMPE,
-        NUME_ORDRE=(1,10,14,20,25,30,40,50,100,105,),
-        RESULTAT=TEMPE,
-        OPTION='META_NOEU',);
-
-###########################################################################
-#  CALCUL DE LA DURETE
-####################################################################
-
-TEMPE=CALC_CHAMP(reuse =TEMPE,
-
-
-      NUME_ORDRE=(1,10,14,20,25,30,40,50,100,105,),
-      RESULTAT=TEMPE,
-       THERMIQUE=('DURT_ELNO'),);
+TEMPE=CALC_META(reuse=TEMPE,
+                MODELE=MOTH,
+                CHAM_MATER=MAT,
+                RESULTAT=TEMPE,
+                ETAT_INIT=_F(META_INIT_ELNO=PHASINIT,),
+                COMP_INCR=_F(RELATION='ACIER',),
+                OPTION=('META_ELNO','META_NOEU','DURT_ELNO','DURT_NOEU',),);
 
 #################################################################
 # TESTS DES RESULTATS

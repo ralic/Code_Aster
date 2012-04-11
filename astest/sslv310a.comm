@@ -1,4 +1,4 @@
-# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 11/04/2012   AUTEUR LADIER A.LADIER 
 # TITRE  MURAKAMI 9.35 FISSURE SEMI-ELLIPTIQUE DEBOUCHANT A LA PEAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -80,8 +80,6 @@ FISS1=DEFI_FOND_FISS(         MAILLAGE=MA,
                                                      'N6951', 'N6971', 'N6965',
                                                      'N6962',
                                                    ),
-                                           DTAN_ORIG=( 1.,  0.,  0.,),
-                                           DTAN_EXTR=( 0.,  1.,  0.,)
 
                                                    ),
                                LEVRE_SUP=_F(  GROUP_MA = 'LEVREINS'),
@@ -364,7 +362,7 @@ TEST_TABLE(       TABLE=GLOC2,
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                               VALE_K = 'N6962'),
                        VALE=5889.04,
-                  PRECISION=0.005       )
+                  PRECISION=0.01    )
 
 #
 # 3IEME COURONNE

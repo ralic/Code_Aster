@@ -1,9 +1,9 @@
       SUBROUTINE JEFINI ( COND )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 10/04/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -64,12 +64,11 @@ C     -------------  EDITION DES REPERTOIRES ---------------------------
       IF ( KCOND .EQ. 'TEST    '  ) THEN
         DO 5 I = 1 , NBFIC
           IF ( CLASSE(I:I) .NE. ' ' ) THEN
-            CALL JEIMPR ( 'MESSAGE' , CLASSE(I:I) ,
-     &                    '     JEFINI     ' // KCOND )
+            CALL JEIMPR ( 6 , CLASSE(I:I) ,'     JEFINI     ' // KCOND )
           ENDIF
    5    CONTINUE
 C     -------------  EDITION SEGMENTATION MEMOIRE ----------------------
-        CALL JEIMPM ( 'MESSAGE' )
+        CALL JEIMPM ( 6 )
       ENDIF
 C     -------------  LIBERATION FICHIER --------------------------------
       IF ( KCOND .NE. 'ERREUR  ' )   THEN

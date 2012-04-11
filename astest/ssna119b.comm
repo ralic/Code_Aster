@@ -1,4 +1,4 @@
-# MODIF  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 10/04/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE MODELISATION AXIS_GRAD_VARI + LOI ENDO_SCALAIRE
 # ssna119b.para = tps_job 90 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -138,7 +138,7 @@ EVOL = STAT_NON_LINE(
                               PCENT_PIVOT=50,
                               SYME = 'OUI',
                               ),
-                   ARCHIVAGE=_F(PAS_ARCH=1000), # pour etre sur de n'avoir que le dernier
+                   ARCHIVAGE=_F(PAS_ARCH=1), 
                    );
 
 
@@ -154,11 +154,11 @@ MA_QU = DEFI_GROUP(reuse = MA_QU,
          )
        )
 # FORCES NODALES
-EVOL = CALC_NO(reuse = EVOL,
+EVOL = CALC_CHAMP(reuse = EVOL,
   MODELE = MO,
   CHAM_MATER = CHMAT,
   RESULTAT = EVOL,
-  OPTION = 'FORC_NODA',
+  FORCE = 'FORC_NODA',
   )
 
 # FORCE RESULTANTE DANS LA DIRECTION Y:
@@ -243,12 +243,12 @@ IMPR_TABLE(TABLE=T_FU,COMM_PARA='#',)
 #***********************************************************************
 #    TEST COMPARAISON AVEC ENDOMMAGEMENT EN NON_REGRESSION
 #*********************************************************************** 
-
+nm_ordre=45
                                          
 # TEST DEPL          
 TEST_RESU(RESU=_F(RESULTAT=EVOL,
                   REFERENCE='NON_REGRESSION',
-                  NUME_ORDRE=1,
+                  NUME_ORDRE=nm_ordre,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
                   GROUP_NO='P_HAUT',
@@ -258,7 +258,7 @@ TEST_RESU(RESU=_F(RESULTAT=EVOL,
 # TEST SIEF          
 TEST_RESU(RESU=_F(RESULTAT=EVOL,
                   REFERENCE='NON_REGRESSION',
-                  NUME_ORDRE=1,
+                  NUME_ORDRE=nm_ordre,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SIXX',
                   MAILLE='M160',
@@ -269,7 +269,7 @@ TEST_RESU(RESU=_F(RESULTAT=EVOL,
 # TEST FORC_NODA          
 TEST_RESU(RESU=_F(RESULTAT=EVOL,
                   REFERENCE='NON_REGRESSION',
-                  NUME_ORDRE=1,
+                  NUME_ORDRE=nm_ordre,
                   NOM_CHAM='FORC_NODA',
                   NOM_CMP='DY',
                   GROUP_NO='P_HAUT',

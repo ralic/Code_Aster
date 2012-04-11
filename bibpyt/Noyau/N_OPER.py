@@ -1,9 +1,9 @@
-#@ MODIF N_OPER Noyau  DATE 30/08/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_OPER Noyau  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,6 +32,7 @@ import types,string,traceback
 import N_ENTITE
 import N_ETAPE
 import nommage
+from strfunc import ufmt
 
 class OPER(N_ENTITE.ENTITE):
    """
@@ -145,18 +146,12 @@ class OPER(N_ENTITE.ENTITE):
       """
           Méthode de vérification des attributs de définition
       """
-      if type(self.regles) != types.TupleType :
-        self.cr.fatal("L'attribut 'regles' doit etre un tuple : %s" %`self.regles`)
-      if type(self.fr) != types.StringType :
-        self.cr.fatal("L'attribut 'fr' doit etre une chaine de caractères : %s" %`self.fr`)
-      if self.reentrant not in ('o','n','f'):
-        self.cr.fatal("L'attribut 'reentrant' doit valoir 'o','n' ou 'f' : %s" %`self.reentrant`)
-      if type(self.docu) != types.StringType :
-        self.cr.fatal("L'attribut 'docu' doit etre une chaine de caractères : %s" %`self.docu` )
-      if type(self.nom) != types.StringType :
-        self.cr.fatal("L'attribut 'nom' doit etre une chaine de caractères : %s" %`self.nom`)
-      if type(self.op) != types.IntType :
-        self.cr.fatal("L'attribut 'op' doit etre un entier signé : %s" %`self.op`)
+      self.check_regles()
+      self.check_fr()
+      self.check_reentrant()
+      self.check_docu()
+      self.check_nom()
+      self.check_op(valmin=0)
       self.verif_cata_regles()
 
    def supprime(self):

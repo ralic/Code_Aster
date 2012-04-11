@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 10/04/2012   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,35 +20,55 @@
 CALC_META=OPER(nom="CALC_META",op=194,sd_prod=evol_ther,reentrant='o',
             UIinfo={"groupes":("Post-traitements","Thermique",)},
                fr="Calcule l'évolution métallurgique à partir du résultat d'un calcul thermique",
-         MODELE          =SIMP(statut='o',typ=modele_sdaster ),
-         CHAM_MATER      =SIMP(statut='o',typ=cham_mater ),
-         RESULTAT        =SIMP(statut='o',typ=evol_ther ),
-         ETAT_INIT       =FACT(statut='o',
-            regles=(UN_PARMI('EVOL_THER', 'META_INIT_ELNO'),),
-            EVOL_THER       =SIMP(statut='f',typ=evol_ther ),
-            META_INIT_ELNO  =SIMP(statut='f',typ=carte_sdaster ),
-            b_etat     =BLOC(condition="EVOL_THER != None",
-               regles=(UN_PARMI('NUME_INIT', 'INST_INIT',),),
-               NUME_INIT       =SIMP(statut='f',typ='I'),
-               INST_INIT       =SIMP(statut='f',typ='R'),
-               b_inst     =BLOC(condition="INST_INIT != None",
-                  CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU",),),
-                  b_prec_rela=BLOC(condition="(CRITERE=='RELATIF')",
-                      PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,),),
-                  b_prec_abso=BLOC(condition="(CRITERE=='ABSOLU')",
-                      PRECISION       =SIMP(statut='o',typ='R',),),
-               ),
-            ),
-         ),
-         COMP_INCR       =FACT(statut='o',max=1,
-           RELATION        =SIMP(statut='o',typ='TXM',into=("ACIER","ZIRC",) ),
-           ACIER           =SIMP(statut='c',typ='I',defaut=7,into=(7,) ),
-           ZIRC            =SIMP(statut='c',typ='I',defaut=4,into=(4,) ),
-      regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),
-           TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-           GROUP_MA        =SIMP(statut='f',typ=grma, validators=NoRepeat(), max='**'),
-           MAILLE          =SIMP(statut='f',typ=ma, validators=NoRepeat(), max='**'),
-         ),
-         OPTION          =SIMP(statut='f',typ='TXM'
-                             ,into=("META_ELNO",) ),
+
+     regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),
+
+     MODELE          =SIMP(statut='f',typ=modele_sdaster ),
+     CHAM_MATER      =SIMP(statut='f',typ=cham_mater ),
+     RESULTAT        =SIMP(statut='o',typ=evol_ther ),
+
+     OPTION          =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
+                           into=(
+                                 "DURT_ELNO",
+                                 "DURT_NOEU",
+                                 "META_ELNO",
+                                 "META_NOEU",
+                                 ),),
+
+     TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+     GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',
+                           fr="le calcul ne sera effectué que sur ces mailles là"),
+     MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**',
+                           fr="le calcul ne sera effectué que sur ces mailles là"),
+
+     b_meta =BLOC(condition= "au_moins_un(OPTION, ('META_ELNO','META_NOEU'))",
+       ETAT_INIT       =FACT(statut='o',
+          regles=(UN_PARMI('EVOL_THER', 'META_INIT_ELNO'),),
+          EVOL_THER       =SIMP(statut='f',typ=evol_ther ),
+          META_INIT_ELNO  =SIMP(statut='f',typ=carte_sdaster ),
+          b_etat     =BLOC(condition="EVOL_THER != None",
+             regles=(UN_PARMI('NUME_INIT', 'INST_INIT',),),
+             NUME_INIT       =SIMP(statut='f',typ='I'),
+             INST_INIT       =SIMP(statut='f',typ='R'),
+             b_inst     =BLOC(condition="INST_INIT != None",
+                CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU",),),
+                b_prec_rela=BLOC(condition="(CRITERE=='RELATIF')",
+                    PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,),),
+                b_prec_abso=BLOC(condition="(CRITERE=='ABSOLU')",
+                    PRECISION       =SIMP(statut='o',typ='R',),),
+             ),
+          ),
+       ),
+
+       COMP_INCR       =FACT(statut='o',max=1,
+         RELATION        =SIMP(statut='o',typ='TXM',into=("ACIER","ZIRC",) ),
+         ACIER           =SIMP(statut='c',typ='I',defaut=7,into=(7,) ),
+         ZIRC            =SIMP(statut='c',typ='I',defaut=4,into=(4,) ),
+
+         regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),
+         TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+         GROUP_MA        =SIMP(statut='f',typ=grma, validators=NoRepeat(), max='**'),
+         MAILLE          =SIMP(statut='f',typ=ma, validators=NoRepeat(), max='**'),
+                             ),
+                 ),
 )  ;

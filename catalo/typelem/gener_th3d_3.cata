@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 10/04/2012   AUTEUR PROIX J-M.PROIX 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -130,6 +130,7 @@ MODE_LOCAL__
 
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
     ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    )
+    ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
 
 VECTEUR__
     MVECTTR = VTEM_R DDL_THER
@@ -145,7 +146,7 @@ OPTION__
     CHAR_LIMITE         -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     CHAR_THER_EVOL      61    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER
-                                     CTEMPSR  PTEMPSR
+                                     CTEMPSR  PTEMPSR  ZVARCPG  PVARCPR
                               OUT__  MVECTTR  PVECTTR
     CHAR_THER_EVOLNI    281   IN__   CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  EHYDRNO  PHYDRPM  CMATERC  PMATERC
                                      DDL_THER PTEMPER  CTEMPSR  PTEMPSR  DDL_THER PTMPCHF  DDL_THER PTMPCHI
@@ -163,29 +164,30 @@ OPTION__
                               OUT__  EGNEUT1R PLAGRP   MVECTTR  PRESIDU  MVECTTR  PVECTTR
     COOR_ELGA           488   IN__   NGEOMER  PGEOMER
                               OUT__  EGGEOP_R PCOORPG
-    DURT_ELNO      552   IN__   CMATERC  PMATERC  EPHASNO_ PPHASIN
+    DURT_ELNO      552        IN__   CMATERC  PMATERC  EPHASNO_ PPHASIN
                               OUT__  EDURTNO  PDURT_R
-    ECIN_ELEM      -1    IN__   XXXXXX   XXXXXX
+    ECIN_ELEM      -1         IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     ENER_ELAS           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     ENER_TOTALE         -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    EPOT_ELEM      -1    IN__   XXXXXX   XXXXXX
+    EPOT_ELEM      -1         IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     EPOT_ELEM_TEMP      66    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER  CTEMPSR  PTEMPSR
-                              OUT__  EENEDNO  PENERDR
+                                     ZVARCPG  PVARCPR
+                              OUT__  EENEDNO  PENERDR  
     ERTH_ELEM           3     IN__   CREFERK  PCHARG   EFLUXNO  PFLUX_P  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  CSOURCF  PSOURCF  DDL_THER PTEMP_P
                                      EVOISIN  PVOISIN  ESOURCR  PSOURCR
                               OUT__  EERREURT PERREUR
     ERTH_ELNO           379   IN__   EERREURT PERREUR
                               OUT__  EERRENOT PERRENO
-    FLUX_ELGA      62    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER
-                                     CTEMPSR  PTEMPSR
+    FLUX_ELGA      62         IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER
+                                     CTEMPSR  PTEMPSR  ZVARCPG  PVARCPR
                               OUT__  EFLUXPG  PFLUX_R
-    FLUX_ELNO      63    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER
-                                     CTEMPSR  PTEMPSR
+    FLUX_ELNO      63         IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER
+                                     CTEMPSR  PTEMPSR  ZVARCPG  PVARCPR
                               OUT__  EFLUXNO  PFLUX_R
     INDIC_ENER          -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
@@ -193,11 +195,14 @@ OPTION__
                               OUT__  XXXXXX   XXXXXX
     INIT_MAIL_VOIS      99    IN__  
                               OUT__  EVOISIN  PVOISIN
+    INIT_VARC           99    IN__  
+                              OUT__  ZVARCPG  PVARCPR
     MASS_INER           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     MASS_THER           54    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPSR  PTEMPSR
+                                     ZVARCPG  PVARCPR
                               OUT__  MMATTTR  PMATTTR
-    META_ELNO      64    IN__   CCOMPOR  PCOMPOR  CFTRC    PFTRC    CMATERC  PMATERC  EPHASNO_ PPHASIN
+    META_ELNO      64         IN__   CCOMPOR  PCOMPOR  CFTRC    PFTRC    CMATERC  PMATERC  EPHASNO_ PPHASIN
                                      DDL_THER PTEMPAR  DDL_THER PTEMPER  DDL_THER PTEMPIR  CTEMPSR  PTEMPSR
                               OUT__  EPHASNO_ PPHASNOU
     META_INIT_ELNO      321   IN__   CCOMPOR  PCOMPOR  CMATERC  PMATERC  CPHASIN_ PPHASIN  DDL_THER PTEMPER
@@ -216,15 +221,16 @@ OPTION__
     RICE_TRACEY         -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     RIGI_THER           51    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPSR  PTEMPSR
+                                     ZVARCPG  PVARCPR
                               OUT__  MMATTTR  PMATTTR
     RIGI_THER_CONV_T    522   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CDECENT  PNEUK24  DDL_THER PTEMPEI
                                      CTEMPSR  PTEMPSR  NVITESR  PVITESR
                               OUT__  MMATTSR  PMATTTR
     RIGI_THER_TRANS     521   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPEI  DDL_THER PTEMPER
-                                     CTEMPSR  PTEMPSR
+                                     CTEMPSR  PTEMPSR  
                               OUT__  MMATTTR  PMATTTR
-    SOUR_ELGA      319   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER
-                                     CTEMPSR  PTEMPSR
+    SOUR_ELGA           319   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER
+                                     CTEMPSR  PTEMPSR  ZVARCPG  PVARCPR
                               OUT__  ESOURCR  PSOUR_R
     SYME_MTNS_R         222   IN__   MMATTSR  PNOSYM
                               OUT__  MMATTTR  PSYM

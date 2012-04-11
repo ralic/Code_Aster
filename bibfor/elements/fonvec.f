@@ -1,10 +1,11 @@
-      SUBROUTINE FONVEC ( RESU, NOMA )
+      SUBROUTINE FONVEC ( RESU, NOMA, CNXINV )
       IMPLICIT NONE
       CHARACTER*8         RESU, NOMA
+      CHARACTER*19        CNXINV 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 11/04/2012   AUTEUR LADIER A.LADIER 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -28,6 +29,7 @@ C
 C     ENTREES:
 C        RESU       : NOM DU CONCEPT RESULTAT DE L'OPERATEUR
 C        NOMA       : NOM DU MAILLAGE
+C        CNXINV     : CONNECTIVITE INVERSE
 C-----------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
@@ -87,7 +89,7 @@ C     --------------------------------------------------------------
         CALL WKVECT(RESU//'.NORMALE','G V R8',3,JNORM)
         CALL GETVR8 (' ','NORMALE',1,IARG,3,ZR(JNORM),NVENOR)
       ELSE
-          CALL FONNOR(RESU, NOMA )
+          CALL FONNOR(RESU, NOMA, CNXINV )
       ENDIF
 C
 C     --------------------------------------------------------------

@@ -1,8 +1,8 @@
-#@ MODIF V_MEME_NOMBRE Validation  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF V_MEME_NOMBRE Validation  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -43,7 +43,7 @@ class MEME_NOMBRE:
 
       for mc in self.mcs:
         if mc not in args.keys():
-          text = "Une clé dans la régle n'existe pas %s" % mc
+          text = u"Une clé dans la règle n'existe pas %s" % mc
           return text,0
 
         val = args[mc].valeur
@@ -56,7 +56,7 @@ class MEME_NOMBRE:
         if size == -1:
           size = len_val
         elif size != len_val:
-          text = "Pas la même longeur"
+          text = u"Pas la même longeur"
           return text,0
       return text,1
 

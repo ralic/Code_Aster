@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF med_aster_module supervis  DATE 03/04/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF med_aster_module supervis  DATE 10/04/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */

@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfwsv hdf  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF hdfwsv hdf  DATE 10/04/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -114,7 +114,7 @@ INTEGER DEFPSSSPSP(HDFWSV, hdfwsv, INTEGER *idf, char *nomg, STRING_SIZE lg,
 
   if ((dataspace = H5Screate_simple(1, dimsf, NULL))<0 )
     return -1 ; 
-  if ((dataset = H5Dcreate(idfic, nomd, datatype, dataspace, H5P_DEFAULT))<0 )
+  if ((dataset = H5Dcreate(idfic, nomd, datatype, dataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT))<0 )
     return -1 ;
   if ((iret = H5Dwrite(dataset, datatype, H5S_ALL, H5S_ALL, H5P_DEFAULT, sv))<0 )
     return -1 ;

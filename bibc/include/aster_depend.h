@@ -1,7 +1,7 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF aster_depend include  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF aster_depend include  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -89,12 +89,11 @@ Compatibilité ascendantes :
 #ifdef _USE_64_BITS
 #define _STRLEN_AT_END
 #define _USE_LONG_LONG_INT
-
-#else
-/* win32 */
-#define _USE_STDCALL
-
 #endif
+
+/* stdcall must be defined explicitly because it does not seem required anywhere */
+//#define _USE_STDCALL
+#define _STRLEN_AT_END
 
 #else
 /* Linux & Unix platforms */

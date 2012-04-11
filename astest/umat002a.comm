@@ -1,28 +1,28 @@
-# MODIF  DATE 26/09/2011   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE COMPORTEMENT UMAT 3D CHARGEMENT MULTIDIRECTIONNEL EN DEFORMATION CF COMP001x
 # umat002a.para = tps_job 300 mem_job 512Mo mem_aster 20 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 import os
 from asrun.toolbox import make_shared
-from Utilitai.veri_matr_tang import VERI_MATR_TANG
+from Contrib.veri_matr_tang import VERI_MATR_TANG
 
 # Juste pour les besoins du cas-test.
 # Il est preferable d'utiliser :
@@ -42,8 +42,8 @@ else:
     os.rename("fort.22", "fort.22.f")
     os.rename("fort.23", "fort.23.f")
     # On force la ligne de commande pour ne pas etre gene par les licences des compilateurs
-    make_shared("libumat1.so", "fort.22.f") 
-    make_shared("libumat2.so", "fort.23.f") 
+    make_shared("libumat1.so", "fort.22.f")
+    make_shared("libumat2.so", "fort.23.f")
 
 
 DEBUT(CODE=_F(NOM='UMAT002A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='OUI',IMPR_MACRO='NON');
@@ -55,7 +55,7 @@ DEBUT(CODE=_F(NOM='UMAT002A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='
 YOUNG = 200000.0;
 POISSON = 0.3;
 
-#parametres loi ISOT_LINE 
+#parametres loi ISOT_LINE
 SY = 437.0;
 pente = 2024.74690664;
 # def des materiaux
@@ -92,7 +92,7 @@ ACIER[1]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
             UMAT=_F( C1 = LAMBDA ,C2= MU , C3=LAMBB, C4= MUB, C5=NUB),
                     ECRO_LINE=_F(D_SIGM_EPSI=pente,
                                  SY=SY,),)
-                                 
+
 compor='UMAT'
 
 
@@ -104,7 +104,7 @@ N_cas = len(N_pas)
 
 # les differents calculs effectues et les precisions sur chaque TEST_RESU
 label_cal=['_Pa_','_Th_','_sym_','_rot_'] + 6* ['_N']
-prec_ecart=4*[1.E-10] + [1.E-1] + (N_cas-5)*[1.E-2]   
+prec_ecart=4*[1.E-10] + [1.E-1] + (N_cas-5)*[1.E-2]
 prec_tgt=1.e-8
 
 
@@ -116,7 +116,7 @@ INCLUDE(UNITE=91)
 ##################################################################################
 #  TEST 3D
 ##################################################################################
-                                 
+
 # definition du chargement 3D
 INCLUDE(UNITE=93)
 
@@ -163,23 +163,23 @@ for i in range(Ncal):
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=1,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
-                   MATER      = ACIER[imat],  
+                   MATER      = ACIER[imat],
                    ARCHIVAGE = _F(LIST_INST = temps_ar),
                    INCREMENT=_F(LIST_INST=temps,),
                  #  THER=_F(INST_IMP= inst_th, TEMP_IMP= temp_th, OPTION = opt_ther,),
                    EPSI_IMPOSE=_F(EPXX=eps_imp[0], EPYY=eps_imp[1], EPZZ=eps_imp[2],
                                   EPXY=eps_imp[3], EPXZ=eps_imp[4], EPYZ=eps_imp[5]),
                       INFO=2,  );
-                        
+
         #IMPR_TABLE(TABLE=RESU[i]);
-        
+
 # On renomme les composantes en fonction de  l'ordre de discretisation
         N = N_pas[i]
         chN=label_cal[i]+str(N)
         for ch in ch_param:
                 j=ch_param.index(ch)
                 chnew=ch+chN
-                ##Extraction par type de variable 
+                ##Extraction par type de variable
                 if i==0 :
                         R_SI[j]=CALC_TABLE( TABLE=RESU[i],
                                      TITRE = ' ',
@@ -209,10 +209,10 @@ for i in range(Ncal):
                         DETRUIRE ( CONCEPT = _F (NOM = TMP_S,),)
                 #IMPR_TABLE(TABLE=R_SI[j]);
         DETRUIRE ( CONCEPT = _F (NOM = temps,),)
-        
-# TEST_RESU sur les erreurs relatives 
+
+# TEST_RESU sur les erreurs relatives
 # label_cal=['_Pa_','_Th_','_sym_','_rot_'] + 6* ['_N']
-prec_ecart=4*[1.E-10] + [1.E-1] + (N_cas-5)*[1.E-2]   
+prec_ecart=4*[1.E-10] + [1.E-1] + (N_cas-5)*[1.E-2]
 
 prec_zero=[1.E-10, 0.01, 0.01]
 
@@ -221,28 +221,28 @@ ch_param2=['V1','VMIS','TRACE']
 TEST_ECART(ch_param2,label_cal,N_pas,Ncal,ch_param,R_SI,prec_ecart,prec_zero)
 
 
-###############################################################################                                 
+###############################################################################
 
 
 # impressions
-                
+
 for i in range(len(ch_param)):
         IMPR_TABLE(TABLE=R_SI[i])
-        
 
-        
-                
+
+
+
 # TESTS DE NON REGRESSION DES QUANTITES SIGNIFICATIVES
 
 TEST_TABLE(TABLE=R_SI[1],
            NOM_PARA='VMIS_Pa_1',VALE=1.612E+09,
            FILTRE=_F(NOM_PARA='INST',VALE=6.0*t_0),
-           REFERENCE='NON_REGRESSION',);     
+           REFERENCE='NON_REGRESSION',);
 
 TEST_TABLE(TABLE=R_SI[3],
            NOM_PARA='SIXX_Pa_1',VALE=-1.848E+09,
            FILTRE=_F(NOM_PARA='INST',VALE=6.0*t_0),
-           REFERENCE='NON_REGRESSION',);     
+           REFERENCE='NON_REGRESSION',);
 
 
 # Test de la matrice tangente sur le calcul le plus fin
@@ -259,7 +259,7 @@ Linst=DEFI_LIST_REEL(DEBUT=0.0,
                                  _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),);
 
 RESU_TGT=SIMU_POINT_MAT(
-                   COMP_INCR=_F(RELATION=compor,                
+                   COMP_INCR=_F(RELATION=compor,
                                 TYPE_MATR_TANG='VERIFICATION',
                                 NB_VARI=1,
                                 VALE_PERT_RELA=1.E-5,
@@ -267,7 +267,7 @@ RESU_TGT=SIMU_POINT_MAT(
                                 NOM_ROUTINE='second'),  # un '_' doit etre ajoute automatiquement
                    NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
-                   MATER      = ACIER[1],  
+                   MATER      = ACIER[1],
                    INCREMENT=_F(LIST_INST=Linst,),
                    EPSI_IMPOSE=_F(EPXX=eps_imp[0], EPYY=eps_imp[1], EPZZ=eps_imp[2],
                                   EPXY=eps_imp[3], EPXZ=eps_imp[4], EPYZ=eps_imp[5]),
@@ -282,12 +282,12 @@ TEST_TABLE(TABLE=DIFF_MAT,
            VALE=0.,
            CRITERE='ABSOLU',
            PRECISION=prec_tgt,
-           REFERENCE='ANALYTIQUE',);     
+           REFERENCE='ANALYTIQUE',);
 
 
 
 
-                                 
+
 #
 IMPR_TABLE(TABLE=DIFF_MAT)
 FIN();

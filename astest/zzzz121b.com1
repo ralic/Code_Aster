@@ -29,6 +29,10 @@ MACR_ADAP_MAIL(MAILLAGE_N=MCINQ,
                            RESULTAT=RESUCINQ,
                            NOM_CHAM='DEPL',
                            NUME_ORDRE=1,),),
+               ADD_CHAM=(_F(CHAM_GD=CO('QUA6'),
+                            CHAM_CAT='DIAMETRE',),
+                         _F(CHAM_GD=CO('NIV6'),
+                            CHAM_CAT='NIVEAU',),),
                );
 #  AVEC LES IMPRESSIONS SUIVANTES, ON PEUT CONTROLER QU'INTERPOLER TOUTES LES
 #  LES COMPOSANTES ENSEMBLE OU SEPAREMENT PRODUIT LES MEMES CHAMPS
@@ -105,6 +109,6 @@ TEST_RESU(CHAM_NO=(_F(CHAM_GD=D6DX,
                   REFERENCE='NON_REGRESSION',
                   VERSION='10.03.02',),);
 
-###IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=RESUSIX,),);
+###IMPR_RESU(FORMAT='MED',UNITE=86,RESU=_F(RESULTAT=RESUSIX,),);
 
 FIN();

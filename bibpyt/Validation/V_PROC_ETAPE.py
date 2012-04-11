@@ -1,26 +1,25 @@
-#@ MODIF V_PROC_ETAPE Validation  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF V_PROC_ETAPE Validation  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-#                                                                       
-#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+#
+#
 # ======================================================================
-
 
 """
    Ce module contient la classe mixin PROC_ETAPE qui porte les méthodes
@@ -30,22 +29,21 @@
    Une classe mixin porte principalement des traitements et est
    utilisée par héritage multiple pour composer les traitements.
 """
-# Modules Python
-import string,types
-
 # Modules EFICAS
 import V_ETAPE
 from Noyau.N_Exception import AsException
 from Noyau.N_utils import AsType
+from Noyau.strfunc import ufmt
+
 
 class PROC_ETAPE(V_ETAPE.ETAPE):
    """
-      On réutilise les méthodes report,verif_regles 
+      On réutilise les méthodes report,verif_regles
       de ETAPE par héritage.
    """
 
    def isvalid(self,sd='oui',cr='non'):
-      """ 
+      """
          Methode pour verifier la validité de l'objet PROC_ETAPE. Cette méthode
          peut etre appelée selon plusieurs modes en fonction de la valeur
          de sd et de cr (sd n'est pas utilisé).
@@ -59,23 +57,18 @@ class PROC_ETAPE(V_ETAPE.ETAPE):
           - produire un compte-rendu : self.cr
 
           - propager l'éventuel changement d'état au parent
-
       """
       if CONTEXT.debug : print "ETAPE.isvalid ",self.nom
       if self.state == 'unchanged' :
         return self.valid
       else:
         valid=self.valid_child()
-
         valid=valid * self.valid_regles(cr)
-
         if self.reste_val != {}:
           if cr == 'oui' :
-            self.cr.fatal("Mots cles inconnus :" + string.join(self.reste_val.keys(),','))
+            self.cr.fatal(_(u"Mots clés inconnus : %s"), ','.join(self.reste_val.keys()))
           valid=0
-
         self.set_valid(valid)
-
         return self.valid
 
 

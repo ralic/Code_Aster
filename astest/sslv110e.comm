@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/04/2012   AUTEUR LADIER A.LADIER 
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,8 +23,15 @@
 #
 #
 
-DEBUT(CODE=_F(NOM='SSLV110E',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='SSLV110E',NIV_PUB_WEB='INTERNET'),
+      DEBUG=_F(SDVERI='OUI'),
+      IGNORE_ALARM=('RUPTURE0_55','UTILITAI4_40'))
 
+# on ignore les 2 alarmes'RUPTURE0_55' et 'UTILITAI4_40' car le but de ce cas test 
+# est de tester CALC_G avec different type de charges (fcontion, constante, pression...)
+# sans pour autant realiser un calcul mecanique avec chacune de ces charges.
+# Ainsi, on realise un unique calcul mecanique et on fait plusieurs post-traitements.
+# Dans chaque post-traitement, la charge est equivalente a celle utilisee dans le calcul
 #
 # --------------------------------------------------------------------
 
@@ -58,297 +65,162 @@ CH=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=(
 PRESF = FORMULE(NOM_PARA=('X','Y','Z'),VALE='1.')
 FORCF = FORMULE(NOM_PARA=('X','Y','Z'),VALE='1.')
 
-CHFONC=AFFE_CHAR_MECA_F(  MODELE=MO,
-                            PRES_REP=_F(  GROUP_MA = 'GRPRES',
-                                       PRES = PRESF,  )    )
+CHFONC=AFFE_CHAR_MECA_F(MODELE=MO,
+                        PRES_REP=_F(GROUP_MA = 'GRPRES',
+                                    PRES = PRESF))
 
-CHFACER=AFFE_CHAR_MECA(  MODELE=MO,
-                          FORCE_FACE=_F(  GROUP_MA = 'GRPRES',  FZ = 1.,))
+CHFACER=AFFE_CHAR_MECA(MODELE=MO,
+                       FORCE_FACE=_F(GROUP_MA = 'GRPRES',  FZ = 1.,))
 
-CHFACEF=AFFE_CHAR_MECA_F(  MODELE=MO,
-                             FORCE_FACE=_F(  GROUP_MA = 'GRPRES',
-                                          FZ = FORCF,   )      )
+CHFACEF=AFFE_CHAR_MECA_F(MODELE=MO,
+                         FORCE_FACE=_F(GROUP_MA = 'GRPRES',
+                                       FZ = FORCF,   )      )
 
-CHAMDEPL=MECA_STATIQUE(   MODELE=MO,
-                             CHAM_MATER=CHMAT,
-                              EXCIT=_F( CHARGE = CH,  ))
+# resolution avec une charge en pression constante
+CHAMDEPL=MECA_STATIQUE(MODELE=MO,
+                       CHAM_MATER=CHMAT,
+                       EXCIT=_F( CHARGE = CH,  ))
 
-#
-#    --- DEFINITION DU MODULE DE THETA ET DES RAYONS DEFINISSANT LA
-#        COURONNE PAR FONCTIONS
-#
+
+#----------------------------------------------------------------------
+#              post-traitement
+#----------------------------------------------------------------------
+
+FONDFISS=DEFI_FOND_FISS(MAILLAGE=MA,
+                        SYME='OUI',
+                        FOND_FISS=_F(GROUP_NO='FONFIS'),
+                        LEVRE_SUP=_F(GROUP_MA='GRPRES'),
+                        )
+
+# on ne post-traite les resultat que pour la couronne 2
 MODUF=DEFI_FONCTION(  NOM_PARA='ABSC',  VALE=( 0., 1.,     26.69, 1., ))
+RINF=DEFI_FONCTION(  NOM_PARA='ABSC',  VALE=( 0., 0.1875, 26.69, 0.7812,))
+RSUP=DEFI_FONCTION(  NOM_PARA='ABSC',  VALE=( 0., 0.375,  26.69, 1.5625,))
 
-RINF1=DEFI_FONCTION(  NOM_PARA='ABSC',  VALE=( 0., 0.,     26.69, 0., ))
+THETA=CALC_THETA(MODELE=MO,
+                 FOND_FISS=FONDFISS,
+                 THETA_3D=_F(TOUT = 'OUI',
+                             MODULE_FO = MODUF,
+                             R_INF_FO = RINF,
+                             R_SUP_FO = RSUP,)
+                  )
 
-RSUP1=DEFI_FONCTION(  NOM_PARA='ABSC',  VALE=( 0., 0.1875, 26.69, 0.7812,))
+# post-traitement avec la charge du calcul (pression constante)
+Gglob1=CALC_G(OPTION='CALC_G_GLOB',
+              RESULTAT=CHAMDEPL,
+              THETA=_F(THETA=THETA))
 
-RINF2=DEFI_FONCTION(  NOM_PARA='ABSC',  VALE=( 0., 0.1875, 26.69, 0.7812,))
+Gloc1=CALC_G(RESULTAT=CHAMDEPL,
+             THETA=_F(FOND_FISS=FONDFISS,
+                      R_SUP_FO=RSUP,
+                      R_INF_FO=RINF))
 
-RSUP2=DEFI_FONCTION(  NOM_PARA='ABSC',  VALE=( 0., 0.375,  26.69, 1.5625,))
+# post-traitement avec une charge en force face constante
+Gglob2=CALC_G(OPTION='CALC_G_GLOB',
+              RESULTAT=CHAMDEPL,
+              THETA=_F(THETA=THETA),
+              EXCIT=_F(CHARGE=CHFACER))
 
-RINF3=DEFI_FONCTION(  NOM_PARA='ABSC',  VALE=( 0., 0.375,  26.69, 1.5625,))
+Gloc2=CALC_G(RESULTAT=CHAMDEPL,
+             THETA=_F(FOND_FISS=FONDFISS,
+                      R_SUP_FO=RSUP,
+                      R_INF_FO=RINF),
+             EXCIT=_F(CHARGE=CHFACER))
 
-RSUP3=DEFI_FONCTION(  NOM_PARA='ABSC',  VALE=( 0., 1.6465, 26.69, 3.125, ))
+# post-traitement avec une charge en force face 'fonction'
+Gglob3=CALC_G(OPTION='CALC_G_GLOB',
+              RESULTAT=CHAMDEPL,
+              THETA=_F(THETA=THETA),
+              EXCIT=_F(CHARGE=CHFACEF))
 
-FISS1=DEFI_FOND_FISS(MAILLAGE=MA,
-                     SYME='OUI',
-                     FOND_FISS=_F(GROUP_NO='FONFIS',
-                                  DTAN_ORIG=( 0.,  1.,  0.,),
-                                  DTAN_EXTR=( 1.,  0.,  0.,)),
-                     LEVRE_SUP=_F(GROUP_MA='GRPRES',),
-                     )
+Gloc3=CALC_G(RESULTAT=CHAMDEPL,
+             THETA=_F(FOND_FISS=FONDFISS,
+                      R_SUP_FO=RSUP,
+                      R_INF_FO=RINF),
+             EXCIT=_F(CHARGE=CHFACEF))
 
-FISS11=DEFI_FOND_FISS(MAILLAGE=MA,
-                      SYME='OUI',
-                      FOND_FISS=_F(GROUP_NO='FONFIS',
-                                  DTAN_ORIG=( 0.,  1.,  0.,),),
-                     )
-
-#----------------------------------------------------------------------
-#                           COURONNE 1
-#----------------------------------------------------------------------
-
-THETA1=CALC_THETA(   MODELE=MO,
-                      FOND_FISS=FISS1,
-                        THETA_3D=_F(  TOUT = 'OUI',
-                                   MODULE_FO = MODUF,
-                                   R_INF_FO = RINF1,
-                                   R_SUP_FO = RSUP1,  )
-                     )
-
-G1=CALC_G(        OPTION='CALC_G_GLOB',
-                  RESULTAT=CHAMDEPL,
-                  THETA=_F(THETA=THETA1),
-                  EXCIT=_F(CHARGE=CHFONC,),)
-
-GLOC1=CALC_G(         RESULTAT=CHAMDEPL,
-                      THETA=_F(FOND_FISS=FISS1,
-                               R_SUP_FO=RSUP1,
-                               R_INF_FO=RINF1),
-                      LISSAGE=_F(DEGRE=7,),
-                      )
 
 #----------------------------------------------------------------------
-#                           COURONNE 2
+#              TEST DE G global
 #----------------------------------------------------------------------
 
-THETA2=CALC_THETA(   MODELE=MO,
-                      FOND_FISS=FISS1,
-                        THETA_3D=_F(  TOUT = 'OUI',
-                                   MODULE_FO = MODUF,
-                                   R_INF_FO = RINF2,
-                                   R_SUP_FO = RSUP2,  )
-                     )
+Gglob_ref = 5.76e-3 / 8
 
-G2=CALC_G(          OPTION='CALC_G_GLOB',
-                    RESULTAT=CHAMDEPL,
-                    THETA=_F(THETA=THETA2),
-                    EXCIT=_F(CHARGE=CHFACER,),)
+TEST_TABLE(TABLE=Gglob1,
+           NOM_PARA='G',
+           VALE=Gglob_ref,
+           PRECISION=0.01,
+           REFERENCE='ANALYTIQUE')
 
-GLOC2=CALC_G(         RESULTAT=CHAMDEPL,
-                      THETA=_F(FOND_FISS=FISS1,
-                               R_SUP_FO=RSUP2,
-                               R_INF_FO=RINF2),
-                      LISSAGE=_F(DEGRE=7,),
-                        )
+Gglob_cal = 7.24526E-04
+# deuxieme test pour verif que la valeur que l'on cherche a reproduire n'a pas bouge
+TEST_TABLE(TABLE=Gglob1,
+           NOM_PARA='G',
+           VALE=Gglob_cal,
+           PRECISION=1e-6,
+           REFERENCE='NON_REGRESSION',
+           VERSION='11.01.17')
 
-#----------------------------------------------------------------------
-#                           COURONNE 3
-#----------------------------------------------------------------------
+# dans la suite, on ne cherche pas a se comparer a la valeur analytique
+# on fait juste une comparaison avec les resultats de la charge du calcul
 
-THETA3=CALC_THETA(   MODELE=MO,
-                      FOND_FISS=FISS1,
-                        THETA_3D=_F(  TOUT = 'OUI',
-                                   MODULE_FO = MODUF,
-                                   R_INF_FO = RINF3,
-                                   R_SUP_FO = RSUP3,  )
-                     )
+TEST_TABLE(TABLE=Gglob2,
+           NOM_PARA='G',
+           VALE=Gglob_cal,
+           PRECISION=1e-6,
+           REFERENCE='AUTRE_ASTER')
 
-G3=CALC_G(          OPTION='CALC_G_GLOB',
-                    RESULTAT=CHAMDEPL,
-                    THETA=_F(THETA=THETA3),
-                    EXCIT=_F(CHARGE=CHFACEF,),)
+TEST_TABLE(TABLE=Gglob3,
+           NOM_PARA='G',
+           VALE=Gglob_cal,
+           PRECISION=1e-6,
+           REFERENCE='AUTRE_ASTER')
 
-GLOC3=CALC_G(         RESULTAT=CHAMDEPL,
-                      THETA=_F(FOND_FISS=FISS1,
-                               R_SUP_FO=RSUP3,
-                               R_INF_FO=RINF3),
-                      LISSAGE=_F(DEGRE=7),
-                        )
-
-#
-#  CALCUL AVEC LA METHODE 'THETA_LAGRANGE'
-#
-
-GLOC4=CALC_G(         RESULTAT=CHAMDEPL,
-                      THETA=_F(FOND_FISS=FISS1,
-                               R_SUP_FO=RSUP2,
-                               R_INF_FO=RINF2),
-                      LISSAGE=_F(LISSAGE_THETA='LAGRANGE',),
-                      )
-
-#
-#  CALCUL AVEC LA METHODE 'LAGRANGE_LAGRANGE'
-#
-
-GLOC5=CALC_G(         RESULTAT=CHAMDEPL,
-                      THETA=_F(FOND_FISS=FISS1,
-                               R_SUP_FO=RSUP2,
-                               R_INF_FO=RINF2),
-                      LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
-                                 LISSAGE_G='LAGRANGE'),
-                        )
-
-GLOC55=CALC_G(         RESULTAT=CHAMDEPL,
-                      THETA=_F(FOND_FISS=FISS11,
-                               DIRECTION=(1.,0.,0.),
-                               R_SUP_FO=RSUP2,
-                               R_INF_FO=RINF2),
-                      LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
-                                 LISSAGE_G='LAGRANGE'),
-                        )
-
-#
-#  CALCUL AVEC LA METHODE 'NOEUD_NOEUD'
-#
-
-GLOC6=CALC_G(         RESULTAT=CHAMDEPL,
-                      THETA=_F(FOND_FISS=FISS1,
-                               R_SUP_FO=RSUP2,
-                               R_INF_FO=RINF2),
-                      LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
-                                 LISSAGE_G='LAGRANGE_NO_NO'),)
-
-#----------------------------------------------------------------------
-#              TEST DE G
-#----------------------------------------------------------------------
-
-TEST_TABLE(       TABLE=G1,
-                       NOM_PARA='G',
-                           VALE=7.0503219199279E-04,
-                      PRECISION=5.E-6,
-                      REFERENCE='ANALYTIQUE'      )
-
-TEST_TABLE(       TABLE=G2,
-                       NOM_PARA='G',
-                           VALE=7.2452560863439E-04,
-                      PRECISION=5.E-6,
-                      REFERENCE='ANALYTIQUE'      )
-
-TEST_TABLE(       TABLE=G3,
-                       NOM_PARA='G',
-                           VALE=6.9745852629086E-04,
-                      PRECISION=5.E-6,
-                      REFERENCE='ANALYTIQUE'      )
 
 #----------------------------------------------------------------------
 #              TEST DE G(A)
 #----------------------------------------------------------------------
 
+Ga_ref = 7.16e-5
 
-TEST_TABLE(      TABLE=GLOC1,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'NO1099',      ),
-                 NOM_PARA='G',
-                      VALE=7.164E-5,
-                 PRECISION=5.E-2,
-                 REFERENCE='ANALYTIQUE'      )
+# premier test pour verif que l'on ne calcule pas n'importe quoi
+TEST_TABLE(TABLE=Gloc1,
+           FILTRE=_F(NOM_PARA = 'NOEUD',
+                     VALE_K = 'NO1099',),
+           NOM_PARA='G',
+           VALE=Ga_ref,
+           PRECISION=0.03,
+           REFERENCE='ANALYTIQUE')
 
-TEST_TABLE(      TABLE=GLOC2,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'NO1099',      ),
-                 NOM_PARA='G',
-                      VALE=7.164E-5,
-                 PRECISION=5.E-2,
-                 REFERENCE='ANALYTIQUE'      )
+Ga_cal = 6.9828699868854E-05 
+# deuxieme test pour verif que la valeur que l'on cherche a reproduire n'a pas bouge
+TEST_TABLE(TABLE=Gloc1,
+           FILTRE=_F(NOM_PARA = 'NOEUD',
+                     VALE_K = 'NO1099',),
+           NOM_PARA='G',
+           VALE=Ga_cal,
+           PRECISION=1e-6,
+           REFERENCE='NON_REGRESSION',
+           VERSION='11.01.17')
 
-TEST_TABLE(      TABLE=GLOC3,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'NO1099',      ),
-                 NOM_PARA='G',
-                      VALE=6.7196177910176E-05,
-                 PRECISION=5.E-7,
-                 REFERENCE='ANALYTIQUE'      )
+# dans la suite, on ne cherche pas a se comparer a la valeur analytique
+# on fait juste une comparaison avec les resultats de la charge du calcul
 
-TEST_TABLE(      TABLE=GLOC4,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'NO1099',      ),
-                 NOM_PARA='G',
-                      VALE=7.164E-5,
-                 PRECISION=7.E-2,
-                 REFERENCE='ANALYTIQUE'      )
+TEST_TABLE(TABLE=Gloc2,
+           FILTRE=_F(NOM_PARA = 'NOEUD',
+                     VALE_K = 'NO1099',),
+           NOM_PARA='G',
+           VALE=Ga_cal,
+           PRECISION=1e-6,
+           REFERENCE='AUTRE_ASTER')
 
-TEST_TABLE(      TABLE=GLOC5,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'NO1099',      ),
-                 NOM_PARA='G',
-                      VALE=7.164E-5,
-                 PRECISION=5.E-2,
-                 REFERENCE='ANALYTIQUE'      )
-
-TEST_TABLE(      TABLE=GLOC55,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'NO1099',      ),
-                 NOM_PARA='G',
-                      VALE=1.5234E-5,
-                 PRECISION=5.E-2,
-                 REFERENCE='NON_REGRESSION'      )
-
-TEST_TABLE(      TABLE=GLOC6,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'NO1099',      ),
-                 NOM_PARA='G',
-                     VALE=7.164E-5,
-                 PRECISION=5.E-2,
-                 REFERENCE='ANALYTIQUE'      )
-
-#----------------------------------------------------------------------
-#              TEST DE G(C)
-#----------------------------------------------------------------------
-
-
-TEST_TABLE(      TABLE=GLOC1,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'NO1179',      ),
-                 NOM_PARA='G',
-                      VALE=5.21E-5,
-                 PRECISION=5.E-2      )
-
-TEST_TABLE(      TABLE=GLOC2,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'NO1179',      ),
-                 NOM_PARA='G',
-                      VALE=5.21E-5,
-                 PRECISION=5.E-2      )
-
-TEST_TABLE(      TABLE=GLOC3,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'NO1179',      ),
-                 NOM_PARA='G',
-                      VALE=5.21E-5,
-                 PRECISION=5.E-2      )
-
-TEST_TABLE(      TABLE=GLOC4,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'NO1179',      ),
-                 NOM_PARA='G',
-                      VALE=5.21E-5,
-                 PRECISION=5.E-2      )
-
-TEST_TABLE(      TABLE=GLOC5,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'NO1179',      ),
-                 NOM_PARA='G',
-                      VALE=5.21E-5,
-                 PRECISION=7.E-2      )
-
-TEST_TABLE(      TABLE=GLOC6,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'NO1179',      ),
-                 NOM_PARA='G',
-                      VALE=5.21E-5,
-                 PRECISION=5.E-2      )
+TEST_TABLE(TABLE=Gloc3,
+           FILTRE=_F(NOM_PARA = 'NOEUD',
+                     VALE_K = 'NO1099',),
+           NOM_PARA='G',
+           VALE=Ga_cal,
+           PRECISION=1e-6,
+           REFERENCE='AUTRE_ASTER')
 
 FIN()
 #

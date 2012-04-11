@@ -1,9 +1,9 @@
-      SUBROUTINE JEIMPM ( CUNIT )
+      SUBROUTINE JEIMPM ( UNIT )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
-C MODIF JEVEUX  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 10/04/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,11 +20,11 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_18 CRS_508 CRS_512
       IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*(*)       CUNIT
+      INTEGER          UNIT
 C ----------------------------------------------------------------------
 C IMPRIME LA SEGMENTATION DE LA MEMOIRE
 C
-C IN  CUNIT  : NOM LOCAL DU FICHIER D'IMPRESSION
+C IN  UNIT  : NUMERO D'UNITE LOGIQUE ASSOCIE AU FICHIER D'IMPRESSION
 C ----------------------------------------------------------------------
       CHARACTER*1      K1ZON
       COMMON /KZONJE/  K1ZON(8)
@@ -74,8 +74,7 @@ C ----------------------------------------------------------------------
       REAL*8           VUSTA,VUDYN,VXSTA,VXDYN
 C DEB ------------------------------------------------------------------
 C
-      JULIST = IUNIFI ( CUNIT )
-      IF ( JULIST .EQ. 0 ) GOTO 9999
+      IF ( UNIT .LE. 0 ) GOTO 9999
       VUSTA = 0.D0
       VUDYN = 0.D0
       VXSTA = 0.D0
@@ -83,10 +82,10 @@ C
 C
 C     ON LISTE MAINTENANT LES OBJETS ALLOUES DYNAMIQUEMENT
 C
-      WRITE (JULIST,'(4A)' ) ('--------------------',K=1,4)
-      WRITE (JULIST,'(A)') 'OBJETS ALLOUES DYNAMIQUEMENT '
-      WRITE (JULIST,'(4A)' ) ('--------------------',K=1,4)
-      WRITE (JULIST,'(/A,A/)')
+      WRITE (UNIT,'(4A)' ) ('--------------------',K=1,4)
+      WRITE (UNIT,'(A)') 'OBJETS ALLOUES DYNAMIQUEMENT '
+      WRITE (UNIT,'(4A)' ) ('--------------------',K=1,4)
+      WRITE (UNIT,'(/A,A/)')
      +      ' CL-  --NUM-- -MA-  ---------IADY--------- -U- - LON UA',
      +      ' -  -S- ------------- NOM --------------'
       NCLA1 = 1
@@ -109,7 +108,7 @@ C
             CALL ASSERT( (ISD.GT.0) .AND. (ISD.LT.5) )
             ISF  = ISZON(JISZON + ISZON(JISZON+IDM) - 4) / ISSTAT
             CALL ASSERT( (ISF.GT.0) .AND. (ISF.LT.5) )
-            WRITE(JULIST,
+            WRITE(UNIT,
      +        '(''|'',A1,''|'',I4,''|'',I8,''|'',I4,''|'','//
      +        'I20,''|'',A1,''|'',I11,''| '',A1,''| '',A)')
      +        CLA,IDCO,J,IM,IADYN,KSTAT(ISD:ISD),IL,KSTAT(ISF:ISF),NOM32
@@ -140,7 +139,7 @@ C
                     ISF  = ISZON(JISZON + ISZON(JISZON+IDM) - 4)/ISSTAT
                     WRITE(NOM8,'(I8)') K
                     NOM32  = RNOM(JRNOM(IC)+J)(1:24)//NOM8
-                    WRITE(JULIST,
+                    WRITE(UNIT,
      +              '(''|'',A1,''|'',I4,''|'',I8,''|'',I4,''|'','//
      +              'I20,''|'',A1,''|'',I11,''| '',A1,''| '',A)')
      +              CLA,J,K,IM,IADYOC,KSTAT(ISD:ISD),IL,
@@ -158,25 +157,25 @@ C
  205    CONTINUE
  200  CONTINUE
 C
-      WRITE(JULIST,*) '  '
-      WRITE(JULIST,*) ' CUMUL DES LONGUEURS DES SEGMENTS UTILISES UA/UD'
-      WRITE(JULIST,60) ' ALLOCATION STATIQUE  :',VUSTA*LOIS/(1024*1024),
+      WRITE(UNIT,*) '  '
+      WRITE(UNIT,*) ' CUMUL DES LONGUEURS DES SEGMENTS UTILISES UA/UD'
+      WRITE(UNIT,60) ' ALLOCATION STATIQUE  :',VUSTA*LOIS/(1024*1024),
      +                ' Mo'
-      WRITE(JULIST,60) ' ALLOCATION DYNAMIQUE :',VUDYN*LOIS/(1024*1024),
+      WRITE(UNIT,60) ' ALLOCATION DYNAMIQUE :',VUDYN*LOIS/(1024*1024),
      +                ' Mo'
-      WRITE(JULIST,60) ' ALLOCATION TOTALE    :',(VUSTA+VUDYN)*LOIS
+      WRITE(UNIT,60) ' ALLOCATION TOTALE    :',(VUSTA+VUDYN)*LOIS
      +                /(1024*1024),' Mo',(VUSTA+VUDYN)*LOIS,' o '
-      WRITE(JULIST,*) '  '
-      WRITE(JULIST,*) ' CUMUL DES LONGUEURS DES SEGMENTS DECHARGEABLES'
+      WRITE(UNIT,*) '  '
+      WRITE(UNIT,*) ' CUMUL DES LONGUEURS DES SEGMENTS DECHARGEABLES'
      +                //' XA/XD'
-      WRITE(JULIST,60) ' ALLOCATION STATIQUE  :',VXSTA*LOIS/(1024*1024),
+      WRITE(UNIT,60) ' ALLOCATION STATIQUE  :',VXSTA*LOIS/(1024*1024),
      +                ' Mo'
-      WRITE(JULIST,60) ' ALLOCATION DYNAMIQUE :',VXDYN*LOIS/(1024*1024),
+      WRITE(UNIT,60) ' ALLOCATION DYNAMIQUE :',VXDYN*LOIS/(1024*1024),
      +                ' Mo'
-      WRITE(JULIST,60) ' ALLOCATION TOTALE    :',(VXSTA+VXDYN)*LOIS
+      WRITE(UNIT,60) ' ALLOCATION TOTALE    :',(VXSTA+VXDYN)*LOIS
      +                /(1024*1024),' Mo',(VXSTA+VXDYN)*LOIS,' o '
-      WRITE(JULIST,*) '  '
-      WRITE(JULIST,60) ' ESPACE MEMOIRE JEVEUX OCCUPE    :',
+      WRITE(UNIT,*) '  '
+      WRITE(UNIT,60) ' ESPACE MEMOIRE JEVEUX OCCUPE    :',
      +  (VUSTA+VUDYN+VXSTA+VXDYN)*LOIS/(1024*1024),' Mo',
      +  (VUSTA+VUDYN+VXSTA+VXDYN)*LOIS,' o '
 C

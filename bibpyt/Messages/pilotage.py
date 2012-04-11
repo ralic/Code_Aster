@@ -1,8 +1,8 @@
-#@ MODIF pilotage Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF pilotage Messages  DATE 10/04/2012   AUTEUR KAZYMYRE K.KAZYMYRENKO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -121,16 +121,6 @@ cata_msg = {
 
 88 : _(u"""
  La loi de comportement <%(k1)s> n'est pas disponible pour le pilotage de type PRED_ELAS.
-"""),
-
-89 : _(u"""
- Le pilotage PRED_ELAS nécessite ETA_PILO_MIN et ETA_PILO_MAX
- pour la loi ENDO_ISOT_BETON
-"""),
-
-90 : _(u"""
- Le pilotage PRED_ELAS nécessite ETA_PILO_MIN et ETA_PILO_MAX
- pour la loi ENDO_ORTH_BETON
 """),
 
 }

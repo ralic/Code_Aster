@@ -1,4 +1,4 @@
-#@ MODIF E_ETAPE Execution  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_ETAPE Execution  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -31,6 +31,7 @@ from Noyau.N_utils import prbanner
 from Noyau.N_Exception import AsException
 from Noyau.N_MACRO_ETAPE import MACRO_ETAPE
 from Noyau.N_info import message, SUPERV
+
 from strfunc import convert
 
 import genpy

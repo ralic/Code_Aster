@@ -1,28 +1,28 @@
-#@ MODIF N_JDC_CATA Noyau  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_JDC_CATA Noyau  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-#                                                                       
-#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+#
+#
 # ======================================================================
 
 
-""" 
+"""
     Ce module contient la classe de definition JDC_CATA
     qui permet de spécifier les caractéristiques d'un JDC
 """
@@ -31,6 +31,7 @@ import types,string,traceback
 
 import N_ENTITE
 import N_JDC
+from strfunc import ufmt
 
 class JDC_CATA(N_ENTITE.ENTITE):
    """
@@ -38,8 +39,8 @@ class JDC_CATA(N_ENTITE.ENTITE):
 
     Attributs de classe :
 
-    - class_instance qui indique la classe qui devra etre utilisée 
-            pour créer l'objet qui servira à controler la conformité 
+    - class_instance qui indique la classe qui devra etre utilisée
+            pour créer l'objet qui servira à controler la conformité
             du jeu de commandes avec sa définition
 
     - label qui indique la nature de l'objet de définition (ici, JDC)
@@ -65,7 +66,7 @@ class JDC_CATA(N_ENTITE.ENTITE):
       self.commandes=[]
       for niveau in niveaux:
          self.d_niveaux[niveau.nom]=niveau
-      # On change d'objet catalogue. Il faut d'abord mettre le catalogue 
+      # On change d'objet catalogue. Il faut d'abord mettre le catalogue
       # courant à None
       CONTEXT.unset_current_cata()
       CONTEXT.set_current_cata(self)
@@ -93,8 +94,7 @@ class JDC_CATA(N_ENTITE.ENTITE):
       """
           Méthode de vérification des attributs de définition
       """
-      if type(self.regles) != types.TupleType :
-        self.cr.fatal("L'attribut 'regles' doit etre un tuple : %s" %`self.regles`)
+      self.check_regles()
       self.verif_cata_regles()
 
    def verif_cata_regles(self):
@@ -109,11 +109,11 @@ class JDC_CATA(N_ENTITE.ENTITE):
          Methode pour produire un compte-rendu de validation d'un catalogue de commandes
       """
       self.cr = self.CR(debut = "Compte-rendu de validation du catalogue "+self.code,
-                         fin = "Fin Compte-rendu de validation du catalogue "+self.code)
+                        fin = "Fin Compte-rendu de validation du catalogue "+self.code)
       self.verif_cata()
       for commande in self.commandes:
         cr = commande.report()
-        cr.debut = "Début Commande :"+commande.nom
+        cr.debut = u"Début Commande :"+commande.nom
         cr.fin = "Fin commande :"+commande.nom
         self.cr.add(cr)
       return self.cr

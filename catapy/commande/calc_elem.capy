@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 19/03/2012   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 10/04/2012   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,6 +33,7 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
 
      regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','FREQ','NUME_MODE',
                     'NOEUD_CMP','LIST_INST','LIST_FREQ','LIST_ORDRE','NOM_CAS'),
+             PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),
                     ),
      TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
      NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
@@ -395,7 +396,7 @@ b_charge =BLOC( condition = "au_moins_un(OPTION, ('EPME_ELNO','EPSI_ELGA','EPME_
      b_ther          =BLOC( condition = "AsType(RESULTAT) in (evol_ther,fourier_ther,)" ,fr="options thermiques",
           OPTION          =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                            into=("FLUX_ELGA","FLUX_ELNO",
-                                  "DURT_ELNO","SOUR_ELGA","ERTH_ELEM","ERTH_ELNO",),),
+                                 "SOUR_ELGA","ERTH_ELEM","ERTH_ELNO",),),
                EXCIT           =FACT(statut='f',max='**',
                     regles=(EXCLUS('FONC_MULT','FONC_MULT_C','COEF_MULT','COEF_MULT_C'),),
                     CHARGE          =SIMP(statut='o',typ=char_ther ),

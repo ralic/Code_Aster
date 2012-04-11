@@ -1,8 +1,8 @@
-#@ MODIF utilit Lecture_Cata_Ele  DATE 14/10/2008   AUTEUR DESOZA T.DESOZA 
+#@ MODIF utilit Lecture_Cata_Ele  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -597,72 +597,47 @@ def concat_capy(capy1,capy2):
 
 def detruire_cata(capy,unigest) :
 #==================================
-   """
-     détruire dans un objet 'capy' les catalogues indiqués dans le fichier unigest
-        capy    : objet capy à modifier
-        unigest : nom du fichier unigest
-   """
+    u"""détruire dans un objet 'capy' les catalogues indiqués dans le fichier
+    unigest
 
-   # liste des catalogues à détruire :
-   # -----------------------------------
-   liste_cata_detr=[]
-   unig=os.path.abspath(unigest)
-   if os.path.isfile(unig) :
-       fic_unig=open(unig,"r")
-       lines=fic_unig.readlines()
-       for line in lines :
-          words=string.split(line)
-          if len(words) > 0 :
-             if string.upper(words[0])=="CATSUPPR" : liste_cata_detr.append((string.upper(words[1]),string.upper(words[2])))
-
-   # prise en compte des destructions :
-   # -----------------------------------
-   for (nom,type) in liste_cata_detr :
-      ierr=0
-
-      if type in ("COMMANDE","COMMUN","ENTETE") :
-         # ce ne sont pas des catalogues d'éléments, on ne fait rien :
-         ierr=-1
-         pass
-
-      elif type=="OPTIONS" :
-         dico=capy.dicop ; catas=capy.op
-         if dico.has_key(nom):
-            num=dico[nom] ;del dico[nom];del catas[num]
-            for nom2 in dico.keys():
-               numav= dico[nom2]
-               if numav > num : dico[nom2]=numav-1
-         else :  ierr=1
-
-      elif type=="TYPELEM" :
-         dico=capy.dicte ; catas=capy.te
-         if dico.has_key(nom):
-            num=dico[nom] ;del dico[nom];del catas[num]
-            for nom2 in dico.keys():
-               numav= dico[nom2]
-               if numav > num : dico[nom2]=numav-1
-         else :
-            dico=capy.dictg ; catas=capy.tg
-            if dico.has_key(nom):
-               num=dico[nom] ;del dico[nom];del catas[num]
-               for nom2 in dico.keys():
-                  numav= dico[nom2]
-                  if numav > num : dico[nom2]=numav-1
-            else :  ierr=1
-
-      else:
-          assert type=="COMPELEM", type
-          ierr=1
-
-
-      if ierr == 1 :
-         ERR.mess('E',"Le catalogue: "+nom+" de type: "+type+" ne peut pas etre détruit.")
-      elif ierr == -1 :
-         pass
-      else :
-         ERR.mess('I',"Le catalogue: "+nom+" de type: "+type+" a été détruit.")
-
-
+    :capy: objet capy à modifier
+    :unigest: nom du fichier unigest
+    """
+    if not unigest or not os.path.isfile(os.path.abspath(unigest)):
+        return
+    # prise en compte des destructions :
+    with open(os.path.abspath(unigest)) as fid:
+        for line in fid:
+            words = line.split()
+            if not words or words[0].upper() != "CATSUPPR":
+                continue
+            nom = words[1].upper()
+            type = words[2].upper()
+            if type == "OPTIONS" :
+                dico = capy.dicop
+                catas = capy.op
+            elif type == "TYPELEM":
+                dico = capy.dicte
+                catas = capy.te
+                if nom not in dico:
+                    dico = capy.dictg
+                    catas = capy.tg
+            else:
+                # other must not be element catalog or compelem
+                assert type in ("COMMANDE", "COMMUN", "ENTETE", "COMPELEM"), type
+            if nom in dico:
+                num = dico[nom]
+                del dico[nom]
+                del catas[num]
+                for nom2 in dico:
+                    numav = dico[nom2]
+                    if numav > num:
+                        dico[nom2] = numav - 1
+                mess = u"Le catalogue: %s de type: %s a été détruit."
+                ERR.mess('I', mess % (nom, type))
+            else:
+                mess = u"Le catalogue: %s de type : %s ne peut pas etre détruit."
+                ERR.mess('E', mess % (nom, type))
 
 
 ##################################################################################

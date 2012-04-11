@@ -1,9 +1,9 @@
-#@ MODIF V_MCCOMPO Validation  DATE 30/08/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF V_MCCOMPO Validation  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,12 +27,12 @@
    les traitements des objets composites de type OBJECT
 """
 # Modules Python
-import string,types
 import traceback
 
 # Modules EFICAS
 from Noyau import N_CR
 from Noyau.N_Exception import AsException
+from Noyau.strfunc import ufmt
 
 class MCCOMPO:
    """
@@ -67,7 +67,7 @@ class MCCOMPO:
         self.isvalid(cr='oui')
       except AsException,e:
         if CONTEXT.debug : traceback.print_exc()
-        self.cr.fatal(string.join((self.txt_nat,self.nom,str(e))))
+        self.cr.fatal(' '.join((self.txt_nat, self.nom, str(e))))
       return self.cr
 
    def verif_regles(self):
@@ -75,9 +75,9 @@ class MCCOMPO:
          A partir du dictionnaire des mots-clés présents, vérifie si les règles
          de self sont valides ou non.
 
-         Retourne une string et un booléen :
+         Retourne une chaine et un booléen :
 
-           - texte = la string contient le message d'erreur de la (les) règle(s) violée(s) ('' si aucune)
+           - texte = la chaine contient le message d'erreur de la (les) règle(s) violée(s) ('' si aucune)
 
            - testglob = booléen 1 si toutes les règles OK, 0 sinon
       """

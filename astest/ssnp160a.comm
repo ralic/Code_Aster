@@ -1,0 +1,347 @@
+# MODIF  DATE 10/04/2012   AUTEUR PROIX J-M.PROIX 
+# RESPONSABLE PROIX J-M.PROIX
+# TITRE DIFFUSION H2 DANS UN ACIER ELASTOPLASTIQUE 2D CPLAN
+# ssnp160a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='SSNP160A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON',));
+
+##############
+# appel du fichier contenant la macro de calcul du chargement pour la diffusion H2                  
+##############
+
+from Contrib.diffusion_H2 import CHAR_SOURCE
+from Contrib.diffusion_H2 import CHAMP_DETOILE
+from Contrib.diffusion_H2 import CHAR_GRAD_IMPO
+from Contrib.diffusion_H2 import CHAR_GRAD_INI
+import numpy as NP
+
+#......................................................................
+# PLAQUE CARREE 2D CONTRAINTES PLANES
+# ELASTOPLASTICITE ISOTROPE VON MISES   (1 QUAD4) + DIFFUSION H2
+#......................................................................
+
+MA=LIRE_MAILLAGE();
+
+MO=AFFE_MODELE(MAILLAGE=MA,
+               VERIF='MAILLE',
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='C_PLAN',),);
+
+#m, Pa, s
+
+Sy=2.E8
+E=2.E11
+H=2.E9
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
+                            NU=0.3,),
+                    ECRO_LINE=_F(D_SIGM_EPSI=H,
+                                 SY=Sy,),
+                    );
+
+CM=AFFE_MATERIAU(MAILLAGE=MA,
+                 AFFE=_F(TOUT='OUI',
+                         MATER=ACIER,),);
+
+
+
+
+
+
+TRACTION=AFFE_CHAR_MECA(MODELE=MO,
+                        FORCE_CONTOUR=_F(MAILLE='GAUCHE',
+                                         FX=-1.,),);
+
+LIAISON=AFFE_CHAR_MECA(MODELE=MO,
+                       DDL_IMPO=(_F(NOEUD='NO4',
+                                    DX=0.,
+                                    DY=0.,),
+                                 _F(NOEUD='NO2',
+                                    DX=0.,),),);
+
+NBPAS=100
+
+tfin1=1.e7
+tfin2=2.e7
+
+dt = (tfin2-tfin1)/NBPAS
+
+
+SIGMA_F=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
+                            tfin1,Sy,
+                            tfin2,3.*Sy,
+                            ),PROL_DROITE='EXCLU',PROL_GAUCHE='EXCLU',);
+                            
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=(_F(JUSQU_A=tfin1,
+                                     NOMBRE=1,),
+                                  _F(JUSQU_A=tfin2,
+                                     NOMBRE=NBPAS,),
+                                     ),);
+epsp1=0.
+UM=STAT_NON_LINE(MODELE=MO,
+                CHAM_MATER=CM,
+                EXCIT=(_F(CHARGE=LIAISON,),
+                       _F(CHARGE=TRACTION,
+                          FONC_MULT=SIGMA_F,),
+                          ),
+                COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
+                INCREMENT=_F(LIST_INST=L_INST,INST_FIN=tfin1),
+                NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,),
+                )
+
+###################################################################
+# initialisation du calcul de diffusion
+
+MOTH=AFFE_MODELE(MAILLAGE=MA,AFFE=_F(TOUT='OUI',PHENOMENE='THERMIQUE',MODELISATION='PLAN_DIAG',),);
+                       
+# Dl en m**2/s
+Dl=1.27E-8
+# concentrations initales en H2
+Cl0=2.08E21
+Ct0=8.42e20
+Ctot0=Cl0+Ct0
+Cl=Cl0/Ctot0
+
+Nl=5.1e29
+Kt=NP.exp(60000./8.3144/293.)
+a1=23.26
+a2=-2.33
+a3=-5.5
+Vh=2.e-6
+R=8.3144
+T=293.
+
+
+ACIERTH0=DEFI_MATERIAU(THER=_F(LAMBDA=Dl, RHO_CP=1.));
+
+CMTH0=AFFE_MATERIAU(MAILLAGE=MA,AFFE=_F(TOUT='OUI',MATER=ACIERTH0,),);
+
+CHTH0=AFFE_CHAR_THER(MODELE=MOTH,TEMP_IMPO=_F(TOUT='OUI',TEMP=Cl),)
+                     
+UTH=THER_LINEAIRE(MODELE=MOTH,CHAM_MATER=CMTH0,
+                  INCREMENT=_F(LIST_INST = L_INST, INST_FIN=tfin1),
+                  EXCIT=_F(CHARGE=CHTH0,),
+                  ETAT_INIT=_F( VALE = Cl) ,
+                  );
+                  
+tinit=tfin1
+
+RHOCP=DEFI_FONCTION(NOM_PARA='NEUT1',VALE=(0.,0.,1.,1.), PROL_DROITE='LINEAIRE')
+LAMBDA=DEFI_CONSTANTE(VALE=Dl) 
+ACIERTH=DEFI_MATERIAU(THER_FO=_F(LAMBDA=LAMBDA, RHO_CP=RHOCP));
+
+
+for k in range(1,NBPAS+1):
+
+   tfin = tinit + dt 
+   
+   UM=STAT_NON_LINE(MODELE=MO,
+                ETAT_INIT=_F(EVOL_NOLI=UM),reuse=UM,
+                CHAM_MATER=CM,
+                EXCIT=(_F(CHARGE=LIAISON,),
+                       _F(CHARGE=TRACTION,
+                          FONC_MULT=SIGMA_F,),
+                          ),
+                COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
+                INCREMENT=_F(LIST_INST=L_INST,INST_FIN=tfin),
+                NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,),
+                )
+
+   # appel de la macro calculant le chargement source
+  
+   CHTH=CHAR_SOURCE(RESU_H2=UTH, RESUMECA=UM, TINIT=tinit, TFIN= tfin, DIME=2,
+                     GRMAVOL='CUBE_G', Ctot0=Ctot0, )
+  
+ 
+   #construire le champ de NEUT1
+   NEUTG=CHAMP_DETOILE(RESU_H2=UTH,RESUMECA=UM,TINIT=tinit,TFIN= tfin,DIME=2,GRMAVOL='CUBE_G',Ctot0=Ctot0, )
+
+   CMTH=AFFE_MATERIAU(MAILLAGE=MA,INFO=1,
+                      AFFE=_F(GROUP_MA='CUBE_G',MATER=ACIERTH,),
+                         AFFE_VARC=(_F(GROUP_MA='CUBE_G',
+                                      CHAMP_GD=NEUTG,
+                                      NOM_VARC='NEUT1'),),
+                      );
+   UTH=THER_LINEAIRE(MODELE=MOTH,
+                   CHAM_MATER=CMTH,
+                   INCREMENT=_F(  LIST_INST = L_INST, INST_FIN=tfin),
+                   EXCIT=_F(CHARGE=CHTH,),
+                   ETAT_INIT=_F( EVOL_THER = UTH,), reuse=UTH,
+                   #SOLVEUR=_F(METHODE='MUMPS'),
+                   #PARM_THETA=1.,
+                   );
+   tinit = tfin
+   
+   DETRUIRE(INFO=1,CONCEPT=_F(NOM=(CHTH,NEUTG,CMTH)))
+
+
+
+# comparaison a la solution analystique
+
+CL2=RECU_FONCTION(RESULTAT=UTH,
+                 NOM_CHAM='TEMP',
+                 NOM_CMP='TEMP',
+                 NOEUD='NO2',
+                  );
+                  
+P1=RECU_FONCTION(RESULTAT=UM,
+                 NOM_CHAM='VARI_ELGA',
+                 NOM_CMP='V1',
+                 MAILLE='CUBE',
+                 POINT=1,
+                  );
+
+CTOT=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,1.,tfin2,1.));
+
+CT2=CALC_FONCTION(COMB=(
+                  _F(FONCTION=CL2,COEF=-1.),
+                  _F(FONCTION=CTOT,COEF=1.),
+                  ))
+
+def NT(epsp) :
+   import numpy as NP
+   lnt = a1+a2*NP.exp(a3*epsp)
+   Nt=10**(lnt)
+   return Nt
+   
+def Ctana(EPSI) :
+#   Nl=5.1E29
+#   Kt=exp(60000./8.3144/293)
+   a=(Nl/Kt/Ctot0 + 1. + NT(EPSI)/Ctot0) 
+   cta=a - sqrt (a**2 - 4*NT(EPSI)/Ctot0 )
+   cta=cta/2.
+   return cta
+   
+Ct_ana = FORMULE(VALE='Ctana(EPSI)', NOM_PARA=('EPSI'),);
+
+LT=DEFI_LIST_REEL(DEBUT=0.0,
+                  INTERVALLE=_F(JUSQU_A=0.2,
+                                PAS=0.0001,),);
+
+Cta=CALC_FONC_INTERP(FONCTION=Ct_ana,
+                     LIST_PARA=LT,
+                     NOM_PARA='EPSI',
+                     INTERPOL='LIN',);
+
+                        
+                        
+IMPR_FONCTION(FORMAT='XMGRACE',#PILOTE='INTERACTIF',
+              UNITE=38,
+              COURBE=(
+              _F(FONC_X=P1, FONC_Y=CL2,LEGENDE='Cl/Ctot'),
+              _F(FONC_X=P1, FONC_Y=CT2,LEGENDE='Ct/Ctot'),
+              _F(FONCTION=Cta,LEGENDE='Ct_a/Ctot'),
+                        ),
+              LEGENDE_X='p',
+              LEGENDE_Y='Cl',);
+              
+# test de Ct calule par rapport a la solution analytique
+
+TEST_FONCTION(VALEUR=( # p=0.02
+                      _F(FONCTION=P1,
+                         NOM_PARA='INST',
+                         VALE_PARA=1.10000E+07,
+                         VALE_REFE=1.98000E-02,
+                         REFERENCE='ANALYTIQUE',),
+                      _F(FONCTION=CT2,
+                         NOM_PARA='INST',
+                         VALE_PARA=1.10000E+07,
+                         VALE_REFE=0.5057681,
+                         REFERENCE='ANALYTIQUE',),
+                         
+                         #p=0.03
+                      _F(FONCTION=P1,
+                         NOM_PARA='INST',
+                         VALE_PARA=1.15000E+07,
+                         VALE_REFE=2.97000E-02,
+                         REFERENCE='ANALYTIQUE',),
+                      _F(FONCTION=CT2,
+                         NOM_PARA='INST',
+                         VALE_PARA=1.15000E+07,
+                         VALE_REFE=0.65217605,
+                         PRECISION=0.003,
+                         REFERENCE='ANALYTIQUE',),
+                         
+                        #p=0.04 
+                      _F(FONCTION=P1,
+                         NOM_PARA='INST',
+                         VALE_PARA=1.20000E+07,
+                         VALE_REFE=3.96000E-02,
+                         REFERENCE='ANALYTIQUE',),
+                      _F(FONCTION=CT2,
+                         NOM_PARA='INST',
+                         VALE_PARA=1.20000E+07,
+                         VALE_REFE=0.82390254,
+                         PRECISION=0.004,
+                         REFERENCE='ANALYTIQUE',),
+                         
+                         #p=0.05
+                      _F(FONCTION=P1,
+                         NOM_PARA='INST',
+                         VALE_PARA=1.25000E+07,
+                         VALE_REFE=4.95000E-02,
+                         REFERENCE='ANALYTIQUE',),
+                      _F(FONCTION=CT2,
+                         NOM_PARA='INST',
+                         VALE_PARA=1.25000E+07,
+                         VALE_REFE=0.96401156,
+                         PRECISION=0.01,
+                         REFERENCE='ANALYTIQUE',),
+                         
+                         #p=0.06
+                      _F(FONCTION=P1,
+                         NOM_PARA='INST',
+                         VALE_PARA=1.30000E+07,
+                         VALE_REFE=5.94000E-02,
+                         REFERENCE='ANALYTIQUE',),
+                      _F(FONCTION=CT2,
+                         NOM_PARA='INST',
+                         VALE_PARA=1.30000E+07,
+                         VALE_REFE=0.98936088,
+                         PRECISION=0.004,
+                         REFERENCE='ANALYTIQUE',),
+                         
+                         #p=0.1
+                      _F(FONCTION=P1,
+                         NOM_PARA='INST',
+                         VALE_PARA=1.51000E+07,
+                         VALE_REFE=1.00980E-01,
+                         REFERENCE='ANALYTIQUE',),
+                      _F(FONCTION=CT2,
+                         NOM_PARA='INST',
+                         VALE_PARA=1.51000E+07,
+                         VALE_REFE=0.99807477,
+                         REFERENCE='ANALYTIQUE',),
+                         
+                         #p=0.2
+                      _F(FONCTION=P1,
+                         NOM_PARA='INST',
+                         VALE_PARA=2.00000E+07,
+                         VALE_REFE=1.98000E-01,
+                         REFERENCE='ANALYTIQUE',),
+                      _F(FONCTION=CT2,
+                         NOM_PARA='INST',
+                         VALE_PARA=2.00000E+07,
+                         VALE_REFE=0.99962819,
+                         REFERENCE='ANALYTIQUE',),
+                         ),);
+FIN();

@@ -1,4 +1,4 @@
-#@ MODIF i18n Execution  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF i18n Execution  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,8 +29,8 @@ import gettext
 import locale
 
 from Noyau.N_types import force_list
-from E_Core import version_shortname
 from strfunc import get_encoding
+from E_Core import version_shortname
 
 def get_language():
     """Return default language (2 letters)"""

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 11/04/2012   AUTEUR LADIER A.LADIER 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -114,7 +114,7 @@ FOND=DEFI_FOND_FISS(MAILLAGE=MA,
                     SYME='OUI',
                     FOND_FISS=_F(GROUP_MA = 'LFF',
                                  DTAN_ORIG=(1., 0., 0.,),
-                                 DTAN_EXTR=(0., 1., 0.,),),
+                                 ),
                    )
 
 THETA=CALC_THETA(
@@ -176,7 +176,7 @@ TEST_TABLE(        TABLE=G,
                    FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
                              VALE_I = 1),
                       VALE=36.4,
-                 PRECISION=0.0041,
+                 PRECISION=0.0043,
                  REFERENCE='AUTRE_ASTER'
             )
 
@@ -187,7 +187,7 @@ TEST_TABLE(        TABLE=GBIL,FILTRE=(
                              VALE_I = 1)),
                   NOM_PARA='G_BILIN',
                       VALE=36.4,
-                 PRECISION=0.0041,
+                 PRECISION=0.0043,
                  REFERENCE='AUTRE_ASTER'
             )
 

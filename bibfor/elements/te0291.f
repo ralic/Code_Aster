@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 31/01/2012   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 10/04/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,18 +49,18 @@ C
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       INTEGER NNO,KP,NPG1,I,K,NNOS,JGANO,NDIM
-      INTEGER IPOIDS,IVF,IDFDE,IGEOM,NIV
+      INTEGER IPOIDS,IVF,IDFDE,IGEOM,NIV,NBCMP
       INTEGER IBID,IERR,IMATE,ISIEF,ISIG,MATER
 
-      REAL*8 DFDX(9),DFDY(9),POIDS,VALRES(2)
-      REAL*8 SIG11,SIG22,SIG33,SIG12,R
-      REAL*8 XX,YY,E,NU,EEST,NOR,NORSIG,NU0,HE
+      REAL*8 DFDX(27),DFDY(27),DFDZ(27),POIDS,VALRES(2)
+      REAL*8 SIG11,SIG22,SIG33,SIG12,SIG13,SIG23,R
+      REAL*8 E,NU,EEST,NOR,NORSIG,NU0,HE
 
       INTEGER ICODRE(2)
       CHARACTER*4 FAMI
       CHARACTER*8 NOMRES(2)
 
-      LOGICAL LTEATT
+      LOGICAL LTEATT,LAXI
 C
 C ----------------------------------------------------------------------
 C
@@ -82,32 +82,46 @@ C
 C
 C    BOUCLE SUR LES POINTS DE GAUSS
 C
+      LAXI = .FALSE.
+      IF (LTEATT(' ','AXIS','OUI')) LAXI = .TRUE.
+
       DO 101 KP=1,NPG1
         K=(KP-1)*NNO
-        CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
-        IF ( LTEATT(' ','AXIS','OUI') ) THEN
+        IF (NDIM.EQ.2) THEN
+          CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
+          NBCMP=4
+        ELSE IF (NDIM.EQ.3) THEN
+          CALL DFDM3D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,
+     &                DFDZ,POIDS)
+          NBCMP=6
+        ENDIF
+
+        IF (LAXI) THEN
            R = 0.D0
            DO 103 I=1,NNO
              R = R + ZR(IGEOM+2*(I-1)) * ZR(IVF+K+I-1)
 103        CONTINUE
            POIDS = POIDS*R
         ENDIF
-        XX = 0.D0
-        YY = 0.D0
-        DO 106 I=1,NNO
-          XX = XX + ZR(IGEOM+2*(I-1)) * ZR(IVF+K+I-1)
-          YY = YY + ZR(IGEOM+2*I-1)   * ZR(IVF+K+I-1)
-106     CONTINUE
+
         SIG11 = 0.D0
         SIG22 = 0.D0
         SIG33 = 0.D0
         SIG12 = 0.D0
+        SIG13 = 0.D0
+        SIG23 = 0.D0
         DO 102 I=1,NNO
-             SIG11 = SIG11 + ZR(ISIG-1+4*(I-1)+1) * ZR(IVF+K+I-1)
-             SIG22 = SIG22 + ZR(ISIG-1+4*(I-1)+2) * ZR(IVF+K+I-1)
-             SIG33 = SIG33 + ZR(ISIG-1+4*(I-1)+3) * ZR(IVF+K+I-1)
-             SIG12 = SIG12 + ZR(ISIG-1+4*(I-1)+4) * ZR(IVF+K+I-1)
+          SIG11 = SIG11 + ZR(ISIG-1+NBCMP*(I-1)+1) * ZR(IVF+K+I-1)
+          SIG22 = SIG22 + ZR(ISIG-1+NBCMP*(I-1)+2) * ZR(IVF+K+I-1)
+          SIG33 = SIG33 + ZR(ISIG-1+NBCMP*(I-1)+3) * ZR(IVF+K+I-1)
+          SIG12 = SIG12 + ZR(ISIG-1+NBCMP*(I-1)+4) * ZR(IVF+K+I-1)
+          IF (NDIM.EQ.3) THEN
+            SIG13 = SIG13 + ZR(ISIG-1+NBCMP*(I-1)+5) * ZR(IVF+K+I-1)
+            SIG23 = SIG23 + ZR(ISIG-1+NBCMP*(I-1)+6) * ZR(IVF+K+I-1)
+          ENDIF
+C
 102     CONTINUE
+
         CALL RCVALB(FAMI,KP,1,'+',MATER,' ','ELAS',0,' ',0.D0,
      &              2,NOMRES,VALRES, ICODRE, 1)
         E  = VALRES(1)
@@ -115,19 +129,42 @@ C
 C
 C    ESTIMATION DE L'ERREUR EN NORME DE L' ENERGIE
 C
-        EEST = (SIG11-ZR(ISIEF-1+4*(KP-1)+1))**2
-     &        +(SIG22-ZR(ISIEF-1+4*(KP-1)+2))**2
-     &        +(SIG33-ZR(ISIEF-1+4*(KP-1)+3))**2
-     &        +(1.D0+NU)*(SIG12-ZR(ISIEF-1+4*(KP-1)+4))**2
-        ZR(IERR) = ZR(IERR) + EEST * POIDS / E
+        IF (NDIM.EQ.2) THEN
+          EEST = (SIG11-ZR(ISIEF-1+NBCMP*(KP-1)+1))**2
+     &          +(SIG22-ZR(ISIEF-1+NBCMP*(KP-1)+2))**2
+     &          +(SIG33-ZR(ISIEF-1+NBCMP*(KP-1)+3))**2
+     &          +(1.D0+NU)*(SIG12-ZR(ISIEF-1+NBCMP*(KP-1)+4))**2
+          ZR(IERR) = ZR(IERR) + EEST * POIDS / E
 C
 C    NORME DE L' ENERGIE DE LA SOLUTION CALCULEE
 C
-        NOR    = ZR(ISIEF-1+4*(KP-1)+1)**2
-     &         + ZR(ISIEF-1+4*(KP-1)+2)**2
-     &         + ZR(ISIEF-1+4*(KP-1)+3)**2
-     &         +(1.D0+NU)*ZR(ISIEF-1+4*(KP-1)+4)**2
+        NOR    = ZR(ISIEF-1+NBCMP*(KP-1)+1)**2
+     &         + ZR(ISIEF-1+NBCMP*(KP-1)+2)**2
+     &         + ZR(ISIEF-1+NBCMP*(KP-1)+3)**2
+     &         +(1.D0+NU)*ZR(ISIEF-1+NBCMP*(KP-1)+4)**2
         NORSIG = NORSIG + NOR * POIDS / E
+C
+        ELSE IF (NDIM.EQ.3) THEN
+          EEST = (SIG11-ZR(ISIEF-1+NBCMP*(KP-1)+1))**2
+     &          +(SIG22-ZR(ISIEF-1+NBCMP*(KP-1)+2))**2
+     &          +(SIG33-ZR(ISIEF-1+NBCMP*(KP-1)+3))**2
+     &          +(1.D0+NU)*(SIG12-ZR(ISIEF-1+NBCMP*(KP-1)+4))**2
+     &          +(1.D0+NU)*(SIG13-ZR(ISIEF-1+NBCMP*(KP-1)+5))**2
+     &          +(1.D0+NU)*(SIG23-ZR(ISIEF-1+NBCMP*(KP-1)+6))**2
+          ZR(IERR) = ZR(IERR) + EEST * POIDS / E
+C
+C    NORME DE L' ENERGIE DE LA SOLUTION CALCULEE
+C
+          NOR    = ZR(ISIEF-1+NBCMP*(KP-1)+1)**2
+     &           + ZR(ISIEF-1+NBCMP*(KP-1)+2)**2
+     &           + ZR(ISIEF-1+NBCMP*(KP-1)+3)**2
+     &           +(1.D0+NU)*ZR(ISIEF-1+NBCMP*(KP-1)+4)**2
+     &           +(1.D0+NU)*ZR(ISIEF-1+NBCMP*(KP-1)+5)**2
+     &           +(1.D0+NU)*ZR(ISIEF-1+NBCMP*(KP-1)+6)**2
+          NORSIG = NORSIG + NOR * POIDS / E
+        ELSE
+           CALL ASSERT(.FALSE.)
+        ENDIF
 C
 101   CONTINUE
 C

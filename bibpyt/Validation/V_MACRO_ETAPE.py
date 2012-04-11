@@ -1,24 +1,24 @@
-#@ MODIF V_MACRO_ETAPE Validation  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF V_MACRO_ETAPE Validation  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-#                                                                       
-#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+#
+#
 # ======================================================================
 
 
@@ -31,7 +31,8 @@
    utilisée par héritage multiple pour composer les traitements.
 """
 # Modules Python
-import string,types,sys
+import types
+import sys
 import traceback
 
 # Modules EFICAS
@@ -39,13 +40,14 @@ import V_MCCOMPO
 import V_ETAPE
 from Noyau.N_Exception import AsException
 from Noyau.N_utils import AsType
+from Noyau.strfunc import ufmt
 
 class MACRO_ETAPE(V_ETAPE.ETAPE):
    """
    """
 
    def isvalid(self,sd='oui',cr='non'):
-      """ 
+      """
          Methode pour verifier la validité de l'objet ETAPE. Cette méthode
          peut etre appelée selon plusieurs modes en fonction de la valeur
          de sd et de cr.
@@ -75,8 +77,9 @@ class MACRO_ETAPE(V_ETAPE.ETAPE):
              # Il n'a pas ete transforme par type_sdprod
              # Cette situation est interdite
              # Pb: La macro-commande a passe le concept a une commande (macro ?) mal definie
-             if cr =='oui': 
-               self.cr.fatal("Macro-commande mal definie : manque probablement appel a type_sdprod pour %s" % c.nom)
+             if cr =='oui':
+               self.cr.fatal(_(u"Macro-commande mal définie : il manque probablement "
+                                   u"un appel à type_sdprod pour %s"), c.nom)
              valid=0
 
         valid=valid * self.valid_child()
@@ -84,7 +87,7 @@ class MACRO_ETAPE(V_ETAPE.ETAPE):
 
         if self.reste_val != {}:
           if cr == 'oui' :
-            self.cr.fatal("Mots cles inconnus :" + string.join(self.reste_val.keys(),','))
+            self.cr.fatal(_(u"Mots clés inconnus : %s"), ','.join(self.reste_val.keys()))
           valid=0
 
         if sd == "non":
@@ -97,7 +100,8 @@ class MACRO_ETAPE(V_ETAPE.ETAPE):
 
         if self.definition.reentrant == 'n' and self.reuse:
            # Il ne peut y avoir de concept reutilise avec une MACRO  non reentrante
-           if cr == 'oui' : self.cr.fatal('Macro-commande non reentrante : ne pas utiliser reuse ')
+           if cr == 'oui' :
+               self.cr.fatal(_(u'Macro-commande non réentrante : ne pas utiliser reuse'))
            valid=0
 
         if valid:
@@ -114,7 +118,7 @@ class MACRO_ETAPE(V_ETAPE.ETAPE):
         return self.valid
 
    def update_sdprod(self,cr='non'):
-      """ 
+      """
            Cette méthode met à jour le concept produit en fonction des conditions initiales :
 
             1. Il n'y a pas de concept retourné (self.definition.sd_prod == None)
@@ -127,8 +131,8 @@ class MACRO_ETAPE(V_ETAPE.ETAPE):
       """
       sd_prod=self.definition.sd_prod
       # On memorise le type retourné dans l attribut typret
-      self.typret=None 
-      if type(sd_prod) == types.FunctionType: 
+      self.typret=None
+      if type(sd_prod) == types.FunctionType:
         # Type de concept retourné calculé
         d=self.cree_dict_valeurs(self.mc_liste)
         try:
@@ -142,24 +146,27 @@ class MACRO_ETAPE(V_ETAPE.ETAPE):
           # Erreur pendant le calcul du type retourné
           if CONTEXT.debug:traceback.print_exc()
           self.sd=None
-          if cr == 'oui' : 
+          if cr == 'oui' :
              l=traceback.format_exception(sys.exc_info()[0],
-                                           sys.exc_info()[1],
-                                           sys.exc_info()[2])
-             self.cr.fatal('Impossible d affecter un type au résultat\n'+string.join(l[2:]))
+                                          sys.exc_info()[1],
+                                          sys.exc_info()[2])
+             self.cr.fatal(_(u'Impossible d affecter un type au résultat\n%s'), ' '.join(l[2:]))
           return 0
       # on teste maintenant si la SD est r\351utilis\351e ou s'il faut la cr\351er
       valid=1
       if self.reuse:
         # Un concept reutilise a ete specifie
         if AsType(self.reuse) != sd_prod:
-          if cr == 'oui' : self.cr.fatal('Type de concept reutilise incompatible avec type produit')
+          if cr == 'oui' :
+              self.cr.fatal(_(u'Type de concept réutilisé incompatible avec type produit'))
           valid=0
         if self.sdnom!='':
            if self.sdnom[0] != '_' and self.reuse.nom != self.sdnom:
              # Le nom de la variable de retour (self.sdnom) doit etre le meme que celui du concept reutilise (self.reuse.nom)
              if cr == 'oui' :
-                self.cr.fatal('Concept reutilise : le nom de la variable de retour devrait etre %s et non %s' %(self.reuse.nom,self.sdnom))
+                self.cr.fatal(_(u'Concept réutilisé : le nom de la variable de '
+                                     u'retour devrait être %s et non %s'),
+                                   self.reuse.nom, self.sdnom)
              valid= 0
         if valid:self.sd=self.reuse
       else:
@@ -168,24 +175,26 @@ class MACRO_ETAPE(V_ETAPE.ETAPE):
           # Que faut il faire de l eventuel ancien sd ?
           self.sd = None
         else:
-          if self.sd: 
+          if self.sd:
             # Un sd existe deja, on change son type
             if CONTEXT.debug:print "changement de type:",self.sd,sd_prod
             if self.sd.__class__ != sd_prod:
               self.sd.change_type(sd_prod)
             self.typret=sd_prod
-          else: 
+          else:
             # Le sd n existait pas , on ne le crée pas
             self.typret=sd_prod
-            if cr == 'oui' : self.cr.fatal("Concept retourné non défini")
-            valid=0 
+            if cr == 'oui' :
+                self.cr.fatal(_(u"Concept retourné non défini"))
+            valid=0
         if self.definition.reentrant == 'o':
-           if cr == 'oui' : self.cr.fatal('Commande obligatoirement reentrante : specifier reuse=concept')
+           if cr == 'oui' :
+               self.cr.fatal(_(u'Commande obligatoirement réentrante : spécifier reuse=concept'))
            valid=0
       return valid
 
    def report(self):
-      """ 
+      """
           Methode pour la generation d un rapport de validation
       """
       V_ETAPE.ETAPE.report(self)

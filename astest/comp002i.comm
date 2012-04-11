@@ -1,29 +1,29 @@
-# MODIF  DATE 12/07/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE GENIAUT S.GENIAUT
 # TITRE  TEST LOI DE COMPORTEMENT 3D  VISCOCHAB
 # comp002i.para = tps_job 250 mem_job 512Mo mem_aster 20 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # VISCOPLASTIQUE modele Chaboche
 #......................................................................
 
 
-from Utilitai.veri_matr_tang import VERI_MATR_TANG
+from Contrib.veri_matr_tang import VERI_MATR_TANG
 
 DEBUT(CODE=_F(NOM='COMP002I',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),IMPR_MACRO='NON');
 
@@ -100,11 +100,11 @@ ACIER[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG_Pa,
                                  G1_0=Gam1,
                                  G2_0=Gam2,
 #                                 A_I=1.,
-                                 
+
                                  # viscosite
                                  K_0=Kv_Pa ,
                                  N=N,
-                                 
+
                                  # ecoulement terme en exp
                                  A_K=1.,
 #                                 ALP=0.,
@@ -155,11 +155,11 @@ ACIER[1]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
                                  G1_0=Gam1,
                                  G2_0=Gam2,
 #                                 A_I=1.,
-                                 
+
                                  # viscosite
                                  K_0=Kv ,
                                  N=N,
-                                 
+
                                  # ecoulement terme en exp
                                  A_K=1.,
 #                                 ALP=0.,
@@ -177,7 +177,7 @@ ACIER[1]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
 #                                 G_X2=0.,
 #                                 QR_0=0.,
                                  ),
-                                 
+
                                  );
 
 compor='VISCOCHAB'
@@ -190,7 +190,7 @@ N_pas = 4*[1] + [1, 5, 25, 125, 625, 3125]
 N_cas = len(N_pas)
 
 label_cal=['_Pa_','_Th_','_sym_','_rot_'] + 6* ['_N']
-prec_ecart=3*[1.E-10]+ [1.]  + [3.] + [0.8] +(N_cas-4)*[11.E-2]   
+prec_ecart=3*[1.E-10]+ [1.]  + [3.] + [0.8] +(N_cas-4)*[11.E-2]
 prec_tgt=1.e-3
 
 ch_param=['V13','VMIS','TRACE','V16','SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ',]
@@ -241,14 +241,14 @@ for i in range(Ncal):
    DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = temps,),
                         ECHEC=_F(ACTION       = 'DECOUPE',
                                  SUBD_METHODE = 'AUTO',
-                                 
+
                                  ),)
    # Resout le pb a deformation imposee
    RESU[i]=SIMU_POINT_MAT(
                           COMP_INCR   =_F(RELATION=compor,ITER_INTE_MAXI=1500),
                           NEWTON      =_F(MATRICE='TANGENTE',REAC_ITER=1),
                           CONVERGENCE =_F(ITER_GLOB_MAXI=10,),
-                          MATER       = ACIER[imat],  
+                          MATER       = ACIER[imat],
                           ARCHIVAGE   =_F(LIST_INST = temps_ar),
                         #  INCREMENT   =_F(LIST_INST=temps),
                           INCREMENT   =_F(LIST_INST=DEFLIST,),
@@ -260,27 +260,27 @@ for i in range(Ncal):
 
    DETRUIRE ( CONCEPT = _F (NOM = temps,),)
    DETRUIRE ( CONCEPT = _F (NOM = DEFLIST,),)
-        
 
-# TEST_RESU sur les erreurs relatives 
+
+# TEST_RESU sur les erreurs relatives
 prec_zero=[1.E-10, 0.01, 0.01, 0.01]
 
 TEST_ECART(ch_param2,label_cal,N_pas,Ncal,ch_param,R_SI,prec_ecart,prec_zero)
-                
+
 for i in range(Ncal):
    IMPR_TABLE(TABLE=R_SI[i])
-        
+
 
 IMPR_TABLE(TABLE=RESU[0])
 
 # Test de la matrice tangente sur le calcul le plus fin
 
 i=Ncal-1
-N = N_pas[i]                 
-imat = P_imat[i]             
-idef = P_idef[i]             
-eps_imp = V_EPS[idef]   
-opt_ther = P_opt_ther[i]     
+N = N_pas[i]
+imat = P_imat[i]
+idef = P_idef[i]
+eps_imp = V_EPS[idef]
+opt_ther = P_opt_ther[i]
 Linst=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(_F(JUSQU_A=t_0,NOMBRE=N,),
                                  _F(JUSQU_A=2.0*t_0,NOMBRE=N,),
@@ -292,14 +292,14 @@ Linst=DEFI_LIST_REEL(DEBUT=0.0,
                                  _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),);
 
 RESU_TGT=SIMU_POINT_MAT(
-                        COMP_INCR=_F(RELATION=compor, 
-                                     ITER_INTE_MAXI=100,               
+                        COMP_INCR=_F(RELATION=compor,
+                                     ITER_INTE_MAXI=100,
                                      TYPE_MATR_TANG='VERIFICATION',
                                      VALE_PERT_RELA=1.E-5,
                                     ),
                         NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,),
                         CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
-                        MATER      = ACIER[1],  
+                        MATER      = ACIER[1],
                         INCREMENT=_F(LIST_INST=Linst,),
                         EPSI_IMPOSE=_F(EPXX=eps_imp[0], EPYY=eps_imp[1], EPZZ=eps_imp[2],
                                        EPXY=eps_imp[3], EPXZ=eps_imp[4], EPYZ=eps_imp[5]),
@@ -315,29 +315,29 @@ TEST_TABLE(TABLE=DIFF_MAT,
            VALE=0.,
            CRITERE='ABSOLU',
            PRECISION=prec_tgt,
-           REFERENCE='ANALYTIQUE',);     
+           REFERENCE='ANALYTIQUE',);
 
-                
+
 # TESTS DE NON REGRESSION DES QUANTITES SIGNIFICATIVES
 TEST_TABLE(TABLE=R_SI[0],
            NOM_PARA='V13_Pa_1',VALE=1.26418E-02,
            FILTRE=_F(NOM_PARA='INST',VALE=8.0*t_0),
-           REFERENCE='NON_REGRESSION',);     
+           REFERENCE='NON_REGRESSION',);
 
 TEST_TABLE(TABLE=R_SI[1],
            NOM_PARA='VMIS_Pa_1',VALE=7.19733E+08,
            FILTRE=_F(NOM_PARA='INST',VALE=8.0*t_0),
-           REFERENCE='NON_REGRESSION',);     
+           REFERENCE='NON_REGRESSION',);
 
 TEST_TABLE(TABLE=R_SI[3],
            NOM_PARA='V16_Pa_1',VALE=-3.516423E-03,
            FILTRE=_F(NOM_PARA='INST',VALE=8.0*t_0),
-           REFERENCE='NON_REGRESSION',);     
-           
+           REFERENCE='NON_REGRESSION',);
+
 TEST_TABLE(TABLE=R_SI[4],
            NOM_PARA='SIXX_Pa_1',VALE=1.54275E+08,
            FILTRE=_F(NOM_PARA='INST',VALE=8.0*t_0),
-           REFERENCE='NON_REGRESSION',);     
+           REFERENCE='NON_REGRESSION',);
 
 
 FIN()

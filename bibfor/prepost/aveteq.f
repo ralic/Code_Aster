@@ -2,9 +2,9 @@
      &                   VETEQ )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/09/2011   AUTEUR TRAN V-X.TRAN 
+C MODIF PREPOST  DATE 10/04/2012   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -63,7 +63,7 @@ C ----- DEBUT COMMUNS NORMALISES  JEVEUX  ------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ------------------------------------------------------------------
       INTEGER    IORDR, ADRS, J
-      REAL*8     EPS(6),LCIV2E
+      REAL*8     EPS(6),LCIV2E, EQUI(17)
 C     ------------------------------------------------------------------
 C
 C234567                                                              012
@@ -77,7 +77,11 @@ C
             EPS(J) = VWORK(ADRS + J + 6 )        
 35       CONTINUE 
          
-         VETEQ(IORDR) = LCIV2E(EPS)
+         CALL FGEQUI(EPS,'EPSI',3,EQUI)
+         VETEQ(IORDR) =  EQUI(1)
+C	  write(6,*) 'VETEQ', VETEQ(IORDR)
+
+C         VETEQ(IORDR) = LCIV2E(EPS)
          
  10   CONTINUE
 C

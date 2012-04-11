@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 10/04/2012   AUTEUR KAZYMYRE K.KAZYMYRENKO 
 # TITRE LOIS NON LOCALES A DEFORMATIONS REGULARISEES SUR BARREAU 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -112,7 +112,7 @@ EVOL1=STAT_NON_LINE(reuse=EVOL1,
                                 GROUP_MA = ('GMA34',),
                                 ETA_PILO_R_MIN = 0.,
                                  ETA_PILO_MIN=1.,
-                                 ETA_PILO_MAX=100.,),
+                                 ETA_PILO_R_MAX=100.,),
                        );
 
 TEST_RESU(RESU=(  _F(

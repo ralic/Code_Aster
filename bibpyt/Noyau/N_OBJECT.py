@@ -1,32 +1,33 @@
-#@ MODIF N_OBJECT Noyau  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_OBJECT Noyau  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-#                                                                       
-#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+#
+#
 # ======================================================================
 
 
-""" 
+"""
     Ce module contient la classe OBJECT classe mère de tous les objets
     servant à controler les valeurs par rapport aux définitions
 """
 from N_CR import CR
+from strfunc import ufmt
 
 class OBJECT:
    """
@@ -50,9 +51,9 @@ class OBJECT:
       return self.parent.get_etape()
 
    def supprime(self):
-      """ 
+      """
          Méthode qui supprime les références arrières suffisantes pour
-         que l'objet puisse etre correctement détruit par le 
+         que l'objet puisse etre correctement détruit par le
          garbage collector
       """
       self.parent = None
@@ -63,7 +64,7 @@ class OBJECT:
    def get_val(self):
       """
           Retourne la valeur de l'objet. Cette méthode fournit
-          une valeur par defaut. Elle doit etre dérivée pour chaque 
+          une valeur par defaut. Elle doit etre dérivée pour chaque
           type d'objet
       """
       return self
@@ -127,6 +128,7 @@ class ErrorObj(OBJECT):
       self.cr=CR()
       self.cr.debut = "Mot-clé invalide : "+self.nom
       self.cr.fin = "Fin Mot-clé invalide : "+self.nom
-      self.cr.fatal("Type non autorisé pour le mot-clé %s : '%s'" % (self.nom,self.valeur))
+      self.cr.fatal(_(u"Type non autorisé pour le mot-clé %s : '%s'"),
+                        self.nom, self.valeur)
       return self.cr
 

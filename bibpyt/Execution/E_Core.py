@@ -1,4 +1,4 @@
-#@ MODIF E_Core Execution  DATE 13/03/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_Core Execution  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -378,7 +378,7 @@ def _bwc_arguments(argv):
     # removed options
     long_opts_rm = ('rep', 'mem', 'mxmemdy', 'memory_stat', 'memjeveux_stat',
                     'type_alloc', 'taille', 'partition',
-                    'origine')
+                    'origine', 'ORBInitRef',)
     # renamed options
     long_opts_mv = { 'eficas_path' : 'bibpyt' }
     orig = argv[:]

@@ -1,4 +1,4 @@
-#@ MODIF calculel Messages  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel Messages  DATE 10/04/2012   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -423,9 +423,15 @@ Risques et conseils :
         CEQUI
 """),
 
+75 : _(u"""
+ Votre modèle ne contient que des éléments 1D. Le lissage global n'est
+ possible que pour les éléments 2D ou 3D.
+"""),
 
-
-
+76 : _(u"""
+ Votre modèle contient un mélange d'éléments 1D,2D ou 3D. 
+ Le lissage global n'est possible que pour les éléments 2D soit 3D.
+"""),
 
 91 : _(u"""
  incohérence des familles de points de Gauss pour la maille  %(k1)s
