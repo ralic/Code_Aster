@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/04/2012   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,13 +27,7 @@ CALC_META=OPER(nom="CALC_META",op=194,sd_prod=evol_ther,reentrant='o',
      CHAM_MATER      =SIMP(statut='f',typ=cham_mater ),
      RESULTAT        =SIMP(statut='o',typ=evol_ther ),
 
-     OPTION          =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
-                           into=(
-                                 "DURT_ELNO",
-                                 "DURT_NOEU",
-                                 "META_ELNO",
-                                 "META_NOEU",
-                                 ),),
+     OPTION          =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',into=C_NOM_CHAM_INTO(phenomene='METALLURGIE',),),
 
      TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
      GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',

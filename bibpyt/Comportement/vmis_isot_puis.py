@@ -1,4 +1,4 @@
-#@ MODIF vmis_isot_puis Comportement  DATE 13/02/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF vmis_isot_puis Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,7 +27,7 @@ loi = LoiComportement(
 par une courbe de traction analytique avec une loi puissance""",
    num_lc         = 1,
    nb_vari        = 2,
-   nom_vari       = ('DEFPLCUM', 'INDICAT'),
+   nom_vari       = ('EPSPEQ', 'INDIPLAS'),
    mc_mater       = ('ELAS', 'ECRO_PUIS'),
    modelisation   = ('3D', 'AXIS', 'C_PLAN', 'D_PLAN' ),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP', 'SIMO_MIEHE','GDEF_HYPO_ELAS'),

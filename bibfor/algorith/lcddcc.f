@@ -12,11 +12,12 @@
       REAL*8 B,H,DELTG0,TAU0,D,BETA,TEMP,DLAT,KF,KSELF,RHOMOB,KBOLTZ
       REAL*8 YAT,MU,LC,RHOTOT,EPSEQ,DG,DELTAG,T1,T2,T3,T4,T5,T6,T7,T8,T9
       REAL*8 RS,D1,LAMBDA,ALPHAT,LS,TAUSLT,TAUSLR,GAMNUC,ASR
-      REAL*8 DELTA1,DELTA2,AIRR,XI,RHOIRR,DEPDT
+      REAL*8 DELTA1,DELTA2,AIRR,XI,RHOIRR,DEPDT,TAUC,T10
+      LOGICAL NEW
       COMMON /DEPS6/DEPSDT
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -85,6 +86,9 @@ C ======================================================================
 C         XI    =COEFT(IFL+23)
       ENDIF
 
+C     DELTA1=1 par defaut : nouvelle formulation. Sinon, ancienne
+      NEW=(ABS(DELTA1-1.D0).LT.1.D-6)
+      
 C initialisation des arguments en sortie
       DGAMMA=0.D0
       DALPHA=0.D0
@@ -102,9 +106,17 @@ C     on resout en alpha=rho
 
 C 1.  CALCUL de DeltaG approximatif
       RHOTOT=0.D0
-      DO 10 IR=1,12
-         RHOTOT=RHOTOT+RHOP(IR)
- 10   CONTINUE
+      IF (NEW) THEN
+C rho tot represente rho_f (foret)      
+         DO 11 IR=1,12
+            IF (IR.EQ.IS) GOTO 11
+            RHOTOT=RHOTOT+RHOP(IR)
+ 11      CONTINUE
+      ELSE
+         DO 10 IR=1,12
+            RHOTOT=RHOTOT+RHOP(IR)
+ 10      CONTINUE
+      ENDIF
       IF (RHOTOT.LT.RMIN) THEN
          IRET=1
          GOTO 9999
@@ -117,6 +129,7 @@ C 1.  CALCUL de DeltaG approximatif
       IF (DEPDT.GT.RMIN) THEN
 C        DEPDST FOURNI PAR L'UTILISATEUR
          DG=KBOLTZ*TEMP*LOG(RHOMOB*B*H/SQRT(RHOTOT)/DEPDT)
+         DELTAG=MIN(DELTG0,DG)
       ELSEIF (DEPSDT.GT.RMIN) THEN
 C        DEPSDT DU POINT DE GAUSS
          DG=KBOLTZ*TEMP*LOG(RHOMOB*B*H/SQRT(RHOTOT)/DEPSDT)
@@ -142,9 +155,16 @@ C 3.  calcul de lambda
       
 C 4.  calcul de Ls      
       ALPHAT=0.D0
-      DO 20 IR=1,12
-         ALPHAT=ALPHAT+RHOP(IR)*HSR(IS,IR)
- 20   CONTINUE
+      IF (NEW) THEN
+         DO 21 IR=1,12
+            IF (IR.EQ.IS) GOTO 21
+            ALPHAT=ALPHAT+RHOP(IR)*HSR(IS,IR)
+ 21      CONTINUE
+      ELSE
+         DO 20 IR=1,12
+            ALPHAT=ALPHAT+RHOP(IR)*HSR(IS,IR)
+ 20      CONTINUE
+      ENDIF
       IF (ALPHAT.LT.RMIN) THEN
          IRET=1
          GOTO 9999
@@ -160,13 +180,26 @@ C 4.  calcul de Ls
 C 5.  calcul de Taus_LT
       T3 = 2.D0*ALPHAT*RS+LC
       T4=1.D0/LAMBDA-1.D0/T3
-      TAUSLT=MAX(0.D0,((1.D0-BETA)*ALPHAT*MU*B*T4))
+      IF (NEW) THEN
+         TAUSLT=MAX(0.D0,(ALPHAT*MU*B*T4))
+      ELSE
+         TAUSLT=MAX(0.D0,((1.D0-BETA)*ALPHAT*MU*B*T4))
+      ENDIF
 
 C 6.  calcul de Taus_LR
-      TAUSLR=BETA*ALPHAT*MU*B*SQRT(RHOTOT)
+      IF (NEW) THEN
+         TAUSLR=MU*B*SQRT(RHOP(IS)*HSR(IS,IS))
+      ELSE
+         TAUSLR=BETA*ALPHAT*MU*B*SQRT(RHOTOT)
+      ENDIF
       
 C 7.  calcul de Taus_eff
-      TAUEFF=ABS(TAUS)-TAUF - TAUSLT - TAUSLR
+      IF (NEW) THEN
+         TAUC=TAUF + SQRT( TAUSLT**2+TAUSLR**2)
+         TAUEFF=ABS(TAUS)-TAUC
+      ELSE
+         TAUEFF=ABS(TAUS)-TAUF - TAUSLT - TAUSLR
+      ENDIF
       
       IF (ABS(TAUS).GT.RMIN) THEN
          SGNS=TAUS/ABS(TAUS)
@@ -187,8 +220,12 @@ C 8.  calcul de gamma_nuc
       GAMNUC=GAMNUC*SGNS
 
 C 9.  calcul de gamma_prob
-      T6=TAUF+TAUSLR+(1.D0-BETA)*ALPHAT*MU*B/LAMBDA
-      GAMPRO=GAMMA0*(ABS(TAUS)/T6)**N
+      IF (NEW) THEN
+         GAMPRO=GAMMA0*(ABS(TAUS)/TAUC)**N
+      ELSE
+         T6=TAUF+TAUSLR+(1.D0-BETA)*ALPHAT*MU*B/LAMBDA
+         GAMPRO=GAMMA0*(ABS(TAUS)/T6)**N
+      ENDIF
       GAMPRO=GAMPRO*SGNS
 
 C 10. ECOULEMENT CALCUL DE DGAMMA,DP
@@ -207,26 +244,39 @@ C 10. ECOULEMENT CALCUL DE DGAMMA,DP
          DP=ABS(DGAMMA)
       ENDIF
 
+      IF (NEW) THEN
+         T10=1.D0
+         IF (TAUEFF.GT.RMIN) T10=(1.D0-DELTA1*TAUEFF/TAU0)
+      ENDIF
+      
 C 11. CALCUL DE RHO_POINT RENOMME DALPHA
       IF (RHOP(IS).GT.RMIN) THEN
-         T7= SQRT(HSR(IS,IS)*RHOP(IS))
+         IF (NEW) THEN
+            T7= SQRT(HSR(IS,IS)*RHOP(IS))*T10
+         ELSE
+            T7= SQRT(HSR(IS,IS)*RHOP(IS))
+         ENDIF
       ELSE
          T7=0.D0
 C        ou bien IRET=1, a voir  
       ENDIF
       
-      T8=0.D0
-      DO 30 IR=1,12
-         IF (IR.EQ.IS) GOTO 30
-         IF (TAUEFF.GT.RMIN) THEN
-            ASR=HSR(IS,IR)*(1.D0-DELTA1*TAUEFF/TAU0)
-         ELSE
-            ASR=HSR(IS,IR)
-         ENDIF
-         IF (RHOP(IR).GT.RMIN) THEN
-            T8=T8+SQRT(ASR*RHOP(IR))
-         ENDIF
- 30   CONTINUE
+      IF (NEW) THEN
+         T8=ALPHAT*RHOTOT*LAMBDA*T10      
+      ELSE
+         T8=0.D0
+         DO 30 IR=1,12
+            IF (IR.EQ.IS) GOTO 30
+            IF (TAUEFF.GT.RMIN) THEN
+               ASR=HSR(IS,IR)*(1.D0-DELTA2*TAUEFF/TAU0)
+            ELSE
+               ASR=HSR(IS,IR)
+            ENDIF
+            IF (RHOP(IR).GT.RMIN) THEN
+               T8=T8+SQRT(ASR*RHOP(IR))
+            ENDIF
+ 30      CONTINUE
+      ENDIF
       
       IF (TAUEFF.GT.RMIN) THEN
          T9=1.D0/YAT+DELTA2*2.D0*R8PI()*TAUEFF/MU/B

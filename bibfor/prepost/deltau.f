@@ -2,7 +2,7 @@
      &                  NUMPAQ, TSPAQ, NOMMET, NOMCRI,NOMFOR,
      &                  GRDVIE,FORVIE, CESR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 03/04/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,19 +75,19 @@ C---- COMMUNS NORMALISES  JEVEUX
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ------------------------------------------------------------------
-      INTEGER      I, J, KWORK, N, JCERD, JCERL, JCERV, JAD
+      INTEGER       J, KWORK, N, JCERD, JCERL, JCERV, JAD
       INTEGER      IRET, IMAP, ICESD, ICESL, ICESV, IBID
       INTEGER      IPG, TNECES, TDISP, JVECPG, JVECTN
       INTEGER      JVECTU, JVECTV, NGAM, DIM, TAB2(18)
       INTEGER      NBPG, SOMPGW, NBPGP, L, JDTAUM, JRESUN
       INTEGER      LOR8EM, LOISEM,ICMP, VALI(2)
       REAL*8       DGAM, GAMMA, PI, R8PI, DPHI, TAB1(18)
-      REAL*8       PHI0, VALA, VALB, COEFPA, VRESU2(24)
+      REAL*8       PHI0, VALA, VALB, COEFPA, VRESU2(24), VALPAR(20)
       INTEGER      ICODWO, IARG
       CHARACTER*8  CHMAT1, NOMMAT
       CHARACTER*10 OPTIO
       CHARACTER*19 CHMAT, CESMAT
-      
+
 C
 C-----------------------------------------------------------------------
 C234567                                                              012
@@ -205,14 +205,14 @@ C ET DES PARAMETRES ASSOCIES AU CRITERE CHOISI POUR LA MAILLE COURANTE.
          DO 420 IPG=1, NBPG
 
             CALL JERAZO( '&&DELTAU.VECTPG', TNECES, 1 )
-            
-C REMPACER PAR ACMATA                  
-            CALL ACGRDO ( JVECTN, JVECTU, JVECTV, NBORDR, KWORK,
-     &                    SOMPGW, JRWORK, TSPAQ, IPG, JVECPG,JDTAUM, 
-     &                    JRESUN, NOMMET, NOMMAT, NOMCRI,VALA,
-     &                    COEFPA, NOMFOR, GRDVIE, FORVIE, VRESU2)
 
-C 
+C REMPACER PAR ACMATA
+            CALL ACGRDO ( JVECTN, JVECTU, JVECTV, NBORDR, KWORK,
+     &                    SOMPGW, JRWORK, TSPAQ, IPG, JVECPG,JDTAUM,
+     &                    JRESUN, NOMMET, NOMMAT, NOMCRI,VALA,
+     &              COEFPA, NOMFOR, GRDVIE, FORVIE,VALPAR, VRESU2)
+
+C
 C C AFFECTATION DES RESULTATS DANS UN CHAM_ELEM SIMPLE
 
             DO 550 ICMP=1, 24

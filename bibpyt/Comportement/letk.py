@@ -1,4 +1,4 @@
-#@ MODIF letk Comportement  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF letk Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

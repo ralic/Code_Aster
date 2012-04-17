@@ -1,7 +1,7 @@
       SUBROUTINE NMCRER(CARCRI,SDERRO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/04/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 16/04/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +55,7 @@ C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER      ZEVEN
-      PARAMETER   (ZEVEN = 30)
+      PARAMETER   (ZEVEN = 31)
       CHARACTER*16 NEVEN(ZEVEN)
       CHARACTER*8  NCRET(ZEVEN)
       INTEGER      VCRET(ZEVEN)
@@ -83,7 +83,7 @@ C
      &              'DIVE_FIXF','DIVE_FIXC','ERRE_CTCG',
      &              'ERRE_CTCF','ERRE_CTCC','DIVE_FROT',
      &              'DIVE_GEOM','DIVE_RELA','DIVE_MAXI',
-     &              'DIVE_REFE','DIVE_COMP'/
+     &              'DIVE_REFE','DIVE_COMP','DIVE_CTCC'/
 C
 C --- NOM DU CODE RETOUR ATTACHE A L'EVENEMENT
 C
@@ -97,7 +97,7 @@ C
      &              'XXX','XXX','XXX',
      &              'XXX','XXX','XXX',
      &              'XXX','XXX','XXX',
-     &              'XXX','XXX'/
+     &              'XXX','XXX','XXX'/
 C
 C --- VALEUR DU CODE RETOUR CORRESPONDANT A CHAQUE EVENEMENT
 C
@@ -111,7 +111,7 @@ C
      &               99,99,99,
      &               99,99,99,
      &               99,99,99,
-     &               99,99/
+     &               99,99,99/
 C
 C --- TYPE ET NIVEAU DE DECLENCHEMENT POSSIBLES DE L'EVENEMENT
 C TROIS TYPES
@@ -132,7 +132,7 @@ C
      &              'CONV_FIXE','CONV_FIXE','ERRI_FIXE',
      &              'ERRI_FIXE','ERRI_FIXE','CONV_RESI',
      &              'CONV_NEWT','CONV_RESI','CONV_RESI',
-     &              'CONV_RESI','CONV_RESI'/
+     &              'CONV_RESI','CONV_RESI','CONV_NEWT'/
 C
 C --- FONCTIONNALITE ACTIVE SI NECESSAIRE POUR CONVERGENCE
 C
@@ -146,7 +146,7 @@ C
      &              ' ',' '       ,' ',
      &              ' ',' '       ,' ',
      &              ' ',' '       ,' ',
-     &              ' ',' '       /
+     &              ' ',' '       ,' '/
 C
 C ----------------------------------------------------------------------
 C

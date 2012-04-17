@@ -1,4 +1,4 @@
-#@ MODIF calc_fonction_ops Macro  DATE 10/04/2012   AUTEUR ZENTNER I.ZENTNER 
+#@ MODIF calc_fonction_ops Macro  DATE 16/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -332,7 +332,7 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
         __ff = DSP['FONCTION'].convert()
         wmin = 1.001
         wcoup = deuxpi * DSP['FREQ_COUP']
-        duree = min(10., DSP['DUREE'])
+        duree = max(10., DSP['DUREE'])
         ksi = DSP['AMOR_REDUIT']
         pesanteur = DSP['NORME']
         fract = DSP['FRACT']

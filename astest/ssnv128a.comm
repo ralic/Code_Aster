@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/04/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT AVEC FROTTEMENT D'UNE PLAQUE SUR UN PLAN RIGIDE
 # ssnv128a.para = tps_job 100 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -52,6 +52,11 @@ MA=MODI_MAILLAGE(reuse=MA,
                  ORIE_PEAU_2D=(_F(GROUP_MA = 'LPRESV',),
                                _F(GROUP_MA = 'LPRESH',))
                 )
+#
+MA=DEFI_GROUP(reuse=MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=_F( NOM='LCONTA',
+                                      GROUP_MA='LCONTA',),);
 #
 MATPLA=DEFI_MATERIAU(ELAS=_F(E = 1.3E11,
                              NU = 0.2,)
@@ -129,7 +134,7 @@ U2M=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                   CONVERGENCE= _F(ARRET = 'OUI',
                                  ITER_GLOB_MAXI = 200,
                                  RESI_GLOB_RELA = 1.0E-5,),
-#                  INFO=2,
+                  INFO=1,
                   ARCHIVAGE=_F(INST=(-2.0,1.0,),),
                )
 #
@@ -353,7 +358,7 @@ U3M=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                  CONVERGENCE = _F(ARRET = 'OUI',
                                   ITER_GLOB_MAXI = 200,
                                   RESI_GLOB_RELA = 1.0E-5,),
-                 INFO=2,
+                 INFO=1,
                )
 #
 U3M=CALC_ELEM(reuse=U3M,
@@ -450,6 +455,15 @@ DEPL3L=CREA_CHAMP(OPERATION='EXTR',
                  RESULTAT=U3L,
                  INST=1.0
                 )
+                
+TCONT=POST_RELEVE_T(ACTION=_F(INTITULE='CONT',
+                              GROUP_NO='LCONTA',
+                              RESULTAT=U3L,
+                              NOM_CHAM='VALE_CONT',
+                              INST=1.0,
+                              TOUT_CMP='OUI',
+                              OPERATION='EXTRACTION'));
+IMPR_TABLE(TABLE=TCONT);
 #
 TEST_RESU(RESU=(_F(RESULTAT   = U3L,
                    INST       = 1.0,
@@ -502,6 +516,29 @@ TEST_RESU(RESU=(_F(RESULTAT   = U3L,
                    VERSION    = '7.1.11',
                 ))
        )#
+       
+# VERIF PROJECTION  (AVANT-DERNIER NOEUD A DROITE)
+TEST_RESU(RESU=
+                _F(RESULTAT   = U3L,
+                   INST       = 1.0,
+                   NOM_CHAM   = 'VALE_CONT',
+                   NOEUD      = 'N32',
+                   NOM_CMP    = 'PROJ_X',
+                   VALE       = 3.87500E-02,
+                   PRECISION  = 1E-8,
+                   REFERENCE  = 'ANALYTIQUE',));
+
+TEST_RESU(RESU=
+                _F(RESULTAT   = U3L,
+                   INST       = 1.0,
+                   NOM_CHAM   = 'VALE_CONT',
+                   NOEUD      = 'N32',
+                   NOM_CMP    = 'PROJ_Y',
+                   VALE       = 0.0,
+                   CRITERE    = 'ABSOLU',
+                   PRECISION  = 1E-8,
+                   REFERENCE  = 'ANALYTIQUE',));
+             
 #
 FIN()
 #

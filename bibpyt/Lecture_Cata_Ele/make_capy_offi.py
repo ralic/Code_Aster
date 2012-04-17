@@ -1,4 +1,4 @@
-#@ MODIF make_capy_offi Lecture_Cata_Ele  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF make_capy_offi Lecture_Cata_Ele  DATE 16/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -74,7 +74,7 @@ def main(rep_cata_offi, nom_capy_offi):
     """
     nom_capy_offi = osp.abspath(nom_capy_offi)
     rep_cata_offi = osp.abspath(rep_cata_offi)
-    
+
     trav = tempfile.mkdtemp(prefix='make_capy_offi_')
     dirav = os.getcwd()
     os.chdir(trav)

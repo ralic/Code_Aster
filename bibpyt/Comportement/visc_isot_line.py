@@ -1,4 +1,4 @@
-#@ MODIF visc_isot_line Comportement  DATE 06/02/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF visc_isot_line Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,7 @@ loi = LoiComportement(
    doc = """Loi viscoplastique avec critère de Von Mises, écrouissage isotrope linéaire et viscosité en sinh""",
    num_lc         = 1,
    nb_vari        = 2,
-   nom_vari       = ('DEFPLCUM', 'INDICAT'),
+   nom_vari       = ('EPSPEQ', 'INDIPLAS'),
    mc_mater       = ('ELAS', 'ECRO_LINE', 'VISC_SINH'),
    modelisation   = ('3D', 'AXIS', 'D_PLAN'),
    deformation    = ('SIMO_MIEHE',),

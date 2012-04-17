@@ -1,8 +1,8 @@
-#@ MODIF rousselier Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF rousselier Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -28,7 +28,7 @@ loi = LoiComportement(
    Pour faciliter l'intégration de ce modèle, il est conseillé d'utiliser systématiquement le redécoupage global du pas de temps (SUBD_PAS).""",
    num_lc         = 36,
    nb_vari        = 9,
-   nom_vari       = ('EPSPEQ','POROSITE','EPSE_XX','EPSE_YY','EPSE_ZZ','EPSE_XY','EPSE_XZ','EPSE_YZ','INDIPLAS'),
+   nom_vari       = ('EPSPEQ','POROSITE','EPSEXX','EPSEYY','EPSEZZ','EPSEXY','EPSEXZ','EPSEYZ','INDIPLAS'),
    mc_mater       = ('ELAS','ROUSSELIER'),
    modelisation   = ('3D', 'AXIS', 'D_PLAN'),
    deformation    = ('SIMO_MIEHE'),

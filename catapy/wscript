@@ -1,0 +1,48 @@
+# encoding: utf-8
+
+import os
+import os.path as osp
+from waflib import TaskGen, Utils
+
+def build(self):
+    get_srcs = self.path.get_src().ant_glob
+    env = self.all_envs[self.variant]
+
+    # source order is important for catapy.
+    # See changelog 11.0.17 to get information about the order
+
+    sources = get_srcs('entete/accas.capy')
+    sources += get_srcs('entete/co_*.capy')
+    sources += get_srcs('entete/*.capy',
+                        excl=['entete/accas.capy', 'entete/co_*.capy'])
+    sources += get_srcs('commun/*.capy')
+    sources += get_srcs('commande/*.capy')
+
+    self(
+       features = 'catapy py',
+           name = 'catapy',
+         target = 'cata.py',
+         source = sources,
+   install_path = osp.join(env.PYTHONDIR, 'Cata'),
+    )
+
+###############################################################################
+
+# manage extension
+@TaskGen.extension('.capy')
+def capy(self, node):
+    pass
+
+@TaskGen.feature('catapy')
+def catapy(self):
+    """Merge capy files to cata.py and install it."""
+    # doing merge in python as it is multi-plateform
+    target = self.bld.bldnode.make_node(self.target)
+    with open(target.abspath(), 'w') as fid:
+        for node in self.source:
+            with open(node.abspath()) as subfid:
+                fid.write(subfid.read())
+                fid.write(os.linesep)
+                fid.flush()
+    target.sig = Utils.h_file(target.abspath())
+    self.process_py(target)

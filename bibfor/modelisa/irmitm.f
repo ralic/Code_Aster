@@ -1,6 +1,6 @@
       SUBROUTINE IRMITM (NBMODE,IFMIS,FREQ,TABRIG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
+C MODIF MODELISA  DATE 17/04/2012   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -36,7 +36,7 @@ C      ---- DEBUT DES COMMUNS JEVEUX ----------------------------------
       CHARACTER*32   JEXNUM
 C      ---- FIN DES COMMUNS JEVEUX ------------------------------------
 C
-      CHARACTER*24 TABRIG, TABFRQ, TABRI2
+      CHARACTER*24 TABRIG, TABFRQ, TABRI2, TABRI0
       REAL*8       A(3), A2(3), NINS2
 C      INTEGER*8    LONG1,LONG2,LONG3
 C-----------------------------------------------------------------------
@@ -45,15 +45,17 @@ C
 
 C
       TABRI2 = '&&IRMITM.RIG2'
+      TABRI0 = '&&IRMITM.RIG0'
       TABFRQ = '&&IRMITM.FREQ'
       CALL WKVECT(TABRI2,'V V R',NBMODE*NBMODE,JRI2)
+      CALL WKVECT(TABRI0,'V V R',NBMODE*NBMODE,JRI0)
       REWIND IFMIS
 C
 C   Lecture d'entiers INTEGER*8 en binaire venant de MISS3D
 C   On convertit ensuite en INTEGER (*4 sur machine 32 bits, sinon *8).
 C   Les reels ne posent pas de probleme : ce sont toujours des REAL*8
 C
-      READ(IFMIS) NINS2
+      READ(IFMIS,*) NINS2,PAS
       NFREQ=INT(NINS2)
       CALL WKVECT(TABFRQ,'V V R',NFREQ,JFRQ)
 C      NBMODE=LONG2
@@ -61,7 +63,12 @@ C      N1=LONG3
       IC=1
 C      CALL WKVECT(TABRIG,'V V R',NBMODE*NBMODE,JRIG)
       CALL JEVEUO(TABRIG,'E',JRIG)
-      READ(IFMIS) (ZR(JFRQ+IFR-1),IFR=1,NFREQ)
+C      READ(IFMIS) (ZR(JFRQ+IFR-1),IFR=1,NFREQ)
+C      READ(IFMIS) (TFREQ(IFR),IFR=1,NFREQ)
+C      WRITE(6,*) 'TABFRE0=',(TFREQ(IFR),IFR=1,NFREQ)
+      DO 1 I=1,NFREQ
+        ZR(JFRQ+I-1) = (I-1)*PAS
+    1 CONTINUE
       DO 3 I = 1, NFREQ
         A(1) = ZR(JFRQ+I-1)
         IF (FREQ.LE.(A(1) + R8PREM( ))) THEN
@@ -81,14 +88,21 @@ C      CALL WKVECT(TABRIG,'V V R',NBMODE*NBMODE,JRIG)
       IFREQ = NFREQ
       IC = 0
     7 CONTINUE
+C      WRITE(6,*) 'NBMODE=',NBMODE
+C      WRITE(6,*) 'FREQ= ',FREQ,' IFREQ= ',IFREQ,' IC= ',IC
       DO 5 I = 1, IFREQ-1
-        READ(IFMIS) A(1)
+        READ(IFMIS,*) A(1)
+        READ(IFMIS,1000) ((ZR(JRI0+(I2-1)*NBMODE+I1-1),
+     &                     I1=1,NBMODE),I2=1,NBMODE)
     5 CONTINUE
-      READ(IFMIS) ((ZR(JRIG+(I2-1)*NBMODE+I1-1),
+      READ(IFMIS,*) A(1)
+C      WRITE(6,*) 'INST= ',A(1)
+      READ(IFMIS,1000) ((ZR(JRIG+(I2-1)*NBMODE+I1-1),
      &              I1=1,NBMODE),I2=1,NBMODE)
       IF (IC.GE.1) THEN
-        READ(IFMIS) ((ZR(JRI2+(I2-1)*NBMODE+I1-1),
-     &                I1=1,NBMODE),I2=1,NBMODE)        
+        READ(IFMIS,*) A(1)
+        READ(IFMIS,1000) ((ZR(JRI2+(I2-1)*NBMODE+I1-1),
+     &                     I1=1,NBMODE),I2=1,NBMODE)        
         DO 8 I1 = 1, NBMODE
         DO 8 I2 = 1, NBMODE
           ZR(JRIG+(I2-1)*NBMODE+I1-1) =
@@ -98,8 +112,10 @@ C      CALL WKVECT(TABRIG,'V V R',NBMODE*NBMODE,JRIG)
     8   CONTINUE
       ENDIF
 
+      CALL JEDETR(TABRI0)
       CALL JEDETR(TABRI2)
       CALL JEDETR(TABFRQ)
 C
+ 1000 FORMAT((6(1X,1PE13.6)))
       CALL JEDEMA()
       END

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 02/04/2012   AUTEUR TRAN V-X.TRAN 
+#& MODIF COMMANDE  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,34 +26,13 @@ POST_K_TRANS=MACRO(nom="POST_K_TRANS",
                    reentrant='n',
                    UIinfo={"groupes":("Post-traitements","Rupture",)},
         RESU_TRANS      =SIMP(statut='o',typ=tran_gene),
-        MODELISATION  =SIMP(statut='o',typ='TXM',into=("3D","AXIS","D_PLAN","C_PLAN"),),
         K_MODAL         =FACT(statut='o',
-           TABL_K_MODA     =SIMP(statut='f',typ=table_sdaster,),
-           RESU_MODA       =SIMP(statut='f',typ=mode_meca,),
+           TABL_K_MODA     =SIMP(statut='o',typ=table_sdaster,),
            FOND_FISS       =SIMP(statut='f',typ=fond_fiss,),
            FISSURE         =SIMP(statut='f',typ=fiss_xfem,),
-           THETA           =SIMP(statut='f',typ=(theta_geom,cham_no_sdaster)),
-           R_INF           =SIMP(statut='f',typ='R'),
-           R_SUP           =SIMP(statut='f',typ='R'),
-           MODULE          =SIMP(statut='f',typ='R'),
-#           DIME_MAILLE     =SIMP(statut='o',typ='I',into=(2,3) ),
-           DIRE_THETA      =SIMP(statut='f',typ=cham_no_sdaster ),
-           DIRECTION       =SIMP(statut='f',typ='R',max='**'),
-           R_INF_FO        =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-           R_SUP_FO        =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-           MODULE_FO       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-           LISSAGE_THETA   =SIMP(statut='f',typ='TXM',into=("LEGENDRE","LAGRANGE","LAGRANGE_REGU"),),
-           LISSAGE_G       =SIMP(statut='f',typ='TXM',into=("LEGENDRE","LAGRANGE","LAGRANGE_NO_NO","LAGRANGE_REGU"),),
-           b_legen    =BLOC(condition="(LISSAGE_THETA=='LEGENDRE') or (LISSAGE_G=='LEGENDRE')",
-              DEGRE           =SIMP(statut='f',typ='I',defaut=5,into=(0,1,2,3,4,5,6,7) ),                
+           regles=( UN_PARMI('FISSURE','FOND_FISS'), ),
            ),
-
-           regles=(UN_PARMI('TABL_K_MODA','RESU_MODA'),
-                   UN_PARMI('FISSURE','FOND_FISS'),
-                   EXCLUS('MODULE','MODULE_FO'),
-                   PRESENT_PRESENT('R_INF','R_SUP'),
-                   PRESENT_PRESENT('R_INF_FO','R_SUP_FO'), ),
-         ),
+           
         regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','LIST_INST','LIST_ORDRE'),),
         TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
         NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),

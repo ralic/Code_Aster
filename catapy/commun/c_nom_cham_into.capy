@@ -1,7 +1,7 @@
-#& MODIF COMMUN  DATE 04/01/2012   AUTEUR SELLENET N.SELLENET 
+#& MODIF COMMUN  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,178 +17,416 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE PELLET J.PELLET
-# ce fichier contient la liste des "into" possibles pour le mot cle NOM_CHAM
-# c'est a dire les noms de champs des SD RESULTAT (DATA de la routine RSCRSD)
 
-def C_NOM_CHAM_INTO( *l_typ_cham ): #COMMUN#
-    """Cette fonction retourne la liste des "into" possibles pour le mot-clé NOM_CHAM.
-    C'est à dire les noms de champs des SD RESULTAT (DATA de la routine RSCRSD).
-    l_typ_cham : rien ou un ou plusieurs parmi 'ELGA', 'ELNO', 'NOEU', 'ELEM'.
+class NOM_CHAM_INTO:  #COMMUN#
     """
-    # Liste de tout les champs
-    l_tout_cham = [
-                        "ACCE",
-                        "ACCE_ABSOLU",
-                        "ALPH0_ELGA_EPSP",
-                        "ALPHP_ELGA_ALPH0",
-                        "COMPORTEMENT",
-                        "COMPORTHER",
-                        "DEDE_ELNO",
-                        "DEDE_NOEU",
-                        "DEGE_ELNO",
-                        "DEGE_ELGA",
-                        "DEGE_NOEU",
-                        "DEPL",
-                        "DEPL_ABSOLU",
-                        "DEPL_VIBR",
-                        "DERA_ELGA",
-                        "DERA_ELNO",
-                        "DERA_NOEU",
-                        "DESI_ELNO",
-                        "DESI_NOEU",
-                        "DETE_ELNO",
-                        "DETE_NOEU",
-                        "DISS_ELGA",
-                        "DISS_ELNO",
-                        "DISS_NOEU",
-                        "DIVU",
-                        "DURT_ELNO",
-                        "DURT_NOEU",
-                        "ECIN_ELEM",
-                        "EFGE_ELGA",
-                        "EFGE_ELNO",
-                        "EFGE_NOEU",
-                        "ENDO_ELGA",
-                        "ENDO_ELNO",
-                        "ENDO_NOEU",
-                        "ENEL_ELGA",
-                        "ENEL_ELNO",
-                        "ENEL_NOEU",
-                        "EPEQ_ELGA",
-                        "EPEQ_ELNO",
-                        "EPEQ_NOEU",
-                        "EPFD_ELGA",
-                        "EPFD_ELNO",
-                        "EPFD_NOEU",
-                        "EPFP_ELGA",
-                        "EPFP_ELNO",
-                        "EPFP_NOEU",
-                        "EPME_ELGA",
-                        "EPME_ELNO",
-                        "EPMG_ELGA",
-                        "EPMG_ELNO",
-                        "EPMG_NOEU",
-                        "EPMQ_ELGA",
-                        "EPMQ_ELNO",
-                        "EPMQ_NOEU",
-                        "EPOT_ELEM",
-                        "EPSA_ELNO",
-                        "EPSA_NOEU",
-                        "EPSG_ELGA",
-                        "EPSG_ELNO",
-                        "EPSG_NOEU",
-                        "EPSI_ELGA",
-                        "EPSI_ELNO",
-                        "EPSI_NOEU",
-                        "EPSP_ELGA",
-                        "EPSP_ELNO",
-                        "EPSP_NOEU",
-                        "EPTU_ELNO",
-                        "EPVC_ELGA",
-                        "EPVC_ELNO",
-                        "EPVC_NOEU",
-                        "ERME_ELEM",
-                        "ERME_ELNO",
-                        "ERME_NOEU",
-                        "ERTH_ELEM",
-                        "ERTH_ELNO",
-                        "ERTH_NOEU",
-                        "ERZ1_ELEM",
-                        "ERZ2_ELEM",
-                        "ETOT_ELEM",
-                        "ETOT_ELGA",
-                        "ETOT_ELNO",
-                        "FERRAILLAGE",
-                        "FLHN_ELGA",
-                        "FLUX_ELGA",
-                        "FLUX_ELNO",
-                        "FLUX_NOEU",
-                        "FORC_NODA",
-                        "FSUR_2D",
-                        "FSUR_3D",
-                        "FVOL_2D",
-                        "FVOL_3D",
-                        "GRAD_NOEU_THETA",
-                        "HYDR_ELNO",
-                        "HYDR_NOEU",
-                        "INDL_ELGA",
-                        "INTE_ELNO",
-                        "INTE_NOEU",
-                        "IRRA",
-                        "LANL_ELGA",
-                        "META_ELGA_TEMP",
-                        "META_ELNO",
-                        "META_NOEU",
-                        "MODE_FLAMB",
-                        "MODE_STAB",
-                        "PDIL_ELGA",
-                        "PRAC_ELNO",
-                        "PRAC_NOEU",
-                        "PRES",
-                        "PRME_ELNO",
-                        "PTOT",
-                        "QIRE_ELEM",
-                        "QIRE_ELNO",
-                        "QIRE_NOEU",
-                        "QIZ1_ELEM",
-                        "QIZ2_ELEM",
-                        "REAC_NODA",
-                        "SIEF_ELGA",
-                        "SIEF_ELNO",
-                        "SIEF_NOEU",
-                        "SIEQ_ELGA",
-                        "SIEQ_ELNO",
-                        "SIEQ_NOEU",
-                        "SIGM_ELGA",
-                        "SIGM_ELNO",
-                        "SIGM_NOEU",
-                        "SING_ELEM",
-                        "SING_ELNO",
-                        "SIPM_ELNO",
-                        "SIPO_ELNO",
-                        "SIPO_NOEU",
-                        "SIRO_ELEM",
-                        "SISE_ELNO",
-                        "SIZ1_NOEU",
-                        "SIZ2_NOEU",
-                        "SOUR_ELGA",
-                        "SPMX_ELGA",
-                        "STRX_ELGA",
-                        "TEMP",
-                        "THETA",
-                        "VAEX_ELGA",
-                        "VAEX_ELNO",
-                        "VAEX_NOEU",
-                        "VALE_CONT",
-                        "VARC_ELGA",
-                        "VARI_ELGA",
-                        "VARI_ELNO",
-                        "VARI_NOEU",
-                        "VITE",
-                        "VITE_ABSOLU",
-                        "VITE_VENT",
-                        ]
-    for typ in ('ELGA', 'ELNO', 'NOEU', 'CART'):
-        for i in range(1, 11):
-            l_tout_cham.append('UT%02d_%s' % (i, typ))
+    """
+    def Tous(self):
+        """ Tous les champs
+        """
+        self.all_phenomenes = ('CONTRAINTE', 'DEFORMATION', 'ENERGIE', 'CRITERES',
+                               'VARI_INTERNE', 'HYDRAULIQUE', 'THERMIQUE',
+                               'ACOUSTIQUE', 'FORCE', 'ERREUR', 'DEPLACEMENT',
+                               'METALLURGIE', 'AUTRES')
+        d = {}
+        d['CONTRAINTE'] = {
+            "EFGE_ELGA":        ( ("lin", "nonlin"),
+                                 _(u"Efforts généralisés aux points de Gauss"), ),
+            "EFGE_ELNO":        ( ("lin", "nonlin"),
+                                 _(u"Efforts généralisés aux noeuds par élément"), ),
+            "EFGE_NOEU":        ( ("lin", "nonlin"),
+                                 _(u"Efforts généralisés aux noeuds"), ),
+            "SIEF_ELGA":        ( ("lin"),
+                                 _(u"Contraintes et efforts aux points de Gauss"), ),
+            "SIEF_ELNO":        ( ("lin", "nonlin"),
+                                 _(u"Contraintes et efforts aux noeuds par élément"), ),
+            "SIEF_NOEU":        ( ("lin", "nonlin"),
+                                 _(u"Contraintes et efforts aux noeuds"), ),
+            "SIGM_ELGA":        ( ("lin", "nonlin"),
+                                 _(u"Contraintes aux points de Gauss"), ),
+            "SIGM_ELNO":        ( ("lin", "nonlin"),
+                                 _(u"Contraintes aux noeuds par élément"), ),
+            "SIGM_NOEU":        ( ("lin", "nonlin"),
+                                 _(u"Contraintes aux noeuds"), ),
+            "SIPM_ELNO":        ( ("lin"),
+                                 _(u"Contraintes aux noeuds par élément pour les éléments de poutre"), ),
+            "SIPO_ELNO":        ( ("lin", "nonlin"),
+                                 _(u"Contraintes aux noeuds par élément pour les éléments de poutre"), ),
+            "SIPO_NOEU":        ( ("lin", "nonlin"),
+                                 _(u"Contraintes aux noeuds pour les éléments de poutre"), ),
+            "SIRO_ELEM":        ( ("lin", "nonlin"),
+                                 _(u"Contraintes de rosette par élément"), ),
+        }
+        d['DEFORMATION'] = {
+            "DEGE_ELGA":        ( ("lin"),          
+            _(u"Déformations généralisées aux points de Gauss"), ),
+            "DEGE_ELNO":        ( ("lin", "nonlin"),
+                                 _(u"Déformations généralisées aux noeuds par élément"), ),
+            "DEGE_NOEU":        ( ("lin", "nonlin"),
+                                 _(u"Déformations généralisées aux noeuds"), ),
+            "EPFD_ELGA":        ( ("nonlin"),
+                                 _(u"Déformations de fluage de déssication aux points de Gauss"), ),
+            "EPFD_ELNO":        ( ("nonlin"),
+                                 _(u"Déformations de fluage de déssication aux noeuds par élément"), ),
+            "EPFD_NOEU":        ( ("nonlin"),
+                                 _(u"Déformations de fluage de déssication aux noeuds"), ),
+            "EPFP_ELGA":        ( ("nonlin"),
+                                 _(u"Déformations de fluage propre aux points de Gauss"), ),
+            "EPFP_ELNO":        ( ("nonlin"),
+                                 _(u"Déformations de fluage propre aux noeuds par élément"), ),
+            "EPFP_NOEU":        ( ("nonlin"),
+                                 _(u"Déformations de fluage propre aux noeuds"), ),
+            "EPME_ELGA":        ( ("lin", "nonlin"),
+                                 _(u"Déformations mécaniques en petits déplacements aux points de Gauss"), ),
+            "EPME_ELNO":        ( ("lin", "nonlin"),
+                                 _(u"Déformations mécaniques en petits déplacements aux noeuds par élément"), ),
+            "EPME_NOEU":        ( ("lin", "nonlin"),
+                                 _(u"Déformations mécaniques en petits déplacements aux noeuds"), ),
+            "EPMG_ELGA":        ( ("nonlin"),
+                                 _(u"Déformations mécaniques en grands déplacements aux points de Gauss"), ),
+            "EPMG_ELNO":        ( ("nonlin"),
+                                 _(u"Déformations mécaniques en grands déplacements aux noeuds par élément"), ),
+            "EPMG_NOEU":        ( ("nonlin"),
+                                 _(u"Déformations mécaniques en grands déplacements aux noeuds"), ),
+            "EPSG_ELGA":        ( ("lin", "nonlin"),
+                                 _(u"Déformations de Green-Lagrange aux points de Gauss"), ),
+            "EPSG_ELNO":        ( ("lin", "nonlin"),
+                                 _(u"Déformations de Green-Lagrange aux noeuds par élément"), ),
+            "EPSG_NOEU":        ( ("lin", "nonlin"),
+                                 _(u"Déformations de Green-Lagrange aux noeuds"), ),
+            "EPSI_ELGA":        ( ("lin", "nonlin"),
+                                 _(u"Déformations aux points de Gauss"), ),
+            "EPSI_ELNO":        ( ("lin", "nonlin"),
+                                 _(u"Déformations aux noeuds par élément"), ),
+            "EPSI_NOEU":        ( ("lin", "nonlin"),
+                                 _(u"Déformations aux noeuds"), ),
+            "EPSP_ELGA":        ( ("nonlin"),
+                                 _(u"Déformations anélastique aux points de Gauss"), ),
+            "EPSP_ELNO":        ( ("nonlin"),
+                                 _(u"Déformations anélastique aux noeuds par élément"), ),
+            "EPSP_NOEU":        ( ("nonlin"),
+                                 _(u"Déformations anélastique aux noeuds"), ),
+            "EPTU_ELNO":        ( ("lin", "nonlin"),
+                                 _(u"Déformations aux noeuds par élément pour les tuyaux"), ),
+            "EPVC_ELGA":        ( ("lin", "nonlin"),
+                                 _(u"Déformations dues aux variables de commande aux points de Gauss"), ),
+            "EPVC_ELNO":        ( ("lin", "nonlin"),
+                                 _(u"Déformations dues aux variables de commande aux noeuds par élément"), ),
+            "EPVC_NOEU":        ( ("lin", "nonlin"),
+                                 _(u"Déformations dues aux variables de commande aux noeuds"), ),
+        }
+        d['ENERGIE'] = {
+            "DISS_ELGA":        ( ("lin", "nonlin"),
+                                 _(u"Densité d'énergie de dissipation aux points de Gauss"), ),
+            "DISS_ELNO":        ( ("lin", "nonlin"),
+                                 _(u"Densité d'énergie de dissipation aux noeuds par élément"), ),
+            "DISS_NOEU":        ( ("lin", "nonlin"),
+                                 _(u"Densité d'énergie de dissipation aux noeuds"), ),
+            "ECIN_ELEM":        ( ("lin"),
+                                 _(u"Énergie cinétique par élément"), ),
+            "ENEL_ELGA":        ( ("lin", "nonlin"),
+                                 _(u"Densité d'énergie élastique aux points de Gauss"), ),
+            "ENEL_ELNO":        ( ("lin", "nonlin"),
+                                 _(u"Densité d'énergie élastique aux noeuds par élément"), ),
+            "ENEL_NOEU":        ( ("lin", "nonlin"),
+                                 _(u"Densité d'énergie élastique aux noeuds"), ),
+            "EPOT_ELEM":        ( ("lin"),
+                                 _(u"Énergie potentielle de déformation élastique par élément"), ),
+            "ETOT_ELEM":        ( ("lin", "nonlin"),
+                                 _(u"Incrément d'énergie de déformation totale par élément"), ),
+            "ETOT_ELGA":        ( ("lin", "nonlin"),
+                                 _(u"Incrément de densité d'énergie de déformation totale aux points de Gauss"), ),
+            "ETOT_ELNO":        ( ("lin", "nonlin"),
+                                 _(u"Incrément de densité d'énergie de déformation totale aux noeuds par élément"), ),
+        }                       
+        d['CRITERES'] = {
+            "DERA_ELGA":        ( ("nonlin"),
+                                 _(u"Indicateur local de décharge et de perte de radialité aux points de Gauss"), ),
+            "DERA_ELNO":        ( ("nonlin"),
+                                 _(u"Indicateur local de décharge et de perte de radialité aux noeuds par élément"), ),
+            "DERA_NOEU":        ( ("nonlin"),
+                                 _(u"Indicateur local de décharge et de perte de radialité aux noeuds"), ),
+            "ENDO_ELGA":        ( ("lin", "nonlin"),
+                                 _(u"Dommage de Lemaître-Sermage aux points de Gauss"), ),
+            "ENDO_ELNO":        ( ("lin", "nonlin"),
+                                 _(u"Dommage de Lemaître-Sermage aux noeuds par élément"), ),
+            "ENDO_NOEU":        ( ("lin", "nonlin"),
+                                 _(u"Dommage de Lemaître-Sermage aux noeuds"), ),
+            "EPEQ_ELGA":        ( ("lin", "nonlin"),
+                                 _(u"Déformations équivalentes aux points de Gauss"), ),
+            "EPEQ_ELNO":        ( ("lin", "nonlin"),
+                                 _(u"Déformations équivalentes aux noeuds par élément"), ),
+            "EPEQ_NOEU":        ( ("lin", "nonlin"),
+                                 _(u"Déformations équivalentes aux noeuds"), ),
+            "EPMQ_ELGA":        ( ("lin", "nonlin"),
+                                 _(u"Déformations mécaniques équivalentes aux points de Gauss"), ),
+            "EPMQ_ELNO":        ( ("lin", "nonlin"),
+                                 _(u"Déformations mécaniques équivalentes aux noeuds par élément"), ),
+            "EPMQ_NOEU":        ( ("lin", "nonlin"),
+                                 _(u"Déformations mécaniques équivalentes aux noeuds"), ),
+            "INDL_ELGA":        ( ("nonlin"),
+                                 _(u"Indicateur de localisation aux points de Gauss"), ),
+            "PDIL_ELGA":        ( ("nonlin"),
+                                 _(u"Module de rigidité de micro-dilatation"), ),
+            "SIEQ_ELGA":        ( ("lin", "nonlin"),
+                                 _(u"Contraintes équivalentes aux points de Gauss"), ),
+            "SIEQ_ELNO":        ( ("lin", "nonlin"),
+                                 _(u"Contraintes équivalentes aux noeuds par élément"), ),
+            "SIEQ_NOEU":        ( ("lin", "nonlin"),
+                                 _(u"Contraintes équivalentes aux noeuds"), ),
+        }                       
+        d['VARI_INTERNE'] = {
+            "VAEX_ELGA":        ( ("nonlin"),
+                                 _(u"Extraction d'une variable interne aux points de Gauss"), ),
+            "VAEX_ELNO":        ( ("nonlin"),
+                                 _(u"Extraction d'une variable interne aux noeuds pas élément"), ),
+            "VAEX_NOEU":        ( ("nonlin"),
+                                 _(u"Extraction d'une variable interne aux noeuds"), ),
+            "VARC_ELGA":        ( ("lin", "nonlin"),
+                                 _(u"Variables de commande aux points de Gauss"), ),
+            "VARI_ELNO":        ( ("nonlin"),
+                                 _(u"Variables internes aux noeuds pas élément"), ),
+            "VARI_NOEU":        ( ("nonlin"),
+                                 _(u"Variables internes aux noeuds"), ),
+        }
+        d['HYDRAULIQUE'] = {
+            "FLHN_ELGA":        ( ("nonlin"),
+                                 _(u"Flux hydrauliques aux points de Gauss"), ),
+        }
+        d['THERMIQUE'] = {
+            "FLUX_ELGA":        ( (),
+                                 _(u"Flux thermique aux points de Gauss"), ),
+            "FLUX_ELNO":        ( (),
+                                 _(u"Flux thermique aux noeuds par élément"), ),
+            "FLUX_NOEU":        ( (),
+                                 _(u"Flux thermique aux noeuds"), ),
+            "HYDR_NOEU":        ( (),
+                                 _(u"Hydratation aux noeuds"), ),
+            "SOUR_ELGA":        ( (),
+                                 _(u"Source de chaleur à partir d'un potentiel électrique"), ),
+        }                       
+        d['ACOUSTIQUE'] = {
+            "PRAC_ELNO":        ( (),
+                                 _(u"Pression acoustique aux noeuds par élément"), ),
+            "PRAC_NOEU":        ( (),
+                                 _(u"Pression acoustique aux noeuds"), ),
+            "INTE_ELNO":        ( (),
+                                 _(u"Intensité acoustique aux noeuds par élément"), ),
+            "INTE_NOEU":        ( (),
+                                 _(u"Intensité acoustique aux noeuds"), ),
+        }
+        d['FORCE'] = {
+            "FORC_NODA":        ( (),
+                                 _(u"Forces nodales"), ),
+            "REAC_NODA":        ( (),
+                                 _(u"Réactions nodales"), ),
+        }
+        d['ERREUR'] = {
+            "SIZ1_NOEU":        ( (),
+                                 _(u"Contraintes lissées de Zhu-Zienkiewicz version 1 aux noeuds"), ),
+            "ERZ1_ELEM":        ( (),
+                                 _(u"Indicateur d'erreur de Zhu-Zienkiewicz version 1 par élément"), ),
+            "SIZ2_NOEU":        ( (),
+                                 _(u"Contraintes lissées de Zhu-Zienkiewicz version 2 aux noeuds"), ),
+            "ERZ2_ELEM":        ( (),
+                                 _(u"Indicateur d'erreur de Zhu-Zienkiewicz version 2 par élément"), ),
+            "ERME_ELEM":        ( (),
+                                 _(u"Indicateur d'erreur en résidu en mécanique par élément"), ),
+            "ERME_ELNO":        ( (),
+                                 _(u"Indicateur d'erreur en résidu en mécanique aux noeuds par élément"), ),
+            "ERME_NOEU":        ( (),
+                                 _(u"Indicateur d'erreur en résidu en mécanique aux noeuds"), ),
+            "QIRE_ELEM":        ( (),
+                                 _(u"Indicateur d'erreur en quantités d'intérêt en résidu par élément"), ),
+            "QIRE_ELNO":        ( (),
+                                 _(u"Indicateur d'erreur en quantités d'intérêt en résidu aux noeuds par élément"), ),
+            "QIRE_NOEU":        ( (),
+                                 _(u"Indicateur d'erreur en quantités d'intérêt en résidu aux noeuds"), ),
+            "QIZ1_ELEM":        ( (),
+                                 _(u"Indicateur d'erreur en quantités d'intérêt de Zhu-Zienkiewicz version 1 par élément"), ),
+            "QIZ2_ELEM":        ( (),
+                                 _(u"Indicateur d'erreur en quantités d'intérêt de Zhu-Zienkiewicz version 2 par élément"), ),
+            "SING_ELEM":        ( (),
+                                 _(u"Degré de singularité par élément"), ),
+            "SING_ELNO":        ( (),
+                                 _(u"Degré de singularité aux noeuds par élément"), ),
+            "ERTH_ELEM":        ( (),
+                                 _(u"Indicateur d'erreur en résidu en thermique par élément"), ),
+            "ERTH_ELNO":        ( (),
+                                 _(u"Indicateur d'erreur en résidu en thermique aux noeuds par élément"), ),
+            "ERTH_NOEU":        ( (),
+                                 _(u"Indicateur d'erreur en résidu en thermique aux noeuds"), ),
+        }                       
+        d['METALLURGIE'] = {
+            "DURT_ELNO":        ( (),
+                                 _(u"Dureté aux noeuds par élément"), ),
+            "DURT_NOEU":        ( (),
+                                 _(u"Dureté aux noeuds"), ),
+            "META_ELNO":        ( (),
+                                 _(u"Proportion de phases métallurgiques aux noeuds par élément"), ),
+            "META_NOEU":        ( (),
+                                 _(u"Proportion de phases métallurgiques aux noeuds"), ),
+        }
+        d['DEPLACEMENT'] = {
+            "ACCE":             ( (),
+                                 _(u"Accélération aux noeuds"), ),
+            "ACCE_ABSOLU":      ( (),
+                                 _(u"Accélération absolue aux noeuds"), ),
+            "DEPL":             ( (),
+                                 _(u"Déplacements aux noeuds"), ),
+            "DEPL_ABSOLU":      ( (),
+                                 _(u"Déplacements absolus aux noeuds"), ),
+            "STRX_ELGA":        ( (),
+                                 _(u"Efforts généralisés à partir des déplacements en linéaire aux points de Gauss"), ),
+            "TEMP":             ( (),
+                                 _(u"Température aux noeuds"), ),
+            "VITE":             ( (),
+                                 _(u"Vitesse aux noeuds"), ),
+            "VALE_CONT":        ( (),
+                                 _(u"Statuts de contact"), ),
+            "VARI_ELGA":        ( (),
+                                 _(u"Variables internes aux points de Gauss"), ),
+            "VITE_ABSOLU":      ( (),
+                                 _(u"Vitesse absolue aux noeuds"), ),
+        }
+        d['AUTRES'] = {
+            "COMPORTEMENT":     ( (),
+                                 _(u"Carte de comportement mécanique"), ),
+            "COMPORTHER":       ( (),
+                                 _(u"Carte de comportement thermique"), ),
+            "DEPL_VIBR":        ( (),
+                                 _(u"Déplacement pour mode vibratoire"), ),
+            "DIVU":             ( (),
+                                 _(u"Déformation volumique en THM"), ),
+            "EPSA_ELNO":        ( (),
+                                 _(u"Déformations anélastique aux noeuds par élément"), ),
+            "EPSA_NOEU":        ( (),
+                                 _(u"Déformations anélastique aux noeuds"), ),
+            "FERRAILLAGE":      ( ("lin"),
+                                 _(u"Densité de ferraillage"), ),
+            "FSUR_2D":          ( (),
+                                 _(u"Chargement de force surfacique en 2D"), ),
+            "FSUR_3D":          ( (),
+                                 _(u"Chargement de force surfacique en 3D"), ),
+            "FVOL_2D":          ( (),
+                                 _(u"Chargement de force volumique en 2D"), ),
+            "FVOL_3D":          ( (),
+                                 _(u"Chargement de force volumique en 3D"), ),
+            "HYDR_ELNO":        ( (),
+                                 _(u"Hydratation aux noeuds par élément"), ),
+            "IRRA":             ( (),
+                                 _(u"Irradition aux noeuds"), ),
+            "MODE_FLAMB":       ( (),
+                                 _(u"Mode de flambement"), ),
+            "MODE_STAB":        ( (),
+                                 _(u"Mode de stabilité"), ),
+            "PRES":             ( (),
+                                 _(u"Chargement de pression"), ),
+            "PRME_ELNO":        ( (),
+                                 _(u"Pression aux noeuds par élément pour les éléments FLUIDE"), ),
+            "PTOT":             ( (),
+                                 _(u"Pression totale de fluide en THM"), ),
+            "SISE_ELNO":        ( (),
+                                 _(u"Contraintes aux noeuds par sous-élément"), ),
+            "SPMX_ELGA":        ( (),
+                                 _(u"Valeurs maximum sur un sous-point"), ),
+            "THETA":            ( (),
+                                 _(u"Champ theta"), ),
+            "VITE_VENT":        ( (),
+                                 _(u"Chargement vitesse du vent"), ),
+        }
+        for typ in ('ELGA', 'ELNO', 'NOEU', 'CART'):
+            for i in range(1, 11):
+                d['AUTRES']['UT%02d_%s' % (i, typ)]=( (),
+                                 _(u"Champ utilisateur numéro %02d_%s" % (i, typ)), )
+        self.d_all = d
+        return
 
-    # Si aucun argument n'est passe, on utilise tous les types de champs possibles
-    if len(l_typ_cham) == 0:
-        return tuple(l_tout_cham)
+    def Check(self):
+        """ Check des doublons
+        """
+        l_cham = []
+        for phen in self.all_phenomenes:
+            for cham in self.d_all[phen].keys():
+                if cham in l_cham:
+                    raise "Erreur : %s est en doublon dans c_nom_cham_into" % cham
+                else:
+                    l_cham.append(cham)
 
-    l_ncham = []
-    for typ in l_typ_cham :
-        for cham in l_tout_cham :
-            if typ in cham.split('_'):
-                l_ncham.append(cham)
-    return tuple(l_ncham)
+    def InfoChamps(self, l_nom_cham):
+        """ on renvoie juste les informations relatives au(x) champ(s)
+        """
+        d_cham = {}.fromkeys( l_nom_cham, ( '', '', '' ) )
+        for nom_cham in l_nom_cham:
+            for phen in self.all_phenomenes:
+              for cham in self.d_all[phen].keys():
+                  if nom_cham == cham:
+                      cate = self.d_all[phen][cham][0]
+                      helptxt = self.d_all[phen][cham][1]
+                      d_cham[nom_cham] = ( phen, cate, helptxt )
+        return d_cham
+
+    def Filtre(self, *l_typ_cham, **kwargs):
+        """ Check des doublons
+        """
+        phenomene   = kwargs.get('phenomene')
+        categorie   = kwargs.get('categorie')
+        # Construction de la liste des champs en tenant compte des eventuels filtre (phenomene, categorie, l_typ_cham)
+        # ------------------------------------------------------------------------------------------------------------
+        l_cham = []
+        # Filtre par phenomene
+        if phenomene is None:
+            l_phen = self.all_phenomenes
+        else:
+            l_phen = [ phenomene ]
+        for phen in l_phen:
+            # parcours de tous les champs
+            for cham in self.d_all[phen].keys():
+               #print cham, categorie, l_typ_cham
+               isok = True
+               # Filtre par categorie
+               if categorie is not None:
+                 lcat = self.d_all[phen][cham][0]
+                 if categorie in lcat:
+                     isok = True
+                 else:
+                     isok = False
+               if isok:
+                 l_cham.append(cham)
+        l_cham.sort()
+        # Filtre sur les types de champs
+        if len(l_typ_cham) == 0:
+            return tuple(l_cham)
+        l_ncham = []
+        for typ in l_typ_cham :
+            for cham in l_cham :
+                if typ in cham.split('_'):
+                  l_ncham.append(cham)
+        return tuple(l_ncham)
+
+    def __init__(self):
+        self.Tous()
+        # check les doublons (fonctionnalite developpeur permettant de detecter les doublons dans les champs)
+        if 1:
+            self.Check()
+
+    def __call__(self, *l_typ_cham, **kwargs):
+        """Cette fonction retourne la liste des "into" possibles pour le mot-clé NOM_CHAM.
+        C'est à dire les noms de champs des SD RESULTAT (DATA de la routine RSCRSD).
+        l_typ_cham : rien ou un ou plusieurs parmi 'ELGA', 'ELNO', 'NOEU', 'ELEM'.
+        kwargs : un dictionnaire de mot-cles, les cles parmis : 
+          'phenomene'  : retourne la liste des champs en filtrant par le phenomene (eventuellement mixe avec le suivant)
+          'categorie'  : retourne la liste des champs en filtrant par le phenomene (eventuellement mixe avec le precedent)
+          'l_nom_cham' : (une liste ou un string) retourne uniqement les informations relatives au champ precise en argument
+        """
+        l_nom_cham  = kwargs.get('l_nom_cham')
+        import types
+        if type(l_nom_cham) == types.StringType:
+            l_nom_cham = [ l_nom_cham ]
+        if l_nom_cham:
+            return self.InfoChamps(l_nom_cham)
+        else:
+            return self.Filtre(*l_typ_cham, **kwargs)
+
+
+C_NOM_CHAM_INTO = NOM_CHAM_INTO()

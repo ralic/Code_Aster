@@ -1,4 +1,4 @@
-# MODIF  DATE 02/04/2012   AUTEUR TRAN V-X.TRAN 
+# MODIF  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES
 # sdls114a.para = tps_job 240 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -256,7 +256,6 @@ RESUDYNA =CALC_CHAMP(reuse =RESUDYNA ,
                    FORCE='REAC_NODA',);
 
 KT1 = POST_K_TRANS(RESU_TRANS = RES_DYNA,
-                   MODELISATION='C_PLAN',
                    K_MODAL = _F(TABL_K_MODA =GLMO1,
                               FOND_FISS=FF1, ),);
 
@@ -304,26 +303,5 @@ TEST_TABLE(TABLE=GLMO3,
               PRECISION=0.001,
               REFERENCE = 'NON_REGRESSION',
              );
-
-LI = DEFI_LIST_REEL(VALE = (9.0E-04,6.90E-03, 1.285E-2),);
-KT2 = POST_K_TRANS(RESU_TRANS = RES_DYNA,
-                   MODELISATION='C_PLAN',
-                   LIST_INST = LI,
-                   K_MODAL = _F(RESU_MODA=MODE,
-                               FOND_FISS=FF1,
-                              MODULE=1.0,
-                              R_SUP = 5.E-5,
-                              R_INF=5.E-6,
-                   DIRECTION = (-1.0, 0.0, 0.0),),);
-
-IMPR_TABLE(TABLE=KT2);
-TEST_TABLE(TABLE=KT2,
-           NOM_PARA='K1',
-           FILTRE=_F(NOM_PARA = 'INST',
-                      VALE = 1.285E-2),
-           VALE=4.49990E+05,
-           PRECISION=0.001,
-           REFERENCE = 'NON_REGRESSION',
-          );
 
 FIN();

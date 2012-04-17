@@ -1,7 +1,7 @@
       SUBROUTINE MMMRES(NOMA  ,INST  ,DEFICO,RESOCO,DEPPLU,
      &                  DEPDEL,SDDISC,VEASSE,CNSINR,CNSPER)
 C
-C MODIF ALGORITH  DATE 02/04/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 16/04/2012   AUTEUR ABBAS M.ABBAS 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -79,7 +79,7 @@ C
       INTEGER      JDEPDE,JDEPLU
       INTEGER      NDIMG,MMINFI
       INTEGER      CFMMVD,ZTABF,ZRESU,ZPERC
-      INTEGER      NUMNOE
+      INTEGER      NUMNOE,NUMMAM
       INTEGER      POSMAE
       INTEGER      JDECME
       REAL*8       GLI,GLI1,GLI2
@@ -89,10 +89,12 @@ C
       REAL*8       R,RX,RY,RZ
       REAL*8       IMP,IMPX,IMPY,IMPZ
       REAL*8       CONT,LAGSF
+      REAL*8       KSIPR1,KSIPR2,PROJ(3)
       CHARACTER*8  LICNT3(3)
       CHARACTER*19 FCONTS,FFROTS,DEPDES,DEPCN
       CHARACTER*19 FCTCN,FFROCN
       CHARACTER*19 FCONT,FFROT
+      CHARACTER*19 NEWGEO
       CHARACTER*24 GLIE,GLIM
       INTEGER      JGLIE,JGLIM
       CHARACTER*24 TABFIN,APJEU
@@ -163,6 +165,10 @@ C
       DEPCN  = '&&MMMRES.DEPCN'
       GLIE   = '&&MMMRES.GLIE'
       GLIM   = '&&MMMRES.GLIM'
+C
+C --- GEOMETRIE ACTUALISEE
+C
+      NEWGEO = RESOCO(1:14)//'.NEWG'
 C
 C --- ACCES AU MAILLAGE
 C
@@ -383,6 +389,14 @@ C
               IMPZ   = ZR(JCNSVP+ZPERC*(NUMNOE-1)+4-1) + RZ*DELTAT
             ENDIF
 C
+C --------- COORDONNNES DE LA PROJECTION
+C
+            KSIPR1    = ZR(JTABF+ZTABF*(IPTC-1)+5 )
+            KSIPR2    = ZR(JTABF+ZTABF*(IPTC-1)+6 )
+            NUMMAM    = NINT(ZR(JTABF+ZTABF*(IPTC-1)+2))
+            CALL MCOPCO(NOMA  ,NEWGEO,NDIMG ,NUMMAM,KSIPR1,
+     &                  KSIPR2,PROJ  )
+C
 C --------- ARCHIVAGE DES RESULTATS DANS LE CHAM_NO_S VALE_CONT
 C
             ZR(JCNSVR+ZRESU*(NUMNOE-1)+1 -1) = CONT
@@ -417,6 +431,9 @@ C
               ZR(JCNSVR+ZRESU*(NUMNOE-1)+22-1) = IMPX
               ZR(JCNSVR+ZRESU*(NUMNOE-1)+23-1) = IMPY
               ZR(JCNSVR+ZRESU*(NUMNOE-1)+24-1) = IMPZ
+              ZR(JCNSVR+ZRESU*(NUMNOE-1)+28-1) = PROJ(1)
+              ZR(JCNSVR+ZRESU*(NUMNOE-1)+29-1) = PROJ(2)
+              ZR(JCNSVR+ZRESU*(NUMNOE-1)+30-1) = PROJ(3)
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+3 -1) = .TRUE.
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+4 -1) = .TRUE.
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+5 -1) = .TRUE.
@@ -438,6 +455,9 @@ C
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+22-1) = .TRUE.
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+23-1) = .TRUE.
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+24-1) = .TRUE.
+              ZL(JCNSLR+ZRESU*(NUMNOE-1)+28-1) = .TRUE.
+              ZL(JCNSLR+ZRESU*(NUMNOE-1)+29-1) = .TRUE.
+              ZL(JCNSLR+ZRESU*(NUMNOE-1)+30-1) = .TRUE.
             ELSEIF (NDIMG.EQ.2) THEN
               ZR(JCNSVR+ZRESU*(NUMNOE-1)+3 -1) = RN
               ZR(JCNSVR+ZRESU*(NUMNOE-1)+4 -1) = RNX
@@ -454,6 +474,8 @@ C
               ZR(JCNSVR+ZRESU*(NUMNOE-1)+21-1) = IMP
               ZR(JCNSVR+ZRESU*(NUMNOE-1)+22-1) = IMPX
               ZR(JCNSVR+ZRESU*(NUMNOE-1)+23-1) = IMPY
+              ZR(JCNSVR+ZRESU*(NUMNOE-1)+28-1) = PROJ(1)
+              ZR(JCNSVR+ZRESU*(NUMNOE-1)+29-1) = PROJ(2)
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+3 -1) = .TRUE.
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+4 -1) = .TRUE.
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+5 -1) = .TRUE.
@@ -469,6 +491,8 @@ C
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+21-1) = .TRUE.
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+22-1) = .TRUE.
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+23-1) = .TRUE.
+              ZL(JCNSLR+ZRESU*(NUMNOE-1)+28-1) = .TRUE.
+              ZL(JCNSLR+ZRESU*(NUMNOE-1)+29-1) = .TRUE.
             ELSE
               CALL ASSERT(.FALSE.)
             ENDIF

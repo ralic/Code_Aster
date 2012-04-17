@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/04/2012   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,7 +33,7 @@ CALC_CHAMP=OPER(nom="CALC_CHAMP",op=52,sd_prod=calc_champ_prod,reentrant='f',
 
      regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','FREQ','NUME_MODE',
                     'NOEUD_CMP','LIST_INST','LIST_FREQ','LIST_ORDRE','NOM_CAS'),
-#             PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),
+             PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),
              ),
      TOUT_ORDRE       = SIMP(statut='f',typ='TXM',into=("OUI",) ),
      NUME_ORDRE       = SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
@@ -71,157 +71,81 @@ CALC_CHAMP=OPER(nom="CALC_CHAMP",op=52,sd_prod=calc_champ_prod,reentrant='f',
                                                           comb_fourier,mult_elas,fourier_elas,mode_flamb)",
          CONTRAINTE   = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
                              fr="Options pour le calcul de contraintes et efforts generalises",
-                             into=(
-                                   "SIEF_ELGA","SIEF_ELNO","SIEF_NOEU",
-                                   "SIGM_ELGA","SIGM_ELNO","SIGM_NOEU",
-                                   "EFGE_ELGA","EFGE_ELNO","EFGE_NOEU",
-                                               "SIPO_ELNO","SIPO_NOEU",
-                                                                       "SIRO_ELEM",
-                                               "SIPM_ELNO",
-                                  ),
-                            ),
+                             into=C_NOM_CHAM_INTO(phenomene='CONTRAINTE',categorie='lin'),),
+
          DEFORMATION  = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
                              fr="Options pour le calcul de deformations",
-                             into=(
-                                   "EPSI_ELGA","EPSI_ELNO","EPSI_NOEU",
-                                   "EPSG_ELGA","EPSG_ELNO","EPSG_NOEU",
-                                   "EPME_ELGA","EPME_ELNO","EPME_NOEU",
-                                   "DEGE_ELGA","DEGE_ELNO","DEGE_NOEU",
-                                   "EPVC_ELGA","EPVC_ELNO","EPVC_NOEU",
-                                               "EPTU_ELNO",
-                                  ),
-                            ),
+                             into=C_NOM_CHAM_INTO(phenomene='DEFORMATION',categorie='lin'),),
+
          ENERGIE      = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
                              fr="Options pour le calcul d'energies",
-                             into=(
-                                   "ENEL_ELGA","ENEL_ELNO","ENEL_NOEU",
-                                   "ETOT_ELGA","ETOT_ELNO",            "ETOT_ELEM",
-                                   "DISS_ELGA","DISS_ELNO","DISS_NOEU",
-                                                                       "EPOT_ELEM",
-                                                                       "ECIN_ELEM",
-                                  ),
-                             ),
+                             into=C_NOM_CHAM_INTO(phenomene='ENERGIE',categorie='lin'),),
+
          CRITERES     = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
                              fr="Options pour le calcul de criteres",
-                             into=(
-                                   "SIEQ_ELGA","SIEQ_ELNO","SIEQ_NOEU",
-                                   "EPEQ_ELGA","EPEQ_ELNO","EPEQ_NOEU",
-                                   "EPMQ_ELGA","EPMQ_ELNO","EPMQ_NOEU",
-                                   "ENDO_ELGA","ENDO_ELNO","ENDO_NOEU",
-                                  ),
-                            ),
+                             into=C_NOM_CHAM_INTO(phenomene='CRITERES',categorie='lin'),),
+
          VARI_INTERNE = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
                              fr="Options pour le calcul de variables internes",
-                             into=("VARC_ELGA",),),
+                             into=C_NOM_CHAM_INTO(phenomene='VARI_INTERNE',categorie='lin'),),
                      ),
 
      # Bloc non-lineaire
      b_non_lin  = BLOC(condition = "AsType(RESULTAT) in (evol_noli,)",
          CONTRAINTE   = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
                              fr="Options pour le calcul de contraintes et efforts generalises",
-                             into=(
-                                               "SIEF_ELNO","SIEF_NOEU",
-                                   "SIGM_ELGA","SIGM_ELNO","SIGM_NOEU",
-                                   "EFGE_ELGA","EFGE_ELNO","EFGE_NOEU",
-                                               "SIPO_ELNO","SIPO_NOEU",
-                                                                       "SIRO_ELEM",
-                                  ),
-                            ),
+                             into=C_NOM_CHAM_INTO(phenomene='CONTRAINTE',categorie='nonlin'),),
 
          DEFORMATION  = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
                              fr="Options pour le calcul de deformations",
-                             into=(
-                                   "EPSI_ELGA","EPSI_ELNO","EPSI_NOEU",
-                                   "EPSG_ELGA","EPSG_ELNO","EPSG_NOEU",
-                                   "EPME_ELGA","EPME_ELNO","EPME_NOEU",
-                                   "EPMG_ELGA","EPMG_ELNO","EPMG_NOEU",
-                                   "EPSP_ELGA","EPSP_ELNO","EPSP_NOEU",
-                                               "DEGE_ELNO","DEGE_NOEU",
-                                   "EPVC_ELNO","EPVC_ELGA","EPVC_NOEU",
-                                   "EPFD_ELGA","EPFD_ELNO","EPFD_NOEU",
-                                   "EPFP_ELGA","EPFP_ELNO","EPFP_NOEU",
-                                               "EPTU_ELNO",
-                                  ),
-                            ),
+                             into=C_NOM_CHAM_INTO(phenomene='DEFORMATION',categorie='nonlin'),),
 
          ENERGIE      = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
                              fr="Options pour le calcul d'energies",
-                             into=(
-                                   "ETOT_ELGA","ETOT_ELNO",           "ETOT_ELEM",
-                                   "ENEL_ELGA","ENEL_ELNO","ENEL_NOEU",
-                                   "DISS_ELGA","DISS_ELNO","DISS_NOEU",
-                                  ),
-                             ),
+                             into=C_NOM_CHAM_INTO(phenomene='ENERGIE',categorie='nonlin'),),
 
          CRITERES     = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
                              fr="Options pour le calcul de criteres",
-                             into=(
-                                   "SIEQ_ELGA","SIEQ_ELNO","SIEQ_NOEU",
-                                   "EPEQ_ELGA","EPEQ_ELNO","EPEQ_NOEU",
-                                   "EPMQ_ELGA","EPMQ_ELNO","EPMQ_NOEU",
-                                   "ENDO_ELGA","ENDO_ELNO","ENDO_NOEU",
-                                  ),
-                            ),
+                             into=C_NOM_CHAM_INTO(phenomene='CRITERES',categorie='nonlin'),),
 
          VARI_INTERNE = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
                              fr="Options pour le calcul de variables internes",
-                             into=(
-                                   "VARC_ELGA",
-                                               "VARI_ELNO","VARI_NOEU",
-                                   "VAEX_ELGA","VAEX_ELNO","VAEX_NOEU",
-                                  ),
-                            ),
+                             into=C_NOM_CHAM_INTO(phenomene='VARI_INTERNE',categorie='nonlin'),),
 
          b_nom_vari   = BLOC(condition = "au_moins_un(VARI_INTERNE, ('VAEX_ELNO','VAEX_ELGA','VAEX_NOEU'))",
              NOM_VARI = SIMP(statut='o',typ='TXM',min= 1,max='**',
                              fr="nom de la variable a extraire",
-               into=("DPORO","DRHOLQ","DPVP","SATLIQ","EVP","IND_ETA","D","IND_END","TEMP_MAX","GAMP","PCR",
-                     "SEUIL_HYD","IND_HYD","PCOHE","COMP_ROC","SEUIL_ISO","ANG_DEV","X11","X22","X33","X12","X13","X23",
-                     "DIST_DEV","DEV_SUR_CRIT","DIST_ISO","NB_ITER","ARRET","NB_REDE","SIGNE",
-                     "RDEV_1","RDEV_2","RDEV_3","RISO","EPSIVPLA","IND_1","IND_2","IND_3","IND_4",
-                    ),
-                            ),
-                            ),
+                             into=("DPORO","DRHOLQ","DPVP","SATLIQ","EVP","IND_ETA","D","IND_END","TEMP_MAX",
+                                   "GAMP","PCR","SEUIL_HYD","IND_HYD","PCOHE","COMP_ROC","SEUIL_ISO","ANG_DEV",
+                                   "X11","X22","X33","X12","X13","X23","DIST_DEV","DEV_SUR_CRIT","DIST_ISO",
+                                   "NB_ITER","ARRET","NB_REDE","SIGNE","RDEV_1","RDEV_2","RDEV_3","RISO","EPSIVPLA",
+                                   "IND_1","IND_2","IND_3","IND_4",
+                                   ),
+                             ),),
 
          HYDRAULIQUE  = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
                              fr="Options pour le calcul de flux hydraulique",
-                             into=(
-                                   "FLHN_ELGA",
-                                  ),
-                            ),
+                             into=C_NOM_CHAM_INTO(phenomene='HYDRAULIQUE',categorie='nonlin'),),
                       ),
 
      # Bloc Thermique
      b_ther = BLOC(condition = "AsType(RESULTAT) in (evol_ther,fourier_ther,)" ,
          THERMIQUE    = SIMP(statut='f',typ='TXM',validators=NoRepeat(), max='**',
                              fr="Options pour le calcul de champs en thermique",
-                             into=(
-                                   "FLUX_ELGA","FLUX_ELNO","FLUX_NOEU",
-                                   "SOUR_ELGA",
-                                                           "HYDR_NOEU",
-                                  ),
-                            ),
+                             into=C_NOM_CHAM_INTO(phenomene='THERMIQUE',),),
                   ),
 
      # Bloc acoustique
      b_acou = BLOC(condition = "AsType(RESULTAT) in (acou_harmo,mode_acou,dyna_harmo)",
          ACOUSTIQUE   = SIMP(statut='f',typ='TXM',validators=NoRepeat(), max='**',
                              fr="Options pour le calcul de champs en acoustique",
-                             into=(
-                                               "PRAC_ELNO","PRAC_NOEU",
-                                               "INTE_ELNO","INTE_NOEU",
-                                  ),
-                            ),
+                             into=C_NOM_CHAM_INTO(phenomene='ACOUSTIQUE',),),
                   ),
 
      # Bloc FORC_NODA et REAC_NODA
      FORCE            = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
                              fr="Options pour des forces nodales et des reactions nodales",
-                             into=(
-                                   "FORC_NODA",
-                                   "REAC_NODA",
-                                  ),
-                            ),
+                             into=C_NOM_CHAM_INTO(phenomene='FORCE',),),
 
      # Mot-cle facteur CHAMp UTILisateur
      CHAM_UTIL = FACT(statut='f', max='**',

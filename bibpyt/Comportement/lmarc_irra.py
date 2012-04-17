@@ -1,4 +1,4 @@
-#@ MODIF lmarc_irra Comportement  DATE 04/01/2012   AUTEUR SELLENET N.SELLENET 
+#@ MODIF lmarc_irra Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,7 +28,7 @@ loi = LoiComportement(
    Pour les poutres, le fluage n'a lieu que dans le sens axial de la poutre : dans les autres directions, le comportement est élastique.""",
    num_lc         = 30,
    nb_vari        = 21,
-   nom_vari       = ('X_XX','X_YY','X_ZZ','X_XY','X_XZ','X_YZ',  'X1_XX','X1_YY','X1_ZZ','X1_XY','X1_XZ','X1_YZ',  'X2_XX','X2_YY','X2_ZZ','X2_XY','X2_XZ','X2_YZ','EPSPEQ','IRVECU','EPSGRD'),
+   nom_vari       = ('XCINXX','XCINYY','XCINZZ','XCINXY','XCINXZ','XCINYZ', 'XCIN1XX','XCIN1YY','XCIN1ZZ','XCIN1XY','XCIN1XZ','XCIN1YZ',  'XCIN2XX','XCIN2YY','XCIN2ZZ','XCIN2XY','XCIN2XZ','XCIN2YZ','EPSPEQ','IRVECU','EPSGRD'),
    mc_mater       = ('ELAS','LMARC_IRRA'),
    modelisation   = ('POU_D_E','POU_D_T'),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),

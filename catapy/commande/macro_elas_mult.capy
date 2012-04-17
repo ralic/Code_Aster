@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -49,18 +49,8 @@ MACRO_ELAS_MULT=MACRO(nom="MACRO_ELAS_MULT",
            MODE_FOURIER    =SIMP(statut='f',typ='I' ),
            TYPE_MODE       =SIMP(statut='f',typ='TXM',defaut="SYME",into=("SYME","ANTI","TOUS") ),
            CHAR_MECA       =SIMP(statut='f',typ=(char_meca),validators=NoRepeat(),max='**'),
-           OPTION          =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
-                                 into=("EFGE_ELNO","EPOT_ELEM","SIGM_ELNO","SIEF_ELGA",
-                                       "DEGE_ELNO","EPSI_ELNO",
-                                       "EPSI_ELGA","EPSG_ELNO","EPSG_ELGA","EPSP_ELNO","EPSP_ELGA",
-                                       "ECIN_ELEM","FLUX_ELGA","FLUX_ELNO","SOUR_ELGA",
-                                       "PRAC_ELNO","INTE_ELNO",
-                                       "SIZ1_NOEU","ERZ1_ELEM","SIZ2_NOEU",
-                                       "ERZ2_ELEM","VNOR_ELEM_DEPL","ERME_ELNO",
-                                       "ERME_ELEM","SIEQ_ELNO","SIEQ_ELGA","EPEQ_ELNO",
-                                       "QIRE_ELEM","QIRE_ELNO","QIZ1_ELEM","QIZ2_ELEM",
-                                       "EPEQ_ELGA","FORC_NODA","REAC_NODA","EPSI_NOEU","SIGM_NOEU",
-                                       "EFGE_NOEU","SIEQ_NOEU","EPEQ_NOEU","FLUX_NOEU") ),
+           OPTION          =SIMP(statut='f',typ='TXM',into=("SIEF_ELGA","SANS"),defaut="SIEF_ELGA",max=1,
+                                 fr="Contraintes aux points de Gauss.",),
            NUME_COUCHE     =SIMP(statut='f',typ='I',defaut=1),
            NIVE_COUCHE     =SIMP(statut='f',typ='TXM',defaut="MOY",into=("SUP","INF","MOY")),
            SOUS_TITRE      =SIMP(statut='f',typ='TXM',max='**'),

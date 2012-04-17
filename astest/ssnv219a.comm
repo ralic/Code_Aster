@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 16/04/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE METHODE DES SOLUTIONS MANUFACTUREES : CONTACT GRANDES DEFORMATIONS 3D
 # ssnv219a.para = tps_job 600 mem_job 800Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -324,7 +324,7 @@ DIFF=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',MODELE=modl,
 # ========================================================================================
 
 TEST_RESU(CHAM_NO=_F(CHAM_GD= DIFF   ,
-                     REFERENCE='ANALYTIQUE', PRECISION=1.E-8    ,
+                     REFERENCE='ANALYTIQUE', PRECISION=2.E-8    ,
                      TYPE_TEST='SOMM_ABS', VALE=0.088219316257937 ),
           )
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/04/2012   AUTEUR CHANSARD F.CHANSARD 
 # TITRE DEFINITION D'UN INTER-SPECTRE D'EXCITATION ANALYTIQUE
 # sdll148a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -35,13 +35,15 @@ MODELE=AFFE_MODELE(  MAILLAGE=TUBE,
                                MODELISATION = 'POU_D_T'))
 
 
-CARA=AFFE_CARA_ELEM( MODELE=MODELE,
-                     POUTRE=_F(  GROUP_MA = 'MC',
-                                 SECTION = 'CERCLE',
-                                 CARA = ( 'R','EP',),
-                                 VALE = ( 7.939000E-03,
-                                          3.176000E-03, )))
-
+CARA=AFFE_CARA_ELEM(MODELE=MODELE,
+                    POUTRE=_F(GROUP_MA='MC',
+                              SECTION='GENERALE',
+                              CARA=('A','IY','IZ',
+                                    'AY','AZ','JX',
+                                    'RY','RZ','RT',),
+                              VALE=(1.26737E-04,2.71577E-09,2.71577E-09,
+                                    1.69403E+00,1.69403E+00,5.43155E-09,
+                                    7.93900E-03,7.93900E-03,7.93900E-03,),),);
 
 MAT=DEFI_MATERIAU(  ELAS=_F( E = 2.200000E+11,
                              RHO = 8.330000E+03,

@@ -1,4 +1,4 @@
-#@ MODIF vmis_cin2_chab Comportement  DATE 30/01/2012   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF vmis_cin2_chab Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,7 +28,7 @@ loi = LoiComportement(
    tensorielles de rappel. Toutes les constantes du matériau peuvent éventuellement dépendre de la température.""",
    num_lc         = 4,
    nb_vari        = 14,
-   nom_vari       = ('DEFPLCUM', 'INDICAT', 'ALPHAXX', 'ALPHAYY', 'ALPHAZZ', 'ALPHAXY', 'ALPHAXZ', 'ALPHAYZ', 'ALPHA2XX', 'ALPHA2YY', 'ALPHA2ZZ', 'ALPHA2XY', 'ALPHA2XZ', 'ALPHA2YZ'),
+   nom_vari       = ('EPSPEQ', 'INDIPLAS', 'ALPHAXX', 'ALPHAYY', 'ALPHAZZ', 'ALPHAXY', 'ALPHAXZ', 'ALPHAYZ', 'ALPHA2XX', 'ALPHA2YY', 'ALPHA2ZZ', 'ALPHA2XY', 'ALPHA2XZ', 'ALPHA2YZ'),
    mc_mater       = ('ELAS', 'CIN2_CHAB'),
    modelisation   = ('3D', 'AXIS', 'D_PLAN'),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP','GDEF_HYPO_ELAS','GDEF_LOG'),

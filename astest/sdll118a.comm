@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 17/04/2012   AUTEUR CHANSARD F.CHANSARD 
 # TITRE POUTRE SOUMISE A UNE EXCITATION FLUIDELASTIQUE AXIALE
 # sdll118a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -308,10 +308,10 @@ TEST_FONCTION(
                    VALEUR=_F(
                    FONCTION = FREQ_1,
                    VALE_PARA = 4.000000E+00,
-                   VALE_REFE = 6.812275E+00,
+                   VALE_REFE = 6.812005488E+00,
                    PRECISION = 1.E-08,
                    REFERENCE = 'NON_REGRESSION',
-                   VERSION = '5.02.26')
+                   VERSION = '11.01.18')
                )
 
 #
@@ -341,10 +341,10 @@ TEST_FONCTION(
                    VALEUR=_F(
                    FONCTION = AMOR_1,
                    VALE_PARA = 4.000000E+00,
-                   VALE_REFE = 1.697249E-01,
+                   VALE_REFE = 1.69730036E-01,
                    PRECISION = 1.E-06,
                    REFERENCE = 'NON_REGRESSION',
-                   VERSION = '5.02.26')
+                   VERSION = '11.01.18')
                )
 
 #
@@ -378,10 +378,10 @@ TEST_FONCTION(
                    VALEUR=_F(
                    FONCTION = FREQ_2,
                    VALE_PARA = 4.000000E+00,
-                   VALE_REFE = 6.812275E+00,
+                   VALE_REFE = 6.812005488E+00,
                    PRECISION = 1.E-08,
                    REFERENCE = 'NON_REGRESSION',
-                   VERSION = '5.02.26')
+                   VERSION = '11.01.18')
                )
 
 #
@@ -411,10 +411,10 @@ TEST_FONCTION(
                    VALEUR=_F(
                    FONCTION = AMOR_2,
                    VALE_PARA = 4.000000E+00,
-                   VALE_REFE = 1.697249E-01,
+                   VALE_REFE = 1.69730036E-01,
                    PRECISION = 1.E-06,
                    REFERENCE = 'NON_REGRESSION',
-                   VERSION = '5.02.26')
+                   VERSION = '11.01.18')
                )
 
 #

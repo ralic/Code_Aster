@@ -1,5 +1,5 @@
 
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 17/04/2012   AUTEUR CHANSARD F.CHANSARD 
 # TITRE POUTRE SOUMISE A UNE EXCITATION FLUIDELASTIQUE AXIALE
 # sdll118b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -272,10 +272,10 @@ TEST_FONCTION(VALEUR=_F(FONCTION=FREQ_1,
 
 TEST_FONCTION(VALEUR=_F(FONCTION=FREQ_1,
                         VALE_PARA=4.0,
-                        VALE_REFE=4.842109,
+                        VALE_REFE=4.841730952,
                         PRECISION=1e-07,
                         REFERENCE='NON_REGRESSION',
-                        VERSION='5.02.26',),);
+                        VERSION='11.01.18',),);
 #
 
 AMOR_1=RECU_FONCTION(BASE_ELAS_FLUI=MELAS,
@@ -294,10 +294,10 @@ TEST_FONCTION(VALEUR=_F(FONCTION=AMOR_1,
 
 TEST_FONCTION(VALEUR=_F(FONCTION=AMOR_1,
                         VALE_PARA=4.0,
-                        VALE_REFE=0.2193572,
+                        VALE_REFE=0.21937148,
                         PRECISION=1e-07,
                         REFERENCE='NON_REGRESSION',
-                        VERSION='5.02.26',),);
+                        VERSION='11.01.18',),);
 #
 #-----------------------------
 # TEST DES RESULTATS DU MODE 2
@@ -319,10 +319,10 @@ TEST_FONCTION(VALEUR=_F(FONCTION=FREQ_2,
 
 TEST_FONCTION(VALEUR=_F(FONCTION=FREQ_2,
                         VALE_PARA=4.0,
-                        VALE_REFE=4.842109,
+                        VALE_REFE=4.841730953 ,
                         PRECISION=1e-07,
                         REFERENCE='NON_REGRESSION',
-                        VERSION='5.02.26',),);
+                        VERSION='11.01.18',),);
 #
 
 AMOR_2=RECU_FONCTION(BASE_ELAS_FLUI=MELAS,
@@ -341,10 +341,10 @@ TEST_FONCTION(VALEUR=_F(FONCTION=AMOR_2,
 
 TEST_FONCTION(VALEUR=_F(FONCTION=AMOR_2,
                         VALE_PARA=4.0,
-                        VALE_REFE=0.2193572,
+                        VALE_REFE=0.21937148,
                         PRECISION=1e-07,
                         REFERENCE='NON_REGRESSION',
-                        VERSION='5.02.26',),);
+                        VERSION='11.01.18',),);
 #
 
 FIN();

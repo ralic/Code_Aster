@@ -1,31 +1,31 @@
       SUBROUTINE ACGRDO(JVECTN, JVECTU, JVECTV, NBORDR, KWORK,
-     &                  SOMPGW, JRWORK, TSPAQ, IPG, JVECPG,JDTAUM, 
+     &                  SOMPGW, JRWORK, TSPAQ, IPG, JVECPG,JDTAUM,
      &                  JRESUN,NOMMET,NOMMAT,NOMCRI,VALA,COEFPA,
-     &                  NOMFOR,GRDVIE,FORVIE,VRESU)
+     &                  NOMFOR,GRDVIE,FORVIE,VALPAR, VRESU)
       IMPLICIT   NONE
       INTEGER    JVECTN, JVECTU, JVECTV, NBORDR, KWORK
       INTEGER    SOMPGW, JRWORK, TSPAQ, IPG, JVECPG, JDTAUM,JRESUN
       CHARACTER*16  NOMMET, NOMCRI, NOMFOR,FORVIE
       CHARACTER*8   NOMMAT,GRDVIE
-      REAL*8     VRESU(24), VALA,COEFPA
+      REAL*8     VRESU(24),VALPAR(20),VALA,COEFPA
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/04/2012   AUTEUR TRAN V-X.TRAN 
+C MODIF PREPOST  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20 CRP_21 CRS_512 CRS_1404
 C ---------------------------------------------------------------------
@@ -34,7 +34,7 @@ C      CALCULER DES GRANDEURS SERVANT A EVALUER LES CRITERES D4AMORCAGE
 C      ET CALCULER LA GRANDEUR EQUIVALENT
 C
 C REMARQUE: CETTE SUBROUTINE EST APPLICABLE POUR UN NOEUD OU IPG EGALE
-C           A 1 ET SOMPGW = SOMNOW,JVECPG = JVECNO  
+C           A 1 ET SOMPGW = SOMNOW,JVECPG = JVECNO
 C ---------------------------------------------------------------------
 C ARGUMENTS :
 C     JVECTN  : IN  : ADRESSE DU VECTEUR CONTENANT LES COMPOSANTES DES
@@ -48,17 +48,17 @@ C     KWORK   : IN  : KWORK = 0 ON TRAITE LA 1ERE MAILLE DU PAQUET DE
 C                               MAILLES ;
 C                     KWORK = 1 ON TRAITE LA IEME (I>1) MAILLE DU PAQUET
 C                               MAILLES.
-C     SOMPGW  : IN  : SOMME DES POINTS DE GAUSS DES N MAILLES PRECEDANT 
+C     SOMPGW  : IN  : SOMME DES POINTS DE GAUSS DES N MAILLES PRECEDANT
 C                     LA MAILLE COURANTE.
-C     JRWORK  : IN  : ADRESSE DU VECTEUR DE TRAVAIL CONTENANT 
+C     JRWORK  : IN  : ADRESSE DU VECTEUR DE TRAVAIL CONTENANT
 C                     L'HISTORIQUE DES TENSEURS DES CONTRAINTES
 C                     ATTACHES A CHAQUE POINT DE GAUSS DES MAILLES
 C                     DU <<PAQUET>> DE MAILLES.
 C     TSPAQ   : IN  : TAILLE DU SOUS-PAQUET DU <<PAQUET>> DE MAILLES
 C                     COURANT.
 C     IPG     : IN  : IEME POINT DE GAUSS.
-C     JVECPG  : IN  : ADRESSE DU VECTEUR DE TRAVAIL CONTENANT 
-C                     LES COMPOSANTES u ET v DU VECTEUR TAU 
+C     JVECPG  : IN  : ADRESSE DU VECTEUR DE TRAVAIL CONTENANT
+C                     LES COMPOSANTES u ET v DU VECTEUR TAU
 C                     (CISAILLEMENT), POUR TOUS LES NUMEROS
 C                     D'ORDRE DE CHAQUE VECTEUR NORMAL.
 C    JDTAU      IN    ADRESSE DU VECTEUR DE TRAVAIL CONTENANT
@@ -66,7 +66,7 @@ C                     LES VALEURS DE DELTA_TAU_MAX POUR CHAQUE VECTEUR.
 C    JVECN      IN    ADRESSE DU VECTEUR DE TRAVAIL CONTENANT
 C                     LA VALEUR DU POINTEUR PERMETTANT D'ACCEDER AU
 C                     VECTEUR NORMAL ASSOCIE A DELTA_TAU_MAX.
-C    NOMMET     IN    NOM DE METHOD D'APPROCHEMENT DE CERCLE ("CERCLE 
+C    NOMMET     IN    NOM DE METHOD D'APPROCHEMENT DE CERCLE ("CERCLE
 C                     EXACT" ET "CERCLE APPROCHE")
 C    VALA       IN    VALEUR DU PARAMETRE a ASSOCIE AU CRITERE.
 C    COEFPA     IN    COEFFICIENT DE PASSAGE CISAILLEMENT - UNIAXIAL.
@@ -92,13 +92,13 @@ C ------------------------------------------------------------------
 C23456
 
       REAL*8     RESUPC(24), GRDEQ(2), DTAUM(2), NXM(2), NYM(2), COEPRE
-      REAL*8     NZM(2), NRUPT(2), DOM(2), SIGEQ(2),LCIV2S 
+      REAL*8     NZM(2), NRUPT(2), DOM(2), SIGEQ(2)
       REAL*8     NORMAX(2), NORMOY(2),EPNMAX(2), EPNMOY(2), VALPU(2)
-      REAL*8     PHYDRO, PHYDRM, VALE,VALNU, R8B 
-      REAL*8     SIG(6), VALPAR(24),EPS(6), EPSE(6), EPSP(6),VEPSP(6)
+      REAL*8     PHYDRO, PHYDRM, VALE,VALNU, R8B
+      REAL*8     SIG(6),EPS(6), EPSE(6), EPSP(6),VEPSP(6)
       REAL*8     EPSL(6), EPSEL(6), EPSPL(6),EQEPSP, JACAUX(3)
       REAL*8     VSIG(6), SIGL(6), EQSIG, VSIGE, EQUI(17)
-      REAL*8     R8MAEM, PHYMIN, C1, C2, RBID(6), VEPSPE , LCIV2E 
+      REAL*8     R8MAEM, PHYMIN, C1, C2, RBID(6), VEPSPE , LCIV2E
       REAL*8     NM1X, NM1Y, NM1Z, BR(6),VECPRO(3,3),VALPRO(3)
       REAL*8     EPRMAX, EPRMIN, SIGNM1, TOL, TOLDYN, AR(6)
       REAL*8     FXM, FYM, FZM, SINM1M, EPSPA(NBORDR+1), SOMDEF
@@ -125,8 +125,8 @@ C      &        'SINMAX2', 'SINMOY2', 'EPNMAX2', 'EPNMOY2', 'SIGEQ2',
 C      &             'NBRUP2', 'ENDO2' ,'VMIS', 'TRESCA' /
 
 C     ---------------------------------------------------------------
-        DATA  NOMPAR/   'DTAUMA', 'PHYDRM', 'NORMAX', 'NORMOY',  
-     &                  'EPNMAX', 'EPNMOY', 'DEPSPE', 'EPSPR1', 
+        DATA  NOMPAR/   'DTAUMA', 'PHYDRM', 'NORMAX', 'NORMOY',
+     &                  'EPNMAX', 'EPNMOY', 'DEPSPE', 'EPSPR1',
      &                  'SIGNM1', 'DENDIS', 'DENDIE', 'APHYDR',
      &                  'MPHYDR', 'DSIGEQ', 'SIGPR1', 'EPSNM1',
      &                  'INVA2S', 'DSITRE', 'DEPTRE', 'EPSPAC'   /
@@ -135,7 +135,7 @@ C     ---------------------------------------------------------------
 C -------------------------------------------------------------------
 C
 C RECUPERER LA LISTE DE GRANDEURS ACTIVES
-         
+
         TYPCHA = 'PERIODIQUE'
 
         CALL ANACRI( NOMCRI,NOMFOR,TYPCHA,'NON', PARACT, LBID)
@@ -144,8 +144,8 @@ C ------------------------------------------------------------------
 C---  CALCULER DES GRANDEURS ACTIVES
 C-------------------------------------------------------------------
 C INITIALISATION
-      PLCICR = .FALSE.  
-      PHYDRM = 0.D0    
+      PLCICR = .FALSE.
+      PHYDRM = 0.D0
       PHYMIN = 0.D0
       PHYDRO = 0.D0
       VEPSPE = 0.D0
@@ -167,10 +167,10 @@ C INITIALISATION
       SIGMIN = 0.D0
       VEPST  = 0.D0
       EPSPAC = 0.D0
-      
+
       DO 20 I = 1, 24
          RESUPC(I) = 0.0D0
-20    CONTINUE 
+20    CONTINUE
 
       DO 35 I = 1, 6
          SIG(I) = 0.0D0
@@ -183,7 +183,7 @@ C INITIALISATION
          EPSEL(I)= 0.0D0
          EPSPL(I)= 0.0D0
          SIGL(I) = 0.0D0
-35    CONTINUE 
+35    CONTINUE
 
 C FIN D'INITILISATION
 C
@@ -207,76 +207,76 @@ C ANALYSER LES CHARGEMENTS APLIQUES
 
       CALL ACANCY(NBORDR, KWORK, SOMPGW, JRWORK, TSPAQ, IPG, C1,
      &                C2, ORDINI, ORDFIN, NBCYAD,CYFERM, EPSPA)
-     
-     
 C ---------------------------------------------------------------
 C CALCULER LES GRANDEURS
-     
+
       DO 10 J= ORDINI, ORDFIN
          DECAL = 12
 C         ADR = (J-1)*TSPAQ+KWORK*SOMPGW*6+(IPG-1)*6
 
          ADR = (J-1)*TSPAQ+KWORK*SOMPGW*DECAL+(IPG-1)*DECAL
-         
-C RECUPERER LES TENSEURS A CE NUMERO D'ORDRE        
+
+C RECUPERER LES TENSEURS A CE NUMERO D'ORDRE
 C ORDRE DU TENSEUR SIXX, SIYY, SIZZ, SIXY, SIXZ, SIYZ,
-C SIMILAIRE POUR 
+C SIMILAIRE POUR
 C   EPS  : DEFORMATION TOTALE
 C   EPSE : DEFORMATION ELASTIQUE
 C   EPSP : DEFORMATION PLASTIQUE
 
 
          CALL TENEPS( JRWORK,ADR, C1, C2, SIG, EPS, EPSE, EPSP)
-         
+
 C ---------------------------------------------------------------
 C ON CALCULE PHYDRM QU'UNE FOIS, LA PRESSION HYDROSTATIQUE
 C EST CONSTANTE PAR RAPPORT AU vect_n.
 
 C -- CALCULER LES GRANDEURS PRESSION HYDROSTATIQUE
- 
-C    CALCULER PRESSION HYDROSTATIQUE MAXIMALE = Max_t(1/3 Tr[SIG])  
+
+C    CALCULER PRESSION HYDROSTATIQUE MAXIMALE = Max_t(1/3 Tr[SIG])
          IF  ( (PARACT(2) .EQ. 1) .OR. (PARACT(12) .EQ. 1)
      &                  .OR. (PARACT(13) .EQ. 1) ) THEN
-     
+
             PHYDRO = (SIG(1) + SIG(2) + SIG(3))/3.0D0
 
             IF (PHYDRO .GT. PHYDRM) THEN
                PHYDRM = PHYDRO
             ENDIF
-            
+
             IF (PHYDRO .LT. PHYMIN) THEN
                PHYMIN = PHYDRO
             ENDIF
-            
-         ENDIF 
-         
+
+         ENDIF
+
 C ---------------------------------------------------------------
-C -- CALCULER LA DEMI-AMPLITUDE DE LA DEFORMATION PLASIQUE EQVA 
+C -- CALCULER LA DEMI-AMPLITUDE DE LA DEFORMATION PLASIQUE EQVA
 C POUR LE CRIETRE MANSON_COFF
-       
+
          IF (PARACT(7) .EQ. 1)  THEN
-         
-            DO 11 L = J, ORDFIN  
+
+            DO 11 L = J, ORDFIN
                ADRL = (L-1)*TSPAQ+KWORK*SOMPGW*DECAL+(IPG-1)*DECAL
-               
+
                CALL TENEPS(JRWORK,ADRL,C1,C2,
      &                         RBID,EPSL, EPSEL, EPSPL)
-           
-               DO 12 I = 1, 6      
+
+               DO 12 I = 1, 6
                   VEPSP(I)= EPSP(I) - EPSPL(I)
-12             CONTINUE 
-               EQEPSP = LCIV2E(VEPSP)
-               
+12             CONTINUE
+               CALL FGEQUI(VEPSP,'EPSI',3,EQUI)
+               EQEPSP =  EQUI(1)
+C               EQEPSP = LCIV2E(VEPSP)
+
                IF (VEPSPE .LT. EQEPSP) THEN
                   VEPSPE = EQEPSP
                ENDIF
-11          CONTINUE   
-  
+11          CONTINUE
+
          ENDIF
-          
+
 C SIG PRIN MAX-----------------------------------------------
       IF ((PARACT(8) .EQ. 1) .OR. (PARACT(9) .EQ. 1) .OR.
-     &          (PARACT(19) .EQ. 1) ) THEN   
+     &          (PARACT(19) .EQ. 1) ) THEN
             NVP = 3
             NPERM = 12
             TOL = 1.D-10
@@ -294,8 +294,8 @@ C SIG PRIN MAX-----------------------------------------------
             BR(3) = 0.D0
             BR(4) = 1.D0
             BR(5) = 0.D0
-            BR(6) = 1.D0      
-         
+            BR(6) = 1.D0
+
             CALL JACOBI(NVP,NPERM,TOL,TOLDYN,AR,BR,VECPRO,VALPRO,
      &                        JACAUX,NITJAC,ITYPE,IORDRE)
 
@@ -317,17 +317,17 @@ C CALCNORM = vect_F.vect_n
                IF (ABS(SIGNM1) .GT. SINM1M) THEN
                   SINM1M = ABS(SIGNM1)
                ENDIF
-               
+
             ENDIF
-            
+
             IF (EPRMIN .GT. VALPRO(1)) THEN
                EPRMIN = VALPRO(1)
             ENDIF
-                                 
+
             IF (ETREMA .LT. (VALPRO(1)-VALPRO(3))) THEN
                ETREMA = (VALPRO(1)-VALPRO(3))
             ENDIF
-            
+
             IF (ETREMI .GT. (VALPRO(1)-VALPRO(3))) THEN
                ETREMI = VALPRO(1)-VALPRO(3)
             ENDIF
@@ -335,87 +335,87 @@ C CALCNORM = vect_F.vect_n
 
 C ---------------------------------------------------------------
 C CALCULER DENSITE D'ENERGIE DISTORSION ELASTIQUE
-C    
+C
          IF (PARACT(10) .EQ. 1)  THEN
 
             CALL LCDEVI(SIG,DEVSIG)
             CALL LCDEVI(EPSE, DVEPSE)
 
-            
+
             IF (J .LT. ORDFIN) THEN
                ADRL = (J+1-1)*TSPAQ+KWORK*SOMPGW*DECAL+(IPG-1)*DECAL
-               
+
                CALL TENEPS(JRWORK,ADRL,C1,C2,
      &                         SIGL,EPSL, EPSEL, EPSPL)
                CALL LCDEVI(SIGL, DSIGL)
                CALL LCDEVI(EPSEL, DEPSL)
-               
+
                SOMDEN = 0.D0
-               DO 32 I = 1, 6      
+               DO 32 I = 1, 6
                   SOMDEN= SOMDEN + 0.5D0*(DEVSIG(I)+DSIGL(I))
-     &                             *(DEPSL(I)- DVEPSE(I))              
-32             CONTINUE                   
-  
-              IF (SOMDEN .GT. 0) THEN 
+     &                             *(DEPSL(I)- DVEPSE(I))
+32             CONTINUE
+
+              IF (SOMDEN .GT. 0) THEN
                   DENDIS = DENDIS + SOMDEN
               ENDIF
-               
+
             ENDIF
 
          ENDIF
 
 C ---------------------------------------------------------------
 C CALCULER DENSITE D'ENERGIE DISSIPISE PLASTIQUE
-C    
+C
          IF (PARACT(11) .EQ. 1)  THEN
-            
+
             IF (J .LT. ORDFIN) THEN
                ADRL = (J+1-1)*TSPAQ+KWORK*SOMPGW*DECAL+(IPG-1)*DECAL
-               
+
                CALL TENEPS(JRWORK,ADRL,C1,C2,
      &                         SIGL,EPSL, EPSEL, EPSPL)
-               
+
                SOMDEN = 0.D0
-               DO 33 I = 1, 6      
+               DO 33 I = 1, 6
                   SOMDEN= SOMDEN + 0.5D0*(SIG(I)+SIGL(I))
-     &                             *(EPSPL(I)- EPSP(I))              
-33             CONTINUE                   
-  
+     &                             *(EPSPL(I)- EPSP(I))
+33             CONTINUE
+
                DENDIE = DENDIE + SOMDEN
-               
+
             ENDIF
 
          ENDIF
-         
+
 C ---------------------------------------------------------------
-C -- CALCULER LA DEMI-AMPLITUDE DE LA CONTRAINTE EQVALENTE 
+C -- CALCULER LA DEMI-AMPLITUDE DE LA CONTRAINTE EQVALENTE
 C POUR LE CRIETRE MANSON_COFF
-       
+
          IF (PARACT(14) .EQ. 1)  THEN
-         
-            DO 21 L = J, ORDFIN  
+
+            DO 21 L = J, ORDFIN
                ADRL = (L-1)*TSPAQ+KWORK*SOMPGW*DECAL+(IPG-1)*DECAL
-               
+
                CALL TENEPS(JRWORK,ADRL,C1,C2,
      &                         SIGL,RBID, RBID, RBID)
-           
-               DO 22 I = 1, 6      
+
+               DO 22 I = 1, 6
                   VSIG(I)= SIG(I) - SIGL(I)
-22             CONTINUE 
+22             CONTINUE
                CALL FGEQUI(VSIG,'SIGM',3,EQUI)
                EQSIG = EQUI(1)
-               
+
                IF (VSIGE .LT. EQSIG) THEN
                   VSIGE = EQSIG
                ENDIF
-21          CONTINUE   
-  
+21          CONTINUE
+
          ENDIF
 
 C ---------------------------------------------------------------
 C CALCULER CONTRAINTES PRINCIPALES MAX ET LA DEF TRACTION DU PLAN
          IF ((PARACT(15) .EQ. 1) .OR. (PARACT(16) .EQ. 1) .OR.
-     &          (PARACT(18) .EQ. 1) ) THEN   
+     &          (PARACT(18) .EQ. 1) ) THEN
             NVP = 3
             NPERM = 12
             TOL = 1.D-10
@@ -433,8 +433,8 @@ C CALCULER CONTRAINTES PRINCIPALES MAX ET LA DEF TRACTION DU PLAN
             BR(3) = 0.D0
             BR(4) = 1.D0
             BR(5) = 0.D0
-            BR(6) = 1.D0      
-         
+            BR(6) = 1.D0
+
             CALL JACOBI(NVP,NPERM,TOL,TOLDYN,AR,BR,VECPRO,VALPRO,
      &                        JACAUX,NITJAC,ITYPE,IORDRE)
 
@@ -456,84 +456,84 @@ C CALCNORM = vect_F.vect_n
                IF (ABS(EPSNM1) .GT. EPNM1M) THEN
                   EPNM1M = ABS(EPSNM1)
                ENDIF
-               
+
             ENDIF
-            
+
             IF (SIGMIN .GT. VALPRO(1)) THEN
                SIGMIN = VALPRO(1)
             ENDIF
-                                 
+
             IF (STREMA .LT. (VALPRO(1)-VALPRO(3))) THEN
                STREMA = (VALPRO(1)-VALPRO(3))
             ENDIF
-            
+
             IF (STREMI .GT. (VALPRO(1)-VALPRO(3))) THEN
                STREMI = VALPRO(1)-VALPRO(3)
             ENDIF
-         ENDIF         
+         ENDIF
 
-C --------------------------------------------------------------- 
+C ---------------------------------------------------------------
 C CALCULER CONTRAINTES PRINCIPALES MAX ET LA TRACTION DE CE PLAN
          IF (PARACT(17) .EQ. 1)  THEN
-         
-            DO 41 L = J, ORDFIN  
+
+            DO 41 L = J, ORDFIN
                ADRL = (L-1)*TSPAQ+KWORK*SOMPGW*DECAL+(IPG-1)*DECAL
-               
+
                CALL TENEPS(JRWORK,ADRL,C1,C2,
      &                         RBID,EPSL, EPSEL, EPSPL)
-           
-               DO 42 I = 1, 6      
+
+               DO 42 I = 1, 6
                   VEPS(I)= EPS(I) - EPSL(I)
-42             CONTINUE 
+42             CONTINUE
                EQEPS = LCIV2E(VEPS)
-               
+
                IF (VEPST .LT. EQEPS) THEN
                   VEPST = EQEPS
                ENDIF
-41          CONTINUE   
-  
+41          CONTINUE
+
          ENDIF
-         
-C --------------------------------------------------------------- 
-C CALCULER DEFORMATION PLASTIQUE ACCUMULEE         
+
+C ---------------------------------------------------------------
+C CALCULER DEFORMATION PLASTIQUE ACCUMULEE
          IF (PARACT(20) .EQ. 1)  THEN
-         
-            IF (J .LT. ORDFIN) THEN 
+
+            IF (J .LT. ORDFIN) THEN
                ADRL = (J+1-1)*TSPAQ+KWORK*SOMPGW*DECAL+(IPG-1)*DECAL
-               
+
                CALL TENEPS(JRWORK,ADRL,C1,C2,
-     &                         SIGL,EPSL, EPSEL, EPSPL) 
-          
+     &                         SIGL,EPSL, EPSEL, EPSPL)
+
                SOMDEF = 0.D0
                DO 43 K=1,6
                   SOMDEF = SOMDEF + (EPSPL(K)-EPSP(K))*
-     &                               (EPSPL(K)-EPSP(K))    
+     &                               (EPSPL(K)-EPSP(K))
 43             CONTINUE
                EPSPAC = EPSPAC + SOMDEF**0.5D0
             ENDIF
-            
+
          ENDIF
-         
+
 10    CONTINUE
 
 C ---------------------------------------------------------------
-C POUR LES GRANDEURS DES CRITERERS "CISSAILEMENT PLAN CRITIQUE", 
-C ACMATA  CALCULE LES 8 PREMIER GRANDEURS ET CEUX DE 13-20  
+C POUR LES GRANDEURS DES CRITERERS "CISSAILEMENT PLAN CRITIQUE",
+C ACMATA  CALCULE LES 8 PREMIER GRANDEURS ET CEUX DE 13-20
 C
       IF  ( (PARACT(1) .EQ. 1) .OR. (PARACT(3) .EQ. 1) .OR.
      &      (PARACT(4) .EQ. 1) .OR. (PARACT(5) .EQ. 1)
-     &                  .OR. (PARACT(6) .EQ. 1)) THEN  
-             
-         PLCICR = .TRUE.  
+     &                  .OR. (PARACT(6) .EQ. 1)) THEN
+
+         PLCICR = .TRUE.
       ENDIF
 
       IF (PLCICR) THEN
-      
+
            CALL ACMATA ( JVECTN, JVECTU, JVECTV, NBORDR, KWORK,
-     &                SOMPGW, JRWORK, TSPAQ, IPG, JVECPG, 
+     &                SOMPGW, JRWORK, TSPAQ, IPG, JVECPG,
      &                JDTAUM,JRESUN, NOMMET, NOMMAT, RESUPC)
 
-           DO 110 K = 1,2       
+           DO 110 K = 1,2
               DTAUM(K) =    RESUPC(1+(K-1)*11)
               NXM(K)   =    RESUPC(2+(K-1)*11)
               NYM(K)   =    RESUPC(3+(K-1)*11)
@@ -542,7 +542,7 @@ C
               NORMOY(K)=    RESUPC(6+(K-1)*11)
               EPNMAX(K)=    RESUPC(7+(K-1)*11)
               EPNMOY(K)=    RESUPC(8+(K-1)*11)
-              
+
 110        CONTINUE
 
       ENDIF
@@ -552,14 +552,14 @@ C --  EVALUER LES CRITERES EXISTANTS
 C -----------------------------------------------------------------
 C
 
-      DO 120 K = 1,2      
+      DO 120 K = 1,2
 C
 
-C RECUPERATION DU COEFFICIENT DE PRE-ECROUISSAGE DONNE 
+C RECUPERATION DU COEFFICIENT DE PRE-ECROUISSAGE DONNE
 C PAR L'UTILISATE
 
          CALL GETVR8(' ','COEF_PREECROU',1,IARG,1,COEPRE,IRET)
-                   
+
 C        1/ C DE MATAKE
          IF (NOMCRI(1:14) .EQ. 'MATAKE_MODI_AC') THEN
             IF ( NORMAX(K) .GT. 0.0D0 ) THEN
@@ -570,7 +570,7 @@ C        1/ C DE MATAKE
                SIGEQ(K) = SIGEQ(K)*COEFPA
             ENDIF
             GRDEQ(K) = SIGEQ(K)
-         
+
          ENDIF
 
 C        2/ C DE DANG VAN
@@ -583,42 +583,42 @@ C        2/ C DE DANG VAN
                SIGEQ(K)  = SIGEQ(K)*COEFPA
             ENDIF
             GRDEQ(K) = SIGEQ(K)
-            
+
          ENDIF
-         
+
 C        CALC NOMBRE DE CYCLES A LA RUPTURE ET DU DOMMAGE
          CALL RCCOME ( NOMMAT, 'FATIGUE', PHENOM, ICODRE )
-         IF ( ICODRE .EQ. 1 ) CALL U2MESS('F','FATIGUE1_24')   
-C        POUR CRITERE= DANG_VAN OU MATAKE   
+         IF ( ICODRE .EQ. 1 ) CALL U2MESS('F','FATIGUE1_24')
+C        POUR CRITERE= DANG_VAN OU MATAKE
 
 
          CALL LIMEND( NOMMAT,GRDEQ,'WOHLER',' ', ENDUR)
          IF (ENDUR) THEN
             NRUPT(K)=R8MAEM()
          ELSE
-         
+
             CALL RCVALE(NOMMAT,'FATIGUE',1,'SIGM    ',GRDEQ(K),
      &           1,'WOHLER  ',NRUPT(K),ICODRE,1)
          ENDIF
          DOM(K) = 1.D0/NRUPT(K)
-         NRUPT(K)= NINT(NRUPT(K)) 
-         
- 120  CONTINUE     
- 
-                           
+         NRUPT(K)= NINT(NRUPT(K))
+
+ 120  CONTINUE
+
+
 C ---------------------------------------------------------------
-C           EVALUER CRITERES FOURNIS PAR FORMULE        
+C           EVALUER CRITERES FOURNIS PAR FORMULE
 C---------------------------------------------------------------
       DO 100 K = 1,2
-       
-          IF (NOMCRI(1:7) .EQ. 'FORMULE') THEN         
+
+          IF (NOMCRI(1:7) .EQ. 'FORMULE') THEN
 C        NOMBRE DE PARAMETRES DISPONIBLES
              NPARMA = 20
-C        VALEURS DE CES PARAMETRES, CORRESSPOND A NOMPAR         
+C        VALEURS DE CES PARAMETRES, CORRESSPOND A NOMPAR
              VALPAR(1) = DTAUM(K)
              VALPAR(2) = PHYDRM
              VALPAR(3) = NORMAX(K)
-             VALPAR(4) = NORMOY(K) 
+             VALPAR(4) = NORMOY(K)
              VALPAR(5) = EPNMAX(K)
              VALPAR(6) = EPNMOY(K)
              VALPAR(7) = VEPSPE/2.D0
@@ -635,83 +635,82 @@ C        VALEURS DE CES PARAMETRES, CORRESSPOND A NOMPAR
              VALPAR(18) = (STREMA -STREMI)/4.D0
              VALPAR(19) = (ETREMA -ETREMI)/4.D0
              VALPAR(20) = EPSPAC
-             
-C  RECUPERER LES NOMS DE PARAMETRES FOURNIS PAR L'UTILISATEUR         
+
+C  RECUPERER LES NOMS DE PARAMETRES FOURNIS PAR L'UTILISATEUR
              CHNOM(20:24) = '.PROL'
              CHNOM(1:19) = NOMFOR
-             
+
              CALL JEVEUO(CHNOM,'L',JPROF)
-             CALL FONBPA ( NOMFOR, ZK24(JPROF), CBID, NPARMA,  
+             CALL FONBPA ( NOMFOR, ZK24(JPROF), CBID, NPARMA,
      &                     NP, NOMPF )
-     
+
              DO 30 J = 1, NP
                 DO 25 IPAR = 1, NPARMA
                    IF (NOMPF(J).EQ.NOMPAR(IPAR)) THEN
-                      VALPU(J) =  VALPAR(IPAR) 
-                      GOTO 30            
+                      VALPU(J) =  VALPAR(IPAR)
+                      GOTO 30
                    ENDIF
-25              CONTINUE             
-30           CONTINUE          
+25              CONTINUE
+30           CONTINUE
 
              CALL FOINTE('F',NOMFOR, NP, NOMPF,VALPU, GRDEQ(K),IBID)
-             
+
 C PAS DE CRITERE DE FATEMI ET SOCIE EN ELASTIQUE ET AMPLITUDE CONSTANTE,
 C CELAAS DE SENS.
 
 C        CALC NOMBRE DE CYCLES A LA RUPTURE ET DU DOMMAGE
             CALL RCCOME ( NOMMAT, 'FATIGUE', PHENOM, ICODRE )
             IF ( ICODRE .EQ. 1 ) CALL U2MESS('F','FATIGUE1_24')
-             
-C        POUR CRITERE= FORMULE      
- 
- 
+
+C        POUR CRITERE= FORMULE
+
+
             CALL LIMEND( NOMMAT,GRDEQ(K),GRDVIE,FORVIE, ENDUR)
-           
+
             IF (ENDUR) THEN
                NRUPT(K)=R8MAEM()
             ELSE
-            
-               IF (GRDVIE(1:6) .EQ. 'WOHLER') THEN          
+
+               IF (GRDVIE(1:6) .EQ. 'WOHLER') THEN
                   NOMGRD = 'SIGM    '
-                  GRDVIE(7:8) = '  '    
+                  GRDVIE(7:8) = '  '
                   CALL RCVALE(NOMMAT,'FATIGUE',1,NOMGRD,GRDEQ(K),
      &              1,GRDVIE,NRUPT(K),ICODRE,1)
                ENDIF
-               
-               IF (GRDVIE(1:8) .EQ. 'MANSON_C') THEN          
+
+               IF (GRDVIE(1:8) .EQ. 'MANSON_C') THEN
                   NOMGRD = 'EPSI    '
                   CALL RCVALE(NOMMAT,'FATIGUE',1,NOMGRD,GRDEQ(K),
      &              1,GRDVIE,NRUPT(K),ICODRE,1)
                ENDIF
-               
+
                IF (GRDVIE(1:8) .EQ. 'FORM_VIE') THEN
-               
+
                   CALL RENRFA(FORVIE, GRDEQ(K), NRUPT(K),ICODRE)
-                  
+
                ENDIF
-               
+
                DOM(K) = 1.D0/NRUPT(K)
                NRUPT(K) = NINT(NRUPT(K))
-            ENDIF 
+            ENDIF
 
-         ENDIF     
-                  
-100    CONTINUE 
-         
+         ENDIF
+
+100    CONTINUE
 
 C ------------------------------------------------------------------
 C---  SORTIE LES RESULTAT
 C-------------------------------------------------------------------
-                  
+
 C        CONSON D'UN CHAM_ELEM SIMPLE PUIS D'UN CHAM_ELEM CONTENANT
 C        POURE POINT DE GAUSS DE CHAQUE MAILLE MAX DE DTAU_MAX ET LE
 C        VECTRMAL ASSOCIE.
       DO 40 I = 1, 24
          VRESU(I) = 0.0D0
-40    CONTINUE  
+40    CONTINUE
 
       DO 101 K = 1,2
-      
+
          VRESU(1+(K-1)*11)  = DTAUM(K)
          VRESU(2+(K-1)*11)  = NXM(K)
          VRESU(3+(K-1)*11)  = NYM(K)

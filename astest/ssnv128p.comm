@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/04/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT AVEC FROTTEMENT D UNE PLAQUE SUR UN PLAN RIGIDE
 # ssnv128p.para = tps_job 280 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -180,6 +180,28 @@ TEST_RESU(RESU=(_F(RESULTAT   = U2M,
                    PRECISION  = 5.E-2,
                    REFERENCE  = 'AUTRE_ASTER',
                    VERSION    = '7.1.11')));
+
+# VERIF PROJECTION  (POINT LE PLUS A DROITE)
+TEST_RESU(RESU=
+                _F(RESULTAT   = U2M,
+                   INST       = 1.0,
+                   NOM_CHAM   = 'VALE_CONT',
+                   NOEUD      = 'N321',
+                   NOM_CMP    = 'PROJ_X',
+                   VALE       = 4.0E-2,
+                   PRECISION  = 1E-8,
+                   REFERENCE  = 'ANALYTIQUE',));
+
+TEST_RESU(RESU=
+                _F(RESULTAT   = U2M,
+                   INST       = 1.0,
+                   NOM_CHAM   = 'VALE_CONT',
+                   NOEUD      = 'N321',
+                   NOM_CMP    = 'PROJ_Y',
+                   VALE       = 0.0,
+                   CRITERE    = 'ABSOLU',
+                   PRECISION  = 1E-8,
+                   REFERENCE  = 'ANALYTIQUE',));
 
 FIN();
 #

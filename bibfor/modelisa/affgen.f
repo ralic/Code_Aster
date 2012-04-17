@@ -1,13 +1,14 @@
-      SUBROUTINE AFFGEN(TMP,NOM,NEL,NTEL)
+      SUBROUTINE AFFGEN(TMP,NOM,NEL,NTEL,NAPCIS,FONCIS)
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER                       NTEL(*)
       CHARACTER*8           NOM
+      CHARACTER*19 NAPCIS, FONCIS 
       CHARACTER*24      TMP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 17/04/2012   AUTEUR CHANSARD F.CHANSARD 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -48,11 +49,13 @@ C       ----- DEBUT COMMUNS NORMALISES  JEVEUX  ------------------------
         COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1), ZK80(1)
         CHARACTER*32     JEXNOM
 C       -----  FIN  COMMUNS NORMALISES  JEVEUX  ------------------------
-        REAL*8    EPS,    R8PI,   PI
+        REAL*8    EPS,    R8PI,   PI,     ALPHA,  BETA,   CCIS
         REAL*8    HY,     HZ,     EPY,    EPZ,    HYI,    HZI
         REAL*8    A,      B,      A4,     B4,     B3
         REAL*8    CT,     CD,     JX
-        REAL*8    RE,     RI,     E,      RIRE
+        REAL*8    RE,     RI,     E
+        REAL*8    VALPAY(2), VALPAZ(2), VALPAF
+        CHARACTER*24 NOMPA(2), NOMPAF
         DATA    EPS     /1.D-3/
 C     ------------------------------------------------------------------
 C
@@ -157,25 +160,35 @@ C              --- CAS DU TUBE RECTANGULAIRE ---
                CT = 2.D0*EPY*EPZ*(HY-EPY)*(HY-EPY)*(HZ-EPZ)*(HZ-EPZ)
                CD = HY*EPY + HZ*EPZ - EPY*EPY - EPZ*EPZ
                JX = CT /CD
-C  AY
-               IF (NEL.EQ.NTEL(1)) ZR(JDGE+IGEN+2) = 1.5D0
-               IF (NEL.EQ.NTEL(2)) ZR(JDGE+IGEN+2) = 0.D0
-               IF (NEL.EQ.NTEL(3)) ZR(JDGE+IGEN+2) = 1.5D0
-               IF (NEL.EQ.NTEL(4)) ZR(JDGE+IGEN+2) = 1.5D0
-               IF (NEL.EQ.NTEL(5)) ZR(JDGE+IGEN+2) = 1.5D0
-               IF (NEL.EQ.NTEL(6)) ZR(JDGE+IGEN+2) = 1.5D0
-               IF (NEL.EQ.NTEL(12)) ZR(JDGE+IGEN+2) = 0.D0
-               IF (NEL.EQ.NTEL(13)) ZR(JDGE+IGEN+2) = 1.5D0
+C              
+C	       --- INTERPOLATION DES COEFFICIENTS DE CISAILLEMENT
+               ALPHA = (HY - 2.D0 * EPY ) / HY
+               BETA = (HZ - 2.D0 * EPZ ) / HZ
+               CALL ASSERT((ALPHA.GE.0.D0) .OR. (BETA.GE.0.D0))
+               IF (ALPHA.GT.0.95D0 .OR. BETA.GT.0.95D0) THEN
+                  CALL U2MESS('F','MODELISA10_15')
+               ENDIF
+               NOMPA(1)= 'ALPHA'
+               NOMPA(2)= 'BETA'
+               VALPAY(1)= ALPHA
+               VALPAY(2)= BETA
+               VALPAZ(1)= BETA
+               VALPAZ(2)= ALPHA
+               CALL FOINTE('A',NAPCIS,2,NOMPA,VALPAY,AY,IER)
+               CALL FOINTE('A',NAPCIS,2,NOMPA,VALPAZ,AZ,IER)       
+C
+C  AY            
+               IF (NEL.EQ.NTEL(2).OR.NEL.EQ.NTEL(12)) THEN
+                   ZR(JDGE+IGEN+2) = 0.D0
+               ELSE
+                   ZR(JDGE+IGEN+2) = AY
+               ENDIF
 C  AZ
-               IF (NEL.EQ.NTEL(1)) ZR(JDGE+IGEN+3) = 1.5D0
-               IF (NEL.EQ.NTEL(2)) ZR(JDGE+IGEN+3) = 0.D0
-               IF (NEL.EQ.NTEL(3)) ZR(JDGE+IGEN+3) = 1.5D0
-               IF (NEL.EQ.NTEL(4)) ZR(JDGE+IGEN+3) = 1.5D0
-               IF (NEL.EQ.NTEL(5)) ZR(JDGE+IGEN+3) = 1.5D0
-               IF (NEL.EQ.NTEL(6)) ZR(JDGE+IGEN+3) = 1.5D0
-               IF (NEL.EQ.NTEL(12)) ZR(JDGE+IGEN+3) = 0.D0
-               IF (NEL.EQ.NTEL(13)) ZR(JDGE+IGEN+3) = 1.5D0
-
+               IF (NEL.EQ.NTEL(2).OR.NEL.EQ.NTEL(12)) THEN
+                   ZR(JDGE+IGEN+3) = 0.D0
+               ELSE
+                   ZR(JDGE+IGEN+3) = AZ
+               ENDIF
 C  JX
                ZR(JDGE+IGEN+6) = JX
 C  RT. TUBE RECTANGULAIRE MINCE D'EPAISSEUR CONSTANTE. RT=JX/2.E.AINT
@@ -242,55 +255,26 @@ C  RZ
             ZR(JDGE+IGEN+8) = RE
 C  RT
             ZR(JDGE+IGEN+9) = RE
-C  AY
-            IF (ABS(RI/RE).LE.EPS) THEN
-               IF (NEL.EQ.NTEL(1)) ZR(JDGE+IGEN+2) = 10.D0 / 9.D0
-               IF (NEL.EQ.NTEL(2)) ZR(JDGE+IGEN+2) = 0.D0
-               IF (NEL.EQ.NTEL(3)) ZR(JDGE+IGEN+2) = 10.D0 / 9.D0
-               IF (NEL.EQ.NTEL(4)) ZR(JDGE+IGEN+2) = 10.D0 / 9.D0
-               IF (NEL.EQ.NTEL(5)) ZR(JDGE+IGEN+2) = 10.D0 / 9.D0
-               IF (NEL.EQ.NTEL(6)) ZR(JDGE+IGEN+2) = 10.D0 / 9.D0
-               IF (NEL.EQ.NTEL(12)) ZR(JDGE+IGEN+2) = 0.D0
-               IF (NEL.EQ.NTEL(13)) ZR(JDGE+IGEN+2) = 10.D0 / 9.D0
-C  AI
-               ZR(JDGE+IGEN2-1) = 0.D0
+C              
+C	    --- INTERPOLATION DES COEFFICIENTS DE CISAILLEMENT
+C
+            ALPHA = RI / RE
+            CALL ASSERT((ALPHA .GE. 0.D0) .OR. (ALPHA .LE. 1.D0))
+            NOMPAF = 'ALPHA'
+            VALPAF = ALPHA
+            CALL FOINTE('A',FONCIS,1,NOMPAF,VALPAF,CCIS,IER)
+C  AY	    
+            IF (NEL.EQ.NTEL(2).OR.NEL.EQ.NTEL(12)) THEN
+                ZR(JDGE+IGEN+2) = 0.D0
             ELSE
-C
-C --        CAS DU TUBE CIRCULAIRE
-C
-C -         A PAROI EPAISSE
-               IF ( RI/RE .LT. 0.9D0 )THEN
-                  IF (NEL.EQ.NTEL(2).OR.NEL.EQ.NTEL(12)) THEN
-                    ZR(JDGE+IGEN+2) = 0.D0
-                  ELSE
-                    RIRE = RI / RE
-                    ZR(JDGE+IGEN+2) = - .905D0  * RIRE**3
-     &                                + 1.156D0 * RIRE**2
-     &                                + .634D0  * RIRE
-     &                                + 1.093D0
-                  ENDIF
-C -         A PAROI FINE
-               ELSE
-                  IF (NEL.EQ.NTEL(1)) ZR(JDGE+IGEN+2) = 2.D0
-                  IF (NEL.EQ.NTEL(2)) ZR(JDGE+IGEN+2) = 0.D0
-                  IF (NEL.EQ.NTEL(3)) ZR(JDGE+IGEN+2) = 2.D0
-                  IF (NEL.EQ.NTEL(4)) ZR(JDGE+IGEN+2) = 2.D0
-                  IF (NEL.EQ.NTEL(5)) ZR(JDGE+IGEN+2) = 2.D0
-                  IF (NEL.EQ.NTEL(6)) ZR(JDGE+IGEN+2) = 2.D0
-                  IF (NEL.EQ.NTEL(12)) ZR(JDGE+IGEN+2) = 0.D0
-                  IF (NEL.EQ.NTEL(13)) ZR(JDGE+IGEN+2) = 2.D0
-               ENDIF
-C
+                ZR(JDGE+IGEN+2) = CCIS
             ENDIF
 C  AZ
-            IF (NEL.EQ.NTEL(1)) ZR(JDGE+IGEN+3) = ZR(JDGE+IGEN+2)
-            IF (NEL.EQ.NTEL(2)) ZR(JDGE+IGEN+3) = 0.D0
-            IF (NEL.EQ.NTEL(3)) ZR(JDGE+IGEN+3) = ZR(JDGE+IGEN+2)
-            IF (NEL.EQ.NTEL(4)) ZR(JDGE+IGEN+3) = ZR(JDGE+IGEN+2)
-            IF (NEL.EQ.NTEL(5)) ZR(JDGE+IGEN+3) = ZR(JDGE+IGEN+2)
-            IF (NEL.EQ.NTEL(6)) ZR(JDGE+IGEN+3) = ZR(JDGE+IGEN+2)
-            IF (NEL.EQ.NTEL(12)) ZR(JDGE+IGEN+3) = 0.D0
-            IF (NEL.EQ.NTEL(13)) ZR(JDGE+IGEN+3) = ZR(JDGE+IGEN+2)
+            IF (NEL.EQ.NTEL(2).OR.NEL.EQ.NTEL(12)) THEN
+                ZR(JDGE+IGEN+3) = ZR(JDGE+IGEN+2)
+            ELSE
+                ZR(JDGE+IGEN+3) = ZR(JDGE+IGEN+2)
+            ENDIF
 C  AI
             ZR(JDGE+IGEN2-1) = PI * RI * RI
 C AY/AZ POUR TUYAUX ET 3D_FAISCEAU

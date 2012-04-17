@@ -1,4 +1,4 @@
-#@ MODIF make_surch_offi Lecture_Cata_Ele  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF make_surch_offi Lecture_Cata_Ele  DATE 16/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -70,8 +70,9 @@ def main(surch, unigest, nom_capy_offi, resu_ojb):
     Script pour surcharger les catalogues officiels
     (Il travaille dans un sandbox)
     """
-    nom_capy_offi = osp.abspath(nom_capy_offi)
-    resu_ojb = osp.abspath(resu_ojb)
+    abspath = lambda path: path and osp.abspath(path)
+    surch, unigest, nom_capy_offi, resu_ojb = map(abspath,
+        (surch, unigest, nom_capy_offi, resu_ojb))
 
     trav = tempfile.mkdtemp(prefix='make_surch_offi_')
     dirav = os.getcwd()
@@ -94,10 +95,10 @@ def _main(surch, unigest, nom_capy_offi, resu_ojb):
     import Lecture_Cata_Ele.utilit as utilit
 
     capy_surch = None
-    if surch and osp.isfile(osp.abspath(surch)):
+    if surch and osp.isfile(surch):
         # pour ne pas utiliser trop de mémoire, on decoupe
         # le fichier pour la lecture :
-        liste_morceaux = utilit.cata_split(osp.abspath(surch), "morceau", 5000)
+        liste_morceaux = utilit.cata_split(surch, "morceau", 5000)
         capy_surch = lire_cata(liste_morceaux[0])
         for k in range(len(liste_morceaux) - 1) :
             capy_surc2 = lire_cata(liste_morceaux[k + 1])

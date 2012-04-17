@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
 # RESPONSABLE MASSIN P.MASSIN
 # TITRE  : POUTRE ENCASTREE SOUMISE A DES EFFORTS UNITAIRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -112,24 +112,19 @@ RESU=MACRO_ELAS_MULT(MODELE=POUTMODE,
                      CARA_ELEM=CARELEM,
                      CHAR_MECA_GLOBAL=COND_LIM,
                      CAS_CHARGE=(_F(NOM_CAS='CHARGE NUMERO 1',
-                                    CHAR_MECA=CHARGE1,
-                                    OPTION='DEGE_ELNO',),
+                                    CHAR_MECA=CHARGE1,),
                                  _F(NOM_CAS='CHARGE NUMERO 2',
-                                    CHAR_MECA=CHARGE2,
-                                    OPTION='DEGE_ELNO',
-                                    NIVE_COUCHE='SUP',),
+                                    CHAR_MECA=CHARGE2,),
                                  _F(NOM_CAS='CHARGE NUMERO 3',
-                                    CHAR_MECA=CHARGE3,
-                                    OPTION='DEGE_ELNO',),
+                                    CHAR_MECA=CHARGE3,),
                                  _F(NOM_CAS='CHARGE NUMERO 4',
-                                    CHAR_MECA=CHARGE4,
-                                    OPTION='DEGE_ELNO',),),);
+                                    CHAR_MECA=CHARGE4,),),);
 
 #
 
 RESU=CALC_ELEM(reuse =RESU,
                RESULTAT=RESU,
-               OPTION=('EFGE_ELNO','SIGM_ELNO',),);
+               OPTION=('DEGE_ELNO','EFGE_ELNO','SIGM_ELNO',),);
 
 RESUPOS=POST_CHAMP(RESULTAT=RESU,
                      EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
@@ -240,14 +235,13 @@ RESU5=MACRO_ELAS_MULT(MODELE=POUTMODE,
                      CARA_ELEM=CARELEM,
                      CHAR_MECA_GLOBAL=COND_LIM,
                      CAS_CHARGE=(_F(NOM_CAS='CHARGE NUMERO 5',
-                                    CHAR_MECA=CHARGE5,
-                                    OPTION='DEGE_ELNO',),))
+                                    CHAR_MECA=CHARGE5,),))
 
 #
 
 RESU5=CALC_ELEM(reuse =RESU5,
                 RESULTAT=RESU5,
-                OPTION=('EFGE_ELNO','SIGM_ELNO',),);
+                OPTION=('DEGE_ELNO','EFGE_ELNO','SIGM_ELNO',),);
 
 RESU5POS=POST_CHAMP(RESULTAT=RESU5,
                      EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',

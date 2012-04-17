@@ -1,4 +1,4 @@
-#@ MODIF i18n Execution  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF i18n Execution  DATE 16/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -47,7 +47,11 @@ class Language():
         """Initialization"""
         self.localedir = os.environ.get('ASTER_LOCALEDIR') or \
             osp.join(os.environ.get('ASTER_ROOT', ''), 'share', 'locale')
-        self.domain = 'aster_%s' % version_shortname()
+        try:
+            shortname = version_shortname()
+        except ImportError:
+            shortname = 'stable'
+        self.domain = 'aster_%s' % shortname
         self.current_lang = self.default_lang = get_language()
 
     def get_current_settings(self):

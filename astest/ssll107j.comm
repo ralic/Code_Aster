@@ -1,0 +1,88 @@
+# MODIF  DATE 17/04/2012   AUTEUR CHANSARD F.CHANSARD 
+# TITRE UTILISATION DE LA MARCO_CARA_POUTRE
+# ssll107j.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='SSLL107J',
+              NIV_PUB_WEB='INTERNET'),);
+
+TAB_PL=MACR_CARA_POUTRE(UNITE=20,
+                        FORMAT='MED',
+                        GROUP_MA_BORD='ext',
+                        NOEUD='N1',);
+
+TAB_EP=MACR_CARA_POUTRE(UNITE=21,
+                        FORMAT='MED',
+                        GROUP_MA_BORD=('int','ext',),
+                        NOEUD='N1',);
+
+TAB_FIN=MACR_CARA_POUTRE(UNITE=22,
+                         FORMAT='MED',
+                         GROUP_MA_BORD=('int','ext',),
+                         NOEUD='N1',);
+
+TEST_TABLE(TABLE=TAB_PL,
+           NOM_PARA='AY',
+           REFERENCE='NON_REGRESSION',
+           PRECISION=1.E-5,
+           CRITERE='ABSOLU',
+           VERSION='11.01.18',
+           VALE=1.1666361652374,);
+
+TEST_TABLE(TABLE=TAB_PL,
+           NOM_PARA='AZ',
+           REFERENCE='NON_REGRESSION',
+           PRECISION=1.E-5,
+           CRITERE='ABSOLU',
+           VERSION='11.01.18',
+           VALE=1.1666359257114,);
+
+TEST_TABLE(TABLE=TAB_EP,
+           NOM_PARA='AY',
+           REFERENCE='NON_REGRESSION',
+           PRECISION=1.E-5,
+           CRITERE='ABSOLU',
+           VERSION='11.01.18',
+           VALE=1.6931360987397,);
+
+TEST_TABLE(TABLE=TAB_EP,
+           NOM_PARA='AZ',
+           REFERENCE='NON_REGRESSION',
+           PRECISION=1.E-5,
+           CRITERE='ABSOLU',
+           VERSION='11.01.18',
+           VALE=1.6931496584961,);
+
+TEST_TABLE(TABLE=TAB_FIN,
+           NOM_PARA='AY',
+           REFERENCE='NON_REGRESSION',
+           PRECISION=1.E-5,
+           CRITERE='ABSOLU',
+           VERSION='11.01.18',
+           VALE=1.9907221771643,);
+
+TEST_TABLE(TABLE=TAB_FIN,
+           NOM_PARA='AZ',
+           REFERENCE='NON_REGRESSION',
+           PRECISION=1.E-5,
+           CRITERE='ABSOLU',
+           VERSION='11.01.18',
+           VALE=1.9907302655931,);
+
+FIN()

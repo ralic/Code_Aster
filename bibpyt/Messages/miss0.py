@@ -1,8 +1,8 @@
-#@ MODIF miss0 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF miss0 Messages  DATE 17/04/2012   AUTEUR GREFFET N.GREFFET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -114,6 +114,18 @@ Fournir une plage de fréquence (mot-clé LIST_FREQ) n'est possible que si
 TYPE_RESU = 'FICHIER' ou 'HARM_GENE'.
 Dans les autres cas, il est nécessaire d'avoir un pas de fréquences constant
 pour le calcul des FFT.
+"""),
+
+18 : _(u"""
+Le nombre de pas de temps (calculé avec INST_FIN et INST_PAS) n'est pas pair.
+Il faut donc corriger ces valeurs pour respecter cette condition.
+"""),
+
+19 : _(u"""
+Dans le cas présent (DECOMP_IMPE='SANS_PRODUIT'), 
+les valeurs lues par les mots-clés MATR_MASS et AMOR_HYST (tous les deux sous MATR_GENE) 
+ne sont pas utilisées.
+De plus, le fichier UNITE_RESU_MASS ne sera pas crée.
 """),
 
 }

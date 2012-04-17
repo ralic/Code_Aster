@@ -1,4 +1,4 @@
-# MODIF  DATE 26/03/2012   AUTEUR TRAN V-X.TRAN 
+# MODIF  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE  CRITERES DE FATIGUE CROSSLAND ET DANG VAN PAPADOPOULOS
 # ET CRITERE EN FORMULE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -58,9 +58,13 @@ WHOL=DEFI_FONCTION(       NOM_PARA='SIGM',
                                  2210.,         20.,
                                  2900.,         10.,    )  )
 
-MAT0=DEFI_MATERIAU(    FATIGUE=_F(  WOHLER = WHOL,
-                                   D0 = 540.97,
-                                   TAU0 = 352.)  )
+MAT0=DEFI_MATERIAU(ELAS=_F(E = 200000.,
+                           NU = 0.3,
+                           ALPHA = 0. ),
+                    
+                   FATIGUE=_F(WOHLER = WHOL,
+                              D0 = 540.97,
+                              TAU0 = 352.),);
 
 ######################################################
 #-----------------------------------------------------------------------

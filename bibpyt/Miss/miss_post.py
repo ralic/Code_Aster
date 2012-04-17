@@ -1,20 +1,20 @@
-#@ MODIF miss_post Miss  DATE 17/08/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF miss_post Miss  DATE 17/04/2012   AUTEUR GREFFET N.GREFFET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE  YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# THE FREE SOFTWARE FOUNDATION  EITHER VERSION 2 OF THE LICENSE, OR
 # (AT YOUR OPTION) ANY LATER VERSION.
 #
 # THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# WITHOUT ANY WARRANTY  WITHOUT EVEN THE IMPLIED WARRANTY OF
 # MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
 # GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
 # YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+# ALONG WITH THIS PROGRAM  IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE COURTOIS M.COURTOIS
@@ -29,10 +29,16 @@ avec "_xxxx" (soit _9000002).
 """
 
 import os
+import shutil
 import traceback
 import os.path as osp
 
+from math import pi
+
+from Accas import _F
+
 import numpy as NP
+from numpy.fft import ifft, fft
 
 import aster
 from Cata.cata import (
@@ -48,13 +54,13 @@ from Utilitai.Table import Table
 from Utilitai.Utmess import UTMESS
 from Utilitai.utils import set_debug, _print, _printDBG
 
+
 # correspondance
 FKEY = {
     'DX' : 'FONC_X',
     'DY' : 'FONC_Y',
     'DZ' : 'FONC_Z',
 }
-
 
 
 class POST_MISS(object):
@@ -593,6 +599,358 @@ class POST_MISS_FICHIER(POST_MISS):
         """Prépare et produit les concepts de sortie."""
 
 
+class POST_MISS_FICHIER_TEMPS(POST_MISS_FICHIER):
+    """Pas de post-traitement, car on ne sort que les fichiers."""
+
+    def init_attr(self):
+        """Initialisations"""
+        self.dt = self.param['PAS_INST']
+        N_inst = int(self.param['INST_FIN']/self.param['PAS_INST'])
+        factor = self.param['COEF_SURECH']
+        self.L_points = factor*N_inst
+        self.nbr_freq = self.L_points/2 + 1
+        eps = self.param['PRECISION']
+        self.rho = eps**(1./(2.*N_inst))
+        self.nrows = self.param['NB_MODE']
+        self.ncols = self.param['NB_MODE']
+        self.Mg = 0 
+        self.Kg = 0 
+        self.Cg = 0 
+
+        self.Z_temps = NP.zeros((self.nrows, self.ncols, self.L_points), float) 
+        self.Fs_temps = NP.zeros((self.ncols, self.L_points), float)
+
+        # Noms des fichiers à utiliser
+        self._fich_impe = osp.join(self.param['_WRKDIR'], 'impe_Laplace')
+        self._fich_forc = osp.join(self.param['_WRKDIR'], 'forc_Laplace')
+
+
+    def execute(self):
+        """Lance le post-traitement (passage Laplace-Temps)"""
+        self.init_attr()
+        self.calc_impe_temps()
+        self.ecri_impe(self.Z_temps)
+
+        if self.param['EXCIT_SOL']:
+            self.calc_forc_temps()
+            self.ecri_forc(self.Fs_temps)
+
+   
+    def calc_impe_temps(self):
+        """Calcul de l'impédance dans le domaine temporel"""
+        fid = open(self._fich_impe, 'r') 
+
+        impe_Laplace = NP.zeros((self.nrows, self.ncols, self.nbr_freq), complex) 
+        k = -1 
+   
+        while (k < self.nbr_freq - 1):
+            for n in range(0,self.nrows):
+                for m in range(0,self.ncols):
+                    txt = fid.readline() 
+                    if( txt[0:7] == 'MATRICE' ):
+                        tmp = fid.readline() 
+                        k = k + 1 
+                    data = fid.readline().split() 
+                    impe_Laplace[n,m,k] = float(data[1]) + 1j*float(data[2]) 
+
+        fid.close() 
+
+        Z_Laplace = NP.zeros((self.nrows, self.ncols, self.L_points), complex) 
+        Z_Laplace[:,:,0:self.nbr_freq] = NP.conj(impe_Laplace[:,:,0:self.nbr_freq]) 
+        # Z_Laplace[:,:,self.nbr_freq:] = impe_Laplace[:,:,self.nbr_freq-1:1:-1] 
+        Z_Laplace[:,:,self.nbr_freq:] = impe_Laplace[:,:,self.nbr_freq-2:0:-1] 
+
+        MATR_GENE = self.param['MATR_GENE']
+        if MATR_GENE:
+           z_complex = NP.exp(1j*2*pi/self.L_points)  # 'pi' imported from math
+           GammaZ = NP.zeros(self.L_points, complex) 
+           order = 2 
+           for k in range(0,self.L_points):
+               for m in range(1,order+1):
+                   GammaZ[k] = GammaZ[k] + 1./m * (1 - self.rho*z_complex**(-k))**m 
+           s_laplace = GammaZ / self.dt 
+                    
+           if MATR_GENE['MATR_AMOR']:
+               self.Cg = MATR_GENE['MATR_AMOR'].EXTR_MATR_GENE() 
+    
+           if MATR_GENE['MATR_RIGI']:
+               self.Kg = MATR_GENE['MATR_RIGI'].EXTR_MATR_GENE()   
+               
+           if MATR_GENE['DECOMP_IMPE'] == 'PRODUIT':
+               if MATR_GENE['MATR_MASS']:
+                   self.Mg = MATR_GENE['MATR_MASS'].EXTR_MATR_GENE()
+               Hyst = NP.imag(Z_Laplace[:,:,0]) 
+               for r in range(0,self.L_points):
+                   mat = self.Mg*(s_laplace[r]**2) + self.Cg*s_laplace[r] + self.Kg 
+                   mat_inv = NP.linalg.inv(mat) 
+                   if MATR_GENE['AMOR_HYST'] == 'DANS_MATR_AMOR':
+                       Z_Laplace[:,:,r] = Z_Laplace[:,:,r] - 1j*Hyst*NP.sign(NP.imag(s_laplace[r])) 
+                   Z_Laplace[:,:,r] = Z_Laplace[:,:,r]*mat_inv 
+           else:
+               if MATR_GENE['MATR_MASS'] or MATR_GENE['AMOR_HYST']:
+                   UTMESS('A','MISS0_19')
+               for r in range(0,self.L_points):
+                   Z_Laplace[:,:,r] = Z_Laplace[:,:,r] - self.Cg*s_laplace[r] - self.Kg 
+     
+        rhoinv = 1./self.rho 
+        for r in range(0,self.nrows):
+            for l in range(0,self.ncols):
+                fact = 1 
+                x_lapl = Z_Laplace[r,l,:] 
+                x_t = NP.real(ifft(x_lapl)) 
+                for k in range(0,len(x_t)):
+                    x_t[k] = fact * x_t[k]  # x_t[k] = rho**(-k) * x_t[k]
+                    fact = fact*rhoinv 
+                self.Z_temps[r,l,:] = x_t 
+ 
+
+    def calc_forc_temps(self):
+        """Calcul de l'effort sismique dans le domaine temporel"""
+        fid = open(self._fich_forc, 'r') 
+
+        effort_sismique = NP.zeros((3, self.ncols, self.nbr_freq), complex)  # 3 chargements : X, Y, Z
+        title = fid.readline() 
+        for k in range(0,self.nbr_freq):
+            for n in range(0,3):
+                for m in range(0,self.ncols):
+                    txt = fid.readline() 
+                    data = fid.readline().split()  # Output matrix: 1 ligne, 3 colonnes
+                    effort_sismique[n,m,k] = float(data[1]) + 1j*float(data[2]) 
+                    #effort_sismique[n,m,k] = (float(data[1]) + 1j*float(data[2]))/(-2.*1j*(pi)**0.5) 
+            title = fid.readline() 
+    
+        fid.close() 
+    
+        fsism1 = NP.zeros((self.nrows, self.L_points), complex)   # Chargement 1
+        effort1 = NP.squeeze(effort_sismique[0,:,0:self.nbr_freq]) 
+        fsism1[:,0:self.nbr_freq] = NP.conj(effort1[:,0:self.nbr_freq]) 
+        fsism1[:,self.nbr_freq:] = effort1[:,self.nbr_freq-1:1:-1] 
+    
+        fsism2 = NP.zeros((self.nrows, self.L_points), complex)   # Chargement 2
+        effort2 = NP.squeeze(effort_sismique[1,:,0:self.nbr_freq]) 
+        fsism2[:,0:self.nbr_freq] = NP.conj(effort2[:,0:self.nbr_freq]) 
+        fsism2[:,self.nbr_freq:] = effort2[:,self.nbr_freq-1:1:-1] 
+    
+        fsism3 = NP.zeros((self.nrows, self.L_points), complex)   # Chargement 3
+        effort3 = NP.squeeze(effort_sismique[2,:,0:self.nbr_freq]) 
+        fsism3[:,0:self.nbr_freq] = NP.conj(effort3[:,0:self.nbr_freq]) 
+        fsism3[:,self.nbr_freq:] = effort3[:,self.nbr_freq-1:1:-1] 
+    
+        F_sism_temps1 = NP.zeros((self.nrows, self.L_points), float) 
+        F_sism_temps2 = NP.zeros((self.nrows, self.L_points), float) 
+        F_sism_temps3 = NP.zeros((self.nrows, self.L_points), float)  
+    
+        rhoinv = 1./self.rho 
+        for r in range(0,self.nrows):
+           fact = 1 
+           x_lapl1 = fsism1[r,:] 
+           x_t1 = NP.real(ifft(x_lapl1)) 
+           x_lapl2 = fsism2[r,:] 
+           x_t2 = NP.real(ifft(x_lapl2)) 
+           x_lapl3 = fsism3[r,:] 
+           x_t3 = NP.real(ifft(x_lapl3)) 
+           for k in range(0,len(x_t1)): 
+              x_t1[k] = fact * x_t1[k]  # x_t1[k] = rho**(-k) * x_t1[k] 
+              x_t2[k] = fact * x_t2[k]  # x_t2[k] = rho**(-k) * x_t2[k] 
+              x_t3[k] = fact * x_t3[k]  # x_t3[k] = rho**(-k) * x_t3[k] 
+              fact = fact * rhoinv 
+           F_sism_temps1[r,:] = x_t1 
+           F_sism_temps2[r,:] = x_t2 
+           F_sism_temps3[r,:] = x_t3 
+
+            
+        # Convolution avec le chargement impose
+        deplx = NP.zeros(self.L_points, float) 
+        deply = NP.zeros(self.L_points, float) 
+        deplz = NP.zeros(self.L_points, float) 
+    
+        if self.param['EXCIT_SOL']['CHAM_X']:
+              deplx = self.calc_depl('CHAM_X') 
+             
+        if self.param['EXCIT_SOL']['CHAM_Y']:
+              deply = self.calc_depl('CHAM_Y') 
+    
+        if self.param['EXCIT_SOL']['CHAM_Z']:
+              deplz = self.calc_depl('CHAM_Z') 
+              
+        ext = ['1x','1y','1z','2x','2y','2z','3x','3y','3z']
+        file = osp.join(self.param['_WRKDIR'], 'filtre_inverse_')
+        fname = file + ext[0]
+
+        ## Calcul du nombre de frequences
+        fid = open(fname, 'r')
+        tmp = fid.readline()
+        data = fid.readline().split()
+        freq = []
+        while data[0] != 'FIN':
+            freq.append(data[0])
+            data = fid.readline().split()
+        fid.close()
+        
+        ## Lecture filtre inverse
+        filler = NP.frompyfunc(lambda x: list(), 1, 1)
+        filtre_inverse = filler(NP.empty((len(freq),len(ext)), dtype=NP.object))
+        for file_nbr in range(0,len(ext)):
+            fname = file + ext[file_nbr]
+            fid = open(fname, 'r')
+            tmp = fid.readline()
+            data = fid.readline().split()
+            for k in range(0,len(freq)):
+                filtre_inverse[k][file_nbr].append(data[1] + '+' + data[2] + 'j')
+                data = fid.readline().split()
+            fid.close()
+        
+        ## FFT des chargements imposes
+        #freq = [float(x) for x in freq_txt]
+        deplx_freq = fft(deplx,len(freq))
+        deply_freq = fft(deply,len(freq))
+        deplz_freq = fft(deplz,len(freq))
+        depl = NP.array([deplx_freq, deply_freq, deplz_freq])       
+        
+        ## Calcul des chargements SV, SH, P en frequence
+        filtre = NP.zeros((3,3,len(freq)),complex)
+        char_SV_SH_P = NP.zeros((3,len(freq)))
+        to_stringv = NP.vectorize(lambda st : eval(str(st)[2:len(str(st))-2]))
+        for k in range(0,len(freq)):
+            filtre[0,:,k] = to_stringv(filtre_inverse[k][0:3])  # Onde SV
+            filtre[1,:,k] = to_stringv(filtre_inverse[k][3:6])  # Onde SH
+            filtre[2,:,k] = to_stringv(filtre_inverse[k][6:9])  # Onde P
+            char_SV_SH_P[:,k] = NP.dot(filtre[:,:,k],depl[:,k])
+        
+        ## Calcul des evolutions SV, SH, P en temps
+        onde_SV = NP.real(ifft(char_SV_SH_P[0,:]))
+        onde_SH = NP.real(ifft(char_SV_SH_P[1,:]))
+        onde_P = NP.real(ifft(char_SV_SH_P[2,:]))
+        
+        tmp_SV = list(onde_SV)
+        tmp_SH = list(onde_SH)
+        tmp_P = list(onde_P)
+        tmp_SV.insert(0,0.0)
+        tmp_SH.insert(0,0.0)
+        tmp_P.insert(0,0.0)
+        onde_SV = NP.array(tmp_SV)
+        onde_SH = NP.array(tmp_SH)
+        onde_P = NP.array(tmp_P)
+
+        ## Calcul de l'effort sismique equivalent en temps                
+        for n in range(0,self.L_points):
+          for k in range(0,n):
+            self.Fs_temps[:,n]=self.Fs_temps[:,n]+onde_SV[n-k]*F_sism_temps1[:,k]
+            self.Fs_temps[:,n]=self.Fs_temps[:,n]+onde_SH[n-k]*F_sism_temps2[:,k]+onde_P[n-k]*F_sism_temps3[:,k]
+   
+    
+    def ecri_impe(self, Z_temps):
+        """Ecriture des 3 types d'impédance dans les 3 fichiers de sortie"""
+        for n in range(0,self.L_points):
+           # Symmetric impedance
+           Z_temps[:,:,n] = (Z_temps[:,:,n] + Z_temps[:,:,n].transpose())/2. 
+
+        if self.param['MATR_GENE']:
+           if self.param['MATR_GENE']['MATR_MASS']:
+             Z_temps_M = NP.zeros((self.nrows, self.ncols, self.L_points), float) 
+             for n in range(0, self.L_points):
+                Z_temps_M[:,:,n] = NP.dot(Z_temps[:,:,n],self.Mg) 
+             self.impr_impe(Z_temps_M,self.param['UNITE_RESU_MASS']) 
+   
+           if self.param['MATR_GENE']['MATR_AMOR']:
+             Z_temps_C = NP.zeros((self.nrows, self.ncols, self.L_points), float) 
+             for n in range(0, self.L_points):
+                Z_temps_C[:,:,n] = NP.dot(Z_temps[:,:,n],self.Cg) 
+             self.impr_impe(Z_temps_C,self.param['UNITE_RESU_AMOR'])  
+     
+           if self.param['MATR_GENE']['MATR_RIGI']:
+             Z_temps_K = NP.zeros((self.nrows, self.ncols, self.L_points), float) 
+             for n in range(0, self.L_points):
+                Z_temps_K[:,:,n] = NP.dot(Z_temps[:,:,n],self.Kg) 
+             self.impr_impe(Z_temps_K,self.param['UNITE_RESU_RIGI']) 
+        else:
+           self.impr_impe(Z_temps,self.param['UNITE_RESU_RIGI']) 
+
+
+    def impr_impe(self, Zdt, unite_type_impe):
+        """Ecriture d'une impédance quelconque dans le fichier de sortie en argument"""
+        fname = os.path.join( self.param['_WRKDIR'], self.param['PROJET'] + '.' + str(unite_type_impe) )
+        fid = open(fname, 'w') 
+
+        if self.param['NB_MODE'] < 6:
+            nb_colonne = self.param['NB_MODE']
+        else:
+            nb_colonne = 6 
+
+        fmt_ligne = " %13.6E" * nb_colonne
+        # residu = NP.remainder(self.param['NB_MODE'],NB_COLONNE)
+        # fmt_ligne_fin = " %13.6E" * residu
+
+        txt = []  
+        txt.append('%s %s' % (str(self.L_points), str(self.dt)))
+        for n in range(0, self.L_points):
+            txt.append('%s' % str(n*self.dt))
+            for l in range(0,self.nrows):
+                for c in range(0,self.ncols,nb_colonne):  
+                    txt.append(fmt_ligne % tuple(Zdt[l,c:c+nb_colonne,n]))
+        fid.write(os.linesep.join(txt))
+        fid.close()
+        shutil.copyfile(fname, os.path.join( self.param['_INIDIR'], 'fort' + '.' + str(unite_type_impe) ))
+
+
+    def ecri_forc(self, fs_temps):
+        """Ecriture de l'effort sismique dans le fichier de sortie"""
+        fname = os.path.join( self.param['_WRKDIR'], self.param['PROJET'] + '.' + str(self.param['EXCIT_SOL']['UNITE_RESU_FORC']) )
+        fid = open(fname, 'w')
+ 
+        if self.param['NB_MODE'] < 6:
+            nb_colonne = self.param['NB_MODE']
+        else:
+            nb_colonne = 6 
+
+        fmt_ligne = " %13.6E" * nb_colonne
+        # residu = NP.remainder(self.param['NB_MODE'],NB_COLONNE)
+        # fmt_ligne_fin = " %13.6E" * residu
+
+        txt = []
+        txt.append('%s %s' % (str(self.L_points), str(self.dt)))
+        for n in range(0,self.L_points):
+            txt.append('%s' % str(n*self.dt))
+            for mode in range(0,self.param['NB_MODE'], nb_colonne):
+                txt.append(fmt_ligne % tuple(fs_temps[mode:mode+nb_colonne,n]))   
+        fid.write(os.linesep.join(txt))
+        fid.close()
+        shutil.copyfile(fname, os.path.join( self.param['_INIDIR'], 'fort' + '.' + str(self.param['EXCIT_SOL']['UNITE_RESU_FORC'])))
+
+
+    def cumtrapz(self, a):
+        """Integration en temps (accélération -> vitesse -> déplacement)"""
+        length = len(a) 
+        b = NP.zeros(length, float) 
+        for k in range(0, length - 1):
+           b[k+1] = NP.add(a[k], a[k+1])/2. 
+        c = NP.add.accumulate(b) 
+        return c 
+        
+        
+    def calc_depl(self, champ_dir):
+        """Lecture du fichier déplacement/vitesse/accélération pour le calcul de l'effort sismique"""
+        __linst = DEFI_LIST_REEL(DEBUT=0.,INTERVALLE=_F(JUSQU_A= self.param['INST_FIN'] - self.dt,PAS=self.dt),)
+        _champ = CALC_FONCTION(COMB=_F(FONCTION=self.param['EXCIT_SOL'][champ_dir], COEF=1.0,),LIST_PARA=__linst)
+        
+        linst = __linst.Valeurs()
+        char_impo = _champ.Valeurs()[1]
+        
+        if (self.param['EXCIT_SOL']['NOM_CHAM'] == 'ACCE'):
+                  #if (EXCIT_SOL['CORRECTION'] == 1): # Baseline correction
+                  #      t = NP.arange(0,N_inst*dt,dt) 
+                  #      BL_coeff = NP.polyfit(t,char_impo,2)  # Baseline Estimation coefficients
+                  #      Accez_BL = BL_coeff[0]*t**2 + BL_coeff[1]*t + BL_coeff[2] 
+                  #      char_impo = char_impo - Accez_BL  # Baseline correction
+              velo = self.dt*self.cumtrapz(char_impo) 
+              depl = self.dt*self.cumtrapz(velo) 
+        if (self.param['EXCIT_SOL']['NOM_CHAM'] == 'VITE'):
+              depl = self.dt*self.cumtrapz(char_impo) 
+        if (self.param['EXCIT_SOL']['NOM_CHAM'] == 'DEPL'):
+              depl = char_impo 
+           
+        return depl 
+         
 
 def PostMissFactory(type_post, *args, **kwargs):
     """Crée l'objet POST_MISS pour le type de post-traitement demandé."""
@@ -604,16 +962,20 @@ def PostMissFactory(type_post, *args, **kwargs):
         return POST_MISS_TAB(*args, **kwargs)
     elif type_post == 'FICHIER':
         return POST_MISS_FICHIER(*args, **kwargs)
+    elif type_post == 'FICHIER_TEMPS':
+        return POST_MISS_FICHIER_TEMPS(*args, **kwargs)
     else:
         raise NotImplementedError, type_post
 
 
 def info_freq(param):
     """Emet un message sur les fréquences utilisées"""
-    if param['FREQ_MAX']:
+    if param['LIST_FREQ']:
+        UTMESS('I', 'MISS0_14', valk=repr(param['LIST_FREQ']), vali=len(param['LIST_FREQ']))
+    else:
         nbfmiss = int((param['FREQ_MAX'] - param['FREQ_MIN']) / param['FREQ_PAS']) + 1
         UTMESS('I', 'MISS0_13', valr=(param['FREQ_MIN'], param['FREQ_MAX'],
                                       param['FREQ_PAS']),
                                 vali=nbfmiss)
-    else:
-        UTMESS('I', 'MISS0_14', valk=repr(param['LIST_FREQ']), vali=len(param['LIST_FREQ']))
+
+

@@ -1,4 +1,4 @@
-# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/04/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE EXTRUSION D'UN LOPIN CONTACT
 # ssnv504h.para = tps_job 220 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -26,7 +26,9 @@
 # UNITES   : NEWTON , METRE , SECONDE (N,M,S)
 #
 
-DEBUT(CODE=_F(NOM='SSNV504H',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='SSNV504H',NIV_PUB_WEB='INTERNET'),
+      IGNORE_ALARM='CONTACT3_16',
+      DEBUG=_F(SDVERI='OUI'))
 
 #
 #  CALCUL VALIDATION DU PASSAGE DES SINGULARITES GEOMETRIQUES
@@ -123,19 +125,22 @@ CH1=AFFE_CHAR_MECA(MODELE=MO,
 
 CH0=AFFE_CHAR_MECA(MODELE=MO,
                    DDL_IMPO=_F(GROUP_NO='LMN',
-                               DY=1.0,),);
+                               DY=1.0,),
+                               );
 
 
 CH2  = DEFI_CONTACT(MODELE         = MO,
                     FORMULATION    = 'CONTINUE',
-                    REAC_GEOM      = 'CONTROLE',
-                    NB_ITER_GEOM   = 4,
                     ALGO_RESO_CONT = 'NEWTON',
                     ZONE =(
                            _F(
                              GROUP_MA_MAIT = 'SMAI1',
                              GROUP_MA_ESCL = 'SESC1',
-                             CONTACT_INIT  = 'INTERPENETRE',
+                             ),
+                           _F(
+                             GROUP_MA_MAIT = 'SESC2',
+                             GROUP_MA_ESCL = 'SMAI2',
+                             INTEGRATION   = 'GAUSS',
                              ),
                           ),
                    );
@@ -151,9 +156,11 @@ DPLY=DEFI_FONCTION(NOM_PARA='INST',
                    PROL_DROITE='LINEAIRE',
                    PROL_GAUCHE='LINEAIRE',);
 
-L_INST=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=(_F(JUSQU_A=5.0,
-                                     PAS=5.0,),
+# CONTACT RASANT: ON VA DIRECTEMENT A 10 ET NON A 5
+
+LTPS=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=(_F(JUSQU_A=10.0,
+                                     PAS=10.0,),
                                   _F(JUSQU_A=20.0,
                                      PAS=5.0,),
                                   _F(JUSQU_A=50.0,
@@ -166,6 +173,11 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                                      PAS=5.0,),
                                     ),);
 
+
+L_INST=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
+                                  LIST_INST=LTPS,),
+                     ECHEC=_F(SUBD_PAS=4,
+                              SUBD_NIVEAU=5,),);
 U=STAT_NON_LINE(MODELE=MO,
                 CHAM_MATER=CM,
                 INFO=1,
@@ -180,7 +192,9 @@ U=STAT_NON_LINE(MODELE=MO,
                 NEWTON=_F(MATRICE='TANGENTE',
                           REAC_ITER=1,),
                 ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                CONVERGENCE=_F(RESI_GLOB_MAXI=9.9999999999999995E-07,),
+                CONVERGENCE=_F(RESI_GLOB_MAXI=9.9999999999999995E-07,
+                ITER_GLOB_MAXI=20,
+                ),
                );
 
 U=CALC_CHAMP(reuse =U,
@@ -197,38 +211,30 @@ DEPLAC=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLAC',
                               GROUP_NO='RELEVE',
                               RESULTAT=U,
                               NOM_CHAM='DEPL',
-                              LIST_INST=L_INST,
+                              LIST_INST=LTPS,
                               TOUT_CMP='OUI',
                               OPERATION='EXTRACTION',),);
 
-TCONT=POST_RELEVE_T(ACTION=_F(INTITULE='CONT',
-                              GROUP_NO='RELEVE',
-                              RESULTAT=U,
-                              NOM_CHAM='VALE_CONT',
-                              LIST_INST=L_INST,
-                              TOUT_CMP='OUI',
-                              OPERATION='EXTRACTION',),);
 
 IMPR_TABLE(TABLE=DEPLAC,);
-IMPR_TABLE(TABLE=TCONT,);
 
 TEST_RESU(RESU=(_F(RESULTAT=U,
                    NUME_ORDRE=1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
                    GROUP_NO='K',
-                   VALE=5.0,
+                   VALE=10.116987179981,
                    PRECISION=1.E-3,
-                   VERSION = '8.0.6',
+                   VERSION = '11.1.17',
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=U,
-                   NUME_ORDRE=28,
+                   INST=155.,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
                    GROUP_NO='K',
-                   VALE=144.22400000000001,
+                   VALE=155.07640919255,
                    PRECISION=1.E-3,
-                   VERSION = '8.0.6',
+                   VERSION = '11.1.17',
                    REFERENCE='NON_REGRESSION',),
            ),);
 

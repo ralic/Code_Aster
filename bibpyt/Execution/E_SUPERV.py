@@ -1,4 +1,4 @@
-#@ MODIF E_SUPERV Execution  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_SUPERV Execution  DATE 16/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -71,7 +71,7 @@ class SUPERV:
     def format_CR(self, cr):
         """Fonction pour imprimer le rapport"""
         return ufmt(_(u">> JDC.py : DEBUT RAPPORT\n%s\n"
-                      u">> JDC.py : FIN RAPPORT"), cr)
+                      u">> JDC.py : FIN RAPPORT"), str(cr))
 
     def error(self, *args):
         """Cet enrobage permet de s'assurer que le sys.path a été enrichi

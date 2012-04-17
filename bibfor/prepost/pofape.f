@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/03/2012   AUTEUR TRAN V-X.TRAN 
+C MODIF PREPOST  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,33 +43,41 @@ C     ------------------------------------------------------------------
      &              IBID, IORDO, IFONC1, IFONC, ILIGN, NBPAR, NBPAPF, J,
      &              NVAL, PARACT (30), NBEPS,IFONC2, IFONCE, IORDOE,
      &              IFONC3, IFONCP, IORDOP
+      INTEGER       TDISP, NBNOP, LISNOE(1), NBNOT, NBORDR, NNOINI
+      INTEGER       NUMPAQ, TSPAQ, K, JRWORK
+
       REAL*8        RBID, PHMAX, CISSIO, SPHERE, PCORR, VAL(2), VMAX,
-     &              VMIN, DOMAGE, RCRIT,VRESU(24)
+     &              VMIN, DOMAGE, RCRIT,VRESU(24), RESU(4), VALPAR(20)
       COMPLEX*16    CBID
-      LOGICAL       LHAIGH, LKE, LBID
-      INTEGER ICODRE(2), ICODWO, ICODBA, ICODHS
+      LOGICAL       LHAIGH, LKE, POST, FORDEF, PLCICR
+      INTEGER       ICODRE(2), ICODWO, ICODBA, ICODHS
       CHARACTER*8   K8B, NOMTEN(6), NOMRES(2), KDOMM, NOMPAR,NOMMAT,
-     &              CARA, RESULT, NOMPA1(20), NOMEPS(6), NOMEPP(6)
+     &              CARA, RESULT, NOMEPS(6), NOMEPP(6)
       CHARACTER*16  NOMCMD, PHENO, PHENOM,CRITER, NOMFOR, TYPCHA,FORVIE
+      CHARACTER*16  PROAXE, NOMMET
+      CHARACTER*19  K19B
       CHARACTER*24  FVALE(6), ETVALE(6), PTVALE(6)
 C     --- POST_FATI_MULT -----------------------------------------------
-      PARAMETER    ( NBPAPF = 29  )
-      CHARACTER*3   TYPPPF(NBPAPF), TYPPA1(20)
+      PARAMETER    ( NBPAPF = 32  )
+      CHARACTER*3   TYPPPF(NBPAPF)
       CHARACTER*16  NOMPPF(NBPAPF)
       INTEGER      IARG
       DATA  NOMPPF / 'CRITERE' , 'VALE_CRITERE' , 'PRES_HYDRO_MAX' ,
      &               'AMPLI_CISSION' , 'RAYON_SPHERE'   ,
      &               'VALE_MIN' , 'VALE_MAX' , 'DOMMAGE' ,'NBRUP',
-     &               'DTAUMA', 'PHYDRM', 'NORMAX', 'NORMOY',  
-     &               'EPNMAX', 'EPNMOY', 'DEPSPE', 'EPSPR1', 
+     &               'DTAUMA', 'PHYDRM', 'NORMAX', 'NORMOY',
+     &               'EPNMAX', 'EPNMOY', 'DEPSPE', 'EPSPR1',
      &               'SIGNM1', 'DENDIS', 'DENDIE', 'APHYDR',
      &               'MPHYDR', 'DSIGEQ', 'SIGPR1', 'EPSNM1',
-     &               'INVA2S', 'DSITRE', 'DEPTRE', 'EPSPAC'   /       
-     
-      DATA  TYPPPF /  'K16' , 'R' , 'R' , 'R' , 'R' , 'R' , 'R' , 'R',  
+     &               'INVA2S', 'DSITRE', 'DEPTRE', 'EPSPAC',
+     &               'VNMX',   'VNMY',   'VNMZ'  /
+
+
+      DATA  TYPPPF /  'K16' , 'R' , 'R' , 'R' , 'R' , 'R' , 'R' , 'R',
      &                  'R' , 'R' , 'R' , 'R' , 'R' , 'R',  'R',
      &                  'R' , 'R' , 'R' , 'R' , 'R' , 'R',  'R',
-     &                  'R' , 'R' , 'R' , 'R' , 'R' , 'R',  'R'/
+     &                  'R' , 'R' , 'R' , 'R' , 'R' , 'R',  'R',
+     &                  'R' , 'R',  'R'/
 
 C     ---------------------------------------------------------------
 C     ----------------------------------------------------------------
@@ -79,7 +87,7 @@ C
       LKE    = .FALSE.
       LHAIGH = .FALSE.
       NBC    = 1
-      
+
 C
       CALL GETRES ( RESULT, K8B, NOMCMD )
 C
@@ -130,15 +138,15 @@ CCCCCCCCCC RECUPERER LA DEFORMATION TOTALE
       CALL GETVID ( 'HISTOIRE', 'EPS_XZ',1,IARG,1, NOMEPS(5), N5 )
       CALL GETVID ( 'HISTOIRE', 'EPS_YZ',1,IARG,1, NOMEPS(6), N6 )
       NBEPS = N1 + N2 + N3 + N4 + N5 + N6
- 
+
        IF (NBEPS .EQ. 0) THEN
 C          DO 46 J = 1 , NBPTOT/2
 C             ZR(IORDOE+(J-1)*NBEPS) = 0.D0
-C   46     CONTINUE 
+C   46     CONTINUE
          CALL WKVECT ( '&&POFAPE.ORDOE','V V R',NBPTOT*NBEPS, IORDOE )
          GO TO 45
-      ENDIF    
-     
+      ENDIF
+
 C
 C     --- CHARGEMENT PERIODIQUE ---
 C
@@ -165,9 +173,9 @@ C
       NBPTOT = NBPTOT / 2
       DO 41 J = 1 , NBPTOT
          ZR(IORDOE+(J-1)*NBEPS) = ZR(IFONC2+NBPTOT+J-1)
-  41  CONTINUE  
-  
-  45  CONTINUE  
+  41  CONTINUE
+
+  45  CONTINUE
 C
 
 CCCCCCCCCC RECUPERER LA DEFORMATION PLASTIQUE
@@ -178,15 +186,15 @@ CCCCCCCCCC RECUPERER LA DEFORMATION PLASTIQUE
       CALL GETVID ( 'HISTOIRE', 'EPSP_XZ',1,IARG,1, NOMEPP(5), N5 )
       CALL GETVID ( 'HISTOIRE', 'EPSP_YZ',1,IARG,1, NOMEPP(6), N6 )
       NBEPS = N1 + N2 + N3 + N4 + N5 + N6
-      
+
       IF (NBEPS .EQ. 0) THEN
          CALL WKVECT ( '&&POFAPE.ORDOP','V V R',NBPTOT*NBEPS, IORDOP )
 C          DO 47 J = 1 , NBPTOT/2
 C             ZR(IORDOP+(J-1)*NBEPS) = 0.D0
-C   47     CONTINUE 
-  
+C   47     CONTINUE
+
          GO TO 48
-      ENDIF    
+      ENDIF
 C
       PTVALE(1) = NOMEPP(1)//'           .VALE'
       CALL JELIRA ( PTVALE(1), 'LONMAX', NBPTS, K8B )
@@ -211,9 +219,9 @@ C
       NBPTOT = NBPTOT / 2
       DO 42 J = 1 , NBPTOT
          ZR(IORDOP+(J-1)*NBEPS) = ZR(IFONC3+NBPTOT+J-1)
-  42  CONTINUE 
-  
-  48  CONTINUE 
+  42  CONTINUE
+
+  48  CONTINUE
 C
 C     --- CREATION DE LA TABLE ---
 C
@@ -227,29 +235,156 @@ C     --- DETERMINATION DES CRITERES---
 C
       CRITER = ' '
       CALL GETVTX ( ' ', 'CRITERE', 1,IARG,1, CRITER, N1 )
-      
+
       TYPCHA = ' '
       CALL GETVTX ( ' ', 'TYPE_CHARGE', 1,IARG,1, TYPCHA, N1 )
-      
+
       CALL GETVID(' ','FORMULE_GRDEQ',1,IARG,1,NOMFOR,NVAL)
       IF (NVAL .EQ. 0) THEN
           NOMFOR = '        '
       ENDIF
-      
+
       CALL GETVID(' ','FORMULE_VIE',1,IARG,1,FORVIE,NVAL)
       IF (NVAL .EQ. 0) THEN
           FORVIE = '        '
       ENDIF
 C
       KDOMM = ' '
-      CALL GETVTX ( ' ', 'DOMMAGE', 1,IARG,1, KDOMM, N1 )  
+      CALL GETVTX ( ' ', 'DOMMAGE', 1,IARG,1, KDOMM, N1 )
 
-CCCCCCCCCCCCCCCCCCC      
+C ---   NOM DE LA METHODE PERMETTANT DE DETERMINER LE CERCLE CIRCONSCRIT
+      CALL GETVTX(' ','METHODE',1,IARG,1,NOMMET,NVAL)
+      IF (NVAL .EQ. 0) THEN
+        NOMMET = '        '
+      ENDIF
+
+C ---   PROJECTION SUR UN AXE OU SUR DEUX AXES
+C     (CHARGEMENT NON_PERIODIQUE UNIQUEMENT)
+      CALL GETVTX(' ','PROJECTION',1,IARG,1,PROAXE,NVAL)
+      IF (NVAL .EQ. 0) THEN
+        PROAXE = '        '
+      ENDIF
+
+CCCCCCCCCCCCCCCCCCC
 C
       CALL TBAJLI (RESULT, 1,NOMPPF(1), IBID,RBID,CBID,CRITER, 0 )
       CALL TBNULI (RESULT, 1,NOMPPF(1), IBID,RBID,CBID,CRITER,
      &             RBID, K8B, ILIGN )
       IF ( ILIGN .LE. 0 ) ILIGN = 0
+
+
+
+      DO 601 J=1, 4
+            RESU(J) = 0.0D0
+ 601     CONTINUE
+
+      IF ( ( CRITER .EQ. 'FORMULE_CRITERE' ) .OR.
+     &         ( CRITER .EQ. 'MATAKE_MODI_AV' )  .OR.
+     &         ( CRITER .EQ. 'DANG_VAN_MODI_AV' )  .OR.
+     &         ( CRITER .EQ. 'FATESOCI_MODI_AV' )  .OR.
+     &         ( CRITER .EQ. 'MATAKE_MODI_AC' )  .OR.
+     &         ( CRITER .EQ. 'DANG_VAN_MODI_AC' )  )  THEN
+
+C ANALYSER LE CRITERE
+          CALL ANACRI( CRITER,NOMFOR, TYPCHA,'OUI', PARACT, FORDEF)
+          POST = .TRUE.
+C CONS TRUIRE UN VECTEUR WORK QUI CONTIENT CONTRAINE ET DEFORMATION
+
+          CALL WKVECT ( '&&POFAPE.ORDOCD','V V R',NBPTOT*NBEPS*2,JRWORK)
+
+          DO 60 J = 1, NBPTOT
+             DO 65 K = 1, 6
+                ZR(JRWORK+(J-1)*NBEPS*2+K-1) = ZR(IORDO+(J-1)*NBEPS+K-1)
+                ZR(JRWORK+(J-1)*NBEPS*2 + NBEPS + K-1) =
+     &                           ZR(IORDOE+(J-1)*NBEPS+K-1)
+65           CONTINUE
+60        CONTINUE
+
+          TDISP = NBPTOT*NBEPS*2
+          NBNOT = 1
+          LISNOE(1) = 1
+          NBORDR = NBPTOT
+          NNOINI = 1
+          NBNOP = 1
+          NUMPAQ = 1
+          TSPAQ = 12
+          PLCICR = .FALSE.
+
+C POUR CHARGEMENT PERIODIQUE
+          IF (TYPCHA .EQ. 'PERIODIQUE')  THEN
+C               CALL FMACGR(NBF, NBPTOT, ZR(IORDO), ZR(IORDOE),
+C      &                     ZR(IORDOP),CRITER,NOMMAT,
+C      &                     NOMFOR,KDOMM,FORVIE,VRESU)
+C
+              CALL DTAUNO(JRWORK, LISNOE, NBNOT, NBORDR, NNOINI, NBNOP,
+     &                  NUMPAQ, TSPAQ, NOMMET, CRITER,NOMFOR,KDOMM,
+     &              FORVIE, K8B, K19B, NOMMAT, POST, VALPAR, VRESU)
+
+
+              IF  ( (PARACT(1) .EQ. 1) .OR. (PARACT(3) .EQ. 1) .OR.
+     &            (PARACT(4) .EQ. 1) .OR. (PARACT(5) .EQ. 1)
+     &                  .OR. (PARACT(6) .EQ. 1)) THEN
+
+                   PLCICR = .TRUE.
+              ENDIF
+
+              IF (PLCICR) THEN
+
+                  CALL TBAJLI (RESULT, 1,NOMPPF(10), IBID,VRESU(1),
+     &                   CBID,K8B, ILIGN )
+
+                  DO 46 I = 1, 3
+                     CALL TBAJLI (RESULT, 1,NOMPPF(I+29), IBID,
+     &                   VRESU(I+1),CBID,K8B,ILIGN)
+
+46                CONTINUE
+
+                  DO 44 I = 1, 4
+                     CALL TBAJLI (RESULT, 1,NOMPPF(I+11), IBID,
+     &                    VRESU(I+4), CBID,K8B,ILIGN)
+
+44                CONTINUE
+
+              ELSE
+C POUR LES GRANDEURS HORS DES CRITERES A PLAN CRITIQUE
+                  DO 43 I = 1, 20
+                     IF (PARACT(I) .EQ. 1) THEN
+                        CALL TBAJLI (RESULT, 1,NOMPPF(I+9), IBID,
+     &                         VALPAR(I),CBID,K8B,ILIGN)
+                        ENDIF
+43                CONTINUE
+
+              ENDIF
+
+              CALL TBAJLI (RESULT, 1,NOMPPF(2), IBID,VRESU(9),
+     &                   CBID,K8B, ILIGN )
+              CALL TBAJLI (RESULT, 1,NOMPPF(9), IBID,VRESU(10),CBID,
+     &                   K8B, ILIGN )
+              CALL TBAJLI (RESULT, 1,NOMPPF(8), IBID,VRESU(11),CBID,
+     &                   K8B, ILIGN )
+
+
+C POUR CHARGEMENT NON-PERIODIQUE
+          ELSEIF (TYPCHA .EQ. 'NON_PERIODIQUE')  THEN
+
+             CALL AVGRNO(ZR(JRWORK), TDISP, LISNOE, NBNOT, NBORDR,
+     &              NNOINI,NBNOP, NUMPAQ, TSPAQ, CRITER, NOMFOR,KDOMM,
+     &            FORVIE,FORDEF,K8B,PROAXE,NOMMAT, K19B, POST, RESU)
+
+             CALL TBAJLI (RESULT, 1,NOMPPF(30), IBID,RESU(1),CBID,
+     &                      K8B, ILIGN )
+             CALL TBAJLI (RESULT, 1,NOMPPF(31), IBID,RESU(2),CBID,
+     &                      K8B, ILIGN )
+             CALL TBAJLI (RESULT, 1,NOMPPF(32), IBID,RESU(3),CBID,
+     &                      K8B, ILIGN )
+             CALL TBAJLI (RESULT, 1,NOMPPF(8), IBID,RESU(4),CBID,
+     &                       K8B, ILIGN )
+
+          ENDIF
+
+         GOTO 50
+      ENDIF
+
 C
       NOMRES(1) = 'D0'
       NOMRES(2) = 'TAU0'
@@ -276,31 +411,8 @@ C
            CALL TBAJLI (RESULT, 1,NOMPPF(3), IBID,PHMAX,CBID,K8B,ILIGN)
            CALL TBAJLI (RESULT, 1,NOMPPF(5), IBID,SPHERE,CBID,K8B,ILIGN)
 C
-      ELSEIF ( CRITER .EQ. 'FORMULE_CRITERE' ) THEN
-C              --------------------------
-C ANALYSER LE CRITERE
-           CALL ANACRI( CRITER,NOMFOR, TYPCHA,'OUI', PARACT, LBID)    
-
-           CALL FMACGR(NBF, NBPTOT, ZR(IORDO), ZR(IORDOE),  
-     &                  ZR(IORDOP),CRITER,NOMMAT,
-     &                  NOMFOR,KDOMM,FORVIE,VRESU)
-C
-           DO 43 I = 1, 20
-            IF (PARACT(I) .EQ. 1) THEN
-               CALL TBAJLI (RESULT, 1,NOMPPF(I+9), IBID,VRESU(I),
-     &                      CBID,K8B,ILIGN)
-           ENDIF           
-43    CONTINUE 
-
-           CALL TBAJLI (RESULT, 1,NOMPPF(2), IBID,VRESU(21),
-     &                    CBID,K8B, ILIGN )
-           CALL TBAJLI (RESULT, 1,NOMPPF(9), IBID,VRESU(22),CBID,
-     &                    K8B, ILIGN ) 
-           CALL TBAJLI (RESULT, 1,NOMPPF(8), IBID,VRESU(23),CBID,
-     &                    K8B, ILIGN )         
-           
       ENDIF
-      
+
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
       IF ( CRITER .NE. 'FORMULE_CRITERE' ) THEN
@@ -350,9 +462,11 @@ C
           ELSE
              CALL U2MESS('F','FATIGUE1_20')
           ENDIF
-C     
+C
       ENDIF
-      
+
+50    CONTINUE
+
       CALL JEDETR ( '&&POFAPE.ORDO' )
       CALL JEDEMA()
 C

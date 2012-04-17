@@ -1,4 +1,4 @@
-# MODIF  DATE 02/04/2012   AUTEUR TRAN V-X.TRAN 
+# MODIF  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES POUR UNE MODE PROPRE
 # sdls114c.para = tps_job 240 mem_job 256Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -216,7 +216,6 @@ RESUDYNA = REST_GENE_PHYS(RESU_GENE = RES_DYNA,
                           );
                           
 KT1 = POST_K_TRANS(RESU_TRANS = RES_DYNA,
-                   MODELISATION='C_PLAN',
                    K_MODAL = _F(TABL_K_MODA =GLMO1,
                                 FISSURE=FISS, 
                                ),

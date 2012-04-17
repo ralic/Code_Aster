@@ -1,4 +1,4 @@
-#@ MODIF N_types Noyau  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_types Noyau  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -67,3 +67,6 @@ def force_list(obj):
         obj = [obj,]
     return list(obj)
 
+def force_tuple(obj):
+    """Return `obj` as a tuple."""
+    return tuple(force_list(obj))

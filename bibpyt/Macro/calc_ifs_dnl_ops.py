@@ -1,8 +1,8 @@
-#@ MODIF calc_ifs_dnl_ops Macro  DATE 17/10/2011   AUTEUR REZETTE C.REZETTE 
+#@ MODIF calc_ifs_dnl_ops Macro  DATE 17/04/2012   AUTEUR GREFFET N.GREFFET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -87,7 +87,7 @@ def calc_ifs_dnl_ops(self,GROUP_MA_IFS,NOM_CMP_IFS,UNITE_NOEUD,UNITE_ELEM,MODELE
 
     if (not(ifsCharTuple[j] in tmpListe)):
       tmpListe.append(ifsCharTuple[j])
-      grpRefeNode  = prefix + ifsCharTuple[j]
+      grpRefeNode  = prefix + ifsCharTuple[j][0]
     #  ifsCharTuple = ifsCharTuple[1:] + (grpRefeNode,)
             
       grpRefeDico                  = {}
@@ -96,7 +96,7 @@ def calc_ifs_dnl_ops(self,GROUP_MA_IFS,NOM_CMP_IFS,UNITE_NOEUD,UNITE_ELEM,MODELE
       grpRefeMocle['CREA_GROUP_NO'].append(grpRefeDico)
 
   for j in range(len(tmpListe)):
-    tmpListe[j] = prefix + tmpListe[j]
+    tmpListe[j] = prefix + tmpListe[j][0]
   ifsCharMocle['GROUP_NO']=tuple(tmpListe)
 
   for j in range(len(NOM_CMP_IFS)):

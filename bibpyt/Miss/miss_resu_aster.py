@@ -1,21 +1,21 @@
-#@ MODIF miss_resu_aster Miss  DATE 22/03/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF miss_resu_aster Miss  DATE 17/04/2012   AUTEUR GREFFET N.GREFFET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE COURTOIS M.COURTOIS
 
@@ -114,7 +114,7 @@ def lire_resultat_aster(fich_aster):
                                  lbid, double, 1, 1, regexp_label="COUPL +AMOR")
 
     except IOError, err:
-        raise aster.error('MISS0_7', vali=ln, valk=str(err))  
+        raise aster.error('MISS0_7', vali=ln, valk=str(err))
     # vérifications
     try:
         struct.check()
@@ -132,27 +132,28 @@ def lire_resultat_aster(fich_aster):
 
 class STRUCT_RESULTAT:
     """Simple conteneur."""
-    titre = ""
-    noeud_nb = 0
-    noeud_coor = []
-    maille_nb = 0
-    maille_connec = []
-    maille_dime = 0
-    mode_dyna_nb = 0
-    mode_dyna_type = ""
-    mode_dyna_vale = []
-    mode_dyna_freq = []
-    mode_dyna_amor = []
-    mode_dyna_mass = []
-    mode_dyna_rigi = []
-    mode_stat_nb = 0
-    mode_stat_type = ""
-    mode_stat_vale = []
-    mode_stat_mass = []
-    mode_stat_rigi = []
-    coupl_nb = [0, 0]
-    coupl_mass = []
-    coupl_rigi = []
+    def __init__(self):
+        self.titre = ""
+        self.noeud_nb = 0
+        self.noeud_coor = []
+        self.maille_nb = 0
+        self.maille_connec = []
+        self.maille_dime = 0
+        self.mode_dyna_nb = 0
+        self.mode_dyna_type = ""
+        self.mode_dyna_vale = []
+        self.mode_dyna_freq = []
+        self.mode_dyna_amor = []
+        self.mode_dyna_mass = []
+        self.mode_dyna_rigi = []
+        self.mode_stat_nb = 0
+        self.mode_stat_type = ""
+        self.mode_stat_vale = []
+        self.mode_stat_mass = []
+        self.mode_stat_rigi = []
+        self.coupl_nb = [0, 0]
+        self.coupl_mass = []
+        self.coupl_rigi = []
 
 
     def check(self):

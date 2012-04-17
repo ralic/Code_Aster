@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/04/2012   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -66,16 +66,7 @@ CALC_ERREUR=OPER(nom="CALC_ERREUR",op=42,sd_prod=calc_erreur_prod,reentrant='f',
                     COEF_MULT       =SIMP(statut='f',typ='R'),),
 #-----------------------------------------------------------------------
 
-     OPTION =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
-                           into=("SIZ1_NOEU","ERZ1_ELEM",
-                                 "SIZ2_NOEU","ERZ2_ELEM",
-                                 "ERME_ELEM","ERME_ELNO",
-                                 "ERME_NOEU","QIRE_NOEU",
-                                 "QIRE_ELEM","QIRE_ELNO",
-                                 "QIZ1_ELEM","QIZ2_ELEM",
-                                 "SING_ELEM","SING_ELNO",
-                                 "ERTH_ELEM","ERTH_ELNO",
-                                 "ERTH_NOEU",),),
+     OPTION =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',into=C_NOM_CHAM_INTO(phenomene='ERREUR',),),
 
      b_erre_qi =BLOC(condition = "au_moins_un(OPTION, ('QIRE_ELEM','QIZ1_ELEM','QIZ2_ELEM','QIRE_ELNO','QIRE_NOEU'))",
                      RESU_DUAL=SIMP(statut='o',typ=resultat_sdaster,fr="Résultat du problème dual"),),

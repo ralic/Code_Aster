@@ -2,7 +2,7 @@
      &                  NBMAP, NUMPAQ, TSPAQ, NOMCRI,NOMFOR,GRDVIE,
      &                  FORVIE,FORDEF, PROAXE,CESR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 03/04/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE ANGLES J.ANGLES
-C 
+C
       IMPLICIT     NONE
       INTEGER      TDISP, NBMAP, VNBPG(NBMAP), NBPGT, NBORDR, NMAINI
       INTEGER      NUMPAQ, TSPAQ
@@ -28,7 +28,7 @@ C
       CHARACTER*8  GRDVIE
       CHARACTER*16 NOMCRI, PROAXE, NOMFOR, FORVIE
       CHARACTER*19 CESR
-      LOGICAL      FORDEF
+      LOGICAL      FORDEF, POST
 C ---------------------------------------------------------------------
 C BUT: DETERMINER LE PLAN DANS LEQUEL LE DOMMAGE EST MAXIMAL
 C ---------------------------------------------------------------------
@@ -86,7 +86,7 @@ C-----------------------------------------------------------------------
 C
       REAL*8        FATSOC, DGAM, GAMMA, PI, R8PI, DPHI, TAB1(18), PHI0
       REAL*8        VALA, VALB, COEFPA, CUDOMX
-      REAL*8        NXM, NYM, NZM  
+      REAL*8        NXM, NYM, NZM
       REAL*8        VRESU(24)
 C
       CHARACTER*8  CHMAT1, NOMMAT
@@ -217,16 +217,18 @@ C ET DES PARAMETRES ASSOCIES AU CRITERE CHOISI POUR LA MAILLE COURANTE.
 
 
          NBVECM = 209
-         
+
+         POST = .FALSE.
+
          DO 420 IPG=1, NBPG
-       
-        
+
+
 C REMPLACER PAR AVPLCR
-            CALL AVPLCR (NBVECM, ZR(JVECTN), ZR(JVECTU), ZR(JVECTV),  
-     &           NBORDR,KWORK, SOMPGW, VWORK, TDISP, TSPAQ,IPG,  
-     &           NOMCRI,NOMFOR,GRDVIE, FORVIE, FORDEF, FATSOC,PROAXE,   
-     &           NOMMAT, VALA,COEFPA, CUDOMX, NXM, NYM, NZM )
-     
+            CALL AVPLCR (NBVECM, ZR(JVECTN), ZR(JVECTU), ZR(JVECTV),
+     &           NBORDR,KWORK, SOMPGW, VWORK, TDISP, TSPAQ,IPG,
+     &           NOMCRI,NOMFOR,GRDVIE, FORVIE, FORDEF, FATSOC,PROAXE,
+     &           NOMMAT, VALA,COEFPA, POST, CUDOMX, NXM, NYM, NZM )
+
 C RECUPERER LES RESULTATS
             DO 600 ICMP=1, 24
                VRESU(ICMP) = 0.0D0

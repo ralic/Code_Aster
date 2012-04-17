@@ -1,0 +1,33 @@
+# encoding: utf-8
+
+def options(self):
+    group = self.get_option_group("Aster options")
+    group.add_option('--embed-fermetur', dest='embed_fermetur',
+                    default=False, action='store_true',
+                    help='embed fermeture symbols')
+
+
+def configure(self):
+    from Options import options as opts
+
+    env = self.all_envs[self.variant]
+
+    if opts.embed_all or opts.embed_fermetur:
+        env.append_value('ASTER_EMBEDS', ['fermetur'])
+
+    # don't fails because of duplicated symbols in fermetur
+    env.append_unique('LINKFLAGS', ['-Wl,--allow-multiple-definition'])
+
+
+def build(self):
+    get_srcs = self.path.get_src().ant_glob
+    env = self.all_envs[self.variant]
+    embed = env.ASTER_EMBEDS and 'fermetur' in env.ASTER_EMBEDS
+
+    self(
+        features = 'fc' + ('' if embed else ' fcshlib'),
+            name = 'asterfermetur',
+          target = 'asterfermetur',
+          source = get_srcs('*.f'),
+             env = env,
+    )

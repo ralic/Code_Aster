@@ -1,4 +1,4 @@
-#@ MODIF modelisa10 Messages  DATE 19/03/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa10 Messages  DATE 17/04/2012   AUTEUR CHANSARD F.CHANSARD 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -83,9 +83,15 @@ Arguments incompatibles : il y a %(i1)d degrés de liberté esclaves mais %(i2)d c
 Arguments incompatibles : il y a %(i1)d degrés de liberté esclaves mais %(i2)d noeuds esclaves.
 """),
 
-14 : _("""
+14 : _(u"""
 Pour un spectre de type SPEC_CORR_CONV_3, il faut donner le nom du
 MODELE_INTERFACE dans PROJ_SPEC_BASE
+"""),
+
+15 : _(u"""
+La géométrie de la section utilisée n'est pas prévue par l'opérande SECTION = 'RECTANGLE' de AFFE_CARA_ELEM.
+L'un des bords est trop fin. 
+Utilisez l'opérande SECTION = 'GENERALE'.
 """),
 
 }

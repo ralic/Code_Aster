@@ -1,4 +1,4 @@
-# MODIF  DATE 02/04/2012   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 16/04/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 # sdnv103f.para = tps_job 360 mem_job 500Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -280,8 +280,8 @@ liste2=DEFI_LIST_INST(  DEFI_LIST=_F(LIST_INST = temps2,),
                                EVENEMENT        = 'COLLISION',
                                ACTION           = 'DECOUPE',
                                SUBD_METHODE     = 'AUTO',
-                               DELTAT_COLLISION = 1.7E-8,
-                               DUREE_DECOUPE    = 1.5E-6,
+                               SUBD_INST = 1.7E-8,
+                               SUBD_DUREE    = 1.5E-6,
                               ),   
                           ),
                         )

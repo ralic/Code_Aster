@@ -1,4 +1,4 @@
-#@ MODIF E_JDC Execution  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_JDC Execution  DATE 16/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -38,7 +38,7 @@ from Noyau.N_JDC    import MemoryErrorMsg
 from Noyau.N_info import message, SUPERV
 from Noyau import basetype
 
-from strfunc import convert
+from strfunc import convert, ufmt
 from concept_dependency import ConceptDependenciesVisitor
 
 import aster

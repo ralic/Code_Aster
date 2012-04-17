@@ -1,8 +1,8 @@
-# MODIF  DATE 10/04/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 16/04/2012   AUTEUR COURTOIS M.COURTOIS 
 #  DATE   : 06/04/12
 #  AUTEUR : F. LEBOUVIER (DeltaCAD)
 #  TITRE  : REPONSE DYNAMIQUE D UNE DALLE EN BETON ARME (MODELE GLRC_DAMAGE)
-# sdns108a.para = tps_job 800 mem_job 512Mo ncpus 1 liste_test S
+# sdns108a.para = tps_job 900 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

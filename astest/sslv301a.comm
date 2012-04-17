@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE POUTRE CYLINDRIQUE CONSOLE SOUS CHARGE LINEAIREMENT REPARTIE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -65,87 +65,57 @@ CHARGT=AFFE_CHAR_MECA_F(   MODELE=MODELE,
 #           ...  FX = Q/R/PI ...
                          )
 
-DEF_1=MACRO_ELAS_MULT(        MODELE=MODELE,
-                              CHAM_MATER=CHMAT,
-                              CHAR_MECA_GLOBAL=CLIM,CAS_CHARGE=(
-                              _F( 
-                                           MODE_FOURIER = 0,
-                                             
-                                           TYPE_MODE = 'SYME',
-                                           CHAR_MECA = CHARGT,
-                                           OPTION = 'SIGM_ELNO'),
-                                         _F( 
-                                           MODE_FOURIER = 1,
-                                             
-                                           TYPE_MODE = 'SYME',
-                                           CHAR_MECA = CHARGT,
-                                           OPTION = 'SIGM_ELNO'))
-                          )
+DEF_1=MACRO_ELAS_MULT(MODELE=MODELE,
+                      CHAM_MATER=CHMAT,
+                      CHAR_MECA_GLOBAL=CLIM,
+                      CAS_CHARGE=(_F(MODE_FOURIER = 0,
+                                     TYPE_MODE = 'SYME',
+                                     CHAR_MECA = CHARGT,),
+                                  _F(MODE_FOURIER = 1,
+                                     TYPE_MODE = 'SYME',
+                                     CHAR_MECA = CHARGT,),),);
 
-DEF_2=MACRO_ELAS_MULT(        MODELE=MODELE,
-                              CHAM_MATER=CHMAT,
-                              CHAR_MECA_GLOBAL=CLIM,CAS_CHARGE=(
-                              _F( 
-                                           MODE_FOURIER = 0,
-                                             
-                                           TYPE_MODE = 'SYME',
-                                           CHAR_MECA = CHARGT,
-                                           OPTION = 'SIGM_ELNO'),
-                                         _F( 
-                                           MODE_FOURIER = 1,
-                                             
-                                           TYPE_MODE = 'SYME',
-                                           CHAR_MECA = CHARGT,
-                                           OPTION = 'SIGM_ELNO'),
-                                         _F( 
-                                           MODE_FOURIER = 2,
-                                             
-                                           TYPE_MODE = 'SYME',
-                                           CHAR_MECA = CHARGT,
-                                           OPTION = 'SIGM_ELNO'),
-                                         _F( 
-                                           MODE_FOURIER = 3,
-                                             
-                                           TYPE_MODE = 'SYME',
-                                           CHAR_MECA = CHARGT,
-                                           OPTION = 'SIGM_ELNO'),
-                                         _F( 
-                                           MODE_FOURIER = 4,
-                                             
-                                           TYPE_MODE = 'SYME',
-                                           CHAR_MECA = CHARGT,
-                                           OPTION = 'SIGM_ELNO'),
-                                         _F( 
-                                           MODE_FOURIER = 5,
-                                             
-                                           TYPE_MODE = 'SYME',
-                                           CHAR_MECA = CHARGT,
-                                           OPTION = 'SIGM_ELNO'),
-                                         _F( 
-                                           MODE_FOURIER = 6,
-                                             
-                                           TYPE_MODE = 'SYME',
-                                           CHAR_MECA = CHARGT,
-                                           OPTION = 'SIGM_ELNO'),
-                                         _F( 
-                                           MODE_FOURIER = 7,
-                                             
-                                           TYPE_MODE = 'SYME',
-                                           CHAR_MECA = CHARGT,
-                                           OPTION = 'SIGM_ELNO'),
-                                         _F( 
-                                           MODE_FOURIER = 8,
-                                             
-                                           TYPE_MODE = 'SYME',
-                                           CHAR_MECA = CHARGT,
-                                           OPTION = 'SIGM_ELNO'),
-                                         _F( 
-                                           MODE_FOURIER = 9,
-                                             
-                                           TYPE_MODE = 'SYME',
-                                           CHAR_MECA = CHARGT,
-                                           OPTION = 'SIGM_ELNO'))
-                          )
+DEF_1=CALC_CHAMP(reuse= DEF_1,
+                 RESULTAT = DEF_1,
+                 CONTRAINTE='SIGM_ELNO',);
+
+DEF_2=MACRO_ELAS_MULT(MODELE=MODELE,
+                      CHAM_MATER=CHMAT,
+                      CHAR_MECA_GLOBAL=CLIM,
+                      CAS_CHARGE=(_F(MODE_FOURIER = 0,
+                                     TYPE_MODE = 'SYME',
+                                     CHAR_MECA = CHARGT,),
+                                  _F(MODE_FOURIER = 1,
+                                     TYPE_MODE = 'SYME',
+                                     CHAR_MECA = CHARGT,),
+                                  _F(MODE_FOURIER = 2,
+                                     TYPE_MODE = 'SYME',
+                                     CHAR_MECA = CHARGT,),
+                                  _F(MODE_FOURIER = 3,
+                                     TYPE_MODE = 'SYME',
+                                     CHAR_MECA = CHARGT,),
+                                  _F(MODE_FOURIER = 4,
+                                     TYPE_MODE = 'SYME',
+                                     CHAR_MECA = CHARGT,),
+                                  _F(MODE_FOURIER = 5,
+                                     TYPE_MODE = 'SYME',
+                                     CHAR_MECA = CHARGT,),
+                                  _F(MODE_FOURIER = 6,
+                                     TYPE_MODE = 'SYME',
+                                     CHAR_MECA = CHARGT,),
+                                  _F(MODE_FOURIER = 7,
+                                     TYPE_MODE = 'SYME',
+                                     CHAR_MECA = CHARGT,),
+                                  _F(MODE_FOURIER = 8,
+                                     TYPE_MODE = 'SYME',
+                                     CHAR_MECA = CHARGT,),
+                                  _F(MODE_FOURIER = 9,
+                                     TYPE_MODE = 'SYME',
+                                     CHAR_MECA = CHARGT,),),);
+
+DEF_2=CALC_CHAMP(reuse= DEF_2,
+                 RESULTAT = DEF_2,
+                 CONTRAINTE='SIGM_ELNO',);
 
 # RECOMBINAISONS DE FOURIER EN DEPLACEMENTS ET CONTRAINTES
 # CALCUL 1: 2 MODES  - CALCUL 2: 10 MODES

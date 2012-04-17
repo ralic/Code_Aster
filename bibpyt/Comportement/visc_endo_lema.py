@@ -1,4 +1,4 @@
-#@ MODIF visc_endo_lema Comportement  DATE 13/02/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF visc_endo_lema Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,7 +27,7 @@ loi = LoiComportement(
    Ce modèle s'emploie avec les mots clés DEFORMATION = PETIT ou PETIT_REAC.""",
    num_lc         = 31,
    nb_vari        = 10,
-   nom_vari       = ('EPSVP_XX','EPSVP_YY','EPSVP_ZZ','EPSVP_XY','EPSVP_XZ','EPSVP_YZ','EPSPEQ','ECROISOT','ENDO','INDIPLAS'),
+   nom_vari       = ('EPSPXX','EPSPYY','EPSPZZ','EPSPXY','EPSPXZ','EPSPYZ','EPSPEQ','ECROISOT','ENDO','INDIPLAS'),
    mc_mater       = ('ELAS','VENDOCHAB'),
    modelisation   = ('3D', 'AXIS', 'D_PLAN'),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP','GDEF_HYPO_ELAS'),

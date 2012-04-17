@@ -1,4 +1,4 @@
-# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
 # RESPONSABLE PROIX J.M.PROIX
 # TITRE TUBE DROIT SOUMIS A PLUSIEURS CHARGEMENTS ELEMENT TUYAU_6M MACRO_ELAS_MULT
 # ssll106c.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test R
@@ -180,76 +180,44 @@ CHAR9B=AFFE_CHAR_MECA_F(   MODELE=MO,
             )
 
 
-RESU=MACRO_ELAS_MULT(            MODELE=MO,
-                                CHAM_MATER=CHMAT,CARA_ELEM=CAREL,
-        CHAR_MECA_GLOBAL=CHAR0,CAS_CHARGE=(
-                   _F(
-            NOM_CAS = 'CHARGE NUMERO 1 ',
-            CHAR_MECA = CHAR1,
-            SOUS_TITRE = 'FX LOCAL',
-            OPTION = ('EPSI_ELGA', 'SIEF_ELGA','DEGE_ELNO',
-                         'EFGE_ELNO',
-                         )),
-                   _F(
-            NOM_CAS = 'CHARGE NUMERO 2',
-            CHAR_MECA = CHAR2,
-            SOUS_TITRE = 'FY LOCAL ',
-            OPTION = ('EPSI_ELGA', 'SIEF_ELGA','DEGE_ELNO',
-                         )),
-                   _F(
-            NOM_CAS = 'CHARGE NUMERO 3',
-            CHAR_MECA = CHAR3,
-            SOUS_TITRE = 'FZ LOCAL ',
-            OPTION = ('EPSI_ELGA', 'SIEF_ELGA','DEGE_ELNO',
-                         )),
-                   _F(
-            NOM_CAS = 'CHARGE NUMERO 4 ',
-            CHAR_MECA = CHAR4,
-            SOUS_TITRE = 'MX LOCAL',
-            OPTION = ('EPSI_ELGA', 'SIEF_ELGA','DEGE_ELNO',
-                         'EFGE_ELNO',
-                         )),
-                   _F(
-            NOM_CAS = 'CHARGE NUMERO 5',
-            CHAR_MECA = CHAR5,
-            SOUS_TITRE = 'MY LOCAL ',
-            OPTION = ('EPSI_ELGA', 'SIEF_ELGA','DEGE_ELNO',
-                         'EFGE_ELNO',
-                         )),
-                   _F(
-            NOM_CAS = 'CHARGE NUMERO 6',
-            CHAR_MECA = CHAR6,
-            SOUS_TITRE = 'MZ LOCAL ',
-            OPTION = ('EPSI_ELGA', 'SIEF_ELGA','DEGE_ELNO',
-                         'EFGE_ELNO',
-                         )),
-                   _F(
-           NOM_CAS = 'CHARGE NUMERO 7',
-            CHAR_MECA = CHAR7,
-            SOUS_TITRE = 'PRESSION',
-            OPTION = ('EPSI_ELGA', 'SIEF_ELGA',
-                         'FORC_NODA',
-                         )),
-                   _F(
-           NOM_CAS = 'CHARGE NUMERO 8',
-            CHAR_MECA = CHAR8,
-            SOUS_TITRE = 'GRAVITE',
-            OPTION = ('EPSI_ELGA', 'SIEF_ELGA',
-                      'EFGE_ELNO',)),
-                   _F(
-           NOM_CAS = 'CHARGE NUMERO 9',
-            CHAR_MECA = CHAR9,
-            SOUS_TITRE = 'LINEIQUE',
-            OPTION = ('EPSI_ELGA', 'SIEF_ELGA',
-                      'EFGE_ELNO',)),
-                   _F(
-           NOM_CAS = 'CHARGE NUMERO91',
-            CHAR_MECA = CHAR9B,
-            SOUS_TITRE = 'LINEIQUE',
-            OPTION = ('EPSI_ELGA', 'SIEF_ELGA',
-                      'EFGE_ELNO',)),
-                      )
-                             )
+RESU=MACRO_ELAS_MULT(MODELE=MO,
+                     CHAM_MATER=CHMAT,
+                     CARA_ELEM=CAREL,
+                     CHAR_MECA_GLOBAL=CHAR0,
+                     CAS_CHARGE=(_F(NOM_CAS = 'CHARGE NUMERO 1 ',
+                                    CHAR_MECA = CHAR1,
+                                    SOUS_TITRE = 'FX LOCAL',),
+                                 _F( NOM_CAS = 'CHARGE NUMERO 2',
+                                    CHAR_MECA = CHAR2,
+                                    SOUS_TITRE = 'FY LOCAL ',),
+                                 _F(NOM_CAS = 'CHARGE NUMERO 3',
+                                    CHAR_MECA = CHAR3,
+                                    SOUS_TITRE = 'FZ LOCAL ',),
+                                 _F(NOM_CAS = 'CHARGE NUMERO 4 ',
+                                    CHAR_MECA = CHAR4,
+                                    SOUS_TITRE = 'MX LOCAL',),
+                                 _F(NOM_CAS = 'CHARGE NUMERO 5',
+                                    CHAR_MECA = CHAR5,
+                                    SOUS_TITRE = 'MY LOCAL ',),
+                                 _F(NOM_CAS = 'CHARGE NUMERO 6',
+                                    CHAR_MECA = CHAR6,
+                                    SOUS_TITRE = 'MZ LOCAL ',),
+                                 _F(NOM_CAS = 'CHARGE NUMERO 7',
+                                    CHAR_MECA = CHAR7,
+                                    SOUS_TITRE = 'PRESSION',),
+                                 _F(NOM_CAS = 'CHARGE NUMERO 8',
+                                    CHAR_MECA = CHAR8,
+                                    SOUS_TITRE = 'GRAVITE',),
+                                 _F(NOM_CAS = 'CHARGE NUMERO 9',
+                                    CHAR_MECA = CHAR9,
+                                    SOUS_TITRE = 'LINEIQUE',),
+                                 _F(NOM_CAS = 'CHARGE NUMERO91',
+                                    CHAR_MECA = CHAR9B,
+                                    SOUS_TITRE = 'LINEIQUE',),),);
+
+RESU=CALC_ELEM(reuse =RESU,
+               RESULTAT=RESU,
+               OPTION=('EPSI_ELGA','EFGE_ELNO','DEGE_ELNO'),);
 
 TEST_RESU(RESU=(
 

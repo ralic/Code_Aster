@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 17/04/2012   AUTEUR CHEIGNON E.CHEIGNON 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -54,7 +54,7 @@ CALC_EUROPLEXUS = MACRO(nom="CALC_EUROPLEXUS",
            FONC_MULT      = SIMP(statut='o',typ=(fonction_sdaster,)),
           ),
 
-        DIME = FACT(statut='o', regles=(AU_MOINS_UN('UNITE_DIME','Q4GS','FORCE',
+        DIME = FACT(statut='f', regles=(AU_MOINS_UN('UNITE_DIME','Q4GS','FORCE',
                                                     'PT6L','ZONE','POUT','ECRO',
                                                     'APPU','BLOQ','PRESS','PMAT',
                                                     'DKT3','DEPL','FNOM','TABLE','FTAB',

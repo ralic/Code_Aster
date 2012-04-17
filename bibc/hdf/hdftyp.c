@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdftyp hdf  DATE 10/04/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE */
+/* MODIF hdftyp hdf  DATE 16/04/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -85,10 +85,10 @@ INTEGER DEFPSPS(HDFTYP, hdftyp, INTEGER *idf, char *nomgr, STRING_SIZE ln,
     herr_t (*H5L_iterate_t)( hid_t g_id, const char *name, const H5L_info_t *info, void *op_data)
 
     The parameters of this callback function have the following values or meanings:
-        	g_id 	Group that serves as root of the iteration; same value as the H5Lvisit group_id parameter
-        	name 	Name of link, relative to g_id, being examined at current step of the iteration
-        	info 	H5L_info_t struct containing information regarding that link
-        	op_data     	User-defined pointer to data required by the application in processing the link; a pass-through of the op_data pointer provided with the H5Lvisit function call
+            g_id    Group that serves as root of the iteration; same value as the H5Lvisit group_id parameter
+            name    Name of link, relative to g_id, being examined at current step of the iteration
+            info    H5L_info_t struct containing information regarding that link
+            op_data         User-defined pointer to data required by the application in processing the link; a pass-through of the op_data pointer provided with the H5Lvisit function call
 
     The possible return values from the callback function, and the effect of each, are as follows:
 
@@ -100,10 +100,9 @@ INTEGER DEFPSPS(HDFTYP, hdftyp, INTEGER *idf, char *nomgr, STRING_SIZE ln,
 #ifndef _DISABLE_HDF5
 herr_t indiceType(hid_t id, const char *nom, const H5L_info_t *info, void *donnees)
 {
-  herr_t	  status;
-  H5O_info_t	  infobuf;
+  herr_t status;
+  H5O_info_t infobuf;
   char *retour;
-  H5G_stat_t statbuf;
   int iret;
 
   retour =(char *)donnees;

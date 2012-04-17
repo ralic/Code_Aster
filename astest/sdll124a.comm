@@ -1,10 +1,10 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 17/04/2012   AUTEUR CHANSARD F.CHANSARD 
 # RESPONSABLE TORKHANI M.TORKHANI
 # TITRE DIAGRAMME DE CAMPBELL D'UNE LIGNE D'ARBRE SIMPLIFIEE
 # sdll124a.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -183,13 +183,13 @@ TEST_RESU(RESU=(
                 CRITERE = 'RELATIF', PRECISION = 1.E-3,
                 NUME_ORDRE = 3,  VALE = 1.6949E+02, REFERENCE='AUTRE_ASTER',),
           _F( RESULTAT = lmod[0], PARA = 'AMOR_REDUIT',
-                CRITERE = 'RELATIF', PRECISION = 1.E-3,
+                CRITERE = 'RELATIF', PRECISION = 2.E-3,
                 NUME_ORDRE = 3,  VALE = 3.1232E-03, REFERENCE='AUTRE_ASTER',),
           _F( RESULTAT = lmod[0], PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 1.E-3,
                 NUME_ORDRE = 4,  VALE = 1.85563E+02, REFERENCE='AUTRE_ASTER',),
           _F( RESULTAT = lmod[0], PARA = 'AMOR_REDUIT',
-                CRITERE = 'RELATIF', PRECISION = 1.E-3,
+                CRITERE = 'RELATIF', PRECISION = 2.E-3,
                 NUME_ORDRE = 4,  VALE = 2.8533E-03, REFERENCE='AUTRE_ASTER',),
             ),)
 
@@ -199,7 +199,7 @@ TEST_RESU(RESU=(
                 CRITERE = 'RELATIF', PRECISION = 1.E-3,
                 NUME_ORDRE = 1,  VALE = 5.4112E+01, REFERENCE='AUTRE_ASTER',),
           _F( RESULTAT = lmod[3], PARA = 'AMOR_REDUIT',
-                CRITERE = 'RELATIF', PRECISION = 1.3E-2,
+                CRITERE = 'RELATIF', PRECISION = 1.4E-2,
                 NUME_ORDRE = 1,  VALE = 2.6624E-04, REFERENCE='AUTRE_ASTER',),
           _F( RESULTAT = lmod[3], PARA = 'FREQ',
                 CRITERE = 'RELATIF', PRECISION = 1.E-3,
@@ -217,7 +217,7 @@ TEST_RESU(RESU=(
                 CRITERE = 'RELATIF', PRECISION = 2.E-3,
                 NUME_ORDRE = 4,  VALE = 1.9600E+02, REFERENCE='AUTRE_ASTER',),
           _F( RESULTAT = lmod[3], PARA = 'AMOR_REDUIT',
-                CRITERE = 'RELATIF', PRECISION = 1.8E-2,
+                CRITERE = 'RELATIF', PRECISION = 2.E-2,
                 NUME_ORDRE = 4,  VALE = 2.7612E-03, REFERENCE='AUTRE_ASTER',),
             ),)
 

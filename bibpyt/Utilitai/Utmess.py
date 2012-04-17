@@ -1,4 +1,4 @@
-#@ MODIF Utmess Utilitai  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Utmess Utilitai  DATE 17/04/2012   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,13 +29,15 @@ try:
     import aster
     from aster import error
     aster_exists = True
-    from Messages.context_info import message_context_concept
-    from Utilitai.string_utils import cut_long_lines, copy_text_to, clean_string
-    from Execution.strfunc import convert, ufmt, to_unicode
 except:
     aster_exists = False
     class error(Exception):
         pass
+
+
+from Messages.context_info import message_context_concept
+from Utilitai.string_utils import cut_long_lines, copy_text_to, clean_string
+from Execution.strfunc import convert, ufmt, to_unicode
 
 from Noyau.N_types import force_list
 

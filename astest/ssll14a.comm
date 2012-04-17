@@ -1,4 +1,4 @@
-# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE PORTIQUE PLAN ARTICULE EN PIED
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -113,52 +113,40 @@ CHARG5=AFFE_CHAR_MECA(  MODELE=MODELE,
                           _F(  GROUP_NO = 'D',    FX = F2),
                           _F(  GROUP_NO = 'D',    MZ = M))   )
 
-STATIQUE=MACRO_ELAS_MULT( MODELE=MODELE,
-                          CHAM_MATER=CH_MATER,
-                          CARA_ELEM=CARA_ELE,
-                          CHAR_MECA_GLOBAL=BLOQU,
-                          NUME_DDL=CO("NU_DDL"),
-                          CAS_CHARGE=(
-                   _F(
-            NOM_CAS = 'CHARGE NUMERO 1',
-            CHAR_MECA = CHARG1,
-            SOUS_TITRE = 'CHARGE REPARTIE VERTICALE SUR LE TRONCON DC',
-            OPTION = ( 'SIEF_ELGA', ),
-            )))
+STATIQUE=MACRO_ELAS_MULT(MODELE=MODELE,
+                         CHAM_MATER=CH_MATER,
+                         CARA_ELEM=CARA_ELE,
+                         CHAR_MECA_GLOBAL=BLOQU,
+                         NUME_DDL=CO("NU_DDL"),
+                         CAS_CHARGE=_F(NOM_CAS = 'CHARGE NUMERO 1',
+                                       CHAR_MECA = CHARG1,
+                                       SOUS_TITRE = 'CHARGE REPARTIE VERTICALE SUR LE TRONCON DC',
+                                       OPTION =  'SIEF_ELGA',),);
 
-# POUR VERIFIER LA CORRECTION DE LA FICHE 14212 :
-STATIQUE=CALC_CHAMP( reuse= STATIQUE,RESULTAT= STATIQUE,NOM_CAS = 'CHARGE NUMERO 1',FORCE='REAC_NODA')
+STATIQUE=MACRO_ELAS_MULT(reuse=STATIQUE,
+                         MODELE=MODELE,
+                         CHAM_MATER=CH_MATER,
+                         CARA_ELEM=CARA_ELE,
+                         CHAR_MECA_GLOBAL=BLOQU,
+                         CAS_CHARGE=(_F(NOM_CAS = 'CHARGE NUMERO 2',
+                                        CHAR_MECA = CHARG2,
+                                        SOUS_TITRE = 'FORCE PONCTUELLE VERTICALE EN C',),
+                                     _F(NOM_CAS = 'CHARGE NUMERO 3',
+                                        CHAR_MECA = CHARG3,
+                                        SOUS_TITRE = 'FORCE PONCTUELLE HORIZONTALE EN C',),
+                                     _F(NOM_CAS = 'CHARGE NUMERO 4',
+                                        CHAR_MECA = CHARG4,
+                                        SOUS_TITRE = 'MOMEMT EN C',),
+                                     _F(NOM_CAS = 'CHARGE NUMERO 5',
+                                        CHAR_MECA = CHARG5,
+                                        SOUS_TITRE = 'COMBINAISON DES 4 CHARGEMENTS PRECEDENTS',),),);
+
+STATIQUE=CALC_CHAMP(reuse= STATIQUE,
+                    RESULTAT = STATIQUE,
+                    FORCE='REAC_NODA',);
+
 TEST_RESU(RESU=_F( RESULTAT = STATIQUE,  NOM_CAS = 'CHARGE NUMERO 1', NOM_CHAM = 'REAC_NODA',   NOEUD = 'N21',
            NOM_CMP = 'DY', VALE = 0.0, CRITERE='ABSOLU', PRECISION = 1.E-5, REFERENCE = 'ANALYTIQUE'))
-
-
-STATIQUE=MACRO_ELAS_MULT( reuse=STATIQUE,
-                          MODELE=MODELE,
-                          CHAM_MATER=CH_MATER,
-                          CARA_ELEM=CARA_ELE,
-                          CHAR_MECA_GLOBAL=BLOQU,
-                          CAS_CHARGE=(
-                   _F(
-            NOM_CAS = 'CHARGE NUMERO 2',
-            CHAR_MECA = CHARG2,
-            SOUS_TITRE = 'FORCE PONCTUELLE VERTICALE EN C',
-            OPTION = ( 'SIEF_ELGA','REAC_NODA', )),
-                   _F(
-            NOM_CAS = 'CHARGE NUMERO 3',
-            CHAR_MECA = CHARG3,
-            SOUS_TITRE = 'FORCE PONCTUELLE HORIZONTALE EN C',
-            OPTION = ( 'SIEF_ELGA','REAC_NODA', )),
-                   _F(
-            NOM_CAS = 'CHARGE NUMERO 4',
-            CHAR_MECA = CHARG4,
-            SOUS_TITRE = 'MOMEMT EN C',
-            OPTION = ( 'SIEF_ELGA','REAC_NODA', )),
-                   _F(
-            NOM_CAS = 'CHARGE NUMERO 5',
-            CHAR_MECA = CHARG5,
-            SOUS_TITRE = 'COMBINAISON DES 4 CHARGEMENTS PRECEDENTS',
-            OPTION = ( 'SIEF_ELGA','REAC_NODA', ))))
-
 
 TAB_REAC=POST_RELEVE_T(
        ACTION=_F(  RESULTAT = STATIQUE,      INTITULE = 'REACTION',

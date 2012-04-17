@@ -1,4 +1,4 @@
-#@ MODIF hoek_brown Comportement  DATE 06/02/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF hoek_brown Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,7 +28,7 @@ loi = LoiComportement(
    on peut utiliser le re-découpage local du pas de temps (ITER_INTE_PAS).""",
    num_lc         = 33,
    nb_vari        = 3,
-   nom_vari       = ('GAMMAECR','DPVOLEQ','INDIPLAS'),
+   nom_vari       = ('GAMMAECR','EPSPVOL','INDIPLAS'),
    mc_mater       = ('ELAS', 'HOEK_BROWN'),
    modelisation   = ('3D', 'AXIS', 'D_PLAN',),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),

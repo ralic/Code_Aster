@@ -1,8 +1,8 @@
-# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE CYLINDRE SOUMIS A UNE PRESSION EN MODE 1 FOURIER (QUAD8)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -59,17 +59,17 @@ BLOQU=AFFE_CHAR_MECA_F(       MODELE=MO,DDL_IMPO=(
 CH=AFFE_CHAR_MECA_F(       MODELE=MO,
                PRES_REP=_F(  GROUP_MA = 'BOUT',       PRES = P,  )  )
 
-RESU=MACRO_ELAS_MULT(            MODELE=MO,
-                                   CHAM_MATER=CM,
-                             CHAR_MECA_GLOBAL=BLOQU,
-                            CAS_CHARGE=_F(
-                                 MODE_FOURIER = 1,
+RESU=MACRO_ELAS_MULT(MODELE=MO,
+                     CHAM_MATER=CM,
+                     CHAR_MECA_GLOBAL=BLOQU,
+                     CAS_CHARGE=_F(MODE_FOURIER = 1,
+                                   TYPE_MODE = 'SYME',
+                                   CHAR_MECA = CH,
+                                   SOUS_TITRE = 'MODE FOURIER 1 SYME'),);
 
-                                 TYPE_MODE = 'SYME',
-                                 CHAR_MECA = CH,
-                                 OPTION = 'SIGM_ELNO',
-                                 SOUS_TITRE = 'MODE FOURIER 1 SYME')
-                          )
+RESU=CALC_CHAMP(reuse= RESU,
+                RESULTAT = RESU,
+                CONTRAINTE='SIGM_ELNO',);
 
 DEPLA=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
 NOM_CHAM='DEPL', RESULTAT=RESU,

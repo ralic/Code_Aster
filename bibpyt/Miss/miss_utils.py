@@ -1,8 +1,8 @@
-#@ MODIF miss_utils Miss  DATE 23/05/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF miss_utils Miss  DATE 17/04/2012   AUTEUR GREFFET N.GREFFET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,6 +47,7 @@ dict_format = {
     'sR' : "%15.6E",
     'I'  : "6d",
     'sI' : "%6d",
+    'F'  : "6.6f",
 }
 
 
@@ -80,6 +81,7 @@ class MISS_PARAMETER(object):
             'EXCIT_HARMO' : None,
             'INST_FIN' : None,
             'PAS_INST' : None,
+            'FICHIER_SOL_INCI' : None,
             #XXX en attendant de savoir si on réutilisera
             'ISSF' : 'NON',
         }
@@ -109,15 +111,15 @@ class MISS_PARAMETER(object):
     def check(self):
         """Vérification des règles impossible à écrire dans le .capy"""
         # unités logiques
-        if self['UNITE_RESU_IMPE'] is None:
+        if self.get('UNITE_RESU_IMPE') is None:
             self.set('_exec_Miss', True)
             self['UNITE_RESU_IMPE'] = self.UL.Libre(action='ASSOCIER')
-        if self['UNITE_RESU_FORC'] is None:
+        if self.get('UNITE_RESU_FORC') is None:
             self.set('_exec_Miss', True)
             self['UNITE_RESU_FORC'] = self.UL.Libre(action='ASSOCIER')
 
         # fréquences
-        if self['LIST_FREQ'] is not None and self['TYPE_RESU'] not in ('FICHIER', 'HARM_GENE'):
+        if self['LIST_FREQ'] is not None and self['TYPE_RESU'] not in ('FICHIER','HARM_GENE'):
             raise aster.error('MISS0_17')
 
         # si base modale, vérifier/compléter les amortissements réduits

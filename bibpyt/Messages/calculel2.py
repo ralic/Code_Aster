@@ -1,4 +1,4 @@
-#@ MODIF calculel2 Messages  DATE 13/03/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calculel2 Messages  DATE 16/04/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -332,6 +332,14 @@ Erreur d'utilisation :
        * affecter une modélisation "3D" sur un maillage formé de facettes.
        * affecter une modélisation qui ne sait pas traiter tous les types de mailles du maillage
          (par exemple 'PLAN_DIAG' en thermique, 'AXIS_SI' en mécanique)
+"""),
+
+
+
+
+
+67: _(u"""Erreur d'utilisation :
+ On ne peut pas filtrer les mailles de type %(k1)s car ce n'est pas un type de maille connu.
 """),
 
 68: _(u"""

@@ -1,8 +1,8 @@
-#@ MODIF hoek_brown_eff Comportement  DATE 08/02/2011   AUTEUR GRANET S.GRANET 
+#@ MODIF hoek_brown_eff Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -29,7 +29,7 @@ loi = LoiComportement(
    (ITER_INTE_PAS).""",
    num_lc         = 9999,
    nb_vari        = 3,
-   nom_vari       = ('GAMMAECR','DPVOLEQ','INDIPLAS'),
+   nom_vari       = ('GAMMAECR','EPSPVOL','INDIPLAS'),
    mc_mater       = ('ELAS', 'HOEK_BROWN'),
    modelisation   = ('THM'),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
 # RESPONSABLE DESROCHE X.DESROCHES
 # TITRE CYLINDRE ENCASTRE SOUS POIDS PROPRE ET PRESSION
 # sslv303a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
@@ -74,19 +74,17 @@ CHAR_PR=AFFE_CHAR_MECA_F(   MODELE=MODELE,
                           )
 
 # RESOLUTION DES 2 CAS DE CHARGE INDEPENDANTS
-DEF0=MACRO_ELAS_MULT(        MODELE=MODELE,
-                             CHAM_MATER=CHMAT,
-                             CHAR_MECA_GLOBAL=CLIM,CAS_CHARGE=(
-                             _F(
-                                          MODE_FOURIER = 1,
-
-                                          TYPE_MODE = 'SYME',
-                                          CHAR_MECA = CHAR_GR),
-                             _F(
-                                          MODE_FOURIER = 1,
-
-                                          TYPE_MODE = 'SYME',
-                                          CHAR_MECA = CHAR_PR))
+DEF0=MACRO_ELAS_MULT(MODELE=MODELE,
+                     CHAM_MATER=CHMAT,
+                     CHAR_MECA_GLOBAL=CLIM,CAS_CHARGE=(
+                     _F(MODE_FOURIER = 1,
+                        TYPE_MODE = 'SYME',
+                        CHAR_MECA = CHAR_GR,
+                        OPTION = 'SANS' ),
+                     _F(MODE_FOURIER = 1,
+                        TYPE_MODE = 'SYME',
+                        CHAR_MECA = CHAR_PR,
+                        OPTION = 'SANS' ))
                      )
 
 U0_GR=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',

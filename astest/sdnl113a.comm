@@ -1,5 +1,5 @@
 
-# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/04/2012   AUTEUR CHANSARD F.CHANSARD 
 # CREE DATE 07/04/2000   AUTEUR E. CHAMPAIN
 # TITRE TUYAUTERIE EN FORME DE LYRE (ELSA) SOUS CHARGEMENT SISMIQUE
 # sdnl113a.para = tps_job 240 mem_job 512Mo ncpus 1 liste_test R
@@ -306,11 +306,11 @@ TEST_RESU(RESU=(_F(RESULTAT=RESULT,
                   NOM_CHAM='REAC_NODA',
                   NOM_CMP='DX',
                   GROUP_NO='L',
-                  VALE=71577.12987107,
+                  VALE=71577.149114303,
                   CRITERE='RELATIF',
                   PRECISION=1E-9,
                   REFERENCE='NON_REGRESSION',
-                  VERSION='10.03.14',),
+                  VERSION='11.01.18',),
                _F(RESULTAT=RESULT,
                   INST=TFIN,
                   NOM_CHAM='VARI_ELNO',
@@ -318,11 +318,11 @@ TEST_RESU(RESU=(_F(RESULTAT=RESULT,
                   MAILLE='M10',
                   NOEUD='N10',
                   SOUS_POINT=25,
-                  VALE=4.114621124E-05,
+                  VALE=4.1146174636333E-05,
                   CRITERE='RELATIF',
                   PRECISION=1E-9,
                   REFERENCE='NON_REGRESSION',
-                  VERSION='10.03.14',),
+                  VERSION='11.01.18',),
                   ),);
 
 #IMPR_RESU(FORMAT='RESULTAT',

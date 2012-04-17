@@ -1,4 +1,4 @@
-# MODIF  DATE 10/04/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 16/04/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE MODELISATION AXIS_GRAD_VARI + LOI ENDO_SCALAIRE
 # ssna119b.para = tps_job 90 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -138,7 +138,7 @@ EVOL = STAT_NON_LINE(
                               PCENT_PIVOT=50,
                               SYME = 'OUI',
                               ),
-                   ARCHIVAGE=_F(PAS_ARCH=1), 
+                   ARCHIVAGE=_F(PAS_ARCH=1000), 
                    );
 
 
@@ -243,7 +243,7 @@ IMPR_TABLE(TABLE=T_FU,COMM_PARA='#',)
 #***********************************************************************
 #    TEST COMPARAISON AVEC ENDOMMAGEMENT EN NON_REGRESSION
 #*********************************************************************** 
-nm_ordre=45
+nm_ordre=1
                                          
 # TEST DEPL          
 TEST_RESU(RESU=_F(RESULTAT=EVOL,

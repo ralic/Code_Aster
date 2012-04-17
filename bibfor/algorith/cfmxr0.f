@@ -1,9 +1,9 @@
       SUBROUTINE CFMXR0(DEFICO,RESOCO,NOMA  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/06/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 16/04/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -57,7 +57,7 @@ C
 C --------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------
 C
       INTEGER      NBCMP
-      PARAMETER    (NBCMP = 27)
+      PARAMETER    (NBCMP = 30)
       CHARACTER*8  NOMCMP(NBCMP)
       INTEGER      NBPER
       PARAMETER    (NBPER = 4)
@@ -79,15 +79,16 @@ C
       LOGICAL      CFDISL,LCTCC,LCTCD,LMAIL
 C ----------------------------------------------------------------------
       DATA NOMCMP
-     &   / 'CONT','JEU' ,'RN'  ,
-     &     'RNX' ,'RNY' ,'RNZ' ,
-     &     'GLIX','GLIY','GLI' ,
-     &     'RTAX','RTAY','RTAZ',
-     &     'RTGX','RTGY','RTGZ',
-     &     'RX'  ,'RY'  ,'RZ'  ,
-     &     'R'   ,'HN'  ,'I'   ,
-     &     'IX'  ,'IY'  ,'IZ'  ,
-     &     'PT_X','PT_Y','PT_Z'/
+     &   / 'CONT'  ,'JEU'   ,'RN'    ,
+     &     'RNX'   ,'RNY'   ,'RNZ'   ,
+     &     'GLIX'  ,'GLIY'  ,'GLI'   ,
+     &     'RTAX'  ,'RTAY'  ,'RTAZ'  ,
+     &     'RTGX'  ,'RTGY'  ,'RTGZ'  ,
+     &     'RX'    ,'RY'    ,'RZ'    ,
+     &     'R'     ,'HN'    ,'I'     ,
+     &     'IX'    ,'IY'    ,'IZ'    ,
+     &     'PT_X'  ,'PT_Y'  ,'PT_Z'  ,
+     &     'PROJ_X','PROJ_Y','PROJ_Z'/
 C ----------------------------------------------------------------------
       DATA NOMPER
      &   / 'V1','V2','V3','V4'/
@@ -134,7 +135,7 @@ C --- CREATION DU CHAM_NO_S VALE_CONT
 C
       CALL CNSCRE(NOMA  ,'INFC_R',ZRESU ,NOMCMP,'V',CNSINR)
       CALL JEVEUO(CNSINR(1:19)//'.CNSV','E',JCNSVR)
-      CALL JEVEUO(CNSINR(1:19)//'.CNSL','E',JCNSLR) 
+      CALL JEVEUO(CNSINR(1:19)//'.CNSL','E',JCNSLR)
 C
 C --- INITIALISATION DU CHAM_NO_S VALE_CONT
 C
@@ -185,10 +186,10 @@ C
  3          CONTINUE
  2        CONTINUE
  1      CONTINUE
-      ENDIF  
+      ENDIF
 C
-C --- TRANSFO. EN CHAM_NO      
-C    
+C --- TRANSFO. EN CHAM_NO
+C
       CALL CNSCNO(CNSINR,' ','NON','V',CNOINR,'F',IBID)
 C
       CALL JEDEMA()

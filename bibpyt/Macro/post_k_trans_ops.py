@@ -1,4 +1,4 @@
-#@ MODIF post_k_trans_ops Macro  DATE 02/04/2012   AUTEUR TRAN V-X.TRAN 
+#@ MODIF post_k_trans_ops Macro  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-def post_k_trans_ops(self,RESU_TRANS,MODELISATION, K_MODAL,TOUT_ORDRE, NUME_ORDRE,  
+def post_k_trans_ops(self,RESU_TRANS,K_MODAL,TOUT_ORDRE, NUME_ORDRE,  
                  LIST_ORDRE, INST, LIST_INST,INFO,**args):          
   """
      Ecriture de la macro post_k_trans
@@ -47,11 +47,17 @@ def post_k_trans_ops(self,RESU_TRANS,MODELISATION, K_MODAL,TOUT_ORDRE, NUME_ORDR
 
 #------------------------------------------------------------------
   TABK = K_MODAL['TABL_K_MODA']
-  
-  if MODELISATION=='3D':
-      DIME = 3
+    
+  __kgtheta=TABK
+ 
+  tablin =__kgtheta.EXTR_TABLE()
+   
+#  sif_arg = args['tablin']
+  if 'K3' in tablin.para :
+     DIME = 3
   else :
-      DIME = 2
+     DIME = 2
+      
   F2D = K_MODAL['FOND_FISS']
   F3D = []
   if DIME == 3 :
@@ -59,64 +65,7 @@ def post_k_trans_ops(self,RESU_TRANS,MODELISATION, K_MODAL,TOUT_ORDRE, NUME_ORDR
   
   F2Db = []
   if DIME == 2 :  
-    F2Db = K_MODAL['FISSURE']
-  
-#
-# Calcul du tableau des K modaux
-#
-  if TABK == None :
-    montit = 'Calcul des K modaux'
-    resumod = K_MODAL['RESU_MODA']
-    thet = K_MODAL['THETA']
-
-    motscles={}
-    motscles2={}
-    motscles['THETA'] = []
-    mcthet = {}
-    if F2D != None :    mcthet['FOND_FISS'] = F2D
-    if thet != None :   mcthet['THETA'] = thet
-    if F3D != None :   
-      if DIME == 3: mcthet['FISSURE'] = F3D
-    if F2Db != None :   
-      if DIME == 2: mcthet['FISSURE'] = F2Db       
-    if K_MODAL['DIRECTION']!=None :  mcthet['DIRECTION'] = K_MODAL['DIRECTION']
-    if K_MODAL['DIRE_THETA']!=None: mcthet['DIRE_THETA'] = K_MODAL['DIRE_THETA']
-    if K_MODAL['R_SUP']!=None : mcthet['R_SUP'] = K_MODAL['R_SUP']
-    if K_MODAL['R_SUP_FO']!=None : mcthet['R_SUP_FO'] = K_MODAL['R_SUP_FO']
-    if K_MODAL['R_INF']!=None : mcthet['R_INF'] = K_MODAL['R_INF']
-    if K_MODAL['R_INF_FO']!=None : mcthet['R_INF_FO'] = K_MODAL['R_INF_FO']
-    if K_MODAL['MODULE']!=None : mcthet['MODULE'] = K_MODAL['MODULE']
-    if K_MODAL['MODULE']==None and  F2D : mcthet['MODULE'] = 1
-    if K_MODAL['MODULE_FO']!=None : mcthet['MODULE_FO'] = K_MODAL['MODULE_FO']
-    
-    if thet == None and F3D :  
-        motscles2['LISSAGE'] = [] 
-        if K_MODAL['LISSAGE_G'] == None :  K_MODAL['LISSAGE_G']='LEGENDRE'
-        if K_MODAL['LISSAGE_THETA'] == None :  K_MODAL['LISSAGE_THETA']='LEGENDRE'
-        if K_MODAL['LISSAGE_G'] == 'LEGENDRE' :
-           motscles2['LISSAGE'].append(_F(LISSAGE_G =K_MODAL['LISSAGE_G'],
-                        LISSAGE_THETA =K_MODAL['LISSAGE_THETA'], 
-                        DEGRE = K_MODAL['DEGRE'] ))
-        else :
-           motscles2['LISSAGE'].append(_F(LISSAGE_G =K_MODAL['LISSAGE_G'],
-                        LISSAGE_THETA =K_MODAL['LISSAGE_THETA'], ))
-    
-    __kgtheta = CALC_G(       RESULTAT   = resumod,
-                            OPTION = 'K_G_MODA',
-                            TOUT_MODE = 'OUI',
-                            INFO       = INFO, 
-                            TITRE      = montit, 
-                            THETA=mcthet,
-                            **motscles2)
-
-
-#
-# Recuperation du tableau des K modaux
-#
-  else :
-    
-    __kgtheta=TABK
-  
+    F2Db = K_MODAL['FISSURE'] 
    
 #-----------------------------------------
 #  

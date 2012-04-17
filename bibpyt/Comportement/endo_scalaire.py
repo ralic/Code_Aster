@@ -1,4 +1,4 @@
-#@ MODIF endo_scalaire Comportement  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF endo_scalaire Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,7 @@ loi = LoiComportement(
    ecrouissage isotrope lineaire negatif - R5.03.18""",
    num_lc         = 46,
    nb_vari        = 3,
-   nom_vari       = ('ENDO_VALE', 'INDICAT', 'ENDO_RIGI'),
+   nom_vari       = ('ENDO', 'INDIENDO', 'ENDORIGI'),
    mc_mater       = ('ELAS', 'ENDO_SCALAIRE', 'NON_LOCAL'),
    modelisation   = ('3D', 'AXIS', 'D_PLAN', 'GRADVARI'),
    deformation    = ('PETIT',),

@@ -4,7 +4,7 @@
       CHARACTER*19 SOLVEU
 C ----------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/04/2012   AUTEUR TARDIEU N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,8 +48,8 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX --------------------
       REAL*8       EPSMAT
       CHARACTER*3  SYME,MIXPRE,KMD
       CHARACTER*8  KSTOP,MODELE
-      CHARACTER*8  METHOD,PARTIT
-      CHARACTER*16 NOMSOL
+      CHARACTER*8  PARTIT
+      CHARACTER*16 METHOD,NOMSOL
       CHARACTER*19 LIGRMO
       INTEGER      EXIMC,GETEXM
       INTEGER      IARG
@@ -158,10 +158,12 @@ C     -----------------------------
 C     -----------------------------
         CALL CRSVGC(NOMSOL,SOLVEU,ISTOP,NPREC,SYME,EPSMAT,MIXPRE,KMD)
 
-      ELSE IF (METHOD.EQ.'MULT_FRO') THEN
+      ELSE IF (METHOD.EQ.'MULT_FRONT') THEN
 C     -----------------------------
         CALL CRSVMF(NOMSOL,SOLVEU,ISTOP,NPREC,SYME,EPSMAT,MIXPRE,KMD)
-
+        
+      ELSE 
+        CALL ASSERT(.FALSE.)
       ENDIF
 
 

@@ -13,9 +13,9 @@ C     POUR GAGNER EN TEMPS CPU
       CHARACTER*(*)  FAMI
       CHARACTER*16 COMP(*)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -261,7 +261,7 @@ C
 C
 C                 ECROUISSAGE CINEMATIQUE
 C
-                  IF ((NUECOU.LT.4).OR.(NUECOU.GT.6)) THEN
+                  IF ((NUECOU.LT.4).OR.(NUECOU.GT.7)) THEN
                       CALL LCMMEC( COEFT,INDFA,NMAT,NBCOMM,NECRCI,
      &                     ITMAX, TOLER,VIS(1),DGAMMA,DALPHA, IRET)
                       IF (IRET.NE.0) GOTO 9999
@@ -291,6 +291,9 @@ C                 EVG designe ici EPSVPG
 
   6      CONTINUE
 
+          IF (NECOUL.EQ.'MONO_DD_CC_IRRA') THEN
+             NUVI=NUVI+12
+          ENDIF
           DECAL = NUVI
 
 C         "homogenesisation" des déformations viscoplastiques

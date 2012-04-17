@@ -1,4 +1,4 @@
-# MODIF  DATE 10/04/2012   AUTEUR TRAN V-X.TRAN 
+# MODIF  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
 #
 # TITRE FATIGUE, AMPLITUDE VARIABLE, TEST DES GRANDEURS EN DEFORMATIONS
 # sslv135q.para = tps_job 600 mem_job 600Mo ncpus 1 liste_test S
@@ -262,11 +262,11 @@ SOL_NL = CALC_ELEM( reuse    = SOL_NL,
                                 'EPSP_ELGA',
                                 'EPSP_ELNO'))
 
-SOL_NL = CALC_NO( reuse    = SOL_NL,
-                  RESULTAT = SOL_NL,
-                  TOUT = 'OUI',
-                  GROUP_MA = ('FACE1_3D', 'FACE2_3D', 'FACE3_3D', 'CUBE'),
-                  OPTION   = ('SIGM_NOEU','EPSI_NOEU', 'EPSP_NOEU',))
+SOL_NL = CALC_CHAMP( reuse    = SOL_NL,
+                     RESULTAT = SOL_NL,
+                     GROUP_MA = ('FACE1_3D', 'FACE2_3D', 'FACE3_3D', 'CUBE'),
+                     CONTRAINTE='SIGM_NOEU',DEFORMATION='EPSI_NOEU'
+                   )
 
 # 2eme CALCUL AVEC STAT_NON_LINE
 # -------------------------
@@ -297,11 +297,11 @@ SOL_NL2 = CALC_ELEM( reuse    = SOL_NL2,
                                 'EPSP_ELGA',
                                 'EPSP_ELNO'))
 
-SOL_NL2 = CALC_NO( reuse    = SOL_NL2,
-                  RESULTAT = SOL_NL2,
-                  TOUT = 'OUI',
-                  GROUP_MA = ('FACE1_3D', 'FACE2_3D', 'FACE3_3D', 'CUBE'),
-                  OPTION   = ('SIGM_NOEU','EPSI_NOEU', 'EPSP_NOEU',))
+SOL_NL2 = CALC_CHAMP( reuse    = SOL_NL2,
+                      RESULTAT = SOL_NL2,
+                      GROUP_MA = ('FACE1_3D', 'FACE2_3D', 'FACE3_3D', 'CUBE'),
+                      CONTRAINTE='SIGM_NOEU',DEFORMATION=('EPSI_NOEU','EPSP_NOEU',),
+                    )
 
 # 3eme CALCUL AVEC STAT_NON_LINE
 # -------------------------
@@ -332,12 +332,11 @@ SOL_NL3 = CALC_ELEM( reuse    = SOL_NL3,
                                 'EPSP_ELGA',
                                 'EPSP_ELNO'))
 
-SOL_NL3 = CALC_NO( reuse    = SOL_NL3,
-                  RESULTAT = SOL_NL3,
-                  TOUT = 'OUI',
-                  GROUP_MA = ('FACE1_3D', 'FACE2_3D', 'FACE3_3D', 'CUBE'),
-                  OPTION   = ('SIGM_NOEU','EPSI_NOEU', 'EPSP_NOEU',)
-                )
+SOL_NL3 = CALC_CHAMP( reuse    = SOL_NL3,
+                      RESULTAT = SOL_NL3,
+                      GROUP_MA = ('FACE1_3D', 'FACE2_3D', 'FACE3_3D', 'CUBE'),
+                      CONTRAINTE='SIGM_NOEU',DEFORMATION=('EPSI_NOEU','EPSP_NOEU',),
+                    )
 
 
 ##################################################################

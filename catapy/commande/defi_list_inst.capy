@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 02/04/2012   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 16/04/2012   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -63,13 +63,13 @@ bloc_manu   =BLOC(fr                = "Subdivision de type manuel",
 # Bloc pour decoupe automatique - Cas de la collision
 bloc_auto2  =BLOC(fr                = "Subdivision de type automatique",
                   condition         = "SUBD_METHODE == 'AUTO'",
-                  DELTAT_COLLISION  = SIMP(fr                = "Parametre de decoupe fine du pas de temps",
+                  SUBD_INST         = SIMP(fr                = "Parametre de decoupe fine du pas de temps",
                                            statut            = 'o',
                                            typ               = 'R',
                                            val_min           = 0.0,
                                            max               = 1,
                                            ), 
-                  DUREE_DECOUPE     = SIMP(fr                = "Duree de decoupe apres collision",
+                  SUBD_DUREE        = SIMP(fr                = "Duree de decoupe apres collision",
                                            statut            = 'o',
                                            typ               = 'R',
                                            val_min           = 0.0,

@@ -1,4 +1,4 @@
-#@ MODIF visc_cin1_chab Comportement  DATE 30/01/2012   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF visc_cin1_chab Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,7 @@ loi = LoiComportement(
    doc = """Loi élasto-visco-plastique de Chaboche à 1 variable cinématique""",
    num_lc         = 4,
    nb_vari        = 8,
-   nom_vari       = ('DEFPLCUM', 'INDICAT', 'ALPHAXX', 'ALPHAYY', 'ALPHAZZ', 'ALPHAXY', 'ALPHAXZ', 'ALPHAYZ'),
+   nom_vari       = ('EPSPEQ', 'INDIPLAS', 'ALPHAXX', 'ALPHAYY', 'ALPHAZZ', 'ALPHAXY', 'ALPHAXZ', 'ALPHAYZ'),
    mc_mater       = ('ELAS', 'CIN1_CHAB', 'LEMAITRE'),
    modelisation   = ('3D', 'AXIS', 'D_PLAN'),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP','GDEF_HYPO_ELAS'),

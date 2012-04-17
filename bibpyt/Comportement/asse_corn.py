@@ -1,8 +1,8 @@
-#@ MODIF asse_corn Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF asse_corn Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -26,7 +26,7 @@ loi = LoiComportement(
    doc = """Relation de comportement élasto-plastique isotherme pour les assemblages boulonnés de cornières de pylônes [R5.03.32]""",
    num_lc         = 9999,
    nb_vari        = 7,
-   nom_vari       = ('V1','V2','V3','V4','V5','V6','V7'),
+   nom_vari       = ('ASSCORN1','ASSCORN2','ASSCORN3','ASSCORN4','ASSCORN5','ASSCORN6','ASSCORN7'),
    mc_mater       = ('ASSE_CORN'),
    modelisation   = ('DIS_TR','DIS_T'),
    deformation    = ('PETIT','PETIT_REAC', 'GROT_GDEP'),

@@ -3,7 +3,7 @@
 
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -37,8 +37,8 @@ C     VAR  NVI    :  NOMBRE DE VARIABLES INTERNES
 C          VINF   :  VARIABLES INTERNES A T+DT
 C          MATERF :  COEF MATERIAU
 C     ----------------------------------------------------------------
-      INTEGER NVI,NMAT,NBCOMM(NMAT,3),NBPHAS,I,IPHAS,INDFV,NUVI,NS,IFA
-      INTEGER IFL, IRR, IS, NBFSYS, NBSYS, NSFA, NSFV,NUECOU
+      INTEGER NVI,NMAT,NBCOMM(NMAT,3),NBPHAS,I,IPHAS,INDFV,NUVI,IFA
+      INTEGER IFL,IRR,IS,NBFSYS,NBSYS,NSFV,INDPHA,INDCP
       REAL*8  VIND(NVI),VINF(NVI),DVIN(NVI),SIG(6),GRANB(6)
       REAL*8  EPSEQ,E,NU,FV,SIGG(6),MUS(6),NG(3),LG(3),PGL(3,3)
       REAL*8  ID(3,3),F(3,3),FPM(3,3),FP(3,3),FE(3,3),DETP,LCNRTE
@@ -58,8 +58,6 @@ C     ----------------------------------------------------------------
       IF (LOI(1:8).EQ.'MONOCRIS') THEN      
   
          NBFSYS=NBCOMM(NMAT,2)
-C        NSFA : debut de la famille IFA dans DY et YD
-         NSFA=6
 C        NSFV : debut de la famille IFA dans les variables internes
          NSFV=6
          DO 6 IFA=1,NBFSYS
@@ -86,7 +84,6 @@ C              VARIABLES INTERNES PAR SYSTEME DE GLISSEMENT
             IF(IRR.EQ.1) THEN
                CALL DCOPY(12, RHOIRR,1,VINF(NSFV+3*NBSYS+1),1)
             ENDIF
-            NSFA=NSFA+NBSYS
             NSFV=NSFV+NBSYS*3
   6      CONTINUE
   
@@ -158,6 +155,32 @@ C         RECUPERER L'ORIENTATION DE LA PHASE ET LA PROPORTION
                VINF(NUVI+6*(IPHAS-1)+I)=SIGG(I)
    2        CONTINUE
    1     CONTINUE
+         NSFV=7+6*NBPHAS
+         DO 33 IPHAS=1,NBPHAS
+            INDPHA=NBCOMM(1+IPHAS,1)
+            NBFSYS=NBCOMM(INDPHA,1)
+            INDCP=NBCOMM(1+IPHAS,2)
+            DO 32 IFA=1,NBFSYS
+               NECOUL=CPMONO(INDCP+5*(IFA-1)+3)
+               IF (NECOUL.EQ.'MONO_DD_CC_IRRA') THEN
+                  NBSYS=12
+                  CALL DCOPY(12, VIND(NSFV+3*NBSYS+1),1,RHOIRR,1)
+                  IFL=NBCOMM(INDPHA+IFA,1)
+                  XI=MATERF(IFL+22,2)
+                  DO 31 IS=1,NBSYS
+C                    VARIABLES INTERNES PAR SYSTEME DE GLISSEMENT
+                     NUVI=NSFV+3*(IS-1)+3
+                     DP=VINF(NUVI)
+                     IF(IRR.EQ.1) THEN
+                        RHOIRR(IS)=RHOIRR(IS)*EXP(-XI*DP)
+                     ENDIF
+  31              CONTINUE
+                  CALL DCOPY(12,RHOIRR,1,VINF(NSFV+3*NBSYS+1),1)
+                  NSFV=NSFV+12
+               ENDIF
+               NSFV=NSFV+NBSYS*3
+  32        CONTINUE
+  33     CONTINUE
       ENDIF
 
       IF (EPSEQ.EQ.0.D0) THEN

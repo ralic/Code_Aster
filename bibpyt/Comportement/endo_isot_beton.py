@@ -1,8 +1,8 @@
-#@ MODIF endo_isot_beton Comportement  DATE 28/02/2011   AUTEUR BARGELLI R.BARGELLINI 
+#@ MODIF endo_isot_beton Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -28,7 +28,7 @@ loi = LoiComportement(
    en traction et en compression du béton (Cf. [R7.01.04] pour plus de détails).""",
    num_lc         = 6,
    nb_vari        = 2,
-   nom_vari       = ('ENDO', 'INDICAT'),
+   nom_vari       = ('ENDO', 'INDIENDO'),
    mc_mater       = ('ELAS', 'BETON_ECRO_LINE', 'NON_LOCAL'),
    modelisation   = ('3D', 'AXIS', 'D_PLAN','GRADVARI','GRADEPSI'),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),

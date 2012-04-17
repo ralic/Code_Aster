@@ -1,4 +1,4 @@
-#@ MODIF E_Core Execution  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_Core Execution  DATE 16/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -144,8 +144,8 @@ class CoreOptions(object):
         sys.path.insert(0, '.')
         bibpyt = self.get_option('bibpyt')
         if bibpyt:
-            sys.path.insert(0, bibpyt)
-            sys.path.append(osp.join(bibpyt, 'Cata'))
+            sys.path.insert(0, osp.abspath(bibpyt))
+            sys.path.append(osp.join(osp.abspath(bibpyt), 'Cata'))
 
     def init_info(self):
         """Stocke les informations générales (machine, os...)."""

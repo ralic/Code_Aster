@@ -1,4 +1,4 @@
-#@ MODIF macro_elas_mult_ops Macro  DATE 03/04/2012   AUTEUR SELLENET N.SELLENET 
+#@ MODIF macro_elas_mult_ops Macro  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -43,7 +43,6 @@ def macro_elas_mult_ops(self,MODELE,CHAM_MATER,CARA_ELEM,NUME_DDL,
   RESOUDRE        =self.get_cmd('RESOUDRE')
   CREA_RESU       =self.get_cmd('CREA_RESU')
   CALC_ELEM       =self.get_cmd('CALC_ELEM')
-  CALC_NO         =self.get_cmd('CALC_NO')
   # La macro compte pour 1 dans la numerotation des commandes
   self.set_icmd(1)
 
@@ -202,53 +201,24 @@ def macro_elas_mult_ops(self,MODELE,CHAM_MATER,CARA_ELEM,NUME_DDL,
   nomres=CREA_RESU(OPERATION='AFFE',TYPE_RESU=tyresu,NOM_CHAM='DEPL',**motscles)
 
 #####################################################################
-# boucle sur les items de CAS_CHARGE pour CALC_ELEM et CALC_NO
+# boucle sur les items de CAS_CHARGE pour SIEF_ELGA
 
   iocc=0
   for m in CAS_CHARGE:
-     iocc=iocc+1
+      iocc=iocc+1
 
-     if m['OPTION']:
-        nbel=0
-        nbno=0
-        liste_el=[]
-        liste_no=[]
-        if type(m['OPTION'])==types.StringType:
-           liste_option=(m['OPTION'],)
-        else :
-           liste_option=m['OPTION']
-        for option in liste_option :
-           if option in (     'FORC_NODA','REAC_NODA',
-                              'EPSI_NOEU','SIGM_NOEU','EFGE_NOEU',
-                              'SIEQ_NOEU','EPEQ_NOEU',):
-              nbno=nbno+1
-              liste_no.append(option)
-           else:
-              nbel=nbel+1
-              liste_el.append(option)
-
-        if nbel:
-           motscles={}
-           if ielas:
+      if m['OPTION']=='SIEF_ELGA':
+          motscles={}
+          if ielas:
               motscles['NOM_CAS']=m['NOM_CAS']
-           else:
+          else:
               motscles['NUME_MODE']=m['MODE_FOURIER']
-           CALC_ELEM(reuse=nomres,
-                     RESULTAT=nomres,
-                     REPE_COQUE=_F(NIVE_COUCHE=m['NIVE_COUCHE'],
-                                   NUME_COUCHE=m['NUME_COUCHE'],),
-                     OPTION=tuple(liste_el),
-                     **motscles)
-        if nbno:
-           motscles={}
-           if ielas:
-              motscles['NOM_CAS']=m['NOM_CAS']
-           else:
-              motscles['NUME_MODE']=m['MODE_FOURIER']
-           CALC_NO(reuse=nomres,
-                   RESULTAT=nomres,
-                   OPTION=tuple(liste_no),
-                     **motscles)
+          CALC_ELEM(reuse=nomres,
+                    RESULTAT=nomres,
+                    REPE_COQUE=_F(NIVE_COUCHE=m['NIVE_COUCHE'],
+                                  NUME_COUCHE=m['NUME_COUCHE'],),
+                    OPTION='SIEF_ELGA',
+                    **motscles)
 
 # fin de la boucle sur les items de CAS_CHARGE
 #####################################################################

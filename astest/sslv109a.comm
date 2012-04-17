@@ -1,4 +1,4 @@
-# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE CYLINDRE SOUMIS A UNE PRESSION EN MODE 1 FOURIER (TRIA6)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -92,7 +92,7 @@ TEST_TABLE(       TABLE=T_ENER,
 # ----------------------------------------------------------------------
 
 FO_ELAS1=CALC_ELEM(reuse=FO_ELAS1,   RESULTAT=FO_ELAS1,
-                         OPTION=( 'SIEF_ELGA', 'SIGM_ELNO', ),
+                         OPTION= 'SIGM_ELNO', 
                        )
 
 FO_ELAS1=CALC_CHAMP(reuse=FO_ELAS1,   RESULTAT=FO_ELAS1,

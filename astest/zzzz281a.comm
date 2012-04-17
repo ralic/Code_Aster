@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FONCTIONNALITES PYTHON ET FORTRAN : COMPILATION DES CATALOGUES D'ELEMENTS ET CREATION DE LA BASE JEVEUX elem.1
 # zzzz281a.para = tps_job 120 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -21,82 +21,67 @@
 #
 # RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 # CAS_TEST ZZZZ281A
-import sys
 import os
 import os.path as osp
 from glob import glob
 
-from asrun.profil import ASTER_PROFIL
-from asrun.config import ASTER_CONFIG
+from asrun.profil import AsterProfil
+from asrun.config import AsterConfig
+
 from Lecture_Cata_Ele.make_surch_offi import main
 from Lecture_Cata_Ele.lecture import lire_cata
 
 aster_root = os.environ.get('ASTER_ROOT')
 
 fprof = glob('*.export')[0]
-prof = ASTER_PROFIL(fprof)
+prof = AsterProfil(fprof)
 
 rep_vers = osp.join(aster_root, prof.get_version_path())
 
-conf = ASTER_CONFIG('config.txt')
+conf = AsterConfig('config.txt')
 catalo = osp.join(rep_vers, conf['BINPICKLED'][0])
 
 os.remove('elem.1')
 assert not osp.exists('elem.1')
 
-unigest=open('UNIGEST','w')
-#
-# concatenation des fichiers unigest :
-#-------------------------------------
-for i in range(len(prof.Get('D','unig'))):
-    nomf=prof.Get('D','unig')[i]['path']
-    unig=open(nomf,'r')
-    texte=unig.read()
-    unigest.write(texte)
-    unig.close()
+with open('UNIGEST', 'w') as unigest:
+    # concatenation des fichiers unigest :
+    #-------------------------------------
+    for nomf in [funig['path'] for funig in prof.Get('D', 'unig')]:
+        unigest.write(unig.read())
 
-unigest.close()
-
-if len(prof.Get('D','cata')) > 0 :
-    catasur=open('CATASUR','w')
-#
-#   concatenation des fichiers catalo :
-#   ----------------------------------
-    for i in range(len(prof.Get('D','cata'))):
-        nomf=prof.Get('D','cata')[i]['path']
-        if not os.path.isdir(nomf) :
-#           cas d'un fichier :
-#           -----------------
-            cata=open(nomf,'r')
-            texte=cata.read()
-            catasur.write(texte)
-            cata.close()
-        else:
-#           cas d'un repertoire :
-#           --------------------
-            lisfic=glob(osp.join(nomf,"*.cata"))
-            for nomfic in lisfic :
-                cata= open(nomfic,'r')
+lcata = prof.Get('D', 'cata')
+if lcata:
+    with open('CATASUR', 'w') as catasur:
+        # concatenation des fichiers catalo :
+        for nomf in [funig['path'] for funig in lcata]:
+            if not os.path.isdir(nomf) :
+                # cas d'un fichier
+                cata=open(nomf,'r')
                 texte=cata.read()
                 catasur.write(texte)
                 cata.close()
+            else:
+                # cas d'un repertoire
+                lisfic=glob(osp.join(nomf,"*.cata"))
+                for nomfic in lisfic :
+                    cata= open(nomfic,'r')
+                    texte=cata.read()
+                    catasur.write(texte)
+                    cata.close()
 
-    catasur.close()
-
-
-prev = os.getcwd()
-main('./make_ele', 'CATASUR', 'UNIGEST', catalo, 'fort.4')
-os.chdir(prev)
+main('CATASUR', 'UNIGEST', catalo, 'fort.4')
 
 DEBUT(CODE=_F(NOM='ZZZZ281A', NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON',),
       CATALOGUE = _F( FICHIER = 'CATAELEM', UNITE = 4),
-PAR_LOT='NON',DEBUG=_F(SDVERI='OUI'))
+      PAR_LOT='NON',DEBUG=_F(SDVERI='OUI'))
 
 MAJ_CATA(ELEMENT=_F())
 
 is_ok = int( osp.exists('elem.1') )
 TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
                        _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
+
 TEST_TABLE(TABLE=TAB1,
            FILTRE=_F(NOM_PARA='TEST',
                      VALE_K='VALEUR  ',),

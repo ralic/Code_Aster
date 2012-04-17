@@ -1,5 +1,5 @@
 
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE : FLAMBEMENT D'UNE PLAQUE CIRCULAIRE SOUMISE A UNE
 # sslv139b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -70,8 +70,7 @@ ELAS=MACRO_ELAS_MULT(MODELE=MODMECA,
                      CHAR_MECA_GLOBAL=CLS,
                      CAS_CHARGE=_F(MODE_FOURIER=0,
                                    TYPE_MODE='SYME',
-                                   CHAR_MECA=CHAR,
-                                   OPTION='SIEF_ELGA',),);
+                                   CHAR_MECA=CHAR,),);
 
 SIG=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                OPERATION='EXTR',

@@ -1,4 +1,4 @@
-#@ MODIF prepost3 Messages  DATE 09/01/2012   AUTEUR SELLENET N.SELLENET 
+#@ MODIF prepost3 Messages  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -147,12 +147,6 @@ cata_msg = {
 
 78 : _(u"""
  le fichier maillage GIBI est vide
-"""),
-
-79 : _(u"""
- cette commande ne fait que compléter un résultat composé déjà existant.
- il faut donc que le résultat de la commande :  %(k1)s
- soit identique à l'argument "RESULTAT" :  %(k2)s 
 """),
 
 80 : _(u"""

@@ -1,4 +1,4 @@
-#@ MODIF recal Macro  DATE 13/03/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF recal Macro  DATE 17/04/2012   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -69,12 +69,14 @@ def get_absolute_path(path):
 # recupere "bibpyt" à partir de "bibpyt/Macro/recal.py"
 sys.path.append(get_absolute_path(os.path.join(sys.argv[0], '..', '..')))
 
-try:
-   from Utilitai.Utmess import UTMESS
-except:
-   def UTMESS(code='I', txt='',valk='', vali='', valr=''):
-       print txt, valk, vali, valr
-       if code=='F': sys.exit()
+from Utilitai.Utmess import UTMESS
+# try:
+#    from Utilitai.Utmess import UTMESS
+# except Exception, e:
+#    print e
+#    def UTMESS(code='I', txt='',valk='', vali='', valr=''):
+#        print txt, valk, vali, valr
+#        if code=='F': sys.exit()
 
 
 # -------------------------------------------------------------------------------
@@ -715,7 +717,7 @@ class CALCULS_ASTER:
         except: pass
         try:
             from asrun.run          import AsRunFactory
-            from asrun.profil       import ASTER_PROFIL
+            from asrun.profil       import AsterProfil
             from asrun.repart       import get_hostrc
             from asrun.parametric   import is_list_of_dict
             from asrun.thread       import Dispatcher
@@ -738,7 +740,7 @@ class CALCULS_ASTER:
         else:                             run.options['debug_stderr'] = False  # pas d'output d'executions des esclaves dans l'output maitre
 
         # Master profile
-        prof = ASTER_PROFIL(filename=export)
+        prof = AsterProfil(filename=export)
         tmp_param = tempfile.mkdtemp()
         try:    username = prof.param['username'][0]
         except: username = os.environ['LOGNAME']
@@ -1378,7 +1380,7 @@ if __name__ == '__main__':
 
         if not parametres:  raise Exception("MR Parameters file need to define 'parametres' variable")
         if not calcul:      raise Exception("MR Parameters file need to define 'calcul' variable")
-        if not isinstance(parameters, list):
+        if not isinstance(parametres, list):
            raise Exception("Wrong type for 'parametres' variable in MR parameters file : %s"  % options.mr_parameters)
         if not isinstance(calcul, list):
            raise Exception("Wrong type for 'calcul' variable in MR parameters file : %s"      % options.mr_parameters)

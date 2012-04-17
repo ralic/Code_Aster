@@ -1,9 +1,10 @@
       SUBROUTINE AVCRIT( NBVEC, NBORDR, VECTN, VWORK, TDISP, KWORK,
      &                   SOMMW, TSPAQ,I, VALA, COEFPA, NCYCL, VMIN,
-     &                   VMAX, OMIN, OMAX, NOMCRI, NOMMAT, NOMFOR,GDREQ)
+     &                   VMAX, OMIN, OMAX, NOMCRI, NOMMAT, NOMFOR,
+     &                   POST, GDREQ)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/04/2012   AUTEUR TRAN V-X.TRAN 
+C MODIF PREPOST  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,12 +21,13 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRS_1404
-C RESPONSABLE F1BHHAJ J.ANGLES
+C TOLE CRP_21 CRS_1404
+C RESPONSABLE ANGLES J.ANGLES
       IMPLICIT      NONE
       INTEGER       NBVEC, NBORDR, NCYCL(NBVEC)
       INTEGER       OMIN(NBVEC*(NBORDR+2)), OMAX(NBVEC*(NBORDR+2))
       INTEGER       TDISP, KWORK, SOMMW, TSPAQ, I
+      LOGICAL       POST
       REAL*8        VECTN(3*NBVEC)
       REAL*8        VWORK(TDISP)
       REAL*8        VALA, COEFPA
@@ -76,7 +78,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
       INTEGER      IVECT, AD0, AD1, AD2, ICYCL, NVAL, IPAR, J, NP
       INTEGER      IBID, NPARMA, JPROF, PARACT(30), IARG
-      REAL*8       COEPRE, VALPAR(30), VALPU(30) 
+      REAL*8       COEPRE, VALPAR(30), VALPU(30)
       REAL*8       VSIGN(NBVEC*NBORDR), VPHYDR(NBORDR)
       REAL*8       VSIPR(NBORDR), VEPSN(NBORDR)
       REAL*8       VETPR(NBORDR), VSITN(NBORDR)
@@ -94,41 +96,41 @@ C  VPHYDR   IN   R  : VECTEUR CONTENANT LA PRESSION HYDROSTATIQUE A
 C                     TOUS LES INSTANTS, ON UTILISE VPHYDR
 C                     UNIQUEMENT DANS LE CRITERE DE DANG VAN.
 C     ------------------------------------------------------------------
-      DATA  NOMPAR /  'TAUPR_1','TAUPR_2','SIGN_1',  'SIGN_2',
-     &                 'PHYDR_1','PHYDR_2','EPSPR_1', 'EPSPR_2', 
+      DATA  NOMPAR /   'TAUPR_1','TAUPR_2','SIGN_1',  'SIGN_2',
+     &                 'PHYDR_1','PHYDR_2','EPSPR_1', 'EPSPR_2',
      &                 'SIPR1_1','SIPR1_2','EPSN1_1', 'EPSN1_2',
      &                 'ETPR1_1','ETPR1_2','SITN1_1', 'SITN1_2',
      &                 'EPPR1_1','EPPR1_2','SIPN1_1', 'SIPN1_2',
      &                 'SIGEQ_1','SIGEQ_2', 'ETEQ_1', 'ETEQ_2',
      &                 'EPEQ_1', 'EPEQ_2',  'INVJ2_1','INVJ2_2',
-     &                 'SITRE_1', 'SITRE_2'     /
+     &                 'SITRE_1','SITRE_2'     /
 C-----------------------------------------------------------------------
 C
 C234567                                                              012
 
       CALL JEMARQ()
 
-C 
+C
 C RECUPERER LA LISTE DE GRANDEURS ACTIVES
-         
+
       TYPCHA = 'NON_PERIODIQUE'
 
       CALL ANACRI( NOMCRI,NOMFOR,TYPCHA,'NON', PARACT, FORDEF)
-      
+
 C VOIR SI LE CRITERE DU TYPE DE PLANE CRITIQUE
 C SI OUI, ON TOURNE NVVECT, SI NON ON NVEC=1
-     
+C
 C       PLACRI = .FALSE.
 C       DO 30 J = 1, 8
-C          IF (PARACT(J) .EQ. 1) THEN 
+C          IF (PARACT(J) .EQ. 1) THEN
 C             PLACRI = .TRUE.
 C             GOTO 31
 C          ENDIF
-C 
+C
 C 30    CONTINUE
-C 
-C 31    CONTINUE   
-  
+C
+C 31    CONTINUE
+
 C-----------------------------------------------------------------------
 C CALCULER LES GRANDEURS
 C----------------------------------------------------------------------
@@ -137,7 +139,7 @@ C 1.1 CALCUL DE LA CONTRAINTE NORMALE
          CALL AVSIGN(NBVEC, NBORDR, VECTN,
      &         VWORK, TDISP, KWORK,
      &         SOMMW, TSPAQ, I,VSIGN)
-         
+
       ENDIF
 
 C 1.2 CALCUL DE LA PRESSION HYDROSTATIQUE
@@ -145,7 +147,7 @@ C 1.2 CALCUL DE LA PRESSION HYDROSTATIQUE
 
           CALL AVPHYD(NBORDR, VWORK, TDISP, KWORK, SOMMW,
      &                  TSPAQ, I, VPHYDR)
-     
+
       ENDIF
 
       IF ( (PARACT(9) .EQ. 1 ) .OR. (PARACT(10) .EQ. 1 ) .OR.
@@ -153,8 +155,8 @@ C 1.2 CALCUL DE LA PRESSION HYDROSTATIQUE
 
           CALL AVSIPR(NBORDR, VWORK, TDISP, KWORK, SOMMW,
      &                  TSPAQ, I, VSIPR, VEPSN)
-     
-      ENDIF     
+
+      ENDIF
 
 
       IF ( (PARACT(13) .EQ. 1 ) .OR. (PARACT(14) .EQ. 1 ) .OR.
@@ -162,68 +164,71 @@ C 1.2 CALCUL DE LA PRESSION HYDROSTATIQUE
 
           CALL AVETPR(NBORDR, VWORK, TDISP, KWORK, SOMMW,
      &                  TSPAQ, I, VETPR, VSITN)
-     
-      ENDIF     
+
+      ENDIF
 
       IF ( (PARACT(17) .EQ. 1 ) .OR. (PARACT(18) .EQ. 1 ) .OR.
      &     (PARACT(19) .EQ. 1 ) .OR. (PARACT(20) .EQ. 1 ) ) THEN
 
           CALL AVEPPR(NBORDR, VWORK, TDISP, KWORK, SOMMW,
      &                  TSPAQ, I, NOMMAT, VEPPR, VSIPN)
-     
-      ENDIF     
-      
+
+      ENDIF
+
       IF ((PARACT(21) .EQ. 1 ) .OR. (PARACT(22) .EQ. 1 )) THEN
 
          CALL AVSIEQ( NBORDR, VWORK, TDISP, KWORK, SOMMW, TSPAQ, I,
      &                   VSIEQ )
 
       ENDIF
-      
+
       IF ((PARACT(23) .EQ. 1 ) .OR. (PARACT(24) .EQ. 1 )) THEN
 
          CALL AVETEQ( NBORDR, VWORK, TDISP, KWORK, SOMMW, TSPAQ, I,
      &                   VETEQ )
 
-      ENDIF                      
+      ENDIF
 C----------------------------------------------------------------------
 C EVALUER LES GRANDEURS
-C---------------------------------------------------------------------- 
-C 1. CRITERE DE DANG_VAN MODIFIE (AMPLITUDE VARIABLE)  
-      CALL GETVR8(' ','COEF_PREECROU',1,IARG,1,COEPRE,NVAL)
-      
-      IF (NOMCRI(1:7) .EQ. 'FORMULE') THEN  
+C----------------------------------------------------------------------
+C 1. CRITERE DE DANG_VAN MODIFIE (AMPLITUDE VARIABLE)
+C      IF (.NOT. POST) THEN
+         CALL GETVR8(' ','COEF_PREECROU',1,IARG,1,COEPRE,NVAL)
+C      ENDIF
+
+      IF (NOMCRI(1:7) .EQ. 'FORMULE') THEN
 C NOMBRE DE PARAMETRES DISPONIBLES
          NPARMA = 30
-C RECUPERER LES NOMS DE PARAMETRES FOURNIS PAR L'UTILISATEUR         
+C RECUPERER LES NOMS DE PARAMETRES FOURNIS PAR L'UTILISATEUR
          CHNOM(20:24) = '.PROL'
          CHNOM(1:19) = NOMFOR
-      
+
          CALL JEVEUO(CHNOM,'L',JPROF)
-         CALL FONBPA ( NOMFOR, ZK24(JPROF), CBID, NPARMA, NP, NOMPF ) 
+         CALL FONBPA ( NOMFOR, ZK24(JPROF), CBID, NPARMA, NP, NOMPF )
       ENDIF
-       
+
       DO 10 IVECT=1, NBVEC
          AD0 = (IVECT-1)*NBORDR
          DO 20 ICYCL=1, NCYCL(IVECT)
             AD1 = (IVECT-1)*NBORDR + ICYCL
             AD2 = (IVECT-1)*(NBORDR+2) + ICYCL
-            
+
             IF (NOMCRI(1:14) .EQ. 'MATAKE_MODI_AV') THEN
                GDREQ(AD1)= COEPRE*ABS((VMAX(AD2) - VMIN(AD2))/2.0D0) +
      &                    VALA*MAX(VSIGN(AD0+OMAX(AD2)),
      &                             VSIGN(AD0+OMIN(AD2)),0.0D0)
-               GDREQ(AD1)= GDREQ(AD1)*COEFPA               
+               GDREQ(AD1)= GDREQ(AD1)*COEFPA
+
             ENDIF
-            
+
             IF (NOMCRI(1:16) .EQ. 'DANG_VAN_MODI_AV') THEN
                GDREQ(AD1)= COEPRE*ABS((VMAX(AD2) - VMIN(AD2))/2.0D0) +
      &                       VALA*MAX(VPHYDR(OMAX(AD2)),
      &                                VPHYDR(OMIN(AD2)),0.0D0)
-     
+
                GDREQ(AD1)= GDREQ(AD1)*COEFPA
-            ENDIF 
-            
+            ENDIF
+
             IF (NOMCRI(1:16) .EQ. 'FATESOCI_MODI_AV') THEN
                 GDREQ(AD1)=
      &            COEPRE*ABS((VMAX(AD2) - VMIN(AD2))/2.0D0)*
@@ -231,14 +236,14 @@ C RECUPERER LES NOMS DE PARAMETRES FOURNIS PAR L'UTILISATEUR
      &                                     VSIGN(AD0+OMIN(AD2)),0.0D0))
                GDREQ(AD1)= GDREQ(AD1)*COEFPA
             ENDIF
-            
-            IF (NOMCRI(1:7) .EQ. 'FORMULE') THEN 
+
+            IF (NOMCRI(1:7) .EQ. 'FORMULE') THEN
                VALPAR(1) = VMAX(AD2)
                VALPAR(2) = VMIN(AD2)
                VALPAR(3) = VSIGN(AD0+OMAX(AD2))
                VALPAR(4) = VSIGN(AD0+OMIN(AD2))
                VALPAR(5) = VPHYDR(OMAX(AD2))
-               VALPAR(6) = VPHYDR(OMIN(AD2))             
+               VALPAR(6) = VPHYDR(OMIN(AD2))
                VALPAR(7) = VMAX(AD2)
                VALPAR(8) = VMIN(AD2)
                VALPAR(9) = VSIPR(OMAX(AD2))
@@ -252,7 +257,7 @@ C RECUPERER LES NOMS DE PARAMETRES FOURNIS PAR L'UTILISATEUR
                VALPAR(17) = VEPPR(OMAX(AD2))
                VALPAR(18) = VEPPR(OMIN(AD2))
                VALPAR(19) = VSIPN(OMAX(AD2))
-               VALPAR(20) = VSIPN(OMIN(AD2))   
+               VALPAR(20) = VSIPN(OMIN(AD2))
                VALPAR(21) = VSIEQ(OMAX(AD2))
                VALPAR(22) = VSIEQ(OMIN(AD2))
                VALPAR(23) = VETEQ(OMAX(AD2))
@@ -262,31 +267,29 @@ C RECUPERER LES NOMS DE PARAMETRES FOURNIS PAR L'UTILISATEUR
                VALPAR(27) = 0.D0
                VALPAR(28) = 0.D0
                VALPAR(29) = 0.D0
-               VALPAR(30) = 0.D0  
-               
+               VALPAR(30) = 0.D0
+
                DO 75 J = 1, NP
                   DO 65 IPAR = 1, NPARMA
                      IF (NOMPF(J).EQ.NOMPAR(IPAR)) THEN
-                        VALPU(J) =  VALPAR(IPAR) 
-                        GOTO 75            
+                        VALPU(J) =  VALPAR(IPAR)
+                        GOTO 75
                      ENDIF
-65                CONTINUE             
-75             CONTINUE          
- 
+65                CONTINUE
+75             CONTINUE
+
                CALL FOINTE('F',NOMFOR, NP,NOMPF,VALPU,GDREQ(AD1),IBID)
-               
+
             ENDIF
-                         
+
  20      CONTINUE
-         
+
 C         IF ( .NOT. PLACRI) THEN
 C            GOTO 99
 C         ENDIF
-         
+
  10   CONTINUE
- 
- 99   CONTINUE
- 
+
       CALL JEDEMA()
 C
       END

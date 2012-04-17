@@ -1,0 +1,175 @@
+# encoding: utf-8
+
+import os
+import os.path as osp
+import shutil
+from functools import partial
+from itertools import chain
+from waflib import TaskGen, Logs, Utils, Errors, Task
+
+def build(self):
+    env = self.all_envs[self.variant]
+    if self.cmd.startswith('uninstall'):
+        elem = osp.join(env.ASTERDATADIR[0], 'elements')
+        try:
+            os.remove(elem)
+        except OSError:
+            pass
+        return
+
+    self(
+        features = 'catalo',
+            name = 'catapy',
+          target = 'elements',
+             env = env,
+    install_path = env.ASTERDATADIR[0],
+    )
+
+@TaskGen.feature('catalo')
+@TaskGen.before('process_source')
+def pre_build_catalo(self):
+    # deps => any change in these files induce a rebuild of the pickled
+    deps = self.bld.srcnode.ant_glob('*/Lecture_Cata_Ele/*.py')
+    catalo = self.path
+    catalo.get_bld().mkdir()
+    pickled = catalo.get_bld().make_node('cata_ele.pickled')
+    ojb = catalo.get_bld().make_node('cata_ele.ojb')
+    self.create_task('picklecata', src=[catalo] + deps, tgt=pickled)
+    self.create_task('surchcata', src=[pickled], tgt=ojb)
+    self.source = [ojb] # bypass the execution of process_source
+
+class surchcata(Task.Task):
+    shell = True
+    run_str = ' '.join(('PYTHONPATH=${BIBPYTPATH}', '${PYTHON}',
+                        '-m', 'Lecture_Cata_Ele.make_surch_offi',
+                        '-i', '${SRC[0].abspath()}',
+                        '-o', '${TGT[0].abspath()}'))
+    def exec_command(self, cmd, **kw):
+        try:
+            self.generator.bld.cmd_and_log(cmd, quiet=0, **kw)
+        except Errors.WafError, err:
+            Logs.warn('stdout: %s' % err.stdout)
+            Logs.warn('stderr: %s' % err.stderr)
+            raise
+
+class picklecata(surchcata):
+    shell = True
+    run_str = ' '.join(('PYTHONPATH=${BIBPYTPATH}', '${PYTHON}',
+                        '-m', 'Lecture_Cata_Ele.make_capy_offi',
+                        '-i', '${SRC[0].abspath()}',
+                        '-o', '${TGT[0].abspath()}'))
+
+    def sig_explicit_deps(self):
+        self.dep_nodes[:] = self.inputs[1:]
+        catalo = self.inputs[0]
+        # put *.cata files into self.inputs in order to let the
+        # original sig_explicit_deps compute their signature which is
+        # used to rebuild on any changes.
+        self.inputs[:] = catalo.ant_glob('**/*.cata')
+        super(picklecata, self).sig_explicit_deps()
+        self.inputs[:] = [catalo]
+
+@TaskGen.extension('.ojb')
+def buildcata(self, node):
+    if not getattr(self.bld, 'is_install', None) \
+        or not getattr(self, 'install_path', None):
+        return
+    install_path = osp.join(self.install_path, self.target)
+    post = partial(build_cata_ele, ojb=node, install_path=install_path)
+    self.bld.add_post_fun(post)
+
+def build_cata_ele(self, ojb, install_path):
+    """Build the catalog of elements"""
+    bldnode = self.path.get_bld()
+    Logs.info('+ build the elements catalog %s using installed aster (from %s)'
+              % ('elem.1', ojb))
+
+    # generate the command file
+    comm = bldnode.make_node('fort.1')
+    content = os.linesep.join([
+        "DEBUT(CATALOGUE=_F(FICHIER='CATAELEM', UNITE=4), PAR_LOT='NON')",
+        "MAJ_CATA(ELEMENT=_F())",
+        "FIN()", ""
+    ])
+    comm.write(content, 'w')
+
+    # .ojb -> fort.4
+    before = ojb.abspath()
+    after= bldnode.make_node('fort.4').abspath()
+    os.rename(before, after)
+
+    try:
+        #  generate the command line
+        exec_pyaster(self, 'Execution/E_SUPERV.py', cwd=bldnode.abspath(),
+                     args=['-eficas_path', '${PYTHONARCHDIR}',
+                           '-commandes', comm.abspath(),
+                           '-memjeveux', '8',
+                           '-tpmax', '60'])
+    finally: # fort.4 -> .ojb
+        os.rename(after, before)
+
+    elem = bldnode.find_node('elem.1')
+    tsk = self.do_install(elem.abspath(), install_path)
+
+def exec_pyaster(self, pyfile, args, **kwargs):
+    '''Execute aster depending on the configuration'''
+    from Options import options as opts
+    env = self.all_envs[self.variant]
+    environ = os.environ.copy()
+    cmds = []
+
+    if env.ASTER_EMBEDS and 'bibc' in env.ASTER_EMBEDS:
+        exec_task = self.get_tgen_by_name('asterexec')
+        python = osp.join(exec_task.install_task.dest, exec_task.target)
+    else:
+        python = list(env.PYTHON)[0]
+
+    ld_paths = get_ld_paths(self)
+    if ld_paths:
+        add_to_env_paths(environ, 'LD_LIBRARY_PATH', ld_paths)
+        # add to cli as it could contain variable (``$LIBDIR`` for example)
+        cmds.append('LD_LIBRARY_PATH="%s"' % environ['LD_LIBRARY_PATH']) # XXX
+
+    python_path = self.get_tgen_by_name('bibpyt').install_path
+    add_to_env_paths(environ, 'LIBDIR', env['LIBDIR'])
+    add_to_env_paths(environ, 'BINDIR', env['BINDIR'])
+    add_to_env_paths(environ, 'PYTHONARCHDIR', env['PYTHONARCHDIR'])
+    add_to_env_paths(environ, 'PYTHONDIR', env['PYTHONDIR'])
+    add_to_env_paths(environ, 'PYTHONPATH', python_path)
+    add_to_env_paths(environ, 'ASTER_ROOT', env['PREFIX'])
+
+    cmds += [python, osp.join(python_path, pyfile)]
+    cmds += args
+
+    cmds = ' '.join(cmds)
+
+    Logs.debug('os environ: %r' % environ)
+    try:
+        self.cmd_and_log(cmds, env=environ, shell=True, quiet=0, **kwargs)
+    except Exception, err:
+        Logs.warn('stdout: %s' % err.stdout)
+        Logs.warn('stderr: %s' % err.stderr)
+        raise
+    # self.exec_command(cmds, env=environ)
+
+def get_ld_paths(self):
+    # Add *LIBPATH paths to LD_LIBRARY_PATH
+    env = self.all_envs[self.variant]
+    ld_path = list(chain(*[Utils.to_list(env[name])
+                           for name in ('LIBPATH', 'LIBDIR') if env[name]]))
+    # add path where built libs are installed
+    for task_name in ('asterlib', 'asterfermetur'):
+        try:
+            ld_path.insert(0, self.get_tgen_by_name('asterlib').install_task.dest)
+        except Errors.WafError:# depends on --enbed-* options
+            pass
+    return ld_path
+
+def add_to_env_paths(environ, name, path):
+    if not path:
+        return
+    paths = [path] if isinstance(path, basestring) else path
+    raw = environ.get(name, None)
+    if raw is not None:
+        paths += [p for p in raw.split(os.pathsep)]
+    environ[name] = os.pathsep.join(p for p in paths)

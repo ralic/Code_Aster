@@ -1,0 +1,43 @@
+# encoding: utf-8
+
+from waflib import Logs, Configure
+
+def configure(self):
+    from Options import options as opts
+
+    self.add_os_flags('F90CFLAGS', 'FCFLAGS_F90')
+    self.add_os_flags('F90LINKFLAGS', 'FCLINKFLAGS_F90')
+    self.add_os_flags('F90INCLUDES', 'INCLUDES')
+    self.add_os_flags('F90DEFINES', 'DEFINES')
+    self.check_fortran90_compiler_flags()
+
+    if self.env.HAVE_MUMPS:
+        ant = 'bibf90/include_mumps-%s%s' \
+            % (self.env.MUMPS_version, opts.parallel and '_mpi' or '')
+        dirs = [d.abspath() for d in self.srcnode.ant_glob(ant, src=True, dir=True)]
+        self.env.append_value('INCLUDES', dirs)
+
+def build(self):
+    get_srcs = self.path.get_src().ant_glob
+    buildenv = self.all_envs[self.variant].copy()
+    buildenv.append_unique('FCFLAGS', buildenv.FCFLAGS_F90)
+    buildenv.append_unique('FCLINKFLAGS', buildenv.FCLINKFLAGS_F90)
+
+    self(
+        features = 'fc',
+            name = 'asterbibf90',
+          source = get_srcs('**/*.F'),
+             env = buildenv,
+             use = ['MPI', 'OPENMP', 'MED', 'MUMPS', 'SCOTCH', 'PETSC']
+    )
+
+###############################################################################
+
+@Configure.conf
+def check_fortran90_compiler_flags(self):
+    self.start_msg('Getting fortran90 link flags')
+    flags = []
+    if self.env.FC_NAME == 'GFORTRAN':
+        flags.extend(['-ffixed-line-length-0', '-x', 'f77-cpp-input'])
+        self.env.append_value('FCFLAGS_F90', flags)
+    self.end_msg(flags)

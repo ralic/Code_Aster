@@ -1,9 +1,9 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 17/04/2012   AUTEUR CHANSARD F.CHANSARD 
 # TITRE VALEUR DE REFERENCE POUR LES ELEMENTS DISCRETS 3D
 # zzzz234d.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -242,10 +242,10 @@ TEST_RESU(RESU=(_F(RESULTAT   = RE_DISTN,
                    NOM_CHAM   = 'DEPL',
                    GROUP_NO   = 'B',
                    NOM_CMP    = 'DY',
-                   VALE       = -0.012646081312959,
+                   VALE       = -0.012646628704071,
                    
                    REFERENCE  = 'NON_REGRESSION',
-                   VERSION    = '10.2.20',
+                   VERSION    = '11.01.18',
                    PRECISION  = 1E-8,
                    ),),
        )
@@ -560,10 +560,10 @@ TEST_RESU(RESU=(_F(RESULTAT   = RE_DISTN,
                    NOM_CHAM   = 'DEPL',
                    GROUP_NO   = 'B',
                    NOM_CMP    = 'DY',
-                   VALE       = -0.012646081312959,
+                   VALE       = -0.012646628704071,
                    
                    REFERENCE  = 'NON_REGRESSION',
-                   VERSION    = '10.2.20',
+                   VERSION    = '11.01.18',
                    PRECISION  = 1E-8,
                    ),),
        )

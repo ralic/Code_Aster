@@ -1,8 +1,8 @@
-#@ MODIF vmis_ecmi_line Comportement  DATE 10/01/2011   AUTEUR PROIX J-M.PROIX 
+#@ MODIF vmis_ecmi_line Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -27,7 +27,7 @@ loi = LoiComportement(
    cinématique linéaire et isotrope linéaire (Cf. [R5.03.16] pour plus de détails).""",
    num_lc         = 3,
    nb_vari        = 8,
-   nom_vari       = ('DEFPLCUM', 'INDICAT', 'X_XX', 'X_YY', 'X_ZZ', 'X_XY', 'X_XZ', 'X_YZ'),
+   nom_vari       = ('EPSPEQ', 'INDIPLAS', 'XCINXX', 'XCINYY', 'XCINZZ', 'XCINXY', 'XCINXZ', 'XCINYZ'),
    mc_mater       = ('ELAS', 'ECRO_LINE', 'PRAGER'),
    modelisation   = ('3D', 'AXIS', 'C_PLAN', 'D_PLAN'),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP','GDEF_HYPO_ELAS','GDEF_LOG'),

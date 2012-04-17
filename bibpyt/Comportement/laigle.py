@@ -1,4 +1,4 @@
-#@ MODIF laigle Comportement  DATE 13/02/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF laigle Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,12 +27,12 @@ loi = LoiComportement(
    Pour faciliter l'intégration de ce modèle, on peut utiliser le redécoupage automatique local du pas de temps (ITER_INTE_PAS).""",
    num_lc         = 33,
    nb_vari        = 4,
-   nom_vari       = ('DPDEVCUM','DPVOLCUM','DOMCOMP','INDIPLAS'),
+   nom_vari       = ('EPSPEQ','EPSPVOL','DOMCOMP','INDIPLAS'),
    mc_mater       = ('ELAS','LAIGLE'),
    modelisation   = ('3D', 'AXIS', 'D_PLAN','THM'),
    deformation    = ('PETIT','PETIT_REAC', 'GROT_GDEP'),
    nom_varc       = ('TEMP'),
-   algo_inte         = ('NEWTON',),
+   algo_inte      = ('NEWTON',),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
    proprietes     = None,
 )

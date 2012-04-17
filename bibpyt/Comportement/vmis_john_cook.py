@@ -1,4 +1,4 @@
-#@ MODIF vmis_john_cook Comportement  DATE 05/03/2012   AUTEUR SFAYOLLE S.FAYOLLE 
+#@ MODIF vmis_john_cook Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,7 @@ loi = LoiComportement(
    doc = """Loi de plasticité de Von Mises à écrouissage de Johnson-Cook [R5.03.02]""",
    num_lc         = 54,
    nb_vari        = 5,
-   nom_vari       = ('DEFPLCUM', 'INDICAT','VDEFPLCUM','DINSTM','DDISSM',),
+   nom_vari       = ('EPSPEQ', 'INDIPLAS','DEPSPEQ','DINSTM','DDISSM',),
    mc_mater       = ('ECRO_COOK'),
    modelisation   = ('3D', 'AXIS', 'D_PLAN',),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP', 'GDEF_LOG','GDEF_HYPO_ELAS','GREEN_REAC'),

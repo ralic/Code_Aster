@@ -1,4 +1,4 @@
-#@ MODIF lemaitre_irra Comportement  DATE 04/01/2012   AUTEUR SELLENET N.SELLENET 
+#@ MODIF lemaitre_irra Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

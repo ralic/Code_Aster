@@ -1,4 +1,4 @@
-# MODIF  DATE 02/04/2012   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 16/04/2012   AUTEUR TARDIEU N.TARDIEU 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 # sdnv103i.para = tps_job 300 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -249,7 +249,7 @@ TEST_RESU(RESU=(
           NOM_CHAM  = 'VITE',   
           GROUP_NO  = 'B1',
           CRITERE   = 'RELATIF', 
-          PRECISION = 1.E-10,
+          PRECISION = 2.5E-10,
           NOM_CMP   = 'DX',    
           VALE      = 83900.271694816, 
           REFERENCE = 'NON_REGRESSION',

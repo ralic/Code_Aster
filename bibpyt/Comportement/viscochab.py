@@ -1,4 +1,4 @@
-#@ MODIF viscochab Comportement  DATE 13/02/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF viscochab Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,7 +27,7 @@ loi = LoiComportement(
    Ce modèle s'emploie avec les mots clés DEFORMATION = PETIT ou PETIT_REAC.""",
    num_lc         = 32,
    nb_vari        = 28,
-   nom_vari       = ('VG1','VG2','VG3','VG4','VG5','VG6','VG7','VG8','VG9','VG10','VG11','VG12','VG13','VG14','VG15','VG16','VG17','VG18','VG19','VG20','VG21','VG22','VG23','VG24','VG25','VG26','VG27','VG28',),
+   nom_vari       = ('VISCHA1','VISCHA2','VISCHA3','VISCHA4','VISCHA5','VISCHA6','VISCHA7','VISCHA8','VISCHA9','VISCHA10','VISCHA11','VISCHA12','VISCHA13','VISCHA14','VISCHA15','VISCHA16','VISCHA17','VISCHA18','VISCHA19','VISCHA20','VISCHA21','VISCHA22','VISCHA23','VISCHA24','VISCHA25','VISCHA26','VISCHA27','VISCHA28',),
    mc_mater       = ('ELAS','VISCOCHAB'),
    modelisation   = ('3D', 'AXIS', 'D_PLAN'),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),

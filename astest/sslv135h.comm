@@ -1,4 +1,4 @@
-# MODIF  DATE 10/04/2012   AUTEUR TRAN V-X.TRAN 
+# MODIF  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
 #
 # TITRE FATIGUE, AMPLITUDE CONSTANTE, TEST DU CRITERE VMIS_TRESCA
 # sslv135h.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
@@ -233,12 +233,11 @@ SOL_NL = CALC_ELEM( reuse    = SOL_NL,
                                 'EPSI_ELNO')
                   )
 
-SOL_NL = CALC_NO( reuse    = SOL_NL,
-                  RESULTAT = SOL_NL,
-                  TOUT = 'OUI',
-                  GROUP_MA = ('FACE1_3D', 'FACE2_3D', 'FACE3_3D'),
-                  OPTION   = ('SIGM_NOEU','EPSI_NOEU')
-                )
+SOL_NL = CALC_CHAMP( reuse    = SOL_NL,
+                     RESULTAT = SOL_NL,
+                     GROUP_MA = ('FACE1_3D', 'FACE2_3D', 'FACE3_3D'),
+                     CONTRAINTE='SIGM_NOEU',DEFORMATION='EPSI_NOEU'
+                   )
                 
 # CALCUL DE LA FATIGUE SUR L'ENSEMBLE DE LA STRUCTURE AUX POINTS DE GAUSS
 # -----------------------------------------------------------------------

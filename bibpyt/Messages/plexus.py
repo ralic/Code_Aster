@@ -1,8 +1,8 @@
-#@ MODIF plexus Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF plexus Messages  DATE 17/04/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,6 +28,8 @@ cata_msg = {
 3 : _(u"""Le mot-clé GROUP_MA est obligatoire dans AFFE_MODELE"""),
 
 4 : _(u"""Le type de section de poutre %(k1)s n'est pas encore pris en compte dans le passage vers Europlexus"""),
+
+5 : _(u"""Le type de section de barre %(k1)s n'est pas encore pris en compte dans le passage vers Europlexus"""),
 
 7 : _(u"""Le mot-clé FONC_MULT est obligatoire pour le chargement de type PRES_REP"""),
 

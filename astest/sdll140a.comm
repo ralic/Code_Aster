@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
+# MODIF  DATE 17/04/2012   AUTEUR CHANSARD F.CHANSARD 
 # TITRE CALCUL D'UNE LIGNE D'ARBRE AVEC 3 DISQUES (CADYRO : DLRR08)
 # REFERENCE : M. LALANNE, G. FERRARIS -        RORORDYNAMIC, PREDICTION IN
 # ENGINEERING - pp 68-71
@@ -253,7 +253,8 @@ TEST_RESU(RESU=(
                   REFERENCE='SOURCE_EXTERNE',
                   NUME_ORDRE=8,
                   PARA='FREQ',
-                  VALE=407.619,),
+                  VALE=407.619,
+                  PRECISION=0.002,),
     
                 _F(RESULTAT=MODEG,
                   REFERENCE='SOURCE_EXTERNE',
@@ -265,13 +266,15 @@ TEST_RESU(RESU=(
                   REFERENCE='SOURCE_EXTERNE',
                   NUME_ORDRE=11,
                   PARA='FREQ',
-                  VALE=622.654,),
+                  VALE=622.654,
+                  PRECISION=0.002,),
                  
                _F(RESULTAT=MODEG,
                   REFERENCE='SOURCE_EXTERNE',
                   NUME_ORDRE=12,
                   PARA='FREQ',
-                  VALE=715.026,),))
+                  VALE=715.026,
+                  PRECISION=0.002,),))
                                                                                                        
 TEST_RESU(RESU=(
                _F(RESULTAT=MODEZ,
@@ -309,7 +312,8 @@ TEST_RESU(RESU=(
                   REFERENCE='SOURCE_EXTERNE',
                   NUME_ORDRE=7,
                   PARA='FREQ',
-                  VALE=407.619,),
+                  VALE=407.619,
+                  PRECISION=0.002,),
     
                 _F(RESULTAT=MODEZ,
                   REFERENCE='SOURCE_EXTERNE',
@@ -321,13 +325,15 @@ TEST_RESU(RESU=(
                   REFERENCE='SOURCE_EXTERNE',
                   NUME_ORDRE=10,
                   PARA='FREQ',
-                  VALE=622.654,),
+                  VALE=622.654,
+                  PRECISION=0.002,),
                  
                _F(RESULTAT=MODEZ,
                   REFERENCE='SOURCE_EXTERNE',
                   NUME_ORDRE=11,
                   PARA='FREQ',
-                  VALE=715.026,),))
+                  VALE=715.026,
+                  PRECISION=0.002),))
                                                                                                        
 
 PROJ_BASE(BASE=MODES,
@@ -402,7 +408,8 @@ TEST_RESU(RESU=(
                   REFERENCE='SOURCE_EXTERNE',
                   NUME_ORDRE=12,
                   PARA='FREQ',
-                  VALE=715.026,),))
+                  VALE=715.026,
+                  PRECISION=0.002,),))
                                                                                                        
 FIN()
 

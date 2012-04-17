@@ -1,8 +1,8 @@
-#@ MODIF cjs Comportement  DATE 08/02/2011   AUTEUR GRANET S.GRANET 
+#@ MODIF cjs Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -26,7 +26,7 @@ loi = LoiComportement(
    doc = """Comportement élastoplastique multi-critere des sols  cf. R7.01.13""",
    num_lc         = 23,
    nb_vari        = 16,
-   nom_vari       = ('SEUILISO','ANGLEDEV','X_XX','X_YY','X_ZZ','X_XY','X_XZ','X_YZ','DISTSDEV','SDEVCRIT','DISTSISO','NBITER','RESIDU','NBSSPAS','SDEVEPSP','INDIPLAS'),
+   nom_vari       = ('SEUILISO','ANGLEDEV','XCINXX','XCINYY','XCINZZ','XCINXY','XCINXZ','XCINYZ','DISTSDEV','SDEVCRIT','DISTSISO','NBITER','RESIDU','NBSSPAS','SDEVEPSP','INDIPLAS'),
    mc_mater       = ('ELAS','CJS'),
    modelisation   = ('3D', 'AXIS', 'D_PLAN', 'KIT_THM'),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),

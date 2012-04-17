@@ -1,0 +1,176 @@
+# encoding: utf-8
+
+import os.path as osp
+
+from waflib import Configure, Logs
+
+def options(self):
+    self.load('python_cfg', tooldir='waftools')
+    group = self.get_option_group("Aster options")
+    group.add_option('-e', '--build-executable', dest='embed_aster',
+                    default=False, action='store_true',
+                    help='build aster as an executable: it is an alias for --embed-aster')
+    group.add_option('--embed-aster', dest='embed_aster',
+                    default=False, action='store_true',
+                    help='embed all aster components within a python interpreter')
+
+def configure(self):
+    from Options import options as opts
+    # C config
+    self.add_os_flags('CFLAGS', 'CFLAGS')
+    self.add_os_flags('CLINKFLAGS', 'LINKFLAGS')
+    self.add_os_flags('CINCLUDES', 'INCLUDES')
+    self.add_os_flags('CDEFINES', 'DEFINES')
+
+    # preserve symbols in the dyn table for stdcalls
+    self.env.append_unique('LINKFLAGS', ['-Wl,--export-dynamic'])
+
+    # -Wl,--allow-multiple-definition is used to prevent compilers to
+    # complain about symbols that are defined multiple times
+    # (fermeture and _WITHOUT_PYMOD)
+    self.load('python_cfg', tooldir='waftools')
+
+    self.env.append_unique('INCLUDES', ['include/'])
+    if opts.embed_all or opts.embed_aster:
+        self.env.append_value('ASTER_EMBEDS', ['bibc'])
+    if 'ifort' in self.env.LINK_FC:
+        self.env.append_value('LINKFLAGS', ['-nofor_main'])
+    self.check_cflags()
+
+def build(self):
+    # We split Code_Aster byte code:
+    #
+    # - libaster.so: a shared library that store symbols
+    # - libasterfermetur.so: symbols that are required but not yet
+    #   implemented
+    # - *aster*.so: python C-extension that contains python bindings
+    #
+    # Some functions are called from C, Fortran or Python
+    # (cross-language communication). Some of them are coded within
+    # python C-extension files while the corresponding byte-codes and
+    # symbols shall be stored in libaster.so. To do so, we define
+    # _WITHOUT_PYMOD_.
+    #
+    get_srcs = self.path.get_src().ant_glob
+
+    env = self.all_envs[self.variant]
+    buildenv = env.copy()
+
+    # order is important
+    uses = ['MATH', 'MPI', 'OPENMP', 'CLIB']
+    for deps in ('PETSC', 'SCOTCH', 'MUMPS', 'MED'):
+        if buildenv['HAVE_' + deps]:
+            uses.insert(0, deps)
+
+    if env.ASTER_EMBEDS and 'bibc' in env.ASTER_EMBEDS:
+        build_as_embeded(self, uses, env)
+    else:
+        build_as_shared(self, uses, env)
+
+    self.add_group()
+    # install headers
+    self.install_files(
+        osp.join(env.INCLUDEDIR, 'aster'),
+        get_srcs('include/*.h')
+    )
+
+def build_as_shared(self, uses, shenv):
+    get_srcs = self.path.get_src().ant_glob
+
+    self(
+        features = 'c cshlib',
+            name = 'asterlib',
+          target = 'aster',
+          source = get_srcs('**/*.c', excl=['supervis/python.c']),
+         defines = '_WITHOUT_PYMOD_',
+             env = shenv.copy(),
+             use = ['PYEMBED', 'NUMPY', 'asterbibfor', 'asterbibf90',
+                    'asterfermetur'] + uses,
+    )
+
+    self.add_group()
+
+    self(
+        features = 'c cshlib pyext',
+          target = '../bibpyt/aster_core',
+            name = 'aster_core',
+          source = get_srcs('**/astercore_module.c'),
+             env = shenv.copy(),
+             use = ['asterlib'],
+    )
+
+    self(
+        features = 'c cshlib pyext',
+          target = '../bibpyt/aster',
+            name = 'astermodule',
+          source = get_srcs('**/astermodule.c'),
+             env = shenv.copy(),
+             use = ['asterlib'] + uses,
+    )
+
+    self(
+        features = 'c cshlib pyext',
+          target = '../bibpyt/aster_fonctions',
+            name = 'aster_fonctions',
+          source = get_srcs('**/fonctions_module.c'),
+             env = shenv.copy(),
+             use = ['NUMPY'],
+    )
+
+    if shenv.HAVE_MED:
+        self(
+            features = 'c cshlib pyext',
+              target = '../bibpyt/med_aster',
+                name = 'med_aster',
+              source = get_srcs('**/med_aster_module.c'),
+                 env = shenv.copy(),
+                 use = ['asterlib', 'MPI', 'OPENMP', 'MED'],
+        )
+
+def build_as_embeded(self, uses, stenv):
+    get_srcs = self.path.get_src().ant_glob
+
+    excl = ['**/med_aster_module.c'] if not stenv.HAVE_MED else []
+
+    # required for Intel compiler
+    main = 'main' if stenv.FC_MAIN == -1 or 'ifort' in stenv.LINK_FC else stenv.FC_MAIN
+
+    tgt = (self.variant == 'release' and 'aster') or 'asterd'
+    self(
+        features = 'c fcprogram pyembed',
+          target = tgt,
+            name = 'asterexec',
+          source = get_srcs(['**/*.c'], excl=excl),
+         defines = ['_MAIN_=%s' % main],
+             env = stenv.copy(),
+             use = ['NUMPY', 'asterbibfor', 'asterbibf90', 'asterfermetur']
+                   + uses,
+        )
+
+@Configure.conf
+def check_cflags(self):
+    def safe_remove(var, value):
+        try:
+            self.env[var].remove(value)
+        except ValueError:
+            pass
+    if 'icc' in self.env.CC_NAME:
+        safe_remove('CFLAGS_PYEXT', '-fwrapv')
+        safe_remove('CFLAGS_PYEMBED', '-fwrapv')
+        safe_remove('CXXFLAGS_PYEXT', '-fwrapv')
+        safe_remove('CXXFLAGS_PYEMBED', '-fwrapv')
+
+
+@Configure.conf
+def check_optimization_cflags(self):
+    self.setenv('debug')
+    flags = ['-g']
+    self.start_msg('Setting C debug flags')
+    self.env.append_unique('CFLAGS', flags)
+    self.end_msg(flags)
+
+    self.setenv('release')
+    flags = ['-O2']
+    self.start_msg('Setting C optimization flags')
+    self.env.append_unique('CFLAGS', flags)
+    self.end_msg(flags)

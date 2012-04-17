@@ -1,4 +1,4 @@
-#@ MODIF stanley_engine Stanley  DATE 13/03/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF stanley_engine Stanley  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -92,12 +92,17 @@ ignore_prefixe  = 'S9999'
 
 
 cata = cata_champs.CATA_CHAMPS()
+print "cata=", cata
 
 # Gestion des Exceptions
 texte_onFatalError = "Une erreur est intervenue. L'operation a ete annulee."
 
 # Texte sensibilite
 texte_sensibilite = "Résultat non dérivé"
+
+# Pour la gestion des Exceptions
+prev_onFatalError = aster.onFatalError()
+aster.onFatalError('EXCEPTION')
 
 
 # ==============================================================================
@@ -1145,6 +1150,7 @@ class ETAT_RESU:
       raise Exception('Le champ ' + nom_cham + ' est inaccessible')
 
     for nom_cham in etapes[1:] :
+      cata[nom_cham].Evalue(self.contexte, numeros, options)
       try:
         cata[nom_cham].Evalue(self.contexte, numeros, options)
       except aster.error,err:
@@ -1695,7 +1701,10 @@ class STANLEY:
 #        DETRUIRE(OBJET=_F(CHAINE='_MA_'+str(i)), INFO=1, ALARME='NON')
         DETR( '_MA_'+str(i) )
      self.interface.Kill()
-
+     
+     # Pour la gestion des Exceptions
+     aster.onFatalError(prev_onFatalError)
+  
 
   def Clavier(self,event) :
     """

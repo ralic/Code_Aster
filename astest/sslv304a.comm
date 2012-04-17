@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE CYLINDRE SOUS PRESSION EXTERIEURE VARIABLE (AXIS_FOURIER)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -87,17 +87,17 @@ PR2_TAN=AFFE_CHAR_MECA(     MODELE=MODELE,
                           )
 
 #  RESOLUTION
-DEF=MACRO_ELAS_MULT(        MODELE=MODELE,
-                              CHAM_MATER=CHMAT,
-                              CHAR_MECA_GLOBAL=CLIM,
-                              CAS_CHARGE=_F(
-                                           MODE_FOURIER = 1,
-
-                                           TYPE_MODE = 'ANTI',
-                                           CHAR_MECA = (PR1_RAD, PR1_LON,
-                                                        PR2_NOR, PR2_TAN,),
-                                           OPTION = 'SIGM_ELNO')
-                           )
+DEF=MACRO_ELAS_MULT(MODELE=MODELE,
+                    CHAM_MATER=CHMAT,
+                    CHAR_MECA_GLOBAL=CLIM,
+                    CAS_CHARGE=_F(MODE_FOURIER = 1,
+                                  TYPE_MODE = 'ANTI',
+                                  CHAR_MECA = (PR1_RAD, PR1_LON,
+                                               PR2_NOR, PR2_TAN,),
+                                  OPTION = 'SANS',),)
+DEF=CALC_CHAMP(reuse= DEF,
+               RESULTAT = DEF,
+               CONTRAINTE='SIGM_ELNO',);
 
 # RECUPERATION DES CHAMPS ELEMENTAIRES
 U0=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',

@@ -1,8 +1,8 @@
-#@ MODIF czm_exp Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF czm_exp Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -26,7 +26,7 @@ loi = LoiComportement(
    doc = """Loi cohésive exponentielle  de type Barenblatt - R7.02.11""",
    num_lc         = 12,
    nb_vari        = 7,
-   nom_vari       = ('SAUT_N', 'SAUT_T1', 'SEUIL_DEP','INDIENDO', 'PCENERDI', 'SIGM_N','SIGM_T1'),
+   nom_vari       = ('SAUT_N', 'SAUT_T1', 'SEUILDEP','INDIENDO', 'PCENERDI', 'SIGM_N','SIGM_T1'),
    mc_mater       = ('RUPT_FRAG'),
    modelisation   = ('3D','PLAN','AXIS','ELEMJOIN'),
    deformation    = ('PETIT'),

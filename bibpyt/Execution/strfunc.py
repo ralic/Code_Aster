@@ -1,4 +1,4 @@
-#@ MODIF strfunc Execution  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF strfunc Execution  DATE 16/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -52,6 +52,8 @@ def to_unicode(string):
         return new
     elif type(string) is list:
         return [to_unicode(elt) for elt in string]
+    elif type(string) is tuple:
+        return tuple(to_unicode(list(string)))
     elif type(string) is not str:
         return string
     assert type(string) is str, u"unsupported object: %s" % string
@@ -88,8 +90,10 @@ def ufmt(uformat, *args):
     else:
         nargs = []
         for arg in args:
-            if type(arg) in (str, dict):
+            if type(arg) in (str, unicode, list, tuple, dict):
                 nargs.append(to_unicode(arg))
+            elif type(arg) not in (int, long, float):
+                nargs.append(to_unicode(str(arg)))
             else:
                 nargs.append(arg)
         arguments = tuple(nargs)

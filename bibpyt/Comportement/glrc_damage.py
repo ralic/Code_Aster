@@ -1,4 +1,4 @@
-#@ MODIF glrc_damage Comportement  DATE 10/04/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF glrc_damage Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,7 +32,7 @@ loi = LoiComportement(
    Pour les précisions sur la formulation du modèle voir [R7.01.31].""",
    num_lc         = 9999,
    nb_vari        = 19,
-   nom_vari       = ('EPSP1','EPSP2','EPSP3','KHIP1','KHIP2','KHIP3','DISSPLAS','ENDOFL+','ENDOFL-','DISSENDO','ANGL1','ANGL2','ANGL3','XMEMB1','XMEMB2','XMEMB3','XFLEX1','XFLEX2','XFLEX3'),
+   nom_vari       = ('EPSP1','EPSP2','EPSP3','KHIP1','KHIP2','KHIP3','DISSIP','ENDOFL+','ENDOFL-','DISSENDO','ANGL1','ANGL2','ANGL3','XMEMB1','XMEMB2','XMEMB3','XFLEX1','XFLEX2','XFLEX3'),
    mc_mater       = ('GLRC_DAMAGE','GLRC_ACIER'),
    modelisation   = ('DKTG','Q4GG'),
    deformation    = ('PETIT', 'GROT_GDEP'),

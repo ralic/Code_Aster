@@ -1,8 +1,8 @@
-#@ MODIF miss_fichier_interf Miss  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF miss_fichier_interf Miss  DATE 17/04/2012   AUTEUR GREFFET N.GREFFET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -77,12 +77,14 @@ def fichier_cmde(param, struct, *nom_fichier):
         "fich_mvol" : nom_fichier[0],
         "fich_chp" : nom_fichier[1],
         "fich_sol" : nom_fichier[2],
+      "fich_sol_ini" : param["FICHIER_SOL_INCI"],
         "fich_impe" : nom_fichier[3],
         "fich_forc" : nom_fichier[4],
         "freq_min" : param["FREQ_MIN"],
         "freq_max" : param["FREQ_MAX"],
         "freq_pas" : param["FREQ_PAS"],
         "freq_list" : param['LIST_FREQ'],
+        "freq_imag" : param['FREQ_IMAG'],
         "freq_nb" : "",
         "binaire"  : "",
         "z0" : param["Z0"],
@@ -98,7 +100,7 @@ def fichier_cmde(param, struct, *nom_fichier):
         dict_info["rfic1"] = "RFIC"
         dict_info["rfic2"] = str(param['RFIC'])
     # deux formats possibles pour les fréquences
-    if param["FREQ_MIN"]:
+    if param["FREQ_MIN"] and not param["LIST_FREQ"]:
         itmpl = "FREQUENCE DE %%(freq_min)%(R)s A %%(freq_max)%(R)s " \
                 "PAS %%(freq_pas)%(R)s" % dict_format
         dict_info['_lfreq'] = itmpl % dict_info
@@ -107,9 +109,95 @@ def fichier_cmde(param, struct, *nom_fichier):
         itmpl = "FREQUENCE %%(freq_nb)%(I)s\n" % dict_format + \
                 (dict_format['sR'] * dict_info['freq_nb']) % dict_info['freq_list']
         dict_info['_lfreq'] = itmpl % dict_info
+    if param['FREQ_IMAG']:
+        #dict_info['fich_sol_ini'] = param["FICHIER_SOL_INCI"]
+        itmpl = "IMGO %%(freq_imag)%(R)s" % dict_format
+        dict_info['_fimg'] = itmpl % dict_info
+        itmpl = template_miss_imag_in % dict_format
+        #itmpl = template_miss_non_imag_in % dict_format
+        dict_info['_fimg2'] = itmpl % dict_info
+    else:
+        itmpl = "*" % dict_format
+        dict_info['_fimg'] = itmpl % dict_info
+        itmpl = template_miss_non_imag_in % dict_format
+        dict_info['_fimg2'] = itmpl % dict_info
     content = template_miss_in % dict_info
     return content
+                
 
+def fichier_cmde_inci(param, struct, *nom_fichier):
+    """Produit le fichier de commandes Miss (ini).
+       Calcul du champ incident pour la methode Laplace-temps.
+    """
+    dict_info = {
+        "projet" : param["PROJET"],
+        "titre"  : struct.titre,
+        "fich_mvol" : nom_fichier[0],
+        "fich_chp" : nom_fichier[1],
+        "fich_sol" : nom_fichier[2],
+        "freq_min" : param["FREQ_MIN"],
+        "freq_max" : param["FREQ_MAX"],
+        "freq_pas" : param["FREQ_PAS"],
+        "freq_nb" : "",
+        "z0" : param["Z0"],
+        "surf"  : "",
+    }
+    if param["SURF"] == "OUI":
+        dict_info["surf"] = "SURF"
+    # deux formats possibles pour les fréquences
+    N = int(param['INST_FIN']/param['PAS_INST'])
+    Fs = 1./param['PAS_INST']
+    param['FREQ_MAX'] = Fs
+    param['FREQ_MIN'] = Fs/N
+    param['FREQ_PAS'] = Fs/N
+    dict_info['freq_max'] = param['FREQ_MAX']
+    dict_info['freq_pas'] = param['FREQ_PAS']
+    dict_info['freq_min'] = param['FREQ_MIN']
+    itmpl = "FREQUENCE DE %%(freq_min)%(R)s A %%(freq_max)%(R)s " \
+                "PAS %%(freq_pas)%(R)s" % dict_format
+    dict_info['_lfreq'] = itmpl % dict_info
+    dict_info['freq_nb'] = dict_info['freq_max']/dict_info['freq_pas']
+    content = template_miss_in2 % dict_info
+    return content
+
+
+template_miss_non_imag_in = """LIRE %%(fich_sol)s
+*
+*
+* Definition des champs incidents 
+* -------------------------------- 
+INCI 3 
+DPLANE SV 1. Z0 %%(z0)%(R)s 
+0. 0. 1.
+DPLANE SH 1. Z0 %%(z0)%(R)s 
+0. 0. 1.
+DPLANE P 1. Z0 %%(z0)%(R)s 
+0. 0. 1. 
+* 
+* Calcul des champs incidents
+* --------------------------------
+EXEC INCI
+*"""
+
+template_miss_imag_in = """LIRE %%(fich_sol_ini)s
+*
+*
+* Definition des champs incidents 
+* -------------------------------- 
+INCI 3 
+PLANE SV 1. 
+0. 0. 1.
+PLANE SH 1. 
+0. 0. 1.
+PLANE P 1.  
+0. 0. 1. 
+* 
+* Calcul des champs incidents
+* --------------------------------
+EXEC SPEC
+*
+EXEC INCI
+*"""
 
 template_miss_in = """*
 * Nom generique des fichiers MISS
@@ -150,6 +238,7 @@ INTEGRATION RECT 6 8 TRIANGLE 12 12
 *-------------------------
 *
 %%(_lfreq)s
+%%(_fimg)s
 *
 * Definition du sous-domaine    1
 *----------------------------
@@ -182,22 +271,7 @@ DOMAINE    2
 * Chargement des fonctions de Green
 * ----------------------------------
 DOS2M Z0 %%(z0)%(R)s  %%(surf)s
-LIRE %%(fich_sol)s
-*
-* Definition des champs incidents
-* --------------------------------
-INCI 3
-DPLANE SV 1. Z0 %%(z0)%(R)s
-0. 0. 1.
-DPLANE SH 1. Z0 %%(z0)%(R)s
-0. 0. 1.
-DPLANE P 1. Z0 %%(z0)%(R)s
-0. 0. 1.
-*
-* Calcul des champs incidents
-* --------------------------------
-EXEC INCI
-*
+%%(_fimg2)s
 *
 * Chargement du domaine    2
 * ---------------------------
@@ -239,5 +313,120 @@ FINP
 FIN
 """ % dict_format
 
+template_miss_in2 = """*
+* Nom generique des fichiers MISS
+* --------------------------------
+GENER %%(projet)s
+*
+* Debut du menu DATA
+* ------------------
+DATA
+*
+* Titre de l etude
+*-----------------
+TITRE
+%%(titre)s
+*
+* Lecture du maillage
+*--------------------
+MVOL %%(fich_mvol)s
+*
+* Definition du groupe lie a la structure
+*----------------------------------------
+GROUP
+    2 VOLUME
+FIN
+FING
+*
+* Definition des modes
+*---------------------
+CHAMP
+LIRE %%(fich_chp)s
+*
+* Definition des points de controle
+* ---------------------------------
+CONTrole 1
+0.0 0.0 %%(z0)%(R)s
+*
+* Parametres d integration
+*-------------------------
+*
+INTEGRATION RECT 6 8 TRIANGLE 12 12
+*
+* Plage de frequence MISS
+*-------------------------
+*
+%%(_lfreq)s
+*
+* Definition du sous-domaine    1
+*----------------------------
+*
+SDOMAINE    1 GROUPE    1   2
+KCM
+FINS
+*
+* Definition du sous-domaine    2
+*----------------------------
+*
+SDOMAINE    2 GROUPE   -1
+STRAtifie
+FINS
+*
+* Fin du menu DATA
+*-----------------
+*
+FIND
+********************************************************************************
+*
+* Debut de l execution
+*---------------------
+*
+*
+* Chargement du domaine    2
+* ---------------------------
+DOMAINE    2
+*
+* Chargement des fonctions de Green
+* ----------------------------------
+DOS2M Z0 %%(z0)%(R)s 
+LIRE %%(fich_sol)s
+*
+* Definition des champs incidents 
+* --------------------------------
+INCI 3 
+PLANE SV 1. 
+     0.00000     0.00000     1.00000
+PLANE SH 1. 
+     0.00000     0.00000     1.00000
+PLANE P 1.  
+     0.00000     0.00000     1.00000
+*
+* Calcul des champs incidents 
+* --------------------------------
+EXEC SPEC
+*
+EXEC INCI
+*
+EXEC CONTROLE UI
+*
+*
+SIGNAL DIRAC DEPL
+DOMAINE 2
+POST
+SPEC NF=    %%(freq_nb)%(I)s FMAX=     %%(freq_max)%(F)s
+FICH filtre_inverse
+CUI FLTI
+FREQ TOUTES
+CHAMP DE 1 A 3 PAS 1
+POINTS DE 1 A 1 PAS 1
+DDL TOUS
+*
+FINT
+FINP
+*
+* Fin de l execution
+* -------------------
+FIN
+""" % dict_format
 
 

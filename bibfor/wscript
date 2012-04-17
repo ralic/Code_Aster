@@ -1,0 +1,99 @@
+# encoding: utf-8
+
+import shlex
+from functools import partial
+
+from waflib import Configure, Utils, Logs
+
+
+def options(self):
+    self.load('compiler_c')
+    self.load('compiler_fc')
+
+def configure(self):
+    self.add_os_flags('FORFLAGS', 'FCFLAGS')
+    self.add_os_flags('FORLINKFLAGS', 'FCLINKFLAGS')
+    self.add_os_flags('FORINCLUDES', 'INCLUDES')
+    self.add_os_flags('FORDEFINES', 'DEFINES')
+
+    paths = self.srcnode.ant_glob('bibfor/include', src=True, dir=True)
+    paths = [d.abspath() for d in paths]
+    self.env.append_value('INCLUDES', paths)
+
+    self.check_fortran()
+    self.check_fortran_dummy_main()
+    self.check_fortran_compiler_flags()
+    self.check_fortran_mangling()
+
+def build(self):
+    buildenv = self.all_envs[self.variant]
+    get_srcs = self.path.get_src().ant_glob
+
+    self(
+        features = 'fc',
+            name = 'asterbibfor',
+          source = get_srcs('**/*.f'),
+             env = buildenv,
+             use = ['MPI', 'OPENMP'],
+    )
+
+###############################################################################
+
+@Configure.conf
+def check_fortran_compiler_flags(self):
+    self.start_msg('Getting fortran link type flags')
+    flags = []
+    if self.env.FC_NAME == 'GFORTRAN':
+        if self.env.DEST_CPU == 'x86_64':
+            flags += ['-fdefault-%s-%i' % (name, 8)
+                      for name in ('double', 'integer', 'real')]
+
+    if self.env.FC_NAME == 'IFORT':
+        flags += ['-fpe0', '-traceback']
+        if self.env.DEST_CPU == 'x86_64':
+            flags += ['-%s%i' % (name, 8) for name in 'ir']
+    self.env.append_unique('FCFLAGS', flags)
+    self.end_msg(flags)
+
+@Configure.conf
+def check_optimization_fcflags(self):
+    """
+    loop optimization error using LOC function in gfortran
+    Debian bug report: http://gcc.gnu.org/bugzilla/show_bug.cgi?id=51267
+    """
+    int_size = self.env.DEST_CPU == 'x86_64' and 8 or 4
+    fragment = self.uncompress64('''
+eNp9UsFOhDAUvO9XzMXQrgWFTfbGkRguHnQPxouptGADtiuUxM/3AZYQV+XU92bmzfSVHZbv3Lum
+l+/wevCdq3bfbWO9bnQPMw4s5cIII5WwghhCfxpfOaUDtXONqWQH1/4Ue/nKjjx0LXJkK0UqKhmJ
+K0Y0jng+kh0Hxw2uWHl/Ku6Kh5fH8rngKuiUQ5rC5KmwoYU5JA28ZmZ/iLNpQI44/QNP/8eBDU5W
+QOWsN3Zc7+taghPfjzrZpMqyOdVhv8l17mkT2ItoWkRES4x4HompMFyALYdEfyQUapOmDhASqxNM
+iRfPWnbDbEpml7kmnWs5/JveZAivRfrb0NU05lfGuhNtlalDQY/boXgqTyxQ+YZ38Qd9Afm7k44=
+''') % dict(INTEGER_SIZE=int_size)
+
+    self.setenv('debug')
+    flags = ['-g']
+    self.start_msg('Setting fortran debug flags')
+    self.env.append_unique('FCFLAGS', flags)
+    self.end_msg(flags)
+
+    self.setenv('release')
+    testit = partial(self.check_fc, fragment=fragment, mandatory=False,
+                     compile_filename='testloc.f', execute=True, use=['OPENMP'])
+    self.start_msg('Getting fortran optimization flags')
+    flags = [f for f in self.env.FCFLAGS
+             if (f.startswith('-O') and f[-1].isdigit()) or f == '-g']
+    map(self.env.FCFLAGS.remove, flags) # remove existing optimization flags
+    if not flags:
+        flags = ['-O2']
+    if not testit(fcflags=flags,
+                  errmsg='Optimization flag not compatible try with -O0'):
+        flags.append('-fno-tree-dse')
+        if not testit(fcflags=flags):
+            flags = ['-O0']
+            testit(fcflags=flags, mandatory=True,
+            errmsg=('No config found to prevent "LOC in loop" failure.',
+                    'It is known to fail with gcc 4.6 and flag "-Oi" (i>0).'))
+    self.env.append_unique('FCFLAGS', flags)
+    self.end_msg(flags)
+
+

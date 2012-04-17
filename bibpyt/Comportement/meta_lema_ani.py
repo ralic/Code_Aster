@@ -1,8 +1,8 @@
-#@ MODIF meta_lema_ani Comportement  DATE 18/01/2011   AUTEUR PROIX J-M.PROIX 
+#@ MODIF meta_lema_ani Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -27,12 +27,12 @@ loi = LoiComportement(
             pour le Zirconium uniquement""",
    num_lc         = 15,
    nb_vari        = 2,
-   nom_vari       = ('AVOIR','AVOIR'),
+   nom_vari       = ('EPSPEQ','INDIPLAS'),
    mc_mater       = ('ELAS_META', 'META_LEMA_ANI'),
    modelisation   = ('3D', 'AXIS', 'D_PLAN'),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP','GREEN_REAC','GDEF_LOG'),
    nom_varc       = ('TEMP',),
-   algo_inte         = ('ANALYTIQUE',),
+   algo_inte         = ('NEWTON',),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
    proprietes     = None,
 )

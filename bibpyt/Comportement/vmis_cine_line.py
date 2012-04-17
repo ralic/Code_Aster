@@ -1,8 +1,8 @@
-#@ MODIF vmis_cine_line Comportement  DATE 10/01/2011   AUTEUR PROIX J-M.PROIX 
+#@ MODIF vmis_cine_line Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -26,7 +26,7 @@ loi = LoiComportement(
    doc = """Loi de Von Mises - Prager avec ecrouissage cinematique lineaire [R5.03.02]""",
    num_lc         = 2,
    nb_vari        = 7,
-   nom_vari       = ('X_XX', 'X_YY', 'X_ZZ', 'X_XY', 'X_XZ', 'X_YZ', 'INDICAT',),
+   nom_vari       = ('XCINXX', 'XCINYY', 'XCINZZ', 'XCINXY', 'XCINXZ', 'XCINYZ', 'INDIPLAS',),
    mc_mater       = ('ELAS', 'ECRO_LINE'),
    modelisation   = ('3D', 'AXIS', 'D_PLAN', '1D'),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP','GDEF_LOG','GDEF_HYPO_ELAS'),

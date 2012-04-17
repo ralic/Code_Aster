@@ -1,4 +1,4 @@
-#@ MODIF endo_carre Comportement  DATE 13/02/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF endo_carre Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,7 @@ loi = LoiComportement(
    écrouissage isotrope hyperbolique négatif - R""",
    num_lc         = 53,
    nb_vari        = 2,
-   nom_vari       = ('VARI', 'INDICAT'),
+   nom_vari       = ('ENDO', 'INDIENDO'),
    mc_mater       = ('ELAS', 'ECRO_PARA', 'NON_LOCAL'),
    modelisation   = ('3D', 'AXIS',  'D_PLAN','GRADVARI','GRADEPSI','GDVARINO'),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),

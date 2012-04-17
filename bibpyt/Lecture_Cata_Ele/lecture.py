@@ -1,4 +1,4 @@
-#@ MODIF lecture Lecture_Cata_Ele  DATE 26/03/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF lecture Lecture_Cata_Ele  DATE 16/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -39,31 +39,31 @@ def lire_cata(nomfic,format='cata'):
 
 
 #   lire un fichier .cata et construire  un catalogue  python (capy)
-        global spark
-        spark.FIC_CATA = nomfic
-        fcata = open(nomfic,"r")
-        if format == 'cata' :
-            try :
-                t0=scan(fcata)
-                fcata.close()
-                t1=parse(t0)
-            except :
-                fcata = open(nomfic,"r")
-                print 80*'/'
-                print "Erreur de lecture d'un morceau contenant des catalogues"
-                print "Impression du morceau (avec ses numéros de lignes):"
-                ilig=0
-                for line in fcata :
-                    ilig=ilig+1; print "%i %s" % (ilig,line[:-1])
-                print 80*'/'
-                raise Exception("Erreur_Fatale")
-            ast2=creer_capy(t1)
-            capy=ast2.ast
-            del ast2
-            detruire_kids(capy)
-        else :
-            raise Exception("Erreur_Fatale format inconnu: %s" % format)
-        return capy
+    global spark
+    spark.FIC_CATA = nomfic
+    fcata = open(nomfic,"r")
+    if format == 'cata' :
+        try :
+            t0=scan(fcata)
+            fcata.close()
+            t1=parse(t0)
+        except :
+            fcata = open(nomfic,"r")
+            print 80*'/'
+            print "Erreur de lecture d'un morceau contenant des catalogues"
+            print "Impression du morceau (avec ses numéros de lignes):"
+            ilig=0
+            for line in fcata :
+                ilig=ilig+1; print "%i %s" % (ilig,line[:-1])
+            print 80*'/'
+            raise Exception("Erreur_Fatale")
+        ast2=creer_capy(t1)
+        capy=ast2.ast
+        del ast2
+        detruire_kids(capy)
+    else :
+        raise Exception("Erreur_Fatale format inconnu: %s" % format)
+    return capy
 
 
 #######################################################################################################
@@ -80,54 +80,54 @@ debug_constr=0
 # --------------------------------------
 
 class Token:
-        def __init__(self, type, lineno, attr=''):
-                self.type = type
-                self.attr = attr
-                self.lineno = lineno
-                if debug_scan : print self
+    def __init__(self, type, lineno, attr=''):
+        self.type = type
+        self.attr = attr
+        self.lineno = lineno
+        if debug_scan : print self
 
-        #  __cmp__      required for GenericParser, required for
-        #                       GenericASTMatcher only if your ASTs are
-        #                       heterogeneous (i.e., AST nodes and tokens)
-        #  __repr__     recommended for nice error messages in GenericParser
-        #  __getitem__  only if you have heterogeneous ASTs
-        #
-        def __cmp__(self, o):
-                return cmp(self.type, o)
-        def __repr__(self):
-                return ' Token ligne:' + str(self.lineno)  \
-                     + ' type: "' + self.type  + '" valeur: "' + self.attr +'"'
-        #def __getitem__(self, i):
-        #       raise IndexError
+    #  __cmp__      required for GenericParser, required for
+    #                       GenericASTMatcher only if your ASTs are
+    #                       heterogeneous (i.e., AST nodes and tokens)
+    #  __repr__     recommended for nice error messages in GenericParser
+    #  __getitem__  only if you have heterogeneous ASTs
+    #
+    def __cmp__(self, o):
+        return cmp(self.type, o)
+    def __repr__(self):
+        return ' Token ligne:' + str(self.lineno)  \
+             + ' type: "' + self.type  + '" valeur: "' + self.attr +'"'
+    #def __getitem__(self, i):
+    #       raise IndexError
 
 class AST:
-        def __init__(self, type):
-                self.type = type
-                self._kids = []
+    def __init__(self, type):
+        self.type = type
+        self._kids = []
 
-        #
-        #  Not all these may be needed, depending on which classes you use:
-        #
-        #  __getitem__          GenericASTTraversal, GenericASTMatcher
-        #  __len__              GenericASTBuilder
-        #  __setslice__         GenericASTBuilder
-        #  __cmp__              GenericASTMatcher
-        #
-        def __getitem__(self, i):
-                return self._kids[i]
-        def __len__(self):
-                try :
-                    return len(self._kids)
-                except : return 1
-        def __repr__(self):
-                try :
-                   return ' type_AST: "' + self.type + '" ligne: ' + str(self.lineno)
-                except :
-                   return ' type_AST: effacé.'
-        def __setslice__(self, low, high, seq):
-                self._kids[low:high] = seq
-        def __cmp__(self, o):
-                return cmp(self.type, o)
+    #
+    #  Not all these may be needed, depending on which classes you use:
+    #
+    #  __getitem__          GenericASTTraversal, GenericASTMatcher
+    #  __len__              GenericASTBuilder
+    #  __setslice__         GenericASTBuilder
+    #  __cmp__              GenericASTMatcher
+    #
+    def __getitem__(self, i):
+        return self._kids[i]
+    def __len__(self):
+        try :
+            return len(self._kids)
+        except : return 1
+    def __repr__(self):
+        try :
+            return ' type_AST: "' + self.type + '" ligne: ' + str(self.lineno)
+        except :
+            return ' type_AST: effacé.'
+    def __setslice__(self, low, high, seq):
+        self._kids[low:high] = seq
+    def __cmp__(self, o):
+        return cmp(self.type, o)
 
 # --------------------------------------------------------------------------------
 #       SCANNING
@@ -214,7 +214,7 @@ def scan(f):
 
 class MonParser(GenericASTBuilder):
     def __init__(self, AST, start='catalo'):
-                GenericASTBuilder.__init__(self, AST, start)
+        GenericASTBuilder.__init__(self, AST, start)
 
 
 #   définition de la structure générale :
@@ -502,20 +502,20 @@ class creer_capy(GenericASTTraversal):
         # -----------------------------------------------------------------------------
         likeys= node.dicop.keys(); likeys.sort(); liste2=[]; dico2={};k=0
         for ke in likeys:
-           liste2.append(node.op[node.dicop[ke]])
-           dico2[ke]=k; k=k+1
+            liste2.append(node.op[node.dicop[ke]])
+            dico2[ke]=k; k=k+1
         node.op=liste2 ; node.dicop=dico2
 
         likeys= node.dicte.keys(); likeys.sort(); liste2=[]; dico2={};k=0
         for ke in likeys:
-           liste2.append(node.te[node.dicte[ke]])
-           dico2[ke]=k; k=k+1
+            liste2.append(node.te[node.dicte[ke]])
+            dico2[ke]=k; k=k+1
         node.te=liste2 ; node.dicte=dico2
 
         likeys= node.dictg.keys(); likeys.sort(); liste2=[]; dico2={};k=0
         for ke in likeys:
-           liste2.append(node.tg[node.dictg[ke]])
-           dico2[ke]=k; k=k+1
+            liste2.append(node.tg[node.dictg[ke]])
+            dico2[ke]=k; k=k+1
         node.tg=liste2 ; node.dictg=dico2
 
 
@@ -523,8 +523,8 @@ class creer_capy(GenericASTTraversal):
     def n_l_cata(self, node):
         node.l_cata=[]
         if len(node) == 2 :
-           node.l_cata.extend(node[0].l_cata)
-           node.l_cata.append(node[1].cata)
+            node.l_cata.extend(node[0].l_cata)
+            node.l_cata.append(node[1].cata)
         if len(node) == 1 : node.l_cata.append(node[0].cata)
 
     def n_cata(self, node):
@@ -538,28 +538,28 @@ class creer_capy(GenericASTTraversal):
         #  l_ident   ::= ident
         node.l_ident=[]
         if len(node) == 2 :
-           node.l_ident.extend(node[0].l_ident)
-           match=re.search('([a-z][a-z0-9_]*)\[([0-9]*)\]',node[1].attr,re.IGNORECASE)
-           if match is not None :
-             prefix=match.group(1)
-             lonlist=match.group(2)
-             ident_list=[]
-             for i in range(1,int(lonlist)+1) :
-               ident_list.append(prefix+str(i))
-             node.l_ident.extend(ident_list)
-           else :
-             node.l_ident.append(node[1].attr)
+            node.l_ident.extend(node[0].l_ident)
+            match=re.search('([a-z][a-z0-9_]*)\[([0-9]*)\]',node[1].attr,re.IGNORECASE)
+            if match is not None :
+                prefix=match.group(1)
+                lonlist=match.group(2)
+                ident_list=[]
+                for i in range(1,int(lonlist)+1) :
+                    ident_list.append(prefix+str(i))
+                node.l_ident.extend(ident_list)
+            else :
+                node.l_ident.append(node[1].attr)
         else :
-           match=re.search('([a-z][a-z0-9_]*)\[([0-9]*)\]',node[0].attr,re.IGNORECASE)
-           if match is not None :
-             prefix=match.group(1)
-             lonlist=match.group(2)
-             ident_list=[]
-             for i in range(1,int(lonlist)+1) :
-               ident_list.append(prefix+str(i))
-             node.l_ident.extend(ident_list)
-           else :
-             node.l_ident.append(node[0].attr)
+            match=re.search('([a-z][a-z0-9_]*)\[([0-9]*)\]',node[0].attr,re.IGNORECASE)
+            if match is not None :
+                prefix=match.group(1)
+                lonlist=match.group(2)
+                ident_list=[]
+                for i in range(1,int(lonlist)+1) :
+                    ident_list.append(prefix+str(i))
+                node.l_ident.extend(ident_list)
+            else :
+                node.l_ident.append(node[0].attr)
         del node._kids
 
     def n_l_entier(self, node):
@@ -567,10 +567,10 @@ class creer_capy(GenericASTTraversal):
         #  l_entier   ::= entier
         node.l_entier=[]
         if len(node) == 2 :
-           node.l_entier.extend(node[0].l_entier)
-           node.l_entier.append(int(node[1].attr))
+            node.l_entier.extend(node[0].l_entier)
+            node.l_entier.append(int(node[1].attr))
         else :
-           node.l_entier.append(int(node[0].attr))
+            node.l_entier.append(int(node[0].attr))
         del node._kids
 
 
@@ -581,48 +581,48 @@ class creer_capy(GenericASTTraversal):
         #    l_tyma      ::=  tyma
         node.l_tyma=[]
         if len(node) == 2 :
-           node.l_tyma.extend(node[0].l_tyma)
-           node.l_tyma.append(node[1].tyma)
+            node.l_tyma.extend(node[0].l_tyma)
+            node.l_tyma.append(node[1].tyma)
         else :
-           node.l_tyma.append(node[0].tyma)
+            node.l_tyma.append(node[0].tyma)
         del node._kids
 
     def n_tyma(self, node):
         #                     0       1     2      3     4       5       6      7
         #  tyma      ::=  MAILLE__  ident entier  DIM__ entier  CODE__ chaine  l_elrefe
-           node.tyma=(node[1].attr,node[2].attr,node[4].attr,node[6].attr,node[7].l_elrefe)
-           if len(node[6].attr) != 5 :
-              ERR.mess('E',"le code d'un type de maille doit avoir 3 caractères exactement."+node.code)
+        node.tyma=(node[1].attr,node[2].attr,node[4].attr,node[6].attr,node[7].l_elrefe)
+        if len(node[6].attr) != 5 :
+            ERR.mess('E',"le code d'un type de maille doit avoir 3 caractères exactement."+node.code)
 
 
     def n_fampg(self, node):
         #  fampg       ::=  FAMILLE__  ident  entier
-           node.fampg=(node[1].attr,node[2].attr,)
+        node.fampg=(node[1].attr,node[2].attr,)
 
     def n_l_fampg(self, node):
         #    l_fampg      ::=  l_fampg fampg
         #    l_fampg      ::=  fampg
         node.l_fampg=[]
         if len(node) == 2 :
-           node.l_fampg.extend(node[0].l_fampg)
-           node.l_fampg.append(node[1].fampg)
+            node.l_fampg.extend(node[0].l_fampg)
+            node.l_fampg.append(node[1].fampg)
         else :
-           node.l_fampg.append(node[0].fampg)
+            node.l_fampg.append(node[0].fampg)
         del node._kids
 
     def n_elrefe(self, node):
         #  elrefe      ::=  ELREFE__  ident  l_fampg
-           node.elrefe=(node[1].attr,node[2].l_fampg)
+        node.elrefe=(node[1].attr,node[2].l_fampg)
 
     def n_l_elrefe(self, node):
         #    l_elrefe      ::=  l_elrefe elrefe
         #    l_elrefe      ::=  elrefe
         node.l_elrefe=[]
         if len(node) == 2 :
-           node.l_elrefe.extend(node[0].l_elrefe)
-           node.l_elrefe.append(node[1].elrefe)
+            node.l_elrefe.extend(node[0].l_elrefe)
+            node.l_elrefe.append(node[1].elrefe)
         else :
-           node.l_elrefe.append(node[0].elrefe)
+            node.l_elrefe.append(node[0].elrefe)
         del node._kids
 
     def n_cata_tm(self, node):
@@ -634,23 +634,23 @@ class creer_capy(GenericASTTraversal):
         # vérification de l'unicité des noms des types de maille et de leurs codes :
         dico={} ; dico_code={}
         for k in  range(len(node.ltm)) :
-           if dico.has_key(node.ltm[k][0]) : ERR.mess('E',"erreur : le type de maille: "+node.ltm[k][0]+" est déjà défini.")
-           if dico_code.has_key(node.ltm[k][3]) : ERR.mess('E',"erreur : le type de maille: "+node.ltm[k][0]+" a un CODE__ déjà utilisé:"+node.ltm[k][3])
-           dico[node.ltm[k][0]]=1
-           dico_code[node.ltm[k][3]]=1
+            if dico.has_key(node.ltm[k][0]) : ERR.mess('E',"erreur : le type de maille: "+node.ltm[k][0]+" est déjà défini.")
+            if dico_code.has_key(node.ltm[k][3]) : ERR.mess('E',"erreur : le type de maille: "+node.ltm[k][0]+" a un CODE__ déjà utilisé:"+node.ltm[k][3])
+            dico[node.ltm[k][0]]=1
+            dico_code[node.ltm[k][3]]=1
 
         # vérification de l'unicité des noms des ELREFE :
         dico={}
         for tm in node.ltm :
-           nom_tm=tm[0]
-           for elrefe in tm[4] :
-              nom_elrefe=elrefe[0]
-              if not dico.has_key(nom_elrefe) :
-                 dico[nom_elrefe]=nom_tm
-              else :
-                 if dico[nom_elrefe]!=nom_tm :
-                    ERR.mess('E',"erreur : le nom d'ELREFE__ "+nom_elrefe+\
-                    " est défini dans plusieurs MAILLE__ : "+nom_tm+" "+dico[nom_elrefe])
+            nom_tm=tm[0]
+            for elrefe in tm[4] :
+                nom_elrefe=elrefe[0]
+                if not dico.has_key(nom_elrefe) :
+                    dico[nom_elrefe]=nom_tm
+                else :
+                    if dico[nom_elrefe]!=nom_tm :
+                        ERR.mess('E',"erreur : le nom d'ELREFE__ "+nom_elrefe+\
+                        " est défini dans plusieurs MAILLE__ : "+nom_tm+" "+dico[nom_elrefe])
         ERR.contexte("","RAZ")
 
 
@@ -666,8 +666,8 @@ class creer_capy(GenericASTTraversal):
         node.l_affe_te=[]
         if len(node) == 1 : node.l_affe_te.append(node[0].affe_te)
         if len(node) == 2 :
-           node.l_affe_te.extend(node[0].l_affe_te)
-           node.l_affe_te.append(node[1].affe_te)
+            node.l_affe_te.extend(node[0].l_affe_te)
+            node.l_affe_te.append(node[1].affe_te)
 
     def n_modeli(self, node):
 #                             0           1     2      3      4     5       6       7           8          9
@@ -675,16 +675,16 @@ class creer_capy(GenericASTTraversal):
 #       modeli      ::=  MODELISATION__ chaine DIM__ entier entier CODE__ chaine  ATTRIBUT__ l_attr_val l_affe_te
         ERR.contexte('Définition de la modélisation: '+node[1].attr)
         if len(node)== 8 :
-           node.modeli=(node[1].attr,node[7].l_affe_te,node[6].attr,(node[3].attr,node[4].attr),None)
+            node.modeli=(node[1].attr,node[7].l_affe_te,node[6].attr,(node[3].attr,node[4].attr),None)
         else :
-           node.modeli=(node[1].attr,node[9].l_affe_te,node[6].attr,(node[3].attr,node[4].attr),node[8].l_attr_val)
+            node.modeli=(node[1].attr,node[9].l_affe_te,node[6].attr,(node[3].attr,node[4].attr),node[8].l_attr_val)
 
         if len(node[6].attr) != 5 :
-           ERR.mess('E',"le code d'une modélisation doit avoir 3 caractères exactement: "+node[6].attr)
+            ERR.mess('E',"le code d'une modélisation doit avoir 3 caractères exactement: "+node[6].attr)
         if not node[3].attr in ("-1","0","1","2","3")  :
-           ERR.mess('E',"la 1eme dimension doit etre celle des élements 'principaux' (-1,0,1,2, ou 3) : "+node[3].attr)
+            ERR.mess('E',"la 1eme dimension doit etre celle des élements 'principaux' (-1,0,1,2, ou 3) : "+node[3].attr)
         if not node[4].attr in ("2","3")  :
-           ERR.mess('E',"la 2eme dimension doit etre celle de l'espace (2 ou 3) : "+node[4].attr)
+            ERR.mess('E',"la 2eme dimension doit etre celle de l'espace (2 ou 3) : "+node[4].attr)
         ERR.contexte("","RAZ")
 
     def n_l_modeli(self, node):
@@ -693,8 +693,8 @@ class creer_capy(GenericASTTraversal):
         node.l_modeli=[]
         if len(node) == 1 : node.l_modeli.append(node[0].modeli)
         if len(node) == 2 :
-           node.l_modeli.extend(node[0].l_modeli)
-           node.l_modeli.append(node[1].modeli)
+            node.l_modeli.extend(node[0].l_modeli)
+            node.l_modeli.append(node[1].modeli)
 
     def n_pheno(self, node):
 #                             0      1       2      3        4
@@ -702,15 +702,15 @@ class creer_capy(GenericASTTraversal):
         ERR.contexte('Définition du phénomène: '+node[1].attr)
         node.pheno=(node[1].attr,node[4].l_modeli,node[3].attr)
         if len(node[3].attr) != 4 :
-           ERR.mess('E',"le code d'un phénomène doit avoir 2 exactement: "+node[3].attr)
+            ERR.mess('E',"le code d'un phénomène doit avoir 2 exactement: "+node[3].attr)
 
         # vérification de l'unicité des noms des modélisations (et de leurs codes) d'un phénomène:
         dico={}; dico_code={}
         for modeli in node[4].l_modeli :
-           if dico.has_key(modeli[0]): ERR.mess('E',"La modélisation: "+modeli[0]+" est définie plusieurs fois.")
-           if dico_code.has_key(modeli[2]): ERR.mess('E',"La modélisation: "+modeli[0]+" a un CODE__ déjà utilisé:"+modeli[2])
-           dico[modeli[0]]=1
-           dico_code[modeli[2]]=1
+            if dico.has_key(modeli[0]): ERR.mess('E',"La modélisation: "+modeli[0]+" est définie plusieurs fois.")
+            if dico_code.has_key(modeli[2]): ERR.mess('E',"La modélisation: "+modeli[0]+" a un CODE__ déjà utilisé:"+modeli[2])
+            dico[modeli[0]]=1
+            dico_code[modeli[2]]=1
         ERR.contexte("","RAZ")
 
 
@@ -721,8 +721,8 @@ class creer_capy(GenericASTTraversal):
         node.l_pheno=[]
         if len(node) == 1 : node.l_pheno.append(node[0].pheno)
         if len(node) == 2 :
-           node.l_pheno.extend(node[0].l_pheno)
-           node.l_pheno.append(node[1].pheno)
+            node.l_pheno.extend(node[0].l_pheno)
+            node.l_pheno.append(node[1].pheno)
 
     def n_cata_ph(self, node):
 #                           0              1                2
@@ -752,9 +752,9 @@ class creer_capy(GenericASTTraversal):
         if len(node)   == 2 :  node.opin1=(node[0].attr,node[1].attr,None,None)
         elif len(node) == 3 :
             if node[2].attr[0] == "'":
-               node.opin1=(node[0].attr,node[1].attr,node[2].attr,None)
+                node.opin1=(node[0].attr,node[1].attr,node[2].attr,None)
             elif node[2].attr[0] == "<":
-               node.opin1=(node[0].attr,node[1].attr,None,node[2].attr)
+                node.opin1=(node[0].attr,node[1].attr,None,node[2].attr)
         elif len(node) == 4 :  node.opin1=(node[0].attr,node[1].attr,
                                            node[2].attr,node[3].attr)
 
@@ -770,10 +770,10 @@ class creer_capy(GenericASTTraversal):
 #          l_opin1   ::= opin1
         node.l_opin1=[]
         if len(node) == 2 :
-           node.l_opin1.extend(node[0].l_opin1)
-           node.l_opin1.append(node[1].opin1)
+            node.l_opin1.extend(node[0].l_opin1)
+            node.l_opin1.append(node[1].opin1)
         else :
-           node.l_opin1.append(node[0].opin1)
+            node.l_opin1.append(node[0].opin1)
         del node._kids
 
     def n_l_opou1(self, node):
@@ -781,10 +781,10 @@ class creer_capy(GenericASTTraversal):
 #          l_opou1   ::= opou1
         node.l_opou1=[]
         if len(node) == 2 :
-           node.l_opou1.extend(node[0].l_opou1)
-           node.l_opou1.append(node[1].opou1)
+            node.l_opou1.extend(node[0].l_opou1)
+            node.l_opou1.append(node[1].opou1)
         else :
-           node.l_opou1.append(node[0].opou1)
+            node.l_opou1.append(node[0].opou1)
         del node._kids
 
     def n_cata_op(self, node):
@@ -795,14 +795,14 @@ class creer_capy(GenericASTTraversal):
 #       cata_op     ::=  cmodif ident  comlibr   OPTION__  IN__      l_opin1    OUT__     l_opou1     #8
         node.cmodif=node[0].attr
         if len(node) == 6 :
-           node.cata_op=(node[1].attr,[],node[5].l_opou1,None)
+            node.cata_op=(node[1].attr,[],node[5].l_opou1,None)
         elif len(node) == 7 :
-           if node[4].type=="IN__" :
-              node.cata_op=(node[1].attr,[],node[6].l_opou1,node[2].attr)
-           else :
-              node.cata_op=(node[1].attr,node[4].l_opin1,node[6].l_opou1,None)
+            if node[4].type=="IN__" :
+                node.cata_op=(node[1].attr,[],node[6].l_opou1,node[2].attr)
+            else :
+                node.cata_op=(node[1].attr,node[4].l_opin1,node[6].l_opou1,None)
         elif len(node) == 8 :
-           node.cata_op=(node[1].attr,node[5].l_opin1,node[7].l_opou1,node[2].attr)
+            node.cata_op=(node[1].attr,node[5].l_opin1,node[7].l_opou1,node[2].attr)
 
 
 #   pour construire le catalogue des GRANDEUR :
@@ -815,17 +815,17 @@ class creer_capy(GenericASTTraversal):
 #       gdsimp     ::= comlibr    ident    =         UNION__    l_ident
 
         if len(node) == 5 :
-           node.comlibr=node[0].attr; decal=1
+            node.comlibr=node[0].attr; decal=1
         else :
-           node.comlibr=None ; decal=0
+            node.comlibr=None ; decal=0
         node.nom=node[0+decal].attr
         if node[2+decal].type == "UNION__" :
-           node.union="OUI"
-           node.lgd=node[3+decal].l_ident
+            node.union="OUI"
+            node.lgd=node[3+decal].l_ident
         else :
-           node.union=None
-           node.tscal=node[2+decal].attr
-           node.lcmp=node[3+decal].l_ident
+            node.union=None
+            node.tscal=node[2+decal].attr
+            node.lcmp=node[3+decal].l_ident
 
     def n_l_gdsimp(self, node):
 #       l_gdsimp   ::= l_gdsimp  gdsimp
@@ -833,8 +833,8 @@ class creer_capy(GenericASTTraversal):
         node.l_gd=[]
         if len(node) == 1 : node.l_gd.append(node[0])
         if len(node) == 2 :
-           node.l_gd.extend(node[0].l_gd)
-           node.l_gd.append(node[1])
+            node.l_gd.extend(node[0].l_gd)
+            node.l_gd.append(node[1])
 
     def n_gdelem(self, node):
 #       gdelem   ::= ident entier l_ident
@@ -847,8 +847,8 @@ class creer_capy(GenericASTTraversal):
         node.l_gd=[]
         if len(node) == 1 : node.l_gd.append(node[0])
         if len(node) == 2 :
-           node.l_gd.extend(node[0].l_gd)
-           node.l_gd.append(node[1])
+            node.l_gd.extend(node[0].l_gd)
+            node.l_gd.append(node[1])
 
 
     def n_cata_gd(self, node):
@@ -948,9 +948,9 @@ class creer_capy(GenericASTTraversal):
         # point    ::= ( l_ident  )
         # point    ::= ( )
         if len(node) == 3 :
-           node.point=node[1].l_ident
+            node.point=node[1].l_ident
         else :
-           node.point=[]
+            node.point=[]
 
     def n_l_point(self, node):
         #  l_point  ::= ident  point
@@ -995,9 +995,9 @@ class creer_capy(GenericASTTraversal):
 #       gauss1    ::=  GAUSS__  l_attr_val
 #       gauss1    ::=  GAUSS__  l_attr_val  fpg_liste
         if len(node)==2 :
-           node.gauss1=(node[1].l_attr_val,None)
+            node.gauss1=(node[1].l_attr_val,None)
         if len(node)==3 :
-           node.gauss1=(node[1].l_attr_val,node[2].l_fpg_liste)
+            node.gauss1=(node[1].l_attr_val,node[2].l_fpg_liste)
 
     def n_elref1(self, node):
 #       elref1    ::=  ELREFE__ ident
@@ -1046,9 +1046,9 @@ class creer_capy(GenericASTTraversal):
 #       entet1      ::=  ENTETE__  ELEMENT__ ident MAILLE__ ident  l_elref1
 #       entet1      ::=  ENTETE__  ELEMENT__ ident MAILLE__ ident  l_elref1  ATTRIBUT__ l_attr_val
         if len(node)==6 :
-           node.entet1=(node[2].attr,node[4].attr,node[5].l_elref1,None)
+            node.entet1=(node[2].attr,node[4].attr,node[5].l_elref1,None)
         else :
-           node.entet1=(node[2].attr,node[4].attr,node[5].l_elref1,node[7].l_attr_val)
+            node.entet1=(node[2].attr,node[4].attr,node[5].l_elref1,node[7].l_attr_val)
 
 
     def n_entete(self, node):
@@ -1118,11 +1118,11 @@ class creer_capy(GenericASTTraversal):
 #       opt      ::= ident entier IN__  OUT__
         ERR.contexte("Définition de l'option:"+node[0].attr + " vers la ligne: "+str(node[0].lineno))
         if len(node)==6 :
-           node.opt =(node[0].attr,node[1].attr,trie_en_2(node[3].l_ident),trie_en_2(node[5].l_ident))
+            node.opt =(node[0].attr,node[1].attr,trie_en_2(node[3].l_ident),trie_en_2(node[5].l_ident))
         if len(node)==5 :
-           node.opt =(node[0].attr,node[1].attr,[],trie_en_2(node[4].l_ident))
+            node.opt =(node[0].attr,node[1].attr,[],trie_en_2(node[4].l_ident))
         if len(node)==4 :
-           node.opt =(node[0].attr,node[1].attr,[],[])
+            node.opt =(node[0].attr,node[1].attr,[],[])
         ERR.contexte("","RAZ")
 
 
@@ -1134,20 +1134,20 @@ def detruire_kids(ast):
     # but : détruire dans l'arbre produit tout l'arbre syntaxique (.kids, .lineno, .type).
     for k in ast.__dict__.keys():
         if k=='_kids' :
-           del ast._kids
+            del ast._kids
         elif k=='type' :
-           del ast.type
+            del ast.type
         elif k=='lineno' :
-           del ast.lineno
+            del ast.lineno
         else :
-           try :
-              detruire_kids(ast.__dict__[k])
-           except: pass
+            try :
+                detruire_kids(ast.__dict__[k])
+            except: pass
 
-           try :
-              for elt in ast.__dict__[k]:
-                 detruire_kids(elt)
-           except: pass
+            try :
+                for elt in ast.__dict__[k]:
+                    detruire_kids(elt)
+            except: pass
 
 
 def trie_en_2(liste):
@@ -1155,15 +1155,12 @@ def trie_en_2(liste):
     if len(liste)%2 != 0 : ERR.mess('E',"Erreur la liste d'identificateurs doit etre une liste de paires:\n\t "+str(liste))
     l1=[];l2=[];lr=[]
     for k in range(len(liste)/2) :
-       l1.append(liste[2*(k-1)])
-       l2.append(liste[2*(k-1)+1])
+        l1.append(liste[2*(k-1)])
+        l2.append(liste[2*(k-1)+1])
     l2_apres=copy.deepcopy(l2)
     l2_apres.sort()
     for x2 in l2_apres :
-       k= l2.index(x2)
-       lr.append(l1[k])
-       lr.append(l2[k])
+        k= l2.index(x2)
+        lr.append(l1[k])
+        lr.append(l2[k])
     return lr
-
-
-

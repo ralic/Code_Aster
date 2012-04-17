@@ -1,4 +1,4 @@
-#@ MODIF granger_fp_indt Comportement  DATE 13/02/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF granger_fp_indt Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

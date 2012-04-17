@@ -1,4 +1,4 @@
-#@ MODIF hayhurst Comportement  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF hayhurst Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,7 @@ loi = LoiComportement(
    Ce modele s'emploie avec les mots cles DEFORMATION = PETIT ou PETIT_REAC ou GDEF_HYPO_ELAS ou GDEF_LOG.""",
    num_lc         = 32,
    nb_vari        = 12,
-   nom_vari       = ('EPSVP_XX','EPSVP_YY','EPSVP_ZZ','EPSVP_XY','EPSVP_XZ','EPSVP_YZ','EPSPEQ','H1','H2','PHI','D','H'),
+   nom_vari       = ('EPSPXX','EPSPYY','EPSPZZ','EPSPXY','EPSPXZ','EPSPYZ','EPSPEQ','H1','H2','PHI','ENDO','VIDE'),
    mc_mater       = ('ELAS','HAYHURST'),
    modelisation   = ('3D','AXIS','D_PLAN'),
    deformation    = ('PETIT','PETIT_REAC','GDEF_HYPO_ELAS','GDEF_LOG'),

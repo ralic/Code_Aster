@@ -10,7 +10,7 @@
       CHARACTER*(*)                      KCHA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 10/04/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,7 +83,6 @@ C
       CALL GETRES(K8B,CONCEP,NOMCMD)
 C
       IF ( (NOMCMD.EQ.'CALC_ELEM'     ).OR.
-     &     (NOMCMD.EQ.'CALC_NO'       ).OR.
      &     (NOMCMD.EQ.'CALC_CHAMP'    ).OR.
      &     (NOMCMD.EQ.'CALC_ERREUR'   ).OR.
      &     (NOMCMD.EQ.'CALC_META  '   ).OR.

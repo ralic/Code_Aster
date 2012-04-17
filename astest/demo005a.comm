@@ -1,10 +1,10 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
 #
 # TITRE : Cylindre mince sous pression hydrostatique
 # demo005a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,44 +34,9 @@ DEBUT(CODE=_F(NOM='DEMO005A', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 # Lecture du maillage
 # ------------------
-# Le maillage est fourni au format GMSH
-
-PRE_GMSH() ;
-
 # Lecture du maillage dans le fichier de maillage et creation du concept mail
-# contenant le maillage au format Aster
 
-mail = LIRE_MAILLAGE  ( ) ;
-
-
-# Definition des groupes
-# ----------------------
-# Definition des groupes de mailles a partir de ceux crees dans GMSH
-
-mail=DEFI_GROUP(reuse =mail,
-               MAILLAGE=mail,
-               CREA_GROUP_MA=(_F(NOM='APPUI',
-                           GROUP_MA='GM11',),
-                              _F(NOM='LDF',
-                           GROUP_MA='GM13',),
-                              _F(NOM='LFA',
-                           GROUP_MA='GM14',),
-                              _F(NOM='ND_A',
-                           GROUP_MA='GM1',),
-                              _F(NOM='ND_B',
-                           GROUP_MA='GM2',),
-                              _F(NOM='ND_C',
-                           GROUP_MA='GM3',),
-                              _F(NOM='ND_D',
-                           GROUP_MA='GM4',),
-                              ),
-# Definition des groupes de noeuds a partir des groupes de mailles
-               CREA_GROUP_NO=(_F(GROUP_MA='ND_A',),
-                              _F(GROUP_MA='ND_B',),
-                              _F(GROUP_MA='ND_C',),
-                              _F(GROUP_MA='ND_D',),
-                              ),
-               );
+mail = LIRE_MAILLAGE  ( FORMAT='MED') ;
 
 
 # Definition du modele
@@ -110,11 +75,11 @@ chmat=AFFE_MATERIAU(MAILLAGE=mail,
 # -------------------------------------
 # Les conditions aux limites peuvent porter sur des noeuds, des groupes de noeuds,
 # des mailles ou des groupes de mailles
-# Ici les noeuds du groupe de mailles APPUI (mailles de bord) sont affectees de
+# Ici les noeuds du groupe de mailles LAB (mailles de bord) sont affectees de
 # la condition: DY = 0 ce qui signifie "deplacement suivant y" nul.
 
 clim=AFFE_CHAR_MECA(MODELE=modl,
-                FACE_IMPO=_F(GROUP_MA='APPUI',
+                FACE_IMPO=_F(GROUP_MA='LAB',
                             DY=0,),);
 
 # Definition du chargement:
@@ -123,20 +88,20 @@ clim=AFFE_CHAR_MECA(MODELE=modl,
 # Les fonctions sont definies point par point (variation affine entre deux points
 # par defaut)
 # Ici la pression varie entre
-#     20000 Pa pour y=0
-#  et     0 Pa pour y=L
+#     200000 Pa pour y=0
+#  et      0 Pa pour y=L
 
 f_y=DEFI_FONCTION(NOM_PARA='Y',
-                  VALE=(0.0,20000.0,
+                  VALE=(0.0,200000.0,
                         4.0,0.0,),);
 
 # Affectation du chargement
 # -------------------------
 # Affectation de la pression (fonction de y) sur le bord compose des groupes
-# de mailles LFA LDF
+# de mailles de bord LDA
 
 charg=AFFE_CHAR_MECA_F(MODELE=modl,
-           PRES_REP=_F(GROUP_MA=('LFA','LDF',),
+           PRES_REP=_F(GROUP_MA=('LDA',),
                        PRES=f_y,),);
 
 # Resolution
@@ -160,121 +125,50 @@ res1=MECA_STATIQUE(
 # element a partir des deplacements
 
 res1=CALC_ELEM(reuse=res1,
-
-
                RESULTAT=res1,
                OPTION='SIGM_ELNO',);
 
 
-# Impression des resultats aux points A B C D
+# Impression des resultats au point A
 # -------------------------------------------
 # Impression des resultats au format texte des deplacements aux noeuds
 # correspondant au point A
 
 IMPR_RESU(MODELE=modl,
           RESU=_F(RESULTAT=res1,
-                  GROUP_MA='ND_A',),);
+                  GROUP_NO='NOEUDA',),);
 
-# Impression des resultats au format texte des deplacements aux noeuds
-# correspondant au point B
+# Impression des resultats pour une visualisation avec SALOME
 
-IMPR_RESU(MODELE=modl,
-          RESU=_F(RESULTAT=res1,
-                  GROUP_MA='ND_B',),);
-
-IMPR_RESU(MODELE=modl,
-          RESU=_F(RESULTAT=res1,
-                 GROUP_MA='ND_C',),);
-IMPR_RESU(MODELE=modl,
-          RESU=_F(RESULTAT=res1,
-                  GROUP_MA='ND_D',),);
-
-# Impression des resultats au format texte deplacement/contraintes sur tout
-# le maillage
-
-IMPR_RESU(MODELE=modl,
+IMPR_RESU(MODELE=modl,FORMAT='MED',
           RESU=_F(RESULTAT=res1,),);
-
-
-# Impression des resultats pour une visualisation avec GMSH
-
-IMPR_RESU(MODELE=modl,UNITE=37,FORMAT='GMSH',
-          RESU=_F(RESULTAT=res1,NOM_CHAM='DEPL',),);
 
 # Verification des resultats (Test de non-regression)
 #
-# Verification du deplacement suivant x et y au point A
+# Verification du deplacement suivant x au point A
 
 TEST_RESU(RESU=(
                 _F( RESULTAT = res1,
                     NOM_CHAM = 'DEPL',
-                    GROUP_NO = 'ND_A',
+                    GROUP_NO = 'NOEUDA',
                     NOM_CMP  = 'DX',
-                    VALE     = 4.68143E-06,
+                    VALE     = 9.956E-06,
                     NUME_ORDRE = 1,
                     REFERENCE='NON_REGRESSION',
-                    VERSION  ='8.1.0'
                   ),
                 )
           )
-# Verification du deplacement suivant x et y au point B
+
+# Verification du deplacement suivant y au point C
 
 TEST_RESU(RESU=(
                 _F( RESULTAT = res1,
                     NOM_CHAM = 'DEPL',
-                    GROUP_NO = 'ND_B',
-                    NOM_CMP  = 'DX',
-                    VALE     = 4.65280E-06,
-                    NUME_ORDRE = 1,
-                    REFERENCE='NON_REGRESSION',
-                    VERSION  ='8.1.0'
-                  ),
-                )
-          )
-# Verification du deplacement suivant x et y au point C
-
-TEST_RESU(RESU=(
-                _F( RESULTAT = res1,
-                    NOM_CHAM = 'DEPL',
-                    GROUP_NO = 'ND_C',
-                    NOM_CMP  = 'DX',
-                    VALE     =1.20218E-06,
-                    NUME_ORDRE = 1,
-                    REFERENCE='NON_REGRESSION',
-                    VERSION  ='8.1.0'
-                  ),
-                _F( RESULTAT = res1,
-                    NOM_CHAM = 'DEPL',
-                    GROUP_NO = 'ND_C',
+                    GROUP_NO = 'NOEUDC',
                     NOM_CMP  = 'DY',
-                    VALE     = -2.63963E-06,
+                    VALE     = -5.318E-06,
                     NUME_ORDRE = 1,
                     REFERENCE='NON_REGRESSION',
-                    VERSION  ='8.1.0'
-                  ),
-                )
-          )
-
-# Verification du deplacement suivant x et y au point D
-
-TEST_RESU(RESU=(
-                _F( RESULTAT = res1,
-                    NOM_CHAM = 'DEPL',
-                    GROUP_NO = 'ND_D',
-                    NOM_CMP  = 'DX',
-                    VALE     =3.31016E-09,
-                    NUME_ORDRE = 1,
-                    REFERENCE='NON_REGRESSION',
-                    VERSION  ='8.1.0'
-                  ),
-                _F( RESULTAT = res1,
-                    NOM_CHAM = 'DEPL',
-                    GROUP_NO = 'ND_D',
-                    NOM_CMP  = 'DY',
-                    VALE     = -2.81696E-06,
-                    NUME_ORDRE = 1,
-                    REFERENCE='NON_REGRESSION',
-                    VERSION  ='8.1.0'
                   ),
                 )
           )
