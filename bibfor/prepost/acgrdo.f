@@ -7,10 +7,10 @@
       INTEGER    SOMPGW, JRWORK, TSPAQ, IPG, JVECPG, JDTAUM,JRESUN
       CHARACTER*16  NOMMET, NOMCRI, NOMFOR,FORVIE
       CHARACTER*8   NOMMAT,GRDVIE
-      REAL*8     VRESU(24),VALPAR(20),VALA,COEFPA
+      REAL*8     VRESU(24),VALPAR(22),VALA,COEFPA
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF PREPOST  DATE 23/04/2012   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -94,7 +94,7 @@ C23456
       REAL*8     RESUPC(24), GRDEQ(2), DTAUM(2), NXM(2), NYM(2), COEPRE
       REAL*8     NZM(2), NRUPT(2), DOM(2), SIGEQ(2)
       REAL*8     NORMAX(2), NORMOY(2),EPNMAX(2), EPNMOY(2), VALPU(2)
-      REAL*8     PHYDRO, PHYDRM, VALE,VALNU, R8B
+      REAL*8     PHYDRO, PHYDRM, VALE,VALNU, R8B, SIGM(NBORDR*6)
       REAL*8     SIG(6),EPS(6), EPSE(6), EPSP(6),VEPSP(6)
       REAL*8     EPSL(6), EPSEL(6), EPSPL(6),EQEPSP, JACAUX(3)
       REAL*8     VSIG(6), SIGL(6), EQSIG, VSIGE, EQUI(17)
@@ -102,16 +102,16 @@ C23456
       REAL*8     NM1X, NM1Y, NM1Z, BR(6),VECPRO(3,3),VALPRO(3)
       REAL*8     EPRMAX, EPRMIN, SIGNM1, TOL, TOLDYN, AR(6)
       REAL*8     FXM, FYM, FZM, SINM1M, EPSPA(NBORDR+1), SOMDEF
-      REAL*8     DEVSIG(6), DVEPSE(6), DENDIS, DSIGL(6)
+      REAL*8     DEVSIG(6), DVEPSE(6), DENDIS, DSIGL(6), RAYSPH
       REAL*8     DEPSL(6), SOMDEN,DENDIE, ETREMA, ETREMI
       REAL*8     SIGMAX, EXM, EYM, EZM,EPSNM1,EPNM1M, SIGMIN
       REAL*8     STREMA, STREMI, VEPS(6), EQEPS,VEPST , EPSPAC
       INTEGER    NPERM,ITYPE,IORDRE, NVP, NITJAC, ORDINI, ORDFIN
       INTEGER    I,J,K,L,IBID,JPROF, NPARMA, NP,ICODRE,ADR,IRET,IPAR
-      INTEGER    DECAL, PARACT(30), ADRL, NBCYAD, IARG
+      INTEGER    DECAL, PARACT(30), ADRL, NBCYAD, IARG, NBF, NBTOT
       CHARACTER*24 CHNOM, CBID
       CHARACTER*16 PHENOM, TYPCHA
-      CHARACTER*8  NOMPF(20), NOMPAR(20), NOMGRD
+      CHARACTER*8  NOMPF(22), NOMPAR(22), NOMGRD
       LOGICAL      ENDUR, PLCICR, LBID, CYFERM
 C-----------------------------------------------------------------------
 C       DATA  LSIG/ 'SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ' /
@@ -129,7 +129,8 @@ C     ---------------------------------------------------------------
      &                  'EPNMAX', 'EPNMOY', 'DEPSPE', 'EPSPR1',
      &                  'SIGNM1', 'DENDIS', 'DENDIE', 'APHYDR',
      &                  'MPHYDR', 'DSIGEQ', 'SIGPR1', 'EPSNM1',
-     &                  'INVA2S', 'DSITRE', 'DEPTRE', 'EPSPAC'   /
+     &                  'INVA2S', 'DSITRE', 'DEPTRE', 'EPSPAC',
+     &                  'RAYSPH', 'AMPCIS'   /
 C     ---------------------------------------------------------------
 
 C -------------------------------------------------------------------
@@ -167,7 +168,8 @@ C INITIALISATION
       SIGMIN = 0.D0
       VEPST  = 0.D0
       EPSPAC = 0.D0
-
+      RAYSPH = 0.D0
+      
       DO 20 I = 1, 24
          RESUPC(I) = 0.0D0
 20    CONTINUE
@@ -391,7 +393,7 @@ C ---------------------------------------------------------------
 C -- CALCULER LA DEMI-AMPLITUDE DE LA CONTRAINTE EQVALENTE
 C POUR LE CRIETRE MANSON_COFF
 
-         IF (PARACT(14) .EQ. 1)  THEN
+         IF ((PARACT(14) .EQ. 1) .OR. (PARACT(22) .EQ. 1)) THEN
 
             DO 21 L = J, ORDFIN
                ADRL = (L-1)*TSPAQ+KWORK*SOMPGW*DECAL+(IPG-1)*DECAL
@@ -512,9 +514,36 @@ C CALCULER DEFORMATION PLASTIQUE ACCUMULEE
                EPSPAC = EPSPAC + SOMDEF**0.5D0
             ENDIF
 
-         ENDIF
+         ENDIF 
 
 10    CONTINUE
+
+
+C ---------------------------------------------------------------
+C CALCULER LE RAYON DE SPHERE CIRCONCRITE
+      IF (PARACT(21) .EQ. 1)  THEN
+      
+         DO 16 J= 1, NBORDR*6
+            SIGM(J) = 0.D0
+16       CONTINUE 
+
+         DO 15 J= ORDINI, ORDFIN
+            DECAL = 12
+
+            ADR = (J-1)*TSPAQ+KWORK*SOMPGW*DECAL+(IPG-1)*DECAL
+
+            CALL TENEPS( JRWORK,ADR, C1, C2, SIG, EPS, EPSE, EPSP)
+            
+            DO 17 K= 1, 6
+               SIGM((J-1)*6+ K) = SIG(K)
+17          CONTINUE            
+15       CONTINUE
+         
+         NBF = 6
+         NBTOT = ORDFIN - ORDINI +1 
+         CALL FMRAYO (NBF, NBTOT, SIGM, RAYSPH)
+             
+      ENDIF 
 
 C ---------------------------------------------------------------
 C POUR LES GRANDEURS DES CRITERERS "CISSAILEMENT PLAN CRITIQUE",
@@ -613,7 +642,7 @@ C---------------------------------------------------------------
 
           IF (NOMCRI(1:7) .EQ. 'FORMULE') THEN
 C        NOMBRE DE PARAMETRES DISPONIBLES
-             NPARMA = 20
+             NPARMA = 22
 C        VALEURS DE CES PARAMETRES, CORRESSPOND A NOMPAR
              VALPAR(1) = DTAUM(K)
              VALPAR(2) = PHYDRM
@@ -635,6 +664,8 @@ C        VALEURS DE CES PARAMETRES, CORRESSPOND A NOMPAR
              VALPAR(18) = (STREMA -STREMI)/4.D0
              VALPAR(19) = (ETREMA -ETREMI)/4.D0
              VALPAR(20) = EPSPAC
+             VALPAR(21) = RAYSPH
+             VALPAR(22) = VSIGE/(2.D0*1.732051D0)
 
 C  RECUPERER LES NOMS DE PARAMETRES FOURNIS PAR L'UTILISATEUR
              CHNOM(20:24) = '.PROL'

@@ -13,7 +13,7 @@
       CHARACTER*16       TYPBAS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
+C MODIF ALGORITH  DATE 23/04/2012   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -172,7 +172,7 @@ C           CAS D'UN NUME_ORDRE
         IF (N2.NE.0) THEN
           IF (MONMOT(1).EQ.'OUI') THEN
             NOMMOT = 'OUI'
-            CALL GETVID('EXCIT','MODE_STAT',1,IARG,1,MODSTA,NBV)
+            CALL GETVID(' ','MODE_STAT',1,IARG,1,MODSTA,NBV)
             IF(NBV.EQ.0) THEN
                IER =IER+1
                CALL U2MESG('E', 'ALGORITH13_46',0,' ',0,0,0,0.D0)
@@ -194,7 +194,7 @@ C           CAS D'UN NUME_ORDRE
         IF (N3.NE.0) THEN
           IF (MONMOT(2).EQ.'OUI') THEN
             NOMMOT = 'OUI'
-            CALL GETVID('EXCIT','MODE_CORR',1,IARG,1,MODCOR,NBV)
+            CALL GETVID(' ','MODE_CORR',1,IARG,1,MODCOR,NBV)
             IF(NBV.EQ.0) THEN
                IER =IER+1
                CALL U2MESG('E', 'ALGORITH13_47',0,' ',0,0,0,0.D0)

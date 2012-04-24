@@ -1,4 +1,4 @@
-# MODIF  DATE 12/03/2012   AUTEUR FOUCAULT A.FOUCAULT 
+# MODIF  DATE 23/04/2012   AUTEUR DEVESA G.DEVESA 
 # TITRE SOLLICITATION SISMIQUE D UNE COLONNE DE SOL 
 #  APRES CONSTRUCTION PAR COUCHES AVEC LOI DE HUJEUX
 # wdnp101a.para = tps_job 1000 mem_job 128Mo ncpus 1 liste_test S
@@ -789,7 +789,7 @@ U9B=STAT_NON_LINE(reuse=U9B,
                                       ),                              
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1),
-                 CONVERGENCE=_F(ITER_GLOB_MAXI=10,RESI_GLOB_RELA=1E-6,
+                 CONVERGENCE=_F(ITER_GLOB_MAXI=10,RESI_GLOB_RELA=1.1E-6,
                                 ARRET='OUI',),
                  INFO=1,
                  );                    

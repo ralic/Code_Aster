@@ -1,8 +1,8 @@
-#@ MODIF ce_calcul_modifstruct Calc_essai  DATE 28/11/2011   AUTEUR BODEL C.BODEL 
+#@ MODIF ce_calcul_modifstruct Calc_essai  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -1090,7 +1090,7 @@ def clear_concept(objet):
         cpt = objet.obj
     except AttributeError:
         cpt = objet
-    DETRUIRE(CONCEPT=_F(NOM=cpt),ALARME='NON',INFO=1)
+    DETRUIRE(CONCEPT=_F(NOM=cpt),INFO=1)
 
 
 def convert_args( mc, concepts ):

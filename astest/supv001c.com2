@@ -1,0 +1,71 @@
+# AJOUT 
+# TITRE TEST DE LA CREATION DES CONCEPTS PAR LES MACRO-COMMANDES
+# RESPONSABLE
+# .comm : en PAR_LOT='OUI'
+# .com1 : en PAR_LOT='NON'
+# .com2 : THER_LINEAIRE en PAR_LOT='NON'
+# .com3 : THER_LINEAIRE en PAR_LOT='OUI'
+
+DEBUT(CODE=_F(NOM='SUPV001C', NIV_PUB_WEB='INTERNET'),
+      PAR_LOT='OUI',
+      IMPR_MACRO='OUI',)
+
+# import la macro
+import os
+if os.path.exists('fort.33'):
+    os.rename('fort.33', 'ma_macro.py')
+from ma_macro import MA_MACRO
+
+# Le calcul thermique est celui de ttll01b
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
+
+TIMPVAR=DEFI_CONSTANTE(NOM_RESU='TEMP',
+                       VALE=100.0E0)
+
+ACIER=DEFI_MATERIAU(THER=_F(LAMBDA=1.0,
+                    RHO_CP=1.0))
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=ACIER))
+
+MOTH=AFFE_MODELE(MAILLAGE=MAIL,
+                 AFFE=_F(TOUT='OUI',
+                         MODELISATION='PLAN',
+                         PHENOMENE='THERMIQUE'))
+
+TEMP0=CREA_CHAMP(OPERATION='AFFE',
+                 TYPE_CHAM='NOEU_TEMP_R',
+                 MAILLAGE=MAIL,
+                 AFFE=_F(TOUT='OUI',
+                         NOM_CMP='TEMP',
+                         VALE=0.0E0))
+
+CHTH=AFFE_CHAR_THER_F(MODELE=MOTH,
+                      TEMP_IMPO=_F(GROUP_NO='GRNM14',
+                                   TEMP=TIMPVAR))
+
+LR8=DEFI_LIST_REEL(DEBUT=0.,
+                   INTERVALLE=(_F(JUSQU_A=1.E-3,NOMBRE=10),
+                               _F(JUSQU_A=1.E-2,NOMBRE=9),
+                               _F(JUSQU_A=1.E-1,NOMBRE=9),
+                               _F(JUSQU_A=1.E0,NOMBRE=9),
+                               _F(JUSQU_A=2.0,NOMBRE=10)))
+
+RTEMP=MA_MACRO(MOTH=MOTH,
+               TEMP0=TEMP0,
+               CHMAT=CHMAT,
+               LR8=LR8,
+               CHTH=CHTH,)
+
+DETRUIRE(CONCEPT=_F(NOM=RTEMP),)
+
+MA_MACRO(MOTH=MOTH,
+         TEMP0=TEMP0,
+         CHMAT=CHMAT,
+         LR8=LR8,
+         CHTH=CHTH,
+         TEMPER=CO('RTEMP'),)
+
+FIN()
+

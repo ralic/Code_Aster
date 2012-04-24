@@ -1,9 +1,9 @@
-#@ MODIF N_MCSIMP Noyau  DATE 30/08/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_MCSIMP Noyau  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,6 +34,7 @@ from Noyau.N_ASSD import ASSD
 from Noyau.N_CO import CO
 import N_OBJECT
 from N_CONVERT import ConversionFactory
+from N_types import force_list
 
 class MCSIMP(N_OBJECT.OBJECT):
    """
@@ -180,10 +181,8 @@ class MCSIMP(N_OBJECT.OBJECT):
           Cette methode retourne l'objet MCSIMP self s'il a le concept co
           comme valeur.
       """
-      lval=self.valeur
-      if type(self.valeur) not in (list, tuple):
-        lval=(self.valeur,)
-      if co in lval:return [self,]
+      if co in force_list(self.valeur):
+          return [self,]
       return []
 
    def get_all_co(self):
@@ -191,10 +190,5 @@ class MCSIMP(N_OBJECT.OBJECT):
           Cette methode retourne la liste de tous les concepts co
           associés au mot cle simple
       """
-      lval=self.valeur
-      if type(self.valeur) not in (list, tuple):
-        lval=(self.valeur,)
-      l=[]
-      for c in lval:
-        if isinstance(c,CO) or hasattr(c,"_etape"):l.append(c)
-      return l
+      return [co for co in force_list(self.valeur) \
+                 if isinstance(co, CO) and co.is_typco()]

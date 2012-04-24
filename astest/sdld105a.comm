@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
+# MODIF  DATE 23/04/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE REPONSE TRANSITOIRE D UN SYSTEME MASSES-RESSORTS A UN SEISME AVEC CORRECTION STATIQUE
 # sdld105a.para = tps_job 180 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -195,10 +195,9 @@ TRA_GCS=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                         EXCIT=_F(VECT_ASSE=VECT_X,
                                  FONC_MULT=ACCELERO,
                                  CORR_STAT='OUI',
-                                 MODE_CORR=MODCOR,
                                  D_FONC_DT=DERI_PRE,
-                                 D_FONC_DT2=DERI_SEC,),);
-
+                                 D_FONC_DT2=DERI_SEC,),
+                        MODE_CORR=MODCOR,);     
 
 N04_DXC3=RECU_FONCTION(RESU_GENE=TRA_GCS,
                        NOM_CHAM='DEPL',

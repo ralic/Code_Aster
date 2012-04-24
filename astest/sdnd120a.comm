@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
+# MODIF  DATE 23/04/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE LACHER D'UNE MASSE AVEC DISPOSITIF ANTI SISMIQUE
 # sdnd120a.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -169,22 +169,24 @@ PROJ_BASE(BASE=MODE_MEC,
 # CALCUL TRANSITOIRE PAR SUPERPOSITION MODALE
 # -------------------------------------------
 TRAN_GE1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                 MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
-                  SCHEMA_TEMPS=_F(SCHEMA='EULER',),                
-               INCREMENT=_F( INST_INIT = 0.,  INST_FIN = 1.,  PAS = 1.25E-5),EXCIT=(
+                    MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
+                    SCHEMA_TEMPS=_F(SCHEMA='EULER',),                
+                    INCREMENT=_F( INST_INIT = 0.,  INST_FIN = 1.,  PAS = 1.25E-5),
+                    MODE_STAT=MODE_STA,
+                    EXCIT=(
                 _F( VECT_ASSE = VECT_X1,
                        MULT_APPUI = 'OUI',
                        DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO1',
-                       MODE_STAT=MODE_STA,
+###                       MODE_STAT=MODE_STA,
                        ACCE = ACCELER1,
                        VITE = VITESSE1,  DEPL = DEPLACE1),
                 _F( VECT_ASSE = VECT_X2,  ACCE = ACCELER2,
                        MULT_APPUI = 'OUI',
-                       MODE_STAT=MODE_STA,
+###                       MODE_STAT=MODE_STA,
                        DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO11',
                        VITE = VITESSE2,  DEPL = DEPLACE2)),
-                ARCHIVAGE=_F(  PAS_ARCH = 80),
-                ANTI_SISM=_F(  NOEUD_1 = 'NO2',
+                    ARCHIVAGE=_F(  PAS_ARCH = 80),
+                    ANTI_SISM=_F(  NOEUD_1 = 'NO2',
                             NOEUD_2 = 'NO12',
                             RIGI_K1 = 6.E+06,
                             RIGI_K2 = 0.53E+06,
@@ -196,22 +198,24 @@ TRAN_GE1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                           )
 
 TRAN_GE2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                 MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
-                  SCHEMA_TEMPS=_F(SCHEMA='EULER',),                
-               INCREMENT=_F( INST_INIT = 0.,  INST_FIN = 1.,  PAS = 1.25E-5),EXCIT=(
+                    MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
+                    SCHEMA_TEMPS=_F(SCHEMA='EULER',),                
+                    INCREMENT=_F( INST_INIT = 0.,  INST_FIN = 1.,  PAS = 1.25E-5),
+                    MODE_STAT=MODE_STA,
+                    EXCIT=(
                 _F( VECT_ASSE = VECT_X1,
                        MULT_APPUI = 'OUI',
                        DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO1',
-                       MODE_STAT=MODE_STA,
+###                       MODE_STAT=MODE_STA,
                        ACCE = ACCELER1,
                        VITE = VITESSE1,  DEPL = DEPLACE1),
                 _F( VECT_ASSE = VECT_X2,  ACCE = ACCELER2,
                        MULT_APPUI = 'OUI',
-                       MODE_STAT=MODE_STA,
+###                       MODE_STAT=MODE_STA,
                        DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO11',
                        VITE = VITESSE2,  DEPL = DEPLACE2)),
-                ARCHIVAGE=_F(  PAS_ARCH = 80),
-                ANTI_SISM=_F(  GROUP_NO_1 = 'GN2',
+                    ARCHIVAGE=_F(  PAS_ARCH = 80),
+                    ANTI_SISM=_F(  GROUP_NO_1 = 'GN2',
                             GROUP_NO_2 = 'GN12',
                             RIGI_K1 = 6.E+06,
                             RIGI_K2 = 0.53E+06,

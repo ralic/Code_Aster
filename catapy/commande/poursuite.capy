@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -66,6 +66,8 @@ POURSUITE=MACRO(nom="POURSUITE",
                                  statut='f',typ='TXM',into=('OUI','NON'),defaut='NON'),
            ENVIMA          =SIMP(fr="imprime les valeurs définies dans ENVIMA",
                                  statut='f',typ='TXM',into=('TEST',)),
+           HIST_ETAPE = SIMP(fr="permet de conserver toutes les étapes du jeu de commandes",
+                             statut='f', typ='TXM', into=('OUI', 'NON'), defaut='NON'),
          ),
 
          MESURE_TEMPS     =FACT(fr="Pour choisir les mesures de temps consommé dans les commandes",

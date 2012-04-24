@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -103,6 +103,8 @@ C
          NOPARP = ZK24(LPROL+2)
          NOPARF = ZK24(LPROL+6)
 C
+      ELSE
+        CALL ASSERT(.FALSE.)
       ENDIF
 C
 C

@@ -1,8 +1,8 @@
-#@ MODIF test_fichier_ops Macro  DATE 10/11/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF test_fichier_ops Macro  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -153,8 +153,7 @@ def test_fichier_ops(self, FICHIER, NB_VALE, VALE, VALE_K, TYPE_TEST,
                  CRITERE='ABSOLU',
                  **kwopt)
 
-   DETRUIRE(CONCEPT=_F(NOM=(tinfo__, tab1__),),
-            ALARME='NON',INFO=1,)
+   DETRUIRE(CONCEPT=_F(NOM=(tinfo__, tab1__),), INFO=1,)
    return ier
 
 #-------------------------------------------------------------------------------

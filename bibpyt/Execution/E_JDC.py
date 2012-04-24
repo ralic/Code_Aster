@@ -1,4 +1,4 @@
-#@ MODIF E_JDC Execution  DATE 16/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_JDC Execution  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -72,7 +72,7 @@ class JDC:
           print e,e.nom,e.isactif()
         try:
            if e.isactif():
-               message.debug(SUPERV, "call etape.Exec : %s %s", e.nom, e)
+               #message.debug(SUPERV, "call etape.Exec : %s %s", e.nom, e)
                e.Exec()
         except EOFError:
            # L'exception EOFError a ete levee par l'operateur FIN
@@ -248,7 +248,7 @@ class JDC:
        # le pickle (version 2.2)
        if self.info_level > 1:
           self.timer_fin.Start(" . filter")
-       context=self.filter_context(context,mode)
+       context=self.filter_context(context)
        if self.info_level > 1:
           self.timer_fin.Stop(" . filter")
        # Sauvegarde du pickle dans le fichier pick.1 du repertoire de travail
@@ -258,7 +258,7 @@ class JDC:
        if self.info_level > 1:
           self.timer_fin.Stop("pickle")
 
-   def filter_context(self,context,mode):
+   def filter_context(self, context):
        """
           Cette methode construit un dictionnaire a partir du dictionnaire context
           passé en argument en supprimant tous les objets python que l'on ne veut pas
@@ -278,8 +278,10 @@ class JDC:
            if isinstance(value,ENTITE) :continue
            # Enfin on conserve seulement les objets que l'on peut pickler individuellement.
            try:
+              # supprimer le maximum de références arrières (notamment pour les formules)
               # pour accélérer, on supprime le catalogue de SD devenu inutile.
               if isinstance(value, ASSD):
+                  value.supprime(force=True)
                   value.supprime_sd()
               pickle.dumps(value, protocol=PICKLE_PROTOCOL)
               d[key]=value

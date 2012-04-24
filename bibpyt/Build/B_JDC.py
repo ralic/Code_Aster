@@ -1,4 +1,4 @@
-#@ MODIF B_JDC Build  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_JDC Build  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -102,7 +102,7 @@ class JDC(CODE):
     ier=0
     for e in self.etapes:
       if not e.isactif():continue
-      message.debug(SUPERV, "call etape.Build : %s, %s", e.nom, e)
+      #message.debug(SUPERV, "call etape.Build : %s, %s", e.nom, e)
       ret=e.Build()
       ier=ier+ret
       if ret == 0:

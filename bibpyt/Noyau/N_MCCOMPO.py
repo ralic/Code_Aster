@@ -1,4 +1,4 @@
-#@ MODIF N_MCCOMPO Noyau  DATE 03/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_MCCOMPO Noyau  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -206,6 +206,13 @@ class MCCOMPO(N_OBJECT.OBJECT):
       dico_mc.update(dico)
       dico=dico_mc
 
+      return dico
+
+   def cree_dict_toutes_valeurs(self):
+      """Semblable à `cree_dict_valeurs(liste=self.mc_liste)` en supprimant les
+      valeurs None."""
+      dico = self.cree_dict_valeurs(self.mc_liste, condition=0)
+      dico = dict([(k, v) for k, v in dico.items() if v is not None])
       return dico
 
    def cree_dict_condition(self,liste=[],condition=0):

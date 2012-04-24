@@ -1,4 +1,4 @@
-#@ MODIF N_JDC Noyau  DATE 13/03/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_JDC Noyau  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -106,6 +106,7 @@ NONE = None
       self.nstep=0
       self.nsd=0
       self.par_lot='OUI'
+      self.par_lot_user = None
       if definition:
          self.regles=definition.regles
          self.code = definition.code
@@ -120,8 +121,7 @@ NONE = None
       # on met le jdc lui-meme dans le context global pour l'avoir sous
       # l'etiquette "jdc" dans le fichier de commandes
       self.g_context={ 'jdc' : self }
-      # Liste pour stocker tous les concepts produits dans le JDC
-      self.sds=[]
+      #message.debug(SUPERV, "g_context : %s - %s", self.g_context, id(self.g_context))
       # Dictionnaire pour stocker tous les concepts du JDC (acces rapide par le nom)
       self.sds_dict={}
       self.etapes=[]
@@ -132,6 +132,8 @@ NONE = None
       self.index_etape_courante=0
       self.UserError="UserError"
       self.alea = None
+      # permet transitoirement de conserver la liste des étapes
+      self.hist_etape = False
 
    def compile(self):
       """
@@ -176,10 +178,12 @@ Causes possibles :
       linecache.cache[self.nom]=0,0,string.split(self.procedure,'\n'),self.nom
       try:
          exec self.exec_init in self.g_context
+         #message.debug(SUPERV, "JDC.exec_compile_1 - len(g_context) = %d", len(self.g_context.keys()))
          for obj_cata in self.cata:
             if type(obj_cata) == types.ModuleType :
                init2 = "from "+obj_cata.__name__+" import *"
                exec init2 in self.g_context
+         #message.debug(SUPERV, "JDC.exec_compile_2 - len(g_context) = %d", len(self.g_context.keys()))
 
          # Initialisation du contexte global pour l'évaluation des conditions de BLOC
          # On utilise une copie de l'initialisation du contexte du jdc
@@ -201,8 +205,9 @@ Causes possibles :
          # est recalculé
          # mais les constantes sont perdues
          self.const_context=self.g_context
-         message.debug(SUPERV, "pass")
+         #message.debug(SUPERV, "pass")
          exec self.proc_compile in self.g_context
+         #message.debug(SUPERV, "JDC.exec_compile_3 - len(g_context) = %d", len(self.g_context.keys()))
 
          CONTEXT.unset_current_step()
          if self.appli != None : self.appli.affiche_infos('')
@@ -288,7 +293,7 @@ Causes possibles :
       """
       self.etapes.append(etape)
       self.index_etapes[etape] = len(self.etapes) - 1
-      message.debug(SUPERV, "#%d %s", self.index_etapes[etape], etape.nom)
+      #message.debug(SUPERV, "#%d %s", self.index_etapes[etape], etape.nom)
       return self.g_register(etape)
 
    def o_register(self,sd):
@@ -348,7 +353,6 @@ Causes possibles :
       if sdnom in self._reserved_kw:
          raise AsException("Nom de concept invalide. '%s' est un mot-clé réservé." % sdnom)
 
-      # ATTENTION : Il ne faut pas ajouter sd dans sds car il s y trouve deja.
       # Ajoute a la creation (appel de reg_sd).
       self.sds_dict[sdnom]=sd
       sd.set_name(sdnom)
@@ -356,14 +360,13 @@ Causes possibles :
       # En plus si restrict vaut 'non', on insere le concept dans le contexte du JDC
       if restrict == 'non':
          self.g_context[sdnom]=sd
-         message.debug(SUPERV, "g_context[%r] = %s", sdnom, sd)
+         #message.debug(SUPERV, "g_context[%r] = %s", sdnom, sd)
 
    def reg_sd(self,sd):
       """
           Methode appelee dans l __init__ d un ASSD lors de sa creation
           pour s enregistrer
       """
-      self.sds.append(sd)
       return self.o_register(sd)
 
    def delete_concept_after_etape(self,etape,sd):
@@ -381,6 +384,22 @@ Causes possibles :
       N_OBJECT.OBJECT.supprime(self)
       for etape in self.etapes:
          etape.supprime()
+
+   def clean(self, netapes):
+      """Nettoie les `netapes` dernières étapes de la liste des étapes."""
+      if self.hist_etape:
+          return
+      for i in xrange(netapes):
+        e=self.etapes.pop()
+        jdc=e.jdc
+        parent=e.parent
+        e.supprime()
+        e.parent=parent
+        e.jdc=jdc
+        #message.debug(SUPERV, "JDC.clean - etape = %r - refcount(e) = %d",
+                      #e.nom, sys.getrefcount(e))
+        del self.index_etapes[e]
+
 
    def get_file(self,unite=None,fic_origine=''):
       """
@@ -408,13 +427,22 @@ Causes possibles :
       linecache.cache[file]=0,0,string.split(text,'\n'),file
       return file,text
 
-   def set_par_lot(self,par_lot):
+   def set_par_lot(self, par_lot, user_value=False):
       """
-          Met le mode de traitement a PAR LOT
-          ou a COMMANDE par COMMANDE
-          en fonction de la valeur du mot cle PAR_LOT et
-          du contexte : application maitre ou pas
+      Met le mode de traitement a PAR LOT
+      ou a COMMANDE par COMMANDE
+      en fonction de la valeur du mot cle PAR_LOT et
+      du contexte : application maitre ou pas
+      
+      En PAR_LOT='NON', il n'y a pas d'ambiguité.
+      En PAR_LOT='OUI', E_SUPERV positionne l'attribut à 'NON' après la phase
+      d'analyse et juste avant la phase d'exécution.
+      `user_value` : permet de stocker la valeur choisie par l'utilisateur
+      pour l'interroger plus tard (par exemple dans `get_contexte_avant`).
       """
+      #message.debug(SUPERV, "set par_lot = %r", par_lot)
+      if user_value:
+          self.par_lot_user = par_lot
       if self.appli == None:
         # Pas d application maitre
         self.par_lot=par_lot
@@ -466,6 +494,23 @@ Causes possibles :
       # courante pendant le processus de construction des étapes.
       # Si on insère des commandes (par ex, dans EFICAS), il faut préalablement
       # remettre ce pointeur à 0
+      #message.debug(SUPERV, "g_context : %s", [k for k, v in self.g_context.items() if isinstance(v, ASSD)])
+      #message.debug(SUPERV, "current_context : %s", [k for k, v in self.current_context.items() if isinstance(v, ASSD)])
+      if self.par_lot_user == 'NON':
+          d = self.current_context = self.g_context.copy()
+          if etape is None:
+              return d
+          # retirer les sd produites par 'etape'
+          sd_names = [sd.nom for sd in etape.get_created_sd()]
+          #message.debug(SUPERV, "reuse : %s, sdprods : %s", etape.reuse, sd_names)
+          for nom in sd_names:
+             try:
+                  del d[nom]
+             except KeyError:
+                 from warnings import warn
+                 warn("concept '%s' absent du contexte de %s" % (nom, self.nom),
+                      RuntimeWarning, stacklevel=2)
+          return d
       if etape:
          index_etape = self.index_etapes[etape]
       else:
@@ -488,6 +533,7 @@ Causes possibles :
          if e.isactif():
             e.update_context(d)
       self.index_etape_courante=index_etape
+      #message.debug(SUPERV, "returns : %s", [k for k, v in d.items() if isinstance(v, ASSD)])
       return d
 
    def get_global_contexte(self):

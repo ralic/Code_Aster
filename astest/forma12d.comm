@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
+# MODIF  DATE 23/04/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE TP DYNAMIQUE LINEAIRE
 # forma12d.para = tps_job 180 mem_job 60Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -112,6 +112,7 @@ d2sin25 = FORMULE(VALE='-(2*pi*omega)**2*sin(2*pi*omega*INST)',
 DYNACORR=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                          MATR_MASS=MAGENE,
                          MATR_RIGI=GEGENE,
+                         MODE_CORR=MOSTRA,
                          SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                          INCREMENT=_F(INST_FIN=1.0,
                                       PAS=1.E-4,),
@@ -119,8 +120,7 @@ DYNACORR=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                   FONC_MULT=sin25,
                                   CORR_STAT='OUI',
                                   D_FONC_DT=dsin25,
-                                  D_FONC_DT2=d2sin25,
-                                  MODE_CORR=MOSTRA,),);
+                                  D_FONC_DT2=d2sin25,),);
 
 DYNASAN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                         MATR_MASS=MAGENE,

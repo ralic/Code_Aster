@@ -1,4 +1,4 @@
-#@ MODIF macro_elas_mult_ops Macro  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
+#@ MODIF macro_elas_mult_ops Macro  DATE 23/04/2012   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -215,8 +215,6 @@ def macro_elas_mult_ops(self,MODELE,CHAM_MATER,CARA_ELEM,NUME_DDL,
               motscles['NUME_MODE']=m['MODE_FOURIER']
           CALC_ELEM(reuse=nomres,
                     RESULTAT=nomres,
-                    REPE_COQUE=_F(NIVE_COUCHE=m['NIVE_COUCHE'],
-                                  NUME_COUCHE=m['NUME_COUCHE'],),
                     OPTION='SIEF_ELGA',
                     **motscles)
 

@@ -1,9 +1,9 @@
-#@ MODIF N_ETAPE Noyau  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_ETAPE Noyau  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,46 +52,43 @@ class ETAPE(N_MCCOMPO.MCCOMPO):
    # On le met à None pour indiquer qu'il n'y a pas de module de calcul rattaché
    codex=None
 
-   def __init__(self,oper=None,reuse=None,args={}):
+   def __init__(self, oper=None, reuse=None, args={}):
       """
-         Attributs :
-
-          - definition : objet portant les attributs de définition d'une étape de type opérateur. Il
-                         est initialisé par l'argument oper.
-
-          - reuse : indique le concept d'entrée réutilisé. Il se trouvera donc en sortie
-                    si les conditions d'exécution de l'opérateur l'autorise
-
-          - valeur : arguments d'entrée de type mot-clé=valeur. Initialisé avec l'argument args.
-
+      Attributs :
+       - definition : objet portant les attributs de définition d'une étape de type opérateur. Il
+                      est initialisé par l'argument oper.
+       - reuse : indique le concept d'entrée réutilisé. Il se trouvera donc en sortie
+                 si les conditions d'exécution de l'opérateur l'autorise
+       - valeur : arguments d'entrée de type mot-clé=valeur. Initialisé avec l'argument args.
       """
-      self.definition=oper
-      self.reuse=reuse
-      self.valeur=args
+      self.definition = oper
+      self.reuse = reuse
+      self.valeur = args
       self.nettoiargs()
-      self.parent=CONTEXT.get_current_step()
+      self.parent = CONTEXT.get_current_step()
       self.etape = self
-      self.nom=oper.nom
-      self.idracine=oper.label
-      self.appel=N_utils.callee_where()
-      self.mc_globaux={}
-      self.sd=None
-      self.actif=1
+      self.nom = oper.nom
+      self.idracine = oper.label
+      self.appel = N_utils.callee_where()
+      self.mc_globaux = {}
+      self.sd = None
+      self.actif = 1
       self.make_register()
+      self.icmd = None
 
    def make_register(self):
       """
-         Initialise les attributs jdc, id, niveau et réalise les
-         enregistrements nécessaires
+      Initialise les attributs jdc, id, niveau et réalise les
+      enregistrements nécessaires
       """
       if self.parent :
          self.jdc = self.parent.get_jdc_root()
-         self.id=self.parent.register(self)
-         self.niveau=None
+         self.id = self.parent.register(self)
+         self.niveau = None
       else:
-         self.jdc = self.parent =None
-         self.id=None
-         self.niveau=None
+         self.jdc = self.parent = None
+         self.id = None
+         self.niveau = None
 
    def nettoiargs(self):
       """
@@ -120,7 +117,7 @@ class ETAPE(N_MCCOMPO.MCCOMPO):
              le nommage du concept.
 
       """
-      message.debug(SUPERV, "Build_sd %s", self.nom)
+      #message.debug(SUPERV, "Build_sd %s", self.nom)
       self.sdnom=nom
       try:
          if self.parent:
@@ -233,7 +230,6 @@ Causes possibles :
          Retourne l'étape à laquelle appartient self
          Un objet de la catégorie etape doit retourner self pour indiquer que
          l'étape a été trouvée
-         XXX fait double emploi avec self.etape ????
       """
       return self
 
@@ -251,6 +247,20 @@ Causes possibles :
       if self.sd:
          self.sd.supprime()
 
+   def __del__(self):
+      #message.debug(SUPERV, "__del__ ETAPE %s <%s>", getattr(self, 'nom', 'unknown'), self)
+      #if self.sd:
+         #message.debug(SUPERV, "            sd : %s", self.sd.nom)
+      pass
+
+   def get_created_sd(self):
+      """Retourne la liste des sd réellement produites par l'étape.
+      Si reuse est présent, `self.sd` a été créée avant, donc n'est pas dans
+      cette liste."""
+      if not self.reuse and self.sd:
+          return [self.sd, ]
+      return []
+
    def isactif(self):
       """
          Indique si l'étape est active (1) ou inactive (0)
@@ -262,7 +272,7 @@ Causes possibles :
           Methode utilisee pour que l etape self se declare etape
           courante. Utilise par les macros
       """
-      message.debug(SUPERV, "call etape.set_current_step", stack_id=-1)
+      #message.debug(SUPERV, "call etape.set_current_step", stack_id=-1)
       cs= CONTEXT.get_current_step()
       if self.parent != cs :
          raise AsException("L'étape courante", cs.nom, cs,
@@ -416,7 +426,6 @@ Causes possibles :
        """
        if self.sd and self.reuse == None :
            self.parent.NommerSdprod(self.sd,self.sd.nom)
-
 
    def is_include(self):
       """Permet savoir si on a affaire à la commande INCLUDE

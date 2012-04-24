@@ -1,4 +1,4 @@
-#@ MODIF B_ETAPE Build  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_ETAPE Build  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -35,6 +35,7 @@ from Noyau import N_MCSIMP, N_MCFACT, N_MCBLOC, N_MCLIST, N_ASSD, N_ENTITE
 from Noyau import N_FACT, N_BLOC, N_SIMP
 from Noyau.N_Exception import AsException
 from Noyau.N_GEOM  import GEOM
+from Noyau.N_info import message, SUPERV
 import B_utils
 import B_CODE
 import B_OBJECT
@@ -103,6 +104,7 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
             print "\tGETRES : nom_concept =", '"' + nom_concept + '"'
             print "\tGETRES : type_concept =", '"' + type_concept + '"'
             print "\tGETRES : nom_cmd =", '"' + nom_cmd + '"'
+        #message.debug(SUPERV, "commande : %s, concept : %s, type : %s", nom_cmd, nom_concept, type_concept)
         return nom_concept, type_concept, nom_cmd
 
     def getfac(self, nom_motfac):
@@ -642,10 +644,16 @@ La remontée d'erreur suivante peut aider à comprendre où se situe l'erreur :
             assert(objet_sd != None)
             valeur = B_utils.Typast(AsType(objet_sd))
             valeur = valeur.upper()
+        except AssertionError:
+            if not nom_concept.startswith('&'):
+                from warnings import warn
+                warn("concept inconnu : %s" % nom_concept, RuntimeWarning, stacklevel=1)
+            valeur = ' '
         except :
             #raise AsException("Probleme dans gettco: %s, %s ; Objet introuvable!" % (self.nom, nom_concept))
             # objet inexistant : l'appelant doit décoder le ' '
             valeur = ' '
+        #message.debug(SUPERV, "concept : %s, type : '%s'", nom_concept, valeur)
         return valeur
 
     def gettvc(self, nom):
@@ -799,6 +807,7 @@ La remontée d'erreur suivante peut aider à comprendre où se situe l'erreur :
             ret = 1
         else:
             ret = -1
+        #message.debug(SUPERV, "gcucon(%s, '%s') returns %s", resul.strip(), concep.strip(), ret)
         return ret
 
     def putvir(self, ival):

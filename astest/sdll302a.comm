@@ -1,9 +1,9 @@
-# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 23/04/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE REPONSE TEMPORELLE D'UNE POUTRE
 # sdll302a.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -266,17 +266,17 @@ REPBASE1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                MATR_RIGI=RIGIGEN1,
                                MATR_MASS=MASSGEN1,
                                ARCHIVAGE=_F( LIST_INST = L_INSTA),
-                              INCREMENT=_F(  INST_INIT = DEBUTR,
+                               INCREMENT=_F(  INST_INIT = DEBUTR,
                                           PAS = PAS,
                                           INST_FIN = TFIN),
-                                   EXCIT=_F(  VECT_ASSE = VECTGEN1,
+                               EXCIT=_F(   VECT_ASSE = VECTGEN1,
                                            MULT_APPUI = 'OUI',
-                                           MODE_STAT=MODESTA,
                                            ACCE = CENTROA,
                                            VITE = VITESSA,
                                            DEPL = DEPLACA,
                                            DIRECTION = (0., 1., 0.,),
-                                           GROUP_NO = ('P0', 'P2',))
+                                           GROUP_NO = ('P0', 'P2',)),
+                               MODE_STAT=MODESTA,           
                            )
 
 #

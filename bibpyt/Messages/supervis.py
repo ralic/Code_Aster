@@ -1,4 +1,4 @@
-#@ MODIF supervis Messages  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF supervis Messages  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -117,10 +117,6 @@ cata_msg={
 
 32: _(u"""
  La procédure "%(k1)s" ne peut être appelée en cours d'exécution des commandes
-"""),
-
-36: _(u"""
- Le concept de nom '%(k1)s' n'existe pas
 """),
 
 38: _(u"""

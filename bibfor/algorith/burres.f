@@ -1,9 +1,9 @@
         SUBROUTINE BURRES(TYPMOD,NMAT,MATERD,MATERF,TIMED,TIMEF,
      &                    NVI,VIN,YD,YF,DEPS,DY,NR,R)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/12/2011   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 23/04/2012   AUTEUR HAELEWYN J.HAELEWYN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -162,11 +162,13 @@ C --- CALCUL DE LA NORME DES DEFORMATIONS IRREVERSIBLES A T -> NFID
 C === =================================================================
       CALL LCPRSC(EPSFID,EPSFID,NFID)
       NFID = SQRT(NFID)
+      IF(NFID.LT.VIN(21))NFID = VIN(21)
 C === =================================================================
 C --- CALCUL DE LA NORME DES DEFORMATIONS IRREVERSIBLES A T+DT -> NFIF
 C === =================================================================
       CALL LCPRSC(EPSFIF,EPSFIF,NFIF)
       NFIF = SQRT(NFIF)
+      IF(NFIF.LT.VIN(21))NFIF = VIN(21)
 C === =================================================================
 C --- CALCUL DE (EXP(NFIF/KAPPA)-EXP(NFID/KAPPA))
 C === =================================================================

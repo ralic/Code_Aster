@@ -1,4 +1,4 @@
-#@ MODIF E_MACRO_ETAPE Execution  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_MACRO_ETAPE Execution  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -65,7 +65,7 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
       Le seul cas ou on appelle plusieurs fois Execute est pour INCLUDE
       (appel dans op_init)
       """
-      message.debug(SUPERV, "%s par_lot=%s", self.nom, self.jdc and self.jdc.par_lot)
+      #message.debug(SUPERV, "%s par_lot=%s", self.nom, self.jdc and self.jdc.par_lot)
       if not self.jdc or self.jdc.par_lot != "NON" :
          return
 
@@ -73,8 +73,8 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
          self.executed=1
 
          cr=self.report()
-         self.parent.cr.add(cr)
          if not cr.estvide():
+           self.parent.cr.add(cr)
            raise EOFError
 
          try:
@@ -83,6 +83,7 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
              ier=self.Build()
          except self.codex.error:
              self.detruit_sdprod()
+             self.parent.clean(1)
              raise
 
          if ier > 0 :
@@ -91,6 +92,8 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
             raise EOFError
 
          E_ETAPE.ETAPE.Exec(self)
+         # "publie" les concepts produits par la macro
+         self.update_context(self.parent.g_context)
 
          if self.icmd!=None :
             self.AfficheFinCommande()
@@ -117,7 +120,8 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
          s_obj.discard(self.sd)
          if len(s_obj) > 0:
              DETRUIRE = self.get_cmd('DETRUIRE')
-             DETRUIRE(CONCEPT=_F(NOM=list(s_obj)), ALARME='NON', INFO=1)
+             DETRUIRE(CONCEPT=_F(NOM=list(s_obj)), INFO=1)
+      self.parent.clean(1)
       self.reset_current_step()
 
    def Execute_alone(self):
@@ -143,8 +147,8 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
       self.executed=1
 
       cr=self.report()
-      self.parent.cr.add(cr)
       if not cr.estvide():
+        self.parent.cr.add(cr)
         raise EOFError
 
       ier=self.Build_alone()
@@ -162,7 +166,7 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
       Cette methode enchaine en une seule passe les phases de construction et d'execution.
       Utilisée en PAR_LOT='OUI'.
       """
-      message.debug(SUPERV, "BuildExec %s", self.nom)
+      #message.debug(SUPERV, "BuildExec %s", self.nom)
       self.set_current_step()
       self.building=None
       # Chaque macro_etape doit avoir un attribut cr du type CR
@@ -172,8 +176,6 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
       self.cr=self.CR(debut='Etape : '+self.nom + '    ligne : '+`self.appel[0]` + \
                             '    fichier : '+`self.appel[1]`,
                       fin = 'Fin Etape : '+self.nom)
-
-      self.parent.cr.add(self.cr)
 
       # Si la liste des etapes est remplie avant l'appel à Build
       # on a affaire à une macro de type INCLUDE
@@ -205,7 +207,12 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
             self.AfficheFinCommande()
          else :
             self.AfficheFinCommande(avec_temps=False)
+
+         if not self.cr.estvide():
+           self.parent.cr.add(self.cr)
       except:
+         if not self.cr.estvide():
+           self.parent.cr.add(self.cr)
          self.reset_current_step()
          raise
 
@@ -223,7 +230,7 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
          s_obj.discard(self.sd)
          if len(s_obj) > 0:
              DETRUIRE = self.get_cmd('DETRUIRE')
-             DETRUIRE(CONCEPT=_F(NOM=list(s_obj)), ALARME='NON', INFO=1)
+             DETRUIRE(CONCEPT=_F(NOM=list(s_obj)), INFO=1)
       self.reset_current_step()
 
    def get_liste_etapes(self,liste):

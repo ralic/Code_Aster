@@ -1,9 +1,9 @@
-#@ MODIF N_CO Noyau  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_CO Noyau  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -31,7 +31,8 @@ from asojb import AsBase
 
 class CO(ASSD, AsBase):
    def __init__(self,nom):
-      ASSD.__init__(self,etape=None,sd=None,reg='oui')
+      ASSD.__init__(self, etape=None, sd=None, reg='oui')
+      self._as_co = 1
       #
       #  On demande le nommage du concept
       #
@@ -45,10 +46,7 @@ class CO(ASSD, AsBase):
          self.nom=nom
 
    def __convert__(cls,valeur):
-         if hasattr(valeur,'_etape') :
-            # valeur est un concept CO qui a ete transforme par type_sdprod
-            if valeur.etape == valeur._etape:
-               # le concept est bien produit par l'etape
-               return valeur
+         if valeur.is_typco():
+             return valeur
          raise ValError("Pas un concept CO")
    __convert__=classmethod(__convert__)

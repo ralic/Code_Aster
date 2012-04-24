@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/01/2012   AUTEUR BOTTONI M.BOTTONI 
+#& MODIF COMMANDE  DATE 23/04/2012   AUTEUR BOTTONI M.BOTTONI 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,17 +44,13 @@ POST_ENDO_FISS=MACRO(nom="POST_ENDO_FISS",
                               regles     = (UN_PARMI('NUME_ORDRE','INST'),),
                               NUME_ORDRE = SIMP(statut = 'f', typ = 'I', validators = NoRepeat(), ),
                               INST       = SIMP(statut = 'f', typ = 'R', validators = NoRepeat(), ),
-                              MODELE     = SIMP(statut = 'f', typ = modele_sdaster,
-                                                fr = "nom du modele a associer au champ",),),
+                              ),
 
-            b_champ    = BLOC(condition = "CHAM_GD != None",
-                              MODELE    = SIMP(statut = 'f', typ = modele_sdaster,
-                                               fr = "nom du modele a associer au champ",),),
+            #b_champ    = BLOC(condition = "CHAM_GD != None",),
 
             CHAM_GD         = SIMP(statut = 'f',typ = (cham_gd_sdaster)),
             RESULTAT        = SIMP(statut = 'f',typ = (evol_noli)),
             NOM_CMP         = SIMP(statut = 'o',typ='TXM',),
-            #PLAN            = SIMP(statut = 'f',typ='TXM',defaut='XY', into=('XY','XZ','YZ'),),
             NOM_CHAM        = SIMP(statut = 'o', typ = 'TXM',
                                    fr = "nom du champ a post-traiter",),
 

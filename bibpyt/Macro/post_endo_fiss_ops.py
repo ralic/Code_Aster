@@ -1,4 +1,4 @@
-#@ MODIF post_endo_fiss_ops Macro  DATE 30/01/2012   AUTEUR BOTTONI M.BOTTONI 
+#@ MODIF post_endo_fiss_ops Macro  DATE 23/04/2012   AUTEUR BOTTONI M.BOTTONI 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,7 +31,7 @@ from Utilitai.UniteAster      import UniteAster
 from post_endo_fiss_utils     import ThresholdTooHighError, NoMaximaError
 
 
-def cherche_trajet(self,NOM_CMP, NOM_CHAM, dRECHERCHE,__ENDO, modelisa, typeChampTrajet, infoPlan, inst):
+def cherche_trajet(self,NOM_CMP, NOM_CHAM, dRECHERCHE,__ENDO, __mail, typeChampTrajet, infoPlan, inst):
 
     from math import radians
     from Utilitai.Utmess import UTMESS
@@ -57,8 +57,8 @@ def cherche_trajet(self,NOM_CMP, NOM_CHAM, dRECHERCHE,__ENDO, modelisa, typeCham
     dplan1   = infoPlan[3]
     dplan2   = infoPlan[4]
 
-    __modtot = modelisa['MODELE']
-    __mail   = modelisa['MAILLAGE']
+    #__modtot = modelisa['MODELE']
+    #__mail   = modelisa['MAILLAGE']
     dime     = __mail.sdj.DIME.get()[5]
 
 
@@ -81,10 +81,11 @@ def cherche_trajet(self,NOM_CMP, NOM_CHAM, dRECHERCHE,__ENDO, modelisa, typeCham
     #   AND CONSTRUCTION OF THE WORKING "RESULT" CONCEPT
     #
     motclefs1 = {}
-    if __modtot != None :
-        motclefs1['MODELE'] = __modtot
-    else :
-        motclefs1['MAILLAGE'] = __mail
+    #if __modtot != None :
+    #    motclefs1['MODELE'] = __modtot
+    #else :
+    #    motclefs1['MAILLAGE'] = __mail
+    motclefs1['MAILLAGE'] = __mail
 
     if 'GROUP_MA' in dRECHERCHE.keys() :
         groupma = dRECHERCHE['GROUP_MA']
@@ -152,20 +153,21 @@ def cherche_trajet(self,NOM_CMP, NOM_CHAM, dRECHERCHE,__ENDO, modelisa, typeCham
     resu_mail0,arcgma0,angles0,nbno0 = crea_mail_lig_coup(dime,lignes,groups,arcs)
     __MAI = crea_sd_mail(self,resu_mail0)
 
-    if __modtot != None :
-        __MO = AFFE_MODELE( MAILLAGE = __MAI,
-                            AFFE    = _F(TOUT         = 'OUI',
-                                        PHENOMENE    = 'MECANIQUE',
-                                        MODELISATION = 'BARRE'),)
+    # if __modtot != None :
+    #     __MO = AFFE_MODELE( MAILLAGE = __MAI,
+    #                         AFFE    = _F(TOUT         = 'OUI',
+    #                                     PHENOMENE    = 'MECANIQUE',
+    #                                     MODELISATION = 'BARRE'),)
 
     motclefs2 = {}
-    if __modtot != None :
-        motclefs2['MODELE_1'] = __modtot
-        motclefs2['MODELE_2'] = __MO
-    else :
-        motclefs2['MAILLAGE_1'] = __mail
-        motclefs2['MAILLAGE_2'] = __MAI
-    
+    # if __modtot != None :
+    #     motclefs2['MODELE_1'] = __modtot
+    #     motclefs2['MODELE_2'] = __MO
+    # else :
+    #     motclefs2['MAILLAGE_1'] = __mail
+     #    motclefs2['MAILLAGE_2'] = __MAI
+    motclefs2['MAILLAGE_1'] = __mail 
+    motclefs2['MAILLAGE_2'] = __MAI
     nbPrec = NP.finfo(NP.float).precision
     distMax = 10.**(-nbPrec+2)
     
@@ -247,21 +249,22 @@ def cherche_trajet(self,NOM_CMP, NOM_CHAM, dRECHERCHE,__ENDO, modelisa, typeCham
     resu_mail0,arcgma0,angles0,nbno0 = crea_mail_lig_coup(dime,lignes,groups,arcs)
 
     __MAI = crea_sd_mail(self,resu_mail0)
-    if __modtot != None :
-        __MO = AFFE_MODELE( MAILLAGE = __MAI,
-                            AFFE    = _F( TOUT         = 'OUI',
-                                          PHENOMENE    = 'MECANIQUE',
-                                          MODELISATION = 'BARRE'),)
-
+    # if __modtot != None :
+    #     __MO = AFFE_MODELE( MAILLAGE = __MAI,
+    #                         AFFE    = _F( TOUT         = 'OUI',
+    #                                       PHENOMENE    = 'MECANIQUE',
+    #                                       MODELISATION = 'BARRE'),)
+ 
     motclefs2 = {}
-    if __modtot != None :
-        motclefs2['MODELE_1'] = __modtot
-        motclefs2['MODELE_2'] = __MO
-    else :
-        motclefs2['MAILLAGE_1'] = __mail
-        motclefs2['MAILLAGE_2'] = __MAI
+    # if __modtot != None :
+    #     motclefs2['MODELE_1'] = __modtot
+    #     motclefs2['MODELE_2'] = __MO
+    # else :
+    #     motclefs2['MAILLAGE_1'] = __mail
+    #     motclefs2['MAILLAGE_2'] = __MAI
 
-    
+    motclefs2['MAILLAGE_1'] = __mail
+    motclefs2['MAILLAGE_2'] = __MAI
 
     __YBARPR = PROJ_CHAMP( METHODE      = 'COLLOCATION',
                            RESULTAT     = __resu,
@@ -377,20 +380,21 @@ def cherche_trajet(self,NOM_CMP, NOM_CHAM, dRECHERCHE,__ENDO, modelisa, typeCham
         resu_mail0,arcgma0,angles0,nbno0 = crea_mail_lig_coup(dime,lignes,groups,arcs)
 
         __MAI = crea_sd_mail(self,resu_mail0)
-        if __modtot != None :
-            __MO = AFFE_MODELE( MAILLAGE = __MAI,
-                                AFFE     = _F( TOUT         = 'OUI',
-                                               PHENOMENE    = 'MECANIQUE',
-                                               MODELISATION = 'BARRE' ),)
+        # if __modtot != None :
+        #     __MO = AFFE_MODELE( MAILLAGE = __MAI,
+        #                         AFFE     = _F( TOUT         = 'OUI',
+        #                                        PHENOMENE    = 'MECANIQUE',
+        #                                        MODELISATION = 'BARRE' ),)
 
         motclefs2 = {}
-        if __modtot != None :
-            motclefs2['MODELE_1'] = __modtot
-            motclefs2['MODELE_2'] = __MO
-        else :
-            motclefs2['MAILLAGE_1'] = __mail
-            motclefs2['MAILLAGE_2'] = __MAI
-
+        # if __modtot != None :
+        #     motclefs2['MODELE_1'] = __modtot
+        #     motclefs2['MODELE_2'] = __MO
+        # else :
+        #     motclefs2['MAILLAGE_1'] = __mail
+        #     motclefs2['MAILLAGE_2'] = __MAI
+        motclefs2['MAILLAGE_1'] = __mail
+        motclefs2['MAILLAGE_2'] = __MAI
         try :
             # we try to project, except the case of no points "in the material"
             __YBARPR = PROJ_CHAMP( METHODE      = 'COLLOCATION',
@@ -526,7 +530,7 @@ def cherche_trajet(self,NOM_CMP, NOM_CHAM, dRECHERCHE,__ENDO, modelisa, typeCham
 
 
 
-def calcul_ouverture(self, NOM_CHAM, NOM_CMP, dRECHERCHE, __RESUIN, modelisa, infoPlan, inst, CoxCrete, CoyCrete, CozCrete, dime, strong_flag) :
+def calcul_ouverture(self, NOM_CHAM, NOM_CMP, dRECHERCHE, __RESUIN, __mail, infoPlan, inst, CoxCrete, CoyCrete, CozCrete, dime, strong_flag) :
 
     import numpy as NP
     import aster
@@ -575,8 +579,8 @@ def calcul_ouverture(self, NOM_CHAM, NOM_CMP, dRECHERCHE, __RESUIN, modelisa, in
     # ---------------------------
     #  2D AND MESH PARAMETERS
     #
-    __mail   = modelisa['MAILLAGE']
-    __modtot = modelisa['MODELE']
+    #__mail   = modelisa['MAILLAGE']
+    #__modtot = modelisa['MODELE']
     coorIni1 = infoPlan[0]
     coorIni2 = infoPlan[1]
     dnor     = infoPlan[2]
@@ -633,11 +637,11 @@ def calcul_ouverture(self, NOM_CHAM, NOM_CMP, dRECHERCHE, __RESUIN, modelisa, in
         __MAI = crea_sd_mail(self,resu_mail0)
         
         
-        if __modtot != None :
-            __MOD = AFFE_MODELE(MAILLAGE = __MAI,
-                                AFFE     = _F(TOUT         = 'OUI',
-                                            PHENOMENE    = 'MECANIQUE',
-                                            MODELISATION = 'BARRE'),)
+        # if __modtot != None :
+        #     __MOD = AFFE_MODELE(MAILLAGE = __MAI,
+        #                         AFFE     = _F(TOUT         = 'OUI',
+        #                                     PHENOMENE    = 'MECANIQUE',
+        #                                     MODELISATION = 'BARRE'),)
 
         CoorTotOrtho = __MAI.sdj.COORDO.VALE.get()
         XtotOrtho    = NP.array( CoorTotOrtho[coorIni1:len(CoorTotOrtho):3] )
@@ -661,13 +665,14 @@ def calcul_ouverture(self, NOM_CHAM, NOM_CMP, dRECHERCHE, __RESUIN, modelisa, in
         # Projection of displ. or strain field on the orthogonal profile
         #    and extraction of this field from the result concept
         motclefs2 = {}
-        if __modtot != None :
-            motclefs2['MODELE_1'] = __modtot
-            motclefs2['MODELE_2'] = __MOD
-        else :
-            motclefs2['MAILLAGE_1'] = __mail
-            motclefs2['MAILLAGE_2'] = __MAI
-
+        # if __modtot != None :
+        #     motclefs2['MODELE_1'] = __modtot
+        #     motclefs2['MODELE_2'] = __MOD
+        # else :
+        #     motclefs2['MAILLAGE_1'] = __mail
+        #     motclefs2['MAILLAGE_2'] = __MAI
+        motclefs2['MAILLAGE_1'] = __mail
+        motclefs2['MAILLAGE_2'] = __MAI
         except1 = 'False'
         except2 = 'False'
         try :
@@ -761,6 +766,7 @@ def calcul_ouverture(self, NOM_CHAM, NOM_CMP, dRECHERCHE, __RESUIN, modelisa, in
 
 
 
+
 def post_endo_fiss_ops(self,
                        TABLE,
                        OUVERTURE,
@@ -829,10 +835,13 @@ def post_endo_fiss_ops(self,
     if args['CHAM_GD'] != None :
         build    = 'champ'
         __ENDO   = args['CHAM_GD']
-        __modtot = args['MODELE']
-        n_modele = (__modtot.nom).strip()
+        #__modtot = args['MODELE']
+        #n_modele = (__modtot.nom).strip()
         inst = 1.
         motscles['INST'] = inst
+        
+        n_mail = __ENDO.sdj.REFE.get()[0].strip()      
+        __mail = self.get_concept(n_mail)
 
     else :
         build     = 'resu'
@@ -859,34 +868,36 @@ def post_endo_fiss_ops(self,
                 UTMESS('F','POST0_41')
 
         # Modele pour projections
-        modelisa = {}
-        if args['MODELE'] != None :
-            __modtot = args['MODELE']
-            n_modele = (__modtot.nom).strip()
-        elif dicResu['MODELE'][0] is not None:
-            lst_n_modele = dicResu['MODELE']
-            n_modele     = lst_n_modele[nume_ordre-1]
-            n_modele = n_modele.strip()
-            __modtot = self.get_concept(n_modele)
-        else :
-            __modtot = None
+        #modelisa = {}
+        #if args['MODELE'] != None :
+         #   __modtot = args['MODELE']
+          #  n_modele = (__modtot.nom).strip()
+        #elif dicResu['MODELE'][0] is not None:
+         #   lst_n_modele = dicResu['MODELE']
+          #  n_modele     = lst_n_modele[nume_ordre-1]
+          #  n_modele = n_modele.strip()
+          #  __modtot = self.get_concept(n_modele)
+        #else :
+        #    __modtot = None
 
         # Maillage pour projections
-        iret,ibid,n_mail_resu = aster.dismoi('F','NOM_MAILLA',__RESUIN.nom,'RESULTAT')
-        __mail_resu  = self.get_concept(n_mail_resu)
-        if __modtot != None :
-            n_mail = __modtot.sdj.MODELE.LGRF.get()
-            n_mail = n_mail[0].strip()
-            __mail = self.get_concept(n_mail)
-            if n_mail_resu != n_mail :
-                n_mail = n_mail_resu
-                __mail = __mail_resu
-                __modtot = None
-        else :
-            __mail = __mail_resu
+        # iret,ibid,n_mail_resu = aster.dismoi('F','NOM_MAILLA',__RESUIN.nom,'RESULTAT')
+        iret,ibid,n_mail = aster.dismoi('F','NOM_MAILLA',__RESUIN.nom,'RESULTAT')
+        #__mail_resu  = self.get_concept(n_mail_resu)
+        __mail = self.get_concept(n_mail)
+        #if __modtot != None :
+        #    n_mail = __modtot.sdj.MODELE.LGRF.get()
+        #    n_mail = n_mail[0].strip()
+        #    __mail = self.get_concept(n_mail)
+        #    if n_mail_resu != n_mail :
+        #        n_mail = n_mail_resu
+        #        __mail = __mail_resu
+        #        __modtot = None
+        #else :
+        #    __mail = __mail_resu
 
-        modelisa['MODELE']   = __modtot
-        modelisa['MAILLAGE'] = __mail
+        #modelisa['MODELE']   = __modtot
+        #modelisa['MAILLAGE'] = __mail
 
     dime    = __mail.sdj.DIME.get()[5]
 
@@ -1001,12 +1012,12 @@ def post_endo_fiss_ops(self,
 
         dRECHERCHE = l_dRECHERCHE[idxRech]
     
-        (CoxCrete, CoyCrete, CozCrete, EndoCrete, Connex) = cherche_trajet(self,NOM_CMP, NOM_CHAM, dRECHERCHE,__ENDO, modelisa, typeChampTrajet, infoPlan, inst)
+        (CoxCrete, CoyCrete, CozCrete, EndoCrete, Connex) = cherche_trajet(self,NOM_CMP, NOM_CHAM, dRECHERCHE,__ENDO, __mail, typeChampTrajet, infoPlan, inst)
         if OUVERTURE == 'OUI' :
             if strong_flag == False:
-                lstOuvFiss = calcul_ouverture(self, NOM_CHAM, NOM_CMP, dRECHERCHE, __RESUIN, modelisa, infoPlan, inst,CoxCrete, CoyCrete, CozCrete, dime, strong_flag)
+                lstOuvFiss = calcul_ouverture(self, NOM_CHAM, NOM_CMP, dRECHERCHE, __RESUIN, __mail, infoPlan, inst,CoxCrete, CoyCrete, CozCrete, dime, strong_flag)
             else :
-                lstOuvFiss, lstErr = calcul_ouverture(self, NOM_CHAM, NOM_CMP, dRECHERCHE, __RESUIN, modelisa, infoPlan, inst,nume_ordre,CoxCrete, CoyCrete, CozCrete, dime, strong_flag)
+                lstOuvFiss, lstErr = calcul_ouverture(self, NOM_CHAM, NOM_CMP, dRECHERCHE, __RESUIN, __mail, infoPlan, inst,nume_ordre,CoxCrete, CoyCrete, CozCrete, dime, strong_flag)
         XcreteTot.append(CoxCrete)
         YcreteTot.append(CoyCrete)
         ZcreteTot.append(CozCrete)

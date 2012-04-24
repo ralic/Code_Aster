@@ -1,6 +1,6 @@
       SUBROUTINE CARBE3(CHARGE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 23/04/2012   AUTEUR ASSIRE A.ASSIRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -57,10 +57,11 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       COMPLEX*16   BETAC
       INTEGER      IFM,NIV,IBID,IARG,IER,IRET
       INTEGER      IDXRBE,IDXLIG,IDXCOL,IDXVEC,IDXNOE,IDXGRO,IDXTER
+      INTEGER      IDXDDL
       INTEGER      POSESC,POSMAI,CNTLIG,CNTDDL,CNTNOE,INILIG
       INTEGER      JCOOR,JLISES,JCOFES,JDDLES,JCESCL,JCOORE,JW,JS,JB
-      INTEGER      JLISRE,JNOREL,JDDL,JCMUR,JCMUC,JCMUF,JDIREC,JDIME
-      INTEGER      JNOGRO,JNOESC,JXAB
+      INTEGER      JNOREL,JDDL,JCMUR,JCMUC,JCMUF,JDIREC,JDIME
+      INTEGER      JNOGRO,JNOESC,JXAB,JNZDDL,JNZNOR
       INTEGER      NBRBE3,NBDLES,NBCFES,NBDDL,NBLIGN,NBCOL,NBGROU,NBENT
       INTEGER      NBNOEU,NBDLMA,MAXESC,MAXLES,MAXDDL,DIME
       INTEGER      LXLGUT
@@ -69,11 +70,12 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       REAL*8       COFESC,BETA,X(6,6)
 C ----------------------------------------------------------------------
 
-      CALL JEMARQ()
-
-      CALL INFNIV(IFM,NIV)
-
       MOTFAC = 'LIAISON_RBE3    '
+      CALL GETFAC(MOTFAC,NBRBE3)
+
+      IF (NBRBE3.EQ.0) GO TO 9999
+
+      BETA = 0.0D0
       BETAC = (1.0D0,0.0D0)
       TYPCOE = 'REEL'
       TYPVAL = 'REEL'
@@ -84,13 +86,13 @@ C ----------------------------------------------------------------------
       DDLTRR(5) = 'DRY'
       DDLTRR(6) = 'DRZ'
 
-      CALL GETFAC(MOTFAC,NBRBE3)
-
+      CALL INFNIV(IFM,NIV)      
+      CALL JEMARQ()
+      
       IF (NIV.EQ.2) THEN
         WRITE(IFM,*) 'NOMBRE RELATIONS RBE3 : ',NBRBE3
+C       CALL JXVERI(' ')
       ENDIF
-
-      IF (NBRBE3.EQ.0) GO TO 9999
 
       CALL GETRES(NOMRES,CONCEP,NOMCMD)
       CALL DISMOI('F','TYPE_CHARGE',CHARGE,'CHARGE',IBID,TYPCHA,IER)
@@ -155,13 +157,20 @@ C        -------------------------------------------------------
         CNTDDL = CNTDDL + MAXESC * 6
         MAXDDL = MAX(MAXDDL,CNTDDL)
    40 CONTINUE
+   
+      IF (NIV.EQ.2) THEN
+        WRITE(IFM,*) 'MAXESC : ',MAXESC
+        WRITE(IFM,*) 'MAXDDL : ',MAXDDL
+      ENDIF   
 
 C     -- ALLOCATION DES TABLEAUX DE TRAVAIL
 C     -------------------------------------
       LISREL = '&&CARBE3.RLLISTE'
       CALL WKVECT('&&CARBE3.LISNOREL','V V K8',MAXDDL,JNOREL)
+      CALL WKVECT('&&CARBE3.LISNZNOR','V V K8',MAXDDL,JNZNOR)
       CALL WKVECT('&&CARBE3.LISNOESC','V V K8',MAXESC,JNOESC)
       CALL WKVECT('&&CARBE3.DDL  ','V V K8',MAXDDL,JDDL)
+      CALL WKVECT('&&CARBE3.NZDDL','V V K8',MAXDDL,JNZDDL)
       CALL WKVECT('&&CARBE3.COEMUR','V V R',MAXDDL,JCMUR)
       CALL WKVECT('&&CARBE3.COEMUC','V V C',MAXDDL,JCMUC)
       CALL WKVECT('&&CARBE3.COEMUF','V V K8',MAXDDL,JCMUF)
@@ -171,7 +180,7 @@ C     -------------------------------------
       CALL WKVECT('&&CARBE3.COEFES','V V R',MAXESC,JCOFES)
       CALL WKVECT('&&CARBE3.COOREL','V V R',MAXESC*3,JCOORE)
       CALL WKVECT('&&CARBE3.DDLESCL','V V K24',MAXESC,JDDLES)
-
+      
 C     BOUCLE SUR LES RELATIONS RBE3
 C     -----------------------------------
       DO 80 IDXRBE=1,NBRBE3
@@ -199,10 +208,6 @@ C     -----------------------------------
      &                NOEMAI,NBENT)
         ENDIF
 
-        IDXTER = 1
-        ZK8(JNOREL-1+IDXTER) = NOEMAI
-        ZR(JCMUR-1+IDXTER) = -1.0D0
-        ZK8(JNOREL+1) = NOEMAI
         CALL JENONU(JEXNOM(NOMA//'.NOMNOE',NOEMAI),POSMAI)
         COOMAI(1) = ZR(JCOOR-1+3*(POSMAI-1)+1)
         COOMAI(2) = ZR(JCOOR-1+3*(POSMAI-1)+2)
@@ -326,12 +331,13 @@ C           -------------------------------------------------------
           DO 215 IDXLIG=1,6
             IF (DDLESC(IDXLIG)) THEN
               NBDLES = NBDLES + 1
-              ZK8(JNOREL-1+1+NBDLES) = ZK8(JNOESC-1+IDXNOE)
-              ZK8(JDDL-1+1+NBDLES) = DDLTRR(IDXLIG)
+              ZK8(JNOREL-1+NBDLES) = ZK8(JNOESC-1+IDXNOE)
+              ZK8(JDDL-1+NBDLES) = DDLTRR(IDXLIG)
             ENDIF
-            ZL(JCESCL+(IDXNOE-1)*6+IDXLIG) = DDLESC(IDXLIG)
+            ZL(JCESCL-1+(IDXNOE-1)*6+IDXLIG) = DDLESC(IDXLIG)
   215     CONTINUE
-  110   CONTINUE
+  110   CONTINUE 
+  
         IF (NIV.EQ.2) THEN
           WRITE (IFM,*) 'NOMBRE DDL NOEUDS ESCLAVES : ',NBDLES
         ENDIF
@@ -395,11 +401,11 @@ C       -------------------------------------------------------
           FRSTCO = .TRUE.
           CNTLIG = 0
           DO 220 IDXCOL=1,6
-            IF (ZL(JCESCL+(IDXNOE-1)*6+IDXCOL)) THEN
+            IF (ZL(JCESCL-1+(IDXNOE-1)*6+IDXCOL)) THEN
               NBCOL = NBCOL + 1
               NBLIGN = INILIG
               DO 300 IDXLIG=1,6
-                IF (ZL(JCESCL+(IDXNOE-1)*6+IDXLIG)) THEN
+                IF (ZL(JCESCL-1+(IDXNOE-1)*6+IDXLIG)) THEN
                   NBLIGN = NBLIGN + 1
                   IF (FRSTCO) THEN
                     CNTLIG = CNTLIG + 1
@@ -439,7 +445,7 @@ C       -------------------------------------------------------
           DO 230 IDXCOL=1,6
             NBLIGN = INILIG
             DO 400 IDXLIG=1,6
-              IF (ZL(JCESCL+(IDXNOE-1)*6+IDXLIG)) THEN
+              IF (ZL(JCESCL-1+(IDXNOE-1)*6+IDXLIG)) THEN
                 NBLIGN = NBLIGN + 1
                 IF (FRSTCO) THEN
                   CNTLIG = CNTLIG + 1
@@ -555,26 +561,40 @@ C --- SI NON TYPLAG = '12'
         DO 250 IDXLIG=1,6
           IF (DDLMAI(IDXLIG)) THEN
             IDXTER = 1
-            ZK8(JDDL-1+IDXTER) = DDLTRR(IDXLIG)
+            ZK8(JNZNOR-1+IDXTER) = NOEMAI
+            ZR(JCMUR-1+IDXTER) = -1.0D0
+            ZK8(JNZDDL-1+IDXTER) = DDLTRR(IDXLIG)
+            IDXDDL = 1
             DO 420 IDXCOL=1,NBDLES
-              IDXTER = IDXTER + 1
-              ZR(JCMUR-1+IDXTER) = ZR(JB-1+6*(IDXCOL-1)+IDXLIG)
+              IDXVEC = 6*(IDXCOL-1)+IDXLIG
+              IF (ZR(JB-1+IDXVEC).NE.0) THEN
+                IDXTER = IDXTER + 1
+                ZK8(JNZDDL-1+IDXTER) = ZK8(JDDL-1+IDXDDL)
+                ZK8(JNZNOR-1+IDXTER) = ZK8(JNOREL-1+IDXDDL)
+                ZR(JCMUR-1+IDXTER) = ZR(JB-1+IDXVEC)
+              ENDIF
+              IDXDDL = IDXDDL + 1
   420       CONTINUE
-          CALL AFRELA(ZR(JCMUR),ZC(JCMUC),ZK8(JDDL),ZK8(JNOREL),
-     &           ZI(JDIME),ZR(JDIREC),1+NBDLES,BETA,BETAC,BETAF,TYPCOE,
+            CALL AFRELA(ZR(JCMUR),ZC(JCMUC),ZK8(JNZDDL),ZK8(JNZNOR),
+     &           ZI(JDIME),ZR(JDIREC),IDXTER,BETA,BETAC,BETAF,TYPCOE,
      &           TYPVAL,TYPLAG,0.D0,LISREL)
           ENDIF
   250   CONTINUE
 
         CALL JEDETR('&&CARBE3.B')
 
-
    80 CONTINUE
 
 C     -- AFFECTATION DE LA LISTE_RELA A LA CHARGE :
 C     ---------------------------------------------
       CALL AFLRCH(LISREL,CHARGE)
-
- 9999 CONTINUE
+      
       CALL JEDEMA()
+      
+C     IF (NIV.EQ.2) THEN
+C       CALL JXVERI(' ')
+C     ENDIF       
+      
+ 9999 CONTINUE
+
       END

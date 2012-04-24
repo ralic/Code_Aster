@@ -1,9 +1,9 @@
       SUBROUTINE BURLNF(NVI,VIND,NMAT,MATERD,MATERF,DT,
      &                  NR,YD,YF,VINF,SIGF)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/12/2011   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 23/04/2012   AUTEUR HAELEWYN J.HAELEWYN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -47,7 +47,7 @@ C ----------------------------------------------------------------
       REAL*8          AFD(6),BFD(6,6),CFD(6,6),DEPSFD(6)
       REAL*8          BFDSID(6),CFDSIF(6)
       REAL*8          AFR(6),BFR(6,6),CFR(6,6),DEPSFR(6)
-      REAL*8          BFRSID(6),CFRSIF(6),SIGF(6)
+      REAL*8          BFRSID(6),CFRSIF(6),SIGF(6),EPSFIF(6),NFIF
       COMMON /TDIM/   NDT  , NDI
 
 C *********************************************************************
@@ -139,5 +139,16 @@ C === =================================================================
 C --- AFFECTATION CONTRAINTES REDUITES PAR LE FLUAGE
 C === =================================================================
       CALL LCEQVE(YF,SIGF)
+
+C === =================================================================
+C --- CALCUL NORME DES DEFORMATIONS IRREVERSIBLES DE FLUAGE
+C === =================================================================
+      DO 18 I = 1, NDT
+        EPSFIF(I) = YF(NDT+I)
+ 18   CONTINUE
+      CALL LCPRSC(EPSFIF,EPSFIF,NFIF)
+      NFIF = SQRT(NFIF)      
+
+      IF(NFIF.GT.VINF(21))VINF(21) = NFIF
 
       END

@@ -1,9 +1,9 @@
-#@ MODIF N_PROC_ETAPE Noyau  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_PROC_ETAPE Noyau  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -43,49 +43,16 @@ class PROC_ETAPE(N_ETAPE.ETAPE):
 
    """
    nature = "PROCEDURE"
-   def __init__(self,oper=None,args={}):
+   def __init__(self, oper=None, reuse=None, args={}):
       """
-         Attributs :
-
-          - definition : objet portant les attributs de définition d'une étape de type opérateur. Il
-                         est initialisé par l'argument oper.
-
-          - valeur : arguments d'entrée de type mot-clé=valeur. Initialisé avec l'argument args.
-
+      Attributs :
+       - definition : objet portant les attributs de définition d'une étape de type opérateur. Il
+                      est initialisé par l'argument oper.
+       - valeur : arguments d'entrée de type mot-clé=valeur. Initialisé avec l'argument args.
+       - reuse : forcément None pour une PROC
       """
-      self.definition=oper
-      self.valeur=args
-      self.nettoiargs()
-      self.parent=CONTEXT.get_current_step()
-      self.etape = self
-      self.nom=oper.nom
-      self.idracine=oper.label
-      self.appel=N_utils.callee_where()
-      self.mc_globaux={}
-      self.sd=None
-      self.actif=1
-      self.make_register()
-
-   def make_register(self):
-      """
-         Initialise les attributs jdc, id, niveau et réalise les enregistrements
-         nécessaires
-      """
-      if self.parent :
-         self.jdc = self.parent.get_jdc_root()
-         self.id=self.parent.register(self)
-         self.niveau=None
-      else:
-         self.jdc = self.parent =None
-         self.id=None
-         self.niveau=None
-
-   def McBuild(self):
-      """
-         Demande la construction des sous-objets et les stocke dans l'attribut
-         mc_liste.
-      """
-      self.mc_liste=self.build_mc()
+      N_ETAPE.ETAPE.__init__(self, oper, reuse=None, args=args)
+      self.reuse = None
 
    def Build_sd(self):
       """

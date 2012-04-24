@@ -1,4 +1,4 @@
-#@ MODIF modelisa6 Messages  DATE 16/01/2012   AUTEUR CHEIGNON E.CHEIGNON 
+#@ MODIF modelisa6 Messages  DATE 23/04/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -87,14 +87,6 @@ cata_msg = {
 
 18 : _(u"""
  la maille  %(k1)s donnée après le mot-clé  %(k2)s n'a pas un type géométrique autorisé
-"""),
-
-19 : _(u"""
-  Le mot clé est non admis : %(k1)s
-
-  Les mots-clés admissibles sont :
-      %(k2)s  ou  %(k3)s  ou  %(k4)s  ou  %(k5)s  ou
-      %(k6)s  ou  %(k7)s  ou  %(k8)s ou  %(k9)s
 """),
 
 20 : _(u"""

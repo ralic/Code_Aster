@@ -1,7 +1,8 @@
-#& MODIF ENTETE  DATE 17/08/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF ENTETE  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
+# -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -16,8 +17,23 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE COURTOIS M.COURTOIS
-
+# RESPONSABLE PELLET J.PELLET
 
 class cham_mater(ASSD):
     cata_sdj = "SD.sd_cham_mater.sd_cham_mater"
+
+    def get_vale_ref(self, nom_varc):
+        """Retourne la valeur de référence de `nom_varc`."""
+        from SD.sd_carte import sd_carte
+        nom_varc = nom_varc.strip()
+        varc = self.sdj.varc
+        nom = [sv.strip() for sv in varc.CVRCNOM.get()]
+        assert nom_varc in nom, (nom_varc, nom)
+        idx = nom.index(nom_varc)
+        novarc = [sv for sv in varc.CVRCVARC.get()]
+        assert len(novarc) > idx, novarc
+        nomch = novarc[idx]
+        # accès à la carte
+        cartref = sd_carte("%-8s.%-8s.1" % (self.nom, nomch))
+        valref = cartref.VALE.get()[0]
+        return valref

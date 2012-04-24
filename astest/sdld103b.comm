@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
+# MODIF  DATE 23/04/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE SYSTEME MASSES-RESSORTS LINEAIRE MULTI-SUPPORTE (ROTATION)
 # sdld103b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -183,13 +183,13 @@ PROJ_BASE(BASE=MODE_MEC,
 TRAN_GEE=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                  MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
                  SCHEMA_TEMPS=_F(SCHEMA='EULER',),
-                EXCIT=(
+                 MODE_STAT=MODE_STA,
+                 EXCIT=(
                 _F( VECT_ASSE = VECT_X1,
                         ACCE = ACCELER1,
                         MULT_APPUI = 'OUI',
                         DIRECTION = ( 0., 0., 0., 1., 0., 0.,),
                         NOEUD = 'NO1',
-                        MODE_STAT=MODE_STA,
                         VITE = VITESSE1,
                         DEPL = DEPLACE1),
                 _F( VECT_ASSE = VECT_X2,
@@ -197,7 +197,6 @@ TRAN_GEE=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                         MULT_APPUI = 'OUI',
                         DIRECTION = ( 0., 0., 0., 1., 0., 0.,),
                         NOEUD = 'NO5',
-                        MODE_STAT=MODE_STA,
                         VITE = VITESSE2,
                         DEPL = DEPLACE2)),
                  ARCHIVAGE=_F(  PAS_ARCH = 1),

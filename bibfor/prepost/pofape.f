@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF PREPOST  DATE 23/04/2012   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +58,7 @@ C     ------------------------------------------------------------------
       CHARACTER*19  K19B
       CHARACTER*24  FVALE(6), ETVALE(6), PTVALE(6)
 C     --- POST_FATI_MULT -----------------------------------------------
-      PARAMETER    ( NBPAPF = 32  )
+      PARAMETER    ( NBPAPF = 34  )
       CHARACTER*3   TYPPPF(NBPAPF)
       CHARACTER*16  NOMPPF(NBPAPF)
       INTEGER      IARG
@@ -70,6 +70,7 @@ C     --- POST_FATI_MULT -----------------------------------------------
      &               'SIGNM1', 'DENDIS', 'DENDIE', 'APHYDR',
      &               'MPHYDR', 'DSIGEQ', 'SIGPR1', 'EPSNM1',
      &               'INVA2S', 'DSITRE', 'DEPTRE', 'EPSPAC',
+     &               'RAYSPH', 'AMPCIS',
      &               'VNMX',   'VNMY',   'VNMZ'  /
 
 
@@ -77,7 +78,7 @@ C     --- POST_FATI_MULT -----------------------------------------------
      &                  'R' , 'R' , 'R' , 'R' , 'R' , 'R',  'R',
      &                  'R' , 'R' , 'R' , 'R' , 'R' , 'R',  'R',
      &                  'R' , 'R' , 'R' , 'R' , 'R' , 'R',  'R',
-     &                  'R' , 'R',  'R'/
+     &                  'R',  'R',  'R' , 'R',  'R'/
 
 C     ---------------------------------------------------------------
 C     ----------------------------------------------------------------
@@ -334,7 +335,7 @@ C
      &                   CBID,K8B, ILIGN )
 
                   DO 46 I = 1, 3
-                     CALL TBAJLI (RESULT, 1,NOMPPF(I+29), IBID,
+                     CALL TBAJLI (RESULT, 1,NOMPPF(I+31), IBID,
      &                   VRESU(I+1),CBID,K8B,ILIGN)
 
 46                CONTINUE
@@ -347,7 +348,7 @@ C
 
               ELSE
 C POUR LES GRANDEURS HORS DES CRITERES A PLAN CRITIQUE
-                  DO 43 I = 1, 20
+                  DO 43 I = 1, 22
                      IF (PARACT(I) .EQ. 1) THEN
                         CALL TBAJLI (RESULT, 1,NOMPPF(I+9), IBID,
      &                         VALPAR(I),CBID,K8B,ILIGN)
@@ -371,11 +372,11 @@ C POUR CHARGEMENT NON-PERIODIQUE
      &              NNOINI,NBNOP, NUMPAQ, TSPAQ, CRITER, NOMFOR,KDOMM,
      &            FORVIE,FORDEF,K8B,PROAXE,NOMMAT, K19B, POST, RESU)
 
-             CALL TBAJLI (RESULT, 1,NOMPPF(30), IBID,RESU(1),CBID,
+             CALL TBAJLI (RESULT, 1,NOMPPF(32), IBID,RESU(1),CBID,
      &                      K8B, ILIGN )
-             CALL TBAJLI (RESULT, 1,NOMPPF(31), IBID,RESU(2),CBID,
+             CALL TBAJLI (RESULT, 1,NOMPPF(33), IBID,RESU(2),CBID,
      &                      K8B, ILIGN )
-             CALL TBAJLI (RESULT, 1,NOMPPF(32), IBID,RESU(3),CBID,
+             CALL TBAJLI (RESULT, 1,NOMPPF(34), IBID,RESU(3),CBID,
      &                      K8B, ILIGN )
              CALL TBAJLI (RESULT, 1,NOMPPF(8), IBID,RESU(4),CBID,
      &                       K8B, ILIGN )

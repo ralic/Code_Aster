@@ -1,4 +1,4 @@
-#@ MODIF recal Macro  DATE 17/04/2012   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF recal Macro  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -629,7 +629,7 @@ class CALCULS_ASTER:
          Lrep=[]
          for i in range(len(liste_reponses)):
              reponse = liste_reponses[i]
-             DETRUIRE(OBJET=_F(CHAINE='VEXTR___'), ALARME='NON', INFO=1)  # Faudrait proteger ce nom ici (VEXTR___ peut etre deja utilise dans l'etude)
+             DETRUIRE(OBJET=_F(CHAINE='VEXTR___'), INFO=1)  # Faudrait proteger ce nom ici (VEXTR___ peut etre deja utilise dans l'etude)
              exec( "VEXTR___ = %s.EXTR_TABLE()" % reponse)
              list_para = VEXTR___.para
              tab_lue   = VEXTR___.values()
@@ -644,7 +644,7 @@ class CALCULS_ASTER:
          # Destruction des concepts Aster
          liste_concepts = self.jdc.g_context.keys()
          for c in liste_concepts:
-             DETRUIRE(OBJET=_F(CHAINE=c), ALARME='NON', INFO=1);
+             DETRUIRE(OBJET=_F(CHAINE=c), INFO=1);
 
          #detr_concepts(self.jdc)  # marche pas !
          #sys.exit()

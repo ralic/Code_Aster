@@ -1,4 +1,4 @@
-#@ MODIF context Noyau  DATE 13/03/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF context Noyau  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -39,7 +39,7 @@ def set_current_step(step):
    global _root
    if _root : raise Exception("Impossible d'affecter _root. Il devrait valoir None")
    _root=step
-   message.debug(SUPERV, "current_step = %s", step and step.nom, stack_id=-1)
+   #message.debug(SUPERV, "current_step = %s", step and step.nom, stack_id=-1)
 
 def get_current_step():
    """

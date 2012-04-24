@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/04/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE REPONSE TEMPORELLE D'UNE POUTRE
 # sdll302b.para = tps_job 60 mem_job 400Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -298,13 +298,12 @@ REPBASE1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                MATR_RIGI=RIGIGEN1,
                                MATR_MASS=MASSGEN1,
                                ARCHIVAGE=_F( LIST_INST = L_INSTA),
-                              INCREMENT=_F(  INST_INIT = DEBUTR,
+                               INCREMENT=_F(  INST_INIT = DEBUTR,
                                           PAS = PAS,
                                           INST_FIN = TFIN),
                                EXCIT=(
                                    _F(  VECT_ASSE = VECTGENA,
                                            MULT_APPUI = 'OUI',
-                                           MODE_STAT=MODESTA,
                                            ACCE = CENTROA,
                                            VITE = VITESSA,
                                            DEPL = DEPLACA,
@@ -312,12 +311,12 @@ REPBASE1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                            GROUP_NO = ('P0',)),
                                    _F(  VECT_ASSE = VECTGENB,
                                            MULT_APPUI = 'OUI',
-                                           MODE_STAT=MODESTA,
                                            ACCE = CENTROB,
                                            VITE = VITESSB,
                                            DEPL = DEPLACB,
                                            DIRECTION = (0., 1., 0.,),
-                                           GROUP_NO = ('P2',)))
+                                           GROUP_NO = ('P2',))),
+                               MODE_STAT=MODESTA,           
                            )
 
 #

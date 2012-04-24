@@ -1,4 +1,4 @@
-# MODIF  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 23/04/2012   AUTEUR DELMAS J.DELMAS 
 # RESPONSABLE PROIX J.M.PROIX
 # TITRE TUBE DROIT SOUMIS A PLUSIEURS CHARGEMENTS (ELEMENT TUYAU_3M 3 NOEUDS) MACRO_ELAS_MULT
 # ssll106a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
@@ -200,13 +200,24 @@ RESU=MACRO_ELAS_MULT(MODELE=MO,
                                     SOUS_TITRE = 'GRAVITE',),
                                  _F(NOM_CAS = 'CHARGE NUMERO 9',
                                     CHAR_MECA = CHAR9,
-                                    SOUS_TITRE = 'LINEIQUE',),
-                                 _F(NOM_CAS = 'CHARGE NUMERO91',
+                                    SOUS_TITRE = 'LINEIQUE',),),);
+
+RESU=CALC_ELEM(reuse =RESU,
+               RESULTAT=RESU,
+               OPTION=('EPSI_ELGA','EFGE_ELNO','DEGE_ELNO'),);
+
+RESU=MACRO_ELAS_MULT(reuse =RESU,
+                     MODELE=MO,
+                     CHAM_MATER=CHMAT,
+                     CARA_ELEM=CAREL,
+                     CHAR_MECA_GLOBAL=CHAR0,
+                     CAS_CHARGE=(_F(NOM_CAS = 'CHARGE NUMERO91',
                                     CHAR_MECA = CHAR9B,
                                     SOUS_TITRE = 'LINEIQUE',),),);
 
 RESU=CALC_ELEM(reuse =RESU,
                RESULTAT=RESU,
+               NOM_CAS = 'CHARGE NUMERO91',
                OPTION=('EPSI_ELGA','EFGE_ELNO','DEGE_ELNO'),);
 
 TEST_RESU(RESU=(

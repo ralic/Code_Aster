@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 23/04/2012   AUTEUR TRAN V-X.TRAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,12 +64,12 @@ POST_FATIGUE=OPER(nom="POST_FATIGUE",op=136,sd_prod=table_sdaster,reentrant='n',
                                  EPS_XZ  = SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                  EPS_YZ  = SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                  
-                                 EPSP_XX  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                 EPSP_YY  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                 EPSP_ZZ  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                 EPSP_XY  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                 EPSP_XZ  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                 EPSP_YZ  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                 EPSP_XX  = SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                 EPSP_YY  = SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                 EPSP_ZZ  = SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                 EPSP_XY  = SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                 EPSP_XZ  = SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                 EPSP_YZ  = SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                ),
                                
              TYPE_CHARGE    = SIMP(statut='o',typ='TXM',into=("PERIODIQUE","NON_PERIODIQUE")),                            

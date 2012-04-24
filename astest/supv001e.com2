@@ -1,0 +1,35 @@
+# AJOUT
+# TITRE TEST DE CREATION/UTILISATION DE FORMULE AVEC INCLUDE
+# RESPONSABLE
+
+# .comm : en PAR_LOT='OUI'
+# .com1 : POURSUITE en PAR_LOT='OUI'
+# .com2 : en PAR_LOT='NON'
+# .com3 : POURSUITE en PAR_LOT='NON'
+
+DEBUT(CODE=_F(NOM='SUPV001E', NIV_PUB_WEB='INTERNET'),
+      PAR_LOT='NON', IGNORE_ALARM='SUPERVIS_1',)
+
+a = 2.
+
+mult2 = FORMULE(NOM_PARA='INST', VALE='INST * a')
+
+assert mult2(2.) == 4.
+print "mult2(2.) =", mult2(2.)
+
+INCLUDE(UNITE=11)
+
+assert mult3(6.) == 18.
+print "mult3(6.) =", mult3(6.)
+
+# the *python* function objects are not pickled by E_JDC, so ``funct3`` won't be
+# available to evaluate ``mult3`` in POURSUITE.
+
+freal = CALC_FONC_INTERP(FONCTION=mult3,
+                         VALE_PARA=(1., 2.))
+
+IMPR_FONCTION(COURBE=_F(FONCTION=freal), UNITE=6)
+
+DETRUIRE(CONCEPT=_F(NOM=mult3))
+
+FIN()

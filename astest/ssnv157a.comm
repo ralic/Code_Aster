@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/04/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE LOIS NON LOCALES A DEFORMATIONS REGULARISEES SUR BARREAU 3D
 # ssnv157a.para = tps_job 150 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -40,11 +40,11 @@ MO=AFFE_MODELE(AFFE=_F(TOUT='OUI',
                                               MODELISATION='3D_GRAD_EPSI',),
                                 MAILLAGE=TOTO,);
 
-CL1=AFFE_CHAR_MECA(DDL_IMPO=_F(DY=0,
+CL1=AFFE_CHAR_CINE(MECA_IMPO=_F(DY=0,
                                GROUP_NO='GMA30',),
                    MODELE=MO,);
 
-CL2=AFFE_CHAR_MECA(DDL_IMPO=(_F(DX=0,
+CL2=AFFE_CHAR_CINE(MECA_IMPO=(_F(DX=0,
                                GROUP_NO='GMA31',),
                              _F(DZ=0,
                                NOEUD='N1',),),

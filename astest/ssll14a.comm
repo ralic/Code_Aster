@@ -1,4 +1,4 @@
-# MODIF  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 23/04/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE PORTIQUE PLAN ARTICULE EN PIED
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -123,6 +123,11 @@ STATIQUE=MACRO_ELAS_MULT(MODELE=MODELE,
                                        SOUS_TITRE = 'CHARGE REPARTIE VERTICALE SUR LE TRONCON DC',
                                        OPTION =  'SIEF_ELGA',),);
 
+STATIQUE=CALC_CHAMP(reuse= STATIQUE,
+                    RESULTAT = STATIQUE,
+                    NOM_CAS='CHARGE NUMERO 1',
+                    FORCE='REAC_NODA',);
+
 STATIQUE=MACRO_ELAS_MULT(reuse=STATIQUE,
                          MODELE=MODELE,
                          CHAM_MATER=CH_MATER,
@@ -143,6 +148,22 @@ STATIQUE=MACRO_ELAS_MULT(reuse=STATIQUE,
 
 STATIQUE=CALC_CHAMP(reuse= STATIQUE,
                     RESULTAT = STATIQUE,
+                    NOM_CAS = 'CHARGE NUMERO 2',
+                    FORCE='REAC_NODA',);
+
+STATIQUE=CALC_CHAMP(reuse= STATIQUE,
+                    RESULTAT = STATIQUE,
+                    NOM_CAS = 'CHARGE NUMERO 3',
+                    FORCE='REAC_NODA',);
+
+STATIQUE=CALC_CHAMP(reuse= STATIQUE,
+                    RESULTAT = STATIQUE,
+                    NOM_CAS = 'CHARGE NUMERO 4',
+                    FORCE='REAC_NODA',);
+
+STATIQUE=CALC_CHAMP(reuse= STATIQUE,
+                    RESULTAT = STATIQUE,
+                    NOM_CAS = 'CHARGE NUMERO 5',
                     FORCE='REAC_NODA',);
 
 TEST_RESU(RESU=_F( RESULTAT = STATIQUE,  NOM_CAS = 'CHARGE NUMERO 1', NOM_CHAM = 'REAC_NODA',   NOEUD = 'N21',

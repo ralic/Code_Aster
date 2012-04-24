@@ -7,7 +7,7 @@
      &                    INPSCO,NBPASE)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/03/2012   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 23/04/2012   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -261,7 +261,15 @@ C      CALL WKVECT('&&'//NOMPRO//'.DEPL1','V V R',NEQ,IDEPL1)
       CALL WKVECT('&&'//NOMPRO//'.VITEA','V V R',NEQ,IVITEA)
       CALL WKVECT('&&'//NOMPRO//'.VITA1','V V R',NEQ,IVITA1)
       CALL WKVECT('&&'//NOMPRO//'.ACCEA','V V R',NEQ,IACCEA)
-      CALL GETVID('EXCIT','MODE_STAT',1,IARG,1,MODSTA,NBV)
+C    Verification de presence des modes_statiques
+      CALL GETVID(' ','MODE_STAT',1,IARG,1,MODSTA,NBV)
+      CALL GETFAC('EXCIT',NBEXCI)
+      DO 69 , IAUX = 1,NBEXCI
+          CALL GETVTX('EXCIT','MULT_APPUI',IAUX,IARG,1,K8B,ND)
+          IF (K8B.EQ.'OUI' .AND. NBV.EQ.0) THEN 
+             CALL U2MESG('F', 'ALGORITH13_46',0,' ',0,0,0,0.D0)
+          ENDIF
+69      CONTINUE
 
 C 1.8. ==> ???
 

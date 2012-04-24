@@ -1,0 +1,49 @@
+# AJOUT 
+# TITRE TEST DE LA CREATION DES CONCEPTS PAR LES MACRO-COMMANDES
+# RESPONSABLE
+# .comm : en PAR_LOT='OUI'
+# .com1 : en PAR_LOT='NON'
+# .com2 : THER_LINEAIRE en PAR_LOT='NON'
+# .com3 : THER_LINEAIRE en PAR_LOT='OUI'
+
+DEBUT(CODE=_F(NOM='SUPV001C', NIV_PUB_WEB='INTERNET'),
+      PAR_LOT='NON', IGNORE_ALARM='SUPERVIS_1',
+      IMPR_MACRO='OUI',)
+
+def ma_macro_ops(self, TABLE, **kwargs):
+    """Corps de la macro de test."""
+    CREA_TABLE = self.get_cmd('CREA_TABLE')
+    self.set_icmd(1)
+    # on crée une table que l'on retourne soit sous le mot-clé TABLE,
+    # soit en concept principal.
+    self.DeclareOut('tabout', TABLE or self.sd)
+    tabout = CREA_TABLE(LISTE=_F(PARA='NUME',
+                                 LISTE_I=range(5),),)
+    return 0
+
+def ma_macro_prod(self, TABLE, **kwargs):
+    """Déclaration des concepts de sortie"""
+    if TABLE:
+        self.type_sdprod(TABLE, table_sdaster)
+        return None
+    return table_sdaster
+
+MA_MACRO = MACRO(nom="MA_MACRO",
+                 op=ma_macro_ops,
+                 sd_prod=ma_macro_prod,
+                 TABLE = SIMP(statut='f', typ=CO,),)
+
+MA_MACRO(TABLE=CO('tabd'))
+tabg = MA_MACRO()
+
+IMPR_TABLE(TABLE=tabd,
+           UNITE=6)
+
+DETRUIRE(CONCEPT=_F(NOM=tabd),)
+
+IMPR_TABLE(TABLE=tabg,
+           UNITE=6)
+
+DETRUIRE(CONCEPT=_F(NOM=tabg),)
+
+FIN()

@@ -1,9 +1,9 @@
         SUBROUTINE BURCVX(MOD,NMAT,MATERD,MATERF,TIMED,TIMEF,
      &                    NVI,VIND,NR,SIGD,DEPS,YD,YF,TOLER,SEUIL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/12/2011   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 23/04/2012   AUTEUR HAELEWYN J.HAELEWYN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -53,7 +53,7 @@ C     ----------------------------------------------------------------
       REAL*8          AFI(6),BFI(6,6),CFI(6,6)
       REAL*8          AN(6) ,BN(6,6) ,CN(6,6)
       REAL*8          DSIG(6),R8PREM,MAXI,MINI
-      REAL*8          EPSFI(6),EISP,ER,SEUIL
+      REAL*8          EPSFI(6),EISP,ER,SEUIL,NFIF,EPSFIF(6),NFID
       CHARACTER*8     MOD
 
 C === =================================================================
@@ -151,7 +151,7 @@ C === =================================================================
       ER    = 0.0D0
       DO 13 I=NDT+1,NR
          ER    = ER + R(I)*R(I)
-13    CONTINUE
+ 13   CONTINUE
       ER    = SQRT(ER)
 
 C === =================================================================
@@ -159,5 +159,21 @@ C --- ASSIGNATION DE LA VALEUR AU SEUIL
 C === =================================================================
       SEUIL = 1.D0
       IF(ER.LT.TOLER)SEUIL = -1.D0
-      
+
+C === =================================================================
+C --- CONTROLE DU TERME PORTANT SUR LES DEFORMATIONS IRREVERSIBLES 
+C --- SI LA NORME OBTENUE EST INFERIEURE A VIND(21) ALORS LA SOLUTION
+C --- LINEARISEE EST EXACTE
+C === =================================================================
+      DO 14 I = 1, NDT
+        EPSFIF(I) = YF(NDT+I)
+  14  CONTINUE
+
+      CALL LCPRSC(EPSFIF,EPSFIF,NFIF)
+      NFIF = SQRT(NFIF)
+
+      IF(NFIF.LT.VIND(21))THEN 
+        SEUIL = -1.D0
+      ENDIF
+
       END

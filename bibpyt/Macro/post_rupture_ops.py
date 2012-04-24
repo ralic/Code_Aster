@@ -1,8 +1,8 @@
-#@ MODIF post_rupture_ops Macro  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF post_rupture_ops Macro  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -282,21 +282,16 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
          verif_exi(tabin, 'K2')
 
       if crit_ang == 'SITT_MAX' :
-
-         __angle_deg=FORMULE(NOM_PARA=('K1','K2'),VALE='sittmax(K1,K2)*180./pi')
-
          # on l'ajoute dans l'environnement pour pouvoir s'en servir dans les commandes
          self.update_const_context({'sittmax' : sittmax})
+         __angle_deg=FORMULE(NOM_PARA=('K1','K2'),VALE='sittmax(K1,K2)*180./pi')
 
       elif crit_ang in ('K1_MAX','K2_NUL','G_MAX'):
-
          # criteres uniquement valables en 2D
          # mais comment savoir ?
-
-         __angle_deg=FORMULE(NOM_PARA=('K1','K2'),VALE='amestoy(K1,K2,crit_ang)')
-
          # on l'ajoute dans l'environnement pour pouvoir s'en servir dans les commandes
          self.update_const_context({'amestoy' : amestoy})
+         __angle_deg=FORMULE(NOM_PARA=('K1','K2'),VALE='amestoy(K1,K2,crit_ang)')
 
       tabout=CALC_TABLE(TABLE=TABIN,
                         reuse=TABIN,
@@ -339,7 +334,6 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
          (young, poisson)=caract_mater(self,args['MATER'])
          self.update_const_context({'E' : young})
          self.update_const_context({'nu' : poisson})
-         
          __cumul = FORMULE(NOM_PARA='G',VALE='sqrt(E)/((1-nu**2)*G)')
 
       elif cumul == 'QUADRATIQUE' :
@@ -413,10 +407,10 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
          for i,q in enumerate(list_q):
 
             # definition de la formule
-            __delta_unit = FORMULE(NOM_PARA=q,VALE=q+'*(COEF_MULT_MAXI-COEF_MULT_MINI)')
             self.update_const_context({'q' : q})
             self.update_const_context({'COEF_MULT_MAXI' : COEF_MULT_MAXI})
             self.update_const_context({'COEF_MULT_MINI' : COEF_MULT_MINI})
+            __delta_unit = FORMULE(NOM_PARA=q,VALE=q+'*(COEF_MULT_MAXI-COEF_MULT_MINI)')
 
             mostcles={}
             if i==0 :
@@ -547,12 +541,10 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
       M = args['M']
 
       if loi == 'PARIS' :
-
-         __da=FORMULE(NOM_PARA=(str(dkeq)),VALE='C * ' + dkeq + ' **M ')
-
          # on l'ajoute dans l'environnement pour pouvoir s'en servir dans les commandes
          self.update_const_context({'C' : C})
          self.update_const_context({'M' : M})
+         __da=FORMULE(NOM_PARA=(str(dkeq)),VALE='C * ' + dkeq + ' **M ')
 
       tabout=CALC_TABLE(TABLE=TABIN,
                         reuse=TABIN,
@@ -650,8 +642,8 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
          DN_pilo = DAmax_pilo/damax
 
       # quelque soit le type de pilotage : mise a jour du DELTA_A et ecriture du DN
-      __DNpilo=FORMULE(NOM_PARA='DELTA_A', VALE= 'DN_pilo * DELTA_A ')
       self.update_const_context({'DN_pilo' : DN_pilo})
+      __DNpilo=FORMULE(NOM_PARA='DELTA_A', VALE= 'DN_pilo * DELTA_A ')
 
       for TABLE_i in TABLE:
 
@@ -756,10 +748,9 @@ def post_rupture_ops(self, TABLE, OPERATION, **args):
       elif change == True and ('G' and 'G_IRWIN' not in tabin.para) :
 
          # formule servant a mettre a zero les valeurs negatives de K1         
+         self.update_const_context({'mise_zero' : mise_zero})
          __formul = FORMULE( NOM_PARA = 'K1',
                              VALE = 'mise_zero(K1)')
-
-         self.update_const_context({'mise_zero' : mise_zero})
 
          # mise a zero des valeurs de K1 negatives
          tabout=CALC_TABLE(TABLE=TABIN,reuse=TABIN,

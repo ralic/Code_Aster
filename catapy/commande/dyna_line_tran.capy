@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
+#& MODIF COMMANDE  DATE 23/04/2012   AUTEUR ALARCON A.ALARCON 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -82,18 +82,20 @@ DYNA_LINE_TRAN=OPER(nom="DYNA_LINE_TRAN",op=  48,sd_prod=dyna_trans,
            MULT_APPUI      =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
            b_mult_appui     =BLOC(condition = "MULT_APPUI == 'OUI'",
            regles=(EXCLUS('NOEUD','GROUP_NO'),),
-           MODE_STAT       =SIMP(statut='f',typ=mode_meca),
            DIRECTION       =SIMP(statut='f',typ='R',max='**'),
            NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
            GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
          ),),
+###
+         MODE_STAT       =SIMP(statut='f',typ=mode_meca),
+###       
          EXCIT_RESU      =FACT(statut='f',max='**',
            RESULTAT        =SIMP(statut='o',typ=dyna_trans ),
            COEF_MULT       =SIMP(statut='o',typ='R' ),
          ),
          AMOR_MODAL      =FACT(statut='f',
-           MODE_MECA       =SIMP(statut='f',typ=mode_meca ),
-           AMOR_REDUIT     =SIMP(statut='f',typ='R',max='**'),
+           MODE_MECA       =SIMP(statut='o',typ=mode_meca ),
+           AMOR_REDUIT     =SIMP(statut='o',typ='R',max='**'),
            NB_MODE         =SIMP(statut='f',typ='I',defaut= 9999 ),
          ),
 

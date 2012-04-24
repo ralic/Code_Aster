@@ -1,7 +1,6 @@
-      SUBROUTINE NMCVGI(SDIMPR,TYPAFF)
-C
+      SUBROUTINE OPTDEP(OPTION, LISOPT, NOPOUT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/04/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF CALCULEL  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -18,33 +17,43 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C RESPONSABLE ABBAS M.ABBAS
-C
       IMPLICIT NONE
-      CHARACTER*24 SDIMPR
-      CHARACTER*6  TYPAFF           
-C 
-C ----------------------------------------------------------------------
+C     --- ARGUMENTS IN ---
+      CHARACTER*16 OPTION
+C     --- ARGUMENTS OUT ---
+      INTEGER      NOPOUT
+      CHARACTER*24 LISOPT(*)
 C
-C ROUTINE MECA_NON_LINE (AFFICHAGE)
+      CHARACTER*24 NOLIOP
+      CHARACTER*8 TEMP
+      INTEGER I, JLISOP
+C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER        ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8         ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16     ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL        ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8    ZK8
+      CHARACTER*16          ZK16
+      CHARACTER*24                  ZK24
+      CHARACTER*32                          ZK32
+      CHARACTER*80                                  ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-C ENCAPSULATION DES AFFICHAGES DU TABLEAU DE CONVERGENCE ET INFOS
+      TEMP = '&&OPTDEF'
+      CALL CCLIOP(OPTION, TEMP, NOLIOP, NOPOUT)
+      IF (NOPOUT .EQ. 0) GOTO 9999
+      CALL ASSERT(NOPOUT.LE.100)
 C
-C ----------------------------------------------------------------------
+      CALL JEVEUO(NOLIOP,'L',JLISOP)
+      DO 10 I=1, NOPOUT
+        LISOPT(I) = ZK24(JLISOP-1+I)
+ 10   CONTINUE
 C
-C
-C IN  SDIMPR : SD AFFICHAGE
-C IN  TYPAFF : TYPE AFFICHAGE
-C               'CVG_OK'  MESSAGE DE CONVERGENCE NORMALE 
-C               'CVG_MX'  MESSAGE DE CONVERGENCE SI CRITERE 
-C                             RESI_GLOB_RELA ET CHARGEMENT = 0,
-C                             ON UTILISE RESI_GLOB_MAXI (MAXREL)
-C
-C ----------------------------------------------------------------------
-C
-C A RESORBER
-      CALL ASSERT(.FALSE.)
-      
-     
-C
+ 9999 CONTINUE
+      CALL JEDETC(' ', TEMP, 1)
       END

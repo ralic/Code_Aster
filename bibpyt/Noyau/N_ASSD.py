@@ -1,9 +1,9 @@
-#@ MODIF N_ASSD Noyau  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_ASSD Noyau  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -63,19 +63,19 @@ class ASSD(object):
       self.sd_deleted = 0
       # attributs pour le Catalogue de Structure de Données Jeveux
       # "self.cata_sdj" est un attribut de classe
-      #XXX si on nomme ces attributs _sdj/_class_sdj, pb en poursuite :
-      #XXX dans rebuild_sd, self n'a pas ces attributs qui ne sont donc
-      #XXX pas recopiés... !?
       self.ptr_class_sdj = None
       self.ptr_sdj = None
+      # construit en tant que CO('...')
+      # 0 : assd normal, 1 : type CO, 2 : type CO typé
+      self._as_co = 0
 
    def _get_sdj(self):
        """Retourne le catalogue de SD associé au concept."""
        if self.ptr_sdj is None:
            cata_sdj = getattr(self, 'cata_sdj', None)
-           assert cata_sdj, "L'attribut 'cata_sdj' doit être défini pour la classe %s" \
+           assert cata_sdj, "The attribute 'cata_sdj' must be defined in the class %s" \
                 % self.__class__.__name__
-           assert self.nom, "L'attribut 'nom' n'a pas été renseigné !"
+           assert self.nom, "The attribute 'nom' has not been filled!"
            if self.ptr_class_sdj is None:
                self.ptr_class_sdj = import_object(cata_sdj)
            self.ptr_sdj = self.ptr_class_sdj(nomj=self.nom)
@@ -92,6 +92,12 @@ class ASSD(object):
 
 
    def __getitem__(self,key):
+      from strfunc import convert
+      text_error = convert(_(u"ASSD.__getitem__ est déprécié car la référence à "
+                             u"l'objet ETAPE parent sera supprimée."))
+      #raise NotImplementedError(text_error)
+      from warnings import warn
+      warn(text_error, DeprecationWarning, stacklevel=2)
       return self.etape[key]
 
    def set_name(self, nom):
@@ -99,9 +105,20 @@ class ASSD(object):
       """
       self.nom = nom
 
+   def is_typco(self):
+       """Permet de savoir si l'ASSD est issu d'un type CO.
+       Retourne:
+          0 : ce n'est pas un type CO
+          1 : c'est un type CO, non encore typé
+          2 : c'est un type CO retypé
+       """
+       return self._as_co
+
    def change_type(self, new_type):
       """Type connu a posteriori (type CO)."""
       self.__class__ = new_type
+      assert self._as_co != 0
+      self._as_co = 2
 
    def get_name(self):
       """
@@ -116,9 +133,11 @@ class ASSD(object):
          self.nom = self.id
       return self.nom
 
-   def supprime(self):
+   def supprime(self, force=False):
       """
-          Cassage des boucles de références pour destruction du JDC
+      Cassage des boucles de références pour destruction du JDC.
+      'force' est utilisée pour faire des suppressions complémentaires
+      (voir les formules dans N_FONCTION).
       """
       self.supprime_sd()
       self.etape = None
@@ -132,7 +151,8 @@ class ASSD(object):
       self._del_sdj()
 
    def __del__(self):
-       message.debug(SUPERV, "__del__ ASSD %s <%s>", getattr(self, 'nom', 'unknown'), self)
+       #message.debug(SUPERV, "__del__ ASSD %s <%s>", getattr(self, 'nom', 'unknown'), self)
+       pass
 
    def accept(self,visitor):
       """
@@ -166,6 +186,20 @@ class ASSD(object):
       if CONTEXT.debug: print '  `- is_accessible =', repr(is_accessible)
       return is_accessible
 
+   def filter_context(self, context):
+      """Filtre le contexte fourni pour retirer (en gros) ce qui vient du catalogue."""
+      from N_ENTITE import ENTITE
+      import types
+      ctxt = {}
+      for key, value in context.items():
+         if type(value) in (types.ModuleType, types.ClassType) :
+            continue
+         if issubclass(type(value), types.TypeType):
+            continue
+         if isinstance(value, ENTITE):
+            continue
+         ctxt[key] = value
+      return ctxt
 
    def par_lot(self):
       """Conserver uniquement pour la compatibilite avec le catalogue v9 dans eficas."""
@@ -186,7 +220,7 @@ class assd(ASSD):
         # qui font tout pour se faire passer pour de vrais entiers/réels.
         if isinstance(valeur, ASSD) or type(valeur) in (int, float):
             return valeur
-        raise ValueError("On attend un objet concept.")
+        raise ValueError(_(u"On attend un objet concept."))
     __convert__ = classmethod(__convert__)
 
 

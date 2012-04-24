@@ -1,4 +1,4 @@
-# MODIF  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 23/04/2012   AUTEUR TRAN V-X.TRAN 
 # TITRE  CRITERES DE FATIGUE CROSSLAND ET DANG VAN PAPADOPOULOS
 # ET CRITERE EN FORMULE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -22,19 +22,29 @@
 DEBUT(  CODE=_F(  NOM = 'SZLZ107A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 TAUN1=DEFI_FONCTION(    NOM_PARA='INST',
-                          VALE=(  1.,   411.,
+                          VALE=(  0.,     0.,
+                                  1.,   411.,
                                   2.,     0.,
-                                  3.,  -411.,   )  )
+                                  3.,  -411., 
+                                  4.,     0.,
+                                  5.,   411.,  )  )
 
 TAUN2=DEFI_FONCTION(    NOM_PARA='INST',
-                          VALE=(  1.,   205.,
+                          VALE=(  0.,     0.,
+                                  1.,   205.,
                                   2.,     0.,
-                                  3.,  -205.,   )  )
+                                  3.,  -205., 
+                                  4.,     0.,
+                                  5.,   205.,
+                                      )  )
 
 TAUN3=DEFI_FONCTION(    NOM_PARA='INST',
-                          VALE=(  1.,     0.,
+                          VALE=(  0.,     0.,
+                                  1.,     0.,
                                   2.,     0.,
-                                  3.,     0.,   )  )
+                                  3.,     0.,
+                                  4.,     0.,
+                                  5.,     0.,   )  )
 
 WHOL=DEFI_FONCTION(       NOM_PARA='SIGM',
                             INTERPOL='LOG',
@@ -203,16 +213,16 @@ TEST_TABLE(        TABLE=TAB_3,
 # b = TAU0 = 352
 # a = (TAU0-D0/SQRT(3))/D0/3 = 0.22
 CRIT_FAT =   FORMULE(
-           NOM_PARA=('DTAUMA','PHYDRM'),
-           VALE=''' (DTAUMA + 0.22*PHYDRM) - 352 '''
+           NOM_PARA=('RAYSPH','PHYDRM'),
+           VALE=''' (RAYSPH + 0.22*(max(PHYDRM,0))) - 352 '''
            )
            
 # POUR RETROUVER LE CRITERE CROSSLAND
 # b = TAU0 = 352
 # a = (TAU0-D0/SQRT(3))/D0/3 = 0.22
 CRIT_FA2 =   FORMULE(
-           NOM_PARA=('DSIGEQ','PHYDRM'),
-           VALE=''' (DSIGEQ/1.732 + 0.22*PHYDRM) - 352 '''
+           NOM_PARA=('AMPCIS','PHYDRM'),
+           VALE=''' (AMPCIS + 0.22*(max(PHYDRM,0)) ) - 352 '''
            )
 
 WHOL_F =   FORMULE(
@@ -283,7 +293,7 @@ TEST_TABLE(     TABLE=TAB_1a,
                 PRECISION=1.E-5                )
 
 TEST_TABLE(     TABLE=TAB_1a,
-                NOM_PARA='DTAUMA',
+                NOM_PARA='RAYSPH',
                 VALE=313.579,
                 PRECISION=1.E-5                )
 
@@ -329,7 +339,7 @@ TEST_TABLE(     TABLE=TAB_1b,
                 PRECISION=1.E-5                )
 
 TEST_TABLE(     TABLE=TAB_1b,
-                NOM_PARA='DTAUMA',
+                NOM_PARA='RAYSPH',
                 VALE=313.579,
                 PRECISION=1.E-5                )
 
@@ -375,7 +385,7 @@ TEST_TABLE(     TABLE=TAB_1c,
                 PRECISION=1.E-5                )
 
 TEST_TABLE(     TABLE=TAB_1c,
-                NOM_PARA='DTAUMA',
+                NOM_PARA='RAYSPH',
                 VALE=313.579,
                 PRECISION=1.E-5                )
 
@@ -422,8 +432,8 @@ TEST_TABLE(     TABLE=TAB_2a,
 
 # VALE=313.579*SQRT(3)=
 TEST_TABLE(     TABLE=TAB_2a,
-                NOM_PARA='DSIGEQ',
-                VALE=543.1348,
+                NOM_PARA='AMPCIS',
+                VALE=313.579,
                 PRECISION=1.E-5                )
 
 TEST_TABLE(     TABLE=TAB_2a,

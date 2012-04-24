@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
+# MODIF  DATE 23/04/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE TEST DU MULTI-APPUIS SUR UN SYSTEME MASSES-RESSORTS NON LINEAIRE
 # sdnd102a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -205,12 +205,13 @@ TRAN_GE1=DYNA_VIBRA( TYPE_CALCUL='TRAN',
                      BASE_CALCUL='GENE',
                  MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
                 SCHEMA_TEMPS=_F(SCHEMA='EULER',),
-                AMOR_MODAL=_F(AMOR_REDUIT=0.07,),                 
+                AMOR_MODAL=_F(AMOR_REDUIT=0.07,),
+                MODE_STAT=MODE_STA,              
                EXCIT=_F(  VECT_ASSE = VECT_X,  ACCE = ACCELER1,
                        VITE = VITESSE1,  DEPL = DEPLACE1,
                        MULT_APPUI = 'OUI',
                        DIRECTION = ( 1., 0., 0.,),
-                       MODE_STAT=MODE_STA, NOEUD = 'NO1'),
+                       NOEUD = 'NO1'),
 # CONDITION DE CHOC D'UN NOEUD PAR RAPPORT A UN OBSTACLE
 # IMMOBILE DANS LE REFERENTIEL ABSOLU
                CHOC=_F(  GROUP_NO_1 = 'MASSES',
@@ -263,15 +264,14 @@ TRAN_GE2=DYNA_VIBRA(  TYPE_CALCUL='TRAN',
                      MATR_MASS=MGEN_BIC,   MATR_RIGI=RGEN_BIC,
                  SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                  AMOR_MODAL=_F(AMOR_REDUIT=( 0.07,  0.07, ),),
+                 MODE_STAT=MSTA_BIC,
                 EXCIT=(
                 _F(  VECT_ASSE = VECT_X1,  ACCE = ACCELER1,
                        MULT_APPUI = 'OUI',
                        DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO1',
-                       MODE_STAT=MSTA_BIC,
                        VITE = VITESSE1, DEPL = DEPLACE1), 
                 _F(  VECT_ASSE = VECT_X2,  ACCE = ACCELER2,
                        MULT_APPUI = 'OUI',
-                       MODE_STAT=MSTA_BIC,
                        DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO11',
                        VITE = VITESSE2, DEPL = DEPLACE2)), 
 # CONDITION DE CHOC ENTRE LE NOEUD 2 ET LE NOEUD 12

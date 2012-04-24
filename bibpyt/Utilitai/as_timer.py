@@ -1,8 +1,8 @@
-#@ MODIF as_timer Utilitai  DATE 17/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF as_timer Utilitai  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -73,6 +73,7 @@ class ASTER_TIMER:
          state is one of 'start', 'stop'
    """
    MaxNumTimer = 9999999
+   MaxSize = 500
 
 #-------------------------------------------------------------------------------
    def __init__(self, add_total=True, format='as_run'):
@@ -118,6 +119,8 @@ class ASTER_TIMER:
    def Start(self, timer, mode='CONT', num=None, hide=None, name=None):
       """Start a new timer or restart one
       """
+      if len(self.timers) > 1000:
+          return
       name = name or str(timer)
       isnew = self.timers.get(timer) is None
       if not num:
@@ -160,6 +163,8 @@ class ASTER_TIMER:
    def Stop(self, timer, hide=None):
       """Stop a timer
       """
+      if len(self.timers) > 1000:
+          return
       if self.timers.get(timer) is None:
          self.timers[timer] = {
             'name'   : str(timer),
@@ -194,6 +199,8 @@ class ASTER_TIMER:
    def StopAndGet(self, timer, *args, **kwargs):
       """Stop a timer and return "delta" values.
       """
+      if len(self.timers) > 1000:
+          return 0., 0., 0.
       self.Stop(timer, *args, **kwargs)
       cpu_dt  = self.timers[timer]['cpu_dt']
       sys_dt  = self.timers[timer]['sys_dt']

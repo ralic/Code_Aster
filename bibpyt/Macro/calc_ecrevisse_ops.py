@@ -1,8 +1,8 @@
-#@ MODIF calc_ecrevisse_ops Macro  DATE 17/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calc_ecrevisse_ops Macro  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -345,10 +345,10 @@ def calc_ecrevisse_ops(self,
         # Extraction des tables Temperatures + deplacement levres fissure
         _tbl_temp = _T_TEMP.EXTR_TABLE()
         _tbl_dpl   = _T_DPL.EXTR_TABLE()
-        DETRUIRE(CONCEPT=_F(NOM=(_T_DPL,_T_TEMP,)),INFO=1,ALARME='NON')
+        DETRUIRE(CONCEPT=_F(NOM=(_T_DPL,_T_TEMP,)),INFO=1)
         _tbl_dpl_b  = _T_DPL_B.EXTR_TABLE()
         _tbl_temp_b = _T_TEMPB.EXTR_TABLE()
-        DETRUIRE(CONCEPT=_F(NOM=(_T_DPL_B,_T_TEMPB,)),INFO=1,ALARME='NON')
+        DETRUIRE(CONCEPT=_F(NOM=(_T_DPL_B,_T_TEMPB,)),INFO=1)
 
 
         # --Determination des cotes a donner a ecrevisse--
@@ -560,8 +560,8 @@ def calc_ecrevisse_ops(self,
 
             motscle2= {'ECOULEMENT': txt, 'MODELE_ECRE' : txt2 }
 
-            DETRUIRE(OBJET=_F(CHAINE = '_TAB2' ),INFO=1,ALARME='NON')
-            DETRUIRE(OBJET=_F(CHAINE = '_DEB2' ),INFO=1,ALARME='NON')
+            DETRUIRE(OBJET=_F(CHAINE = '_TAB2' ),INFO=1)
+            DETRUIRE(OBJET=_F(CHAINE = '_DEB2' ),INFO=1)
             __TAB_i = CO('_TAB2')
             __DEB_i = CO('_DEB2')
 
@@ -617,8 +617,8 @@ def calc_ecrevisse_ops(self,
                             _F(PARA = "COEF_CONV", LISTE_R = dictTab[4]['LISTE_R'],),
                             ),)
 
-            DETRUIRE(OBJET=_F(CHAINE = '__TAB_i' ),INFO=1,ALARME='NON')
-            DETRUIRE(OBJET=_F(CHAINE = '__DEB_i' ),INFO=1,ALARME='NON')
+            DETRUIRE(OBJET=_F(CHAINE = '__TAB_i' ),INFO=1)
+            DETRUIRE(OBJET=_F(CHAINE = '__DEB_i' ),INFO=1)
 
             if ( debug ):
                os.system('ls -al ' + os.path.join(os.getcwd(),tmp_ecrevisse) )

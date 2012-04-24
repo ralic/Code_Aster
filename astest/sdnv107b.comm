@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 23/04/2012   AUTEUR DEVESA G.DEVESA 
 # TITRE POUTRE PLASTIQUE EN TRACTION DYNAMIQUE CONDENSEE PAR 
 # sdnv107b.para = tps_job 300 mem_job 900Mo mem_aster 90 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -117,6 +117,9 @@ PARAM=AFFE_CARA_ELEM(  MODELE=MODELE,
                                      _F( CARA='M_T_D_N',
                                          VALE=(0.,),
                                          GROUP_MA = ('PVOLU'), ),
+                                     _F( CARA='A_T_D_N',
+                                         VALE=(0.,0.,0.,),
+                                         GROUP_MA = ('PC3','PVOLU'), ),
                                     ),  );
                                   
 PARAM1=AFFE_CARA_ELEM(  MODELE=MODELE1,
@@ -132,6 +135,9 @@ PARAM1=AFFE_CARA_ELEM(  MODELE=MODELE1,
                                      _F( CARA='M_T_D_N',
                                         VALE=(0.,),
                                    GROUP_MA = ('PVOLU1','PVOLU2'), ),
+                                     _F( CARA='A_T_D_N',
+                                         VALE=(0.,0.,0.,),
+                                   GROUP_MA = ('PSURF2','PVOLU1','PVOLU2'), ),
                                      ),
                                    );
                                    
@@ -177,6 +183,8 @@ MACRO_MATR_ASSE(MODELE=MODELE1,
                               OPTION='RIGI_MECA',),
                            _F(MATRICE=CO('MATM1'),
                               OPTION='MASS_MECA',),
+                           _F(MATRICE=CO('MATA1'),
+                              OPTION='AMOR_MECA',),
                            ),
                 ); 
                               
@@ -223,6 +231,7 @@ BAMO1=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODE1,
 MAEL1=MACR_ELEM_DYNA(  BASE_MODALE=BAMO1,
                        MATR_RIGI=MATR1,
                        MATR_MASS=MATM1,
+                       MATR_AMOR=MATA1,
                        SANS_GROUP_NO='SURF2',
                      );
                      
@@ -281,6 +290,9 @@ PARAMB=AFFE_CARA_ELEM(  MODELE=MODELB,
                                      _F( CARA='M_T_D_N',
                                          VALE=(0.,),
                                          GROUP_MA = ('PVOLU3'), ),
+                                     _F( CARA='A_T_D_N',
+                                         VALE=(0.,0.,0.,),
+                                         GROUP_MA = ('PC3','PVOLU3'), ),
                                     ),
                                    );
                         

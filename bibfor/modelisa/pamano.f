@@ -4,9 +4,9 @@
       CHARACTER*(*)     MOTFAZ, MOCLEZ, NOMAZ, LISTYZ, LISNOZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 23/04/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -177,9 +177,6 @@ C              -----------------------------------------------------
  20            CONTINUE
  10          CONTINUE
          ENDIF
-         IF ((N1MAX.EQ.1).AND.(MOTFAC.EQ.'LIAISON_UNIL_NO')) THEN
-            IDIMP1 = 1
-         ENDIF
 
 C
 C     -- TRAITEMENT DES MOTS-CLES MAILLE_1 ET MAILLE_2
@@ -269,16 +266,7 @@ C
 C     -- MOTCLE NON ADMIS
 C        -------------------------------------------------------
       ELSE
-          VALK(1) = MOTCLE
-          VALK(2) = MGRMA1
-          VALK(3) = MGRMA2
-          VALK(4) = MGRNO1
-          VALK(5) = MGRNO2
-          VALK(6) = MMAIL1
-          VALK(7) = MMAIL2
-          VALK(8) = MNOEU1
-          VALK(9) = MNOEU2
-          CALL U2MESK('F','MODELISA6_19', 9 ,VALK)
+          CALL ASSERT(.FALSE.)
       ENDIF
 C
 C     -- IDIMAX = MAJORANT DE LA LONGUEUR DE LA LISTE DE NOEUDS

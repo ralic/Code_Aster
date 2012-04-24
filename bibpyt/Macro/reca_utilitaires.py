@@ -1,9 +1,9 @@
-#@ MODIF reca_utilitaires Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF reca_utilitaires Macro  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -93,7 +93,7 @@ def detr_concepts(self):
    liste_concepts=mes_concepts(base=self.parent)
    for e in liste_concepts:
       nom = string.strip(e)
-      DETRUIRE( OBJET =self.g_context['_F'](CHAINE = nom), INFO=1, ALARME='NON')
+      DETRUIRE( OBJET =self.g_context['_F'](CHAINE = nom), INFO=1)
       if self.jdc.g_context.has_key(nom) : del self.jdc.g_context[nom]
    del(liste_concepts)
 

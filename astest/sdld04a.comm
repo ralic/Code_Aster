@@ -1,4 +1,4 @@
-# MODIF  DATE 05/03/2012   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 23/04/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE REPONSE TRANSITOIRE D'UN SYSTEME A UNE ACCELERATION IMPOSEE
 # sdld04a.para = tps_job 60 mem_job 164Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -312,9 +312,10 @@ PROJ_BASE(  BASE=MODE_CS,   NB_VECT=2,MATR_ASSE_GENE=(
 
 TRA_GCS=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                  MATR_MASS=MASG_CS2,   MATR_RIGI=RIGG_CS2,
-                 SCHEMA_TEMPS=_F(SCHEMA='DEVOGE',),                  
+                 SCHEMA_TEMPS=_F(SCHEMA='DEVOGE',),
+                 MODE_CORR=MODCOR,
                  EXCIT=_F(  VECT_ASSE = VECT_GC2,  FONC_MULT = ACCELERO,
-                        CORR_STAT = 'OUI',MODE_CORR=MODCOR,
+                        CORR_STAT = 'OUI',
                         D_FONC_DT = DERI_PRE,  D_FONC_DT2 = DERI_SEC),
                 INCREMENT=_F(  INST_INIT = 0.,  INST_FIN = 0.1,  PAS = 0.001)
                            )

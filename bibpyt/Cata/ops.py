@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 13/03/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ops Cata  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,6 +20,7 @@
 # RESPONSABLE COURTOIS M.COURTOIS
 
 # Modules Python
+import sys
 import os
 import os.path as osp
 import traceback
@@ -32,6 +33,7 @@ import Accas
 from Accas import ASSD
 from Noyau.ascheckers     import CheckLog
 from Noyau.N_info import message, SUPERV
+from Noyau.N_types import force_list
 
 try:
    import aster
@@ -53,18 +55,16 @@ def commun_DEBUT_POURSUITE(jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, 
    """Fonction sdprod partie commune à DEBUT et POURSUITE.
    (on stocke un entier au lieu du logique)
    """
-   jdc.par_lot    = PAR_LOT
+   jdc.set_par_lot(PAR_LOT, user_value=True)
    jdc.impr_macro = int(IMPR_MACRO == 'OUI')
    jdc.jxveri     = int(CODE != None or (DEBUG != None and DEBUG['JXVERI'] == 'OUI'))
    jdc.sdveri     = int(DEBUG != None and DEBUG['SDVERI'] == 'OUI')
    jdc.fico       = None
    jdc.sd_checker = CheckLog()
    jdc.info_level = INFO
+   jdc.hist_etape = (DEBUG != None and DEBUG['HIST_ETAPE'] == 'OUI')
    if CODE != None:
       jdc.fico = CODE['NOM']
-      # protection eficas
-      if hasattr(jdc, 'init_ctree'):
-         jdc.init_ctree()
    if LANG:
        from Execution.i18n import localization
        localization.install(LANG)
@@ -269,10 +269,6 @@ def POURSUITE_context(self,d):
    d.update(self.g_context)
    # Une commande POURSUITE n'est possible qu'au niveau le plus haut
    # On ajoute directement les concepts dans le contexte du jdc
-   # XXX est ce que les concepts ne sont pas ajoutés plusieurs fois ??
-   for v in self.g_context.values():
-      if isinstance(v, ASSD) :
-         self.jdc.sds.append(v)
 
 def build_poursuite(self,**args):
    """
@@ -315,41 +311,46 @@ def build_include(self,**args):
    # La macro INCLUDE ne sera pas numérotée (incrément=None)
    ier=0
    self.set_icmd(None)
-   icmd=0
    # On n'execute pas l'ops d'include en phase BUILD car il ne sert a rien.
    #ier=self.codex.opsexe(self,1)
    return ier
 
-def build_detruire(self,d):
-   """Fonction op_init de DETRUIRE."""
-   list_co = set()
-   sd = []
-   # par nom de concept (typ=assd)
-   if self["CONCEPT"] != None:
-      for mc in self["CONCEPT"]:
-         mcs = mc["NOM"]
-         if type(mcs) not in (list, tuple):
-            mcs = [mcs]
-         list_co.update(mcs)
-   # par chaine de caractères (typ='TXM')
-   if self["OBJET"] != None:
-      for mc in self["OBJET"]:
-         mcs = mc["CHAINE"]
-         if type(mcs) not in (list, tuple):
-            mcs = [mcs]
-         # longueur <= 8, on cherche les concepts existants
-         for nom in mcs:
+def _detr_list_co(self, context):
+    """Utilitaire pour DETRUIRE"""
+    list_co = set()
+    # par nom de concept (typ=assd)
+    for mc in self['CONCEPT'] or []:
+        list_co.update(force_list(mc["NOM"]))
+    # par chaine de caractères (typ='TXM')
+    for mc in self['OBJET'] or []:
+        # longueur <= 8, on cherche les concepts existants
+        for nom in force_list(mc['CHAINE']):
             assert type(nom) in (str, unicode), 'On attend une chaine de caractères : %s' % nom
             if len(nom.strip()) <= 8:
-               if self.jdc.sds_dict.get(nom) != None:
-                  list_co.add(self.jdc.sds_dict[nom])
-               elif d.get(nom) != None:
-                  list_co.add(d[nom])
+                if self.jdc.sds_dict.get(nom) != None:
+                    list_co.add(self.jdc.sds_dict[nom])
+                elif context.get(nom) != None:
+                    list_co.add(context[nom])
             #else uniquement destruction des objets jeveux
+    return list_co
 
-   for co in list_co:
+def DETRUIRE(self, CONCEPT, OBJET, **args):
+   """Fonction OPS pour la macro DETRUIRE : exécution réelle."""
+   # pour les formules, il ne faut pas vider l'attribut "parent_context" trop tôt
+   for co in _detr_list_co(self, {}):
+       co.supprime(force=True)
+   self.set_icmd(1)
+   ier = self.codex.opsexe(self, 7)
+   return ier
+
+def build_detruire(self, d):
+   """Fonction op_init de DETRUIRE."""
+   # d est le g_context du jdc ou d'une macro
+   #message.debug(SUPERV, "id(d) : %s", id(d))
+   for co in _detr_list_co(self, d):
       assert isinstance(co, ASSD), 'On attend un concept : %s (type=%s)' % (co, type(co))
       nom = co.nom
+      #message.debug(SUPERV, "refcount_1(%s) = %d", nom, sys.getrefcount(co))
       # traitement particulier pour les listes de concepts, on va mettre à None
       # le terme de l'indice demandé dans la liste :
       # nomconcept_i est supprimé, nomconcept[i]=None
@@ -368,8 +369,8 @@ def build_detruire(self,d):
          del d[nom]
       if self.jdc.sds_dict.has_key(nom):
          del self.jdc.sds_dict[nom]
-      #XXX/memoire suppression du concept et de sa partie SD
-      #co.supprime()
+      # "suppression" du concept
+      co.supprime()
       # On signale au parent que le concept n'existe plus après l'étape self
       self.parent.delete_concept_after_etape(self, co)
       # marque comme détruit == non executé
@@ -385,7 +386,6 @@ def build_procedure(self,**args):
     # le numéro de la commande n est pas utile en phase de construction
     # On ne numérote pas une macro PROCEDURE (incrément=None)
     self.set_icmd(None)
-    icmd=0
     #ier=self.codex.opsexe(self,3)
     return ier
 
@@ -393,10 +393,8 @@ def build_DEFI_FICHIER(self,**args):
     """
     Fonction ops de la macro DEFI_FICHIER
     """
-    ier=0
     self.set_icmd(1)
-    icmd=0
-    ier=self.codex.opsexe(self,26)
+    ier = self.codex.opsexe(self, 26)
     return ier
 
 def build_formule(self, d):

@@ -1,0 +1,34 @@
+# -*- coding: iso-8859-1 -*-
+
+from Cata.cata import *
+from Cata.cata import _F
+
+def ma_macro_ops(self, TEMPER, **kwargs):
+    """Corps de la macro de test."""
+    self.set_icmd(1)
+    # soit à gauche, soit sous TEMPER
+    self.DeclareOut('rther', TEMPER or self.sd)
+    THER_LINEAIRE = self.get_cmd('THER_LINEAIRE')
+    rther=THER_LINEAIRE(MODELE=kwargs['MOTH'],
+                        ETAT_INIT=_F(CHAM_NO=kwargs['TEMP0'],),
+                        INCREMENT=_F(LIST_INST=kwargs['LR8']),
+                        CHAM_MATER=kwargs['CHMAT'],
+                        EXCIT=_F(CHARGE=kwargs['CHTH']))
+    return 0
+
+def ma_macro_sdprod(self, TEMPER, **kwargs):
+    if TEMPER:
+        self.type_sdprod(TEMPER, evol_ther)
+        return None
+    return evol_ther
+
+MA_MACRO = MACRO(nom="MA_MACRO",
+                 op=ma_macro_ops,
+                 sd_prod=ma_macro_sdprod,
+                 MOTH=SIMP(statut='o',typ=modele_sdaster),
+                 TEMP0=SIMP(statut='o',typ=cham_no_sdaster),
+                 LR8=SIMP(statut='o',typ=listr8_sdaster),
+                 CHMAT=SIMP(statut='o',typ=cham_mater),
+                 CHTH=SIMP(statut='o',typ=(char_ther,char_cine_ther)),
+                 TEMPER=SIMP(statut='f', typ=CO))
+

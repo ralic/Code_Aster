@@ -1,4 +1,4 @@
-#@ MODIF cata_vari Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF cata_vari Comportement  DATE 23/04/2012   AUTEUR HAELEWYN J.HAELEWYN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -128,6 +128,7 @@ DICT_NOM_VARI = {
     "EID22" : _(u"déformation déviatorique irréversible, composante 22"),
     "EID23" : _(u"déformation déviatorique irréversible, composante 23"),
     "EID33" : _(u"déformation déviatorique irréversible, composante 33"),
+    "EIEQM" : _(u"déformation équivalente irréversible maximale"),
     "ERD11" : _(u"déformation déviatorique réversible, composante 11"),
     "ERD12" : _(u"déformation déviatorique réversible, composante 12"),
     "ERD31" : _(u"déformation déviatorique réversible, composante 31"),

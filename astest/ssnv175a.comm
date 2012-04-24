@@ -1,4 +1,4 @@
-# MODIF  DATE 10/04/2012   AUTEUR KAZYMYRE K.KAZYMYRENKO 
+# MODIF  DATE 23/04/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE LOIS NON LOCALES A DEFORMATIONS REGULARISEES SUR BARREAU 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -49,11 +49,11 @@ MO=AFFE_MODELE(AFFE=_F(TOUT='OUI',
 
 
 
-CL1=AFFE_CHAR_MECA(DDL_IMPO=_F(DY=0,
+CL1=AFFE_CHAR_CINE(MECA_IMPO=_F(DY=0,
                                GROUP_NO='GMA30',),
                    MODELE=MO,);
 
-CL2=AFFE_CHAR_MECA(DDL_IMPO=(_F(DX=0,
+CL2=AFFE_CHAR_CINE(MECA_IMPO=(_F(DX=0,
                                GROUP_NO='GMA31',),
                              _F(DZ=0,
                                NOEUD='N1',),),  

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 23/04/2012   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,8 +51,6 @@ MACRO_ELAS_MULT=MACRO(nom="MACRO_ELAS_MULT",
            CHAR_MECA       =SIMP(statut='f',typ=(char_meca),validators=NoRepeat(),max='**'),
            OPTION          =SIMP(statut='f',typ='TXM',into=("SIEF_ELGA","SANS"),defaut="SIEF_ELGA",max=1,
                                  fr="Contraintes aux points de Gauss.",),
-           NUME_COUCHE     =SIMP(statut='f',typ='I',defaut=1),
-           NIVE_COUCHE     =SIMP(statut='f',typ='TXM',defaut="MOY",into=("SUP","INF","MOY")),
            SOUS_TITRE      =SIMP(statut='f',typ='TXM',max='**'),
            VECT_ASSE       =SIMP(statut='f',typ=cham_no_sdaster),
          ),

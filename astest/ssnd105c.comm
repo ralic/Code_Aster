@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/04/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE TRACTION AVEC MEMOIRE MAXI D'ECROUISSAGE AXIS
 # ssnd105c.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -170,6 +170,7 @@ LINST2=DEFI_LIST_REEL(DEBUT=TINI,
 # avec memoire
 ################
 
+rgmaxi = 1.E-6
 
 VISCMEMO=STAT_NON_LINE(MODELE=MOD2D,
                        CHAM_MATER=MAT2,
@@ -179,6 +180,7 @@ VISCMEMO=STAT_NON_LINE(MODELE=MOD2D,
                        COMP_INCR=_F(RELATION=COMPOR1,
                                     ITER_INTE_MAXI=50,),
                        INCREMENT=_F(LIST_INST=LINST,),
+                       CONVERGENCE=_F(RESI_GLOB_MAXI=rgmaxi),
                        NEWTON=_F(PREDICTION='ELASTIQUE',
                                  REAC_ITER=1,),
                        RECH_LINEAIRE=_F(ITER_LINE_MAXI=5,),
@@ -216,6 +218,7 @@ VISCMEMO=STAT_NON_LINE(reuse =VISCMEMO,
                        ETAT_INIT=_F(EVOL_NOLI=VISCMEMO,),
                        INCREMENT=_F(LIST_INST=LINST2,
                                     INST_FIN=TFIN,),
+                      CONVERGENCE=_F(RESI_GLOB_MAXI=rgmaxi),
                        NEWTON=_F(REAC_ITER=1,),
 
 
@@ -264,6 +267,7 @@ VISCOCH=STAT_NON_LINE(MODELE=MOD2D,
                       INCREMENT=_F(LIST_INST=LINST,),
                       NEWTON=_F(PREDICTION='ELASTIQUE',
                                 REAC_ITER=1,),
+                      CONVERGENCE=_F(RESI_GLOB_MAXI=rgmaxi),
                       RECH_LINEAIRE=_F(ITER_LINE_MAXI=5,),
 
                       SUIVI_DDL=(_F(
@@ -293,6 +297,7 @@ VISCOCH=STAT_NON_LINE(reuse =VISCOCH,
                       ETAT_INIT=_F(EVOL_NOLI=VISCOCH,),
                       INCREMENT=_F(LIST_INST=LINST2,
                                    INST_FIN=TFIN,),
+                      CONVERGENCE=_F(RESI_GLOB_MAXI=rgmaxi),
                       NEWTON=_F(REAC_ITER=1,),
 
                       SUIVI_DDL=(_F(
@@ -449,6 +454,7 @@ VMISCIN2=STAT_NON_LINE(MODELE=MOD2D,
                        INCREMENT=_F(LIST_INST=LINST,),
                        NEWTON=_F(PREDICTION='ELASTIQUE',
                                  REAC_ITER=1,),
+                       CONVERGENCE=_F(RESI_GLOB_MAXI=rgmaxi),
                        RECH_LINEAIRE=_F(ITER_LINE_MAXI=5,),
                        SUIVI_DDL=(_F(
                                     NOM_CMP='V1',
@@ -473,6 +479,7 @@ VMISCIN2=STAT_NON_LINE(reuse =VMISCIN2,
                        COMP_INCR=_F(RELATION=COMPOR2,
                                     ITER_INTE_MAXI=50,),
                        ETAT_INIT=_F(EVOL_NOLI=VMISCIN2,),
+                       CONVERGENCE=_F(RESI_GLOB_MAXI=rgmaxi),
                       INCREMENT=_F(LIST_INST=LINST2,
                                    INST_FIN=TFIN,),
                        NEWTON=_F(REAC_ITER=1,),

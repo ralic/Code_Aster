@@ -1,0 +1,23 @@
+POURSUITE(CODE=_F(NOM='SUPV001E',),
+          PAR_LOT='OUI')
+
+assert a == 2.
+
+mult6 = FORMULE(NOM_PARA='INST', VALE='INST * a * 3')
+assert mult6(2.) == 12.
+
+mult12sq = FORMULE(NOM_PARA='INST', VALE='INST * a * mult6(a)')
+assert mult12sq(2.) == 48.
+
+assert mult2(2.) == 4.
+
+TEST_FONCTION(VALEUR=(_F(FONCTION=mult2,
+                         NOM_PARA='INST',
+                         VALE_PARA=2.,
+                         VALE_REFE=4.,),
+                      _F(FONCTION=mult12sq,
+                         NOM_PARA='INST',
+                         VALE_PARA=2.,
+                         VALE_REFE=48.,),))
+
+FIN()

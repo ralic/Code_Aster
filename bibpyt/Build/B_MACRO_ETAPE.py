@@ -1,4 +1,4 @@
-#@ MODIF B_MACRO_ETAPE Build  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_MACRO_ETAPE Build  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -61,7 +61,6 @@ class MACRO_ETAPE(B_ETAPE.ETAPE):
       self.cr=self.CR(debut='Etape : '+self.nom + '    ligne : '+`self.appel[0]` + '    fichier : '+`self.appel[1]`,
                       fin = 'Fin Etape : '+self.nom)
 
-      self.parent.cr.add(self.cr)
       try:
          ier = self._Build()
          if ier == 0 and self.jdc.par_lot == 'OUI':
@@ -70,11 +69,15 @@ class MACRO_ETAPE(B_ETAPE.ETAPE):
                 if not e.isactif():continue
                 ier=ier+e.Build()
 
+         if not self.cr.estvide():
+           self.parent.cr.add(self.cr)
          self.reset_current_step()
          return ier
       except:
          # Si une exception a ete levee, on se contente de remettre le step courant au pere
          # et on releve l'exception
+         if not self.cr.estvide():
+           self.parent.cr.add(self.cr)
          self.reset_current_step()
          raise
 

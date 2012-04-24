@@ -1,4 +1,4 @@
-#@ MODIF stanley_engine Stanley  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
+#@ MODIF stanley_engine Stanley  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -111,9 +111,9 @@ def DETR(lnom):
 
    if not type(lnom) in [ types.TupleType, types.ListType ]: lnom = [ lnom ]
    if type(lnom[0]) == types.StringType:
-       DETRUIRE(OBJET   = _F(CHAINE = lnom), INFO=1, ALARME='NON')
+       DETRUIRE(OBJET   = _F(CHAINE = lnom), INFO=1)
    else:
-       DETRUIRE(CONCEPT = _F(NOM    = lnom), INFO=1, ALARME='NON')
+       DETRUIRE(CONCEPT = _F(NOM    = lnom), INFO=1)
 
 
 # ==============================================================================
@@ -132,7 +132,6 @@ DEFI_FICHIER(FICHIER='TMP', UNITE=_ULGMSH, INFO=1)
 _TUL2=INFO_EXEC_ASTER(LISTE_INFO='UNITE_LIBRE')
 _ULMAIL=_TUL2['UNITE_LIBRE',1]
 DEFI_FICHIER(ACTION='LIBERER', UNITE=_ULGMSH, INFO=1)
-#DETRUIRE(CONCEPT = _F(NOM = (_TUL,_TUL2)), INFO=1, ALARME='NON')
 DETR( (_TUL,_TUL2) )
 
 _UL =[_ULGMSH,_ULMAIL]
@@ -165,15 +164,8 @@ class ERREUR:
   def DETRUIRE(self, l_detr=[]):
     if len(l_detr)>0:
        DETR( tuple(l_detr) )
-#        try:     DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr)), INFO=1, ALARME='NON')
-#        except:
-#           try:    DETRUIRE(OBJET = _F(CHAINE = tuple(l_detr)), INFO=1, ALARME='NON')
-#           except: pass
-
-
 
 # ==============================================================================
-
 class PARAMETRES :
 
   """
@@ -1674,7 +1666,6 @@ class STANLEY:
     l_detr=[]
     for i in range(_NUM):
       l_detr.append( '_MA_'+str(i) )
-#    if len(l_detr)>0: DETRUIRE(OBJET=_F(CHAINE= l_detr ), INFO=1, ALARME='NON')
     if len(l_detr)>0: DETR( l_detr )
     self.selection.interface.rootTk.quit()
     self.parametres.Terminer(self.interface)
@@ -1698,7 +1689,6 @@ class STANLEY:
            pass
 
      for i in range(_NUM):
-#        DETRUIRE(OBJET=_F(CHAINE='_MA_'+str(i)), INFO=1, ALARME='NON')
         DETR( '_MA_'+str(i) )
      self.interface.Kill()
      
@@ -2123,7 +2113,7 @@ class DRIVER :
        motscles['SENSIBILITE'] = contexte.para_sensi
 
     try:
-       DETRUIRE(CONCEPT = _F(NOM    = _RESU_P), INFO=2, ALARME='NON')
+       DETRUIRE(CONCEPT = _F(NOM    = _RESU_P), INFO=2)
     except Exception,e:
        pass
 
@@ -2962,7 +2952,6 @@ class DRIVER_SUP_GMSH(DRIVER) :
       texte = "Cette action n'est pas realisable.\n"+str(err)
       return self.erreur.Remonte_Erreur(err, [__ma, _MA[INDICE]], 1, texte)
 
-#    DETRUIRE(CONCEPT = _F(NOM = __ma), INFO=1, ALARME='NON')
     DETR( __ma )
     _NUM = _NUM + 1
 
@@ -3006,7 +2995,6 @@ class DRIVER_SUP_GMSH(DRIVER) :
       texte = "Cette action n'est pas realisable.\n"+str(err)
       return self.erreur.Remonte_Erreur(err, [ma, _MA[INDICE]], 1, texte)
 
-#    DETRUIRE(CONCEPT = _F(NOM = ma), INFO=1, ALARME='NON')
     DETR( ma )
     _NUM = _NUM + 1
 

@@ -1,4 +1,4 @@
-#@ MODIF N_info Noyau  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_info Noyau  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -256,12 +256,12 @@ def mem_msg_callback(category, level, msg, args, kwargs):
 if __name__ == "__main__":
     message.set_level(SUPERV, LEVEL.WARN)
     message.set_level(MISS, LEVEL.DEBUG)
-    message.debug(None, "debug message")
+    #message.debug(None, "debug message")
     message.info(ALL, "information message")
     message.warn(None, "warning message")
     message.error(ALL, "error message")
     message.add_memory_info()
-    message.debug(MISS, "debug supervisor message")
+    #message.debug(MISS, "debug supervisor message")
     message.info(SUPERV, "information supervisor message")
     message.warn(SUPERV, "warning supervisor message")
     message.error(SUPERV, "error supervisor message")

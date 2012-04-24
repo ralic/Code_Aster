@@ -1,9 +1,9 @@
-# MODIF  DATE 04/10/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE STAT_NON_LINE EN COMMANDES ECLATEES POUR UN CALCUL ELASTO-PLASTIQUE
 # pynl02a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -260,7 +260,7 @@ for i_inst in range(1,len(l_inst)) :
       ME_AS=FACTORISER(reuse =ME_AS,
                        MATR_ASSE=ME_AS);
 
-   DETRUIRE(OBJET=_F(CHAINE='CHARB_AS'),INFO=1,ALARME='NON')
+   DETRUIRE(OBJET=_F(CHAINE='CHARB_AS'),INFO=1)
 
    # charge elementaire de blocage
    CHARB_EL=CALC_VECT_ELEM(OPTION='CHAR_MECA',INST = inst,CHARGE=CHARB,);
@@ -283,7 +283,7 @@ for i_inst in range(1,len(l_inst)) :
                       COMB=_F(CHAM_GD=CHARB_AS, COEF_R=1.),)
    else :
 
-      DETRUIRE(CONCEPT=_F(NOM=(F_AS),),INFO=1)
+      DETRUIRE(CONCEPT=_F(NOM=F_AS),INFO=1)
       F_AS=CREA_CHAMP(OPERATION='COMB',
                       TYPE_CHAM='NOEU_DEPL_R',
                       COMB=(_F(CHAM_GD=CHARB_AS, COEF_R=1.),
@@ -292,7 +292,7 @@ for i_inst in range(1,len(l_inst)) :
                             _F(CHAM_GD=BTLA_AS,  COEF_R=-1.),
                             ),)
 
-   DETRUIRE(OBJET=_F(CHAINE='DU'),INFO=1,ALARME='NON')
+   DETRUIRE(OBJET=_F(CHAINE='DU'),INFO=1)
 
    if i_inst == 1 or pred == 'elastique' :
       # prediction avec la matrice elastique
@@ -314,7 +314,7 @@ for i_inst in range(1,len(l_inst)) :
                       COMB=_F(CHAM_GD=DU, COEF_R=1.),)
 
    DETRUIRE(CONCEPT=_F(NOM=(MT_EL,MT_AS,F_AS)),INFO=1)
-   DETRUIRE(OBJET=_F(CHAINE='M_AS'),INFO=1,ALARME='NON')
+   DETRUIRE(OBJET=_F(CHAINE='M_AS'),INFO=1)
 
    #=========================================================
    #               BOUCLE DE NEWTON
@@ -335,7 +335,7 @@ for i_inst in range(1,len(l_inst)) :
 
       # remarque la destruction du container 'CONT ne detruit pas les champs de la table...
       # ce qui augmente leur numero  a chaque fois, et declanche les erreurs de verif SD
-      DETRUIRE(OBJET=_F(CHAINE='CONT'),INFO=1,ALARME='NON')
+      DETRUIRE(OBJET=_F(CHAINE='CONT'),INFO=1)
 
       CONT=CALCUL(OPTION=('COMPORTEMENT','FORC_INT_ELEM','MATR_TANG_ELEM'),
                   MODELE=MO,
@@ -400,7 +400,7 @@ for i_inst in range(1,len(l_inst)) :
                            FILTRE=_F(NOM_PARA='NOM_OBJET',
                                      VALE_K='VECT_ELEM'),)
 
-      DETRUIRE(OBJET=_F(CHAINE='FORIN_AS'),INFO=1,ALARME='NON')
+      DETRUIRE(OBJET=_F(CHAINE='FORIN_AS'),INFO=1)
 
       # forces internes assemblees
       FORIN_AS=ASSE_VECTEUR(VECT_ELEM=FORIN_EL,
@@ -415,7 +415,7 @@ for i_inst in range(1,len(l_inst)) :
                            FILTRE=_F(NOM_PARA='NOM_OBJET',
                                      VALE_K='VEDIRI_EL'),)
 
-      DETRUIRE(OBJET=_F(CHAINE='BTLA_AS'),INFO=1,ALARME='NON')
+      DETRUIRE(OBJET=_F(CHAINE='BTLA_AS'),INFO=1)
 
       # Bt.La assemblee
       BTLA_AS=ASSE_VECTEUR(VECT_ELEM=BTLA_EL,

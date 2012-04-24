@@ -1,9 +1,9 @@
-#@ MODIF N_FONCTION Noyau  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_FONCTION Noyau  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -37,17 +37,24 @@ class formule(ASSD):
         ASSD.__init__(self, *args, **kwargs)
         self.nompar = None
         self.expression = None
+        ctxt = {}
+        ctxt.update(getattr(self.parent, 'const_context', {}))
+        ctxt.update(getattr(self.parent, 'macro_const_context', {}))
+        self.parent_context = self.filter_context(ctxt)
+        #message.debug(SUPERV, "add parent_context %s %s", self.nom, self.parent_context)
 
     def __call__(self, *val):
-        context = {}
-        # cas de INCLUDE (ou POURSUITE dans Eficas)
-        context.update(getattr(self.parent, 'contexte_fichier_init', {}))
-        # récupération des constantes locales en cas de MACRO
-        context.update(getattr(self.parent, 'macro_const_context', {}))
+        """Evaluation de la formule"""
+        from math import sin, cos, tan, asin, acos, atan2, atan, sinh, cosh, tanh
+        from math import pi ,exp,log, log10, sqrt
+        context = locals().copy()
+        # en POURSUITE, self.parent_context is None, on essaie de reprendre const_context
+        context.update(getattr(self, 'parent_context') \
+                    or getattr(self.parent, 'const_context', {}))
         for param, value in zip(self.nompar, val):
             context[param] = value
         try:
-            res = eval(self.expression, self.jdc.const_context, context)
+            res = eval(self.expression, context)
         except Exception, exc:
             message.error(SUPERV, "ERREUR LORS DE L'ÉVALUATION DE LA FORMULE '%s' " \
                           ":\n>> %s",self.nom, str(exc))
@@ -78,6 +85,27 @@ class formule(ASSD):
         d = ASSD.__getstate__(self)
         del d['code']
         return d
+
+    def supprime(self, force=False):
+        """
+        Cassage des boucles de références pour destruction du JDC.
+        'force' est utilisée pour faire des suppressions complémentaires.
+        
+        Pour être évaluées, les formules ont besoin du contexte des "constantes"
+        (objets autres que les concepts) qui sont soit dans (jdc).const_context,
+        soit dans (macro).macro_const_context.
+        On le stocke dans 'parent_context'.
+        Deux précautions valent mieux qu'une : on retire tous les concepts.
+        
+        Lors de la suppression du concept, 'supprime' est appelée par
+        'build_detruire' avec force=True afin de supprimer le "const_context"
+        conservé.
+        """
+        if force:
+            for ctxt in ('parent_context', 'g_context'):
+                if hasattr(self, ctxt):
+                    setattr(self, ctxt, None)
+        ASSD.supprime(self, force)
 
     def Parametres(self):
         """Equivalent de fonction.Parametres pour pouvoir utiliser des formules

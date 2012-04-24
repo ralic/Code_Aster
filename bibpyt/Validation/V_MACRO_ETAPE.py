@@ -1,4 +1,4 @@
-#@ MODIF V_MACRO_ETAPE Validation  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF V_MACRO_ETAPE Validation  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -69,17 +69,18 @@ class MACRO_ETAPE(V_ETAPE.ETAPE):
       else:
         valid=1
         # On marque les concepts CO pour verification ulterieure de leur bonne utilisation
-        l=self.mark_CO()
+        l = self.get_all_co()
         # On verifie que les concepts CO sont bien passes par type_sdprod
         for c in l:
-          if c.etape is self.parent:
+           #if c.etape is self.parent:
+           if c.is_typco() != 2:
              # le concept est propriete de l'etape parent
              # Il n'a pas ete transforme par type_sdprod
              # Cette situation est interdite
              # Pb: La macro-commande a passe le concept a une commande (macro ?) mal definie
              if cr =='oui':
-               self.cr.fatal(_(u"Macro-commande mal définie : il manque probablement "
-                                   u"un appel à type_sdprod pour %s"), c.nom)
+               self.cr.fatal(_(u"Macro-commande mal définie : le concept n'a pas été typé par "
+                               u"un appel à type_sdprod pour %s"), c.nom)
              valid=0
 
         valid=valid * self.valid_child()

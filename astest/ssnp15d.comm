@@ -1,4 +1,4 @@
-# MODIF  DATE 12/03/2012   AUTEUR DESROCHE X.DESROCHES 
+# MODIF  DATE 23/04/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECR. ISOT. COQUE3D)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,108 +25,94 @@ DEBUT(CODE=_F(NOM='SSNP15D', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 # ELASTOPLASTICITE ISOTROPE VON MISES   (2 MEC3TR7H ET 1 MEC4QU9H)
 #......................................................................
 
+M=LIRE_MAILLAGE();
 
-M=LIRE_MAILLAGE( )
+M=DEFI_GROUP(reuse =M,
+             MAILLAGE=M,
+             CREA_GROUP_MA=_F(NOM='TOUT',
+                              TOUT='OUI',),);
 
-M=DEFI_GROUP( reuse=M,   MAILLAGE=M,
-  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+MO=AFFE_MODELE(MAILLAGE=M,
+               VERIF='MAILLE',
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='COQUE_3D',),);
 
-MO=AFFE_MODELE(
-            MAILLAGE=M,    VERIF='MAILLE',
-           AFFE=_F( TOUT = 'OUI',
-                 PHENOMENE = 'MECANIQUE',
-                 MODELISATION = 'COQUE_3D')
-           )
+CARAC=AFFE_CARA_ELEM(MODELE=MO,
+                     COQUE=_F(GROUP_MA='TOUT',
+                              EPAIS=2.,
+                              ANGL_REP=(10.0,43.0,),
+                              A_CIS=0.8333333333,
+                              COQUE_NCOU=1,),);
 
-CARAC=AFFE_CARA_ELEM(  MODELE=MO,
-           COQUE=_F( COQUE_NCOU=2, 
-#                     ANGL_REP = (90., -53.13,),
-                      ANGL_REP = (10.0, 43.0,),
-                     GROUP_MA = 'TOUT',
-                     EPAIS = 2.,
-                     A_CIS = 0.8333333333,))
+ACIER=DEFI_MATERIAU(ELAS=_F(E=195000.,
+                            NU=0.3,),
+                    ECRO_LINE=_F(D_SIGM_EPSI=1930.,
+                                 SY=181.,),);
 
-ACIER=DEFI_MATERIAU(
-                ELAS=_F( E = 195000., NU = 0.3),
-           ECRO_LINE=_F( D_SIGM_EPSI = 1930., SY = 181.)
-           )
+CM=AFFE_MATERIAU(MAILLAGE=M,
+                 AFFE=_F(TOUT='OUI',
+                         MATER=ACIER,),);
 
-CM=AFFE_MATERIAU(
-            MAILLAGE=M,
-           AFFE=_F( TOUT = 'OUI',MATER = ACIER)
-           )
+SIGMA_F=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
+                            1.0,151.2,
+                            ),PROL_DROITE='EXCLU',PROL_GAUCHE='EXCLU',);
 
-SIGMA_F=DEFI_FONCTION(
+TAU_F=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
+                          1.0,93.1,
+                          ),PROL_DROITE='EXCLU',PROL_GAUCHE='EXCLU',);
 
-                 NOM_PARA='INST',
-              PROL_DROITE='EXCLU',
-              PROL_GAUCHE='EXCLU',
+TRACTION=AFFE_CHAR_MECA(MODELE=MO,
+                        FORCE_ARETE=_F(MAILLE='GAUCHE',
+                                       FY=-1.2,
+                                       FZ=-1.6,),);
 
-                VALE=(
-                0.0,    0.0,
-                1.0,  151.2,
-                )
-              )
+CISAIL=AFFE_CHAR_MECA(MODELE=MO,
+                      FORCE_ARETE=(_F(MAILLE='GAUCHE',
+                                      FY=1.6,
+                                      FZ=-1.2,),
+                                   _F(MAILLE='DROITE',
+                                      FY=-1.6,
+                                      FZ=1.2,),
+                                   _F(GROUP_MA='HAUT',
+                                      FY=1.2,
+                                      FZ=1.6,),
+                                   _F(GROUP_MA='BAS',
+                                      FY=-1.2,
+                                      FZ=-1.6,),),);
 
-TAU_F=DEFI_FONCTION(
+LIAISON=AFFE_CHAR_MECA(MODELE=MO,
+                       DDL_IMPO=(_F(NOEUD='NO4',
+                                    DX=0.,
+                                    DY=0.,
+                                    DZ=0.,
+                                    DRX=0.,
+                                    DRY=0.,
+                                    DRZ=0.,),
+                                 _F(NOEUD='NO2',
+                                    DRX=0.,
+                                    DRY=0.,
+                                    DRZ=0.,),
+                                 _F(NOEUD='NO7',
+                                    DRX=0.,
+                                    DRY=0.,
+                                    DRZ=0.,),),
+                       LIAISON_DDL=(_F(NOEUD=('NO2','NO2',),
+                                       DDL=('DY','DZ',),
+                                       COEF_MULT=(0.75,1.,),
+                                       COEF_IMPO=0.,),
+                                    _F(NOEUD=('NO7','NO7',),
+                                       DDL=('DY','DZ',),
+                                       COEF_MULT=(0.75,1.,),
+                                       COEF_IMPO=0.,),),);
 
-                 NOM_PARA='INST',
-               PROL_DROITE='EXCLU',
-              PROL_GAUCHE='EXCLU',
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
+                          1.0,1.0,
+                          ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
 
-                VALE=(
-                0.0,    0.0,
-                1.0,   93.1,
-                )
-              )
-
-TRACTION=AFFE_CHAR_MECA(
-
-                      MODELE=MO,
-
-                FORCE_ARETE=_F(
-                MAILLE = 'GAUCHE',
-                FY = -1.2,
-                FZ = -1.6)
-              )
-
-CISAIL=AFFE_CHAR_MECA(
-
-                      MODELE=MO,FORCE_ARETE=(
-
-                _F( MAILLE = 'GAUCHE',    FY = 1.6,   FZ = -1.2),
-                _F( MAILLE = 'DROITE',    FY = -1.6,   FZ = 1.2),
-                _F( GROUP_MA = 'HAUT',    FY = 1.2,   FZ = 1.6),
-                _F( GROUP_MA = 'BAS',     FY = -1.2,   FZ = -1.6))
-              )
-
-LIAISON=AFFE_CHAR_MECA(
-
-               MODELE=MO,DDL_IMPO=(
-
-     _F( NOEUD = 'NO4',  DX = 0., DY = 0., DZ = 0., DRX = 0., DRY = 0., DRZ = 0.),
-     _F( NOEUD = 'NO2',  DRX = 0., DRY = 0., DRZ = 0.),
-     _F( NOEUD = 'NO7',  DRX = 0., DRY = 0., DRZ = 0.)),LIAISON_DDL=(
-
-                _F( NOEUD = ('NO2', 'NO2',),
-                   DDL = ('DY', 'DZ',),
-             COEF_MULT = (0.75,  1.,),
-             COEF_IMPO = 0.),
-
-                _F( NOEUD = ('NO7', 'NO7',),
-                   DDL = ('DY', 'DZ',),
-             COEF_MULT = (0.75,  1.,),
-             COEF_IMPO = 0.))
-               )
-
-RAMPE=DEFI_FONCTION(   NOM_PARA='INST',
-                         PROL_GAUCHE='LINEAIRE',
-                          PROL_DROITE='LINEAIRE',
-                         VALE=(0.0,0.0,1.0,1.0,))
-
-L_INST=DEFI_LIST_REEL(  DEBUT=0.0,
-                           INTERVALLE=_F( JUSQU_A = 1.0,      NOMBRE = 1)
-                         )
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A=1.0,
+                                    NOMBRE=1,),);
 
 # STAT_NON_LINE 'VMIS_ISOT_LINE'
 #-------------------------------
@@ -134,79 +120,69 @@ L_INST=DEFI_LIST_REEL(  DEBUT=0.0,
 U=STAT_NON_LINE(MODELE=MO,
                 CHAM_MATER=CM,
                 CARA_ELEM=CARAC,
-                EXCIT=(_F(CHARGE = LIAISON),
-                       _F(CHARGE = TRACTION,
-                          FONC_MULT = SIGMA_F),
-                       _F(CHARGE = CISAIL,
-                          FONC_MULT = TAU_F)),
-                COMP_INCR=_F(RELATION = 'VMIS_ISOT_LINE',
-                             ITER_INTE_MAXI = 30,
-                             RESI_INTE_RELA = 1.E-6
-                              ),
-                INCREMENT=_F(LIST_INST = L_INST),
-                NEWTON=_F(MATRICE = 'TANGENTE',
-                          REAC_ITER = 3),
-                RECH_LINEAIRE=_F(RHO_MAX=150),
-              )
+                EXCIT=(_F(CHARGE=LIAISON,),
+                       _F(CHARGE=TRACTION,
+                          FONC_MULT=SIGMA_F,),
+                       _F(CHARGE=CISAIL,
+                          FONC_MULT=TAU_F,),),
+                COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
+                             RESI_INTE_RELA=1.E-6,
+                             ITER_INTE_MAXI=30,),
+                INCREMENT=_F(LIST_INST=L_INST,),
+                NEWTON=_F(MATRICE='TANGENTE',
+                          REAC_ITER=3,),
+                RECH_LINEAIRE=_F(RHO_MAX=150,),);
 
-##U=CALC_ELEM( reuse=U,   RESULTAT=U,
-##                      TOUT_ORDRE='OUI',
-##             REPE_COQUE =_F( NUME_COUCHE=1, NIVE_COUCHE='SUP'),
-##                     OPTION=('EPSI_ELNO',
-##                             'EFGE_ELNO',
-##                             'VARI_ELNO',
-##                             'SIGM_ELNO',),);
-
-CALC_CHAMP(reuse = U,  RESULTAT=U,
-          CONTRAINTE =('SIGM_ELGA','SIGM_ELNO','EFGE_ELNO'),
-#          DEFORMATION =('EPSI_ELNO',),
-#          VARI_INTERNE =('VARI_ELNO',),
-#          CRITERES =('SIEQ_ELNO',),
-          )
+U=CALC_CHAMP(reuse =U,
+             RESULTAT=U,
+             CONTRAINTE=('SIGM_ELGA','SIGM_ELNO','EFGE_ELNO',),);
 
 UPOS=POST_CHAMP(RESULTAT=U,
-                 EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
-                               NUME_COUCHE=1,
-                               NIVE_COUCHE='SUP',),);
+                EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                              NUME_COUCHE=1,
+                              NIVE_COUCHE='SUP',),);
 
-U=CALC_ELEM( reuse=U,   RESULTAT=U,
-                      TOUT_ORDRE='OUI',
-             REPE_COQUE =_F( NUME_COUCHE=1, NIVE_COUCHE='SUP'),
-                     OPTION=('EPSI_ELNO','VARI_ELNO',),);
+U=CALC_ELEM(reuse =U,
+            RESULTAT=U,
+            TOUT_ORDRE='OUI',
+            REPE_COQUE=_F(NUME_COUCHE=1,
+                          NIVE_COUCHE='SUP',),
+            OPTION=('EPSI_ELNO','VARI_ELNO',),);
 
 UPOSLOC=MODI_REPERE(RESULTAT=UPOS,
-         MODI_CHAM=_F(NOM_CHAM='SIGM_ELNO',
-         NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ',),
-         TYPE_CHAM='TENS_3D',),
-         REPERE='COQUE',
-         AFFE=_F(ANGL_REP=(90.0,-53.13,),),)
+                    MODI_CHAM=_F(TYPE_CHAM='TENS_3D',
+                                 NOM_CHAM='SIGM_ELNO',
+                                 NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ',),),
+                    REPERE='COQUE',
+                    AFFE=_F(ANGL_REP=(90.0,-53.13,),),);
 
 SIGGAUS=MODI_REPERE(RESULTAT=U,
-         MODI_CHAM=_F(NOM_CHAM='SIGM_ELGA',
-         NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ',),
-         TYPE_CHAM='TENS_3D',),
-         REPERE='COQUE',
-         AFFE=_F(ANGL_REP=(90.0,-53.13,),),)
+                    MODI_CHAM=_F(TYPE_CHAM='TENS_3D',
+                                 NOM_CHAM='SIGM_ELGA',
+                                 NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ',),),
+                    REPERE='COQUE',
+                    AFFE=_F(ANGL_REP=(90.0,-53.13,),),);
 
 EFGE=MODI_REPERE(RESULTAT=U,
-         MODI_CHAM=_F(NOM_CHAM='EFGE_ELNO',
-         NOM_CMP=('NXX','NYY','NXY','MXX','MYY','MXY','QX','QY',),
-         TYPE_CHAM='COQUE_GENE',),
-         REPERE='COQUE',
-         AFFE=_F(ANGL_REP=(90.0,-53.13,),),)
+                 MODI_CHAM=_F(TYPE_CHAM='COQUE_GENE',
+                              NOM_CHAM='EFGE_ELNO',
+                              NOM_CMP=('NXX','NYY','NXY','MXX','MYY','MXY','QX','QY',),),
+                 REPERE='COQUE',
+                 AFFE=_F(ANGL_REP=(90.0,-53.13,),),);
 
 EPSI=MODI_REPERE(RESULTAT=U,
-         MODI_CHAM=_F(NOM_CHAM='EPSI_ELNO',
-         NOM_CMP=('EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ',),
-         TYPE_CHAM='TENS_3D',),
-         REPERE='COQUE',
-         AFFE=_F(ANGL_REP=(90.0,-53.13,),),)
+                 MODI_CHAM=_F(TYPE_CHAM='TENS_3D',
+                              NOM_CHAM='EPSI_ELNO',
+                              NOM_CMP=('EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ',),),
+                 REPERE='COQUE',
+                 AFFE=_F(ANGL_REP=(90.0,-53.13,),),);
 
-U=CALC_ELEM(reuse=U,
+U=CALC_ELEM(reuse =U,
             RESULTAT=UPOS,
             TOUT_ORDRE='OUI',
-            REPE_COQUE =_F(NUME_COUCHE=1,NIVE_COUCHE='SUP'),
-            OPTION=('SIEQ_ELNO',),);
+            REPE_COQUE=_F(NUME_COUCHE=1,
+                          NIVE_COUCHE='SUP',),
+            OPTION='SIEQ_ELNO',);
 
 U1=POST_CHAMP(RESULTAT=U,
               TOUT_ORDRE='OUI',
@@ -214,18 +190,21 @@ U1=POST_CHAMP(RESULTAT=U,
               EXTR_COQUE=_F(NOM_CHAM='VARI_ELNO',
                             NUME_COUCHE=1,
                             NIVE_COUCHE='INF',),);
+
 U2=POST_CHAMP(RESULTAT=U,
               TOUT_ORDRE='OUI',
               GROUP_MA='TOUT',
               EXTR_COQUE=_F(NOM_CHAM='VARI_ELNO',
                             NUME_COUCHE=1,
                             NIVE_COUCHE='MOY',),);
+
 U3=POST_CHAMP(RESULTAT=U,
               TOUT_ORDRE='OUI',
               GROUP_MA='TOUT',
               EXTR_COQUE=_F(NOM_CHAM='VARI_ELNO',
                             NUME_COUCHE=1,
                             NIVE_COUCHE='SUP',),);
+
 TEST_RESU(RESU=(_F(
                    RESULTAT = UPOSLOC,  NOM_CHAM = 'SIGM_ELNO',
                    MAILLE = 'MA1',  NOEUD = 'NO1',
@@ -520,4 +499,3 @@ TEST_RESU(RESU=(_F(
 
 
 FIN()
-

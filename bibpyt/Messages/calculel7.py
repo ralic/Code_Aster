@@ -1,4 +1,4 @@
-#@ MODIF calculel7 Messages  DATE 31/01/2012   AUTEUR REZETTE C.REZETTE 
+#@ MODIF calculel7 Messages  DATE 23/04/2012   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -39,6 +39,12 @@ cata_msg = {
 
 4 : _(u"""
   Le nombre de couches est limité à %(i1)d, or vous en avez définies %(i2)d !
+  Veuillez contacter votre assistance technique.
+"""),
+
+5 : _(u"""
+  Pour l'option %(k1)s, le nombre de couches est limité à 1,
+  or vous en avez définies %(i1)d !
   Veuillez contacter votre assistance technique.
 """),
 }

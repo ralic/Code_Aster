@@ -1,8 +1,8 @@
-#@ MODIF algorith13 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith13 Messages  DATE 23/04/2012   AUTEUR ALARCON A.ALARCON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -108,11 +108,11 @@ cata_msg = {
 """),
 
 46 : _(u"""
- il manque les modes statiques
+ Il manque les modes statiques. Vérifiez que MODE_STAT est bien renseigné.
 """),
 
 47 : _(u"""
- il manque les modes corrigés
+ Il manque les modes corrigés. Vérifiez que MODE_CORR est bien renseigné.
 """),
 
 48 : _(u"""

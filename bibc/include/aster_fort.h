@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF aster_fort include  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF aster_fort include  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -50,6 +50,9 @@ extern void DEFSSSSPSP(DISMOI, dismoi, char *,STRING_SIZE, char *,STRING_SIZE, c
 #define CALL_MATFPE(a) CALLP(MATFPE,matfpe,a)
 extern void DEFP(MATFPE, matfpe, INTEGER *);
 
+#define CALL_OPTDEP(a,b,c) CALLSSP(OPTDEP, optdep, a, b, c)
+extern void DEFSSP(OPTDEP, optdep, char *,STRING_SIZE, char *,STRING_SIZE, INTEGER *);
+
 
 /* routines SUPERVISEUR */
 #define CALL_EXPASS(a)  CALLP(EXPASS,expass,a)
@@ -90,8 +93,11 @@ extern void CALL_JEMARQ();
 #define CALL_JEDEMA() STDCALL(JEDEMA, jedema)()
 extern void CALL_JEDEMA();
 
-#define CALL_JEDETR(nom) CALLS(JEDETR, jedetr, nom)
+#define CALL_JEDETR(a) CALLS(JEDETR, jedetr, a)
 extern void DEFS(JEDETR, jedetr, char *, STRING_SIZE);
+
+#define CALL_JEDETC(a, b, c) CALLSSP(JEDETC, jedetc, a, b, c)
+extern void DEFSSP(JEDETC, jedetc, char *, STRING_SIZE, char *, STRING_SIZE, INTEGER*);
 
 #define CALL_JELST3(a,b,c,d)  CALLSSPP(JELST3,jelst3,a,b,c,d)
 extern void DEFSSPP(JELST3,jelst3, char*, STRING_SIZE, char*, STRING_SIZE, INTEGER*, INTEGER*);

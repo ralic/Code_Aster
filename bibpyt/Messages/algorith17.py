@@ -1,4 +1,4 @@
-#@ MODIF algorith17 Messages  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF algorith17 Messages  DATE 23/04/2012   AUTEUR ALARCON A.ALARCON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -105,4 +105,17 @@ cata_msg={
   résultat harmonique) n'est pas possible. Vous pouvez demander
   l'évolution.
 """),
+
+20 : _(u"""
+  La prise en compte d'un amortissement équivalent a un amortissement modal par le mot-clé AMOR_MODAL nécessite 
+  une base de modes pré calculée sur laquelle est décomposé l'amortissement. 
+  Conseil: vérifiez qu'un base de modes est bien renseignée sous le mot-clé MODE_MECA.
+"""),
+21 : _(u"""
+  Aucune valeur d'amortissement modal n'a été trouvée sous le mot-clé AMOR_MODAL. 
+  Cette information est nécessaire pour la prise en compte d'un amortissement de type modal.
+
+"""),
+
+
 }

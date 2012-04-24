@@ -6,22 +6,22 @@ C
       CHARACTER*(*)       MOZ,  MAZ, CHVOIZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF ELEMENTS  DATE 23/04/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ----------------------------------------------------------------------
 C ......................................................................
@@ -48,13 +48,14 @@ C
       INTEGER          IMA, INO, INO1,INO2,INO3,INO4, KMA, JMA
       INTEGER          IAMAV1,IAMAV2,IAMAV3,IAMAV4,IAREPE,IAVALE
       INTEGER          IFA,IMA1,IMA2,IMA3,IMA4,IER
-      INTEGER          IGREL, IEL, IAVAL1, IAVAL2, JAD, IAD, IADV
+      INTEGER          IGREL, IEL, IGRELV, IELV
+      INTEGER          IAVAL1, IAVAL2, JAD, IAD, IADV
       INTEGER          JCELD,NBMAV1,NBMAV2,NBMAV3,NBMAV4
       INTEGER          NUMAV1,NUMAV2,NUMAV3,NUMAV4,TYP,SOM(4,6,4),IATYMA
       LOGICAL          TROISD
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM 
+      CHARACTER*32       JEXNUM
       INTEGER            ZI,DEBUGR
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -153,6 +154,10 @@ C
 C ----------- BOUCLE SUR LES MAILLES -------------------------------
 C
       DO 801 , IMA = 1 , NBMA
+C
+        IGREL = ZI(IAREPE-1+2*(IMA-1)+1)
+        IEL   = ZI(IAREPE-1+2*(IMA-1)+2)
+        IF ((IGREL.EQ.0).AND.(IEL.EQ.0)) GOTO 801
 C
         CALL JEVEUO (JEXNUM(CONNEX,IMA),'L',JAD)
         IAD=IATYMA-1+IMA
@@ -261,6 +266,9 @@ C
                           NUMAV4 = ZI(IAMAV4-1+IMA4)
                          IF (NUMAV4 .EQ. NUMAV1) THEN
 C- ------STOCKAGE DU NUMERO DU VOISIN ET DE SON TYPE ----------------
+                            IGRELV = ZI(IAREPE-1+2*(NUMAV1-1)+1)
+                            IELV   = ZI(IAREPE-1+2*(NUMAV1-1)+2)
+                            IF ((IGRELV.EQ.0).AND.(IELV.EQ.0)) GOTO 802
                             ZI(IAVAL2+IFA) = NUMAV1
                             IADV=IATYMA-1+NUMAV1
                             TYP = ZI(IADV)
@@ -273,6 +281,9 @@ C
 C
 C       CAS DES FACES TRIANGULAIRES
 C-------STOCKAGE DU NUMERO DU VOISIN ET DE SON TYPE ----------------
+                        IGRELV = ZI(IAREPE-1+2*(NUMAV1-1)+1)
+                        IELV   = ZI(IAREPE-1+2*(NUMAV1-1)+2)
+                        IF ((IGRELV.EQ.0).AND.(IELV.EQ.0)) GOTO 802
                         ZI(IAVAL2+IFA) = NUMAV1
                         IADV=IATYMA-1+NUMAV1
                         TYP = ZI(IADV)
@@ -309,8 +320,11 @@ C ----------- BOUCLE SUR LES MAILLES -------------------------------
 C
       DO 601 IMA = 1,NBMA
 C
-        CALL JEVEUO (JEXNUM(CONNEX,IMA),'L',JAD)
+        IGREL = ZI(IAREPE-1+2*(IMA-1)+1)
+        IEL   = ZI(IAREPE-1+2*(IMA-1)+2)
+        IF ((IGREL.EQ.0).AND.(IEL.EQ.0)) GOTO 601
 C
+        CALL JEVEUO (JEXNUM(CONNEX,IMA),'L',JAD)
         IAD=IATYMA-1+IMA
         CALL JENUNO (JEXNUM('&CATA.TM.NOMTM',ZI(IAD)),TYPEMA)
          IF (TYPEMA(1:4) .EQ. 'QUAD')THEN
@@ -354,6 +368,9 @@ C
 C
 C --------- STOCKAGE DU NUMERO DU VOISIN ET DE SON TYPE ----------------
 C
+                  IGRELV = ZI(IAREPE-1+2*(NUMAV1-1)+1)
+                  IELV   = ZI(IAREPE-1+2*(NUMAV1-1)+2)
+                  IF ((IGRELV.EQ.0).AND.(IELV.EQ.0)) GOTO 602
                   ZI(IAVAL1+14*(IEL-1)+INO) = NUMAV1
                   IADV=IATYMA-1+NUMAV1
                   TYP = ZI(IADV)

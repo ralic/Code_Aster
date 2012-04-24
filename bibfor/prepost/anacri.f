@@ -1,6 +1,6 @@
       SUBROUTINE ANACRI( NOMCRI,NOMFOR, TYPCHA,IMPGRD, PARACT, FORDEF)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/03/2012   AUTEUR TRAN V-X.TRAN 
+C MODIF PREPOST  DATE 23/04/2012   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -56,7 +56,7 @@ C---- COMMUNS NORMALISES  JEVEUX
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C-----------------------------------------------------------------------
       INTEGER       I, ID, NPARMA, JPROF, NP
-      CHARACTER*8   NOMPA1(20), NOMPA2(30), NOMPF(30)
+      CHARACTER*8   NOMPA1(22), NOMPA2(30), NOMPF(30)
       CHARACTER*24  CHNOM, CBID
       LOGICAL       GRDEXI
 C
@@ -65,7 +65,8 @@ C     ---------------------------------------------------------------
      &                  'EPNMAX', 'EPNMOY', 'DEPSPE', 'EPSPR1', 
      &                  'SIGNM1', 'DENDIS', 'DENDIE', 'APHYDR',
      &                  'MPHYDR', 'DSIGEQ', 'SIGPR1', 'EPSNM1',
-     &                  'INVA2S', 'DSITRE', 'DEPTRE', 'EPSPAC'   /
+     &                  'INVA2S', 'DSITRE', 'DEPTRE', 'EPSPAC',
+     &                  'RAYSPH', 'AMPCIS'  /
 C     ---------------------------------------------------------------
 C     ---------------------------------------------------------------
         DATA  NOMPA2/  'TAUPR_1','TAUPR_2','SIGN_1',  'SIGN_2',
@@ -192,10 +193,20 @@ C VERIFIER QUE LE NOM DE GRANDEUR A CALCULER EST BON
          PARACT(8) = 1
       ENDIF
 
+C DANS POST_FATIGUE
+      IF (NOMCRI(1:9) .EQ. 'CROSSLAND') THEN
+         PARACT(2) = 1
+         PARACT(22) = 1
+      ENDIF
+      
+      IF (NOMCRI(1:12) .EQ. 'PAPADOPOULOS') THEN
+         PARACT(2) = 1
+         PARACT(21) = 1
+      ENDIF
 C POUR OPERATEUR POST_FATIGUE
       
       IF (IMPGRD .EQ. 'OUI') THEN
-         WRITE(6,*)'CRITERE D-AMORCAGE A UTILISER ==>',NOMCRI
+         WRITE(6,*)'CRITERE AMORCAGE A UTILISER ==>',NOMCRI
          WRITE(6,*)' '
          WRITE(6,*)'         LES GRANDEURS A CALCULER : '
          DO 70 I = 1, NPARMA

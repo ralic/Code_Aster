@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,10 +44,9 @@ C     ------------------------------------------------------------------
       CHARACTER*6 NOMPRO
       CHARACTER*8 KBID
       CHARACTER*8 LERESU
-      CHARACTER*3 ALARME
       CHARACTER*32 KCH
       CHARACTER*24  NORECG
-      INTEGER LBID, IEX, IER
+      INTEGER LBID, IER
       INTEGER NCON, LCON, NSENS
       INTEGER IRET,NRPASS,NBPASS,ADRECG
 
@@ -59,7 +58,6 @@ C
       CALL JEMARQ()
       CALL INFNIV(IFM,NIV)
       IF (NIV.GT.1) LBID=JVINFO('AFFECT', NIV)
-      CALL GETVTX(' ','ALARME',0,IARG,1,ALARME,LBID)
       CALL GETFAC('CONCEPT',NBOCC)
       DO 3 IOCC = 1,NBOCC
 
@@ -77,27 +75,19 @@ C
              IF(NSENS.EQ.0) THEN
                CALL JEDETC('G',ZK8(LCON-1+II),1)
                CALL GCDETC(ZK8(LCON-1+II))
-C
-               CALL GCUCON(ZK8(LCON-1+II),' ',IEX)
-               IF ( IEX.EQ.0 .AND. ALARME.NE.'NON' ) THEN
-C
-C   SI LE CONCEPT A DETRUIRE N EXISTE PAS : ALARME
-C   (SAUF SI ON DEMANDE A LES SUPPRIMER DANS UNE MACRO PAR EXEMPLE)
-                  CALL U2MESK('A','SUPERVIS_36',1,ZK8(LCON-1+II))
-                ENDIF
-              ELSE
-                IAUX = IOCC
-                CALL JEEXIN(NORECG,IER)
-                IF (IER.NE.0) CALL JEDETR(NORECG)
-                CALL PSRESE('CONCEPT',IAUX,1,ZK8(LCON-1+II),1,
-     &                       NBPASS,NORECG,IRET)
-                CALL JEVEUO(NORECG,'L',ADRECG)
-                DO 310 NRPASS = 1,NBPASS
-                   LERESU = ZK24(ADRECG+2*NRPASS-2) (1:8)
-                   CALL JEDETC('G',LERESU,1)
-                   CALL GCDETC(LERESU)
-310             CONTINUE
-              ENDIF
+             ELSE
+               IAUX = IOCC
+               CALL JEEXIN(NORECG,IER)
+               IF (IER.NE.0) CALL JEDETR(NORECG)
+               CALL PSRESE('CONCEPT',IAUX,1,ZK8(LCON-1+II),1,
+     &                     NBPASS,NORECG,IRET)
+               CALL JEVEUO(NORECG,'L',ADRECG)
+               DO 310 NRPASS = 1,NBPASS
+                 LERESU = ZK24(ADRECG+2*NRPASS-2) (1:8)
+                 CALL JEDETC('G',LERESU,1)
+                 CALL GCDETC(LERESU)
+310            CONTINUE
+             ENDIF
 300        CONTINUE
            CALL JEDETR('&&OPS007.LISTE_CO')
          ENDIF

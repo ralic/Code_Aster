@@ -1,4 +1,4 @@
-#@ MODIF E_ETAPE Execution  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_ETAPE Execution  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -202,7 +202,7 @@ class ETAPE:
       # stop pour la commande
       cpu_user, cpu_syst, elapsed = self.jdc.timer.StopAndGet(id(self), hide=not voir)
       if voir :
-         if avec_temps:
+         if avec_temps and self.icmd is not None:
             rval = aster.jeinfo()
             if (rval[5] > 0. and rval[8] > 0.) :
               UTMESS('I', 'SUPERVIS2_73', valr=(rval[8]/1024, rval[4], rval[1]))
@@ -235,7 +235,7 @@ class ETAPE:
       Le seul cas ou on appelle plusieurs fois Execute est pour la
       commande INCLUDE (appel dans op_init)
       """
-      message.debug(SUPERV, "%s par_lot=%s", self.nom, self.jdc and self.jdc.par_lot)
+      #message.debug(SUPERV, "%s par_lot=%s", self.nom, self.jdc and self.jdc.par_lot)
       if not self.jdc or self.jdc.par_lot != "NON" :
          return
 
@@ -243,22 +243,17 @@ class ETAPE:
       self.executed=1
 
       cr=self.report()
-      self.parent.cr.add(cr)
       if not cr.estvide():
+        self.parent.cr.add(cr)
         raise EOFError
 
-      #self.set_current_step()
-      #try:
-      if True:
-         self.Build()
-         try:
-            self.Exec()
-         except self.codex.error:
-            self.detruit_sdprod()
-            raise
-      #except:
-          #self.reset_current_step()
-      #self.reset_current_step()
+      self.Build()
+      try:
+         self.Exec()
+         self.parent.clean(1)
+      except self.codex.error:
+         self.detruit_sdprod()
+         raise
 
    def detruit_sdprod(self):
       """ Cette méthode supprime le concept produit par la commande
@@ -280,20 +275,13 @@ class ETAPE:
       Le seuls cas ou on appelle plusieurs fois Execute est pour la
       commande INCLUDE (appel dans op_init)
       """
-      message.debug(SUPERV, "BuildExec %s", self.nom)
+      #message.debug(SUPERV, "BuildExec %s", self.nom)
       if hasattr(self,"executed") and self.executed == 1:return
       self.executed=1
 
-      #self.set_current_step()
-      #try:
-      if True:
-         # Construction des sous-commandes
-         self.Build()
-         self.Exec()
-      #except:
-         #self.reset_current_step()
-         #raise
-      #self.reset_current_step()
+      # Construction des sous-commandes
+      self.Build()
+      self.Exec()
 
    def get_liste_etapes(self,liste):
       liste.append(self.etape)

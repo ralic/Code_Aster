@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 03/04/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -41,14 +41,6 @@ void convertxt( _IN int nval, _IN PyObject *tup, _OUT char *val, _IN STRING_SIZE
 void converltx( _IN int nval, _IN PyObject *tup, _OUT char *val, _IN STRING_SIZE taille) ;
 
 void TraitementFinAster( _IN int val ) ;
-
-PyObject * MakeTupleString(long nbval,char *kval,STRING_SIZE lkval,INTEGER *lval);
-PyObject * MakeListString(long nbval,char *kval,STRING_SIZE lkval );
-PyObject * MakeTupleInt(long nbval, INTEGER* kval);
-PyObject * MakeListInt(long nbval, INTEGER* kval);
-PyObject * MakeTupleFloat(long nbval,DOUBLE* kval);
-PyObject * MakeListFloat(long nbval,DOUBLE* kval);
-
 
 #define _UTILISATION_SETJMP_
 /*
@@ -2364,6 +2356,37 @@ PyObject *args;
 }
 
 /* ---------------------------------------------------------------------- */
+static char getoptdep_doc[] =
+"Interface d'appel a la routine fortran CCLIOP.\n"
+"   usage: parent_options = aster.get_option_dependency(option) \n\n"
+"     option       : option dont on veut les dependances\n"
+"   Retourne :\n"
+"     parent_options : listes des options parentes\n";
+
+static PyObject * aster_getoptdep(self, args)
+PyObject *self; /* Not used */
+PyObject *args;
+{
+    char *Fopt, *Fres, *opt;
+    int tmax = 100;  /* taille maximale dans OPTDEP/CCLIOP */
+    INTEGER nbopt;
+    PyObject *res;
+    
+    if (!PyArg_ParseTuple(args, "s", &opt))
+        return NULL;
+    
+    Fopt = MakeFStrFromCStr(opt, 16);
+    Fres = MakeBlankFStr(24 * tmax);
+    CALL_OPTDEP(Fopt, Fres, &nbopt);
+
+    res = MakeTupleString((long)(nbopt), Fres, 24, NULL);
+    
+    FreeStr(Fopt);
+    FreeStr(Fres);
+    return res;
+}
+
+/* ---------------------------------------------------------------------- */
 static PyObject * aster_mdnoma(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
@@ -3098,6 +3121,7 @@ static PyMethodDef aster_methods[] = {
                 {"mdnoch",       aster_mdnoch,       METH_VARARGS},
                 {"rcvale",       aster_rcvale,       METH_VARARGS, rcvale_doc},
                 {"dismoi",       aster_dismoi,       METH_VARARGS, dismoi_doc},
+                {"get_option_dependency", aster_getoptdep, METH_VARARGS, getoptdep_doc},
                 {"argv",         aster_argv,         METH_VARARGS},
                 {"prepcompcham", aster_prepcompcham, METH_VARARGS},
                 {"getvectjev",   aster_getvectjev,   METH_VARARGS, getvectjev_doc},

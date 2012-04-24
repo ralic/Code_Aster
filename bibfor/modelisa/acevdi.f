@@ -4,9 +4,9 @@
       CHARACTER*(*)     NOMAZ,NOMOZ,MCF
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 23/04/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -121,6 +121,7 @@ C
      &                   ZK8(JMAIL), N1 )
             DO 12 IMA = 1, NBMAIL
                NOMAIL = ZK8(JMAIL+IMA-1)
+               CALL VERIMA(NOMA, NOMAIL, 1, 'MAILLE')
                CALL JENONU(JEXNOM(MAILMA,NOMAIL),NUMA)
                NUTYMA = ZI(IDTYMA+NUMA-1)
                CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',NUTYMA),TYPEL)
@@ -142,6 +143,7 @@ C
      &                   ZK8(JGRM), N1 )
             DO 14 IG = 1, NBGRM
                NOGRM = ZK8(JGRM+IG-1)
+               CALL VERIMA(NOMA, NOGRM, 1, 'GROUP_MA')
                CALL JELIRA(JEXNOM(GRMAMA,NOGRM),'LONUTI',NBMAIL,K8B)
                CALL JEVEUO(JEXNOM(GRMAMA,NOGRM),'L',JMAIL)
                DO 16 IMA = 1 , NBMAIL

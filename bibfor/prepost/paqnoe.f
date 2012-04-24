@@ -1,7 +1,7 @@
       SUBROUTINE PAQNOE(NOMSD, NOMU, NOMMAI, NOMMET, NOMCRI,NOMFOR,
      &                  GRDVIE, FORVIE,FORDEF, TYPCHA, PROAXE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF PREPOST  DATE 23/04/2012   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,7 +66,7 @@ C-----------------------------------------------------------------------
       INTEGER       VALI(2)
       LOGICAL       POST
 C
-      REAL*8        R8B, VAL1, VAL2, RESU(4), VRESU(24), VALPAR(20)
+      REAL*8        R8B, VAL1, VAL2, RESU(4), VRESU(24), VALPAR(22)
 C
       COMPLEX*16    C16B
 C

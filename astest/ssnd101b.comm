@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE DISCRETS AVEC COMPORTEMENT VISQUEUX 2D : T ET TR SUR NOEUD ET SEG2
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -305,6 +305,6 @@ for LeDiscret in ListeDiscrets:
    for ii in range(len(LaF)):
       motclefs['CONCEPT'].append(_F(NOM=LaF[ii]))
       motclefs['CONCEPT'].append(_F(NOM=LeD[ii]))
-   DETRUIRE(INFO=1,ALARME='NON',**motclefs)
+   DETRUIRE(INFO=1,**motclefs)
 
 FIN()

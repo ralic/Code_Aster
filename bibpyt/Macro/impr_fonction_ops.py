@@ -1,8 +1,8 @@
-#@ MODIF impr_fonction_ops Macro  DATE 12/07/2010   AUTEUR PROIX J-M.PROIX 
+#@ MODIF impr_fonction_ops Macro  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -188,7 +188,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
                dCi['LEGENDE'] = '%s %s=%g' % (Leg,dic['NOM_PARA'].strip(),p)
                Graph.AjoutParaCourbe(dicC, args=dCi)
                graph.AjoutCourbe(**dicC)
-               DETRUIRE(OBJET=_F(CHAINE=('li__','ftmp__'),),ALARME='NON',INFO=1)
+               DETRUIRE(OBJET=_F(CHAINE=('li__','ftmp__'),), INFO=1)
          else:
             ftmp__=obj
             dpar=ftmp__.Parametres()
@@ -324,10 +324,10 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
          graph.AjoutCourbe(**dicC)
 
       # 1.2.9. ménage
-      DETRUIRE(OBJET=_F(CHAINE=('li__','ftmp__','ftm2__'),),ALARME='NON',INFO=1)
+      DETRUIRE(OBJET=_F(CHAINE=('li__','ftmp__','ftm2__'),), INFO=1)
 
    # 1.2.99. ménage hors boucle
-   DETRUIRE(OBJET=_F(CHAINE='linter__',), ALARME='NON',INFO=1)
+   DETRUIRE(OBJET=_F(CHAINE='linter__',), INFO=1)
 
    # 1.3. dbg
    if INFO==2:
