@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
+#& MODIF COMMANDE  DATE 30/04/2012   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -54,7 +54,7 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
              NOM_CHAM     =SIMP(statut='o',typ='TXM',validators=NoRepeat(),into=C_NOM_CHAM_INTO()),
            ),
 
-           b_mode       =BLOC(condition = "((TYPE_RESU=='MODE_MECA') or (TYPE_RESU=='DYNA_HARMO') or (TYPE_RESU=='DYNA_TRANS'))",
+           b_mode       =BLOC(condition = "au_moins_un(TYPE_RESU, ('MODE_MECA', 'DYNA_HARMO', 'DYNA_TRANS'))",
              MATR_A         =SIMP(statut='f',typ=matr_asse_depl_r,),
              MATR_B         =SIMP(statut='f',typ=matr_asse_depl_r,),
            ),
@@ -69,8 +69,8 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
                 NOM_CAS         =SIMP(statut='f',typ='TXM' ),
                 CHARGE          =SIMP(statut='f',typ=(char_meca),max='**'),
              ),
-             b_evol          =BLOC(condition = "((TYPE_RESU=='EVOL_ELAS') or (TYPE_RESU=='EVOL_NOLI') or (TYPE_RESU=='EVOL_THER')\
-                                         or (TYPE_RESU=='EVOL_VARC') or (TYPE_RESU=='EVOL_CHAR') or (TYPE_RESU=='DYNA_TRANS'))",
+             b_evol          =BLOC(condition = "au_moins_un(TYPE_RESU, ('EVOL_ELAS', 'EVOL_NOLI', \
+                                        'EVOL_THER', 'EVOL_VARC', 'EVOL_CHAR', 'DYNA_TRANS'))",
                 regles=(UN_PARMI('INST','LIST_INST'),),
                 INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
                 LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),

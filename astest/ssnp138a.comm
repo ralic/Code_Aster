@@ -1,4 +1,4 @@
-# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/04/2012   AUTEUR GENIAUT S.GENIAUT 
 # TITRE FISSURE INCLINEE EN 2D AVEC X-FEM
 # ssnp138a.para = tps_job 360 mem_job 256Mo mem_aster 50 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -59,8 +59,8 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu),);
 #*********************************************************
 
 # ANGLES D INCLINAISON DE LA FISSURE (EN DEGRES)
-alphaf = [0., 15., 30., 45., 60.] ;
-#alphaf = [0.] ;
+#alphaf = [0., 15., 30., 45., 60.] ;
+alphaf = [30.] ;
 
 # DEFINITION DES COURONNES POUR LE CALCUL DES SIF
 RI=[0.1*A,   eps]
@@ -104,15 +104,14 @@ def LEVSETTAN(x,y,beta) :
 
 nbcalc = len(alphaf)
 alpha = [None]*nbcalc
-#LN = [None]*nbcalc
-#LT = [None]*nbcalc
 FISS = [None]*nbcalc
 MODELK = [None]*nbcalc
 CHMA = [None]*nbcalc
 CH = [None]*nbcalc
-UTOT2 = [None]*nbcalc
-UTOT2 = [None]*nbcalc
-PK = [None]*nbcalc
+RESU = [None]*nbcalc
+RESU = [None]*nbcalc
+PK1 = [None]*nbcalc
+PK2 = [None]*nbcalc
 
 nbc=len(RI)
 SIF_1 = [None]*(nbc*nbcalc)
@@ -130,42 +129,37 @@ for i in range(nbcalc) :
 #  LT[i]=FORMULE(NOM_PARA=('X','Y'),VALE='LEVSETTAN(X,Y,'+alpha+')');
 
   FISS[i]=DEFI_FISS_XFEM(MODELE=MODELEIN,
-#                    DEFI_FISS=_F(FONC_LT=LT[i],FONC_LN=LN[i],),
-                    DEFI_FISS=_F(
-                                 FORM_FISS  = 'SEGMENT',
-                                 PFON_ORIG  = (-A*cos(eval(alpha))/2,-A*sin(eval(alpha))/2, 0.),
-                                 PFON_EXTR  = ( A*cos(eval(alpha))/2, A*sin(eval(alpha))/2, 0.),
-                                 ),
-                    TYPE_ENRI_FOND='GEOMETRIQUE',
-                    NB_COUCHES=3,
-                    INFO=1);
+                         DEFI_FISS=_F(
+                                      FORM_FISS  = 'SEGMENT',
+                                      PFON_ORIG  = (-A*cos(eval(alpha))/2,-A*sin(eval(alpha))/2, 0.),
+                                      PFON_EXTR  = ( A*cos(eval(alpha))/2, A*sin(eval(alpha))/2, 0.),
+                                      ),
+                         TYPE_ENRI_FOND='GEOMETRIQUE',
+                         NB_COUCHES=3,
+                         )
 
-  MODELK[i]=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS[i],INFO=1,);
+  MODELK[i]=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS[i])
 
 
   CHMA[i]=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
-                       MODELE=MODELK[i],
-                       AFFE=_F(TOUT = 'OUI',
-                                MATER=ACIER,
-                                ),
-                             );
+                        MODELE=MODELK[i],
+                        AFFE=_F(TOUT = 'OUI',
+                                MATER=ACIER))
 #
 # CHARGEMENTS
 #
   CH[i]=AFFE_CHAR_MECA(MODELE=MODELK[i],
                        LIAISON_XFEM='OUI',
                        DDL_IMPO=(_F(GROUP_NO=('NA','NB',),DY=0.),
-                                _F(GROUP_NO=('NC','ND',),DX=0.),),
-                       PRES_REP=_F(GROUP_MA=('LIG1','LIG3',),PRES=PRES,),
-                       INFO=1,);
+                                 _F(GROUP_NO=('NC','ND',),DX=0.),),
+                       PRES_REP=_F(GROUP_MA=('LIG1','LIG3',),PRES=PRES))
 
 #
 # RESOLUTION
 #
-  UTOT2[i]=MECA_STATIQUE(MODELE=MODELK[i],
-                   CHAM_MATER=CHMA[i],
-                   EXCIT=_F(CHARGE=CH[i],),
-                   INFO=1,);
+  RESU[i]=MECA_STATIQUE(MODELE=MODELK[i],
+                        CHAM_MATER=CHMA[i],
+                        EXCIT=_F(CHARGE=CH[i]))
 
 #
 # POST-TRAITEMENT : CALCUL DES SIFS
@@ -179,51 +173,48 @@ for i in range(nbcalc) :
 
   for j in range(0,nbc) :
     k = i*nbc + j
-    SIF_1[k]=CALC_G(RESULTAT=UTOT2[i],
+    SIF_1[k]=CALC_G(RESULTAT=RESU[i],
                    OPTION='CALC_K_G',
                    THETA=_F(FISSURE=FISS[i],
                             R_INF=RI[j],
-                            R_SUP=RS[j],),
-                   INFO=2);
+                            R_SUP=RS[j]))
 
-    SIF_2[k]=CALC_G(RESULTAT=UTOT2[i],
+    SIF_2[k]=CALC_G(RESULTAT=RESU[i],
                    OPTION='CALC_K_G',
                    THETA=_F(FISSURE=FISS[i],
                             NUME_FOND=2,
                             R_INF=RI[j],
-                            R_SUP=RS[j],),
-                   INFO=2);
+                            R_SUP=RS[j]))
 
-    TG_1[k]=CALC_G(RESULTAT=UTOT2[i],
+    TG_1[k]=CALC_G(RESULTAT=RESU[i],
                    THETA=_F(FISSURE=FISS[i],
                             R_INF=RI[j],
-                            R_SUP=RS[j],),
-                   INFO=2);
+                            R_SUP=RS[j]))
 
-    IMPR_TABLE(TABLE=SIF_1[k],);
-    IMPR_TABLE(TABLE=SIF_2[k],);
-    IMPR_TABLE(TABLE=TG_1[k],);
+    IMPR_TABLE(TABLE=SIF_1[k])
+    IMPR_TABLE(TABLE=SIF_2[k])
+    IMPR_TABLE(TABLE=TG_1[k])
 
     TEST_TABLE(TABLE=SIF_1[k],
               NOM_PARA='K1',
               VALE=K1REF,
               CRITERE='RELATIF',
               PRECISION=0.02,
-              REFERENCE='ANALYTIQUE',);
+              REFERENCE='ANALYTIQUE',)
 
     TEST_TABLE(TABLE=SIF_2[k],
               NOM_PARA='K1',
               VALE=K1REF,
               CRITERE='RELATIF',
               PRECISION=0.02,
-              REFERENCE='ANALYTIQUE',);
+              REFERENCE='ANALYTIQUE',)
 
     TEST_TABLE(TABLE=TG_1[k],
               NOM_PARA='G',
               VALE=GREF,
               CRITERE='RELATIF',
               PRECISION=0.02,
-              REFERENCE='ANALYTIQUE',);
+              REFERENCE='ANALYTIQUE',)
 
     if K2REF != 0. :
       TEST_TABLE(TABLE=SIF_1[k],
@@ -231,41 +222,41 @@ for i in range(nbcalc) :
               VALE=K2REF,
               CRITERE='RELATIF',
               PRECISION=0.03,
-              REFERENCE='ANALYTIQUE',);
+              REFERENCE='ANALYTIQUE',)
 
       TEST_TABLE(TABLE=SIF_2[k],
               NOM_PARA='K2',
               VALE=K2REF,
               CRITERE='RELATIF',
               PRECISION=0.03,
-              REFERENCE='ANALYTIQUE',);
+              REFERENCE='ANALYTIQUE',)
     else :
       TEST_TABLE(TABLE=SIF_1[k],
               NOM_PARA='K2',
               VALE=K2REF,
               CRITERE='ABSOLU',
               PRECISION=K1REF/1000.,
-              REFERENCE='ANALYTIQUE',);
+              REFERENCE='ANALYTIQUE',)
 
       TEST_TABLE(TABLE=SIF_2[k],
               NOM_PARA='K2',
               VALE=K2REF,
               CRITERE='ABSOLU',
               PRECISION=K1REF/1000.,
-              REFERENCE='ANALYTIQUE',);
+              REFERENCE='ANALYTIQUE',)
 
-  # K1 SUR LE 2EME FOND
-  PK[i]=POST_K1_K2_K3(MODELISATION='D_PLAN',
+  # K1 SUR LE 1er FOND 
+  PK1[i]=POST_K1_K2_K3(MODELISATION='D_PLAN',
                      MATER=ACIER,
                      FISSURE = FISS[i],
-                     NUME_FOND = 2,
+                     NUME_FOND = 1,
                      ABSC_CURV_MAXI = RS[0],
-                     RESULTAT  = UTOT2[i],
+                     RESULTAT  = RESU[i],
                     )
 
-  IMPR_TABLE(TABLE = PK[i])
+  IMPR_TABLE(TABLE = PK1[i])
 
-  TEST_TABLE(TABLE=PK[i],
+  TEST_TABLE(TABLE=PK1[i],
               NOM_PARA='K1',
               VALE=K1REF,
               CRITERE='RELATIF',
@@ -273,7 +264,7 @@ for i in range(nbcalc) :
               REFERENCE='ANALYTIQUE');
 
   if K2REF != 0. :
-    TEST_TABLE(TABLE=PK[i],
+    TEST_TABLE(TABLE=PK1[i],
               NOM_PARA='K2',
               VALE=K2REF,
               CRITERE='RELATIF',
@@ -281,7 +272,42 @@ for i in range(nbcalc) :
               REFERENCE='ANALYTIQUE');
 
   else :
-    TEST_TABLE(TABLE=PK[i],
+    TEST_TABLE(TABLE=PK1[i],
+              NOM_PARA='K2',
+              VALE=K2REF,
+              CRITERE='ABSOLU',
+              PRECISION=K1REF/1000.,
+              REFERENCE='ANALYTIQUE');
+
+
+  # K1 SUR LE 2EME FOND
+  PK2[i]=POST_K1_K2_K3(MODELISATION='D_PLAN',
+                     MATER=ACIER,
+                     FISSURE = FISS[i],
+                     NUME_FOND = 2,
+                     ABSC_CURV_MAXI = RS[0],
+                     RESULTAT  = RESU[i],
+                    )
+
+  IMPR_TABLE(TABLE = PK2[i])
+
+  TEST_TABLE(TABLE=PK2[i],
+              NOM_PARA='K1',
+              VALE=K1REF,
+              CRITERE='RELATIF',
+              PRECISION=0.02,
+              REFERENCE='ANALYTIQUE');
+
+  if K2REF != 0. :
+    TEST_TABLE(TABLE=PK2[i],
+              NOM_PARA='K2',
+              VALE=K2REF,
+              CRITERE='RELATIF',
+              PRECISION=0.02,
+              REFERENCE='ANALYTIQUE');
+
+  else :
+    TEST_TABLE(TABLE=PK2[i],
               NOM_PARA='K2',
               VALE=K2REF,
               CRITERE='ABSOLU',
@@ -305,7 +331,7 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                              MODELISATION='D_PLAN',),)
 
 RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
-                        RESULTAT      = UTOT2[i],
+                        RESULTAT      = RESU[i],
 
                         INFO          = 2)
 

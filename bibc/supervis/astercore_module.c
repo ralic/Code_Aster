@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astercore_module supervis  DATE 03/04/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astercore_module supervis  DATE 30/04/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -226,11 +226,14 @@ char* asterc_getopt_string(_IN char *option, _OUT int *iret)
      *  iret = 4 : option inexistante, type incorrect.
      */
     PyObject *res;
-    char *value = NULL;
+    char *value = NULL, *stmp = NULL;
+    STRING_SIZE lv;
     *iret = 4;
     res = asterc_getopt(option);
     if ( PyString_Check(res) ) {
-        value = PyString_AsString(res);
+        stmp = PyString_AsString(res);
+        lv = strlen(stmp);
+        value = MakeFStrFromCStr(stmp, strlen(stmp));
         *iret = 0;
     }
     Py_DECREF(res);
@@ -302,6 +305,7 @@ void DEFSSP(GTOPTK,gtoptk, _IN char *option, STRING_SIZE lopt,
     }
     *iret = (INTEGER)ret;
     FreeStr(sopt);
+    FreeStr(value);
 }
 
 /*

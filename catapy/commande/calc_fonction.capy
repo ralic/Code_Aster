@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/04/2012   AUTEUR ZENTNER I.ZENTNER 
+#& MODIF COMMANDE  DATE 30/04/2012   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -107,15 +107,16 @@ CALC_FONCTION=MACRO(nom="CALC_FONCTION",
            NATURE          =SIMP(statut='f',typ='TXM',defaut="ACCE",into=("DEPL","VITE","ACCE") ),
            NATURE_FONC     =SIMP(statut='f',typ='TXM',defaut="ACCE",into=("DEPL","VITE","ACCE") ),
          ),
-         DSP             =FACT(statut='f',fr="Densité spectrale",
-           FONCTION        =SIMP(statut='o',typ=fonction_sdaster ),
-           AMOR_REDUIT     =SIMP(statut='o',typ='R'),
-           NORME           =SIMP(statut='o',typ='R'),
-           LIST_FREQ       =SIMP(statut='f',typ=listr8_sdaster ),
-           FREQ            =SIMP(statut='f',typ='R',max='**'),
-           FREQ_COUP       =SIMP(statut='o',typ='R',fr="fréquence de coupure" ),
-           DUREE           =SIMP(statut='o',typ='R',fr="durée de la phase forte pour facteur de peak" ),
-           FRACT           =SIMP(statut='o',typ='R',defaut=0.5,val_min=0.,val_max=1.,fr="fractile" ),
+         DSP             =FACT(statut='f', fr="Densité spectrale",
+           FONCTION        =SIMP(statut='o', typ=fonction_sdaster ),
+           AMOR_REDUIT     =SIMP(statut='o', typ='R', val_min=0., val_max=1.),
+           NORME           =SIMP(statut='o', typ='R'),
+           LIST_FREQ       =SIMP(statut='f', typ=listr8_sdaster ),
+           FREQ            =SIMP(statut='f', typ='R', max='**'),
+           FREQ_COUP       =SIMP(statut='o', typ='R', fr="fréquence de coupure" ),
+           DUREE           =SIMP(statut='o', typ='R', val_min=0.,
+                                 fr="durée de la phase forte pour facteur de peak"),
+           FRACT           =SIMP(statut='o', typ='R', defaut=0.5, val_min=0., val_max=1., fr="fractile" ),
          ),
          ABS             =FACT(statut='f',fr="Valeur absolue d'une fonction",
            FONCTION        =SIMP(statut='o',typ=fonction_sdaster,),

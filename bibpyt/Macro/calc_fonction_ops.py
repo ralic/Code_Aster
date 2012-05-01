@@ -1,4 +1,4 @@
-#@ MODIF calc_fonction_ops Macro  DATE 16/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calc_fonction_ops Macro  DATE 30/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -332,7 +332,7 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
         __ff = DSP['FONCTION'].convert()
         wmin = 1.001
         wcoup = deuxpi * DSP['FREQ_COUP']
-        duree = max(10., DSP['DUREE'])
+        duree = DSP['DUREE']
         ksi = DSP['AMOR_REDUIT']
         pesanteur = DSP['NORME']
         fract = DSP['FRACT']
@@ -344,8 +344,8 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
             l_freq = __ff.vale_x
         sro = __ff.evalfonc(l_freq) * pesanteur
         ctxt.f = sro.nom
-        assert 0< fract < 1.0, 'invalid value for FRACT'
-        assert 0 < ksi < 1, 'invalid value for AMOR_REDUIT'
+        assert 0. < fract < 1., 'invalid value for FRACT'
+        assert 0. < ksi < 1., 'invalid value for AMOR_REDUIT'
         def coefn(wn, T, p):
             vo = wn / (2. * math.pi)
             return vo * T / ( -math.log(p) )
@@ -361,26 +361,21 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
         nbfreq = len(valw)
         valg = NP.zeros(nbfreq)
         sumg = 0.        
-        ZPA=__ff.vale_y[-1]
+        ZPA = __ff.vale_y[-1]
         for n in range(nbfreq):
             wn = valw[n]
             if wn <= wmin:
-                valg[n]=0.0
+                valg[n] = 0.0
             else:
- 
-              valsro = sro.vale_y[n]
-              if wn > wcoup:
-                 valsro = ZPA
-
-              npi2 = peak2(fract, duree, wn, ksi)
-              v1 = 1./(wn*(math.pi/(2.*ksi)-2.))
-              v2 = (valsro**2)/npi2;
-            #v3=2*trapz(w(1:ii-1),Gw)
-              Gw = t_fonction(valw, valg, para=__ff.para)
-              v3 = 2. * Gw.trapeze(0.0)(wn)
-              valg[n] = v1*(v2-v3)
-              if valg[n]<0.0:
-                 valg[n]=0.0
+                valsro = sro.vale_y[n]
+                if wn > wcoup:
+                    valsro = ZPA
+                npi2 = peak2(fract, duree, wn, ksi)
+                v1 = 1./(wn*(math.pi/(2.*ksi)-2.))
+                v2 = (valsro**2)/npi2;
+                Gw = t_fonction(valw, valg, para=__ff.para)
+                v3 = 2. * Gw.trapeze(0.0)(wn)
+                valg[n] = max([v1*(v2-v3), 0.])
         valf = valw / deuxpi
         __ex = t_fonction(valf, valg * deuxpi, para=__ff.para)
       ###

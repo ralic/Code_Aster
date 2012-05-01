@@ -1,4 +1,5 @@
-#& MODIF COMMUN  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMUN  DATE 30/04/2012   AUTEUR COURTOIS M.COURTOIS 
+# encoding: iso-8859-1
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                WWW.CODE-ASTER.ORG
@@ -420,8 +421,7 @@ class NOM_CHAM_INTO:  #COMMUN#
           'l_nom_cham' : (une liste ou un string) retourne uniqement les informations relatives au champ precise en argument
         """
         l_nom_cham  = kwargs.get('l_nom_cham')
-        import types
-        if type(l_nom_cham) == types.StringType:
+        if type(l_nom_cham) == str:
             l_nom_cham = [ l_nom_cham ]
         if l_nom_cham:
             return self.InfoChamps(l_nom_cham)

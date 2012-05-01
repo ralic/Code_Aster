@@ -1,4 +1,4 @@
-#@ MODIF calc_europlexus_ops Macro  DATE 23/04/2012   AUTEUR CHEIGNON E.CHEIGNON 
+#@ MODIF calc_europlexus_ops Macro  DATE 30/04/2012   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -587,6 +587,8 @@ class EUROPLEXUS:
             dic_gma[dic_modele[modelisation]].extend(group_ma)
         else :
           UTMESS('F','PLEXUS_3')
+      elif modelisation not in dic_modele.keys():
+          UTMESS('F','PLEXUS_6',valk=modelisation)
 
     RetablirAlarme('SOUSTRUC_36')
 
@@ -653,7 +655,7 @@ class EUROPLEXUS:
             if elem['CARA'] == 'M_T_D_N' :
                 group_ma = self.get_group_ma(elem)
                 vale = elem['VALE']
-                epx[MODULE].append('MASSE  123456 %s' %vale)
+                epx[MODULE].append('MASSE  123 %s' %vale)
                 epx[MODULE].append(7*' ' + 'LECT')
                 for group in group_ma:
                     epx[MODULE].append(11*' '+group)
@@ -2175,7 +2177,7 @@ class EUROPLEXUS:
 
     # Pour la gestion des alarmes
     RetablirAlarme('MED_83')
-    RetablirAlarme('MED_98')
+
 
 
     nbChamp = i
@@ -2340,6 +2342,8 @@ class EUROPLEXUS:
                              'NOM_CMP_RESU' : tupVar, 'CUMUL' : 'OUI','COEF_R':1.})
                     dicDetr.append({'NOM' : __ECR3[j]})
         # if 'DKT3' in self.modelisations:
+
+        RetablirAlarme('MED_98')
 
         __SIGN = CREA_CHAMP(
             INFO      = self.INFO,

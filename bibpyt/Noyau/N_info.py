@@ -1,4 +1,4 @@
-#@ MODIF N_info Noyau  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_info Noyau  DATE 30/04/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -241,7 +241,8 @@ def memory_used(pid):
     p = Popen(['cat', '/proc/%s/status' % pid], stdout=PIPE)
     output = p.communicate()[0]
     mat = RE_VMPEAK.search(output)
-    return int(mat.group(1)) / 1024.
+    mem = mat and int(mat.group(1)) or 0.
+    return mem / 1024.
 
 current_memory_used = partial(memory_used, _pid)
 

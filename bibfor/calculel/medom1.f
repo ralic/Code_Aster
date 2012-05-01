@@ -10,7 +10,7 @@
       CHARACTER*(*)                      KCHA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 30/04/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -167,18 +167,6 @@ C                               EVENTUELEMENT DONNE EN ARGUMENT ---
             CALL U2MESS('F','CALCULEL3_42')
           ENDIF
 C
-C        --- VERIFICATION DU TYPE DE CHARGEMENT ---
-          IF (NOMCMD.NE.'CALC_G') THEN
-            CALL DISMOI('F','TYPE_CHARGE',ZK8(ICHA),'CHARGE',IBID,
-     &                 CTYP,IE)
-            DO 40 I = 1,NCHA
-              CALL DISMOI('F','TYPE_CHARGE',ZK8(ICHA-1+I),'CHARGE',
-     &                  IBID,K8B,IE)
-              IF (K8B(1:4).NE.CTYP) THEN
-                 CALL U2MESS('F','CALCULEL3_43')
-              ENDIF
- 40         CONTINUE
-          ENDIF
         ENDIF
 C
 C   SI IEXCIT=0 ON PREND LE CHARGEMENT PRESENT DANS LA SD ET ON

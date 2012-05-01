@@ -1,4 +1,4 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 20/03/2012   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 30/04/2012   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -387,8 +387,12 @@ def get_direction(Nnoff,ndim,DTANOR,DTANEX,Lnoff,FOND_FISS) :
       VDIR = [None]*Nnoff
       
       if ndim ==2 :
-         VDIR[0] = NP.array([Basefo[2],Basefo[3],0.])
+         # attention en 2d, il faut que la base (VDIR, VNOR) soit dans le sens trigo
+         # ce qui n'est pas forcement le cas dans BASEFOND
+         # on prend le vecteur normal de la base (car il faut imperativement que le saut normal soit lsn(+) - lsn(-)
+         # on prend comme vecteur de direction de propa une rotation de -90 du vecteur normal
          VNOR[0] = NP.array([Basefo[0],Basefo[1],0.])
+         VDIR[0] = NP.array([Basefo[1],-Basefo[0],0.])
          dicVDIR = dict([(Lnoff[0],VDIR[0])])
          dicVNOR = dict([(Lnoff[0],VNOR[0])])
       elif ndim == 3 :          
@@ -744,11 +748,13 @@ def get_direction_xfem(Nnoff,Vpropa,Coorfo,ndim) :
          VNOR[i] = NP.array([Vpropa[6*i],Vpropa[6*i+1],Vpropa[6*i+2]])
          VDIR[i] = NP.array([Vpropa[3+6*i],Vpropa[3+6*i+1],Vpropa[3+6*i+2]])
       elif ndim == 2 :
+         # attention en 2d, il faut que la base (VDIR, VNOR) soit dans le sens trigo
+         # ce qui n'est pas forcement le cas dans BASEFOND
+         # on prend le vecteur normal de la base (car il faut imperativement que le saut normal soit lsn(+) - lsn(-)
+         # on prend comme vecteur de direction de propa une rotation de -90 du vecteur normal
          for i in range(0,Nnoff):
-            VDIR[i] = NP.array([Vpropa[2+4*i],Vpropa[3+4*i],0.])
             VNOR[i] = NP.array([Vpropa[0+4*i],Vpropa[1+4*i],0.])
-
-
+            VDIR[i] = NP.array([Vpropa[1+4*i],-Vpropa[0+4*i] ,0.])
       return (VDIR,VNOR,absfon)
 
 #---------------------------------------------------------------------------------------------------------------

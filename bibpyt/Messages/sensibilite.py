@@ -1,4 +1,4 @@
-#@ MODIF sensibilite Messages  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF sensibilite Messages  DATE 30/04/2012   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -79,7 +79,7 @@ cata_msg = {
 """),
 
 16 : _(u"""
- EXICHA différent de 0 et 1
+ Erreur fatale
 """),
 
 33 : _(u"""
@@ -147,7 +147,7 @@ Conseil :
 """),
 
 81 : _(u"""
- la structure nosimp est introuvable dans la mémorisation inpsco
+ Erreur fatale
 """),
 
 91 : _(u"""

@@ -1,4 +1,4 @@
-#@ MODIF contact Messages  DATE 05/03/2012   AUTEUR DESOZA T.DESOZA 
+#@ MODIF contact Messages  DATE 30/04/2012   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -100,8 +100,8 @@ Le modèle mélange des mailles avec des modélisations de dimensions différentes (
 """),
 
 85 : _(u"""
-L'alarme CONTACT_84 se transforme en erreur fatale !
-Il ne faut pas que les surfaces de contact mélangent des mailles affectées d'une modélisation plane (D_PLAN, C_PLAN ou AXI)
+Le modèle mélange des mailles avec des modélisations de dimensions différentes (2D avec 3D ou macro-éléments).
+Il ne faut pas que les surfaces de contact mélangent des mailles affectées d'une modélisation plane (D_PLAN, C_PLAN ou AXIS)
 avec des mailles affectées d'une modélisation 3D. 
 """),
 
@@ -116,7 +116,7 @@ Il faut avoir la même option pour ALGO_CONT et ALGO_FROT.
 """),
 
 93 : _(u"""
-Contact méthode VERIF.
+Contact méthode sans résolution.
  -> Interpénétrations des surfaces.
  
  -> Risque & Conseil :
@@ -125,15 +125,14 @@ Contact méthode VERIF.
 """),
 
 94 : _(u"""
-Contact méthode continue. La modélisation COQUE_3D n'est pas encore compatible avec la formulation 'CONTINUE'.
+La modélisation COQUE_3D n'est pas encore compatible avec la formulation CONTINUE.
 """),
 
 96 : _(u"""
-Contact méthode continue. La prise en compte d'un contact entre une maille '%(k1)s' et une maille '%(k2)s' n'est pas prévu.
+La prise en compte d'un contact entre une maille '%(k1)s' et une maille '%(k2)s' n'est pas prévue avec la formulation CONTINUE.
 
 Conseils :
 - utilisez une formulation 'DISCRETE'
-- contactez votre assistance technique
 """),
 
 97 : _(u"""

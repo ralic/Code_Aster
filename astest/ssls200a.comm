@@ -1,4 +1,4 @@
-# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/04/2012   AUTEUR SELLENET N.SELLENET 
 # TITRE NON-REGRESSION THERMO-ELASTICITE POUR TOUTES COQUES SURFACIQUES
 # RESPONSABLE PELLET J.PELLET
 # ssls200a.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test R
@@ -172,7 +172,9 @@ MESTAT2=POST_CHAMP(RESULTAT=MESTAT,
 MESTAT=CALC_ELEM(reuse =MESTAT,
                  RESULTAT=MESTAT,
                  MAILLE=('Q1','T1','Q2','Q3','T3',),
-                 OPTION='DEGE_ELNO',);
+                 OPTION=('DEGE_ELNO','DEGE_ELGA',));
+
+IMPR_RESU(RESU=_F(RESULTAT=MESTAT,NOM_CHAM=('DEGE_ELNO','DEGE_ELGA'),MAILLE=('Q1','T1','Q2','Q3','T3',),))
 
 MESTAT=CALC_CHAMP(reuse =MESTAT,
                RESULTAT=MESTAT,
@@ -209,6 +211,9 @@ TEST_RESU(RESU=(
           _F( RESULTAT= MESTAT  , NOM_CHAM= 'DEGE_ELNO', NUME_ORDRE=      1,
               REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
               TYPE_TEST= 'SOMM_ABS', VALE=  2.4435240515360E+04 ),
+          _F( RESULTAT= MESTAT  , NOM_CHAM= 'DEGE_ELGA', NUME_ORDRE=      1,
+              REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
+              TYPE_TEST= 'SOMM_ABS', VALE=  2.4188288151455E+04 ),
           ),)
 
 # ----------------------------------------------------------------------

@@ -1,4 +1,4 @@
-#@ MODIF mecanonline5 Messages  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
+#@ MODIF mecanonline5 Messages  DATE 30/04/2012   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -82,11 +82,15 @@ en accélération est possible
 """),
 
 11 : _(u"""
- Pour un schéma de type NEWMARK, seule les formulations en accélération et en déplacement sont possibles
+ Pour un schéma de type NEWMARK, seules les formulations en accélération et en déplacement sont possibles
 """),
 
 12 : _(u"""
- Pour un schéma de type THETA, seule les formulations en vitesse et en déplacement sont possibles
+ Pour un schéma de type THETA, seules les formulations en vitesse et en déplacement sont possibles
+"""),
+
+13 : _(u"""
+ La matrice de masse diagonale (option MASS_DIAG) n'est pas utilisable avec un schéma implicite.
 """),
 
 19 : _(u"""
@@ -113,7 +117,7 @@ Le contact n'est pas possible.
 
 23 : _(u"""
 Schéma en dynamique explicite.
-LIAISON_UNILATER n'est pas possible.
+Les liaisons unilatérales ne sont pas possibles.
 """),
 
 24 : _(u"""

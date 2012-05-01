@@ -1,4 +1,4 @@
-#@ MODIF mecanonline2 Messages  DATE 02/04/2012   AUTEUR ABBAS M.ABBAS 
+#@ MODIF mecanonline2 Messages  DATE 30/04/2012   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -78,8 +78,8 @@ cata_msg = {
 95 : _(u"""
   -> Indications supplémentaires : pour la variable de commande :  %(k1)s 
      et la composante :  %(k2)s
-     Valeur maximum de abs( %(k2)s - %(k5)s_REF) : %(r1)f sur la maille : %(k3)s
-     Valeur minimum de abs( %(k2)s - %(k5)s_REF) : %(r2)f sur la maille : %(k4)s
+     Valeur maximum de la valeur absolue de ( %(k2)s - %(k5)s_REF) : %(r1)f sur la maille : %(k3)s
+     Valeur minimum de la valeur absolue de ( %(k2)s - %(k5)s_REF) : %(r2)f sur la maille : %(k4)s
 """),
 
 96 : _(u"""

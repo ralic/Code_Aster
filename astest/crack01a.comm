@@ -1,0 +1,225 @@
+# MODIF  DATE 30/04/2012   AUTEUR GENIAUT S.GENIAUT 
+# TITRE VALIDATION DE L'ASSISTANT CRACK ANALYSIS DU MODULE ASTER SALOME-MECA : FISSURE CIRCULAIRE EN MILIEU INFINI
+# crack01a.para = tps_job 100 mem_job 512Mo liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# MODALISATION A : METHODE X-FEM (FISSURE NON MAILLEE) EN 3D
+
+# CE CAS-TEST EST ISSU DU SSLV134H, MAIS AVEC UNE MISE EN DONNEE PAR LE WIZARD
+
+DEBUT(CODE=_F( NOM = 'CRACK01A',NIV_PUB_WEB='INTERNET'),
+      DEBUG=_F(SDVERI='OUI'),
+      PAR_LOT='NON',
+      IGNORE_ALARM=('SUPERVIS_1','CALCULEL2_63'))
+
+# <SUPERVIS_1> : PAR_LOT='NON' sert uniquement a recuperer de maniere dynamique le nombre de fonds de fissure (EXTR_TABLE)
+
+# <CALCULEL2_63> : DANS UN MODELE, IL EXISTE DES ELEMENTS DE TYPE "BORD" QUI N'ONT PAS DE VOISIN AVEC RIGIDITE
+#  LE MODELE PROVOQUANT CES ALARMES NE SERT QU'A LA VISUALISATION
+
+#---------------------------------------------------------------------------
+# parameters from the Wizard 
+#------------------------------
+
+# h0 : initial elements size 
+h0 = 1.25
+
+# hc : target elements size (taille cible)
+hc=0.15
+
+#---------------------------------------------------------------------------
+
+# PARAMETRES DE LA FISSURE
+x0 = 8.18
+y0 = 0.
+z0 = 2.05
+ray = 2.
+
+# useful parameters
+#------------------
+
+# number of mesh refinements
+n = (log(h0)-log(hc))/log(2)
+nb_raff = int(n)+1
+
+# h : final elements size 
+h = h0/(2.**nb_raff)
+
+# rayon du disque de raffinement
+r_raff = 6*h
+
+# initialisation
+MA    = [None]*(nb_raff+1)
+MO    = [None]*nb_raff
+CHERR = [None]*nb_raff
+
+i_raff=0   
+MA[i_raff]=LIRE_MAILLAGE(FORMAT='MED')
+
+# boucle de raffinements
+for i_raff in range(nb_raff) :
+
+   MO[i_raff]=AFFE_MODELE(MAILLAGE=MA[i_raff],
+                          AFFE=_F(TOUT='OUI',
+                                  PHENOMENE='MECANIQUE',
+                                  MODELISATION='3D'))
+
+   fiss_1=DEFI_FISS_XFEM(MODELE=MO[i_raff],
+                         DEFI_FISS=_F(
+                                      FORM_FISS      = 'ELLIPSE',
+                                      DEMI_GRAND_AXE = ray,
+                                      DEMI_PETIT_AXE = ray,
+                                      CENTRE         = (x0, y0, z0),
+                                      VECT_X         = (0. , 1. , 0. ),
+                                      VECT_Y         = (1., 0. , 0. ),
+                                      ),
+                         )
+                    
+   l_fiss = (fiss_1,)
+      
+   # evaluation de l'erreur       
+   CHERR[i_raff]=RAFF_XFEM(FISSURE=l_fiss)
+   
+   # definition du type du maillage n+1
+   MA[i_raff+1]=CO('MA_%d' % (i_raff+1))
+   
+   # valeur du critere de raffinement
+   crit = -max(r_raff , h0/(2.**i_raff) )
+   
+   MACR_ADAP_MAIL(ADAPTATION         = 'RAFFINEMENT',
+                  CHAM_GD            = CHERR[i_raff],
+                  CRIT_RAFF_ABS      = crit,
+                  USAGE_CMP          = 'RELATIF', 
+                  MAILLAGE_N         = MA[i_raff],
+                  MAILLAGE_NP1       = MA[i_raff+1],
+                  ELEMENTS_NON_HOMARD= 'IGNORER')
+                  
+   DETRUIRE(CONCEPT=_F(NOM=l_fiss),INFO=1)
+   
+assert(nb_raff == i_raff+1)
+
+MA[nb_raff]=MODI_MAILLAGE(reuse =MA[nb_raff],
+                          MAILLAGE=MA[nb_raff],
+                          ORIE_PEAU_3D=_F(GROUP_MA=('EXTUBE_S')))
+
+IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(MAILLAGE=MA[nb_raff]))
+
+
+MOD=AFFE_MODELE(MAILLAGE=MA[nb_raff],
+                AFFE=_F(GROUP_MA=('VOL','EXTUBE_S','EXTUBE_I','PEAUEXT','BORD1'),
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='3D'))
+
+fiss_1=DEFI_FISS_XFEM(MODELE=MOD,
+                      DEFI_FISS=_F(
+                                   FORM_FISS      = 'ELLIPSE',
+                                   DEMI_GRAND_AXE = ray,
+                                   DEMI_PETIT_AXE = ray,
+                                   CENTRE         = (x0, y0, z0),
+                                   VECT_X         = (0. , 1. , 0. ),
+                                   VECT_Y         = (1., 0. , 0. ),
+                                   ),
+                      )
+
+l_fiss = (fiss_1,)
+
+MODX=MODI_MODELE_XFEM(MODELE_IN=MOD,
+                      FISSURE=l_fiss)
+
+ACIER=DEFI_MATERIAU( ELAS=_F(  E = 2.E11,  NU = 0.3))
+
+MATE=AFFE_MATERIAU(MAILLAGE=MA[nb_raff],
+                   AFFE=_F(TOUT='OUI',
+                           MATER=ACIER))
+                             
+CHAR=AFFE_CHAR_MECA(MODELE=MODX,
+                    DDL_IMPO=(_F(GROUP_MA='PEAUEXT' ,DX=0.),
+                              _F(GROUP_MA='EXTUBE_I',DZ=0.),
+                              _F(GROUP_MA='BORD1'   ,DY=0.),
+                              ),
+                    PRES_REP=_F(GROUP_MA='EXTUBE_S',PRES=-1.E6,),
+                    )
+
+
+RESU=MECA_STATIQUE(MODELE=MODX,
+                   CHAM_MATER=MATE,
+                   EXCIT=_F(CHARGE=CHAR))
+
+#----------------------------------------------------------------------
+#                       VISUALISATION
+#----------------------------------------------------------------------
+
+MA_VISU=POST_MAIL_XFEM(MODELE=MODX)
+
+MO_VISU=AFFE_MODELE(MAILLAGE=MA_VISU,
+                    AFFE=_F(TOUT='OUI',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D'))
+
+RE_VISU=POST_CHAM_XFEM(MODELE_VISU=MO_VISU,
+                       RESULTAT=RESU)
+
+IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RE_VISU))
+
+#----------------------------------------------------------------------
+#                       POST-TRAITEMENT DE K1
+#----------------------------------------------------------------------
+
+NB_FOND=RECU_TABLE(CO=fiss_1,NOM_TABLE='NB_FOND_FISS')
+dict = NB_FOND.EXTR_TABLE().values()
+nb_fond = dict['NOMBRE'][0]
+DETRUIRE(CONCEPT=_F(NOM=NB_FOND),INFO=1)
+
+G1 = [None]*nb_fond
+
+for i in range(nb_fond) :
+   
+   G1[i]=CALC_G(THETA=_F(FISSURE=fiss_1,
+                         NUME_FOND=i+1,
+                         R_INF=2*h,
+                         R_SUP=5*h,),
+                RESULTAT=RESU,
+                OPTION='CALC_K_G')
+
+   IMPR_TABLE(TABLE=G1[i])
+
+#----------------------------------------------------------------------
+#              TEST DE K1 EN 1 POINT
+#----------------------------------------------------------------------
+
+
+K1ref = 1.595E+6
+TEST_TABLE(TABLE=G1_0,
+           TYPE_TEST='MAX',
+           NOM_PARA='K1',
+           VALE=K1ref,
+           PRECISION=0.03,
+           REFERENCE='ANALYTIQUE')
+
+TEST_TABLE(TABLE=G1_0,
+           TYPE_TEST='MIN',
+           NOM_PARA='K1',
+           VALE=K1ref,
+           PRECISION=0.03,
+           REFERENCE='ANALYTIQUE')
+
+
+
+
+FIN();
+

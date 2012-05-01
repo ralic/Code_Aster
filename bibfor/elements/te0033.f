@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       CHARACTER*16        OPTION, NOMTE
 C ----------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 23/04/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 30/04/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -101,47 +101,48 @@ CC OPTION DE CALCUL INVALIDE
    20 CONTINUE
 
       CALL JEVECH('PGEOMER','L',JGEOM)
-      CALL JEVECH('PMATERC','L',JMATE)
-      CALL JEVECH('PCACOQU','L',JCARA)
 
 C
 C --- VERIFICATION DE LA COHERENCE DES INFORMATIONS
 C --- PROVENANT DE DEFI_COQU_MULT ET DE AFFE_CARA_ELEM
 C     ----------------------------------
       JNBSPI = 0
-      CALL TECACH('NNN','PNBSP_I',1,JNBSPI,IRET)
-      IF (IRET.EQ.0) THEN
-        NBCOU = ZI(JNBSPI)
-        ICOU = 0
-        EPTOT = 0.D0
-        EPI = 0.D0
-        CALL JEVECH('PCACOQU','L',JCARA)
-        EPAIS  = ZR(JCARA)
-  5     CONTINUE
-        ICOU=ICOU+1
-        CALL CODENT(ICOU,'G',NUM)
-        CALL CODENT(1,'G',VAL)
-        NOMRES = 'C'//NUM//'_V'//VAL
-        FAMIL='FPG1'
-        KPG=1
-        SPT=1
-        POUM='+'
-        CALL RCVALB(FAMIL,KPG,SPT,POUM,ZI(JMATE),' ','ELAS_COQMU',
-     &       0,' ',R8BID,1,NOMRES,EPI,ICODRE,0)
-        IF (ICODRE.EQ.0) THEN
-          EPTOT=EPTOT+EPI
-          GOTO 5
-        ENDIF
-        IF (EPTOT.NE.0.D0) THEN
-          IF ((ICOU-1).NE.NBCOU) THEN
-            VALI(1) = ICOU-1
-            VALI(2) = NBCOU
-            CALL U2MESG('F','ELEMENTS3_51',0,' ',2,VALI,0,0.D0)
+      IF ( OPTION.EQ.'SIEF_ELGA'.OR.OPTION.EQ.'EPSI_ELGA' ) THEN
+        CALL JEVECH('PMATERC','L',JMATE)
+        CALL TECACH('NNN','PNBSP_I',1,JNBSPI,IRET)
+        IF (IRET.EQ.0) THEN
+          NBCOU = ZI(JNBSPI)
+          ICOU = 0
+          EPTOT = 0.D0
+          EPI = 0.D0
+          CALL JEVECH('PCACOQU','L',JCARA)
+          EPAIS  = ZR(JCARA)
+  5       CONTINUE
+          ICOU=ICOU+1
+          CALL CODENT(ICOU,'G',NUM)
+          CALL CODENT(1,'G',VAL)
+          NOMRES = 'C'//NUM//'_V'//VAL
+          FAMIL='FPG1'
+          KPG=1
+          SPT=1
+          POUM='+'
+          CALL RCVALB(FAMIL,KPG,SPT,POUM,ZI(JMATE),' ','ELAS_COQMU',
+     &         0,' ',R8BID,1,NOMRES,EPI,ICODRE,0)
+          IF (ICODRE.EQ.0) THEN
+            EPTOT=EPTOT+EPI
+            GOTO 5
           ENDIF
-          IF (ABS(EPAIS-EPTOT)/EPAIS.GT.1.D-2) THEN
-            VALR(1) = EPTOT
-            VALR(2) = EPAIS
-            CALL U2MESG('F','ELEMENTS3_52',0,' ',0,0,2,VALR)
+          IF (EPTOT.NE.0.D0) THEN
+            IF ((ICOU-1).NE.NBCOU) THEN
+              VALI(1) = ICOU-1
+              VALI(2) = NBCOU
+              CALL U2MESG('F','ELEMENTS3_51',0,' ',2,VALI,0,0.D0)
+            ENDIF
+            IF (ABS(EPAIS-EPTOT)/EPAIS.GT.1.D-2) THEN
+              VALR(1) = EPTOT
+              VALR(2) = EPAIS
+              CALL U2MESG('F','ELEMENTS3_52',0,' ',0,0,2,VALR)
+            ENDIF
           ENDIF
         ENDIF
       ENDIF
