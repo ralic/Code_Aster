@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 07/05/2012   AUTEUR BODEL C.BODEL 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +26,6 @@ PROJ_SPEC_BASE=OPER(nom="PROJ_SPEC_BASE",op= 146,sd_prod=table_fonction,reentran
          TOUT_CMP       =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
          BASE_ELAS_FLUI =SIMP(statut='f',typ=melasflu_sdaster ),
          MODE_MECA      =SIMP(statut='f',typ=mode_meca ),
-         TYPE_FLUI_STRU =SIMP(statut='f',typ=type_flui_stru ),
          CHAM_NO        =SIMP(statut='f',typ=cham_no_sdaster),
          FREQ_INIT      =SIMP(statut='o',typ='R',val_min=0.E+0 ),  
          FREQ_FIN       =SIMP(statut='o',typ='R',val_min=0.E+0 ),  

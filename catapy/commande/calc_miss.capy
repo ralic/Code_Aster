@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 17/04/2012   AUTEUR GREFFET N.GREFFET 
+#& MODIF COMMANDE  DATE 07/05/2012   AUTEUR GREFFET N.GREFFET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -88,13 +88,9 @@ CALC_MISS = MACRO(nom="CALC_MISS",
                                fr="Groupe de mailles de l'interface"),
         UNITE_IMPR_ASTER = SIMP(statut='f', typ='I', defaut=25,
                                 fr="Unité des résultats transmis par Code_Aster à Miss"),
-        UNITE_RESU_IMPE  = SIMP(statut='f', typ='I', defaut=38,
-                                fr="Unité logique des impédances écrites par Miss"),
-        UNITE_RESU_FORC  = SIMP(statut='f', typ='I', defaut=28,
-                                fr="Unité logique des forces sismiques écrites par Miss"),
-        UNITE_RESU_RIGI =SIMP(statut='f',typ='I', defaut=39),
-        UNITE_RESU_AMOR =SIMP(statut='f',typ='I', defaut=40),
-        UNITE_RESU_MASS =SIMP(statut='f',typ='I', defaut=41),
+        UNITE_RESU_RIGI =SIMP(statut='f',typ='I'),
+        UNITE_RESU_AMOR =SIMP(statut='f',typ='I'),
+        UNITE_RESU_MASS =SIMP(statut='f',typ='I'),
         INST_FIN       = SIMP(statut='f', typ='R', fr="Instant final du calcul"),
         PAS_INST       = SIMP(statut='f', typ='R', fr="Pas de temps du calcul"),
         PRECISION      = SIMP(statut='f',typ='R',defaut=0.000001),

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
+#& MODIF COMMANDE  DATE 07/05/2012   AUTEUR BODEL C.BODEL 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -63,11 +63,9 @@ PROJ_BASE=MACRO(nom="PROJ_BASE",
            VECT_ASSE_GENE  =SIMP(statut='f',typ=vect_asse_gene),
          ),
          RESU_GENE  =FACT(statut='f',max='**',
-           RESULTAT         =SIMP(statut='o',typ=CO,),
-           regles=(UN_PARMI('RESU','RESU_GENE',),),
+           RESULTAT        =SIMP(statut='o',typ=CO,),
            TYPE_VECT       =SIMP(statut='f',typ='TXM',defaut="FORC"),
-           RESU            =SIMP(statut='f',typ=dyna_trans),
-           RESU_GENE       =SIMP(statut='f',typ=tran_gene),
+           RESU            =SIMP(statut='o',typ=dyna_trans),
          ),
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
 )  ;

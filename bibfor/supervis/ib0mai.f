@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 07/05/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,12 +25,16 @@ C     UTILISATION DU COMMON POUR L'AFFICHAGE
       INTEGER          LFIC,MFIC
       COMMON /FENVJE/  LFIC,MFIC
 C
+      INTEGER          NEXCEP
+      COMMON /UTEXC /  NEXCEP
+C     ------------------------------------------------------------------
       CHARACTER*8  NOMF
       INTEGER      UNMEGA, IDEBUG, IRET, LOIS
       INTEGER      MXDYN, IBID, ISMAEM
       REAL*8       VALR(3), MOCTET, MEMORY
       INTEGER      LOISEM
 C
+      NEXCEP = 0
       IBID = 0
 C     --- MEMOIRE POUR LE GESTIONNAIRE D'OBJET ---
       UNMEGA = 1 024 * 1 024

@@ -1,9 +1,9 @@
-#@ MODIF nommage Noyau  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF nommage Noyau  DATE 07/05/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -72,7 +72,6 @@ def _GetNomConceptResultat(ope, level=2):
   co = f.f_code
   filename = co.co_filename
   name = co.co_name
-  #print "NOMOP,FICHIER, LIGNE ",ope,filename,lineno
   #pattern pour identifier le debut de la commande
   pattern_oper=re.compile(regex1 % ope)
 
@@ -81,13 +80,10 @@ def _GetNomConceptResultat(ope, level=2):
     line = linecache.getline(filename, lineno)
     lineno=lineno-1
     if pattern_comment.match(line):continue
-    #print "LIGNE ",line
     list.append(line)
     if pattern_oper.search(line):
       l=pattern_oper.split(line)
       list.reverse()
-      #print "COMMANDE ",string.join(list)
-      #print "SPLIT ",l
       # On suppose que le concept resultat a bien ete
       # isole en tete de la ligne de source
       m=evalnom(string.strip(l[0]),f.f_locals)
@@ -106,13 +102,11 @@ def evalnom(text,d):
       evaluant la partie indice dans le contexte de l'appelant d
   """
   l=re.split('([\[\]]+)',text)
-  #print l
   if l[-1] == '' :l=l[:-1]
   lll=[]
   i=0
   while i<len(l):
     s=l[i]
-    ll=string.split(s,',')
     ll=re.split('[ ,]+',s)
     if ll[0] == '' :ll=ll[1:]
     if len(ll) == 1:

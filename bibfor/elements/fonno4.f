@@ -1,13 +1,13 @@
-      SUBROUTINE FONNO4 (MACOFO,NOMA,NBMAC,TABLEV,NOE,NBNOFF,INDIC)
+      SUBROUTINE FONNO4 (NDIM,MACOFO,NOMA,NBMAC,TABLEV,NOE,NBNOFF,INDIC)
       IMPLICIT NONE
       CHARACTER*8         NOMA
       CHARACTER*19        MACOFO
-      INTEGER             NBMAC,TABLEV(2),NOE(4,4),NBNOFF,INDIC(4)
+      INTEGER             NDIM,NBMAC,TABLEV(2),NOE(4,4),NBNOFF,INDIC(4)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/09/2011   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 07/05/2012   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -26,6 +26,7 @@ C       ----------------------------------------------------------------
 C       FILTRE DES FACES LIBRES
 C       ----------------------------------------------------
 C    ENTREES
+C       NDIM   : DIMENSION DU MAILLAGE
 C       MACOFO : VECTEUR DES MAILLES (PRINCIPALES) CONNECTEES AU SEGMENT
 C                DU FOND DE FISSURE COURANT
 C       NOMA   : NOM DU MAILLAGE
@@ -38,7 +39,7 @@ C                MAILLES CONNECTEES AU NOEUD SOMMET COURANT
 C                ET AUX LEVRES
 C       NBNOFF : NOMBRE DE NOEUD EN FOND DE FISSURE
 C    SORTIE
-C       INDIC  : INDICE DES FACES INTERNES
+C       INDIC  : INDICE DES FACES / ARETES INTERNES
 
 C       ----------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -114,25 +115,27 @@ C         LES FACES A NE PAS PRENDRE EN COMPTE CAR INTERNE
           ENDIF
  141    CONTINUE 
  140  CONTINUE
+
 C     CAS PARTICULIER OU AUCUNE MAILLE INTERNE N'EST PRESENTE
       IF ((COMP5.EQ.0).AND.(NBMAC.EQ.2)) THEN
         DO 200 INP=1,4
           DO 201 INQ=1,4
-          COMPTE = 0
+            COMPTE = 0
             IF (INP.NE.INQ) THEN
-            DO 202 I=1,4
-              DO 203 J=1,4
-                IF (NOE(INP,I).NE.0) THEN
-                  IF (NOE(INP,I).EQ.NOE(INQ,J)) THEN
-                   COMPTE = COMPTE+1
+              DO 202 I=1,4
+                DO 203 J=1,4
+                  IF (NOE(INP,I).NE.0) THEN
+                    IF (NOE(INP,I).EQ.NOE(INQ,J)) THEN
+                      COMPTE = COMPTE+1
+                    ENDIF
                   ENDIF
-                ENDIF
- 203          CONTINUE        
- 202        CONTINUE
+ 203            CONTINUE        
+ 202          CONTINUE
             ENDIF      
-          IF (COMPTE.GE.3) THEN
-            INDIC(INP)=INQ    
-          ENDIF          
+            IF (    NDIM.EQ.3.AND.COMPTE.GE.3
+     &          .OR.NDIM.EQ.2.AND.COMPTE.GE.2) THEN
+              INDIC(INP)=INQ    
+            ENDIF          
  201      CONTINUE
  200    CONTINUE        
       ENDIF

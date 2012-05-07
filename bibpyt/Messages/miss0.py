@@ -1,4 +1,4 @@
-#@ MODIF miss0 Messages  DATE 17/04/2012   AUTEUR GREFFET N.GREFFET 
+#@ MODIF miss0 Messages  DATE 07/05/2012   AUTEUR GREFFET N.GREFFET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -126,6 +126,15 @@ Dans le cas présent (DECOMP_IMPE='SANS_PRODUIT'),
 les valeurs lues par les mots-clés MATR_MASS et AMOR_HYST (tous les deux sous MATR_GENE) 
 ne sont pas utilisées.
 De plus, le fichier UNITE_RESU_MASS ne sera pas crée.
+"""),
+
+20 : _(u"""
+La matrice d'impédance correspondant à l'instant t = 0 n'est pas définie positive.
+La liste de DDL problématique(s) est : %(k1)s
+Il faut donc, soit :
+- augmenter la valeur du mot-clé INST_PAS,
+- diminuer la taille des éléments du maillage de l'interface ISS,
+- bloquer ce ou ces DDL.
 """),
 
 }

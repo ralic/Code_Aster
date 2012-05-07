@@ -1,4 +1,4 @@
-#@ MODIF miss_calcul Miss  DATE 17/04/2012   AUTEUR GREFFET N.GREFFET 
+#@ MODIF miss_calcul Miss  DATE 07/05/2012   AUTEUR GREFFET N.GREFFET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -260,6 +260,12 @@ class CALCUL_MISS(object):
         fich = '%s.%s' % (self.param['PROJET'], ext)
         return osp.join(self.param['_WRKDIR'], fich)
 
+    def _fichier_tmp_local(self, ext):
+        """Retourne le nom d'un fichier MISS en local.
+        """
+        fich = '%s.%s' % (self.param['PROJET'], ext)
+        return osp.join('./', fich)
+
 
     def _fichier_aster(self, unite):
         """Nom du fichier d'unité logique unite dans le répertoire d'exécution de Code_Aster.
@@ -318,10 +324,19 @@ class CALCUL_MISS_FICHIER_TEMPS(CALCUL_MISS):
         self.nbr_freq = self.L_points/2 + 1
 
         # Noms des fichiers à utiliser
-        self._fname = osp.join(self.param['_WRKDIR'], 'impe_Laplace')
-        self._fname2 = osp.join(self.param['_WRKDIR'], 'forc_Laplace')
-        self._fichier_impe = osp.join(self.param['_WRKDIR'], self.param['PROJET'] + '.' +'resu_impe')
-        self._fichier_forc = osp.join(self.param['_WRKDIR'], self.param['PROJET'] + '.' + 'resu_forc') 
+        
+        lfich = ( "impe_Laplace", "forc_Laplace" )
+        lfich = map(self._fichier_tmp, lfich)
+        # chemins relatifs au _WRKDIR sinon trop longs pour Miss
+        lfich = map(osp.basename, lfich)
+        
+        self._fname = lfich[0]
+        self._fname2 = lfich[1]
+        
+        lfich = ("resu_impe", "resu_forc")
+        lfich = map(self._fichier_tmp, lfich)
+        self._fichier_impe = lfich[0]
+        self._fichier_forc = lfich[1]
 
         # Variables à rajouter dans 'param'
         self.param.set('LIST_FREQ', None)
@@ -331,29 +346,33 @@ class CALCUL_MISS_FICHIER_TEMPS(CALCUL_MISS):
         self.param.set('NB_MODE', modes_nb)
          
         # Creation du fichier sol 
-        self.param.set('FICHIER_SOL_INCI', self._fichier_tmp("sol.inci"))
+        self.param.set('FICHIER_SOL_INCI', self._fichier_tmp_local("sol.inci"))
          
     
     def execute(self):
         """Exécute MISS3D : calcul du champ incident + boucle sur les fréquences complexes"""
-        copie_fichier(self._fichier_tmp("inci"), self._fichier_tmp("in"))
-        aster.affiche("MESSAGE",'LANCEMENT DU CALCUL DU CHAMP INCIDENT EN FREQUENCE')
-        CALCUL_MISS.execute(self)
-        copie_fichier(self._fichier_tmp("OUT"), self._fichier_tmp("OUT.inci"))
-        copie_fichier(self._fichier_tmp("sol"), self._fichier_tmp("sol.inci"))
-
         self.init_attr()
+
+        if self.param['EXCIT_SOL']:
+            copie_fichier(self._fichier_tmp("inci"), self._fichier_tmp("in"))
+            aster.affiche("MESSAGE",'LANCEMENT DU CALCUL DE LA FORCE SISMIQUE EN FREQUENCE')
+            CALCUL_MISS.execute(self)
+            copie_fichier(self._fichier_tmp("OUT"), self._fichier_tmp("OUT.inci"))
+            copie_fichier(self._fichier_tmp("sol"), self._fichier_tmp("sol.inci"))
+            fd = open(self._fname2, 'w')
+            text = open(self._fichier_forc, 'r').read()
+            fd.write(text)
+            fd.close()
+            copie_fichier(self._fichier_forc, self._fichier_aster(self.param['EXCIT_SOL']['UNITE_RESU_FORC']))
         
-        fd1 = open(self._fname, 'w')
-        fd2 = open(self._fname2, 'w')
+        fd = open(self._fname, 'w')
         CALCUL_MISS.cree_fichier_sol(self)
         aster.affiche("MESSAGE",'BOUCLE SUR LES FREQUENCES COMPLEXES')
-        self._exec_boucle_lapl(fd1,fd2)
-        fd1.close()                     
-        fd2.close()
+        self._exec_boucle_lapl(fd)
+        fd.close()                     
 
    
-    def _exec_boucle_lapl(self,fd1,fd2): 
+    def _exec_boucle_lapl(self,fd): 
         """Exécute MISS3D dans une boucle sur toutes les fréquences complexes"""
         L_points = self.L_points
         dt = self.dt
@@ -371,15 +390,12 @@ class CALCUL_MISS_FICHIER_TEMPS(CALCUL_MISS):
                 # 'sin','cos','pi' imported from MATH
 
             CALCUL_MISS.cree_commande_miss(self)
-            str00 = str(self.param['LIST_FREQ'][0])+' + i . '+str(self.param['FREQ_IMAG'])+' ('+str(k+1)+'/'+str(self.nbr_freq)+')'
+            str00 = str(self.param['FREQ_IMAG'])+' + i . '+str(self.param['LIST_FREQ'][0])+' ('+str(k+1)+'/'+str(self.nbr_freq)+')'
             aster.affiche("MESSAGE",'FREQUENCE COMPLEXE COURANTE =  '+str00)
             CALCUL_MISS.execute(self)
             
             text = open(self._fichier_impe, 'r').read()
-            fd1.write(text)
-
-            text2 = open(self._fichier_forc, 'r').read()
-            fd2.write(text2)
+            fd.write(text)
             
         # libérer la structure contenant les données numériques
         CALCUL_MISS.init_data(self)

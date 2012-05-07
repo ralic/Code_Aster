@@ -7,7 +7,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/01/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 07/05/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -179,7 +179,7 @@ C       -- POUR LES VARIABLES DE COMMANDE :
         CODRET=0
 
 C       CORRECTION JMP : POURQUOI REDECOUPER POUR RIGI_MECA_TANG ?
-        IF (OPTION.EQ.'RIGI_MECA_TANG') IPAL=0
+        IF (OPTION(1:9).EQ.'RIGI_MECA') IPAL=0
 
         READ (COMPOR(2),'(I16)') NVI
 C
@@ -216,9 +216,6 @@ C -->   REDECOUPAGE IMPOSE ==>  RETURN DANS PLASTI APRES RECHERCHE
 C       DES CARACTERISTIQUES DU MATERIAU A (T) ET (T+DT)
         IF ( IPAL  .LE.   0 ) GOTO 9999
         IF ( ICOMP .EQ.  -1 ) ICOMP = 0
-C
-        IF ( OPTION .EQ. 'RIGI_MECA_TANG' ) GOTO 9999
-C
 C
 C --    CAS DE NON CONVERGENCE LOCALE / REDECOUPAGE DU PAS DE TEMPS
 C
@@ -265,10 +262,8 @@ C --        REACTUALISATION DES VARIABLES POUR L INCREMENT SUIVANT
                 TF = TF + DELTAT
                 TF1=TF
                 CALL LCSOVE ( EPS     , DEPS    , EPS  )
-                IF ( OPTION .NE. 'RIGI_MECA_TANG' ) THEN
-                    CALL LCEQVN ( NDT     , SIGF    , SD   )
-                    CALL LCEQVN ( NVI     , VINF    , VIND   )
-                ENDIF
+                CALL LCEQVN ( NDT     , SIGF    , SD   )
+                CALL LCEQVN ( NVI     , VINF    , VIND   )
             ENDIF
 C
 C

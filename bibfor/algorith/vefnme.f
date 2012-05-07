@@ -3,7 +3,7 @@
      &                  PARTPS,CARCRI,CHVARC,LIGREZ,LISCHA,
      &                  OPTION,STRX)
 C
-C MODIF ALGORITH  DATE 09/01/2012   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 07/05/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -121,7 +121,14 @@ C
       ELSE
         DEBUG  = .FALSE.
       ENDIF
-      CALL DISMOI('F','NOM_MAILLA',DEPMOI,'CHAM_NO',IBID,MAILLA,IED)
+      IF ( DEPMOI.NE.' ' ) THEN
+        CALL DISMOI('F','NOM_MAILLA',DEPMOI,'CHAM_NO',IBID,MAILLA,IED)
+      ELSEIF ( SIGMA.NE.' ' ) THEN
+        CALL DISMOI('F','NOM_MAILLA',SIGMA(1:19),'CHAM_ELEM',
+     &              IBID,MAILLA,IED)
+      ELSE
+        CALL ASSERT(.FALSE.)
+      ENDIF
       CHGEOM = MAILLA(1:8)//'.COORDO'
       IF (VECELE.EQ.' ') THEN
         VECELE = '&&VEFNME'

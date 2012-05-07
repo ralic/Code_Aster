@@ -3,7 +3,7 @@
       CHARACTER*8         RESU, NOMA
       CHARACTER*19        CNXINV
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/04/2012   AUTEUR LADIER A.LADIER 
+C MODIF ELEMENTS  DATE 07/05/2012   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -231,9 +231,10 @@ C       ----------------------------------------------------------------
 C
         CALL FONNO2 (MACOFO,NOMA,NBMAC,NBNOFF,NBNOSE,
      &               NBMAX,NOEUA,TABLEV)
+
 C
 C
-C       3) RECUP DES FACES CONNECTEES AU FOND
+C       3) RECUP DES FACES / ARETES CONNECTEES AU FOND
 C          POUR CHACUNE DES 2 MAILLES
 C          -> REMPLISSAGE DE NOE
 C       ----------------------------------------------------
@@ -245,7 +246,7 @@ C       4) FILTRE DES FACES LIBRES
 C          -> REMPLISSAGE DE INDIC
 C       ----------------------------------------------------
 C
-        CALL FONNO4 (MACOFO,NOMA,NBMAC,TABLEV,NOE,NBNOFF,INDIC)
+        CALL FONNO4 (NDIM,MACOFO,NOMA,NBMAC,TABLEV,NOE,NBNOFF,INDIC)
         CALL JEDETR (MACOFO)
 
 C       5) CALCUL DES VECTEURS DE LA BASE LOCALE :

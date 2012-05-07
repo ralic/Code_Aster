@@ -1,4 +1,4 @@
-#@ MODIF as_timer Utilitai  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF as_timer Utilitai  DATE 07/05/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -119,7 +119,7 @@ class ASTER_TIMER:
    def Start(self, timer, mode='CONT', num=None, hide=None, name=None):
       """Start a new timer or restart one
       """
-      if len(self.timers) > 1000:
+      if len(self.timers) > self.MaxSize:
           return
       name = name or str(timer)
       isnew = self.timers.get(timer) is None
@@ -163,7 +163,7 @@ class ASTER_TIMER:
    def Stop(self, timer, hide=None):
       """Stop a timer
       """
-      if len(self.timers) > 1000:
+      if len(self.timers) > self.MaxSize:
           return
       if self.timers.get(timer) is None:
          self.timers[timer] = {
@@ -199,7 +199,7 @@ class ASTER_TIMER:
    def StopAndGet(self, timer, *args, **kwargs):
       """Stop a timer and return "delta" values.
       """
-      if len(self.timers) > 1000:
+      if len(self.timers) > self.MaxSize:
           return 0., 0., 0.
       self.Stop(timer, *args, **kwargs)
       cpu_dt  = self.timers[timer]['cpu_dt']

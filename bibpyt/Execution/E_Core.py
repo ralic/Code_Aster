@@ -1,4 +1,4 @@
-#@ MODIF E_Core Execution  DATE 16/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_Core Execution  DATE 07/05/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -373,7 +373,7 @@ def _bwc_arguments(argv):
     )
     # boolean options
     long_opts_sw = (
-        'suivi_batch', 'interact', 'verif', 'totalview',
+        'suivi_batch', 'interact', 'verif', 'totalview', 'dbgjeveux',
     )
     # removed options
     long_opts_rm = ('rep', 'mem', 'mxmemdy', 'memory_stat', 'memjeveux_stat',

@@ -1,4 +1,4 @@
-#@ MODIF algorith12 Messages  DATE 02/04/2012   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith12 Messages  DATE 07/05/2012   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,6 +27,13 @@ cata_msg = {
  nom sous-structure        : %(k1)s
  nom MACR_ELEM             : %(k2)s
  nom interface inexistante : %(k3)s
+"""),
+
+3 : _(u"""
+ On ne trouve pas le nom de l'interface associée à la sous-structure
+ %(k1)s. La base modale utilisée pour définir le macro-élément associé
+ à la sous-structure doit avoir été définie avec DEFI_BASE_MODALE, en
+ mentionnant obligatoirement l'interface sous le mot-clé INTERF_DYNA.
 """),
 
 

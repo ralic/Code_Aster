@@ -1,4 +1,4 @@
-# MODIF  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 07/05/2012   AUTEUR TRAN V-X.TRAN 
 #
 # TITRE CRITERES EN FORMULE POUR POST_FATIGUE AMPLITUDE CONSTANTE
 # szlz107b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
@@ -25,10 +25,10 @@ DEBUT(  CODE=_F(  NOM = 'SZLZ107B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'
 ### ON VEUT RETROUVER LE MEME RESULTAT AVEC CALC_FATIGUE DE CAS-TEST SSLV135o
 SIGMXX=DEFI_FONCTION(    NOM_PARA='INST',
                           VALE=(  
-                                  0     ,  0     ,
-                                  0.25  ,  50    ,
-                                  0.5   ,  100   ,
-                                  0.75  ,  150   ,                                 
+#                                   0     ,  0     ,
+#                                   0.25  ,  50    ,
+#                                   0.5   ,  100   ,
+#                                   0.75  ,  150   ,                                 
                                   1     ,  200   ,
                                   1.25  ,  150   ,
                                   1.5   ,  100   ,
@@ -51,10 +51,10 @@ SIGMXX=DEFI_FONCTION(    NOM_PARA='INST',
 
 ZERO  =DEFI_FONCTION(    NOM_PARA='INST',
                           VALE=(  
-                                  0     ,  0     ,
-                                  0.25  ,  0    ,
-                                  0.5   ,  0   ,
-                                  0.75  ,  0   ,                                 
+#                                   0     ,  0     ,
+#                                   0.25  ,  0    ,
+#                                   0.5   ,  0   ,
+#                                   0.75  ,  0   ,                                 
                                   1     ,  0   ,
                                   1.25  ,  0   ,
                                   1.5   ,  0   ,
@@ -77,10 +77,10 @@ ZERO  =DEFI_FONCTION(    NOM_PARA='INST',
 
 EPSTXX=DEFI_FONCTION(    NOM_PARA='INST',
                           VALE=(  
-                                  0     ,   0       ,
-                                  0.25  ,   0.00025 ,
-                                  0.5   ,   0.0005  ,
-                                  0.75  ,   0.00075 ,                                  
+#                                   0     ,   0       ,
+#                                   0.25  ,   0.00025 ,
+#                                   0.5   ,   0.0005  ,
+#                                   0.75  ,   0.00075 ,                                  
                                   1     ,   0.00175 ,
                                   1.25  ,   0.0015  ,
                                   1.5   ,   0.00125 ,
@@ -102,10 +102,10 @@ EPSTXX=DEFI_FONCTION(    NOM_PARA='INST',
                                   
 EPSTYY=DEFI_FONCTION(    NOM_PARA='INST',
                           VALE=(  
-                                  0     ,0         ,
-                                  0.25  ,-0.000075 ,
-                                  0.5   ,-0.00015  ,
-                                  0.75  ,-0.000225 ,                                  
+#                                   0     ,0         ,
+#                                   0.25  ,-0.000075 ,
+#                                   0.5   ,-0.00015  ,
+#                                   0.75  ,-0.000225 ,                                  
                                   1     ,-0.000675 ,
                                   1.25  ,-0.0006   ,
                                   1.5   ,-0.000525 ,
@@ -128,10 +128,10 @@ EPSTYY=DEFI_FONCTION(    NOM_PARA='INST',
 
 EPSTZZ=DEFI_FONCTION(    NOM_PARA='INST',
                           VALE=(  
-                                  0     ,0         ,
-                                  0.25  ,-0.000075 ,
-                                  0.5   ,-0.00015  ,
-                                  0.75  ,-0.000225 ,                                  
+#                                   0     ,0         ,
+#                                   0.25  ,-0.000075 ,
+#                                   0.5   ,-0.00015  ,
+#                                   0.75  ,-0.000225 ,                                  
                                   1     ,-0.000675 ,
                                   1.25  ,-0.0006   ,
                                   1.5   ,-0.000525 ,
@@ -154,10 +154,10 @@ EPSTZZ=DEFI_FONCTION(    NOM_PARA='INST',
 
 EPSPXX=DEFI_FONCTION(    NOM_PARA='INST',
                           VALE=(  
-                                  0     , 0        ,
-                                  0.25  , 0        ,
-                                  0.5   , 0        ,
-                                  0.75  , 0        ,
+#                                   0     , 0        ,
+#                                   0.25  , 0        ,
+#                                   0.5   , 0        ,
+#                                   0.75  , 0        ,
                                   1     , 0.00075  ,
                                   1.25  , 0.00075  ,
                                   1.5   , 0.00075  ,
@@ -180,10 +180,10 @@ EPSPXX=DEFI_FONCTION(    NOM_PARA='INST',
                                   
 EPSPYY=DEFI_FONCTION(    NOM_PARA='INST',
                           VALE=(  
-                                  0     , 0        ,
-                                  0.25  , 0         ,
-                                  0.5   , 0        ,
-                                  0.75  , 0        ,                                   
+#                                   0     , 0        ,
+#                                   0.25  , 0         ,
+#                                   0.5   , 0        ,
+#                                   0.75  , 0        ,                                   
                                   1     ,-0.000375 ,
                                   1.25  ,-0.000375 ,
                                   1.5   ,-0.000375 ,
@@ -206,10 +206,10 @@ EPSPYY=DEFI_FONCTION(    NOM_PARA='INST',
 
 EPSPZZ=DEFI_FONCTION(    NOM_PARA='INST',
                           VALE=(  
-                                  0     , 0         ,
-                                  0.25  , 0        ,
-                                  0.5   , 0        ,
-                                  0.75  , 0        ,                                 
+#                                   0     , 0         ,
+#                                   0.25  , 0        ,
+#                                   0.5   , 0        ,
+#                                   0.75  , 0        ,                                 
                                   1     ,-0.000375 ,                                  
                                   1.25  ,-0.000375 ,
                                   1.5   ,-0.000375 ,
@@ -481,13 +481,15 @@ FATN2 = [None]*4
 
 NPAR = ['DTAUMA','VNMX', 'VNMY', 'VNMZ','NORMAX', 'NORMOY','EPNMAX', 'EPNMOY',
          'VALE_CRITERE','NBRUP','DOMMAGE']
+CTEST = ['RELATIF', 'RELATIF', 'RELATIF','ABSOLU', 'RELATIF','ABSOLU', 'RELATIF', 
+         'ABSOLU','RELATIF', 'RELATIF', 'RELATIF']
  
-RESU = [1.50E+02, 7.0710678118655E-01, 7.0710678118655E-01,6.1232339957368E-17, 
-        5.0000000000000E+01, -1.2237124893648E-14,1.7500000000000E-04,-5.1198435922927E-20,
+RESU = [1.50E+02, 7.0710678118655E-01, 7.0710678118655E-01,0, 
+        5.0000000000000E+01, 0,1.7500000000000E-04, 0,
         3.0000000000000E+02, 1.0946000000000E+04 ,9.1356470832402E-05,
 # DANG_VAN        
-        1.50E+02, 7.0710678118655E-01, 7.0710678118655E-01,6.1232339957368E-17, 
-        5.0000000000000E+01, -1.2237124893648E-14,1.7500000000000E-04,-5.1198435922927E-20,
+        1.50E+02, 7.0710678118655E-01, 7.0710678118655E-01,0, 
+        5.0000000000000E+01, 0,1.7500000000000E-04,0,
         2.7500000000000E+02, 1.4903000000000E+04 ,6.7099587679274E-05,
           ]
 # 
@@ -535,6 +537,7 @@ for i in range(2) :
         TEST_TABLE( TABLE=FATN2[i],
             NOM_PARA = NPAR[j],
             VALE=RESU[j+ 11*i],
+            CRITERE = CTEST[j],
             PRECISION=1.0E-10                
             )
 
@@ -583,6 +586,7 @@ for i in range(2) :
         TEST_TABLE( TABLE=FATNW2[i],
             NOM_PARA = NPAR[j],
             VALE=RESU[j + 11*i],
+            CRITERE = CTEST[j],
             PRECISION=1.0E-10                
             ) 
                              
@@ -644,6 +648,7 @@ for i in range(2) :
         TEST_TABLE( TABLE=FATN2[i+2],
             NOM_PARA = NPAR[j],
             VALE=RESU[j+ 11*i],
+            CRITERE = CTEST[j],
             PRECISION=1.0E-10                
             )
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/04/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 07/05/2012   AUTEUR MACOCCO K.MACOCCO 
 # TITRE ESTIMATEUR D'ERREUR SUR UNE PLAQUE TROUEE EN TRACTION
 # sslv111g.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -195,11 +195,11 @@ TEST_RESU(CHAM_NO=(_F(CHAM_GD=SIGZZ1,
                       CRITERE='RELATIF',
                       PRECISION=0.095,),
                    _F(CHAM_GD=SIGZZ1,
-                      NOEUD='N317',
+                      NOEUD='N137',
                       NOM_CMP='SIXY',
                       VALE=SIXY(1.0,0.0,),
                       CRITERE='ABSOLU',
-                      PRECISION=0.1,),),);
+                      PRECISION=0.05,),),);
 
 IMPR_RESU(MODELE=MO,
           RESU=(_F(RESULTAT=RESU,

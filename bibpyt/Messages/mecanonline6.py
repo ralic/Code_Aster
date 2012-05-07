@@ -1,4 +1,4 @@
-#@ MODIF mecanonline6 Messages  DATE 02/04/2012   AUTEUR ABBAS M.ABBAS 
+#@ MODIF mecanonline6 Messages  DATE 07/05/2012   AUTEUR GREFFET N.GREFFET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -61,6 +61,10 @@ cata_msg = {
 
 12 : _(u"""
   Le mode de stabilité de numéro d'ordre %(i1)d a pour charge critique %(r1)19.12e
+"""),
+
+13 : _(u"""
+  <Erreur> On ne peut pas utiliser CRIT_STAB en calcul parallèle
 """),
 
 29 : _(u"""

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
+# MODIF  DATE 07/05/2012   AUTEUR BODEL C.BODEL 
 # TITRE PLAQUE SUR APPUI SOUMISE A UNE ACCELERATION DE RICKER (METHODE TEMPS-FREQUENCE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,8 @@
 # ======================================================================
 # sdls119b.para = tps_job 300 mem_job 1000Mo mem_aster 80 ncpus 1 liste_test R
 
-DEBUT(CODE=_F(NOM='SDLS119B', NIV_PUB_WEB='INTERNET',));
+DEBUT(CODE=_F(NOM='SDLS119B', NIV_PUB_WEB='INTERNET',),
+      IMPR_MACRO='OUI');
 #
 import aster
 #

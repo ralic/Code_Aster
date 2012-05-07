@@ -1,4 +1,4 @@
-#@ MODIF B_ETAPE Build  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_ETAPE Build  DATE 07/05/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -645,9 +645,9 @@ La remontée d'erreur suivante peut aider à comprendre où se situe l'erreur :
             valeur = B_utils.Typast(AsType(objet_sd))
             valeur = valeur.upper()
         except AssertionError:
-            if not nom_concept.startswith('&'):
-                from warnings import warn
-                warn("concept inconnu : %s" % nom_concept, RuntimeWarning, stacklevel=1)
+            #if not nom_concept.startswith('&'):
+                #from warnings import warn
+                #warn("concept inconnu : %s" % nom_concept, RuntimeWarning, stacklevel=1)
             valeur = ' '
         except :
             #raise AsException("Probleme dans gettco: %s, %s ; Objet introuvable!" % (self.nom, nom_concept))

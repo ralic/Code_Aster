@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 07/05/2012   AUTEUR SELLENET N.SELLENET 
 # TITRE CUBE EN TRACTION SIMPLE ET COMPRESSION AVEC LA LOI ENDO_ORTH_BETON
 # ssnv217a.para = tps_job 60 mem_job 256Mo ncpus 1
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -120,7 +120,9 @@ U=STAT_NON_LINE(MODELE=MO,
                              INST_INIT=0.0,
                              INST_FIN=1.0,),
                 ARCHIVAGE=_F(LIST_INST=L_ARCH,),
-                NEWTON=_F(REAC_ITER=1,),);
+                NEWTON=_F(REAC_ITER=1,),
+                ENERGIE=_F(),
+);
 
 U=STAT_NON_LINE(reuse =U,
                 MODELE=MO,
@@ -139,7 +141,9 @@ U=STAT_NON_LINE(reuse =U,
                              INST_INIT=1.0,
                              INST_FIN=2.0,),
                 ARCHIVAGE=_F(LIST_INST=L_ARCH,),
-                NEWTON=_F(REAC_ITER=1,),);
+                NEWTON=_F(REAC_ITER=1,),
+                ENERGIE=_F(),
+);
 
 U=STAT_NON_LINE(reuse =U,
                 MODELE=MO,
@@ -158,7 +162,9 @@ U=STAT_NON_LINE(reuse =U,
                              INST_INIT=2.0,
                              INST_FIN=4.0,),
                 ARCHIVAGE=_F(LIST_INST=L_ARCH,),
-                NEWTON=_F(REAC_ITER=1,),);
+                NEWTON=_F(REAC_ITER=1,),
+                ENERGIE=_F(),
+);
 
 TEST_RESU(RESU=_F(RESULTAT=U,
                   NUME_ORDRE=2,
@@ -231,5 +237,43 @@ TEST_RESU(RESU=_F(RESULTAT=U,
                   POINT=1,
                   VALE=-533333.33,
                   REFERENCE='NON_REGRESSION',),);
+
+
+
+# Validation croisee des calculs d'energie :
+#-------------------------------------------
+ENER1=RECU_TABLE(CO=U,NOM_TABLE='PARA_CALC',);
+#IMPR_TABLE(TABLE=ENER1)
+
+
+U=CALC_CHAMP(reuse = U, FORCE='FORC_NODA', RESULTAT=U, );
+ENER2 = POST_ELEM( RESULTAT = U, TRAV_EXT = _F(),)
+#IMPR_TABLE(TABLE=ENER2)
+
+# On se sert de ENER1 comme reference pour ENER2 :
+TEST_TABLE(TABLE=ENER1, FILTRE=_F(  NOM_PARA = 'INST', VALE = 1.),
+           NOM_PARA='TRAV_EXT', VALE=503.91043140284     , CRITERE='RELATIF', PRECISION=1.E-6, REFERENCE='NON_REGRESSION' )
+
+TEST_TABLE(TABLE=ENER1, FILTRE=_F(  NOM_PARA = 'INST', VALE = 2.),
+           NOM_PARA='TRAV_EXT', VALE=524.44797530353     , CRITERE='RELATIF', PRECISION=1.E-6, REFERENCE='NON_REGRESSION' )
+
+TEST_TABLE(TABLE=ENER1, FILTRE=_F(  NOM_PARA = 'INST', VALE = 4.),
+           NOM_PARA='TRAV_EXT', VALE=2.4841796608592E+05 , CRITERE='RELATIF', PRECISION=1.E-6, REFERENCE='NON_REGRESSION' )
+
+
+TEST_TABLE(TABLE=ENER2, FILTRE=_F(  NOM_PARA = 'INST', VALE = 1.),
+           NOM_PARA='TRAV_REEL', VALE=503.91043140284     , CRITERE='RELATIF', PRECISION=1.E-6, REFERENCE='AUTRE_ASTER' )
+
+# A cause du "reuse", il faut cumuler ce que l'on trouve dans ENER1 :
+X2=503.91043140284 + 524.44797530353
+TEST_TABLE(TABLE=ENER2, FILTRE=_F(  NOM_PARA = 'INST', VALE = 2.),
+           NOM_PARA='TRAV_REEL', VALE=X2     , CRITERE='RELATIF', PRECISION=1.5E-6, REFERENCE='AUTRE_ASTER' )
+
+# A cause du "reuse", il faut cumuler ce que l'on trouve dans ENER1 :
+X3=503.91043140284 + 524.44797530353 + 2.4841796608592E+05
+TEST_TABLE(TABLE=ENER2, FILTRE=_F(  NOM_PARA = 'INST', VALE = 4.),
+           NOM_PARA='TRAV_REEL', VALE=X3 , CRITERE='RELATIF', PRECISION=1.E-6, REFERENCE='AUTRE_ASTER' )
+
+
 
 FIN();

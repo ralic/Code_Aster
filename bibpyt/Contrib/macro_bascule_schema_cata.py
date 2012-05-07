@@ -1,8 +1,8 @@
-#@ MODIF macro_bascule_schema_cata Contrib  DATE 25/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF macro_bascule_schema_cata Contrib  DATE 07/05/2012   AUTEUR GREFFET N.GREFFET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -314,12 +314,20 @@ MACRO_BASCULE_SCHEMA = MACRO(nom="MACRO_BASCULE_SCHEMA", op=macro_bascule_schema
 #
                      SCH_TEMPS_EQ     =FACT(statut='f',
                         SCHEMA          =SIMP(statut='o',min=1,max=1,typ='TXM',
-                                              into=("DIFF_CENT","TCHAMWA",),),
+                                              into=("DIFF_CENT","TCHAMWA","NEWMARK","HHT",),),
                         b_tchamwa = BLOC(condition="SCHEMA=='TCHAMWA'",
                           PHI          =SIMP(statut='f',typ='R',defaut= 1.05),),
+                        b_newmark = BLOC(condition="SCHEMA=='NEWMARK'",
+                          ALPHA        =SIMP(statut='f',typ='R',defaut= 0.25),
+                          DELTA        =SIMP(statut='f',typ='R',defaut= 0.5),),
+                        b_hht     = BLOC(condition="SCHEMA=='HHT'",
+                          ALPHA        =SIMP(statut='f',typ='R',defaut= -0.3 ),
+                          MODI_EQUI    =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),),),
                         b_explicit= BLOC(condition="SCHEMA=='TCHAMWA'or SCHEMA=='DIFF_CENT'",
                           STOP_CFL     =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON"),),
                           FORMULATION  =SIMP(statut='o',typ='TXM',into=("ACCELERATION",),),),
+                        b_implicit= BLOC(condition="SCHEMA!='TCHAMWA'and SCHEMA!='DIFF_CENT'",
+                          FORMULATION  =SIMP(statut='o',max=1,typ='TXM',into=("DEPLACEMENT","VITESSE",),),),
                      ),
 #
                      C_INCR_I       =C_COMP_INCR(),

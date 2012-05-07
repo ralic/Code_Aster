@@ -1,4 +1,4 @@
-#@ MODIF miss_utils Miss  DATE 17/04/2012   AUTEUR GREFFET N.GREFFET 
+#@ MODIF miss_utils Miss  DATE 07/05/2012   AUTEUR GREFFET N.GREFFET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -81,7 +81,7 @@ class MISS_PARAMETER(object):
             'EXCIT_HARMO' : None,
             'INST_FIN' : None,
             'PAS_INST' : None,
-            'FICHIER_SOL_INCI' : None,
+            'FICHIER_SOL_INCI' : 'NON', #Si ondes inclinees : None
             #XXX en attendant de savoir si on réutilisera
             'ISSF' : 'NON',
         }

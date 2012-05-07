@@ -1,4 +1,4 @@
-#@ MODIF miss_fichier_sol Miss  DATE 17/04/2012   AUTEUR GREFFET N.GREFFET 
+#@ MODIF miss_fichier_sol Miss  DATE 07/05/2012   AUTEUR GREFFET N.GREFFET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -93,10 +93,13 @@ def fichier_sol(tab, param=None):
     content.append("SOURCE %8d 3D" % nb_source)
     # forces
     format = "FORCE HORIZ POSI %(s_FORCE)8d"
-    if param['TYPE_RESU'] == 'FICHIER_TEMPS' and param['FICHIER_SOL_INCI'] == None :
-        # champ incident au substratum
-        content.append("FORCE PLANE POSI   %8d" % nb_couche)
-    else:
+    type_arg = 0
+    if param.get('TYPE_RESU') and param.get('FICHIER_SOL_INCI'):
+        if param['TYPE_RESU'] == 'FICHIER_TEMPS' and param['FICHIER_SOL_INCI'] == None :
+            type_arg = 1
+            # champ incident au substratum
+            content.append("FORCE PLANE POSI   %8d" % nb_couche)
+    if (type_arg == 0):
         for ic, row in enumerate(tsol):
             if row["s_FORCE"] != 0:
                 content.append(format % row)    

@@ -7,7 +7,7 @@
       CHARACTER*4 TYCH,DEJAIN
 C    -------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 30/04/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF UTILITAI  DATE 07/05/2012   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -207,7 +207,7 @@ C     -- PONDERATION DU CHAMP PAR LES POIDS DES POINTS :
 C              IAD1 ET IDA3 DOIVENT ETRE DU MEME SIGNE SINON
 C              CELA SIGNIFIE QUE LES DEUX CHAMPS N'ONT PAS LE
 C              MEME PROFIL
-               IF ( IAD1*IAD3.LE.0 ) THEN
+               IF ( .NOT.(IAD1.GT.0.AND.IAD3.GT.0) ) THEN
                  CALL ASSERT(.FALSE.)
                ELSE
 C                SI IAD1 EST NEGATIF OU NUL ALORS IL N'Y A

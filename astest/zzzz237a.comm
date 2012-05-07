@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 07/05/2012   AUTEUR SELLENET N.SELLENET 
 # TITRE VALIDATION DU MOT-CLE LIAISON_UNILATER PAR UNE CONDITION PORTANT SUR DES DEPLACEMENTS
 # zzzz237a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -206,6 +206,23 @@ IMPR_TABLE(TABLE=T_CONT,);
 #           RESU=_F(RESULTAT=RESU,
 #                   NOM_CHAM='VALE_CONT',),);
 
+# TEST DE CALC_VECT_ELEM OPTION FORC_NODA
+
+SIGM = CREA_CHAMP(TYPE_CHAM = 'ELGA_SIEF_R',
+                  OPERATION = 'EXTR',
+                  RESULTAT  = RESU,
+                  NOM_CHAM  = 'SIEF_ELGA',
+                  INST      = 20.0,);
+
+FORC = CALC_VECT_ELEM(OPTION    = 'FORC_NODA',
+                      MODELE    = MO,
+                      SIEF_ELGA = SIGM,
+                      CARA_ELEM = CAR_DIS,);
+
+NUME = NUME_DDL(MODELE = MO);
+
+VECT = ASSE_VECTEUR(VECT_ELEM = FORC,
+                    NUME_DDL  = NUME,);
 
 #--------------------------
 # TESTS DES RESULTATS     #
@@ -276,6 +293,22 @@ TEST_RESU(RESU=_F(RESULTAT=RESU,
                   REFERENCE='NON_REGRESSION',
                   VERSION='9.2.18',)
                   );
+
+TEST_RESU(CHAM_NO=_F(CHAM_GD=VECT,
+                     NOM_CMP='DY',
+                     GROUP_NO='A',
+                     VALE=+2.19780E+10,
+                     REFERENCE='NON_REGRESSION',
+                     VERSION='9.2.18',)
+                  );
+
+TEST_RESU(CHAM_NO=_F(CHAM_GD=VECT,
+                     NOM_CMP='DY',
+                     GROUP_NO='B',
+                     VALE=+2.19780E+10,
+                     REFERENCE='NON_REGRESSION',
+                     VERSION='9.2.18',)
+                     );
 
 #--------------------------
 

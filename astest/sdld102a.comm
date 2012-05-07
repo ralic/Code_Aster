@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
+# MODIF  DATE 07/05/2012   AUTEUR BODEL C.BODEL 
 # TITRE SOUS-STRUCTURATION TRANSITOIRE : SYSTEME MASSES-RESSORTS
 # sdld102a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -330,30 +330,19 @@ MODGLO=REST_SOUS_STRUC(RESU_GENE=RESGEN,
                        TOUT_ORDRE='OUI',
                        SQUELETTE=SQUEL,);
 
-#
-# ----- NUMEROTATION DU PROBLEME GENERALISE
-
-NUMEMODE=NUME_DDL_GENE(BASE=RESGEN,
-                       STOCKAGE='DIAG',);
 
 #
-# ----- MATRICES ET VECTEURS GENERALISES
+# ----- NUME_GENE, MATRICES ET VECTEURS GENERALISES
 
-MASPRO=PROJ_MATR_BASE(BASE=RESGEN,
-                      NUME_DDL_GENE=NUMEMODE,
-                      MATR_ASSE_GENE=MASGEN,);
-
-#
-
-RIGPRO=PROJ_MATR_BASE(BASE=RESGEN,
-                      NUME_DDL_GENE=NUMEMODE,
-                      MATR_ASSE_GENE=RIGGEN,);
-
-#
-
-VECPRO=PROJ_VECT_BASE(BASE=RESGEN,
-                      NUME_DDL_GENE=NUMEMODE,
-                      VECT_ASSE_GENE=FGEN,);
+PROJ_BASE(BASE=RESGEN,
+          STOCKAGE='DIAG',
+          NUME_DDL_GENE=CO('NUMEMODE'),
+          MATR_ASSE_GENE=(_F(MATRICE=CO('RIGPRO'),
+                             MATR_ASSE_GENE=RIGGEN,),
+                          _F(MATRICE=CO('MASPRO'),
+                             MATR_ASSE_GENE=MASGEN,),),
+          VECT_ASSE_GENE=_F(VECTEUR=CO('VECPRO'),
+                            VECT_ASSE_GENE=FGEN,),);
 
 #
 # ----- CALCULS TRANSITOIRES

@@ -1,4 +1,4 @@
-#@ MODIF E_Exception Execution  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_Exception Execution  DATE 07/05/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -150,6 +150,10 @@ class ExceptionsStore(object):
         name, exc = self._dict_exc.get(code, self._default)
         return exc
 
+    def get_exception_name(self, code):
+        """Return the exception corresponding to `code`."""
+        return self._dict_exc.get(code, self._default)
+
 
 # Singleton object
 ST = ExceptionsStore()
@@ -176,8 +180,9 @@ ST.register(35, "InterpenetrationError", InterpenetrationError)
 
 def add_to_dict_module(dictmodule):
     """Wrapper to ExceptionsStore method to simplify call from astermodule."""
-    ST.add_to_dict_module(dictmodule)
+    return ST.add_to_dict_module(dictmodule)
 
 def get_exception(code):
     """Wrapper to ExceptionsStore method to simplify call from astermodule."""
     return ST.get_exception(code)
+

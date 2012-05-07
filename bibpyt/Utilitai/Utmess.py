@@ -1,4 +1,4 @@
-#@ MODIF Utmess Utilitai  DATE 17/04/2012   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF Utmess Utilitai  DATE 07/05/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,6 +38,7 @@ except:
 from Messages.context_info import message_context_concept
 from Utilitai.string_utils import cut_long_lines, copy_text_to, clean_string
 from Execution.strfunc import convert, ufmt, to_unicode
+from Execution.E_Exception import ST
 
 from Noyau.N_types import force_list
 
@@ -110,7 +111,7 @@ class MESSAGE_LOGGER:
         self.print_message(*args, **kwargs)
 
 
-    def print_message(self, code, idmess, valk=(), vali=(), valr=(),
+    def print_message(self, code, idmess, valk=(), vali=(), valr=(), exc_num=None,
                             exception=False, print_as=None, cc=None):
         """Appelé par la routine fortran U2MESG ou à la fonction python UTMESS
         pour afficher un message.
@@ -135,7 +136,7 @@ class MESSAGE_LOGGER:
                     # le formattage 'brut' échoue, on passera par une conversion complète
                     pass
         # récupération du texte du message
-        dictmess = self.get_message(code, idmess, valk, vali, valr)
+        dictmess = self.get_message(code, idmess, valk, vali, valr, exc_num)
 
         # on le met dans le buffer
         self.add_to_buffer(dictmess)
@@ -149,6 +150,9 @@ class MESSAGE_LOGGER:
             self.print_buffer_content(print_as, cc)
 
             if exception and code[0] in ('S', 'F'):
+                exc_typ = dictmess.get('exc_typ')
+                if exc_typ:
+                    raise exc_typ(idmess, valk, vali, valr)
                 raise error(idmess, valk, vali, valr)
 
         return None
@@ -175,7 +179,7 @@ class MESSAGE_LOGGER:
         return dicarg
 
 
-    def get_message(self, code, idmess, valk=(), vali=(), valr=()):
+    def get_message(self, code, idmess, valk=(), vali=(), valr=(), exc_num=None):
         """Retourne le texte du message dans un dictionnaire dont les clés sont :
             'code', 'id_message', 'corps_message'
         """
@@ -258,6 +262,9 @@ Exception : %s
                 dictmess['corps_message'] = repr(args)
         # limite la longueur des lignes
         dictmess['corps_message'] = cut_long_lines(dictmess['corps_message'], MAXLENGTH)
+        # type d'exception
+        if exc_num:
+            dictmess['exc_name'], dictmess['exc_typ'] = ST.get_exception_name(exc_num)
         return dictmess
 
 
@@ -266,19 +273,16 @@ Exception : %s
         """
         return self.format_message(self.get_message(*args, **kwargs))
 
-
     def init_buffer(self):
         """Initialise le buffer.
         """
         self._buffer = []
-
 
     def add_to_buffer(self, dictmess):
         """Ajoute le message décrit dans le buffer en vue d'une impression
         ultérieure.
         """
         self._buffer.append(dictmess)
-
 
     def get_current_code(self):
         """Retourne le code du message du buffer = code du message le plus grave
@@ -287,12 +291,15 @@ Exception : %s
         dgrav = { '?' : -9, 'I' : 0, 'A' : 1, 'S' : 4, 'Z' : 4, 'E' : 6, 'F' : 10 }
 
         current = '?'
+        exc_name = None
+        exc_typ = None
         for dictmess in self._buffer:
             code = dictmess['code'][0]
             if dgrav.get(code, -9) > dgrav.get(current, -9):
                 current = code
-
-        return current
+            exc_name = exc_name or dictmess.get('exc_name')
+            exc_typ = exc_typ or dictmess.get('exc_typ')
+        return current, exc_name, exc_typ
 
     def get_current_flags(self):
         """Retourne les flags du message du buffer = flags du premier."""
@@ -318,12 +325,12 @@ Exception : %s
 
         # construction du dictionnaire du message global
         dglob = {
-            'code'          : self.get_current_code(),
             'flags'         : self.get_current_flags(),
             'id_message'    : self.get_current_id(),
             'liste_message' : [],
             'liste_context' : [],
         }
+        dglob['code'], dglob['exc_name'], dglob['exc_typ'] = self.get_current_code()
         for dictmess in self._buffer:
             dglob['liste_message'].append(dictmess['corps_message'])
             dglob['liste_context'].append(dictmess['context_info'])
@@ -401,7 +408,7 @@ Exception : %s
     def update_counter(self):
         """Mise à jour des compteurs et réaction si besoin.
         """
-        code = self.get_current_code()
+        code = self.get_current_code()[0]
         if   code == 'E':
             self.erreur_E = True
         elif code == 'F':
@@ -500,7 +507,7 @@ du calcul ont été sauvées dans la base jusqu'au moment de l'arret."""),
             'final'  : u"""%(corps)s""",
         }
         dmsg = dictmess.copy()
-        dmsg['type_message'] = self.get_type_message(dictmess['code'])
+        dmsg['type_message'] = self.get_type_message(dictmess)
         if dmsg['id_message'] != 'I':
             dmsg['str_id_message'] = '<%s>' % dmsg['id_message']
         else:
@@ -556,18 +563,19 @@ du calcul ont été sauvées dans la base jusqu'au moment de l'arret."""),
         return clean_string(os.linesep.join(l_txt))
 
 
-    def get_type_message(self, code):
+    def get_type_message(self, dictmess):
         """Retourne le type du message affiché.
         En cas d'erreur, si on lève une exception au lieu de s'arreter,
         on n'affiche pas le type de l'erreur pour ne pas fausser le diagnostic
         """
+        code = dictmess['code']
         typmess = code.strip()
         if self.onFatalError().startswith('EXCEPTION'):
             if typmess in ('E', 'F'):
                 typmess = 'EXCEPTION'
         # dans tous les cas, pour S et Z (exception), on affiche EXCEPTION.
-        if typmess in ('Z', 'S'):
-            typmess = 'EXCEPTION'
+        if code in ('Z', 'S'):
+            typmess = dictmess.get('exc_name') or 'EXCEPTION'
         return typmess
 
 
@@ -632,7 +640,7 @@ def raise_UTMESS(exc):
 # unique instance du MESSAGE_LOGGER
 MessageLog = MESSAGE_LOGGER()
 
-def UTMESS(code, idmess, valk=(), vali=(), valr=(), print_as=None, cc=None):
+def UTMESS(code, idmess, valk=(), vali=(), valr=(), exc_num=None, print_as=None, cc=None):
     """Utilitaire analogue à la routine fortran U2MESS/U2MESG avec les arguments
     optionnels.
         code   : 'A', 'E', 'S', 'F', 'I'
@@ -648,8 +656,8 @@ def UTMESS(code, idmess, valk=(), vali=(), valr=(), print_as=None, cc=None):
             + appel à MessageLog
             + puis exception ou abort en fonction du niveau d'erreur.
     """
-    MessageLog(code, idmess, valk, vali, valr, exception=True,
-               print_as=print_as, cc=cc)
+    MessageLog(code, idmess, valk, vali, valr, exc_num=exc_num,
+               exception=True, print_as=print_as, cc=cc)
 
 
 def ASSERT(condition, message=""):

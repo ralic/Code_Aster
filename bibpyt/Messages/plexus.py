@@ -1,4 +1,4 @@
-#@ MODIF plexus Messages  DATE 30/04/2012   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF plexus Messages  DATE 07/05/2012   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

@@ -6,7 +6,7 @@ C
       CHARACTER*(*)       MOZ,  MAZ, CHVOIZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/04/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 07/05/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,11 +39,11 @@ C
 C DECLARATION VARIABLES LOCALES
 C
       CHARACTER*32     NOE1,NOE2,NOE3,NOE4
-      CHARACTER*24     TYPMAI, CONNEX, CONINV
+      CHARACTER*24     TYPMAI, CONNEX, CONINV, VALK(1),NOMMA
       CHARACTER*8      MA, KBID, TYPEMA, MO
       CHARACTER*19     LIGRMO, CHVOIS
-      INTEGER          IBID
-      INTEGER IBIDT(1)
+      INTEGER          IBID,NBVOIS
+      INTEGER          IBIDT(1),VALI(2)
       INTEGER          NBNO, NBMA, NBS,NBF,TYMVOL
       INTEGER          IMA, INO, INO1,INO2,INO3,INO4, KMA, JMA
       INTEGER          IAMAV1,IAMAV2,IAMAV3,IAMAV4,IAREPE,IAVALE
@@ -52,6 +52,9 @@ C
       INTEGER          IAVAL1, IAVAL2, JAD, IAD, IADV
       INTEGER          JCELD,NBMAV1,NBMAV2,NBMAV3,NBMAV4
       INTEGER          NUMAV1,NUMAV2,NUMAV3,NUMAV4,TYP,SOM(4,6,4),IATYMA
+      
+      REAL*8           R8BIDT(1)
+      
       LOGICAL          TROISD
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
@@ -234,6 +237,7 @@ C REPERAGE ET STOCKAGE DES VOISINS
 C  BOUCLE 803 : ON REGARDE TOUTES LES MAILLES POSSEDANT LE 1ER SOMMET
 C               DE LA MAILLE COURANTE, IMA, ET QUI NE SONT PAS IMA
 C
+          NBVOIS = 0
           DO 803 , IMA1 = 1,NBMAV1
             NUMAV1 = ZI(IAMAV1-1+IMA1)
             IF ( NUMAV1.NE.IMA ) THEN
@@ -265,30 +269,45 @@ C
                         DO 806 IMA4 = 1,NBMAV4
                           NUMAV4 = ZI(IAMAV4-1+IMA4)
                          IF (NUMAV4 .EQ. NUMAV1) THEN
+C
 C- ------STOCKAGE DU NUMERO DU VOISIN ET DE SON TYPE ----------------
+C
+C                         SI LA MAILLE N'EST PAS DANS LE MODELE, ON SORT
                             IGRELV = ZI(IAREPE-1+2*(NUMAV1-1)+1)
                             IELV   = ZI(IAREPE-1+2*(NUMAV1-1)+2)
-                            IF ((IGRELV.EQ.0).AND.(IELV.EQ.0)) GOTO 802
+                            IF ((IGRELV.EQ.0).AND.(IELV.EQ.0)) GOTO 803
+C
+                            NBVOIS = NBVOIS + 1
+C
+                            IF (NBVOIS.GT.1) GOTO 803
+C                        
                             ZI(IAVAL2+IFA) = NUMAV1
                             IADV=IATYMA-1+NUMAV1
                             TYP = ZI(IADV)
                             ZI(IAVAL2+IFA+7) = TYP
-                            GOTO 802
+                            GOTO 803
                           ENDIF
   806                   CONTINUE
 C
                       ELSE
 C
 C       CAS DES FACES TRIANGULAIRES
+C
 C-------STOCKAGE DU NUMERO DU VOISIN ET DE SON TYPE ----------------
+C                       SI LA MAILLE N'EST PAS DANS LE MODELE, ON SORT
                         IGRELV = ZI(IAREPE-1+2*(NUMAV1-1)+1)
                         IELV   = ZI(IAREPE-1+2*(NUMAV1-1)+2)
-                        IF ((IGRELV.EQ.0).AND.(IELV.EQ.0)) GOTO 802
+                        IF ((IGRELV.EQ.0).AND.(IELV.EQ.0)) GOTO 803
+C
+                        NBVOIS = NBVOIS + 1
+C
+                        IF (NBVOIS.GT.1) GOTO 803
+C                        
                         ZI(IAVAL2+IFA) = NUMAV1
                         IADV=IATYMA-1+NUMAV1
                         TYP = ZI(IADV)
                         ZI(IAVAL2+IFA+7) = TYP
-                        GOTO 802
+                        GOTO 803
 C
                       ENDIF
                     ENDIF
@@ -301,6 +320,14 @@ C
             ENDIF
 C
   803     CONTINUE
+          IF (NBVOIS.GT.1) THEN
+            CALL JENUNO(JEXNUM(MA//'.NOMMAI',IMA),NOMMA)
+            VALK(1)=NOMMA
+            VALI(1)=IFA
+            VALI(2)=NBVOIS
+            CALL U2MESG('F','INDICATEUR_12',1,VALK,2,VALI,0,R8BIDT(1))
+            CALL ASSERT(.FALSE.)
+          ENDIF
   802   CONTINUE
 C
 C --------- STOCKAGE DU NUMERO DE L'ELEMENT ET DE SON TYPE -------------
@@ -320,11 +347,13 @@ C ----------- BOUCLE SUR LES MAILLES -------------------------------
 C
       DO 601 IMA = 1,NBMA
 C
+C       SI LA MAILLE N'EST PAS DANS LE MODELE, ON SORT
         IGREL = ZI(IAREPE-1+2*(IMA-1)+1)
         IEL   = ZI(IAREPE-1+2*(IMA-1)+2)
         IF ((IGREL.EQ.0).AND.(IEL.EQ.0)) GOTO 601
 C
         CALL JEVEUO (JEXNUM(CONNEX,IMA),'L',JAD)
+C
         IAD=IATYMA-1+IMA
         CALL JENUNO (JEXNUM('&CATA.TM.NOMTM',ZI(IAD)),TYPEMA)
          IF (TYPEMA(1:4) .EQ. 'QUAD')THEN
@@ -348,6 +377,7 @@ C
      +                NBMAV1,K1BID)
           CALL JEVEUO (JEXNUM(CONINV,ZI(JAD-1+INO)),'L',IAMAV1)
 C
+          NBVOIS = 0
           DO 603 KMA = 1,NBMAV1
             NUMAV1 = ZI(IAMAV1-1+KMA)
             IF (NUMAV1 .NE. IMA) THEN
@@ -368,19 +398,33 @@ C
 C
 C --------- STOCKAGE DU NUMERO DU VOISIN ET DE SON TYPE ----------------
 C
+C                 SI LA MAILLE N'EST PAS DANS LE MODELE, ON SORT
                   IGRELV = ZI(IAREPE-1+2*(NUMAV1-1)+1)
                   IELV   = ZI(IAREPE-1+2*(NUMAV1-1)+2)
-                  IF ((IGRELV.EQ.0).AND.(IELV.EQ.0)) GOTO 602
+                  IF ((IGRELV.EQ.0).AND.(IELV.EQ.0)) GOTO 603
+C
+                  NBVOIS = NBVOIS + 1
+C
+                  IF (NBVOIS.GT.1) GOTO 603
+C                      
                   ZI(IAVAL1+14*(IEL-1)+INO) = NUMAV1
                   IADV=IATYMA-1+NUMAV1
                   TYP = ZI(IADV)
                   ZI(IAVAL1+14*(IEL-1)+INO+7) = TYP
 C
-                  GOTO 602
+                  GOTO 603
                 ENDIF
   604         CONTINUE
             ENDIF
   603     CONTINUE
+          IF (NBVOIS.GT.1) THEN
+            CALL JENUNO(JEXNUM(MA//'.NOMMAI',IMA),NOMMA)
+            VALK(1)=NOMMA
+            VALI(1)=INO
+            VALI(2)=NBVOIS
+            CALL U2MESG('F','INDICATEUR_12',1,VALK,2,VALI,0,R8BIDT(1))
+            CALL ASSERT(.FALSE.)
+          ENDIF
   602   CONTINUE
 C
 C --------- STOCKAGE DU NUMERO DE L'ELEMENT ET DE SON TYPE -------------

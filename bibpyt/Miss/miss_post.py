@@ -1,4 +1,4 @@
-#@ MODIF miss_post Miss  DATE 17/04/2012   AUTEUR GREFFET N.GREFFET 
+#@ MODIF miss_post Miss  DATE 07/05/2012   AUTEUR GREFFET N.GREFFET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -47,7 +47,7 @@ from Cata.cata import (
     LIRE_IMPE_MISS, LIRE_FORC_MISS,
     DYNA_LINE_HARM, REST_SPEC_TEMP,
     DEFI_LIST_REEL, CALC_FONCTION, RECU_FONCTION, DEFI_FONCTION,
-    FORMULE, CALC_FONC_INTERP, CREA_TABLE,
+    FORMULE, CALC_FONC_INTERP, CREA_TABLE, LIRE_FONCTION,
 )
 
 from Utilitai.Table import Table
@@ -314,7 +314,6 @@ class POST_MISS_TRAN(POST_MISS):
                                    AMOR_REDUIT=self.param['AMOR_REDUIT'],),
                                    EXCIT=excit,
                                    **opts)
-        #DETRUIRE(CONCEPT=_F(NOM=(__fosx, __fosy, __fosz),),)
         return dyge
 
 
@@ -621,8 +620,12 @@ class POST_MISS_FICHIER_TEMPS(POST_MISS_FICHIER):
         self.Fs_temps = NP.zeros((self.ncols, self.L_points), float)
 
         # Noms des fichiers à utiliser
-        self._fich_impe = osp.join(self.param['_WRKDIR'], 'impe_Laplace')
-        self._fich_forc = osp.join(self.param['_WRKDIR'], 'forc_Laplace')
+        lfich = ( "impe_Laplace", "forc_Laplace")
+        lfich = map(self._fichier_tmp, lfich)
+        # chemins relatifs au _WRKDIR sinon trop longs pour Miss
+        lfich = map(osp.basename, lfich)        
+        self._fich_impe =  lfich[0]
+        self._fich_forc =  lfich[1]     
 
 
     def execute(self):
@@ -657,7 +660,6 @@ class POST_MISS_FICHIER_TEMPS(POST_MISS_FICHIER):
 
         Z_Laplace = NP.zeros((self.nrows, self.ncols, self.L_points), complex) 
         Z_Laplace[:,:,0:self.nbr_freq] = NP.conj(impe_Laplace[:,:,0:self.nbr_freq]) 
-        # Z_Laplace[:,:,self.nbr_freq:] = impe_Laplace[:,:,self.nbr_freq-1:1:-1] 
         Z_Laplace[:,:,self.nbr_freq:] = impe_Laplace[:,:,self.nbr_freq-2:0:-1] 
 
         MATR_GENE = self.param['MATR_GENE']
@@ -701,144 +703,95 @@ class POST_MISS_FICHIER_TEMPS(POST_MISS_FICHIER):
                 for k in range(0,len(x_t)):
                     x_t[k] = fact * x_t[k]  # x_t[k] = rho**(-k) * x_t[k]
                     fact = fact*rhoinv 
-                self.Z_temps[r,l,:] = x_t 
+                self.Z_temps[r,l,:] = x_t
  
+        termes_diag = NP.diag(self.Z_temps[:,:,0])
+        liste_ddl_pb = ''
+        for k in range(0,len(termes_diag)):
+            if termes_diag[k] <= 0:
+                liste_ddl_pb = liste_ddl_pb + str(k)+ ', '
+        if ( len(liste_ddl_pb) > 0 ):
+            UTMESS('A','MISS0_20', valk = liste_ddl_pb )
+
 
     def calc_forc_temps(self):
         """Calcul de l'effort sismique dans le domaine temporel"""
-        fid = open(self._fich_forc, 'r') 
-
-        effort_sismique = NP.zeros((3, self.ncols, self.nbr_freq), complex)  # 3 chargements : X, Y, Z
-        title = fid.readline() 
-        for k in range(0,self.nbr_freq):
-            for n in range(0,3):
-                for m in range(0,self.ncols):
-                    txt = fid.readline() 
-                    data = fid.readline().split()  # Output matrix: 1 ligne, 3 colonnes
-                    effort_sismique[n,m,k] = float(data[1]) + 1j*float(data[2]) 
-                    #effort_sismique[n,m,k] = (float(data[1]) + 1j*float(data[2]))/(-2.*1j*(pi)**0.5) 
-            title = fid.readline() 
-    
-        fid.close() 
-    
-        fsism1 = NP.zeros((self.nrows, self.L_points), complex)   # Chargement 1
-        effort1 = NP.squeeze(effort_sismique[0,:,0:self.nbr_freq]) 
-        fsism1[:,0:self.nbr_freq] = NP.conj(effort1[:,0:self.nbr_freq]) 
-        fsism1[:,self.nbr_freq:] = effort1[:,self.nbr_freq-1:1:-1] 
-    
-        fsism2 = NP.zeros((self.nrows, self.L_points), complex)   # Chargement 2
-        effort2 = NP.squeeze(effort_sismique[1,:,0:self.nbr_freq]) 
-        fsism2[:,0:self.nbr_freq] = NP.conj(effort2[:,0:self.nbr_freq]) 
-        fsism2[:,self.nbr_freq:] = effort2[:,self.nbr_freq-1:1:-1] 
-    
-        fsism3 = NP.zeros((self.nrows, self.L_points), complex)   # Chargement 3
-        effort3 = NP.squeeze(effort_sismique[2,:,0:self.nbr_freq]) 
-        fsism3[:,0:self.nbr_freq] = NP.conj(effort3[:,0:self.nbr_freq]) 
-        fsism3[:,self.nbr_freq:] = effort3[:,self.nbr_freq-1:1:-1] 
-    
         F_sism_temps1 = NP.zeros((self.nrows, self.L_points), float) 
         F_sism_temps2 = NP.zeros((self.nrows, self.L_points), float) 
-        F_sism_temps3 = NP.zeros((self.nrows, self.L_points), float)  
-    
-        rhoinv = 1./self.rho 
-        for r in range(0,self.nrows):
-           fact = 1 
-           x_lapl1 = fsism1[r,:] 
-           x_t1 = NP.real(ifft(x_lapl1)) 
-           x_lapl2 = fsism2[r,:] 
-           x_t2 = NP.real(ifft(x_lapl2)) 
-           x_lapl3 = fsism3[r,:] 
-           x_t3 = NP.real(ifft(x_lapl3)) 
-           for k in range(0,len(x_t1)): 
-              x_t1[k] = fact * x_t1[k]  # x_t1[k] = rho**(-k) * x_t1[k] 
-              x_t2[k] = fact * x_t2[k]  # x_t2[k] = rho**(-k) * x_t2[k] 
-              x_t3[k] = fact * x_t3[k]  # x_t3[k] = rho**(-k) * x_t3[k] 
-              fact = fact * rhoinv 
-           F_sism_temps1[r,:] = x_t1 
-           F_sism_temps2[r,:] = x_t2 
-           F_sism_temps3[r,:] = x_t3 
+        F_sism_temps3 = NP.zeros((self.nrows, self.L_points), float) 
 
-            
-        # Convolution avec le chargement impose
-        deplx = NP.zeros(self.L_points, float) 
-        deply = NP.zeros(self.L_points, float) 
-        deplz = NP.zeros(self.L_points, float) 
-    
+        __linst = DEFI_LIST_REEL(DEBUT=0.,INTERVALLE=_F(JUSQU_A= self.param['INST_FIN'] - self.dt,PAS=self.dt),)    
+        unit = self.param['EXCIT_SOL']['UNITE_RESU_FORC']  # Rq. Même UL que le fichier effort sismique de MISS
+        nbmod = self.param['NB_MODE']
+
         if self.param['EXCIT_SOL']['CHAM_X']:
-              deplx = self.calc_depl('CHAM_X') 
+              deplx_aster = self.calc_depl('CHAM_X', __linst)
+              fdeplx=CALC_FONCTION( FFT=_F(FONCTION= deplx_aster,METHODE='COMPLET'));
+              for mode in range(0, nbmod):
+                  F_sism_temps1[mode,:] = self.calc_forc_comp_temps(unit, __linst, 'fdeplx', mode + 1)
              
         if self.param['EXCIT_SOL']['CHAM_Y']:
-              deply = self.calc_depl('CHAM_Y') 
-    
+              deply_aster = self.calc_depl('CHAM_Y', __linst) 
+              fdeply=CALC_FONCTION( FFT=_F(FONCTION= deply_aster,METHODE='COMPLET'));
+              for mode in range(0, nbmod):
+                  F_sism_temps2[mode,:] = self.calc_forc_comp_temps(unit, __linst, 'fdeply', nbmod + mode + 1)
+
         if self.param['EXCIT_SOL']['CHAM_Z']:
-              deplz = self.calc_depl('CHAM_Z') 
-              
-        ext = ['1x','1y','1z','2x','2y','2z','3x','3y','3z']
-        file = osp.join(self.param['_WRKDIR'], 'filtre_inverse_')
-        fname = file + ext[0]
+              deplz_aster = self.calc_depl('CHAM_Z', __linst) 
+              fdeplz=CALC_FONCTION( FFT=_F(FONCTION= deplz_aster,METHODE='COMPLET'));
+              for mode in range(0, nbmod):
+                  F_sism_temps3[mode,:] = self.calc_forc_comp_temps(unit, __linst, 'fdeplz', 2*nbmod + mode + 1)
+        
+        self.Fs_temps = F_sism_temps1 + F_sism_temps2 + F_sism_temps3
 
-        ## Calcul du nombre de frequences
-        fid = open(fname, 'r')
-        tmp = fid.readline()
-        data = fid.readline().split()
-        freq = []
-        while data[0] != 'FIN':
-            freq.append(data[0])
-            data = fid.readline().split()
-        fid.close()
-        
-        ## Lecture filtre inverse
-        filler = NP.frompyfunc(lambda x: list(), 1, 1)
-        filtre_inverse = filler(NP.empty((len(freq),len(ext)), dtype=NP.object))
-        for file_nbr in range(0,len(ext)):
-            fname = file + ext[file_nbr]
-            fid = open(fname, 'r')
-            tmp = fid.readline()
-            data = fid.readline().split()
-            for k in range(0,len(freq)):
-                filtre_inverse[k][file_nbr].append(data[1] + '+' + data[2] + 'j')
-                data = fid.readline().split()
-            fid.close()
-        
-        ## FFT des chargements imposes
-        #freq = [float(x) for x in freq_txt]
-        deplx_freq = fft(deplx,len(freq))
-        deply_freq = fft(deply,len(freq))
-        deplz_freq = fft(deplz,len(freq))
-        depl = NP.array([deplx_freq, deply_freq, deplz_freq])       
-        
-        ## Calcul des chargements SV, SH, P en frequence
-        filtre = NP.zeros((3,3,len(freq)),complex)
-        char_SV_SH_P = NP.zeros((3,len(freq)))
-        to_stringv = NP.vectorize(lambda st : eval(str(st)[2:len(str(st))-2]))
-        for k in range(0,len(freq)):
-            filtre[0,:,k] = to_stringv(filtre_inverse[k][0:3])  # Onde SV
-            filtre[1,:,k] = to_stringv(filtre_inverse[k][3:6])  # Onde SH
-            filtre[2,:,k] = to_stringv(filtre_inverse[k][6:9])  # Onde P
-            char_SV_SH_P[:,k] = NP.dot(filtre[:,:,k],depl[:,k])
-        
-        ## Calcul des evolutions SV, SH, P en temps
-        onde_SV = NP.real(ifft(char_SV_SH_P[0,:]))
-        onde_SH = NP.real(ifft(char_SV_SH_P[1,:]))
-        onde_P = NP.real(ifft(char_SV_SH_P[2,:]))
-        
-        tmp_SV = list(onde_SV)
-        tmp_SH = list(onde_SH)
-        tmp_P = list(onde_P)
-        tmp_SV.insert(0,0.0)
-        tmp_SH.insert(0,0.0)
-        tmp_P.insert(0,0.0)
-        onde_SV = NP.array(tmp_SV)
-        onde_SH = NP.array(tmp_SH)
-        onde_P = NP.array(tmp_P)
 
-        ## Calcul de l'effort sismique equivalent en temps                
-        for n in range(0,self.L_points):
-          for k in range(0,n):
-            self.Fs_temps[:,n]=self.Fs_temps[:,n]+onde_SV[n-k]*F_sism_temps1[:,k]
-            self.Fs_temps[:,n]=self.Fs_temps[:,n]+onde_SH[n-k]*F_sism_temps2[:,k]+onde_P[n-k]*F_sism_temps3[:,k]
-   
+    def calc_forc_comp_temps(self, unit, linst, fdepl, indice): 
     
+        __lfreq = DEFI_LIST_REEL(DEBUT=0.0,
+                       INTERVALLE=_F(JUSQU_A=1./self.param['PAS_INST']/2.0, 
+                       PAS=1./self.param['PAS_INST']/self.L_points,),);
+
+        __fHr = LIRE_FONCTION(UNITE=unit,NOM_PARA='FREQ',
+                       INDIC_PARA=[1,1],INDIC_RESU=[indice,2],
+                         );
+        
+        __fHi = LIRE_FONCTION(UNITE=unit,NOM_PARA='FREQ',
+                       INDIC_PARA=[1,1],INDIC_RESU=[indice,3],
+                         );  
+
+        __fH = CALC_FONCTION(COMB_C=(
+                       _F(FONCTION=__fHr,COEF_C=1+0j),
+                       _F(FONCTION=__fHi,COEF_C=0-1j),
+                             ),
+                        PROL_DROITE='CONSTANT',
+                        PROL_GAUCHE='CONSTANT',
+                         );     
+             
+        self.parent.update_const_context({'__fH' : __fH})        
+        __fF = FORMULE(NOM_PARA='FREQ',VALE_C=fdepl+'(FREQ)*__fH(FREQ)')              
+                         
+        __fT0 = CALC_FONC_INTERP(FONCTION=__fF, NOM_PARA = 'FREQ',
+                        PROL_DROITE='CONSTANT',
+                        PROL_GAUCHE='CONSTANT',
+                        LIST_PARA=__lfreq);
+                                            
+              
+        __fTT = CALC_FONCTION( FFT=_F(FONCTION=__fT0,METHODE='COMPLET',
+                            SYME='NON'));
+                            
+        self.parent.update_const_context({'__fTT' : __fTT})        
+        __fTTF = FORMULE(NOM_PARA='INST',VALE='__fTT(INST)-__fTT(0)')
+            
+        __fT1 = CALC_FONC_INTERP(FONCTION=__fTTF, NOM_PARA = 'INST',
+                        PROL_DROITE='CONSTANT',
+                        PROL_GAUCHE='CONSTANT',
+                        LIST_PARA=linst);
+
+        force = __fT1.Valeurs()[1]
+        DETRUIRE(CONCEPT=_F(NOM=(__fHr,__fHi,__fH,__fF,__fT0,__fTT,__fTTF,__fT1,__lfreq)));
+        return force
+
+
     def ecri_impe(self, Z_temps):
         """Ecriture des 3 types d'impédance dans les 3 fichiers de sortie"""
         for n in range(0,self.L_points):
@@ -928,28 +881,37 @@ class POST_MISS_FICHIER_TEMPS(POST_MISS_FICHIER):
         return c 
         
         
-    def calc_depl(self, champ_dir):
+    def calc_depl(self, champ_dir, __linst):
         """Lecture du fichier déplacement/vitesse/accélération pour le calcul de l'effort sismique"""
-        __linst = DEFI_LIST_REEL(DEBUT=0.,INTERVALLE=_F(JUSQU_A= self.param['INST_FIN'] - self.dt,PAS=self.dt),)
-        _champ = CALC_FONCTION(COMB=_F(FONCTION=self.param['EXCIT_SOL'][champ_dir], COEF=1.0,),LIST_PARA=__linst)
-        
-        linst = __linst.Valeurs()
-        char_impo = _champ.Valeurs()[1]
-        
+        __champ = CALC_FONCTION(COMB=_F(FONCTION=self.param['EXCIT_SOL'][champ_dir], COEF=1.0,),LIST_PARA=__linst)
         if (self.param['EXCIT_SOL']['NOM_CHAM'] == 'ACCE'):
                   #if (EXCIT_SOL['CORRECTION'] == 1): # Baseline correction
                   #      t = NP.arange(0,N_inst*dt,dt) 
-                  #      BL_coeff = NP.polyfit(t,char_impo,2)  # Baseline Estimation coefficients
-                  #      Accez_BL = BL_coeff[0]*t**2 + BL_coeff[1]*t + BL_coeff[2] 
-                  #      char_impo = char_impo - Accez_BL  # Baseline correction
-              velo = self.dt*self.cumtrapz(char_impo) 
-              depl = self.dt*self.cumtrapz(velo) 
+#               temps = NP.array(linst)
+#               BL_coeff = NP.polyfit(temps,char_impo,2)  # Baseline Estimation coefficients
+#               Accez_BL = BL_coeff[0]*temps**2 + BL_coeff[1]*temps + BL_coeff[2] 
+#               char_impo = char_impo - Accez_BL  # Baseline correction
+#               velo = self.dt*self.cumtrapz(char_impo) 
+#               depl = self.dt*self.cumtrapz(velo) 
+              __vite = CALC_FONCTION( INTEGRE=_F(  FONCTION = __champ) )
+              __vite_der = CALC_FONCTION( DERIVE=_F(  FONCTION = __vite) )
+              __depl = CALC_FONCTION( INTEGRE=_F(  FONCTION = __vite_der) )
+              __depl_der = CALC_FONCTION( DERIVE=_F(  FONCTION = __depl) )
+              __depl_champ =  __depl_der
         if (self.param['EXCIT_SOL']['NOM_CHAM'] == 'VITE'):
-              depl = self.dt*self.cumtrapz(char_impo) 
+              __depl = CALC_FONCTION( INTEGRE=_F(  FONCTION = __champ) )
+              __depl_der = CALC_FONCTION( DERIVE=_F(  FONCTION = __depl) )
+              __depl_champ =  __depl_der
         if (self.param['EXCIT_SOL']['NOM_CHAM'] == 'DEPL'):
-              depl = char_impo 
-           
-        return depl 
+              __depl_champ =  __champ        
+        return __depl_champ
+
+    # --- utilitaires internes
+    def _fichier_tmp(self, ext):
+        """Retourne le nom d'un fichier MISS dans WRKDIR.
+        """
+        fich = '%s.%s' % (self.param['PROJET'], ext)
+        return osp.join(self.param['_WRKDIR'], fich)
          
 
 def PostMissFactory(type_post, *args, **kwargs):

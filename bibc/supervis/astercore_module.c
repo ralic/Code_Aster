@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astercore_module supervis  DATE 30/04/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astercore_module supervis  DATE 07/05/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -311,11 +311,12 @@ void DEFSSP(GTOPTK,gtoptk, _IN char *option, STRING_SIZE lopt,
 /*
  * Functions based on MessageLog object.
  */
-void DEFSSPSPPPP(UTPRIN,utprin, _IN char *typmess, _IN STRING_SIZE ltype,
-                                _IN char *idmess, _IN STRING_SIZE lidmess,
-                                _IN INTEGER *nbk, _IN char *valk, _IN STRING_SIZE lvk,
-                                _IN INTEGER *nbi, _IN INTEGER *vali,
-                                _IN INTEGER *nbr, _IN DOUBLE *valr)
+void DEFSPSPSPPPP(UTPRIN,utprin, _IN char *typmess, _IN STRING_SIZE ltype,
+                                 _IN INTEGER *exc_typ,
+                                 _IN char *idmess, _IN STRING_SIZE lidmess,
+                                 _IN INTEGER *nbk, _IN char *valk, _IN STRING_SIZE lvk,
+                                 _IN INTEGER *nbi, _IN INTEGER *vali,
+                                 _IN INTEGER *nbr, _IN DOUBLE *valr)
 {
    /*
       Interface Fortran/Python pour l'affichage des messages
@@ -341,8 +342,9 @@ void DEFSSPSPPPP(UTPRIN,utprin, _IN char *typmess, _IN STRING_SIZE ltype,
     }
 
 
-    res = PyObject_CallMethod(gMsgLog, "print_message", "s#s#OOO",
-                              typmess, ltype, idmess, lidmess, tup_valk, tup_vali, tup_valr);
+    res = PyObject_CallMethod(gMsgLog, "print_message", "s#s#OOOi",
+                              typmess, ltype, idmess, lidmess, tup_valk, tup_vali, tup_valr,
+                              (int)*exc_typ);
     if (!res) {
        MYABORT("erreur lors de l'appel a MessageLog");
     }

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/04/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 07/05/2012   AUTEUR SELLENET N.SELLENET 
 # TITRE NON-REGRESSION THERMO-ELASTICITE POUR TOUTES COQUES SURFACIQUES
 # RESPONSABLE PELLET J.PELLET
 # ssls200a.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test R
@@ -213,7 +213,7 @@ TEST_RESU(RESU=(
               TYPE_TEST= 'SOMM_ABS', VALE=  2.4435240515360E+04 ),
           _F( RESULTAT= MESTAT  , NOM_CHAM= 'DEGE_ELGA', NUME_ORDRE=      1,
               REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-              TYPE_TEST= 'SOMM_ABS', VALE=  2.4188288151455E+04 ),
+              TYPE_TEST= 'SOMM_ABS', VALE=  2.1089830569202E+04 ),
           ),)
 
 # ----------------------------------------------------------------------

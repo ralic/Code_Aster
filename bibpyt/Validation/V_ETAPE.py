@@ -1,4 +1,4 @@
-#@ MODIF V_ETAPE Validation  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF V_ETAPE Validation  DATE 07/05/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -34,6 +34,7 @@
 import types
 import sys
 import traceback
+import re
 
 # Modules EFICAS
 import V_MCCOMPO
@@ -76,10 +77,10 @@ class ETAPE(V_MCCOMPO.MCCOMPO):
              if cr == 'oui' :
                 self.cr.fatal(_(u"Pas de nom pour le concept retourné"))
              valid = 0
-          elif self.sd.nom.find('SD_') != -1 :
+          elif re.search('^SD_[0-9]*$', self.sd.nom):
              # la SD est 'SD_' cad son nom = son id donc pas de nom donné par utilisateur : --> erreur
              if cr == 'oui' :
-                self.cr.fatal(_(u"Pas de nom pour le concept retourné"))
+                self.cr.fatal(_(u"Nom de concept invalide ('SD_' est réservé)"))
              valid = 0
        return valid
 

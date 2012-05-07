@@ -1,4 +1,4 @@
-#@ MODIF algorith9 Messages  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
+#@ MODIF algorith9 Messages  DATE 07/05/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -253,6 +253,11 @@ cata_msg = {
 
 99 : _(u"""
  la variable  %(k1)s  n'existe pas dans la loi CJS en 2D
+"""),
+
+100 : _(u"""
+ Vous ne pouvez pas mélanger deux modélisations avec et sans dépendance
+des paramètres matériau à la température (mots-clés ELAS, ELAS_FO).
 """),
 
 }

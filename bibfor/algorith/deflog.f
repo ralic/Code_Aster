@@ -1,8 +1,8 @@
-      SUBROUTINE DEFLOG(NDIM,F,EPSL,GN,LAMB,LOGL)
+      SUBROUTINE DEFLOG(NDIM,F,EPSL,GN,LAMB,LOGL,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/11/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 07/05/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -31,12 +31,12 @@ C     OUT   LAMB  valeurs propres du tenseur F
 C     OUT   LOGL  log des valeurs propres du tenseur F
 C ----------------------------------------------------------------------
       REAL*8  TR(6),GN(3,3),EPSL33(3,3),TR2(3),FT(3,3),GN2(2,2)
-      REAL*8  F(3,3),EPSL(6),LAMB(3),LOGL(3),F33(3,3)
-      INTEGER NBVEC,I,J,K,NDIM
+      REAL*8  F(3,3),EPSL(6),LAMB(3),LOGL(3),F33(3,3),DETF,R8MIEM
+      INTEGER NBVEC,I,J,K,NDIM,IRET
 C ----------------------------------------------------------------------
 
       NBVEC = 3
-
+      
 C     LE CALCUL DES VALEURS PROPRES N'A PAS ENCORE ETE FAIT  
       CALL LCTR2M(3,F,FT)
       CALL PMAT(3,FT,F,F33)
@@ -74,13 +74,16 @@ C --- MATRICE TR = (XX XY XZ YY YZ ZZ) (POUR DIAGP3)
          GN(3,3)=1.D0
          
       ENDIF
-
      
       DO 10 I=1,NBVEC
+         IF (LAMB(I).LE.R8MIEM()) THEN
+            IRET=1
+            GOTO 9999
+         ENDIF
          LOGL(I)=LOG(LAMB(I))*0.5D0
  10   CONTINUE
       
-C   EPSL = DEFORMATION LOGARITHMIQUE
+C     EPSL = DEFORMATION LOGARITHMIQUE
       CALL R8INIR(9,0.D0,EPSL33,1)
       CALL R8INIR(6,0.D0,EPSL,1)
       DO 11 I=1,3
@@ -93,5 +96,5 @@ C              Calcul de EPSL dans le repere general
  11   CONTINUE
       CALL TNSVEC(3,3,EPSL33,EPSL,SQRT(2.D0))
       
-
+ 9999 CONTINUE
       END

@@ -1,4 +1,4 @@
-#@ MODIF proj_base_ops Macro  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
+#@ MODIF proj_base_ops Macro  DATE 07/05/2012   AUTEUR BODEL C.BODEL 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -75,8 +75,8 @@ def proj_base_ops(self, BASE, NB_VECT,
             motscles = {}
             if v['RESU']:
                 motscles['RESU'] = v['RESU']
-            elif v['RESU_GENE']:
-                motscles['RESU_GENE'] = v['RESU_GENE']
+##            elif v['RESU_GENE']:
+##                motscles['RESU_GENE'] = v['RESU_GENE']
             else:
                 UTMESS('F','MODAL0_1')
             motscles['TYPE_VECT'] = v['TYPE_VECT']

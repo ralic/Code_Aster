@@ -1,4 +1,4 @@
-#@ MODIF miss_fichier_interf Miss  DATE 17/04/2012   AUTEUR GREFFET N.GREFFET 
+#@ MODIF miss_fichier_interf Miss  DATE 07/05/2012   AUTEUR GREFFET N.GREFFET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -77,7 +77,6 @@ def fichier_cmde(param, struct, *nom_fichier):
         "fich_mvol" : nom_fichier[0],
         "fich_chp" : nom_fichier[1],
         "fich_sol" : nom_fichier[2],
-      "fich_sol_ini" : param["FICHIER_SOL_INCI"],
         "fich_impe" : nom_fichier[3],
         "fich_forc" : nom_fichier[4],
         "freq_min" : param["FREQ_MIN"],
@@ -110,17 +109,20 @@ def fichier_cmde(param, struct, *nom_fichier):
                 (dict_format['sR'] * dict_info['freq_nb']) % dict_info['freq_list']
         dict_info['_lfreq'] = itmpl % dict_info
     if param['FREQ_IMAG']:
-        #dict_info['fich_sol_ini'] = param["FICHIER_SOL_INCI"]
         itmpl = "IMGO %%(freq_imag)%(R)s" % dict_format
         dict_info['_fimg'] = itmpl % dict_info
-        itmpl = template_miss_imag_in % dict_format
-        #itmpl = template_miss_non_imag_in % dict_format
+        #itmpl = template_ondes_inclinees_in % dict_format #Ne pas oublier : changer fichier_sol aussi
+        itmpl = template_ondes_non_inclinees_in % dict_format
         dict_info['_fimg2'] = itmpl % dict_info
+        itmpl = template_impe_seule_in % dict_format
+        dict_info['_fimg3'] = itmpl % dict_info
     else:
         itmpl = "*" % dict_format
         dict_info['_fimg'] = itmpl % dict_info
-        itmpl = template_miss_non_imag_in % dict_format
+        itmpl = template_ondes_non_inclinees_in % dict_format
         dict_info['_fimg2'] = itmpl % dict_info
+        itmpl = template_impe_forc_in % dict_format
+        dict_info['_fimg3'] = itmpl % dict_info
     content = template_miss_in % dict_info
     return content
                 
@@ -135,12 +137,16 @@ def fichier_cmde_inci(param, struct, *nom_fichier):
         "fich_mvol" : nom_fichier[0],
         "fich_chp" : nom_fichier[1],
         "fich_sol" : nom_fichier[2],
+        "fich_impe" : nom_fichier[3],
+        "fich_forc" : nom_fichier[4],
         "freq_min" : param["FREQ_MIN"],
         "freq_max" : param["FREQ_MAX"],
         "freq_pas" : param["FREQ_PAS"],
         "freq_nb" : "",
         "z0" : param["Z0"],
         "surf"  : "",
+        "rfic1"  : "",
+        "rfic2"  : "",
     }
     if param["SURF"] == "OUI":
         dict_info["surf"] = "SURF"
@@ -157,12 +163,14 @@ def fichier_cmde_inci(param, struct, *nom_fichier):
                 "PAS %%(freq_pas)%(R)s" % dict_format
     dict_info['_lfreq'] = itmpl % dict_info
     dict_info['freq_nb'] = dict_info['freq_max']/dict_info['freq_pas']
+    #itmpl= template_ondes_inclinees_in % dict_format  #Ne pas oublier : changer fichier_sol aussi
+    itmpl = template_ondes_non_inclinees_in % dict_format
+    dict_info['_fimg2'] = itmpl % dict_info
     content = template_miss_in2 % dict_info
     return content
 
 
-template_miss_non_imag_in = """LIRE %%(fich_sol)s
-*
+template_ondes_non_inclinees_in = """*
 *
 * Definition des champs incidents 
 * -------------------------------- 
@@ -179,8 +187,7 @@ DPLANE P 1. Z0 %%(z0)%(R)s
 EXEC INCI
 *"""
 
-template_miss_imag_in = """LIRE %%(fich_sol_ini)s
-*
+template_ondes_inclinees_in = """*
 *
 * Definition des champs incidents 
 * -------------------------------- 
@@ -198,6 +205,37 @@ EXEC SPEC
 *
 EXEC INCI
 *"""
+
+template_impe_forc_in = """EXEC UGTG IMPEDANCE FORCE %%(rfic1)s %%(rfic2)s %%(rfic2)s
+*
+*
+* Post-traitement
+* ----------------
+POST
+FICH %%(fich_impe)s  %%(binaire)s
+IMPDC
+FREQ TOUTES
+CHPU TOUS
+CHPT TOUS
+FICH %%(fich_forc)s
+FORCE
+FREQ TOUTES
+DDL TOUS
+UI TOUS
+FINP"""
+
+template_impe_seule_in = """EXEC UGTG IMPEDANCE %%(rfic1)s %%(rfic2)s %%(rfic2)s
+*
+*
+* Post-traitement
+* ----------------
+POST
+FICH %%(fich_impe)s  %%(binaire)s
+IMPDC
+FREQ TOUTES
+CHPU TOUS
+CHPT TOUS
+FINP"""
 
 template_miss_in = """*
 * Nom generique des fichiers MISS
@@ -271,6 +309,7 @@ DOMAINE    2
 * Chargement des fonctions de Green
 * ----------------------------------
 DOS2M Z0 %%(z0)%(R)s  %%(surf)s
+LIRE %%(fich_sol)s
 %%(_fimg2)s
 *
 * Chargement du domaine    2
@@ -290,23 +329,7 @@ EXEC SPFR
 *
 * Calcul des impedances
 *
-EXEC UGTG IMPEDANCE FORCE %%(rfic1)s %%(rfic2)s %%(rfic2)s
-*
-*
-* Post-traitement
-* ----------------
-POST
-FICH %%(fich_impe)s  %%(binaire)s
-IMPDC
-FREQ TOUTES
-CHPU TOUS
-CHPT TOUS
-FICH %%(fich_forc)s
-FORCE
-FREQ TOUTES
-DDL TOUS
-UI TOUS
-FINP
+%%(_fimg3)s
 *
 * Fin de l execution
 * -------------------
@@ -342,11 +365,6 @@ FING
 *---------------------
 CHAMP
 LIRE %%(fich_chp)s
-*
-* Definition des points de controle
-* ---------------------------------
-CONTrole 1
-0.0 0.0 %%(z0)%(R)s
 *
 * Parametres d integration
 *-------------------------
@@ -388,40 +406,38 @@ DOMAINE    2
 *
 * Chargement des fonctions de Green
 * ----------------------------------
-DOS2M Z0 %%(z0)%(R)s 
+DOS2M Z0 %%(z0)%(R)s  %%(surf)s
+LIRE %%(fich_sol)s
+%%(_fimg2)s
+*
+* Chargement du domaine    2
+* ---------------------------
+DOMAINE    2
+*
+* Chargement des fonctions de Green
+* ----------------------------------
+DOS2M Z0 %%(z0)%(R)s  %%(surf)s
 LIRE %%(fich_sol)s
 *
-* Definition des champs incidents 
-* --------------------------------
-INCI 3 
-PLANE SV 1. 
-     0.00000     0.00000     1.00000
-PLANE SH 1. 
-     0.00000     0.00000     1.00000
-PLANE P 1.  
-     0.00000     0.00000     1.00000
+* Calcul dans le sol
+* -------------------
+* Calcul des fonctions de Green
 *
-* Calcul des champs incidents 
-* --------------------------------
-EXEC SPEC
+EXEC SPFR
 *
-EXEC INCI
+* Calcul des impedances
 *
-EXEC CONTROLE UI
+EXEC UGTG FORCE %%(rfic1)s %%(rfic2)s %%(rfic2)s
 *
 *
-SIGNAL DIRAC DEPL
-DOMAINE 2
+* Post-traitement
+* ----------------
 POST
-SPEC NF=    %%(freq_nb)%(I)s FMAX=     %%(freq_max)%(F)s
-FICH filtre_inverse
-CUI FLTI
+FICH %%(fich_forc)s
+FORCE
 FREQ TOUTES
-CHAMP DE 1 A 3 PAS 1
-POINTS DE 1 A 1 PAS 1
 DDL TOUS
-*
-FINT
+UI TOUS
 FINP
 *
 * Fin de l execution

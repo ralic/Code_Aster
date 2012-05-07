@@ -1,4 +1,4 @@
-#@ MODIF indicateur Messages  DATE 21/02/2012   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF indicateur Messages  DATE 07/05/2012   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -75,6 +75,18 @@ Problème sur les charges. Consulter la documentation
 
 11 : _(u"""
 Impossible de récupérer les paramètres temporels.
+"""),
+
+12 : _(u"""
+ La face numéro %(i1)d de la maille %(k1)s possède %(i2)d voisins.
+ Or, ceci n'est pas prévu : un seul voisin par face est autorisé.
+ Cela signifie que la maillage comporte des mailles doubles ou qu'une maille
+ de bord est intercalée entre deux mailles volumiques.
+ 
+ Conseils :
+   Vérifiez votre maillage.
+   Ces mailles doubles ou intercalées ne sont peut-être pas nécessaire au calcul.
+   Dans ce cas ne les affectez pas avec le modèle !
 """),
 
 20 : _(u"""
