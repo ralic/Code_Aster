@@ -2387,6 +2387,7 @@ TEST_TABLE(      TABLE=M2_L,
                             VALE = 9.41509E-01,         ),
                 REFERENCE='AUTRE_ASTER',
                  NOM_PARA='SIXY',
+                PRECISION=1.E-2,
                      VALE=-1.41879E-09           )
 
 # ---------------------------------------------------------------------

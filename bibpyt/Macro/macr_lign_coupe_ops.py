@@ -1,8 +1,8 @@
-#@ MODIF macr_lign_coupe_ops Macro  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF macr_lign_coupe_ops Macro  DATE 09/05/2012   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -467,14 +467,14 @@ def crea_mail_lig_coup(dimension,lignes,groups,arcs):
 
 # construction du maillage au format Aster des segments de lignes de coupe
 
+  resu=[]
   nblig=len(lignes)
   nbngr=len(groups)
   nbarc=len(arcs)
 
-  resu='TITRE\n'
-  titre='Maillage ligne de coupe'+'\n'
-  resu=resu+'FINSF\n'
-  resu=resu+'COOR_'+str(dimension)+'D\n'
+  resu.append('TITRE')
+  resu.append('FINSF')
+  resu.append('COOR_%dD' %dimension)
   epsi=0.00000001
 
 # creation des noeuds
@@ -488,25 +488,25 @@ def crea_mail_lig_coup(dimension,lignes,groups,arcs):
         x=pt1[0]+j*(pt2[0]-pt1[0])/(nbp_lig_coupe-1)
         y=pt1[1]+j*(pt2[1]-pt1[1])/(nbp_lig_coupe-1)
         nbno=nbno+1
-        noeud='  N'+str(nbno)+'   '+str(x)+'    '+str(y)+'\n'
-        resu=resu+noeud
+        noeud='  N%d   %21.14E    %21.14E' %(nbno,x,y)
+        resu.append(noeud)
       elif dimension==3:
         x=pt1[0]+j*(pt2[0]-pt1[0])/(nbp_lig_coupe-1)
         y=pt1[1]+j*(pt2[1]-pt1[1])/(nbp_lig_coupe-1)
         z=pt1[2]+j*(pt2[2]-pt1[2])/(nbp_lig_coupe-1)
         nbno=nbno+1
-        noeud='  N'+str(nbno)+'   '+str(x)+'   '+str(y)+'   '+str(z)+'\n'
-        resu=resu+noeud
+        noeud='  N%d   %21.14E    %21.14E    %21.14E' %(nbno,x,y,z)
+        resu.append(noeud)
   for i in range(nbngr):
     for pt in groups[i][1:]:
       if dimension==2:
         nbno=nbno+1
-        noeud='  N'+str(nbno)+' '+str(pt[0])+'    '+str(pt[1])+'\n'
-        resu=resu+noeud
+        noeud='  N%d   %21.14E    %21.14E' %(nbno,pt[0],pt[1])
+        resu.append(noeud)
       elif dimension==3:
         nbno=nbno+1
-        noeud='  N'+str(nbno)+' '+str(pt[0])+'    '+str(pt[1])+'    '+str(pt[2])+'\n'
-        resu=resu+noeud
+        noeud='  N%d   %21.14E    %21.14E    %21.14E' %(nbno,pt[0],pt[1],pt[2])
+        resu.append(noeud)
   angles=[None]*nbarc
   for i in range(nbarc):
     pt1           = arcs[i][0]
@@ -523,86 +523,87 @@ def crea_mail_lig_coup(dimension,lignes,groups,arcs):
       if dimension==2:
         nbno=nbno+1
         x,y=crea_noeu_lig_coup(dimension,pt1,pt2,anglj,dnor=[])
-        noeud='  N'+str(nbno)+'   '+str(x)+'    '+str(y)+'\n'
-        resu=resu+noeud
+        noeud='  N%d   %21.14E    %21.14E' %(nbno,x,y)
+        resu.append(noeud)
       elif dimension==3:
         nbno=nbno+1
         x,y,z=crea_noeu_lig_coup(dimension,pt1,pt2,anglj,dnor)
-        noeud='  N'+str(nbno)+'   '+str(x)+'   '+str(y)+'   '+str(z)+'\n'
-        resu=resu+noeud
-  resu=resu+'FINSF\n'
+        noeud='  N%d   %21.14E    %21.14E    %21.14E' %(nbno,x,y,z)
+        resu.append(noeud)
+  resu.append('FINSF')
 
 # creation des mailles
   nbma=0
   for i in range(nblig):
     nbp_lig_coupe = lignes[i][2]
-    resu=resu+'SEG2\n'
+    resu.append('SEG2')
     for j in range(nbp_lig_coupe-1):
         nbma=nbma+1
-        maille='  M'+str(nbma)+' N'+str(nbma+i)+' N'+str(nbma+1+i)+'\n'
-        resu=resu+maille
-    resu=resu+'FINSF\n'
+        maille='  M%d N%d N%d' %(nbma,nbma+i,nbma+1+i)
+        resu.append(maille)
+    resu.append('FINSF')
   for i in range(nbngr):
-    resu=resu+'SEG2\n'
+    resu.append('SEG2')
     for pt in groups[i][1:-1]:
         nbma=nbma+1
-        maille='  M'+str(nbma)+' N'+str(nbma+nblig+i)+' N'+str(nbma+nblig+1+i)+'\n'
-        resu=resu+maille
-    resu=resu+'FINSF\n'
+        maille='  M%d N%d N%d' %(nbma,nbma+nblig+i,nbma+nblig+1+i)
+        resu.append(maille)
+    resu.append('FINSF')
   nprec=0
 
   for i in range(nbarc):
     nbp_lig_coupe = arcs[i][2]
     angle         = arcs[i][3]
-    resu=resu+'SEG2\n'
+    resu.append('SEG2')
     nbmai=nbma+nblig+nbngr+nprec+i+1
     for j in range(nbp_lig_coupe-1):
         nbma=nbma+1
-        maille='  M'+str(nbma)+' N'+str(nbma+nblig+nbngr+nprec+i)+' N'+str(nbma+nblig+nbngr+nprec+1+i)+'\n'
-        resu=resu+maille
+        maille='  M%d N%d N%d' %(nbma,nbma+nblig+nbngr+nprec+i,nbma+nblig+nbngr+nprec+1+i)
+        resu.append(maille)
     if abs(angle-360.)<epsi:
         nbma=nbma+1
-        maille='  M'+str(nbma)+' N'+str(nbma+nblig+nbngr+nprec+i)+' N'+str(nbmai)+'\n'
+        maille='  M%d N%d N%d' %(nbma,nbma+nblig+nbngr+nprec+i,nbmai)
         nprec=nprec-1
-        resu=resu+maille
-    resu=resu+'FINSF\n'
+        resu.append(maille)
+    resu.append('FINSF')
 
 # creation des groupes de mailles (1 par ligne de coupe)
   nbma=0
   for i in range(nblig):
-    resu=resu+'GROUP_MA\n'
-    resu=resu+'  LICOU'+str(i+1)
+    resu.append('GROUP_MA')
+    resu.append('  LICOU%d' %(i+1))
     nbp_lig_coupe = lignes[i][2]
     for j in range(nbp_lig_coupe-1):
         nbma=nbma+1
-        resu=resu+'  M'+str(nbma)+'\n'
-    resu=resu+'\n'
-    resu=resu+'FINSF\n'
+        resu.append('  M%d' %nbma)
+    resu.append('')
+    resu.append('FINSF')
   for i in range(nbngr):
-    resu=resu+'GROUP_MA\n'
-    resu=resu+groups[i][0]
+    resu.append('GROUP_MA')
+    resu.append(groups[i][0])
     nbp_lig_coupe = len(groups[i])-1
     for j in range(nbp_lig_coupe-1):
         nbma=nbma+1
-        resu=resu+'  M'+str(nbma)+'\n'
-    resu=resu+'\n'
-    resu=resu+'FINSF\n'
+        resu.append('  M%d' %nbma)
+    resu.append('')
+    resu.append('FINSF')
   arcgma=[]
   for i in range(nbarc):
-    resu=resu+'GROUP_MA\n'
+    resu.append('GROUP_MA')
     k=nblig+i
-    resu=resu+'  LICOU'+str(k+1)
-    arcgma.append('LICOU'+str(k+1))
+    resu.append('  LICOU%d' %(k+1) )
+    arcgma.append('LICOU%d' %(k+1) )
     nbp_lig_coupe = arcs[i][2]
     angle         = arcs[i][3]
     if abs(angle-360.)<epsi: nbpt=nbp_lig_coupe+1
     else                   : nbpt=nbp_lig_coupe
     for j in range(nbpt-1):
         nbma=nbma+1
-        resu=resu+'  M'+str(nbma)+'\n'
-    resu=resu+'\n'
-    resu=resu+'FINSF\n'
-  resu=resu+'FIN\n'
+        resu.append('  M%d' %nbma)
+    resu.append('')
+    resu.append('FINSF')
+  resu.append('FIN')
+  resu.append('')
 
   return resu,arcgma,angles,nbno
 
@@ -778,7 +779,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
   UL = UniteAster()
   nomFichierSortie = UL.Nom(UNITE_MAILLAGE)
   fproc=open(nomFichierSortie,'w')
-  fproc.write(resu_mail)
+  fproc.write(string.join(resu_mail,os.linesep))
   fproc.close()
   UL.EtatInit(UNITE_MAILLAGE)
 

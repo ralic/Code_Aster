@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 16/04/2012   AUTEUR ABBAS M.ABBAS 
+%& MODIF COMPELEM  DATE 10/05/2012   AUTEUR CHEIGNON E.CHEIGNON 
 % RESPONSABLE PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -719,10 +719,10 @@ GRANDEUR_SIMPLE__
        X13      : tenseur cinematique utilise pour IND_DCHA et VAL_DCHA, CMP 13
        X23      : tenseur cinematique utilise pour IND_DCHA et VAL_DCHA, CMP 23
        RADI_V   : indic. de perte de radialité sur le deviateur des contraintes
-       ERR_RADI : indicateur d'erreur d'integration due a la non radialité 
+       ERR_RADI : indicateur d'erreur d'integration due a la non radialité
 >>
-    DERA_R   = R    DCHA_V   DCHA_T   IND_DCHA   VAL_DCHA   X11     X22     X33 
-                    X12     X13       X23        RADI_V     ERR_RADI  
+    DERA_R   = R    DCHA_V   DCHA_T   IND_DCHA   VAL_DCHA   X11     X22     X33
+                    X12     X13       X23        RADI_V     ERR_RADI
 
 
 <<  DISS_R Type:R énergie dissipée
@@ -1264,14 +1264,14 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        PT_Z   : coordonnée suivant z du point de contact
        PROJ_X   : coordonnée suivant x du projete du point de contact
        PROJ_Y   : coordonnée suivant y du projete du point de contact
-       PROJ_Z   : coordonnée suivant z du projete du point de contact       
+       PROJ_Z   : coordonnée suivant z du projete du point de contact
 >>
     INFC_R   = R    CONT     JEU      RN       RNX      RNY      RNZ
                     GLIX     GLIY     GLI
                     RTAX     RTAY     RTAZ
                     RTGX     RTGY     RTGZ
                     RX       RY       RZ       R
-                    HN       I        IX       IY       IZ       
+                    HN       I        IX       IY       IZ
                     PT_X     PT_Y     PT_Z     PROJ_X   PROJ_Y   PROJ_Z
 
 <<  INST_R Type:R Instant de calcul pour une évolution temporelle
@@ -1954,7 +1954,7 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        SIGV_L : GRAD_VARI - COMPOSANTE ASSOCIEE AU LAGRANGE
        SIGV_GX: GRAD_VARI - COMPOSANTE ASSOCIEA AU GRADIENT SELON X
        SIGV_GY: GRAD_VARI - COMPOSANTE ASSOCIEA AU GRADIENT SELON Y
-       SIGV_GZ: GRAD_VARI - COMPOSANTE ASSOCIEA AU GRADIENT SELON Z       
+       SIGV_GZ: GRAD_VARI - COMPOSANTE ASSOCIEA AU GRADIENT SELON Z
 >>
     SIEF_R   = R    SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     N        VY
        VZ       MT       MFY      MFZ      BX       NXX      NYY      NXY
@@ -1979,7 +1979,7 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        DEPV22   DEPV23   DEPV31   DEPV32   DEPV33   TRSIG    CONT_X   CONT_Y
        CONT_Z   SIG_NX   SIG_NY   SIG_NZ   SIG_N    SIG_TX   SIG_TY   SIG_TZ
        SIG_T1X  SIG_T1Y  SIG_T1Z  SIG_T1   SIG_T2X  SIG_T2Y  SIG_T2Z  SIG_T2
-       LH1P     LH1M     DPRE1P   DPRE1M   TRIAX    FSTAB[72] 
+       LH1P     LH1M     DPRE1P   DPRE1M   TRIAX    FSTAB[72]
        SIGV_A   SIGV_L   SIGV_GX  SIGV_GY  SIGV_GZ
 
 <<  SING_R Type:R grandeurs liée au calcul de carte de taille
@@ -2027,18 +2027,23 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        MFY : moment de flexion suivant GY
        MFZ : moment de flexion suivant GZ
        BX : bi-moment (poutre avec gauchissement)
-       EPXX
-       GAXY
-       GAXZ
-       GAT
-       KY
-       KZ
-       GAX
-       DXINT
+       EPXX : incrément de déformation axiale cumulé
+       GAXY : incrément de déformation de cisaillement suivant Y cumulé
+       GAXZ : incrément de déformation de cisaillement suivant  Z cumulé
+       GAT : incrément de déformation de torsion cumulé
+       KY : incrément de courbure autour de Y cumulé
+       KZ : incrément de courbure autour de Z cumulé
+       GAX : incrément de déformation de gauchissement cumulé
+       DXINT : deplacement axial du noeud bulle interne
+       ALPHA : premier angle nautique réactualisé
+       BETA  : deuxième angle nautique réactualisé
+       GAMMA : troisième angle nautique réactualisé
+
 >>
     STRX_R = R     N        VY       VZ       MT       MFY      MFZ
              BX       EPXX     GAXY     GAXZ     GAT      KY
-             KZ        GAX     DXINT
+             KZ        GAX     DXINT    ALPHA    BETA     GAMMA
+
 
 
 <<  TEMP_C Type:C Température inconnue du phénomène thermique

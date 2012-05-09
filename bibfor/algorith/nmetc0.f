@@ -1,8 +1,8 @@
       SUBROUTINE NMETC0(MODELE,SDIETO,COMPOR,RESOCO,NBCHAM,
-     &                  ZIOCH )
+     &                  ZIOCH,CARELE )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/03/2012   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 10/05/2012   AUTEUR CHEIGNON E.CHEIGNON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,7 @@ C
       IMPLICIT     NONE
       INTEGER      NBCHAM,ZIOCH
       CHARACTER*24 SDIETO,COMPOR
-      CHARACTER*24 MODELE,RESOCO
+      CHARACTER*24 MODELE,RESOCO,CARELE
 C
 C ----------------------------------------------------------------------
 C
@@ -40,6 +40,7 @@ C IN  MODELE : NOM DU MODELE
 C IN  COMPOR : CARTE COMPORTEMENT
 C IN  RESOCO : SD DE RESOLUTION DU CONTACT
 C IN  SDIETO : SD GESTION IN ET OUT
+C IN  CARELE : SD CARA_ELEM
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ---------------------------
 C
@@ -67,8 +68,9 @@ C
       CHARACTER*24 EXTE0,AMOR0,LIAI0,NODA0
       CHARACTER*19 XINDC0,XSEUC0,XCOHE0
       INTEGER      ICHAM
-      CHARACTER*8  LPAIN(1),LPAOUT(3)
-      CHARACTER*24 LCHIN(1),LCHOUT(3)
+      CHARACTER*3  KSTR
+      CHARACTER*8  LPAIN(1),LPAOUT(2)
+      CHARACTER*24 LCHIN(1),LCHOUT(2)
       INTEGER      IBID,IRET
       CHARACTER*19 LIGRMO
       LOGICAL      LBID
@@ -105,12 +107,26 @@ C
       LCHOUT(1) = VARI0
       LPAOUT(2) = 'PSIEF_R'
       LCHOUT(2) = SIGM0
-      LPAOUT(3) = 'PSTRX_R'
-      LCHOUT(3) = STRX0
       CALL CALCUL('S'   ,'TOU_INI_ELGA',LIGRMO,
      &            1     ,LCHIN         ,LPAIN ,
-     &            3     ,LCHOUT        ,LPAOUT,
+     &            2     ,LCHOUT        ,LPAOUT,
      &            'V'   ,'OUI')
+
+C
+C --- CREATION DES CHAMPS INITIAUX NON VIDES
+C
+
+      CALL DISMOI('F','EXI_STRX',LIGRMO,'LIGREL',IBID,KSTR,IRET)
+      IF (KSTR.EQ.'OUI') THEN
+        LPAIN(1)  = 'PCAORIE'
+        LCHIN(1)  =  CARELE(1:8)//'.CARORIEN'
+        LPAOUT(1) = 'PSTRX_R'
+        LCHOUT(1) = STRX0
+        CALL CALCUL('S'   ,'INI_STRX',LIGRMO,
+     &            1     ,LCHIN         ,LPAIN ,
+     &            1     ,LCHOUT        ,LPAOUT,
+     &            'V'   ,'OUI')
+      ENDIF
 C
 C --- ACCES SD CHAMPS
 C

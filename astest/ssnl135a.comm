@@ -1,4 +1,4 @@
-# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 10/05/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE DETERMINATION DES CHARGES DE RUINE DE LA CONSOLE MEKELEC
 # ssnl135a.para = tps_job 600 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -587,12 +587,9 @@ ORIENTATION=(
 TEMPS=DEFI_LIST_REEL(DEBUT=0.000000e+00,
                      INTERVALLE=(_F(JUSQU_A=0.15,
                                     NOMBRE=15,),
-                                 _F(JUSQU_A=0.175,
-                                    PAS=0.001,),
-                                 _F(JUSQU_A=0.18,
-                                    NOMBRE=1,),
-                                 _F(JUSQU_A=2.0,
-                                    PAS=0.002,),),);
+                                 _F(JUSQU_A=0.20,
+                                    NOMBRE=100,),
+                                 ),);
 
 FORCT_F=DEFI_FONCTION(NOM_PARA='INST',
                       VALE=(0.,0.,1.0,49900.0,),
@@ -617,9 +614,9 @@ FORCT=AFFE_CHAR_MECA(MODELE=MO,
 # **********************************************************************
 #                  C A L C U L   N O N   L I N E A I R E
 # **********************************************************************
-NBGL = 50;
+NBGL = 15;
 
-RESGL = 1e-06;
+RESGL = 5e-05;
 
 # ----------------------------------------------------------------------
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS),
@@ -637,7 +634,6 @@ MEKEFOR=STAT_NON_LINE(MODELE=MO,
                              _F(CHARGE=FORCT,
                                 TYPE_CHARGE='FIXE_PILO',),),
                       COMP_INCR=(_F(RELATION='ELAS',
-                                    DEFORMATION='PETIT_REAC',
                                     MAILLE=
                                     ('D008022','D008032','D009022','D009032','D00A032',
                                              'D00A042','D00A041','D00A052','D00A062','D00A072','D00A082','D00B032','D00B042',

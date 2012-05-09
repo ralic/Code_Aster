@@ -1,0 +1,367 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR flejou       FLEJOU Jean Luc        DATE 10/05/2012 - 15:57:50
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017238 DU 2011-07-01 13:50:15
+TYPE anomalie concernant Code_Aster (VERSION 11.1)
+TMA : Necs
+TITRE
+    PETIT_REAC pour DIS_TR_L
+FONCTIONNALITE
+   Problème :
+   ==========
+   La fonctionnalité DEFORMATION = 'PETIT_REAC' pour les éléments discrets n'est pas pertinente.
+   
+   Solution :
+   ==========
+   On supprime cette fonctionnalité.
+   
+   Sources impactées :
+   ===================
+   te0047.f : suppression tout ce qui concerne la réactualisation de la géométrie et ajout
+   d'un message d'alarme pour avertir que seul DEFORMATION=PETIT est disponible pour les
+   discrets.
+   
+   discrets.py : ajout du message d'alarme discrets_18
+   
+   ssnl135b et ssnl135c : suppression de DEFORMATION =PETIT_REAC (ces deux tests sont
+   également modifiés par issue17380 restitué conjointement)
+   ssnl135a : suppression de DEFORMATION =PETIT_REAC + modification de la liste d'instant et
+   de RESI_GLOB_RELA pour faire converger le test (pas de modifs des TEST_RESU)
+   
+   Doc impactée :
+   ============== 
+   V6.02.135
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.02.135
+VALIDATION
+    passage cas test
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017380 DU 2011-08-08 09:38:05
+TYPE anomalie concernant Code_Aster (VERSION 11.1)
+TMA : Necs
+TITRE
+    Angle de vrille des poutres en géométrie réactualisée
+FONCTIONNALITE
+   Anomalie :
+   ==========
+   On s'est aperçu sur un test de poutre en flexion en grands déplacements que l'on ne
+   trouvait pas dans certains cas les mêmes résultats selon l'orientation de la poutre (quand
+   la section n'est pas un cercle).
+   
+   Le problème vient en fait de la réactualisation de l'angle de vrille GAMMA au cours du
+   temps qui n'est pas fait correctement.
+   
+   Cette fiche corrige ce problème.
+   
+   Les résultats sont faux depuis que PETIT_REAC est possible sur ces éléments de poutres.
+   Les cas d'études concernées sont la flexion de poutre en grands déplacements pour des
+   sections autres que cercles. Un message, qui existe depuis l'origine, déconseille
+   l'utilisation de PEIT_REAC pour ce type de poutre.
+   
+   
+   Développement :
+   ===============
+   On intègre la méthode qui est décrite dans le fichier doc.odt ci-joint pour les POU_D_TGM. 
+   Les POU_D_T_GD ne sont pas concernées par l'anomalie. 
+   Les POU_D_E, POU_D_T et POU_D_TG ont la possibilité d'utiliser PETIT_REAC et sont donc
+   concernées par cette correction. Cependant l'utilisation de PETIT_REAC pour cette type de
+   poutre est déconseillée par une alarme et donne des résultats faux dans le cas test de
+   flambement proposé. (La poutre flambe en Z alors qu'elle devrait flamber en Y sans aucune
+   surcharge).
+   
+   On a créé la routine gareac.f qui calcule DGAMMA la correction à apporter à GAMMA. Elle
+   est appelée par les options RIGI_MECA_TANG, FULL_MECA et RAPH_MECA.
+   L'option FORC_NODA se contente de relire GAMMA dans le champ STRX_ELGA.
+   
+   Comme on vient de le dire, on utilise le champ STRX_ELGA pour stocker les 3 angles
+   nautiques réactualisés (même si seul GAMMA est utile). On a créé pour ce champ une
+   nouvelle option d'initialisation, afin d'y écrire l'orientation initiale des poutres,
+   nommée INI_STRX qui appelle le te0023 (qui était libre jusqu'à présent). 
+   
+   On profite de cette fiche pour mettre à jour les intitulés des composantes manquantes
+   pour le champs STRX_ELGA dans grandeur_simple__.cata. 
+   
+   Sources impactées :
+   ===================
+   nminit.f : ajout de CARELE aux arguments de nmetcr.f
+   nmetcr.f : ajout de CARELE en argument ainsi qu'en argument de nmetc0.f
+   nmetc0.f : si PMF, appel à CALCUL pour l'option INI_STRX
+   te0023.f : nouvelle routine, initialisation du champ STRX_ELGA
+   gareac.f : nouvelle routine, calcul de la correction à apporter à GAMMA
+   te0516.f : appel à gareac.f, lecture de GAMMA (t-1) dans le champ STRX_ELGA et écriture de
+   GAMMA (t) dans STRX_ELGA
+   te0517.f : lecture de GAMMA(t-1) dans STRX_ELGA et non plus dans PCAORIE
+   te0143.f : comme dans les deux routines précédentes NCOMP le nombre de composantes du
+   champ STRX_ELGA passe à 18 pour les POU_D_TGM
+   
+   gener_mepmf1.cata      : ajout de l'option INI_STRX
+   gener_mepmf2.cata      : ajout de l'option INI_STRX et des angles nautiques dans le champ
+   STRX_ELGA
+   ini_strx.cata          : nouveau catalogue
+   grandeur_simple__.cata : ajout des angles nautiques dans STRX_R et ajout des descriptions
+   de composantes manquantes
+   
+   Validation :
+   ============
+   On crée un test de flambement (ssnl139a). La poutre a une section rectangulaire.
+   L'orientation colinéaire à X, pour laquelle GAMMA n'a pas besoin d'être corrigée sert de
+   référence. La poutre est dans le plan X0Z et fait un angle BETA 45° avec
+   l'horizontale. On fait flamber la poutre en appliquant une petite perturbation selon Y.
+   Les déplacements selon Y ne dépendent pas de BETA, on peut alors vérifier que les
+   déplacements correspondent à ceux obtenus pour l'orientation selon X.
+   Dans l'état actuel du code, on ne trouve pas les mêmes résultats.
+   
+   Tests impactés :
+   ================
+   Avec ces développements on a 3 cas tests de la base NOOK et 2 <S>ERROR.
+   
+   ssnl136a et ssnl135c : seules des tests de NON_REGRESSION sont NOOK -> on modifie les valeurs
+   
+   ssnl133b : plusieurs tests de non régression sont NOOK et un test AUTRE_ASTER (obtenu à
+   partir de la modélisation POU_D_T_GD).  Voici pour ce dernier ce que l'on obtient avant et
+   après modification du code :
+   
+   avant
+   ---- FONCTION         ETA_PILO
+        DX_ETA           1.2
+        REFERENCE        LEGENDE  VALE_REF  VALE_CAL  ERREUR  TOLE
+   OK   AUTRE_ASTER      XXXX     22.004    20.306    7.7%    8.0%
+   
+   après
+   ---- FONCTION         ETA_PILO
+        DX_ETA           1.2
+        REFERENCE        LEGENDE   VALE_REF  VALE_CAL   ERREUR  TOLE
+   NOOK AUTRE_ASTER      XXXX      22.004    24.008     9.1%    8.0%
+   
+   On s'aperçoit que l'écart à la solution de référence n'a pas vraiment augmenté, de plus
+   pour tous les autres tests AUTRE_ASTER les résultats sont bien meilleurs, ex :
+   
+   avant
+   ---- FONCTION         ETA_PILO
+         DX_ETA           4.0
+        REFERENCE        LEGENDE   VALE_REF  VALE_CAL  ERREUR  TOLE
+    OK  AUTRE_ASTER      XXXX      150.697   140.545   6.7%    7.0%
+   
+   après
+   ---- FONCTION         ETA_PILO
+        DX_ETA           4.0
+        REFERENCE        LEGENDE   VALE_REF  VALE_CAL  ERREUR  TOLE
+   OK   AUTRE_ASTER      XXXX      150.6973  150.85043 0.1%   7.0%
+   
+   On passe donc la tolérance à 10%. Dans une prochaine fiche visant à développer GROT_GDEP
+   pour les autres types de poutre, on pourra chercher les raisons de cet écart et aussi
+   resserrer les tolérances pour les autres tests (on ne le fait pas pour le moment).
+   
+   ssnl134a : ne converge plus -> on passe RESI_GLOB_RELA de 1E-6 à 2E-6 et ça converge sans
+   NOOK_TEST_RESU
+   
+   ssnl135b : ne converge plus -> on passe RESI_GLOB_RELA de 1E-6 à 5E-5 et convergence avec
+   NOOK sur test de non régression : on change la valeur (on remarque que pour le test
+   SOURCE_EXTERNE on se rapproche de la référence comme dans ssnl135c)
+   
+   Documentation :
+   ===============
+   - nouvelle doc V6.02.139
+   - doc [V6.02.133] ,[V6.02.135]
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 6.0.4
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.02.139,V6.02.133,V6.02.135,V6.02.136
+VALIDATION
+    ssnl139a
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desoza       DE SOZA Thomas         DATE 09/05/2012 - 11:36:22
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018546 DU 2012-03-14 14:45:38
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    X-FEM plantage en version optimisÃ©e sur Calibre 7 ivanoe
+FONCTIONNALITE
+   Anomalie
+   ========
+   
+   En version NEW11.1.13 les tests suivants continuent de sortir brutalement en erreur en
+   version optimisÃ©e sur IvanoÃ© : 
+   
+   ssnp110d, ssnp503m, ssnp503o, ssnv182a, ssnv182b, ssnv182c, ssnv182d, ssnv182e, ssnv182f,
+   ssnv182g, ssnv182h, ssnv182i, ssnv182j, ssnv182k, ssnv182l, ssnv185g, ssnv186a, ssnv186b,
+   ssnv186c, ssnv186d, ssnv186e, ssnv186f, ssnv186g, ssnv186h, ssnv186i, ssnv186j, ssnv186k,
+   ssnv186l, ssnv186m, ssnv195b, ssnv195c, ssnv201a, ssnv209b, ssnv209c, ssnv209d, ssnv209e,
+   ssnv209g, ssnv209h, ssnv209k, ssnv209l, ssnv209m, ssnv209n, ssnv509a, ssnv509b, ssnv510b,
+   ssnv510c, ssnv511e, ssnv511g, ssnv512g, ssnv512i, ssnv513g
+   
+   Analyse
+   =======
+   
+   Une analyse approfondie a rÃ©vÃ©lÃ© plusieurs problÃ¨mes sans toutefois rÃ©gler le plantage :
+   
+   - lecture du source (JPL) : adresses JEVEUX pas toujours initialisÃ©es mais non utilisÃ©es
+   - analyse croisÃ©e avec Ftnchek : appel de la routine dfdm1d par xjacf2 avec un scalaire
+   RBID alors que l'on Ã©crit dans un tableau de taille 3 (DFDX)
+   - valgrind : erreur dans Metis appelÃ© depuis MUMPS, sans doute un problÃ¨me d'installation
+   sans gravitÃ©
+   - dÃ©limitation du bug dans la routine te0532 par des WRITE (solution du dernier recours) :
+   le plantage mÃªme si c'est difficile de l'affirmer semble situÃ© autour de 3 tableaux
+   Fortran de taille 60 que l'on remplit avec des champs locaux aux TE
+   
+   Correction
+   ==========
+   
+   On corrige le bug dans l'appel Ã  dfdm1d par xjacf2, et l'on supprime les 3 tableaux
+   statiques de taille 60 qui ne servent pas.
+   
+   Les tests ne plantent plus mais il est difficile de croire que le problÃ¨me ne se
+   reproduira plus. Je propose de rÃ©-Ã©mettre une fiche Ã  cette occasion.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    tests incriminÃ©s
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018630 DU 2012-03-28 14:28:03
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    [FORUM] Erreur avec CONTACT+COQUE_3D+LISSAGE
+FONCTIONNALITE
+   Anomalie
+   ========
+   
+   RÃ©f : http://www.code-aster.org/forum2/viewtopic.php?id=16534
+   
+   Un utilisateur du forum a rencontrÃ© un ASSERT dans un calcul de contact avec COQUE_3D et
+   lissage des normales activÃ©.
+   
+   Correction
+   ==========
+   
+   Les Ã©lÃ©ments COQUE_3D Ã©tant particuliers (leurs degrÃ©s de libertÃ© ne partagent pas les
+   mÃªmes supports et fonctions de forme), une exception doit Ãªtre faite pour le contact afin
+   de ne considÃ©rer que le support des degrÃ©s de libertÃ© de dÃ©placement (concrÃ¨tement un
+   QUAD8 pour les QUAD9, un TRIA6 pour les TRIA7).
+   
+   Cette exception avait Ã©tÃ© partiellement programmÃ©e et on s'arrÃªtait dans un blindage.
+   
+   DÃ©sormais on tient bien compte de cette spÃ©cificitÃ© (que l'on rencontre aussi pour les
+   Ã©lÃ©ments QUAD8 en 3D qui sont dÃ©gÃ©nÃ©rÃ©s en QUAD4 pour Ã©viter des problÃ¨mes de pressions).
+   
+   Remarque : le lissage est donc fait sur la base d'une maille QUAD8 pour un QUAD9 et TRIA6
+   pour une maille TRIA7.
+   
+   Validation
+   ==========
+   
+   Sur le test fourni. On active de plus le lissage dans un test de la base utilisant des
+   COQUE_3D, les rÃ©sultats sont inchangÃ©s (ssnv129b).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    test joint
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR durand       DURAND Christophe      DATE 05/09/2012 - 02:12:09
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018375 DU 2012-02-09 18:10:29
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    ProblÃ¨me arrondi coordonnÃ©es segment MACR_LIGN_COUPE
+FONCTIONNALITE
+   ProblÃ¨me dans le formatage des nombres rÃ©els pour le maillage de ligne gÃ©nÃ©rÃ© par
+   MACR_LIGN_COUPE, dans le cas de trÃ¨s petits nombres.
+   
+   Je revois le mÃ©canisme de gÃ©nÃ©ration du maillage de ligne (mÃ©thode crea_mail_lig_coup dans
+   macr_lign_coupe_ops.py) et en particulier le formatage des rÃ©els.
+   
+   A faire en versions 11 et 10.
+   Je me charge de l'asrest v10.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    Ã©tude fournie  + tests de la base
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT ssnl139a                     cheignon E.CHEIGNON         138    138      0
+ CASTEST MODIF sdnl102a                     cheignon E.CHEIGNON         200      1      1
+ CASTEST MODIF ssnl118a                     cheignon E.CHEIGNON         191      1      1
+ CASTEST MODIF ssnl133b                     cheignon E.CHEIGNON         228     17     17
+ CASTEST MODIF ssnl134a                     cheignon E.CHEIGNON         430      4      3
+ CASTEST MODIF ssnl135a                     cheignon E.CHEIGNON         738      6     10
+ CASTEST MODIF ssnl135b                     cheignon E.CHEIGNON         741      5      5
+ CASTEST MODIF ssnl135c                     cheignon E.CHEIGNON         743      3      4
+ CASTEST MODIF ssnl136a                     cheignon E.CHEIGNON         240      9      9
+ CASTEST MODIF ssnv129b                       desoza T.DESOZA           221      2      1
+ CASTEST MODIF zzzz136b                       durand C.DURAND          1770      1      1
+CATALOGU AJOUT options/ini_strx             cheignon E.CHEIGNON          26     26      0
+CATALOGU MODIF compelem/grandeur_simple__   cheignon E.CHEIGNON        2194     15     10
+CATALOGU MODIF typelem/gener_mepmf1         cheignon E.CHEIGNON         283      4      2
+CATALOGU MODIF typelem/gener_mepmf2         cheignon E.CHEIGNON         281      5      3
+ FORTRAN AJOUT elements/gareac              cheignon E.CHEIGNON         167    167      0
+ FORTRAN AJOUT elements/te0023              cheignon E.CHEIGNON          72     72      0
+ FORTRAN MODIF algorith/apcoma                desoza T.DESOZA           116     13      9
+ FORTRAN MODIF algorith/approj                desoza T.DESOZA           190      3      3
+ FORTRAN MODIF algorith/aptgem                desoza T.DESOZA           209      7     10
+ FORTRAN MODIF algorith/copnor                desoza T.DESOZA           154      5     11
+ FORTRAN MODIF algorith/nmetc0              cheignon E.CHEIGNON         188     24      8
+ FORTRAN MODIF algorith/nmetcr              cheignon E.CHEIGNON         307      5      4
+ FORTRAN MODIF algorith/nminit              cheignon E.CHEIGNON         302      2      2
+ FORTRAN MODIF algorith/xjacf2                desoza T.DESOZA           232      3      3
+ FORTRAN MODIF algorith/xjacff                desoza T.DESOZA           212      2      2
+ FORTRAN MODIF algorith/xmoffc                desoza T.DESOZA            70      8      4
+ FORTRAN MODIF elements/te0047              cheignon E.CHEIGNON         915      5     46
+ FORTRAN MODIF elements/te0143              cheignon E.CHEIGNON         247      3      3
+ FORTRAN MODIF elements/te0516              cheignon E.CHEIGNON         641     29      6
+ FORTRAN MODIF elements/te0517              cheignon E.CHEIGNON         363      9      4
+ FORTRAN MODIF elements/te0532                desoza T.DESOZA           391     15     23
+  PYTHON MODIF Mac3coeur/calc_mac3coeur_ops   cheignon E.CHEIGNON         377     19      6
+  PYTHON MODIF Macro/macr_lign_coupe_ops      durand C.DURAND           998     52     51
+  PYTHON MODIF Messages/discrets            cheignon E.CHEIGNON         186      6      2
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    4         403       403              +403
+ MODIF :   31       14358       283     264       +19
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   35       14761       686     264      +422 

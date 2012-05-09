@@ -11,7 +11,7 @@
 
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2012   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 09/05/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,7 +78,7 @@ C
       REAL*8          FF(27),RBID1(3),RBID2(3)
       REAL*8          GRLT(3),NORM2,PS,ND1(3)
       INTEGER         IBID,NBNOMX,NNOC
-      INTEGER         I,J,K,NNOF,IPOIDF,IVFF,IDFDEF,NDIMF
+      INTEGER         J,K,NNOF,IPOIDF,IVFF,IDFDEF,NDIMF
       CHARACTER*8     K8BID
       INTEGER         DDLH,NFE,DDLS,DDLM
       REAL*8          HE,FE(4),DGDGL(4,3)

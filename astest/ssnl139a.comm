@@ -1,0 +1,138 @@
+# MODIF  DATE 10/05/2012   AUTEUR CHEIGNON E.CHEIGNON 
+# TITRE VALIDATION DE LA REACTUALISATION DE L'ANGLE DE VRILLE DES POUTRES
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# ssnl139a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
+
+DEBUT(CODE=_F(NOM='SSNL139A',NIV_PUB_WEB='INTERNET'))
+# lecture maillage lineique
+MAPOU=LIRE_MAILLAGE(UNITE=20,)
+
+# lecture maillage section grossiere
+MASEC=LIRE_MAILLAGE(UNITE=19,)
+
+MOPOU=AFFE_MODELE(MAILLAGE=MAPOU,
+                  AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='POU_D_TGM',),)
+
+GFF=DEFI_GEOM_FIBRE(INFO=1,
+                   SECTION=_F(MAILLAGE_SECT = MASEC , TOUT_SECT = 'OUI',
+                               GROUP_FIBRE = 'BETON',
+                               COOR_AXE_POUTRE = (0.05,0.1)),
+
+                 )
+
+POUCA=AFFE_CARA_ELEM(MODELE=MOPOU,    INFO=1,
+# caracteristiques des sections, orientations et rigidite de torsion
+           POUTRE=_F(GROUP_MA=('POUTRE'),
+                     SECTION='RECTANGLE',
+                     CARA = ('HY','HZ'),
+                     VALE = (0.1,0.2),
+                     PREC_INERTIE=0.3,
+                     PREC_AIRE=1.E-2),
+           ORIENTATION=_F(GROUP_MA=('POUTRE'),
+                          #CARA='ANGL_VRIL', VALE=0.0,),
+                          CARA='ANGL_VRIL', VALE=90.0,),
+           MULTIFIBRE = _F ( GROUP_MA = 'POUTRE',
+                              GROUP_FIBRE= ('BETON'),),
+
+           GEOM_FIBRE = GFF ,
+                  )
+
+RAC2SUR2=0.70710678118654757
+# LES MATERIAUX
+
+# DEFINIR ICI TOUTES LES VARIATIONS FONCTION DE LA TEMPERATURE SELON EUROCODE
+NUB=0.25
+RHOB=2400.
+EB=10.E9
+
+BETON=DEFI_MATERIAU(ELAS=_F(E=EB, NU=NUB, RHO=RHOB),
+                   )
+
+
+# MATERIAU POUR LES GROUPES DE FIBRES
+MATFF=DEFI_COMPOR(GEOM_FIBRE=GFF,MATER_SECT=BETON,
+                 MULTIFIBRE=(_F(GROUP_FIBRE='BETON',MATER=BETON,RELATION='ELAS',
+                                DEFORMATION='GROT_GDEP'),
+                                #),
+                             ))
+
+
+# LES CHAMPS DE MATERIAUX
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAPOU,
+                    AFFE=_F(GROUP_MA='POUTRE', MATER=(BETON)),
+                    AFFE_COMPOR=_F(GROUP_MA='POUTRE',COMPOR=MATFF),
+                         )
+
+BLOQUAGE=AFFE_CHAR_MECA(MODELE=MOPOU,
+                        DDL_IMPO=(_F(GROUP_NO='A',  DX=0.0, DY=0.0, DZ=0.0,
+                                                    DRY=0.,#DRX=0.
+                                     ),
+                                  _F(GROUP_NO='B',  DY=0.0, ),
+                                  ),
+                                  # blocage de la ratoation autour de l'axe de la poutre
+                                  LIAISON_DDL=_F(NOEUD=('N001','N001'),DDL=('DRX','DRZ'),COEF_MULT=(RAC2SUR2,RAC2SUR2),COEF_IMPO=0.0)
+                                  )
+CHARG=AFFE_CHAR_MECA(MODELE=MOPOU,
+                        DDL_IMPO=(
+                                  _F(GROUP_NO='B',  DX= -0.70710678118654757E-02, DZ=-0.70710678118654757E-02 ),
+                                  ),)
+PERTU=AFFE_CHAR_MECA(MODELE=MOPOU,
+                        FORCE_NODALE=(
+                                  _F(GROUP_NO='C',  FY=100.0 , ),
+                                  ),)
+FOFO=DEFI_FONCTION(NOM_PARA='INST',
+                   VALE=(0. , 0.,
+                         1. , 1.)
+                         )
+
+LINST=DEFI_LIST_REEL(DEBUT=0.0,
+INTERVALLE=(_F(JUSQU_A=1.,  NOMBRE=10,),
+           ),
+            );
+
+
+U1=STAT_NON_LINE(MODELE=MOPOU,
+                 CHAM_MATER=CHMAT,
+                 CARA_ELEM=POUCA,
+                 EXCIT=(_F(CHARGE=BLOQUAGE,),
+                        _F(CHARGE=CHARG,FONC_MULT=FOFO),
+                        _F(CHARGE=PERTU),
+                         ),
+                 COMP_INCR=(_F(RELATION='MULTIFIBRE'),
+                               ),
+                 INCREMENT=_F(LIST_INST=LINST,
+                              ),
+                 NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1),
+                 CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
+                                ITER_GLOB_MAXI=100,),
+                 );
+
+
+TEST_RESU(RESU=(_F(RESULTAT=U1,
+                   INST=1.0,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   NOEUD='N006',
+                   VALE=1.50847E-01,
+                   CRITERE='RELATIF',
+                   PRECISION=1.0E-5,
+                   REFERENCE='NON_REGRESSION',),
+                ),);
+
+FIN()

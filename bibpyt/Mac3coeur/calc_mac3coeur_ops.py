@@ -1,4 +1,4 @@
-#@ MODIF calc_mac3coeur_ops Mac3coeur  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calc_mac3coeur_ops Mac3coeur  DATE 10/05/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -52,6 +52,9 @@ def calc_mac3coeur_ops(self, **args):
 
     _TAB_N       = self['TABLE_N']
     _tabn1       = _TAB_N.EXTR_TABLE()
+
+    # ITER_GLOB_MAXI pour STAT_NON_LINE
+    NITER=20
 
     # on recupere le nom du coeur
     name = _tabn1.para[0]
@@ -145,7 +148,9 @@ def calc_mac3coeur_ops(self, **args):
                       SUIVI_DDL   = (_F(NOM_CHAM  = 'DEPL',
                                       EVAL_CHAM = 'MIN',
                                       NOM_CMP   = ('DX'),
-                                      GROUP_NO  = ('CRAYON'))));
+                                      GROUP_NO  = ('CRAYON'))),
+                      CONVERGENCE=_F(ITER_GLOB_MAXI=NITER),
+                                      );
 
        RESUC1 = STAT_NON_LINE( reuse = RESUC1,
                       MODELE      = _MO_N,
@@ -175,7 +180,9 @@ def calc_mac3coeur_ops(self, **args):
                                         EVAL_CHAM = 'MIN',
                                         NOM_CMP   = ('DX'),
                                         GROUP_NO  = ('CRAYON'),)
-                       ),);
+                       ),
+                       CONVERGENCE=_F(ITER_GLOB_MAXI=NITER),
+                       );
 
 
 
@@ -211,7 +218,9 @@ def calc_mac3coeur_ops(self, **args):
                                              _F(RELATION='ELAS',       GROUP_MA =('EBOINF','EBOSUP','RIG',),),),
                               INCREMENT   = _F(LIST_INST = _time, INST_FIN = _coeur.temps_simu['T1'],),
                               NEWTON      = _F(MATRICE='TANGENTE', REAC_ITER=1,),
-                              SOLVEUR     = _F(METHODE='MUMPS',RENUM='AMF',OUT_OF_CORE='OUI',ELIM_LAGR2='NON',PCENT_PIVOT=80,),)
+                              SOLVEUR     = _F(METHODE='MUMPS',RENUM='AMF',OUT_OF_CORE='OUI',ELIM_LAGR2='NON',PCENT_PIVOT=80,),
+                              CONVERGENCE=_F(ITER_GLOB_MAXI=NITER),
+                              )
 
        _TAB_NP1   = _LAME['TABLE_NP1']
        _tabp1     = _TAB_NP1.EXTR_TABLE()
@@ -260,7 +269,9 @@ def calc_mac3coeur_ops(self, **args):
                                              _F(RELATION='ELAS',       GROUP_MA =('EBOINF','EBOSUP','RIG',),),),
                               INCREMENT   = _F(LIST_INST = _timep1, NUME_INST_FIN = 1,),
                               NEWTON      = _F(MATRICE='TANGENTE', REAC_ITER=1,),
-                              SOLVEUR     = _F(METHODE='MUMPS',RENUM='AMF',OUT_OF_CORE='OUI',ELIM_LAGR2='NON',PCENT_PIVOT=80,),)
+                              SOLVEUR     = _F(METHODE='MUMPS',RENUM='AMF',OUT_OF_CORE='OUI',ELIM_LAGR2='NON',PCENT_PIVOT=80,),
+                              CONVERGENCE=_F(ITER_GLOB_MAXI=NITER),
+                              )
 
        for nom in _coeurp1.nameAC.keys() :
            if nom in _coeur.nameAC :
@@ -360,5 +371,7 @@ def calc_mac3coeur_ops(self, **args):
                                               _F(RELATION='ELAS',       GROUP_MA =('EBOINF','EBOSUP','RIG',),),),
                                 INCREMENT   = _F(LIST_INST = _timep1, INST_FIN = _coeurp1.temps_simu['T1'],),
                                 NEWTON      = _F(MATRICE='TANGENTE',REAC_ITER=1,),
-                                SOLVEUR     = _F(METHODE='MUMPS',RENUM='AMF',OUT_OF_CORE='OUI',ELIM_LAGR2='NON',PCENT_PIVOT=200,),);
+                                SOLVEUR     = _F(METHODE='MUMPS',RENUM='AMF',OUT_OF_CORE='OUI',ELIM_LAGR2='NON',PCENT_PIVOT=200,),
+                                CONVERGENCE=_F(ITER_GLOB_MAXI=NITER),
+                                );
 

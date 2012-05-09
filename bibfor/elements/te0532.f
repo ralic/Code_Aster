@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/03/2012   AUTEUR FERTE G.FERTE 
+C MODIF ELEMENTS  DATE 09/05/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,7 +57,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
       INTEGER      IPOIDF,IVFF,IDFDEF,IADZI,IAZK24,IBID,JOUT1,JOUT2
       INTEGER      JOUT3,JMEMCO,NDIM,NFH,DDLC,DDLS,DDLM
       INTEGER      NPG,NPGF,XOULA,INCOCA,INTEG,NFE,NINTER,NNOF
-      INTEGER      INDCO(60),GLISS(60),MEMCO(60),NFACE,CFACE(5,3)
+      INTEGER      NFACE,CFACE(5,3)
       INTEGER      NNO,NNOS,NNOM,NNOL,PLA(27),LACT(8),NLACT
       INTEGER      IER,CONTAC,JBASEC,NPTF,NDDL,NVEC,NFISS,JFISNO
       INTEGER      IMATE,SINGU,JCOHES,JCOHEO,JHEANO,IFISS,JHEAFA,NCOMPH
@@ -70,13 +70,12 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
       CHARACTER*16 ENR
       REAL*8       FFPC(27),DFBID(27,3),CZMFE
       REAL*8       FFI,REAC,FFP(27),FFC(8),LC
-      REAL*8       PREC,ND(3),DN,SAUT(3),LAMBDA,LST,R,RR,E,G(3),RBID
+      REAL*8       PREC,ND(3),DN,SAUT(3),LAMBDA,LST,R,RR,G(3),RBID
       REAL*8       ALPHA0,P(3,3),PP(3,3),DSIDEP(6,6),TAU1(3)
       REAL*8       TAU2(3),ALPHA,DNOR(3),DTANG(3),AM3(3),SIGMA(6)
-      REAL*8       VALRES(3),RELA,COHES(60)
-      REAL*8       CPENCO,CSTACO
+      REAL*8       VALRES(3),RELA
       PARAMETER    (PREC=1.D-16)
-      LOGICAL      IMPRIM,NOEUD,LPENAC
+      LOGICAL      IMPRIM,NOEUD
       DATA         NOMRES /'GC','SIGM_C','PENA_ADH'/
 C......................................................................
 
@@ -160,25 +159,16 @@ C
       ENDIF
       IF(RELA.EQ.1.D0.OR.RELA.EQ.2.D0) THEN
         CALL JEVECH('PMATERC','L',IMATE)
-          IMATE = IMATE + 60*(IFISS-1)
-          CALL JEVECH('PCOHES' ,'L',JCOHES)
-          CALL JEVECH('PCOHESO' ,'E',JCOHEO)
-        ENDIF
-C       RÉCUPÉRATIONS DES DONNÉES SUR LE CONTACT ET
-C       SUR LA TOPOLOGIE DES FACETTES
-        NINTER=ZI(JLONCH+3*(IFISS-1)-1+1)
-        IF (NINTER.EQ.0) GOTO 90
-        NFACE=ZI(JLONCH+3*(IFISS-1)-1+2)
-        NPTF=ZI(JLONCH+3*(IFISS-1)-1+3)
-
-        DO 10 I=1,60
-          INDCO(I) = ZI(JINDCO-1+60*(IFISS-1)+I)
-          GLISS(I) = ZI(JGLISS-1+60*(IFISS-1)+I)
-          MEMCO(I) = ZI(JMEMCO-1+60*(IFISS-1)+I)
-          IF(RELA.EQ.1.D0.OR.RELA.EQ.2.D0) THEN
-             COHES(I) = ZR(JCOHES-1+60*(IFISS-1)+I)
-          ENDIF
-10      CONTINUE
+        IMATE = IMATE + 60*(IFISS-1)
+        CALL JEVECH('PCOHES' ,'L',JCOHES)
+        CALL JEVECH('PCOHESO' ,'E',JCOHEO)
+      ENDIF
+C     RÉCUPÉRATIONS DES DONNÉES SUR LE CONTACT ET
+C     SUR LA TOPOLOGIE DES FACETTES
+      NINTER=ZI(JLONCH+3*(IFISS-1)-1+1)
+      IF (NINTER.EQ.0) GOTO 90
+      NFACE=ZI(JLONCH+3*(IFISS-1)-1+2)
+      NPTF=ZI(JLONCH+3*(IFISS-1)-1+3)
 
         DO 15 I=1,NFACE
           DO 16 J=1,NPTF
@@ -321,7 +311,7 @@ C              CALCUL DE LA REACTION A PARTIR DES LAMBDA DE DEPPLU
                  REAC = REAC + FFI * LAMBDA
  150           CONTINUE
 
-               IF (INDCO(ISSPG).EQ.0) THEN
+               IF (ZI(JINDCO-1+60*(IFISS-1)+ISSPG).EQ.0) THEN
 
 C              ON REGARDE LA DISTANCE DN DES POINTS SUPPOSÉS
 C              NON CONTACTANTS :
@@ -337,15 +327,15 @@ C              INTERPÉNÉPRATION EQUIVAUT À DN > 0 (ICI DN > 1E-16 )
 C
 C                ON REGARDE LA REACTION POUR LES POINTS 
 C                SUPPOSES CONTACTANT :
-               ELSE IF (INDCO(ISSPG).EQ.1) THEN
+               ELSE IF (ZI(JINDCO-1+60*(IFISS-1)+ISSPG).EQ.1) THEN
                  IF (REAC.GT.-1.D-3) THEN
 C                  SI GLISSIERE=OUI ET IL Y A EU DU CONTACT DEJA SUR CE
 C                  POINT (MEMCON=1), ALORS ON FORCE LE CONTACT
-                  IF ((GLISS(ISSPG).EQ.1).AND.
-     &            (MEMCO(ISSPG).EQ.1)) THEN
+                  IF ((ZI(JGLISS-1+60*(IFISS-1)+ISSPG).EQ.1).AND.
+     &            (ZI(JMEMCO-1+60*(IFISS-1)+ISSPG).EQ.1)) THEN
                     ZI(JOUT2-1+60*(IFISS-1)+ISSPG) = 1
                     ZI(JOUT3-1+60*(IFISS-1)+ISSPG) = 1
-                  ELSE IF (GLISS(ISSPG).EQ.0) THEN
+                  ELSE IF (ZI(JGLISS-1+60*(IFISS-1)+ISSPG).EQ.0) THEN
                     ZI(JOUT2-1+60*(IFISS-1)+ISSPG) = 0
                     INCOCA = 1
                   ENDIF
@@ -357,12 +347,13 @@ C
                ELSE
 C                SI INDCO N'EST NI ÉGAL À 0 NI ÉGAL À 1:
 C                PROBLEME DE STATUT DE CONTACT.
-                 CALL ASSERT(INDCO(ISSPG).EQ.0.OR.INDCO(ISSPG).EQ.1)
+                 CALL ASSERT(ZI(JINDCO-1+60*(IFISS-1)+ISSPG).EQ.0
+     &                   .OR.ZI(JINDCO-1+60*(IFISS-1)+ISSPG).EQ.1)
                END IF
 C
 C           IMPRESSION (2EME PARTIE)
                IF (IMPRIM) THEN
-                 WRITE(6,698)INDCO(ISSPG),DN,REAC,
+                 WRITE(6,698)ZI(JINDCO-1+60*(IFISS-1)+ISSPG),DN,REAC,
      &                        ZI(JOUT2-1+60*(IFISS-1)+ISSPG)
  698             FORMAT(5X,I1,4X,E11.5,4X,E11.5,4X,I1)
                ENDIF
@@ -374,7 +365,8 @@ C
 C              CALCUL SAUT DE DEPLACEMENT EQUIVALENT
                JOB='SAUT_EQ'
                CALL XMMSA2(NDIM  ,IPGF  ,ZI(IMATE),SAUT  ,ND   ,
-     &                    TAU1 ,TAU2  ,COHES(ISSPG),JOB  ,RELA,
+     &                    TAU1 ,TAU2  ,ZR(JCOHES-1+60*(IFISS-1)+ISSPG),
+     &                    JOB  ,RELA,
      &                    ALPHA,DSIDEP,SIGMA       ,PP   ,DNOR,
      &                    DTANG,P   ,AM3)
 C

@@ -1,8 +1,8 @@
       SUBROUTINE XMOFFC(LACT,NLACT,NNO,FFE,FFC)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 09/05/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,8 +19,8 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE PELLET J.PELLET
       IMPLICIT NONE
-      INTEGER      LACT(27),NLACT,NNO
-      REAL*8       FFE(27),FFC(27)
+      INTEGER      LACT(*),NLACT,NNO
+      REAL*8       FFE(*),FFC(*)
 C
 C ----------------------------------------------------------------------
 C
@@ -60,6 +60,10 @@ C
             FFC(I)= 0.D0
           ENDIF
  20     CONTINUE
+      ENDIF
+C
+      IF (NNO.GT.8) THEN
+        CALL ASSERT(.FALSE.)
       ENDIF
 C
       CALL JEDEMA()

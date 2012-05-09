@@ -4,7 +4,7 @@
       CHARACTER*(*) OPTIOZ,NOMTEZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 10/05/2012   AUTEUR CHEIGNON E.CHEIGNON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,7 +66,7 @@ C ----------------------------------------------------------------------
       REAL*8      ULM(12),ULP(12),DUL(12),DVL(12),DPE(12),DVE(12)
       REAL*8      VARMO(8),VARPL(8),VARIPC(7)
       REAL*8      DTEMPS,TEMPER,R8BID
-      REAL*8      DDOT,DULY,FORCE(3),PLOUF,TET1,TET2,VARIP,XL,XL0,XL2
+      REAL*8      DDOT,DULY,FORCE(3),PLOUF,VARIP
       REAL*8      ZERO,MOINS1
 
       INTEGER     NBT,NNO,NC,NEQ,IGEOM,ICONTM,IDEPLM,IDEPLP,ICOMPO
@@ -78,7 +78,6 @@ C ----------------------------------------------------------------------
       CHARACTER*4    FAMI
       CHARACTER*8    K8BID,FAMIL,POUM
       CHARACTER*24   MESSAK(5)
-      LOGICAL        PREAC
       PARAMETER     (ZERO = 0.0D0, MOINS1=-1.0D0)
 C ----------------------------------------------------------------------
 C
@@ -224,9 +223,9 @@ C                       DIS_BILI_ELAS    ASSE_CORN
 C                       ARME             DIS_CHOC
 C                       DIS_GOUJ2E
 C     ZK16(ICOMPO+1)    NBVAR = READ (ZK16(ICOMPO+1),'(I16)')
-C     ZK16(ICOMPO+2)    PETIT_REAC  GREEN
+C     ZK16(ICOMPO+2)    PETIT
 C     ZK16(ICOMPO+3)    COMP_ELAS   COMP_INCR
-      PREAC = ZK16(ICOMPO+2)(6:10).EQ.'_REAC'
+      IF (ZK16(ICOMPO+2).NE.'PETIT') CALL U2MESS('A','DISCRETS_18')
 
 C         OPTION           MATRICE     FORCES
 C      12345678901234      TANGENTE    NODALES
@@ -282,55 +281,15 @@ C --- DEPLACEMENTS DANS LE REPERE GLOBAL
 C        UGM = DEPLACEMENT PRECEDENT
 C        DUG = INCREMENT DE DEPLACEMENT
 C        UGP = DEPLACEMENT COURANT
-C        XD  = VECTEUR JOIGNANT LES DEUX NOEUDS AU REPOS (NORME XL0)
+C        XD  = VECTEUR JOIGNANT LES DEUX NOEUDS AU REPOS
       DO 10 I = 1,NEQ
          UGM(I) = ZR(IDEPLM+I-1)
          DUG(I) = ZR(IDEPLP+I-1)
          UGP(I) = UGM(I) + DUG(I)
    10 CONTINUE
 
-      XL0 = ZERO
-      XL  = ZERO
       IF (NNO.EQ.2)  THEN
          CALL VDIFF(NDIM,ZR(IGEOM+NDIM),ZR(IGEOM),XD)
-         XL2=DDOT(NDIM,XD,1,XD,1)
-         XL0 = SQRT(XL2)
-      END IF
-
-C --- CHANGEMENT DE REPERE POUR L'ELEMENT TRANSLATION/ROTATION LIAISON
-      IF ( PREAC ) THEN
-C        REACTUALISATION DES COORDONNEES
-C        DE 1 NOEUD
-         IF ( NNO .EQ. 1 ) THEN
-            DO 21 I = 1,NDIM
-               COORG(I)      = UGP(I)    + ZR(IGEOM+I-1)
-21          CONTINUE
-C
-C        DES 2 NOEUDS ET CALCUL DE LA DISTANCE
-         ELSE IF ( NNO .EQ. 2 ) THEN
-            DO 22 I = 1,NDIM
-               COORG(I)      = UGP(I)    + ZR(IGEOM+I-1)
-               COORG(I+NDIM) = UGP(I+NC) + ZR(IGEOM+I+NDIM-1)
-22          CONTINUE
-            CALL VDIFF(NDIM,COORG(NDIM+1),COORG(1),XD)
-            XL2=DDOT(NDIM,XD,1,XD,1)
-            XL = SQRT(XL2)
-         ENDIF
-      ENDIF
-
-C     ANGLE DE VRILLE MOYEN SI ELEMENT DE LONGUEUR NON NULLE
-      IF (NOMTE.EQ.'MECA_DIS_TR_L'.AND. PREAC ) THEN
-         TET1=DDOT(3,UGP(4),1,XD,1)
-         TET2=DDOT(3,UGP(10),1,XD,1)
-         IF (XL.NE.0.D0) THEN
-            TET1 = TET1/XL
-            TET2 = TET2/XL
-         ELSE
-            TET1 = 0.D0
-            TET2 = 0.D0
-         END IF
-         IF (XL0.NE.0.D0) CALL ANGVX(XD,ANG(1),ANG(2))
-         ANG(3) = ANG(3) + (TET1+TET2)/2.D0
       END IF
 
 C --- MATRICE MGL DE PASSAGE REPERE GLOBAL -> REPERE LOCAL

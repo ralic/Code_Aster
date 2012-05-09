@@ -1,4 +1,4 @@
-# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 10/05/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE DETERMINATION DES CHARGES DE RUINE DE LA CONSOLE MEKELEC
 # ssnl135b.para = tps_job 230 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -620,7 +620,7 @@ FORCT=AFFE_CHAR_MECA(MODELE=MO,
 # **********************************************************************
 NBGL = 50;
 
-RESGL = 1e-06;
+RESGL = 5e-05;
 
 # ----------------------------------------------------------------------
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS),
@@ -638,7 +638,7 @@ MEKEFOR=STAT_NON_LINE(MODELE=MO,
                              _F(CHARGE=FORCT,
                                 TYPE_CHARGE='FIXE_PILO',),),
                       COMP_INCR=(_F(RELATION='ELAS',
-                                    DEFORMATION='PETIT_REAC',
+                                    DEFORMATION='PETIT',
                                     MAILLE=
                                     ('D008022','D008032','D009022','D009032','D00A032',
                                              'D00A042','D00A041','D00A052','D00A062','D00A072','D00A082','D00B032','D00B042',
@@ -734,8 +734,8 @@ TEST_TABLE(TABLE=TAB_PILO,
 TEST_TABLE(TABLE=TAB_PILO,
            NOM_PARA='ETA_PILOTAGE',
            TYPE_TEST='MAX',
-           VALE=3.8595877419830E+04,
+           VALE=38551.658975792,
            CRITERE='RELATIF',
            REFERENCE='NON_REGRESSION',
-           VERSION='8.3.2',);
+           VERSION='11.1.20',);
 FIN();
