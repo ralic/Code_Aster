@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF aster_fort include  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF aster_fort include  DATE 21/05/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -29,14 +29,14 @@
  * *********************************************************************/
 
 /* routines UTILITAIRES */
-#define CALL_R8VIDE F_FUNC(R8VIDE,r8vide)
-extern DOUBLE CALL_R8VIDE();
+#define CALL_R8VIDE() CALL0(R8VIDE,r8vide)
+extern DOUBLE DEF0(R8VIDE,r8vide);
 
-#define CALL_R8PI() F_FUNC(R8PI,r8pi)()
-extern DOUBLE CALL_R8PI();
+#define CALL_R8PI() CALL0(R8PI,r8pi)
+extern DOUBLE DEF0(R8PI,r8pi);
 
-#define CALL_ISNNEM() F_FUNC(ISNNEM,isnnem)()
-extern INTEGER CALL_ISNNEM();
+#define CALL_ISNNEM() CALL0(ISNNEM,isnnem)
+extern INTEGER DEF0(ISNNEM,isnnem);
 
 #define CALL_ULOPEN(a,b,c,d,e) CALLPSSSS(ULOPEN,ulopen,a,b,c,d,e)
 extern void DEFPSSSS(ULOPEN,ulopen,INTEGER *,char *,STRING_SIZE,char *,STRING_SIZE, char *,STRING_SIZE,char *,STRING_SIZE);
@@ -61,8 +61,8 @@ extern void DEFP(EXPASS,expass, INTEGER*);
 #define CALL_OPSEXE(a)  CALLP(OPSEXE,opsexe,a)
 extern void DEFP(OPSEXE,opsexe, INTEGER*) ;
 
-#define CALL_IMPERS() F_FUNC(IMPERS,impers)()
-extern void STDCALL(IMPERS,impers)();
+#define CALL_IMPERS() CALL0(IMPERS,impers)
+extern void DEF0(IMPERS,impers);
 
 #define CALL_ONERRF(a,b,c) CALLSSP(ONERRF,onerrf,a,b,c)
 extern void DEFSSP(ONERRF,onerrf,char *,STRING_SIZE, _OUT char *,STRING_SIZE, _OUT INTEGER *);
@@ -70,8 +70,8 @@ extern void DEFSSP(ONERRF,onerrf,char *,STRING_SIZE, _OUT char *,STRING_SIZE, _O
 #define CALL_GCNCON(a,b) CALLSS(GCNCON,gcncon,a,b)
 extern void DEFSS(GCNCON,gcncon,char *,STRING_SIZE,char *,STRING_SIZE);
 
-#define CALL_DEBUT() F_FUNC(DEBUT,debut)()
-extern void STDCALL(DEBUT,debut)();
+#define CALL_DEBUT() CALL0(DEBUT,debut)
+extern void DEF0(DEBUT,debut);
 
 #define CALL_IBMAIN(a) CALLP(IBMAIN,ibmain,a)
 extern void DEFP(IBMAIN,ibmain, INTEGER*);
@@ -87,11 +87,11 @@ extern void DEFPSSSP(GCUGEN, gcugen, INTEGER*, char*, STRING_SIZE, char*, STRING
 
 
 /* routines JEVEUX */
-#define CALL_JEMARQ() STDCALL(JEMARQ, jemarq)()
-extern void CALL_JEMARQ();
+#define CALL_JEMARQ() CALL0(JEMARQ, jemarq)
+extern void DEF0(JEMARQ,jemarq);
 
-#define CALL_JEDEMA() STDCALL(JEDEMA, jedema)()
-extern void CALL_JEDEMA();
+#define CALL_JEDEMA() CALL0(JEDEMA, jedema)
+extern void DEF0(JEDEMA,jedema);
 
 #define CALL_JEDETR(a) CALLS(JEDETR, jedetr, a)
 extern void DEFS(JEDETR, jedetr, char *, STRING_SIZE);

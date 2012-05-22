@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 22/05/2012   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,17 +49,22 @@ C OUT IER : CODE RETOUR
 
       IF(DN .EQ. 0) THEN
         CALL RCVALB(FAMI,KPG,SPT,POUM,ZIMAT,' ',PHENOM,1,'X ',XX,1,
-     &              KFONC,FXX,CODRES,1)
+     &              KFONC,FXX,CODRES,0)
       ELSEIF(DN .EQ. 1) THEN
         WRITE (KAUX,'(A1,A7)') 'D',KFONC(1:7)
         CALL RCVALB(FAMI,KPG,SPT,POUM,ZIMAT,' ',PHENOM,1,'X ',XX,1,
-     &              KAUX,FXX,CODRES,1)
+     &              KAUX,FXX,CODRES,0)
       ELSEIF(DN .EQ. 2) THEN
         WRITE (KAUX,'(A2,A6)') 'DD',KFONC(1:6)
         CALL RCVALB(FAMI,KPG,SPT,POUM,ZIMAT,' ',PHENOM,1,'X ',XX,1,
-     &              KAUX,FXX,CODRES,1)
+     &              KAUX,FXX,CODRES,0)
       ELSE
         IER = 3
+      ENDIF
+
+      IF(CODRES.NE.0)THEN
+        FXX = 0.D0
+        IER = 2
       ENDIF
 
       END

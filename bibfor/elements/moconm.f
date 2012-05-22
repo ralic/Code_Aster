@@ -3,10 +3,10 @@
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 22/05/2012   AUTEUR SFAYOLLE S.FAYOLLE 
 C TOLE CRS_1404
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,6 +21,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE SFAYOLLE S.FAYOLLE
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
@@ -38,7 +39,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-      CHARACTER*19 NUFSUP,NUFINF,NUFSD1,NUFID1,NUFSD2,NUFID2
+      CHARACTER*8 NUFSUP,NUFINF,NUFSD1,NUFID1,NUFSD2,NUFID2
       INTEGER      NLIT
       REAL*8       SIGB,SIGA(NLIT),HH,OM(NLIT),RR(NLIT),PREC,E1,SIGMA
       INTEGER   PTMAX,ORDLU
@@ -116,15 +117,12 @@ C    (PAR EX LINER SI RR=-1)
  50   CONTINUE
 
 C --- AJOUT DE LA FONCTION
-C      CALL ADD_FONCTION(NUFSUP,FTYP,II,NN,MM,ORDLU)
-C      CALL ADFONC(NUFSUP,FTYP,II,NN,MM,ORDLU)
       E1=0.D0
-
       NPT = II
       CALL LSQPOL(ORDLU,E1,NPT,NN,MM,ORDOK,POLY,SIGMA)
 
 C     --- CREATION ET REMPLISSAGE DE L'OBJET NUFSUP.VALE ---
-      CALL WKVECT ( NUFSUP//'.VALE', 'G V R', 2*NPT, JVALE )
+      CALL WKVECT ( NUFSUP//'           .VALE', 'G V R', 2*NPT, JVALE )
       JFON = JVALE + NPT
       DO 72 I = 0, NPT-1
         XX = NN(1) + (NN(NPT)-NN(1))*I/(NPT-1)
@@ -135,7 +133,7 @@ C     --- CREATION ET REMPLISSAGE DE L'OBJET NUFSUP.VALE ---
  73     CONTINUE
  72   CONTINUE
 
-      CALL WKVECT ( NUFSD1//'.VALE', 'G V R', 2*NPT, JVALE )
+      CALL WKVECT ( NUFSD1//'           .VALE', 'G V R', 2*NPT, JVALE )
       JFON = JVALE + NPT
       DO 74 I = 0, NPT-1
         XX = NN(1) + (NN(NPT)-NN(1))*I/(NPT-1)
@@ -146,7 +144,7 @@ C     --- CREATION ET REMPLISSAGE DE L'OBJET NUFSUP.VALE ---
  75     CONTINUE
  74   CONTINUE
 
-      CALL WKVECT ( NUFSD2//'.VALE', 'G V R', 2*NPT, JVALE )
+      CALL WKVECT ( NUFSD2//'           .VALE', 'G V R', 2*NPT, JVALE )
       JFON = JVALE + NPT
       DO 76 I = 0, NPT-1
         XX = NN(1) + (NN(NPT)-NN(1))*I/(NPT-1)
@@ -158,21 +156,21 @@ C     --- CREATION ET REMPLISSAGE DE L'OBJET NUFSUP.VALE ---
  76   CONTINUE
 
 C     --- CREATION ET REMPLISSAGE DE L'OBJET NUFSUP.PROL ---
-      CALL WKVECT ( NUFSUP//'.PROL', 'G V K24', 6, JPROL )
+      CALL WKVECT ( NUFSUP//'           .PROL', 'G V K24', 6, JPROL )
       ZK24(JPROL)   = 'FONCTION                '
       ZK24(JPROL+1) = 'LIN LIN                 '
       ZK24(JPROL+2) = 'X                       '
       ZK24(JPROL+3) = 'TOUTRESU                '
       ZK24(JPROL+4) = 'LL                      '
 
-      CALL WKVECT ( NUFSD1//'.PROL', 'G V K24', 6, JPROL )
+      CALL WKVECT ( NUFSD1//'           .PROL', 'G V K24', 6, JPROL )
       ZK24(JPROL)   = 'FONCTION                '
       ZK24(JPROL+1) = 'LIN LIN                 '
       ZK24(JPROL+2) = 'X                       '
       ZK24(JPROL+3) = 'TOUTRESU                '
       ZK24(JPROL+4) = 'CC                      '
 
-      CALL WKVECT ( NUFSD2//'.PROL', 'G V K24', 6, JPROL )
+      CALL WKVECT ( NUFSD2//'           .PROL', 'G V K24', 6, JPROL )
       ZK24(JPROL)   = 'FONCTION                '
       ZK24(JPROL+1) = 'LIN LIN                 '
       ZK24(JPROL+2) = 'X                       '
@@ -210,14 +208,12 @@ C--- NEGATIVE BENDING
  80   CONTINUE
 
 C--- AJOUT DE LA FONCTION
-C      CALL ADD_FONCTION(NUFINF,FTYP,II,NN,MM,ORDLU)
-C      CALL ADFONC(NUFINF,FTYP,II,NN,MM,ORDLU)
       E1=0.D0
       NPT = II
       CALL LSQPOL(ORDLU,E1,NPT,NN,MM,ORDOK,POLY,SIGMA)
 
 C     --- CREATION ET REMPLISSAGE DE L'OBJET NUFINF.VALE ---
-      CALL WKVECT ( NUFINF//'.VALE', 'G V R', 2*NPT, JVALE )
+      CALL WKVECT ( NUFINF//'           .VALE', 'G V R', 2*NPT, JVALE )
       JFON = JVALE + NPT
       DO 102 I = 0, NPT-1
         XX = NN(1) + (NN(NPT)-NN(1))*I/(NPT-1)
@@ -228,7 +224,7 @@ C     --- CREATION ET REMPLISSAGE DE L'OBJET NUFINF.VALE ---
  103    CONTINUE
  102  CONTINUE
 
-      CALL WKVECT ( NUFID1//'.VALE', 'G V R', 2*NPT, JVALE )
+      CALL WKVECT ( NUFID1//'           .VALE', 'G V R', 2*NPT, JVALE )
       JFON = JVALE + NPT
       DO 104 I = 0, NPT-1
         XX = NN(1) + (NN(NPT)-NN(1))*I/(NPT-1)
@@ -239,7 +235,7 @@ C     --- CREATION ET REMPLISSAGE DE L'OBJET NUFINF.VALE ---
  105    CONTINUE
  104  CONTINUE
 
-      CALL WKVECT ( NUFID2//'.VALE', 'G V R', 2*NPT, JVALE )
+      CALL WKVECT ( NUFID2//'           .VALE', 'G V R', 2*NPT, JVALE )
       JFON = JVALE + NPT
       DO 106 I = 0, NPT-1
         XX = NN(1) + (NN(NPT)-NN(1))*I/(NPT-1)
@@ -251,21 +247,21 @@ C     --- CREATION ET REMPLISSAGE DE L'OBJET NUFINF.VALE ---
  106  CONTINUE
 
 C     --- CREATION ET REMPLISSAGE DE L'OBJET NUFSUP.PROL ---
-      CALL WKVECT ( NUFINF//'.PROL', 'G V K24', 6, JPROL )
+      CALL WKVECT ( NUFINF//'           .PROL', 'G V K24', 6, JPROL )
       ZK24(JPROL)   = 'FONCTION                '
       ZK24(JPROL+1) = 'LIN LIN                 '
       ZK24(JPROL+2) = 'X                       '
       ZK24(JPROL+3) = 'TOUTRESU                '
       ZK24(JPROL+4) = 'LL                      '
 
-      CALL WKVECT ( NUFID1//'.PROL', 'G V K24', 6, JPROL )
+      CALL WKVECT ( NUFID1//'           .PROL', 'G V K24', 6, JPROL )
       ZK24(JPROL)   = 'FONCTION                '
       ZK24(JPROL+1) = 'LIN LIN                 '
       ZK24(JPROL+2) = 'X                       '
       ZK24(JPROL+3) = 'TOUTRESU                '
       ZK24(JPROL+4) = 'CC                      '
 
-      CALL WKVECT ( NUFID2//'.PROL', 'G V K24', 6, JPROL )
+      CALL WKVECT ( NUFID2//'           .PROL', 'G V K24', 6, JPROL )
       ZK24(JPROL)   = 'FONCTION                '
       ZK24(JPROL+1) = 'LIN LIN                 '
       ZK24(JPROL+2) = 'X                       '

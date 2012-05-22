@@ -11,7 +11,7 @@
       REAL*8     VRESU(24),VALPAR(22),VALA,COEFPA
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 07/05/2012   AUTEUR TRAN V-X.TRAN 
+C MODIF PREPOST  DATE 21/05/2012   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -344,10 +344,34 @@ C CALCNORM = vect_F.vect_n
             ENDIF
          ENDIF
 
+C
+C ---------------------------------------------------------------
+C CALCULER DENSITE D'ENERGIE DISSIPISE PLASTIQUE
+C
+         IF (PARACT(10) .EQ. 1)  THEN
+
+            IF (J .LT. ORDFIN) THEN
+               ADRL = (J+1-1)*TSPAQ+KWORK*SOMPGW*DECAL+(IPG-1)*DECAL
+
+               CALL TENEPS(JRWORK,ADRL,C1,C2,
+     &                         SIGL,EPSL, EPSEL, EPSPL)
+
+               SOMDEN = 0.D0
+               DO 33 I = 1, 6
+                  SOMDEN= SOMDEN + 0.5D0*(SIG(I)+SIGL(I))
+     &                             *(EPSPL(I)- EPSP(I))
+33             CONTINUE
+
+               DENDIS = DENDIS + SOMDEN
+
+            ENDIF
+
+         ENDIF
+C
 C ---------------------------------------------------------------
 C CALCULER DENSITE D'ENERGIE DISTORSION ELASTIQUE
 C
-         IF (PARACT(10) .EQ. 1)  THEN
+         IF (PARACT(11) .EQ. 1)  THEN
 
             CALL LCDEVI(SIG,DEVSIG)
             CALL LCDEVI(EPSE, DVEPSE)
@@ -368,31 +392,8 @@ C
 32             CONTINUE
 
               IF (SOMDEN .GT. 0) THEN
-                  DENDIS = DENDIS + SOMDEN
+                  DENDIE = DENDIE + SOMDEN
               ENDIF
-
-            ENDIF
-
-         ENDIF
-
-C ---------------------------------------------------------------
-C CALCULER DENSITE D'ENERGIE DISSIPISE PLASTIQUE
-C
-         IF (PARACT(11) .EQ. 1)  THEN
-
-            IF (J .LT. ORDFIN) THEN
-               ADRL = (J+1-1)*TSPAQ+KWORK*SOMPGW*DECAL+(IPG-1)*DECAL
-
-               CALL TENEPS(JRWORK,ADRL,C1,C2,
-     &                         SIGL,EPSL, EPSEL, EPSPL)
-
-               SOMDEN = 0.D0
-               DO 33 I = 1, 6
-                  SOMDEN= SOMDEN + 0.5D0*(SIG(I)+SIGL(I))
-     &                             *(EPSPL(I)- EPSP(I))
-33             CONTINUE
-
-               DENDIE = DENDIE + SOMDEN
 
             ENDIF
 

@@ -1,8 +1,8 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF FASTER utilitai  DATE 19/05/2011   AUTEUR SELLENET N.SELLENET */
+/* MODIF FASTER utilitai  DATE 21/05/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -21,7 +21,7 @@
 
 #include "aster.h"
 
-void STDCALL(FASTER,faster)()
+void DEF0(FASTER,faster)
 {
 /*
    Fonction pour positionner le buffer du ficher de sortie

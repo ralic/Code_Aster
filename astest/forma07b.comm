@@ -1,6 +1,6 @@
-# MODIF  DATE 10/04/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 22/05/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE TP RUPTURE : FISSURE CIRCULAIRE DANS UN MILIEU INFINI
-# forma07b.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
+# forma07b.para = tps_job 240 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

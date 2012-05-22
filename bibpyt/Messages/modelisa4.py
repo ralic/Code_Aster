@@ -1,8 +1,8 @@
-#@ MODIF modelisa4 Messages  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa4 Messages  DATE 21/05/2012   AUTEUR TARDIEU N.TARDIEU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -399,7 +399,8 @@ Ceci est dangereux car cela peut produire un maillage non conforme.
   numéro de la dernière ligne traitée : %(i1)d
 
   -> Risque & Conseil :
-  Vérifiez si le mot clé FIN est présent à la fin du fichier.
+  Vérifiez que le maillage est au format Aster (.mail).
+  Vérifiez que le mot clé FIN est présent à la fin du fichier de maillage.
 """),
 
 94 : _(u"""

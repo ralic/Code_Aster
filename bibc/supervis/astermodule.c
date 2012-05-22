@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 07/05/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 21/05/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -133,13 +133,13 @@ static PyObject *except_module = NULL;
 static char *NomCas          = "        ";
 
 
-INTEGER F_FUNC(ISJVUP, isjvup)()
+INTEGER DEF0(ISJVUP, isjvup)
 {
    /* "is jeveux up ?" : retourne 1 si jeveux est démarré/initialisé, sinon 0. */
    return (INTEGER)jeveux_status;
 }
 
-void F_FUNC(XFINI,xfini)(_IN INTEGER *code)
+void DEFP(XFINI,xfini, _IN INTEGER *code)
 {
    /* XFINI est n'appelé que par JEFINI avec code=19 (=CodeFinAster) */
    /* jeveux est fermé */
@@ -352,7 +352,7 @@ void DEFSP(GETFAC,getfac,_IN char *nomfac, _IN STRING_SIZE lfac, _OUT INTEGER *o
 
 
 /* ------------------------------------------------------------------ */
-void F_FUNC(GETRAN,getran)(_OUT DOUBLE *rval)
+void DEFP(GETRAN,getran, _OUT DOUBLE *rval)
 {
     /*
       Procedure GETRAN pour le FORTRAN : recupere un réel aleatoire (loi uniforme 0-1) du module python Random
@@ -1142,7 +1142,7 @@ void DEFSSPPPSP(GETVID,getvid,_IN char *motfac,_IN STRING_SIZE lfac,
 
 
 /* ------------------------------------------------------------------ */
-void F_FUNC(PUTVIR,putvir) (_IN INTEGER *ival)
+void DEFP(PUTVIR,putvir, _IN INTEGER *ival)
 {
    /*
       Entrees:

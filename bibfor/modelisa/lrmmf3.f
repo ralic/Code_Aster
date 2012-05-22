@@ -8,9 +8,9 @@
      &                    VECGRM, NBCGRM, NBGRLO )
 C TOLE CRP_21
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 12/07/2011   AUTEUR DESOZA T.DESOZA 
+C MODIF MODELISA  DATE 21/05/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -222,10 +222,10 @@ C   2.0.1. --- RENOMMAGE PAR L'UTILISATEUR
             IF ( NBCGRM .GT. 0 ) THEN
                ILMED = LXLGUT(NOGRFA(IAUX))
                DO 910 I=1, NBCGRM
-                  KBID = ZK32(IVGRM-1+I*2-1)
+                  KBID = ZK80(IVGRM-1+I*2-1)
                   ILNEW = LXLGUT(KBID)
                   IF (NOGRFA(IAUX)(1:ILMED) .EQ. KBID(1:ILNEW)) THEN
-                     KBID = ZK32(IVGRM-1+I*2)
+                     KBID = ZK80(IVGRM-1+I*2)
                      ILNEW = LXLGUT(KBID)
                      RENOMM = .TRUE.
                      VALK(1) = NOGRFA(IAUX)
@@ -237,11 +237,11 @@ C   2.0.1. --- RENOMMAGE PAR L'UTILISATEUR
                   ENDIF
 C
 C          --- VERIFIER QUE LES NOUVEAUX NOMS N'EXISTENT PAS DEJA
-                  KBID = ZK32(IVGRM-1+I*2)
+                  KBID = ZK80(IVGRM-1+I*2)
                   ILNEW = LXLGUT(KBID)
                   IF (NOGRFA(IAUX)(1:ILMED) .EQ. KBID(1:ILNEW)) THEN
                      ERRGM = .TRUE.
-                     VALK(1) = ZK32(IVGRM-1+I*2-1)
+                     VALK(1) = ZK80(IVGRM-1+I*2-1)
                      VALK(2) = KBID(1:ILNEW)
                      CALL U2MESK('E','MED_9',2,VALK)
                   ENDIF

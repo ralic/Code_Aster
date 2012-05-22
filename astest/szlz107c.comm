@@ -1,4 +1,4 @@
-# MODIF  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 21/05/2012   AUTEUR TRAN V-X.TRAN 
 # TITRE CRITERES EN FORMULE POUR POST_FATIGUE AMPLITUDE VARIABLE
 # szlz107c.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -416,12 +416,12 @@ for i in range(NBPR) :
                                      EPS_XZ  = ZERO,
                                      EPS_YZ  = ZERO,
                                      
-                                     EPSP_XX  = EPSPXX,
-                                     EPSP_YY  = EPSPYY,
-                                     EPSP_ZZ  = EPSPZZ,
-                                     EPSP_XY  = ZERO,
-                                     EPSP_XZ  = ZERO,
-                                     EPSP_YZ  = ZERO,
+#                                      EPSP_XX  = EPSPXX,
+#                                      EPSP_YY  = EPSPYY,
+#                                      EPSP_ZZ  = EPSPZZ,
+#                                      EPSP_XY  = ZERO,
+#                                      EPSP_XZ  = ZERO,
+#                                      EPSP_YZ  = ZERO,
                                      
                                      ),
                        TYPE_CHARGE = 'NON_PERIODIQUE',
@@ -457,12 +457,12 @@ for i in range(NBPR) :
                                      EPS_XZ  = ZERO,
                                      EPS_YZ  = ZERO,
                                      
-                                     EPSP_XX  = EPSPXX,
-                                     EPSP_YY  = EPSPYY,
-                                     EPSP_ZZ  = EPSPZZ,
-                                     EPSP_XY  = ZERO,
-                                     EPSP_XZ  = ZERO,
-                                     EPSP_YZ  = ZERO,
+#                                      EPSP_XX  = EPSPXX,
+#                                      EPSP_YY  = EPSPYY,
+#                                      EPSP_ZZ  = EPSPZZ,
+#                                      EPSP_XY  = ZERO,
+#                                      EPSP_XZ  = ZERO,
+#                                      EPSP_YZ  = ZERO,
                                      
                                      ),
                        TYPE_CHARGE = 'NON_PERIODIQUE',
@@ -498,12 +498,12 @@ for i in range(NBPR) :
                                      EPS_XZ  = ZERO,
                                      EPS_YZ  = ZERO,
                                      
-                                     EPSP_XX  = EPSPXX,
-                                     EPSP_YY  = EPSPYY,
-                                     EPSP_ZZ  = EPSPZZ,
-                                     EPSP_XY  = ZERO,
-                                     EPSP_XZ  = ZERO,
-                                     EPSP_YZ  = ZERO,
+#                                      EPSP_XX  = EPSPXX,
+#                                      EPSP_YY  = EPSPYY,
+#                                      EPSP_ZZ  = EPSPZZ,
+#                                      EPSP_XY  = ZERO,
+#                                      EPSP_XZ  = ZERO,
+#                                      EPSP_YZ  = ZERO,
                                      
                                      ),
                        TYPE_CHARGE = 'NON_PERIODIQUE',

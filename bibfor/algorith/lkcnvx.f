@@ -1,6 +1,6 @@
-        SUBROUTINE LKCNVX (SIGM,NVI,VIND,NMAT,MATER,SEUIL,VINF)
+        SUBROUTINE LKCNVX (SIGD,SIGF,NVI,VIND,NMAT,MATER,SEUIL,VINF)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 22/05/2012   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,9 +21,10 @@ C ======================================================================
 C RESPONSABLE FOUCAULT A.FOUCAULT
 C ----------------------------------------------------------------------
 C --- BUT : CONVEXE ELASTO-VISCO-PLASTIQUE DE LETK A T+DT --------------
-C ---       POUR (SIGM , VINT) DONNES ----------------------------------
+C ---       POUR (SIGF , VINT) DONNES ----------------------------------
 C ----------------------------------------------------------------------
-C -IN : SIGM   :  CONTRAINTE -------------------------------------------
+C -IN : SIGF   :  CONTRAINTE ELASTIQUE ---------------------------------
+C --- : SIGD   :  CONTRAINTE A T ---------------------------------------
 C --- : NVI    :  NOMBRE DE VARIABLES INTERNES -------------------------
 C --- : VIND   :  VARIABLES INTERNES A T -------------------------------
 C --- : NMAT   :  DIMENSION MATER --------------------------------------
@@ -35,11 +36,11 @@ C ----------------------------------------------------------------------
 C ======================================================================
         INTEGER         NMAT,NVI
         REAL*8          MATER(NMAT,2),SEUIL
-        REAL*8          SIGM(6),VIND(NVI),VINF(NVI)
+        REAL*8          SIGD(6),SIGF(6),VIND(NVI),VINF(NVI)
 C
         INTEGER         NDT,NDI,I
-        REAL*8          I1,DEVSIG(6),UBID,SIGT(6)
-        REAL*8          XIT,SEUILP,SEUILV,ZERO,UN
+        REAL*8          I1,DEVSIG(6),UBID,SIGT(6),SIGU(6)
+        REAL*8          XIT,SEUILP,SEUILV,ZERO,UN,SOMME,R8PREM
 
         PARAMETER       (ZERO  =  0.D0 )
         PARAMETER       (UN    =  1.D0 )
@@ -50,8 +51,26 @@ C --------------------------------------------------------------------
 C --- PASSAGE EN CONVENTION MECANIQUE DES SOLS
 C --------------------------------------------------------------------
         DO 10 I = 1, NDT
-          SIGT(I) = -SIGM(I)
+          SIGT(I) = -SIGF(I)
+          SIGU(I) = -SIGD(I)
   10    CONTINUE
+
+C --------------------------------------------------------------------
+C --- VERIFICATION D'UN ETAT INITIAL PLASTIQUEMENT ADMISSIBLE -----
+C --------------------------------------------------------------------
+      SOMME = ZERO
+      DO 20 I = 1, NVI
+        SOMME = SOMME + VIND(I)
+  20  CONTINUE
+      IF(ABS(SOMME).LT.R8PREM())THEN
+        I1 = SIGU(1)+SIGU(2)+SIGU(3)
+        CALL LCDEVI(SIGU,DEVSIG)
+        CALL LKCRIP(I1,DEVSIG,VIND,NMAT,MATER,UBID,SEUILP)
+        IF(SEUILP/MATER(4,1).GT.1.0D-6)THEN
+          CALL U2MESS('F','ALGORITH2_2')
+        ENDIF
+      ENDIF
+
 C --------------------------------------------------------------------
 C --- CONSTRUCTION TENSEUR DEVIATOIRE DES CONTRAINTES ET 1ER INVARIANT
 C --------------------------------------------------------------------

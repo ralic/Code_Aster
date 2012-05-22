@@ -2,9 +2,9 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 24/10/2011   AUTEUR SFAYOLLE S.FAYOLLE 
+C MODIF MODELISA  DATE 22/05/2012   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,6 +20,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE SFAYOLLE S.FAYOLLE
+C TOLE CRP_20
 C ----------------------------------------------------------------------
 C
 C BUT : DETERMINATION DES PARAMETRES MATERIAU POUR LE MODELE GLRC_DAMAGE
@@ -51,44 +52,45 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8  MF2X,MF2Y,RHO,AMORA,AMORB,EEQ,NUEQ,MF1,MF2,NMIN1,NMIN2
       REAL*8  NORMM,NORMN,VALRES(5),MP1N0,MP2N0,AUX,MAXMP(2),MINMP(2)
       REAL*8  NMAX0,NMIN(2),NMAX(2),OML(NA),R8B,PAR1,PAR2,ELB(2)
+      REAL*8  MP1CST(2),MP2CST(2),OMT,EAT,BT1,BT2
       INTEGER ICODR2(5)
       CHARACTER*8 MATER,FON(4),K8B,NOMRES(5)
-      CHARACTER*19 FSNCX,FSNCY,FSCXD,FSCYD,FSCXD2,FSCYD2
-      CHARACTER*19 FINCX,FINCY,FICXD,FICYD,FICXD2,FICYD2
+      CHARACTER*8 FSNCX,FSNCY,FSCXD,FSCYD,FSCXD2,FSCYD2
+      CHARACTER*8 FINCX,FINCY,FICXD,FICYD,FICXD2,FICYD2
       CHARACTER*16 TYPE,NOMCMD,FICHIE
-      CHARACTER*19  FON19
       LOGICAL ULEXIS
-      INTEGER      IARG
+      INTEGER IARG, IMPF, ICST, ICIS
 
       CALL JEMARQ()
 
-      CALL GETFAC('NAPPE'  ,NNAP)
-      CALL GETFAC('CABLE_PREC',NPREC)
-      CALL GETFAC('LINER'        ,NLINER)
+      CALL GETFAC('NAPPE'     ,NNAP  )
+      CALL GETFAC('CABLE_PREC',NPREC )
+      CALL GETFAC('LINER'     ,NLINER)
 
       NLIT = NNAP + NPREC + NLINER
 
       IF (NLIT .EQ. 0) THEN
-        NLIT = 1
-        EA(1) = 0.0D0
+        NLIT   = 1
+        EA(1)  = 0.0D0
         NUA(1) = 0.0D0
         OMX(1) = 0.0D0
         OMY(1) = 0.0D0
-        RX(1) = 0.0D0
-        RY(1) = 0.0D0
+        RX(1)  = 0.0D0
+        RY(1)  = 0.0D0
       ENDIF
+
 
       NIMPR = 0
 
       CALL GETVIS(' ','INFO',1,IARG,1,IMPR,IBID1)
 
       IF (IMPR .EQ. 2) THEN
-         NIMPR = 1
-         IFR    = 0
-         FICHIE = ' '
-         IF ( .NOT. ULEXIS( IMPR ) ) THEN
-            CALL ULOPEN ( IMPR, ' ', FICHIE, 'NEW', 'O' )
-         ENDIF
+        NIMPR  = 1
+        IFR    = 0
+        FICHIE = ' '
+        IF ( .NOT. ULEXIS( IMPR ) ) THEN
+          CALL ULOPEN ( IMPR, ' ', FICHIE, 'NEW', 'O' )
+        ENDIF
       END IF
 
       CALL GETVID('BETON','MATER',1,IARG,1,MATER,IBID)
@@ -131,11 +133,6 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       FC = VALRES(2)
 
       CALL GETVR8('BETON','EPAIS',1,IARG,1,HH,IBID)
-C      CALL GETVR8('BETON','OMT',1,1,1,OMT,IBID)
-C      CALL GETVR8('BETON','EAT',1,1,1,EAT,IBID)
-C      IF(IBID .EQ. 0) EAT = EB
-C      CALL GETVR8('BETON','BT1',1,1,1,BT1,IBID)
-C      CALL GETVR8('BETON','BT2',1,1,1,BT2,IBID)
       CALL GETVR8('BETON','GAMMA',1,IARG,1,GAMMA,IBID)
       CALL GETVR8('BETON','QP1',1,IARG,1,QP1,IBID)
       CALL GETVR8('BETON','QP2',1,IARG,1,QP2,IBID)
@@ -253,12 +250,22 @@ C MOMENT DE FISSURATION
 C MOYENNE DANS CHAQUE DIRECTION
       MF1 = (MF1X+MF1Y)/2.D0
       MF2 = (MF2X+MF2Y)/2.D0
-C      IF(BT1 .EQ. 0.0D0) THEN
-C        BT1 = 5.D0/6.D0*HH/2.D0*(EB/(1+NUB)+EAT*OMT)
-C      ENDIF
-C      IF(BT2 .EQ. 0.0D0) THEN
-C        BT2 = 5.D0/6.D0*HH/2.D0*(EB/(1+NUB)+EAT*OMT)
-C      ENDIF
+
+
+      CALL GETVR8('BETON','BT1',1,IARG,1,BT1,ICIS)
+      CALL GETVR8('BETON','BT2',1,IARG,1,BT2,ICIS)
+
+      IF(ICIS .EQ. 0)THEN
+        CALL GETVR8('BETON','OMT',1,IARG,1,OMT,ICIS)
+        CALL GETVR8('BETON','EAT',1,IARG,1,EAT,ICIS)
+        IF(ICIS .NE. 0) THEN
+          BT1 = 5.D0/6.D0*HH/2.D0*(EB/(1+NUB)+EAT*OMT)
+          BT2 = 5.D0/6.D0*HH/2.D0*(EB/(1+NUB)+EAT*OMT)
+        ELSE
+          BT1 = -1.D0
+          BT2 = -1.D0
+        ENDIF
+      ENDIF
 
 C-----REMPLISSAGE DU MATERIAU
       CALL WKVECT(MATER//'.MATERIAU.NOMRC ','G V K16',2,JLM)
@@ -287,10 +294,20 @@ C---------ELASTIQUE---------------
         ZR(JMELR+4 ) = AMORB
       ENDIF
 C---------GLRC_DAMAGE---------------
-      LONOBJ = 47
-      LONUTI = 34
+      LONOBJ = 48
+      LONUTI = 35
+
       CALL WKVECT(MATER//'.GLRC_DAMAG.VALK','G V K8',2*LONOBJ,JMELK)
-      CALL JEECRA(MATER//'.GLRC_DAMAG.VALK','LONUTI',58,' ')
+
+      CALL GETVR8('BETON','MP1X',1,IARG,1,MP1CST(1),ICST)
+
+      IF(ICST .EQ. 0) THEN
+        CALL JEECRA(MATER//'.GLRC_DAMAG.VALK','LONUTI',59,' ')
+      ELSE
+        CALL JEECRA(MATER//'.GLRC_DAMAG.VALK','LONUTI',LONUTI,' ')
+      ENDIF
+
+C       CALL JEECRA(MATER//'.GLRC_DAMAG.VALK','LONUTI',59,' ')
       CALL WKVECT(MATER//'.GLRC_DAMAG.VALR','G V R',LONOBJ,JMELR)
       CALL JEECRA(MATER//'.GLRC_DAMAG.VALR','LONUTI',LONUTI,' ')
       CALL WKVECT(MATER//'.GLRC_DAMAG.VALC','G V C',LONOBJ,JMELC)
@@ -298,28 +315,28 @@ C---------GLRC_DAMAGE---------------
       IFON0 = JMELK + LONUTI
       LONGF = 12
       IFON1 = IFON0 + LONGF
-      ZK8(JMELK  ) = 'BN11    '
-      ZR(JMELR   ) = BN11
-      ZK8(JMELK+1) = 'BN12    '
-      ZR(JMELR+1 ) = BN12
-      ZK8(JMELK+2) = 'BN22    '
-      ZR(JMELR+2 ) = BN22
-      ZK8(JMELK+3) = 'BN33    '
-      ZR(JMELR+3 ) = BN33
-      ZK8(JMELK+4) = 'MF1     '
-      ZR(JMELR+4 ) = MF1
-      ZK8(JMELK+5) = 'MF2     '
-      ZR(JMELR+5 ) = MF2
-      ZK8(JMELK+6) = 'QP1     '
-      ZR(JMELR+6 ) = QP1
-      ZK8(JMELK+7) = 'QP2     '
-      ZR(JMELR+7 ) = QP2
-      ZK8(JMELK+8) = 'GAMMA   '
-      ZR(JMELR+8 ) = GAMMA
-      ZK8(JMELK+9) = 'BT1     '
-      ZR(JMELR+9 ) = 0.0D0
+      ZK8(JMELK  )  = 'BN11    '
+      ZR(JMELR   )  = BN11
+      ZK8(JMELK+1)  = 'BN12    '
+      ZR(JMELR+1 )  = BN12
+      ZK8(JMELK+2)  = 'BN22    '
+      ZR(JMELR+2 )  = BN22
+      ZK8(JMELK+3)  = 'BN33    '
+      ZR(JMELR+3 )  = BN33
+      ZK8(JMELK+4)  = 'MF1     '
+      ZR(JMELR+4 )  = MF1
+      ZK8(JMELK+5)  = 'MF2     '
+      ZR(JMELR+5 )  = MF2
+      ZK8(JMELK+6)  = 'QP1     '
+      ZR(JMELR+6 )  = QP1
+      ZK8(JMELK+7)  = 'QP2     '
+      ZR(JMELR+7 )  = QP2
+      ZK8(JMELK+8)  = 'GAMMA   '
+      ZR(JMELR+8 )  = GAMMA
+      ZK8(JMELK+9)  = 'BT1     '
+      ZR(JMELR+9 )  = BT1
       ZK8(JMELK+10) = 'BT2     '
-      ZR(JMELR+10 ) = 0.0D0
+      ZR(JMELR+10 ) = BT2
       ZK8(JMELK+11) = 'C1N1    '
       ZR(JMELR+11 ) = CN(1,1)
       ZK8(JMELK+12) = 'C1N2    '
@@ -362,7 +379,9 @@ C---------IMPRESSION-------------
         WRITE (IFR,*) 'PARAMETRES HOMOGENEISES POUR GLRC_DAMAGE :'
         WRITE (IFR,*) 'BN11, BN12, BN22, BN33 =   :',BN11,' ',BN12,' ',
      &                BN22,' ',BN33
-C        WRITE (IFR,*) 'BT1, BT2 =   :',BT1,' ',BT2
+        IF (ICIS .EQ. 0) THEN
+          WRITE (IFR,*) 'BT1, BT2 =   :',BT1,' ',BT2
+        ENDIF
         WRITE (IFR,*) 'MF1, MF2 =   :',MF1,' ',MF2
         WRITE (IFR,*) 'GAMMA, QP1, QP2 =   :',GAMMA,' ',QP1,' ',QP2
         WRITE (IFR,*) 'C1N1, C1N2, C1N3 =   :',CN(1,1),' ',CN(1,2),' ',
@@ -373,103 +392,148 @@ C        WRITE (IFR,*) 'BT1, BT2 =   :',BT1,' ',BT2
      &                 CM(1,3)
         WRITE (IFR,*) 'C2M1, C2M2, C2M3 =   :',CM(2,1),' ',CM(2,2),' ',
      &                 CM(2,3)
-        WRITE (IFR,*) 'MODULE D YOUNG ET COEFFICIENT DE POISSON
-     &                 EFFECTIFS EN FLEXION:'
+        WRITE (IFR,*) 'MODULE D YOUNG ET COEFFICIENT DE POISSON '
+     &                ,'EFFECTIFS EN FLEXION:'
         WRITE (IFR,*) 'EF, NUF =   :',EEQ,' ',NUEQ
       END IF
 C--------CREER LES FONCTIONS SEUILS---------
-      CALL GCNCON('_',FSNCX)
-      CALL GCNCON('_',FSNCY)
-      CALL GCNCON('_',FSCXD)
-      CALL GCNCON('_',FSCYD)
-      CALL GCNCON('_',FSCXD2)
-      CALL GCNCON('_',FSCYD2)
-      CALL GCNCON('_',FINCX)
-      CALL GCNCON('_',FINCY)
-      CALL GCNCON('_',FICXD)
-      CALL GCNCON('_',FICYD)
-      CALL GCNCON('_',FICXD2)
-      CALL GCNCON('_',FICYD2)
+
+C--------L UTILISATEUR A ENTRE DES CONSTANTES
+
+      CALL GETVR8('BETON','MP1Y',1,IARG,1,MP1CST(2),ICST)
+      CALL GETVR8('BETON','MP2X',1,IARG,1,MP2CST(1),ICST)
+      CALL GETVR8('BETON','MP2Y',1,IARG,1,MP2CST(2),ICST)
+
+      IF(ICST .EQ. 0) THEN
+C--------L UTILISATEUR A ENTRE DES FONCTIONS
+
+        CALL GETVID('BETON','MP1X_FO',1,IARG,1,FSNCX,IMPF)
+        CALL GETVID('BETON','MP2X_FO',1,IARG,1,FINCX,IMPF)
+        CALL GETVID('BETON','MP1Y_FO',1,IARG,1,FSNCY,IMPF)
+        CALL GETVID('BETON','MP2Y_FO',1,IARG,1,FINCY,IMPF)
+
+        IF (IMPF .EQ. 1) THEN
+          CALL GCNCON('_',FSCXD)
+          CALL GCNCON('_',FSCYD)
+          CALL GCNCON('_',FSCXD2)
+          CALL GCNCON('_',FSCYD2)
+          CALL GCNCON('_',FICXD)
+          CALL GCNCON('_',FICYD)
+          CALL GCNCON('_',FICXD2)
+          CALL GCNCON('_',FICYD2)
 C-----Mx/Nx -------------
-      CALL MOCONM(FC,SY,HH,NLIT,OMX,RX,FSNCX,FINCX,
+          CALL MOCON2(FC,SY,HH,NLIT,OMX,RX,FSNCX,FINCX,
      &            FSCXD,FICXD,FSCXD2,FICXD2,PREX)
 C-----My/Ny -------------
-      CALL MOCONM(FC,SY,HH,NLIT,OMY,RY,FSNCY,FINCY,
+          CALL MOCON2(FC,SY,HH,NLIT,OMY,RY,FSNCY,FINCY,
      &            FSCYD,FICYD,FSCYD2,FICYD2,PREY)
-      ZK8(IFON0  ) = 'FMEX1   '
-      ZK8(IFON1  ) = FSNCX
-      ZK8(IFON0+1) = 'FMEY1   '
-      ZK8(IFON1+1) = FSNCY
-      ZK8(IFON0+2) = 'DFMEX1  '
-      ZK8(IFON1+2) = FSCXD
-      ZK8(IFON0+3) = 'DFMEY1  '
-      ZK8(IFON1+3) = FSCYD
-      ZK8(IFON0+4) = 'DDFMEX1 '
-      ZK8(IFON1+4) = FSCXD2
-      ZK8(IFON0+5) = 'DDFMEY1 '
-      ZK8(IFON1+5) = FSCYD2
-      ZK8(IFON0+6) = 'FMEX2   '
-      ZK8(IFON1+6) = FINCX
-      ZK8(IFON0+7) = 'FMEY2   '
-      ZK8(IFON1+7) = FINCY
-      ZK8(IFON0+8) = 'DFMEX2  '
-      ZK8(IFON1+8) = FICXD
-      ZK8(IFON0+9) = 'DFMEY2  '
-      ZK8(IFON1+9) = FICYD
-      ZK8(IFON0+10) = 'DDFMEX2 '
-      ZK8(IFON1+10) = FICXD2
-      ZK8(IFON0+11) = 'DDFMEY2 '
-      ZK8(IFON1+11) = FICYD2
+        ELSE
+C--------L UTILISATEUR N A RIEN RENSEIGNE
+
+          CALL GCNCON('_',FSNCX)
+          CALL GCNCON('_',FSNCY)
+          CALL GCNCON('_',FINCX)
+          CALL GCNCON('_',FINCY)
+          CALL GCNCON('_',FSCXD)
+          CALL GCNCON('_',FSCYD)
+          CALL GCNCON('_',FSCXD2)
+          CALL GCNCON('_',FSCYD2)
+          CALL GCNCON('_',FICXD)
+          CALL GCNCON('_',FICYD)
+          CALL GCNCON('_',FICXD2)
+          CALL GCNCON('_',FICYD2)
+C-----Mx/Nx -------------
+          CALL MOCONM(FC,SY,HH,NLIT,OMX,RX,FSNCX,FINCX,
+     &            FSCXD,FICXD,FSCXD2,FICXD2,PREX)
+C-----My/Ny -------------
+          CALL MOCONM(FC,SY,HH,NLIT,OMY,RY,FSNCY,FINCY,
+     &            FSCYD,FICYD,FSCYD2,FICYD2,PREY)
+        ENDIF
+
+        ZK8(IFON0  ) = 'FMEX1   '
+        ZK8(IFON1  ) = FSNCX
+        ZK8(IFON0+1) = 'FMEY1   '
+        ZK8(IFON1+1) = FSNCY
+        ZK8(IFON0+2) = 'DFMEX1  '
+        ZK8(IFON1+2) = FSCXD
+        ZK8(IFON0+3) = 'DFMEY1  '
+        ZK8(IFON1+3) = FSCYD
+        ZK8(IFON0+4) = 'DDFMEX1 '
+        ZK8(IFON1+4) = FSCXD2
+        ZK8(IFON0+5) = 'DDFMEY1 '
+        ZK8(IFON1+5) = FSCYD2
+        ZK8(IFON0+6) = 'FMEX2   '
+        ZK8(IFON1+6) = FINCX
+        ZK8(IFON0+7) = 'FMEY2   '
+        ZK8(IFON1+7) = FINCY
+        ZK8(IFON0+8) = 'DFMEX2  '
+        ZK8(IFON1+8) = FICXD
+        ZK8(IFON0+9) = 'DFMEY2  '
+        ZK8(IFON1+9) = FICYD
+        ZK8(IFON0+10) = 'DDFMEX2 '
+        ZK8(IFON1+10) = FICXD2
+        ZK8(IFON0+11) = 'DDFMEY2 '
+        ZK8(IFON1+11) = FICYD2
 C---------IMPRESSION-------------
-      IF (NIMPR.GT.0) THEN
-        WRITE (IFR,1000)
-        WRITE (IFR,*) 'FONCTIONS SEUIL POUR GLRC:'
-        WRITE (IFR,*) 'FMEX1, FMEY1, FMEX2, FMEY2 =   :',FSNCX,' ',
+        IF (NIMPR.GT.0) THEN
+          WRITE (IFR,1000)
+          WRITE (IFR,*) 'FONCTIONS SEUIL POUR GLRC:'
+          WRITE (IFR,*) 'FMEX1, FMEY1, FMEX2, FMEY2 =   :',FSNCX,' ',
      &                FSNCY,' ',FINCX,' ',FINCY
-        WRITE (IFR,*) 'DERIVEES PREMIERES :'
-        WRITE (IFR,*) 'DFMEX1, DFMEY1, DFMEX2, DFMEY2 =   :',FSCXD,' ',
-     &                FSCYD,' ',FICXD,' ',FICYD
-        WRITE (IFR,*) 'DERIVEES SECONDES :'
-        WRITE (IFR,*) 'DDFMEX1, DDFMEY1, DDFMEX2, DDFMEY2 =   :',FSCXD2,
-     &                ' ',FSCYD2,' ',FICXD2,' ',FICYD2
-      END IF
-      NOMRES(1) = 'FMEX1'
-      FON(1) = FSNCX
-      NOMRES(2) = 'FMEX2'
-      FON(2) = FINCX
-      NOMRES(3) = 'FMEY1'
-      FON(3) = FSNCY
-      NOMRES(4) = 'FMEY2'
-      FON(4) = FINCY
-      FON19 = '                   '
+          WRITE (IFR,*) 'DERIVEES PREMIERES :'
+          WRITE (IFR,*) 'DFMEX1, DFMEY1, DFMEX2, DFMEY2 =   :',FSCXD,
+     &                ' ',FSCYD,' ',FICXD,' ',FICYD
+          WRITE (IFR,*) 'DERIVEES SECONDES :'
+          WRITE (IFR,*) 'DDFMEX1, DDFMEY1, DDFMEX2, DDFMEY2 =   :',
+     &                FSCXD2,' ',FSCYD2,' ',FICXD2,' ',FICYD2
+        END IF
+
+        NOMRES(1) = 'FMEX1'
+        FON(1) = FSNCX
+        NOMRES(2) = 'FMEX2'
+        FON(2) = FINCX
+        NOMRES(3) = 'FMEY1'
+        FON(3) = FSNCY
+        NOMRES(4) = 'FMEY2'
+        FON(4) = FINCY
+      ENDIF
+
 C------CALCULER MAXMP,MINMP,NORMM,NORMN-----------------
       DO 35, II = 1,2
-        K8B = 'X '
-        CALL FOINTE ('F',FON(2*(II-1)+1),1,'X ',0.0D0,MP1N0,IBID )
-        CALL FOINTE ('F',FON(2*II      ),1,'X ',0.0D0,MP2N0,IBID )
-        FON19(1:8) = FON(2*(II-1)+1)
-        CALL MMFONC(FON19,AUX,MAXMP(II))
-        FON19(1:8) = FON(2*II)
-        CALL MMFONC(FON19,MINMP(II),AUX)
-        IF ( (MP1N0  .LT.  0.D0).OR.(MP2N0  .GT.  0.D0).OR.
+        IF(ICST .EQ. 0)THEN
+          K8B = 'X '
+          CALL FOINTE ('F',FON(2*(II-1)+1),1,'X ',0.0D0,MP1N0,IBID )
+          CALL FOINTE ('F',FON(2*II      ),1,'X ',0.0D0,MP2N0,IBID )
+          CALL MMFONC(FON(2*(II-1)+1),AUX,MAXMP(II))
+          CALL MMFONC(FON(2*II),MINMP(II),AUX)
+          IF ( (MP1N0  .LT.  0.D0).OR.(MP2N0  .GT.  0.D0).OR.
      &       (MAXMP(II)-MINMP(II) .LE. 0.D0)   ) THEN
-          CALL U2MESS('F','ELEMENTS_87')
+            CALL U2MESS('F','ELEMENTS_87')
+          ENDIF
+        ELSE
+          MAXMP(II)=MP1CST(II)
+          MINMP(II)=MP2CST(II)
         ENDIF
  35   CONTINUE
+
       NORMM=0.5D0*MAX(MAXMP(1)-MINMP(1),MAXMP(2)-MINMP(2))
+
       DO 40, II = 1,2
-        NMIN1 = -1.0D20
-        NMAX1 =  1.0D20
-        NMIN2 = -1.0D20
-        NMAX2 =  1.0D20
-        NMAX0 = MIN(NMAX1,NMAX2)
-        NMIN0 = MAX(NMIN1,NMIN2)
-        CALL INTERF(MATER,NOMRES(2*(II-1)+1),NOMRES(2*II),
+        IF(ICST .EQ. 0)THEN
+          NMAX0 =  1.0D20
+          NMIN0 = -1.0D20
+          CALL INTERF(MATER,NOMRES(2*(II-1)+1),NOMRES(2*II),
      &              NORMM,NMIN0,NMIN(II))
-        CALL INTERF(MATER,NOMRES(2*(II-1)+1),NOMRES(2*II),
+          CALL INTERF(MATER,NOMRES(2*(II-1)+1),NOMRES(2*II),
      &                NORMM,NMAX0,NMAX(II))
+        ELSE
+          NMAX(II)=0.D0
+          NMIN(II)=0.D0
+        ENDIF
  40   CONTINUE
+
       NORMN=0.5D0*MAX(ABS(NMAX(1)-NMIN(1)),ABS(NMAX(2)-NMIN(2)))
+
       ZK8(JMELK+23) = 'MAXMP1  '
       ZR(JMELR+23 ) = MAXMP(1)
       ZK8(JMELK+24) = 'MAXMP2  '
@@ -492,6 +556,13 @@ C------CALCULER MAXMP,MINMP,NORMM,NORMN-----------------
       ZR(JMELR+32 ) = BM22
       ZK8(JMELK+33) = 'BM33    '
       ZR(JMELR+33 ) = BM33
+      ZK8(JMELK+34) = 'MPCST    '
+      IF (ICST .NE. 0) THEN
+        ZR(JMELR+34 ) = 0.D0
+      ELSE
+        ZR(JMELR+34 ) = 1.D0
+      ENDIF
  1000 FORMAT (/,80 ('-'))
       CALL JEDEMA()
+
       END

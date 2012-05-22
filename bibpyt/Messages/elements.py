@@ -1,4 +1,4 @@
-#@ MODIF elements Messages  DATE 21/02/2012   AUTEUR DESROCHE X.DESROCHES 
+#@ MODIF elements Messages  DATE 22/05/2012   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -45,6 +45,16 @@ Conseil :
   Vérifiez les données sous le mot clef ANGL_REP de la commande AFFE_CARA_ELEM.
 """),
 
+4 : _(u"""
+Problème dans le calcul de l'option FORC_NODA / REAC_NODA :
+ 
+Le nombre de sous-point du champ de contrainte contenu dans la SD n'est 
+pas cohérent avec ce qui a été défini dans AFFE_CARA_ELEM.
+ 
+Il est probable que le champ de contrainte a été extrait sur un seul sous-point.
+ 
+Il est impératif d'utiliser un champ de contrainte complet pour le calcul de FORC_NODA.
+"""),
 
 5 : _(u"""
  problème de maillage TUYAU :

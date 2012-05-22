@@ -1,4 +1,4 @@
-#@ MODIF macr_lign_coupe_ops Macro  DATE 09/05/2012   AUTEUR DURAND C.DURAND 
+#@ MODIF macr_lign_coupe_ops Macro  DATE 21/05/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,6 +18,8 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
+import os
+
 ########################################################################
 # script PYTHON de creation du résultat local
 ########################################################################
@@ -27,11 +29,9 @@
 def crea_grp_matiere(self,groupe,newgrp,iocc,m,__remodr,NOM_CHAM,LIGN_COUPE,__macou):
 
   import aster
-  import os,string,types
   from Accas import _F
   from Noyau.N_utils import AsType
   from Utilitai.Utmess import  UTMESS
-  import os
   POST_RELEVE_T = self.get_cmd('POST_RELEVE_T')
   DEFI_GROUP    = self.get_cmd('DEFI_GROUP')
 
@@ -119,7 +119,6 @@ def crea_resu_local(self,dime,NOM_CHAM,m,resin,mail,nomgrma):
 
   from Utilitai.Utmess     import  UTMESS
   from math import pi,sqrt,atan2,asin
-  import os,string,types
   import aster
   from Accas import _F
   MODI_REPERE = self.get_cmd('MODI_REPERE')
@@ -462,7 +461,6 @@ def dist_min_deux_points(mail):
 
 def crea_mail_lig_coup(dimension,lignes,groups,arcs):
 
-  import os,sys,copy
   from Utilitai.Utmess     import  UTMESS
 
 # construction du maillage au format Aster des segments de lignes de coupe
@@ -615,7 +613,6 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
   """
      Ecriture de la macro MACR_LIGN_COUPE
   """
-  import os,string,types
   from Accas import _F
   from Noyau.N_utils import AsType
   import aster,math
@@ -674,11 +671,11 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
     # récupération de la grandeur du champ
     n_cham=CHAM_GD.nom
     catagd=aster.getvectjev("&CATA.GD.NOMGD")
-    desc=aster.getvectjev(string.ljust(n_cham,19)+'.DESC')
+    desc=aster.getvectjev('%-19s.DESC' % n_cham)
     if desc!= None:
       nomgd=catagd[desc[0]-1]
     else:
-      celd=aster.getvectjev(string.ljust(n_cham,19)+'.CELD')
+      celd=aster.getvectjev('%-19s.CELD' % n_cham)
       nomgd=catagd[celd[0]-1]
     # détermination du type de résultat à créer
     if   nomgd[:6] == 'TEMP_R' : TYPE_RESU='EVOL_THER'
@@ -695,7 +692,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
                        AFFE=_F(CHAM_GD=CHAM_GD,INST=0.),)
     RESULTAT=__resuch
   l_mailla=aster.getvectjev(n_modele.ljust(8)+'.MODELE    .LGRF')
-  n_mailla=string.strip(l_mailla[0])
+  n_mailla=l_mailla[0].strip()
   # le maillage est-il 2D ou 3D ?
   iret,dime,kbid = aster.dismoi('F','DIM_GEOM',n_mailla,'MAILLAGE')
   collgrma=aster.getcolljev(n_mailla.ljust(8)+'.GROUPEMA')
@@ -779,7 +776,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
   UL = UniteAster()
   nomFichierSortie = UL.Nom(UNITE_MAILLAGE)
   fproc=open(nomFichierSortie,'w')
-  fproc.write(string.join(resu_mail,os.linesep))
+  fproc.write(os.linesep.join(resu_mail))
   fproc.close()
   UL.EtatInit(UNITE_MAILLAGE)
 

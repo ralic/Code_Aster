@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/05/2012   AUTEUR DESOZA T.DESOZA 
 # TITRE RUINE ELASTO-PLASTIQUE DU PORTIQUE DE LEE
 # ssnl136b.para = tps_job 90 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -163,19 +163,19 @@ TEST_FONCTION(VALEUR=(_F(FONCTION=COOR_X,
                          VALE_PARA=0.5,
                          VALE_REFE=22.28,
                          CRITERE='RELATIF',
-                         PRECISION=0.016,
+                         PRECISION=0.02,
                          REFERENCE='SOURCE_EXTERNE',),
                       _F(FONCTION=COOR_Y,
                          VALE_PARA=0.5,
                          VALE_REFE=58.74,
                          CRITERE='RELATIF',
-                         PRECISION=0.015,
+                         PRECISION=0.02,
                          REFERENCE='SOURCE_EXTERNE',),
                       _F(FONCTION=DEPZ,
                          VALE_PARA=0.5,
                          VALE_REFE=40.12,
                          CRITERE='RELATIF',
-                         PRECISION=0.021,
+                         PRECISION=0.03,
                          REFERENCE='SOURCE_EXTERNE',),),);
 
 TEST_FONCTION(VALEUR=(_F(FONCTION=COOR_X,
@@ -188,13 +188,13 @@ TEST_FONCTION(VALEUR=(_F(FONCTION=COOR_X,
                          VALE_PARA=1.0,
                          VALE_REFE=46.99,
                          CRITERE='RELATIF',
-                         PRECISION=0.021,
+                         PRECISION=0.03,
                          REFERENCE='SOURCE_EXTERNE',),
                       _F(FONCTION=DEPZ,
                          VALE_PARA=1.0,
                          VALE_REFE=53.52,
                          CRITERE='RELATIF',
-                         PRECISION=0.015,
+                         PRECISION=0.01,
                          REFERENCE='SOURCE_EXTERNE',),),);
 
 # -------------- TESTS DE NON REGRESSION ----------------------
@@ -288,19 +288,19 @@ TEST_FONCTION(VALEUR=(_F(FONCTION=COOR_XM,
                          VALE_PARA=0.5,
                          VALE_REFE=22.28,
                          CRITERE='RELATIF',
-                         PRECISION=0.016,
+                         PRECISION=0.02,
                          REFERENCE='SOURCE_EXTERNE',),
                       _F(FONCTION=COOR_Y,
                          VALE_PARA=0.5,
                          VALE_REFE=58.74,
                          CRITERE='RELATIF',
-                         PRECISION=0.015,
+                         PRECISION=0.02,
                          REFERENCE='SOURCE_EXTERNE',),
                       _F(FONCTION=DEPZM,
                          VALE_PARA=0.5,
                          VALE_REFE=40.12,
                          CRITERE='RELATIF',
-                         PRECISION=0.021,
+                         PRECISION=0.03,
                          REFERENCE='SOURCE_EXTERNE',),),);
 
 TEST_FONCTION(VALEUR=(_F(FONCTION=COOR_XM,
@@ -313,13 +313,13 @@ TEST_FONCTION(VALEUR=(_F(FONCTION=COOR_XM,
                          VALE_PARA=1.0,
                          VALE_REFE=46.99,
                          CRITERE='RELATIF',
-                         PRECISION=0.021,
+                         PRECISION=0.031,
                          REFERENCE='SOURCE_EXTERNE',),
                       _F(FONCTION=DEPZM,
                          VALE_PARA=1.0,
                          VALE_REFE=53.52,
                          CRITERE='RELATIF',
-                         PRECISION=0.015,
+                         PRECISION=0.01,
                          REFERENCE='SOURCE_EXTERNE',),),);
 
 # -------------- TESTS DE NON REGRESSION ----------------------

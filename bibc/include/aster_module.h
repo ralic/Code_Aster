@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF aster_module include  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF aster_module include  DATE 21/05/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -30,11 +30,10 @@
 extern void PRE_myabort( _IN const char *nomFichier , _IN const int numeroLigne , _IN const char *message ) ;
 #define MYABORT(message) PRE_myabort( __FILE__ , __LINE__ , message )
 
-#define CALL_ISJVUP() F_FUNC(ISJVUP, isjvup)()
-extern INTEGER F_FUNC(ISJVUP, isjvup)();
+#define CALL_ISJVUP() CALL0(ISJVUP, isjvup)
+extern INTEGER DEF0(ISJVUP, isjvup);
 
-extern void F_FUNC(XFINI,xfini)(_IN INTEGER *);
-
+extern void CALLP(XFINI,xfini, _IN INTEGER *);
 
 /* FIN ASTER_MODULE_H */
 #endif

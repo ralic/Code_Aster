@@ -1,4 +1,4 @@
-# MODIF  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 21/05/2012   AUTEUR TRAN V-X.TRAN 
 #
 # TITRE FATIGUE, AMPLITUDE CONSTANTE, TEST  DES GRANDEURS
 # sslv135o.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
@@ -273,7 +273,7 @@ TABEPSP=POST_RELEVE_T(ACTION=_F(INTITULE='EPSP_XX',
                                 OPERATION='EXTRACTION',),);
 IMPR_TABLE(TABLE=TABEPSP);
 
-NBPR = 14
+NBPR = 13
 CRIT= [None]*NBPR
 FATN= [None]*NBPR
 FATM= [None]*NBPR
@@ -308,73 +308,68 @@ CRIT[5] =   FORMULE(
            )
 
 CRIT[6] =   FORMULE(
-           NOM_PARA='DENDIE',
-           VALE= '''DENDIE'''
-           )
-
-CRIT[7] =   FORMULE(
            NOM_PARA='DSIGEQ',
            VALE= '''DSIGEQ'''
            )
 
-CRIT[8] =   FORMULE(
+CRIT[7] =   FORMULE(
            NOM_PARA='SIGPR1',
            VALE= '''SIGPR1'''
            )
 
-CRIT[9] =   FORMULE(
+CRIT[8] =   FORMULE(
            NOM_PARA='EPSNM1',
            VALE= '''EPSNM1'''
            )
 
-CRIT[10] =   FORMULE(
+CRIT[9] =   FORMULE(
            NOM_PARA='INVA2S',
            VALE= '''INVA2S'''
            )
 
-CRIT[11] =   FORMULE(
+CRIT[10] =   FORMULE(
            NOM_PARA='DSITRE',
            VALE= '''DSITRE'''
            )
 
-CRIT[12] =   FORMULE(
+CRIT[11] =   FORMULE(
            NOM_PARA='DEPTRE',
            VALE= '''DEPTRE'''
            )
 
-CRIT[13] =   FORMULE(
+CRIT[12] =   FORMULE(
            NOM_PARA='EPSPAC',
            VALE= '''EPSPAC'''
            )
 
-RESU = [7.5E-4, 8.75E-4, 200, 0.45, 66.66666, 0.173333, 0.45, 200, 100, 1.75E-3 , 1.616666E-3, 50, 6.0625E-4,3.67423E-3]
+RESU = [7.5E-4, 8.75E-4, 200, 0.173333, 66.66666, 0.45, 200, 100, 1.75E-3 , 1.616666E-3, 50, 6.0625E-4,3.67423E-3]
 
-for i in range(1,NBPR) :
+for i in range(12) :
 #
 # TEST CRITERE FORMULE AVEC 'DOMA_NOEUD',
 #########################################NOEUD
-    FATN[i]=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
-                           OPTION        = 'DOMA_NOEUD',
-                           TYPE_CHARGE   = 'PERIODIQUE',
-                           RESULTAT      = SOL_NL,
-                           CHAM_MATER    = MAT,
-                           GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),
-                           MAILLAGE      = CUBE,
-                           CRITERE       = 'FORMULE_CRITERE',
-                           FORMULE_GRDEQ   = CRIT[i],
-                           COURBE_GRD_VIE  = 'WOHLER'
-                         )
-
-
-
-    TEST_RESU(CHAM_NO=(  _F( CHAM_GD = FATN[i],
-                            NOM_CMP = 'SIGEQ1',
-                            NOEUD = 'N1',
-                            REFERENCE = 'ANALYTIQUE',
-                            PRECISION = 2.0E-6,
-                            VALE = RESU[i] ),
-                       )
-              )
+#     FATN[i]=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
+#                            OPTION        = 'DOMA_NOEUD',
+#                            TYPE_CHARGE   = 'PERIODIQUE',
+#                            RESULTAT      = SOL_NL,
+#                            CHAM_MATER    = MAT,
+#                            GROUP_MA      = ('FACE1', 'FACE2', 'FACE3'),
+#                            MAILLAGE      = CUBE,
+#                            CRITERE       = 'FORMULE_CRITERE',
+#                            FORMULE_GRDEQ   = CRIT[i],
+#                            COURBE_GRD_VIE  = 'WOHLER'
+#                          )
+# 
+# 
+# 
+#     TEST_RESU(CHAM_NO=(  _F( CHAM_GD = FATN[i],
+#                             NOM_CMP = 'SIGEQ1',
+#                             NOEUD = 'N1',
+#                             REFERENCE = 'ANALYTIQUE',
+#                             PRECISION = 2.0E-6,
+#                             VALE = RESU[i] ),
+#                        )
+#               )
 
 # TEST CRITERE FORMULE AVEC 'DOMA_NOEUD',
 #########################################NOEUD

@@ -1,4 +1,4 @@
-#@ MODIF algorith2 Messages  DATE 17/01/2012   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith2 Messages  DATE 22/05/2012   AUTEUR FOUCAULT A.FOUCAULT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,6 +25,12 @@ cata_msg = {
 Erreur utilisateur dans la commande CREA_RESU / AFFE :
  Le maillage associé au mot clé CHAM_GD           : %(k1)s
  est différent de celui associé au mot clé MODELE : %(k2)s
+"""),
+
+2 : _(u"""
+ L'état initial défini n'est pas plastiquement admissible pour le modèle LETK. 
+ L'état initial de contraintes est erroné ou les propriétés matériaux ne sont pas adaptées au problème posé. 
+ Le calcul s'arrête en erreur fatale par précautions. 
 """),
 
 6 : _(u"""

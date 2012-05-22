@@ -1,4 +1,4 @@
-# MODIF  DATE 07/05/2012   AUTEUR TRAN V-X.TRAN 
+# MODIF  DATE 21/05/2012   AUTEUR TRAN V-X.TRAN 
 # TITRE CRITERES EN FORMULE POUR POST_FATIGUE AMPLITUDE VARIABLE POUR
 # szlz107e.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -244,15 +244,7 @@ for i in range(2) :
                                      EPS_ZZ  = EPSTZZ,
                                      EPS_XY  = ZERO,
                                      EPS_XZ  = ZERO,
-                                     EPS_YZ  = ZERO,
-                                     
-                                     EPSP_XX  = ZERO,
-                                     EPSP_YY  = ZERO,
-                                     EPSP_ZZ  = ZERO,
-                                     EPSP_XY  = ZERO,
-                                     EPSP_XZ  = ZERO,
-                                     EPSP_YZ  = ZERO,
-                                     
+                                     EPS_YZ  = ZERO,                                     
                                      ),
                        TYPE_CHARGE = 'NON_PERIODIQUE',
                        CRITERE='FORMULE_CRITERE',
@@ -292,14 +284,6 @@ for i in range(2) :
                                      EPS_XY  = ZERO,
                                      EPS_XZ  = ZERO,
                                      EPS_YZ  = ZERO,
-                                     
-                                     EPSP_XX  = ZERO,
-                                     EPSP_YY  = ZERO,
-                                     EPSP_ZZ  = ZERO,
-                                     EPSP_XY  = ZERO,
-                                     EPSP_XZ  = ZERO,
-                                     EPSP_YZ  = ZERO,
-                                     
                                      ),
                        TYPE_CHARGE = 'NON_PERIODIQUE',
                        CRITERE='FORMULE_CRITERE',
@@ -344,13 +328,6 @@ for i in range(2) :
                                      EPS_XZ  = ZERO,
                                      EPS_YZ  = ZERO,
                                      
-                                     EPSP_XX  = ZERO,
-                                     EPSP_YY  = ZERO,
-                                     EPSP_ZZ  = ZERO,
-                                     EPSP_XY  = ZERO,
-                                     EPSP_XZ  = ZERO,
-                                     EPSP_YZ  = ZERO,
-                                     
                                      ),
                        TYPE_CHARGE = 'NON_PERIODIQUE',
                        CRITERE='FORMULE_CRITERE',
@@ -389,13 +366,6 @@ for i in range(2) :
                                      EPS_XY  = ZERO,
                                      EPS_XZ  = ZERO,
                                      EPS_YZ  = ZERO,
-                                     
-                                     EPSP_XX  = ZERO,
-                                     EPSP_YY  = ZERO,
-                                     EPSP_ZZ  = ZERO,
-                                     EPSP_XY  = ZERO,
-                                     EPSP_XZ  = ZERO,
-                                     EPSP_YZ  = ZERO,
                                      
                                      ),
                        TYPE_CHARGE = 'NON_PERIODIQUE',
@@ -470,14 +440,7 @@ FATN2=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
                                  EPS_XY  = ZERO,
                                  EPS_XZ  = ZERO,
                                  EPS_YZ  = ZERO,
-                                 
-                                 EPSP_XX  = ZERO,
-                                 EPSP_YY  = ZERO,
-                                 EPSP_ZZ  = ZERO,
-                                 EPSP_XY  = ZERO,
-                                 EPSP_XZ  = ZERO,
-                                 EPSP_YZ  = ZERO,
-                                 
+                                      
                                  ),
                    TYPE_CHARGE = 'NON_PERIODIQUE',
                    CRITERE='FORMULE_CRITERE',
@@ -512,15 +475,7 @@ FATN2M=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
                                  EPS_ZZ  = EPSTZZ,
                                  EPS_XY  = ZERO,
                                  EPS_XZ  = ZERO,
-                                 EPS_YZ  = ZERO,
-                                 
-                                 EPSP_XX  = ZERO,
-                                 EPSP_YY  = ZERO,
-                                 EPSP_ZZ  = ZERO,
-                                 EPSP_XY  = ZERO,
-                                 EPSP_XZ  = ZERO,
-                                 EPSP_YZ  = ZERO,
-                                 
+                                 EPS_YZ  = ZERO,                                 
                                  ),
                    TYPE_CHARGE = 'NON_PERIODIQUE',
                    CRITERE='FORMULE_CRITERE',
@@ -557,14 +512,6 @@ FATN2F=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
                                  EPS_XY  = ZERO,
                                  EPS_XZ  = ZERO,
                                  EPS_YZ  = ZERO,
-                                 
-                                 EPSP_XX  = ZERO,
-                                 EPSP_YY  = ZERO,
-                                 EPSP_ZZ  = ZERO,
-                                 EPSP_XY  = ZERO,
-                                 EPSP_XZ  = ZERO,
-                                 EPSP_YZ  = ZERO,
-                                 
                                  ),
                    TYPE_CHARGE = 'NON_PERIODIQUE',
                    CRITERE='FORMULE_CRITERE',
@@ -602,13 +549,6 @@ FATN2SF=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
                                  EPS_XZ  = ZERO,
                                  EPS_YZ  = ZERO,
                                  
-                                 EPSP_XX  = ZERO,
-                                 EPSP_YY  = ZERO,
-                                 EPSP_ZZ  = ZERO,
-                                 EPSP_XY  = ZERO,
-                                 EPSP_XZ  = ZERO,
-                                 EPSP_YZ  = ZERO,
-                                 
                                  ),
                    TYPE_CHARGE = 'NON_PERIODIQUE',
                    CRITERE='FATESOCI_MODI_AV',
@@ -641,15 +581,7 @@ FATN2SF2=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
                                  EPS_ZZ  = EPSTZZ,
                                  EPS_XY  = ZERO,
                                  EPS_XZ  = ZERO,
-                                 EPS_YZ  = ZERO,
-                                 
-                                 EPSP_XX  = ZERO,
-                                 EPSP_YY  = ZERO,
-                                 EPSP_ZZ  = ZERO,
-                                 EPSP_XY  = ZERO,
-                                 EPSP_XZ  = ZERO,
-                                 EPSP_YZ  = ZERO,
-                                 
+                                 EPS_YZ  = ZERO,                                 
                                  ),
                    TYPE_CHARGE = 'NON_PERIODIQUE',
                    CRITERE='FATESOCI_MODI_AV',

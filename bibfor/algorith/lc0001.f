@@ -16,7 +16,7 @@
       CHARACTER*(*)   FAMI
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 21/05/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -137,7 +137,7 @@ C               IMPLEX
      &                TYPMOD,DSIDEP,CODRET)
            ENDIF
         ELSEIF (MCMATE.EQ.'ELAS_ORTH'.OR.MCMATE.EQ.'ELAS_ISTR') THEN
-          CALL NMORTH (FAMI,KPG,KSP,NDIM,MCMATE,IMATE,
+          CALL NMORTH (FAMI,KPG,KSP,NDIM,MCMATE,IMATE,'T',
      &                 DEPS,SIGM,OPTION,ANGMAS,SIGP,VIP,
      &                 DSIDEP)
         ELSE

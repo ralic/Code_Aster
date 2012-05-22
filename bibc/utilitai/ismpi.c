@@ -1,7 +1,7 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF ISMPI utilitai  DATE 19/05/2011   AUTEUR SELLENET N.SELLENET */
+/* MODIF ISMPI utilitai  DATE 21/05/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -18,7 +18,7 @@
 /* ================================================================== */
 #include "aster.h"
 
-INTEGER STDCALL(ISMPI, ismpi) ()
+INTEGER DEF0(ISMPI, ismpi)
 /*
 ** Fonction pour interroger l'indicateur le type d'executable Aster 
 ** Renvoie 1 si l'exécutable a été compilé avec l'option _USE_MPI
@@ -27,9 +27,9 @@ INTEGER STDCALL(ISMPI, ismpi) ()
 {
 #ifdef _USE_MPI
    static INTEGER IND_COMP_MPI=1;
-#else	
+#else   
    static INTEGER IND_COMP_MPI=0;
-#endif	
+#endif  
 
 return IND_COMP_MPI;
 }

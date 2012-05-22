@@ -1,8 +1,11 @@
       SUBROUTINE FORNGR ( OPTION , NOMTE )
-C MODIF ELEMENTS  DATE 24/10/2011   AUTEUR PELLET J.PELLET 
-C ======================================================================
+      IMPLICIT NONE
+      CHARACTER*16 OPTION,NOMTE
+C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C MODIF ELEMENTS  DATE 22/05/2012   AUTEUR DELMAS J.DELMAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,13 +20,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_20
 C
-      IMPLICIT NONE
-C
-      CHARACTER*16        OPTION , NOMTE
-C
-C ......................................................................
 C     FONCTION  :  FORC_NODA DES COQUE_3D
 C                  GEOMETRIQUE AVEC GRANDES ROTATIONS
 C
@@ -58,7 +55,7 @@ C
 C
 C---- DECLARATIONS LOCALES
 C
-      INTEGER I  ,  J  , IN , II , NVAL,  K1
+      INTEGER I  ,  J  , IN , II , NVAL,  K1,IRET,ITAB(7)
 C
 C---- DECLARATIONS RIGIDITE GEOMETRIQUE
 C
@@ -89,7 +86,7 @@ C
 C
 C---- DECLARATIONS COUCHES
 C
-      INTEGER ICOMPO, NBCOU
+      INTEGER NBCOU,NBSP
       INTEGER ICOU
       REAL * 8 ZIC  , ZMIN , EPAIS , COEF
 C --- CONTRAINTE DE REFERENCE POUR REFE_FORC_NODA
@@ -123,16 +120,12 @@ C DEB
 C
 C---- LE NOMBRE DE COUCHES
 C
-      CALL JEVECH ( 'PCOMPOR' , 'L' , ICOMPO )
-C
       CALL JEVECH('PNBSP_I','L',JNBSPI)
       NBCOU=ZI(JNBSPI-1+1)
 C
-      IF ( NBCOU . LE . 0 )
-     &   CALL U2MESS('F','ELEMENTS_12')
+      IF ( NBCOU . LE . 0 ) CALL U2MESS('F','ELEMENTS_12')
 C
-      IF ( NBCOU . GT . 10 )
-     &   CALL U2MESS('F','ELEMENTS_13')
+      IF ( NBCOU . GT . 10 ) CALL U2MESS('F','ELEMENTS_13')
 C______________________________________________________________________
 C
 C---- RECUPERATION DES POINTEURS ( L : LECTURE )
@@ -166,7 +159,10 @@ C------- CONTRAINTES DE CAUCHY AUX POINTS DE GAUSS
 C
          IF (OPTION.EQ.'FORC_NODA') THEN
 
-            CALL JEVECH ( 'PCONTMR' , 'L' , ICONTM )
+           CALL TECACH('OOO','PCONTMR' ,7,ITAB,IRET)
+           ICONTM=ITAB(1)
+           NBSP=ITAB(7)
+           IF (NBSP.NE.NPGE*NBCOU) CALL U2MESS('F','ELEMENTS_4')
 
          ELSEIF (OPTION.EQ.'REFE_FORC_NODA') THEN
 
@@ -245,7 +241,7 @@ C
 C--------- SUPERNOEUD
 C
          DO 222 II = 1 , 3
-           VECTHE ( NB2, II ) = ZR ( IUM - 1 + 6 * ( NB1    ) + II     )
+           VECTHE ( NB2, II ) = ZR ( IUM - 1 + 6 *  NB1     + II     )
  222     CONTINUE
 C
 C
@@ -293,23 +289,14 @@ C
 C---------- POSITION SUR L EPAISSEUR ET POIDS D INTEGRATION
 C
             IF      ( INTE . EQ . 1 ) THEN
-C
                ZIC = ZMIN + ( ICOU - 1 ) * EPAIS
-C
                COEF = 1.D0 / 3.D0
-C
             ELSE IF ( INTE . EQ . 2 ) THEN
-C
                ZIC = ZMIN + EPAIS / 2.D0 + ( ICOU - 1 ) * EPAIS
-C
                COEF = 4.D0 / 3.D0
-C
             ELSE
-C
                ZIC = ZMIN + EPAIS + ( ICOU - 1 ) * EPAIS
-C
                COEF = 1.D0 / 3.D0
-C
             ENDIF
 C
 C---------- COORDONNEE ISOP.  SUR L EPAISSEUR  DIVISEE PAR DEUX
@@ -442,7 +429,6 @@ C
      &                       B1SU  , B2SU  )
 
                IF  (OPTION.EQ.'FORC_NODA') THEN
-
 C
 C------- CONTRAINTES DE CAUCHY = PK2 AUX POINTS DE GAUSS
 C
@@ -452,7 +438,6 @@ C
                    STILD(3) = ZR ( ICONTM - 1 + K1 + 4 )
                    STILD(4) = ZR ( ICONTM - 1 + K1 + 5 )
                    STILD(5) = ZR ( ICONTM - 1 + K1 + 6 )
-C
 C
 C------------- FINT ( 6 * NB1 + 3 )  =     INTEGRALE  DE
 C              ( B2SU ( 5 , 6 * NB1 + 3 ) ) T * STILD ( 5 ) *
@@ -466,7 +451,6 @@ C++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 C
 C------------- VARIABLES INTERNES INACTIVES COMPORTEMENT NON PLASTIQUE
 C
-C
                ELSEIF  (OPTION.EQ.'REFE_FORC_NODA') THEN
 
 C            CALCUL DES FORCES NODALES DE REFERENCE EN AFFECTANT
@@ -477,22 +461,15 @@ C            POUR CHAQUE POINT D'INTEGRATION
                   CALL R8INIR(51,0.D0,EFFINT,1)
 
                   DO 155 I=1,5
-
                     SIGTMP(I)=SIGREF
-
                     CALL BTSIG ( 6 * NB1 + 3 , 5 ,
      &                   ZR (LZR - 1 + 127 + INTSN - 1) * DETJ * COEF ,
      &                   B2SU , SIGTMP , EFFINT )
-C
                     SIGTMP(I)=0.D0
-
                     DO 156 J=1,51
-
                        FTEMP(J) = FTEMP(J)+ABS(EFFINT(J))
  156                CONTINUE
-
  155              CONTINUE
-
                ENDIF
 C
 C========== FIN BOUCLE NPGSN
@@ -508,15 +485,11 @@ C---- FIN BOUCLE NBCOU
 C
  600  CONTINUE
 C
-C
 C      ON PREND LA VALEUR MOYENNE DES FORCES NODALES DE REFERENCE
 
       IF  (OPTION.EQ.'REFE_FORC_NODA') THEN
-
          NVAL=NBCOU*NPGE*NPGSN*5
-
          CALL DAXPY(51,1.D0/NVAL,FTEMP,1,ZR ( IVECTU ) ,1)
-
       ENDIF
 C
       END

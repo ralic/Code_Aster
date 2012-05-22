@@ -1,6 +1,9 @@
       SUBROUTINE TE0517(OPTION,NOMTE)
+      IMPLICIT NONE
+      CHARACTER*16 OPTION,NOMTE
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 10/05/2012   AUTEUR CHEIGNON E.CHEIGNON 
+C MODIF ELEMENTS  DATE 22/05/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,9 +21,6 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C
 C ======================================================================
-      IMPLICIT NONE
-      CHARACTER*16 OPTION,NOMTE
-C ----------------------------------------------------------------------
 C     CALCUL DES OPTIONS POUR L'ELEMENT POU_D_TGM (MULTI-FIBRES)
 C        VARI_ELNO
 C        EFGE_ELNO
@@ -61,7 +61,7 @@ C
 
       INTEGER NBFIB,KP,ADR,NCOMP,I,CARA,NE,JACF,NCARFI
       INTEGER ICOMPO,ICGP,ICONTN,IORIEN,IVECTU
-      INTEGER JTAB(7), LX,INO,ISTRXR,ISTRXM
+      INTEGER JTAB(7), LX,INO,ISTRXR,ISTRXM,NBSP
 C
       INTEGER IDEPLM,IDEPLP,IGEOM,IRET,ISECT,IMATE,K,NPG,IFGM
       REAL*8  UTG(14),XUG(6),XD(3),ANG1(3),DDOT,EY,EZ,TEMP
@@ -106,9 +106,6 @@ C     NOMBRE DE COMPOSANTES DES CHAMPS PSTRX? PAR POINTS DE GAUSS
 C       --- RECUPERATION DES CARACTERISTIQUES DES FIBRES
         CALL JEVECH('PNBSP_I','L',I)
         NBFIB = ZI(I)
-C       IF ( ZI(I+1).NE.1 ) THEN
-C          CALL U2MESS('F','SENSIBILITE_52')
-C       ENDIF
         CALL JEVECH('PFIBRES','L',JACF)
         NCARFI = 3
 
@@ -212,9 +209,13 @@ C     --------------------------------------
 
             IF(OPTION.EQ.'FORC_NODA') THEN
                CALL TECACH('OON','PCONTMR',7,JTAB,IRET)
+               NBSP=JTAB(7)
+               IF (NBSP.NE.NBFIB) CALL U2MESS('F','ELEMENTS_4')
                CALL JEVECH ( 'PSTRXMR','L',ISTRXR)
             ELSE
                CALL TECACH('OON','PCONTRR',7,JTAB,IRET)
+               NBSP=JTAB(7)
+               IF (NBSP.NE.NBFIB) CALL U2MESS('F','ELEMENTS_4')
                CALL JEVECH ( 'PSTRXRR','L',ISTRXR)
             ENDIF
 C ---       LONGUEUR DE L'ELEMENT ---

@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION , NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 19/03/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 22/05/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,7 +25,7 @@ C     CALCUL DES OPTIONS DES ELEMENTS DE PLAQUE
 C          -----------------------------------------------------------
 C                                              TRIANGLE  QUADRANGLE
 C        LINEAIRE          KIRCHOFF  (MINCE)        DKT       DST
-C                 AVEC CISAILLEMENT  (EPAISSE)      DST       DSQ 
+C                 AVEC CISAILLEMENT  (EPAISSE)      DST       DSQ
 C                                                   Q4G       T3G
 C
 C        RIGI_MECA       MASS_MECA
@@ -59,13 +59,16 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
+      INTEGER    NPGE
+      PARAMETER ( NPGE=3 )
+
       INTEGER      NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO,IND
       INTEGER      MULTIC,CODRET,JDEPM,JDEPR
       INTEGER      ICOMPO,I1,I2,J,JVECT,JVAPR,KPG,SPT
       INTEGER      ICHN,K,JCRET,JFREQ,IACCE
       INTEGER      JMATE,JGEOM,JMATR,JENER,I,JCARA
       INTEGER      IVECT,NDDL,NVEC,IRET,ICONTP
-      INTEGER      ICOU, NBCOU,JNBSPI, IRET1, VALI(2)
+      INTEGER      ICOU, NBCOU,JNBSPI, IRET1, VALI(2),ITAB(7),NBSP
       INTEGER      IBID
       INTEGER      N1, N2, NI
       LOGICAL      LCQHOM
@@ -98,6 +101,9 @@ C --- PASSAGE DES CONTRAINTES DANS LE REPERE INTRINSEQUE :
       CALL COSIRO(NOMTE,'PCONTMR','UI','G',IBID,'S')
       CALL COSIRO(NOMTE,'PCONTRR','UI','G',IBID,'S')
 
+      JNBSPI = 0
+      CALL TECACH('NNN','PNBSP_I',1,JNBSPI,IRET1)
+
       LCQHOM = .FALSE.
       IF ( OPTION.EQ.'FULL_MECA'      .OR.
      &     OPTION.EQ.'RAPH_MECA'      .OR.
@@ -119,8 +125,6 @@ C
 C ---   VERIFICATION DE LA COHERENCE DES INFORMATIONS
 C ---   PROVENANT DE DEFI_COQU_MULT ET DE AFFE_CARA_ELEM
 C       ----------------------------------
-        JNBSPI = 0
-        CALL TECACH('NNN','PNBSP_I',1,JNBSPI,IRET1)
         FAMI='FPG1'
         KPG=1
         SPT=1
@@ -387,7 +391,14 @@ C
       ELSEIF ( OPTION.EQ.'FORC_NODA' ) THEN
 C     -------------------------------------
 
-         CALL JEVECH ( 'PCONTMR', 'L', ICONTP )
+           CALL TECACH('OOO','PCONTMR' ,7,ITAB,IRET)
+           ICONTP=ITAB(1)
+           NBSP=ITAB(7)
+           NBCOU=ZI(JNBSPI)
+
+           WRITE(6,*)'NBSP=',NBSP
+           WRITE(6,*)'NPGE*NBCOU=',NPGE*NBCOU
+           IF (NBSP.NE.NPGE*NBCOU) CALL U2MESS('F','ELEMENTS_4')
          IND=8
          CALL DXEFFI ( OPTION, NOMTE, PGL, ZR(ICONTP), IND, EFFGT )
 C

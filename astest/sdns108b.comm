@@ -1,4 +1,4 @@
-# MODIF  DATE 10/04/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 22/05/2012   AUTEUR SFAYOLLE S.FAYOLLE 
 #  DATE   : 06/04/12
 #  AUTEUR : F. LEBOUVIER (DeltaCAD)
 #  TITRE  : REPONSE DYNAMIQUE D UNE DALLE EN BETON ARME (MODELE GLRC_DAMAGE)
@@ -82,7 +82,7 @@ MAT = DEFI_GLRC(RELATION='GLRC_DAMAGE',
                            EPAIS = EP,
                            GAMMA = 0.,
                            QP1   = 0.5,     QP2   = 0.5,
-                           BT1   = 1600.E6, BT2   = 1600.E6,
+                           EAT   = E  ,     OMT   = 0.01303669,
 
                            C1M1 = CPRG_1,C1M2 = CPRG_1,C1M3 = CPRG_1,
                            C2M1 = CPRG_1,C2M2 = CPRG_1,C2M3 = CPRG_1,

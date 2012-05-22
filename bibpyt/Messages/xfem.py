@@ -1,8 +1,8 @@
-#@ MODIF xfem Messages  DATE 01/12/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF xfem Messages  DATE 22/05/2012   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,6 +22,17 @@
 
 cata_msg={
 
+1: _(u"""
+  -> Problème lors de l'orientation du fond de fissure : le nombre 
+     de points de bords du fond de fissure devrait être pair. Or on 
+     en trouve %(i1)d. 
+  -> Conseil:
+     Vérifiez la mise en données de la fissure.
+     Notamment si GROUP_MA_FOND est utilisé, il ne doit pas coïncider
+     avec un bord de la structure.
+     Si vous êtes sûr de votre mise en données, contactez l'assistance.
+"""),
+
 2: _(u"""
   -> Le calcul de la distance d'un noeud à l'ellipse n'a pas convergé
      avec le nombre d'itérations maximal fixé (10). Cela est dû à une
@@ -35,7 +46,7 @@ cata_msg={
 3: _(u"""
   -> Le modèle %(k1)s est incompatible avec la méthode X-FEM.
   -> Risque & Conseil:
-     Vérifier qu'il a bien été créé par l'opérateur MODI_MODELE_XFEM.
+     Vérifiez qu'il a bien été créé par l'opérateur MODI_MODELE_XFEM.
 """),
 
 4: _(u"""

@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF python supervis  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF python supervis  DATE 21/05/2012   AUTEUR COURTOIS M.COURTOIS */
 /* RESPONSABLE LEFEBVRE J-P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
@@ -51,8 +51,12 @@ void terminate(){
 }
 #endif
 
+#ifndef _MAIN_
+#define _MAIN_ main
+#endif
+
 int
-main(argc, argv)
+_MAIN_(argc, argv)
     int argc;
     char **argv;
 {

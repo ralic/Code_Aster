@@ -1,10 +1,10 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 21/05/2012   AUTEUR PROIX J-M.PROIX 
 # TITRE THERMO-PLASTICITE EN TRACTION SIMPLE
 # RESPONSABLE PROIX J.M.PROIX
 # hsnv100a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,354 +20,496 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='HSNV100A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='HSNV100A',
+              NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='OUI',),);
 
 #......................................................................
 # CAS TEST THERMOPLASTICITE ELEMENTAIRE
 #......................................................................
 # DEFINITION DES CARACTERISTIQUES DU MATERIAU
-#
 
-MAIL=LIRE_MAILLAGE( )
+MAIL=LIRE_MAILLAGE();
 
 #
 # DONNEES DE MODELISATION
-#
 
-FCT1=DEFI_FONCTION(   NOM_PARA='EPSI',  PROL_DROITE='LINEAIRE',
-                                          PROL_GAUCHE='LINEAIRE',
-                       VALE=(
-                             0.200E-2,      400.,
-                             0.400E-2,      500.,)
-                                                    )
+FCT1=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(0.200E-2,400.,
+                         0.400E-2,500.,
+                         ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
 
 #
 
-FCT2=DEFI_FONCTION(   NOM_PARA='EPSI',  PROL_DROITE='LINEAIRE',
-                                          PROL_GAUCHE='LINEAIRE',
-                       VALE=(
-                             0.100E-2,      200.,
-                             0.300E-2,      300.,)
-                                                    )
+FCT2=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(0.100E-2,200.,
+                         0.300E-2,300.,
+                         ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
 
 #
 
-CTRACB=DEFI_NAPPE(   NOM_PARA='TEMP',  PROL_DROITE='LINEAIRE',
-                                         PROL_GAUCHE='LINEAIRE',
-                           PARA=(0.,50.,),
-                           FONCTION=(FCT1,FCT2,)            )
+CTRACB=DEFI_NAPPE(NOM_PARA='TEMP',
+                  PARA=(0.,50.,),
+                  FONCTION=(FCT1,FCT2,),
+                  PROL_DROITE='LINEAIRE',
+                  PROL_GAUCHE='LINEAIRE',);
 
 #
 # MATERIAU ISOTROPE
-#
 
-MAT=DEFI_MATERIAU(
-          THER=_F( RHO_CP = 0.0E-3,LAMBDA = 1.0E-3),
-          ELAS=_F( E = 200.E+3, NU = .3,ALPHA = 10.0E-6),
-           TRACTION=_F( SIGM = CTRACB)                                 )
+MAT=DEFI_MATERIAU(ELAS=_F(E=200.E+3,
+                          NU=.3,
+                          ALPHA=10.0E-6,),
+                  TRACTION=_F(SIGM=CTRACB,),
+                  THER=_F(LAMBDA=1.0E-3,
+                          RHO_CP=0.0E-3,),);
 
-#
-# MATERIAU ORTHOTROPE EN FAIT ISOTROPE
-#
+CM=AFFE_MATERIAU(MAILLAGE=MAIL,
+                 AFFE=_F(TOUT='OUI',
+                         MATER=MAT,),);
 
-MATO=DEFI_MATERIAU(
-          THER=_F( RHO_CP = 0.0E-3,LAMBDA = 1.0E-3),
-          ELAS_ORTH=_F(  E_L = 200000., E_T = 200000., E_N = 200000.,
-                    NU_LT = 0.3,   NU_LN = 0.3,   NU_TN = 0.3,
-                    G_LT = 75000., G_LN = 75000., G_TN = 75000.,
-                    ALPHA_L = 10.0E-6, ALPHA_N = 10.0E-6, ALPHA_T = 10.0E-6),
-           TRACTION=_F( SIGM = CTRACB)                                 )
+T0=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+              OPERATION='AFFE',
+              MAILLAGE=MAIL,
+              AFFE=_F(TOUT='OUI',
+                      NOM_CMP='TEMP',
+                      VALE=0.0,),);
+t1 = 66.666;
 
-#
+t3 = 80.0;
 
-CM=AFFE_MATERIAU(    MAILLAGE=MAIL,
-          AFFE=_F( TOUT = 'OUI',MATER = MAT)
-                                                )
+t5 = 90.0;
 
-#
+t4 = 85.0;
 
-CMO=AFFE_MATERIAU(    MAILLAGE=MAIL,
-          AFFE=_F( TOUT = 'OUI',MATER = MATO)
-                                                )
+t2 = (t1 + ((t3 - t1) / 2.0));
 
-#
 
-T0=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MAIL,
-          AFFE=_F( TOUT = 'OUI', NOM_CMP = 'TEMP', VALE = 0.0)
-                                                )
+L_INST=DEFI_LIST_REEL(DEBUT=0.,
+                      INTERVALLE=(_F(JUSQU_A=t1,
+                                     NOMBRE=1,),
+                                  _F(JUSQU_A=t3,
+                                     NOMBRE=2,),
+                                  _F(JUSQU_A=t5,
+                                     NOMBRE=2,),),);
 
-L_INST=DEFI_LIST_REEL(       DEBUT=0.,INTERVALLE=(
-           _F( JUSQU_A = 66.666E0,   NOMBRE = 1),
-                      _F( JUSQU_A = 80.000E0,   NOMBRE = 2),
-                      _F( JUSQU_A = 90.000E0,   NOMBRE = 2))
-         )
-
-#
-TIMPVAR=DEFI_FONCTION(    NOM_PARA='INST',  NOM_RESU='TEMP',
-           VALE=(  0.E0,  0.E0, 100.E0, 100.E0,)
-                                                )
+TIMPVAR=DEFI_FONCTION(NOM_PARA='INST',NOM_RESU='TEMP',VALE=(0.E0,0.E0,
+                            100.E0,100.E0,
+                            ),);
 
 #
 
-MOTHER=AFFE_MODELE(  MAILLAGE=MAIL,
-          AFFE=_F( TOUT = 'OUI', MODELISATION = 'AXIS', PHENOMENE = 'THERMIQUE'))
+MOTHER=AFFE_MODELE(MAILLAGE=MAIL,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='THERMIQUE',
+                           MODELISATION='AXIS',),);
 
 #
 
-MOMECA=AFFE_MODELE(  MAILLAGE=MAIL,
-          AFFE=_F( TOUT = 'OUI', MODELISATION = 'AXIS', PHENOMENE = 'MECANIQUE'))
-
-#
-CHTHER=AFFE_CHAR_THER_F(    MODELE=MOTHER,TEMP_IMPO=(
-            _F( GROUP_NO = 'GRNO1',  TEMP = TIMPVAR),
-            _F( GROUP_NO = 'GRNO2',  TEMP = TIMPVAR),
-            _F( GROUP_NO = 'GRNO3',  TEMP = TIMPVAR),
-            _F( GROUP_NO = 'GRNO4',  TEMP = TIMPVAR))
-                          )
+MOMECA=AFFE_MODELE(MAILLAGE=MAIL,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='AXIS',),);
 
 #
 
-TEMPE=THER_LINEAIRE(  MODELE=MOTHER,   CHAM_MATER=CM,
-          EXCIT=_F( CHARGE = CHTHER),
-          ETAT_INIT=_F( CHAM_NO = T0),
-          INCREMENT=_F( LIST_INST = L_INST)
-                        )
+CHTHER=AFFE_CHAR_THER_F(MODELE=MOTHER,
+                        TEMP_IMPO=(_F(GROUP_NO='GRNO1',
+                                      TEMP=TIMPVAR,),
+                                   _F(GROUP_NO='GRNO2',
+                                      TEMP=TIMPVAR,),
+                                   _F(GROUP_NO='GRNO3',
+                                      TEMP=TIMPVAR,),
+                                   _F(GROUP_NO='GRNO4',
+                                      TEMP=TIMPVAR,),),);
 
-CHMECA=AFFE_CHAR_MECA(
-            MODELE=MOMECA,DDL_IMPO=(
-           _F( GROUP_NO = 'GRNO1',  DY = 0.),
-           _F( GROUP_NO = 'GRNO3',  DY = 0.)),
-                                                                )
+# SOLUTION ELASTOPLASTIQUE
 
-#
-TEMPEO=THER_LINEAIRE(  MODELE=MOTHER,   CHAM_MATER=CMO,
-          EXCIT=_F( CHARGE = CHTHER),
-          ETAT_INIT=_F( CHAM_NO = T0),
-          INCREMENT=_F( LIST_INST = L_INST)
-                        )
+TEMPE=THER_LINEAIRE(MODELE=MOTHER,
+                    CHAM_MATER=CM,
+                    EXCIT=_F(CHARGE=CHTHER,),
+                    INCREMENT=_F(LIST_INST=L_INST,),
+                    ETAT_INIT=_F(CHAM_NO=T0,),);
 
-CHMECAO=AFFE_CHAR_MECA(
-            MODELE=MOMECA,DDL_IMPO=(
-           _F( GROUP_NO = 'GRNO1',  DY = 0.),
-           _F( GROUP_NO = 'GRNO3',  DY = 0.)),
-                                                                )
-CTM=AFFE_MATERIAU(    MAILLAGE=MAIL,
-          AFFE=_F( TOUT = 'OUI',MATER = MAT,),
-          AFFE_VARC=_F( TOUT='OUI',
-                        EVOL=TEMPE,
-                        NOM_VARC='TEMP',
-                        NOM_CHAM='TEMP',
-                        VALE_REF=0.),)
+CHMECA=AFFE_CHAR_MECA(MODELE=MOMECA,
+                      DDL_IMPO=(_F(GROUP_NO='GRNO1',
+                                   DY=0.,),
+                                _F(GROUP_NO='GRNO3',
+                                   DY=0.,),),);
 
-#
-CTMO=AFFE_MATERIAU(    MAILLAGE=MAIL,
-          AFFE=_F( TOUT = 'OUI',MATER = MATO,),
-          AFFE_VARC=_F( TOUT='OUI',
-                        EVOL=TEMPEO,
-                        NOM_VARC='TEMP',
-                        NOM_CHAM='TEMP',
-                        VALE_REF=0.),)
+CTM=AFFE_MATERIAU(MAILLAGE=MAIL,
+                  AFFE=_F(TOUT='OUI',
+                          MATER=MAT,),
+                  AFFE_VARC=_F(TOUT='OUI',
+                               NOM_VARC='TEMP',
+                               EVOL=TEMPE,
+                               NOM_CHAM='TEMP',
+                               VALE_REF=0.,),);
 
+U=STAT_NON_LINE(MODELE=MOMECA,
+                CHAM_MATER=CTM,
+                EXCIT=_F(CHARGE=CHMECA,),
+                COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',),
+                INCREMENT=_F(LIST_INST=L_INST,),);
 
-U=STAT_NON_LINE(
-                            MODELE=MOMECA,
-                        CHAM_MATER=CTM,
-                             EXCIT=_F(
-                CHARGE = CHMECA),
-                         COMP_INCR=_F(
-                RELATION = 'VMIS_ISOT_TRAC'),
-                         INCREMENT=_F(
-                LIST_INST = L_INST),
-                       CONVERGENCE=_F(
-                RESI_GLOB_RELA = .0001,
-                ITER_GLOB_MAXI = 10)
-              )
-
-U=CALC_ELEM( reuse=U,
-                            OPTION=( 'EPSI_ELNO',
-                  'SIGM_ELNO',  'VARI_ELNO',),
-                          RESULTAT=U,
-              )
-
-#
-TEST_RESU(RESU=(
-          _F(  RESULTAT = TEMPE,  NOM_CHAM = 'TEMP',  NUME_ORDRE = 5,
-            NOEUD = 'N1', NOM_CMP = 'TEMP', VALE = 90.),
-          _F(  RESULTAT = U,  NOM_CHAM = 'EPSI_ELNO',  NUME_ORDRE = 1,
-            MAILLE = 'M1', NOEUD = 'N1', NOM_CMP = 'EPXX', VALE = 8.6666E-4),
-          _F(  RESULTAT = U, NOM_CHAM = 'SIGM_ELNO', NUME_ORDRE = 1,
-            MAILLE = 'M1', NOEUD = 'N1', NOM_CMP = 'SIYY', VALE = -133.333),
-          _F(  RESULTAT = U,  NOM_CHAM = 'EPSI_ELNO',  NUME_ORDRE = 3,
-            MAILLE = 'M1',NOEUD = 'N2', NOM_CMP = 'EPZZ',VALE = 1.1000E-3),
-          _F(  RESULTAT = U,  NOM_CHAM = 'VARI_ELNO',  NUME_ORDRE = 3,
-            MAILLE = 'M1',NOEUD = 'N2',NOM_CMP = 'V1',VALE = 3.0000E-4),
-          _F(  RESULTAT = U,  NOM_CHAM = 'SIGM_ELNO',  NUME_ORDRE = 3,
-            MAILLE = 'M1',NOEUD = 'N2',NOM_CMP = 'SIYY',VALE = -100.),
-          _F(  RESULTAT = U,  NOM_CHAM = 'EPSI_ELNO',  NUME_ORDRE = 5,
-            MAILLE = 'M1',NOEUD = 'N3',NOM_CMP = 'EPZZ',VALE = 1.2750E-3),
-          _F(  RESULTAT = U,  NOM_CHAM = 'VARI_ELNO',  NUME_ORDRE = 5,
-            MAILLE = 'M1',NOEUD = 'N3',NOM_CMP = 'V1',VALE = 5.2500E-4),
-          _F(  RESULTAT = U,  NOM_CHAM = 'SIGM_ELNO',  NUME_ORDRE = 5,
-            MAILLE = 'M1',NOEUD = 'N3',NOM_CMP = 'SIYY',VALE = -75.000))
-          )
+U=CALC_ELEM(reuse =U,
+            RESULTAT=U,
+            OPTION=('EPSI_ELNO','SIGM_ELNO','VARI_ELNO',),);
 
 #
 
-V=STAT_NON_LINE(
-                            MODELE=MOMECA,
-                        CHAM_MATER=CTMO,
-                             EXCIT=_F(
-                CHARGE = CHMECAO),
-                         COMP_ELAS=_F(
-                RELATION = 'ELAS'),
-                         INCREMENT=_F(
-                LIST_INST = L_INST),
-                            NEWTON=_F(
-                MATRICE = 'ELASTIQUE'),
-                       CONVERGENCE=_F(
-                RESI_GLOB_RELA = .0001,
-                ITER_GLOB_MAXI = 10)
-              )
+TEST_RESU(RESU=(_F(RESULTAT=TEMPE,
+                   INST=t5,
+                   NOM_CHAM='TEMP',
+                   NOM_CMP='TEMP',
+                   NOEUD='N1',
+                   VALE=90.0,),
+                _F(RESULTAT=U,
+                   INST=t1,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOM_CMP='EPXX',
+                   MAILLE='M1',
+                   NOEUD='N1',
+                   VALE=0.00086666,),
+                _F(RESULTAT=U,
+                   INST=t1,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIYY',
+                   MAILLE='M1',
+                   NOEUD='N1',
+                   VALE=-133.333,),
+                _F(RESULTAT=U,
+                   INST=t3,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOM_CMP='EPZZ',
+                   MAILLE='M1',
+                   NOEUD='N2',
+                   VALE=0.0011,),
+                _F(RESULTAT=U,
+                   INST=t3,
+                   NOM_CHAM='VARI_ELNO',
+                   NOM_CMP='V1',
+                   MAILLE='M1',
+                   NOEUD='N2',
+                   VALE=0.0003,),
+                _F(RESULTAT=U,
+                   INST=t3,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIYY',
+                   MAILLE='M1',
+                   NOEUD='N2',
+                   VALE=-100.0,),
+                _F(RESULTAT=U,
+                   INST=t5,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOM_CMP='EPZZ',
+                   MAILLE='M1',
+                   NOEUD='N3',
+                   VALE=0.001275,),
+                _F(RESULTAT=U,
+                   INST=t5,
+                   NOM_CHAM='VARI_ELNO',
+                   NOM_CMP='V1',
+                   MAILLE='M1',
+                   NOEUD='N3',
+                   VALE=0.000525,),
+                _F(RESULTAT=U,
+                   INST=t5,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIYY',
+                   MAILLE='M1',
+                   NOEUD='N3',
+                   VALE=-75.0,),),);
 
-V=CALC_ELEM( reuse=V,
-                            OPTION=( 'EPSI_ELNO',
-                   'SIGM_ELNO',  'VARI_ELNO',),
-                          RESULTAT=V,
-              )
+# MATERIAU ORTHOTROPE EN FAIT ISOTROPE, EN THERMOELASTICITE
+
+MATO=DEFI_MATERIAU(ELAS_ORTH=_F(E_L=200000.,
+                                E_T=200000.,
+                                E_N=200000.,
+                                NU_LT=0.3,
+                                NU_LN=0.3,
+                                NU_TN=0.3,
+                                G_LT=75000.,
+                                G_LN=75000.,
+                                G_TN=75000.,
+                                ALPHA_L=10.0E-6,
+                                ALPHA_T=10.0E-6,
+                                ALPHA_N=10.0E-6,),
+                   TRACTION=_F(SIGM=CTRACB,),
+                   THER=_F(LAMBDA=1.0E-3,
+                           RHO_CP=0.0E-3,),);
+
+CMO=AFFE_MATERIAU(MAILLAGE=MAIL,
+                  AFFE=_F(TOUT='OUI',
+                          MATER=MATO,),);
+
+TEMPEO=THER_LINEAIRE(MODELE=MOTHER,
+                     CHAM_MATER=CMO,
+                     EXCIT=_F(CHARGE=CHTHER,),
+                     INCREMENT=_F(LIST_INST=L_INST,),
+                     ETAT_INIT=_F(CHAM_NO=T0,),);
+
+CTMO=AFFE_MATERIAU(MAILLAGE=MAIL,
+                   AFFE=_F(TOUT='OUI',
+                           MATER=MATO,),
+                   AFFE_VARC=_F(TOUT='OUI',
+                                NOM_VARC='TEMP',
+                                EVOL=TEMPEO,
+                                NOM_CHAM='TEMP',
+                                VALE_REF=0.,),);
+
+VE=STAT_NON_LINE(MODELE=MOMECA,
+                 CHAM_MATER=CTMO,
+                 EXCIT=_F(CHARGE=CHMECA,),
+                 COMP_ELAS=_F(RELATION='ELAS',),
+                 INCREMENT=_F(LIST_INST=L_INST,),
+                 NEWTON=_F(MATRICE='ELASTIQUE',),);
+
+VE=CALC_ELEM(reuse =VE,
+             RESULTAT=VE,
+             OPTION=('EPSI_ELNO','SIGM_ELNO','VARI_ELNO',),);
 
 #
-TEST_RESU(RESU=(
-          _F(  RESULTAT = V,  NOM_CHAM = 'EPSI_ELNO',  NUME_ORDRE = 1,
-            MAILLE = 'M1', NOEUD = 'N1', NOM_CMP = 'EPXX', VALE = 8.6666E-4),
-          _F(  RESULTAT = V,  NOM_CHAM = 'SIGM_ELNO',  NUME_ORDRE = 1,
-            MAILLE = 'M1', NOEUD = 'N1', NOM_CMP = 'SIYY', VALE = -133.333))
-          )
+eps1 = ((1.3 * t1) * 1e-05);
 
-V2=STAT_NON_LINE(
-                            MODELE=MOMECA,
-                        CHAM_MATER=CTM,
-                             EXCIT=_F(
-                CHARGE = CHMECAO),
-                         COMP_INCR=_F(
-                RELATION = 'ELAS'),
-                         INCREMENT=_F(
-                LIST_INST = L_INST),
-                            NEWTON=_F(
-                MATRICE = 'ELASTIQUE'),
-                       CONVERGENCE=_F(
-                RESI_GLOB_RELA = .0001,
-                ITER_GLOB_MAXI = 10)
-              )
+eps3 = ((1.3 * t3) * 1e-05);
 
-V2=CALC_ELEM( reuse=V2,
-                            OPTION=( 'EPSI_ELNO',
-                  'SIGM_ELNO',  'VARI_ELNO',),
-                          RESULTAT=V2,
-              )
+eps5 = ((1.3 * t5) * 1e-05);
 
-TEST_RESU(RESU=(
-          _F(  RESULTAT = V2,NOM_CHAM = 'SIGM_ELNO',NUME_ORDRE = 1,
-            MAILLE = 'M1',NOEUD = 'N1',NOM_CMP = 'SIYY',VALE = -133.333),
-          _F(  RESULTAT = V2,NOM_CHAM = 'EPSI_ELNO',NUME_ORDRE = 1,
-            MAILLE = 'M1',NOEUD = 'N1',NOM_CMP = 'EPXX',VALE = 8.6666E-4))
-                           )
+
+TEST_RESU(RESU=(_F(RESULTAT=VE,
+                   INST=t1,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOM_CMP='EPXX',
+                   MAILLE='M1',
+                   NOEUD='N1',
+                   VALE=eps1,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=VE,
+                   INST=t3,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOM_CMP='EPXX',
+                   MAILLE='M1',
+                   NOEUD='N1',
+                   VALE=eps3,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=VE,
+                   INST=t5,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOM_CMP='EPXX',
+                   MAILLE='M1',
+                   NOEUD='N1',
+                   VALE=eps5,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=VE,
+                   INST=t1,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIYY',
+                   MAILLE='M1',
+                   NOEUD='N1',
+                   VALE=-133.333,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=VE,
+                   INST=t3,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIYY',
+                   MAILLE='M1',
+                   NOEUD='N2',
+                   VALE=-160.0,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=VE,
+                   INST=t5,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIYY',
+                   MAILLE='M1',
+                   NOEUD='N3',
+                   VALE=-180.0,
+                   REFERENCE='ANALYTIQUE',),),);
+
+VI=STAT_NON_LINE(MODELE=MOMECA,
+                 CHAM_MATER=CTMO,
+                 EXCIT=_F(CHARGE=CHMECA,),
+                 COMP_INCR=_F(RELATION='ELAS',),
+                 INCREMENT=_F(LIST_INST=L_INST,),
+                 NEWTON=_F(MATRICE='ELASTIQUE',),);
+
+VI=CALC_ELEM(reuse =VI,
+             RESULTAT=VI,
+             OPTION=('EPSI_ELNO','SIGM_ELNO','VARI_ELNO',),);
+
+#
+
+TEST_RESU(RESU=(_F(RESULTAT=VI,
+                   INST=t1,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOM_CMP='EPXX',
+                   MAILLE='M1',
+                   NOEUD='N1',
+                   VALE=eps1,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=VI,
+                   INST=t3,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOM_CMP='EPXX',
+                   MAILLE='M1',
+                   NOEUD='N1',
+                   VALE=eps3,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=VI,
+                   INST=t5,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOM_CMP='EPXX',
+                   MAILLE='M1',
+                   NOEUD='N1',
+                   VALE=eps5,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=VI,
+                   INST=t1,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIYY',
+                   MAILLE='M1',
+                   NOEUD='N1',
+                   VALE=-133.333,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=VI,
+                   INST=t3,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIYY',
+                   MAILLE='M1',
+                   NOEUD='N2',
+                   VALE=-160.0,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=VI,
+                   INST=t5,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIYY',
+                   MAILLE='M1',
+                   NOEUD='N3',
+                   VALE=-180.0,
+                   REFERENCE='ANALYTIQUE',),),);
+
+# TEST DE REPRISE
+
+DEP=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+               OPERATION='EXTR',
+               RESULTAT=U,
+               NOM_CHAM='DEPL',
+               INST=t1,);
 
 #
 
-DEP=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-                    RESULTAT=U, NUME_ORDRE=1, NOM_CHAM='DEPL' )
+SI1=CREA_CHAMP(TYPE_CHAM='CART_SIEF_R',
+               OPERATION='AFFE',
+               MAILLAGE=MAIL,
+               AFFE=_F(TOUT='OUI',
+                       NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIYZ','SIXZ',),
+                       VALE=(0.,-133.332,0.,0.,0.,0.,),),);
+
+L_INST1=DEFI_LIST_REEL(DEBUT=66.666E0,
+                       INTERVALLE=(_F(JUSQU_A=80.000E0,
+                                      NOMBRE=2,),
+                                   _F(JUSQU_A=90.000E0,
+                                      NOMBRE=2,),),);
+
+W=STAT_NON_LINE(MODELE=MOMECA,
+                CHAM_MATER=CTM,
+                EXCIT=_F(CHARGE=CHMECA,),
+                COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',),
+                ETAT_INIT=_F(DEPL=DEP,
+                             SIGM=SI1,),
+                INCREMENT=_F(LIST_INST=L_INST1,),
+                CONVERGENCE=_F(RESI_GLOB_RELA=.0001,
+                               ITER_GLOB_MAXI=10,),);
+
+W=CALC_ELEM(reuse =W,
+            RESULTAT=W,
+            OPTION=('EPSI_ELNO','SIGM_ELNO','VARI_ELNO',),);
 
 #
 
-SI1=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='CART_SIEF_R',
-                    MAILLAGE=MAIL,
-                      AFFE=_F(  TOUT = 'OUI',
-           NOM_CMP = ('SIXX','SIYY','SIZZ','SIXY','SIYZ','SIXZ',),
-           VALE = (  0.,   -133.332,  0.,     0.,     0.,     0.,))
-                      )
-
-L_INST1=DEFI_LIST_REEL(
-               DEBUT=66.666E0,INTERVALLE=(
-           _F( JUSQU_A = 80.000E0,   NOMBRE = 2),
-                      _F( JUSQU_A = 90.000E0,   NOMBRE = 2))
-         )
-
-W=STAT_NON_LINE(
-                            MODELE=MOMECA,
-                        CHAM_MATER=CTM,
-                             EXCIT=_F(
-                CHARGE = CHMECA),
-                         COMP_INCR=_F(
-                RELATION = 'VMIS_ISOT_TRAC'),
-                         INCREMENT=_F(
-                LIST_INST = L_INST1),
-                         ETAT_INIT=_F(
-                SIGM = SI1,
-                DEPL = DEP),
-                       CONVERGENCE=_F(
-                RESI_GLOB_RELA = .0001,
-                ITER_GLOB_MAXI = 10)
-              )
-
-W=CALC_ELEM( reuse=W,
-                            OPTION=( 'EPSI_ELNO',
-                  'SIGM_ELNO',  'VARI_ELNO',),
-                          RESULTAT=W,
-
-              )
-
-#
-TEST_RESU(RESU=(
-          _F(  RESULTAT = W,  NOM_CHAM = 'EPSI_ELNO',  NUME_ORDRE = 2,
-            MAILLE = 'M1',NOEUD = 'N2',NOM_CMP = 'EPZZ',VALE = 1.1000E-3),
-          _F(  RESULTAT = W,  NOM_CHAM = 'VARI_ELNO',  NUME_ORDRE = 2,
-            MAILLE = 'M1',NOEUD = 'N2',NOM_CMP = 'V1',VALE = 3.0000E-4),
-          _F(  RESULTAT = W,  NOM_CHAM = 'SIGM_ELNO',  NUME_ORDRE = 2,
-            MAILLE = 'M1',NOEUD = 'N2',NOM_CMP = 'SIYY',VALE = -100.),
-          _F(  RESULTAT = W,  NOM_CHAM = 'EPSI_ELNO',  NUME_ORDRE = 4,
-            MAILLE = 'M1',NOEUD = 'N3',NOM_CMP = 'EPZZ',VALE = 1.2750E-3),
-          _F(  RESULTAT = W,  NOM_CHAM = 'VARI_ELNO',  NUME_ORDRE = 4,
-            MAILLE = 'M1',NOEUD = 'N3',NOM_CMP = 'V1',VALE = 5.2500E-4),
-          _F(  RESULTAT = W,  NOM_CHAM = 'SIGM_ELNO',  NUME_ORDRE = 4,
-            MAILLE = 'M1',NOEUD = 'N3',NOM_CMP = 'SIYY',VALE = -75.000))
-          )
+TEST_RESU(RESU=(_F(RESULTAT=W,
+                   INST=t3,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOM_CMP='EPZZ',
+                   MAILLE='M1',
+                   NOEUD='N2',
+                   VALE=0.0011,),
+                _F(RESULTAT=W,
+                   INST=t3,
+                   NOM_CHAM='VARI_ELNO',
+                   NOM_CMP='V1',
+                   MAILLE='M1',
+                   NOEUD='N2',
+                   VALE=0.0003,),
+                _F(RESULTAT=W,
+                   INST=t3,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIYY',
+                   MAILLE='M1',
+                   NOEUD='N2',
+                   VALE=-100.0,),
+                _F(RESULTAT=W,
+                   INST=t5,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOM_CMP='EPZZ',
+                   MAILLE='M1',
+                   NOEUD='N3',
+                   VALE=0.001275,),
+                _F(RESULTAT=W,
+                   INST=t5,
+                   NOM_CHAM='VARI_ELNO',
+                   NOM_CMP='V1',
+                   MAILLE='M1',
+                   NOEUD='N3',
+                   VALE=0.000525,),
+                _F(RESULTAT=W,
+                   INST=t5,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIYY',
+                   MAILLE='M1',
+                   NOEUD='N3',
+                   VALE=-75.0,),),);
 
 #  ATESTS DES ENERGIES
-U=CALC_ELEM( reuse=U, OPTION=( 'ETOT_ELGA','ENEL_ELGA'),
-                          RESULTAT=U,
-                          )
 
-TEST_RESU(RESU=(
-          _F(  RESULTAT = U,  NOM_CHAM = 'ENEL_ELGA',  NUME_ORDRE = 1,REFERENCE='ANALYTIQUE',
-            MAILLE = 'M1', POINT=1, NOM_CMP = 'TOTALE', VALE = 4.4444E-02),),)
+U=CALC_ELEM(reuse =U,
+            RESULTAT=U,
+            OPTION=('ETOT_ELGA','ENEL_ELGA',),);
 
-T_POT=POST_ELEM(
-                    RESULTAT=U,
-                      CHARGE=CHMECA,
-                    ENER_POT=_F( TOUT = 'OUI',)  )
+TEST_RESU(RESU=_F(RESULTAT=U,
+                  INST=t1,
+                  NOM_CHAM='ENEL_ELGA',
+                  NOM_CMP='TOTALE',
+                  MAILLE='M1',
+                  POINT=1,
+                  VALE=0.044444,
+                  REFERENCE='ANALYTIQUE',),);
 
-T_TOT=POST_ELEM(
-                    RESULTAT=U,
-                      CHARGE=CHMECA,
-                    ENER_TOTALE=_F( TOUT = 'OUI',)  )
+T_POT=POST_ELEM(ENER_POT=_F(TOUT='OUI',),
+                CHARGE=CHMECA,
+                RESULTAT=U,);
 
-IMPR_TABLE(TABLE=T_POT)
+T_TOT=POST_ELEM(ENER_TOTALE=_F(TOUT='OUI',),
+                CHARGE=CHMECA,
+                RESULTAT=U,);
 
-IMPR_TABLE(TABLE=T_TOT)
+IMPR_TABLE(TABLE=T_POT,);
 
-TEST_TABLE ( TABLE=T_POT,
-             FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                       VALE_I=1),
-             NOM_PARA='TOTALE',
-             REFERENCE='ANALYTIQUE',
-             VALE= 0.266664  )
+IMPR_TABLE(TABLE=T_TOT,);
+
+TEST_TABLE(TABLE=T_POT,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           NOM_PARA='TOTALE',
+           VALE=0.266664,
+           REFERENCE='ANALYTIQUE',);
+
 # 4.4444E-2 * 3/2 * 4 = 0.266664
-TEST_TABLE ( TABLE=T_TOT,
-             FILTRE=_F(NOM_PARA='NUME_ORDRE',
-                       VALE_I=1),
-             NOM_PARA='TOTALE',
-             REFERENCE='ANALYTIQUE',
-             VALE= 0.266664 )
 
-FIN()
-#
+TEST_TABLE(TABLE=T_TOT,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           NOM_PARA='TOTALE',
+           VALE=0.266664,
+           REFERENCE='ANALYTIQUE',);
+
+FIN();
+#CHECKSUM:2cec309a6cacce1f4d2829259233c927  -:FIN CHECKSUM

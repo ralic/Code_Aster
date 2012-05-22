@@ -1,7 +1,7 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hancpu utilitai  DATE 19/05/2011   AUTEUR SELLENET N.SELLENET */
+/* MODIF hancpu utilitai  DATE 21/05/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -26,9 +26,9 @@
 */
 void hancpu(int sig)
 {
-   void STDCALL(SIGCPU, sigcpu)();
+   void DEF0(SIGCPU, sigcpu);
    
-   F_FUNC(SIGCPU, sigcpu)();
+   CALL0(SIGCPU, sigcpu);
    exit(sig);
 }
 

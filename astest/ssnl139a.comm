@@ -1,21 +1,21 @@
-# MODIF  DATE 10/05/2012   AUTEUR CHEIGNON E.CHEIGNON 
+# MODIF  DATE 21/05/2012   AUTEUR DESOZA T.DESOZA 
 # TITRE VALIDATION DE LA REACTUALISATION DE L'ANGLE DE VRILLE DES POUTRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # ssnl139a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 
@@ -45,7 +45,6 @@ POUCA=AFFE_CARA_ELEM(MODELE=MOPOU,    INFO=1,
                      PREC_INERTIE=0.3,
                      PREC_AIRE=1.E-2),
            ORIENTATION=_F(GROUP_MA=('POUTRE'),
-                          #CARA='ANGL_VRIL', VALE=0.0,),
                           CARA='ANGL_VRIL', VALE=90.0,),
            MULTIFIBRE = _F ( GROUP_MA = 'POUTRE',
                               GROUP_FIBRE= ('BETON'),),
@@ -53,7 +52,6 @@ POUCA=AFFE_CARA_ELEM(MODELE=MOPOU,    INFO=1,
            GEOM_FIBRE = GFF ,
                   )
 
-RAC2SUR2=0.70710678118654757
 # LES MATERIAUX
 
 # DEFINIR ICI TOUTES LES VARIATIONS FONCTION DE LA TEMPERATURE SELON EUROCODE
@@ -69,7 +67,6 @@ BETON=DEFI_MATERIAU(ELAS=_F(E=EB, NU=NUB, RHO=RHOB),
 MATFF=DEFI_COMPOR(GEOM_FIBRE=GFF,MATER_SECT=BETON,
                  MULTIFIBRE=(_F(GROUP_FIBRE='BETON',MATER=BETON,RELATION='ELAS',
                                 DEFORMATION='GROT_GDEP'),
-                                #),
                              ))
 
 
@@ -79,18 +76,19 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAPOU,
                     AFFE_COMPOR=_F(GROUP_MA='POUTRE',COMPOR=MATFF),
                          )
 
+RAC2SUR2=sqrt(2.)/2.
 BLOQUAGE=AFFE_CHAR_MECA(MODELE=MOPOU,
                         DDL_IMPO=(_F(GROUP_NO='A',  DX=0.0, DY=0.0, DZ=0.0,
-                                                    DRY=0.,#DRX=0.
+                                                    DRY=0.,
                                      ),
                                   _F(GROUP_NO='B',  DY=0.0, ),
                                   ),
-                                  # blocage de la ratoation autour de l'axe de la poutre
+                                  # blocage de la rotation autour de l'axe de la poutre
                                   LIAISON_DDL=_F(NOEUD=('N001','N001'),DDL=('DRX','DRZ'),COEF_MULT=(RAC2SUR2,RAC2SUR2),COEF_IMPO=0.0)
                                   )
 CHARG=AFFE_CHAR_MECA(MODELE=MOPOU,
                         DDL_IMPO=(
-                                  _F(GROUP_NO='B',  DX= -0.70710678118654757E-02, DZ=-0.70710678118654757E-02 ),
+                                  _F(GROUP_NO='B',  DX= -0.01*RAC2SUR2, DZ=-0.01*RAC2SUR2 ),
                                   ),)
 PERTU=AFFE_CHAR_MECA(MODELE=MOPOU,
                         FORCE_NODALE=(
@@ -132,6 +130,7 @@ TEST_RESU(RESU=(_F(RESULTAT=U1,
                    VALE=1.50847E-01,
                    CRITERE='RELATIF',
                    PRECISION=1.0E-5,
+                   VERSION='11.1.20',
                    REFERENCE='NON_REGRESSION',),
                 ),);
 

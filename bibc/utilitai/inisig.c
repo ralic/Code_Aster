@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF inisig utilitai  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF inisig utilitai  DATE 21/05/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -64,7 +64,7 @@ void hancpu (int sig);
 #endif
 
 
-void STDCALL(INISIG, inisig)()
+void DEF0(INISIG, inisig)
 {
 #if defined _POSIX
    struct sigaction action_CPU_LIM;
@@ -140,7 +140,7 @@ void stptrap (int sig)
 
 static INTEGER status_usr1 = 0;
 
-INTEGER F_FUNC(ETAUSR, etausr)()
+INTEGER DEF0(ETAUSR, etausr)
 {
     /* ETAt USR1 :
      * Retourne la variable status_usr1 */
@@ -156,7 +156,7 @@ void stpusr1 (int sig)
     status_usr1 = (INTEGER)1;
 }
 
-void STDCALL(CLRUSR, clrusr)()
+void DEF0(CLRUSR, clrusr)
 {
     /* CLeaR USR1 :
      * Réinitialise la valeur de status_usr1

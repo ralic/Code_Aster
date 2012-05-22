@@ -1,4 +1,4 @@
-# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/05/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE MODELISATION DU GONFLEMENT DE L ARGILE GONFLANTE (AXI HH2MS)
 # wtna110a.para = tps_job 150 mem_job 128Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -293,7 +293,7 @@ SIGINIT=CREA_CHAMP(     MODELE=MODELE,
 TEMPS2=DEFI_LIST_REEL(   DEBUT=0.,INTERVALLE=(
                             _F(  JUSQU_A = 1.,   NOMBRE =500 ,  ),
                          ),
-                         ),
+                         )
 
 MSTEP=DEFI_FONCTION( NOM_PARA='INST',
                            PROL_DROITE='LINEAIRE',

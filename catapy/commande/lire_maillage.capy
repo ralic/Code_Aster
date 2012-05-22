@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 21/05/2012   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -51,9 +51,9 @@ LIRE_MAILLAGE=OPER(nom="LIRE_MAILLAGE",op=   1,sd_prod=maillage_sdaster,
 #
             RENOMME = FACT(statut='f', max='**',
                                  fr="Renommer un nom de groupe MED",
-                 NOM_MED     = SIMP(statut='o', typ=grma,
+                 NOM_MED     = SIMP(statut='o', typ='TXM', validators=LongStr(1, 64),
                                     fr="Nom du groupe dans le fichier MED"),
-                 NOM         = SIMP(statut='o', typ=grma, validators=LongStr(1,8),
+                 NOM         = SIMP(statut='o', typ=grma,
                                     fr="Nom du groupe dans le maillage ASTER"),
             ),
          ),

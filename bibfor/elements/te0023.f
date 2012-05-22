@@ -1,6 +1,6 @@
       SUBROUTINE TE0023(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 10/05/2012   AUTEUR CHEIGNON E.CHEIGNON 
+C MODIF ELEMENTS  DATE 21/05/2012   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -44,27 +44,31 @@ C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                  ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+      INTEGER IORIEN,ISTRX,I,KPG,NPG,NCOMP
 C     ------------------------------------------------------------------
-      INTEGER LORIEN,LSTRX,I
       CALL JEMARQ()
-      CALL JEVECH('PCAORIE','L',LORIEN)
-      CALL JEVECH('PSTRX_R','E',LSTRX)
+      CALL JEVECH('PCAORIE','L',IORIEN)
+      CALL JEVECH('PSTRX_R','E',ISTRX)
 
-      IF (NOMTE.EQ.'MECA_POU_D_TGM')THEN
-        DO 3 I=1,15
-          ZR(LSTRX-1+I)=0.D0
+      IF (NOMTE.EQ.'MECA_POU_D_TGM') THEN
+        NCOMP = 18
+        NPG   = 3
+        DO 3 KPG = 1,NPG
+          DO 2 I=1,15
+            ZR(ISTRX-1+NCOMP*(KPG-1)   +I) = 0.D0
+ 2        CONTINUE
+          DO 1 I=1,3
+            ZR(ISTRX-1+NCOMP*(KPG-1)+15+I) = ZR(IORIEN-1+I)
+ 1        CONTINUE
  3      CONTINUE
-        DO 1 I=1,3
-          ZR(LSTRX+15-1+I)=ZR(LORIEN-1+I)
- 1      CONTINUE
-        DO 4 I=1,15
-          ZR(LSTRX+18-1+I)=0.D0
- 4      CONTINUE
-
       ELSEIF (NOMTE.EQ.'MECA_POU_D_EM')THEN
-        DO 2 I=1,30
-          ZR(LSTRX-1+I)=0.D0
- 2      CONTINUE
+        NCOMP = 15
+        NPG   = 2
+        DO 20 KPG = 1,NPG
+          DO 10 I=1,NCOMP
+            ZR(ISTRX-1+NCOMP*(KPG-1)+I)=0.D0
+ 10       CONTINUE
+ 20     CONTINUE
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF

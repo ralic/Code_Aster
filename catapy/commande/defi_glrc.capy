@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 11/01/2011   AUTEUR SFAYOLLE S.FAYOLLE 
+#& MODIF COMMANDE  DATE 22/05/2012   AUTEUR SFAYOLLE S.FAYOLLE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -62,6 +62,11 @@ DEFI_GLRC=OPER(nom="DEFI_GLRC",op=57,sd_prod=mater_sdaster,reentrant='f',
            b_glrc_damage=BLOC(condition = "RELATION == 'GLRC_DAMAGE'",
                             fr="Paramètres de la loi GLRC_DAMAGE",
                    BETON            =FACT(statut='o',max=1,
+                   regles=(ENSEMBLE('MP1X', 'MP1Y', 'MP2X', 'MP2Y'),
+                           ENSEMBLE('MP1X_FO', 'MP1Y_FO', 'MP2X_FO', 'MP2Y_FO'),
+                           PRESENT_ABSENT('MP1X', 'MP1X_FO', 'MP1Y_FO', 'MP2X_FO', 'MP2Y_FO'),
+                           ENSEMBLE('OMT', 'EAT'),
+                           ENSEMBLE('BT1','BT2'),),
                      MATER           =SIMP(statut='o',typ=(mater_sdaster) ),
                      EPAIS           =SIMP(statut='o',typ='R',val_min=0.E+0 ),
                      GAMMA           =SIMP(statut='o',typ='R',val_min=0.E+0,val_max=1.E+0),
@@ -81,15 +86,20 @@ DEFI_GLRC=OPER(nom="DEFI_GLRC",op=57,sd_prod=mater_sdaster,reentrant='f',
                      C2M2            =SIMP(statut='o',typ='R',val_min=0.E+0),
                      C2M3            =SIMP(statut='o',typ='R',val_min=0.E+0),
 
-                     OMT             =SIMP(statut='f',typ='R',val_min=0.E+0,defaut=0.0E+0),
-                     EAT             =SIMP(statut='f',typ='R',val_min=0.E+0,defaut=0.0E+0),
-                     BT1             =SIMP(statut='f',typ='R',val_min=0.E+0,defaut=0.0E+0),
-                     BT2             =SIMP(statut='f',typ='R',val_min=0.E+0,defaut=0.0E+0),
+                     OMT             =SIMP(statut='f',typ='R',val_min=0.E+0),
+                     EAT             =SIMP(statut='f',typ='R',val_min=0.E+0),
+                     BT1             =SIMP(statut='f',typ='R',val_min=0.E+0),
+                     BT2             =SIMP(statut='f',typ='R',val_min=0.E+0),
 
-                     MP1X            =SIMP(statut='f',typ=('R',listr8_sdaster)),
-                     MP2X            =SIMP(statut='f',typ=('R',listr8_sdaster)),
-                     MP1Y            =SIMP(statut='f',typ=('R',listr8_sdaster)),
-                     MP2Y            =SIMP(statut='f',typ=('R',listr8_sdaster)),
+                     MP1X            =SIMP(statut='f',typ='R'),
+                     MP2X            =SIMP(statut='f',typ='R'),
+                     MP1Y            =SIMP(statut='f',typ='R'),
+                     MP2Y            =SIMP(statut='f',typ='R'),
+
+                     MP1X_FO         =SIMP(statut='f',typ=fonction_sdaster),
+                     MP2X_FO         =SIMP(statut='f',typ=fonction_sdaster),
+                     MP1Y_FO         =SIMP(statut='f',typ=fonction_sdaster),
+                     MP2Y_FO         =SIMP(statut='f',typ=fonction_sdaster),
          ),
                    NAPPE     =FACT(statut='o',max=10,
                      MATER           =SIMP(statut='o',typ=(mater_sdaster) ),

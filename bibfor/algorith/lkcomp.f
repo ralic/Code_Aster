@@ -12,9 +12,9 @@ C
       REAL*8             DSIDE(6,6)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 22/05/2012   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -87,6 +87,7 @@ C      REAL*8        LGLEPS
       REAL*8        DSIG(6), VECD(6)
       REAL*8        DE(6,6),KK,MU
       REAL*8        KRON(6),  VINTR
+      REAL*8        SOMME, R8PREM
       CHARACTER*3   MATCST
 C =================================================================
 C --- INITIALISATION DE PARAMETRES --------------------------------
@@ -175,6 +176,19 @@ C =================================================================
         DEVML(K)   = DEPSTH(K) - DVML/3.D0 * KRON(K)
  115  CONTINUE
 
+C =================================================================
+C --- VERIFICATION D'UN ETAT INITIAL PLASTIQUEMENT ADMISSIBLE -----
+C =================================================================
+      SOMME = ZERO
+      DO 140 I = 1, NVI
+        SOMME = SOMME + VINM(I)
+ 140  CONTINUE
+      IF(ABS(SOMME).LT.R8PREM())THEN
+        CALL LKCRIP(I1ML,SML,VINM,NBMAT,MATERD,UCRPM,SEUPM)
+        IF(SEUPM/MATERD(4,1).GT.1.0D-6)THEN
+          CALL U2MESS('F','ALGORITH2_2')
+        ENDIF
+      ENDIF
 C =================================================================
 C --- PREDICTION ELASTIQUE ----------------------------------------
 C =================================================================

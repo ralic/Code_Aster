@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 10/04/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 22/05/2012   AUTEUR SFAYOLLE S.FAYOLLE 
 C TOLE CRP_20
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -411,8 +411,13 @@ C
 
           CALL MAGLRC (ZI(IMATE),MATR,DELAS,ECR)
           IF(Q4GG) THEN
-            DCC(1,1) = MATR(6)*EP/(2.D0*(1.D0+MATR(7)))*5.D0/6.D0
-            DCC(2,2) = DCC(1,1)
+            IF(MATR(14) .EQ. -1.D0)THEN
+              DCC(1,1) = MATR(6)*EP/(2.D0*(1.D0+MATR(7)))*5.D0/6.D0
+              DCC(2,2) = DCC(1,1)
+            ELSE
+              DCC(1,1) = MATR(14)
+              DCC(2,2) = MATR(15)
+            ENDIF
             DCC(1,2) = 0.D0
             DCC(2,1) = 0.D0
           ENDIF

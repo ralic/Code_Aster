@@ -1,4 +1,4 @@
-# MODIF  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 21/05/2012   AUTEUR DESOZA T.DESOZA 
 # TITRE POUTRE EN FLAMBEMENT
 # ssnl502d.para = tps_job 90 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -146,7 +146,8 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                                      NOMBRE=5,),
                                   _F(JUSQU_A=tfin,
                                      NOMBRE=500,),),);
-#Premier calcul non-lineaire avec PETIT_REAC pour s'approcher de la charge critique de flambement
+
+#Premier calcul non-lineaire avec GROT_GDEP pour s'approcher de la charge critique de flambement
 
 RESO=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CH_MAT,
@@ -163,6 +164,7 @@ RESO=STAT_NON_LINE(MODELE=MO,
                    CONVERGENCE=_F(RESI_GLOB_RELA=1e-05,
                                   ITER_GLOB_MAXI=100,),
                    );
+
 #Difficulte a converger : on pilote en longueur d'arc
 
 RESO=STAT_NON_LINE(reuse =RESO,
@@ -305,24 +307,23 @@ IMPR_RESU(FORMAT='CASTEM',
                   NOM_CHAM='DEPL',),);
 
 # 3 PREMIERES VALEURS ELOIGNEES DE LA SOLUTION ANALYTIQUE A CAUSE DU DEFAUT DE RECTITUDE
-
 TEST_FONCTION(VALEUR=(_F(FONCTION=DX_ETA,
                          VALE_PARA=1.015,
                          VALE_REFE=0.11,
                          CRITERE='RELATIF',
-                         PRECISION=0.55,
+                         PRECISION=0.25,
                          REFERENCE='ANALYTIQUE',),
                       _F(FONCTION=DX_ETA,
                          VALE_PARA=1.063,
                          VALE_REFE=0.211,
                          CRITERE='RELATIF',
-                         PRECISION=0.1,
+                         PRECISION=0.05,
                          REFERENCE='ANALYTIQUE',),
                       _F(FONCTION=DX_ETA,
                          VALE_PARA=1.152,
                          VALE_REFE=0.2965,
                          CRITERE='RELATIF',
-                         PRECISION=0.03,
+                         PRECISION=0.01,
                          REFERENCE='ANALYTIQUE',),
                       _F(FONCTION=DX_ETA,
                          VALE_PARA=1.293,
@@ -334,7 +335,7 @@ TEST_FONCTION(VALEUR=(_F(FONCTION=DX_ETA,
                          VALE_PARA=1.518,
                          VALE_REFE=0.396,
                          CRITERE='RELATIF',
-                         PRECISION=0.015,
+                         PRECISION=0.02,
                          REFERENCE='ANALYTIQUE',),
                       _F(FONCTION=DX_ETA,
                          VALE_PARA=1.884,
@@ -360,37 +361,37 @@ TEST_FONCTION(VALEUR=(_F(FONCTION=DX_ETA,
                          CRITERE='RELATIF',
                          PRECISION=0.01,
                          REFERENCE='ANALYTIQUE',),),);
-# 3 PREMIERES VALEURS ELOIGNEES DE LA SOLUTION ANALYTIQUE A CAUSE DU DEFAUT DE RECTITUDE
 
+# 3 PREMIERES VALEURS ELOIGNEES DE LA SOLUTION ANALYTIQUE A CAUSE DU DEFAUT DE RECTITUDE
 TEST_FONCTION(VALEUR=(_F(FONCTION=DY_ETA,
                          VALE_PARA=1.015,
                          VALE_REFE=-0.015,
                          CRITERE='RELATIF',
-                         PRECISION=0.8,
+                         PRECISION=0.7,
                          REFERENCE='ANALYTIQUE',),
                       _F(FONCTION=DY_ETA,
                          VALE_PARA=1.063,
                          VALE_REFE=-0.0595,
                          CRITERE='RELATIF',
-                         PRECISION=0.2,
+                         PRECISION=0.1,
                          REFERENCE='ANALYTIQUE',),
                       _F(FONCTION=DY_ETA,
                          VALE_PARA=1.152,
                          VALE_REFE=-0.1295,
                          CRITERE='RELATIF',
-                         PRECISION=0.07,
+                         PRECISION=0.05,
                          REFERENCE='ANALYTIQUE',),
                       _F(FONCTION=DY_ETA,
                          VALE_PARA=1.293,
                          VALE_REFE=-0.22,
                          CRITERE='RELATIF',
-                         PRECISION=0.04,
+                         PRECISION=0.01,
                          REFERENCE='ANALYTIQUE',),
                       _F(FONCTION=DY_ETA,
                          VALE_PARA=1.518,
                          VALE_REFE=-0.3255,
                          CRITERE='RELATIF',
-                         PRECISION=0.02,
+                         PRECISION=0.01,
                          REFERENCE='ANALYTIQUE',),
                       _F(FONCTION=DY_ETA,
                          VALE_PARA=1.884,
@@ -414,27 +415,27 @@ TEST_FONCTION(VALEUR=(_F(FONCTION=DY_ETA,
                          VALE_PARA=9.116,
                          VALE_REFE=-0.7885,
                          CRITERE='RELATIF',
-                         PRECISION=0.015,
+                         PRECISION=0.02,
                          REFERENCE='ANALYTIQUE',),),);
-# 3 PREMIERES VALEURS ELOIGNEES DE LA SOLUTION ANALYTIQUE A CAUSE DU DEFAUT DE RECTITUDE
 
+# 3 PREMIERES VALEURS ELOIGNEES DE LA SOLUTION ANALYTIQUE A CAUSE DU DEFAUT DE RECTITUDE
 TEST_FONCTION(VALEUR=(_F(FONCTION=MZ_ETA,
                          VALE_PARA=1.015,
                          VALE_REFE=127.58,
                          CRITERE='RELATIF',
-                         PRECISION=0.56,
+                         PRECISION=0.3,
                          REFERENCE='ANALYTIQUE',),
                       _F(FONCTION=MZ_ETA,
                          VALE_PARA=1.063,
                          VALE_REFE=248.32,
                          CRITERE='RELATIF',
-                         PRECISION=0.1,
+                         PRECISION=0.05,
                          REFERENCE='ANALYTIQUE',),
                       _F(FONCTION=MZ_ETA,
                          VALE_PARA=1.152,
                          VALE_REFE=380.45,
                          CRITERE='RELATIF',
-                         PRECISION=0.03,
+                         PRECISION=0.02,
                          REFERENCE='ANALYTIQUE',),
                       _F(FONCTION=MZ_ETA,
                          VALE_PARA=1.293,
@@ -485,9 +486,6 @@ _F(FONCTION=DX_ETA,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='8.3.2',
 _F(FONCTION=DX_ETA,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='8.3.2',VALE_PARA=9.116, VALE_REFE=2.1049785006189E-01),
                         ),)
 
-
-
-# 3 PREMIERES VALEURS ELOIGNEES DE LA SOLUTION ANALYTIQUE A CAUSE DE LA PERTURBATION
 TEST_FONCTION(VALEUR=(
 _F(FONCTION=DY_ETA,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='8.3.2',VALE_PARA=1.015, VALE_REFE=-2.4104020077641E-02),
 _F(FONCTION=DY_ETA,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='8.3.2',VALE_PARA=1.063, VALE_REFE=-6.4733490663647E-02),
@@ -500,7 +498,6 @@ _F(FONCTION=DY_ETA,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='8.3.2',
 _F(FONCTION=DY_ETA,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='8.3.2',VALE_PARA=9.116, VALE_REFE=-7.7957755591576E-01),
                         ),)
 
-# 3 PREMIERES VALEURS ELOIGNEES DE LA SOLUTION ANALYTIQUE A CAUSE DE LA PERTURBATION
 TEST_FONCTION(VALEUR=(
 _F(FONCTION=MZ_ETA,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='8.3.2',VALE_PARA=1.015, VALE_REFE=1.5414803184754E+02),
 _F(FONCTION=MZ_ETA,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='8.3.2',VALE_PARA=1.063, VALE_REFE=2.5929920402290E+02),

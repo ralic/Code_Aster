@@ -1,4 +1,4 @@
-#@ MODIF calc_mac3coeur_ops Mac3coeur  DATE 10/05/2012   AUTEUR CHEIGNON E.CHEIGNON 
+#@ MODIF calc_mac3coeur_ops Mac3coeur  DATE 21/05/2012   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -54,7 +54,7 @@ def calc_mac3coeur_ops(self, **args):
     _tabn1       = _TAB_N.EXTR_TABLE()
 
     # ITER_GLOB_MAXI pour STAT_NON_LINE
-    NITER=20
+    NITER=30
 
     # on recupere le nom du coeur
     name = _tabn1.para[0]

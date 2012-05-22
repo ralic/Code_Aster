@@ -1,4 +1,4 @@
-# MODIF  DATE 10/05/2012   AUTEUR CHEIGNON E.CHEIGNON 
+# MODIF  DATE 21/05/2012   AUTEUR DESOZA T.DESOZA 
 # TITRE DETERMINATION DES CHARGES DE RUINE DE LA CONSOLE MEKELEC
 # ssnl135b.para = tps_job 230 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -19,7 +19,8 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='SSNL135B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='SSNL135B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),DEBUG=_F(SDVERI='OUI'),
+      IGNORE_ALARM='MODELISA4_9',)
 
 # Lecture du maillage
 MA = LIRE_MAILLAGE(FORMAT='MED',)
@@ -590,10 +591,8 @@ MA=DEFI_GROUP(reuse=MA,
 # --------------- DEFINITION DES CHARGEMENTS VARIABLES -----------------
 
 TEMPS=DEFI_LIST_REEL(DEBUT=0.000000e+00,
-                     INTERVALLE=(_F(JUSQU_A=0.59,
-                                   PAS=0.01,),
-                                 _F(JUSQU_A=2.0,
-                                   PAS=0.001,),),);
+                     INTERVALLE=(_F(JUSQU_A=1.0,
+                                   PAS=0.01,),),);
 
 FORCT_F=DEFI_FONCTION(NOM_PARA='INST',
                       VALE=(0.,0.,1.0,32400.0,),
@@ -620,7 +619,7 @@ FORCT=AFFE_CHAR_MECA(MODELE=MO,
 # **********************************************************************
 NBGL = 50;
 
-RESGL = 5e-05;
+RESGL = 1e-06;
 
 # ----------------------------------------------------------------------
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS),
@@ -629,10 +628,34 @@ DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS),
                                  SUBD_PAS=4,
                                  SUBD_PAS_MINI = 1e-6),)
 
-MEKEFOR=STAT_NON_LINE(MODELE=MO,
+MEKEFOR0=STAT_NON_LINE(MODELE=MO,
                       CHAM_MATER=CHMAT,
                       CARA_ELEM=CAREL,
                       INFO = 1,
+                      EXCIT=(_F(CHARGE=LIAISON,),
+                             _F(CHARGE=DEPLT,),
+                             _F(CHARGE=FORCT,
+                                FONC_MULT=FORCT_F,),),
+                      COMP_INCR=(_F(RELATION='ELAS',
+                                    DEFORMATION='PETIT',
+                                    MAILLE=
+                                    ('D008022','D008032','D009022','D009032','D00A032',
+                                             'D00A042','D00A041','D00A052','D00A062','D00A072','D00A082','D00B032','D00B042',
+                                             'D00B052','D00B062','D00B061','D00B072','D00B082',),),
+                                 _F(RELATION='MULTIFIBRE',
+                                    GROUP_MA=('S00B','S00A','S009','S008','S007','S006','S005','S004','S003','S002','S001',),),),
+                      INCREMENT=_F(LIST_INST=DEFLIST,
+                                   INST_FIN=0.1,),
+                      NEWTON=_F(MATRICE='TANGENTE',
+                                REAC_ITER=1,),
+                      CONVERGENCE=_F(RESI_GLOB_RELA=RESGL,
+                                     ITER_GLOB_MAXI=NBGL,),
+                      );
+
+MEKEFOR=STAT_NON_LINE(MODELE=MO,
+                      CHAM_MATER=CHMAT,
+                      CARA_ELEM=CAREL,
+                      ETAT_INIT=_F(EVOL_NOLI=MEKEFOR0),
                       EXCIT=(_F(CHARGE=LIAISON,),
                              _F(CHARGE=DEPLT,),
                              _F(CHARGE=FORCT,
@@ -657,43 +680,6 @@ MEKEFOR=STAT_NON_LINE(MODELE=MO,
                       CONVERGENCE=_F(RESI_GLOB_RELA=RESGL,
                                      ITER_GLOB_MAXI=NBGL,),
                       );
-# ----------------------------------------------------
-# Pour : BARRE, POU_D_TGM, CABLE
-
-#MEKEFOR=CALC_CHAMP(reuse =MEKEFOR,
-#                  MODELE=MO,
-#                  CHAM_MATER=CHMAT,
-#                  CARA_ELEM=CAREL,
-#                  RESULTAT=MEKEFOR,
-#                  TOUT_ORDRE='OUI',
-#                  GROUP_MA=('S00B','S00A','S009','S008','S007','S006','S005','S004','S003','S002','S001',),
-#                   CONTRAINTE=('SIGM_ELNO'),);
-# ----------------------------------------------------
-
-#MEKEFOR=CALC_CHAMP(reuse =MEKEFOR,
-#                RESULTAT=MEKEFOR,
-#                TOUT_ORDRE='OUI',
-#                FORCE='FORC_NODA',
-#                MODELE=MO,
-#                CHAM_MATER=CHMAT,
-#                CARA_ELEM=CAREL,);
-
-#IMPR_RESU(MODELE=MO,
-#          FORMAT='CASTEM',
-#          RESU=_F(MAILLAGE=MA,
-#                  RESULTAT=MEKEFOR,
-#                  NOM_CHAM=('DEPL','SIGM_ELNO',),),);
-# ----------------------------------------------------
-
-#IMPR_RESU(FORMAT='RESULTAT',
-#          RESU=(_F(RESULTAT=MEKEFOR,
-#                   NOM_CHAM='FORC_NODA',
-#                   NOM_CMP=('DX','DY','DZ','DRX','DRY','DRZ',),
-#                   NOEUD=('G00B02','G00A02','G00901','G00801',),),
-#                _F(RESULTAT=MEKEFOR,
-#                   NOM_CHAM='DEPL',
-#                   NOM_CMP=('DX','DY','DZ','DRX','DRY','DRZ',),
-#                   NOEUD='G00101',),),);
 
 ETA_PILO=RECU_FONCTION(RESULTAT=MEKEFOR,
                        NOM_PARA_RESU='ETA_PILOTAGE',);
@@ -734,8 +720,8 @@ TEST_TABLE(TABLE=TAB_PILO,
 TEST_TABLE(TABLE=TAB_PILO,
            NOM_PARA='ETA_PILOTAGE',
            TYPE_TEST='MAX',
-           VALE=38551.658975792,
+           VALE=38543.95899752,
            CRITERE='RELATIF',
            REFERENCE='NON_REGRESSION',
-           VERSION='11.1.20',);
+           VERSION='11.1.22',);
 FIN();

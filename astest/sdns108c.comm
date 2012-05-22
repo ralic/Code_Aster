@@ -1,8 +1,6 @@
 # MODIF  DATE 22/05/2012   AUTEUR SFAYOLLE S.FAYOLLE 
-#  DATE   : 06/04/12
-#  AUTEUR : F. LEBOUVIER (DeltaCAD)
 #  TITRE  : REPONSE DYNAMIQUE D UNE DALLE EN BETON ARME (MODELE GLRC_DAMAGE)
-# sdns108a.para = tps_job 800 mem_job 512Mo ncpus 1 liste_test S
+# sdns108c.para = tps_job 800 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,7 +25,7 @@
 #            Mailles QUAD4
 
 
-DEBUT(CODE=_F(NOM='SDNS108A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='SDNS108C',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 
 # Carateristiques de la dalle
@@ -89,6 +87,9 @@ MAT = DEFI_GLRC(RELATION='GLRC_DAMAGE',
                            C2M1 = CPRG_1,C2M2 = CPRG_1,C2M3 = CPRG_1,
                            C1N1 = CPRG_2,C1N2 = CPRG_2,C1N3 = CPRG_2,
                            C2N1 = CPRG_2,C2N2 = CPRG_2,C2N3 = CPRG_2,
+                           
+                           MP1X = 1.2E3, MP1Y = 1.2E3,
+                           MP2X = -1.2E3, MP2Y = -1.2E3,
                            ),
 
                 NAPPE = (_F( MATER =  MAT_A,
@@ -177,18 +178,18 @@ IMPR_FONCTION(COURBE=(_F(FONCTION=DAMO_DEP,),),);
 # VERIFICATION DES DEPLACEMENTS
 # ------------------------------
 
-# INSTANT = 0.00934s
-# EUROPLEXUS (Q4GS GLRC) t=0.0093436, DZ=-0.04890906
+# INSTANT = 0.00965s
+# EUROPLEXUS (Q4GS GLRC) t=0.0096593, DZ=-0.05870762
 
 TEST_RESU(RESU=(
            _F( RESULTAT = DYNA_AMO,
-               NUME_ORDRE = 9340,
+               NUME_ORDRE = 9650,
                NOM_CHAM = 'DEPL',
                CRITERE = 'RELATIF',
-               PRECISION = 0.05,
+               PRECISION = 0.20,
                GROUP_NO='Point_C',
                NOM_CMP = 'DZ',
-               VALE = -0.04890906,
+               VALE = -0.05870762,
                REFERENCE = 'SOURCE_EXTERNE'),
              ),
           );

@@ -1,7 +1,7 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF MLNUMP utilitai  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF MLNUMP utilitai  DATE 21/05/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -19,7 +19,7 @@
 /* ------------------------------------------------------------------ */
 #include "aster.h"
 
-INTEGER STDCALL(MLNUMP, mlnump)()
+INTEGER DEF0(MLNUMP, mlnump)
 {
     INTEGER nump;
 #if defined _USE_OPENMP

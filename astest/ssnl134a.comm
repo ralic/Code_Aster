@@ -1,4 +1,4 @@
-# MODIF  DATE 10/05/2012   AUTEUR CHEIGNON E.CHEIGNON 
+# MODIF  DATE 21/05/2012   AUTEUR DESOZA T.DESOZA 
 # TITRE RUINE ELASTO-PLASTIQUE DU PORTIQUE DE LEE
 # ssnl134a.para = tps_job 90 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -19,7 +19,8 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='SSNL134A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='SSNL134A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),DEBUG=_F(SDVERI='OUI'),
+      IGNORE_ALARM='FONCT0_62',)
 
 #Acquisition du maillage du  portique bi-encastre
 
@@ -89,16 +90,36 @@ FO_MULT=DEFI_FONCTION(NOM_PARA='INST',
                       PROL_DROITE='EXCLU',
                       PROL_GAUCHE='EXCLU',);
 
+tforc=0.5
+tfin=10.0;
+
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=(_F(JUSQU_A=10.0,
+                      INTERVALLE=(_F(JUSQU_A=tforc,
+                                     NOMBRE=5,),
+                                  _F(JUSQU_A=tfin,
                                      PAS=0.01,),),);
 
-tfin=10.0;
-tpost=1.23;
-
-RESO2=STAT_NON_LINE(MODELE=MOD_TGM,
+RESO0=STAT_NON_LINE(MODELE=MOD_TGM,
                     CHAM_MATER=MATER,
                     CARA_ELEM=CARACT,
+                    EXCIT=(_F(CHARGE=LIAISON,),
+                           _F(CHARGE=FORCE,
+                              FONC_MULT=FO_MULT,
+                              ),),
+                    COMP_INCR=_F(RELATION='MULTIFIBRE',
+                                 ),
+                    INCREMENT=_F(LIST_INST=L_INST,
+                                 INST_FIN=tforc,),
+                    NEWTON=_F(MATRICE='TANGENTE',
+                              REAC_ITER=1,),
+                    CONVERGENCE=_F(RESI_GLOB_RELA=1e-6,
+                                   ITER_GLOB_MAXI=50,),
+                    );
+
+RESO=STAT_NON_LINE(MODELE=MOD_TGM,
+                    CHAM_MATER=MATER,
+                    CARA_ELEM=CARACT,
+                    ETAT_INIT=_F(EVOL_NOLI=RESO0),
                     EXCIT=(_F(CHARGE=LIAISON,),
                            _F(CHARGE=FORCE,
                               TYPE_CHARGE='FIXE_PILO',
@@ -115,25 +136,9 @@ RESO2=STAT_NON_LINE(MODELE=MOD_TGM,
                                 GROUP_NO='OMEGA',
                                 NOM_CMP=('DX','DY',),
                                 ETA_PILO_MAX=2.0,),
-                    CONVERGENCE=_F(RESI_GLOB_RELA=2e-6,
-                                   ITER_GLOB_MAXI=50,),
+                    CONVERGENCE=_F(RESI_GLOB_RELA=1e-5,
+                                   ITER_GLOB_MAXI=10,),
                     );
-
-ETA_PILO=RECU_FONCTION(RESULTAT=RESO2,
-                    NOM_PARA_RESU='ETA_PILOTAGE',);
-
-DEPX=RECU_FONCTION(RESULTAT=RESO2,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DX',
-                   GROUP_NO='PX',);
-
-DEPY=RECU_FONCTION(RESULTAT=RESO2,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DY',
-                   GROUP_NO='PX',);
-
-MDEPY=CALC_FONCTION(COMB=_F(FONCTION=DEPY,
-                            COEF=-1.0,),);
 
 # Valeurs de reference
 
@@ -167,47 +172,23 @@ DEPY_REF=DEFI_LIST_REEL(VALE=(10.246,
 57.5425,
 60.1085,),);
 
-# Impression des courbes
-
-IMPR_FONCTION(FORMAT='XMGRACE',
-              COURBE=(_F(FONC_X=DEPX,
-                         FONC_Y=ETA_PILO,),
-                      _F(FONC_X=MDEPY,
-                         FONC_Y=ETA_PILO,),
-                      _F(LIST_PARA=DEPX_REF,
-                         LIST_RESU=ETA_REF,),
-                      _F(LIST_PARA=DEPY_REF,
-                         LIST_RESU=ETA_REF,),),);
-
-# Bilan d'efforts
-
-RESO2=CALC_CHAMP(reuse =RESO2,
-              RESULTAT=RESO2,
-              FORCE='FORC_NODA',
-
-
-
-              TOUT='OUI',);
-
-FORC_INT=POST_RELEVE_T(ACTION=_F(INTITULE='FORCES_INT',
-                                 TOUT='OUI',
-                                 GROUP_NO='OMEGA',
-                                 RESULTAT=RESO2,
-                                 NOM_CHAM='FORC_NODA',
-                                 INST=tpost,
-                                 TOUT_CMP='OUI',
-                                 OPERATION='EXTRACTION',),);
-
-IMPR_TABLE(TABLE=FORC_INT,);
-
-#Extraction au format CASTEM pour visualiser la deformee.
-
-IMPR_RESU(FORMAT='CASTEM',
-          RESU=_F(MAILLAGE=MAILLAGE,
-                  RESULTAT=RESO2,
-                  NOM_CHAM='DEPL',),);
-
 # Preparation des fonctions pour les tests
+
+ETA_PILO=RECU_FONCTION(RESULTAT=RESO,
+                       NOM_PARA_RESU='ETA_PILOTAGE',);
+
+DEPX=RECU_FONCTION(RESULTAT=RESO,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='PX',);
+
+DEPY=RECU_FONCTION(RESULTAT=RESO,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='PX',);
+
+MDEPY=CALC_FONCTION(COMB=_F(FONCTION=DEPY,
+                            COEF=-1.0,),);
 
 T_ETA=CREA_TABLE(FONCTION=_F(FONCTION=ETA_PILO,),);
 
@@ -218,213 +199,92 @@ T_DEPY=CREA_TABLE(FONCTION=_F(FONCTION=MDEPY,),);
 TAB_COMB=CALC_TABLE(TABLE=T_ETA,
                     ACTION=(_F(OPERATION='COMB', TABLE=T_DEPX, NOM_PARA='INST'),
                             _F(OPERATION='COMB', TABLE=T_DEPY, NOM_PARA='INST'),),);
-
 IMPR_TABLE(TABLE=TAB_COMB,);
+
+DEPX_ETA=RECU_FONCTION(TABLE=TAB_COMB,
+                     PARA_X='DX',
+                     PARA_Y='ETA_PILO',
+                     INTERPOL='LIN',
+                     PROL_DROITE='CONSTANT',
+                     PROL_GAUCHE='CONSTANT',);
+
+DEPY_ETA=RECU_FONCTION(TABLE=TAB_COMB,
+                     PARA_X='DY',
+                     PARA_Y='ETA_PILO',
+                     INTERPOL='LIN',
+                     PROL_DROITE='CONSTANT',
+                     PROL_GAUCHE='CONSTANT',);
+
+# Impression des courbes
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              COURBE=(_F(FONC_X=DEPX,
+                         FONC_Y=ETA_PILO,
+                         LEGENDE='DX',MARQUEUR=0,),
+                      _F(FONC_X=MDEPY,
+                         FONC_Y=ETA_PILO,
+                         LEGENDE='-DY',MARQUEUR=0,),
+                      _F(LIST_PARA=DEPX_REF,
+                         LIST_RESU=ETA_REF,
+                         LEGENDE='DX (ref.)',),
+                      _F(LIST_PARA=DEPY_REF,
+                         LIST_RESU=ETA_REF,
+                         LEGENDE='-DY (ref.)',),),
+              TITRE='Reponse force-deplacement',
+              BORNE_X=(0.0,105.0,),
+              BORNE_Y=(-1.0,2.0,),
+              ECHELLE_X='LIN',
+              ECHELLE_Y='LIN',
+              GRILLE_X=10,
+              GRILLE_Y=0.5,
+              LEGENDE_X='Deplacement (cm)',
+              LEGENDE_Y='Force (N)',);
 
 # Tests
 
-TEST_RESU(RESU=(
-             _F(RESULTAT = RESO2,
-                    PARA = 'ETA_PILOTAGE',
-              NUME_ORDRE = 8,
-                    VALE = 0.968,
-                 CRITERE = 'RELATIF',
-               PRECISION = 0.05,
-               REFERENCE = 'SOURCE_EXTERNE',),
-             _F(RESULTAT = RESO2,          NUME_ORDRE = 8,
-                NOM_CHAM = 'DEPL',           GROUP_NO = 'PX',
-                 NOM_CMP = 'DX',                 VALE = 1.773,
-                 CRITERE = 'RELATIF',
-               PRECISION = 0.10,
-               REFERENCE = 'SOURCE_EXTERNE',),
-             _F(RESULTAT = RESO2,          NUME_ORDRE = 8,
-                NOM_CHAM = 'DEPL',           GROUP_NO = 'PX',
-                 NOM_CMP = 'DY',                 VALE = -10.246,
-                 CRITERE = 'RELATIF',
-               PRECISION = 0.05,
-               REFERENCE = 'SOURCE_EXTERNE',),
-             _F(RESULTAT = RESO2,
-                    PARA = 'ETA_PILOTAGE',
-              NUME_ORDRE = 12,
-                    VALE = 1.242,
-                 CRITERE = 'RELATIF',
-               PRECISION = 0.05,
-               REFERENCE = 'SOURCE_EXTERNE',),
-             _F(RESULTAT = RESO2,          NUME_ORDRE = 12,
-                NOM_CHAM = 'DEPL',           GROUP_NO = 'PX',
-                 NOM_CMP = 'DX',                 VALE = 3.6975,
-                 CRITERE = 'RELATIF',
-               PRECISION = 0.05,
-               REFERENCE = 'SOURCE_EXTERNE',),
-             _F(RESULTAT = RESO2,          NUME_ORDRE = 12,
-                NOM_CHAM = 'DEPL',           GROUP_NO = 'PX',
-                 NOM_CMP = 'DY',                 VALE = -16.1245,
-                 CRITERE = 'RELATIF',
-               PRECISION = 0.05,
-               REFERENCE = 'SOURCE_EXTERNE',),
-            _F(RESULTAT = RESO2,
-                    PARA = 'ETA_PILOTAGE',
-              NUME_ORDRE = 17,
-                    VALE = 1.4153,
-                 CRITERE = 'RELATIF',
-               PRECISION = 0.05,
-               REFERENCE = 'SOURCE_EXTERNE',),
-             _F(RESULTAT = RESO2,          NUME_ORDRE = 17,
-                NOM_CHAM = 'DEPL',           GROUP_NO = 'PX',
-                 NOM_CMP = 'DX',                 VALE = 6.496,
-                 CRITERE = 'RELATIF',
-               PRECISION = 0.07,
-               REFERENCE = 'SOURCE_EXTERNE',),
-             _F(RESULTAT = RESO2,          NUME_ORDRE = 17,
-                NOM_CHAM = 'DEPL',           GROUP_NO = 'PX',
-                 NOM_CMP = 'DY',                 VALE = -22.8245,
-                 CRITERE = 'RELATIF',
-               PRECISION = 0.05,
-               REFERENCE = 'SOURCE_EXTERNE',),
-             _F(RESULTAT = RESO2,
-                    PARA = 'ETA_PILOTAGE',
-              NUME_ORDRE = 25,
-                    VALE = 1.507,
-                 CRITERE = 'RELATIF',
-               PRECISION = 0.05,
-               REFERENCE = 'SOURCE_EXTERNE',),
-             _F(RESULTAT = RESO2,          NUME_ORDRE = 25,
-                NOM_CHAM = 'DEPL',           GROUP_NO = 'PX',
-                 NOM_CMP = 'DX',                 VALE = 13.176,
-                 CRITERE = 'RELATIF',
-               PRECISION = 0.05,
-               REFERENCE = 'SOURCE_EXTERNE',),
-             _F(RESULTAT = RESO2,          NUME_ORDRE = 25,
-                NOM_CHAM = 'DEPL',           GROUP_NO = 'PX',
-                 NOM_CMP = 'DY',                 VALE = -37.6525,
-                 CRITERE = 'RELATIF',
-               PRECISION = 0.08,
-               REFERENCE = 'SOURCE_EXTERNE',),
-            _F(RESULTAT = RESO2,
-                    PARA = 'ETA_PILOTAGE',
-              NUME_ORDRE = 31,
-                    VALE = 1.4605,
-                 CRITERE = 'RELATIF',
-               PRECISION = 0.05,
-               REFERENCE = 'SOURCE_EXTERNE',),
-             _F(RESULTAT = RESO2,          NUME_ORDRE = 31,
-                NOM_CHAM = 'DEPL',           GROUP_NO = 'PX',
-                 NOM_CMP = 'DX',                 VALE = 18.5865,
-                 CRITERE = 'RELATIF',
-               PRECISION = 0.05,
-               REFERENCE = 'SOURCE_EXTERNE',),
-             _F(RESULTAT = RESO2,          NUME_ORDRE = 31,
-                NOM_CHAM = 'DEPL',           GROUP_NO = 'PX',
-                NOM_CMP = 'DY',                 VALE = -43.3615,
-               CRITERE = 'RELATIF',
-               PRECISION = 0.05,
-               REFERENCE = 'SOURCE_EXTERNE',),
-            _F(RESULTAT = RESO2,
-               PARA = 'ETA_PILOTAGE',
-               NUME_ORDRE = 37,
-               VALE = 1.4006,
-               CRITERE = 'RELATIF',
-               PRECISION = 0.05,
-               REFERENCE = 'SOURCE_EXTERNE',),
-             _F(RESULTAT = RESO2,          NUME_ORDRE = 37,
-                NOM_CHAM = 'DEPL',           GROUP_NO = 'PX',
-                 NOM_CMP = 'DX',                 VALE = 23.0885,
-                 CRITERE = 'RELATIF',
-               PRECISION = 0.09,
-               REFERENCE = 'SOURCE_EXTERNE',),
-             _F(RESULTAT = RESO2,          NUME_ORDRE = 37,
-                NOM_CHAM = 'DEPL',           GROUP_NO = 'PX',
-                 NOM_CMP = 'DY',                 VALE = -48.318,
-                 CRITERE = 'RELATIF',
-               PRECISION = 0.05,
-               REFERENCE = 'SOURCE_EXTERNE',),
-            _F(RESULTAT = RESO2,
-                    PARA = 'ETA_PILOTAGE',
-              NUME_ORDRE = 42,
-                    VALE = 1.3151,
-                 CRITERE = 'RELATIF',
-               PRECISION = 0.05,
-               REFERENCE = 'SOURCE_EXTERNE',),
-             _F(RESULTAT = RESO2,          NUME_ORDRE = 42,
-                NOM_CHAM = 'DEPL',           GROUP_NO = 'PX',
-                 NOM_CMP = 'DX',                 VALE = 28.6505,
-                 CRITERE = 'RELATIF',
-               PRECISION = 0.08,
-               REFERENCE = 'SOURCE_EXTERNE',),
-             _F(RESULTAT = RESO2,          NUME_ORDRE = 42,
-                NOM_CHAM = 'DEPL',           GROUP_NO = 'PX',
-                 NOM_CMP = 'DY',                 VALE = -52.057,
-                 CRITERE = 'RELATIF',
-               PRECISION = 0.05,
-               REFERENCE = 'SOURCE_EXTERNE',),
-             _F(RESULTAT = RESO2,
-                    PARA = 'ETA_PILOTAGE',
-              NUME_ORDRE = 50,
-                    VALE = 1.1062,
-                 CRITERE = 'RELATIF',
-               PRECISION = 0.05,
-               REFERENCE = 'SOURCE_EXTERNE',),
-             _F(RESULTAT = RESO2,          NUME_ORDRE = 50,
-                NOM_CHAM = 'DEPL',           GROUP_NO = 'PX',
-                 NOM_CMP = 'DX',                 VALE = 38.5155,
-                 CRITERE = 'RELATIF',
-               PRECISION = 0.05,
-               REFERENCE = 'SOURCE_EXTERNE',),
-             _F(RESULTAT = RESO2,          NUME_ORDRE = 50,
-                NOM_CHAM = 'DEPL',           GROUP_NO = 'PX',
-                 NOM_CMP = 'DY',                 VALE = -57.5425,
-                 CRITERE = 'RELATIF',
-               PRECISION = 0.05,
-               REFERENCE = 'SOURCE_EXTERNE',),
-            _F(RESULTAT = RESO2,
-                    PARA = 'ETA_PILOTAGE',
-              NUME_ORDRE = 56,
-                    VALE = 0.9275,
-                 CRITERE = 'RELATIF',
-               PRECISION = 0.05,
-               REFERENCE = 'SOURCE_EXTERNE',),
-             _F(RESULTAT = RESO2,          NUME_ORDRE = 56,
-                NOM_CHAM = 'DEPL',           GROUP_NO = 'PX',
-                 NOM_CMP = 'DX',                 VALE = 45.851,
-                 CRITERE = 'RELATIF',
-               PRECISION = 0.05,
-               REFERENCE = 'SOURCE_EXTERNE',),
-             _F(RESULTAT = RESO2,          NUME_ORDRE = 56,
-                NOM_CHAM = 'DEPL',           GROUP_NO = 'PX',
-                 NOM_CMP = 'DY',                 VALE = -60.1085,
-                 CRITERE = 'RELATIF',
-               PRECISION = 0.05,
-               REFERENCE = 'SOURCE_EXTERNE',),
-           )
-           )
+# REFERENCE ISSUE DE LA LITTERATURE (MOYENNE DE CODES)
+TEST_FONCTION(VALEUR=(_F(FONCTION=DEPX_ETA,VALE_PARA=1.773  ,VALE_REFE=0.968 ,CRITERE='RELATIF',PRECISION=0.05,REFERENCE='SOURCE_EXTERNE',),
+                      _F(FONCTION=DEPX_ETA,VALE_PARA=3.6975 ,VALE_REFE=1.242 ,CRITERE='RELATIF',PRECISION=0.05,REFERENCE='SOURCE_EXTERNE',),
+                      _F(FONCTION=DEPX_ETA,VALE_PARA=6.496  ,VALE_REFE=1.4153,CRITERE='RELATIF',PRECISION=0.05,REFERENCE='SOURCE_EXTERNE',),
+                      _F(FONCTION=DEPX_ETA,VALE_PARA=13.176 ,VALE_REFE=1.507 ,CRITERE='RELATIF',PRECISION=0.05,REFERENCE='SOURCE_EXTERNE',),
+                      _F(FONCTION=DEPX_ETA,VALE_PARA=18.5865,VALE_REFE=1.4605,CRITERE='RELATIF',PRECISION=0.05,REFERENCE='SOURCE_EXTERNE',),
+                      _F(FONCTION=DEPX_ETA,VALE_PARA=23.0885,VALE_REFE=1.4006,CRITERE='RELATIF',PRECISION=0.05,REFERENCE='SOURCE_EXTERNE',),
+                      _F(FONCTION=DEPX_ETA,VALE_PARA=28.6505,VALE_REFE=1.3151,CRITERE='RELATIF',PRECISION=0.05,REFERENCE='SOURCE_EXTERNE',),
+                      _F(FONCTION=DEPX_ETA,VALE_PARA=38.5155,VALE_REFE=1.1062,CRITERE='RELATIF',PRECISION=0.05,REFERENCE='SOURCE_EXTERNE',),
+                      _F(FONCTION=DEPX_ETA,VALE_PARA=45.851 ,VALE_REFE=0.9275,CRITERE='RELATIF',PRECISION=0.05,REFERENCE='SOURCE_EXTERNE',),),)
 
-TEST_RESU(RESU=(
-_F(RESULTAT = RESO2,NUME_ORDRE = 8,PARA = 'ETA_PILOTAGE',VALE = 9.6394398718668E-01,CRITERE = 'RELATIF',REFERENCE = 'NON_REGRESSION',VERSION='8.3.2',),
-_F(RESULTAT = RESO2,NUME_ORDRE = 8,NOM_CHAM = 'DEPL',GROUP_NO = 'PX',NOM_CMP = 'DX',VALE = 1.9501176585744E+00,CRITERE = 'RELATIF',REFERENCE = 'NON_REGRESSION',VERSION='8.3.2',),
-_F(RESULTAT = RESO2,NUME_ORDRE = 8,NOM_CHAM = 'DEPL',GROUP_NO = 'PX',NOM_CMP = 'DY',VALE = -1.0228089159570E+01,CRITERE = 'RELATIF',REFERENCE = 'NON_REGRESSION',VERSION='8.3.2',),
-_F(RESULTAT = RESO2,NUME_ORDRE = 12,PARA = 'ETA_PILOTAGE',VALE = 1.2043825825037E+00,CRITERE = 'RELATIF',REFERENCE = 'NON_REGRESSION',VERSION='8.3.2',),
-_F(RESULTAT = RESO2,NUME_ORDRE = 12,NOM_CHAM = 'DEPL',GROUP_NO = 'PX',NOM_CMP = 'DX',VALE = 3.8388518827122E+00,CRITERE = 'RELATIF',REFERENCE = 'NON_REGRESSION',VERSION='8.3.2',),
-_F(RESULTAT = RESO2,NUME_ORDRE = 12,NOM_CHAM = 'DEPL',GROUP_NO = 'PX',NOM_CMP = 'DY',VALE = -1.5806865326700E+01,CRITERE = 'RELATIF',REFERENCE = 'NON_REGRESSION',VERSION='8.3.2',),
-_F(RESULTAT = RESO2,NUME_ORDRE = 17,PARA = 'ETA_PILOTAGE',VALE = 1.4103999734485E+00,CRITERE = 'RELATIF',REFERENCE = 'NON_REGRESSION',VERSION='8.3.2',),
-_F(RESULTAT = RESO2,NUME_ORDRE = 17,NOM_CHAM = 'DEPL',GROUP_NO = 'PX',NOM_CMP = 'DX',VALE = 6.9040669599663E+00,CRITERE = 'RELATIF',REFERENCE = 'NON_REGRESSION',VERSION='8.3.2',),
-_F(RESULTAT = RESO2,NUME_ORDRE = 17,NOM_CHAM = 'DEPL',GROUP_NO = 'PX',NOM_CMP = 'DY',VALE = -2.3123231251345E+01,CRITERE = 'RELATIF',REFERENCE = 'NON_REGRESSION',VERSION='8.3.2',),
-_F(RESULTAT = RESO2,NUME_ORDRE = 25,PARA = 'ETA_PILOTAGE',VALE = 1.4903891420625E+00,CRITERE = 'RELATIF',REFERENCE = 'NON_REGRESSION',VERSION='8.3.2',),
-_F(RESULTAT = RESO2,NUME_ORDRE = 25,NOM_CHAM = 'DEPL',GROUP_NO = 'PX',NOM_CMP = 'DX',VALE = 1.3047936209315E+01,CRITERE = 'RELATIF',REFERENCE = 'NON_REGRESSION',VERSION='8.3.2',),
-_F(RESULTAT = RESO2,NUME_ORDRE = 25,NOM_CHAM = 'DEPL',GROUP_NO = 'PX',NOM_CMP = 'DY',VALE = -3.5009319727632E+01,CRITERE = 'RELATIF',REFERENCE = 'NON_REGRESSION',VERSION='8.3.2',),
-_F(RESULTAT = RESO2,NUME_ORDRE = 31,PARA = 'ETA_PILOTAGE',VALE = 1.4633765103597E+00,CRITERE = 'RELATIF',REFERENCE = 'NON_REGRESSION',VERSION='8.3.2',),
-_F(RESULTAT = RESO2,NUME_ORDRE = 31,NOM_CHAM = 'DEPL',GROUP_NO = 'PX',NOM_CMP = 'DX',VALE = 1.8739207198421E+01,CRITERE = 'RELATIF',REFERENCE = 'NON_REGRESSION',VERSION='8.3.2',),
-_F(RESULTAT = RESO2,NUME_ORDRE = 31,NOM_CHAM = 'DEPL',GROUP_NO = 'PX',NOM_CMP = 'DY',VALE = -4.3047155313906E+01,CRITERE = 'RELATIF',REFERENCE = 'NON_REGRESSION',VERSION='8.3.2',),
-_F(RESULTAT = RESO2,NUME_ORDRE = 37,PARA = 'ETA_PILOTAGE',VALE = 1.4007025346605E+00,CRITERE = 'RELATIF',REFERENCE = 'NON_REGRESSION',VERSION='8.3.2',),
-_F(RESULTAT = RESO2,NUME_ORDRE = 37,NOM_CHAM = 'DEPL',GROUP_NO = 'PX',NOM_CMP = 'DX',VALE = 2.5150297273922E+01,CRITERE = 'RELATIF',REFERENCE = 'NON_REGRESSION',VERSION='8.3.2',),
-_F(RESULTAT = RESO2,NUME_ORDRE = 37,NOM_CHAM = 'DEPL',GROUP_NO = 'PX',NOM_CMP = 'DY',VALE = -4.9281987859351E+01,CRITERE = 'RELATIF',REFERENCE = 'NON_REGRESSION',VERSION='8.3.2',),
-_F(RESULTAT = RESO2,NUME_ORDRE = 42,PARA = 'ETA_PILOTAGE',VALE = 1.3128626486224E+00,CRITERE = 'RELATIF',REFERENCE = 'NON_REGRESSION',VERSION='8.3.2',),
-_F(RESULTAT = RESO2,NUME_ORDRE = 42,NOM_CHAM = 'DEPL',GROUP_NO = 'PX',NOM_CMP = 'DX',VALE = 3.0763065113475E+01,CRITERE = 'RELATIF',REFERENCE = 'NON_REGRESSION',VERSION='8.3.2',),
-_F(RESULTAT = RESO2,NUME_ORDRE = 42,NOM_CHAM = 'DEPL',GROUP_NO = 'PX',NOM_CMP = 'DY',VALE = -5.2671761499238E+01,CRITERE = 'RELATIF',REFERENCE = 'NON_REGRESSION',VERSION='8.3.2',),
-_F(RESULTAT = RESO2,NUME_ORDRE = 50,PARA = 'ETA_PILOTAGE',VALE = 1.1095721373763E+00,CRITERE = 'RELATIF',REFERENCE = 'NON_REGRESSION',VERSION='8.3.2',),
-_F(RESULTAT = RESO2,NUME_ORDRE = 50,NOM_CHAM = 'DEPL',GROUP_NO = 'PX',NOM_CMP = 'DX',VALE = 4.0019154209380E+01,CRITERE = 'RELATIF',REFERENCE = 'NON_REGRESSION',VERSION='8.3.2',),
-_F(RESULTAT = RESO2,NUME_ORDRE = 50,NOM_CHAM = 'DEPL',GROUP_NO = 'PX',NOM_CMP = 'DY',VALE = -5.6207116042157E+01,CRITERE = 'RELATIF',REFERENCE = 'NON_REGRESSION',VERSION='8.3.2',),
-_F(RESULTAT = RESO2,NUME_ORDRE = 56,PARA = 'ETA_PILOTAGE',VALE = 9.2862559909785E-01,CRITERE = 'RELATIF',REFERENCE = 'NON_REGRESSION',VERSION='8.3.2',),
-_F(RESULTAT = RESO2,NUME_ORDRE = 56,NOM_CHAM = 'DEPL',GROUP_NO = 'PX',NOM_CMP = 'DX',VALE = 4.7143021822386E+01,CRITERE = 'RELATIF',REFERENCE = 'NON_REGRESSION',VERSION='8.3.2',),
-_F(RESULTAT = RESO2,NUME_ORDRE = 56,NOM_CHAM = 'DEPL',GROUP_NO = 'PX',NOM_CMP = 'DY',VALE = -5.7817549749648E+01,CRITERE = 'RELATIF',REFERENCE = 'NON_REGRESSION',VERSION='8.3.2',),),)
+# Les 2 derniers tests ont des tolerances tres elevees uniquement car il est impossible de tester proprement un calcul pilote
+# La superposition des courbes de references et des courbes calculees montre une superposition quasi-parfaite.
+
+TEST_FONCTION(VALEUR=(_F(FONCTION=DEPY_ETA,VALE_PARA=10.246 ,VALE_REFE=0.968 ,CRITERE='RELATIF',PRECISION=0.05,REFERENCE='SOURCE_EXTERNE',),
+                      _F(FONCTION=DEPY_ETA,VALE_PARA=16.1245,VALE_REFE=1.242 ,CRITERE='RELATIF',PRECISION=0.05,REFERENCE='SOURCE_EXTERNE',),
+                      _F(FONCTION=DEPY_ETA,VALE_PARA=22.8245,VALE_REFE=1.4153,CRITERE='RELATIF',PRECISION=0.05,REFERENCE='SOURCE_EXTERNE',),
+                      _F(FONCTION=DEPY_ETA,VALE_PARA=37.6525,VALE_REFE=1.507 ,CRITERE='RELATIF',PRECISION=0.05,REFERENCE='SOURCE_EXTERNE',),
+                      _F(FONCTION=DEPY_ETA,VALE_PARA=43.3615,VALE_REFE=1.4605,CRITERE='RELATIF',PRECISION=0.05,REFERENCE='SOURCE_EXTERNE',),
+                      _F(FONCTION=DEPY_ETA,VALE_PARA=48.318 ,VALE_REFE=1.4006,CRITERE='RELATIF',PRECISION=0.05,REFERENCE='SOURCE_EXTERNE',),
+                      _F(FONCTION=DEPY_ETA,VALE_PARA=52.057 ,VALE_REFE=1.3151,CRITERE='RELATIF',PRECISION=0.05,REFERENCE='SOURCE_EXTERNE',),
+                      _F(FONCTION=DEPY_ETA,VALE_PARA=57.5425,VALE_REFE=1.1062,CRITERE='RELATIF',PRECISION=0.15,REFERENCE='SOURCE_EXTERNE',),
+                      _F(FONCTION=DEPY_ETA,VALE_PARA=60.1085,VALE_REFE=0.9275,CRITERE='RELATIF',PRECISION=0.55,REFERENCE='SOURCE_EXTERNE',),),)
+
+# NON REGRESSION
+TEST_FONCTION(VALEUR=(_F(FONCTION=DEPX_ETA,VALE_PARA=1.773  ,VALE_REFE=0.937 ,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='11.1.22',),
+                      _F(FONCTION=DEPX_ETA,VALE_PARA=3.6975 ,VALE_REFE=1.193 ,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='11.1.22',),
+                      _F(FONCTION=DEPX_ETA,VALE_PARA=6.496  ,VALE_REFE=1.391 ,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='11.1.22',),
+                      _F(FONCTION=DEPX_ETA,VALE_PARA=13.176 ,VALE_REFE=1.489 ,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='11.1.22',),
+                      _F(FONCTION=DEPX_ETA,VALE_PARA=18.5865,VALE_REFE=1.46353,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='11.1.22',),
+                      _F(FONCTION=DEPX_ETA,VALE_PARA=23.0885,VALE_REFE=1.4236,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='11.1.22',),
+                      _F(FONCTION=DEPX_ETA,VALE_PARA=28.6505,VALE_REFE=1.3495,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='11.1.22',),
+                      _F(FONCTION=DEPX_ETA,VALE_PARA=38.5155,VALE_REFE=1.1455,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='11.1.22',),
+                      _F(FONCTION=DEPX_ETA,VALE_PARA=45.851 ,VALE_REFE=0.962 ,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='11.1.22',),),)
+
+TEST_FONCTION(VALEUR=(_F(FONCTION=DEPY_ETA,VALE_PARA=10.246 ,VALE_REFE=0.9645,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='11.1.22',),
+                      _F(FONCTION=DEPY_ETA,VALE_PARA=16.1245,VALE_REFE=1.2149,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='11.1.22',),
+                      _F(FONCTION=DEPY_ETA,VALE_PARA=22.8245,VALE_REFE=1.4025,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='11.1.22',),
+                      _F(FONCTION=DEPY_ETA,VALE_PARA=37.6525,VALE_REFE=1.485 ,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='11.1.22',),
+                      _F(FONCTION=DEPY_ETA,VALE_PARA=43.3615,VALE_REFE=1.460871,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='11.1.22',),
+                      _F(FONCTION=DEPY_ETA,VALE_PARA=48.318 ,VALE_REFE=1.4153,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='11.1.22',),
+                      _F(FONCTION=DEPY_ETA,VALE_PARA=52.057 ,VALE_REFE=1.3356,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='11.1.22',),
+                      _F(FONCTION=DEPY_ETA,VALE_PARA=57.5425,VALE_REFE=0.973803,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='11.1.22',),
+                      _F(FONCTION=DEPY_ETA,VALE_PARA=60.1085,VALE_REFE=0.442724,CRITERE='RELATIF',REFERENCE='NON_REGRESSION',VERSION='11.1.22',),),)
 
 FIN();

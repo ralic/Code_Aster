@@ -27,42 +27,42 @@ POURSUITE(CODE=_F(  NOM = 'ZZZZ136A'))
 TEST_TABLE(      TABLE=s1_g,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXX',
                      VALE=2.48096E-01            )
 
 TEST_TABLE(      TABLE=s1_g,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYY',
                      VALE=-7.42584E-02            )
 
 TEST_TABLE(      TABLE=s1_g,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIZZ',
                      VALE=-1.62408E-01            )
 
 TEST_TABLE(      TABLE=s1_g,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXY',
                      VALE=2.38606E-01            )
 
 TEST_TABLE(      TABLE=s1_g,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXZ',
                      VALE=-4.06040E-02            )
 
 TEST_TABLE(      TABLE=s1_g,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYZ',
                      VALE=-1.27159E-01            )
 
@@ -73,42 +73,42 @@ TEST_TABLE(      TABLE=s1_g,
 TEST_TABLE(      TABLE=S1L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXX',
                      VALE=2.48096E-01            )
 
 TEST_TABLE(      TABLE=S1L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYY',
                      VALE=-7.42584E-02            )
 
 TEST_TABLE(      TABLE=S1L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIZZ',
                      VALE=-1.62408E-01            )
 
 TEST_TABLE(      TABLE=S1L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXY',
                      VALE=2.38606E-01            )
 
 TEST_TABLE(      TABLE=S1L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXZ',
                      VALE=-4.06040E-02            )
 
 TEST_TABLE(      TABLE=S1L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYZ',
                      VALE=-1.27159E-01            )
 
@@ -119,42 +119,42 @@ TEST_TABLE(      TABLE=S1L_G,
 TEST_TABLE(      TABLE=S1_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXX',
                      VALE=2.48096E-01            )
 
 TEST_TABLE(      TABLE=S1_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYY',
                      VALE=-7.42584E-02            )
 
 TEST_TABLE(      TABLE=S1_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIZZ',
                      VALE=-1.62408E-01            )
 
 TEST_TABLE(      TABLE=S1_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXY',
                      VALE=2.38606E-01            )
 
 TEST_TABLE(      TABLE=S1_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXZ',
                      VALE=-4.06040E-02            )
 
 TEST_TABLE(      TABLE=S1_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYZ',
                      VALE=-1.27159E-01            )
 
@@ -165,42 +165,42 @@ TEST_TABLE(      TABLE=S1_L,
 TEST_TABLE(      TABLE=S1L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXX',
                      VALE=2.48096E-01            )
 
 TEST_TABLE(      TABLE=S1L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYY',
                      VALE=-7.42584E-02            )
 
 TEST_TABLE(      TABLE=S1L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIZZ',
                      VALE=-1.62408E-01            )
 
 TEST_TABLE(      TABLE=S1L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXY',
                      VALE=2.38606E-01            )
 
 TEST_TABLE(      TABLE=S1L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXZ',
                      VALE=-4.06040E-02            )
 
 TEST_TABLE(      TABLE=S1L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYZ',
                      VALE=-1.27159E-01            )
 
@@ -211,42 +211,42 @@ TEST_TABLE(      TABLE=S1L_L,
 TEST_TABLE(      TABLE=S1_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXX',
                      VALE=2.48096E-01            )
 
 TEST_TABLE(      TABLE=S1_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYY',
                      VALE=-7.42584E-02            )
 
 TEST_TABLE(      TABLE=S1_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIZZ',
                      VALE=-1.62408E-01            )
 
 TEST_TABLE(      TABLE=S1_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXY',
                      VALE=2.38606E-01            )
 
 TEST_TABLE(      TABLE=S1_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXZ',
                      VALE=-4.06040E-02            )
 
 TEST_TABLE(      TABLE=S1_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYZ',
                      VALE=-1.27159E-01            )
 
@@ -257,42 +257,42 @@ TEST_TABLE(      TABLE=S1_U,
 TEST_TABLE(      TABLE=S1L_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXX',
                      VALE=2.48096E-01            )
 
 TEST_TABLE(      TABLE=S1L_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYY',
                      VALE=-7.42584E-02            )
 
 TEST_TABLE(      TABLE=S1L_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIZZ',
                      VALE=-1.62408E-01            )
 
 TEST_TABLE(      TABLE=S1L_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXY',
                      VALE=2.38606E-01            )
 
 TEST_TABLE(      TABLE=S1L_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXZ',
                      VALE=-4.06040E-02            )
 
 TEST_TABLE(      TABLE=S1L_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYZ',
                      VALE=-1.27159E-01            )
 
@@ -303,44 +303,44 @@ TEST_TABLE(      TABLE=S1L_U,
 TEST_TABLE(      TABLE=S2_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXX',
-                     VALE=9.62055E-02            )
+                     VALE=8.922E-02            )
 
 TEST_TABLE(      TABLE=S2_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYY',
-                     VALE=8.22351E-02            )
+                     VALE=8.922E-02            )
 
 TEST_TABLE(      TABLE=S2_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIZZ',
                      VALE=4.28641E-01            )
 
 TEST_TABLE(      TABLE=S2_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXY',
                      VALE=2.67618E-01            )
 
 TEST_TABLE(      TABLE=S2_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXZ',
-                     VALE=-8.64170E-02            )
+                     VALE=-0.1124            )
 
 TEST_TABLE(      TABLE=S2_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYZ',
-                     VALE=-1.38397E-01            )
+                     VALE=-0.1124            )
 
 # ---------------------------------------------------------------------
 # S2L_G: LISTE DE NOEUDS P2 P3, REPERE GLOBAL
@@ -349,42 +349,42 @@ TEST_TABLE(      TABLE=S2_G,
 TEST_TABLE(      TABLE=S2L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXX',
                      VALE=8.92203E-02            )
 
 TEST_TABLE(      TABLE=S2L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYY',
                      VALE=8.92203E-02            )
 
 TEST_TABLE(      TABLE=S2L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIZZ',
                      VALE=4.28641E-01            )
 
 TEST_TABLE(      TABLE=S2L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXY',
                      VALE=2.67618E-01            )
 
 TEST_TABLE(      TABLE=S2L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXZ',
                      VALE=-1.12407E-01            )
 
 TEST_TABLE(      TABLE=S2L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYZ',
                      VALE=-1.12407E-01            )
 
@@ -395,44 +395,44 @@ TEST_TABLE(      TABLE=S2L_G,
 TEST_TABLE(      TABLE=S2_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXX',
                      VALE=3.56838E-01            )
 
 TEST_TABLE(      TABLE=S2_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYY',
                      VALE=-1.78397E-01            )
 
 TEST_TABLE(      TABLE=S2_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIZZ',
                      VALE=4.28641E-01            )
 
 TEST_TABLE(      TABLE=S2_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',CRITERE='ABSOLU',
                  NOM_PARA='SIXY',
-                     VALE=-6.98518E-03           )
+                     VALE=0.           )
 
 TEST_TABLE(      TABLE=S2_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXZ',
                      VALE=-1.58968E-01            )
 
 TEST_TABLE(      TABLE=S2_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',CRITERE='ABSOLU',
                  NOM_PARA='SIYZ',
-                     VALE=-3.67556E-02            )
+                     VALE=0.            )
 
 # ---------------------------------------------------------------------
 # S2L_L: LISTE DE NOEUDS P9 P10 REPERE LOCAL, VECT_Y: (0. 1. 0.)
@@ -441,28 +441,28 @@ TEST_TABLE(      TABLE=S2_L,
 TEST_TABLE(      TABLE=S2L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXX',
                      VALE=3.56838E-01            )
 
 TEST_TABLE(      TABLE=S2L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYY',
                      VALE=-1.78397E-01            )
 
 TEST_TABLE(      TABLE=S2L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIZZ',
                      VALE=4.28641E-01            )
 
 TEST_TABLE(      TABLE=S2L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXY',
                   CRITERE='ABSOLU',
                 PRECISION=1.E-10,
@@ -471,14 +471,14 @@ TEST_TABLE(      TABLE=S2L_L,
 TEST_TABLE(      TABLE=S2L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXZ',
                      VALE=-1.58968E-01            )
 
 TEST_TABLE(      TABLE=S2L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYZ',
                   CRITERE='ABSOLU',
                 PRECISION=1.E-10,
@@ -491,44 +491,44 @@ TEST_TABLE(      TABLE=S2L_L,
 TEST_TABLE(      TABLE=S2_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXX',
                      VALE=3.56838E-01            )
 
 TEST_TABLE(      TABLE=S2_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYY',
                      VALE=-1.78397E-01            )
 
 TEST_TABLE(      TABLE=S2_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIZZ',
                      VALE=4.28641E-01            )
 
 TEST_TABLE(      TABLE=S2_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',CRITERE='ABSOLU',
                  NOM_PARA='SIXY',
-                     VALE=-6.98518E-03           )
+                     VALE=0.           )
 
 TEST_TABLE(      TABLE=S2_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXZ',
                      VALE=-1.58968E-01            )
 
 TEST_TABLE(      TABLE=S2_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',CRITERE='ABSOLU',
                  NOM_PARA='SIYZ',
-                     VALE=-3.67556E-02             )
+                     VALE=0.             )
 
 # ---------------------------------------------------------------------
 # S2L_U: LISTE DE NOEUDS P9 P10, REPERE UTILISAT, ANGL_NAUT: (45. 0. 0.)
@@ -537,28 +537,28 @@ TEST_TABLE(      TABLE=S2_U,
 TEST_TABLE(      TABLE=S2L_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXX',
                      VALE=3.56838E-01            )
 
 TEST_TABLE(      TABLE=S2L_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYY',
                      VALE=-1.78397E-01            )
 
 TEST_TABLE(      TABLE=S2L_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIZZ',
                      VALE=4.28641E-01            )
 
 TEST_TABLE(      TABLE=S2L_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXY',
                   CRITERE='ABSOLU',
                 PRECISION=1.E-10,
@@ -567,14 +567,14 @@ TEST_TABLE(      TABLE=S2L_U,
 TEST_TABLE(      TABLE=S2L_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXZ',
                      VALE=-1.58968E-01            )
 
 TEST_TABLE(      TABLE=S2L_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYZ',
                   CRITERE='ABSOLU',
                 PRECISION=1.E-10,
@@ -587,42 +587,42 @@ TEST_TABLE(      TABLE=S2L_U,
 TEST_TABLE(      TABLE=S3_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXX',
                      VALE=-7.42584E-02            )
 
 TEST_TABLE(      TABLE=S3_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYY',
                      VALE=2.48096E-01            )
 
 TEST_TABLE(      TABLE=S3_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIZZ',
                      VALE=-1.62408E-01            )
 
 TEST_TABLE(      TABLE=S3_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXY',
                      VALE=2.38606E-01            )
 
 TEST_TABLE(      TABLE=S3_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXZ',
                      VALE=-1.27159E-01            )
 
 TEST_TABLE(      TABLE=S3_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYZ',
                      VALE=-4.06040E-02            )
 
@@ -633,42 +633,42 @@ TEST_TABLE(      TABLE=S3_G,
 TEST_TABLE(      TABLE=S3L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXX',
                      VALE=-7.42584E-02            )
 
 TEST_TABLE(      TABLE=S3L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYY',
                      VALE=2.48096E-01            )
 
 TEST_TABLE(      TABLE=S3L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIZZ',
                      VALE=-1.62408E-01            )
 
 TEST_TABLE(      TABLE=S3L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXY',
                      VALE=2.38606E-01            )
 
 TEST_TABLE(      TABLE=S3L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXZ',
                      VALE=-1.27159E-01            )
 
 TEST_TABLE(      TABLE=S3L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYZ',
                      VALE=-4.06040E-02            )
 
@@ -679,42 +679,42 @@ TEST_TABLE(      TABLE=S3L_G,
 TEST_TABLE(      TABLE=S3_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXX',
                      VALE=2.48096E-01            )
 
 TEST_TABLE(      TABLE=S3_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYY',
                      VALE=-7.42584E-02            )
 
 TEST_TABLE(      TABLE=S3_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIZZ',
                      VALE=-1.62408E-01            )
 
 TEST_TABLE(      TABLE=S3_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXY',
                      VALE=-2.38606E-01            )
 
 TEST_TABLE(      TABLE=S3_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXZ',
                      VALE=-4.06040E-02            )
 
 TEST_TABLE(      TABLE=S3_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYZ',
                      VALE=1.27159E-01            )
 
@@ -725,42 +725,42 @@ TEST_TABLE(      TABLE=S3_L,
 TEST_TABLE(      TABLE=S3L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXX',
                      VALE=2.48096E-01            )
 
 TEST_TABLE(      TABLE=S3L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYY',
                      VALE=-7.42584E-02            )
 
 TEST_TABLE(      TABLE=S3L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIZZ',
                      VALE=-1.62408E-01            )
 
 TEST_TABLE(      TABLE=S3L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXY',
                      VALE=-2.38606E-01            )
 
 TEST_TABLE(      TABLE=S3L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXZ',
                      VALE=-4.06040E-02            )
 
 TEST_TABLE(      TABLE=S3L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYZ',
                      VALE=1.27159E-01            )
 
@@ -771,42 +771,42 @@ TEST_TABLE(      TABLE=S3L_L,
 TEST_TABLE(      TABLE=S3_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXX',
                      VALE=2.48096E-01            )
 
 TEST_TABLE(      TABLE=S3_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYY',
                      VALE=-7.42584E-02            )
 
 TEST_TABLE(      TABLE=S3_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIZZ',
                      VALE=-1.62408E-01            )
 
 TEST_TABLE(      TABLE=S3_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXY',
                      VALE=-2.38606E-01            )
 
 TEST_TABLE(      TABLE=S3_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXZ',
                      VALE=-4.06040E-02            )
 
 TEST_TABLE(      TABLE=S3_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYZ',
                      VALE=1.27159E-01            )
 
@@ -818,42 +818,42 @@ TEST_TABLE(      TABLE=S3_U,
 TEST_TABLE(      TABLE=S3L_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXX',
                      VALE=2.48096E-01            )
 
 TEST_TABLE(      TABLE=S3L_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYY',
                      VALE=-7.42584E-02            )
 
 TEST_TABLE(      TABLE=S3L_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIZZ',
                      VALE=-1.62408E-01            )
 
 TEST_TABLE(      TABLE=S3L_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXY',
                      VALE=-2.38606E-01            )
 
 TEST_TABLE(      TABLE=S3L_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXZ',
                      VALE=-4.06040E-02            )
 
 TEST_TABLE(      TABLE=S3L_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYZ',
                      VALE=1.27159E-01            )
 
@@ -865,84 +865,84 @@ TEST_TABLE(      TABLE=S3L_U,
 TEST_TABLE(      TABLE=S4L_C,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXX',
                      VALE=3.32501E-01            )
 
 TEST_TABLE(      TABLE=S4L_C,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYY',
                      VALE=-4.61405E-01            )
 
 TEST_TABLE(      TABLE=S4L_C,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIZZ',
                      VALE=-3.79967E-01            )
 
 TEST_TABLE(      TABLE=S4L_C,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXY',
                      VALE=-9.81270E-02            )
 
 TEST_TABLE(      TABLE=S4L_C,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXZ',
                      VALE=4.20808E-01            )
 
 TEST_TABLE(      TABLE=S4L_C,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYZ',
                      VALE=6.03983E-03            )
 
 TEST_TABLE(      TABLE=S4L_C,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.85271E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXX',
                      VALE=5.11916E-01            )
 
 TEST_TABLE(      TABLE=S4L_C,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.85271E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYY',
                      VALE=-3.48136E-01            )
 
 TEST_TABLE(      TABLE=S4L_C,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.85271E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIZZ',
                      VALE=-6.21663E-01            )
 
 TEST_TABLE(      TABLE=S4L_C,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.85271E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXY',
                      VALE=-4.44552E-02            )
 
 TEST_TABLE(      TABLE=S4L_C,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.85271E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXZ',
                      VALE=-1.71225E-01            )
 
 TEST_TABLE(      TABLE=S4L_C,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.85271E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYZ',
                      VALE=1.52287E-02            )
 
@@ -952,42 +952,42 @@ TEST_TABLE(      TABLE=S4L_C,
 TEST_TABLE(      TABLE=S4_N31,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXX',
                      VALE=3.32501E-01            )
 
 TEST_TABLE(      TABLE=S4_N31,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIZZ',
                      VALE=-4.61405E-01            )
 
 TEST_TABLE(      TABLE=S4_N31,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYY',
                      VALE=-3.79967E-01            )
 
 TEST_TABLE(      TABLE=S4_N31,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXZ',
                      VALE=-9.81270E-02            )
 
 TEST_TABLE(      TABLE=S4_N31,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXY',
                      VALE=4.20808E-01            )
 
 TEST_TABLE(      TABLE=S4_N31,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYZ',
                      VALE=6.03983E-03            )
 
@@ -997,42 +997,42 @@ TEST_TABLE(      TABLE=S4_N31,
 TEST_TABLE(      TABLE=S4_N1,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXX',
                      VALE=-3.79967E-01            )
 
 TEST_TABLE(      TABLE=S4_N1,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIZZ',
                      VALE=-4.61405E-01            )
 
 TEST_TABLE(      TABLE=S4_N1,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYY',
                      VALE=3.32501E-01            )
 
 TEST_TABLE(      TABLE=S4_N1,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXZ',
                      VALE=6.03983E-03            )
 
 TEST_TABLE(      TABLE=S4_N1,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXY',
                      VALE=4.20808E-01            )
 
 TEST_TABLE(      TABLE=S4_N1,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYZ',
                      VALE=-9.81270E-02            )
 
@@ -1044,7 +1044,7 @@ TEST_TABLE(      TABLE=D1_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-2.35049E-07            )
 
@@ -1052,7 +1052,7 @@ TEST_TABLE(      TABLE=D1_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=-1.97008E-07            )
 
@@ -1060,28 +1060,28 @@ TEST_TABLE(      TABLE=D1_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-1.27769E-07            )
 
 TEST_TABLE(      TABLE=D1_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-2.19094E-07            )
 
 TEST_TABLE(      TABLE=D1_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=-1.90295E-07            )
 
 TEST_TABLE(      TABLE=D1_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-1.29749E-08            )
 
@@ -1093,7 +1093,7 @@ TEST_TABLE(      TABLE=D1L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-2.35049E-07            )
 
@@ -1101,7 +1101,7 @@ TEST_TABLE(      TABLE=D1L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=-1.97008E-07            )
 
@@ -1109,28 +1109,28 @@ TEST_TABLE(      TABLE=D1L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-1.27769E-07            )
 
 TEST_TABLE(      TABLE=D1L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-2.19094E-07            )
 
 TEST_TABLE(      TABLE=D1L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=-1.90295E-07            )
 
 TEST_TABLE(      TABLE=D1L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-1.29749E-08            )
 
@@ -1142,7 +1142,7 @@ TEST_TABLE(      TABLE=D1_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-2.35049E-07            )
 
@@ -1150,7 +1150,7 @@ TEST_TABLE(      TABLE=D1_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=-1.97008E-07            )
 
@@ -1158,28 +1158,28 @@ TEST_TABLE(      TABLE=D1_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-1.27769E-07            )
 
 TEST_TABLE(      TABLE=D1_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-2.19094E-07            )
 
 TEST_TABLE(      TABLE=D1_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=-1.90295E-07            )
 
 TEST_TABLE(      TABLE=D1_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-1.29749E-08            )
 
@@ -1191,7 +1191,7 @@ TEST_TABLE(      TABLE=D1L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-2.35049E-07            )
 
@@ -1199,7 +1199,7 @@ TEST_TABLE(      TABLE=D1L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=-1.97008E-07            )
 
@@ -1207,28 +1207,28 @@ TEST_TABLE(      TABLE=D1L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-1.27769E-07            )
 
 TEST_TABLE(      TABLE=D1L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-2.19094E-07            )
 
 TEST_TABLE(      TABLE=D1L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=-1.90295E-07            )
 
 TEST_TABLE(      TABLE=D1L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-1.29749E-08            )
 
@@ -1240,7 +1240,7 @@ TEST_TABLE(      TABLE=D1_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-2.35049E-07            )
 
@@ -1248,7 +1248,7 @@ TEST_TABLE(      TABLE=D1_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=-1.97008E-07            )
 
@@ -1256,28 +1256,28 @@ TEST_TABLE(      TABLE=D1_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-1.27769E-07            )
 
 TEST_TABLE(      TABLE=D1_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-2.19094E-07            )
 
 TEST_TABLE(      TABLE=D1_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=-1.90295E-07            )
 
 TEST_TABLE(      TABLE=D1_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-1.29749E-08            )
 
@@ -1289,7 +1289,7 @@ TEST_TABLE(      TABLE=D1L_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-2.35049E-07            )
 
@@ -1297,7 +1297,7 @@ TEST_TABLE(      TABLE=D1L_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=-1.97008E-07            )
 
@@ -1305,28 +1305,28 @@ TEST_TABLE(      TABLE=D1L_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-1.27769E-07            )
 
 TEST_TABLE(      TABLE=D1L_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-2.19094E-07            )
 
 TEST_TABLE(      TABLE=D1L_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=-1.90295E-07            )
 
 TEST_TABLE(      TABLE=D1L_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-1.29749E-08            )
 
@@ -1338,7 +1338,7 @@ TEST_TABLE(      TABLE=D2_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-2.17656E-07            )
 
@@ -1346,7 +1346,7 @@ TEST_TABLE(      TABLE=D2_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=-2.17656E-07            )
 
@@ -1354,28 +1354,28 @@ TEST_TABLE(      TABLE=D2_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-9.07308E-08            )
 
 TEST_TABLE(      TABLE=D2_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-1.94172E-07            )
 
 TEST_TABLE(      TABLE=D2_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=-1.94172E-07            )
 
 TEST_TABLE(      TABLE=D2_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=6.65551E-08            )
 
@@ -1387,7 +1387,7 @@ TEST_TABLE(      TABLE=D2L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-2.17656E-07            )
 
@@ -1395,7 +1395,7 @@ TEST_TABLE(      TABLE=D2L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=-2.17656E-07            )
 
@@ -1403,28 +1403,28 @@ TEST_TABLE(      TABLE=D2L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-9.07308E-08            )
 
 TEST_TABLE(      TABLE=D2L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-1.94172E-07            )
 
 TEST_TABLE(      TABLE=D2L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=-1.94172E-07            )
 
 TEST_TABLE(      TABLE=D2L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=6.65551E-08            )
 
@@ -1436,7 +1436,7 @@ TEST_TABLE(      TABLE=D2_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-3.07813E-07            )
 
@@ -1444,7 +1444,7 @@ TEST_TABLE(      TABLE=D2_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                   CRITERE='ABSOLU',
                 PRECISION=1.E-10,
@@ -1454,21 +1454,21 @@ TEST_TABLE(      TABLE=D2_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-9.07308E-08            )
 
 TEST_TABLE(      TABLE=D2_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-2.74601E-07            )
 
 TEST_TABLE(      TABLE=D2_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                   CRITERE='ABSOLU', 
                 PRECISION=1.E-10,
@@ -1477,7 +1477,7 @@ TEST_TABLE(      TABLE=D2_L,
 TEST_TABLE(      TABLE=D2_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=6.65551E-08            )
 
@@ -1490,7 +1490,7 @@ TEST_TABLE(      TABLE=D2L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-3.07813E-07            )
 
@@ -1498,7 +1498,7 @@ TEST_TABLE(      TABLE=D2L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                   CRITERE='ABSOLU', 
                 PRECISION=1.E-10,
@@ -1508,21 +1508,21 @@ TEST_TABLE(      TABLE=D2L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-9.07308E-08            )
 
 TEST_TABLE(      TABLE=D2L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-2.74601E-07            )
 
 TEST_TABLE(      TABLE=D2L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                   CRITERE='ABSOLU', 
                 PRECISION=1.E-10,
@@ -1531,7 +1531,7 @@ TEST_TABLE(      TABLE=D2L_L,
 TEST_TABLE(      TABLE=D2L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=6.65551E-08            )
 
@@ -1544,7 +1544,7 @@ TEST_TABLE(      TABLE=D2_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-3.07813E-07            )
 
@@ -1552,7 +1552,7 @@ TEST_TABLE(      TABLE=D2_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                   CRITERE='ABSOLU', 
                      VALE=0.            )
@@ -1561,21 +1561,21 @@ TEST_TABLE(      TABLE=D2_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-9.07308E-08            )
 
 TEST_TABLE(      TABLE=D2_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-2.74601E-07            )
 
 TEST_TABLE(      TABLE=D2_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                   CRITERE='ABSOLU', 
                 PRECISION=1.E-10,
@@ -1584,7 +1584,7 @@ TEST_TABLE(      TABLE=D2_U,
 TEST_TABLE(      TABLE=D2_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=6.65551E-08            )
 
@@ -1597,7 +1597,7 @@ TEST_TABLE(      TABLE=D2L_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-3.07813E-07            )
 
@@ -1605,7 +1605,7 @@ TEST_TABLE(      TABLE=D2L_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                   CRITERE='ABSOLU', 
                 PRECISION=1.E-10,
@@ -1615,21 +1615,21 @@ TEST_TABLE(      TABLE=D2L_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-9.07308E-08            )
 
 TEST_TABLE(      TABLE=D2L_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-2.74601E-07            )
 
 TEST_TABLE(      TABLE=D2L_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                   CRITERE='ABSOLU', 
                 PRECISION=1.E-10,
@@ -1638,7 +1638,7 @@ TEST_TABLE(      TABLE=D2L_U,
 TEST_TABLE(      TABLE=D2L_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=6.65551E-08            )
 
@@ -1650,7 +1650,7 @@ TEST_TABLE(      TABLE=D3_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-1.97008E-07            )
 
@@ -1658,7 +1658,7 @@ TEST_TABLE(      TABLE=D3_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=-2.35049E-07            )
 
@@ -1666,28 +1666,28 @@ TEST_TABLE(      TABLE=D3_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-1.27769E-07            )
 
 TEST_TABLE(      TABLE=D3_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-1.90295E-07            )
 
 TEST_TABLE(      TABLE=D3_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=-2.19094E-07            )
 
 TEST_TABLE(      TABLE=D3_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-1.29749E-08            )
 
@@ -1699,7 +1699,7 @@ TEST_TABLE(      TABLE=D3L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-1.97008E-07            )
 
@@ -1707,7 +1707,7 @@ TEST_TABLE(      TABLE=D3L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=-2.35049E-07            )
 
@@ -1715,28 +1715,28 @@ TEST_TABLE(      TABLE=D3L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-1.27769E-07            )
 
 TEST_TABLE(      TABLE=D3L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-1.90295E-07            )
 
 TEST_TABLE(      TABLE=D3L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=-2.19094E-07            )
 
 TEST_TABLE(      TABLE=D3L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-1.29749E-08            )
 
@@ -1748,7 +1748,7 @@ TEST_TABLE(      TABLE=D3_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-2.35049E-07            )
 
@@ -1756,7 +1756,7 @@ TEST_TABLE(      TABLE=D3_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=1.97008E-07            )
 
@@ -1764,28 +1764,28 @@ TEST_TABLE(      TABLE=D3_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-1.27769E-07            )
 
 TEST_TABLE(      TABLE=D3_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-2.19094E-07            )
 
 TEST_TABLE(      TABLE=D3_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=1.90295E-07            )
 
 TEST_TABLE(      TABLE=D3_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-1.29749E-08            )
 
@@ -1797,7 +1797,7 @@ TEST_TABLE(      TABLE=D3L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-2.35049E-07            )
 
@@ -1805,7 +1805,7 @@ TEST_TABLE(      TABLE=D3L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=1.97008E-07            )
 
@@ -1813,28 +1813,28 @@ TEST_TABLE(      TABLE=D3L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-1.27769E-07            )
 
 TEST_TABLE(      TABLE=D3L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-2.19094E-07            )
 
 TEST_TABLE(      TABLE=D3L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=1.90295E-07            )
 
 TEST_TABLE(      TABLE=D3L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-1.29749E-08            )
 
@@ -1846,7 +1846,7 @@ TEST_TABLE(      TABLE=D3_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-2.35049E-07            )
 
@@ -1854,7 +1854,7 @@ TEST_TABLE(      TABLE=D3_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=1.97008E-07            )
 
@@ -1862,28 +1862,28 @@ TEST_TABLE(      TABLE=D3_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-1.27769E-07            )
 
 TEST_TABLE(      TABLE=D3_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-2.19094E-07            )
 
 TEST_TABLE(      TABLE=D3_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=1.90295E-07            )
 
 TEST_TABLE(      TABLE=D3_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-1.29749E-08            )
 
@@ -1896,7 +1896,7 @@ TEST_TABLE(      TABLE=D3L_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-2.35049E-07            )
 
@@ -1904,7 +1904,7 @@ TEST_TABLE(      TABLE=D3L_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=1.97008E-07            )
 
@@ -1912,28 +1912,28 @@ TEST_TABLE(      TABLE=D3L_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-1.27769E-07            )
 
 TEST_TABLE(      TABLE=D3L_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-2.19094E-07            )
 
 TEST_TABLE(      TABLE=D3L_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=1.90295E-07            )
 
 TEST_TABLE(      TABLE=D3L_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-1.29749E-08            )
 
@@ -1945,7 +1945,7 @@ TEST_TABLE(      TABLE=S1_TDX,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='TR_DIR_1',
                      VALE=1.13900E-01            )
 
@@ -1953,7 +1953,7 @@ TEST_TABLE(      TABLE=S1_TDX,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='TR_DIR_2',
                      VALE=2.38606E-01            )
 
@@ -1961,7 +1961,7 @@ TEST_TABLE(      TABLE=S1_TDX,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='TR_DIR_3',
                      VALE=2.99264E-02            )
 
@@ -1973,7 +1973,7 @@ TEST_TABLE(      TABLE=S1L_TDX,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='TR_DIR_1',
                      VALE=1.13900E-01            )
 
@@ -1981,7 +1981,7 @@ TEST_TABLE(      TABLE=S1L_TDX,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='TR_DIR_2',
                      VALE=2.38606E-01            )
 
@@ -1989,7 +1989,7 @@ TEST_TABLE(      TABLE=S1L_TDX,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='TR_DIR_3',
                      VALE=2.99264E-02            )
 
@@ -2001,7 +2001,7 @@ TEST_TABLE(      TABLE=S1_TDY,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='TR_DIR_1',
                      VALE=2.38606E-01            )
 
@@ -2009,7 +2009,7 @@ TEST_TABLE(      TABLE=S1_TDY,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='TR_DIR_2',
                      VALE=-2.08454E-01            )
 
@@ -2017,7 +2017,7 @@ TEST_TABLE(      TABLE=S1_TDY,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='TR_DIR_3',
                      VALE=-4.69094E-02            )
 
@@ -2029,7 +2029,7 @@ TEST_TABLE(      TABLE=S1L_TDY,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='TR_DIR_1',
                      VALE=2.38606E-01            )
 
@@ -2037,7 +2037,7 @@ TEST_TABLE(      TABLE=S1L_TDY,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='TR_DIR_2',
                      VALE=-2.08454E-01            )
 
@@ -2045,7 +2045,7 @@ TEST_TABLE(      TABLE=S1L_TDY,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='TR_DIR_3',
                      VALE=-4.69094E-02            )
 
@@ -2057,7 +2057,7 @@ TEST_TABLE(      TABLE=S1_TDZ,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='TR_DIR_1',
                      VALE=2.99264E-02            )
 
@@ -2065,7 +2065,7 @@ TEST_TABLE(      TABLE=S1_TDZ,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='TR_DIR_2',
                      VALE=-4.69094E-02            )
 
@@ -2073,7 +2073,7 @@ TEST_TABLE(      TABLE=S1_TDZ,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='TR_DIR_3',
                      VALE=-4.75532E-01            )
 
@@ -2085,7 +2085,7 @@ TEST_TABLE(      TABLE=S1L_TDZ,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='TR_DIR_1',
                      VALE=2.99264E-02            )
 
@@ -2093,7 +2093,7 @@ TEST_TABLE(      TABLE=S1L_TDZ,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='TR_DIR_2',
                      VALE=-4.69094E-02            )
 
@@ -2101,7 +2101,7 @@ TEST_TABLE(      TABLE=S1L_TDZ,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='TR_DIR_3',
                      VALE=-4.75532E-01            )
 
@@ -2113,7 +2113,7 @@ TEST_TABLE(      TABLE=D1_TDX,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='TRAC_DIR',
                      VALE=-2.35049E-07            )
 
@@ -2125,7 +2125,7 @@ TEST_TABLE(      TABLE=D1L_TDX,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='TRAC_DIR',
                      VALE=-2.35049E-07            )
 
@@ -2137,7 +2137,7 @@ TEST_TABLE(      TABLE=D2_TDX,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='TRAC_DIR',
                   CRITERE='ABSOLU',
                 PRECISION=1.E-10,
@@ -2146,7 +2146,7 @@ TEST_TABLE(      TABLE=D2_TDX,
 TEST_TABLE(      TABLE=D2_TDX,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='TRAC_DIR',
                   CRITERE='ABSOLU',
                 PRECISION=1.E-10,
@@ -2160,7 +2160,7 @@ TEST_TABLE(      TABLE=D2L_TDX,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='TRAC_DIR',
                   CRITERE='ABSOLU',
                 PRECISION=1.E-10,
@@ -2169,7 +2169,7 @@ TEST_TABLE(      TABLE=D2L_TDX,
 TEST_TABLE(      TABLE=D2L_TDX,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='TRAC_DIR',
                   CRITERE='ABSOLU',
                 PRECISION=1.E-10,
@@ -2292,42 +2292,42 @@ TEST_TABLE(      TABLE=PRIN_NO,
 TEST_TABLE(      TABLE=M1L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXX',
                      VALE= 1.28413E-01           )
 
 TEST_TABLE(      TABLE=M1L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYY',
                      VALE= -2.83838E-02           )
 
 TEST_TABLE(      TABLE=M1L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIZZ',
                      VALE= -1.84551E-01          )
 
 TEST_TABLE(      TABLE=M1L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXY',
                      VALE=  2.16093E-01          )
 
 TEST_TABLE(      TABLE=M1L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXZ',
                      VALE=-9.39100E-02            )
 
 TEST_TABLE(      TABLE=M1L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYZ',
                      VALE= -1.73470E-01          )
 
@@ -2338,42 +2338,42 @@ TEST_TABLE(      TABLE=M1L_G,
 TEST_TABLE(      TABLE=M1_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXX',
                      VALE= 1.28413E-01           )
 
 TEST_TABLE(      TABLE=M1_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYY',
                      VALE= -2.83838E-02          )
 
 TEST_TABLE(      TABLE=M1_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIZZ',
                      VALE= -1.84551E-01          )
 
 TEST_TABLE(      TABLE=M1_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXY',
                      VALE= 2.16093E-01      )
 
 TEST_TABLE(      TABLE=M1_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXZ',
                      VALE= -9.39100E-02          )
 
 TEST_TABLE(      TABLE=M1_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYZ',
                      VALE= -1.73470E-01           )
 
@@ -2384,42 +2384,42 @@ TEST_TABLE(      TABLE=M1_L,
 TEST_TABLE(      TABLE=M1_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXX',
                      VALE= 1.28413E-01         )
 
 TEST_TABLE(      TABLE=M1_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYY',
                      VALE= -2.83838E-02          )
 
 TEST_TABLE(      TABLE=M1_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIZZ',
                      VALE= -1.84551E-01           )
 
 TEST_TABLE(      TABLE=M1_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXY',
                      VALE= 2.16093E-01           )
 
 TEST_TABLE(      TABLE=M1_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXZ',
                      VALE= -9.39100E-02    )
 
 TEST_TABLE(      TABLE=M1_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYZ',
                      VALE= -1.73470E-01            )
 
@@ -2430,42 +2430,42 @@ TEST_TABLE(      TABLE=M1_U,
 TEST_TABLE(      TABLE=M2L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXX',
                      VALE= 8.92203E-02          )
 
 TEST_TABLE(      TABLE=M2L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYY',
                      VALE= 8.92203E-02          )
 
 TEST_TABLE(      TABLE=M2L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIZZ',
                      VALE= 4.28641E-01          )
 
 TEST_TABLE(      TABLE=M2L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXY',
                      VALE=  2.67618E-01       )
 
 TEST_TABLE(      TABLE=M2L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXZ',
                      VALE=  -1.12407E-01         )
 
 TEST_TABLE(      TABLE=M2L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYZ',
                      VALE= -1.12407E-01          )
 
@@ -2476,28 +2476,28 @@ TEST_TABLE(      TABLE=M2L_G,
 TEST_TABLE(      TABLE=M2L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXX',
                      VALE=   3.56838E-01         )
 
 TEST_TABLE(      TABLE=M2L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYY',
                      VALE=  -1.78397E-01         )
 
 TEST_TABLE(      TABLE=M2L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIZZ',
                      VALE= 4.28641E-01           )
 
 TEST_TABLE(      TABLE=M2L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXY',
                   CRITERE='ABSOLU',
                 PRECISION=1.E-10,
@@ -2506,14 +2506,14 @@ TEST_TABLE(      TABLE=M2L_L,
 TEST_TABLE(      TABLE=M2L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXZ',
                      VALE= -1.58968E-01          )
 
 TEST_TABLE(      TABLE=M2L_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYZ',
                   CRITERE='ABSOLU',
                 PRECISION=1.E-10,
@@ -2526,28 +2526,28 @@ TEST_TABLE(      TABLE=M2L_L,
 TEST_TABLE(      TABLE=M2_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXX',
                      VALE=3.56838E-01            )
 
 TEST_TABLE(      TABLE=M2_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYY',
                      VALE=-1.78397E-01            )
 
 TEST_TABLE(      TABLE=M2_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIZZ',
                      VALE=4.28641E-01            )
 
 TEST_TABLE(      TABLE=M2_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                 CRITERE='ABSOLU',
                 PRECISION=1.E-10,
                  NOM_PARA='SIXY',
@@ -2556,14 +2556,14 @@ TEST_TABLE(      TABLE=M2_U,
 TEST_TABLE(      TABLE=M2_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXZ',
                      VALE=-1.58968E-01            )
 
 TEST_TABLE(      TABLE=M2_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                 CRITERE='ABSOLU',
                 PRECISION=1.E-10,
                  NOM_PARA='SIYZ',
@@ -2576,42 +2576,42 @@ TEST_TABLE(      TABLE=M2_U,
 TEST_TABLE(      TABLE=M3L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXX',
                      VALE= -2.83838E-02         )
 
 TEST_TABLE(      TABLE=M3L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYY',
                      VALE= 1.28413E-01           )
 
 TEST_TABLE(      TABLE=M3L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIZZ',
                      VALE=-1.84551E-01           )
 
 TEST_TABLE(      TABLE=M3L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXY',
                      VALE=2.16093E-01            )
 
 TEST_TABLE(      TABLE=M3L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXZ',
                      VALE=-1.73470E-01            )
 
 TEST_TABLE(      TABLE=M3L_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYZ',
                      VALE=-9.39100E-02          )
 
@@ -2622,42 +2622,42 @@ TEST_TABLE(      TABLE=M3L_G,
 TEST_TABLE(      TABLE=M3_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXX',
                      VALE= 1.28413E-01          )
 
 TEST_TABLE(      TABLE=M3_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYY',
                      VALE= -2.83838E-02           )
 
 TEST_TABLE(      TABLE=M3_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIZZ',
                      VALE= -1.84551E-01          )
 
 TEST_TABLE(      TABLE=M3_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXY',
                      VALE=  -2.16093E-01         )
 
 TEST_TABLE(      TABLE=M3_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXZ',
                      VALE= -9.39100E-02           )
 
 TEST_TABLE(      TABLE=M3_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYZ',
                      VALE= 1.73470E-01         )
 
@@ -2668,42 +2668,42 @@ TEST_TABLE(      TABLE=M3_L,
 TEST_TABLE(      TABLE=M3_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXX',
                      VALE= 1.28413E-01           )
 
 TEST_TABLE(      TABLE=M3_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYY',
                      VALE= -2.83838E-02           )
 
 TEST_TABLE(      TABLE=M3_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIZZ',
                      VALE= -1.84551E-01           )
 
 TEST_TABLE(      TABLE=M3_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXY',
                      VALE= -2.16093E-01           )
 
 TEST_TABLE(      TABLE=M3_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXZ',
                      VALE= -9.39100E-02           )
 
 TEST_TABLE(      TABLE=M3_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYZ',
                      VALE= 1.73470E-01          )
 
@@ -2715,84 +2715,84 @@ TEST_TABLE(      TABLE=M3_U,
 TEST_TABLE(      TABLE=M4L_C,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXX',
                      VALE= 2.23201E-01           )
 
 TEST_TABLE(      TABLE=M4L_C,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYY',
                      VALE= -4.68468E-01           )
 
 TEST_TABLE(      TABLE=M4L_C,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIZZ',
                      VALE= -2.94210E-01           )
 
 TEST_TABLE(      TABLE=M4L_C,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXY',
                      VALE= 3.29707E-01           )
 
 TEST_TABLE(      TABLE=M4L_C,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXZ',
                      VALE= 3.29707E-01           )
 
 TEST_TABLE(      TABLE=M4L_C,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYZ',
                      VALE= -2.04348E-02          )
 
 TEST_TABLE(      TABLE=M4L_C,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.85271E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXX',
                      VALE=  5.11916E-01           )
 
 TEST_TABLE(      TABLE=M4L_C,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.85271E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYY',
                      VALE= -3.48136E-01          )
 
 TEST_TABLE(      TABLE=M4L_C,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.85271E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIZZ',
                      VALE= -6.21663E-01          )
 
 TEST_TABLE(      TABLE=M4L_C,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.85271E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXY',
                      VALE=  -1.71225E-01          )
 
 TEST_TABLE(      TABLE=M4L_C,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.85271E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIXZ',
                      VALE=  -1.71225E-01         )
 
 TEST_TABLE(      TABLE=M4L_C,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.85271E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='SIYZ',
                      VALE=  1.52287E-02        )
 
@@ -2804,7 +2804,7 @@ TEST_TABLE(      TABLE=N1_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-2.35049E-07            )
 
@@ -2812,7 +2812,7 @@ TEST_TABLE(      TABLE=N1_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=-1.97008E-07            )
 
@@ -2820,28 +2820,28 @@ TEST_TABLE(      TABLE=N1_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-1.27769E-07            )
 
 TEST_TABLE(      TABLE=N1_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-2.19094E-07            )
 
 TEST_TABLE(      TABLE=N1_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=-1.90295E-07            )
 
 TEST_TABLE(      TABLE=N1_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-1.29749E-08            )
 
@@ -2853,7 +2853,7 @@ TEST_TABLE(      TABLE=N1_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-2.35049E-07            )
 
@@ -2861,7 +2861,7 @@ TEST_TABLE(      TABLE=N1_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=-1.97008E-07            )
 
@@ -2869,28 +2869,28 @@ TEST_TABLE(      TABLE=N1_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-1.27769E-07            )
 
 TEST_TABLE(      TABLE=N1_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-2.19094E-07            )
 
 TEST_TABLE(      TABLE=N1_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=-1.90295E-07            )
 
 TEST_TABLE(      TABLE=N1_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-1.29749E-08            )
 
@@ -2902,7 +2902,7 @@ TEST_TABLE(      TABLE=N1_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-2.35049E-07            )
 
@@ -2910,7 +2910,7 @@ TEST_TABLE(      TABLE=N1_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=-1.97008E-07            )
 
@@ -2918,28 +2918,28 @@ TEST_TABLE(      TABLE=N1_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-1.27769E-07            )
 
 TEST_TABLE(      TABLE=N1_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-2.19094E-07            )
 
 TEST_TABLE(      TABLE=N1_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=-1.90295E-07            )
 
 TEST_TABLE(      TABLE=N1_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-1.29749E-08            )
 
@@ -2951,7 +2951,7 @@ TEST_TABLE(      TABLE=N2_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-2.17656E-07            )
 
@@ -2959,7 +2959,7 @@ TEST_TABLE(      TABLE=N2_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=-2.17656E-07            )
 
@@ -2967,28 +2967,28 @@ TEST_TABLE(      TABLE=N2_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-9.07308E-08            )
 
 TEST_TABLE(      TABLE=N2_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-1.94172E-07            )
 
 TEST_TABLE(      TABLE=N2_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=-1.94172E-07            )
 
 TEST_TABLE(      TABLE=N2_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=6.65551E-08            )
 
@@ -3000,7 +3000,7 @@ TEST_TABLE(      TABLE=N2_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-3.07813E-07            )
 
@@ -3008,7 +3008,7 @@ TEST_TABLE(      TABLE=N2_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                   CRITERE='ABSOLU',
                 PRECISION=1.E-10,
@@ -3018,21 +3018,21 @@ TEST_TABLE(      TABLE=N2_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-9.07308E-08            )
 
 TEST_TABLE(      TABLE=N2_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-2.74601E-07            )
 
 TEST_TABLE(      TABLE=N2_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                   CRITERE='ABSOLU', 
                 PRECISION=1.E-10,
@@ -3041,7 +3041,7 @@ TEST_TABLE(      TABLE=N2_L,
 TEST_TABLE(      TABLE=N2_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=6.65551E-08            )
 
@@ -3055,7 +3055,7 @@ TEST_TABLE(      TABLE=N2_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-3.07813E-07            )
 
@@ -3063,7 +3063,7 @@ TEST_TABLE(      TABLE=N2_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                   CRITERE='ABSOLU', 
                      VALE=0.            )
@@ -3072,21 +3072,21 @@ TEST_TABLE(      TABLE=N2_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-9.07308E-08            )
 
 TEST_TABLE(      TABLE=N2_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-2.74601E-07            )
 
 TEST_TABLE(      TABLE=N2_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                   CRITERE='ABSOLU', 
                 PRECISION=1.E-10,
@@ -3095,7 +3095,7 @@ TEST_TABLE(      TABLE=N2_U,
 TEST_TABLE(      TABLE=N2_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=6.65551E-08            )
 
@@ -3107,7 +3107,7 @@ TEST_TABLE(      TABLE=N3_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-1.97008E-07            )
 
@@ -3115,7 +3115,7 @@ TEST_TABLE(      TABLE=N3_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=-2.35049E-07            )
 
@@ -3123,28 +3123,28 @@ TEST_TABLE(      TABLE=N3_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-1.27769E-07            )
 
 TEST_TABLE(      TABLE=N3_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-1.90295E-07            )
 
 TEST_TABLE(      TABLE=N3_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=-2.19094E-07            )
 
 TEST_TABLE(      TABLE=N3_G,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-1.29749E-08            )
 
@@ -3156,7 +3156,7 @@ TEST_TABLE(      TABLE=N3_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-2.35049E-07            )
 
@@ -3164,7 +3164,7 @@ TEST_TABLE(      TABLE=N3_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=1.97008E-07            )
 
@@ -3172,28 +3172,28 @@ TEST_TABLE(      TABLE=N3_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-1.27769E-07            )
 
 TEST_TABLE(      TABLE=N3_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-2.19094E-07            )
 
 TEST_TABLE(      TABLE=N3_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=1.90295E-07            )
 
 TEST_TABLE(      TABLE=N3_L,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-1.29749E-08            )
 
@@ -3205,7 +3205,7 @@ TEST_TABLE(      TABLE=N3_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-2.35049E-07            )
 
@@ -3213,7 +3213,7 @@ TEST_TABLE(      TABLE=N3_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=1.97008E-07            )
 
@@ -3221,28 +3221,28 @@ TEST_TABLE(      TABLE=N3_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-1.27769E-07            )
 
 TEST_TABLE(      TABLE=N3_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DX',
                      VALE=-2.19094E-07            )
 
 TEST_TABLE(      TABLE=N3_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DY',
                      VALE=1.90295E-07            )
 
 TEST_TABLE(      TABLE=N3_U,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 5.00000E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='DZ',
                      VALE=-1.29749E-08            )
 
@@ -3254,7 +3254,7 @@ TEST_TABLE(      TABLE=O1_TDX,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='TR_DIR_1',
                      VALE= 2.23201E-01          )
 
@@ -3262,7 +3262,7 @@ TEST_TABLE(      TABLE=O1_TDX,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='TR_DIR_2',
                      VALE= 3.29707E-01          )
 
@@ -3270,7 +3270,7 @@ TEST_TABLE(      TABLE=O1_TDX,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='TR_DIR_3',
                      VALE= -3.41003E-02         )
 
@@ -3283,7 +3283,7 @@ TEST_TABLE(      TABLE=O1_TDY,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='TR_DIR_1',
                      VALE=  3.29707E-01          )
 
@@ -3291,7 +3291,7 @@ TEST_TABLE(      TABLE=O1_TDY,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='TR_DIR_2',
                      VALE=  -2.94210E-01          )
 
@@ -3299,7 +3299,7 @@ TEST_TABLE(      TABLE=O1_TDY,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='TR_DIR_3',
                      VALE= -2.04348E-02          )
 
@@ -3311,7 +3311,7 @@ TEST_TABLE(      TABLE=O1_TDZ,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='TR_DIR_1',
                      VALE= -3.41003E-02           )
 
@@ -3319,7 +3319,7 @@ TEST_TABLE(      TABLE=O1_TDZ,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='TR_DIR_2',
                      VALE= -2.04348E-02          )
 
@@ -3327,7 +3327,7 @@ TEST_TABLE(      TABLE=O1_TDZ,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='TR_DIR_3',
                      VALE= -4.68468E-01          )
 
@@ -3339,7 +3339,7 @@ TEST_TABLE(      TABLE=P1_TDX,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='TRAC_DIR',
                      VALE=-2.35049E-07            )
 
@@ -3351,7 +3351,7 @@ TEST_TABLE(      TABLE=P2_TDX,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 0.00000E+00,     
                             CRITERE = 'ABSOLU',         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='TRAC_DIR',
                   CRITERE='ABSOLU',
                 PRECISION=1.E-10,
@@ -3360,7 +3360,7 @@ TEST_TABLE(      TABLE=P2_TDX,
 TEST_TABLE(      TABLE=P2_TDX,
                    FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
                             VALE = 6.09476E-01,         ),
-                REFERENCE='AUTRE_ASTER',
+                REFERENCE='NON_REGRESSION',
                  NOM_PARA='TRAC_DIR',
                   CRITERE='ABSOLU',
                 PRECISION=1.E-10,

@@ -1,4 +1,4 @@
-#@ MODIF N_FONCTION Noyau  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_FONCTION Noyau  DATE 21/05/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -25,6 +25,8 @@
 # de la division réelle pour les entiers, et non la division entière
 # 1/2=0.5 (et non 0). Comportement par défaut dans Python 3.0.
 from __future__ import division
+from math import sin, cos, tan, asin, acos, atan2, atan, sinh, cosh, tanh
+from math import pi, exp, log, log10, sqrt
 
 from N_ASSD import ASSD
 from N_info import message, SUPERV
@@ -45,16 +47,13 @@ class formule(ASSD):
 
     def __call__(self, *val):
         """Evaluation de la formule"""
-        from math import sin, cos, tan, asin, acos, atan2, atan, sinh, cosh, tanh
-        from math import pi ,exp,log, log10, sqrt
-        context = locals().copy()
         # en POURSUITE, self.parent_context is None, on essaie de reprendre const_context
-        context.update(getattr(self, 'parent_context') \
-                    or getattr(self.parent, 'const_context', {}))
+        context = getattr(self, 'parent_context') or getattr(self.parent, 'const_context', {})
         for param, value in zip(self.nompar, val):
             context[param] = value
         try:
-            res = eval(self.expression, context)
+            # globals() pour math.*
+            res = eval(self.code, context, globals())
         except Exception, exc:
             message.error(SUPERV, "ERREUR LORS DE L'ÉVALUATION DE LA FORMULE '%s' " \
                           ":\n>> %s",self.nom, str(exc))

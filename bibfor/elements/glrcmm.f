@@ -2,7 +2,7 @@
      &                 EPST,DEPS,DSIG,ECR,DELAS,DSIDEP,CRIT,CODRET)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 22/05/2012   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -97,35 +97,54 @@ C     MATRICE DE PASSATE ORTHO -> LOCAL
       Q(1,2) = -Q(2,1)
       Q(2,2) = Q(1,1)
 
-      NOMRES(1) = 'FMEX1'
-      NOMRES(2) = 'FMEX2'
-      NOMRES(3) = 'FMEY1'
-      NOMRES(4) = 'FMEY2'
-      NOMRES(5) = 'MAXMP1'
-      NOMRES(6) = 'MINMP1'
-      NOMRES(7) = 'MAXMP2'
-      NOMRES(8) = 'MINMP2'
       FAMI='FPG1'
       KPG=1
       SPT=1
       POUM='+'
 
-      DO 50, I=1,2
-        CALL RCVALB(FAMI,KPG,SPT,POUM,ZIMAT,' ',PHENOM,1,'X ',0.D0,2,
+      NOMRES(1)='MPCST'
+
+      CALL RCVALB(FAMI,KPG,SPT,POUM,ZIMAT,' ',PHENOM,0,' ',0.D0,
+     &            1,NOMRES,VALRES,CODRES,1)
+
+      IF (VALRES(1) .EQ. 0.D0) THEN
+        NOMRES(1) = 'MAXMP1'
+        NOMRES(2) = 'MINMP1'
+        NOMRES(3) = 'MAXMP2'
+        NOMRES(4) = 'MINMP2'
+        CALL RCVALB(FAMI,KPG,SPT,POUM,ZIMAT,' ',PHENOM,0,' ',R8BID,4,
+     &              NOMRES,VALRES,CODRES,1)
+        MAXMP(1) = VALRES(1)
+        MAXMP(2) = VALRES(3)
+        MINMP(1) = VALRES(2)
+        MINMP(2) = VALRES(4)
+      ELSE
+        NOMRES(1) = 'FMEX1'
+        NOMRES(2) = 'FMEX2'
+        NOMRES(3) = 'FMEY1'
+        NOMRES(4) = 'FMEY2'
+        NOMRES(5) = 'MAXMP1'
+        NOMRES(6) = 'MINMP1'
+        NOMRES(7) = 'MAXMP2'
+        NOMRES(8) = 'MINMP2'
+
+        DO 50, I=1,2
+          CALL RCVALB(FAMI,KPG,SPT,POUM,ZIMAT,' ',PHENOM,1,'X ',0.D0,2,
      &            NOMRES(2*(I-1)+1),VALRES,CODRES,1)
-        MP1N0 = VALRES(1)
-        MP2N0 = VALRES(2)
+          MP1N0 = VALRES(1)
+          MP2N0 = VALRES(2)
 
-        CALL RCVALB(FAMI,KPG,SPT,POUM,ZIMAT,' ',PHENOM,0,' ',R8BID,2,
+          CALL RCVALB(FAMI,KPG,SPT,POUM,ZIMAT,' ',PHENOM,0,' ',R8BID,2,
      &            NOMRES(2*(I-1)+5),VALRES,CODRES,1)
-        MAXMP(I) = VALRES(1)
-        MINMP(I) = VALRES(2)
+          MAXMP(I) = VALRES(1)
+          MINMP(I) = VALRES(2)
 
-        IF ( (MP1N0  .LT.  0.D0).OR.(MP2N0  .GT.  0.D0)
-     &      .OR.     (MAXMP(I)-MINMP(I) .LE. 0.D0)   ) THEN
-          CALL U2MESS('F','ELEMENTS_87')
-        ENDIF
- 50   CONTINUE
+          IF ((MP1N0 .LT. 0.D0).OR.(MP2N0 .GT. 0.D0)
+     &   .OR. (MAXMP(I)-MINMP(I) .LE. 0.D0)) THEN
+            CALL U2MESS('F','ELEMENTS_87')
+          ENDIF
+ 50     CONTINUE
+      ENDIF
 
       NOMRES(1) = 'NORMM'
       NOMRES(2) = 'NORMN'

@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF dll_zmat supervis  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF dll_zmat supervis  DATE 21/05/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -141,7 +141,7 @@ void STDCALL(ZASWRP, zaswrp) (
 #endif
 }
 
-void STDCALL(ZASWRI,zaswri) ()
+void DEF0(ZASWRI,zaswri)
 {
 #ifdef _POSIX
     /* ZASter WRapper Init : wrapper to Zasini C++ function
