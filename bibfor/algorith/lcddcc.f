@@ -17,7 +17,7 @@
       COMMON /DEPS6/DEPSDT
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 29/05/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -37,6 +37,9 @@ C ======================================================================
 C ======================================================================
 C  COMPORTEMENT MONOCRISTALLIN : ECOULEMENT (VISCO)PLASTIQUE
 C  INTEGRATION DE LA LOI MONOCRISTALLINE DD-CC. CALCUL DE DALPHA DGAMMA
+C
+C ARGUMENTS
+C
 C       IN  TAUS    :  SCISSION REDUITE
 C           COEFT   :  PARAMETRES MATERIAU
 C           IFA     :  NUMERO DE FAMILLE
@@ -95,7 +98,7 @@ C initialisation des arguments en sortie
       DP=0.D0
       IRET=0
       
-      LC=1.4D-12 * TEMP * TEMP
+      LC=500.D0*B*(TEMP/300.D0)**2
 
       DO 55 IR=1,NBSYS
          RHOM(IR)=VIND(3*(IR-1)+1)
@@ -153,7 +156,7 @@ C 3.  calcul de lambda
       T2=MIN(SQRT(RHOTOT),D1)
       LAMBDA=1.D0/T2 - D
       
-C 4.  calcul de Ls      
+C 4.  calcul de Alpha-s_AT et Ls      
       ALPHAT=0.D0
       IF (NEW) THEN
          DO 21 IR=1,12

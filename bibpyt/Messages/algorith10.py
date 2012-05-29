@@ -1,4 +1,4 @@
-#@ MODIF algorith10 Messages  DATE 02/04/2012   AUTEUR GRANET S.GRANET 
+#@ MODIF algorith10 Messages  DATE 29/05/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -197,10 +197,6 @@ cata_msg = {
 
 76 : _(u"""
  mot-clé NB_BLOC inopérant on prend un bloc
-"""),
-
-77 : _(u"""
- élément dégénéré
 """),
 
 87 : _(u"""

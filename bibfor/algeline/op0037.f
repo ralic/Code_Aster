@@ -2,9 +2,9 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 29/05/2012   AUTEUR BRIE N.BRIE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -49,7 +49,7 @@ C     PARAMETRES "MODE_FLAMB"
       INTEGER       L1,L2,L3,LMASSE,LRAIDE,LAMOR,LDDL
       REAL*8        R8B
       COMPLEX*16    C16B
-      LOGICAL       LMASIN, LREFE, LBASM, LAMO
+      LOGICAL       LMASIN, LREFE, LBASM, LAMO, LCMPLX
       CHARACTER*1    TYPMOD
       CHARACTER*24 VALK(4)
       CHARACTER*8   MODEOU, MODEIN, NOMCMP(7), K8B, CMP,
@@ -83,8 +83,9 @@ C     --- RECUPERATION DU RESULTAT ET DU MODE A TRAITER ---
       CALL GETRES( MODEOU, TYPCON, NOMCMD )
       CALL GCUCON( MODEOU, TYPCON, IEX    )
 C
-      LBASM=.FALSE.
-      LAMO=.FALSE.
+      LBASM = .FALSE.
+      LAMO  = .FALSE.
+      LCMPLX= .FALSE.
       CALL GETVID('  ','MODE',1,IARG,1,MODEIN,L)
 
       IF ( IEX .GT. 0 ) THEN
@@ -161,6 +162,12 @@ C
             CALL U2MESS('F','ALGELINE2_34')
           ENDIF
         ENDIF
+
+C       ------ AU PASSAGE, ON FAIT UN TEST SUR LE TYPE DES MODES
+C              (REEL OU COMPLEXE)
+        CALL JELIRA(K19B//'.VALE','TYPE',IBID,TYPMOD)
+        IF (TYPMOD .EQ. 'C')   LCMPLX = .TRUE.
+
  77   CONTINUE
 C
 C     --- INITIALISATION ---
@@ -183,10 +190,11 @@ C     --- MATRICES DE REFERENCE DES MODES ---
       TYPEBA=ZK24(LMODE+6)
       IF (TYPEBA(1:1).NE.' ') LBASM=.TRUE.
 
-      IF (TYPEBA(1:1).NE.' ') THEN
+      IF (TYPEBA(1:1).NE.' ') THEN      
         CALL GETVID(' ','RAIDE',0,IARG,1,MAT1,L1)
         CALL GETVID(' ','MASSE',0,IARG,1,MAT2,L2)
         CALL GETVID(' ','AMOR',0,IARG,1,MAT3,L3)
+        IF ( (L1*L2) .EQ. 0 )  CALL U2MESS('F','ALGELINE_6')
         MASSE = MAT2
         RAIDE = MAT1
         AMOR  = ' '
@@ -246,22 +254,28 @@ C     --- OPTION DE NORMALISATION  ---
          IF      ( NORM .EQ. 'MASS_GENE'      ) THEN
 C        --- CALCUL DE LA MASSE DU MODELE
             IF (.NOT.LREFE) CALL U2MESS('F','ALGELINE2_35')
+            IF ( LBASM .AND. LCMPLX .AND. (AMOR.EQ.' ') ) THEN
+               CALL U2MESS('F','ALGELINE_8')
+            ENDIF
             METHOD(1:9) = 'MASS_GENE'
             CALL MTDSCR(MASSE)
             CALL JEVEUO(MASSE(1:19)//'.&INT','E',LMAT(1))
             IF (AMOR.NE.' ') THEN
                CALL MTDSCR(AMOR)
                CALL JEVEUO(AMOR(1:19)//'.&INT','E',LMAT(2))
-            END IF
+            ENDIF
          ELSE IF ( NORM .EQ. 'RIGI_GENE'  ) THEN
             IF (.NOT.LREFE) CALL U2MESS('F','ALGELINE2_35')
+            IF ( LBASM .AND. LCMPLX .AND. (AMOR.EQ.' ') ) THEN
+               CALL U2MESS('F','ALGELINE_8')
+            ENDIF
             METHOD(1:9) = 'RAID_GENE'
             CALL MTDSCR(RAIDE)
             CALL JEVEUO(RAIDE(1:19)//'.&INT','E',LMAT(1))
             IF (AMOR.NE.' ') THEN
                CALL MTDSCR(MASSE)
                CALL JEVEUO(MASSE(1:19)//'.&INT','E',LMAT(2))
-            END IF
+            ENDIF
          ELSE IF ( NORM .EQ. 'EUCL'      ) THEN
             METHOD(1:4) = 'EUCL'
             NCMP   = 1

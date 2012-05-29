@@ -12,7 +12,7 @@
       CHARACTER*16  NOMTE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 29/05/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,6 +86,7 @@ C ---------------------------------------------------------------------
 C
       NPG    = 0
       NPOINI = 0
+      NBSEL  = 0
 C
       CALL ELRACA ( ELREFA, NDIM, NNO, NNOS, NBFPG, FAMG, NBPG, X, VOL )
 
@@ -105,9 +106,6 @@ C
      &                 MXNBN2,  MXNBPI, MXNBTE,
      &                 MXNBSE, NBSEL, CORSEL)
 
-      ELSE
-         NPG    = 0
-         NPOINI = 0
       ENDIF
 
       CALL JEDEMA()

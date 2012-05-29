@@ -1,22 +1,7 @@
-# MODIF  DATE 07/05/2012   AUTEUR GRANET S.GRANET 
+# MODIF  DATE 29/05/2012   AUTEUR GRANET S.GRANET 
 # TITRE MODELISATION DU GONFLEMENT DE L ARGILE GONFLANTE (SINI = 0.0099)
 # wtnp119e.para = tps_job 150 mem_job 128Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
-# ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 # wtnp119e.para = tps_job 150 mem_job 128Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -444,20 +429,20 @@ TEST_RESU(RESU=_F(RESULTAT=U2,
 
 
 TEST_RESU(RESU=_F(RESULTAT=U2,
-                  INST=0.7,
-                  NOM_CHAM='SIEF_NOEU',
-                  NOM_CMP='SIXX',
-                  NOEUD='N3',
-                  VALE=-1.667E-11,
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-3,
-                  REFERENCE='NON_REGRESSION',),);
-TEST_RESU(RESU=_F(RESULTAT=U2,
                   INST=0.8,
                   NOM_CHAM='SIEF_NOEU',
                   NOM_CMP='SIXX',
                   NOEUD='N3',
-                  VALE=-1.667E-11,
+                  VALE=0.,
+                  CRITERE='ABSOLU',
+                  PRECISION=1.E-3,
+                  REFERENCE='NON_REGRESSION',),);
+TEST_RESU(RESU=_F(RESULTAT=U2,
+                  INST=1.,
+                  NOM_CHAM='SIEF_NOEU',
+                  NOM_CMP='SIXX',
+                  NOEUD='N3',
+                  VALE=-1.7E7,
                   CRITERE='RELATIF',
                   PRECISION=1.E-3,
                   REFERENCE='NON_REGRESSION',),);

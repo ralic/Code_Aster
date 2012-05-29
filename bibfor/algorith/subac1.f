@@ -1,8 +1,8 @@
-      SUBROUTINE SUBAC1(NDIM,AXI,NNO,IPG,IVF,IDFDE,GEOM,COVA)
+      SUBROUTINE SUBAC1(LAXI,NNO,VFF,DFF,GEOM,COVA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 29/05/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,26 +20,9 @@ C ======================================================================
 
       IMPLICIT NONE
 
-      LOGICAL AXI
-      INTEGER NDIM,NNO,IVF,IDFDE,IPG
-      REAL*8  GEOM(2,NNO)
-      REAL*8  COVA(3,3)
-C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      INTEGER ZI
-      COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
-      COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
-      COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+      LOGICAL LAXI
+      INTEGER NNO
+      REAL*8  VFF(NNO),DFF(NNO),GEOM(2,NNO),COVA(3,3)
 C.......................................................................
 C     CALCUL DE LA BASE COVARIANTE POUR UN ELEMENT LINEIQUE
 C.......................................................................
@@ -51,7 +34,7 @@ C IN  GEOM    COORDONNEES DES NOEUDS
 C OUT COVA    COORDONNEES DES VECTEURS DE LA BASE COVARAINTE
 C.......................................................................
 
-      INTEGER N,I,II,K
+      INTEGER N,I
       REAL*8  NORME
 
       DO 10 I = 1,3
@@ -59,20 +42,17 @@ C.......................................................................
         COVA(I,2) = 0.D0
  10   CONTINUE
 
-      K = NDIM*(IPG-1)*NNO
-
 C    CALCUL DU PREMIER VECTEUR TANGENT
       DO 20 N = 1,NNO
-        II = NDIM*(N-1)
         DO 25 I=1,2
-          COVA(I,1)=COVA(I,1)+ZR(IDFDE-1+K+II+1)*GEOM(I,N)
+          COVA(I,1)=COVA(I,1)+DFF(N)*GEOM(I,N)
  25     CONTINUE
  20   CONTINUE
 
 C    CALCUL DU SECOND VECTEUR TANGENT
-      IF (AXI) THEN
+      IF (LAXI) THEN
         DO 30 N = 1,NNO
-          COVA(3,2) = COVA(3,2) + GEOM(1,N)*ZR(IVF-1+N+(IPG-1)*NNO)
+          COVA(3,2) = COVA(3,2) + VFF(N)*GEOM(1,N)
  30     CONTINUE
       ELSE
         COVA(3,2) = 1.D0
@@ -84,8 +64,6 @@ C    CALCUL DE LA NORMALE (PRODUIT VECTORIEL DES VECTEURS TANGENTS)
       COVA(3,3) = COVA(1,1)*COVA(2,2) - COVA(2,1)*COVA(1,2)
 
       NORME = SQRT(COVA(1,3)**2 + COVA(2,3)**2 + COVA(3,3)**2)
-      IF (NORME.EQ.0.D0) CALL U2MESS('F','ALGORITH10_77')
-
       COVA(1,3) = COVA(1,3) / NORME
       COVA(2,3) = COVA(2,3) / NORME
       COVA(3,3) = COVA(3,3) / NORME

@@ -1,7 +1,7 @@
       SUBROUTINE TE0574(OPTION,NOMTE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/05/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 29/05/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,7 +27,7 @@ C ----------------------------------------------------------------------
 C
 C ROUTINE CALCUL ELEMENTAIRE
 C
-C CALCUL DES RIGIDITES ELEMENTAIRES EN MECANIQUE CORRESPONDANT A UN
+C CALCUL DES OPTIONS ELEMENTAIRES EN MECANIQUE CORRESPONDANT A UN
 C CHARGEMENT EN PRESSION SUIVEUSE SUR DES ARETES D'ELEMENTS
 C ISOPARAMETRIQUES 2D
 C
@@ -37,6 +37,7 @@ C ----------------------------------------------------------------------
 C
 C
 C IN  OPTION : OPTION DE CALCUL
+C               CHAR_MECA_PRSU_F
 C               RIGI_MECA_PRSU_F
 C IN  NOMTE  : NOM DU TYPE ELEMENT
 C
@@ -60,9 +61,9 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER       MXNOEU,MXVECT,MXMATR
-      PARAMETER     (MXNOEU=3,MXVECT=2*3,MXMATR=2*2*3*3)
-      INTEGER       MXPARA
+      INTEGER        MXNOEU  ,MXNPG   ,MXVECT    ,MXMATR
+      PARAMETER     (MXNOEU=3,MXNPG=4,MXVECT=2*3,MXMATR=2*3*2*3)
+      INTEGER        MXPARA
       PARAMETER     (MXPARA=3)
 C
       CHARACTER*8   NOMPAR(MXPARA)
@@ -74,11 +75,11 @@ C
       INTEGER       NDIM,NNO,NPG,NNOS,NDDL
       INTEGER       IDDL,INO,IPG
       INTEGER       JPOIDS,JVF,JDF,JGANO
-      INTEGER       JMATR
+      INTEGER       JVECT,JMATR
       INTEGER       JGEOM,JDEPM,JDEPP,JPRES,JTIME
-      INTEGER       KDEC,KK,I,J
+      INTEGER       KDEC,I,J,K
 C
-      REAL*8        PR(2,4)
+      REAL*8        P(2,MXNPG)
       REAL*8        VECT(MXVECT),MATR(MXMATR)
 C
 C ----------------------------------------------------------------------
@@ -86,13 +87,13 @@ C
 C
 C --- CARACTERISTIQUES ELEMENT
 C
+      LAXI = LTEATT(' ','AXIS','OUI')
       CALL ELREF4(' '   ,'RIGI',NDIM  ,NNO   ,NNOS  ,
      &            NPG   ,JPOIDS,JVF   ,JDF   ,JGANO )
       NDDL = 2*NNO
+      CALL ASSERT(NDIM  .LE.1     )
       CALL ASSERT(NNO.LE.MXNOEU)
-      CALL ASSERT(NDIM.LE.2)
-      CALL ASSERT(NPG.LE.4)
-      LAXI = LTEATT(' ','AXIS','OUI')
+      CALL ASSERT(NPG   .LE.MXNPG )
 C
 C --- ACCES CHAMPS
 C
@@ -101,7 +102,6 @@ C
       CALL JEVECH('PDEPLPR','L',JDEPP)
       CALL JEVECH('PPRESSF','L',JPRES)
       CALL JEVECH('PTEMPSR','L',JTIME)
-      CALL JEVECH('PMATUNS','E',JMATR)
 C
 C --- REACTUALISATION DE LA GEOMETRIE PAR LE DEPLACEMENT
 C
@@ -129,25 +129,43 @@ C
         VALPAR(1) = X
         VALPAR(2) = Y
         CALL FOINTE('FM',ZK8(JPRES)  ,MXPARA,NOMPAR,VALPAR,
-     &              PR(1,IPG),IER)
+     &              P(1,IPG),IER)
         CALL FOINTE('FM',ZK8(JPRES+1),MXPARA,NOMPAR,VALPAR,
-     &              PR(2,IPG),IER)
+     &              P(2,IPG),IER)
  100  CONTINUE
 C
 C --- CALCUL EFFECTIF DE LA RIGIDITE
 C
-      CALL NMPR2D(NDIM  ,LAXI  ,2     ,NNO      ,NPG   ,
-     &            JPOIDS,JVF   ,JDF   ,ZR(JGEOM),PR    ,
-     &            VECT  ,MATR  )
+      IF (OPTION.EQ.'CHAR_MECA_PRSU_F') THEN
+        CALL NMPR2D(1     ,LAXI   ,NNO      ,NPG   ,ZR(JPOIDS),
+     &              ZR(JVF),ZR(JDF),ZR(JGEOM),P     ,VECT      ,
+     &              MATR   )
+C
+C --- RECOPIE DU VECTEUR ELEMENTAIRE
+C
+        CALL JEVECH('PVECTUR','E',JVECT)
+        CALL DCOPY(NDDL  ,VECT  ,1,ZR(JVECT),1)
+
+      ELSEIF (OPTION.EQ.'RIGI_MECA_PRSU_F') THEN
+        CALL NMPR2D(2      ,LAXI   ,NNO      ,NPG   ,ZR(JPOIDS),
+     &              ZR(JVF),ZR(JDF),ZR(JGEOM),P     ,VECT      ,
+     &              MATR   )
 C
 C --- RECOPIE DE LA MATRICE ELEMENTAIRE (NON-SYMETRIQUE)
+C --- LES MATRICES NON SYMETRIQUES SONT ENTREES EN LIGNE
 C
-      KK = 0
+        CALL JEVECH('PMATUNS','E',JMATR)
+        K = 0
       DO 110 I = 1,NDDL
         DO 120 J = 1,NDDL
-          KK = KK + 1
-          ZR(JMATR-1+KK) = MATR(J*(NDDL-1)+I)
+            K = K + 1
+            ZR(JMATR-1+K) = MATR((J-1)*NDDL+I)
   120   CONTINUE
   110 CONTINUE
+        CALL ASSERT(K.EQ.NDDL*NDDL)
+
+      ELSE
+        CALL ASSERT(.FALSE.)
+      ENDIF
 C
       END

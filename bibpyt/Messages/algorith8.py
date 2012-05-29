@@ -1,8 +1,8 @@
-#@ MODIF algorith8 Messages  DATE 07/11/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith8 Messages  DATE 29/05/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -60,11 +60,15 @@ cata_msg = {
 """),
 
 24 : _(u"""
- Le chargement de type cisaillement suiveur n'est pas disponible.
+ Le chargement de type cisaillement (mot-clé CISA_2D) ne peut pas être suiveur (mot-clé TYPE_CHAR='SUIV').
 """),
 
 25 : _(u"""
- Le chargement de type pression suiveuse est imposé sur l'axe du modèle axisymétrique.
+ On ne sait pas traiter un chargement de type pression (mot-clé PRES_REP) suiveuse (mot-clé TYPE_CHAR_='SUIV') imposé sur l'axe du modèle axisymétrique.
+
+ Conseils :
+  - Vérifiez que le chargement doit bien être suiveur.
+  - Vérifiez que la zone d'application du chargement est la bonne.
 """),
 
 28 : _(u"""

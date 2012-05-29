@@ -1,4 +1,4 @@
-#@ MODIF modelisa4 Messages  DATE 21/05/2012   AUTEUR TARDIEU N.TARDIEU 
+#@ MODIF modelisa4 Messages  DATE 29/05/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -127,7 +127,7 @@ Ceci est dangereux car cela peut produire un maillage non conforme.
 """),
 
 18 : _(u"""
- le mot-clé type_champ =  %(k1)s n'est pas cohérent avec le type du champ extrait :  %(k2)s _ %(k3)s
+ le mot-clé type_champ =  %(k1)s n'est pas cohérent avec le type du champ extrait :  %(k2)s_%(k3)s
 """),
 
 19 : _(u"""

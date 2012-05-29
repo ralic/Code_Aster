@@ -1,4 +1,4 @@
-#@ MODIF elements4 Messages  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF elements4 Messages  DATE 29/05/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -55,14 +55,6 @@ cata_msg = {
 
 34 : _(u"""
  le jacobien est nul.
-"""),
-
-35 : _(u"""
- matns() sous dimensionné
-"""),
-
-36 : _(u"""
- pr() sous dimensionné
 """),
 
 38 : _(u"""
