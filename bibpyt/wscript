@@ -1,6 +1,8 @@
 # encoding: utf-8
 
-from waflib import Logs, Utils
+import os.path as osp
+
+from waflib import TaskGen, Utils
 
 def build(self):
     get_srcs = self.path.get_src().ant_glob
@@ -13,3 +15,21 @@ def build(self):
     install_from = '.',
     install_path = env.PYTHONDIR,
     )
+
+    self(
+       features = 'revid py',
+           name = 'revision_id',
+         target = 'revision_id.py',
+   install_path = osp.join(env.PYTHONDIR, 'Accas'),
+    )
+
+@TaskGen.feature('revid')
+def build_revid(self):
+    """Create 'revision_id.py' containing the parent revision."""
+    target = self.bld.bldnode.make_node(self.target)
+    txt = "#\nrevid = %s\n" % self.env.ASTER_VERSION
+    with open(target.abspath(), 'w') as fid:
+        fid.write(txt)
+    target.sig = Utils.h_file(target.abspath())
+    self.process_py(target)
+

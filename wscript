@@ -94,6 +94,7 @@ def configure(self):
     paths =  libpaths + ldpaths
     os.environ['LD_LIBRARY_PATH'] = os.pathsep.join(p for p in paths if p)
 
+    self.load('scm_aster', tooldir='waftools')
     self.load('parallel', tooldir='waftools')
     self.check_platform()
 
@@ -155,6 +156,10 @@ def init(self):
        class tmp(y):
            variant = 'release'
 
+def all(self):
+    from waflib import Options
+    lst = ['install_release', 'install_debug']
+    Options.commands = lst + Options.commands
 
 ###############################################################################
 class BuildElementContext(Build.BuildContext):

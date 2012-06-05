@@ -34,9 +34,9 @@ C
       LOGICAL     EXPLOI
 C
       VERS = 11
-      UTIL = 1
-      NIVO = 24
-      DATE = '30/05/2012'
+      UTIL = 2
+      NIVO = 0
+      DATE = '06/06/2012'
       EXPLOI = .FALSE.
 C      
       END
