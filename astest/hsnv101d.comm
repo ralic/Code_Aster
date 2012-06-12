@@ -1,4 +1,4 @@
-# MODIF  DATE 10/04/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE THERMO_METALLO_MECANIQUE DECOUPLEE EN TRACTION SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -297,11 +297,8 @@ U=STAT_NON_LINE(
               )
 
 
-U=CALC_ELEM( reuse=U,
-                            OPTION=(
-                  'SIGM_ELNO',  'VARI_ELNO', 'EPSI_ELNO'),
-                          RESULTAT=U,
-              )
+U=CALC_CHAMP(reuse=U,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('EPSI_ELNO'),RESULTAT=U)
+
 
 CHVAR47=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_VARI_R',
                     RESULTAT=U, NOM_CHAM='VARI_ELNO',

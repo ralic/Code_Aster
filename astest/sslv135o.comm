@@ -1,4 +1,4 @@
-# MODIF  DATE 21/05/2012   AUTEUR TRAN V-X.TRAN 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 #
 # TITRE FATIGUE, AMPLITUDE CONSTANTE, TEST  DES GRANDEURS
 # sslv135o.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
@@ -231,14 +231,8 @@ SOL_NL = STAT_NON_LINE ( TITRE      =
                        SOLVEUR=_F(METHODE = 'MULT_FRONT'),
                                                          )
 
-SOL_NL = CALC_ELEM( reuse    = SOL_NL,
-                    RESULTAT = SOL_NL,
-                    OPTION   = ('EPSI_ELGA',
-                                'SIGM_ELNO',
-                                'EPSI_ELNO',
-                                'EPSP_ELGA',
-                                'EPSP_ELNO')
-                  )
+SOL_NL=CALC_CHAMP(reuse=SOL_NL,RESULTAT=SOL_NL,CONTRAINTE=('SIGM_ELNO'),DEFORMATION=('EPSI_ELGA','EPSI_ELNO','EPSP_ELGA','EPSP_ELNO'))
+
 
 SOL_NL = CALC_CHAMP( reuse    = SOL_NL,
                      RESULTAT = SOL_NL,
@@ -249,7 +243,7 @@ SOL_NL = CALC_CHAMP( reuse    = SOL_NL,
 TABSIGM=POST_RELEVE_T(ACTION=_F(INTITULE='SIGMA_XX',
                                 NOEUD = 'N1',
                                 RESULTAT=SOL_NL,
-                                TOUT_ORDRE='OUI',
+
                                 TOUT_CMP='OUI',
                                 NOM_CHAM = 'SIGM_NOEU',
                                 OPERATION='EXTRACTION',),);
@@ -258,7 +252,7 @@ IMPR_TABLE(TABLE=TABSIGM);
 TABEPS=POST_RELEVE_T(ACTION=_F(INTITULE='EPS_XX',
                                 NOEUD = 'N1',
                                 RESULTAT=SOL_NL,
-                                TOUT_ORDRE='OUI',
+
                                 TOUT_CMP='OUI',
                                 NOM_CHAM='EPSI_NOEU' ,
                                 OPERATION='EXTRACTION',),);
@@ -267,7 +261,7 @@ IMPR_TABLE(TABLE=TABEPS);
 TABEPSP=POST_RELEVE_T(ACTION=_F(INTITULE='EPSP_XX',
                                 NOEUD = 'N1',
                                 RESULTAT=SOL_NL,
-                                TOUT_ORDRE='OUI',
+
                                 TOUT_CMP='OUI',
                                 NOM_CHAM='EPSP_NOEU' ,
                                 OPERATION='EXTRACTION',),);

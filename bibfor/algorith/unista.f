@@ -3,22 +3,22 @@
 C-----------------------------------------------------------------------
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/12/2011   AUTEUR BEAURAIN J.BEAURAIN 
+C MODIF ALGORITH  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C-----------------------------------------------------------------------
@@ -45,7 +45,7 @@ C IN  REDEM    : NOMBRE REDEMARRAGES METHODE SORENSEN
 C
 C ----------------------------------------------------------------------
 C CORPS DU PROGRAMME
-      IMPLICIT NONE      
+      IMPLICIT NONE
 
 C     %-----------------%
 C     | ARRAY ARGUMENTS |
@@ -93,7 +93,7 @@ C
       CALL WKVECT('&&INESTA.VECT.TEM3','V V R',
      &             LDV,VECT2)
       CALL WKVECT('&&INESTA.VECT.TEM4','V V R',
-     &             LDH*LDH,Q)     
+     &             LDH*LDH,Q)
       CALL WKVECT('&&INESTA.VECT.TEM5','V V R',
      &             LDH*LDH,B)
 C
@@ -109,12 +109,12 @@ C
       IF (ETAT.EQ.0) THEN
 C
 C     1ER APPEL A LA METHODE DES PUISSANCES
-C              
+C
         CALL MPPSTA (H,LDH,V,LDV,DDLSTA,N,ZR(VECTT),
-     &               DDLEXC,INDICO,PROJ) 
-C        
-      ENDIF  
-C      
+     &               DDLEXC,INDICO,PROJ)
+C
+      ENDIF
+C
       IF (ETAT.EQ.1) THEN
 C
 C     MISE EN PLACE SHIFT POUR VALEUR NEGATIVE
@@ -139,9 +139,9 @@ C
 C
       ENDIF
 C
-      ERR = DNRM2(LDV,ZR(VECTT),1) 
+      ERR = DNRM2(LDV,ZR(VECTT),1)
       CALL DSCAL ( LDV,ONE/ERR,ZR(VECTT),1 )
-      CALL MRMULT('ZERO',LDYNFA,ZR(VECTT),' ',ZR(XSOL),1)
+      CALL MRMULT('ZERO',LDYNFA,ZR(VECTT),ZR(XSOL),1,.TRUE.)
 C
       VTEST = 0.D0
       DO 50 I = 1,LDV
@@ -158,69 +158,69 @@ C
       IF (VTEST.LT.0.D0 .OR. ETAT.EQ.0) THEN
         DO 90 I = 1,LDV
           VECTP(I) = ZR(VECTT+I-1)
-  90    CONTINUE        
+  90    CONTINUE
         CSTA = VTEST
         GOTO 300
-      ENDIF                        
-C   
+      ENDIF
+C
 C     CALCUL DU CRITERE
-C       
+C
       DO 60 I = 1,LDH
         DO 70 J = 1,LDH
           IF (I.EQ.J) THEN
             ZR(B+(I-1)*LDH+J-1) = 1.D0
           ELSE
             ZR(B+(I-1)*LDH+J-1) = 0.D0
-          ENDIF    
+          ENDIF
   70    CONTINUE
-  60  CONTINUE 
+  60  CONTINUE
 C
-      CARA='NFSP'    
-C          
-      CALL MGAUSS(CARA,H,ZR(B),LDH,LDH,LDH,DET,IRET)   
-      
-      PROJ = 0   
-           
+      CARA='NFSP'
+C
+      CALL MGAUSS(CARA,H,ZR(B),LDH,LDH,LDH,DET,IRET)
+
+      PROJ = 0
+
       CALL MPPSTA (ZR(B),LDH,V,LDV,DDLSTA,N,ZR(VECT2),
-     &             DDLEXC,INDICO,PROJ)      
-      
-      ERR = DNRM2(LDV,ZR(VECT2),1) 
-      CALL DSCAL ( LDV,ONE/ERR,ZR(VECT2),1 )            
-      CALL MRMULT('ZERO',LDYNFA,ZR(VECT2),' ',ZR(XSOL),1)
+     &             DDLEXC,INDICO,PROJ)
+
+      ERR = DNRM2(LDV,ZR(VECT2),1)
+      CALL DSCAL ( LDV,ONE/ERR,ZR(VECT2),1 )
+      CALL MRMULT('ZERO',LDYNFA,ZR(VECT2),ZR(XSOL),1,.TRUE.)
       VTEST = 0.D0
       DO 55 I = 1,LDV
-        VTEST = VTEST +ZR(VECT2+I-1)*ZR(XSOL+I-1)   
-  55  CONTINUE      
-C  
+        VTEST = VTEST +ZR(VECT2+I-1)*ZR(XSOL+I-1)
+  55  CONTINUE
+C
 C      WRITE (IFM,*) 'VAL_PROPRE_MAX : ',VTEST
-C      
+C
       DO 15 I = 1,LDH
         DO 25 J = 1,LDH
           ZR(Q+(I-1)*LDH+J-1) = -ZR(B+(I-1)*LDH+J-1)-
      &                           ZR(B+(J-1)*LDH+I-1)
   25    CONTINUE
-  15  CONTINUE      
+  15  CONTINUE
       DO 35 I = 1,LDH
 C        Q(I,I) = 2*VTEST*(1.D0/4.D0)+Q(I,I)
         ZR(Q+(I-1)*LDH+I-1) = 2*VTEST*(1.5D0/2.D0)+
      &                        ZR(Q+(I-1)*LDH+I-1)
-  35  CONTINUE            
-  
+  35  CONTINUE
+
       IF (REDEM.EQ.0) THEN
         DO 80 I = 1,LDV
           VECTP(I) = ZR(VECTT+I-1)
-  80    CONTINUE                
-      ENDIF  
+  80    CONTINUE
+      ENDIF
 C
-      INDICO = 1  
+      INDICO = 1
       PROJ = 1
 C
       CALL MPPSTA (ZR(Q),LDH,V,LDV,DDLSTA,N,VECTP,
-     &             DDLEXC,INDICO,PROJ)      
-            
-      ERR = DNRM2(LDV,VECTP,1) 
-      CALL DSCAL ( LDV,ONE/ERR,VECTP,1 )      
-      CALL MRMULT('ZERO',LDYNFA,VECTP,' ',ZR(XSOL),1)
+     &             DDLEXC,INDICO,PROJ)
+
+      ERR = DNRM2(LDV,VECTP,1)
+      CALL DSCAL ( LDV,ONE/ERR,VECTP,1 )
+      CALL MRMULT('ZERO',LDYNFA,VECTP,ZR(XSOL),1,.TRUE.)
       VTEST = 0.D0
       DO 65 I = 1,LDV
         VTEST = VTEST +VECTP(I)*ZR(XSOL+I-1)
@@ -228,15 +228,15 @@ C
           IF (VECTP(I).LT.ZERO) THEN
             CALL ASSERT (.FALSE.)
           ENDIF
-        ENDIF    
+        ENDIF
   65  CONTINUE
 C
       WRITE (IFM,*) 'VAL2_STAB : ',VTEST
       WRITE (IFM,9070)
-      WRITE (IFM,9080) 
-C                      
-      CSTA = VTEST    
-  
+      WRITE (IFM,9080)
+C
+      CSTA = VTEST
+
   300 CONTINUE
 
       REDEM = REDEM +1

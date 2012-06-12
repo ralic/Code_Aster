@@ -1,23 +1,23 @@
-# MODIF  DATE 13/12/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # RESPONSABLE YLEPAPE Y.LEPAPE
 # TITRE ESSAI DE FLUAGE PROPRE (MODELE UMLV)
 # ssnv163b.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # -----------------------------------------------------
 # MODELISATION 2D AXIS : FLUAGE PROPRE UMLV
@@ -31,7 +31,7 @@ M=DEFI_GROUP( reuse=M,
               MAILLAGE=M,
               CREA_GROUP_NO=_F( GROUP_MA = 'L_INF')
            )
-           
+
 M=DEFI_GROUP( reuse=M,
               MAILLAGE=M,
               CREA_GROUP_NO=_F( GROUP_MA = 'L_SUP')
@@ -41,7 +41,7 @@ M=DEFI_GROUP( reuse=M,
               MAILLAGE=M,
               CREA_GROUP_NO=_F( GROUP_MA = 'L_GCH')
             )
-            
+
 M=DEFI_GROUP( reuse=M,
               MAILLAGE=M,
               CREA_GROUP_NO=_F( GROUP_MA = 'L_DRT')
@@ -94,16 +94,16 @@ SECH=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=M,
                        )
 
 TEMP=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=M,
-                         AFFE=_F( 
+                         AFFE=_F(
                                TOUT = 'OUI',
                                NOM_CMP = 'TEMP',
                                VALE = 20.)
                        )
 
-CM=AFFE_MATERIAU(  MAILLAGE=M,   
+CM=AFFE_MATERIAU(  MAILLAGE=M,
                    AFFE=_F( TOUT = 'OUI',
                             MATER = BETON),
-                   AFFE_VARC=(_F(TOUT='OUI',CHAMP_GD=SECH,NOM_VARC='SECH',VALE_REF=1), 
+                   AFFE_VARC=(_F(TOUT='OUI',CHAMP_GD=SECH,NOM_VARC='SECH',VALE_REF=1),
                               _F(TOUT='OUI',CHAMP_GD=TEMP,NOM_VARC='TEMP',VALE_REF=20),),);
 
 
@@ -124,7 +124,7 @@ CH12=AFFE_CHAR_MECA( MODELE=MO,
                      LIAISON_UNIF=_F( GROUP_NO = 'L_DRT',
                                       DDL = 'DX'
                                 )
-                   )                   
+                   )
 CH2=AFFE_CHAR_MECA_F( MODELE=MO,
                       FORCE_NODALE=_F( GROUP_NO = 'L_SUP',
                                        FY = FORCE),
@@ -140,7 +140,7 @@ L_INST=DEFI_LIST_REEL(  DEBUT=-1.0,INTERVALLE=(
              _F( JUSQU_A = 8640000.,  NOMBRE = 10))
            )
 
-#DELTAT=432000=5J 
+#DELTAT=432000=5J
 
 
 U=STAT_NON_LINE( MODELE=MO,
@@ -160,10 +160,8 @@ U=STAT_NON_LINE( MODELE=MO,
                                 ITER_GLOB_MAXI = 25)
               )
 
-U=CALC_ELEM( reuse=U,
-             OPTION=('SIGM_ELNO','VARI_ELNO','EPSI_ELNO'),
-             RESULTAT=U,
-           )
+U=CALC_CHAMP(reuse=U,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('EPSI_ELNO'),RESULTAT=U)
+
 
 
 TEST_RESU(RESU=(

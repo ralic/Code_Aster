@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2012   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE PARALLELIPIPEDE SOUS SON PROPRE POIDS (HEXA8 FIN)
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,9 +64,8 @@ DEP1=MECA_STATIQUE(    MODELE=MO,     CHAM_MATER=CHMAT,EXCIT=(
 
                        )
 
-CALC_ELEM( reuse= DEP1 ,RESULTAT= DEP1 ,
-                          OPTION=( 'SIGM_ELNO', 'EPOT_ELEM',)
-                       )
+CALC_CHAMP(reuse=DEP1,RESULTAT=DEP1,CONTRAINTE=('SIGM_ELNO'),ENERGIE=('EPOT_ELEM'))
+
 
 DEP2=MECA_STATIQUE(     MODELE=MO,     CHAM_MATER=CHMAT,EXCIT=(
                          _F(  CHARGE = CH1),
@@ -78,10 +77,8 @@ DEP2=MECA_STATIQUE(     MODELE=MO,     CHAM_MATER=CHMAT,EXCIT=(
 #            MAILLAGE ET A FORTIORI DANS LE CHARGEMENT
 #            IL FAUDRA COMPLETER LE MAILLAGE UN JOUR. G. NICOLAS.
 
-CALC_ELEM(     reuse=DEP2,
-                         RESULTAT=DEP2,        NUME_ORDRE=1,
+CALC_CHAMP(reuse=DEP2,RESULTAT=DEP2,NUME_ORDRE=1,ENERGIE=('EPOT_ELEM'))
 
-   OPTION=( 'EPOT_ELEM',   ))
 
 CALC_ERREUR(     reuse=DEP2,
                          RESULTAT=DEP2,        NUME_ORDRE=1,

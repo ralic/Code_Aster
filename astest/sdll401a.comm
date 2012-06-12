@@ -1,8 +1,8 @@
-# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE SOUMISE A UNE FORCE SINUSOIDALE REPARTIE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -153,16 +153,8 @@ DYNFX=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                        )
 
 #
-DYN_FX=CALC_ELEM(MODELE=MO,
-                 CHAM_MATER=CHMAT,
-                 CARA_ELEM=CAREL,
-                 RESULTAT=DYNFX,
-                 EXCIT=_F( CHARGE = REPFX,
-                           FONC_MULT = fCOS),
-                 OPTION=('EFGE_ELNO',
-                         'SIPM_ELNO',
-                                  )
-                    )
+DYN_FX=CALC_CHAMP(MODELE=MO,CHAM_MATER=CHMAT,CARA_ELEM=CAREL,RESULTAT=DYNFX,EXCIT=_F(CHARGE=REPFX,FONC_MULT=fCOS),CONTRAINTE=('EFGE_ELNO','SIPM_ELNO'))
+
 
 #
 # EFFORT NORMAL A X = 0
@@ -284,16 +276,8 @@ DYNPOF20=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                           )
 
 #
-DYNP_F20=CALC_ELEM( MODELE=MO,
-                    CHAM_MATER=CHMAT,
-                    CARA_ELEM=CAREL,
-                    RESULTAT=DYNPOF20,
-                    EXCIT=_F( CHARGE = PONF20,
-                              FONC_MULT = fCOS),
-                    OPTION=('EFGE_ELNO',
-                            'SIPM_ELNO',
-                                     )
-                    )
+DYNP_F20=CALC_CHAMP(MODELE=MO,CHAM_MATER=CHMAT,CARA_ELEM=CAREL,RESULTAT=DYNPOF20,EXCIT=_F(CHARGE=PONF20,FONC_MULT=fCOS),CONTRAINTE=('EFGE_ELNO','SIPM_ELNO'))
+
 
 #
 # EFFORT NORMAL A X = 0
@@ -339,16 +323,8 @@ DYNPOM20=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                        )
 
 #
-DYNP_M20=CALC_ELEM( MODELE=MO,
-                    CHAM_MATER=CHMAT,
-                    CARA_ELEM=CAREL,
-                    RESULTAT=DYNPOM20,
-                    EXCIT=_F( CHARGE = PONM20,
-                              FONC_MULT = fCOS),
-                    OPTION=('EFGE_ELNO',
-                            'SIPM_ELNO',
-                                     )
-                    )
+DYNP_M20=CALC_CHAMP(MODELE=MO,CHAM_MATER=CHMAT,CARA_ELEM=CAREL,RESULTAT=DYNPOM20,EXCIT=_F(CHARGE=PONM20,FONC_MULT=fCOS),CONTRAINTE=('EFGE_ELNO','SIPM_ELNO'))
+
 
 #
 # MOMENT DE TORSION A X = 0

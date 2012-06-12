@@ -1,4 +1,4 @@
-# MODIF  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # RESPONSABLE PROIX J.M.PROIX
 # TITRE TUBE DROIT SOUMIS A PLUSIEURS CHARGEMENTS ELEMENT TUYAU_6M MACRO_ELAS_MULT
 # ssll106c.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test R
@@ -215,9 +215,8 @@ RESU=MACRO_ELAS_MULT(MODELE=MO,
                                     CHAR_MECA = CHAR9B,
                                     SOUS_TITRE = 'LINEIQUE',),),);
 
-RESU=CALC_ELEM(reuse =RESU,
-               RESULTAT=RESU,
-               OPTION=('EPSI_ELGA','EFGE_ELNO','DEGE_ELNO'),);
+RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CONTRAINTE=('EFGE_ELNO'),DEFORMATION=('EPSI_ELGA','DEGE_ELNO'))
+
 
 TEST_RESU(RESU=(
 
@@ -672,11 +671,8 @@ REST=MECA_STATIQUE(             MODELE=MO,
 
                         )
 
-CALC_ELEM( reuse= REST ,RESULTAT= REST ,
+CALC_CHAMP(reuse=REST,RESULTAT=REST,CONTRAINTE=('EFGE_ELNO'),DEFORMATION=('EPSI_ELGA'))
 
-                  OPTION=('EPSI_ELGA',
-                          'EFGE_ELNO', )
-                        )
 
 CALC_CHAMP(reuse=REST,
 

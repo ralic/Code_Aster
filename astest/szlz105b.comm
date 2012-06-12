@@ -1,8 +1,8 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE FATIGUE - COMPTAGE DE CYCLES RAINFLOW - DOMMAGE-EQUIVALENTS- 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -111,22 +111,11 @@ DEPL=MECA_STATIQUE(
                                            FONC_MULT = COEF),
                                LIST_INST=LINST                       )
 
-DEPL=CALC_ELEM( reuse=DEPL,
-                                    OPTION=(   'EPSI_ELGA',
-                                               'EPSI_ELNO',
-                                               'EPME_ELGA',
-                                               'EPME_ELNO',
-                                               'SIGM_ELNO',   ),
-                                  RESULTAT=DEPL )
+DEPL=CALC_CHAMP(reuse=DEPL,CONTRAINTE=('SIGM_ELNO'),DEFORMATION=('EPSI_ELGA','EPSI_ELNO','EPME_ELGA','EPME_ELNO'),RESULTAT=DEPL)
 
-DEPL=CALC_ELEM( reuse=DEPL,
-                                    OPTION=(   'SIEQ_ELGA',
-                                               'EPEQ_ELGA',
-                                               'SIEQ_ELNO',
-                                               'EPMQ_ELGA',
-                                               'EPMQ_ELNO',
-                                               'EPEQ_ELNO',  ),
-                                  RESULTAT=DEPL )
+
+DEPL=CALC_CHAMP(reuse=DEPL,CRITERES=('SIEQ_ELGA','EPEQ_ELGA','SIEQ_ELNO','EPMQ_ELGA','EPMQ_ELNO','EPEQ_ELNO'),RESULTAT=DEPL)
+
 
 
 IMPR_RESU(MODELE = TRIDIM,

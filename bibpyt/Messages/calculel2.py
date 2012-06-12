@@ -1,4 +1,4 @@
-#@ MODIF calculel2 Messages  DATE 16/04/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel2 Messages  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -481,11 +481,4 @@ Attention : les numéros d'ordre ne sont pas contigus.
  il faut fournir le "CARA_ELEM"
 """),
 
-98: _(u"""
- la charge doit être une charge mécanique
-"""),
-
-99: _(u"""
- option  %(k1)s non licite pour un calcul non linéaire.
-"""),
 }

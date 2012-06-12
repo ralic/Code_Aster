@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 21/05/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 12/06/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -619,6 +619,37 @@ void DEFSSS( GETRES ,getres, _OUT char *nomres, _IN STRING_SIZE lres,
         return ;
 }
 
+void DEFSPS(GETTYP,gettyp, _IN char *typaster, _IN STRING_SIZE ltyp,
+                        _INOUT INTEGER *nbval,
+                          _OUT char *txval,    _IN STRING_SIZE ltx)
+{
+    /* Interface GETTYP
+     * voir B_ETAPE.gettyp
+     */
+    PyObject *res = (PyObject*)0;
+    PyObject *tup = (PyObject*)0;
+    char *typ;
+    int ok = 0;
+    int nval = 0;
+    
+    typ = MakeCStrFromFStr(typaster, ltyp);
+    res = PyObject_CallMethod(commande, "gettyp", "s", typ);
+    if ( res == NULL ) MYABORT("erreur dans la partie Python de gettyp");
+    
+    ok = PyArg_ParseTuple(res, "iO", &nval, &tup);
+    if( !ok ) MYABORT("erreur dans la partie Python");
+
+    if ( *nbval == 0 ) {
+        *nbval = (INTEGER)nval;
+    } else {
+        nval = nval > (int)*nbval ? (int)*nbval : nval;
+        convertxt(nval, tup, txval, ltx);
+    }
+    
+    FreeStr(typ);
+    Py_XDECREF(res);
+    Py_XDECREF(tup);
+}
 
 /* ------------------------------------------------------------------ */
 void DEFSSPPPPP(GETVC8,getvc8,_IN char *motfac,_IN STRING_SIZE lfac,
@@ -2516,8 +2547,6 @@ PyObject *args;
         est appele par cata.POURSUITE (cf. ops.py)
         */
         PyObject *temp = (PyObject*)0 ;
-        PyObject *concepts = (PyObject*)0 ;
-        INTEGER lonuti=0 ;
         static int nbPassages=0 ;
                                                                 ASSERT((nbPassages==1)||(commande==(PyObject*)0));
         nbPassages++ ;
@@ -2536,17 +2565,8 @@ PyObject *args;
         fflush(stderr) ;
         fflush(stdout) ;
         try(1){
-                /*  appel de la commande debut (effectue dans POURSU) */
-                /*  La routine fortran POURSU traite aussi le cas     */
-                /*  de la poursuite de calcul (en retour lonuti       */
-                /*  contient le nombre de concepts crees dans le      */
-                /*  calcul precedent)                                 */
-                CALL_POURSU(&lonuti);
-
-                /* recuperation de la liste des concepts dans une     */
-                /* string python                                      */
-                concepts=PyString_FromStringAndSize(NULL, (Py_ssize_t)(lonuti*80) );
-                CALL_GCCPTS (PyString_AsString(concepts), 80);
+                /*  appel de la commande POURSUTE */
+                CALL_POURSU();
         }
         finally{
                 /* On depile l appel */
@@ -2568,7 +2588,8 @@ PyObject *args;
 
           /*  retour de la fonction poursu sous la forme
            *  d'un tuple d'un entier et un objet */
-          return Py_BuildValue("(iN)", (int)lonuti, concepts );
+          Py_INCREF(Py_None);
+          return Py_None;
         }
 }
 
@@ -2748,30 +2769,6 @@ PyObject *args;
 
    return tup;
 }
-
-/* ------------------------------------------------------------------ */
-/*      Routines d'interface pour l'enregistrement d'un concept       */
-/*                      dans la liste jeveux                          */
-static PyObject* aster_co_register_jev(self, args)
-PyObject *self; /* Not used */
-PyObject *args;
-{
-/*       usage : aster.co_register_jev(nomsd, typsd, nomcmd)
-                 appele gcugen(0, ...) puis gcugen(1, ...)
-*/
-    char *nomsd, *typsd, *oper;
-    INTEGER icmdt = 0, icode;
-
-    if (!PyArg_ParseTuple(args, "sss", &nomsd, &typsd, &oper))
-        return NULL;
-    icode = 0;
-    CALL_GCUGEN( &icode, nomsd, typsd, oper, &icmdt );
-    icode = 1;
-    CALL_GCUGEN( &icode, nomsd, typsd, oper, &icmdt );
-
-    return PyInt_FromLong( (long)icmdt );
-}
-
 /* ------------------------------------------------------------------ */
 
 
@@ -3144,7 +3141,6 @@ static PyMethodDef aster_methods[] = {
                 {"putcolljev",   aster_putcolljev,   METH_VARARGS, putcolljev_doc},
                 {"getcolljev",   aster_getcolljev,   METH_VARARGS, getcolljev_doc},
                 {"GetResu",      aster_GetResu,      METH_VARARGS},
-                {"co_register_jev", aster_co_register_jev, METH_VARARGS},
                 {"jeveux_getobjects", jeveux_getobjects, METH_VARARGS},
                 {"jeveux_getattr", jeveux_getattr,   METH_VARARGS},
                 {"jeveux_exists", jeveux_exists,     METH_VARARGS},

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/01/2012   AUTEUR DESROCHE X.DESROCHES 
+# MODIF  DATE 11/06/2012   AUTEUR DELMAS J.DELMAS 
 # RESPONSABLE DESROCHE X.DESROCHES
 # TITRE  : PLAQUE STRATIFIEE SOUMISE A 4 CHARGEMETNS ELEMENTAIRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -143,12 +143,10 @@ RESU1=MECA_STATIQUE( MODELE=MO,
                       EXCIT=_F(CHARGE = CHA1),
                        )
 
-CALC_ELEM( reuse= RESU1 ,RESULTAT= RESU1 ,
-                      OPTION=(
-                              'EFGE_ELNO',
-                              'DEGE_ELNO'),
-                     )
-
+RESU1=CALC_CHAMP(reuse= RESU1,
+                 RESULTAT=RESU1,
+                 CONTRAINTE=('EFGE_ELNO',),
+                 DEFORMATION=('DEGE_ELNO'),);
 
 #
 # ON TESTE QUE LES EFFORTS SONT UNIFORMES
@@ -168,19 +166,15 @@ TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='DEGE_ELNO',NOM_CMP='KXX',RESULTAT=RESU
 # CALCUL DES CONTRANTES DE RUPTURE A PARTIR DES LIMITES DE RUPTURE
 # DEFINIES DANS DEFI_MATERIAU
 #
-CALC_ELEM(reuse = RESU1,  RESULTAT=RESU1,
-          OPTION='SIGM_ELNO',)
+RESU1=CALC_CHAMP(reuse =RESU1,
+                 RESULTAT=RESU1,
+                 CONTRAINTE=('SIGM_ELNO',),
+                 DEFORMATION=('EPSI_ELNO',),);
 
 R1S1INF=POST_CHAMP(RESULTAT=RESU1,
-                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                    EXTR_COQUE=_F(NOM_CHAM=('SIGM_ELNO','EPSI_ELNO',),
                                   NUME_COUCHE=1,
                                   NIVE_COUCHE='INF',),);
-#
-R1S1INF = CALC_ELEM(reuse=R1S1INF,
-                     RESULTAT=RESU1,
-                     OPTION=  'EPSI_ELNO' ,
-                     REPE_COQUE =_F( NUME_COUCHE=1,
-                                     NIVE_COUCHE='INF',),  )
 
 TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='SIGM_ELNO',NOM_CMP='SIXX',RESULTAT=R1S1INF,
            NOEUD='N1',MAILLE='M1',REFERENCE='ANALYTIQUE',VALE=-6.82,PRECISION=0.001,),);
@@ -247,9 +241,10 @@ RESU2=MECA_STATIQUE( MODELE=MO,
                       EXCIT=_F( CHARGE = CHA2),
                        )
 
-CALC_ELEM( reuse= RESU2 ,RESULTAT= RESU2 ,
-                      OPTION=( 'EFGE_ELNO','SIGM_ELNO'),
-                       )
+CALC_CHAMP(reuse= RESU2,
+           RESULTAT= RESU2 ,
+           CONTRAINTE=('EFGE_ELNO','SIGM_ELNO'),);
+           
 # ON TESTE QUE LES EFFORTS SONT UNIFORMES
 
 TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO',NOM_CMP='MYY',RESULTAT=RESU2,
@@ -322,9 +317,10 @@ RESU3=MECA_STATIQUE(       MODELE=MO,
                               EXCIT=_F( CHARGE = CHA3),
                           )
 
-CALC_ELEM( reuse= RESU3 ,RESULTAT= RESU3 ,
-                         OPTION=('EFGE_ELNO','SIGM_ELNO')
-                       )
+CALC_CHAMP(reuse= RESU3,
+           RESULTAT=RESU3 ,
+           CONTRAINTE=('EFGE_ELNO','SIGM_ELNO'),);
+           
 # ON TESTE QUE LES EFFORTS SONT UNIFORMES
 
 TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO',NOM_CMP='QY',RESULTAT=RESU3,
@@ -396,9 +392,10 @@ RESU4=MECA_STATIQUE(       MODELE=MO,
                               EXCIT=_F( CHARGE = CHA4),
                          )
 
-CALC_ELEM( reuse= RESU4 ,RESULTAT= RESU4 ,
-                         OPTION=('EFGE_ELNO','SIGM_ELNO')
-                       )
+CALC_CHAMP(reuse= RESU4,
+           RESULTAT=RESU4 ,
+           CONTRAINTE=('EFGE_ELNO','SIGM_ELNO'),);
+           
 # ON TESTE QUE LES EFFORTS SONT UNIFORMES
 
 TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO',NOM_CMP='QX',RESULTAT=RESU4,

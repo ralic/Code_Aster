@@ -1,5 +1,5 @@
 
-# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE BATIMENT SOUMIS A UNE EXCITATION SISMIQUE
 # VERSION B de ce test : ajout de poutres afin de lier les DRZ
 #                        entre poteaux et plaques
@@ -183,9 +183,8 @@ IMPR_RESU(MODELE=MO,
                   NOM_CHAM='DEPL',
                   NUME_MODE=(1,2,3,4,5,6,7,8,),),);
 #
-MODE1=CALC_ELEM(reuse =MODE1,
-                RESULTAT=MODE1,
-                OPTION=('SIEF_ELGA','EFGE_ELNO',),);
+MODE1=CALC_CHAMP(reuse=MODE1,RESULTAT=MODE1,CONTRAINTE=('SIEF_ELGA','EFGE_ELNO'))
+
 #
 
 MODE1=CALC_CHAMP(reuse =MODE1,
@@ -646,9 +645,8 @@ MODE_STA=MODE_STATIQUE(MATR_RIGI=RIGIDITE,
                        PSEUDO_MODE=_F(AXE='X',),);
 #
 
-MODE_STA=CALC_ELEM(reuse =MODE_STA,
-                   RESULTAT=MODE_STA,
-                   OPTION=('SIEF_ELGA','EFGE_ELNO',),);
+MODE_STA=CALC_CHAMP(reuse=MODE_STA,RESULTAT=MODE_STA,CONTRAINTE=('SIEF_ELGA','EFGE_ELNO'))
+
 #
 
 MODE_STA=CALC_CHAMP(reuse =MODE_STA,

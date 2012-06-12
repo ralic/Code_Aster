@@ -2,7 +2,7 @@
 C RESPONSABLE PROIX J-M.PROIX
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 11/06/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,7 +38,7 @@ C ----------------------------------------------------------------------
       IMPLICIT NONE
       CHARACTER*1  K1BID
       CHARACTER*8  NOMA,K8B,TYPMCL(2)
-      CHARACTER*16 TYMATG,COMP,ALGO,MOCLES(2),MOCLEF(2)
+      CHARACTER*16 TYMATG,COMP,ALGO,MOCLES(2),MOCLEF(2),CRIRUP
       CHARACTER*16 TEXTE(3),COMCOD,METHOD,K16BID,NOMCMD
       CHARACTER*19 CARCRI
       CHARACTER*24 CARCRZ
@@ -290,7 +290,18 @@ C         TOLERANCE POUR LE CRITERE DE RADIALITE
                    TSEUIL=-10.D0
                 ENDIF
              ENDIF
-          ENDIF          
+          ENDIF 
+C         CRIT_RUPT
+          IF (MOCLEF(I) .EQ. 'COMP_INCR') THEN
+             IF (TYPTGT.EQ.0 .AND.
+     &           TYMATG(1:16).NE.'TANGENTE_SECANTE') THEN
+               CALL GETVTX(MOCLEF(I),'POST_ITER',K,IARG,1,CRIRUP,IRET) 
+                IF (IRET.EQ.1) THEN       
+C            VERIF QUE CRIRUP EST POSSIBLE POUR COMP
+                TSAMPL = 1.D0
+                ENDIF 
+              ENDIF     
+          ENDIF  
           
 C         STOCKAGE DE LA CARTE CARCRI
 

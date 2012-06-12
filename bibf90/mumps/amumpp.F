@@ -3,9 +3,9 @@
      &                  LPRECO)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPP MUMPS  DATE 29/03/2011   AUTEUR BOITEAU O.BOITEAU 
+!& MODIF AMUMPP MUMPS  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 ! ==================================================================
-! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR
 ! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS
@@ -91,7 +91,7 @@ C============================================================
       COMMON /MUMPSD/ DMPS
       COMMON /MUMPSZ/ ZMPS
       COMMON /MUMPSH/ NONUS,NOMATS,NOSOLS,ETAMS,ROUCS,PRECS
-      
+
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
@@ -152,7 +152,7 @@ C     ------------------------------------------------
       NOSOLV=NOSOLS(KXMPS)
       NONU=NONUS(KXMPS)
       ETAM=ETAMS(KXMPS)
-      
+
 
       VCIVAL=VCINE//'.VALE'
       CALL MTDSCR(NOMAT)
@@ -181,13 +181,13 @@ C       ------------------------------------------------
           ENDIF
 
 C         --- PRISE EN COMPTE DU CONDITIONNEMENT DES LAGRANGES :
-C         ON NE LE FAIT PAS SI MUMPS EST UTILISE COMME 
+C         ON NE LE FAIT PAS SI MUMPS EST UTILISE COMME
 C         PRECONDITIONNEUR (DEJA FAIT DANS RESGRA.F)
           IF ((RANG.EQ.0).AND.(.NOT.LPRECO).AND.PREPOS) THEN
              IF (LTYPR) THEN
-               CALL MRCONL(LMAT,N,'R',RSOLU,NBSOL)
+               CALL MRCONL('MULT',LMAT,N,'R',RSOLU,NBSOL)
              ELSE
-               CALL MCCONL(LMAT,N,'C',CSOLU,NBSOL)
+               CALL MCCONL('MULT',LMAT,N,'C',CSOLU,NBSOL)
              ENDIF
           ENDIF
 
@@ -289,7 +289,7 @@ C         -- IMPRESSION DU/DES SECONDS MEMBRES (SI DEMANDE) :
 
       ELSE IF (OPTION.EQ.2) THEN
 
-        
+
 C       ------------------------------------------------
 C        POST-TRAITEMENTS ASTER DE LA SOLUTION :
 C       ------------------------------------------------
@@ -322,7 +322,7 @@ C           -- LAGR1 = LAGR1/2 PUIS LAGR2 = LAGR1
 C           -- VALIDE QUE SUR PROC 0, MAIS C'EST OK CAR ON
 C           -- BROADCAST LA SOLUTION APRES
             CALL JEVEUO(NONU//'.NUME.DELG','L',JDELG)
-            CALL NUDLG2(NONU)            
+            CALL NUDLG2(NONU)
             CALL JEVEUO(NONU//'.NUME.DLG2','L',JDLG2)
             IF (LTYPR) THEN
               DO I=1,NBSOL
@@ -348,13 +348,13 @@ C           -- BROADCAST LA SOLUTION APRES
           ENDIF
 
 C         --- PRISE EN COMPTE DU CONDITIONNEMENT DES LAGRANGES :
-C         ON NE LE FAIT PAS SI MUMPS EST UTILISE COMME 
+C         ON NE LE FAIT PAS SI MUMPS EST UTILISE COMME
 C         PRECONDITIONNEUR (DEJA FAIT DANS RESGRA.F)
           IF (.NOT.LPRECO.AND.PREPOS) THEN
             IF (LTYPR) THEN
-              CALL MRCONL(LMAT,N,'R',RSOLU,NBSOL)
+              CALL MRCONL('MULT',LMAT,N,'R',RSOLU,NBSOL)
             ELSE
-              CALL MCCONL(LMAT,N,'C',CSOLU,NBSOL)
+              CALL MCCONL('MULT',LMAT,N,'C',CSOLU,NBSOL)
             ENDIF
           ENDIF
         ENDIF
@@ -366,7 +366,7 @@ C       -- BROADCAST DE SOLU A TOUS LES PROC
 C         -- EST-CE AUSSI SIMPLE POUR LES COMPLEXES ?
           CALL MPICM1('BCAST','R',2*NNBSOL,IBID,CSOLU)
         ENDIF
-        
+
 C       -- IMPRESSION DU/DES SOLUTIONS (SI DEMANDE) :
         IF (IMPR(1:9).EQ.'OUI_SOLVE') THEN
           IF (RANG.EQ.0) THEN

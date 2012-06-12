@@ -3,9 +3,9 @@
       IMPLICIT NONE
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -125,14 +125,14 @@ C
             CALL JEVEUO(ZK24(ITYSTO+I-1)(1:19)//'.VALE','L',ITPY)
             IF(MODEL.EQ.'3D') THEN
               CALL JEVEUO(ZK24(ITZSTO+I-1)(1:19)//'.VALE','L',ITPZ)
-              CALL MRMULT('ZERO',IMATZ,ZR(ITPZ),'R',ZR(IVZ),1)
+              CALL MRMULT('ZERO',IMATZ,ZR(ITPZ),ZR(IVZ),1,.TRUE.)
             ENDIF
 
 C------MULTIPLICATIONS MATRICE MAX * CHAMNO MODX---------------------
 C----------ET MATRICE MAY * CHAMNO MODY------------------------------
 
-           CALL MRMULT('ZERO',IMATX,ZR(ITPX),'R',ZR(IVX),1)
-           CALL MRMULT('ZERO',IMATY,ZR(ITPY),'R',ZR(IVY),1)
+           CALL MRMULT('ZERO',IMATX,ZR(ITPX),ZR(IVX),1,.TRUE.)
+           CALL MRMULT('ZERO',IMATY,ZR(ITPY),ZR(IVY),1,.TRUE.)
 
 C RANG GENERALISE DU TERME DE MASSE CALCULEE : LIGNE
 
@@ -175,17 +175,17 @@ C
 C                 CAS OU LE BLOC COURANT N EST PAS LE BON
 C
                     CALL JELIBE(JEXNUM(NOMRES//'           .UALF',
-     +                          IBLO))
+     &                          IBLO))
                     CALL JEVEUO(JEXNUM(NOMRES//'           .UALF',
-     +              IBLODI),'E',LDBLO)
+     &              IBLODI),'E',LDBLO)
                     ZR(LDBLO+ZI(IADIA+IRANG-1)+JRANG-IRANG-1) = MIJ
                     IF (NIV .EQ. 2) THEN
                       WRITE(IFM,350) IRANG,JRANG,MIJ
                     ENDIF
                     CALL JELIBE(JEXNUM(NOMRES//'           .UALF',
-     +                          IBLODI))
+     &                          IBLODI))
                     CALL JEVEUO(JEXNUM(NOMRES//'           .UALF',
-     +              IBLO),'E',LDBLO)
+     &              IBLO),'E',LDBLO)
 
                   ELSE
                     ZR(LDBLO+ZI(IADIA+IRANG-1)+JRANG-IRANG-1) = MIJ

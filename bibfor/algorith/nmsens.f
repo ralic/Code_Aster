@@ -5,7 +5,7 @@
      &                  VALINC,SOLALG,VEELEM,VEASSE,MEASSE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/04/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -117,6 +117,8 @@ C
 C
 C ----------------------------------------------------------------------
 C
+C A RESORBER
+      CALL ASSERT(.FALSE.)
       CALL JEMARQ()
       CALL INFDBG('MECA_NON_LINE',IFM,NIV)
 C

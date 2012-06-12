@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 07/05/2012   AUTEUR SELLENET N.SELLENET 
+%& MODIF TYPELEM  DATE 11/06/2012   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,7 +41,7 @@ MODE_LOCAL__
                                         TOLDEBO  ITEDEBO  TSSEUIL  TSAMPL   TSRETOUR )
     ECODRET  = CODE_I   ELEM__         (IRET     )
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   XXXX1
-                                        XXXX2    KIT[9])
+                                        XXXX2    KIT[9]   )
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
     CGEOMER  = GEOM_R   ELEM__         (X        Y        Z        )
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
@@ -88,9 +88,8 @@ MODE_LOCAL__
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
     CITERAT  = NEUT_R   ELEM__         (X1       )
     EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30]    )
-    ENONLIN  = NEUT_I   ELEM__         (X1)
+    ENONLIN  = NEUT_I   ELEM__         (X1       )
     EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30]    )
-
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
     ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    )
 

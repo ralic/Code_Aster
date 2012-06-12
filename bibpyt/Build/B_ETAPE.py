@@ -1,4 +1,4 @@
-#@ MODIF B_ETAPE Build  DATE 07/05/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_ETAPE Build  DATE 12/06/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -106,6 +106,23 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
             print "\tGETRES : nom_cmd =", '"' + nom_cmd + '"'
         #message.debug(SUPERV, "commande : %s, concept : %s, type : %s", nom_cmd, nom_concept, type_concept)
         return nom_concept, type_concept, nom_cmd
+
+    def gettyp(self, typaster):
+        """Retourne la liste des noms de concepts du type `typaster`.
+        `mxval` : longueur maximale de la liste retournée.
+        On passe mxval=0, pour savoir comment dimensionner le vecteur résultat.
+        """
+        from Cata import cata
+        lconcept = []
+        klass = getattr(cata, typaster.lower().strip(), None)
+        if klass:
+            ctxt = self.parent.get_contexte_avant(self)
+            lconcept = [(co.order, co.nom) for co in ctxt.values() \
+                        if issubclass(type(co), klass) and co.executed ==1]
+            lconcept.sort()
+            lconcept = [nom for order, nom in lconcept]
+        nbval = len(lconcept)
+        return nbval, tuple(lconcept)
 
     def getfac(self, nom_motfac):
         """

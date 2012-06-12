@@ -1,11 +1,11 @@
       SUBROUTINE LCMATE( FAMI,KPG,KSP,COMP,MOD,IMAT,NMAT,TEMPD,TEMPF,
      &                   IMPEXP,TYPMA,HSR,MATERD,MATERF,MATCST,NBCOMM,
-     &                   CPMONO,ANGMAS,PGL,ITMAX,TOLER,NDT,NDI,NR,
-     &                   NVI,VIND,NFS,NSG,TOUTMS,NHSR,NUMHSR)
+     &                   CPMONO,ANGMAS,PGL,ITMAX,TOLER,NDT,NDI,NR,CRIT,
+     &                   NVI,VIND,NFS,NSG,TOUTMS,NHSR,NUMHSR,SIGD)
       IMPLICIT   NONE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 11/06/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,8 +57,8 @@ C       ----------------------------------------------------------------
       INTEGER         IMAT, NMAT, NDT , NDI  , NR , NVI, I, ITMAX, J
       INTEGER         KPG,KSP, IMPEXP, NFS, NSG, NHSR
       REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2) , TEMPD , TEMPF
-      REAL*8          VIND(*), PGL(3,3), ANGMAS(3)
-      REAL*8          TOLER
+      REAL*8          VIND(*), PGL(3,3), ANGMAS(3), SIGD(6)
+      REAL*8          TOLER, CRIT(*)
       CHARACTER*16    LOI, COMP(*)
       CHARACTER*8     MOD,    TYPMA
       CHARACTER*3     MATCST
@@ -89,7 +89,7 @@ C
 C
       ELSEIF ( LOI(1:9) .EQ. 'VISCOCHAB' ) THEN
          CALL CVMMAT ( FAMI,KPG,KSP,MOD,IMAT,NMAT,MATERD,
-     &                 MATERF, MATCST, TYPMA,  NDT,   NDI , NR , NVI )
+     &    MATERF, MATCST, TYPMA,  NDT,   NDI , NR ,CRIT,VIND,NVI,SIGD )
 C
       ELSEIF (LOI.EQ.'VENDOCHAB'.OR.LOI.EQ.'VISC_ENDO_LEMA') THEN
          CALL VECMAT ( FAMI, KPG, KSP, MOD, LOI,IMAT,   NMAT, MATERD,

@@ -1,14 +1,14 @@
       SUBROUTINE WPERMO(LMASSE,LRAIDE,LAMOR,NBPROP,VECP,FR,AM,EXCL,
-     +                                                  OMECOR,ERNORM)
+     &                                                  OMECOR,ERNORM)
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER           LMASSE,LRAIDE,LAMOR,NBPROP,EXCL(*)
       COMPLEX*16        VECP(*)
       REAL*8            FR(*),AM(*),OMECOR,ERNORM(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -100,9 +100,9 @@ C
           AMI = ISIG*ABS(AMI*FRI)/SQRT(1.D0-AMI*AMI)
           FREQ = DCMPLX( AMI, FRI)
           FREQ2 = FREQ*FREQ
-          CALL MCMULT('ZERO',LRAIDE,VECP(IVEC),'C',ZC(IAUX1),1)
-          CALL MCMULT('ZERO',LMASSE,VECP(IVEC),'C',ZC(IAUX2),1)
-          CALL MCMULT('ZERO',LAMOR ,VECP(IVEC),'C',ZC(IAUX3),1)
+          CALL MCMULT('ZERO',LRAIDE,VECP(IVEC),ZC(IAUX1),1,.FALSE.)
+          CALL MCMULT('ZERO',LMASSE,VECP(IVEC),ZC(IAUX2),1,.FALSE.)
+          CALL MCMULT('ZERO',LAMOR,VECP(IVEC),ZC(IAUX3),1,.FALSE.)
           DO 2 J = 0, NEQ-1
             ZC(IAUX2+J)=ZC(IAUX1+J)+FREQ*ZC(IAUX3+J)+FREQ2*ZC(IAUX2+J)
  2        CONTINUE
@@ -112,9 +112,9 @@ C           --- ON PREND LA NORME EUCLIDIENNE ---
           ANORM2 = 0.D0
           DO 3 J = 0, NEQ-1
               ANORM1 = ANORM1 +
-     +             DBLE(DCONJG(ZC(IAUX1+J))*ZC(IAUX1+J)*EXCL(J+1))
+     &             DBLE(DCONJG(ZC(IAUX1+J))*ZC(IAUX1+J)*EXCL(J+1))
               ANORM2 = ANORM2 +
-     +             DBLE(DCONJG(ZC(IAUX2+J))*ZC(IAUX2+J)*EXCL(J+1))
+     &             DBLE(DCONJG(ZC(IAUX2+J))*ZC(IAUX2+J)*EXCL(J+1))
  3        CONTINUE
           IF ( ABS(FREQ) .GT. XSEUIL ) THEN
             IF (  ANORM1 .NE. 0.D0 ) THEN

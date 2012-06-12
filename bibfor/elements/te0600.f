@@ -4,7 +4,7 @@
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C =====================================================================
-C MODIF ELEMENTS  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 11/06/2012   AUTEUR DELMAS J.DELMAS 
 C RESPONSABLE GRANET S.GRANET
 C =====================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -392,7 +392,7 @@ C ======================================================================
          CALL POSTHM(OPTION,MODINT,JGANO,NCMP,NVIM,ZR(ICHG),ZR(ICHN))
       ENDIF
 C ======================================================================
-C --- 8. OPTION : VARI_ELNO ---------------------------------------
+C --- 8. OPTION : VARI_ELNO --------------------------------------------
 C ======================================================================
       IF (OPTION.EQ.'VARI_ELNO  ') THEN
          CALL JEVECH('PVARIGR','L',ICHG)
@@ -406,14 +406,12 @@ C ======================================================================
          CALL POSTHM(OPTION,MODINT,JGANO,NCMP,NVIM,ZR(ICHG),ZR(ICHN))
       END IF
 C ======================================================================
-C --- 9. OPTION : EPSI_ELGA OU EPSI_ELNO---------------------------
+C --- 9. OPTION : EPSI_ELGA --------------------------------------------
 C ======================================================================
-      IF ((OPTION.EQ.'EPSI_ELGA') .OR.
-     &    (OPTION.EQ.'EPSI_ELNO')) THEN
-
+      IF (OPTION.EQ.'EPSI_ELGA') THEN
          CALL JEVECH('PGEOMER','L',IGEOM)
          CALL JEVECH('PDEPLAR','L',IDEPLA)
-         CALL JEVECH('PDEFORR','E',IDEFO)
+         CALL JEVECH('PDEFOPG','E',IDEFO)
          CALL EPSTHM ( NDDLS, NDDLM, NNO, NNOS, NNOM,NMEC,
      &                 DIMDEF, DIMUEL, NDIM, NPI,
      &                 IPOIDS, IPOID2, IVF, IVF2,
@@ -422,17 +420,11 @@ C ======================================================================
      &                 MECANI, PRESS1, PRESS2, TEMPE,
      &                 NP1, NP2, AXI, EPSM )
 
-         IF (OPTION(6:9).EQ.'ELGA') THEN
-            DO 200 IGAU = 1,NPI
-               DO 210 ISIG = 1,6
-                  ZR(IDEFO+6*(IGAU-1)+ISIG-1) = EPSM(6*(IGAU-1)+ISIG)
-  210          CONTINUE
-  200       CONTINUE
-         ELSE IF (OPTION(6:9).EQ.'ELNO') THEN
-            CALL PPGAN2(JGANO,1,6,EPSM,ZR(IDEFO))
-         ELSE
-            CALL ASSERT(.FALSE.)
-         ENDIF
+         DO 200 IGAU = 1,NPI
+            DO 210 ISIG = 1,6
+               ZR(IDEFO+6*(IGAU-1)+ISIG-1) = EPSM(6*(IGAU-1)+ISIG)
+  210       CONTINUE
+  200    CONTINUE
       ENDIF
 C ======================================================================
       END

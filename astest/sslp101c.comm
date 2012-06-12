@@ -1,4 +1,4 @@
-# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE FISSUREE AVEC PRESSION LEVRE FISSURE (CALCUL G,K1,K2 )
 # sslp101c.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -58,11 +58,8 @@ RESU=STAT_NON_LINE(
                 RESI_GLOB_RELA = 1.E-6)
               )
 
-RESU=CALC_ELEM( reuse=RESU,
-                            OPTION=(
-                  'SIGM_ELNO',  'VARI_ELNO',),
-                          RESULTAT=RESU,
-              )
+RESU=CALC_CHAMP(reuse=RESU,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=RESU)
+
 
 THETA1=CALC_THETA(      MODELE=MO,
                         THETA_2D=_F(  NOEUD = 'N668', MODULE = 1.,

@@ -1,4 +1,4 @@
-# MODIF  DATE 16/04/2012   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE CONTACT AVEC FROTTEMENT D'UNE PLAQUE SUR UN PLAN RIGIDE
 # ssnv128a.para = tps_job 100 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -138,10 +138,8 @@ U2M=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                   ARCHIVAGE=_F(INST=(-2.0,1.0,),),
                )
 #
-U2M=CALC_ELEM(reuse=U2M,
-              OPTION=('SIGM_ELNO', 'VARI_ELNO',),
-              RESULTAT=U2M,
-             )
+U2M=CALC_CHAMP(reuse=U2M,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U2M)
+
 #
 DEPL2M=CREA_CHAMP(OPERATION='EXTR',
                   TYPE_CHAM='NOEU_DEPL_R',
@@ -279,10 +277,8 @@ TAB_OBS=RECU_TABLE(CO=U2L,
 
 IMPR_TABLE(   TABLE=TAB_OBS,)
 
-U2L=CALC_ELEM(reuse=U2L,
-              OPTION=('SIGM_ELNO', 'VARI_ELNO',),
-              RESULTAT=U2L,
-             )
+U2L=CALC_CHAMP(reuse=U2L,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U2L)
+
 #
 DEPL2L=CREA_CHAMP(OPERATION='EXTR',
                   TYPE_CHAM='NOEU_DEPL_R',
@@ -361,10 +357,8 @@ U3M=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                  INFO=1,
                )
 #
-U3M=CALC_ELEM(reuse=U3M,
-            OPTION=('SIGM_ELNO', 'VARI_ELNO',),
-            RESULTAT=U3M,
-           )
+U3M=CALC_CHAMP(reuse=U3M,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U3M)
+
 #
 DEPL3M=CREA_CHAMP(OPERATION='EXTR',
                  TYPE_CHAM='NOEU_DEPL_R',
@@ -444,10 +438,8 @@ U3L=STAT_NON_LINE(MODELE      = MO,
 #                 INFO=2,
                )
 #
-U3L=CALC_ELEM(reuse=U3L,
-            OPTION=('SIGM_ELNO', 'VARI_ELNO',),
-            RESULTAT=U3L,
-           )
+U3L=CALC_CHAMP(reuse=U3L,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U3L)
+
 #
 DEPL3L=CREA_CHAMP(OPERATION='EXTR',
                  TYPE_CHAM='NOEU_DEPL_R',
@@ -455,7 +447,7 @@ DEPL3L=CREA_CHAMP(OPERATION='EXTR',
                  RESULTAT=U3L,
                  INST=1.0
                 )
-                
+
 TCONT=POST_RELEVE_T(ACTION=_F(INTITULE='CONT',
                               GROUP_NO='LCONTA',
                               RESULTAT=U3L,
@@ -516,7 +508,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = U3L,
                    VERSION    = '7.1.11',
                 ))
        )#
-       
+
 # VERIF PROJECTION  (AVANT-DERNIER NOEUD A DROITE)
 TEST_RESU(RESU=
                 _F(RESULTAT   = U3L,
@@ -538,7 +530,7 @@ TEST_RESU(RESU=
                    CRITERE    = 'ABSOLU',
                    PRECISION  = 1E-8,
                    REFERENCE  = 'ANALYTIQUE',));
-             
+
 #
 FIN()
 #

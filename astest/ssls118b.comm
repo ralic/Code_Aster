@@ -1,4 +1,4 @@
-# MODIF  DATE 10/04/2012   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE  PLAQUE CARREE EN APPUI SIMPLE SOUS PRESSION SINUSOIDALE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -119,9 +119,8 @@ RESU=MECA_STATIQUE(MODELE=MO,
                    EXCIT=(_F(CHARGE=CHA,),
                           _F(CHARGE=CHA_P,),),);
 
-RESU=CALC_ELEM(reuse =RESU,
-               RESULTAT=RESU,
-               OPTION='SIGM_ELNO',);
+RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CONTRAINTE=('SIGM_ELNO'))
+
 
 SIG_C1_S=POST_CHAMP(RESULTAT=RESU,
                      EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
@@ -135,9 +134,8 @@ SIG_C1_I=POST_CHAMP(RESULTAT=RESU,
                      EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
                                    NIVE_COUCHE='INF',),);
-EFF=CALC_ELEM(RESULTAT=RESU,
-              OPTION='EFGE_ELNO',
-               );
+EFF=CALC_CHAMP(RESULTAT=RESU,CONTRAINTE=('EFGE_ELNO'))
+
 
 TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    NUME_ORDRE=1,

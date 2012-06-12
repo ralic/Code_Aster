@@ -1,8 +1,8 @@
-# MODIF  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 11/06/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE MELANGE 3D-PLAQUE-POUTRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -223,65 +223,33 @@ TEST_RESU(CHAM_NO=(_F(CHAM_GD=DEP2,
                       REFERENCE='ANALYTIQUE',
                       PRECISION=0.001,),),);
 
-DEPF=CALC_ELEM(reuse =DEPF,
-               RESULTAT=DEPF,
-               NUME_ORDRE=1,
-               GROUP_MA='GRMA2',
-               OPTION='EFGE_ELNO',
-               );
-
-DEPF=CALC_ELEM(reuse =DEPF,
-               RESULTAT=DEPF,
-               NUME_ORDRE=1,
-               GROUP_MA='GRMA2',
-               OPTION='SIGM_ELNO',
-               REPE_COQUE=_F(NIVE_COUCHE='SUP',),
-               );
+DEPF=CALC_CHAMP(reuse =DEPF,
+                RESULTAT=DEPF,
+                NUME_ORDRE=1,
+                GROUP_MA='GRMA2',
+                CONTRAINTE=('EFGE_ELNO','SIGM_ELNO',),
+                DEFORMATION=('EPSI_ELNO'),);
 
 DEPFPOS=POST_CHAMP(RESULTAT=DEPF,
                    GROUP_MA='GRMA2',
                    NUME_ORDRE=1,
-                   EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                   EXTR_COQUE=_F(NOM_CHAM=('SIGM_ELNO','EPSI_ELNO'),
                                  NUME_COUCHE=1,
                                  NIVE_COUCHE='SUP',),);
 
-DEPF=CALC_ELEM(reuse =DEPF,
-               RESULTAT=DEPF,
-               NUME_ORDRE=1,
-               GROUP_MA='GRMA2',
-               OPTION='EPSI_ELNO',
-               REPE_COQUE=_F(NIVE_COUCHE='SUP',),
-               );
-
-DEPC=CALC_ELEM(reuse =DEPC,
+DEPC=CALC_CHAMP(reuse =DEPC,
                RESULTAT=DEPC,
                NUME_ORDRE=1,
                GROUP_MA='GRMA2',
-               OPTION='EFGE_ELNO',
-               );
-
-DEPC=CALC_ELEM(reuse =DEPC,
-               RESULTAT=DEPC,
-               NUME_ORDRE=1,
-               GROUP_MA='GRMA2',
-               OPTION='SIGM_ELNO',
-               REPE_COQUE=_F(NIVE_COUCHE='SUP',),
-               );
+               CONTRAINTE=('EFGE_ELNO','SIGM_ELNO',),
+               DEFORMATION=('EPSI_ELNO'),);
 
 DEPCPOS=POST_CHAMP(RESULTAT=DEPC,
                    GROUP_MA='GRMA2',
                    NUME_ORDRE=1,
-                   EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+                   EXTR_COQUE=_F(NOM_CHAM=('SIGM_ELNO','EPSI_ELNO'),
                                  NUME_COUCHE=1,
                                  NIVE_COUCHE='SUP',),);
-
-DEPC=CALC_ELEM(reuse =DEPC,
-               RESULTAT=DEPC,
-               NUME_ORDRE=1,
-               GROUP_MA='GRMA2',
-               OPTION='EPSI_ELNO',
-               REPE_COQUE=_F(NIVE_COUCHE='SUP',),
-               );
 
 TEST_RESU(RESU=(_F(RESULTAT=DEPF,
                    NUME_ORDRE=1,
@@ -301,7 +269,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPF,
                    VALE=-30.0,
                    REFERENCE='ANALYTIQUE',
                    PRECISION=0.005,),
-                _F(RESULTAT=DEPF,
+                _F(RESULTAT=DEPFPOS,
                    NUME_ORDRE=1,
                    NOM_CHAM='EPSI_ELNO',
                    NOM_CMP='EPXX',
@@ -328,7 +296,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPF,
                    VALE=6.0,
                    REFERENCE='ANALYTIQUE',
                    PRECISION=0.005,),
-                _F(RESULTAT=DEPC,
+                _F(RESULTAT=DEPCPOS,
                    NUME_ORDRE=1,
                    NOM_CHAM='EPSI_ELNO',
                    NOM_CMP='EPXX',

@@ -1,7 +1,7 @@
       SUBROUTINE OP0045()
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/04/2012   AUTEUR TARDIEU N.TARDIEU 
+C MODIF ALGELINE  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -1184,26 +1184,6 @@ C     ET DE SON EVENTUELLE OCCURENCE EXTERNE (MUMPS)
       IF (FLAGE) CALL U2MESS('F','ALGELINE5_75')
  999  CONTINUE
 
-C     ------------------------------------------------------------------
-C     ----------- CALCUL DE SENSIBILITE                   --------------
-C     ------------------------------------------------------------------
-      CALL GETVID(' ','SENSIBILITE',1,IARG,1,K8BID,IRET)
-      IF (IRET.NE.0) THEN
-C --- MATRICES NON SYMETRIQUES SANS DOUTE HORS DU PERIMETRE
-C     DE LA SENSIBILITE
-        IF (LNS) CALL ASSERT(.FALSE.)
-        IF (LKR.AND.(.NOT.LC)) THEN
-          CALL SEMORE(LRAIDE,LAMOR,LMASSE,NEQ,MXRESF,NCONV,
-     &            ZR(LRESUR),ZR(LVEC),
-     &            NBPARI,NBPARR,NBPARK,NBPARA,NOPARA,
-     &            ZI(LRESUI),ZK24(LRESUK))
-        ELSE
-          CALL SEMOCO(LRAIDE,LAMOR,LMASSE,NEQ,MXRESF,NCONV,
-     &            ZR(LRESUR),ZC(LVEC),
-     &            NBPARI,NBPARR,NBPARK,NBPARA,NOPARA,
-     &            ZI(LRESUI),ZK24(LRESUK))
-        ENDIF
-      ENDIF
 
 C     ------------------------------------------------------------------
 

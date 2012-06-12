@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE Maillage adaptatif thermo-mecanique sur une culasse fissuree
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -153,18 +153,13 @@ for num_calc in range(0,nb_calc1) :
 
 # POST_TRAITEMENT POUR OBTENIR LES FLUX AUX NOEUDS ET
 # L'INDICATEUR D'ERREUR THERMIQUE EN RESIDU.
-   TEMP[num_calc]=CALC_ELEM(reuse=TEMP[num_calc],
-                  RESULTAT=TEMP[num_calc],
-                  TOUT='OUI',
-                  TOUT_ORDRE='OUI',
-                  OPTION=(
-# LISSAGE DES FLUX
-                       'FLUX_ELNO',),);
+   TEMP[num_calc]=CALC_CHAMP(reuse=TEMP[num_calc],RESULTAT=TEMP[num_calc],THERMIQUE=('FLUX_ELNO'))
+
 
    TEMP[num_calc]=CALC_ERREUR(reuse=TEMP[num_calc],
                   RESULTAT=TEMP[num_calc],
                   TOUT='OUI',
-                  TOUT_ORDRE='OUI',
+
                   OPTION=(
 # CALCUL DE L'INDICATEUR PAR ELEMENTS ET AUX NOEUDS PAR ELEM
                        'ERTH_ELEM',
@@ -190,7 +185,7 @@ for num_calc in range(0,nb_calc1) :
                RESULTAT=TEMP[num_calc],
                MODELE_1=MOT[num_calc],
                MODELE_2=MOT2[num_calc],
-               TOUT_ORDRE='OUI')
+               )
 
    CHMTM[num_calc]=AFFE_MATERIAU(MAILLAGE=MAM[num_calc],
                        AFFE=_F(GROUP_MA='GM38',
@@ -221,18 +216,13 @@ for num_calc in range(0,nb_calc1) :
 
 # POST_TRAITEMENT POUR OBTENIR LES CONTRAINTES AUX NOEUDS ET
 # L'INDICATEUR MECANIQUE EN RESIDU.
-   DEPLA[num_calc]=CALC_ELEM(reuse=DEPLA[num_calc],
-                  RESULTAT=DEPLA[num_calc],
-                  TOUT='OUI',
-                  TOUT_ORDRE='OUI',
-                  OPTION=(
-# LISSAGE DES CONTRAINTES SI STAT_NON_LINE
-                       'SIGM_ELNO',),);
+   DEPLA[num_calc]=CALC_CHAMP(reuse=DEPLA[num_calc],RESULTAT=DEPLA[num_calc],CONTRAINTE=('SIGM_ELNO'))
+
 
    DEPLA[num_calc]=CALC_ERREUR(reuse=DEPLA[num_calc],
                   RESULTAT=DEPLA[num_calc],
                   TOUT='OUI',
-                  TOUT_ORDRE='OUI',
+
                   OPTION=(
 # CALCUL DE L'INDICATEUR EN RESIDU PAR ELEM ET AUX NOEUDS PAR ELEM
                        'ERME_ELEM',

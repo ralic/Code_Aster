@@ -2,7 +2,7 @@
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 09/01/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF UTILITAI  DATE 11/06/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -133,7 +133,7 @@ C
          PARAM  = 'PCONTPR'
       ELSE IF (TYCH(1:11).EQ.'ELGA_EPSI_R') THEN
          OPTION = 'EPSI_ELGA'
-         PARAM  = 'PDEFORR'
+         PARAM  = 'PDEFOPG'
       ELSE IF (TYCH(1:11).EQ.'ELGA_VARI_R') THEN
          OPTION = 'RAPH_MECA'
          PARAM  = 'PVARIPR'
@@ -321,7 +321,7 @@ C
      &                NOMAAS, TYCH(1:8), NOMGD, TYPENT,
      &                NBCMPV, NCMPVA, NCMPVM, PROLZ,
      &                IINST, NUMPT, NUMORD, INST, CRIT, PREC,
-     &                UNITE, LIGREL, OPTION, PARAM, 
+     &                UNITE, LIGREL, OPTION, PARAM,
      &                ZI(JNBPGM),ZI(JNBPMM),CODRET )
 C
         CALL COPISD('CHAMP_GD','G',CHATMP,CHANOM)

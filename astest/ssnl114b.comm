@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE CABLE PESANT AVEC DILATATION THERMIQUE. MODEL. B : POU_D_T_GD
 # ssnl114b.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -104,11 +104,8 @@ RESU1=STAT_NON_LINE(
                 REAC_ITER = 1)
               )
 
-RESU1=CALC_ELEM( reuse=RESU1,
-                            OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO',),
-                          RESULTAT=RESU1,
-              )
+RESU1=CALC_CHAMP(reuse=RESU1,CONTRAINTE=('SIEF_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=RESU1)
+
 
 # SOLUTION ANALYTIQUE : FORTRAN DANS SSNL114.38
 
@@ -129,10 +126,10 @@ TEST_RESU(RESU=(_F( RESULTAT = RESU1,
                  PRECISION = 2.E-3))
           )
 
-TEST_RESU(RESU=( 
+TEST_RESU(RESU=(
           _F( RESULTAT= RESU1   , NOM_CHAM= 'DEPL', NUME_ORDRE=      0,
               REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-              CRITERE= 'ABSOLU', 
+              CRITERE= 'ABSOLU',
               TYPE_TEST= 'SOMM_ABS', VALE=  0.0000000000000E+00 ),
           _F( RESULTAT= RESU1   , NOM_CHAM= 'DEPL', NUME_ORDRE=      1,
               REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
@@ -142,7 +139,7 @@ TEST_RESU(RESU=(
               TYPE_TEST= 'SOMM_ABS', VALE=  2.1710555097465E+04 ),
           _F( RESULTAT= RESU1   , NOM_CHAM= 'SIEF_ELGA', NUME_ORDRE=      0,
               REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-              CRITERE= 'ABSOLU', 
+              CRITERE= 'ABSOLU',
               TYPE_TEST= 'SOMM_ABS', VALE=  0.0000000000000E+00 ),
           _F( RESULTAT= RESU1   , NOM_CHAM= 'SIEF_ELGA', NUME_ORDRE=      1,
               REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
@@ -152,7 +149,7 @@ TEST_RESU(RESU=(
               TYPE_TEST= 'SOMM_ABS', VALE=  3.3378135699613E+05 ),
           _F( RESULTAT= RESU1   , NOM_CHAM= 'SIEF_ELNO', NUME_ORDRE=      0,
               REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-              CRITERE= 'ABSOLU', 
+              CRITERE= 'ABSOLU',
               TYPE_TEST= 'SOMM_ABS', VALE=  0.0000000000000E+00 ),
           _F( RESULTAT= RESU1   , NOM_CHAM= 'SIEF_ELNO', NUME_ORDRE=      1,
               REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
@@ -162,7 +159,7 @@ TEST_RESU(RESU=(
               TYPE_TEST= 'SOMM_ABS', VALE=  6.6756271399226E+05 ),
           _F( RESULTAT= RESU1   , NOM_CHAM= 'VARI_ELGA', NUME_ORDRE=      0,
               REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-              CRITERE= 'ABSOLU', 
+              CRITERE= 'ABSOLU',
               TYPE_TEST= 'SOMM_ABS', VALE=  0.0000000000000E+00 ),
           _F( RESULTAT= RESU1   , NOM_CHAM= 'VARI_ELGA', NUME_ORDRE=      1,
               REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
@@ -172,7 +169,7 @@ TEST_RESU(RESU=(
               TYPE_TEST= 'SOMM_ABS', VALE=  1.1961864026251E-02 ),
           _F( RESULTAT= RESU1   , NOM_CHAM= 'VARI_ELNO', NUME_ORDRE=      0,
               REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-              CRITERE= 'ABSOLU', 
+              CRITERE= 'ABSOLU',
               TYPE_TEST= 'SOMM_ABS', VALE=  0.0000000000000E+00 ),
           _F( RESULTAT= RESU1   , NOM_CHAM= 'VARI_ELNO', NUME_ORDRE=      1,
               REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,

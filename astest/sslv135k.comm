@@ -1,4 +1,4 @@
-# MODIF  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 #
 # TITRE FATIGUE, AMPLITUDE VARIABLE, TEST DU CRITERE FORMULE QUI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -269,12 +269,8 @@ SOL_NL = STAT_NON_LINE ( TITRE      =
                         NEWTON     =_F ( MATRICE      = 'ELASTIQUE',
                                          REAC_INCR    = 0 ))
 
-SOL_NL = CALC_ELEM( reuse    = SOL_NL,
-                    RESULTAT = SOL_NL,
-                    OPTION   = ('EPSI_ELGA',
-                                'SIGM_ELNO',
-                                'EPSI_ELNO')
-                  )
+SOL_NL=CALC_CHAMP(reuse=SOL_NL,RESULTAT=SOL_NL,CONTRAINTE=('SIGM_ELNO'),DEFORMATION=('EPSI_ELGA','EPSI_ELNO'))
+
 
 SOL_NL = CALC_CHAMP( reuse    = SOL_NL,
                      RESULTAT = SOL_NL,
@@ -295,13 +291,8 @@ SOL_L = MECA_STATIQUE ( TITRE      =
                         LIST_INST  =   LINST,
                      )
 
-SOL_L = CALC_ELEM( reuse      = SOL_L,
-                   RESULTAT   = SOL_L,
-                   OPTION     = ('EPSI_ELGA',
-                                 'SIGM_ELNO',
-                                 'EPSI_ELNO',
-                                   )
-                 )
+SOL_L=CALC_CHAMP(reuse=SOL_L,RESULTAT=SOL_L,CONTRAINTE=('SIGM_ELNO'),DEFORMATION=('EPSI_ELGA','EPSI_ELNO'))
+
 
 SOL_L = CALC_CHAMP( reuse    = SOL_L,
                  RESULTAT = SOL_L,

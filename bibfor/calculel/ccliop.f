@@ -1,12 +1,13 @@
-      SUBROUTINE CCLIOP(OPTION,NOBASE,NOLIOP,NOPOUT)
+      SUBROUTINE CCLIOP(TYPE,OPTION,NOBASE,NOLIOP,NOPOUT)
       IMPLICIT NONE
 C     --- ARGUMENTS ---
       INTEGER      NOPOUT
+      CHARACTER*(*)TYPE
       CHARACTER*8  NOBASE
       CHARACTER*16 OPTION
       CHARACTER*24 NOLIOP
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 11/06/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,6 +49,9 @@ C  EX : SI OPTION DEPEND DE L'INSTANT N+1 D'OPTIO2 ALORS :
 C       NOLDEP(N-1) = 'NP1'
 C
 C IN  :
+C   TYPE    K8   TYPE DE DEPENDANCE : OPTION OU CHAMP
+C                - OPTION : OPTIONS A CALCULER
+C                - CHAMP  : CHAMPS NECESSAIRES (POUR STANLEY)
 C   OPTION  K24  NOM DE L'OPTION
 C   NOBASE  K8   BASE DU NOM A PARTIR DE LAQUELLE LE NOM DES OBJETS DE
 C                CCLIOP SERONT CONSTRUITS
@@ -143,8 +147,11 @@ C
 C       CAS D'UNE OPTION AUX ELEMENTS
         ELSE
           IF ( (CUROPT.EQ.'DEPL').OR.
-     &         (CUROPT.EQ.'SIEF_ELGA').OR.
+     &         (CUROPT.EQ.'VITE').OR.
+     &         (CUROPT.EQ.'ACCE').OR.
+     &         (CUROPT.EQ.'TEMP').OR.
      &         (CUROPT.EQ.'VARI_ELGA') ) THEN
+C         POUR CES OPTIONS, IL N'Y A PAS DE DEPENDANCE
             NPARIN = 0
           ELSE
             CALL JENONU(JEXNOM('&CATA.OP.NOMOPT',CUROPT),OPT)
@@ -156,11 +163,11 @@ C       CAS D'UNE OPTION AUX ELEMENTS
 C
 C         BOUCLE SUR LES PARAMETRES DE CETTE OPTION
           DO 20 IPARA = 1,NPARIN
-C           ON VERIFIE QUE L'OPTION EXISTE
+C           ON VERIFIE QUE L'OPTION CORRESPONDAND AU CHAMP EXISTE
             OPTIO2 = ZK24(IAOPLO+3*IPARA-2)
             CALL JENONU(JEXNOM('&CATA.OP.NOMOPT',OPTIO2),OPT2)
 C
-C           ON EVITE QU'UNE OPTION DEPENDE D'ELLE MEME
+C           ON EVITE QU'UNE OPTION NE DEPENDE D'ELLE MEME
             IF ( LOPTIO(IOP).EQ.OPTIO2 ) THEN
               IF ( ZK24(IAOPLO+3*IPARA-1).EQ.'NP1' ) THEN
                 ISODEP(IOP) = '+'
@@ -173,6 +180,7 @@ C                CALL ASSERT(.FALSE.)
             ENDIF
 
             IF ( (OPT2.NE.0) ) THEN
+C --------- ON DEPEND D'UN CHAMP QUI EST UNE OPTION
               NOPOUT = NOPOUT+1
               LOPTIO(NOPOUT) = OPTIO2
 C             REMPLISSAGE DE LA LISTE DE DEPENDANCES DES OPTIONS
@@ -185,11 +193,32 @@ C             REMPLISSAGE DE LA LISTE DE DEPENDANCES DES OPTIONS
               LOPDEP(NOPOUT) = ZK24(IAOPLO+3*IPARA-1)
               OPAJOU = .TRUE.
               ISODEP(NOPOUT) = ' '
-            ELSEIF( ((OPTIO2.EQ.'DEPL').OR.
-     &               (OPTIO2.EQ.'SIEF_ELGA').OR.
-     &               (OPTIO2.EQ.'VARI_ELGA')).AND.
-     &              ((ZK24(IAOPLO+3*IPARA-1).EQ.'NP1').OR.
-     &               (ZK24(IAOPLO+3*IPARA-1)(1:3).EQ.'NM1')) ) THEN
+            ELSEIF ( ((OPTIO2.EQ.'DEPL').OR.
+     &                (OPTIO2.EQ.'VITE').OR.
+     &                (OPTIO2.EQ.'ACCE').OR.
+     &                (OPTIO2.EQ.'TEMP').OR.
+     &                (OPTIO2.EQ.'VARI_ELGA')).AND.
+     &               (ZK24(IAOPLO+3*IPARA-1).EQ.'N').AND.
+     &               (TYPE(1:5).EQ.'CHAMP') ) THEN
+C --------- ON DEPEND D'UN CHAMP QUI N'EST PAS UNE OPTION (POUR STANLEY)
+              NOPOUT = NOPOUT+1
+              LOPTIO(NOPOUT) = OPTIO2
+C             REMPLISSAGE DE LA LISTE DE DEPENDANCES DES OPTIONS
+              IF ( .NOT.OPAJOU ) THEN
+                LOPOR1(IOP) = NOPOUT
+                LOPOR2(IOP) = 0
+              ENDIF
+              LOPOR1(NOPOUT) = 0
+              LOPOR2(NOPOUT) = 0
+              LOPDEP(NOPOUT) = ZK24(IAOPLO+3*IPARA-1)
+              OPAJOU = .TRUE.
+              ISODEP(NOPOUT) = ' '
+            ELSEIF ( ((OPTIO2.EQ.'DEPL').OR.
+     &                (OPTIO2.EQ.'SIEF_ELGA').OR.
+     &                (OPTIO2.EQ.'VARI_ELGA')).AND.
+     &               ((ZK24(IAOPLO+3*IPARA-1).EQ.'NP1').OR.
+     &                (ZK24(IAOPLO+3*IPARA-1)(1:3).EQ.'NM1')) ) THEN
+C --------- ON DEPEND DE SOIT-MEME A L'INSTANT NP1 OU NM1
               NOPOUT = NOPOUT+1
               LOPTIO(NOPOUT) = OPTIO2
 C             REMPLISSAGE DE LA LISTE DE DEPENDANCES DES OPTIONS

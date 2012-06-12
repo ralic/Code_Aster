@@ -3,9 +3,9 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 11/06/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,8 +25,7 @@ C          DEFORMATIONS DE FLUAGE DE GRANGER
 C          ELEMENTS ISOPARAMETRIQUES 2D
 
 C     IN   OPTION : OPTIONS DE CALCUL
-C                   'EPSP_ELNO'   'EPSP_ELGA'
-C                   'EPGR_ELNO'   'EPGR_ELGA'
+C                   'EPSP_ELGA'
 C          NOMTE  : NOM DU TYPE ELEMENT
 C ----------------------------------------------------------------------
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
@@ -48,14 +47,14 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       INTEGER MXCMEL,NBRES,NBSGM,I,NDIM,NNO,NNOS,NBSIGM,NBSIG,
      &        IDSIG,ICOMPO,NPG,IPOIDS,IVF,IDFDE,
-     &        IGAU,ISIG,INO,IGEOM,IDEPL,IDEFP,
+     &        IGAU,ISIG,IGEOM,IDEPL,IDEFP,
      &        ITEMPS,IMATE,
      &        NBVARI,IVARI,NVIF,IBID,JTAB(7),IRET,JGANO
       PARAMETER (MXCMEL=54)
       PARAMETER (NBRES=3)
       PARAMETER (NBSGM=4)
       REAL*8 VALRES(NBRES),EPSM(MXCMEL),EPSPLA(MXCMEL)
-      REAL*8 EPSPLN(MXCMEL),SIGMA(NBSGM), VALPAR,C1,C2,TRSIG
+      REAL*8 SIGMA(NBSGM), VALPAR,C1,C2,TRSIG
       REAL*8 EPSFLF(NBSGM)
       REAL*8 REPERE(7),NHARM,E,NU,ZERO,UN
       INTEGER ICODRE(NBRES)
@@ -78,9 +77,6 @@ C     ---------------
       NHARM = ZERO
       MOD3D = '3D'
 
-      DO 10 I = 1,MXCMEL
-        EPSPLN(I) = ZERO
-   10 CONTINUE
 C --- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT :
 C     -----------------------------------------
       NBSIG = NBSIGM()
@@ -151,7 +147,7 @@ C ---       DE DESSICCATION ET  D HYDRATION
 C ---       EPSRET = - B_ENDO * HYDR - K_DESSIC *(SREF-S)
 C          ----------------------
 
-      OPTIO2 = 'EPME_'//OPTION(6:9)//'_DEPL'
+      OPTIO2 = 'EPME_ELGA'
       CALL EPSVMC('RIGI',NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
      &              ZR(IGEOM),ZR(IDEPL),
      &              ZR(ITEMPS),ZI(IMATE),REPERE,NHARM,OPTIO2,EPSM)
@@ -260,38 +256,17 @@ C           ---------------------------------------------------------
 
 C --- RECUPERATION DU VECTEUR EN SORTIE DES DEFORMATIONS PLASTIQUES :
 C     -------------------------------------------------------------
-      CALL JEVECH('PDEFOPL','E',IDEFP)
+      CALL JEVECH('PDEFOPG','E',IDEFP)
 
 C --- AFFECTATION DU VECTEUR EN SORTIE DES DEFORMATIONS PLASTIQUES :
 C     ------------------------------------------------------------
-      IF (OPTION(6:9).EQ.'ELGA') THEN
-
 C ---    AFFECTATION DU VECTEUR EN SORTIE AVEC LES DEFORMATIONS AUX
 C ---    POINTS D'INTEGRATION :
 C        --------------------
-        DO 140 IGAU = 1,NPG
-          DO 130 ISIG = 1,NBSIG
-            ZR(IDEFP+NBSIG* (IGAU-1)+ISIG-1) = EPSPLA(NBSIG* (IGAU-1)+
-     &        ISIG)
-  130     CONTINUE
-  140   CONTINUE
-
-      ELSE IF (OPTION(6:9).EQ.'ELNO') THEN
-
-C ---    DEFORMATIONS AUX NOEUDS :
-C        -----------------------
-         CALL PPGAN2 ( JGANO, 1, NBSIG, EPSPLA, EPSPLN )
-
-C ---    AFFECTATION DU VECTEUR EN SORTIE AVEC LES DEFORMATIONS AUX
-C ---    NOEUDS :
-C        ------
-        DO 160 INO = 1,NNO
-          DO 150 ISIG = 1,NBSIG
-            ZR(IDEFP+NBSIG* (INO-1)+ISIG-1) = EPSPLN(NBSIG* (INO-1)+
-     &        ISIG)
-  150     CONTINUE
-  160   CONTINUE
-
-      END IF
-
+      DO 140 IGAU = 1,NPG
+        DO 130 ISIG = 1,NBSIG
+          ZR(IDEFP+NBSIG* (IGAU-1)+ISIG-1) = EPSPLA(NBSIG* (IGAU-1)+
+     &      ISIG)
+  130   CONTINUE
+  140 CONTINUE
       END

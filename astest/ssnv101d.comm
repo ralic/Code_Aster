@@ -1,9 +1,9 @@
-# MODIF  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # RESPONSABLE PROIX J.M.PROIX
 # TITRE ESSAI DE TRACTION-CISAILLEMENT EN DEFORMATIONS PLANES (CHABOCHE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -177,16 +177,11 @@ SOLNL2=STAT_NON_LINE(
                                            REAC_ITER = 1,               ),
                              CONVERGENCE=_F(  ITER_GLOB_MAXI = 20,         ))
 
-SOLNL2=CALC_ELEM( reuse=SOLNL2,
-                                      INST=1.435,
-                                   OPTION=(
-                              'SIGM_ELNO', 'VARI_ELNO',),
-                                  RESULTAT=SOLNL2 )
+SOLNL2=CALC_CHAMP(reuse=SOLNL2,INST=1.435,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=SOLNL2)
 
-SOLNL2=CALC_ELEM( reuse=SOLNL2,
-                                      INST=1.435,
-                                    OPTION='EPSI_ELNO',
-                                  RESULTAT=SOLNL2 )
+
+SOLNL2=CALC_CHAMP(reuse=SOLNL2,INST=1.435,DEFORMATION=('EPSI_ELNO'),RESULTAT=SOLNL2)
+
 
 TEST_RESU(RESU=(
   _F(  RESULTAT = SOLNL2,  NOM_CHAM = 'SIGM_ELNO',  NUME_ORDRE = 13,
@@ -245,13 +240,8 @@ SOLNL3=STAT_NON_LINE(
 
 
 
-SOLNL3=CALC_ELEM( reuse=SOLNL3,
-                            RESULTAT=SOLNL3,
-                        NUME_ORDRE=13,
-                              OPTION=( 'VARI_ELNO',
-                                       'EPSI_ELNO',
-                                       'SIGM_ELNO', )
-                      )
+SOLNL3=CALC_CHAMP(reuse=SOLNL3,RESULTAT=SOLNL3,NUME_ORDRE=13,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('EPSI_ELNO'))
+
 
 TEST_RESU(RESU=(
   _F(  RESULTAT = SOLNL3,  NOM_CHAM = 'SIGM_ELNO',  NUME_ORDRE = 13,
@@ -310,13 +300,8 @@ SOLNL4=STAT_NON_LINE(
 
 
 
-SOLNL4=CALC_ELEM( reuse=SOLNL4,
-                            RESULTAT=SOLNL4,
-                        NUME_ORDRE=13,
-                              OPTION=( 'VARI_ELNO',
-                                       'EPSI_ELNO',
-                                       'SIGM_ELNO', )
-                      )
+SOLNL4=CALC_CHAMP(reuse=SOLNL4,RESULTAT=SOLNL4,NUME_ORDRE=13,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('EPSI_ELNO'))
+
 
 TEST_RESU(RESU=(
   _F(  RESULTAT = SOLNL4,  NOM_CHAM = 'SIGM_ELNO',  NUME_ORDRE = 13,
@@ -375,13 +360,8 @@ SOLNL5=STAT_NON_LINE(
 
 
 
-SOLNL5=CALC_ELEM( reuse=SOLNL5,
-                            RESULTAT=SOLNL5,
-                        NUME_ORDRE=13,
-                              OPTION=( 'VARI_ELNO',
-                                       'EPSI_ELNO',
-                                       'SIGM_ELNO', )
-                      )
+SOLNL5=CALC_CHAMP(reuse=SOLNL5,RESULTAT=SOLNL5,NUME_ORDRE=13,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('EPSI_ELNO'))
+
 
 TEST_RESU(RESU=(
   _F(  RESULTAT = SOLNL5,  NOM_CHAM = 'SIGM_ELNO',  NUME_ORDRE = 13,

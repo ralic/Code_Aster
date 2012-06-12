@@ -1,8 +1,8 @@
-#@ MODIF simu_point_mat_ops Macro  DATE 12/12/2011   AUTEUR PROIX J-M.PROIX 
+#@ MODIF simu_point_mat_ops Macro  DATE 11/06/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -46,6 +46,7 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
   MODI_REPERE     = self.get_cmd('MODI_REPERE')
   POST_RELEVE_T   = self.get_cmd('POST_RELEVE_T')
   STAT_NON_LINE   = self.get_cmd('STAT_NON_LINE')
+  IMPR_RESU       = self.get_cmd('IMPR_RESU')
 
   from Accas import _F
   from Utilitai.UniteAster import UniteAster
@@ -185,6 +186,12 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
  
        if   ARCHIVAGE   :
          motscles['ARCHIVAGE']   = ARCHIVAGE.List_F()
+         
+         #     variables de commande
+       mcvarc=[]
+       if args.has_key('AFFE_VARC'):
+          if args['AFFE_VARC'] != None:
+             motscles['AFFE_VARC']  = args['AFFE_VARC'].List_F()
 
        self.DeclareOut('REPONSE',self.sd)
 
@@ -483,6 +490,118 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
                           l_affe_cham.append(dicoch)
                       __EVOV=CREA_RESU(OPERATION='AFFE',TYPE_RESU='EVOL_VARC',NOM_CHAM='TEMP',
                                AFFE = l_affe_cham)  
+                  elif(str(lvarc[ivarc]['NOM_VARC'])=='M_ZIRC'):
+                      typech = 'ELNO_NEUT_R'
+                      labsc =lvarc[ivarc]['V1'].Absc()
+                      lordo1=lvarc[ivarc]['V1'].Ordo()
+                      lordo2=lvarc[ivarc]['V2'].Ordo()
+                      lordo3=lvarc[ivarc]['V3'].Ordo()
+                      lordo4=lvarc[ivarc]['V4'].Ordo()
+                      l_affe_cham=[]
+                      __CHV=[None]*len(labsc)
+                      __CHN=[None]*len(labsc)
+                      for it,time in enumerate(labsc):
+                          __CHN[it]=CREA_CHAMP(TYPE_CHAM=typech,
+                                     OPERATION='AFFE',PROL_ZERO='OUI',
+                                     MODELE=__MO,
+                                     AFFE=(
+                                          _F(MAILLE='VOLUME',
+                                             NOM_CMP='X1',
+                                             VALE=lordo1[it],
+                                            ),
+                                          _F(MAILLE='VOLUME',
+                                             NOM_CMP='X2',
+                                             VALE=lordo2[it],
+                                            ),
+                                          _F(MAILLE='VOLUME',
+                                             NOM_CMP='X3',
+                                             VALE=lordo3[it],
+                                            ),
+                                          _F(MAILLE='VOLUME',
+                                             NOM_CMP='X4',
+                                             VALE=lordo4[it],
+                                            ),
+                                     ),),
+                          dicoch={}
+                          __CHV[it] =CREA_CHAMP( OPERATION='ASSE',TYPE_CHAM='ELNO_VARI_R',
+                                   MODELE=__MO,PROL_ZERO='OUI',
+                                   ASSE=(
+                                   _F(CHAM_GD=__CHN[it],NOM_CMP='X1',NOM_CMP_RESU='V1',GROUP_MA='TOUT'),
+                                   _F(CHAM_GD=__CHN[it],NOM_CMP='X2',NOM_CMP_RESU='V2',GROUP_MA='TOUT'),
+                                   _F(CHAM_GD=__CHN[it],NOM_CMP='X3',NOM_CMP_RESU='V3',GROUP_MA='TOUT'),
+                                   _F(CHAM_GD=__CHN[it],NOM_CMP='X4',NOM_CMP_RESU='V4',GROUP_MA='TOUT'),
+                                   )) ;
+                          dicoch["CHAM_GD"]=__CHV[it]
+                          dicoch["INST"]=time
+                          l_affe_cham.append(dicoch)
+                      __EVOV=CREA_RESU(OPERATION='AFFE',TYPE_RESU='EVOL_THER',
+                                       NOM_CHAM=str('META_ELNO'),AFFE = l_affe_cham)
+                      IMPR_RESU(RESU=_F(RESULTAT=__EVOV))
+                  elif(str(lvarc[ivarc]['NOM_VARC'])=='M_ACIER'):
+                      typech = 'ELNO_NEUT_R'
+                      labsc =lvarc[ivarc]['V1'].Absc()
+                      lordo1=lvarc[ivarc]['V1'].Ordo()
+                      lordo2=lvarc[ivarc]['V2'].Ordo()
+                      lordo3=lvarc[ivarc]['V3'].Ordo()
+                      lordo4=lvarc[ivarc]['V4'].Ordo()
+                      lordo5=lvarc[ivarc]['V5'].Ordo()
+                      lordo6=lvarc[ivarc]['V6'].Ordo()
+                      lordo7=lvarc[ivarc]['V7'].Ordo()
+                      l_affe_cham=[]
+                      __CHV=[None]*len(labsc)
+                      __CHN=[None]*len(labsc)
+                      for it,time in enumerate(labsc):
+                          __CHN[it]=CREA_CHAMP(TYPE_CHAM=typech,
+                                     OPERATION='AFFE',PROL_ZERO='OUI',
+                                     MODELE=__MO,
+                                     AFFE=(
+                                          _F(MAILLE='VOLUME',
+                                             NOM_CMP='X1',
+                                             VALE=lordo1[it],
+                                            ),
+                                          _F(MAILLE='VOLUME',
+                                             NOM_CMP='X2',
+                                             VALE=lordo2[it],
+                                            ),
+                                          _F(MAILLE='VOLUME',
+                                             NOM_CMP='X3',
+                                             VALE=lordo3[it],
+                                            ),
+                                          _F(MAILLE='VOLUME',
+                                             NOM_CMP='X4',
+                                             VALE=lordo4[it],
+                                            ),
+                                          _F(MAILLE='VOLUME',
+                                             NOM_CMP='X5',
+                                             VALE=lordo5[it],
+                                            ),
+                                          _F(MAILLE='VOLUME',
+                                             NOM_CMP='X6',
+                                             VALE=lordo6[it],
+                                            ),
+                                          _F(MAILLE='VOLUME',
+                                             NOM_CMP='X7',
+                                             VALE=lordo7[it],
+                                            ),
+                                     ),),
+                          dicoch={}
+                          __CHV[it] =CREA_CHAMP( OPERATION='ASSE',TYPE_CHAM='ELNO_VARI_R',
+                                   MODELE=__MO,PROL_ZERO='OUI',
+                                   ASSE=(
+                                   _F(CHAM_GD=__CHN[it],NOM_CMP='X1',NOM_CMP_RESU='V1',GROUP_MA='TOUT'),
+                                   _F(CHAM_GD=__CHN[it],NOM_CMP='X2',NOM_CMP_RESU='V2',GROUP_MA='TOUT'),
+                                   _F(CHAM_GD=__CHN[it],NOM_CMP='X3',NOM_CMP_RESU='V3',GROUP_MA='TOUT'),
+                                   _F(CHAM_GD=__CHN[it],NOM_CMP='X4',NOM_CMP_RESU='V4',GROUP_MA='TOUT'),
+                                   _F(CHAM_GD=__CHN[it],NOM_CMP='X5',NOM_CMP_RESU='V5',GROUP_MA='TOUT'),
+                                   _F(CHAM_GD=__CHN[it],NOM_CMP='X6',NOM_CMP_RESU='V6',GROUP_MA='TOUT'),
+                                   _F(CHAM_GD=__CHN[it],NOM_CMP='X7',NOM_CMP_RESU='V7',GROUP_MA='TOUT'),
+                                   )) ;
+                          dicoch["CHAM_GD"]=__CHV[it]
+                          dicoch["INST"]=time
+                          l_affe_cham.append(dicoch)
+                      __EVOV=CREA_RESU(OPERATION='AFFE',TYPE_RESU='EVOL_THER',
+                                       NOM_CHAM=str('META_ELNO'),AFFE = l_affe_cham)
+                      IMPR_RESU(RESU=_F(RESULTAT=__EVOV))
                   else:
                       typech = 'NOEU_' + str(lvarc[ivarc]['NOM_VARC']) + '_R'
                       labsc=lvarc[ivarc]['VALE_FONC'].Absc()
@@ -506,9 +625,14 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
                                AFFE = l_affe_cham)  
                   dico["MAILLE"]='VOLUME'
                   dico["EVOL"]=__EVOV
-                  dico["NOM_VARC"]=lvarc[ivarc]['NOM_VARC']
-                  if lvarc[ivarc]['VALE_REF'] != None:
-                     dico["VALE_REF"]=lvarc[ivarc]['VALE_REF']
+                  if (str(lvarc[ivarc]['NOM_VARC'])=='M_ZIRC'):
+                     dico["NOM_VARC"]="M_ZIRC"
+                  elif (str(lvarc[ivarc]['NOM_VARC'])=='M_ACIER'):
+                     dico["NOM_VARC"]="M_ACIER"
+                  else:
+                     dico["NOM_VARC"]=lvarc[ivarc]['NOM_VARC']
+                     if lvarc[ivarc]['VALE_REF'] != None:
+                        dico["VALE_REF"]=lvarc[ivarc]['VALE_REF']
                   mcvarc.append(dico)
 #      -- Materiau et modele
       if len(mcvarc) > 0 :
@@ -653,6 +777,10 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
   
       if   ARCHIVAGE   :
          motscles['ARCHIVAGE']   = ARCHIVAGE.List_F()
+         
+      if args.has_key('SUIVI_DDL'):
+         if args['SUIVI_DDL'] != None:
+            motscles['SUIVI_DDL']   = args['SUIVI_DDL'].List_F()
 
       if   etatinit == 1  :
 

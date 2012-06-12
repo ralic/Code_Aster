@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/06/2012   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE : VARIATION TEMPERATURE DANS LE COMPORTEMENT 'VISC_CIN1_CHAB'
 # comp008j.para = tps_job 120 mem_job 64Mo ncpus 1 liste_test S
@@ -125,7 +125,7 @@ for i in range(NCAL):
 ############################################################################
 # MACRO pour test thermoplastique
 
-tabresu=TEST_COMPOR(
+tabresu=TEST_COMPOR(SUPPORT='ELEMENT',
               MATER=MATERI,COMP_INCR=_F(RELATION=compor),
               LIST_MATER=LMAT2,ALPHA=ALPH,YOUNG=YOUN,TEMP_INIT=T0,TEMP_FIN=Tmax,NEWTON=_F(REAC_ITER=1),
               NB_VARI=NB_VARI,

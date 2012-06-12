@@ -1,4 +1,4 @@
-#@ MODIF mecanonline3 Messages  DATE 02/04/2012   AUTEUR ABBAS M.ABBAS 
+#@ MODIF mecanonline3 Messages  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -47,10 +47,6 @@ cata_msg = {
 
 73 : _(u"""
  forces d'inertie et FETI incompatibles
-"""),
-
-75 : _(u"""
- forces d'inertie dérivées et FETI incompatibles
 """),
 
 78 : _(u"""

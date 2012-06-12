@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 27/02/2012   AUTEUR GREFFET N.GREFFET 
+#& MODIF COMMANDE  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,8 +23,7 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
                       +" d'une structure en non linéaire",
                    reentrant='f',
             UIinfo={"groupes":("Résolution","Mécanique",)},
-         regles=(AU_MOINS_UN('COMP_INCR','COMP_ELAS'),
-                 CONCEPT_SENSIBLE('ENSEMBLE'),),
+         regles=(AU_MOINS_UN('COMP_INCR','COMP_ELAS'),),
          MODELE          =SIMP(statut='o',typ=modele_sdaster),
          CHAM_MATER      =SIMP(statut='o',typ=cham_mater),
          CARA_ELEM       =SIMP(statut='f',typ=cara_elem),
@@ -159,9 +158,6 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
               b_prec_abso=BLOC(condition="(CRITERE=='ABSOLU')",
                  PRECISION       =SIMP(statut='o',typ='R',),),
          ),
-           SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),max='**',
-                               fr="Liste des paramètres de sensibilité",
-                               ang="List of sensitivity parameters"),
          INFO            =SIMP(statut='f',typ='I',into=(1,2) ),
          b_info=BLOC(condition="INFO==2",
                fr="filtre les messages émis dans le .mess selon le type de message demandé",

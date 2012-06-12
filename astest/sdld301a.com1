@@ -15,9 +15,8 @@ MODE_CO=MODE_STATIQUE(MATR_MASS=MATRMASS,
                       PSEUDO_MODE=_F(AXE='X',),
                       MATR_RIGI=MATRRIGI,);
 
-MODE_CO=CALC_ELEM(reuse =MODE_CO,
-                  RESULTAT=MODE_CO,
-                  OPTION=('SIEF_ELGA','EFGE_ELNO'),);
+MODE_CO=CALC_CHAMP(reuse=MODE_CO,RESULTAT=MODE_CO,CONTRAINTE=('SIEF_ELGA','EFGE_ELNO'))
+
 
 MODE_CO=CALC_CHAMP(reuse =MODE_CO,
                 RESULTAT=MODE_CO,

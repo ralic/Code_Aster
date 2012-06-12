@@ -73,7 +73,7 @@ PYTHON         | python  | 2.7   | %(PYTHON)s
 BIN_NODBG      | bin     | 11-04 | %(PREFIX)s/bin/aster
 BIN_DBG        | bin     | 11-04 | %(PREFIX)s/bin/asterd
 BINCMDE        | bin     | 11-04 | %(PYTHONARCHDIR)s/Cata
-BINELE         | bin     | 11-04 | %(ASTERDATADIR)s/elements
+BINELE         | bin     | 11-04 | $ASTER_VERSION_DIR/elements
 BINPICKLED     | bin     | 11-04 | %(SRC)s/build/release/catalo/cata_ele.pickled
 #
 # pour as_run --messages, --get, --show...
@@ -84,7 +84,7 @@ SRCC           | src     | 11-04 | %(SRC)s/bibc
 SRCPY          | src     | 11-04 | %(PYTHONARCHDIR)s
 SRCCATA        | src     | 11-04 | %(SRC)s/catalo
 SRCCAPY        | src     | 11-04 | %(SRC)s/catapy
-SRCTEST        | src     | 11-04 | %(SRC)s/astest
+SRCTEST        | src     | 11-04 | %(SRC)s/../tests/astest
 SRCMAT         | src     | 11-04 | %(SRC)s/../data/materiau
 SRCHIST        | src     | 11-04 | %(SRC)s/histor
 #
@@ -93,8 +93,8 @@ ARGPYT         | exec    | 03-02 | Execution/E_SUPERV.py
 ARGEXE         | exec    | 03-02 | -eficas_path ./Python
 #
 REPOUT         | exec    | 11-04 | $ASTER_ROOT/outils
-REPMAT         | exec    | 02-05 | $ASTER_VERSION_DIR/share/aster/materiau
-REPDEX         | exec    | 02-05 | $ASTER_VERSION_DIR/share/aster/datg
+REPMAT         | exec    | 02-05 | $ASTER_VERSION_DIR/materiau
+REPDEX         | exec    | 02-05 | $ASTER_VERSION_DIR/datg
 """
 
 TMPL_PROFILE = r"""# created by waftools/legacy
@@ -105,4 +105,3 @@ $ASTER_VERSION_DIR/lib:\
 
 export LD_LIBRARY_PATH
 """
-

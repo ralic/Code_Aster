@@ -1,4 +1,4 @@
-# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE Test de arrachement axisymmetrique(La Borderie & Pijaudier Cabot)
 # ssna112a.para = tps_job 160 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -157,13 +157,8 @@ U1=STAT_NON_LINE(MODELE=MODELO,
                  CONVERGENCE=_F(ITER_GLOB_MAXI=100,
                                 RESI_GLOB_RELA=1.E-07,),);
 
-U1=CALC_ELEM(reuse =U1,
+U1=CALC_CHAMP(reuse=U1,CONTRAINTE=('SIGM_ELNO'),DEFORMATION=('EPSI_ELNO','EPSI_ELGA'),RESULTAT=U1)
 
-
-             OPTION=('SIGM_ELNO',
-                     'EPSI_ELNO',
-                     'EPSI_ELGA',),
-             RESULTAT=U1,);
 
 U1=CALC_CHAMP(reuse =U1,
 
@@ -237,14 +232,14 @@ UXP=RECU_FONCTION(RESULTAT=U1,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
                   GROUP_NO='PA2',
-                  TOUT_ORDRE='OUI',
+
                   );
 
 UYP=RECU_FONCTION(RESULTAT=U1,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
                   GROUP_NO='PA2',
-                  TOUT_ORDRE='OUI',
+
                   );
 
 # ---- f(contraintes)
@@ -254,7 +249,7 @@ SXY661=RECU_FONCTION(RESULTAT=U1,
                    NOM_CMP='SITX',
                    MAILLE ='M66',
                    POINT = 1,
-                   TOUT_ORDRE='OUI',
+
                    );
 
 SXY672=RECU_FONCTION(RESULTAT=U1,
@@ -262,7 +257,7 @@ SXY672=RECU_FONCTION(RESULTAT=U1,
                    NOM_CMP='SITX',
                    MAILLE ='M67',
                    POINT = 2,
-                   TOUT_ORDRE='OUI',
+
                    );
 
 SXY681=RECU_FONCTION(RESULTAT=U1,
@@ -270,7 +265,7 @@ SXY681=RECU_FONCTION(RESULTAT=U1,
                    NOM_CMP='SITX',
                    MAILLE ='M68',
                    POINT = 1,
-                   TOUT_ORDRE='OUI',
+
                    );
 
 SXY692=RECU_FONCTION(RESULTAT=U1,
@@ -278,7 +273,7 @@ SXY692=RECU_FONCTION(RESULTAT=U1,
                    NOM_CMP='SITX',
                    MAILLE ='M69',
                    POINT = 2,
-                   TOUT_ORDRE='OUI',
+
                    );
 
 SXY701=RECU_FONCTION(RESULTAT=U1,
@@ -286,7 +281,7 @@ SXY701=RECU_FONCTION(RESULTAT=U1,
                    NOM_CMP='SITX',
                    MAILLE ='M70',
                    POINT = 1,
-                   TOUT_ORDRE='OUI',
+
                    );
 
 SXY712=RECU_FONCTION(RESULTAT=U1,
@@ -294,7 +289,7 @@ SXY712=RECU_FONCTION(RESULTAT=U1,
                    NOM_CMP='SITX',
                    MAILLE ='M71',
                    POINT = 2,
-                   TOUT_ORDRE='OUI',
+
                    );
 
 SXY721=RECU_FONCTION(RESULTAT=U1,
@@ -302,7 +297,7 @@ SXY721=RECU_FONCTION(RESULTAT=U1,
                    NOM_CMP='SITX',
                    MAILLE ='M72',
                    POINT = 1,
-                   TOUT_ORDRE='OUI',
+
                    );
 
 SXY732=RECU_FONCTION(RESULTAT=U1,
@@ -310,7 +305,7 @@ SXY732=RECU_FONCTION(RESULTAT=U1,
                    NOM_CMP='SITX',
                    MAILLE ='M73',
                    POINT = 2,
-                   TOUT_ORDRE='OUI',
+
                    );
 
 SXY741=RECU_FONCTION(RESULTAT=U1,
@@ -318,7 +313,7 @@ SXY741=RECU_FONCTION(RESULTAT=U1,
                    NOM_CMP='SITX',
                    MAILLE ='M74',
                    POINT = 1,
-                   TOUT_ORDRE='OUI',
+
                    );
 
 # ---- f(variables internes)
@@ -328,7 +323,7 @@ V2PG1_66=RECU_FONCTION(RESULTAT=U1,
                    NOM_CMP='V2',
                    MAILLE ='M66',
                    POINT = 1,
-                   TOUT_ORDRE='OUI',
+
                    );
 
 V2PG2_66=RECU_FONCTION(RESULTAT=U1,
@@ -336,7 +331,7 @@ V2PG2_66=RECU_FONCTION(RESULTAT=U1,
                    NOM_CMP='V2',
                    MAILLE ='M66',
                    POINT = 2,
-                   TOUT_ORDRE='OUI',
+
                    );
 
 # ---------- en format AGRAF ----------

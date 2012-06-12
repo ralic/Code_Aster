@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE CIRCULAIRE POSEE     SOUS PRESSION DST  170 N - 296 TRIA3
 # ssls101f.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -214,9 +214,8 @@ TEST_TABLE(      TABLE=EPOT_PE,
 
 #--------------------------------------------------------------------
 
-DEPR=CALC_ELEM( reuse= DEPR ,RESULTAT= DEPR ,
-                         OPTION=('EFGE_ELNO',),
-                )
+DEPR=CALC_CHAMP(reuse=DEPR,RESULTAT=DEPR,CONTRAINTE=('EFGE_ELNO'))
+
 
 #--------------------------------------------------------------------
 RELEVE_1=POST_RELEVE_T(

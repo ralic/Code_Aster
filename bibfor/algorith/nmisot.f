@@ -3,7 +3,7 @@
      &                   OPTION,SIGP,VIP,DSIDEP,DEMU,CINCO,IRET)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/01/2012   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 11/06/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,9 +27,9 @@ C
       CHARACTER*(*)      FAMI
       CHARACTER*8        TYPMOD(*)
       CHARACTER*16       COMPOR,OPTION
-      REAL*8             CRIT(10),LINE,RADI
+      REAL*8             CRIT(11),LINE,RADI
       REAL*8             DEPS(6),DX,DEUXMU,DEMU,CINCO
-      REAL*8             SIGM(6),VIM(2),SIGP(6),VIP(2),DSIDEP(6,6)
+      REAL*8             SIGM(6),VIM(*),SIGP(6),VIP(*),DSIDEP(6,6)
 C ----------------------------------------------------------------------
 C     REALISE LA LOI DE VON MISES ISOTROPE ET ELASTIQUE POUR LES
 C     ELEMENTS ISOPARAMETRIQUES EN PETITES DEFORMATIONS
@@ -172,6 +172,12 @@ C
          EM  = VALRES(1)
          NUM = VALRES(2)
          DEUMUM = EM/(1.D0+NUM)
+C        CRIT_RUPT
+         IF ((CRIT(11).GT.0.D0).AND.(VIM(8).GT.0.D0)) THEN
+            LGPG = 8
+            CALL RUPMAT (FAMI, KPG, KSP, IMATE,VIM,LGPG,EM,SIGM)
+         ENDIF
+
          IF (INCO) THEN
            TROIKM = DEUMUM
          ELSE
@@ -181,6 +187,13 @@ C
      &                 2,NOMRES(1),VALRES(1),ICODRE(1), 2)
          E      = VALRES(1)
          NU     = VALRES(2)
+
+C        CRIT_RUPT
+         IF ((CRIT(11).GT.0.D0).AND.(VIM(8).GT.0.D0)) THEN
+            LGPG = 8
+            CALL RUPMAT (FAMI, KPG, KSP, IMATE,VIM,LGPG,E,SIGM)
+         ENDIF
+
          IF (INCO) THEN
            DEUXMU = 2.D0*E/3.D0
            TROISK = DEUXMU
@@ -264,6 +277,13 @@ C     ---------------------------------------
      &        CALL U2MESS('F','CALCULEL_31')
           CALL RCTRAC(IMATE,1,'SIGM',TM,JPROLM,JVALEM,
      &                NBVALM,EM)
+     
+C         CRIT_RUPT VMIS_ISOT_TRAC
+          IF ((CRIT(11).GT.0.D0).AND.(VIM(8).GT.0.D0)) THEN
+             LGPG = 8
+             CALL RUPMAT (FAMI, KPG, KSP, IMATE,VIM,LGPG,EM,SIGM)
+          ENDIF
+     
           DEUMUM = EM/(1.D0+NUM)
           IF (INCO) THEN
             TROIKM = DEUMUM
@@ -279,6 +299,12 @@ C     ---------------------------------------
      &        CALL U2MESS('F','CALCULEL_31')
           CALL RCTRAC(IMATE,1,'SIGM',RESU,JPROLP,JVALEP,
      &                NBVALP,E)
+C         CRIT_RUPT VMIS_ISOT_TRAC
+          IF ((CRIT(11).GT.0.D0).AND.(VIM(8).GT.0.D0)) THEN
+             LGPG = 8
+             CALL RUPMAT (FAMI, KPG, KSP, IMATE,VIM,LGPG,E,SIGM)
+          ENDIF
+
           CALL RCFONC('S',1,JPROLP,JVALEP,NBVALP,SIGY,DUM,
      &                DUM,DUM,DUM,DUM,DUM,DUM,DUM)
           CALL RCFONC('V',1,JPROLP,JVALEP,NBVALP,RBID,RBID,

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 30/01/2012   AUTEUR DESROCHE X.DESROCHES 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE STRATIFIEE EN FLEXION - DKT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -337,11 +337,8 @@ STA1=MECA_STATIQUE(MODELE=MO,
                    CARA_ELEM=EP,
                    EXCIT=_F(CHARGE=CHME,),);
 
-STA1=CALC_ELEM(reuse =STA1,
-               RESULTAT=STA1,
-               TYPE_OPTION='SIGM_STRUCT',
-               OPTION=('EFGE_ELNO',),
-               );
+STA1=CALC_CHAMP(reuse=STA1,RESULTAT=STA1,CONTRAINTE=('EFGE_ELNO'))
+
 # ______________________________________________________________________
 
 
@@ -350,11 +347,8 @@ STA2=MECA_STATIQUE(MODELE=MO,
                    CARA_ELEM=EP2,
                    EXCIT=_F(CHARGE=CHME,),);
 
-STA2=CALC_ELEM(reuse =STA2,
-               RESULTAT=STA2,
-               TYPE_OPTION='SIGM_STRUCT',
-               OPTION=('EFGE_ELNO',),
-               );
+STA2=CALC_CHAMP(reuse=STA2,RESULTAT=STA2,CONTRAINTE=('EFGE_ELNO'))
+
 
 # ______________________________________________________________________
 
@@ -364,11 +358,8 @@ STA3=MECA_STATIQUE(MODELE=MO3,
                    CARA_ELEM=EP3,
                    EXCIT=_F(CHARGE=CHME3,),);
 
-STA3=CALC_ELEM(reuse =STA3,
-               RESULTAT=STA3,
-               TYPE_OPTION='SIGM_STRUCT',
-               OPTION=('EFGE_ELNO',),
-               );
+STA3=CALC_CHAMP(reuse=STA3,RESULTAT=STA3,CONTRAINTE=('EFGE_ELNO'))
+
 
 
 # ______________________________________________________________________

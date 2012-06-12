@@ -1,4 +1,4 @@
-#@ MODIF sensibilite Messages  DATE 30/04/2012   AUTEUR SELLENET N.SELLENET 
+#@ MODIF sensibilite Messages  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -39,14 +39,6 @@ cata_msg = {
  Le champ de thêta sensibilité est inexistant dans la structure de donnée %(k1)s
 """),
 
-5 : _(u"""
- On ne sait pas dériver ce type de structures : %(k1)s.
-"""),
-
-6 : _(u"""
- Le paramètre de sensibilité doit être un champ thêta.
-"""),
-
 8 : _(u"""
  Pour l'occurrence numéro %(i1)d ,
  la dérivée du champ %(k1)s de %(k2)s par rapport à %(k3)s est introuvable.
@@ -65,11 +57,6 @@ cata_msg = {
  Le calcul de sensibilité n'est pas encore disponible pour les chargements de type EPSI_INIT
 """),
 
-12 : _(u"""
- Il y a vraisemblablement %(i1)d modes propres multiples.
- Le calcul des sensibilités se limite actuellement aux modes propres simples
-"""),
-
 13 : _(u"""
  On ne peut pas dériver avec une charge complexe en entrée de DYNA_LINE_HARM.
 """),
@@ -79,7 +66,7 @@ cata_msg = {
 """),
 
 16 : _(u"""
- Erreur fatale
+ EXICHA différent de 0 et 1
 """),
 
 33 : _(u"""
@@ -93,14 +80,6 @@ cata_msg = {
 
 37 : _(u"""
  L'option sensibilité n'est pas opérationnelle pour la modélisation %(k1)s
-"""),
-
-41 : _(u"""
- Déplacements initiaux imposés nuls pour les  calculs de sensibilité
-"""),
-
-42 : _(u"""
- Vitesses initiales imposées nulles pour les  calculs de sensibilité
 """),
 
 51 : _(u"""
@@ -124,16 +103,6 @@ cata_msg = {
  Le calcul de dérivée n'a pas été étendu à la plasticité.
 """),
 
-56 : _(u"""
-Problème :
-  Le calcul de sensibilité dans MODE_ITER_SIMULT n'est pas conseillé ici.
-  Il aura besoin de beaucoup de mémoire (>3 Go).
-
-Conseil :
-  Pour les nombres de ddls importants, il faut préférer le calcul de sensibilité
-  par "différences finies".
-"""),
-
 57 : _(u"""
  Le calcul de dérivée n'a pas été prévu pour les variables de commande de séchage ou d'hydratation.
 """),
@@ -147,20 +116,7 @@ Conseil :
 """),
 
 81 : _(u"""
- Erreur fatale
-"""),
-
-91 : _(u"""
- Le pas de temps adaptatif n'est pas approprié pour le calcul de sensibilité
- par rapport au paramètre matériau
-"""),
-
-92 : _(u"""
- On ne peut pas dériver les concepts de type %(k1)s
-"""),
-
-93 : _(u"""
- On ne peut pas dériver avec un VECT_ASSE en entrée de DYNA_LINE_HARM.
+ la structure nosimp est introuvable dans la mémorisation inpsco
 """),
 
 95 : _(u"""

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE CREUX THERMOELASTIQUE PESANT EN ROTATION UNIFORME
 # hpla100d.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -172,18 +172,16 @@ DEPLPES=MECA_STATIQUE(MODELE=MO,
                       CHAM_MATER=CHMAT,
                       EXCIT=_F(CHARGE=CHPES),);
 
-DEPLPES=CALC_ELEM(reuse=DEPLPES,
-                  RESULTAT=DEPLPES,
-                  OPTION=('EFGE_ELNO','SIGM_ELNO',),);
+DEPLPES=CALC_CHAMP(reuse=DEPLPES,RESULTAT=DEPLPES,CONTRAINTE=('EFGE_ELNO','SIGM_ELNO'))
+
 
 DEPLROT=MECA_STATIQUE(MODELE=MO,
                       CARA_ELEM=CARE,
                       CHAM_MATER=CHMAT,
                       EXCIT=_F(CHARGE=CHROT),)
 
-DEPLROT=CALC_ELEM(reuse=DEPLROT,
-                  RESULTAT=DEPLROT ,
-                  OPTION=('EFGE_ELNO','SIGM_ELNO',),);
+DEPLROT=CALC_CHAMP(reuse=DEPLROT,RESULTAT=DEPLROT,CONTRAINTE=('EFGE_ELNO','SIGM_ELNO'))
+
 
 # ------------------------------------------------------------------
 
@@ -211,9 +209,8 @@ DEPLDIL=CREA_RESU(OPERATION='AFFE',
                           CHAM_MATER=CHMAT1,
                           CARA_ELEM=CARE,),);
 
-DEPLDIL=CALC_ELEM(reuse=DEPLDIL,
-                  RESULTAT= DEPLDIL ,
-                  OPTION=('SIEF_ELGA','EFGE_ELNO','SIGM_ELNO',),);
+DEPLDIL=CALC_CHAMP(reuse=DEPLDIL,RESULTAT=DEPLDIL,CONTRAINTE=('SIEF_ELGA','EFGE_ELNO','SIGM_ELNO'))
+
 
 STATNL2=STAT_NON_LINE(MODELE=MO,
                       CHAM_MATER=CHMATH1,
@@ -236,9 +233,8 @@ DEPLDILT=CREA_RESU(OPERATION='AFFE',
                            CHAM_MATER=CHMATH1,
                            CARA_ELEM=CARE,),);
 
-DEPLDILT=CALC_ELEM(reuse=DEPLDILT,
-                   RESULTAT=DEPLDILT,
-                   OPTION=('SIEF_ELGA','EFGE_ELNO','SIGM_ELNO',),);
+DEPLDILT=CALC_CHAMP(reuse=DEPLDILT,RESULTAT=DEPLDILT,CONTRAINTE=('SIEF_ELGA','EFGE_ELNO','SIGM_ELNO'))
+
 
 # ------------------------------------------------------------------
 
@@ -247,18 +243,16 @@ DEPLDI2=MECA_STATIQUE(MODELE=MO,
                       CARA_ELEM=CARE,
                       EXCIT=_F(CHARGE=CHDI2),)
 
-DEPLDI2=CALC_ELEM(reuse=DEPLDI2,
-                  RESULTAT=DEPLDI2 ,
-                  OPTION=('EFGE_ELNO','SIGM_ELNO',),);
+DEPLDI2=CALC_CHAMP(reuse=DEPLDI2,RESULTAT=DEPLDI2,CONTRAINTE=('EFGE_ELNO','SIGM_ELNO'))
+
 
 DEPLDI2T=MECA_STATIQUE(MODELE=MO,
                        CHAM_MATER=CHMATH2,
                        CARA_ELEM=CARE,
                        EXCIT=_F(CHARGE=CHDI2),)
 
-DEPLDI2T=CALC_ELEM(reuse=DEPLDI2T,
-                   RESULTAT=DEPLDI2T ,
-                   OPTION=('EFGE_ELNO','SIGM_ELNO',),);
+DEPLDI2T=CALC_CHAMP(reuse=DEPLDI2T,RESULTAT=DEPLDI2T,CONTRAINTE=('EFGE_ELNO','SIGM_ELNO'))
+
 
 #---------------------------------------------------------------------
 
@@ -416,8 +410,8 @@ U=STAT_NON_LINE(           MODELE=MO,
                      RECH_LINEAIRE=_F( ITER_LINE_MAXI = 3)
               )
 
-CALC_ELEM( reuse=U, RESULTAT=U,
-           OPTION=( 'EFGE_ELNO',  'VARI_ELNO',), )
+CALC_CHAMP(reuse=U,RESULTAT=U,CONTRAINTE=('EFGE_ELNO'),VARI_INTERNE=('VARI_ELNO'))
+
 
 #---------------------------------------------------------------------
 

@@ -1,27 +1,26 @@
-      SUBROUTINE MRMMVR(CUMUL,NOMMAT,SMDI,SMHC,LMATD,
-     &                  NEQ,NEQL,VECT,XSOL,NBVECT)
+      SUBROUTINE MRMMVR(CUMUL,LMAT,SMDI,SMHC,LMATD,NEQ,NEQL,VECT,XSOL,
+     &                  NBVECT,VECTMP,PREPOS)
       IMPLICIT NONE
       CHARACTER*(*) CUMUL
       INTEGER*4 SMHC(*)
-      INTEGER SMDI(*),NEQ,NBVECT,NEQL
-      CHARACTER*(*) NOMMAT
-      REAL*8 VECT(NEQ,NBVECT),XSOL(NEQ,NBVECT)
-      LOGICAL LMATD
+      INTEGER SMDI(*),NEQ,NBVECT,NEQL,LMAT
+      REAL*8 VECT(NEQ,NBVECT),XSOL(NEQ,NBVECT),VECTMP(NEQ)
+      LOGICAL LMATD,PREPOS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/01/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGELINE  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
 C (AT YOUR OPTION) ANY LATER VERSION.
-C
+
 C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
 C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
 C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
 C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-C
+
 C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
@@ -31,11 +30,12 @@ C     ------------------------------------------------------------------
 C                   MULTIPLICATION MATRICE PAR N VECTEURS
 C         XSOL(1..NEQ,1..NBVECT) = MATRICE  * VECT(1..NEQ,1..NBVECT)
 C     ------------------------------------------------------------------
-C     VERSION : LES ENTITES SONT REELLES
-C             : LA MATRICE EST STOCKEE MORSE (SYMETRIQUE OU NON)
+C IN  CUMUL  : K4 :
+C              / 'ZERO' : XSOL =        MAT*VECT
+C              / 'CUMU' : XSOL = XSOL + MAT*VECT
 C     ------------------------------------------------------------------
-C
-C
+
+
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
@@ -52,7 +52,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-C
+
       REAL*8 ZERO
       CHARACTER*1 KBID
       CHARACTER*14 NUMDDL
@@ -60,25 +60,27 @@ C
       CHARACTER*24 VALM,REFA
       CHARACTER*32 JEXNUM
       INTEGER KFIN,JVALMS,JVALMI,JVEC,KI,KDEB,NBLOC
-      INTEGER ILIG,JCOL,JREFA,JNULG,ILIGG,JCOLG,NUMGLO
+      INTEGER ILIG,JCOL,JREFA,JNULG,ILIGG,JCOLG,NUMGLO,K
+      INTEGER KETA,IEXI,JCCID,IEQ
       LOGICAL NONSYM
 C     ------------------------------------------------------------------
-C
-C
-C
-      CALL JEMARQ()
-      NOM19 = NOMMAT
 
-      VALM = NOM19//'.VALM'
+
+
+      CALL JEMARQ()
+      NOM19=ZK24(ZI(LMAT+1))
+
+      VALM=NOM19//'.VALM'
       CALL JELIRA(VALM,'NMAXOC',NBLOC,KBID)
       CALL ASSERT(NBLOC.EQ.1 .OR. NBLOC.EQ.2)
-      NONSYM = (NBLOC.EQ.2)
+      NONSYM=(NBLOC.EQ.2)
 
-      ZERO = 0.D0
+      ZERO=0.D0
+      CALL ASSERT(CUMUL.EQ.'ZERO' .OR. CUMUL.EQ.'CUMU')
       IF (CUMUL.EQ.'ZERO') THEN
-        DO 20 JVEC = 1,NBVECT
-          DO 10 ILIG = 1,NEQ
-            XSOL(ILIG,JVEC) = ZERO
+        DO 20 JVEC=1,NBVECT
+          DO 10 ILIG=1,NEQ
+            XSOL(ILIG,JVEC)=ZERO
    10     CONTINUE
    20   CONTINUE
       ENDIF
@@ -90,54 +92,94 @@ C     -- VALM(1) : AU DESSUS DE LA DIAGONALE
 C        -- VALM(2) : AU DESSOUS DE LA DIAGONALE
         CALL JEVEUO(JEXNUM(VALM,2),'L',JVALMI)
       ELSE
-        JVALMI = JVALMS
+        JVALMI=JVALMS
       ENDIF
 
-      IF ( .NOT.LMATD ) THEN
-      DO 50 JVEC = 1,NBVECT
-        XSOL(1,JVEC) = XSOL(1,JVEC) + ZR(JVALMS-1+1)*VECT(1,JVEC)
-        DO 40 ILIG = 2,NEQ
-          KDEB = SMDI(ILIG-1) + 1
-          KFIN = SMDI(ILIG) - 1
-CCDIR$ IVDEP
-          DO 30 KI = KDEB,KFIN
-            JCOL = SMHC(KI)
-            XSOL(ILIG,JVEC) = XSOL(ILIG,JVEC) +
-     &                        ZR(JVALMI-1+KI)*VECT(JCOL,JVEC)
-            XSOL(JCOL,JVEC) = XSOL(JCOL,JVEC) +
-     &                        ZR(JVALMS-1+KI)*VECT(ILIG,JVEC)
+
+C     -- CAS D'UNE MATRICE NON DISTRIBUEE :
+C     ----------------------------------------
+      IF (.NOT.LMATD) THEN
+        DO 60 JVEC=1,NBVECT
+          DO 30,K=1,NEQ
+            VECTMP(K)=VECT(K,JVEC)
    30     CONTINUE
-          XSOL(ILIG,JVEC) = XSOL(ILIG,JVEC) +
-     &                      ZR(JVALMS+KFIN)*VECT(ILIG,JVEC)
-   40   CONTINUE
-   50 CONTINUE
+C         -- LES LAGRANGE DOIVENT ETRE MIS A L'ECHELLE AVANT LA
+C            MULTIPLICATION :
+          IF (PREPOS) CALL MRCONL('DIVI',LMAT,0,'R',VECTMP,1)
+          XSOL(1,JVEC)=XSOL(1,JVEC)+ZR(JVALMS-1+1)*VECTMP(1)
+          DO 50 ILIG=2,NEQ
+            KDEB=SMDI(ILIG-1)+1
+            KFIN=SMDI(ILIG)-1
+C           CDIR$ IVDEP
+            DO 40 KI=KDEB,KFIN
+              JCOL=SMHC(KI)
+              XSOL(ILIG,JVEC)=XSOL(ILIG,JVEC)+
+     &                        ZR(JVALMI-1+KI)*VECTMP(JCOL)
+              XSOL(JCOL,JVEC)=XSOL(JCOL,JVEC)+
+     &                        ZR(JVALMS-1+KI)*VECTMP(ILIG)
+   40       CONTINUE
+            XSOL(ILIG,JVEC)=XSOL(ILIG,JVEC)+ZR(JVALMS+KFIN)*VECTMP(ILIG)
+   50     CONTINUE
+          IF (PREPOS) CALL MRCONL('DIVI',LMAT,0,'R',XSOL(1,JVEC),1)
+   60   CONTINUE
+
+
+C     -- CAS D'UNE MATRICE DISTRIBUEE :
+C     ----------------------------------------
       ELSE
-      REFA = NOM19//'.REFA'
-      CALL JEVEUO(REFA,'L',JREFA)
-      NUMDDL = ZK24(JREFA+2-1)
-      CALL JEVEUO(NUMDDL//'.NUML.NULG','L',JNULG)
-      DO 60 JVEC = 1,NBVECT
-        NUMGLO = ZI(JNULG+1-1)
-        XSOL(NUMGLO,JVEC) = XSOL(NUMGLO,JVEC) + 
-     &                      ZR(JVALMS-1+1)*VECT(NUMGLO,JVEC)
-        DO 80 ILIG = 2,NEQL
-           ILIGG = ZI(JNULG+ILIG-1)
-           KDEB = SMDI(ILIG-1) + 1
-           KFIN = SMDI(ILIG) - 1
-CCDIR$ IVDEP
-           DO 70 KI = KDEB,KFIN
-             JCOL = SMHC(KI)
-             JCOLG = ZI(JNULG+JCOL-1)
-             XSOL(ILIGG,JVEC) = XSOL(ILIGG,JVEC) +
-     &                          ZR(JVALMI-1+KI)*VECT(JCOLG,JVEC)
-             XSOL(JCOLG,JVEC) = XSOL(JCOLG,JVEC) +
-     &                          ZR(JVALMS-1+KI)*VECT(ILIGG,JVEC)
-   70      CONTINUE
-           XSOL(ILIGG,JVEC) = XSOL(ILIGG,JVEC) +
-     &                        ZR(JVALMS+KFIN)*VECT(ILIGG,JVEC)
-   80   CONTINUE
-   60 CONTINUE
+        REFA=NOM19//'.REFA'
+        CALL JEVEUO(REFA,'L',JREFA)
+        NUMDDL=ZK24(JREFA+2-1)
+        CALL JEVEUO(NUMDDL//'.NUML.NULG','L',JNULG)
+        DO 100 JVEC=1,NBVECT
+          DO 70,K=1,NEQ
+            VECTMP(K)=VECT(K,JVEC)
+   70     CONTINUE
+          IF (PREPOS) CALL MRCONL('DIVI',LMAT,0,'R',VECTMP,1)
+          NUMGLO=ZI(JNULG+1-1)
+          XSOL(NUMGLO,JVEC)=XSOL(NUMGLO,JVEC)+
+     &                      ZR(JVALMS-1+1)*VECTMP(NUMGLO)
+          DO 90 ILIG=2,NEQL
+            ILIGG=ZI(JNULG+ILIG-1)
+            KDEB=SMDI(ILIG-1)+1
+            KFIN=SMDI(ILIG)-1
+C           CDIR$ IVDEP
+            DO 80 KI=KDEB,KFIN
+              JCOL=SMHC(KI)
+              JCOLG=ZI(JNULG+JCOL-1)
+              XSOL(ILIGG,JVEC)=XSOL(ILIGG,JVEC)+
+     &                         ZR(JVALMI-1+KI)*VECTMP(JCOLG)
+              XSOL(JCOLG,JVEC)=XSOL(JCOLG,JVEC)+
+     &                         ZR(JVALMS-1+KI)*VECTMP(ILIGG)
+   80       CONTINUE
+            XSOL(ILIGG,JVEC)=XSOL(ILIGG,JVEC)+
+     &                       ZR(JVALMS+KFIN)*VECTMP(ILIGG)
+   90     CONTINUE
+          IF (PREPOS) CALL MRCONL('DIVI',LMAT,0,'R',XSOL(1,JVEC),1)
+  100   CONTINUE
       ENDIF
+
+
+C     -- POUR LES DDLS ELIMINES PAR AFFE_CHAR_CINE, ON NE PEUT PAS
+C        CALCULER F=K*U. CES DDLS SONT MIS A ZERO.
+C     -------------------------------------------------------------
+      CALL JEEXIN(NOM19//'.CCID',IEXI)
+      IF (IEXI.NE.0) THEN
+        CALL JEVEUO(NOM19//'.CCID','L',JCCID)
+        DO 110 JVEC=1,NBVECT
+          DO 111, IEQ=1,NEQ
+             IF (LMATD) THEN
+               KETA=ZI(JCCID-1+ZI(JNULG+IEQ-1))
+             ELSE
+               KETA=ZI(JCCID-1+IEQ)
+             ENDIF
+             CALL ASSERT(KETA.EQ.1 .OR. KETA.EQ.0)
+             IF (KETA.EQ.1) XSOL(IEQ,JVEC)=0.D0
+111       CONTINUE
+110     CONTINUE
+      ENDIF
+
+
 
       CALL JEDEMA()
       END

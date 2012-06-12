@@ -1,5 +1,5 @@
 
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE CIRCULAIRE ENCASTREE SOUS PRESSION DSQ  169 N - 147 QUAD4
 # ssls100g.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -294,10 +294,8 @@ TEST_RESU(RESU=(_F(RESULTAT=DEP,
                    REFERENCE='ANALYTIQUE',),),);
 #--------------------------------------------------------------------
 
-DEP=CALC_ELEM(reuse =DEP,
-              RESULTAT=DEP,
-              NUME_ORDRE=1,
-              OPTION='EFGE_ELNO',);
+DEP=CALC_CHAMP(reuse=DEP,RESULTAT=DEP,NUME_ORDRE=1,CONTRAINTE=('EFGE_ELNO'))
+
 #--------------------------------------------------------------------
 
 RELEVE_1=POST_RELEVE_T(ACTION=_F(INTITULE='EFGE_R',

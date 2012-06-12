@@ -1,9 +1,9 @@
-#@ MODIF basetype Noyau  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF basetype Noyau  DATE 12/06/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -144,8 +144,6 @@ class BaseType(object):
         #XXX MC : avec ce code, j'ai l'impression qu'on supprime aussi
         # des attributs de classe, ce qui pose problème pour une
         # instanciation future...
-        # Dans une version précédente, on utilisait l'attribut
-        # sd_deleted pour ne faire qu'une fois, à voir.
         # Supprimer les références remontantes devrait suffir.
         #if delete:
             #while len(self._subtypes):

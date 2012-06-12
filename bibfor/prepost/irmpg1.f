@@ -4,9 +4,9 @@
      &                    RAUX1, RAUX2, RAUX3,
      &                    NOLOPG, CODRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 12/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -350,9 +350,9 @@ C
      &/,'*      POINTS DE GAUSS     *',
      &/,'*  NUMERO  *     POIDS     *',
      &/,28('*'))
-60011 FORMAT('* ',I5,'    *',G11.5,'    *')
-60012 FORMAT('* ',I5,2('    *',G11.5),'    *')
-60013 FORMAT('* ',I5,3('    *',G11.5),'    *')
+60011 FORMAT('* ',I5,'    *',1PG12.5,'    *')
+60012 FORMAT('* ',I5,2('    *',1PG12.5),'    *')
+60013 FORMAT('* ',I5,3('    *',1PG12.5),'    *')
 60021 FORMAT(28('*'))
 60022 FORMAT(44('*'))
 60023 FORMAT(60('*'))

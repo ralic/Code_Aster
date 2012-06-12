@@ -1,4 +1,4 @@
-#@ MODIF E_ETAPE Execution  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_ETAPE Execution  DATE 12/06/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -91,14 +91,10 @@ class ETAPE:
           self.codex.oper(self, self.jdc.jxveri)
           self.jdc.timer.Stop(' . part Fortran')
           self.jdc.timer.Start(' . part Superviseur')
-
-          # enregistrement des concepts sensibles en attente
-          self.jdc.memo_sensi.register_sensi()
+          for co in self.get_created_sd():
+             co.executed = 1
 
           if self.definition.op_init is None:
-             # marque le concept comme calculé
-             if self.sd:
-               self.sd.executed = 1
              # vérification de la SD produite
              if self.sd and self.jdc.sdveri:
                 # on force la vérif si :

@@ -1,4 +1,4 @@
-# MODIF  DATE 23/04/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 11/06/2012   AUTEUR DELMAS J.DELMAS 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECR. ISOT. COQUE3D)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -106,14 +106,14 @@ LIAISON=AFFE_CHAR_MECA(MODELE=MO,
                                        COEF_MULT=(0.75,1.,),
                                        COEF_IMPO=0.,),),);
 
-RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
-                          1.0,1.0,
-                          ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0.0,0.0,1.0,1.0,),
+                    PROL_DROITE='LINEAIRE',
+                    PROL_GAUCHE='LINEAIRE',);
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
                                     NOMBRE=1,),);
-
 # STAT_NON_LINE 'VMIS_ISOT_LINE'
 #-------------------------------
 
@@ -133,35 +133,51 @@ U=STAT_NON_LINE(MODELE=MO,
                           REAC_ITER=3,),
                 RECH_LINEAIRE=_F(RHO_MAX=150,),);
 
-U=CALC_CHAMP(reuse =U,
+U=CALC_CHAMP(reuse=U,
              RESULTAT=U,
-             CONTRAINTE=('SIGM_ELGA','SIGM_ELNO','EFGE_ELNO',),);
+             CONTRAINTE =('SIGM_ELGA','SIGM_ELNO','EFGE_ELNO'),
+             DEFORMATION='EPSI_ELNO',
+             VARI_INTERNE ='VARI_ELNO',);
 
-UPOS=POST_CHAMP(RESULTAT=U,
-                EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
+USUP=POST_CHAMP(RESULTAT=U,
+                EXTR_COQUE=_F(NOM_CHAM=('SIGM_ELNO','EPSI_ELNO','VARI_ELNO'),
                               NUME_COUCHE=1,
                               NIVE_COUCHE='SUP',),);
 
-U=CALC_ELEM(reuse =U,
-            RESULTAT=U,
-            TOUT_ORDRE='OUI',
-            REPE_COQUE=_F(NUME_COUCHE=1,
-                          NIVE_COUCHE='SUP',),
-            OPTION=('EPSI_ELNO','VARI_ELNO',),);
+UINF=POST_CHAMP(RESULTAT=U,
+                TOUT_ORDRE='OUI',
+                GROUP_MA='TOUT',
+                EXTR_COQUE=_F(NOM_CHAM='VARI_ELNO',
+                              NUME_COUCHE=1,
+                              NIVE_COUCHE='INF',),);
+UMOY=POST_CHAMP(RESULTAT=U,
+                TOUT_ORDRE='OUI',
+                GROUP_MA='TOUT',
+                EXTR_COQUE=_F(NOM_CHAM=('EPSI_ELNO','VARI_ELNO',),
+                              NUME_COUCHE=1,
+                              NIVE_COUCHE='MOY',),);
 
-UPOSLOC=MODI_REPERE(RESULTAT=UPOS,
-                    MODI_CHAM=_F(TYPE_CHAM='TENS_3D',
-                                 NOM_CHAM='SIGM_ELNO',
-                                 NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ',),),
-                    REPERE='COQUE',
-                    AFFE=_F(ANGL_REP=(90.0,-53.13,),),);
 
-SIGGAUS=MODI_REPERE(RESULTAT=U,
-                    MODI_CHAM=_F(TYPE_CHAM='TENS_3D',
-                                 NOM_CHAM='SIGM_ELGA',
-                                 NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ',),),
-                    REPERE='COQUE',
-                    AFFE=_F(ANGL_REP=(90.0,-53.13,),),);
+SIGMGAUS=MODI_REPERE(RESULTAT=U,
+                     MODI_CHAM=_F(TYPE_CHAM='TENS_3D',
+                                  NOM_CHAM='SIGM_ELGA',
+                                  NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ',),),
+                     REPERE='COQUE',
+                     AFFE=_F(ANGL_REP=(90.0,-53.13,),),);
+
+SIGM=MODI_REPERE(RESULTAT=USUP,
+                 MODI_CHAM=_F(TYPE_CHAM='TENS_3D',
+                              NOM_CHAM='SIGM_ELNO',
+                              NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ',),),
+                 REPERE='COQUE',
+                 AFFE=_F(ANGL_REP=(90.0,-53.13,),),);
+
+EPSI=MODI_REPERE(RESULTAT=USUP,
+                 MODI_CHAM=_F(TYPE_CHAM='TENS_3D',
+                              NOM_CHAM='EPSI_ELNO',
+                              NOM_CMP=('EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ',),),
+                 REPERE='COQUE',
+                 AFFE=_F(ANGL_REP=(90.0,-53.13,),),);
 
 EFGE=MODI_REPERE(RESULTAT=U,
                  MODI_CHAM=_F(TYPE_CHAM='COQUE_GENE',
@@ -170,146 +186,12 @@ EFGE=MODI_REPERE(RESULTAT=U,
                  REPERE='COQUE',
                  AFFE=_F(ANGL_REP=(90.0,-53.13,),),);
 
-EPSI=MODI_REPERE(RESULTAT=U,
-                 MODI_CHAM=_F(TYPE_CHAM='TENS_3D',
-                              NOM_CHAM='EPSI_ELNO',
-                              NOM_CMP=('EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ',),),
-                 REPERE='COQUE',
-                 AFFE=_F(ANGL_REP=(90.0,-53.13,),),);
-
 U=CALC_ELEM(reuse =U,
-            RESULTAT=UPOS,
+            RESULTAT=USUP,
             TOUT_ORDRE='OUI',
             REPE_COQUE=_F(NUME_COUCHE=1,
                           NIVE_COUCHE='SUP',),
             OPTION='SIEQ_ELNO',);
-
-U1=POST_CHAMP(RESULTAT=U,
-              TOUT_ORDRE='OUI',
-              GROUP_MA='TOUT',
-              EXTR_COQUE=_F(NOM_CHAM='VARI_ELNO',
-                            NUME_COUCHE=1,
-                            NIVE_COUCHE='INF',),);
-
-U2=POST_CHAMP(RESULTAT=U,
-              TOUT_ORDRE='OUI',
-              GROUP_MA='TOUT',
-              EXTR_COQUE=_F(NOM_CHAM='VARI_ELNO',
-                            NUME_COUCHE=1,
-                            NIVE_COUCHE='MOY',),);
-
-U3=POST_CHAMP(RESULTAT=U,
-              TOUT_ORDRE='OUI',
-              GROUP_MA='TOUT',
-              EXTR_COQUE=_F(NOM_CHAM='VARI_ELNO',
-                            NUME_COUCHE=1,
-                            NIVE_COUCHE='SUP',),);
-
-TEST_RESU(RESU=(_F(
-                   RESULTAT = UPOSLOC,  NOM_CHAM = 'SIGM_ELNO',
-                   MAILLE = 'MA1',  NOEUD = 'NO1',
-                   INST = 1.,     NOM_CMP = 'SIXX',
-                   VALE = 1.512E+02,      PRECISION = 1.E-02),
-                  _F(
-                   RESULTAT = UPOSLOC,   NOM_CHAM = 'SIGM_ELNO',
-                   MAILLE = 'MA1',   NOEUD = 'NO1',
-                   INST = 1.,      NOM_CMP = 'SIXY',
-                   VALE = 0.931E+02,      PRECISION = 1.E-02),
-                  _F(
-                   RESULTAT = UPOSLOC,   NOM_CHAM = 'SIGM_ELNO',
-                   MAILLE = 'MA1',   NOEUD = 'NO3',
-                   INST = 1.,      NOM_CMP = 'SIXX',
-                   VALE = 1.512E+02,      PRECISION = 1.E-02),
-                  _F(
-                   RESULTAT = UPOSLOC,   NOM_CHAM = 'SIGM_ELNO',
-                   MAILLE = 'MA1',  NOEUD = 'NO3',
-                   INST = 1.,      NOM_CMP = 'SIXY',
-                   VALE = 0.931E+02,      PRECISION = 1.E-02),
-                  _F(
-                   RESULTAT = UPOSLOC,   NOM_CHAM = 'SIGM_ELNO',
-                   MAILLE = 'MA2',   NOEUD = 'NO3',
-                   INST = 1.,      NOM_CMP = 'SIXX',
-                   VALE = 1.512E+02,      PRECISION = 1.E-02),
-                  _F(
-                   RESULTAT = UPOSLOC,   NOM_CHAM = 'SIGM_ELNO',
-                   MAILLE = 'MA2',   NOEUD = 'NO3',
-                   INST = 1.,      NOM_CMP = 'SIXY',
-                   VALE = 0.931E+02,      PRECISION = 1.E-02),
-                  _F(
-                   RESULTAT = UPOSLOC,   NOM_CHAM = 'SIGM_ELNO',
-                   MAILLE = 'MA3',   NOEUD = 'NO2',
-                   INST = 1.,      NOM_CMP = 'SIXX',
-                   VALE = 1.512E+02,      PRECISION = 1.E-02),
-                  _F(
-                   RESULTAT = UPOSLOC,   NOM_CHAM = 'SIGM_ELNO',
-                   MAILLE = 'MA3',   NOEUD = 'NO2',
-                   INST = 1.,      NOM_CMP = 'SIXY',
-                   VALE = 0.931E+02,      PRECISION = 1.E-02),
-                  _F(
-                   RESULTAT = UPOSLOC,   NOM_CHAM = 'SIGM_ELNO',
-                   MAILLE = 'MA3',   NOEUD = 'NO4',
-                   INST = 1.,      NOM_CMP = 'SIXX',
-                   VALE = 1.512E+02,      PRECISION = 1.E-02),
-                  _F(
-                   RESULTAT = UPOSLOC,   NOM_CHAM = 'SIGM_ELNO',
-                   MAILLE = 'MA3',   NOEUD = 'NO4',
-                   INST = 1.,      NOM_CMP = 'SIXY',
-                   VALE = 0.931E+02,      PRECISION = 1.E-02))
-            )
-
-TEST_RESU(RESU=(_F(
-                   RESULTAT = U,  NOM_CHAM = 'VARI_ELNO',
-                   MAILLE = 'MA1',  NOEUD = 'NO14',
-                   INST = 1.,
-                   NOM_CMP = 'V1', SOUS_POINT=1,
-                   VALE = 2.055E-02,      PRECISION = 1.E-02),
-                 _F(
-                   RESULTAT = U,  NOM_CHAM = 'VARI_ELNO',
-                   MAILLE = 'MA2',  NOEUD = 'NO13',
-                   INST = 1.,
-                   NOM_CMP = 'V1', SOUS_POINT=1,
-                   VALE = 2.055E-02,      PRECISION = 1.E-02),
-                 _F(
-                   RESULTAT = U,  NOM_CHAM = 'VARI_ELNO',
-                   MAILLE = 'MA3',  NOEUD = 'NO17',
-                   INST = 1.,
-                   NOM_CMP = 'V1', SOUS_POINT=1,
-                   VALE = 2.055E-02,      PRECISION = 1.E-02))
-            )
-
-
-TEST_RESU(RESU=(
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO',  INST = 1.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V1',         VALE = 2.05473E-02),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO',  INST = 1.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V1',         VALE = 2.05473E-02),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO',  INST = 1.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V2',         VALE = 1.00000E+00),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO',  INST = 1.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V2',         VALE = 1.00000E+00),
-             ),)
-
-TEST_RESU(RESU=(
-            _F(  RESULTAT = U2,  NOM_CHAM = 'VARI_ELNO',  INST = 1.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V1',         VALE = 2.05473E-02),
-            _F(  RESULTAT = U2,  NOM_CHAM = 'VARI_ELNO',  INST = 1.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V1',         VALE = 2.05473E-02),
-            _F(  RESULTAT = U2,  NOM_CHAM = 'VARI_ELNO',  INST = 1.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V2',         VALE = 1.00000E+00),
-            _F(  RESULTAT = U2,  NOM_CHAM = 'VARI_ELNO',  INST = 1.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V2',         VALE = 1.00000E+00),
-             ),)
-
-TEST_RESU(RESU=(
-            _F(  RESULTAT = U3,  NOM_CHAM = 'VARI_ELNO',  INST = 1.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V1',         VALE = 2.05473E-02),
-            _F(  RESULTAT = U3,  NOM_CHAM = 'VARI_ELNO',  INST = 1.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V1',         VALE = 2.05473E-02),
-            _F(  RESULTAT = U3,  NOM_CHAM = 'VARI_ELNO',  INST = 1.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V2',         VALE = 1.00000E+00),
-            _F(  RESULTAT = U3,  NOM_CHAM = 'VARI_ELNO',  INST = 1.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V2',         VALE = 1.00000E+00),
-             ),)
 
 TEST_RESU(RESU=(_F(
                    RESULTAT = U,  NOM_CHAM = 'DEPL',  NOEUD = 'NO1',
@@ -338,55 +220,55 @@ TEST_RESU(RESU=(_F(
              )
 
 TEST_RESU(RESU=(_F(
-                   RESULTAT = EFGE,  NOM_CHAM = 'EFGE_ELNO',
+                   RESULTAT = SIGM,  NOM_CHAM = 'SIGM_ELNO',
                    MAILLE = 'MA1',  NOEUD = 'NO1',
-                   INST = 1.,     NOM_CMP = 'NXX',
-                   VALE = 3.024E+02,      PRECISION = 1.E-02),
+                   INST = 1.,     NOM_CMP = 'SIXX',
+                   VALE = 1.512E+02,      PRECISION = 1.E-02),
                   _F(
-                   RESULTAT = EFGE,   NOM_CHAM = 'EFGE_ELNO',
+                   RESULTAT = SIGM,   NOM_CHAM = 'SIGM_ELNO',
                    MAILLE = 'MA1',   NOEUD = 'NO1',
-                   INST = 1.,      NOM_CMP = 'NXY',
-                   VALE = 1.862E+02,      PRECISION = 1.E-02),
+                   INST = 1.,      NOM_CMP = 'SIXY',
+                   VALE = 0.931E+02,      PRECISION = 1.E-02),
                   _F(
-                   RESULTAT = EFGE,   NOM_CHAM = 'EFGE_ELNO',
+                   RESULTAT = SIGM,   NOM_CHAM = 'SIGM_ELNO',
                    MAILLE = 'MA1',   NOEUD = 'NO3',
-                   INST = 1.,      NOM_CMP = 'NXX',
-                   VALE = 3.024E+02,      PRECISION = 1.E-02),
+                   INST = 1.,      NOM_CMP = 'SIXX',
+                   VALE = 1.512E+02,      PRECISION = 1.E-02),
                   _F(
-                   RESULTAT = EFGE,   NOM_CHAM = 'EFGE_ELNO',
+                   RESULTAT = SIGM,   NOM_CHAM = 'SIGM_ELNO',
                    MAILLE = 'MA1',  NOEUD = 'NO3',
-                   INST = 1.,      NOM_CMP = 'NXY',
-                   VALE = 1.862E+02,      PRECISION = 1.E-02),
+                   INST = 1.,      NOM_CMP = 'SIXY',
+                   VALE = 0.931E+02,      PRECISION = 1.E-02),
                   _F(
-                   RESULTAT = EFGE,   NOM_CHAM = 'EFGE_ELNO',
+                   RESULTAT = SIGM,   NOM_CHAM = 'SIGM_ELNO',
                    MAILLE = 'MA2',   NOEUD = 'NO3',
-                   INST = 1.,      NOM_CMP = 'NXX',
-                   VALE = 3.024E+02,      PRECISION = 1.E-02),
+                   INST = 1.,      NOM_CMP = 'SIXX',
+                   VALE = 1.512E+02,      PRECISION = 1.E-02),
                   _F(
-                   RESULTAT = EFGE,   NOM_CHAM = 'EFGE_ELNO',
+                   RESULTAT = SIGM,   NOM_CHAM = 'SIGM_ELNO',
                    MAILLE = 'MA2',   NOEUD = 'NO3',
-                   INST = 1.,      NOM_CMP = 'NXY',
-                   VALE = 1.862E+02,      PRECISION = 1.E-02),
+                   INST = 1.,      NOM_CMP = 'SIXY',
+                   VALE = 0.931E+02,      PRECISION = 1.E-02),
                   _F(
-                   RESULTAT = EFGE,   NOM_CHAM = 'EFGE_ELNO',
+                   RESULTAT = SIGM,   NOM_CHAM = 'SIGM_ELNO',
                    MAILLE = 'MA3',   NOEUD = 'NO2',
-                   INST = 1.,      NOM_CMP = 'NXX',
-                   VALE = 3.024E+02,      PRECISION = 1.E-02),
+                   INST = 1.,      NOM_CMP = 'SIXX',
+                   VALE = 1.512E+02,      PRECISION = 1.E-02),
                   _F(
-                   RESULTAT = EFGE,   NOM_CHAM = 'EFGE_ELNO',
+                   RESULTAT = SIGM,   NOM_CHAM = 'SIGM_ELNO',
                    MAILLE = 'MA3',   NOEUD = 'NO2',
-                   INST = 1.,      NOM_CMP = 'NXY',
-                   VALE = 1.862E+02,      PRECISION = 1.E-02),
+                   INST = 1.,      NOM_CMP = 'SIXY',
+                   VALE = 0.931E+02,      PRECISION = 1.E-02),
                   _F(
-                   RESULTAT = EFGE,   NOM_CHAM = 'EFGE_ELNO',
+                   RESULTAT = SIGM,   NOM_CHAM = 'SIGM_ELNO',
                    MAILLE = 'MA3',   NOEUD = 'NO4',
-                   INST = 1.,      NOM_CMP = 'NXX',
-                   VALE = 3.024E+02,      PRECISION = 1.E-02),
+                   INST = 1.,      NOM_CMP = 'SIXX',
+                   VALE = 1.512E+02,      PRECISION = 1.E-02),
                   _F(
-                   RESULTAT = EFGE,   NOM_CHAM = 'EFGE_ELNO',
+                   RESULTAT = SIGM,   NOM_CHAM = 'SIGM_ELNO',
                    MAILLE = 'MA3',   NOEUD = 'NO4',
-                   INST = 1.,      NOM_CMP = 'NXY',
-                   VALE = 1.862E+02,      PRECISION = 1.E-02))
+                   INST = 1.,      NOM_CMP = 'SIXY',
+                   VALE = 0.931E+02,      PRECISION = 1.E-02))
             )
 
 
@@ -468,6 +350,115 @@ TEST_RESU(RESU=(_F(
             )
 
 TEST_RESU(RESU=(_F(
+                   RESULTAT = EFGE,  NOM_CHAM = 'EFGE_ELNO',
+                   MAILLE = 'MA1',  NOEUD = 'NO1',
+                   INST = 1.,     NOM_CMP = 'NXX',
+                   VALE = 3.024E+02,      PRECISION = 1.E-02),
+                  _F(
+                   RESULTAT = EFGE,   NOM_CHAM = 'EFGE_ELNO',
+                   MAILLE = 'MA1',   NOEUD = 'NO1',
+                   INST = 1.,      NOM_CMP = 'NXY',
+                   VALE = 1.862E+02,      PRECISION = 1.E-02),
+                  _F(
+                   RESULTAT = EFGE,   NOM_CHAM = 'EFGE_ELNO',
+                   MAILLE = 'MA1',   NOEUD = 'NO3',
+                   INST = 1.,      NOM_CMP = 'NXX',
+                   VALE = 3.024E+02,      PRECISION = 1.E-02),
+                  _F(
+                   RESULTAT = EFGE,   NOM_CHAM = 'EFGE_ELNO',
+                   MAILLE = 'MA1',  NOEUD = 'NO3',
+                   INST = 1.,      NOM_CMP = 'NXY',
+                   VALE = 1.862E+02,      PRECISION = 1.E-02),
+                  _F(
+                   RESULTAT = EFGE,   NOM_CHAM = 'EFGE_ELNO',
+                   MAILLE = 'MA2',   NOEUD = 'NO3',
+                   INST = 1.,      NOM_CMP = 'NXX',
+                   VALE = 3.024E+02,      PRECISION = 1.E-02),
+                  _F(
+                   RESULTAT = EFGE,   NOM_CHAM = 'EFGE_ELNO',
+                   MAILLE = 'MA2',   NOEUD = 'NO3',
+                   INST = 1.,      NOM_CMP = 'NXY',
+                   VALE = 1.862E+02,      PRECISION = 1.E-02),
+                  _F(
+                   RESULTAT = EFGE,   NOM_CHAM = 'EFGE_ELNO',
+                   MAILLE = 'MA3',   NOEUD = 'NO2',
+                   INST = 1.,      NOM_CMP = 'NXX',
+                   VALE = 3.024E+02,      PRECISION = 1.E-02),
+                  _F(
+                   RESULTAT = EFGE,   NOM_CHAM = 'EFGE_ELNO',
+                   MAILLE = 'MA3',   NOEUD = 'NO2',
+                   INST = 1.,      NOM_CMP = 'NXY',
+                   VALE = 1.862E+02,      PRECISION = 1.E-02),
+                  _F(
+                   RESULTAT = EFGE,   NOM_CHAM = 'EFGE_ELNO',
+                   MAILLE = 'MA3',   NOEUD = 'NO4',
+                   INST = 1.,      NOM_CMP = 'NXX',
+                   VALE = 3.024E+02,      PRECISION = 1.E-02),
+                  _F(
+                   RESULTAT = EFGE,   NOM_CHAM = 'EFGE_ELNO',
+                   MAILLE = 'MA3',   NOEUD = 'NO4',
+                   INST = 1.,      NOM_CMP = 'NXY',
+                   VALE = 1.862E+02,      PRECISION = 1.E-02))
+            )
+
+TEST_RESU(RESU=(_F(
+                   RESULTAT = U,  NOM_CHAM = 'VARI_ELNO',
+                   MAILLE = 'MA1',  NOEUD = 'NO14',
+                   INST = 1.,
+                   NOM_CMP = 'V1', SOUS_POINT=1,
+                   VALE = 2.055E-02,      PRECISION = 1.E-02),
+                 _F(
+                   RESULTAT = U,  NOM_CHAM = 'VARI_ELNO',
+                   MAILLE = 'MA2',  NOEUD = 'NO13',
+                   INST = 1.,
+                   NOM_CMP = 'V1', SOUS_POINT=1,
+                   VALE = 2.055E-02,      PRECISION = 1.E-02),
+                 _F(
+                   RESULTAT = U,  NOM_CHAM = 'VARI_ELNO',
+                   MAILLE = 'MA3',  NOEUD = 'NO17',
+                   INST = 1.,
+                   NOM_CMP = 'V1', SOUS_POINT=1,
+                   VALE = 2.055E-02,      PRECISION = 1.E-02))
+            )
+
+
+TEST_RESU(RESU=(
+            _F(  RESULTAT = UINF,  NOM_CHAM = 'VARI_ELNO',  INST = 1.,   TYPE_TEST='MIN',
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V1',         VALE = 2.05473E-02),
+            _F(  RESULTAT = UINF,  NOM_CHAM = 'VARI_ELNO',  INST = 1.,   TYPE_TEST='MAX',
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V1',         VALE = 2.05473E-02),
+            _F(  RESULTAT = UINF,  NOM_CHAM = 'VARI_ELNO',  INST = 1.,   TYPE_TEST='MIN',
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V2',         VALE = 1.00000E+00),
+            _F(  RESULTAT = UINF,  NOM_CHAM = 'VARI_ELNO',  INST = 1.,   TYPE_TEST='MAX',
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V2',         VALE = 1.00000E+00),
+             ),)
+
+TEST_RESU(RESU=(
+            _F(  RESULTAT = UMOY,  NOM_CHAM = 'VARI_ELNO',  INST = 1.,   TYPE_TEST='MIN',
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V1',         VALE = 2.05473E-02),
+            _F(  RESULTAT = UMOY,  NOM_CHAM = 'VARI_ELNO',  INST = 1.,   TYPE_TEST='MAX',
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V1',         VALE = 2.05473E-02),
+            _F(  RESULTAT = UMOY,  NOM_CHAM = 'VARI_ELNO',  INST = 1.,   TYPE_TEST='MIN',
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V2',         VALE = 1.00000E+00),
+            _F(  RESULTAT = UMOY,  NOM_CHAM = 'VARI_ELNO',  INST = 1.,   TYPE_TEST='MAX',
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V2',         VALE = 1.00000E+00),
+             ),)
+
+TEST_RESU(RESU=(
+            _F(  RESULTAT = USUP,  NOM_CHAM = 'VARI_ELNO',  INST = 1.,   TYPE_TEST='MIN',
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V1',         VALE = 2.05473E-02),
+            _F(  RESULTAT = USUP,  NOM_CHAM = 'VARI_ELNO',  INST = 1.,   TYPE_TEST='MAX',
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V1',         VALE = 2.05473E-02),
+            _F(  RESULTAT = USUP,  NOM_CHAM = 'VARI_ELNO',  INST = 1.,   TYPE_TEST='MIN',
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V2',         VALE = 1.00000E+00),
+            _F(  RESULTAT = USUP,  NOM_CHAM = 'VARI_ELNO',  INST = 1.,   TYPE_TEST='MAX',
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V2',         VALE = 1.00000E+00),
+             ),)
+
+
+
+
+TEST_RESU(RESU=(_F(
                    RESULTAT = U,  NOM_CHAM = 'SIEQ_ELNO',REFERENCE='AUTRE_ASTER',
                    MAILLE = 'MA1',  NOEUD = 'NO1',
                    INST = 1.,     NOM_CMP = 'VMIS',
@@ -486,12 +477,12 @@ TEST_RESU(RESU=(_F(
 
 
 TEST_RESU(RESU=(_F(
-                   RESULTAT = SIGGAUS,  NOM_CHAM = 'SIGM_ELGA',
+                   RESULTAT = SIGMGAUS,  NOM_CHAM = 'SIGM_ELGA',
                    MAILLE = 'MA3',  POINT = 2,SOUS_POINT=3,
                    INST = 1.,     NOM_CMP = 'SIXX',
                    VALE = 1.512E+02,      PRECISION = 1.E-02),
                   _F(
-                   RESULTAT = SIGGAUS,  NOM_CHAM = 'SIGM_ELGA',
+                   RESULTAT = SIGMGAUS,  NOM_CHAM = 'SIGM_ELGA',
                    MAILLE = 'MA3',  POINT = 2,SOUS_POINT=3,
                    INST = 1.,     NOM_CMP = 'SIXY',
                    VALE = 0.931E+02,      PRECISION = 1.E-02))

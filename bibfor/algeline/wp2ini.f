@@ -1,6 +1,6 @@
       SUBROUTINE WP2INI(APPR,LMASSE,LAMOR,LRAIDE,LMATRA,LMTPSC,SIGMA,
-     +                  XH,XB,OPTIOF,PRORTO,NBORTO,NBVECT,NEQ,LBLOQ,
-     +                  LDDL,ALPHA,BETA,SIGNE,YH,YB,SOLVEU)
+     &                  XH,XB,OPTIOF,PRORTO,NBORTO,NBVECT,NEQ,LBLOQ,
+     &                  LDDL,ALPHA,BETA,SIGNE,YH,YB,SOLVEU)
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*1       APPR
       INTEGER           LMASSE,LAMOR,LRAIDE,LMATRA,LMTPSC
@@ -13,22 +13,22 @@
       CHARACTER*19      SOLVEU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_21
 C     GENERATION DES VECTEURS DE LANCZOS ET DE LA TRIADIAGONALE
@@ -153,8 +153,8 @@ C     1 - GENERATION DU PREMIER VECTEUR
 C
 C     --- 1.1. DIRECTION
       CALL WP2AYL(APPR,LMATRA,LMASSE,LAMOR,SIGMA,LBLOQ,XH,XB,
-     +            YH(1,1),YB(1,1),
-     +            ZR(AU1),ZR(AU2),ZR(AU3),ZR(AU4),ZC(AV),NEQ,SOLVEU)
+     &            YH(1,1),YB(1,1),
+     &            ZR(AU1),ZR(AU2),ZR(AU3),ZR(AU4),ZC(AV),NEQ,SOLVEU)
 C
       DO 100 I = 1, NEQ
          ZR(ABAYH + I-1) = -ZR(AU1 + I-1) - ZR(AU2 + I-1)
@@ -184,14 +184,14 @@ C
  120  CONTINUE
 C
 C     --- 1.3. COEFFICIENT DE LA TRIDIAGONALE
-      CALL MRMULT('ZERO',LAMOR,YH(1,1),'R',ZR(AU1),1)
-      CALL MRMULT('ZERO',LMASSE,YB(1,1),'R',ZR(AU2),1)
-      CALL MRMULT('ZERO',LMASSE,YH(1,1),'R',ZR(AU3),1)
+      CALL MRMULT('ZERO',LAMOR,YH(1,1),ZR(AU1),1,.FALSE.)
+      CALL MRMULT('ZERO',LMASSE,YB(1,1),ZR(AU2),1,.FALSE.)
+      CALL MRMULT('ZERO',LMASSE,YH(1,1),ZR(AU3),1,.FALSE.)
 C
       A = 0.D0
       DO 130 I = 1, NEQ
          A = A - YH(I,1)*(ZR(AU1 + I-1) + ZR(AU2 + I-1))
-     +         - YB(I,1)* ZR(AU3 + I-1)
+     &         - YB(I,1)* ZR(AU3 + I-1)
  130  CONTINUE
       ALPHA(1) = A
       BETA(1)  = 0.D0
@@ -201,9 +201,9 @@ C     2  -  GENERATION DES VECTEURS 2, 3, .. , NBVECT
 C
 C        --- 2.1. DIRECTION
          CALL WP2AYL(APPR,LMATRA,LMASSE,LAMOR,SIGMA,LBLOQ,
-     +               YH(1,J-1),YB(1,J-1),
-     +               YH(1,J),YB(1,J),
-     +               ZR(AU1),ZR(AU2),ZR(AU3),ZR(AU4),ZC(AV),NEQ,SOLVEU)
+     &               YH(1,J-1),YB(1,J-1),
+     &               YH(1,J),YB(1,J),
+     &               ZR(AU1),ZR(AU2),ZR(AU3),ZR(AU4),ZC(AV),NEQ,SOLVEU)
 C
          DO 210 I = 1, NEQ
             ZR(ABAYH + I-1) = -ZR(AU1 + I-1) - ZR(AU2 + I-1)
@@ -213,7 +213,7 @@ C
          A = 0.D0
          DO 215 IPS = 1, NEQ
             A = A + ZR(ABAYH+IPS-1)*YH(IPS,J-1)
-     +            + ZR(ABAYB+IPS-1)*YB(IPS,J-1)
+     &            + ZR(ABAYB+IPS-1)*YB(IPS,J-1)
   215   CONTINUE
 C
          D1 = SIGNE(J-1)
@@ -228,7 +228,7 @@ C
             B = 0.D0
             DO 225 IPS = 1, NEQ
                B = B + ZR(ABAYH+IPS-1)*YH(IPS,J-2)
-     +               + ZR(ABAYB+IPS-1)*YB(IPS,J-2)
+     &               + ZR(ABAYB+IPS-1)*YB(IPS,J-2)
   225      CONTINUE
             D2 = SIGNE(J-2)
             B  = D2*B
@@ -243,17 +243,17 @@ C        --- 2.2. NORMALISATION
          ABYB = ZI(APTBYB + J-1)
          IF ( APPR .EQ. 'R' ) THEN
             CALL WP2BRY(LMTPSC,LMASSE,LAMOR,LRAIDE,SR,SI2,
-     +                  YH(1,J),YB(1,J),ZR(ABYH),ZR(ABYB),
-     +                  ZR(AU1),ZR(AU2),ZR(AU3),ZR(AU4),NEQ,SOLVEU)
+     &                  YH(1,J),YB(1,J),ZR(ABYH),ZR(ABYB),
+     &                  ZR(AU1),ZR(AU2),ZR(AU3),ZR(AU4),NEQ,SOLVEU)
          ELSE
             CALL WP2BIY(LMASSE,LAMOR,LRAIDE,MODS2,DEUXSR,INVSI,
-     +                  YH(1,J),YB(1,J),ZR(ABYH),ZR(ABYB),LBLOQ,
-     +                  ZR(AU1),ZR(AU2),ZR(AU3),ZR(AU4),NEQ)
+     &                  YH(1,J),YB(1,J),ZR(ABYH),ZR(ABYB),LBLOQ,
+     &                  ZR(AU1),ZR(AU2),ZR(AU3),ZR(AU4),NEQ)
          ENDIF
          C = 0.D0
          DO 235 IPS = 1, NEQ
             C = C + ZR(ABYH+IPS-1)*YH(IPS,J)
-     +            + ZR(ABYB+IPS-1)*YB(IPS,J)
+     &            + ZR(ABYB+IPS-1)*YB(IPS,J)
   235   CONTINUE
 C
          A = 1.D0/SQRT(ABS(C))
@@ -279,7 +279,7 @@ C        --- 2.3. REORTHOGONALISTION
             A = 0.D0
             DO 310 IPS = 1, NEQ
                A = A + ZR(ABYH+IPS-1)*YH(IPS,J)
-     +               + ZR(ABYB+IPS-1)*YB(IPS,J)
+     &               + ZR(ABYB+IPS-1)*YB(IPS,J)
   310      CONTINUE
             OC =  ( ABS(A) .LT. PRORTO )
             RO =  (.NOT. OC) .OR. RO
@@ -295,7 +295,7 @@ C
                B = 0.D0
                DO 320 IPS = 1, NEQ
                   B = B + ZR(ABYH+IPS-1)*YH(IPS,J)
-     +                  + ZR(ABYB+IPS-1)*YB(IPS,J)
+     &                  + ZR(ABYB+IPS-1)*YB(IPS,J)
   320         CONTINUE
                IF ( ABS(B) .GT. ABS(A) ) THEN
                   VALI (1) = IO
@@ -320,17 +320,17 @@ C        --- 2.4. REACTUALISATION
             ABYB = ZI(APTBYB + J-1)
             IF ( APPR .EQ. 'R' ) THEN
                CALL WP2BRY(LMTPSC,LMASSE,LAMOR,LRAIDE,SR,SI2,
-     +                     YH(1,J),YB(1,J),ZR(ABYH),ZR(ABYB),
-     +                     ZR(AU1),ZR(AU2),ZR(AU3),ZR(AU4),NEQ,SOLVEU)
+     &                     YH(1,J),YB(1,J),ZR(ABYH),ZR(ABYB),
+     &                     ZR(AU1),ZR(AU2),ZR(AU3),ZR(AU4),NEQ,SOLVEU)
             ELSE
                CALL WP2BIY(LMASSE,LAMOR,LRAIDE,MODS2,DEUXSR,INVSI,
-     +                     YH(1,J),YB(1,J),ZR(ABYH),ZR(ABYB),LBLOQ,
-     +                     ZR(AU1),ZR(AU2),ZR(AU3),ZR(AU4),NEQ)
+     &                     YH(1,J),YB(1,J),ZR(ABYH),ZR(ABYB),LBLOQ,
+     &                     ZR(AU1),ZR(AU2),ZR(AU3),ZR(AU4),NEQ)
             ENDIF
             C = 0.D0
             DO 350 IPS = 1, NEQ
                C = C + ZR(ABYH+IPS-1)*YH(IPS,J)
-     +               + ZR(ABYB+IPS-1)*YB(IPS,J)
+     &               + ZR(ABYB+IPS-1)*YB(IPS,J)
   350      CONTINUE
             A = 1.D0/SQRT(ABS(C))
             IF ( C .GT. 0.D0 ) THEN
@@ -349,17 +349,17 @@ C
          ENDIF
 C
 C        --- 2.5. COEFFICIENTS DE LA TRIDIAGONALE
-         CALL MRMULT('ZERO',LAMOR,YH(1,J),'R',ZR(AU1),1)
-         CALL MRMULT('ZERO',LMASSE,YB(1,J),'R',ZR(AU2),1)
-         CALL MRMULT('ZERO',LMASSE,YH(1,J),'R',ZR(AU3),1)
+         CALL MRMULT('ZERO',LAMOR,YH(1,J),ZR(AU1),1,.FALSE.)
+         CALL MRMULT('ZERO',LMASSE,YB(1,J),ZR(AU2),1,.FALSE.)
+         CALL MRMULT('ZERO',LMASSE,YH(1,J),ZR(AU3),1,.FALSE.)
 C
          A = 0.D0
          B = 0.D0
          DO 500, I = 1, NEQ, 1
             A = A - YH(I,J)*(ZR(AU1+ I-1) + ZR(AU2 + I-1))
-     +            - YB(I,J)* ZR(AU3 + I-1)
+     &            - YB(I,J)* ZR(AU3 + I-1)
             B = B - YH(I,J-1)*(ZR(AU1 + I-1) + ZR(AU2 + I-1))
-     +            - YB(I,J-1)* ZR(AU3 + I-1)
+     &            - YB(I,J-1)* ZR(AU3 + I-1)
   500    CONTINUE
          ALPHA(J) = A
          BETA (J) = B

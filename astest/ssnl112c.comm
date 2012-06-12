@@ -1,4 +1,4 @@
-# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE THERMOPLASTICITE SUR UNE BARRE (PINTO)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -183,10 +183,8 @@ U=STAT_NON_LINE(
                 ITER_LINE_MAXI = 8)
               )
 
-CALC_ELEM( reuse=U,
-                            OPTION='SIEF_ELNO',
-                          RESULTAT=U,
-              )
+CALC_CHAMP(reuse=U,CONTRAINTE=('SIEF_ELNO'),RESULTAT=U)
+
 
 #
 

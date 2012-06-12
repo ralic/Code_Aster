@@ -1,24 +1,24 @@
 
-# MODIF  DATE 02/04/2012   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE COMPORTEMENTS ELASTOVISCOPLASTIQUES MONOCRISTALLINS
 # RESPONSABLE JMBHH01 J.M.PROIX
 # ssnv172a.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='SSNV172A',
@@ -153,7 +153,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=145200.0,
                                   GM=0.0,
                                   PM=0.0,
                                   C=0.0,),);
-                                  
+
 # TEST INFORMATIQUE DU MATERIAU ORTHOTROPE
 # IDENTIQUE EN FAIT AU PRECEDENT
 
@@ -171,7 +171,7 @@ ACIERORT=DEFI_MATERIAU(
                                 ALPHA_L = 0.,
                                 ALPHA_N = 0.,
                                  ALPHA_T = 0.),
-                            
+
                     MONO_VISC1=_F(N=10.0,
                                   K=40.0,
                                   C=10.0,),
@@ -182,10 +182,10 @@ ACIERORT=DEFI_MATERIAU(
                                   H=0.0,),
 
                     MONO_CINE1=_F(D=36.68,),
-                    
+
                                   );
-                                  
-                                                                    
+
+
 # MATERIAU DEFINI POUR LE COMPORTEMENT  DD_KR
 
 ACIERKR=DEFI_MATERIAU(ELAS=_F(E=275200.,
@@ -205,7 +205,7 @@ ACIERKR=DEFI_MATERIAU(ELAS=_F(E=275200.,
                                    H2      = 0.25,
                                    H3      = 0.25,
                                    H4      = 0.25,
-                                  ),        
+                                  ),
                     );
 
 ACIERT2=DEFI_MATERIAU(ELAS=_F(E=145200.0,
@@ -234,7 +234,7 @@ TEMP=273.5
 
 TEMPE=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
                MAILLAGE=CUBE,
-                   AFFE=_F( 
+                   AFFE=_F(
                TOUT = 'OUI',
                NOM_CMP = 'TEMP',
                VALE= 0.)
@@ -248,8 +248,8 @@ MAT=AFFE_MATERIAU(MAILLAGE=CUBE,
                                      VALE_REF=0),),
                   AFFE=_F(TOUT='OUI',
                           MATER=ACIER,),);
-                          
-                          
+
+
 MATKR=AFFE_MATERIAU(MAILLAGE=CUBE,
                         AFFE_VARC=(_F(TOUT='OUI',
                                      CHAMP_GD=TEMPE,
@@ -257,17 +257,17 @@ MATKR=AFFE_MATERIAU(MAILLAGE=CUBE,
                                      VALE_REF=0),),
                   AFFE=_F(TOUT='OUI',
                           MATER=ACIERKR,),);
-                          
+
 
 MATORTH=AFFE_MATERIAU(MAILLAGE=CUBE,
                   AFFE=_F(TOUT='OUI',
                           MATER=ACIERORT,),);
-                          
-                          
+
+
 MATT2=AFFE_MATERIAU(MAILLAGE=CUBE,
                   AFFE=_F(TOUT='OUI',MATER=ACIERT2,),);
-                          
-                          
+
+
 
 COMPOR1=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER,
                                     ECOULEMENT='MONO_VISC1',
@@ -282,7 +282,7 @@ COMPOR2=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER,
                                     ECRO_CINE='MONO_CINE2',
                                     ELAS='ELAS',
                                     FAMI_SYST_GLIS='UNIAXIAL',),),);
-                          
+
 
 COMPT2=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIERT2,
                                     ECOULEMENT='MONO_VISC2',
@@ -299,7 +299,7 @@ COMPORTH=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIERORT,
                                     ELAS='ELAS_ORTH',
                                     FAMI_SYST_GLIS='UNIAXIAL',),),);
 
-                    
+
 # ORIENTATION QUELCONQUE (PAS DE VALEUR DE REFERENCE)
 ORIEN=AFFE_CARA_ELEM(MODELE=TROISD,
                      MASSIF=_F(GROUP_MA='TOUT',
@@ -313,8 +313,8 @@ COMPORKR=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIERKR,
                                     FAMI_SYST_GLIS='BCC24',),),);
 
 COMPORP=DEFI_COMPOR(POLYCRISTAL=(
-                        _F(MONOCRISTAL=COMPORKR,FRAC_VOL=1,ANGL_EULER=(0.,0.,0.),),   
-                        ),  
+                        _F(MONOCRISTAL=COMPORKR,FRAC_VOL=1,ANGL_EULER=(0.,0.,0.),),
+                        ),
                     LOCALISATION='BETA',DL=0.,DA=0.,
                     );
 
@@ -326,7 +326,7 @@ ORIENKR=AFFE_CARA_ELEM(MODELE=TROISD,
 
 
 
-# SOLUTION DE REFERENCE                          
+# SOLUTION DE REFERENCE
 # ATTENTION TRES SENSIBLE AU PAS DE TEMPS.
 
 SOLCHAB=STAT_NON_LINE(MODELE=TROISD,
@@ -342,9 +342,8 @@ SOLCHAB=STAT_NON_LINE(MODELE=TROISD,
                       NEWTON=(_F(REAC_ITER=1,),),
                       ARCHIVAGE=_F(LIST_INST=LINST,),);
 
-SOLCHAB=CALC_ELEM(reuse =SOLCHAB,
-                  RESULTAT=SOLCHAB,
-                  OPTION=('EPSI_ELGA','EPSP_ELGA',),);
+SOLCHAB=CALC_CHAMP(reuse=SOLCHAB,RESULTAT=SOLCHAB,DEFORMATION=('EPSI_ELGA','EPSP_ELGA'))
+
 
 TEST_RESU(RESU=(_F(RESULTAT=SOLCHAB,
                    INST=TFIN,
@@ -370,9 +369,9 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLCHAB,
                    POINT=1,
                    VALE=-1.8729214778e-05,
                    REFERENCE='NON_REGRESSION',),),);
-                   
-                   
-                   
+
+
+
 # IMPLICITE : TEST DE MONO_VISC1, MONO_LINE1, MONO_CIN1
 
 IMPL1=STAT_NON_LINE(MODELE=TROISD,INFO=1,
@@ -392,12 +391,11 @@ IMPL1=STAT_NON_LINE(MODELE=TROISD,INFO=1,
                      NEWTON=_F(REAC_ITER=1,),
                                      );
 
-IMPL1=CALC_ELEM(reuse =IMPL1,
-                 RESULTAT=IMPL1,
-                 OPTION=('EPSI_ELGA','EPSP_ELGA',),);
+IMPL1=CALC_CHAMP(reuse=IMPL1,RESULTAT=IMPL1,DEFORMATION=('EPSI_ELGA','EPSP_ELGA'))
 
-                   
-# COMPARAISON A VISC_CIN1_CHAB, MAIS PROBLEME DE SENSIBILITE AU PAS DE 
+
+
+# COMPARAISON A VISC_CIN1_CHAB, MAIS PROBLEME DE SENSIBILITE AU PAS DE
 # TEMPS. CELA CONVERGE QUAND DELTAT TEND VERS 0
 
 TEST_RESU(RESU=(_F(RESULTAT=IMPL1,
@@ -444,11 +442,10 @@ EXPL1=STAT_NON_LINE(MODELE=TROISD,
                     INCREMENT=(_F(LIST_INST=LINST,),),
                     );
 
-EXPL1=CALC_ELEM(reuse =EXPL1,
-                RESULTAT=EXPL1,
-                OPTION=('EPSI_ELGA','EPSP_ELGA',),);
+EXPL1=CALC_CHAMP(reuse=EXPL1,RESULTAT=EXPL1,DEFORMATION=('EPSI_ELGA','EPSP_ELGA'))
 
-                   
+
+
 TEST_RESU(RESU=(_F(RESULTAT=EXPL1,
                    INST=TFIN,
                    NOM_CHAM='SIEF_ELGA',
@@ -476,9 +473,9 @@ TEST_RESU(RESU=(_F(RESULTAT=EXPL1,
                    PRECISION=(0.04,0.0001,),
                    REFERENCE='AUTRE_ASTER',),),);
 
-                   
+
 # IMPLICITE : TEST DE MONO_VISC2, MONO_LINE2, MONO_CIN2
-# COMPARASION A IMPL1 : Avec les valeurs des coeffcients de MONO_CINE2, MONO_ISOT2, MONO_VISC2, 
+# COMPARASION A IMPL1 : Avec les valeurs des coeffcients de MONO_CINE2, MONO_ISOT2, MONO_VISC2,
 #                            on doit trouver la meme solution
 
 IMPL2=STAT_NON_LINE(MODELE=TROISD,INFO=1,
@@ -498,12 +495,11 @@ IMPL2=STAT_NON_LINE(MODELE=TROISD,INFO=1,
                      ARCHIVAGE=_F(LIST_INST=LINST,),
                                      );
 
-IMPL2=CALC_ELEM(reuse =IMPL2,
-                 RESULTAT=IMPL2,
-                 OPTION=('EPSI_ELGA','EPSP_ELGA',),);
+IMPL2=CALC_CHAMP(reuse=IMPL2,RESULTAT=IMPL2,DEFORMATION=('EPSI_ELGA','EPSP_ELGA'))
 
-                   
-# test de non regression de MONO_CINE2, MONO_ISOT2, MONO_VISC2 
+
+
+# test de non regression de MONO_CINE2, MONO_ISOT2, MONO_VISC2
 TEST_RESU(RESU=(_F(RESULTAT=IMPL2,
                    INST=TFIN,
                    NOM_CHAM='SIEF_ELGA',
@@ -529,9 +525,9 @@ TEST_RESU(RESU=(_F(RESULTAT=IMPL2,
                    VALE=-1.85279E-05,
                    PRECISION=(0.001,0.0001,),
                    REFERENCE='AUTRE_ASTER',),),);
-                   
 
-                   
+
+
 
 # EXPLICITE RUNGE_KUTTA : TEST DE MONO_VISC2, MONO_LINE2, MONO_CIN2
 
@@ -552,9 +548,8 @@ EXPL2=STAT_NON_LINE(MODELE=TROISD,
                                 REAC_ITER=0,),),
                      );
 
-EXPL2=CALC_ELEM(reuse =EXPL2,
-                 RESULTAT=EXPL2,
-                 OPTION=('EPSI_ELGA','EPSP_ELGA',),);
+EXPL2=CALC_CHAMP(reuse=EXPL2,RESULTAT=EXPL2,DEFORMATION=('EPSI_ELGA','EPSP_ELGA'))
+
 
 TEST_RESU(RESU=(_F(RESULTAT=EXPL2,
                    INST=TFIN,
@@ -582,10 +577,10 @@ TEST_RESU(RESU=(_F(RESULTAT=EXPL2,
                    REFERENCE='AUTRE_ASTER',),
                    ),);
 
-                   
+
 # test specfique MONO_VISC2, MONO_ISOT2, MONO_CINE2
 
-                          
+
 RESUT2=STAT_NON_LINE(MODELE=TROISD,INFO=1,
                      CHAM_MATER=MATT2,
                      EXCIT=(_F(CHARGE=TRAC3,
@@ -619,12 +614,11 @@ RESUT2=STAT_NON_LINE(MODELE=TROISD,INFO=1,
                                  ),
                                      );
 
-RESUT2=CALC_ELEM(reuse =RESUT2,
-                 RESULTAT=RESUT2,
-                 OPTION=('EPSI_ELGA','EPSP_ELGA',),);
+RESUT2=CALC_CHAMP(reuse=RESUT2,RESULTAT=RESUT2,DEFORMATION=('EPSI_ELGA','EPSP_ELGA'))
 
-                   
-# test de non regression 
+
+
+# test de non regression
 
 TEST_RESU(RESU=(_F(RESULTAT=RESUT2,
                    INST=2.,
@@ -653,8 +647,8 @@ TEST_RESU(RESU=(_F(RESULTAT=RESUT2,
                    REFERENCE='NON_REGRESSION',),
                    ),);
 
-# IMPLICITE : TEST DE L'ORTHOTROPIE                    
-                                      
+# IMPLICITE : TEST DE L'ORTHOTROPIE
+
 IMPLORTH=STAT_NON_LINE(MODELE=TROISD,
                      CHAM_MATER=MATORTH,
                      EXCIT=(_F(CHARGE=TRAC,
@@ -673,9 +667,8 @@ IMPLORTH=STAT_NON_LINE(MODELE=TROISD,
                                     ITER_GLOB_MAXI=100,),
                                      );
 
-IMPLORTH=CALC_ELEM(reuse =IMPLORTH,
-                 RESULTAT=IMPLORTH,
-                 OPTION=('EPSI_ELGA'),);
+IMPLORTH=CALC_CHAMP(reuse=IMPLORTH,RESULTAT=IMPLORTH,DEFORMATION=('EPSI_ELGA'))
+
 
 
 
@@ -698,8 +691,8 @@ TEST_RESU(RESU=(_F(RESULTAT=IMPLORTH,
                    ),)
 
 
-# EXPLICITE RUNGE_KUTTA : TEST DE  ORTHOTROPIE                    
-                   
+# EXPLICITE RUNGE_KUTTA : TEST DE  ORTHOTROPIE
+
 EXPLORTH=STAT_NON_LINE(MODELE=TROISD,
                      CHAM_MATER=MATORTH,
                      EXCIT=(_F(CHARGE=TRAC,
@@ -714,9 +707,8 @@ EXPLORTH=STAT_NON_LINE(MODELE=TROISD,
                      INCREMENT=(_F(LIST_INST=LINST,),),
                     );
 
-EXPLORTH=CALC_ELEM(reuse =EXPLORTH,
-                 RESULTAT=EXPLORTH,
-                 OPTION=('EPSI_ELGA'),);
+EXPLORTH=CALC_CHAMP(reuse=EXPLORTH,RESULTAT=EXPLORTH,DEFORMATION=('EPSI_ELGA'))
+
 
 
 
@@ -749,9 +741,9 @@ COMPORZ=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIER,
                                     ECRO_CINE='MONO_CINE1',
                                     ELAS='ELAS',
                                     FAMI_SYST_GLIS='ZIRCONIUM',),
-                                    
+
                                     );
-                          
+
 
 
 IMPLZ=STAT_NON_LINE(MODELE=TROISD,INFO=1,
@@ -771,12 +763,11 @@ IMPLZ=STAT_NON_LINE(MODELE=TROISD,INFO=1,
                      ARCHIVAGE=_F(LIST_INST=LINST3,),
                                      );
 
-IMPLZ=CALC_ELEM(reuse =IMPLZ,
-                 RESULTAT=IMPLZ,
-                 OPTION=('EPSI_ELGA','EPSP_ELGA',),);
+IMPLZ=CALC_CHAMP(reuse=IMPLZ,RESULTAT=IMPLZ,DEFORMATION=('EPSI_ELGA','EPSP_ELGA'))
 
-                   
-# test de non regression 
+
+
+# test de non regression
 
 TEST_RESU(RESU=(_F(RESULTAT=IMPLZ,
                    INST=2.,
@@ -823,17 +814,17 @@ table=LIRE_TABLE( UNITE=40,
                    FORMAT='ASTER',
                    NUME_TABLE=1,
                    SEPARATEUR=' ',)
-                   
+
 COMPORZ2=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIER,
                                     ECOULEMENT='MONO_VISC1',
                                     ECRO_ISOT='MONO_ISOT1',
                                     ECRO_CINE='MONO_CINE1',
                                     ELAS='ELAS',
                                     FAMI_SYST_GLIS='ZIRCONIUM',),
-                                    
+
                       MATR_INTER= table,
                                     );
-                          
+
 
 
 IMPLZ2=STAT_NON_LINE(MODELE=TROISD,INFO=1,
@@ -853,12 +844,11 @@ IMPLZ2=STAT_NON_LINE(MODELE=TROISD,INFO=1,
                      ARCHIVAGE=_F(LIST_INST=LINST3,),
                                      );
 
-IMPLZ2=CALC_ELEM(reuse =IMPLZ2,
-                 RESULTAT=IMPLZ2,
-                 OPTION=('EPSI_ELGA','EPSP_ELGA',),);
+IMPLZ2=CALC_CHAMP(reuse=IMPLZ2,RESULTAT=IMPLZ2,DEFORMATION=('EPSI_ELGA','EPSP_ELGA'))
 
-                   
-# test de non regression 
+
+
+# test de non regression
 
 TEST_RESU(RESU=(_F(RESULTAT=IMPLZ2,
                    INST=2.,
@@ -899,10 +889,10 @@ TEST_RESU(RESU=(_F(RESULTAT=IMPLZ2,
 # troisieme test du zirconium polycristal avec matrice d'interaction fournie dans une table
 
 
-                   
+
 COMPORZ3=DEFI_COMPOR(POLYCRISTAL=(
-                        _F(MONOCRISTAL=COMPORZ2,FRAC_VOL=1,ANGL_EULER=(0.,0.,0.),),   
-                        ),  
+                        _F(MONOCRISTAL=COMPORZ2,FRAC_VOL=1,ANGL_EULER=(0.,0.,0.),),
+                        ),
                     LOCALISATION='BETA',DL=0.,DA=0.,
                     );
 
@@ -927,13 +917,12 @@ POLYZ3=STAT_NON_LINE(MODELE=TROISD,INFO=1,
                      ARCHIVAGE=_F(LIST_INST=LINST3,),
                                      );
 
-POLYZ3=CALC_ELEM(reuse =POLYZ3,
-                 RESULTAT=POLYZ3,
-                 OPTION=('EPSI_ELGA','EPSP_ELGA',),);
+POLYZ3=CALC_CHAMP(reuse=POLYZ3,RESULTAT=POLYZ3,DEFORMATION=('EPSI_ELGA','EPSP_ELGA'))
+
 
 #IMPR_RESU(RESU=_F(RESULTAT=POLYZ3))
-                   
-# test de non regression 
+
+# test de non regression
 
 TEST_RESU(RESU=(_F(RESULTAT=POLYZ3,
                    INST=2.,
@@ -985,7 +974,7 @@ ACIER1=DEFI_MATERIAU(ELAS=_F(E=145200.0,
                                   H=0.0,),
                     MONO_CINE1=_F(D=36.68,),
                                   );
-                                  
+
 ACIER2=DEFI_MATERIAU(MONO_VISC1=_F(N=10.0,
                                   K=40.0,
                                   C=10.0,),
@@ -995,7 +984,7 @@ ACIER2=DEFI_MATERIAU(MONO_VISC1=_F(N=10.0,
                                   H=0.0,),
                     MONO_CINE1=_F(D=36.68,),
                                   );
-                                  
+
 ACIER3=DEFI_MATERIAU(MONO_VISC1=_F(N=10.0,
                                   K=40.0,
                                   C=10.0,),
@@ -1005,7 +994,7 @@ ACIER3=DEFI_MATERIAU(MONO_VISC1=_F(N=10.0,
                                   H=0.0,),
                     MONO_CINE1=_F(D=36.68,),
                                   );
-                                  
+
 ACIER4=DEFI_MATERIAU(  MONO_VISC1=_F(N=10.0,
                                   K=40.0,
                                   C=10.0,),
@@ -1015,7 +1004,7 @@ ACIER4=DEFI_MATERIAU(  MONO_VISC1=_F(N=10.0,
                                   H=0.0,),
                     MONO_CINE1=_F(D=36.68,),
                                   );
-                                  
+
 ACIER5=DEFI_MATERIAU( MONO_VISC1=_F(N=10.0,
                                   K=40.0,
                                   C=10.0,),
@@ -1033,28 +1022,28 @@ prism_a1=LIRE_TABLE( UNITE=49,
                    FORMAT='ASTER',
                    NUME_TABLE=1,
                    SEPARATEUR=' ',)
-                   
+
 bas1    =LIRE_TABLE( UNITE=49,
                    FORMAT='ASTER',
                    NUME_TABLE=2,
                    SEPARATEUR=' ',)
-                   
+
 pyr_a   =LIRE_TABLE( UNITE=49,
                    FORMAT='ASTER',
                    NUME_TABLE=3,
                    SEPARATEUR=' ',)
-                                      
+
 pyr_c_a =LIRE_TABLE( UNITE=49,
                    FORMAT='ASTER',
                    NUME_TABLE=4,
                    SEPARATEUR=' ',)
-                   
+
 pyr2_c_a=LIRE_TABLE( UNITE=49,
                    FORMAT='ASTER',
                    NUME_TABLE=5,
                    SEPARATEUR=' ',)
-                   
-                   
+
+
 COMPORZ4=DEFI_COMPOR(MONOCRISTAL=(
                                  _F(MATER=ACIER1,
                                     ECOULEMENT='MONO_VISC1',
@@ -1063,21 +1052,21 @@ COMPORZ4=DEFI_COMPOR(MONOCRISTAL=(
                                     ELAS      ='ELAS',
                                     FAMI_SYST_GLIS='UTILISATEUR',
                                     TABL_SYST_GLIS=prism_a1),
-                                    
+
                                  _F(MATER=ACIER2,
                                     ECOULEMENT='MONO_VISC1',
                                     ECRO_ISOT ='MONO_ISOT1',
                                     ECRO_CINE ='MONO_CINE1',
                                     FAMI_SYST_GLIS='UTILISATEUR',
                                     TABL_SYST_GLIS=bas1),
-                                    
+
                                  _F(MATER=ACIER3,
                                     ECOULEMENT='MONO_VISC1',
                                     ECRO_ISOT ='MONO_ISOT1',
                                     ECRO_CINE ='MONO_CINE1',
                                     FAMI_SYST_GLIS='UTILISATEUR',
                                     TABL_SYST_GLIS=pyr_a),
-                                    
+
                                  _F(MATER=ACIER4,
                                     ECOULEMENT='MONO_VISC1',
                                     ECRO_ISOT ='MONO_ISOT1',
@@ -1085,25 +1074,25 @@ COMPORZ4=DEFI_COMPOR(MONOCRISTAL=(
                                     FAMI_SYST_GLIS='UTILISATEUR',
                                     TABL_SYST_GLIS=pyr_c_a,
                                     ),
-                                    
+
                                  _F(MATER=ACIER5,
                                     ECOULEMENT='MONO_VISC1',
                                     ECRO_ISOT ='MONO_ISOT1',
                                     ECRO_CINE ='MONO_CINE1',
                                     FAMI_SYST_GLIS='UTILISATEUR',
                                     TABL_SYST_GLIS=pyr2_c_a),
-                                    
+
                                  ),
                       MATR_INTER= table,
                      );
 
-                     
+
 MAT12345=AFFE_MATERIAU(MAILLAGE=CUBE,
                   AFFE=_F(TOUT='OUI',
                           MATER=(ACIER1,ACIER2,ACIER3,ACIER4,ACIER5)),);
-                          
-                     
-                          
+
+
+
 IMPLZ4=STAT_NON_LINE(MODELE=TROISD,INFO=1,
                      CHAM_MATER=MAT12345,
                      EXCIT=(_F(CHARGE=TRAC3,
@@ -1138,12 +1127,11 @@ IMPLZ4=STAT_NON_LINE(MODELE=TROISD,INFO=1,
                                  ),
                                      );
 
-IMPLZ4=CALC_ELEM(reuse =IMPLZ4,
-                 RESULTAT=IMPLZ4,
-                 OPTION=('EPSI_ELGA','EPSP_ELGA',),);
+IMPLZ4=CALC_CHAMP(reuse=IMPLZ4,RESULTAT=IMPLZ4,DEFORMATION=('EPSI_ELGA','EPSP_ELGA'))
 
-                   
-# test de non regression 
+
+
+# test de non regression
 
 TEST_RESU(RESU=(_F(RESULTAT=IMPLZ4,
                    INST=2.,
@@ -1180,17 +1168,17 @@ TEST_RESU(RESU=(_F(RESULTAT=IMPLZ4,
                    PRECISION=(0.001,0.0001,),
                    REFERENCE='AUTRE_ASTER',),
                    ),);
-                     
-                   
+
+
 COMPORZ5=DEFI_COMPOR(POLYCRISTAL=(
-                        _F(MONOCRISTAL=COMPORZ4,FRAC_VOL=1,ANGL_EULER=(0.,0.,0.),),   
-                        ),  
+                        _F(MONOCRISTAL=COMPORZ4,FRAC_VOL=1,ANGL_EULER=(0.,0.,0.),),
+                        ),
                     LOCALISATION='BETA',DL=0.,DA=0.,
                     );
-                   
+
 IMPR_CO(CONCEPT=_F(NOM=COMPORZ5))
-                     
-                          
+
+
 POLYZ5=STAT_NON_LINE(MODELE=TROISD,INFO=1,
                      CHAM_MATER=MAT12345,
                      EXCIT=(_F(CHARGE=TRAC3,
@@ -1225,12 +1213,11 @@ POLYZ5=STAT_NON_LINE(MODELE=TROISD,INFO=1,
                                  ),
                                      );
 
-POLYZ5=CALC_ELEM(reuse =POLYZ5,
-                 RESULTAT=POLYZ5,
-                 OPTION=('EPSI_ELGA','EPSP_ELGA',),);
+POLYZ5=CALC_CHAMP(reuse=POLYZ5,RESULTAT=POLYZ5,DEFORMATION=('EPSI_ELGA','EPSP_ELGA'))
 
-                   
-# test de non regression 
+
+
+# test de non regression
 
 TEST_RESU(RESU=(_F(RESULTAT=POLYZ5,
                    INST=2.,
@@ -1291,9 +1278,8 @@ IMPLKR=STAT_NON_LINE(MODELE=TROISD,
                      CONVERGENCE=(_F(RESI_GLOB_RELA=1e-06,
                                      ITER_GLOB_MAXI=11,),),);
 
-IMPLKR=CALC_ELEM(reuse =IMPLKR,
-                 RESULTAT=IMPLKR,
-                 OPTION=('EPSI_ELGA','EPSP_ELGA'),);
+IMPLKR=CALC_CHAMP(reuse=IMPLKR,RESULTAT=IMPLKR,DEFORMATION=('EPSI_ELGA','EPSP_ELGA'))
+
 
 TEST_RESU(RESU=(_F(RESULTAT=IMPLKR,
                    INST=TFIN3,
@@ -1312,7 +1298,7 @@ TEST_RESU(RESU=(_F(RESULTAT=IMPLKR,
                    VALE=-8.1822E-04,PRECISION=(0.002,0.0001),
                    REFERENCE='SOURCE_EXTERNE',),
                    ),)
-                   
+
 
 
 
@@ -1333,9 +1319,8 @@ EXPLKR=STAT_NON_LINE(MODELE=TROISD,
                      ARCHIVAGE=_F(LIST_INST=LINST3,),
                                      )
 
-EXPLKR=CALC_ELEM(reuse =EXPLKR,
-                 RESULTAT=EXPLKR,
-                 OPTION=('EPSI_ELGA','EPSP_ELGA'),);
+EXPLKR=CALC_CHAMP(reuse=EXPLKR,RESULTAT=EXPLKR,DEFORMATION=('EPSI_ELGA','EPSP_ELGA'))
+
 
 
 TEST_RESU(RESU=(_F(RESULTAT=EXPLKR,
@@ -1355,7 +1340,7 @@ TEST_RESU(RESU=(_F(RESULTAT=EXPLKR,
                    VALE=-8.1822E-04,PRECISION=(0.0005,0.0001),
                    REFERENCE='SOURCE_EXTERNE',),
                    ),)
-                   
+
 
 
 EXPLKRP=STAT_NON_LINE(MODELE=TROISD,
@@ -1375,9 +1360,8 @@ EXPLKRP=STAT_NON_LINE(MODELE=TROISD,
                      ARCHIVAGE=_F(LIST_INST=LINST3,),
                                      )
 
-EXPLKRP=CALC_ELEM(reuse =EXPLKRP,
-                 RESULTAT=EXPLKRP,
-                 OPTION=('EPSI_ELGA','EPSP_ELGA'),);
+EXPLKRP=CALC_CHAMP(reuse=EXPLKRP,RESULTAT=EXPLKRP,DEFORMATION=('EPSI_ELGA','EPSP_ELGA'))
+
 
 
 TEST_RESU(RESU=(_F(RESULTAT=EXPLKRP,
@@ -1400,4 +1384,4 @@ TEST_RESU(RESU=(_F(RESULTAT=EXPLKRP,
 
 FIN();
 
-                   
+

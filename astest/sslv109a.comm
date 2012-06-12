@@ -1,4 +1,4 @@
-# MODIF  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE SOUMIS A UNE PRESSION EN MODE 1 FOURIER (TRIA6)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -91,9 +91,8 @@ TEST_TABLE(       TABLE=T_ENER,
 #                     OPERATEUR COMB_FOURIER
 # ----------------------------------------------------------------------
 
-FO_ELAS1=CALC_ELEM(reuse=FO_ELAS1,   RESULTAT=FO_ELAS1,
-                         OPTION= 'SIGM_ELNO', 
-                       )
+FO_ELAS1=CALC_CHAMP(reuse=FO_ELAS1,RESULTAT=FO_ELAS1,CONTRAINTE=('SIGM_ELNO'))
+
 
 FO_ELAS1=CALC_CHAMP(reuse=FO_ELAS1,   RESULTAT=FO_ELAS1,
                        FORCE='FORC_NODA',
@@ -200,9 +199,8 @@ CO_FOUR1=COMB_FOURIER(   RESULTAT=FO_ELAS1,
                                 ANGL=( ANGL1,  ANGL2,  )
                         )
 
-CO_FOUR1=CALC_ELEM(reuse =CO_FOUR1,
-                   RESULTAT=CO_FOUR1,
-                   OPTION=('SIEQ_ELGA','SIEQ_ELNO',),);
+CO_FOUR1=CALC_CHAMP(reuse=CO_FOUR1,RESULTAT=CO_FOUR1,CRITERES=('SIEQ_ELGA','SIEQ_ELNO'))
+
 
 TEST_RESU(RESU=(
             _F(  RESULTAT = CO_FOUR1,

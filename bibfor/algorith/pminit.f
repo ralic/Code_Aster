@@ -3,10 +3,10 @@
      &                  IROTA ,EPSM  ,SIGM  ,VIM   ,VIP   ,VR,
      &                  DEFIMP,COEF  ,INDIMP,FONIMP,CIMPO ,
      &                  KEL   ,SDDISC,PARCRI,PRED  ,MATREL,IMPTGT,
-     &                  OPTION, NOMVI, NBVITA)
+     &                  OPTION, NOMVI, NBVITA, NBVRCM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2012   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 11/06/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,18 +79,18 @@ C
       INTEGER      NDIM,N1,NBVARI,NBPAR,I,J,K,IMATE,KPG,KSP,NBOCC,N2
       INTEGER      IEPSI,ICONT,IGRAD,IROTA,DEFIMP,INDIMP(9),NCMP
       INTEGER      PRED,MATREL,IC1C2,IFORTA,IMPTGT,NBVITA
-      INTEGER      ILIGNE,ICOLON,FONACT(28),NBCOL
+      INTEGER      ILIGNE,ICOLON,FONACT(28),NBCOL,NBVRCM,NUMINS
       CHARACTER*4  NOMEPS(6),NOMSIG(6),NOMGRD(9),OPTGT
       CHARACTER*8  TYPMOD(2),K8B,TABLE,FONIMP(9),FONGRD(9),F0,VK8(2)
       CHARACTER*8  FONEPS(6),FONSIG(6),TYPPAR(*),VALEF,NOMVI(*)
       CHARACTER*16 OPTION,NOMPAR(*),PREDIC,MATRIC,FORTAB
       CHARACTER*19 LISINS,SDDISC,SOLVEU
       REAL*8       INSTAM,ANG(7),SIGM(6),EPSM(9),VALE,RAC2
-      REAL*8       VIM(NBVARI),VIP(NBVARI),VR(*)
+      REAL*8       VIM(NBVARI),VIP(NBVARI),VR(*),DIINST
       REAL*8       SIGI,REP(7),R8DGRD,KEL(6,6),CIMPO(6,12)
       REAL*8       ANGD(3),ANG1,PGL(3,3),XYZGAU(3),COEF,INSTIN
       REAL*8       PARCRI(*),PARCON(9),ANGEUL(3),ID(9),DSIDEP(36)
-      REAL*8       SIGINI(6),EPSINI(6)
+      REAL*8       SIGINI(6),EPSINI(6),R8VIDE
       INTEGER      IARG
 
       DATA NOMEPS/'EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ'/
@@ -298,17 +298,6 @@ C     ----------------------------------------
 
       INSTAM=0.D0
 
-C     ----------------------------------------
-C     MATRICE ELASTIQUE ET COEF POUR ADIMENSIONNALISER
-C     ----------------------------------------
-      CALL DMAT3D('RIGI',IMATE,INSTAM,'+',KPG,KSP,
-     &                   REP,XYZGAU,KEL)
-C     DMAT ECRIT MU POUR LES TERMES DE CISAILLEMENT
-      COEF=MAX(KEL(1,1),KEL(2,2),KEL(3,3))
-      DO 67 J=4,6
-        KEL(J,J) = KEL(J,J)*2.D0
-        COEF=MAX(COEF,KEL(J,J))
- 67   CONTINUE
 
 C     ----------------------------------------
 C     CHARGEMENT
@@ -393,7 +382,6 @@ C AFFECTATION DE SIGMA_I=0. SI RIEN N'EST IMPOSE SUR LA LIGNE I
             ENDIF
  58      CONTINUE
          DEFIMP=-1
-         COEF=1.D0
       ENDIF
 
 C     ----------------------------------------
@@ -448,7 +436,7 @@ C     ----------------------------------------
 C     CREATION SD DISCRETISATION
 C     ----------------------------------------
       CALL GETVID('INCREMENT','LIST_INST',1,IARG,1,LISINS,N1)
-      INSTIN = 0.D0
+      INSTIN = R8VIDE()
       CALL NMCRLI(FONACT,INSTIN,LISINS,SDDISC)
 
 C     ----------------------------------------
@@ -480,5 +468,27 @@ C     ----------------------------------------
 
 C     SUBDIVISION AUTOMATIQUE DU PAS DE TEMPS
       CALL NMCRSU(SDDISC,LISINS,PARCRI,FONACT,SOLVEU)
+      
+C     INSTANT INITIAL      
+      NUMINS=0 
+      INSTAM = DIINST(SDDISC, NUMINS) 
 
+C     CALCUL DES VARIABLES DE COMMANDE
+      CALL VRCINP(NBVRCM,2, INSTAM,INSTAM )
+      
+C     ----------------------------------------
+C     MATRICE ELASTIQUE ET COEF POUR ADIMENSIONNALISER
+C     ----------------------------------------
+      CALL DMAT3D('PMAT',IMATE,INSTAM,'+',KPG,KSP,
+     &                   REP,XYZGAU,KEL)
+C     DMAT ECRIT MU POUR LES TERMES DE CISAILLEMENT
+      COEF=MAX(KEL(1,1),KEL(2,2),KEL(3,3))
+      DO 67 J=4,6
+        KEL(J,J) = KEL(J,J)*2.D0
+        COEF=MAX(COEF,KEL(J,J))
+ 67   CONTINUE
+ 
+      IF (IC1C2.EQ.1) THEN
+         COEF=1.D0
+      ENDIF
       END

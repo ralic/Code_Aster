@@ -1,4 +1,4 @@
-# MODIF  DATE 10/04/2012   AUTEUR KAZYMYRE K.KAZYMYRENKO 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE ESSAIS BIAXIAUX EN 3D - COMPORTEMENT ENDO_ORTH_BETON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -274,29 +274,14 @@ U_3=STAT_NON_LINE(reuse=U_3,
 
 
 
-U_1 = CALC_ELEM(
-   reuse = U_1,
+U_1=CALC_CHAMP(reuse=U_1,RESULTAT=U_1,DEFORMATION=('EPSI_ELGA'))
 
 
-   RESULTAT  =U_1,
-   OPTION    =('EPSI_ELGA'),
-   );
-
-U_2 = CALC_ELEM(
-   reuse = U_2,
+U_2=CALC_CHAMP(reuse=U_2,RESULTAT=U_2,DEFORMATION=('EPSI_ELGA'))
 
 
-   RESULTAT  =U_2,
-   OPTION    =('EPSI_ELGA'),
-   );
+U_3=CALC_CHAMP(reuse=U_3,RESULTAT=U_3,DEFORMATION=('EPSI_ELGA'))
 
-U_3 = CALC_ELEM(
-   reuse = U_3,
-
-
-   RESULTAT  =U_3,
-   OPTION    =('EPSI_ELGA'),
-   );
 
 
 
@@ -304,7 +289,7 @@ U_3 = CALC_ELEM(
 
 SIXX1=RECU_FONCTION(RESULTAT=U_1,
                  NOM_CHAM='SIEF_ELGA',
-                 TOUT_ORDRE='OUI',
+
                  NOM_CMP='SIXX',
                  MAILLE='VOLUME',
                  POINT=1,);
@@ -312,7 +297,7 @@ SIXX1=RECU_FONCTION(RESULTAT=U_1,
 
 SIXX2=RECU_FONCTION(RESULTAT=U_2,
                  NOM_CHAM='SIEF_ELGA',
-                 TOUT_ORDRE='OUI',
+
                  NOM_CMP='SIXX',
                  MAILLE='VOLUME',
                  POINT=1,);
@@ -320,7 +305,7 @@ SIXX2=RECU_FONCTION(RESULTAT=U_2,
 
 SIXX3=RECU_FONCTION(RESULTAT=U_3,
                  NOM_CHAM='SIEF_ELGA',
-                 TOUT_ORDRE='OUI',
+
                  NOM_CMP='SIXX',
                  MAILLE='VOLUME',
                  POINT=1,);

@@ -1,13 +1,14 @@
-      SUBROUTINE DLDIFF ( LCREA,LAMORT,NEQ,IMAT,
+      SUBROUTINE DLDIFF ( RESULT,FORCE1,
+     &                    LCREA,LAMORT,NEQ,IMAT,
      &                    MASSE,RIGID,AMORT,
      &                    DEP0,VIT0,ACC0,FEXTE,FAMOR,FLIAI,T0,
      &                    NCHAR,NVECA,LIAD,LIFO,
      &                    MODELE,MATE,CARELE,
      &                    CHARGE,INFOCH,FOMULT,NUMEDD,NUME,
-     &                    INPSCO,NBPASE,SOLVEU)
+     &                    SOLVEU)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/03/2012   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,8 +58,6 @@ C  IN  : INFOCH    : INFO SUR LES CHARGES
 C  IN  : FOMULT    : LISTE DES FONC_MULT ASSOCIES A DES CHARGES
 C  IN  : NUMEDD    : NUME_DDL DE LA MATR_ASSE RIGID
 C  IN  : NUME      : NUMERO D'ORDRE DE REPRISE
-C  IN  : NBPASE   : NOMBRE DE PARAMETRE SENSIBLE
-C  IN  : INPSCO   : STRUCTURE CONTENANT LA LISTE DES NOMS (CF. PSNSIN)
 C  VAR : DEP0      : TABLEAU DES DEPLACEMENTS A L'INSTANT N
 C  VAR : VIT0      : TABLEAU DES VITESSES A L'INSTANT N
 C  VAR : ACC0      : TABLEAU DES ACCELERATIONS A L'INSTANT N
@@ -68,13 +67,12 @@ C CORPS DU PROGRAMME
 
 C DECLARATION PARAMETRES D'APPELS
       INTEGER      NEQ,IMAT(*),LIAD(*),NCHAR,NVECA,NUME
-      INTEGER      NBPASE
-C
       CHARACTER*8  MASSE, RIGID, AMORT
-      CHARACTER*13 INPSCO
       CHARACTER*24 MODELE, CARELE, CHARGE, FOMULT, MATE, NUMEDD
       CHARACTER*24 INFOCH, LIFO(*)
       CHARACTER*19 SOLVEU
+      CHARACTER*8  RESULT
+      CHARACTER*19 FORCE1
 C
       REAL*8 DEP0(*), VIT0(*), ACC0(*), T0
       REAL*8 FEXTE(*), FAMOR(*), FLIAI(*)
@@ -101,13 +99,11 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ---------------------------
       INTEGER NBTYAR
       PARAMETER ( NBTYAR = 6 )
       INTEGER IWK0, IWK1, IWK2
-      INTEGER NRPASE, NRORES
-      INTEGER IFM, NIV, ETAUSR
-      INTEGER IDEPL1
-      INTEGER IVITE1, IVITE2
-      INTEGER IACCE1
-      INTEGER IARCHI
-      INTEGER IAUX, JAUX, IBID
+      INTEGER IFM, NIV, ETAUSR,NE
+      INTEGER IEQ,IEXCL
+      INTEGER IDEPL1,IVITE1, IVITE2,IACCE1,IARCHI
+      INTEGER IBID
+      INTEGER ALARM,ARCHIV
       INTEGER IPEPA, IGRPA
       INTEGER IPAS, ISTOP, ISTOC, JSTOC
       INTEGER JNBPA, JBINT, JLPAS
@@ -159,8 +155,8 @@ C
       DEUXPI = R8DEPI()
       IARCHI = NUME
       ENER=.FALSE.
-      CALL GETFAC('ENERGIE',IAUX)
-      IF (IAUX.NE.0) THEN
+      CALL GETFAC('ENERGIE',NE)
+      IF (NE.NE.0) THEN
         ENER=.TRUE.
       ENDIF
 C
@@ -169,7 +165,7 @@ C
       CALL DLTINS(NBGRPA,LISPAS,LIBINT,LINBPA,NPATOT,T0,LISINS)
       CALL JEVEUO(LISPAS,'L',JLPAS)
       CALL JEVEUO(LIBINT,'L',JBINT)
-      CALL JEVEUO(LINBPA,'L',JNBPA)     
+      CALL JEVEUO(LINBPA,'L',JNBPA)
 C
 C 1.5. ==> EXTRACTION DIAGONALE M ET CALCUL VITESSE INITIALE
 C
@@ -182,14 +178,11 @@ C
 C
       DT1 = ZR(JLPAS)
       R8BID = DT1/2.D0
-      DO 15,  IAUX = 1, NEQ
-        IF (ZR(IWK1+IAUX-1).NE.0.D0) THEN
-           ZR(IWK1+IAUX-1)=1.0D0/ZR(IWK1+IAUX-1)
+      DO 15,  IEQ = 1, NEQ
+        IF (ZR(IWK1+IEQ-1).NE.0.D0) THEN
+           ZR(IWK1+IEQ-1)=1.0D0/ZR(IWK1+IEQ-1)
         ENDIF
-        DO 151 , NRPASE = 0, NBPASE
-          JAUX = NEQ*NRPASE + 1
-          VIT0(JAUX+IAUX) = VIT0(JAUX+IAUX) - R8BID*ACC0(JAUX+IAUX)
-  151   CONTINUE
+        VIT0(1+IEQ) = VIT0(1+IEQ) - R8BID*ACC0(1+IEQ)
    15 CONTINUE
 C
 C 1.6. ==> --- ARCHIVAGE ---
@@ -213,12 +206,12 @@ C
       IF ( NBEXCL.EQ.NBTYAR ) THEN
         CALL U2MESS('F','ALGORITH3_14')
       ENDIF
-      DO 16 , IAUX = 1,NBEXCL
-        IF (TYP1(IAUX).EQ.'DEPL') THEN
+      DO 16 , IEXCL = 1,NBEXCL
+        IF (TYP1(IEXCL).EQ.'DEPL') THEN
           TYPEAR(1) = '    '
-        ELSEIF (TYP1(IAUX).EQ.'VITE') THEN
+        ELSEIF (TYP1(IEXCL).EQ.'VITE') THEN
           TYPEAR(2) = '    '
-        ELSEIF (TYP1(IAUX).EQ.'ACCE') THEN
+        ELSEIF (TYP1(IEXCL).EQ.'ACCE') THEN
           TYPEAR(3) = '    '
         ENDIF
    16 CONTINUE
@@ -234,42 +227,34 @@ C
       WRITE(IFM,*) '! LE NB D''EQUATIONS EST          : ',NEQ
       IF ( NUME.NE.0 ) WRITE(IFM,*)
      &'! REPRISE A PARTIR DU NUME_ORDRE  : ',NUME
-      DO 17 , IAUX = 1,NBGRPA
-        DT = ZR(JLPAS-1+IAUX)
-        NBPTPA = ZI(JNBPA-1+IAUX)
-        T0 = ZR(JBINT-1+IAUX)
+      DO 17 , IGRPA = 1,NBGRPA
+        DT = ZR(JLPAS-1+IGRPA)
+        NBPTPA = ZI(JNBPA-1+IGRPA)
+        T0 = ZR(JBINT-1+IGRPA)
         TF = T0 + NBPTPA*DT
         WRITE(IFM,*)'! L''INSTANT INITIAL EST        : ',T0
         WRITE(IFM,*)'! L''INSTANT FINAL EST          : ',TF
         WRITE(IFM,*)'! LE PAS DE TEMPS DU CALCUL EST : ',DT
         WRITE(IFM,*)'! LE NB DE PAS DE CALCUL EST    : ',NBPTPA
-   17 CONTINUE  
+   17 CONTINUE
       WRITE(IFM,*) '----------------------------------------------',' '
 C
 C====
-C 2. BOUCLE SUR CREATION DES CONCEPTS RESULTAT
+C 2. CREATION DU CONCEPT RESULTAT
 C====
 C
-      T0 = ZR(JBINT) 
-C         
-      DO 21 , NRORES = 0 , NBPASE
-C
-        NRPASE = NRORES
-        IAUX = 1 + NEQ*NRPASE
-        JAUX = NBTYAR
-C
-        CALL DLTCRR ( NRPASE, INPSCO,
-     &                NEQ, NBORDR, IARCHI, ' ', IFM,
-     &                T0, LCREA, TYPRES,
-     &                MASSE, RIGID, AMORT,
-     &                DEP0(IAUX), VIT0(IAUX), ACC0(IAUX),
-     &                FEXTE(1),FAMOR(1),FLIAI(1),
-     &                NUMEDD, NUME, JAUX, TYPEAR )
+      T0 = ZR(JBINT)
+      CALL DLTCRR (RESULT,
+     &             NEQ, NBORDR, IARCHI, ' ', IFM,
+     &             T0, LCREA, TYPRES,
+     &             MASSE, RIGID, AMORT,
+     &             DEP0, VIT0, ACC0,
+     &             FEXTE,FAMOR,FLIAI,
+     &             NUMEDD, NUME, NBTYAR, TYPEAR )
 
-   21 CONTINUE
 C
       CALL TITRE
-C       
+C
 C
 C
 C====
@@ -286,8 +271,8 @@ C
       DO 31 , IGRPA = 1,NBGRPA
 C
 C 3.1.1. ==> PREALABLES
-C        
-       CALL UTTCPU('CPU.DLDIFF.1','DEBUT',' ')       
+C
+       CALL UTTCPU('CPU.DLDIFF.1','DEBUT',' ')
        DT = ZR(JLPAS-1+IGRPA)
        NBPTPA = ZI(JNBPA-1+IGRPA)
        T0 = ZR(JBINT-1+IGRPA)
@@ -298,9 +283,9 @@ C
        CALL EXTDIA( RIGID, NUMEDD, 2, ZR(IWK2))
        IBID=0
        DTMAX=DT
-       DO 312 IAUX=1,NEQ
-        IF (ZR(IWK1+IAUX-1).NE.0.D0) THEN
-          OMEG = SQRT( ZR(IWK2+IAUX-1) * ZR(IWK1+IAUX-1) )
+       DO 312 IEQ=1,NEQ
+        IF (ZR(IWK1+IEQ-1).NE.0.D0) THEN
+          OMEG = SQRT( ZR(IWK2+IEQ-1) * ZR(IWK1+IEQ-1) )
           DTM = 5.D-02*DEUXPI/OMEG
           IF (DTMAX.GT.DTM) THEN
             DTMAX=DTM
@@ -318,7 +303,7 @@ C
        ENDIF
 C ==> FIN DE VERIFICATION
 C
-C       
+C
 C 3.1.3. ==> BOUCLE SUR LES NBPTPA "PETITS" PAS DE TEMPS
 C
        DO 313 , IPEPA = 1 , NBPTPA
@@ -327,29 +312,20 @@ C
         ISTOC = 0
         TEMPS = T0 + DT*IPEPA
         CALL UTTCPU('CPU.DLDIFF.2','DEBUT',' ')
+        ARCHIV = ZI(JSTOC+IPAS-1)
 C
-C 3.1.3.1 ==> BOUCLE SUR LES CAS STANDARD ET SENSIBLES
-C
-        DO 3131 , NRORES = 0 , NBPASE
-C
-          NRPASE = NRORES
-          IAUX = 1 + NEQ*NRPASE
-          IBID = ZI(JSTOC+IPAS-1)
-C
-          CALL DLDIF0 ( NRPASE, NBPASE, INPSCO,
-     &                  NEQ, ISTOC, IARCHI, IFM,
-     &                  LAMORT,
-     &                  IMAT, MASSE, RIGID, AMORT,
-     &                  DEP0(IAUX), VIT0(IAUX), ACC0(IAUX),
-     &                  ZR(IDEPL1), ZR(IVITE1), ZR(IACCE1), ZR(IVITE2),
-     &                  FEXTE(1),FAMOR(1),FLIAI(1),
-     &                  NCHAR, NVECA, LIAD, LIFO, MODELE,ENER,SOLVEU,
-     &                  MATE, CARELE, CHARGE, INFOCH, FOMULT, NUMEDD,
-     &                  DT, TEMPS,
-     &                  ZR(IWK0), ZR(IWK1),
-     &                  IBID, NBTYAR, TYPEAR )
-
- 3131   CONTINUE
+        CALL DLDIF0 ( RESULT,FORCE1,
+     &               NEQ, ISTOC, IARCHI, IFM,
+     &               LAMORT,
+     &               IMAT, MASSE, RIGID, AMORT,
+     &               DEP0, VIT0, ACC0,
+     &               ZR(IDEPL1), ZR(IVITE1), ZR(IACCE1), ZR(IVITE2),
+     &               FEXTE(1),FAMOR(1),FLIAI(1),
+     &               NCHAR, NVECA, LIAD, LIFO, MODELE,ENER,SOLVEU,
+     &               MATE, CARELE, CHARGE, INFOCH, FOMULT, NUMEDD,
+     &               DT, TEMPS,
+     &               ZR(IWK0), ZR(IWK1),
+     &               ARCHIV, NBTYAR, TYPEAR )
 C
 C 3.5. ==> VERIFICATION DU TEMPS DE CALCUL RESTANT
 C
@@ -359,7 +335,7 @@ C
            IF ( IPEPA .NE. NPATOT ) THEN
             ISTOP = 1
             VALI(1) = IGRPA
-            VALI(2) = IPEPA            
+            VALI(2) = IPEPA
             VALR(1) = TPS2(4)
             VALR(2) = TPS2(1)
             GOTO 3900
@@ -378,8 +354,8 @@ C ---------- FIN DE LA BOUCLE SUR LES NBPTPA "PETITS" PAS DE TEMPS
           VALR(2) = TPS1(1)
           GO TO 3900
       END IF
-C ------- FIN BOUCLE SUR LES GROUPES DE PAS DE TEMPS   
-   31 CONTINUE  
+C ------- FIN BOUCLE SUR LES GROUPES DE PAS DE TEMPS
+   31 CONTINUE
 C
  3900 CONTINUE
 C
@@ -390,25 +366,18 @@ C====
 C
       IF ( NBEXCL.NE.0 ) THEN
 C
-        DO 41 , IAUX = 1,NBEXCL
-          TYPEAR(IAUX) = TYP1(IAUX)
+        DO 41 , IEXCL = 1,NBEXCL
+          TYPEAR(IEXCL) = TYP1(IEXCL)
    41   CONTINUE
 C
-        JAUX = 0
-        DO 42 , NRORES = 0 , NBPASE
-
-          NRPASE = NRORES
-          IAUX = NEQ*NRPASE
+        ALARM = 0
 C
-          CALL DLARCH ( NRORES, INPSCO,
-     &                  NEQ, ISTOC, IARCHI, ' ',
-     &                  JAUX, IFM, TEMPS,
-     &                  NBEXCL, TYPEAR, MASSE,
-     &                  ZR(IDEPL1+IAUX), ZR(IVITE1+IAUX),
-     &                  ZR(IACCE1+IAUX), FEXTE(1+NEQ),
-     &                  FAMOR(1+NEQ), FLIAI(1+NEQ) )
-C
-   42   CONTINUE
+        CALL DLARCH ( RESULT,NEQ, ISTOC, IARCHI, ' ',
+     &                ALARM, IFM, TEMPS,
+     &                NBEXCL, TYPEAR, MASSE,
+     &                ZR(IDEPL1), ZR(IVITE1),
+     &                ZR(IACCE1), FEXTE(1+NEQ),
+     &                FAMOR(1+NEQ), FLIAI(1+NEQ) )
 C
       ENDIF
 C

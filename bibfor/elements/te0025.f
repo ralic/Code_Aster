@@ -3,9 +3,9 @@
       CHARACTER*16 OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 11/06/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,16 +22,12 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
 C     BUT: CALCUL DES DEFORMATIONS AUX POINTS D'INTEGRATION
-C          OU AUX NOEUDS DES ELEMENTS ISOPARAMETRIQUES 3D
+C          DES ELEMENTS ISOPARAMETRIQUES 3D
 
-C          OPTIONS : 'EPSI_ELNO'
-C                    'EPSI_ELGA'
-C                    'EPSG_ELNO'
+C          OPTIONS : 'EPSI_ELGA'
 C                    'EPSG_ELGA'
-C                    'EPME_ELNO  '
-C                    'EPME_ELGA  '
-C                    'EPMG_ELNO  '
-C                    'EPMG_ELGA  '
+C                    'EPME_ELGA'
+C                    'EPMG_ELGA'
 
 C     ENTREES  ---> OPTION : OPTION DE CALCUL
 C              ---> NOMTE  : NOM DU TYPE ELEMENT
@@ -54,25 +50,16 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       INTEGER JGANO,NBSIGM,NDIM,NNO,I,NNOS,NPG,IPOIDS,IVF,IDFDE,
-     &        NBSIG,IGAU,ISIG,INO,IGEOM,IDEPL,
+     &        NBSIG,IGAU,ISIG,IGEOM,IDEPL,
      &        ITEMPS,IDEFO,IMATE,IRET,IDIM
-      REAL*8 EPSM(162),EPSNO(162),REPERE(7),BARY(3)
-      REAL*8 NHARM,INSTAN,ZERO,S
+      REAL*8 EPSM(162),REPERE(7),BARY(3)
+      REAL*8 NHARM,INSTAN,ZERO
 C DEB ------------------------------------------------------------------
 
 C ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
 C ---- GEOMETRIE ET INTEGRATION
 C      ------------------------
-      IF (OPTION(6:9).EQ.'ELGA') THEN
-        CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
-      ELSE IF (OPTION(6:9).EQ.'ELNO') THEN
-C       -- ON AURAIT AIME PRENDRE 'NOGA' MAIS SI IL EXISTE DE
-C          L'HYDRATATION, IL FAUT SE SOUMETTRE ...
-        CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
-      ELSE
-        CALL ASSERT(.FALSE.)
-      END IF
-
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 
 C ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
 C      -----------------------------------------
@@ -105,7 +92,7 @@ C      -----------------------------------
 
 C ---- RECUPERATION DU VECTEUR DES DEFORMATIONS EN SORTIE :
 C      --------------------------------------------------
-      CALL JEVECH('PDEFORR','E',IDEFO)
+      CALL JEVECH('PDEFOPG','E',IDEFO)
 
 C ---- CALCUL DES DEFORMATIONS MECANIQUES AUX POINTS D'INTEGRATION
 C ---- DE L'ELEMENT , I.E. SI ON NOTE EPSI_MECA = B*U
@@ -134,38 +121,15 @@ C     COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
      +            INSTAN,
      +            ZI(IMATE), REPERE, NHARM, OPTION, EPSM)
 
-      IF (OPTION(6:9).EQ.'ELGA') THEN
 C         --------------------
 C ---- AFFECTATION DU VECTEUR EN SORTIE AVEC LES DEFORMATIONS AUX
 C ---- POINTS D'INTEGRATION :
 C      --------------------
-        DO 80 IGAU = 1,NPG
-          DO 70 ISIG = 1,NBSIG
-            ZR(IDEFO+NBSIG* (IGAU-1)+ISIG-1) = EPSM(NBSIG* (IGAU-1)+
-     &        ISIG)
-   70     CONTINUE
-   80   CONTINUE
-
-      ELSE IF (OPTION(6:9).EQ.'ELNO') THEN
-
-C ---- DEFORMATIONS AUX NOEUDS :
-C      -----------------------
-
-        CALL PPGAN2(JGANO,1,NBSIG,EPSM,EPSNO)
-        S = 0.D0
-
-C ---- AFFECTATION DU VECTEUR EN SORTIE AVEC LES DEFORMATIONS AUX
-C ---- NOEUDS :
-C      ------
-        DO 100 INO = 1,NNO
-          DO 90 ISIG = 1,NBSIG
-            ZR(IDEFO+NBSIG* (INO-1)+ISIG-1) = EPSNO(NBSIG* (INO-1)+ISIG)
-            S = S + EPSNO(NBSIG* (INO-1)+ISIG)
-   90     CONTINUE
-  100   CONTINUE
-
-      ELSE
-        CALL ASSERT(.FALSE.)
-      END IF
-
+      DO 80 IGAU = 1,NPG
+        DO 70 ISIG = 1,NBSIG
+          ZR(IDEFO+NBSIG* (IGAU-1)+ISIG-1) = EPSM(NBSIG* (IGAU-1)+
+     &      ISIG)
+   70   CONTINUE
+   80 CONTINUE
+C
       END

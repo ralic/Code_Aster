@@ -1,22 +1,22 @@
-# MODIF  DATE 24/10/2011   AUTEUR CORUS M.CORUS 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE SOUS STRUCTURATION DYNAMIQUE : PLAQUE MINCE APPUYEE-APPUYEE
 # sdls106b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
 # CAS_TEST__: PLAQUERITZ
@@ -28,7 +28,7 @@
 
 #           PLAQUE APPUYEE SUR SES BORDS DECOUPEE EN 2 PARTIES
 
-#           AVEC INTERFACES DE TYPE CRAIG-BAMPTON 
+#           AVEC INTERFACES DE TYPE CRAIG-BAMPTON
 
 #           MAILLAGES INCOMPATIBLES ET MODES DE COUPLAGE
 
@@ -48,10 +48,10 @@ DEBUT(CODE=_F(NOM='SDLS106B', NIV_PUB_WEB='INTERNET'),
 PRE_IDEAS(UNITE_MAILLAGE=20,
           UNITE_IDEAS=19,
           );
-          
+
 PRE_IDEAS(UNITE_MAILLAGE=30,
           UNITE_IDEAS=29,
-          );         
+          );
 
 MAILLA1=LIRE_MAILLAGE(UNITE=20,FORMAT='ASTER',)
 MAILLA2=LIRE_MAILLAGE(UNITE=30,FORMAT='ASTER',)
@@ -66,8 +66,8 @@ MODELE2=AFFE_MODELE(MAILLAGE=MAILLA2,
                     AFFE=_F( GROUP_MA = 'CALCUL',
                              PHENOMENE = 'MECANIQUE',
                              MODELISATION = 'DKT'),);
-                             
-                             
+
+
 #
 MATER=DEFI_MATERIAU(  ELAS=_F( E = 2.1E11,  NU = 0.30,  RHO = 7800.0))
 
@@ -77,7 +77,7 @@ CHAMAT1=AFFE_MATERIAU(  MAILLAGE=MAILLA1,
                                     MATER = MATER))
 CHAMAT2=AFFE_MATERIAU(  MAILLAGE=MAILLA2,
                        AFFE=_F( GROUP_MA = 'CALCUL',
-                                    MATER = MATER))                                    
+                                    MATER = MATER))
 #
 PARAM1=AFFE_CARA_ELEM(  MODELE=MODELE1,
                             COQUE=_F( EPAIS = 0.01,
@@ -197,7 +197,7 @@ MODESTA1=MODE_STATIQUE(MATR_RIGI=RAID_1,
                                      TOUT_CMP='OUI',
                                      NBMOD=20,
                                      SHIFT=1.,),);
- 
+
 MODESTA2=MODE_STATIQUE(MATR_RIGI=RAID_2,
                         MATR_MASS=MASS_2,
                         MODE_INTERF=_F(GROUP_NO = 'BLOQUE',
@@ -210,7 +210,7 @@ BAMO1_CL=DEFI_BASE_MODALE( RITZ=( _F( MODE_MECA = MODES_1),
                                   _F( MODE_INTF = MODESTA1,
                                       NMAX_MODE = 999)),
                            ORTHO='OUI',
-                           MATRICE=MASS_1,           
+                           MATRICE=MASS_1,
                            INTERF_DYNA=LINT1_CL,
                            NUME_REF=NUMDDL_1)
 
@@ -299,7 +299,7 @@ SQUEL=DEFI_SQUELETTE(  MODELE_GENE=MODEGE,SOUS_STRUC=(
 #
 MODGLO=REST_SOUS_STRUC(RESU_GENE=RESGEN,
                        SQUELETTE=SQUEL,
-                       TOUT_ORDRE='OUI',
+
                        TOUT_CHAM='OUI')
 
 #
@@ -308,14 +308,14 @@ MODGLO=REST_SOUS_STRUC(RESU_GENE=RESGEN,
 
 MODGLSS=REST_SOUS_STRUC(   RESU_GENE=RESGEN,
                            SOUS_STRUC='CARRE2',
-                           TOUT_ORDRE='OUI')
+                           )
 
 #
 #  TEST DE CALC_ELEM SUR UN RESULTAT RESTITUE
 #
 
-MODGLSS=CALC_ELEM(RESULTAT= MODGLSS,reuse=MODGLSS,
-                   OPTION='SIEF_ELGA')
+MODGLSS=CALC_CHAMP(RESULTAT=MODGLSS,reuse=MODGLSS,CONTRAINTE=('SIEF_ELGA'))
+
 
 
 TEST_RESU(RESU=(_F( RESULTAT = MODGLO, PARA = 'FREQ',

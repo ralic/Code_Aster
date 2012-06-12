@@ -2,9 +2,9 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -230,8 +230,8 @@ C BOUCLE DE CALCUL DES MACS
         DO 30 I = 1 , NBMOD1
           PII=0.D0
           IF (MATR.NE.' ') THEN
-            CALL MCMULT ( 'ZERO', IMATRA, ZC(IDBAS1+(I-1)*NEQ),
-     &                    'R',ZC(IDVEC1),1)
+            CALL MCMULT ( 'ZERO',IMATRA,ZC(IDBAS1+(I-1)*NEQ),ZC(IDVEC1)
+     &                    ,1,.TRUE.)
 
             DO 10 IDDL = 1,NEQ
               IF(ZI(IDDEEQ-1+2*IDDL).LE.0)
@@ -256,8 +256,8 @@ C PB AVEC ZDOTC DE BLAS POUR CERTAIN COMPILO -> CALCUL DIRECT
             PIJ=0.D0
             PJJ=0.D0
             IF (MATR.NE.' ') THEN
-              CALL MCMULT ( 'ZERO', IMATRA, ZC(IDBAS2+(J-1)*NEQ),
-     &                    'C',ZC(IDVEC2),1)
+              CALL MCMULT ( 'ZERO',IMATRA,ZC(IDBAS2+(J-1)*NEQ),
+     &                      ZC(IDVEC2),1,.TRUE.)
 
               DO 50 IDDL = 1,NEQ
                 IF(ZI(IDDEEQ-1+2*IDDL).LE.0)
@@ -280,8 +280,8 @@ C PB AVEC ZDOTC DE BLAS POUR CERTAIN COMPILO -> CALCUL DIRECT
                 ZC(IDBAS3-1+IDDL)=ZC(IDBAS1+(I-1)*NEQ-1+IDDL)
      &                          -ZC(IDBAS2+(J-1)*NEQ-1+IDDL)
  115          CONTINUE
-              CALL MCMULT ( 'ZERO', IMATRA, ZC(IDBAS3),
-     &                    'C',ZC(IDVEC3),1)
+              CALL MCMULT ( 'ZERO',IMATRA,ZC(IDBAS3),ZC(IDVEC3),1,
+     &                      .TRUE.)
               DO 116 IDDL = 1,NEQ
                 IF(ZI(IDDEEQ-1+2*IDDL).LE.0)
      &             ZC(IDVEC3-1+IDDL) = DCMPLX(0.D0,0.D0)
@@ -333,8 +333,8 @@ C BOUCLE DE CALCUL DES MACS
         DO 130 I = 1 , NBMOD1
           PII=0.D0
           IF (MATR.NE.' ') THEN
-            CALL MRMULT ( 'ZERO', IMATRA, ZR(IDBAS1+(I-1)*NEQ),
-     &                    'R',ZR(IDVEC1),1)
+            CALL MRMULT ( 'ZERO',IMATRA,ZR(IDBAS1+(I-1)*NEQ),
+     &                    ZR(IDVEC1),1,.TRUE.)
             CALL ZERLAG ( ZR(IDVEC1), NEQ, ZI(IDDEEQ) )
           ELSE
             CALL DCOPY(NEQ,ZR(IDBAS1+(I-1)*NEQ),1,ZR(IDVEC1),1)
@@ -349,8 +349,8 @@ C BOUCLE DE CALCUL DES MACS
             PIJ=0.D0
             PJJ=0.D0
             IF (MATR.NE.' ') THEN
-              CALL MRMULT ( 'ZERO', IMATRA, ZR(IDBAS2+(J-1)*NEQ),
-     &                    'R',ZR(IDVEC2),1)
+              CALL MRMULT ( 'ZERO',IMATRA,ZR(IDBAS2+(J-1)*NEQ),
+     &                    ZR(IDVEC2),1,.TRUE.)
               CALL ZERLAG ( ZR(IDVEC2), NEQ, ZI(IDDEEQ) )
             ELSE
               CALL DCOPY(NEQ,ZR(IDBAS2+(J-1)*NEQ),1,ZR(IDVEC2),1)
@@ -362,8 +362,8 @@ C BOUCLE DE CALCUL DES MACS
             IF (IERI) THEN
               CALL VDIFF(NEQ,ZR(IDBAS1+(I-1)*NEQ),
      &                     ZR(IDBAS2+(J-1)*NEQ),ZR(IDBAS3))
-              CALL MRMULT ( 'ZERO', IMATRA, ZR(IDBAS3),
-     &                    'R',ZR(IDVEC3),1)
+              CALL MRMULT ( 'ZERO',IMATRA,ZR(IDBAS3),
+     &                    ZR(IDVEC3),1,.TRUE.)
               CALL ZERLAG ( ZR(IDVEC3), NEQ, ZI(IDDEEQ) )
 
               PIJ = ABS(DDOT( NEQ,ZR(IDBAS3) ,1,

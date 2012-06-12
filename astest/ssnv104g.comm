@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE CONTACT DE DEUX SPHERES
 # ssnv104g.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -86,7 +86,7 @@ CHA3=DEFI_CONTACT(MODELE       = MO,
                   LISSAGE      = 'OUI',
                   ZONE=_F(  APPARIEMENT = 'MAIT_ESCL',
                                ALGO_CONT = 'CONTRAINTE',
-                               
+
                                NORMALE = 'MAIT_ESCL',
                                GROUP_MA_MAIT = 'CONTBAS',
                                GROUP_MA_ESCL = 'CONTHAUT'),
@@ -135,11 +135,8 @@ RESU=STAT_NON_LINE(
                               INFO=2
               )
 
-RESU=CALC_ELEM( reuse=RESU,
-                            OPTION=(
-                  'SIGM_ELNO',  'VARI_ELNO',),
-                          RESULTAT=RESU,
-              )
+RESU=CALC_CHAMP(reuse=RESU,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=RESU)
+
 
 #
 SIELNO1=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
@@ -326,11 +323,8 @@ RESUF=STAT_NON_LINE(
                               INFO=2
               )
 
-RESUF=CALC_ELEM( reuse=RESUF,
-                            OPTION=(
-                  'SIGM_ELNO',  'VARI_ELNO',),
-                          RESULTAT=RESUF,
-              )
+RESUF=CALC_CHAMP(reuse=RESUF,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=RESUF)
+
 
 #
 SIELNO11=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',

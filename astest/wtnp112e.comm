@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # ======================================================================
 # TITRE RESATURATION D UNE COLONNE TEST THHD, 2D ,
 # wtnp112e.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
@@ -240,12 +240,8 @@ RESU0=STAT_NON_LINE(
                 ARCHIVAGE  = _F(LIST_INST = LI_AR),
               );
 
-RESU0=CALC_ELEM(reuse =RESU0,
+RESU0=CALC_CHAMP(reuse=RESU0,CONTRAINTE=('SIEF_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=RESU0)
 
-
-             TOUT_ORDRE='OUI',
-             OPTION=('SIEF_ELNO','VARI_ELNO'),
-             RESULTAT=RESU0,);
 
 TRB=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                             GROUP_NO=('BASS'),

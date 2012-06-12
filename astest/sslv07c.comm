@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE PARALLELIPIPEDE SOUS SON PROPRE POIDS (HEXA8 FIN)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -63,10 +63,8 @@ RESU=MECA_STATIQUE(MODELE=MO,
                    EXCIT=(_F(CHARGE=CH1,),
                           _F(CHARGE=CH2,),),);
 
-RESU=CALC_ELEM( reuse= RESU ,RESULTAT= RESU ,
+RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CONTRAINTE=('SIGM_ELNO'))
 
-                             OPTION=('SIGM_ELNO',),
-                )
 
 #---------------------------------------------------------------------
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE FERRAILLAGE D'UNE CUVE CARREE SELON LA METHODE DE CAPRA ET MAURY
 # ssls135a.para = tps_job 30 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -141,9 +141,8 @@ Solution=MECA_STATIQUE(MODELE=FEMLin,
                               _F(CHARGE=surchrep,),),);
 
 # calculs elementaires, en complement de resultats
-Solution=CALC_ELEM(reuse =Solution,
-                   RESULTAT=Solution,
-                   OPTION=('EFGE_ELNO','SIGM_ELNO',),);
+Solution=CALC_CHAMP(reuse=Solution,RESULTAT=Solution,CONTRAINTE=('EFGE_ELNO','SIGM_ELNO'))
+
 
 # calculs supplementaires pour le ferraillage
 Solution=CALC_FERRAILLAGE(reuse =Solution,

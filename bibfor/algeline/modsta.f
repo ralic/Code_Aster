@@ -7,9 +7,9 @@
       COMPLEX*16        CBID
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -93,7 +93,8 @@ C
      &                                   ZI(JDDL+IND+IN) * COEF(IN2+IC)
  14            CONTINUE
  12         CONTINUE
-            CALL MRMULT('ZERO',LMATM,ZR(JDDR),'R',ZRMOD(1,IMOD),1)
+            CALL MRMULT('ZERO',LMATM,ZR(JDDR),ZRMOD(1,IMOD),1,.TRUE.
+     &)
             CALL JEDETR('&&MODSTA.POSITION_DDR')
 C
  10      CONTINUE
@@ -121,7 +122,8 @@ C
                   ZR(JDDR+ILA2-1) = UN
                   CALL RESOUD(MATFAC,MATPRE,' ',SOLVEU,' ',' ',' ',
      &                  ' ',1,ZR(JDDR),CBID,.TRUE.)
-                  CALL MRMULT('ZERO',LMATM,ZR(JDDR),'R',ZRMOD(1,IMOD),1)
+                  CALL MRMULT('ZERO',LMATM,ZR(JDDR),ZRMOD(1,IMOD),1,
+     &.TRUE.)
                   CALL JEDETR('&&MODSTA.POSITION_DDR')
                ENDIF
             ENDIF

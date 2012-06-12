@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 20/09/2011   AUTEUR PROIX J-M.PROIX 
+#& MODIF COMMANDE  DATE 11/06/2012   AUTEUR PROIX J-M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -54,42 +54,70 @@ SIMU_POINT_MAT=MACRO(nom="SIMU_POINT_MAT",
        PAS_ARCH        =SIMP(statut='f',typ='I' ),
        PRECISION       =SIMP(statut='f',typ='R',defaut= 1.0E-6),
                            ),
+     # on permet certaines variables de commandes scalaires, définies par une fonction du temps
+     # on permet ici seulementn celles qui sont validees
+      AFFE_VARC    = FACT(statut='f',max='**',
+         NOM_VARC    =SIMP(statut='o',typ='TXM', into=("TEMP","IRRA","SECH")),
+         VALE_FONC   = SIMP(statut='f',typ=(fonction_sdaster,formule) ),
+         VALE_REF    = SIMP(statut='f',typ='R'),
+                         ), 
+        # un mot clé caché qui ne sert qu'à boucler sur les VARC possibles :
+      LIST_NOM_VARC =SIMP(statut='c',typ='TXM', defaut=("TEMP","IRRA","SECH")),
+                  
                ),
    b_EF = BLOC(condition="SUPPORT ==  'ELEMENT'",fr="Simulation sur un élément fini",
       MODELISATION  =SIMP(statut='f',typ='TXM',max=1,into=("3D","C_PLAN","D_PLAN",)),
       RECH_LINEAIRE   =C_RECH_LINEAIRE(),
       ARCHIVAGE       =C_ARCHIVAGE(),
-                 ),
-   # on permet certaines variables de commandes scalaires, définies par une fonction du temps
-   b_EFV = BLOC(condition="SUPPORT ==  'ELEMENT'",fr="variables de commande sur un élément fini",
-         # un mot clé caché qui ne sert qu'à boucler sur les VARC possibles :
-         LIST_NOM_VARC =SIMP(statut='c',typ='TXM', defaut=("TEMP","CORR","IRRA","HYDR","SECH","EPSA",
-                                                           "M_ACIER","M_ZIRC","NEUT1","NEUT2")),
+      SUIVI_DDL       =C_SUIVI_DDL(),
+                     
+     # on permet certaines variables de commandes scalaires, définies par une fonction du temps
+     # a priori toutes doivent fonctionner
+      AFFE_VARC    = FACT(statut='f',max='**',
+         NOM_VARC        =SIMP(statut='o',typ='TXM', into=("TEMP","CORR","IRRA","HYDR","SECH","M_ACIER","M_ZIRC",
+                                                           "EPSA","NEUT1","NEUT2")),
+         VALE_FONC   = SIMP(statut='f',typ=(fonction_sdaster,formule) ),
+         VALE_REF    = SIMP(statut='f',typ='R'),
+ 
+             b_ZIRC = BLOC(condition="NOM_VARC=='M_ZIRC'",
+              V1   = SIMP(statut='o',typ=(fonction_sdaster,formule) ),
+              V2   = SIMP(statut='o',typ=(fonction_sdaster,formule) ),
+              V3   = SIMP(statut='o',typ=(fonction_sdaster,formule) ),
+              V4   = SIMP(statut='o',typ=(fonction_sdaster,formule) ),
+                          ),
+ 
+             b_ACIER = BLOC(condition="NOM_VARC=='M_ACIER'",
+              V1   = SIMP(statut='o',typ=(fonction_sdaster,formule) ),
+              V2   = SIMP(statut='o',typ=(fonction_sdaster,formule) ),
+              V3   = SIMP(statut='o',typ=(fonction_sdaster,formule) ),
+              V4   = SIMP(statut='o',typ=(fonction_sdaster,formule) ),
+              V5   = SIMP(statut='o',typ=(fonction_sdaster,formule) ),
+              V6   = SIMP(statut='o',typ=(fonction_sdaster,formule) ),
+              V7   = SIMP(statut='o',typ=(fonction_sdaster,formule) ),
+                          ),
+                         ), 
+        # un mot clé caché qui ne sert qu'à boucler sur les VARC possibles :
+      LIST_NOM_VARC =SIMP(statut='c',typ='TXM', defaut=("TEMP","CORR","IRRA","HYDR","SECH","EPSA",
+                                                              "M_ACIER","M_ZIRC","NEUT1","NEUT2")),
+                  
+      SIGM_IMPOSE=FACT(statut='f',
+            SIXX = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+            SIYY = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+            SIZZ = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+            SIXY = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+            SIXZ = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+            SIYZ = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+                       ),
+      EPSI_IMPOSE=FACT(statut='f',
+            EPXX = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+            EPYY = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+            EPZZ = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+            EPXY = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+            EPXZ = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+            EPYZ = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+                       ),
 
-         AFFE_VARC    = FACT(statut='f',max='**',
-          NOM_VARC        =SIMP(statut='o',typ='TXM', into=("TEMP","CORR","IRRA","HYDR","SECH","M_ACIER","M_ZIRC",
-                                                            "EPSA","NEUT1","NEUT2")),
-          VALE_FONC   = SIMP(statut='o',typ=(fonction_sdaster,formule) ),
-          VALE_REF    = SIMP(statut='f',typ='R'),
-         ),
-
-        SIGM_IMPOSE=FACT(statut='f',
-              SIXX = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
-              SIYY = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
-              SIZZ = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
-              SIXY = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
-              SIXZ = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
-              SIYZ = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
-                         ),
-        EPSI_IMPOSE=FACT(statut='f',
-              EPXX = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
-              EPYY = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
-              EPZZ = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
-              EPXY = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
-              EPXZ = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
-              EPYZ = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
-                         ),
-               ),
+            ),
    b_COEF = BLOC(condition="SUPPORT ==  'POINT'",fr="matrice de coefficients",
      regles = (PRESENT_ABSENT('SIGM_IMPOSE','MATR_C1','MATR_C2','VECT_IMPO'),
                PRESENT_ABSENT('EPSI_IMPOSE','MATR_C1','MATR_C2','VECT_IMPO'),
@@ -98,7 +126,7 @@ SIMU_POINT_MAT=MACRO(nom="SIMU_POINT_MAT",
                PRESENT_ABSENT('VECT_IMPO', 'SIGM_IMPOSE','EPSI_IMPOSE'),
                EXCLUS('EPSI_IMPOSE','GRAD_IMPOSE'),
                EXCLUS('SIGM_IMPOSE','GRAD_IMPOSE'),
-     ),
+               ),
 
      SIGM_IMPOSE=FACT(statut='f',
            SIXX = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
@@ -162,6 +190,7 @@ SIMU_POINT_MAT=MACRO(nom="SIMU_POINT_MAT",
    VARI_INIT=FACT(statut='f',
           VALE = SIMP(statut='o',typ='R',max='**'),
                      ),
+
    INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
 )
 

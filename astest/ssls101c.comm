@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2012   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE CIRCULAIRE POSEE SOUS PRESSION  147 SHB8
 # ssls101c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -140,7 +140,7 @@ CHFC=AFFE_CHAR_MECA_F(MODELE=MODEL,
 
 CHPE=AFFE_CHAR_MECA(MODELE=MODEL,
                       PESANTEUR=_F(GRAVITE= 10.,
-                                   DIRECTION=(0., 0., -10., ), ),) 
+                                   DIRECTION=(0., 0., -10., ), ),)
 
 MATELEM=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                        MODELE=MODEL,
@@ -430,9 +430,8 @@ RESU=CREA_RESU(OPERATION='AFFE',
                         ),
                 );
 
-RESU=CALC_ELEM( reuse=RESU, RESULTAT=RESU, 
-                          OPTION=('SIEF_ELGA'),
-                             )
+RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CONTRAINTE=('SIEF_ELGA'))
+
 
 #--------------------------------------------------------------------
 # expression des contraintes a partir du moment SIXX=MXX*12*z/(h*h*h)

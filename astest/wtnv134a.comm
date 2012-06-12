@@ -1,4 +1,4 @@
-# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 #
 # TITRE    ESSAI TRIAXIAL NON DRAINE CYCLIQUE AVEC LA LOI
 # wtnv134a.para = tps_job 250 mem_job 391Mo ncpus 1 liste_test S
@@ -295,11 +295,8 @@ U1=STAT_NON_LINE(MODELE=MODELE,
 #-------------------------
 #    TEST_RESU AU POINT C
 #-------------------------
-U1=CALC_ELEM(reuse      = U1,
+U1=CALC_CHAMP(reuse=U1,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('EPSI_ELNO'),RESULTAT=U1)
 
-
-             OPTION     = ('SIGM_ELNO','EPSI_ELNO','VARI_ELNO'),
-             RESULTAT   = U1);
 
 U1=CALC_CHAMP(reuse      = U1,
 
@@ -626,11 +623,8 @@ U2=STAT_NON_LINE(MODELE=MODELE,
 #-------------------------
 #    TEST_RESU AU POINT C
 #-------------------------
-U2=CALC_ELEM(reuse      = U2,
+U2=CALC_CHAMP(reuse=U2,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('EPSI_ELNO'),RESULTAT=U2)
 
-
-             OPTION     = ('SIGM_ELNO','EPSI_ELNO','VARI_ELNO'),
-             RESULTAT   = U2);
 
 U2=CALC_CHAMP(reuse      = U2,
 

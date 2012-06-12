@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 11/06/2012   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -92,10 +92,9 @@ MODE_LOCAL__
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
     EVOISIN  = VOISIN   ELEM__         (V0       V1       V2       V3       V4       V5       V6
                                         T0       T1       T2       T3       T4       T5       T6       )
-    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30])
-    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30])
+    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30]    )
+    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30]    )
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
-
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
     ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    )
 
@@ -127,11 +126,9 @@ OPTION__
     ENER_TOTALE         -1    IN__    OUT__    XXXXXX   XXXXXX
     EPOT_ELEM           -1    IN__    OUT__    XXXXXX   XXXXXX
     EPSI_ELGA           453   IN__   NDEPLAR  PDEPLAR  NGEOMER  PGEOMER
-                              OUT__  EDEFOPG  PDEFORR
-                                     EDEFOPC  PDEFORC
-    EPSI_ELNO           453   IN__   NDEPLAR  PDEPLAR  NGEOMER  PGEOMER
-                              OUT__  EDEFONO  PDEFORR
-                                     EDEFONC  PDEFORC
+                              OUT__  EDEFOPG  PDEFOPG  EDEFOPC  PDEFOPC
+    EPSI_ELNO           4     IN__   EDEFOPG  PDEFOPG
+                              OUT__  EDEFONO  PDEFONO  EDEFONC  PDEFONC
     ERME_ELEM           375   IN__   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  EVOISIN  PVOISIN  CMATERC  PMATERC
                                      CREFERI  PFORCE   CREFERI  PPRESS   CPESANR  PPESANR  CROTATR  PROTATR
                                      EFORCER  PFRVOLU  CFORCEF  PFFVOLU  ECONTNO  PCONTNO

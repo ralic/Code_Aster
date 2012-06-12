@@ -1,4 +1,4 @@
-# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE EN C.P. (TET10)
 # sslv04d.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -66,9 +66,8 @@ RESU=MECA_STATIQUE(         MODELE=MO,    CHAM_MATER=CM,
                           EXCIT=_F(  CHARGE = CH),
                       )
 
-CALC_ELEM( reuse= RESU ,RESULTAT= RESU ,
+CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CONTRAINTE=('SIGM_ELNO'),DEFORMATION=('EPSI_ELNO'))
 
-                      OPTION=('EPSI_ELNO', 'SIGM_ELNO',))
 
 CALC_CHAMP( reuse=RESU,                      RESULTAT=RESU,
                      DEFORMATION='EPSI_NOEU',CONTRAINTE='SIGM_NOEU')
@@ -265,10 +264,8 @@ TEST_RESU(RESU=(
 #----------------------------------------------------------------
 #
 
-CALC_ELEM(reuse= RESU ,
-          RESULTAT= RESU ,
-          GROUP_MA='PRES',
-          OPTION='SIRO_ELEM',);
+CALC_CHAMP(reuse=RESU,RESULTAT=RESU,GROUP_MA='PRES',CONTRAINTE=('SIRO_ELEM'))
+
 
 
 

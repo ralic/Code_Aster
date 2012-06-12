@@ -1,7 +1,7 @@
       SUBROUTINE LISSEN(LISCHA,NBPASE,INPSCO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/01/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -56,78 +56,6 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-      INTEGER      NRPASE
-      INTEGER      IAUX,JAUX
-      CHARACTER*8  NOPASE,K8BID,CHARGE
-      INTEGER      NBCHAR,ICHAR
-      INTEGER      IRET,IBID
-      INTEGER      CODCHA
-      LOGICAL      LISICO,LNEUM,LONDP,LSIGI,LDUAL
-      CHARACTER*24 TYPEPS,MOTCLE,K24BID
-      CHARACTER*24 NOMLIS
-      INTEGER      JLISCI
-      CHARACTER*13 PREFOB
-      INTEGER      ICH,NBCH,IPOSIT,INDXCH
-      LOGICAL      LEXIS,LISEXI
-C
-C ----------------------------------------------------------------------
-C
-      CALL JEMARQ()
-C
-      CALL LISNNB(LISCHA,NBCHAR)
-C
-      DO 10 NRPASE = 1,NBPASE
-        IAUX   = NRPASE
-        JAUX   = 1
-        CALL PSNSLE(INPSCO,IAUX  ,JAUX  ,NOPASE)
-        IF (NOPASE.NE.' ') THEN
-          DO 15 ICHAR = 1,NBCHAR
-            CALL LISLCH(LISCHA,ICHAR ,CHARGE)
-            CALL LISLCO(LISCHA,ICHAR ,CODCHA)
-            CALL LISLLC(LISCHA,ICHAR ,PREFOB)
-            CALL PSGENC(CHARGE,NOPASE,K8BID ,IRET  )
-            IF (IRET.EQ.0) THEN
-              LDUAL  = LISICO('DIRI_DUAL'    ,CODCHA)
-              LNEUM  = LISICO('NEUM_MECA'    ,CODCHA)
-              LONDP  = LISICO('ONDE_PLANE'   ,CODCHA)
-              LSIGI  = LISICO('SIGM_INTERNE' ,CODCHA)
-              TYPEPS = ' '
-              IF (LDUAL) THEN
-                TYPEPS = 'DIRICHLE'
-              ELSEIF (LNEUM) THEN
-                TYPEPS = 'FORCE'
-                NOMLIS = '&&LISSEN.NOMLIS'
-                CALL LISDEF('POEC','NEUM_MECA',IBID  ,K8BID ,IPOSIT)
-                CALL LISDEF('IDNS',NOMLIS,IPOSIT,K8BID ,NBCH  )
-                CALL JEVEUO(NOMLIS,'L',JLISCI)
-                DO 30 ICH = 1,NBCH
-                  INDXCH = ZI(JLISCI-1+ICH)
-                  LEXIS  = LISEXI(PREFOB,INDXCH)
-                  IF (LEXIS) THEN
-                    CALL LISDEF('MOTC',K24BID,INDXCH,MOTCLE,IBID  )
-                    IF (MOTCLE.EQ.'PESANTEUR') THEN
-                      TYPEPS = '.PESAN'
-                    ELSEIF (MOTCLE.EQ.'ROTATION') THEN
-                      TYPEPS = '.ROTAT'
-                    ELSEIF (MOTCLE.EQ.'EPSI_INIT') THEN
-                      TYPEPS = '.EPSIN'
-                    ENDIF
-                  ENDIF
-  30            CONTINUE
-                CALL JEDETR(NOMLIS)
-              ELSEIF (LONDP) THEN
-                TYPEPS = '.ONDPL'
-              ELSEIF (LSIGI) THEN
-                TYPEPS = '.SIINT'
-              ENDIF
-              IF (TYPEPS.EQ.' ') CALL U2MESS('F','SENSIBILITE_93')
-              CALL PSTYPA(NBPASE,INPSCO,CHARGE,NOPASE,
-     &                    TYPEPS)
-C
-            ENDIF
-  15      CONTINUE
-        ENDIF
-  10  CONTINUE
-C
-      CALL JEDEMA()
+C A RESORBER
+      CALL ASSERT(.FALSE.)
       END

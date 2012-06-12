@@ -1,4 +1,4 @@
-# MODIF  DATE 10/04/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE NON-REGRESSION D'ASTER : THERMIQUE PLAN
 # RESPONSABLE PELLET J.PELLET
 # ttnp200a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
@@ -228,10 +228,8 @@ POT_ELRE=CREA_RESU(OPERATION='AFFE', TYPE_RESU='EVOL_THER',
                    NOM_CHAM='TEMP',
                    AFFE=_F(  CHAM_GD = CHAMNO4, INST = 4.,MODELE=MO,CHAM_MATER=CHMAT),
                                  )
-CALC_ELEM(reuse=POT_ELRE,
-          RESULTAT=POT_ELRE,
-          OPTION='SOUR_ELGA',
-          )
+CALC_CHAMP(reuse=POT_ELRE,RESULTAT=POT_ELRE,THERMIQUE=('SOUR_ELGA'))
+
 
 TEST_RESU(RESU=(
       _F( RESULTAT = POT_ELRE,
@@ -390,10 +388,8 @@ THL10=THER_LINEAIRE(        MODELE=MO,
                            INCREMENT=_F(  LIST_INST = LR1),
                            ETAT_INIT=_F( VALE = 0.) )
 
-THL10=CALC_ELEM(reuse=THL10,
-                          OPTION=( 'FLUX_ELNO',
-                                   'FLUX_ELGA',  ),
-                    RESULTAT=THL10               )
+THL10=CALC_CHAMP(reuse=THL10,THERMIQUE=('FLUX_ELNO','FLUX_ELGA'),RESULTAT=THL10)
+
 
 THL10=CALC_META(reuse=THL10,
                 RESULTAT=THL10,

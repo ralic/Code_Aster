@@ -1,9 +1,10 @@
       SUBROUTINE TUSIEF(OPTION,NOMTE,NBRDDL,B,VIN,MAT,PASS,VTEMP)
       IMPLICIT NONE
-C MODIF ELEMENTS  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
+C ----------------------------------------------------------------------
+C MODIF ELEMENTS  DATE 11/06/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,8 +22,10 @@ C ======================================================================
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 
-C   FONCTION REALISEE:  CALCUL DES OPTIONS EPSI_ELGA,DEGE_ELNO
-C                          ET SIEF_ELGA POUR UN TUYAU
+C   FONCTION REALISEE:  CALCUL DES OPTIONS EPSI_ELGA,
+C                                          DEGE_ELGA,
+C                                          DEGE_ELNO,
+C                                          SIEF_ELGA POUR UN TUYAU
 C    - ARGUMENTS:
 C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
@@ -41,7 +44,7 @@ C ......................................................................
       REAL*8 VTEMP(NBRDDL),PASS(NBRDDL,NBRDDL),PGL4(3,3)
       INTEGER NNO,NPG,NBCOU,NBSEC,ICOUDE,NDIM,JCOOPG,NSPG
       INTEGER IPOIDS,IVF,KPGS,K,NNOS
-      INTEGER IMATE,ICAGEP,IGEOM,NBPAR
+      INTEGER IMATE,ICAGEP,NBPAR
       INTEGER IGAU,ICOU,ISECT,I,J,JIN,JOUT,IRET,INDICE
       INTEGER LORIEN,ICOUD2,MMT,JNBSPI
       INTEGER NDDL,M,IDFDK,JDFD2,JGANO
@@ -72,22 +75,17 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       NBCOU = ZI(JNBSPI-1+1)
       NBSEC = ZI(JNBSPI-1+2)
 
-
-      CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PCAGEPO','L',ICAGEP)
+C     H = EPAISSEUR, A= RMOY
       H = ZR(ICAGEP+1)
       A = ZR(ICAGEP) - H/2.D0
-C A= RMOY, H = EPAISSEUR
-
 
       M = 3
       IF (NOMTE.EQ.'MET6SEG3') M = 6
 
-
       DO 10 I = 1,NPG
         XPG(I) = ZR(JCOOPG-1+I)
    10 CONTINUE
-
 
 C     --- RECUPERATION DES ORIENTATIONS ---
 
@@ -102,8 +100,7 @@ C     --- RECUPERATION DES ORIENTATIONS ---
         MMT = 1
       END IF
 
-
-       IF (OPTION.EQ.'SIEF_ELGA') THEN
+      IF (OPTION.EQ.'SIEF_ELGA') THEN
 
         CALL JEVECH('PMATERC','L',IMATE)
         NOMRES(1) = 'E'
@@ -148,7 +145,6 @@ C        DEFINITION DE LA MATRICE DE COMPORTEMENT C
         C(4,4) = G*CISAIL
 
 C        FIN DE LA CONSTRUCTION DE LA MATRICE DE COMPORTEMENT C
-
       END IF
 
       CALL JEVECH('PDEPLAR','L',JIN)
@@ -161,37 +157,36 @@ C        FIN DE LA CONSTRUCTION DE LA MATRICE DE COMPORTEMENT C
         CALL VLGGLC(NNO,NBRDDL,PGL1,PGL2,PGL3,PGL4,VIN,'GL',PASS,VTEMP)
       END IF
 
-       IF (OPTION.EQ.'EPSI_ELGA') THEN
+      IF (OPTION.EQ.'EPSI_ELGA') THEN
+        CALL JEVECH('PDEFOPG','E',JOUT)
+C
+      ELSE IF (OPTION.EQ.'DEGE_ELNO'.OR.
+     &          OPTION.EQ.'DEGE_ELGA') THEN
 
-        CALL JEVECH('PDEFORR','E',JOUT)
-
-       ELSE IF (OPTION.EQ.'DEGE_ELNO') THEN
-
-        CALL JEVECH('PDEFOGR','E',JOUT)
+        IF(OPTION.EQ.'DEGE_ELGA') CALL JEVECH('PDEFOPG','E',JOUT)
+        IF(OPTION.EQ.'DEGE_ELNO') CALL JEVECH('PDEFOGR','E',JOUT)
         CALL R8INIR(24,0.D0,DEGG,1)
         NBRDDL = NNO* (6+3+6* (M-1))
         NDDL = (6+3+6* (M-1))
-
-       ELSE IF (OPTION.EQ.'SIEF_ELGA') THEN
-
+C
+      ELSE IF (OPTION.EQ.'SIEF_ELGA') THEN
         CALL JEVECH('PCONTRR','E',JOUT)
-
+C
       ELSE
         CALL U2MESK('F','ELEMENTS4_49',1,OPTION)
+C
       END IF
-
-
-C BOUCLE SUR LES POINTS DE GAUSS
-
-C BOUCLE SUR LES POINTS DE SIMPSON DANS L'EPAISSEUR
 
       KPGS = 0
       SIGTH(1) = 0.D0
       SIGTH(2) = 0.D0
       NSPG=(2*NBSEC + 1)*(2*NBCOU + 1)
+
+C --- BOUCLE SUR LES POINTS DE GAUSS
+C ---- BOUCLE SUR LES POINTS DE SIMPSON DANS L'EPAISSEUR
       DO 120 IGAU = 1,NPG
-         IF (OPTION.EQ.'SIEF_ELGA') THEN
-C ATTENTION IRET NON INITIALISE PAR VERIFG
+        IF (OPTION.EQ.'SIEF_ELGA') THEN
+C         ATTENTION IRET NON INITIALISE PAR VERIFG
           IRET=0
           CALL VERIFG('RIGI',IGAU,NSPG,'+',ZI(IMATE),'ELAS',1,
      &                 EPSTHE,IRET)
@@ -200,11 +195,10 @@ C ATTENTION IRET NON INITIALISE PAR VERIFG
           AT2 = (C(2,1)+C(2,2))*EPSTHE
         END IF
 
-         IF (OPTION.NE.'DEGE_ELNO') THEN
-
+        IF ((OPTION.EQ.'SIEF_ELGA').OR.
+     &      (OPTION.EQ.'EPSI_ELGA'))    THEN
+C --- BOUCLE SUR LES POINTS DE SIMPSON SUR LA CIRCONFERENCE
           DO 100 ICOU = 1,2*NBCOU + 1
-
-C BOUCLE SUR LES POINTS DE SIMPSON SUR LA CIRCONFERENCE
 
             IF (MMT.EQ.0) THEN
               R = A
@@ -228,14 +222,13 @@ C                  FI = FI - OMEGA
      &                      RAYON,THETA,MMT,B)
               END IF
 
-               IF (OPTION.EQ.'EPSI_ELGA') THEN
-
+              IF (OPTION.EQ.'EPSI_ELGA') THEN
                 DO 80 I = 1,4
                   DO 70 J = 1,NBRDDL
                     MAT(I,J) = B(I,J)
    70             CONTINUE
    80           CONTINUE
-               ELSE IF (OPTION.EQ.'SIEF_ELGA') THEN
+              ELSE IF (OPTION.EQ.'SIEF_ELGA') THEN
                 SIGTH(1) = AT1
                 SIGTH(2) = AT2
                 CALL PROMAT(C,4,4,4,B,4,4,NBRDDL,MAT)
@@ -256,7 +249,7 @@ C  STOCKAGE DU VECTEUR VOUT
    90       CONTINUE
   100     CONTINUE
 
-         ELSE IF (OPTION.EQ.'DEGE_ELNO') THEN
+         ELSE IF (OPTION.EQ.'DEGE_ELNO'.OR.OPTION.EQ.'DEGE_ELGA') THEN
 C            DEFORMATIONS GENERALISEES DE POUTRE
 
           DO 110 K = 1,NNO
@@ -293,15 +286,20 @@ C              KZ=D(DRZ)/DX
 
   120 CONTINUE
 
-      IF (OPTION.EQ.'DEGE_ELNO') THEN
+C
+
+      IF (OPTION.EQ.'DEGE_ELNO'.OR.OPTION.EQ.'DEGE_ELGA') THEN
         DO 150 I = 1,6
           DO 130 IGAU = 1,NPG
             VPG(IGAU) = DEGG(6* (IGAU-1)+I)
+            IF(OPTION.EQ.'DEGE_ELGA') ZR(JOUT+6*(IGAU-1)+I-1)=VPG(IGAU)
   130     CONTINUE
-          CALL PPGAN2(JGANO,1,1,VPG,VNO)
-          DO 140 J = 1,NNO
-            ZR(JOUT+6* (J-1)+I-1) = VNO(J)
-  140     CONTINUE
+          IF(OPTION.EQ.'DEGE_ELNO') THEN
+            CALL PPGAN2(JGANO,1,1,VPG,VNO)
+            DO 140 J = 1,NNO
+              ZR(JOUT+6* (J-1)+I-1) = VNO(J)
+  140       CONTINUE
+          ENDIF
   150   CONTINUE
       END IF
 

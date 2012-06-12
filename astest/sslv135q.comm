@@ -1,23 +1,23 @@
-# MODIF  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 #
 # TITRE FATIGUE, AMPLITUDE VARIABLE, TEST DES GRANDEURS EN DEFORMATIONS
 # sslv135q.para = tps_job 600 mem_job 600Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #----------------------------------------------------------------------
 #    Cas test sslv135q : cube 3D
@@ -56,7 +56,7 @@
 
 DEBUT(CODE=_F(NOM='sslv135q',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
                IGNORE_ALARM=('PREPOST4_27'))
-               
+
 CUBE = LIRE_MAILLAGE(FORMAT='MED', )
 
 CUBE=DEFI_GROUP(reuse = CUBE,
@@ -106,7 +106,7 @@ CUBE=DEFI_GROUP(reuse = CUBE,
 MANCOF=DEFI_FONCTION( NOM_PARA='EPSI',
                       INTERPOL='LOG',
                       PROL_DROITE='LINEAIRE',
-                      PROL_GAUCHE='LINEAIRE', 
+                      PROL_GAUCHE='LINEAIRE',
                       VALE=(  0.00226,    5800000.,
                               0.00230,    4600000.,
                               0.00250,     239284.,
@@ -254,13 +254,8 @@ SOL_NL = STAT_NON_LINE ( TITRE      =
                         NEWTON     =_F ( MATRICE      = 'ELASTIQUE',
                                          REAC_INCR    = 0 ))
 
-SOL_NL = CALC_ELEM( reuse    = SOL_NL,
-                    RESULTAT = SOL_NL,
-                    OPTION   = ('EPSI_ELGA',
-                                'SIGM_ELNO',
-                                'EPSI_ELNO',
-                                'EPSP_ELGA',
-                                'EPSP_ELNO'))
+SOL_NL=CALC_CHAMP(reuse=SOL_NL,RESULTAT=SOL_NL,CONTRAINTE=('SIGM_ELNO'),DEFORMATION=('EPSI_ELGA','EPSI_ELNO','EPSP_ELGA','EPSP_ELNO'))
+
 
 SOL_NL = CALC_CHAMP( reuse    = SOL_NL,
                      RESULTAT = SOL_NL,
@@ -289,13 +284,8 @@ SOL_NL2 = STAT_NON_LINE ( TITRE      =
                                         ITER_GLOB_MAXI = 50),
                        SOLVEUR=_F(METHODE = 'MULT_FRONT'),)
 
-SOL_NL2 = CALC_ELEM( reuse    = SOL_NL2,
-                    RESULTAT = SOL_NL2,
-                    OPTION   = ('EPSI_ELGA',
-                                'SIGM_ELNO',
-                                'EPSI_ELNO',
-                                'EPSP_ELGA',
-                                'EPSP_ELNO'))
+SOL_NL2=CALC_CHAMP(reuse=SOL_NL2,RESULTAT=SOL_NL2,CONTRAINTE=('SIGM_ELNO'),DEFORMATION=('EPSI_ELGA','EPSI_ELNO','EPSP_ELGA','EPSP_ELNO'))
+
 
 SOL_NL2 = CALC_CHAMP( reuse    = SOL_NL2,
                       RESULTAT = SOL_NL2,
@@ -324,13 +314,8 @@ SOL_NL3 = STAT_NON_LINE ( TITRE      =
                                         ITER_GLOB_MAXI = 50),
                        SOLVEUR=_F(METHODE = 'MULT_FRONT'),)
 
-SOL_NL3 = CALC_ELEM( reuse    = SOL_NL3,
-                    RESULTAT = SOL_NL3,
-                    OPTION   = ('EPSI_ELGA',
-                                'SIGM_ELNO',
-                                'EPSI_ELNO',
-                                'EPSP_ELGA',
-                                'EPSP_ELNO'))
+SOL_NL3=CALC_CHAMP(reuse=SOL_NL3,RESULTAT=SOL_NL3,CONTRAINTE=('SIGM_ELNO'),DEFORMATION=('EPSI_ELGA','EPSI_ELNO','EPSP_ELGA','EPSP_ELNO'))
+
 
 SOL_NL3 = CALC_CHAMP( reuse    = SOL_NL3,
                       RESULTAT = SOL_NL3,
@@ -729,7 +714,7 @@ TEST_RESU(CHAM_NO=(  _F( CHAM_GD = FATN_W4,
                        )
               )
 
-# TEST DU CRITERE 1 AVEC 'DOMA_ELGA'  et avec SOL_NL2  
+# TEST DU CRITERE 1 AVEC 'DOMA_ELGA'  et avec SOL_NL2
 #      par INTERPOLATION de la COURBE DE MANSON
 ##################################################################
 FATM_W4=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
@@ -779,7 +764,7 @@ TEST_RESU(CHAM_NO=(  _F( CHAM_GD = FATN_WF5,
                        )
               )
 
-# TEST DU CRITERE 2 AVEC 'DOMA_ELGA'  et avec SOL_NL2 
+# TEST DU CRITERE 2 AVEC 'DOMA_ELGA'  et avec SOL_NL2
 #          avec la FORMULE DE MANSON
 ##################################################################
 FATM_WF5=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
@@ -805,7 +790,7 @@ TEST_RESU(CHAM_ELEM=( _F(CHAM_GD = FATM_WF5,
                           )
               )
 
-# TEST DU CRITERE 2 AVEC 'DOMA_NOEUD'  et avec SOL_NL2 
+# TEST DU CRITERE 2 AVEC 'DOMA_NOEUD'  et avec SOL_NL2
 #      par INTERPOLATION de la COURBE DE MANSON
 ##################################################################
 FATN_W5=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
@@ -829,7 +814,7 @@ TEST_RESU(CHAM_NO=(  _F( CHAM_GD = FATN_W5,
                        )
               )
 
-# TEST DU CRITERE 2 AVEC 'DOMA_ELGA'  et avec SOL_NL2  
+# TEST DU CRITERE 2 AVEC 'DOMA_ELGA'  et avec SOL_NL2
 #      par INTERPOLATION de la COURBE DE MANSON
 ##################################################################
 FATM_W5=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
@@ -854,7 +839,7 @@ TEST_RESU(CHAM_ELEM=( _F(CHAM_GD = FATM_W5,
                           )
               )
 
-# TEST DU CRITERE 3 AVEC 'DOMA_NOEUD'  et avec SOL_NL2 
+# TEST DU CRITERE 3 AVEC 'DOMA_NOEUD'  et avec SOL_NL2
 #          avec la FORMULE DE MANSON
 ##################################################################
 FATN_WF6=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
@@ -879,7 +864,7 @@ TEST_RESU(CHAM_NO=(  _F( CHAM_GD = FATN_WF6,
                        )
               )
 
-# TEST DU CRITERE 3 AVEC 'DOMA_ELGA'  et avec SOL_NL2 
+# TEST DU CRITERE 3 AVEC 'DOMA_ELGA'  et avec SOL_NL2
 #          avec la FORMULE DE MANSON
 ##################################################################
 FATM_WF6=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
@@ -905,7 +890,7 @@ TEST_RESU(CHAM_ELEM=( _F(CHAM_GD = FATM_WF6,
                           )
               )
 
-# TEST DU CRITERE 3 AVEC 'DOMA_NOEUD'  et avec SOL_NL2 
+# TEST DU CRITERE 3 AVEC 'DOMA_NOEUD'  et avec SOL_NL2
 #      par INTERPOLATION de la COURBE DE MANSON
 ##################################################################
 FATN_W6=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',
@@ -929,7 +914,7 @@ TEST_RESU(CHAM_NO=(  _F( CHAM_GD = FATN_W6,
                        )
               )
 
-# TEST DU CRITERE 3 AVEC 'DOMA_ELGA'  et avec SOL_NL2  
+# TEST DU CRITERE 3 AVEC 'DOMA_ELGA'  et avec SOL_NL2
 #      par INTERPOLATION de la COURBE DE MANSON
 ##################################################################
 FATM_W6=CALC_FATIGUE( TYPE_CALCUL   = 'FATIGUE_MULTI',

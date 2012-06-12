@@ -1,19 +1,19 @@
       SUBROUTINE RESGRA(MAT,MATF,VCINE,NITER,EPSI,CRITER,NSECM,RSOLU,
      &                  SOLVEU)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/03/2011   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
 C (AT YOUR OPTION) ANY LATER VERSION.
-C
+
 C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
 C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
 C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
 C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-C
+
 C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
@@ -43,7 +43,7 @@ C----------------------------------------------------------------------
 C     COMMUNS JEVEUX
 C----------------------------------------------------------------------
       INTEGER*4 ZI4
-      COMMON  /I4VAJE/ZI4(1)
+      COMMON /I4VAJE/ZI4(1)
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -105,7 +105,7 @@ C     -----------------------------
 
 C     4- PRECONDITIONNEMENT DES "LAGR" DE LA MATRICE
 C     ------------------------------------------------
-      CALL MRCONL(LMAT,0,'R',RSOLU,NSECM)
+      CALL MRCONL('MULT',LMAT,0,'R',RSOLU,NSECM)
 
 
 C     5- RECUPERATION DE LA MATRICE ASSEMBLEE :
@@ -128,7 +128,7 @@ C     ------------------------------------------------
 
 
 C     6- RECUPERATION DE LA MATRICE DE PRECONDITIONNEMENT:
-C     -----------------------------------------------------      
+C     -----------------------------------------------------
       IF (PRECON(1:8).EQ.'LDLT_INC') THEN
         CALL JEEXIN(MATFAC//'.REFA',IRET)
         IF (IRET.EQ.0) CALL U2MESS('F','ALGELINE3_38')
@@ -151,29 +151,29 @@ C     ------------------------------------------------
 
 C     9- RESOLUTION EFFECTIVE ---
 C     ---------------------------------
-      DO 20,K=1,NSECM
+      DO 30,K=1,NSECM
         CALL WKVECT('&&RESGRA.W4','V V R',NEQ,IDW4)
-        
+
 C        ---- SOLUTION POUR MUMPS
         SMBR='&&RESGRA.SMBR      '
         CALL WKVECT(SMBR//'.VALE','V V R',NEQ,ISMBR)
-      
+
         KDEB=(K-1)*NEQ+1
         CALL GCPC(NEQ,ZI(IDIN),ZI4(IDIP),ZR(IDAC),ZI(IDINPC),
-     &            ZI4(IDIPPC),ZR(IDACPC),RSOLU(KDEB),ZR(IDW4),
-     &            ZR(IDW1),ZR(IDW2),ZR(IDW3),0,NITER,EPSI,CRITER,
-     &            SOLVEU,MATAS,SMBR)
-        DO 21,IEQ=1,NEQ
+     &            ZI4(IDIPPC),ZR(IDACPC),RSOLU(KDEB),ZR(IDW4),ZR(IDW1),
+     &            ZR(IDW2),ZR(IDW3),0,NITER,EPSI,CRITER,SOLVEU,MATAS,
+     &            SMBR)
+        DO 20,IEQ=1,NEQ
           RSOLU(KDEB-1+IEQ)=ZR(IDW4-1+IEQ)
-   21   CONTINUE
+   20   CONTINUE
         CALL JEDETR('&&RESGRA.W4')
         CALL JEDETR(SMBR//'.VALE')
-   20 CONTINUE
+   30 CONTINUE
 
 
 C     10- MISE A JOUR DES COEFFICIENTS DE LAGRANGE :
 C     ---------------------------------
-      CALL MRCONL(LMAT,0,'R',RSOLU,NSECM)
+      CALL MRCONL('MULT',LMAT,0,'R',RSOLU,NSECM)
 
 
       CALL JEDETR('&&RESGRA.W1')

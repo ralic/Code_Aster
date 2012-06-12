@@ -4,7 +4,7 @@
       CHARACTER*8   NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/01/2012   AUTEUR CHEIGNON E.CHEIGNON 
+C MODIF MODELISA  DATE 11/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,12 +24,13 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ----------------------------------------------------------------------
 C     AFFE_CARA_ELEM
-C     AFFECTATION DES CARACTERISTIQUES POUR LES ELEMENTS DISCRET
+C     AFFECTATION DES CARACTERISTIQUES POUR LES ELEMENTS DISCRET PAR
+C     RAIDEUR REPARTIE
 C ----------------------------------------------------------------------
 C IN  : NOMA   : NOM DU MAILLAGE
 C IN  : NOMO   : NOM DU MODELE
 C IN  : LMAX   : NOMBRE MAX DE MAILLE OU GROUPE DE MAILLE
-C IN  : NBOCC  : NOMBRE D'OCCURRENCES DU MOT CLE DISCRET
+C IN  : NBOCC  : NOMBRE D'OCCURRENCES DU MOT CLE RIGI_PARASOL
 C IN  : IVR    : TABLEAU DES INDICES DE VERIFICATION
 C ----------------------------------------------------------------------
 C
@@ -61,6 +62,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      L,LDGM,LDNM,LOKM,LOREP,NBMTRD,NBNMA
       INTEGER      NBNO,NBNOEU,NBORM,NC,NCAR,NCARAC,NCMP
       INTEGER      NDIM,NG,NGP,NMA,NREP,NUMNOE,NVAL,DIMCAR
+      INTEGER      VALI(2)
 
       REAL*8       VAL(NBVAL), ETA, VALE(NBVAL),RIROT(3),R8BID
       CHARACTER*1  KMA(3), K1BID
@@ -80,6 +82,7 @@ C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
       CALL GETRES(NOMU,CONCEP,CMD)
+
       TMPDIS = NOMU//'.DISCRET'
       MLGNNO = NOMA//'.NOMNOE'
       MLGNMA = NOMA//'.NOMMAI'
@@ -98,6 +101,7 @@ C
       CALL WKVECT('&&TMPRIGTO','V V R',6*NOEMAF,IRGTO)
       CALL WKVECT('&&TMPAMOTO','V V R',6*NOEMAF,IAMTO)
       CALL WKVECT('&&TMPTABMP','V V K8',LMAX,ITBMP)
+
 C     POUR EUROPLEXUS
 C     SI EUROPLEXUS ALORS TOUTES LES OCCURRENCES DE RIGI_PARASOL DOIVENT
 C     AVOIR EUROPLEXUS='OUI'. TEST SUR LA 1ERE OCCURENCE DU MOT CLEF,
@@ -181,7 +185,7 @@ C  I RAIDEUR (POUR EPX)
       IR = 0
 C I AMOR (POUR EPX)
       IA = 0
-C --- BOUCLE SUR LES OCCURRENCES DE DISCRET
+C --- BOUCLE SUR LES OCCURRENCES DE RIGI_PARASOL
       DO 30 IOC = 1 , NBOCC
          ETA = 0.0D0
 C        PAR DEFAUT ON EST DANS LE REPERE GLOBAL, MATRICES SYMETRIQUES
@@ -269,6 +273,11 @@ C
             ELSE
                CALL ASSERT( .FALSE. )
             ENDIF
+
+            DO 255 INO = 1,NBNO
+                ZK8(ITBMP + INO - 1) = ' '
+ 255        CONTINUE
+
 C
             IF (IXNW.NE.0.AND.NGP.EQ.0) THEN
                DO 39 I = 1,NBNO
@@ -301,6 +310,14 @@ C
                CALL JELIRA(JEXNOM(NOMA//'.GROUPEMA',NOGP),'LONMAX',
      &                     NMA,K8BID)
                CALL JEVEUO(JEXNOM(NOMA//'.GROUPEMA',NOGP),'L',LDGM)
+
+               IF (NMA.NE.NBNO) THEN
+                  VALI(1) = NBNO
+                  VALI(2) = NMA
+                  CALL U2MESG('F','MODELISA2_10',1,NOGP,2,VALI,0,R8BID)
+               ENDIF
+
+
                DO 22 IN = 0,NMA-1
 C                 RECUPERE LE NOMBRE DE NOEUD DE LA MAILLE
                   CALL JELIRA(JEXNUM(NOMA//'.CONNEX',ZI(LDGM+IN)),
@@ -318,6 +335,7 @@ C                 BOUCLE SUR LE NB DE NOEUD DE LA MAILLE
                      DO 24 INO = 1, NBNO
                         IF (ZK8(ITBNO+INO-1) .EQ. NOMNOE) THEN
                            ZK8(ITBMP+INO-1) = NOMMAI
+
                            GOTO 22
                         ENDIF
  24                  CONTINUE
@@ -340,6 +358,17 @@ C              IFR = IUNIFI('RESULTAT')
                   ENDIF
                ENDIF
 C
+C            VERIF QU'UN DISCRET EST FIXE A CHACUN DES NOEUDS DU RADIER
+C            (UNE SEULE FOIS PAR OCCURRENCE DE RIGI_PARASOL)
+               IF (NC .EQ. 1) THEN
+                  DO 227 INO = 1, NBNO
+                    IF(ZK8(ITBMP + INO - 1).EQ.' ')THEN
+                       CALL JENUNO(JEXNUM(MLGNNO,INO),NOMNOE)
+                       CALL U2MESK('F','MODELISA2_8',1,NOMNOE)
+                    ENDIF
+ 227              CONTINUE
+               ENDIF
+
                IF ( IUNITE .GT. 0 ) THEN
                   DO 27 I = 1,NBNO
                      IV = 1

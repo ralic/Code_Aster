@@ -3,9 +3,9 @@
       CHARACTER*8         NOMRES
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,10 +52,10 @@ C
 C
 C-----  FIN  COMMUNS NORMALISES  JEVEUX  ------------------------------
       INTEGER       IAD, JIAD, LLREF, IER,
-     +              IBID, JORDM, IDMODE, LMASSE, IDSTAT, JORDS,
-     +              JTRAV1, JTRAV2, JTRAV3, JTRAV4, JNSTA,
-     +              I, J, K, IEQ, NBORD, NBMODE, NBSTAT, NEQ, N1,
-     +              IORNE, IOROL, JVALE
+     &              IBID, JORDM, IDMODE, LMASSE, IDSTAT, JORDS,
+     &              JTRAV1, JTRAV2, JTRAV3, JTRAV4, JNSTA,
+     &              I, J, K, IEQ, NBORD, NBMODE, NBSTAT, NEQ, N1,
+     &              IORNE, IOROL, JVALE
       REAL*8        ALPHA, R8SCAL,DDOT
       CHARACTER*8   K8B, MECA, STAT
       CHARACTER*14  NU
@@ -119,8 +119,8 @@ C
          DO 20 I=1,NBMODE
 C
 C --------- PRODUIT MASSE*MODE PROPRE I
-            CALL MRMULT ( 'ZERO', LMASSE, ZR(IDMODE+(I-1)*NEQ), 'R',
-     +                    ZR(JTRAV2), 1 )
+            CALL MRMULT ( 'ZERO',LMASSE,ZR(IDMODE+(I-1)*NEQ),
+     &                    ZR(JTRAV2), 1,.TRUE.)
 C
 C --------- (T(MODE STAT J)*MASSE*MODE PROPRE I)
             R8SCAL=DDOT(NEQ,ZR(IDSTAT+(J-1)*NEQ),1,ZR(JTRAV2),1)
@@ -130,13 +130,13 @@ C --------- PUIS
 C --------- SOMME (T(MODE STAT J)*MASSE*MODE PROPRE I)*MODE PROPRE I
             DO 30 K=1,NEQ
                ZR(JTRAV1+(K-1)) = ZR(JTRAV1+(K-1)) +
-     +                           R8SCAL * ZR(IDMODE+(I-1)*NEQ+(K-1))
+     &                           R8SCAL * ZR(IDMODE+(I-1)*NEQ+(K-1))
  30         CONTINUE
  20      CONTINUE
 C
          DO 40 K=1,NEQ
             ZR(JNSTA+(J-1)*NEQ+(K-1)) = ZR(IDSTAT+(J-1)*NEQ+(K-1)) -
-     +                                  ZR(JTRAV1+(K-1))
+     &                                  ZR(JTRAV1+(K-1))
  40      CONTINUE
 C
  10   CONTINUE
@@ -147,7 +147,7 @@ C
       ALPHA = 0.717D0
 C
       CALL VPGSKP ( NEQ, NBSTAT, ZR(JNSTA), ALPHA, LMASSE, 2,
-     +              ZR(JTRAV1), ZI(JTRAV4), ZR(JTRAV3) )
+     &              ZR(JTRAV1), ZI(JTRAV4), ZR(JTRAV3) )
 C
       NBORD = NBMODE + NBSTAT
       CALL RSCRSD('G',NOMRES,'MODE_MECA',NBORD)

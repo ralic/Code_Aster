@@ -1,4 +1,4 @@
-#@ MODIF cata_champs Stanley  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
+#@ MODIF cata_champs Stanley  DATE 11/06/2012   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -144,12 +144,15 @@ class CATA_CHAMPS :
           else:
              supp = 'NOEU'
           if phen not in ('AUTRES'):
-             #print opt, s, supp, phen
-             lheredite = list(aster.get_option_dependency(opt))
-             lheredite = list(set(lheredite))
-             if opt in lheredite:
-                lheredite.remove(opt)
-             self(opt, supp, lheredite, comm, phen)
+             if phen in ('FORCE'):
+                lheredite = ['DEPL']
+                self(opt, supp, lheredite, comm, phen)
+             else : 
+                lheredite = list(aster.get_option_dependency(opt))
+                lheredite = list(set(lheredite))
+                if opt in lheredite:
+                   lheredite.remove(opt)
+                self(opt, supp, lheredite, comm, phen)
 
 
   def __getitem__(self, nom_cham) :

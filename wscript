@@ -137,6 +137,7 @@ def build(self):
     for optional in ('materiau', 'datg', 'catapy', 'catalo'):
         if osp.exists(osp.join(optional, 'wscript')):
             self.recurse(optional)
+    self.load('scm_aster', tooldir='waftools')
     self.load('legacy', tooldir='waftools')
 
 def build_elements(self):

@@ -1,4 +1,4 @@
-#@ MODIF calculel7 Messages  DATE 23/04/2012   AUTEUR DELMAS J.DELMAS 
+#@ MODIF calculel7 Messages  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,11 +20,6 @@
 # RESPONSABLE DELMAS J.DELMAS
 
 cata_msg = {
-
-
-1 : _(u"""
-  pour calculer  %(k1)s  il faut SIEF_NOEU
-"""),
 
 2 : _(u"""
   option %(k1)s : pour l élément  %(k2)s  il faut ajouter dans le %(k3)s

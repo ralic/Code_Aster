@@ -1,7 +1,7 @@
       SUBROUTINE TE0154(OPTION,NOMTE)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT  NONE
       CHARACTER*(*)     OPTION,NOMTE
 C ----------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 11/06/2012   AUTEUR DELMAS J.DELMAS 
 C     CALCUL
 C       - DU VECTEUR ELEMENTAIRE EFFORT GENERALISE,
 C       - DU VECTEUR ELEMENTAIRE CONTRAINTE
@@ -30,7 +30,7 @@ C ----------------------------------------------------------------------
 C IN  OPTION : K16 : NOM DE L'OPTION A CALCULER
 C        'EFGE_ELNO'   : CALCUL DU VECTEUR EFFORT GENERALISE
 C        'SIEF_ELGA'   : CALCUL DU VECTEUR EFFORT GENERALISE
-C        'EPSI_ELNO'   : CALCUL DU VECTEUR DEFORMATION
+C        'EPSI_ELGA'   : CALCUL DU VECTEUR DEFORMATION
 C        'EPOT_ELEM'   : CALCUL DE L'ENERGIE DE DEFORMATION
 C        'ECIN_ELEM'   : CALCUL DE L'ENERGIE CINETIQUE
 C IN  NOMTE  : K16 : NOM DU TYPE ELEMENT
@@ -73,8 +73,8 @@ C     ------------------------------------------------------------------
       NC  = 3
       FAMI = 'RIGI'
 C
-      IF ( (NOMTE .NE. 'MECA_BARRE').AND.
-     &      (NOMTE .NE. 'MECA_2D_BARRE'))  THEN
+      IF ((NOMTE .NE. 'MECA_BARRE').AND.
+     &    (NOMTE .NE. 'MECA_2D_BARRE'))  THEN
          CH16 = NOMTE
          CALL U2MESK('F','ELEMENTS2_42',1,CH16)
       ENDIF
@@ -109,7 +109,7 @@ C
       ENDIF
 C
 C     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
-      IF (OPTION.NE.'EPSI_ELNO') THEN
+      IF( OPTION .NE. 'EPSI_ELGA' ) THEN
         CALL JEVECH ('PCAGNBA', 'L',LSECT)
         A = ZR(LSECT)
       ENDIF
@@ -238,10 +238,9 @@ C
          CALL PTENCI(6,ULR,KLC,ZR(JFREQ),ZR(JENDE),ITYPE,KANL,IF)
 
 C
-      ELSEIF( OPTION .EQ. 'EPSI_ELNO' ) THEN
-         CALL JEVECH('PDEFORR','E',JDEFO)
-         ZR(JDEFO)=(ULR(4)-ULR(1))/XL
-         ZR(JDEFO+1)=(ULR(4)-ULR(1))/XL
+      ELSEIF( OPTION .EQ. 'EPSI_ELGA' ) THEN
+         CALL JEVECH('PDEFOPG','E',JDEFO)
+         ZR(JDEFO-1+1)=(ULR(4)-ULR(1))/XL
       ELSE
          XRIG = E * A / XL
          KLC(1,1) =  XRIG

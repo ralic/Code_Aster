@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE COUPLAGE FLUAGE/BETON_DOUBLE_DP - TRACTION UNIAXIALE EN 3D
 # ssnp116a.para = tps_job 60 mem_job 160Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -240,11 +240,8 @@ COUPLA=STAT_NON_LINE(
                                  RESI_GLOB_RELA = 1.E-6)
                             )
 
-COUPLA=CALC_ELEM(    reuse=COUPLA,
-                     OPTION=( 'SIGM_ELNO',
-                              'EPFP_ELNO',
-                              'EPSP_ELNO', ),
-                     RESULTAT=COUPLA )
+COUPLA=CALC_CHAMP(reuse=COUPLA,CONTRAINTE=('SIGM_ELNO'),DEFORMATION=('EPFP_ELNO','EPSP_ELNO'),RESULTAT=COUPLA)
+
 
 RELEVE_1=POST_RELEVE_T(ACTION=(
                    _F(  RESULTAT = COUPLA,
@@ -480,12 +477,8 @@ COUPLA2=STAT_NON_LINE(
                                  RESI_GLOB_RELA = 1.E-6)
                             )
 
-COUPLA2=CALC_ELEM(    reuse=COUPLA2,
-                     OPTION=( 'EPSI_ELNO',
-                              'SIGM_ELNO',
-                              'EPFP_ELNO',
-                              'EPSP_ELNO', ),
-                     RESULTAT=COUPLA2 )
+COUPLA2=CALC_CHAMP(reuse=COUPLA2,CONTRAINTE=('SIGM_ELNO'),DEFORMATION=('EPSI_ELNO','EPFP_ELNO','EPSP_ELNO'),RESULTAT=COUPLA2)
+
 
 RELEVE_3=POST_RELEVE_T(ACTION=(
                    _F(  RESULTAT = COUPLA2,
@@ -592,11 +585,8 @@ COUPLA3=STAT_NON_LINE(
                                RESI_GLOB_RELA = 1.E-6),
               )
 
-COUPLA3=CALC_ELEM( reuse=COUPLA3,
-                   OPTION=( 'SIGM_ELNO',
-                            'EPFP_ELNO',
-                            'EPSP_ELNO', ),
-                   RESULTAT=COUPLA3 )
+COUPLA3=CALC_CHAMP(reuse=COUPLA3,CONTRAINTE=('SIGM_ELNO'),DEFORMATION=('EPFP_ELNO','EPSP_ELNO'),RESULTAT=COUPLA3)
+
 
 RELEVE_4=POST_RELEVE_T(ACTION=(
                    _F(  RESULTAT = COUPLA3,

@@ -1,4 +1,4 @@
-# MODIF  DATE 03/04/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DE LA COMMANDE CREA_RESU MOT CLE FACTEUR PERM_CHAM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,7 +20,7 @@
 #
 # zzzz131a.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
 
-DEBUT(CODE=_F(NOM='ZZZZ131A', NIV_PUB_WEB='INTERNET'), 
+DEBUT(CODE=_F(NOM='ZZZZ131A', NIV_PUB_WEB='INTERNET'),
 IGNORE_ALARM=('MECANONLINE5_37','MECANONLINE2_37'),
 DEBUG=_F(SDVERI='OUI'))
 
@@ -144,11 +144,8 @@ RESU1=STAT_NON_LINE(
                                     REAC_ITER = 1),
               )
 
-RESU1=CALC_ELEM( reuse=RESU1,
-                            OPTION=(
-                  'EFGE_ELNO',),
-                          RESULTAT=RESU1,
-              )
+RESU1=CALC_CHAMP(reuse=RESU1,CONTRAINTE=('EFGE_ELNO'),RESULTAT=RESU1)
+
 
 TEST_RESU(RESU=(
           # POUTRE DE LA FAMILLE 1
@@ -390,11 +387,8 @@ RESU2=CREA_RESU( reuse=RESU2,   OPERATION='PERM_CHAM', TYPE_RESU='EVOL_NOLI',
 
                    )
 
-RESU2=CALC_ELEM( reuse=RESU2,
-                            OPTION=(
-                  'EFGE_ELNO',),
-                          RESULTAT=RESU2,
-              )
+RESU2=CALC_CHAMP(reuse=RESU2,CONTRAINTE=('EFGE_ELNO'),RESULTAT=RESU2)
+
 
 NUM2=1
 
@@ -574,11 +568,8 @@ TEST_RESU(RESU=(
 RESU11=EXTR_RESU(RESULTAT=RESU1,
                 ARCHIVAGE=_F(LIST_INST=LINST11),)
 
-RESU11=CALC_ELEM( reuse=RESU11,
-                            OPTION=(
-                  'DEGE_ELNO',),
-                          RESULTAT=RESU11,
-              )
+RESU11=CALC_CHAMP(reuse=RESU11,DEFORMATION=('DEGE_ELNO'),RESULTAT=RESU11)
+
 
 #IMPR_RESU(RESU=_F(RESULTAT=RESU11))
 

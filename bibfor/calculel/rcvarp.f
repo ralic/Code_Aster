@@ -1,0 +1,171 @@
+      SUBROUTINE RCVARP(ARRET,NOVRC,POUM,VALVRC,IRET)
+      IMPLICIT NONE
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF CALCULEL  DATE 11/06/2012   AUTEUR PROIX J-M.PROIX 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+      CHARACTER*(*) NOVRC,POUM
+      CHARACTER*1 ARRET
+      INTEGER  IRET
+      REAL*8 VALVRC
+C-----------------------------------------------------------------------
+C BUT: RECUPERER LA VALEUR D'UNE VARIABLE DE COMMANDE  CALC_POINT_MAT
+C      POUR UNE VALEUR D'INSTANT ('+','-','REF')
+C
+C ARGUMENTS :
+C  IN   ARRET (K1)  : CE QU'IL FAUT FAIRE EN CAS DE PROBLEME
+C              = ' ' : ON REMPLIT CODRET ET ON SORT SANS MESSAGE.
+C              = 'F' : SI LA VARIABLE N'EST PAS TROUVEE, ON ARRETE
+C                       EN FATAL.
+C  IN   NOVRC  (K8) : NOM DE LA VARIABLE DE COMMANDE SOUHAITEE
+C  IN   POUM   (K*) : /'+', /'-', /'REF'
+C  OUT  VALVRC (R)  : VALEUR DE LA VARIABLE DE COMMANDE
+C  OUT  IRET   (I)  : CODE RETOUR : 0 -> OK
+C                                   1 -> VARIABLE NON TROUVEE
+
+C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
+      COMMON /IVARJE/ZI(1)
+      COMMON /RVARJE/ZR(1)
+      COMMON /CVARJE/ZC(1)
+      COMMON /LVARJE/ZL(1)
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      INTEGER ZI
+      REAL*8 ZR
+      COMPLEX*16 ZC
+      LOGICAL ZL
+      CHARACTER*8 ZK8,NOVR8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
+      CHARACTER*16 OPTION,NOMTE,NOMTM,PHENO,MODELI
+      COMMON /CAKK01/OPTION,NOMTE,NOMTM,PHENO,MODELI
+      INTEGER NFPGMX
+      PARAMETER (NFPGMX=10)
+      INTEGER NFPG,JFPGL,DECALA(NFPGMX),KM,KP,KR,IREDEC
+      COMMON /CAII17/NFPG,JFPGL,DECALA,KM,KP,KR,IREDEC
+      REAL*8 TIMED1,TIMEF1,TD1,TF1
+      COMMON /CARR01/TIMED1,TIMEF1,TD1,TF1
+      INTEGER KCVRC,INDIK8,IISNAN,IPREM
+      CHARACTER*24 VALK(4)
+      REAL*8 VALVRM,VALVRP,TDEF,INST,RUNDF,R8NNEM
+      INTEGER JVCFON,JVCVAL
+      COMMON /CAII33/JVCFON,JVCVAL
+      INTEGER NBCVRC,JVCNOM
+      COMMON /CAII14/NBCVRC,JVCNOM
+      SAVE RUNDF
+      DATA IPREM /0/
+C ---------------------------------------------------------------
+      IF (IPREM.EQ.0) THEN
+        RUNDF=R8NNEM()
+        IPREM=1
+      ENDIF
+C ---------------------------------------------------------------
+      TDEF=RUNDF
+      IRET=0
+      
+C     2) CALCUL DE KCVCRC :
+C     ----------------------
+      NOVR8=NOVRC
+      KCVRC=INDIK8(ZK8(JVCNOM),NOVR8,1,NBCVRC)
+
+C     -- SI LA CVRC N'EST PAS FOURNIE, ON REND "R8NNEM"
+
+      IF (KCVRC.EQ.0) THEN
+        IRET=1
+        IF (ARRET.EQ.' ') THEN
+          VALVRC=RUNDF
+          GO TO 9999
+        ELSE
+          VALK(1) = NOVR8
+          VALK(2) = ZK8(JVCNOM-1+KCVRC)
+          VALK(3) = POUM
+          IF (POUM.EQ.'+') THEN
+            INST=TIMEF1
+          ELSEIF (POUM.EQ.'-') THEN
+            INST=TIMED1
+          ELSE
+            INST=0.D0
+          ENDIF
+          CALL U2MESG('F','CALCULEL4_69',3,VALK,0,0,1,INST)
+        END IF
+      END IF
+
+C     4) CALCUL DE VALVRC :
+C     ----------------------
+
+      IF (POUM.EQ.'REF') THEN
+      
+        VALVRC=ZR(JVCVAL-1+ 3*(KCVRC-1)+3)
+
+      ELSE IF (POUM.EQ.'+' .AND. IREDEC.EQ.0) THEN
+
+        VALVRC=ZR(JVCVAL-1+ 3*(KCVRC-1)+2)
+
+      ELSE IF (POUM.EQ.'-' .AND. IREDEC.EQ.0) THEN
+      
+        VALVRC=ZR(JVCVAL-1+ 3*(KCVRC-1)+1)
+
+      ELSE IF (IREDEC.EQ.1) THEN
+
+        VALVRM=ZR(JVCVAL-1+ 3*(KCVRC-1)+1)
+
+        VALVRP=ZR(JVCVAL-1+ 3*(KCVRC-1)+2)
+
+        IF ( (IISNAN(VALVRM).EQ.0).AND.(IISNAN(VALVRP).EQ.0) ) THEN
+          IF (POUM.EQ.'-') THEN
+            VALVRC=VALVRM+(TD1-TIMED1)*(VALVRP-VALVRM)/(TIMEF1-TIMED1)
+          ELSE IF (POUM.EQ.'+') THEN
+            VALVRC=VALVRM+(TF1-TIMED1)*(VALVRP-VALVRM)/(TIMEF1-TIMED1)
+          ELSE
+            CALL ASSERT(.FALSE.)
+          ENDIF
+        ELSE
+          VALVRC=RUNDF
+        ENDIF
+
+      ELSE
+        CALL ASSERT(.FALSE.)
+      ENDIF
+
+      IRET=0
+      IF (IISNAN(VALVRC).GT.0)  IRET=1
+
+
+C     -- TRAITEMENT SI IRET=1
+      IF (IRET.EQ.1) THEN
+        IF (NOVR8.EQ.'TEMP') THEN
+          VALVRC=TDEF
+          IRET=1
+          GO TO 9999
+        ENDIF
+        IF (ARRET.EQ.' ') THEN
+          VALVRC=RUNDF
+        ELSE
+          VALK(1) = NOVR8
+          VALK(2) = ZK8(JVCNOM-1+KCVRC)
+          CALL U2MESK('F','CALCULEL4_69', 2 ,VALK)
+        END IF
+      END IF
+      GOTO 9999
+
+
+9999  CONTINUE
+
+
+      END

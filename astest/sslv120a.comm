@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE ETIREMENT D'UN PARALLELEPIPEDE ORTHOTROPE SOUS SON PROPRE POIDS
 # sslv120a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -68,9 +68,8 @@ RESU=MECA_STATIQUE(MODELE=MO,
 
 
 
-RESU=CALC_ELEM( reuse= RESU ,RESULTAT= RESU ,
-               OPTION=('SIGM_ELNO'),
-                )
+RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CONTRAINTE=('SIGM_ELNO'))
+
 
 TEST_RESU(RESU=(
      # B
@@ -163,9 +162,8 @@ RESUNL0=STAT_NON_LINE(MODELE=MO,
                      INCREMENT=(_F(LIST_INST=LINST,),),
                                      );
 
-RESUNL0=CALC_ELEM( reuse= RESUNL0 ,RESULTAT= RESUNL0 ,
-               OPTION=('SIGM_ELNO',),
-                )
+RESUNL0=CALC_CHAMP(reuse=RESUNL0,RESULTAT=RESUNL0,CONTRAINTE=('SIGM_ELNO'))
+
 
 #
 #---------------------------------------------------------------------
@@ -297,7 +295,7 @@ CHMAT2=AFFE_MATERIAU(  MAILLAGE=MA,
                        AFFE=_F(  TOUT = 'OUI',
                         MATER = MAT2
                         ) )
-                        
+
 COMPOR2=DEFI_COMPOR(MONOCRISTAL=(_F(
                                     MATER=MAT2,
                                     ECOULEMENT='MONO_VISC1',
@@ -317,9 +315,8 @@ RESUMM0=STAT_NON_LINE(MODELE=MO,
                      INCREMENT=(_F(LIST_INST=LINST,),),
                                      );
 
-RESUMM0=CALC_ELEM( reuse= RESUMM0 ,RESULTAT= RESUMM0 ,
-               OPTION=('SIGM_ELNO',),
-                )
+RESUMM0=CALC_CHAMP(reuse=RESUMM0,RESULTAT=RESUMM0,CONTRAINTE=('SIGM_ELNO'))
+
 
 #
 #---------------------------------------------------------------------
@@ -402,8 +399,8 @@ TEST_RESU(RESU=(
 
 DEFI_GROUP( reuse=MA,MAILLAGE=MA,
   CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
-  
-  
+
+
 ORIEN=AFFE_CARA_ELEM(MODELE=MO,
                      MASSIF=_F(GROUP_MA='TOUT',
                                ANGL_REP=(30.0,50.0,70.0,),),);
@@ -415,9 +412,8 @@ RESUEL1=MECA_STATIQUE(MODELE=MO,
                    EXCIT=_F(CHARGE=CH,),
                    );
 
-RESUEL1=CALC_ELEM( reuse= RESUEL1 ,RESULTAT= RESUEL1 ,
-               OPTION=('SIGM_ELNO',),
-                )
+RESUEL1=CALC_CHAMP(reuse=RESUEL1,RESULTAT=RESUEL1,CONTRAINTE=('SIGM_ELNO'))
+
 
 #
 #---------------------------------------------------------------------
@@ -497,9 +493,8 @@ RESUNL1=STAT_NON_LINE(MODELE=MO,
                      INCREMENT=(_F(LIST_INST=LINST,),),
                                      );
 
-RESUNL1=CALC_ELEM( reuse= RESUNL1 ,RESULTAT= RESUNL1 ,
-               OPTION=('SIGM_ELNO',),
-                )
+RESUNL1=CALC_CHAMP(reuse=RESUNL1,RESULTAT=RESUNL1,CONTRAINTE=('SIGM_ELNO'))
+
 
 #
 #---------------------------------------------------------------------
@@ -591,9 +586,8 @@ RESUMI1=STAT_NON_LINE(MODELE=MO,
                                      ),
                                      );
 
-RESUMI1=CALC_ELEM( reuse= RESUMI1 ,RESULTAT= RESUMI1 ,
-               OPTION=('SIGM_ELNO',),
-                )
+RESUMI1=CALC_CHAMP(reuse=RESUMI1,RESULTAT=RESUMI1,CONTRAINTE=('SIGM_ELNO'))
+
 
 #
 #---------------------------------------------------------------------
@@ -679,9 +673,8 @@ RESUMM1=STAT_NON_LINE(MODELE=MO,
                                ),
                                      );
 
-RESUMM1=CALC_ELEM( reuse= RESUMM1 ,RESULTAT= RESUMM1 ,
-               OPTION=('SIGM_ELNO',),
-                )
+RESUMM1=CALC_CHAMP(reuse=RESUMM1,RESULTAT=RESUMM1,CONTRAINTE=('SIGM_ELNO'))
+
 
 #
 #---------------------------------------------------------------------
@@ -770,9 +763,8 @@ RESUMP1=STAT_NON_LINE(MODELE=MO,
                                ),
                                      );
 
-RESUMP1=CALC_ELEM( reuse= RESUMP1 ,RESULTAT= RESUMP1 ,
-               OPTION=('SIGM_ELNO',),
-                )
+RESUMP1=CALC_CHAMP(reuse=RESUMP1,RESULTAT=RESUMP1,CONTRAINTE=('SIGM_ELNO'))
+
 
 #
 #---------------------------------------------------------------------

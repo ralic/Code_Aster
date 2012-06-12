@@ -5,7 +5,7 @@
       CHARACTER*16 TYPRES
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,12 +62,11 @@ C
       PARAMETER (NOMPRO='LRCOMM')
 
       INTEGER IORDR,LORDR,NEXCI,JPARA
-      INTEGER I,IRET,IBID,IAUX,NBTROU,NBPASE
+      INTEGER I,IRET,IBID,NBTROU
 
       REAL*8 EPSI,RBID
 
-      CHARACTER*8 CRIT,BASENO,K8BID,BLAN8
-      CHARACTER*13 INPSCO
+      CHARACTER*8 CRIT,K8BID,BLAN8
       CHARACTER*19 INFCHA,LISCHA,LISCH2
       CHARACTER*24 CHAMP,NOOBJ,FOMULT,K24B,COMPOR,CARCRI,BLAN24
 
@@ -79,11 +78,8 @@ C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 
-C               12345678
-      BLAN8  = '        '
-
-C               123456789012345678901234
-      BLAN24 = '                        '
+      BLAN8  = ' '
+      BLAN24 = ' '
       COMPOR = BLAN24
 C
       LISCHA = '&&'//NOMPRO//'.LISCHA    '
@@ -138,15 +134,11 @@ C
         NOOBJ ='12345678'//'.1234'//'.EXCIT.INFC'
         CALL GNOMSD(NOOBJ,10,13)
         LISCH2 = NOOBJ(1:19)
-        IAUX = 1
-        BASENO='&&'//NOMPRO
-        INPSCO='&&'//NOMPRO//'_PSCO'
         IBID=0
-        CALL PSLECT ( ' ', IBID, BASENO, RESU, IAUX,
-     &                NBPASE, INPSCO, IRET )
         IF(TYPRES.EQ.'EVOL_ELAS'.OR.
      &     TYPRES.EQ.'EVOL_NOLI')THEN
-          CALL NMDOME (K24B,K24B,K24B,LISCHA,NBPASE,INPSCO,BLAN8,IBID)
+          CALL NMDOME(K24B,K24B,K24B,LISCHA,BLAN8,
+     &                IBID)
         ELSEIF(TYPRES.EQ.'EVOL_THER')THEN
           INFCHA = '&&'//NOMPRO//'_INFCHA    '
           CALL NTDOTH (K24B,K24B,K24B,FOMULT,MATCST,

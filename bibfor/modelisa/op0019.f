@@ -1,6 +1,6 @@
       SUBROUTINE OP0019()
 
-C MODIF MODELISA  DATE 19/03/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF MODELISA  DATE 11/06/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -49,12 +49,13 @@ C     NBEBA   2 : NOMBRE D'ELEMENTS DE TYPE "BARRE"
 C     NBEMA  53 : NOMBRE D'ELEMENTS DE TYPE "MASSIF"
 C     NBEGB   6 : NOMBRE D'ELEMENTS DE TYPE "GRILLE"
       INTEGER     NBEPO,NBEDI,NBECO,NBECA,NBEBA,NBEMA,NBEGB,NBTEL,NBMCF
-      INTEGER     NBEL1,NBEL2
+      INTEGER     NBEL1,NBEL2,NBEL3
       PARAMETER  (      NBEPO=13,NBEDI=8,NBECO=28,NBECA=2,NBEBA=2)
       PARAMETER  (NBEL1=NBEPO   +NBEDI  +NBECO   +NBECA  +NBEBA)
-      PARAMETER  (      NBEMA=53,NBEGB=6)
-      PARAMETER  (NBEL2=NBEMA   +NBEGB)
-      PARAMETER  (NBTEL=NBEL1+NBEL2)
+      PARAMETER  (      NBEMA=54,NBEGB=6)
+      PARAMETER  (NBEL2=NBEMA)
+      PARAMETER  (NBEL3=NBEGB)
+      PARAMETER  (NBTEL=NBEL1+NBEL2+NBEL3)
 C     NBMCF  : NOMBRE DE MOTS CLES FACTEUR DE L'OPERATEUR
       PARAMETER  (NBMCF=13)
 C ----------------------------------------------------------------------
@@ -71,6 +72,7 @@ C ----------------------------------------------------------------------
       CHARACTER*8    VER(3),NOMU,NOMO,NOMA,LPAIN(3),LPAOUT(1)
       CHARACTER*16   CONCEP,CMD,MCLF(NBMCF),MCLE(4),K16BID
       CHARACTER*16   NOMELE(NBTEL),NOMEL1(NBEL1),NOMEL2(NBEL2)
+      CHARACTER*16   NOMEL3(NBEL3)
       CHARACTER*19   CARTCF,LIGRMO,LCHIN(3),LCHOUT(1)
       CHARACTER*24   MLGNMA,MODNOM,MODNEM,TMPLST,TMPLMA,TMPLNO,TMPNCF
 
@@ -86,7 +88,8 @@ C ----------------------------------------------------------------------
      &               'DISCRET_2D      '/
 C     !!!! A L'ORDRE DE STOCKAGE
 C        NOMEL1 : POUTRE(13) DISCRET(8) COQUE(28) CABLE(2) BARRE(2)
-C        NOMEL2 : MASSIF(53) GRILLE(6)
+C        NOMEL2 : MASSIF(53) 
+C        NOMEL3 : GRILLE(6)
       DATA NOMEL1 /         'MECA_POU_D_T    ','MECA_POU_D_E    ',
      &   'MECA_POU_D_T_GD ','MECA_POU_C_T    ','MEFS_POU_D_T    ',
      &   'MECA_POU_D_TG   ','MECA_POHO_HEXA8 ','MECA_POHO_HEXA20',
@@ -110,6 +113,7 @@ C        NOMEL2 : MASSIF(53) GRILLE(6)
       DATA NOMEL2 /         'MECA_HEXA8      ','MECA_PENTA6     ',
      &   'MECA_PENTA18    ','MECA_TETRA4     ','MECA_HEXA27     ',
      &   'MECA_HEXA20     ','MECA_PENTA15    ','MECA_TETRA10    ',
+     &   'MECA_TETRS10    ',
      &   'MECA_PYRAM5     ','MECA_PYRAM13    ','MECA_HEXS8      ',
      &   'MECA_HEXS20     ','MEAXTR3         ','MEAXQU4         ',
      &   'MEAXTR6         ','MEAXQU8         ','MEAXQU9         ',
@@ -124,9 +128,11 @@ C        NOMEL2 : MASSIF(53) GRILLE(6)
      &   'THPLTR3         ','THPLQU4         ','THPLTR6         ',
      &   'THPLQU8         ','THPLQU9         ','MET3SEG3        ',
      &   'MET6SEG3        ','MET3SEG4        ','HM_DPQ8S        ',
-     &   'HM_AXIS_QU8S    ','HM_DPTR6S       ','HM_AXIS_TR6S    ',
-     &   'MEGCQU4         ','MEGMTR3         ','MEGMQU4         ',
-     &   'MEGMTR6         ','MEGMQU8         ','MEGCTR3         '/
+     &   'HM_AXIS_QU8S    ','HM_DPTR6S       ','HM_AXIS_TR6S    '/
+
+      DATA NOMEL3 /         'MEGCQU4         ','MEGMTR3         ',
+     &   'MEGMQU4         ','MEGMTR6         ','MEGMQU8         ',
+     &   'MEGCTR3         '/
 
       DATA NBMCLE /  2,2,4,4,2,2,2,2,2,1,2,0,4/
 C --- ------------------------------------------------------------------
@@ -140,6 +146,9 @@ C --- INITIALISATION DE  NOMELE
       DO 20 I = 1,NBEL2
          NOMELE(I+NBEL1) = NOMEL2(I)
    20 CONTINUE
+      DO 25 I = 1,NBEL3
+         NOMELE(I+NBEL1+NBEL2) = NOMEL3(I)
+   25 CONTINUE
 
 C --- ------------------------------------------------------------------
 C --- RECUPERATION DES ARGUMENTS  DE LA COMMANDE
@@ -477,7 +486,6 @@ C           POUTRE      /  TUYAU_NSEC
 C     ----------------------------------------------------------
       CALL PMFD00()
 
-
 C     -- APPEL DE L'OPTION DE VERIFICATION VERI_CARA_ELEM :
 C     -------------------------------------------------------
       LPAIN(1)='PCACOQU'
@@ -487,7 +495,6 @@ C     -------------------------------------------------------
       LIGRMO=NOMO//'.MODELE'
       CALL CALCUL('C','VERI_CARA_ELEM',LIGRMO,1,LCHIN,LPAIN,1,
      &            LCHOUT,LPAOUT,'V','OUI')
-
 
       CALL JEDEMA()
       END

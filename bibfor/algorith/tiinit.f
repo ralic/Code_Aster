@@ -3,7 +3,7 @@
      &                  SDOBSE,LEVOL  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,7 @@ C
       CHARACTER*19  SDDISC
       LOGICAL       LEVOL,LOSTAT,LNONL,LREUSE
       CHARACTER*19  SDOBSE
-      CHARACTER*24  RESULZ,MODELE      
+      CHARACTER*24  RESULZ,MODELE
       CHARACTER*24  SDIETO
 C
 C ----------------------------------------------------------------------
@@ -56,7 +56,6 @@ C
       INTEGER      N1
       CHARACTER*8  NOMO,RESULT
       CHARACTER*19 LISINS
-      CHARACTER*24 K24B
       INTEGER      IARG
 C
 C ----------------------------------------------------------------------
@@ -89,9 +88,7 @@ C
 C --- CREATION SD OBSERVATION
 C
       IF (LNONL) THEN
-        K24B=' '
-        CALL NMCROB(MAILLA,NOMO  ,RESULT,K24B,SDIETO,
-     &              SDOBSE)
+        CALL NMCROB(MAILLA,NOMO  ,RESULT,SDIETO,SDOBSE)
       ENDIF
 C
   999 CONTINUE

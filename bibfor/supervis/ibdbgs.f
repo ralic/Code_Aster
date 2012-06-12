@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
+C MODIF SUPERVIS  DATE 12/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -106,7 +106,7 @@ C     -----------------------------------------------------
          CALL U2MESS('I','SUPERVIS_12')
          IDEBUG = 1
       ENDIF
-
+      CALL JDCSET('jeveux', IDEBUG)
 
 C     -- DEBUG / ENVIMA :
 C     -----------------------------------------------------

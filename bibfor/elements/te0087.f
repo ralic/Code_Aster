@@ -1,11 +1,11 @@
       SUBROUTINE TE0087 ( OPTION , NOMTE )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 11/06/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,16 +22,12 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C     BUT: CALCUL DES DEFORMATIONS AUX POINTS D'INTEGRATION
-C          OU AUX NOEUDS DES ELEMENTS ISOPARAMETRIQUES 2D
+C          DES ELEMENTS ISOPARAMETRIQUES 2D
 C
-C          OPTIONS : 'EPSI_ELNO'
-C                    'EPSI_ELGA'
-C                    'EPSG_ELNO'
+C          OPTIONS : 'EPSI_ELGA'
 C                    'EPSG_ELGA'
-C                    'EPME_ELNO  '
-C                    'EPME_ELGA  '
-C                    'EPMG_ELNO  '
-C                    'EPMG_ELGA  '
+C                    'EPME_ELGA'
+C                    'EPMG_ELGA'
 C
 C     ENTREES  ---> OPTION : OPTION DE CALCUL
 C              ---> NOMTE  : NOM DU TYPE ELEMENT
@@ -53,23 +49,23 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      INTEGER          NBSIG, NBSIG1, NBSIG2, NDIM, NNO, I,
-     &                 NNOS, NPG, IPOIDS, IVF, IDFDE,IDIM,
-     &                 IGAU, ISIG, IGEOM, IDEPL,IRET,
-     &                 ITEMPS, IDEFO, IMATE
+      INTEGER          NBSIG, NBSIG1, NBSIG2, NDIM, NNO, I
+      INTEGER          NNOS, NPG, IPOIDS, IVF, IDFDE, IDIM
+      INTEGER          IGAU, ISIG, IGEOM, IDEPL, IRET
+      INTEGER          ITEMPS, IDEFO, IMATE, NBSIGM
+      INTEGER          ICOMPO, JGANO
+
       REAL*8           EPSM(54), REPERE(7),BARY(3)
-      REAL*8           NHARM, INSTAN
+      REAL*8           NHARM, INSTAN, ZERO
+
       CHARACTER*4      FAMI
       CHARACTER*16     COMPOR
+
       LOGICAL          LTEATT
-      INTEGER          NBSIGM
+C
 C DEB ------------------------------------------------------------------
 C
-      IF ( OPTION(6:9) .EQ.'ELNO' ) THEN
-        FAMI='GANO'
-      ELSE
-        FAMI='RIGI'
-      ENDIF
+      FAMI='RIGI'
       CALL ELREF4(' ',FAMI,NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C
 C ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
@@ -137,7 +133,7 @@ C      ---------------------------------------------------------------
 C
 C ---- RECUPERATION DU VECTEUR DES DEFORMATIONS EN SORTIE :
 C      --------------------------------------------------
-      CALL JEVECH('PDEFORR','E',IDEFO)
+      CALL JEVECH('PDEFOPG','E',IDEFO)
 C
 C ---- CALCUL DES DEFORMATIONS MECANIQUES AUX POINTS D'INTEGRATION
 C ---- DE L'ELEMENT , I.E. SI ON NOTE EPSI_MECA = B*U
@@ -149,23 +145,13 @@ C      ---------------------------------------
      &            ZR(IGEOM),ZR(IDEPL),INSTAN,
      &            ZI(IMATE),REPERE,NHARM,OPTION,EPSM)
 C
-      IF (OPTION(6:9).EQ.'ELGA') THEN
-C         --------------------
+C      --------------------
 C ---- AFFECTATION DU VECTEUR EN SORTIE AVEC LES DEFORMATIONS AUX
 C ---- POINTS D'INTEGRATION :
 C      --------------------
-        DO 80 IGAU = 1, NPG
-        DO 80 ISIG = 1, NBSIG
-          ZR(IDEFO+NBSIG*(IGAU-1)+ISIG-1) = EPSM(NBSIG*(IGAU-1)+ISIG)
- 80     CONTINUE
-C
-      ELSE IF ( OPTION(6:9) .EQ. 'ELNO' ) THEN
-C
-C ---- DEFORMATIONS AUX NOEUDS :
-C      -----------------------
-C
-         CALL PPGAN2 ( JGANO, 1, NBSIG, EPSM, ZR(IDEFO) )
-C
-      ENDIF
+      DO 80 IGAU = 1, NPG
+      DO 80 ISIG = 1, NBSIG
+        ZR(IDEFO+NBSIG*(IGAU-1)+ISIG-1) = EPSM(NBSIG*(IGAU-1)+ISIG)
+ 80   CONTINUE
 C
       END

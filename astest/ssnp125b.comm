@@ -1,4 +1,4 @@
-# MODIF  DATE 02/04/2012   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # ======================================================================
 # TITRE CAS-TEST POUR LA VALIDATION DE l'OPTION INDL_ELGA POUR ----
 # ssnp125b.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
@@ -168,12 +168,8 @@ except aster.NonConvergenceError:
      last_iter=U.LIST_VARI_ACCES()['NUME_ORDRE'][-1]
 
 
-U = CALC_ELEM(
-              reuse      = U,
-              OPTION     = ('INDL_ELGA',),
-              RESULTAT   = U,
-              NUME_ORDRE = (19,last_iter),
-              );
+U=CALC_CHAMP(reuse=U,CRITERES=('INDL_ELGA'),RESULTAT=U,NUME_ORDRE=(19,last_iter))
+
 ############################################################
 #IMPR_RESU(RESU=_F(RESULTAT=U,
 #                  NUME_ORDRE = (19,last_iter),

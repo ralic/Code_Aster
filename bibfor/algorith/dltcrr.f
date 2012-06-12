@@ -1,4 +1,4 @@
-      SUBROUTINE DLTCRR ( NRORES, INPSCO,
+      SUBROUTINE DLTCRR ( RESULT,
      &                    NEQ, NBORDR, IARCHI, TEXTE, IFM,
      &                    T0, LCREA, TYPRES,
      &                    MASSE, RIGID, AMORT,
@@ -7,7 +7,7 @@
      &                    NUMEDD, NUME, NBTYAR, TYPEAR )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,10 +31,6 @@ C       DYNAMIQUE LINEAIRE TRANSITOIRE - CREATION DES RESULTATS
 C       -         -        -             --           -
 C
 C ----------------------------------------------------------------------
-C  IN  : NRORES    : NUMERO DE LA RESOLUTION
-C                  0 : CALCUL STANDARD
-C                 >0 : CALCUL DE LA DERIVEE NUMERO NRORES
-C  IN  : INPSCO    : STRUCTURE CONTENANT LA LISTE DES NOMS
 C  IN  : NEQ       : NOMBRE D'EQUATIONS
 C  IN  : IARCHI    : PILOTAGE DE L'ARCHIVAGE DES RESULTATS
 C  IN  : TEXTE     : COMMENTAIRE A IMPRIMER
@@ -51,11 +47,7 @@ C  IN  : NUMEDD    : NUME_DDL DE LA MATR_ASSE RIGID
 C  IN  : NUME      : NUMERO D'ORDRE DE REPRISE
 C
 C
-C CORPS DU PROGRAMME
       IMPLICIT NONE
-C DECLARATION PARAMETRES D'APPELS
-C
-      INTEGER NRORES
       INTEGER NEQ, NBORDR, IARCHI, IFM
       INTEGER NUME, NBTYAR
 
@@ -63,7 +55,7 @@ C
       REAL*8 FEXTE(2*NEQ),FAMOR(2*NEQ),FLIAI(2*NEQ)
 
       CHARACTER*8  MASSE, RIGID, AMORT
-      CHARACTER*13 INPSCO
+      CHARACTER*8 RESULT
       CHARACTER*16 TYPRES
       CHARACTER*16 TYPEAR(NBTYAR)
       CHARACTER*24 NUMEDD
@@ -88,23 +80,11 @@ C    ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ---------------------------
 C
-      CHARACTER*8 RESULT
-      CHARACTER*19 KREFE
 
-      INTEGER IAUX, JAUX
+      CHARACTER*19 KREFE
       INTEGER ISTOC
       INTEGER LREFE
-C
-C====
-C 1. PREALABLES
-C====
-C 1.1. ==> NOM DES STRUCTURES ASSOCIEES AUX DERIVATIONS
-C                3. LE NOM DU RESULTAT
 
-      IAUX = NRORES
-      JAUX = 3
-      CALL PSNSLE ( INPSCO, IAUX, JAUX, RESULT )
-CC      PRINT *,'NRORES = ',NRORES,' ==> RESULT = ', RESULT
 C
 C====
 C 2. CREATION DE LA STRUCTURE DE DONNEE RESULTAT
@@ -128,17 +108,12 @@ C
 C
 C 2.2. ==> ARCHIVAGE INITIAL
 C
-        IF ( NRORES.EQ.0 ) THEN
-          IARCHI = -1
-        ELSE
-          IARCHI = 0
-        ENDIF
+        IARCHI = -1
         ISTOC = 0
-        JAUX = 1
 C
-        CALL DLARCH ( NRORES, INPSCO,
+        CALL DLARCH ( RESULT,
      &                NEQ, ISTOC, IARCHI, TEXTE,
-     &                JAUX, IFM, T0,
+     &                1, IFM, T0,
      &                NBTYAR, TYPEAR, MASSE,
      &                DEP0, VIT0, ACC0,
      &                FEXTE(NEQ+1),FAMOR(NEQ+1),FLIAI(NEQ+1) )
@@ -149,12 +124,8 @@ C====
 C 3. RECUPERATION
 C====
       ELSE
-C
-        IF ( NRORES.EQ.0 ) THEN
-          NBORDR = NBORDR + NUME
-        ENDIF
+        NBORDR = NBORDR + NUME
         CALL RSAGSD( RESULT, NBORDR )
-C
       ENDIF
 C
 C====

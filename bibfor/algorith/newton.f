@@ -17,9 +17,9 @@ C
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 12/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -359,7 +359,7 @@ C
       IF ( ICONFA.EQ.-1 ) THEN
          IF ( NITNEW.GT.NITMAX ) THEN
             WRITE(KB3,'(I3)') NITMAX
-            WRITE(KB10,'(1PD10.4)') TC
+            WRITE(KB10,'(1PD11.4)') TC
              VALK(1) = KB3
              VALK(2) = KB10
              CALL U2MESK('F','ALGORITH6_53', 2 ,VALK)
@@ -410,7 +410,7 @@ C
       ELSE IF ( ICONFA.EQ.1 ) THEN
          IF ( NITNEW.GT.NITMAX ) THEN
             WRITE(KB3,'(I3)') NITMAX
-            WRITE(KB10,'(1PD10.4)') TC
+            WRITE(KB10,'(1PD11.4)') TC
              VALK(1) = KB3
              VALK(2) = KB10
              CALL U2MESK('F','ALGORITH6_53', 2 ,VALK)
@@ -537,7 +537,7 @@ C
       ELSE IF ( NBCHA.GT.NBCHEA ) THEN
          IF ( NITNEW.GT.NITMAX ) THEN
             WRITE(KB3,'(I3)') NITMAX
-            WRITE(KB10,'(1PD10.4)') TC
+            WRITE(KB10,'(1PD11.4)') TC
              VALK(1) = KB3
              VALK(2) = KB10
              CALL U2MESK('F','ALGORITH6_53', 2 ,VALK)

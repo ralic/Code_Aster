@@ -1,4 +1,4 @@
-# MODIF  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # RESPONSABLE ANGLES J.ANGLES
 #
 # TITRE FATIGUE, CHARGEMENT CYCLIQUE : TRACTION-COMPRESSION + CISAILLEMENT
@@ -301,13 +301,8 @@ SOL_NL = STAT_NON_LINE ( TITRE      =
 
 
 
-SOL_NL = CALC_ELEM( reuse    = SOL_NL,
-                    RESULTAT = SOL_NL,
-                    OPTION   = (
-                                'EPSI_ELGA',
-                                'SIGM_ELNO',
-                                'EPSI_ELNO')
-                  )
+SOL_NL=CALC_CHAMP(reuse=SOL_NL,RESULTAT=SOL_NL,CONTRAINTE=('SIGM_ELNO'),DEFORMATION=('EPSI_ELGA','EPSI_ELNO'))
+
 
 SOL_NL = CALC_CHAMP( reuse    = SOL_NL,
                   RESULTAT = SOL_NL,

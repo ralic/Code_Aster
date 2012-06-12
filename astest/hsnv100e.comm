@@ -1,9 +1,9 @@
-# MODIF  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE THERMO-PLASTICITE EN TRACTION SIMPLE
 # hsnv100e.para = tps_job 60 mem_job 164Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -212,11 +212,8 @@ U=STAT_NON_LINE(
                 ITER_GLOB_MAXI = 10)
               )
 
-U=CALC_ELEM( reuse=U,
-                            RESULTAT=U,
-                              OPTION=( 'EPSI_ELNO',
-                                       'SIGM_ELNO', )
-                      )
+U=CALC_CHAMP(reuse=U,RESULTAT=U,CONTRAINTE=('SIGM_ELNO'),DEFORMATION=('EPSI_ELNO'))
+
 
 #
 TEST_RESU(RESU=(
@@ -265,11 +262,8 @@ V=STAT_NON_LINE(
                 ITER_GLOB_MAXI = 10)
               )
 
-V=CALC_ELEM( reuse=V,
-                            RESULTAT=V,
-                              OPTION=( 'EPSI_ELNO',
-                                       'SIGM_ELNO', )
-                      )
+V=CALC_CHAMP(reuse=V,RESULTAT=V,CONTRAINTE=('SIGM_ELNO'),DEFORMATION=('EPSI_ELNO'))
+
 
 #
 TEST_RESU(RESU=(

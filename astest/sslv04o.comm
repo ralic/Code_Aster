@@ -1,4 +1,4 @@
-# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE EN C.P. (TRIA6 QUAD8) TEST ORIE_PRES_2D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -62,10 +62,8 @@ RESU=MECA_STATIQUE(         MODELE=MO,    CHAM_MATER=CM,
 
                     )
 
-CALC_ELEM( reuse= RESU ,RESULTAT= RESU ,
+CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CONTRAINTE=('SIGM_ELNO'),DEFORMATION=('EPSI_ELNO'))
 
-                      OPTION=( 'EPSI_ELNO', 'SIGM_ELNO',)
-                    )
 
 CALC_CHAMP( reuse=RESU,                      RESULTAT=RESU,
                      DEFORMATION='EPSI_NOEU',CONTRAINTE='SIGM_NOEU')

@@ -1,4 +1,4 @@
-# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL NON DRAINE
 # wtnv100b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
@@ -114,11 +114,8 @@ U1=STAT_NON_LINE(
                 RESI_GLOB_RELA = 1.E-6)
               )
 
-U1=CALC_ELEM( reuse=U1,
-                            OPTION=(
-                  'SIGM_ELNO',  'VARI_ELNO',),
-                          RESULTAT=U1,
-              )
+U1=CALC_CHAMP(reuse=U1,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U1)
+
 
 TEMPS2=DEFI_LIST_REEL(   DEBUT=1.,INTERVALLE=(
                             _F(  JUSQU_A = 1.1,  NOMBRE = 50),
@@ -194,11 +191,8 @@ U2=STAT_NON_LINE(
                 RESI_GLOB_RELA = 1.E-6)
               )
 
-U2=CALC_ELEM( reuse=U2,
-                            OPTION=(
-                  'SIGM_ELNO',  'VARI_ELNO',),
-                          RESULTAT=U2,
-              )
+U2=CALC_CHAMP(reuse=U2,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U2)
+
 
 #FIN();
 
@@ -214,10 +208,8 @@ U2=CALC_ELEM( reuse=U2,
 #POURSUITE();
 
 
-U2=CALC_ELEM( reuse=U2,     RESULTAT=U2,
-                    NUME_ORDRE=(5, 10, 20, 40, 60, 100,),
-                        OPTION=('EPSI_ELNO', )
-                )
+U2=CALC_CHAMP(reuse=U2,RESULTAT=U2,NUME_ORDRE=(5,10,20,40,60,100),DEFORMATION=('EPSI_ELNO'))
+
 
 U2=CALC_CHAMP(  reuse=U2,     RESULTAT=U2,
                     NUME_ORDRE=(5, 10, 20, 40, 60, 100,),

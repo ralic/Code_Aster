@@ -1,4 +1,4 @@
-# MODIF  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 #
 # TITRE : Cylindre mince sous pression hydrostatique
 # demo005a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
@@ -124,9 +124,8 @@ res1=MECA_STATIQUE(
 # le nom 'SIGM_ELNO' signifie "contraintes calculees aux noeuds de chaque
 # element a partir des deplacements
 
-res1=CALC_ELEM(reuse=res1,
-               RESULTAT=res1,
-               OPTION='SIGM_ELNO',);
+res1=CALC_CHAMP(reuse=res1,RESULTAT=res1,CONTRAINTE=('SIGM_ELNO'))
+
 
 
 # Impression des resultats au point A

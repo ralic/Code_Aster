@@ -1,4 +1,4 @@
-#@ MODIF diffusion_H2 Contrib  DATE 10/04/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF diffusion_H2 Contrib  DATE 11/06/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -153,32 +153,46 @@ def char_grad_impo_ops(self,RESU_H2,TINIT,TFIN,RESUMECA,GRMAVOL,DIME,Ctot0,CHARG
          
    # pour gagner du temps on evite la construction du mot-cle GRAD_TEMP_INI
    nomvale=CHARGRD0.nom.ljust(8)+'.CHTH.GRAIN.VALE'
-   tabvale=aster.getvectjev( CHARGRD0.nom.ljust(8)+'.CHTH.GRAIN.VALE' )
-   nbrvale=len(tabvale)
+   nomlima=CHARGRD0.nom.ljust(8)+'.CHTH.GRAIN.LIMA'
+   nomdesc=CHARGRD0.nom.ljust(8)+'.CHTH.GRAIN.DESC'
+   tabvale=aster.getvectjev( nomvale)
+   tabdesc=aster.getvectjev( nomdesc)
+   dicolima = aster.getcolljev(nomlima)
+
+   nbrvale=len(tabvale)    
    champ=NP.zeros(nbrvale)
    bidon=NP.zeros(nbrvale)
 
    nommai =__MAIL.sdj.NOMMAI.get()
    connex =__MAIL.sdj.CONNEX.get()
    groupma=__MAIL.sdj.GROUPEMA.get()[GRMAVOL.ljust(8)]
- 
-   for ima in groupma :
-      # ATTENTION : dans Python, les tableaux commencent a 0
-      # mais dans la connectivite, les noeuds commencent a 1!
-      lnoeu=NP.array(connex[ima])-1
-      nbno=len(lnoeu)
-
-      # calcul de la moyenne par maille de fx
-      lflux=fx[lnoeu]
-      flux=NP.add.reduce(lflux)
-      flux=flux/nbno
- 
-      lfluy=fy[lnoeu]
-      fluy=NP.add.reduce(lfluy)
-      fluy=fluy/nbno
+   nbzone=tabdesc[1]
+#   print "tabdesc",tabdesc
+#   print "tablima",dicolima
+   
+   for izone in dicolima.keys() :
       
-      champ[9*(ima-1)+1]=-flux
-      champ[9*(ima-1)+2]=-fluy
+      # chaque maille du groupe est affectee
+      for index,ima in enumerate(dicolima[izone]):
+          if ima==0 : break
+          if ima in groupma :
+              # ATTENTION : dans Python, les tableaux commencent a 0
+              # mais dans la connectivite, les noeuds commencent a 1!
+              lnoeu=NP.array(connex[ima])-1
+              nbno=len(lnoeu)
+
+              # calcul de la moyenne par maille de fx
+              lflux=fx[lnoeu]
+              flux=NP.add.reduce(lflux)
+              flux=flux/nbno
+ 
+              lfluy=fy[lnoeu]
+              fluy=NP.add.reduce(lfluy)
+              fluy=fluy/nbno
+              numa=index
+#              print 'essai, numa, ima',numa, ima, groupma, lnoeu, nbno
+              champ[9*(numa-1)+1]=-flux
+              champ[9*(numa-1)+2]=-fluy
       
    aster.putvectjev(nomvale,nbrvale,tuple(range(1,nbrvale+1)),tuple(champ),tuple(bidon),1 )
  

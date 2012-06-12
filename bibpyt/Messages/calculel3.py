@@ -1,4 +1,4 @@
-#@ MODIF calculel3 Messages  DATE 13/02/2012   AUTEUR SELLENET N.SELLENET 
+#@ MODIF calculel3 Messages  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -40,26 +40,8 @@ cata_msg = {
  les structures de données résultat :  EVOL_ELAS, DYNA_TRANS, DYNA_HARMO
 """),
 
-5 : _(u"""
-  pour calculer  %(k1)s  il faut SIEF_ELNO ou EFGE_ELNO
-"""),
-
-6 : _(u"""
-  option  %(k1)s  non traitée pour un résultat de type  %(k2)s
-"""),
-
 7 : _(u"""
  Calcul de  %(k1)s  impossible.
-"""),
-
-8 : _(u"""
- les champs SIEF_ELGA et SIGM_ELNO sont absents :
- on ne peut pas calculer l'option %(k1)s  avec la SD de type  %(k2)s
-"""),
-
-9 : _(u"""
- Le champ  SIGM_ELNO est absent :
- on ne peut pas calculer l'option %(k1)s  avec la SD de type  %(k2)s.
 """),
 
 11 : _(u"""
@@ -93,21 +75,11 @@ cata_msg = {
  le résultat  %(k1)s  doit comporter un champ de contraintes au numéro d'ordre  %(k2)s  .
 """),
 
-18 : _(u"""
- pas de champ de contraintes pour calculer  %(k1)s
-"""),
 
 19 : _(u"""
  problème à l'appel de ALCHML pour  %(k1)s
 """),
 
-20 : _(u"""
- pas de champ d'endommagement pour calculer  %(k1)s
-"""),
-
-21 : _(u"""
- le calcul avec l'option ENDO_ELNO nécessite au préalable un calcul avec l'option ENDO_ELGA
-"""),
 
 22 : _(u"""
   L'option %(k1)s est inexistante.
@@ -224,9 +196,10 @@ PROJ_CHAMP / METHODE='ECLA_PG' :
  données incorrectes.
 """),
 
-
-
-
+46 : _(u"""
+La MATR_ASSE et le CHAM_NO ont des numérotations différentes (%(k1)s et %(k2)s).
+Si la MATR_ASSE contient des ddls LAGR, ceux-ci sont mis à zéro.
+"""),
 
 47 : _(u"""
 Possible erreur d'utilisation :

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 #======================================================================
 #
 # TITRE : VALIDATION DE LA TEMPERATURE  RELATION = 'BETON_UMLV_FP'
@@ -162,10 +162,8 @@ U=STAT_NON_LINE(MODELE=MOMECA,
                           );
 
 
-U=CALC_ELEM(reuse =U,
-               RESULTAT=U,
-               OPTION=('SIEQ_ELNO','VARI_ELNO'
-                       ),);
+U=CALC_CHAMP(reuse=U,RESULTAT=U,CRITERES=('SIEQ_ELNO'),VARI_INTERNE=('VARI_ELNO'))
+
 
 #IMPR_RESU(RESU=_F(RESULTAT=U,NOM_CHAM='SIEQ_ELNO',MAILLE='M1',NOEUD='N1',NOM_CMP=('VMIS','TRSIG')))
 
@@ -312,10 +310,8 @@ for i in range(NCAL):
               DETRUIRE ( CONCEPT =  _F (NOM =SIG2),);
               DETRUIRE ( CONCEPT =  _F (NOM =SM1),);
 
-          RESU[i]=CALC_ELEM(reuse =RESU[i],
-                            RESULTAT=RESU[i],
-                            OPTION=('SIGM_ELNO','SIEQ_ELNO'
-                            ),);
+          RESU[i]=CALC_CHAMP(reuse=RESU[i],RESULTAT=RESU[i],CRITERES=('SIEQ_ELNO'),CONTRAINTE=('SIGM_ELNO'))
+
 
           #IMPR_RESU(RESU=_F(RESULTAT=RESU[i],NOM_CHAM='SIEQ_ELNO',MAILLE='M1',NOEUD='N1',NOM_CMP=('VMIS','TRSIG')))
 

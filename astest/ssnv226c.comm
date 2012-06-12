@@ -1,0 +1,213 @@
+# MODIF  DATE 11/06/2012   AUTEUR PROIX J-M.PROIX 
+# TITRE VALIDATION POST_ITER='CRIT_RUPT' 3D VISC_ISOT_TRAC
+# ssnv226c.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#
+DEBUT(CODE=_F(NOM='SSNV226C',NIV_PUB_WEB='INTERNET',),)
+
+
+CUBE=LIRE_MAILLAGE();
+
+PRECIS=1.E-6
+
+CUBE=DEFI_GROUP(reuse =CUBE,
+              MAILLAGE=CUBE,
+              DETR_GROUP_NO=_F(NOM=('GAUCHE','ARRIERE','HAUT','BAS',),),
+              CREA_GROUP_NO=(_F(OPTION='PLAN',
+                                NOM='BAS',
+                                POINT=(0.0,0.0,0.0,),
+                                VECT_NORMALE=(0.0,0.0,1.0,),
+                                PRECISION=PRECIS,),
+                             _F(OPTION='PLAN',
+                                NOM='HAUT',
+                                POINT=(0.0,0.0,1.0,),
+                                VECT_NORMALE=(0.0,0.0,1.0,),
+                                PRECISION=PRECIS,),
+                             _F(OPTION='PLAN',
+                                NOM='GAUCHE',
+                                POINT=(0.0,0.0,0.0,),
+                                VECT_NORMALE=(0.0,1.0,0.0,),
+                                PRECISION=PRECIS,),
+                             _F(OPTION='PLAN',
+                                NOM='ARRIERE',
+                                POINT=(0.0,0.0,0.0,),
+                                VECT_NORMALE=(1.0,0.0,0.0,),
+                                PRECISION=PRECIS,),),);
+
+
+
+SY = 750.E6;
+E=2.E11
+Eps0=SY/E
+
+CTRAC=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(Eps0, SY,  1., 1500.E6))
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
+                               NU=0.3,
+                               RHO=7800.,
+                             ALPHA=0.0,),
+                   CRIT_RUPT=_F(SIGM_C=7.8E8,
+                                COEF=10000.,),
+                   TRACTION=_F(SIGM=CTRAC,),
+                     VISC_SINH=_F( SIGM_0=6176.E6,
+                                   EPSI_0=3.31131121483e13,
+                                   M=6.76,),
+                                 );
+
+TROISD=AFFE_MODELE(MAILLAGE=CUBE,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='3D',),);
+
+
+
+MAT=AFFE_MATERIAU(MAILLAGE=CUBE,
+                  AFFE=_F(TOUT='OUI',
+                          MATER=ACIER,),);
+
+TRAC=AFFE_CHAR_MECA(MODELE=TROISD,
+                     DDL_IMPO=(
+                     _F(GROUP_NO='ARRIERE',
+                                 DX=0.0,),
+                        _F(GROUP_NO='BAS',
+                                 DZ=0.0,),
+                       _F(GROUP_NO='GAUCHE',
+                                 DY=0.0,),
+                       _F(GROUP_NO='HAUT',
+                                   DZ=1.0),
+                                   ),)
+##chargement
+EpsMax=0.05
+viteps=1.e-4
+tmax=EpsMax/viteps
+
+EPSZZ=DEFI_FONCTION(
+                      NOM_PARA='INST',  NOM_RESU='EPSI',
+                       VALE=(  0. , 0., tmax , EpsMax),
+                       PROL_DROITE='LINEAIRE',
+                        )
+
+
+
+LINST=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(_F(JUSQU_A=tmax,
+                                    NOMBRE=100,),
+                                    ),);
+
+DEFLIST1=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LINST,),)
+
+                    
+SOLNL=STAT_NON_LINE( MODELE=TROISD,
+                     CHAM_MATER=MAT,
+                     EXCIT=_F(CHARGE=TRAC,FONC_MULT=EPSZZ),
+                     INCREMENT=_F(LIST_INST=DEFLIST1),
+                     COMP_INCR=_F(RELATION='VISC_ISOT_TRAC',
+                                                      POST_ITER='CRIT_RUPT',
+                                  DEFORMATION='SIMO_MIEHE',
+                                  ),
+                     NEWTON=_F(REAC_ITER=1,
+                              ),
+                     SUIVI_DDL= ( 
+                               _F(NOM_CMP    ='V1',
+                                  NOM_CHAM   ='VARI_ELGA',
+                                  TOUT='OUI',
+                                  EVAL_ELGA  ='MAX',
+                                  EVAL_CHAM  ='MAX',),
+                               _F(NOM_CMP    ='V14',
+                                  NOM_CHAM   ='VARI_ELGA',
+                                  TOUT='OUI',
+                                  EVAL_ELGA  ='MAX',
+                                  EVAL_CHAM  ='MAX',),
+                               _F(NOM_CMP    ='SIZZ',
+                                  NOM_CHAM   ='SIEF_ELGA',
+                                  TOUT='OUI',
+                                  EVAL_ELGA  ='MAX',
+                                  EVAL_CHAM  ='MAX',),
+                                  ),
+                    );
+
+
+
+SOLNL=CALC_ELEM(reuse =SOLNL,
+                 RESULTAT=SOLNL,
+                 OPTION=('EPSI_ELGA','EPSP_ELGA',),);
+
+
+
+# Calcul des moyennes
+
+INT_SI=POST_ELEM(MODELE=TROISD,
+                   RESULTAT=SOLNL,
+                   INTEGRALE=_F(NOM_CHAM='SIEF_ELGA',
+                                NOM_CMP=('SIXX','SIYY','SIZZ'),
+                                TOUT='OUI'),)
+
+IMPR_TABLE(TABLE=INT_SI)
+
+INT_EP=POST_ELEM(MODELE=TROISD,
+                   RESULTAT=SOLNL,
+                   INTEGRALE=_F(NOM_CHAM='EPSP_ELGA',
+                                NOM_CMP=('EPXX','EPYY','EPZZ'),
+                                TOUT='OUI'),)
+
+IMPR_TABLE(TABLE=INT_EP)
+
+
+
+
+
+F_SI=RECU_FONCTION(TABLE=INT_SI,
+                           PARA_X='INST',
+                           PARA_Y='INTE_SIZZ',);
+
+F_EP=RECU_FONCTION(TABLE=INT_EP,
+                           PARA_X='INST',
+                           PARA_Y='INTE_EPZZ',);
+
+INT_VI=POST_ELEM(MODELE=TROISD,
+                   RESULTAT=SOLNL,
+                   INTEGRALE=_F(NOM_CHAM='VARI_ELGA',
+                                NOM_CMP=('V1','V14'),
+                                TOUT='OUI'),)
+
+IMPR_TABLE(TABLE=INT_VI)
+
+
+
+IMPR_FONCTION(
+FORMAT ='XMGRACE',
+UNITE=40,
+COURBE=_F(FONC_X=F_EP, FONC_Y=F_SI))
+
+
+
+TEST_FONCTION(VALEUR=_F(FONCTION=F_SI,
+                        NOM_PARA='INST',
+                        VALE_PARA=250.,
+                        VALE_REFE=7.80304E+08,
+                        REFERENCE='NON_REGRESSION',),);
+
+TEST_FONCTION(VALEUR=_F(FONCTION=F_SI,
+                        NOM_PARA='INST',
+                        VALE_PARA=255.,
+                        VALE_REFE=8.77866E+04,
+                        REFERENCE='NON_REGRESSION',),);
+
+FIN() 
+

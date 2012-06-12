@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE Validation de CHAR_MECA_HYDR_R et CHAR_MECA_SECH_R
 # zzzz284a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -189,7 +189,8 @@ TEST_RESU(RESU=(
 # ------------------------------------------------------------------
 # 4) Validation de l'option 'VARC_ELGA' :
 #----------------------------------------
-DEP2=CALC_ELEM(reuse=DEP2, RESULTAT=DEP2, OPTION='VARC_ELGA')
+DEP2=CALC_CHAMP(reuse=DEP2,RESULTAT=DEP2,VARI_INTERNE=('VARC_ELGA'))
+
 
 TEST_RESU(RESU=(
       _F( RESULTAT = DEP2,  NUME_ORDRE = 1, NOM_CHAM = 'VARC_ELGA',   MAILLE = 'M1', POINT=3,

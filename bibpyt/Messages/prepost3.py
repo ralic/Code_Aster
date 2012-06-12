@@ -1,4 +1,4 @@
-#@ MODIF prepost3 Messages  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
+#@ MODIF prepost3 Messages  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -147,10 +147,6 @@ cata_msg = {
 
 78 : _(u"""
  le fichier maillage GIBI est vide
-"""),
-
-80 : _(u"""
- pour un résultat de type " %(k1)s ", on ne traite que l'option ..._NOEU_...
 """),
 
 81 : _(u"""

@@ -1,4 +1,4 @@
-# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE SOUS STRUCTURATION DYNAMIQUE : PLAQUE MINCE LIBRE ET ENCASTREE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -117,11 +117,8 @@ MODES_L1=MODE_ITER_SIMULT(     MATR_A=RAID_L,
                              CALC_FREQ=_F( OPTION = 'BANDE',
                                         FREQ = (10.,1000.,)))
 
-MODES_L1=CALC_ELEM( reuse=MODES_L1,
+MODES_L1=CALC_CHAMP(reuse=MODES_L1,CONTRAINTE=('SIEF_ELGA'),RESULTAT=MODES_L1)
 
-                      TOUT_ORDRE='OUI',
-                          OPTION='SIEF_ELGA',
-                         RESULTAT=MODES_L1 )
 MODES_L1=CALC_CHAMP(reuse =MODES_L1,
               RESULTAT=MODES_L1,
               FORCE='FORC_NODA');
@@ -303,11 +300,11 @@ SQUEL=DEFI_SQUELETTE(  MODELE_GENE=MODEGE,SOUS_STRUC=(
 #
 MODGLO=REST_SOUS_STRUC(   RESU_GENE=RESGEN,
                              SQUELETTE=SQUEL,
-                           TOUT_ORDRE='OUI')
+                           )
 #
 MODGLO2=REST_SOUS_STRUC(   RESU_GENE=RESGEN,
                            SOUS_STRUC='CARRE1',
-                           TOUT_ORDRE='OUI',
+
                             TOUT_CHAM='OUI')
 #
 TEST_RESU(RESU=(_F( RESULTAT = MODGLO, PARA = 'FREQ',
@@ -475,12 +472,8 @@ CARSQUEL=AFFE_CARA_ELEM(  MODELE=MODELE1,
                                    GROUP_MA = 'TOUT2')  )
 
 #
-MODGL22=CALC_ELEM( MODELE=MODELE1,
-                       CHAM_MATER=MATSQUEL,
-                       CARA_ELEM=CARSQUEL,
-                      TOUT_ORDRE='OUI',
-                          OPTION='SIGM_ELNO',
-                         RESULTAT=MODGL2 )
+MODGL22=CALC_CHAMP(MODELE=MODELE1,CHAM_MATER=MATSQUEL,CARA_ELEM=CARSQUEL,CONTRAINTE=('SIGM_ELNO'),RESULTAT=MODGL2)
+
 
 #
 TEST_RESU(RESU=(

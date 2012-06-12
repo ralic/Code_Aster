@@ -1,4 +1,4 @@
-#@ MODIF sd_compor SD  DATE 13/02/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF sd_compor SD  DATE 11/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -169,17 +169,22 @@ class sd_compor(AsBase):
         sd2=sd_mater(mater) ; sd2.check(checker)
         for k in range(nbgmax):
             grfib1     =cprk[6*k+0]
+            assert grfib1 != '' , cprk
             mater1     =cprk[6*k+1]
+            assert mater1 != '' , cprk
             loifib1    =cprk[6*k+2]
             algo1d     =cprk[6*k+3]
             deform     =cprk[6*k+4]
-            nbfib=    int(cprk[6*k+5])
-            assert grfib1 != '' , cprk
-            assert mater1 != '' , cprk
-            sd2=sd_mater(mater1) ; sd2.check(checker)
-            assert loifib1 != '' , cprk
-            assert algo1d  in ('ANALYTIQUE','DEBORST') , cprk
-            assert deform  in ('PETIT','PETIT_REAC','GROT_GDEP') , cprk
-            assert nbfib > 0      , cprk
-
-
+            if mater1 != 'VIDE':
+                nbfib=    int(cprk[6*k+5])
+                sd2=sd_mater(mater1) ; sd2.check(checker)
+                assert loifib1 != '' , cprk
+                assert algo1d  in ('ANALYTIQUE','DEBORST') , cprk
+                assert deform  in ('PETIT','PETIT_REAC','GROT_GDEP') , cprk
+                assert nbfib > 0      , cprk
+            else :
+                nbfib=    cprk[6*k+5]
+                assert loifib1 == '' , cprk
+                assert algo1d  == '' , cprk
+                assert deform  == '' , cprk
+                assert nbfib   == '' , cprk

@@ -1,40 +1,40 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE FATIGUE VIBRATOIRE D'UNE AUBE DE VENTILATEUR
 # sdlv129a.para = tps_job 100 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='SDLV129A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-M=LIRE_MAILLAGE(FORMAT='MED',) 
+M=LIRE_MAILLAGE(FORMAT='MED',)
 #
 # MAILLAGE, MODELE ET MATERIAU
 #
 M=MODI_MAILLAGE(reuse =M, MAILLAGE=M,INFO=2,
                        ORIE_PEAU_3D=(_F(GROUP_MA='SLAT2',),),
                        );
-                                 
+
 MO=AFFE_MODELE(    MAILLAGE=M,    VERIF='MAILLE',
        AFFE=_F( TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = '3D') )
 
 MAT=DEFI_MATERIAU(
         ELAS=_F(  E = 210000.,  NU = 0.3,  RHO = 7.8E-6) )
-        
+
 CM=AFFE_MATERIAU(    MAILLAGE=M,
        AFFE=_F(  TOUT = 'OUI', MATER = MAT),);
 
@@ -60,10 +60,8 @@ RES_STAT=MECA_STATIQUE(MODELE=MO,
                          _F(CHARGE = ROTA, ) ),
                         );
 
-RES_STAT=CALC_ELEM( reuse=RES_STAT,
-                       OPTION=(  'SIGM_ELNO',
-                                'SIEQ_ELGA', 'SIEQ_ELNO',  ),
-                     RESULTAT=RES_STAT )
+RES_STAT=CALC_CHAMP(reuse=RES_STAT,CRITERES=('SIEQ_ELGA','SIEQ_ELNO'),CONTRAINTE=('SIGM_ELNO'),RESULTAT=RES_STAT)
+
 
 
 TEST_RESU(RESU=_F(RESULTAT=RES_STAT,
@@ -105,10 +103,8 @@ MODE=MODE_ITER_SIMULT(    MATR_A=A,     MATR_B=B,
              CALC_FREQ=_F( NMAX_FREQ = 5) ,
              VERI_MODE=_F( SEUIL=1E-05),)
 
-MODE=CALC_ELEM( reuse=MODE,
-                       OPTION=( 'SIEF_ELGA', 'SIGM_ELNO', 
-                                'SIEQ_ELGA','SIEQ_ELNO',   ),
-                     RESULTAT=MODE )
+MODE=CALC_CHAMP(reuse=MODE,CRITERES=('SIEQ_ELGA','SIEQ_ELNO'),CONTRAINTE=('SIEF_ELGA','SIGM_ELNO'),RESULTAT=MODE)
+
 
 TEST_RESU(RESU=_F(RESULTAT=MODE,
                   NUME_MODE=1,
@@ -128,8 +124,8 @@ TEST_RESU(RESU=_F(RESULTAT=MODE,
                   NOEUD = 'N111',
                   VALE=-2.97812567E+01,
                   REFERENCE='NON_REGRESSION',
-                  PRECISION=0.01,),);       
-                             
+                  PRECISION=0.01,),);
+
 TEST_RESU(RESU=_F(RESULTAT=MODE,
                   NUME_MODE=1,
                   NOM_CHAM='SIEQ_ELNO',
@@ -148,7 +144,7 @@ TEST_RESU(RESU=_F(RESULTAT=MODE,
                   NOEUD = 'N111',
                   VALE=2.97812567E+01,
                   REFERENCE='NON_REGRESSION',
-                  PRECISION=0.01,),);                  
+                  PRECISION=0.01,),);
 #
 #
 # CALCUL EN FATIGUE
@@ -191,7 +187,7 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=D_MOD1,
                   TYPE_TEST='MIN',
                   VALE=2.44963E+01,
                   REFERENCE='NON_REGRESSION',
-                  PRECISION=0.01,),);                  
+                  PRECISION=0.01,),);
 
 # MODE 1 SEUL (AUX NOEUDS, GERBER)
 D_MOD1b=CALC_FATIGUE( TYPE_CALCUL = 'FATIGUE_VIBR',
@@ -220,7 +216,7 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=D_MOD1b,
                   TYPE_TEST='MIN',
                   VALE=3.136561E+01,
                   REFERENCE='NON_REGRESSION',
-                  PRECISION=0.01,),);                  
+                  PRECISION=0.01,),);
 
 # MODE 1 SEUL (AUX PTS DE GAUSS, GERBER)
 D_MOD1G=CALC_FATIGUE( TYPE_CALCUL = 'FATIGUE_VIBR',
@@ -235,7 +231,7 @@ D_MOD1G=CALC_FATIGUE( TYPE_CALCUL = 'FATIGUE_VIBR',
                        MATER       = MATE,
                        INFO        = 1
                      )
-                                                   
+
 
 
 # (MODE 1) + 0,5 * (MODE 2) (AUX NOEUDS, GOODMAN)
@@ -251,7 +247,7 @@ D_MOD12=CALC_FATIGUE( TYPE_CALCUL = 'FATIGUE_VIBR',
                        MATER       = MATE,
                        INFO        = 1
                      )
-                     
+
 
 TEST_RESU(CHAM_ELEM=_F(CHAM_GD=D_MOD12,
                   NOM_CMP='DOMA',
@@ -261,7 +257,7 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=D_MOD12,
                   REFERENCE='ANALYTIQUE',
                   PRECISION=0.01,),);
 
-                                       
+
 TDMG12=POST_RELEVE_T(ACTION=_F(     INTITULE='(MODE 1) + 0,5 * (MODE 2)',
                                     CHAM_GD=D_MOD12,
                                     TOUT_CMP='OUI',
@@ -289,7 +285,7 @@ D_MOD12b=CALC_FATIGUE( TYPE_CALCUL = 'FATIGUE_VIBR',
                        MATER       = MATE,
                        INFO        = 1
                      )
-                     
+
 
 TEST_RESU(CHAM_ELEM=_F(CHAM_GD=D_MOD12b,
                   NOM_CMP='DOMA',
@@ -299,7 +295,7 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=D_MOD12b,
                   REFERENCE='ANALYTIQUE',
                   PRECISION=0.01,),);
 
-                                       
+
 TDMG12b=POST_RELEVE_T(ACTION=_F(    INTITULE='(MODE 1) + 0,5 * (MODE 2)',
                                     CHAM_GD=D_MOD12b,
                                     TOUT_CMP='OUI',

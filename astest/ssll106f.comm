@@ -1,4 +1,4 @@
-# MODIF  DATE 09/01/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # RESPONSABLE PROIX J.M.PROIX
 # TITRE TUBE DROIT SOUMIS A PLUSIEURS CHARGEMENTS (ELEMENT TUYAU_3M 4 NOEUDS STAT_NON_LINE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -135,9 +135,8 @@ U1=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10),
                 RESI_LINE_RELA = 1.E-5)
               )
 
-U1=CALC_ELEM( reuse=U1,
-              OPTION=('EFGE_ELNO','VARI_ELNO','DEGE_ELNO','SIGM_ELNO'),
-              RESULTAT=U1, )
+U1=CALC_CHAMP(reuse=U1,CONTRAINTE=('EFGE_ELNO','SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('DEGE_ELNO'),RESULTAT=U1)
+
 
 TEST_RESU(RESU=(
 
@@ -161,12 +160,12 @@ _F( RESULTAT = U1, NUME_ORDRE = 2,
 
 
 U1POS1=POST_CHAMP(RESULTAT=U1,
-                  TOUT_ORDRE='OUI',
+
                   EXTR_TUYAU=_F(NOM_CHAM='SIGM_ELNO',
                                 NUME_COUCHE=1,
                                 NIVE_COUCHE='SUP',ANGLE=90, ),);
 U1POS2=POST_CHAMP(RESULTAT=U1,
-                  TOUT_ORDRE='OUI',
+
                   EXTR_TUYAU=_F(NOM_CHAM='VARI_ELNO',
                                 NUME_COUCHE=1,
                                 NIVE_COUCHE='SUP',ANGLE=90, ),);
@@ -194,11 +193,8 @@ U2=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,),
                 RESI_LINE_RELA = 1.E-5)
               )
 
-U2=CALC_ELEM( reuse=U2,
-                            OPTION=(
-                  'EFGE_ELNO',  'VARI_ELNO','DEGE_ELNO'),
-                          RESULTAT=U2,
-              )
+U2=CALC_CHAMP(reuse=U2,CONTRAINTE=('EFGE_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('DEGE_ELNO'),RESULTAT=U2)
+
 
 TEST_RESU(RESU=(
 
@@ -240,11 +236,8 @@ U3=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10),
                 RESI_LINE_RELA = 1.E-5)
               )
 
-U3=CALC_ELEM( reuse=U3,
-                            OPTION=(
-                  'EFGE_ELNO',  'VARI_ELNO','DEGE_ELNO'),
-                          RESULTAT=U3,
-              )
+U3=CALC_CHAMP(reuse=U3,CONTRAINTE=('EFGE_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('DEGE_ELNO'),RESULTAT=U3)
+
 
 TEST_RESU(RESU=(
 
@@ -286,11 +279,8 @@ U4=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,),
                 RESI_LINE_RELA = 1.E-5)
               )
 
-U4=CALC_ELEM( reuse=U4,
-                            OPTION=(
-                  'EFGE_ELNO',  'VARI_ELNO','DEGE_ELNO'),
-                          RESULTAT=U4,
-              )
+U4=CALC_CHAMP(reuse=U4,CONTRAINTE=('EFGE_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('DEGE_ELNO'),RESULTAT=U4)
+
 
 TEST_RESU(RESU=(
 
@@ -340,11 +330,8 @@ U5=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10),
                 RESI_LINE_RELA = 1.E-5)
               )
 
-U5=CALC_ELEM( reuse=U5,
-                            OPTION=(
-                  'EFGE_ELNO',  'VARI_ELNO','DEGE_ELNO'),
-                          RESULTAT=U5,
-              )
+U5=CALC_CHAMP(reuse=U5,CONTRAINTE=('EFGE_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('DEGE_ELNO'),RESULTAT=U5)
+
 
 TEST_RESU(RESU=(
 
@@ -394,11 +381,8 @@ U6=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,),
                 RESI_LINE_RELA = 1.E-5)
               )
 
-U6=CALC_ELEM( reuse=U6,
-                            OPTION=(
-                  'EFGE_ELNO',  'VARI_ELNO','DEGE_ELNO'),
-                          RESULTAT=U6,
-              )
+U6=CALC_CHAMP(reuse=U6,CONTRAINTE=('EFGE_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('DEGE_ELNO'),RESULTAT=U6)
+
 
 TEST_RESU(RESU=(
 
@@ -449,11 +433,8 @@ U7=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10),
                 RESI_LINE_RELA = 1.E-5)
               )
 
-U7=CALC_ELEM( reuse=U7,
-                            OPTION=(
-                  'EFGE_ELNO',  'VARI_ELNO',),
-                          RESULTAT=U7,
-              )
+U7=CALC_CHAMP(reuse=U7,CONTRAINTE=('EFGE_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U7)
+
 
 # WO DOIT ETRE COMPRIS ENTRE 7.11111D-6 ET 7.76896D-6
 # MOYENNE 7.44  TOLE 4.42#
@@ -574,7 +555,7 @@ TEST_RESU(RESU=(_F(RESULTAT=U1,NUME_ORDRE = 2,
 # validation de POST_CHAMP / EXTR_TUYAU :
 #----------------------------------------
 # Decoupage en 16 secteurs  => (NUME_COUCHE=1/SUP + ANGLE=90) = (NUME_COUCHE=2/INF + ANGLE=90) = sous-point 75 (=2*(2*16+1)+9)
-U2=CALC_CHAMP(reuse =U2, RESULTAT=U2, TOUT_ORDRE='OUI', CONTRAINTE='SIGM_ELGA')
+U2=CALC_CHAMP(reuse =U2, RESULTAT=U2,  CONTRAINTE='SIGM_ELGA')
 #IMPR_RESU(RESU=_F(RESULTAT=U2, NOM_CHAM='SIGM_ELGA',NUME_ORDRE=2))
 
 U2B=POST_CHAMP(RESULTAT=U2, NUME_ORDRE=2,

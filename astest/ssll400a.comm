@@ -1,9 +1,9 @@
-# MODIF  DATE 15/02/2011   AUTEUR FLEJOU J-L.FLEJOU 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE DE SECTION CIRCULAIRE VARIABLE,
 # ssll400a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -218,11 +218,8 @@ MCVF100X=MECA_STATIQUE(        MODELE=MO,
                                    EXCIT=_F( CHARGE = FORC100X),
                                    )
 
-CALC_ELEM( reuse= MCVF100X ,RESULTAT= MCVF100X ,
-                                  OPTION=('EFGE_ELNO',
-                                          'SIPM_ELNO',
-                                         )
-                          )
+CALC_CHAMP(reuse=MCVF100X,RESULTAT=MCVF100X,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO'))
+
 
 #
 TEST_RESU(   RESU=_F( RESULTAT = MCVF100X,
@@ -301,11 +298,8 @@ MCVF100Y=MECA_STATIQUE(         MODELE=MO,
                                     EXCIT=_F( CHARGE = FOR100Y),
                                    )
 
-CALC_ELEM( reuse= MCVF100Y ,RESULTAT= MCVF100Y ,
-                                   OPTION=('EFGE_ELNO',
-                                           'SIPM_ELNO',
-                                          )
-                          )
+CALC_CHAMP(reuse=MCVF100Y,RESULTAT=MCVF100Y,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO'))
+
 
 #
 TEST_RESU(   RESU=_F( RESULTAT = MCVF100Y,
@@ -449,11 +443,8 @@ MCVM100X=MECA_STATIQUE(         MODELE=MO,
                                     EXCIT=_F( CHARGE = MOM100X),
                                 )
 
-CALC_ELEM( reuse= MCVM100X ,RESULTAT= MCVM100X ,
-                                   OPTION=('EFGE_ELNO',
-                                           'SIPM_ELNO',
-                                          )
-                          )
+CALC_CHAMP(reuse=MCVM100X,RESULTAT=MCVM100X,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO'))
+
 
 #
 TEST_RESU(   RESU=_F( RESULTAT = MCVM100X,
@@ -561,11 +552,8 @@ MCVM100Y=MECA_STATIQUE(         MODELE=MO,
                                     EXCIT=_F( CHARGE = MOM100Y),
                                    )
 
-CALC_ELEM( reuse= MCVM100Y ,RESULTAT= MCVM100Y ,
-                                   OPTION=('EFGE_ELNO',
-                                           'SIPM_ELNO',
-                                          )
-                           )
+CALC_CHAMP(reuse=MCVM100Y,RESULTAT=MCVM100Y,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO'))
+
 
 #
 TEST_RESU(   RESU=_F( RESULTAT = MCVM100Y,
@@ -681,11 +669,8 @@ MCVD100X=MECA_STATIQUE(        MODELE=MO,
                                    EXCIT=_F( CHARGE = DENS100X),
                                   )
 
-CALC_ELEM( reuse= MCVD100X ,RESULTAT= MCVD100X ,
-                                  OPTION=('EFGE_ELNO',
-                                          'SIPM_ELNO',
-                                         )
-                          )
+CALC_CHAMP(reuse=MCVD100X,RESULTAT=MCVD100X,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO'))
+
 
 #
 TEST_RESU(   RESU=_F( RESULTAT = MCVD100X,
@@ -762,11 +747,8 @@ MCVDENY=MECA_STATIQUE(         MODELE=MO,
                                   EXCIT=_F( CHARGE = DENS100Y),
                                 )
 
-CALC_ELEM( reuse= MCVDENY ,RESULTAT= MCVDENY ,
-                                  OPTION=('EFGE_ELNO',
-                                          'SIPM_ELNO',
-                                         )
-                         )
+CALC_CHAMP(reuse=MCVDENY,RESULTAT=MCVDENY,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO'))
+
 
 #
 TEST_RESU(   RESU=_F( RESULTAT = MCVDENY,
@@ -929,11 +911,8 @@ MRVF100X=MECA_STATIQUE(        MODELE=MO,
                                    EXCIT=_F( CHARGE = FORC100X),
                                  )
 
-CALC_ELEM( reuse= MRVF100X ,RESULTAT= MRVF100X ,
-                                  OPTION=('EFGE_ELNO',
-                                          'SIPM_ELNO',
-                                         )
-                          )
+CALC_CHAMP(reuse=MRVF100X,RESULTAT=MRVF100X,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO'))
+
 
 #
 TEST_RESU(   RESU=_F( RESULTAT = MRVF100X,
@@ -1012,11 +991,8 @@ MRVF100Y=MECA_STATIQUE(         MODELE=MO,
                                     EXCIT=_F( CHARGE = FOR100Y),
                                   )
 
-CALC_ELEM( reuse= MRVF100Y ,RESULTAT= MRVF100Y ,
-                                   OPTION=('EFGE_ELNO',
-                                           'SIPM_ELNO',
-                                          )
-                          )
+CALC_CHAMP(reuse=MRVF100Y,RESULTAT=MRVF100Y,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO'))
+
 
 #
 TEST_RESU(   RESU=_F( RESULTAT = MRVF100Y,
@@ -1160,12 +1136,8 @@ MRVM100X=MECA_STATIQUE(         MODELE=MO,
                                     EXCIT=_F( CHARGE = MOM100X),
                                    )
 
-CALC_ELEM( reuse= MRVM100X ,RESULTAT= MRVM100X ,
+CALC_CHAMP(reuse=MRVM100X,RESULTAT=MRVM100X,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO'))
 
-                                   OPTION=('EFGE_ELNO',
-                                           'SIPM_ELNO',
-                                          )
-                          )
 
 #
 TEST_RESU(   RESU=_F( RESULTAT = MRVM100X,
@@ -1277,11 +1249,8 @@ MRVM100Y=MECA_STATIQUE(         MODELE=MO,
                                     EXCIT=_F( CHARGE = MOM100Y),
                                    )
 
-CALC_ELEM( reuse= MRVM100Y ,RESULTAT= MRVM100Y ,
-                                   OPTION=('EFGE_ELNO',
-                                           'SIPM_ELNO',
-                                          )
-                           )
+CALC_CHAMP(reuse=MRVM100Y,RESULTAT=MRVM100Y,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO'))
+
 
 #
 TEST_RESU(   RESU=_F( RESULTAT = MRVM100Y,
@@ -1397,11 +1366,8 @@ MRVD100X=MECA_STATIQUE(        MODELE=MO,
                                    EXCIT=_F( CHARGE = DENS100X),
                                   )
 
-CALC_ELEM( reuse= MRVD100X ,RESULTAT= MRVD100X ,
-                                  OPTION=('EFGE_ELNO',
-                                          'SIPM_ELNO',
-                                         )
-                          )
+CALC_CHAMP(reuse=MRVD100X,RESULTAT=MRVD100X,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO'))
+
 
 #
 TEST_RESU(   RESU=_F( RESULTAT = MRVD100X,
@@ -1492,11 +1458,8 @@ MRVDENY=MECA_STATIQUE(         MODELE=MO,
                                   EXCIT=_F( CHARGE = DENS100Y),
                                  )
 
-CALC_ELEM( reuse= MRVDENY ,RESULTAT= MRVDENY ,
-                                  OPTION=('EFGE_ELNO',
-                                          'SIPM_ELNO',
-                                         )
-                         )
+CALC_CHAMP(reuse=MRVDENY,RESULTAT=MRVDENY,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO'))
+
 
 #
 TEST_RESU(   RESU=_F( RESULTAT = MRVDENY,
@@ -1778,11 +1741,8 @@ MCGPESX=MECA_STATIQUE(         MODELE=MO,
                                   EXCIT=_F( CHARGE = PENSENGX),
                                  )
 
-CALC_ELEM( reuse= MCGPESX ,RESULTAT= MCGPESX ,
-                                  OPTION=('EFGE_ELNO',
-                                          'SIPM_ELNO',
-                                         )
-                         )
+CALC_CHAMP(reuse=MCGPESX,RESULTAT=MCGPESX,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO'))
+
 
 #
 TEST_RESU(   RESU=_F(  RESULTAT = MCGPESX,

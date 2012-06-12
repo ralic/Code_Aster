@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 12/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,12 +40,12 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER      IUNIFI, ICHK , INFO
-      INTEGER      IEND, IFM, IUNERR, IUNRES, IUNMES
-      INTEGER      I, L, ICMD, JCMD, NBCMD, NBEXT, NFHDF
+      INTEGER      IUNIFI, ICHK , INFO, NBENRE, NBOCT
+      INTEGER      IFM, IUNERR, IUNRES, IUNMES
+      INTEGER      I, L, ICMD, JCO, NBCO, NBEXT, NFHDF
       LOGICAL      ULEXIS
-      CHARACTER*8  K8B, OUINON, TYPRES
-      CHARACTER*16 FCHIER,FHDF
+      CHARACTER*8  K8B, OUINON
+      CHARACTER*16 FCHIER, FHDF, TYPRES
       CHARACTER*80 FICH
       INTEGER      IARG
 C     ------------------------------------------------------------------
@@ -61,8 +61,6 @@ C     TEST ERREUR E SANS ERREUR F
 
 C     -----  FIN DE LA ZONE DE TEST ------------------------------------
 C
-C     --- IMPRESSION DES SD RESULTAT
-C
       IFM    = 0
       FCHIER = ' '
       CALL GETVIS ( ' ', 'UNITE'  , 1,IARG,1, IFM   , L )
@@ -70,28 +68,24 @@ C
          CALL ULOPEN ( IFM, ' ', FCHIER, 'NEW', 'O' )
       ENDIF
 C
-      IEND = 0
-      TYPRES = 'RESULTAT'
-      CALL GCURES ( TYPRES, IEND, NBCMD, K8B )
-      IF ( NBCMD .GT. 0 ) THEN
-         IEND = 1
-         CALL WKVECT ( '&&OP9999.NOM', 'V V K8', NBCMD, JCMD )
-         CALL GCURES ( TYPRES, IEND, NBCMD, ZK8(JCMD) )
-         DO 10 I = 1 , NBCMD
-            WRITE(IFM,1000)
-            CALL RSINFO ( ZK8(JCMD+I-1) , IFM )
- 10      CONTINUE
+      TYPRES = 'RESULTAT_SDASTER'
+      NBCO = 0
+      CALL GETTYP(TYPRES, NBCO, K8B)
+      IF (NBCO .GT. 0) THEN
+        CALL WKVECT('&&OP9999.NOM', 'V V K8', NBCO, JCO)
+        CALL GETTYP(TYPRES, NBCO, ZK8(JCO))
+        DO 10 I = 1 , NBCO
+           WRITE(IFM,1000)
+           CALL RSINFO ( ZK8(JCO-1+I) , IFM )
+ 10     CONTINUE
       ENDIF
 C
-      CALL GCUOPR ( 1 , ICMD  )
       IUNERR = IUNIFI('ERREUR')
       IUNMES = IUNIFI('MESSAGE')
       IUNRES = IUNIFI('RESULTAT')
 C
 C     --- SUPPRESSION DES CONCEPTS TEMPORAIRES DES MACRO
       CALL JEDETC('G','.',1)
-      CALL GCUOPR( -1 ,ICMD)
-      CALL GCDETP(ICMD,'.')
 
 C     -- IMPRESSION DE LA TAILLE DES CONCEPTS DE LA BASE GLOBALE:
       CALL UIMPBA('G',IUNMES)
@@ -112,6 +106,10 @@ C     --- SAUVEGARDE DE LA GLOBALE AU FORMAT HDF
           CALL JEIMHD(FICH,'G')
         ENDIF
       ENDIF
+C
+C     RECUPERE LA POSITION D'UN ENREGISTREMENT SYSTEME CARACTERISTIQUE
+      CALL JELIAD('G', NBENRE, NBOCT)
+      CALL JDCSET('jeveux_sysaddr', NBOCT)
 C
 C     --- APPEL JXVERI POUR VERIFIER LA BONNE FIN D'EXECUTION
       CALL JXVERI(' ')

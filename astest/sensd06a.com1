@@ -98,13 +98,8 @@ for i in range(n):
 
 #  diff=(T_DIF['DY',1]-T_REF['DY',1])/(sensible[i]*epsilon)
 
-  DYTD[i] = CALC_ELEM(
-                 reuse = DYTD[i],
+  DYTD[i]=CALC_CHAMP(reuse=DYTD[i],RESULTAT=DYTD[i],CONTRAINTE=('SIGM_ELNO'))
 
-                 RESULTAT = DYTD[i],
-
-                 OPTION = 'SIGM_ELNO',
-                 );
 
   TDIFC[i]=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
                                 GROUP_NO=('OPPOSE'),
@@ -181,13 +176,8 @@ DYTFX=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                     EXCIT=( _F(FONC_MULT=FC,CHARGE=CHS_2),),
                     SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),)
 
-DYTFX = CALC_ELEM(
-                 reuse = DYTFX,
+DYTFX=CALC_CHAMP(reuse=DYTFX,RESULTAT=DYTFX,CONTRAINTE=('SIGM_ELNO'))
 
-                 RESULTAT = DYTFX,
-
-                 OPTION = 'SIGM_ELNO',
-                 );
 
 DYTFY=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                     MODELE=MO,CHAM_MATER=CHMAT,
@@ -196,13 +186,8 @@ DYTFY=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                     EXCIT=( _F(FONC_MULT=FC,CHARGE=CHS_3),),
                     SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),)
 
-DYTFY = CALC_ELEM(
-                 reuse = DYTFY,
+DYTFY=CALC_CHAMP(reuse=DYTFY,RESULTAT=DYTFY,CONTRAINTE=('SIGM_ELNO'))
 
-                 RESULTAT = DYTFY,
-
-                 OPTION = 'SIGM_ELNO',
-                 );
 
 OPPSXX = RECU_FONCTION(RESULTAT=DYTFX,
                      NOM_CHAM='SIGM_ELNO',

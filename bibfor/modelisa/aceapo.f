@@ -7,7 +7,7 @@
       CHARACTER*(*)     MCLF
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 17/04/2012   AUTEUR CHANSARD F.CHANSARD 
+C MODIF MODELISA  DATE 12/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -374,7 +374,7 @@ C
      &  12X,'RZ2 ',8X,'RT2  ',7X,'AI1  ',7X,'AI2  ',7X,'JG1  ',/,
      &  12X,'JG2 ',8X,'IYR21',7X,'IYR22',7X,'IZR21',7X,'IZR22',/,
      &  12X,'TVAR',8X,'TSEC ')
- 2001   FORMAT(/,1P,3X,A8,1X,5(D11.5,1X),5(/,12X,5(D11.5,1X)),
+ 2001   FORMAT(/,1P,3X,A8,1X,5(1PD12.5,1X),5(/,12X,5(1PD12.5,1X)),
      &         /,12X,I6,6X,I6)
  2002   FORMAT(/,3X,'<SECTION> ',
      &  'VALEURS DE TYPE GEOMETRIQUE AFFECTEES AUX POUTRES',//,3X,
@@ -382,7 +382,7 @@ C
      &  ,/,12X,         'HY2         HZ2         EPY2        EPZ2'
      &  ,/,12X,         'R1          EP1         R2          EP2',9X
      &  ,'TSEC')
- 2003   FORMAT(/,1P,3X,A8,1X,4(D11.5,1X),2(/,12X,4(D11.5,1X)),I6)
+ 2003   FORMAT(/,1P,3X,A8,1X,4(1PD12.5,1X),2(/,12X,4(1PD12.5,1X)),I6)
 C
 C --- ALLOCATION DES CARTES
       CALL ALCART('G',CARTPO,NOMA,'CAGNPO')

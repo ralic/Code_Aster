@@ -1,4 +1,4 @@
-#@ MODIF supervis2 Messages  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF supervis2 Messages  DATE 12/06/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,7 @@
 cata_msg={
 
 1 : _(u"""
-Lecture du fichier %(k1)s..."""),
+ Lecture du fichier %(k1)s..."""),
 
 2 : _(u"""
     Vous utilisez une vieille version de Code_Aster.
@@ -34,6 +34,8 @@ Lecture du fichier %(k1)s..."""),
 """),
 
 3 : _(u"""%(k1)-8s %(k2)-16s ignoré"""),
+
+#4 plus bas avec 10
 
 5 : _(u"""
 Erreur inattendue lors de l'exécution de la commande '%(k1)s'.
@@ -62,21 +64,36 @@ dans la commande FIN) est inutile lorsque l'on sauvegarde cette
 dernière au format HDF (mot clé FORMAT_HDF="OUI" dans la commande FIN).
 """),
 
+#9 plus bas avec 10
+
 # Lignes d'entete
-10 : {  'message' : _(u"""
+4 : {  'message' : _(u"""
 
                 -- CODE_ASTER -- VERSION : %(k1)s --
+"""),
+       'flags' : 'CENTER | ALL_UNIT',
+},
 
-                Version %(k2)s du %(k3)s
-                Copyright EDF R&D %(k4)s - %(k5)s
-                Exécution du : %(k6)s
-                Nom de la machine : %(k7)s
-                Architecture : %(k8)s
-                Type de processeur : %(k9)s
-                Système d'exploitation : %(k10)s
-                Langue des messages : %(k11)s
+9 : {  'message' : _(u"""Version %(k1)s du %(k2)s"""),
+       'flags' : 'CENTER | ALL_UNIT',
+},
+
+23 : {  'message' : _(u"""Version %(k1)s modifiée le %(k2)s
+               révision %(k3)s - branche '%(k4)s'"""),
+       'flags' : 'CENTER | ALL_UNIT',
+},
+
+10 : {  'message' : _(u"""Copyright EDF R&D %(k1)s - %(k2)s
+
+                Exécution du : %(k3)s
+                Nom de la machine : %(k4)s
+                Architecture : %(k5)s
+                Type de processeur : %(k6)s
+                Système d'exploitation : %(k7)s
+                Langue des messages : %(k8)s
 """), 'flags' : 'CENTER | ALL_UNIT',
 },
+# fin Lignes d'entete
 
 11 : {  'message' : _(u"""Parallélisme MPI : actif
                 Rang du processeur courant : %(i1)d
@@ -129,6 +146,8 @@ dernière au format HDF (mot clé FORMAT_HDF="OUI" dans la commande FIN).
 Taille limite des fichiers d'échange : %(r2).2f Go
 """), 'flags' : 'CENTER | ALL_UNIT',
 },
+
+# 23 plus haut avec 10
 
 # Affichage des commandes
 70 : u"""  # ------------------------------------------------------------------------------------------""",

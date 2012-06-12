@@ -1,4 +1,4 @@
-#@ MODIF supervis Messages  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF supervis Messages  DATE 12/06/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,21 +38,8 @@ cata_msg={
  Erreur programmeur : %(k1)s non appariés.
 """),
 
-7: _(u"""
- Le concept " %(k1)s " est inconnu.
- Il n'est ni parmi les créés, ni parmi ceux à créer.
-"""),
-
 8: _(u"""
  Un nom de concept intermédiaire doit commencer par '.' ou '_' et non :  %(k1)s
-"""),
-
-9: _(u"""
- Longueur nulle
-"""),
-
-10: _(u"""
-   - le concept  "%(k1)s" est détruit des bases de données.
 """),
 
 12: _(u"""
@@ -84,8 +71,7 @@ cata_msg={
 """),
 
 19: _(u"""
- Début de lecture
-"""),
+ Début de lecture..."""),
 
 20: _(u"""
   "%(k1)s" argument invalide du mot clé "FICHIER" du mot clé facteur "CATALOGUE"
@@ -133,6 +119,14 @@ Fermeture des bases jeveux afin de permettre la POURSUITE ultérieure du calcul.
    %(ktout)s
 """),
 
+41: _(u"""La version %(k1)s a été modifiée par %(i1)d révisions.
+"""),
+
+42: _(u"""Les fichiers suivants ont été modifiés par rapport à la dernière révision %(k1)s :
+
+%(k2)s
+"""),
+
 43: _(u"""
  Débogage %(k1)s suspendu
 """),
@@ -147,7 +141,7 @@ Fermeture des bases jeveux afin de permettre la POURSUITE ultérieure du calcul.
 """),
 
 52: _(u"""
- fin de lecture (durée  %(r1)f  s.) %(k1)s
+ Fin de lecture (durée  %(r1)f  s.) %(k1)s
 """),
 
 56: _(u"""
@@ -177,59 +171,46 @@ Fermeture des bases jeveux afin de permettre la POURSUITE ultérieure du calcul.
   Réserve CPU prévue = %(i3)d secondes
 """),
 
-65: _(u"""
-   %(k1)s   %(k2)s   %(k3)s   %(k4)s
+65 : _(u"""
+ Liste des concepts issus de la base :
+    Nom         Type du concept
 """),
 
-66: _(u"""
-   %(k1)s   %(k2)s   %(k3)s   %(k4)s   %(k5)s
-"""),
+66 : _(u"""    %(k1)-8s    %(k2)-20s    %(k3)s"""),
 
-67: _(u"""
- Passage numéro %(i1)d
+67 : _(u"""    pas de concept
 """),
 
 68: _(u"""
- information sur les concepts devant être créés.
+ La signature de la base sauvegardée est (à l'adresse %(i1)d) :
+    %(k1)s
+"""),
+
+69: _(u"""
+Les fichiers glob.1 et pick.1 ne sont pas cohérents !
+
+D'après le fichier pick.1, la signature de la base à l'adresse %(i1)d devrait être :
+    %(k1)s
+Or la signature de glob.1 est :
+    %(k2)s
+"""),
+
+70: _(u"""
+ La signature de la base relue est conforme à celle attendue (à l'adresse %(i1)d) :
+    %(k1)s
 """),
 
 71: _(u"""
- rappel sur les exécutions précédentes
-   - il a été exécuté %(i1)d procédures et opérateurs.
+ La signature de la base au format HDF ne peut pas être vérifiée.
 """),
 
 72: _(u"""
-   - l'exécution précédente s'est terminée correctement.
-"""),
-
-73: _(u"""
-
-   - l'exécution précédente s'est terminée en erreur dans la procédure %(k1)s.
-"""),
-
-74: _(u"""
-
-   - l'exécution précédente s'est terminée en erreur dans l'opérateur %(k1)s.
-"""),
-
-75: _(u"""
-     le concept %(k1)s de type %(k2)s  est peut-être erroné.
+ L'exécution précédente s'est terminée correctement.
 """),
 
 76: _(u"""
-   - l'exécution précédente s'est terminée prématurément dans l'opérateur %(k1)s.
-"""),
-
-77: _(u"""
-     le concept %(k1)s de type %(k2)s a été néanmoins validé par l'opérateur
-"""),
-
-78: _(u"""
-     Message attaché au concept  %(k1)s
-"""),
-
-79: _(u"""
-     Pas de message attaché au concept %(k1)s
+ L'exécution précédente a été interrompue au cours d'une commande qui a produit
+ le concept '%(k1)s' de type <%(k2)s> qui a été néanmoins validé par l'opérateur.
 """),
 
 81: _(u"""
@@ -255,20 +236,8 @@ Fermeture des bases jeveux afin de permettre la POURSUITE ultérieure du calcul.
 
 """),
 
-85: _(u"""
- information sur les concepts existants.
-"""),
-
 86: _(u"""
  Erreur à la relecture du fichier pick.1 : aucun objet sauvegardé ne sera récupéré.
-"""),
-
-87: _(u"""
-Types incompatibles entre glob.1 et pick.1 pour le concept de nom %(k1)s.
-"""),
-
-88: _(u"""
-Concept de nom %(k1)s et de type %(k2)s introuvable dans la base globale"
 """),
 
 89: _(u"""

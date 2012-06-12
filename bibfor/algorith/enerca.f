@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/05/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGORITH  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -99,7 +99,7 @@ C ----------------------------------------------------------------------
 C DECLARATION VARIABLES LOCALES
 C ----------------------------------------------------------------------
       INTEGER      IAUX,NEQ,IBID,IE,IRET,NBCOL,LONG
-      INTEGER      JDEEQ,JCONL,IMDV,ICVMOZ,IENER
+      INTEGER      JDEEQ,IMDV,ICVMOZ,IENER
       INTEGER      IMASSE,IAMORT,IRIGID
       INTEGER      IUMOY,IUPMUM,IUMOYZ,IUPMUZ
       INTEGER      IVMOY,IVPMVM,IVMOYZ,IVPMVZ
@@ -108,7 +108,7 @@ C ----------------------------------------------------------------------
       CHARACTER*19 DEPPLU
       CHARACTER*11 FORMA
       CHARACTER*40 FORMB,FORMC
-      REAL*8       COEFL,DDOT
+      REAL*8       DDOT
       REAL*8       WINT,WEXT,LIAI,ECIN,AMOR,WSCH
 
 C ----------------------------------------------------------------------
@@ -217,7 +217,7 @@ C --------------------------------------------------------------------
       CALL WKVECT('&&ENERCA.FMOY','V V R',NEQ,IFMOY)
       IF (SDENER(1:8).EQ.'&&OP0048') THEN
         CALL WKVECT('&&ENERCA.KUMOYZ','V V R  ',NEQ,IKUMOZ)
-        CALL MRMULT('ZERO',IRIGID,ZR(IUMOYZ),'R',ZR(IKUMOZ),1)
+        CALL MRMULT('ZERO',IRIGID,ZR(IUMOYZ),ZR(IKUMOZ),1,.TRUE.)
         WINT=DDOT(NEQ,ZR(IUPMUZ),1,ZR(IKUMOZ),1)
       ELSE
         DO 30 IAUX=1,NEQ
@@ -231,7 +231,7 @@ C - UNIQUEMENT SI CALCUL DYNAMIQUE
 C --------------------------------------------------------------------
       IF (LDYNA) THEN
         CALL WKVECT('&&ENERCA.MDV','V V R  ',NEQ,IMDV)
-        CALL MRMULT('ZERO',IMASSE,ZR(IVPMVZ),'R',ZR(IMDV),1)
+        CALL MRMULT('ZERO',IMASSE,ZR(IVPMVZ),ZR(IMDV),1,.TRUE.)
         ECIN=DDOT(NEQ,ZR(IVMOYZ),1,ZR(IMDV),1)
       ENDIF
 C --------------------------------------------------------------------
@@ -248,44 +248,20 @@ C 2. CONTRIBUTION DE Bt.LAMBDA (DIRICHLETS) POUR OP0048
 C LAGRANGES PORTES PAR LA MATRICE DE MASSE
           CALL WKVECT('&&ENERCA.MUMOY','V V R',NEQ,IMUMOY)
           CALL WKVECT('&&ENERCA.MUMOYZ','V V R',NEQ,IMUMOZ)
-          CALL MRMULT('ZERO',IMASSE,ZR(IUMOY),'R',ZR(IMUMOY),1)
-          CALL MRMULT('ZERO',IMASSE,ZR(IUMOYZ),'R',ZR(IMUMOZ),1)
+          CALL MRMULT('ZERO',IMASSE,ZR(IUMOY),ZR(IMUMOY),1,.TRUE.)
+          CALL MRMULT('ZERO',IMASSE,ZR(IUMOYZ),ZR(IMUMOZ),1,.TRUE.)
           DO 40 IAUX=1,NEQ
             ZR(IFMOY-1+IAUX)=ZR(IMUMOZ-1+IAUX)-ZR(IMUMOY-1+IAUX)
   40      CONTINUE
-          COEFL=1.D0
-C ON PEUT NE PAS AVOIR DE BLOCAGE ET NE JAMAIS CALCULER DE LAGRANGE
-C NI DE COEFFICIENT DE MISE A L ECHELLE
-          CALL JEEXIN(MASSE//'.CONL',IRET)
-          IF (IRET.NE.0) THEN
-            CALL JEVEUO(MASSE//'.CONL','L',JCONL)
-            DO 50 IAUX=1,NEQ
-              IF (ZR(JCONL-1+IAUX).GT.1.D0) THEN
-                COEFL=ZR(JCONL-1+IAUX)
-              ENDIF
-  50        CONTINUE
-          ENDIF
-          WEXT = WEXT + DDOT(NEQ,ZR(IFMOY),1,ZR(IUPMUZ),1)/COEFL
+          WEXT = WEXT + DDOT(NEQ,ZR(IFMOY),1,ZR(IUPMUZ),1)
         ELSE
 C LAGRANGES PORTES PAR LA MATRICE DE RIGIDITE
           CALL WKVECT('&&ENERCA.KUMOY','V V R  ',NEQ,IKUMOY)
-          CALL MRMULT('ZERO',IRIGID,ZR(IUMOY),'R',ZR(IKUMOY),1)
+          CALL MRMULT('ZERO',IRIGID,ZR(IUMOY),ZR(IKUMOY),1,.TRUE.)
           DO 60 IAUX=1,NEQ
             ZR(IFMOY-1+IAUX)=ZR(IKUMOZ-1+IAUX)-ZR(IKUMOY-1+IAUX)
   60      CONTINUE
-          COEFL=1.D0
-C ON PEUT NE PAS AVOIR DE BLOCAGE ET NE JAMAIS CALCULER DE LAGRANGE
-C NI DE COEFFICIENT DE MISE A L ECHELLE
-          CALL JEEXIN(RIGID//'.CONL',IRET)
-          IF (IRET.NE.0) THEN
-            CALL JEVEUO(RIGID//'.CONL','L',JCONL)
-            DO 70 IAUX=1,NEQ
-              IF (ZR(JCONL-1+IAUX).GT.1.D0) THEN
-                COEFL=ZR(JCONL-1+IAUX)
-              ENDIF
-  70        CONTINUE
-          ENDIF
-          WEXT = WEXT + DDOT(NEQ,ZR(IFMOY),1,ZR(IUPMUZ),1)/COEFL
+          WEXT = WEXT + DDOT(NEQ,ZR(IFMOY),1,ZR(IUPMUZ),1)
         ENDIF
       ENDIF
 C 3. CONTRIBUTION DES NEUMANN
@@ -324,11 +300,11 @@ C --------------------------------------------------------------------
         IF (LAMORT) THEN
           IF (ZI(IAMORT+3).EQ.1) THEN
             CALL WKVECT('&&ENERCA.CVMOYZ','V V R',NEQ,ICVMOZ)
-            CALL MRMULT('ZERO',IAMORT,ZR(IVMOYZ),'R',ZR(ICVMOZ),1)
+            CALL MRMULT('ZERO',IAMORT,ZR(IVMOYZ),ZR(ICVMOZ),1,.TRUE.)
             AMOR = AMOR + DDOT(NEQ,ZR(IUPMUZ),1,ZR(ICVMOZ),1)
           ELSE
             CALL WKVECT('&&ENERCA.CVMOYZ','V V C',NEQ,ICVMOZ)
-            CALL MRMULT('ZERO',IAMORT,ZR(IVMOYZ),'C',ZR(ICVMOZ),1)
+            CALL MRMULT('ZERO',IAMORT,ZR(IVMOYZ),ZR(ICVMOZ),1,.TRUE.)
             AMOR = AMOR + DDOT(NEQ,ZR(IUPMUZ),1,ZR(ICVMOZ),1)
           ENDIF
         ENDIF

@@ -1,4 +1,4 @@
-# MODIF  DATE 05/03/2012   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # RESPONSABLE SFAYOLLE S.FAYOLLE
 # TITRE  : ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
 # ssns106f.para = tps_job 300 mem_job 256Mo ncpus 1 liste_test S
@@ -279,7 +279,7 @@ RESU_G=STAT_NON_LINE(MODELE=MO_G,
 
 RESU_G=CALC_CHAMP(reuse =RESU_G,RESULTAT=RESU_G,PRECISION=1.E-3,
              FORCE=('FORC_NODA',),)
-             
+
 TDYA4=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                               INTITULE='A4DY',
                               RESULTAT=RESU1,
@@ -295,7 +295,7 @@ TDYA4=CALC_TABLE(reuse =TDYA4,
                           NOM_PARA  = 'NUME_ORDRE',
                           CRIT_COMP = 'GT',
                           VALE    = 0,
-                         ),),); 
+                         ),),);
 
 TDYA4_G=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                                 INTITULE='A4DY',
@@ -303,7 +303,7 @@ TDYA4_G=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                                 NOM_CHAM='DEPL',
                                 GROUP_NO='A4',
                                 NOM_CMP='DY',),),);
-                                
+
 TDYA4_G=CALC_TABLE(reuse =TDYA4_G,
                TABLE=TDYA4_G,
                ACTION=(_F(
@@ -312,7 +312,7 @@ TDYA4_G=CALC_TABLE(reuse =TDYA4_G,
                           CRIT_COMP = 'GT',
                           VALE    = 0,
                          ),),);
-                         
+
 TFXA4=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                               INTITULE='A4FX',
                               RESULTAT=RESU1,
@@ -329,7 +329,7 @@ TFXA4=CALC_TABLE(reuse =TFXA4,
                           NOM_PARA  = 'NUME_ORDRE',
                           CRIT_COMP = 'GT',
                           VALE    = 0,
-                         ),),); 
+                         ),),);
 
 TFXA4_G=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                                 INTITULE='A4FX',
@@ -481,18 +481,14 @@ TEST_TABLE(TABLE=TFXA4_G0,
 
 #--------------------------------------------------------------------
 
-RESU1_D=CALC_ELEM(RESULTAT=RESU1,
-                GROUP_MA='DALLE',
-                OPTION=('VARI_ELNO','ENEL_ELGA','ENEL_ELNO',),);
+RESU1_D=CALC_CHAMP(RESULTAT=RESU1,GROUP_MA='DALLE',VARI_INTERNE=('VARI_ELNO'),ENERGIE=('ENEL_ELGA','ENEL_ELNO'))
 
-RESU1_A=CALC_ELEM(RESULTAT=RESU1,
-                  GROUP_MA=('ACIER1L','ACIER2L','ACIER1T','ACIER2T',),
-                  OPTION='SIEF_ELNO',);
 
-RESU_G=CALC_ELEM(reuse=RESU_G,
-                 RESULTAT=RESU_G,
-                 GROUP_MA='DALLE_G',
-                 OPTION=('DEGE_ELNO','SIEF_ELNO','VARI_ELNO','ENEL_ELGA','ENEL_ELNO',),);
+RESU1_A=CALC_CHAMP(RESULTAT=RESU1,GROUP_MA=('ACIER1L','ACIER2L','ACIER1T','ACIER2T'),CONTRAINTE=('SIEF_ELNO'))
+
+
+RESU_G=CALC_CHAMP(reuse=RESU_G,RESULTAT=RESU_G,GROUP_MA='DALLE_G',CONTRAINTE=('SIEF_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('DEGE_ELNO'),ENERGIE=('ENEL_ELGA','ENEL_ELNO'))
+
 
 TRAV_G=POST_ELEM(TRAV_EXT=_F(),
                  RESULTAT=RESU_G,);

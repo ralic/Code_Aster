@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/04/2012   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 11/06/2012   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -90,32 +90,17 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
                                   "SIRO_ELEM","SIPM_ELNO",
                               # déformations
                                  "EPSI_ELNO","EPSI_ELGA","EPSG_ELGA","EPSG_ELNO",
-                                 "EPME_ELNO","EPME_ELGA","DEGE_ELNO","EPTU_ELNO",
+                                 "EPME_ELNO","EPME_ELGA","DEGE_ELNO",
                                  "EPVC_ELNO","EPVC_ELGA","DEGE_ELGA",
                               #  ENER
                                  "EPOT_ELEM","ECIN_ELEM","ENEL_ELGA","ENEL_ELNO",
                                  "ETOT_ELGA","ETOT_ELNO","ETOT_ELEM","DISS_ELGA","DISS_ELNO",
-                              #  estimateurs erreur
-                                 "SIZ1_NOEU","ERZ1_ELEM","SIZ2_NOEU","ERZ2_ELEM",
-                                 "ERME_ELEM","ERME_ELNO",
-                                 "QIRE_ELEM","QIRE_ELNO","QIZ1_ELEM","QIZ2_ELEM",
-                                 "SING_ELEM","SING_ELNO",
                               #  CRIT
                                  "SIEQ_ELNO","SIEQ_ELGA",
                                  "EPEQ_ELNO","EPEQ_ELGA","EPMQ_ELNO","EPMQ_ELGA",
                                  "ENDO_ELGA","ENDO_ELNO",
                               #  autres
                                  "PRME_ELNO","VARC_ELGA"),),
-
-                b_erre_qi =BLOC(condition = "au_moins_un(OPTION, ('QIRE_ELEM','QIZ1_ELEM','QIZ2_ELEM'))",
-                    RESU_DUAL=SIMP(statut='o',typ=evol_elas,fr="resultat du probleme dual"),),
-
-               b_sing =BLOC(condition= "au_moins_un(OPTION, ('SING_ELEM'))",
-                    PREC_ERR=SIMP(statut='o',typ='R',val_min= 0.,
-                                  fr="precision demandee pour calculer la carte de taille des elements"),
-                    TYPE_ESTI=SIMP(statut='f',typ='TXM',into=("ERME_ELEM","ERZ1_ELEM","ERZ2_ELEM",
-                                                              "QIRE_ELEM","QIZ1_ELEM","QIZ2_ELEM",),
-                                   fr="choix de l'estimateur d'erreur"),),
 
                EXCIT           =FACT(statut='f',max='**',
                                      fr="Charges contenant les températures, les efforts répartis pour les poutres...",
@@ -176,9 +161,9 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
           b_epsi         =BLOC( condition = "TYPE_OPTION=='EPSI'",
                OPTION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                            into=("EPSI_ELNO","EPSI_ELGA","EPME_ELNO","EPME_ELGA",
-                                 "DEGE_ELNO","DEGE_ELGA","EPTU_ELNO","EPVC_ELNO","EPVC_ELGA",),
+                                 "DEGE_ELNO","DEGE_ELGA","EPVC_ELNO","EPVC_ELGA",),
                                  ),
-b_charge =BLOC( condition = "au_moins_un(OPTION, ('EPME_ELNO','EPSI_ELGA','EPME_ELGA','EPSI_ELNO','EPTU_ELNO'))",
+          b_charge =BLOC( condition = "au_moins_un(OPTION, ('EPME_ELNO','EPSI_ELGA','EPME_ELGA','EPSI_ELNO'))",
                                       fr="charge contenant les temperatures",
                     EXCIT           =FACT(statut='f',max='**',
                          CHARGE          =SIMP(statut='o',typ=(char_meca,char_ther,char_acou,char_cine_meca,) ),),
@@ -212,27 +197,6 @@ b_charge =BLOC( condition = "au_moins_un(OPTION, ('EPME_ELNO','EPSI_ELGA','EPME_
                            into=("PRME_ELNO",),
                                  ) ),
 
-          b_indi_erreur        =BLOC( condition = "TYPE_OPTION=='INDI_ERREUR'",
-               OPTION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',defaut="ERME_ELEM",
-                           into=("SIZ1_NOEU","ERZ1_ELEM","SIZ2_NOEU","ERZ2_ELEM",
-                                 "ERME_ELEM","ERME_ELNO",
-                                 "QIRE_ELEM","QIRE_ELNO","QIZ1_ELEM","QIZ2_ELEM",
-                                 "SING_ELEM","SING_ELNO",
-                                 )),
-
-               b_erre_qi =BLOC(condition = "au_moins_un(OPTION, ('QIRE_ELEM','QIZ1_ELEM','QIZ2_ELEM'))",
-                    RESU_DUAL=SIMP(statut='o',typ=evol_elas,fr="resultat du probleme dual"),),
-
-               b_sing =BLOC(condition= "au_moins_un(OPTION, ('SING_ELEM'))",
-                    PREC_ERR=SIMP(statut='o',typ='R',val_min= 0.,
-                                  fr="precision demandee pour calculer la carte de taille des elements" ),
-                    TYPE_ESTI=SIMP(statut='f',typ='TXM',into=("ERME_ELEM","ERZ1_ELEM","ERZ2_ELEM",
-                                                              "QIRE_ELEM","QIZ1_ELEM","QIZ2_ELEM",),
-                                   fr="choix de l'estimateur d'erreur"),),
-
-               EXCIT           =FACT(statut='f',max='**',fr="charge contenant les temperatures",
-                     CHARGE          =SIMP(statut='o',typ=(char_meca,char_ther,char_acou) ),),
-                                 ),
                                  ),
 #    fin bloc lineaire
 
@@ -251,7 +215,7 @@ b_charge =BLOC( condition = "au_moins_un(OPTION, ('EPME_ELNO','EPSI_ELGA','EPME_
                                   # EPSI
                                   "EPSI_ELNO","EPSI_ELGA","EPSG_ELNO","EPSG_ELGA",
                                  "EPME_ELNO","EPME_ELGA","EPMG_ELNO","EPMG_ELGA",
-                                 "DEGE_ELNO","EPTU_ELNO",
+                                 "DEGE_ELNO",
                                  "EPSP_ELNO","EPSP_ELGA",
                                  "EPFD_ELNO","EPFD_ELGA","EPVC_ELNO","EPVC_ELGA",
                                  "EPFP_ELNO","EPFP_ELGA",
@@ -260,27 +224,14 @@ b_charge =BLOC( condition = "au_moins_un(OPTION, ('EPME_ELNO','EPSI_ELGA','EPME_
                                  "VAEX_ELGA","VAEX_ELNO",
                                  # CRIT
                                  "SIEQ_ELNO","SIEQ_ELGA",
-                                 "ERME_ELEM","ERME_ELNO","ERZ1_ELEM","ERZ2_ELEM",
-                                 "QIRE_ELEM","QIRE_ELNO","QIZ1_ELEM","QIZ2_ELEM",
                                  "EPEQ_ELNO","EPEQ_ELGA","EPMQ_ELNO","EPMQ_ELGA",
                                  "DERA_ELNO","DERA_ELGA",
-                                 "ENDO_ELGA","ENDO_ELNO","INDL_ELGA","SING_ELEM",
-                                 "SING_ELNO","PDIL_ELGA",
+                                 "ENDO_ELGA","ENDO_ELNO","INDL_ELGA",
+                                 "PDIL_ELGA",
                                  "ENEL_ELGA","ENEL_ELNO",
                                  "ETOT_ELGA","ETOT_ELNO","ETOT_ELEM",
                                  "DISS_ELGA","DISS_ELNO"),
                                ),
-
-
-               b_erre_qi =BLOC(condition = "au_moins_un(OPTION, ('QIRE_ELEM','QIZ1_ELEM','QIZ2_ELEM'))",
-                    RESU_DUAL=SIMP(statut='o',typ=(evol_elas,evol_noli),fr="resultat du probleme dual"),),
-
-               b_sing =BLOC(condition= "au_moins_un(OPTION, ('SING_ELEM'))",
-                    PREC_ERR=SIMP(statut='o',typ='R',val_min= 0.,
-                                  fr="precision demandee pour calculer la carte de taille des elements" ),
-                    TYPE_ESTI=SIMP(statut='f',typ='TXM',into=("ERME_ELEM","ERZ1_ELEM","ERZ2_ELEM",
-                                                              "QIRE_ELEM","QIZ1_ELEM","QIZ2_ELEM",),
-                                   fr="choix de l'estimateur d'erreur"),),
 
 
                b_extr = BLOC( condition = "au_moins_un(OPTION, ('VAEX_ELNO','VAEX_ELGA'))",
@@ -326,7 +277,7 @@ b_charge =BLOC( condition = "au_moins_un(OPTION, ('EPME_ELNO','EPSI_ELGA','EPME_
 
           b_epsi         =BLOC( condition = "TYPE_OPTION=='EPSI'",
                OPTION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
-                           into=( "EPSI_ELNO","EPSI_ELGA","EPSG_ELNO","EPSG_ELGA",
+                           into=("EPSI_ELNO","EPSI_ELGA","EPSG_ELNO","EPSG_ELGA",
                                  "EPME_ELNO","EPME_ELGA","EPMG_ELNO","EPMG_ELGA",
                                  "EPSP_ELNO","EPSP_ELGA","DEGE_ELNO","EPVC_ELNO","EPVC_ELGA",
                                  "EPFD_ELNO","EPFD_ELGA","EPFP_ELNO","EPFP_ELGA","DEGE_ELGA",),
@@ -334,10 +285,6 @@ b_charge =BLOC( condition = "au_moins_un(OPTION, ('EPME_ELNO','EPSI_ELGA','EPME_
                EXCIT           =FACT(statut='f',max='**',fr="charge contenant les temperatures",
                     CHARGE          =SIMP(statut='o',typ=(char_meca,char_ther,char_acou) ),),
                                  ),
-         b_epstuyo       =BLOC( condition = "au_moins_un(OPTION, ('EPTU_ELNO'))",
-              EXCIT           =FACT(statut='f',max='**',fr="charge contenant les temperatures",
-                    CHARGE          =SIMP(statut='o',typ=(char_meca,char_ther,char_acou) ),),
-                               ),
 
           b_vari         =BLOC( condition = "TYPE_OPTION=='VARI'",
                                        fr="Calcul et extraction des variables internes",
@@ -372,31 +319,15 @@ b_charge =BLOC( condition = "au_moins_un(OPTION, ('EPME_ELNO','EPSI_ELGA','EPME_
                                  ),
 
 
-          b_indi_erreur         =BLOC( condition = "TYPE_OPTION=='INDI_ERREUR'",
-               OPTION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',defaut="ERME_ELEM",
-                           into=("ERME_ELEM","ERME_ELNO","ERZ1_ELEM","ERZ2_ELEM",
-                                 "DERA_ELNO","DERA_ELGA",
-                                 "QIRE_ELEM","QIRE_ELNO","QIZ1_ELEM","QIZ2_ELEM",
-                                 "SING_ELEM","SING_ELNO",) ),
-
-               b_erre_qi =BLOC(condition = "au_moins_un(OPTION, ('QIRE_ELEM','QIZ1_ELEM','QIZ2_ELEM'))",
-                RESU_DUAL    =SIMP(statut='o',typ=(evol_elas,evol_noli),fr="resultat du probleme dual")),
-
-               b_sing =BLOC(condition= "au_moins_un(OPTION, ('SING_ELEM'))",
-                    PREC_ERR=SIMP(statut='o',typ='R',val_min= 0.,
-                                  fr="precision demandee pour calculer la carte de taille des elements" ),
-                    TYPE_ESTI=SIMP(statut='f',typ='TXM',into=("ERME_ELEM","ERZ1_ELEM","ERZ2_ELEM",
-                                                              "QIRE_ELEM","QIZ1_ELEM","QIZ2_ELEM",),
-                                   fr="choix de l'estimateur d'erreur"),),
                                  ),
-                                 ),
+
 #          fin bloc evol_noli
 
 #           thermique : evol_ther, fourier_ther
      b_ther          =BLOC( condition = "AsType(RESULTAT) in (evol_ther,fourier_ther,)" ,fr="options thermiques",
           OPTION          =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                            into=("FLUX_ELGA","FLUX_ELNO",
-                                 "SOUR_ELGA","ERTH_ELEM","ERTH_ELNO",),),
+                                 "SOUR_ELGA",),),
                EXCIT           =FACT(statut='f',max='**',
                     regles=(EXCLUS('FONC_MULT','FONC_MULT_C','COEF_MULT','COEF_MULT_C'),),
                     CHARGE          =SIMP(statut='o',typ=char_ther ),

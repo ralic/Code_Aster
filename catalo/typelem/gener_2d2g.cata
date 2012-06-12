@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 11/06/2012   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -71,7 +71,7 @@ MODE_LOCAL__
     EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30]    )
     E1NEUTK  = NEUT_K24 ELEM__         (Z1       )
     EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30]    )
-    EMNEUT_R = NEUT_R   ELEM__         (X[30]     )
+    EMNEUT_R = NEUT_R   ELEM__         (X[30]    )
     ENORME   = NEUT_R   ELEM__         (X1       )
     E1GNEUT  = NEUT_R   ELGA__ RIGI    (X1       )
     E1NNEUT  = NEUT_R   ELNO__ IDEN__  (X1       )
@@ -103,7 +103,7 @@ OPTION__
                               OUT__  ECONTPG  PEPCON3
     CARA_GEOM           -1    IN__     OUT__  XXXXXX   XXXXXX
     CHAR_LIMITE         -1    IN__     OUT__  XXXXXX   XXXXXX
-    CHAR_MECA_PESA_R     6    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR
+    CHAR_MECA_PESA_R    6     IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR
                               OUT__  MVECTUR  PVECTUR
     COOR_ELGA           479   IN__   NGEOMER  PGEOMER
                               OUT__  EGGEOP_R PCOORPG
@@ -111,10 +111,10 @@ OPTION__
     ENER_ELAS           -1    IN__     OUT__  XXXXXX   XXXXXX
     ENER_TOTALE         -1    IN__     OUT__  XXXXXX   XXXXXX
     EPOT_ELEM           -1    IN__     OUT__  XXXXXX   XXXXXX
-    EPSI_ELGA            6    IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER
-                              OUT__  EDEFOPG  PDEFORR
-    EPSI_ELNO           -1    IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER
-                              OUT__  EDEFONO  PDEFORR
+    EPSI_ELGA           6     IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER
+                              OUT__  EDEFOPG  PDEFOPG
+    EPSI_ELNO           4     IN__   EDEFOPG  PDEFOPG
+                              OUT__  EDEFONO  PDEFONO
     VAEX_ELGA           549   IN__   CCOMPOR  PCOMPOR  E1NEUTK  PNOVARI  ZVARIPG  PVARIGR
                               OUT__  E1GNEUT  PVARIGS
     VAEX_ELNO           549   IN__   CCOMPOR  PCOMPOR  E1NEUTK  PNOVARI  ZVARINO  PVARINR

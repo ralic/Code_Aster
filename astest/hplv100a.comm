@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE PARALLELEPIPEDE. MODULE D'YOUNG FONCTION DE LA TEMPERATURE.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -254,15 +254,11 @@ RES=MECA_STATIQUE(   MODELE=MO2,  CHAM_MATER=CMME, LIST_INST=LR,EXCIT=(
                           _F( CHARGE = CH4, ),
                           _F( CHARGE = CH3, ))  )
 
-CALC_ELEM( reuse= RES ,RESULTAT= RES ,
-                           OPTION='SIGM_ELNO',
-                            LIST_INST=LR,)
+CALC_CHAMP(reuse=RES,RESULTAT=RES,CONTRAINTE=('SIGM_ELNO'),LIST_INST=LR)
 
-CALC_ELEM(reuse=RES,
 
-                     OPTION='EPSI_ELNO',
-                     RESULTAT=RES
-                   )
+CALC_CHAMP(reuse=RES,DEFORMATION=('EPSI_ELNO'),RESULTAT=RES)
+
 
 TEST_RESU(RESU=(
               _F(   RESULTAT = RES,   NOM_CHAM = 'DEPL',    NUME_ORDRE = 1,

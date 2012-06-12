@@ -1,4 +1,4 @@
-# MODIF  DATE 11/04/2012   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -104,11 +104,8 @@ RESU=STAT_NON_LINE(
                               INFO=1
               )
 
-RESU=CALC_ELEM( reuse=RESU,
-                            OPTION=(
-                  'SIGM_ELNO',  'VARI_ELNO',),
-                          RESULTAT=RESU,
-              )
+RESU=CALC_CHAMP(reuse=RESU,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=RESU)
+
 
 FOND=DEFI_FOND_FISS(MAILLAGE=MA,
                     SYME='OUI',

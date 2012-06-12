@@ -1,9 +1,9 @@
-# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE SENSIBILITE EFGE_ELNO / SIPO_ELNO
 # sensd09c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -101,11 +101,8 @@ DYT=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                       EXCIT=(_F(CHARGE=CHARGE),),
                       SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),)
 
-DYT = CALC_ELEM(
-                 reuse = DYT,
-                 RESULTAT= DYT,NUME_ORDRE=20,
-                 OPTION = ('EFGE_ELNO','SIPO_ELNO',),
-                 );
+DYT=CALC_CHAMP(reuse=DYT,RESULTAT=DYT,NUME_ORDRE=20,CONTRAINTE=('EFGE_ELNO','SIPO_ELNO'))
+
 
 CALC_SENSI(reuse = DYT,RESULTAT= DYT,NUME_ORDRE=20,SENSIBILITE=(PS[0],PS[1]),
                  OPTION = ('EFGE_ELNO','SIPO_ELNO',),
@@ -191,11 +188,8 @@ for i in range(n):
                       EXCIT=(_F(CHARGE=CHARGE),),
                       SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),)
 
-  DYTD[i] = CALC_ELEM(
-                 reuse = DYTD[i],
-                 RESULTAT= DYTD[i],
-                 OPTION = ('EFGE_ELNO','SIPO_ELNO',),
-                 );
+  DYTD[i]=CALC_CHAMP(reuse=DYTD[i],RESULTAT=DYTD[i],CONTRAINTE=('EFGE_ELNO','SIPO_ELNO'))
+
 
 # pour EFGE_ELNO
 

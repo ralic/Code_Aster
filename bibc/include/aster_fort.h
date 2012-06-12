@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF aster_fort include  DATE 21/05/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF aster_fort include  DATE 12/06/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -76,14 +76,8 @@ extern void DEF0(DEBUT,debut);
 #define CALL_IBMAIN(a) CALLP(IBMAIN,ibmain,a)
 extern void DEFP(IBMAIN,ibmain, INTEGER*);
 
-#define CALL_POURSU(a) CALLP(POURSU,poursu,a)
-extern void DEFP(POURSU,poursu,INTEGER*) ;
-
-#define CALL_GCCPTS(a,la) F_FUNC(GCCPTS,gccpts)(a,la)
-extern void DEFS(GCCPTS,gccpts,char *, STRING_SIZE );
-
-#define CALL_GCUGEN(a,b,c,d,e) CALLPSSSP(GCUGEN,gcugen,a,b,c,d,e)
-extern void DEFPSSSP(GCUGEN, gcugen, INTEGER*, char*, STRING_SIZE, char*, STRING_SIZE, char*,  STRING_SIZE, INTEGER*);
+#define CALL_POURSU() CALL0(POURSU,poursu)
+extern void DEF0(POURSU,poursu);
 
 
 /* routines JEVEUX */

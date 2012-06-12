@@ -33,10 +33,8 @@ RESU[nbadap]=STAT_NON_LINE(reuse =RESU[nbadap],
                            CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
                            SOLVEUR=_F(METHODE='LDLT',),);
 
-RESU[nbadap]=CALC_ELEM(reuse =RESU[nbadap],
-                       RESULTAT=RESU[nbadap],
-                       LIST_INST=LI2_BIS,
-                       OPTION='SIEF_ELNO',);
+RESU[nbadap]=CALC_CHAMP(reuse=RESU[nbadap],RESULTAT=RESU[nbadap],LIST_INST=LI2_BIS,CONTRAINTE=('SIEF_ELNO'))
+
 
 RESU[nbadap]=CALC_ERREUR(reuse =RESU[nbadap],
                          RESULTAT=RESU[nbadap],

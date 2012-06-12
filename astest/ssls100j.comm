@@ -1,4 +1,4 @@
-# MODIF  DATE 09/01/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE CIRCULAIRE ENCASTREE SOUMISE A UNE PRESSION UNIFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -66,18 +66,14 @@ RESU=MECA_STATIQUE(    MODELE=MODEL, CHAM_MATER=CHMAT,
                                CARA_ELEM=CARELEM,
                                EXCIT=_F(  CHARGE = CHARGE)       )
 
-RESU=CALC_ELEM(reuse=RESU,
-               RESULTAT=RESU,
-               OPTION=('SIGM_ELNO','EPSI_ELNO',),
-               REPE_COQUE=_F(NIVE_COUCHE='SUP', ),);
+RESU=CALC_ELEM(reuse=RESU,RESULTAT=RESU,OPTION=('SIGM_ELNO','EPSI_ELNO',),REPE_COQUE=_F(NIVE_COUCHE='SUP',),);
 
 RESC1SUP=POST_CHAMP(RESULTAT=RESU,
                      EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
                                    NUME_COUCHE=1,
                                    NIVE_COUCHE='SUP',),);
-RESU=CALC_ELEM(reuse=RESU,     RESULTAT=RESU,
-                        OPTION=('EFGE_ELNO','DEGE_ELNO',),
-               );
+RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CONTRAINTE=('EFGE_ELNO'),DEFORMATION=('DEGE_ELNO'))
+
 
 TEST_RESU(RESU=(_F(
                    RESULTAT = RESC1SUP,  NOM_CHAM = 'SIGM_ELNO',

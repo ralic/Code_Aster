@@ -1,4 +1,4 @@
-#@ MODIF test_compor_ops Macro  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF test_compor_ops Macro  DATE 11/06/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -436,8 +436,11 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMP_INCR,COMP_ELAS,LIST_MATE
       __zero=DEFI_CONSTANTE(VALE=0.)
 
 
+      if args['SUPPORT'] != None :
+          motscles['SUPPORT']=args['SUPPORT']
+
+
       __U=SIMU_POINT_MAT(MATER=MATER,INFO=INFO,
-                       SUPPORT='ELEMENT',
                          AFFE_VARC=(
                          _F(  NOM_VARC='TEMP',
                               VALE_FONC=__TIMP,
@@ -446,16 +449,15 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMP_INCR,COMP_ELAS,LIST_MATE
                        INCREMENT=_F(LIST_INST=__LINST,),
                        EPSI_IMPOSE=_F(EPXX=__zero,),
                        **motscles);
-
       # On ne garde pas les valeurs initiales (NUME_ORDRE = 0 exclu)
 
       __U = CALC_TABLE(reuse =__U,
                     TABLE=__U,
                     ACTION=(_F(
                           OPERATION = 'FILTRE',
-                          NOM_PARA  = 'NUME_ORDRE',
+                          NOM_PARA  = 'INST',
                           CRIT_COMP = 'GT',
-                          VALE    = 0,
+                          VALE    = 0.,
                          ),),);
 
       SXM = 0.
@@ -526,7 +528,6 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMP_INCR,COMP_ELAS,LIST_MATE
           if (NB_VARI > 0):
               __RES[i]=SIMU_POINT_MAT(INFO=INFO,
                                  MATER=LIST_MATER[i],
-                                 SUPPORT='ELEMENT',
                                  INCREMENT=_F(LIST_INST = __list, ),
                                  EPSI_IMPOSE=_F(EPXX=__epsimp),
                                  SIGM_INIT=_F(SIXX=SXM),
@@ -537,7 +538,6 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMP_INCR,COMP_ELAS,LIST_MATE
           else :
               __RES[i]=SIMU_POINT_MAT(INFO=INFO,
                                  MATER=LIST_MATER[i],
-                                 SUPPORT='ELEMENT',
                                  INCREMENT=_F(LIST_INST = __list, ),
                                  EPSI_IMPOSE=_F(EPXX=__epsimp),
                                  SIGM_INIT=_F(SIXX=SXM),
@@ -545,14 +545,13 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMP_INCR,COMP_ELAS,LIST_MATE
                                  **motscles);
 
           # On ne teste pas les valeurs initiales (NUME_ORDRE = 0 exclu)
-
           __RES[i] = CALC_TABLE(reuse =__RES[i],
                     TABLE=__RES[i],
                     ACTION=(_F(
                           OPERATION = 'FILTRE',
-                          NOM_PARA  = 'NUME_ORDRE',
-                          CRIT_COMP = 'GT',
-                          VALE    = 0,
+                          NOM_PARA  = 'INST',
+                          CRIT_COMP = 'EQ',
+                          VALE    = time,
                          ),),);
 
           # recuperation des valeurs initiales du futur pas de temps dans la table resultat

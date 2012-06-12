@@ -1,4 +1,4 @@
-#@ MODIF stanley_engine Stanley  DATE 29/05/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF stanley_engine Stanley  DATE 11/06/2012   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1513,6 +1513,9 @@ class STANLEY:
       'SalomeIsovaleurs': DRIVER_SALOME_ISOVALEURS(self)
       }
 
+   # Transformation du modèle
+    self.ModeleVersCentralise()
+
    # Lancement de l'interface graphique (jusqu'a ce qu'on quitte)
     self.interface.Go()
 
@@ -1525,7 +1528,24 @@ class STANLEY:
       except AttributeError :
         pass
 
+  def ModeleVersCentralise(self):
+    """
+      Transforme le modèle en modèle centralisé pour post-traiter des bases produites en parallèle
+    """
 
+    para = {
+      'reuse'        : self.contexte.modele,
+      'MODELE'       : self.contexte.modele,
+      'PARTITION'    : dict({'PARALLELISME':'CENTRALISE',})
+      }
+
+    # Lancement de la commande
+    try:
+      apply(MODI_MODELE,(),para)
+    except aster.error,err:
+      UTMESS('A','STANLEY_4',valk=[str(err)])
+    except Exception,err:
+      UTMESS('A','STANLEY_5',valk=[str(err)])
 
   def Calculer(self) :
     """
@@ -1689,10 +1709,10 @@ class STANLEY:
      for i in range(_NUM):
         DETR( '_MA_'+str(i) )
      self.interface.Kill()
-     
+
      # Pour la gestion des Exceptions
      aster.onFatalError(prev_onFatalError)
-  
+
 
   def Clavier(self,event) :
     """

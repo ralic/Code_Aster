@@ -1,7 +1,7 @@
       SUBROUTINE OP0044()
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/04/2012   AUTEUR TARDIEU N.TARDIEU 
+C MODIF ALGELINE  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -746,21 +746,6 @@ C PARAMETRE POUR VERIF. DE STURM ETENDUE (INACTIVE DANS OP0044)
 
 C     ------------------------------------------------------------------
 
-      CALL GETVID(' ','SENSIBILITE',1,IARG,1,K8BID,IRET)
-
-      IF (IRET.NE.0) THEN
-        IF ((KTYP.EQ.'R').AND.(LAMOR.EQ.0)) THEN
-          CALL SEMORE(LRAIDE,LAMOR,LMASSE,NEQ,MXRESF,NBMOD,
-     &            ZR(LRESUR),ZR(LVEC),
-     &            NBPARI,NBPARR,NBPARK,NBPARA,NOPARA,
-     &            ZI(LRESUI),ZK24(LRESUK))
-        ELSE
-          CALL SEMOCO(LRAIDE,LAMOR,LMASSE,NEQ,MXRESF,NBMOD,
-     &            ZR(LRESUR),ZC(LVEC),
-     &            NBPARI,NBPARR,NBPARK,NBPARA,NOPARA,
-     &            ZI(LRESUI),ZK24(LRESUK))
-        ENDIF
-      ENDIF
 
 C     ------------------------------------------------------------------
  9999 CONTINUE

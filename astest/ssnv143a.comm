@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE TRACTION BIAXIALE EN 3D - COMPORTEMENT BETON_DOUBLE_DP
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -226,15 +226,11 @@ SOLNL=STAT_NON_LINE(
                 RESI_GLOB_RELA = 1.E-6)
               )
 
-SOLNL=CALC_ELEM( reuse=SOLNL,
-                            OPTION=(
-                  'SIGM_ELNO',  'VARI_ELNO',),
-                          RESULTAT=SOLNL,
-              )
+SOLNL=CALC_CHAMP(reuse=SOLNL,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=SOLNL)
 
-SOLNL=CALC_ELEM(     reuse=SOLNL,
-                                   OPTION='EPSI_ELNO',
-                                 RESULTAT=SOLNL )
+
+SOLNL=CALC_CHAMP(reuse=SOLNL,DEFORMATION=('EPSI_ELNO'),RESULTAT=SOLNL)
+
 
 TEST_RESU(RESU=(
   _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIGM_ELNO', NUME_ORDRE = 10,

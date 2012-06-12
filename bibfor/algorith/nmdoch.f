@@ -1,7 +1,7 @@
-      SUBROUTINE NMDOCH(LISCHA,NBPASE,IEXCIT,EXCIT ,INPSCO)
+      SUBROUTINE NMDOCH(LISCHA,IEXCIT,EXCIT )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,11 +21,9 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C TOLE CRP_20
 C
-      IMPLICIT NONE
-      INTEGER       NBPASE
-      INTEGER       IEXCIT
-      CHARACTER*19  LISCHA,EXCIT
-      CHARACTER*(*) INPSCO
+      IMPLICIT     NONE
+      INTEGER      IEXCIT
+      CHARACTER*19 LISCHA,EXCIT
 C
 C ----------------------------------------------------------------------
 C
@@ -42,8 +40,6 @@ C                      0 : LE CHARGEMENT EST ISSU DE LA SD RESULTAT
 C                      1 : LE CHARGEMENT EST FOURNI PAR L'UTILISATEUR
 C I/O LISCHA : IN - NOM DONNE A SD L_CHARGES
 C IN  EXCIT  : NOM EXTRAIT DE LA SD RESULTAT SI IEXCIT=0
-C IN  NBPASE : NOMBRE DE PARAMETRES SENSIBLES
-C IN  INPSCO : STRUCTURE CONTENANT LA LISTE DES NOMS
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C
@@ -65,24 +61,22 @@ C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER      ITYCH
-      INTEGER      N1,IBID,IERD,NOCC,IEXC,INCHA1,IRET2
+      INTEGER      N1,IBID,NOCC,IEXC,INCHA1,IRET2
       INTEGER      NPILO,NEXCI,NCHAR,NCHAR1,NCHAR2,NCHAR3
       INTEGER      INFMAX,INDIC,ICH,IRET,INFC,J,ICHAR
-      INTEGER      NRPASE,ADCHSE,IAUX,JAUX,JINFCH
-      INTEGER      JLCHA,JINFC,GETEXM
+      INTEGER      JINFCH,JLCHA,JINFC,GETEXM
       INTEGER      JLCHA2,JINFC2
       INTEGER      JLISDB,ICHD
       CHARACTER*5  SUFFIX
-      CHARACTER*8  K8BID,AFFCHA,PARCHA,TYPCHA,REPONS
-      CHARACTER*8  NOPASE,FCTCSR
+      CHARACTER*8  K8BID,AFFCHA,PARCHA,TYPCHA
+      CHARACTER*8  FCTCSR
       CHARACTER*16 NOMCMD,TYPESD
       CHARACTER*8  NOMCHA,NOMFCT,NOMCH1,NOMFC1
       CHARACTER*24 INFOC1,INFOCH
       CHARACTER*19 LISCH2,LISDBL
       CHARACTER*24 LIGRCH,LCHIN,K24BID
-      CHARACTER*24 CHARSE
       INTEGER      IVAL,IVAL1
-      LOGICAL      EXCHSE,LFCPLX,LACCE
+      LOGICAL      LFCPLX,LACCE
       INTEGER      NBINFO
 C --- NOMBRE MAXIMUM DE TYPE_INFO
       INTEGER      NBINMX
@@ -95,18 +89,12 @@ C --- NOMBRE MAXIMUM DE TYPESD DE CHARGE                    : NBTYCH
       INTEGER      NBTYCH
       PARAMETER    (NBTYCH=18)
       CHARACTER*6  NOMLIG(NBTYCH)
-      CHARACTER*8  TYPEPS(NBTYCH)
       INTEGER      IARG
 C
       DATA NOMLIG  /'.FORNO','.F3D3D','.F2D3D','.F1D3D',
      &              '.F2D2D','.F1D2D','.F1D1D','.PESAN',
      &              '.ROTAT','.PRESS','.FELEC','.FCO3D',
      &              '.FCO2D','.EPSIN','.FLUX' ,'.VEASS',
-     &              '.ONDPL','.SIINT'/
-      DATA TYPEPS  /'FORCE' ,'FORCE' ,'FORCE' ,'FORCE' ,
-     &              'FORCE' ,'FORCE' ,'FORCE' ,'.PESAN',
-     &              '.ROTAT','FORCE' ,'.FELEC','FORCE' ,
-     &              'FORCE' ,'.EPSIN','.FLUX' ,'.VEASS',
      &              '.ONDPL','.SIINT'/
 C
 C ----------------------------------------------------------------------
@@ -118,7 +106,6 @@ C --- INITIALISATIONS
 C
       NCHAR  = 0
       INFMAX = 0
-      CHARSE = '&&NMDOME.CHARSE'
       FCTCSR = '&&NMDOME'
       LISDBL = '&&NMDOME.LISDBL'
       LFCPLX = .FALSE.
@@ -221,21 +208,15 @@ C
 C
       IF (NCHAR.NE.0) THEN
 C
-C --- CREATION LA SD L_CHARGES
+C ----- CREATION LA SD L_CHARGES
 C
         CALL LISCCR(LISCHA,NCHAR ,'V')
 C
-C --- CREATION LA SD L_CHARGES_SENSI
-C
-        CALL JEDETR(CHARSE)
-        IAUX     = MAX(NBPASE,1)
-        CALL WKVECT(CHARSE         ,'V V K8' ,IAUX     ,ADCHSE)
-C
-C --- LISTE DOUBLE
+C ----- LISTE DOUBLE
 C
         CALL WKVECT(LISDBL,'V V K8',NCHAR,JLISDB)
 C
-C --- BOCULE SUR LES CHARGES
+C ----- BOUCLE SUR LES CHARGES
 C
         DO 130 ICH = 1,NCHAR
           IF (IEXCIT.EQ.1) THEN
@@ -256,27 +237,11 @@ C
           ENDIF
           ZK8(JLISDB+ICH-1)  = NOMCHA(1:8)
 C
-C -------- LIGREL DE LA CHARGE
+C ------- LIGREL DE LA CHARGE
 C
           LIGRCH = NOMCHA(1:8)//'.CHME.LIGRE'
 C
-C -------- LA CHARGE EST-ELLE CONCERNEE PAR UN CALCUL DE SENSIBILITE ?
-C
-          EXCHSE = .FALSE.
-          DO 40 NRPASE = 1,NBPASE
-            IAUX = NRPASE
-            JAUX = 1
-            CALL PSNSLE(INPSCO,IAUX  ,JAUX ,NOPASE)
-            CALL PSGENC(NOMCHA,NOPASE,K8BID,IRET  )
-            IF (IRET.EQ.0) THEN
-              ZK8(ADCHSE+NRPASE-1) = NOPASE
-              EXCHSE = .TRUE.
-            ELSE
-              ZK8(ADCHSE+NRPASE-1) = ' '
-            END IF
-   40     CONTINUE
-C
-C -------- TYPE DE LA CHARGE
+C ------- TYPE DE LA CHARGE
 C
           IF (IEXCIT.EQ.1) THEN
             IF(NOMCMD.EQ.'DYNA_LINE_TRAN' .OR.
@@ -300,13 +265,13 @@ C
             ENDIF
           ENDIF
 C
-C -------- NOMBRE DE CHARGES PILOTEES
+C ------- NOMBRE DE CHARGES PILOTEES
 C
           IF (TYPCHA.EQ.'FIXE_PIL') THEN
             NPILO  = NPILO + 1
           ENDIF
 C
-C -------- CONTROLE DU CARACTERE MECANIQUE DE LA CHARGE
+C ------- CONTROLE DU CARACTERE MECANIQUE DE LA CHARGE
 C
           CALL DISMOI('F'   ,'TYPE_CHARGE',NOMCHA,'CHARGE',
      &                IBID  ,AFFCHA       ,IRET)
@@ -315,7 +280,7 @@ C
             CALL U2MESK('F','CHARGES_22',1,NOMCHA(1:8))
           END IF
 C
-C -------- FONCTIONS MULTIPLICATIVES DES CHARGES
+C ------- FONCTIONS MULTIPLICATIVES DES CHARGES
 C
           LFCPLX = (NOMCMD.EQ.'DYNA_LINE_HARM' .OR.
      &    ( NOMCMD.EQ.'LIRE_RESU' .AND. TYPESD.EQ.'DYNA_HARMO' ) )
@@ -329,7 +294,7 @@ C
             ENDIF
           ENDIF
 C
-C -------- CHARGE DE TYPE DIRICHLET PROVENANT D'UN AFFE_CHAR_CINE
+C ------- CHARGE DE TYPE DIRICHLET PROVENANT D'UN AFFE_CHAR_CINE
 C
           NBINFO = 0
           INFOCH = 'RIEN'
@@ -379,9 +344,6 @@ C
               ELSE
                 INFOCH = 'DIRI_PILO'
               ENDIF
-
-
-
             ELSE
               IF (AFFCHA(5:7).EQ.'_FO') THEN
                 INFOCH = 'DIRI_FO'
@@ -389,20 +351,6 @@ C
      &                      PARCHA,IRET)
                 IF (PARCHA(1:3).EQ.'OUI') THEN
                   INFOCH = 'DIRI_FT'
-                END IF
-
-                IF (EXCHSE) THEN
-                  DO 50,NRPASE = 1,NBPASE
-                    NOPASE = ZK8(ADCHSE+NRPASE-1)
-                    IF (NOPASE.NE.' ') THEN
-                      CALL TELLME('F','NOM_FONCTION',LCHIN(1:19),NOPASE,
-     &                            REPONS,IRET  )
-                      IF (REPONS.EQ.'OUI') THEN
-                        CALL PSTYPA(NBPASE, INPSCO, NOMCHA, NOPASE,
-     &                              'DIRICHLE')
-                      END IF
-                    END IF
-   50             CONTINUE
                 END IF
               ELSE
                 INFOCH = 'DIRI_CSTE'
@@ -418,7 +366,7 @@ C
             LISINF(NBINFO) = INFOCH
           ENDIF
 C
-C -------- CHARGE DE TYPE NEUMANN
+C ------- CHARGE DE TYPE NEUMANN
 C
           DO 70 ITYCH = 1,NBTYCH
             IF (NOMLIG(ITYCH).EQ.'.VEASS') THEN
@@ -458,20 +406,6 @@ C
                 ELSE
                   INFOCH = 'NEUM_FO'
                 END IF
-
-                IF (EXCHSE) THEN
-                  DO 60,NRPASE = 1,NBPASE
-                    NOPASE = ZK8(ADCHSE+NRPASE-1)
-                    IF (NOPASE.NE.'        ') THEN
-                      CALL TELLME('F','NOM_FONCTION',LCHIN(1:19),NOPASE,
-     &                            REPONS,IERD)
-                      IF (REPONS.EQ.'OUI') THEN
-                        CALL PSTYPA(NBPASE,INPSCO,NOMCHA,NOPASE,
-     &                              TYPEPS(ITYCH) )
-                      END IF
-                    END IF
-   60             CONTINUE
-                END IF
               ELSE
                 INFOCH = 'NEUM_CSTE'
               END IF
@@ -482,9 +416,8 @@ C
               LISINF(NBINFO) = INFOCH
             ENDIF
    70     CONTINUE
-
 C
-C -------- CHARGE DE TYPE EVOL_CHAR
+C ------- CHARGE DE TYPE EVOL_CHAR
 C
           INFOCH = 'RIEN'
           LCHIN = LIGRCH(1:13)//'.EVOL.CHAR'

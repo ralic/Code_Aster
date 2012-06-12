@@ -1,20 +1,21 @@
-      SUBROUTINE DLNEW0 ( NRORES, NBPASE, INPSCO, IINTEG, NEQ, ISTOC, 
-     &                    IARCHI, IFM, NBEXCI, NONDP, NMODAM, LAMORT, 
-     &                    LIMPED, LMODST, IMAT, MASSE, RIGID, AMORT, 
-     &                    NCHAR, NVECA, LIAD, LIFO, MODELE, MATE, 
+      SUBROUTINE DLNEW0 ( RESULT,FORCE0,FORCE1,
+     &                    IINTEG, NEQ, ISTOC,
+     &                    IARCHI, IFM, NBEXCI, NONDP, NMODAM, LAMORT,
+     &                    LIMPED, LMODST, IMAT, MASSE, RIGID, AMORT,
+     &                    NCHAR, NVECA, LIAD, LIFO, MODELE, MATE,
      &                    CARELE, CHARGE, INFOCH, FOMULT, NUMEDD, DEPLA,
-     &                    VITEA, ACCEA, DEP0, VIT0, ACC0, FEXTE, FAMOR, 
-     &                    FLIAI, DEPL1, VITE1, ACCE1, PSDEL, FAMMO, 
-     &                    FIMPE, FONDE, VIEN, VITE, VITA1, MLTAP, A0, 
-     &                    A2, A3, A4, A5, A6, A7, A8, C0, C1, C2, C3, 
-     &                    C4, C5, NODEPL, NOVITE, NOACCE, MATRES, 
-     &                    MAPREC, SOLVEU, CRITER, CHONDP, ENER, VITINI, 
-     &                    VITENT, VALMOD, BASMOD, VEANEC, VAANEC, 
-     &                    VAONDE, VEONDE, DT, THETA, TEMPM, TEMPS, 
+     &                    VITEA, ACCEA, DEP0, VIT0, ACC0, FEXTE, FAMOR,
+     &                    FLIAI, DEPL1, VITE1, ACCE1, PSDEL, FAMMO,
+     &                    FIMPE, FONDE, VIEN, VITE, VITA1, MLTAP, A0,
+     &                    A2, A3, A4, A5, A6, A7, A8, C0, C1, C2, C3,
+     &                    C4, C5, NODEPL, NOVITE, NOACCE, MATRES,
+     &                    MAPREC, SOLVEU, CRITER, CHONDP, ENER, VITINI,
+     &                    VITENT, VALMOD, BASMOD, VEANEC, VAANEC,
+     &                    VAONDE, VEONDE, DT, THETA, TEMPM, TEMPS,
      &                    IFORC2, TABWK1, TABWK2, ARCHIV,NBTYAR,TYPEAR )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/03/2012   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,11 +38,6 @@ C     CALCUL MECANIQUE TRANSITOIRE PAR INTEGRATION DIRECTE
 C     AVEC METHODES IMPLICITES :                  - THETA-WILSON
 C                                                 - NEWMARK
 C ----------------------------------------------------------------------
-C  IN  : NRORES    : NUMERO DE LA RESOLUTION
-C                  0 : CALCUL STANDARD
-C                 >0 : CALCUL DE LA DERIVEE NUMERO NRORES
-C  IN  : NBPASE    : NOMBRE DE PARAMETRES SENSIBLES
-C  IN  : INPSCO    : STRUCTURE CONTENANT LA LISTE DES NOMS
 C  IN  : IINTEG    : ENTIER INDIQUANT LA METHODE D'INTEGRATION
 C  IN  : NEQ       : NOMBRE D'EQUATIONS
 C  IN  : ISTOC     : PILOTAGE DU STOCKAGE DES RESULTATS
@@ -80,7 +76,7 @@ C CORPS DU PROGRAMME
       IMPLICIT NONE
 C DECLARATION PARAMETRES D'APPELS
 C
-      INTEGER NRORES, NBPASE, NBEXCI, NONDP, NMODAM, IINTEG, NEQ
+      INTEGER NBEXCI, NONDP, NMODAM, IINTEG, NEQ
       INTEGER ISTOC, IARCHI, IFM, IMAT(3), NCHAR, NVECA, LIAD(*)
       INTEGER IFORC2, ARCHIV, NBTYAR, MLTAP(NBEXCI)
 C
@@ -95,9 +91,10 @@ C
 C
       CHARACTER*8 NODEPL(NBEXCI), NOVITE(NBEXCI), NOACCE(NBEXCI)
       CHARACTER*8 MASSE, RIGID, AMORT
+      CHARACTER*8 RESULT
+      CHARACTER*19 FORCE0,FORCE1
       CHARACTER*8 CHONDP(NONDP)
       CHARACTER*8 MATRES
-      CHARACTER*13 INPSCO
       CHARACTER*16 TYPEAR(NBTYAR)
       CHARACTER*19 SOLVEU
       CHARACTER*19 MAPREC
@@ -129,45 +126,30 @@ C
       CHARACTER*6 NOMPRO
       PARAMETER ( NOMPRO = 'DLNEW0' )
 C
-      INTEGER IFORC0, IFORC1, IAUX, JAUX
-      INTEGER LRESU,LCRRE,IRESU,NBEXRE,ITEM2,IRET,LVALE,IBID,I
-      INTEGER LVAL1,LVAL2,LTPS0,LTPS1,NBINST,IFNOBI,IFCIBI
+      INTEGER IFORC0, IFORC1
+      INTEGER LRESU,LCRRE,NBEXRE,ITEM2,IRET,LVALE,IBID,I
+      INTEGER LVAL1,LVAL2,LTPS0,LTPS1,NBINST,IFNOBI,IFCIBI,ALARM
+      INTEGER IEXCI,IEQ,IRESU
 C
       REAL*8 COEFD, COEFV, COEFA, PREC, EPS0, ALPHA
 
-      CHARACTER*8 RESULT,K8BID
+      CHARACTER*8  K8BID
       CHARACTER*16 TYPA(6)
       CHARACTER*19 CHSOL, CHAM19, CHAMNO, CHAMN2,SDENER,K19BID
-      CHARACTER*19 FORCE0, FORCE1,MASSE1,AMORT1,RIGID1
+      CHARACTER*19 MASSE1,AMORT1,RIGID1
       CHARACTER*24 CINE, VECCOR, VECOND
       COMPLEX*16   CBID
 C     -----------------------------------------------------------------
 C
-C====
-C 1. PREALABLES
-C====
-C 1.1. ==> NOM DES STRUCTURES ASSOCIEES AUX DERIVATIONS
-C                3. LE NOM DU RESULTAT
-C               10. VARIABLE COMPLEMENTAIRE NUMERO 2 INSTANT N
 
-      IAUX = NRORES
-      JAUX = 3
-      CALL PSNSLE ( INPSCO, IAUX, JAUX, RESULT )
+
 C
-      JAUX = 8
-      CALL PSNSLE ( INPSCO, IAUX, JAUX, FORCE0 )
+C --- NOM DES STRUCTURES DE TRAVAIL
 C
-      JAUX = 10
-      CALL PSNSLE ( INPSCO, IAUX, JAUX, FORCE1 )
-C
-C 1.2. ==> NOM DES STRUCTURES DE TRAVAIL
-C
-C               12   345678   9012345678901234
-      CHSOL  = '&&'//NOMPRO//'.SOLUTION  '
-C               123456789012345678901234
-      VECCOR = '&&VECCOR                '
-      VECOND = '&&VECOND                '
-      CINE   = '                        '
+      CHSOL  = '&&'//NOMPRO//'.SOLUTION '
+      VECCOR = '&&VECCOR'
+      VECOND = '&&VECOND'
+      CINE   = '  '
       CHAMNO  = '&&'//NOMPRO//'.CHAMNO'
       CALL JEEXIN(CHAMNO(1:19)//'.REFE',IRET)
       IF (IRET.EQ.0) THEN
@@ -181,24 +163,24 @@ C               123456789012345678901234
 C====
 C 2. DEPLACEMENT, VITESSE ET ACCELERATIONS A
 C====
-      DO 21 , IAUX = 1,NEQ
-        DEPLA(IAUX) = 0.D0
-        VITEA(IAUX) = 0.D0
-        ACCEA(IAUX) = 0.D0
+      DO 21 , IEQ = 1,NEQ
+        DEPLA(IEQ) = 0.D0
+        VITEA(IEQ) = 0.D0
+        ACCEA(IEQ) = 0.D0
    21 CONTINUE
 C
       IF ( LMODST ) THEN
 C
-        DO 22 , JAUX = 1 , NBEXCI
+        DO 22 IEXCI = 1 , NBEXCI
 C
-          IF ( MLTAP(JAUX).EQ.1 ) THEN
-            CALL FOINTE('F ',NODEPL(JAUX),1,'INST',TEMPS,COEFD,IAUX)
-            CALL FOINTE('F ',NOVITE(JAUX),1,'INST',TEMPS,COEFV,IAUX)
-            CALL FOINTE('F ',NOACCE(JAUX),1,'INST',TEMPS,COEFA,IAUX)
-            DO 221 , IAUX = 1,NEQ
-              DEPLA(IAUX) = DEPLA(IAUX) + PSDEL(IAUX)*COEFD
-              VITEA(IAUX) = VITEA(IAUX) + PSDEL(IAUX)*COEFV
-              ACCEA(IAUX) = ACCEA(IAUX) + PSDEL(IAUX)*COEFA
+          IF ( MLTAP(IEXCI).EQ.1 ) THEN
+            CALL FOINTE('F ',NODEPL(IEXCI),1,'INST',TEMPS,COEFD,IEQ)
+            CALL FOINTE('F ',NOVITE(IEXCI),1,'INST',TEMPS,COEFV,IEQ)
+            CALL FOINTE('F ',NOACCE(IEXCI),1,'INST',TEMPS,COEFA,IEQ)
+            DO 221 IEQ = 1,NEQ
+              DEPLA(IEQ) = DEPLA(IEQ) + PSDEL(IEQ)*COEFD
+              VITEA(IEQ) = VITEA(IEQ) + PSDEL(IEQ)*COEFV
+              ACCEA(IEQ) = ACCEA(IEQ) + PSDEL(IEQ)*COEFA
   221       CONTINUE
           ENDIF
 C
@@ -209,12 +191,12 @@ C
 C====
 C 3.
 C====
-      DO 31 , IAUX = 1,NEQ
-        VITE(IAUX) = VIT0(IAUX)
+      DO 31 , IEQ = 1,NEQ
+        VITE(IEQ) = VIT0(IEQ)
    31 CONTINUE
       IF ( LMODST ) THEN
-        DO 32 , IAUX = 1,NEQ
-          VIEN(IAUX) = VITEA(IAUX)
+        DO 32 , IEQ = 1,NEQ
+          VIEN(IEQ) = VITEA(IEQ)
    32   CONTINUE
       ENDIF
       IF (LIMPED) THEN
@@ -228,8 +210,8 @@ C====
 
       IF ( NMODAM.NE.0 ) THEN
         IF ( LMODST ) THEN
-          DO 33 , IAUX = 1,NEQ
-            VITA1(IAUX) = VIT0(IAUX) + VITEA(IAUX)
+          DO 33 , IEQ = 1,NEQ
+            VITA1(IEQ) = VIT0(IEQ) + VITEA(IEQ)
    33     CONTINUE
           CALL FMODAM(NEQ,VITA1,VALMOD,BASMOD,FAMMO)
         ELSE
@@ -243,43 +225,43 @@ C====
       CALL JEVEUO(FORCE0(1:19)//'.VALE','E',IFORC0)
       CALL JEVEUO(FORCE1(1:19)//'.VALE','E',IFORC1)
 C
-      CALL DLFEXT ( NVECA, NCHAR, TEMPS, NEQ,
-     &              LIAD, LIFO, CHARGE, INFOCH, FOMULT,
-     &              MODELE, MATE, CARELE, NUMEDD,
-     &              NBPASE, NRORES, INPSCO, ZR(IFORC1) )
+      CALL DLFEXT ( NVECA, NCHAR, TEMPS, NEQ,LIAD,
+     &               LIFO, CHARGE, INFOCH, FOMULT,MODELE,
+     &               MATE, CARELE, NUMEDD,
+     &              ZR(IFORC1) )
 C
       IF ( NONDP.NE.0 ) THEN
-        DO 43 , IAUX = 1,NEQ
-          ZR(IFORC1+IAUX-1) = ZR(IFORC1+IAUX-1) - FONDE(IAUX)
+        DO 43 , IEQ = 1,NEQ
+          ZR(IFORC1+IEQ-1) = ZR(IFORC1+IEQ-1) - FONDE(IEQ)
    43   CONTINUE
       ENDIF
       IF (ENER) THEN
-        DO 433, IAUX =1,NEQ
-          FEXTE(IAUX)=FEXTE(IAUX+NEQ)
-          FEXTE(IAUX+NEQ)=ZR(IFORC1+IAUX-1)
+        DO 433, IEQ =1,NEQ
+          FEXTE(IEQ)=FEXTE(IEQ+NEQ)
+          FEXTE(IEQ+NEQ)=ZR(IFORC1+IEQ-1)
   433   CONTINUE
       ENDIF
 
       IF ( LIMPED ) THEN
-        DO 41 ,  IAUX = 1,NEQ
-          ZR(IFORC1+IAUX-1) = ZR(IFORC1+IAUX-1) - FIMPE(IAUX)
+        DO 41 ,  IEQ = 1,NEQ
+          ZR(IFORC1+IEQ-1) = ZR(IFORC1+IEQ-1) - FIMPE(IEQ)
    41   CONTINUE
         IF (ENER) THEN
-          DO 411 IAUX=1,NEQ
-            FLIAI(IAUX)=FLIAI(IAUX+NEQ)
-            FLIAI(IAUX+NEQ)=FIMPE(IAUX)
+          DO 411 IEQ=1,NEQ
+            FLIAI(IEQ)=FLIAI(IEQ+NEQ)
+            FLIAI(IEQ+NEQ)=FIMPE(IEQ)
   411     CONTINUE
         ENDIF
       ENDIF
 
       IF ( NMODAM.NE.0 ) THEN
-        DO 42 , IAUX = 1,NEQ
-          ZR(IFORC1+IAUX-1) = ZR(IFORC1+IAUX-1) - FAMMO(IAUX)
+        DO 42 , IEQ = 1,NEQ
+          ZR(IFORC1+IEQ-1) = ZR(IFORC1+IEQ-1) - FAMMO(IEQ)
    42   CONTINUE
         IF (ENER) THEN
-          DO 421 IAUX=1,NEQ
-            FAMOR(IAUX)=FAMOR(IAUX+NEQ)
-            FAMOR(IAUX+NEQ)=FAMMO(IAUX)
+          DO 421 IEQ=1,NEQ
+            FAMOR(IEQ)=FAMOR(IEQ+NEQ)
+            FAMOR(IEQ+NEQ)=FAMMO(IEQ)
   421     CONTINUE
         ENDIF
       ENDIF
@@ -346,10 +328,10 @@ C        --- INTERPOLATION LINEAIRE ---
  211        CONTINUE
  213        CONTINUE
           ENDIF
-          DO 212 IAUX = 1,NEQ
-            ZR(IFORC2+IAUX-1) = ZR(LVALE+IAUX-1)*ZR(LCRRE+IRESU-1)
-            ZR(IFORC1+IAUX-1) = ZR(IFORC1+IAUX-1) +
-     &                          ZR(LVALE+IAUX-1)*ZR(LCRRE+IRESU-1)
+          DO 212 IEQ = 1,NEQ
+            ZR(IFORC2+IEQ-1) = ZR(LVALE+IEQ-1)*ZR(LCRRE+IRESU-1)
+            ZR(IFORC1+IEQ-1) = ZR(IFORC1+IEQ-1) +
+     &                          ZR(LVALE+IEQ-1)*ZR(LCRRE+IRESU-1)
   212     CONTINUE
           IF (IBID.GT.0) THEN
             CALL JELIBE(CHAM19//'.VALE')
@@ -359,8 +341,8 @@ C        --- INTERPOLATION LINEAIRE ---
           ENDIF
   210   CONTINUE
         IF (ENER) THEN
-          DO 23 IAUX = 1,NEQ
-            FEXTE(IAUX+NEQ)=FEXTE(IAUX+NEQ)+ ZR(IFORC2+IAUX-1)
+          DO 23 IEQ = 1,NEQ
+            FEXTE(IEQ+NEQ)=FEXTE(IEQ+NEQ)+ ZR(IFORC2+IEQ-1)
    23     CONTINUE
         ENDIF
       ENDIF
@@ -442,19 +424,6 @@ C
         CALL DCOPY ( NEQ, ZR(IFORC1), 1, ZR(IFORC0), 1 )
       ENDIF
 
-C====
-C 10. DANS LE CAS DE CALCUL AVEC SENSIBILITE ET POUR LE CALCUL
-C          NOMINALE, SAUVEGARDE DU CHAMP SOLUTION
-C====
-C
-      IF ( NRORES.EQ.0 .AND. NBPASE.GT.0 ) THEN
-C
-        IAUX = 6
-        CALL SENS01 ( INPSCO,
-     &                NEQ, MASSE,
-     &                IAUX, DEPL1, ACCE1 )
-C
-      ENDIF
 
 C====
 C 11. ARCHIVAGE EVENTUEL DANS L'OBJET SOLUTION
@@ -462,7 +431,7 @@ C====
       IF ( ARCHIV.EQ.1 ) THEN
 C
         ISTOC = 0
-        JAUX = 1
+        ALARM = 1
 C
         IF ( LMODST ) THEN
 C
@@ -472,23 +441,21 @@ C
           TYPA(4) = '    '
           TYPA(5) = '    '
           TYPA(6) = '    '
-          DO 101 , IAUX = 1,NEQ
-            DEPLA(IAUX) = DEPLA(IAUX) + DEP0(IAUX)
-            VITEA(IAUX) = VITEA(IAUX) + VIT0(IAUX)
-            ACCEA(IAUX) = ACCEA(IAUX) + ACC0(IAUX)
+          DO 101 , IEQ = 1,NEQ
+            DEPLA(IEQ) = DEPLA(IEQ) + DEP0(IEQ)
+            VITEA(IEQ) = VITEA(IEQ) + VIT0(IEQ)
+            ACCEA(IEQ) = ACCEA(IEQ) + ACC0(IEQ)
   101     CONTINUE
-          CALL DLARCH ( NRORES, INPSCO,
-     &                  NEQ, ISTOC, IARCHI, ' ',
-     &                  JAUX, IFM, TEMPS,
+          CALL DLARCH ( RESULT,NEQ, ISTOC, IARCHI, ' ',
+     &                  ALARM, IFM, TEMPS,
      &                  NBTYAR, TYPA, MASSE,
      &                  DEPLA, VITEA, ACCEA,
      &                  FEXTE(NEQ+1), FAMOR(NEQ+1), FLIAI(NEQ+1))
 C
         ENDIF
 C
-        CALL DLARCH ( NRORES, INPSCO,
-     &                NEQ, ISTOC, IARCHI, ' ',
-     &                JAUX, IFM, TEMPS,
+        CALL DLARCH ( RESULT,NEQ, ISTOC, IARCHI, ' ',
+     &                ALARM, IFM, TEMPS,
      &                NBTYAR, TYPEAR, MASSE,
      &                DEP0, VIT0, ACC0,
      &                FEXTE(NEQ+1),FAMOR(NEQ+1),FLIAI(NEQ+1))

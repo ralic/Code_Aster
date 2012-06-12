@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ops Cata  DATE 12/06/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -133,11 +133,13 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO, 
    commun_DEBUT_POURSUITE(self.jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO)
 
    if self.codex:
+     base = 'glob.1'
      if aster_exists:
         repglob = aster_core.get_option("repglob")
-        glob1 = osp.join(repglob, "glob.1")
-        if not osp.isfile(glob1) and not osp.isfile("bhdf.1"):
-          UTMESS('F','SUPERVIS_89')
+        bhdf = osp.join(repglob, 'bhdf.1')
+        base = osp.join(repglob, 'glob.1')
+        if not osp.isfile(base) and not osp.isfile(bhdf):
+            UTMESS('F','SUPERVIS_89')
      # Le module d'execution est accessible et glob.1 est present
      # Pour eviter de rappeler plusieurs fois la sequence d'initialisation
      # on memorise avec l'attribut fichier_init que l'initialisation
@@ -148,31 +150,11 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO, 
      # le sous programme fortran appelé par self.codex.poursu demande le numéro
      # de l'operateur (GCECDU->getoper), on lui donne la valeur 0
      self.definition.op=0
-     lonuti,concepts = self.codex.poursu(self)
+     self.codex.poursu(self)
      # Par la suite pour ne pas executer la commande pendant la phase
      # d'execution on le remet à None
-     self.definition.op=None
-     # On demande la numérotation de la commande POURSUITE avec l'incrément
-     # lonuti pour qu'elle soit numérotée à la suite des commandes existantes.
-     # self.set_icmd(lonuti)    Non : on repart à zéro
-     pos=0
-     d={}
-     while pos+80 < len(concepts)+1:
-       nomres=concepts[pos:pos+8]
-       concep=concepts[pos+8:pos+24]
-       nomcmd=concepts[pos+24:pos+40]
-       statut=concepts[pos+40:pos+48]
-       message.info(SUPERV, '%s %s %s %s', nomres, concep, nomcmd, statut)
-       if nomres[0] not in (' ', '.', '&') and statut != '&DETRUIT':
-          exec nomres+'='+concep.lower()+'()' in self.parent.g_context,d
-       elif statut == '&DETRUIT':
-          self.jdc.nsd = self.jdc.nsd+1
-       pos=pos+80
-     # ces ASSD seront écrasées par le pick.1,
-     # on vérifiera la cohérence de type entre glob.1 et pick.1
-     for k,v in d.items():
-       self.parent.NommerSdprod(v,k)
-     self.g_context=d
+     self.definition.op = None
+     self.g_context = {}
 
      # Il peut exister un contexte python sauvegardé sous forme  pickled
      # On récupère ces objets après la restauration des concepts pour que
@@ -189,40 +171,54 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO, 
         UTMESS('F', 'SUPERVIS_86')
         return
      self.jdc.restore_pickled_attrs(pickle_context)
+     # vérification cohérence pick/base
+     savsign = self.jdc._sign
+     newsign = self.jdc.signature(base)
+     if args.get('FORMAT_HDF') == 'OUI':
+         UTMESS('I', 'SUPERVIS_71')
+     elif newsign != savsign:
+         UTMESS('F', 'SUPERVIS_69', valk=(savsign, newsign),
+                                    vali=self.jdc.jeveux_sysaddr)
+         return
+     else:
+         UTMESS('I', 'SUPERVIS_70', valk=newsign, vali=self.jdc.jeveux_sysaddr)
      from Cata.cata  import entier
      from Noyau.N_CO import CO
-     for elem in pickle_context.keys():
-         if isinstance(pickle_context[elem], ASSD):
-            pickle_class = pickle_context[elem].__class__
+     interrupt = []
+     count = 0
+     UTMESS('I', 'SUPERVIS_65')
+     for elem, co in pickle_context.items():
+         if isinstance(co, ASSD):
+            count += 1
+            typnam = co.__class__.__name__
             # on rattache chaque assd au nouveau jdc courant (en poursuite)
-            pickle_context[elem].jdc = self.jdc
-            pickle_context[elem].parent = self.jdc
+            co.jdc = self.jdc
+            co.parent = self.jdc
             # le marquer comme 'executed'
-            pickle_context[elem].executed = 1
+            i_int = ''
+            if co.executed != 1:
+                interrupt.append((co.nom, typnam))
+                i_int = 'exception'
+            co.executed = 1
+            UTMESS('I', 'SUPERVIS_66', valk=(co.nom, typnam.lower(), i_int))
             # pour que sds_dict soit cohérent avec g_context
-            self.jdc.sds_dict[elem] = pickle_context[elem]
-            if elem != pickle_context[elem].nom:
-               name = re.sub('_([0-9]+)$', '[\\1]', pickle_context[elem].nom)
+            self.jdc.sds_dict[elem] = co
+            if elem != co.nom:
+               name = re.sub('_([0-9]+)$', '[\\1]', co.nom)
                if self.jdc.info_level > 1:
                   UTMESS('I', 'SUPERVIS2_3',
-                         valk=(elem, type(pickle_context[elem]).__name__.upper()))
+                         valk=(elem, type(co).__name__.upper()))
                UTMESS('A', 'SUPERVIS_93', valk=(elem, "del %s" % name))
                del pickle_context[elem]
                continue
-            # détecte les incohérences
-            if elem in self.g_context.keys():
-               poursu_class = self.g_context[elem].__class__
-               if poursu_class != pickle_class :
-                  UTMESS('F','SUPERVIS_87',valk=[elem])
-                  return
-            elif pickle_class not in (CO, entier) :
-            # on n'a pas trouvé le concept dans la base et sa classe est ASSD : ce n'est pas normal
-            # sauf dans le cas de CO : il n'a alors pas été typé et c'est normal qu'il soit absent de la base
-            # même situation pour le type 'entier' produit uniquement par DEFI_FICHIER
-               UTMESS('F','SUPERVIS_88', valk=[elem,str(pickle_class)])
-               return
-         if pickle_context[elem]==None:
+         if co == None:
             del pickle_context[elem]
+     if count == 0:
+         UTMESS('I', 'SUPERVIS_67')
+     for nom, typnam in interrupt:
+         UTMESS('I', 'SUPERVIS_76', valk=(nom, typnam))
+     if not interrupt:
+         UTMESS('I', 'SUPERVIS_72')
      self.g_context.update(pickle_context)
      return
 
@@ -252,7 +248,7 @@ def get_pickled_context():
        # Le contexte sauvegardé a été picklé en une seule fois. Il est seulement
        # possible de le récupérer en bloc. Si cette opération echoue, on ne récupère
        # aucun objet.
-       context=pickle.load(file)
+       context = pickle.load(file)
        file.close()
     except:
        # En cas d'erreur on ignore le contenu du fichier

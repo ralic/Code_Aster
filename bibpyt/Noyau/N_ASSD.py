@@ -1,4 +1,4 @@
-#@ MODIF N_ASSD Noyau  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_ASSD Noyau  DATE 12/06/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -59,8 +59,10 @@ class ASSD(object):
         self.id = self.parent.o_register(self)
       # permet de savoir si le concept a été calculé (1) ou non (0)
       self.executed = 0
-      # permet de savoir si le catalogue de SD a déjà été supprimé (1) ou non (0)
-      self.sd_deleted = 0
+      if self.parent:
+          self.order = self.parent.icmd
+      else:
+          self.order = 0
       # attributs pour le Catalogue de Structure de Données Jeveux
       # "self.cata_sdj" est un attribut de classe
       self.ptr_class_sdj = None

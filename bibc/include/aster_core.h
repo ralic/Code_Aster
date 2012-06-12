@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF aster_core include  DATE 21/05/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF aster_core include  DATE 12/06/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -49,7 +49,7 @@ extern void DEFPP(CHKMSG,chkmsg, _IN INTEGER *, _OUT INTEGER *);
 extern void DEFSSP(CHEKSD,cheksd,_IN char *,_IN STRING_SIZE, _IN char *, _IN STRING_SIZE,
                    _OUT INTEGER *);
 
-extern void DEF0(PRHEAD,prhead);
+extern void DEFP(PRHEAD,prhead, _IN INTEGER *);
 
 extern PyObject* aster_matfpe(PyObject*, PyObject *);
 

@@ -1,4 +1,4 @@
-#@ MODIF B_MACRO_ETAPE Build  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_MACRO_ETAPE Build  DATE 12/06/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -150,7 +150,7 @@ class MACRO_ETAPE(B_ETAPE.ETAPE):
           Fonction:
             Delivrer un nom de concept non encore utilise et unique
       """
-      ### self.jdc.nsd=self.jdc.nsd+1 #CD : ca me semble inutile
+      # nsd est incrémenté à l'enregistrement dans N_JDC
       return type + "9" + str(self.jdc.nsd).zfill(6)
 
    def DeclareOut(self,nom,concept):

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/06/2012   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE : VARIATION TEMPERATURE DANS LE COMPORTEMENT 'ELAS_VMIS_LINE' sous COMP_ELAS
 # comp007b.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
@@ -86,7 +86,7 @@ TIMP=DEFI_FONCTION(
 
 U=SIMU_POINT_MAT(COMP_ELAS=_F(RELATION=compor,),
                  MATER=MATERI,
-                 SUPPORT='ELEMENT',
+                 SUPPORT='POINT',
                    AFFE_VARC=(
                    _F(  NOM_VARC='TEMP',
                         VALE_FONC=TIMP,
@@ -152,7 +152,7 @@ for i in range(1,NCAL+1):
 
           RESU[i]=SIMU_POINT_MAT(COMP_ELAS=_F(RELATION=compor,),
                                  MATER=MATER[i],
-                                 SUPPORT='ELEMENT',
+                                 SUPPORT='POINT',
                                  INCREMENT=_F(LIST_INST = list, ),
                                  NEWTON=_F( PREDICTION='ELASTIQUE',
                                              MATRICE='TANGENTE',

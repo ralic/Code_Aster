@@ -3,7 +3,7 @@
      &                   OPTION,TAUP,VIP,DTAUDF,IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/01/2012   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 11/06/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +30,7 @@ C TOLE CRP_7
       REAL*8             DF(3,3),FM(3,3)
       REAL*8             VIM(8),VIP(8)
       REAL*8             TAUP(6),DTAUDF(6,3,3)
-      REAL*8             CARCRI(3)
+      REAL*8             CARCRI(*)
 
 C ----------------------------------------------------------------------
 C       INTEGRATION DE LA LOI DE COMPORTEMENT PLASTIQUE ISOTROPE
@@ -126,7 +126,8 @@ C    CARACTERISTIQUES MATERIAU
       ELSE
         POUM='-'
       END IF
-      CALL LCPIMA(FAMI,KPG,KSP,POUM,MATE,COMPOR,INSTAM,INSTAP)
+      CALL LCPIMA(FAMI,KPG,KSP,POUM,MATE,COMPOR,INSTAM,INSTAP,
+     &            CARCRI,TAUP,VIM)
 
 C 2 - RESOLUTION
 C-----------------------------------------------------------------------

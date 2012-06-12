@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # RESPONSABLE DEBONNIERES P.DEBONNIERES
 # TITRE CYLINDRE INFINI SOUS PRESSION (VISCOELASTICITE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -308,11 +308,8 @@ U=STAT_NON_LINE( reuse=U,
                 RENUM = 'RCMK')
               )
 
-U=CALC_ELEM( reuse=U,
-                            OPTION=(
-                  'SIGM_ELNO',  'VARI_ELNO',),
-                          RESULTAT=U,
-              )
+U=CALC_CHAMP(reuse=U,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U)
+
 
 #
 
@@ -325,11 +322,11 @@ TEST_RESU(RESU=(
            )
            )
 
-U=CALC_ELEM(reuse=U,         RESULTAT=U,
-                OPTION='EPSI_ELNO')
+U=CALC_CHAMP(reuse=U,RESULTAT=U,DEFORMATION=('EPSI_ELNO'))
 
-U=CALC_ELEM(reuse=U,         RESULTAT=U,
-                OPTION='EPSP_ELNO')
+
+U=CALC_CHAMP(reuse=U,RESULTAT=U,DEFORMATION=('EPSP_ELNO'))
+
 
 TEST_RESU(RESU=(
    _F(  RESULTAT = U,    NOM_CHAM = 'EPSP_ELNO',

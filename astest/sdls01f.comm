@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE CARREE MINCE , LIBRE OU ENCASTREE SUR UN BORD
 # sdls01f.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -149,10 +149,8 @@ TEST_RESU(RESU=(
 #
 #--------- CAS1
 
-MODE1=CALC_ELEM( reuse=MODE1,            RESULTAT=MODE1,
+MODE1=CALC_CHAMP(reuse=MODE1,RESULTAT=MODE1,ENERGIE=('EPOT_ELEM','ECIN_ELEM'))
 
-                       OPTION=( 'EPOT_ELEM',
-                                'ECIN_ELEM', )           )
 
 MODE1=NORM_MODE( reuse=MODE1,   MODE=MODE1,
                         NORME='MASS_GENE')
@@ -308,10 +306,8 @@ TEST_TABLE(      TABLE=ECIN1,FILTRE=(
 MODE2=NORM_MODE( reuse=MODE2,   MODE=MODE2,
                         NORME='MASS_GENE')
 
-MODE2=CALC_ELEM( reuse=MODE2,            RESULTAT=MODE2,
+MODE2=CALC_CHAMP(reuse=MODE2,RESULTAT=MODE2,ENERGIE=('EPOT_ELEM','ECIN_ELEM'))
 
-                       OPTION=( 'EPOT_ELEM',
-                                'ECIN_ELEM', )           )
 
 EPOT2=POST_ELEM(  RESULTAT=MODE2,       MODELE=MO,
                      CHAM_MATER=CHMAT,     CARA_ELEM=CARELEM,

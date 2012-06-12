@@ -1,7 +1,7 @@
-# MODIF  DATE 10/04/2012   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 11/06/2012   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE DIFFUSION H2 DANS UN ACIER ELASTOPLASTIQUE 2D CPLAN
-# ssnp160a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
+# ssnp160a.para = tps_job 120 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -136,13 +136,15 @@ ACIERTH0=DEFI_MATERIAU(THER=_F(LAMBDA=Dl, RHO_CP=1.));
 CMTH0=AFFE_MATERIAU(MAILLAGE=MA,AFFE=_F(TOUT='OUI',MATER=ACIERTH0,),);
 
 CHTH0=AFFE_CHAR_THER(MODELE=MOTH,TEMP_IMPO=_F(TOUT='OUI',TEMP=Cl),)
-                     
+
 UTH=THER_LINEAIRE(MODELE=MOTH,CHAM_MATER=CMTH0,
                   INCREMENT=_F(LIST_INST = L_INST, INST_FIN=tfin1),
                   EXCIT=_F(CHARGE=CHTH0,),
                   ETAT_INIT=_F( VALE = Cl) ,
                   );
                   
+CHARGRD0=CHAR_GRAD_INI(RESU_H2=UTH,DIME=2,GRMAVOL='CUBE_G',)
+
 tinit=tfin1
 
 RHOCP=DEFI_FONCTION(NOM_PARA='NEUT1',VALE=(0.,0.,1.,1.), PROL_DROITE='LINEAIRE')
@@ -172,6 +174,10 @@ for k in range(1,NBPAS+1):
                      GRMAVOL='CUBE_G', Ctot0=Ctot0, )
   
  
+   # appel de la fonction python calculant le gradient impose
+   CHAR_GRAD_IMPO(RESU_H2=UTH, RESUMECA=UM, TINIT=tinit, TFIN= tfin, DIME=2,
+                        GRMAVOL='CUBE_G', Ctot0=Ctot0,CHARGRD0=CHARGRD0 )
+ 
    #construire le champ de NEUT1
    NEUTG=CHAMP_DETOILE(RESU_H2=UTH,RESUMECA=UM,TINIT=tinit,TFIN= tfin,DIME=2,GRMAVOL='CUBE_G',Ctot0=Ctot0, )
 
@@ -184,10 +190,11 @@ for k in range(1,NBPAS+1):
    UTH=THER_LINEAIRE(MODELE=MOTH,
                    CHAM_MATER=CMTH,
                    INCREMENT=_F(  LIST_INST = L_INST, INST_FIN=tfin),
-                   EXCIT=_F(CHARGE=CHTH,),
+                   EXCIT=(
+                   _F(CHARGE=CHTH,),
+                   _F(CHARGE=CHARGRD0,),
+                   ),
                    ETAT_INIT=_F( EVOL_THER = UTH,), reuse=UTH,
-                   #SOLVEUR=_F(METHODE='MUMPS'),
-                   #PARM_THETA=1.,
                    );
    tinit = tfin
    

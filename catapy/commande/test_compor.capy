@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 12/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 11/06/2012   AUTEUR PROIX J-M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -55,6 +55,7 @@ TEST_COMPOR =MACRO(nom="TEST_COMPOR",
             TEMP_INIT       =SIMP(statut='o',typ='R', fr="temperature initiale et de reference"),
             TEMP_FIN        =SIMP(statut='o',typ='R', fr="temperature finale"),
             INST_FIN        =SIMP(statut='f',typ='R',defaut=1.,fr="instant final"),
+            SUPPORT         =SIMP(statut='f',typ='TXM',max=1,into=("POINT","ELEMENT",),defaut=("POINT"),),
             NB_VARI         =SIMP(statut='o',typ='I', fr="nombre de variables internes - 0 en elasticité"),
             VARI_TEST       =SIMP(statut='f',typ='TXM',max='**',
                                   fr="liste de variables internes à tester - par defaut, toutes"),

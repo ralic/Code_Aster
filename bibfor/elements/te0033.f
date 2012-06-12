@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       CHARACTER*16        OPTION, NOMTE
 C ----------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 07/05/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF ELEMENTS  DATE 11/06/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,7 +25,8 @@ C     GENERALISES POUR LES ELEMENTS DKT, DKTG, DST, DKQ, DSQ ET Q4G
 C     POUR UN MATERIAU ISOTROPE OU MULTICOUCHE
 C         OPTIONS TRAITEES  ==>  SIEF_ELGA
 C                                EFGE_ELNO
-C                                EPSI_ELNO
+C                                EPSI_ELGA
+C                                DEGE_ELGA
 C                                DEGE_ELNO
 C     IN   K16   OPTION : NOM DE L'OPTION A CALCULER
 C     IN   K16   NOMTE  : NOM DU TYPE_ELEMENT
@@ -47,17 +48,20 @@ C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER       NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO
-      INTEGER       I, IC, INIV, IRET, JCARA,VALI(2),
-     &              JDEPG, JEFFG, JGEOM, JMATE, JNUMCO, JSIGM,
-     &              NP, MULTIC,
-     &              JNBSPI, NBCOU, ICOU
+      INTEGER       I, IRET, JCARA,VALI(2)
+      INTEGER       JDEPG, JEFFG, JGEOM, JMATE, JSIGM
+      INTEGER       NP, MULTIC
+      INTEGER       JNBSPI, NBCOU, ICOU
+      INTEGER       ICODRE,KPG,SPT
+
       REAL*8        ZERO,EPI,EPAIS,EPTOT
       REAL*8        PGL(3,3), XYZL(3,4), R8BID,VALR(2)
       REAL*8        DEPL(24)
-      REAL*8        EFFGT(32), SIGTOT(24),EFFPG(32)
+      REAL*8        EFFGT(32),EFFPG(32)
       REAL*8        T2EV(4), T2VE(4)
+
       LOGICAL       DKG
-      INTEGER       ICODRE,KPG,SPT
+
       CHARACTER*2   VAL
       CHARACTER*3   NUM
       CHARACTER*4   FAMI
@@ -75,7 +79,6 @@ C
 C
       IF (OPTION.NE.'SIEF_ELGA' .AND.
      &    OPTION.NE.'EFGE_ELNO' .AND.
-     &    OPTION.NE.'EPSI_ELNO' .AND.
      &    OPTION.NE.'EPSI_ELGA' .AND.
      &    OPTION.NE.'DEGE_ELNO' .AND.
      &    OPTION.NE.'DEGE_ELGA') THEN
@@ -96,12 +99,7 @@ CC OPTION DE CALCUL INVALIDE
         EFFGT(I) = ZERO
    10 CONTINUE
 
-      DO 20 I = 1,24
-        SIGTOT(I) = ZERO
-   20 CONTINUE
-
       CALL JEVECH('PGEOMER','L',JGEOM)
-
 C
 C --- VERIFICATION DE LA COHERENCE DES INFORMATIONS
 C --- PROVENANT DE DEFI_COQU_MULT ET DE AFFE_CARA_ELEM
@@ -165,36 +163,10 @@ C     ----------------------------------
       CALL JEVECH('PDEPLAR','L',JDEPG)
       CALL UTPVGL(NNO,6,PGL,ZR(JDEPG),DEPL)
 
-
 C     ---------- CONTRAINTES ET DEFORMATIONS --------------------------
 
 C          ----------------------------
-      IF ( OPTION(1:9) .EQ. 'EPSI_ELNO' ) THEN
-C               ----------------------------
-        CALL JEVECH('PDEFORR','E',JSIGM)
-        CALL JEVECH('PNUMCOR','L',JNUMCO)
-        IC = ZI(JNUMCO)
-        INIV = ZI(JNUMCO+1)
-
-        IF (NOMTE.EQ.'MEDKTR3' ) THEN
-          CALL DKTCOD(XYZL,PGL,IC,INIV,DEPL,SIGTOT)
-        ELSE IF (NOMTE.EQ.'MEDSTR3') THEN
-          CALL DSTCOD(XYZL,PGL,IC,INIV,DEPL,SIGTOT)
-        ELSE IF (NOMTE.EQ.'MEDKQU4') THEN
-          CALL DKQCOD(XYZL,PGL,IC,INIV,DEPL,SIGTOT)
-        ELSE IF (NOMTE.EQ.'MEDSQU4') THEN
-          CALL DSQCOD(XYZL,PGL,IC,INIV,DEPL,SIGTOT)
-        ELSE IF (NOMTE.EQ.'MEQ4QU4') THEN
-          CALL Q4GCOD(XYZL,PGL,IC,INIV,DEPL,SIGTOT)
-        END IF
-
-C ---     PASSAGE DES DEFORMATIONS  DU REPERE INTRINSEQUE
-C ---     A L'ELEMENT AU REPERE LOCAL DE LA COQUE
-C         ---------------------------------------
-        CALL DXSIRO(NP,T2VE,SIGTOT,ZR(JSIGM))
-C
-C               ----------------------------
-      ELSE IF ( OPTION(1:9) .EQ. 'SIEF_ELGA' ) THEN
+      IF ( OPTION(1:9) .EQ. 'SIEF_ELGA' ) THEN
 C               ----------------------------
         CALL JEVECH('PCONTRR','E',JSIGM)
 C
@@ -233,7 +205,7 @@ C
 C               ----------------------------
       ELSE IF ( OPTION(1:9) .EQ. 'EPSI_ELGA' ) THEN
 C               ----------------------------
-        CALL JEVECH('PDEFORR','E',JSIGM)
+        CALL JEVECH('PDEFOPG','E',JSIGM)
 C
         IF (DKG) THEN
           NBCOU = 1
@@ -257,6 +229,8 @@ C
         END IF
 
         CALL DXSIRO(NP*NBCOU*3,T2VE,ZR(JSIGM),ZR(JSIGM))
+
+C               ----------------------------
       ELSE IF ( OPTION(1:9) .EQ. 'EFGE_ELNO' ) THEN
 C               ----------------------------
 C ---     CALCUL DES EFFORTS GENERALISES VRAIS
@@ -269,14 +243,11 @@ C ---   A L'ELEMENT AU REPERE LOCAL DE LA COQUE
 C       ---------------------------------------
         CALL JEVECH('PEFFORR','E',JEFFG)
         CALL DXEFRO(NP,T2VE,EFFGT,ZR(JEFFG))
-
 C
 C               ----------------------------
       ELSE IF ( OPTION(1:9) .EQ. 'DEGE_ELNO' ) THEN
 C               ----------------------------
-
         CALL JEVECH('PDEFOGR','E',JEFFG)
-
 
         IF (NOMTE.EQ.'MEDKTR3' .OR.
      &      NOMTE.EQ.'MEDKTG3' ) THEN
@@ -300,8 +271,6 @@ C ---     PASSAGE DES DEFORMATIONS GENERALISEES DU REPERE INTRINSEQUE
 C ---     A L'ELEMENT AU REPERE LOCAL DE LA COQUE
 C         ---------------------------------------
         CALL DXEFRO(NP,T2VE,EFFGT,ZR(JEFFG))
-
-
 C
 C               ----------------------------
       ELSE IF ( OPTION(1:9) .EQ. 'DEGE_ELGA' ) THEN

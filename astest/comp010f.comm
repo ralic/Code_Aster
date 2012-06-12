@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/06/2012   AUTEUR PROIX J-M.PROIX 
 #======================================================================
 #
 # TITRE : VALIDATION DE LA TEMPERATURE RELATION = 'VISC_IRRA_LOG'
@@ -100,7 +100,7 @@ FLU_IMP=DEFI_FONCTION(NOM_PARA='INST',  NOM_RESU='IRRA',
 
 U=SIMU_POINT_MAT(COMP_INCR=_F(RELATION=compor,),
                  MATER=MATERI,
-                 SUPPORT='ELEMENT',
+                 SUPPORT='POINT',
                    AFFE_VARC=(
                    _F(  NOM_VARC='TEMP',
                         VALE_FONC=TIMP,
@@ -168,7 +168,7 @@ for i in range(NCAL):
 
           RESU[i]=SIMU_POINT_MAT(COMP_INCR=_F(RELATION=compor,),
                                  MATER=MATER[i],
-                                 SUPPORT='ELEMENT',
+                                 SUPPORT='POINT',
                                  AFFE_VARC=(
                                              _F(NOM_VARC='TEMP',
                                                 VALE_FONC=tempi,

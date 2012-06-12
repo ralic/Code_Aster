@@ -1,4 +1,4 @@
-#@ MODIF prepost5 Messages  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
+#@ MODIF prepost5 Messages  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,22 +32,6 @@ Champ inexistant SIEF_ELGA ou SIEF_ELGA numéro d'ordre %(k1)s pour le calcul de 
 
 3 : _(u"""
 Champ inexistant DEPL numéro d'ordre %(k1)s pour le calcul de l'option %(k2)s
-"""),
-
-4 : _(u"""
-Champ inexistant %(k1)s numéro d'ordre %(k2)s pour le calcul de l'option %(k3)s
-"""),
-
-5 : _(u"""
-Option illicite pour le résultat %(k1)s numéro d'ordre %(k2)s pour le calcul de l'option %(k3)s
-"""),
-
-6 : _(u"""
-Numéro d'ordre trop grand %(k1)s pour le calcul de l'option %(k2)s
-"""),
-
-7 : _(u"""
-Option illicite pour le résultat %(k1)s numéro d'ordre trop grand %(k2)s pour le calcul de l'option %(k3)s
 """),
 
 8 : _(u"""

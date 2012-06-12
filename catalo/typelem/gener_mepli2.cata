@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 11/06/2012   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -78,10 +78,10 @@ MODE_LOCAL__
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        W        )
     CTEMPSR  = INST_R   ELEM__         (INST     )
-    CREFERI  = NEUT_I   ELEM__         (X[12])
+    CREFERI  = NEUT_I   ELEM__         (X[12]    )
     ECOURAN  = NEUT_R   ELEM__         (X1       )
     CCONSTR  = NEUT_R   ELEM__         (X1       )
-    ENEUR10  = NEUT_R   ELNO__ IDEN__  (X[6]   )
+    ENEUR10  = NEUT_R   ELNO__ IDEN__  (X[6]     )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     CROTATR  = ROTA_R   ELEM__         (OME      AR       BR       CR       X        Y
                                         Z        )
@@ -138,11 +138,9 @@ OPTION__
     ENER_TOTALE         -1    IN__    OUT__    XXXXXX   XXXXXX
     EPOT_ELEM           -1    IN__    OUT__    XXXXXX   XXXXXX
     EPSI_ELGA           447   IN__   NDEPLAR  PDEPLAR  NGEOMER  PGEOMER
-                              OUT__  EDEFOPG  PDEFORR
-                                     EDEFOPC  PDEFORC
-    EPSI_ELNO           447   IN__   NDEPLAR  PDEPLAR  NGEOMER  PGEOMER
-                              OUT__  EDEFONO  PDEFORR
-                                     EDEFONC  PDEFORC
+                              OUT__  EDEFOPG  PDEFOPG  EDEFOPC  PDEFOPC
+    EPSI_ELNO           4     IN__   EDEFOPG  PDEFOPG
+                              OUT__  EDEFONO  PDEFONO  EDEFONC  PDEFONC
     EPEQ_ELGA           336   IN__   EDEFOPG  PDEFORR
                               OUT__  EDFEQPG  PDEFOEQ
     SIEQ_ELGA           336   IN__   ESIGMPG  PCONTRR

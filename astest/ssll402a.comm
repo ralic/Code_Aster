@@ -1,4 +1,4 @@
-# MODIF  DATE 17/04/2012   AUTEUR CHANSARD F.CHANSARD 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE ANNEAU DYNAMOMETRIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -96,10 +96,8 @@ MEST1=MECA_STATIQUE(        MODELE=MO,
                                      _F( CHARGE = CHARG2))
                       )
 
-MEST1=CALC_ELEM( reuse=MEST1,
-                         RESULTAT=MEST1,
-                           OPTION=('EFGE_ELNO', 'SIPM_ELNO',)
-                    )
+MEST1=CALC_CHAMP(reuse=MEST1,RESULTAT=MEST1,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO'))
+
 
 #
 TEST_RESU(   RESU=_F( RESULTAT = MEST1,

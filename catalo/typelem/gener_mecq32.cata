@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 11/06/2012   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -55,6 +55,8 @@ MODE_LOCAL__
     ENONLIN  = NEUT_I   ELEM__         (X1)
     EENECNO  = ENER_R   ELEM__         (TOTALE   MEMBRANE FLEXION  )
     EENEDNO  = ENER_R   ELEM__         (TOTALE   MEMBRANE FLEXION  )
+    EDEFOPG  = EPSI_R   ELGA__ MASS    (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
+    EDEFOPC  = EPSI_C   ELGA__ MASS    (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EDEFONC  = EPSI_C   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       FZ       MX       MY       MZ
@@ -64,8 +66,8 @@ MODE_LOCAL__
     COMEG2R  = OME2_R   ELEM__         (OMEG2    )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     EGGEOP_R = GEOM_R   ELGA__ MASS    (X        Y        Z        W       )
-    EGNEUT_R = NEUT_R   ELGA__ MASS    (X[30])
-    EGNEUT_F = NEUT_F   ELGA__ MASS    (X[30])
+    EGNEUT_R = NEUT_R   ELGA__ MASS    (X[30]    )
+    EGNEUT_F = NEUT_F   ELGA__ MASS    (X[30]    )
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
     ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    )
     CTEMPSR  = INST_R   ELEM__         (INST     )
@@ -80,7 +82,6 @@ MODE_LOCAL__
     EPRESNO  = PRES_R   ELNO__ IDEN__  (PRES     )
     CROTATR  = ROTA_R   ELEM__         (OME      AR       BR       CR       X        Y
                                         Z        )
-    EDEFOPG  = EPSI_R   ELGA__ MASS    (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     ECONTPG  = SIEF_R   ELGA__ MASS    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ECONTPC  = SIEF_C   ELGA__ MASS    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
@@ -107,10 +108,10 @@ MODE_LOCAL__
     NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     TEMP_INF TEMP_SUP )
     ZVARIPG  = VARI_R   ELGA__ MASS    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
-    CFER1_R  = FER1_R   ELEM__         (TYPCOMB  ENROBG  CEQUI   SIGACI  SIGBET  PIVA     PIVB )
-    CFER2_R  = FER2_R   ELEM__         (DNSXI     DNSXS   DNSYI   DNSYS   DNST    SIGMBE   EPSIBE)
-    EGAMIMA  = SPMX_R   ELGA__ MASS    ( VAL  NUCOU  NUSECT  NUFIBR  POSIC  POSIS)
-    ENOMIMA  = SPMX_R   ELNO__ IDEN__  ( VAL  NUCOU  NUSECT  NUFIBR  POSIC  POSIS)
+    CFER1_R  = FER1_R   ELEM__         (TYPCOMB  ENROBG   CEQUI    SIGACI   SIGBET   PIVA     PIVB     )
+    CFER2_R  = FER2_R   ELEM__         (DNSXI    DNSXS    DNSYI    DNSYS    DNST     SIGMBE   EPSIBE   )
+    EGAMIMA  = SPMX_R   ELGA__ MASS    (VAL      NUCOU    NUSECT   NUFIBR   POSIC    POSIS    )
+    ENOMIMA  = SPMX_R   ELNO__ IDEN__  (VAL      NUCOU    NUSECT   NUFIBR   POSIC    POSIS    )
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA
@@ -175,14 +176,12 @@ OPTION__
     EPOT_ELEM           401   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ENBSP_I  PNBSP_I
                               OUT__  EENEDNO  PENERDR
-    EPSI_ELNO           410   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
-                                     CNUMCOR  PNUMCOR  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
-                                     ENBSP_I  PNBSP_I
-                              OUT__  EDEFONO  PDEFORR
-                                     EDEFONC  PDEFORC
     EPSI_ELGA           410   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  CTEMPSR  PTEMPSR  ENBSP_I  PNBSP_I
-                              OUT__  EDEFOPG  PDEFORR
+                              OUT__  EDEFOPG  PDEFOPG  EDEFOPC  PDEFOPC
+    EPSI_ELNO           40    IN__   CCACOQU  PCACOQU  EDEFOPG  PDEFOPG  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
+                                     ENBSP_I  PNBSP_I
+                              OUT__  EDEFONO  PDEFONO  EDEFONC  PDEFONC
     SIEQ_ELNO           330   IN__   ESIGMNOR PCONCOR
                               OUT__  ECOEQNO  PCONTEQ
     FORC_NODA           416   IN__   CCACOQU  PCACOQU  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
@@ -308,7 +307,7 @@ OPTION__
                               OUT__  ECONTPG  PSIGMR   ECONTPC  PSIGMC
     SIGM_ELNO           40    IN__   CCACOQU  PCACOQU  CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  DDL_MECA PDEPLAR
                                      NGEOMER  PGEOMER  ENBSP_I  PNBSP_I
-                              OUT__  ECONTNO PSIEFNOR  ECONTNC  PSIEFNOC
+                              OUT__  ECONTNO  PSIEFNOR ECONTNC  PSIEFNOC
     SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM
                               OUT__  MMATUUR  PSYM
     MINMAX_SP           99    IN__

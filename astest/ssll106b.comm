@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # RESPONSABLE PROIX J.M.PROIX
 # TITRE TUBE DROIT SOUMIS A PLUSIEURS CHARGEMENTS ELEMENT TUYAU_3M 3 NOEUDS STAT_NON_LINE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -137,11 +137,8 @@ U1=STAT_NON_LINE(
                 RESI_LINE_RELA = 1.E-5)
               )
 
-U1=CALC_ELEM( reuse=U1,
-                            OPTION=(
-                  'EFGE_ELNO',  'VARI_ELNO','DEGE_ELNO'),
-                          RESULTAT=U1,
-              )
+U1=CALC_CHAMP(reuse=U1,CONTRAINTE=('EFGE_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('DEGE_ELNO'),RESULTAT=U1)
+
 
 U2=STAT_NON_LINE(
                             MODELE=MO,
@@ -166,11 +163,8 @@ U2=STAT_NON_LINE(
                 RESI_LINE_RELA = 1.E-5)
               )
 
-U2=CALC_ELEM( reuse=U2,
-                            OPTION=(
-                  'EFGE_ELNO',  'VARI_ELNO','DEGE_ELNO'),
-                          RESULTAT=U2,
-              )
+U2=CALC_CHAMP(reuse=U2,CONTRAINTE=('EFGE_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('DEGE_ELNO'),RESULTAT=U2)
+
 
 U3=STAT_NON_LINE(
                             MODELE=MO,
@@ -195,11 +189,8 @@ U3=STAT_NON_LINE(
                 RESI_LINE_RELA = 1.E-5)
               )
 
-U3=CALC_ELEM( reuse=U3,
-                            OPTION=(
-                  'EFGE_ELNO',  'VARI_ELNO','DEGE_ELNO',),
-                          RESULTAT=U3,
-              )
+U3=CALC_CHAMP(reuse=U3,CONTRAINTE=('EFGE_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('DEGE_ELNO'),RESULTAT=U3)
+
 
 U4=STAT_NON_LINE(
                             MODELE=MO,
@@ -224,11 +215,8 @@ U4=STAT_NON_LINE(
                 RESI_LINE_RELA = 1.E-5)
               )
 
-U4=CALC_ELEM( reuse=U4,
-                            OPTION=(
-                  'EFGE_ELNO',  'VARI_ELNO','DEGE_ELNO',),
-                          RESULTAT=U4,
-              )
+U4=CALC_CHAMP(reuse=U4,CONTRAINTE=('EFGE_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('DEGE_ELNO'),RESULTAT=U4)
+
 
 U5=STAT_NON_LINE(
                             MODELE=MO,
@@ -253,11 +241,8 @@ U5=STAT_NON_LINE(
                 RESI_LINE_RELA = 1.E-5)
               )
 
-U5=CALC_ELEM( reuse=U5,
-                            OPTION=(
-                  'EFGE_ELNO',  'VARI_ELNO','DEGE_ELNO',),
-                          RESULTAT=U5,
-              )
+U5=CALC_CHAMP(reuse=U5,CONTRAINTE=('EFGE_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('DEGE_ELNO'),RESULTAT=U5)
+
 
 U6=STAT_NON_LINE(
                             MODELE=MO,
@@ -282,11 +267,8 @@ U6=STAT_NON_LINE(
                 RESI_LINE_RELA = 1.E-5)
               )
 
-U6=CALC_ELEM( reuse=U6,
-                            OPTION=(
-                  'EFGE_ELNO',  'VARI_ELNO','DEGE_ELNO',),
-                          RESULTAT=U6,
-              )
+U6=CALC_CHAMP(reuse=U6,CONTRAINTE=('EFGE_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('DEGE_ELNO'),RESULTAT=U6)
+
 
 U7=STAT_NON_LINE(
                             MODELE=MO,
@@ -311,11 +293,8 @@ U7=STAT_NON_LINE(
                 RESI_LINE_RELA = 1.E-5)
               )
 
-U7=CALC_ELEM( reuse=U7,
-                            OPTION=(
-                  'EFGE_ELNO',  'VARI_ELNO',),
-                          RESULTAT=U7,
-              )
+U7=CALC_CHAMP(reuse=U7,CONTRAINTE=('EFGE_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U7)
+
 
 TEST_RESU(RESU=(
 

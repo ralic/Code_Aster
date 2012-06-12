@@ -1,8 +1,8 @@
-#@ MODIF modelisa2 Messages  DATE 21/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa2 Messages  DATE 11/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -62,6 +62,9 @@ La maille %(k1)s a déjà été affectée par une orientation.
 La règle de surcharge est appliquée
 """),
 
+8: _(u"""
+  Il n'y a pas d'élément discret fixé au noeud %(k1)s du radier.
+"""),
 
 
 9: _(u"""
@@ -70,6 +73,13 @@ La règle de surcharge est appliquée
   Risques & conseils :
     Dans ce contexte, les seuls solveurs autorisés sont MULT_FRONT et LDLT
 """),
+
+10: _(u"""
+  Le nombre de noeuds du radier et le nombre d'éléments discrets du groupe %(k1)s sont différents :
+  Nombre de noeuds du radier : %(i1)d
+  Nombre d'éléments discrets         : %(i2)d
+"""),
+
 
 13: _(u"""
  problème pour récupérer une grandeur dans la table CARA_GEOM

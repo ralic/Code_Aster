@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE  DSR3 - SANS RENUM / AFFE_CHAR_MECA / SOLVE
 # gcpc002a.para = tps_job 120 mem_job 360Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -86,10 +86,8 @@ RESU=CREA_RESU(OPERATION='AFFE',
                        MODELE=MO,
                        CHAM_MATER=CHMAT,),);
 
-RESU=CALC_ELEM(reuse =RESU,
-               RESULTAT=RESU,
-               INST=0.,
-               OPTION='SIGM_ELNO',);
+RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,INST=0.,CONTRAINTE=('SIGM_ELNO'))
+
 
 TEST_RESU(CHAM_NO=(_F(CHAM_GD=DEP,
                       NOEUD='NO13943',

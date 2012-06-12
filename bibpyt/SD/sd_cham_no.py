@@ -1,8 +1,8 @@
-#@ MODIF sd_cham_no SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF sd_cham_no SD  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -41,9 +41,14 @@ class sd_cham_no(sd_titre):
         return gd,num
 
     def u_refe(self):
-        refe=self.REFE.get()
+        refe=self.REFE.get_stripped()
         mail      = refe[0]
         prof_chno = refe[1]
+        if refe[2] == 'FETI' :
+           assert refe[3] != '', refe
+        else :
+           assert refe[2] == '', refe
+           assert refe[3] == '', refe
         return mail,prof_chno
 
     def check_cham_no_i_REFE(self, checker):
@@ -59,7 +64,7 @@ class sd_cham_no(sd_titre):
         sd2 = sd_maillage(mail)
         sd2.check(checker)
 
-        if prof_chno.strip() :
+        if prof_chno :
             if checker.names.has_key(prof_chno[:14]+'.NUME.PRNO'):  return
             sd2 = sd_prof_chno(prof_chno)
             sd2.check(checker)

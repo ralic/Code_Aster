@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE Maillage adaptatif mecanique sur une poutre en flexion
 # forma20b.para = tps_job 100 mem_job 128Mo ncpus 1 liste_test S
@@ -168,15 +168,8 @@ for num_calc in range(0,nb_calc1) :
 
 # POST_TRAITEMENT POUR OBTENIR LES CONTRAINTES AUX NOEUDS ET LES
 # DEUX TYPES D'INDICATEURS D'ERREUR EN MECANIQUE (ZZ1 ET RESIDU).
-   DEPLA[num_calc]=CALC_ELEM(reuse=DEPLA[num_calc],
-                  RESULTAT=DEPLA[num_calc],
-                  TOUT='OUI',
-                  NUME_ORDRE=1,
-                  OPTION=(
-# LISSAGE DES CONTRAINTES SI MECA_STATIQUE
-#                       'SIGM_ELNO',
-# LISSAGE DES CONTRAINTES SI STAT_NON_LINE
-                       'SIGM_ELNO',),);
+   DEPLA[num_calc]=CALC_CHAMP(reuse=DEPLA[num_calc],RESULTAT=DEPLA[num_calc],NUME_ORDRE=1,CONTRAINTE=('SIGM_ELNO'))
+
 
    DEPLA[num_calc]=CALC_ERREUR(reuse=DEPLA[num_calc],
                   RESULTAT=DEPLA[num_calc],
@@ -213,7 +206,7 @@ for num_calc in range(0,nb_calc1) :
           ACTION=(_F(INTITULE='FLECHE',
                  GROUP_NO='GM10',
                  RESULTAT=DEPLA[num_calc],
-                 TOUT_ORDRE='OUI',
+
                  NOM_CHAM='DEPL',
                  RESULTANTE=('DY'),
                  OPERATION='EXTRACTION',),

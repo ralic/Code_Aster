@@ -1,7 +1,7 @@
       SUBROUTINE NMCHAI(TYCHAP,TYVARZ,VALI  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,12 +70,12 @@ C
 C
       DATA LVEELM /'CNFINT','CNDIRI','CNBUDI','CNFNOD','CNDIDO',
      &             'CNDIPI','CNFEDO','CNFEPI','CNLAPL','CNONDP',
-     &             'CNFSDO','CNIMPP','CNMSME','CNDIDI','CNSSTF',
+     &             'CNFSDO','CNIMPP','      ','CNDIDI','CNSSTF',
      &             'CNELTC','CNELTF','CNREFE','CNVCF1','CNVCF0',
      &             'CNIMPC','CNUSUR'/
       DATA LVEASS /'CNFINT','CNDIRI','CNBUDI','CNFNOD','CNDIDO',
      &             'CNDIPI','CNFEDO','CNFEPI','CNLAPL','CNONDP',
-     &             'CNFSDO','CNIMPP','CNMSME','CNDIDI','CNSSTF',
+     &             'CNFSDO','CNIMPP','      ','CNDIDI','CNSSTF',
      &             'CNELTC','CNELTF','CNREFE','CNVCF1','CNVCF0',
      &             'CNCINE','CNSSTR','CNCTDF','CNVCPR','CNDYNA',
      &             'CNMODP','CNMODC','CNCTDC','CNUNIL','CNFEXT',

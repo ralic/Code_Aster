@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE PROBLEME DE HOVGAARD : CALCUL DES EFFORTS POU_C_T + POU_D_T
 # ssll101b.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -187,32 +187,19 @@ RESU=MACRO_ELAS_MULT(MODELE=MODELE,
                                 ),
                      );
 
-RESU=CALC_ELEM( reuse= RESU ,RESULTAT= RESU ,
+RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CONTRAINTE=('EFGE_ELNO'),NUME_ORDRE=1)
 
 
+RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CONTRAINTE=('EFGE_ELNO'),NUME_ORDRE=2)
 
-                              OPTION=('EFGE_ELNO'),
-                              NUME_ORDRE=1,
-                )
-
-RESU=CALC_ELEM( reuse= RESU ,RESULTAT= RESU ,
-
-
-
-                             OPTION=('EFGE_ELNO',),
-                             NUME_ORDRE=2,
-               )
 
 RESU1=MECA_STATIQUE(       MODELE=MODELE,
                            CHAM_MATER=CHAMTH,
                             CARA_ELEM=CARA_ELE,
                             EXCIT=_F( CHARGE = CON_LIM),)
 
-RESU1=CALC_ELEM( reuse= RESU1 ,RESULTAT= RESU1 ,
+RESU1=CALC_CHAMP(reuse=RESU1,RESULTAT=RESU1,CONTRAINTE=('EFGE_ELNO'))
 
-
-                             OPTION=('EFGE_ELNO',),
-               )
 
 
 

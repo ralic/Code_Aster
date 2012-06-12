@@ -1,4 +1,4 @@
-#@ MODIF E_JDC Execution  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_JDC Execution  DATE 12/06/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -25,8 +25,9 @@
 """
 """
 # Modules Python
-import sys, types,os, string, fpformat
-from os import times
+import os
+import os.path as osp
+import types
 import cPickle as pickle
 PICKLE_PROTOCOL = 0
 
@@ -49,15 +50,20 @@ class JDC:
    """
    # attributs accessibles depuis le fortran par les méthodes génériques
    # get_jdc_attr et set_jdc_attr
-   l_jdc_attr = ('jxveri', 'sdveri', 'impr_macro')
+   l_jdc_attr = ('jxveri', 'sdveri', 'impr_macro', 'jeveux', 'jeveux_sysaddr')
 
    # attributs du jdc "picklés" (ceux qui contiennent des infos de l'exécution).
-   l_pick_attr = ('memo_sensi', 'catalc')
+   # nsd : nombre de sd produites
+   l_pick_attr = ('memo_sensi', 'catalc', 'nsd', 'jeveux_sysaddr')
 
    def __init__(self):
       self.info_level = 1
       self.timer_fin = None
       self.ctree = None
+      for attr in self.l_jdc_attr:
+          setattr(self, attr, 0)
+      # à part car pas de type entier
+      self._sign = None
 
    def Exec(self):
       """
@@ -145,6 +151,7 @@ class JDC:
    def affiche_fin_exec(self):
        """ Cette methode affiche les statistiques de temps finales.
        """
+       from Utilitai.Utmess import UTMESS
        import aster_core
        ###############################################################
        #impression des statistiques de temps d'execution des commandes
@@ -185,6 +192,12 @@ class JDC:
 """) % (cpu_total_user+cpu_total_syst, cpu_total_user, cpu_total_syst, cpu_restant)
 
        aster.affiche('MESSAGE', convert(texte_final))
+
+       repglob = aster_core.get_option("repglob")
+       base = osp.join(repglob, 'glob.1')
+       sign = self.signature(base)
+       UTMESS('I', 'SUPERVIS_68', valk=sign, vali=self.jeveux_sysaddr)
+
        if self.fico is None:
            aster.affiche('MESSAGE', convert(repr(self.timer)))
        if self.ctree:
@@ -248,7 +261,7 @@ class JDC:
        # le pickle (version 2.2)
        if self.info_level > 1:
           self.timer_fin.Start(" . filter")
-       context=self.filter_context(context)
+       context = self.filter_context(context)
        if self.info_level > 1:
           self.timer_fin.Stop(" . filter")
        # Sauvegarde du pickle dans le fichier pick.1 du repertoire de travail
@@ -268,14 +281,16 @@ class JDC:
        """
        d={}
        for key,value in context.items():
-           if key in ('aster', '__builtins__') :continue
-           if type(value) in (types.ModuleType,types.ClassType,types.FunctionType) :
+           if key in ('aster', 'aster_core', '__builtins__'):
+              continue
+           if type(value) in (types.ModuleType,types.ClassType,types.FunctionType):
               continue
            if issubclass(type(value), basetype.MetaType):
               continue
            if issubclass(type(value), types.TypeType):
               continue
-           if isinstance(value,ENTITE) :continue
+           if isinstance(value,ENTITE):
+              continue
            # Enfin on conserve seulement les objets que l'on peut pickler individuellement.
            try:
               # supprimer le maximum de références arrières (notamment pour les formules)
@@ -363,7 +378,7 @@ class JDC:
          Retourne la valeur d'un des attributs "aster"
       """
       if attr not in self.l_jdc_attr:
-         self.cr.exception(ufmt(_(u"Erreur de programmation :\n"
+         raise aster.error(ufmt(_(u"Erreur de programmation :\n"
                                   u"attribut '%s' non autorisé"), attr))
       return getattr(self, attr)
 
@@ -372,13 +387,12 @@ class JDC:
          Positionne un des attributs "aster"
       """
       if attr not in self.l_jdc_attr:
-         self.cr.exception(ufmt(_(u"Erreur de programmation :\n"
+         raise aster.error(ufmt(_(u"Erreur de programmation :\n"
                                   u"attribut '%s' non autorisé"), attr))
       if type(value) not in (int, long):
-         self.cr.exception(ufmt(_(u"Erreur de programmation :\n"
+         raise aster.error(ufmt(_(u"Erreur de programmation :\n"
                                   u"valeur non entière : %s"), value))
       setattr(self, attr, value)
-
 
    def save_pickled_attrs(self, context):
       """Ajoute le dictionnaire des attributs du jdc à "pickler" dans le contexte.
@@ -386,8 +400,8 @@ class JDC:
       d = {}
       for attr in self.l_pick_attr:
          d[attr] = getattr(self, attr)
+      d['_sign'] = self._sign
       context['jdc_pickled_attributes'] = d
-
 
    def restore_pickled_attrs(self, context):
       """Restaure les attributs du jdc qui ont été "picklés" via le contexte.
@@ -396,5 +410,19 @@ class JDC:
       for attr, value in d.items():
          #assert attr in self.l_pick_attr
          setattr(self, attr, value)
+      self._sign = d['_sign']
 
+   def signature(self, base):
+       """Retourne une signature de l'exécution.
+       La base ne doit pas être ouverte."""
+       from hashlib import sha1
+       bufsize = 100000*8*10    # 10 enregistrements de taille standard
+       if base.endswith('bhdf.1'):
+           self.jeveux_sysaddr = 0
+       with open(base, 'rb') as fobj:
+          fobj.flush()
+          fobj.seek(self.jeveux_sysaddr, 0)
+          self._sign = sha1(fobj.read(bufsize)).hexdigest()
+       #print "#DBG signature of", base, "at", self.jeveux_sysaddr, ':', self._sign
+       return self._sign
 

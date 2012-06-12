@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 11/06/2012   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -99,7 +99,7 @@ MODE_LOCAL__
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W       )
     ENORME   = NEUT_R   ELEM__         (X1       )
-    EMNEUT_R = NEUT_R   ELEM__         (X[30]     )
+    EMNEUT_R = NEUT_R   ELEM__         (X[30]    )
     EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        )
     ENGEOM_R = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     CTEMPSR  = INST_R   ELEM__         (INST     )
@@ -107,9 +107,9 @@ MODE_LOCAL__
     ENINST_R = INST_R   ELNO__ IDEN__  (INST     )
     EMASSINE = MASS_R   ELEM__         (M        CDGX     CDGY     CDGZ     IXX      IYY
                                         IZZ      IXY      IXZ      IYZ      )
-    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30])
+    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30]    )
     E1NEUTK  = NEUT_K24 ELEM__         (Z1       )
-    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30])
+    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30]    )
     E1GNEUT  = NEUT_R   ELGA__ RIGI    (X1       )
     E1NNEUT  = NEUT_R   ELNO__ IDEN__  (X1       )
     ECOURAN  = NEUT_R   ELEM__         (X1       )
@@ -125,7 +125,6 @@ MODE_LOCAL__
                                         FH21X    FH21Y    FH21Z    ENT21
                                         M22      FH22X    FH22Y    FH22Z    ENT22
                                         QPRIM    FHTX     FHTY     FHTZ     )
-
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ
                                         SIP      M11      FH11X    FH11Y    FH11Z    ENT11
                                         M12      FH12X    FH12Y    FH12Z    ENT12    M21
@@ -140,7 +139,6 @@ MODE_LOCAL__
                                         QPRIM    FHTX     FHTY     FHTZ     )
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
-
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
     ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    )
 
@@ -167,11 +165,9 @@ OPTION__
     ENER_TOTALE         -1    IN__    OUT__    XXXXXX   XXXXXX
     EPOT_ELEM           -1    IN__    OUT__    XXXXXX   XXXXXX
     EPSI_ELGA           600   IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER
-                              OUT__  EDEFOPG  PDEFORR
-                                     EDEFOPC  PDEFORC
-    EPSI_ELNO           600   IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER
-                              OUT__  EDEFONO  PDEFORR
-                                     EDEFONC  PDEFORC
+                              OUT__  EDEFOPG  PDEFOPG  EDEFOPC  PDEFOPC
+    EPSI_ELNO           4     IN__   EDEFOPG  PDEFOPG
+                              OUT__  EDEFONO  PDEFONO  EDEFONC  PDEFONC
     FORC_NODA           600   IN__   ECONTPG  PCONTMR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
                                      CMATERC  PMATERC
                               OUT__  MVECTUR  PVECTUR

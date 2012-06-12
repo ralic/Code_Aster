@@ -1,4 +1,4 @@
-# MODIF  DATE 30/04/2012   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE FISSURE INCLINEE EN 2D AVEC X-FEM
 # ssnp138a.para = tps_job 360 mem_job 256Mo mem_aster 50 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -245,7 +245,7 @@ for i in range(nbcalc) :
               PRECISION=K1REF/1000.,
               REFERENCE='ANALYTIQUE',)
 
-  # K1 SUR LE 1er FOND 
+  # K1 SUR LE 1er FOND
   PK1[i]=POST_K1_K2_K3(MODELISATION='D_PLAN',
                      MATER=ACIER,
                      FISSURE = FISS[i],
@@ -335,9 +335,8 @@ RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
 
                         INFO          = 2)
 
-RES_XFEM=CALC_ELEM(reuse =RES_XFEM,
-                   RESULTAT=RES_XFEM,
-                   OPTION=('SIEQ_ELGA','SIEQ_ELNO'));
+RES_XFEM=CALC_CHAMP(reuse=RES_XFEM,RESULTAT=RES_XFEM,CRITERES=('SIEQ_ELGA','SIEQ_ELNO'))
+
 
 RES_XFEM=CALC_CHAMP(reuse =RES_XFEM,
                  RESULTAT=RES_XFEM,

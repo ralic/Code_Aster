@@ -5,7 +5,7 @@
      &                  CHVARI,COMPOR,CHTESE,CHDESE,NOPASE,
      &                  TYPESE,CHACSE,CODRET)
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 11/06/2012   AUTEUR DELMAS J.DELMAS 
 C TOLE CRP_20 CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -202,19 +202,20 @@ C ----------------------------------------------------------------------
                LPAOUT(1) = 'PDEFOGR'
             ELSE IF (OPTIO2.EQ.'DEGE_ELGA') THEN
                LPAOUT(1) = 'PDEFOPG'
-            ELSE IF (OPTIO2.EQ.'EPSI_ELNO' .OR.
-     &               OPTIO2.EQ.'EPSI_ELGA' .OR.
-     &               OPTIO2.EQ.'EPSG_ELNO' .OR.
+            ELSE IF (OPTIO2.EQ.'EPSI_ELGA' .OR.
      &               OPTIO2.EQ.'EPSG_ELGA' .OR.
-     &               OPTIO2.EQ.'EPME_ELNO' .OR.
      &               OPTIO2.EQ.'EPME_ELGA' .OR.
-     &               OPTIO2.EQ.'EPMG_ELNO' .OR.
      &               OPTIO2.EQ.'EPMG_ELGA' .OR.
-     &               OPTIO2.EQ.'EPFP_ELGA'      .OR.
-     &               OPTIO2.EQ.'EPFP_ELNO'      .OR.
-     &               OPTIO2.EQ.'EPFD_ELGA'      .OR.
-     &               OPTIO2.EQ.'EPFD_ELNO'      ) THEN
-               LPAOUT(1) = 'PDEFORR'
+     &               OPTIO2.EQ.'EPFP_ELGA' .OR.
+     &               OPTIO2.EQ.'EPFD_ELGA') THEN
+               LPAOUT(1) = 'PDEFOPG'
+            ELSE IF (OPTIO2.EQ.'EPSI_ELNO' .OR.
+     &               OPTIO2.EQ.'EPSG_ELNO' .OR.
+     &               OPTIO2.EQ.'EPME_ELNO' .OR.
+     &               OPTIO2.EQ.'EPMG_ELNO' .OR.
+     &               OPTIO2.EQ.'EPFP_ELNO' .OR.
+     &               OPTIO2.EQ.'EPFD_ELNO') THEN
+               LPAOUT(1) = 'PDEFONO'
             ELSE IF (OPTIO2.EQ.'EPSP_ELNO' .OR.
      &               OPTIO2.EQ.'EPSP_ELGA') THEN
                LPAOUT(1) = 'PDEFOPL'
@@ -228,10 +229,6 @@ C ----------------------------------------------------------------------
                LPAOUT(1) = 'PENERCR'
                CALL AJCHCA('POMEGA2',CHFREQ,LPAIN,
      &                     LCHIN,NBIN,MAXIN,'N')
-            ELSE IF (OPTIO2.EQ.'EPTU_ELNO') THEN
-               LPAIN(1) = 'PDEFORR'
-               LCHIN(1) =  CHEPS
-               LPAOUT(1) = 'PDEFONO'
             ELSE IF (OPTIO2.EQ.'FLUX_ELNO' .OR.
      &               OPTIO2.EQ.'FLUX_ELGA') THEN
                LPAOUT(1) = 'PFLUX_R'

@@ -1,4 +1,4 @@
-#@ MODIF i18n Execution  DATE 16/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF i18n Execution  DATE 12/06/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,7 +30,7 @@ import locale
 
 from Noyau.N_types import force_list
 from strfunc import get_encoding
-from E_Core import version_shortname
+from E_Core import get_branch_orig
 
 def get_language():
     """Return default language (2 letters)"""
@@ -48,7 +48,7 @@ class Language():
         self.localedir = os.environ.get('ASTER_LOCALEDIR') or \
             osp.join(os.environ.get('ASTER_ROOT', ''), 'share', 'locale')
         try:
-            shortname = version_shortname()
+            shortname = get_branch_orig()
         except ImportError:
             shortname = 'stable'
         self.domain = 'aster_%s' % shortname

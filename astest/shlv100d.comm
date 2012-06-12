@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE REPONSE HARMONIQUE CYLINDRE EN D.P. (TETRA10)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -109,9 +109,8 @@ DYNAH=DYNA_VIBRA(BASE_CALCUL='PHYS',
                  EXCIT=_F(VECT_ASSE=VAS,
                           COEF_MULT=1.0,),);
 
-DYNAH=CALC_ELEM(reuse =DYNAH,
-                RESULTAT=DYNAH,
-                OPTION='SIGM_ELNO',);
+DYNAH=CALC_CHAMP(reuse=DYNAH,RESULTAT=DYNAH,CONTRAINTE=('SIGM_ELNO'))
+
 
 TEST_RESU(RESU=(_F(RESULTAT=DYNAH,
                    NUME_ORDRE=1,

@@ -1,4 +1,4 @@
-#@ MODIF calculel5 Messages  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel5 Messages  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -283,9 +283,6 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
  Veuillez plutôt utiliser un chargement de type 'force interne'.
 """),
 
-63 : _(u"""
- Il faut au moins 2 numéros d'ordre pour traiter l'option %(k1)s
-"""),
 
 
 65 : _(u"""

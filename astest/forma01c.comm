@@ -1,4 +1,4 @@
-# MODIF  DATE 16/04/2012   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 11/06/2012   AUTEUR DELMAS J.DELMAS 
 # RESPONSABLE DELMAS J.DELMAS
 # TITRE PLAQUE TROUEE EN TRACTION EN ELASTICITE - ADAPTATION DE MAILLAGE DANS UNE BOUCLE
 # forma01c.para = tps_job 300 mem_job 256Mo ncpus 1 liste_test R
@@ -88,9 +88,9 @@ for k in range(1,nbadap+1):
 
   DEFI_FICHIER(ACTION='LIBERER',UNITE=80+k,)
   
-  RESU[k]=CALC_ELEM(reuse =RESU[k],
-                    RESULTAT=RESU[k],
-                    OPTION='ERME_ELEM',);
+  RESU[k]=CALC_ERREUR(reuse =RESU[k],
+                      RESULTAT=RESU[k],
+                      OPTION='ERME_ELEM',);
 
   if k == nbadap :
     break

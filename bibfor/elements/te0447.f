@@ -1,8 +1,8 @@
        SUBROUTINE TE0447 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 11/06/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,17 +20,15 @@ C ======================================================================
        IMPLICIT NONE
        CHARACTER*16        OPTION , NOMTE
 
-C ......................................................................
-C    - FONCTION REALISEE:  CALCUL DES DEFORMATIONS ELEMENTAIRES 2D
-C                          DES ELEMENTS ISOPARAMETRIQUES
-C                          OPTION : 'EPSI_ELGA      '
-C                          OPTION : 'EPSI_ELNO      '
 
-C
-C    - ARGUMENTS:
-C        DONNEES:      OPTION       -->  OPTION DE CALCUL
-C                      NOMTE        -->  NOM DU TYPE ELEMENT
-C ......................................................................
+C     BUT: CALCUL DES DEFORMATIONS AUX POINTS DE GAUSS
+C          DES ELEMENTS INCOMPRESSIBLES 2D
+
+C          OPTION : 'EPSI_ELGA'
+
+C     ENTREES  ---> OPTION : OPTION DE CALCUL
+C              ---> NOMTE  : NOM DU TYPE ELEMENT
+C.......................................................................
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
@@ -50,7 +48,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       LOGICAL       AXI, GRAND
       INTEGER       KPG,KSIG, NNO, NNOS, NPG, IPOIDS, IVF,  NDIM, NCMP
-      INTEGER       IDFDE, IDEPL, IGEOM, IDEFO, KK, JGANO, NBSP
+      INTEGER       IDFDE, IDEPL, IGEOM, IDEFO, KK, JGANO
       REAL*8        POIDS, DFDI(81), F(3,3), R, EPS(6), VPG(36)
       REAL*8        TMP
 C ......................................................................
@@ -58,12 +56,11 @@ C ......................................................................
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 
       NCMP = 2*NDIM
-      NBSP = 1
       AXI   = NOMTE(3:4).EQ.'AX'
       GRAND = .FALSE.
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PDEPLAR','L',IDEPL)
-      CALL JEVECH('PDEFORR','E',IDEFO)
+      CALL JEVECH('PDEFOPG','E',IDEFO)
 
       CALL R8INIR(6,0.D0,EPS,1)
       CALL R8INIR(36,0.D0,VPG,1)
@@ -84,14 +81,9 @@ C       RECUPERATION DE LA DEFORMATION
  20     CONTINUE
  10   CONTINUE
 
-C      AFFECTATION DU VECTEUR EN SORTIE
-C         (DEFORMATIONS AUX POINTS DE GAUSS OU AUX NOEUDS)
-      IF (OPTION(6:9).EQ.'ELGA') THEN
-        DO 30 KK = 1,NPG*NCMP
-            ZR(IDEFO+KK-1)= VPG(KK)
- 30     CONTINUE
-      ELSEIF (OPTION(6:9).EQ.'ELNO') THEN
-        CALL PPGAN2 ( JGANO, NBSP, NCMP, VPG, ZR(IDEFO) )
-      ENDIF
-
+C     AFFECTATION DU VECTEUR EN SORTIE
+      DO 30 KK = 1,NPG*NCMP
+          ZR(IDEFO+KK-1)= VPG(KK)
+ 30   CONTINUE
+C
       END

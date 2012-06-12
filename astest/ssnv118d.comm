@@ -1,22 +1,22 @@
-# MODIF  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE TRACTION CISAILLEMENT EN 3D (VISCOCHAB / VISC_CIN2_MEMO)
 # ssnv118d.para = tps_job 100 mem_job 64Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #----------------------------------------------------------------------
 #         ELEMENT 3D CUBE A 8 NOEUDS EN TRACTION - COMPRESSION
@@ -72,7 +72,7 @@ ACIER=DEFI_MATERIAU(            ELAS=_F(   E = 145000.,
                                              G2_0=1300.,
                                              A_I=0.5,
                                              ),
-                               MEMO_ECRO=_F(  
+                               MEMO_ECRO=_F(
                                             MU = 19.,
                                             Q_M = 460.,
                                             Q_0 = 40.,
@@ -80,30 +80,30 @@ ACIER=DEFI_MATERIAU(            ELAS=_F(   E = 145000.,
                                           ),
                                LEMAITRE=_F(N=24.,
                                            UN_SUR_K=1./70.),
-                                           
+
                                VISCOCHAB=_F(
                                             # viscosite
                                             K_0 = 70.,
                                             N = 24.,
-                                            
+
                                             # ecrouissage isotrope
                                             K = 35.,
                                             B = 12.,
-                                            
+
                                             # memoire
                                             MU = 19.,
                                             Q_M = 460.,
                                             Q_0 = 40.,
                                             QR_0 = 0.,
                                             ETA = .04,
-                                                                                        
+
                                             # ecrouissage cinematique
                                             C1 = 1950.,
                                             C2 = 65000.,
                                             G1_0 = 50.,
                                             G2_0 = 1300.,
                                             # modif de gamma
-                                            A_I = 0.5,                                            
+                                            A_I = 0.5,
                                             ))
 
 MAT=AFFE_MATERIAU(            MAILLAGE=CUBE,
@@ -184,12 +184,8 @@ SOLNL=STAT_NON_LINE(
                 ARCHIVAGE=_F(LIST_INST=LARCH),
               )
 
-SOLNL=CALC_ELEM( reuse=SOLNL,
-                       OPTION=( 'EPSI_ELNO',
-                                'SIGM_ELNO',  'VARI_ELNO',),
-                     RESULTAT=SOLNL,
-                           INST=10.,
-              )
+SOLNL=CALC_CHAMP(reuse=SOLNL,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('EPSI_ELNO'),RESULTAT=SOLNL,INST=10.)
+
 
 TEST_RESU(RESU=(
   _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIGM_ELNO',  NUME_ORDRE = 11,REFERENCE='NON_REGRESSION',
@@ -205,7 +201,7 @@ TEST_RESU(RESU=(
   _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO',  NUME_ORDRE = 11,REFERENCE='NON_REGRESSION',
                  MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'EPXY',  VALE = 9.9789488283526E-03,
                                                     PRECISION = 1.1E-2),
-                                                    
+
   _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO',  NUME_ORDRE = 11,
                MAILLE = 'MA1',  NOEUD = 'N1',
                NOM_CMP = 'V13',             VALE = 1.9142489181422E-02,REFERENCE='NON_REGRESSION',),
@@ -267,43 +263,39 @@ SOLMEMO=STAT_NON_LINE(
                                        TOUT = 'OUI',
                                        EVAL_ELGA       ='MAX',
                                        PAS_OBSE = 2,
-                                       ),   
+                                       ),
                                     _F(NOM_CMP='DX',
                                        NOM_CHAM='DEPL',
                                        TOUT = 'OUI',
-                                       ),                                         
+                                       ),
                                     _F(NOM_CMP='DY',
                                        NOM_CHAM='DEPL',
                                        TOUT = 'OUI',
-                                       ),  
+                                       ),
                                     _F(NOM_CMP='DZ',
                                        NOM_CHAM='DEPL',
                                        TOUT = 'OUI',
-                                       ),  
+                                       ),
                                     _F(
                                     NOM_CMP=('DX','DY','DZ',),
                                     EVAL_CMP = 'FORMULE',
                                     FORMULE = NORME,
                                        NOM_CHAM='DEPL',
                                        TOUT = 'OUI',
-                                       ),                                                                                                                      
+                                       ),
                                     ),
-                            SUIVI_DDL=( 
+                            SUIVI_DDL=(
                                     _F(
                                     NOM_CMP=('DX','DY','DZ',),
                                     EVAL_CMP = 'FORMULE',
                                     FORMULE = NORME,
                                        NOM_CHAM='DEPL',
                                        NOEUD           ='N1',
-                                       ),                                                                                                        
+                                       ),
                                     ),);
 
-SOLMEMO=CALC_ELEM( reuse=SOLMEMO,
-                       OPTION=( 'EPSI_ELNO',
-                                'SIGM_ELNO',  'VARI_ELNO',),
-                     RESULTAT=SOLMEMO,
-                           INST=10.,
-              )
+SOLMEMO=CALC_CHAMP(reuse=SOLMEMO,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('EPSI_ELNO'),RESULTAT=SOLMEMO,INST=10.)
+
 
 TEST_RESU(RESU=(
   _F(  RESULTAT = SOLMEMO,  NOM_CHAM = 'SIGM_ELNO',  NUME_ORDRE = 11,REFERENCE='NON_REGRESSION',
@@ -323,19 +315,19 @@ TEST_RESU(RESU=(
   _F(  RESULTAT = SOLMEMO,  NOM_CHAM = 'VARI_ELNO',  NUME_ORDRE = 11,REFERENCE='AUTRE_ASTER',
                MAILLE = 'MA1',  NOEUD = 'N1',
                NOM_CMP = 'V1',             VALE = 1.9142489181422E-02,PRECISION = 1.E-3),
-               
+
   _F(  RESULTAT = SOLMEMO,  NOM_CHAM = 'VARI_ELNO',  NUME_ORDRE = 11,REFERENCE='AUTRE_ASTER',
                MAILLE = 'MA1',  NOEUD = 'N1',
                NOM_CMP = 'V15',             VALE = 9.5061733417098E+00,PRECISION = 1.E-3),
-               
+
   _F(  RESULTAT = SOLMEMO,  NOM_CHAM = 'VARI_ELNO',  NUME_ORDRE = 11,REFERENCE='AUTRE_ASTER',
                MAILLE = 'MA1',  NOEUD = 'N1',
                NOM_CMP = 'V16',             VALE = 7.6569956682344E-04,PRECISION = 1.E-3),
-               
+
   _F(  RESULTAT = SOLMEMO,  NOM_CHAM = 'VARI_ELNO',  NUME_ORDRE = 11,REFERENCE='AUTRE_ASTER',
                MAILLE = 'MA1',  NOEUD = 'N1',
                NOM_CMP = 'V17',             VALE = 1.5074149396844E-02,PRECISION = 3.E-3),
-               
+
                                                     )
                                                                      )
 

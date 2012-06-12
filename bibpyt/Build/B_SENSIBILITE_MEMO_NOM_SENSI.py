@@ -1,9 +1,9 @@
-#@ MODIF B_SENSIBILITE_MEMO_NOM_SENSI Build  DATE 10/11/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_SENSIBILITE_MEMO_NOM_SENSI Build  DATE 12/06/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -314,16 +314,14 @@ class MEMORISATION_SENSIBILITE:
       return tuple(res)
 
 
-   # appelé par regsen (astermodule.c)
+   # **était** appelé par E_ETAPE.Exec...
    def register_sensi(self):
       """Enregistre les sd dérivées produites par les commandes principales pour qu'elles
       soient enregistrées dans la base jeveux.
       """
-      while len(self.l_regjv) > 0:
-         sd = self.l_regjv.pop(0)
-         typsd = sd.__class__.__name__
-         icmdt = aster.co_register_jev(sd.nom, typsd.upper(), 'MEMO_NOM_SENSI')
-
+      from warnings import warn
+      warn("MEMO_NOM_SENSI is not supported anymore. POURSUITE will not be possible.",
+           DeprecationWarning, stacklevel=2)
 
    def _key_(self, nosimp, nopase):
       """Retourne la clé (sd_nomi, para_sensi) à partir des noms.

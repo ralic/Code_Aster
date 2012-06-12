@@ -1,4 +1,4 @@
-# MODIF  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE NON-REGRESSION D'ASTER : MECANIQUE LINEAIRE 3D
 # RESPONSABLE PELLET J.PELLET
 # sslv200a.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test S
@@ -546,16 +546,8 @@ MSLIN=MECA_STATIQUE(        MODELE=MO,
                            LIST_INST=LR1,
                           )
 
-CALC_ELEM( reuse= MSLIN ,RESULTAT= MSLIN ,
-                          LIST_INST=LR1,
-                          OPTION=( 'EPSG_ELGA', 'EPSG_ELNO',
-                                   'SIGM_ELNO',
-                                   'EPME_ELNO', 'EPME_ELGA',
-                                   'EPOT_ELEM', 'EPSI_ELGA',
-                                   'EPSI_ELNO', 'SIEQ_ELNO',
-                                   'SIEQ_ELGA', 'EPEQ_ELNO',
-                                   'EPEQ_ELGA',  )
-                        )
+CALC_CHAMP(reuse=MSLIN,RESULTAT=MSLIN,LIST_INST=LR1,CRITERES=('SIEQ_ELNO','SIEQ_ELGA','EPEQ_ELNO','EPEQ_ELGA'),DEFORMATION=('EPSG_ELGA','EPSG_ELNO','EPME_ELNO','EPME_ELGA','EPSI_ELGA','EPSI_ELNO'),ENERGIE=('EPOT_ELEM'),CONTRAINTE=('SIGM_ELNO'))
+
 
 CALC_CHAMP( reuse=MSLIN,  RESULTAT=MSLIN,
          CONTRAINTE='SIGM_NOEU',DEFORMATION='EPSI_NOEU',CRITERES=('SIEQ_NOEU','EPEQ_NOEU'),
@@ -856,7 +848,7 @@ CHAMEL6=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELGA_EPSI_R',
                       NOM_CHAM='EPSI_ELGA', RESULTAT=MSLIN,
                         TYPE_MAXI='MINI',
                         TYPE_RESU='VALE',
-                        TOUT_ORDRE='OUI' )
+                         )
 
 CHAMEL7=CALC_CHAM_ELEM(    MODELE=MO,
                               CARA_ELEM=CARA1,

@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 30/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMUN  DATE 11/06/2012   AUTEUR DELMAS J.DELMAS 
 # encoding: iso-8859-1
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -59,8 +59,8 @@ class NOM_CHAM_INTO:  #COMMUN#
                                  _(u"Contraintes de rosette par élément"), ),
         }
         d['DEFORMATION'] = {
-            "DEGE_ELGA":        ( ("lin"),          
-            _(u"Déformations généralisées aux points de Gauss"), ),
+            "DEGE_ELGA":        ( ("lin", "nonlin"),          
+                                 _(u"Déformations généralisées aux points de Gauss"), ),
             "DEGE_ELNO":        ( ("lin", "nonlin"),
                                  _(u"Déformations généralisées aux noeuds par élément"), ),
             "DEGE_NOEU":        ( ("lin", "nonlin"),
@@ -107,8 +107,6 @@ class NOM_CHAM_INTO:  #COMMUN#
                                  _(u"Déformations anélastique aux noeuds par élément"), ),
             "EPSP_NOEU":        ( ("nonlin"),
                                  _(u"Déformations anélastique aux noeuds"), ),
-            "EPTU_ELNO":        ( ("lin", "nonlin"),
-                                 _(u"Déformations aux noeuds par élément pour les tuyaux"), ),
             "EPVC_ELGA":        ( ("lin", "nonlin"),
                                  _(u"Déformations dues aux variables de commande aux points de Gauss"), ),
             "EPVC_ELNO":        ( ("lin", "nonlin"),

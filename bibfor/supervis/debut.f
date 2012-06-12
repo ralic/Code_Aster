@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 12/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,12 +26,10 @@ C     ROUTINE(S) UTILISEE(S) :
 C        IBBASE  IBCATA
 C     ------------------------------------------------------------------
 C
-      INTEGER      MXCMD
-      PARAMETER   (MXCMD = 500 )
       CHARACTER*8  K8B, REPONS
       CHARACTER*16 NOMCMD, K16B, CMPDEF, CMPUT, CMPOUT
       CHARACTER*80 FICHDF
-      INTEGER      IER, ICMD, LOUT, N, NCODE
+      INTEGER      IER, LOUT, N, NCODE
       INTEGER      IARG
 C
       FICHDF=' '
@@ -83,12 +81,7 @@ C        NE SOIT REPROCHE A UNE COMMANDE CREANT UNE SD
 C        (DEBUT/DEBUG/SDVERI='OUI')
       CALL GCNCON('.',K8B)
 C
-C --- INITIALISATION DE LA TABLE DES CONCEPTS ---
-      CALL GCUINI( MXCMD , 'G' , IER )
-C
 C --- LECTURE DU MOT CLE FACTEUR  CATALOGUE ---
       IF ( FICHDF .EQ. '  ') CALL IBCATA( IER )
 C
-C --- STATS SUR LA COMMANDE DE DEMARRAGE  ---
-      CALL GCUOPR( 1, ICMD )
       END

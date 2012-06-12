@@ -10,9 +10,8 @@ TFIN  = 230.0;
 ########################################################################
 
 # CONTRAINTES EQUIVALENTES AUX POINTS DE GAUSS
-RESUNL=CALC_ELEM(reuse =RESUNL,
-                 RESULTAT=RESUNL,
-                 OPTION=('SIEQ_ELGA',),);
+RESUNL=CALC_CHAMP(reuse=RESUNL,RESULTAT=RESUNL,CRITERES=('SIEQ_ELGA'))
+
 
 IMPR_RESU(MODELE=MODE,
           RESU=(_F(RESULTAT=RESUNL,

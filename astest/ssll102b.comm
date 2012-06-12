@@ -1,4 +1,4 @@
-# MODIF  DATE 17/04/2012   AUTEUR CHANSARD F.CHANSARD 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR DES FORCES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -118,9 +118,8 @@ NOEUD = 'C3', NOM_CMP = 'DRY', VALE = 0.0,      PRECISION = 1.E-13, CRITERE = 'A
 NOEUD = 'C3', NOM_CMP = 'DRZ', VALE = 0.0,      PRECISION = 1.E-13, CRITERE = 'ABSOLU', REFERENCE = 'ANALYTIQUE'),)
             )
 
-CALC_ELEM( reuse=MEST1,
-                      RESULTAT=MEST1,
-                      OPTION=('EFGE_ELNO', 'SIPM_ELNO',))
+CALC_CHAMP(reuse=MEST1,RESULTAT=MEST1,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO'))
+
 
 TEST_RESU(RESU=(
 
@@ -203,9 +202,8 @@ NOEUD = 'C3', NOM_CMP = 'DRZ', VALE = 1.2732395E-7,
                                      PRECISION = 1.E-6, CRITERE = 'RELATIF', REFERENCE = 'ANALYTIQUE'),)
             )
 
-CALC_ELEM( reuse=MEST2,
-                      RESULTAT=MEST2,
-                      OPTION=('EFGE_ELNO', 'SIPM_ELNO',))
+CALC_CHAMP(reuse=MEST2,RESULTAT=MEST2,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO'))
+
 
 TEST_RESU(RESU=(
 
@@ -301,9 +299,8 @@ NOEUD = 'C3', NOM_CMP = 'DRZ', VALE = 0.0,      PRECISION = 1.E-13, CRITERE = 'A
 
             )
 
-CALC_ELEM( reuse=MEST3,
-                      RESULTAT=MEST3,
-                      OPTION=('EFGE_ELNO', 'SIPM_ELNO',))
+CALC_CHAMP(reuse=MEST3,RESULTAT=MEST3,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO'))
+
 
 TEST_RESU(RESU=(
 
@@ -396,9 +393,8 @@ NOEUD = 'C3', NOM_CMP = 'DRY', VALE = 0.0,      PRECISION = 1.E-13, CRITERE = 'A
 NOEUD = 'C3', NOM_CMP = 'DRZ', VALE = 0.0,      PRECISION = 1.E-13, CRITERE = 'ABSOLU', REFERENCE = 'ANALYTIQUE'),)
             )
 
-CALC_ELEM( reuse=MEST4,
-                      RESULTAT=MEST4,
-                      OPTION=('EFGE_ELNO', 'SIPM_ELNO',))
+CALC_CHAMP(reuse=MEST4,RESULTAT=MEST4,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO'))
+
 
 TEST_RESU(RESU=(
 
@@ -491,9 +487,8 @@ NOEUD = 'C3', NOM_CMP = 'DRY', VALE = 1.2732395E-7,
 NOEUD = 'C3', NOM_CMP = 'DRZ', VALE = 0.0,      PRECISION = 1.E-13, CRITERE = 'ABSOLU', REFERENCE = 'ANALYTIQUE'),)
             )
 
-CALC_ELEM( reuse=MEST5,
-                      RESULTAT=MEST5,
-                      OPTION=('EFGE_ELNO', 'SIPM_ELNO',))
+CALC_CHAMP(reuse=MEST5,RESULTAT=MEST5,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO'))
+
 
 TEST_RESU(RESU=(
 
@@ -576,9 +571,8 @@ NOEUD = 'C3', NOM_CMP = 'DRZ', VALE = 1.2732395E-7,
                                      PRECISION = 1.E-6, CRITERE = 'RELATIF', REFERENCE = 'ANALYTIQUE'),)
             )
 
-CALC_ELEM( reuse=MEST6,
-                      RESULTAT=MEST6,
-                      OPTION=('EFGE_ELNO', 'SIPM_ELNO',))
+CALC_CHAMP(reuse=MEST6,RESULTAT=MEST6,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO'))
+
 
 TEST_RESU(RESU=(
 
@@ -613,9 +607,8 @@ CHARG7=AFFE_CHAR_MECA(  MODELE=MO,
 MEST7=MECA_STATIQUE(        MODELE=MO,    CHAM_MATER=CHMAT,
             CARA_ELEM=CAREL, EXCIT=_F( CHARGE = CHARG7)   )
 
-CALC_ELEM( reuse=MEST7,
-                      RESULTAT=MEST7,
-                      OPTION=('EFGE_ELNO', 'SIPM_ELNO',))
+CALC_CHAMP(reuse=MEST7,RESULTAT=MEST7,CONTRAINTE=('EFGE_ELNO','SIPM_ELNO'))
+
 
 TEST_RESU(RESU=(
 
@@ -657,9 +650,8 @@ CHARG8=AFFE_CHAR_MECA(  MODELE=MO,
 MEST8=MECA_STATIQUE(        MODELE=MO,    CHAM_MATER=CHMAT,
             CARA_ELEM=CAREL, EXCIT=_F( CHARGE = CHARG8)   )
 
-CALC_ELEM( reuse=MEST8,
-                      RESULTAT=MEST8,
-                      OPTION=('EFGE_ELNO', 'SIPO_ELNO',  'SIPM_ELNO',))
+CALC_CHAMP(reuse=MEST8,RESULTAT=MEST8,CONTRAINTE=('EFGE_ELNO','SIPO_ELNO','SIPM_ELNO'))
+
 
 TEST_RESU(RESU=(
 
@@ -708,9 +700,8 @@ MAILLE = 'S41', NOEUD = 'C1', VALE = 673.755925756, PRECISION = 1.E-6, CRITERE =
 
 # TEST DE SIPO_ELNO
 
-CALC_ELEM( reuse=MEST7,
-                      RESULTAT=MEST7,
-                      OPTION='SIPO_ELNO' )
+CALC_CHAMP(reuse=MEST7,RESULTAT=MEST7,CONTRAINTE=('SIPO_ELNO'))
+
 
 TEST_RESU(RESU=(
 
@@ -806,9 +797,8 @@ MEST9=MECA_STATIQUE(       MODELE=MO,    CHAM_MATER=CHMAT,
                                 EXCIT=_F( CHARGE = CHARG9),
                                    )
 
-CALC_ELEM( reuse= MEST9 ,RESULTAT= MEST9 ,
+CALC_CHAMP(reuse=MEST9,RESULTAT=MEST9,CONTRAINTE=('SIPO_ELNO'))
 
-                               OPTION='SIPO_ELNO'    )
 
 #
 #======================================================================

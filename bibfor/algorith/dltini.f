@@ -1,11 +1,10 @@
-      SUBROUTINE DLTINI ( LCREA, NUME,
+      SUBROUTINE DLTINI ( LCREA, NUME,RESULT,
      &                    DEPINI, VITINI, ACCINI,
      &                    FEXINI, FAMINI, FLIINI,
-     &                    NEQ, NUMEDD, INCHAC, BASENO,
-     &                    NRPASE, INPSCO )
+     &                    NEQ, NUMEDD, INCHAC, BASENO)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/03/2012   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,8 +33,6 @@ C IN  : NEQ    : NOMBRE D'EQUATIONS
 C IN  : NUMEDD : NUMEROTATION DDL
 C IN  : BASENO : BASE DES NOMS DE STRUCTURES
 C VAR : INCHAC : CALCUL OU NON DE L'ACCELERATION INITIALE
-C IN  : NRPASE : NUMERO DU CHARGEMENT (STANDARD OU SENSIBILITE)
-C IN  : INPSCO : STRUCTURE CONTENANT LA LISTE DES NOMS (CF. PSNSIN)
 C     ------------------------------------------------------------------
 C CORPS DU PROGRAMME
       IMPLICIT NONE
@@ -43,14 +40,12 @@ C CORPS DU PROGRAMME
 C DECLARATION PARAMETRES D'APPELS
       REAL*8 DEPINI(*), VITINI(*), ACCINI(*)
       REAL*8 FEXINI(*), FAMINI(*), FLIINI(*)
-      CHARACTER*8 BASENO
-      CHARACTER*13 INPSCO
+      CHARACTER*8 BASENO,RESULT
       CHARACTER*24 NUMEDD
       LOGICAL LCREA
       INTEGER NUME
       INTEGER NEQ
       INTEGER INCHAC
-      INTEGER NRPASE
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER           ZI
       COMMON / IVARJE / ZI(1)
@@ -67,33 +62,22 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                         ZK80
       COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
-      INTEGER IBID, IEQ, IRE, IRET, JVALE
+      INTEGER IRE, IRET, JVALE
       INTEGER NAI, NDI, NDY, NVI
-      INTEGER JAUX,IERR
-      CHARACTER*8  NOMRES, DYNA, DYNA1
-      CHARACTER*19  CHAMP, CHAM2, RESULT
+      INTEGER IERR
+      CHARACTER*8  REUSE
+      CHARACTER*19  CHAMP, CHAM2
       INTEGER      IARG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
       LCREA = .TRUE.
-
-C====
-C 1. NOM DES STRUCTURES ASSOCIEES AUX DERIVATIONS
-C               3. LE NOM DU RESULTAT
-C====
-      IBID = 0
-      JAUX = 3
-      CALL PSNSLE ( INPSCO,   IBID, JAUX, NOMRES )
-      JAUX = 3
-      CALL PSNSLE ( INPSCO, NRPASE, JAUX, RESULT )
-      DYNA1 = RESULT(1:8)
 C
 C====
 C 2.  --- EST-ON EN REPRISE ? ---
 C====
 C
-      CALL GETVID('ETAT_INIT','RESULTAT',1,IARG,1,DYNA,NDY)
+      CALL GETVID('ETAT_INIT','RESULTAT',1,IARG,1,REUSE,NDY)
 C
 C====
 C 3. EN REPRISE
@@ -102,55 +86,54 @@ C
       IF ( NDY .NE. 0 ) THEN
 C
 C        --- RECUPERATION DES CHAMPS DEPL VITE ET ACCE ---
-         CALL RSEXCH(DYNA1,'DEPL',NUME,CHAMP,IRET)
+         CALL RSEXCH(RESULT,'DEPL',NUME,CHAMP,IRET)
          IF ( IRET .NE. 0 ) THEN
-            CALL U2MESK('F','ALGORITH3_25',1,DYNA1)
+            CALL U2MESK('F','ALGORITH3_25',1,RESULT)
          ELSE
             CALL JEVEUO(CHAMP//'.VALE','L',JVALE)
             CALL DCOPY(NEQ,ZR(JVALE),1,DEPINI,1)
          ENDIF
-         CALL RSEXCH(DYNA1,'VITE',NUME,CHAMP,IRET)
+         CALL RSEXCH(RESULT,'VITE',NUME,CHAMP,IRET)
          IF ( IRET .NE. 0 ) THEN
-            CALL U2MESK('F','ALGORITH3_26',1,DYNA1)
+            CALL U2MESK('F','ALGORITH3_26',1,RESULT)
          ELSE
             CALL JEVEUO(CHAMP//'.VALE','L',JVALE)
             CALL DCOPY(NEQ,ZR(JVALE),1,VITINI,1)
          ENDIF
-         CALL RSEXCH(DYNA1,'ACCE',NUME,CHAMP,IRET)
+         CALL RSEXCH(RESULT,'ACCE',NUME,CHAMP,IRET)
          IF ( IRET .NE. 0 ) THEN
-            CALL U2MESK('F','ALGORITH3_27',1,DYNA1)
+            CALL U2MESK('F','ALGORITH3_27',1,RESULT)
          ELSE
             CALL JEVEUO(CHAMP//'.VALE','L',JVALE)
             CALL DCOPY(NEQ,ZR(JVALE),1,ACCINI,1)
          ENDIF
-         CALL RSEXCH(DYNA1,'FORC_EXTE',NUME,CHAMP,IRET)
+         CALL RSEXCH(RESULT,'FORC_EXTE',NUME,CHAMP,IRET)
          IF (IRET .EQ . 0 ) THEN
            CALL JEVEUO(CHAMP//'.VALE','L',JVALE)
            CALL DCOPY(NEQ,ZR(JVALE),1,FEXINI,1)
          ENDIF
-         CALL RSEXCH(DYNA1,'FORC_AMOR',NUME,CHAMP,IRET)
+         CALL RSEXCH(RESULT,'FORC_AMOR',NUME,CHAMP,IRET)
          IF (IRET .EQ . 0 ) THEN
            CALL JEVEUO(CHAMP//'.VALE','L',JVALE)
            CALL DCOPY(NEQ,ZR(JVALE),1,FAMINI,1)
          ENDIF
-         CALL RSEXCH(DYNA1,'FORC_LIAI',NUME,CHAMP,IRET)
+         CALL RSEXCH(RESULT,'FORC_LIAI',NUME,CHAMP,IRET)
          IF (IRET .EQ . 0 ) THEN
            CALL JEVEUO(CHAMP//'.VALE','L',JVALE)
            CALL DCOPY(NEQ,ZR(JVALE),1,FLIINI,1)
          ENDIF
 C
 C        --- CREE-T-ON UNE NOUVELLE STRUCTURE ? ---
-         IF ( NOMRES .EQ. DYNA ) THEN
-            LCREA = .FALSE.
-            CALL RSRUSD ( NOMRES, NUME+1 )
+         IF ( RESULT .EQ. REUSE ) THEN
+           LCREA = .FALSE.
+           CALL RSRUSD ( RESULT, NUME+1 )
          ENDIF
 C====
 C 4. --- RECUPERATION DES CONDITIONS INITIALES ---
 C====
 C
       ELSE
-C
-         CALL JEEXIN(DYNA1(1:8)//'           .REFD',IRE)
+         CALL JEEXIN(RESULT(1:8)//'           .REFD',IRE)
          IF (IRE.GT.0) THEN
            LCREA = .FALSE.
          ENDIF
@@ -161,17 +144,9 @@ C
             CALL CHPVER('F',CHAMP,'NOEU','DEPL_R',IERR)
             INCHAC = 1
             CHAM2 = BASENO//'.DEPINI'
-            IF (NRPASE.EQ.0) THEN
-              CALL VTCREB (CHAM2, NUMEDD, 'V', 'R', NEQ)
-              CALL VTCOPY(CHAMP,CHAM2)
-              CALL JEVEUO(CHAM2//'.VALE','L',JVALE)
-            ELSE
-              CALL JEVEUO(CHAM2//'.VALE','E',JVALE)
-              DO 41 IEQ=1,NEQ
-                ZR(JVALE-1+IEQ)=0.D0
-   41         CONTINUE
-              CALL U2MESK('A', 'SENSIBILITE_41',0,' ')
-            ENDIF
+            CALL VTCREB (CHAM2, NUMEDD, 'V', 'R', NEQ)
+            CALL VTCOPY(CHAMP,CHAM2)
+            CALL JEVEUO(CHAM2//'.VALE','L',JVALE)
             CALL DCOPY(NEQ,ZR(JVALE),1,DEPINI,1)
          ELSE
             CALL U2MESS('I','ALGORITH3_28')
@@ -182,31 +157,23 @@ C
             CALL CHPVER('F',CHAMP,'NOEU','DEPL_R',IERR)
             INCHAC = 1
             CHAM2 = BASENO//'.VITINI'
-            IF (NRPASE.EQ.0) THEN
-              CALL VTCREB (CHAM2, NUMEDD, 'V', 'R', NEQ)
-              CALL VTCOPY(CHAMP,CHAM2)
-              CALL JEVEUO(CHAM2//'.VALE','L',JVALE)
-            ELSE
-              CALL JEVEUO(CHAM2//'.VALE','E',JVALE)
-              DO 42 IEQ=1,NEQ
-                ZR(JVALE-1+IEQ)=0.D0
-   42         CONTINUE
-              CALL U2MESK('A', 'SENSIBILITE_42',0,' ')
-            ENDIF
+            CALL VTCREB (CHAM2, NUMEDD, 'V', 'R', NEQ)
+            CALL VTCOPY(CHAMP,CHAM2)
+            CALL JEVEUO(CHAM2//'.VALE','L',JVALE)
             CALL DCOPY(NEQ,ZR(JVALE),1,VITINI,1)
          ELSE
             CALL U2MESS('I','ALGORITH3_29')
          ENDIF
 
          CALL GETVID('ETAT_INIT','ACCE',1,IARG,1,CHAMP,NAI)
-         IF (NAI.GT.0 .AND. NRPASE.EQ.0) THEN
-              CALL CHPVER('F',CHAMP,'NOEU','DEPL_R',IERR)
-              INCHAC = 0
-              CHAM2 = BASENO//'.ACCINI'
-              CALL VTCREB (CHAM2, NUMEDD, 'V', 'R', NEQ)
-              CALL VTCOPY(CHAMP,CHAM2)
-              CALL JEVEUO(CHAM2//'.VALE','L',JVALE)
-              CALL DCOPY(NEQ,ZR(JVALE),1,ACCINI,1)
+         IF (NAI.GT.0 ) THEN
+           CALL CHPVER('F',CHAMP,'NOEU','DEPL_R',IERR)
+           INCHAC = 0
+           CHAM2 = BASENO//'.ACCINI'
+           CALL VTCREB (CHAM2, NUMEDD, 'V', 'R', NEQ)
+           CALL VTCOPY(CHAMP,CHAM2)
+           CALL JEVEUO(CHAM2//'.VALE','L',JVALE)
+           CALL DCOPY(NEQ,ZR(JVALE),1,ACCINI,1)
          ENDIF
 C
       ENDIF

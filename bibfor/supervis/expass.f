@@ -3,7 +3,7 @@
       LOGICAL            JXVRF
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 12/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,15 +60,11 @@ C
       LDBG  = .FALSE.
       LDBG  = JXVRF
 C
-      CALL GCUOPR( 0 ,ICMDCT )
       CALL EXECOP()
       IF ( LDBG ) THEN
          CALL GETRES(NOMRES,CONCEP,NOMCMD)
          CALL JXVERI(' ')
       ENDIF
-C
-C     --- EXECUTIONS ---
-      CALL GCUOPR( 1 ,ICMDCT)
 C
       CALL JEDEMA()
       END

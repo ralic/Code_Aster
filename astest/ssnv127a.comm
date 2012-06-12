@@ -1,8 +1,8 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE DANS UN ALESAGE AVEC CONTACT ET FROTTEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -50,14 +50,14 @@ SSNV127A=DEFI_GROUP(reuse =SSNV127A,
                                       NOM='RELEVE',
                                       GROUP_NO_ORIG='A1',
                                       GROUP_NO_EXTR='B2',),),);
-                                      
+
 # POUR ELIMINER LES NOEUDS COMMUNS AUX SURFACES DE CONTACT
 SSNV127A=DEFI_GROUP(reuse=SSNV127A,
                     MAILLAGE=SSNV127A,
                     CREA_GROUP_NO=(_F(GROUP_MA='BCC1',),
                                    _F(GROUP_MA='BCC2',),
                                    _F(INTERSEC=('BCC1','BCC2',),
-                                      NOM='BCC_SGN'),),)                                      
+                                      NOM='BCC_SGN'),),)
 #
 #_____________________________________________________________________
 #
@@ -170,7 +170,7 @@ U=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                 CHAM_MATER=CHMAT,
                 EXCIT=(_F(CHARGE=CHA1,
                           FONC_MULT=RAMPE,),),
-                CONTACT  = CHA2,       
+                CONTACT  = CHA2,
                 COMP_ELAS=_F(RELATION='ELAS',),
                 INCREMENT=_F(LIST_INST=L_INST,),
                 NEWTON=_F(MATRICE='ELASTIQUE',
@@ -178,9 +178,8 @@ U=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=20),
                 );
 
-U=CALC_ELEM(reuse =U,
-            OPTION=('SIGM_ELNO'),
-            RESULTAT=U,);
+U=CALC_CHAMP(reuse=U,CONTRAINTE=('SIGM_ELNO'),RESULTAT=U)
+
 #
 #
 

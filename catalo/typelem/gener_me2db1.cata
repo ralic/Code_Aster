@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 11/06/2012   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,6 +47,8 @@ MODE_LOCAL__
     EMASSINE = MASS_R   ELEM__         (M        CDGX     CDGY     CDGZ     IXX      IYY
                                         IZZ      IXY      IXZ      IYZ      )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
+    EDEFOPG  = EPSI_R   ELGA__ RIGI    (EPXX     )
+    EDEFOPC  = EPSI_C   ELGA__ RIGI    (EPXX     )
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     )
     EDEFONC  = EPSI_C   ELNO__ IDEN__  (EPXX     )
     EEFGEGA  = SIEF_R   ELGA__ RIGI    (N        )
@@ -60,7 +62,7 @@ MODE_LOCAL__
     CVENTCX  = VENTCX_F ELEM__         (FCXP     )
     EREFCO   = PREC     ELEM__         (EFFORT   )
     EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30]    )
-    ENONLIN  = NEUT_I   ELEM__         (X1)
+    ENONLIN  = NEUT_I   ELEM__         (X1       )
     EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30]    )
 
 
@@ -125,10 +127,11 @@ OPTION__
     EPOT_ELEM           154   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR
                               OUT__  EENEDNO  PENERDR
-    EPSI_ELNO           154   IN__   CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
+    EPSI_ELGA           154   IN__   CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
-                              OUT__  EDEFONO  PDEFORR
-                                     EDEFONC  PDEFORC
+                              OUT__  EDEFOPG  PDEFOPG  EDEFOPC  PDEFOPC
+    EPSI_ELNO           4     IN__   EDEFOPG  PDEFOPG
+                              OUT__  EDEFONO  PDEFONO  EDEFONC  PDEFONC
     FORC_NODA           156   IN__   CCAORIE  PCAORIE  EEFGEGA  PCONTMR
                               OUT__  MVECTUR  PVECTUR
     FULL_MECA           248   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR

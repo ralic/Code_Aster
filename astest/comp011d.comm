@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/06/2012   AUTEUR PROIX J-M.PROIX 
 #======================================================================
 #
 # TITRE : VALIDATION DE LA TEMPERATURE  RELATION = 'BETON_DOUBLE_DP'
@@ -102,6 +102,7 @@ MATER=DEFI_MATERIAU(ELAS_FO=_F(E=YOUN,
               BETON_DOUBLE_DP=_F( F_C = FC,
                                F_T = FT,
                                COEF_BIAX = BETA,
+                               LONG_CARA=0.778271716226,
                                ENER_COMP_RUPT = GC,
                                ENER_TRAC_RUPT = GT,
                                COEF_ELAS_COMP = 33.3333333,
@@ -122,7 +123,7 @@ TIMP=DEFI_FONCTION(
 
 U=SIMU_POINT_MAT(COMP_INCR=_F(RELATION=compor,),
                  MATER=MATER,
-                 SUPPORT='ELEMENT',
+               #  SUPPORT='ELEMENT',
                    AFFE_VARC=(
                    _F(  NOM_VARC='TEMP',
                         VALE_FONC=TIMP,
@@ -178,6 +179,7 @@ for i in range(NCAL):
                                              COEF_BIAX = BETA_T,
                                              ENER_COMP_RUPT = GC_T,
                                              ENER_TRAC_RUPT = GT_T,
+                                             LONG_CARA=0.778271716226,
                                              COEF_ELAS_COMP = 33.3333333,
                                              ECRO_COMP_P_PIC = 'LINEAIRE',
                                              ECRO_TRAC_P_PIC = 'LINEAIRE'),
@@ -188,7 +190,7 @@ for i in range(NCAL):
 
           RESU[i]=SIMU_POINT_MAT(COMP_INCR=_F(RELATION=compor,),
                                  MATER=MATER[i],
-                                 SUPPORT='ELEMENT',
+                                 SUPPORT='POINT',
                                  AFFE_VARC=(
                                    _F(  NOM_VARC='TEMP',
                                         VALE_FONC=TIMP,

@@ -1,23 +1,23 @@
-# MODIF  DATE 23/04/2012   AUTEUR DEVESA G.DEVESA 
-# TITRE SOLLICITATION SISMIQUE D UNE COLONNE DE SOL 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+# TITRE SOLLICITATION SISMIQUE D UNE COLONNE DE SOL
 #  APRES CONSTRUCTION PAR COUCHES AVEC LOI DE HUJEUX
 # wdnp101a.para = tps_job 1000 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 
@@ -97,7 +97,7 @@ for n in range(nbcouche-1):
 
 # <--5: fin boucle for
 
-                    
+
 #  -------------------------------------------------------------------
 #  Definition du sol sature en eau ACTIF, affectation global materiau,
 #  liste d instants
@@ -164,8 +164,8 @@ MAT1=DEFI_MATERIAU(ELAS=_F(
                                UN_SUR_K   = INV_K_EAU,
                                VISC       = VISCOLIQ,
                                D_VISC_TEMP= DVISCOL));
-                               
-                              
+
+
 MAT_PAR=DEFI_MATERIAU(
 # general mechanical properties of the rock
                       ELAS=_F(
@@ -223,7 +223,7 @@ F_EVOL=DEFI_FONCTION(NOM_PARA='INST',
                      PROL_GAUCHE='CONSTANT',
                      VALE=(0.       , 0.,
                            1000000.0, 1.));
-                           
+
 FOC = DEFI_CONSTANTE( VALE=9.81) ;
 
 #        ----------------------------------
@@ -268,7 +268,7 @@ DEFLISTT =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =TEMPS ),
 # Mise en place de la premiere couche et de la seconde couche simultanement = 1ere couche
 # Etat initail du pb hydraulique
 # On utilise une valeur de critere lache pour commencer a appliquer le
-#   poids car la precision s ameliore ensuite 
+#   poids car la precision s ameliore ensuite
 
 U[0]=STAT_NON_LINE(MODELE=MOD[0],
                  CHAM_MATER=AFFMAT1,
@@ -311,7 +311,7 @@ SIG[0]=CREA_CHAMP(INFO=1,
                 RESULTAT=U[0],
                 NOM_CHAM='SIEF_ELGA',
                 INST=2000000.0,);
-                
+
 VAR[0]=CREA_CHAMP(INFO=2,
                 TYPE_CHAM='ELGA_VARI_R',
                 OPERATION='EXTR',
@@ -319,10 +319,8 @@ VAR[0]=CREA_CHAMP(INFO=2,
                 NOM_CHAM='VARI_ELGA',
                 INST=2000000.0,);
 
-U[0]=CALC_ELEM(reuse=U[0],
-               GROUP_MA=list_group_ma[0:2],
-               OPTION=('SIGM_ELNO','VARI_ELNO'),
-               RESULTAT=U[0]);
+U[0]=CALC_CHAMP(reuse=U[0],GROUP_MA=list_group_ma[0:2],CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U[0])
+
 
 
 
@@ -369,8 +367,8 @@ for n in range(1,nbcouche-1):
                     AFFE=_F(GROUP_MA=list_group_ma[n+1],
                             NOM_CMP =('SIXX','SIYY','SIZZ'),
                             VALE    =(P0,P0,P0)));
-                            
-                     
+
+
 
     print ' > list_group_ma =',list_group_ma[:n+1]
     print '   list_group_ma =',list_group_ma[n+1]
@@ -405,7 +403,7 @@ for n in range(1,nbcouche-1):
                            );
 
     CH_BID = CREA_CHAMP(INFO=2,
-                         TYPE_CHAM='NOEU_DEPL_R',                        
+                         TYPE_CHAM='NOEU_DEPL_R',
                          OPERATION='ASSE',
                          MODELE = MOD[n],
                          ASSE=_F(GROUP_MA=list_group_ma[:n+2],
@@ -422,14 +420,14 @@ for n in range(1,nbcouche-1):
 
     CH_GEOM = CREA_CHAMP(INFO=2,
                          TYPE_CHAM = 'NOEU_GEOM_R',
-                         MAILLAGE = MA, 
+                         MAILLAGE = MA,
                          OPERATION='EXTR',
                          NOM_CHAM = 'GEOMETRIE',
                          )
-                         
+
 
     CH_FONC = CREA_CHAMP(INFO=2,
-                         TYPE_CHAM='NOEU_NEUT_F',                        
+                         TYPE_CHAM='NOEU_NEUT_F',
                          OPERATION='AFFE',
                          MODELE = MOD[n],
                          AFFE=(_F(GROUP_MA=list_group_ma[n+1],
@@ -438,14 +436,14 @@ for n in range(1,nbcouche-1):
                                ),);
 
     CH_EVAL = CREA_CHAMP(INFO=2,
-                         TYPE_CHAM='NOEU_NEUT_R',                        
+                         TYPE_CHAM='NOEU_NEUT_R',
                          OPERATION='EVAL',
                          CHAM_F = CH_FONC,
                          CHAM_PARA = (DEPL_PJ,CH_GEOM),
                                );
 
     CH_DEPL = CREA_CHAMP(INFO=2,
-                         TYPE_CHAM='NOEU_DEPL_R',                        
+                         TYPE_CHAM='NOEU_DEPL_R',
                          OPERATION='ASSE',
                          MODELE = MOD[n],
                          ASSE=_F(GROUP_MA=list_group_ma[n+1],
@@ -482,7 +480,7 @@ for n in range(1,nbcouche-1):
                             _F(GROUP_MA=list_group_ma[:n+1],
                                CHAM_GD=SIG[n-1],
                                CUMUL='OUI',
-                               COEF_R=1.0),                 
+                               COEF_R=1.0),
                             ),
                       );
 
@@ -515,7 +513,7 @@ for n in range(1,nbcouche-1):
                            NOM_CMP =('X1','X2','X3','X4','X5','X6','X7','X8','X9','X10','X11',
                                      'X12',),
                            VALE    =vari_3));
-                           
+
 
     INIVAR=CREA_CHAMP(INFO=1,
                       TYPE_CHAM='ELGA_VARI_R',
@@ -545,7 +543,7 @@ for n in range(1,nbcouche-1):
                             _F(GROUP_MA=list_group_ma[n+1],
                                CHAM_GD=CART3,
                                NOM_CMP =('X1','X2','X3','X4','X5','X6','X7','X8','X9','X10','X11','X12',),
-                                     
+
                                NOM_CMP_RESU=('V41','V42','V43','V44','V45','V46','V47','V48',
                                              'V49','V50','V51','V52'),
                                CUMUL='OUI',
@@ -555,9 +553,9 @@ for n in range(1,nbcouche-1):
 
     t_init=(n+1)*1.E6
     t_fin =(n+2)*1.E6
-    
+
 # On utilise une valeur de critere lache pour commencer a appliquer le
-#   poids car la precision s ameliore ensuite 
+#   poids car la precision s ameliore ensuite
 
     U[n]=STAT_NON_LINE(MODELE=MOD[n],
                  CHAM_MATER=AFFMAT1,
@@ -613,11 +611,9 @@ for n in range(1,nbcouche-1):
                 INST = t_fin,
                 INFO=1,);
 
-    U[n]=CALC_ELEM(reuse=U[n],
-                   GROUP_MA=list_group_ma[0:n+2],
-                   OPTION=('SIGM_ELNO','VARI_ELNO'),
-                   RESULTAT=U[n]);
-                   
+    U[n]=CALC_CHAMP(reuse=U[n],GROUP_MA=list_group_ma[0:n+2],CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U[n])
+
+
 #    IMPR_RESU(RESU=_F(CHAM_GD=DEP[n]));
 #    IMPR_RESU(RESU=_F(CHAM_GD=VAR[n]));
 #    IMPR_RESU(RESU=_F(CHAM_GD=SIG[n]));
@@ -629,7 +625,7 @@ for n in range(1,nbcouche-1):
 BO_CONH0=AFFE_CHAR_MECA(MODELE=MOD[9],
                         DDL_IMPO=(
                                   _F(GROUP_NO='BAS',
-                                     # DX=0., 
+                                     # DX=0.,
                                      DY=0.,
                                       ),
                                   _F(GROUP_NO='FREESURF',
@@ -637,10 +633,10 @@ BO_CONH0=AFFE_CHAR_MECA(MODELE=MOD[9],
                                   ),
                        LIAISON_UNIF=(
                                   _F(GROUP_NO='BAS',
-                                     DDL=('DX'), 
+                                     DDL=('DX'),
                                      ),
                                     ),
-                       LIAISON_GROUP=             
+                       LIAISON_GROUP=
                                 (_F(GROUP_NO_1='LAT_LEFT',
                                     GROUP_NO_2='LAT_RIGH',
                                     DDL_1=('DX',),
@@ -668,7 +664,7 @@ BO_CONH0=AFFE_CHAR_MECA(MODELE=MOD[9],
 TI_LI_IN=DEFI_LIST_REEL(DEBUT=-1.e-6, INTERVALLE=_F(JUSQU_A=0.,
                                                  NOMBRE=1,),);
 
-FOC2 = DEFI_CONSTANTE( VALE=9.81001) ;                        
+FOC2 = DEFI_CONSTANTE( VALE=9.81001) ;
 
 DEFLIST3 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TI_LI_IN),
                         ECHEC=_F(EVENEMENT     = 'ERREUR',
@@ -707,11 +703,11 @@ U9B=STAT_NON_LINE(MODELE=MOD[9],
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1),
                  CONVERGENCE=_F(ITER_GLOB_MAXI=10,RESI_GLOB_RELA=1E-6));
-                 
+
 MONOX=AFFE_CHAR_MECA(MODELE=MOD[nbcouche-2],
                    PESANTEUR=_F(GRAVITE=1.0,
                                 DIRECTION=(-1.0,0.0,0.0),),);
-                           
+
 
 # SEISMIC SIGNAL Friuli_GEFDYN : FONC_MULT=ACCELE
 INCLUDE(UNITE=90, INFO=1,);
@@ -732,7 +728,7 @@ L_INSTh=DEFI_LIST_REEL(DEBUT=T000,
 L_ARCH=DEFI_LIST_REEL(DEBUT=T000,
                       INTERVALLE=_F(JUSQU_A=T_END,
                                     PAS=pas_gro,),);
-                                    
+
 L_COMB=DEFI_LIST_REEL(DEBUT=T000,
                       INTERVALLE=_F(JUSQU_A=T_END,
                                     PAS=pas_gro,),);
@@ -742,16 +738,16 @@ NU = NUME_DDL( MODELE=MOD[9], CHARGE=BO_CONH0, );
 LIST=DEFI_LIST_REEL(DEBUT=0.0,
                     INTERVALLE=_F(JUSQU_A=pas_tfin,
                                   NOMBRE=1,),);
-                                  
-# On utilise une valeur de critere lache car on accepte tout champ de 
-#   deplacement solution 
+
+# On utilise une valeur de critere lache car on accepte tout champ de
+#   deplacement solution
 
 DEFLIST4 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =LIST ),
                         ECHEC=_F(EVENEMENT     = 'ERREUR',
                                  ACTION        = 'DECOUPE',
                                  SUBD_METHODE  = 'MANUEL',))
 
-U9B=STAT_NON_LINE(reuse=U9B, 
+U9B=STAT_NON_LINE(reuse=U9B,
                  MODELE=MOD[9],
                  CHAM_MATER=AFFMAT1,
                  EXCIT=(_F(CHARGE=BO_CONH0),
@@ -781,35 +777,35 @@ U9B=STAT_NON_LINE(reuse=U9B,
                  ETAT_INIT=_F(EVOL_NOLI=U9B,
                               INST=0.0,PRECISION=1.E-6,),
                  INCREMENT=_F(
-                              LIST_INST=DEFLIST4, 
+                              LIST_INST=DEFLIST4,
                               PRECISION=1.E-8,
                               INST_FIN=pas_tfin,),
                  ARCHIVAGE=_F(
                                PAS_ARCH = 1,
-                                      ),                              
+                                      ),
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1),
                  CONVERGENCE=_F(ITER_GLOB_MAXI=10,RESI_GLOB_RELA=1.1E-6,
                                 ARRET='OUI',),
                  INFO=1,
-                 );                    
-                    
-                    
+                 );
+
+
 U0=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                 OPERATION='EXTR',
                 RESULTAT=U9B,
                 NOM_CHAM='DEPL',
                 INST=0.0,
                 INFO=1,);
-                
+
 UT=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                 OPERATION='EXTR',
                 RESULTAT=U9B,
                 NOM_CHAM='DEPL',
                 INST=pas_tfin,
-                INFO=1,);                
-                
-                
+                INFO=1,);
+
+
 DU=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                     OPERATION='ASSE',
                     NUME_DDL=NU,
@@ -822,24 +818,24 @@ DU=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                     _F(TOUT='OUI',
                        CHAM_GD=U0,
                        CUMUL='OUI',
-                       COEF_R=-1.0,),                       
+                       COEF_R=-1.0,),
                           ),
-                   );                                           
+                   );
 
 SIGP=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                 OPERATION='EXTR',
                 RESULTAT=U9B,
                 NOM_CHAM='SIEF_ELGA',
                 INST=0.0,
-                INFO=1,);                
-                
+                INFO=1,);
+
 VARIP=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
                 OPERATION='EXTR',
                 RESULTAT=U9B,
                 NOM_CHAM='VARI_ELGA',
                 INST=0.0,
-                INFO=1,);                
-                                  
+                INFO=1,);
+
 CONT=CALCUL(OPTION=('COMPORTEMENT','FORC_INT_ELEM','MATR_TANG_ELEM'),
                  MODELE=MOD[9],
                  CHAM_MATER=AFFMAT1,
@@ -875,71 +871,71 @@ MATR=EXTR_TABLE(TYPE_RESU='MATR_ELEM_DEPL_R',
                  NOM_PARA='NOM_SD',
                  FILTRE=_F(NOM_PARA='NOM_OBJET',
                            VALE_K='MATR_ELEM'),);
-                 
-                   
+
+
 MATM=CALC_MATR_ELEM(OPTION='MASS_MECA',
                    MODELE=MOD[9],
                    CHAM_MATER=AFFMAT1,
                    CHARGE=BO_CONH0,);
-                   
+
 MATASM=ASSE_MATRICE(MATR_ELEM=MATM, NUME_DDL=NU,);
 
 MATASR=ASSE_MATRICE(MATR_ELEM=MATR, NUME_DDL=NU, SYME='OUI',);
 
 IMPR_CO(CHAINE='MATASR             .LIME');
-                                                                             
+
 MODET=MACRO_MODE_MECA(MATR_A=MATASR, MATR_B=MATASM,
                        NMAX_ITER_SOREN=80,
                        CALC_FREQ=_F(
                                     FREQ=(-0.1,15.,40.,68.,
                                           ),
-                                    DIM_SOUS_ESPACE=78,),  
+                                    DIM_SOUS_ESPACE=78,),
                        VERI_MODE=_F(STOP_ERREUR='NON'),
                        IMPRESSION=_F(),
                        );
-                       
-                       
+
+
 BAMODA=DEFI_BASE_MODALE( RITZ=( _F( MODE_MECA = MODET),
                                ),
                          NUME_REF=NU);
-                         
+
 NDDLGENE = NUME_DDL_GENE( BASE= BAMODA,
-                          STOCKAGE= 'PLEIN',);                          
-                            
+                          STOCKAGE= 'PLEIN',);
+
 RIGIGEN=PROJ_MATR_BASE(  BASE=BAMODA,  NUME_DDL_GENE=NDDLGENE,
                             MATR_ASSE=MATASR );
 
 MASSGEN=PROJ_MATR_BASE(  BASE=BAMODA,  NUME_DDL_GENE=NDDLGENE,
-                            MATR_ASSE=MATASM );                            
-                            
+                            MATR_ASSE=MATASM );
+
 modgen=MODE_ITER_SIMULT(MATR_A=RIGIGEN, MATR_B=MASSGEN,
                        CALC_FREQ=_F(
                                     OPTION='BANDE',
                                     FREQ=(-0.1,215.),
                                     ),
                        VERI_MODE=_F(STOP_ERREUR='NON',),
-                         );                         
-                         
+                         );
+
 RESPHY=REST_GENE_PHYS(    RESU_GENE=modgen,
                           NOM_CHAM='DEPL',
-                          TOUT_ORDRE='OUI'
+
                                         );
-                                        
-RESMOD=DEFI_BASE_MODALE( 
-                   RITZ=( 
+
+RESMOD=DEFI_BASE_MODALE(
+                   RITZ=(
                          _F( MODE_MECA=RESPHY,NMAX_MODE = 99),
                         ),
                         NUME_REF=NU);
-                        
-MODEP = NORM_MODE(MODE=RESMOD, NORME='TRAN_ROTA', 
+
+MODEP = NORM_MODE(MODE=RESMOD, NORME='TRAN_ROTA',
                   MASSE=MATASM, RAIDE=MATASR,
                   );
-                                                                                      
+
 DEFLISTh =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =L_INSTh ),
                         ECHEC=_F(ACTION        = 'DECOUPE',
                                  SUBD_METHODE  = 'MANUEL',
                                  SUBD_PAS=2,SUBD_NIVEAU=20),)
-                                 
+
 L_amor=CALC_AMOR_MODAL(
         AMOR_RAYLEIGH=_F(MODE_MECA = MODET,
                          AMOR_ALPHA=7.0E-5, AMOR_BETA=0.),
@@ -975,24 +971,24 @@ U9B2=DYNA_NON_LINE(
                             METHODE='MULT_FRONT',
                             NPREC=15,
                             SYME='NON'),
-                 PROJ_MODAL=_F(MODE_MECA = MODEP), 
-                 AMOR_MODAL=_F(MODE_MECA = MODET,LIST_AMOR=L_amor), 
+                 PROJ_MODAL=_F(MODE_MECA = MODEP),
+                 AMOR_MODAL=_F(MODE_MECA = MODET,LIST_AMOR=L_amor),
                  ETAT_INIT=_F(EVOL_NOLI=U9B,
                               INST=0.0,PRECISION=1.E-6,
 #  On impose explicitement une acceleration initiale nulle car la matrice de masse etant singuliere
 #  a cause du modele, on ne peut calculer une acceleration non nulle :
-                              ACCE = ACCE0,),  
+                              ACCE = ACCE0,),
                  INCREMENT=_F(
-                              LIST_INST=DEFLISTh, 
+                              LIST_INST=DEFLISTh,
                               PRECISION=1.E-6,),
                  ARCHIVAGE=_F(
                                LIST_INST=L_ARCH,
-                                      ),                              
+                                      ),
                  SCHEMA_TEMPS=_F(SCHEMA='TCHAMWA',
                                  FORMULATION='ACCELERATION',
                                  PHI=1.1,STOP_CFL='NON',),
                  );
-                                    
+
 ACC_R1X=RECU_FONCTION(  RESULTAT=U9B2,
                         TITRE='ACC_R1X',
                         NOM_CHAM='ACCE',
@@ -1001,7 +997,7 @@ ACC_R1X=RECU_FONCTION(  RESULTAT=U9B2,
                         PROL_DROITE='CONSTANT',
                         PROL_GAUCHE='CONSTANT',
                         INTERPOL='LIN',);
-                        
+
 ACC_R47X=RECU_FONCTION( RESULTAT=U9B2,
                         TITRE='ACC_R47X',
                         NOM_CHAM='ACCE',
@@ -1010,23 +1006,23 @@ ACC_R47X=RECU_FONCTION( RESULTAT=U9B2,
                         PROL_DROITE='CONSTANT',
                         PROL_GAUCHE='CONSTANT',
                         INTERPOL='LIN',);
-                         
+
 ACC_A1X=CALC_FONCTION( LIST_PARA=L_COMB,
                        COMB=(  _F( FONCTION = ACC_R1X, COEF = 1.),
                                _F( FONCTION = ACCELE, COEF = 1.),),
                       );
-                      
+
 ACC_A47X=CALC_FONCTION( LIST_PARA=L_COMB,
                        COMB=(  _F( FONCTION = ACC_R47X, COEF = 1.),
                                _F( FONCTION = ACCELE, COEF = 1.),),
                       );
 
 TAB_INF1 = INFO_FONCTION(RMS = _F(FONCTION = ACC_A47X,INST_INIT=2.80,
-                                    INST_FIN = 2.88, ))                                                   
+                                    INST_FIN = 2.88, ))
 TAB_INF2 = INFO_FONCTION(RMS = _F(FONCTION = ACC_A47X,INST_INIT=3.06,
-                                    INST_FIN = 3.14, ))                                                   
+                                    INST_FIN = 3.14, ))
 TAB_INF3 = INFO_FONCTION(RMS = _F(FONCTION = ACC_A47X,INST_INIT=3.47,
-                                    INST_FIN = 3.55, ))                                                   
+                                    INST_FIN = 3.55, ))
 
 TEST_TABLE(TABLE=TAB_INF1,NOM_PARA='RMS',
            VALE = 1.785,PRECISION = 0.01,
@@ -1046,9 +1042,9 @@ SPOSCI = CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ACC_A47X,
                                  NORME=9.81, ),);
 
 
-MAXSP = INFO_FONCTION(MAX = _F(FONCTION = SPOSCI,))   
+MAXSP = INFO_FONCTION(MAX = _F(FONCTION = SPOSCI,))
 
-TEST_FONCTION(ATTRIBUT=(_F(FONCTION=SPOSCI,PARA=2E-2,                          
+TEST_FONCTION(ATTRIBUT=(_F(FONCTION=SPOSCI,PARA=2E-2,
                            ATTR='NOM_PARA_FONC',ATTR_REFE='FREQ',
                            REFERENCE='NON_REGRESSION'),
                         _F(FONCTION=SPOSCI,ATTR='NOM_PARA',

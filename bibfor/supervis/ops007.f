@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 12/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,7 +74,6 @@ C
           DO 300 II=1,NCON
              IF(NSENS.EQ.0) THEN
                CALL JEDETC('G',ZK8(LCON-1+II),1)
-               CALL GCDETC(ZK8(LCON-1+II))
              ELSE
                IAUX = IOCC
                CALL JEEXIN(NORECG,IER)
@@ -85,7 +84,6 @@ C
                DO 310 NRPASS = 1,NBPASS
                  LERESU = ZK24(ADRECG+2*NRPASS-2) (1:8)
                  CALL JEDETC('G',LERESU,1)
-                 CALL GCDETC(LERESU)
 310            CONTINUE
              ENDIF
 300        CONTINUE
@@ -116,11 +114,6 @@ C
             L=LXLGUT(KCH)
             IF (L.GT.0) THEN
                CALL JEDETC(KLAS,KCH(1:L),ZI(JPO+II-1))
-               IF (L.LE.8) THEN
-C                 SI L<=8, C'EST PEUT-ETRE UN CONCEPT, ON ESSAIE DE
-C                 LE MARQUER COMME DETRUIT DANS LA BASE
-                  CALL GCDETC(KCH(1:L))
-               ENDIF
             ENDIF
  105     CONTINUE
          CALL JEDETR('&&OPS007.NOMOBJ')

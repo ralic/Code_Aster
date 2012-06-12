@@ -1,4 +1,4 @@
-#@ MODIF E_Core Execution  DATE 07/05/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_Core Execution  DATE 12/06/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -168,7 +168,8 @@ class CoreOptions(object):
         self.info['versMAJ'] = self.info['versMIN'] = self.info['versSUB'] = 0
         if self.opts.bibpyt:
             from Accas import properties
-            for attr in ('version', 'date', 'exploit'):
+            for attr in ('version', 'date', 'exploit', 'parentid',
+                         'branch', 'from_branch', 'changes', 'uncommitted'):
                 self.info[attr] = getattr(properties, attr)
             vers = self.info['version']
             if vers:
@@ -264,86 +265,48 @@ def checksd(nomsd, typesd):
             aster.affiche('MESSAGE',repr(obj)+msg)
     return iret
 
-_LABEL = None
-def _init_labels():
-    global _LABEL
-    if _LABEL:
-        return
-    from Noyau.N_utils import Enum
-    _LABEL = Enum('STABLE', 'STABLE_UPDATES', 'TESTING', 'UNSTABLE')
-
-_version_label = None
-def version_label():
-    """Retourne le label de la version."""
-    global _version_label
-    if _version_label is not None:
-        return _version_label
+def get_branch_orig():
+    """Retourne la branche d'origine dont sont issus les sources"""
     from Accas import properties
-    _init_labels()
-    # version stabilisée, exemple : 11.3.0
-    last = properties.version.split('.')[-1]
-    try:
-        patch = int(last)
-    except ValueError:
-        patch = -1
-    sta = patch == 0
-    label = _LABEL.UNSTABLE
-    if sta:
-        if properties.exploit:
-            label = _LABEL.STABLE
-        else:
-            label = _LABEL.TESTING
-    else:
-        if properties.exploit:
-            label = _LABEL.STABLE_UPDATES
-        else:
-            label = _LABEL.UNSTABLE
-    _version_label = label
-    return label
+    return properties.from_branch
 
-def version_shortname():
-    """Retourne le nom 'court' de la version."""
-    _init_labels()
-    shortname = {
-        _LABEL.STABLE : "stable",
-        _LABEL.STABLE_UPDATES : "stable-updates",
-        _LABEL.TESTING : "testing",
-        _LABEL.UNSTABLE : "unstable",
-    }
-    return shortname[version_label()]
-
-def print_header():
+def _print_header():
     """Appelé par entete.F pour afficher des informations sur
     la machine."""
     import aster_core
     from i18n import localization
     from Utilitai.Utmess import UTMESS
-    _init_labels()
+    from Accas import properties
     names = {
-        _LABEL.STABLE : _(u"""EXPLOITATION (stable)"""),
-        _LABEL.STABLE_UPDATES : _(u"""CORRECTIVE AVANT STABILISATION (stable-updates)"""),
-        _LABEL.TESTING : _(u"""DÉVELOPPEMENT STABILISÉE (testing)"""),
-        _LABEL.UNSTABLE : _(u"""DÉVELOPPEMENT (unstable)"""),
+        'stable' : _(u"""EXPLOITATION (stable)"""),
+        'stable-updates' : _(u"""CORRECTIVE AVANT STABILISATION (stable-updates)"""),
+        'testing' : _(u"""DÉVELOPPEMENT STABILISÉE (testing)"""),
+        'unstable' : _(u"""DÉVELOPPEMENT (unstable)"""),
     }
-    typvers = names[version_label()]
+    unkn = _(u"""DÉVELOPPEMENT (%s)""") % aster_core.get_option('from_branch')
+    typvers = names.get(aster_core.get_option('from_branch'), unkn)
     aster_core.set_info('versLabel', typvers)
     lang_settings = '%s (%s)' % localization.get_current_settings()
 
     date_build = aster_core.get_option('date')
-
+    changes = aster_core.get_option('changes')
+    uncommitted = aster_core.get_option('uncommitted')
+    UTMESS('I', 'SUPERVIS2_4', valk=typvers)
+    if not changes and not uncommitted:
+        UTMESS('I', 'SUPERVIS2_9',
+            valk=(aster_core.get_option('version'), date_build,),)
+    else:
+        UTMESS('I', 'SUPERVIS2_23',
+            valk=(aster_core.get_option('version'), date_build,
+                  aster_core.get_option('parentid'), aster_core.get_option('branch')),)
     UTMESS('I', 'SUPERVIS2_10',
-        valk=(typvers,
-              aster_core.get_option('version'),
-              date_build,
-              "1991", time.strftime('%Y'),
+        valk=("1991", time.strftime('%Y'),
               time.strftime('%c'),
               aster_core.get_option('hostname'),
               aster_core.get_option('architecture'),
               aster_core.get_option('processor'),
               aster_core.get_option('system') + ' ' + aster_core.get_option('osrelease'),
-              lang_settings,
-            ),
-    )
+              lang_settings,),)
     # avertissement si la version a plus de 15 mois
     if aster_core._NO_EXPIR == 0:
         try:
@@ -355,6 +318,34 @@ def print_header():
                 UTMESS('A', 'SUPERVIS2_2')
         except ValueError:
             pass
+
+def _print_alarm():
+    import aster_core
+    from Utilitai.Utmess import UTMESS
+    changes = aster_core.get_option('changes')
+    uncommitted = aster_core.get_option('uncommitted')
+    if changes:
+        UTMESS('A+', 'SUPERVIS_41', valk=aster_core.get_option('version'), vali=changes)
+    if uncommitted and type(uncommitted) is list:
+        fnames = ', '.join(uncommitted)
+        UTMESS('A+', 'SUPERVIS_42', valk=(aster_core.get_option('parentid'), fnames),)
+    UTMESS('I', 'VIDE_1')
+
+def print_header(part):
+    """Appelé par entete.F pour afficher des informations sur la machine.
+    Certaines informations étant obtenues en fortran, une partie des messages
+    est imprimée par le fortran. On a donc découpé en plusieurs morceaux.
+    part = 1 : entête principal : ici
+    part = 2 : informations librairies : dans entete.F
+    part = 3 : message d'alarme en cas de modification du code source : ici
+    """
+    if part == 1:
+        _print_header()
+    elif part == 3:
+        _print_alarm()
+    else:
+        raise ValueError("unknown value for 'part'")
+    
 
 def _bwc_arguments(argv):
     """Fonction de compatibilité de transition vers des options "GNU".

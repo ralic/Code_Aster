@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 10/04/2012   AUTEUR PROIX J-M.PROIX 
+%& MODIF TYPELEM  DATE 11/06/2012   AUTEUR PROIX J-M.PROIX 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -233,8 +233,10 @@ OPTION__
                                      DDL_THER PTEMPER  CTEMPSR  PTEMPSR  DDL_THER PTMPCHF  DDL_THER PTMPCHI
                               OUT__  MVECTTR  PVECTTI  MVECTTR  PVECTTR
     CHAR_THER_GRAI_F    219   IN__   NGEOMER  PGEOMER  CGRAINF  PGRAINF  CMATERC  PMATERC  CTEMPSR  PTEMPSR
+                                     ZVARCPG  PVARCPR
                               OUT__  MVECTTR  PVECTTR 
     CHAR_THER_GRAI_R    219   IN__   NGEOMER  PGEOMER  CGRAINR  PGRAINR  CMATERC  PMATERC
+                                     ZVARCPG  PVARCPR
                               OUT__  MVECTTR  PVECTTR 
     CHAR_THER_SOUR_F    80    IN__   NGEOMER  PGEOMER  CSOURCF  PSOURCF  CTEMPSR  PTEMPSR
                               OUT__  MVECTTR  PVECTTR

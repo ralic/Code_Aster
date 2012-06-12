@@ -1,32 +1,32 @@
-      SUBROUTINE VPQZLA      
+      SUBROUTINE VPQZLA
      &  (TYPEQZ, QRN, IQRN, LQRN, QRAR, QRAI, QRBA, QRVL,
      &   LVEC, KQRN, LVALPR, NCONV, OMECOR, KTYP, KQRNR,
      &   NEQACT, ILSCAL, IRSCAL, OPTIOF, TYPRES, OMEMIN, OMEMAX, OMESHI,
      &   DDLEXC, NFREQ, LMASSE, LRAIDE, LAMOR, NUMEDD, SIGMA,
      &   ICSCAL, IVSCAL, IISCAL, IBSCAL, FLAGE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 15/11/2010   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C TOLE CRP_21
 C TOLE CRP_4
 C     SUBROUTINE ASTER ORCHESTRANT LA METHODE QZ (VERSION LAPACK).
-C     EN GENERALISEE OU EN QUADRATIQUE AVEC MATRICES K, M  ET C 
+C     EN GENERALISEE OU EN QUADRATIQUE AVEC MATRICES K, M  ET C
 C     SYMETRIQUES OU NON. K E R/C, M E R, C E R.
 C-----------------------------------------------------------------------
 C CE PROGRAMME EFFECUE LES TACHES SUIVANTES:
@@ -35,9 +35,9 @@ C    - PASSAGE DES MATRICES EN STOCKAGE MORSE A DES MATRICES PLEINES
 C    (NECESSAIRE POUR UTILISER LAPACK)
 C    - APPEL AUX ROUTINES LAPACK DE RESOLUTION DE PB GENERALISES
 C          BETA * A * X - ALPHA * B * X = 0
-C       ON PEUT ALORS CALCULER LES VALEURS PROPRES DU PROBLEME 
+C       ON PEUT ALORS CALCULER LES VALEURS PROPRES DU PROBLEME
 C       GENERALISE ENFAISANT LE RAPPORT ALPHA/BETA SI BETA EST NON NUL.
-C    - TRI DES VALEURS PROPRES: SEUL LES MODES PROPRES CORRESPONDANT 
+C    - TRI DES VALEURS PROPRES: SEUL LES MODES PROPRES CORRESPONDANT
 C    AUX DDL ACTIFS SONT CONSERVES. LES MODES PROVENANT DES LAGRANGES
 C    OU DES DDL BLOQUES DONNENT DES VALEURS NULLES POUR BETA.
 C
@@ -66,12 +66,12 @@ C IN  KTYP   : K1 : TYPE DE LA MATRICE DE RAIDEUR
 C IN  KQRNR  : IS : ADRESSE JEVEUX VECTEUR AUX LAPACK SI K E C (R)
 C IN  NEQACT : IS : NOMBRE DE DDL ACTIFS
 C IN  ILSCAL/IRSCAL : IS : ADRESSE JEVEUX VECTEURS AUX POUR QZ_EQUI
-C IN  OPTIOF : K16: OPTION DEMANDEE (BANDE, PLUS_PETITE,CENTRE,TOUT) 
+C IN  OPTIOF : K16: OPTION DEMANDEE (BANDE, PLUS_PETITE,CENTRE,TOUT)
 C IN  TYPRES : K16: TYPE DE SD_RESULTAT
 C IN  OMEMIN/OMEMAX: R8 : FREQS MIN ET MAX DE LA BANDE RECHERCHEE
 C IN  OMESHI : R8 : VALEUR  RETENUE DU SHIFT PAR VPFOPR EN GENE REEL
 C IN  DDLEXC : IS : DDLEXC(1..QRN) VECTEUR POSITION DES DDLS BLOQUES.
-C IN  NFREQ  : IS : NBRE DE MODES DEMANDES SI OPTIOF=CENTRE OU 
+C IN  NFREQ  : IS : NBRE DE MODES DEMANDES SI OPTIOF=CENTRE OU
 C                   PLUS_PETITE
 C IN  LMASSE : IS : DESCRIPTEUR DE LA MATRICE DE MASSE M (R)
 C IN  LRAIDE : IS : DESCRIPTEUR DE LA MATRICE DE RAIDEUR K (R/C)
@@ -124,7 +124,7 @@ C DECLARATION VARIABLES LOCALES
      &             IVALA1,IVALR1,IVALM1,LVECN,JM1,IAUXH1,IM1,J2M1,
      &             IAUX21,ICS1
       INTEGER*4    QRN4,LDVL4,LDVR4,QRLWO4,QRINFO,ILO,IHI,IAUXH4
-      REAL*8       R8MIEM,R8MAEM,R8PREM,ABNRM,BBNRM,BAUX, 
+      REAL*8       R8MIEM,R8MAEM,R8PREM,ABNRM,BBNRM,BAUX,
      &             RAUXI,AAUX,VALR(4),RAUX,ANORM,BNORM,PREC2,VPINF,PREC,
      &             VPMAX,VPCOUR,ALPHA,FREQOM,PREC3,RUN,RZERO,RAUXR,
      &             RAUXM,CNORM,CAUX,COEFN,
@@ -145,7 +145,7 @@ C-----------------------------------------------------------------------
       CALL INFNIV(IFM,NIV)
       CALL MATFPE(-1)
 
-C------      
+C------
 C------
 C INITS
 C------
@@ -199,7 +199,7 @@ C ---- QRN DOIT ETRE PAIRE EN QUADRATIQUE
         LKR=.FALSE.
       ELSE
 C ---- OPTION ILLICITE
-        CALL ASSERT(.FALSE.)      
+        CALL ASSERT(.FALSE.)
       ENDIF
 C ---- MATRICES NON SYMETRIQUES ?
        LNSA=.FALSE.
@@ -210,13 +210,13 @@ C ---- MATRICES NON SYMETRIQUES ?
        ENDIF
        IF (ZI(LRAIDE+4).EQ.0) LNSR=.TRUE.
        IF (ZI(LMASSE+4).EQ.0) LNSM=.TRUE.
-       
+
 C--------------------------------------------------
 C--------------------------------------------------
-C CONVERSION DES MATRICES MORSE EN MATRICES PLEINES 
+C CONVERSION DES MATRICES MORSE EN MATRICES PLEINES
 C--------------------------------------------------
 C--------------------------------------------------
-      
+
 C ---- MATRICES K ET M REELLES SYMETRIQUES
       NOMRAI=ZK24(ZI(LRAIDE+1))
       NOMMAS=ZK24(ZI(LMASSE+1))
@@ -232,7 +232,7 @@ C ---- MATRICES K ET M REELLES SYMETRIQUES
       ENDIF
       CALL JEVEUO(NUMEDD(1:14)//'.SMOS.SMHC','L',IHCOL)
       CALL JEVEUO(NUMEDD(1:14)//'.SMOS.SMDI','L',IADIA)
-      
+
 C ---- PB MODAL GENERALISE
       IF (.NOT.LC) THEN
 C ---- MATRICES K ET M REELLES SYMETRIQUES
@@ -321,7 +321,7 @@ C ---       PARTIE TRIANGULAIRE SUP
             BAUX=ABS(ZR(IVALM+IM1))
             CAUX=ABS(ZR(IVALA+IM1))
 C ---       PARTIE TRIANGULAIRE INF
-            IF (IAUXH.NE.J) THEN            
+            IF (IAUXH.NE.J) THEN
               IF (LNSR) THEN
                 IF (LKR) THEN
                   AAUX1=ABS(ZR(IVALR1+IM1))
@@ -349,7 +349,7 @@ C ---       PARTIE TRIANGULAIRE INF
               ZR(LVECN+IAUXH1)      =ZR(LVECN+IAUXH1)      +AAUX1
               ZR(LVECN+IAUXH1+QRNS2)=ZR(LVECN+IAUXH1+QRNS2)+BAUX1
               ZR(LVECN+IAUXH1+QRN)  =ZR(LVECN+IAUXH1+QRN)  +CAUX1
-            ENDIF       
+            ENDIF
    38     CONTINUE
           IDEB = IFIN+1
    39   CONTINUE
@@ -436,7 +436,7 @@ C MATRICE COMPAGNON A
 C MATRICE COMPAGNON B
               ZC(LQRN+JM1*QRN+IAUXH1)     =  CAUXA
               ZC(LQRN+QRN*IAUXH1+JM1)     =  CAUXA1
-              ZC(LQRN+J2M1*QRN+IAUXH1)    =  CAUXM           
+              ZC(LQRN+J2M1*QRN+IAUXH1)    =  CAUXM
               ZC(LQRN+QRN*IAUX21+JM1)     =  CAUXM1
               IF (J.EQ.IAUXH)
      &          ZC(LQRN+JM1*QRN+IAUX21)   =  CAUXM2
@@ -445,13 +445,13 @@ C MATRICE COMPAGNON B
             ELSE IF (TYPLIN.EQ.1) THEN
 C MATRICE COMPAGNON A
               ZC(IQRN+JM1*QRN+IAUX21)     = -CAUXR
-              ZC(IQRN+QRN*IAUXH1+J2M1)    = -CAUXR1           
+              ZC(IQRN+QRN*IAUXH1+J2M1)    = -CAUXR1
               ZC(IQRN+J2M1*QRN+IAUXH1)    =  CAUXM2
               ZC(IQRN+QRN*IAUX21+JM1)     =  CAUXM2
               ZC(IQRN+J2M1*QRN+IAUX21)    =  -CAUXA
               ZC(IQRN+QRN*IAUX21+J2M1)    = -CAUXA1
 C MATRICE COMPAGNON B
-              ZC(LQRN+JM1*QRN+IAUXH1)     =  CAUXM2           
+              ZC(LQRN+JM1*QRN+IAUXH1)     =  CAUXM2
               ZC(LQRN+QRN*IAUXH1+JM1)     =  CAUXM2
               ZC(LQRN+J2M1*QRN+IAUX21)    =   CAUXM
               ZC(LQRN+QRN*IAUX21+J2M1)    =  CAUXM1
@@ -466,7 +466,7 @@ C MATRICE COMPAGNON B
 C ---- TESTS UNITAIRES SI LTEST=.TRUE.
       IF (LTEST) THEN
         IF (LKR.AND.(.NOT.LC).AND.(.NOT.LNSM).AND.(.NOT.LNSR)) THEN
-          DO 61 I=1,QRN     
+          DO 61 I=1,QRN
           DO 60 J=1,QRN
             ZR(IQRN-1+(J-1)*QRN+I)=RZERO
             ZR(LQRN-1+(J-1)*QRN+I)=RZERO
@@ -476,7 +476,7 @@ C ---- TESTS UNITAIRES SI LTEST=.TRUE.
             ZR(IQRN-1+(I-1)*QRN+I)=I*RUN
             ZR(LQRN-1+(I-1)*QRN+I)=RUN
    62     CONTINUE
-        ELSE      
+        ELSE
           DO 64 I=1,QRN
           DO 63 J=1,QRN
             ZC(IQRN-1+(J-1)*QRN+I)=CZERO
@@ -523,8 +523,8 @@ C           ZC(LQRN+JM1*QRN+IM1)=DCMPLX(F1,F2)
 C   78     CONTINUE
 C   79   CONTINUE
 C      ENDIF
-      
-C ---- CALCUL DE LA NORME INFINIE DE A ET B 
+
+C ---- CALCUL DE LA NORME INFINIE DE A ET B
       ANORM=0.D0
       BNORM=0.D0
       DO 44 I = 1,QRN
@@ -547,7 +547,7 @@ C ---- CALCUL DE LA NORME INFINIE DE A ET B
         ANORM=MAX(ANORM,AAUX)
         BNORM=MAX(BNORM,BAUX)
    44 CONTINUE
-C ---- CALCUL DE LA NORME L1 DE A ET B 
+C ---- CALCUL DE LA NORME L1 DE A ET B
       ANORM1=0.D0
       BNORM1=0.D0
       DO 440 J = 1,QRN
@@ -588,7 +588,7 @@ C        DO I=1,QRN
 C         CAUXR=ZC(IQRN+(J-1)*QRN+I-1)
 C         CAUXM=ZC(LQRN+(J-1)*QRN+I-1)
 C         WRITE(17,'(I4,1X,I4,1X,E17.8,1X,E17.8)')
-C     &     I,J,DBLE(CAUXR),DBLE(CAUXM)          
+C     &     I,J,DBLE(CAUXR),DBLE(CAUXM)
 C       ENDDO
 C      ENDDO
 C-------------------------------------------------------------------
@@ -598,7 +598,7 @@ C 1ERE PASSE: POUR ESTIMER L'ESPACE DE TRAVAIL OPTIMAL EN TEMPS
 C 2ND PASSE : RESOLUTION VALEURS PROPRES ET VECTEURS PROPRES A DROITE
 C-------------------------------------------------------------------
 C-------------------------------------------------------------------
-       
+
 C ---- ADRESSE VECTEURS PROPRES
        IF (LC) THEN
          CALL WKVECT('&&VPQZLA.VP2','V V C',QRN*QRN,LVEC2)
@@ -678,8 +678,8 @@ C     VALEURS PROPRES ET LES ANGLES DE VECTEURS PROPRES
             ZR(ICSCAL+IM1)=PREC*ABNORM/RAUX
    70     CONTINUE
         ENDIF
-               
-C ----  QZ SIMPLE 
+
+C ----  QZ SIMPLE
       ELSEIF (TYPEQZ(1:9).EQ.'QZ_SIMPLE') THEN
         IF ((LKR).AND.(.NOT.LC).AND.(.NOT.LNSR).AND.(.NOT.LNSM)) THEN
           CALL DGGEV('N','V',QRN4,ZR(IQRN),QRN4,ZR(LQRN),QRN4,ZR(QRAR),
@@ -697,7 +697,7 @@ C ----  QZ SIMPLE
         ELSE
           CALL ZGGEV('N','V',QRN4,ZC(IQRN),QRN4,ZC(LQRN),QRN4,ZC(QRAR),
      &      ZC(QRBA),ZC(QRVL),LDVL4,ZC(LVEC3),LDVR4,ZC(KQRN),QRLWO4,
-     &      ZR(KQRNR),QRINFO)          
+     &      ZR(KQRNR),QRINFO)
           IF (QRINFO.EQ.0) THEN
             QRLWO4 = INT(DBLE(ZC(KQRN)))
             QRLWOR = INT(DBLE(ZC(KQRN)))
@@ -707,8 +707,8 @@ C ----  QZ SIMPLE
      &        ZC(QRAR),ZC(QRBA),ZC(QRVL),LDVL4,ZC(LVEC3),LDVR4,
      &        ZC(KQRN2),QRLWO4,ZR(KQRNR),QRINFO)
           ENDIF
-        ENDIF          
- 
+        ENDIF
+
 C ----  QR
       ELSEIF (TYPEQZ(1:5).EQ.'QZ_QR') THEN
 C ---- CONFIGURATION ILLICITE
@@ -728,7 +728,7 @@ C ---- OPTION INVALIDE
         CALL ASSERT(.FALSE.)
       ENDIF
 
-C-------------------------------------      
+C-------------------------------------
 C ------------------------------------
 C TRAITEMENT  DES ERREURS DANS LAPACK
 C ------------------------------------
@@ -798,13 +798,13 @@ C POUR DEBUG
       ENDIF
 C FIN DEBUG
 
-C-----------------------------------      
+C-----------------------------------
 C ----------------------------------
 C POST-TRAITEMENTS ET VERIFICATIONS
 C ----------------------------------
 C-----------------------------------
 
-      DECAL = 0     
+      DECAL = 0
 C ---- SI SYSTEME NON SYM REEL, TRAITEMENT DES PARTIES IMAGINAIRES
       IF ((TYPEQZ(1:5).NE.'QZ_QR').AND.(LKR).AND.(.NOT.LC).AND.
      &    (.NOT.LNSM).AND.(.NOT.LNSR)) THEN
@@ -844,7 +844,7 @@ C ---- GENERALISE REEL SYM MAIS PAS SPD
           IF (ABS(ZR(QRBA+IM1)).GT.PREC) THEN
             RAUX=SQRT(ZR(QRAR+IM1)**2+ZR(QRAI+IM1)**2)
             RAUXI=ABS(ZR(QRBA+IM1))
-            IF ((RAUX.GT.ANORM).OR.(RAUXI.GT.BNORM)) 
+            IF ((RAUX.GT.ANORM).OR.(RAUXI.GT.BNORM))
      &      THEN
               VALI(1)=I
               VALR(1)=RAUX
@@ -925,7 +925,7 @@ C ---- QUADRATIQUE REEL ET COMPLEXE, SYM OU NON
 C     --- POST-TRAITEMENT POUR QR ---
         DO 57 I = 1,QRN
            IM1=I-1
-           IF ((ZR(LVALPR+IM1).LT.PREC3).OR.(ZR(LVALPR+IM1).GT.PREC2)) 
+           IF ((ZR(LVALPR+IM1).LT.PREC3).OR.(ZR(LVALPR+IM1).GT.PREC2))
      &     THEN
              DECAL = DECAL+1
              IF (NIV.GE.2) THEN
@@ -942,7 +942,7 @@ C     --- POST-TRAITEMENT POUR QR ---
            ENDIF
    57   CONTINUE
       ENDIF
-      
+
 C ----  NBRE DE MODES RETENUS
       NCONV = QRN-DECAL
 
@@ -959,10 +959,10 @@ C ---- RESULTAT DU TEST UNITAIRE
    66   CONTINUE
       ENDIF
 
-C-------------------------------------      
+C-------------------------------------
 C ----  ON TESTE LES MODES VALIDES
 C ----  1/ NBRE TOTAL DE MODES TROUVES
-C-------------------------------------     
+C-------------------------------------
       IF ((NCONV/IMULT).NE.NEQACT) THEN
         VALI(1)=NCONV/IMULT
         VALI(2)=NEQACT
@@ -1007,7 +1007,7 @@ C ---- GENERALISE SYM REEL
      &                        ZR(LVEC+(J-1)*QRN),1)
             ENDIF
    80     CONTINUE
-          NCONV = J        
+          NCONV = J
           IF (NCONV.NE.NFREQ) THEN
             VALI(1)=NCONV
             VALI(2)=NFREQ
@@ -1046,7 +1046,7 @@ C STRATEGIE BIZARRE A REVOIR (CF VPSORC, VPFOPC, RECTFC, VPBOSC)
           NCONV=NFREQ
         ELSE
           KMSG='F'
-C --- PROBABLEMENT OPTION='TOUT' QUI PRESUPPOSE (SANS DOUTE A TORT 
+C --- PROBABLEMENT OPTION='TOUT' QUI PRESUPPOSE (SANS DOUTE A TORT
 C     EN NON SYM) QUE NFREQ=NEQACT
           VALI(1)=NFREQ
           VALI(2)=NCONV
@@ -1101,17 +1101,17 @@ C------------------------------------------------------------------
         ENDIF
         IAUXH4=IAUXH
         DO 91 I=1,NCONV
-          CALL JERAZO('&&VPQZLA.TAMPON.PROV_1',IAUXH,1)      
-          CALL JERAZO('&&VPQZLA.TAMPON.PROV_2',IAUXH,1)      
+          CALL JERAZO('&&VPQZLA.TAMPON.PROV_1',IAUXH,1)
+          CALL JERAZO('&&VPQZLA.TAMPON.PROV_2',IAUXH,1)
           IF (LC) CALL JERAZO('&&VPQZLA.TAMPON.PROV_3',IAUXH,1)
           IF (LKR.AND.(.NOT.LC).AND.(.NOT.LNSM).AND.(.NOT.LNSR)) THEN
             FR=ZR(LVALPR-1+I)+OMESHI
             FREQ=FR*CUN
-            CALL MRMULT('ZERO',LRAIDE,ZR(LVEC+IAUXH*(I-1)),'R',
-     &                  ZR(IAUX1),1)
+            CALL MRMULT('ZERO',LRAIDE,ZR(LVEC+IAUXH*(I-1)),
+     &                  ZR(IAUX1),1,.FALSE.)
             ANORM1=DNRM2(IAUXH4,ZR(IAUX1),1)
-            CALL MRMULT('ZERO',LMASSE,ZR(LVEC+IAUXH*(I-1)),'R',
-     &                  ZR(IAUX2),1)
+            CALL MRMULT('ZERO',LMASSE,ZR(LVEC+IAUXH*(I-1)),
+     &                  ZR(IAUX2),1,.FALSE.)
             CALL DAXPY(IAUXH4,-FR,ZR(IAUX2),1,ZR(IAUX1),1)
             ANORM2=DNRM2(IAUXH4,ZR(IAUX1),1)
           ELSE
@@ -1120,14 +1120,14 @@ C------------------------------------------------------------------
             ELSE
               FREQ = ZC(LVALPR-1+I)-SIGMA
             ENDIF
-            CALL MCMULT('ZERO',LRAIDE,ZC(LVEC+IAUXH*(I-1)),'C',
-     &                  ZC(IAUX1),1)
+            CALL MCMULT('ZERO',LRAIDE,ZC(LVEC+IAUXH*(I-1)),
+     &                  ZC(IAUX1),1,.FALSE.)
             ANORM1=DZNRM2(IAUXH4,ZC(IAUX1),1)
-            CALL MCMULT('ZERO',LMASSE,ZC(LVEC+IAUXH*(I-1)),'C',
-     &                  ZC(IAUX2),1)
+            CALL MCMULT('ZERO',LMASSE,ZC(LVEC+IAUXH*(I-1)),
+     &                  ZC(IAUX2),1,.FALSE.)
             IF (LC) THEN
-              CALL MCMULT('ZERO',LAMOR ,ZC(LVEC+IAUXH*(I-1)),'C',
-     &                          ZC(IAUX3),1)
+              CALL MCMULT('ZERO',LAMOR,ZC(LVEC+IAUXH*(I-1)),
+     &                          ZC(IAUX3),1,.FALSE.)
               CALL ZAXPY(IAUXH4,FREQ,ZC(IAUX3),1,ZC(IAUX1),1)
               FREQ2 = FREQ*FREQ
               CALL ZAXPY(IAUXH4,FREQ2,ZC(IAUX2),1,ZC(IAUX1),1)
@@ -1164,7 +1164,7 @@ C------------------------------------------------------------------
         CALL JEDETR('&&VPQZLA.TAMPON.PROV_1')
         CALL JEDETR('&&VPQZLA.TAMPON.PROV_2')
         IF (LC) CALL JEDETR('&&VPQZLA.TAMPON.PROV_3')
-      ENDIF      
-      CALL MATFPE(1)      
-      CALL JEDEMA()      
+      ENDIF
+      CALL MATFPE(1)
+      CALL JEDEMA()
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE MUR PLAN EN THERMIQUE STATIONNAIRE (QUAD8/TRIA6)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -63,10 +63,8 @@ TEMPE=THER_LINEAIRE(        MODELE=MOTH,
              CHAM_MATER=CHMAT, EXCIT=_F( CHARGE = CHTH)
              )
 
-TEMPE=CALC_ELEM( reuse=TEMPE,
-                        RESULTAT=TEMPE,
-                            OPTION=('FLUX_ELNO' ,
-                                    'FLUX_ELGA',),);
+TEMPE=CALC_CHAMP(reuse=TEMPE,RESULTAT=TEMPE,THERMIQUE=('FLUX_ELNO','FLUX_ELGA'))
+
 
 CHEM2=INTE_MAIL_2D(   MAILLAGE=MAIL,
                       DEFI_SEGMENT=_F( ORIGINE = ( 0.04,  0.07, ),

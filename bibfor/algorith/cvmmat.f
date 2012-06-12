@@ -1,12 +1,12 @@
         SUBROUTINE CVMMAT ( FAMI, KPG, KSP, MOD,    IMAT,   NMAT,
      &                      MATERD, MATERF, MATCST, TYPMA,    NDT,
-     &                      NDI,    NR,     NVI )
+     &                      NDI,    NR, CRIT, VIM,   NVI, SIGD )
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 11/06/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -46,10 +46,10 @@ C           NDI    :  NB DE COMPOSANTES DIRECTES  TENSEURS
 C           NR     :  NB DE COMPOSANTES SYSTEME NL
 C           NVI    :  NB DE VARIABLES INTERNES
 C       ----------------------------------------------------------------
-        INTEGER         KPG, KSP, NMAT, NDT , NDI  , NR , NVI
+        INTEGER         KPG, KSP, NMAT, NDT , NDI  , NR , NVI, LGPG
         INTEGER         IOPTIO, IDNR, I, J, IMAT
         REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2)
-        REAL*8          EPSI , C1D , C2D
+        REAL*8          EPSI , C1D , C2D, VIM(*), SIGD(6), CRIT(*)
         CHARACTER*(*)   FAMI
         CHARACTER*8     MOD , NOMC(28) , TYPMA
       INTEGER CERR(28)
@@ -145,6 +145,15 @@ C -     RECUPERATION MATERIAU A (T)
 C
           CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ', 'ELAS',0,' ',
      &                0.D0, 3,NOMC(1),  MATERD(1,1),  CERR(1), 0)
+
+C
+          IF (CRIT(11) .GT.0.D0) THEN
+            LGPG = 34
+            CALL RUPMAT (FAMI, KPG, KSP, IMAT,VIM, LGPG, 
+     &                   MATERD(1,1), SIGD)
+          ENDIF
+C 
+
           IF ( CERR(3) .NE. 0 ) MATERD(3,1) = 0.D0
           CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ', 'VISCOCHAB',0,' ',
      &                0.D0,25,NOMC(4),  MATERD(1,2),  CERR(4), 2)
@@ -158,6 +167,14 @@ C -     RECUPERATION MATERIAU A (T+DT)
 C
           CALL RCVALB(FAMI,KPG,KSP,'+',IMAT,' ', 'ELAS',  0,' ',
      &                0.D0, 3,NOMC(1),  MATERF(1,1),  CERR(1), 0)
+
+C
+          IF (CRIT(11) .GT. 0.D0) THEN
+            LGPG = 34
+            CALL RUPMAT (FAMI, KPG, KSP, IMAT,VIM, LGPG, 
+     &                   MATERF(1,1), SIGD)
+          ENDIF
+C          
           IF ( CERR(3) .NE. 0 ) MATERF(3,1) = 0.D0
           CALL RCVALB(FAMI,KPG,KSP,'+',IMAT,' ', 'VISCOCHAB', 0,' ',
      &                0.D0, 25,NOMC(4),  MATERF(1,2),  CERR(4), 2)
@@ -191,4 +208,8 @@ C
  40     CONTINUE
 C
  9999   CONTINUE
+C     NOMBRE DE COEF MATERIAU      
+      MATERF(NMAT,2)=25
+      MATERD(NMAT,2)=25
+      
         END

@@ -6,9 +6,9 @@
       CHARACTER*19      MASS2
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -87,7 +87,7 @@ C
 C
 C              --- ON RECUPERE LE MODE STATIQUE ASSOCIE AU NOEUD ---
                CALL RSORAC(MODSTA,'NOEUD_CMP',IBID,R8B,ACCES,C16B,EPSI,
-     +                     CRIT,IORDR,1,NBTROU)
+     &                     CRIT,IORDR,1,NBTROU)
                IF (NBTROU.NE.1) THEN
                   IER = IER + 1
                   VALK (1) = ACCES(1:8)
@@ -96,7 +96,7 @@ C              --- ON RECUPERE LE MODE STATIQUE ASSOCIE AU NOEUD ---
                   GOTO 20
                ENDIF
                CALL RSVPAR(MODSTA,IORDR,'TYPE_DEFO',IBID,R8B,
-     +                                  'DEPL_IMPO',IRET)
+     &                                  'DEPL_IMPO',IRET)
                IF (IRET.NE.100) THEN
                   IER = IER + 1
                   VALK (1) = 'MODE_MECA'
@@ -121,7 +121,8 @@ C                 --- ON EFFECTUE LE PRODUIT  MASSE * CHAM_NO ---
                      ZR(IDVE+I) = -XD * ZR(IDMST+I)
  22               CONTINUE
                   CALL JELIBE(CHAMNO//'.VALE')
-                  CALL MRMULT('CUMU',LMAT,ZR(IDVE),'R',ZR(IDCHM),1)
+                  CALL MRMULT('CUMU',LMAT,ZR(IDVE),ZR(IDCHM),1,
+     &.TRUE.)
                ENDIF
  20         CONTINUE
          ENDIF

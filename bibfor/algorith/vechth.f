@@ -1,7 +1,7 @@
       SUBROUTINE VECHTH(TYPCAL,MODELZ,CHARGZ,INFOCZ,CARELZ,MATEZ,INSTZ,
      &                  CHTNZ,VECELZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 11/06/2012   AUTEUR PROIX J-M.PROIX 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -94,13 +94,16 @@ C ----------------------------------------------------------------------
       PARAMETER (NBCHMX=6)
       INTEGER NBOPT(NBCHMX),NLIGR(NBCHMX)
       CHARACTER*6 NOMPAR(NBCHMX),NOMCHP(NBCHMX),NOMOPT(NBCHMX)
+      CHARACTER*19 CHVARC
       DATA NOMCHP/'.T_EXT','.FLURE','.FLUR2','.SOURE','.HECHP','.GRAIN'/
       DATA NOMOPT/'TEXT_','FLUN_','FLUX_','SOUR_','PARO_','GRAI_'/
       DATA NOMPAR/'PT_EXT','PFLUXN','PFLUXV','PSOURC','PHECHP','PGRAIN'/
-      DATA NBOPT/5,3,3,3,5,6/
+      DATA NBOPT/5,3,3,3,5,7/
       DATA NLIGR/1,1,1,1,2,1/
 
 C DEB ------------------------------------------------------------------
+      CHVARC = '&&NXACMV.CHVARC'
+
 C====
 C 1.1 PREALABLES LIES AUX OPTIONS
 C====
@@ -191,8 +194,11 @@ C ... LA CARTE MATERIAU (I1)
       LPAIN(6) = 'PMATERC'
       LCHIN(6) = MATE
 C ... LE CHAMP DE DEPLACEMENT
-      LPAIN(7) = 'PDEPLAR'
-      LCHIN(7) = '&&DEPPLU'
+      LPAIN(7) = 'PVARCPR'
+      LCHIN(7) = CHVARC
+C ... LE CHAMP DE DEPLACEMENT
+      LPAIN(8) = 'PDEPLAR'
+      LCHIN(8) = '&&DEPPLU'
 
 C ... LE CHAMP RESULTAT
       PAOUT = 'PVECTTR'

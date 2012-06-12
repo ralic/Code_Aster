@@ -34,16 +34,11 @@ for i in range(n):
                    EXCIT=(_F(CHARGE=CH_0),_F(CHARGE=CH_1,),),
                   );
 
-  RES2[i]= CALC_ELEM(
-                 reuse = RES2[i],
-                 RESULTAT = RES2[i],
-                 OPTION = 'EPSI_ELNO'
-                 );
+  RES2[i]=CALC_CHAMP(reuse=RES2[i],RESULTAT=RES2[i],DEFORMATION=('EPSI_ELNO'))
 
-  RES2[i]= CALC_ELEM(
-                 reuse = RES2[i],
-                 RESULTAT = RES2[i],
-                 OPTION = 'SIGM_ELNO')
+
+  RES2[i]=CALC_CHAMP(reuse=RES2[i],RESULTAT=RES2[i],CONTRAINTE=('SIGM_ELNO'))
+
 
   TB_DY[i]=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
                                GROUP_NO=('OPPOSE'),
@@ -84,10 +79,10 @@ for i in range(n):
       CRITERE   = 'ABSOLU',
       PRECISION = 1.E-6,
       REFERENCE = 'AUTRE_ASTER',)
-      
+
 #
 # -- Deformations
-#        
+#
   TB_EPS[i]=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
                                NOEUD='N256',
                                MAILLE='M82',
@@ -133,7 +128,7 @@ for i in range(n):
 
 #
 # -- Contraintes
-#        
+#
   TB_SIY[i]=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
                                NOEUD='N256',
                                MAILLE='M82',
@@ -145,7 +140,7 @@ for i in range(n):
 
   V_SIYY[i]=FORMULE(NOM_PARA=('SIYY_EPS', 'SIYY_REF', 'SIYYDPS'),
                     VALE='abs ((SIYY_EPS - SIYY_REF)/%f - SIYYDPS)' %(sensible[i]*epsilon))
-    
+
   TBSIYY[i]=CALC_TABLE(TABLE=TA_R_SIS,
                         SENSIBILITE=PS[i],
                         ACTION=(_F(OPERATION='RENOMME',
@@ -185,7 +180,7 @@ for i in range(n):
   DETRUIRE( CONCEPT =_F(NOM = TB_EPS[i] ))
   DETRUIRE( CONCEPT =_F(NOM = MAT2[i] ))
   DETRUIRE( CONCEPT =_F(NOM = MATE2[i] ))
-  DETRUIRE( CONCEPT =_F(NOM = VER_DY[i] ))  
+  DETRUIRE( CONCEPT =_F(NOM = VER_DY[i] ))
   DETRUIRE( CONCEPT =_F(NOM = V_EPXY[i] ))
   DETRUIRE( CONCEPT =_F(NOM = V_SIYY[i] ))
 #

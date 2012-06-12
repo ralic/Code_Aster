@@ -1,22 +1,22 @@
-# MODIF  DATE 21/02/2012   AUTEUR ABBAS M.ABBAS 
-# TITRE : EFFET DE ROTATION DE RESEAU SUR UN CUBE MONOCRISTALLIN 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+# TITRE : EFFET DE ROTATION DE RESEAU SUR UN CUBE MONOCRISTALLIN
 # ssnd112b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='SSND112B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'));
@@ -177,8 +177,8 @@ VAIN11 = CREA_CHAMP(OPERATION = 'ASSE',
 
 NORME = FORMULE(VALE='sqrt(DX*DX+DY*DY+DZ*DZ)',
               NOM_PARA=('DX','DY','DZ',));
-              
-# Calcul des angles d'Euler correspondant a une orientation cristallographique donnee       
+
+# Calcul des angles d'Euler correspondant a une orientation cristallographique donnee
 
 h=-1
 k=2
@@ -189,15 +189,15 @@ phi =NP.arccos(l / NP.sqrt( h*h + k*k + l*l) ) * 180. / NP.pi
 phi2=NP.arctan2( h / NP.sqrt( h*h + k*k ) , k / NP.sqrt( h*h + k*k ) )* 180. / NP.pi
 
 pena = 1.E4
-                     
+
 ORIEN=AFFE_CARA_ELEM(MODELE=TROISD,
                      MASSIF=_F(GROUP_MA='VOL',ANGL_EULER=(phi1, phi, phi2),),
                      DISCRET=_F(GROUP_MA=('PX1',),
                                 CARA='K_T_D_N',
                                 VALE=(0.,pena,0.,),),
                      );
-                     
-                     
+
+
 SOLNL=STAT_NON_LINE(MODELE = TROISD,
                     CHAM_MATER = MAT,
                     CARA_ELEM = ORIEN,
@@ -216,11 +216,11 @@ SOLNL=STAT_NON_LINE(MODELE = TROISD,
                                   GROUP_MA=('PX1'),),
                               ),
                      INCREMENT=(_F(LIST_INST=LIS2DD, INST_FIN=tmax),),
-                     
+
                      NEWTON=(_F(REAC_ITER=1,PREDICTION='EXTRAPOLE'),),
-                     
+
                      ARCHIVAGE=_F(LIST_INST=LINSTDD),
-                     
+
                      SUIVI_DDL=( _F(NOM_CMP    ='V7',
                                    NOM_CHAM   ='VARI_ELGA',
                                    GROUP_MA   ='VOL',
@@ -247,15 +247,12 @@ SOLNL=STAT_NON_LINE(MODELE = TROISD,
                                #    FORMULE = NORME,
                                #    NOM_CHAM='DEPL',
                                #    GROUP_MA   ='VOL',
-                               #    ),                                                                                                        
+                               #    ),
                                  ),
                     );
-                    
-SOLNL = CALC_ELEM(reuse= SOLNL,
-                  RESULTAT = SOLNL,
-                  TOUT_ORDRE = 'OUI',
-                  OPTION   =('EPSG_ELGA',),
-                  );
+
+SOLNL=CALC_CHAMP(reuse=SOLNL,RESULTAT=SOLNL,DEFORMATION=('EPSG_ELGA'))
+
 
 nbnum=100
 pas=20
@@ -297,7 +294,7 @@ IMPR_FONCTION(
                        LEGENDE= 'Edir',),),
             UNITE=28,
             TITRE='Edir = f(INST)');
-            
+
 DEFI_FICHIER(UNITE = 28,
              ACTION = 'LIBERER');
 
@@ -314,11 +311,11 @@ IMPR_FONCTION(
                         LEGENDE= 'SIGdir',),),
             UNITE=28,
             TITRE='SIGdir = f(Edir)');
-            
+
 DEFI_FICHIER(UNITE = 28,
              ACTION = 'LIBERER');
-             
-             
+
+
 
 gamma=[None]*13
 rho=[None]*13
@@ -332,22 +329,22 @@ DEFI_FICHIER(UNITE = 31,
              FICHIER = 'REPE_OUT/gamma_eps_'+ nom_cas + '.dat');
 
 for i in range(1,13):
-    
-    
+
+
     gamma[i]=RECU_FONCTION(RESULTAT=SOLNL,
                    NOM_CHAM='VARI_ELGA',
                    MAILLE='CUBE',
                    POINT=numpg,
                    NOM_CMP='V'+str(8+3*(i-1)),
                            INTERPOL='LIN');
-    
+
     rho[i]=RECU_FONCTION(RESULTAT=SOLNL,
                    NOM_CHAM='VARI_ELGA',
                    MAILLE='CUBE',
                    POINT=numpg,
                    NOM_CMP='V'+str(7+3*(i-1)),
                    INTERPOL='LIN');
-    
+
     IMPR_FONCTION(
             FORMAT='XMGRACE',
             PILOTE='',
@@ -361,7 +358,7 @@ for i in range(1,13):
                        FREQ_MARQUEUR = 10,
                        LEGENDE= unicode(system[i],'iso-8859-1').encode('utf-8'),),),
             UNITE=30,);
-          
+
     IMPR_FONCTION(
             FORMAT='XMGRACE',
             PILOTE='',
@@ -375,10 +372,10 @@ for i in range(1,13):
                        FREQ_MARQUEUR = 10,
                        LEGENDE= unicode(system[i],'iso-8859-1').encode('utf-8'),),),
             UNITE=31,);
-                
+
 DEFI_FICHIER(UNITE = 30,
              ACTION = 'LIBERER');
-                
+
 DEFI_FICHIER(UNITE = 31,
              ACTION = 'LIBERER');
 

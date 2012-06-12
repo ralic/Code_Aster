@@ -3,9 +3,9 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/08/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 11/06/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,7 +25,7 @@ C     BUT: CALCUL DES DEFORMATIONS PLASTIQUES AUX NOEUDS ET PG
 C          ELEMENTS ISOPARAMETRIQUES 3D
 
 C     IN   OPTION : OPTIONS DE CALCUL
-C                   'EPSP_ELNO'   'EPSP_ELGA'
+C                   'EPSP_ELGA'
 C          NOMTE  : NOM DU TYPE ELEMENT
 C ----------------------------------------------------------------------
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
@@ -47,7 +47,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       INTEGER JGANO,MXCMEL,NBRES,NBSGM,I,NDIM,NNO,NBSIGM,NBSIG,
      &        IDSIG,NNOS,NPG,IPOIDS,IVF,IDFDE,IGAU,
-     &        ISIG,INO,IGEOM,IDEPL,ITEMPS,IMATE,
+     &        ISIG,IGEOM,IDEPL,ITEMPS,IMATE,
      &        IDEFP,ICOMPO,NBVARI,IVARI,
      &        NVI,NVIF,IBID,JTAB(7),IRET,IDIM
       PARAMETER (MXCMEL=162)
@@ -55,7 +55,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       PARAMETER (NBSGM=6)
       REAL*8 VALRES(NBRES)
       REAL*8 EPSM(MXCMEL),EPSPLA(MXCMEL)
-      REAL*8 EPSPLN(MXCMEL),SIGMA(NBSGM)
+      REAL*8 SIGMA(NBSGM)
       REAL*8 VALPAR(2),C1,C2,TRSIG,XYZ(3)
       REAL*8 REPERE(7),NHARM,E,NU,ZERO,UN,TEMPG
       REAL*8 EPSFLF(NBSGM)
@@ -73,9 +73,6 @@ C     ---------------
       NHARM = ZERO
       MOD3D = '3D'
 
-      DO 10 I = 1,MXCMEL
-        EPSPLN(I) = ZERO
-   10 CONTINUE
 C --- CARACTERISTIQUES DU TYPE D'ELEMENT :
 C --- GEOMETRIE ET INTEGRATION
 C     ------------------------
@@ -141,7 +138,7 @@ C --- ET EPSRET SONT LES DEFORMATIONS LIEES AU RETRAIT
 C ---    DE DESSICCATION ET  D HYDRATION
 C --- EPSRET = - B_ENDO * HYDR - K_DESSIC *(SREF-S)
 C          ----------------------
-      OPTIO2 = 'EPME_'//OPTION(6:9)//'_DEPL'
+      OPTIO2 = 'EPME_ELGA'
       CALL EPSVMC('RIGI',NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
      &            ZR(IGEOM),ZR(IDEPL),ZR(ITEMPS),
      &            ZI(IMATE),REPERE,NHARM,OPTIO2,EPSM)
@@ -266,38 +263,18 @@ C           ---------------------------------------------------------
 
 C --- RECUPERATION DU VECTEUR EN SORTIE DES DEFORMATIONS PLASTIQUES :
 C     -------------------------------------------------------------
-      CALL JEVECH('PDEFOPL','E',IDEFP)
+      CALL JEVECH('PDEFOPG','E',IDEFP)
 
 C --- AFFECTATION DU VECTEUR EN SORTIE DES DEFORMATIONS PLASTIQUES :
 C     ------------------------------------------------------------
-      IF (OPTION(6:9).EQ.'ELGA') THEN
-
 C ---    AFFECTATION DU VECTEUR EN SORTIE AVEC LES DEFORMATIONS AUX
 C ---    POINTS D'INTEGRATION :
 C        --------------------
-        DO 160 IGAU = 1,NPG
-          DO 150 ISIG = 1,NBSIG
-            ZR(IDEFP+NBSIG* (IGAU-1)+ISIG-1) = EPSPLA(NBSIG* (IGAU-1)+
-     &        ISIG)
-  150     CONTINUE
-  160   CONTINUE
-
-      ELSE IF (OPTION(6:9).EQ.'ELNO') THEN
-
-C ---    DEFORMATIONS AUX NOEUDS :
-C        -----------------------
-        CALL PPGAN2(JGANO,1,NBSIG,EPSPLA,EPSPLN)
-
-C ---    AFFECTATION DU VECTEUR EN SORTIE AVEC LES DEFORMATIONS AUX
-C ---    NOEUDS :
-C        ------
-        DO 180 INO = 1,NNO
-          DO 170 ISIG = 1,NBSIG
-            ZR(IDEFP+NBSIG* (INO-1)+ISIG-1) = EPSPLN(NBSIG* (INO-1)+
-     &        ISIG)
-  170     CONTINUE
-  180   CONTINUE
-
-      END IF
+      DO 160 IGAU = 1,NPG
+        DO 150 ISIG = 1,NBSIG
+          ZR(IDEFP+NBSIG* (IGAU-1)+ISIG-1) = EPSPLA(NBSIG* (IGAU-1)+
+     &      ISIG)
+  150   CONTINUE
+  160 CONTINUE
 
       END

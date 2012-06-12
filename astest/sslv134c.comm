@@ -1,4 +1,4 @@
-# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 # sslv134c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -60,9 +60,8 @@ CHAMDEPL=MECA_STATIQUE(        MODELE=MO,
                               _F( CHARGE = SYMETRIE))
                            )
 
-CHAMDEPL=CALC_ELEM( reuse=CHAMDEPL,
-                           OPTION='SIGM_ELNO',
-                         RESULTAT=CHAMDEPL )
+CHAMDEPL=CALC_CHAMP(reuse=CHAMDEPL,CONTRAINTE=('SIGM_ELNO'),RESULTAT=CHAMDEPL)
+
 
 FISS=DEFI_FOND_FISS(MAILLAGE=MA,
                     FOND_FISS=_F( GROUP_NO = ('P0',)),
@@ -90,12 +89,12 @@ G0=CALC_G        (       RESULTAT=CHAMDEPL,
                          THETA=_F(THETA=THETA01),
                      )
 
-              
+
 GK0=CALC_G(THETA=_F(FOND_FISS=FISS,THETA=THETA01,),
           RESULTAT=CHAMDEPL,
           INFO=2,
           OPTION='CALC_K_G',);
-          
+
 IMPR_TABLE(TABLE=GK0,),
 
 # POST_K1_K2_K3
@@ -142,7 +141,7 @@ TEST_TABLE(       TABLE=GK0,
                    REFERENCE='NON_REGRESSION',
                    VALE=1.64307E+06,
                  PRECISION=0.0001        )
-                 
+
 TEST_TABLE(       TABLE=TABL_K1,
                       REFERENCE='ANALYTIQUE',
                        NOM_PARA='K1',
@@ -154,11 +153,11 @@ TEST_TABLE(       TABLE=TABL_K1,
                        NOM_PARA='G',
                            VALE=GLOC,
                       PRECISION=0.03           )
-                      
-                      
+
+
 # -------------------------------------------------------------
 #           ON AJOUTE LA ROTATION POUR CALCULER K
-#                    SOUS LA FORCE CONTRIGUGE 
+#                    SOUS LA FORCE CONTRIGUGE
 # -------------------------------------------------------------
 # LA VITESSE DE TOTATIO EST 150 TRS/MINUTE
 VAL_ROT = 15.708
@@ -167,24 +166,24 @@ CHAR_ROT=AFFE_CHAR_MECA(  MODELE=MO,
                         DDL_IMPO=(
                           _F(  GROUP_NO = ('LP8P9', 'LP8P9S',), DX = 0.),
                           _F(  GROUP_NO = 'LP0P11',  DY = 0.)  ),
-                          
+
                         FORCE_CONTOUR=(
                           _F(  GROUP_MA = 'LP9P10',  FY = 1.E6),
                           _F(  GROUP_MA = 'LP9P10S', FY = -1.E6)),
-                         
+
                         ROTATION=_F(VITESSE = VAL_ROT,
                                 AXE = (0.,1.,0.,),
                                 CENTRE =(0.,0.,0.,),
-                                  ), 
+                                  ),
 
                                  );
-                   
+
 DEPL_ROT=MECA_STATIQUE(MODELE=MO,
                        CHAM_MATER=CHMAT,
                        EXCIT=_F(CHARGE=CHAR_ROT,),
                        INST=1.,
-                       INFO=1,);  
-                                
+                       INFO=1,);
+
 IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=DEPL_ROT));
 
 G1=CALC_G        (       OPTION='CALC_G',
@@ -193,12 +192,12 @@ G1=CALC_G        (       OPTION='CALC_G',
                          THETA=_F(THETA=THETA01,SYME='OUI'),
                      )
 
-              
+
 GK1=CALC_G(THETA=_F(FOND_FISS=FISS,THETA=THETA01,),
           RESULTAT=DEPL_ROT,
           INFO=2,
           OPTION='CALC_K_G',);
-          
+
 IMPR_TABLE(TABLE=GK1,),
 
 # POST_K1_K2_K3

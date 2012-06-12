@@ -1,7 +1,7 @@
       SUBROUTINE RCVARC(ARRET,NOVRC,POUM,FAMI,KPG,KSP,VALVRC,IRET)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 11/06/2012   AUTEUR PROIX J-M.PROIX 
 C RESPONSABLE VABHHTS J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -92,6 +92,13 @@ C ---------------------------------------------------------------
 
 C     -- S'IL N'Y A PAS DE VARC, ON NE PEUT PAS LES TROUVER !
       IF (NBCVRC.EQ.0)  GOTO 9998
+      
+      IF(IACTIF.EQ.2) THEN
+C        ON VIENT DE CALC_POINT_MAT      
+         CALL ASSERT(FAMI.EQ.'PMAT')
+         CALL RCVARP(ARRET,NOVRC,POUM,VALVRC,IRET)
+         GOTO 9999
+      ENDIF
 
       TDEF=RUNDF
 

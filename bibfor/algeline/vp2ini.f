@@ -9,9 +9,9 @@
       CHARACTER*19 SOLVEU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -124,7 +124,7 @@ C     -----------------------------------------------------------------
         ALPHA(ISTO) = -ALPHA(ISTO)
         BETA(ISTO) = 0.D0
         LKXSTO = LKX + (ISTO-1)*NEQ
-        CALL MRMULT('ZERO',LDYNAM,VECT(1,ISTO),'R',ZR(LKXSTO),1)
+        CALL MRMULT('ZERO',LDYNAM,VECT(1,ISTO),ZR(LKXSTO),1,.FALSE.)
         XIKXI = 0.D0
         DO 10 IEQ = 1,NEQ
           XIKXI = XIKXI + VECT(IEQ,ISTO)*ZR(LKXSTO+IEQ-1)
@@ -171,7 +171,7 @@ C     --- CALCUL DE (LDYNAM**-1)*MASSE * X0 ---
 
       LKX1 = LKX + NEQ* (IVECD-1) + NEQ*NSTOC
 
-      CALL MRMULT('ZERO',LMASSE,ZR(LX),'R',ZR(LMX),1)
+      CALL MRMULT('ZERO',LMASSE,ZR(LX),ZR(LMX),1,.FALSE.)
       DO 90 IEQ = 1,NEQ
         VECT(IEQ,IVECD) = ZR(LMX+IEQ-1)*DDLEXC(IEQ)
    90 CONTINUE
@@ -180,7 +180,7 @@ C     --- CALCUL DE (LDYNAM**-1)*MASSE * X0 ---
 
 C     --- K-ORTHONORMALISATION DU 1-ER VECTEUR ---
 
-      CALL MRMULT('ZERO',LDYNAM,VECT(1,IVECD),'R',ZR(LKX1),1)
+      CALL MRMULT('ZERO',LDYNAM,VECT(1,IVECD),ZR(LKX1),1,.FALSE.)
       XIKXI = 0.D0
       DO 100 IEQ = 1,NEQ
         XIKXI = XIKXI + VECT(IEQ,IVECD)*ZR(LKX1+IEQ-1)
@@ -200,7 +200,7 @@ C     --- K-ORTHONORMALISATION DU 1-ER VECTEUR ---
 
 C     --- CALCUL DE ALPHA(1)
 
-      CALL MRMULT('ZERO',LMASSE,VECT(1,IVECD),'R',ZR(LX),1)
+      CALL MRMULT('ZERO',LMASSE,VECT(1,IVECD),ZR(LX),1,.FALSE.)
       AI = 0.D0
       DO 120 IEQ = 1,NEQ
         AI = AI + VECT(IEQ,IVECD)*ZR(LX+IEQ-1)
@@ -218,7 +218,7 @@ C     -----------------------------------------------------------------
         IVECM1 = IVEC - 1
         LKXP1 = LKX + NEQ*IVEC
 
-        CALL MRMULT('ZERO',LMASSE,VECT(1,IVEC),'R',ZR(LMX),1)
+        CALL MRMULT('ZERO',LMASSE,VECT(1,IVEC),ZR(LMX),1,.FALSE.)
         AI = 0.D0
         DO 130 IEQ = 1,NEQ
           AI = AI + VECT(IEQ,IVEC)*ZR(LMX+IEQ-1)
@@ -248,7 +248,8 @@ C     -----------------------------------------------------------------
 
 C         --- K-NORMALISATION DU VECTEUR IVECP1 ---
 
-        CALL MRMULT('ZERO',LDYNAM,VECT(1,IVECP1),'R',ZR(LKXP1),1)
+        CALL MRMULT('ZERO',LDYNAM,VECT(1,IVECP1),ZR(LKXP1),1,.FALSE.
+     &)
         XIKXI = 0.D0
         DO 180 IEQ = 1,NEQ
           XIKXI = XIKXI + VECT(IEQ,IVECP1)*ZR(LKXP1+IEQ-1)
@@ -269,7 +270,7 @@ C         --- K-REORTHOGONALISATION COMPLETE DU VECTEUR IVECP1
 C         --- CALCUL DE ALPHA ET BETA ---
 
         DO 210 JVEC = IVEC,IVECP1
-          CALL MRMULT('ZERO',LMASSE,VECT(1,IVECP1),'R',ZR(LX),1)
+          CALL MRMULT('ZERO',LMASSE,VECT(1,IVECP1),ZR(LX),1,.FALSE.)
           XJKXI = 0.D0
           DO 200 IEQ = 1,NEQ
             XJKXI = XJKXI + VECT(IEQ,JVEC)*ZR(LX+IEQ-1)

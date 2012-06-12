@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE TRACTIONS-ROTATIONS MULTIPLES GDEF_HYPOELAS VISCOPLASTIQUE
 # ssnd108a.para = tps_job 180 mem_job 64Mo mem_aster 50 ncpus 1 liste_test S
@@ -184,8 +184,8 @@ for icomp,comp in enumerate(compor) :
         DETRUIRE(CONCEPT=_F(NOM=(Linst2,DEFLIST2)),INFO=1)
 
 
-    resu[icomp]=CALC_ELEM(reuse =resu[icomp], RESULTAT=resu[icomp],
-               OPTION=('SIEQ_ELGA','EPSG_ELGA'));
+    resu[icomp]=CALC_CHAMP(reuse=resu[icomp],RESULTAT=resu[icomp],CRITERES=('SIEQ_ELGA'),DEFORMATION=('EPSG_ELGA'))
+
 
     vmis[icomp]=RECU_FONCTION(RESULTAT=resu[icomp],NOM_CHAM='SIEQ_ELGA',
                               NOM_CMP='VMIS',MAILLE='M2',POINT=1,);

@@ -1,10 +1,11 @@
       SUBROUTINE TE0528(OPTION,NOMTE)
-      IMPLICIT   NONE
+      IMPLICIT NONE
       CHARACTER*16 OPTION,NOMTE
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/12/2011   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ELEMENTS  DATE 11/06/2012   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,7 +20,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C ======================================================================
 
 C     BUT: CALCUL DES DEFORMATIONS DUES :
 C         AU FLUAGE DE DESSICCATION
@@ -30,8 +30,8 @@ C          ELEMENTS ISOPARAMETRIQUES 3D/D_PLAN/AXIS
 
 
 C     IN   OPTION : OPTIONS DE CALCUL
-C                   'EPFD_ELNO'   'EPFD_ELGA'
-C                      'EPFP_ELNO'  'EPFP_ELGA'
+C                   'EPFD_ELGA'
+C                   'EPFP_ELGA'
 C          NOMTE  : NOM DU TYPE ELEMENT
 C ----------------------------------------------------------------------
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
@@ -47,13 +47,13 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-      INTEGER JGANO,MXCMEL,NBSGM,I,NDIM,NNO,NBSIGM,NBSIG,NBSP,
-     &        NNOS,NPG,IPOIDS,IVF,IDFDE,IGAU,ISIG,INO,IGEOM,
+      INTEGER JGANO,MXCMEL,NBSGM,I,NDIM,NNO,NBSIGM,NBSIG,
+     &        NNOS,NPG,IPOIDS,IVF,IDFDE,IGAU,ISIG,IGEOM,
      &        IDEF,ICOMPO,NBVARI,IVARI,
      &        JTAB(7),IRET,IMATE,ITEMPS
       PARAMETER (MXCMEL=162)
       PARAMETER (NBSGM=6)
-      REAL*8 EPSFL(MXCMEL),EPSFLN(MXCMEL),EPSTMP(NBSGM)
+      REAL*8 EPSFL(MXCMEL),EPSTMP(NBSGM)
       REAL*8 VALPAR,NU
       INTEGER ICODRE
       CHARACTER*8 NOMRES,NOMPAR
@@ -215,39 +215,19 @@ C-------------------------------------------------------------------*
 C
 C --- RECUPERATION DU VECTEUR EN SORTIE:
 C     -------------------------------------------------------------
-      CALL JEVECH('PDEFORR','E',IDEF)
+      CALL JEVECH('PDEFOPG','E',IDEF)
 
 C --- AFFECTATION DU VECTEUR EN SORTIE
 C     ------------------------------------------------------------
-      IF (OPTION(6:9).EQ.'ELGA') THEN
-
 C ---    AFFECTATION DU VECTEUR EN SORTIE AVEC LES DEFORMATIONS AUX
 C ---    POINTS D'INTEGRATION :
 C        --------------------
-        DO 160 IGAU = 1,NPG
-          DO 150 ISIG = 1,NBSIG
-            ZR(IDEF+NBSIG* (IGAU-1)+ISIG-1) = EPSFL(NBSIG* (IGAU-1)+
-     &        ISIG)
-  150     CONTINUE
-  160   CONTINUE
+      DO 160 IGAU = 1,NPG
+        DO 150 ISIG = 1,NBSIG
+          ZR(IDEF+NBSIG* (IGAU-1)+ISIG-1) = EPSFL(NBSIG* (IGAU-1)+
+     &      ISIG)
+  150   CONTINUE
+  160 CONTINUE
 
-      ELSE IF (OPTION(6:9).EQ.'ELNO') THEN
-
-C ---    DEFORMATIONS AUX NOEUDS :
-C        -----------------------
-        NBSP = 1
-        CALL PPGAN2(JGANO,NBSP,NBSIG,EPSFL,EPSFLN)
-
-C ---    AFFECTATION DU VECTEUR EN SORTIE AVEC LES DEFORMATIONS AUX
-C ---    NOEUDS :
-C        ------
-        DO 580 INO = 1,NNO
-          DO 570 ISIG = 1,NBSIG
-            ZR(IDEF+NBSIG* (INO-1)+ISIG-1) = EPSFLN(NBSIG* (INO-1)+
-     &        ISIG)
-  570     CONTINUE
-  580   CONTINUE
-
-      END IF
-  999  CONTINUE
+  999 CONTINUE
       END

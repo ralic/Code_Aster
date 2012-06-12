@@ -1,14 +1,14 @@
-      SUBROUTINE DLADAP(TINIT,LCREA,LAMORT,NEQ,IMAT,
+      SUBROUTINE DLADAP(RESULT,TINIT,LCREA,LAMORT,NEQ,IMAT,
      &                  MASSE,RIGID,AMORT,
      &                  DEP0,VIT0,ACC0,
      &                  FEXTE,FAMOR,FLIAI,
      &                  NCHAR,NVECA,LIAD,LIFO,
      &                  MODELE,MATE,CARELE,
-     &                  CHARGE,INFOCH,FOMULT,NUMEDD,NUME,INPSCO,
-     &                  NBPASE,SOLVEU)
+     &                  CHARGE,INFOCH,FOMULT,NUMEDD,NUME,
+     &                  SOLVEU)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/03/2012   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,8 +59,6 @@ C  IN  : INFOCH    : INFO SUR LES CHARGES
 C  IN  : FOMULT    : LISTE DES FONC_MULT ASSOCIES A DES CHARGES
 C  IN  : NUMEDD    : NUME_DDL DE LA MATR_ASSE RIGID
 C  IN  : NUME      : NUMERO D'ORDRE DE REPRISE
-C  IN  : NBPASE   : NOMBRE DE PARAMETRE SENSIBLE
-C  IN  : INPSCO   : STRUCTURE CONTENANT LA LISTE DES NOMS (CF. PSNSIN)
 C  VAR : DEP0      : TABLEAU DES DEPLACEMENTS A L'INSTANT N
 C  VAR : VIT0      : TABLEAU DES VITESSES A L'INSTANT N
 C  VAR : ACC0      : TABLEAU DES ACCELERATIONS A L'INSTANT N
@@ -68,13 +66,9 @@ C
 C
 C CORPS DU PROGRAMME
       IMPLICIT NONE
-
-C DECLARATION PARAMETRES D'APPELS
-      INTEGER      NBPASE
       INTEGER      NEQ,IMAT(*),LIAD(*),NCHAR,NVECA,NUME
 
-      CHARACTER*8  MASSE, RIGID, AMORT
-      CHARACTER*13 INPSCO
+      CHARACTER*8  MASSE, RIGID, AMORT,RESULT
       CHARACTER*19 SOLVEU
       CHARACTER*24 MODELE, CARELE, CHARGE, FOMULT, MATE, NUMEDD
       CHARACTER*24 INFOCH, LIFO(*)
@@ -103,10 +97,8 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ---------------------------
 
       INTEGER NBTYAR
       PARAMETER ( NBTYAR = 6 )
-      INTEGER NRORES
-      INTEGER IFM, NIV, ETAUSR
-      INTEGER IAUX, JAUX
-      INTEGER IV, IV1, IV2
+      INTEGER IFM, NIV, ETAUSR,ALARM
+      INTEGER IV1, IV2,IEQ
       INTEGER JDEPL, JDEP2
       INTEGER JVITE, JVIT2
       INTEGER JACCE, JACC2
@@ -118,9 +110,9 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ---------------------------
       INTEGER IWK0
       INTEGER VALI(3)
       CHARACTER*4   TYP1(NBTYAR)
-      CHARACTER*8   K8B, NOMRES, RESULT
+      CHARACTER*8   K8B
       CHARACTER*8   VVAR
-      CHARACTER*16  TYPRES, NOMCMD,TYPEAR(NBTYAR)
+      CHARACTER*16  TYPRES, K16BID,TYPEAR(NBTYAR)
       CHARACTER*19  SDENER,MASSE1,RIGID1,AMORT1,K19BID
       CHARACTER*24  SOP
       CHARACTER*24  NDEEQ
@@ -133,12 +125,12 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ---------------------------
       REAL*8 PAS2
       REAL*8 VALR(3)
       REAL*8 R8PREM
-      INTEGER       IWK1,IWK2,IFORC1,IRET
+      INTEGER       IWK1,IWK2,IFORC1,IRET,IEXCL
       INTEGER       NPER,NRMAX,NR,NPAS,IPAS,IPARCH,IARCHI
       INTEGER       NNC,NBEXCL,NBIPAS,IVERI,NBORDR,NBITER
       INTEGER       NBPASC,IFNOBI,IFCIBI
       INTEGER       ADEEQ
-      INTEGER       NRPASE, IBID
+      INTEGER       IBID
       INTEGER       IARG
       LOGICAL       ENER
 C
@@ -155,7 +147,7 @@ C
 C 1.2. ==> NOM DES STRUCTURES
 C     --- RECUPERATION NOM DE LA COMMANDE ---
 
-      CALL GETRES ( NOMRES, TYPRES, NOMCMD )
+      CALL GETRES ( K8B, TYPRES, K16BID )
 C
       NDEEQ = NUMEDD(1:8)//'      .NUME.DEEQ'
 C
@@ -212,17 +204,17 @@ C
         CALL U2MESS('F','ALGORITH3_13')
       ENDIF
 C
-      DO 15 , IAUX=1, NEQ
+      DO 15 IEQ=1,NEQ
 C
-        IF (ZR(IWK1+IAUX-1).NE.0.D0) THEN
+        IF (ZR(IWK1+IEQ-1).NE.0.D0) THEN
 C
-          ZR(IWK1+IAUX-1)=1.0D0/ZR(IWK1+IAUX-1)
-          NDDL = ZI(ADEEQ + 2*IAUX-1)
+          ZR(IWK1+IEQ-1)=1.0D0/ZR(IWK1+IEQ-1)
+          NDDL = ZI(ADEEQ + 2*IEQ-1)
           DO 151 IV1 = 1,NEQ
-            IV2=IAUX+IV1
+            IV2=IEQ+IV1
             IF (IV2.LE.NEQ) THEN
               IF (ZI(ADEEQ+2*IV2-1).EQ.NDDL) THEN
-                ZI(JIND2+IAUX-1) = IV2
+                ZI(JIND2+IEQ-1) = IV2
                 GOTO 152
               ENDIF
             ELSE
@@ -233,10 +225,10 @@ C
   152     CONTINUE
 C
           DO 153 IV1 = 1,NEQ
-            IV2=IAUX-IV1
+            IV2=IEQ-IV1
             IF (IV2.GT.0) THEN
               IF (ZI(ADEEQ+2*IV2-1).EQ.NDDL) THEN
-                ZI(JIND1+IAUX-1) = IV2
+                ZI(JIND1+IEQ-1) = IV2
                 GOTO 154
               ENDIF
             ELSE
@@ -252,18 +244,14 @@ C
 C
 C 1.6. ==> AFFECTATION DES VECTEURS INITIAUX
 C
-      DO 16 , IAUX=1,NEQ
-        DO 161 , NRORES = 0 , NBPASE
-C
-          NRPASE = NRORES
-          ZR(JDEPL+IAUX-1) = DEP0(IAUX+NEQ*NRPASE)
-          ZR(JVITE+IAUX-1) = VIT0(IAUX+NEQ*NRPASE)-
-     &                       0.5D0*DTI*ACC0(IAUX+NEQ*NRPASE)
-          ZR(JVIP1+IAUX-1) = VIT0(IAUX+NEQ*NRPASE)
-          ZR(JACCE+IAUX-1) = ACC0(IAUX+NEQ*NRPASE)
-  161   CONTINUE
-        ZR(JVMIN1+IAUX-1) = 1.D-15
-        ZR(JVMIN2+IAUX-1) = 1.D-15
+      DO 16 IEQ=1,NEQ
+        ZR(JDEPL+IEQ-1) = DEP0(IEQ)
+        ZR(JVITE+IEQ-1) = VIT0(IEQ)-
+     &                     0.5D0*DTI*ACC0(IEQ)
+        ZR(JVIP1+IEQ-1) = VIT0(IEQ)
+        ZR(JACCE+IEQ-1) = ACC0(IEQ)
+        ZR(JVMIN1+IEQ-1) = 1.D-15
+        ZR(JVMIN2+IEQ-1) = 1.D-15
    16 CONTINUE
 C
 C 1.7. ==> --- ARCHIVAGE ---
@@ -294,12 +282,12 @@ C
       IF ( NBEXCL.EQ.NBTYAR ) THEN
         CALL U2MESS('F','ALGORITH3_14')
       ENDIF
-      DO 17 , IAUX = 1,NBEXCL
-        IF (TYP1(IAUX).EQ.'DEPL') THEN
+      DO 17 , IEXCL = 1,NBEXCL
+        IF (TYP1(IEXCL).EQ.'DEPL') THEN
           TYPEAR(1) = '    '
-        ELSEIF (TYP1(IAUX).EQ.'VITE') THEN
+        ELSEIF (TYP1(IEXCL).EQ.'VITE') THEN
           TYPEAR(2) = '    '
-        ELSEIF (TYP1(IAUX).EQ.'ACCE') THEN
+        ELSEIF (TYP1(IEXCL).EQ.'ACCE') THEN
           TYPEAR(3) = '    '
         ENDIF
    17 CONTINUE
@@ -322,24 +310,17 @@ C
       WRITE(IFM,*) '----------------------------------------------',' '
 C
 C====
-C 2. BOUCLE SUR CREATION DES CONCEPTS RESULTAT
+C 2. CREATION DES CONCEPTS RESULTAT
 C====
 C
-      DO 21 , NRORES = 0 , NBPASE
-C
-        NRPASE = NRORES
-        IAUX = 1 + NEQ*NRPASE
-        JAUX = NBTYAR
+      CALL DLTCRR( RESULT,
+     &             NEQ, NBORDR, IARCHI, 'PREMIER(S)', IFM,
+     &             TINIT, LCREA, TYPRES,
+     &             MASSE, RIGID, AMORT,
+     &             DEP0, VIT0, ACC0,
+     &             FEXTE,FAMOR,FLIAI,
+     &             NUMEDD, NUME, NBTYAR, TYPEAR )
 
-        CALL DLTCRR ( NRPASE, INPSCO,
-     &                NEQ, NBORDR, IARCHI, 'PREMIER(S)', IFM,
-     &                TINIT, LCREA, TYPRES,
-     &                MASSE, RIGID, AMORT,
-     &                DEP0(IAUX), VIT0(IAUX), ACC0(IAUX),
-     &                FEXTE(1),FAMOR(1),FLIAI(1),
-     &                NUMEDD, NUME, JAUX, TYPEAR )
-
-   21 CONTINUE
 
       CALL TITRE
 C
@@ -347,7 +328,6 @@ C====
 C 3. CALCUL : BOUCLE SUR LES PAS DE TEMPS
 C====
 C
-          NRORES = 0
       IPAS = 0
       NBITER = 0
       IVERI = 0
@@ -358,13 +338,12 @@ C
       DT1 = 0.D0
       DT2 = DTI
       CALL UTTCPU('CPU.DLADAP', 'INIT',' ')
-      NRPASE = 0
 C
    30 CONTINUE
 C
       IF (ENER) THEN
-        DO 434, IAUX=1,NEQ
-          FEXTE(IAUX)=FEXTE(IAUX+NEQ)
+        DO 434 IEQ=1,NEQ
+          FEXTE(IEQ)=FEXTE(IEQ+NEQ)
   434   CONTINUE
       ENDIF
 C
@@ -387,22 +366,21 @@ C        --- DERNIER PAS DE TEMPS ? ---
           NBITER = NBITER + 1
           PAS1 = (DT1+DT2)*0.5D0
           PAS2 = DT2*0.5D0
-          DO 102 IAUX = 0,NEQ-1
+          DO 102 IEQ = 0,NEQ-1
 C            --- VITESSES AUX INSTANTS INTERMEDIAIRES ------
-             ZR(JVIT2+IAUX) = ZR(JVITE+IAUX) + PAS1 * ZR(JACCE+IAUX)
+             ZR(JVIT2+IEQ) = ZR(JVITE+IEQ) + PAS1 * ZR(JACCE+IEQ)
 C            --- DEPLACEMENTS AUX INSTANTS 'TEMPS+DT2' ---------
-             ZR(JDEP2+IAUX) = ZR(JDEPL+IAUX) + (DT2 * ZR(JVIT2+IAUX))
+             ZR(JDEP2+IEQ) = ZR(JDEPL+IEQ) + (DT2 * ZR(JVIT2+IEQ))
  102      CONTINUE
 C ------------- CALCUL DU SECOND MEMBRE F*
           R8VAL = TEMPS+DT2
-          CALL DLFEXT ( NVECA,NCHAR,R8VAL,NEQ,
-     &                   LIAD,LIFO,CHARGE,INFOCH,FOMULT,
-     &                   MODELE,MATE,CARELE,NUMEDD,
-     &                   NBPASE,NRPASE,INPSCO,ZR(IFORC1))
+          CALL DLFEXT (NVECA,NCHAR,R8VAL,NEQ,LIAD,
+     &                 LIFO,CHARGE,INFOCH,FOMULT,MODELE,
+     &                   MATE,CARELE,NUMEDD,ZR(IFORC1))
 C
           IF (ENER) THEN
-            DO 433, IAUX =1,NEQ
-              FEXTE(IAUX+NEQ)=ZR(IFORC1+IAUX-1)
+            DO 433, IEQ =1,NEQ
+              FEXTE(IEQ+NEQ)=ZR(IFORC1+IEQ-1)
   433       CONTINUE
           ENDIF
 C
@@ -412,26 +390,26 @@ C ------------- FORCE DYNAMIQUE F* = F* - K DEP - C VIT
 C
 C ------------- RESOLUTION DE M . A = F ET CALCUL DE VITESSE STOCKEE
 C           --- RESOLUTION AVEC FORCE1 COMME SECOND MEMBRE ---
-          DO 20 IAUX=1, NEQ
-                ZR(JACC2+IAUX-1)=ZR(IWK1+IAUX-1)*ZR(IFORC1+IAUX-1)
+          DO 20 IEQ= 1, NEQ
+                ZR(JACC2+IEQ-1)=ZR(IWK1+IEQ-1)*ZR(IFORC1+IEQ-1)
 C           --- VITESSE AUX INSTANTS 'TEMPS+DT2' ---
-                ZR(JVIP2+IAUX-1)=ZR(JVIT2+IAUX-1)+PAS2*ZR(JACC2+IAUX-1)
+                ZR(JVIP2+IEQ-1)=ZR(JVIT2+IEQ-1)+PAS2*ZR(JACC2+IEQ-1)
  20       CONTINUE
 C
 C        --- CALCUL DE VMIN ---
           IF (VVAR(1:4) .EQ. 'MAXI') THEN
-            DO 109 IV = 0,NEQ-1
-              RTMP = ABS(ZR(JVITE+IV)*1.D-02)
-              ZR(JVMIN+IV) = MAX(ZR(JVMIN+IV),RTMP)
+            DO 109 IEQ = 0,NEQ-1
+              RTMP = ABS(ZR(JVITE+IEQ)*1.D-02)
+              ZR(JVMIN+IEQ) = MAX(ZR(JVMIN+IEQ),RTMP)
  109        CONTINUE
           ELSEIF (VVAR(1:4) .EQ. 'NORM') THEN
-            DO 110 IV = 0,NEQ-1
-              IF (ZR(IWK1+IV).NE.0.D0) THEN
-               ZR(JVMIN1+IV)=1.D-02*ZR(JVIT2+(ZI(JIND1+IV)-1))
-               ZR(JVMIN2+IV)=1.D-02*ZR(JVIT2+(ZI(JIND2+IV)-1))
+            DO 110 IEQ = 0,NEQ-1
+              IF (ZR(IWK1+IEQ).NE.0.D0) THEN
+               ZR(JVMIN1+IEQ)=1.D-02*ZR(JVIT2+(ZI(JIND1+IEQ)-1))
+               ZR(JVMIN2+IEQ)=1.D-02*ZR(JVIT2+(ZI(JIND2+IEQ)-1))
               ENDIF
               RTMP = 1.D-15
-              ZR(JVMIN+IV)=MAX(RTMP,ZR(JVMIN1+IV),ZR(JVMIN2+IV))
+              ZR(JVMIN+IEQ)=MAX(RTMP,ZR(JVMIN1+IEQ),ZR(JVMIN2+IEQ))
  110        CONTINUE
           ENDIF
 C
@@ -476,23 +454,23 @@ C       --- ARCHIVAGE EVENTUEL DANS L'OBJET SOLUTION ---
         IF((TEMPS.LE.TARCH .AND. TEMP2.GE.TARCH) .OR.
      &     (TEMP2.EQ.TFIN)) THEN
           ISTOC = 0
-          JAUX = 1
+          ALARM = 1
           IF((TEMP2-TARCH).LE.(TARCH-TEMPS)) THEN
             TARCHI = TEMP2
-            CALL DLARCH ( NRORES, INPSCO,
+            CALL DLARCH (RESULT,
      &                    NEQ, ISTOC, IARCHI, ' ',
-     &                    JAUX, IFM, TEMP2,
+     &                    ALARM, IFM, TEMP2,
      &                    NBTYAR, TYPEAR, MASSE,
-     &                    ZR(JDEP2), ZR(JVIP2), ZR(JACC2), 
+     &                    ZR(JDEP2), ZR(JVIP2), ZR(JACC2),
      &                    FEXTE(1+NEQ),FAMOR(1+NEQ),FLIAI(1+NEQ) )
           ELSE
             TARCHI = TEMPS
-            CALL DLARCH ( NRORES, INPSCO,
+            CALL DLARCH (RESULT,
      &                    NEQ, ISTOC, IARCHI, ' ',
-     &                    JAUX, IFM, TEMPS,
+     &                    ALARM, IFM, TEMPS,
      &                    NBTYAR, TYPEAR, MASSE,
      &                    ZR(JDEPL), ZR(JVIP1), ZR(JACCE),
-     &                    FEXTE,FAMOR,FLIAI ) 
+     &                    FEXTE,FAMOR,FLIAI )
           ENDIF
           TARCH = TARCH + DTARCH
         ENDIF
@@ -515,9 +493,6 @@ C ON CALCULE LA VITESSE A T N-1
         ENDIF
 C
 C ------------- ARCHIVAGE DES PARAMETRES
-      IAUX = NRORES
-      JAUX = 3
-      CALL PSNSLE ( INPSCO, IAUX, JAUX, RESULT )
 C
       CALL NMARPC(RESULT,SDENER,TEMPS)
 C
@@ -560,26 +535,18 @@ C====
 C
       IF ( NBEXCL.NE.0 ) THEN
 C
-        DO 41 , IAUX = 1,NBEXCL
-          TYPEAR(IAUX) = TYP1(IAUX)
+        DO 41 , IEXCL = 1,NBEXCL
+          TYPEAR(IEXCL) = TYP1(IEXCL)
    41   CONTINUE
 C
-        JAUX = 0
-        DO 42 , NRORES = 0 , NBPASE
-
-          NRPASE = NRORES
-          IAUX = NEQ*NRPASE
-C
-          CALL DLARCH ( NRORES, INPSCO,
-     &                  NEQ, ISTOC, IARCHI, 'DERNIER(S)',
-     &                  JAUX, IFM, TEMPS,
-     &                  NBTYAR, TYPEAR, MASSE,
-     &                  ZR(JDEPL+IAUX), ZR(JVIP1+IAUX),
-     &                  ZR(JACCE+IAUX), FEXTE(NEQ+1),FAMOR(NEQ+1),
-     &                  FLIAI(NEQ+1) )
-C
-   42   CONTINUE
-C
+        ALARM = 0
+        CALL DLARCH ( RESULT,
+     &                NEQ, ISTOC, IARCHI, 'DERNIER(S)',
+     &                ALARM, IFM, TEMPS,
+     &                NBTYAR, TYPEAR, MASSE,
+     &                ZR(JDEPL), ZR(JVIP1),
+     &                ZR(JACCE), FEXTE(NEQ+1),FAMOR(NEQ+1),
+     &                FLIAI(NEQ+1) )
       ENDIF
 C
 C====
