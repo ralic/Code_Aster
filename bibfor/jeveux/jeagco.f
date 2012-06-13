@@ -1,8 +1,8 @@
       SUBROUTINE JEAGCO(SCHIN, SCHOUT, NBOCNW, LONTNW, CLAOUT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 27/06/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,6 +20,7 @@ C ======================================================================
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C TOLE CRP_18 CRS_508  CRS_512
       IMPLICIT REAL*8 (A-H,O-Z)
+      INCLUDE 'jeveux.h'
       CHARACTER*(*)     SCHIN, SCHOUT, CLAOUT
       INTEGER           NBOCNW, LONTNW
 C ----------------------------------------------------------------------
@@ -75,7 +76,6 @@ C     ------------------------------------------------------------------
      +               IDLONO = 8 , IDLUTI = 9 , IDNUM  = 10 )
       INTEGER          IV(IDNUM)
       CHARACTER*8      CSUFFI(IDNUM)
-      CHARACTER*32   JEXNUM,JEXNOM
 C ----------------------------------------------------------------------
       INTEGER          LTYPI,IADDI(2)
       CHARACTER*24     NOM24

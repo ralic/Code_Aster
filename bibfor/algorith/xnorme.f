@@ -2,12 +2,13 @@
      &                  NUNOA,NUNOB,NUNOC,JCOOR,COORG)
       IMPLICIT NONE
 
+      INCLUDE 'jeveux.h'
       INTEGER       IPTBOR(2),NBFACB,JCOOR
       INTEGER       NUNOA,NUNOB,NUNOC,INDIPT
       REAL*8        VECTN(12),COORG(3)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/03/2012   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -42,22 +43,6 @@ C     SORTIE
 C       IPTBOR   : VECTEUR CONTENANT LES INDICES DES POINTS DE BORD DE
 C                  LA MAILLE
 C     ------------------------------------------------------------------
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER          ZI
-      COMMON  /IVARJE/ ZI(1)
-      REAL*8           ZR
-      COMMON  /RVARJE/ ZR(1)
-      COMPLEX*16       ZC
-      COMMON  /CVARJE/ ZC(1)
-      LOGICAL          ZL
-      COMMON  /LVARJE/ ZL(1)
-      CHARACTER*8      ZK8
-      CHARACTER*16             ZK16
-      CHARACTER*24                      ZK24
-      CHARACTER*32                               ZK32
-      CHARACTER*80                                        ZK80
-      COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       INTEGER         K
       REAL*8          AB(3),AC(3),AG(3),NORMAL(3),V(3),DDOT,PROJ

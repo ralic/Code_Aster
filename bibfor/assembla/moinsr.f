@@ -1,14 +1,15 @@
       SUBROUTINE MOINSR(J,N,IDIL,IDIICH,IDSUIV,NOSUIV,IDIP,NOIP,IILIB,
      &                  IIMAX)
       IMPLICIT NONE
+      INCLUDE 'jeveux.h'
       INTEGER J,N,IDIL,IDIICH,IDSUIV,IDIP,IILIB,IIMAX
       INTEGER K,IDEBCH,II1,KIL,KIP
       CHARACTER*(*) NOSUIV,NOIP
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ASSEMBLA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -56,12 +57,7 @@ C     -------------------------------------------------------------
 C     FONCTIONS JEVEUX
 C     -------------------------------------------------------------
 C     -------------------------------------------------------------
-C     COMMUNS   JEVEUX
 C     -------------------------------------------------------------
-      INTEGER ZI
-      COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
 C----------------------------------------------------------------------
 C                DEBUT DES INSTRUCTIONS
 C----------------------------------------------------------------------

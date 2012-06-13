@@ -3,9 +3,9 @@
       IMPLICIT NONE
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -38,22 +38,7 @@ C           POTENTIELS FLUCTUANTS : 1 : MASSE AJOUTEE
 C                                 : 2 : AMORTISSEMENT ET RAIDEUR
 C IN : K* : SOLVEZ : METHODE DE RESOLUTION 'MULT_FRONT','LDLT' OU 'GCPC'
 C---------------------------------------------------------------------
-C--------- DEBUT DES COMMUNS JEVEUX ----------------------------------
-      INTEGER          ZI
-      COMMON  /IVARJE/ ZI(1)
-      REAL*8           ZR
-      COMMON  /RVARJE/ ZR(1)
-      COMPLEX*16       ZC
-      COMMON  /CVARJE/ ZC(1)
-      LOGICAL          ZL
-      COMMON  /LVARJE/ ZL(1)
-      CHARACTER*8      ZK8
-      CHARACTER*16           ZK16
-      CHARACTER*24                    ZK24
-      CHARACTER*32                            ZK32
-      CHARACTER*80                                    ZK80
-      COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-C     --- FIN DES COMMUNS JEVEUX ------------------------------------
+      INCLUDE 'jeveux.h'
       INTEGER       IBID,NBVALE,NBREFE,NBDESC,NBMODE,IRET,IERD
       INTEGER       ILIRES,J,NBID,IVALK,INDICE,TABAD(5)
       INTEGER       IPHI1,IPHI2,N5,N6,N7,N1,ICOR(2),N2,NDBLE

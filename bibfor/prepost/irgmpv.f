@@ -3,6 +3,7 @@
      &                    SCAL, VECT, TENS, VERSIO )
       IMPLICIT NONE
 C
+      INCLUDE 'jeveux.h'
       INTEGER        IFI, NBORDR, LCH,ICH, VERSIO
       REAL*8         PARA(*)
       LOGICAL        LRESU, SCAL, VECT, TENS
@@ -12,9 +13,9 @@ C     NBRE POUR CHAQUE TYPE D'ELEMENT
       INTEGER        NBEL(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 11/12/2007   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -40,7 +41,6 @@ C     ------------------------------------------------------------------
       INTEGER NBPOI, NBSEG, NBTRI, NBTET, NBQUA, NBPYR, NBPRI, NBHEX
       INTEGER TYPPOI, TYPSEG, TYPTRI, TYPTET, TYPQUA
       INTEGER TYPPYR, TYPPRI, TYPHEX
-      CHARACTER*32 JEXNOM
 C     ------------------------------------------------------------------
 C
       CALL JENONU ( JEXNOM('&CATA.TM.NOMTM', 'POI1'   ), TYPPOI )

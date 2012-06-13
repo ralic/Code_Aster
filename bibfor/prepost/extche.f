@@ -2,6 +2,7 @@
      &                    NBM, NBC, INDIC, NSSCHE,
      &                    MCF,IOCC, NBNAC, NNOEUD )
       IMPLICIT   NONE
+      INCLUDE 'jeveux.h'
       INTEGER       NBM, NBC, NUMMAI(*), IOCC, NBNAC, NNOEUD(*)
       CHARACTER*6   INDIC
       CHARACTER*8   NMAILE(*), NCMP(*)
@@ -9,10 +10,10 @@
       CHARACTER*19  NCHMEL, NCHMEN, NSSCHE, NCHME2
       CHARACTER*(*) MCF
 C*********************************************************************
-C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -141,25 +142,9 @@ C*********************************************************************
 C   FONCTIONS EXTERNES
 C   ------------------
 
-      CHARACTER*32 JEXNUM,JEXNOM
 
-C   COMMUNS NORMALISES JEVEUX
 C   -------------------------
 
-      INTEGER ZI
-      COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
-      COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
-      COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 
 C   NOMS ET ADRESSES DES OJB ASSOCIES AU CHAM_ELEM
 C   ---------------------------------------------

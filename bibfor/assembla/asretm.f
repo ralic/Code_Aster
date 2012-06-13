@@ -1,11 +1,12 @@
       SUBROUTINE ASRETM(LMASYM,JTMP2,LGTMP2,NBTERM,JSMHC,JSMDI,I1,I2)
       IMPLICIT NONE
+      INCLUDE 'jeveux.h'
       LOGICAL LMASYM
       INTEGER  JTMP2,LGTMP2,NBTERM,JSMHC,JSMDI,I1,I2
       INTEGER  IDEB,IFIN,IMIL
 C -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,10 +34,6 @@ C IN     I I1,I2   : NUMEROS GLOBAUX (LIGNE ET COLONNE)
 C IN/OUT I NBTERM   : INDICE DU TERME (R/C) A RECOPIER
 C                     (ISSU DE LA MATRICE ELEMENTAIRE)
 C -----------------------------------------------------------------
-      INTEGER*4 ZI4
-      COMMON  /I4VAJE/ZI4(1)
-      INTEGER ZI
-      COMMON /IVARJE/ZI(1)
       INTEGER ILI,JCO,ICOEFC,ICOEFL,I,NCOEFC,NUBLOC
 C -----------------------------------------------------------------
       IF (I1.LE.I2) THEN

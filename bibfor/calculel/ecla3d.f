@@ -4,6 +4,7 @@
      &                    MXNBN2,  MXNBPI, MXNBTE,
      &                    MXNBSE, NBSEL, CORSEL)
       IMPLICIT   NONE
+      INCLUDE 'jeveux.h'
       INTEGER      MXNBN2,MXNBPI,MXNBTE,MXNBSE
       INTEGER      NPG,CONNX(MXNBN2,MXNBSE),NSOMM1(MXNBPI,MXNBTE)
       INTEGER      NTERM1(MXNBPI),NBNO2(MXNBSE),NPOINI,TYMA(MXNBSE)
@@ -13,7 +14,7 @@
       CHARACTER*8  ELREFA, FAPG
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,7 +63,6 @@ C
 C ---------------------------------------------------------------------
       INTEGER       K, IHEXA8, IPENT6, ITETR4, IPYRA5
       LOGICAL       LTETRA, LPYRAM
-      CHARACTER*32  JEXNOM
       CHARACTER*24 VALK(3)
 
 C ---------------------------------------------------------------------

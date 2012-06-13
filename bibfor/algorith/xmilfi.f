@@ -1,12 +1,13 @@
       SUBROUTINE XMILFI(ELP,NDIM,NNO,PTINT,JTABCO,JTABLS,IPP,IP,MILFI)
       IMPLICIT NONE
 
+      INCLUDE 'jeveux.h'
       INTEGER       NDIM,NNO,JTABCO,JTABLS,IPP,IP
       CHARACTER*8   ELP
       REAL*8        MILFI(NDIM),PTINT(*)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2012   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -37,10 +38,6 @@ C       IP      : NUMERO NOEUD DEUXIEME POINT INTER
 C     SORTIE
 C       MILFI   : COORDONNES DU PT MILIEU ENTRE IPP ET IP
 C     ----------------------------------------------------------------
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  ------------------------
-      REAL*8           ZR
-      COMMON  /RVARJE/ ZR(1)
-C     -----  FIN  COMMUNS NORMALISES  JEVEUX  ------------------------
 C
       REAL*8       KSI(NDIM)
       REAL*8       EPSMAX,RBID

@@ -1,11 +1,12 @@
       SUBROUTINE ABSCVL(NDIM,TABAR,XG,S)
       IMPLICIT NONE 
 
+      INCLUDE 'jeveux.h'
       INTEGER       NDIM
       REAL*8        XG(NDIM),S,TABAR(*)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2012   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -35,10 +36,6 @@ C     SORTIE
 C       S        : ABSCISSE CURVILIGNE DU POINT P PAR RAPPORT AU 
 C                  PREMIER POINT STOCKE DANS COORSG
 C     ----------------------------------------------------------------
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  ------------------------
-      REAL*8           ZR
-      COMMON  /RVARJE/ ZR(1)
-C     -----  FIN  COMMUNS NORMALISES  JEVEUX  ------------------------
 
       REAL*8        XGG,A,B,KSIDER
       REAL*8        TABELT(3),XE

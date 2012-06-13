@@ -2,6 +2,7 @@
      &                    ID, NUME, VECMOD, PARMOD, SPECTR, RECMOR, 
      &                    RECMOD, NBDIS)
       IMPLICIT  NONE
+      INCLUDE 'jeveux.h'
       INTEGER           NBSUP, NEQ, NBMODE, ID, NBDIS(NBSUP)
       REAL*8            VECMOD(NEQ,*), PARMOD(NBMODE,*),
      &                  SPECTR(*), RECMOD(NBSUP,NEQ,*),
@@ -11,7 +12,7 @@
       LOGICAL           MONOAP, MUAPDE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/02/2012   AUTEUR CHANSARD F.CHANSARD 
+C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,22 +50,6 @@ C IN  : RECMOR : VECTEUR DES COMBINAISONS DES REPONSES RIGIDES DES MODES
 C OUT : RECMOD : VECTEUR DES RECOMBINAISONS MODALES
 C IN  : NBDIS  : APPARTENANCE DES SUPPORTS AUX INTRAGROUPES
 C     ------------------------------------------------------------------
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER          ZI
-      COMMON  /IVARJE/ ZI(1)
-      REAL*8           ZR
-      COMMON  /RVARJE/ ZR(1)
-      COMPLEX*16       ZC
-      COMMON  /CVARJE/ ZC(1)
-      LOGICAL          ZL
-      COMMON  /LVARJE/ ZL(1)
-      CHARACTER*8      ZK8
-      CHARACTER*16            ZK16
-      CHARACTER*24                    ZK24
-      CHARACTER*32                            ZK32
-      CHARACTER*80                                    ZK80
-      COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
       INTEGER       IM, IN, IS, JMOD, JUNI, IOC
       REAL*8        GAMMA0, XXX

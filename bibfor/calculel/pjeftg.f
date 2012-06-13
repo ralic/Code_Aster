@@ -1,9 +1,9 @@
       SUBROUTINE PJEFTG(IGEOM,GEOMI,NOMAI,MOTFAC,IOCC)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -35,6 +35,7 @@ C ----------------------------------------------------------------------
 C
 C 0.1. ==> ARGUMENTS
 C
+      INCLUDE 'jeveux.h'
       INTEGER       IGEOM
       CHARACTER*8   NOMAI
       CHARACTER*24  GEOMI
@@ -42,14 +43,8 @@ C
       INTEGER       IOCC
 C
 C 0.2. ==> COMMUNS
-C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 
-      INTEGER ZI
-      COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
 
-C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
 C 0.3. ==> VARIABLES LOCALES
 C

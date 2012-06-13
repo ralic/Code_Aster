@@ -1,10 +1,11 @@
       SUBROUTINE IRTITR(CHAM,NOPASE,NOMA,FORM,IFI,TITRE)
       IMPLICIT NONE
+      INCLUDE 'jeveux.h'
       INTEGER           IFI
       CHARACTER*(*)     CHAM,NOPASE,NOMA,FORM
       CHARACTER*80      TITRE
 C     ------------------------------------------------------------------
-C MODIF PREPOST  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,12 +31,6 @@ C IN  FORM   : K8  : FORMAT D'ECRITURE
 C IN  IFI    : IS  : UNITE LOGIQUE D'ECRITURE
 C OUT TITRE  : K80 : TITRE
 C     ------------------------------------------------------------------
-      COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*8  ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
 C     ------------------------------------------------------------------
       INTEGER       NBTITR,JTITR
       INTEGER       I, IER, IRET

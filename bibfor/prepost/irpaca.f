@@ -1,14 +1,15 @@
       SUBROUTINE IRPACA(NOMCOM,IFI,NBORDR,IOCC,ORDR,NBACC,CHACC,
      &                  NBCHCA,CHAMCA,NBK16,NIVE)
       IMPLICIT REAL*8 (A-H,O-Z)
+      INCLUDE 'jeveux.h'
       CHARACTER*(*)     NOMCOM,                     CHACC(*),CHAMCA(*)
       INTEGER           NBORDR,       IFI,IOCC,ORDR(*),NBACC,NBCHCA
       INTEGER           NBK16,              NIVE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -36,16 +37,6 @@ C IN  CHAMCA   : I   : NOMS DES CHAMPS DE LA TABLE CASTEM
 C IN  NBK16    : I   : NOMBRE DE VARIABLES D'ACCES DE TYPE K16
 C IN  NIVE     : I   : NIVEAU IMPRESSION CASTEM 3 OU 10
 C     ---------------------------------------------------------------
-      INTEGER          ZI
-      COMMON  /IVARJE/ ZI(1)
-      REAL*8           ZR
-      COMMON  /RVARJE/ ZR(1)
-      CHARACTER*8      ZK8
-      CHARACTER*16            ZK16
-      CHARACTER*24                    ZK24
-      CHARACTER*32                            ZK32
-      CHARACTER*80                                    ZK80
-      COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ------------------------------------------------------------------
       CHARACTER*4  CTYPE,TYCH
       CHARACTER*8  NOMCO,CFOR

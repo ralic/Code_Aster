@@ -1,14 +1,15 @@
       SUBROUTINE C3DREP(NOMTE,EPAIS,ALPHA,BETA,COORD,
      &                  NUMNOE,PGL)
       IMPLICIT NONE
+      INCLUDE 'jeveux.h'
       INTEGER      NUMNOE
       CHARACTER*16 NOMTE
       REAL*8       EPAIS,ALPHA,BETA,COORD(3,9),PGL(3,3)
 C     ---------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/10/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -33,22 +34,6 @@ C         LA VARIETE (LE REPERE DE LA VARIETE EST OBTENU PAR LA MATRICE
 C         DE PASSAGE GLOBAL -> LOCAL) AINSI QUE SON INVERSE
 C
 C     ------------------------------------------------------------------
-C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16               ZK16
-      CHARACTER*24                        ZK24
-      CHARACTER*32                                  ZK32
-      CHARACTER*80                                          ZK80
-      COMMON  / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER NB1,NB2,NPGSR,I,J,K,IND,INTSR,LZI,LZR
 C
       REAL*8 VECTA(9,2,3),VECTN(9,3),VECTG(2,3),VECTT(3,3)

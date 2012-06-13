@@ -1,9 +1,9 @@
       SUBROUTINE CAUNDF(CODE,OPT,TE)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,6 +21,7 @@ C ======================================================================
 C RESPONSABLE                            VABHHTS J.PELLET
 C     ARGUMENTS:
 C     ----------
+      INCLUDE 'jeveux.h'
       INTEGER OPT,TE
       CHARACTER*5 CODE
 C ----------------------------------------------------------------------
@@ -47,22 +48,8 @@ C ----------------------------------------------------------------------
       INTEGER IACHOK,IPARG,LGGREL,IACHLO
       CHARACTER*3 TYPSCA
       CHARACTER*8 NOMPAR
-C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
-      COMMON /IVARJE/ZI(1)
-      COMMON /RVARJE/ZR(1)
-      COMMON /CVARJE/ZC(1)
-      COMMON /LVARJE/ZL(1)
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      INTEGER ZI
-      REAL*8 ZR
-      COMPLEX*16 ZC
-      LOGICAL ZL,ECRAS,ARRET
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16,NOMTE,NOMOPT
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32,JEXNUM
-      CHARACTER*80 ZK80
-C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
+      LOGICAL ECRAS,ARRET
+      CHARACTER*16 NOMTE,NOMOPT
       INTEGER IISNAN,ICH,DEBUGR,LGCATA
       REAL*8 RNNEM,R8NNEM
       CHARACTER*8 KNNEM

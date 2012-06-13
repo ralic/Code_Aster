@@ -2,9 +2,9 @@
       IMPLICIT NONE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/02/2008   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -39,6 +39,7 @@ C     NDDLOC : NBRE DE DDL SUPPORTES PAR CE NOEUD SUR L ELEMENT
 C     POS    : TABLEAU DE CORRESPONDANCE AVEC LES DDL SUR LE NOEUD
 C              EN TANT QUE NOEUD GLOBAL
 C ----------------------------------------------------------------------
+      INCLUDE 'jeveux.h'
       INTEGER NBECMX,NCMP
       PARAMETER (NBECMX = 10)
       INTEGER IFIN(NBECMX)
@@ -46,16 +47,6 @@ C ----------------------------------------------------------------------
       INTEGER POS(1)
       INTEGER ECODG,ECODL(*)
 C ----------------------------------------------------------------------
-      INTEGER ZI
-      COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C ----------------------------------------------------------------------
       INTEGER  ILI,NUNOEL,L,JPRN1,JPRN2,NEC,IEC,IN
       INTEGER NDDLOC,N,I,IECDG,IECDL

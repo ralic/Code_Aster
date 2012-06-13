@@ -8,7 +8,7 @@
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/02/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE SELLENET N.SELLENET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -67,6 +67,7 @@ C
 C
 C 0.1. ==> ARGUMENTS
 C
+      INCLUDE 'jeveux.h'
       INTEGER NROFIC,TYPEN
       INTEGER NCMPRF, JNOCMP
       INTEGER NBCMPV
@@ -86,19 +87,7 @@ C
       REAL*8 PREC
 C
 C 0.2. ==> COMMUNS
-C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
       REAL*8 VALR
-      COMMON  / RVARJE / ZR(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
 C 0.3. ==> VARIABLES LOCALES
 C

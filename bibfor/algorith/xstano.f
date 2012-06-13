@@ -2,6 +2,7 @@
      &                  RAYON,CNXINV,STANO)
       IMPLICIT NONE
 
+      INCLUDE 'jeveux.h'
       REAL*8        RAYON
       INTEGER       NMAFIS,JMAFIS
       CHARACTER*8   NOMA
@@ -9,7 +10,7 @@
       CHARACTER*24  LISNO,STANO
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/03/2012   AUTEUR SIAVELIS M.SIAVELIS 
+C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,23 +50,6 @@ C
 C     SORTIE
 C         STANO  : VECTEUR STATUT DES NOEUDS
 C     ------------------------------------------------------------------
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER          ZI
-      COMMON  /IVARJE/ ZI(1)
-      REAL*8           ZR
-      COMMON  /RVARJE/ ZR(1)
-      COMPLEX*16       ZC
-      COMMON  /CVARJE/ ZC(1)
-      LOGICAL          ZL
-      COMMON  /LVARJE/ ZL(1)
-      CHARACTER*8      ZK8
-      CHARACTER*16             ZK16
-      CHARACTER*24                      ZK24
-      CHARACTER*32                               ZK32
-      CHARACTER*80                                        ZK80
-      COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32    JEXNUM
-C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER         IN,AR(12,3),IA,I,J,K,NBNOE,NBNOTT(3)
       INTEGER         INO,IMA,NUNO,NRIEN,NBAR,NA
@@ -80,7 +64,6 @@ C
       REAL*8          DDOT,AB(3),AC(3)
       CHARACTER*8     TYPMA,K8B
       CHARACTER*19    MAI,LMAFIS
-      CHARACTER*32    JEXATR
       LOGICAL         LJONC
 C ----------------------------------------------------------------------
 

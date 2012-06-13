@@ -1,9 +1,9 @@
       SUBROUTINE CALKBP( NNO, NDIM, AXI, R, KPG, GEOM, IVF,
      &                   IPOIDS, IDFDE, KBP )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/01/2011   AUTEUR SFAYOLLE S.FAYOLLE 
+C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -22,6 +22,7 @@ C RESPONSABLE SFAYOLLE S.FAYOLLE
 C TOLE CRS_1404
       IMPLICIT NONE
 
+      INCLUDE 'jeveux.h'
       LOGICAL AXI
 
       INTEGER NDIM, NNO, IPOIDS, IDFDE, IVF
@@ -46,22 +47,6 @@ C IN  IDFDE   : DERIVEE DES FONCTIONS DE FORME ELEMENT DE REFERENCE
 C OUT KBP     : MATRICE KBP
 C......................................................................
 
-C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      INTEGER  ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       INTEGER I, N, M, KPG
 

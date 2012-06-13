@@ -1,6 +1,6 @@
       SUBROUTINE TE0170(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,6 +29,7 @@ C              ---> NOMTE  : NOM DU TYPE ELEMENT
 C.......................................................................
 
       IMPLICIT REAL*8 (A-H,O-Z)
+      INCLUDE 'jeveux.h'
       PARAMETER (NBRES=2)
       CHARACTER*8 NOMRES(NBRES),FAMI,POUM
       INTEGER ICODRE(NBRES)
@@ -39,22 +40,6 @@ C.......................................................................
       INTEGER   IPOIDS,IVF,IDFDE,IGEOM,IMATE,KPG,SPT
       INTEGER   JGANO,NNO,KP,NPG2,IK,IJKL,I,J,IMATUU,JCRET
 
-C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
-      COMMON /IVARJE/ZI(1)
-      COMMON /RVARJE/ZR(1)
-      COMMON /CVARJE/ZC(1)
-      COMMON /LVARJE/ZL(1)
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      INTEGER ZI
-      REAL*8 ZR
-      COMPLEX*16 ZC
-      LOGICAL ZL
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
 
       IF (OPTION(1:9).EQ.'FULL_MECA' .OR.

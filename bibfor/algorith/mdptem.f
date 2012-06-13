@@ -2,6 +2,7 @@
      &       PARCHO,NOECHO,DT,DTS,DTU,DTMAX,TINIT,TFIN,NBPAS,INFO,IER,
      &       LISINS)
       IMPLICIT   REAL*8 (A-H,O-Z)
+      INCLUDE 'jeveux.h'
       INTEGER            NBCHOC, NBPAS, INFO,IER, NBMODE
       REAL*8             MASGEN(*),PULSAT(*),
      &                   PARCHO(NBCHOC,*),DPLMOD(NBCHOC,NBMODE,*)
@@ -10,7 +11,7 @@
       CHARACTER*24       LISINS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/02/2012   AUTEUR ALARCON A.ALARCON 
+C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,22 +47,6 @@ C OUT : NBPAS  : NOMBRE DE PAS CALCULE (INITIAL NON COMPRIS)
 C OUT : IER    : CODE RETOUR
 C OUT : LISINS : LISTE DES INSTANTS POUR L'ARCHIVAGE
 C ----------------------------------------------------------------------
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER           ZI      
-      COMMON / IVARJE / ZI(1)
-      REAL*8            ZR
-      COMMON / RVARJE / ZR(1)
-      COMPLEX*16        ZC
-      COMMON / CVARJE / ZC(1)
-      LOGICAL           ZL
-      COMMON / LVARJE / ZL(1)
-      CHARACTER*8       ZK8
-      CHARACTER*16              ZK16
-      CHARACTER*24                       ZK24
-      CHARACTER*32                                ZK32
-      CHARACTER*80                                         ZK80
-      COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER       IC, IA, I, J, IVERI, IBID  
       INTEGER       JBINT, JLPAS, JVALE, JVALR, JINST, JORDR
       INTEGER       N1, N2, N3, N4, N5, N6, NR, NT, NNI         

@@ -1,7 +1,7 @@
       SUBROUTINE NMDORC(MODELZ,COMPOZ,CARCRI)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,34 +18,19 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE PROIX J-M.PROIX
       IMPLICIT NONE
+      INCLUDE 'jeveux.h'
       CHARACTER*(*) MODELZ,COMPOZ
       CHARACTER*24  CARCRI
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 24/10/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C
 C     SAISIE ET VERIFICATION DES MOTS CLES COMP_INCR / COMP_ELAS
 C
 C IN  MODELZ  : NOM DU MODELE
 C OUT COMPOZ  : CARTE DECRIVANT LE TYPE DE COMPORTEMENT
 C ----------------------------------------------------------------------
-C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 
-      INTEGER        ZI
-      COMMON /IVARJE/ZI(1)
-      REAL*8         ZR
-      COMMON /RVARJE/ZR(1)
-      COMPLEX*16     ZC
-      COMMON /CVARJE/ZC(1)
-      LOGICAL        ZL
-      COMMON /LVARJE/ZL(1)
-      CHARACTER*8    ZK8
-      CHARACTER*16          ZK16
-      CHARACTER*24                  ZK24
-      CHARACTER*32                          ZK32
-      CHARACTER*80                                  ZK80
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C ----------------------------------------------------------------------
-C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
       INTEGER NCMPMA,DIMAKI,NBMO1,IRET,DIMANV
 C    DIMAKI = DIMENSION MAX DE LA LISTE DES RELATIONS KIT

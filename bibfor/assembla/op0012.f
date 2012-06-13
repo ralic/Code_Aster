@@ -1,9 +1,9 @@
       SUBROUTINE OP0012()
 C======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ASSEMBLA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,6 +25,7 @@ C======================================================================
 C----------------------------------------------------------------------
 C     VARIABLES LOCALES
 C----------------------------------------------------------------------
+      INCLUDE 'jeveux.h'
       CHARACTER*8 NU,MATAS,CHARGE,KBID,SYME,SYM2,KMPIC
       CHARACTER*16 TYPM,OPER
       CHARACTER*19 MATEL,SOLVEU
@@ -33,16 +34,6 @@ C----------------------------------------------------------------------
       INTEGER ITYSCA,NBCHC,NBMAT,JLIMAT,JLCHCI,IBID,K,J,NBCHAR
       INTEGER JRECC,ICO,IEXI,IRET,ISLVK,ILIMAT
 C-----------------------------------------------------------------------
-      INTEGER ZI
-      COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       INTEGER      IARG
 C----------------------------------------------------------------------
       CALL JEMARQ()

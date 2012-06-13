@@ -1,9 +1,10 @@
       SUBROUTINE COPISD(TYPESD,BASE,SD1,SD2)
       IMPLICIT NONE
+      INCLUDE 'jeveux.h'
       CHARACTER*(*) TYPESD,BASE,SD1,SD2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,22 +47,6 @@ C     OUT:
 C     SD2 EST CREEE ET A LE MEME CONTENU QUE SD1
 
 C-----------------------------------------------------------------------
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER ZI
-      COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
-      COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
-      COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 
       INTEGER       IRET, I, NBTU, JLTN1, JLTN2,IDD,NBSD,ILIMPI
       CHARACTER*1   BAS2

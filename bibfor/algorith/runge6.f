@@ -1,11 +1,12 @@
       SUBROUTINE RUNGE6( IPIF, DELTAT, TPGP, TPGM, HPGM, HPGP, ERR)
       IMPLICIT NONE
+      INCLUDE 'jeveux.h'
       INTEGER             IPIF
       REAL*8              DELTAT, TPGP, TPGM, HPGM, HPGP, ERR
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/04/2010   AUTEUR HAELEWYN J.HAELEWYN 
+C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -32,24 +33,8 @@ C OUT HPGP  : RESULTAT DE L'INTEGRATION HYDR À ITERATION NEWTON COURANTE
 C OUT ERR : ERREUR ABSOLUE
 C ----------------------------------------------------------------------
 C
-C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C
-C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       REAL*8       F1,F2,F3,F4,F5,F6, VALPA(2)
       REAL*8       K1,K2,K3,K4,K5,K6, HPGPE
       REAL*8       A2,A3,A4,A5,A6

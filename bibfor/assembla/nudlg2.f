@@ -1,8 +1,8 @@
       SUBROUTINE NUDLG2(NU)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ASSEMBLA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,6 +21,7 @@ C ======================================================================
 
 C     ARGUMENTS:
 C     ----------
+      INCLUDE 'jeveux.h'
       CHARACTER*(*) NU
 C ----------------------------------------------------------------------
 C     BUT : CREER L'OBJET NU.DLG2 PERMETTANT D'ASSOCIER LES
@@ -40,23 +41,6 @@ C                               EST ASSOCIE.
 C                               DANS CE CAS .DLG2(IEQ2)=IEQ1
 C ----------------------------------------------------------------------
 
-C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
-      CHARACTER*32 JEXNUM,JEXATR
-      COMMON /IVARJE/ZI(1)
-      COMMON /RVARJE/ZR(1)
-      COMMON /CVARJE/ZC(1)
-      COMMON /LVARJE/ZL(1)
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      INTEGER ZI
-      REAL*8 ZR
-      COMPLEX*16 ZC
-      LOGICAL ZL
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
       INTEGER NEQ,ILI,IER,NBLIGR,IEXI,JPRNO,JDLG2
       INTEGER IMA,NN,ZZNSUP,N1,N2,N3,N4,ZZNEMA
       INTEGER J1NEMA,J2NEMA,NBMA

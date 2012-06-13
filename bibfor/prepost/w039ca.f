@@ -1,10 +1,11 @@
       SUBROUTINE W039CA(IFI,FORM)
       IMPLICIT   NONE
+      INCLUDE 'jeveux.h'
       INTEGER IFI
       CHARACTER*(*) FORM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 23/04/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,24 +28,8 @@ C     BUT:
 C       IMPRIMER LES "CARTES" DE DONNEES DES CHAM_MATER, CARA_ELE, ...
 C ----------------------------------------------------------------------
 C
-C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C
-      INTEGER ZI
-      COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
-      COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
-      COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C
-C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       INTEGER NOCC,IOCC,N1,IBID
       CHARACTER*8 CHMAT,CARELE,MAILLA,CHARGE

@@ -1,12 +1,13 @@
       SUBROUTINE KNDIF2 ( LONG, LK1,L1, LK2,L2, LK3,L3 )
       IMPLICIT NONE
+      INCLUDE 'jeveux.h'
       INTEGER             LONG, L1 ,L2, L3
       CHARACTER*(*)       LK1(L1), LK2(L2), LK3(L3)
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/01/2009   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -38,18 +39,6 @@ C LK3    OUT  V(K*) : LISTE DES K* QUI DOIT CONTENIR LK1 - LK2
 C L3     IN   I     : DIMENSION DU TABLEAU LK3
 C L3     OUT  I     : LONGUEUR DE LA LISTE LK3
 C----------------------------------------------------------------------
-      INTEGER ZI
-      COMMON /IVARJE/ZI(1)
-      COMPLEX*16 ZC
-      COMMON /CVARJE/ZC(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32,JEXNOM
-      CHARACTER*80 ZK80
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C----------------------------------------------------------------------
       CHARACTER*24  PN2 , KBID
       INTEGER K1,K2,NBK3

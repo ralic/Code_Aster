@@ -1,10 +1,11 @@
       SUBROUTINE RSCRSD(BASE,NOMSD,TYPESD,NBORDR)
       IMPLICIT NONE
+      INCLUDE 'jeveux.h'
       CHARACTER*(*) BASE,NOMSD,TYPESD
       INTEGER NBORDR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/06/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,7 +38,6 @@ C ----------------------------------------------------------------------
       CHARACTER*1 KBID,BAS1
       CHARACTER*16 TYPES2
       CHARACTER*19 NOMS2
-      CHARACTER*32 JEXNOM,JEXNUM
 C     ------------------------------------------------------------------
 C                      C H A M P _ M E C A N I Q U E
 C     ------------------------------------------------------------------

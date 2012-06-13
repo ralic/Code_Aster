@@ -3,6 +3,7 @@
      &               MATR,MATA,ITYPG,AXG,ZG,RHOG,VITG,CDG,CPG)
       IMPLICIT REAL*8 (A-H,O-Z)
 C
+      INCLUDE 'jeveux.h'
       INTEGER       NDIM(14),NUMGRP(*),NBMOD
       REAL*8        MATMA(*),DCENT(*)
       REAL*8        CP(*),CF(*),VIT(0:*),RHO(0:*),PSTAT(*),DPSTAT(*)
@@ -14,9 +15,9 @@ C
       REAL*8        ZG(*),AXG(*),RHOG(*),VITG(*),CDG(*),CPG(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/08/2009   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -81,22 +82,6 @@ C IN  : VITG   : PROFIL DE VITESSE DE L'ECOULEMENT AU NIVEAU DES GRILLES
 C IN  : CDG    : COEFF DE TRAINEE POUR CHAQUE TYPE DE GRILLES
 C IN  : CPG    : PENTE DU COEFF DE PORTANCE POUR CHAQUE TYPE DE GRILLES
 C ----------------------------------------------------------------------
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER          ZI
-      COMMON  /IVARJE/ ZI(1)
-      REAL*8           ZR
-      COMMON  /RVARJE/ ZR(1)
-      COMPLEX*16       ZC
-      COMMON  /CVARJE/ ZC(1)
-      LOGICAL          ZL
-      COMMON  /LVARJE/ ZL(1)
-      CHARACTER*8      ZK8
-      CHARACTER*16            ZK16
-      CHARACTER*24                    ZK24
-      CHARACTER*32                            ZK32
-      CHARACTER*80                                    ZK80
-      COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C ----------------------------------------------------------------------
       INTEGER      I,J
       INTEGER      IMOD,IGRP,JMOD,JGRP

@@ -1,7 +1,7 @@
       SUBROUTINE RESGRA(MAT,MATF,VCINE,NITER,EPSI,CRITER,NSECM,RSOLU,
      &                  SOLVEU)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,6 +20,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_4
       IMPLICIT NONE
+      INCLUDE 'jeveux.h'
       CHARACTER*(*) MAT,VCINE,MATF
       INTEGER NITER
       REAL*8 EPSI,RSOLU(*)
@@ -40,22 +41,8 @@ C IN/OUT   R   RSOLU(*,NSECM)  :
 C        EN ENTREE : VECTEUR DE REELS CONTENANT LES SECONDS MEMBRES
 C        EN SORTIE : VECTEUR DE REELS CONTENANT LES SOLUTIONS
 C----------------------------------------------------------------------
-C     COMMUNS JEVEUX
 C----------------------------------------------------------------------
-      INTEGER*4 ZI4
-      COMMON /I4VAJE/ZI4(1)
-      INTEGER ZI
-      COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC,CBID
-      COMMON /CVARJE/ZC(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32,JEXNUM
-      CHARACTER*80 ZK80
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      COMPLEX*16 CBID
 C----------------------------------------------------------------------
 C     VARIABLES LOCALES
 C----------------------------------------------------------------------

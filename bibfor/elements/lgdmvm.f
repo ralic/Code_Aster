@@ -1,7 +1,7 @@
       SUBROUTINE LGDMVM(IMATE,COMPOR,EPSM,DEPS,VIM,OPTION,SIGM,
      &                  SIG,VIP,DSIDEP,CRIT,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/01/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,6 +21,7 @@ C ======================================================================
 C RESPONSABLE SFAYOLLE S.FAYOLLE
 
       IMPLICIT NONE
+      INCLUDE 'jeveux.h'
       CHARACTER*16       OPTION,COMPOR
       REAL*8             EPSM(6),DEPS(6),VIM(*),EP
       REAL*8               R8BID, CRIT(*)
@@ -41,8 +42,6 @@ C       VIP     : VARIABLES INTERNES EN T+
 C       DSIDEP  : MATRICE TANGENTE
 C ----------------------------------------------------------------------
 
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
 
       REAL*8   EMMP(6),DEMP(6),CEL(6,6),CELINV(6,6),CELDAM(6,6),EMEL(6)
       REAL*8   TANDAM(6,6),TANEPL(6,6),SIGPD(6),DEDA(6),RESIDU

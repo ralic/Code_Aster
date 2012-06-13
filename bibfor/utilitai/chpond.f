@@ -2,12 +2,13 @@
 
       IMPLICIT NONE
 
+      INCLUDE 'jeveux.h'
       CHARACTER*8 MODELE
       CHARACTER*19 CHIN,CESOUT,CESPOI
       CHARACTER*4 TYCH,DEJAIN
 C    -------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 07/05/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,22 +41,6 @@ C     OUT CESOUT    : CHIN + PONDERATION (CHAM_ELEM_S /ELXX)
 C     IN/OUT CESPOI : PONDERATION        (CHAM_ELEM_S /ELXX)
 C                     + OBJET .PDSM (POIDS DES MAILLES)
 C     ------------------------------------------------------------------
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER          ZI
-      COMMON  /IVARJE/ ZI(1)
-      REAL*8           ZR
-      COMMON  /RVARJE/ ZR(1)
-      COMPLEX*16       ZC
-      COMMON  /CVARJE/ ZC(1)
-      LOGICAL          ZL
-      COMMON  /LVARJE/ ZL(1)
-      CHARACTER*8      ZK8
-      CHARACTER*16            ZK16
-      CHARACTER*24                    ZK24
-      CHARACTER*32                            ZK32
-      CHARACTER*80                                    ZK80
-      COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       INTEGER IBID,IRET,NBCHIN,NBMA,NBPT,NBSP,NBCMP,JOUTV,JOUTL,JOUTD
       INTEGER IAD1,IAD2,IAD3,ISP,IMA,ICMP,IPT,JCHSV,JCHSL,JCHSD,IEXI

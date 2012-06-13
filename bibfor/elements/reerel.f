@@ -1,13 +1,14 @@
       SUBROUTINE REEREL(ELREFP,NNOP,NDIM,TABAR,XE,XG)
       IMPLICIT NONE
 
+      INCLUDE 'jeveux.h'
       INTEGER       NDIM,NNOP
       REAL*8        XE(NDIM),XG(NDIM),TABAR(*)
       CHARACTER*8   ELREFP
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 31/01/2012   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -37,10 +38,6 @@ C
 C     SORTIE
 C       XG       : COORDONNES REELLES DU POINT
 C......................................................................
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  ------------------------
-      REAL*8           ZR
-      COMMON  /RVARJE/ ZR(1)
-C     -----  FIN  COMMUNS NORMALISES  JEVEUX  ------------------------
 
       REAL*8      FF(NNOP)
       INTEGER     I,J,NBNOMX,NNO

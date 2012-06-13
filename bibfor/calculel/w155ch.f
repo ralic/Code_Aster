@@ -1,7 +1,7 @@
       SUBROUTINE W155CH(CHIN,CARELE,LIGREL,CHEXTR,MOTFAC,NUCOU,NICOU,
      &                  NANGL,NUFIB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/04/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,6 +21,7 @@ C ======================================================================
 C RESPONSABLE PELLET J.PELLET
 C ======================================================================
       IMPLICIT NONE
+      INCLUDE 'jeveux.h'
       CHARACTER*8 CARELE
       CHARACTER*3 NICOU
       CHARACTER*16 MOTFAC
@@ -41,22 +42,6 @@ C IN       NICOU   : NIVEAU DE LA COUCHE (MOY/INF/SUP)
 C IN       NANGL   : VALEUR (ENTIER) DE L'ANGLE (EN DEGRES)
 C IN       NUFIB   : NUMERO DE LA FIBRE
 C ----------------------------------------------------------------------
-C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      INTEGER ZI
-      COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
-      COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
-      COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*24 LINUMA,LINUTE
       CHARACTER*19 CES1,CES2,CES3,CES4,CES5
       CHARACTER*16 OPTION

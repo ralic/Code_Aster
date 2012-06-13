@@ -1,14 +1,15 @@
       SUBROUTINE RAORFI(NOMA,LIGREL,NOEPOU,CARA,COORIG,
      &                  EG1,EG2,EG3,TYPRAC,RAYON)
       IMPLICIT NONE
+      INCLUDE 'jeveux.h'
       INTEGER INFO,IUNIFI,IFM
       CHARACTER*8 NOEPOU,NOMA,CARA
       CHARACTER*19  LIGREL
       REAL*8 COORIG(3),EG1(3),EG2(3),EG3(3),R
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,23 +27,6 @@ C ======================================================================
 C -------------------------------------------------------
 C     POUR LE RACCORD (COQUE OU 3D)_TUYAU
 C
-C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ------
-      CHARACTER*32       JEXNUM , JEXNOM
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE /ZK8(1),ZK16(1),ZK24(1),ZK32(1), ZK80(1)
-C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ------
 C
       INTEGER NMA,IMA,INOPOU,ICONEX,NBNO,IER,I,J,NTSEG3,JDTM,NUTYMA
       INTEGER IDESC,NCMPMX,IVALE,IPTMA,IGD,IDEBGD,JCOOR

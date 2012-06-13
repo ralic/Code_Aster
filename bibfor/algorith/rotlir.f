@@ -2,7 +2,7 @@
      &                    TRAMO1,DDLA1,NBEQ1,IMAST,NUMLIA)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/05/2012   AUTEUR ALARCON A.ALARCON 
+C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,26 +53,10 @@ C IMAST    /I/: ENTIER DETERMINANT SI ON CONSTRUIT :
 C               -1 / -2 : LA MATRICE DE LIAISON STANDARD (C),
 C                1 /  2 : LA MATRICE DE LIAISON PROJETEE (C.PHI)
 C
-C-------- DEBUT COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER          ZI
-      COMMON  /IVARJE/ ZI(1)
-      REAL*8           ZR
-      COMMON  /RVARJE/ ZR(1)
-      COMPLEX*16       ZC
-      COMMON  /CVARJE/ ZC(1)
-      LOGICAL          ZL
-      COMMON  /LVARJE/ ZL(1)
-      CHARACTER*8      ZK8
-      CHARACTER*16            ZK16
-      CHARACTER*24                    ZK24
-      CHARACTER*32                            ZK32
-      CHARACTER*80                                    ZK80
-      COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C
-      CHARACTER*32 JEXNOM, JEXNUM
+      INCLUDE 'jeveux.h'
 C
-C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C   PARAMETER REPRESENTANT LE NOMBRE MAX DE COMPOSANTES DE LA GRANDEUR
 C   SOUS-JACENTE TRAITEE

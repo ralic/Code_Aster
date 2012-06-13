@@ -1,8 +1,8 @@
       SUBROUTINE PJ3DTR(CORTR3,CORRES,NUTM3D,ELRF3D,GEOM1,GEOM2)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,6 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
+      INCLUDE 'jeveux.h'
       CHARACTER*16 CORRES,CORTR3
       CHARACTER*8  ELRF3D(10)
       INTEGER      NUTM3D(10)
@@ -32,24 +33,8 @@ C  IN/JXOUT  CORRES    K16 : NOM DU CORRESP_2_MAILLA FINAL
 C  IN        NUTM3D(10) I  : NUMEROS DES 10 TYPES DE MAILLES 3D
 C  IN        ELRF3D(10) K8 : NOMS DES 10 TYPES DE MAILLES 3D
 C ----------------------------------------------------------------------
-C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
-      CHARACTER*32         JEXATR
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL,LEXT
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+      LOGICAL            LEXT
       INTEGER        NBNOMX,    NBFAMX
       PARAMETER    ( NBNOMX=27, NBFAMX=20)
       INTEGER     CNTETR(4,1),CNPENT(4,3),CNHEXA(4,6),CNPYRA(4,2)

@@ -2,6 +2,7 @@
      &                   NBCMP,TYPAC,NDIM,NRVAL,RESU,NOMTB,NSYMB,
      &                   CHPGS,TYCH,NIVAL,NIORD)
       IMPLICIT   NONE
+      INCLUDE 'jeveux.h'
       INTEGER      NBCMP,NDIM,NBVAL,NBMA
       CHARACTER*4  TYCH
       CHARACTER*8  TYPAC,NOMA,RESU,NOMTB
@@ -10,9 +11,9 @@
       CHARACTER*24 NKCHA,NKCMP,MESMAI,NIVAL,NRVAL,NIORD
       LOGICAL      TOUCMP
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/07/2011   AUTEUR LABBE M.LABBE 
+C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,22 +53,6 @@ C
 C        IN/OUT : NOMTB (K24)  : OBJET TABLE
 C
 C ----------------------------------------------------------------------
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER           ZI
-      COMMON / IVARJE / ZI(1)
-      REAL*8            ZR
-      COMMON / RVARJE / ZR(1)
-      COMPLEX*16        ZC
-      COMMON / CVARJE / ZC(1)
-      LOGICAL           ZL
-      COMMON / LVARJE / ZL(1)
-      CHARACTER*8       ZK8
-      CHARACTER*16              ZK16
-      CHARACTER*24                       ZK24
-      CHARACTER*32                                ZK32,JEXNUM,JEXATR
-      CHARACTER*80                                         ZK80
-      COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 
       INTEGER JCMP,JKCHA,JLMA,JRVAL,JIVAL,JNIORD,JCOOR,JCONX1,JCONX2
       INTEGER JCPGV,JCPGL,JCPGD,I,J,JCESV,JCESL,JCESD,JCESC,NBMAX,NBCMPX

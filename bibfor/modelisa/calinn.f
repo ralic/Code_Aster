@@ -2,7 +2,7 @@
      &                   LISI2Z,LONLI2,MODZ)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,10 +18,11 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT       NONE
+      INCLUDE 'jeveux.h'
       CHARACTER*(*)  MOTFAZ,PREFIZ,NOMAZ,LISI1Z,LISI2Z,MODZ
       INTEGER        IOCC
 C ---------------------------------------------------------------------
-C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C
 C     BUT : CREER LA STRUCTURE INTERMEDIAIRE PRFEIXEE PAR PREFIX
 C           DESCRIVANT LES COUPLES DE NOEUDS EN REGARD AVEC
@@ -58,25 +59,8 @@ C IN  LONLI1  I    : LONGUEUR DE LA PREMIERE LISTE
 C IN  LISI2Z  K*(*): NOM DE LA SECONDE LISTE DE NOEUDS
 C IN  LONLI2  I    : LONGUEUR DE LA SECONDE LISTE
 C ---------------------------------------------------------------------
-C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ---------------------------
 C
-      CHARACTER*32       JEXNUM , JEXNOM
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C
-C --- FIN DECLARATIONS NORMALISEES JEVEUX -----------------------------
 C
       INTEGER        I, IDCONI, IDLOU1, IDLOU2, IER, INO1, INO2,
      &               LONLI1, LONLI2, LONLIS, NBMA1, NBNO1, N1,

@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 12/06/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ops Cata  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -177,9 +177,8 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO, 
      if args.get('FORMAT_HDF') == 'OUI':
          UTMESS('I', 'SUPERVIS_71')
      elif newsign != savsign:
-         UTMESS('F', 'SUPERVIS_69', valk=(savsign, newsign),
+         UTMESS('A', 'SUPERVIS_69', valk=(savsign, newsign),
                                     vali=self.jdc.jeveux_sysaddr)
-         return
      else:
          UTMESS('I', 'SUPERVIS_70', valk=newsign, vali=self.jdc.jeveux_sysaddr)
      from Cata.cata  import entier

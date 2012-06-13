@@ -1,7 +1,7 @@
       SUBROUTINE JELIHD ( NOMF, FICHDF, CLAS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
-C MODIF JEVEUX  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,6 +20,7 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_18 CRP_20 CRS_508 CRS_512 CRS_513 CRS_505
       IMPLICIT NONE
+      INCLUDE 'jeveux.h'
       CHARACTER*(*)       NOMF, FICHDF, CLAS
 C ----------------------------------------------------------------------
 C ROUTINE UTILISATEUR D'OUVERTURE D'UNE BASE AVEC LECTURE SUR
@@ -102,22 +103,6 @@ C
       COMMON /ISTAJE/  ISTAT(4)
       REAL *8          SVUSE,SMXUSE
       COMMON /STATJE/  SVUSE,SMXUSE
-C---------- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C---------- FIN  COMMUNS NORMALISES  JEVEUX ----------------------------
       CHARACTER*4      Z
       PARAMETER      ( Z = 'INIT' )
       CHARACTER*8      KNOM,KNOMF,CVERSB,CVERSU

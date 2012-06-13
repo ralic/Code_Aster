@@ -3,6 +3,7 @@
      &                   NOMFOR,GRDVIE, FORVIE,FORDEF,FATSOC,PROAXE,
      &                   NOMMAT,VALA,COEFPA,POST,CUDOMX, NXM, NYM, NZM )
       IMPLICIT      NONE
+      INCLUDE 'jeveux.h'
       INTEGER       NBORDR, KWORK, I, NBVEC
       INTEGER       SOMNOW, TDISP, TSPAQ
       LOGICAL       FORDEF, POST
@@ -14,7 +15,7 @@
       REAL*8        CUDOMX, NXM, NYM, NZM
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,21 +77,6 @@ C  CUDOMX   OUT  R  : VALEUR DU MAX DES CUMULS DE DOMMAGE.
 C REMARQUE : CETTE ROUTINE SERT POUR LE TRAITEMENT DES POINTS DE GAUSS
 C            ET DES NOEUDS.
 C ----------------------------------------------------------------------
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER          ZI
-      COMMON  /IVARJE/ ZI(1)
-      REAL*8           ZR
-      COMMON  /RVARJE/ ZR(1)
-      COMPLEX*16       ZC
-      COMMON  /CVARJE/ ZC(1)
-      LOGICAL          ZL
-      COMMON  /LVARJE/ ZL(1)
-      CHARACTER*8      ZK8
-      CHARACTER*16             ZK16
-      CHARACTER*24                      ZK24
-      CHARACTER*32                               ZK32
-      CHARACTER*80                                        ZK80
-      COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ------------------------------------------------------------------
       INTEGER       NCYCL(NBVEC), NBVEC1,NVAL
       INTEGER       OMIN(NBVEC*(NBORDR+2)), OMAX(NBVEC*(NBORDR+2))

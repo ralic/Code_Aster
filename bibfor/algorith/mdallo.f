@@ -5,6 +5,7 @@
      +                   JFCHO,JDCHO,JVCHO, JADCHO,
      +                   JREDC,JREDD, LPSTO, METHOD)
       IMPLICIT    REAL*8 (A-H,O-Z)
+      INCLUDE 'jeveux.h'
       CHARACTER*(*) BASEMO
       CHARACTER*8 NOMRES,MASGEN,RIGGEN,AMOGEN,INTITU(*),KBID,KB
       CHARACTER*8 NOECHO(NBCHOC,*),FONRED(NBREDE,*)
@@ -12,9 +13,9 @@
       LOGICAL LPSTO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,22 +53,6 @@ C IN  : LPSTO  : LOGIQUE =VRAI SI STOCKAGE DU PAS DE TEMPS VARIABLE
 C IN  : METHOD : ALGORITHME UTILISE (DEVOGE, EULER, ...)
 C                DANS LE CAS ITMI, UN OBJET EST DIFFERENT
 C ----------------------------------------------------------------------
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER          ZI
-      COMMON  /IVARJE/ ZI(1)
-      REAL*8           ZR
-      COMMON  /RVARJE/ ZR(1)
-      COMPLEX*16       ZC
-      COMMON  /CVARJE/ ZC(1)
-      LOGICAL          ZL
-      COMMON  /LVARJE/ ZL(1)
-      CHARACTER*8      ZK8
-      CHARACTER*16             ZK16
-      CHARACTER*24                      ZK24
-      CHARACTER*32                               ZK32
-      CHARACTER*80                                        ZK80
-      COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER      NBSAUV, NBSTOC,J1REFE
       CHARACTER*8  NUMGEN,BLANC
 C     ------------------------------------------------------------------

@@ -3,7 +3,7 @@
      &                   CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/04/2012   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,13 +25,12 @@ C
 C ======================================================================
 
       IMPLICIT NONE
+      INCLUDE 'jeveux.h'
       INTEGER MATE,NPG,LGPG,CODRET
       REAL*8  GEOM(2,4),DEPLM(8),DDEPL(8),TM,TP
       REAL*8  FINT(8),KTAN(8,8),SIGMA(6,NPG),VIM(LGPG,NPG),VIP(LGPG,NPG)
       CHARACTER*8  TYPMOD(*)
       CHARACTER*16 OPTION, COMPOR(*)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
 C-----------------------------------------------------------------------
 C
 C BUT: DEVELOPPEMENT D'UN ELEMENT DE JOINT.

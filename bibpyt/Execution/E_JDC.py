@@ -1,4 +1,4 @@
-#@ MODIF E_JDC Execution  DATE 12/06/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_JDC Execution  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -29,6 +29,7 @@ import os
 import os.path as osp
 import types
 import cPickle as pickle
+import traceback
 PICKLE_PROTOCOL = 0
 
 # Modules Eficas
@@ -419,10 +420,13 @@ class JDC:
        bufsize = 100000*8*10    # 10 enregistrements de taille standard
        if base.endswith('bhdf.1'):
            self.jeveux_sysaddr = 0
-       with open(base, 'rb') as fobj:
-          fobj.flush()
-          fobj.seek(self.jeveux_sysaddr, 0)
-          self._sign = sha1(fobj.read(bufsize)).hexdigest()
+       self._sign = 'not available'
+       try:
+           with open(base, 'rb') as fobj:
+               fobj.seek(self.jeveux_sysaddr, 0)
+               self._sign = sha1(fobj.read(bufsize)).hexdigest()
+       except (IOError, OSError):
+           traceback.print_exc()
        #print "#DBG signature of", base, "at", self.jeveux_sysaddr, ':', self._sign
        return self._sign
 

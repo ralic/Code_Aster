@@ -1,12 +1,13 @@
       SUBROUTINE XINTAR(ELP,NDIM,IA,TABCO,TABLS,INTAR)
       IMPLICIT NONE
 
+      INCLUDE 'jeveux.h'
       INTEGER       IA,NDIM
       CHARACTER*8   ELP
       REAL*8        INTAR(NDIM),TABCO(*),TABLS(*)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2012   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,10 +37,6 @@ C
 C     SORTIE
 C       INTAR   : COORDONNÉES DES POINTS D'INTERSECTION
 C     ----------------------------------------------------------------
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  ------------------------
-      REAL*8           ZR
-      COMMON  /RVARJE/ ZR(1)
-C     -----  FIN  COMMUNS NORMALISES  JEVEUX  ------------------------
 C
       REAL*8          C1,C2,C3,A,B,C,D,SOL,SOL1,SOL2,MIN,MAX
       REAL*8          XE(NDIM),R8PREM,CRIVAL

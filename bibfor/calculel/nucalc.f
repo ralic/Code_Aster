@@ -2,9 +2,9 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,6 +22,7 @@ C ======================================================================
 C RESPONSABLE                            VABHHTS J.PELLET
 C     ARGUMENTS:
 C     ----------
+      INCLUDE 'jeveux.h'
       INTEGER OPT,TE,MEMOIR
 C ----------------------------------------------------------------------
 C     ENTREES:
@@ -43,10 +44,6 @@ C ----------------------------------------------------------------------
 C     VARIABLES LOCALES:
 C     ------------------
       INTEGER OPTMOD,JJ,IANBLC
-C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
-      COMMON /IVARJE/ZI(1)
-      INTEGER ZI
-      CHARACTER*32 JEXATR
 
 C DEB-------------------------------------------------------------------
       CALL ASSERT(MEMOIR.EQ.0 .OR. MEMOIR.EQ.1)

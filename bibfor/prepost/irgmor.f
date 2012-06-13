@@ -1,5 +1,6 @@
       SUBROUTINE IRGMOR ( TORD, VERS )
       IMPLICIT   NONE
+      INCLUDE 'jeveux.h'
       INTEGER    NTYELE,NELETR
       PARAMETER (NTYELE = 28)
       PARAMETER (NELETR =  8)
@@ -8,9 +9,9 @@ C
       INTEGER                          VERS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -50,7 +51,6 @@ C        pyramid     ET POUR CHAQUE scalar, vector, puis tensor
 C
 C     ------------------------------------------------------------------
       INTEGER I, IND
-      CHARACTER*32 JEXNOM
 C
 C --- DATA QUI DEFINIT L'ORDRE
 C     (IDENTIQUE EN VERSION 1.0 ET 1.2 PUISQUE ON AURA ZERO ELEMENT SUR

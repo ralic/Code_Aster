@@ -1,11 +1,12 @@
       SUBROUTINE XMILAR(NDIM,PINTER,TABAR,AREINT,MILARA,MILARB)
       IMPLICIT NONE
 
+      INCLUDE 'jeveux.h'
       INTEGER       NDIM,AREINT
       REAL*8        MILARA(NDIM),MILARB(NDIM),PINTER(*),TABAR(*)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2012   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,10 +37,6 @@ C     SORTIE
 C       MILARA  : COOR DU PT MILIEU ENTRE 1ER PT DE COORSG ET PT INTER
 C       MILARB  : COOR DU PT MILIEU ENTRE 2EM PT DE COORSG ET PT INTER
 C     ----------------------------------------------------------------
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  ------------------------
-      REAL*8           ZR
-      COMMON  /RVARJE/ ZR(1)
-C     -----  FIN  COMMUNS NORMALISES  JEVEUX  ------------------------
 C
       REAL*8        C(NDIM)
       REAL*8        S,SC,S1

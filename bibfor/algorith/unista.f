@@ -3,7 +3,7 @@
 C-----------------------------------------------------------------------
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,6 +51,7 @@ C     %-----------------%
 C     | ARRAY ARGUMENTS |
 C     %-----------------%
 
+      INCLUDE 'jeveux.h'
       INTEGER DDLSTA(N),DDLEXC(N)
       REAL*8  H(LDH,LDH),V(LDV,LDH)
       REAL*8  VECTP(LDV)
@@ -67,8 +68,6 @@ C     %--------------------%
 C     | DECLARATION JEVEUX |
 C     %--------------------%
 
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
 
 C     %------------------------%
 C     | LOCAL SCALARS & ARRAYS |

@@ -3,6 +3,7 @@
      &                  PINTER,NINTER,AINTER,NFACE,NPTF,CFACE)
       IMPLICIT NONE
 
+      INCLUDE 'jeveux.h'
       REAL*8        LSN(*),LST(*),PINTER(*),AINTER(*)
       INTEGER       JGRLSN,IGEOM,NINTER,NFACE,CFACE(5,3),NPTF
       INTEGER       NFISS,IFISS,FISCO(*),NFISC
@@ -10,7 +11,7 @@
       CHARACTER*16  ENR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2012   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,22 +54,6 @@ C       NFACE   : NOMBRE DE FACETTES POUR IFISS
 C       CFACE   : CONNECTIVITE DES NOEUDS DES FACETTES POUR IFISS
 C
 C     ------------------------------------------------------------------
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER          ZI
-      COMMON  /IVARJE/ ZI(1)
-      REAL*8           ZR
-      COMMON  /RVARJE/ ZR(1)
-      COMPLEX*16       ZC
-      COMMON  /CVARJE/ ZC(1)
-      LOGICAL          ZL
-      COMMON  /LVARJE/ ZL(1)
-      CHARACTER*8      ZK8
-      CHARACTER*16             ZK16
-      CHARACTER*24                      ZK24
-      CHARACTER*32                               ZK32
-      CHARACTER*80                                        ZK80
-      COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       REAL*8          A(3),B(3),C(3),LSNA,LSNB,PADIST,LONGAR,TAMPOR(5)
       REAL*8          ALPHA,BAR(3),OA(3),M(3),AM(3),ND(3),PS,PS1,LAMBDA

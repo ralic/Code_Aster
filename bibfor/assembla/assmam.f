@@ -6,13 +6,14 @@ C              IL FAUT APPELER SON "CHAPEAU" : ASMATR.
 
       IMPLICIT NONE
 
+      INCLUDE 'jeveux.h'
       CHARACTER*(*) BASE,MATAS,TLIMAT(*),NU
       INTEGER NBMAT,ITYSCA
       REAL*8 LICOEF(*)
       CHARACTER*4 MOTCLE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE PELLET J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,20 +52,7 @@ C IN  I   ITYSCA  : TYPE (R/C) DE LA MATR_ASSE
 C                          1 --> REELLES
 C                          2 --> COMPLEXES
 C-----------------------------------------------------------------------
-      INTEGER ZI
-      COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
-      COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
-      COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16,OPTIO,OPTIO2,CODVOI,NOMTE
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      CHARACTER*16 OPTIO,OPTIO2,CODVOI,NOMTE
 C-----------------------------------------------------------------------
       CHARACTER*1  BASE1,TYPSCA,KBID
       CHARACTER*2  TT
@@ -74,7 +62,6 @@ C-----------------------------------------------------------------------
       CHARACTER*16 K16BID,NOMCMD
       CHARACTER*19 MATDEV,MAT19,RESU,MATEL,LIGRE1,LIGRE2,SDFETI
       CHARACTER*24 METHOD,K24B,NOMLOG,INFOFE
-      CHARACTER*32 JEXNUM,JEXNOM,JEXATR
       CHARACTER*1  MATSYM,TYPMAT
       REAL*8       C1,TEMPS(6),RBID
 

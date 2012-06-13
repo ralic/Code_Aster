@@ -1,11 +1,12 @@
       SUBROUTINE INFOAR(NDIM,AR,IA,J,GEOM,LSN,A,B,M,LSNA,LSNB,LSNM)
       IMPLICIT NONE
 
+      INCLUDE 'jeveux.h'
       INTEGER   AR(12,3),NDIM,IA,J
       REAL*8    A(NDIM),B(NDIM),M(NDIM),LSNA,LSNB,LSNM,GEOM(*),LSN(*)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2012   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -27,10 +28,6 @@ C                      L'ARETE CREEE LORS DU SOUS DECOUPAGE
 C                    
 C......................................................................
 C
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  ------------------------
-      REAL*8           ZR
-      COMMON  /RVARJE/ ZR(1)
-C     -----  FIN  COMMUNS NORMALISES  JEVEUX  ------------------------
       INTEGER   NA,NB,NM,I
 C
 C......................................................................

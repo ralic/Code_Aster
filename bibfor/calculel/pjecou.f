@@ -1,6 +1,6 @@
       SUBROUTINE PJECOU(MA1, MA2, NOMGMA, NOMGNO, CORRES)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 17/04/2012   AUTEUR GREFFET N.GREFFET 
+C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,24 +23,10 @@ C     COMMANDE:  PROJ_CHAMP  METHODE:'COUPLAGE' (COUPLAGE IFS VIA YACS)
 C ----------------------------------------------------------------------
 C
       IMPLICIT NONE
+      INCLUDE 'jeveux.h'
       CHARACTER*8  MA1, MA2
       CHARACTER*16 NOMGMA, NOMGNO, CORRES
 C ======================================================================
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-      CHARACTER*32 JEXNOM, JEXNUM
 C ======================================================================
       INTEGER          IRET, ITYPMA, NDIM, NBPG, IB, FLAG, IBT(15)
       INTEGER          NODEGL, INOL, INO2, MAILRF, NBPGRF

@@ -5,7 +5,7 @@
      &                    CODRET )
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 09/01/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,6 +46,7 @@ C
 C
 C 0.1. ==> ARGUMENTS
 C
+      INCLUDE 'jeveux.h'
       INTEGER IDFIMD
       INTEGER NBCMFI, NBVATO, NUMPT, NUMORD
       INTEGER TYPENT, TYPGEO
@@ -56,10 +57,6 @@ C
       CHARACTER*(*) NTVALE
 C
 C 0.2. ==> COMMUNS
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX --------------------------
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
-C     -----  FIN  COMMUNS NORMALISES  JEVEUX --------------------------
 C
 C 0.3. ==> VARIABLES LOCALES
 C

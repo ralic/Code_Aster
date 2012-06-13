@@ -1,9 +1,9 @@
       SUBROUTINE NMCVCI(CHARGE,INFOCH,FOMULT,NUMEDD,DEPMOI,
      &           INSTAP,CNCINE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,6 +28,7 @@ C       POUR CELA, ON FAIT LA DIFFERENCE ENTRE LES INSTANTS "+" ET "-"
 C       MAIS POUR L'INSTANT "-", IL FAUT PARTIR DU "VRAI" CHAMP
 C       DE DEPLACEMENT.
 C----------------------------------------------------------------------
+      INCLUDE 'jeveux.h'
       CHARACTER*24 CHARGE, INFOCH, FOMULT,NUMEDD,CNCINE
       CHARACTER*19 DEPMOI
       CHARACTER*24 L2CNCI(2),CNCINM,CNCINP
@@ -37,21 +38,6 @@ C----------------------------------------------------------------------
       INTEGER NBCHAR, IEXI,JLCHAR
       CHARACTER*1 KBID ,TYPCH(2)
       LOGICAL LVCINE
-C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C----------------------------------------------------------------------
 
       CALL JEMARQ()

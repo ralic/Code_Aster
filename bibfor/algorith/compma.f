@@ -1,8 +1,8 @@
       SUBROUTINE  COMPMA (MAILLA,NBGR,NOMGR,NBTO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,29 +34,13 @@ C NBGR     /I/: NOMBRE DE GROUPES DE MAILLES
 C NOMGR    /I/: NOMS DES GROUPES DE MAILLE
 C NBTO     /O/: NOMBRE DE MAILLES
 C
-C-------- DEBUT COMMUNS NORMALISES  JEVEUX  ----------------------------
-C
-      INTEGER          ZI
-      COMMON  /IVARJE/ ZI(1)
-      REAL*8           ZR
-      COMMON  /RVARJE/ ZR(1)
-      COMPLEX*16       ZC
-      COMMON  /CVARJE/ ZC(1)
-      LOGICAL          ZL
-      COMMON  /LVARJE/ ZL(1)
-      CHARACTER*8      ZK8
-      CHARACTER*16              ZK16
-      CHARACTER*24                        ZK24
-      CHARACTER*32                                  ZK32
-      CHARACTER*80                                            ZK80
-      COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C
 C
-C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
+C
+      INCLUDE 'jeveux.h'
       CHARACTER*8 MAILLA,NOMGR(NBGR),NOMCOU
       CHARACTER*24 VALK(2)
-      CHARACTER*32 JEXNOM
       CHARACTER*1 K1BID
 C
 C-----------------------------------------------------------------------

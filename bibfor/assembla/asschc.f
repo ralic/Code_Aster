@@ -1,14 +1,15 @@
       SUBROUTINE ASSCHC(MATAS,NBCHC,LCHCI,NOMNU,CUMUL)
       IMPLICIT NONE
+      INCLUDE 'jeveux.h'
       CHARACTER*(*) MATAS,LCHCI(*),NOMNU
       CHARACTER*1 BASE
       INTEGER NBCHC
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 01/03/2011   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE VABHHTS J.PELLET
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -37,17 +38,6 @@ C                        L'EFFET DE CES CHARGES EST CUMULE DANS MATAS
 C IN   NOMNU   K*14    : NOM DE LA NUMEROTATION
 C IN   CUMUL   K4      : 'ZERO' / 'CUMU'
 C-----------------------------------------------------------------------
-      CHARACTER*32 JEXNUM,JEXNOM
-      INTEGER ZI
-      COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C----------------------------------------------------------------------
 C     VARIABLES LOCALES
 C----------------------------------------------------------------------

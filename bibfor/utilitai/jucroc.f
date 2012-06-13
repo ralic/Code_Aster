@@ -1,12 +1,13 @@
       SUBROUTINE JUCROC( NOMC, NOOC, NUOC, DIM, LDEC )
       IMPLICIT REAL*8 (A-H,O-Z)
+      INCLUDE 'jeveux.h'
       CHARACTER*(*)      NOMC, NOOC
       INTEGER                        NUOC, DIM, LDEC
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/02/99   AUTEUR CABHHST V.LEFEBVRE 
+C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -31,7 +32,7 @@ C IN  DIM   : IS    : TAILLE DE L'OBJET
 C OUT LDEC  : IS    : DECALAGE
 C     ------------------------------------------------------------------
       CHARACTER*4  CBID
-      CHARACTER*32 NOM, JEXNUM, JEXNOM
+      CHARACTER*32 NOM
 C     ------------------------------------------------------------------
       IF ( NUOC .GT. 0 ) THEN
          NOM = JEXNUM(NOMC,NUOC)

@@ -1,12 +1,13 @@
       SUBROUTINE ACEAOR(NOMA,NOMO,LMAX,NBEPO,NBEDI,NBTEL,NTYELE,
      &                  NOMELE,IVR,IFM,NBOCC)
       IMPLICIT REAL*8 (A-H,O-Z)
+      INCLUDE 'jeveux.h'
       INTEGER           LMAX,NBEPO,NBEDI,NTYELE(*),IVR(*),NBOCC(*)
       CHARACTER*8       NOMA,NOMO
       CHARACTER*16      NOMELE(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 12/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,23 +31,6 @@ C ----------------------------------------------------------------------
 C IN  : NOMA   : NOM DU MAILLAGE
 C IN  : NOMO   : NOM DU MODELE
 C ----------------------------------------------------------------------
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER          ZI
-      COMMON  /IVARJE/ ZI(1)
-      REAL*8           ZR
-      COMMON  /RVARJE/ ZR(1)
-      COMPLEX*16       ZC
-      COMMON  /CVARJE/ ZC(1)
-      LOGICAL          ZL
-      COMMON  /LVARJE/ ZL(1)
-      CHARACTER*8      ZK8
-      CHARACTER*16            ZK16
-      CHARACTER*24                    ZK24
-      CHARACTER*32                            ZK32
-      CHARACTER*80                                    ZK80
-      COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32     JEXNUM, JEXNOM
-C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       PARAMETER    ( NBCAR = 100 , NBVAL = 1000 , NCO = 4 )
       REAL*8       VAL(NBVAL), X1(3), X2(3), X3(3)
       REAL*8       R8MIEM,TSM,R8RDDG,RDDG

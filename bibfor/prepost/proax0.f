@@ -1,8 +1,8 @@
       SUBROUTINE PROAX0( UI, VI, CSTA, CSTB, A1, B1, U0, V0, RPAX )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,6 +19,7 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE F1BHHAJ J.ANGLES
       IMPLICIT      NONE
+      INCLUDE 'jeveux.h'
       REAL*8        UI, VI, CSTA, CSTB, A1, B1, U0, V0, RPAX
 C ----------------------------------------------------------------------
 C BUT: PROJETER SUR L'AXE 2 LES POINTS REPRESANTANT LE
@@ -41,21 +42,6 @@ C RPAX      OUT  R  : VALEUR DE L'AMPLITUDE DU POINT PROJETE SUR L'AXE
 C                     CHOISI, POUR LE VECTEUR NORMAL COURANT.
 C
 C-----------------------------------------------------------------------
-C---- COMMUNS NORMALISES  JEVEUX
-      INTEGER ZI
-      COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
-      COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
-      COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ------------------------------------------------------------------
       REAL*8       UIP, VIP, A3, B3
       REAL*8       UP, VP, VAL

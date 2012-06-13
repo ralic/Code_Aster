@@ -1,6 +1,7 @@
       SUBROUTINE RVAFFE ( MCF,IOCC,SDLIEU,SDEVAL,SDMAIL,TYPAFF,QUANT,
      +                    OPTION,REP,NOMTAB,XNOVAR,NCHEFF,I1,ISD )
       IMPLICIT   NONE
+      INCLUDE 'jeveux.h'
       INTEGER             IOCC, ISD
       CHARACTER*1         TYPAFF
       CHARACTER*16        NCHEFF
@@ -9,9 +10,9 @@
       CHARACTER*(*)       MCF, REP, OPTION, QUANT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -36,23 +37,6 @@ C IN  TYPAFF : K : 'N' --> PAR NOEUD, 'E' --> PAR ELEM
 C IN  QUANT  : K : NOM DE LA QUANTITE TRAITEE
 C IN  OPTION : K : NOM DE L' OPTION   TRAITEE
 C     ------------------------------------------------------------------
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER          ZI
-      COMMON  /IVARJE/ ZI(1)
-      REAL*8           ZR
-      COMMON  /RVARJE/ ZR(1)
-      COMPLEX*16       ZC
-      COMMON  /CVARJE/ ZC(1)
-      LOGICAL          ZL
-      COMMON  /LVARJE/ ZL(1)
-      CHARACTER*8      ZK8
-      CHARACTER*16             ZK16
-      CHARACTER*24                      ZK24
-      CHARACTER*32                               ZK32
-      CHARACTER*80                                        ZK80
-      COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32     JEXNUM
-C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER      AVALE,APNBN,APADR,ANOCP,NBCP,IOC,AABSC,NBPT,NBOC
       INTEGER      APNSP,APNCO,ACOOR,NBCO,NBSP,APNCA,APNSA, I1
       INTEGER      I,DEB,FIN,ADR1,IFM,ANOMND,J,K,ADRI,DECI,NBNI,AVAUX

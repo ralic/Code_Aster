@@ -2,9 +2,9 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,6 +22,7 @@ C ======================================================================
 C RESPONSABLE                            VABHHTS J.PELLET
 C     ARGUMENTS:
 C     ----------
+      INCLUDE 'jeveux.h'
       INTEGER MODATT,IPARG
       CHARACTER*19 CHIN
 C ----------------------------------------------------------------------
@@ -48,22 +49,12 @@ C ----------------------------------------------------------------------
 C     FONCTIONS EXTERNES:
 C     ------------------
       INTEGER DIGDE2
-      CHARACTER*32 JEXNUM
 
 C     VARIABLES LOCALES:
 C     ------------------
       INTEGER DESC,MODE,NCMPEL,IRET,JPARAL,IEL,IAUX1,IAUX2,IAUX0,K
       INTEGER JRESL,DEBUGR,LGGREL
       LOGICAL LPARAL
-C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
-      COMMON /IVARJE/ZI(1)
-      COMMON /RVARJE/ZR(1)
-      COMMON /CVARJE/ZC(1)
-      COMMON /LVARJE/ZL(1)
-      INTEGER ZI
-      REAL*8 ZR
-      COMPLEX*16 ZC
-      LOGICAL ZL
 
 
       CALL JEMARQ()

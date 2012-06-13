@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 04/01/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,6 +22,7 @@ C ======================================================================
 C RESPONSABLE                            VABHHTS J.PELLET
 C     ARGUMENTS:
 C     ----------
+      INCLUDE 'jeveux.h'
       CHARACTER*(*) NMPARZ,LOUEZ
       CHARACTER*8 NOMPAR,NOMMAI
       INTEGER ITAB
@@ -35,7 +36,6 @@ C     ITAB     : ADRESSE DU CHAMP LOCAL CORRESPONDANT A NOMPAR
 C     -----------------------------------------------------------------
       CHARACTER*16 OPTION,NOMTE,NOMTM,PHENO,MODELI
       COMMON /CAKK01/OPTION,NOMTE,NOMTM,PHENO,MODELI
-      CHARACTER*32 JEXNUM,JEXNOM
 
       INTEGER IACHLO,IADSGD,IAMLOC,IAOPDS,IAOPMO,IAOPNO,IAOPPA
       INTEGER ILCHLO,K,KK,DEBUGR
@@ -57,24 +57,9 @@ C     -----------------------------------------------------------------
       INTEGER EVFINI,CALVOI,JREPE,JPTVOI,JELVOI
       COMMON /CAII19/EVFINI,CALVOI,JREPE,JPTVOI,JELVOI
 
-C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
-      COMMON /IVARJE/ZI(1)
-      COMMON /RVARJE/ZR(1)
-      COMMON /CVARJE/ZC(1)
-      COMMON /LVARJE/ZL(1)
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      INTEGER ZI
-      REAL*8 ZR
-      COMPLEX*16 ZC
-      LOGICAL ZL,ETENDU
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
+      LOGICAL ETENDU
       CHARACTER*24 VALK(5)
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
 
-C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
 
 C DEB -----------------------------------------------------------------
       NOMPAR = NMPARZ

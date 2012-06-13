@@ -7,7 +7,7 @@
      &                    MATSYM,DFDI,DEF,SIGP,VIP,MATUU,IVECTU,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/06/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,6 +29,7 @@ C TOLE CRP_21
 
        IMPLICIT NONE
 C
+      INCLUDE 'jeveux.h'
        INTEGER     NNO,NPG,IMATE,LGPG,CODRET,COD(9),IPOIDS,IVF,IDFDE
        INTEGER     IVECTU,IDEPLM,IDEPLP,NDIM
 C
@@ -82,22 +83,6 @@ C OUT VIP     : VARIABLES INTERNES    (RAPH_MECA ET FULL_MECA)
 C OUT MATUU   : MATRICE DE RIGIDITE PROFIL (RIGI_MECA_TANG ET FULL_MECA)
 C OUT VECTU   : FORCES NODALES (RAPH_MECA ET FULL_MECA)
 C.......................................................................
-C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      INTEGER  ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       LOGICAL GRAND,AXI
 

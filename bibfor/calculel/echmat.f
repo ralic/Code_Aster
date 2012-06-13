@@ -1,6 +1,6 @@
       SUBROUTINE ECHMAT(MATZ,LDIST,RMIN,RMAX)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,6 +19,7 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE PELLET
       IMPLICIT NONE
+      INCLUDE 'jeveux.h'
       CHARACTER*(*) MATZ
       REAL*8 RMIN,RMAX
       LOGICAL LDIST
@@ -44,23 +45,6 @@ C               RMAX=0.D0
 C               RMIN=R8MAEM ~1.8E308   (RMIN > RMAX !)
 C ---------------------------------------------------------------------
 
-C---- COMMUNS NORMALISES  JEVEUX
-      INTEGER*4 ZI4
-      COMMON /I4VAJE/ZI4(1)
-      INTEGER ZI
-      COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
-      COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
-      COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32,JEXNOM,JEXNUM
-      CHARACTER*80 ZK80
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ------------------------------------------------------------------
       INTEGER JSMDI,NSMHC,JDELGG,JDELGL,JSMHC,NG,IBID,NZ,N,IMATD
       INTEGER JCOL,NLONG,JREFA,JVALM1

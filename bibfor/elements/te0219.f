@@ -1,6 +1,6 @@
       SUBROUTINE TE0219 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,6 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
+      INCLUDE 'jeveux.h'
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
@@ -37,24 +38,9 @@ C
       INTEGER            NNOP2,C(6,9),ISE,NSE,ITEMPS,J,IER,IBID
       LOGICAL            LTEATT
 C
-C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL ,FONC
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+      LOGICAL            FONC
 C
-C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       CALL ELREF1(ELREFE)
 C

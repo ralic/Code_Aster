@@ -8,9 +8,9 @@
      >                    VECGRM, NBCGRM )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 12/07/2011   AUTEUR DESOZA T.DESOZA 
+C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -60,6 +60,7 @@ C-----------------------------------------------------------------------
 C
       IMPLICIT NONE
 C
+      INCLUDE 'jeveux.h'
       INTEGER NTYMAX
       PARAMETER (NTYMAX = 66)
 C
@@ -77,16 +78,6 @@ C
       CHARACTER*(*) NOMAMD, VECGRM
 C
 C 0.2. ==> COMMUNS
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C 0.3. ==> VARIABLES LOCALES
 C

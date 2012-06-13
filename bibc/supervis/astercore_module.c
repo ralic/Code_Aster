@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astercore_module supervis  DATE 12/06/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astercore_module supervis  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -86,10 +86,10 @@ INTEGER DEFS(JDCGET,jdcget,char *attr, STRING_SIZE l_attr)
         printf("attribut inexistant dans le jdc : '%s'\n\n", attr);
         MYABORT("erreur dans JDCGET");
     }
-    if (!PyInt_Check(val))
+    if (!PyLong_Check(val))
         MYABORT("Seuls les attributs de type entier peuvent etre recuperes !");
 
-    value = (INTEGER)PyInt_AsLong(val);
+    value = (INTEGER)PyLong_AsLong(val);
 
     Py_XDECREF(val);
     return value;
@@ -102,7 +102,7 @@ void DEFSP(JDCSET,jdcset,char *attr, STRING_SIZE l_attr, INTEGER *value)
      */
     PyObject *res;
 
-    res = PyObject_CallMethod(gJDC, "set_jdc_attr", "s#i", attr, l_attr, (int)*value);
+    res = PyObject_CallMethod(gJDC, "set_jdc_attr", "s#l", attr, l_attr, (long)*value);
     if (res == NULL)
         MYABORT("erreur dans JDCSET");
     Py_XDECREF(res);
@@ -333,7 +333,7 @@ void DEFSPSPSPPPP(UTPRIN,utprin, _IN char *typmess, _IN STRING_SIZE ltype,
 
     tup_vali = PyTuple_New( (Py_ssize_t)*nbi ) ;
     for(i=0;i<*nbi;i++){
-       PyTuple_SetItem( tup_vali, i, PyInt_FromLong((long)vali[i]) ) ;
+       PyTuple_SetItem( tup_vali, i, PyLong_FromLong((long)vali[i]) ) ;
     }
 
     tup_valr = PyTuple_New( (Py_ssize_t)*nbr ) ;

@@ -1,6 +1,7 @@
       SUBROUTINE RC36F1 ( NBSIGR, NOCC, SALTIJ, ISK, ISL, NK, NL, N0, 
      +               NBP12, NBP23, NBP13, SIGR, YAPASS, TYPASS, NSITUP )
       IMPLICIT   NONE        
+      INCLUDE 'jeveux.h'
       INTEGER             NBSIGR, NOCC(*), ISK, ISL, NK, NL, N0, NSITUP,
      +                    NBP12, NBP23, NBP13, SIGR(*)
       REAL*8              SALTIJ(*)
@@ -8,9 +9,9 @@
       CHARACTER*3         TYPASS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 16/02/2009   AUTEUR GALENNE E.GALENNE 
+C MODIF POSTRELE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -37,22 +38,6 @@ C                1_3 : PASSAGE GROUPE 1 A GROUPE 3
 C OUT : NSITUP : NUMERO DU CHEMIN DE SITUATION DE PASSAGE
 C
 C     ------------------------------------------------------------------
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER          ZI
-      COMMON  /IVARJE/ ZI(1)
-      REAL*8           ZR
-      COMMON  /RVARJE/ ZR(1)
-      COMPLEX*16       ZC
-      COMMON  /CVARJE/ ZC(1)
-      LOGICAL          ZL
-      COMMON  /LVARJE/ ZL(1)
-      CHARACTER*8      ZK8
-      CHARACTER*16             ZK16
-      CHARACTER*24                      ZK24
-      CHARACTER*32                               ZK32
-      CHARACTER*80                                        ZK80
-      COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C     ------------------------------------------------------------------
       INTEGER      JSIGR, IG1, IG2, NBSIPS, JNPASS, I, K, I1, NSITU,
      +             NUMG1, NUMG2, SIPASS, NPASS, IOC1, IOC2

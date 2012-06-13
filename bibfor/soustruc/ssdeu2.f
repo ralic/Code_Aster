@@ -1,8 +1,8 @@
       SUBROUTINE SSDEU2(NVAL,ILISTE,NVALAP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SOUSTRUC  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,6 +20,7 @@ C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ARGUMENTS:
 C     ----------
+      INCLUDE 'jeveux.h'
       INTEGER NVAL,ILISTE(NVAL),NVALAP
 C ----------------------------------------------------------------------
 C     BUT:
@@ -37,11 +38,7 @@ C     OUT:
 C        NVALAP:  NOMBRE D'ENTIERS DIFFERENTS TROUVES DANS LA LISTE.
 C
 C ----------------------------------------------------------------------
-C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
-      COMMON /IVARJE/ZI(1)
-      INTEGER ZI
       CHARACTER*8 KBID
-C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
 C
 C
 C     -- L'OBJET DE TRAVAIL "&&SSDEU2.WK1" CONTIENDRA DES "1" AU NIVEAU

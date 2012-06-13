@@ -1,10 +1,11 @@
       SUBROUTINE PAMANO(MOTFAZ, MOCLEZ, NOMAZ, LISTYZ, IOCC, LISNOZ,
      &                  LONLIS)
       IMPLICIT REAL*8 (A-H,O-Z)
+      INCLUDE 'jeveux.h'
       CHARACTER*(*)     MOTFAZ, MOCLEZ, NOMAZ, LISTYZ, LISNOZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/04/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,23 +50,6 @@ C OUT      : LISNOZ : NOM DE LA LISTE DES NOEUDS
 C OUT      : LONLIS : LONGUEUR DE LA LISTE DES NOEUDS
 C          : LONLIS : <0 SI CONTACT ET POI1
 C ----------------------------------------------------------------------
-C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER           ZI
-      COMMON / IVARJE / ZI(1)
-      REAL*8            ZR
-      COMMON / RVARJE / ZR(1)
-      COMPLEX*16        ZC
-      COMMON / CVARJE / ZC(1)
-      LOGICAL           ZL
-      COMMON / LVARJE / ZL(1)
-      CHARACTER*8       ZK8
-      CHARACTER*16              ZK16
-      CHARACTER*24                       ZK24
-      CHARACTER*32                                ZK32
-      CHARACTER*80                                         ZK80
-      COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32      JEXNOM, JEXNUM
-C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
 C
       CHARACTER*1   K1BID
       CHARACTER*8   K8BID, NOMA, NOMNOE, NOMAIL

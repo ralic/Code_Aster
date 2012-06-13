@@ -2,12 +2,13 @@
      &                           IPP,IP,DELTA)
          IMPLICIT NONE
 
+      INCLUDE 'jeveux.h'
       INTEGER       NDIM,NNO,JTABLS,IPP,IP
       REAL*8        KSI(NDIM),DELTA(NDIM),PTINT(*),TABCO(*)
       CHARACTER*8   ELP
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2012   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,10 +39,6 @@ C
 C     SORTIE
 C       DELTA   : QUANTITE A MINIMISER
 C     ----------------------------------------------------------------
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  ------------------------
-      REAL*8           ZR
-      COMMON  /RVARJE/ ZR(1)
-C     -----  FIN  COMMUNS NORMALISES  JEVEUX  ------------------------
 C
       INTEGER       NBNOMX
       PARAMETER     (NBNOMX = 27)

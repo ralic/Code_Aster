@@ -1,12 +1,13 @@
       SUBROUTINE DXINER ( NNOE, XYZG1, RHO, EPAIS, MASS, CDG, INERTI )
       IMPLICIT REAL*8 (A-H,O-Z)
+      INCLUDE 'jeveux.h'
       INTEGER            NNOE
       REAL*8             XYZG1(3,*), RHO, EPAIS, MASS, CDG(*), INERTI(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -29,16 +30,6 @@ C     ------------------------------------------------------------------
       REAL*8       XYZG(3,8), XYZL(3,8)
       REAL*8       IGXX, IGYY, IGXY, MATINE(6), IGZZ
       REAL*8       INERT0(6)
-C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER         ZI
-      COMMON /IVARJE/ ZI(1)
-      REAL*8          ZR
-      COMMON /RVARJE/ ZR(1)
-      COMPLEX*16      ZC
-      COMMON /CVARJE/ ZC(1)
-      LOGICAL         ZL
-      COMMON /LVARJE/ ZL(1)
-C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C --- INITIALISATIONS :
 C     ---------------

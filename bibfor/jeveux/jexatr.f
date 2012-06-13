@@ -1,6 +1,6 @@
       FUNCTION   JEXATR ( NOMC , NOMA )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+C MODIF JEVEUX  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,8 +20,8 @@ C ======================================================================
 C TOLE CRP_18 CRS_508 CRS_512
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
       IMPLICIT REAL*8 (A-H,O-Z)
+      INCLUDE 'jeveux.h'
       CHARACTER*(*)       NOMC , NOMA
-      CHARACTER*32        JEXATR
 C ----------------------------------------------------------------------
       CHARACTER*1      K1ZON
       COMMON /KZONJE/  K1ZON(8)

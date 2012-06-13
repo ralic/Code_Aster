@@ -1,9 +1,9 @@
       SUBROUTINE JJHRSV(IDTS,NBVAL,IADMI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C RESPONSABLE LEFEBVRE
-C MODIF JEVEUX  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,6 +20,7 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_18 CRS_508 CRS_512 CRS_513 CRS_505
       IMPLICIT NONE
+      INCLUDE 'jeveux.h'
       INTEGER            IDTS,NBVAL,IADMI
 C ----------------------------------------------------------------------
 C RELIT UN SEGMENT DE VALEURS ASSOCIE A UN OBJET JEVEUX, LE TYPE INTEGER
@@ -38,9 +39,6 @@ C ----------------------------------------------------------------------
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOR8 , LOC8
       INTEGER          ISTAT
       COMMON /ISTAJE/  ISTAT(4)
-C---------- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
 C ----------------------------------------------------------------------
       REAL *8          SVUSE,SMXUSE
       COMMON /STATJE/  SVUSE,SMXUSE

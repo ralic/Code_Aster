@@ -4,15 +4,16 @@
 
       IMPLICIT REAL*8 (A-H,O-Z)
 C
+      INCLUDE 'jeveux.h'
       INTEGER NBMAT,ILIMAT,GD,NEC,ILIMO,NLILI,ICONX1,ICONX2,NBELM,
      &        IADNEM,IADLIE
       CHARACTER*(*) LILI,NOMMA,PREF,MAILLA
       CHARACTER*1 BASE,KSTOP
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ASSEMBLA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -73,20 +74,10 @@ C                            LILI(ILI).LIEL
 C-----------------------------------------------------------------------
 C     FONCTIONS JEVEUX
 C-----------------------------------------------------------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXATR
 C-----------------------------------------------------------------------
-C     COMMUNS   JEVEUX
 C-----------------------------------------------------------------------
-      INTEGER ZI
-      COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
-      CHARACTER*8 ZK8,MODELE,MODELS,EXISS1,EXISS2
-      CHARACTER*16 ZK16,SUROPT,SUROPS,PHENO
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      CHARACTER*8 MODELE,MODELS,EXISS1,EXISS2
+      CHARACTER*16 SUROPT,SUROPS,PHENO
 C----------------------------------------------------------------------
 C     VARIABLES LOCALES
 C----------------------------------------------------------------------

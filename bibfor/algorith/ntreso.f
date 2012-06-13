@@ -6,7 +6,7 @@
      &                  MEDIRI,COMPOR)
 C 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,6 +26,7 @@ C ======================================================================
 C TOLE CRP_21
 C
       IMPLICIT   NONE
+      INCLUDE 'jeveux.h'
       REAL*8        TPSTHE(6)
       CHARACTER*1   CREAS
       CHARACTER*19  LISCHA,SOLVEU,MAPREC
@@ -46,24 +47,8 @@ C       SOLVEUR EF: RESOUD.
 C
 C     FONCTIONS INTRINSEQUES:
 C       AUCUNE.
-C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C
-C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER      IFM,NIV
       REAL*8       R8BID

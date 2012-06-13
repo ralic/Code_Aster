@@ -1,9 +1,9 @@
       SUBROUTINE NMMESS (CODE,DP0,DP1,DP,FONC,NIT,NITMAX,IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -21,6 +21,7 @@ C ======================================================================
 C TOLE CRP_7
 
       IMPLICIT NONE
+      INCLUDE 'jeveux.h'
       INTEGER NIT,NITMAX,IRET
       REAL*8 DP0,DP1,DP
       CHARACTER*1 CODE
@@ -45,15 +46,8 @@ C                               IRET = 2 : NITER INSUFFISANT
 C                               IRET = 3 : F(XMIN) > 0
 C ......................................................................
 
-C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*8 ZK8,NOMAIL
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
+      CHARACTER*8 NOMAIL
       CHARACTER*24 VALK
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
 
       INTEGER IADZI,IAZK24,NBP,I
       INTEGER VALI(2)

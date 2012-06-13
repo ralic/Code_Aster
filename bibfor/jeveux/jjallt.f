@@ -1,8 +1,8 @@
       SUBROUTINE JJALLT (LONOI, IC, GI, TYPEI, LTYPI, CI, JCTAB, JCDYN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 27/06/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -19,6 +19,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_18  CRS_508 CRP_4
       IMPLICIT REAL*8 (A-H,O-Z)
+      INCLUDE 'jeveux.h'
       INTEGER             LONOI,IC,LTYPI,JCTAB
       CHARACTER*(*)       GI,TYPEI,CI
 C-----------------------------------------------------------------------
@@ -36,24 +37,6 @@ C               SEGMENTATION MEMOIRE
 C OUT  JCDYN  : ADRESSE PAR RAPPORT AU COMMUN DE REFERENCE EN 
 C               ALLOCATION DYNAMIQUE
 C
-C---------- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-      INTEGER*4          ZI4
-      COMMON  / I4VAJE / ZI4(1)
-C---------- FIN  COMMUNS NORMALISES  JEVEUX ----------------------------
       INTEGER        IZR,IZC,IZL,IZK8,IZK16,IZK24,IZK32,IZK80,JBID,IZI4,
      &               JCDYN
       EQUIVALENCE    (IZR,ZR),(IZC,ZC),(IZL,ZL),(IZK8,ZK8),(IZK16,ZK16),
