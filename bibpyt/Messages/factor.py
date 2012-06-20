@@ -1,4 +1,4 @@
-#@ MODIF factor Messages  DATE 26/03/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF factor Messages  DATE 20/06/2012   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -105,24 +105,38 @@ Solution :
 
 
 42: _(u"""
-Matrice non factorisable :
-  Le solveur MUMPS considère la matrice comme singulière (en structure ou numériquement).
+Solveur MUMPS :
+  La Matrice est non factorisable. Elle est détectée comme étant singulière
+  (en structure ou numériquement).
 
-Conseil :
+Conseils :
   Il peut s'agir d'une erreur de programmation ou d'un problème de mise en données (blocage
   absent ou surabondant).
 """),
 
 
 50: _(u"""
- Solveur MUMPS :
-   -> Vous avez demandé comme numéroteur RENUM = '%(k1)s', or MUMPS en a
-      utilisé un autre.
-   -> Risque & Conseil :
-      Il se peut que votre version de MUMPS n'ait pas été compilée avec
-      le support de ce numéroteur. Dans le doute, RENUM='AUTO' permet
-      de laisser MUMPS faire le meilleur choix.
+Solveur MUMPS :
+   Vous avez demandé comme numéroteur RENUM = '%(k1)s', or MUMPS en a
+   utilisé un autre.
+
+Conseils :
+   Il se peut que votre version de MUMPS n'ait pas été compilée avec le support de ce numéroteur.
+   Dans le doute, RENUM='AUTO' permet de laisser MUMPS faire le meilleur choix.
  """),
+ 
+51: _(u"""
+Solveur MUMPS :
+  JEVEUX a déchargé sur disque le maximum d'objets possibles afin de laisser de la
+  place à MUMPS. Il a ainsi gagné %(i1)d Mo.
+
+Conseils :
+  La prochaine fois, relancez avec plus de mémoire globale ou avec une option de calcul plus économe
+  (par ordre décroissant d'efficacité):
+    - Si le calcul est parallèle, réduisez la consommation MUMPS en augmentant le nombre de processeurs,
+    - Dans tous les cas, réduisez la consommation MUMPS en activant l'option OUT_OF_CORE (SOLVEUR/GESTION_MEMOIRE='OUT_OF_CORE'),
+    - Si le calcul est parallèle, réduisez la consommation Aster en activant l'option SOLVEUR/MATR_DISTRIBUEE='OUI'.
+"""),
 
 52: _(u"""
   -> Vous avez demandé une analyse de stabilité et vous utilisez le solveur linéaire '%(k1)s'.
@@ -134,17 +148,24 @@ Conseil :
 
 53: _(u"""
 Solveur MUMPS :
-  MUMPS manque de mémoire lors de la factorisation de la matrice.
-Solution :
-  Il faut augmenter la valeur du mot clé  SOLVEUR/PCENT_PIVOT.
-Remarque : on a le droit de dépasser la valeur 100.
+  MUMPS a manqué de mémoire lors de la factorisation de la matrice à cause du pivotage.
+  L'espace supplémentaire requis par ce pivotage est difficilement prévisible a priori.
+  Il est contrôlé par le paramètre SOLVEUR/PCENT_PIVOT.
+  MUMPS a essayé, sans succès, %(i1)d valeurs de ce paramètre:
+                 partant de %(i2)d %% pour finir à %(i3)d %%.
+Conseils :
+  - Augmenter la valeur du mot clé  SOLVEUR/PCENT_PIVOT. On a le droit de dépasser la valeur 100
+    (surtout sur les petits systèmes),
+  - Passer en mode de gestion mémoire automatique (GESTION_MEMOIRE='AUTO'),
+  - En dernier ressort, passer en mode OUT_OF_CORE (GESTION_MEMOIRE='OUT_OF_CORE') ou augmenter la mémoire
+    dévolue au calcul ou le nombre de processeurs (si le calcul est parallèle).
 """),
 
 54: _(u"""
 Solveur MUMPS :
   Le solveur MUMPS manque de mémoire lors de la factorisation de la matrice.
 
-Solution :
+Conseils :
   Il faut augmenter la mémoire accessible à MUMPS (et autres programmes hors fortran de Code_Aster).
   Pour cela, il faut diminuer la mémoire donnée à JEVEUX (ASTK : case "dont Aster (Mo)") ou bien
   augmenter la mémoire totale (ASTK : case "Mémoire totale (Mo))".
@@ -154,7 +175,8 @@ Solution :
 Solveur MUMPS :
   Problème ou alarme dans le solveur MUMPS.
   Le code retour de MUMPS (INFOG(1)) est : %(i1)d
-Solution :
+
+Conseils :
   Consulter le manuel d'utilisation de MUMPS.
   Prévenir l'équipe de développement de Code_Aster.
 """),
@@ -163,7 +185,8 @@ Solution :
 Solveur MUMPS :
   Il ne faut pas utiliser TYPE_RESOL = '%(k1)s'
   Pour une matrice non-symétrique.
-Solution :
+
+Conseils :
   Il faut utiliser TYPE_RESOL = 'NONSYM' (ou 'AUTO').
 """),
 
@@ -172,14 +195,33 @@ Solveur MUMPS :
   La solution du système linéaire est trop imprécise :
   Erreur calculée   : %(r1)g
   Erreur acceptable : %(r2)g   (RESI_RELA)
-Solution :
+
+Conseils :
   On peut augmenter la valeur du mot clé SOLVEUR/RESI_RELA.
+"""),
+
+58: _(u"""
+Solveur MUMPS :
+  MUMPS manque de mémoire lors de la factorisation de la matrice à cause du pivotage.
+  L'espace supplémentaire requis par ce pivotage est difficilement prévisible a priori.
+  MUMPS vient d'échouer avec une valeur de cet espace supplémentaire égale à: 
+                               SOLVEUR/PCENT_PIVOT=%(i1)d %%.
+  On va réessayer avec une valeur plus importante: %(i2)d %% et/ou en passant en gestion
+  mémoire OUT_OF_CORE (SOLVEUR/GESTION_MEMOIRE='OUT_OF_CORE').
+  La prochaine fois, relancer votre calcul en prenant ces nouvelles valeurs du paramétrage.
+  C'est la tentative n %(i3)d de factorisation ! 
+
+Attention :
+  Ce procédé automatique de correction est limité à %(i4)d tentatives !
+  Cette nouvelle valeur SOLVEUR/PCENT_PIVOT devient la valeur par défaut pour les
+  futures résolutions de systèmes linéaires avec MUMPS dans cet opérateur.
 """),
 
 59: _(u"""
 Solveur MUMPS :
   La matrice est déjà factorisée. On ne fait rien.
-Solution :
+
+Conseils :
   Il y a sans doute une erreur de programmation.
   Contactez l'assistance.
 """),
@@ -187,7 +229,8 @@ Solution :
 60: _(u"""
 Solveur MUMPS :
   Limite atteinte : le solveur MUMPS est utilisé par plus de 5 matrices simultanément.
-Solution :
+
+Conseils :
   Contactez l'assistance.
 """),
 
@@ -201,10 +244,11 @@ Erreur Programmeur lors de la résolution d'un système linéaire :
 """),
 
 62: _(u"""
-Alarme Solveur MUMPS :
+Solveur MUMPS :
   La procédure de raffinement itératif aurait besoin de plus que les %(i1)d d'itérations
   imposées en dur dans l'appel MUMPS par Code_Aster.
-Solution :
+
+Conseils :
   On peut essayer la valeur du mot-clé POSTTRAITEMENTS='FORCE'.
 """),
 
@@ -212,7 +256,7 @@ Solution :
 Solveur MUMPS :
   Le solveur MUMPS manque de mémoire lors de la phase d'analyse de la matrice.
 
-Solution :
+Conseils :
   Il faut augmenter la mémoire accessible à MUMPS (et autres programmes hors fortran de Code_Aster).
   Pour cela, il faut diminuer la mémoire donnée à JEVEUX (ASTK : case "dont Aster (Mo)") ou bien
   augmenter la mémoire totale (ASTK : case "Mémoire totale (Mo))".
@@ -222,7 +266,7 @@ Solution :
 Solveur MUMPS :
   MUMPS ne peut pas factoriser la matrice à cause d'un dépassement d'entiers.
 
-Solution :
+Conseils :
   Si vous utilisez la version séquentielle, alors il vous faut passer à la version parallèle.
   Si vous utilisez déjà la version parallèle, alors il faut augmenter le nombre de processeurs
   alloués au calcul.
@@ -230,24 +274,31 @@ Solution :
 
 66: _(u"""
 Solveur MUMPS :
-  Échec de la factorisation OUT-OF-CORE de MUMPS.
+  Échec de la factorisation OUT_OF_CORE de MUMPS.
   Consulter les  messages délivrés  par MUMPS.
-Conseil: Augmenter  le nombre de processeurs utilisés.
+
+Conseils :
+   Augmenter  le nombre de processeurs utilisés.
 """),
 
 67: _(u"""
 Erreur d'utilisation (commande RESOUDRE) :
   La matrice et le second membre fournis à la commande RESOUDRE
   ne sont pas de même dimension (nombre de ddls).
-Conseil: Vérifier la cohérence des arguments MATR et CHAM_NO.
+
+Conseils :
+  Vérifier la cohérence des arguments MATR et CHAM_NO.
 """),
 
 68: _(u"""
 Erreur d'utilisation (commande RESOUDRE) :
   La matrice et le second membre fournis à la commande RESOUDRE
   ne sont pas du même type (réel/complexe).
-Conseil: Vérifier la cohérence des arguments MATR et CHAM_NO.
+
+Conseils :
+  Vérifier la cohérence des arguments MATR et CHAM_NO.
 """),
+
 
 70: _(u"""
 Solveur MUMPS :
@@ -269,10 +320,13 @@ Solveur MUMPS :
 
 72: _(u"""
 Solveur MUMPS :
-  Vous utilisez une version de MUMPS antérieure à la 4.7.3: la %(k1)s.
-  Celle-ci n'est plus supportée pour le couplage Code_Aster/MUMPS.
-Solution:
-  Télécharger et installer une version de MUMPS plus récente.
+  Les seules versions de MUMPS supportée dans Code_Aster sont:
+  la 4.9.2 et la 4.10.0.
+  
+Conseils :
+  Télécharger, installer et relier à Code_Aster une version de MUMPS adéquate.
+  Utiliser un autre solveur linéaire (mot-clé SOLVEUR/METHODE, par exemple "MULT_FRONT" ou "PETSC")
+  Sinon, contactez l'équipe de développement.
 """),
 
 73: _(u"""
@@ -281,7 +335,8 @@ Solveur MUMPS :
   pourcentage prévu par le paramètre SOLVEUR/PCENT_PIVOT= %(r2).0f %%.
   Cela peut engendrer un résultat de mauvaise qualité. Vérifiez bien la qualité de celui-ci
   en fin de résolution via la mot-clé RESI_RELA.
-Solution:
+  
+Conseils :
   Pour améliorer la qualité de la solution vous pouvez activez les options de pré et
   post-traitements (PRETRAITEMENTS='AUTO' et POSTTRAITEMENTS='FORCE' ou 'AUTO'), durcir le critère
   de qualité RESI_RELA ou, si vous avez beaucoup de Lagrange (>10%% de la taille du problème),
@@ -291,38 +346,109 @@ Solution:
 
 74: _(u"""
 Solveur MUMPS :
-  Vous utilisez une version de MUMPS antérieure à la 4.8.4: la %(k1)s.
-  Celle-ci ne permet pas la détection de singularité. On désactive cette fonctionnalité avec
-  une valeur SOLVEUR/NPREC négative.
-Attention:
-  Cette désactivation peut nuire à certains type de calculs (modal, option CRIT_FLAMB...).
+  Attention, vous avez demandé un calcul IN_CORE, mais MUMPS estime avoir besoin pour cela de
+  %(i1)d Mo (avec %(i2)d %% de marge), alors qu'il n'y a que %(i3)d Mo de disponible sur ce processeur !
+  Le calcul pourrait donc être ralenti ou achopper pour cette raison.
+  
+Conseils :
+  La prochaine fois, relancez avec plus de mémoire globale ou avec une option de calcul plus économe
+  (par ordre décroissant d'efficacité):
+    - Si le calcul est parallèle, réduisez la consommation MUMPS en augmentant le nombre de processeurs,
+    - Dans tous les cas, réduisez la consommation MUMPS en activant l'option OUT_OF_CORE (SOLVEUR/GESTION_MEMOIRE='OUT_OF_CORE')
+      ou passer en mode automatique (SOLVEUR/GESTION_MEMOIRE='AUTO'),
+    - Si le calcul est parallèle, réduisez la consommation Aster en activant l'option SOLVEUR/MATR_DISTRIBUEE='OUI'.
 """),
 
+75: _(u"""
+Solveur MUMPS :
+  Attention, vous avez demandé un calcul OUT_OF_CORE, mais MUMPS estime avoir besoin pour cela de
+  %(i1)d Mo (avec %(i2)d %% de marge), alors qu'il n'y a que %(i3)d Mo de disponible sur ce processeur !
+  Le calcul pourrait donc être ralenti ou achopper pour cette raison.
+  
+Conseils :
+  La prochaine fois, relancez avec plus de mémoire globale ou avec une option de calcul plus économe
+  (par ordre décroissant d'efficacité):
+   - Si le calcul est parallèle, réduisez la consommation MUMPS en augmentant le nombre de processeurs,
+   - Si le calcul est parallèle, réduisez la consommation Aster en activant l'option SOLVEUR/MATR_DISTRIBUEE='OUI',
+   - Utilisez un solveur moins exigeant en mémoire (SOLVEUR/METHODE='PETSC' + PRECOND='LDLT_SP').
+"""),
 
+76: _(u"""
+Solveur MUMPS :
+  En déchargeant sur disque tous les objets JEVEUX, la mémoire disponible est passée de %(i1)d Mo à
+  %(i2)d Mo. Or MUMPS a besoin, suivant la gestion mémoire, de:
+     - IN_CORE    : %(i3)d Mo,
+     - OUT_OF_CORE: %(i4)d Mo.
+  Estimations à %(i5)d %% de marge près.
+  
+Conseils :
+  Attention, le mode GESTION_MEMOIRE='AUTO' peut être perturbée si la case "dont Aster" dans ASTK est
+  cochée. Si c'est le cas, décochez la.
+  Sinon, relancez avec plus de mémoire globale ou avec une option de calcul plus économe
+  (par ordre décroissant d'efficacité):
+   - Si le calcul est parallèle, réduisez la consommation MUMPS en augmentant le nombre de processeurs,
+   - Utilisez un solveur moins exigeant en mémoire (SOLVEUR/METHODE='PETSC' + PRECOND='LDLT_SP').
+"""),
 
+77: _(u"""
+Solveur MUMPS :
+  Vous avez demandé les estimations mémoire (mémoire et disque, Aster et MUMPS) de votre calcul.
+  Une fois ces estimations affichées (sur le processeur 0), l'exécution Aster s'arrête en
+  ERREUR_FATALE pour vous permettre de relancer votre calcul en tenant compte de ces éléments.
+"""),
+
+78: _(u"""
+Solveur MUMPS :
+  Dépassement de capacité des termes de la matrice. On a détecté au moins:
+    - %(i1)d termes trop petits,
+    - %(i2)d termes trop grands.
+"""),
+
+79: _(u"""
+Solveur MUMPS :
+  Dépassement de capacité du terme n %(i1)d du second membre. Sa valeur absolue vaut %(r1)g alors que la 
+  limite est fixée à %(r2)g.
+"""),
 
 80: _(u"""
-(solveur linéaire MUMPS) Problème de paramétrage du solveur !
+Solveur MUMPS :
+
+  Attention, vous avez paramétré le solveur linéaire de manière a résoudre un système linéaire 
+  SPD (réel Symétrique Défini Positif): mot-clé SOLVEUR/TYPE_RESOL='SYMDEF'. Or votre système
+  linéaire à valeur complexe. Ceci est contradictoire.
+
+Conseil :
+  Utilisez le solveur linéaire MUMPS avec TYPE_RESOL='AUTO'.
+"""),
+
+81: _(u"""
+*****************************************************************************************************
+
+- Taille du système linéaire: %(i1)d
+ 
+- Mémoire minimale consommée par Code_Aster                                  : %(i2)d Mo
+- Estimation de la mémoire MUMPS avec GESTION_MEMOIRE='IN_CORE'              : %(i3)d Mo
+- Estimation de la mémoire MUMPS avec GESTION_MEMOIRE='OUT_OF_CORE'          : %(i4)d Mo
+- Estimation de l'espace disque pour MUMPS avec GESTION_MEMOIRE='OUT_OF_CORE': %(i5)d Mo
+ 
+===> Pour ce calcul, il faut donc une quantité de mémoire au minimum de 
+        - %(i6)d Mo si GESTION_MEMOIRE='IN_CORE',
+        - %(i7)d Mo si GESTION_MEMOIRE='OUT_OF_CORE'. 
+En cas de doute, utilisez GESTION_MEMOIRE='AUTO'.
+
+*****************************************************************************************************
+"""),
+
+84: _(u"""
+Solveur MUMPS :
 
   Attention, vous avez paramétré le solveur linéaire MUMPS de manière a résoudre un système
   linéaire SPD (réel Symétrique Défini Positif): mot-clé SOLVEUR/TYPE_RESOL='SYMDEF'. Or votre
-  matrice est a valeur complexe. Ceci est contradictoire.
+  matrice comporte des termes négatifs ou nuls sur sa diagonale. Ceci est contradictoire.
 
-    -> Conseil & Risque :
-      Utilisez le solveur linéaire MUMPS avec TYPE_RESOL='AUTO'.
+Conseil :
+  Si il s'agit d'un test vous voila averti, sinon utilisez le solveur linéaire MUMPS
+  avec TYPE_RESOL='AUTO'.
 """),
 
-
-
-84: _(u"""
-(solveur linéaire MUMPS) Problème de paramétrage du solveur !
-
-Attention, vous avez paramètre le solveur linéaire MUMPS de manière a résoudre un système
-linéaire SPD (réel Symétrique Défini Positif): mot-clé SOLVEUR/TYPE_RESOL='SYMDEF'. Or votre
-matrice comporte des termes négatifs ou nuls sur sa diagonale. Ceci est contradictoire.
-
-    -> Conseil & Risque :
-      Si il s'agit d'un test vous voila averti, sinon utilisez le solveur linéaire MUMPS
-      avec TYPE_RESOL='AUTO'.
-"""),
 }

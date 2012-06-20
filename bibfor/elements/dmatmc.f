@@ -1,9 +1,9 @@
       SUBROUTINE  DMATMC(FAMI,MODELI,MATER,INSTAN,POUM,IGAU,ISGAU,
-     &                   REPERE,XYZGAU,NBSIG,D,LSENS)
+     &                   REPERE,XYZGAU,NBSIG,D)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 24/09/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,7 +27,7 @@ C                 ORTHOTROPE ET ISOTROPE TRANSVERSE
 C
 C   ARGUMENT        E/S  TYPE         ROLE
 C    FAMI           IN     K4       FAMILLE DU POINT DE GAUSS
-C    MODELI         IN     K2       MODELISATION 
+C    MODELI         IN     K2       MODELISATION
 C    MATER          IN     I        MATERIAU
 C    IGAU           IN     I        POINT DE GAUSS
 C    ISGAU          IN     I        SOUS-POINT DE GAUSS
@@ -38,7 +38,6 @@ C                                   D'ORTHOTROPIE
 C    XYZGAU(3)      IN     R        COORDONNEES DU POINT D'INTEGRATION
 C    NBSIG          IN     I        NOMBRE DE CONTRAINTES ASSOCIE A
 C                                   L'ELEMENT
-C    LSENS          IN     L        FAIT-ON UN CALCUL DE SENSIBILITE?
 C    D(NBSIG,1)     OUT    R        MATRICE DE HOOKE
 C
 C
@@ -49,7 +48,6 @@ C -----  ARGUMENTS
            CHARACTER*2    MODELI
            INTEGER      MATER,NBSIG,IGAU,ISGAU
            REAL*8       REPERE(7), XYZGAU(1), D(NBSIG,1), INSTAN
-           LOGICAL      LSENS
            LOGICAL      LTEATT
 C
 C.========================= DEBUT DU CODE EXECUTABLE ==================
@@ -60,13 +58,8 @@ C       ------------------------
       IF (LTEATT(' ','DIM_TOPO_MAILLE','3').OR.
      &    LTEATT(' ','FOURIER','OUI')) THEN
 C
-         IF ( LSENS ) THEN
-            CALL DM3DSE(FAMI,MATER,INSTAN,POUM,IGAU,ISGAU,
-     &                  REPERE,XYZGAU,D)
-         ELSE
-            CALL DMAT3D(FAMI,MATER,INSTAN,POUM,IGAU,ISGAU,
-     &                  REPERE,XYZGAU,D)
-         ENDIF
+         CALL DMAT3D(FAMI,MATER,INSTAN,POUM,IGAU,ISGAU,
+     &               REPERE,XYZGAU,D)
 C
 C       ----------------------------------------
 C ----  CAS DEFORMATIONS PLANES ET AXISYMETRIQUE
@@ -74,29 +67,19 @@ C       ----------------------------------------
       ELSEIF (LTEATT(' ','D_PLAN','OUI').OR.
      &        LTEATT(' ','AXIS','OUI').OR.MODELI.EQ.'DP') THEN
 C
-         IF ( LSENS ) THEN
-            CALL DMDPSE(FAMI,MATER,INSTAN,POUM,IGAU,ISGAU,
-     &                  REPERE,D)
-         ELSE
-            CALL DMATDP(FAMI,MATER,INSTAN,POUM,IGAU,ISGAU,
-     &                  REPERE,D)
-         ENDIF
+         CALL DMATDP(FAMI,MATER,INSTAN,POUM,IGAU,ISGAU,
+     &               REPERE,D)
 C
 C       ----------------------
 C ----  CAS CONTRAINTES PLANES
 C       ----------------------
       ELSEIF (LTEATT(' ','C_PLAN','OUI')) THEN
 C
-         IF ( LSENS ) THEN
-            CALL DMCPSE(FAMI,MATER,INSTAN,POUM,IGAU,ISGAU,
+         CALL DMATCP(FAMI,MATER,INSTAN,POUM,IGAU,ISGAU,
      &                  REPERE,D)
-         ELSE
-            CALL DMATCP(FAMI,MATER,INSTAN,POUM,IGAU,ISGAU,
-     &                  REPERE,D)
-         ENDIF
 C
       ELSE
-         CALL U2MESS('F','ELEMENTS_11')
+         CALL ASSERT(.FALSE.)
       ENDIF
 C.============================ FIN DE LA ROUTINE ======================
       END

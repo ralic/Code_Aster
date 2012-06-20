@@ -1,0 +1,66 @@
+      SUBROUTINE LCDVIN(FAMI,KPG,KSP,COMP,MOD,IMAT,MATCST,NVI,NMAT,VINI,
+     &                  COEFT,X,DTIME,SIGI,DVIN,IRET)
+      IMPLICIT NONE
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 18/06/2012   AUTEUR PROIX J-M.PROIX 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C ======================================================================
+C TOLE CRP_21 CRS_1404
+C     ----------------------------------------------------------------
+C     ROUTINE D AIGUILLAGE
+C     ----------------------------------------------------------------
+C     INTEGRATION DE LOIS DE COMPORTEMENT ELASTO-VISCOPLASTIQUE
+C     PAR UNE METHODE DE RUNGE KUTTA. ROUTINE D'AIGUILLAGE
+C     ----------------------------------------------------------------
+C     IN  FAMI    FAMILLE DE POINT DE GAUSS (RIGI,MASS,...)
+C         KPG,KSP NUMERO DU (SOUS)POINT DE GAUSS
+C         COMP     :  NOM DU MODELE DE COMPORTEMENT
+C         MOD     :  TYPE DE MODELISATION
+C         IMAT    :  ADRESSE DU MATERIAU CODE
+C         MATCST  :  NATURE DES PARAMETRES INELASTIQUES
+C         NVI     :  NOMBRE DE VARIABLES INTERNES
+C         NMAT    :  NOMBRE DE PARAMETRES MATERIAU INELASTIQUE
+C         VINI    :  VARIABLES INTERNES A T
+C         COEFT   :  COEFFICIENTS MATERIAU INELASTIQUE A T
+C         X       :  INTERVALE DE TEMPS ADAPTATIF
+C         DTIME   :  INTERVALE DE TEMPS
+C         SIGI    :  CONTRAINTES A L'INSTANT COURANT
+C     OUT DVIN    :  DERIVEES DES VARIABLES INTERNES A T
+C         IRET    :  CODE RETOUR
+C     ----------------------------------------------------------------
+
+      INTEGER KPG,KSP,IMAT,NMAT,NVI,IRET
+      CHARACTER*16 LOI,COMP(*)
+      CHARACTER*8 MOD
+      CHARACTER*(*) FAMI
+      CHARACTER*3 MATCST
+      REAL*8 X,DTIME,SIGI(6),COEFT(NMAT),VINI(NVI),DVIN(NVI)
+C
+      LOI=COMP(1)
+      IF (LOI(1:9).EQ.'VISCOCHAB') THEN
+        CALL RKDCHA(NVI,VINI,COEFT,NMAT,SIGI,DVIN)
+     
+      ELSE  IF (LOI(1:9).EQ.'VENDOCHAB') THEN
+        CALL RKDVEC(FAMI,KPG,KSP,IMAT,MATCST,NVI,VINI,COEFT,
+     &              X,DTIME,NMAT,SIGI,DVIN)
+     
+      ELSE  IF (LOI(1:8).EQ.'HAYHURST') THEN
+        CALL RKDHAY(MOD,NVI,VINI,COEFT,NMAT,SIGI,DVIN,IRET)
+
+      END IF
+      END

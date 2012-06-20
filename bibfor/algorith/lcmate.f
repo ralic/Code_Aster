@@ -5,7 +5,7 @@
       IMPLICIT   NONE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/06/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 18/06/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,19 +54,17 @@ C           TOUTMS :  TOUS LES TENSEURS MS
 C           HSR    : MATRICE D'INTERACTION POUR L'ECROUISSAGE ISOTROPE
 C                    UTILISEE SEULEMENT POUR LE MONOCRISTAL IMPLICITE
 C       ----------------------------------------------------------------
-      INTEGER         IMAT, NMAT, NDT , NDI  , NR , NVI, I, ITMAX, J
-      INTEGER         KPG,KSP, IMPEXP, NFS, NSG, NHSR
-      REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2) , TEMPD , TEMPF
-      REAL*8          VIND(*), PGL(3,3), ANGMAS(3), SIGD(6)
-      REAL*8          TOLER, CRIT(*)
-      CHARACTER*16    LOI, COMP(*)
-      CHARACTER*8     MOD,    TYPMA
-      CHARACTER*3     MATCST
-      CHARACTER*(*)   FAMI
+      INTEGER       IMAT,NMAT,NDT,NDI,NR,NVI,I,ITMAX,KPG,KSP,IMPEXP
+      REAL*8        MATERD(NMAT,2),MATERF(NMAT,2),TEMPD,TEMPF
+      REAL*8        VIND(*),PGL(3,3),ANGMAS(3),TOLER,CRIT(*),SIGD(6)
+      CHARACTER*16  LOI, COMP(*)
+      CHARACTER*8   MOD,TYPMA
+      CHARACTER*3   MATCST
+      CHARACTER*(*) FAMI
 C     SPECIFIQUE MONOCRISTAL
-      INTEGER         NUMHSR(*),NBCOMM(*)
-      REAL*8          HSR(*),TOUTMS(*)
-      CHARACTER*16    CPMONO(*)
+      INTEGER       NUMHSR(*),NBCOMM(*),NFS,NSG,NHSR
+      REAL*8        HSR(*),TOUTMS(*)
+      CHARACTER*16  CPMONO(*)
 C       ----------------------------------------------------------------
 C
 C -     INITIALISATION DE MATERD ET MATERF A 0.
@@ -95,10 +93,6 @@ C
          CALL VECMAT ( FAMI, KPG, KSP, MOD, LOI,IMAT,   NMAT, MATERD,
      &                 MATERF, MATCST, TYPMA,  NDT,   NDI , NR , NVI )
 C
-      ELSEIF ( LOI(1:8) .EQ. 'HAYHURST' ) THEN
-         CALL HAYMAT ( FAMI,KPG,KSP,MOD,IMAT,NMAT,MATERD,
-     1                 MATERF, MATCST, TYPMA,  NDT,   NDI , NR , NVI )
-C
       ELSEIF ( LOI(1:6) .EQ. 'LAIGLE' ) THEN
          CALL LGLMAT ( MOD, IMAT, NMAT, TEMPD, MATERD,
      &                 MATERF, MATCST, NDT, NDI, NR, NVI )
@@ -113,6 +107,10 @@ C
      1     MATERD,MATERF, MATCST, NBCOMM,CPMONO,NDT, NDI, NR, NVI,HSR,
      &     NFS,NSG,TOUTMS,VIND,IMPEXP)
          TYPMA='COHERENT'
+         IF(MOD.NE.'3D') THEN
+            SIGD(5)=0.D0
+            SIGD(6)=0.D0
+         ENDIF
 C
       ELSEIF ( LOI(1:8) .EQ. 'POLYCRIS' ) THEN
          CALL LCMMAP (FAMI,KPG,KSP, COMP, MOD, IMAT, NMAT,ANGMAS,PGL,
@@ -133,7 +131,16 @@ C
      &               MATCST,NDT,NDI,NVI,NR)
          TYPMA='COHERENT'
       ELSE
-         CALL ASSERT( .FALSE. )
+      
+C CAS GENERAL      
+      
+         CALL LCMATT(FAMI,KPG,KSP,MOD,IMAT,NMAT,'-',COMP,
+     &               MATERD(1,1),MATERD(1,2),TYPMA,NDT,NDI,NR,NVI)
+         CALL LCMATT(FAMI,KPG,KSP,MOD,IMAT,NMAT,'+',COMP,
+     &               MATERF(1,1),MATERF(1,2),TYPMA,NDT,NDI,NR,NVI)
+
+         CALL MATECT ( MATERD, MATERF, NMAT, MATCST)
+         
       ENDIF
 C
 C     - DANS LCPLNL ON DIMENSIONNE DES TABLES AVEC (NDT+NVI) QUI SONT

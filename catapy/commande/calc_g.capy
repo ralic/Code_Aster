@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 20/03/2012   AUTEUR GENIAUT S.GENIAUT 
+#& MODIF COMMANDE  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,10 +22,7 @@ CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
                         +" et les facteurs d'intensité de contraintes.",
                     reentrant='f',
             UIinfo={"groupes":("Post-traitements","Rupture",)},
-         regles=(EXCLUS('COMP_ELAS','COMP_INCR'),
-                 CONCEPT_SENSIBLE("ENSEMBLE"),
-                 REUSE_SENSIBLE(),
-                 DERIVABLE('RESULTAT'),),
+         regles=(EXCLUS('COMP_ELAS','COMP_INCR'),),
 
          THETA          =FACT(statut='o',
            THETA           =SIMP(statut='f',typ=(theta_geom,cham_no_sdaster),),
@@ -48,7 +45,7 @@ CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
              R_SUP_FO        =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
              MODULE_FO       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
              ),
-           b_no_fond_fiss      =BLOC(condition="FOND_FISS== None",  
+           b_no_fond_fiss      =BLOC(condition="FOND_FISS== None",
              SYME            =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
              ),
             ),
@@ -112,7 +109,7 @@ CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
            LISSAGE_G       =SIMP(statut='f',typ='TXM',defaut="LEGENDRE",into=("LEGENDRE","LAGRANGE",
                                  "LAGRANGE_NO_NO","LAGRANGE_REGU"),),
                 b_legen    =BLOC(condition="(LISSAGE_THETA=='LEGENDRE') or (LISSAGE_G=='LEGENDRE')",
-                  DEGRE           =SIMP(statut='f',typ='I',defaut=5,into=(0,1,2,3,4,5,6,7) ),                
+                  DEGRE           =SIMP(statut='f',typ='I',defaut=5,into=(0,1,2,3,4,5,6,7) ),
                 ),
          ),
 
@@ -146,10 +143,6 @@ CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
           CALCUL_CONTRAINTE =SIMP(statut='f',typ='TXM',into=("NON",),),
          ),
 
-
-         SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),max='**',
-                           fr="Liste des paramètres de sensibilité.",
-                           ang="List of sensitivity parameters"),
 
          TITRE           =SIMP(statut='f',typ='TXM',max='**'),
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),

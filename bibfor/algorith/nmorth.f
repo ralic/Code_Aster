@@ -3,7 +3,7 @@
      &                   DSIDEP)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/05/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -95,12 +95,12 @@ C     VARIABLE LOCALE
 C     APPEL A DMATMC POUR RECUPERER LA MATRICE TANGENTE
       IF ( OPTION.EQ.'RIGI_MECA_TANG') THEN
          CALL DMATMC(FAMI,K2BID,IMATE,RBID,'-',KPG,KSP,REPERE,
-     &               XYZGAU,NBSIGM,HOOKF,.FALSE.)
+     &               XYZGAU,NBSIGM,HOOKF)
       ELSE
          CALL D1MAMC(FAMI,IMATE,RBID,'-',KPG,KSP,REPERE,
      &               XYZGAU,NBSIGM,MKOOH)
          CALL DMATMC(FAMI,K2BID,IMATE,RBID,'+',KPG,KSP,REPERE,
-     &               XYZGAU,NBSIGM,HOOKF,.FALSE.)
+     &               XYZGAU,NBSIGM,HOOKF)
       ENDIF
 
       IF ( OPTION.EQ.'RIGI_MECA_TANG'.OR.

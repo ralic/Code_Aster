@@ -4,7 +4,7 @@
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 18/06/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,6 +80,10 @@ C
       ELSEIF ( LOI(1:4) .EQ. 'LETK' ) THEN
 
          CALL LKICVG (NR,ITMAX,TOLER,ITER,R,IRET)
+     
+      ELSE
+
+         CALL LCCONG (NR,ITMAX,TOLER,ITER,R,RINI,YD,DY,IRET)
      
       ENDIF
 

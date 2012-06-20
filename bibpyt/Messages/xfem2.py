@@ -1,4 +1,4 @@
-#@ MODIF xfem2 Messages  DATE 31/01/2012   AUTEUR REZETTE C.REZETTE 
+#@ MODIF xfem2 Messages  DATE 20/06/2012   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -78,6 +78,12 @@ cata_msg = {
      XFEM avec contact.
   -> Risque & Conseil:
      Veuillez activer CONTACT='OUI' dans MODI_MODELE_XFEM.
+"""),
+
+10 : _(u"""
+  -> Toutes les fissures ne sont pas rattachées au même maillage.
+     La fissure %(k1)s est rattachée au maillage %(k2)s alors que 
+     la fissure %(k3)s est rattachée au maillage %(k4)s.
 """),
 
 11 : _(u"""

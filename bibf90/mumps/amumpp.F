@@ -1,11 +1,12 @@
       SUBROUTINE AMUMPP(OPTION,NBSOL ,KXMPS ,LDIST ,TYPE  ,IMPR  ,
      &                  IFMUMP,ELI2LG,RSOLU ,CSOLU ,VCINE ,PREPOS,
-     &                  LPRECO)
+     &                  LPRECO,LMIXP)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPP MUMPS  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+!& MODIF AMUMPP MUMPS  DATE 20/06/2012   AUTEUR BOITEAU O.BOITEAU 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG
+
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR
 ! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS
@@ -42,17 +43,18 @@ C           MISE A L'ECHELLE DU RHS ET DE LA SOLUTION (MRCONL) ET DE LA
 C           PRISE EN COMPTE DES AFFE_CHAR_CINE (CSMBGG).
 C           SI .FALSE. ON NE LES FAIT PAS (PAR EXEMPLE EN MODAL).
 C IN  LPRECO :  LOG   : MUMPS EST-IL UTILISE COMME PRECONDITIONNEUR ?
+C IN  LMIXP  :  LOG   : MUMPS EST-IL UTILISE COMME SOLVEUR DIRECT SIMPLE
+C                       PRECISION (DANS UN PROCESSUS NON LINEAIRE) ?
 C-----------------------------------------------------------------------
 ! RESPONSABLE BOITEAU O.BOITEAU
 
       INTEGER      OPTION,NBSOL,KXMPS,IFMUMP
-      LOGICAL      LDIST,ELI2LG
+      LOGICAL      LDIST,ELI2LG,PREPOS,LPRECO,LMIXP
       CHARACTER*1  TYPE
       CHARACTER*14 IMPR
       CHARACTER*19 VCINE
       REAL*8       RSOLU(*)
       COMPLEX*16   CSOLU(*)
-      LOGICAL      PREPOS,LPRECO
 
 #ifdef _HAVE_MUMPS
 
@@ -62,6 +64,7 @@ C============================================================
       INCLUDE 'cmumps_struc.h'
       INCLUDE 'dmumps_struc.h'
       INCLUDE 'zmumps_struc.h'
+      INCLUDE 'jeveux.h'
 C============================================================
       INTEGER    NICNTL
       PARAMETER (NICNTL=26)
@@ -80,33 +83,20 @@ C============================================================
       INTEGER*4    N4
       CHARACTER*1  ROUCS(NMXINS),ROUC,PRECS(NMXINS)
       CHARACTER*4  ETAMS(NMXINS),ETAM
+      CHARACTER*8  KBID
       CHARACTER*14 NONUS(NMXINS),NONU
       CHARACTER*19 NOMATS(NMXINS),NOSOLS(NMXINS),NOMAT,NOSOLV
       CHARACTER*24 VCIVAL
-      LOGICAL      LTYPR
-      REAL*8       RBID,RR4MAX,RAUX,R4MAEM
+      LOGICAL      LTYPR,LAPX
+      REAL*8       RBID,RR4MAX,RAUX,R4MAEM,R4MIEM,R8MAEM,R8MIEM,
+     &             RMIN,RMAX,RTEST,VALR(2)
       COMPLEX*16   CBID,CAUX
       COMMON /MUMPSS/ SMPS
       COMMON /MUMPSC/ CMPS
       COMMON /MUMPSD/ DMPS
       COMMON /MUMPSZ/ ZMPS
       COMMON /MUMPSH/ NONUS,NOMATS,NOSOLS,ETAMS,ROUCS,PRECS
-
-C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
-      INTEGER ZI
-      COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
-      COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
-      COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFNIV(IFM,NIV)
@@ -114,6 +104,7 @@ C-----------------------------------------------------------------------
 C     ------------------------------------------------
 C     INITS
 C     ------------------------------------------------
+      LAPX=LPRECO.OR.LMIXP
       RR4MAX=R4MAEM()
       IF (TYPE.EQ.'S') THEN
         SMPSK=>SMPS(KXMPS)
@@ -122,6 +113,8 @@ C     ------------------------------------------------
         SMPSK%NRHS=NBSOL
         SMPSK%LRHS=N
         LTYPR=.TRUE.
+        RMAX=R4MAEM()*0.5
+        RMIN=R4MIEM()*2.0
       ELSE IF (TYPE.EQ.'C') THEN
         CMPSK=>CMPS(KXMPS)
         RANG=CMPSK%MYID
@@ -129,6 +122,8 @@ C     ------------------------------------------------
         CMPSK%NRHS=NBSOL
         CMPSK%LRHS=N
         LTYPR=.FALSE.
+        RMAX=R4MAEM()*0.5
+        RMIN=R4MIEM()*2.0
       ELSE IF (TYPE.EQ.'D') THEN
         DMPSK=>DMPS(KXMPS)
         RANG=DMPSK%MYID
@@ -136,6 +131,8 @@ C     ------------------------------------------------
         DMPSK%NRHS=NBSOL
         DMPSK%LRHS=N
         LTYPR=.TRUE.
+        RMAX=R8MAEM()*0.5
+        RMIN=R8MIEM()*2.0
       ELSE IF (TYPE.EQ.'Z') THEN
         ZMPSK=>ZMPS(KXMPS)
         RANG=ZMPSK%MYID
@@ -143,6 +140,8 @@ C     ------------------------------------------------
         ZMPSK%NRHS=NBSOL
         ZMPSK%LRHS=N
         LTYPR=.FALSE.
+        RMAX=R8MAEM()*0.5
+        RMIN=R8MIEM()*2.0
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF
@@ -152,8 +151,7 @@ C     ------------------------------------------------
       NOSOLV=NOSOLS(KXMPS)
       NONU=NONUS(KXMPS)
       ETAM=ETAMS(KXMPS)
-
-
+      
       VCIVAL=VCINE//'.VALE'
       CALL MTDSCR(NOMAT)
       CALL JEVEUO(NOMAT//'.&INT','E',LMAT)
@@ -181,7 +179,7 @@ C       ------------------------------------------------
           ENDIF
 
 C         --- PRISE EN COMPTE DU CONDITIONNEMENT DES LAGRANGES :
-C         ON NE LE FAIT PAS SI MUMPS EST UTILISE COMME
+C         ON NE LE FAIT PAS SI MUMPS EST UTILISE COMME 
 C         PRECONDITIONNEUR (DEJA FAIT DANS RESGRA.F)
           IF ((RANG.EQ.0).AND.(.NOT.LPRECO).AND.PREPOS) THEN
              IF (LTYPR) THEN
@@ -232,29 +230,80 @@ C         -- REDUCE DU SECOND MEMBRE AU PROC MAITRE
             ENDIF
           ENDIF
 
+          
 C         -- COPIE DE SOLU DANS %RHS:
           IF (RANG.EQ.0) THEN
             IF (TYPE.EQ.'S') THEN
               DO I=1,NNBSOL
                 RAUX=RSOLU(I)
-                IF (ABS(RAUX).GT.RR4MAX) CALL ASSERT(.FALSE.)
+                RTEST=ABS(RAUX)
+                IF (RTEST.LT.RMIN) THEN
+                  RAUX=0.D0
+                ELSE IF (RTEST.GT.RMAX) THEN
+                  IF (LAPX) THEN
+                    RAUX=RMAX
+                  ELSE
+                    VALR(1)=RTEST
+                    VALR(2)=RMAX
+                    CALL U2MESG('F','FACTOR_79',0,KBID,1,I,2,VALR)
+                  ENDIF
+                ENDIF
                 SMPSK%RHS(I)=RAUX
               ENDDO
             ELSE IF (TYPE.EQ.'C') THEN
               DO I=1,NNBSOL
                 CAUX=CSOLU(I)
-                RBID=MAX(ABS(DBLE(CAUX)),ABS(DIMAG(CAUX)))
-                IF (RBID.GT.RR4MAX) CALL ASSERT(.FALSE.)
+                RTEST=ABS(CAUX)
+                IF (RTEST.LT.RMIN) THEN
+                  CAUX=DCMPLX(0.D0,0.D0)
+                ELSE IF (RTEST.GT.RMAX) THEN
+                  IF (LAPX) THEN
+                    CAUX=DCMPLX(RMAX,0.D0)
+                  ELSE
+                    VALR(1)=RTEST
+                    VALR(2)=RMAX
+                    CALL U2MESG('F','FACTOR_79',0,KBID,1,I,2,VALR)
+                  ENDIF
+                ENDIF
                 CMPSK%RHS(I)=CAUX
               ENDDO
             ELSE IF (TYPE.EQ.'D') THEN
-              CALL DCOPY(N4,RSOLU,1,DMPSK%RHS,1)
+              DO I=1,NNBSOL
+                RAUX=RSOLU(I)
+                RTEST=ABS(RAUX)
+                IF (RTEST.LT.RMIN) THEN
+                  RAUX=0.D0
+                ELSE IF (RTEST.GT.RMAX) THEN
+                  IF (LAPX) THEN
+                    RAUX=RMAX
+                  ELSE
+                    VALR(1)=RTEST
+                    VALR(2)=RMAX
+                    CALL U2MESG('F','FACTOR_79',0,KBID,1,I,2,VALR)
+                  ENDIF
+                ENDIF
+                DMPSK%RHS(I)=RAUX
+              ENDDO
             ELSE IF (TYPE.EQ.'Z') THEN
-              CALL ZCOPY(N4,CSOLU,1,ZMPSK%RHS,1)
+              DO I=1,NNBSOL
+                CAUX=CSOLU(I)
+                RTEST=ABS(CAUX)
+                IF (RTEST.LT.RMIN) THEN
+                  CAUX=DCMPLX(0.D0,0.D0)
+                ELSE IF (RTEST.GT.RMAX) THEN
+                  IF (LAPX) THEN
+                    CAUX=DCMPLX(RMAX,0.D0)
+                  ELSE
+                    VALR(1)=RTEST
+                    VALR(2)=RMAX
+                    CALL U2MESG('F','FACTOR_79',0,KBID,1,I,2,VALR)
+                  ENDIF
+                ENDIF
+                ZMPSK%RHS(I)=CAUX
+              ENDDO
             ELSE
               CALL ASSERT(.FALSE.)
             ENDIF
-
           ENDIF
 
 C         -- IMPRESSION DU/DES SECONDS MEMBRES (SI DEMANDE) :
@@ -289,7 +338,7 @@ C         -- IMPRESSION DU/DES SECONDS MEMBRES (SI DEMANDE) :
 
       ELSE IF (OPTION.EQ.2) THEN
 
-
+        
 C       ------------------------------------------------
 C        POST-TRAITEMENTS ASTER DE LA SOLUTION :
 C       ------------------------------------------------
@@ -322,7 +371,7 @@ C           -- LAGR1 = LAGR1/2 PUIS LAGR2 = LAGR1
 C           -- VALIDE QUE SUR PROC 0, MAIS C'EST OK CAR ON
 C           -- BROADCAST LA SOLUTION APRES
             CALL JEVEUO(NONU//'.NUME.DELG','L',JDELG)
-            CALL NUDLG2(NONU)
+            CALL NUDLG2(NONU)            
             CALL JEVEUO(NONU//'.NUME.DLG2','L',JDLG2)
             IF (LTYPR) THEN
               DO I=1,NBSOL
@@ -348,7 +397,7 @@ C           -- BROADCAST LA SOLUTION APRES
           ENDIF
 
 C         --- PRISE EN COMPTE DU CONDITIONNEMENT DES LAGRANGES :
-C         ON NE LE FAIT PAS SI MUMPS EST UTILISE COMME
+C         ON NE LE FAIT PAS SI MUMPS EST UTILISE COMME 
 C         PRECONDITIONNEUR (DEJA FAIT DANS RESGRA.F)
           IF (.NOT.LPRECO.AND.PREPOS) THEN
             IF (LTYPR) THEN
@@ -366,7 +415,7 @@ C       -- BROADCAST DE SOLU A TOUS LES PROC
 C         -- EST-CE AUSSI SIMPLE POUR LES COMPLEXES ?
           CALL MPICM1('BCAST','R',2*NNBSOL,IBID,CSOLU)
         ENDIF
-
+        
 C       -- IMPRESSION DU/DES SOLUTIONS (SI DEMANDE) :
         IF (IMPR(1:9).EQ.'OUI_SOLVE') THEN
           IF (RANG.EQ.0) THEN

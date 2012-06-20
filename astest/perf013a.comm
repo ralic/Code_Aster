@@ -1,8 +1,8 @@
-# MODIF  DATE 04/05/2011   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 20/06/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE MODES PROPRES D'UNE PLAQUE CARRE ENCASTREE SUR 2 BORDS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -17,14 +17,14 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# perf013a.para = tps_job 400 mem_job 2500Mo ncpus 1 liste_test P
+# perf013a.para = tps_job 400 mem_job 4000Mo ncpus 1 liste_test P
 # ======================================================================
 #       INTERET : CALCULER 10 MODES EN POSITION 11, 12, ..., 20
 #---------------------------------------------------------------------------
 # VARIANTE DU CAS TEST PERF003C MAIS AVEC LE SOLVEUR MUMPS.
 # VARIANTE SEQUENTIELLE.
 # ICI ON PRIVILEGIE LE TEMPS SUR LA MEMOIRE: D'OU LE CHOIX RENUM=QAMD +
-# OUT_OF_CORE='NON (DEFAUT) + LIBERE_MEMOIRE='NON' (DEFAUT).
+# GESTION_MEMOIRE='IN_CORE'.
 # ICI L'OPTION MATR_DISTRIBUEE N'A PAS LIEU D'ETRE. 
 #---------------------------------------------------------------------------
 
@@ -66,7 +66,7 @@ MODES=MODE_ITER_SIMULT(INFO=2,
                                    ),
                       VERI_MODE=_F(),
                       TYPE_RESU='DYNAMIQUE',
-                      SOLVEUR=_F(METHODE='MUMPS',RENUM='QAMD',),
+                      SOLVEUR=_F(METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE'),
                       METHODE='SORENSEN',
                       MATR_B=MASS,
                       MATR_A=RIGI,

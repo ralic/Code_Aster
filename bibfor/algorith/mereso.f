@@ -5,7 +5,7 @@
      &                    BASE, COMPOR )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,7 +68,6 @@ C 0.1. ==> ARGUMENTS
 
 C 0.2. ==> COMMUNS
 
-      COMPLEX*16         CBID
 
 C 0.3. ==> VARIABLES LOCALES
 
@@ -80,10 +79,10 @@ C 0.3. ==> VARIABLES LOCALES
       INTEGER IFM, NIV
       CHARACTER*8 K8BID
       CHARACTER*19 CHDEPL, CHSOL
-      CHARACTER*24 CNCHCI,K24BLA
+      CHARACTER*24 CNCHCI
       CHARACTER*24 CRITER
       CHARACTER*24 DEPL
-      CHARACTER*24 VAPRIN, REPRIN
+      COMPLEX*16   CBID
 
 C DEB-------------------------------------------------------------------
 C====
@@ -93,8 +92,6 @@ C====
 C-----RECUPERATION DU NIVEAU D'IMPRESSION
 
       CALL INFNIV(IFM,NIV)
-
-      K24BLA = ' '
 
 C 1.2. ==> NOM DES STRUCTURES
 
@@ -113,12 +110,9 @@ C====
 C 3. MATRICE ET SECOND MEMBRE
 C====
 
-      CALL MEACMV ( MODELE, MATE, CARELE, FOMULT, LISCHA,
-     &              ITPS, PARTPS,
-     &              NUMEDD, ASSMAT, SOLVEU,
-     &              VECASS, MATASS, MAPREC, CNCHCI,
-     &              0, K24BLA, ' ', VAPRIN, REPRIN,
-     &              BASE, COMPOR )
+      CALL MEACMV(MODELE,MATE  ,CARELE,FOMULT,LISCHA,
+     &            PARTPS,NUMEDD,ASSMAT,SOLVEU,VECASS,
+     &            MATASS,MAPREC,CNCHCI,BASE, COMPOR )
 
 C====
 C 4. RESOLUTION AVEC VECASS COMME SECOND MEMBRE

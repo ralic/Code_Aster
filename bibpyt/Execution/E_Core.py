@@ -1,4 +1,4 @@
-#@ MODIF E_Core Execution  DATE 12/06/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_Core Execution  DATE 18/06/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -276,15 +276,7 @@ def _print_header():
     import aster_core
     from i18n import localization
     from Utilitai.Utmess import UTMESS
-    from Accas import properties
-    names = {
-        'stable' : _(u"""EXPLOITATION (stable)"""),
-        'stable-updates' : _(u"""CORRECTIVE AVANT STABILISATION (stable-updates)"""),
-        'testing' : _(u"""DÉVELOPPEMENT STABILISÉE (testing)"""),
-        'unstable' : _(u"""DÉVELOPPEMENT (unstable)"""),
-    }
-    unkn = _(u"""DÉVELOPPEMENT (%s)""") % aster_core.get_option('from_branch')
-    typvers = names.get(aster_core.get_option('from_branch'), unkn)
+    typvers = get_version_desc()
     aster_core.set_info('versLabel', typvers)
     lang_settings = '%s (%s)' % localization.get_current_settings()
 
@@ -345,7 +337,28 @@ def print_header(part):
         _print_alarm()
     else:
         raise ValueError("unknown value for 'part'")
-    
+
+def get_version_desc():
+    """Return the description of the version"""
+    import aster_core
+    names = {
+        'stable' : _(u"""EXPLOITATION (stable)"""),
+        'stable-updates' : _(u"""CORRECTIVE AVANT STABILISATION (stable-updates)"""),
+        'testing' : _(u"""DÉVELOPPEMENT STABILISÉE (testing)"""),
+        'unstable' : _(u"""DÉVELOPPEMENT (unstable)"""),
+    }
+    from_branch = aster_core.get_option('from_branch')
+    if from_branch == '?':
+        sta = aster_core.get_option('version').split('.')[-1] == '0'
+        expl = aster_core.get_option('exploit')
+        if expl:
+            from_branch = sta and 'stable' or 'stable-updates'
+        else:
+            from_branch = sta and 'testing' or 'unstable'
+    unkn = _(u"""DÉVELOPPEMENT (%s)""") % from_branch
+    typvers = names.get(from_branch, unkn)
+    return typvers
+
 
 def _bwc_arguments(argv):
     """Fonction de compatibilité de transition vers des options "GNU".

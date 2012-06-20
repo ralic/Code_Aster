@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -134,7 +134,7 @@ C  --      CALCUL DE LA MATRICE DE HOOKE (LE MATERIAU POUVANT
 C  --      ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
 C          -------------------------------------------------
           CALL DMATMC(FAMI,'DP',MATER,
-     &                INSTAN,'+',IGAU,1,REPERE,XYZGAU,NBSIG,D,.FALSE.)
+     &                INSTAN,'+',IGAU,1,REPERE,XYZGAU,NBSIG,D)
 C
           IF (OPTION(1:4).EQ.'EPME'.OR.OPTION(1:4).EQ.'EPMG') THEN
             EPSM(NBSIG*(IGAU-1)+3) = -UN/D(3,3)*

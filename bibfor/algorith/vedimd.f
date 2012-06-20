@@ -1,8 +1,7 @@
-      SUBROUTINE VEDIMD(NOMO  ,LISCHA,INSTAN,TYPESE,NOPASE,
-     &                  VECELE)
+      SUBROUTINE VEDIMD(NOMO  ,LISCHA,INSTAN,VECELE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,8 +22,6 @@ C
       IMPLICIT      NONE
       INCLUDE 'jeveux.h'
       CHARACTER*19  LISCHA,VECELE
-      INTEGER       TYPESE
-      CHARACTER*(*) NOPASE
       CHARACTER*8   NOMO
       REAL*8        INSTAN
 C
@@ -40,32 +37,25 @@ C
 C IN  NOMO   : NOM DU MODELE
 C IN  LISCHA : SD LISTE DES CHARGES
 C IN  INSTAN : INSTANT DE CALCUL
-C IN  TYPESE : TYPE DE SENSIBILITE
-C               0 : CALCUL STANDARD, NON DERIVE
-C               SINON : DERIVE (VOIR METYSE)
-C IN  NOPASE : NOM DU PARAMETRE SENSIBLE
 C OUT VECELE : VECT_ELEM RESULTAT
 C
-C
-C
+C ----------------------------------------------------------------------
 C
       INTEGER      NBOUT,NBIN
       PARAMETER    (NBOUT=1, NBIN=3)
       CHARACTER*8  LPAOUT(NBOUT),LPAIN(NBIN)
       CHARACTER*19 LCHOUT(NBOUT),LCHIN(NBIN)
 C
-      CHARACTER*8  NOMCH0,NOMCHS
+      CHARACTER*8  NOMCH0
       CHARACTER*8  K8BID,NEWNOM
       CHARACTER*16 OPTION
-      CHARACTER*19 LIGRMO,LIGRCS,LIGCAL
+      CHARACTER*19 LIGRMO,LIGCAL
       CHARACTER*13 PREFOB
       CHARACTER*19 CHGEOM,CHTIME
-      CHARACTER*19 CARTE,CARTES
+      CHARACTER*19 CARTE
       CHARACTER*8  PARAIN,PARAOU,TYPECH
-      INTEGER      JNOLI,NBNOLI
-      INTEGER      IAUX,IBID,IRET
+      INTEGER      IBID,IRET
       INTEGER      ICHAR,NBCHAR,CODCHA
-      INTEGER      EXICHA
       LOGICAL      LISICO,LDUAL
       CHARACTER*24 NOMLIS
       INTEGER      JLISCI,NBCH,INDXCH
@@ -149,67 +139,35 @@ C
 C ------- NOM DE LA CHARGE
 C
           CALL LISLCH(LISCHA,ICHAR ,NOMCH0)
-          IF (TYPESE.NE.0) THEN
-            CALL PSGENC(NOMCH0,NOPASE,NOMCHS,EXICHA)
-          ELSE
-            EXICHA = 0
-          ENDIF
 C
 C ------- CALCUL SI CHARGE EXISTANTE
 C
-          IF (EXICHA.EQ.0) THEN
-            CALL LISOPT(PREFOB,NOMO  ,TYPECH,INDXCH,OPTION,
-     &                  PARAIN,PARAOU,CARTE ,LIGCAL)
+          CALL LISOPT(PREFOB,NOMO  ,TYPECH,INDXCH,OPTION,
+     &                 PARAIN,PARAOU,CARTE ,LIGCAL)
 C
-C --------- CARTE SENSIBLE
+C ------- CARTE D'ENTREE
 C
-            CARTES      = CARTE
-            IF (TYPESE.NE.0) CARTES(1:8) = NOMCHS
+          LPAIN(3)  = PARAIN
+          LCHIN(3)  = CARTE
 C
-C --------- SENSIBILITE -> ON UTILISE LIGCAL
+C ------- CARTE DE SORTIE
 C
-            IF (TYPESE.NE.0) THEN
-              CALL JELIRA(CARTES(1:19)//'.NOLI','LONMAX',NBNOLI,
-     &                    K8BID)
-              CALL JEVEUO(CARTES(1:19)//'.NOLI','E',JNOLI)
-              LIGRCS = ZK24(JNOLI)(1:19)
-              DO 10 IAUX = 1,NBNOLI
-                ZK24(JNOLI-1+IAUX) = LIGCAL
-   10         CONTINUE
-            ENDIF
+          LPAOUT(1) = PARAOU
+          CALL GCNCO2(NEWNOM)
+          LCHOUT(1) = '&&VEDIMD.'//NEWNOM(2:8)
+          CALL CORICH('E',LCHOUT(1),ICHAR,IBID)
 C
-C --------- CARTE D'ENTREE
+C ------- CALCUL
 C
-            LPAIN(3)  = PARAIN
-            LCHIN(3)  = CARTES
+          CALL CALCUL('S',OPTION,LIGCAL,NBIN  ,LCHIN ,LPAIN ,
+     &                                  NBOUT ,LCHOUT,LPAOUT,
+     &                                  'V'   ,'OUI' )
 C
-C --------- CARTE DE SORTIE
+C ------- RESU_ELEM DANS LE VECT_ELEM
 C
-            LPAOUT(1) = PARAOU
-            CALL GCNCO2(NEWNOM)
-            LCHOUT(1) = '&&VEDIMD.'//NEWNOM(2:8)
-            CALL CORICH('E',LCHOUT(1),ICHAR,IBID)
-C
-C --------- CALCUL
-C
-            CALL CALCUL('S',OPTION,LIGCAL,NBIN  ,LCHIN ,LPAIN ,
-     &                                    NBOUT ,LCHOUT,LPAOUT,
-     &                                    'V'   ,'OUI' )
-C
-C --------- RESU_ELEM DANS LE VECT_ELEM
-C
-            CALL EXISD('CHAMP_GD',LCHOUT(1),IRET)
-            CALL ASSERT(IRET.GT.0)
-            CALL REAJRE(VECELE,LCHOUT(1),'V')
-C
-C --------- SENSIBILITE -> ON REMET LIGRCS
-C
-            IF (TYPESE.NE.0) THEN
-              DO 20 IAUX = 1,NBNOLI
-                ZK24(JNOLI-1+IAUX) = LIGRCS
-   20         CONTINUE
-            ENDIF
-          ENDIF
+          CALL EXISD('CHAMP_GD',LCHOUT(1),IRET)
+          CALL ASSERT(IRET.GT.0)
+          CALL REAJRE(VECELE,LCHOUT(1),'V')
         ENDIF
    30 CONTINUE
 C

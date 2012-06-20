@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE PROPAGATION D'UNE FISSURE X-FEM DANS UNE PLAQUE EN FLEXION 3 POINTS
 # sslp321b.para = tps_job 350 mem_job 150Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -109,7 +109,6 @@ for i in range(1,NPAS+1) :
 
     MODE[i]=MODI_MODELE_XFEM(MODELE_IN=MODEL,FISSURE=FISS[i-1],INFO=2,);
 
-    CHXFE[i]=AFFE_CHAR_MECA(MODELE=MODE[i],LIAISON_XFEM='OUI',INFO=2,);
 
     CHAMA[i]=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        MODELE=MODE[i],
@@ -125,7 +124,7 @@ for i in range(1,NPAS+1) :
 
     RESU[i]=MECA_STATIQUE(MODELE=MODE[i],
                          CHAM_MATER=CHAMA[i],
-                         EXCIT=(_F(CHARGE=CHXFE[i],),
+                         EXCIT=(
                                 _F(CHARGE=CHRIG[i],),),
                          INFO=1,);
 

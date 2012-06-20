@@ -1,4 +1,4 @@
-#@ MODIF post_gp_ops Macro  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF post_gp_ops Macro  DATE 18/06/2012   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -45,10 +45,10 @@ def post_gp_ops(self, **args):
    POST_RELEVE_T = self.get_cmd('POST_RELEVE_T')
    CREA_TABLE    = self.get_cmd('CREA_TABLE')
    DEFI_LIST_ENTI= self.get_cmd('DEFI_LIST_ENTI')
-   CALC_ELEM     = self.get_cmd('CALC_ELEM')
+   CALC_CHAMP    = self.get_cmd('CALC_CHAMP')
    RECU_FONCTION = self.get_cmd('RECU_FONCTION')
    DEFI_GROUP    = self.get_cmd('DEFI_GROUP')
-   EXTR_RESU      = self.get_cmd('EXTR_RESU')
+   EXTR_RESU     = self.get_cmd('EXTR_RESU')
    DETRUIRE      = self.get_cmd('DETRUIRE')
    FIN           = self.get_cmd('FIN')
 
@@ -246,9 +246,9 @@ def post_gp_ops(self, **args):
 
    if self['TRAC_COMP']=='OUI':
       # prise en compte de la traction-compression dans le calcul de l'energie
-      resu2=CALC_ELEM(OPTION=('SIEQ_ELNO'),
-                     RESULTAT=Resultat,
-                     )
+      resu2=CALC_CHAMP(CRITERES='SIEQ_ELNO',
+                      RESULTAT=Resultat,
+                      )
 
       # indices des mailles du dernier group_ma
       # (pour avoir le nombre de mailles par tranche)

@@ -1,4 +1,4 @@
-#@ MODIF impr_table_ops Macro  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF impr_table_ops Macro  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -69,22 +69,9 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
    # format pour l'impression des filtres
    form_filtre='\nFILTRE -> NOM_PARA: %-16s CRIT_COMP: %-4s VALE: %s'
 
-   # 0.3. Création de la liste des tables (une seule sans SENSIBILITE)
-   form_sens='\n... SENSIBILITE AU PARAMETRE %s (SD COMP %s)'
+   # 0.3. Création de la liste des tables
    ltab=[]
-   if args['SENSIBILITE']:
-      lps=args['SENSIBILITE']
-      if not type(lps) in (list, tuple):
-         lps=[lps,]
-      for ps in lps:
-         ncomp = self.jdc.memo_sensi.get_nocomp(TABLE.nom, ps.nom)
-         if ncomp != None:
-            sdtab = table_jeveux(ncomp)
-            tabs = sdtab.EXTR_TABLE()
-            tabs.titr = TABLE.TITRE() + tabs.titr + form_sens % (ps.get_name(), ncomp)
-            ltab.append([tabs, sdtab])
-   else:
-      ltab.append([TABLE.EXTR_TABLE(), TABLE])
+   ltab.append([TABLE.EXTR_TABLE(), TABLE])
 
    if len(ltab)<1:
       return ier

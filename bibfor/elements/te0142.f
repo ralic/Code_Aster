@@ -3,7 +3,7 @@
       INCLUDE 'jeveux.h'
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,19 +36,13 @@ C        'MECA_POU_C_T' : POUTRE COURBE DE TIMOSHENKO(SECTION CONSTANTE)
 C     ------------------------------------------------------------------
 
       PARAMETER (NBRES=3,NBREF=6)
-      PARAMETER (NDDL=12,NL=NDDL*(NDDL+1)/2)
       REAL*8 VALRES(NBRES),VALREF(NBREF)
-      CHARACTER*2 DERIVE
       INTEGER CODRES(NBRES),CODREF(NBREF)
       CHARACTER*8 NOMPAR,NOMRES(NBRES),NOMREF(NBREF)
       REAL*8 ZERO,E,NU,RHO
-      REAL*8 KLV(78),KLC(12,12),KLCS(12,12)
-      REAL*8 MLV(78),MLC(12,12)
-      REAL*8 EFGE(12)
+      REAL*8 KLV(78),KLC(12,12)
       CHARACTER*24 SUROPT
       INTEGER ICOMPO,ISDCOM,IRET
-C
-      REAL *8 RLOC(12), DRLOC(12), DALOC(12)
 C     ------------------------------------------------------------------
       DATA NOMRES/'E','NU','RHO'/
       DATA NOMREF/'E','NU','RHO','RHO_F_IN','RHO_F_EX','CM'/
@@ -122,102 +116,7 @@ C     ---- MATRICE RIGIDITE LIGNE > MATRICE RIGIDITE CARRE
           ZR(JEFFO+I-1) = -ZR(JEFFO+I-1)
           ZR(JEFFO+I+6-1) = ZR(JEFFO+I+6-1)
    10   CONTINUE
-
-C
-C---- SENSIBILITE: CALCUL DE EFGE_ELNO_SENS
-C
-      ELSE IF (OPTION.EQ.'EFGE_ELNO_SENS'   .OR.
-     &         OPTION.EQ.'SIPO_ELNO_SENS'   ) THEN
-C
-C ON SE LIMITE POUR L'INSTANT AUX : POU_D_E
-C
-        IF (NOMTE.NE.'MECA_POU_D_E') THEN
-          CALL U2MESS ('F','ELEMENTS3_25')
-        ENDIF
-C
-C     --- CALCUL DE LA MATRICE DE MASSE LOCALE ---
-C         EQUIVALENT OPTION MASS_MECA
-C
-        CALL POMASS(NOMTE,E,NU,RHO,1,MLV)
-        CALL VECMA(MLV,NL,MLC,NDDL)
-C
-C     --- CALCUL DE LA MATRICE DE RIGIDITE SENSIBLE LOCALE ---
-C
-        CALL JEVECH('PMATSEN','L',IMATE)
-        CALL RCVALB('NOEU',1,1,'+',ZI(IMATE),' ','ELAS',
-     &           NBPAR,NOMPAR,VALPAR,2,
-     &           NOMRES,VALRES,CODRES,1)
-        E   = VALRES(1)
-        XNU = VALRES(2)
-
-C
-C A CE NIVEAU : LA PROCEDURE HABITUELLE DE CALCUL DE SENSIBILITE DONNE :
-C   SI : DERIVATION PAR RAPPORT A E ALORS : E = 1 ET XNU = 0
-C   SI : DERIVATION PAR RAPPORT A NU ALORS : E = 0 ET XNU = 1
-C ICI, LA FORMULATION DE LA DERIVEE EST PLUS COMPLEXE
-C
-        CALL JEVECH('PMATERC','L',IMATE)
-        CALL RCVALB('NOEU',1,1,'+',ZI(IMATE),' ','ELAS',
-     &            NBPAR,NOMPAR,VALPAR,2,
-     &            NOMRES,VALRES,CODRES,1)
-        IF(ABS(XNU).LT.R8PREM()) THEN
-          DERIVE = 'E'
-          XNU = VALRES(2)
-        ELSE IF(ABS(E).LT.R8PREM()) THEN
-          DERIVE = 'NU'
-          E   = VALRES(1)
-          XNU = VALRES(2)
-        END IF
-        CALL PORIGI(NOMTE,E,XNU,KLV)
-C
-        IF(DERIVE(1:2).EQ.'NU') THEN
-C VALEUR NULLE SAUF POUR LES DDL DE TORSION
-            VALTOR = -KLV(10)/(1.D0 + XNU)
-            DO 300 I = 1,NL
-              KLV(I) = 0.D0
-300         CONTINUE
-            KLV(10) =  VALTOR
-            KLV(49) = -VALTOR
-            KLV(55) =  VALTOR
-        ENDIF
-        CALL VECMA(KLV,NL,KLCS,NDDL)
-C
-        CALL JEVECH('PDEPLAR','L',IDEPL)
-        CALL JEVECH('PDEPSEN','L',IDEPSE)
-        CALL JEVECH('PACCSEN','L',IACCSE)
-        IF(OPTION.NE.'SIPO_ELNO_SENS') THEN
-           CALL JEVECH('PEFFORR','E',JEFFO)
-        ELSE
-           CALL JEVECH('PCONTPO','E',JEFFO)
-        ENDIF
-C
-C       CALCUL DANS LE REPERE LOCAL DE LA POUTRE
-C           - DU DEPLACEMENT
-C           - DE LA DERIVEE DU DEPLACEMENT
-C           - DE LA DERIVEE DE L'ACCELERATION
-C
-        CALL DELOGL(IDEPL,RLOC)
-        CALL DELOGL(IDEPSE,DRLOC)
-        CALL DELOGL(IACCSE,DALOC)
-C
-        DO 100 I = 1,NDDL
-            EFGE(I) = 0.D0
-            DO 110 J = 1,NDDL
-              EFGE(I) = EFGE(I)
-     &             + KLC(I,J) * DRLOC(J)
-     &             + KLCS(I,J)* RLOC(J)
-     &             + MLC(I,J) * DALOC(J)
-110         CONTINUE
-100     CONTINUE
-        IF ( OPTION.EQ.'EFGE_ELNO_SENS'  ) THEN
-           DO 130 I = 1,NDDL
-              ZR(JEFFO-1+I) = EFGE(I)
-130        CONTINUE
-        ELSE
-           CALL POSIPR(NOMTE,EFGE,ZR(JEFFO))
-        ENDIF
       ELSE
-C OPTION NON PROGRAMMEE
         CALL ASSERT(.FALSE.)
       END IF
 

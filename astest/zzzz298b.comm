@@ -1,4 +1,4 @@
-# MODIF  DATE 20/03/2012   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE : VALIDATION INFORMATIQUE DE POST_K1_K2_K3
 # zzzz298b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -64,8 +64,6 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,);
 
-CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
-                      LIAISON_XFEM='OUI',);                                 
 
 #----------------------------------------------
 #                   MATERIAU
@@ -109,7 +107,7 @@ CHA2=AFFE_CHAR_MECA(MODELE=MODELEK,
 
 UTOT1x=MECA_STATIQUE(MODELE=MODELEK,
                      CHAM_MATER=CHAMPMA,
-                     EXCIT=(_F(CHARGE=CHXFEM),
+                     EXCIT=(
                             _F(CHARGE=CHA1),
                             _F(CHARGE=CHA2),),); 
                    

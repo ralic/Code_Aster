@@ -2,7 +2,7 @@
      &                  NNOINT,NUME91,RAIINT,SSAMI)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 20/06/2012   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -275,35 +275,7 @@ C-- SOLVEUR = LDLT / OPTIONS PAR DEFAUT
           CALL CRSOLV ('LDLT','SANS',SOLVEU,'V')
         ELSE   
 C-- SOLVEUR = MUMPS / OPTIONS PAR DEFAUT
-          CALL WKVECT(SOLVEU//'.SLVK','V V K24',12,ISLVK)
-          CALL WKVECT(SOLVEU//'.SLVR','V V R',4,ISLVR)
-          CALL WKVECT(SOLVEU//'.SLVI','V V I',7,ISLVI)
-
-          ZK24(ISLVK-1+1)  = 'MUMPS                   '
-          ZK24(ISLVK-1+2)  = 'AUTO                    '
-          ZK24(ISLVK-1+3)  = 'AUTO                    '
-          ZK24(ISLVK-1+4)  = 'AUTO                    '
-          ZK24(ISLVK-1+5)  = 'NON                     '
-          ZK24(ISLVK-1+6)  = 'OUI                     '
-          ZK24(ISLVK-1+7)  = 'NON                     '
-          ZK24(ISLVK-1+8)  = 'NON                     '
-          ZK24(ISLVK-1+9)  = 'NON                     '
-          ZK24(ISLVK-1+10) = 'NON                     '
-          ZK24(ISLVK-1+11) = 'AUTO                    '
-          ZK24(ISLVK-1+12) = 'NON                     '
-
-          ZR(ISLVR-1+1) = -1.D0
-          ZR(ISLVR-1+2) = -1.D0
-          ZR(ISLVR-1+3) = 0.D0
-          ZR(ISLVR-1+4) = 0.D0
-
-          ZI(ISLVI-1+1) = 9
-          ZI(ISLVI-1+2) = 50
-          ZI(ISLVI-1+3) = 0
-          ZI(ISLVI-1+4) = -9999
-          ZI(ISLVI-1+5) = -9999
-          ZI(ISLVI-1+6) = -9999
-          ZI(ISLVI-1+7) = -9999
+          CALL CRSINT(SOLVEU)
         ENDIF
       ENDIF  
 

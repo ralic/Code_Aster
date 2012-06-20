@@ -1,14 +1,11 @@
-        SUBROUTINE RKDVEC( FAMI,KPG,KSP,MOD,   IMAT,  MATCST,
-     &                     NVI,   VINI,  COEFT,
-     &                     E, NU, ALPHA, X,     DTIME,NMAT,COEL,SIGI,
-     &                     EPSD, DETOT,
-     &                     DVIN)
+        SUBROUTINE RKDVEC(FAMI,KPG,KSP,IMAT,MATCST,
+     &                    NVI,VINI,COEFT,X,DTIME,NMAT,SIGI,DVIN)
         IMPLICIT REAL*8(A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 18/06/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,26 +31,14 @@ C
 C     CETTE ROUTINE FOURNIT LA DERIVEE DE L ENSEMBLE DES VARIABLES
 C     INTERNES DU MODELE
 C     ----------------------------------------------------------------
-      CHARACTER*8 MOD
-      INTEGER ICODRE
+      CHARACTER*8     NOMCOE,NOMPAR(2)
       CHARACTER*3     MATCST
       CHARACTER*(*)   FAMI
-      INTEGER         IMAT
-      INTEGER         KPG,KSP,NDT
-      REAL*8          VPAR(2)
-      CHARACTER*8     NOMCOE,NOMPAR(2)
-      REAL*8 E, NU, ALPHA
-      REAL*8 X, DTIME, HSDT
-      REAL*8 TPERD, DTPERD, TEMP,TF
-      REAL*8 COEFT(NMAT),COEL(NMAT)
-      REAL*8 VINI(NVI)
-      REAL*8 DVIN(NVI)
-      REAL*8 SEDVP,  CRITV,      E0,         EPSIEC
-      REAL*8 SMX(6), SIGI(6),    EPSD(6),    DETOT(6)
-      REAL*8 EVI(6),    ECROU,    DMG
-      REAL*8 DEVI(6),DEVCUM,   DECROU,   DDMG
-      REAL*8 ZE, TD, VALP(3)
-      REAL*8 S, ALPHAD, BETAD, N, UNSMVP, KVP, RD, AD , KD
+      INTEGER         IMAT,ICODRE,KPG,KSP,NDT
+      REAL*8 X,DTIME,HSDT,TPERD,DTPERD,TEMP,TF,COEFT(NMAT)
+      REAL*8 VINI(NVI),DVIN(NVI),SEDVP,CRITV,EPSIEC,SMX(6),SIGI(6)
+      REAL*8 ECROU,DMG,DEVI(6),DEVCUM,DECROU,DDMG,ZE,TD,VALP(3)
+      REAL*8 S,ALPHAD,BETAD,N,UNSMVP,KVP,RD,AD,KD,VPAR(2)
 C     ----------------------------------------------------------------
       PARAMETER(ZE=0.0D0)
       PARAMETER(TD=1.5D0)
@@ -82,10 +67,7 @@ C     ----------------------------------------------------------------
 C
 C --  VARIABLES INTERNES
 C
-      DO 5 ITENS=1,6
-        EVI(ITENS) = VINI(ITENS)
-    5 CONTINUE
-        ECROU = VINI(8)
+      ECROU = VINI(8)
 C     D---------------------18/06/96----------------------------
       IF (ECROU.LE.EPSIEC) THEN
         ECROU=EPSIEC
@@ -94,12 +76,6 @@ C     F---------------------18/06/96----------------------------
         DMG  = VINI(9)
 C
 C----------------------------------------------------------------
-      E0=E
-      E=E0*(1.D0-DMG)
-        CALL CALSIG(FAMI,KPG,KSP,EVI,MOD,E,NU,ALPHA,X,DTIME,EPSD,
-     &              DETOT,NMAT,COEL,SIGI)
-      E=E0
-C
 C----- VARIABLES INTERNES
       TRSIG=(SIGI(1)+SIGI(2)+SIGI(3))
 C----- CALCUL DE GRJ0(SIGI) : MAX DES CONTRAINTES PRINCIPALES
@@ -115,7 +91,7 @@ C----- CALCUL DE GRJ2(SIGI) : SECOND INVARIANT (SIGEQ DE VON MISES)
       GRJ2V=0.0D0
       DO 10 ITENS=1,6
         SMX(ITENS)=SIGI(ITENS)
-        IF (ITENS.LE.3) SMX(ITENS)=SMX(ITENS)-(GRJ1)/3.D0
+        IF (ITENS.LE.3) SMX(ITENS)=SMX(ITENS)-GRJ1/3.D0
         GRJ2V=GRJ2V+SMX(ITENS)**2
    10 CONTINUE
       GRJ2V=SQRT(1.5D0*GRJ2V)
@@ -165,13 +141,13 @@ C----- ECROUISSAGE
 C
 C------ EQUATION DONNANT LA DERIVEE DE L ENDOMMAGEMENT
 C
-        DDMG=SEDVP/(AD)
+        DDMG=SEDVP/AD
         DOMCPL=MAX(EPSI,(1-DMG))
-        DDMG=(MAX(0.D0,DDMG)**RD)*(1/(DOMCPL)**KD)
+        DDMG=(MAX(0.D0,DDMG)**RD)*(1/DOMCPL**KD)
 C
 C------ EQUATION DONNANT LA DERIVEE DE L ECROUISSAGE
 C
-        DECROU=CRITV/((1-DMG)*KVP*ECROU**(UNSMVP))
+        DECROU=CRITV/((1-DMG)*KVP*ECROU**UNSMVP)
         DECROU=MAX(0.D0,DECROU)
         DECROU=DECROU**N
 C

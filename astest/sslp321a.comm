@@ -1,9 +1,9 @@
-# MODIF  DATE 20/09/2011   AUTEUR MICOL A.MICOL 
+# MODIF  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE PROPAGATION D'UNE FISSURE X-FEM DANS UNE PLAQUE EN FLEXION 3 POINTS
 # sslp321a.para = tps_job 150 mem_job 150Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -119,7 +119,6 @@ for i in range(NPAS+1) :
                                              
     MODE[i]=MODI_MODELE_XFEM(MODELE_IN=MODEL[i],FISSURE=FISS[i],INFO=1,);
 
-    CHXFE[i]=AFFE_CHAR_MECA(MODELE=MODE[i],LIAISON_XFEM='OUI',INFO=1,);
 
     CHAMA[i]=AFFE_MATERIAU(MAILLAGE=MAT[i],
                        MODELE=MODE[i],
@@ -135,7 +134,7 @@ for i in range(NPAS+1) :
 
     RESU[i]=MECA_STATIQUE(MODELE=MODE[i],
                          CHAM_MATER=CHAMA[i],
-                         EXCIT=(_F(CHARGE=CHXFE[i],),
+                         EXCIT=(
                                 _F(CHARGE=CHRIG[i],),),
                          INFO=1,);
 

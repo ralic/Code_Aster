@@ -1,4 +1,4 @@
-#@ MODIF hayhurst Comportement  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF hayhurst Comportement  DATE 18/06/2012   AUTEUR PROIX J-M.PROIX 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,7 +31,7 @@ loi = LoiComportement(
    modelisation   = ('3D','AXIS','D_PLAN'),
    deformation    = ('PETIT','PETIT_REAC','GDEF_HYPO_ELAS','GDEF_LOG'),
    nom_varc       = ('TEMP'),
-   algo_inte         = ('RUNGE_KUTTA'),
+   algo_inte         = ('RUNGE_KUTTA','NEWTON_PERT'),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
    proprietes     = None,
 )

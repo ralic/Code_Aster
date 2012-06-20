@@ -1,8 +1,8 @@
-#@ MODIF algorith Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith Messages  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -203,11 +203,6 @@ cata_msg = {
 73 : _(u"""
  obstacle de type discret mal défini (un angle est supérieur à pi).
 """),
-
-77 : _(u"""
- problème à la résolution du système
-"""),
-
 
 96 : _(u"""
  ce mot clé de MODI_MAILLAGE attend un vecteur de norme non nulle.

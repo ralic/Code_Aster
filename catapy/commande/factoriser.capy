@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 30/08/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 20/06/2012   AUTEUR BOITEAU O.BOITEAU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -49,10 +49,9 @@ FACTORISER=OPER(nom="FACTORISER",op=14,sd_prod=factoriser_prod,
          # mots clés pour solveur MUMPS :
          TYPE_RESOL      =SIMP(statut='f',typ='TXM',defaut='AUTO',into=('NONSYM','SYMGEN','SYMDEF','AUTO')),
          PRETRAITEMENTS  =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("SANS","AUTO")),
-         PCENT_PIVOT     =SIMP(statut='f',typ='I',defaut=10,),
+         PCENT_PIVOT     =SIMP(statut='f',typ='I',defaut=20,),
          ELIM_LAGR2      =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
-         OUT_OF_CORE  =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
-         LIBERE_MEMOIRE =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
+         GESTION_MEMOIRE =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("IN_CORE","OUT_OF_CORE","AUTO","EVAL")),
 
          # mots clés pour solveur GCPC et PETSc :
          PRE_COND        =SIMP(statut='f',typ='TXM',into=("LDLT_INC","JACOBI","SOR","LDLT_SP"),defaut="LDLT_INC" ),

@@ -1,0 +1,182 @@
+# MODIF  DATE 20/06/2012   AUTEUR GENIAUT S.GENIAUT 
+# TITRE VALIDATION DE LA MACRO-COMMANDE RAFF_XFEM SUR UNE PLAQUE MULTI-FISSUREE
+# sslp317b.para = tps_job 60 mem_job 100Mo liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='SSLP317B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
+      DEBUG=_F(SDVERI='OUI'),
+      PAR_LOT='NON')
+
+# MODELISATION B : RAFFINEMENT AVEC UN CRITERE EN DISTANCE
+
+# dans cette modelisation, on montre plutot la methodologie pour obtenir un maillage bien raffine
+# la validation a proprement parle du champ cree par RAFF_XFEM fait l'objet de la modelisation A
+
+# taille des mailles initiales (diagonales des triangles)
+h0 = 1./20*sqrt(2)
+
+# taille cible des mailles apres raffinement 
+hc = h0/10
+
+# nombre de raffinements
+# attention, en python log = ln (logarithme neperien)
+n = (log(h0)-log(hc))/log(2)
+nb_raff = int(n)+1
+h = h0/(2.**nb_raff)
+
+# rayon du disque de raffinement
+r_raff = 5*h
+
+#print 'hello h0 ',h0
+#print 'hello hc ',hc
+#print 'hello nb_raff ',nb_raff
+#print 'hello h ',h
+#print 'hello r_raff ',r_raff
+
+# initialisation
+MA    = [None]*(nb_raff+1)
+DIAM= [None]*(nb_raff+1)
+i_raff=0   
+
+PRE_GIBI()
+
+MA[i_raff]=LIRE_MAILLAGE()
+
+for i_raff in range(nb_raff) :
+
+   MO=AFFE_MODELE(MAILLAGE=MA[i_raff],
+                  AFFE=(_F(GROUP_MA=('SURF','LIG2','LIG3','LIG4'),
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='D_PLAN',),),);
+
+   # entaille
+   FISS1=DEFI_FISS_XFEM(MODELE=MO,  
+                        TYPE_DISCONTINUITE='INTERFACE', 
+                        DEFI_FISS=_F(FORM_FISS     = 'ENTAILLE',
+                                     DEMI_LONGUEUR = 0.3,
+                                     RAYON_CONGE   = 0.05,
+                                     CENTRE        = (0., -0.3, 0.),
+                                     VECT_X        = (1., 0., 0.),
+                                     VECT_Y        = (0., 1., 0.),
+                                     ))
+
+   # inclusion circulaire
+   FISS2=DEFI_FISS_XFEM(MODELE=MO,  
+                        TYPE_DISCONTINUITE='INTERFACE',
+                        DEFI_FISS=_F(FORM_FISS      = 'ELLIPSE',
+                                     DEMI_GRAND_AXE = 0.05,
+                                     DEMI_PETIT_AXE = 0.05,
+                                     CENTRE         = (0., 0., 0.),
+                                     VECT_X         = (1., 0., 0. ),
+                                     VECT_Y         = (0., 1., 0. ),
+                                     ),)
+
+   FISS3=DEFI_FISS_XFEM(MODELE=MO,  
+                        DEFI_FISS=_F(FORM_FISS  = 'SEGMENT',
+                                     PFON_ORIG  = (0.2, 0.25, 0.),
+                                     PFON_EXTR  = (0.4, 0.25, 0.),))
+
+
+   FISS4=DEFI_FISS_XFEM(MODELE=MO,  
+                        DEFI_FISS=_F(FORM_FISS  = 'SEGMENT',
+                                     PFON_ORIG  = (-0.3, 0.25, 0.),
+                                     PFON_EXTR  = (-0.1, 0.25, 0.),))
+
+   CHERR = RAFF_XFEM(FISSURE=(FISS1,FISS2,FISS3,FISS4))
+
+   # definition du type du maillage n+1
+   MA[i_raff+1]=CO('MA_%d' % (i_raff+1))
+   DIAM[i_raff+1]=CO('DIAM_%d' % (i_raff+1))
+
+   # valeur du critere de raffinement
+   crit = -max(r_raff , 1.1*h0/(2.**i_raff) )
+
+   MACR_ADAP_MAIL(ADAPTATION         = 'RAFFINEMENT',
+                  CHAM_GD            = CHERR,
+                  CRIT_RAFF_ABS      = crit,
+                  USAGE_CMP          = 'RELATIF', 
+                  MAILLAGE_N         = MA[i_raff],
+                  MAILLAGE_NP1       = MA[i_raff+1],
+                  ELEMENTS_NON_HOMARD= 'IGNORER',
+                  ADD_CHAM = _F(CHAM_GD = DIAM[i_raff+1],
+                                CHAM_CAT='DIAMETRE'),
+                  )
+                  
+   DETRUIRE(CONCEPT=_F(NOM=(MO,FISS1,FISS2,FISS3,FISS4,CHERR)),INFO=1)
+
+# impression du dernier maillage
+IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(MAILLAGE=MA[nb_raff]))
+
+#------------------------------------------------------------------------------------------
+# test du bon fonctionnement de la methodologie
+# on va s'assurer que dans un disque autour du fond de fissure gauche de la fissure 3,
+# les mailles ont la bonne taille
+#------------------------------------------------------------------------------------------
+
+# creation du groupe de mailles Disque autour du Fond Gauche de la Fissure 3
+# on ne peut pas creer ce groupe directement car l'option SPHERE de CREA_GROUP_MA
+# prend toutes les mailles dont au moins un noeud est dans le disque
+# -> on passe d'abord par le groupe des noueds inclus dans le disque
+MA[nb_raff]=DEFI_GROUP(reuse=MA[nb_raff],
+                       MAILLAGE=MA[nb_raff],
+                       CREA_GROUP_NO=_F(NOM='NDFGF3',
+                                        OPTION='ENV_SPHERE',
+                                        POINT=(0.2, 0.25),
+                                        RAYON=r_raff/2,
+                                        PRECISION=r_raff/2,
+                                        )
+                       )
+
+
+
+MA[nb_raff]=DEFI_GROUP(reuse=MA[nb_raff],
+                       MAILLAGE=MA[nb_raff],
+                       CREA_GROUP_MA=_F(NOM='MDFGF3',
+                                        OPTION='APPUI',
+                                        GROUP_NO='NDFGF3',
+                                        TYPE_APPUI='TOUT',
+                                        )
+                       )
+
+# on aimerait bien faire un TEST_RESU mais TEST_RESU ne fonctionne pas sur les cartes
+# faut attendre la resolution de la fiche 18997
+# ni CREA_TABLE...
+# alors on bidouille un truc en python : 
+# creation d'une table contenant le plus petit diametre non nul
+
+diam=aster.getvectjev("DIAM_4             .VALE        ")
+
+def notzero(n):
+   return n !=0
+
+diam=filter(notzero,diam)
+
+d = min(diam)
+
+TAB=CREA_TABLE(LISTE=_F(LISTE_R=(d,),
+                        PARA='DIAM'))
+
+IMPR_TABLE(TABLE=TAB)
+
+TEST_TABLE(TABLE=TAB,
+           NOM_PARA='DIAM',
+           VALE=h,
+           REFERENCE='ANALYTIQUE')
+
+FIN()

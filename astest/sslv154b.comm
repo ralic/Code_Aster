@@ -1,4 +1,4 @@
-# MODIF  DATE 20/03/2012   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE  FISSURE CIRCULAIRE EN MODE MIXTE
 # sslv154b.para = tps_job 120 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -65,8 +65,6 @@ MOX=MODI_MODELE_XFEM(MODELE_IN=MO,
                      FISSURE=FISS,);
 
 # charge X-FEM specifique
-CHXFEM=AFFE_CHAR_MECA(MODELE=MOX,
-                      LIAISON_XFEM='OUI',);
 
 nu = 0.3
 MAT=DEFI_MATERIAU(ELAS=_F(E=2.E11,
@@ -101,7 +99,7 @@ RESU=MECA_STATIQUE(MODELE=MOX,
                    CHAM_MATER=CHMAT,
                    EXCIT=(_F(CHARGE=SYMETR),
                           _F(CHARGE=PRESSION),
-                          _F(CHARGE=CHXFEM)),
+                          ),
                    INST=1.,
                    )
 

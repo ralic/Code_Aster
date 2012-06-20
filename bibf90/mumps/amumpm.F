@@ -1,10 +1,10 @@
-      SUBROUTINE AMUMPM(RANG,LDIST,KXMPS,KMONIT,IMPR,IFMUMP,ELI2LG,
-     &                  TYPE,LMD,EPSMAT,LDECHG,KTYPR)
+      SUBROUTINE AMUMPM(RANG,LDIST,KXMPS,KMONIT,IMPR,IFMUMP,KLAG2,
+     &                  TYPE,LMD,EPSMAT,KTYPR,LAPX)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPM MUMPS  DATE 29/03/2011   AUTEUR BOITEAU O.BOITEAU 
+!& MODIF AMUMPM MUMPS  DATE 20/06/2012   AUTEUR BOITEAU O.BOITEAU 
 ! ==================================================================
-! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR
 ! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS
@@ -29,18 +29,20 @@ C IN  KXMPS  :   IN   : INDICE DE L'INSTANCE MUMPS DANS DMPS
 C IN  KMONIT :  K24   : VECTEUR DE NOMS DES OBJ JEVEUX
 C IN  IMPR   :  K14   : FLAG POUR IMPRESSION MATRICE
 C IN  IFMUMP :   IN   : UNITE LOGIQUE POUR IMPRESSION FICHIER
-C IN  ELI2LG :  LOG   : LOGICAL POUR NE LAISSER QU'1 LAGRANGE ACTIF
+C IN  KLAG2  :   K4   : PARAMETRE DE SOLVEUR/ELIM_LAGR2
 C IN  TYPE   :   K1   : TYPE DU POINTEUR R OU C
 C IN  EPSMAT :   R8   : SEUIL DE FILTRAGE DES TERMES DE LA MATRICE
-C IN  LDECHG :  LOG   : PILOTAGE DECHARGEMENT OBJET JEVEUX
 C IN  KTYPR  :   K8   : TYPE DE RESOLUTION MUMPS (SYMDEF...)
+C IN  LAPX   :  LOG   : MUMPS EST UTILISE DE MANIERE "APPROXIMEE"
+C                  PRECONDITIONNEUR OU MIXTE-PRECISION
 C---------------------------------------------------------------
 ! RESPONSABLE BOITEAU O.BOITEAU
 
       INTEGER      RANG,KXMPS,IFMUMP
-      LOGICAL      LDIST,ELI2LG,LMD,LDECHG
+      LOGICAL      LDIST,LMD,LAPX
       REAL*8       EPSMAT
       CHARACTER*1  TYPE
+      CHARACTER*4  KLAG2
       CHARACTER*8  KTYPR
       CHARACTER*14 IMPR
       CHARACTER*24 KMONIT(12)
@@ -53,6 +55,7 @@ C============================================================
       INCLUDE 'cmumps_struc.h'
       INCLUDE 'dmumps_struc.h'
       INCLUDE 'zmumps_struc.h'
+      INCLUDE 'jeveux.h'
 C============================================================
 
       INTEGER    NMXINS
@@ -67,39 +70,24 @@ C============================================================
       TYPE (ZMUMPS_STRUC) , POINTER :: ZMPSK
       INTEGER      JSMDI,NSMDI,JSMHC,NSMHC,JDELG,N1,N,NZ,NZ2,NVALE,
      &             JVALE,NLONG,JVALE2,NZLOC,JCOLG,KTERM,ILIGG,ITERM,
-     &             IFM,NIV,K,SYM,IRET,JCOLL,ILIGL,JNULOGL,LTOT,
-     &             COLTMP,NBEQ,JNEQU,KZERO,IBID,IFILTR,NFILTR
+     &             IFM,NIV,K,SYM,IRET,JCOLL,ILIGL,JNULOGL,LTOT,IOK,IOK2,
+     &             COLTMP,NBEQ,JNEQU,KZERO,IBID,IFILTR,VALI(2),
+     &             NFILT1,NFILT2,NFILT3,NBLAG
       CHARACTER*1  ROUCS(NMXINS),PRECS(NMXINS)
       CHARACTER*4  KBID,ETAMS(NMXINS),ETAM
       CHARACTER*14 NONUS(NMXINS),NONU
       CHARACTER*19 NOMATS(NMXINS),NOSOLS(NMXINS),NOMAT,NOSOLV
-      CHARACTER*24 KFILTR
-      REAL*8       RAUX,RFILTR,RR4MAX,RAUX1,R4MAEM,R8PREM,EPSMAC
+      CHARACTER*24 KFILTR,KPIV,KPIV2
+      REAL*8       RAUX,RFILTR,RAUX1,R4MAEM,R4MIEM,R8MAEM,R8MIEM,
+     &             R8PREM,EPSMAC,RMAX,RMIN,RTEST
       COMPLEX*16   CAUX
-      LOGICAL      LMNSY,LTYPR,LNN,LFILTR,LSPD
+      LOGICAL      LMNSY,LTYPR,LNN,LFILTR,LSPD,ELI2LG
       COMMON /MUMPSS/ SMPS
       COMMON /MUMPSC/ CMPS
       COMMON /MUMPSD/ DMPS
       COMMON /MUMPSZ/ ZMPS
       COMMON /MUMPSH/ NONUS,NOMATS,NOSOLS,ETAMS,ROUCS,PRECS
 
-C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
-      INTEGER*4 ZI4
-      COMMON  /I4VAJE/ZI4(1)
-      INTEGER ZI
-      COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
-      COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
-      COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32, JEXNUM
-      CHARACTER*80 ZK80
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFNIV(IFM,NIV)
@@ -107,11 +95,8 @@ C-----------------------------------------------------------------------
 C       ------------------------------------------------
 C        INITS
 C       ------------------------------------------------
-      RR4MAX=R4MAEM()
+
       EPSMAC=R8PREM()
-      LFILTR=.FALSE.
-      KFILTR='&&AMUMPM.FILTRAGE'
-      NFILTR=0
       NOMAT=NOMATS(KXMPS)
       NOSOLV=NOSOLS(KXMPS)
       NONU=NONUS(KXMPS)
@@ -122,18 +107,26 @@ C --- DE MUMPS: DMUMPS_STRUC OU ZMUMPS_STRUC
         SMPSK=>SMPS(KXMPS)
         LTYPR=.TRUE.
         SYM=SMPSK%SYM
+        RMAX=R4MAEM()*0.5
+        RMIN=R4MIEM()*2.0
       ELSE IF (TYPE.EQ.'C') THEN
         CMPSK=>CMPS(KXMPS)
         LTYPR=.FALSE.
         SYM=CMPSK%SYM
+        RMAX=R4MAEM()*0.5
+        RMIN=R4MIEM()*2.0
       ELSE IF (TYPE.EQ.'D') THEN
         DMPSK=>DMPS(KXMPS)
         LTYPR=.TRUE.
         SYM=DMPSK%SYM
+        RMAX=R8MAEM()*0.5
+        RMIN=R8MIEM()*2.0
       ELSE IF (TYPE.EQ.'Z') THEN
         ZMPSK=>ZMPS(KXMPS)
         LTYPR=.FALSE.
         SYM=ZMPSK%SYM
+        RMAX=R8MAEM()*0.5
+        RMIN=R8MIEM()*2.0
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF
@@ -181,6 +174,22 @@ C       ------------------------------------------------
         CALL ASSERT(N1.EQ.NSMDI)
 C --- CALCUL DE N
         N=NSMDI
+        
+C --- GESTION ELIM_LAGR2
+C --- ON A ESSAYE UNE BASULE AUTOMATIQUE ELIM_LAGR2='OUI'/'NON'
+C --- EN FONCTION DE LA PROPORTION DE LAGRANGES. EN FAIT, 'OUI'
+C --- OFFRE LA PLUPART DU TEMPS LE MEILLEUR COMPROMIS:
+C ---     CPU x MEMOIRE x QUALITE --> ON NE PROGRAMME PAS DE
+C --- BASCULE, ON LAISSE 'OUI' PAR DEFAUT (POUR L'INSTANT)
+        SELECT CASE(KLAG2(1:3))
+        CASE('OUI')
+          ELI2LG=.TRUE.
+        CASE('NON')
+          ELI2LG=.FALSE.
+        CASE DEFAULT
+          CALL ASSERT(.FALSE.)
+        END SELECT
+
 C --- CALCUL DE NZ2
         NZ=ZI(JSMDI-1+N)
         CALL ASSERT(NZ.LE.NSMHC)
@@ -196,25 +205,39 @@ C --- CALCUL DE NZ2
           CALL ASSERT(NLONG.EQ.NZ)
         ENDIF
 
-C ---- DETERMINATION DES TERMES DE REFERENCE POUR LE FILTRAGE
-       IF (EPSMAT.GT.0.D0) THEN
-         LFILTR=.TRUE.
-         CALL JEEXIN(KFILTR,IRET)
-         IF (IRET.NE.0) CALL JEDETR(KFILTR)
-         CALL WKVECT(KFILTR,'V V R',N,IFILTR)
-         IF (LTYPR) THEN
-           DO K=1,N
-             ZR(IFILTR-1+K)=EPSMAT*ABS(ZR(JVALE-1+ZI(JSMDI-1+K)))
-           ENDDO
-         ELSE
-           DO K=1,N
-             ZR(IFILTR-1+K)=EPSMAT*ABS(ZC(JVALE-1+ZI(JSMDI-1+K)))
-           ENDDO
-         ENDIF
-       ELSE
-         LFILTR=.FALSE.
-       ENDIF
-      ENDIF
+C ---  DETERMINATION DES TERMES DE REFERENCE POUR LE FILTRAGE
+C ---  NFILT1 : TERMES RIGOUREUSEMENT NULS
+C ---  NFILT2 : DEPASSEMENT DE CAPACITE PAR VALEUR MAX
+C ---  NFILT3 : DEPASSEMENT DE CAPACITE PAR VALEUR MIN
+        LFILTR=.FALSE.
+        KFILTR='&&AMUMPM.FILTRAGE'
+        NFILT1=0
+        NFILT2=0
+        NFILT3=0
+        IF (EPSMAT.GT.0.D0) THEN
+          LFILTR=.TRUE.
+          CALL JEEXIN(KFILTR,IRET)
+          IF (IRET.NE.0) CALL JEDETR(KFILTR)
+          CALL WKVECT(KFILTR,'V V R',N,IFILTR)
+          IF (LTYPR) THEN
+            DO K=1,N
+              ZR(IFILTR-1+K)=EPSMAT*ABS(ZR(JVALE-1+ZI(JSMDI-1+K)))
+            ENDDO
+          ELSE
+            DO K=1,N
+              ZR(IFILTR-1+K)=EPSMAT*ABS(ZC(JVALE-1+ZI(JSMDI-1+K)))
+            ENDDO
+          ENDIF
+C --- SEUILLAGE DES TERMES DE FILTRAGE POUR EVITER LES VALEURS ABBERANTES
+          DO K=1,N
+            RTEST=ZR(IFILTR-1+K)
+            IF (RTEST.LT.RMIN) ZR(IFILTR-1+K)=0.D0
+            IF (RTEST.GT.RMAX) ZR(IFILTR-1+K)=RMAX
+          ENDDO
+        ELSE
+          LFILTR=.FALSE.
+        ENDIF
+      ENDIF  
 
 C       ------------------------------------------------
 C       DETERMINATION DU NBRE LOCAL DE TERMES PAR PROC: NZLOC
@@ -226,9 +249,38 @@ C         DONT IL A LA RESPONSABILITE.
 C       ------------------------------------------------
 
       IF (((RANG.EQ.0).AND.(.NOT.LDIST)).OR.(LDIST)) THEN
+
+C --- VECTEURS AUXILIAIRES POUR FILTRER LES TERMES MATRICIELS
+C --- KPIV: PROFIL TRIANGULAIRE INF
+C --- KPIV2: IDEM SUP
+        KPIV='&&AMUMPM.TERMEOK'
+        KPIV2='&&AMUMPM.TERMEOK2'
+        CALL JEEXIN(KPIV,IBID)
+        IF (IBID.NE.0) THEN
+          CALL ASSERT(.FALSE.)
+        ELSE
+          CALL WKVECT(KPIV,'V V S',NZ,IOK)
+          DO K=1,NZ
+            ZI4(IOK+K-1)=0
+          ENDDO
+        ENDIF
+        IF (SYM.EQ.0) THEN
+          CALL JEEXIN(KPIV2,IBID)
+          IF (IBID.NE.0) THEN
+            CALL ASSERT(.FALSE.)
+          ELSE
+            CALL WKVECT(KPIV2,'V V S',NZ,IOK2)
+            DO K=1,NZ
+              ZI4(IOK2+K-1)=0
+            ENDDO
+          ENDIF
+        ENDIF
+
         NZLOC=0
         JCOLL=1
         DO KTERM = 1, NZ
+
+C --- PREPARATION DES DONNES (NUM DE COLONNE, TERME DE FILTRAGE...)
           IF (ZI(JSMDI-1+JCOLL).LT.KTERM) JCOLL=JCOLL+1
           ILIGL=ZI4(JSMHC-1+KTERM)
           IF (LFILTR) THEN
@@ -236,59 +288,111 @@ C       ------------------------------------------------
           ELSE
             RFILTR=-1.D0
           ENDIF
+          
+
+C --- PARTIE TRIANGULAIRE INF. SI REEL
           IF (LTYPR) THEN
             RAUX=ZR(JVALE-1+KTERM)
             IF (RAUX.NE.0.D0) THEN
-              IF (ABS(RAUX).LT.RFILTR) THEN
-                NFILTR=NFILTR+1
-C                WRITE(IFM,*)'TERME FILTRE ',ILIGL,JCOLL,RAUX
-              ELSE
+              RTEST=ABS(RAUX)
+              IF (RTEST.GT.RFILTR) THEN
+                IF (RTEST.LT.RMIN) THEN
+                  NFILT3=NFILT3+1
+                  ZI4(IOK+KTERM-1)=-2
+                ELSE IF (RTEST.GT.RMAX) THEN
+                  NFILT2=NFILT2+1
+                  ZI4(IOK+KTERM-1)=-1
+                ELSE
+                  ZI4(IOK+KTERM-1)=1
+                ENDIF
                 NZLOC=NZLOC+1
               ENDIF
+            ELSE
+C ---   TERME RIGOUREUSEMENT NUL
+              NFILT1=NFILT1+1
             ENDIF
+              
           ELSE
+          
+C --- PARTIE TRIANGULAIRE INF. SI COMPLEXE
             CAUX=ZC(JVALE-1+KTERM)
             IF (CAUX.NE.(0.D0,0.D0)) THEN
-              IF (ABS(CAUX).LT.RFILTR) THEN
-                NFILTR=NFILTR+1
-              ELSE
+              RTEST=ABS(CAUX)
+              IF (RTEST.GT.RFILTR) THEN
+                IF (RTEST.LT.RMIN) THEN
+                  NFILT3=NFILT3+1
+                  ZI4(IOK+KTERM-1)=-2
+                ELSE IF (RTEST.GT.RMAX) THEN
+                  NFILT2=NFILT2+1
+                  ZI4(IOK+KTERM-1)=-1
+                ELSE
+                  ZI4(IOK+KTERM-1)=1
+                ENDIF
                 NZLOC=NZLOC+1
               ENDIF
+            ELSE
+C ---   TERME RIGOUREUSEMENT NUL
+              NFILT1=NFILT1+1
             ENDIF
           ENDIF
-C -- SOUS LA DIAGONALE :
+          
+C --- PARTIE TRIANGULAIRE SUP. SI REEL
           IF ((SYM.EQ.0).AND.(ILIGL.NE.JCOLL)) THEN
+          
             IF (LTYPR) THEN
               IF (LMNSY) RAUX=ZR(JVALE2-1+KTERM)
               IF (RAUX.NE.0.D0) THEN
-                IF (ABS(RAUX).LT.RFILTR) THEN
-                  NFILTR=NFILTR+1
-                ELSE
+                RTEST=ABS(RAUX)
+                IF (RTEST.GT.RFILTR) THEN
+                  IF (RTEST.LT.RMIN) THEN
+                    NFILT3=NFILT3+1
+                    ZI4(IOK2+KTERM-1)=-2
+                  ELSE IF (RTEST.GT.RMAX) THEN
+                    NFILT2=NFILT2+1
+                    ZI4(IOK2+KTERM-1)=-1
+                  ELSE
+                    ZI4(IOK2+KTERM-1)=1
+                  ENDIF
                   NZLOC=NZLOC+1
                 ENDIF
+              ELSE
+C ---   TERME RIGOUREUSEMENT NUL
+                NFILT1=NFILT1+1
               ENDIF
+              
             ELSE
+            
+C --- PARTIE TRIANGULAIRE SUP. SI COMPLEXE
               IF (LMNSY) CAUX=ZC(JVALE2-1+KTERM)
               IF (CAUX.NE.(0.D0,0.D0)) THEN
-                IF (ABS(CAUX).LT.RFILTR) THEN
-                  NFILTR=NFILTR+1
-                ELSE
+                RTEST=ABS(CAUX)
+                IF (RTEST.GT.RFILTR) THEN
+                  IF (RTEST.LT.RMIN) THEN
+                    NFILT3=NFILT3+1
+                    ZI4(IOK2+KTERM-1)=-2
+                  ELSE IF (RTEST.GT.RMAX) THEN
+                    NFILT2=NFILT2+1
+                    ZI4(IOK2+KTERM-1)=-1
+                  ELSE
+                    ZI4(IOK2+KTERM-1)=1
+                  ENDIF
                   NZLOC=NZLOC+1
                 ENDIF
+              ELSE
+C ---   TERME RIGOUREUSEMENT NUL
+                NFILT1=NFILT1+1
               ENDIF
+
             ENDIF
           ENDIF
         ENDDO
         NZ2=NZLOC
-        IF (NIV.GE.2)
-     &    WRITE(IFM,*)'<AMUMPM> PROC/NZLOC/NFILTR',RANG,NZLOC,NFILTR
+        IF (NIV.GE.2) THEN
+          WRITE(IFM,*)'<AMUMPM>     NZLOC: ',NZLOC
+          WRITE(IFM,*)'       TERMES NULS: ',NFILT1
+          WRITE(IFM,*)'   UNDER/OVERFLOWS: ',NFILT3,'/',NFILT2
+        ENDIF
       ENDIF
-
-C  -- DECHARGEMENT GLOBAL POUR LAISSER LE PLUS DE MEMOIRE POSSIBLE A
-C  -- MUMPS. MAIS CELA PEUT ETRE COUTEUX EN // AVEC DES ACCES DISQUES
-C  -- LENTS OU EN SEQ, SI ON FAIT DE NBREUSES FACTORISATIONS.
-
-       IF (LDECHG) CALL JJLDYN(0,-1,IBID)
 
 C       ------------------------------------------------
 C       ALLOCATION DES OBJETS MUMPS F90
@@ -362,38 +466,55 @@ C       ------------------------------------------------
         ENDIF
 
 C       ------------------------------------------------
-C       REMPLISSAGE EFFECTIF DES TERMES DE LA MATRICE
+C       INTERPRETATION DES PBS RENCONTRES LORS DU FILTRAGE
+C       REMPLISSAGE DE LA MATRICE
+C       EN CAS D'OVERFLOW:
+C         SI SOLVEUR DIRECT: UTMESS_F
+C         SI PRECONDITIONNEUR OU MIXTE-PRECISION: ON APPROXIME LES
+C           TERMES IMPACTES LORS DU REMPLISSAGE EFFECTIF. 
+C       EN CAS D'UNDERFLOW: ON FIXE A ZERO.
 C       ------------------------------------------------
+
+        IF (.NOT.LAPX) THEN
+          VALI(1)=NFILT3
+          VALI(2)=NFILT2
+          DO KTERM=1,NZ
+            IF (ZI4(IOK+KTERM-1).EQ.-1)
+     &        CALL U2MESI('F','FACTOR_78',2,VALI)
+          ENDDO
+          IF (SYM.EQ.0) THEN
+            DO KTERM=1,NZ
+              IF (ZI4(IOK2+KTERM-1).EQ.-1)
+     &          CALL U2MESI('F','FACTOR_78',2,VALI)
+            ENDDO
+          ENDIF
+        ENDIF
+ 
+C --- REMPLISSAGE EFFECTIF DES TERMES DE LA MATRICE
         JCOLL=1
         ITERM=0
         DO KTERM=1,NZ
 
-C --- PARTIE TRIANGULAIRE SUPERIEURE
           IF (ZI(JSMDI-1+JCOLL).LT.KTERM) JCOLL=JCOLL+1
           ILIGL=ZI4(JSMHC-1+KTERM)
-          IF (LFILTR) THEN
-            RFILTR=ZR(IFILTR-1+ILIGL)+ZR(IFILTR-1+JCOLL)
-          ELSE
-            RFILTR=-1.D0
-          ENDIF
           LNN=.FALSE.
+C --- PARTIE TRIANGULAIRE INF. SI REEL
           IF (LTYPR) THEN
-            RAUX=ZR(JVALE-1+KTERM)
-            IF (RAUX.NE.0.D0) THEN
-              IF (ABS(RAUX).LT.RFILTR) THEN
-                NFILTR=NFILTR+1
-              ELSE
-                LNN=.TRUE.
-              ENDIF
+            IF (ZI4(IOK+KTERM-1).EQ.1) THEN
+              LNN=.TRUE.
+              RAUX=ZR(JVALE-1+KTERM)
+            ELSE IF (ZI4(IOK+KTERM-1).EQ.-1) THEN
+              LNN=.TRUE.
+              RAUX=RMAX
             ENDIF
           ELSE
-            CAUX=ZC(JVALE-1+KTERM)
-            IF (CAUX.NE.(0.D0,0.D0)) THEN
-              IF (ABS(CAUX).LT.RFILTR) THEN
-                NFILTR=NFILTR+1
-              ELSE
-                LNN=.TRUE.
-              ENDIF
+C --- PARTIE TRIANGULAIRE INF. SI COMPLEXE
+            IF (ZI4(IOK+KTERM-1).EQ.1) THEN
+              LNN=.TRUE.
+              CAUX=ZC(JVALE-1+KTERM)
+            ELSE IF (ZI4(IOK+KTERM-1).EQ.-1) THEN
+              LNN=.TRUE.
+              CAUX=DCMPLX(RMAX,0.D0)
             ENDIF
           ENDIF
           IF (LMD) THEN
@@ -409,15 +530,9 @@ C --- PARTIE TRIANGULAIRE SUPERIEURE
             ILIGG=COLTMP
           ENDIF
 
-C ---- TERME NON NUL
+C ---- PARTIE TRIANGULAIRE INF. TERME NON NUL
           IF (LNN) THEN
             ITERM=ITERM+1
-            IF (TYPE.EQ.'S') THEN
-              IF (ABS(RAUX).GT.RR4MAX) CALL ASSERT(.FALSE.)
-            ELSE IF (TYPE.EQ.'C') THEN
-              RAUX1=MAX(ABS(DBLE(CAUX)),ABS(DIMAG(CAUX)))
-              IF (RAUX1.GT.RR4MAX) CALL ASSERT(.FALSE.)
-            ENDIF
             IF (LDIST) THEN
               IF (TYPE.EQ.'S') THEN
                 SMPSK%IRN_loc(ITERM)=ILIGG
@@ -459,7 +574,7 @@ C ---- TERME NON NUL
                 CALL ASSERT(.FALSE.)
               ENDIF
             ENDIF
-            KZERO=0	    
+            KZERO=0         
             IF (ELI2LG) THEN
 C ------      ON ELIMINE LE DERNIER TERME DE A/A_loc SI LAG2
               IF (ZI(JDELG-1+ILIGL).EQ.-1) THEN
@@ -482,33 +597,35 @@ C NSELLENET
             ENDIF
 C --- SI RESOLUTION SPD DEMANDEE ET TERME NEGATIF OU NUL ON S'ARRETE
             IF ((LSPD).AND.(KZERO.EQ.0)) THEN
-	      IF ((ILIGG.EQ.JCOLG).AND.(RAUX.LT.EPSMAC)) 
+              IF ((ILIGG.EQ.JCOLG).AND.(RAUX.LT.EPSMAC)) 
      &         CALL U2MESS('F','FACTOR_84')
-	    ENDIF	    
+            ENDIF           
           ENDIF
 
-C --- PARTIE TRIANGULAIRE INFERIEURE
+C --- PARTIE TRIANGULAIRE SUP. SI REEL
           IF ((SYM.EQ.0).AND.(ILIGL.NE.JCOLL)) THEN
+
             LNN=.FALSE.
             IF (LTYPR) THEN
-              IF (LMNSY) RAUX=ZR(JVALE2-1+KTERM)
-              IF (RAUX.NE.0.D0) THEN
-                IF (ABS(RAUX).LT.RFILTR) THEN
-                  NFILTR=NFILTR+1
-                ELSE
-                  LNN=.TRUE.
-                ENDIF
+              IF (ZI4(IOK2+KTERM-1).EQ.1) THEN
+                LNN=.TRUE.
+                IF (LMNSY) RAUX=ZR(JVALE2-1+KTERM)
+              ELSE IF (ZI4(IOK2+KTERM-1).EQ.-1) THEN
+                LNN=.TRUE.
+                RAUX=RMAX
               ENDIF
             ELSE
-              IF (LMNSY) CAUX=ZC(JVALE2-1+KTERM)
-              IF (CAUX.NE.(0.D0,0.D0)) THEN
-                IF (ABS(CAUX).LT.RFILTR) THEN
-                  NFILTR=NFILTR+1
-                ELSE
-                  LNN=.TRUE.
-                ENDIF
+C --- PARTIE TRIANGULAIRE SUP. SI COMPLEXE
+              IF (ZI4(IOK2+KTERM-1).EQ.1) THEN
+                LNN=.TRUE.
+                IF (LMNSY) CAUX=ZC(JVALE2-1+KTERM)
+              ELSE IF (ZI4(IOK2+KTERM-1).EQ.-1) THEN
+                LNN=.TRUE.
+                CAUX=DCMPLX(RMAX,0.D0)
               ENDIF
             ENDIF
+
+C ---- PARTIE TRIANGULAIRE SUP. TERME NON NUL
             IF (LNN) THEN
               ITERM=ITERM+1
               IF (LMD) THEN
@@ -517,12 +634,6 @@ C --- PARTIE TRIANGULAIRE INFERIEURE
               ELSE
                 ILIGG=ILIGL
                 JCOLG=JCOLL
-              ENDIF
-              IF (TYPE.EQ.'S') THEN
-                IF (ABS(RAUX).GT.RR4MAX) CALL ASSERT(.FALSE.)
-              ELSE IF (TYPE.EQ.'C') THEN
-                RAUX1=MAX(ABS(DBLE(CAUX)),ABS(DIMAG(CAUX)))
-                IF (RAUX1.GT.RR4MAX) CALL ASSERT(.FALSE.)
               ENDIF
               IF (LDIST) THEN
                 IF (TYPE.EQ.'S') THEN
@@ -576,14 +687,14 @@ C NSELLENET
               ENDIF
 C --- SI RESOLUTION SPD DEMANDEE ET TERME NEGATIF OU NUL ON S'ARRETE
               IF ((LSPD).AND.(KZERO.EQ.0)) THEN
-	        IF ((ILIGG.EQ.JCOLG).AND.(RAUX.LT.EPSMAC)) 
+                IF ((ILIGG.EQ.JCOLG).AND.(RAUX.LT.EPSMAC)) 
      &           CALL U2MESS('F','FACTOR_84')
-	      ENDIF	      
+              ENDIF           
             ENDIF
           ENDIF
 C ---FIN DE LA BOUCLE SUR NZ
         ENDDO
-
+            
         CALL ASSERT(ITERM.LE.NZ2)
         NZ2=ITERM
         IF (LDIST) THEN
@@ -693,25 +804,27 @@ C       ------------------------------------------------
 C FIN DU IF LDIST
       ENDIF
 
-C --- NETTOYAGE VECTEUR TEMPORAIRE LOCAL
-      CALL JEEXIN(KFILTR,IRET)
-      IF (IRET.NE.0) CALL JEDETR(KFILTR)
+C --- NETTOYAGE VECTEURS TEMPORAIRES LOCAUX
+      IF (((RANG.EQ.0).AND.(.NOT.LDIST)).OR.(LDIST)) THEN
+        CALL JEEXIN(KFILTR,IRET)
+        IF (IRET.NE.0) CALL JEDETR(KFILTR)
+        CALL JEDETR(KPIV)
+        IF (SYM.EQ.0) CALL JEDETR(KPIV2)
+      ENDIF
 
 C --- DECHARGEMENT CIBLE D'OBJETS JEVEUX
-      IF (.NOT.LDECHG) THEN
-        CALL JELIBD(NONU//'.SMOS.SMDI',LTOT)
-        CALL JELIBD(NONU//'.SMOS.SMHC',LTOT)
-        CALL JELIBD(NONU//'.NUME.DEEQ',LTOT)
-        CALL JELIBD(NONU//'.NUME.NUEQ',LTOT)
-        CALL JELIBD(NONU//'.NUME.LILI',LTOT)
-        CALL JELIBD(JEXNUM(NOMAT//'.VALM',1),LTOT)
-        IF (LMNSY) CALL JELIBD(JEXNUM(NOMAT//'.VALM',2),LTOT)
-        IF (LMD) THEN
-          CALL JELIBD(NONU//'.NUML.NULG',LTOT)
-          CALL JELIBD(NONU//'.NUML.DELG',LTOT)
-        ELSE
-          CALL JELIBD(NONU//'.NUME.DELG',LTOT)
-        ENDIF
+      CALL JELIBD(NONU//'.SMOS.SMDI',LTOT)
+      CALL JELIBD(NONU//'.SMOS.SMHC',LTOT)
+      CALL JELIBD(NONU//'.NUME.DEEQ',LTOT)
+      CALL JELIBD(NONU//'.NUME.NUEQ',LTOT)
+      CALL JELIBD(NONU//'.NUME.LILI',LTOT)
+      CALL JELIBD(JEXNUM(NOMAT//'.VALM',1),LTOT)
+      IF (LMNSY) CALL JELIBD(JEXNUM(NOMAT//'.VALM',2),LTOT)
+      IF (LMD) THEN
+        CALL JELIBD(NONU//'.NUML.NULG',LTOT)
+        CALL JELIBD(NONU//'.NUML.DELG',LTOT)
+      ELSE
+        CALL JELIBD(NONU//'.NUME.DELG',LTOT)
       ENDIF
 
       CALL JEDEMA()

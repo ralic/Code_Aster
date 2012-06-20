@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 # ssnv195d.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -118,13 +118,10 @@ CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                                           DY=0.0,),),
                     INFO=1,);
 
-CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
-                      LIAISON_XFEM='OUI',
-                                INFO=1,);
 
 UTOT1=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
-                   EXCIT=(_F(CHARGE=CHXFEM),
+                   EXCIT=(
                           _F(CHARGE=CH1),
                           ),
                    SOLVEUR=_F(PCENT_PIVOT=10,

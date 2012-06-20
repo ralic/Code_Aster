@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE : VALIDATION DES CONDITIONS DE NEUMANN AVEC X-FEM EN 2D
 # ssnv191c.para = tps_job 60 mem_job 200Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -72,9 +72,6 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MO,
                          FISSURE=FISS,
                          INFO=1,);
 
-CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
-                      LIAISON_XFEM='OUI',
-                      INFO=1,);
 #----------------------------------------------
 #                   MATERIAU
 #----------------------------------------------
@@ -164,7 +161,7 @@ L_INS=DEFI_LIST_REEL(DEBUT=0.0,
 
 UTOT1=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
-                   EXCIT=(_F(CHARGE=CHXFEM),
+                   EXCIT=(
                           _F(CHARGE=CH),
                           _F(CHARGE=CH1),
                           ),
@@ -172,7 +169,7 @@ UTOT1=MECA_STATIQUE(MODELE=MODELEK,
                    ); 
 UTOT2=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
-                   EXCIT=(_F(CHARGE=CHXFEM),
+                   EXCIT=(
                           _F(CHARGE=CH),
                           _F(CHARGE=CH2),
                           ),
@@ -180,7 +177,7 @@ UTOT2=MECA_STATIQUE(MODELE=MODELEK,
                    ); 
 UTOT3=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
-                   EXCIT=(_F(CHARGE=CHXFEM),
+                   EXCIT=(
                           _F(CHARGE=CH),
                           _F(CHARGE=CH3),
                           ),
@@ -188,7 +185,7 @@ UTOT3=MECA_STATIQUE(MODELE=MODELEK,
                    ); 
 UTOT4=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
-                   EXCIT=(_F(CHARGE=CHXFEM),
+                   EXCIT=(
                           _F(CHARGE=CH),
                           _F(CHARGE=CH4),
                           ),

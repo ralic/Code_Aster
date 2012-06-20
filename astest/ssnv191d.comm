@@ -1,8 +1,8 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE : VALIDATION DES CONDITIONS DE NEUMANN AVEC X-FEM EN 3D MAILLAGE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -80,7 +80,6 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS,INFO=1,);
 
-CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,LIAISON_XFEM='OUI',INFO=1,);
 
 #----------------------------------------------
 #                   MATERIAU
@@ -149,7 +148,7 @@ L_INS=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
 
 UTOT1=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
-                   EXCIT=(_F(CHARGE=CHXFEM),
+                   EXCIT=(
                           _F(CHARGE=CH),
                           _F(CHARGE=CH1),
                           ),
@@ -159,7 +158,7 @@ UTOT1=MECA_STATIQUE(MODELE=MODELEK,
                    ); 
 UTOT2=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
-                   EXCIT=(_F(CHARGE=CHXFEM),
+                   EXCIT=(
                           _F(CHARGE=CH),
                           _F(CHARGE=CH2),
                           ),
@@ -169,7 +168,7 @@ UTOT2=MECA_STATIQUE(MODELE=MODELEK,
                    ); 
 UTOT3=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
-                   EXCIT=(_F(CHARGE=CHXFEM),
+                   EXCIT=(
                           _F(CHARGE=CH),
                           _F(CHARGE=CH3),
                           ),
@@ -179,7 +178,7 @@ UTOT3=MECA_STATIQUE(MODELE=MODELEK,
                    ); 
 UTOT4=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
-                   EXCIT=(_F(CHARGE=CHXFEM),
+                   EXCIT=(
                           _F(CHARGE=CH),
                           _F(CHARGE=CH4),
                           ),

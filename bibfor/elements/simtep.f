@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,7 +81,7 @@ C --- CALCUL DES CONTRAINTES MECANIQUES AUX POINTS D'INTEGRATION
 C      ---------------------------------------------------------
       CALL SIGMMC(FAMI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
      +            XYZ,DEPL,INSTAN,REPERE,MATER,NHARM,
-     +            SIGMA,.FALSE.)
+     +            SIGMA)
 C
 C --- CALCUL DES CONTRAINTES THERMIQUES AUX POINTS D'INTEGRATION
 C      ---------------------------------------------------------

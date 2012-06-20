@@ -1,4 +1,4 @@
-#@ MODIF simu_point_mat_ops Macro  DATE 11/06/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF simu_point_mat_ops Macro  DATE 18/06/2012   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,7 +34,7 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
   AFFE_CHAR_MECA  = self.get_cmd('AFFE_CHAR_MECA')
   AFFE_MATERIAU   = self.get_cmd('AFFE_MATERIAU')
   AFFE_MODELE     = self.get_cmd('AFFE_MODELE')
-  CALC_ELEM       = self.get_cmd('CALC_ELEM')
+  CALC_CHAMP      = self.get_cmd('CALC_CHAMP')
   CALC_POINT_MAT  = self.get_cmd('CALC_POINT_MAT')
   CALC_TABLE      = self.get_cmd('CALC_TABLE')
   CREA_CHAMP      = self.get_cmd('CREA_CHAMP')
@@ -806,8 +806,10 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
       else :
          nomepsi='EPSI_ELNO'
          
-      __EVOL1 = CALC_ELEM(reuse = __EVOL1,RESULTAT = __EVOL1,
-        OPTION = ('SIGM_ELNO',nomepsi,'VARI_ELNO'))
+      __EVOL1 = CALC_CHAMP(reuse = __EVOL1,RESULTAT = __EVOL1,
+        CONTRAINTE   = 'SIGM_ELNO',
+        DEFORMATION  = nomepsi,
+        VARI_INTERNE = 'VARI_ELNO',);
  
       if MODELISATION=="3D":
           angles=(ANGLE,0,0)

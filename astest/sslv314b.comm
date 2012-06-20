@@ -1,4 +1,4 @@
-# MODIF  DATE 20/03/2012   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # sslv314b.para = tps_job 100 mem_job 1024Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -111,7 +111,6 @@ for i in range(nbcalc) :
 
    MODELX[i]=MODI_MODELE_XFEM(MODELE_IN=MODELE[i],FISSURE=FF[i],INFO=1,);
 
-   CHXFEM[i]=AFFE_CHAR_MECA(MODELE=MODELX[i],LIAISON_XFEM='OUI',INFO=1,);
    
    CHMAT[i]=AFFE_MATERIAU(MAILLAGE=MA[i],
                           MODELE=MODELX[i],
@@ -125,7 +124,7 @@ for i in range(nbcalc) :
 
    RESU[i]=MECA_STATIQUE(MODELE=MODELX[i],
                          CHAM_MATER=CHMAT[i],
-                         EXCIT=(_F(CHARGE=CHXFEM[i],),
+                         EXCIT=(
                                 _F(CHARGE=CHAR[i],),),
                          INFO=1,);
                          

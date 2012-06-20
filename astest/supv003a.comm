@@ -1,4 +1,4 @@
-# MODIF  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 18/06/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST DE LA METHODE D'INTERROGATION DES OPTIONS get_option_dependency
 # supv003a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -25,8 +25,8 @@ DEBUT(CODE=_F(NOM='SUPV003A', NIV_PUB_WEB='INTERNET'),
 
 import aster
 lopt = aster.get_option_dependency('SIGM_ELGA')
-assert len(lopt) == 2, lopt
-assert lopt == ('SIEF_ELGA', 'SIGM_ELGA'), lopt
+assert len(lopt) == 3, lopt
+assert lopt == ('DEPL', 'SIEF_ELGA', 'SIGM_ELGA'), lopt
 
 lopt = aster.get_option_dependency('ACCE')
 assert len(lopt) == 0, lopt

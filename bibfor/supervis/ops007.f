@@ -1,8 +1,7 @@
       SUBROUTINE OPS007()
-      IMPLICIT REAL*8 (A-H,O-Z)
-C     ------------------------------------------------------------------
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,91 +18,81 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C     OPERATEUR DESTRUCTION DE CONCEPT ET D'OBJETS JEVEUX
-C     ------------------------------------------------------------------
 C
-C
-C     ------------------------------------------------------------------
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
-      CHARACTER*1 KLAS
-      CHARACTER*6 NOMPRO
-      CHARACTER*8 KBID
-      CHARACTER*8 LERESU
+C
+C ----------------------------------------------------------------------
+C
+C     OPERATEUR DESTRUCTION DE CONCEPT ET D'OBJETS JEVEUX
+C
+C ----------------------------------------------------------------------
+C          
+      CHARACTER*1  KLAS
+      CHARACTER*8  K8BID
       CHARACTER*32 KCH
-      CHARACTER*24  NORECG
-      INTEGER LBID, IER
-      INTEGER NCON, LCON, NSENS
-      INTEGER IRET,NRPASS,NBPASS,ADRECG
-
-      PARAMETER (NOMPRO='OPS007')
-      INTEGER      IARG
+      INTEGER      IFM,NIV
+      INTEGER      L,LXLGUT
+      INTEGER      IBID,IARG,JVINFO
+      INTEGER      IOCC,NBOCC
+      INTEGER      IPOS,NPOS,JLPOS
+      INTEGER      ICON,NCON,JLCON
+      INTEGER      IOBJ,NOBJ,JLOBJ
+C
+C ----------------------------------------------------------------------
+C      
+      CALL JEMARQ()
 C
       CALL INFMAJ()
-      NORECG = '&&'//NOMPRO//'_RESULTA_GD     '
-      CALL JEMARQ()
       CALL INFNIV(IFM,NIV)
-      IF (NIV.GT.1) LBID=JVINFO('AFFECT', NIV)
+      IF (NIV.GT.1) IBID = JVINFO('AFFECT', NIV)
+C
+C --- DESTRUCTION DES CONCEPTS
+C
       CALL GETFAC('CONCEPT',NBOCC)
-      DO 3 IOCC = 1,NBOCC
-
-C NON DES CONCEPTS
-
-        CALL GETVID('CONCEPT','NOM',IOCC,IARG,0,KBID,NCON)
+      DO 10 IOCC = 1,NBOCC
+        CALL GETVID('CONCEPT','NOM',IOCC,IARG,0,K8BID,NCON)
         NCON = -NCON
         IF (NCON.GT.0) THEN
-          CALL WKVECT ('&&OPS007.LISTE_CO','V V K8',NCON,LCON)
-          CALL GETVID('CONCEPT','NOM',IOCC,IARG,NCON,ZK8(LCON),LBID)
-          CALL GETVID('CONCEPT','SENSIBILITE',IOCC,IARG,0,
-     &                KBID,NSENS)
+          CALL WKVECT('&&OPS007.LISTE_CO','V V K8',NCON,JLCON)
+          CALL GETVID('CONCEPT','NOM',IOCC,IARG,NCON,ZK8(JLCON),IBID)
+          DO 15 ICON=1,NCON
+            CALL JEDETC('G',ZK8(JLCON-1+ICON),1)
+ 15       CONTINUE
+          CALL JEDETR('&&OPS007.LISTE_CO')
+        ENDIF
+ 10   CONTINUE
+C 
+C --- DESTRUCTION DES OBJETS
 C
-          DO 300 II=1,NCON
-             IF(NSENS.EQ.0) THEN
-               CALL JEDETC('G',ZK8(LCON-1+II),1)
-             ELSE
-               IAUX = IOCC
-               CALL JEEXIN(NORECG,IER)
-               IF (IER.NE.0) CALL JEDETR(NORECG)
-               CALL PSRESE('CONCEPT',IAUX,1,ZK8(LCON-1+II),1,
-     &                     NBPASS,NORECG,IRET)
-               CALL JEVEUO(NORECG,'L',ADRECG)
-               DO 310 NRPASS = 1,NBPASS
-                 LERESU = ZK24(ADRECG+2*NRPASS-2) (1:8)
-                 CALL JEDETC('G',LERESU,1)
-310            CONTINUE
-             ENDIF
-300        CONTINUE
-           CALL JEDETR('&&OPS007.LISTE_CO')
-         ENDIF
- 3    CONTINUE
-
       CALL GETFAC('OBJET',NBOCC)
-      DO 2 IOCC = 1,NBOCC
-         CALL GETVTX('OBJET','CLASSE',IOCC,IARG,1,KLAS,NOBJ)
-         CALL GETVTX('OBJET','CHAINE',IOCC,IARG,0,KBID,NOBJ)
-         NOBJ = -NOBJ
-         CALL WKVECT('&&OPS007.NOMOBJ','V V K24',NOBJ,JOBJ)
-         CALL GETVTX('OBJET','CHAINE',IOCC,IARG,NOBJ,ZK24(JOBJ),LBID)
-         CALL GETVIS('OBJET','POSITION',IOCC,IARG,0,LBID,NIPO)
-         NIPO = -NIPO
-         IF (NIPO .LT. NOBJ) THEN
-           CALL WKVECT('&&OPS007.NIPOSI','V V IS',NOBJ,JPO)
-           DO 201 K=NIPO+1,NOBJ
-             ZI(JPO+K-1) = 1
- 201       CONTINUE
-         ELSE
-           CALL WKVECT('&&OPS007.NIPOSI','V V IS',NIPO,JPO)
-         ENDIF
-         CALL GETVIS('OBJET','POSITION',IOCC,IARG,NIPO,ZI(JPO),LBID)
-         DO 105 II =1,NOBJ
-            KCH = ZK24(JOBJ+II-1)
-            L=LXLGUT(KCH)
-            IF (L.GT.0) THEN
-               CALL JEDETC(KLAS,KCH(1:L),ZI(JPO+II-1))
-            ENDIF
- 105     CONTINUE
-         CALL JEDETR('&&OPS007.NOMOBJ')
-         CALL JEDETR('&&OPS007.NIPOSI')
- 2    CONTINUE
-      IF (NIV.GT.1) LBID=JVINFO('AFFECT', 0)
+      DO 20 IOCC = 1,NBOCC
+        CALL GETVTX('OBJET','CLASSE',IOCC,IARG,1,KLAS ,NOBJ)
+        CALL GETVTX('OBJET','CHAINE',IOCC,IARG,0,K8BID,NOBJ)
+        NOBJ = -NOBJ
+        CALL WKVECT('&&OPS007.NOMOBJ','V V K24',NOBJ,JLOBJ)
+        CALL GETVTX('OBJET','CHAINE',IOCC,IARG,NOBJ,ZK24(JLOBJ),IBID)
+        CALL GETVIS('OBJET','POSITION',IOCC,IARG,0,IBID,NPOS)
+        NPOS = -NPOS
+        IF (NPOS .LT. NOBJ) THEN
+          CALL WKVECT('&&OPS007.NIPOSI','V V IS',NOBJ,JLPOS)
+          DO 21 IPOS=NPOS+1,NOBJ
+            ZI(JLPOS+IPOS-1) = 1
+ 21       CONTINUE
+        ELSE
+          CALL WKVECT('&&OPS007.NIPOSI','V V IS',NPOS,JLPOS)
+        ENDIF
+        CALL GETVIS('OBJET','POSITION',IOCC,IARG,NPOS,ZI(JLPOS),IBID)
+        DO 22 IOBJ =1,NOBJ
+          KCH = ZK24(JLOBJ+IOBJ-1)
+          L   = LXLGUT(KCH)
+          IF (L.GT.0) THEN
+            CALL JEDETC(KLAS,KCH(1:L),ZI(JLPOS+IOBJ-1))
+          ENDIF
+22      CONTINUE
+        CALL JEDETR('&&OPS007.NOMOBJ')
+        CALL JEDETR('&&OPS007.NIPOSI')
+ 20   CONTINUE
+      IF (NIV.GT.1) IBID=JVINFO('AFFECT', 0)
       CALL JEDEMA()
       END

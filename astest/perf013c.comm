@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 20/06/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE MODES PROPRES D'UNE PLAQUE CARRE ENCASTREE SUR 2 BORDS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +17,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# perf013c.para = tps_job 2500 mem_job 11000Mo ncpus 1 liste_test P
+# perf013c.para = tps_job 2500 mem_job 17000Mo ncpus 1 liste_test P
 # ======================================================================
 #       INTERET : CALCULER 10 MODES EN POSITION 11, 12, ..., 20
 #---------------------------------------------------------------------------
@@ -25,7 +25,7 @@
 # UTILISANT LE SOLVEUR MUMPS.
 # VARIANTE SEQUENTIELLE.
 # ICI ON PRIVILEGIE LE TEMPS SUR LA MEMOIRE: D'OU LE CHOIX RENUM=QAMD +
-# OUT_OF_CORE='NON (DEFAUT) + LIBERE_MEMOIRE='NON' (DEFAUT).
+# GESTION_MEMOIRE='IN_CORE'.
 # ICI L'OPTION MATR_DISTRIBUEE N'A PAS LIEU D'ETRE. 
 #---------------------------------------------------------------------------
 
@@ -67,7 +67,7 @@ MODES=MODE_ITER_SIMULT(INFO=2,
                                    ),
                       VERI_MODE=_F(),
                       TYPE_RESU='DYNAMIQUE',
-                      SOLVEUR=_F(METHODE='MUMPS',RENUM='QAMD'),
+                      SOLVEUR=_F(METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE'),
                       METHODE='SORENSEN',
                       MATR_B=MASS,
                       MATR_A=RIGI,

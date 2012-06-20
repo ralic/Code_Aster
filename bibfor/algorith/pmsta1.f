@@ -2,7 +2,7 @@
      &                  NBPAR,NOMPAR,VR,IGRAD,TYPPAR,NOMVI,
      &                  SDDISC, LICCVG,ITEMAX,CONVER,ACTITE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 18/06/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,9 +24,6 @@ C ======================================================================
 C-----------------------------------------------------------------------
 C           OPERATEUR    CALC_POINT_MAT STOCKAGE DANS LA TBLE RESULTAT
 C-----------------------------------------------------------------------
-C
-C
-C
       INCLUDE 'jeveux.h'
       INTEGER      NBPAR,I,NBVARI,IGRAD,NCMP,NBVITA,IFORTA,LICCVG(5)
       INTEGER      ACTITE,JVARI
@@ -54,7 +51,7 @@ C-----------------------------------------------------------------------
       
 C     CALCUL DES INCREMENTS POUR NMEVDR
 
-      CALL DAXPY(NCMP,1.D0,DEPS,1,DEPST,1)
+      CALL DCOPY(NCMP,DEPS,1,DEPST,1)
       IF (IGRAD.EQ.0) CALL DSCAL(3,1.D0/RAC2,DEPST(4),1)
       
       CALL DCOPY(6,SIGP,1,DSIG,1)

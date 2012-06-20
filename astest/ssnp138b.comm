@@ -1,4 +1,4 @@
-# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/06/2012   AUTEUR GENIAUT S.GENIAUT 
 # TITRE FISSURE INCLINEE EN 2D AVEC X-FEM, CHARGEMENTS VOLUMIQUES
 # ssnp138b.para = tps_job 120 mem_job 256Mo mem_aster 50 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,13 +20,9 @@
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='SSNP138B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
-      IGNORE_ALARM=('CALCULEL4_9'),
       DEBUG=_F(SDVERI='OUI'),)
 
-# <CALCULEL4_9> : POST_K1_K2_K3 / MACR_LIGN_COUP emet cette alarme pour
-# signaler une imprecision pour les ddls E1X, E1Y, E1Z, ..., E4Z
-# mais ce n'est pas grave car ces ddls ne servent pas au calcul de K1,K2,K3
-
+# MODELISATION B : CHARGEMENT VOLUMIQUE, MAILLES QUAD4, ENRICHISSEMENT GEOMETRIQUE
 
 #*********************************************************
 #                    GEOMETRIE
@@ -35,16 +31,16 @@ DEBUT(CODE=_F(NOM='SSNP138B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
 #*********************************************************
 #
 # LARGEUR DE L EPROUVETTE SELON X
-W = 0.2 ;
+W = 0.2
 #
 # HAUTEUR DE L EPROUVETTE SELON Y
-H = 0.5 ;
+H = 0.5
 #
 # NOMBRE D ELEMENTS SELON X
-NX = 100. ;
+NX = 100.
 #
 # NOMBRE D ELEMENTS SELON Y
-NY = 100. ;
+NY = 100.
 #
 # precision
 eps = sqrt((W/NX)**2+(H/NY)**2)
@@ -52,11 +48,11 @@ eps = sqrt((W/NX)**2+(H/NY)**2)
 #*********************************************************
 
 # LONGUEUR DE LA FISSURE
-A = 0.04 ;
+A = 0.04
 
 # DEFINITION DU MATERIAU
-E   = 210E9;
-nu  = 0.0;
+E   = 210E9
+nu  = 0.
 rho = 7800.
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),);
@@ -64,28 +60,27 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),);
 #*********************************************************
 
 # ANGLES D INCLINAISON DE LA FISSURE (EN DEGRES)
-alphaf = [0., 45.] ;
+alphaf = [0., 45.] 
 
 # DEFINITION DE lA COURONNE POUR LE CALCUL DES SIF
-RI=0.1*A;
-RS=0.3*A;
+RI=0.1*A
+RS=0.3*A
 
 #----------------------------------------------
 #                MAILLAGE, MODELE INITIAL
 #----------------------------------------------
 
-MAILLAGE=LIRE_MAILLAGE(INFO=1,FORMAT='MED',);
+MAILLAGE=LIRE_MAILLAGE(FORMAT='MED')
 
+MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
+                    MAILLAGE=MAILLAGE,
+                    CREA_GROUP_NO=(_F(NOM='NA',OPTION='ENV_SPHERE',POINT=(-W/2.,0.),PRECISION=eps/4.,RAYON=eps/4.),
+                                   _F(NOM='NB',OPTION='ENV_SPHERE',POINT=(+W/2.,0.),PRECISION=eps/4.,RAYON=eps/4.),
+                                   _F(NOM='NC',OPTION='ENV_SPHERE',POINT=(0.,-H/2.),PRECISION=eps/4.,RAYON=eps/4.),
+                                   _F(NOM='ND',OPTION='ENV_SPHERE',POINT=(0.,+H/2.),PRECISION=eps/4.,RAYON=eps/4.),
+                                   ),
+                     )
 
-
-MAILLAGE=DEFI_GROUP( reuse =MAILLAGE,
-                     MAILLAGE=MAILLAGE,
-                     CREA_GROUP_NO=(_F(NOM='NA',OPTION='ENV_SPHERE',POINT=(-W/2.,0.),PRECISION=eps/4.,RAYON=eps/4.),
-                                    _F(NOM='NB',OPTION='ENV_SPHERE',POINT=(+W/2.,0.),PRECISION=eps/4.,RAYON=eps/4.),
-                                    _F(NOM='NC',OPTION='ENV_SPHERE',POINT=(0.,-H/2.),PRECISION=eps/4.,RAYON=eps/4.),
-                                    _F(NOM='ND',OPTION='ENV_SPHERE',POINT=(0.,+H/2.),PRECISION=eps/4.,RAYON=eps/4.),
-                                    ),
-                      INFO=2 );
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAGE,
                      AFFE= _F(GROUP_MA=('SURF','LIG1','LIG3'),
                               PHENOMENE='MECANIQUE',
@@ -96,11 +91,7 @@ MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
                        ORIE_PEAU_2D=_F(GROUP_MA=('LIG1','LIG3',),),
                        );
 
-L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=1.0,NOMBRE=1,),);
 
-def LEVSETTAN(x,y,beta) :
-     if ( x * cos(beta) + y * sin(beta) ) >= 0. : return   (x * cos(beta) + y * sin(beta)) -  A/2.
-     else :  return   (-x * cos(beta) - y * sin(beta)) -  A/2.
 
 #----------------------------------------------
 #         DEBUT DE LA BOUCLE SUR LES ANGLES
@@ -108,8 +99,6 @@ def LEVSETTAN(x,y,beta) :
 
 nbcalc = len(alphaf)
 alpha = [None]*nbcalc
-#LN = [None]*nbcalc
-#LT = [None]*nbcalc
 FISS = [None]*nbcalc
 MODELK = [None]*nbcalc
 CHMA = [None]*nbcalc
@@ -145,10 +134,8 @@ SI2CH2 = [None]*(nbcalc)
 # BOUCLE SUR LES ANGLES DE LA FISSURE
 #--------------------------------------
 for i in range(nbcalc) :
-#
-# DEFINITION DES LEVEL SET
-#
-# on passe pas un string pour que l evaluation de la fonction se fasse a chaque pas
+
+  # on passe pas un string pour que l evaluation de la fonction se fasse a chaque pas
   alpha = str(eval('alphaf[i]*pi/180.'))
 
   FISS[i]=DEFI_FISS_XFEM(MODELE=MODELEIN,
@@ -175,13 +162,11 @@ for i in range(nbcalc) :
 #
 # FORCE VOLUMIQUE
   CH1[i]=AFFE_CHAR_MECA(MODELE=MODELK[i],
-                       LIAISON_XFEM='OUI',
                        FACE_IMPO=(_F(GROUP_MA=('LIG3'),DX=0.0,DY=0.0,),),
                        FORCE_INTERNE=(_F(TOUT='OUI',FX=0,FY=-78000))
                        );
 # PESANTEUR
   CH2[i]=AFFE_CHAR_MECA(MODELE=MODELK[i],
-                       LIAISON_XFEM='OUI',
                        FACE_IMPO=(_F(GROUP_MA=('LIG3'),DX=0.0,DY=0.0,),),
                        PESANTEUR=_F(GRAVITE=10,
                                     DIRECTION=(0.,-1.,0.),),
@@ -340,34 +325,5 @@ for i in range(nbcalc) :
               REFERENCE='NON_REGRESSION',
               );
 
-
-#------------------------------------------------------------------------
-# POST-TRAITEMENT : MAILLAGE FISSURE et DEPLACEMENTS POUR LE MAILLAGE FISSURE
-#------------------------------------------------------------------------
-i =1
-
-MA_XFEM=POST_MAIL_XFEM(MODELE        = MODELK[i],
-                       INFO          = 2)
-
-MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
-                     AFFE=_F(TOUT='OUI',
-                             PHENOMENE='MECANIQUE',
-                             MODELISATION='D_PLAN',),)
-
-RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
-                        RESULTAT      = UTOT1[i],
-                        INFO          = 2)
-
-RES_XFEM=CALC_CHAMP(reuse=RES_XFEM,RESULTAT=RES_XFEM,CRITERES=('SIEQ_ELGA','SIEQ_ELNO'))
-
-
-RES_XFEM=CALC_CHAMP(reuse =RES_XFEM,
-                 RESULTAT=RES_XFEM,
-                 CRITERES='SIEQ_NOEU');
-
-IMPR_RESU(FORMAT='GMSH',UNITE=81,RESU=(_F(MAILLAGE=MA_XFEM,RESULTAT=RES_XFEM,NOM_CHAM='DEPL',NOM_CMP=('DX','DY')),
-                              _F(RESULTAT=RES_XFEM,NOM_CHAM='SIEQ_NOEU',NOM_CMP='VMIS'),
-                               ),  );
-IMPR_RESU(FORMAT='GMSH',UNITE=81,RESU=_F(RESULTAT=RES_XFEM,NOM_CHAM='DEPL',TYPE_CHAM='VECT_2D',NOM_CMP=('DX','DY')));
 
 FIN();

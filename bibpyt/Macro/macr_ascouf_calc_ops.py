@@ -1,4 +1,4 @@
-#@ MODIF macr_ascouf_calc_ops Macro  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF macr_ascouf_calc_ops Macro  DATE 18/06/2012   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -42,11 +42,11 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
   AFFE_MATERIAU    =self.get_cmd('AFFE_MATERIAU'   )
   AFFE_CARA_ELEM   =self.get_cmd('AFFE_CARA_ELEM'  )
   AFFE_CHAR_THER_F =self.get_cmd('AFFE_CHAR_THER_F')
-  DEFI_CONTACT     =self.get_cmd('DEFI_CONTACT')  
+  DEFI_CONTACT     =self.get_cmd('DEFI_CONTACT'    )  
   THER_LINEAIRE    =self.get_cmd('THER_LINEAIRE'   )
   AFFE_CHAR_MECA   =self.get_cmd('AFFE_CHAR_MECA'  )
   STAT_NON_LINE    =self.get_cmd('STAT_NON_LINE'   )
-  CALC_ELEM        =self.get_cmd('CALC_ELEM'       )
+  CALC_CHAMP       =self.get_cmd('CALC_CHAMP'      )
   IMPR_RESU        =self.get_cmd('IMPR_RESU'       )
   IMPR_TABLE       =self.get_cmd('IMPR_TABLE'      )
   DEFI_FOND_FISS   =self.get_cmd('DEFI_FOND_FISS'  )
@@ -397,13 +397,14 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
                             CONTACT    = contact,
                             INFO       = INFO   , **motscles)   
 #
-#     --- commande CALC_ELEM ---
+#     --- commande CALC_CHAMP ---
 #
-  nomres = CALC_ELEM( reuse      = nomres,
-                      RESULTAT   = nomres ,
-                      TOUT_ORDRE = 'OUI'  ,
-                      OPTION     = ('SIGM_ELNO','SIEQ_ELNO') ,
-                      INFO       = INFO   ,)
+  nomres = CALC_CHAMP( reuse      = nomres     ,
+                       RESULTAT   = nomres     ,
+                       TOUT_ORDRE = 'OUI'      ,
+                       CONTRAINTE = 'SIGM_ELNO',
+                       CRITERES   = 'SIEQ_ELNO',
+                       INFO       = INFO       ,)
 #
 #     --- post-traitements ---
 #

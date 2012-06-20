@@ -1,12 +1,11 @@
-        SUBROUTINE COEFFT( NCOE,  COTHE, COEFF, DCOTHE, DCOEFF,
-     &                     X,     DTIME, COEFT, E,      NU,
-     &                     ALPHA, NMAT, COEL )
+        SUBROUTINE COEFFT(COTHE,COEFF,DCOTHE,DCOEFF,X,DTIME,COEFT,NMAT,
+     &                    COEL)
         IMPLICIT NONE
 C       ===============================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 18/06/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,8 +25,7 @@ C       INTEGRATION DE LOIS DE COMPORTEMENT ELASTO-VISCOPLASTIQUE PAR
 C       UNE METHODE DE RUNGE KUTTA AVEC REDECOUPAGE AUTOMATIQUE DU PAS
 C       DE TEMPS : CALCUL DES PARAMETRES MATERIAU A UN INSTANT DONNE
 C       ---------------------------------------------------------------
-C       IN  NCOE   :  NOMBRE DE COEFFICIENTS MATERIAU INELASTIQUE
-C           COTHE  :  COEFFICIENTS MATERIAU ELASTIQUE A T
+C       IN  COTHE  :  COEFFICIENTS MATERIAU ELASTIQUE A T
 C           COEFF  :  COEFFICIENTS MATERIAU INELASTIQUE A T
 C           DCOTHE :  INTERVALLE COEFFICIENTS MATERIAU ELAST POUR DT
 C           DCOEFF :  INTERVALLE COEFFICIENTS MATERIAU INELAST POUR DT
@@ -35,44 +33,40 @@ C           X      :  INSTANT COURANT
 C           DTIME  :  INTERVALLE DE TEMPS
 C           NMAT   :  NOMNRE MAXI DE COEF MATERIAU
 C       OUT COEFT  :  COEFFICIENTS MATERIAU INELASTIQUE A T+DT
-C           E,NU,
-C           ALPHA  :  COEFFICIENTS MATERIAU ELASTIQUE A T+DT
-C           COEL   :  COEFFICIENTS  ELASTIQUES ORTHOTROPES A T+DT
+CC          COEL   :  COEFFICIENTS  ELASTIQUES ELASTIQUE A T+DT
 C       ---------------------------------------------------------------
-        INTEGER NMAT,NCOE,I
-        REAL*8 NU,E
+        INTEGER NMAT,I,NCOE,NCOEL
         REAL*8 COTHE(NMAT),DCOTHE(NMAT),COEL(NMAT)
-        REAL*8 HSDT,DTIME,X,ALPHA
-        REAL*8 COEFF(NCOE),DCOEFF(NCOE),COEFT(NCOE)
+        REAL*8 HSDT,DTIME,X
+        REAL*8 COEFF(NMAT),DCOEFF(NMAT),COEFT(NMAT)
 C
         HSDT=X/DTIME
 
         CALL R8INIR(NMAT, 0.D0, COEL, 1)
 
         IF (COTHE(NMAT).EQ.0) THEN
-           E=COTHE(1)+HSDT*DCOTHE(1)
-           NU=COTHE(2)+HSDT*DCOTHE(2)
-           ALPHA=COTHE(3)+HSDT*DCOTHE(3)
-           DO 12 I=1,2
+           DO 12 I=1,3
               COEL(I)=COTHE(I)+HSDT*DCOTHE(I)
    12      CONTINUE
            COEL(NMAT)=0.D0
         ELSEIF (COTHE(NMAT).EQ.1) THEN
-           DO 11 I=1,NMAT
+C          MATERIAU ISOTROPE, OU ANISOTROPE, MATRICE DE HOOKE    
+           COEL(NMAT)=1.D0
+           NCOEL=75
+           DO 11 I=1,NCOEL
               COEL(I)=COTHE(I)+HSDT*DCOTHE(I)
    11      CONTINUE
-           COEL(NMAT)=1.D0
-C          E et NU  sont utiles pour les règles de localisation
-C          pou calculer Mu. On prend la moyenne des Gij
-           E=1.D0/COEL(36+22)
-           E=E+(1.D0/COEL(36+29))
-           E=E+(1.D0/COEL(72))
-           E=E/3.D0
-           E=E*2.D0
-           NU=0.D0
+        ENDIF
+
+C       POUR GAGNER DU TEMPS CPU
+        IF (COEFF(NMAT).EQ.0) THEN
+           NCOE=NMAT
+        ELSE
+           NCOE=NINT(COEFF(NMAT))
         ENDIF
 
         DO 10 I=1,NCOE
           COEFT(I)=COEFF(I)+HSDT*DCOEFF(I)
    10   CONTINUE
+   
         END

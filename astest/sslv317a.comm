@@ -1,4 +1,4 @@
-# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE PROPAGATION MIXTE D'UNE FISSURE 3D AVEC X-FEM ET RAFFINEMENT ADAPTATIF
 # sslv317a.para = tps_job 180 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -353,13 +353,11 @@ for i_propa in xrange(pas_debut,nb_pas) :
    PRESSION=AFFE_CHAR_MECA(MODELE=MOD_X,
                            PRES_REP=_F(GROUP_MA=('M_HAUT','M_COTE'),PRES=-1.e6))
 
-   CHXFEM=AFFE_CHAR_MECA(MODELE=MOD_X,
-                         LIAISON_XFEM='OUI')
 
    # Resolution
    RESX=MECA_STATIQUE(MODELE=MOD_X,
                    CHAM_MATER=CHMAT,
-                   EXCIT=(_F(CHARGE=CHXFEM),
+                   EXCIT=(
                           _F(CHARGE=ENCAST),
                           _F(CHARGE=PRESSION),
                           ),
@@ -467,7 +465,7 @@ for i_propa in xrange(pas_debut,nb_pas) :
    IMPR_RESU(FORMAT='MED',UNITE=200+i_propa,RESU=_F(MAILLAGE=MAX1));
 
    # Menage avant iteration de propagation suivante
-   DETRUIRE(CONCEPT=_F(NOM=(MA,MA_INI,MOD_SAIN,FISS,MOD_X,CHMAT,ENCAST,PRESSION,CHXFEM,
+   DETRUIRE(CONCEPT=_F(NOM=(MA,MA_INI,MOD_SAIN,FISS,MOD_X,CHMAT,ENCAST,PRESSION,
                             RESX,MA_XFEM,MOD_VISU,RES_XFEM,TAB_KG,
                             MAX,MA1,MAX1)),INFO=1)
 

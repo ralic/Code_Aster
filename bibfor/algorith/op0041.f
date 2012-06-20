@@ -1,7 +1,7 @@
       SUBROUTINE OP0041()
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 20/06/2012   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,15 +52,13 @@ C         FISS//'.MAILFISS .INDIC'
 C         FISS//'.MAILFISS  .HEAV'
 C         FISS//'.MAILFISS  .CTIP'
 C         FISS//'.MAILFISS  .HECT'
+C         FISS//'.MAILFISS.MAFOND'
 C         FISS//'.FONDFISS'
 C         FISS//'.FONDMULT'
 C         FISS//'.BASLOC'
 C         FISS//'.BASFOND'
 C         FISS//'.INFO'
 C         FISS//'.MODELE'
-C
-C
-C
 C
       INCLUDE 'jeveux.h'
       INTEGER      IFM,NIV,IBID,MXVAL,IRET
@@ -434,6 +432,7 @@ C         FISS//'.MAILFISS .INDIC'
 C         FISS//'.MAILFISS  .HEAV'
 C         FISS//'.MAILFISS  .CTIP'
 C         FISS//'.MAILFISS  .HECT'
+C         FISS//'.MAILFISS.MAFOND'
 C         FISS//'.FONDFISS'
 C         FISS//'.FONDMULT'
 C

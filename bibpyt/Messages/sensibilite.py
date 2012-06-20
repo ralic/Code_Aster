@@ -1,4 +1,4 @@
-#@ MODIF sensibilite Messages  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF sensibilite Messages  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,15 +21,6 @@
 
 cata_msg = {
 
-1 : _(u"""
- Type de dérivation voulu : %(i1)d
- Ce type n'est pas implanté.
-"""),
-
-2 : _(u"""
- On veut dériver %(k1)s par rapport à %(k2)s.
- Cela n'est pas disponible.
-"""),
 
 3 : _(u"""
  La dérivée de %(k1)s par rapport à %(k2)s est introuvable.
@@ -44,22 +35,11 @@ cata_msg = {
  la dérivée du champ %(k1)s de %(k2)s par rapport à %(k3)s est introuvable.
 """),
 
-9 : _(u"""
- On ne sait pas trouver le type de la dérivation par rapport à %(k1)s.
-"""),
-
 10 : _(u"""
  Initialisation de la table associée à la table %(k1)s et au paramètre sensible %(k2)s
  connue sous le nom de concept %(k3)s
 """),
 
-11 : _(u"""
- Le calcul de sensibilité n'est pas encore disponible pour les chargements de type EPSI_INIT
-"""),
-
-13 : _(u"""
- On ne peut pas dériver avec une charge complexe en entrée de DYNA_LINE_HARM.
-"""),
 
 15 : _(u"""
  Le comportement %(k1)s n'est pas autorisé en sensibilité
@@ -67,23 +47,6 @@ cata_msg = {
 
 16 : _(u"""
  EXICHA différent de 0 et 1
-"""),
-
-33 : _(u"""
- La dérivée des contraintes par rapport à l'épaisseur n'est pas implantée
- pour les COQUE_3D.
-"""),
-
-35 : _(u"""
- L'option sensibilité n'est pas opérationnelle pour le comportement %(k1)s
-"""),
-
-37 : _(u"""
- L'option sensibilité n'est pas opérationnelle pour la modélisation %(k1)s
-"""),
-
-51 : _(u"""
- Dérivation de g : un seul paramètre sensible par appel à CALC_G.
 """),
 
 52 : _(u"""
@@ -109,23 +72,6 @@ cata_msg = {
 
 71 : _(u"""
  Dérivation par rapport au paramètre sensible : %(k1)s
-"""),
-
-73 : _(u"""
- Le type de la dérivation est %(k1)s
-"""),
-
-81 : _(u"""
- la structure nosimp est introuvable dans la mémorisation inpsco
-"""),
-
-95 : _(u"""
- Seuls sont possibles :
-"""),
-
-96 : _(u"""
- Les sous types de sensibilité pour l'influence de %(k1)s sont %(k2)s et %(k3)s
- C'est incohérent.
 """),
 
 }

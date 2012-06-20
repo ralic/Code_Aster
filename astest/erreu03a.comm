@@ -1,4 +1,4 @@
-# MODIF  DATE 10/04/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/06/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE DETECTION DE SINGULARITE SIMPLE AVEC LES SOLVEURS LINEAIRES
 # erreu03a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -32,6 +32,7 @@
 #             + FACTOR_42 SI MUMPS ET NPREC<0
 # VALIDATION DE LA DETECTION DE MATRICE NON SPD AVEC
 # MUMPS+TYPE_RESOL='SYMDEF'
+# AVEC MUMPS, VALIDATION DE LA VALEUR 'EVAL' DU MOT-CLE GESTION_MEMOIRE
 #########################################################################
 
 DEBUT(CODE=_F(NOM='ERREU03A',NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'),
@@ -69,6 +70,27 @@ CHARP=AFFE_CHAR_MECA( MODELE=MO,
                      DIRECTION=(0.,0.,-1.,),),)
 
 CHARCI=AFFE_CHAR_CINE( MODELE=MO, MECA_IMPO=  _F( GROUP_NO = 'BASE1',  DX = 10.),  )
+
+# 0 : PRE-EVALUATION DES CONSOMMATIONS MEMOIRE AVEC GESTION_MEMOIRE='EVAL'
+# POUR LE SOLVEUR LINEAIRE MUMPS
+#----------------------------------------------------------------------
+is_ok = 0
+try :
+  RESU01=MECA_STATIQUE(MODELE=MO, CHAM_MATER=CHAM_MAT, INFO=1,
+                     EXCIT=( _F(CHARGE = CHAR),),
+                     SOLVEUR=_F(METHODE='MUMPS',GESTION_MEMOIRE='EVAL',),
+                   )
+
+except aster.error,err:
+   print fmt_raison % str(err)
+   # on verifie que l'erreur fatale est bien celle que l'on attendait :
+   if err.id_message == "FACTOR_77":
+      is_ok = 1
+TAB01=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
+                         _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
+TEST_TABLE(TABLE=TAB01,FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
+           NOM_PARA='BOOLEEN',VALE_I=1,REFERENCE='ANALYTIQUE',)
+DETRUIRE(CONCEPT=_F(NOM=(RESU01, TAB01),),)
 
 # 1 : MANQUE DE BLOCAGE DETECTE VIA LE MECANISME NPREC/STOP_SINGULIER
 #     TEST AVEC LDLT/MF/MUMPS. AVEC MUMPS ON TESTE AUSSI LE MECANISME NPREC<0

@@ -6,7 +6,7 @@
       CHARACTER*(*)                         CARTZ
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 18/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,7 +27,7 @@ C BUT :
 C  - TRAITER L'OPTION 'AFFE' DE LA COMMANDE CREA_CHAMP
 C
 C-----------------------------------------------------------------------
-      INTEGER       GD,IBID,IED,NOCC,NCMPMX,NBTOU,N1
+      INTEGER       GD,IBID,IED,NOCC,NCMPMX,NBTOU,N1,VALI(2)
       INTEGER       IAD,JNCMP,JVALV,JMAIL,NBCMP,K,IOCC,NBMAIL,NBVAR
       REAL*8        RBID,RVID,R8VIDE
       COMPLEX*16    CBID
@@ -102,6 +102,10 @@ C
 C       TEST SUR LES DONNEES INTRODUITES
         IF (NBVAR.NE.NBCMP) THEN
            CALL U2MESS('F','UTILITAI_15')
+        ELSEIF (-NBVAR.GT.NCMPMX) THEN
+           VALI(1)=-NBVAR
+           VALI(2)=NCMPMX
+           CALL U2MESI('F','UTILITAI_8', 2, VALI)
         ELSE
           NBCMP = -NBCMP
           NBVAR = -NBVAR

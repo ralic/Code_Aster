@@ -5,7 +5,7 @@
      &                    CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/02/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 20/06/2012   AUTEUR GENIAUT S.GENIAUT 
 C RESPONSABLE SELLENET N.SELLENET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,7 +57,7 @@ C
       CHARACTER*(*) NOMCMP(*),PARTIE,ETIQCP
 C
       INTEGER NBCMP, NUMPT, NUMORD
-      INTEGER NBMAEC
+      INTEGER NBMAEC, CRET
       INTEGER IFI, LIMAEC(*)
 C
       REAL*8 INSTAN
@@ -85,7 +85,12 @@ C    --- CONVERSION CHAM_ELEM -> CHAM_ELEM_S
 C               1234567890123456789
       CHAMNS = '&&      .CES.MED'
       CHAMNS(3:8) = NOMPRO
-      CALL CELCES ( CHANOM, 'V', CHAMNS )
+      IF ( TYPECH.EQ.'CART' ) THEN
+        CALL CARCES ( CHANOM, 'ELEM', ' ', 'V', CHAMNS, ' ', CRET )
+        TYPECH = 'ELEM'
+      ELSE
+        CALL CELCES ( CHANOM, 'V', CHAMNS )
+      ENDIF
 C
 C    --- ON RECUPERE LES OBJETS
 C

@@ -1,6 +1,6 @@
       SUBROUTINE TE0190(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,6 @@ C ......................................................................
       REAL*8 REPERE(7),XYZGAU(3),INSTAN,NHARM,BARY(3)
       INTEGER NBSIGM,NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO,DIMMOD
       INTEGER IDIM
-      LOGICAL LSENS
 
 
       FAMI  = 'RIGI'
@@ -64,14 +63,6 @@ C     -----------------
       XYZGAU(1) = ZERO
       XYZGAU(2) = ZERO
       XYZGAU(3) = ZERO
-
-C ---- FAIT-ON UN CALCUL DE SENSIBILITE ?
-C      ----------------------------------
-      IF (OPTION(11:15).EQ.'SENSI') THEN
-        LSENS = .TRUE.
-      ELSE
-        LSENS = .FALSE.
-      END IF
 
 C ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
 C      -----------------------------------------
@@ -121,7 +112,7 @@ C  --      CALCUL DE LA MATRICE DE HOOKE (LE MATERIAU POUVANT
 C  --      ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
 C          -------------------------------------------------
         CALL DMATMC(FAMI,'  ',ZI(IMATE),INSTAN,'+',IGAU,1,REPERE,
-     &              XYZGAU,NBSIG,D,LSENS)
+     &              XYZGAU,NBSIG,D)
 
 C  --      MATRICE DE RIGIDITE ELEMENTAIRE BT*D*B
 C          ---------------------------------------
@@ -131,28 +122,16 @@ C          ---------------------------------------
 
 C ---- RECUPERATION ET AFFECTATION DU VECTEUR EN SORTIE
 C      ------------------------------------------------
-      IF (.NOT.LSENS) THEN
+
 C  --  DEMI-MATRICE DE RIGIDITE
-        CALL JEVECH('PMATUUR','E',IMATUU)
+      CALL JEVECH('PMATUUR','E',IMATUU)
 
-        K = 0
-        DO 70 I = 1,NBINCO
-          DO 60 J = 1,I
-            K = K + 1
-            ZR(IMATUU+K-1) = BTDB(I,J)
-   60     CONTINUE
-   70   CONTINUE
-      ELSE
-C  --  CHARGEMENT SENSIBILITE
-        CALL JEVECH('PVECTUR','E',IVECUU)
-        CALL JEVECH('PVAPRIN','L',IVAPRU)
-        DO 90 I = 1,NBINCO
-          ZR(IVECUU+I-1) = 0.D0
-          DO 80 J = 1,NBINCO
-            ZR(IVECUU+I-1) = ZR(IVECUU+I-1) - BTDB(I,J)*ZR(IVAPRU+J-1)
-   80     CONTINUE
-   90   CONTINUE
-
-      END IF
+      K = 0
+      DO 70 I = 1,NBINCO
+        DO 60 J = 1,I
+          K = K + 1
+          ZR(IMATUU+K-1) = BTDB(I,J)
+   60   CONTINUE
+   70 CONTINUE
 
       END

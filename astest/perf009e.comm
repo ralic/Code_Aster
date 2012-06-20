@@ -1,9 +1,9 @@
-# MODIF  DATE 09/03/2010   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 20/06/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE CALCUL DE PERFORMANCE : POMPE RIS
-# perf009e.para = tps_job 1200 mem_job 2200Mo liste_test S
+# perf009e.para = tps_job 1200 mem_job 2200Mo liste_test PI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -21,7 +21,7 @@
 
 # Partitionnement en 4 sous-domaines (DEFI_PART_FETI), 4 processeurs max
 # Matrice distribuee par processeur (MATR_DISTRIBUEE)
-# Mumps Out-Of-Core (OUT_OF_CORE)
+# Mumps Out-Of-Core (GESTION_MEMOIRE='OUT_OF_CORE')
 
 DEBUT(CODE=_F(NOM='PERF009E',
               NIV_PUB_WEB='INTERNET',
@@ -78,7 +78,7 @@ DEP=MECA_STATIQUE(MODELE=MODE,
                          _F(CHARGE=PRES,),),
                   OPTION='SANS',
                   SOLVEUR=_F(METHODE='MUMPS',
-                             OUT_OF_CORE='OUI',
+                             GESTION_MEMOIRE='OUT_OF_CORE',
                              RESI_RELA=-1.0,
                              MATR_DISTRIBUEE='OUI',),);
 

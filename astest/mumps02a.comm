@@ -1,4 +1,4 @@
-# MODIF  DATE 30/04/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/06/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE VALIDATION DU SOLVEUR MUMPS POUR UN MODELE DPLAN_INCO
 # mumps02a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test RI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -49,8 +49,8 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST', VALE=(0.0,  0.0, 1.0,  1.0,),);
 # -------------------------
 MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='CENTRALISE'))
 RESU1=STAT_NON_LINE(MODELE=MO,     
-                   SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='SYMGEN',LIBERE_MEMOIRE='OUI',
-                   RESI_RELA=1.E-8,POSTTRAITEMENTS='AUTO',),
+                   SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='SYMGEN',
+                   RESI_RELA=1.E-8,POSTTRAITEMENTS='AUTO',GESTION_MEMOIRE='AUTO'),
                    CHAM_MATER=CH_MATER, INFO=1,
                    EXCIT=(  _F(CHARGE=SYMETRI2,),),
                    COMP_INCR=_F(RELATION='ELAS',),
@@ -65,8 +65,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU1, INST       = 1.0,  NOM_CHAM   = 'DEPL',
                    GROUP_NO   = 'C',  NOM_CMP    = 'DY', VALE       = 2.0,
                    PRECISION  = 1.E-8, REFERENCE  = 'ANALYTIQUE',)
                    ));
-
-RESU11=STAT_NON_LINE(MODELE=MO,     
+RESU11=STAT_NON_LINE(MODELE=MO, 
                    SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='SYMGEN',
                    RESI_RELA=1.E-5,POSTTRAITEMENTS='SANS',),
                    CHAM_MATER=CH_MATER, INFO=1,
@@ -121,7 +120,8 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU13, INST       = 1.0,  NOM_CHAM   = 'DEPL',
 # ------------------------------------
 MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='MAIL_DISPERSE'))
 RESU2=STAT_NON_LINE(MODELE=MO,
-                   SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='SYMGEN', RESI_RELA=1.E-8,PCENT_PIVOT=200,LIBERE_MEMOIRE='OUI',),
+                   SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='SYMGEN', RESI_RELA=1.E-8,PCENT_PIVOT=200,
+                   GESTION_MEMOIRE='AUTO'),
                    CHAM_MATER=CH_MATER, INFO=1,
                    EXCIT=(  _F(CHARGE=SYMETRI2,),),
                    COMP_INCR=_F(RELATION='ELAS',),
@@ -147,7 +147,8 @@ SDFETI = DEFI_PART_FETI(
                 NOM_GROUP_MA='SD',);
 MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='SOUS_DOMAINE',PARTITION=SDFETI))
 RESU3=STAT_NON_LINE(MODELE=MO,
-                   SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='SYMGEN', RESI_RELA=1.E-8, PCENT_PIVOT=200,LIBERE_MEMOIRE='OUI',),
+                   SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='SYMGEN', RESI_RELA=1.E-8, PCENT_PIVOT=200,
+                   GESTION_MEMOIRE='AUTO'),
                    CHAM_MATER=CH_MATER, INFO=1,
                    EXCIT=(  _F(CHARGE=SYMETRI2,),),
                    COMP_INCR=_F(RELATION='ELAS',),
@@ -171,7 +172,8 @@ RESU4=STAT_NON_LINE(MODELE=MO,
                               RESI_RELA=1.E-8,
                               PCENT_PIVOT=200,
                               MATR_DISTRIBUEE='OUI',
-                              LIBERE_MEMOIRE='OUI',),
+                              GESTION_MEMOIRE='AUTO'
+                              ),
                    CHAM_MATER=CH_MATER, INFO=1,
                    EXCIT=(  _F(CHARGE=SYMETRI2,),),
                    COMP_INCR=_F(RELATION='ELAS',),

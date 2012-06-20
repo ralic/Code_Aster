@@ -1,4 +1,4 @@
-# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185m.para = tps_job 60 mem_job 256Mo mem_aster 50 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -141,7 +141,6 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,INFO=2,
 );
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS,INFO=1,);
 
-CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,LIAISON_XFEM='OUI',INFO=1,);
 
 #----------------------------------------------
 #                   MATERIAU
@@ -209,7 +208,7 @@ CHF=AFFE_CHAR_MECA_F(MODELE=MODELEK,
 
 UTOT1=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMA1,
-                   EXCIT=(_F(CHARGE=CHXFEM),
+                   EXCIT=(
                           _F(CHARGE=CHF),
                           _F(CHARGE=CH),
                           ),

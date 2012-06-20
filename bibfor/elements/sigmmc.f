@@ -1,8 +1,8 @@
       SUBROUTINE SIGMMC (FAMI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,
      +                   IDFDE,XYZ,DEPL,INSTAN,REPERE,MATER,
-     +                   NHARM,SIGMA,LSENS)
+     +                   NHARM,SIGMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,8 +43,6 @@ C    REPERE(7)      IN     R        VALEURS DEFINISSANT LE REPERE
 C                                   D'ORTHOTROPIE
 C    MATER          IN     I        MATERIAU
 C    NHARM          IN     R        NUMERO D'HARMONIQUE
-C    LSENS          IN     L        VAR LOGIQUE INDIQUANT LA NATURE DU
-C                                   CALCUL (V->SENSIBILITE, F->STANDARD)
 C    SIGMA(1)       OUT    R        CONTRAINTES AUX POINTS D'INTEGRATION
 C
 C.========================= DEBUT DES DECLARATIONS ====================
@@ -52,7 +50,6 @@ C -----  ARGUMENTS
       INCLUDE 'jeveux.h'
            REAL*8       XYZ(1), DEPL(1), REPERE(7), SIGMA(1)
            REAL*8       INSTAN, NHARM
-           LOGICAL      LSENS
            CHARACTER*(*) FAMI
 C -----  VARIABLES LOCALES
            INTEGER      IGAU,I,NNO
@@ -107,7 +104,7 @@ C  --      CALCUL DE LA MATRICE DE HOOKE (LE MATERIAU POUVANT
 C  --      ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
 C          -------------------------------------------------
           CALL DMATMC(FAMI,K2BID,MATER, INSTAN, '+', IGAU, 1,
-     +                REPERE, XYZGAU, NBSIG, D, LSENS)
+     +                REPERE, XYZGAU, NBSIG, D)
 C
 C  --      CALCUL DE LA CONTRAINTE AU POINT D'INTEGRATION COURANT
 C          ------------------------------------------------------

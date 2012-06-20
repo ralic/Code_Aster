@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 17/10/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -154,10 +154,6 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
                       PROL_ZERO       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ),
                  ),
              b_extr_resultat =BLOC(condition = "RESULTAT != None",
-                 regles=(DERIVABLE('RESULTAT'),),
-                 SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),
-                                   fr="Paramètre de sensibilité.",
-                                   ang="Sensitivity parameter"),
                  NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),into=C_NOM_CHAM_INTO()),
                  TYPE_MAXI       =SIMP(statut='f',typ='TXM',into=("MAXI","MINI","MAXI_ABS","MINI_ABS","NORM_TRAN",) ),
 

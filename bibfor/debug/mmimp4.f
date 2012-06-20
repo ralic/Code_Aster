@@ -3,7 +3,7 @@
      &                  LGLISS,JEU   ,JEUVIT,LAMBDC)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF DEBUG  DATE 21/02/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF DEBUG  DATE 18/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,6 +23,7 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
+      INCLUDE 'jeveux.h'
       INTEGER      IFM
       INTEGER      NUMMAE
       CHARACTER*8  NOMA
@@ -68,7 +69,6 @@ C ----------------------------------------------------------------------
 C
       CHARACTER*8  NOMESC
       CHARACTER*16 STATUT
-      CHARACTER*32 JEXNUM
 C
 C ----------------------------------------------------------------------
 C

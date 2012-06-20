@@ -1,4 +1,4 @@
-#@ MODIF B_ETAPE Build  DATE 12/06/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_ETAPE Build  DATE 18/06/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -425,7 +425,7 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
         """
         return self.nom
 
-    def getltx(self, nom_motfac, nom_motcle, iocc, mxval):
+    def getltx(self, nom_motfac, nom_motcle, iocc, mxval, taille):
         """
             Methode B_ETAPE.ETAPE.getltx
             Auteur : Antoine Tessayan
@@ -440,7 +440,7 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
         k = 0
         for  chaine in tup[1] :
             assert is_str(chaine)
-            longueurs.append(len(chaine))
+            longueurs.append(min(len(chaine), taille))
             k = k + 1
         assert(k == tup[0])
         if CONTEXT.debug : print "\tGETLTX : isval =", longueurs

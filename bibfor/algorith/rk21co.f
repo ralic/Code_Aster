@@ -1,14 +1,12 @@
-      SUBROUTINE RK21CO( FAMI, KPG, KSP,
-     &                   COMP,   MOD,     IMAT, MATCST,NBCOMM,CPMONO,
-     &                   NFS,NSG,TOUTMS, NVI,    NMAT,    Y,
-     &                   KP,    EE,      A,       H, PGL,NBPHAS,COTHE,
-     &                   COEFF, DCOTHE,  DCOEFF,  E,      NU,
-     &                   ALPHA, COEL, X,       PAS,  SIGI,NEPS,EPSD,
-     &                   DETOT,NHSR,NUMHSR,HSR,ITMAX,TOLER,IRET)
+      SUBROUTINE RK21CO(FAMI,KPG,KSP,
+     &                  COMP,MOD,IMAT,MATCST,NBCOMM,CPMONO,NFS,NSG,
+     &                  TOUTMS,NVI,NMAT,Y,KP,EE,A,H,PGL,NBPHAS,
+     &                  COTHE,COEFF,DCOTHE,DCOEFF,COEL,X,PAS,NEPS,EPSD,
+     &                  DETOT,NHSR,NUMHSR,HSR,ITMAX,TOLER,IRET)
       IMPLICIT NONE
 C     ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/02/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 18/06/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,35 +26,31 @@ C ======================================================================
 C TOLE CRP_21 CRS_1404
 C     ----------------------------------------------------------------
 C     INTEGRATION DE LOIS DE COMPORTEMENT ELASTO-VISCOPLASTIQUE
-C     PAR UNE METHODE DE RUNGE KUTTA
+C     PAR UNE METHODE DE RUNGE KUTTA D'ORDRE 2 A 2 PAS EMBOITES
 C
 C     CALCUL DE LA SOLUTION A L ORDRE 1 ET A L ORDRE 2
 C     ----------------------------------------------------------------
-C       IN   FAMI  :  FAMILLE DE POINT DE GAUSS (RIGI,MASS,...)
-C          KPG,KSP :  NUMERO DU (SOUS)POINT DE GAUSS
-C         COMP     :  NOM DU MODELE DE COMPORTEMENT
+C     IN  FAMI    :  FAMILLE DE POINT DE GAUSS (RIGI,MASS,...)
+C         KPG,KSP :  NUMERO DU (SOUS)POINT DE GAUSS
+C         COMP    :  NOM DU MODELE DE COMPORTEMENT
 C         MOD     :  TYPE DE MODELISATION
 C         IMAT    :  CODE DU MATERIAU CODE
 C         MATCST  : 'OUI'  'NAP'  'NON'
-C         NVI      :  NOMBRE DE VARIABLES INTERNES
+C         NVI     :  NOMBRE DE VARIABLES INTERNES
 C         NMAT    :  NOMBRE DE PARAMETRES MATERIAU INELASTIQUE
-C         Y       :  VARIABLES INTERNES
+C     VAR Y       :  VARIABLES INTERNES
 C         KP      :  INDICE POUR L'INTEGRATION
 C                  KP=1 AUGMENTATION DU PAS DE TEMPS
 C                  KP=0 DIMINUTION DU PAS DE TEMPS
-C         EE      :  VARIABLES INTERNE A T
-C         A       :  VARIABLES INTERNE A T+DT
+C     VAR EE      :  ERREUR=DIFF ENTRE Y2 ET Y1
+C     VAR A       :  F(Y,T)
 C         H       :  PAS DE TEMPS TESTE
 C         COTHE   :  COEFFICIENTS MATERIAU ELAS A T
 C         COEFF   :  COEFFICIENTS MATERIAU INELAS A T
 C         DCOTHE  :  COEFFICIENTS MATERIAU ELAS A T+DT
 C         DCOEFF  :  COEFFICIENTS MATERIAU INELAS A T+DT
-C         E       :  COEFFICIENT MODULE D'YOUNG
-C         NU      :  COEFFICIENT DE POISSON
-C         ALPHA   :  COEFFICIENT DE DILATATION THERMIQUE
-C         X       :  INTERVALE DE TEMPS ADAPTATIF
+C     VAR X       :  INTERVALE DE TEMPS ADAPTATIF
 C         PAS     :  PAS DE TEMPS
-C         SIGI    :  CONTRAINTES A L'INSTANT COURANT
 C         EPSD    :  DEFORMATION TOTALE A T
 C         DETOT   :  INCREMENT DE DEFORMATION TOTALE
 C     ----------------------------------------------------------------
@@ -67,14 +61,10 @@ C     ----------------------------------------------------------------
       CHARACTER*8 MOD
       CHARACTER*(*)   FAMI
       CHARACTER*3     MATCST
-      REAL*8 E, NU, ALPHA, PGL(3,3), COEL(NMAT)
-      REAL*8 X, PAS, H, HS2
-      REAL*8 COTHE(NMAT),DCOTHE(NMAT)
-      REAL*8 SIGI(6),EPSD(6),DETOT(6)
-      REAL*8 Y(NVI)
+      REAL*8 PGL(3,3),COEL(NMAT),COTHE(NMAT),DCOTHE(NMAT)
+      REAL*8 X,PAS,H,HS2,EPSD(6),DETOT(6),Y(NVI)
       REAL*8 F(NVI),HSR(NSG,NSG,NHSR),TOLER
-      REAL*8 COEFF(NMAT),DCOEFF(NMAT)
-      REAL*8 EE(NVI),A(NVI)
+      REAL*8 COEFF(NMAT),DCOEFF(NMAT),EE(NVI),A(NVI)
 C      POUR GAGNER EN TEMPS CPU
       REAL*8 TOUTMS(*)
 C
@@ -82,30 +72,42 @@ C
         EE(I)=0.D0
         F(I)=0.D0
    1  CONTINUE
+   
       IF (KP.EQ.1) THEN
-        CALL RDIF01(FAMI,KPG,KSP,COMP,MOD,IMAT,MATCST,NBCOMM,
+C        INTEGRATION Y1=F(Y,T)      
+         CALL RDIF01(FAMI,KPG,KSP,COMP,MOD,IMAT,MATCST,NBCOMM,
      &              CPMONO,NFS,NSG,TOUTMS,
      &              NVI,NMAT,Y,COTHE,COEFF,DCOTHE,DCOEFF,PGL,NBPHAS,
-     &              E,NU,ALPHA,COEL,X,PAS,SIGI,NEPS,EPSD,DETOT,F,
-     &              NHSR,NUMHSR,HSR,ITMAX, TOLER, IRET)
-        DO 10 I=1,NVI
-          A(I)=F(I)
-          Y(I)=Y(I)+A(I)*H
-   10   CONTINUE
+     &              COEL,X,PAS,NEPS,EPSD,DETOT,F,
+     &              NHSR,NUMHSR,HSR,ITMAX,TOLER,IRET)
+     
+         DO 10 I=1,NVI
+            A(I)=F(I)
+            Y(I)=Y(I)+A(I)*H
+   10    CONTINUE
+   
       ELSE
-        DO 11 I=1,NVI
-          Y(I)=Y(I)+A(I)*H
-   11   CONTINUE
+      
+         DO 11 I=1,NVI
+            Y(I)=Y(I)+A(I)*H
+   11    CONTINUE
+   
       END IF
+      
       X=X+H
+C     INTEGRATION Y2=F(Y1,T+H)      
+      
       CALL RDIF01(FAMI,KPG,KSP,COMP,MOD,IMAT,MATCST,NBCOMM,
      &            CPMONO,NFS,NSG,TOUTMS,
      &            NVI,NMAT,Y,COTHE,COEFF,DCOTHE,DCOEFF,PGL,NBPHAS,
-     &            E,NU,ALPHA,COEL,X,PAS,SIGI,NEPS,EPSD,DETOT,F,
-     &            NHSR,NUMHSR,HSR,ITMAX, TOLER, IRET)
+     &            COEL,X,PAS,NEPS,EPSD,DETOT,F,
+     &            NHSR,NUMHSR,HSR,ITMAX,TOLER,IRET)
+     
       HS2=0.5D0*H
+      
       DO 12 I=1,NVI
-        EE(I)=(F(I)-A(I))*HS2
-        Y(I)=Y(I)+EE(I)
-   12   CONTINUE
+         EE(I)=(F(I)-A(I))*HS2
+         Y(I)=Y(I)+EE(I)
+   12 CONTINUE
+   
       END

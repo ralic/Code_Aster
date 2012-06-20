@@ -1,9 +1,9 @@
-# MODIF  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE PROPAGATION D'UNE FISSURE XFEM EN 2D DANS UNE PLAQUE TROUEE EN FLEXION 3 POINTS
 # sslp315f.para = tps_job 250 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -142,13 +142,11 @@ for i in range(0,NPS) :
     ModX[i]=MODI_MODELE_XFEM(MODELE_IN=mod,
                              FISSURE=fiss[i],);
 
-    ChgX[i]=AFFE_CHAR_MECA(MODELE=ModX[i],
-                           LIAISON_XFEM='OUI',);
 
     ResX[i]=MECA_STATIQUE(MODELE=ModX[i],
                           CHAM_MATER=champma,
                           EXCIT=(_F(CHARGE=cauxl,),
-                                 _F(CHARGE=ChgX[i],),),
+                                 ),
                           INST=1.,
                           INFO=1,);
 

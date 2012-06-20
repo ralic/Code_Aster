@@ -1,6 +1,6 @@
       SUBROUTINE OP0100()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,7 +62,7 @@ C
       CHARACTER*24 DEPLA,MATE,K24B,COMPOR,CHVITE,CHACCE,VECORD
       CHARACTER*24 VALK(3),BASFON
       CHARACTER*24 SDTHET,CHFOND,BASLOC,CHDESE,CHEPSE,CHSISE,THETA
-      CHARACTER*24 NORECG,STYPSE
+      CHARACTER*24 NORECG
       CHARACTER*24 BLAN24,LISSTH,LISSG,OBJMA,NOMNO,COORN
       CHARACTER*24 TRAV1,TRAV2,TRAV3,STOK4
       CHARACTER*24 OBJ1,TRAV4,COURB,DEPLA1,DEPLA2
@@ -427,56 +427,13 @@ C         DANS LE CAS D'UN CALCUL STANDARD :
           IF (NOPASE.EQ.' ') THEN
 
             TYPESE = 0
-            STYPSE = BLAN24
             CHDESE=' '
             CHEPSE=' '
             CHSISE=' '
 
-C           DANS LE CAS D'UN CALCUL DE DERIVE :
-C           TYPESE  : TYPE DE SENSIBILITE
-C               -1 : DERIVATION EULERIENNE (VIA UN CHAMP THETA)
-C                3 : DERIVATION PAR RAPPORT AU MODULE D'YOUNG
-C                5 : DERIVATION PAR RAPPORT AU CHARGEMENT
-C           DANS CES 2 DERNIERS CAS,
-C           IL NE FAUT QU'UN SEUL PARAMETRE SENSIBLE
-C           A CHAQUE APPEL DE CALC_G_THETA
 C
           ELSE
-C
-            CALL METYSE(NBPASE,INPSCO,NOPASE,TYPESE,STYPSE)
-            IF ( TYPESE.EQ.-1 ) THEN
-              OPTIO1 = 'CALC_DG'
-            ELSE IF ( TYPESE.EQ.3 ) THEN
-              IF(NDIM.EQ.2)THEN
-                OPTIO1 = 'CALC_DG_E'
-              ELSE
-                OPTIO1 = 'CALC_DGG_E'
-              ENDIF
-              IF(OPTION.EQ.'CALC_K_G') OPTIO1 = 'CALC_DK_DG_E'
-              IF(NBPASE.GE.2) THEN
-                CALL U2MESS('F','SENSIBILITE_51')
-              ENDIF
-            ELSE IF ( TYPESE.EQ.5 ) THEN
-              IF(NDIM.EQ.2)THEN
-                OPTIO1 = 'CALC_DG_FORC'
-              ELSE
-                OPTIO1 = 'CALC_DGG_FORC'
-              ENDIF
-              IF(OPTION.EQ.'CALC_K_G') OPTIO1 = 'CALC_DK_DG_FORC'
-              IF(NBPASE.GE.2) THEN
-                CALL U2MESS('F','SENSIBILITE_51')
-              ENDIF
-            ELSE
-              VALK(1) = RESUCO
-              VALK(2) = NOPASE
-              CALL U2MESK('F','SENSIBILITE_2', 2 ,VALK)
-            ENDIF
-            CALL PSGENC ( RESUCO, NOPASE, LERES0, IRET )
-            IF ( IRET.NE.0 ) THEN
-              VALK(1) = RESUCO
-              VALK(2) = NOPASE
-              CALL U2MESK('F','SENSIBILITE_3', 2 ,VALK)
-            ENDIF
+
 
           ENDIF
 C

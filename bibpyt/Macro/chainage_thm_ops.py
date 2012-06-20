@@ -1,4 +1,4 @@
-#@ MODIF chainage_thm_ops Macro  DATE 03/04/2012   AUTEUR SELLENET N.SELLENET 
+#@ MODIF chainage_thm_ops Macro  DATE 18/06/2012   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -68,8 +68,6 @@ def chainage_thm_ops(self,TYPE_CHAINAGE,**args):
   CREA_MAILLAGE   = self.get_cmd('CREA_MAILLAGE')
   PROJ_CHAMP      = self.get_cmd('PROJ_CHAMP')
   CREA_CHAMP      = self.get_cmd('CREA_CHAMP')
-
-  CALC_ELEM       = self.get_cmd('CALC_ELEM')
   CREA_RESU       = self.get_cmd('CREA_RESU')
   DEFI_LIST_REEL  = self.get_cmd('DEFI_LIST_REEL')
 

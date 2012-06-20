@@ -1,4 +1,4 @@
-#@ MODIF macr_cara_poutre_ops Macro  DATE 23/01/2012   AUTEUR CHEIGNON E.CHEIGNON 
+#@ MODIF macr_cara_poutre_ops Macro  DATE 18/06/2012   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -47,7 +47,7 @@ def macr_cara_poutre_ops(self,MAILLAGE,SYME_Y,SYME_Z,GROUP_MA_BORD,
   NUME_DDL        =self.get_cmd('NUME_DDL')
   ASSE_VECTEUR    =self.get_cmd('ASSE_VECTEUR')
   POST_ELEM       =self.get_cmd('POST_ELEM')
-  CALC_ELEM       =self.get_cmd('CALC_ELEM')
+  CALC_CHAMP      =self.get_cmd('CALC_CHAMP')
   INTE_MAIL_2D    =self.get_cmd('INTE_MAIL_2D')
   POST_RELEVE_T   =self.get_cmd('POST_RELEVE_T')
   IMPR_TABLE      =self.get_cmd('IMPR_TABLE')
@@ -309,11 +309,11 @@ def macr_cara_poutre_ops(self,MAILLAGE,SYME_Y,SYME_Z,GROUP_MA_BORD,
 
 #    CALCUL DU RAYON DE TORSION EXTERNE : rtext
 
-     __tempe1=CALC_ELEM(reuse=__tempe1,
-                       RESULTAT=__tempe1,
-                       TOUT_ORDRE='OUI',
-                       OPTION='FLUX_ELNO',
-                      )
+     __tempe1=CALC_CHAMP(reuse=__tempe1,
+                         RESULTAT=__tempe1,
+                         TOUT_ORDRE='OUI',
+                         THERMIQUE='FLUX_ELNO',
+                        )
 
      __chem=INTE_MAIL_2D(MAILLAGE=__nomapi,
                          DEFI_CHEMIN=_F(GROUP_MA=GROUP_MA_BORD),
@@ -740,10 +740,10 @@ def macr_cara_poutre_ops(self,MAILLAGE,SYME_Y,SYME_Z,GROUP_MA_BORD,
 
 #    CALCUL DU RAYON DE TORSION EXTERNE : rtext
 
-        __tempe1=CALC_ELEM(reuse=__tempe1,
+        __tempe1=CALC_CHAMP(reuse=__tempe1,
                             RESULTAT=__tempe1,
                             TOUT_ORDRE='OUI',
-                            OPTION='FLUX_ELNO',
+                            THERMIQUE='FLUX_ELNO',
                            )
 
         __chem=INTE_MAIL_2D(MAILLAGE=__nomapi,

@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 12/06/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 18/06/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -282,7 +282,8 @@ void PRE_myabort( _IN const char *nomFichier , _IN const int numeroLigne , _IN c
 
 void DEFSSPPPPP(GETLTX,getltx,_IN char *motfac,_IN STRING_SIZE lfac,
                               _IN char *motcle,_IN STRING_SIZE lcle,_IN INTEGER *iocc,
-                              _IN INTEGER *iarg,_IN INTEGER *mxval,_OUT INTEGER *isval, _OUT INTEGER *nbval )
+                              _IN INTEGER *taille,_IN INTEGER *mxval,
+                              _OUT INTEGER *isval, _OUT INTEGER *nbval )
 {
         /*
         Procedure : getltx_ (appelee par le fortran sous le nom GETLTX)
@@ -302,7 +303,7 @@ void DEFSSPPPPP(GETLTX,getltx,_IN char *motfac,_IN STRING_SIZE lfac,
         ioc=(int)*iocc ;
         ioc=ioc-1 ;
                                                         ASSERT(commande!=(PyObject*)0);
-        res=PyObject_CallMethod(commande,"getltx","ssii",mfc,mcs,ioc,(int)*mxval);
+        res=PyObject_CallMethod(commande,"getltx","ssiii",mfc,mcs,ioc,(int)*mxval, (int)*taille);
 
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
@@ -2514,9 +2515,9 @@ int RecupNomCas(void)
    INTEGER nbval       = 1 ;
    int lng;
    INTEGER longueur;
-   void *malloc(size_t size);
+   INTEGER taille = 80; // taille max
                                                    ASSERT(commande!=(PyObject*)0);
-   CALL_GETLTX ( "CODE","NOM",iocc,iarg,mxval, &longueur ,&nbval) ;
+   CALL_GETLTX ( "CODE","NOM",iocc,&taille,mxval, &longueur ,&nbval) ;
    lng = (int)longueur;
    if(nbval == 0){
       /* Le mot cle NOM n'a pas ete fourni on donne un nom

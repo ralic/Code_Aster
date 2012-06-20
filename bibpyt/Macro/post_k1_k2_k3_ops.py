@@ -1,4 +1,4 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 30/04/2012   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 20/06/2012   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -376,8 +376,11 @@ def get_coor_libre(self,Lnoff,RESULTAT,ndim):
 #---------------------------------------------------------------------------------------------------------------
 
 def get_direction(Nnoff,ndim,DTANOR,DTANEX,Lnoff,FOND_FISS) :
-      """ retourne les normales en chaque point du fond
-          et les vecteurs de direction de propagation"""
+      """ retourne les normales en chaque point du fond (VNOR)
+          et les vecteurs de direction de propagation (VDIR)"""
+
+      # cette fonction retourne 2 dictionnaires, il faudrait mettre 
+      # en conformite avec get_direction_xfem
 
       import numpy as NP
 
@@ -387,12 +390,8 @@ def get_direction(Nnoff,ndim,DTANOR,DTANEX,Lnoff,FOND_FISS) :
       VDIR = [None]*Nnoff
       
       if ndim ==2 :
-         # attention en 2d, il faut que la base (VDIR, VNOR) soit dans le sens trigo
-         # ce qui n'est pas forcement le cas dans BASEFOND
-         # on prend le vecteur normal de la base (car il faut imperativement que le saut normal soit lsn(+) - lsn(-)
-         # on prend comme vecteur de direction de propa une rotation de -90 du vecteur normal
          VNOR[0] = NP.array([Basefo[0],Basefo[1],0.])
-         VDIR[0] = NP.array([Basefo[1],-Basefo[0],0.])
+         VDIR[0] = NP.array([Basefo[2],Basefo[3],0.])
          dicVDIR = dict([(Lnoff[0],VDIR[0])])
          dicVNOR = dict([(Lnoff[0],VNOR[0])])
       elif ndim == 3 :          
@@ -722,6 +721,7 @@ def get_coor_xfem(args,FISSURE,ndim):
 def get_direction_xfem(Nnoff,Vpropa,Coorfo,ndim) :
       """retourne la direction de propagation, la normale a la surface de la fissure,
       et l'abscisse curviligne en chaque point du fond"""
+
       import numpy as NP
       from Utilitai.Utmess     import  UTMESS
 
@@ -748,55 +748,14 @@ def get_direction_xfem(Nnoff,Vpropa,Coorfo,ndim) :
          VNOR[i] = NP.array([Vpropa[6*i],Vpropa[6*i+1],Vpropa[6*i+2]])
          VDIR[i] = NP.array([Vpropa[3+6*i],Vpropa[3+6*i+1],Vpropa[3+6*i+2]])
       elif ndim == 2 :
-         # attention en 2d, il faut que la base (VDIR, VNOR) soit dans le sens trigo
-         # ce qui n'est pas forcement le cas dans BASEFOND
-         # on prend le vecteur normal de la base (car il faut imperativement que le saut normal soit lsn(+) - lsn(-)
-         # on prend comme vecteur de direction de propa une rotation de -90 du vecteur normal
          for i in range(0,Nnoff):
             VNOR[i] = NP.array([Vpropa[0+4*i],Vpropa[1+4*i],0.])
-            VDIR[i] = NP.array([Vpropa[1+4*i],-Vpropa[0+4*i] ,0.])
+            VDIR[i] = NP.array([Vpropa[2+4*i],Vpropa[3+4*i],0.])
       return (VDIR,VNOR,absfon)
 
 #---------------------------------------------------------------------------------------------------------------
 
-def get_sens_tangente_xfem(self,ndim,Nnoff,Coorfo,VDIR,ABSC_CURV_MAXI,__RESX,dmax) :
-      """retourne le sens de la tangente   ???"""
-      from Accas import _F
-      import numpy as NP
-      from Utilitai.Utmess     import  UTMESS
-
-      MACR_LIGN_COUPE  = self.get_cmd('MACR_LIGN_COUPE')
-      DETRUIRE         = self.get_cmd('DETRUIRE')
-
-      if ndim == 3 :
-         i = Nnoff/2
-      elif ndim == 2 :
-         i = 0
-      Po =  NP.array([Coorfo[4*i],Coorfo[4*i+1],Coorfo[4*i+2]])
-      Porig = Po + ABSC_CURV_MAXI*VDIR[i]
-      Pextr = Po - ABSC_CURV_MAXI*VDIR[i]
-      __Tabg = MACR_LIGN_COUPE(RESULTAT=__RESX,
-                               NOM_CHAM='DEPL',
-                               LIGN_COUPE=_F(NB_POINTS=3,
-                                             COOR_ORIG=(Porig[0],Porig[1],Porig[2],),
-                                             TYPE='SEGMENT',
-                                             COOR_EXTR=(Pextr[0],Pextr[1],Pextr[2]),
-                                             DISTANCE_MAX=dmax),);
-      tmp=__Tabg.EXTR_TABLE()
-      test = getattr(tmp,'H1X').values()
-      if test==[None]*3 :
-         UTMESS('F','RUPTURE0_33')
-      if test[0]!=None :
-         sens = 1
-      else :
-         sens = -1
-      DETRUIRE(CONCEPT=_F(NOM=__Tabg),INFO=1)
-
-      return sens
-
-#---------------------------------------------------------------------------------------------------------------
-
-def get_sauts_xfem(self,Nnoff,Coorfo,VDIR,sens,ABSC_CURV_MAXI,NB_NOEUD_COUPE,dmax,__RESX) :
+def get_sauts_xfem(self,Nnoff,Coorfo,VDIR,ABSC_CURV_MAXI,NB_NOEUD_COUPE,dmax,__RESX) :
       """retourne la table des sauts"""
       from Accas import _F
       import numpy as NP
@@ -806,7 +765,7 @@ def get_sauts_xfem(self,Nnoff,Coorfo,VDIR,sens,ABSC_CURV_MAXI,NB_NOEUD_COUPE,dma
       mcfact=[]
       for i in xrange(Nnoff):
          Porig = NP.array([Coorfo[4*i],Coorfo[4*i+1],Coorfo[4*i+2]])
-         Pextr = Porig + ABSC_CURV_MAXI*VDIR[i]*sens
+         Pextr = Porig - ABSC_CURV_MAXI*VDIR[i]
 
          mcfact.append(_F(NB_POINTS=NB_NOEUD_COUPE,
                           COOR_ORIG=(Porig[0],Porig[1],Porig[2],),
@@ -1179,17 +1138,17 @@ def get_depl_inf(FOND_FISS,tabinfi,ndim,Lnofon,syme_char,d_coor,ino,TYPE_MAILLAG
 
 #---------------------------------------------------------------------------------------------------------------
 
-def get_pgl(syme_char,FISSURE,ino,VDIR,VNOR,dicVDIR,dicVNOR,Lnofon) :
+def get_pgl(syme_char,FISSURE,ino,VDIR,VNOR,dicVDIR,dicVNOR,Lnofon,ndim) :
 
       """retourne la matrice du changement de repère"""
       import numpy as NP
-#
-#     1 : VECTEUR NORMAL AU PLAN DE LA FISSURE
-#         ORIENTE LEVRE INFERIEURE VERS LEVRE SUPERIEURE
-#     2 : VECTEUR DE DIRECTION DE PROPAGATION EN M
-#         APPELE AUSSI VECTEUR NORMAL AU FOND DE FISSURE EN M
-#     3 : VECTEUR TANGENT AU FOND DE FISSURE EN M
-#
+
+      # attention en 2d, la base (VDIR, VNOR) issue BASEFOND n'est pas forcement dans le
+      # sens trigo : 
+      # VNOR est dans le sens des level sets normales croissantes pour X-FEM 
+      #          tel que K1 soit defini comme DepLevSup - DepLevInf pour FEM
+      # VDIR est dans la direction de propagation
+
       if FISSURE :
          v1 = VNOR[ino]
          v2 = VDIR[ino]
@@ -1198,15 +1157,13 @@ def get_pgl(syme_char,FISSURE,ino,VDIR,VNOR,dicVDIR,dicVNOR,Lnofon) :
          v1 = dicVNOR[Lnofon[ino]]
          v2 = dicVDIR[Lnofon[ino]]
 
-      v1p = sum(v2*v1)
-
-      if syme_char=='NON' :
-         v1 = v1-v1p*v2
-      else :
-         v2 = v2-v1p*v1
-
       v1 = normalize(v1)
       v2 = normalize(v2)
+
+      if ndim == 2 :
+         # on prend comme vecteur de direction de propa une rotation de -90 du vecteur normal
+         v2 = NP.array([ v1[1] , -v1[0] , 0])
+
       v3 = NP.cross(v1,v2)
 
       pgl = NP.asarray([v1,v2,v3])
@@ -1592,14 +1549,12 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
    from math import pi
    from types import ListType, TupleType
    from Accas import _F
-   from Utilitai.Table      import Table, merge
-   from SD.sd_mater     import sd_compor1
-   EnumTypes = (ListType, TupleType)
+   from Utilitai.Table import Table, merge
+   from SD.sd_mater import sd_compor1
    from Cata.cata import mode_meca
+   from Utilitai.Utmess import  UTMESS, MasquerAlarme, RetablirAlarme
    
-   macro = 'POST_K1_K2_K3'
-   from Utilitai.Utmess     import  UTMESS
-
+   EnumTypes = (ListType, TupleType)
 
    ier = 0
    # La macro compte pour 1 dans la numerotation des commandes
@@ -1618,6 +1573,9 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
    DETRUIRE         = self.get_cmd('DETRUIRE')
 
    EVOL_THER=None
+
+#  on masque cette alarme, voire explication fiche 18070
+   MasquerAlarme('CALCULEL4_9')
 
    if args.has_key('EVOL_THER'):
       if args['EVOL_THER']!=None:
@@ -1903,12 +1861,9 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 #     Calcul de la direction de propagation en chaque point du fond
       (VDIR,VNOR,absfon) = get_direction_xfem(Nnoff,Vpropa,Coorfo,ndim)
 
-#     Sens de la tangente
-      sens = get_sens_tangente_xfem(self,ndim,Nnoff,Coorfo,VDIR,ABSC_CURV_MAXI,__RESX,dmax)
-
 #     Extraction des sauts sur la fissure
       NB_NOEUD_COUPE = args['NB_NOEUD_COUPE']
-      TTSo = get_sauts_xfem(self,Nnoff,Coorfo,VDIR,sens,ABSC_CURV_MAXI,NB_NOEUD_COUPE,dmax,__RESX)
+      TTSo = get_sauts_xfem(self,Nnoff,Coorfo,VDIR,ABSC_CURV_MAXI,NB_NOEUD_COUPE,dmax,__RESX)
 
       Lnofon = []
       Nbnofo = Nnoff
@@ -1986,7 +1941,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
          (l_inst,PRECISION,CRITERE) = get_liste_inst(tabsup,args)
 
 #     récupération de la matrice de changement de repère
-      pgl = get_pgl(syme_char,FISSURE,ino,VDIR,VNOR,dicVDIR,dicVNOR,Lnofon)
+      pgl = get_pgl(syme_char,FISSURE,ino,VDIR,VNOR,dicVDIR,dicVNOR,Lnofon,ndim)
 
 #     ------------------------------------------------------------------
 #                         BOUCLE SUR LES INSTANTS/FREQUENCES

@@ -1,9 +1,9 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE BARREAU FISSURE AVEC X-FEM
 # ssnv173a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -59,8 +59,6 @@ CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                                 ),
                              ),);
 
-CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
-                      LIAISON_XFEM='OUI',);
 
 
 DEPZ=1E-6
@@ -73,7 +71,7 @@ CH=AFFE_CHAR_MECA(MODELE=MODELEK,
 UTOT=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
                    EXCIT=(_F(CHARGE=CH),
-                          _F(CHARGE=CHXFEM),
+                          
                           ),
                    INFO=2,
                    ); 

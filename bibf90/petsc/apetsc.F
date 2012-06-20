@@ -2,7 +2,7 @@
      &                  NBSOL ,IRET  )
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF APETSC PETSC  DATE 26/03/2012   AUTEUR DESOZA T.DESOZA 
+!& MODIF APETSC PETSC  DATE 18/06/2012   AUTEUR COURTOIS M.COURTOIS 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -20,6 +20,7 @@
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ==================================================================
 ! RESPONSABLE DESOZA T.DESOZA
+      INCLUDE 'jeveux.h'
       CHARACTER*(*) ACTION,SOLVEZ,MATASZ,VCINEZ
       REAL*8        RSOLU(*)
       INTEGER       NBSOL,IRET
@@ -57,21 +58,6 @@
 #include "finclude/petscksp.h"
 #include "finclude/petscpc.h"
 !================================================================
-! --- DEBUT DECLARATIONS NORMALISEES JEVEUX ---------------------
-      INTEGER ZI
-      COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
-      COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
-      COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 !----------------------------------------------------------------
 !     AU PLUS 5 MATRICES PETSC SONT GEREES A LA FOIS
       INTEGER      NMXINS

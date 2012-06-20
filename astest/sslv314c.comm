@@ -1,9 +1,9 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # sslv314c.para = tps_job 140 mem_job 1024Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -115,7 +115,6 @@ for i in range(nbcalc) :
 
    MODELX[i]=MODI_MODELE_XFEM(MODELE_IN=MODELE[i],FISSURE=FF[i],INFO=1,);
 
-   CHXFEM[i]=AFFE_CHAR_MECA(MODELE=MODELX[i],LIAISON_XFEM='OUI',INFO=1,);
    
    CHMAT[i]=AFFE_MATERIAU(MAILLAGE=MA[i],
                           MODELE=MODELX[i],
@@ -129,7 +128,7 @@ for i in range(nbcalc) :
 
    RESU[i]=MECA_STATIQUE(MODELE=MODELX[i],
                          CHAM_MATER=CHMAT[i],
-                         EXCIT=(_F(CHARGE=CHXFEM[i],),
+                         EXCIT=(
                                 _F(CHARGE=CHAR[i],),),
                          INFO=1,);
       

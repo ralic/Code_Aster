@@ -1,4 +1,4 @@
-# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE VALIDATION DE L'ESTIMATEUR D'ERREUR XFEM SUR UNE PLAQUE FISSUREE
 # sslp316a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -113,8 +113,6 @@ FISS=DEFI_FISS_XFEM(MODELE=MOD,
 MODK=MODI_MODELE_XFEM(MODELE_IN=MOD,
                       FISSURE=FISS,);
 
-CHXFM=AFFE_CHAR_MECA(MODELE=MODK,
-                     LIAISON_XFEM='OUI',);
 
 MAT=AFFE_MATERIAU(MAILLAGE=MA,
                   MODELE=MODK,
@@ -138,7 +136,7 @@ CH2=AFFE_CHAR_MECA_F(MODELE=MODK,
 
 UTOT=MECA_STATIQUE(MODELE=MODK,
                    CHAM_MATER=MAT,
-                   EXCIT=(_F(CHARGE=CHXFM),
+                   EXCIT=(
                           _F(CHARGE=CH2),
                           ),
                    );

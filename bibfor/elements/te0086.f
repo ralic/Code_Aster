@@ -1,6 +1,6 @@
       SUBROUTINE TE0086 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,10 +31,9 @@ C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 C
       CHARACTER*4      FAMI
-      REAL*8           SIGMA(54), REPERE(7),SIGM2(54),BARY(3)
+      REAL*8           SIGMA(54),BARY(3),REPERE(7)
       REAL*8           NHARM, INSTAN,CONTNO(54)
       INTEGER          IDIM
-      LOGICAL          LSENS
 C
 C
       IF ( OPTION(6:9) .EQ.'ELNO' ) THEN
@@ -56,11 +55,6 @@ C     -----------------
       ZERO     = 0.0D0
       INSTAN   = ZERO
       NHARM    = ZERO
-      IF (OPTION(11:14).EQ.'SENS') THEN
-        LSENS = .TRUE.
-      ELSE
-        LSENS = .FALSE.
-      ENDIF
 C
       DO 10 I = 1, NBSIG2*NPG
          SIGMA(I)  = ZERO
@@ -82,8 +76,8 @@ C     COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
       BARY(2) = 0.D0
       BARY(3) = 0.D0
       DO 160 I = 1,NNO
-        DO 150 IDIM = 1,NDIM
-          BARY(IDIM) = BARY(IDIM)+ZR(IGEOM+IDIM+NDIM*(I-1)-1)/NNO
+        DO 150 IDIM = 1,NDIM 
+           BARY(IDIM) = BARY(IDIM)+ZR(IGEOM+IDIM+NDIM*(I-1)-1)/NNO
  150    CONTINUE
  160  CONTINUE
       CALL ORTREP(ZI(IMATE),NDIM,BARY,REPERE)
@@ -99,28 +93,14 @@ C      --------------------------------------------------
 
 C
 C
-      IF (LSENS) THEN
-        CALL JEVECH('PDEPSEN','L',IDEPS)
-        CALL SIGVMC(FAMI,NNO,NDIM,NBSIG1,NPG,IPOIDS,IVF,IDFDE,
-     +            ZR(IGEOM),ZR(IDEPS),
-     +            INSTAN,REPERE,ZI(IMATE),NHARM,SIGMA,.FALSE.)
 
-        CALL SIGVMC(FAMI,NNO,NDIM,NBSIG1,NPG,IPOIDS,IVF,IDFDE,
-     +              ZR(IGEOM),ZR(IDEPL),
-     +              INSTAN,REPERE,ZI(IMATE),NHARM,SIGM2,.TRUE.)
-        DO 70 I=1, NBSIG*NPG
-          SIGMA(I) = SIGMA(I) + SIGM2(I)
-70      CONTINUE
-
-      ELSE
 C       CALCUL DES CONTRAINTES 'VRAIES' AUX POINTS D'INTEGRATION
 C       DE L'ELEMENT : (I.E. SIGMA_MECA - SIGMA_THERMIQUES)
 C       --------------------------------------------------------
-        CALL SIGVMC(FAMI,NNO,NDIM,NBSIG1,NPG,IPOIDS,IVF,IDFDE,
-     +            ZR(IGEOM),ZR(IDEPL),
-     +            INSTAN,REPERE,ZI(IMATE),NHARM,SIGMA,.FALSE.)
-      ENDIF
-C
+      CALL SIGVMC(FAMI,NNO,NDIM,NBSIG1,NPG,IPOIDS,IVF,IDFDE,
+     +           ZR(IGEOM),ZR(IDEPL),
+     +           INSTAN,REPERE,ZI(IMATE),NHARM,SIGMA)
+
       IF (OPTION(6:9).EQ.'ELGA') THEN
 
         CALL JEVECH('PCONTRR','E',ICONT)
@@ -130,8 +110,9 @@ C ---- AFFECTATION DU VECTEUR EN SORTIE AVEC LES CONTRAINTES AUX
 C ---- POINTS D'INTEGRATION
 C      --------------------
         DO 80 IGAU = 1, NPG
-        DO 80 ISIG = 1, NBSIG
+        DO 81 ISIG = 1, NBSIG
           ZR(ICONT+NBSIG*(IGAU-1)+ISIG-1) = SIGMA(NBSIG*(IGAU-1)+ISIG)
+81     CONTINUE
 80     CONTINUE
 C
       ELSE

@@ -1,6 +1,6 @@
       SUBROUTINE TE0022(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,7 +35,6 @@ C.......................................................................
       REAL*8 SIGM2(162),BARY(3)
       INTEGER NBSIGM,NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO
       INTEGER IDIM
-      LOGICAL LSENS
 
 
 C ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
@@ -52,11 +51,6 @@ C     -----------------
       ZERO = 0.0D0
       INSTAN = ZERO
       NHARM = ZERO
-      IF (OPTION(11:14).EQ.'SENS') THEN
-        LSENS = .TRUE.
-      ELSE
-        LSENS = .FALSE.
-      END IF
 
       DO 10 I = 1,NBSIG*NPG1
         SIGMA(I) = ZERO
@@ -88,27 +82,9 @@ C ---- RECUPERATION DU CHAMP DE DEPLACEMENT SUR L'ELEMENT
 C      --------------------------------------------------
       CALL JEVECH('PDEPLAR','L',IDEPL)
 
-      IF (LSENS) THEN
-        CALL JEVECH('PDEPSEN','L',IDEPS)
-        CALL SIGVMC('RIGI',NNO,NDIM,NBSIG,NPG1,IPOIDS,IVF,
-     &            IDFDE,ZR(IGEOM),ZR(IDEPS),
-     &            INSTAN,REPERE,ZI(IMATE),NHARM,SIGMA,
-     &            .FALSE.)
-
-        CALL SIGVMC('RIGI',NNO,NDIM,NBSIG,NPG1,IPOIDS,IVF,
-     &              IDFDE,ZR(IGEOM),ZR(IDEPL),
-     &              INSTAN,REPERE,ZI(IMATE),NHARM,SIGM2,
-     &              .TRUE.)
-        DO 30 I = 1,NBSIG*NPG1
-          SIGMA(I) = SIGMA(I) + SIGM2(I)
-   30   CONTINUE
-
-      ELSE
-        CALL SIGVMC('RIGI',NNO,NDIM,NBSIG,NPG1,IPOIDS,IVF,
+      CALL SIGVMC('RIGI',NNO,NDIM,NBSIG,NPG1,IPOIDS,IVF,
      &            IDFDE,ZR(IGEOM),ZR(IDEPL),
-     &            INSTAN,REPERE,ZI(IMATE),NHARM,SIGMA,
-     &            .FALSE.)
-      END IF
+     &            INSTAN,REPERE,ZI(IMATE),NHARM,SIGMA)
 
 
 C ---- RECUPERATION ET AFFECTATION DU VECTEUR EN SORTIE

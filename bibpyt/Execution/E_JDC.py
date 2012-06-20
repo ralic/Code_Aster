@@ -1,4 +1,4 @@
-#@ MODIF E_JDC Execution  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_JDC Execution  DATE 18/06/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -411,7 +411,7 @@ class JDC:
       for attr, value in d.items():
          #assert attr in self.l_pick_attr
          setattr(self, attr, value)
-      self._sign = d['_sign']
+      self._sign = getattr(self, '_sign') or '?'
 
    def signature(self, base):
        """Retourne une signature de l'exécution.

@@ -1,4 +1,4 @@
-#@ MODIF rupture0 Messages  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF rupture0 Messages  DATE 20/06/2012   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -219,19 +219,6 @@ Il n'y a pas de mailles de bord connectées au noeud %(k1)s.
 
 32: _(u"""
 Le paramètre ABSC_CURV_MAXI automatiquement choisi vaut : %(r1)f.
-"""),
-
-33: _(u"""
-Problème dans la récupération du saut de déplacement sur les lèvres.
--> Risque et Conseil :
-Il y a plusieurs causes possibles :
-- vérifiez que le résultat correspond bien à un calcul sur des éléments X-FEM;
-- si le calcul correspond à un calcul X-FEM avec contact sur les lèvres de la
-  fissure,vérifiez que le maillage fourni est bien le maillage linéaire initial;
-- vérifiez que le paramètre ABSC_CURV_MAXI est cohérent avec la taille de la
-  fissure : les segments pour l'interpolation du déplacement des lèvres,
-  perpendiculaires au fond de fissure et de longueur ABSC_CURV_MAXI, ne doivent
-  pas "sortir" de la matière.
 """),
 
 34: _(u"""

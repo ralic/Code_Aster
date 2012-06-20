@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,8 +21,7 @@ MECA_STATIQUE=OPER(nom="MECA_STATIQUE",op=46,sd_prod=evol_elas,
                    fr="Résoudre un problème de mécanique statique linéaire",reentrant='f',
             UIinfo={"groupes":("Résolution","Mécanique",)},
          regles=(EXCLUS("INST","LIST_INST"),
-                 AU_MOINS_UN('CHAM_MATER','CARA_ELEM',),
-                 CONCEPT_SENSIBLE('ENSEMBLE'),),
+                 AU_MOINS_UN('CHAM_MATER','CARA_ELEM',),),
          MODELE          =SIMP(statut='o',typ=modele_sdaster),
          CHAM_MATER      =SIMP(statut='f',typ=cham_mater,
          fr="le CHAM_MATER est nécessaire, sauf si le modèle ne contient que des éléments discrets (modélisations DIS_XXX)",
@@ -42,9 +41,6 @@ MECA_STATIQUE=OPER(nom="MECA_STATIQUE",op=46,sd_prod=evol_elas,
          OPTION          =SIMP(statut='f',typ='TXM',into=("SIEF_ELGA","SANS"),defaut="SIEF_ELGA",max=1,
              fr="seule option : contraintes aux points de Gauss. Utiliser CALC_ELEM pour les autres.",
                           ),
-         SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),max='**',
-                               fr="Liste des paramètres de sensibilité.",
-                               ang="List of sensitivity parameters"),
 
 #-------------------------------------------------------------------
 #        Catalogue commun SOLVEUR

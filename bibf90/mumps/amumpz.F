@@ -1,10 +1,10 @@
       SUBROUTINE AMUMPZ(ACTION,KXMPS,CSOLU,VCINE,NBSOL,IRET,
-     &                  IMPR,IFMUMP,PREPOS)
+     &                  IMPR,IFMUMP,PREPOS,PCENTP)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPZ MUMPS  DATE 29/03/2011   AUTEUR BOITEAU O.BOITEAU 
+!& MODIF AMUMPZ MUMPS  DATE 20/06/2012   AUTEUR BOITEAU O.BOITEAU 
 ! ==================================================================
-! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR
 ! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS
@@ -45,13 +45,15 @@ C IN : PREPOS (LOG) : SI .TRUE. ON FAIT LES PRE ET POSTTRAITEMENTS DE
 C           MISE A L'ECHELLE DU RHS ET DE LA SOLUTION (MRCONL) ET DE LA
 C           PRISE EN COMPTE DES AFFE_CHAR_CINE (CSMBGG).
 C           SI .FALSE. ON NE LES FAIT PAS (PAR EXEMPLE EN MODAL).
+C IN  : PCENTP  VECTEUR D'ENTIER GERE PAR AMUMPH POUR PARAMETRER LES
+C                STRATEGIES D'ADAPTATION EN CAS DE PB PCENT_PIVOT
 C---------------------------------------------------------------
 ! RESPONSABLE BOITEAU O.BOITEAU
 
       CHARACTER*(*) ACTION
       CHARACTER*14  IMPR
       CHARACTER*19  VCINE,NOSOLV
-      INTEGER       IRET,NBSOL,KXMPS,IFMUMP
+      INTEGER       IRET,NBSOL,KXMPS,IFMUMP,PCENTP(2)
       COMPLEX*16    CSOLU(*)
       LOGICAL       PREPOS
 
@@ -60,38 +62,23 @@ C---------------------------------------------------------------
 C================================================================
       INCLUDE 'mpif.h'
       INCLUDE 'zmumps_struc.h'
-C================================================================
-C --- DECLARATIONS NORMALISEES JEVEUX ----------------------------
-      INTEGER ZI
-      COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
-      COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
-      COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      INCLUDE 'jeveux.h'
 C================================================================
       INTEGER    NMXINS
       PARAMETER (NMXINS=5)
       TYPE (ZMUMPS_STRUC) , TARGET  :: ZMPS(NMXINS)
       TYPE (ZMUMPS_STRUC) , POINTER :: ZMPSK
-      INTEGER      JSLVK,JSLVR,RANG,NBPROC,NIV,IFM,IBID,IETDEB,
-     &             IETRAT,JREFA,NPREC,JSLVI,N,IPIV,I
-      INTEGER*4    I4
+      INTEGER      JSLVK,JSLVR,RANG,NBPROC,NIV,IFM,IBID,IETDEB,IFACTM,
+     &             IETRAT,JREFA,NPREC,JSLVI,N,IFACT,IAUX,VALI(4),PCPI
       CHARACTER*1  ROUCS(NMXINS),ROUC,TYPE,PREC,PRECS(NMXINS)
-      CHARACTER*4  ETAMS(NMXINS),ETAM
-      CHARACTER*8  KTYPR
+      CHARACTER*4  ETAMS(NMXINS),ETAM,KLAG2
+      CHARACTER*8  KTYPR,K8BID
+      CHARACTER*12 USERSM
       CHARACTER*14 NONUS(NMXINS),NONU
       CHARACTER*19 NOMATS(NMXINS),NOMAT,NOSOLS(NMXINS)
-      CHARACTER*24 KMONIT(12),KPIV
-      REAL*8       EPSMAX,VALR(2),RDESQ,RCTDEB,RBID(1),TEMPS(6),EPSMAT
-      LOGICAL      LQUALI,ELI2LG,LDIST,LRESOL,LMD,LDECHG,LPRECO
+      CHARACTER*24 KMONIT(12)
+      REAL*8       EPSMAX,VALR(2),RCTDEB,RBID(1),TEMPS(6),EPSMAT
+      LOGICAL      LQUALI,LDIST,LRESOL,LMD,LBID,LMIXP,LPRECO,LBIS
       COMMON /MUMPSZ/ ZMPS
       COMMON /MUMPSH/ NONUS,NOMATS,NOSOLS,ETAMS,ROUCS,PRECS
 C=================================================================
@@ -122,10 +109,6 @@ C --- TYPE DE SYSTEME: REEL OU COMPLEXE
       ZMPSK=>ZMPS(KXMPS)
       IRET=0
 
-C --- RDESQ: TAUX DE DESEQUILIBRAGE MAX. POUR PROFILING ACTIVE
-C --- AVEC INFO=2
-      RDESQ=10.D0
-
 C --- L'UTILISATEUR VEUT-IL UNE ESTIMATION DE LA QUALITE DE LA SOL ?
 C --- => LQUALI
       CALL JEVEUO(NOSOLV//'.SLVR','L',JSLVR)
@@ -134,9 +117,9 @@ C --- => LQUALI
 
       CALL JEVEUO(NOSOLV//'.SLVK','L',JSLVK)
 C --- POUR "ELIMINER" LE 2EME LAGRANGE :
-      ELI2LG=ZK24(JSLVK-1+6)(1:3).EQ.'OUI'
-C --- DECHARGEMENT JEVEUX AVANT DE PASSER A MUMPS ?
-      LDECHG=ZK24(JSLVK-1+12)(1:3).EQ.'OUI'
+      KLAG2=ZK24(JSLVK-1+6)
+      LBIS=KLAG2(1:3).EQ.'OUI'
+
 C --- TYPE DE RESOLUTION
       KTYPR=ZK24(JSLVK-1+3)
       IF (KTYPR(1:6).EQ.'SYMDEF') CALL U2MESS('F','FACTOR_80')
@@ -152,18 +135,22 @@ C --- MUMPS PARALLELE DISTRIBUE ?
       NBPROC=ZMPSK%NPROCS
 
 C --- MATRICE ASTER DISTRIBUEE ?
-      LMD = .FALSE.
       LMD = ZK24(JSLVK-1+10)(1:3).EQ.'OUI'
 
 C --- MUMPS EST-IL UTILISE COMME PRECONDITIONNEUR ?
-      LPRECO = .FALSE.
       LPRECO = ZK24(JSLVK-1+8)(1:3).EQ.'OUI'
+
+C --- MUMPS EST-IL UTILISE EN MIXTE-PRECISION ?
+      LMIXP = ZK24(JSLVK-1+7)(1:3).EQ.'OUI'
 
 C --- FILTRAGE DE LA MATRICE DONNEE A MUMPS (UNIQUEMENT NON LINEAIRE)
       EPSMAT=ZR(JSLVR-1+1)
+
+C --- STRATEGIE MEMOIRE POUR MUMPS
+      USERSM=ZK24(JSLVK+8)
       
 C --- POUR MONITORING
-      CALL AMUMPT(0,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE,
+      CALL AMUMPT(0,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,TYPE,
      &            IETDEB,IETRAT,RCTDEB,LDIST)
 
 
@@ -189,21 +176,19 @@ C       ------------------------------------------------
 C       ------------------------------------------------
 C        REMPLISSAGE DE LA MATRICE MUMPS :
 C       ------------------------------------------------
-        CALL AMUMPT(1,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE,
+        CALL AMUMPT(1,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,TYPE,
      &              IETDEB,IETRAT,RCTDEB,LDIST)
-        CALL AMUMPM(RANG,LDIST,KXMPS,KMONIT,IMPR,IFMUMP,ELI2LG,TYPE,LMD,
-     &              EPSMAT,LDECHG,KTYPR)
-
-        IF (LDECHG) CALL JJLDYN(0,-1,IBID)
+        CALL AMUMPM(RANG,LDIST,KXMPS,KMONIT,IMPR,IFMUMP,KLAG2,TYPE,LMD,
+     &              EPSMAT,KTYPR,LPRECO.OR.LMIXP)
 
 C       ------------------------------------------------
 C        ANALYSE MUMPS:
 C       ------------------------------------------------
-        CALL AMUMPT(2,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE,
+        CALL AMUMPT(2,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,TYPE,
      &              IETDEB,IETRAT,RCTDEB,LDIST)
         ZMPSK%JOB = 1
         CALL ZMUMPS(ZMPSK)
-        CALL AMUMPT(4,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE,
+        CALL AMUMPT(4,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,TYPE,
      &              IETDEB,IETRAT,RCTDEB,LDIST)
 
 C       ------------------------------------------------
@@ -217,28 +202,97 @@ C              -- C'EST OK
           IRET=2
           GOTO 99
         ELSE
-          I4=ZMPSK%INFOG(1)
-          IF (I4.LT.0) THEN
-            CALL U2MESI('F','FACTOR_55',1,I4)
+          IAUX=ZMPSK%INFOG(1)
+          IF (IAUX.LT.0) THEN
+            CALL U2MESI('F','FACTOR_55',1,IAUX)
           ELSE
-            CALL U2MESI('A','FACTOR_55',1,I4)
+            CALL U2MESI('A','FACTOR_55',1,IAUX)
           ENDIF
         ENDIF
-C        IF (RANG.EQ.0) CALL ASSERT(ZMPSK%INFOG(1).EQ.0)
         IF(ZK24(JSLVK-1+4).NE.'AUTO' .AND.
      &     ZMPSK%ICNTL(7).NE.ZMPSK%INFOG(7))
      &     CALL U2MESK('A','FACTOR_50',1,ZK24(JSLVK-1+4))
 
+C       -----------------------------------------------------
+C        CHOIX DE LA STRATEGIE MUMPS POUR LA GESTION MEMOIRE
+C       -----------------------------------------------------
+        CALL AMUMPU(1,'Z',KXMPS,USERSM,IBID,LBID)
+C ---   ON SORT POUR REVENIR A AMUMPH ET DETRUIRE L'OCCURENCE MUMPS
+C ---   ASSOCIEE
+        IF (USERSM(1:4).EQ.'EVAL') GOTO 99
+
 C       ------------------------------------------------
 C        FACTORISATION NUMERIQUE MUMPS:
 C       ------------------------------------------------
+
+C --- SI GESTION_MEMOIRE='AUTO'
+C --- ON TENTE PLUSIEURS (PCENTP(1)) FACTORISATIONS NUMERIQUES EN 
+C --- MULTIPLIANT, A CHAQUE ECHEC, L'ANCIEN PCENT_PIVOT PAR PCENTP(2)
+C --- VOIRE EN PASSANT EN OOC (EN DERNIER RESSORT).
+C --- AUTO-ADAPTATION DU PARAMETRAGE SOLVEUR/PCENT_PIVOT:
+C --- ON MODIFIE LE PARAMETRE DANS LA SD_SOLVEUR A LA VOLEE POUR NE
+C --- PAS PERDRE DE TEMPS LA PROCHAINE FOIS. CETTE VALEUR N'EST VALABLE
+C --- QUE DANS L'OPERATEUR CONSIDERE.
+       
         ZMPSK%JOB = 2
-        IF (LRESOL) CALL ZMUMPS(ZMPSK)
-        CALL AMUMPT(6,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE,
+        IFACT=0
+        IF (USERSM(1:4).EQ.'AUTO') THEN
+          IFACTM=PCENTP(1)
+        ELSE
+          IFACTM=1
+        ENDIF
+        IF (LRESOL) THEN
+          PCPI=ZMPSK%ICNTL(14)
+          DO IFACT=1,IFACTM
+            CALL ZMUMPS(ZMPSK)
+            IAUX=ZMPSK%INFOG(1)
+            IF ((IAUX.EQ.-8).OR.(IAUX.EQ.-9).OR.(IAUX.EQ.-14).OR.
+     &          (IAUX.EQ.-15).OR.(IAUX.EQ.-17).OR.(IAUX.EQ.-20)) THEN
+              IF (IFACT.EQ.IFACTM) THEN
+C ---  ERREUR: PLUS DE NOUVELLE TENTATIVE POSSIBLE
+                IF (LPRECO) THEN
+C                 -- MUMPS EST APPELE COMME PRECONDITIONNEUR
+C                 -- ON SORT AVEC UN CODE RETOUR NON NUL
+                  IRET = 1
+                  GOTO 99
+                ELSE
+                  VALI(1)=IFACTM
+                  VALI(2)=PCPI
+                  VALI(3)=ZMPSK%ICNTL(14)
+                  CALL U2MESI('F','FACTOR_53',3,VALI)
+                ENDIF
+              ELSE
+C ---  ERREUR: ON MODIFIE DES PARAMETRES POUR LA NOUVELLE TENTATIVE
+                ZMPSK%ICNTL(14)=ZMPSK%ICNTL(14)*PCENTP(2)
+                ZI(JSLVI-1+2)=ZMPSK%ICNTL(14)
+                IF ((IAUX.EQ.-9).OR.(IFACT.EQ.(IFACTM-1)))
+     &            ZMPSK%ICNTL(22)=1
+                IF (NIV.GE.2) THEN
+                  VALI(1)=ZMPSK%ICNTL(14)/PCENTP(2)
+                  VALI(2)=ZMPSK%ICNTL(14)
+                  VALI(3)=IFACT
+                  VALI(4)=IFACTM
+                  CALL U2MESI('I','FACTOR_58',4,VALI)
+                ENDIF
+              ENDIF
+            ELSE
+C ---  SORTIE STANDARD SANS ERREUR
+              EXIT
+            ENDIF
+          ENDDO
+        ENDIF
+C ---  AFFICHAGE DE CONTROLE
+        IF (NIV.GE.2) THEN
+          WRITE(IFM,*)
+          WRITE(IFM,*)
+     &      '<AMUMPZ> FACTO. NUM. - NBRE TENTATIVES/MAX: ',IFACT,IFACTM
+        ENDIF
+        CALL AMUMPT(6,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,TYPE,
      &              IETDEB,IETRAT,RCTDEB,LDIST)
 
 C       ------------------------------------------------
-C        GESTION ERREURS ET MENAGE ASTER:
+C        GESTION ERREURS ET MENAGE ASTER (SAUF ERREUR PCENT_PIVOT
+C           TRAITEE EN AMONT):
 C       ------------------------------------------------
         VALR(1)=(ZMPSK%INFOG(13)*100.D0)/ZMPSK%N
         VALR(2)=ZMPSK%ICNTL(14)*1.D0
@@ -247,17 +301,6 @@ C       ------------------------------------------------
         ENDIF
         IF (ZMPSK%INFOG(1).EQ.0) THEN
 C              -- C'EST OK
-        ELSE IF ((ZMPSK%INFOG(1).EQ.-8).OR.(ZMPSK%INFOG(1).EQ.-9).OR.
-     &         (ZMPSK%INFOG(1).EQ.-14).OR.(ZMPSK%INFOG(1).EQ.-15).OR.
-     &         (ZMPSK%INFOG(1).EQ.-17).OR.(ZMPSK%INFOG(1).EQ.-20)) THEN
-          IF (LPRECO) THEN
-C         -- MUMPS EST APPELE COMME PRECONDITIONNEUR
-C            ON SORT AVEC UN CODE RETOUR NON NUL
-             IRET = 1
-             GOTO 99
-          ELSE
-            CALL U2MESS('F','FACTOR_53')
-          ENDIF
         ELSE IF (ZMPSK%INFOG(1).EQ.-10) THEN
           IRET=2
           GOTO 99
@@ -268,44 +311,21 @@ C            ON SORT AVEC UN CODE RETOUR NON NUL
        ELSE IF (ZMPSK%INFOG(1).EQ.-90) THEN
           CALL U2MESS('F','FACTOR_66')
         ELSE
-          I4=ZMPSK%INFOG(1)     
-          IF (I4.LT.0) THEN
-            CALL U2MESI('F','FACTOR_55',1,I4)
+          IAUX=ZMPSK%INFOG(1)     
+          IF (IAUX.LT.0) THEN
+            CALL U2MESI('F','FACTOR_55',1,IAUX)
           ELSE
-            CALL U2MESI('A','FACTOR_55',1,I4)
+            CALL U2MESI('A','FACTOR_55',1,IAUX)
           ENDIF
         ENDIF
         
 C       ------------------------------------------------
 C        DETECTION DE SINGULARITE:
 C       ------------------------------------------------
-        IF (NPREC.GE.0) THEN
-          KPIV='&&AMUMP.PIVNUL'
-          CALL JEEXIN(KPIV,IBID)
-          IF (IBID.NE.0) THEN
-            CALL ASSERT(.FALSE.)
-          ELSE
-            N=ZMPSK%N
-            CALL WKVECT(KPIV,'V V I',N+2,IPIV)
-            IF (LRESOL) THEN
-C --- KPIV(1)= NOMBRE DE PIVOTS QUASI NULS (TOUS LE PROCS)
-              IF (ZMPSK%INFOG(28).GT.N) CALL ASSERT(.FALSE.)
-              ZI(IPIV)=ZMPSK%INFOG(28)
-C --- KPIV(2)= NOMBRE DE PIVOTS NEGATIFS (TOUS LE PROCS)
-              IF (ZMPSK%INFOG(12).GT.N) CALL ASSERT(.FALSE.)
-              ZI(IPIV+1)=ZMPSK%INFOG(12)
-C --- KPIV(3..) LES PIVOTS QUASI NULS (ONLY PROC 0)
-              IF (RANG.EQ.0) THEN
-                DO I=1,ZMPSK%INFOG(28)
-                  ZI(IPIV+1+I)=ZMPSK%PIVNUL_LIST(I)
-                ENDDO
-              ENDIF
-C --- BCAST POUR COMMUNIQUER L'INFO AUX AUTRES PROCS
-              CALL MPICM2('BCAST',KPIV)
-            ENDIF
-          ENDIF
-        ENDIF
-        
+        CALL AMUMPU(2,'Z',KXMPS,K8BID,NPREC,LRESOL)
+
+C       ON SOULAGE LA MEMOIRE JEVEUX DES QUE POSSIBLE D'OBJETS MUMPS
+C       INUTILES
         IF ((( RANG.EQ.0).AND.(.NOT.LDIST)).OR.(LDIST)) THEN
           IF (.NOT.LQUALI) THEN
             IF (LDIST) THEN
@@ -329,19 +349,19 @@ C     ------------------------------------------------
 C       ------------------------------------------------
 C        PRETRAITEMENTS ASTER DU/DES SECOND(S) MEMBRE(S) :
 C       ------------------------------------------------
-        CALL AMUMPT(7,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE,
+        CALL AMUMPT(7,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,TYPE,
      &              IETDEB,IETRAT,RCTDEB,LDIST)
-        CALL AMUMPP(0,NBSOL,KXMPS,LDIST,TYPE,IMPR,IFMUMP,ELI2LG,
-     &              RBID,CSOLU,VCINE,PREPOS,LPRECO)
+        CALL AMUMPP(0,NBSOL,KXMPS,LDIST,TYPE,IMPR,IFMUMP,LBIS,
+     &              RBID,CSOLU,VCINE,PREPOS,LPRECO,LMIXP)
 
 C       ------------------------------------------------
 C        RESOLUTION MUMPS :
 C       ------------------------------------------------
-        CALL AMUMPT(8,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE,
+        CALL AMUMPT(8,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,TYPE,
      &              IETDEB,IETRAT,RCTDEB,LDIST)
         ZMPSK%JOB = 3
         IF (LRESOL) CALL ZMUMPS(ZMPSK)
-        CALL AMUMPT(10,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE,
+        CALL AMUMPT(10,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,TYPE,
      &              IETDEB,IETRAT,RCTDEB,LDIST)
 
 C       ------------------------------------------------
@@ -350,18 +370,18 @@ C       ------------------------------------------------
         IF (ZMPSK%INFOG(1).EQ.0) THEN
 C              -- C'EST OK
         ELSE IF ((ZMPSK%INFOG(1).EQ.8).AND.(LQUALI)) THEN
-          I4=ZMPSK%ICNTL(10)    
-          CALL U2MESI('A','FACTOR_62',1,I4)
+          IAUX=ZMPSK%ICNTL(10)    
+          CALL U2MESI('A','FACTOR_62',1,IAUX)
         ELSE IF (ZMPSK%INFOG(1).LT.0) THEN
-          I4=ZMPSK%ICNTL(1)     
-          CALL U2MESI('F','FACTOR_55',1,I4)
+          IAUX=ZMPSK%ICNTL(1)     
+          CALL U2MESI('F','FACTOR_55',1,IAUX)
         ELSE IF (ZMPSK%INFOG(1).EQ.4) THEN
 C          -- PERMUTATION DE COLONNES, ZMPSK%JCN MODIFIE VOLONTAIREMENT
 C          -- PAR MUMPS. IL NE FAUT DONC PAS LE MANIPULER TEL QUE
 C          -- PAS GRAVE POUR ASTER.
         ELSE
-          I4=ZMPSK%INFOG(1)     
-          CALL U2MESI('A','FACTOR_55',1,I4)
+          IAUX=ZMPSK%INFOG(1)     
+          CALL U2MESI('A','FACTOR_55',1,IAUX)
         ENDIF
 C --- CONTROLE DE L'ERREUR SUR LA SOLUTION :
         IF (LQUALI) THEN
@@ -375,13 +395,13 @@ C --- CONTROLE DE L'ERREUR SUR LA SOLUTION :
 C       ------------------------------------------------
 C        POST-TRAITEMENTS ASTER DE/DES (LA) SOLUTION(S) :
 C       ------------------------------------------------
-        CALL AMUMPP(2,NBSOL,KXMPS,LDIST,TYPE,IMPR,IFMUMP,ELI2LG,
-     &              RBID,CSOLU,VCINE,PREPOS,LPRECO)
+        CALL AMUMPP(2,NBSOL,KXMPS,LDIST,TYPE,IMPR,IFMUMP,LBIS,
+     &              RBID,CSOLU,VCINE,PREPOS,LPRECO,LMIXP)
 
 C       ------------------------------------------------
 C        AFFICHAGE DU MONITORING :
 C       ------------------------------------------------
-        CALL AMUMPT(12,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE,
+        CALL AMUMPT(12,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,TYPE,
      &              IETDEB,IETRAT,RCTDEB,LDIST)
 
 C     ------------------------------------------------

@@ -1,4 +1,4 @@
-#@ MODIF calc_ifs_dnl_ops Macro  DATE 17/04/2012   AUTEUR GREFFET N.GREFFET 
+#@ MODIF calc_ifs_dnl_ops Macro  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -117,7 +117,6 @@ def calc_ifs_dnl_ops(self,GROUP_MA_IFS,NOM_CMP_IFS,UNITE_NOEUD,UNITE_ELEM,MODELE
                     'MODE_STAT',
                     'CARA_ELEM',
                     'MASS_DIAG',
-                    'SENSIBILITE',
                     'INFO',
                     'TITRE')
 

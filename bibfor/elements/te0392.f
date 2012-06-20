@@ -1,7 +1,7 @@
       SUBROUTINE TE0392(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,7 +36,6 @@ C.......................................................................
       REAL*8 JACGAU
       REAL*8 REPERE(7),XYZGAU(3),INSTAN
       INTEGER IGEOM, IPOIDS, IVF, IDFDE
-      LOGICAL LSENS
 
       LOGICAL CALBN
       INTEGER KPG,I,INO,J,K,PROJ,NBPG2
@@ -194,9 +193,8 @@ C  --      PREMIER ORDRE AUX DEPLACEMENTS
 C  --      CALCUL DE LA MATRICE DE HOOKE (LE MATERIAU POUVANT
 C  --      ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
 C          -------------------------------------------------
-        LSENS = .FALSE.
         CALL DMATMC('RIGI',K2BID,ZI(IMATE),INSTAN,'+',IGAU,1,
-     &              REPERE,XYZGAU,NBSIG,D,LSENS)
+     &              REPERE,XYZGAU,NBSIG,D)
 
 C     CALCUL DE KC (MATRICE DE RIGIDITE AU CENTRE)
 C     --------------------------------------------

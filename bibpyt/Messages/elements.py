@@ -1,4 +1,4 @@
-#@ MODIF elements Messages  DATE 22/05/2012   AUTEUR DELMAS J.DELMAS 
+#@ MODIF elements Messages  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -183,11 +183,6 @@ Risque & Conseil : mettre un léger écrouissage peut permettre de passer cette di
 
 34 : _(u"""
  élément non traité  %(k1)s
-"""),
-
-35 : _(u"""
- pas d'excentrement avec STAT_NON_LINE
- maille  : %(k1)s
 """),
 
 36 : _(u"""

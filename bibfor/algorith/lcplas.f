@@ -1,14 +1,17 @@
-        SUBROUTINE LCPLAS ( FAMI,KPG,KSP,LOI,TOLER, ITMAX, MOD,IMAT,
-     1                      NMAT, MATERD, MATERF,NR, NVI,
-     2                      TIMED, TIMEF, DEPS,  EPSD, SIGD,VIND,
-     3         SIGF, VINF, COMP,NBCOMM, CPMONO, PGL,NFS,NSG,TOUTMS,HSR,
-     4  ICOMP,IRTETI,THETA,VP,VECP,SEUIL, DEVG, DEVGII,DRDY,TAMPON,CRIT)
-        IMPLICIT   NONE
-C       ================================================================
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
+      SUBROUTINE LCPLAS ( FAMI,KPG,KSP,LOI,TOLER, ITMAX, MOD,IMAT,
+     &                    NMAT, MATERD, MATERF,NR, NVI,
+     &                    TIMED, TIMEF,DEPS,EPSD, SIGD,VIND,
+     &                    SIGF, VINF, 
+     &                    COMP,NBCOMM, CPMONO, PGL,NFS,NSG,TOUTMS,HSR,
+     &                    ICOMP,CODRET,THETA,
+     &                    VP,VECP,SEUIL, DEVG, DEVGII,
+     &                    DRDY,TAMPON,CRIT)
+      IMPLICIT   NONE
+C     ================================================================
+C          CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 18/06/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,33 +27,48 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_21
+C     ----------------------------------------------------------------
+C     INTEGRATION IMPLICITE DES COMPORTEMENTS. CALCUL DE SIGF,VINF,DSDE
+C     ----------------------------------------------------------------
+C     ARGUMENTS
+C
+C     IN FAMI    FAMILLE DE POINT DE GAUSS (RIGI,MASS,...)
+C        KPG,KSP NUMERO DU (SOUS)POINT DE GAUSS
+C        LOI    :  MODELE DE COMPORTEMENT
+C        TOLER  :  TOLERANCE DE CONVERGENCE LOCALE
+C        ITMAX  :  NOMBRE MAXI D'ITERATIONS LOCALES
+C        MOD    :  TYPE DE MODELISATION
+C        IMAT   :  ADRESSE DU MATERIAU CODE
+C        NMAT   :  DIMENSION MATER
+C        MATERD :  COEFFICIENTS MATERIAU A T
+C        MATERF :  COEFFICIENTS MATERIAU A T+DT
+C        NR     :  NB EQUATION DU SYSTEME R(DY)
+C        NVI    :  NB VARIABLES INTERNES
+C        TIMED  :  INSTANT  T
+C        TIMEF  :  INSTANT T+DT
+C        DEPS   :  INCREMENT DE DEFORMATION
+C        EPSD   :  DEFORMATION A T
+C        SIGD   :  CONTRAINTE A T
+C        VIND   :  VARIABLES INTERNES A T
+C        COMP   :  COMPOR - LOI ET TYPE DE DEFORMATION
+C        NBCOMM :  INCIDES DES COEF MATERIAU monocristal
+C        CPMONO :  NOM DES COMPORTEMENTS monocristal
+C        PGL    :  MATRICE DE PASSAGE
+C        TOUTMS :  TENSEURS D'ORIENTATION monocristal
+C        HSR    :  MATRICE D'INTERACTION monocristal
+C        ICOMP  :  COMPTEUR POUR LE REDECOUPAGE DU PAS DE TEMPS
+C        THETA  :  PARAMETRE DE LA THETA-METHODE
+C        VP     :  VALEURS PROPRES DU DEVIATEUR ELASTIQUE(HOEK-BROWN)
+C        VECP   :  VECTEURS PROPRES DU DEVIATEUR ELASTIQUE(HOEK-BROWN)
+C        TAMPON : TABLEAU DE TRAVAIL EN ENTREE(SUIVANT MODELISATION)
+C        CRIT   : CRITERES DE CONVERGENCE LOCAUX 
+C        
+C    OUT SIGF   :  CONTRAINTE A T+DT
+C        VINF   :  VARIABLES INTERNES A T+DT
+C        CODRET :  CODE RETOUR. 0=OK, 1=ECHEC
+C        DRDY   :  MATRICE JACOBIENNE
 C       ----------------------------------------------------------------
-C       INTEGRATION ELASTO-PLASTIQUE SUR DT DE Y = ( SIG , VIN )
-C       ----------------------------------------------------------------
-C       IN  LOI    :  MODELE DE COMPORTEMENT
-C           TOLER  :  TOLERANCE DE CONVERGENCE LOCALE
-C           ITMAX  :  NOMBRE MAXI D'ITERATIONS LOCALES
-C           MOD    :  TYPE DE MODELISATION
-C           IMAT   :  ADRESSE DU MATERIAU CODE
-C           NMAT   :  DIMENSION MATER
-C           MATERD :  COEFFICIENTS MATERIAU A T
-C           MATERF :  COEFFICIENTS MATERIAU A T+DT
-C           TIMED  :  INSTANT  T
-C           TIMEF  :  INSTANT T+DT
-C           EPSD   :  DEFORMATION A T
-C           SIGD   :  CONTRAINTE A T
-C           VIND   :  VARIABLES INTERNES A T
-C           NR     :  NB EQUATION DU SYSTEME R(DY)
-C           NVI    :  NB VARIABLES INTERNES
-C           VP     :  VALEURS PROPRES DU DEVIATEUR ELASTIQUE(HOEK-BROWN)
-C           VECP   : VECTEURS PROPRES DU DEVIATEUR ELASTIQUE(HOEK-BROWN)
-C           ICOMP  :  COMPTEUR POUR LE REDECOUPAGE DU PAS DE TEMPS
-C       VAR DEPS   :  INCREMENT DE DEFORMATION
-C       OUT SIGF   :  CONTRAINTE A T+DT
-C           VINF   :  VARIABLES INTERNES A T+DT
-C           IRTETI = 1:  CONTROLE DU REDECOUPAGE DU PAS DE TEMPS
-C       ----------------------------------------------------------------
-        INTEGER         ITMAX, ICOMP, IRTETI, IRTET, KPG,KSP
+        INTEGER         ITMAX, ICOMP, CODRET, IRTET, KPG,KSP
         INTEGER         IMAT, NMAT,   NVI,    NR
 
 C
@@ -73,7 +91,7 @@ C
         CHARACTER*(*)   FAMI
 C       ----------------------------------------------------------------
 C
-      IRTETI = 0
+      CODRET = 0
       DELTAT = TIMEF - TIMED
       
 C       ----------------------------------------------------------------
@@ -85,20 +103,20 @@ C       ----------------------------------------------------------------
          CALL LCROUS (FAMI,KPG,KSP, TOLER, ITMAX, IMAT, NMAT,MATERD,
      1                MATERF, NVI,   DEPS, SIGD, VIND, THETA,
      2                LOI, DELTAT,  SIGF, VINF, IRTET )
-         IF ( IRTET.GT.0 ) GOTO (1), IRTET
+         IF ( IRTET.GT.0 ) GOTO 1
 C
       ELSEIF (( LOI(1:10) .EQ. 'HOEK_BROWN'       ).OR.
      1         ( LOI(1:14) .EQ. 'HOEK_BROWN_EFF'   ))THEN
          CALL LCHOBR ( TOLER, ITMAX, MOD, NMAT, MATERF, NR, NVI,
      1                 DEPS, SIGD, VIND, SEUIL, VP,VECP,ICOMP, SIGF,
      2                 VINF, IRTET)
-         IF ( IRTET.GT.0 ) GOTO (1), IRTET
+         IF ( IRTET.GT.0 ) GOTO 1
 C
       ELSEIF ( LOI(1:6) .EQ. 'LAIGLE'   ) THEN
          CALL LCPLLG ( TOLER, ITMAX, MOD, NMAT, MATERF, NR, NVI,
      1                 DEPS, SIGD, VIND, SEUIL, ICOMP, SIGF,
      2                 VINF, DEVG, DEVGII, IRTET)
-         IF ( IRTET.GT.0 ) GOTO (1), IRTET
+         IF ( IRTET.GT.0 ) GOTO 1
 C
 C       ----------------------------------------------------------------
 C       CAS GENERAL : RESOLUTION PAR NEWTON
@@ -112,18 +130,21 @@ C       ----------------------------------------------------------------
          IF ( IRTET.GT.0 ) GOTO (1,2), IRTET
 
       ENDIF
+      
 C     CONVERGENCE OK
-      IRTETI = 0
+
+      CODRET = 0
       GOTO 9999
 C
  1    CONTINUE
+ 
 C     PB INTEGRATION ou ITMAX ATTEINT : redecoupage local puis global
-      IRTETI = 1
+      CODRET = 1
       GOTO 9999
 C
 2     CONTINUE
 C     ITMAX ATTEINT : redecoupage du pas de temps global
-      IRTETI = 2
+      CODRET = 2
 C
  9999 CONTINUE
       END

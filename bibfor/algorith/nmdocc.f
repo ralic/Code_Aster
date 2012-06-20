@@ -2,7 +2,7 @@
      &                  NOMCMP,NCMPMA,MECA,NOMCMD)
 C RESPONSABLE PROIX J-M.PROIX
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 18/06/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -184,11 +184,13 @@ C         CAS PARTICULIER DE MONOCRISTAL
           ENDIF
 C
 C         STOCKAGE DE VI SI POST_ITER='CRIT_RUPT' 
-          IF (MOCLEF(I) .EQ. 'COMP_INCR') THEN
-           CALL GETVTX(MOCLEF(I),'POST_ITER',K,IARG,1,CRIRUP,IRET)
-            IF (IRET.EQ.1) THEN
-             NBVARI=NBVARI+6
-            ENDIF
+          IF (NOMCMD(1:6) .NE.'CALC_G') THEN
+             IF (MOCLEF(I) .EQ. 'COMP_INCR') THEN
+                CALL GETVTX(MOCLEF(I),'POST_ITER',K,IARG,1,CRIRUP,IRET)
+                   IF (IRET.EQ.1) THEN
+                       NBVARI=NBVARI+6
+                   ENDIF
+             ENDIF
           ENDIF 
 
           IF (COMP(1:8).EQ.'MULTIFIB') EXIPMF=.TRUE.

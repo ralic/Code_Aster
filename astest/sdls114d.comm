@@ -1,4 +1,4 @@
-# MODIF  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES POUR UNE MODE PROPRE
 # sdls114d.para = tps_job 480 mem_job 256Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -85,7 +85,6 @@ BLOCAGE=AFFE_CHAR_MECA(MODELE=MO,
                                     DZ = 0,),);
                          
 CHAR=AFFE_CHAR_MECA(MODELE=MO,
-                    LIAISON_XFEM='OUI',
                     FORCE_FACE=_F(GROUP_MA='SR_INF',
                                   FX=-1.0E+6,
                                   FY=-5E+6,

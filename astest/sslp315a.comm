@@ -1,4 +1,4 @@
-# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE TROUEE 2D DE LARGEUR FINIE AVEC X-FEM
 # sslp315a.para = tps_job 60 mem_job 500Mo mem_aster 50 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -79,7 +79,6 @@ for i in range(0,nb_pas) :
 
    MOX[i]=MODI_MODELE_XFEM(MODELE_IN=MO[i],FISSURE=FISS[i]);
 
-   CHFEM[i]=AFFE_CHAR_MECA(MODELE=MOX[i],LIAISON_XFEM='OUI');
 
    CHMAT[i]=AFFE_MATERIAU(MAILLAGE=MAT[i],
                           MODELE=MOX[i],
@@ -96,7 +95,7 @@ for i in range(0,nb_pas) :
    UTOT[i]=MECA_STATIQUE(MODELE=MOX[i],
                       CHAM_MATER=CHMAT[i],
                       EXCIT=(_F(CHARGE=CHAR[i],),
-                             _F(CHARGE=CHFEM[i],),),
+                             ),
                       );
 
    SIF[i]=CALC_G(RESULTAT=UTOT[i],

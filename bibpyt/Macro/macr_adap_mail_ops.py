@@ -1,4 +1,4 @@
-#@ MODIF macr_adap_mail_ops Macro  DATE 11/04/2012   AUTEUR NICOLAS G.NICOLAS 
+#@ MODIF macr_adap_mail_ops Macro  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -252,8 +252,6 @@ Sortie :
       for cle in [ "PRECISION", "CRITERE" ] :
         if ( args[cle] != None ) :
           dico[cle] = args[cle]
-    if ( args["SENSIBILITE"] != None ) :
-      dico["SENSIBILITE"] = args["SENSIBILITE"]
   else :
     dico["CHAM_GD"] = args["CHAM_GD"]
   ###print "dico =", dico
@@ -326,8 +324,6 @@ Sortie :
         for cle in [ "PRECISION", "CRITERE" ] :
           if ( le_champ[cle] != None ) :
             dico[cle] = le_champ[cle]
-      if ( le_champ["SENSIBILITE"] != None ) :
-        dico["SENSIBILITE"] = le_champ["SENSIBILITE"]
     else :
       l_aux.append("CHAM_GD")
 #
@@ -586,29 +582,6 @@ Sortie :
           else :
             on_a_le_champ = 0
             break
-#       Si oui, est-ce un champ sensible ou non ?
-        if on_a_le_champ :
-          cle = "SENSIBILITE"
-          if dico.has_key(cle) :
-            if ( dico[cle] != None ) :
-              if dico_pilo.has_key(cle) :
-                if ( dico_pilo[cle] != dico[cle] ) :
-                  on_a_le_champ = 0
-                  break
-              else :
-                on_a_le_champ = 0
-                break
-#       Si oui, est-ce au meme moment ? (remarque : si rien n'est designe, c'est qu'il n'y a qu'un
-#       seul instant ... donc c'est le meme ! En revanche, on ne sait pas comparer une donnee
-#       en numero d'ordre et une donnee en instant. On croise les doigts.)
-        if on_a_le_champ :
-          for cle in [ "NUME_ORDRE", "INST" ] :
-            if dico.has_key(cle) :
-              if ( dico[cle] != None ) :
-                if dico_pilo.has_key(cle) :
-                  if ( dico_pilo[cle] != dico[cle] ) :
-                    on_a_le_champ = 0
-                    break
 #       Le champ de pilotage fait partie des champs mis a jour : on le note
 #       et on utilise le meme nom de champ MED
         if on_a_le_champ :
@@ -1014,7 +987,6 @@ def macr_adap_mail_ops ( self,
         dico["CRITERE"]      = f ; entier ; Critere de precision sur l'instant du champ
         dico["MAJ_CHAM"]     = f ; string ; Nom ASTER du champ interpole sur le nouveau maillage
         dico["NOM_CHAM_MED"] = o ; string ; Nom MED du champ
-        dico["SENSIBILITE"]  = f ; string ; Nom du parametre sensible associe
         dico["CHAM_CAT"]     = f ; string ; categorie du champ supplementaire
 
   5. Signification de INFO
@@ -1379,7 +1351,6 @@ def macr_adap_mail_ops ( self,
 #        dico["CRITERE"]      = f ; entier ; Critere de precision sur l'instant du champ
 #        dico["MAJ_CHAM"]     = f ; string ; Nom ASTER du champ interpole sur le nouveau maillage
 #        dico["NOM_CHAM_MED"] = o ; string ; Nom MED du champ
-#        dico["SENSIBILITE"]  = f ; string ; Nom du parametre sensible associe
 #        dico["CHAM_CAT"]     = f ; string ; categorie du champ supplementaire
 #
 # 4.3.1. Recherche d'un doublon eventuel sur le champ de pilotage de l'adaptation
@@ -1404,8 +1375,6 @@ def macr_adap_mail_ops ( self,
           motscsi["NOM_CMP"] = dico["COMPOSANTE"][0]
         else :
           motscsi["NOM_CMP"] = dico["COMPOSANTE"]
-      if dico.has_key("SENSIBILITE") :
-        motscsi["SENSIBILITE"] = dico["SENSIBILITE"]
 #
       motscfa = {}
       motscfa["RESU"] = _F( INFO_MAILLAGE=infomail, **motscsi )

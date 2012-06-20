@@ -1,4 +1,4 @@
-# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 18/06/2012   AUTEUR CHANSARD F.CHANSARD 
 
 # TITRE SIMPLE POUTRE VERTICALE MONTEE SUR UN RESSORT SOUMISE A UN SEISME
 # sdll147a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
@@ -472,9 +472,9 @@ TEST_RESU(RESU=(_F(RESULTAT=REPGUP,
                    NUME_ORDRE=4,
                    GROUP_NO='H',
                    NOM_CMP='DX',
-                   VALE=0.66650215509216,
+                   VALE=0.61824985176146,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='11.1.6',),),);
+                   VERSION='11.2.2',),),);
 
 TEST_RESU(RESU=(_F(RESULTAT=REPGUP,
                    NOM_CHAM='ACCE_ABSOLU',
@@ -490,9 +490,9 @@ TEST_RESU(RESU=(_F(RESULTAT=REPGUP,
                    NUME_ORDRE=4,
                    GROUP_NO='H',
                    NOM_CMP='DZ',
-                   VALE=0.61489268760658,
+                   VALE=0.56926959473828,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='11.1.6',),),);
+                   VERSION='11.2.2',),),);
 
 TEST_RESU(RESU=(_F(RESULTAT=REPGUP,
                    NOM_CHAM='ACCE_ABSOLU',
@@ -508,9 +508,9 @@ TEST_RESU(RESU=(_F(RESULTAT=REPGUP,
                    NUME_ORDRE=4,
                    GROUP_NO='H',
                    NOM_CMP='DRY',
-                   VALE=0.12203199217951,
+                   VALE=0.096304357433140,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='11.1.6',),),);
+                   VERSION='11.2.2',),),);
 
 TEST_RESU(RESU=(_F(RESULTAT=REPGUP,
                    NOM_CHAM='ACCE_ABSOLU',
@@ -757,9 +757,9 @@ TEST_RESU(RESU=(_F(RESULTAT=REPGUP,
                    NUME_ORDRE=4,
                    GROUP_NO='R',
                    NOM_CMP='DRY',
-                   VALE=1.918737445123E+07,
+                   VALE=1.9606618500589E+07,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='11.1.6',),),);
+                   VERSION='11.2.2',),),);
 
 TEST_RESU(RESU=(_F(RESULTAT=REPGUP,
                    CRITERE='ABSOLU',
@@ -836,9 +836,9 @@ TEST_RESU(RESU=(_F(RESULTAT=REPGUP,
                    NUME_ORDRE=4,
                    GROUP_NO='O',
                    NOM_CMP='DX',
-                   VALE=7.9546079370747E+05,
+                   VALE=9.4449003235868E+05,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='11.1.6',),),);
+                   VERSION='11.2.2',),),);
 
 TEST_RESU(RESU=(_F(RESULTAT=REPGUP,
                    CRITERE='ABSOLU',
@@ -855,8 +855,8 @@ TEST_RESU(RESU=(_F(RESULTAT=REPGUP,
                    NUME_ORDRE=4,
                    GROUP_NO='O',
                    NOM_CMP='DZ',
-                   VALE=1.4820469624222E+06,
+                   VALE=1.5182762043245E+06,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='11.1.6',),),);
+                   VERSION='11.2.2',),),);
 
 FIN()

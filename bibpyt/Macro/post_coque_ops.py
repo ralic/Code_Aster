@@ -1,4 +1,4 @@
-#@ MODIF post_coque_ops Macro  DATE 26/03/2012   AUTEUR DESROCHE X.DESROCHES 
+#@ MODIF post_coque_ops Macro  DATE 18/06/2012   AUTEUR DELMAS J.DELMAS 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,12 +33,12 @@ def post_coque_ops(self,RESULTAT,COOR_POINT,CHAM,NUME_ORDRE,INST,
     ier=0
 
     # On importe les definitions des commandes a utiliser dans la macro
-    MACR_LIGN_COUPE  =self.get_cmd('MACR_LIGN_COUPE')
-    CREA_CHAMP      =self.get_cmd('CREA_CHAMP')
-    CREA_TABLE      =self.get_cmd('CREA_TABLE')
-    IMPR_TABLE      =self.get_cmd('IMPR_TABLE')
-    CALC_TABLE      =self.get_cmd('CALC_TABLE')
-    CALC_ELEM       =self.get_cmd('CALC_ELEM')
+    MACR_LIGN_COUPE  = self.get_cmd('MACR_LIGN_COUPE')
+    CREA_CHAMP       = self.get_cmd('CREA_CHAMP')
+    CREA_TABLE       = self.get_cmd('CREA_TABLE')
+    IMPR_TABLE       = self.get_cmd('IMPR_TABLE')
+    CALC_TABLE       = self.get_cmd('CALC_TABLE')
+    CALC_CHAMP       = self.get_cmd('CALC_CHAMP')
 
 
     # La macro compte pour 1 dans la numerotation des commandes
@@ -69,15 +69,15 @@ def post_coque_ops(self,RESULTAT,COOR_POINT,CHAM,NUME_ORDRE,INST,
       if CHAM=='EFFORT':
         if not NUME_ORDRE in dico['EFGE_ELNO'] :
           if NUME_ORDRE in dico['DEPL'] :
-            CALC_ELEM(RESULTAT=RESULTAT,reuse=RESULTAT,OPTION='EFGE_ELNO',
-                      NUME_ORDRE=NUME_ORDRE)
+            CALC_CHAMP(RESULTAT=RESULTAT,reuse=RESULTAT,CONTRAINTE='EFGE_ELNO',
+                       NUME_ORDRE=NUME_ORDRE)
           else :
             UTMESS('F','POST0_19',vali=NUME_ORDRE)
       elif CHAM=='DEFORMATION':
         if not NUME_ORDRE in dico['DEGE_ELNO'] :
           if NUME_ORDRE in dico['DEPL'] :
-            CALC_ELEM(RESULTAT=RESULTAT,reuse=RESULTAT,OPTION='DEGE_ELNO',
-                      NUME_ORDRE=NUME_ORDRE)
+            CALC_CHAMP(RESULTAT=RESULTAT,reuse=RESULTAT,DEFORMATION='DEGE_ELNO',
+                       NUME_ORDRE=NUME_ORDRE)
           else :
             UTMESS('F','POST0_19',vali=NUME_ORDRE)
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 16/04/2012   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 20/06/2012   AUTEUR GENIAUT S.GENIAUT 
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 # sslv110f.para = tps_job 450 mem_job 1200Mo mem_aster 40 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -22,7 +22,7 @@
 
 DEBUT(CODE=_F( NOM = 'SSLV110F',NIV_PUB_WEB='INTERNET'),
       DEBUG=_F(SDVERI='OUI'),
-      IGNORE_ALARM=('CALCULEL2_63','MODELISA3_31','CALCULEL5_7','CALCULEL4_9'))
+      IGNORE_ALARM=('CALCULEL2_63','MODELISA3_31'))
 
 # explication des alarmes ignorees :
 # <CALCULEL2_63> : DANS UN MODELE, IL EXISTE DES ELEMENTS DE TYPE "BORD" QUI N'ONT PAS DE VOISIN AVEC RIGIDITE
@@ -30,7 +30,6 @@ DEBUT(CODE=_F( NOM = 'SSLV110F',NIV_PUB_WEB='INTERNET'),
 # <MODELISA3_31> : CERTAINS NOEUDS DES MAILLES SUR LESQUELLES ON IMPOSE DNOR=0 SONT SITUES A L'ANGLE DE LA
 #                  STURCTURES, LEUR VECTEUR NORMAL MOYEN PREND DONC EN COMPTE DES MAILLES SITUEES A 90 DEGRES
 #                  C'EST TOUT A FAIT NORMAL.
-# <CALCULEL5_7> ET <CALCULEL4_9> : ALARMES DANS POST_K1_K2_K3 DU A LA PROJECTION (fiche 18070)
 
 
 # para de la fissure
@@ -39,7 +38,7 @@ a=25.
 b= 6.
 
 
-# maillage initial : 'grossier' / 'raffine'
+# maillage initial : 'grossier' / 'deja_raffine'
 typ_ma ='grossier'
 
 
@@ -69,10 +68,11 @@ if typ_ma == 'grossier' :
    r_raff = 5*h
 
    # initialisation
-   MA    = [None]*(nb_raff+1)
-   MO    = [None]*nb_raff
-   CHERR = [None]*nb_raff
-   FISS  = [None]*nb_raff 
+   nb_iter = nb_raff+1
+   MA    = [None]*(nb_iter+1)
+   MO    = [None]*nb_iter
+   CHERR = [None]*nb_iter
+   FISS  = [None]*nb_iter 
 
    i_raff=0   
    MA[i_raff]=LIRE_MAILLAGE(FORMAT='MED')
@@ -82,7 +82,7 @@ if typ_ma == 'grossier' :
                             ORIE_PEAU_3D=_F(GROUP_MA=('M_HAUT','M_BAS','SYM_X','SYM_Y')))
 
    # boucle de raffinements
-   for i_raff in range(nb_raff) :
+   for i_raff in range(nb_iter) :
 
       MO[i_raff]=AFFE_MODELE(MAILLAGE=MA[i_raff],
                              AFFE=_F(TOUT='OUI',
@@ -100,29 +100,27 @@ if typ_ma == 'grossier' :
                                   )
 
       # evaluation de l'erreur       
-      CHERR[i_raff]=RAFF_XFEM(FISSURE=FISS[i_raff])
+      CHERR[i_raff]=RAFF_XFEM(FISSURE=FISS[i_raff],
+                              TYPE='ZONE',
+                              RAYON=r_raff)
 
       # definition du type du maillage n+1
       MA[i_raff+1]=CO('MA_%d' % (i_raff+1))
 
-      # valeur du critere de raffinement
-      # le coef 1.1 permet d'amorcer le raff des le debut
-      crit = -max(r_raff , 1.1*h0/(2.**i_raff) )
-
       MACR_ADAP_MAIL(ADAPTATION         = 'RAFFINEMENT',
                      CHAM_GD            = CHERR[i_raff],
-                     CRIT_RAFF_ABS      = crit,
-                     USAGE_CMP          = 'RELATIF', 
+                     CRIT_RAFF_ABS      = 0.5,
+                     DIAM_MIN           = hc,
                      MAILLAGE_N         = MA[i_raff],
                      MAILLAGE_NP1       = MA[i_raff+1],
                      ELEMENTS_NON_HOMARD= 'IGNORER')
 
-   assert(nb_raff == i_raff+1)
+   assert(nb_iter == i_raff+1)
 
    # impression du dernier maillage
-   IMPR_RESU(FORMAT='MED',UNITE=81,RESU=_F(MAILLAGE=MA[nb_raff]))
+   IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(MAILLAGE=MA[nb_raff]))
 
-elif typ_ma == 'raffine' :
+elif typ_ma == 'deja_raffine' :
 
    nb_raff=0
    h = 0.3
@@ -138,7 +136,7 @@ MAT=DEFI_MATERIAU(ELAS=_F(E=210000.,NU=0.3))
 # attention, il est imperatif de ne definir des elements finis que sur ces groupes,
 # car le maillage contient des mailles de faces situees dans le plan median de la structure
 # sur lesquelles il ne faut surtout par creer d'elements (de bords...)                            
-MO_SAIN=AFFE_MODELE(MAILLAGE=MA[nb_raff],
+MO_SAIN=AFFE_MODELE(MAILLAGE=MA[nb_iter],
                      AFFE=_F(GROUP_MA=('VOL','M_HAUT','M_BAS','SYM_X','SYM_Y'),
                              PHENOMENE='MECANIQUE',
                              MODELISATION='3D'))
@@ -158,7 +156,7 @@ FISS=DEFI_FISS_XFEM(MODELE=MO_SAIN,
 MODX=MODI_MODELE_XFEM(MODELE_IN=MO_SAIN,
                       FISSURE=FISS)
 
-CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MA[nb_raff],
+CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MA[nb_iter],
                        MODELE=MODX,
                        AFFE=_F(TOUT='OUI',
                                MATER=MAT))

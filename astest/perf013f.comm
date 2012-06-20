@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 20/06/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE MODES PROPRES D'UNE PLAQUE CARRE ENCASTREE SUR 2 BORDS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,7 +25,7 @@
 # UTILISANT LE SOLVEUR MUMPS.
 # VARIANTE SEQUENTIELLE.
 # ICI ON PRIVILEGIE LA MEMOIRE SUR LE TEMPS: D'OU LE CHOIX RENUM=METIS +
-# OUT_OF_CORE='OUI' + LIBERE_MEMOIRE='OUI'.
+# GESTION_MEMOIRE='OUT_OF_CORE'.
 # ICI L'OPTION MATR_DISTRIBUEE N'A PAS LIEU D'ETRE. 
 #---------------------------------------------------------------------------
 
@@ -67,7 +67,7 @@ MODES=MODE_ITER_SIMULT(INFO=2,
                                    ),
                       TYPE_RESU='DYNAMIQUE',
                       SOLVEUR=_F(METHODE='MUMPS',RENUM='QAMD',
-                      OUT_OF_CORE='OUI',LIBERE_MEMOIRE='OUI'),
+                      GESTION_MEMOIRE='OUT_OF_CORE'),
                       METHODE='SORENSEN',
                       MATR_B=MASS,
                       MATR_A=RIGI,

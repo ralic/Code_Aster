@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/06/2012   AUTEUR GENIAUT S.GENIAUT 
 # TITRE CALCUL K_I EN X-FEM AXI-SYMMETRIQUE
 # sslv134i.para = tps_job 150 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,12 +20,8 @@
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='SSLV134I', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),
-      IGNORE_ALARM=('CALCULEL2_63','CALCULEL4_9'),
-      );
-
-# <CALCULEL4_9> : POST_K1_K2_K3 / MACR_LIGN_COUP emet cette alarme pour
-# signaler une imprecision pour les ddls E1X, E1Y, E1Z, ..., E4Z
-# mais ce n'est pas grave car ces ddls ne servent pas au calcul de K1,K2,K3
+      IGNORE_ALARM=('CALCULEL2_63')
+      )
 
 # <CALCULEL2_63> : dans un modele, il existe des elements de type "bord" qui n'ont pas de voisin avec rigidite
 #  le modele provoquant ces alarmes ne sert qu'a la visualisation
@@ -67,7 +63,6 @@ CHAR=AFFE_CHAR_MECA(MODELE=MODEX,
                     DDL_IMPO=(  _F(GROUP_NO='C',
                                  DY=0.0,),
                                  ),
-                    LIAISON_XFEM='OUI',
                     FORCE_CONTOUR=(
                                 _F(  GROUP_MA = 'haut',  FY = 1.E6,),
                                 _F(  GROUP_MA = 'bas', FY = -1.E6,),),
@@ -166,40 +161,28 @@ TEST_TABLE(       TABLE=TAB,
 VAL_ROT = 15.708
 
 CHAR_ROT= AFFE_CHAR_MECA(MODELE=MODEX,
-                        DDL_IMPO=(  _F(GROUP_NO='C',
-                                 DY=0.0,),
-                                 ),
-
-                        LIAISON_XFEM='OUI',
-
-                        FORCE_CONTOUR=(
-                                _F(  GROUP_MA = 'haut',  FY = 1.E6,),
-                                _F(  GROUP_MA = 'bas', FY = -1.E6,),
-                                ),
-                        ROTATION=_F(VITESSE = VAL_ROT,
-                                        AXE = (0.,1.,0.,),
+                         DDL_IMPO=_F(GROUP_NO='C',DY=0.0,),
+                         FORCE_CONTOUR=(_F(GROUP_MA = 'haut',  FY =  1.E6,),
+                                        _F(GROUP_MA = 'bas',   FY = -1.E6,),),
+                         ROTATION=_F(VITESSE = VAL_ROT,
+                                     AXE = (0.,1.,0.,),
                                      CENTRE =(0.,0.,0.,),
-                                  ),
-                    );
-
+                                     ),
+                         )
 
 RESU_ROT=MECA_STATIQUE(MODELE=MODEX,
-                   CHAM_MATER=MATE,
-                   EXCIT=(_F(CHARGE=CHAR_ROT),
-                            ),
-                   INFO=1,
-                   );
+                       CHAM_MATER=MATE,
+                       EXCIT=_F(CHARGE=CHAR_ROT))
 
-MA_XROT=POST_MAIL_XFEM(MODELE        = MODEX);
+MA_XROT=POST_MAIL_XFEM(MODELE=MODEX)
 
 MOD_XROT=AFFE_MODELE(MAILLAGE=MA_XROT,
                      AFFE=_F( GROUP_MA=('FACE'),
                               PHENOMENE='MECANIQUE',
                               MODELISATION='AXIS',),);
 
-RES_XROT=POST_CHAM_XFEM(MODELE_VISU   = MOD_XROT,
-                        RESULTAT      = RESU_ROT,
-                        );
+RES_XROT=POST_CHAM_XFEM(MODELE_VISU = MOD_XROT,
+                        RESULTAT    = RESU_ROT)
 
 #IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RES_XROT));
 

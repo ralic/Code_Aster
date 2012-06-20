@@ -1,4 +1,4 @@
-# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE EPROUVETTE AVEC FISSURE CENTRALE XFEM
 # ssnv192a.para = tps_job 130 mem_job 512Mo mem_aster 50 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -219,9 +219,6 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
                          INFO=1,);
 
-CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
-                      LIAISON_XFEM='OUI',
-                      INFO=1,);
 
 #----------------------------------------------
 #                   MATERIAU
@@ -302,7 +299,7 @@ elif fonction == 1 :
 
 RESU1=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMA1,
-                   EXCIT=(_F(CHARGE=CHXFEM),
+                   EXCIT=(
                           _F(CHARGE=CHRIGI),
                           _F(CHARGE=CHPRES),
                           ),

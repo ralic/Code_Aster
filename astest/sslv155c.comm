@@ -1,4 +1,4 @@
-# MODIF  DATE 20/03/2012   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 20/06/2012   AUTEUR GENIAUT S.GENIAUT 
 # TITRE  FISSURE LENTILLE EN TRACTION
 # sslv155c.para = tps_job 300 mem_job 1024Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -49,7 +49,7 @@ a = R * sin(alpha)
 h0 = 1.
 
 # taille cible des mailles apres raffinement 
-hc = 0.06
+hc = 0.025
 
 # nombre de niveau de raffinements
 # attention, en python log = ln (logarithme neperien)
@@ -61,19 +61,23 @@ print '***INFO*** : nb_raff = ',nb_raff
 h = h0/(2.**nb_raff)
 print '***INFO*** : h = ',h
 
-# on realise en fait une iteration de plus, car Homard a parfois du mal...
 nb_iter = nb_raff+1
 
 # rayon du disque de raffinement
-r_raff = 6*h
+r_raff = 5*h
+
+# couronnes d'integration 
+Rsup = 5*h
+Rinf = 2*h
 
 # definition des formules utiles pour le calcul des level sets
 Rp = R * tan(alpha)
 Yh = R - R/cos(alpha)
-LN = FORMULE(NOM_PARA=('X','Y','Z'),VALE='sqrt(X**2+(Y-R)**2+Z**2)-R')
+LN = FORMULE(NOM_PARA=('X','Y','Z'),VALE='-sqrt(X**2+(Y-R)**2+Z**2)+R')
 LT = FORMULE(NOM_PARA=('X','Y','Z'),VALE='sqrt(X**2+(Y-Yh)**2+Z**2)-Rp')
 
 # initialisation
+nb_iter = nb_raff+1
 MA    = [None]*(nb_iter+1)
 MO    = [None]*nb_iter
 CHERR = [None]*nb_iter
@@ -99,19 +103,17 @@ for i_raff in range(nb_iter) :
                                )
       
    # evaluation de l'erreur       
-   CHERR[i_raff]=RAFF_XFEM(FISSURE=FISS[i_raff])
+   CHERR[i_raff]=RAFF_XFEM(FISSURE=FISS[i_raff],
+                           TYPE='ZONE',
+                           RAYON=r_raff)
    
    # definition du type du maillage n+1
    MA[i_raff+1]=CO('MA_%d' % (i_raff+1))
-   
-   # valeur du critere de raffinement
-   crit = -max(r_raff , h0/(2.**i_raff) )
-   
+      
    MACR_ADAP_MAIL(ADAPTATION         = 'RAFFINEMENT',
-                  NIVE_MAX           = nb_raff,
                   CHAM_GD            = CHERR[i_raff],
-                  CRIT_RAFF_ABS      = crit,
-                  USAGE_CMP          = 'RELATIF', 
+                  CRIT_RAFF_ABS      = 0.5,
+                  DIAM_MIN           = hc,
                   MAILLAGE_N         = MA[i_raff],
                   MAILLAGE_NP1       = MA[i_raff+1],
                   ELEMENTS_NON_HOMARD= 'IGNORER')
@@ -157,14 +159,9 @@ CHAR=AFFE_CHAR_MECA(MODELE=MODX,
                     # traction :
                     PRES_REP=_F(GROUP_MA=('SUP','INF','EXT'),PRES=-sig))
 
-CHXFEM=AFFE_CHAR_MECA(MODELE=MODX,
-                      LIAISON_XFEM='OUI')
-
 RESU=MECA_STATIQUE(MODELE=MODX,
                    CHAM_MATER=MATE,
-                   EXCIT=(_F(CHARGE=CHAR,),
-                          _F(CHARGE=CHXFEM)),
-                   INST=1.,)
+                   EXCIT=_F(CHARGE=CHAR))
 
 # visualisation
 MA_VISU=POST_MAIL_XFEM(MODELE=MODX)
@@ -177,20 +174,15 @@ MO_VISU=AFFE_MODELE(MAILLAGE=MA_VISU,
 RE_VISU=POST_CHAM_XFEM(MODELE_VISU=MO_VISU,
                        RESULTAT=RESU)
 
-IMPR_RESU(FORMAT='MED',UNITE=81,RESU=_F(RESULTAT=RE_VISU))
+IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RE_VISU))
 
 # post-traitement en mecanique de la rupture
 CGX=CALC_G(THETA=_F(FISSURE=FISSX,
                     NB_POINT_FOND=30,
-                    R_INF=2*h,
-                    R_SUP=5*h,),
+                    R_INF=Rinf,
+                    R_SUP=Rsup,),
            RESULTAT=RESU,
-           INST=1.,
-           OPTION='CALC_K_G',
-           LISSAGE=_F(LISSAGE_THETA='LEGENDRE',
-                      DEGRE=5,
-                      LISSAGE_G='LEGENDRE'),
-          )
+           OPTION='CALC_K_G')
 
 IMPR_TABLE(TABLE=CGX)
 
@@ -199,14 +191,12 @@ PK=POST_K1_K2_K3(MODELISATION='3D',
                  NB_POINT_FOND=30,
                  MATER=ACIER,
                  RESULTAT=RESU,
-                 INST=1.,
-                 ABSC_CURV_MAXI=4*h)
+                 ABSC_CURV_MAXI=Rsup)
 
 IMPR_TABLE(TABLE=PK)
 
 K1ref = 0.877*(2/pi)*sig*sqrt(pi*a)
 K2ref = 0.235*(2/pi)*sig*sqrt(pi*a)
-K3ref = 0.
 
 # test de la commande CALC_G
 #---------------------------
@@ -215,7 +205,7 @@ TEST_TABLE(TABLE=CGX,
            TYPE_TEST='MAX',
            NOM_PARA='K1',
            VALE=K1ref,
-           PRECISION=0.08,
+           PRECISION=0.05,
            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(TABLE=CGX,
@@ -228,32 +218,17 @@ TEST_TABLE(TABLE=CGX,
 TEST_TABLE(TABLE=CGX,
            TYPE_TEST='MAX',
            NOM_PARA='K2',
-           VALE=-K2ref,
-           PRECISION=0.06,
+           VALE=K2ref,
+           PRECISION=0.15,
            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(TABLE=CGX,
            TYPE_TEST='MIN',
            NOM_PARA='K2',
-           VALE=-K2ref,
-           PRECISION=0.15,
+           VALE=K2ref,
+           PRECISION=0.05,
            REFERENCE='ANALYTIQUE')
 
-# TEST_TABLE(TABLE=CGX,
-#            TYPE_TEST='MAX',
-#            NOM_PARA='K3',
-#            VALE=K3ref,
-#            PRECISION=K1ref/1000.,
-#            CRITERE='ABSOLU',
-#            REFERENCE='ANALYTIQUE')
-# 
-# TEST_TABLE(TABLE=CGX,
-#            TYPE_TEST='MIN',
-#            NOM_PARA='K3',
-#            VALE=K3ref,
-#            PRECISION=K1ref/1000.,
-#            CRITERE='ABSOLU',
-#            REFERENCE='ANALYTIQUE')
 
 # test de la commande POST_K1_K2_K3
 #-----------------------------------
@@ -262,7 +237,7 @@ TEST_TABLE(TABLE=PK,
            TYPE_TEST='MAX',
            NOM_PARA='K1',
            VALE=K1ref,
-           PRECISION=0.10,
+           PRECISION=0.02,
            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(TABLE=PK,
@@ -275,31 +250,17 @@ TEST_TABLE(TABLE=PK,
 TEST_TABLE(TABLE=PK,
            TYPE_TEST='MAX',
            NOM_PARA='K2',
-           VALE=-K2ref,
-           PRECISION=0.02,
+           VALE=K2ref,
+           PRECISION=0.14,
            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(TABLE=PK,
            TYPE_TEST='MIN',
            NOM_PARA='K2',
-           VALE=-K2ref,
-           PRECISION=0.20,
+           VALE=K2ref,
+           PRECISION=0.02,
            REFERENCE='ANALYTIQUE')
 
-# TEST_TABLE(TABLE=PK,
-#            TYPE_TEST='MAX',
-#            NOM_PARA='K3',
-#            VALE=K3ref,
-#            PRECISION=K1ref/1000.,
-#            CRITERE='ABSOLU',
-#            REFERENCE='ANALYTIQUE')
-# 
-# TEST_TABLE(TABLE=PK,
-#            TYPE_TEST='MIN',
-#            NOM_PARA='K3',
-#            VALE=K3ref,
-#            PRECISION=K1ref/1000.,
-#            CRITERE='ABSOLU',
-#            REFERENCE='ANALYTIQUE')
+
                               
 FIN()

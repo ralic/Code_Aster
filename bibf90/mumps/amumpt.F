@@ -1,11 +1,11 @@
 
       SUBROUTINE  AMUMPT(OPTION,KMONIT,TEMPS,RANG,NBPROC,KXMPS,
-     &                   LQUALI,RDESQ,TYPE,IETDEB,IETRAT,RCTDEB,LDIST)
+     &                   LQUALI,TYPE,IETDEB,IETRAT,RCTDEB,LDIST)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF AMUMPT MUMPS  DATE 29/03/2011   AUTEUR BOITEAU O.BOITEAU 
+!& MODIF AMUMPT MUMPS  DATE 20/06/2012   AUTEUR BOITEAU O.BOITEAU 
 ! ================================================================== 
-! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG 
+! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      
 ! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     
@@ -27,10 +27,9 @@ C IN  OPTION :   IN   : OPTION D'UTILISATION.
 C IN/OUT KMONIT: K24  : VECTEUR DE NOMS DES OBJ JEVEUX
 C IN/OUT TEMPS : R8   : VECTEUR POUR UTTCPU
 C IN     RANG  : IN   : RANG DU PROCESSEUR
-C IN     NBPROC: IN   : NBRE DE PROCESEURS
+C IN     NBPROC: IN   : NBRE DE PROCESSEURS
 C IN  KXMPS  :   IN   : INDICE DE L'INSTANCE MUMPS DANS DMPS
 C IN  LQUALI :  LOG   : LOGICAL EN CAS DE CRITERE DE QUALITE
-C IN  RDESQ  :  R8    : PARAMETRE POUR LE DESEQUILIBRAGE MAX
 C IN  TYPE   :   K1   : TYPE DU POINTEUR R OU C
 C IN  LDIST  :  LOG   : LOGICAL MUMPS DISTRIBUE OR NOT
 C---------------------------------------------------------------
@@ -39,7 +38,7 @@ C---------------------------------------------------------------
       INTEGER      OPTION,RANG,NBPROC,KXMPS,IETDEB,IETRAT
       CHARACTER*1  TYPE
       CHARACTER*24 KMONIT(12)
-      REAL*8       TEMPS(6),RDESQ,RCTDEB
+      REAL*8       TEMPS(6),RCTDEB
       LOGICAL      LQUALI,LDIST
 
 #ifdef _HAVE_MUMPS
@@ -50,6 +49,7 @@ C============================================================
       INCLUDE 'cmumps_struc.h'
       INCLUDE 'dmumps_struc.h'
       INCLUDE 'zmumps_struc.h'
+      INCLUDE 'jeveux.h'
 C============================================================
       INTEGER    NMXINS
       PARAMETER (NMXINS=5)
@@ -78,22 +78,6 @@ C============================================================
       COMMON /MUMPSZ/ ZMPS
       COMMON /MUMPSH/ NONUS,NOMATS,NOSOLS,ETAMS,ROUCS,PRECS
       
-C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
-      INTEGER ZI
-      COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
-      COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
-      COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFNIV(IFM,NIV)
       
@@ -116,7 +100,7 @@ C --- DE MUMPS: DMUMPS_STRUC OU ZMUMPS_STRUC
         RINFOG(7)=SMPSK%RINFOG(7)
         RINFOG(9)=SMPSK%RINFOG(9)
         RINFOG(10)=SMPSK%RINFOG(10)
-        NVERS(1:12)='SMUMPS '//SMPSK%VERSION_NUMBER
+        NVERS(1:15)='SMUMPS '//SMPSK%VERSION_NUMBER
       ELSE IF (TYPE.EQ.'C') THEN
         CMPSK=>CMPS(KXMPS)
         N=CMPSK%N
@@ -127,7 +111,7 @@ C --- DE MUMPS: DMUMPS_STRUC OU ZMUMPS_STRUC
         RINFOG(7)=CMPSK%RINFOG(7)
         RINFOG(9)=CMPSK%RINFOG(9)
         RINFOG(10)=CMPSK%RINFOG(10)
-        NVERS(1:12)='CMUMPS '//CMPSK%VERSION_NUMBER
+        NVERS(1:15)='CMUMPS '//CMPSK%VERSION_NUMBER
       ELSE IF (TYPE.EQ.'D') THEN
         DMPSK=>DMPS(KXMPS)
         N=DMPSK%N
@@ -138,7 +122,7 @@ C --- DE MUMPS: DMUMPS_STRUC OU ZMUMPS_STRUC
         RINFOG(7)=DMPSK%RINFOG(7)
         RINFOG(9)=DMPSK%RINFOG(9)
         RINFOG(10)=DMPSK%RINFOG(10)
-        NVERS(1:12)='DMUMPS '//DMPSK%VERSION_NUMBER
+        NVERS(1:15)='DMUMPS '//DMPSK%VERSION_NUMBER
       ELSE IF (TYPE.EQ.'Z') THEN
         ZMPSK=>ZMPS(KXMPS)
         N=ZMPSK%N
@@ -149,7 +133,7 @@ C --- DE MUMPS: DMUMPS_STRUC OU ZMUMPS_STRUC
         RINFOG(7)=ZMPSK%RINFOG(7)
         RINFOG(9)=ZMPSK%RINFOG(9)
         RINFOG(10)=ZMPSK%RINFOG(10)
-        NVERS(1:12)='ZMUMPS '//ZMPSK%VERSION_NUMBER
+        NVERS(1:15)='ZMUMPS '//ZMPSK%VERSION_NUMBER
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF
@@ -205,7 +189,7 @@ C --    ON NE FAIT RIEN DE PLUS !
           CALL SYSTEM_CLOCK(IETFIN)
           RETFIN=REAL(IETFIN-IETDEB)/REAL(IETRAT)
           CALL CPU_TIME(RCTFIN)
-          WRITE(IFM,*)'REMPLISSAGE MATRICE + 2*JJLDYN '
+          WRITE(IFM,*)'REMPLISSAGE MATRICE '
      &          //'TEMPS CPU/ELAPSED ',RCTFIN-RCTDEB,RETFIN
           CALL SYSTEM_CLOCK(IETDEB,IETRAT,IETMAX)
           CALL CPU_TIME(RCTDEB)
@@ -301,7 +285,7 @@ C -- AFFICHAGE
             ELSE
               WRITE(IFM,*)' CALCUL MUMPS CENTRALISE'
             ENDIF
-            WRITE(IFM,*)'<MONITORING '//NVERS(1:12)//' >'
+            WRITE(IFM,*)'<MONITORING '//NVERS(1:15)//' >'
             WRITE(IFM,'(A19,I9)')' TAILLE DU SYSTEME ',N
             IF (LQUALI) THEN
               WRITE(IFM,'(A28,1PD11.4,1PD11.4)')'CONDITIONNEMENT'//

@@ -1,9 +1,8 @@
-      SUBROUTINE VECHMX(NOMO  ,TYPCAL,LISCHA,ICHAR ,TYPESE,
-     &                  NOMCHS,NBCH  ,NOMLIS,NBIN  ,LPAIN ,
-     &                  LCHIN ,LASTIN,VECELE)
+      SUBROUTINE VECHMX(NOMO  ,LISCHA,ICHAR ,NBCH  ,NOMLIS,
+     &                  NBIN  ,LPAIN ,LCHIN ,LASTIN,VECELE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -29,9 +28,7 @@ C
       CHARACTER*19  LISCHA
       CHARACTER*24  NOMLIS
       INTEGER       ICHAR,NBCH
-      CHARACTER*8   NOMO,NOMCHS
-      CHARACTER*4   TYPCAL
-      INTEGER       TYPESE
+      CHARACTER*8   NOMO
       CHARACTER*19  VECELE
 C
 C ----------------------------------------------------------------------
@@ -45,15 +42,8 @@ C ----------------------------------------------------------------------
 C
 C
 C IN  NOMO   : NOM DU MODELE
-C IN  TYPCAL : TYPE DU CALCUL :
-C               'MECA', POUR LA RESOLUTION DE LA MECANIQUE,
-C               'DLAG', POUR LE CALCUL DE LA DERIVEE LAGRANGIENNE
 C IN  LISCHA : SD LISTE DES CHARGES
 C IN  ICHAR  : INDICE DE LA CHARGE
-C IN  TYPESE : TYPE DE SENSIBILITE
-C               0 : CALCUL STANDARD, NON DERIVE
-C               SINON : DERIVE (VOIR METYSE)
-C IN  NOMCHS : NOM DE LA CHARGE SENSIBLE
 C IN  NOMLIS : LISTE DES INDEX DES CHARGES
 C IN  NBCH   : LONGUEUR DE NOMLIS
 C IN  NBIN   : NOMBRE MAXI DE CHAMPS D'ENTREE
@@ -62,8 +52,7 @@ C IN  LCHIN  : LISTE DES CHAMPS IN
 C IN  LASTIN : NOMBRE EFFECTIF DE CHAMPS IN
 C OUT VECELE : VECT_ELEM RESULTAT
 C
-C
-C
+C ----------------------------------------------------------------------
 C
       INTEGER      NBOUT
       PARAMETER    (NBOUT=1)
@@ -71,14 +60,13 @@ C
       CHARACTER*19 LCHOUT(NBOUT)
 C
       INTEGER      JLISCI,ICH,IBID
-      INTEGER      IRET,IAUX
+      INTEGER      IRET
       INTEGER      INDXCH
       CHARACTER*16 OPTION
       CHARACTER*8  PARAIN,PARAOU,NEWNOM
-      INTEGER      JNOLI,NBNOLI
-      CHARACTER*8  K8BID,TYPECH
-      CHARACTER*19 CARTE,CARTES
-      CHARACTER*19 LIGRCS,LIGCAL
+      CHARACTER*8  TYPECH
+      CHARACTER*19 CARTE
+      CHARACTER*19 LIGCAL
       CHARACTER*13 PREFOB
 C
 C ----------------------------------------------------------------------
@@ -113,37 +101,8 @@ C
         INDXCH = ZI(JLISCI-1+ICH)
         CALL LISOPT(PREFOB,NOMO  ,TYPECH,INDXCH,OPTION,
      &              PARAIN,PARAOU,CARTE ,LIGCAL)
-C
-C ----- CARTE SENSIBLE
-C
-        CARTES      = CARTE
-        CARTES(1:8) = NOMCHS
         CALL JEEXIN(CARTE(1:19)//'.DESC',IRET)
         IF (IRET.NE.0) THEN
-C
-C ------- SENSIBILITE -> ON UTILISE LIGCAL
-C
-          IF (TYPESE.EQ.5) THEN
-            CALL JELIRA(CARTES(1:19)//'.NOLI','LONMAX',NBNOLI,
-     &                  K8BID)
-            CALL JEVEUO(CARTES(1:19)//'.NOLI','E',JNOLI)
-            LIGRCS = ZK24(JNOLI)(1:19)
-            DO 20 IAUX = 1,NBNOLI
-              ZK24(JNOLI-1+IAUX) = LIGCAL
-   20       CONTINUE
-          ENDIF
-C
-C ------- SENSIBILITE -> ON CHANGE L'OPTION
-C
-          IF (TYPCAL.EQ.'DLAG') THEN
-            OPTION(6:9) = 'DLAG'
-          ENDIF
-C
-C ------- SENSIBILITE -> ON CHANGE LA CARTE IN
-C
-          IF (TYPESE.EQ.5) THEN
-            CARTE(1:8) = NOMCHS
-          ENDIF
 C
 C ------- CARTE D'ENTREE
 C
@@ -167,14 +126,6 @@ C
           CALL EXISD('CHAMP_GD',LCHOUT(1),IRET)
           CALL ASSERT(IRET.GT.0)
           CALL REAJRE(VECELE,LCHOUT(1),'V')
-C
-C ------- SENSIBILITE -> ON REMET LIGRCS
-C
-          IF (TYPESE.EQ.5) THEN
-            DO 30 IAUX = 1,NBNOLI
-              ZK24(JNOLI-1+IAUX) = LIGRCS
-   30       CONTINUE
-          ENDIF
         ENDIF
    70 CONTINUE
 C

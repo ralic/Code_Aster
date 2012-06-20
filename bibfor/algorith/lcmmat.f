@@ -3,7 +3,7 @@
      &   HSR,NFS,NSG,TOUTMS,VIND,IMPEXP)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 18/06/2012   AUTEUR PROIX J-M.PROIX 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C TOLE CRP_21 CRS_1404
 C ======================================================================
@@ -58,14 +58,13 @@ C           TOUTMS : TOUS LES TENSEURS D'ORIENTATION POUR TOUS LES
 C                    SYSTEMES DE GLISSEMENT
 C           IMPEXP : 0 IMPLICITE, 1 EXPLICITE
 C       ----------------------------------------------------------------
-C     ----------------------------------------------------------------
       INCLUDE 'jeveux.h'
       INTEGER  NMAT, NDT , NDI  , NR , NVI,NBCOMM(NMAT,3),NBVAL,NVINI
       INTEGER  KPG,KSP,IROTA, IMPEXP,NFS,NSG
       REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2)
       REAL*8          HOOK(6,6)
       REAL*8          REPERE(7),XYZ(3),KOOH(6,6),Q(3,3)
-      REAL*8          EPSI,R8PREM,ANGMAS(3),PGL(3,3),R8VIDE,HOOKF(6,6)
+      REAL*8          EPSI,ANGMAS(3),PGL(3,3),R8VIDE,HOOKF(6,6)
       REAL*8          VALRES(NMAT),MS(6),NG(3), LG(3),VIND(*)
       REAL*8          HSR(NSG,NSG),TOUTMS(NFS,NSG,6)
       CHARACTER*8     MOD, NOMC(14)
@@ -75,7 +74,7 @@ C     ----------------------------------------------------------------
       CHARACTER*16    COMP(*),NMATER,NECOUL,NECRIS,NECRCI
       CHARACTER*16    CPMONO(5*NMAT+1),PHENOM,NOMFAM
       INTEGER I, IMAT, NBFSYS, IFA,J,DIMTMS,ITBINT
-      INTEGER NBSYST,NBSYS, NBHSR
+      INTEGER NBSYST,NBSYS
 C     ----------------------------------------------------------------
 C
 C -   NB DE COMPOSANTES / VARIABLES INTERNES -------------------------
@@ -367,5 +366,11 @@ C
  40   CONTINUE
 C
  9999 CONTINUE
+ 
+C     ON STOCKE A LA FIN LE NOMBRE TOTAL DE COEF MATERIAU
+C      MATERD(NMAT,2)=NBCOMM(NMAT,3)
+C      MATERF(NMAT,2)=NBCOMM(NMAT,3)
+ 
       CALL JEDEMA()
+      
       END

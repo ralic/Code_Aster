@@ -1,4 +1,4 @@
-#@ MODIF plexus Messages  DATE 07/05/2012   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF plexus Messages  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,7 +21,10 @@
 
 cata_msg = {
 
-1 : _(u"""La macro-commande MACR_EUROPLEXUS ne fonctionne pas encore en poursuite"""),
+1 : _(u"""
+Pour que CALC_EUROPLEXUS fonctionne il faut ajouter DEBUG=_F(HIST_ETAPE='OUI')
+dans la commande DEBUT.
+Remarque : CALC_EUROPLEXUS ne fonctionne pas en POURSUITE"""),
 
 2:  _(u"""Le mot-clé %(k1)s n'existe pas"""),
 
@@ -34,6 +37,8 @@ cata_msg = {
 6 : _(u"""La modélisation %(k1)s n'est pas disponible dans CALC_EUROPLEXUS"""),
 
 7 : _(u"""Le mot-clé FONC_MULT est obligatoire pour le chargement de type PRES_REP"""),
+
+8 : _(u"""Le concept EVOL_NOLI %(k1)s ne possède pas de mot-clé CARA_ELEM"""),
 
 9 : _(u"""Il faut avoir au moins un des mots-clés DDL_IMPO et PRES_REP dans AFFE_CHAR_MECA"""),
 
@@ -71,6 +76,9 @@ le mot-clé %(k2)s devrait être présent dans CALC_EUROPLEXUS.
 
 16 : _(u"""En présence du mot-clé %(k1)s dans CALC_EUROPLEXUS
 le mot-clé %(k2)s est obligatoire dans AFFE_CARA_ELEM.
+"""),
+
+17 : _(u"""On ne peut pas fournir un état initial de contraintes sur les éléments POU_D_EM.
 """),
 
 }

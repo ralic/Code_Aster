@@ -1,4 +1,4 @@
-#@ MODIF calculel3 Messages  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel3 Messages  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -85,16 +85,8 @@ cata_msg = {
   L'option %(k1)s est inexistante.
 """),
 
-23 : _(u"""
- option :  %(k1)s
-"""),
-
 24: _(u"""
  <I> L'estimateur que vous avez choisi pour le calcul de l'option SING_ELEM est %(k1)s.
-"""),
-
-25 : _(u"""
- calcul non disponible
 """),
 
 26: _(u"""

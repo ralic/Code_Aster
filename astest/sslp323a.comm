@@ -1,9 +1,9 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE PROPAGATION DE FISSURE RADIALE DEBOUCHANTE DANS UN DISQUE EN ROTATION
 # sslp323a.para = tps_job 250 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -114,14 +114,12 @@ for i in range(1,NPS-1) :
                                    AXE = (0.,0.,1.,),
                                    CENTRE=(R,R,0.,),),); 
 
-    ChgX[i]=AFFE_CHAR_MECA(MODELE=ModX[i],
-                           LIAISON_XFEM='OUI',);
 
     ResX[i]=MECA_STATIQUE(MODELE=ModX[i],
                          CHAM_MATER=MAT,
                          EXCIT=(_F(CHARGE=CHRX[i],),
                                 _F(CHARGE=BLOC,),
-                                _F(CHARGE=ChgX[i],),),
+                                ),
                          );
 
     SIF[i]=CALC_G(THETA=_F(FISSURE=Fiss[i],

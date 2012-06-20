@@ -4,7 +4,7 @@
      &                  PRESN,OPTION,IGTHET,JBASEC)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 20/06/2012   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,13 +53,13 @@ C OUT IGTHET  : G (OPTION CALC_G) ET K1, K2, K3 (SI OPTION CALC_K_G)
       REAL*8   FORREP(3,2),PRES,CISA,DEPLA(3),ANGL(2),R3BID(3)
       REAL*8   E,NU,MU,KA,COEFF,COEFF3,R8PI,R27BID(27)
       REAL*8   U1L(3),U2L(3),U3L(3),U1(3),U2(3),U3(3)
-      REAL*8   E1(3),E2(3),E3(3),NORME,P(3,3),DFDI(NNOP,NDIM),DIVT
+      REAL*8   E1(3),E2(3),E3(3),NORME,P(3,3),DFDI(NNOP,NDIM),DIVT,JM
       REAL*8   THETA(3),DTDM(3,3),HE(2),DFOR(3),G,K1,K2,K3,DPREDI(3,3)
       CHARACTER*8  ELREF,TYPMA,FPG,ELC,ELREFC
       DATA     HE / -1.D0 , 1.D0/
 
       CALL JEMARQ()
-      CALL ASSERT(NDIM.EQ.3)
+
       ZXAIN = XXMMVD('ZXAIN')
 C     PAR CONVENTION :
 C     LEVRE INFERIEURE (HE=-1) EST LA LEVRE 1, DE NORMALE SORTANTE  ND
@@ -298,13 +298,14 @@ C           DDL ENRICHIS EN FOND DE FISSURE
 C         --------------------------------
 C         4) CALCUL DES CHAMPS AUXILIAIRES
 C         --------------------------------
+
           IF (OPTION(1:8).EQ.'CALC_K_G')  THEN
-C         CHAMPS AUXILIARES DANS LA BASE LOCALE : U1L,U2L,U3L
+C           CHAMPS AUXILIARES DANS LA BASE LOCALE : U1L,U2L,U3L
             CALL VECINI(9,0.D0,RB9)
             CALL CHAUXI(NDIM,MU,KA,-LST,ANGL(ILEV),RB9,.FALSE.,
      &                RB,RB9,RB9,RB9,U1L,U2L,U3L)
 
-C         CHAMPS AUXILIARES DANS LA BASE GLOBALE : U1,U2,U3
+C           CHAMPS AUXILIARES DANS LA BASE GLOBALE : U1,U2,U3
             CALL VECINI(NDIM,0.D0,U1)
             CALL VECINI(NDIM,0.D0,U2)
             CALL VECINI(NDIM,0.D0,U3)
@@ -316,6 +317,7 @@ C         CHAMPS AUXILIARES DANS LA BASE GLOBALE : U1,U2,U3
  511          CONTINUE
  510        CONTINUE
           ENDIF
+
 C         -----------------------------------------
 C         5) CALCUL DE 'DFOR' =  D(PRES)/DI . THETA
 C         -----------------------------------------
@@ -358,19 +360,39 @@ C         -----------------------------------
             IF (OPTION(1:8).EQ.'CALC_K_G')  THEN
               K1 = K1 + (FORREP(J,ILEV) * DIVT + DFOR(J)) * U1(J)
               K2 = K2 + (FORREP(J,ILEV) * DIVT + DFOR(J)) * U2(J)
-              K3 = K3 + (FORREP(J,ILEV) * DIVT + DFOR(J)) * U3(J)
+              IF (NDIM.EQ.3) 
+     &           K3 = K3 + (FORREP(J,ILEV) * DIVT + DFOR(J)) * U3(J)
             ENDIF
  520      CONTINUE
 
-          ZR(IGTHET)   = ZR(IGTHET)   + G  * JAC * MULT
-          IF (OPTION(1:8).EQ.'CALC_K_G')  THEN
-            ZR(IGTHET+1)=ZR(IGTHET+1)+ K1*JAC*MULT*SQRT(COEFF)*0.5D0
-            ZR(IGTHET+2)=ZR(IGTHET+2)+ K2*JAC*MULT*SQRT(COEFF)*0.5D0
-            ZR(IGTHET+3)=ZR(IGTHET+3)+ K3*JAC*MULT*SQRT(COEFF3)*0.5D0
-            ZR(IGTHET+4) = ZR(IGTHET+4) +K1 * JAC * MULT * COEFF *0.5D0
-            ZR(IGTHET+5) = ZR(IGTHET+5) +K2 * JAC * MULT * COEFF *0.5D0
-            ZR(IGTHET+6) = ZR(IGTHET+6) +K3 * JAC * MULT * COEFF3*0.5D0
+          JM = JAC*MULT*0.5D0
+
+          IF (NDIM.EQ.3) THEN
+
+            ZR(IGTHET-1+1)=ZR(IGTHET-1+1)+G*JAC*MULT
+
+            IF (OPTION(1:8).EQ.'CALC_K_G')  THEN
+              ZR(IGTHET-1+2)=ZR(IGTHET-1+2)+K1*JM*SQRT(COEFF)
+              ZR(IGTHET-1+3)=ZR(IGTHET-1+3)+K2*JM*SQRT(COEFF)
+              ZR(IGTHET-1+4)=ZR(IGTHET-1+4)+K3*JM*SQRT(COEFF3)
+              ZR(IGTHET-1+5)=ZR(IGTHET-1+5)+K1*JM*COEFF
+              ZR(IGTHET-1+6)=ZR(IGTHET-1+6)+K2*JM*COEFF
+              ZR(IGTHET-1+7)=ZR(IGTHET-1+7)+K3*JM*COEFF3
+            ENDIF
+
+          ELSEIF(NDIM.EQ.2)THEN
+          
+            ZR(IGTHET-1+1)=ZR(IGTHET-1+1)+G*JAC*MULT
+
+            IF (OPTION(1:8).EQ.'CALC_K_G')  THEN
+              ZR(IGTHET-1+2)=ZR(IGTHET-1+2)+K1*JM*SQRT(COEFF)
+              ZR(IGTHET-1+3)=ZR(IGTHET-1+3)+K2*JM*SQRT(COEFF)
+              ZR(IGTHET-1+4)=ZR(IGTHET-1+4)+K1*JM*COEFF
+              ZR(IGTHET-1+5)=ZR(IGTHET-1+5)+K2*JM*COEFF
+            ENDIF
+        
           ENDIF
+
  300    CONTINUE
 C       FIN DE BOUCLE SUR LES DEUX LEVRES
 

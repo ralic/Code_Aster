@@ -1,4 +1,4 @@
-#@ MODIF post_bordet_ops Macro  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF post_bordet_ops Macro  DATE 18/06/2012   AUTEUR DELMAS J.DELMAS 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,12 +31,12 @@ def post_bordet_ops(self, TOUT, GROUP_MA, INST, PRECISION, CRITERE, NUME_ORDRE,
     # La macro compte pour 1 dans la numerotation des commandes
     self.set_icmd(1)
     # On importe les definitions des commandes a utiliser dans la macro
-    CREA_CHAMP = self.get_cmd('CREA_CHAMP')
+    CREA_CHAMP      = self.get_cmd('CREA_CHAMP')
     CALC_CHAM_ELEM  = self.get_cmd('CALC_CHAM_ELEM')
-    CALC_ELEM  = self.get_cmd('CALC_ELEM')
-    CREA_TABLE  = self.get_cmd('CREA_TABLE')
-    FORMULE     =self.get_cmd('FORMULE')
-    CALC_TABLE  =self.get_cmd('CALC_TABLE')
+    CALC_CHAMP      = self.get_cmd('CALC_CHAMP')
+    CREA_TABLE      = self.get_cmd('CREA_TABLE')
+    FORMULE         = self.get_cmd('FORMULE')
+    CALC_TABLE      = self.get_cmd('CALC_TABLE')
     #
     # Definition du concept sortant dans le contexte de la macro
     self.DeclareOut('tabout', self.sd)
@@ -74,16 +74,12 @@ def post_bordet_ops(self, TOUT, GROUP_MA, INST, PRECISION, CRITERE, NUME_ORDRE,
     elif TOUT:
         vol = __VOL_PG.EXTR_COMP('W',[])
 
-#contrainte principale max
-    __RESU=CALC_ELEM(
+#contrainte principale max et deformation plastique
+    __RESU=CALC_CHAMP(
              RESULTAT=self['RESULTAT'],
-             OPTION='SIEQ_ELGA')
-#deformation plastique
-    __RESU=CALC_ELEM(
-             reuse=__RESU,
-             RESULTAT=self['RESULTAT'],
-             OPTION='EPSP_ELGA')
-#
+             CRITERES='SIEQ_ELGA',
+             DEFORMATION='EPSP_ELGA',)
+
 #Recuperation de la liste des instants et des ordres de calcul
     list_ordre=__RESU.LIST_VARI_ACCES()['NUME_ORDRE']
     list_inst=__RESU.LIST_VARI_ACCES()['INST']

@@ -1,4 +1,4 @@
-#@ MODIF chainage_meca_hydr Macro  DATE 03/04/2012   AUTEUR SELLENET N.SELLENET 
+#@ MODIF chainage_meca_hydr Macro  DATE 18/06/2012   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,7 +27,6 @@ prec = numpy.finfo(float).eps
 def CHAINAGE_MECA_HYDR(self,args,motscles):
 
     DEFI_LIST_REEL  = self.get_cmd('DEFI_LIST_REEL')
-    CALC_ELEM       = self.get_cmd('CALC_ELEM')
     CREA_CHAMP      = self.get_cmd('CREA_CHAMP')
     CREA_RESU       = self.get_cmd('CREA_RESU')
     CALC_CHAMP      = self.get_cmd('CALC_CHAMP')
@@ -158,10 +157,10 @@ def CHAINAGE_MECA_HYDR(self,args,motscles):
 
     __listinst=DEFI_LIST_REEL(VALE=linst,**motscles);
 
-    __epsir=CALC_ELEM(RESULTAT=RESU_MECA,
-                      OPTION='EPSI_ELNO',
-                      TOUT='OUI',
-                      LIST_INST=__listinst,**motscles);
+    __epsir=CALC_CHAMP(RESULTAT=RESU_MECA,
+                       DEFORMATION='EPSI_ELNO',
+                       TOUT='OUI',
+                       LIST_INST=__listinst,**motscles);
 
     if b_info :  UTMESS('I', 'CHAINAGE_7',valk=['epsi_elno',nom_mo_re],valr=[instp])
       

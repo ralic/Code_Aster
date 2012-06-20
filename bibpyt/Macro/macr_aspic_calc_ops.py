@@ -1,8 +1,8 @@
-#@ MODIF macr_aspic_calc_ops Macro  DATE 12/12/2011   AUTEUR DELMAS J.DELMAS 
+#@ MODIF macr_aspic_calc_ops Macro  DATE 18/06/2012   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,7 +44,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
   THER_LINEAIRE    =self.get_cmd('THER_LINEAIRE'   )
   AFFE_CHAR_MECA   =self.get_cmd('AFFE_CHAR_MECA'  )
   STAT_NON_LINE    =self.get_cmd('STAT_NON_LINE'   )
-  CALC_ELEM        =self.get_cmd('CALC_ELEM'       )
+  CALC_CHAMP       =self.get_cmd('CALC_CHAMP'      )
   POST_RELEVE_T    =self.get_cmd('POST_RELEVE_T'   )
   IMPR_TABLE       =self.get_cmd('IMPR_TABLE'      )
   POST_RCCM        =self.get_cmd('POST_RCCM'       )
@@ -400,11 +400,13 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
                           
                           
 #
-  nomres = CALC_ELEM( reuse      = nomres,
-                      RESULTAT   = nomres ,
-                      TOUT_ORDRE = 'OUI'  ,
-                      OPTION     = ('SIGM_ELNO','VARI_ELNO','SIEQ_ELNO') ,
-                      INFO       = INFO ,)
+  nomres = CALC_CHAMP( reuse        = nomres     ,
+                       RESULTAT     = nomres     ,
+                       TOUT_ORDRE   = 'OUI'      ,
+                       CONTRAINTE   = 'SIGM_ELNO',
+                       VARI_INTERNE = 'VARI_ELNO',
+                       CRITERES     = 'SIEQ_ELNO',
+                       INFO         = INFO       ,)
 #
 #-----------------------------------------------------------------------
   if TYPE_MAILLAGE[:4]=='SAIN' :

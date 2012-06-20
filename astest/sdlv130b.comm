@@ -1,9 +1,9 @@
-# MODIF  DATE 20/10/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
 # TITRE PLAQUE 3D FISSUREE SOUMISE A UN CHARGEMENT EN MODE I.
 # sdlv130b.para = tps_job 120 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -110,9 +110,6 @@ CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
                    PRES_REP=_F(GROUP_MA=('SURFSUP','SURFINF',),
                                PRES=PRES,),);
 
-CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
-                      LIAISON_XFEM='OUI',
-                      INFO=1,);
 
 #----------------------------------------------
 #           CALCUL DES MATRICES ELEMENTAIRES
@@ -121,12 +118,12 @@ CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
 MELR=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                     MODELE=MODELEK,
                     CHAM_MATER=CHAMPMA1,
-                    CHARGE=(CH1,CHXFEM,CH2,),);
+                    CHARGE=(CH1,CH2,),);
 
 MELM=CALC_MATR_ELEM(OPTION='MASS_MECA',
                     MODELE=MODELEK,
                     CHAM_MATER=CHAMPMA1,
-                    CHARGE=(CH1,CHXFEM,CH2,),);
+                    CHARGE=(CH1,CH2,),);
 
 #----------------------------------------------
 #           ASSEMBLAGE DES MATRICES
@@ -147,7 +144,7 @@ L_INS1=DEFI_LIST_REEL(DEBUT=0.0,
 
 UTOT1=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMA1,
-                   EXCIT=(_F(CHARGE=CHXFEM),
+                   EXCIT=(
                           _F(CHARGE=CH1),
                           _F(CHARGE=CH2),
                           ),

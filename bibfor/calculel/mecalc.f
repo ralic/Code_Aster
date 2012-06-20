@@ -5,7 +5,7 @@
      &                  CHVARI,COMPOR,CHTESE,CHDESE,NOPASE,
      &                  TYPESE,CHACSE,CODRET)
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 11/06/2012   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
 C TOLE CRP_20 CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

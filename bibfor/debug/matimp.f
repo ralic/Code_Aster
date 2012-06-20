@@ -1,6 +1,6 @@
       SUBROUTINE MATIMP(MATZ,IFIC,TYPIMZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF DEBUG  DATE 07/05/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF DEBUG  DATE 18/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,6 +20,7 @@ C ======================================================================
 C TOLE CRP_4
 C RESPONSABLE PELLET J.PELLET
       IMPLICIT NONE
+      INCLUDE 'jeveux.h'
       CHARACTER*(*) MATZ,TYPIMZ
       INTEGER IFIC
 C ---------------------------------------------------------------------
@@ -33,23 +34,6 @@ C                       SI TYPIMP=' ', TYPIMP='ASTER'
 C ---------------------------------------------------------------------
 
 
-C---- COMMUNS NORMALISES  JEVEUX
-      INTEGER*4 ZI4
-      COMMON  /I4VAJE/ZI4(1)
-      INTEGER ZI
-      COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
-      COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
-      COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32,JEXNOM,JEXNUM
-      CHARACTER*80 ZK80
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ------------------------------------------------------------------
       INTEGER ILIGL,JCOLL,KTERM,N,NZ,JREFA,JSMDI,NSMDI,JSMHC,NSMHC
       INTEGER JDELG,N1,NVALE,JVALE,NLONG,JVAL2,IBID,NUNO,NUCMP,K,JCMP

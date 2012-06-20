@@ -1,4 +1,4 @@
-#@ MODIF macro_elas_mult_ops Macro  DATE 23/04/2012   AUTEUR DELMAS J.DELMAS 
+#@ MODIF macro_elas_mult_ops Macro  DATE 18/06/2012   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -42,7 +42,7 @@ def macro_elas_mult_ops(self,MODELE,CHAM_MATER,CARA_ELEM,NUME_DDL,
   ASSE_VECTEUR    =self.get_cmd('ASSE_VECTEUR')
   RESOUDRE        =self.get_cmd('RESOUDRE')
   CREA_RESU       =self.get_cmd('CREA_RESU')
-  CALC_ELEM       =self.get_cmd('CALC_ELEM')
+  CALC_CHAMP      =self.get_cmd('CALC_CHAMP')
   # La macro compte pour 1 dans la numerotation des commandes
   self.set_icmd(1)
 
@@ -213,10 +213,10 @@ def macro_elas_mult_ops(self,MODELE,CHAM_MATER,CARA_ELEM,NUME_DDL,
               motscles['NOM_CAS']=m['NOM_CAS']
           else:
               motscles['NUME_MODE']=m['MODE_FOURIER']
-          CALC_ELEM(reuse=nomres,
-                    RESULTAT=nomres,
-                    OPTION='SIEF_ELGA',
-                    **motscles)
+          CALC_CHAMP(reuse=nomres,
+                     RESULTAT=nomres,
+                     CONTRAINTE='SIEF_ELGA',
+                     **motscles)
 
 # fin de la boucle sur les items de CAS_CHARGE
 #####################################################################

@@ -4,7 +4,7 @@
      &                    NBMAEC, LIMAEC, LVARIE, CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 20/06/2012   AUTEUR GENIAUT S.GENIAUT 
 C RESPONSABLE SELLENET N.SELLENET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -243,6 +243,13 @@ C         CERTAINS TRAITEMENT
      &                    NBMAEC, LIMAEC,
      &                    CODRET )
           ENDIF
+        ELSE IF ( TYPECH(1:4).EQ.'CART' ) THEN
+C
+          CALL IRCEME ( IFICHI, NOCHMD, CHANOM, TYPECH, MODEL1,
+     &                  NBRCMP, NOMCMP, ' ', PARTIE,
+     &                  NUMPT, INSTAN, NUMORD,
+     &                  NBMAEC, LIMAEC,
+     &                  CODRET )
         ELSE
           CODRET = 1
           CALL U2MESK('A','MED_92',1,TYPECH(1:4))

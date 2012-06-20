@@ -8,7 +8,7 @@
       REAL*8        PTINT(*),AINTER(*)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 20/06/2012   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -161,17 +161,21 @@ C       NUM NO DE L'ELEMENT
           IF ((LSNA.EQ.0.D0).AND.(LSTA.LE.PREC)) THEN
 C           ON AJOUTE A LA LISTE LE POINT A
             IF (LSTA.GE.0.D0.AND.LLIN) THEN
-             CALL XAJPIN(PTINT,PTMAX,IPT,INS,A,LONGAR,AINTER,0,0,0.D0)
+              CALL XAJPIN(NDIM,PTINT,PTMAX,IPT,INS,A,LONGAR,AINTER,0,0,
+     &                    0.D0)
             ELSE
-             CALL XAJPIN(PTINT,PTMAX,IPT,INS,A,LONGAR,AINTER,0,NA,0.D0)
+              CALL XAJPIN(NDIM,PTINT,PTMAX,IPT,INS,A,LONGAR,AINTER,0,NA,
+     &                    0.D0)
             ENDIF
           ENDIF
           IF (LSNB.EQ.0.D0.AND.LSTB.LE.PREC) THEN
 C           ON AJOUTE A LA LISTE LE POINT B
             IF (LSTB.GE.0.D0.AND.LLIN) THEN
-             CALL XAJPIN(PTINT,PTMAX,IPT,INS,B,LONGAR,AINTER,0,0,0.D0)
+              CALL XAJPIN(NDIM,PTINT,PTMAX,IPT,INS,B,LONGAR,AINTER,0,0,
+     &                    0.D0)
             ELSE
-             CALL XAJPIN(PTINT,PTMAX,IPT,INS,B,LONGAR,AINTER,0,NB,0.D0)
+              CALL XAJPIN(NDIM,PTINT,PTMAX,IPT,INS,B,LONGAR,AINTER,0,NB,
+     &                    0.D0)
             ENDIF
           ENDIF
 
@@ -179,14 +183,15 @@ C           ON AJOUTE A LA LISTE LE POINT B
 C           ON AJOUTE A LA LISTE LE POINT M
             ALPHA=PADIST(NDIM,A,M)
             IF (LSTM.GE.0.D0.AND.LLIN) THEN
-             CALL XAJPIN(PTINT,PTMAX,IPT,INM,M,LONGAR,AINTER,0,0,0.D0)
+              CALL XAJPIN(NDIM,PTINT,PTMAX,IPT,INM,M,LONGAR,AINTER,0,0,
+     &                    0.D0)
             ELSE
               IF (CUT) THEN
-                CALL XAJPIN(PTINT,PTMAX,IPT,INC,M,LONGAR,AINTER,
-     &                                                  IA,0,ALPHA)
+                CALL XAJPIN(NDIM,PTINT,PTMAX,IPT,INC,M,LONGAR,AINTER,
+     &                      IA,0,ALPHA)
               ELSEIF (.NOT.CUT) THEN
-                CALL XAJPIN(PTINT,PTMAX,IPT,INM,M,LONGAR,AINTER,
-     &                                                  0,NM,ALPHA)
+                CALL XAJPIN(NDIM,PTINT,PTMAX,IPT,INM,M,LONGAR,AINTER,
+     &                      0,NM,ALPHA)
               ENDIF
             ENDIF
           ENDIF
@@ -209,11 +214,11 @@ C          CALCUL DES FF DU SE3 (REEREF N'ACCEPTE PAS NDIM=2 & NNO=3)
             LSTC=FF(1)*LSTB+FF(2)*LSTA+FF(3)*LSTM
             IF (LSTC.LE.PREC) THEN
               IF (LSTC.GE.0.D0.AND.LLIN) THEN
-                CALL XAJPIN(PTINT,PTMAX,IPT,INC,C,LONGAR,AINTER,0,0,
-     &                       0.D0)
+                CALL XAJPIN(NDIM,PTINT,PTMAX,IPT,INC,C,LONGAR,AINTER,0,
+     &                      0,0.D0)
               ELSE
-                CALL XAJPIN(PTINT,PTMAX,IPT,INC,C,LONGAR,AINTER,IA,0,
-     &                     ALPHA)
+                CALL XAJPIN(NDIM,PTINT,PTMAX,IPT,INC,C,LONGAR,AINTER,IA,
+     &                      0,ALPHA)
               ENDIF
             ENDIF
           ENDIF
@@ -241,7 +246,7 @@ C       RECHERCHE POINT MILIEU FISSURE
         KSI=0.D0
         CALL ABSCVF(NDIM,COOR2D,KSI,SMILFI)
 C       ON AJOUTE A LA LISTE LE POINT MILFI
-        CALL XAJPIN(PTINT,PTMAX,IPT,NBTOT,MILFI,SMILFI*2,
+        CALL XAJPIN(NDIM,PTINT,PTMAX,IPT,NBTOT,MILFI,SMILFI*2,
      &                                         AINTER,5,0,SMILFI)
       ENDIF
 

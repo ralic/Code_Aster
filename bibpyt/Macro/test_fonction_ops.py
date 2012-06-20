@@ -1,8 +1,8 @@
-#@ MODIF test_fonction_ops Macro  DATE 30/08/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF test_fonction_ops Macro  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -363,7 +363,6 @@ def test_fonction_ops(self,TEST_NOOK,VALEUR,ATTRIBUT,TABL_INTSP,**args):
          epsi = dres['PRECISION']
          crit = dres['CRITERE']
          fct = dres['FONCTION']
-         sensi = dres['SENSIBILITE']
          nompara = dres['NOM_PARA']
          if nompara == None:
             nompara = ''
@@ -381,28 +380,14 @@ def test_fonction_ops(self,TEST_NOOK,VALEUR,ATTRIBUT,TABL_INTSP,**args):
             nompara = [nompara,]
 
          bcle = []
-         pres_sensi = 0
-         # Si on a des parametres sensibles, on boucle dessus
-         # sinon, on boucle uniquement sur la fonction a tester
-         if sensi == None:
-            bcle = [fct,]
-         else:
-            pres_sensi = 1
-            if not is_enum(sensi):
-               bcle = [sensi,]
+         # On boucle uniquement sur la fonction a tester
+         bcle = [fct,]
 
          for ps in bcle:
-            # Suivant le cas, la foction est soit issue des parametres
-            # sensibles soit directement de dres['FONCTION']
+            # La fonction est directement de dres['FONCTION']
             lafonc = None
             titre = ''
-            # Si on a des parametres sensible la fonction n'est pas ps
-            if pres_sensi == 1:
-               ncomp = self.jdc.memo_sensi.get_nocomp(fct.nom, ps.nom)
-               lafonc = self.jdc.memo_sensi.d_sd[ncomp]
-               titre = 'SENSIBILITE AU PARAMETRE ' + ps.get_name()
-            else:
-               lafonc = ps
+            lafonc = ps
 
             res = 0.
             typeFct = ''

@@ -1,6 +1,6 @@
       SUBROUTINE TE0011(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,8 +38,6 @@ C.......................................................................
       REAL*8 REPERE(7),XYZGAU(3),INSTAN,NHARM
       REAL*8 BARY(3)
       INTEGER NBSIGM,IGEOM, IPOIDS, IVF, IDFDE,IDIM
-      LOGICAL LSENS
-
 
 C ---- INITIALISATION
 C ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
@@ -58,15 +56,6 @@ C
           BTDB(I,J) = 0.D0
    10   CONTINUE
    20 CONTINUE
-C
-C ---- FAIT-ON UN CALCUL DE SENSIBILITE ?
-C      ----------------------------------
-CS      IF (OPTION(11:15).EQ.'SENSI') THEN
-      IF (OPTION(11:14).EQ.'SENS') THEN
-        LSENS = .TRUE.
-      ELSE
-        LSENS = .FALSE.
-      END IF
 C
 C ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
 C      -----------------------------------------
@@ -131,7 +120,7 @@ C  --      CALCUL DE LA MATRICE DE HOOKE (LE MATERIAU POUVANT
 C  --      ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
 C          -------------------------------------------------
         CALL DMATMC('RIGI','  ',ZI(IMATE),INSTAN,'+',IGAU,1,REPERE,
-     &              XYZGAU,NBSIG,D,LSENS)
+     &              XYZGAU,NBSIG,D)
 C  --      MATRICE DE RIGIDITE ELEMENTAIRE BT*D*B
 C          ---------------------------------------
         CALL BTDBMC(B,D,JACGAU,NDIM,NNO,NBSIG,PHENOM,BTDB)
@@ -140,37 +129,15 @@ C
 C
 C ---- RECUPERATION ET AFFECTATION DU VECTEUR EN SORTIE
 C      ------------------------------------------------
-      IF (.NOT.LSENS) THEN
 C  --  DEMI-MATRICE DE RIGIDITE
-        CALL JEVECH('PMATUUR','E',IMATUU)
+      CALL JEVECH('PMATUUR','E',IMATUU)
 C
-        K = 0
-        DO 70 I = 1,NBINCO
-          DO 60 J = 1,I
-            K = K + 1
-            ZR(IMATUU+K-1) = BTDB(I,J)
-   60     CONTINUE
-   70   CONTINUE
-      ELSE IF (OPTION(1:15).EQ.'RIGI_MECA_SENSI') THEN
-C  --  CHARGEMENT SENSIBILITE REEL
-        CALL JEVECH('PVECTUR','E',IVECUU)
-        CALL JEVECH('PVAPRIN','L',IVAPRU)
-        DO 90 I = 1,NBINCO
-          ZR(IVECUU+I-1) = 0.D0
-          DO 80 J = 1,NBINCO
-            ZR(IVECUU+I-1) = ZR(IVECUU+I-1) - BTDB(I,J)*ZR(IVAPRU+J-1)
-   80     CONTINUE
-   90   CONTINUE
-      ELSE IF (OPTION(1:16).EQ.'RIGI_MECA_SENS_C') THEN
-C  --  CHARGEMENT SENSIBILITE COMPLEXE
-        CALL JEVECH('PVECTUC','E',IVECUU)
-        CALL JEVECH('PVAPRIN','L',IVAPRU)
-        DO 110 I = 1,NBINCO
-          ZC(IVECUU+I-1) = DCMPLX(0.D0,0.D0)
-          DO 100 J = 1,NBINCO
-            ZC(IVECUU+I-1) = ZC(IVECUU+I-1) - BTDB(I,J)*ZC(IVAPRU+J-1)
-  100     CONTINUE
-  110   CONTINUE
-      END IF
+      K = 0
+      DO 70 I = 1,NBINCO
+        DO 60 J = 1,I
+          K = K + 1
+          ZR(IMATUU+K-1) = BTDB(I,J)
+   60   CONTINUE
+   70 CONTINUE
 
       END

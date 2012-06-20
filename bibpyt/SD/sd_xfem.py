@@ -1,8 +1,8 @@
-#@ MODIF sd_xfem SD  DATE 18/10/2011   AUTEUR COLOMBO D.COLOMBO 
+#@ MODIF sd_xfem SD  DATE 20/06/2012   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -69,6 +69,7 @@ class sd_fiss_xfem(AsBase):
     MAILFISS_CTIP  = Facultatif(AsVI(SDNom(nomj='.MAILFISS  .CTIP')))
     MAILFISS_HEAV  = Facultatif(AsVI(SDNom(nomj='.MAILFISS  .HEAV')))
     MAILFISS_HECT  = Facultatif(AsVI(SDNom(nomj='.MAILFISS  .HECT')))
+    MAILFISS_MAFOND= Facultatif(AsVI(SDNom(nomj='.MAILFISS.MAFOND')))
     MAILFISS_INDIC = AsVI(SDNom(nomj='.MAILFISS .INDIC'), lonmax=6, )
 
 # I.3) objets relatifs a la propagation
@@ -97,7 +98,11 @@ class sd_fiss_xfem(AsBase):
 # 1.5) verifications d'existence :
 
     def check_existence(self,checker) :
-        sdu_ensemble((self.FONDFISS, self.FONDMULT))
+        # si un fond existe alors ...
+#        sdu_ensemble((self.FONDFISS, self.FONDMULT, self.BASEFOND, self.MAILFISS_MAFOND))
+        sdu_ensemble((self.FONDFISS, self.FONDMULT, self.BASEFOND))
+
+        # si ....
         sdu_ensemble((self.LISRL, self.LISCO))
         sdu_ensemble((self.PRO_MES_EL.CELD, self.PRO_NORMAL.CELD))
         sdu_ensemble((self.PRO_RAYON_TORE, self.PRO_NOEUD_TORE))

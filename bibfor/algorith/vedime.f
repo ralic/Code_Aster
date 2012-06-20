@@ -1,7 +1,8 @@
-      SUBROUTINE VEDIME(MODELE,CHARGE,INFCHA,INSTAP,TYPRES,TYPESE,
-     &                  NOPASE,VECELZ)
+      SUBROUTINE VEDIME(MODELE,CHARGE,INFCHA,INSTAP,TYPRES,
+     &                  VECELZ)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,60 +19,57 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C
+      IMPLICIT      NONE
+      INCLUDE 'jeveux.h'
+      CHARACTER*(*) VECELZ,TYPRES
+      CHARACTER*24  MODELE,CHARGE,INFCHA
+      REAL*8        INSTAP
+C
 C ----------------------------------------------------------------------
-C     CALCUL DES VECTEURS ELEMENTAIRES DES ELEMENTS DE LAGRANGE
-C     PRODUIT UN VECT_ELEM DEVANT ETRE ASSEMBLE PAR LA ROUTINE ASASVE
-
+C
+C CALCUL DES VECTEURS ELEMENTAIRES DES ELEMENTS DE LAGRANGE
+C PRODUIT UN VECT_ELEM DEVANT ETRE ASSEMBLE PAR LA ROUTINE ASASVE
+C
+C ----------------------------------------------------------------------
+C
 C IN  MODELE  : NOM DU MODELE
 C IN  CHARGE  : LISTE DES CHARGES
 C IN  INFCHA  : INFORMATIONS SUR LES CHARGEMENTS
 C IN  INSTAP  : INSTANT DU CALCUL
-C IN  TYPESE  : TYPE DE SENSIBILITE
-C                0 : CALCUL STANDARD, NON DERIVE
-C                SINON : DERIVE (VOIR METYSE)
-C . POUR UN CALCUL DE DERIVEE, ON A LES DONNEES SUIVANTES :
-C IN  NOPASE  : NOM DU PARAMETRE SENSIBLE
-C VAR/JXOUT  VECELZ  : VECT_ELEM RESULTAT.
+C OUT VECELE  : VECT_ELEM RESULTAT.
+C
 C ----------------------------------------------------------------------
-      IMPLICIT NONE
-
-C 0.1. ==> ARGUMENTS
-
-      INCLUDE 'jeveux.h'
-      INTEGER TYPESE
-      CHARACTER*(*) NOPASE
-      CHARACTER*(*) VECELZ,TYPRES
-      CHARACTER*24 MODELE,CHARGE,INFCHA
-      REAL*8 INSTAP
-
-C 0.2. ==> COMMUNS
-
-C 0.3. ==> VARIABLES LOCALES
-
-      CHARACTER*6 NOMPRO
-      PARAMETER (NOMPRO='VEDIME')
-
-      CHARACTER*8 NOMCH0,NOMCHS,NOMCHA
-      CHARACTER*8 LPAIN(3),PAOUT,K8BID,NEWNOM
+C
+      CHARACTER*8  LPAIN(3),LPAOUT
+      CHARACTER*19 LCHIN(3),LCHOUT
+      CHARACTER*8  NOMCHA
+      CHARACTER*8  K8BID,NEWNOM
       CHARACTER*16 OPTION
-      CHARACTER*19 VECELE
-      CHARACTER*24 LIGRCH,LIGRCS,LCHIN(3),RESUEL,CHGEOM,CHTIME
-      INTEGER IAUX,IRET,NCHAR,ILVE,JINF,JCHAR,ICHA,JNOLI,NBNOLI
-      INTEGER NUMDI
-      INTEGER EXICHA
-      LOGICAL EXIGEO,BIDON
-      COMPLEX*16 CBID
+      CHARACTER*19 VECELE,LIGRMO
+      CHARACTER*24 LIGRCH,CHGEOM,CHTIME
+      INTEGER      IBID,IRET,NCHAR,ILVE,JINF,JCHAR,ICHA
+      INTEGER      NUMDI
+      LOGICAL      EXIGEO,BIDON
+      COMPLEX*16   CBID
+C
 C ----------------------------------------------------------------------
+C
       CALL JEMARQ()
+C
+C --- INITIALISATIONS
+C
       NEWNOM = '.0000000'
-      VECELE = VECELZ
-      IF (VECELE.EQ.' ') THEN
-        VECELE = '&&'//NOMPRO
+      LIGRMO = MODELE(1:8)//'.MODELE'
+      IF (TYPRES.EQ.'R') THEN
+        LPAOUT = 'PVECTUR'
+      ELSE
+        LPAOUT = 'PVECTUC'
       END IF
-      RESUEL = '&&'//NOMPRO//'.???????'
-
-C     -- BIDON=.TRUE. -> IL N'Y A PAS DE CHARGE
-C     -------------------------------------
+      LCHOUT = '&&VEDIME.???????'
+C
+C --- DETECTION DE LA PRESENCE DE CHARGES
+C
       BIDON = .TRUE.
       CALL JEEXIN(CHARGE,IRET)
       IF (IRET.NE.0) THEN
@@ -82,97 +80,72 @@ C     -------------------------------------
           CALL JEVEUO(INFCHA,'L',JINF)
         END IF
       END IF
-
-C     -- ALLOCATION DU VECT_ELEM RESULTAT :
-C     -------------------------------------
+C
+C --- CALCUL DU NOM DU RESULTAT :
+C
+      VECELE = VECELZ
+      IF (VECELE.EQ.' ') VECELE = '&&VEDIME'
+C
+C --- ALLOCATION DU VECT_ELEM RESULTAT :
+C
       CALL DETRSD('VECT_ELEM',VECELE)
       CALL MEMARE('V',VECELE,MODELE(1:8),' ',' ','CHAR_MECA')
       CALL REAJRE(VECELE,' ','V')
-      IF (BIDON) GO TO 40
-
+      IF (BIDON) GOTO 99
+C
+C --- CARTES GEOMETRIE
+C
       CALL MEGEOM(MODELE(1:8),ZK24(JCHAR) (1:8),EXIGEO,CHGEOM)
-
-      IF (TYPRES.EQ.'R') THEN
-        PAOUT = 'PVECTUR'
-      ELSE
-        PAOUT = 'PVECTUC'
-      END IF
+C
+C --- CARTE INSTANTS
+C
+      CHTIME = '&&VEDIME.CH_INST_R'
+      CALL MECACT('V',CHTIME,'MODELE',LIGRMO,'INST_R  ',
+     &            1,'INST',IBID,INSTAP,CBID,K8BID)
+C
+C --- CHAMPS IN
+C
       LPAIN(2) = 'PGEOMER'
-      LCHIN(2) = CHGEOM
+      LCHIN(2) = CHGEOM(1:19)
       LPAIN(3) = 'PTEMPSR'
-
-      CHTIME = '&&'//NOMPRO//'.CH_INST_R'
-      CALL MECACT('V',CHTIME,'MODELE',MODELE(1:8)//'.MODELE','INST_R  ',
-     &            1,'INST',IAUX,INSTAP,CBID,K8BID)
-      LCHIN(3) = CHTIME
-
+      LCHIN(3) = CHTIME(1:19)
+C
+C --- CALCUL
+C
       ILVE = 0
       DO 30 ICHA = 1,NCHAR
         NUMDI = ZI(JINF+ICHA)
         IF ((NUMDI.GT.0) .AND. (NUMDI.LE.3)) THEN
-          NOMCH0 = ZK24(JCHAR+ICHA-1) (1:8)
-          LIGRCH = NOMCH0//'.CHME.LIGRE'
-          IF (TYPESE.NE.0) THEN
-            CALL PSGENC(NOMCH0,NOPASE,NOMCHS,EXICHA)
-
-C           ATTENTION : DANS LE CAS D'UN CALCUL DE SENSIBILITE, ON
-C           UTILISERA LE LIGREL DU CHARGEMENT STANDARD. POUR CELA ON
-C           REMPLACE LE NOM JEVEUX STOCKE DANS LE CHARGEMENT SENSIBLE
-C           PAR LE NOM STANDARD, LIGRCH. EVIDEMMENT, A LA FIN DU
-C           TRAITEMENT, ON REMETTRA LE VRAI NOM, SAUVEGARDE DANS LIGRCS.
-
-            IF (EXICHA.EQ.0) THEN
-              CALL JELIRA(NOMCHS//'.CHME.CIMPO.NOLI','LONMAX',NBNOLI,
-     &                    K8BID)
-              CALL JEVEUO(NOMCHS//'.CHME.CIMPO.NOLI','E',JNOLI)
-              LIGRCS = ZK24(JNOLI)
-              DO 10,IAUX = 0,NBNOLI - 1
-                ZK24(JNOLI+IAUX) = LIGRCH
-   10         CONTINUE
-              NOMCHA = NOMCHS
+          NOMCHA   = ZK24(JCHAR+ICHA-1) (1:8)
+          LIGRCH   = NOMCHA//'.CHME.LIGRE'
+          LCHIN(1) = NOMCHA//'.CHME.CIMPO'
+          IF (NUMDI.EQ.1) THEN
+            IF (TYPRES.EQ.'R') THEN
+              OPTION = 'MECA_DDLI_R'
+              LPAIN(1) = 'PDDLIMR'
+            ELSE
+              OPTION = 'MECA_DDLI_C'
+              LPAIN(1) = 'PDDLIMC'
             END IF
-          ELSE
-            EXICHA = 0
-            NOMCHA = NOMCH0
+          ELSE IF (NUMDI.EQ.2) THEN
+            OPTION = 'MECA_DDLI_F'
+            LPAIN(1) = 'PDDLIMF'
+          ELSE IF (NUMDI.EQ.3) THEN
+            OPTION = 'MECA_DDLI_F'
+            LPAIN(1) = 'PDDLIMF'
           END IF
-          IF (EXICHA.EQ.0) THEN
-            LCHIN(1) = NOMCHA//'.CHME.CIMPO.DESC'
-            IF (NUMDI.EQ.1) THEN
-              IF (TYPRES.EQ.'R') THEN
-                OPTION = 'MECA_DDLI_R'
-                LPAIN(1) = 'PDDLIMR'
-              ELSE
-                OPTION = 'MECA_DDLI_C'
-                LPAIN(1) = 'PDDLIMC'
-              END IF
-            ELSE IF (NUMDI.EQ.2) THEN
-              OPTION = 'MECA_DDLI_F'
-              LPAIN(1) = 'PDDLIMF'
-            ELSE IF (NUMDI.EQ.3) THEN
-              OPTION = 'MECA_DDLI_F'
-              LPAIN(1) = 'PDDLIMF'
-            END IF
-            ILVE = ILVE + 1
+          ILVE = ILVE + 1
+          CALL GCNCO2(NEWNOM)
+          LCHOUT(10:16) = NEWNOM(2:8)
+          CALL CORICH('E',LCHOUT,ICHA,IBID)
+          CALL CALCUL('S',OPTION,LIGRCH,3,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
+     &                 'V','OUI')
+          CALL REAJRE(VECELE,LCHOUT,'V')
 
-            CALL GCNCO2(NEWNOM)
-            RESUEL(10:16) = NEWNOM(2:8)
-            CALL CORICH('E',RESUEL,ICHA,IAUX)
-
-            CALL CALCUL('S',OPTION,LIGRCH,3,LCHIN,LPAIN,1,RESUEL,PAOUT,
-     &                  'V','OUI')
-            CALL REAJRE(VECELE,RESUEL,'V')
-C           ON REMET LE VRAI NOM DU LIGREL POUR LE CHARGEMENT SENSIBLE :
-            IF (TYPESE.NE.0) THEN
-              DO 20,IAUX = 0,NBNOLI - 1
-                ZK24(JNOLI+IAUX) = LIGRCS
-   20         CONTINUE
-            END IF
-          END IF
-        END IF
+        ENDIF
    30 CONTINUE
-
-   40 CONTINUE
-
+C
+   99 CONTINUE
       VECELZ = VECELE//'.RELR'
 
       CALL JEDEMA()

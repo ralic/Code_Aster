@@ -1,6 +1,6 @@
       SUBROUTINE CRSMSP(SOLVBZ,MATASZ,PCPIV )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 20/06/2012   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,15 +24,12 @@ C ======================================================================
 C-----------------------------------------------------------------------
 C     CREATION D'UNE SD SOLVEUR MUMPS SIMPLE PRECISION UTILISEE COMME
 C     PRECONDITIONNEUR
-C     ATTENTION A LA COHERENCE AVEC CRSVL2 ET CRSVMU
+C     ATTENTION A LA COHERENCE AVEC CRSVMU ET CRSINT
 C-----------------------------------------------------------------------
 C IN  K*  SOLVBZ    : NOM DE LA SD SOLVEUR MUMPS BIDON
 C IN  K*  MATASZ    : MATRICE DU SYSTEME
 C IN  I   PCPIV     : VALEUR DE PCENT_PIVOT
 C-----------------------------------------------------------------------
-C-----------------------------------------------------------------------
-C-----------------------------------------------------------------------
-C----------------------------------------------------------------------
 C     VARIABLES LOCALES
 C----------------------------------------------------------------------
       INTEGER JSLVK,JSLVR,JSLVI,IBID,IRET
@@ -82,13 +79,13 @@ C     MIXER_PRECISION
       ZK24(JSLVK-1+7)  = 'OUI'
 C     PRECONDITIONNEUR
       ZK24(JSLVK-1+8)  = 'OUI'
-C     OUT_OF_CORE
-      ZK24(JSLVK-1+9)  = 'NON'
+C     MEMOIRE_MUMPS
+      ZK24(JSLVK-1+9)  = 'IN_CORE'
 C     MATR_DISTRIBUEE
       ZK24(JSLVK-1+10) = 'NON'
 C     POSTTRAITEMENTS
       ZK24(JSLVK-1+11) = 'SANS'
-      ZK24(JSLVK-1+12) = 'NON'
+      ZK24(JSLVK-1+12) = 'XXXX'
 
       ZR(JSLVR-1+1) = -1.D0
       ZR(JSLVR-1+2) = -1.D0

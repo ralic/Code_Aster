@@ -2,9 +2,9 @@
      &                   NBSOL,IRET,PREPOS)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPH MUMPS  DATE 29/03/2011   AUTEUR BOITEAU O.BOITEAU 
+!& MODIF AMUMPH MUMPS  DATE 20/06/2012   AUTEUR BOITEAU O.BOITEAU 
 ! ==================================================================
-! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR
 ! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS
@@ -79,6 +79,7 @@ C============================================================
       INCLUDE 'cmumps_struc.h'
       INCLUDE 'dmumps_struc.h'
       INCLUDE 'zmumps_struc.h'
+      INCLUDE 'jeveux.h'
 C============================================================
 
       INTEGER NMXINS,IPREM
@@ -92,8 +93,7 @@ C============================================================
       TYPE (DMUMPS_STRUC) , POINTER :: DMPSK
       TYPE (ZMUMPS_STRUC) , POINTER :: ZMPSK
       INTEGER      K,IERD,IBID,KXMPS,JREFA,N,NSMDI,IFM,NIV,IFMUMP,
-     &             IMD,JSLVK,JSLVI,NPREC,IRETZ
-      INTEGER*4    K4
+     &             IMD,JSLVK,JSLVI,NPREC,IRETZ,PCENTP(2)
       CHARACTER*1  ROUCS(NMXINS),ROUC,PREC,PRECS(NMXINS)
       CHARACTER*4  ETAMAT,KBID,ETAMS(NMXINS),ETAM
       CHARACTER*14 NONUS(NMXINS),NONU,NU,IMPR
@@ -104,22 +104,6 @@ C============================================================
       COMMON /MUMPSD/ DMPS
       COMMON /MUMPSZ/ ZMPS
       COMMON /MUMPSH/ NONUS,NOMATS,NOSOLS,ETAMS,ROUCS,PRECS
-      
-C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
-      INTEGER ZI
-      COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
-      COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
-      COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C----------------------------------------------------------------
       SAVE IPREM
       DATA  IPREM /0/
@@ -246,23 +230,22 @@ C       ARITHMETIQUE) ASSOCIEES A UNE MATRICE SI 'DETR_MAT'
         IF (ACTION(1:8).EQ.'DETR_MAT') PREC=PRECS(K)
         IF ((NOMATS(K).EQ.MATAS).AND.(NONUS(K).EQ.NU).AND.
      &      (ROUCS(K).EQ.ROUC).AND.(PRECS(K).EQ.PREC)) THEN
-          K4=K
           IF (ROUC.EQ.'R') THEN
             IF (PREC.EQ.'S') THEN 
-              SMPSK=>SMPS(K4)
+              SMPSK=>SMPS(K)
               N=SMPSK%N
             ELSE IF (PREC.EQ.'D') THEN
-              DMPSK=>DMPS(K4)
+              DMPSK=>DMPS(K)
               N=DMPSK%N
             ELSE
               CALL ASSERT(.FALSE.)
             ENDIF
           ELSE IF (ROUC.EQ.'C') THEN
             IF (PREC.EQ.'S') THEN 
-              CMPSK=>CMPS(K4)
+              CMPSK=>CMPS(K)
               N=CMPSK%N
             ELSE IF (PREC.EQ.'D') THEN
-              ZMPSK=>ZMPS(K4)
+              ZMPSK=>ZMPS(K)
               N=ZMPSK%N
             ELSE
               CALL ASSERT(.FALSE.)
@@ -354,23 +337,31 @@ C        --- PARAMETRE NPREC
          CALL ASSERT(.FALSE.)
       ENDIF
 
+C        --- SI GESTION_MEMOIRE='AUTO'
+C        --- PARAMETRES POUR LA GESTION DE PCENT_PIVOT/ELIM_LAGR2
+C        --- PCENTP(1) --> NBRE TENTATIVES DE FACTO.
+C        --- PCENTP(2) --> TERME MULTIPLICATIF DE PCENT_PIVOT ENTRE DEUX
+C            TENTATIVES DE FACTO.: 
+C                    PCENT_PIVOT_NEW=PCENT_PIVOT_OLD*PCENTP(2)
+      PCENTP(1)=3
+      PCENTP(2)=2
       IF (ROUC.EQ.'R') THEN
         IF (PREC.EQ.'S') THEN
           CALL AMUMPS(ACTION,KXMPS,RSOLU,VCINE,NBSOL,IRETZ,IMPR,IFMUMP,
-     &                PREPOS)
+     &                PREPOS,PCENTP)
         ELSE IF (PREC.EQ.'D') THEN
           CALL AMUMPD(ACTION,KXMPS,RSOLU,VCINE,NBSOL,IRETZ,IMPR,IFMUMP,
-     &                PREPOS)
+     &                PREPOS,PCENTP)
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF
       ELSE IF (ROUC.EQ.'C') THEN
         IF (PREC.EQ.'S') THEN
           CALL AMUMPC(ACTION,KXMPS,CSOLU,VCINE,NBSOL,IRETZ,IMPR,IFMUMP,
-     &                PREPOS)
+     &                PREPOS,PCENTP)
         ELSE IF (PREC.EQ.'D') THEN
           CALL AMUMPZ(ACTION,KXMPS,CSOLU,VCINE,NBSOL,IRETZ,IMPR,IFMUMP,
-     &                PREPOS)
+     &                PREPOS,PCENTP)
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF
@@ -378,6 +369,32 @@ C        --- PARAMETRE NPREC
         CALL ASSERT(.FALSE.)
       ENDIF
 
+C --- NETTOYAGE DES OCCURENCES MUMPS EN MODE GESTION_MEMOIRE='EVAL' POUR
+C --- PAR EXEMPLE NE PAS DEPASSER 5 OCCURENCES SIMULTANNEES EN CAS 
+C --- D'USAGE DU MECANISME TRY_EXCEPT PYTHON
+      IF ((ACTION(1:6).EQ.'PRERES').AND.(ZK24(JSLVK+8)(1:4).EQ.'EVAL'))
+     &THEN
+        IF (ROUC.EQ.'R') THEN
+          IF (PREC.EQ.'S') THEN
+            CALL AMUMPS('DETR_OCC',KXMPS,RSOLU,VCINE,NBSOL,IRETZ,IMPR,
+     &                  IFMUMP,PREPOS,PCENTP)
+          ELSE IF (PREC.EQ.'D') THEN
+            CALL AMUMPD('DETR_OCC',KXMPS,RSOLU,VCINE,NBSOL,IRETZ,IMPR,
+     &                  IFMUMP,PREPOS,PCENTP)
+          ENDIF
+        ELSE IF (ROUC.EQ.'C') THEN
+          IF (PREC.EQ.'S') THEN
+            CALL AMUMPC('DETR_OCC',KXMPS,CSOLU,VCINE,NBSOL,IRETZ,IMPR,
+     &                  IFMUMP,PREPOS,PCENTP)
+          ELSE IF (PREC.EQ.'D') THEN
+            CALL AMUMPZ('DETR_OCC',KXMPS,CSOLU,VCINE,NBSOL,IRETZ,IMPR,
+     &                  IFMUMP,PREPOS,PCENTP)
+          ENDIF
+        ENDIF
+        CALL U2MESS('F','FACTOR_77') 
+      ENDIF
+
+C --- GESTION DES CODES RETOUR EN CAS DE DETECTION DE SINGULARITES     
       IF (ACTION(1:6).EQ.'PRERES') THEN
         CALL ASSERT((IRETZ.EQ.0).OR.(IRETZ.EQ.1).OR.(IRETZ.EQ.2))
         IF (IRETZ.EQ.2) THEN

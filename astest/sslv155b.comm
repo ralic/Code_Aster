@@ -1,4 +1,4 @@
-# MODIF  DATE 30/04/2012   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 20/06/2012   AUTEUR GENIAUT S.GENIAUT 
 # TITRE  FISSURE LENTILLE EN TRACTION
 # sslv155b.para = tps_job 30 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -45,16 +45,23 @@ a = R * sin(alpha)
 # taille des mailles initiales
 h0 = 1.
 
-# taille cible des mailles apres raffinement (la moitie de h de la modelisation A)
-h = 0.0125
+# taille cible des mailles apres raffinement 
+# on prend des mailles 2 fois plus petites que celles
+# de la modelisation A (car ici mailles lineaires)
+hc = 0.025/2
 
 # nombre de raffinements
 # attention, en python log = ln (logarithme neperien)
-n = (log(h0)-log(h))/log(2)
+n = (log(h0)-log(hc))/log(2)
 nb_raff = int(n)+1
+h = h0/(2.**nb_raff)
 
 # rayon du disque de raffinement
-r_raff = 10*h
+r_raff = 5*h
+
+# couronnes d'integration 
+Rsup = 5*h
+Rinf = 2*h
 
 # definition des formules utiles pour le calcul des level sets
 Rp = R * tan(alpha)
@@ -63,16 +70,18 @@ LN = FORMULE(NOM_PARA=('X','Y'),VALE='sqrt(X**2+(Y-R)**2)-R')
 LT = FORMULE(NOM_PARA=('X','Y'),VALE='sqrt(X**2+(Y-Yh)**2)-Rp')
 
 # initialisation
-MA    = [None]*(nb_raff+1)
-MO    = [None]*nb_raff
-CHERR = [None]*nb_raff
-FISS  = [None]*nb_raff 
+nb_iter = nb_raff+1
+MA    = [None]*(nb_iter+1)
+MO    = [None]*nb_iter
+CHERR = [None]*nb_iter
+FISS  = [None]*nb_iter 
 
 i_raff=0   
+
 MA[i_raff]=LIRE_MAILLAGE(FORMAT='MED')
 
 # boucle de raffinements
-for i_raff in range(nb_raff) :
+for i_raff in range(nb_iter) :
 
    MO[i_raff]=AFFE_MODELE(MAILLAGE=MA[i_raff],
                           AFFE=_F(TOUT='OUI',
@@ -84,32 +93,31 @@ for i_raff in range(nb_raff) :
                                             FONC_LN=LN,))
       
    # evaluation de l'erreur       
-   CHERR[i_raff]=RAFF_XFEM(FISSURE=FISS[i_raff])
+   CHERR[i_raff]=RAFF_XFEM(FISSURE=FISS[i_raff],
+                           TYPE='ZONE',
+                           RAYON=r_raff)
    
    # definition du type du maillage n+1
    MA[i_raff+1]=CO('MA_%d' % (i_raff+1))
-   
-   # valeur du critere de raffinement
-   crit = -max(r_raff , h0/(2.**i_raff) )
-   
+      
    MACR_ADAP_MAIL(ADAPTATION         = 'RAFFINEMENT',
                   CHAM_GD            = CHERR[i_raff],
-                  CRIT_RAFF_ABS      = crit,
-                  USAGE_CMP          = 'RELATIF', 
+                  CRIT_RAFF_ABS      = 0.5,
+                  DIAM_MIN           = hc,
                   MAILLAGE_N         = MA[i_raff],
                   MAILLAGE_NP1       = MA[i_raff+1],
                   ELEMENTS_NON_HOMARD= 'IGNORER')
-   
-assert(nb_raff == i_raff+1)
+                     
+assert(nb_iter == i_raff+1)
 
 # impression du dernier maillage
-IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(MAILLAGE=MA[nb_raff]))
+IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(MAILLAGE=MA[nb_iter]))
 
-MA[nb_raff]=MODI_MAILLAGE(reuse =MA[nb_raff],
-                          MAILLAGE=MA[nb_raff],
+MA[nb_iter]=MODI_MAILLAGE(reuse =MA[nb_iter],
+                          MAILLAGE=MA[nb_iter],
                           ORIE_PEAU_2D=_F(GROUP_MA=('SUP','INF','EXT','AXI')))
 
-MODE=AFFE_MODELE(MAILLAGE=MA[nb_raff],
+MODE=AFFE_MODELE(MAILLAGE=MA[nb_iter],
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='MECANIQUE',
                          MODELISATION='AXIS',),);
@@ -124,7 +132,7 @@ MODX=MODI_MODELE_XFEM(MODELE_IN=MODE,
 ACIER=DEFI_MATERIAU(ELAS=_F(E=210000e6,
                             NU=0.3))
 
-MATE=AFFE_MATERIAU(MAILLAGE=MA[nb_raff],
+MATE=AFFE_MATERIAU(MAILLAGE=MA[nb_iter],
                    AFFE=_F(TOUT='OUI',
                            MATER=ACIER))
 
@@ -133,18 +141,9 @@ CHAR=AFFE_CHAR_MECA(MODELE=MODX,
                               _F(GROUP_NO='D'  ,DY=0,),),
                     PRES_REP=_F(GROUP_MA=('SUP','INF','EXT'),PRES=-sig))
 
-CHXFEM=AFFE_CHAR_MECA(MODELE=MODX,
-                      LIAISON_XFEM='OUI')
-
-LIST=DEFI_LIST_REEL(DEBUT=0.,
-                    INTERVALLE=_F(JUSQU_A=1.,
-                                  NOMBRE=1))
-
 RESU=MECA_STATIQUE(MODELE=MODX,
                    CHAM_MATER=MATE,
-                   EXCIT=(_F(CHARGE=CHAR,),
-                          _F(CHARGE=CHXFEM)),
-                   INST=1.)
+                   EXCIT=_F(CHARGE=CHAR))
 
 # visualisation
 MA_VISU=POST_MAIL_XFEM(MODELE=MODX)
@@ -157,14 +156,12 @@ MO_VISU=AFFE_MODELE(MAILLAGE=MA_VISU,
 RE_VISU=POST_CHAM_XFEM(MODELE_VISU=MO_VISU,
                        RESULTAT=RESU)
 
-IMPR_RESU(FORMAT='MED',UNITE=81,RESU=_F(RESULTAT=RE_VISU))
+IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RE_VISU))
 
 CGX=CALC_G(THETA=_F(FISSURE=FISSX,
-                    DIRECTION=(cos(alpha),sin(alpha),0),
-                    R_INF=2*h,
-                    R_SUP=5*h,),
+                    R_INF=Rinf,
+                    R_SUP=Rsup,),
           RESULTAT=RESU,
-          INST=1.,
           OPTION='CALC_K_G')
 
 IMPR_TABLE(TABLE=CGX)
@@ -173,8 +170,7 @@ PK=POST_K1_K2_K3(MODELISATION='AXIS',
                  FISSURE=FISSX,
                  MATER=ACIER,
                  RESULTAT=RESU,
-                 INST=1.,
-                 ABSC_CURV_MAXI=5*h)
+                 ABSC_CURV_MAXI=Rsup)
 
 IMPR_TABLE(TABLE=PK)
 
@@ -184,25 +180,25 @@ K2ref = 0.235*(2/pi)*sig*sqrt(pi*a)
 TEST_TABLE(TABLE=CGX,
            NOM_PARA='K1',
            VALE=K1ref,
-           PRECISION=0.015,
+           PRECISION=0.02,
            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(TABLE=CGX,
            NOM_PARA='K2',
            VALE=K2ref,
-           PRECISION=0.035,
+           PRECISION=0.07,
            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(TABLE=PK,
            NOM_PARA='K1',
            VALE=K1ref,
-           PRECISION=0.065,
+           PRECISION=0.06,
            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(TABLE=PK,
            NOM_PARA='K2',
            VALE=K2ref,
-           PRECISION=0.025,
+           PRECISION=0.08,
            REFERENCE='ANALYTIQUE')
 
 FIN()

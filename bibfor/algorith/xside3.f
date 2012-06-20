@@ -15,7 +15,7 @@
       REAL*8        SIG(6,NPG),COORSE(*)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -157,7 +157,7 @@ C  --      CALCUL DE LA MATRICE DE HOOKE (LE MATERIAU POUVANT
 C  --      ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
 C          -------------------------------------------------
         CALL DMATMC('RIGI',K2BID,IMATE, INSTAN, '+', KPG, 1,
-     +                REPERE, XG, NBSIG, D, .FALSE.)
+     +                REPERE, XG, NBSIG, D)
 
 C --- VECTEUR DES CONTRAINTES
 C      ----------------------

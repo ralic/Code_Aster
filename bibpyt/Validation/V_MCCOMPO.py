@@ -1,4 +1,4 @@
-#@ MODIF V_MCCOMPO Validation  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF V_MCCOMPO Validation  DATE 18/06/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -27,12 +27,13 @@
    les traitements des objets composites de type OBJECT
 """
 # Modules Python
+import os
 import traceback
 
 # Modules EFICAS
 from Noyau import N_CR
 from Noyau.N_Exception import AsException
-from Noyau.strfunc import ufmt
+from Noyau.strfunc import ufmt, to_unicode
 
 class MCCOMPO:
    """
@@ -81,19 +82,17 @@ class MCCOMPO:
 
            - testglob = booléen 1 si toutes les règles OK, 0 sinon
       """
-      #dictionnaire=self.dict_mc_presents(restreint='oui')
-      dictionnaire=self.dict_mc_presents(restreint='non') # On verifie les regles avec les defauts affectés
-      texte='\n'
+      # On verifie les regles avec les defauts affectés
+      dictionnaire = self.dict_mc_presents(restreint='non')
+      texte = ['']
       testglob = 1
       for r in self.definition.regles:
-        erreurs,test=r.verif(dictionnaire)
+        erreurs,test = r.verif(dictionnaire)
         testglob = testglob*test
         if erreurs != '':
-          if len(texte) > 1 :
-            texte=texte+'\n'+erreurs
-          else :
-            texte = texte + erreurs
-      return texte,testglob
+            texte.append(to_unicode(erreurs))
+      texte = os.linesep.join(texte)
+      return texte, testglob
 
    def dict_mc_presents(self,restreint='non'):
       """

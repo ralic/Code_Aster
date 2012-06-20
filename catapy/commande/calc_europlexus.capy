@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 17/04/2012   AUTEUR CHEIGNON E.CHEIGNON 
+#& MODIF COMMANDE  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,12 +29,18 @@ CALC_EUROPLEXUS = MACRO(nom="CALC_EUROPLEXUS",
                         reentrant='n',
                         UIinfo={"groupes":("Outils-métier","Dynamique",)},
                         fr="Chainage Code_Aster-Europlexus",
-
+                        regles=(PRESENT_ABSENT('ETAT_INIT','MODELE'),PRESENT_ABSENT('ETAT_INIT','CARA_ELEM'),
+                        PRESENT_ABSENT('ETAT_INIT','CHAM_MATER'),EXCLUS('ETAT_INIT','FONC_PARASOL'),),
         LOGICIEL = SIMP(statut='f', typ='TXM', defaut='/home/europlex/EPXD/bin/europlexus'),
         LANCEMENT = SIMP(statut='f', typ='TXM', defaut='OUI',into=('OUI','NON')),
 
-        MODELE     = SIMP(statut='o',typ=modele_sdaster),
-        CARA_ELEM  = SIMP(statut='o',typ=cara_elem),
+        ETAT_INIT = FACT(statut='f',
+           RESULTAT    = SIMP(statut='o',typ=evol_noli),
+           CONTRAINTE = SIMP(statut='f', typ='TXM', defaut='NON',into=('OUI','NON')),
+           EQUILIBRE  = SIMP(statut='f', typ='TXM', defaut='OUI',into=('OUI','NON')),
+        ),
+        MODELE     = SIMP(statut='f',typ=modele_sdaster),
+        CARA_ELEM  = SIMP(statut='f',typ=cara_elem),
 
         FONC_PARASOL = FACT(statut='f',
            regles=(PRESENT_PRESENT('NFKT','NFKR'),
@@ -47,11 +53,11 @@ CALC_EUROPLEXUS = MACRO(nom="CALC_EUROPLEXUS",
            ),
 
 
-        CHAM_MATER = SIMP(statut='o',typ=cham_mater),
+        CHAM_MATER = SIMP(statut='f',typ=cham_mater),
 
         EXCIT      = FACT(statut='o',max='**',
            CHARGE         = SIMP(statut='o',typ=(char_meca,)),
-           FONC_MULT      = SIMP(statut='o',typ=(fonction_sdaster,)),
+           FONC_MULT      = SIMP(statut='f',typ=(fonction_sdaster,)),
           ),
 
         DIME = FACT(statut='f', regles=(AU_MOINS_UN('UNITE_DIME','Q4GS','FORCE',
@@ -120,7 +126,7 @@ CALC_EUROPLEXUS = MACRO(nom="CALC_EUROPLEXUS",
         ARCHIVAGE        =FACT(statut='o', regles=( AU_MOINS_UN('PAS_NBRE','PAS_INST',), EXCLUS('PAS_NBRE','PAS_INST',), ),
            PAS_INST     = SIMP(statut='f',typ='R'),
            PAS_NBRE     = SIMP(statut='f',typ='I'),
-           CONT_GENER   = SIMP(statut='o',typ='TXM',defaut="NON",max=1,into=("OUI","NON")),
+           CONT_GENER   = SIMP(statut='o',typ='TXM',defaut="OUI",max=1,into=("OUI","NON")),
                              ),
         COURBE  =  FACT(statut='f',max='**', regles=(EXCLUS('GROUP_NO','GROUP_MA')),
            UNITE_ALIT = SIMP(statut='f',typ='I'),
