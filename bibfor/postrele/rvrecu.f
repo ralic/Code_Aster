@@ -1,12 +1,11 @@
-      SUBROUTINE RVRECU ( MCF, IOCC, CHAMP, CHAMPN, SENSOP, NOMVEC )
+      SUBROUTINE RVRECU ( MCF, IOCC, CHAMP, NOMVEC )
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER                  IOCC
-      CHARACTER*18 SENSOP
-      CHARACTER*(*)       MCF,       CHAMP, CHAMPN, NOMVEC
+      CHARACTER*(*)       MCF,       CHAMP, NOMVEC
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,18 +25,15 @@ C ======================================================================
 C     ------------------------------------------------------------------
 C IN  IOCC   : INDICE DE L' OCCURENCE
 C IN  CHAMP  : NOM DU CHAMP A TRAITER
-C IN  SENSOP : OPTION POUR LA SENSIBILITE
 C     ------------------------------------------------------------------
 C
       CHARACTER*1   TYPE
       CHARACTER*8   K8B, FORM
-      CHARACTER*19  NCH19, NCH19N
+      CHARACTER*19  NCH19
       CHARACTER*24  VECTEU
 C
-      REAL*8 A, B, C
-      REAL*8 R8VIDE, R8PREM
-      REAL*8 EPSIL, RUNDF
-      INTEGER I, IBID, JVAL, JVALN, KVAL, N1, NEQ
+      REAL*8 A, B
+      INTEGER I, IBID, JVAL, KVAL, N1, NEQ
       INTEGER      IARG
 C
 C==================== CORPS DE LA ROUTINE =============================
@@ -53,34 +49,12 @@ C
 C
       CALL GETVTX ( MCF, 'FORMAT_C', IOCC,IARG, 1, FORM, N1 )
 C
-      IF ( SENSOP.EQ.'SENSIBILITE_MODULE' ) THEN
-        NCH19N = CHAMPN
-        CALL JEVEUO (NCH19N//'.VALE', 'L', JVALN )
-        EPSIL = R8PREM( )
-        RUNDF = R8VIDE()
-      ENDIF
-C
       IF ( FORM .EQ. 'MODULE' ) THEN
-C
-        IF ( SENSOP.EQ.'MODULE_SENSIBILITE' ) THEN
-          DO 11 I = 0 , NEQ-1
-            A = DBLE( ZC(JVAL+I) )
-            B = DIMAG( ZC(JVAL+I) )
-            ZR(KVAL+I) = SQRT( A*A + B*B )
-   11     CONTINUE
-        ELSE
-          DO 12 I = 0 , NEQ-1
-            A = DBLE( ZC(JVALN+I) )
-            B = DIMAG( ZC(JVALN+I) )
-            C = A*A + B*B
-            IF ( C.LT.EPSIL ) THEN
-              C = RUNDF
-            ELSE
-              C = ( A*DBLE(ZC(JVAL+I)) + B*DIMAG(ZC(JVAL+I)) ) / SQRT(C)
-            ENDIF
-            ZR(KVAL+I) = C
-   12     CONTINUE
-        ENDIF
+        DO 11 I = 0 , NEQ-1
+          A = DBLE( ZC(JVAL+I) )
+          B = DIMAG( ZC(JVAL+I) )
+          ZR(KVAL+I) = SQRT( A*A + B*B )
+   11   CONTINUE
 C
       ELSEIF ( FORM .EQ. 'REEL' ) THEN
         DO 20 I = 0 , NEQ-1

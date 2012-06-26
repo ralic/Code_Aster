@@ -2,7 +2,7 @@
      &                  NBNOP, NUMPAQ, TSPAQ, NOMCRI, NOMFOR,GRDVIE,
      &           FORVIE,FORDEF,NOMMAI,PROAXE,NOMMAP, CNSR, POST, RESU)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 26/06/2012   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,7 +60,6 @@ C REMARQUE :
 C  - LA TAILLE DU SOUS-PAQUET EST EGALE A LA TAILLE DU <<PAQUET>> DE
 C    MAILLES DIVISEE PAR LE NOMBRE DE NUMERO D'ORDRE (NBORDR).
 C-----------------------------------------------------------------------
-C-----------------------------------------------------------------------
       INTEGER       I, IBID, JVECTN, JVECTU, JVECTV
       INTEGER       JCNRD, JCNRL, JCNRV, IRET, ICESD, ICESL, ICESV
       INTEGER       TNECES, TDISP2, LOR8EM, LOISEM, JVECNO,  N, K
@@ -68,15 +67,18 @@ C-----------------------------------------------------------------------
       INTEGER       L, CNBNO, IBIDNO, KWORK, SOMNOW, INOP
       INTEGER       NBMA, ADRMA, JTYPMA
       INTEGER       ICMP, JAD, IARG
-      INTEGER       VALI(2), NBVECM
+      INTEGER       VALI(2), NBVECM, PARACT(30)
 C
       REAL*8        FATSOC, DGAM, GAMMA, PI, R8PI, DPHI, TAB1(18), PHI0
       REAL*8        VALA, VALB, COEFPA, CUDOMX
       REAL*8        NXM, NYM, NZM
       REAL*8        VRESU(24)
+      
+      LOGICAL       LBID, CRSIGM
 C
       CHARACTER*8  CHMAT1, NOMMAT, K8B
       CHARACTER*10 OPTIO
+      CHARACTER*16 TYPCHA
       CHARACTER*19 CHMAT, CESMAT, NCNCIN
       CHARACTER*24 TYPMA
 C
@@ -138,11 +140,20 @@ C LES INSTANTS ET TOUS LES PLANS
       ELSE
          CALL WKVECT( '&&AVGRNO.VECTNO', 'V V R', TNECES, JVECNO )
       ENDIF
+      
+      TYPCHA = 'NON_PERIODIQUE'
 
+C    DECPRO POUR IDENTIFIER L'AXE A PRPJECTER
+C---    ANALYSER LE CRITERE
+      CRSIGM = .FALSE.  
+      CALL ANACRI( NOMCRI,NOMFOR,TYPCHA,'NON', PARACT,
+     &            LBID, CRSIGM, LBID, LBID,LBID)
+     
+     
       FATSOC = 1.0D0
 
       IF (( NOMCRI(1:16) .EQ. 'FATESOCI_MODI_AV' ) .OR.
-     &    FORDEF )   THEN
+     &    FORDEF .OR. (.NOT. (CRSIGM)) )   THEN
          FATSOC = 1.0D4
       ELSE
          FATSOC = 1.0D0
@@ -177,8 +188,6 @@ C NOEUDS DU PAQUET DE MAILLES.
       IBIDNO = 1
 
       NCNCIN = '&&AVGRNO.CNCINV'
-
-
 
       IF (.NOT. POST) THEN
 

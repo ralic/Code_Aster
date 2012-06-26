@@ -1,4 +1,4 @@
-#@ MODIF sd_contact SD  DATE 30/01/2012   AUTEUR DESOZA T.DESOZA 
+#@ MODIF sd_contact SD  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,7 +31,7 @@ class sd_contact(AsBase):
     nomj = SDNom(fin=8)
 
 #   Longueurs des vecteurs fixes (voir CFMMVD.F)
-    zpari = 28
+    zpari = 29
     zparr = 5
     zdime = 18
     zmeth = 22

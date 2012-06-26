@@ -1,0 +1,97 @@
+      SUBROUTINE MMMCRG(NOMA  ,DDEPLA,DEPPLU,NGEOM ,VGEOM )
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
+      IMPLICIT     NONE
+      INCLUDE     'jeveux.h'
+      CHARACTER*8  NOMA
+      CHARACTER*19 DEPPLU,DDEPLA
+      CHARACTER*16 NGEOM
+      REAL*8       VGEOM
+C
+C ----------------------------------------------------------------------
+C
+C ROUTINE CONTACT (METHODE CONTINUE - ALGORITHME - UTILITAIRE)
+C
+C CALCUL DU CRITERE DE CONVERGENCE
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  NOMA   : NOM DU MAILLAGE
+C IN  DDEPLA : INCREMENT SOLUTION
+C IN  DEPPLU : SOLUTION A L'INSTANT COURANT
+C OUT NGEOM  : LIEU OU LE CRITERE EST MAX
+C OUT VGEOM  : VALEUR DU CRITERE MAX
+C
+C ----------------------------------------------------------------------
+C
+      INTEGER      NCMP
+      PARAMETER    (NCMP=3)
+      CHARACTER*8  LISCMP(NCMP)
+C
+      REAL*8       VMAX1,VMAX2,VMAXI
+      REAL*8       CRIDEP,R8VIDE
+      CHARACTER*8  NOMNOE
+      INTEGER      NUMNO1,NUMNO2,NUMNOE
+      REAL*8       ARMIN,REFE
+C
+      DATA LISCMP  /'DX','DY','DZ'/
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C
+C --- INITIALISATIONS
+C
+      VMAX1  = 0.D0
+      VMAX2  = 0.D0
+      CRIDEP = 0.D0
+      NGEOM  = ' '
+      VGEOM  = R8VIDE()
+C
+C --- NORME MAX AVEC SELECTION DES COMPOSANTES
+C
+      CALL CNOMAX(DDEPLA,NCMP,LISCMP,VMAX1,NUMNO1)
+      CALL CNOMAX(DEPPLU,NCMP,LISCMP,VMAX2,NUMNO2)
+C
+C --- CALCUL DU CRITERE
+C
+      IF (VMAX2.GT.0.D0) THEN
+        CRIDEP = VMAX1/VMAX2
+      ELSE
+        CRIDEP = 1.D0
+      ENDIF
+C
+C --- EMPLACEMENT DU RESIDU MAX
+C
+      NUMNOE = NUMNO1
+      VMAXI  = CRIDEP
+      IF (NUMNOE.EQ.0) THEN
+        NOMNOE = ' '
+      ELSE
+        CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUMNOE),NOMNOE)
+      ENDIF
+      NGEOM  = NOMNOE//'        '
+      VGEOM  = VMAXI
+C
+      CALL JEDEMA()
+      END

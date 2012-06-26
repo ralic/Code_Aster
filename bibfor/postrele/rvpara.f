@@ -1,7 +1,7 @@
-      SUBROUTINE RVPARA ( NOMTAB, LATAB1, NOPASE, MCF, NBPOST )
+      SUBROUTINE RVPARA ( NOMTAB,MCF, NBPOST )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,13 +20,11 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C IN  NOMTAB  : NOM DE LA TABLE PRINCIPALE PRODUITE PAR LA COMMANDE
-C IN  LATAB1  : NOM DE LA TABLE A INITIALISER
-C IN  NOPASE  : NOM DU PARAMETRE SENSIBLE EN COURS D'EXAMEN
 C IN  MCF     : MOT-CLE FACTEUR
 C IN  NBPOST  : NOMBRE DE POST-TRAITEMENT A CONSIDERER
 C ----------------------------------------------------------------------
 C     INITIALISE LA TABLE DE POST_RELEVE_T ASSOCIEE A LA TABLE DE
-C     REFERENCE NOMTAB ET A L'EVENTUEL PARAMETRE SENSIBLE NOPASE.
+C     REFERENCE NOMTAB
 C     ------------------------------------------------------------------
 C
       IMPLICIT   NONE
@@ -35,8 +33,7 @@ C 0.1. ==> ARGUMENTS
 C
       INCLUDE 'jeveux.h'
       CHARACTER*6 MCF
-      CHARACTER*8 NOPASE
-      CHARACTER*19 NOMTAB, LATAB1
+      CHARACTER*8 NOMTAB
       INTEGER NBPOST
 C
 C
@@ -46,8 +43,7 @@ C
       PARAMETER ( NOMPRO = 'RVPARA' )
 C
       INTEGER IFM, NIV
-      INTEGER IOCC, IBID, IAUX, JAUX
-      INTEGER NRPASS, NBPASS, ADRECG
+      INTEGER IOCC, IBID
       INTEGER JCHEM, JCHAM, JRESU, JNCMP, NCMP, I
       INTEGER JINVA, JPRIN, JMOME, JMAIL, JMOYE, J, JTRAD
       INTEGER JTRAN, N1, N2, N3, JCMP1, JCMP2, JCMP3, NBC, NUME
@@ -61,13 +57,10 @@ C
       CHARACTER*16  K16B, NOMSY, TYSD
       CHARACTER*24  NOMOBJ, CHEXTR, NOPARA(100), KNUME
       CHARACTER*24 VALK(3)
-      CHARACTER*24  NORECG
       CHARACTER*24  K24BID
 C
       CHARACTER*24  NOCMP
       INTEGER      JNOCMP,NCMPMX
-C
-      LOGICAL OK
       INTEGER      IARG
 C     ------------------------------------------------------------------
 C
@@ -80,18 +73,8 @@ C
       CALL INFMAJ
       CALL INFNIV(IFM,NIV)
 C
-      IF ( NIV.GE.2 ) THEN
-        IF ( NOPASE.EQ.' ' ) THEN
-          CALL U2MESK('I','POSTRELE_8',1,NOMTAB)
-        ELSE
-           VALK(1) = NOMTAB
-           VALK(2) = NOPASE
-           VALK(3) = LATAB1
-           CALL U2MESK('I','SENSIBILITE_10', 3 ,VALK)
-        ENDIF
-      ENDIF
-C               12   345678   9012345678901234
-      NORECG = '&&'//NOMPRO//'_RESULTA_GD     '
+      IF ( NIV.GE.2 ) CALL U2MESK('I','POSTRELE_8',1,NOMTAB)
+C
       NOCMP  = '&&'//NOMPRO//'_NOM_CMP_TABLE  '
       NCMPMX = 100
       CALL WKVECT(NOCMP ,'V V K8',NCMPMX,JNOCMP)
@@ -127,33 +110,8 @@ C
 C 2.1. ==> ON CHERCHE SI C'EST LA BONNE TABLE
 C
         CALL GETVID ( MCF, 'RESULTAT', IOCC,IARG,0, K8B, N3 )
-C
-        IAUX = IOCC
-        IF ( N3.NE.0 ) THEN
-          IBID = 1
-        ELSE
-          IBID = 2
-        ENDIF
-        JAUX = 1
-        CALL PSRESE ( MCF, IAUX, IBID, NOMTAB, JAUX,
-     &                NBPASS, NORECG, IRET )
-C
-        CALL JEVEUO ( NORECG, 'L', ADRECG )
-C
-        OK = .FALSE.
-        DO 21 , NRPASS = 1 , NBPASS
-          IF ( ZK24(ADRECG+2*NRPASS-2)(1:8).EQ.LATAB1(1:8) .AND.
-     &         ZK24(ADRECG+2*NRPASS-1)(1:8).EQ.NOPASE ) THEN
-            OK = .TRUE.
-          ENDIF
-   21   CONTINUE
-C
-        CALL JEDETR ( NORECG )
-C
-C 2.2. ==> ON NE DECOMPTE LES CARACTERISTIQUES QUE SI C'EST LA
-C          BONNE TABLE
-C
-        IF ( OK ) THEN
+
+
 C
          CALL GETVID ( MCF, 'CHEMIN', IOCC,IARG,0, K8B, N1 )
          IF ( N1 .NE. 0 ) JCHEM = JCHEM + 1
@@ -388,8 +346,6 @@ C
             CALL GETVTX ( MCF, 'MOYE_NOEUD', IOCC,IARG,1, K8B, N1 )
             IF ( K8B(1:3) .EQ. 'NON' ) JMAIL = JMAIL + 1
          ENDIF
-C
-        ENDIF
 C
     2 CONTINUE
 C
@@ -644,12 +600,11 @@ C
 C
 C 3.2. ==> CREATION/INITIALISATION DE LA TABLE
 C
-      CALL TBCRSD ( LATAB1, 'G' )
-      CALL TBAJPA ( LATAB1, NBP, NOPARA, TYPARA )
+      CALL TBCRSD (NOMTAB, 'G' )
+      CALL TBAJPA (NOMTAB, NBP, NOPARA, TYPARA )
 C
-C              12345678      9012345678901234
-      K24BID = LATAB1(1:8)//'           .TITR'
-      CALL TITREA('T',LATAB1,LATAB1,K24BID,'C',' ',0,'G' )
+      K24BID = NOMTAB(1:8)//'           .TITR'
+      CALL TITREA('T',NOMTAB,NOMTAB,K24BID,'C',' ',0,'G' )
 C
       CALL JEDETR(NOCMP )
 C

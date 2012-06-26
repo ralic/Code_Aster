@@ -1,4 +1,4 @@
-# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT DE HERTZ ENTRE 2 DEMI-SPHERES
 # perf005e.para = tps_job 1500 mem_job 384Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -61,8 +61,10 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
                               _F(GROUP_NO='LIM1',     DX=0.0,),
                               _F(GROUP_NO='LIM2',     DZ=0.0,),),);
 
-CHA2 = DEFI_CONTACT(MODELE      = MO,
-                    FORMULATION = 'CONTINUE',
+CHA2 = DEFI_CONTACT(MODELE         = MO,
+                    FORMULATION    = 'CONTINUE',
+                    ALGO_RESO_CONT = 'POINT_FIXE',
+                    ALGO_RESO_GEOM = 'POINT_FIXE',
                     ZONE = _F(GROUP_MA_MAIT='SMAI',
                               GROUP_MA_ESCL='SESC',
                               CONTACT_INIT='INTERPENETRE',

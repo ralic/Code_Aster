@@ -1,15 +1,18 @@
       SUBROUTINE EXTRS2 ( RESU0, RESU1, TYPCON,
-     >                    NBORDR, NUORDR, NBACC, NOMACC,
-     >                    NBARCH, NUARCH, NBEXCL, CHEXCL, NBNOSY )
+     &                    LREST, MAILLA, MODELE,
+     &                    NBORDR, NUORDR, NBACC, NOMACC,
+     &                    NBARCH, NUARCH, NBEXCL, CHEXCL, NBNOSY )
       IMPLICIT   NONE
       INCLUDE 'jeveux.h'
       INTEGER NBORDR,NUORDR(*),NBARCH,NBACC,NUARCH(*),NBEXCL,NBNOSY
       CHARACTER*16 NOMACC(*),CHEXCL(*)
       CHARACTER*(*) RESU0, RESU1
       CHARACTER*16 TYPCON
+      CHARACTER*8 MAILLA,MODELE
+      LOGICAL LREST
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,6 +29,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE SELLENET N.SELLENET
 C     OPERATEUR D'EXTRACTION
 C     ------------------------------------------------------------------
 
@@ -35,12 +39,15 @@ C
       INTEGER LXLGUT
       INTEGER VALI(2)
 C
-      INTEGER I,J,IRE1,IRE2,IADIN,IADOU,IRET
-      CHARACTER*3 TYPE
+      INTEGER I,J,IRE1,IRE2,IADIN,IADOU,IRET,IBID,JLGRF
+      INTEGER JMAOR,IER,CRET
+      CHARACTER*3 TYPE,KCHML
+      CHARACTER*4  TYCH
+      CHARACTER*8  NOMA1,NOMA2,NOMAVR
       CHARACTER*16 NOMSYM
       CHARACTER*16 NOPARA
-      CHARACTER*19 RESUIN,RESUOU
-      CHARACTER*24 CHAMIN,CHAMOU
+      CHARACTER*19 RESUIN,RESUOU,LIGREL
+      CHARACTER*24 CHAMIN,CHAMOU,CORRN,CORRM
       CHARACTER*24 VALK
 C     ------------------------------------------------------------------
 
@@ -60,6 +67,23 @@ C
         CALL RSCRSD('G',RESUOU,TYPCON,NBARCH)
       ENDIF
 
+      IF ( LREST ) THEN
+        CALL DISMOI('C','EXI_CHAM_ELEM',RESUIN,
+     &              'RESULTAT',IBID,KCHML,IRET)
+        IF ( KCHML.EQ.'OUI'.AND.MODELE.NE.' ' ) THEN
+          CALL JEVEUO(MODELE//'.MODELE    .LGRF','L',JLGRF)
+          NOMA2=ZK8(JLGRF)
+          LIGREL=MODELE//'.MODELE'
+        ELSE
+          CALL ASSERT(MAILLA.NE.' ')
+          NOMA2=MAILLA
+          LIGREL=' '
+        ENDIF
+        CALL JEVEUO(NOMA2//'.MAOR','L',JMAOR)
+        NOMA1=ZK8(JMAOR)
+        CORRN=NOMA2//'.CRNO'
+        CORRM=NOMA2//'.CRMA'
+      ENDIF
 
       DO 30 I = 1,NBNOSY
 
@@ -82,7 +106,19 @@ C
             VALK = CHAMOU
             CALL U2MESG('F', 'PREPOST5_16',1,VALK,2,VALI,0,0.D0)
           END IF
-          CALL COPISD('CHAMP_GD','G',CHAMIN,CHAMOU)
+          IF ( LREST ) THEN
+            CALL DISMOI('F','NOM_MAILLA',CHAMIN,
+     &                  'CHAMP',IBID,NOMAVR,IRET)
+            CALL ASSERT(NOMA1.EQ.NOMAVR)
+            CALL DISMOI('F','TYPE_CHAMP',CHAMIN,'CHAMP',IBID,TYCH,IER)
+            IF ( TYCH(1:2).EQ.'EL' ) THEN
+              CALL ASSERT(LIGREL.NE.' ')
+            ENDIF
+            CALL RDTCHP(CORRN,CORRM,CHAMIN(1:19),CHAMOU(1:19),'G',
+     &                  NOMA1,NOMA2,LIGREL,CRET)
+          ELSE
+            CALL COPISD('CHAMP_GD','G',CHAMIN,CHAMOU)
+          ENDIF
           CALL RSNOCH(RESUOU,NOMSYM,NUORDR(J),' ')
    20   CONTINUE
    30 CONTINUE

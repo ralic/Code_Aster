@@ -6,7 +6,7 @@
      &                  OPTION, NOMVI, NBVITA, NBVRCM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 25/06/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,7 +65,7 @@ C
 C
       INTEGER      NDIM,N1,NBVARI,NBPAR,I,J,K,IMATE,KPG,KSP,NBOCC,N2
       INTEGER      IEPSI,ICONT,IGRAD,IROTA,DEFIMP,INDIMP(9),NCMP
-      INTEGER      PRED,MATREL,IC1C2,IFORTA,IMPTGT,NBVITA
+      INTEGER      PRED,MATREL,IC1C2,IFORTA,IMPTGT,NBVITA,IMES(2)
       INTEGER      ILIGNE,ICOLON,FONACT(28),NBCOL,NBVRCM,NUMINS
       CHARACTER*4  NOMEPS(6),NOMSIG(6),NOMGRD(9),OPTGT
       CHARACTER*8  TYPMOD(2),K8B,TABLE,FONIMP(9),FONGRD(9),F0,VK8(2)
@@ -84,21 +84,17 @@ C
       DATA NOMSIG/'SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'/
       DATA NOMGRD/'F11','F12','F13','F21','F22','F23','F31','F32','F33'/
       DATA ID/1.D0,0.D0,0.D0, 0.D0,1.D0,0.D0, 0.D0,0.D0,1.D0/
-C
 C ----------------------------------------------------------------------
-C
 C     INITIALISATIONS
       NDIM=3
       TYPMOD(1)='3D'
       TYPMOD(2)=' '
       SOLVEU   = '&&OP0033'
       RAC2=SQRT(2.D0)
-
 C     ----------------------------------------
 C     RECUPERATION DU NOM DE LA TABLE PRODUITE
 C     ----------------------------------------
       CALL GETRES(TABLE,K24BID,K24BID)
-
       IFORTA=0
       CALL GETVTX(' ','FORMAT_TABLE',1,IARG,1,FORTAB,N1)
       IF (N1.NE.0) THEN
@@ -106,7 +102,6 @@ C     ----------------------------------------
             IFORTA=1
          ENDIF
       ENDIF
-
       NBVITA=NBVARI
       CALL GETVIS(' ','NB_VARI_TABLE',1,IARG,1,K,N1)
       IF (N1.GT.0) NBVITA=K
@@ -119,7 +114,6 @@ C     ----------------------------------------
             IMPTGT=1
          ENDIF
       ENDIF
-
       NCMP=6
       IGRAD=0
       CALL GETVID(' ',NOMGRD(1),1,IARG,1,FONGRD(1),N1)
@@ -127,21 +121,16 @@ C     ----------------------------------------
          NCMP=9
          IGRAD=1
       ENDIF
-
 C     SI LE NOMBRE DE VARIABLES INTERNES EST TROP GRAND
 C     ON CHANGE DE FORMAT DE TABLE
 C     NOMBRE MAXI DE COLONNES DANS UNE TABLE 9999 (CF D4.02.05)
-
       NBCOL=1+NCMP+6+2+NBVITA+1+36
       IF (NBCOL.GT.9999) THEN
           IFORTA=1
       ENDIF
-
       NOMPAR(1)='INST'
-
       IF (IFORTA.EQ.0) THEN
 C     LA TABLE CONTIENT L'INSTANT, EPS, SIG, TRACE, VMIS, VARI, NB_ITER
-
           NBPAR=1+NCMP+6+2+NBVITA+1
           IF (IMPTGT.EQ.1) NBPAR=NBPAR+36
           IF (IGRAD.EQ.1) THEN
@@ -162,17 +151,13 @@ C     LA TABLE CONTIENT L'INSTANT, EPS, SIG, TRACE, VMIS, VARI, NB_ITER
              NOMPAR(1+NCMP+6+2+I)(1:1)='V'
              CALL CODENT(I,'G',NOMPAR(1+NCMP+6+2+I)(2:16))
   11      CONTINUE
-
-          IF (IMPTGT.EQ.1) THEN
-          
+          IF (IMPTGT.EQ.1) THEN          
              DO 133 I=1,6
              DO 133 J=1,6
                 K=1+NCMP+6+2+NBVARI+6*(I-1)+J
                 WRITE(NOMPAR(K),'(A,I1,I1)') 'K',I,J
  133         CONTINUE
-
           ENDIF
-
           NOMPAR(NBPAR)='NB_ITER'
           DO 10 I=1,NBPAR
              TYPPAR(I)='R'
@@ -187,7 +172,6 @@ C     LA TABLE CONTIENT L'INSTANT, EPS, SIG, TRACE, VMIS, VARI, NB_ITER
           TYPPAR(3)='K8'
           TYPPAR(4)='R'
       ENDIF
-
 
       CALL TBCRSD(TABLE,'G')
       CALL TBAJPA(TABLE,NBPAR,NOMPAR,TYPPAR)
@@ -245,8 +229,6 @@ C        VERIFS
          PGL(3,3)=1.D0
 C VOIR GENERALISATION A 3 ANGLES AVEC CALL MATROT
       ENDIF
-
-
 C     ----------------------------------------
 C     ETAT INITIAL
 C     ----------------------------------------
@@ -271,21 +253,21 @@ C     ----------------------------------------
   16     CONTINUE
          CALL DSCAL(3,RAC2,EPSM(4),1)
       ENDIF
-
       CALL GETFAC('VARI_INIT',NBOCC)
       IF (NBOCC.GT.0) THEN
          CALL GETVR8('VARI_INIT','VALE',1,IARG,NBVARI,VIM,N1)
-      ENDIF
-
+         IF (N1.NE.NBVARI) THEN
+            IMES(1)=N1
+            IMES(2)=NBVARI
+            CALL U2MESG('F','COMPOR1_72',0,' ',2,IMES,0,0.D0)
+         ENDIF
+      ENDIF      
       KPG=1
       KSP=1
       CALL R8INIR(7, 0.D0, REP, 1)
       REP(1)=1.D0
       CALL DCOPY(3,ANG,1,REP(2),1)
-
       INSTAM=0.D0
-
-
 C     ----------------------------------------
 C     CHARGEMENT
 C     ----------------------------------------
@@ -377,8 +359,8 @@ C     ----------------------------------------
       IF (IFORTA.EQ.0) THEN
 C CONSTRUCTION DES VECTEURS DE DEFORMATION ET CONTRAINTES
 C RETIRE LE TERME EN RAC2 SUR COMPOSANTES DE CISAILLEMENT
-      CALL LCEQVN( 6 ,EPSM,EPSINI)
-      CALL LCEQVN( 6 ,SIGM,SIGINI)
+         CALL LCEQVN( 6 ,EPSM,EPSINI)
+         CALL LCEQVN( 6 ,SIGM,SIGINI)
          CALL DSCAL(3,1.D0/RAC2,EPSINI(4),1)
          CALL DSCAL(3,1.D0/RAC2,SIGINI(4),1)
 C RECOPIE DANS LA TABLE DES VECTEURS SIGINI ET EPSINI
@@ -418,16 +400,14 @@ C        ajout KTGT
             CALL TBAJLI(TABLE,NBPAR,NOMPAR,0,VR,CBID,VK8,0)
  553     CONTINUE
       ENDIF
-
 C     ----------------------------------------
 C     CREATION SD DISCRETISATION
 C     ----------------------------------------
       CALL GETVID('INCREMENT','LIST_INST',1,IARG,1,LISINS,N1)
       INSTIN = R8VIDE()
       CALL NMCRLI(FONACT,INSTIN,LISINS,SDDISC)
-
 C     ----------------------------------------
-C     NEWTON
+C     LECTURE DE NEWTON
 C     ----------------------------------------
       PRED=1
       CALL GETVTX('NEWTON','PREDICTION',1,IARG,1,PREDIC,N1)
@@ -452,17 +432,13 @@ C     ----------------------------------------
 C     LECTURE DES PARAMETRES DE CONVERGENCE
 C     ----------------------------------------
       CALL NMDOCN(K24BID,PARCRI,PARCON)
-
 C     SUBDIVISION AUTOMATIQUE DU PAS DE TEMPS
-      CALL NMCRSU(SDDISC,LISINS,PARCRI,FONACT,SOLVEU)
-      
+      CALL NMCRSU(SDDISC,LISINS,PARCRI,FONACT,SOLVEU)      
 C     INSTANT INITIAL      
       NUMINS=0 
       INSTAM = DIINST(SDDISC, NUMINS) 
-
 C     CALCUL DES VARIABLES DE COMMANDE
-      CALL VRCINP(NBVRCM,2, INSTAM,INSTAM )
-      
+      CALL VRCINP(NBVRCM,2, INSTAM,INSTAM )      
 C     ----------------------------------------
 C     MATRICE ELASTIQUE ET COEF POUR ADIMENSIONNALISER
 C     ----------------------------------------
@@ -473,8 +449,7 @@ C     DMAT ECRIT MU POUR LES TERMES DE CISAILLEMENT
       DO 67 J=4,6
         KEL(J,J) = KEL(J,J)*2.D0
         COEF=MAX(COEF,KEL(J,J))
- 67   CONTINUE
- 
+ 67   CONTINUE 
       IF (IC1C2.EQ.1) THEN
          COEF=1.D0
       ENDIF

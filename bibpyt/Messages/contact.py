@@ -1,21 +1,21 @@
-#@ MODIF contact Messages  DATE 30/04/2012   AUTEUR SELLENET N.SELLENET 
+#@ MODIF contact Messages  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
@@ -29,7 +29,7 @@ Contact méthodes discrètes.
  -> Risque & Conseil :
     Ce changement peut conduire à des difficultés de convergence dans le processus de Newton mais en
     aucun cas il ne produit des résultats faux.
-    
+
     Si la matrice de rigidité de votre structure est symétrique, vous pouvez ignorer ce qui précède.
     Enfin, il est possible de supprimer l'affichage de cette alarme en renseignant SYME='OUI'
     sous le mot-clé facteur SOLVEUR.
@@ -79,6 +79,16 @@ Le vecteur MAIT_FIXE ou ESCL_FIXE est nul !
 Le vecteur MAIT_VECT_Y ou ESCL_VECT_Y est nul !
 """),
 
+20 : _(u"""
+Contact méthode continue.
+  La méthode de Newton généralisée pour la boucle de géométrie exige que le contact soit aussi résolu par le Newton généralisé.
+"""),
+
+21 : _(u"""
+Contact méthode continue.
+  La méthode de Newton généralisée pour la boucle de géométrie n'est pas utilisable avec la pénalisation.
+"""),
+
 60 : _(u"""
 La maille %(k1)s est de type 'SEG' (poutres) en 3D. Pour ces mailles la normale ne peut pas être déterminée automatiquement.
 Vous devez utilisez l'option NORMALE :
@@ -102,7 +112,7 @@ Le modèle mélange des mailles avec des modélisations de dimensions différentes (
 85 : _(u"""
 Le modèle mélange des mailles avec des modélisations de dimensions différentes (2D avec 3D ou macro-éléments).
 Il ne faut pas que les surfaces de contact mélangent des mailles affectées d'une modélisation plane (D_PLAN, C_PLAN ou AXIS)
-avec des mailles affectées d'une modélisation 3D. 
+avec des mailles affectées d'une modélisation 3D.
 """),
 
 88 : _(u"""
@@ -110,7 +120,7 @@ N'utilisez pas REAC_INCR=0 avec le frottement.
 """),
 
 89 : _(u"""
-Contact méthode continue. 
+Contact méthode continue.
 On ne peut avoir des modélisations différentes entre contact et frottement (pénalisation ou lagrangien augmenté) différents sur la même zone.
 Il faut avoir la même option pour ALGO_CONT et ALGO_FROT.
 """),
@@ -118,7 +128,7 @@ Il faut avoir la même option pour ALGO_CONT et ALGO_FROT.
 93 : _(u"""
 Contact méthode sans résolution.
  -> Interpénétrations des surfaces.
- 
+
  -> Risque & Conseil :
     Vérifier si le niveau d'interpénétration des surfaces est acceptable dans
     votre problème.

@@ -1,8 +1,9 @@
-        SUBROUTINE LCAFYD (COMP,MATERF,NBCOMM,NMAT,MOD,NVI,VIND,NR,YD)
+        SUBROUTINE LCAFYD (COMP,MATERF,NBCOMM,CPMONO,NMAT,MOD,NVI,VIND,
+     &                     NR,YD)
 C RESPONSABLE PROIX J-M.PROIX
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 25/06/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,27 +40,37 @@ C     ----------------------------------------------------------------
       REAL*8          YD(*),MATERF(NMAT,2),VIND(*),FE(3,3)
       REAL*8          ID(3,3),HOOKF(6,6),EPSEGL(6)
       REAL*8          EISP, EPSFI(6)
-      CHARACTER*16    LOI,COMP(*)
+      CHARACTER*16    LOI,COMP(*),CPMONO(5*NMAT+1),NECOUL
       CHARACTER*8     MOD
       COMMON /TDIM/   NDT  , NDI
+      INTEGER IRR,DECIRR,NBSYST,DECAL
+      COMMON/POLYCR/IRR,DECIRR,NBSYST,DECAL
       DATA ID/1.D0,0.D0,0.D0, 0.D0,1.D0,0.D0, 0.D0,0.D0,1.D0/
 C     ----------------------------------------------------------------
 
 C     INITIALISATION DE YD EN IMPLICITE
       LOI=COMP(1)
+      
       IF (LOI(1:8).EQ.'MONOCRIS') THEN
 C ATTENTION !         NS=(NVI-8)/3
          NS=NR-NDT
-         IF ((MATERF(NBCOMM(1,1),2).EQ.4)
-     &       .OR.(MATERF(NBCOMM(1,1),2).EQ.5)
-     &       .OR.(MATERF(NBCOMM(1,1),2).EQ.6)
-     &       .OR.(MATERF(NBCOMM(1,1),2).EQ.7)
-     &                                    ) THEN
-C            KOCKS-RAUCH ET DD_CFC : VARIABLE PRINCIPALE=DENSITE DISLOC
-             CALL ASSERT(NBCOMM(NMAT,2).EQ.1)
-             DO 102 I=1,NS
-                YD(NDT+I)=VIND(6+3*(I-1)+1)
- 102         CONTINUE
+         IRR=0
+         DECIRR=0
+         IF ( (   MATERF(NBCOMM(1,1),2).EQ.4)
+     &      .OR.(MATERF(NBCOMM(1,1),2).EQ.5)
+     &      .OR.(MATERF(NBCOMM(1,1),2).EQ.6)
+     &      .OR.(MATERF(NBCOMM(1,1),2).EQ.7)) THEN
+C           KOCKS-RAUCH ET DD_CFC : VARIABLE PRINCIPALE=DENSITE DISLOC
+C           UNE SEULE FAMILLE
+            CALL ASSERT(NBCOMM(NMAT,2).EQ.1)
+            DO 102 I=1,NS
+               YD(NDT+I)=VIND(6+3*(I-1)+1)
+ 102        CONTINUE
+            NECOUL=CPMONO(3)
+            IF (NECOUL.EQ.'MONO_DD_CC_IRRA') THEN
+               IRR=1
+               DECIRR=6+3*NS
+            ENDIF
          ELSE
 C           AUTRES COMPORTEMENTS MONOCRISTALLINS
             DO 103 I=1,NS
@@ -83,6 +94,9 @@ C Y contient H*(FeT.Fe-Id)/2, ce ne sont pas exactement les PK2
 C Y contient ensuite les ns alpha_s ou gamma_s suivant la loi
             CALL LCPRMV(HOOKF,EPSEGL,YD)
          ENDIF
+         
+         
+         
       ELSEIF ( LOI(1:7) .EQ. 'IRRAD3M' ) THEN
 C        CORRESPONDANCE ENTRE LES VARIABLES INTERNES ET LES EQUATIONS
 C        DU SYSTEME DIFFERENTIEL

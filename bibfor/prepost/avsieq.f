@@ -2,7 +2,7 @@
      &                   VSIEQ )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 26/06/2012   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -47,8 +47,7 @@ C  I      : IN   I  : IEME POINT DE GAUSS OU IEME NOEUD.
 C  VPHYDR : OUT  R  : VECTEUR CONTENANT LA PRESSION HYDROSTATIQUE A
 C                     TOUS LES INSTANTS.
 C ----------------------------------------------------------------------
-C     ------------------------------------------------------------------
-      INTEGER    IORDR, ADRS, J
+      INTEGER    IORDR, ADRS, J, DECAL
       REAL*8     SIG(6),LCIV2S, EQUI(17)
 C     ------------------------------------------------------------------
 C
@@ -56,8 +55,9 @@ C234567                                                              012
 C
       CALL JEMARQ()
 C
+      DECAL = 18
       DO 10 IORDR=1, NBORDR
-         ADRS = (IORDR-1)*TSPAQ + KWORK*SOMMW*12 + (I-1)*12
+         ADRS = (IORDR-1)*TSPAQ + KWORK*SOMMW*DECAL + (I-1)*DECAL
 
          DO 35 J = 1, 6 
             SIG(J) = VWORK(ADRS + J )        

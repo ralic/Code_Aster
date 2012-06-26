@@ -1,4 +1,4 @@
-# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE    : PATIN GLISSANT SUR UN PLAN RIGIDE
 # ssnv503h.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -115,7 +115,9 @@ PTAN_101=AFFE_CHAR_MECA(MODELE=MODE,
 CTAC = DEFI_CONTACT(MODELE         = MODE,
                     FORMULATION    = 'CONTINUE',
                     FROTTEMENT     = 'COULOMB',
-
+                    ALGO_RESO_CONT = 'POINT_FIXE',
+                    ALGO_RESO_GEOM = 'POINT_FIXE',
+                    ALGO_RESO_FROT = 'NEWTON',
                     ZONE =(
                            _F(
                              GROUP_MA_ESCL = 'LESC',

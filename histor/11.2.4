@@ -1,0 +1,1600 @@
+========================================================================
+Version 11.2.4 du : 27/06/2012
+========================================================================
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR abbas        ABBAS Mickael          DATE 06/25/2012 - 04:09:31
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019024 DU 2012-06-20 11:47:55
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Ajouter la possibilitxc3xa9 de rajouter un titre dans les colonnes des observations
+FONCTIONNALITE
+   Problème
+   ========
+   
+   Dans le cadre du projet OMARISI, on souhaite pouvoir réaliser en post-traitement le calcul
+   des drifts inter-etages. Pour se 
+   faire, au cours du calcul, on stocke dans la table d'observation le max des déplacements
+   sur chacun des 
+   planchers (au nombre de 7). Lors de la relecture de la table, on perd malheureusement
+   l'information sur la localisation du 
+   post-traitement et on se retrouve alors avec 7 valeurs avec le label MAX.
+   
+   La demande d'évolution consiste à pouvoir spécifier un TITRE pour les observations afin de
+   pouvoir filtrer la table 
+   d'observation pour les opérations de post-traitements.
+   
+   Solution
+   ========
+   
+   Le mot-clef simple TITRE est ajouté dans le mot-clef facteur OBSERVATION de MECA_NON_LINE
+   (sur le modèle du même mot-clef dans SUIVI_DDL).
+   
+   L'utilisateur entre alors une chaine qui peut servir d'identifiant unique (chaine de
+   longueur 80) pour une occurrence d'observation.
+   Si l'utilisateur n'a pas spécifié de TITRE, la colonne correspondante sera tagguée
+   "OBSERVATION_xx" avec xx le numéro d'occurrence de l'observation dans MECA_NON_LINE.
+   
+   La table contiendra donc une colonne de K80, de paramètre "NOM_OBSERVATION" Exemple sur
+   sdnd102b:
+   
+    NOM_OBSERVATION...............................TYPE_OBJET... NOM_SD.....
+   NUME_ORDRE...INST.........NOM_CHAM.......EVAL_CHAM..NOM_CMP..NOEUD..VALE....
+    DEPL_ABS_DX_NO1...............................R.........................100..........1.00000E-01..DEPL_ABSOLU....VALE.......DX.......NO1....-1.06285E-18
+    VITE_ABS_DX_NO1...............................R.........................100..........1.00000E-01..VITE_ABSOLU....VALE.......DX.......NO1....-1.59155E-02
+    ACCE_ABS_DX_NO1...............................R.........................100..........1.00000E-01..ACCE_ABSOLU....VALE.......DX.......NO1.... 5.31582E-17
+    DEPL_NO1_DX...................................R.........................100..........1.00000E-01..DEPL...........VALE.......DX.......NO2....-3.99797E-05
+    VITE_NO2_DY...................................R.........................100..........1.00000E-01..VITE...........VALE.......DX.......NO2....-1.51053E-02
+   
+   
+   
+   NB1: il existait déjà une colonne de paramètre "NOM_OBJET" dont la valeur était "VALEUR"
+   en dur (vachement utile !)
+   NB2: il est possible d'avoir plusieurs ligne de même titre pour le même instant si
+   l'utilisateur a demandé par exemple les déplacements sur un groupe de nœuds. Dans ce cas,
+   il faudra donc aussi filtrer sur le nom du nœud (comme actuellement)
+   NB3: l'information sur les groupes donnés par l'utilisateur est perdue dès la création de
+    la SD OBSERVATION pour être plus efficace. Il n'est donc pas possible de nommer par le
+   nom des groupes (d'autant qu'il peut y avoir une liste de groupes). C'est à l'utilisateur
+   de trouver un titre convenable (K80, y a de la place !)
+   
+   Impacts:
+   c_observation.capy
+   nmcrob.f  nmobno.f  nmobs2.f  nmobse.f  nmobsz.f nmcrot.f (une routine qui sent fort)
+   
+   Validation: on ajoute des titres aux observations dans sdnd102b. On teste par filtre
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V5.01.102,U4.51.03
+VALIDATION
+    sdnd102b
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018979 DU 2012-06-14 07:06:07
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    Contact - Risque de bug en cas de non-appariement
+FONCTIONNALITE
+   Problème
+   ========
+   
+   
+   A l'occasion du chantier sur le Newton généralisé (fiche issue18339), on s'est aperçu d'un
+   risque de résultats faux dans certaines configurations du contact.
+   Le problème est révélé par le cas-test ssnv503f.
+   Dans ce test, les mouvements de corps rigides en frottement sont corrigés par des ressorts
+   très faibles. A tel point que la structure part "très loin" et les nœuds esclaves ne
+   s'apparient plus (projection des nœuds esclaves au-delà de la surface maitre). En mettant
+   TOLE_PROJ_EXT=1E99 (prolongement infini des surfaces maitres) , on résout le problème .
+   
+   Dans le cas d'un ré-appariement à chaque itération de Newton (Newton généralisé), ceci
+   provoque nécessairement un résultat faux. D'autres configurations en point fixe (algo
+   historique de la méthode continue) peuvent potentiellement aussi présenter ce problème,
+   mais c'est moins probable.
+   
+   
+   Solution
+   ========
+   
+   Il y a un moyen simple de contrôler ce risque: alarmer l'utilisateur lorsqu'aucun nœud
+   esclave ne s'apparie, ce qui révèle nécessairement un problème (soit de définition de
+   contact, soit de mouvements non contrôlés).
+   
+   Résultats faux ?
+   Même si le risque de résultat faux est possible, il est TRÈS facilement contrôlable par
+   l'utilisateur: on voit que les structures ne sont plus en contact.
+   
+   A faire en 10
+   
+   Impact: apcalc.f apvepa.f et appariement.py
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    test perso
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018840 DU 2012-05-10 13:36:04
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    DEFI_CONTACT : formulation continue et POI1
+FONCTIONNALITE
+   Probleme
+   ========
+   
+   Dans la doc de DEFI_CONTACT U4.44.11, il est bien dit que les POI1 ne sont pas compatible
+   avec la formulation continue.
+   Cependant il n'y pas de message d'erreur mais seulement un ASSERT si on fait cette
+   combinaison.
+   
+   Solution
+   ========
+   
+   On ajoute une vérification dans la routine typeco.f (au moment du DEFI_COTNACT) avec une
+   erreur fatale.
+   A faire en V10
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    liste restreinte
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018773 DU 2012-04-24 13:14:33
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    Recherche linxc3xa9aire dans dyna_non_line
+FONCTIONNALITE
+   Problème
+   ========
+   
+   La fiche issue11745 remettait en service la recherche linéaire dans DYNA_NON_LINE.
+   Or, dans nmdomt.f, aucun paramètre du mot-clef n'est lu quand on est en dynamique:
+   IF (NOMCMD(1:4).EQ.'DYNA') THEN
+     NOCC = 0
+   ELSE
+     CALL GETFAC('RECH_LINEAIRE',NOCC)
+   ENDIF
+   
+   
+   Solution
+   ========
+   
+   Il suffit de voir la validation (fdnv100a et sdnv106a) pour se rendre compte du
+   problème: le calcul converge en une itération à chaque pas de temps, la recherche linéaire
+   n'est jamais activée (car elle ne l'est jamais en prédiction) et les statistiques sur le
+   transitoire ne font pas apparaitre le nombre d'itérations de recherche linéaire. 
+   
+   Donc, effectivement, la recherche linéaire en dynamique est "activée", mais
+   avec les paramètres par défaut: méthode CORDE, 0 (!) itérations. Donc, on ne fait rien.
+   Donc, ça sert à rien, sinon à afficher la colonne dans le tableau de convergence.
+   
+   A la question, la recherche linéaire a-t-elle jamais marché un jour ? Oui, avant la
+   9.1.22, pile au moment où l'on émettait la "fiche de doute" issue11285 et qu'on
+   débranchait cette recherche linéaire par précaution.
+   
+   Il faut que la recherche linéaire soit validée. Malheureusement, aucun cas-test de la base
+   ne propose du non-linéaire sévère avec DYNA_NON_LINE, sauf sdnv103. Or ces cas-tests sont
+   des cas-tests de contact, fonctionnalité pour laquelle la recherche linéaire est
+   déconseillée !
+   Il y a bien le sdnv106a, mais il valide la recherche de modes vibratoires (comparaison
+   MODE_VIBR et MODE_ITER_SIMULT) et il est toujours en régime élastique dans ce test.
+   Il n'y a donc aucun moyen de valider la recherche linéaire en dynamique. On modifie
+   nmdomt.f pour que ce soit pris en compte informatiquement. Le défaut de validation de
+   DYNA_NON_LINE en régime non-linéaire est un problème qui reste à traiter.
+   
+   
+   A faire en V10
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucun
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018339 DU 2012-02-02 17:26:18
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    CTC1 - Newton generalise suppression boucle de geometrie
+FONCTIONNALITE
+   Évolution
+   =========
+   
+   On propose d'ajouter la possibilité de résoudre un problème de contact/frottement par la
+   méthode de Newton généralisée.
+   Le but est d'améliorer les performances et également la qualité des résultats dans les cas
+   les plus
+   difficiles pour le contact/frottement: grands-glissements relatifs, forte variations des
+   surfaces (grandes déformations, plasticité).
+   
+   Ce nouvel algorithme est disponible dans la formulation continue.
+   
+   Résultat du travail de D.Kudawoo (ingénieur-chercheur EDF - doctorant LMA/EDF)
+   
+   Enjeux
+   ======
+   
+   L'idée est de passer de l'algorithme "historique" en trois boucles de points fixes
+   (géométrie, frottement, statuts de contact) par une résolution simultanée dans la même
+   itération de Newton (Newton dit généralisé).
+   S'applique à la formulation lagrangienne augmentée dite "méthode continue" dans Aster par
+   linéarisation explicite de tous les termes.
+   
+   Deux fiches ont déjà supprimé les deux boucles internes:
+   - Boucle sur les statuts de contact: issue10533
+   - Boucle sur le seuil de frottement: issue16411
+   
+   Cette fiche supprime la dernière boucle, la plus externe: la boucle d'appariement et de
+   calcul géométrique.
+   Remarque: cette boucle externe est identique à celle présente dans les formulations dites
+   "DISCRETE" mais la fiche ne concerne que la méthode CONTINUE.
+   
+   Impacts
+   =======
+   
+   Trois zones d'impact:
+   1/ Définition des options (DEFI_CONTACT)
+   2/ Modification de l'algorithme de résolution (STAT_NON_LINE et DYNA_NON_LINE - op0070.f)
+   3/ Ajout des termes de linéarisation dans la matrice de résolution (te0364.f)
+   
+   
+   DEFI_CONTACT
+   ============
+   
+   On propose d'ajouter le mot-clef ALGO_RESO_GEOM='POINT_FIXE'/'NEWTON', sur le modèle de ce
+   qui existe déjà pour le contact et le frottement (ALGO_RESO_CONT et ALGO_RESO_FROT).
+   
+   Remarque: 
+   * Le mode ALGO_RESO_CONT=ALGO_RESO_FROT=ALGO_RESO_GEOM='NEWTON' est désormais le mode par
+   DEFAUT de la méthode CONTINUE
+   * Le mode ALGO_RESO_CONT=ALGO_RESO_FROT=ALGO_RESO_GEOM='POINT_FIXE' correspond à la
+   version historique de la méthode continue (version 10 et antérieures).
+   * Quand on décide de ne pas faire de réappariement, (hypothèse des petits glissements),
+   soit REAC_GEOM='SANS', le mode POINT_FIXE est obligatoire. C'est plus simple
+   algorithmiquement et ça permet à l'utilisateur de bien réfléchir à cette hypothèse avant
+   de l'activer (hypothèse dangereuse)
+   * Le mode REAC_GEOM='CONTROLE' n'a pas de sens en Newton généralisé.
+   * La formulation dite "pénalisée"
+   (ALGO_CONT='PENALISATION' ou ALGO_FROT='PENALISATION') n'est possible qu'en mode
+   POINT_FIXE.  La dérivation explicite des termes spécifiques à cette formulation n'a pas
+   été faite. 
+   * La combinatoire des ALGO_RESO_* = 'POINT_FIXE' ou 'NEWTON' est entièrement disponible
+   sauf dans un cas:
+     ALGO_RESO_GEOM='NEWTON' implique TOUJOURS ALGO_RESO_CONT='NEWTON'. 
+   Il n'y a pas de risques de résultats faux si on n'interdit pas cette combinaison, mais
+   elle ne donne pas de résultats (pas de convergence) du fait de incohérence entre la maille
+   appariée et le statut de contact du nœud que cela implique.
+   
+   MECA_NON_LINE
+   =============
+   
+   L'algorithme est modifié:
+   * On permet de ne pas passer dans les boucles externes de points fixes (nmible.f/nmtble.f)
+   en mode "full" Newton
+   * En mode "full-Newton", on ajoute deux colonnes au tableau de convergence: 
+     1/ sur la valeur du critère géométrique (voir remarques)
+     2/ sur l'emplacement de la valeur max du critère géométrique (pour le mode
+   INFO_RESIDU='OUI' dans AFFICHAGE).
+   * En mode "full-Newton", il y a désormais uniquement la colonne des itérations de Newton
+   (plus de colonnes pour les points fixes) et trois colonnes dédiées aux critères de
+   convergence "renforcés" (+ leur INFO_RESIDU s'il y a lieu)
+   * En termes d'algorithmie proprement dite:
+     1/ L'appariement est fait à chaque itération de Newton
+     2/ Création des éléments tardifs de contact à chaque itération de Newton
+     3/ Évaluation de tous les critères (RESI_GLOB_* et critères spécifiques pour le contact
+   continu) à chaque itération
+     4/ Calcul de la matrice de contact avec les termes géométriques: nécessite de recalculer
+   la base tangente dans le TE, à chaque itération
+   
+   Remarques:
+     * Par souci de simplification, la renumérotation du profil de la matrice est refaite
+   aussi à chaque itération. Avant, on économisait cette opération en mode POINT_FIXE. Il est
+   possible que cette simplification dégrade un peu les performances, mais pas constaté pour
+   l'instant.
+     * Les critères de convergence sont renforcées. En toute rigueur théorique, en mode
+   "full-Newton", le seul critère de Newton ( RESI_GLOB_*) est suffisant pour être convergé.
+   En pratique, on a trois autres critères:
+       1/ Variation des statuts de contact: on en peut pas converger si au moins UN nœud a
+   changé de statut de contact entre deux itérations de Newton
+       2/ Variation du seuil de frottement: RESI_FROT vaut 1E-6 par défaut. 
+       3/ Variation de la géométrie: RESI_GEOM vaut 1E-6 par défaut
+     * Le critère de géométrie est différent dans le mode NEWTON par rapport au mode POINT_FIXE:
+       1/ Il repose sur une évaluation de l'incrément de déplacement issu de la résolution de
+   Newton, normé par le déplacement depuis le début du pas de temps. En conséquence, il faut
+   toujours au moins DEUX itérations de Newton pour converger, même en élasticité sans
+   frottement.
+       2/ Il présente la même pathologie que le mode POINT_FIXE: la redécoupe risque de ne
+   pas être efficace dans le cas d'un défaut de convergence sur ce critère (voir issue18771).
+   Toutefois, le critère géométrique étant superflu par rapport au critère de Newton, c'est
+   plutôt ce dernier qui pilote la convergence.
+       3/ Ce critère est très sévère par rapport au mode POINT_FIXE (RESI_GEOM=1E-2 dans ce
+   dernier cas). Quand on converge, on converge beaucoup mieux (voir remarques sur les
+   cas-tests). On peut également atteindre des niveaux de critère géométrique plus faible que
+   dans le cas POINT_FIXE (il était difficile de descendre en-dessous de 1.E-3 dans ce
+   dernier cas).
+   
+   MODIFICATION DES TE
+   ===================
+   
+   La modification concerne trois points:
+   * Passage de l'information "full-Newton" dans la carte d'entrée (modif des catalogues
+   d'éléments)
+   * Recalcul de la base tangente dans le TE (avant, la normal était fixe d'une itération de
+   Newton à l'autre) -> impacts sur mmcaln et divers appelants de cette routines.
+   * Ajout des termes correspondant à la non-linéarité géométrique dans les parties
+   maitre/maitre, esclave/maitre et maitre/esclave -> impacts dans mmtpfe et mmmtmm/mmmtem/mmmtme
+   
+   Remarques:
+   * La partie géométrique est identifié à part dans le TE pour permettre plus tard un
+   éventuel débranchement (passage en mode "QUASI-NEWTON".
+   * Le second membre n'est pas modifié, sauf pour la ré-évaluation des normales
+   
+   VALIDATION
+   ==========
+   
+   Passage des 101 tests en mode "FULL-NEWTON".
+   Un premier passage fait échouer 47 cas-tests, la plupart en défaut de convergence.
+   
+   Analyse globale: quand ça marche, c'est très efficace. Le cas-tests ssnv128p (patin
+   frottant) passe de 1860 itérations (mode POINT_FIXE en V10) à ... 13 itérations de Newton.
+   
+   BILAN: environ 25 tests gagnent entre 1% et 90% (! ) de temps CPU 
+   Les plus marquants (voir feuille EXCEL attachée)
+   
+   -90,11%	ssnp154d
+   -89,83%	ssnv127h
+   -89,52%	ssnv128p
+   -81,68%	ssnp156b
+   -81,55%	ssnp154c
+   -81,25%	ssnp156a
+   -72,32%	sdnv105c
+   -69,08%	sdnv105c
+   -65,31%	sdnv105c
+   -63,34%	sdnv105c
+   -62,47%	ssnp153a
+   -60,00%	ssnv127f
+   -56,74%	ssna111b
+   -52,38%	ssnp154b
+   -50,00%	zzzz292a
+   -49,62%	ssnp501c
+   -47,44%	ssnp503k
+   -46,99%	ssnp502c
+   -46,15%	ssnv503i
+   -45,68%	ssnv128r
+   -45,45%	ssna122b
+   -43,81%	ssnp157a
+   -43,21%	ssnv506e
+   -40,98%	ssnp150b
+   -40,34%	sdnv103f
+   -40,00%	ssnv219b
+   -40,00%	ssnv219b
+   -40,00%	ssnv219b
+   -38,16%	ssnp504e
+   -36,17%	ssnp504a
+   -36,17%	ssnp504c
+   -34,78%	ssnp503g
+   -33,85%	ssnp150b
+   -33,50%	ssnv506f
+   -33,33%	ssnv219b
+   -28,26%	ssnp503i
+   -25,59%	ssnp152e
+   -25,00%	ssnp152a
+   -25,00%	ssnp152a
+   -25,00%	ssnp152b
+   -25,00%	ssnp152b
+   -24,97%	ssnp152f
+   -22,22%	ssna102f
+   -22,22%	ssnp152g
+   -21,40%	ssnp152c
+   -21,05%	ssnp503c
+   -21,02%	sdnv105c
+   -18,39%	ssna122a
+   -16,85%	ssnp152c
+   -16,67%	ssnv193a
+   -15,79%	ssnp503a
+   -13,85%	sdnv105c
+   
+   Dans les échecs, on fait quatre lots.
+   
+   LOT 1 - Cas pathologiques qu'on ne traite pas:
+   - l'usure ne converge plus (il faut probablement introduire des termes supplémentaires) ->
+   ne marchera qu'en POINT_FIXE
+   - le mode PENALISATION -> ne marche bien qu'en POINT_FIXE
+   - les cas-tests "étranges": la mise en donnée, en particulier les conditions limites
+   mériteraient d'être revues (la barre de Taylor sdnv103 par exemple)
+   
+   LOT 2 - Défaut de convergence méritant un traitement particulier.
+   Quatres manières d'agir:
+   - Modifier la discrétisation temporelle ou permettre le redécoupage
+   - Augmenter ITER_GLOB_MAXI (10 par défaut, passer à 11 suffit dans plusieurs cas)
+   - Jouer sur d'autres paramètres. TOLE_PROJ_EXT (voir issue18979), ALGO_CONT, ALGO_FROT. Le
+   Newton généralisé est très sensible à ces paramètres. Un travail est en cours de
+   finalisation sur le sujet.
+   - il faut parfois intervertir surface maitre et surface esclave. La formulation n'étant
+   pas symétrique, il semblerait que la surface déformable doit être la plus rigide (à
+   vérifier ...)
+   
+   LOT 3 - Défaut de convergence sans solution
+   Il y a :
+   - les cas-tests en dynamique en général. On a constaté un fort effet du paramètre ALPHA
+   HHT. L'amortissement numérique est visiblement une mauvaise idée avec le Newton généralisé. 
+   - des cas-tests qui cyclent. Un travail est en cours de finalisation sur le sujet (issue18929)
+   - des cas qu'on n'arrivent pas du tout à corriger
+   
+   Lot 4 - Convergence dégradée
+   - Meilleure prise en compte de la non-linéarité géométrique (1E-6) -> les perf005: pour
+   des raisons d'efficacité, on les laisse en POINT_FIXE
+   
+   Quelques NOOK:
+   - Des valeurs de non-régression avec des très faibles tolérances: 3 tests sont dans ce
+   cas. La plupart correspondant à l'effet du renforcement du critère géométrique
+      sdnv103f, ssna102d et ssnp153a
+   
+   - Les solutions manufacturées: on retrouve le taux de convergence à 2.5 pour la pression
+   (meilleure résolution en géométrie) plus une légère variation de la valeur "analytique"
+      ssnp150b, ssnv219a et ssnv219b
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : D4.06.14,U4.44.11,V5.03.103,V6.01.102,V6.03.150,V6.03.153,v6.04.219,R5.03.52
+VALIDATION
+    liste complète contact
+NB_JOURS_TRAV  : 200.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 017726 DU 2011-10-17 16:11:39
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    OBSERVATION nouvelles options MAX_ABS et MIN_ABS
+FONCTIONNALITE
+   Problème
+   ========
+   
+   Dans le cadre du projet OMARISI on a besoin d'avoir le maximum de la valeur absolue de 
+   champs cinématiques (déplacement et accélération) pour plusieurs groupe de mailles 
+   différents. Pour cela on se sert de l'OBSERVATION car on ne peut tout stocker dans la sd 
+   evol_noli (trop de pas de temps donc on archive).
+   Or dans OBSERVATION, on peut demander :
+   EVAL_CHAM = /'VALE', [DEFAUT]
+               /'MIN',
+               /'MAX',
+               /'MOY',
+   On souhaite avoir directement l'option MAX_ABS et même MIN_ABS (comme cela 
+   existe déjà pour POST_RELEVE_T par exemple).
+   
+   Résolution
+   ==========
+   
+   Ajout de MAX_ABS et MIN_ABS dans l'évaluation des valeurs de l'OBSERVATION.
+   Cette fonctionnalité est également ajoutée dans le SUIVI_DDL (les routines d'extraction
+   sont communes entre les deux fonctionnalités)
+   
+   NB: vu le nombre de routines impactées, je pense qu'il serait souhaitable d'améliorer un
+   peu ça !
+   
+   Impacts:
+   c_observation.capy c_suivi_ddl.capy
+   nmext1.f  nmext3.f nmext0.f  nmext2.f  nmextl.f 
+   
+   Validation: cas-test wtnv113j
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.51.03,V7.31.113
+VALIDATION
+    wtnv113j
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR sellenet     SELLENET Nicolas       DATE 06/25/2012 - 04:09:35
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018918 DU 2012-05-29 11:17:27
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    Routines plus appelees
+FONCTIONNALITE
+   Les routines suivantes ne sont plus appelées : BURAIE, BURJBC, BURJP2, FMACGR, GBAN2D,
+   LCVMF1, PKFON1, NMDECS, TE0422, TE0423, TE0571, TE0572, VERSIO et VTGPLK.
+   
+   On les résorbe.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucune
+DEJA RESTITUE DANS : 11.2.3
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018881 DU 2012-05-21 10:12:52
+TYPE evolution concernant Code_Aster (VERSION 10.5)
+TITRE
+    Mauvais nom de maillage pour une impression restreinte
+FONCTIONNALITE
+   Problème :
+   ----------
+   """
+   Pour une impression de résau format MED, le mot-clé RESTREINT permet de limiter l'écriture
+   à une région définie par des groupes de mailles. Aster écrit alors une restriction du
+   maillage et choisit de nommer ce maillage '&&OP0039'. C'est premièrement assez obscur mais
+   surtout cela plante quand on fait deux impressions sucessives car le maillage existe déja.
+   On pourrait proposer d'ajouter un mot-clé pour définir un nom de maillage MED, sur le
+   modèle de ce qui est fait pour les champs.
+   """
+   
+   
+   Analyse :
+   ---------
+   C'est la fonctionnalité RESTREINT qui pose problème dans IMPR_RESU. Je propose donc de la
+   supprimer de cette commande.
+   
+   L'idée est donc de la déplacer dans EXTR_RESU. Pour permettre cette modification, il est
+   nécessaire de modifier légèrement la structure de données maillage. On y ajoute des
+   vecteurs indispensables (correspondance mailles et noeuds nouveau maillage - ancien
+   maillage) ainsi qu'une référence vers le maillage d'origine.
+   
+   On complique la vie de l'utilisateur mais comme cela, on lui laisse le choix des noms
+   (demande initiale) et on évite de faire la création d'une sd_resultat en souterrain dont
+   on cache tout à l'utilisateur.
+   
+   Le changement de syntaxe est le suivant :
+   Avant :
+   """
+   IMPR_RESU(FORMAT  = 'MED',
+    RESU=_F(RESULTAT=U),
+    RESTREINT=_F(GROUP_MA=('DCB_1','DCB_2',)),
+   )
+   """
+   
+   Après :
+   """
+   MA2 = CREA_MAILLAGE(MAILLAGE=MA,RESTREINT=_F(GROUP_MA=('DCB_1','DCB_2',),),)
+   
+   MO2 = AFFE_MODELE(MAILLAGE=MA2, ...)
+   
+   U2=EXTR_RESU(RESULTAT=U,
+                RESTREINT=_F(MODELE=MO2))
+   
+   IMPR_RESU(FORMAT  = 'MED',
+    RESU=_F(RESULTAT=U2),)
+   """
+   
+   Note hors sujet : je désactive l'émission de MED_1 lorsqu'une famille de point de Gauss ne
+   compte qu'un point de Gauss.
+   
+   
+   Modifications :
+   ---------------
+   Fortran : extrs2.f  irchme.f  op0039.f  op0167.f  op0176.f  rdtchp.f  rdtmai.f
+   Capy    : extr_resu.capy  impr_resu.capy
+   Python  : prepost.py  sd_maillage.py
+   Tests   : forma08a.comm  forma08b.comm  zzzz240a.comm
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U7.05.21 U4.71.04
+VALIDATION
+    forma08a forma08b zzzz240a
+DEJA RESTITUE DANS : 11.2.3
+NB_JOURS_TRAV  : 1.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018828 DU 2012-05-07 12:46:33
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Vxc3xa9rification des appels xc3xa0 JUVECA
+FONCTIONNALITE
+   Problème :
+   ----------
+   """
+   Il y a une cinquantaine de routines appelant JUVECA, une routine permettant d'agrandir un
+   vecteur Jeveux.
+   Afin d'éviter des bugs potentiels (comme celui de issue18581), on propose d'analyser les
+   appels à JUVECA et de vérifier que la taille cible du vecteur agrandi est bien plus grande
+   que la taille dont on a besoin (et pas arbitrairement une taille 2 fois plus grande que la
+   taille initiale).
+   """
+   
+   
+   Analyse et solution :
+   ---------------------
+   Après consultation des experts, il semble qu'il n'y ait que deux JUVECA qui puisse être
+   problématique. Il se trouve dans MOINSR.
+   
+   Il faut rajouter des ASSERT.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    visuelle
+DEJA RESTITUE DANS : 11.2.3
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018707 DU 2012-04-13 09:52:28
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Impression du champ DEPL pour MED
+FONCTIONNALITE
+   Problème :
+   ----------
+   """
+   Le champ DEPL est en fait un champ de DDL qui selon les modélisations et le  type de
+   calcul peut contenir un nombre très important de composantes. Un champ MED a le même
+   nombre de composantes sur tout le maillage.
+   On remplit donc ce champ de valeurs 'zéro'.
+   
+   Ce champ DEPL pose plusieurs problèmes : 
+    - En post-traitement, on ne peut pas directement le traiter en déformée
+    - Il comporte un nombre très important de composante (par exemple, lorsqu'on a un tuyau
+   quelque part dans le maillage, on peut avoir jusqu'à 39 composantes !)
+    - Le fichier MED peut être très gros à cause des zéro.
+   
+   Il faudrait pour le champ DEPL (DX,DY,DZ) avoir une possibilité de l'imprimer au format
+   MED directement.
+   """
+   
+   
+   CR RTA :
+   --------
+   """
+   On ne fait pas de développement particulier pour l'impression du champ de déplacement.
+   Avec NOM_CMP = ('DX', 'DY', 'DZ'), on s'en sort facilement.
+   
+   En revanche, on émet une alarme lorsque le champ a été complété avec "beaucoup" de 0. et
+   on conseille alors l'utilisation de NOM_CMP ou l'impression sur un groupe de mailles.
+   """
+   
+   
+   Solution :
+   ----------
+   Le message MED_30 est déjà émis lorsqu'on détecte l'ajout de 0.D0 :
+   """
+    -> Votre modèle semble être composé de plusieurs modélisations, les composantes
+    . .qui n'existent pas pour une partie du modèle ont été mises à zéro.
+   """
+   
+   On modifie le message pour conseiller l'utilisation de NOM_CMP si l'utilisateur considère
+   que le fichier MED obtenu est trop voluminueux.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucune
+DEJA RESTITUE DANS : 11.2.3
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018424 DU 2012-02-15 14:01:08
+TYPE evolution concernant Code_Aster (VERSION 11.1)
+TITRE
+    Impossible de transformer une carte NEUT_R en CHAMELEM
+FONCTIONNALITE
+   Demande de Gérald :
+   -------------------
+   """
+   Le calcul termine en erreur fatale si on veut convertir la carte de type 'CART_NEUT_R' en
+   CHAMELEM de type 'ELEM_NEUT_R' par un CREA_CHAMP (inspiré de zzzz161a).
+   """
+   
+   
+   Réponse :
+   ---------
+   Malheureusement cette fiche est strictement identique à la fiche issue17649. Une RTA a eu
+   lieu et finalement, je n'ai pas été en mesure d'améliorer la situation de l'utilisateur.
+   
+   À part ajouter TOU_INI_ELEM dans le catalogue qui va bien pour le cas de Gérald, je ne
+   vois pas ce que je peux faire de plus.
+   
+   Ce que souhaite l'utilisateur (Sébastien Meunier), c'est deux choses :
+   - pouvoir manipuler ce champs contenant des diamètres des mailles calculés par HOMARD
+   (calcul de min, max, médiane),
+   - pouvoir réimprimer le champs relu.
+   
+   Pour le premier point, ça me semble déjà faisable aujourd'hui. En effet même si les
+   sd_cartes ne sont pas très intuitives, on peut comprendre ce qu'il y a dedans et en tirer
+   l'information recherchée (cf. doc D4.06.05).
+   
+   Pour le deuxième point, il est indispensable à un restitution de Samuel donc il restituera
+   les sources modifiées pour permettre l'écriture d'une carte au format MED.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucune
+DEJA RESTITUE DANS : 11.2.3
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 25/06/2012 - 12:21:44
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019023 DU 2012-06-20 08:29:04
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    Erreur dans un CALC_FONCTION de MACR_SPECTRE
+FONCTIONNALITE
+   Problème
+   ========
+   
+   Lors de l'appel à MACR_SPECTRE, l'utilisateur rencontre l'erreur suivante :
+   
+   !-------------------------------------------------------------------------!
+   ! <EXCEPTION> <FONCT0_27> . . . . . . . . . . . . . . . . . . . . . . . . !
+   ! . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . !
+   ! Un problème d'interpolation a été rencontré. . . . . . . . . . . . . . .!
+   ! Fonction concernée : AcceX . . . . . . . . . . . . . . . . . . . . . . .!
+   ! . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . !
+   ! . -> Risque & Conseil : . . . . . . . . . . . . . . . . . . . . . . . . !
+   ! . . . Vérifier les valeurs fournies derrière le mot-clé 'INTERPOL' lors !
+   ! . . . de la création de cette(ces) fonction(s). . . . . . . . . . . . . !
+   ! . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . !
+   ! . -> Débogage : . . . . . . . . . . . . . . . . . . . . . . . . . . . . !
+   ! . . . abscisse = 0.005, intervalle = [0.004, 0.006] . . . . . . . . . . !
+   !-------------------------------------------------------------------------!
+   
+   
+   Correction
+   ==========
+   
+   L'interpolation est permise pour les fonctions fournies à MACR_SPECTRE.
+   
+   Il s'agit en fait d'une fonction construite à partir de la table d'observation 
+   par RECU_FONCTION qui, par défaut, n'autorise par l'interpolation.
+   
+   On fait comme pour les cas RESULTAT et RESU_GENE : on permet l'interpolation 
+   linéaire sur cette fonction.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    xc3xa9tude jointe
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018924 DU 2012-05-30 09:50:28
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    getcolljev d'une collection contigue
+FONCTIONNALITE
+   Problème
+   ========
+   
+   La récupération (par copie) d'une collection dans un dictionnaire produit une 
+   erreur mémoire pour un nume_ddl issu du test sdls118a.
+   
+   Correction
+   ==========
+   
+   On récupère l'objet .NUME.PRNO d'un nume_ddl. Il s'agit d'une collection numérotée 
+   dont les clés sont 1 et 3. L'indice 2 a probablement été supprimé.
+   
+   Dans ce cas, getcolljev prévoit de mettre None à l'indice 2 et libère la zone 
+   mémoire de la variable 'tup'. Or comme le tuple n'a pas été créé, on libère une 
+   deuxième fois la référence vers le tuple créé pour l'indice 1 d'où l'erreur 
+   mémoire.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sdls118a modifixc3xa9
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018928 DU 2012-05-30 21:25:12
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    En NEW11.1.24, le cas-test erreu09b s'arrete par manque de temps CPU sur Calibre 7.
+FONCTIONNALITE
+   Le test est NOOK car l'arrêt par manque de temps CPU ne se produit pas.
+   
+   En effet, l'astout post-mise à jour est lancé avec un facteur multiplicatif du 
+   temps de 4 : 4 x 30 s > 110 s du ssna11a dont le test est issu !
+   Ce qui explique aussi pourquoi cela n'arrive pas toutes les semaines, il est à la 
+   limite.
+   
+   On multiplie le nombre d'itérations par 5 pour être certain (ou presque) de 
+   manquer de temps.
+   De plus, on affiche dans l'output la valeur réelle de la limite CPU.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    erreu09b
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR delmas       DELMAS Josselin        DATE 06/26/2012 - 12:49:03
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018999 DU 2012-06-15 11:54:23
+TYPE anomalie concernant Code_Aster (VERSION 11.2)
+TITRE
+    En NEW11.02.02, les cas-tests sslp201a et b sont NOOK sur Rocks.
+FONCTIONNALITE
+   Problème :
+   ========
+   En 11.2.2, les cas-tests sslp201a et b sont NOOK sur Rocks, Calibre 5 et Calibre 7. 
+   
+   Correction :
+   ==========
+   Lors de leur modification en 11.2.1, la tolérance de beaucoup de TEST_RESU a été modifié
+   par mégarde (passage de 1.E-9 à 1.E-10).
+   
+   On rétablit les tolérances initiales.
+   
+   Impacts :
+   =======
+   sslp201a.comm
+   sslp201b.comm
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    passage des tests
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 06/26/2012 - 12:49:04
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018912 DU 2012-05-24 10:53:30
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    En NEW10.06.08, le cas-test zzzz208b s'arrete en erreur fatale sur Rocks.
+FONCTIONNALITE
+   Non reproductible (ok en 10.6.10)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    zzzz208b
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR proix        PROIX Jean-Michel      DATE 06/25/2012 - 01:15:11
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018975 DU 2012-06-13 14:17:23
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    message de bug non explicite avec SIMU_POINT_MAT
+FONCTIONNALITE
+   Problème :
+   ==========
+   Dans le cas test ssnv194d, en définissant 200 grains au lieu de 100, et en initialisant
+   seulement 100 variables internes, ça plante mais le message est peu explicite.
+   Serait il possible de blinder cette situation qui peu facilement se reproduire.
+   
+   Correction :
+   ============
+   C'est effectivement un problème général, dont la correction est simple. Il suffit de
+   vérifier dans PMINIT (lecture et initialisation de SIMU_POINT_MAT) que le nombre de
+   variables internes donné par le comportement et la longueur de la liste de variables
+   internes initiales est le même. Sinon on émet un message :
+   !----------------------------------------------------------------------------------------------!
+   ! <F> <COMPOR1_72>                                                                    
+   !  Le nombre de variables internes initiales est incorrect : 4808 ; il devrait valoir 9608     !
+   ! Cette erreur est fatale. Le code s'arrete.                                            
+   !----------------------------------------------------------------------------------------------!
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    etude jointe
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018988 DU 2012-06-15 08:05:31
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    En NEW11.02.02, les cas-tests  comp008g, h et k sxe2x80x99arrxc3xaatent en erreur fatale sur Aster4.
+FONCTIONNALITE
+   Probleme :
+   ==========
+   
+   En NEW11.02.02, les cas-tests comp008g, h et k s’arrêtent en erreur fatale sur Aster4. 
+   
+   # TITRE g : VARIATION TEMPERATURE DANS LE COMPORTEMENT 'VMIS_CIN1_CHAB'
+   # TITRE h : VARIATION TEMPERATURE DANS LE COMPORTEMENT 'VMIS_CIN2_CHAB'
+   # TITRE k : VARIATION TEMPERATURE DANS LE COMPORTEMENT 'VISC_CIN2_CHAB'
+   
+   Solution :
+   ==========
+   
+   Il y a apparemment incompatibilité dans LC0000 entre l'appel à VRCPTO (qui calcule les
+   déforamtions liées à la variable de commande PTOT) et SIMU_POINT_MAT en mode POINT. La
+   correction consiste donc à ne pas appeler VRCPTO quand on vient de SIMU_POINT_MAT/OP0033.
+   
+   Remarque : il me semble dommage de passer du temps pour tous les comportements à examiner
+   si la variable de commande PTOT est présente (3 comparaisons de chaînes de caractères
+   coûteuses), alors que le couplage ne fonctionne que pour quelques lois, et que seule la
+   loi ELAS est testée (wtnp129b).Il faudrait émettre une fiche pour déplacer cet appel dans
+   les lois particulières (et uniquement celles qui sont testées).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    comp008g
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019021 DU 2012-06-19 16:50:25
+TYPE anomalie concernant Code_Aster (VERSION 10.5)
+TITRE
+    DD_CC_IRRA en modxc3xa9lisation polycristal
+FONCTIONNALITE
+   Problème :
+   ==========
+   
+   Utiliser la loi de comportement DD_CC_IRRA en modélisation polycristal n'est pas possible
+   pour l'instant du fait de la gestion des variables internes.
+   
+   Correction :
+   ============
+   Comme d'habitude, tout ce qui n'est pas testé... ne fonctionne pas forcément. C'était le
+   cas ici.
+   La loi MONO_DD_CC_IRRA était testée pour le monocristal et fonctionnait bien, mais on
+   avait oublié de la tester avec le polycristal. Il fallait pour cela ajouter et spécifier
+   les variables internes supplémentaires : 12 par grain, soit 1200 pour le polycristal testé
+   dans SSNV194F.
+   
+   Au passage, on écrit maintenant les noms des variables internes (sous forme condensée)
+   pour le polycristal, dans DEFI_COMPOR.
+   
+   Validation :
+   ============
+   tous les tests monocristal (pour vérifier la non régression)
+   
+   SSNV194F (nouvelle modélisation) : polycristal homogénéisé (BZ) avec 100 grains composés
+   de monocristaux DD_CC_IRRA. La solution monte l'effet de durcissement dû à l'irradiation
+   (prise en compte sous forme de densités de dislocation spécfifique avec des valeurs
+   initiales non nulles).
+   
+   Impact doc : 
+   ============
+   Principalement R5.03.11 (description des variables internes), v6.04.194 (test SSNV194), et
+   petites corerctions dans les docs v6.08.110, v6.08.112, v7.22.131
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : r5.03.11, v6.04.194, v6.08.110, v6.08.112, v7.22.131
+VALIDATION
+    tous les test MONOCRISTAL
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 019016 DU 2012-06-19 07:50:58
+TYPE anomalie concernant Documentation (VERSION 10.*)
+TITRE
+    [FORUM] coquille rxc3xa9fxc3xa9rence dans R5.03.11
+FONCTIONNALITE
+   Problème documentaire :
+   =======================
+   Signalement sur le forum, on fait référence à R5.03.10, documentation qui n'existe plus
+   suite à la résorption de la loi LMARC.
+   [R5.03.10] Relation de comportement élasto-viscoplastique du LMARC pour les tubes de gaine
+   du crayon combustible
+   
+   Il faut corriger le chapitre 5 : 
+   
+   "D’une façon générale, les comportements monocristallins sont intégrés aux méthodes de
+   Runge-Kutta pour l’intégration explicite [R5.03.14], et à l’environnement « plasti » pour
+   l’intégration implicite [R5.03.10]."
+   
+   Correction :
+   ============
+   
+   [R5.03.14] est la bonne référence aussi bien pour l'explicite que pour l'implciite.
+   
+   Ajout des variables internes liées à l'irradiation, cf. fiche 19021.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : r5.03.11
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR tran         TRAN Van-xuan          DATE 06/26/2012 - 02:17:42
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018737 DU 2012-04-17 14:51:52
+TYPE evolution concernant Code_Aster (VERSION 10.5)
+TITRE
+    V3.04.135 - SSLV135: Endommagement par fatigue sous chargement bi-axial alterne
+FONCTIONNALITE
+   Problèmes:
+   ==========
+   Cas-test sslv135 pour tester des critères amorçage en fatigue contient 17 modélisations.
+   Cela fait difficile pour gérer la documentation et la visibilité
+   
+   Solutions:
+   =========
+   On décide de regrouper des cas-tests qui testent des grandeurs similaires pour réduire le
+   nombre de modélisation de 17 à 6.
+   sslv135a (nouveau): chargement bi-axial, amplitude constante vient des anciennes
+   modélisations a,b,f,i,j,h
+   sslv135b (nouveau): chargement bi-axial, amplitude variable vient des anciennes
+   modélisations c,d,f,k,l,m
+   sslv135c (nouveau): chargement multi-axial, amplitudes constante et variable vient des
+   anciennes modélisations g et n
+   sslv135d (nouveau): amplitude constante, test des grandeurs, vient de l'ancienne
+   modélisation o 
+   sslv135e (nouveau): amplitude variable, test des grandeurs en contrainte, vient de
+   l'ancienne modélisation p 
+   sslv135f (nouveau): amplitude variable, test des grandeurs en déformation, vient de
+   l'ancienne modélisation q
+   
+   pour limiter le nombre de ligne, on a utilisé le loop python
+   
+   Impact docs:
+   ===========
+   V3.04.135: cas-test sslv135
+   V9.01.107: cas-test szlz107 qui cite sslv135
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : V3.04.135, V9.01.107
+VALIDATION
+    sslv135
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018832 DU 2012-05-09 07:55:18
+TYPE evolution concernant Code_Aster (VERSION 10.5)
+TITRE
+    FATIGUE: etat des operandes histoire et cham_mater
+FONCTIONNALITE
+   Problème:
+   ========
+   Pour l'instant, les histoires de la contrainte, déformation et déformation plastique sont
+   obligatoirement demandées dans POST_FATIGUE et dans le champ de la contrainte et de
+   déformation sont obligatoirement demandées dans CALC_FATIGUE. Dans certain critères, on
+   n'a besoin qu'une des trois type de l'histoire, la demande des informations
+   non-nécessaires ne sont pas donc efficace.
+   
+   Solution:
+   ========
+    L'objectif de cette fiche est de changer "contrainte, déformation et déformation
+   plastique" obligatoire en "contrainte, déformation et déformation plastique" optionelle et
+   au-moins-uns. Le critère sera analysé dès le début
+   pour voir quelle type de l'histoire est demandé. Si on le trouve pas, on va s'arrêter fatal.
+   
+   D'alleurs, si le dommage est fourni par une formule, la demande du champ matériau n'est
+   pas nécessaire dans le traitement. On veut le rendre en optionnel. 
+   
+   En fatigue thermique, il n'est pas convient de calculer epsilon_elastique = sigma/E car E
+   est en fonction de température. Dans POST_FATIGUE, il faut connaître la température
+   associé. On prende eps_elas = epsi_tot - epsi_plas. 
+   
+   Validation:
+   ==========
+   szlz107, szlz107
+   
+   Impact docs:
+   ===========
+   U4.83.01: POST_FATIGUE
+   U4.83.02: CALC_FATIGUE
+   V9.01.107: szlz107
+   V3.04.135: szlz107
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.83.01, U4.83.02, V9.01.107, V3.04.135
+VALIDATION
+    sslv135, szlz107
+NB_JOURS_TRAV  : 10.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 018969 DU 2012-06-13 07:44:52
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    FATIGUE: supprimer chargement monotone dans CALC_FATIGUE
+FONCTIONNALITE
+   Problème:
+   =========
+   Pour le calcul en fatigue, il faut d'abord appliquer le chargement monotone, ensuite le
+   chargement cyclique. Pour évaluer des critères d'amorçage en fatigue, il faut ignorer la
+   contribution de la partie du chargement monotone.
+   
+   Dans CALC_FATIGUE, chargement périodique, on n'a pas supprimé proprement la partie
+   monotone.On se base sur le changement du contrainte principale. Cela n'est valable que
+   pour un chargement proportionnel.
+   
+   Solutions:
+   =========
+   On ajoute un mot-clé: INST_INIT_CYCL (optionnel) pour que l'utilisateur fournie l'instant
+   initial du partie de chargement cyclqiue. 
+   Si ce mot-clé n'est pas renseigné, on prendre l'instant initial de SNL comme l'instant
+   début du cycle.
+   Si INST_INIT_CYCL ne fait pas partie des instants calculés, on prendre l'instant initial de
+   SNL comme l'instant début du cycle et on émet une alarme.
+   
+   Validation
+   =========
+   sslv135o
+   
+   Impact docs:
+   ===========
+   U4.83.02: CALC_FATIGUE
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.83.02, V3.04.135
+VALIDATION
+    sslv135o
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT ssnv194f                        proix J-M.PROIX          248    248      0
+ CASTEST MODIF comp008g                        proix J-M.PROIX          124      1      1
+ CASTEST MODIF comp008h                        proix J-M.PROIX          127      1      1
+ CASTEST MODIF comp008k                        proix J-M.PROIX          140      1      1
+ CASTEST MODIF erreu09b                     courtois M.COURTOIS         143      1      1
+ CASTEST MODIF feti008b                        abbas M.ABBAS            165      5      3
+ CASTEST MODIF forma04b                        abbas M.ABBAS            186     10      5
+ CASTEST MODIF forma08a                        abbas M.ABBAS            267     13     20
+ CASTEST MODIF forma08b                        abbas M.ABBAS            285     12     20
+ CASTEST MODIF hsnv131a                        proix J-M.PROIX          214      6      5
+ CASTEST MODIF perf005d                        abbas M.ABBAS            114      3      1
+ CASTEST MODIF perf005e                        abbas M.ABBAS            114      3      1
+ CASTEST MODIF perf005f                        abbas M.ABBAS            115      3      1
+ CASTEST MODIF sdls115b                        abbas M.ABBAS            352      5      5
+ CASTEST MODIF sdnd102b                        abbas M.ABBAS            840     28     15
+ CASTEST MODIF sdnl111e                        abbas M.ABBAS            179      5      3
+ CASTEST MODIF sdnl111f                        abbas M.ABBAS            213      4      2
+ CASTEST MODIF sdnv100c                        abbas M.ABBAS            278      3      1
+ CASTEST MODIF sdnv100d                        abbas M.ABBAS            369      3      1
+ CASTEST MODIF sdnv100e                        abbas M.ABBAS            325      3      1
+ CASTEST MODIF sdnv100i                        abbas M.ABBAS            370      3      6
+ CASTEST MODIF sdnv103f                        abbas M.ABBAS            428      8      8
+ CASTEST MODIF sdnv104c                        abbas M.ABBAS            248      4      3
+ CASTEST MODIF sdnv105c                        abbas M.ABBAS            824     32     13
+ CASTEST MODIF sslp201a                       delmas J.DELMAS          1084     77     77
+ CASTEST MODIF sslp201b                       delmas J.DELMAS          1168     77     77
+ CASTEST MODIF sslv135a                         tran V-X.TRAN          1127    744    913
+ CASTEST MODIF sslv135b                         tran V-X.TRAN           662    388    999
+ CASTEST MODIF sslv135c                         tran V-X.TRAN           665    403    522
+ CASTEST MODIF sslv135d                         tran V-X.TRAN           410    155    530
+ CASTEST MODIF sslv135e                         tran V-X.TRAN           649    385    574
+ CASTEST MODIF sslv135f                         tran V-X.TRAN          1014    772    313
+ CASTEST MODIF ssna102d                        abbas M.ABBAS            311      5      5
+ CASTEST MODIF ssna102f                        abbas M.ABBAS            307      2      3
+ CASTEST MODIF ssna102g                        abbas M.ABBAS            253      5      3
+ CASTEST MODIF ssna105b                        abbas M.ABBAS            232      3      1
+ CASTEST MODIF ssna111b                        abbas M.ABBAS            249      2      1
+ CASTEST MODIF ssna122a                        abbas M.ABBAS            360     12      8
+ CASTEST MODIF ssna122b                        abbas M.ABBAS            360      8      4
+ CASTEST MODIF ssnd110a                        proix J-M.PROIX          793      8      7
+ CASTEST MODIF ssnd110b                        proix J-M.PROIX          699      9     37
+ CASTEST MODIF ssnd110d                        proix J-M.PROIX          618      2      5
+ CASTEST MODIF ssnd112d                        proix J-M.PROIX          500      2      5
+ CASTEST MODIF ssnp121a                        abbas M.ABBAS            204      3      1
+ CASTEST MODIF ssnp121d                        abbas M.ABBAS            242      3      1
+ CASTEST MODIF ssnp121e                        abbas M.ABBAS            242      6      4
+ CASTEST MODIF ssnp121f                        abbas M.ABBAS            239      5      3
+ CASTEST MODIF ssnp121g                        abbas M.ABBAS            214      3      1
+ CASTEST MODIF ssnp121h                        abbas M.ABBAS            204      3      1
+ CASTEST MODIF ssnp121i                        abbas M.ABBAS            254      3      1
+ CASTEST MODIF ssnp121j                        abbas M.ABBAS            246      3      2
+ CASTEST MODIF ssnp121k                        abbas M.ABBAS            244      3      2
+ CASTEST MODIF ssnp121p                        abbas M.ABBAS            214      4      3
+ CASTEST MODIF ssnp121q                        abbas M.ABBAS            248      3      1
+ CASTEST MODIF ssnp121r                        abbas M.ABBAS            246      4      2
+ CASTEST MODIF ssnp150b                        abbas M.ABBAS            715     11      5
+ CASTEST MODIF ssnp152a                        abbas M.ABBAS            629      7      7
+ CASTEST MODIF ssnp152b                        abbas M.ABBAS            605      8      8
+ CASTEST MODIF ssnp152c                        abbas M.ABBAS            210      6      6
+ CASTEST MODIF ssnp152d                        abbas M.ABBAS            228      7      7
+ CASTEST MODIF ssnp152e                        abbas M.ABBAS            183      3      3
+ CASTEST MODIF ssnp152f                        abbas M.ABBAS            229      7      5
+ CASTEST MODIF ssnp152g                        abbas M.ABBAS            184      4      4
+ CASTEST MODIF ssnp153a                        abbas M.ABBAS            349      3      4
+ CASTEST MODIF ssnp154a                        abbas M.ABBAS            305      4      2
+ CASTEST MODIF ssnp154b                        abbas M.ABBAS            305      4      2
+ CASTEST MODIF ssnp154c                        abbas M.ABBAS            325      4      1
+ CASTEST MODIF ssnp154d                        abbas M.ABBAS            326      7      5
+ CASTEST MODIF ssnp156a                        abbas M.ABBAS            101      6      4
+ CASTEST MODIF ssnp156b                        abbas M.ABBAS            135      6      4
+ CASTEST MODIF ssnp157a                        abbas M.ABBAS            267      3      2
+ CASTEST MODIF ssnp501c                        abbas M.ABBAS            244      2      6
+ CASTEST MODIF ssnp502c                        abbas M.ABBAS            251      2      3
+ CASTEST MODIF ssnp503a                        abbas M.ABBAS            169      2      2
+ CASTEST MODIF ssnp503c                        abbas M.ABBAS            165      2      2
+ CASTEST MODIF ssnp503e                        abbas M.ABBAS            183      3      3
+ CASTEST MODIF ssnp503g                        abbas M.ABBAS            186      2      2
+ CASTEST MODIF ssnp503i                        abbas M.ABBAS            186      2      2
+ CASTEST MODIF ssnp503k                        abbas M.ABBAS            180      5      4
+ CASTEST MODIF ssnp504a                        abbas M.ABBAS            174      2      2
+ CASTEST MODIF ssnp504c                        abbas M.ABBAS            173      2      2
+ CASTEST MODIF ssnp504e                        abbas M.ABBAS            234      6     12
+ CASTEST MODIF ssnv104e                        abbas M.ABBAS            461      5      3
+ CASTEST MODIF ssnv127f                        abbas M.ABBAS            440      4      3
+ CASTEST MODIF ssnv127h                        abbas M.ABBAS            461      9      7
+ CASTEST MODIF ssnv128m                        abbas M.ABBAS            260      4      2
+ CASTEST MODIF ssnv128n                        abbas M.ABBAS            179      5      2
+ CASTEST MODIF ssnv128p                        abbas M.ABBAS            190      7     24
+ CASTEST MODIF ssnv128q                        abbas M.ABBAS            194      6      5
+ CASTEST MODIF ssnv128r                        abbas M.ABBAS            180      2      3
+ CASTEST MODIF ssnv128s                        abbas M.ABBAS            215      5      3
+ CASTEST MODIF ssnv128t                        abbas M.ABBAS            220      4      1
+ CASTEST MODIF ssnv128u                        abbas M.ABBAS            250      4      1
+ CASTEST MODIF ssnv128v                        abbas M.ABBAS            212      4      1
+ CASTEST MODIF ssnv128w                        abbas M.ABBAS            236      4      3
+ CASTEST MODIF ssnv128x                        abbas M.ABBAS            181      5      2
+ CASTEST MODIF ssnv129d                        abbas M.ABBAS            222      3      1
+ CASTEST MODIF ssnv153a                        abbas M.ABBAS            192      3      2
+ CASTEST MODIF ssnv193a                        abbas M.ABBAS            299      6      2
+ CASTEST MODIF ssnv194d                        proix J-M.PROIX          216      5     49
+ CASTEST MODIF ssnv194e                        proix J-M.PROIX          212      5    118
+ CASTEST MODIF ssnv209a                        abbas M.ABBAS            234      4      1
+ CASTEST MODIF ssnv209f                        abbas M.ABBAS            270      4      1
+ CASTEST MODIF ssnv209i                        abbas M.ABBAS            192      5      2
+ CASTEST MODIF ssnv219a                        abbas M.ABBAS            345      3      2
+ CASTEST MODIF ssnv219b                        abbas M.ABBAS            750      7      6
+ CASTEST MODIF ssnv501c                        abbas M.ABBAS            492      4      2
+ CASTEST MODIF ssnv503h                        abbas M.ABBAS            405      4      2
+ CASTEST MODIF ssnv503i                        abbas M.ABBAS            538      5      3
+ CASTEST MODIF ssnv504d                        abbas M.ABBAS            227      4      1
+ CASTEST MODIF ssnv504h                        abbas M.ABBAS            242      2      1
+ CASTEST MODIF ssnv504i                        abbas M.ABBAS            215      4      2
+ CASTEST MODIF ssnv504j                        abbas M.ABBAS            258      4      1
+ CASTEST MODIF ssnv505d                        abbas M.ABBAS            186      3      1
+ CASTEST MODIF ssnv505e                        abbas M.ABBAS            187      3      1
+ CASTEST MODIF ssnv505f                        abbas M.ABBAS            298      6      4
+ CASTEST MODIF ssnv505g                        abbas M.ABBAS            322      3      2
+ CASTEST MODIF ssnv505h                        abbas M.ABBAS            482     19      5
+ CASTEST MODIF ssnv505i                        abbas M.ABBAS            209      4      2
+ CASTEST MODIF ssnv505j                        abbas M.ABBAS            344      4      2
+ CASTEST MODIF ssnv506e                        abbas M.ABBAS            239      3      1
+ CASTEST MODIF ssnv506f                        abbas M.ABBAS            288      2      1
+ CASTEST MODIF supv002a                     courtois M.COURTOIS         147      1      1
+ CASTEST MODIF szlz107a                         tran V-X.TRAN           349      1     57
+ CASTEST MODIF szlz107b                         tran V-X.TRAN           638     19     16
+ CASTEST MODIF szlz107c                         tran V-X.TRAN           524     20     20
+ CASTEST MODIF szlz107d                         tran V-X.TRAN          1193     27    231
+ CASTEST MODIF szlz107e                         tran V-X.TRAN           602      3      3
+ CASTEST MODIF wtnv113j                        abbas M.ABBAS            425     62      1
+ CASTEST MODIF zzzz231a                        abbas M.ABBAS            262      3      1
+ CASTEST MODIF zzzz237a                        abbas M.ABBAS            440     10      3
+ CASTEST MODIF zzzz240a                        abbas M.ABBAS            170     17      9
+ CASTEST MODIF zzzz292a                        abbas M.ABBAS            170      7      4
+ CASTEST SUPPR sslv135g.comm                    tran V-X.TRAN           934      0    934
+ CASTEST SUPPR sslv135h.comm                    tran V-X.TRAN           301      0    301
+ CASTEST SUPPR sslv135i.comm                    tran V-X.TRAN          1395      0   1395
+ CASTEST SUPPR sslv135j.comm                    tran V-X.TRAN          1388      0   1388
+ CASTEST SUPPR sslv135k.comm                    tran V-X.TRAN           606      0    606
+ CASTEST SUPPR sslv135l.comm                    tran V-X.TRAN           612      0    612
+ CASTEST SUPPR sslv135m.comm                    tran V-X.TRAN           568      0    568
+ CASTEST SUPPR sslv135n.comm                    tran V-X.TRAN          1612      0   1612
+ CASTEST SUPPR sslv135o.comm                    tran V-X.TRAN           392      0    392
+ CASTEST SUPPR sslv135p.comm                    tran V-X.TRAN           641      0    641
+ CASTEST SUPPR sslv135q.comm                    tran V-X.TRAN           998      0    998
+ CASTEST SUPPR ssnv194e.com1                   proix J-M.PROIX            8      0      8
+CATALOGU MODIF typelem/gener_cmcfz1            abbas M.ABBAS             91      2      2
+CATALOGU MODIF typelem/gener_cmcfz2            abbas M.ABBAS            229      2      2
+CATALOGU MODIF typelem/gener_cmcoz1            abbas M.ABBAS             81      2      2
+CATALOGU MODIF typelem/gener_cmcoz2            abbas M.ABBAS            189      2      2
+CATALOPY MODIF commande/calc_fatigue            tran V-X.TRAN           143     11      3
+CATALOPY MODIF commande/defi_contact           abbas M.ABBAS            620     56     19
+CATALOPY MODIF commande/extr_resu              abbas M.ABBAS             83     10      3
+CATALOPY MODIF commande/post_fatigue            tran V-X.TRAN           130     28     24
+CATALOPY MODIF commun/c_observation            abbas M.ABBAS             82      4      4
+CATALOPY MODIF commun/c_suivi_ddl              abbas M.ABBAS             69      3      3
+       C MODIF supervis/astermodule         courtois M.COURTOIS        3179      1      1
+ FORTRAN AJOUT algorith/apvepa                 abbas M.ABBAS             88     88      0
+ FORTRAN AJOUT algorith/mmcalg                 abbas M.ABBAS             98     98      0
+ FORTRAN AJOUT algorith/mmmcrg                 abbas M.ABBAS             97     97      0
+ FORTRAN AJOUT algorith/nmobno                 abbas M.ABBAS             74     74      0
+ FORTRAN AJOUT elements/mmtgeo                 abbas M.ABBAS            132    132      0
+ FORTRAN MODIF algeline/op0167                 abbas M.ABBAS           1062      3      2
+ FORTRAN MODIF algorith/apcalc                 abbas M.ABBAS             72      6      3
+ FORTRAN MODIF algorith/arch93                 abbas M.ABBAS            472      8      8
+ FORTRAN MODIF algorith/cfdisi                 abbas M.ABBAS            274      6      3
+ FORTRAN MODIF algorith/cfdisl                 abbas M.ABBAS            240     13      4
+ FORTRAN MODIF algorith/dyarc0                 abbas M.ABBAS            183      7      2
+ FORTRAN MODIF algorith/impcod                 abbas M.ABBAS             91      3      3
+ FORTRAN MODIF algorith/impref                 abbas M.ABBAS            271     10     11
+ FORTRAN MODIF algorith/impstd                 abbas M.ABBAS            235     17      8
+ FORTRAN MODIF algorith/isfonc                 abbas M.ABBAS            231      6      2
+ FORTRAN MODIF algorith/lc0000                 proix J-M.PROIX          713      9     13
+ FORTRAN MODIF algorith/lcafyd                 proix J-M.PROIX          155     20      6
+ FORTRAN MODIF algorith/lcddcc                 proix J-M.PROIX          299      9      5
+ FORTRAN MODIF algorith/lcdpec                 proix J-M.PROIX          224      2      2
+ FORTRAN MODIF algorith/lcdpeq                 proix J-M.PROIX          217     12      7
+ FORTRAN MODIF algorith/lcmmfe                 proix J-M.PROIX          158      5      3
+ FORTRAN MODIF algorith/lcmmj1                 proix J-M.PROIX          138      6      3
+ FORTRAN MODIF algorith/lcmmj2                 proix J-M.PROIX           97      6      3
+ FORTRAN MODIF algorith/lcmmjb                 proix J-M.PROIX          101      5      2
+ FORTRAN MODIF algorith/lcmmjd                 proix J-M.PROIX          172      6      4
+ FORTRAN MODIF algorith/lcmmlc                 proix J-M.PROIX          132      5      3
+ FORTRAN MODIF algorith/lcmmop                 proix J-M.PROIX          346      9     10
+ FORTRAN MODIF algorith/lcmmvx                 proix J-M.PROIX          129      5      2
+ FORTRAN MODIF algorith/lcplnl                 proix J-M.PROIX          287      2      2
+ FORTRAN MODIF algorith/lcrkin                 proix J-M.PROIX          176     61     10
+ FORTRAN MODIF algorith/mmappa                 abbas M.ABBAS             81      2      3
+ FORTRAN MODIF algorith/mmapre                 abbas M.ABBAS            233     13     23
+ FORTRAN MODIF algorith/mmbclc                 abbas M.ABBAS            138     48      9
+ FORTRAN MODIF algorith/mmcaln                 abbas M.ABBAS             82     13     14
+ FORTRAN MODIF algorith/mmchml                 abbas M.ABBAS            227      6      5
+ FORTRAN MODIF algorith/mmconv                 abbas M.ABBAS            128     39     16
+ FORTRAN MODIF algorith/mmgeom                 abbas M.ABBAS            119     48     12
+ FORTRAN MODIF algorith/mmligr                 abbas M.ABBAS            281      4      5
+ FORTRAN MODIF algorith/mmmcrf                 abbas M.ABBAS             95     24     22
+ FORTRAN MODIF algorith/mmmjeu                 abbas M.ABBAS            107     21      4
+ FORTRAN MODIF algorith/mmreas                 abbas M.ABBAS            164     11      3
+ FORTRAN MODIF algorith/mreacg                 abbas M.ABBAS             68      2      2
+ FORTRAN MODIF algorith/nmaffm                 abbas M.ABBAS            141      6      4
+ FORTRAN MODIF algorith/nmconv                 abbas M.ABBAS            316     17     15
+ FORTRAN MODIF algorith/nmcore                 abbas M.ABBAS            253     13      7
+ FORTRAN MODIF algorith/nmcrcg                 abbas M.ABBAS             94      8     10
+ FORTRAN MODIF algorith/nmcrdd                 abbas M.ABBAS             92      2      3
+ FORTRAN MODIF algorith/nmcrob                 abbas M.ABBAS            102      8      3
+ FORTRAN MODIF algorith/nmcrot                 abbas M.ABBAS             98      4      5
+ FORTRAN MODIF algorith/nmctcg                 abbas M.ABBAS            110      4      6
+ FORTRAN MODIF algorith/nmdomt                 abbas M.ABBAS            177      3      7
+ FORTRAN MODIF algorith/nmext0                 abbas M.ABBAS            138      6      3
+ FORTRAN MODIF algorith/nmext1                 abbas M.ABBAS             90      2      2
+ FORTRAN MODIF algorith/nmext2                 abbas M.ABBAS            142      9      3
+ FORTRAN MODIF algorith/nmext3                 abbas M.ABBAS            278     14      3
+ FORTRAN MODIF algorith/nmextl                 abbas M.ABBAS            158      6      2
+ FORTRAN MODIF algorith/nmexto                 abbas M.ABBAS            119      6      2
+ FORTRAN MODIF algorith/nmfcon                 abbas M.ABBAS             71      3     17
+ FORTRAN MODIF algorith/nmfcor                 abbas M.ABBAS            222      2      3
+ FORTRAN MODIF algorith/nmfocc                 abbas M.ABBAS            147     18     13
+ FORTRAN MODIF algorith/nmfonc                 abbas M.ABBAS            775     13     10
+ FORTRAN MODIF algorith/nmimps                 abbas M.ABBAS            124      2      3
+ FORTRAN MODIF algorith/nmimre                 abbas M.ABBAS            135     16      9
+ FORTRAN MODIF algorith/nmnble                 abbas M.ABBAS            134      2      3
+ FORTRAN MODIF algorith/nmnewt                 abbas M.ABBAS            382      2      2
+ FORTRAN MODIF algorith/nmobs2                 abbas M.ABBAS            259     21     13
+ FORTRAN MODIF algorith/nmobse                 abbas M.ABBAS            220     19      7
+ FORTRAN MODIF algorith/nmobsz                 abbas M.ABBAS            225     11     11
+ FORTRAN MODIF algorith/nmresi                 abbas M.ABBAS            394     11     10
+ FORTRAN MODIF algorith/nmvprk                 proix J-M.PROIX          215      3      3
+ FORTRAN MODIF algorith/op0166                 abbas M.ABBAS            350     12     58
+ FORTRAN MODIF algorith/pminit                 proix J-M.PROIX          456      8     33
+ FORTRAN MODIF algorith/vechme                 abbas M.ABBAS            326      1      2
+ FORTRAN MODIF assembla/moinsr                 abbas M.ABBAS            198      5      1
+ FORTRAN MODIF calculel/mecalg                 abbas M.ABBAS            381     16    149
+ FORTRAN MODIF calculel/meficg                 abbas M.ABBAS            432      9     58
+ FORTRAN MODIF calculel/op0100                 abbas M.ABBAS            810     69    192
+ FORTRAN MODIF calculel/op0177                 abbas M.ABBAS            243      7     41
+ FORTRAN MODIF calculel/rdtchp                 abbas M.ABBAS            103      7      5
+ FORTRAN MODIF calculel/rdtmai                 abbas M.ABBAS            476     13      8
+ FORTRAN MODIF calculel/rdtres                 abbas M.ABBAS            238      2      2
+ FORTRAN MODIF calculel/trresu                 abbas M.ABBAS            416      5     53
+ FORTRAN MODIF debug/surfc1                    abbas M.ABBAS            132      2      4
+ FORTRAN MODIF debug/surfcl                    abbas M.ABBAS            405     64     32
+ FORTRAN MODIF debug/surfcp                    abbas M.ABBAS            155     49     41
+ FORTRAN MODIF elements/mmmlcf                 abbas M.ABBAS             80      9      7
+ FORTRAN MODIF elements/mmmtem                 abbas M.ABBAS            263     48      7
+ FORTRAN MODIF elements/mmmtme                 abbas M.ABBAS            294     49      8
+ FORTRAN MODIF elements/mmmtmm                 abbas M.ABBAS            257     61     20
+ FORTRAN MODIF elements/mmmtuu                 abbas M.ABBAS            124     38     19
+ FORTRAN MODIF elements/mmtfpe                 abbas M.ABBAS            168     47     26
+ FORTRAN MODIF elements/mmtppe                 abbas M.ABBAS            188     45     27
+ FORTRAN MODIF elements/mmvfpe                 abbas M.ABBAS             90      2      2
+ FORTRAN MODIF elements/mmvppe                 abbas M.ABBAS            195     25     19
+ FORTRAN MODIF elements/te0364                 abbas M.ABBAS            264     37     19
+ FORTRAN MODIF elements/te0365                 abbas M.ABBAS            189     10     11
+ FORTRAN MODIF modelisa/caralv                 abbas M.ABBAS            196     13      4
+ FORTRAN MODIF modelisa/cazocc                 abbas M.ABBAS            320     13      4
+ FORTRAN MODIF modelisa/cazocp                 abbas M.ABBAS            341     86     38
+ FORTRAN MODIF modelisa/cfmmvd                 abbas M.ABBAS            117      2      2
+ FORTRAN MODIF modelisa/chprec                 abbas M.ABBAS            265      9     35
+ FORTRAN MODIF modelisa/op5901                 proix J-M.PROIX          304     11      3
+ FORTRAN MODIF modelisa/op5902                 proix J-M.PROIX          271    108     16
+ FORTRAN MODIF modelisa/surfco                 abbas M.ABBAS             84      4      5
+ FORTRAN MODIF modelisa/typeco                 abbas M.ABBAS            190     21      5
+ FORTRAN MODIF postrele/op0051                 abbas M.ABBAS            313     21    111
+ FORTRAN MODIF postrele/rvgchf                 abbas M.ABBAS            236      6     11
+ FORTRAN MODIF postrele/rvpar0                 abbas M.ABBAS            136     13     70
+ FORTRAN MODIF postrele/rvpara                 abbas M.ABBAS            613     13     58
+ FORTRAN MODIF postrele/rvpost                 abbas M.ABBAS            271      6     10
+ FORTRAN MODIF postrele/rvrecu                 abbas M.ABBAS             74      6     32
+ FORTRAN MODIF prepost/acgrdo                   tran V-X.TRAN           789     84     56
+ FORTRAN MODIF prepost/acmata                   tran V-X.TRAN           473      2      3
+ FORTRAN MODIF prepost/anacri                   tran V-X.TRAN           319    128     24
+ FORTRAN MODIF prepost/avcipr                   tran V-X.TRAN           208     13     14
+ FORTRAN MODIF prepost/avcrit                   tran V-X.TRAN           281      4      4
+ FORTRAN MODIF prepost/aveppr                   tran V-X.TRAN           115     13     36
+ FORTRAN MODIF prepost/aveteq                   tran V-X.TRAN            73      4      7
+ FORTRAN MODIF prepost/avetpr                   tran V-X.TRAN           110      4      3
+ FORTRAN MODIF prepost/avgrno                   tran V-X.TRAN           305     15      6
+ FORTRAN MODIF prepost/avphyd                   tran V-X.TRAN            74      4      4
+ FORTRAN MODIF prepost/avplcr                   tran V-X.TRAN           285      6      7
+ FORTRAN MODIF prepost/avsieq                   tran V-X.TRAN            73      4      4
+ FORTRAN MODIF prepost/avsign                   tran V-X.TRAN           102      2      3
+ FORTRAN MODIF prepost/avsipr                   tran V-X.TRAN           110      4      3
+ FORTRAN MODIF prepost/deltau                   tran V-X.TRAN           238      8      8
+ FORTRAN MODIF prepost/dtauno                   tran V-X.TRAN           272     12     13
+ FORTRAN MODIF prepost/extche                  abbas M.ABBAS            452      4      9
+ FORTRAN MODIF prepost/extchn                  abbas M.ABBAS            403      4      9
+ FORTRAN MODIF prepost/extrs2                  abbas M.ABBAS            159     43      7
+ FORTRAN MODIF prepost/fmacgr                   tran V-X.TRAN           594      3      2
+ FORTRAN MODIF prepost/irchme                  abbas M.ABBAS            259      6     22
+ FORTRAN MODIF prepost/irecri                  abbas M.ABBAS            307     11     12
+ FORTRAN MODIF prepost/iremed                  abbas M.ABBAS            193     13     20
+ FORTRAN MODIF prepost/irgmce                  abbas M.ABBAS            378      5      5
+ FORTRAN MODIF prepost/irgmcg                  abbas M.ABBAS            275      4      4
+ FORTRAN MODIF prepost/irgmcn                  abbas M.ABBAS            288      6      6
+ FORTRAN MODIF prepost/irgmpv                  abbas M.ABBAS            160      3     16
+ FORTRAN MODIF prepost/irgmsh                  abbas M.ABBAS            240      6      8
+ FORTRAN MODIF prepost/irtitr                  abbas M.ABBAS            110      5     16
+ FORTRAN MODIF prepost/mdnoch                  abbas M.ABBAS            138      4     24
+ FORTRAN MODIF prepost/op0039                  abbas M.ABBAS           1023     24     57
+ FORTRAN MODIF prepost/op0151                   tran V-X.TRAN           548     26      6
+ FORTRAN MODIF prepost/op0157                  abbas M.ABBAS            182      2      2
+ FORTRAN MODIF prepost/op0176                  abbas M.ABBAS            177     36     69
+ FORTRAN MODIF prepost/paqmai                   tran V-X.TRAN           656    198     24
+ FORTRAN MODIF prepost/paqnoe                   tran V-X.TRAN           551    200     31
+ FORTRAN MODIF prepost/pofape                   tran V-X.TRAN           498    160    122
+ FORTRAN MODIF prepost/propla                   tran V-X.TRAN           191     55     21
+ FORTRAN MODIF prepost/taurlo                   tran V-X.TRAN           119      4      5
+ FORTRAN MODIF prepost/teneps                   tran V-X.TRAN            70     22     21
+ FORTRAN MODIF prepost/vampli                   tran V-X.TRAN           340     10      9
+ FORTRAN MODIF utilitai/iredsu                 abbas M.ABBAS            333      8     10
+ FORTRAN MODIF utilitai/op0017                 abbas M.ABBAS             96      3     20
+ FORTRAN MODIF utilitai/op0036                 abbas M.ABBAS            260     28     58
+ FORTRAN MODIF utilitai/rfresu                 abbas M.ABBAS            122     18     52
+ FORTRAN SUPPR algorith/aschar                 abbas M.ABBAS             57      0     57
+ FORTRAN SUPPR algorith/buraie                 abbas M.ABBAS            103      0    103
+ FORTRAN SUPPR algorith/burjbc                 abbas M.ABBAS            172      0    172
+ FORTRAN SUPPR algorith/burjp2                 abbas M.ABBAS            109      0    109
+ FORTRAN SUPPR algorith/casemo                 abbas M.ABBAS            213      0    213
+ FORTRAN SUPPR algorith/ginise                 abbas M.ABBAS            185      0    185
+ FORTRAN SUPPR algorith/lcvmf1                 abbas M.ABBAS             73      0     73
+ FORTRAN SUPPR algorith/lissen                 abbas M.ABBAS             46      0     46
+ FORTRAN SUPPR algorith/nmasss                 abbas M.ABBAS            118      0    118
+ FORTRAN SUPPR algorith/nmcals                 abbas M.ABBAS             59      0     59
+ FORTRAN SUPPR algorith/nmchse                 abbas M.ABBAS             89      0     89
+ FORTRAN SUPPR algorith/nmcrss                 abbas M.ABBAS             28      0     28
+ FORTRAN SUPPR algorith/nmdecs                 abbas M.ABBAS             48      0     48
+ FORTRAN SUPPR algorith/nmdose                 abbas M.ABBAS             45      0     45
+ FORTRAN SUPPR algorith/nmleop                 abbas M.ABBAS             30      0     30
+ FORTRAN SUPPR algorith/nmnsle                 abbas M.ABBAS            109      0    109
+ FORTRAN SUPPR algorith/nmsenn                 abbas M.ABBAS             61      0     61
+ FORTRAN SUPPR algorith/nmsens                 abbas M.ABBAS            255      0    255
+ FORTRAN SUPPR algorith/nscomp                 abbas M.ABBAS             82      0     82
+ FORTRAN SUPPR algorith/nsdrpr                 abbas M.ABBAS            591      0    591
+ FORTRAN SUPPR algorith/nsisot                 abbas M.ABBAS            569      0    569
+ FORTRAN SUPPR algorith/nsldc                  abbas M.ABBAS            267      0    267
+ FORTRAN SUPPR algorith/nspl2d                 abbas M.ABBAS            218      0    218
+ FORTRAN SUPPR algorith/nspl3d                 abbas M.ABBAS            218      0    218
+ FORTRAN SUPPR algorith/semoco                 abbas M.ABBAS             55      0     55
+ FORTRAN SUPPR algorith/semore                 abbas M.ABBAS             55      0     55
+ FORTRAN SUPPR algorith/vechd2                 abbas M.ABBAS            259      0    259
+ FORTRAN SUPPR algorith/vechde                 abbas M.ABBAS            478      0    478
+ FORTRAN SUPPR algorith/vtgplk                 abbas M.ABBAS             27      0     27
+ FORTRAN SUPPR calculel/mscalc                 abbas M.ABBAS            492      0    492
+ FORTRAN SUPPR calculel/mscalm                 abbas M.ABBAS             58      0     58
+ FORTRAN SUPPR calculel/op0132                 abbas M.ABBAS             33      0     33
+ FORTRAN SUPPR calculel/op132a                 abbas M.ABBAS             35      0     35
+ FORTRAN SUPPR calculel/vesecn                 abbas M.ABBAS            104      0    104
+ FORTRAN SUPPR elements/coqsep                 abbas M.ABBAS            430      0    430
+ FORTRAN SUPPR elements/coqsnl                 abbas M.ABBAS            374      0    374
+ FORTRAN SUPPR elements/delogl                 abbas M.ABBAS             99      0     99
+ FORTRAN SUPPR elements/dktsnl                 abbas M.ABBAS            536      0    536
+ FORTRAN SUPPR elements/dm3dse                 abbas M.ABBAS            693      0    693
+ FORTRAN SUPPR elements/dmcpse                 abbas M.ABBAS            330      0    330
+ FORTRAN SUPPR elements/dmdpse                 abbas M.ABBAS            596      0    596
+ FORTRAN SUPPR elements/gban2d                 abbas M.ABBAS            170      0    170
+ FORTRAN SUPPR elements/te0422                 abbas M.ABBAS             30      0     30
+ FORTRAN SUPPR elements/te0423                 abbas M.ABBAS             30      0     30
+ FORTRAN SUPPR elements/te0475                 abbas M.ABBAS            174      0    174
+ FORTRAN SUPPR elements/te0476                 abbas M.ABBAS            151      0    151
+ FORTRAN SUPPR elements/te0540                 abbas M.ABBAS            159      0    159
+ FORTRAN SUPPR elements/te0541                 abbas M.ABBAS            153      0    153
+ FORTRAN SUPPR elements/te0571                 abbas M.ABBAS             30      0     30
+ FORTRAN SUPPR elements/te0572                 abbas M.ABBAS             30      0     30
+ FORTRAN SUPPR prepost/acancy                   tran V-X.TRAN           190      0    190
+ FORTRAN SUPPR prepost/op132b                  abbas M.ABBAS             28      0     28
+ FORTRAN SUPPR prepost/pkfon1                  abbas M.ABBAS             58      0     58
+ FORTRAN SUPPR utilifor/versio                 abbas M.ABBAS             42      0     42
+ FORTRAN SUPPR utilitai/msdopt                 abbas M.ABBAS             89      0     89
+ FORTRAN SUPPR utilitai/psnoco                 abbas M.ABBAS            109      0    109
+ FORTRAN SUPPR utilitai/psnsle                 abbas M.ABBAS            103      0    103
+ FORTRAN SUPPR utilitai/psrese                 abbas M.ABBAS            121      0    121
+ FORTRAN SUPPR utilitai/pstypa                 abbas M.ABBAS            251      0    251
+ FORTRAN SUPPR utilitai/pstypr                 abbas M.ABBAS            252      0    252
+ FORTRAN SUPPR utilitai/pstyse                 abbas M.ABBAS            144      0    144
+ FORTRAN SUPPR utilitai/pstyss                 abbas M.ABBAS            121      0    121
+ FORTRAN SUPPR utilitai/pstyst                 abbas M.ABBAS            165      0    165
+ FORTRAN SUPPR utilitai/sens01                 abbas M.ABBAS            108      0    108
+ FORTRAN SUPPR utilitai/sensnc                 abbas M.ABBAS            126      0    126
+ FORTRAN SUPPR utilitai/tellme                 abbas M.ABBAS            111      0    111
+  PYTHON MODIF Macro/macr_spectre_ops       courtois M.COURTOIS         376      1      1
+  PYTHON MODIF Messages/algorith               abbas M.ABBAS            215      1      1
+  PYTHON MODIF Messages/appariement            abbas M.ABBAS             91      9      2
+  PYTHON MODIF Messages/calculel3              abbas M.ABBAS            442      1      1
+  PYTHON MODIF Messages/compor1                proix J-M.PROIX          378      7      1
+  PYTHON MODIF Messages/compor2                proix J-M.PROIX          151     11      1
+  PYTHON MODIF Messages/contact2               abbas M.ABBAS             82      6      1
+  PYTHON MODIF Messages/contact3               abbas M.ABBAS            223      5      1
+  PYTHON MODIF Messages/contact                abbas M.ABBAS            164     11      1
+  PYTHON MODIF Messages/elements               abbas M.ABBAS            359      1      1
+  PYTHON MODIF Messages/fatigue1                tran V-X.TRAN           429     25      8
+  PYTHON MODIF Messages/med                    abbas M.ABBAS            561      4      1
+  PYTHON MODIF Messages/postrele               abbas M.ABBAS            399      2      7
+  PYTHON MODIF Messages/prepost2               abbas M.ABBAS            198      5      1
+  PYTHON MODIF Messages/prepost4                tran V-X.TRAN           282     38      4
+  PYTHON MODIF Messages/prepost                 tran V-X.TRAN           202      2     10
+  PYTHON MODIF Messages/sensibilite            abbas M.ABBAS             56      1     22
+  PYTHON MODIF Messages/utilitai4              abbas M.ABBAS            330      1      1
+  PYTHON MODIF SD/sd_contact                   abbas M.ABBAS            316      2      2
+  PYTHON MODIF SD/sd_maillage                  abbas M.ABBAS            127      7      2
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    6         737       737              +737
+ MODIF :  314       92381      6890    7616      -726
+ SUPPR :   78       20799             20799    -20799
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  398      113917      7627   28415    -20788 

@@ -1,8 +1,8 @@
-#@ MODIF prepost Messages  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF prepost Messages  DATE 26/06/2012   AUTEUR TRAN V-X.TRAN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,14 +44,6 @@ cata_msg = {
 
 10 : _(u"""
  phénomène non valide
-"""),
-
-11 : _(u"""
- nous ne pouvons pas récupérer la valeur du module de Young : E.
-"""),
-
-12 : _(u"""
- nous ne pouvons pas récupérer la valeur du coefficient de Poisson : NU.
 """),
 
 13 : _(u"""

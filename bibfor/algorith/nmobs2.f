@@ -1,26 +1,27 @@
       SUBROUTINE NMOBS2(NOMA  ,SDOBSE,NOMTAB,NUMINS,INSTAN,
-     &                  TYPCHA,NOMCHA,NOMCHS,NBMA  ,NBNO  ,
-     &                  NBPI  ,NBSPI ,NBCMP ,EXTRGA,EXTRCH,
-     &                  EXTRCP,LISTNO,LISTMA,LISTPI,LISTSP,
-     &                  LISTCP,CHAMP ,CHNOEU,CHELGA,NOBSEF)
+     &                  TITOBS,TYPCHA,NOMCHA,NOMCHS,NBMA  ,
+     &                  NBNO  ,NBPI  ,NBSPI ,NBCMP ,EXTRGA,
+     &                  EXTRCH,EXTRCP,LISTNO,LISTMA,LISTPI,
+     &                  LISTSP,LISTCP,CHAMP ,CHNOEU,CHELGA,
+     &                  NOBSEF)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_21
 C RESPONSABLE ABBAS M.ABBAS
@@ -30,6 +31,7 @@ C
       CHARACTER*8   NOMA
       CHARACTER*24  NOMCHA,NOMCHS
       CHARACTER*19  SDOBSE,NOMTAB
+      CHARACTER*80  TITOBS
       INTEGER       NBCMP,NBNO,NBMA
       INTEGER       NBPI,NBSPI,NOBSEF
       CHARACTER*4   TYPCHA
@@ -50,13 +52,14 @@ C ----------------------------------------------------------------------
 C
 C
 C IN  NOMA   : NOM DU MAILLAGE
+C IN  TITOBS : TITRE DE L'OBSERVATION
 C IN  TYPCHA : TYPE DU CHAMP
 C IN  NOMCHA : NOM DU CHAMP
 C IN  NOMCHS : NOM DU CHAMP SIMPLE
 C IN  NBCMP  : NOMBRE DE COMPOSANTES DANS LA SD
 C IN  NBNO   : NOMBRE DE NOEUDS DANS LA SD
 C IN  NBMA   : NOMBRE DE MAILLES DANS LA SD
-C IN  NBPI   : NOMBRE DE POINTS D'INTEGRATION 
+C IN  NBPI   : NOMBRE DE POINTS D'INTEGRATION
 C IN  NBSPI  : NOMBRE DE SOUS-POINTS D'INTEGRATION
 C IN  EXTRGA : TYPE D'EXTRACTION SUR UNE MAILLE
 C IN  EXTRCH : TYPE D'EXTRACTION SUR LE CHAMP
@@ -72,12 +75,11 @@ C IN  CHELGA : VECTEUR DE TRAVAIL CHAMPS AUX ELEMENTS
 C IN  NUMINS : NUMERO DE L'INSTANT COURANT
 C I/O NOBSEF : NOMBRE EFFECTIF D'OBSERVATIONS
 C
+C ----------------------------------------------------------------------
 C
-C
-C        
       INTEGER      NPARX
-      PARAMETER    (NPARX=20)         
-      CHARACTER*8  NOMPAR(NPARX)   
+      PARAMETER    (NPARX=20)
+      CHARACTER*8  NOMPAR(NPARX)
 C
       INTEGER      INO,IMA,IPI,ISPI,ICMP
       INTEGER      NBNOR,NBMAR,IRET
@@ -93,7 +95,7 @@ C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
-C --- PASSAGE EN CHAM_ELEM_S      
+C --- PASSAGE EN CHAM_ELEM_S
 C
       IF (TYPCHA.EQ.'ELGA') THEN
         CALL JEEXIN(NOMCHS,IRET)
@@ -111,6 +113,8 @@ C
           NBNOR  = NBNO
         ELSEIF ((EXTRCH.EQ.'MIN').OR.
      &          (EXTRCH.EQ.'MAX').OR.
+     &          (EXTRCH.EQ.'MAX_ABS').OR.
+     &          (EXTRCH.EQ.'MIN_ABS').OR.
      &          (EXTRCH.EQ.'MOY')) THEN
           NBNOR = 1
         ELSE
@@ -125,6 +129,8 @@ C
           NBMAR  = NBMA
         ELSEIF ((EXTRCH.EQ.'MIN').OR.
      &          (EXTRCH.EQ.'MAX').OR.
+     &          (EXTRCH.EQ.'MAX_ABS').OR.
+     &          (EXTRCH.EQ.'MIN_ABS').OR.
      &          (EXTRCH.EQ.'MOY')) THEN
           NBMAR = 1
         ELSE
@@ -132,7 +138,7 @@ C
         ENDIF
       ENDIF
 C
-C --- NOMBRE DE COMPOSANTES POUR LA BOUCLE          
+C --- NOMBRE DE COMPOSANTES POUR LA BOUCLE
 C
       IF (EXTRCP.EQ.' ') THEN
         NVALCP    = NBCMP
@@ -140,9 +146,9 @@ C
         NVALCP    = 1
       ENDIF
 C
-C --- RECOPIE DU NOM DES COMPOSANTES          
+C --- RECOPIE DU NOM DES COMPOSANTES
 C
-      CALL JEVEUO(LISTCP,'L',JCMP  )     
+      CALL JEVEUO(LISTCP,'L',JCMP  )
       DO 280 ICMP = 1,NBCMP
         NOMPAR(ICMP) = ZK8(JCMP-1+ICMP)
  280  CONTINUE
@@ -155,7 +161,7 @@ C
 C
         DO 20 INO = 1,NBNOR
 C
-C ------- NOEUD COURANT    
+C ------- NOEUD COURANT
 C
           NUMNOE  = ZI(JNO-1+INO)
           CALL JENUNO(JEXNUM(NOMA(1:8)//'.NOMNOE',NUMNOE),NOMNOE)
@@ -166,9 +172,10 @@ C
             VALR = ZR(JNOEU+IVALCP-1
      &                     +NBCMP*(INO-1))
             NOMCMP = NOMPAR(IVALCP)
-            CALL NMOBSZ(SDOBSE,NOMTAB,NOMCHA,TYPCHA,EXTRCH,
-     &                  EXTRCP,EXTRGA,NOMCMP,NOMNOE,NOMMAI,
-     &                  NUM   ,SNUM  ,NUMINS,INSTAN,VALR  )
+            CALL NMOBSZ(SDOBSE,NOMTAB,TITOBS,NOMCHA,TYPCHA,
+     &                  EXTRCH,EXTRCP,EXTRGA,NOMCMP,NOMNOE,
+     &                  NOMMAI,NUM   ,SNUM  ,NUMINS,INSTAN,
+     &                  VALR  )
             NOBSEF = NOBSEF + 1
   21      CONTINUE
   20    CONTINUE
@@ -177,16 +184,16 @@ C
 C --- VALEURS AUX POINTS DE GAUSS
 C
       IF (TYPCHA.EQ.'ELGA') THEN
-        CALL JEVEUO(CHELGA,'L',JELGA)        
+        CALL JEVEUO(CHELGA,'L',JELGA)
         CALL JEVEUO(LISTMA,'L',JMA)
         CALL JEVEUO(LISTPI,'L',JPI)
         CALL JEVEUO(LISTSP,'L',JSPI)
-C           
+C
 C ----- BOUCLE SUR LES MAILLES
 C
         DO 30 IMA = 1,NBMAR
 C
-C ------- MAILLE COURANTE         
+C ------- MAILLE COURANTE
 C
           NUMMAI  = ZI(JMA-1+IMA)
           CALL JENUNO(JEXNUM(NOMA(1:8)//'.NOMMAI',NUMMAI),NOMMAI)
@@ -203,14 +210,14 @@ C
           IF (NPI.GT.NMAPT)   NPI  = NMAPT
           IF (NSPI.GT.NMASPT) NSPI = NMASPT
 C
-C ------- NOMBRE DE POINTS/SOUS-POINTS POUR LA BOUCLE          
+C ------- NOMBRE DE POINTS/SOUS-POINTS POUR LA BOUCLE
 C
           IF (EXTRGA.EQ.'VALE') THEN
             NBPIR  = NPI
             NBSPIR = NSPI
           ELSE
             NBPIR  = 1
-            NBSPIR = 1            
+            NBSPIR = 1
           ENDIF
 C
 C ------- BOUCLE SUR LES POINTS/SOUS_POINTS
@@ -218,29 +225,30 @@ C
           DO 45 IPI = 1,NBPIR
             DO 46 ISPI = 1,NBSPIR
 C
-C ----------- NUMERO DES POINTS/SOUS-POINTS             
+C ----------- NUMERO DES POINTS/SOUS-POINTS
 C
               IF (EXTRGA.EQ.'VALE') THEN
                 NUM    = ZI(JPI-1+IPI  )
-                SNUM   = ZI(JSPI-1+ISPI ) 
+                SNUM   = ZI(JSPI-1+ISPI )
               ELSE
                 NUM    = IPI
-                SNUM   = ISPI              
+                SNUM   = ISPI
               ENDIF
-C              
-C ----------- LECTURE DES VALEURS         
+C
+C ----------- LECTURE DES VALEURS
 C
               DO 47 IVALCP = 1,NVALCP
                 VALR = ZR(JELGA+NBCMP*NBPI*NBSPI*(IMA-1)
      &                   +NBPI*NBSPI*(IVALCP-1)
      &                   +NBSPI*(IPI-1)
-     &                   +(ISPI-1)) 
+     &                   +(ISPI-1))
                 NOMCMP = NOMPAR(IVALCP)
-                CALL NMOBSZ(SDOBSE,NOMTAB,NOMCHA,TYPCHA,EXTRCH,
-     &                      EXTRCP,EXTRGA,NOMCMP,NOMNOE,NOMMAI,
-     &                      NUM   ,SNUM  ,NUMINS,INSTAN,VALR  )
+                CALL NMOBSZ(SDOBSE,NOMTAB,TITOBS,NOMCHA,TYPCHA,
+     &                      EXTRCH,EXTRCP,EXTRGA,NOMCMP,NOMNOE,
+     &                      NOMMAI,NUM   ,SNUM  ,NUMINS,INSTAN,
+     &                      VALR  )
                 NOBSEF = NOBSEF + 1
-  47          CONTINUE 
+  47          CONTINUE
   46        CONTINUE
   45      CONTINUE
   30    CONTINUE

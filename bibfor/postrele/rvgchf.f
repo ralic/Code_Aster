@@ -1,20 +1,19 @@
       SUBROUTINE RVGCHF ( EPSI, CRITER,
-     >                    NOMSD, NOSIMP, NOPASE, CHPSYM, ACCES,
-     >                    IVAL, RVAL, NBVAL, NCHEFF, CA )
+     >                    NOMSD, CHPSYM, ACCES,
+     >                    IVAL, RVAL, NBVAL, NCHEFF)
       IMPLICIT   NONE
 C
       INCLUDE 'jeveux.h'
       CHARACTER*(*) CRITER
       CHARACTER*16  CHPSYM,NCHEFF
-      CHARACTER*8   NOMSD, NOSIMP, NOPASE
+      CHARACTER*8   NOMSD
       CHARACTER*2   ACCES
-      CHARACTER*1   CA
       INTEGER       IVAL(*),NBVAL
       REAL*8        RVAL(*),EPSI
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,8 +37,6 @@ C     ------------------------------------------------------------------
 C IN  EPSI   : R : PRECISION DEMANDEE
 C IN  CRITER : K : CRITERE DE COMPARAISON DE DEUX REELS
 C IN  NOMSD  : K : NOM DE LA SD RESULTAT
-C IN  NOSIMP : K : NOM SIMPLE ASSOCIE AU CONCEPT NOMSD SI SENSIBILITE
-C IN  NOPASE : K : NOM DU PARAMETRE SENSIBLE
 C IN  CHPSYM : K : NOM DU CHAMP SYMBOLIQUE
 C IN  ACCES  : K : TYPE D' ACCES DEMANDE
 C IN  IVAL   : I : TABLE DES VALEURS ENTIERES POUR L' ACCES
@@ -62,7 +59,7 @@ C     ------------------------------------------------------------------
 C
 C
 C
-      CHARACTER*24  NTYPAC,NVALAC,NLSCHP, NNORES
+      CHARACTER*24  NTYPAC,NVALAC,NLSCHP,NNORES
       CHARACTER*24 VALK
       CHARACTER*16  MODACC
       CHARACTER*8   K8BID
@@ -85,11 +82,9 @@ C
       NLSCHP = NCHEFF//'.LSCHEFF'
 C
       CALL WKVECT ( NTYPAC, 'V V K8' , 1 , ATYPAC )
-      CALL WKVECT ( NNORES, 'V V K16', 4 , ANORES )
+      CALL WKVECT ( NNORES, 'V V K16', 2 , ANORES )
       ZK16(ANORES  ) = NOMSD
       ZK16(ANORES+1) = CHPSYM
-      ZK16(ANORES+2) = NOSIMP
-      ZK16(ANORES+3) = NOPASE
 C
       IF ( CAR1 .EQ. 'T' ) THEN
 C     /* ACCES A TOUS LES NUMEROS D' ORDRES */

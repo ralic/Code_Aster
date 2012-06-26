@@ -2,8 +2,7 @@
      &                  NBP, NUMPAQ, TSPAQ, NOMCRI, NOMMAI,
      &                  NOMOPT, CXSR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 26/06/2012   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,7 +63,6 @@ C
 C REMARQUE :
 C  - LA TAILLE DU SOUS-PAQUET EST EGALE A LA TAILLE DU <<PAQUET>> DE
 C    MAILLES DIVISEE PAR LE NOMBRE DE NUMERO D'ORDRE (NBORDR).
-C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
       INTEGER       NNOINI, NBNOP, NBNOT, JCNRD, JCNRL, JCNRV
       INTEGER       L, CNBNO, KWORK, SOMNOW, IBIDNO, NUNOE, INOP
@@ -129,7 +127,7 @@ C  CALCUL DE LA VARIATION D'AMPLITUDE
 
 
 C  IL Y A 6 COMPOSANTES POUR LES CONTRAINTES ==> DECAL=6
-            DECAL = 6
+            DECAL = 18
 
 
             DO 30 I=1, (NBORDR-1)
@@ -137,10 +135,10 @@ C  IL Y A 6 COMPOSANTES POUR LES CONTRAINTES ==> DECAL=6
                DO 40 J=(I+1), NBORDR
 
                   ADRSI = (I-1)*TSPAQ + KWORK*SOMNOW*DECAL
-     &                                + (IBIDNO-1)*DECAL + (DECAL-6)
+     &                                + (IBIDNO-1)*DECAL 
 
                   ADRSJ = (J-1)*TSPAQ + KWORK*SOMNOW*DECAL
-     &                                + (IBIDNO-1)*DECAL + (DECAL-6)
+     &                                + (IBIDNO-1)*DECAL 
 
 C   TENSI/J(1) = CPXXI/J   TENSI/J(2) = CPYYI/J   TENSI/J(3) = CPZZI/J
 C   TENSI/J(4) = CPXYI/J   TENSI/J(5) = CPXZI/J   TENSI/J(6) = CPYZI/J
@@ -166,6 +164,8 @@ C   TENSI/J(4) = CPXYI/J   TENSI/J(5) = CPXZI/J   TENSI/J(6) = CPYZI/J
 
                   CALL RVINVT(DTENS,VMIS,TRES,TRAC,DETR)
 
+
+                     
                   IF (VMIS .GT. VAVMIS) THEN
                      VAVMIS = VMIS
                   ENDIF
@@ -250,7 +250,7 @@ C  BOUCLE SUR LES POINTS DE GAUSS
 C  CALCUL DE LA VARIATION D'AMPLITUDE
 
 C  IL Y A 6 COMPOSANTES POUR LES CONTRAINTES ==> DECAL=6
-               DECAL = 6
+               DECAL = 18
 
 
 C  BOUCLE SUR LES NUMEROS D'ORDRES
@@ -260,10 +260,10 @@ C  BOUCLE SUR LES NUMEROS D'ORDRES
                   DO 140 J=(I+1), NBORDR
 
                      ADRSI = (I-1)*TSPAQ + KWORK*SOMPGW*DECAL
-     &                                   + (IPG-1)*DECAL + (DECAL-6)
+     &                                   + (IPG-1)*DECAL 
 
                      ADRSJ = (J-1)*TSPAQ + KWORK*SOMPGW*DECAL
-     &                                   + (IPG-1)*DECAL + (DECAL-6)
+     &                                   + (IPG-1)*DECAL 
 
 
 C   TENSI/J(1) = CPXXI/J   TENSI/J(2) = CPYYI/J   TENSI/J(3) = CPZZI/J
@@ -289,6 +289,7 @@ C   TENSI/J(4) = CPXYI/J   TENSI/J(5) = CPXZI/J   TENSI/J(6) = CPYZI/J
  150                 CONTINUE
 
                      CALL RVINVT(DTENS,VMIS,TRES,TRAC,DETR)
+
 
                      IF (VMIS .GT. VAVMIS) THEN
                         VAVMIS = VMIS

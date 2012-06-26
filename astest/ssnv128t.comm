@@ -1,4 +1,4 @@
-# MODIF  DATE 27/02/2012   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT AVEC FROTTEMENT ET USURE D'UNE PLAQUE SUR UN PLAN RIGIDE
 # ssnv128t.para = tps_job 380 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -76,6 +76,9 @@ CHA4 = DEFI_CONTACT(MODELE         = MO,
                     FORMULATION    = 'CONTINUE',
                     FROTTEMENT     = 'COULOMB',
                     REAC_GEOM      = 'CONTROLE',
+                    ALGO_RESO_GEOM = 'POINT_FIXE',
+                    ALGO_RESO_CONT = 'POINT_FIXE', 
+                    ALGO_RESO_FROT = 'NEWTON', 
                     NB_ITER_GEOM   = 2,
                     ZONE =(
                            _F(

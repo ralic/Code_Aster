@@ -1,6 +1,6 @@
       SUBROUTINE PROPLA( NBVEC, VECTN, VECTU, VECTV, NBORDR, KWORK,
-     &                   SOMMW, VWORK, TDISP, TSPAQ, I, NOMCRI,FORDEF, 
-     &                   FATSOC,VECTRA )
+     &                   SOMMW, VWORK, TDISP, TSPAQ, I, NOMCRI,NOMFOR, 
+     &                   FORDEF, FATSOC,VECTRA )
       IMPLICIT      NONE
       INCLUDE 'jeveux.h'
       INTEGER       NBVEC, NBORDR, KWORK
@@ -8,9 +8,9 @@
       REAL*8        VECTN(3*NBVEC), VECTU(3*NBVEC), VECTV(3*NBVEC)
       REAL*8        VWORK(TDISP), FATSOC, VECTRA(2*NBVEC*NBORDR)
       LOGICAL       FORDEF
-      CHARACTER*16  NOMCRI
+      CHARACTER*16  NOMCRI, NOMFOR
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 26/06/2012   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -72,8 +72,9 @@ C
 C REMARQUE : CETTE ROUTINE SERT POUR LE TRAITEMENT DES POINTS DE GAUSS
 C            ET DES NOEUDS.
 C ----------------------------------------------------------------------
-C     ------------------------------------------------------------------
-      INTEGER    IVECT, IORDR, N, DECAL, ADRS
+      INTEGER    IVECT, IORDR, N, DECAL, ADRS, DECPRO, PARACT(30)
+      LOGICAL    LBID, CRSIGM, CREPST, CREPSE,CREPSP
+      CHARACTER*16  TYPCHA
       REAL*8     NX, NY, NZ, UX, UY, UZ, VX, VY, VZ
       REAL*8     CMPXX, CMPYY, CMPZZ, CMPXY, CMPXZ, CMPYZ
       REAL*8     FX, FY, FZ
@@ -84,17 +85,46 @@ C
 C234567                                                              012
 
       CALL JEMARQ()
+      
+      TYPCHA = 'NON_PERIODIQUE'
 
       N = 0
-
-C       IF (( NOMCRI(1:16) .EQ. 'FATESOCI_MODI_AV' ) .OR.
-C      &    FORDEF ) THEN
-C          DECAL = 12
-C       ELSE
-C          DECAL = 6
-C       ENDIF
+      DECPRO = 0
+C    DECPRO POUR IDENTIFIER L'AXE A PRPJECTER
+C---    ANALYSER LE CRITERE
+C  INITIALISER
+      CRSIGM = .FALSE. 
+      CREPST = .FALSE. 
+      CREPSE = .FALSE. 
+      CREPSP = .FALSE.
       
-      DECAL = 12
+      CALL ANACRI( NOMCRI,NOMFOR,TYPCHA,'NON', PARACT,
+     &            LBID, CRSIGM, CREPST, CREPSE,CREPSP)
+   
+     
+C TRAITEMENT DES PAQUETS DE NOEUDS.
+
+      IF (( NOMCRI(1:16) .EQ. 'FATESOCI_MODI_AV' ) .OR.
+     &    FORDEF ) THEN
+         DECPRO = 6
+         GOTO 50
+      ENDIF
+      
+      IF (CRSIGM) THEN
+            DECPRO = 0
+      ELSE
+         IF (CREPST) THEN
+            DECPRO = 6
+         ELSE
+            IF (CREPSP) THEN
+               DECPRO = 12
+            ENDIF
+         ENDIF
+      ENDIF
+
+50    CONTINUE
+      
+      DECAL = 18
 
       DO 10 IVECT=1, NBVEC
          NX = VECTN((IVECT-1)*3 + 1)
@@ -110,16 +140,20 @@ C       ENDIF
          VZ = VECTV((IVECT-1)*3 + 3)
 
          DO 20 IORDR=1, NBORDR
-C             ADRS = (IORDR-1)*TSPAQ + KWORK*SOMMW*DECAL
-C      &                             + (I-1)*DECAL + (DECAL-6)
-            IF (( NOMCRI(1:16) .EQ. 'FATESOCI_MODI_AV' ) .OR.
-     &         FORDEF ) THEN
-               ADRS = (IORDR-1)*TSPAQ + KWORK*SOMMW*DECAL
-     &                             + (I-1)*DECAL + 6
-            ELSE
-               ADRS = (IORDR-1)*TSPAQ + KWORK*SOMMW*DECAL
-     &                             + (I-1)*DECAL
-            ENDIF 
+
+C ON PROJETTE LA DEFORMATION SI FORDEF = OUI
+C             IF (( NOMCRI(1:16) .EQ. 'FATESOCI_MODI_AV' ) .OR.
+C      &         FORDEF ) THEN
+C                ADRS = (IORDR-1)*TSPAQ + KWORK*SOMMW*DECAL
+C      &                             + (I-1)*DECAL + 6
+C             ELSE
+C                ADRS = (IORDR-1)*TSPAQ + KWORK*SOMMW*DECAL
+C      &                             + (I-1)*DECAL
+C            ENDIF
+            
+             ADRS = (IORDR-1)*TSPAQ + KWORK*SOMMW*DECAL
+     &                             + (I-1)*DECAL + DECPRO
+      
             CMPXX = VWORK(ADRS + 1)
             CMPYY = VWORK(ADRS + 2)
             CMPZZ = VWORK(ADRS + 3)

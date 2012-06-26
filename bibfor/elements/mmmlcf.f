@@ -1,8 +1,8 @@
       SUBROUTINE MMMLCF(COEFFF,COEFAC,COEFAF,LPENAC,LPENAF,
-     &                  IRESOF,LAMBDS)
+     &                  IRESOF,IRESOG,LAMBDS)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,7 @@ C
       REAL*8   COEFAC,COEFAF
       REAL*8   COEFFF,LAMBDS
       LOGICAL  LPENAC,LPENAF
-      INTEGER  IRESOF
+      INTEGER  IRESOF,IRESOG
 C
 C ----------------------------------------------------------------------
 C
@@ -44,11 +44,12 @@ C OUT LPENAC : .TRUE. SI CONTACT PENALISE
 C OUT LPENAF : .TRUE. SI FROTTEMENT PENALISE
 C OUT IRESOF : ALGO. DE RESOLUTION POUR LE FROTTEMENT
 C              0 - POINT FIXE
-C              1 - NEWTON PARTIEL
-C              2 - NEWTON COMPLET
+C              1 - NEWTON
+C OUT IRESOG : ALGO. DE RESOLUTION POUR LA GEOMETRIE
+C              0 - POINT FIXE
+C              1 - NEWTON
 C
-C
-C
+C ----------------------------------------------------------------------
 C
       INTEGER      JPCF
       INTEGER      IALGOC,IALGOF
@@ -66,6 +67,7 @@ C
       IALGOC = NINT(ZR(JPCF-1+15))
       IALGOF = NINT(ZR(JPCF-1+18))
       IRESOF = NINT(ZR(JPCF-1+17))
+      IRESOG = NINT(ZR(JPCF-1+28))
       LAMBDS =      ZR(JPCF-1+13)
 C
 C --- PENALISATION ?

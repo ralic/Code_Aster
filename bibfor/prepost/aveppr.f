@@ -2,7 +2,7 @@
      &                   NOMMAT, VEPPR, VSIPN )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 26/06/2012   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,12 +48,11 @@ C  I      : IN   I  : IEME POINT DE GAUSS OU IEME NOEUD.
 C  VPHYDR : OUT  R  : VECTEUR CONTENANT LA PRESSION HYDROSTATIQUE A
 C                     TOUS LES INSTANTS.
 C ----------------------------------------------------------------------
-C     ------------------------------------------------------------------
       INTEGER    IORDR, ADRS, NVP, NPERM, NITJAC, J, IORDRE, ITYPE
-      INTEGER    ICODRE
-      REAL*8     SIG(6), EPS(6), TOL, TOLDYN,AR(6), BR(6)
-      REAL*8     VECPRO(3,3), VALPRO(3), NM1X, NM1Y, NM1Z,EXM, EYM, EZM
-      REAL*8     JACAUX(3), C1, C2, VALE, VALNU, EPSE(6), EPSP(6), R8B
+      INTEGER    DECAL
+      REAL*8     SIG(6), TOL, TOLDYN,AR(6), BR(6)
+      REAL*8     VECPRO(3,3), VALPRO(3), NM1X, NM1Y, NM1Z,SXM, SYM, SZM
+      REAL*8     JACAUX(3), EPSP(6)
 C     ------------------------------------------------------------------
 C
 C234567                                                              012
@@ -62,38 +61,15 @@ C
 C
 C ---------------------------------------------------------------
 C RECUPER LES CONTRAINTES ET DEFORMATION
-      CALL RCVALE(NOMMAT,'ELAS',0,'        ',R8B,1,'E       ',
-     &            VALE,ICODRE,0)
-      IF (ICODRE .EQ. 1) THEN
-         CALL U2MESS('F','PREPOST_11')
-      ENDIF
-      CALL RCVALE(NOMMAT,'ELAS',0,'        ',R8B,1,'NU      ',
-     &            VALNU,ICODRE,0)
-      IF (ICODRE .EQ. 1) THEN
-         CALL U2MESS('F','PREPOST_12')
-      ENDIF
-      C1 = (1+VALNU)/VALE
-      C2 = VALNU/VALE
 
+      DECAL = 18
       DO 10 IORDR=1, NBORDR
-         ADRS = (IORDR-1)*TSPAQ + KWORK*SOMMW*12 + (I-1)*12
+         ADRS = (IORDR-1)*TSPAQ + KWORK*SOMMW*DECAL + (I-1)*DECAL
 
          DO 35 J = 1, 6
             SIG(J) = VWORK(ADRS + J )
-            EPS(J) =  VWORK(ADRS + J + 6)
+            EPSP(J) =  VWORK(ADRS + J + 6 + 6)
 35       CONTINUE
-C ON SUPPOSE QUE EPS_TOT = EPS_ELAS + EPSPLAS
-
-         EPSE(1) = C1*SIG(1) - C2*(SIG(1) + SIG(2) + SIG(3))
-         EPSE(2) = C1*SIG(2) - C2*(SIG(1) + SIG(2) + SIG(3))
-         EPSE(3) = C1*SIG(3) - C2*(SIG(1) + SIG(2) + SIG(3))
-         EPSE(4) = C1*SIG(4)
-         EPSE(5) = C1*SIG(5)
-         EPSE(6) = C1*SIG(6)
-
-         DO 45 J = 1, 6
-            EPSP(J) =  EPS(J) - EPSE(J)
-45       CONTINUE
 
          NVP = 3
          NPERM = 12
@@ -118,18 +94,19 @@ C ON SUPPOSE QUE EPS_TOT = EPS_ELAS + EPSPLAS
      &                     JACAUX,NITJAC,ITYPE,IORDRE)
 
          VEPPR(IORDR) = VALPRO(1)
+         
          NM1X = VECPRO (1,1)
          NM1Y = VECPRO (2,1)
          NM1Z = VECPRO (3,1)
 C CALCvect_F = [SIG].vect_n
 
-         EXM = SIG(1)*NM1X + SIG(4)*NM1Y + SIG(5)*NM1Z
-         EYM = SIG(4)*NM1X + SIG(2)*NM1Y + SIG(6)*NM1Z
-         EZM = SIG(5)*NM1X + SIG(6)*NM1Y + SIG(3)*NM1Z
+         SXM = SIG(1)*NM1X + SIG(4)*NM1Y + SIG(5)*NM1Z
+         SYM = SIG(4)*NM1X + SIG(2)*NM1Y + SIG(6)*NM1Z
+         SZM = SIG(5)*NM1X + SIG(6)*NM1Y + SIG(3)*NM1Z
 
 C CALCNORM = vect_F.vect_n
 
-         VSIPN(IORDR) = ABS(EXM*NM1X + EYM*NM1Y + EZM*NM1Z)
+         VSIPN(IORDR) = ABS(SXM*NM1X + SYM*NM1Y + SZM*NM1Z)
 C
  10   CONTINUE
 C

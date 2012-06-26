@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,24 +25,19 @@ C
 C     ------------------------------------------------------------------
 C
       INCLUDE 'jeveux.h'
-      INTEGER       IRET,NRPASS,NBPASS,ADRECG
       INTEGER       NIVO,N3,N1,IFI,N2,NBOCC,IALICO,NCON,IPOS,LONG,N4
-      INTEGER       I,IAUX,IOCC
+      INTEGER       I,IOCC
       LOGICAL       LATTR, LCONT, ULEXIS
       CHARACTER*1   BASE
-      CHARACTER*6   NOMPRO
       CHARACTER*8   KBID
       CHARACTER*8   LERESU
       CHARACTER*16  NOMFI
-      CHARACTER*24  NORECG
       CHARACTER*72  CHAINE
 C     ------------------------------------------------------------------
-      PARAMETER (NOMPRO='OP0017')
       INTEGER      IARG
 C
       CALL JEMARQ()
       CALL INFMAJ()
-      NORECG = '&&'//NOMPRO//'_RESULTA_GD     '
 C
       NIVO = 0
       CALL GETVIS ( ' ', 'NIVEAU', 1,IARG,1, NIVO, N3 )
@@ -79,20 +74,8 @@ C
            CALL WKVECT ('&&OP0017.LISTE_CO','V V K8',NCON,IALICO)
            CALL GETVID('CONCEPT','NOM',IOCC,IARG,NCON,ZK8(IALICO),N1)
            DO 1, I=1,NCON
-             IAUX = IOCC
-             CALL JEEXIN(NORECG,IRET)
-             IF (IRET.NE.0) CALL JEDETR(NORECG)
-             CALL PSRESE('CONCEPT',IAUX,1,ZK8(IALICO-1+I),1,
-     1                    NBPASS,NORECG,IRET)
-             CALL JEVEUO(NORECG,'L',ADRECG)
-             DO 2 NRPASS = 1,NBPASS
-C            POUR LE PASSAGE NUMERO NRPASS :
-C          . NOM DU CHAMP DE RESULTAT OU DE GRANDEUR
-C          . NOM DU PARAMETRE DE SENSIBILITE
-
-               LERESU = ZK24(ADRECG+2*NRPASS-2) (1:8)
-               CALL UTIMSD(IFI,NIVO,LATTR,LCONT,LERESU,1,BASE)
- 2           CONTINUE
+             LERESU = ZK8(IALICO-1+I)
+            CALL UTIMSD(IFI,NIVO,LATTR,LCONT,LERESU,1,BASE)
  1         CONTINUE
            CALL JEDETR('&&OP0017.LISTE_CO')
         ENDIF

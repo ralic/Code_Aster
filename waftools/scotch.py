@@ -45,8 +45,6 @@ def check_scotch(self):
         else:
             # default or SCOTCH_VERSION >= 5
             opts.scotch_libs = 'esmumps scotch scotcherr'
-        if opts.parallel:
-            opts.scotch_libs = opts.scotch_libs.replace('scotch', 'ptscotch')
 
     # Code_Aster v11.0.1: FICHE 016627
     if 'scotchmetis' in opts.scotch_libs:

@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,6 @@ C
 
       CHARACTER*8  K8B, RESU,MONAXE, FORMAR, CHMAT, CARAEL
       CHARACTER*8  NOMNOE, NOMCMP, KNUM, NOMDIR
-      CHARACTER*8  NOSIMP, NOPASE
       CHARACTER*14 NUME
       CHARACTER*16 CONCEP,ACCES(3)
       CHARACTER*19 CHAMNO,RAIDE
@@ -456,12 +455,13 @@ C     --- ECRITURE EVENTUELLE DES VALEURS ET DES VECTEURS PROPRES ---
          IBID = 0
          K8B = ' '
          IUL = IUNIFI( 'MESSAGE' )
-         CALL IRECRI ( RESU,NOSIMP,NOPASE, 'RESULTAT',IUL, K8B,
-     &                 LBID,IBID, K8B,' ', NBPAR,
-     &                 ZK16(JPARA), NBMODE, ZI(LRES), .TRUE., K8B,
-     &                 IBID, K8B, 'T', K8B,.FALSE., IBID, IBID, IBID,
-     &                 IBID, IBID, K8B, .FALSE., R8B, .FALSE., R8B,
-     &                 .FALSE.,.FALSE., FORMAR,NIVE,VERSIO)
+         CALL IRECRI ( RESU, 'RESULTAT',IUL, K8B,LBID,
+     &                 IBID, K8B,' ', NBPAR,ZK16(JPARA),
+     &                  NBMODE, ZI(LRES), .TRUE., K8B,IBID,
+     &                  'T', K8B,.FALSE., IBID,IBID,
+     &                   IBID,IBID, IBID, K8B, .FALSE.,
+     &                  R8B, .FALSE., R8B,.FALSE.,.FALSE.,
+     &                 FORMAR,NIVE,VERSIO)
       ENDIF
 
 

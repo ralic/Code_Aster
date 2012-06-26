@@ -7,7 +7,7 @@
       CHARACTER*(*) NOSUIV,NOIP
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ASSEMBLA  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,6 +68,7 @@ C        --- LA CHAINE J EST VIDE. ON L'INITIALISE PAR IL(1:N) ---
         ZI(IDIICH-1+J) = IILIB
         IF ((IILIB+N).GE.IIMAX) THEN
           IIMAX = NINT(1.5D0*IIMAX)
+          CALL ASSERT((IILIB+N).LT.IIMAX)
           CALL JUVECA(NOIP,IIMAX)
           CALL JEVEUO(NOIP,'E',IDIP)
           CALL JUVECA(NOSUIV,IIMAX)
@@ -97,6 +98,7 @@ C           INSERTION DE IL(1) EN DEBUT DE CHAINE
           IF ((IILIB+1).GE.IIMAX) THEN
             IIMAX = NINT(1.5D0*IIMAX)
             CALL JUVECA(NOIP,IIMAX)
+            CALL ASSERT((IILIB+1).LT.IIMAX)
             CALL JEVEUO(NOIP,'E',IDIP)
             CALL JUVECA(NOSUIV,IIMAX)
             CALL JEVEUO(NOSUIV,'E',IDSUIV)
@@ -158,6 +160,7 @@ C                  ENTRE CES 2 ELEMENTS
               IF ((IILIB+1).GE.IIMAX) THEN
                 IIMAX = NINT(1.5D0*IIMAX)
                 CALL JUVECA(NOIP,IIMAX)
+                CALL ASSERT((IILIB+1).LT.IIMAX)
                 CALL JEVEUO(NOIP,'E',IDIP)
                 CALL JUVECA(NOSUIV,IIMAX)
                 CALL JEVEUO(NOSUIV,'E',IDSUIV)
@@ -176,6 +179,7 @@ C              INSERTION DES ELEMENT RESTANT DE IL EN FIN DE CHAINE  .
             IF ((IILIB+1+N-KIL).GE.IIMAX) THEN
               IIMAX = NINT(1.5D0*IIMAX)
               CALL JUVECA(NOIP,IIMAX)
+              CALL ASSERT((IILIB+1+N-KIL).LT.IIMAX)
               CALL JEVEUO(NOIP,'E',IDIP)
               CALL JUVECA(NOSUIV,IIMAX)
               CALL JEVEUO(NOSUIV,'E',IDSUIV)

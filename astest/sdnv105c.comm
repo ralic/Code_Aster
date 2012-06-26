@@ -1,4 +1,4 @@
-# MODIF  DATE 05/03/2012   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE ROCKING OF A 2D BLOCK RESTING ON A GROUND TABLE
 # sdnv105c.para = tps_job 2020 mem_job 1024Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -36,7 +36,7 @@ g = 9.81;
 
 
 # NUMERICAL-INTEGRATION PARAMETERS
-n_iter_max = 10;
+n_iter_max = 20;
 
 pre_glo = 1e-04;
 
@@ -224,8 +224,11 @@ CHA_conp=DEFI_CONTACT(MODELE       = MO,
 CHA_cont=DEFI_CONTACT(MODELE         = MO,
                       FORMULATION    = 'CONTINUE',
                       FROTTEMENT     = 'COULOMB',
-                      ALGO_RESO_FROT = 'POINT_FIXE',
-                      ITER_FROT_MAXI = 20,
+                      ALGO_RESO_CONT = 'NEWTON',
+                      ALGO_RESO_GEOM = 'NEWTON',
+                      ALGO_RESO_FROT = 'NEWTON',
+                      RESI_GEOM      = 0.01,
+                      #ITER_FROT_MAXI = 20,
                       ZONE = _F(
                               ALGO_CONT     = 'STANDARD',
                               COEF_CONT     = 1.0E-3,
@@ -235,7 +238,23 @@ CHA_cont=DEFI_CONTACT(MODELE         = MO,
                       ),
          )
 
-
+CHA_con2=DEFI_CONTACT(MODELE         = MO,
+                      FORMULATION    = 'CONTINUE',
+                      FROTTEMENT     = 'COULOMB',
+                      ALGO_RESO_CONT = 'POINT_FIXE',
+                      ALGO_RESO_GEOM = 'POINT_FIXE',
+                      ALGO_RESO_FROT = 'POINT_FIXE',
+                      RESI_GEOM      = 0.01,
+                      ITER_FROT_MAXI = 20,
+                      ZONE = _F(
+                              ALGO_CONT     = 'STANDARD',
+                              COEF_CONT     = 1.0E-3,
+                              GROUP_MA_MAIT = 'CONBAS',
+                              GROUP_MA_ESCL = 'CONHAUT',
+                              COULOMB       = mu_frot,
+                      ),
+         )
+         
 # SELF WEIGHT
 ramp_pes=DEFI_FONCTION(NOM_PARA='INST',
                        VALE=(-1.95,0.0,-1.65,1.0,0.0,1.0),
@@ -313,7 +332,7 @@ u_ini_la=DYNA_NON_LINE(MODELE=MO,
                        NEWTON=_F(MATRICE='TANGENTE', REAC_ITER=1),
                        SOLVEUR=_F(METHODE='MULT_FRONT',RENUM='MDA',SYME='OUI',),
                        CONVERGENCE=_F(ARRET='OUI',
-                                      RESI_GLOB_MAXI=0.0001,
+                                      #RESI_GLOB_MAXI=0.0001,
                                       RESI_GLOB_RELA=1e-05,
                                       ITER_GLOB_MAXI=20));
 
@@ -348,7 +367,7 @@ u_lacher=DYNA_NON_LINE(MODELE=MO, CHAM_MATER=CHMAT,
                                      ALPHA = -0.1, MODI_EQUI='NON'),
                        NEWTON=_F(MATRICE='TANGENTE', REAC_ITER=1),
                        SOLVEUR=_F(METHODE='MULT_FRONT',RENUM='MDA'),
-                       CONVERGENCE=_F(RESI_GLOB_MAXI=pre_glo,
+                       CONVERGENCE=_F(#RESI_GLOB_MAXI=pre_glo,
                                       RESI_GLOB_RELA=pre_rel,
                                       ITER_GLOB_MAXI=n_iter_max,
                                       ARRET='OUI'));
@@ -374,7 +393,7 @@ u_lacher=DYNA_NON_LINE(reuse =u_lacher, MODELE=MO,
                        NEWTON=_F(MATRICE='TANGENTE',
                                  REAC_ITER=1),
                        SOLVEUR=_F(METHODE='MULT_FRONT',RENUM='MDA'),
-                       CONVERGENCE=_F(RESI_GLOB_MAXI=pre_glo,
+                       CONVERGENCE=_F(#RESI_GLOB_MAXI=pre_glo,
                                       RESI_GLOB_RELA=pre_rel,
                                       ITER_GLOB_MAXI=n_iter_max,
                                       ARRET='OUI'));
@@ -386,7 +405,7 @@ u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                        EXCIT=(_F(CHARGE=CHA_pes),
                               _F(CHARGE=CL_fix_t),
                               ),
-                       CONTACT  =CHA_cont,
+                       CONTACT  =CHA_con2,
                        COMP_INCR=_F(RELATION='ELAS',
                                     DEFORMATION='GROT_GDEP',),
                        ETAT_INIT=_F(EVOL_NOLI=u_lacher,
@@ -407,9 +426,9 @@ u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                        NEWTON=_F(MATRICE='TANGENTE',
                                  REAC_ITER=1),
                        SOLVEUR=_F(METHODE='MULT_FRONT',RENUM='MDA'),
-                       CONVERGENCE=_F(RESI_GLOB_MAXI=pre_glo,
+                       CONVERGENCE=_F(#RESI_GLOB_MAXI=pre_glo,
                                       RESI_GLOB_RELA=pre_rel,
-                                      ITER_GLOB_MAXI=10,
+                                      ITER_GLOB_MAXI=n_iter_max,
                                       ARRET='OUI'));
 
 # ---- second vol libre: hht(alpha=0.)
@@ -421,7 +440,7 @@ u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                        EXCIT=(_F(CHARGE=CHA_pes),
                               _F(CHARGE=CL_fix_t),
                               ),
-                       CONTACT  =CHA_cont,
+                       CONTACT  =CHA_con2,
                        COMP_INCR=_F(RELATION='ELAS',
                                     DEFORMATION='GROT_GDEP',),
                        ETAT_INIT=_F(EVOL_NOLI=u_lacher,
@@ -436,7 +455,7 @@ u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                        NEWTON=_F(MATRICE='TANGENTE',
                                  REAC_ITER=1),
                        SOLVEUR=_F(METHODE='MULT_FRONT',RENUM='MDA'),
-                       CONVERGENCE=_F(RESI_GLOB_MAXI=pre_glo,
+                       CONVERGENCE=_F(#RESI_GLOB_MAXI=pre_glo,
                                       RESI_GLOB_RELA=pre_rel,
                                       ITER_GLOB_MAXI=n_iter_max,
                                       ARRET='OUI'));
@@ -451,7 +470,7 @@ u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                        EXCIT=(_F(CHARGE=CHA_pes),
                               _F(CHARGE=CL_fix_t),
                               ),
-                       CONTACT  =CHA_cont,
+                       CONTACT  =CHA_con2,
                        COMP_INCR=_F(RELATION='ELAS',
                                     DEFORMATION='GROT_GDEP',),
                        ETAT_INIT=_F(EVOL_NOLI=u_lacher,
@@ -465,7 +484,7 @@ u_lacher=DYNA_NON_LINE(reuse =u_lacher,
                        NEWTON=_F(MATRICE='TANGENTE',
                                  REAC_ITER=1),
                        SOLVEUR=_F(METHODE='MULT_FRONT',RENUM='MDA'),
-                       CONVERGENCE=_F(RESI_GLOB_MAXI=pre_glo,
+                       CONVERGENCE=_F(#RESI_GLOB_MAXI=pre_glo,
                                       RESI_GLOB_RELA=pre_rel,
                                       ITER_GLOB_MAXI=n_iter_max,
                                       ARRET='OUI'));

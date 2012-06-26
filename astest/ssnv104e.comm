@@ -1,4 +1,4 @@
-# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 # RESPONSABLE ABBAS M.ABBAS
 # AUTEUR : M. ZARROUG
 # DATE   : 18/12/2000
@@ -50,6 +50,8 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
 
 CHA1 = DEFI_CONTACT(MODELE         = MO,
                     FORMULATION    = 'CONTINUE',
+                    ALGO_RESO_CONT = 'POINT_FIXE',
+                    ALGO_RESO_GEOM = 'POINT_FIXE',
                     ITER_CONT_MAXI = 20,
                     ZONE =(
                            _F(
@@ -106,7 +108,6 @@ RESU=STAT_NON_LINE(MODELE=MO,
                    CONTACT  = CHA1,
                    COMP_ELAS=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=L_INST,),
-
                    OBSERVATION=(_F(NOM_CHAM='DEPL',
                                    NOM_CMP='DY',
                                    PAS_OBSE=1,
@@ -137,7 +138,8 @@ RESU=STAT_NON_LINE(MODELE=MO,
                                  UNITE=37,),),
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=1),
-                   CONVERGENCE=_F(RESI_GLOB_MAXI=1.));
+                   CONVERGENCE=_F(RESI_GLOB_MAXI=1.,
+                                  ITER_GLOB_MAXI=30 ));
 
 
 

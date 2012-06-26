@@ -1,7 +1,7 @@
       SUBROUTINE AVSIGN( NBVEC, NBORDR, VECTN, VWORK, TDISP, KWORK,
      &                   SOMMW, TSPAQ, I, VSIGN )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 26/06/2012   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -54,7 +54,6 @@ C  VSIGN  : OUT  R  : VECTEUR CONTENANT LES VALEURS DE LA CONTRAINTE
 C                     NORMALE, POUR TOUS LES NUMEROS D'ORDRE
 C                     DE CHAQUE VECTEUR NORMAL.
 C ----------------------------------------------------------------------
-C     ------------------------------------------------------------------
       INTEGER    N, DECAL, IVECT, IORDR, ADRS 
       REAL*8     NX, NY, NZ
       REAL*8     SIXX, SIYY, SIZZ, SIXY, SIXZ, SIYZ, FX, FY, FZ, NORM
@@ -71,7 +70,7 @@ C          DECAL = 12
 C       ELSE
 C          DECAL = 6
 C       ENDIF
-      DECAL = 12
+      DECAL = 18
       DO 10 IVECT=1, NBVEC
          NX = VECTN((IVECT-1)*3 + 1)
          NY = VECTN((IVECT-1)*3 + 2)

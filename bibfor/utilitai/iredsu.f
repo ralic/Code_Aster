@@ -5,7 +5,7 @@
       CHARACTER*(*) MACR,FORM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,7 +60,6 @@ C
 
       CHARACTER*1  B, CECR
       CHARACTER*8  K8B, MACREL, NOMA, NOEU, CMP, FORMAR
-      CHARACTER*8  NOSIMP, NOPASE
       CHARACTER*16 NOMSYM
       CHARACTER*19 BASEMO, NOCH19
       CHARACTER*24 MANONO
@@ -80,8 +79,6 @@ C
       MACREL = MACR
       FORMAR = '1PE12.5'
       NIVE   = 3
-      NOSIMP = '        '
-      NOPASE = '        '
 C
       CALL JEVEUO(MACREL//'.MAEL_REFE','L',JREFE)
       BASEMO = ZK24(JREFE)
@@ -185,12 +182,13 @@ C     ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
           WRITE (IFC,'(40A2)') 'Ph', 'i_', 'a '
           WRITE (IFC,'(A)') '    -1'
           TITRE = 'MODE DYNAMIQUE'
-          CALL IRECRI ( BASEMO,NOSIMP,NOPASE,FORM,IFC,TITRE,
-     >                 LBID,1,'DEPL',' ',IERO,K8B, 1,IORD,
-     >                  .TRUE.,B,IERO,B,CECR,K8B,F,IERO,
-     >                  IBID,IERO,IBID,IERO,K8B,
-     >                  F,ZERO,F,ZERO,F,F,FORMAR,
-     >                  NIVE,VERSIO)
+          CALL IRECRI ( BASEMO,FORM,IFC,TITRE,LBID,
+     >                 1,'DEPL',' ',IERO,K8B, 
+     &                 1,IORD,.TRUE.,B,IERO,
+     >                 CECR,K8B,F,IERO,IBID,
+     >                 IERO,IBID,IERO,K8B,F,
+     >                 ZERO,F,ZERO,F,F,
+     >                 FORMAR,NIVE,VERSIO)
         ENDIF
  100  CONTINUE
       IF ( NSTAT .NE. 0 ) THEN

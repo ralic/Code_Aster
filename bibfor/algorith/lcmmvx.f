@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 25/06/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,8 @@ C     ----------------------------------------------------------------
       CHARACTER*16    CPMONO(5*NMAT+1)
       CHARACTER*16    NOMFAM,NECOUL,NECRIS
       COMMON /DEPS6/DEPSDT
+      INTEGER IRR,DECIRR,NBSYST,DECAL
+      COMMON/POLYCR/IRR,DECIRR,NBSYST,DECAL
 C
       SEUIL=-1.D0
       DT=TIMEF-TIMED
@@ -104,8 +106,9 @@ C
 C
 C           ECOULEMENT VISCOPLASTIQUE
 C
+            DECAL=NSFV
             CALL LCMMFE( TAUS,MATERF(NMAT+1),MATERF,IFA,
-     &      NMAT,NBCOMM,NECOUL,IS,NBSYS,VIN(NSFV+1),DY(NSFA+1),
+     &      NMAT,NBCOMM,NECOUL,IS,NBSYS,VIN,DY(NSFA+1),
      &      RP,ALPHAM,GAMMAM,DT,DALPHA,DGAMMA,DP,CRIT,SGNS,NFS,NSG,
      &      HSR,IRET)
 

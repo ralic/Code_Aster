@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE IMPACT POUTRE AVEC ELEMENTS 3D SUR PLAN RIGIDE
 # sdnv100d.para = tps_job 60 mem_job 64Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -72,9 +72,11 @@ CH=AFFE_CHAR_MECA(
            )
 
 
-CH2 = DEFI_CONTACT(MODELE      = MODE,
-                   FORMULATION = 'CONTINUE',
-                   REAC_GEOM   = 'SANS',
+CH2 = DEFI_CONTACT(MODELE         = MODE,
+                   FORMULATION    = 'CONTINUE',
+                   REAC_GEOM      = 'SANS',
+                   ALGO_RESO_CONT = 'POINT_FIXE',
+                   ALGO_RESO_GEOM = 'POINT_FIXE',
                    ZONE        =_F(
                               ALGO_CONT = 'STANDARD',
                               COEF_CONT = 1.0E-2,

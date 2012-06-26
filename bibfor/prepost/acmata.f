@@ -10,7 +10,7 @@
       REAL*8     VRESPC(24)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 26/06/2012   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -73,7 +73,6 @@ C    COEFPA     IN    COEFFICIENT DE PASSAGE CISAILLEMENT - UNIAXIAL.
 C   VRSESU      OUT   TABLEAU DES RESULTATS (GRANDEURS ET DOMMAGE).
 C                     POUR L'INSTANT, LA DIMENSION DE VRESU EST 24
 C ----------------------------------------------------------------------
-C     ------------------------------------------------------------------
       INTEGER      I, J, K, N
       INTEGER      NBVEC, DIM ,MNMAX(2), JVPG1, JVPG2
       INTEGER      JVECN2, JVECU2, JVECV2, JVECN1, JVECU1, JVECV1
@@ -353,7 +352,7 @@ C          C1 = (1+VALNU)/VALE
 C          C2 = VALNU/VALE
 
          DO 540 I=1, NBORDR
-            DECAL = 12
+            DECAL = 18
 C           ADR = (J-1)*TSPAQ+KWORK*SOMPGW*6+(IPG-1)*6
             ADRS = (I-1)*TSPAQ+KWORK*SOMPGW*DECAL+(IPG-1)*DECAL
             SIXX = ZR(JRWORK + ADRS + 0)

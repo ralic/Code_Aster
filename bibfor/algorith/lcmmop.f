@@ -13,7 +13,7 @@ C     POUR GAGNER EN TEMPS CPU
       CHARACTER*(*)  FAMI
       CHARACTER*16 COMP(*)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/06/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 25/06/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -128,9 +128,11 @@ C     ----------------------------------------------------------------
       REAL*8 DEVI(6),MS(6),TAUS,DGAMMA,DALPHA,DP
       REAL*8 DEVGEQ,LCNRTS,DBETA,BETA,DVINEQ,GRANB(6)
       REAL*8 CRIT, SGNS, EXPBP(NSG),DY(NSG)
-      INTEGER ITENS,NBFSYS,I,NUVI,IFA,NBSYS,IS,IV,NUMS
-      INTEGER INDPHA,INDFV,DECAL,IPHAS,INDCP,INDFA,IEXP
+      INTEGER ITENS,NBFSYS,I,NUVI,IFA,NBSYS,IS,IV
+      INTEGER INDPHA,INDFV,IPHAS,INDCP,INDFA,IEXP
       INTEGER IFL,NUECOU,IHSR
+      INTEGER IRR,DECIRR,NBSYST,DECAL
+      COMMON/POLYCR/IRR,DECIRR,NBSYST,DECAL
 C     ----------------------------------------------------------------
 C --  VARIABLES INTERNES
 C
@@ -179,6 +181,8 @@ C        pour calculer Mu. On prend la moyenne des Gij
          NU=0.D0
       ENDIF
       
+      NBSYST=0
+      
       DO 1 IPHAS=1,NBPHAS
 C        INDPHA indice debut phase IPHAS dans NBCOMM
          INDPHA=NBCOMM(1+IPHAS,1)
@@ -190,7 +194,6 @@ C         INDORI=INDFV+1
          CALL LCLOCA(COEFT,E,NU,NMAT,NBCOMM,NBPHAS,SIGI,VINI,
      &               IPHAS,GRANB,LOCA,SIGG)
          NBFSYS=NBCOMM(INDPHA,1)
-         NUMS=0
          INDCP=NBCOMM(1+IPHAS,2)
 C        Nombre de variables internes de la phase (=monocristal)
 C         NVIG=NBCOMM(INDPHA,3)
@@ -215,8 +218,6 @@ C           indice de la famille IFA
             NUECOU=NINT(COEFT(IFL))
 
             DO 7 IS=1,NBSYS
-               NUMS=NUMS+1
-
 C              VARIABLES INTERNES DU SYST GLIS
                DO 8 IV=1,3
                   NUVI=NUVI+1
@@ -264,7 +265,7 @@ C              D'OU :
                DT=1.D0
 C
                CALL LCMMFE( TAUS,COEFT,COEL,INDFA,
-     &              NMAT,NBCOMM,NECOUL,IS,NBSYS,VINI(DECAL+1),DY(1),
+     &              NMAT,NBCOMM,NECOUL,IS,NBSYS,VINI,DY(1),
      &              RP,VIS(1),VIS(2),DT,DALPHA,DGAMMA,DP,CRIT,SGNS,
      &              NFS,NSG,HSR(1,1,IHSR),IRET)
                IF (DP.GT.0.D0) THEN
@@ -297,13 +298,11 @@ C                 EVG designe ici EPSVPG
                   DVIN(NUVI-1)=0.D0
                   DVIN(NUVI  )=0.D0
                ENDIF
+               NBSYST=NBSYST+1
   7        CONTINUE
 
   6      CONTINUE
 
-          IF (NECOUL.EQ.'MONO_DD_CC_IRRA') THEN
-             NUVI=NUVI+12
-          ENDIF
           DECAL = NUVI
 
 C         "homogenesisation" des déformations viscoplastiques

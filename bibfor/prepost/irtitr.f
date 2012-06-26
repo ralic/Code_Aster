@@ -1,11 +1,11 @@
-      SUBROUTINE IRTITR(CHAM,NOPASE,NOMA,FORM,IFI,TITRE)
+      SUBROUTINE IRTITR(CHAM,NOMA,FORM,IFI,TITRE)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER           IFI
-      CHARACTER*(*)     CHAM,NOPASE,NOMA,FORM
+      CHARACTER*(*)     CHAM,NOMA,FORM
       CHARACTER*80      TITRE
 C     ------------------------------------------------------------------
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,18 +40,13 @@ C
       CHARACTER*16  DATE,TYPRES
       CHARACTER*19  CHAM19
       CHARACTER*24  DATEUR
-      CHARACTER*80  TITSUP(7),STITR
+      CHARACTER*80  TITSUP(7)
 C
       CALL JEMARQ()
       NOMMA=NOMA
       CHAM19 = CHAM
       TITRE = ' '
-C
-C     SOUS-TITRE POUR LES CAS DE SENSIBILITE
-      IF ( NOPASE.NE.' ' ) THEN
-        WRITE (STITR,'(1X,A,1X,A)')
-     &                        '... SENSIBILITE AU PARAMETRE',NOPASE
-      ENDIF
+
 C
 C     --- SI CHAM19 != ' ', ALORS IL S'AGIT DE L'IMPRESSION D'UN CHAMP
 C         (RESULTAT OU CHAM_GD) ET NON D'UN MAILLAGE.
@@ -64,9 +59,6 @@ C         LE TITRE EST ALORS ECRIT DANS LE K80 TITRE
           TITRE=ZK80(JTITR)
           IF(FORM.EQ.'RESULTAT')  THEN
             WRITE(IFI,'(1X,A)') (ZK80(JTITR+I-1),I=1,NBTITR)
-            IF ( NOPASE.NE.' ' ) THEN
-              WRITE (IFI,'(A)') STITR
-            ENDIF
           ENDIF
         ELSE
           CALL GETTCO(CHAM,TYPRES)
@@ -74,9 +66,6 @@ C         LE TITRE EST ALORS ECRIT DANS LE K80 TITRE
      &                         'CONCEPT ',CHAM,'DE TYPE ',TYPRES
           IF(FORM.EQ.'RESULTAT')  THEN
             WRITE (IFI,'(A)') TITRE
-            IF ( NOPASE.NE.' ' ) THEN
-              WRITE (IFI,'(A)') STITR
-            ENDIF
           ENDIF
         ENDIF
       ENDIF

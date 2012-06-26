@@ -1,4 +1,4 @@
-# MODIF  DATE 21/05/2012   AUTEUR TRAN V-X.TRAN 
+# MODIF  DATE 26/06/2012   AUTEUR TRAN V-X.TRAN 
 #
 # TITRE CRITERES EN FORMULE POUR POST_FATIGUE AMPLITUDE CONSTANTE
 # szlz107b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
@@ -22,7 +22,7 @@
 
 DEBUT(  CODE=_F(  NOM = 'SZLZ107B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-### ON VEUT RETROUVER LE MEME RESULTAT AVEC CALC_FATIGUE DE CAS-TEST SSLV135o
+### ON VEUT RETROUVER LE MEME RESULTAT AVEC CALC_FATIGUE DE CAS-TEST SSLV135d
 SIGMXX=DEFI_FONCTION(    NOM_PARA='INST',
                           VALE=(  
 #                                   0     ,  0     ,
@@ -252,9 +252,10 @@ WHOL=DEFI_FONCTION(       NOM_PARA='SIGM',
                                  2210.,         20.,
                                  2900.,         10.,    )  )
 
-MAT0=DEFI_MATERIAU(ELAS=_F(E = 200000.,
-                           NU = 0.3,
-                           ALPHA = 0. ),
+MAT0=DEFI_MATERIAU(
+#                    ELAS=_F(E = 200000.,
+#                            NU = 0.3,
+#                            ALPHA = 0. ),
                     
                    FATIGUE=_F(WOHLER = WHOL,
                               D0 = 540.97,
@@ -332,6 +333,7 @@ CRIT[12] =   FORMULE(
 RESU = [7.5E-4, 8.75E-4, 200, 66.66666, 0.45, 0.173333,  200, 100, 1.75E-3 , 1.616666E-3, 50, 6.0625E-4,3.67423E-3]
 NPAR = ['DEPSPE', 'EPSPR1', 'SIGNM1', 'APHYDR', 'DENDIS','DENDIE', 'DSIGEQ','SIGPR1', 'EPSNM1','INVA2S','DSITRE','DEPTRE', 'EPSPAC' ]
 for i in range(NBPR) :
+#for i in range(5,6) :
 #
 # TEST CRITERE FORMULE 
 #########################################NOEUD
@@ -351,19 +353,20 @@ for i in range(NBPR) :
                                      EPS_XZ  = ZERO,
                                      EPS_YZ  = ZERO,
                                      
-#                                      EPSP_XX  = EPSPXX,
-#                                      EPSP_YY  = EPSPYY,
-#                                      EPSP_ZZ  = EPSPZZ,
-#                                      EPSP_XY  = ZERO,
-#                                      EPSP_XZ  = ZERO,
-#                                      EPSP_YZ  = ZERO,
+                                     EPSP_XX  = EPSPXX,
+                                     EPSP_YY  = EPSPYY,
+                                     EPSP_ZZ  = EPSPZZ,
+                                     EPSP_XY  = ZERO,
+                                     EPSP_XZ  = ZERO,
+                                     EPSP_YZ  = ZERO,
                                      
                                      ),
                        TYPE_CHARGE = 'PERIODIQUE',
                        CRITERE='FORMULE_CRITERE',
                        FORMULE_GRDEQ = CRIT[i],
                        DOMMAGE='WOHLER',
-                       MATER=MAT0                 )
+                       MATER=MAT0                
+                        )
                        
     IMPR_TABLE(TABLE = FATN[i]) 
 
@@ -375,9 +378,9 @@ for i in range(NBPR) :
 ###################################################
 # POUR RETROUVER LES CRITERES DE DANG_VAN ET MATAKE
 ###################################################
-#LE CHARGEMENT OBTENU AVEC SSLV135c/d/e
+#LE CHARGEMENT OBTENU AVEC SSLV135a
 #######################################################
-# ASSOCIE AVEC LA SOLUTION SOL_NL de SSLV135c
+# ASSOCIE AVEC LA SOLUTION SOL_NL de SSLV135a
 #######################################################
 # POUR DANG-VAN et MATAKE
 SIGMXX2=DEFI_FONCTION(    NOM_PARA='INST',
@@ -582,7 +585,7 @@ ACIER[0]   = DEFI_MATERIAU   ( ELAS           =_F( E        = 200000.,
                                                 NU       = .3,
                                                 ALPHA    = 0. ),
                             FATIGUE        =_F( WOHLER   = WHOL, ),
-                            CISA_PLAN_CRIT =_F( CRITERE = 'MATAKE_MODI_AV',
+                            CISA_PLAN_CRIT =_F( CRITERE = 'MATAKE_MODI_AC',
                                                 MATAKE_A  = 1.0,
                                                 MATAKE_B  = 2.0,
                                                 COEF_FLEX_TORS = 1.5 )
@@ -591,7 +594,7 @@ ACIER[1]   = DEFI_MATERIAU   ( ELAS           =_F( E        = 200000.,
                                                 NU       = .3,
                                                 ALPHA    = 0. ),
                             FATIGUE        =_F( WOHLER   = WHOL, ),
-                            CISA_PLAN_CRIT =_F( CRITERE = 'DANG_VAN_MODI_AV',
+                            CISA_PLAN_CRIT =_F( CRITERE = 'DANG_VAN_MODI_AC',
                                                 D_VAN_A = 1.0,
                                                 D_VAN_B = 2.0,
                                                 COEF_CISA_TRAC = 1.5 )

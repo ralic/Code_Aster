@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT AVEC MACRO-ELEMENTS STATIQUE
 # ssnv193a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -34,7 +34,7 @@ MA=MODI_MAILLAGE(reuse =MA,
                                  _F(GROUP_MA='Maitre',),),);
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
-              CREA_GROUP_NO=(                                                                         _F(GROUP_MA='Esclave',
+              CREA_GROUP_NO=(_F(GROUP_MA='Esclave',
                                 NOM='Esclave',),
                              _F(GROUP_MA='Interf',
                                 NOM='Interf',),
@@ -87,6 +87,8 @@ ENCAST=AFFE_CHAR_CINE(MODELE=MO,
 
 CONTC =DEFI_CONTACT(MODELE    = MO,
                   FORMULATION  = 'CONTINUE',
+                  ALGO_RESO_CONT = 'NEWTON',
+                  ALGO_RESO_GEOM = 'NEWTON',
                   ZONE=(
                         _F(
                           GROUP_MA_MAIT='Maitre',
@@ -188,6 +190,8 @@ MOMACR=AFFE_MODELE(MAILLAGE=MAG,
 
 CONTC2 =DEFI_CONTACT(MODELE    = MOMACR,
                   FORMULATION  = 'CONTINUE',
+                  ALGO_RESO_CONT = 'NEWTON',
+                  ALGO_RESO_GEOM = 'NEWTON',
                   ZONE=(
                         _F(
                           GROUP_MA_MAIT='Maitre',

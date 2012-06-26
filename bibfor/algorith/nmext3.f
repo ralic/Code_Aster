@@ -4,22 +4,22 @@
      &                  CHGAUS,CHELGA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
@@ -48,7 +48,7 @@ C IN  NOMCHA : NOM DU CHAMP
 C IN  NOMCHS : NOM DU CHAMP SIMPLE
 C IN  NBCMP  : NOMBRE DE COMPOSANTES DANS LA SD
 C IN  NBMA   : NOMBRE DE MAILLES DANS LA SD
-C IN  NBPI   : NOMBRE DE POINTS D'INTEGRATION 
+C IN  NBPI   : NOMBRE DE POINTS D'INTEGRATION
 C IN  NBSPI  : NOMBRE DE SOUS-POINTS D'INTEGRATION
 C IN  EXTRGA : TYPE D'EXTRACTION SUR UNE MAILLE
 C IN  EXTRCH : TYPE D'EXTRACTION SUR LE CHAMP
@@ -61,8 +61,7 @@ C IN  CHELGA : VECTEUR DE TRAVAIL CHAMPS AUX ELEMENTS
 C IN  CHGAUS : VECTEUR DE TRAVAIL CHAMPS AUX POINTS DE GAUSS
 C IN  CHAMP  : CHAMP A EXTRAIRE
 C
-C
-C
+C ----------------------------------------------------------------------
 C
       INTEGER      NPARX
       PARAMETER    (NPARX=20)
@@ -88,7 +87,7 @@ C
       IF (IRET.EQ.0) THEN
         CALL SDMPIC('CHAM_ELEM',CHAMP )
         CALL CELCES(CHAMP ,'V',NOMCHS)
-      ENDIF  
+      ENDIF
 C
 C --- ACCES AUX CHAMPS DE TRAVAIL
 C
@@ -96,11 +95,11 @@ C
       CALL JEVEUO(CHELGA,'E',JELGA)
       CALL JEVEUO(NOMCHS(1:19)//'.CESD','L',JCESD)
       CALL JEVEUO(NOMCHS(1:19)//'.CESL','L',JCESL)
-      CALL JEVEUO(NOMCHS(1:19)//'.CESV','L',JCESV) 
-      CALL JEVEUO(NOMCHS(1:19)//'.CESC','L',JCESC)     
+      CALL JEVEUO(NOMCHS(1:19)//'.CESV','L',JCESV)
+      CALL JEVEUO(NOMCHS(1:19)//'.CESC','L',JCESC)
       CALL ASSERT(NBCMP.LE.NPARX)
 C
-C --- ACCES LISTE DES MAILLES/POINTS/SOUS_POINTS         
+C --- ACCES LISTE DES MAILLES/POINTS/SOUS_POINTS
 C
       CALL JEVEUO(LISTMA,'L',JMA)
       CALL JEVEUO(LISTPI,'L',JPI)
@@ -109,9 +108,9 @@ C
 C --- BOUCLE SUR LES MAILLES
 C
       DO 30 IMA = 1,NBMA
-C      
+C
 C ----- MAILLE COURANTE
-C        
+C
         NUMMAI  = ZI(JMA-1+IMA)
         CALL JENUNO(JEXNUM(NOMA(1:8)//'.NOMMAI',NUMMAI),NOMMAI)
 C
@@ -132,12 +131,12 @@ C
         DO 45 IPI = 1,NPI
           DO 46 ISPI = 1,NSPI
 C
-C --------- NUMERO DES POINTS/SOUS-POINTS             
+C --------- NUMERO DES POINTS/SOUS-POINTS
 C
             NUM    = ZI(JPI-1+IPI  )
             SNUM   = ZI(JSPI-1+ISPI)
-C            
-C --------- EXTRACTION DES VALEURS AUX POINTS DE GAUSS           
+C
+C --------- EXTRACTION DES VALEURS AUX POINTS DE GAUSS
 C
             CALL NMEXTJ(NOMCHA,NBCMP ,LISTCP,EXTRCP,NUM   ,
      &                  SNUM  ,NVALCP,NUMMAI,JCESD ,JCESV ,
@@ -153,29 +152,29 @@ C
               ISPIR  = 1
             ENDIF
 C
-C --------- CALCUL DES VALEURS         
+C --------- CALCUL DES VALEURS
 C
             DO 47 IVALCP = 1,NVALCP
-              VALR   = VALRES(IVALCP)   
+              VALR   = VALRES(IVALCP)
               VAL2R  = ZR(JGAUS+NBCMP*(IVALCP-1)
-     &                         +NBPI*(IPIR-1) 
-     &                         +NBSPI*(ISPIR-1))       
+     &                         +NBPI*(IPIR-1)
+     &                         +NBSPI*(ISPIR-1))
               IF (EXTRGA.EQ.'VALE') THEN
                 ZR(JGAUS+NBPI*NBSPI*(IVALCP-1)
-     &                  +NBSPI*(IPIR-1) 
+     &                  +NBSPI*(IPIR-1)
      &                  +(ISPIR-1)) = VALR
-              ELSEIF (EXTRGA.EQ.'MAX') THEN   
+              ELSEIF (EXTRGA.EQ.'MAX') THEN
                 ZR(JGAUS+NBPI*NBSPI*(IVALCP-1)
-     &                  +NBSPI*(IPIR-1) 
-     &                  +(ISPIR-1)) = MAX(VALR,VAL2R)      
+     &                  +NBSPI*(IPIR-1)
+     &                  +(ISPIR-1)) = MAX(VALR,VAL2R)
               ELSEIF (EXTRGA.EQ.'MIN') THEN
                 ZR(JGAUS+NBPI*NBSPI*(IVALCP-1)
-     &                  +NBSPI*(IPIR-1) 
-     &                  +(ISPIR-1)) = MIN(VALR,VAL2R) 
+     &                  +NBSPI*(IPIR-1)
+     &                  +(ISPIR-1)) = MIN(VALR,VAL2R)
               ELSEIF (EXTRGA.EQ.'MOY') THEN
                 ZR(JGAUS+NBPI*NBSPI*(IVALCP-1)
-     &                  +NBSPI*(IPIR-1) 
-     &                  +(ISPIR-1)) = VALR+VAL2R                
+     &                  +NBSPI*(IPIR-1)
+     &                  +(ISPIR-1)) = VALR+VAL2R
               ELSE
                 CALL ASSERT(.FALSE.)
               ENDIF
@@ -184,9 +183,9 @@ C
   45    CONTINUE
 C
 C ----- AFFECTATION DES VALEURS AUX MAILLES
-C        
+C
         DO 75 IPI = 1,NPI
-          DO 76 ISPI = 1,NSPI 
+          DO 76 ISPI = 1,NSPI
             IF (EXTRGA.EQ.'VALE') THEN
               IPIR   = IPI
               ISPIR  = ISPI
@@ -194,42 +193,54 @@ C
               IPIR   = 1
               ISPIR  = 1
             ENDIF
-C                                
-            DO 77 IVALCP = 1,NVALCP 
-              IF (EXTRCH.EQ.'VALE') THEN 
+C
+            DO 77 IVALCP = 1,NVALCP
+              IF (EXTRCH.EQ.'VALE') THEN
                 IMAR = IMA
               ELSE
                 IMAR = 1
-              ENDIF  
+              ENDIF
               VALR   = ZR(JGAUS+NBPI*NBSPI*(IVALCP-1)
-     &                  +NBSPI*(IPIR-1) 
+     &                  +NBSPI*(IPIR-1)
      &                  +(ISPIR-1))
               VAL2R  = ZR(JELGA+NBCMP*NBPI*NBSPI*(IMAR-1)
      &                       +NBPI*NBSPI*(IVALCP-1)
-     &                       +NBSPI*(IPIR-1) 
+     &                       +NBSPI*(IPIR-1)
      &                       +(ISPIR-1))
-              IF (EXTRCH.EQ.'VALE') THEN 
+              IF (EXTRCH.EQ.'VALE') THEN
                 ZR(JELGA+NBCMP*NBPI*NBSPI*(IMAR-1)
      &                       +NBPI*NBSPI*(IVALCP-1)
-     &                       +NBSPI*(IPIR-1) 
-     &                       +(ISPIR-1)) = 
-     &          VALR
-              ELSEIF (EXTRCH.EQ.'MAX') THEN 
-                ZR(JELGA+NBCMP*NBPI*NBSPI*(IMAR-1)
-     &                       +NBPI*NBSPI*(IVALCP-1)
-     &                       +NBSPI*(IPIR-1) 
+     &                       +NBSPI*(IPIR-1)
      &                       +(ISPIR-1)) =
-     &          MAX(VALR,VAL2R)              
+     &          VALR
+              ELSEIF (EXTRCH.EQ.'MAX') THEN
+                ZR(JELGA+NBCMP*NBPI*NBSPI*(IMAR-1)
+     &                       +NBPI*NBSPI*(IVALCP-1)
+     &                       +NBSPI*(IPIR-1)
+     &                       +(ISPIR-1)) =
+     &          MAX(VALR,VAL2R)
               ELSEIF (EXTRCH.EQ.'MIN') THEN
                 ZR(JELGA+NBCMP*NBPI*NBSPI*(IMAR-1)
      &                       +NBPI*NBSPI*(IVALCP-1)
-     &                       +NBSPI*(IPIR-1) 
+     &                       +NBSPI*(IPIR-1)
      &                       +(ISPIR-1)) =
      &          MIN(VALR,VAL2R)
+              ELSEIF (EXTRCH.EQ.'MAX_ABS') THEN
+                ZR(JELGA+NBCMP*NBPI*NBSPI*(IMAR-1)
+     &                       +NBPI*NBSPI*(IVALCP-1)
+     &                       +NBSPI*(IPIR-1)
+     &                       +(ISPIR-1)) =
+     &          MAX(ABS(VAL2R),ABS(VALR))
+              ELSEIF (EXTRCH.EQ.'MIN_ABS') THEN
+                ZR(JELGA+NBCMP*NBPI*NBSPI*(IMAR-1)
+     &                       +NBPI*NBSPI*(IVALCP-1)
+     &                       +NBSPI*(IPIR-1)
+     &                       +(ISPIR-1)) =
+     &          MIN(ABS(VAL2R),ABS(VALR))
               ELSEIF (EXTRCH.EQ.'MOY') THEN
                 ZR(JELGA+NBCMP*NBPI*NBSPI*(IMAR-1)
      &                       +NBPI*NBSPI*(IVALCP-1)
-     &                       +NBSPI*(IPIR-1) 
+     &                       +NBSPI*(IPIR-1)
      &                       +(ISPIR-1)) =
      &          VALR+VAL2R
               ELSE
@@ -239,22 +250,22 @@ C
   77        CONTINUE
   76      CONTINUE
   75    CONTINUE
-  30  CONTINUE  
+  30  CONTINUE
 C
 C --- CALCUL DE LA MOYENNE
-C  
+C
       IF (EXTRCH.EQ.'MOY') THEN
         IMAR = 1
         DO 55 IPI = 1,NPI
           DO 56 ISPI = 1,NSPI
-            DO 57 IVALCP = 1,NVALCP           
+            DO 57 IVALCP = 1,NVALCP
               VAL2R  = ZR(JELGA+NBCMP*NBPI*NBSPI*(IMAR-1)
      &                       +NBPI*NBSPI*(IVALCP-1)
-     &                       +NBSPI*(IPIR-1) 
-     &                       +(ISPIR-1))           
+     &                       +NBSPI*(IPIR-1)
+     &                       +(ISPIR-1))
               ZR(JELGA+NBCMP*NBPI*NBSPI*(IMAR-1)
      &                       +NBPI*NBSPI*(IVALCP-1)
-     &                       +NBSPI*(IPIR-1) 
+     &                       +NBSPI*(IPIR-1)
      &                       +(ISPIR-1)) =
      &        VAL2R/ NBMA
  57         CONTINUE

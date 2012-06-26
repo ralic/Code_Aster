@@ -1,7 +1,7 @@
       SUBROUTINE TE0365(OPTION,NOMTE )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT      NONE
-      INCLUDE 'jeveux.h'
+      INCLUDE       'jeveux.h'
       CHARACTER*16  OPTION,NOMTE
 C
 C ----------------------------------------------------------------------
@@ -36,14 +36,13 @@ C
 C  ENTREES  ---> OPTION : OPTION DE CALCUL
 C           ---> NOMTE  : NOM DU TYPE ELEMENT
 C
-C
-C
+C ----------------------------------------------------------------------
 C
       INTEGER      IDDL
       INTEGER      NNE,NNM,NNL
       INTEGER      NDDL,NDIM,NBCPS,NBDM
       INTEGER      JVECT
-      INTEGER      IRESOF
+      INTEGER      IRESOF,IRESOG
       INTEGER      NDEXFR
       REAL*8       NORM(3),TAU1(3),TAU2(3)
       REAL*8       MPROJT(3,3)
@@ -98,7 +97,7 @@ C
 C --- PREPARATION DES CALCULS - LECTURE DES COEFFICIENTS
 C
       CALL MMMLCF(COEFFF,COEFAC,COEFAF,LPENAC,LPENAF,
-     &            IRESOF,LAMBDS)
+     &            IRESOF,IRESOG,LAMBDS)
 C
 C --- PREPARATION DES CALCULS - LECTURE FONCTIONNALITES AVANCEES
 C
@@ -111,12 +110,12 @@ C
 C
 C ----- CALCUL DES QUANTITES
 C
-        CALL MMVPPE(TYPMAE,TYPMAM,NDIM  ,NNE   ,NNM   ,
-     &              NNL   ,NBDM  ,LAXIS ,LDYNA ,LFOVIT,
-     &              PRFUSU,JEUSUP,FFE   ,FFM   ,FFL   ,
-     &              NORM  ,TAU1  ,TAU2  ,MPROJT,JACOBI,
-     &              WPG   ,DLAGRC,DLAGRF,JEU   ,DJEU  ,
-     &              DJEUT )
+        CALL MMVPPE(TYPMAE,TYPMAM,IRESOG,NDIM  ,NNE   ,
+     &              NNM   ,NNL   ,NBDM  ,LAXIS ,LDYNA ,
+     &              LFOVIT,PRFUSU,JEUSUP,FFE   ,FFM   ,
+     &              FFL   ,NORM  ,TAU1  ,TAU2  ,MPROJT,
+     &              JACOBI,WPG   ,DLAGRC,DLAGRF,JEU   ,
+     &              DJEU  ,DJEUT )
 C
 C ----- CHOIX DU LAGRANGIEN DE CONTACT
 C

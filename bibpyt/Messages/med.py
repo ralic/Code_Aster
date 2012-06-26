@@ -1,4 +1,4 @@
-#@ MODIF med Messages  DATE 13/02/2012   AUTEUR SELLENET N.SELLENET 
+#@ MODIF med Messages  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -189,6 +189,9 @@ cata_msg = {
 30: _(u"""
   -> Votre modèle semble être composé de plusieurs modélisations, les composantes
      qui n'existent pas pour une partie du modèle ont été mises à zéro.
+
+     Dans certains cas, le fichier MED produit peut devenir volumineux. Dans ce
+     cas, l'utilisation du mot-clé NOM_CMP est conseillée.
 """),
 
 31 : _(u"""

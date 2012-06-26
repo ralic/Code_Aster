@@ -37,7 +37,7 @@ class create_asrun_files(Task.Task):
         sep = os.pathsep + '\\\n'
         dico = dict([(k, as_str(env[k])) \
                         for k in ('PREFIX', 'PYTHON', 'PYTHONARCHDIR', 'ASTERDATADIR')])
-        dico['DEFINES'] = ' '.join([d for d in env['DEFINES'] if '=' not in d])
+        dico['DEFINES'] = ' '.join([d.split('=')[0] for d in env['DEFINES']])
         dico['LD_LIBRARY_PATH'] = sep.join(ld_path)
         dico['SRC'] = self.src
         open(cfg, 'w').write(TMPL_CONFIG_TXT % dico)

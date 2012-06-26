@@ -4,7 +4,7 @@
      &                   POST, GDREQ)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 26/06/2012   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,7 +61,6 @@ C  GDREQ    OUT  R  : VECTEUR CONTENANT LES VALEURS DE LA GRANDEUR
 C                     EQUIVALENTE, POUR TOUS LES NUMEROS D'ORDRE
 C                     DE CHAQUE VECTEUR NORMAL.
 C ----------------------------------------------------------------------
-C     ------------------------------------------------------------------
       INTEGER      IVECT, AD0, AD1, AD2, ICYCL, NVAL, IPAR, J, NP
       INTEGER      IBID, NPARMA, JPROF, PARACT(30), IARG
       REAL*8       COEPRE, VALPAR(30), VALPU(30)
@@ -70,7 +69,7 @@ C     ------------------------------------------------------------------
       REAL*8       VETPR(NBORDR), VSITN(NBORDR)
       REAL*8       VEPPR(NBORDR), VSIPN(NBORDR)
       REAL*8       VSIEQ(NBORDR), VETEQ(NBORDR)
-      LOGICAL      FORDEF
+      LOGICAL      FORDEF, LBID
       CHARACTER*8  NOMPF(30), NOMPAR(30)
       CHARACTER*16 TYPCHA
       CHARACTER*24 CHNOM, CBID
@@ -101,7 +100,8 @@ C RECUPERER LA LISTE DE GRANDEURS ACTIVES
 
       TYPCHA = 'NON_PERIODIQUE'
 
-      CALL ANACRI( NOMCRI,NOMFOR,TYPCHA,'NON', PARACT, FORDEF)
+      CALL ANACRI( NOMCRI,NOMFOR,TYPCHA,'NON', PARACT, FORDEF,
+     &   LBID, LBID, LBID, LBID)
 
 C VOIR SI LE CRITERE DU TYPE DE PLANE CRITIQUE
 C SI OUI, ON TOURNE NVVECT, SI NON ON NVEC=1

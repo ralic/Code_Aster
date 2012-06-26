@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 20/06/2011   AUTEUR TRAN V-X.TRAN 
+#& MODIF COMMANDE  DATE 26/06/2012   AUTEUR TRAN V-X.TRAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -90,7 +90,7 @@ CALC_FATIGUE=OPER(nom="CALC_FATIGUE",op= 151,sd_prod=calc_fatigue_prod,reentrant
            TYPE_CHARGE   =SIMP(statut='o',typ='TXM',into=("PERIODIQUE","NON_PERIODIQUE") ),
            OPTION        =SIMP(statut='o',typ='TXM',into=("DOMA_ELGA","DOMA_NOEUD") ),
            RESULTAT      =SIMP(statut='o',typ=(evol_elas, evol_noli) ),
-           CHAM_MATER    =SIMP(statut='o',typ=(cham_mater) ),
+           CHAM_MATER    =SIMP(statut='f',typ=(cham_mater) ),
            MAILLAGE      =SIMP(statut='o',typ=maillage_sdaster ),
            regles=(UN_PARMI('GROUP_NO','NOEUD','GROUP_MA','MAILLE'),),
            GROUP_MA      =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**' ),
@@ -112,6 +112,14 @@ CALC_FATIGUE=OPER(nom="CALC_FATIGUE",op= 151,sd_prod=calc_fatigue_prod,reentrant
                         FORMULE_VIE   =SIMP(statut='o',typ=(fonction_sdaster,formule) ),
                   ),
                ),
+               
+               INST_INIT_CYCL =SIMP(statut='f',typ='R',min=1, max=1),
+               INST_CRIT      =SIMP(statut='f',typ='TXM',into=("RELATIF","ABSOLU",) ),
+               regles=(PRESENT_PRESENT('INST_INIT_CYCL','INST_CRIT', ),),
+                  b_prec_rela=BLOC(condition="(INST_CRIT=='RELATIF')",
+                        PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6),),
+                  b_prec_abso=BLOC(condition="(INST_CRIT=='ABSOLU')",
+                        PRECISION       =SIMP(statut='o',typ='R'),),
            ),
            b_non_period   =BLOC(condition = "TYPE_CHARGE == 'NON_PERIODIQUE'",
                CRITERE       =SIMP(statut='o',typ='TXM',

@@ -1,4 +1,4 @@
-# MODIF  DATE 21/05/2012   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT DE DEUX POUTRES EN GRANDS DEPLACEMENTS
 # ssnv505j.para = tps_job 300 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -128,6 +128,8 @@ CONTD=DEFI_CONTACT(MODELE=MO,
 
 CONTC=DEFI_CONTACT(MODELE=MO,
                    FORMULATION='CONTINUE',
+                   ALGO_RESO_CONT = 'POINT_FIXE',
+                   ALGO_RESO_GEOM = 'POINT_FIXE',
                    FROTTEMENT='SANS',
                    ZONE=_F(GROUP_MA_MAIT='SMAI',
                            GROUP_MA_ESCL='SESC',
@@ -164,7 +166,7 @@ RESUD=STAT_NON_LINE(MODELE=MO,
                     INCREMENT=_F(LIST_INST=L_TEMPS,),
                     NEWTON=_F(REAC_ITER=1,),
                     SOLVEUR=_F(SYME='OUI',),
-                    CONVERGENCE=_F(ITER_GLOB_MAXI=21,),
+                    CONVERGENCE=_F(ITER_GLOB_MAXI=41,),
                     ARCHIVAGE=_F(LIST_INST=L_ARCH,),);
 
 RESUD=CALC_CHAMP(reuse =RESUD,

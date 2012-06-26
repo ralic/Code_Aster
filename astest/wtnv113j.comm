@@ -1,4 +1,4 @@
-# MODIF  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE TEST THMS 3D, MODELISATION THMC=LIQU_SATU
 # wtnv113j.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -180,6 +180,7 @@ RESU0=STAT_NON_LINE(   MODELE=MODELE,
                                        NOM_CHAM='SIEF_ELGA',
                                        EVAL_ELGA='VALE',
                                        POINT=1,
+                                       #EVAL_CHAM='MIN_ABS',
                                        EVAL_CHAM='MIN',
                                        GROUP_MA = 'VOLUME',
                                        ),
@@ -201,6 +202,37 @@ RESU0=STAT_NON_LINE(   MODELE=MODELE,
                                        EVAL_CHAM='MIN',
                                        GROUP_MA = 'VOLUME',
                                        ),
+                                     _F(TITRE='VALE_PRE1',
+                                       NOM_CMP='PRE1',
+                                       NOM_CHAM='DEPL',
+                                       EVAL_CHAM='VALE',
+                                       NOEUD=('NO1','NO3','NO8','NO6','NO13','NO15','NO20','NO18'),
+                                       ),
+                                     _F(TITRE='MIN_PRE1',
+                                       NOM_CMP='PRE1',
+                                       NOM_CHAM='DEPL',
+                                       EVAL_CHAM='MIN',
+                                       NOEUD=('NO1','NO3','NO8','NO6','NO13','NO15','NO20','NO18'),
+                                       ),
+                                     _F(TITRE='MAX_PRE1',
+                                       NOM_CMP='PRE1',
+                                       NOM_CHAM='DEPL',
+                                       EVAL_CHAM='MAX',
+                                       NOEUD=('NO1','NO3','NO8','NO6','NO13','NO15','NO20','NO18'),
+                                       ),
+                                    _F(TITRE='MAX_ABS_PRE1',
+                                       NOM_CMP='PRE1',
+                                       NOM_CHAM='DEPL',
+                                       EVAL_CHAM='MAX_ABS',
+                                       NOEUD=('NO1','NO3','NO8','NO6','NO13','NO15','NO20','NO18'),
+                                       ),
+                                    _F(TITRE='MIN_ABS_PRE1',
+                                       NOM_CMP='PRE1',
+                                       NOM_CHAM='DEPL',
+                                       EVAL_CHAM='MIN_ABS',
+                                       NOEUD=('NO1','NO3','NO8','NO6','NO13','NO15','NO20','NO18'),
+                                       ),
+
                    ),)
 
 
@@ -355,6 +387,34 @@ TEST_TABLE(TABLE=TAB_OBS,
            REFERENCE='NON_REGRESSION',);
 
 
+TEST_TABLE(TABLE=TAB_OBS,
+           FILTRE=(
+                   _F(NOM_PARA='NOM_OBSERVATION',
+                      CRIT_COMP='EQ',
+                      VALE_K='MAX_ABS_PRE1',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=16,),
+                   ),
+           NOM_PARA='VALE',
+           VALE=5000.0469320954,
+           CRITERE='RELATIF',
+           PRECISION=1E-8,
+           REFERENCE='NON_REGRESSION',);
+
+TEST_TABLE(TABLE=TAB_OBS,
+           FILTRE=(
+                   _F(NOM_PARA='NOM_OBSERVATION',
+                      CRIT_COMP='EQ',
+                      VALE_K='MIN_ABS_PRE1',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=16,),
+                   ),
+           NOM_PARA='VALE',
+           VALE=4999.9526983751,
+           CRITERE='RELATIF',
+           PRECISION=1E-8,
+           REFERENCE='NON_REGRESSION',);
+
 IMPR_RESU(FORMAT='RESULTAT',
           RESU=_F(RESULTAT=RESU0,NUME_ORDRE=16,),)
 
@@ -362,3 +422,4 @@ IMPR_RESU(FORMAT='RESULTAT',
 
 FIN()
 #
+

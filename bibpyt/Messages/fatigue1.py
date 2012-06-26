@@ -1,8 +1,8 @@
-#@ MODIF fatigue1 Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF fatigue1 Messages  DATE 26/06/2012   AUTEUR TRAN V-X.TRAN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -380,33 +380,50 @@ avec valeur_max = valeur_min = valeur du chargement, i.e., amplitude = 0.
 """),
 
 91: _(u"""
- Dans CALC_FATIGUE  pour le critère d'amorçage fournis par la formule, le calcul
+ Dans CALC_FATIGUE/POST_FATIGUE  pour le critère d'amorçage fournis par la formule, le calcul
  de la grandeur %(k1)s n'est pas disponible. Merci de fournir les noms des grandeurs
  disponibles ou contacter le développeur.
 """),
 
 92: _(u"""
- Dans CALC_FATIGUE, pour le critère d'amorçage fournis par la formule, pour déterminer
+ Dans CALC_FATIGUE/POST_FATIGUE, pour le critère d'amorçage fournis par la formule, pour déterminer
  le plan de dommage maximal, il n'est pas possible de projeter simultanément la contrainte
  et la déformation. Les grandeurs sont incompatibles avec le critère requis.
 """),
 
 93: _(u"""
- Dans CALC_FATIGUE, pour le critère d'amorçage fournis par la formule, le mot-clé
+ Dans CALC_FATIGUE/POST_FATIGUE, pour le critère d'amorçage fournis par la formule, le mot-clé
  FORMULE_VIE est fournis par une formule le seul paramètre accepté est NBRUP,
  c'est-à-dire, N_f, car le critère formule est pour GRDEQ = f(N_f).
  Changez le nom et vérifiez bien que la fonction est de type: GRDEQ = f(N_f).
 """),
 
 94: _(u"""
- Dans CALC_FATIGUE, pour le critère d'amorçage fournis par la formule et le mot-clé
+ Dans CALC_FATIGUE/POST_FATIGUE, pour le critère d'amorçage fournis par la formule et le mot-clé
  FORMULE_VIE est fournis par la formule, la grandeur équivalente pour l'instant est
  plus grande que f(N_f =1 ). Vérifiez la formule de la courbe FORMULE_VIE.
 """),
 
+95: _(u"""
+ Pour le critère utilisé, au moins d'une histoire de la tenseur de déformation est demandée.
+"""),
+
 96: _(u"""
-Attention, le cycle de chargement appliqué entraîne une courbe hystérésis non fermée.
-Vérifiez les chargements appliqués.
+ On note que DEFORMATION ELASTIQUE  = DEFORMATION TOTALE - DEFORMATION PLASTIQUE. Si les déformations 
+ totale ou plastique ne sont pas fournies, on prendre la valeur zéro. 
+"""),
+
+
+97: _(u"""
+ Pour le critère utilisé, l'histoire de la tenseur de contrainte(SIGM_XX...) est demandée.
+"""),
+
+98: _(u"""
+ Pour le critère utilisé, l'histoire de la tenseur de déformation totale (EPS_XX...)est demandée.
+"""),
+
+99: _(u"""
+ Pour le critère utilisée, l'histoire de la tenseur de déformation plastique (EPSP_XX...) est demandée.
 """),
 
 }

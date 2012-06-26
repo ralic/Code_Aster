@@ -1,4 +1,4 @@
-# MODIF  DATE 21/05/2012   AUTEUR TRAN V-X.TRAN 
+# MODIF  DATE 26/06/2012   AUTEUR TRAN V-X.TRAN 
 # TITRE CRITERES EN FORMULE POUR POST_FATIGUE AMPLITUDE VARIABLE
 # szlz107d.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -21,7 +21,7 @@
 
 DEBUT(  CODE=_F(  NOM = 'SZLZ107D',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-#LE CHARGEMENT OBTENU AVEC SSLV135q
+#LE CHARGEMENT OBTENU AVEC SSLV135f
 
                                                                                   
 MANCOF=DEFI_FONCTION( NOM_PARA='EPSI',
@@ -73,7 +73,7 @@ CRIT[3] =   FORMULE(
            )
            
 #######################################################
-# ASSOCIE AVEC LA SOLUTION SOL_NL de SSLV135q
+# ASSOCIE AVEC LA SOLUTION SOL_NL de SSLV135f
 #######################################################
 SIGMXX=DEFI_FONCTION(    NOM_PARA='INST',
                           VALE=(  
@@ -217,14 +217,7 @@ for i in range(NBPR-1) :
                                      EPS_ZZ  = EPSTZZ,
                                      EPS_XY  = ZERO,
                                      EPS_XZ  = ZERO,
-                                     EPS_YZ  = ZERO,
-                                     
-#                                      EPSP_XX  = ZERO,
-#                                      EPSP_YY  = ZERO,
-#                                      EPSP_ZZ  = ZERO,
-#                                      EPSP_XY  = ZERO,
-#                                      EPSP_XZ  = ZERO,
-#                                      EPSP_YZ  = ZERO,
+                                     EPS_YZ  = ZERO,                                  
                                      
                                      ),
                        TYPE_CHARGE = 'NON_PERIODIQUE',
@@ -242,7 +235,7 @@ for i in range(NBPR-1) :
                 PRECISION=1.E-4                
                 )
                 
-for i in range(NBPR-1) :
+for i in range(NBPR-2) :
              
     FATNW[i]=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
                        HISTOIRE=_F(  
@@ -260,13 +253,6 @@ for i in range(NBPR-1) :
                                      EPS_XZ  = ZERO,
                                      EPS_YZ  = ZERO,
                                      
-#                                      EPSP_XX  = ZERO,
-#                                      EPSP_YY  = ZERO,
-#                                      EPSP_ZZ  = ZERO,
-#                                      EPSP_XY  = ZERO,
-#                                      EPSP_XZ  = ZERO,
-#                                      EPSP_YZ  = ZERO,
-                                     
                                      ),
                        TYPE_CHARGE = 'NON_PERIODIQUE',
                        CRITERE='FORMULE_CRITERE',
@@ -283,7 +269,7 @@ for i in range(NBPR-1) :
                 VALE=RESU[i],
                 PRECISION=2.5E-3                )
 
-for i in range(NBPR-1) :
+for i in range(NBPR-2) :
 
     FATNF[i]=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
                        HISTOIRE=_F(  
@@ -299,15 +285,7 @@ for i in range(NBPR-1) :
                                      EPS_ZZ  = EPSTZZ,
                                      EPS_XY  = ZERO,
                                      EPS_XZ  = ZERO,
-                                     EPS_YZ  = ZERO,
-                                     
-#                                      EPSP_XX  = ZERO,
-#                                      EPSP_YY  = ZERO,
-#                                      EPSP_ZZ  = ZERO,
-#                                      EPSP_XY  = ZERO,
-#                                      EPSP_XZ  = ZERO,
-#                                      EPSP_YZ  = ZERO,
-                                     
+                                     EPS_YZ  = ZERO,                                     
                                      ),
                        TYPE_CHARGE = 'NON_PERIODIQUE',
                        CRITERE='FORMULE_CRITERE',
@@ -327,7 +305,7 @@ for i in range(NBPR-1) :
 
                 
 #######################################################
-# ASSOCIE AVEC LA SOLUTION SOL_NL2 de SSLV135q
+# ASSOCIE AVEC LA SOLUTION SOL_NL2 de SSLV135f
 #######################################################
 SIGMXX2=DEFI_FONCTION(    NOM_PARA='INST',
                           VALE=(  
@@ -606,172 +584,6 @@ EPSTZZ2=DEFI_FONCTION(    NOM_PARA='INST',
                        4.56250E+00 ,  -6.75000E-04  ,                          
                                   )  )
 
-EPSPXX2=DEFI_FONCTION(    NOM_PARA='INST',
-                          VALE=( 
-                       0.00000E+00 ,   0.00000E+00  ,
-                       1.00000E-01 ,  -2.04617E-19  ,
-                       2.00000E-01 ,   1.73264E-19  ,
-                       3.00000E-01 ,  -3.37319E-19  ,
-                       4.00000E-01 ,   1.72979E-18  ,
-                       5.00000E-01 ,   1.24721E-18  ,
-                       6.00000E-01 ,  -6.50521E-19  ,
-                       7.00000E-01 ,  -2.24625E-19  ,
-                       8.00000E-01 ,   9.00000E-04  ,
-                       9.00000E-01 ,   2.70000E-03  ,
-                       1.00000E+00 ,   4.50000E-03  ,
-                       1.10000E+00 ,   4.50000E-03  ,
-                       1.20000E+00 ,   4.50000E-03  ,
-                       1.30000E+00 ,   4.50000E-03  ,
-                       1.40000E+00 ,   4.50000E-03  ,
-                       1.50000E+00 ,   4.50000E-03  ,
-                       1.60000E+00 ,   4.50000E-03  ,
-                       1.70000E+00 ,   4.50000E-03  ,
-                       1.80000E+00 ,   4.50000E-03  ,
-                       1.90000E+00 ,   4.50000E-03  ,
-                       2.00000E+00 ,   4.50000E-03  ,
-                       2.10000E+00 ,   4.50000E-03  ,
-                       2.20000E+00 ,   4.50000E-03  ,
-                       2.30000E+00 ,   4.50000E-03  ,
-                       2.40000E+00 ,   4.50000E-03  ,
-                       2.50000E+00 ,   4.50000E-03  ,
-                       2.51250E+00 ,   4.27500E-03  ,
-                       2.52500E+00 ,   4.05000E-03  ,
-                       2.53750E+00 ,   3.82500E-03  ,
-                       2.55000E+00 ,   3.60000E-03  ,
-                       2.56250E+00 ,   3.37500E-03  ,
-                       2.66250E+00 ,   3.37500E-03  ,
-                       2.76250E+00 ,   3.37500E-03  ,
-                       2.86250E+00 ,   3.37500E-03  ,
-                       2.96250E+00 ,   3.37500E-03  ,
-                       3.06250E+00 ,   3.37500E-03  ,
-                       3.16250E+00 ,   3.37500E-03  ,
-                       3.26250E+00 ,   3.37500E-03  ,
-                       3.36250E+00 ,   3.37500E-03  ,
-                       3.46250E+00 ,   3.37500E-03  ,
-                       3.56250E+00 ,   3.37500E-03  ,
-                       3.66250E+00 ,   3.37500E-03  ,
-                       3.76250E+00 ,   3.37500E-03  ,
-                       3.86250E+00 ,   3.37500E-03  ,
-                       3.96250E+00 ,   3.37500E-03  ,
-                       4.06250E+00 ,   3.37500E-03  ,
-                       4.16250E+00 ,   3.37500E-03  ,
-                       4.26250E+00 ,   3.37500E-03  ,
-                       4.36250E+00 ,   3.37500E-03  ,
-                       4.46250E+00 ,   3.37500E-03  ,
-                       4.56250E+00 ,   3.37500E-03  ,                           
-                                  )  )
-                                  
-EPSPYY2=DEFI_FONCTION(    NOM_PARA='INST',
-                          VALE=(  
-                       0.00000E+00 , 0.00000E+00 ,
-                       1.00000E-01 , 4.01355E-19 ,
-                       2.00000E-01 , 3.13393E-19 ,
-                       3.00000E-01 , 7.40524E-20 ,
-                       4.00000E-01 , 4.93208E-19 ,
-                       5.00000E-01 , 1.47041E-18 ,
-                       6.00000E-01 , 2.15284E-18 ,
-                       7.00000E-01 , 9.83566E-19 ,
-                       8.00000E-01 ,-4.50000E-04 ,
-                       9.00000E-01 ,-1.35000E-03 ,
-                       1.00000E+00 ,-2.25000E-03 ,
-                       1.10000E+00 ,-2.25000E-03 ,
-                       1.20000E+00 ,-2.25000E-03 ,
-                       1.30000E+00 ,-2.25000E-03 ,
-                       1.40000E+00 ,-2.25000E-03 ,
-                       1.50000E+00 ,-2.25000E-03 ,
-                       1.60000E+00 ,-2.25000E-03 ,
-                       1.70000E+00 ,-2.25000E-03 ,
-                       1.80000E+00 ,-2.25000E-03 ,
-                       1.90000E+00 ,-2.25000E-03 ,
-                       2.00000E+00 ,-2.25000E-03 ,
-                       2.10000E+00 ,-2.25000E-03 ,
-                       2.20000E+00 ,-2.25000E-03 ,
-                       2.30000E+00 ,-2.25000E-03 ,
-                       2.40000E+00 ,-2.25000E-03 ,
-                       2.50000E+00 ,-2.25000E-03 ,
-                       2.51250E+00 ,-2.13750E-03 ,
-                       2.52500E+00 ,-2.02500E-03 ,
-                       2.53750E+00 ,-1.91250E-03 ,
-                       2.55000E+00 ,-1.80000E-03 ,
-                       2.56250E+00 ,-1.68750E-03 ,
-                       2.66250E+00 ,-1.68750E-03 ,
-                       2.76250E+00 ,-1.68750E-03 ,
-                       2.86250E+00 ,-1.68750E-03 ,
-                       2.96250E+00 ,-1.68750E-03 ,
-                       3.06250E+00 ,-1.68750E-03 ,
-                       3.16250E+00 ,-1.68750E-03 ,
-                       3.26250E+00 ,-1.68750E-03 ,
-                       3.36250E+00 ,-1.68750E-03 ,
-                       3.46250E+00 ,-1.68750E-03 ,
-                       3.56250E+00 ,-1.68750E-03 ,
-                       3.66250E+00 ,-1.68750E-03 ,
-                       3.76250E+00 ,-1.68750E-03 ,
-                       3.86250E+00 ,-1.68750E-03 ,
-                       3.96250E+00 ,-1.68750E-03 ,
-                       4.06250E+00 ,-1.68750E-03 ,
-                       4.16250E+00 ,-1.68750E-03 ,
-                       4.26250E+00 ,-1.68750E-03 ,
-                       4.36250E+00 ,-1.68750E-03 ,
-                       4.46250E+00 ,-1.68750E-03 ,
-                       4.56250E+00 ,-1.68750E-03 ,
-                                  )  )
-
-EPSPZZ2=DEFI_FONCTION(    NOM_PARA='INST',
-                          VALE=(  
-                       0.00000E+00 ,  0.00000E+00  ,
-                       1.00000E-01 ,  7.63546E-20  ,
-                       2.00000E-01 , -7.40524E-20  ,
-                       3.00000E-01 , -4.48206E-19  ,
-                       4.00000E-01 , -1.98423E-20  ,
-                       5.00000E-01 , -3.05418E-19  ,
-                       6.00000E-01 , -2.85576E-19  ,
-                       7.00000E-01 , -4.15263E-19  ,
-                       8.00000E-01 , -4.50000E-04  ,
-                       9.00000E-01 , -1.35000E-03  ,
-                       1.00000E+00 , -2.25000E-03  ,
-                       1.10000E+00 , -2.25000E-03  ,
-                       1.20000E+00 , -2.25000E-03  ,
-                       1.30000E+00 , -2.25000E-03  ,
-                       1.40000E+00 , -2.25000E-03  ,
-                       1.50000E+00 , -2.25000E-03  ,
-                       1.60000E+00 , -2.25000E-03  ,
-                       1.70000E+00 , -2.25000E-03  ,
-                       1.80000E+00 , -2.25000E-03  ,
-                       1.90000E+00 , -2.25000E-03  ,
-                       2.00000E+00 , -2.25000E-03  ,
-                       2.10000E+00 , -2.25000E-03  ,
-                       2.20000E+00 , -2.25000E-03  ,
-                       2.30000E+00 , -2.25000E-03  ,
-                       2.40000E+00 , -2.25000E-03  ,
-                       2.50000E+00 , -2.25000E-03  ,
-                       2.51250E+00 , -2.13750E-03  ,
-                       2.52500E+00 , -2.02500E-03  ,
-                       2.53750E+00 , -1.91250E-03  ,
-                       2.55000E+00 , -1.80000E-03  ,
-                       2.56250E+00 , -1.68750E-03  ,
-                       2.66250E+00 , -1.68750E-03  ,
-                       2.76250E+00 , -1.68750E-03  ,
-                       2.86250E+00 , -1.68750E-03  ,
-                       2.96250E+00 , -1.68750E-03  ,
-                       3.06250E+00 , -1.68750E-03  ,
-                       3.16250E+00 , -1.68750E-03  ,
-                       3.26250E+00 , -1.68750E-03  ,
-                       3.36250E+00 , -1.68750E-03  ,
-                       3.46250E+00 , -1.68750E-03  ,
-                       3.56250E+00 , -1.68750E-03  ,
-                       3.66250E+00 , -1.68750E-03  ,
-                       3.76250E+00 , -1.68750E-03  ,
-                       3.86250E+00 , -1.68750E-03  ,
-                       3.96250E+00 , -1.68750E-03  ,
-                       4.06250E+00 , -1.68750E-03  ,
-                       4.16250E+00 , -1.68750E-03  ,
-                       4.26250E+00 , -1.68750E-03  ,
-                       4.36250E+00 , -1.68750E-03  ,
-                       4.46250E+00 , -1.68750E-03  ,
-                       4.56250E+00 , -1.68750E-03  ,                          
-
-                                  )  )
-
 FATN2 = [None]*(NBPR-1)
 FATNW2 = [None]*(NBPR-1)
 FATNF2 = [None]*(NBPR-1)
@@ -780,7 +592,7 @@ RESU2 = [2.408735E-4, 2.408735E-4,1.322816E-4  ]
 
 RESUF2 = [1.449229E-4, 1.449229E-4, 6.53204991059937E-5  ]
 
-for i in range(NBPR-1) :
+for i in range(NBPR-2) :
 
     FATN2[i]=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
                        HISTOIRE=_F(  
@@ -796,15 +608,7 @@ for i in range(NBPR-1) :
                                      EPS_ZZ  = EPSTZZ2,
                                      EPS_XY  = ZERO2,
                                      EPS_XZ  = ZERO2,
-                                     EPS_YZ  = ZERO2,
-                                     
-#                                      EPSP_XX  = EPSPXX2,
-#                                      EPSP_YY  = EPSPYY2,
-#                                      EPSP_ZZ  = EPSPZZ2,
-#                                      EPSP_XY  = ZERO2,
-#                                      EPSP_XZ  = ZERO2,
-#                                      EPSP_YZ  = ZERO2,
-                                     
+                                     EPS_YZ  = ZERO2,                                     
                                      ),
                        TYPE_CHARGE = 'NON_PERIODIQUE',
                        CRITERE='FORMULE_CRITERE',
@@ -821,7 +625,7 @@ for i in range(NBPR-1) :
                 PRECISION=1.E-4                
                 )
                 
-for i in range(NBPR-1) :
+for i in range(NBPR-2) :
              
     FATNW2[i]=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
                        HISTOIRE=_F(  
@@ -838,14 +642,6 @@ for i in range(NBPR-1) :
                                      EPS_XY  = ZERO2,
                                      EPS_XZ  = ZERO2,
                                      EPS_YZ  = ZERO2,
-                                     
-#                                      EPSP_XX  = EPSPXX2,
-#                                      EPSP_YY  = EPSPYY2,
-#                                      EPSP_ZZ  = EPSPZZ2,
-#                                      EPSP_XY  = ZERO2,
-#                                      EPSP_XZ  = ZERO2,
-#                                      EPSP_YZ  = ZERO2,
-
                                      ),
                        TYPE_CHARGE = 'NON_PERIODIQUE',
                        CRITERE='FORMULE_CRITERE',
@@ -904,7 +700,7 @@ for i in range(NBPR-2) :
                 PRECISION=1.E-5                )
                 
 #######################################################
-# ASSOCIE AVEC LA SOLUTION SOL_NL3 de SSLV135q
+# ASSOCIE AVEC LA SOLUTION SOL_NL3 de SSLV135f
 #######################################################
 SIGMXX3=DEFI_FONCTION(    NOM_PARA='INST',
                           VALE=(  
@@ -1292,12 +1088,12 @@ FATN3=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
                                  EPS_XZ  = ZERO3,
                                  EPS_YZ  = ZERO3,
                                  
-#                                  EPSP_XX  = EPSPXX3,
-#                                  EPSP_YY  = EPSPYY3,
-#                                  EPSP_ZZ  = EPSPZZ3,
-#                                  EPSP_XY  = ZERO3,
-#                                  EPSP_XZ  = ZERO3,
-#                                  EPSP_YZ  = ZERO3,
+                                 EPSP_XX  = EPSPXX3,
+                                 EPSP_YY  = EPSPYY3,
+                                 EPSP_ZZ  = EPSPZZ3,
+                                 EPSP_XY  = ZERO3,
+                                 EPSP_XZ  = ZERO3,
+                                 EPSP_YZ  = ZERO3,
                                  
                                  ),
                    TYPE_CHARGE = 'NON_PERIODIQUE',
@@ -1331,12 +1127,12 @@ FATNW3=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
                                  EPS_XZ  = ZERO3,
                                  EPS_YZ  = ZERO3,
                                  
-#                                  EPSP_XX  = EPSPXX3,
-#                                  EPSP_YY  = EPSPYY3,
-#                                  EPSP_ZZ  = EPSPZZ3,
-#                                  EPSP_XY  = ZERO3,
-#                                  EPSP_XZ  = ZERO3,
-#                                  EPSP_YZ  = ZERO3,
+                                 EPSP_XX  = EPSPXX3,
+                                 EPSP_YY  = EPSPYY3,
+                                 EPSP_ZZ  = EPSPZZ3,
+                                 EPSP_XY  = ZERO3,
+                                 EPSP_XZ  = ZERO3,
+                                 EPSP_YZ  = ZERO3,
 
                                  ),
                    TYPE_CHARGE = 'NON_PERIODIQUE',
@@ -1371,12 +1167,12 @@ FATNF3=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
                                  EPS_XZ  = ZERO3,
                                  EPS_YZ  = ZERO3,
                                  
-#                                  EPSP_XX  = EPSPXX3,
-#                                  EPSP_YY  = EPSPYY3,
-#                                  EPSP_ZZ  = EPSPZZ3,
-#                                  EPSP_XY  = ZERO3,
-#                                  EPSP_XZ  = ZERO3,
-#                                  EPSP_YZ  = ZERO3,
+                                 EPSP_XX  = EPSPXX3,
+                                 EPSP_YY  = EPSPYY3,
+                                 EPSP_ZZ  = EPSPZZ3,
+                                 EPSP_XY  = ZERO3,
+                                 EPSP_XZ  = ZERO3,
+                                 EPSP_YZ  = ZERO3,
                                  
                                  ),
                    TYPE_CHARGE = 'NON_PERIODIQUE',

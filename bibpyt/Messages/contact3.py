@@ -1,4 +1,4 @@
-#@ MODIF contact3 Messages  DATE 02/04/2012   AUTEUR ABBAS M.ABBAS 
+#@ MODIF contact3 Messages  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,6 +29,10 @@ portent un coefficient de frottement nul.
 Le frottement est donc désactivé.
 
 Conseil : vérifiez que vous avez correctement défini le coefficient de frottement (mot-clé COULOMB) dans chaque zone.
+"""),
+
+2 : _(u"""
+La maille < %(k1)s > est de type POI1. C'est impossible dans la méthode continue.
 """),
 
 3 : _(u"""

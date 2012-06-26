@@ -1,4 +1,4 @@
-      SUBROUTINE IRGMSH ( NOMCON, NOSIMP, NOPASE,
+      SUBROUTINE IRGMSH ( NOMCON,
      &                    PARTIE, IFI, NBCHAM, CHAM, LRESU,
      &                    NBORDR, ORDR, NBCMP, NOMCMP, NBMAT, NUMMAI,
      &                    VERSIO, LGMSH, TYCHA )
@@ -7,12 +7,12 @@
       INTEGER           IFI, NBCHAM, NBORDR, NBCMP, ORDR(*), NBMAT,
      &                  NUMMAI(*),VERSIO
       LOGICAL           LRESU,LGMSH
-      CHARACTER*(*)     NOMCON, NOSIMP, NOPASE
+      CHARACTER*(*)     NOMCON
       CHARACTER*(*)     CHAM(*),NOMCMP(*),PARTIE
       CHARACTER*8       TYCHA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,8 +34,6 @@ C     BUT: ECRITURE D'UN CHAMP OU D'UN CONCEPT RESULTAT AU FORMAT GMSH
 C
 C     ENTREE:
 C     NOMCON : K8  : NOM DU CONCEPT A IMPRIMER
-C     NOSIMP : K8  : NOM SIMPLE ASSOCIE AU CONCEPT NOMCON SI SENSIBILITE
-C     NOPASE : K8  : NOM DU PARAMETRE SENSIBLE
 C     PARTIE : K4  : IMPRESSION DE LA PARTIE COMPLEXE OU REELLE DU CHAMP
 C     IFI    : I   : NUMERO D'UNITE LOGIQUE DU FICHIER GMSH
 C     NBCHAM : I   : NOMBRE DE CHAMP DANS LE TABLEAU CHAM
@@ -177,7 +175,7 @@ C ------ TRAITEMENT DU CAS CHAM_NO:
 C
          IF (TYCH(1:4).EQ.'NOEU' ) THEN
             CALL IRGMCN ( CHAM(ICH), PARTIE, IFI,
-     &                    NOMCON, NOSIMP, NOPASE,
+     &                    NOMCON,
      &                    ORDR,NBORDR,
      &                    ZR(JCOOR), ZI(JCONX), ZI(JPOIN), NOBJ, NBEL,
      &                    NBCMP, NOMCMP, LRESU, ZR(JPARA),
@@ -193,7 +191,7 @@ C
               TYCHA='SCALAIRE'
             ENDIF
             CALL IRGMCE ( CHAM(ICH), PARTIE, IFI,
-     &                    NOMCON, NOSIMP, NOPASE,
+     &                    NOMCON,
      &                    ORDR,NBORDR,
      &                    ZR(JCOOR), ZI(JCONX), ZI(JPOIN), NOBJ, NBEL,
      &                    NBCMP, NOMCMP, LRESU, ZR(JPARA),
@@ -211,7 +209,7 @@ C
               CALL U2MESK('A','PREPOST6_35',2,VALK)
             ENDIF
             CALL IRGMCG ( CHAM(ICH), PARTIE, IFI,
-     &                    NOMCON, NOSIMP, NOPASE,
+     &                    NOMCON,
      &                    ORDR,NBORDR,
      &                    ZR(JCOOR), ZI(JCONX), ZI(JPOIN), NOBJ, NBEL,
      &                    NBCMP, NOMCMP, LRESU, ZR(JPARA),

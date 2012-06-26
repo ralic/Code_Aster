@@ -1,4 +1,4 @@
-# MODIF  DATE 16/04/2012   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT AVEC FROTTEMENT D UNE PLAQUE SUR UN PLAN RIGIDE
 # ssnv128p.para = tps_job 280 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -68,10 +68,10 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
 CHA2=DEFI_CONTACT(MODELE=MO,
                   FORMULATION='CONTINUE',
                   FROTTEMENT='COULOMB',
-                  ITER_GEOM_MAXI=20,
-                  RESI_GEOM=0.05,
+                  ALGO_RESO_GEOM = 'NEWTON',
                   RESI_FROT=1e-10,
                   ALGO_RESO_CONT = 'NEWTON',
+                  ALGO_RESO_FROT = 'NEWTON',
                   ZONE=_F(SANS_GROUP_NO='PPS',
                           GROUP_MA_MAIT='LBATI',
                           GROUP_MA_ESCL='LCONTA',
@@ -84,13 +84,15 @@ CHA2=DEFI_CONTACT(MODELE=MO,
                            ),
                               );
 
+                          
+                          
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_GAUCHE='LINEAIRE',
                     PROL_DROITE='LINEAIRE',
                     VALE=(0.0,0.0,1.0,1.0));
 
 LINST=DEFI_LIST_REEL(DEBUT=0.,
-                      INTERVALLE=_F(JUSQU_A = 1.0, NOMBRE = 5));
+                      INTERVALLE=_F(JUSQU_A = 1.0, NOMBRE = 1));
 
 L_INST=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
                                   LIST_INST=LINST,),
@@ -111,29 +113,10 @@ U2M=STAT_NON_LINE(MODELE     = MO,
                   INCREMENT  = _F(LIST_INST = L_INST),
                   NEWTON=_F(REAC_ITER=1,),
                   CONVERGENCE= _F(ARRET = 'OUI',
-                                 ITER_GLOB_MAXI = 50,
+                                 ITER_GLOB_MAXI = 500,
                                  RESI_GLOB_RELA = 1.0E-4),
 #                  INFO=2,
                );
-#
-DEPLAC=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLAC',
-                              GROUP_NO='RELEVE',
-                              RESULTAT=U2M,
-                              NOM_CHAM='DEPL',
-                              INST=0.4,
-                              TOUT_CMP='OUI',
-                              OPERATION='EXTRACTION'));
-#
-TCONT=POST_RELEVE_T(ACTION=_F(INTITULE='CONT',
-                              GROUP_NO='RELEVE',
-                              RESULTAT=U2M,
-                              NOM_CHAM='VALE_CONT',
-                              INST=0.4,
-                              TOUT_CMP='OUI',
-                              OPERATION='EXTRACTION'));
-
-IMPR_TABLE(TABLE=DEPLAC);
-IMPR_TABLE(TABLE=TCONT);
 
 TEST_RESU(RESU=(_F(RESULTAT   = U2M,
                    INST       = 1.0,

@@ -1,4 +1,4 @@
-# MODIF  DATE 16/04/2012   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE METHODE DES SOLUTIONS MANUFACTUREES : CONTACT GRANDES DEFORMATIONS 3D
 # ssnv219a.para = tps_job 600 mem_job 800Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -231,6 +231,7 @@ ForceInt=AFFE_CHAR_MECA_F(MODELE=modl,
 # affectation des conditions limites
 Contact=DEFI_CONTACT(MODELE=modl,
                      FORMULATION='CONTINUE',
+                     ALGO_RESO_GEOM = 'NEWTON',
                      ALGO_RESO_CONT = 'NEWTON',
                      ZONE=_F(GROUP_MA_MAIT=('MAITRE',),
                              GROUP_MA_ESCL=('ESCLAVE',),
@@ -325,7 +326,7 @@ DIFF=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',MODELE=modl,
 
 TEST_RESU(CHAM_NO=_F(CHAM_GD= DIFF   ,
                      REFERENCE='ANALYTIQUE', PRECISION=2.E-8    ,
-                     TYPE_TEST='SOMM_ABS', VALE=0.088219316257937 ),
+                     TYPE_TEST='SOMM_ABS', VALE=0.087911430310821 ),
           )
 
 IMPR_RESU(FORMAT='MED',

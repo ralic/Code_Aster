@@ -1,11 +1,13 @@
-      SUBROUTINE MMMTMM(PHASEP,NDIM  ,NNM   ,MPROJN,MPROJT,
-     &                  WPG   ,FFM   ,JACOBI,COEFAC,COEFAF,
-     &                  COEFFF,RESE  ,NRESE ,LAMBDA,MATRMM)
+      SUBROUTINE MMMTMM(PHASEP,LNEWTG,NDIM  ,NNM   ,MPROJN,
+     &                  MPROJT,WPG   ,FFM   ,DFFM  ,JACOBI,
+     &                  COEFAC,COEFAF,COEFFF,RESE  ,NRESE ,
+     &                  LAMBDA,DLAGRC,JEU   ,H11T1N,H12T2N,
+     &                  H21T1N,H22T2N,MATRMM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 17/10/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -23,14 +25,17 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C TOLE CRP_21
 C
-      IMPLICIT NONE
+      IMPLICIT     NONE
       CHARACTER*9  PHASEP
+      LOGICAL      LNEWTG
       INTEGER      NDIM,NNM
       REAL*8       MPROJN(3,3),MPROJT(3,3)
-      REAL*8       WPG,FFM(9),JACOBI
+      REAL*8       WPG,FFM(9),JACOBI,DFFM(2,9)
       REAL*8       RESE(3),NRESE
-      REAL*8       COEFAC,COEFAF
-      REAL*8       LAMBDA,COEFFF
+      REAL*8       COEFAC,COEFAF,JEU
+      REAL*8       LAMBDA,COEFFF,DLAGRC
+      REAL*8       H11T1N(3,3),H12T2N(3,3)
+      REAL*8       H21T1N(3,3),H22T2N(3,3)
       REAL*8       MATRMM(27,27)
 C
 C ----------------------------------------------------------------------
@@ -49,33 +54,41 @@ C              'ADHE'      - ADHERENCE
 C              'ADHE_PENA' - ADHERENCE PENALISE
 C              'GLIS'      - GLISSEMENT
 C              'GLIS_PENA' - GLISSEMENT PENALISE
+C IN  LNEWTG : .TRUE. SI CALCUL CONTRIBUTION GEOMETRIQUE EN NEWTON GENE.
 C IN  NDIM   : DIMENSION DU PROBLEME
 C IN  NNM    : NOMBRE DE NOEUDS DE LA MAILLE MAITRE
 C IN  MPROJN : MATRICE DE PROJECTION NORMALE [Pn]
 C IN  MPROJT : MATRICE DE PROJECTION TANGENTE [Pt]
 C IN  WPG    : POIDS DU POINT INTEGRATION DU POINT DE CONTACT
 C IN  FFM    : FONCTIONS DE FORMES DEPL. MAIT.
+C IN  DFFM   : DERIVEES PREMIERES DES FONCTIONS DE FORME MAITRES
 C IN  JACOBI : JACOBIEN DE LA MAILLE AU POINT DE CONTACT
 C IN  COEFAC : COEF_AUGM_CONT
 C IN  COEFAF : COEF_AUGM_FROT
 C IN  LAMBDA : LAGRANGIEN DE CONTACT
+C IN  DLAGRC : INCREMENT DEPDEL DU LAGRANGIEN DE CONTACT
+C IN  DJEU   : INCREMENT DEPDEL DU JEU
 C IN  RESE   : SEMI-MULTIPLICATEUR GTK DE FROTTEMENT
 C               GTK = LAMBDAF + COEFAF*VITESSE
 C IN  NRESE  : NORME DU SEMI-MULTIPLICATEUR GTK DE FROTTEMENT
 C IN  COEFFF : COEFFICIENT DE FROTTEMENT DE COULOMB
+C IN  H11T1N : MATRICE
+C IN  H21T1N : MATRICE
+C IN  H12T2N : MATRICE
+C IN  H22T2N : MATRICE
 C OUT MATRMM : MATRICE ELEMENTAIRE DEPL_M/DEPL_M
 C
 C ----------------------------------------------------------------------
 C
       INTEGER   I, J, K,L,II, JJ,IDIM
-      REAL*8    G(3,3),E(3,3),D(3,3),MATPRB(3,3)
+      REAL*8    G(3,3),E(3,3),D(3,3),MATPRB(3,3),DFFMT(9,2)
       REAL*8    C1(3),C2(3),C3(3),D1(3),D2(3),D3(3)
 C
 C ----------------------------------------------------------------------
 C
-      CALL MATINI(3,3,0.D0,E     )
-      CALL MATINI(3,3,0.D0,D     )
-      CALL MATINI(3,3,0.D0,G     )
+      CALL MATINI(3,3,0.D0,E)
+      CALL MATINI(3,3,0.D0,D)
+      CALL MATINI(3,3,0.D0,G)
       CALL VECINI(3,0.D0,D1)
       CALL VECINI(3,0.D0,D2)
       CALL VECINI(3,0.D0,D3)
@@ -89,12 +102,18 @@ C
         C3(IDIM) = MPROJT(IDIM,3)
 3     CONTINUE
 C
+      DO 17 I=1,9
+        DO 18 J=1,2
+          DFFMT(I,J) = DFFM(J,I)
+18      CONTINUE
+17    CONTINUE
+C
 C --- PRODUIT [E] = [Pt]x[Pt]
 C
       CALL PMAT  (3,MPROJT,MPROJT,E    )
 C
 C --- MATRICE DE PROJECTION SUR LA BOULE UNITE
-C  
+C
       IF (PHASEP(1:4).EQ.'GLIS') THEN
         CALL MMMMPB(RESE  ,NRESE ,NDIM  ,MATPRB)
       ENDIF
@@ -129,32 +148,54 @@ C --- CALCUL DES TERMES
 C
       IF (PHASEP(1:4).EQ.'CONT') THEN
         IF (PHASEP(6:9).EQ.'PENA') THEN
-          DO 160 I = 1,NNM
-            DO 150 J = 1,NNM
-              DO 140 K = 1,NDIM
-                DO 130 L = 1,NDIM
+            DO 160 I = 1,NNM
+              DO 150 J = 1,NNM
+                DO 140 K = 1,NDIM
+                  DO 130 L = 1,NDIM
                   II = NDIM*(I-1)+L
                   JJ = NDIM*(J-1)+K
                   MATRMM(II,JJ) = MATRMM(II,JJ) + COEFAC*
      &                            WPG*JACOBI*FFM(I)*MPROJN(L,K)*FFM(J)
-  130           CONTINUE
-  140         CONTINUE
-  150       CONTINUE
-  160     CONTINUE
+  130             CONTINUE
+  140           CONTINUE
+  150         CONTINUE
+  160       CONTINUE
         ELSE
-          DO 161 I = 1,NNM
-            DO 151 J = 1,NNM
-              DO 141 K = 1,NDIM
-                DO 131 L = 1,NDIM
-                  II = NDIM*(I-1)+L
-                  JJ = NDIM*(J-1)+K
-                  MATRMM(II,JJ) = MATRMM(II,JJ) + COEFAC*
-     &                            WPG*JACOBI*FFM(I)*MPROJN(L,K)*FFM(J)
-  131           CONTINUE
-  141         CONTINUE
-  151       CONTINUE
-  161     CONTINUE
-        ENDIF       
+          IF (LNEWTG) THEN
+            DO 761 I = 1,NNM
+              DO 751 J = 1,NNM
+                DO 741 K = 1,NDIM
+                  DO 731 L = 1,NDIM
+                    II = NDIM*(I-1)+L
+                    JJ = NDIM*(J-1)+K
+                    MATRMM(II,JJ) = MATRMM(II,JJ) -
+     &   WPG*JACOBI*2.0D0*
+     &  (DLAGRC-COEFAC*JEU)*H11T1N(L,K)*FFM(I)*DFFMT(J,1)-
+     &   WPG*JACOBI*2.0D0*
+     &  (DLAGRC-COEFAC*JEU)*H12T2N(L,K)*FFM(I)*DFFMT(J,1)-
+     &   WPG*JACOBI*2.0D0*
+     &  (DLAGRC-COEFAC*JEU)*H21T1N(L,K)*FFM(I)*DFFMT(J,2)-
+     &   WPG*JACOBI*2.0D0*
+     &  (DLAGRC-COEFAC*JEU)*H22T2N(L,K)*FFM(I)*DFFMT(J,2)
+  731             CONTINUE
+  741           CONTINUE
+  751         CONTINUE
+  761       CONTINUE
+          ELSE
+            DO 361 I = 1,NNM
+              DO 351 J = 1,NNM
+                DO 341 K = 1,NDIM
+                  DO 331 L = 1,NDIM
+                    II = NDIM*(I-1)+L
+                    JJ = NDIM*(J-1)+K
+                    MATRMM(II,JJ) = MATRMM(II,JJ) + COEFAC*
+     &  WPG*JACOBI*FFM(I)*MPROJN(L,K)*FFM(J)
+  331             CONTINUE
+  341           CONTINUE
+  351         CONTINUE
+  361       CONTINUE
+          ENDIF
+        ENDIF
       ELSEIF (PHASEP(1:4).EQ.'ADHE') THEN
         IF (PHASEP(6:9).EQ.'PENA') THEN
           DO 165 I = 1,NNM
@@ -168,7 +209,7 @@ C
   135           CONTINUE
   145         CONTINUE
   155       CONTINUE
-  165     CONTINUE        
+  165     CONTINUE
         ELSE
           DO 166 I = 1,NNM
             DO 156 J = 1,NNM
@@ -182,9 +223,9 @@ C
   146         CONTINUE
   156       CONTINUE
   166     CONTINUE
-        ENDIF        
+        ENDIF
       ELSEIF (PHASEP(1:4).EQ.'GLIS') THEN
-        IF (PHASEP(6:9).EQ.'PENA') THEN         
+        IF (PHASEP(6:9).EQ.'PENA') THEN
           DO 465 I = 1,NNM
             DO 455 J = 1,NNM
               DO 445 K = 1,NDIM
@@ -196,7 +237,7 @@ C
   435           CONTINUE
   445         CONTINUE
   455       CONTINUE
-  465     CONTINUE                
+  465     CONTINUE
         ELSE
           DO 365 I = 1,NNM
             DO 355 J = 1,NNM

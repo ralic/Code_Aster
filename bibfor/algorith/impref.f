@@ -1,7 +1,7 @@
       SUBROUTINE IMPREF(ICOD  ,SDSUIV,TITRE ,FORMA )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,8 +47,7 @@ C              1: ENTIER
 C              2: REEL
 C              3: CHAINE
 C
-C
-C
+C ----------------------------------------------------------------------
 C
       INTEGER      ZDEF
       PARAMETER    (ZDEF=32)
@@ -125,16 +124,16 @@ C
       DATA FORCOL(11) /2/
 
 
-      DATA (TITCOL(J,12),J=1,3)/ '                ',
-     &                           '                ',
-     &                           '                '/
+      DATA (TITCOL(J,12),J=1,3)/ '    CRITERE     ',
+     &                           '  GEOMETRIQUE   ',
+     &                           '      VALE      '/
       DATA FORCOL(12) /2/
 
 
-      DATA (TITCOL(J,13),J=1,3)/ '                ',
-     &                           '                ',
-     &                           '                '/
-      DATA FORCOL(13) /2/
+      DATA (TITCOL(J,13),J=1,3)/ '    CRITERE     ',
+     &                           '  GEOMETRIQUE   ',
+     &                           '    MAX. LIEU   '/
+      DATA FORCOL(13) /3/
 
       DATA (TITCOL(J,14),J=1,3)/ '                ',
      &                           '                ',
@@ -202,7 +201,7 @@ C
 C
       DATA (TITCOL(J,25),J=1,3)/ '      SEUIL     ',
      &                           '    FROTTEMENT  ',
-     &                           '     COULOMB    '/
+     &                           '                '/
       DATA FORCOL(25) /2/
 
 

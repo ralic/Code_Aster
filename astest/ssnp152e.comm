@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 # CAS TEST : SSNP152E
 # TITRE INCLUSION DE DEUX COURONNES
 # ssnp152e.para = tps_job 200 mem_job 512Mo ncpus 1 liste_test S
@@ -129,9 +129,9 @@ CH2=AFFE_CHAR_MECA_F(MODELE=MO, DDL_IMPO=(_F(GROUP_MA='S2R3',DX=ux2,DY=uy2,),),)
 #+----------------------------------------+
 CONT_N  = DEFI_CONTACT(MODELE = MO,
                        FORMULATION    = 'CONTINUE',
-                       REAC_GEOM      = 'AUTOMATIQUE',
-                       ITER_GEOM_MAXI = 50,
                        LISSAGE        = 'OUI',
+                       ALGO_RESO_CONT = 'NEWTON',
+                       ALGO_RESO_GEOM = 'NEWTON',
                        ZONE =(
                            _F(GROUP_MA_ESCL = 'S1R2',
                               GROUP_MA_MAIT = 'S2R2',

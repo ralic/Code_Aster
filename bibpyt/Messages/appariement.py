@@ -1,8 +1,8 @@
-#@ MODIF appariement Messages  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF appariement Messages  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,6 +20,13 @@
 
 cata_msg = {
 
+1 : _(u"""
+Aucun noeud n'est apparié.
+La définition de vos surfaces ou de vos paramètres d'appariement est incorrecte.
+Vérifier TOLE_PROJ_EXT et/ou la définition de vos surfaces.
+Vérifier les déplacements induits par votre modélisation.
+Cette alarme peut entraîner des résultats faux si elle apparaît dans la résolution du contact en Newton généralisé.
+"""),
 
 13 : _(u"""
 L'algorithme de Newton a échoué lors de la projection du point de coordonnées

@@ -1,4 +1,4 @@
-# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE BENCHMARK NAFEMS DE VALIDATION DU CONTACT 5 STEEL ROLLER ON RUBBER
 # ssnp157a.para = tps_job 1500 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -126,7 +126,8 @@ coef = 1.0E-5
 CON=DEFI_CONTACT(MODELE=MO,
                  FORMULATION='CONTINUE',
                  FROTTEMENT='COULOMB',
-                 ITER_GEOM_MAXI=50,
+                 #ITER_GEOM_MAXI=50,
+                 ALGO_RESO_GEOM = 'NEWTON',
                  ALGO_RESO_CONT='NEWTON',
                  ALGO_RESO_FROT='NEWTON',
                  ZONE=_F(GROUP_MA_MAIT='Master',

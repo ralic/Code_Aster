@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C TOLE CRP_21
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 25/06/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -58,6 +58,8 @@ C       ----------------------------------------------------------------
       REAL*8 MATERF(NMAT*2),DT,SGNR,HR,DPR,DPDTAU,DPRDAS,DHRDAS,TOLER
       REAL*8 TAUS,TAUR,DY(*)
       CHARACTER*16  CPMONO(5*NMAT+1)
+      INTEGER IRR,DECIRR,NBSYST,DECAL
+      COMMON/POLYCR/IRR,DECIRR,NBSYST,DECAL
 C     ----------------------------------------------------------------
 
       IRET=0
@@ -69,8 +71,9 @@ C        KOCKS-RAUCH
      &                DGSDTS,DKSDTS,DGRDBS,DKRDBS,IRET)
       ELSEIF (NUECOU.EQ.5) THEN
 C        DD-CFC
+         DECAL=NSFV
          CALL LCMMJD( TAUR,MATERF,IFA,NMAT,NBCOMM,DT,
-     &                IR,IS,NBSYS,NFS,NSG,HSR,VIND(NSFV+1),DY(NSFA+1),
+     &                IR,IS,NBSYS,NFS,NSG,HSR,VIND,DY(NSFA+1),
      &             DPDTAU,DPRDAS,DHRDAS,HR,DPR,SGNR,IRET)
       
          DGSDTS=DPDTAU*SGNR 

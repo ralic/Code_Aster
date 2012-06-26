@@ -7,7 +7,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 25/06/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -103,65 +103,61 @@ C ----------------------------------------------------------------------
 C
 C    ATTENTION  VIM    VARIABLES INTERNES A T MODIFIEES SI REDECOUPAGE
 C       ----------------------------------------------------------------
-        INTEGER         IMATE,NDIM,NVI,KPG,KSP
-        INTEGER         NEPS,NSIG,NWKIN,NWKOUT,NDSDE
+      INTEGER         IMATE,NDIM,NVI,KPG,KSP
+      INTEGER         NEPS,NSIG,NWKIN,NWKOUT,NDSDE
 C
-        REAL*8          CRIT(*), ANGMAS(3)
-        REAL*8          INSTAM,     INSTAP,    TEMPD,   TEMPF  , TREF
-        REAL*8          WKIN(NWKIN),WKOUT(NWKOUT)
-        REAL*8          EPSM(NEPS),  DEPS(NEPS)
-        REAL*8          SIGM(NSIG),   SIGP(NSIG)
-        REAL*8          VIM(NVI),   VIP(NVI)
-        REAL*8          DSIDEP(NDSDE)
+      REAL*8          CRIT(*), ANGMAS(3)
+      REAL*8          INSTAM,     INSTAP,    TEMPD,   TEMPF  , TREF
+      REAL*8          WKIN(NWKIN),WKOUT(NWKOUT)
+      REAL*8          EPSM(NEPS),  DEPS(NEPS)
+      REAL*8          SIGM(NSIG),   SIGP(NSIG)
+      REAL*8          VIM(NVI),   VIP(NVI)
+      REAL*8          DSIDEP(NDSDE)
 C
-        CHARACTER*16    COMPOR(*),     OPTION
-        CHARACTER*8     TYPMOD(*)
-        CHARACTER*(*)   FAMI
-        LOGICAL         CP 
+      CHARACTER*16    COMPOR(*),     OPTION
+      CHARACTER*8     TYPMOD(*)
+      CHARACTER*(*)   FAMI
+      LOGICAL         CP 
 C
-C       ----------------------------------------------------------------
-C       VARIABLES LOCALES POUR LE REDECOUPAGE DU PAS DE TEMPS
-C               TD      INSTANT T
-C               TF      INSTANT T+DT
-C               TEMD    TEMPERATURE A T
-C               TEMF    TEMPERATURE A T+DT
-C               DEPS    INCREMENT DE DEFORMATION TOTALE
-C               VD      VARIABLES INTERNES A T    + INDICATEUR ETAT T
-C               DSIDEPLO MATRICE DE COMPORTEMENT TANGENT A T+DT OU T
-C               ICOMP           COMPTEUR POUR LE REDECOUPAGE DU PAS DE
-C                                    TEMPS
-C               RETURN1 EN CAS DE NON CONVERGENCE LOCALE
-C       ----------------------------------------------------------------
+C     ----------------------------------------------------------------
+C     VARIABLES LOCALES POUR LE REDECOUPAGE DU PAS DE TEMPS
+C             TD      INSTANT T
+C             TF      INSTANT T+DT
+C             TEMD    TEMPERATURE A T
+C             TEMF    TEMPERATURE A T+DT
+C             DEPS    INCREMENT DE DEFORMATION TOTALE
+C             VD      VARIABLES INTERNES A T    + INDICATEUR ETAT T
+C             DSIDEPLO MATRICE DE COMPORTEMENT TANGENT A T+DT OU T
+C             ICOMP           COMPTEUR POUR LE REDECOUPAGE DU PAS DE
+C                                  TEMPS
+C             RETURN1 EN CAS DE NON CONVERGENCE LOCALE
+C     ----------------------------------------------------------------
 C
-        INTEGER         ICOMP
-        INTEGER         NUMLC
-        INTEGER         CODRET
-C       ----------------------------------------------------------------
-C       COMMONS POUR VARIABLES DE COMMANDE : CAII17 ET CARR01
-        INTEGER NFPGMX
-        PARAMETER (NFPGMX=10)
-        INTEGER NFPG,JFPGL,DECALA(NFPGMX),KM,KP,KR,IREDEC
-        COMMON /CAII17/NFPG,JFPGL,DECALA,KM,KP,KR,IREDEC
-        REAL*8 INSTM1,INSTP1,TD1,TF1
-        COMMON /CARR01/INSTM1,INSTP1,TD1,TF1
-C       ----------------------------------------------------------------
+      INTEGER         ICOMP
+      INTEGER         NUMLC
+      INTEGER         CODRET
+C     ----------------------------------------------------------------
+C     COMMONS POUR VARIABLES DE COMMANDE : CAII17 ET CARR01
+      INTEGER NFPGMX
+      PARAMETER (NFPGMX=10)
+      INTEGER NFPG,JFPGL,DECALA(NFPGMX),KM,KP,KR,IREDEC
+      COMMON /CAII17/NFPG,JFPGL,DECALA,KM,KP,KR,IREDEC
+      REAL*8 INSTM1,INSTP1,TD1,TF1
+      COMMON /CARR01/INSTM1,INSTP1,TD1,TF1
+      INTEGER NUTE,JNBELR,JNOELR,IACTIF,JPNLFP,JNOLFP,NBLFPG
+      COMMON /CAII11/NUTE,JNBELR,JNOELR,IACTIF,JPNLFP,JNOLFP,NBLFPG
+C     ------------------------------------------------------------------
 
 C     NUMLC doit etre compris entre 1 et 100
 
-C ON CALCULE LA DEFORMATION MECANIQUE ASSOCIEE A LA VARIABLE DE
-C COMMANDE PTOT.
-C ON LA RETRANCHE ENSUITE AUX DEFORMATIONS MECANIQUES TOTALES DEPS
-C LA VARIABLE DE COMMANDE EST DONC EFFECTIVE POUR TOUTES LES LOIS
-C DE COMPORTEMENT PRESENTES SOUS LC0000
-C
-C CE CALCUL N'EST POSSIBLE QUE :
-C 1 => EN PETITES DEFORMATIONS
-C 2 => AVEC UNE LOI MECANIQUE DU KIT THM
-C
-      IF (OPTION(1:9).NE.'RIGI_MECA') THEN
-C        print *,'DANS LC0000, DEPS = ',DEPS
-C        print *,'DANS LC0000, NEPS = ',NEPS
-        CALL VRCPTO(COMPOR,DEPS,NEPS,FAMI,KPG,KSP,IMATE)
+      IF (IACTIF.NE.2) THEN
+         IF (OPTION(1:9).NE.'RIGI_MECA') THEN
+C           DEFORMATION MECANIQUE ASSOCIEE A LA VARIABLE DE
+C           COMMANDE PTOT. CE CALCUL N'EST POSSIBLE QUE :
+C           1 => EN PETITES DEFORMATIONS
+C           2 => AVEC UNE LOI MECANIQUE DU KIT THM
+            CALL VRCPTO(COMPOR,DEPS,NEPS,FAMI,KPG,KSP,IMATE)
+         ENDIF
       ENDIF
 
       GO TO (101,102,103,104,105,106,107,108,109,110,111,112,113,114,

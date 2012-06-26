@@ -1,6 +1,6 @@
       SUBROUTINE AVCIPR( NBVEC, VECTN, VECTU, VECTV, NBORDR, KWORK,
      &                   SOMMW, VWORK, TDISP, TSPAQ, IPGN, NOMCRI, 
-     &                   FORDEF,FATSOC,PROAXE, PSEUIL, METHOD, 
+     &                   NOMFOR, FORDEF,FATSOC,PROAXE, PSEUIL, METHOD, 
      &                   NCYCL, VMIN, VMAX, OMIN, OMAX)
       IMPLICIT      NONE
       INCLUDE 'jeveux.h'
@@ -8,7 +8,7 @@
       INTEGER       SOMMW, TDISP, TSPAQ, IPGN
       REAL*8        VECTN(3*NBVEC), VECTU(3*NBVEC), VECTV(3*NBVEC)
       REAL*8        VWORK(TDISP), FATSOC, PSEUIL
-      CHARACTER*16  NOMCRI,PROAXE 
+      CHARACTER*16  NOMCRI,NOMFOR,PROAXE 
       CHARACTER*8   METHOD
       INTEGER       NCYCL(NBVEC)
       INTEGER       OMIN(NBVEC*(NBORDR+2)), OMAX(NBVEC*(NBORDR+2))
@@ -16,7 +16,7 @@
       LOGICAL       FORDEF
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 26/06/2012   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -92,7 +92,6 @@ C                     NORMAUX.
 C REMARQUE : CETTE ROUTINE SERT POUR LE TRAITEMENT DES POINTS DE GAUSS
 C            ET DES NOEUDS.
 C ----------------------------------------------------------------------
-C     ------------------------------------------------------------------
 
 C VECTRA  VECTEUR DE TRAVAIL CONTENANT 
 C         LES COMPOSANTES u ET v DU VECTEUR TAU 
@@ -145,15 +144,15 @@ C ITRV   VECTEUR DE TRAVAIL ENTIER (POUR LES NUME_ORDRE)
       INTEGER       NPOIN(NBVEC), VALORD(NBVEC*NBORDR)
       INTEGER       NPIC(NBVEC), ORDPIC(NBVEC*(NBORDR+2))     
       REAL*8        PIC(NBVEC*(NBORDR+2)), RTRV(NBORDR+2) 
-      REAL*8        CUDOMX, NXM, NYM, NZM
+C      REAL*8        CUDOMX, NXM, NYM, NZM
 C     ------------------------------------------------------------------
 C
 C  PROJECTION DE L'HISTORIQUE DU CISAILLEMENT DANS UN PLAN
       CALL JEMARQ()
       
       CALL PROPLA( NBVEC, VECTN, VECTU, VECTV, NBORDR, KWORK,
-     &            SOMMW, VWORK, TDISP, TSPAQ, IPGN,NOMCRI,FORDEF,
-     &                   FATSOC,VECTRA )
+     &            SOMMW, VWORK, TDISP, TSPAQ, IPGN,NOMCRI,NOMFOR,
+     &                   FORDEF, FATSOC,VECTRA )
 
 C CALCUL DU DOMMAGE MAX ET DU VECTEUR NORMAL ASSOCIE POUR
 C LE NOEUD/POINT GAUSS COURANT DE LA MAILLE COURANTE.
@@ -169,13 +168,13 @@ C 2. ENCADREMENT DES POINTS DANS LE PLAN
       CALL AVENCA(VECTRA, NBVEC, NBORDR, LSIG0, IFLAG,
      &               RMIMA)
      
-      IF (LSIG0) THEN
-         CUDOMX = 0.0D0
-         NXM = 0.0D0
-         NYM = 0.0D0
-         NZM = 1.0D0
-         GOTO 555
-      ENDIF
+C       IF (LSIG0) THEN
+C          CUDOMX = 0.0D0
+C          NXM = 0.0D0
+C          NYM = 0.0D0
+C          NZM = 1.0D0
+C          GOTO 555
+C       ENDIF
        
 C 3. PROJECTION DE L'HISTORIQUE DE CHARGEMENT SUR UN OU DEUX AXES
 

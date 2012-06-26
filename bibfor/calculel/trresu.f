@@ -4,7 +4,7 @@
       INTEGER    IFIC, NOCC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,7 @@ C ----------------------------------------------------------------------
 
       INTEGER      VALI,IBID,IE,IOCC,IRET,IVARI,JLUE,JORDR,
      &             N1,N2,N3,N4,NBORDR,NUMORD,NUPO,NBCMP,JCMP
-      INTEGER      NRPASS,NBPASS,ADRECG,NUSP,IAUX,IREFR,
+      INTEGER      NUSP,IREFR,
      &             IREFI,IREFC,NREF, NL1,NL2,LXLGUT,NL11,NL22
       REAL*8       VALR,EPSI,PREC,R8B
       COMPLEX*16   VALC,C16B
@@ -38,12 +38,12 @@ C ----------------------------------------------------------------------
       CHARACTER*4  TYPCH,TESTOK,CHPT
       CHARACTER*8  CRIT,CRIT2,NOMAIL,NODDL,NOGRNO,NOMMA
       CHARACTER*8  NORESU,TYPTES,NOMGD
-      CHARACTER*8  LERESU,NOPASE
+      CHARACTER*8  LERESU
       CHARACTER*11 MOTCLE
       CHARACTER*16 NOPARA,K16B,TBTXT(2)
       CHARACTER*19 CHAM19,KNUM
       CHARACTER*17 NONOEU
-      CHARACTER*24 NORECG,TRAVR,TRAVI,TRAVC
+      CHARACTER*24 TRAVR,TRAVI,TRAVC
       CHARACTER*33 TITRES,VALK(3)
       CHARACTER*200 LIGN1,LIGN2
       INTEGER      IARG
@@ -53,7 +53,6 @@ C     ------------------------------------------------------------------
       CALL JEMARQ()
 
       MOTCLE = 'RESULTAT'
-      NORECG = '&&TRRESU_RESULTA_GD'
       TRAVR  = '&&TRRESU_TRAVR'
       TRAVI  = '&&TRRESU_TRAVI'
       TRAVC  = '&&TRRESU_TRAVC'
@@ -64,9 +63,6 @@ C     ------------------------------------------------------------------
 
         CALL GETVTX('RESU','NOM_CMP',IOCC,IARG,1,NODDL,N1)
         CALL GETVID('RESU','RESULTAT',IOCC,IARG,1,NORESU,N1)
-        IAUX = IOCC
-        CALL PSRESE('RESU',IAUX,1,NORESU,1,NBPASS,NORECG,IRET)
-        CALL JEVEUO(NORECG,'L',ADRECG)
 
         CALL TRPREC ( 'RESU', IOCC, EPSI, CRIT, PREC, CRIT2 )
 
@@ -95,20 +91,10 @@ C     ------------------------------------------------------------------
           CALL GETVC8('RESU','VALE_C', IOCC,IARG,NREF,ZC(IREFC),IRET)
         ENDIF
 
-        DO 60,NRPASS = 1,NBPASS
-C        POUR LE PASSAGE NUMERO NRPASS :
-C        . NOM DU CHAMP DE RESULTAT OU DE GRANDEUR
-C        . NOM DU PARAMETRE DE SENSIBILITE
           LIGN1  = ' '
           LIGN2  = ' '
-          LERESU = ZK24(ADRECG+2*NRPASS-2) (1:8)
-          NOPASE = ZK24(ADRECG+2*NRPASS-1) (1:8)
-          IF (NOPASE.EQ.' ') THEN
-C                    123456789012345678901234567890123
-            TITRES = ' '
-          ELSE
-            TITRES = 'SENSIBILITE AU PARAMETRE '//NOPASE
-          END IF
+          LERESU = NORESU
+          TITRES = ' '
 
           KNUM = '&&TRRESU.NUME_ORDRE'
           CALL RSUTNU(LERESU,'RESU',IOCC,KNUM,NBORDR,PREC,CRIT2,IRET)
@@ -140,14 +126,6 @@ C                    123456789012345678901234567890123
             LIGN1(NL1+17:NL1+17)='.'
             LIGN2(NL2+17:NL2+17)='.'
 
-            IF(NOPASE.NE.' ')THEN
-               NL1 = LXLGUT(LIGN1)
-               NL2 = LXLGUT(LIGN2)
-               LIGN1(1:NL1+16)=LIGN1(1:NL1-1)//' TITRE'
-               LIGN2(1:NL2+33)=LIGN2(1:NL2-1)//' '//TITRES
-               LIGN1(NL1+17:NL1+17)='.'
-               LIGN2(NL2+34:NL2+34)='.'
-            ENDIF
 
             CALL UTEST3('RESU',IOCC,TBTXT)
 
@@ -224,14 +202,6 @@ C                    123456789012345678901234567890123
                 LIGN1(NL1+17:NL1+17)='.'
                 LIGN2(NL2+17:NL2+17)='.'
 
-                IF(NOPASE.NE.' ')THEN
-                   NL1 = LXLGUT(LIGN1)
-                   NL2 = LXLGUT(LIGN2)
-                   LIGN1(1:NL1+16)=LIGN1(1:NL1-1)//' TITRE'
-                   LIGN2(1:NL2+33)=LIGN2(1:NL2-1)//' '//TITRES
-                   LIGN1(NL1+17:NL1+17)='.'
-                   LIGN2(NL2+34:NL2+34)='.'
-                ENDIF
 
 
                 CALL GETVTX('RESU','NOM_CMP',IOCC,IARG,0,NODDL,N4)
@@ -335,14 +305,6 @@ C              RIEN A FAIRE.
                   VALK(3) = TITRES
                   CALL U2MESG('F','CALCULEL6_97',3,VALK,1,NUMORD,0,0.D0)
                 END IF
-                IF(NOPASE.NE.' ')THEN
-                    NL1 = LXLGUT(LIGN1)
-                    NL2 = LXLGUT(LIGN2)
-                    LIGN1(1:NL1+16)=LIGN1(1:NL1-1)//' TITRE'
-                    LIGN2(1:NL2+33)=LIGN2(1:NL2-1)//' '//TITRES
-                    LIGN1(NL1+17:NL1+17)='.'
-                    LIGN2(NL2+34:NL2+34)='.'
-                ENDIF
 
                 NL1 = LXLGUT(LIGN1)
                 NL11 = LXLGUT(LIGN1(1:NL1-1))
@@ -405,14 +367,6 @@ C              RIEN A FAIRE.
                   LIGN2(NL2+17:NL2+17)='.'
                 ENDIF
 
-                IF(NOPASE.NE.' ')THEN
-                    NL1 = LXLGUT(LIGN1)
-                    NL2 = LXLGUT(LIGN2)
-                    LIGN1(1:NL1+16)=LIGN1(1:NL1-1)//' TITRE'
-                    LIGN2(1:NL2+37)=LIGN2(1:NL2-1)//' '//TITRES
-                    LIGN1(NL1+17:NL1+17)='.'
-                    LIGN2(NL2+38:NL2+38)='.'
-                ENDIF
 
                 NL1 = LXLGUT(LIGN1)
                 NL11 = LXLGUT(LIGN1(1:NL1-1))
@@ -447,9 +401,7 @@ C              RIEN A FAIRE.
             END IF
           END IF
    50     CONTINUE
-          CALL JEDETR(NORECG)
           CALL JEDETR(KNUM)
-   60   CONTINUE
         WRITE (IFIC,*)' '
    70 CONTINUE
 

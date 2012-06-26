@@ -1,7 +1,7 @@
       SUBROUTINE SURFCO(CHAR,NOMA)
-C      
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,51 +18,50 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C RESPONSABLE MABBAS M.ABBAS
+C RESPONSABLE ABBAS M.ABBAS
 C 
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*8 CHAR
       CHARACTER*8 NOMA
-C      
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE CONTACT (TOUTES METHODES - AFFICHAGE DONNEES)
 C
-C AFFICHAGE LES INFOS CONTENUES DANS LA SD CONTACT 
-C      
+C AFFICHAGE LES INFOS CONTENUES DANS LA SD CONTACT
+C
 C ----------------------------------------------------------------------
 C
 C
 C IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
 C IN  NOMA   : NOM DU MAILLAGE
 C
-C
-C
+C ----------------------------------------------------------------------
 C
       INTEGER      IFM,NIV
       LOGICAL      LMAIL
-      CHARACTER*24 DEFICO 
-      INTEGER      CFDISI,IFORM      
+      CHARACTER*24 DEFICO
+      INTEGER      CFDISI,IFORM
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ
-      CALL INFDBG('CONTACT',IFM,NIV) 
+      CALL INFNIV(IFM,NIV)
 C
       IF (NIV.LE.1) THEN
         GOTO 999
-      ENDIF  
+      ENDIF
 C
 C --- INITIALISATIONS
 C
-      DEFICO = CHAR(1:8)//'.CONTACT'           
+      DEFICO = CHAR(1:8)//'.CONTACT'
 C
 C --- TYPE DE FORMULATION (DISCRETE/CONTINUE/XFEM)
 C
-      IFORM  = CFDISI(DEFICO,'FORMULATION')       
-      LMAIL  = (IFORM.EQ.1).OR.(IFORM.EQ.2) 
-C      
+      IFORM  = CFDISI(DEFICO,'FORMULATION')
+      LMAIL  = (IFORM.EQ.1).OR.(IFORM.EQ.2)
+C
       CALL SURFCP(CHAR,IFM)
 C
       IF (LMAIL) THEN
@@ -71,15 +70,15 @@ C
 C
       IF (IFORM.EQ.1) THEN
         CALL SURFC1(CHAR,IFM)
-      ELSEIF (IFORM.EQ.2) THEN    
+      ELSEIF (IFORM.EQ.2) THEN
         CALL SURFC2(CHAR,NOMA,IFM)
       ELSEIF (IFORM.EQ.3) THEN
         CALL SURFC3(CHAR,NOMA,IFM)
       ELSE
-        CALL ASSERT(.FALSE.)      
-      ENDIF  
+        CALL ASSERT(.FALSE.)
+      ENDIF
 C
- 999  CONTINUE          
+ 999  CONTINUE
 C
       CALL JEDEMA
       END

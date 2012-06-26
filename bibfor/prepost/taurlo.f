@@ -5,7 +5,7 @@
       INTEGER    NBVEC, JVECTN, JVECTU, JVECTV, NBORDR, KWORK
       INTEGER    SOMPGW, JRWORK, TSPAQ, IPG, JVECPG
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 26/06/2012   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -55,8 +55,7 @@ C                     LES COMPOSANTES u ET v DU VECTEUR TAU
 C                     (CISAILLEMENT), POUR TOUS LES NUMEROS
 C                     D'ORDRE DE CHAQUE VECTEUR NORMAL.
 C ----------------------------------------------------------------------
-C     ------------------------------------------------------------------
-      INTEGER    IVECT, IORDR, N, ADRS
+      INTEGER    IVECT, IORDR, N, ADRS, DECAL
       REAL*8     NX, NY, NZ, UX, UY, UZ, VX, VY, VZ
       REAL*8     SIXX, SIYY, SIZZ, SIXY, SIXZ, SIYZ, FX, FY, FZ
       REAL*8     NORM, TAUX, TAUY, TAUZ, CUTAU, CVTAU
@@ -82,8 +81,8 @@ C
          VZ = ZR(JVECTV + (IVECT-1)*3 + 2)
 C
          DO 20 IORDR=1, NBORDR
-         
-            ADRS = (IORDR-1)*TSPAQ+KWORK*SOMPGW*12+(IPG-1)*12
+            DECAL = 18
+            ADRS = (IORDR-1)*TSPAQ+KWORK*SOMPGW*DECAL+(IPG-1)*DECAL
             
             SIXX = ZR(JRWORK + ADRS + 0)
             SIYY = ZR(JRWORK + ADRS + 1)

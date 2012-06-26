@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/02/2012   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -76,24 +76,53 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
 
          b_contact=BLOC(condition = "FORMULATION != 'LIAISON_UNIL' ",
 
-# PARAMETRE GENERAL : BOUCLE DE GEOMETRIE
+# PARAMETRE GENERAL : BOUCLE DE GEOMETRIE - Cas discret
 
-           b_bouc_geom_mail=BLOC(condition = "(FORMULATION == 'DISCRETE' or FORMULATION == 'CONTINUE')",
-                                 REAC_GEOM =SIMP(statut='f',
-                                                 typ='TXM',
-                                                 into=("AUTOMATIQUE","CONTROLE","SANS",),
-                                                 defaut="AUTOMATIQUE",
-                                                 ),
-                                 b_automatique = BLOC(condition = "REAC_GEOM == 'AUTOMATIQUE' ",
-                                   ITER_GEOM_MAXI = SIMP(statut='f',typ='I',defaut=10),
-                                   RESI_GEOM      = SIMP(statut='f',typ='R',defaut=0.01),
+           b_bouc_geom_maild=BLOC(condition = "FORMULATION == 'DISCRETE'",
+                                  ALGO_RESO_GEOM = SIMP(statut='f',
+                                                        typ='TXM',
+                                                        into=("POINT_FIXE",),
+                                                        defaut="POINT_FIXE"),
+                                  REAC_GEOM = SIMP(statut='f',
+                                                   typ='TXM',
+                                                   into=("AUTOMATIQUE","CONTROLE","SANS",),
+                                                   defaut="AUTOMATIQUE"),
+                                  b_automatique = BLOC(condition = "REAC_GEOM == 'AUTOMATIQUE' ",
+                                       ITER_GEOM_MAXI = SIMP(statut='f',typ='I',defaut=10),
+                                       RESI_GEOM      = SIMP(statut='f',typ='R',defaut=0.01)),
+                                  b_controle    = BLOC(condition = "REAC_GEOM == 'CONTROLE' ",
+                                       NB_ITER_GEOM   = SIMP(statut='f',typ='I',defaut = 2)),
+                                  )),
+
+# PARAMETRE GENERAL : BOUCLE DE GEOMETRIE - Cas continu
+
+           b_bouc_geom_mailc=BLOC(condition = "FORMULATION == 'CONTINUE'",
+                                  ALGO_RESO_GEOM = SIMP(statut='f',
+                                                        typ='TXM',
+                                                        into=("POINT_FIXE","NEWTON",),
+                                                        defaut="NEWTON"),
+                                  b_algo_reso_geomNE = BLOC(condition = "ALGO_RESO_GEOM=='NEWTON'",
+                                    RESI_GEOM      = SIMP(statut='f',typ='R',defaut=0.000001),),
+
+                                  b_algo_reso_geomPF = BLOC(condition = "ALGO_RESO_GEOM=='POINT_FIXE'",
+                                     REAC_GEOM = SIMP(statut='f',
+                                                   typ='TXM',
+                                                   into=("AUTOMATIQUE","CONTROLE","SANS",),
+                                                   defaut="AUTOMATIQUE"),
+                                    b_automatique = BLOC(condition = "REAC_GEOM == 'AUTOMATIQUE' ",
+                                       ITER_GEOM_MAXI = SIMP(statut='f',typ='I',defaut=10),
+                                       RESI_GEOM      = SIMP(statut='f',typ='R',defaut=0.01)),
+                                    b_controle    = BLOC(condition = "REAC_GEOM == 'CONTROLE' ",
+                                       NB_ITER_GEOM   = SIMP(statut='f',typ='I',defaut = 2)))
                                    ),
-                                 b_controle    = BLOC(condition = "REAC_GEOM == 'CONTROLE' ",
-                                   NB_ITER_GEOM   = SIMP(statut='f',typ='I',defaut = 2),
-                                   ),
-                                 ),
+
+# PARAMETRE GENERAL : BOUCLE DE GEOMETRIE - Cas XFEM
 
            b_bouc_geom_xfem=BLOC(condition = "FORMULATION == 'XFEM' ",
+                                 ALGO_RESO_GEOM = SIMP(statut='f',
+                                                        typ='TXM',
+                                                        into=("POINT_FIXE",),
+                                                        defaut="POINT_FIXE"),
                                  REAC_GEOM =SIMP(statut='f',
                                                  typ='TXM',
                                                  into=("AUTOMATIQUE","CONTROLE","SANS",),
@@ -115,8 +144,9 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                  ITER_CONT_MULT = SIMP(statut='f',typ='I',defaut = 4),
                                  ),
 
+
            b_bouc_cont_cont=BLOC(condition = "FORMULATION == 'CONTINUE' ",
-                                 ALGO_RESO_CONT = SIMP(statut='f',typ='TXM',defaut="POINT_FIXE",
+                                 ALGO_RESO_CONT = SIMP(statut='f',typ='TXM',defaut="NEWTON",
                                                       into=("POINT_FIXE","NEWTON")),
                                  b_algo_reso_contPF = BLOC(condition = "ALGO_RESO_CONT=='POINT_FIXE'",
                                    ITER_CONT_TYPE = SIMP(statut='f',typ='TXM',defaut="MAXI",
@@ -141,19 +171,18 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                    ),
                                  ),
 
-# PARAMETRE GENERAL : BOUCLE DE FROTTEMENT
+# PARAMETRE GENERAL : BOUCLE DE FROTTEMENT - Cas continu
 
            b_bouc_frot_cont= BLOC(condition = "FROTTEMENT=='COULOMB' and FORMULATION == 'CONTINUE' ",
-                                  
-                                  ALGO_RESO_FROT = SIMP(statut='f',typ='TXM',defaut="NEWTON",
-                                                      into=("POINT_FIXE","NEWTON",)),
-                                                      
+                                  ALGO_RESO_FROT = SIMP(statut='f',
+                                                        typ='TXM',
+                                                        into=("POINT_FIXE","NEWTON",),
+                                                        defaut="NEWTON"),
                                   b_algo_reso_frotPF = BLOC(condition = "ALGO_RESO_FROT=='POINT_FIXE'",
                                     REAC_FROT =SIMP(statut='f',
-                                                  typ='TXM',
-                                                  defaut="AUTOMATIQUE",
-                                                  into=("AUTOMATIQUE","CONTROLE",),
-                                                  ),
+                                                    typ='TXM',
+                                                    into=("AUTOMATIQUE","CONTROLE",),
+                                                    defaut="AUTOMATIQUE"),
                                     b_automatique = BLOC(condition = "REAC_FROT == 'AUTOMATIQUE' ",
                                                          ITER_FROT_MAXI = SIMP(statut='f',typ='I',defaut=10),
                                                          RESI_FROT      = SIMP(statut='f',typ='R',defaut=0.0001),
@@ -161,13 +190,14 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                     b_controle    = BLOC(condition = "REAC_FROT == 'CONTROLE' ",
                                                          NB_ITER_FROT   = SIMP(statut='f',typ='I',defaut = 2),
                                     ),
-                                  ),                    
+                                  ),
                                   b_algo_reso_frotNE = BLOC(condition = "ALGO_RESO_FROT=='NEWTON'",
-                                    
+
                                     RESI_FROT      = SIMP(statut='f',typ='R',defaut=0.0001),
                                   ),
                                   ),
 
+# PARAMETRE GENERAL : BOUCLE DE FROTTEMENT - Cas XFEM
 
            b_bouc_frot_xfem= BLOC(condition = "FROTTEMENT=='COULOMB' and FORMULATION == 'XFEM' ",
                                   REAC_FROT =SIMP(statut='f',
@@ -226,7 +256,6 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                                           defaut=0,),
                                   ),
                                   ),
-           ),
 
 ## AFFECTATIONS (ZONES PAR ZONES)
 
@@ -362,6 +391,8 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
 # -- Appariement
                                           APPARIEMENT     =SIMP(statut='f',typ='TXM',defaut="MAIT_ESCL",
                                                                 into=("MAIT_ESCL",)),
+
+
 #
                                           regles=(UN_PARMI('GROUP_MA_ESCL','MAILLE_ESCL'),
                                                   UN_PARMI('GROUP_MA_MAIT','MAILLE_MAIT'),),
@@ -426,6 +457,12 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                                        TOLE_INTERP   = SIMP(statut='f',typ='R',defaut = 0.),
                                                        ),
 # -- Fonctionnalités spécifiques 'CONTINUE'
+
+
+# -- Controle des statuts
+                                          REAC_PARA       =SIMP(statut='f',typ='TXM',defaut="NON",
+                                                                into=("NON","OUI")),
+# --
                                           INTEGRATION     =SIMP(statut='f',typ='TXM',defaut="AUTO",
                                           into=("AUTO","GAUSS","SIMPSON","NCOTES",),),
                                           b_gauss   =BLOC(condition = "INTEGRATION == 'GAUSS' ",
@@ -509,7 +546,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                        INTEGRATION    = SIMP(statut='f',
                                                              typ='TXM',
                                                              defaut="GAUSS",
-                                                             
+
                                           into=("NOEUD","GAUSS","SIMPSON","NCOTES",),),
                                           b_gauss   =BLOC(condition = "INTEGRATION == 'GAUSS' ",
                                                           fr="Dégré du polynôme de Legendre donnant les points de Gauss",
@@ -523,7 +560,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                                           fr="Dégré du polynôme interpolateur",
                                                           ORDRE_INT = SIMP(statut='f',typ='I',defaut=3,val_min=3,val_max=8),
                                             ),
-                                            
+
                                        RELATION       = SIMP(statut='f',typ='TXM',defaut="NON",
                                                              into=("CZM_EXP_REG","CZM_LIN_REG","NON"),),
 

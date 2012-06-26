@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,7 +63,7 @@ C
 C        --- ECRITURE DU TITRE ---
 C
          K8B = '        '
-         CALL IRTITR(GENE,K8B,K8B,FORM,IFI,TITRE)
+         CALL IRTITR(GENE,K8B,FORM,IFI,TITRE)
 C
 C        --- IMPRESSION DE LA STRUCTURE DU RESU_GENE ---
 C

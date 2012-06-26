@@ -1,8 +1,8 @@
-#@ MODIF prepost4 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF prepost4 Messages  DATE 26/06/2012   AUTEUR TRAN V-X.TRAN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -122,15 +122,24 @@ cata_msg = {
 """),
 
 34 : _(u"""
- les champs de  déformations aux points de gauss n'existent pas.
+ les champs de déformations aux points de gauss n'existent pas.
 """),
 
 35 : _(u"""
  le champ simple qui contient les valeurs des déformations n existe pas.
 """),
 
+36 : _(u"""
+ le champ de déformations plastiques aux points de gauss EPSP_ELGA n'a pas été calcule.
+ On prendre la valeur zéro. Si la déformation existe, il faut calculer EPSP_ELGA.
+"""),
+
+37 : _(u"""
+ le champ simple qui contient les valeurs des déformations plastiques n'existe pas.
+"""),
+
 38 : _(u"""
- le champ de contraintes aux noeuds SIEF_NOEU n'a pas été calcule.
+ le champ de contraintes aux noeuds SIEF_NOEU ou SIEF_NOEU n'a pas été calculé.
 """),
 
 39 : _(u"""
@@ -138,16 +147,41 @@ cata_msg = {
 """),
 
 40 : _(u"""
- le champ de  contraintes aux noeuds n'existe pas.
+ le champ de contraintes aux noeuds n'existe pas.
 """),
 
 41 : _(u"""
- le champ de  déformations aux noeuds n'existe pas.
+ le champ de déformations aux noeuds n'existe pas.
+"""),
+
+42 : _(u"""
+ le champ de déformations plastiques aux noeuds EPSP_NOEU n'a pas été calculé.
+"""),
+
+43 : _(u"""
+ le champ de déformations plastiques aux noeuds n'existe pas.
+"""),
+
+45 : _(u"""
+ Pour calculer la déformation élastique, la déformation totale est obligatoire.
+"""),
+
+46: _(u"""
+ On note que déformation élastique  = déformation TOTALE - déformation PLASTIQUE. Si la déformation 
+ plastique n'est pas calculée dans le resultat, on prendre la valeur zéro. 
 """),
 
 47 : _(u"""
- INST_INIT plus grand que INST_FIN
+ INST_INI plus grand que INST_FIN
 """),
+
+48 : _(u"""
+ Instant initial du cycle ne se trouve pas dans la liste des instants calculés. On prend l'instant initial stocké
+ comme instant initial pour la partie du chargement cyclique.
+ Risques et conseils: On peut modifier la liste des instants fournie dans STAT_NON_LINE en utilisant une liste d'instant manuelle
+ pour assurer que l'instant initial du cycle fait partie des instants calculés.
+"""),
+
 
 57 : _(u"""
   erreur données.

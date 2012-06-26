@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE IMPACT DE DEUX POUTRES ELASTIQUES
 # sdnl111e.para = tps_job 1140 mem_job 800Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -82,11 +82,12 @@ VITINI=CREA_CHAMP(   OPERATION='AFFE',
                                    
 # *******************************************
 
-CONTACT = DEFI_CONTACT(MODELE      = MODELE,
-                       FORMULATION = 'CONTINUE',
-                       ZONE        =_F(INTEGRATION='AUTO',
-                                    GROUP_MA_MAIT='CNT_POU1',
-                                    GROUP_MA_ESCL='CNT_POU2',),)
+CONTACT = DEFI_CONTACT(MODELE         = MODELE,
+                       FORMULATION    = 'CONTINUE',
+                       ALGO_RESO_CONT = 'POINT_FIXE',
+                       ALGO_RESO_GEOM = 'POINT_FIXE',
+                       ZONE        =_F(GROUP_MA_MAIT='CNT_POU1',
+                                       GROUP_MA_ESCL='CNT_POU2',),)
 
  
 # ************************************************************
@@ -109,6 +110,7 @@ RESU=DYNA_NON_LINE(MODELE=MODELE,
                 SCHEMA_TEMPS=_F(SCHEMA='HHT',
                                 FORMULATION='DEPLACEMENT',
                                 ALPHA = -0.30, ),
+                CONVERGENCE =_F(ITER_GLOB_MAXI=20),
                 NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,),
                 SOLVEUR=_F(METHODE='MULT_FRONT',),)
 

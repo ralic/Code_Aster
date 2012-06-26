@@ -1,4 +1,4 @@
-# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE FORMATION AVANCEE CONTACT DE HERTZ
 # forma04b.para = tps_job 60 mem_job 64Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -63,8 +63,10 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,
 
 # -- Definition du contact
 
-CONT=DEFI_CONTACT(MODELE=MO,
-                  FORMULATION='CONTINUE',
+CONT=DEFI_CONTACT(MODELE         = MO,
+                  FORMULATION    = 'CONTINUE',
+                  ALGO_RESO_CONT = 'NEWTON',
+                  ALGO_RESO_GEOM = 'NEWTON',
                   ZONE=_F(GROUP_MA_MAIT='CONT2',
                           GROUP_MA_ESCL='CONT1',
                           INTEGRATION='GAUSS',
@@ -72,8 +74,10 @@ CONT=DEFI_CONTACT(MODELE=MO,
                           ),);
 
 TPS=DEFI_LIST_REEL(DEBUT=0,
-                   INTERVALLE=_F(JUSQU_A=1,
-                                 NOMBRE=20,),);
+                   INTERVALLE=(_F(JUSQU_A=0.1,
+                                 NOMBRE=2,),
+                               _F(JUSQU_A=1,
+                                 NOMBRE=1,),),);
 
 STNL=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMAT,
@@ -83,6 +87,7 @@ STNL=STAT_NON_LINE(MODELE=MO,
                    COMP_INCR=_F(RELATION='ELAS',),
                    NEWTON=_F(REAC_ITER=1,MATRICE='ELASTIQUE'),
                    INCREMENT=_F(LIST_INST=TPS,),
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=50),
                    );
 
 # -- Post-traitement

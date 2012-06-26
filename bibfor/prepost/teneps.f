@@ -1,6 +1,6 @@
       SUBROUTINE TENEPS( JRWORK,ADR, C1, C2, SIG,EPS,EPSE,EPSP  )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 26/06/2012   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -38,32 +38,33 @@ C    EPS    : OUT : DEFORMATION TOTALE (6 COMPOSANTES)
 C    EPSE   : OUT : DEFORMATION ELASTIQUE (6 COMPOSANTES)
 C    SIG    : OUT : DEFORMATION PLASTIQUE (6 COMPOSANTES)
 C-----------------------------------------------------------------------
-C-----------------------------------------------------------------------
-      INTEGER       I
+      INTEGER       K
 
-      DO 25 I = 1, 6
-         SIG(I) = 0.0D0
-         EPS(I) = 0.0D0
-         EPSE(I)= 0.0D0
-         EPSP(I)= 0.0D0
+      DO 25 K = 1, 6
+         SIG(K) = 0.0D0
+         EPS(K) = 0.0D0
+         EPSE(K)= 0.0D0
+         EPSP(K)= 0.0D0
 25    CONTINUE 
 
-      DO 35 I = 1, 6 
-         SIG(I) = ZR(JRWORK + ADR + I - 1)        
-         EPS(I) = ZR(JRWORK + ADR + I - 1 + 6)
+      DO 35 K = 1, 6 
+         SIG(K) = ZR(JRWORK + ADR + K - 1)        
+         EPS(K) = ZR(JRWORK + ADR + K - 1 + 6)
+         EPSP(K) = ZR(JRWORK + ADR + K - 1 + 12)
+         EPSE(K) = EPS(K) - EPSP(K)
 35    CONTINUE 
 
 C ON SUPPOSE QUE EPS_TOT = EPS_ELAS + EPSPLAS
          
-      EPSE(1) = C1*SIG(1) - C2*(SIG(1) + SIG(2) + SIG(3))
-      EPSE(2) = C1*SIG(2) - C2*(SIG(1) + SIG(2) + SIG(3))
-      EPSE(3) = C1*SIG(3) - C2*(SIG(1) + SIG(2) + SIG(3))
-      EPSE(4) = C1*SIG(4)
-      EPSE(5) = C1*SIG(5)
-      EPSE(6) = C1*SIG(6)
-
-      DO 45 I = 1, 6 
-        EPSP(I) =  EPS(I) - EPSE(I)
-45    CONTINUE 
+C       EPSE(1) = C1*SIG(1) - C2*(SIG(1) + SIG(2) + SIG(3))
+C       EPSE(2) = C1*SIG(2) - C2*(SIG(1) + SIG(2) + SIG(3))
+C       EPSE(3) = C1*SIG(3) - C2*(SIG(1) + SIG(2) + SIG(3))
+C       EPSE(4) = C1*SIG(4)
+C       EPSE(5) = C1*SIG(5)
+C       EPSE(6) = C1*SIG(6)
+C 
+C       DO 45 K = 1, 6 
+C         EPSP(K) =  EPS(K) - EPSE(K)
+C 45    CONTINUE 
 
       END

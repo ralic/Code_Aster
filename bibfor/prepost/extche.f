@@ -1,4 +1,4 @@
-      SUBROUTINE EXTCHE ( NCHME2, NCHMEN, SENSOP, NMAILE, NUMMAI, NCMP,
+      SUBROUTINE EXTCHE ( NCHME2,NMAILE, NUMMAI, NCMP,
      &                    NBM, NBC, INDIC, NSSCHE,
      &                    MCF,IOCC, NBNAC, NNOEUD )
       IMPLICIT   NONE
@@ -6,11 +6,10 @@
       INTEGER       NBM, NBC, NUMMAI(*), IOCC, NBNAC, NNOEUD(*)
       CHARACTER*6   INDIC
       CHARACTER*8   NMAILE(*), NCMP(*)
-      CHARACTER*18  SENSOP
-      CHARACTER*19  NCHMEL, NCHMEN, NSSCHE, NCHME2
+      CHARACTER*19  NCHMEL,  NSSCHE, NCHME2
       CHARACTER*(*) MCF
 C*********************************************************************
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,10 +38,6 @@ C   ---------
 
 C     NCHME2 (IN) : NOM DE LA SD DE TYPE CHAM_ELEM SUR LAQUELLE
 C                   ON EXTRAIT
-C
-C     NCHMNE (IN) : NOM DE LA SD NOMINALE DANS LE CAS DE SENSIBILITE
-C
-C     SENSOP (IN) : OPTION POUR LA SENSIBILITE
 C
 C     NMAILE (IN) : TABLEAU DES NOMS DE MAILLE SUR LESQUELS
 C                   ON EXTRAIT
@@ -247,7 +242,7 @@ C   --------------------------------------------------------
         CALL JEVEUO(NVALE,'L',AVALE)
       ELSE
         NOMVEC = 'EXTCHE.VECTEUR'
-        CALL RVRECU( MCF, IOCC, NCHMEL, NCHMEN, SENSOP, NOMVEC )
+        CALL RVRECU(MCF, IOCC, NCHMEL, NOMVEC )
         CALL JEVEUO(NOMVEC,'L',AVALE)
       END IF
       CALL JEVEUO(NDESC,'L',JCELD)

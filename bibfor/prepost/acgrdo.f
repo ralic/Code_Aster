@@ -1,4 +1,4 @@
-      SUBROUTINE ACGRDO(JVECTN, JVECTU, JVECTV, NBORDR, KWORK,
+      SUBROUTINE ACGRDO(JVECTN, JVECTU, JVECTV, NBORDR,ORDINI, KWORK,
      &                  SOMPGW, JRWORK, TSPAQ, IPG, JVECPG,JDTAUM,
      &                  JRESUN,NOMMET,NOMMAT,NOMCRI,VALA,COEFPA,
      &            NOMFOR,GRDVIE,FORVIE,POST,VALPAR, VRESU)
@@ -12,7 +12,7 @@
       REAL*8     VRESU(24),VALPAR(22),VALA,COEFPA
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 26/06/2012   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,6 +46,7 @@ C                     VECTEURS u DU PLAN DE CISAILLEMENT.
 C     JVECTV  : IN  : ADRESSE DU VECTEUR CONTENANT LES COMPOSANTES DES
 C                     VECTEURS v DU PLAN DE CISAILLEMENT.
 C     NBORDR  : IN  : NOMBRE DE NUMEROS D'ORDRE.
+C     ORDINI     IN    I  : ORDRE INITIAL POUR LE CHARGEMENT CYCLIQUE
 C     KWORK   : IN  : KWORK = 0 ON TRAITE LA 1ERE MAILLE DU PAQUET DE
 C                               MAILLES ;
 C                     KWORK = 1 ON TRAITE LA IEME (I>1) MAILLE DU PAQUET
@@ -75,7 +76,6 @@ C    COEFPA     IN    COEFFICIENT DE PASSAGE CISAILLEMENT - UNIAXIAL.
 C    VRESU      OUT   TABLEAU DES RESULTATS (GRANDEURS ET DOMMAGE).
 C                     POUR L'INSTANT, LA DIMENSION DE VRESU EST 24
 C ---------------------------------------------------------------------
-C ------------------------------------------------------------------
 C23456
 
       REAL*8     RESUPC(24), GRDEQ(2), DTAUM(2), NXM(2), NYM(2), COEPRE
@@ -88,18 +88,18 @@ C23456
       REAL*8     R8MAEM, PHYMIN, C1, C2, RBID(6), VEPSPE , LCIV2E
       REAL*8     NM1X, NM1Y, NM1Z, BR(6),VECPRO(3,3),VALPRO(3)
       REAL*8     EPRMAX, EPRMIN, SIGNM1, TOL, TOLDYN, AR(6)
-      REAL*8     FXM, FYM, FZM, SINM1M, EPSPA(NBORDR+1), SOMDEF
+      REAL*8     FXM, FYM, FZM, SINM1M, SOMDEF
       REAL*8     DEVSIG(6), DVEPSE(6), DENDIS, DSIGL(6), RAYSPH
       REAL*8     DEPSL(6), SOMDEN,DENDIE, ETREMA, ETREMI
       REAL*8     SIGMAX, EXM, EYM, EZM,EPSNM1,EPNM1M, SIGMIN
       REAL*8     STREMA, STREMI, VEPS(6), EQEPS,VEPST , EPSPAC
       INTEGER    NPERM,ITYPE,IORDRE, NVP, NITJAC, ORDINI, ORDFIN
       INTEGER    I,J,K,L,IBID,JPROF, NPARMA, NP,ICODRE,ADR,IRET,IPAR
-      INTEGER    DECAL, PARACT(30), ADRL, NBCYAD, IARG, NBF, NBTOT
+      INTEGER    DECAL, PARACT(30), ADRL, IARG, NBF, NBTOT
       CHARACTER*24 CHNOM, CBID
       CHARACTER*16 PHENOM, TYPCHA
       CHARACTER*8  NOMPF(22), NOMPAR(22), NOMGRD
-      LOGICAL      ENDUR, PLCICR, LBID, CYFERM
+      LOGICAL      ENDUR, PLCICR, LBID
 C-----------------------------------------------------------------------
 C       DATA  LSIG/ 'SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ' /
 C C
@@ -126,7 +126,10 @@ C RECUPERER LA LISTE DE GRANDEURS ACTIVES
 
         TYPCHA = 'PERIODIQUE'
 
-        CALL ANACRI( NOMCRI,NOMFOR,TYPCHA,'NON', PARACT, LBID)
+C  INITIALISER
+
+        CALL ANACRI( NOMCRI,NOMFOR,TYPCHA,'NON', PARACT, 
+     &   LBID, LBID, LBID, LBID, LBID)
 
 C ------------------------------------------------------------------
 C---  CALCULER DES GRANDEURS ACTIVES
@@ -178,37 +181,60 @@ C FIN D'INITILISATION
 C
 C ---------------------------------------------------------------
 C RECUPER LES CONTRAINTES ET DEFORMATION
-      CALL RCVALE(NOMMAT,'ELAS',0,'        ',R8B,1,'E       ',
-     &            VALE,ICODRE,0)
-      IF (ICODRE .EQ. 1) THEN
-         CALL U2MESS('F','PREPOST_11')
-      ENDIF
-      CALL RCVALE(NOMMAT,'ELAS',0,'        ',R8B,1,'NU      ',
-     &            VALNU,ICODRE,0)
-      IF (ICODRE .EQ. 1) THEN
-         CALL U2MESS('F','PREPOST_12')
-      ENDIF
-      C1 = (1+VALNU)/VALE
-      C2 = VALNU/VALE
+C       CALL RCVALE(NOMMAT,'ELAS',0,'        ',R8B,1,'E       ',
+C      &            VALE,ICODRE,0)
+C       IF (ICODRE .EQ. 1) THEN
+C          CALL U2MESS('F','PREPOST_11')
+C       ENDIF
+C       CALL RCVALE(NOMMAT,'ELAS',0,'        ',R8B,1,'NU      ',
+C      &            VALNU,ICODRE,0)
+C       IF (ICODRE .EQ. 1) THEN
+C          CALL U2MESS('F','PREPOST_12')
+C       ENDIF
+C       C1 = (1+VALNU)/VALE
+C       C2 = VALNU/VALE
 
+C ---------------------------------------------------------------
+
+C POUR LE POST-FATIGUE, ON CONSIDERE QUE L'HISTOIRE EST 
+C POUR UN CYCLE ENTIER - COMPLET
+
+C C      IF (POST) THEN
+C       ORDINI = 1
+C       ORDFIN = NBORDR
+C C      ENDIF
+C       IF ((PARACT(11) .EQ. 1) .OR. (PARACT(10) .EQ. 1) ) THEN
+C C ANALYSER LES CHARGEMENTS APLIQUES
+C 
+C          CALL ACANCY(NBORDR, KWORK, SOMPGW, JRWORK, TSPAQ, IPG, C1,
+C      &                C2, ORINIE, ORDFIE, NBCYAD,CYFERM, EPSPA)
+C          ORDINI = ORINIE
+C          ORDFIN = ORDFIE
+C 
+C       ENDIF
+
+C
 C ---------------------------------------------------------------
 C ANALYSER LES CHARGEMENTS APLIQUES
 
-      CALL ACANCY(NBORDR, KWORK, SOMPGW, JRWORK, TSPAQ, IPG, C1,
-     &                C2, ORDINI, ORDFIN, NBCYAD,CYFERM, EPSPA)
+C        CALL ACANCY(NBORDR, KWORK, SOMPGW, JRWORK, TSPAQ, IPG, C1,
+C      &                C2, ORDINI, ORDFIN, NBCYAD,CYFERM, EPSPA)
 C ---------------------------------------------------------------
 C CALCULER LES GRANDEURS
 
 C POUR LE POST-FATIGUE, ON CONSIDERE QUE L'HISTOIRE EST 
 C POUR UN CYCLE ENTIER - COMPLET
+C 
+C       IF (POST) THEN
+C          ORDINI = 1
+C       ENDIF
 
-      IF (POST) THEN
-         ORDINI = 1
-         ORDFIN = NBORDR
-      ENDIF
-C      
-      DO 10 J= ORDINI, ORDFIN
-         DECAL = 12
+C ---------------------------------------------------------------
+C CALCULER LES GRANDEURS
+      ORDFIN = NBORDR
+      
+      DO 10 J= ORDINI, ORDFIN 
+         DECAL = 18
 C         ADR = (J-1)*TSPAQ+KWORK*SOMPGW*6+(IPG-1)*6
 
          ADR = (J-1)*TSPAQ+KWORK*SOMPGW*DECAL+(IPG-1)*DECAL
@@ -248,17 +274,17 @@ C    CALCULER PRESSION HYDROSTATIQUE MAXIMALE = Max_t(1/3 Tr[SIG])
 C ---------------------------------------------------------------
 C -- CALCULER LA DEMI-AMPLITUDE DE LA DEFORMATION PLASIQUE EQVA
 C POUR LE CRIETRE MANSON_COFF
-
+         
          IF (PARACT(7) .EQ. 1)  THEN
 
             DO 11 L = J, ORDFIN
                ADRL = (L-1)*TSPAQ+KWORK*SOMPGW*DECAL+(IPG-1)*DECAL
 
                CALL TENEPS(JRWORK,ADRL,C1,C2,
-     &                         RBID,EPSL, EPSEL, EPSPL)
+     &                         RBID,RBID, RBID, EPSPL)
 
-               DO 12 I = 1, 6
-                  VEPSP(I)= EPSP(I) - EPSPL(I)
+               DO 12 K = 1, 6
+                  VEPSP(K)= EPSP(K) - EPSPL(K)
 12             CONTINUE
                CALL FGEQUI(VEPSP,'EPSI',3,EQUI)
                EQEPSP =  EQUI(1)
@@ -330,7 +356,39 @@ C CALCNORM = vect_F.vect_n
             ENDIF
          ENDIF
 
+C ---------------------------------------------------------------
+C CALCULER DENSITE D'ENERGIE DISTORSION ELASTIQUE
 C
+         IF (PARACT(11) .EQ. 1)  THEN
+
+            CALL LCDEVI(SIG,DEVSIG)
+            CALL LCDEVI(EPSE, DVEPSE)
+
+
+            IF (J .LT. ORDFIN) THEN
+               ADRL = (J+1-1)*TSPAQ+KWORK*SOMPGW*DECAL+(IPG-1)*DECAL
+
+               CALL TENEPS(JRWORK,ADRL,C1,C2,
+     &                         SIGL,EPSL, EPSEL, EPSPL)
+     
+               CALL LCDEVI(SIGL, DSIGL)
+               CALL LCDEVI(EPSEL, DEPSL)
+
+               SOMDEN = 0.D0
+               DO 32 I = 1, 6
+
+                  SOMDEN= SOMDEN + 0.5D0*(DEVSIG(I)+DSIGL(I))
+     &                             *(DEPSL(I)- DVEPSE(I))
+32             CONTINUE
+
+              IF (SOMDEN .GT. 0) THEN
+                  DENDIE = DENDIE + SOMDEN
+              ENDIF
+
+            ENDIF
+
+         ENDIF
+
 C ---------------------------------------------------------------
 C CALCULER DENSITE D'ENERGIE DISSIPISE PLASTIQUE
 C
@@ -346,40 +404,10 @@ C
                DO 33 I = 1, 6
                   SOMDEN= SOMDEN + 0.5D0*(SIG(I)+SIGL(I))
      &                             *(EPSPL(I)- EPSP(I))
+
 33             CONTINUE
 
                DENDIS = DENDIS + SOMDEN
-
-            ENDIF
-
-         ENDIF
-C
-C ---------------------------------------------------------------
-C CALCULER DENSITE D'ENERGIE DISTORSION ELASTIQUE
-C
-         IF (PARACT(11) .EQ. 1)  THEN
-
-            CALL LCDEVI(SIG,DEVSIG)
-            CALL LCDEVI(EPSE, DVEPSE)
-
-
-            IF (J .LT. ORDFIN) THEN
-               ADRL = (J+1-1)*TSPAQ+KWORK*SOMPGW*DECAL+(IPG-1)*DECAL
-
-               CALL TENEPS(JRWORK,ADRL,C1,C2,
-     &                         SIGL,EPSL, EPSEL, EPSPL)
-               CALL LCDEVI(SIGL, DSIGL)
-               CALL LCDEVI(EPSEL, DEPSL)
-
-               SOMDEN = 0.D0
-               DO 32 I = 1, 6
-                  SOMDEN= SOMDEN + 0.5D0*(DEVSIG(I)+DSIGL(I))
-     &                             *(DEPSL(I)- DVEPSE(I))
-32             CONTINUE
-
-              IF (SOMDEN .GT. 0) THEN
-                  DENDIE = DENDIE + SOMDEN
-              ENDIF
 
             ENDIF
 
@@ -524,7 +552,7 @@ C CALCULER LE RAYON DE SPHERE CIRCONCRITE
 16       CONTINUE 
 
          DO 15 J= ORDINI, ORDFIN
-            DECAL = 12
+            DECAL = 18
 
             ADR = (J-1)*TSPAQ+KWORK*SOMPGW*DECAL+(IPG-1)*DECAL
 
@@ -753,9 +781,9 @@ C        VECTRMAL ASSOCIE.
          VRESU(9+(K-1)*11)  = GRDEQ(K)
          VRESU(10+(K-1)*11) = NRUPT(K)
          VRESU(11+(K-1)*11) = DOM(K)
+101   CONTINUE
          VRESU(23) = 0.0D0
          VRESU(24) = 0.0D0
-101   CONTINUE
-C
+         
 C      CALL JEDEMA()
       END

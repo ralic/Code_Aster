@@ -1,5 +1,6 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE EMBOUTISSAGE D'UNE TOLE PAR UN POINCON HEMISPHERIQUE
+# ssnv501c.para = tps_job 350 mem_job 300Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -280,9 +281,10 @@ CH1=AFFE_CHAR_MECA(MODELE=MODEL,
 
 CH2  = DEFI_CONTACT(MODELE         = MODEL,
                     FORMULATION    = 'CONTINUE',
+                    ALGO_RESO_GEOM = 'POINT_FIXE',
                     REAC_GEOM      = 'CONTROLE',
                     NB_ITER_GEOM   = 3,
-                    ALGO_RESO_CONT = 'NEWTON',
+                    ALGO_RESO_CONT = 'POINT_FIXE',
                     ZONE =(
                            _F(
                              GROUP_MA_ESCL='LFC2S',

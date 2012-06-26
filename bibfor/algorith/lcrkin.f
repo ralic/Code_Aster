@@ -1,8 +1,8 @@
-        SUBROUTINE LCRKIN(NDIM,OPT,COMP,MATERF,NBCOMM,NMAT,MOD,NVI,
-     &                    SIGD,SIGF,VIND,VINF,NBPHAS,IRET)
+        SUBROUTINE LCRKIN(NDIM,OPT,COMP,MATERF,NBCOMM,CPMONO,NMAT,MOD,
+     &                    NVI,SIGD,SIGF,VIND,VINF,NBPHAS,IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 25/06/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -38,13 +38,16 @@ C          SIGF   :  CONTRAINTES A T+DT
 C          VINF   :  VARIABLES INTERNES A T+DT
 C     OUT  IRET   :  CODE RETOUR
 C     ----------------------------------------------------------------
-      INTEGER NDT,NVI,NMAT,NDI,NS,NBCOMM(NMAT,3),ICP,NDIM,IRET
-      INTEGER NBPHAS
+      INTEGER NDT,NVI,NMAT,NDI,NS,NBCOMM(NMAT,3),ICP,NDIM,IRET,IFL
+      INTEGER INDFA,NUECOU
+      INTEGER NBPHAS,IFA,INDCP,INDPHA,IPHAS,NBSYS,NSFV,NBFSYS
       REAL*8  MATERF(NMAT,2),VIND(*),VINF(*),ID(3,3),SIGD(*),SIGF(*)
       REAL*8  DSDE(6,6),MAXDOM,ENDOC,FP(3,3)
-      CHARACTER*16 LOI,COMP(*),OPT
+      CHARACTER*16 LOI,COMP(*),OPT,CPMONO(5*NMAT+1),NECOUL
       CHARACTER*8  MOD
       COMMON/TDIM/ NDT,NDI
+      INTEGER IRR,DECIRR,NBSYST,DECAL
+      COMMON/POLYCR/IRR,DECIRR,NBSYST,DECAL
       PARAMETER (MAXDOM=0.99D0)
       DATA ID/1.D0,0.D0,0.D0, 0.D0,1.D0,0.D0, 0.D0,0.D0,1.D0/
 C     ----------------------------------------------------------------
@@ -103,10 +106,11 @@ C        POUR EVITER LES 1/0 DANS RKDVEC
          ENDIF
       ENDIF
 
-C      POUR POLYCRISTAL
-C     INITIALISATION DE NBPHAS 
-      NBPHAS=NBCOMM(1,1)
-
+C     COMPTAGE       
+      IRR=0
+      DECIRR=0
+      NBSYST=0
+      DECAL=0
       IF (LOI(1:8).EQ.'MONOCRIS')  THEN
          IF (COMP(3)(1:4).EQ.'SIMO') THEN
             IF (OPT.NE.'RAPH_MECA') THEN
@@ -117,8 +121,55 @@ C     INITIALISATION DE NBPHAS
             CALL DCOPY(9,FP,1,VINF(NVI-3-18+1),1)
             NVI=NVI-9
          ENDIF
-         NVI = NVI-3
+         IF ( (   MATERF(NBCOMM(1,1),2).EQ.4)
+     &      .OR.(MATERF(NBCOMM(1,1),2).EQ.5)
+     &      .OR.(MATERF(NBCOMM(1,1),2).EQ.6)
+     &      .OR.(MATERF(NBCOMM(1,1),2).EQ.7)) THEN
+C           KOCKS-RAUCH ET DD_CFC : VARIABLE PRINCIPALE=DENSITE DISLOC
+C           UNE SEULE FAMILLE
+            CALL ASSERT(NBCOMM(NMAT,2).EQ.1)
+            NECOUL=CPMONO(3)
+            IF (NECOUL.EQ.'MONO_DD_CC_IRRA') THEN
+               IRR=1
+               DECIRR=6+3*12
+            ENDIF
+         ENDIF
+         IF (IRR.EQ.1) THEN            
+            NVI = NVI-3-12
+         ELSE
+            NVI = NVI-3
+         ENDIF
       ENDIF
+      
+C      POUR POLYCRISTAL
+C     INITIALISATION DE NBPHAS 
+      NBPHAS=NBCOMM(1,1)
+      IF (LOI(1:8).EQ.'POLYCRIS')  THEN
+C        RECUPERATION DU NOMBRE DE PHASES
+         NBPHAS=NBCOMM(1,1)
+         NSFV=7+6*NBPHAS
+         DO 33 IPHAS=1,NBPHAS
+            INDPHA=NBCOMM(1+IPHAS,1)
+            NBFSYS=NBCOMM(INDPHA,1)
+            DO 32 IFA=1,NBFSYS
+C              indice de la famille IFA
+               INDFA=INDPHA+IFA
+               IFL=NBCOMM(INDFA,1)
+               NUECOU=NINT(MATERF(IFL,2))
+C              IRRADIATION   
+               IF (NUECOU.EQ.7) THEN
+                  IF (NINT(MATERF(IFL+21,2)).EQ.1) THEN
+                     IRR=1
+                  ENDIF
+               ENDIF
+               NBSYS=12
+               NSFV=NSFV+NBSYS*3
+  32        CONTINUE
+  33     CONTINUE
+         DECIRR=NSFV
+      ENDIF
+      
+C  PENSER A DIMINUER NVI      
 C
 
  9999 CONTINUE

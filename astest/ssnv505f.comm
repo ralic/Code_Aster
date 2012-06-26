@@ -1,4 +1,4 @@
-# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT DE DEUX POUTRES EN PETITES DEFORMATIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -155,7 +155,7 @@ ULAG=STAT_NON_LINE(MODELE=MODE,
                 INCREMENT=_F(LIST_INST=L_INST,
                              INST_FIN=1.,),
                 NEWTON=_F(REAC_ITER=1,),
-                CONVERGENCE=_F(ITER_GLOB_MAXI=20,),
+                CONVERGENCE=_F(ITER_GLOB_MAXI=40,),
                 SOLVEUR=_F(SYME='OUI',),
                 ARCHIVAGE=_F(LIST_INST=L_ARCH),
                 INFO=1,);
@@ -191,7 +191,9 @@ T_DEP_LA=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
 
 CHCON= DEFI_CONTACT(MODELE         = MODE,
                     FORMULATION    = 'CONTINUE',
-                    REAC_GEOM      = 'CONTROLE',
+                    ALGO_RESO_CONT = 'POINT_FIXE',
+                    ALGO_RESO_GEOM = 'POINT_FIXE',
+REAC_GEOM      = 'CONTROLE',
                     NB_ITER_GEOM   = 4,
                     ZONE =(
                            _F(
@@ -218,7 +220,7 @@ UCON=STAT_NON_LINE(MODELE=MODE,
                 INCREMENT=_F(LIST_INST=L_INST,
                              INST_FIN=1.,),
                 NEWTON=_F(REAC_ITER=1,),
-                CONVERGENCE=_F(ITER_GLOB_MAXI=20,),
+                CONVERGENCE=_F(ITER_GLOB_MAXI=40,),
                 ARCHIVAGE=_F(LIST_INST=L_ARCH),
                 INFO=1,);
 

@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,25 +24,18 @@ C     ------------------------------------------------------------------
       INCLUDE 'jeveux.h'
       INTEGER NBTROU,NUMER1,L,N1,IRET,IVARI
       INTEGER NM,NGM,NPOINT,NP,NN,NPR,NGN,IBID,IE
-      INTEGER NRES,IFM,NIV,NUSP
+      INTEGER NRES,IFM,NIV,NUSP,IARG
       REAL*8 EPSI
       CHARACTER*8 K8B,CRIT,MAILLE,NOMA,INTRES
       CHARACTER*8 NOEUD,CMP,NOGMA,NOGNO,NOMGD
       CHARACTER*16 NOMCMD,TYPCON,NOMCHA,NPRESU
       CHARACTER*19 NOMFON,CHAM19,RESU
-C SENSIBILITE
-      CHARACTER*8  NOPASE
-      CHARACTER*19 RESUT,LAFON1
-      CHARACTER*24 NORECG
-      CHARACTER*24 VALK(2)
-      INTEGER NBPASS,ADRECG,NRPASS
-      INTEGER      IARG
-C SENSIBILITE
+      CHARACTER*24 VALK(3)
+
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 C
       CALL GETRES(NOMFON,TYPCON,NOMCMD)
-      NORECG = '&&'//'RFRESU'//'_RESULTA_GD     '
 
 C --- RECUPERATION DU NIVEAU D'IMPRESSION
       CALL INFMAJ
@@ -71,86 +64,59 @@ C     -----------------------------------------------------------------
 C                       --- CAS D'UN RESULTAT ---
 C     -----------------------------------------------------------------
 C
-C        --- NOMBRE DE PASSAGES POUR LA SENSIBILITE ---
-C
-      CALL PSRESE ( ' ', 0, 1, NOMFON, 1,
-     &              NBPASS, NORECG, IRET )
-C
-      IF ( IRET.EQ.0 ) THEN
-        CALL JEVEUO ( NORECG, 'L', ADRECG )
-      ENDIF
 
-C============ DEBUT DE LA BOUCLE SUR LE NOMBRE DE PASSAGES ============
-      CALL GETVID(' ','RESULTAT ',0,IARG,1,RESUT,NRES)
-      DO 60 , NRPASS = 1 , NBPASS
-        LAFON1 = '                   '
-        LAFON1(1:8) = ZK24(ADRECG+2*NRPASS-2)(1:8)
-        NOPASE = ZK24(ADRECG+2*NRPASS-1)(1:8)
-        IF (NRES.NE.0) THEN
-          IF (NOPASE.EQ.' ') THEN
-             RESU = RESUT
-           ELSE
-             CALL PSGENC ( RESUT, NOPASE, RESU, IRET )
-             IF ( IRET.NE.0 ) THEN
-               VALK(1) = RESUT
-               VALK(2) = NOPASE
-               CALL U2MESK('F','SENSIBILITE_3', 2 ,VALK)
-             ENDIF
-          ENDIF
 
-          CALL GETVTX(' ','NOM_PARA_RESU',0,IARG,1,NPRESU,NPR)
-          IF (NPR.NE.0) THEN
-            IF (INTRES(1:3).NE.'NON') THEN
-              CALL U2MESS('F','UTILITAI4_21')
-            END IF
-            CALL FOCRR3(LAFON1,RESU,NPRESU,'G',IRET)
-            GO TO 10
-          END IF
+      CALL GETVID(' ','RESULTAT ',0,IARG,1,RESU,NRES)
 
-          CALL GETVTX(' ','NOM_CHAM',0,IARG,1,NOMCHA,L)
-          CALL RSUTNC(RESU,NOMCHA,1,CHAM19,NUMER1,NBTROU)
-          IF (NBTROU.EQ.0) CALL U2MESK('F','UTILITAI4_22',1,NOMCHA)
-          CALL DISMOI('F','NOM_MAILLA',CHAM19,'CHAMP',IBID,NOMA,IE)
-          CALL DISMOI('F','NOM_GD',CHAM19,'CHAMP',IBID,NOMGD,IE)
-          IF (NGN.NE.0) THEN
-            CALL UTNONO(' ',NOMA,'NOEUD',NOGNO,NOEUD,IRET)
-            IF (IRET.EQ.10) THEN
-              CALL U2MESK('F','ELEMENTS_67',1,NOGNO)
-            ELSE IF (IRET.EQ.1) THEN
-              VALK(1) = NOEUD
-              CALL U2MESG('A', 'SOUSTRUC_87',1,VALK,0,0,0,0.D0)
-            END IF
-          END IF
-          IF (NGM.NE.0) THEN
-            CALL UTNONO(' ',NOMA,'MAILLE',NOGMA,MAILLE,IRET)
-            IF (IRET.EQ.10) THEN
-              CALL U2MESK('F','ELEMENTS_73',1,NOGMA)
-            ELSE IF (IRET.EQ.1) THEN
-              VALK(1) = MAILLE
-              CALL U2MESG('A', 'UTILITAI6_72',1,VALK,0,0,0,0.D0)
-            END IF
-          END IF
-          CALL UTCMP1(NOMGD,' ',1,CMP,IVARI)
-          IF (INTRES(1:3).EQ.'NON') THEN
-            CALL FOCRRS(LAFON1,RESU,'G',NOMCHA,MAILLE,NOEUD,CMP,NPOINT,
-     &                  NUSP,IVARI,IRET)
-          ELSE
-            CALL FOCRR2(LAFON1,RESU,'G',NOMCHA,MAILLE,NOEUD,CMP,
-     &                  NPOINT,NUSP,IVARI,IRET)
-          END IF
+      IF (NRES.NE.0) THEN
+        CALL GETVTX(' ','NOM_PARA_RESU',0,IARG,1,NPRESU,NPR)
+        IF (NPR.NE.0) THEN
+          IF (INTRES(1:3).NE.'NON') CALL U2MESS('F','UTILITAI4_21')
+          CALL FOCRR3(NOMFON,RESU,NPRESU,'G',IRET)
           GO TO 10
         END IF
-  10    CONTINUE
-        CALL FOATTR(' ',1,LAFON1)
+
+        CALL GETVTX(' ','NOM_CHAM',0,IARG,1,NOMCHA,L)
+        CALL RSUTNC(RESU,NOMCHA,1,CHAM19,NUMER1,NBTROU)
+        IF (NBTROU.EQ.0) CALL U2MESK('F','UTILITAI4_22',1,NOMCHA)
+        CALL DISMOI('F','NOM_MAILLA',CHAM19,'CHAMP',IBID,NOMA,IE)
+        CALL DISMOI('F','NOM_GD',CHAM19,'CHAMP',IBID,NOMGD,IE)
+        IF (NGN.NE.0) THEN
+          CALL UTNONO(' ',NOMA,'NOEUD',NOGNO,NOEUD,IRET)
+          IF (IRET.EQ.10) THEN
+            CALL U2MESK('F','ELEMENTS_67',1,NOGNO)
+          ELSE IF (IRET.EQ.1) THEN
+            VALK(1) = NOEUD
+            CALL U2MESK('A', 'SOUSTRUC_87',1,VALK)
+          END IF
+        END IF
+        IF (NGM.NE.0) THEN
+          CALL UTNONO(' ',NOMA,'MAILLE',NOGMA,MAILLE,IRET)
+          IF (IRET.EQ.10) THEN
+            CALL U2MESK('F','ELEMENTS_73',1,NOGMA)
+          ELSE IF (IRET.EQ.1) THEN
+            VALK(1) = MAILLE
+            CALL U2MESK('A', 'UTILITAI6_72',1,VALK)
+          END IF
+        END IF
+        CALL UTCMP1(NOMGD,' ',1,CMP,IVARI)
+        IF (INTRES(1:3).EQ.'NON') THEN
+          CALL FOCRRS(NOMFON,RESU,'G',NOMCHA,MAILLE,NOEUD,CMP,NPOINT,
+     &                 NUSP,IVARI,IRET)
+        ELSE
+          CALL FOCRR2(NOMFON,RESU,'G',NOMCHA,MAILLE,NOEUD,CMP,
+     &                 NPOINT,NUSP,IVARI,IRET)
+        END IF
+        GOTO 10
+      END IF
+  10  CONTINUE
+      CALL FOATTR(' ',1,NOMFON)
 C     --- VERIFICATION QU'ON A BIEN CREER UNE FONCTION ---
 C         ET REMISE DES ABSCISSES EN ORDRE CROISSANT
-        CALL ORDONN(LAFON1,0)
+      CALL ORDONN(NOMFON,0)
 C
-  60  CONTINUE
-      CALL JEDETR ( NORECG )
-
       CALL TITRE
-      IF (NIV.GT.1) CALL FOIMPR(LAFON1,NIV,IFM,0,K8B)
+      IF (NIV.GT.1) CALL FOIMPR(NOMFON,NIV,IFM,0,K8B)
 
       CALL JEDEMA()
       END

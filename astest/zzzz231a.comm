@@ -1,4 +1,4 @@
-# MODIF  DATE 16/04/2012   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE VALIDATION DU CONTACT EN GEOMETRIE INITIALE AVEC ETAT INITIAL
 # zzzz231a.para = tps_job 160 mem_job 256Mo mem_aster 50 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -89,6 +89,8 @@ CONT2 = DEFI_CONTACT(MODELE      = MO,
 
 CONT3 = DEFI_CONTACT(MODELE      = MO,
                    FORMULATION  = 'CONTINUE',
+                   ALGO_RESO_CONT = 'NEWTON',
+                   ALGO_RESO_GEOM = 'NEWTON',
                    ZONE=(
                         _F(
                             RESOLUTION   = 'NON',

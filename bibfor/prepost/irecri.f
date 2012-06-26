@@ -1,15 +1,16 @@
-      SUBROUTINE IRECRI(NOMCON,NOSIMP,NOPASE,FORM,IFI,TITRE,
-     &     LGMSH,NBCHAM,CHAM,PARTIE,NBPARA,PARA,NBORDR,
-     &     ORDR,LRESU,MOTFAC,IOCC,MODELE,CECR,TYCHA,LCOR,NBNOT,
-     &     NUMNOE,NBMAT,NUMMAI,NBCMP,NOMCMP,
-     &     LSUP,BORSUP,LINF,BORINF,LMAX,LMIN,FORMR,
-     &     NIVE,VERSIO )
+      SUBROUTINE IRECRI(NOMCON,FORM,IFI   ,TITRE ,LGMSH,
+     &                  NBCHAM,CHAM,PARTIE,NBPARA,PARA,
+     &                  NBORDR,ORDR,LRESU,MOTFAC,IOCC,
+     &                  CECR,TYCHA,LCOR,NBNOT,NUMNOE,
+     &                  NBMAT,NUMMAI,NBCMP,NOMCMP,LSUP,
+     &                  BORSUP,LINF,BORINF,LMAX,LMIN,
+     &                  FORMR,NIVE,VERSIO )
       IMPLICIT REAL*8 (A-H,O-Z)
 C
       INCLUDE 'jeveux.h'
-      CHARACTER*(*)     NOMCON,NOSIMP,NOPASE
+      CHARACTER*(*)     NOMCON
       CHARACTER*(*)     FORM, TITRE, CHAM(*), PARA(*)
-      CHARACTER*(*)                       MOTFAC,     MODELE,CECR
+      CHARACTER*(*)     MOTFAC,CECR
       CHARACTER*(*)     NOMCMP(*), FORMR, PARTIE
       CHARACTER*8       TYCHA
       REAL*8            BORSUP,BORINF
@@ -19,7 +20,7 @@ C
       LOGICAL                                   LRESU,LCOR
       LOGICAL           LSUP,LINF,              LMAX,LMIN,LGMSH
 C-----------------------------------------------------------------------
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,8 +44,6 @@ C-----------------------------------------------------------------------
 C     ECRITURE D'UN CONCEPT SUR FICHIER RESULTAT
 C
 C IN  NOMCON : K8  : NOM DU CONCEPT A IMPRIMER
-C IN  NOSIMP : K8  : NOM SIMPLE ASSOCIE AU CONCEPT NOMCON SI SENSIBILITE
-C IN  NOPASE : K8  : NOM DU PARAMETRE SENSIBLE
 C IN  FORM   : K8  : FORMAT D'ECRITURE
 C IN  IFI    : IS  : UNITE LOGIQUE D'ECRITURE
 C IN  TITRE  : K80 : TITRE POUR ALI_BABA ET SUPERTAB
@@ -148,7 +147,7 @@ C     -------------------------
 C
       IF (FORM .EQ. 'GMSH') THEN
 
-         CALL IRGMSH ( NOMCON, NOSIMP, NOPASE,
+         CALL IRGMSH ( NOMCON,
      &                 PARTIE, IFI, NBCHAM, CHAM, LRESU,NBORDR,
      &                 ORDR, NBCMP, NOMCMP, NBMAT, NUMMAI,
      &                 VERSIO, LGMSH, TYCHA )

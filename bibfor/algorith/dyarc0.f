@@ -5,7 +5,7 @@
       CHARACTER*(*)       RESUZ, LISARC, LICHEX
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -118,7 +118,12 @@ C
 C
 C
       CALL GETFAC ( MOTCLE , NBOCC )
-      IF ( NBOCC .EQ. 0 ) GOTO 9999
+      IF ( NBOCC .EQ. 0 ) THEN
+        DO 90 K = 1 , NBORDR
+          ZI(JARCH+K-1)=1
+ 90     CONTINUE
+        GOTO 9999
+      ENDIF
 C
 C     --- LES NUMEROS D'ORDRE EN SORTIE ---
 C

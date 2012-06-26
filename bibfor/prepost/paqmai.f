@@ -1,7 +1,8 @@
       SUBROUTINE PAQMAI(NOMSD, NOMU, NOMMAI, NOMMET, NOMCRI,NOMFOR,
-     &                  GRDVIE, FORVIE,FORDEF, TYPCHA, PROAXE)
+     &                  GRDVIE, FORVIE,FORDEF, TYPCHA, PROAXE,
+     &                  INSTIC,INSCRI,PREC)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 26/06/2012   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,9 +23,10 @@ C RESPONSABLE F1BHHAJ J.ANGLES
 C TOLE  CRP_20
       IMPLICIT     NONE
       INCLUDE 'jeveux.h'
-      CHARACTER*8  NOMSD, NOMU, NOMMAI, GRDVIE
+      CHARACTER*8  NOMSD, NOMU, NOMMAI, GRDVIE,INSCRI
       CHARACTER*16 NOMMET, NOMCRI, TYPCHA, PROAXE, NOMFOR, FORVIE
       LOGICAL      FORDEF
+      REAL*8       INSTIC,PREC
 C ---------------------------------------------------------------------
 C BUT: DETERMINER LE PLUS PETIT CERCLE CIRCONSCRIT AUX POINTS
 C      REPRESANTANT LE VECTEUR DE CISAILLEMENT TAU DANS LE PLAN u, v.
@@ -41,27 +43,30 @@ C GRDVIE   IN    K16: NOM DE LA COURBE GRANDEUR EQUIVALENT _DUREE VIE
 C TYPCHA     IN    K16: TYPE DE CHARGEMENT (PERIODIQUE OU NON).
 C PROAXE     IN    K16: TYPE DE PROJECTION (UN OU DEUX AXES).
 C-----------------------------------------------------------------------
-C-----------------------------------------------------------------------
       INTEGER       IBID, IERD, LORDR, JORDR, NBORDR, NDIM, IRET, JCESD
       INTEGER       NBMA, NBPGT, NBPGMX, JNBPG, IMA, TDISP, JRWORK, TPAQ
       INTEGER       NBPAQ, NUMPAQ, NMAPAQ, NBCMP, BORMAX, NBPMAX, JNBPAQ
       INTEGER       NMAINI, NBMAP, TSPAQ, IORDR, LOR8EM, LOISEM, JAD
       INTEGER       JSIGV, JSIGD, JSIGL, IMAP, NBPG, IPG, ICMP, IRET1
-      INTEGER       JEPSV, JEPSD, JEPSL
+      INTEGER       JEPSV, JEPSD, JEPSL, PARACT(30),JEPPED, JEPPEL
+      INTEGER       JEPSPV, JEPSPD, JEPSPL, IRET2, JEPPEV, VALEP
       INTEGER       I, KWORK, SOMPGW, SOMPGS, SOMPGI, JMAIL, JGRMA
       INTEGER       N, NINIT, NBPGGM, NBMAGM, NMEMO,NNCP
-      INTEGER VALI(2)
+      INTEGER       VALI(2), DECAL, ORDINI, K, JINST, IORD
 C
-      REAL*8        R8B, VAL1
+      REAL*8        R8B, VAL1, R8PREM
 C
       COMPLEX*16    C16B
 C
+      CHARACTER*1   KBID
       CHARACTER*4   LSIG(6), LEPS(6)
       CHARACTER*8   K8B, MOTCLE(4), TYMOCL(4)
       CHARACTER*16  TYPRES, NOMOPT
       CHARACTER*19  LISMAI
       CHARACTER*19  CESR, LIGRE, CELBID, CHSIG, CHSIGS, CES1, CES2
-      CHARACTER*19  CHEPS, CES3, CES4
+      CHARACTER*19  CHEPS, CES3, CES4, CHEPPE
+      CHARACTER*19  CHEPSP, CES5, CES6, CES7, CES8      
+      LOGICAL       LBID, CRSIGM, CREPST, CREPSE,CREPSP, CREPPE
 C
 C-----------------------------------------------------------------------
 C234567                                                              012
@@ -110,12 +115,63 @@ C DES NUMEROS D'ORDRE
       CALL WKVECT('&&PAQMAI.NUME_ORDRE','V V I',NDIM,JORDR)
       CALL RSORAC( NOMSD, 'TOUT_ORDRE', IBID, R8B, K8B, C16B, R8B, K8B,
      &             ZI(JORDR), NDIM, NBORDR )
-
+     
       IF (ZI(JORDR) .EQ. 0) THEN
          CALL U2MESS('A','PREPOST4_27')
          NBORDR = NBORDR - 1
       ENDIF
 
+      ORDINI = 1
+      DO 420 K = 2, NBORDR
+         IORD = ZI(JORDR-1+K)
+         CALL RSADPA(NOMSD,'L',1,'INST',IORD,0,JINST,KBID)
+         IF (INSTIC .GT. R8PREM() ) THEN
+           IF (INSCRI .EQ.'ABSOLU') THEN
+            IF (ABS(ZR(JINST) - INSTIC) .LT. PREC ) THEN
+               ORDINI = K 
+               GOTO 410
+            ENDIF
+            ELSE  
+            IF (INSCRI .EQ.'RELATIF') THEN
+               IF (ABS(ZR(JINST)/INSTIC - 1.D0).LT. PREC ) THEN
+                  ORDINI = K 
+                  GOTO 410
+               ENDIF
+            ENDIF
+           ENDIF
+         ENDIF
+420   CONTINUE
+410   CONTINUE
+
+      IF  ((ORDINI .EQ. 1) .AND. 
+     &   ((INSCRI .EQ.'ABSOLU') .OR. (INSCRI .EQ.'RELATIF') ) ) THEN
+         CALL U2MESS('A','PREPOST4_48')
+      ENDIF
+
+C  INITIALISER
+      CRSIGM = .FALSE. 
+      CREPST = .FALSE. 
+      CREPSE = .FALSE. 
+      CREPSP = .FALSE.
+C---    ANALYSER LE CRITERE
+      CALL ANACRI( NOMCRI,NOMFOR,TYPCHA,'NON', PARACT,
+     &            LBID, CRSIGM, CREPST, CREPSE,CREPSP)
+
+             
+C IF CRITERE CONTIENT DEFORMATION ELASTIQUE
+       CREPPE = .FALSE. 
+       IF (CREPSE) THEN
+          IF ( .NOT. CREPST ) THEN
+               CALL U2MESS('A','PREPOST4_45')
+               CREPST = .TRUE.
+            ENDIF
+          IF  (( .NOT. CREPSP ) ) THEN
+             CALL U2MESS('A','PREPOST4_46')
+             CREPPE = .TRUE. 
+          ENDIF
+                         
+       ENDIF
+     
 C RECUPERATION DU NOMBRE DE MAILLES ET DU NOMBRE DE POINTS DE GAUSS
 C PAR MAILLE
 
@@ -202,7 +258,7 @@ C          NBCMP = 12
 C       ELSE
 C          NBCMP = 6
 C       ENDIF
-      NBCMP = 12
+      NBCMP = 18
 C     POUR CALCULER LE NB DE PAQUETS MAXI NOUS NE FAISONS PAS LA MEME
 C     CHOSE QUE DANS paqnoe.f PARCE QUE BORMAX EST NATURELLEMENT
 C     SURDIMENSIONNEE CAR NBMA TIENT COMPTE DES MAILLES NON VOLUMIQUES.
@@ -313,42 +369,96 @@ C        PERMET D'INITIALISER SOMPGS A CHAQUE PAQUET
                   NINIT = NMAINI
                ENDIF
                N = NINIT
+
+C IF CRITERE CONTIENT CONTRAINTE            
+               IF (CRSIGM) THEN
                
-               CALL RSEXCH( NOMSD, 'SIEF_ELGA', IORDR, CHSIG, IRET )
-               
-               CALL RSEXCH(NOMSD, 'EPSI_ELGA', IORDR, CHEPS,
+                  CALL RSEXCH( NOMSD, 'SIEF_ELGA', IORDR, CHSIG, IRET)
+                  IF (IRET .NE. 0) THEN
+                     CALL U2MESS('F','PREPOST4_32')
+                  ENDIF
+
+                  CES1 = '&&PAQMAI.SIG_S1'
+                  CES2 = '&&PAQMAI.SIG_ORDO'
+                  CALL CELCES(CHSIG, 'V', CES1)
+                  CALL CESRED(CES1, 0, IBID, 6, LSIG, 'V', CES2)
+                  CALL JEEXIN(CES2(1:19)//'.CESV', IRET)
+                  IF (IRET .EQ. 0) THEN
+                     CALL U2MESS('F','PREPOST4_29')
+                  ENDIF
+                     CALL JEVEUO(CES2(1:19)//'.CESD', 'L', JSIGD)
+                     CALL JEVEUO(CES2(1:19)//'.CESL', 'L', JSIGL)
+                     CALL JEVEUO(CES2(1:19)//'.CESV', 'L', JSIGV)
+               ENDIF
+
+C IF CRITERE CONTIENT DEFORMATION TOTALE  
+               IF (CREPST) THEN
+                  
+                  CALL RSEXCH(NOMSD, 'EPSI_ELGA', IORDR, CHEPS,
      &                        IRET1)
-     
-               IF (IRET .NE. 0) THEN
-                  CALL U2MESS('F','PREPOST4_32')
-               ELSEIF (IRET1 .NE. 0) THEN
-                  CALL U2MESS('F','PREPOST4_33')
+                  IF (IRET1 .NE. 0) THEN
+                     CALL U2MESS('F','PREPOST4_33')
+                  ENDIF
+                  
+                  CES3 = '&&PAQMAI.EPS_S3'
+                  CES4 = '&&PAQMAI.EPS_ORDO'
+                  CALL CELCES(CHEPS, 'V', CES3)
+                  CALL CESRED(CES3, 0, IBID, 6, LEPS, 'V', CES4)
+                  CALL JEEXIN(CES4(1:19)//'.CESV', IRET)
+                  IF (IRET .EQ. 0) THEN
+                     CALL U2MESS('F','PREPOST4_34')
+                  ENDIF
+                  CALL JEVEUO(CES4(1:19)//'.CESD', 'L', JEPSD)
+                  CALL JEVEUO(CES4(1:19)//'.CESL', 'L', JEPSL)
+                  CALL JEVEUO(CES4(1:19)//'.CESV', 'L', JEPSV)
                ENDIF
 
-               CES1 = '&&PAQMAI.SIG_S1'
-               CES2 = '&&PAQMAI.SIG_ORDO'
-               CALL CELCES(CHSIG, 'V', CES1)
-               CALL CESRED(CES1, 0, IBID, 6, LSIG, 'V', CES2)
-               CALL JEEXIN(CES2(1:19)//'.CESV', IRET)
-               IF (IRET .EQ. 0) THEN
-                  CALL U2MESS('F','PREPOST4_29')
+C IF CRITERE CONTIENT DEFORMATION PLASTIQUE  
+               IF (CREPSP) THEN
+                  
+                  CALL RSEXCH(NOMSD, 'EPSP_ELGA', IORDR, CHEPSP,
+     &                        IRET2)
+                  IF (IRET2 .NE. 0) THEN
+                     CALL U2MESS('F','PREPOST4_36')
+                  ENDIF
+                  
+                  CES5 = '&&PAQMAI.EPSP_S3'
+                  CES6 = '&&PAQMAI.EPSP_ORDO'
+                  CALL CELCES(CHEPSP, 'V', CES5)
+                  CALL CESRED(CES5, 0, IBID, 6, LEPS, 'V', CES6)
+                  CALL JEEXIN(CES5(1:19)//'.CESV', IRET)
+                  IF (IRET .EQ. 0) THEN
+                     CALL U2MESS('F','PREPOST4_37')
+                  ENDIF
+                  CALL JEVEUO(CES6(1:19)//'.CESD', 'L', JEPSPD)
+                  CALL JEVEUO(CES6(1:19)//'.CESL', 'L', JEPSPL)
+                  CALL JEVEUO(CES6(1:19)//'.CESV', 'L', JEPSPV)
                ENDIF
-               CALL JEVEUO(CES2(1:19)//'.CESD', 'L', JSIGD)
-               CALL JEVEUO(CES2(1:19)//'.CESL', 'L', JSIGL)
-               CALL JEVEUO(CES2(1:19)//'.CESV', 'L', JSIGV)
+               
+C IF CRITERE CONTIENT DEFORMATION ELASTIQUE
+               IF (CREPPE) THEN
 
-               CES3 = '&&PAQMAI.EPS_S3'
-               CES4 = '&&PAQMAI.EPS_ORDO'
-               CALL CELCES(CHEPS, 'V', CES3)
-               CALL CESRED(CES3, 0, IBID, 6, LEPS, 'V', CES4)
-               CALL JEEXIN(CES4(1:19)//'.CESV', IRET)
-               IF (IRET .EQ. 0) THEN
-                  CALL U2MESS('F','PREPOST4_34')
+                  CALL RSEXCH(NOMSD, 'EPSP_ELGA', IORDR, CHEPPE,
+     &                        VALEP)
+                  IF (VALEP .NE. 0) THEN
+                     CALL U2MESS('A','PREPOST4_46')
+                  ENDIF
+                  IF (VALEP .EQ. 0) THEN
+                     CES7 = '&&PAQMAI.EPSPE_S3'
+                     CES8 = '&&PAQMAI.EPSPE_ORDO'
+                     CALL CELCES(CHEPPE, 'V', CES7)
+                     CALL CESRED(CES7, 0, IBID, 6, LEPS, 'V', CES8)
+                     CALL JEEXIN(CES7(1:19)//'.CESV', IRET)
+                     IF (IRET .EQ. 0) THEN
+                        CALL U2MESS('F','PREPOST4_37')
+                     ENDIF
+                     CALL JEVEUO(CES8(1:19)//'.CESD', 'L', JEPPED)
+                     CALL JEVEUO(CES8(1:19)//'.CESL', 'L', JEPPEL)
+                     CALL JEVEUO(CES8(1:19)//'.CESV', 'L', JEPPEV)
+                  ENDIF
                ENDIF
-               CALL JEVEUO(CES4(1:19)//'.CESD', 'L', JEPSD)
-               CALL JEVEUO(CES4(1:19)//'.CESL', 'L', JEPSL)
-               CALL JEVEUO(CES4(1:19)//'.CESV', 'L', JEPSV)
-
+               
+             
                IF ( NUMPAQ .EQ. 1 ) THEN
                   SOMPGS = 0
                ELSEIF ( NUMPAQ .GT. 1 ) THEN
@@ -356,6 +466,7 @@ C        PERMET D'INITIALISER SOMPGS A CHAQUE PAQUET
                ENDIF
                SOMPGW = 0
                KWORK = 0
+               DECAL = 18
 
                DO 320 IMAP=NMAINI, NMAINI+(NBMAP-1)
                   IF ( (IMAP .GT. NMAINI) .AND. (NUMPAQ .EQ. 1) ) THEN
@@ -381,6 +492,8 @@ C        PERMET D'INITIALISER SOMPGS A CHAQUE PAQUET
                      DO 340 IPG=1, NBPG
 
 C BOUCLE SUR LES CONTRAINTES (6 COMPOSANTES)
+                      IF (CRSIGM) THEN
+         
                         DO 360 ICMP=1, 6
                            CALL CESEXI('C',JSIGD,JSIGL,IMAP,IPG,1,ICMP,
      &                                 JAD)
@@ -391,13 +504,15 @@ C BOUCLE SUR LES CONTRAINTES (6 COMPOSANTES)
                                 CALL U2MESS('F','PREPOST4_30')
                              ENDIF
                            ELSE
-                             ZR( JRWORK + (ICMP-1) + (IPG-1)*12 +
-     &                           KWORK*SOMPGW*12 + (IORDR-1)*TSPAQ ) =
+                             ZR( JRWORK + (ICMP-1) + (IPG-1)*DECAL +
+     &                         KWORK*SOMPGW*DECAL + (IORDR-1)*TSPAQ ) =
      &                       ZR( JSIGV -1 +JAD)
                            ENDIF
  360                    CONTINUE
+                      ENDIF
 
-C BOUCLE SUR LES DEFORMATIONS (6 COMPOSANTES)
+C BOUCLE SUR LES DEFORMATIONS TOTALES (6 COMPOSANTES)
+                      IF (CREPST) THEN
                         DO 380 ICMP=1, 6
                            CALL CESEXI('C',JEPSD,JEPSL,IMAP,IPG,1,ICMP,
      &                                 JAD)
@@ -408,12 +523,58 @@ C BOUCLE SUR LES DEFORMATIONS (6 COMPOSANTES)
                                 CALL U2MESS('F','PREPOST4_35')
                              ENDIF
                            ELSE
-                             ZR( JRWORK + (ICMP+6-1) + (IPG-1)*12 +
-     &                           KWORK*SOMPGW*12 + (IORDR-1)*TSPAQ ) =
+                             ZR( JRWORK + (ICMP+6-1) + (IPG-1)*DECAL +
+     &                         KWORK*SOMPGW*DECAL + (IORDR-1)*TSPAQ ) =
      &                       ZR( JEPSV -1+JAD)
                            ENDIF
  380                    CONTINUE
+                     ENDIF
 
+C BOUCLE SUR LES DEFORMATIONS PLASTIQUES (6 COMPOSANTES)
+                      IF (CREPSP) THEN
+                        DO 400 ICMP=1, 6
+                           CALL CESEXI('C',JEPSPD,JEPSPL,IMAP,IPG,1,
+     &                                 ICMP,JAD)
+                           IF (JAD .LE. 0) THEN
+                             IF ( ICMP .EQ. 5 ) THEN
+                                CALL U2MESI('F', 'FATIGUE1_3',1,ICMP)
+                             ELSE
+                                CALL U2MESS('F','PREPOST4_35')
+                             ENDIF
+                           ELSE
+                             ZR( JRWORK + (ICMP+6+6-1) + (IPG-1)*DECAL +
+     &                         KWORK*SOMPGW*DECAL + (IORDR-1)*TSPAQ ) =
+     &                       ZR( JEPSPV -1+JAD)
+                           ENDIF
+ 400                    CONTINUE
+                     ENDIF
+                     
+C BOUCLE SUR LES DEFORMATIONS PLASTIQUES (6 COMPOSANTES)
+                     IF (CREPSE) THEN
+                       IF (VALEP .EQ. 0) THEN
+                          DO 401 ICMP=1, 6
+                             CALL CESEXI('C',JEPPED,JEPPEL,IMAP,IPG,1,
+     &                                ICMP,JAD)
+                             IF (JAD .LE. 0) THEN
+                             IF ( ICMP .EQ. 5 ) THEN
+                               CALL U2MESI('F', 'FATIGUE1_3',1,ICMP)
+                             ELSE
+                               CALL U2MESS('F','PREPOST4_35')
+                             ENDIF
+                             ELSE
+                                ZR(JRWORK + (ICMP+6+6-1)+(IPG-1)*DECAL+
+     &                        KWORK*SOMPGW*DECAL + (IORDR-1)*TSPAQ ) =
+     &                          ZR( JEPPEV -1+JAD)
+                             ENDIF
+ 401                      CONTINUE
+                       ELSE 
+                          DO 405 ICMP=1, 6
+                             ZR( JRWORK + (ICMP+6+6-1) +(IPG-1)*DECAL +
+     &                 KWORK*SOMPGW*DECAL + (IORDR-1)*TSPAQ ) = 0.D0
+ 405                      CONTINUE                           
+                       ENDIF
+                     ENDIF
+                     
  340                 CONTINUE
                   ENDIF
                   IF ( (NOMMAI .NE. '        ') .AND.
@@ -436,8 +597,8 @@ C         ENDIF
          ENDIF
 
          IF (TYPCHA .EQ. 'PERIODIQUE') THEN
-            CALL DELTAU (JRWORK, JNBPG, NBPGT, NBORDR, NMAINI, NBMAP,
-     &                   NUMPAQ, TSPAQ, NOMMET, NOMCRI,NOMFOR,
+            CALL DELTAU (JRWORK, JNBPG, NBPGT, NBORDR,ORDINI, NMAINI, 
+     &                   NBMAP, NUMPAQ, TSPAQ, NOMMET, NOMCRI,NOMFOR,
      &                   GRDVIE, FORVIE, CESR)
 
          ELSEIF (TYPCHA .EQ. 'NON_PERIODIQUE') THEN
@@ -448,7 +609,6 @@ C         ENDIF
 
  200  CONTINUE
 
-      WRITE(6,*)' '
 
 C TRANSFORMATION D'UN CHAM_ELEM SIMPLE EN CHAM_ELEM
 
@@ -462,11 +622,25 @@ C MENAGE
       CALL DETRSD('CHAM_ELEM',CELBID)
       CALL DETRSD('CHAM_ELEM_S',CESR)
       CALL DETRSD('CHAM_ELEM_S',CHSIGS)
-      CALL DETRSD('CHAM_ELEM_S',CES1)
-      CALL DETRSD('CHAM_ELEM_S',CES2)
-      IF ( NOMCRI(1:16) .EQ. 'FATESOCI_MODI_AV' ) THEN
+
+      IF (CRSIGM) THEN
+         CALL DETRSD('CHAM_ELEM_S',CES1)
+         CALL DETRSD('CHAM_ELEM_S',CES2)
+      ENDIF
+      
+      IF (CREPST) THEN
          CALL DETRSD('CHAM_ELEM_S',CES3)
          CALL DETRSD('CHAM_ELEM_S',CES4)
+      ENDIF
+      
+      IF (CREPSP) THEN
+         CALL DETRSD('CHAM_ELEM_S',CES5)
+         CALL DETRSD('CHAM_ELEM_S',CES6)
+      ENDIF
+      
+      IF (((CREPPE)) .AND. (VALEP .EQ. 0)) THEN
+         CALL DETRSD('CHAM_ELEM_S',CES7)
+         CALL DETRSD('CHAM_ELEM_S',CES8)
       ENDIF
 
       CALL JEDETR('&&PAQMAI.NUME_ORDRE')

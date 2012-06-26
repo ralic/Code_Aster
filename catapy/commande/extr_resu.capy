@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 03/10/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,7 +47,7 @@ EXTR_RESU=OPER(nom="EXTR_RESU",op=176,sd_prod=extr_resu_prod,reentrant='f',
                                    fr="Liste des paramètres de sensibilité.",
                                    ang="List of sensitivity parameters"),
 
-         ARCHIVAGE       =FACT(statut='o',
+         ARCHIVAGE       =FACT(statut='f',
            regles=(  UN_PARMI('NUME_ORDRE', 'INST', 'FREQ', 'NUME_MODE',
                         'NOEUD_CMP', 'LIST_INST', 'LIST_FREQ', 'LIST_ORDRE',
                         'NOM_CAS', 'LIST_ARCH', 'PAS_ARCH' ),
@@ -71,6 +71,13 @@ EXTR_RESU=OPER(nom="EXTR_RESU",op=176,sd_prod=extr_resu_prod,reentrant='f',
            NOEUD_CMP       =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),
            NOM_CAS         =SIMP(statut='f',typ='TXM'),
                                ),
+
+         RESTREINT   =FACT(statut='f', max=1,
+            fr="Pour réduire une ou plusieurs sd_resultat sur un maillage ou un modèle réduit",
+            regles=(UN_PARMI('MAILLAGE','MODELE'),),
+            MAILLAGE        =SIMP(statut='f',typ=maillage_sdaster),
+            MODELE          =SIMP(statut='f',typ=modele_sdaster),
+            ),
 
          TITRE           =SIMP(statut='f',typ='TXM',max='**' ),
 )  ;

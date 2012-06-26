@@ -1,4 +1,4 @@
-# MODIF  DATE 23/04/2012   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 # sdnv103f.para = tps_job 360 mem_job 500Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -67,9 +67,9 @@ CH=AFFE_CHAR_MECA(
 CH2 = DEFI_CONTACT(MODELE         = MODE,
                    FORMULATION    = 'CONTINUE',
                    FROTTEMENT     = 'COULOMB',
-                   REAC_GEOM      = 'CONTROLE',
-                   NB_ITER_GEOM   = 2,
-
+                   ALGO_RESO_CONT = 'NEWTON',
+                   ALGO_RESO_GEOM = 'NEWTON',
+                   ALGO_RESO_FROT = 'NEWTON',
                    ZONE        =_F(
                               GROUP_MA_MAIT='RIGID',
                               GROUP_MA_ESCL='SZZ',
@@ -183,7 +183,7 @@ TEST_RESU(RESU=(
      _F(  RESULTAT = RESU1,   INST = IFIN,
           NOM_CHAM = 'DEPL',   GROUP_NO = 'B1',
           CRITERE = 'RELATIF', PRECISION = (3.E-2, 1.E-10),
-          NOM_CMP = 'DX',    VALE =1.5825574088439, REFERENCE = 'NON_REGRESSION',
+          NOM_CMP = 'DX',    VALE =1.7496298183762, REFERENCE = 'NON_REGRESSION',
           VERSION='11.0.28' ),
      _F(  RESULTAT = RESU1,   INST = IFIN,
           NOM_CHAM = 'DEPL',   GROUP_NO = 'A2',
@@ -193,7 +193,7 @@ TEST_RESU(RESU=(
      _F(  RESULTAT = RESU1,   INST = IFIN,
           NOM_CHAM = 'VITE',   GROUP_NO = 'B1',
           CRITERE = 'RELATIF', PRECISION = (3.E-2, 1.E-10),
-          NOM_CMP = 'DX',    VALE = 74025.543471751, REFERENCE = 'NON_REGRESSION',
+          NOM_CMP = 'DX',    VALE = 78981.886179879, REFERENCE = 'NON_REGRESSION',
           VERSION='11.0.22' ),
      _F(  RESULTAT = RESU1,   INST = IFIN,
           NOM_CHAM = 'VITE',   GROUP_NO = 'A2',
@@ -215,7 +215,7 @@ TEST_TABLE(TABLE     = CONTB1_1,
            NOM_PARA  = 'JEU',
            CRITERE   = 'RELATIF',
            PRECISION = 1.E-10,
-           VALE      = 0.060970760152392,
+           VALE      = 0.089534326856020,
            REFERENCE = 'NON_REGRESSION',
            VERSION   = '11.0.21' )
 
@@ -383,7 +383,7 @@ TEST_TABLE(TABLE     = CONTB1_2,
            NOM_PARA  = 'JEU',
            CRITERE   = 'RELATIF',
            PRECISION = 5.E-10,
-           VALE      = 0.084079704132284 ,
+           VALE      = 0.084020393828398,
            REFERENCE = 'NON_REGRESSION',
            VERSION   = '11.0.21' )
 

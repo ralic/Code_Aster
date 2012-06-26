@@ -1,5 +1,5 @@
       SUBROUTINE IRGMCN ( CHAMSY, PARTIE, IFI,
-     &                    NOMCON, NOSIMP, NOPASE,
+     &                    NOMCON,
      &                    ORDR, NBORDR,
      &                    COORD, CONNX, POINT, NOBJ, NBEL,
      &                    NBCMPI, NOMCMP, LRESU, PARA,
@@ -10,7 +10,7 @@
       INTEGER        ORDR(*), CONNX(*), POINT(*)
       REAL*8         COORD(*), PARA(*)
       LOGICAL        LRESU
-      CHARACTER*(*)  NOMCON, NOSIMP, NOPASE, CHAMSY, NOMCMP(*), PARTIE
+      CHARACTER*(*)  NOMCON,CHAMSY, NOMCMP(*), PARTIE
 C     NBRE, NOM D'OBJET POUR CHAQUE TYPE D'ELEMENT
       INTEGER    NELETR
       PARAMETER (NELETR =  8)
@@ -20,7 +20,7 @@ C     NBRE, NOM D'OBJET POUR CHAQUE TYPE D'ELEMENT
       CHARACTER*8 TYCHA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -171,7 +171,7 @@ C
 C        ECRITURE DE L'ENTETE DE View
 C        ****************************
          NOCMP = 'TENSEUR '
-         CALL IRGMPV ( IFI, LRESU, NOMCON, NOSIMP, NOPASE,
+         CALL IRGMPV ( IFI, LRESU, NOMCON,
      &                 CHAMSY, NBORD2, PARA, NOCMP, NBEL,
      &                 .FALSE., .FALSE., TENS, VERSIO )
 
@@ -202,7 +202,7 @@ C        ECRITURE DE L'ENTETE DE View
 C        ****************************
 C
          NOCMP = 'VECTEUR '
-         CALL IRGMPV ( IFI, LRESU, NOMCON, NOSIMP, NOPASE,
+         CALL IRGMPV ( IFI, LRESU, NOMCON,
      &                 CHAMSY, NBORD2, PARA, NOCMP, NBEL,
      &                 .FALSE., VECT, TENS, VERSIO )
 C
@@ -248,7 +248,7 @@ C
 C        ECRITURE DE L'ENTETE DE View
 C        ****************************
 C
-         CALL IRGMPV ( IFI, LRESU, NOMCON, NOSIMP, NOPASE,
+         CALL IRGMPV ( IFI, LRESU, NOMCON,
      &                 CHAMSY, NBORD2, PARA, NOCMP, NBEL,
      &                 SCAL, .FALSE., TENS, VERSIO )
 C

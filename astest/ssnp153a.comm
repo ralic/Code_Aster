@@ -1,4 +1,4 @@
-# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE SHALLOW IRONING
 # ssnp153a.para = tps_job 600 mem_job 800Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -106,10 +106,9 @@ CLy=AFFE_CHAR_CINE(MODELE=MO,
 
 CONT=DEFI_CONTACT(MODELE=MO,
                   FORMULATION='CONTINUE',
-                  REAC_GEOM='CONTROLE',
                   FROTTEMENT='COULOMB',
-                  NB_ITER_GEOM=4,
                   LISSAGE='OUI',
+                  ALGO_RESO_GEOM = 'NEWTON',
                   ALGO_RESO_CONT = 'NEWTON',
                   ZONE=_F(GROUP_MA_MAIT='Master',
                           GROUP_MA_ESCL='Slave',
@@ -274,7 +273,7 @@ TEST_TABLE(TABLE=TAB_T,
            FILTRE=_F(NOM_PARA='INST', VALE=5.00000E-01),
            NOM_PARA='DX',
            PRECISION=3.E-7,
-           VALE=1.8359154153122E+07 )
+           VALE=1.8359148468034E+07 )
 
 TEST_TABLE(TABLE=TAB_T,
            REFERENCE='NON_REGRESSION',

@@ -4,10 +4,10 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/10/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 25/06/2012   AUTEUR PROIX J-M.PROIX 
 C TOLE CRP_21
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -55,6 +55,8 @@ C       ----------------------------------------------------------------
       REAL*8 DHDALR,HS,TAUR,DP,DY(*),MATERF(NMAT*2),DT,RP,DGDALR,DFDRR
       REAL*8 ALPHAM,DALPHA,ALPHAP,CRIT,DGAMMA,SGNS,GAMMAP,PETITH,SGNR
       CHARACTER*16 NECOUL,CPMONO(5*NMAT+1)
+      INTEGER IRR,DECIRR,NBSYST,DECAL
+      COMMON/POLYCR/IRR,DECIRR,NBSYST,DECAL
 C     ----------------------------------------------------------------
 
       IRET=0
@@ -70,8 +72,9 @@ C     ----------------------------------------------------------------
       ALPHAM=VIND(NUVI+1)
       GAMMAP=VIND(NUVI+2)
       ALPHAP=ALPHAM+DY(NUVR)
+      DECAL=NSFV
       CALL LCMMFE(TAUR,MATERF(NMAT+1),MATERF(1),IFA,
-     &     NMAT,NBCOMM,NECOUL,IR,NBSYS,VIND(NSFV+1),
+     &     NMAT,NBCOMM,NECOUL,IR,NBSYS,VIND,
      &     DY(NSFA+1),RP,ALPHAP,GAMMAP,DT,DALPHA,DGAMMA,DP,CRIT,
      &     SGNS,NFS,NSG,HSR,IRET)
       IF (IRET.GT.0)  GOTO 9999

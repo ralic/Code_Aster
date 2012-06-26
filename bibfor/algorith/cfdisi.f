@@ -1,7 +1,7 @@
       FUNCTION CFDISI(DEFICZ,QUESTZ)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -25,7 +25,7 @@ C
       INTEGER       CFDISI
       CHARACTER*(*) DEFICZ
       CHARACTER*(*) QUESTZ
-C      
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE CONTACT (TOUTES METHODES)
@@ -34,11 +34,11 @@ C RETOURNE DES INFOS DIVERSES POUR LE CONTACT (ENTIER)
 C
 C ----------------------------------------------------------------------
 C
-C      
+C
 C IN  DEFICO  : SD DE DEFINITION DU CONTACT (ISSUE D'AFFE_CHAR_MECA)
 C IN  QUESTI  : QUESTION (PARAMETRE INTERROGE)
 C   'STOP_SINGULIER'  ARRET OU NON SI MATR. CONTACT SINGULIERE
-C   'LONG_BLOC'       LONGUEUR BLOC POUR MULTIPLE SND MEMBRES        
+C   'LONG_BLOC'       LONGUEUR BLOC POUR MULTIPLE SND MEMBRES
 C   'ITER_CONT_MULT'  NBRE. MAXI ITERATIONS CONTACT (MULTIPLICATEUR)
 C   'PRE_COND'        PARAMETRE POUR METHODE GCP
 C   'RECH_LINEAIRE'   PARAMETRE POUR METHODE GCP
@@ -46,16 +46,15 @@ C   'NZONE'           NOMBRE DE ZONES DE CONTACT
 C   'NDIM'            DIMENSION  DU PROBLEME DE CONTACT (2D OU 3D)
 C   'NZOCO'           NOMBRE DE ZONES DE CONTACT
 C   'NNOCO'           NOMBRE DE NOEUDS EN CONTACT SUR UNE ZONE
-C                      (ESCLAVES+MAITRES)       
+C                      (ESCLAVES+MAITRES)
 C
-C
-C
+C ----------------------------------------------------------------------
 C
       CHARACTER*24 NDIMCO
       INTEGER      JDIM
       CHARACTER*24 DEFICO,QUESTI
       CHARACTER*24 PARACI
-      INTEGER      JPARCI       
+      INTEGER      JPARCI
 C
 C ----------------------------------------------------------------------
 C
@@ -65,87 +64,87 @@ C --- INITIALISATIONS
 C
       DEFICO = DEFICZ
       QUESTI = QUESTZ
-C 
-C --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
-C    
-      PARACI = DEFICO(1:16)//'.PARACI'      
-      NDIMCO = DEFICO(1:16)//'.NDIMCO'    
 C
-      IF (QUESTI.EQ.'NB_ITER_GEOM')      THEN    
+C --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
+C
+      PARACI = DEFICO(1:16)//'.PARACI'
+      NDIMCO = DEFICO(1:16)//'.NDIMCO'
+C
+      IF (QUESTI.EQ.'NB_ITER_GEOM')      THEN
         CALL JEVEUO(PARACI,'L',JPARCI)
-        CFDISI = ZI(JPARCI+1-1) 
+        CFDISI = ZI(JPARCI+1-1)
 
-      ELSEIF (QUESTI.EQ.'STOP_SINGULIER') THEN  
-        CALL JEVEUO(PARACI,'L',JPARCI) 
+      ELSEIF (QUESTI.EQ.'STOP_SINGULIER') THEN
+        CALL JEVEUO(PARACI,'L',JPARCI)
         CFDISI = ZI(JPARCI+2-1)
-        
-      ELSEIF (QUESTI.EQ.'NB_RESOL')      THEN 
-        CALL JEVEUO(PARACI,'L',JPARCI)      
+
+      ELSEIF (QUESTI.EQ.'NB_RESOL')      THEN
+        CALL JEVEUO(PARACI,'L',JPARCI)
         CFDISI = ZI(JPARCI+3-1)
-        
+
       ELSEIF (QUESTI.EQ.'FORMULATION')   THEN
         CALL JEVEUO(PARACI,'L',JPARCI)
-        CFDISI = ZI(JPARCI+4-1)         
-          
+        CFDISI = ZI(JPARCI+4-1)
+
       ELSEIF (QUESTI.EQ.'ITER_CONT_MULT') THEN
         CALL JEVEUO(PARACI,'L',JPARCI)
-        CFDISI = ZI(JPARCI+5-1)        
+        CFDISI = ZI(JPARCI+5-1)
 
       ELSEIF (QUESTI.EQ.'ITER_GEOM_MAXI') THEN
         CALL JEVEUO(PARACI,'L',JPARCI)
-        CFDISI = ZI(JPARCI+6-1)  
- 
+        CFDISI = ZI(JPARCI+6-1)
+
       ELSEIF (QUESTI.EQ.'ITER_FROT_MAXI') THEN
         CALL JEVEUO(PARACI,'L',JPARCI)
         CFDISI = ZI(JPARCI+7-1)
-           
+
       ELSEIF (QUESTI.EQ.'ALL_VERIF') THEN
         CALL JEVEUO(PARACI,'L',JPARCI)
-        CFDISI = ZI(JPARCI+8-1)   
+        CFDISI = ZI(JPARCI+8-1)
 
       ELSEIF (QUESTI.EQ.'EXIS_USURE') THEN
         CALL JEVEUO(PARACI,'L',JPARCI)
-        CFDISI = ZI(JPARCI+9-1) 
-        
+        CFDISI = ZI(JPARCI+9-1)
+
       ELSEIF (QUESTI.EQ.'ITER_CONT_MAXI') THEN
         CALL JEVEUO(PARACI,'L',JPARCI)
-        CFDISI = ZI(JPARCI+10-1) 
-          
+        CFDISI = ZI(JPARCI+10-1)
+
       ELSEIF (QUESTI.EQ.'ALL_INTERPENETRE') THEN
         CALL JEVEUO(PARACI,'L',JPARCI)
-        CFDISI = ZI(JPARCI+11-1) 
-          
-      ELSEIF (QUESTI.EQ.'ITER_GCP_MAXI')  THEN       
+        CFDISI = ZI(JPARCI+11-1)
+
+      ELSEIF (QUESTI.EQ.'ITER_GCP_MAXI')  THEN
         CALL JEVEUO(PARACI,'L',JPARCI)
         CFDISI = ZI(JPARCI+12-1)
-                        
-      ELSEIF (QUESTI.EQ.'PRE_COND')       THEN    
+
+      ELSEIF (QUESTI.EQ.'PRE_COND')       THEN
         CALL JEVEUO(PARACI,'L',JPARCI)
         CFDISI = ZI(JPARCI+13-1)
 
-      ELSEIF (QUESTI.EQ.'ITER_PRE_MAXI')  THEN   
+      ELSEIF (QUESTI.EQ.'ITER_PRE_MAXI')  THEN
         CALL JEVEUO(PARACI,'L',JPARCI)
-        CFDISI = ZI(JPARCI+14-1)  
-        
-      ELSEIF (QUESTI.EQ.'RECH_LINEAIRE')  THEN   
+        CFDISI = ZI(JPARCI+14-1)
+
+      ELSEIF (QUESTI.EQ.'RECH_LINEAIRE')  THEN
         CALL JEVEUO(PARACI,'L',JPARCI)
         CFDISI = ZI(JPARCI+15-1)
-             
+
       ELSEIF (QUESTI.EQ.'AXISYMETRIQUE')   THEN
         CALL JEVEUO(PARACI,'L',JPARCI)
-        CFDISI = ZI(JPARCI+16-1) 
+        CFDISI = ZI(JPARCI+16-1)
 
       ELSEIF (QUESTI.EQ.'ALGO_CONT')   THEN
         CALL JEVEUO(PARACI,'L',JPARCI)
-        CFDISI = ZI(JPARCI+17-1) 
- 
+        CFDISI = ZI(JPARCI+17-1)
+
       ELSEIF (QUESTI.EQ.'ALGO_FROT')   THEN
         CALL JEVEUO(PARACI,'L',JPARCI)
-        CFDISI = ZI(JPARCI+18-1) 
-        
+        CFDISI = ZI(JPARCI+18-1)
+
       ELSEIF (QUESTI.EQ.'LISSAGE')   THEN
         CALL JEVEUO(PARACI,'L',JPARCI)
-        CFDISI = ZI(JPARCI+19-1) 
+        CFDISI = ZI(JPARCI+19-1)
 
       ELSEIF (QUESTI.EQ.'NB_ITER_FROT') THEN
         CALL JEVEUO(PARACI,'L',JPARCI)
@@ -154,14 +153,14 @@ C
       ELSEIF (QUESTI.EQ.'EXIS_XFEM_CZM') THEN
         CALL JEVEUO(PARACI,'L',JPARCI)
         CFDISI = ZI(JPARCI+21-1)
-        
+
       ELSEIF (QUESTI.EQ.'EXIS_PENA') THEN
         CALL JEVEUO(PARACI,'L',JPARCI)
-        CFDISI = ZI(JPARCI+22-1)        
+        CFDISI = ZI(JPARCI+22-1)
 
       ELSEIF (QUESTI.EQ.'EXIS_VERIF') THEN
         CALL JEVEUO(PARACI,'L',JPARCI)
-        CFDISI = ZI(JPARCI+23-1) 
+        CFDISI = ZI(JPARCI+23-1)
 
       ELSEIF (QUESTI.EQ.'ALL_INTEG_NOEUD') THEN
         CALL JEVEUO(PARACI,'L',JPARCI)
@@ -173,94 +172,98 @@ C
 
       ELSEIF (QUESTI.EQ.'EXIS_GLISSIERE') THEN
         CALL JEVEUO(PARACI,'L',JPARCI)
-        CFDISI = ZI(JPARCI+26-1) 
-      
+        CFDISI = ZI(JPARCI+26-1)
+
       ELSEIF (QUESTI.EQ.'ALGO_RESO_CONT') THEN
         CALL JEVEUO(PARACI,'L',JPARCI)
-        CFDISI = ZI(JPARCI+27-1) 
-      
+        CFDISI = ZI(JPARCI+27-1)
+
       ELSEIF (QUESTI.EQ.'ALGO_RESO_FROT') THEN
         CALL JEVEUO(PARACI,'L',JPARCI)
-        CFDISI = ZI(JPARCI+28-1) 
-        
+        CFDISI = ZI(JPARCI+28-1)
+
+      ELSEIF (QUESTI.EQ.'ALGO_RESO_GEOM') THEN
+        CALL JEVEUO(PARACI,'L',JPARCI)
+        CFDISI = ZI(JPARCI+29-1)
+
       ELSEIF (QUESTI .EQ.'CONT_XFEM_GG')   THEN
         CALL JEVEUO(PARACI,'L',JPARCI)
         IF ((ZI(JPARCI+17-1).EQ.7).AND.(ZI(JPARCI+1-1).NE.0)) THEN
           CFDISI = 1
         ELSE
           CFDISI = 0
-        ENDIF         
+        ENDIF
 C
       ELSEIF (QUESTI.EQ.'PROJ_NEWT_ITER') THEN
-        CFDISI = 200         
+        CFDISI = 200
 C
       ELSEIF (QUESTI.EQ.'FLIP_FLOP_IMAX') THEN
         CFDISI = 20
 C
       ELSEIF (QUESTI.EQ.'NDIM')           THEN
-        CALL JEVEUO(NDIMCO,'L',JDIM )      
+        CALL JEVEUO(NDIMCO,'L',JDIM )
         CFDISI = ZI(JDIM+1-1)
-        
+
       ELSEIF (QUESTI.EQ.'NZOCO')          THEN
-        CALL JEVEUO(NDIMCO,'L',JDIM )      
-        CFDISI = ZI(JDIM+2-1) 
-        
+        CALL JEVEUO(NDIMCO,'L',JDIM )
+        CFDISI = ZI(JDIM+2-1)
+
       ELSEIF (QUESTI.EQ.'NSUCO')          THEN
-        CALL JEVEUO(NDIMCO,'L',JDIM )      
-        CFDISI = ZI(JDIM+3-1)         
+        CALL JEVEUO(NDIMCO,'L',JDIM )
+        CFDISI = ZI(JDIM+3-1)
 
       ELSEIF (QUESTI.EQ.'NMACO')          THEN
-        CALL JEVEUO(NDIMCO,'L',JDIM )      
-        CFDISI = ZI(JDIM+4-1) 
-                
+        CALL JEVEUO(NDIMCO,'L',JDIM )
+        CFDISI = ZI(JDIM+4-1)
+
       ELSEIF (QUESTI.EQ.'NNOCO')          THEN
-        CALL JEVEUO(NDIMCO,'L',JDIM )      
-        CFDISI = ZI(JDIM+5-1)         
-                    
+        CALL JEVEUO(NDIMCO,'L',JDIM )
+        CFDISI = ZI(JDIM+5-1)
+
       ELSEIF (QUESTI.EQ.'NTNOE')         THEN
-        CALL JEVEUO(NDIMCO,'L',JDIM )      
+        CALL JEVEUO(NDIMCO,'L',JDIM )
         CFDISI = ZI(JDIM+8 -1)
 
       ELSEIF (QUESTI.EQ.'NTMAE')         THEN
-        CALL JEVEUO(NDIMCO,'L',JDIM )      
+        CALL JEVEUO(NDIMCO,'L',JDIM )
         CFDISI = ZI(JDIM+9 -1)
 
       ELSEIF (QUESTI.EQ.'NTNOM')         THEN
-        CALL JEVEUO(NDIMCO,'L',JDIM )      
+        CALL JEVEUO(NDIMCO,'L',JDIM )
         CFDISI = ZI(JDIM+10-1)
 
       ELSEIF (QUESTI.EQ.'NTMAM')         THEN
-        CALL JEVEUO(NDIMCO,'L',JDIM )      
-        CFDISI = ZI(JDIM+11-1) 
-        
+        CALL JEVEUO(NDIMCO,'L',JDIM )
+        CFDISI = ZI(JDIM+11-1)
+
       ELSEIF (QUESTI.EQ.'NTNOEC')         THEN
-        CALL JEVEUO(NDIMCO,'L',JDIM )      
+        CALL JEVEUO(NDIMCO,'L',JDIM )
         CFDISI = ZI(JDIM+12-1)
 
       ELSEIF (QUESTI.EQ.'NTMAEC')         THEN
-        CALL JEVEUO(NDIMCO,'L',JDIM )      
+        CALL JEVEUO(NDIMCO,'L',JDIM )
         CFDISI = ZI(JDIM+13-1)
 
       ELSEIF (QUESTI.EQ.'NTNOMC')         THEN
-        CALL JEVEUO(NDIMCO,'L',JDIM )      
+        CALL JEVEUO(NDIMCO,'L',JDIM )
         CFDISI = ZI(JDIM+14-1)
 
       ELSEIF (QUESTI.EQ.'NTMAMC')         THEN
-        CALL JEVEUO(NDIMCO,'L',JDIM )      
-        CFDISI = ZI(JDIM+15-1)         
-  
+        CALL JEVEUO(NDIMCO,'L',JDIM )
+        CFDISI = ZI(JDIM+15-1)
+
       ELSEIF (QUESTI.EQ.'NTPT')         THEN
-        CALL JEVEUO(NDIMCO,'L',JDIM )      
-        CFDISI = ZI(JDIM+16-1)  
+        CALL JEVEUO(NDIMCO,'L',JDIM )
+        CFDISI = ZI(JDIM+16-1)
 
       ELSEIF (QUESTI.EQ.'NTPC')         THEN
-        CALL JEVEUO(NDIMCO,'L',JDIM )      
+        CALL JEVEUO(NDIMCO,'L',JDIM )
         CFDISI = ZI(JDIM+17-1)
-                
+
       ELSEIF (QUESTI.EQ.'NTMANO')         THEN
-        CALL JEVEUO(NDIMCO,'L',JDIM )      
-        CFDISI = ZI(JDIM+18-1)                    
-C                              
+        CALL JEVEUO(NDIMCO,'L',JDIM )
+        CFDISI = ZI(JDIM+18-1)
+C
       ELSE
         WRITE(6,*) 'QUESTION: ',QUESTI
         CALL ASSERT(.FALSE.)

@@ -1,4 +1,4 @@
-# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE BENCHMARK NAFEMS DE VALIDATION DU CONTACT 1 CYLINDER ROLLER CONTACT
 # ssnp154b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -75,6 +75,8 @@ FORCE=AFFE_CHAR_MECA(MODELE=MO,
 
 CONT=DEFI_CONTACT(MODELE=MO,
                   FORMULATION='CONTINUE',
+                  ALGO_RESO_CONT = 'NEWTON',
+                  ALGO_RESO_GEOM = 'NEWTON',
                   ZONE=_F(
                           GROUP_MA_MAIT='Top_B',
                           GROUP_MA_ESCL='Bottom_C',
@@ -102,7 +104,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
                      COMP_INCR=_F(RELATION='ELAS',
                                   DEFORMATION='GROT_GDEP',),
                      INCREMENT=_F(LIST_INST=L_INST,),
-                     CONVERGENCE=_F(),
+                     CONVERGENCE=_F(ITER_GLOB_MAXI=50,),
                      SOLVEUR=_F(),
                      NEWTON=_F(REAC_ITER=1,),);
 

@@ -1,13 +1,15 @@
-      SUBROUTINE RDTCHP(CORRN,CORRM,CH1,CH2,NOMA,NOMARE,LIGREL,CRET)
+      SUBROUTINE RDTCHP(CORRN,CORRM,CH1,CH2,BASE,
+     &                  NOMA,NOMARE,LIGREL,CRET)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER CRET
+      CHARACTER*1 BASE
       CHARACTER*8 NOMA,NOMARE
       CHARACTER*24 CORRN,CORRM
       CHARACTER*19 CH1,CH2,LIGREL
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,7 +62,7 @@ C     -----------------------------------------------------------------
       IF (TYCH.EQ.'NOEU') THEN
         CALL CNOCNS(CH1,'V',CH1S)
         CALL RDTCNS(NOMARE,CORRN,CH1S,'V',CH2S)
-        CALL CNSCNO(CH2S,' ','NON','V',CH2,' ',CRET)
+        CALL CNSCNO(CH2S,' ','NON',BASE,CH2,' ',CRET)
         CALL DETRSD('CHAM_NO_S',CH1S)
         CALL DETRSD('CHAM_NO_S',CH2S)
 
@@ -71,7 +73,7 @@ C     -----------------------------------------------------------------
         IF ( CRET.EQ.0 ) THEN
           CALL DISMOI('F','NOM_OPTION',CH1,'CHAMP',IBID,OPTION,IBID)
           CALL CESCEL(CH2S,LIGREL,OPTION,' ','OUI',
-     &                NNCP,'V',CH2,'F',IRET)
+     &                NNCP,BASE,CH2,'F',IRET)
           CALL ASSERT(IRET.EQ.0)
           CALL ASSERT(NNCP.EQ.0)
         ENDIF
@@ -83,7 +85,7 @@ C     -----------------------------------------------------------------
         CALL CARCES(CH1,'ELEM',' ','V',CH1S,'A',IRET)
         CALL ASSERT(IRET.EQ.0)
         CALL RDTCES(NOMARE,CORRM,CH1S,'V',CH2S,CRET)
-        CALL CESCAR(CH2S,CH2,'V')
+        CALL CESCAR(CH2S,CH2,BASE)
         CALL ASSERT(IRET.EQ.0)
         CALL DETRSD('CHAM_ELEM_S',CH1S)
         CALL DETRSD('CHAM_ELEM_S',CH2S)

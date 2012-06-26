@@ -1,4 +1,4 @@
-# MODIF  DATE 21/05/2012   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE VALIDATION DE POU_D_TGM
 # ssnv505h.para = tps_job 550 mem_job 256Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -146,16 +146,22 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_DROITE='LINEAIRE',
                     PROL_GAUCHE='LINEAIRE',);
 
-#L_INST=DEFI_LIST_REEL(DEBUT=0.0,
-#                      INTERVALLE=(_F(JUSQU_A=1.,
-#                                     NOMBRE=50,),),);
 
 L_ARCH=DEFI_LIST_REEL(DEBUT=0.0,
                                      INTERVALLE=(_F(JUSQU_A=.1,
                                      NOMBRE=25,),),);
-L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+LINST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(_F(JUSQU_A=1.,
                                      NOMBRE=50,),),);
+
+L_INST=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
+                                  LIST_INST=LINST,),
+                     ECHEC=_F(EVENEMENT='ERREUR',
+                              ACTION='DECOUPE',
+                              SUBD_METHODE = 'MANUEL',
+                              SUBD_PAS=5,
+                              SUBD_NIVEAU=5,),);
+                              
 
 ULAG=STAT_NON_LINE(MODELE=MODE,
                 CHAM_MATER=CM,
@@ -253,7 +259,11 @@ TEST_TABLE(TABLE=T_REA_LA,
 
 CHCON= DEFI_CONTACT(MODELE         = MODE,
                     FORMULATION    = 'CONTINUE',
+                    ALGO_RESO_CONT = 'POINT_FIXE',
+                    ALGO_RESO_GEOM = 'POINT_FIXE',
                     ITER_CONT_MAXI = 10,
+                    RESI_GEOM      = 0.01,
+                    INFO = 2,
                     ZONE =(
                            _F(
                               GROUP_MA_MAIT  = 'POU1',
@@ -265,6 +275,8 @@ CHCON= DEFI_CONTACT(MODELE         = MODE,
                              ),
                           ),
                    );
+
+
 
 
 UCON=STAT_NON_LINE(MODELE=MODE,
@@ -362,6 +374,8 @@ CHESCL= DEFI_CONTACT(MODELE         = MODE,
                     FORMULATION     = 'CONTINUE',
                     ITER_CONT_TYPE  = 'MULT',
                     ITER_CONT_MULT  = 4,
+                    ALGO_RESO_GEOM = 'POINT_FIXE',
+                    ALGO_RESO_CONT = 'POINT_FIXE',
                     ZONE =(
                            _F(
                               GROUP_MA_MAIT  = 'POU1',

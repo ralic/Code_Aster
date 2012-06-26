@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE EXTRUSION D'UN LOPIN CONTACT GLISSIERE
 # ssnv504i.para = tps_job 190 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -128,6 +128,8 @@ CH0=AFFE_CHAR_MECA(MODELE=MO,
 
 CH2  = DEFI_CONTACT(MODELE         = MO,
                     FORMULATION    = 'CONTINUE',
+                    ALGO_RESO_CONT = 'POINT_FIXE',
+                    ALGO_RESO_GEOM = 'POINT_FIXE',
                     LISSAGE        = 'OUI',
                     ZONE =(
                            _F(
@@ -185,7 +187,7 @@ U=STAT_NON_LINE(MODELE=MO,
                 NEWTON=_F(MATRICE='TANGENTE',
                           REAC_ITER=1,),
                 ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                CONVERGENCE=_F(RESI_GLOB_MAXI=9.9999999999999995E-07,),);
+                CONVERGENCE=_F(RESI_GLOB_MAXI=9.9999999999999995E-07,ITER_GLOB_MAXI=30,),);
 
 IMPR_RESU(FORMAT='MED',
           RESU=_F(RESULTAT=U,),);

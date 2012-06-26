@@ -1,4 +1,4 @@
-#@ MODIF compor2 Messages  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF compor2 Messages  DATE 25/06/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -137,5 +137,15 @@ FP : (1,1),(1,2),(1,3),(2,1),(2,2),(2,3),(3,1),(3,2),(3,3),
 FE : (1,1),(1,2),(1,3),(2,1),(2,2),(2,3),(3,1),(3,2),(3,3),
 """),
 
+27: _(u"""
+Mot-clef : %(k1)s - nombre de grains  %(i1)d : localisation %(k2)s 
+nombre d'occurrences de MONOCRISTAL différentes : %(i2)d - nombre de variables internes : %(i3)d
+Noms des variables internes :"""),
+
+28: _(u""" A partir de la variable interne %(i1)d : pour chaque grain : """),
+
+29: _(u""" Dernière variable interne V%(i1)d : %(k1)s"""),
+
+30: _(u""" ... jusqu'à V%(i1)d """),
 
 }

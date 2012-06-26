@@ -1,7 +1,7 @@
       SUBROUTINE TE0364(OPTION,NOMTE )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT      NONE
-      INCLUDE 'jeveux.h'
+      INCLUDE       'jeveux.h'
       CHARACTER*16  OPTION,NOMTE
 C
 C ----------------------------------------------------------------------
@@ -36,13 +36,12 @@ C
 C  ENTREES  ---> OPTION : OPTION DE CALCUL
 C           ---> NOMTE  : NOM DU TYPE ELEMENT
 C
-C
-C
+C ----------------------------------------------------------------------
 C
       INTEGER      I,J,IJ
       INTEGER      NNE,NNM,NNL
       INTEGER      NDDL,NDIM,NBCPS,NBDM
-      INTEGER      IRESOF
+      INTEGER      IRESOF,IRESOG
       INTEGER      NDEXFR
       REAL*8       COEFFF,LAMBDA,LAMBDS
       REAL*8       COEFAC,COEFAF
@@ -53,7 +52,7 @@ C
       REAL*8       RESE(3),NRESE
       REAL*8       JEUSUP
       REAL*8       DLAGRC,DLAGRF(2)
-      REAL*8       JEU,DJEU(3),DJEUT(3)
+      REAL*8       JEU,DJEUT(3)
       CHARACTER*8  TYPMAE,TYPMAM
       CHARACTER*9  PHASEP
       LOGICAL      LAXIS,LELTF
@@ -63,7 +62,9 @@ C
       LOGICAL      DEBUG
       INTEGER      JMATT
       REAL*8       PRFUSU,CWEAR
-      REAL*8       FFE(9),FFM(9),FFL(9)
+      REAL*8       FFE(9),FFM(9),FFL(9),DFFM(2,9)
+      REAL*8       MPRT1N(3,3),MPRT2N(3,3)
+      REAL*8       GENE11(3,3),GENE21(3,3)
 C
       REAL*8       MATRCC(9,9)
       REAL*8       MATREE(27,27),MATRMM(27,27)
@@ -73,6 +74,7 @@ C
       REAL*8       MATRFF(18,18)
       REAL*8       MATRFE(18,27),MATRFM(18,27)
       REAL*8       MATRMF(27,18),MATREF(27,18)
+      REAL*8       MATRFC(18,9)
 C
       CHARACTER*24 TYPELT
 C
@@ -97,6 +99,8 @@ C
       CALL MATINI(18,27,0.D0,MATRFM)
       CALL MATINI(27,18,0.D0,MATREF)
       CALL MATINI(27,18,0.D0,MATRMF)
+      CALL MATINI(18,9 ,0.D0,MATRFC)
+
       DEBUG  = .FALSE.
 C
 C --- TYPE DE MAILLE DE CONTACT
@@ -113,7 +117,7 @@ C
 C --- PREPARATION DES CALCULS - LECTURE DES COEFFICIENTS
 C
       CALL MMMLCF(COEFFF,COEFAC,COEFAF,LPENAC,LPENAF,
-     &            IRESOF,LAMBDS)
+     &            IRESOF,IRESOG,LAMBDS)
 C
 C --- PREPARATION DES CALCULS - LECTURE FONCTIONNALITES AVANCEES
 C
@@ -127,11 +131,12 @@ C
 C ----- CALCUL DES QUANTITES
 C
         CALL MMTPPE(TYPMAE,TYPMAM,NDIM  ,NNE   ,NNM   ,
-     &              NNL   ,NBDM  ,LAXIS ,LDYNA ,JEUSUP,
-     &              PRFUSU,FFE   ,FFM   ,FFL   ,NORM  ,
-     &              TAU1  ,TAU2  ,MPROJN,MPROJT,JACOBI,
-     &              WPG   ,DLAGRC,DLAGRF,JEU   ,DJEU  ,
-     &              DJEUT )
+     &              NNL   ,NBDM  ,IRESOG,LAXIS ,LDYNA ,
+     &              JEUSUP,PRFUSU,FFE   ,FFM   ,DFFM  ,
+     &              FFL   ,JACOBI,WPG   ,JEU   ,DJEUT ,
+     &              DLAGRC,DLAGRF,NORM  ,TAU1  ,TAU2  ,
+     &              MPROJN,MPROJT,MPRT1N,MPRT2N,GENE11,
+     &              GENE21)
 C
 C ----- CHOIX DU LAGRANGIEN DE CONTACT
 C
@@ -156,13 +161,26 @@ C
 C --- CALCUL FORME FAIBLE FORCE DE CONTACT/FROTTEMENT
 C
       IF (TYPELT.EQ.'POIN_ELEM') THEN
-        CALL MMTFPE(PHASEP,NDIM  ,NNE   ,NNM   ,NNL   ,
-     &              NBCPS ,WPG   ,JACOBI,FFL   ,FFE   ,
-     &              FFM   ,NORM  ,TAU1  ,TAU2  ,MPROJN,
-     &              MPROJT,RESE  ,NRESE ,LAMBDA,IRESOF,
-     &              COEFFF,COEFAF,COEFAC,DLAGRF,DJEUT ,
-     &              MATREE,MATRMM,MATREM,MATRME,MATREC,
-     &              MATRMC,MATREF,MATRMF)
+        CALL MMTFPE(PHASEP,IRESOF,NDIM  ,NNE   ,NNM   ,
+     &              NNL   ,NBCPS ,WPG   ,JACOBI,FFL   ,
+     &              FFE   ,FFM   ,DFFM  ,NORM  ,TAU1  ,
+     &              TAU2  ,MPROJN,MPROJT,RESE  ,NRESE ,
+     &              LAMBDA,JEU   ,COEFFF,COEFAF,COEFAC,
+     &              DLAGRC,DLAGRF,DJEUT ,MATREE,MATRMM,
+     &              MATREM,MATRME,MATREC,MATRMC,MATREF,
+     &              MATRMF)
+C
+C ----- CONTRIBUTIONS NON-LINEARITES GEOMETRIQUES
+C
+        IF (IRESOG.EQ.1) THEN
+          CALL MMTGEO(PHASEP,NDIM  ,NNE   ,NNM   ,MPROJN,
+     &                MPROJT,WPG   ,FFE   ,FFM   ,DFFM  ,
+     &                JACOBI,COEFAC,COEFAF,COEFFF,RESE  ,
+     &                NRESE ,LAMBDA,JEU   ,DLAGRC,MPRT1N,
+     &                MPRT2N,GENE11,GENE21,MATREE,MATRMM,
+     &                MATREM,MATRME)
+        ENDIF
+
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF

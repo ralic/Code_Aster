@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE   EXTRUSION D'UN LOPIN AVEC LE CONTACT GLISSIERE
 # ssnv504j.para = tps_job 210 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -114,7 +114,10 @@ DDLIMP=AFFE_CHAR_MECA(MODELE=MO,
 
 CONTACT  = DEFI_CONTACT(MODELE         = MO,
                         FORMULATION    = 'CONTINUE',
+                        ALGO_RESO_CONT = 'POINT_FIXE',
+                        ALGO_RESO_GEOM = 'POINT_FIXE',
                         LISSAGE        = 'OUI',
+                        
                     ZONE =(
                            _F(
                              GROUP_MA_MAIT ='FIL_MAI1',

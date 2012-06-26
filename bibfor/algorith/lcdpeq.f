@@ -3,7 +3,7 @@
 
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/04/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 25/06/2012   AUTEUR PROIX J-M.PROIX 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,13 +38,15 @@ C          VINF   :  VARIABLES INTERNES A T+DT
 C          MATERF :  COEF MATERIAU
 C     ----------------------------------------------------------------
       INTEGER NVI,NMAT,NBCOMM(NMAT,3),NBPHAS,I,IPHAS,INDFV,NUVI,IFA
-      INTEGER IFL,IRR,IS,NBFSYS,NBSYS,NSFV,INDPHA,INDCP
+      INTEGER IFL,IS,NBFSYS,NBSYS,NSFV,INDPHA,INDCP,NUMIRR
       REAL*8  VIND(NVI),VINF(NVI),DVIN(NVI),SIG(6),GRANB(6)
       REAL*8  EPSEQ,E,NU,FV,SIGG(6),MUS(6),NG(3),LG(3),PGL(3,3)
       REAL*8  ID(3,3),F(3,3),FPM(3,3),FP(3,3),FE(3,3),DETP,LCNRTE
       REAL*8  DETOT(*),EPSD(*),PK2(6),DEVI(6),ENDOC,DP,XI,QM(3,3)
       REAL*8  MATERF(NMAT,2),RHOIRR(12)
       CHARACTER*16 LOI,CPMONO(5*NMAT+1),LOCA,COMP(*),NECOUL,NOMFAM
+      INTEGER IRR,DECIRR,NBSYST,DECAL
+      COMMON/POLYCR/IRR,DECIRR,NBSYST,DECAL
       DATA    ID/1.D0,0.D0,0.D0, 0.D0,1.D0,0.D0, 0.D0,0.D0,1.D0/    
 
       LOI  = COMP(1)
@@ -68,7 +70,7 @@ C            NUECOU=NINT(MATERF(IFL,2))
             CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MUS,NG,LG,0,QM)
             IF (NECOUL.EQ.'MONO_DD_CC_IRRA') THEN
                CALL DCOPY(12, VIND(NSFV+3*NBSYS+1),1,RHOIRR,1)
-               XI=MATERF(IFL+22,2)
+               XI=MATERF(IFL+23,2)
                IRR=1
             ELSE
                IRR=0
@@ -155,7 +157,10 @@ C         RECUPERER L'ORIENTATION DE LA PHASE ET LA PROPORTION
                VINF(NUVI+6*(IPHAS-1)+I)=SIGG(I)
    2        CONTINUE
    1     CONTINUE
+
+C        IRRADIATION   
          NSFV=7+6*NBPHAS
+         NUMIRR=0
          DO 33 IPHAS=1,NBPHAS
             INDPHA=NBCOMM(1+IPHAS,1)
             NBFSYS=NBCOMM(INDPHA,1)
@@ -164,9 +169,9 @@ C         RECUPERER L'ORIENTATION DE LA PHASE ET LA PROPORTION
                NECOUL=CPMONO(INDCP+5*(IFA-1)+3)
                IF (NECOUL.EQ.'MONO_DD_CC_IRRA') THEN
                   NBSYS=12
-                  CALL DCOPY(12, VIND(NSFV+3*NBSYS+1),1,RHOIRR,1)
+                  CALL DCOPY(12, VIND(DECIRR+NUMIRR+1),1,RHOIRR,1)
                   IFL=NBCOMM(INDPHA+IFA,1)
-                  XI=MATERF(IFL+22,2)
+                  XI=MATERF(IFL+23,2)
                   DO 31 IS=1,NBSYS
 C                    VARIABLES INTERNES PAR SYSTEME DE GLISSEMENT
                      NUVI=NSFV+3*(IS-1)+3
@@ -175,8 +180,8 @@ C                    VARIABLES INTERNES PAR SYSTEME DE GLISSEMENT
                         RHOIRR(IS)=RHOIRR(IS)*EXP(-XI*DP)
                      ENDIF
   31              CONTINUE
-                  CALL DCOPY(12,RHOIRR,1,VINF(NSFV+3*NBSYS+1),1)
-                  NSFV=NSFV+12
+                  CALL DCOPY(12,RHOIRR,1,VINF(DECIRR+NUMIRR+1),1)
+                  NUMIRR=NUMIRR+NBSYS
                ENDIF
                NSFV=NSFV+NBSYS*3
   32        CONTINUE

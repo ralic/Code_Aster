@@ -2,7 +2,7 @@
      &                  CARELE,MATE  ,VRCPLU,LIGREZ,VECELZ)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE PELLET J.PELLET
 C
-      IMPLICIT      NONE 
+      IMPLICIT      NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*) MODELZ,CHARGZ,INFCHZ,CARELE,MATE
       CHARACTER*(*) VRCPLU,VECELZ,LIGREZ
@@ -291,7 +291,6 @@ C
                 CALL JEVEUO(LCHIN(1),'L',JLCHIN)
                 CALL COPISD('CHAMP_GD','V',ZK8(JLCHIN),LCHOUT)
               ELSE
-                write(6,*) 'RR: ',NCHIN,NCHINX
                 CALL ASSERT(NCHIN.LE.NCHINX)
                 CALL CALCUL(STOP,OPTION,LIGREL,NCHIN,LCHIN,LPAIN,1,
      &                      LCHOUT,LPAOUT,'V','OUI')

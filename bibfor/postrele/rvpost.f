@@ -1,10 +1,10 @@
       SUBROUTINE RVPOST ( MCF, IOCC, DIM, I1, I2, NCHEFF,
      >                    XNOMCP,
-     >                    NRESU, NCH19, NCH19N, SENSOP,
+     >                    NRESU, NCH19,
      >                    NLSMAC, NLSNAC, NOMTAB, XNOVAR)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,8 +29,6 @@ C IN  DIM    : K : '2D' OU '3D'
 C IN  I1, I2 : I : REPERAGE DU CHAMP DANS UNE SD RESULTAT_COMPOSE
 C IN  XNOMCP : K : NOM DE LA COLLECTION DES NOMS DE CMP
 C IN  NCH19  : K : NOM DU CHAMP A TRAITER
-C IN  NCH19N : K : NOM DU CHAMP NOMINAL QUAND ON TRAITE UNE DERIVEE
-C IN  SENSOP : K : OPTION POUR LA SENSIBILITE
 C IN  NLSMAC : K : NOM DU VECTEUR DES MAILLES ACTIVES
 C IN  NLSNAC : K : NOM DU VECTEUR DES NOEUDS ACTIFS
 C     ------------------------------------------------------------------
@@ -41,8 +39,7 @@ C
       CHARACTER*2 DIM
       CHARACTER*8 NRESU
       CHARACTER*16 NCHEFF
-      CHARACTER*18 SENSOP
-      CHARACTER*19 NCH19, NCH19N, NOMTAB
+      CHARACTER*19 NCH19, NOMTAB
       CHARACTER*24 XNOMCP, NLSMAC, NLSNAC, XNOVAR
       CHARACTER*(*) MCF
 C
@@ -109,9 +106,8 @@ C
             IF ( DOCU .EQ. 'CHNO' ) THEN
                CALL JELIRA(NLSNAC,'LONMAX',NBNAC,K8B)
                CALL JEVEUO(NLSNAC,'L',JLSNAC)
-               CALL EXTCHN(NCH19,NCH19N, SENSOP,
-     >                     K8B,ZI(JLSNAC),ZK8(JCMPNC),
-     >                     NBNAC,NBCPN,'NUMERO',SSCH19, MCF, IOCC )
+               CALL EXTCHN(NCH19,K8B,ZI(JLSNAC),ZK8(JCMPNC),
+     &                    NBNAC,NBCPN,'NUMERO',SSCH19, MCF, IOCC )
 C
             ELSE
                CALL JEEXIN(NLSNAC,IBID)
@@ -124,7 +120,7 @@ C
                ENDIF
                CALL JELIRA(NLSMAC,'LONMAX',NBMAC,K8B)
                CALL JEVEUO(NLSMAC,'L',JLSMAC)
-               CALL EXTCHE(NCH19,NCH19N, SENSOP,
+               CALL EXTCHE(NCH19,
      >                     K8B,ZI(JLSMAC),ZK8(JCMPNC),
      >                     NBMAC,NBCPN,'NUMERO',SSCH19, MCF, IOCC,
      >                     NBNAC, ZI(JLSNAC) )

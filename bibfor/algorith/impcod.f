@@ -1,7 +1,7 @@
       SUBROUTINE IMPCOD(COLONN,ICOD  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/04/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,8 +57,8 @@ C
       DATA MOTCLE(9)        / 'RELI_NBIT'/
       DATA MOTCLE(10)       / 'RELI_COEF'/
       DATA MOTCLE(11)       / 'PILO_COEF'/
-      DATA MOTCLE(12)       / '&&&&&&&&&'/
-      DATA MOTCLE(13)       / '&&&&&&&&&'/
+      DATA MOTCLE(12)       / 'GEOM_NEWT'/
+      DATA MOTCLE(13)       / 'GEOM_NOEU'/
       DATA MOTCLE(14)       / '&&&&&&&&&'/
       DATA MOTCLE(15)       / 'MATR_ASSE'/
       DATA MOTCLE(16)       / 'DEBORST  '/

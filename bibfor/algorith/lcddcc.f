@@ -4,7 +4,7 @@
      &                    IRET                              )
       IMPLICIT NONE
       INTEGER IFA,NMAT,NBCOMM(NMAT,3),IRET
-      INTEGER IFL,IS,IR,NBSYS,NFS,NSG,NUECOU,IRR
+      INTEGER IFL,IS,IR,NBSYS,NFS,NSG,NUECOU,IRR2
       REAL*8 TAUS,COEFT(NMAT),DGAMMA,DP,VIND(*),DALPHA
       REAL*8 RP,SGNS,HSR(NSG,NSG),DY(12),DT,DEPSDT
       REAL*8 N,GAMMA0,R8MIEM,RMIN,RHOP(12),R8MAEM
@@ -15,9 +15,11 @@
       REAL*8 DELTA1,DELTA2,AIRR,XI,RHOIRR,DEPDT,TAUC,T10
       LOGICAL NEW
       COMMON /DEPS6/DEPSDT
+      INTEGER IRR,DECIRR,NBSYST,DECAL
+      COMMON/POLYCR/IRR,DECIRR,NBSYST,DECAL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/05/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 25/06/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -83,7 +85,8 @@ C ======================================================================
       DEPDT =COEFT(IFL+18)
       TEMP=  COEFT(IFL+19)
       MU    =COEFT(IFL+20)
-      IRR   =NINT(COEFT(IFL+21))
+      IRR2   =NINT(COEFT(IFL+21))
+      CALL ASSERT(IRR2.EQ.IRR)
       IF (IRR.GT.0) THEN
          AIRR  =COEFT(IFL+22)
 C         XI    =COEFT(IFL+23)
@@ -101,7 +104,7 @@ C initialisation des arguments en sortie
       LC=500.D0*B*(TEMP/300.D0)**2
 
       DO 55 IR=1,NBSYS
-         RHOM(IR)=VIND(3*(IR-1)+1)
+         RHOM(IR)=VIND(DECAL+3*(IR-1)+1)
          RHOP(IR)=RHOM(IR)+DY(IR)
  55   CONTINUE
       
@@ -125,7 +128,7 @@ C rho tot represente rho_f (foret)
          GOTO 9999
       ENDIF
       IF (IRR.GT.0) THEN
-         RHOIRR=VIND(3*NBSYS+IS)
+         RHOIRR=VIND(DECIRR+NBSYST+IS)
          RHOTOT=RHOTOT+RHOIRR
       ENDIF
 
@@ -220,6 +223,7 @@ C 8.  calcul de gamma_nuc
          T5=SQRT(TAUEFF/TAU0)
       ENDIF
       GAMNUC=RHOMOB*B*H*LS*EXP(-DELTG0*(1.D0-T5)/KBOLTZ/TEMP)
+C     ON POURRAIT DESACTIVER CE SYSTEME SI TAU_EFF < 0      
       GAMNUC=GAMNUC*SGNS
 
 C 9.  calcul de gamma_prob

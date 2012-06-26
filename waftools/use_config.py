@@ -1,5 +1,6 @@
 # encoding: utf-8
 
+import sys
 from waflib import Configure, Errors, Context
 
 DEFAULT_DIR = 'wafcfg'

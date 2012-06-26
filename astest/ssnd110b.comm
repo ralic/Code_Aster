@@ -1,4 +1,4 @@
-# MODIF  DATE 11/06/2012   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 25/06/2012   AUTEUR PROIX J-M.PROIX 
 # TITRE VALIDATION MONOCRISTAL LOI DD_CC THERMIQUE + A-THERMIQUE
 # ssnd110b.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -254,7 +254,6 @@ TEST_FONCTION(VALEUR=_F(FONCTION=gamma[sys1],
 TEST_FONCTION(VALEUR=_F(FONCTION=gamma[sys2],
                         NOM_PARA='INST',
                         VALE_PARA=1.0,
-                        PRECISION=0.002,
                         VALE_REFE=-1.01835E-05,
                         REFERENCE='NON_REGRESSION',),);
                         
@@ -285,15 +284,8 @@ TEST_FONCTION(VALEUR=_F(FONCTION=EVIYZ,
                         VALE_REFE=8.617E-06,
                         REFERENCE='NON_REGRESSION',),);
 
-IMPR_TABLE(TABLE=EXPLDD)
 
 
-######################################################################################"""
-
-# test de la nouvelle formulation (27/03/2012) de DD_CFC  en IMPLICITE
-# coefficients L.Vincent (CEA) et comparaison aux resultats CEA pour 50K
-
-######################################################################################"""
 
 TEMP=50
 
@@ -674,53 +666,33 @@ DEFI_FICHIER(UNITE = 28,
 
 sys1=5
 
-rhoCEA=LIRE_FONCTION(UNITE=22,
-                           NOM_PARA='INST',
-                           NOM_RESU='SIZZ',
-                           INDIC_PARA=(1,1),
-                           INDIC_RESU=(1,3),
-                           )
-
-gamCEA=LIRE_FONCTION(UNITE=22,
-                           NOM_PARA='INST',
-                           NOM_RESU='SIZZ',
-                           INDIC_PARA=(1,1),
-                           INDIC_RESU=(1,2),
-                           )
-#1.00E+02        5.5200E-02      4.2960E+06      5.4440E-02      3.9480E+06
-#5.00E+02        2.9370E-01      1.0390E+07      2.8686E-01      9.0917E+06
 
 TEST_FONCTION(VALEUR=_F(FONCTION=rhoi[sys1],
                         NOM_PARA='INST',
                         VALE_PARA=100.,
-                        VALE_REFE=4.2960E+06,
-                        PRECISION=0.1,
-                        REFERENCE='SOURCE_EXTERNE',),);
+                        VALE_REFE=3.944964E+06,
+                        REFERENCE='NON_REGRESSION',),);
 
 TEST_FONCTION(VALEUR=_F(FONCTION=rhoi[sys1],
                         NOM_PARA='INST',
                         VALE_PARA=500.,
-                        VALE_REFE=1.0390E+07,
-                        PRECISION=0.15,
-                        REFERENCE='SOURCE_EXTERNE',),);
+                        VALE_REFE=9.086727E+06,
+                        REFERENCE='NON_REGRESSION',),);
 
 TEST_FONCTION(VALEUR=_F(FONCTION=gammi[sys1],
                         NOM_PARA='INST',
                         VALE_PARA=100.,
-                        PRECISION=0.02,
-                        VALE_REFE=-5.5200E-02,
-                        REFERENCE='SOURCE_EXTERNE',),);
+                        VALE_REFE=-5.44E-02,
+                        REFERENCE='NON_REGRESSION',),);
 
 TEST_FONCTION(VALEUR=_F(FONCTION=gammi[sys1],
                         NOM_PARA='INST',
                         VALE_PARA=500.,
-                        PRECISION=0.02,
-                        VALE_REFE=-2.8686E-01,
-                        REFERENCE='SOURCE_EXTERNE',),);
+                        VALE_REFE=-2.8714E-01,
+                        REFERENCE='NON_REGRESSION',),);
 
 
 
-IMPR_TABLE(TABLE=IMPLDD)
 
 FIN()
                    

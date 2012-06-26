@@ -1,4 +1,4 @@
-# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT DE DEUX BLOCS
 # ssnp121p.para = tps_job 30 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -90,6 +90,8 @@ CHA2 = DEFI_CONTACT(
             FORMULATION = 'CONTINUE',
             ITER_CONT_MAXI=60,
             ITER_GEOM_MAXI=4,
+            ALGO_RESO_CONT = 'POINT_FIXE',
+            ALGO_RESO_GEOM = 'POINT_FIXE',
        ZONE=_F(
                GROUP_MA_ESCL = 'AB',
                GROUP_MA_MAIT = 'EF',
@@ -127,8 +129,7 @@ RESU=STAT_NON_LINE (
                                   REAC_ITER=1,
                                   REAC_INCR=1,),
                    CONVERGENCE=_F(
-                                ARRET='OUI',
-                                ITER_GLOB_MAXI=5,),
+                                ITER_GLOB_MAXI=40,),
                    SOLVEUR     =_F(
                                METHODE='LDLT',
                                RENUM='SANS',),);

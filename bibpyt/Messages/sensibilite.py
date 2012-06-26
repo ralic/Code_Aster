@@ -1,4 +1,4 @@
-#@ MODIF sensibilite Messages  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
+#@ MODIF sensibilite Messages  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,28 +26,10 @@ cata_msg = {
  La dérivée de %(k1)s par rapport à %(k2)s est introuvable.
 """),
 
-4 : _(u"""
- Le champ de thêta sensibilité est inexistant dans la structure de donnée %(k1)s
-"""),
-
-8 : _(u"""
- Pour l'occurrence numéro %(i1)d ,
- la dérivée du champ %(k1)s de %(k2)s par rapport à %(k3)s est introuvable.
-"""),
-
-10 : _(u"""
- Initialisation de la table associée à la table %(k1)s et au paramètre sensible %(k2)s
- connue sous le nom de concept %(k3)s
-"""),
-
-
 15 : _(u"""
  Le comportement %(k1)s n'est pas autorisé en sensibilité
 """),
 
-16 : _(u"""
- EXICHA différent de 0 et 1
-"""),
 
 52 : _(u"""
  Actuellement, on ne sait dériver que les 'POU_D_E'.
@@ -70,8 +52,5 @@ cata_msg = {
  Le calcul de dérivée n'a pas été prévu pour les variables de commande de séchage ou d'hydratation.
 """),
 
-71 : _(u"""
- Dérivation par rapport au paramètre sensible : %(k1)s
-"""),
 
 }

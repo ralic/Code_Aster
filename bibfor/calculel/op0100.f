@@ -1,6 +1,6 @@
       SUBROUTINE OP0100()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF CALCULEL  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,8 +34,8 @@ C
       INTEGER IFM,NIV,N1,LONVEC,IORD, IBID,I,IAD,NCAS,JNCAS,JNORD
       INTEGER VALI,NBTROU,NUTROU,INDIIS,IIND
       INTEGER NRES,NP,NC,NEXCI,NCHA,IRET,ICHA,IVEC,NBPARA
-      INTEGER IFOND,LNOFF,TYPESE,JINST,NBPASS,ADRECG
-      INTEGER NBPASE,NRPASS,NDEG,NBRE,IADNUM,IADRMA
+      INTEGER IFOND,LNOFF,JINST
+      INTEGER NDEG,NBRE,IADNUM,IADRMA
       INTEGER NBR8,IADRCO,IADRNO,NBNO,J,IPULS,IORD1,IORD2
       INTEGER NBORN,NBCO,IBOR,IG,LNOEU,LABSCU,NBVAL
       INTEGER NDIMTE,NCELAS,IER,ITHET,NDIM,IFISS
@@ -44,26 +44,24 @@ C
 
 C
       REAL*8  TIME,TIMEU,TIMEV,PREC,R8B,DIR(3)
-      REAL*8  RINF,RSUP,MODULE,VAL(2),PULS,RBID
+      REAL*8  RINF,RSUP,MODULE,PULS,RBID
 C
-      COMPLEX*16 CBID,C16B
+      COMPLEX*16 C16B
 C
       CHARACTER*4 K4B
       CHARACTER*6 NOMPRO
       PARAMETER ( NOMPRO = 'OP0100' )
-      CHARACTER*8 TABLE1,MODELE,RESUCO,K8B,K8BID,KCALC,KCALC2
-      CHARACTER*8 FOND,FISS,LITYPA(NXPARA),SYMECH,NOPASE,CRIT
-      CHARACTER*8 LATABL,LERES0,NOMA,THETAI,NOEUD,CAS
-      CHARACTER*13 INPSCO
-      CHARACTER*16 TYPCO,OPER,OPTION,TYSD, LINOPA(NXPARA),OPTIO1,SUITE
+      CHARACTER*8 MODELE,RESUCO,K8B,K8BID,KCALC
+      CHARACTER*8 FOND,FISS,LITYPA(NXPARA),SYMECH,CRIT
+      CHARACTER*8 LATABL,NOMA,THETAI,NOEUD,CAS
+      CHARACTER*16 TYPCO,OPER,OPTION,TYSD, LINOPA(NXPARA),SUITE
       CHARACTER*16 OPTIO2,K16B,NOMCAS,K16BID
       CHARACTER*19 GRLT,GRLN
       CHARACTER*19 VCHAR
       CHARACTER*24 DEPLA,MATE,K24B,COMPOR,CHVITE,CHACCE,VECORD
       CHARACTER*24 VALK(3),BASFON
-      CHARACTER*24 SDTHET,CHFOND,BASLOC,CHDESE,CHEPSE,CHSISE,THETA
-      CHARACTER*24 NORECG
-      CHARACTER*24 BLAN24,LISSTH,LISSG,OBJMA,NOMNO,COORN
+      CHARACTER*24 SDTHET,CHFOND,BASLOC,THETA
+      CHARACTER*24 LISSTH,LISSG,OBJMA,NOMNO,COORN
       CHARACTER*24 TRAV1,TRAV2,TRAV3,STOK4
       CHARACTER*24 OBJ1,TRAV4,COURB,DEPLA1,DEPLA2
 C
@@ -77,18 +75,38 @@ C 1. PREALABLES
 C==============
 C
       CALL JEMARQ()
-C               12   345678   9012345678901234
       VCHAR  = '&&'//NOMPRO//'.CHARGES'
       COURB  = '&&'//NOMPRO//'.COURB'
-      INPSCO = '&&'//NOMPRO//'_PSCO'
-      NORECG = '&&'//NOMPRO//'_PARA_SENSI     '
-C               123456789012345678901234
-      BLAN24 = '                        '
       TRAV1='&&'//NOMPRO//'.TRAV1'
       TRAV2='&&'//NOMPRO//'.TRAV2'
       TRAV3='&&'//NOMPRO//'.TRAV3'
       TRAV4='&&'//NOMPRO//'.TRAV4'
       STOK4='&&'//NOMPRO//'.STOK4'
+C
+C A RESORBER (CONFLIT MESSAGES V11.2.3/11.2.4)
+C
+      IF (.FALSE.) THEN
+        CALL U2MESS('I','ALGORITH_77')
+        CALL U2MESS('I','CALCULEL3_23')
+        CALL U2MESS('I','CALCULEL3_25')
+        CALL U2MESS('I','ELEMENTS_35')
+        CALL U2MESS('I','SENSIBILITE_10')
+        CALL U2MESS('I','SENSIBILITE_11')
+        CALL U2MESS('I','SENSIBILITE_13')
+        CALL U2MESS('I','SENSIBILITE_16')
+        CALL U2MESS('I','SENSIBILITE_33')
+        CALL U2MESS('I','SENSIBILITE_35') 
+        CALL U2MESS('I','SENSIBILITE_37') 
+        CALL U2MESS('I','SENSIBILITE_4') 
+        CALL U2MESS('I','SENSIBILITE_71')
+        CALL U2MESS('I','SENSIBILITE_73') 
+        CALL U2MESS('I','SENSIBILITE_8')
+        CALL U2MESS('I','SENSIBILITE_81')
+        CALL U2MESS('I','SENSIBILITE_95') 
+        CALL U2MESS('I','SENSIBILITE_96')
+        CALL U2MESS('I','UTILITAI4_88')
+      ENDIF
+
 C
 C     ===============================
 C       2. RECUPERATION DES OPERANDES
@@ -103,10 +121,8 @@ C
 C     -----------------------------------------------------
 C     2.1. LE CONCEPT DE SORTIE, SON TYPE, LA COMMANDE
 C     -----------------------------------------------------
-      CALL GETRES(TABLE1,TYPCO,OPER)
-      IF ( NIV.GE.2 ) THEN
-        CALL U2MESK('I','RUPTURE0_3',1,TABLE1)
-      ENDIF
+      CALL GETRES(LATABL,TYPCO,OPER)
+      IF ( NIV.GE.2 ) CALL U2MESK('I','RUPTURE0_3',1,LATABL)
 C
 C     ----------------
 C     2.2. OPTION
@@ -251,8 +267,8 @@ C     2.6.2 : THETA CALCULE ????
 
          OBJ1 = MODELE//'.MODELE    .LGRF'
          CALL JEVEUO ( OBJ1, 'L', IADRMA )
-         NOMA = ZK8(IADRMA)
-         THETA=TABLE1//'_CHAM_THETA'
+         NOMA  = ZK8(IADRMA)
+         THETA = LATABL//'_CHAM_THETA'
          NOMNO = NOMA//'.NOMNOE'
          COORN = NOMA//'.COORDO    .VALE'
          CALL JEVEUO ( COORN, 'L', IADRCO )
@@ -383,71 +399,15 @@ C     ON NE PEUT PAS
 C
       ENDIF
 C
-C     -------------------------------------
-C     2.8. ==> SENSIBILITE : 2D OU 3D GLOB
-C     -------------------------------------
-C
-      IF (CAS.NE.'3D_LOCAL') THEN
-        CALL GINISE(TABLE1,NBPASE,INPSCO,NORECG,MATE,NCHA,VCHAR,NBPASS)
-        CALL JEVEUO(NORECG,'L',ADRECG)
-      ELSE
-        NBPASE=0
-        NBPASS=1
-        LATABL=TABLE1
-      ENDIF
-C
 C
 C     =======================
 C     3. CALCUL DE L'OPTION
 C     =======================
-C
-C     ======= DEBUT DE LA BOUCLE SUR LE NOMBRE DE PASSAGES =============
-      DO 30 , NRPASS = 1 , NBPASS
-C
-C       DECODAGE DES NOMS DES CONCEPTS
-C       POUR LE PASSAGE NUMERO NRPASS :
-C        . NOPASE : NOM DU PARAMETRE DE SENSIBILITE EVENTUELLEMENT
-C        . LATABL : NOM DE LA TABLE A COMPLETER
-C                   C'EST 'TABLE1' POUR UN CALCUL STANDARD, UN NOM
-C                   COMPOSE A PARTIR DE 'TABLE1' ET 'NOPASE' POUR
-C                   UN CALCUL DE SENSIBILITE
-C        . LERES0 : IDEM POUR RESUCO
-C        . OPTIO1 : C'EST OPTION POUR UN CALCUL STANDARD, 'CALC_DG' POUR
-C                   UN CALCUL DE SENSIBILITE
-        OPTIO1 = OPTION
-
-        IF (CAS.NE.'3D_LOCAL') THEN
-
-          NOPASE = ZK24(ADRECG+2*NRPASS-1) (1:8)
-          LATABL = ZK24(ADRECG+2*NRPASS-2) (1:8)
-C
-C
-C         DANS LE CAS D'UN CALCUL STANDARD :
-
-          IF (NOPASE.EQ.' ') THEN
-
-            TYPESE = 0
-            CHDESE=' '
-            CHEPSE=' '
-            CHSISE=' '
 
 C
-          ELSE
-
-
-          ENDIF
+C     DETERMINATION AUTOMATIQUE DE THETA (CAS 3D LOCAL)
 C
-          IF ( NIV.GE.2 ) THEN
-            IF ( NOPASE.NE.'        ' ) THEN
-              CALL U2MESK('I','SENSIBILITE_71',1,NOPASE)
-            ENDIF
-          ENDIF
-
-        ENDIF
-C
-C       DETERMINATION AUTOMATIQUE DE THETA (CAS 3D LOCAL)
-C
-        IF (CAS.EQ.'3D_LOCAL'.AND.IFISS.NE.0) THEN
+      IF (CAS.EQ.'3D_LOCAL'.AND.IFISS.NE.0) THEN
 
 C         ON A TOUJOURS À FAIRE À UN FOND OUVERT
           CONNEX = .FALSE.
@@ -464,7 +424,7 @@ C         ON A TOUJOURS À FAIRE À UN FOND OUVERT
      &                BASFON,NDEG,MILIEU,PAIR,NDIMTE)
           CALL XCOURB(GRLT,GRLN,NOMA,MODELE,COURB)
 
-        ELSEIF (CAS.EQ.'3D_LOCAL'.AND.IFOND.NE.0) THEN
+      ELSEIF (CAS.EQ.'3D_LOCAL'.AND.IFOND.NE.0) THEN
 
          CALL JEVEUO(CHFOND,'L',IADNUM)
          IF (ZK8(IADNUM+1-1).EQ.ZK8(IADNUM+LNOFF-1)) THEN
@@ -491,30 +451,30 @@ C         ON A TOUJOURS À FAIRE À UN FOND OUVERT
      &              MILIEU,NDIMTE,PAIR)
          CALL GIMPT2(THETAI,NBRE,TRAV1,TRAV2,TRAV3,CHFOND,STOK4,LNOFF,0)
 
-        ENDIF
+      ENDIF
 
 C       MENAGE
-        IF(NDIM.EQ.3)THEN
-          CALL JEEXIN(TRAV1,IRET)
-          IF (IRET.NE.0) CALL JEDETR(TRAV1)
-          CALL JEEXIN(TRAV2,IRET)
-          IF (IRET.NE.0) CALL JEDETR(TRAV2)
-          CALL JEEXIN(TRAV3,IRET)
-          IF (IRET.NE.0) CALL JEDETR(TRAV3)
-          CALL JEEXIN(STOK4,IRET)
-          IF (IRET.NE.0) CALL JEDETR(STOK4)
-        ENDIF
+      IF(NDIM.EQ.3)THEN
+        CALL JEEXIN(TRAV1,IRET)
+        IF (IRET.NE.0) CALL JEDETR(TRAV1)
+        CALL JEEXIN(TRAV2,IRET)
+        IF (IRET.NE.0) CALL JEDETR(TRAV2)
+        CALL JEEXIN(TRAV3,IRET)
+        IF (IRET.NE.0) CALL JEDETR(TRAV3)
+        CALL JEEXIN(STOK4,IRET)
+        IF (IRET.NE.0) CALL JEDETR(STOK4)
+      ENDIF
 
 C ---   CREATION DE LA TABLE
 C
-        CALL CGCRTB(LATABL,OPTIO1,NDIM,LMELAS,CAS,LLEVST,
-     &              NBPARA,LINOPA,LITYPA)
+      CALL CGCRTB(LATABL,OPTION,NDIM,LMELAS,CAS,LLEVST,
+     &            NBPARA,LINOPA,LITYPA)
 C
 C       --------------------------------------------------------------
 C       3.1. ==> CALCUL DE LA FORME BILINEAIRE DU TAUX DE RESTITUTION
 C       --------------------------------------------------------------
 C
-        IF (OPTIO1(1:6) .EQ.'G_BILI'.OR. OPTIO1(1:5) .EQ.'G_MAX') THEN
+      IF (OPTION(1:6) .EQ.'G_BILI'.OR. OPTION(1:5) .EQ.'G_MAX') THEN
 
           DO 3111 I = 1 , LONVEC
 
@@ -577,7 +537,7 @@ C       ----------------------------------------------------
 C       3.2. ==> MAXIMISATION DU G SOUS CONTRAINTES BORNES
 C       ----------------------------------------------------
 C
-        IF (OPTIO1(1:5) .EQ.'G_MAX') THEN
+        IF (OPTION(1:5) .EQ.'G_MAX') THEN
 
           CALL GETFAC ('BORNES', NBORN )
           IF (NBORN.NE.0) THEN
@@ -615,15 +575,15 @@ C
             ENDIF
 
           ELSE
-            CALL U2MESK('F','RUPTURE0_92',1,OPTIO1)
+            CALL U2MESK('F','RUPTURE0_92',1,OPTION)
           ENDIF
         ENDIF
 C
 C       -------------------------------
-C       3.3. ==> CALCUL DE KG (3D LOC)
+C     3.3. ==> CALCUL DE KG (3D LOC)
 C       -------------------------------
 C
-        ELSE IF (CAS.EQ.'3D_LOCAL'.AND.OPTIO1.EQ.'CALC_K_G') THEN
+      ELSE IF (CAS.EQ.'3D_LOCAL'.AND.OPTION.EQ.'CALC_K_G') THEN
 
           DO 33 I = 1,LONVEC
             IORD = ZI(IVEC-1+I)
@@ -651,7 +611,7 @@ C
               CALL U2MESG('F', 'RUPTURE0_93',1,VALK,1,VALI,0,0.D0)
             ENDIF
 
-            CALL CAKG3D(OPTIO1,LATABL,MODELE,DEPLA,THETAI,MATE,COMPOR,
+            CALL CAKG3D(OPTION,LATABL,MODELE,DEPLA,THETAI,MATE,COMPOR,
      &              NCHA,ZK8(ICHA),SYMECH,CHFOND,LNOFF,BASLOC,COURB,
      &              IORD,NDEG,THLAGR,GLAGR,THLAG2,PAIR,NDIMTE,
      &              EXITIM,TIME,NBPARA,LINOPA,FISS,
@@ -659,10 +619,10 @@ C
    33     CONTINUE
 C
 C       ------------------------
-C       3.3.2. ==>OPTION CALC_K_MAX
+C     3.3.2. ==>OPTION CALC_K_MAX
 C       ------------------------
 C
-        ELSE IF (OPTIO1 .EQ.'CALC_K_MAX') THEN
+      ELSE IF (OPTION .EQ.'CALC_K_MAX') THEN
           CALL MMAXKL(LATABL,MODELE,THETAI,MATE,COMPOR,NCHA,SYMECH,
      &               CHFOND,LNOFF,BASLOC,COURB,NDEG,THLAGR,GLAGR,
      &               THLAG2,PAIR,NDIMTE,NBPARA,LINOPA,
@@ -670,10 +630,10 @@ C
      &               LMELAS,LNCAS,ZL(JNORD))
 C
 C       ------------------------
-C       3.4. ==>OPTION K_G_MODA
+C     3.4. ==>OPTION K_G_MODA
 C       ------------------------
 C
-        ELSE IF (OPTIO1 .EQ. 'K_G_MODA') THEN
+      ELSE IF (OPTION .EQ. 'K_G_MODA') THEN
 C
 C         3.4.1 ==>  K_G_MODA 2D
 C         -----------------------
@@ -694,7 +654,7 @@ C           FEM
                 PULS = ZR(IPULS)
                 PULS = SQRT(PULS)
 
-                CALL MEMOKG(OPTIO1,LATABL,MODELE,DEPLA,THETA,MATE,
+                CALL MEMOKG(OPTION,LATABL,MODELE,DEPLA,THETA,MATE,
      &                      SYMECH,FOND,IORD,PULS,NBPARA,
      &                      LINOPA)
  341           CONTINUE
@@ -718,11 +678,10 @@ C           X-FEM
                 CHVITE =' '
                 CHACCE =' '
 
-                CALL MEFICG(OPTIO1,LATABL,MODELE,DEPLA,THETA,MATE,NCHA,
-     &                      ZK8(ICHA),SYMECH,FOND,NOEUD,0.D0,
-     &                      IORD,PULS,NBPARA, LINOPA, NOPASE,
-     &                      LMELAS,
-     &                      K16BID,COMPOR)
+                CALL MEFICG(OPTION,LATABL,MODELE,DEPLA,THETA,
+     &                      MATE,NCHA,ZK8(ICHA),SYMECH,FOND,
+     &                      NOEUD,0.D0,IORD  ,PULS  ,NBPARA,
+     &                      LINOPA,LMELAS,K16BID,COMPOR)
  3422         CONTINUE
             ENDIF
 C
@@ -744,7 +703,7 @@ C         -------------------------
               PULS = SQRT(PULS)
               EXITIM = .TRUE.
 
-              CALL CAKGMO(OPTIO1,LATABL,MODELE,DEPLA,THETAI,MATE,COMPOR,
+              CALL CAKGMO(OPTION,LATABL,MODELE,DEPLA,THETAI,MATE,COMPOR,
      &                    NCHA,ZK8(ICHA),SYMECH,CHFOND,LNOFF,BASLOC,
      &                    COURB,IORD,NDEG,THLAGR,GLAGR,THLAG2,PAIR,
      &                    NDIMTE,PULS,NBPARA,LINOPA,FISS)
@@ -792,53 +751,6 @@ C
               CALL RSEXCH(RESUCO,'ACCE',IORD,CHACCE,IRET)
             ENDIF
 C
-C           RECUPERATION DES CHAMNO DE DERIVEE LAGRANGIENNE DE
-C           DEPLACEMENT DANS LA SD RESULTAT DERIVE DE TYPE EVOL_ELAS
-            IF (OPTIO1.EQ.'CALC_DG') THEN
-              CALL RSEXC2(1,1,LERES0,'DEPL',IORD,CHDESE,OPTIO1,IRET)
-              IF (IRET.GT.0) THEN
-                VALI = IORD
-                VALK (1) = 'DEPL'
-                VALK (2) = RESUCO
-                VALK (3) = NOPASE
-                CALL U2MESG('F', 'SENSIBILITE_8',3,VALK,1,VALI,0,0.D0)
-              ENDIF
-            ENDIF
-C
-            IF (OPTIO1.EQ.'CALC_DG_E'
-     &      .OR. OPTIO1.EQ.'CALC_DG_FORC'
-     &      .OR. OPTIO1.EQ.'CALC_DGG_E'
-     &      .OR. OPTIO1.EQ.'CALC_DGG_FORC'
-     &      .OR. OPTIO1.EQ.'CALC_DK_DG_E'
-     &      .OR. OPTIO1.EQ.'CALC_DK_DG_FORC') THEN
-              CALL RSEXC2(1,1,LERES0,'DEPL',IORD,CHDESE,OPTIO1,IRET)
-              IF (IRET.GT.0) THEN
-                VALI = IORD
-                VALK (1) = 'DEPL'
-                VALK (2) = RESUCO
-                VALK (3) = NOPASE
-                CALL U2MESG('F', 'SENSIBILITE_8',3,VALK,1,VALI,0,0.D0)
-              ENDIF
-              CALL RSEXC2(1,1,LERES0,'EPSI_ELGA',IORD,CHEPSE,
-     &                    OPTIO1,IRET)
-              IF (IRET.GT.0) THEN
-                VALI = IORD
-                VALK (1) = 'EPSI_ELGA'
-                VALK (2) = RESUCO
-                VALK (3) = NOPASE
-                CALL U2MESG('F', 'SENSIBILITE_8',3,VALK,1,VALI,0,0.D0)
-              ENDIF
-              CALL RSEXC2(1,1,LERES0,'SIEF_ELGA',IORD,
-     &                    CHSISE,OPTIO1,IRET)
-              IF (IRET.GT.0) THEN
-                VALI = IORD
-                VALK (1) = 'SIEF_ELGA'
-                VALK (2) = RESUCO
-                VALK (3) = NOPASE
-                CALL U2MESG('F', 'SENSIBILITE_8',3,VALK,1,VALI,0,0.D0)
-              ENDIF
-            ENDIF
-C
 C           VERIFICATION DE LA PRESENCE DU CHAMPS SIEF_ELGA
 C           LORSQUE CALCUL_CONTRAINTE='NON'
             IF(KCALC.EQ.'NON')THEN
@@ -853,56 +765,28 @@ C           LORSQUE CALCUL_CONTRAINTE='NON'
             ENDIF
 C
 C
-            IF(    (OPTIO1(1:6).EQ.'CALC_G'.AND.CAS.EQ.'2D')
-     &         .OR. OPTIO1.EQ.'CALC_DG'
-     &         .OR. OPTIO1.EQ.'CALC_DG_E'
-     &         .OR. OPTIO1.EQ.'CALC_DG_FORC'
-     &         .OR. OPTIO1.EQ.'CALC_DGG_E'
-     &         .OR. OPTIO1.EQ.'CALC_DGG_FORC'
-     &         .OR. OPTIO1.EQ.'CALC_G_GLOB') THEN
+            IF(    (OPTION(1:6).EQ.'CALC_G'.AND.CAS.EQ.'2D')
+     &         .OR. OPTION.EQ.'CALC_G_GLOB') THEN
 C
-              CALL MECALG(OPTIO1,LATABL,MODELE,DEPLA,THETA,MATE,NCHA,
-     &                    ZK8(ICHA),SYMECH,COMPOR,EXITIM,TIME,IORD,
-     &                    NBPARA,LINOPA,NOPASE,TYPESE,CHDESE,
-     &                    CHEPSE,CHSISE,CHVITE,CHACCE,LMELAS,NOMCAS,
-     &                    KCALC)
+              CALL MECALG(OPTION,LATABL,MODELE,DEPLA,THETA,
+     &                    MATE,NCHA,ZK8(ICHA),SYMECH,COMPOR,
+     &                    TIME,IORD,NBPARA,LINOPA,CHVITE,
+     &                    CHACCE,LMELAS,NOMCAS,KCALC)
 C
-            ELSEIF(OPTIO1(1:6).EQ.'CALC_G'.AND.CAS.EQ.'3D_LOCAL')THEN
+            ELSEIF(OPTION(1:6).EQ.'CALC_G'.AND.CAS.EQ.'3D_LOCAL')THEN
 C
-              CALL MECAGL(OPTIO1,LATABL,MODELE,DEPLA,THETAI,MATE,COMPOR,
+              CALL MECAGL(OPTION,LATABL,MODELE,DEPLA,THETAI,MATE,COMPOR,
      &                    NCHA,ZK8(ICHA),SYMECH,CHFOND,LNOFF,IORD,NDEG,
      &                    THLAGR,GLAGR,THLAG2,MILIEU,NDIMTE,PAIR,EXITIM,
      &                    TIME,NBPARA,LINOPA,CHVITE,CHACCE,LMELAS,
      &                    NOMCAS,KCALC)
 C
-            ELSE IF (OPTIO1(1:6).EQ.'CALC_K'.AND.CAS.EQ.'2D') THEN
+            ELSE IF (OPTION(1:6).EQ.'CALC_K'.AND.CAS.EQ.'2D') THEN
 C
-              CALL MEFICG(OPTIO1,LATABL,MODELE,DEPLA,THETA,MATE,NCHA,
-     &                    ZK8(ICHA),SYMECH,FOND,NOEUD,TIME,IORD,
-     &                    RBID,NBPARA, LINOPA, NOPASE,
-     &                    LMELAS,NOMCAS,
-     &                    COMPOR)
-C
-            ELSE IF (OPTIO1.EQ.'CALC_DK_DG_E') THEN
-              OPTIO2 = 'CALC_DG_E'
-              KCALC2 = 'OUI'
-              CALL MECALG(OPTIO2,LATABL,MODELE,DEPLA,THETA,MATE,NCHA,
-     &                    ZK8(ICHA),SYMECH,COMPOR,EXITIM,TIME,IORD,
-     &                    3,LINOPA,NOPASE,TYPESE,CHDESE,
-     &                    CHEPSE,CHSISE,CHVITE,CHACCE,LMELAS,NOMCAS,
-     &                    KCALC2)
-C
-C             LES DERIVEES DE KI ET KII SONT NULLES.
-C             ON LES AJOUTE DIRECTEMENT
-              VAL(1) = 0.D0
-              VAL(2) = 0.D0
-              CALL TBAJLI(LATABL,2,LINOPA(4),IORD,VAL,CBID,K8B,1)
-            ELSE IF (OPTIO1.EQ.'CALC_DK_DG_FORC') THEN
-              CALL MEFICG(OPTIO1,LATABL,MODELE,DEPLA,THETA,MATE,NCHA,
-     &                    ZK8(ICHA),SYMECH,FOND,NOEUD,TIME,IORD,
-     &                    RBID, NBPARA, LINOPA, NOPASE,
-     &                    LMELAS,NOMCAS,
-     &                    COMPOR)
+              CALL MEFICG(OPTION,LATABL,MODELE,DEPLA,THETA,
+     &                    MATE,NCHA,ZK8(ICHA),SYMECH,FOND,
+     &                    NOEUD,TIME,IORD,RBID,NBPARA,
+     &                    LINOPA,LMELAS,NOMCAS,COMPOR)
 
             ELSE
               CALL U2MESS('F','RUPTURE0_96')
@@ -914,17 +798,10 @@ C             ON LES AJOUTE DIRECTEMENT
  35       CONTINUE
 
         ENDIF
-C
-        IF(CAS.NE.'3D_LOCAL'.AND. NBPASE.GT.1)THEN
-          K24B = BLAN24
-          K24B(1:8)   = LATABL
-          K24B(20:24) = '.TITR'
-          CALL TITREA('T',LATABL,LATABL,K24B,'C',' ',0,'G' )
-        ELSE
-          CALL TITRE
-        ENDIF
 
- 30   CONTINUE
+      CALL TITRE
+
+
 
       CALL JEDETC('G','&&NMDORC',1)
 

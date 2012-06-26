@@ -1,5 +1,5 @@
       SUBROUTINE IRGMCE ( CHAMSY, PARTIE, IFI,
-     &                    NOMCON, NOSIMP, NOPASE,
+     &                    NOMCON,
      &                    ORDR, NBORDR,
      &                    COORD, CONNX, POINT, NOBJ, NBEL,
      &                    NBCMPI, NOMCMP, LRESU, PARA,
@@ -7,7 +7,7 @@
      &                    VERSIO, TYCHA)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
-      CHARACTER*(*) NOMCON, NOSIMP, NOPASE, CHAMSY, NOMCMP(*), PARTIE
+      CHARACTER*(*) NOMCON,CHAMSY, NOMCMP(*), PARTIE
       CHARACTER*8 NOMAOU,NOMAIN,TYCHA
       REAL*8 COORD(*),PARA(*)
       LOGICAL LRESU
@@ -27,7 +27,7 @@ C     NBRE, NOM D'OBJET POUR CHAQUE TYPE D'ELEMENT
       CHARACTER*24 NOBJ(NTYELE)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -202,7 +202,7 @@ C     *************************************************
         CALL WKVECT('&&IRGMCE.ORDRE_CMP','V V K8',NCMPME,JZCMP)
         DO 268 K=1,NCMPME
           ZK8(JZCMP+K-1)=' '
- 268    CONTINUE 
+ 268    CONTINUE
         DO 269 K = 1,NBCMPD
             ZK8(JZCMP+K-1)=NOMCMP(K)
             ZK8(JZCMP+NCMPME/2+K-1)=ZK8(JNCMP+K-1)
@@ -215,7 +215,7 @@ C     *************************************************
             K8B = NOMCMP(K)
             CALL U2MESK('F','PREPOST2_54',1,K8B)
    62       CONTINUE
-            IF(K.NE.IX) LCMP=.TRUE.  
+            IF(K.NE.IX) LCMP=.TRUE.
  269    CONTINUE
         IF(LCMP)CALL U2MESK('A','PREPOST2_55',NCMPME,ZK8(JZCMP))
         CALL JEDETR('&&IRGMCE.ORDRE_CMP')
@@ -273,7 +273,7 @@ C
 
 C ----- ECRITURE DE L'ENTETE DE View
 C       ****************************
-        CALL IRGMPV ( IFI, LRESU, NOMCON, NOSIMP, NOPASE,
+        CALL IRGMPV ( IFI, LRESU, NOMCON,
      &                CHAMSY, NBORD2, PARA, NOCMP, NBEL2,
      &                SCAL, VECT, TENS, VERSIO )
 C
@@ -322,12 +322,12 @@ C ----- VERIFICATION SUR LES COMPOSANTES FOURNIES PAR L'UTILISATEUR:
           IF(ICMP.EQ.0)THEN
             CALL U2MESK('F','PREPOST6_34',1,NOMCMP(K))
           ENDIF
- 145    CONTINUE         
+ 145    CONTINUE
 C
 C ----- ECRITURE DE L'ENTETE DE View
 C       ****************************
          NOCMP = 'TENSEUR'
-         CALL IRGMPV ( IFI, LRESU, NOMCON, NOSIMP, NOPASE,
+         CALL IRGMPV ( IFI, LRESU, NOMCON,
      &                 CHAMSY, NBORD2, PARA, NOCMP, NBEL2,
      &                 SCAL, VECT, TENS, VERSIO )
 C

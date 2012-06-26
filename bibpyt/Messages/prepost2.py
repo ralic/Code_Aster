@@ -1,4 +1,4 @@
-#@ MODIF prepost2 Messages  DATE 09/01/2012   AUTEUR SELLENET N.SELLENET 
+#@ MODIF prepost2 Messages  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,6 +35,10 @@ On ne sait pas écrire des champs par élément aux points de gauss au format CASTE
 
 4 : _(u"""
  erreur programmation
+"""),
+
+5 : _(u"""
+ Le mot-clé RESTREINT n'est pas autorisé dans EXTR_RESU en reuse.
 """),
 
 35 : _(u"""

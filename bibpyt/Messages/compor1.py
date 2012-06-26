@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 07/05/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF compor1 Messages  DATE 25/06/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -369,4 +369,10 @@ Problème lors du traitement de l'occurrence numéro %(i1)d du mot-clé facteur %(k
 71 : _(u"""
 Erreur dans le calcul du tenseur équivalent au sens de HILL.
 """),
+
+72: _(u"""
+ Le nombre de variables internes initiales est incorrect : %(i1)d ; il devrait valoir %(i2)d
+"""),
+
+
 }

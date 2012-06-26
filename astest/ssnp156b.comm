@@ -1,4 +1,4 @@
-# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE BENCHMARK NAFEMS DE VALIDATION DU CONTACT 4 LOADED PIN
 # ssnp156b.para = tps_job 120 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -102,9 +102,11 @@ CELEM=AFFE_CARA_ELEM(MODELE=MO,
                                    VALE=(0,rigi,),),)
 
 CON=DEFI_CONTACT(MODELE=MO,
-                FORMULATION='CONTINUE',
-                FROTTEMENT='COULOMB',
-                ALGO_RESO_FROT='POINT_FIXE',
+                FORMULATION    = 'CONTINUE',
+                FROTTEMENT     = 'COULOMB',
+                ALGO_RESO_CONT = 'NEWTON',
+                ALGO_RESO_GEOM = 'NEWTON',
+                ALGO_RESO_FROT = 'NEWTON',
                 ZONE=_F(GROUP_MA_MAIT='Master',
                         GROUP_MA_ESCL='Slave',
                         CONTACT_INIT='INTERPENETRE',

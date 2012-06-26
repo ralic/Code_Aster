@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE PLAQUE AVEC CONTACT ET FROTTEMENT SUR UN PLAN RIGIDE
 # ssnv128w.para = tps_job 100 mem_job 200Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -71,11 +71,12 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                             MATER = MATPLA));
 
 CHA1=DEFI_CONTACT(MODELE=MO,
-                 ALGO_RESO_CONT = 'NEWTON',
                  FORMULATION    = 'CONTINUE',
-                 ITER_GEOM_MAXI = 2,
                  FROTTEMENT     = 'COULOMB',
+                 ITER_GEOM_MAXI = 2,
                  ALGO_RESO_FROT = 'POINT_FIXE',
+                 ALGO_RESO_GEOM = 'POINT_FIXE',
+                 ALGO_RESO_CONT = 'NEWTON',
                  ZONE=_F(
                          GROUP_MA_MAIT = 'SBATI',
                          GROUP_MA_ESCL = 'SCONTA',

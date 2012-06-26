@@ -1,7 +1,7 @@
       SUBROUTINE OP0177()
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,8 +36,7 @@ C
 C
       INTEGER IBID, N1, N2, N3, IRET, IUNIFI, IFIC, NPARFI
       INTEGER VALI,IREFR,IREFI,IREFC,NREF
-      INTEGER NRPASS,NBPASS,ADRECG
-      INTEGER IAUX, JAUX, LXLGUT,NL1,NL2,NL11,NL22
+      INTEGER LXLGUT,NL1,NL2,NL11,NL22
       LOGICAL       ULEXIS
 C
       REAL*8       R8B, VALR, PREC
@@ -46,13 +45,12 @@ C
 C
       CHARACTER*1  TYPR
       CHARACTER*3  SSIGNE
-      CHARACTER*8  K8B, CRIT, CTYPE, TYPTES, TABLE0
-      CHARACTER*8 LATABL,NOPASE,MOTCLE
+      CHARACTER*8  K8B, CRIT, CTYPE, TYPTES, LATABL
+      CHARACTER*8  MOTCLE
       CHARACTER*16 NOMFI,TBTXT(2)
       CHARACTER*19 NEWTAB, NEWTA1
       CHARACTER*24 PARA
-      CHARACTER*24 NORECG,TRAVR,TRAVI,TRAVC
-      CHARACTER*38 TITRES
+      CHARACTER*24 TRAVR,TRAVI,TRAVC
       CHARACTER*80 VALK
       CHARACTER*200 LIGN1,LIGN2
       INTEGER      IARG
@@ -68,7 +66,6 @@ C
       TRAVR  = '&&'//NOMPRO//'_TRAVR          '
       TRAVI  = '&&'//NOMPRO//'_TRAVI          '
       TRAVC  = '&&'//NOMPRO//'_TRAVC          '
-      NORECG = '&&'//NOMPRO//'_RESULTA_GD     '
       MOTCLE = 'TABLE'
 C
       NOMFI = ' '
@@ -78,7 +75,7 @@ C
       ENDIF
       WRITE(IFIC,1000)
 C
-      CALL GETVID ( ' ', 'TABLE' ,1,IARG,1, TABLE0, N1 )
+      CALL GETVID ( ' ', 'TABLE' ,1,IARG,1,LATABL, N1 )
 C
       CALL GETFAC ( 'FILTRE' , NPARFI )
 C
@@ -113,32 +110,9 @@ C
       CALL GETVTX ( ' ', 'NOM_PARA', 1,IARG,1, PARA, N1 )
 C
       CALL GETVTX ( ' ', 'TYPE_TEST', 1,IARG,1, TYPTES, N1 )
-C
-C=======================================================================
-C -- SENSIBILITE : NOMBRE DE PASSAGES
-C=======================================================================
-      IAUX = 1
-      JAUX = 1
-      IBID = 1
-      CALL PSRESE(' ',IBID,IAUX,TABLE0,JAUX,NBPASS,NORECG,IRET)
-      CALL JEVEUO(NORECG,'L',ADRECG)
-C=======================================================================
-C
-      DO 60,NRPASS = 1,NBPASS
 
-C      POUR LE PASSAGE NUMERO NRPASS :
-C      . NOM DU CHAMP DE RESULTAT OU DE GRANDEUR
-C      . NOM DU PARAMETRE DE SENSIBILITE
-
-      LATABL = ZK24(ADRECG+2*NRPASS-2) (1:8)
-      NOPASE = ZK24(ADRECG+2*NRPASS-1) (1:8)
       LIGN1  = ' '
       LIGN2  = ' '
-      IF (NOPASE.EQ.' ') THEN
-        TITRES = ' '
-      ELSE
-        TITRES = 'SENSIBILITE AU PARAMETRE '//NOPASE
-      END IF
 
 C
 C     ------------------------------------------------------------------
@@ -158,14 +132,6 @@ C     ------------------------------------------------------------------
       LIGN2(1:NL2+16)=LIGN2(1:NL2-1)//' '//PARA(1:16)
       LIGN1(NL1+17:NL1+17)='.'
       LIGN2(NL2+17:NL2+17)='.'
-      IF(NOPASE.NE.' ')THEN
-        NL1 = LXLGUT(LIGN1)
-        NL2 = LXLGUT(LIGN2)
-        LIGN1(1:NL1+16)=LIGN1(1:NL1-1)//' TITRE'
-        LIGN2(1:NL2+33)=LIGN2(1:NL2-1)//' '//TITRES
-        LIGN1(NL1+17:NL1+17)='.'
-        LIGN2(NL2+34:NL2+34)='.'
-      ENDIF
 
 
       IF ( NPARFI .NE. 0 ) THEN
@@ -265,7 +231,7 @@ C
  9999 CONTINUE
       IF ( NPARFI .NE. 0 )  CALL DETRSD ( 'TABLE' , NEWTA1 )
       WRITE (IFIC,*)' '
-   60 CONTINUE
+
 
 C
 1000  FORMAT(/,80('-'))
