@@ -1,14 +1,14 @@
       SUBROUTINE I3CRAD(K,F,A,NBA,T,R1,R2)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       INTEGER K,F,NBA,A
       REAL*8  R1,R2,T
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -40,6 +40,8 @@ C
 C
 C======================================================================
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       ZERO = 0.0D0
       UN   = 1.0D0
       DEUX = 2.0D0

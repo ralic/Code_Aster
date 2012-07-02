@@ -1,7 +1,7 @@
       SUBROUTINE INER81(NOMRES,CLASSE,BASMOD,NOMMAT)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,6 +33,11 @@ C
 C
 C
       INCLUDE 'jeveux.h'
+C-----------------------------------------------------------------------
+      INTEGER I ,IA ,IAD ,IBID ,IDBASE ,IDDEEQ ,IEQ
+      INTEGER IER ,IF ,IRET ,LDREF ,LDRES ,LMAT ,LTVEC1
+      INTEGER LTVEC2 ,LTVEC3 ,MXDDL ,NBDEF ,NEQ
+C-----------------------------------------------------------------------
       PARAMETER     (MXDDL=6)
       CHARACTER*8   NOMDDL(MXDDL)
       CHARACTER*1  CLASSE
@@ -42,6 +47,7 @@ C
       CHARACTER*14 NUM
       CHARACTER*24  NOMRES
       CHARACTER*24 VALK
+      REAL*8 DDOT
 C
 C-----------------------------------------------------------------------
       DATA PGC /'INER81'/

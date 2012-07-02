@@ -1,10 +1,10 @@
       FUNCTION FITOF(PHI,F1,F2,AMOR,HORIG)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/03/98   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -29,6 +29,9 @@ C IN  :HORIG    C16 :DECALAGE DE L'ORIGINE POUR LES ANGLES
 C     ------------------------------------------------------------------
       REAL*8 PHI,F1,F2,F3,EPS,PHI1,PHI2,PHI3,DF,FITOF,AMOR,FX1,FX2
       COMPLEX*16 H1,H2,H3,HORIG
+C-----------------------------------------------------------------------
+      REAL*8 PHASE 
+C-----------------------------------------------------------------------
       EPS=0.000001D0
       FX1=F1
       FX2=F2

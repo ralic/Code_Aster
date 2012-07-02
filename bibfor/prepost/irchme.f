@@ -4,7 +4,7 @@
      &                    LVARIE, CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF PREPOST  DATE 02/07/2012   AUTEUR SELLENET N.SELLENET 
 C RESPONSABLE SELLENET N.SELLENET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -186,6 +186,14 @@ C
           ENDIF
           CALL JEEXIN ( MODEL1//'.MAILLE', IRET)
           IF(IRET.EQ.0)THEN
+               IF ( NORESU.NE.' ' ) THEN
+                  CALL RSADPA(NORESU,'L',1,'MODELE',NUMORD, 0, IAUX,
+     &                        SAUX08 )
+                  MODEL1 = ZK8(IAUX)
+                  CALL JEEXIN ( MODEL1//'.MAILLE', IRET)
+               ENDIF
+            ENDIF
+            IF(IRET.EQ.0)THEN
             VALK (1) = CHANOM
             CALL U2MESG('F', 'MED_82',1,VALK,0,0,0,0.D0)
           ENDIF

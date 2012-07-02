@@ -1,11 +1,11 @@
       SUBROUTINE IBCATA ( IER )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,13 +34,17 @@ C     ------------------------------------------------------------------
 C     --- DEFAUT POUR LES CATALOGUES D'ELEMENTS
 C     --- 3  = CATAELEM
 C     --- 4  = BASELEM
+C-----------------------------------------------------------------------
+      INTEGER ICATA ,IELTDF ,IER1 ,IOCC ,IPLACE ,IUN ,MXCATA
+      INTEGER MXDFCA ,NBCATA ,NBNOM ,NBOCC ,NBUNIT
+C-----------------------------------------------------------------------
       PARAMETER          ( IELTDF = 4 )
 C     ------------------------------------------------------------------
       PARAMETER          ( MXDFCA = 4 ,       MXCATA = 10 )
       CHARACTER*32  DFNOM(MXDFCA)     , NOM (MXCATA)
       CHARACTER*24  VALK
       INTEGER       DFUNIT(MXDFCA)    , UNITE(MXCATA)
-      INTEGER      IARG
+      INTEGER      IARG,I
 C     ------------------------------------------------------------------
 C     OPTIONS PAR DEFAUT :
 C

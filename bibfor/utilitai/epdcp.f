@@ -1,8 +1,8 @@
       SUBROUTINE EPDCP(TC,TD,SIGI,EPSI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -30,13 +30,16 @@ C                  GRANDE CONTRAINTE EQUIVALENTES
 C
 C
 C ----------------------------------------------------------------------
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       REAL*8 TC(6),TD(6),TR(6),TU(6),VECP(3,3),VECINT(3)
       REAL*8 EQUI(3),SIGI,EPSI,JACAUX(3),T(3,3)
 
       REAL*8 TOL,TOLDYN
       INTEGER NBVEC,NPERM
       INTEGER TYPE,IORDRE
+C-----------------------------------------------------------------------
+      INTEGER I ,K ,NITJAC 
+C-----------------------------------------------------------------------
       DATA NPERM,TOL,TOLDYN/20,1.D-10,1.D-2/
 C ----------------------------------------------------------------------
 

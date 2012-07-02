@@ -1,5 +1,5 @@
       SUBROUTINE FGTAES(NOMMAT,NOMNAP,NBCYCL,EPSMIN,EPSMAX,DOM)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*)     NOMMAT,NOMNAP
       REAL*8                          EPSMIN(*),EPSMAX(*)
@@ -7,7 +7,7 @@
       INTEGER                  NBCYCL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,6 +44,10 @@ C
       REAL*8       NRUPT,DELTA,DNAP,EPMAX,VALP(2),VAL(10)
       REAL*8       SALT,X,RE,SLMODI,Y
       LOGICAL ENDUR
+C-----------------------------------------------------------------------
+      INTEGER I ,IER ,NBPAR 
+      REAL*8 RBID ,ZERO 
+C-----------------------------------------------------------------------
       DATA ZERO /1.D-13/
 C
       CALL JEMARQ()

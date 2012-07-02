@@ -1,8 +1,8 @@
       SUBROUTINE DEFSTA(NMRESZ,NUMRFZ,RAILDZ,LDDL,NOCMP,NBFOR,
      &                  NBDEF,TYDEF,INORD)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,6 +48,11 @@ C
 C
 C
       INCLUDE 'jeveux.h'
+C-----------------------------------------------------------------------
+      INTEGER I ,IADVAL ,IBID ,IER ,INORD ,IRT ,LMAT 
+      INTEGER LTCHAM ,LTCVN ,NBDEF ,NBFOR ,NBPABM ,NEQ ,NEQR 
+
+C-----------------------------------------------------------------------
       PARAMETER    (NBPABM=9)
 C
       INTEGER       LDDL(NBFOR,NBDEF),LDPAR(NBPABM)
@@ -143,7 +148,7 @@ C
 C        CHAMNO(20:24)  = '.REFE'
 
 C
-        CALL RSNOCH(NOMRES,DEPL,INORD,' ')
+        CALL RSNOCH(NOMRES,DEPL,INORD)
 C
 C ----- STOCKAGE DES PSEUDO PARAMETRES
 C

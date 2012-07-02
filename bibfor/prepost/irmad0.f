@@ -1,11 +1,11 @@
       SUBROUTINE IRMAD0 ( IFC, VERSIO, NSTAT, CHAMNO, NOMSYM )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER                  VERSIO, NSTAT
       CHARACTER*(*)                       CHAMNO(*) , NOMSYM
 C--------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,6 +36,11 @@ C
       CHARACTER*24  NOMNU
 C     ------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IAD ,IADESC ,IAEC ,IANUEQ ,IAPRNO ,IAREFE 
+      INTEGER IBID ,IER ,IFC ,INO ,IRET ,ITYPE ,JNO 
+      INTEGER JNU ,NBEC ,NBNO ,NCMPMX ,NEC 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       CHAMN = CHAMNO(1)
 C

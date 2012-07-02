@@ -1,12 +1,12 @@
       SUBROUTINE IRPARA(RESU,FORM,IFI,NBORDR,ORDR,NBPA,NOMPAR,CECR)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*)                               NOMPAR(*)
       CHARACTER*(*)                                            CECR
       CHARACTER*(*)       RESU,FORM
       INTEGER                          NBORDR,ORDR(*),NBPA
 C     ------------------------------------------------------------------
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -48,6 +48,13 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C
 C     --- INITIALISATION ---
+C-----------------------------------------------------------------------
+      INTEGER I ,IAD ,IEC ,IECI ,IECR ,IFI ,IK16 
+      INTEGER IK24 ,IK32 ,IK8 ,IK80 ,IORD ,IPA ,ISNNEM 
+      INTEGER LK16PA ,LK24PA ,LK32PA ,LK80PA ,LK8PA ,LNIPA ,LNRPA 
+      INTEGER NECK16 ,NECK24 ,NECK32 ,NECK8 ,NECK80 
+      REAL*8 R8VIDE 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       IUNDF  = ISNNEM()
       RUNDF  = R8VIDE()

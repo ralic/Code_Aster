@@ -1,8 +1,8 @@
         SUBROUTINE LIRITM(IFL,ICL,IV,RV,CV,CNL,DEBLIG,ILEC)
-        IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/01/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,8 @@ C       ----------------------------------------------------------------
         CHARACTER*16    NOP
         COMMON          /OPMAIL/        NOP
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
         IF(DEBLIG.EQ.-1)THEN
         CALL LIRLIG(IFL,CNL,LIG,ILEC)
         IDEB   = 1

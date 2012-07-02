@@ -1,7 +1,7 @@
       SUBROUTINE DMGMOD(NOMSYM,NOMSD,NOMSD2,NOMMAT,
      &                  NBORDR,JORDR,JCOEF,NBPT,NTCMP,
      &                  NUMCMP,IMPR,VDOMAG)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*8       NOMMAT
       CHARACTER*16      NOMSYM
@@ -11,7 +11,7 @@
       INTEGER           NTCMP,IMPR,NBORDR,JORDR,JCOEF
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,8 +46,6 @@ C              NUMCMP    NUMERO(S) DE LA(DES) COMPOSANTE(S) DE EQUI_GD
 C              IMPR      NIVEAU IMPRESSION
 C       OUT    VDOMAG    VECTEUR DOMMAGE AUX POINTS
 C       ----------------------------------------------------------------
-      CHARACTER*6        PGC
-      COMMON  / NOMAJE / PGC
 C       ---------------------------------------------------------------
       CHARACTER*8     K8B,NOMRM(1),NOMPAR,KCORRE,NOMFON
       CHARACTER*10    NOMPHE
@@ -67,6 +65,10 @@ C
 C
 C ---   VECTEURS DE TRAVAIL
 C
+C-----------------------------------------------------------------------
+      INTEGER IK ,IVALF
+      REAL*8 R8MIEM
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 
       NOMDMG = '&&OP0151.EQUI_GD'

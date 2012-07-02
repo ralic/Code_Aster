@@ -1,8 +1,8 @@
        SUBROUTINE TRAN63(C66,C3333,ICAS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,10 +21,12 @@ C=======================================================================
 C ICAS  = 1 ---> PASSAGE D'UN TENSEUR D'ORDRE 4 A UN TENSEUR D'ORDRE 2
 C       = 2 ---> PASSAGE D'UN TENSEUR D'ORDRE 2 A UN TENSEUR D'ORDRE 4
 C
-      IMPLICIT REAL*8(A-H,O-Z)
+      IMPLICIT NONE
       INTEGER ICAS,I1(6),J1(6),IJ,KL,IJ1(3,3),I,J,K,L
       REAL*8 C3333(3,3,3,3),C66(6,6)
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       IF(ICAS.EQ.1)THEN
           DO 10 K=1,3
              I1(K)=K

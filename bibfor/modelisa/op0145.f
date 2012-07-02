@@ -1,7 +1,7 @@
       SUBROUTINE OP0145()
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C-----------------------------------------------------------------------
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C
 C     OPERATEUR "DEFI_SPEC_TURB"
@@ -36,6 +36,13 @@ C
       CHARACTER*19  NOMU
       CHARACTER*24  VAIN, VARE, VATE, NNOE
 C
+C-----------------------------------------------------------------------
+      INTEGER IANGL ,IFO ,IFONCT ,IINTER ,IMC ,IMCF ,IMCI 
+      INTEGER INAT ,INATUR ,INOEUD ,IOCC ,IRET ,ISPECT ,JVAVF 
+      INTEGER LFON ,LNAT ,LNNOE ,LNOM ,LONG ,LVAIN ,LVARE 
+      INTEGER LVATE ,NBMCL ,NNAP 
+      REAL*8 RBID 
+C-----------------------------------------------------------------------
       DATA MCFAC /'SPEC_LONG_COR_1','SPEC_LONG_COR_2',
      &            'SPEC_LONG_COR_3','SPEC_LONG_COR_4',
      &            'SPEC_CORR_CONV_1','SPEC_CORR_CONV_2',

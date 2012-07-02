@@ -1,4 +1,4 @@
-# MODIF  DATE 30/01/2012   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE BARREAU FISSURE AVEC X-FEM
 # ssnv195c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -19,9 +19,9 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='SSNV195C',NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NOM='SSNV195C',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
 
-MAILLE=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
+MAILLE=LIRE_MAILLAGE(FORMAT='MED',INFO=1);
 
 MAILLE=DEFI_GROUP(reuse = MAILLE,
                   MAILLAGE = MAILLE,
@@ -75,7 +75,7 @@ MAILLE=DEFI_GROUP(reuse = MAILLE,
                                 VECT_NORMALE = (0.0,0.0,1.0),
                                 PRECISION = 1E-3,
                                 ),
-#                              _F(GROUP_MA='VOL',),                            
+#                              _F(GROUP_MA='VOL'),                            
                             )    
            );
 
@@ -85,17 +85,17 @@ MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLE,COPIE=_F(),
 
 MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                     MAILLAGE=MAILLAGE,
-                    CREA_GROUP_NO=_F(GROUP_MA='VOL',),   
+                    CREA_GROUP_NO=_F(GROUP_MA='VOL'),   
                     );
 
 MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAGE,
-                       LINE_QUAD=_F(GROUP_MA='VOL',),
+                       LINE_QUAD=_F(GROUP_MA='VOL'),
 );
                        
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
-                   AFFE=_F(GROUP_MA=('VOL',),
+                   AFFE=_F(GROUP_MA=('VOL'),
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='3D_XFEM_CONT',),
+                            MODELISATION='3D_XFEM_CONT'),
                      );        
 
 PENTE1=0.57735
@@ -112,12 +112,12 @@ LN2=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-PENTE2*Y-B2');
 
 FISS1=DEFI_FISS_XFEM(MODELE=MODELEIN,  
                     TYPE_DISCONTINUITE='INTERFACE',
-                    DEFI_FISS=_F(FONC_LN=LN1),);
+                    DEFI_FISS=_F(FONC_LN=LN1));
 
                     
 FISS2=DEFI_FISS_XFEM(MODELE=MODELEIN,  
                     TYPE_DISCONTINUITE='INTERFACE',
-                    DEFI_FISS=_F(FONC_LN=LN2),);
+                    DEFI_FISS=_F(FONC_LN=LN2));
                     
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
@@ -142,7 +142,7 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                                COULOMB      = 1.0,
                                SEUIL_INIT   = -2.E11,   
                                ALGO_FROT    = 'STANDARD',
-                               COEF_FROT    = 1000.,                             ), 
+                               COEF_FROT    = 1000.), 
                             _F(
                                FISS_MAIT    = FISS2,
                                INTEGRATION  = 'GAUSS',
@@ -161,14 +161,14 @@ E=100.0E6
 nu=0.
 ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
                             NU=nu,
-                            RHO=7800.0,),);
+                            RHO=7800.0));
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        MODELE=MODELEK,
-                       AFFE=(_F(GROUP_MA=('VOL',),
+                       AFFE=(_F(GROUP_MA=('VOL'),
                                 MATER=ACIER,
                                 ),
-                             ),);
+                             ));
 ZERO=0.0
 DEPX=1.E-3
 DEPY=2.E-3
@@ -184,36 +184,36 @@ CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                                  _F(GROUP_NO='face_hau',
                                     DX=ZERO,
                                     DY=ZERO,   
-                                    DZ=DEPZ,),
+                                    DZ=DEPZ),
                                  _F(GROUP_NO='face_bas',
                                     DX=ZERO,
                                     DY=ZERO,
                                     DZ=DEPZ,
                                     ),
                                  ),
-                       INFO=1,);
+                       INFO=1);
 
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       LIAISON_XFEM='OUI',
-                      CONTACT_XFEM=CTXFEM,);
+                      CONTACT_XFEM=CTXFEM);
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=1,),);
+                                    NOMBRE=1));
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,              
-                   EXCIT=(_F(CHARGE=CH1,),                    
-                          _F(CHARGE=CHXFEM,),), 
+                   EXCIT=(_F(CHARGE=CH1),                    
+                          _F(CHARGE=CHXFEM)), 
                    CONTACT  = CTXFEM,                        
                    COMP_ELAS=_F(RELATION='ELAS',
-                                GROUP_MA='VOL',),
-                   INCREMENT=_F(LIST_INST=L_INST,),
+                                GROUP_MA='VOL'),
+                   INCREMENT=_F(LIST_INST=L_INST),
                    SOLVEUR=_F(METHODE='MUMPS',
-                               PCENT_PIVOT=10),
-                   NEWTON=_F(REAC_ITER=1,),
-                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                   INFO=2,);
+                               ),
+                   NEWTON=_F(REAC_ITER=1),
+                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA'),
+                   INFO=2);
 
 
 # -------------------------------------------------------------   
@@ -227,7 +227,7 @@ MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAGE,
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),) 
+                              MODELISATION='3D')) 
 
 RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAGE,
                         MODELE_VISU   = MOD_VISU,
@@ -244,18 +244,18 @@ RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAGE,
 
 
 DEP=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
-                                GROUP_NO=('NFISSU',),
+                                GROUP_NO=('NFISSU'),
                                 RESULTAT=RES_XFEM,
                                 NOM_CHAM='DEPL',
                                 NUME_ORDRE=1,
                                 TOUT_CMP='OUI',
-                                OPERATION='EXTRACTION',),);
+                                OPERATION='EXTRACTION'));
 
 IMPR_TABLE(TABLE=DEP,
            FORMAT='AGRAF',
            FORMAT_R='1PE12.5',
            FORMAT_C='MODULE_PHASE',
-           IMPR_FONCTION='NON',);
+           IMPR_FONCTION='NON');
 
 # POUR LES DEUX FISSURES
 
@@ -265,7 +265,7 @@ TEST_TABLE(TABLE=DEP,
            VALE=ZERO,
            CRITERE='ABSOLU',
            PRECISION=1.0E-16,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEP,
            NOM_PARA='DX',
@@ -273,7 +273,7 @@ TEST_TABLE(TABLE=DEP,
            VALE=ZERO,
            CRITERE='ABSOLU',
            PRECISION=1.0E-16,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEP,
            NOM_PARA='DY',
@@ -281,7 +281,7 @@ TEST_TABLE(TABLE=DEP,
            VALE=ZERO,
            CRITERE='ABSOLU',
            PRECISION=1.0E-16,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEP,
            NOM_PARA='DY',
@@ -289,7 +289,7 @@ TEST_TABLE(TABLE=DEP,
            VALE=ZERO,
            CRITERE='ABSOLU',
            PRECISION=1.0E-16,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 
 # POUR LA PREMIERE FISSURE
@@ -302,7 +302,7 @@ LAG = CALC_TABLE(TABLE = DEP,
                   ACTION = (_F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'COOR_Z',
                                CRIT_COMP = 'LT',
-                               VALE      = 25,),),);
+                               VALE      = 25)));
 
 TEST_TABLE(TABLE=LAG,
            NOM_PARA='LAGS_C',
@@ -310,7 +310,7 @@ TEST_TABLE(TABLE=LAG,
            VALE=LAREF,
            CRITERE='RELATIF',
            PRECISION=1.E-6,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=LAG,
            NOM_PARA='LAGS_C',
@@ -318,7 +318,7 @@ TEST_TABLE(TABLE=LAG,
            VALE=LAREF,
            CRITERE='RELATIF',
            PRECISION=1.E-6,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=LAG,
            NOM_PARA='LAGS_F1',
@@ -326,7 +326,7 @@ TEST_TABLE(TABLE=LAG,
            VALE=LA1REF,
            CRITERE='ABSOLU',
            PRECISION=1.E-12,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=LAG,
            NOM_PARA='LAGS_F1',
@@ -334,7 +334,7 @@ TEST_TABLE(TABLE=LAG,
            VALE=LA1REF,
            CRITERE='ABSOLU',
            PRECISION=1.E-12,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=LAG,
            NOM_PARA='LAGS_F2',
@@ -342,7 +342,7 @@ TEST_TABLE(TABLE=LAG,
            VALE=LA2REF,
            CRITERE='RELATIF',
            PRECISION=1.E-12,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=LAG,
            NOM_PARA='LAGS_F2',
@@ -350,7 +350,7 @@ TEST_TABLE(TABLE=LAG,
            VALE=LA2REF,
            CRITERE='RELATIF',
            PRECISION=1.E-12,
-           REFERENCE='ANALYTIQUE',); 
+           REFERENCE='ANALYTIQUE'); 
 
 
 # POUR LA DEUXIEME FISSURE
@@ -359,11 +359,11 @@ DEP2P = CALC_TABLE(TABLE = DEP,
                   ACTION = (_F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'NOEUD',
                                CRIT_COMP = 'REGEXP',
-                               VALE_K    = 'N[^P]',),
+                               VALE_K    = 'N[^P]'),
                             _F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'COOR_Z',
                                CRIT_COMP = 'GT',
-                               VALE      = 25,),),);
+                               VALE      = 25)));
 
 TEST_TABLE(TABLE=DEP2P,
            NOM_PARA='DZ',
@@ -371,7 +371,7 @@ TEST_TABLE(TABLE=DEP2P,
            VALE=ZERO,
            CRITERE='ABSOLU',
            PRECISION=1.0E-16,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEP2P,
            NOM_PARA='DZ',
@@ -379,17 +379,17 @@ TEST_TABLE(TABLE=DEP2P,
            VALE=ZERO,
            CRITERE='ABSOLU',
            PRECISION=1.0E-16,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 DEP2M = CALC_TABLE(TABLE = DEP,
                   ACTION = (_F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'NOEUD',
                                CRIT_COMP = 'REGEXP',
-                               VALE_K    = 'N[^M]',),
+                               VALE_K    = 'N[^M]'),
                             _F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'COOR_Z',
                                CRIT_COMP = 'GT',
-                               VALE      = 25,),),);
+                               VALE      = 25)));
 
 TEST_TABLE(TABLE=DEP2M,
            NOM_PARA='DZ',
@@ -397,7 +397,7 @@ TEST_TABLE(TABLE=DEP2M,
            VALE=DEPZ,
            CRITERE='RELATIF',
            PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEP2M,
            NOM_PARA='DZ',
@@ -405,6 +405,6 @@ TEST_TABLE(TABLE=DEP2M,
            VALE=DEPZ,
            CRITERE='RELATIF',
            PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 FIN();

@@ -1,9 +1,9 @@
       SUBROUTINE PMPPR(AMAT,NA1,NA2,KA,BMAT,NB1,NB2,KB,
      &                 CMAT,NC1,NC2)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -23,7 +23,7 @@ C    P. RICHARD     DATE 12/03/91
 C-----------------------------------------------------------------------
 C  BUT:  PRODUIT DE DEUX MATRICES STOCKEE PLEINE AVEC PRISE EN COMPTE
 C DE TRANSPOSITION PAR L'INTERMEDIAIRE D'INDICATEUR K
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C-----------------------------------------------------------------------
 C
@@ -48,6 +48,10 @@ C
 C
 C   CAS SANS TRANSPOSITION
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,J ,K ,KA ,KB ,NA1 ,NA2 
+      INTEGER NB1 ,NB2 ,NC1 ,NC2 
+C-----------------------------------------------------------------------
       IF(KA.EQ.1.AND.KB.EQ.1) THEN
         IF(NA2.NE.NB1) THEN
           CALL U2MESG('F', 'ALGORITH13_91',0,' ',0,0,0,0.D0)

@@ -4,7 +4,7 @@
      +                   DEPSTO,VITSTO,ACCSTO,PASSTO,LPSTO, IORSTO,
      +                   TEMSTO,FCHOST,DCHOST,VCHOST, ICHOST, VINT,
      +                   IREDST,DREDST )
-      IMPLICIT   REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER    IORSTO(*),IREDST(*),SAREDI(*),ICHOST(*)
       REAL*8     DEPGEN(*),VITGEN(*),ACCGEN(*),DEPSTO(*),VITSTO(*),
      +           SAUCHO(NBCHOC,*),SAURED(*),DREDST(*),PASSTO(*),
@@ -13,9 +13,9 @@
       LOGICAL LPSTO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/03/2000   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -35,6 +35,11 @@ C
 C     ARCHIVAGE DES VALEURS
 C     ------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER IC ,IM ,IND ,IPAS ,IR ,ISTO1 ,ISTO2 
+      INTEGER ISTO3 ,NBCHOC ,NBMODE ,NBREDE ,NBSCHO ,NDEC 
+      REAL*8 DT ,T 
+C-----------------------------------------------------------------------
       IORSTO(ISTO1+1) = IPAS
       TEMSTO(ISTO1+1) = T
       NDEC = NBCHOC*ISTO1

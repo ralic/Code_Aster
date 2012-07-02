@@ -1,8 +1,8 @@
       SUBROUTINE DHFMSS(IND,VECTT,DVECTT,DHSFM,DHSS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 17/12/2007   AUTEUR DESROCHES X.DESROCHES 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -21,7 +21,7 @@ C ======================================================================
 C
 C  CE PROGRAMME EST LA DERIVEE PAR RAPPORT A L'EPAISSEUR DE HFMSS
 C
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER IND
       REAL*8 VECTT(3,3),DVECTT(3,3)
       REAL*8 DHFM(3,6),DHS(2,6),DHSFM(3,9),DHSS(2,9)
@@ -30,6 +30,8 @@ C     CONSTRUCTION DE  DHFM  :  (3,6) AUX X PTS D'INTEGRATION
 C                                        X= REDUIT OU NORMAL
 C     (DANS L'EXPRESSION DE DHFM, PAS DE COMPOSANTES VECTT(3,K))
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       DHFM(1,1)=2.D0*VECTT(1,1)*DVECTT(1,1)
       DHFM(1,2)=2.D0*VECTT(1,2)*DVECTT(1,2)
       DHFM(1,3)=2.D0*VECTT(1,3)*DVECTT(1,3)

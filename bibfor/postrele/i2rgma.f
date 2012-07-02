@@ -1,11 +1,11 @@
       SUBROUTINE I2RGMA (EPSI,SOR,SEX,ROR,REX,M1,M2,FOR,FEX,
      +                   TSOR,TSEX,TROR,TREX,TFOR,TFEX,TM1,TM2,ADR)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -29,6 +29,9 @@ C
       LOGICAL TROUVE,DEJALA
       REAL*8  S
 C
+C-----------------------------------------------------------------------
+      INTEGER M1 ,M2 
+C-----------------------------------------------------------------------
       TROUVE = .FALSE.
       DEJALA = .FALSE.
       S      = -1.0D0

@@ -2,9 +2,9 @@
      &                      TCHOCT,TCHOCM,NBREBO,TREBOT,TREBOM)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/06/96   AUTEUR KXBADNG T.FRIOU 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -34,9 +34,15 @@ C OUT : TREBOM : TEMPS DE REBOND MOYEN
 C OUT : TCHOCT : TEMPS DE CHOC CUMULE
 C ----------------------------------------------------------------------
 C
-         IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
          REAL*8   FN(*), T(*)
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,ICHOC ,IDEBUR ,IDEBUT ,IDECH ,IFIN ,IFINR 
+      INTEGER IREBO ,NBCHOC ,NBPT ,NBREBO 
+      REAL*8 OFFSET ,TCHMAX ,TCHMIN ,TCHOC ,TCHOCM ,TCHOCT ,TREBO 
+      REAL*8 TREBOM ,TREBOT ,ZERO 
+C-----------------------------------------------------------------------
          ZERO   = 0.D0
          NBCHOC = 0
          NBREBO = 0

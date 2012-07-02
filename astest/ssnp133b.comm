@@ -1,4 +1,4 @@
-# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE TEST DES ELEMENTS A DISCONTINUITE SUR UNE PLAQUE TROUEE
 # ssnp133b.para = tps_job 100 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -78,7 +78,7 @@ MO = AFFE_MODELE(
            GROUP_MA     = 'JOINT',
            PHENOMENE    = 'MECANIQUE',
            MODELISATION = 'PLAN_ELDI'),
-        ), )
+        ))
 
 #--------------------------------------------------------------
 # DEFINITION DES PARAMETRES MATERIAUX
@@ -125,7 +125,7 @@ SYMETRIE = AFFE_CHAR_MECA(
       GROUP_NO = 'SYME_BD',
       DY=0.0,
       ),
-    ),  )
+    ))
 
 # EFFORT IMPOSE SUR LA SURFACE SUPERIEURE DE LA PLAQUE
 TRACTION = AFFE_CHAR_MECA(
@@ -140,12 +140,12 @@ TRACTION = AFFE_CHAR_MECA(
 
 INSTANTS = DEFI_LIST_REEL(
                           DEBUT = 0.,
-                          INTERVALLE = (_F(JUSQU_A =  tfin, NOMBRE = nbpas), ),
+                          INTERVALLE = (_F(JUSQU_A =  tfin, NOMBRE = nbpas)),
                           )
 
 INS_ARCH = DEFI_LIST_REEL(
                           DEBUT = 0.,
-                          INTERVALLE = (_F(JUSQU_A =  tfin, NOMBRE = nbpas_arch), ),
+                          INTERVALLE = (_F(JUSQU_A =  tfin, NOMBRE = nbpas_arch)),
                           )
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INSTANTS ),
@@ -154,7 +154,7 @@ DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INSTANTS ),
                   SUBD_PAS  = 10,
                   SUBD_PAS_MINI = 1.E-8,
                   SUBD_NIVEAU=10,
-                                 ),)
+                                 ))
 
 EVOL = STAT_NON_LINE(
   MODELE = MO,
@@ -170,7 +170,7 @@ EVOL = STAT_NON_LINE(
     _F(RELATION = 'ELAS'      , GROUP_MA = 'MATIERE'),
     _F(RELATION = 'CZM_EXP',    GROUP_MA = 'JOINT'  ),
     ),
-  INCREMENT = _F(LIST_INST = DEFLIST,),
+  INCREMENT = _F(LIST_INST = DEFLIST),
   PILOTAGE  = _F (
     TYPE           = 'PRED_ELAS',
     GROUP_MA       = 'JOINT',
@@ -187,7 +187,7 @@ EVOL = STAT_NON_LINE(
     RESI_GLOB_RELA = 1.E-6,
     ITER_GLOB_MAXI = 12,
     ),
-  SOLVEUR    = _F(METHODE = 'MUMPS', PCENT_PIVOT = 100),
+  SOLVEUR    = _F(METHODE = 'MUMPS'),
   ARCHIVAGE = _F(
     LIST_INST      = INS_ARCH
     )
@@ -240,45 +240,45 @@ FY = RECU_FONCTION ( TABLE  = FORCE,
 #--------------------------------------------------------------
 
 TEST_TABLE(TABLE=TAB_U,
-              FILTRE=(_F(NOM_PARA='INST',VALE=50,),),
+              FILTRE=(_F(NOM_PARA='INST',VALE=50)),
               NOM_PARA='DY',
               VALE=3.60651E-03,
               REFERENCE='NON_REGRESSION')
 TEST_TABLE(TABLE=FORCE,
-              FILTRE=(_F(NOM_PARA='INST',VALE=50,),),
+              FILTRE=(_F(NOM_PARA='INST',VALE=50)),
               NOM_PARA='DY',
               VALE=5.78832E+07,
               REFERENCE='NON_REGRESSION')
 
 TEST_TABLE(TABLE=TAB_U,
-              FILTRE=(_F(NOM_PARA='INST',VALE=75,),),
+              FILTRE=(_F(NOM_PARA='INST',VALE=75)),
               NOM_PARA='DY',
               VALE=3.54604E-03,
               REFERENCE='NON_REGRESSION')
 TEST_TABLE(TABLE=FORCE,
-              FILTRE=(_F(NOM_PARA='INST',VALE=75,),),
+              FILTRE=(_F(NOM_PARA='INST',VALE=75)),
               NOM_PARA='DY',
               VALE=5.11117E+07,
               REFERENCE='NON_REGRESSION')
 
 TEST_TABLE(TABLE=TAB_U,
-              FILTRE=(_F(NOM_PARA='INST',VALE=100,),),
+              FILTRE=(_F(NOM_PARA='INST',VALE=100)),
               NOM_PARA='DY',
               VALE=3.39435E-03,
               REFERENCE='NON_REGRESSION')
 TEST_TABLE(TABLE=FORCE,
-              FILTRE=(_F(NOM_PARA='INST',VALE=100,),),
+              FILTRE=(_F(NOM_PARA='INST',VALE=100)),
               NOM_PARA='DY',
               VALE=4.43684E+07,
               REFERENCE='NON_REGRESSION')
 
 TEST_TABLE(TABLE=TAB_U,
-              FILTRE=(_F(NOM_PARA='INST',VALE=159,),),
+              FILTRE=(_F(NOM_PARA='INST',VALE=159)),
               NOM_PARA='DY',
               VALE=4.32977E-03,
               REFERENCE='NON_REGRESSION')
 TEST_TABLE(TABLE=FORCE,
-              FILTRE=(_F(NOM_PARA='INST',VALE=159,),),
+              FILTRE=(_F(NOM_PARA='INST',VALE=159)),
               NOM_PARA='DY',
               VALE=1.01265E+07,
               REFERENCE='NON_REGRESSION')

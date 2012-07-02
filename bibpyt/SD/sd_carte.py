@@ -1,8 +1,8 @@
-#@ MODIF sd_carte SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF sd_carte SD  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,7 +27,7 @@ class sd_carte(sd_titre):
 
     DESC = AsVI(docu='CART', )
     NOMA = AsVK8(lonmax=1, )
-    VALE = AsVect(type=Parmi('C', 'K', 'R'), ltyp=Parmi(16, 24, 8), )
+    VALE = AsVect(type=Parmi('C', 'K', 'R', 'I',), ltyp=Parmi(16, 24, 8), )
 
     NOLI = Facultatif(AsVK24())
     LIMA = Facultatif(AsColl(acces='NU', stockage='CONTIG', modelong='VARIABLE', type='I', ))

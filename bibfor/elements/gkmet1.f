@@ -1,12 +1,12 @@
       SUBROUTINE GKMET1(NDEG,NNOFF,CHFOND,IADRGK,IADGKS,IADGKI,ABSCUR)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 
       INCLUDE 'jeveux.h'
       INTEGER         NDEG,NNOFF,IADRGK,IADGKS,IADGKI
       CHARACTER*24    CHFOND,ABSCUR
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,6 +51,9 @@ C
 C
 C
 
+C-----------------------------------------------------------------------
+      INTEGER I1 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 
 C    VALEURS DU POLYNOME DE LEGENDRE  POUR LES NOEUDS DU FOND DE FISSURE

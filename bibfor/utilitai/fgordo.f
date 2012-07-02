@@ -1,11 +1,11 @@
       SUBROUTINE FGORDO(NBEXTR,EXT,ORD)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       REAL*8                   EXT(*),ORD(*)
       INTEGER           NBEXTR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,6 +30,9 @@ C IN  EXT    : R   : VALEURS DES EXTREMA
 C OUT ORD    : R   : VALEURS DES EXTREMA REORDONNES
 C     ------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,J ,K 
+C-----------------------------------------------------------------------
       IF (EXT(1).LT.EXT(2)) THEN
         ORD(1)=EXT(1)
         ORD(2)=EXT(2)

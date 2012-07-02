@@ -1,6 +1,6 @@
       SUBROUTINE CGMABA (MOFAZ, IOCC, NOMAZ, LISMAZ, NBMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C.======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C       CGMABA -- TRAITEMENT DE L'OPTION BANDE
 C                 DU MOT FACTEUR CREA_GROUP_MA DE
@@ -60,6 +60,14 @@ C
       INTEGER      IARG
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
+C-----------------------------------------------------------------------
+      INTEGER IBID ,IDCOOR ,IDLIMA ,IDNOEU ,IER ,IMA ,INO 
+      INTEGER IOCC ,IRET ,NANGLE ,NB ,NBMA ,NBMAI ,NBNO 
+      INTEGER NBNOD ,NDIM ,NDIM1 ,NDIST ,NUMNOE ,NV ,NVECT 
+
+      REAL*8 D ,DIST ,R8BID ,R8DGRD ,XNORM ,XNORM2 ,ZERO 
+
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
 C --- INITIALISATIONS :

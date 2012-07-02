@@ -1,12 +1,12 @@
       SUBROUTINE VPZHES (MAT,K,L,NEQ,MXEQ,D)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER              K,L,NEQ,MXEQ
       REAL*8             MAT(MXEQ,NEQ),D(NEQ)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -31,6 +31,8 @@ C     ------------------------------------------------------------------
       INTEGER            M,I,J
       REAL*8             F,G,H,SCALE,ZERO
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       ZERO = 0.D0
       DO 45 M = K+1, L-1
          H     = ZERO

@@ -12,7 +12,7 @@
       LOGICAL LREST
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -119,7 +119,7 @@ C
           ELSE
             CALL COPISD('CHAMP_GD','G',CHAMIN,CHAMOU)
           ENDIF
-          CALL RSNOCH(RESUOU,NOMSYM,NUORDR(J),' ')
+          CALL RSNOCH(RESUOU,NOMSYM,NUORDR(J))
    20   CONTINUE
    30 CONTINUE
 

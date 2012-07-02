@@ -1,4 +1,4 @@
-# MODIF  DATE 11/06/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE VALIDATION LOI ENDO_SCALAIRE ET DU PILOTAGE PRED_ELAS POUR LA MODELISATION D_PLAN_GRAD_VARI 
 # ssnv223a.para = tps_job 70 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -156,7 +156,7 @@ EVOL = STAT_NON_LINE(
     ),
   SOLVEUR   = _F(
     METHODE     = 'MUMPS',
-    PCENT_PIVOT = 200,
+   
     ),
   ) 
 
@@ -169,7 +169,7 @@ tfin_pilo = 6.
 EVOL=CALC_CHAMP(reuse =EVOL,
                 RESULTAT=EVOL,
                 CONTRAINTE=('SIGM_ELGA','SIGM_ELNO','SIEF_ELNO'),
-                VARI_INTERNE=('VARI_ELNO','VARI_NOEU',),);
+                VARI_INTERNE=('VARI_ELNO','VARI_NOEU'));
 
 # -----------------------------------------------------
 #     EXTRACTION SUR LA FACE DROITE DU QUADGRANGLE
@@ -226,7 +226,7 @@ TEST_TABLE(REFERENCE = 'ANALYTIQUE',
     ),
   )
 
-#ENGENDRE_TEST(CO=EVOL,);
+#ENGENDRE_TEST(CO=EVOL);
 
 TEST_RESU(RESU=( 
           _F( RESULTAT= EVOL    , NOM_CHAM= 'SIGM_ELGA', NUME_ORDRE=      0,
@@ -295,6 +295,6 @@ TEST_RESU(RESU=(
           _F( RESULTAT= EVOL    , NOM_CHAM= 'SIGM_ELNO', NUME_ORDRE=      6,
               REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
               TYPE_TEST= 'SOMM_ABS', VALE=  3.0434723285011E+00 ),
-          ),)
+          ))
 
 FIN()

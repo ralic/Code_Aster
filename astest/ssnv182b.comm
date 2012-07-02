@@ -1,4 +1,4 @@
-# MODIF  DATE 30/01/2012   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 # ssnv182b.para = tps_job 180 mem_job 1400Mo mem_aster 50 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -21,25 +21,25 @@
 
 
 DEBUT(CODE=_F(NOM='SSNV182B',
-              NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'));
+              NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
 
-MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
+MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1);
 
 MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,
-                        LINE_QUAD=_F(GROUP_MA='VOL',),);
+                        LINE_QUAD=_F(GROUP_MA='VOL'));
 
 MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                     MAILLAGE=MAILLAG2,
                     CREA_GROUP_NO=_F(NOM='VOLQUAD',
-                                     GROUP_MA='VOL',),);
+                                     GROUP_MA='VOL'));
 
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
-                     AFFE=(_F(GROUP_MA=('VOL',),
+                     AFFE=(_F(GROUP_MA=('VOL'),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D_XFEM_CONT',),
-                           _F(GROUP_MA=('SURFINF','SURFSUP',),
+                              MODELISATION='3D_XFEM_CONT'),
+                           _F(GROUP_MA=('SURFINF','SURFSUP'),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),),);
+                              MODELISATION='3D')));
 
 PENTE=-1./2.
 B=10.-10.*PENTE
@@ -49,12 +49,12 @@ LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-PENTE*Y-B');
 
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     TYPE_DISCONTINUITE='INTERFACE',
-                    DEFI_FISS=_F(FONC_LN=LN,),);
+                    DEFI_FISS=_F(FONC_LN=LN));
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
                          CONTACT='P1P1A',
-                         INFO=1,);
+                         INFO=1);
 
 CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                       FORMULATION    = 'XFEM',
@@ -81,12 +81,12 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
 CHLN=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                 OPERATION='EXTR',
                 NOM_CHAM='LNNO',
-                     FISSURE=FISS,);
+                     FISSURE=FISS);
 
 IMPR_RESU(FORMAT='IDEAS',
           UNITE=30,
           RESU=_F(MAILLAGE=MAILLAG1,
-                  CHAM_GD=CHLN,),);
+                  CHAM_GD=CHLN));
 
 
 
@@ -95,44 +95,44 @@ E=100.0E6
 nu=0.
 ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
                             NU=nu,
-                            RHO=7800.0,),);
+                            RHO=7800.0));
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        MODELE=MODELEK,
-                       AFFE=_F(GROUP_MA=('VOL','SURFINF','SURFSUP',),
-                                MATER=ACIER,),);
+                       AFFE=_F(GROUP_MA=('VOL','SURFINF','SURFSUP'),
+                                MATER=ACIER));
 
 CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                    DDL_IMPO=(_F(GROUP_MA='SURFINF',
                                           DX=0.0,
                                                     DY=0.0,
-                                                    DZ=0.0,),
+                                                    DZ=0.0),
                                        _F(GROUP_MA='SURFSUP',
                                           DX=0.0,
                                                       DY=0.0,
-                                                    DZ=-1.E-6,),),
-                    INFO=1,);
+                                                    DZ=-1.E-6)),
+                    INFO=1);
 
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       LIAISON_XFEM='OUI',
-                      CONTACT_XFEM=CTXFEM,);
+                      CONTACT_XFEM=CTXFEM);
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=1,),);
+                                    NOMBRE=1));
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
-                   EXCIT=(_F(CHARGE=CH1,),
-                          _F(CHARGE=CHXFEM,),),
+                   EXCIT=(_F(CHARGE=CH1),
+                          _F(CHARGE=CHXFEM)),
                    CONTACT  = CTXFEM,       
                    COMP_ELAS=_F(RELATION='ELAS',
-                                GROUP_MA='VOL',),
-                   INCREMENT=_F(LIST_INST=L_INST,),
-                   NEWTON=_F(REAC_ITER=1,),
-                   SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,),
-                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                   INFO=1,);
+                                GROUP_MA='VOL'),
+                   INCREMENT=_F(LIST_INST=L_INST),
+                   NEWTON=_F(REAC_ITER=1),
+                   SOLVEUR=_F(METHODE='MUMPS'),
+                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA'),
+                   INFO=1);
 
 
 LAG=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
@@ -140,7 +140,7 @@ LAG=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                            # maillage 2_10_10
 #                             NOEUD=('N43','N52','N61','N70','N79','N153','N162','N171','N180','N189','N253',
 #                                    'N265','N277','N289','N328','NS271','NS272','NS276','NS346','NS347','NS366','NS421',
-#                                    'NS422','NS457','NS496','NS497','NS548','NS571','NS572','NS639','NS648','NS649','NS730',),
+#                                    'NS422','NS457','NS496','NS497','NS548','NS571','NS572','NS639','NS648','NS649','NS730'),
 
                            # maillage 5_10_10
 #                             NOEUD=('N121','N122','N123','N124','N156','N163','N177','N180','N191','N202','N212','N219','N226','N241',
@@ -148,7 +148,7 @@ LAG=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
 #                                    'N554','N575','NS526','NS527','NS531','NS536','NS541','NS546','NS697','NS698','NS732','NS733',
 #                                    'NS807','NS811','NS868','NS869','NS923','NS924','NS982','NS999','NS1039','NS1040','NS1114','NS1115',
 #                                    'NS1157','NS1186','NS1210','NS1211','NS1305','NS1306','NS1332','NS1373','NS1383','NS1384','NS1496',
-#                                    'NS1497','NS1501','NS1506',),
+#                                    'NS1497','NS1501','NS1506'),
 
                            # maillage 10_10_10
 #                              NOEUD=('N256','N257','N258','N259','N260','N261','N262','N263','N264','N336','N348','N367','N375','N390','N391','N392','N393',
@@ -158,18 +158,18 @@ LAG=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
 #                                     'NS996','NS1282','NS1283','NS1342','NS1343','NS1442','NS1446','NS1449','NS1452','NS1455','NS1458','NS1461','NS1613','NS1614','NS1693','NS1694',
 #                                     'NS1777','NS1809','NS1850','NS1870','NS1899','NS1903','NS1906','NS1944','NS1945','NS2044','NS2045','NS2112','NS2156','NS2185','NS2217','NS2234',
 #                                     'NS2254','NS2258','NS2275','NS2276','NS2395','NS2396','NS2447','NS2503','NS2507','NS2510','NS2513','NS2516','NS2519','NS2608','NS2609','NS2746',
-#                                     'NS2747','NS2751','NS2756','NS2761','NS2766','NS2771','NS2776','NS2781',),
+#                                     'NS2747','NS2751','NS2756','NS2761','NS2766','NS2771','NS2776','NS2781'),
 
                            # maillage 1_20_20
 #                             NOEUD=('N120','N138','N156','N174','N192','N210','N228','N246','N264','N282','N416','N559','N577','N595','N613','N631',
 #                                    'N649','N667','N685','N703','N721','N826','NS670','NS671','NS763','NS764','NS856','NS857','NS949','NS950','NS1042','NS1043',
-#                                    'NS1135','NS1136','NS1228','NS1229','NS1321','NS1322','NS1414','NS1415','NS1504','NS1507',),
+#                                    'NS1135','NS1136','NS1228','NS1229','NS1321','NS1322','NS1414','NS1415','NS1504','NS1507'),
 
                            # maillage 2_20_20
 #                             NOEUD=('N145','N164','N183','N202','N221','N240','N259','N278','N297','N316','N336','N546','N565','N584','N603','N622',
 #                                    'N641','N660','N679','N698','N717','N736','N941','N942','N964','N986','N1008','N1030','N1052','N1074','N1096','N1118',
 #                                    'N1140','NS1021','NS1022','NS1032','NS1176','NS1177','NS1204','NS1331','NS1332','NS1375','NS1486','NS1487','NS1546','NS1641','NS1642','NS1717',
-#                                    'NS1796','NS1797','NS1888','NS1951','NS1952','NS2059','NS2106','NS2107','NS2230','NS2261','NS2262','NS2401','NS2415','NS2416','NS2572',),
+#                                    'NS1796','NS1797','NS1888','NS1951','NS1952','NS2059','NS2106','NS2107','NS2230','NS2261','NS2262','NS2401','NS2415','NS2416','NS2572'),
 
                            # maillage 5_20_20
                              NOEUD=('N481','N486','N522','N523','N556','N565','N597','N602',
@@ -187,15 +187,15 @@ LAG=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                     'NS3779','NS3780','NS3904','NS3905','NS3987','NS4046','NS4120','NS4121',
                                     'NS4265','NS4266','NS4332','NS4403','NS4461','NS4462','NS4626','NS4627',
                                     'NS4677','NS4760','NS4802','NS4803','NS4987','NS4988','NS5022','NS5117',
-                                    'NS5142','NS5143','NS5348','NS5349','NS5359','NS5364',),
+                                    'NS5142','NS5143','NS5348','NS5349','NS5359','NS5364'),
 
 
 #                             GROUP_NO='VOLQUAD',
                              RESULTAT=UTOT1,
                              NOM_CHAM='DEPL',
                              NUME_ORDRE=1,
-                             NOM_CMP=('LAGS_C','LAGS_F1','LAGS_F2',),
-                             OPERATION='EXTRACTION',),);
+                             NOM_CMP=('LAGS_C','LAGS_F1','LAGS_F2'),
+                             OPERATION='EXTRACTION'));
 
 
 
@@ -203,7 +203,7 @@ IMPR_TABLE(TABLE=LAG,
            FORMAT='AGRAF',
            FORMAT_R='1PE12.5',
            FORMAT_C='MODULE_PHASE',
-           IMPR_FONCTION='NON',);
+           IMPR_FONCTION='NON');
 
 LAREF=-4.
 LA1REF=0.
@@ -218,7 +218,7 @@ TEST_TABLE(TABLE=LAG,
            VALE=LAREF,
            CRITERE='RELATIF',
            PRECISION=prec,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=LAG,
            NOM_PARA='LAGS_C',
@@ -226,7 +226,7 @@ TEST_TABLE(TABLE=LAG,
            VALE=LAREF,
            CRITERE='RELATIF',
            PRECISION=prec,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=LAG,
            NOM_PARA='LAGS_F1',
@@ -234,7 +234,7 @@ TEST_TABLE(TABLE=LAG,
            VALE=LA1REF,
            CRITERE='ABSOLU',
            PRECISION=prec,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=LAG,
            NOM_PARA='LAGS_F1',
@@ -242,7 +242,7 @@ TEST_TABLE(TABLE=LAG,
            VALE=LA1REF,
            CRITERE='ABSOLU',
            PRECISION=prec,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=LAG,
            NOM_PARA='LAGS_F2',
@@ -250,7 +250,7 @@ TEST_TABLE(TABLE=LAG,
            VALE=LA2REF,
            CRITERE='RELATIF',
            PRECISION=prec,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=LAG,
            NOM_PARA='LAGS_F2',
@@ -258,7 +258,7 @@ TEST_TABLE(TABLE=LAG,
            VALE=LA2REF,
            CRITERE='RELATIF',
            PRECISION=prec,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 # -------------------------------------------------------------
 #            POST-TRAITEMENT POUR LA VISUALISATION X-FEM
@@ -271,7 +271,7 @@ MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAG1,
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),)
+                              MODELISATION='3D'))
 
 RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
                         MODELE_VISU   = MOD_VISU,

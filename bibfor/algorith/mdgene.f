@@ -1,13 +1,13 @@
       SUBROUTINE MDGENE (BASEMO,NBMODE,NUMGEN,MASGEN,RIGGEN,AMOGEN,
      &                                                 NEXCIT,JVEC,IER)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER                   NBMODE,                NEXCIT,JVEC,IER
       CHARACTER*8        BASEMO,              MASGEN,RIGGEN,AMOGEN
       CHARACTER*14                     NUMGEN
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,6 +44,9 @@ C
       CHARACTER*8   BASE1, BASE2,K8B,VECGEN
       CHARACTER*14  NU1GEN,NU2GEN,NU3GEN,NU4GEN,K14B
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,JDES1 ,JDES2 ,JREF1 ,JREF2 
 C-----------------------------------------------------------------------
       DATA K8B /'        '/
       DATA K14B /'              '/

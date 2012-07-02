@@ -1,5 +1,5 @@
       SUBROUTINE RVECHC(DIM,SSCH19,SDLIEU,SDEVAL,NBNDF,CLOCF)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
       CHARACTER*19 SSCH19,SDEVAL,SDLIEU
@@ -9,7 +9,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,6 +38,9 @@ C OUT SDEVAL : K : NOM DU SOUS_CHAM_GD PRODUIT
 C     ------------------------------------------------------------------
 C
       REAL*8     EPSI
+C-----------------------------------------------------------------------
+      INTEGER NBADR 
+C-----------------------------------------------------------------------
       PARAMETER (EPSI = 1.0D-6)
 C
 C

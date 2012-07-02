@@ -1,11 +1,11 @@
         SUBROUTINE LECDBG(IFL,ICL,IV,RV,CV,CNL,MCL,NBM,NBG,
      &  DIM,NOB,IER,IRTETI)
-        IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -46,6 +46,10 @@ C
         CHARACTER*(*)   CV
         COMMON          /OPMAIL/        CMD
         SAVE B24
+C-----------------------------------------------------------------------
+      INTEGER I ,ICL ,IER ,IFL ,IFM ,IRTET ,IRTETI 
+      INTEGER IUNIFI ,IV ,NBG ,NBM ,NUMTCL 
+C-----------------------------------------------------------------------
         DATA B24        /'                        '/
         IRTETI = 0
 C

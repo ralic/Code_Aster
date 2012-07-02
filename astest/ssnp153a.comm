@@ -1,4 +1,4 @@
-# MODIF  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE SHALLOW IRONING
 # ssnp153a.para = tps_job 600 mem_job 800Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -132,7 +132,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
                              REAC_ITER=1,),
                    CONVERGENCE=_F(RESI_GLOB_MAXI=1.E1,
                                   ITER_GLOB_MAXI=20,),
-                   SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=30,),
+                   SOLVEUR=_F(METHODE='MUMPS',),
                    ARCHIVAGE=_F(LIST_INST=L_ARCH,),);
 
 

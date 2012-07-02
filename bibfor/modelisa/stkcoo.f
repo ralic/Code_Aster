@@ -1,9 +1,9 @@
         SUBROUTINE STKCOO(IFL,ICL,IV,RV,CV,CNL,MCL,NBM,NUM,COO,NNO,
      &  IRTETI)
-        IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,12 +43,14 @@ C
         CHARACTER*(*)   CV
         CHARACTER*24    COO,    NNO
 C
-      CHARACTER*6        PGC
-      COMMON  / NOMAJE / PGC
+C-----------------------------------------------------------------------
+      INTEGER I ,IAD ,ICL ,IDEC ,IFL ,IFM ,IRET
+      INTEGER IRTET ,IRTETI ,IUNIFI ,IV ,NBM ,NUM ,NUMTCL
+
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       IRTETI = 0
 C
-        PGC = 'OP0001'
         IFM = IUNIFI('MESSAGE')
 C
 C - ITEM = MOTS CLES  TYPE COORDONNEES ?

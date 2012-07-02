@@ -1,4 +1,4 @@
-# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # ======================================================================
 # TITRE  - CONSOLIDATION TERZAGHI 2D Q8
 # wtnl100c.para = tps_job 90 mem_job 128Mo ncpus 1 liste_test R
@@ -21,59 +21,59 @@
 # ======================================================================
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='WTNL100C',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON',),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='WTNL100C',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED');
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='D_PLAN_HMS',),);
+                           MODELISATION='D_PLAN_HMS'));
 #  LISTE DES INSTANTS DE CALCUL
 
 LI=DEFI_LIST_REEL(DEBUT=0.0,
                   INTERVALLE=(_F(JUSQU_A=0.0001,
-                                 NOMBRE=1,),
+                                 NOMBRE=1),
                               _F(JUSQU_A=0.001,
-                                 NOMBRE=9,),
+                                 NOMBRE=9),
                               _F(JUSQU_A=0.01,
-                                 NOMBRE=30,),
+                                 NOMBRE=30),
                               _F(JUSQU_A=0.1,
-                                 NOMBRE=40,),
+                                 NOMBRE=40),
                               _F(JUSQU_A=1.0,
-                                 NOMBRE=50,),
+                                 NOMBRE=50),
                               _F(JUSQU_A=10,
-                                 NOMBRE=45,),
+                                 NOMBRE=45),
                               _F(JUSQU_A=100,
-                                 NOMBRE=47,),
+                                 NOMBRE=47),
                               _F(JUSQU_A=1000,
-                                 NOMBRE=48,),
+                                 NOMBRE=48),
                               _F(JUSQU_A=10000,
-                                 NOMBRE=50,),),);
+                                 NOMBRE=50)));
 
-UN=DEFI_CONSTANTE(VALE=1.0,);
+UN=DEFI_CONSTANTE(VALE=1.0);
 
-ZERO=DEFI_CONSTANTE(VALE=0.0,);
+ZERO=DEFI_CONSTANTE(VALE=0.0);
 
-BIDON=DEFI_CONSTANTE(VALE=0.0,);
+BIDON=DEFI_CONSTANTE(VALE=0.0);
 #
 #
 #K=k*mu/(rhow*g)
 
-KINT=DEFI_CONSTANTE(VALE=1e-08,);
+KINT=DEFI_CONSTANTE(VALE=1e-08);
 #
 
 MATERIAU=DEFI_MATERIAU(ELAS=_F(E=10000000.0,
                                NU=0.0,
                                RHO=2800.0,
-                               ALPHA=1e-05,),
+                               ALPHA=1e-05),
                        COMP_THM='LIQU_SATU',
                        THM_INIT=_F(
                        PRE1=1000000.0,
                        PORO=0.5,
                        TEMP=293.0,
                        PRE2=100000.0,
-                       PRES_VAPE=2320.0,),
+                       PRES_VAPE=2320.0),
                        THM_DIFFU=_F(
                        RHO=2800.0,
                        BIOT_COEF=1.0,
@@ -89,57 +89,57 @@ MATERIAU=DEFI_MATERIAU(ELAS=_F(E=10000000.0,
                        D_PERM_LIQU_SATU=ZERO,
                        PERM_GAZ=BIDON,
                        D_PERM_SATU_GAZ=BIDON,
-                       D_PERM_PRES_GAZ=BIDON,),
+                       D_PERM_PRES_GAZ=BIDON),
                        THM_LIQU=_F(
                        RHO=1000.0,
                        UN_SUR_K=0.0,
                        VISC=UN,
                        D_VISC_TEMP=ZERO,
                        ALPHA=0.0001,
-                       CP=4180.0,),
+                       CP=4180.0),
                        THM_GAZ=_F(
                        MASS_MOL=0.02896,
                        CP=1000.0,
                        VISC=BIDON,
-                       D_VISC_TEMP=BIDON,),
+                       D_VISC_TEMP=BIDON),
                        THM_VAPE_GAZ=_F(
                        MASS_MOL=0.018,
                        CP=1870.0,
                        VISC=BIDON,
-                       D_VISC_TEMP=BIDON,),);
+                       D_VISC_TEMP=BIDON));
 
 CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
                      AFFE=_F(TOUT='OUI',
-                             MATER=MATERIAU,),);
+                             MATER=MATERIAU));
 
 CHAR=AFFE_CHAR_MECA(MODELE=MODELE,
                     DDL_IMPO=(_F(GROUP_NO='HAUT',
-                                 PRE1=0.0,),
+                                 PRE1=0.0),
                               _F(GROUP_NO='BAS',
                                  DX=0.0,
-                                 DY=0.0,),
+                                 DY=0.0),
                               _F(GROUP_NO='BORDVERT',
-                                 DX=0.0,),),
+                                 DX=0.0)),
                     PRES_REP=_F(GROUP_MA='FACESUP',
-                                PRES=1.0,),);
+                                PRES=1.0));
 
 linst = [0,0.0001,0.001,0.01,0.1,1.0,10.0,50.21276596,100.0,193.75,250.0];
 nbinst = len(linst);
 
 RESU1=STAT_NON_LINE(MODELE=MODELE,
                     CHAM_MATER=CHMAT0,
-                    EXCIT=_F(CHARGE=CHAR,),
+                    EXCIT=_F(CHARGE=CHAR),
                     COMP_INCR=_F(RELATION='KIT_HM',PARM_THETA=0.57,
-                                 RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL',),),
+                                 RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL')),
                     INCREMENT=_F(LIST_INST=LI,
-                                 INST_FIN=250.0,),
+                                 INST_FIN=250.0),
                     NEWTON=_F(MATRICE='TANGENTE',
-                              REAC_ITER=1,),
-                    CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
+                              REAC_ITER=1),
+                    CONVERGENCE=_F(ITER_GLOB_MAXI=10),
                     SOLVEUR=_F(METHODE='MUMPS',
-                               PCENT_PIVOT=100,),
+   ),
                     ARCHIVAGE=_F(INST=linst,
-                                 PRECISION=0.001,),);
+                                 PRECISION=0.001));
 
 
 
@@ -167,12 +167,12 @@ MAILLIN = CREA_MAILLAGE(
 
 MAILLIN=DEFI_GROUP(reuse =MAILLIN,
                    MAILLAGE=MAILLIN,
-                   CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+                   CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI'));
 
 MODELIN=AFFE_MODELE(MAILLAGE=MAILLIN,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='D_PLAN',),);
+                           MODELISATION='D_PLAN'));
 
 RESULIN = PROJ_CHAMP(
                METHODE='COLLOCATION',
@@ -195,7 +195,7 @@ for k in range(nbinst) :
                     OPERATION='EXTR',
                     RESULTAT=RESU1,
                     NOM_CHAM='DEPL',
-                    INST=linst[k],);
+                    INST=linst[k]);
 
 motcle1={}
 motcle2={}
@@ -209,10 +209,10 @@ for k in range(nbinst) :
 
   motcle1['MAJ_CHAM'].append(
   _F(TYPE_CHAM='NOEU_DEPL_R',CHAM_GD  = PRE[k],
-                                  CHAM_MAJ = PREB[k],),);
+                                  CHAM_MAJ = PREB[k]));
 
   motcle2['AFFE'].append(
-  _F(CHAM_GD=PREB[k],INST=linst[k],),);
+  _F(CHAM_GD=PREB[k],INST=linst[k]));
 
 MACR_ADAP_MAIL( ADAPTATION='MODIFICATION',DEGRE='OUI',
                 MAILLAGE_N   = MAIL,
@@ -230,7 +230,7 @@ RESULINC = PROJ_CHAMP(
                RESULTAT=RESULINB,
                MAILLAGE_1=MAILLIN2,
                MAILLAGE_2=MAILLIN,
-               NOM_CHAM ='DEPL',)
+               NOM_CHAM ='DEPL')
 
 EXTR1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               INTITULE='MAIL',
@@ -238,21 +238,21 @@ EXTR1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               NOM_CHAM='DEPL',
                               GROUP_NO='COUL_7',
 
-                              NOM_CMP='PRE1',),);
+                              NOM_CMP='PRE1'));
 
 INCNUM = FORMULE(VALE='NUMAUX+1',
-                 NOM_PARA='NUMAUX',);
+                 NOM_PARA='NUMAUX');
 
 EXTR1=CALC_TABLE(   reuse=EXTR1,
                     TABLE=EXTR1,
                     ACTION=(
                            _F(OPERATION='RENOMME',
-                              NOM_PARA=('NUME_ORDRE','NUMAUX',),),
+                              NOM_PARA=('NUME_ORDRE','NUMAUX')),
                            _F(OPERATION='OPER',
                               FORMULE=INCNUM,
-                              NOM_PARA='NUME_ORDRE',),
+                              NOM_PARA='NUME_ORDRE'),
 
-                 ),);
+                 ));
 
 EXTR2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               INTITULE='MAIL',
@@ -260,7 +260,7 @@ EXTR2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               NOM_CHAM='DEPL',
                               GROUP_NO='COUL_7',
 
-                              NOM_CMP='PRE1',),);
+                              NOM_CMP='PRE1'));
 
 EXTR2=CALC_TABLE(reuse=EXTR2,TABLE=EXTR2,
                  ACTION=(_F(OPERATION='RENOMME',NOM_PARA=('PRE1','PREPROJ')),
@@ -268,17 +268,17 @@ EXTR2=CALC_TABLE(reuse=EXTR2,TABLE=EXTR2,
                   )
 
 EXTR1=CALC_TABLE(reuse=EXTR1,TABLE=EXTR1,
-                 ACTION=(_F(OPERATION='COMB',TABLE=EXTR2,NOM_PARA=('NUME_ORDRE','NOEUD',)),
+                 ACTION=(_F(OPERATION='COMB',TABLE=EXTR2,NOM_PARA=('NUME_ORDRE','NOEUD')),
                          )
                   )
 
 DIFF = FORMULE(VALE='abs(PREPROJ-PRE1)',
-                 NOM_PARA=('PREPROJ','PRE1',),);
+                 NOM_PARA=('PREPROJ','PRE1'));
 
 TBDIF=CALC_TABLE(   TABLE=EXTR1,
                     ACTION=_F(OPERATION='OPER',
                               FORMULE=DIFF,
-                              NOM_PARA='DIFF',),);
+                              NOM_PARA='DIFF'));
 
 TEST_TABLE( TABLE     = TBDIF ,
             TYPE_TEST = 'MAX',
@@ -293,14 +293,14 @@ TEST_TABLE( TABLE     = TBDIF ,
 IMPR_RESU(RESU=_F( RESULTAT = RESULIN,
                    INST     = 250.0,
                    NOM_CHAM ='DEPL',
-                   ),)
+                   ))
 
 IMPR_RESU(FORMAT = 'IDEAS', UNITE = 30,
           RESU=_F( RESULTAT = RESULIN,
                    MAILLAGE=MAILLIN,
                    NOM_CHAM ='DEPL',
                    NOM_CMP  ='PRE1',
-                   TOUT_ORDRE = 'OUI', ) )
+                   TOUT_ORDRE = 'OUI') )
 
 
 RESULINS = PROJ_CHAMP(
@@ -309,44 +309,44 @@ RESULINS = PROJ_CHAMP(
                MODELE_1=MODELE,
                MODELE_2=MODELIN,
                NOM_CHAM ='SIEF_NOEU',
-               INST = 250.,)
+               INST = 250.)
 
 IMPR_RESU(FORMAT = 'GMSH', UNITE = 37,
           RESU=_F( RESULTAT = RESULINS,
                    MAILLAGE=MAILLIN,
                    NOM_CHAM ='SIEF_NOEU',
                    NOM_CMP  ='SIYY',
-                   INST=250., ),);
+                   INST=250.));
 
 
 #############
 SIGMA2=POST_RELEVE_T(ACTION=_F(INTITULE='SIGMA',
                             RESULTAT=RESU1,
                                            GROUP_NO ='BORDVERT',
-                                           INST = (0.0001,0.001,0.01,0.1,1.0,10.0,50.21276596,100.0,193.75,250.0,),
+                                           INST = (0.0001,0.001,0.01,0.1,1.0,10.0,50.21276596,100.0,193.75,250.0),
                             NOM_CHAM='SIEF_NOEU',
-                            NOM_CMP=('SIXX','SIYY','SIZZ','SIXY',),
-                            OPERATION='EXTRACTION',),);
+                            NOM_CMP=('SIXX','SIYY','SIZZ','SIXY'),
+                            OPERATION='EXTRACTION'));
 
 VARIN2=POST_RELEVE_T(ACTION=_F(INTITULE='VARI',
                                RESULTAT=RESU1,
                                               GROUP_NO = 'BORDVERT',
                                NOM_CHAM='VARI_NOEU',
                                TOUT_CMP='OUI',
-                                              INST=(0.0001,0.001,0.01,0.1,1.0,10.0,50.21276596,100.0,193.75,250.0,),
-                               OPERATION='EXTRACTION',),);
+                                              INST=(0.0001,0.001,0.01,0.1,1.0,10.0,50.21276596,100.0,193.75,250.0),
+                               OPERATION='EXTRACTION'));
 
 DEPLA2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                                RESULTAT=RESU1,
                                               GROUP_NO = 'BORDVERT',
-                                              INST=(0.0001,0.001,0.01,0.1,1.0,10.0,50.21276596,100.0,193.75,250.0,),
+                                              INST=(0.0001,0.001,0.01,0.1,1.0,10.0,50.21276596,100.0,193.75,250.0),
                                NOM_CHAM='DEPL',
                                               TOUT_CMP = 'OUI',
-                               OPERATION='EXTRACTION',),);
+                               OPERATION='EXTRACTION'));
 
-IMPR_TABLE(TABLE=SIGMA2,);
-IMPR_TABLE(TABLE=VARIN2,);
-IMPR_TABLE(TABLE=DEPLA2,);
+IMPR_TABLE(TABLE=SIGMA2);
+IMPR_TABLE(TABLE=VARIN2);
+IMPR_TABLE(TABLE=DEPLA2);
 
 TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    INST=0.0001,
@@ -355,7 +355,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NOEUD='NO29',
                    VALE=1.0,
                    PRECISION=0.001,
-                   REFERENCE='ANALYTIQUE',),
+                   REFERENCE='ANALYTIQUE'),
                 _F(RESULTAT=RESU1,
                    INST=0.0001,
                    NOM_CHAM='DEPL',
@@ -363,7 +363,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NOEUD='NO31',
                    VALE=1.0,
                    PRECISION=0.001,
-                   REFERENCE='ANALYTIQUE',),
+                   REFERENCE='ANALYTIQUE'),
                 _F(RESULTAT=RESU1,
                    INST=250.,
                    NOM_CHAM='DEPL',
@@ -371,7 +371,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NOEUD='NO1',
                    VALE=0.68544576689,
                    PRECISION=0.001,
-                   REFERENCE='ANALYTIQUE',),
+                   REFERENCE='ANALYTIQUE'),
                 _F(RESULTAT=RESU1,
                    INST=250.,
                    NOM_CHAM='DEPL',
@@ -379,7 +379,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NOEUD='NO3',
                    VALE=0.682208147164,
                    PRECISION=0.001,
-                   REFERENCE='ANALYTIQUE',),
+                   REFERENCE='ANALYTIQUE'),
                 _F(RESULTAT=RESU1,
                    INST=250.,
                    NOM_CHAM='DEPL',
@@ -387,7 +387,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NOEUD='NO5',
                    VALE=0.67252104433,
                    PRECISION=0.001,
-                   REFERENCE='ANALYTIQUE',),
+                   REFERENCE='ANALYTIQUE'),
                 _F(RESULTAT=RESU1,
                    INST=250.,
                    NOM_CHAM='DEPL',
@@ -395,7 +395,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NOEUD='NO7',
                    VALE=0.656461946263,
                    PRECISION=0.001,
-                   REFERENCE='ANALYTIQUE',),
+                   REFERENCE='ANALYTIQUE'),
                 _F(RESULTAT=RESU1,
                    INST=250.,
                    NOM_CHAM='DEPL',
@@ -403,7 +403,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NOEUD='NO9',
                    VALE=0.634160686593,
                    PRECISION=0.001,
-                   REFERENCE='ANALYTIQUE',),
+                   REFERENCE='ANALYTIQUE'),
                 _F(RESULTAT=RESU1,
                    INST=250.,
                    NOM_CHAM='DEPL',
@@ -411,7 +411,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NOEUD='NO11',
                    VALE=0.605800331394,
                    PRECISION=0.001,
-                   REFERENCE='ANALYTIQUE',),
+                   REFERENCE='ANALYTIQUE'),
                 _F(RESULTAT=RESU1,
                    INST=250.,
                    NOM_CHAM='DEPL',
@@ -419,7 +419,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NOEUD='NO13',
                    VALE=0.571618145927,
                    PRECISION=0.001,
-                   REFERENCE='ANALYTIQUE',),
+                   REFERENCE='ANALYTIQUE'),
                 _F(RESULTAT=RESU1,
                    INST=250.,
                    NOM_CHAM='DEPL',
@@ -427,7 +427,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NOEUD='NO15',
                    VALE=0.531906397249,
                    PRECISION=0.002,
-                   REFERENCE='ANALYTIQUE',),
+                   REFERENCE='ANALYTIQUE'),
                 _F(RESULTAT=RESU1,
                    INST=250.,
                    NOM_CHAM='DEPL',
@@ -435,7 +435,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NOEUD='NO17',
                    VALE=0.487012719208,
                    PRECISION=0.002,
-                   REFERENCE='ANALYTIQUE',),
+                   REFERENCE='ANALYTIQUE'),
                 _F(RESULTAT=RESU1,
                    INST=250.,
                    NOM_CHAM='DEPL',
@@ -443,7 +443,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NOEUD='NO19',
                    VALE=0.437339762565,
                    PRECISION=0.002,
-                   REFERENCE='ANALYTIQUE',),
+                   REFERENCE='ANALYTIQUE'),
                 _F(RESULTAT=RESU1,
                    INST=250.,
                    NOM_CHAM='DEPL',
@@ -451,7 +451,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NOEUD='NO21',
                    VALE=0.38334387542,
                    PRECISION=0.002,
-                   REFERENCE='ANALYTIQUE',),
+                   REFERENCE='ANALYTIQUE'),
                 _F(RESULTAT=RESU1,
                    INST=250.,
                    NOM_CHAM='DEPL',
@@ -459,7 +459,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NOEUD='NO23',
                    VALE=0.32553260623,
                    PRECISION=0.002,
-                   REFERENCE='ANALYTIQUE',),
+                   REFERENCE='ANALYTIQUE'),
                 _F(RESULTAT=RESU1,
                    INST=250.,
                    NOM_CHAM='DEPL',
@@ -467,7 +467,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NOEUD='NO25',
                    VALE=0.264460889851,
                    PRECISION=0.002,
-                   REFERENCE='ANALYTIQUE',),
+                   REFERENCE='ANALYTIQUE'),
                 _F(RESULTAT=RESU1,
                    INST=250.,
                    NOM_CHAM='DEPL',
@@ -475,7 +475,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NOEUD='NO27',
                    VALE=0.200725860656,
                    PRECISION=0.002,
-                   REFERENCE='ANALYTIQUE',),
+                   REFERENCE='ANALYTIQUE'),
                 _F(RESULTAT=RESU1,
                    INST=250.,
                    NOM_CHAM='DEPL',
@@ -483,7 +483,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NOEUD='NO29',
                    VALE=0.134960328921,
                    PRECISION=0.002,
-                   REFERENCE='ANALYTIQUE',),
+                   REFERENCE='ANALYTIQUE'),
                 _F(RESULTAT=RESU1,
                    INST=250.,
                    NOM_CHAM='DEPL',
@@ -491,7 +491,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NOEUD='NO31',
                    VALE=0.0678250497631,
                    PRECISION=0.002,
-                   REFERENCE='ANALYTIQUE',),
+                   REFERENCE='ANALYTIQUE'),
                 _F(RESULTAT=RESU1,
                    INST=250.,
                    NOM_CHAM='DEPL',
@@ -500,7 +500,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    VALE=4.23748995523e-17,
                    CRITERE='ABSOLU',
                    PRECISION=1e-06,
-                   REFERENCE='ANALYTIQUE',),),);
+                   REFERENCE='ANALYTIQUE')));
 
 TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    INST=0.0001,
@@ -511,7 +511,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    VALE= 0.,
                    CRITERE='ABSOLU',
                    PRECISION=1e-08,
-                   REFERENCE='ANALYTIQUE',),
+                   REFERENCE='ANALYTIQUE'),
                 _F(RESULTAT=RESU1,
                    INST=250.,
                    NOM_CHAM='SIEF_ELNO',
@@ -520,7 +520,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NOEUD='NO34',
                    VALE=-0.31455423311,
                    PRECISION=0.002,
-                   REFERENCE='ANALYTIQUE',),
+                   REFERENCE='ANALYTIQUE'),
                 _F(RESULTAT=RESU1,
                    INST=250.,
                    NOM_CHAM='SIEF_ELNO',
@@ -529,7 +529,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NOEUD='NO35',
                    VALE=-0.317791852836,
                    PRECISION=0.002,
-                   REFERENCE='ANALYTIQUE',),
+                   REFERENCE='ANALYTIQUE'),
                 _F(RESULTAT=RESU1,
                    INST=250.,
                    NOM_CHAM='SIEF_ELNO',
@@ -538,7 +538,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NOEUD='NO36',
                    VALE=-0.32747895567,
                    PRECISION=0.002,
-                   REFERENCE='ANALYTIQUE',),
+                   REFERENCE='ANALYTIQUE'),
                 _F(RESULTAT=RESU1,
                    INST=250.,
                    NOM_CHAM='SIEF_ELNO',
@@ -547,7 +547,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NOEUD='NO37',
                    VALE=-0.343538053737,
                    PRECISION=0.002,
-                   REFERENCE='ANALYTIQUE',),
+                   REFERENCE='ANALYTIQUE'),
                 _F(RESULTAT=RESU1,
                    INST=250.,
                    NOM_CHAM='SIEF_ELNO',
@@ -556,7 +556,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NOEUD='NO38',
                    VALE=-0.365839313407,
                    PRECISION=0.002,
-                   REFERENCE='ANALYTIQUE',),
+                   REFERENCE='ANALYTIQUE'),
                 _F(RESULTAT=RESU1,
                    INST=250.,
                    NOM_CHAM='SIEF_ELNO',
@@ -565,7 +565,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NOEUD='NO39',
                    VALE=-0.394199668606,
                    PRECISION=0.002,
-                   REFERENCE='ANALYTIQUE',),
+                   REFERENCE='ANALYTIQUE'),
                 _F(RESULTAT=RESU1,
                    INST=250.,
                    NOM_CHAM='SIEF_ELNO',
@@ -574,7 +574,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NOEUD='NO40',
                    VALE=-0.428381854073,
                    PRECISION=0.002,
-                   REFERENCE='ANALYTIQUE',),
+                   REFERENCE='ANALYTIQUE'),
                 _F(RESULTAT=RESU1,
                    INST=250.,
                    NOM_CHAM='SIEF_ELNO',
@@ -583,7 +583,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NOEUD='NO41',
                    VALE=-0.468093602751,
                    PRECISION=0.002,
-                   REFERENCE='ANALYTIQUE',),
+                   REFERENCE='ANALYTIQUE'),
                 _F(RESULTAT=RESU1,
                    INST=250.,
                    NOM_CHAM='SIEF_ELNO',
@@ -592,7 +592,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NOEUD='NO42',
                    VALE=-0.512987280792,
                    PRECISION=0.002,
-                   REFERENCE='ANALYTIQUE',),
+                   REFERENCE='ANALYTIQUE'),
                 _F(RESULTAT=RESU1,
                    INST=250.,
                    NOM_CHAM='SIEF_ELNO',
@@ -601,7 +601,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NOEUD='NO43',
                    VALE=-0.562660237435,
                    PRECISION=0.001,
-                   REFERENCE='ANALYTIQUE',),
+                   REFERENCE='ANALYTIQUE'),
                 _F(RESULTAT=RESU1,
                    INST=250.,
                    NOM_CHAM='SIEF_ELNO',
@@ -610,7 +610,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NOEUD='NO44',
                    VALE=-0.61665612458,
                    PRECISION=0.001,
-                   REFERENCE='ANALYTIQUE',),
+                   REFERENCE='ANALYTIQUE'),
                 _F(RESULTAT=RESU1,
                    INST=250.,
                    NOM_CHAM='SIEF_ELNO',
@@ -619,7 +619,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NOEUD='NO45',
                    VALE=-0.67446739377,
                    PRECISION=0.001,
-                   REFERENCE='ANALYTIQUE',),
+                   REFERENCE='ANALYTIQUE'),
                 _F(RESULTAT=RESU1,
                    INST=250.,
                    NOM_CHAM='SIEF_ELNO',
@@ -628,7 +628,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NOEUD='NO46',
                    VALE=-0.735539110149,
                    PRECISION=0.001,
-                   REFERENCE='ANALYTIQUE',),
+                   REFERENCE='ANALYTIQUE'),
                 _F(RESULTAT=RESU1,
                    INST=250.,
                    NOM_CHAM='SIEF_ELNO',
@@ -637,7 +637,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NOEUD='NO47',
                    VALE=-0.799274139344,
                    PRECISION=0.001,
-                   REFERENCE='ANALYTIQUE',),
+                   REFERENCE='ANALYTIQUE'),
                 _F(RESULTAT=RESU1,
                    INST=250.,
                    NOM_CHAM='SIEF_ELNO',
@@ -646,7 +646,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NOEUD='NO48',
                    VALE=-0.865039671079,
                    PRECISION=0.001,
-                   REFERENCE='ANALYTIQUE',),
+                   REFERENCE='ANALYTIQUE'),
                 _F(RESULTAT=RESU1,
                    INST=250.,
                    NOM_CHAM='SIEF_ELNO',
@@ -655,7 +655,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NOEUD='NO49',
                    VALE=-0.932174950237,
                    PRECISION=0.001,
-                   REFERENCE='ANALYTIQUE',),
+                   REFERENCE='ANALYTIQUE'),
                 _F(RESULTAT=RESU1,
                    INST=250.,
                    NOM_CHAM='SIEF_ELNO',
@@ -665,7 +665,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    VALE=-1.0,
                    CRITERE='ABSOLU',
                    PRECISION=1e-06,
-                   REFERENCE='ANALYTIQUE',),),);
+                   REFERENCE='ANALYTIQUE')));
 
 TEST_RESU(RESU=(
                 _F(RESULTAT=RESU1,
@@ -736,6 +736,6 @@ TEST_RESU(RESU=(
                    VERSION='10.1.21',
                    REFERENCE='NON_REGRESSION'),
 
-                   ),);
+                   ));
 
 FIN();

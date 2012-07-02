@@ -1,6 +1,6 @@
       SUBROUTINE BMNOIN(BASMDZ,INTFZ,NMINTZ,NUMINT,NBNOI,NUMNOE,NBDIF)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*8 INTF,NOMINT,BASMOD
       CHARACTER*(*) INTFZ,NMINTZ,BASMDZ
@@ -57,6 +57,10 @@ C
 C---------------RECUPERATION INTERF_DYNA ET NUME_DDL-----------------
 C                 SI DONNEE BASE MODALE OU INTERF_DYNA
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,INOE ,LLDES ,LLINT ,LLREF ,NBDIF ,NBEFFI 
+      INTEGER NBNOE ,NBNOI ,NUMCOU ,NUMINT 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       INTF   = INTFZ
       NOMINT = NMINTZ

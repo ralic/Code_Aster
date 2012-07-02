@@ -1,8 +1,8 @@
       SUBROUTINE SSDT74(NOMRES,NOMCMD)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,21 @@ C =>
       LOGICAL       PRDEFF       
       INTEGER      IARG
 C =<      
+
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IBID ,IER ,IFM ,INFO ,IPARCH ,IRET 
+      INTEGER ITEMAX ,J1 ,J2 ,JACCS ,JADCHO ,JAMOG ,JARCH 
+      INTEGER JCOEFM ,JCONL ,JDCHO ,JDEPL ,JDEPS ,JFCHO ,JFOND 
+      INTEGER JFONV ,JIADVE ,JIDESC ,JINST ,JINTI ,JINUMO ,JMASG 
+      INTEGER JNOACC ,JNODEP ,JNOEC ,JNOMFO ,JNOVIT ,JORDR ,JPARC 
+      INTEGER JPARD ,JPASS ,JPSDEL ,JPSID ,JPUL2 ,JPULS ,JRAIG 
+      INTEGER JRANC ,JREDC ,JREDD ,JREDE ,JREFA ,JREVI ,JSCDE 
+      INTEGER JVCHO ,JVEC ,JVECR ,JVITS ,K ,N1 ,NAMOR 
+      INTEGER NBBAS ,NBCHOC ,NBMODE ,NBMODI ,NBMODY ,NBMOST ,NBPAS 
+      INTEGER NBREDE ,NBREVI ,NBSAUV ,NBSST ,NEQ ,NEQGEN ,NM 
+      INTEGER NR ,NV 
+      REAL*8 DEUX ,DTARCH ,OMEG2 ,PREC ,R8PREM ,TFIN ,TINIT 
 
 C-----------------------------------------------------------------------
       DATA K8B/'        '/

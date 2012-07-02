@@ -3,7 +3,7 @@
      &                   OPTION,SIGP,VIP,DSIDEP,DEMU,CINCO,IRET)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/06/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_7 CRP_20
 C
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER            NDIM,IMATE,KPG,KSP,IRET
       CHARACTER*(*)      FAMI
       CHARACTER*8        TYPMOD(*)
@@ -85,6 +85,11 @@ C
       CHARACTER*8 NOMPAR(3),TYPE
       REAL*8      VALPAM(3),VALPAP(3),RESU,R8MIEM,VALRM(2)
       REAL*8      BENDOM,BENDOP,KDESSM,KDESSP,RAC2,XM(6),XP(6)
+C-----------------------------------------------------------------------
+      INTEGER LGPG 
+      REAL*8 ALFAFA ,COCO ,DP0 ,PRECR ,R8PREM ,RPRIM0 ,TM 
+      REAL*8 UNSURN ,XAP 
+C-----------------------------------------------------------------------
       DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
       DATA EPSA   / 'EPSAXX','EPSAYY','EPSAZZ','EPSAXY','EPSAXZ',
      &              'EPSAYZ'/

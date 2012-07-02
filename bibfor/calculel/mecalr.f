@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -249,7 +249,7 @@ C    ------------------------------------------------------------------
               CALL DISMOI('F','PROF_CHNO',CHAMGD,'CHAM_NO',IB,PFCHNO,IE)
               CALL SINOZ2(MODELE,PFCHNO,CHSIG,CHSIGN)
             ENDIF
-            CALL RSNOCH(LERES1,OPTION,IORDR,' ')
+            CALL RSNOCH(LERES1,OPTION,IORDR)
   150       CONTINUE
             CALL JEDEMA()
   160     CONTINUE
@@ -422,7 +422,7 @@ C       CES DEUX COMPOSANTES SONT CONSTANTES PAR ELEMENT
             CALL SINGUE(CHERRS,CHENES,NOMA,NDIM,NNOEM,NELEM,ZR(JCOOR),
      &                  PREC,LIGRMO,IORDR,CHELEM,TYPES)
 
-            CALL RSNOCH(LERES1,OPTION,IORDR,' ')
+            CALL RSNOCH(LERES1,OPTION,IORDR)
 
 C 3.4 - DESTRUCTION DES CHAM_ELEM_S
 
@@ -471,7 +471,7 @@ C 4 - STOCKAGE
             CALL CESCEL(CHSINN,LIGRMO(1:19),'SING_ELNO','PSINGNO',
      &                  'NON',NNCP,'G',CHELEM(1:19),'F',IBID)
 
-            CALL RSNOCH(LERES1,OPTION,IORDR,' ')
+            CALL RSNOCH(LERES1,OPTION,IORDR)
 
 C 5 - DESTRUCTION DES CHAM_ELEM_S
 

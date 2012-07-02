@@ -1,8 +1,8 @@
       SUBROUTINE ASSVSS(BASE,VEC,VECEL,NU,VECPRO,MOTCLE,TYPE,FOMULT,
      &                  INSTAP)
-      IMPLICIT REAL*8(A-H,O-Z)
+      IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ASSEMBLA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,6 +54,16 @@ C ----------------------------------------------------------------------
 C ---------------------------------------------------------------------
 C     VARIABLES LOCALES
 C ---------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,I1 ,IACONX ,IAD1 ,IADLIE ,IADNEM ,IADVAL
+      INTEGER IALCHA ,IAMAIL ,IANCMP ,IANMCR ,IANUEQ ,IANULO ,IAPROL
+      INTEGER IAPSDL ,IASSSA ,ICHAR ,ICMP ,ICONX1 ,ICONX2 ,IDNEQU
+      INTEGER IDPRN1 ,IDPRN2 ,IDRESL ,IDVEDS ,IDVERF ,IDVREF ,IEC
+      INTEGER IER ,IERD ,IL ,ILIM ,ILIMNU ,ILIVEC ,IMA
+      INTEGER INOLD ,IRET ,JEC ,K1 ,LGNCMP ,N1 ,NBCHAR
+      INTEGER NBECMX ,NBELM ,NBNOSS ,NBSMA ,NBSSA ,NCMP ,NCMPEL
+      INTEGER NDDL1 ,NEQUA ,NM ,NMXCMP ,NNOE ,NUGD, INDIK8
+C-----------------------------------------------------------------------
       PARAMETER(NBECMX=10)
 
       CHARACTER*1 BAS

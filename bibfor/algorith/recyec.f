@@ -1,6 +1,6 @@
       SUBROUTINE RECYEC(NMRESZ,MDCYCZ,NUMSEC,TYPSDZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C***********************************************************************
 C    P. RICHARD     DATE 16/04/91
 C-----------------------------------------------------------------------
 C  BUT:      < RESTITUTION CYCLIQUE ECLATEE >
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C      RESTITUER EN BASE PHYSIQUE SUR UN SECTEUR LES RESULTATS
 C                ISSU DE LA SOUS-STRUCTURATION CYCLIQUE
@@ -47,6 +47,9 @@ C-----------------------------------------------------------------------
 C
 C-----------------ECRITURE DU TITRE-------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER LLREF ,LLTYP ,NUMSEC 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       NOMRES = NMRESZ
       MODCYC = MDCYCZ

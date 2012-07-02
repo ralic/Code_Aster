@@ -1,11 +1,11 @@
       SUBROUTINE GCOUR3 (RESU,NOMA,COORN,LNOFF,TRAV1,
      &           TRAV2,TRAV3,CHFOND,GRLT,THLAGR,THLAG2,
      &           BASFON,NBRE,MILIEU,PAIR,NDIMTE)
-       IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,6 +77,10 @@ C
 C
       LOGICAL           THLAGR,MILIEU, DEBUG,THLAG2,PAIR
 C
+C-----------------------------------------------------------------------
+      INTEGER IADRTT ,JBAS ,KNO 
+      REAL*8 S0 ,S1 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 
       EPS = 1.D-12

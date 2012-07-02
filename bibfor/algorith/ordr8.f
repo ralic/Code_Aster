@@ -1,8 +1,8 @@
       SUBROUTINE ORDR8(TAB,NB,IORD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,7 +21,7 @@ C***********************************************************************
 C    P. RICHARD     DATE //
 C-----------------------------------------------------------------------
 C  BUT:  TROUVER L'ORDRE CROISSANT D'UNE TABLE DE VALEUR R8
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C     PAS DE MODIFICATION DE L'ORDRE D'ENTREE MAIS DETERMINATION DE
 C     POINTEUR D'ORDRE
 C
@@ -39,6 +39,10 @@ C
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IORMIN ,ITEMP ,J ,NB 
+      REAL*8 VMIN 
+C-----------------------------------------------------------------------
       DO 10 I=1,NB
         IORD(I)=I
  10   CONTINUE

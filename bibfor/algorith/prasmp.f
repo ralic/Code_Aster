@@ -1,7 +1,7 @@
       SUBROUTINE  PRASMP (OPTION,NUGENE,TMINBL,NOMPRN,MODGEN,
      &TMNOBL,TMADBL,KNOMBL,INUMBL,SSMAX)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C***********************************************************************
 C    P. RICHARD     DATE 13/10/92
@@ -74,6 +74,13 @@ C
       INTEGER      INUMBL(*)
       CHARACTER*1 K1BID
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER IAD ,IBID ,IBL1 ,IEQC ,INUC ,INUL ,IRET 
+      INTEGER J ,LC ,LL ,LLNUEQ ,LLORS ,LLPRS ,LLSCDI 
+      INTEGER LLSCIB ,LTADBL ,LTINBL ,LTNOBL ,NBCOL ,NBLIG ,NBSST 
+      INTEGER NTAIL ,NTPRNO ,NUSST 
+      REAL*8 SSMAX 
 C-----------------------------------------------------------------------
       DATA RIGOPT,RICOPT,MASOPT,AMOOPT/'RIGI_GENE','RIGI_GENE_C',
      &                                 'MASS_GENE','AMOR_GENE'/

@@ -1,13 +1,13 @@
       SUBROUTINE CALMDG(MODEL,MODGEN,NUGENE,NUM,NU,MA,MATE,MOINT,
      &                  MOFLUI,NDBLE,
      &                  ITXSTO,ITYSTO,ITZSTO,IPRSTO,NBMO,IADIRG)
-      IMPLICIT REAL*8  (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*)  MATE
 
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,6 +68,14 @@ C---------------------------------------------------------------------
 C -----------------------------------------------------------------
 C---------------------------------------------------------------------
 
+C-----------------------------------------------------------------------
+      INTEGER IADIRG ,IADRX ,IADRY ,IADRZ ,IADX ,IADY ,IADZ 
+      INTEGER IBAMO ,ICOMPT ,IDELAT ,IERD ,IGEO ,ILIRES ,ILMAX 
+      INTEGER IMACL ,IMODG ,IND ,IOR ,IPRS ,IRANG ,IRET 
+      INTEGER IROT ,ITABL ,ITZSTO ,K ,NBMO ,NBMOD ,NBMODG 
+      INTEGER NBSST ,NN 
+      REAL*8 BID ,EBID 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 
 C=====================================================================

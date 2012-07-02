@@ -1,7 +1,7 @@
       SUBROUTINE IRMARE(IFC,NDIM,NNO,COORDO,NBMA,CONNEX,POINT,NOMA,
      &                  TYPMA,TYPEL,LMOD,TITRE,NBTITR,NBGRN,NBGRM,
      &                  NOMAI,NONOE,FORMAR)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
       CHARACTER*80 TITRE(*)
@@ -12,7 +12,7 @@ C
       LOGICAL      LMOD
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,6 +60,13 @@ C
 C
 C     ECRITURE DU TITRE
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IAGRMA ,IAGRNO ,ICO ,IFIN ,IGM ,IGN 
+      INTEGER IMA ,INO ,IPO ,IPOIN ,IT ,ITYPE ,ITYPP 
+      INTEGER J ,JM ,JMAI ,JN ,K ,NBFOIS ,NBGRM 
+      INTEGER NBGRN ,NBM ,NBMA ,NBN ,NBREST ,NDIM ,NNO 
+      INTEGER NNOE 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       FORMAT = FORMAR
       FMT='(1X,A8,1X,'//FORMAT//',1X,'//FORMAT//',1X,'//FORMAT//')'

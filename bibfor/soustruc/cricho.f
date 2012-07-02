@@ -1,10 +1,10 @@
       SUBROUTINE CRICHO (NBMODE,RIGGEN,NBCHOC,PARCHO,NOECHO,INFO,
      &    FIMPO,RFIMPO,TRLOC,SOUPL,INDIC,NEQ,BMODAL,SEUIL,MARIG,
      &    NBNLI)
-      IMPLICIT  REAL*8  (A-H,O-Z)
+      IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SOUSTRUC  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,6 +62,9 @@ C
 
 C
 C      SEUIL=1.D0
+C-----------------------------------------------------------------------
+      REAL*8 DDOT ,R8PREM 
+C-----------------------------------------------------------------------
       SEUIL=0.D0
 C      EPS=1.D-50
       EPS = R8PREM( )

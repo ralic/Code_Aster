@@ -1,13 +1,13 @@
       SUBROUTINE FOC2IN ( METHOD, NBPTS, VAR ,FON   ,CSTE,RES   )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       CHARACTER*(*)       METHOD
       INTEGER                     NBPTS
       REAL*8                             VAR(*),FON(*),CSTE,RES(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/03/97   AUTEUR D6BHHBQ B.QUINNEZ 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -42,6 +42,9 @@ C
 C     COEF(1) POUR LES IMPAIRS, COEF(2) POUR LES PAIRS
       REAL*8    COEF(2)
       INTEGER   IP(2)
+C-----------------------------------------------------------------------
+      INTEGER I ,IPERM 
+C-----------------------------------------------------------------------
       DATA      IP/2,1/
 C     ------------------------------------------------------------------
       ZERO   = 0.0D0

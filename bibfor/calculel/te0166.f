@@ -1,6 +1,6 @@
       SUBROUTINE TE0166 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
@@ -35,9 +35,12 @@ C
       REAL*8             POIDS(3)
       CHARACTER*8        FAMI,POUM
       INTEGER            I,NEU,NEUM1,KC,IC,IVECTU,IPESA,KPG,SPT
-      INTEGER            IGEOM,IMATE,LSECT,IDEPLA,IDEPLP
+      INTEGER            IGEOM,IMATE,LSECT,IDEPLA,IDEPLP,IRET
 C
 C
+C-----------------------------------------------------------------------
+      REAL*8 DDOT ,R8B
+C-----------------------------------------------------------------------
       FAMI='FPG1'
       KPG=1
       SPT=1
@@ -49,7 +52,8 @@ C
       CALL JEVECH('PCACABL','L',LSECT)
       A = ZR(LSECT)
 C
-      CALL JEVECH('PDEPLMR','L',IDEPLA)
+      CALL TECACH('ONO','PDEPLMR',1,IDEPLA,IRET)
+      IF (IRET.NE.0) CALL U2MESS('F','CALCULEL6_78')
       CALL JEVECH('PDEPLPR','L',IDEPLP)
 C
       DO 10 I=1,9

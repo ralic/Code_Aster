@@ -1,10 +1,10 @@
       SUBROUTINE RFBEFL ( BASE )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*)       BASE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,6 +33,12 @@ C     ------------------------------------------------------------------
       INTEGER      IARG
 C     ------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IBID ,ID ,IMOD ,IND ,IND1 ,IND2 
+      INTEGER INUMEO ,J ,LFON ,LFREQ ,LNUMO ,LPRO ,LVAR 
+      INTEGER LVITE ,MIN ,N1 ,N2 ,N3 ,N4 ,N5 
+      INTEGER NBM ,NBNO ,NBV ,NPV ,NUMMOD 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
       CALL INFMAJ

@@ -1,9 +1,9 @@
       SUBROUTINE ASSMIV(BASE,VEC,NBVEC,TLIVEC,LICOEF,NU,VECPRO,MOTCLE,
      &                  TYPE)
-      IMPLICIT REAL*8(A-H,O-Z)
+      IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ASSEMBLA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,7 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
 C     COMMUNS   LOCAUX DE L'OPERATEUR ASSE_VECTEUR
 C ----------------------------------------------------------------------
-      INTEGER GD,NEC,NLILI,DIGDEL
+      INTEGER GD,NEC,NLILI,DIGDEL,NBNO
 C ---------------------------------------------------------------------
 C     VARIABLES LOCALES
 C ---------------------------------------------------------------------
@@ -77,6 +77,16 @@ C ----------------------------------------------------------------------
       REAL*8 R8MAEM
 
 C --- DEBUT ------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,I1 ,IAD ,IAD1 ,IADLIE ,IADNEM ,IANUEQ
+      INTEGER IANULO ,IAPSDL ,ICONX1 ,ICONX2 ,IDDESC ,IDLRES ,IDNEQU
+      INTEGER IDPRN1 ,IDPRN2 ,IDVEDS ,IDVERF ,IDVREF ,IEL ,IER
+      INTEGER IERD ,IGR ,IL ,ILIM ,ILIMNU ,ILINU ,ILIVE
+      INTEGER ILIVEC ,IMAT ,IRESU ,JNUMSD ,JPRTK ,JRESL ,JVALE
+      INTEGER K1 ,MODE ,N1 ,NBELM ,NBNOSS ,NBRESU ,NCMP
+      INTEGER NCMPEL ,NDDL1 ,NEL ,NEQUA ,NM ,NMXCMP ,NNOE
+      INTEGER NUGD ,NUMA
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 
 C-----RECUPERATION DU NIVEAU D'IMPRESSION

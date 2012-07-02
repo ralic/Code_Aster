@@ -1,7 +1,7 @@
       SUBROUTINE TE0330(OPTION,NOMTE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ----------------------------------------------------------------------
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 
 C     BUT:
 C       POUR TOUS LES ELEMENTS, CALCUL AUX NOEUDS DES
@@ -38,6 +38,10 @@ C     ENTREES :  OPTION : OPTION DE CALCUL
 C                NOMTE  : NOM DU TYPE ELEMENT
 C ----------------------------------------------------------------------
       INCLUDE 'jeveux.h'
+C-----------------------------------------------------------------------
+      INTEGER IDFDX ,IPOIDS ,IVF ,JGANO ,JIN ,NDIM ,NEQMAX 
+      INTEGER NNOMAX ,NPGMAX 
+C-----------------------------------------------------------------------
       PARAMETER (NPGMAX=27,NNOMAX=27,NEQMAX=17)
 C ----------------------------------------------------------------------
       INTEGER ICONT,IEQUIF

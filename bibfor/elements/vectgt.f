@@ -1,9 +1,9 @@
       SUBROUTINE VECTGT(IND,NB1,XI,KSI3S2,INTSX,ZR,EPAIS,VECTN,
      &                                                 VECTG,VECTT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,12 +19,17 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER IND,NB1,INTSX
       REAL*8 XI(3,*),ZR(*),EPAIS,VECTN(9,3)
       REAL*8 VECTG(2,3),VECTT(3,3)
       REAL*8 KSI3S2
 C
+C-----------------------------------------------------------------------
+      INTEGER I1 ,I2 ,INTSX1 ,J ,K ,L1 ,L2 
+      INTEGER L3 
+      REAL*8 RNORM 
+C-----------------------------------------------------------------------
       IF  (IND.EQ.0) THEN
 C
 C     CALCULS AUX PTS D'INTEGRATION REDUITE

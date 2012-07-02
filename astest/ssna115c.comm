@@ -1,4 +1,4 @@
-# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE FISSURATION INTERFACE 2D AXIS SUR ARRACHEMENT, LOI CZM_TAC_MIX
 # ssna115c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -61,13 +61,13 @@ MA  =  DEFI_GROUP(
        GROUP_MA = 'GM2',
        OPTION = 'NOEUD_ORDO',
        GROUP_NO_ORIG = 'NO_JBD',
-       GROUP_NO_EXTR = 'NO_JHD',),
+       GROUP_NO_EXTR = 'NO_JHD'),
     _F(
        NOM = 'GN_J_G',
        GROUP_MA = 'GM5',
        OPTION = 'NOEUD_ORDO',
        GROUP_NO_ORIG = 'NO_JBG',
-       GROUP_NO_EXTR = 'NO_JHG',),
+       GROUP_NO_EXTR = 'NO_JHG'),
     )
   )
 
@@ -177,13 +177,13 @@ EVOL = STAT_NON_LINE(
       _F(GROUP_MA = 'JOINT'  , RELATION = 'CZM_TAC_MIX')),
          INCREMENT = _F(
                          LIST_INST = INSTANTS,
-                         INST_FIN  = 0.,),
+                         INST_FIN  = 0.),
        RECH_LINEAIRE = _F (ITER_LINE_MAXI = 2),
        NEWTON  = _F(
                     MATRICE   = 'TANGENTE',
-                    REAC_ITER = 1,),
+                    REAC_ITER = 1),
        CONVERGENCE = _F(ITER_GLOB_MAXI = 20),
-       SOLVEUR     = _F(METHODE = 'MUMPS', PCENT_PIVOT=10),
+       SOLVEUR     = _F(METHODE = 'MUMPS'),
        ARCHIVAGE   = _F(LIST_INST = INS_ARCH)
     )
 
@@ -227,7 +227,7 @@ EVOL = STAT_NON_LINE(reuse  = EVOL,
     RESI_GLOB_MAXI = 1.E-4,
     ITER_GLOB_MAXI = 10,
     ),
-  SOLVEUR = _F(METHODE = 'MUMPS', PCENT_PIVOT=10),
+  SOLVEUR = _F(METHODE = 'MUMPS'),
   ARCHIVAGE =_F(LIST_INST = INS_ARCH)
   )
 
@@ -270,56 +270,56 @@ FRES = POST_RELEVE_T(
 
 TEST_TABLE(TABLE=UPILO,
            FILTRE=(_F(NOM_PARA='INST',
-                      VALE=3.00000E+00,),),
+                      VALE=3.00000E+00)),
            NOM_PARA='DY',
            VALE=1.576931E-01,
            PRECISION=0.001,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 
 TEST_TABLE(TABLE=FRES,
            FILTRE=(_F(NOM_PARA='INST',
-                      VALE=3.00000E+00,),),
+                      VALE=3.00000E+00)),
            NOM_PARA='DY',
            VALE=1.254990E+01,
            PRECISION=0.001,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 
 TEST_TABLE(TABLE=UPILO,
            FILTRE=(_F(NOM_PARA='INST',
-                      VALE=6.00000E+00,),),
+                      VALE=6.00000E+00)),
            NOM_PARA='DY',
            VALE=2.656474E-01,
            PRECISION=0.001,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 
 TEST_TABLE(TABLE=FRES,
            FILTRE=(_F(NOM_PARA='INST',
-                      VALE=6.00000E+00,),),
+                      VALE=6.00000E+00)),
            NOM_PARA='DY',
            VALE=9.486833E+00,
            PRECISION=0.001,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 
 TEST_TABLE(TABLE=UPILO,
            FILTRE=(_F(NOM_PARA='INST',
-                      VALE=8.00000E+00,),),
+                      VALE=8.00000E+00)),
            NOM_PARA='DY',
            VALE=3.63577E-01,
            PRECISION=0.001,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 
 TEST_TABLE(TABLE=FRES,
            FILTRE=(_F(NOM_PARA='INST',
-                      VALE=8.00000E+00,),),
+                      VALE=8.00000E+00)),
            NOM_PARA='DY',
            VALE=6.70820E+00,
            PRECISION=0.001,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 
 IMPR_TABLE(TABLE = UPILO)

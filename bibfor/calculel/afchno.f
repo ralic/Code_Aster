@@ -1,6 +1,6 @@
       SUBROUTINE AFCHNO ( CHAMN, BASE, GRAN, NOMA, NBNOEU, NBCPNO,
      +                    DESC, LONVAL, TYPVAL, RVAL, CVAL, KVAL )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER           NBCPNO(*), DESC(*)
       REAL*8            RVAL(*)
@@ -8,7 +8,7 @@
       CHARACTER*(*)     CHAMN, GRAN, NOMA, BASE, TYPVAL, KVAL(*)
 C--------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,6 +34,11 @@ C
       CHARACTER*1  K1BID
       INTEGER NCMP,NCMPMX,JCORR2
 C
+C-----------------------------------------------------------------------
+      INTEGER I1 ,IC ,IDEC ,IE ,IEC ,II ,INEC 
+      INTEGER INO ,JJ ,LNUEQ ,LONVAL ,LPRNO ,LVALE ,NBNOEU 
+      INTEGER NEC ,NN ,NUMGD 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       CHAMNO = CHAMN
 C

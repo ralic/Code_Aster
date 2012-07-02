@@ -1,9 +1,9 @@
       SUBROUTINE JEIMPO ( UNIT , NOMLU , PARM , MESS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
-C MODIF JEVEUX  DATE 27/06/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,7 +27,7 @@ C IN  NOMLU : NOM DE L'OBJET JEVEUX A IMPRIMER
 C IN  PARM  : ARGUMENT NON UTILISE (CHAINE DE CARACTERES)
 C IN  MESS  : MESSAGE D'INFORMATION IMPRIME 
 C ----------------------------------------------------------------------
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER             UNIT
       CHARACTER *(*)      NOMLU , PARM , MESS
 C     ------------------------------------------------------------------
@@ -40,6 +40,13 @@ C     -----------------------------------------------------------------
       INTEGER          ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
       COMMON /IATCJE/  ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER IADMEX ,IADMI ,IBDESO ,IBIADD ,IBIADM ,IBLONO ,IDECI 
+      INTEGER INAT ,IPGCEX ,IXIADM ,IXLONO ,JCARA ,JDATE ,JDOCU 
+      INTEGER JGENR ,JHCOD ,JIADD ,JIADM ,JLONG ,JLONO ,JLTYP 
+      INTEGER JLUTI ,JMARQ ,JORIG ,JRNOM ,JTYPE ,K ,N 
+      INTEGER NBMAX 
+C-----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
      &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   

@@ -1,8 +1,8 @@
       SUBROUTINE EXMANO(NOMA,NUMNOE,NUMANO,NBMANO)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,6 +39,10 @@ C
       CHARACTER*1  K1BID
       CHARACTER*24 MLGNMA,MLGTMA,MLGCNX
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER JDNO ,JDTM ,NBMAIL ,NO1 ,NO2 ,NTSEG ,NUMAIL 
+      INTEGER NUTYMA 
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 C

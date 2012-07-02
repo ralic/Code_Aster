@@ -1,7 +1,7 @@
       SUBROUTINE VPINTE(OPTION,NFREQ,VALP,DET,IDET,IEME,NPAS,
      +                  TOLF, NITF, LRAIDE, LMASSE, LDYNAM,
      +                  RESUFI, RESUFR, NFREQB, SOLVEU)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       CHARACTER*16      OPTION
       INTEGER                                 IDET(*),IEME(*),NPAS(*)
       REAL*8                                                TOLF
@@ -11,9 +11,9 @@
       CHARACTER*19      SOLVEU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -49,6 +49,12 @@ C
       REAL*8  DD2, D2, F2, W2
 C     ------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER IDEC ,IDET0 ,IEME0 ,IEMEI ,IER ,IFREQ ,II 
+      INTEGER IP1 ,IP2 ,ITRIG ,JDEC ,JFREQ ,NBITER ,NFREQ 
+      INTEGER NITER ,NITF ,NTROU 
+      REAL*8 VALEUR 
+C-----------------------------------------------------------------------
       IFREQ = 0
       DET0 = 0.D0
       IDET0 = 0

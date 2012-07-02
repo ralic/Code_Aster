@@ -1,6 +1,6 @@
       SUBROUTINE IRMAD1 ( IFI,VERSIO,NBNO,PRNO,NUEQ,NEC,DG,NCMPMX,
      &            ITYPE,NSTAT,CHAMNO,NOMCMP,NOMSYM,NUMNOE)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
       INTEGER       IFI,NBNO,PRNO(*),NUEQ(*),NEC,DG(*),NCMPMX,NUMNOE(*)
@@ -8,7 +8,7 @@ C
       CHARACTER*(*) NOMCMP(*),NOMSYM,CHAMNO(*)
 C--------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,6 +37,12 @@ C     ------------------------------------------------------------------
 C
 C  --- INITIALISATIONS ----
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IAVALE ,ICHS ,ICMP ,ICMS ,ICMSUP ,ICOMPT 
+      INTEGER ICP ,IEC ,IMAT ,INNO ,INO ,IRVAL ,IST 
+      INTEGER IVAL ,K1 ,K2 ,MFOR ,MKEY ,MTYP ,NBCMPT 
+      INTEGER NCMP ,NCOL ,NDIM ,NROW 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       DO 10 I = 1 , NCMPMX
          LTABL(I) = .FALSE.

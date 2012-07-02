@@ -1,6 +1,6 @@
       SUBROUTINE RETREC(NOMRES,RESGEN,NOMSST)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C***********************************************************************
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C  C. VARE     DATE 16/11/94
 C-----------------------------------------------------------------------
 C
@@ -50,6 +50,15 @@ C
       CHARACTER*8  K8BID,KBID
       INTEGER      IARG
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,I1 ,IAD ,IARCHI ,IBID ,ICH ,IDINSG 
+      INTEGER IDRESU ,IDVECG ,IEQ ,IER ,IRE1 ,IRE2 ,IRE3 
+      INTEGER IRETOU ,J ,JINST ,JNUME ,K ,K1 ,LDNEW 
+      INTEGER LINST ,LLCHAB ,LLNEQU ,LLNUEQ ,LLORS ,LLPRS ,LLREF1 
+      INTEGER LLREF2 ,LLREFE ,LMAPRO ,LMOET ,LREFE ,LSILIA ,LSST 
+      INTEGER N1 ,NBCHAM ,NBDDG ,NBINSG ,NBINST ,NBSST ,NEQ 
+      INTEGER NEQET ,NEQGEN ,NEQRED ,NUSST ,NUTARS 
 C-----------------------------------------------------------------------
       DATA SOUTR  /'&SOUSSTR'/
 C-----------------------------------------------------------------------
@@ -293,7 +302,7 @@ C
               CALL JELIBE(CHAMBA)
 50          CONTINUE
             CALL JELIBE(CHAMNO)
-            CALL RSNOCH(NOMRES,CHMP(ICH),IARCHI,' ')
+            CALL RSNOCH(NOMRES,CHMP(ICH),IARCHI)
 32        CONTINUE
           CALL RSADPA(NOMRES,'E',1,'INST',IARCHI,0,LINST,K8B)
           ZR(LINST) = ZR(JINST+I)
@@ -353,7 +362,7 @@ C
               CALL JELIBE(CHAMBA)
 70          CONTINUE
             CALL JELIBE(CHAMNO)
-            CALL RSNOCH(NOMRES,CHMP(ICH),IARCHI,' ')
+            CALL RSNOCH(NOMRES,CHMP(ICH),IARCHI)
 42        CONTINUE
           CALL RSADPA(NOMRES,'E',1,'INST',IARCHI,0,LINST,K8B)
           ZR(LINST) = ZR(JINST+I)

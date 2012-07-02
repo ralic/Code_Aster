@@ -1,8 +1,8 @@
       SUBROUTINE FGEQUI ( T, TYPZ, NDIM, EQUI )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/09/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ----------------------------------------------------------------------
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C     CALCUL DES GRANDEURS EQUIVALENTES EN CONTRAINTE ET DEFORMATION
 C     SOIT DANS L ORDRE :
 C                . CONTRAINTES EQUIVALENTES  :
@@ -53,6 +53,9 @@ C ----------------------------------------------------------------------
       CHARACTER*8 TYP
       CHARACTER*3    LCQEQV
       COMMON /TDIM/  NT,ND
+C-----------------------------------------------------------------------
+      INTEGER I ,J ,ND ,NITJAC ,NT 
+C-----------------------------------------------------------------------
       DATA   NUL     /6*0.D0/
       DATA   NPERM ,TOL,TOLDYN    /12,1.D-10,1.D-2/
 C ----------------------------------------------------------------------

@@ -1,9 +1,9 @@
       SUBROUTINE  CALCSP ( CASINT, NOMU, TABLE, FREQ, MASG, NBM, NPV,
      &                     NBMR, IMOD1, NUOR, VITE )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,6 +47,14 @@ C
       INTEGER       NBM, NPV, NBMR, IMOD1, NUOR(*)
       REAL*8        FREQ(*), MASG(*), VITE(*)
 C
+C-----------------------------------------------------------------------
+      INTEGER IBID ,IDEB ,IFO ,IFONC ,IHI ,IHI1 ,IHR 
+      INTEGER IHR1 ,IL ,IM ,IM1 ,IM2 ,IMB ,IMODF 
+      INTEGER IP ,IRET ,IV ,LPROL ,LVALE ,NBPAR ,NBPF 
+
+      REAL*8 FR ,FRI ,HHI ,HHR ,HII1 ,HII2 ,HIR1 
+      REAL*8 HIR2 ,PI ,R8B ,R8PI 
+C-----------------------------------------------------------------------
       PARAMETER   ( NBPAR = 5 )
       INTEGER       IVAL(3), VALI(2)
       REAL*8        MGI, KSI

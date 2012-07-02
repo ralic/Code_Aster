@@ -5,7 +5,7 @@
       CHARACTER*19                                PROFNO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,7 +69,7 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C
       CALL JEMARQ()
-      
+
       INDIRF='&&REGEGL.INDIR.SST'
 C
 C-----ECRITURE DU TITRE-------------------------------------------------
@@ -134,7 +134,7 @@ C-----RECUPERATION NOMBRE DE MODES PROPRES CALCULES---------------------
 C
       CALL RSORAC(RESGEN,'LONUTI',IBID,RBID,KBID,CBID,RBID,
      &            KBID,NBMOD,1,IBID)
-     
+
 C
 C --- ON RESTITUE SUR TOUS LES MODES OU SUR QUELQUES MODES:
 C
@@ -152,7 +152,7 @@ C
 C
 C-----ALLOCATION STRUCTURE DE DONNEES RESULTAT--------------------------
 C
-      CALL RSCRSD('G',NOMRES,'MODE_MECA',NBMOD)      
+      CALL RSCRSD('G',NOMRES,'MODE_MECA',NBMOD)
 C
 C-- ON TESTE SI ON A EU RECOURS A L'ELIMINATION
 C
@@ -165,7 +165,7 @@ C      SST=    '&&'//NUMGEN(1:8)//'VECT_NOM_SS'
       SST=   NUMGEN(1:14)//'.ELIM.NOMS'
 
       CALL JEEXIN(SELIAI,ELIM)
-      
+
       IF (ELIM .NE. 0) THEN
         NEQET=0
         CALL JEVEUO(NUMGEN//'.NEQU','L',IBID)
@@ -177,8 +177,8 @@ C      SST=    '&&'//NUMGEN(1:8)//'VECT_NOM_SS'
         DO 10 I=1,NBSST
           NEQET=NEQET+ZI(LSILIA+I-1)
   10    CONTINUE
-        CALL WKVECT('&&MODE_ETENDU_REST_ELIM','V V R',NEQET,LMOET)    
-      ENDIF  
+        CALL WKVECT('&&MODE_ETENDU_REST_ELIM','V V R',NEQET,LMOET)
+      ENDIF
 C
 CC
 CCC---RESTITUTION PROPREMENT DITE---------------------------------------
@@ -200,8 +200,8 @@ C
         CALL DCAPNO ( RESGEN, DEPL, IORD, CHAMOL )
         CALL JEVEUO ( CHAMOL, 'L', LLCHOL )
 
-C-- SI ELIMINATION, ON RESTITUE D'ABORD LES MODES GENERALISES       
-        IF (ELIM .NE. 0) THEN      
+C-- SI ELIMINATION, ON RESTITUE D'ABORD LES MODES GENERALISES
+        IF (ELIM .NE. 0) THEN
           DO 21 I1=1,NEQET
             ZR(LMOET+I1-1)=0.D0
             DO 31 K1=1,NEQRED
@@ -209,15 +209,15 @@ C-- SI ELIMINATION, ON RESTITUE D'ABORD LES MODES GENERALISES
      &          ZR(LMAPRO+(K1-1)*NEQET+I1-1)*
      &          ZR(LLCHOL+K1-1)
   31        CONTINUE
-  21      CONTINUE  
-          LLCHOL=LMOET               
-        ENDIF       
+  21      CONTINUE
+          LLCHOL=LMOET
+        ENDIF
 C
 C  REQUETTE NOM ET ADRESSE NOUVEAU CHAMNO
 C
         CALL RSEXCH ( NOMRES, DEPL, I, CHAMNE, IER )
         CALL VTCREA ( CHAMNE, CREFE, 'G', 'R', NEQ )
-        CALL JEVEUO ( CHAMNE//'.VALE', 'E', LDNEW )        
+        CALL JEVEUO ( CHAMNE//'.VALE', 'E', LDNEW )
 C
         CALL RSADPA ( RESGEN, 'L', 8,NOMPAR, IORD,0,IADPAR,KBID)
         FREQ   = ZR(IADPAR(1))
@@ -233,7 +233,7 @@ C  BOUCLE SUR LES SOUS-STRUCTURES
 C
         DO 30 K = 1,NBSST
           CALL JEEXIN(JEXNUM(INDIRF,K),IRET)
-          
+
 C
 C  TEST SI LA SST GENERE DES DDL GLOBAUX
 C
@@ -244,7 +244,7 @@ C
               IEQ=0
               DO 41 I1=1,NUMSST-1
                 IEQ=IEQ+ZI(LSILIA+I1-1)
-  41          CONTINUE 
+  41          CONTINUE
             ELSE
               NUMSST=K
 C  RECUPERATION DU NUMERO TARDIF DE LA SST
@@ -253,7 +253,7 @@ C  RECUPERATION DU NUMERO TARDIF DE LA SST
   40          CONTINUE
               IEQ=ZI(LLPRS+(NUTARS-1)*2)
             ENDIF
-             
+
             CALL MGUTDM(MODGEN,KBID,K,'NOM_BASE_MODALE',IBID,
      &                  BASMOD)
             CALL JEVEUO(BASMOD//'           .REFD','L',LREFE)
@@ -297,7 +297,7 @@ C
               ELSE
                 IAD=LLCHOL+ZI(LLNUEQ+IEQ+J-2)-1
               ENDIF
-              
+
 C-- DANS LE CAS ELIM, CHANGER LE IAD, le ZI(LLNUEQ EST PAS BON)
 
 C           --- CALCUL DES MASSES EFFECTIVES ---
@@ -318,7 +318,7 @@ C
                 ZR(LTVEC+L-1)=ZR(LTVEC+L-1)+ZR(LLCHAB+L-1)*
      &                        ZR(IAD)
 60            CONTINUE
-              
+
               CALL JELIBE(CHAMBA)
 50          CONTINUE
             CALL JEVEUO(JEXNUM(INDIRF,K),'L',LLIND)
@@ -337,7 +337,7 @@ C
         EFMASX = EFMASX*EFMASX/GENEM
         EFMASY = EFMASY*EFMASY/GENEM
         EFMASZ = EFMASZ*EFMASZ/GENEM
-        CALL RSNOCH ( NOMRES, DEPL, I, ' ' )
+        CALL RSNOCH ( NOMRES,DEPL,I)
         CALL RSADPA ( NOMRES,'E',9,NOMPAR,I,0,IADPAR,KBID)
         ZR(IADPAR(1)) = FREQ
         ZR(IADPAR(2)) = GENEK

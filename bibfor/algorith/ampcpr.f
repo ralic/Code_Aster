@@ -1,8 +1,8 @@
       SUBROUTINE AMPCPR(CMAT,NB1,NB2,BMAT,N1,N2,I,J,FAC,NPAR,NSYM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C***********************************************************************
 C    P. RICHARD     DATE 12/03/91
@@ -48,6 +48,13 @@ C-----------------------------------------------------------------------
 C
 C   CAS SANS TRANSPOSITION
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,ICOL ,IDEB ,IFIN ,II ,IIDEB ,IIFIN 
+      INTEGER ILIG ,ITERME ,J ,JDEB ,JFIN ,JJ ,JJDEB 
+      INTEGER JJFIN ,N1 ,N2 ,NB1 ,NB2 ,NPAR ,NSYM 
+
+      REAL*8 FAC 
+C-----------------------------------------------------------------------
       IF(NSYM.EQ.1) THEN
 C
         JDEB=J

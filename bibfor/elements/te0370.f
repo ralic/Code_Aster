@@ -1,6 +1,6 @@
       SUBROUTINE TE0370(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,7 @@ C     ENTREES  ---> OPTION : OPTION DE CALCUL
 C          ---> NOMTE  : NOM DU TYPE ELEMENT
 C.......................................................................
 C
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER            ICODRE
       CHARACTER*8        FAMI,POUM
@@ -47,6 +47,10 @@ C
 C
 C
 C
+C-----------------------------------------------------------------------
+      INTEGER IDEPLM ,IDEPLP ,LPESA ,NPG2 
+      REAL*8 R8B 
+C-----------------------------------------------------------------------
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG2,IPOIDS,IVF,IDFRDE,JGANO)
 C
       CALL JEVECH('PGEOMER','L',IGEOM)

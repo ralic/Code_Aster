@@ -1,11 +1,11 @@
       SUBROUTINE CHMIMA(NOMSD,NOMSY,TYPMAX,NOCHAM)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER                       NBORDR
       CHARACTER*(*)     NOMSD,NOMSY, TYPMAX,NOCHAM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,6 +42,13 @@ C ----------------------------------------------------------------------
       CHARACTER*5 SUFV
       INTEGER      IARG
 C ----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IAD ,IB ,IE ,IN ,INOE ,INUMER 
+      INTEGER IRET ,IVALE ,J ,JDDLX ,JDDLY ,JDDLZ ,JDLRX 
+      INTEGER JDLRY ,JDLRZ ,JORDR ,JVPNT ,N2 ,NBNOE ,NC 
+      INTEGER NEQ ,NP ,NVALE 
+      REAL*8 EPSI ,RS1 ,X ,Y ,Z 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       KNUM   = '&&CHMIMA.NUME_ORDRE'
       NOMS2  = NOMSY

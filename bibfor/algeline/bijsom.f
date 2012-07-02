@@ -1,11 +1,11 @@
       SUBROUTINE BIJSOM(UMOY,RHOF,R1,R2,LONG,CF0,ICOQ,JCOQ,JMOD,NBM,RKI,
      &                  THETAI,THETAJ,TCOEF,YSOL,BIJ)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 31/10/96   AUTEUR KXBADNG N.GAY 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -63,6 +63,11 @@ C
 C
 C-----------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER K 
+      REAL*8 COEP ,COEPR1 ,COEPR2 ,DZ ,PI ,R8PI ,RAYON 
+      REAL*8 WJ ,WPR ,Z 
+C-----------------------------------------------------------------------
       PI = R8PI()
       DZ = LONG/100.D0
       SOM = DCMPLX(0.D0,0.D0)

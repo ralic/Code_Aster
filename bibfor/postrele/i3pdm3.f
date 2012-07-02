@@ -1,12 +1,12 @@
       SUBROUTINE I3PDM3 ( EPSI,K,DESC,DESCTM,CONEXK,COORDO,PT,DEDANS)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER           K, DESC(*), DESCTM(*), CONEXK(*)
       REAL*8            EPSI, PT(*), COORDO(*)
       LOGICAL           DEDANS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,6 +44,8 @@ C
 C
 C======================================================================
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       ADESTM =  DESCTM(DESC(K))
       DEDANS = .TRUE.
       FINI   = .FALSE.

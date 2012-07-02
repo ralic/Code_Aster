@@ -1,9 +1,9 @@
       SUBROUTINE USUPU2 (NBPT,NBPAIR,COEF,ANG,ISUPP,NBINST,TEMPS,
      &                PUUSUR,VUSTUB,VUSOB,PUS,PMOYE,POURPU,POUPRE)
-      IMPLICIT REAL *8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,6 +33,14 @@ C-----------------------------------------------------------------------
       REAL*8 VUSTUB(NBPAIR,NBINST),VUSOB(NBPAIR,NBINST)
       REAL*8 PUS(*),PMOYE,POURPU(*),POUPRE(*)
       INTEGER      IARG
+C-----------------------------------------------------------------------
+      INTEGER ICHOC ,IDEBUT ,IFIN ,IFIRES ,ISUPP ,IUNIFI ,J 
+      INTEGER JDESC ,JDLOC ,JFCHO ,JINST ,JNCHO ,JVGLI ,JWK1 
+      INTEGER JWK2 ,JWK3 ,JWK4 ,JWK5 ,JWK6 ,LG ,LXLGUT 
+      INTEGER N1 ,N2 ,N3 ,N4 ,NBCHOC ,NBINST ,NBLOC 
+      INTEGER NBPAIR ,NBPAS ,NBPT ,NBVAL ,NT 
+      REAL*8 PUUSUR ,TDEBUT ,TFIN ,TMAX ,TMIN 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       IFIRES = IUNIFI('RESULTAT')
       NBPT = 0

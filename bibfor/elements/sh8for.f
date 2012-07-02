@@ -1,6 +1,6 @@
       SUBROUTINE SH8FOR(XETEMP,PARA,XIDEPM,SIGMA,FSTAB,XIVECT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,7 @@ C ======================================================================
 C
 C               ELEMENT SHB8
 C
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER LAG,IRDC
       REAL*8 FSTAB(12),PARA(*)
@@ -36,7 +36,7 @@ C
       REAL*8 F(3,8),SIGMAG(6),PQIALF(3,4)
       REAL*8 QIALFA(3,4),FHG(3,8),RR12(3,3),RR1(3,3),FHG24(24)
       REAL*8 SITMP1(8,8),SITMP2(8,8),POIDS
-      REAL*8 FQ(24),XETEMP(*)
+      REAL*8 FQ(24),XETEMP(*),HOUXGB
 C
 C INITIALISATIONS
 C
@@ -47,6 +47,11 @@ C DANS SHB8_TEST_NUM: ATTENTION A LA NUMEROTATION DES NOEUDS
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C      IF (NOMSHB.EQ.'SHB8') THEN
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IA ,IP ,J ,K ,KK
+      REAL*8 AJAC ,AUX ,RBID ,UNS3 ,UNS8 ,VOL ,XCOOEF
+      REAL*8 XMU ,XNU ,XYOUNG ,ZETA ,ZLAMB
+C-----------------------------------------------------------------------
          DATA GB/1.D0,1.D0,-1.D0,-1.D0,-1.D0,-1.D0,1.D0,
      &    1.D0,1.D0,-1.D0,-1.D0,1.D0,-1.D0,1.D0,1.D0,
      &   -1.D0,1.D0,-1.D0,1.D0,-1.D0,1.D0,-1.D0,1.D0,

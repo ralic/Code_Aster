@@ -1,8 +1,8 @@
       SUBROUTINE OP0120()
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,6 +24,17 @@ C
 C     ------------------------------------------------------------------
 C
       INCLUDE 'jeveux.h'
+C-----------------------------------------------------------------------
+      INTEGER I ,IFFT ,IFM ,IMATR ,IT ,J ,K 
+      INTEGER KB ,KF ,KK ,KTABL ,L ,L1 ,L2 
+      INTEGER LCOD ,LCOMP1 ,LFON ,LINT ,LONG1 ,LONG2 ,LPROL 
+      INTEGER LRESU1 ,LRMS ,LS1 ,LSSX ,LTABL ,LVALC ,LVALE 
+      INTEGER NBF1 ,NBPAR ,NBPTS ,NBPTS2 ,NBPTS3 ,NDA ,NDD 
+      INTEGER NFCOD ,NFONC ,NIV ,NMATR 
+      REAL*8 BMATR ,DFREQ ,DT ,DURANA ,DURDEC ,FREFIN ,FREINI 
+      REAL*8 PTS ,PTS1 ,PTS2 ,PTS3 ,R8B ,TINST ,TINST1 
+      REAL*8 TINST2 
+C-----------------------------------------------------------------------
       PARAMETER   ( NBPAR = 6 )
       INTEGER       LONG, IVAL(2), IER
       REAL*8        RESU, ZERO

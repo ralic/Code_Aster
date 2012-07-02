@@ -1,4 +1,4 @@
-# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE COMPORTEMENT NON-LINEAIRE D'UN ELEMENT D'ARMEMENT DE LIGNE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,7 +29,7 @@ MO=AFFE_MODELE(   MAILLAGE=MA,
                   PARTITION=_F(PARALLELISME='CENTRALISE'))
 
 F1=DEFI_FONCTION(   NOM_PARA='INST',
-                      VALE=(0., 0., 4., 4., 6., 2., 10., 6., 12., 4., ),
+                      VALE=(0., 0., 4., 4., 6., 2., 10., 6., 12., 4.),
                         PROL_DROITE='LINEAIRE',
                        PROL_GAUCHE='LINEAIRE'   )
 
@@ -45,10 +45,10 @@ CHMAT=AFFE_MATERIAU(   MAILLAGE=MA,
 CAREL=AFFE_CARA_ELEM(   MODELE=MO,
                     DISCRET=_F(  MAILLE = 'D1',
                               CARA = 'K_TR_D_L',
-                              VALE = (1.E6, 1.E6, 1.E6, 1.E9, 1.E9, 1.E9,)),
+                              VALE = (1.E6, 1.E6, 1.E6, 1.E9, 1.E9, 1.E9)),
                     ORIENTATION=_F(  MAILLE = 'D1',
                                   CARA = 'ANGL_NAUT',
-                                  VALE = ( 0.,  0., 0., ))
+                                  VALE = ( 0.,  0., 0.))
                          )
 
 CH1=AFFE_CHAR_MECA(   MODELE=MO,
@@ -60,7 +60,7 @@ CH1=AFFE_CHAR_MECA(   MODELE=MO,
                                  MX = 0.,  MY = 0.,    MZ = 0.)
                       )
 
-STATNL=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,),
+STATNL=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS'),
                             MODELE=MO,
                         CHAM_MATER=CHMAT,
                          CARA_ELEM=CAREL,

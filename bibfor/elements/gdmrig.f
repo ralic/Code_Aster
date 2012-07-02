@@ -1,9 +1,9 @@
       SUBROUTINE GDMRIG (KP,NNO,AJACOB,PJACOB,EN,ENPRIM,X0PG,ROT0,ROTK,
      &                   GRANC,PN,PM,   RIGI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -42,12 +42,16 @@ C
 C     OUT : RIGI      : MATRICE DE RIGIDITE (CUMUL DES CONTRIBUTIONS DES
 C                       POINTS DE GAUSS)
 C ------------------------------------------------------------------
-      IMPLICIT REAL*8(A-H,O-Z)
+      IMPLICIT NONE
       REAL*8 EN(3,2),ENPRIM(3,2),X0PG(3),ROT0(3,3),ROTK(3,3),GRANC(6),
      &PN(3),PM(3),RIGI(18,18),D(9,9),STOKAJ(9,6,6),PI(6,6),CPIT(6,6),
      &PICPIT(6,6),PICPBJ(6,6),BI(6,6),BJ(6,6),BIBJ(6,6),BIT(6,6),
      &UPSI(9,6),UPSJ(9,6),UPIUPJ(6,6),UPSIT(6,9),DUPSJ(9,6),ROTABS(3,3)
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,J ,KP ,NE ,NNO 
+      REAL*8 AJACOB ,PJACOB ,ZERO 
+C-----------------------------------------------------------------------
       ZERO = 0.D0
 C
       DO 7 J=1,6

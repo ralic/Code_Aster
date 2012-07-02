@@ -1,4 +1,4 @@
-# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # RESPONSABLE FERNANDES R.FERNANDES
 # ======================================================================
 # TITRE ETUDE : ESSAI BIAXIAL DRAINE (MODELISATION D_PLAN)
@@ -27,12 +27,12 @@ DEBUT(CODE=_F(NOM='SSNP124B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 MAILLAGE = LIRE_MAILLAGE( );
 
 MATER    = DEFI_MATERIAU(  ELAS    = _F(  E  = 5800.0E6,
-                                          NU = 0.3  ,),
+                                          NU = 0.3  ),
                            DRUCK_PRAGER = _F(  ECROUISSAGE = 'PARABOLIQUE',
                                           ALPHA       =    0.33      ,
                                           P_ULTM      =    0.01      ,
                                           SY          =    2.57E6    ,
-                                          SY_ULTM     =    0.57E6    ,),
+                                          SY_ULTM     =    0.57E6    ),
                         );
 
 CHMAT    = AFFE_MATERIAU(  MAILLAGE = MAILLAGE,
@@ -53,8 +53,8 @@ SIGINIT=CREA_CHAMP(TYPE_CHAM='CART_SIEF_R',
                   OPERATION='AFFE',
                   MODELE=MODELE,
                   AFFE=_F(TOUT='OUI',
-                          NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ','SIP','M11','FH11X','FH11Y',),
-                          VALE=(-2.E6,-2.E6,-2.E6,0.0,0.0,0.0,0,0.0,0.0,0.0,),),);
+                          NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ','SIP','M11','FH11X','FH11Y'),
+                          VALE=(-2.E6,-2.E6,-2.E6,0.0,0.0,0.0,0,0.0,0.0,0.0)));
 
 CHAR_UM3 = AFFE_CHAR_MECA( MODELE   = MODELE,
                            PRES_REP = _F(  MAILLE = 'M3',
@@ -90,30 +90,30 @@ COEF2    = DEFI_FONCTION(  NOM_PARA    = 'INST',
                            PROL_DROITE = 'CONSTANT',
                            PROL_GAUCHE = 'CONSTANT',
                            VALE=( 1.0,  -0.000,
-                                  2.0,  -0.015,    )
+                                  2.0,  -0.015)
                         )
 
 TEMPS    = DEFI_LIST_REEL( DEBUT       = 1.,
                            INTERVALLE  = (
-                                           _F(  JUSQU_A = 2.000, NOMBRE = 100, ),),
+                                           _F(  JUSQU_A = 2.000, NOMBRE = 100)),
                           )
 
-U2       = STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,),
+U2       = STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS'),
                           MODELE     = MODELE,
                           CHAM_MATER = CHMAT,
                           EXCIT      = (
-                                        _F( CHARGE        = CHAR_UM3,),
-                                        _F( CHARGE        = DEPL_M5, ),
-     _F( CHARGE        = DEPL_M2, ),
+                                        _F( CHARGE        = CHAR_UM3),
+                                        _F( CHARGE        = DEPL_M5),
+     _F( CHARGE        = DEPL_M2),
             _F( CHARGE        = DEPL_M4,
-                                            FONC_MULT     = COEF2,),),
+                                            FONC_MULT     = COEF2)),
                          COMP_INCR   = _F( RELATION       = 'DRUCK_PRAGER'),
                          NEWTON      = _F( MATRICE        = 'TANGENTE',
-                                           REAC_ITER      = 1,),
-                         ETAT_INIT   = _F( SIGM           = SIGINIT,),
+                                           REAC_ITER      = 1),
+                         ETAT_INIT   = _F( SIGM           = SIGINIT),
                          CONVERGENCE = _F( RESI_GLOB_RELA = 1.E-6,
                                            ITER_GLOB_MAXI = 50),
-                         INCREMENT   = _F( LIST_INST      = TEMPS,)
+                         INCREMENT   = _F( LIST_INST      = TEMPS)
                         )
 
 U2=CALC_CHAMP(reuse=U2,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U2)
@@ -262,25 +262,25 @@ TEST_RESU( RESU = (
 #           NOEUD  = 'N4',
 #           NOM_CHAM  = 'SIGM_ELNO',
 #           TOUT_CMP  = 'OUI',
-#           OPERATION = 'EXTRACTION',),);
+#           OPERATION = 'EXTRACTION'));
 #
 #DEFORMAT = POST_RELEVE_T( ACTION = _F( INTITULE  = 'DEFORMATION',
 #           RESULTAT  =  U2,
 #           NOEUD  = 'N4',
 #           NOM_CHAM  = 'VARI_ELNO',
 #           TOUT_CMP  = 'OUI',
-#           OPERATION = 'EXTRACTION',),);
+#           OPERATION = 'EXTRACTION'));
 #
 #DEPLACEM = POST_RELEVE_T( ACTION = _F( INTITULE  = 'DEPLACEMENT',
 #           RESULTAT  =  U2,
 #           NOEUD  = 'N4',
 #           NOM_CHAM  = 'DEPL',
 #           TOUT_CMP  = 'OUI',
-#           OPERATION = 'EXTRACTION',),);
+#           OPERATION = 'EXTRACTION'));
 #
-#IMPR_TABLE(TABLE=SIGMA,   );
-#IMPR_TABLE(TABLE=DEFORMAT,);
-#IMPR_TABLE(TABLE=DEPLACEM,);
+#IMPR_TABLE(TABLE=SIGMA);
+#IMPR_TABLE(TABLE=DEFORMAT);
+#IMPR_TABLE(TABLE=DEPLACEM);
 #######################################################################
 
 FIN();

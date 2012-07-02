@@ -1,6 +1,6 @@
       SUBROUTINE DFDM1D ( NNO,POIDS,DFRDK,COOR,DFDX,COUR,JACP,COSA,SINA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER             NNO
       REAL*8                  DFRDK(1),COOR(*),DFDX(1)
@@ -49,6 +49,10 @@ C
       CHARACTER*8 NOMAIL
       INTEGER            I
 C
+C-----------------------------------------------------------------------
+      INTEGER IADZI ,IAZK24 
+      REAL*8 D2XDK ,D2YDK ,R8GAEM 
+C-----------------------------------------------------------------------
       DXDK = 0.D0
       DYDK = 0.D0
       DO 100 I=1,NNO

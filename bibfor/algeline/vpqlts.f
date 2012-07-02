@@ -1,12 +1,12 @@
       SUBROUTINE VPQLTS (DIAG,SURDIA,NEQ,VECPRO,MXCMP,MXITER,IER,NITQR)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER  NEQ,MXCMP,MXITER,IER,NITQR
       REAL*8   DIAG(1),SURDIA(1),VECPRO(MXCMP,1)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 17/09/96   AUTEUR D6BHHBQ B.QUINNEZ 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -51,6 +51,10 @@ C     ------------------------------------------------------------------
       REAL*8   B,C,F,G,H,P,R,S
       REAL*8   ZERO, UN, DEUX , EPSMAC, R8PREM
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IEQ ,J ,JEQ ,JTER ,K ,M 
+
+C-----------------------------------------------------------------------
       IER    = 0
       ZERO   = 0.0D0
       EPSMAC = R8PREM()

@@ -1,6 +1,6 @@
       SUBROUTINE SS2MM2(MO,VECEL,NOMCAS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SOUSTRUC  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C INSPI  SS2MME
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C     ARGUMENTS:
 C     ----------
@@ -48,6 +48,10 @@ C
 C
 C
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IALSCH ,IAMACR ,IAREFR ,IASSSA ,IBID ,IERD 
+      INTEGER IRET ,NBSMA ,NBSSA 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL DISMOI('F','NOM_MAILLA',MO,'MODELE',IBID,MA,IERD)
       CALL DISMOI('F','NB_SS_ACTI',MO,'MODELE',NBSSA,KBID,IERD)

@@ -1,8 +1,8 @@
       SUBROUTINE ASBGL2(BGLOB,B)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 12/08/2008   AUTEUR DESROCHES X.DESROCHES 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -20,9 +20,12 @@ C ======================================================================
 C
 C Transformer B(3,20) dans global en BGLOB(6,60) en global
 C
-      IMPLICIT REAL *8(A-H,O-Z)
+      IMPLICIT NONE
       REAL *8 BGLOB(6,60), B(3,20)
 C
+C-----------------------------------------------------------------------
+      INTEGER J 
+C-----------------------------------------------------------------------
       CALL R8INIR(360,0.D0,BGLOB,1)
 C
 C Premiere ligne

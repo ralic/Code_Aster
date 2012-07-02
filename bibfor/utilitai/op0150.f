@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,10 +28,7 @@ C        * MED
 C
 C ......................................................................
 C
-C
 
-C
-C
       INCLUDE 'jeveux.h'
       CHARACTER*6 NOMPRO
       PARAMETER (NOMPRO='OP0150')
@@ -39,7 +36,7 @@ C
       INTEGER NDIM
       INTEGER NTO,NNU,JLIST,NBORDR,NBNOCH,NVAR
       INTEGER NBVARI,JNUME,NP,ICH,NIS
-      INTEGER IRET,NFOR,LL
+      INTEGER IRET,NFOR,LL,IEXI
       INTEGER I,LONG,IER
       INTEGER LORDR,IORD,NC
       INTEGER IBID,NBV,NBTROU
@@ -57,8 +54,8 @@ C
       CHARACTER*10 ACCES
       CHARACTER*16 NOMCMD,CONCEP,TYPRES,FICH
       CHARACTER*16 LINOCH(100),FORM,NOCH,K16NOM
-      CHARACTER*19 LISTR8,LISTIS,NOMCH,LIGREL
-      CHARACTER*19 PRCHND
+      CHARACTER*19 LISTR8,LISTIS,LIGREL
+      CHARACTER*19 PRCHND,RESU19
       CHARACTER*24 VALK(2)
       CHARACTER*24 OPTION
       COMPLEX*16 CBID
@@ -235,10 +232,10 @@ C     --- CREATION DE LA STRUCTURE DE DONNEES RESULTAT ---
       IF (IRET.GT.0) ACCE = 'FREQ'
 
 C- ON VERIFIE SI LE CHAMP DEMANDE EST COMPATIBLE AVEC LE TYPE DE RESUTAT
-
       DO 30 ICH = 1,NBNOCH
-        CALL RSUTCH(RESU,LINOCH(ICH),1,NOMCH,IRET)
-        IF (IRET.NE.0) THEN
+        RESU19=RESU
+        CALL JENONU(JEXNOM(RESU19//'.DESC',LINOCH(ICH)),IEXI)
+        IF (IEXI.EQ.0) THEN
           VALK (1) = TYPRES
           VALK (2) = LINOCH(ICH)
           CALL U2MESG('F','UTILITAI8_24',2,VALK,0,0,0,0.D0)
@@ -270,8 +267,8 @@ C
       ELSE IF (FORM.EQ.'ENSIGHT') THEN
 C     ================================
 C
-        CALL JEEXIN(LIGREL//'.LGRF',IRET)
-        IF (IRET.EQ.0) THEN
+        CALL JEEXIN(LIGREL//'.LGRF',IEXI)
+        IF (IEXI.EQ.0) THEN
           CALL U2MESS('F','UTILITAI2_88')
         ELSE
           CALL DISMOI('F','DIM_GEOM',NOMO,'MODELE',NDIM,K8BID,IER)
@@ -431,6 +428,7 @@ C     --------------------------------------------
 
       CALL TITRE
 
+
 C     -- CREATION D'UN .REFD VIDE SI NECESSAIRE :
 C     ---------------------------------------------------
       IF( TYPRES.EQ.'HARM_GENE'  .OR.
@@ -439,6 +437,11 @@ C     ---------------------------------------------------
      &    TYPRES(1:9).EQ.'MODE_MECA' )THEN
          CALL AJREFD(' ',RESU,'FORCE')
       ENDIF
+
+C     -- SI NECESSAIRE, ON MET LES CHAMPS DE DEPL_R/C DANS
+C        LA NUMEROTATION DU NUME_DDL DU .REFD :
+C     -----------------------------------------------------
+      CALL RSMODE(RESU)
 
       CALL JEDEMA()
       END

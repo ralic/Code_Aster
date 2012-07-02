@@ -1,9 +1,9 @@
       SUBROUTINE JECREO ( NOMLU , LISTAT )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C RESPONSABLE LEFEBVRE
-C MODIF JEVEUX  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
+C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,9 +25,14 @@ C IN  NOMLU  : NOM DE L'OBJET JEVEUX
 C IN  LISTAT : CHAINE DE CARACTERES CONTENANT LA LISTES DES ATTRIBUTS
 C
 C ----------------------------------------------------------------------
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       CHARACTER *(*)      NOMLU , LISTAT
 C     ==================================================================
+C-----------------------------------------------------------------------
+      INTEGER IV ,JCARA ,JDATE ,JDOCU ,JGENR ,JHCOD ,JIADD 
+      INTEGER JIADM ,JLONG ,JLONO ,JLTYP ,JLUTI ,JMARQ ,JORIG 
+      INTEGER JRNOM ,JTYPE ,N 
+C-----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
 C
       CHARACTER*2      DN2

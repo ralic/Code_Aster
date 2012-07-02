@@ -1,12 +1,12 @@
       SUBROUTINE FUN2(XI1, XI2, P, XKK, Q, VT,  N  )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER                                   N
       REAL*8          XI1, XI2, P, XKK, Q, VT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/01/95   AUTEUR G8BHHAC A.Y.PORTABILITE 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -41,6 +41,8 @@ C OUT R*8  !   VT   !     -     !
 C    -------------------------------------------------------------------
       REAL*8    ALG,DI,PHI,A,A2,A3,RHO,C
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       IF (XI1.EQ.XI2) THEN
           Q   = 0.5D0
           XKK = 12.D0*XI1/(1.D0+P*(12.D0*XI1))

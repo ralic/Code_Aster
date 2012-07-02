@@ -1,8 +1,8 @@
       SUBROUTINE RRLDC(A,NORDRE,X,NVES)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,7 +21,7 @@ C***********************************************************************
 C    A. COMTE                                 DATE 31/07/91
 C-----------------------------------------------------------------------
 C  BUT:  RESOLUTION DE L'EQUATION MATRICIELLE
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C                 A*X=B
 C
 C  OU A EST UNE MATRICE COMPLEXE FACTORISEE LDLT PAR TRLDC
@@ -40,6 +40,10 @@ C
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IDIAG ,ILIGN1 ,ILIGN2 ,IN ,INDIAG ,NORDRE 
+      INTEGER NV ,NVES 
+C-----------------------------------------------------------------------
       ILIGN1 = 1
       ILIGN2 = NORDRE
 C

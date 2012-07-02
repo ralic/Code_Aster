@@ -1,5 +1,5 @@
       SUBROUTINE MERIA1(MODELE,NCHAR,LCHAR,MATE,MATEL,PREFCH)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER NCHAR
       CHARACTER*8 LCHAR(*)
@@ -7,7 +7,7 @@
       CHARACTER*(*) MODELE,MATE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,6 +57,9 @@ C     ------------------
       LOGICAL EXIGEO
 
 
+C-----------------------------------------------------------------------
+      INTEGER ICHA ,ILIRES ,IRET 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL MEGEOM(MODELE,LCHAR(1),EXIGEO,CHGEOM)
 

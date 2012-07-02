@@ -1,10 +1,10 @@
       SUBROUTINE PACOU0 (X,FVEC,QT,R,C,D,FVCOLD,G,P,S,T,W,XOLD,WORK,
      &                   CHECK,VECR1,VECR2,TYPFLU,VECR3,AMOR,MASG,VECR4,
      &                   VECR5,VECI1,VG,INDIC,NBM,NMODE,NT)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,6 +35,12 @@ C ---------
       INTEGER VECI1(*)
       LOGICAL RESTRT,SING,SKIP,CHECK
       CHARACTER*8 TYPFLU
+C-----------------------------------------------------------------------
+      INTEGER I ,INDIC ,ITS ,J ,K ,MAXITS ,N 
+      INTEGER NBM ,NMODE ,NT 
+      REAL*8 DEN ,EPS ,F ,FOLD ,STPMAX ,STPMX ,SUM 
+      REAL*8 TEMP ,TEST ,TOLF ,TOLMIN ,TOLX ,VG 
+C-----------------------------------------------------------------------
       PARAMETER (EPS=1.0D-8,TOLX=EPS,TOLMIN=10.D0*EPS)
       PARAMETER (TOLF=1.D-04)
       PARAMETER (MAXITS=200,STPMX=100.D0)

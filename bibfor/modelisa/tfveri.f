@@ -1,9 +1,9 @@
       SUBROUTINE TFVERI(CMD,NOMMCF,NBOCC,ITYPFL)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,7 +19,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C-----------------------------------------------------------------------
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C     VERIFICATIONS DE PREMIER NIVEAU
 C     APPELANT : OP0143 , OPERATEUR DEFI_FLUI_STRU
@@ -50,6 +50,16 @@ C
 C ----1.CAS D'UN FAISCEAU_TRANS
 C       -----------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER IANGL ,IBID ,ICAPA ,ICARA ,ICM ,ICMP ,ICOUP 
+      INTEGER IER2 ,IGRA2 ,IHY ,IHZ ,IOCC ,IPAS ,IPESAN 
+      INTEGER IR ,IRAYON ,IRHO ,IRHOE ,IRHOI ,IRUGO ,ITPAS 
+      INTEGER ITRES ,IVAPA ,IVECT ,IVISC ,JCOUP ,NBCOOR ,NBHY 
+      INTEGER NBHZ ,NBOCC ,NBR ,NBTUB ,NBTUB2 ,NBYC ,NBZC 
+      INTEGER NCARA ,NCM ,NCMP ,NCOUP ,NPAS ,NRHOE ,NRHOI 
+      INTEGER NTPAS ,NTRES ,NTYPG 
+      REAL*8 RBID 
+C-----------------------------------------------------------------------
       IF (ITYPFL.EQ.1) THEN
 C ---    VERIFICATION DE LA PRESENCE D AU MOINS UNE OCCURENCE DU
 C        MOT-CLE COUPLAGE

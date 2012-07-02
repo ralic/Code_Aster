@@ -1,8 +1,8 @@
       SUBROUTINE TRAN75(NOMRES,TYPRES,NOMIN,BASEMO)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,17 @@ C ----------------------------------------------------------------------
       LOGICAL       TOUSNO, MULTAP, LEFFOR, PREMS
       INTEGER      IARG
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER IADESC ,IADRIF ,IARCHI ,IAREFE ,IBID ,ICH ,ID 
+      INTEGER IDBASE ,IDEC ,IDEFM ,IDINSG ,IDRESU ,IDVECG ,IE 
+      INTEGER IER ,INOCMP ,INOECP ,INUDDL ,INUMNO ,IPSDEL ,IRET 
+      INTEGER IRETOU ,J2REFE ,J3REFE ,JC ,JDDL ,JINST ,JNOACC 
+      INTEGER JNODEP ,JNOVIT ,JNUME ,JPSDEL ,JVEC ,LINST ,LLCHA 
+      INTEGER LPSDEL ,LREFE ,LVAL2 ,LVALE ,N1 ,N2 ,N3 
+      INTEGER N4 ,NBCHAM ,NBD ,NBDIR ,NBEXCI ,NBINSG ,NBINST 
+      INTEGER NBMODE ,NBNOEU ,NCMP ,NEQ ,NFONCT 
+      REAL*8 R8PREM 
+C-----------------------------------------------------------------------
       DATA BLANC    /'        '/
       DATA CHAMN2   /'&&TRAN75.CHAMN2'/
       DATA NOMCMP   /'DX      ','DY      ','DZ      ',
@@ -424,7 +435,7 @@ C               --- ACCELERATION ABSOLUE = RELATIVE + ENTRAINEMENT
                 CALL JEDETR ('&&TRAN75.VECTEUR')
                 CALL JEDETR ('&&TRAN75.DDL')
              ENDIF
-             CALL RSNOCH(NOMRES,TYPE(ICH),IARCHI,' ')
+             CALL RSNOCH(NOMRES,TYPE(ICH),IARCHI)
              CALL RSADPA(NOMRES,'E',1,'INST',IARCHI,0,LINST,K8B)
              ZR(LINST) = ZR(JINST+I)
  200      CONTINUE

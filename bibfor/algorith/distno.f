@@ -1,12 +1,12 @@
       SUBROUTINE DISTNO(XLOCAL,SIGNE,TYPEOB,XJEU,DIST1,DIST2,
      &                  DNORM,COST,SINT )
-      IMPLICIT  REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       REAL*8            XLOCAL(6),SIGNE(*)
       CHARACTER*8       TYPEOB
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,6 +43,13 @@ C---------------------------------------------------------------------
       COMPLEX*16   CBID
       CHARACTER*24 NOMFON
 C
+C-----------------------------------------------------------------------
+      INTEGER I 
+      REAL*8 COS2 ,COST ,COSTNO ,DEPI ,DIST1 ,DIST2 ,DNORM 
+      REAL*8 DY ,DZ ,R1 ,R2 ,R8DEPI ,SIN2 ,SINT 
+      REAL*8 SINTNO ,T1 ,T2 ,TETANO ,UN ,XJEU ,XLG 
+      REAL*8 XLS ,Y1 ,Y2 ,Z1 ,Z2 ,ZERO 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       ZERO = 0.D0
       UN   = 1.D0

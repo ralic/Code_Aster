@@ -1,14 +1,14 @@
       SUBROUTINE SSPACE(LRAID,LMATRA,LMASS,NEQ,NBVEC,NFREQ,LPROD,ITEMAX,
      &                  NPERM,TOL,TOLDYN,VECT,VALPRO,NITJAC,NITBAT,
      &                  SOLVEU)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER LRAID,LMATRA,LMASS,NEQ,NBVEC,NFREQ
       INTEGER LPROD(NEQ),ITEMAX,NPERM,NITJAC,NITBAT
       REAL*8 TOL,TOLDYN,VALPRO(NBVEC),VECT(NEQ,NBVEC)
       CHARACTER*19 SOLVEU
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,6 +57,13 @@ C-----------------------------------------------------------------------
       CHARACTER*1  KBID
       CHARACTER*19 K19BID,MATASS,CHCINE,CRITER
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IAA ,IAR ,IBR ,ICOMP ,ICONV ,IFPOS 
+      INTEGER II ,IIPOS ,IJAC ,IRDIAK ,IRDIAM ,ITEMPO ,ITER 
+      INTEGER ITOLVE ,IVECPR ,IVECT ,JJ ,KK ,LL ,NFRCV 
+      INTEGER NITJA 
+      REAL*8 ART ,BRT ,DSEED 
+C-----------------------------------------------------------------------
       DATA VALM/'                   .VALM'/
 
 C     INIT. OBJETS ASTER

@@ -1,16 +1,16 @@
       SUBROUTINE PTKTFV(ITYPE,SK,E,ROF,CE,A1,AI1,A2,AI2,XL,XIY1,XIY2,
      &                  XIZ1,XIZ2,XJX1,XJX2,G,ALFAY1,ALFAY2,
      &                  ALFAZ1,ALFAZ2,EY,EZ)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER ITYPE
       REAL*8 SK(*)
       REAL*8 E,ROF,CE,A1,AI1,A2,AI2,XL,XIY1,XIY2,XIZ1,XIZ2,XJX1,XJX2
       REAL*8 G,ALFAY1,ALFAY2,ALFAZ1,ALFAZ2,EY,EZ
 C    -------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -83,7 +83,7 @@ C     SOUS - PROGRAMMES UTILISES
 C FUN1     - AIRES ET CONSTANTE DE TORSION EQUIVALENTES
 C FUN2     - MOMENTS D INERTIE EQUIVALENTS
 C     ------------------------------------------------------------------
-      INTEGER IP(16)
+      INTEGER IP(16),I,J,K
       REAL*8 ZERO,R8GAEM
       REAL*8  C2,C4,C8,C9,C12,C60
       REAL*8  EXL,XL2,XL3, PHIY,PHIZ, ASY,ASZ
@@ -97,6 +97,8 @@ C
       C9   =  9.D0
       C12  = 12.D0
       C60  = 60.D0
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       DATA IP/ 0,1,3,6,10,15,21,28,36,45,55,66,78,91,105,120/
 C ---------------------------------------------------------------------
       DO 1,I=1,136

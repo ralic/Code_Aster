@@ -1,12 +1,12 @@
       SUBROUTINE NUM2K8(NOMGD,TGLOK8,TLOCK8,NBLK8,TIND)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER                               NBLK8,TIND(*)
       CHARACTER*8       NOMGD,TGLOK8(*),TLOCK8(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -29,6 +29,9 @@ C                 (NBLK8 : DIMENSION DE TLOCK8)
 C
 C ----------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,J 
+C-----------------------------------------------------------------------
       IF ( NOMGD(1:6).EQ.'SIEF_R') THEN
          DO 10, I = 1, NBLK8, 1
             TIND (I) = 0

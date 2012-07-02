@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE  - VALIDATION DE LA MODELISATION A MICRO-DILATATION SANS LAGRANGE
 # ssll117g.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -27,96 +27,96 @@ MA = LIRE_MAILLAGE();
 MAILLAGE=CREA_MAILLAGE(MAILLAGE=MA,
                     CREA_GROUP_MA=(_F(NOM  = 'ROCHE_RE',
                                       GROUP_MA    = 'ROCHE',
-                                      PREF_MAILLE = 'MR'),),);
+                                      PREF_MAILLE = 'MR')));
 
 MAILLAGE = DEFI_GROUP( reuse    = MAILLAGE,
                    MAILLAGE = MAILLAGE,
-                   CREA_GROUP_NO = (     _F(GROUP_MA='ROCHE',),
-                                         _F(GROUP_MA='DA',),
-                                         _F(GROUP_MA='BC',),
+                   CREA_GROUP_NO = (     _F(GROUP_MA='ROCHE'),
+                                         _F(GROUP_MA='DA'),
+                                         _F(GROUP_MA='BC'),
                                          _F (NOM        ='SROCHE',
                                              CRIT_NOEUD ='SOMMET',
-                                             GROUP_MA   ='ROCHE',),
+                                             GROUP_MA   ='ROCHE'),
                                          _F (NOM        ='MROCHE',
                                              CRIT_NOEUD ='MILIEU',
-                                             GROUP_MA   ='ROCHE',),
+                                             GROUP_MA   ='ROCHE'),
                                          _F (NOM        ='SBC',
                                              CRIT_NOEUD ='SOMMET',
-                                             GROUP_MA   ='BC',),),);
+                                             GROUP_MA   ='BC')));
 
 MODELE   = AFFE_MODELE( MAILLAGE = MAILLAGE,
                         INFO     = 2,
                         AFFE     = (_F( GROUP_MA     = 'ROCHE',
                                         PHENOMENE    = 'MECANIQUE',
-                                        MODELISATION = 'D_PLAN_SI',),
+                                        MODELISATION = 'D_PLAN_SI'),
                                     _F( GROUP_MA     = 'ROCHE_RE',
                                         PHENOMENE    = 'MECANIQUE',
-                                        MODELISATION = 'D_PLAN_DIL',),
+                                        MODELISATION = 'D_PLAN_DIL'),
                        ));
 
 SOL1  = DEFI_MATERIAU( ELAS      = _F( E           = 1000.0,
-                                      NU          = 0.0,),
+                                      NU          = 0.0),
                       );
 
 SOL2  = DEFI_MATERIAU( ELAS_2NDG = _F( A1          = 10.0,
                                       A2          = 0.0,
                                       A3          = 0.0,
                                       A4          = 0.0,
-                                      A5          = 0.0,),
-                      NON_LOCAL = _F( PENA_LAGR  = 1.0E8,),
+                                      A5          = 0.0),
+                      NON_LOCAL = _F( PENA_LAGR  = 1.0E8),
                       );
 
 
 CHMAT = AFFE_MATERIAU( MAILLAGE = MAILLAGE,
                        AFFE     = (_F( TOUT  = 'OUI',
-                                      MATER =  SOL1,),
+                                      MATER =  SOL1),
                                   _F( GROUP_MA  = 'ROCHE_RE',
-                                      MATER =  SOL2,),
-                                      ),);
+                                      MATER =  SOL2),
+                                      ));
 
 CHCI=AFFE_CHAR_MECA( INFO = 2,
                      MODELE=MODELE,
                      DDL_IMPO=( _F( GROUP_NO='SROCHE',
-                                    DY=0.0,),
+                                    DY=0.0),
                                 _F( GROUP_NO='MROCHE',
-                                    DY=0.0,),
+                                    DY=0.0),
                                 _F( GROUP_NO='BC',
-                                    DX=0.0,),
+                                    DX=0.0),
                                 _F( GROUP_NO='SBC',
-                                    GONF=0.0,),
-                   ),)
+                                    GONF=0.0),
+                   ))
 
 CALEXT=AFFE_CHAR_MECA(MODELE=MODELE,
                       DDL_IMPO=(_F(GROUP_NO = 'DA',
-                                  DX       =  0.1,),
-                                 ),);
+                                  DX       =  0.1),
+                                 ));
 
 TEMPS=DEFI_LIST_REEL( DEBUT      = 0.0,
                       INTERVALLE = (_F(JUSQU_A = 1.0,
-                                       PAS   = 0.10,),),)
+                                       PAS   = 0.10)))
 
 COEF  = DEFI_FONCTION( NOM_PARA    = 'INST',
                        VALE        = ( 0.0,    0.0,
-                                       1.0,    1.0, ),
-                       PROL_DROITE = 'CONSTANT',);
+                                       1.0,    1.0),
+                       PROL_DROITE = 'CONSTANT');
 
 U1 = STAT_NON_LINE(
                     MODELE      = MODELE,
                     CHAM_MATER  = CHMAT,
                     EXCIT       = ( _F( CHARGE    = CHCI     ),
                                     _F( CHARGE    = CALEXT,
-                                        FONC_MULT = COEF     ),),
+                                        FONC_MULT = COEF     )),
                     SOLVEUR=(_F( METHODE='MUMPS',
-                                 PCENT_PIVOT=30,)),
+   )),
                     COMP_INCR=(_F(GROUP_MA='ROCHE',
-                                  RELATION='ELAS',),
+                                  RELATION='ELAS'),
                                _F(GROUP_MA='ROCHE_RE',
-                                  RELATION='ELAS',),),
+                                  RELATION='ELAS')),
                     NEWTON      = _F( MATRICE  = 'TANGENTE',
-                                      REAC_ITER = 1 ,),
+                                      REAC_ITER = 1 ),
                     CONVERGENCE = _F( RESI_GLOB_RELA = 1.E-6, 
                                        )  ,
-                    INCREMENT    = _F( LIST_INST     = TEMPS ,))
+                    INCREMENT    = _F( LIST_INST     = TEMPS ))
 
 TEST_RESU(RESU=(
    _F( RESULTAT  = U1,

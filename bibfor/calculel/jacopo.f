@@ -1,6 +1,6 @@
       SUBROUTINE JACOPO(LONG,TPSCAZ,IAD1,IAD2)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE                            VABHHTS J.PELLET
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER LONG,IAD1,IAD2
       CHARACTER*(*) TPSCAZ
@@ -34,6 +34,9 @@ C      IAD2: ADRESSE DANS LE COMMON ZI (OU ZR...) DE L'OBJET RECOPIE.
       CHARACTER*8 TYPSCA
 C DEB-------------------------------------------------------------------
 
+C-----------------------------------------------------------------------
+      INTEGER I 
+C-----------------------------------------------------------------------
       TYPSCA = TPSCAZ
 
       T = TYPSCA(1:3)

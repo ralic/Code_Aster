@@ -1,12 +1,12 @@
       SUBROUTINE FGCOKE(NBCYCL,SIGMIN,SIGMAX,N,M,SM,RKE)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       REAL*8                   SIGMIN(*),SIGMAX(*)
       REAL*8                                 N,M,SM,RKE(*)
       INTEGER           NBCYCL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,6 +38,9 @@ C     ------------------------------------------------------------------
 C
       REAL*8 DELTA
 C
+C-----------------------------------------------------------------------
+      INTEGER I 
+C-----------------------------------------------------------------------
       DO 10 I=1,NBCYCL
         DELTA = ABS(SIGMAX(I)-SIGMIN(I))
         IF(DELTA.LE.3.D0*SM) THEN

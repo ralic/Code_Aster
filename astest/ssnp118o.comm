@@ -1,4 +1,4 @@
-# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE TEST DE LA LOI JOINT_MECA_RUPT SUR LES ELEMENTS DE JOINT PENTA6
 # ssnp118o.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -80,10 +80,10 @@ MA=LIRE_MAILLAGE()
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
               CREA_GROUP_NO=(_F(NOEUD=('NO2','NO4','NO8'),
-                                NOM='DROITE',),
+                                NOM='DROITE'),
                               _F(NOEUD=('NO1','NO3','NO7'),
-                                NOM='GAUCHE',),
-                               ),);
+                                NOM='GAUCHE'),
+                               ));
 
 IMPR_RESU(FORMAT  = 'GMSH',RESU=_F(MAILLAGE=MA),UNITE=19)
 
@@ -110,7 +110,7 @@ MO=AFFE_MODELE(
 # MATERIAU ELASTIQUE
 MAT_CUB=DEFI_MATERIAU(ELAS=_F(
                               E   = young,
-                              NU  = poiss),)
+                              NU  = poiss))
 
 # MATERIAU JOINT
 MAT_JOI=DEFI_MATERIAU(
@@ -120,7 +120,7 @@ MAT_JOI=DEFI_MATERIAU(
                                    PENA_RUPTURE=pena_rupture,
                                    ALPHA=alpha,
                                    PENA_CONTACT=pena_contact
-                          ),)
+                          ))
 
 
 CM=AFFE_MATERIAU(MAILLAGE=MA,
@@ -162,22 +162,22 @@ FCT=DEFI_FONCTION(NOM_PARA='INST',VALE=(linst[0], 0.,
                                         linst[2], delta_endo,              # TRACTION JUSQU'A ENDOMMAGEMENT PARTIEL
                                         linst[3], -delta_elas,             # DECHARGEMENT COMPRESSION
                                         linst[4], delta_max*0.99999999),   # TRACTION JUSQU'A LA RUPTURE QUASI-COMPLETE
-                  PROL_DROITE='LINEAIRE',);
+                  PROL_DROITE='LINEAIRE');
 
 
 U_1=STAT_NON_LINE(
-  SOLVEUR=_F(METHODE='MUMPS', PCENT_PIVOT=50,),
+  SOLVEUR=_F(METHODE='MUMPS'),
   MODELE     = MO,
   CHAM_MATER = CM,
   EXCIT      = (
-    _F(CHARGE = LIAISON , ),
+    _F(CHARGE = LIAISON ),
     _F(CHARGE = TRAC_1, FONC_MULT = FCT),
   ),
   COMP_INCR  = (
           _F(RELATION = 'JOINT_MECA_RUPT',
-             MAILLE = 'PRISMDEG', ),
+             MAILLE = 'PRISMDEG'),
           _F(RELATION = 'ELAS',
-             MAILLE = 'PRISM',),
+             MAILLE = 'PRISM'),
           ),
   INCREMENT  = _F(LIST_INST = L_INST, INST_INIT=0,INST_FIN = insfin),
   CONVERGENCE= _F(ITER_GLOB_MAXI = 20),
@@ -206,19 +206,19 @@ TFORCE=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                GROUP_NO='DROITE',
                                RESULTANTE=('DX','DY'),
 #                               TOUT_CMP='OUI',
-                               ),);
+                               ));
 
 
 # PROJECTEUR SUR LA NORMALE
 PNOR = FORMULE(VALE='DX*cos(angle)+DY*sin(angle)',
-              NOM_PARA=('DX','DY',),);
+              NOM_PARA=('DX','DY'));
 
 # INSERTION D'UNE COLONNE AVEC LA PROJECTION NORMALE DE LA FORCE NODALE
 TFORCE=CALC_TABLE(reuse =TFORCE,
                   TABLE=TFORCE,
                   ACTION=_F(OPERATION='OPER',
                             FORMULE=PNOR,
-                            NOM_PARA='F_N',),);
+                            NOM_PARA='F_N'));
 
 # DEPLACEMENT DU NOEUD EN_HAUT
 TDELTA_N=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
@@ -227,14 +227,14 @@ TDELTA_N=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               NOM_CHAM='DEPL',
                               TOUT_ORDRE='OUI',
                               GROUP_NO='TOUTSEUL',
-                              NOM_CMP=('DX','DY',),),);
+                              NOM_CMP=('DX','DY')));
 
 # INSERTION D'UNE COLONNE AVEC LA PROJECTION NORMALE DE DEPLACEMENT
 TDELTA_N=CALC_TABLE(reuse =TDELTA_N,
                     TABLE=TDELTA_N,
                     ACTION=_F(OPERATION='OPER',
                             FORMULE=PNOR,
-                            NOM_PARA='U_N',),);
+                            NOM_PARA='U_N'));
 
 #----------------------------------------------------------------------------------
 # IMPRESSION DE RESULTAT CALCUL MODE I PURE
@@ -249,23 +249,23 @@ IMPR_TABLE(TABLE=TDELTA_N);
 # LA MANIPULATION POUR IMPRIMER LA COURBE FORCE-DEPLACEMENT AU FORMAT XMGRACE
 FN=RECU_FONCTION(TABLE=TFORCE,
                   PARA_X='INST',
-                  PARA_Y='F_N',);
+                  PARA_Y='F_N');
 
 DN=RECU_FONCTION(TABLE=TDELTA_N,
                   PARA_X='INST',
-                  PARA_Y='U_N',);
+                  PARA_Y='U_N');
 
 IMPR_FONCTION(FORMAT='TABLEAU',
               COURBE=_F(FONC_X=DN,
                         FONC_Y=FN,
-                        LEGENDE='Force Deplacement',),
+                        LEGENDE='Force Deplacement'),
              );
 ## EN MODE INTERACTIF SEULEMENT
 #IMPR_FONCTION(FORMAT='XMGRACE',
 #              PILOTE='INTERACTIF',
 #              COURBE=_F(FONC_X=DN,
 #                        FONC_Y=FN,
-#                        LEGENDE='F(U)',),
+#                        LEGENDE='F(U)'),
 #              LEGENDE_X='\\xd\\s\\0n',
 #              LEGENDE_Y='F\\sn',
 #              TITRE='mode I avec charge-decharge',
@@ -288,24 +288,24 @@ TEST_FONCTION(VALEUR=(_F(FONCTION=FN,
                         NOM_PARA='INST',
                         VALE_PARA=linst[1],
                         VALE_REFE=sigma_max*A_tri,
-                        REFERENCE='ANALYTIQUE',),
+                        REFERENCE='ANALYTIQUE'),
                      _F(FONCTION=FN,
                         NOM_PARA='INST',
                         VALE_PARA=linst[2],
                         VALE_REFE=sigma_endo*A_tri,
-                        REFERENCE='ANALYTIQUE',),
+                        REFERENCE='ANALYTIQUE'),
                      _F(FONCTION=FN,
                         NOM_PARA='INST',
                         VALE_PARA=linst[3],
                         VALE_REFE=sigma_pena*A_tri,
-                        REFERENCE='ANALYTIQUE',),
+                        REFERENCE='ANALYTIQUE'),
                      _F(FONCTION=FN,
                         NOM_PARA='INST',
                         VALE_PARA=linst[4],
                         VALE_REFE=sigma_max*1e-3*A_tri,
                         PRECISION=sigma_max*1e-3*A_tri,
                         CRITERE   = 'ABSOLU',
-                        REFERENCE='ANALYTIQUE',),
+                        REFERENCE='ANALYTIQUE'),
                         ),
                         );
 
@@ -345,18 +345,18 @@ F2DX=DEFI_FONCTION(NOM_PARA='INST',VALE=( 0.,0.,
                                         linst2[3],delta_joint5*cos(angle)-delta_max_tan*sin(angle),# COMPRESSION PARTIEL
                                         linst2[4],delta_joint5*cos(angle)                          # FERMETURE TANGENTIEL
                                         ),
-                  PROL_DROITE='LINEAIRE',);
+                  PROL_DROITE='LINEAIRE');
 F2DY=DEFI_FONCTION(NOM_PARA='INST',VALE=( 0.,0.,
                                         linst2[1],delta_joint*sin(angle),                           # OUVERTURE NORMALE
                                         linst2[2],delta_joint*sin(angle)+delta_max_tan*cos(angle),  # OUVERTURE TANGENTIEL
                                         linst2[3],delta_joint5*sin(angle)+delta_max_tan*cos(angle),# COMPRESSION PARTIEL
                                         linst2[4],delta_joint5*sin(angle)                          # FERMETURE TANGENTIEL
                                         ),
-                  PROL_DROITE='LINEAIRE',);
+                  PROL_DROITE='LINEAIRE');
 F2DZ=DEFI_FONCTION(NOM_PARA='INST',VALE=( 0.,0., # FONCTION = 0
                                           1.,0.
                                         ),
-                  PROL_DROITE='LINEAIRE',);
+                  PROL_DROITE='LINEAIRE');
 
 TRAC_2=AFFE_CHAR_MECA_F(MODELE=MO,
                       DDL_IMPO=(_F(GROUP_NO='GAUCHE',
@@ -372,18 +372,18 @@ TRAC_2=AFFE_CHAR_MECA_F(MODELE=MO,
 #-----------------------------------------------------------------------------------
 
 U_2=STAT_NON_LINE(
-  SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=50,),
+  SOLVEUR=_F(METHODE='MUMPS'),
   MODELE     = MO,
   CHAM_MATER = CM,
   EXCIT      = (
-    _F(CHARGE = LIAISON , ),
-    _F(CHARGE = TRAC_2, ),
+    _F(CHARGE = LIAISON ),
+    _F(CHARGE = TRAC_2),
   ),
   COMP_INCR  = (
           _F(RELATION = 'JOINT_MECA_RUPT',
-             MAILLE = 'PRISMDEG', ),
+             MAILLE = 'PRISMDEG'),
           _F(RELATION = 'ELAS',
-             MAILLE = 'PRISM',),
+             MAILLE = 'PRISM'),
           ),
   INCREMENT  = _F(LIST_INST = L_INST, INST_INIT=0,INST_FIN = insfin),
   CONVERGENCE= _F(ITER_GLOB_MAXI = 20),
@@ -638,19 +638,19 @@ F3DX=DEFI_FONCTION(NOM_PARA='INST',VALE=( 0.,0.,
                                         linst3[3],delta_joint9*cos(angle), # COMPRESSION NORMALE PARTIEL
                                         linst3[4],delta_joint9*cos(angle)  # MODE3 RETOUR
                                         ),
-                  PROL_DROITE='LINEAIRE',);
+                  PROL_DROITE='LINEAIRE');
 F3DY=DEFI_FONCTION(NOM_PARA='INST',VALE=( 0.,0.,
                                         linst3[1],delta_joint*sin(angle),  # OUVERTURE NORMALE
                                         linst3[2],delta_joint*sin(angle),  # MODE3 ALLEZ
                                         linst3[3],delta_joint9*sin(angle),# COMPRESSION PARTIEL
                                         linst3[4],delta_joint9*sin(angle) # MODE3 RETOUR
                                         ),
-                  PROL_DROITE='LINEAIRE',);
+                  PROL_DROITE='LINEAIRE');
 F3DZ=DEFI_FONCTION(NOM_PARA='INST',VALE=( 0.,0.,
                                           linst3[2], -delta_max_tan, # OUVERTURE TANGENTIEL MODE3 ALLEZ
                                           linst3[4],  delta_max_tan  # FERMETURE TANGENTIEL MODE3 RETOUR
                                         ),
-                  PROL_DROITE='LINEAIRE',);
+                  PROL_DROITE='LINEAIRE');
 
 TRAC_3=AFFE_CHAR_MECA_F(MODELE=MO,
                       DDL_IMPO=(_F(GROUP_NO='GAUCHE',
@@ -666,18 +666,18 @@ TRAC_3=AFFE_CHAR_MECA_F(MODELE=MO,
 #-----------------------------------------------------------------------------------
 
 U_3=STAT_NON_LINE(
-  SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=50,),
+  SOLVEUR=_F(METHODE='MUMPS'),
   MODELE     = MO,
   CHAM_MATER = CM,
   EXCIT      = (
-    _F(CHARGE = LIAISON , ),
-    _F(CHARGE = TRAC_3, ),
+    _F(CHARGE = LIAISON ),
+    _F(CHARGE = TRAC_3),
   ),
   COMP_INCR  = (
           _F(RELATION = 'JOINT_MECA_RUPT',
-             MAILLE = 'PRISMDEG', ),
+             MAILLE = 'PRISMDEG'),
           _F(RELATION = 'ELAS',
-             MAILLE = 'PRISM',),
+             MAILLE = 'PRISM'),
           ),
   INCREMENT  = _F(LIST_INST = L_INST, INST_INIT=0,INST_FIN = insfin),
   CONVERGENCE= _F(ITER_GLOB_MAXI = 20),

@@ -1,13 +1,13 @@
       SUBROUTINE PTMTUF(M,RHO,E,ROF,CE,A,AI,XL,XIY,XIZ,G,ALFAY,ALFAZ,
      &                  EY,EZ)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       REAL*8  M(*)
       REAL*8  RHO,E,ROF,CE,A,AI,XL,XIY,XIZ,G,ALFAY,ALFAZ,EY,EZ
 C    -------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -70,13 +70,16 @@ C LOC R*8 ! ASY    !   -     ! AIRE REDUITE CISAILLEE SUIVANT Y
 C LOC R*8 ! ASZ    !   -     ! AIRE REDUITE CISAILLEE SUIVANT Z
 C LOC I   ! IP     !   16    ! POINTEUR SUR L'ELEMENT DIAGONAL PRECEDENT
 C     ------------------------------------------------------------------
-      INTEGER IP(16)
+      INTEGER IP(16),I
       REAL*8  ASY,ASZ
       REAL*8  XL2,PHIY,PHIZ,ZIAL,YIAL,CY,CZ
-      REAL*8 ZERO,R8GAEM
+      REAL*8 ZERO,R8GAEM,PHIY2,PHIZ2
       REAL*8 C1 ,C2 ,C3  ,C5  ,C6  ,C7  ,C9 ,C10
       REAL*8       C11,C12,C13 ,C15 ,C24 ,C30 ,C35
       REAL*8       C40,C60,C70,C105,C120,C140,C210,C420
+C-----------------------------------------------------------------------
+      DATA IP/ 0,1,3,6,10,15,21,28,36,45,55,66,78,91,105,120/
+C ---------------------------------------------------------------------
 C
       ZERO =   0.D0
       C1   =   1.D0
@@ -102,8 +105,6 @@ C
       C140 = 140.D0
       C210 = 210.D0
       C420 = 420.D0
-      DATA IP/ 0,1,3,6,10,15,21,28,36,45,55,66,78,91,105,120/
-C ---------------------------------------------------------------------
       DO 1,I=1,136
          M(I) =ZERO
     1 CONTINUE

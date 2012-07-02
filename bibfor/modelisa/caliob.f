@@ -1,11 +1,11 @@
       SUBROUTINE CALIOB(FONREE,CHARGE)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*4 FONREE
       CHARACTER*8 CHARGE
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,6 +30,14 @@ C IN  : FONREE : 'REEL' OU 'FONC'
 C IN  : CHARGE : NOM UTILISATEUR DU RESULTAT DE CHARGE
 C ---------------------------------------------------------------------
 
+C-----------------------------------------------------------------------
+      INTEGER I ,I1 ,IBID ,IER ,IGR ,IN ,INO 
+      INTEGER IOCC ,IRET ,J ,JCMU ,JCMUC ,JDDL ,JGR0 
+      INTEGER JJJ ,JLISTE ,JNOMA ,K ,N ,N1 ,NA 
+      INTEGER NBDDL ,NBEM ,NBET ,NBGM ,NBNO ,NDIM ,NDIMMO 
+      INTEGER NENT ,NG ,NGR ,NGRO ,NLIAI ,NNO 
+      REAL*8 BETA 
+C-----------------------------------------------------------------------
       PARAMETER (NBDDL=6)
       INTEGER IMP
       COMPLEX*16 BETAC

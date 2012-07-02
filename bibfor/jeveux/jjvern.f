@@ -1,6 +1,6 @@
       SUBROUTINE JJVERN ( NOML32 , ICRE , IRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 16/01/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_6
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       CHARACTER *32       NOML32
       INTEGER                      ICRE , IRET
 C     ------------------------------------------------------------------
@@ -30,6 +30,10 @@ C     ------------------------------------------------------------------
       COMMON /JCHAJE/  ILLICI , JCLASS
       INTEGER          ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
       COMMON /IATCJE/  ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
+C-----------------------------------------------------------------------
+      INTEGER JDOCU ,JGENR ,JORIG ,JRNOM ,JTYPE ,K ,N 
+
+C-----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       CHARACTER*1      GENR    , TYPE
       CHARACTER*4      DOCU

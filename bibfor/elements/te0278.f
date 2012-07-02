@@ -1,9 +1,9 @@
       SUBROUTINE TE0278(OPTION,NOMTE)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*16       NOMTE,OPTION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,6 +43,10 @@ C
       INTEGER            NBELR,NNOS,JGANO
 C---- DEBUT-----------------------------------------
 
+C-----------------------------------------------------------------------
+      INTEGER I ,IER ,INO ,ITEMP ,ITEMPS ,J ,JNO 
+
+C-----------------------------------------------------------------------
       CALL ELREF2(NOMTE,2,LIREFE,NBELR)
       CALL ASSERT(NBELR.EQ.2)
       ELREFE = LIREFE(2)

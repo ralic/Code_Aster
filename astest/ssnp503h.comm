@@ -1,4 +1,4 @@
-# MODIF  DATE 17/04/2012   AUTEUR FERTE G.FERTE 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,7 +25,7 @@
 
 DEBUT(CODE=_F(NOM='SSNP503H',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
 
-MAILLAG2=LIRE_MAILLAGE(INFO=1,FORMAT='MED',);
+MAILLAG2=LIRE_MAILLAGE(INFO=1,FORMAT='MED');
 Y=3
 
 MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
@@ -34,19 +34,19 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                                        OPTION = 'PLAN',
                                        POINT  = (0.0,Y,0.0),
                                        VECT_NORMALE = (0.0,1.0,0.0),
-                                       PRECISION = 1E-1,),),)
+                                       PRECISION = 1E-1)))
 MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                     MAILLAGE=MAILLAG2,
                     CREA_GROUP_NO =(_F(NOM = 'NFISSU2',
                                        OPTION = 'PLAN',
                                        POINT  = (0.0,6,0.0),
                                        VECT_NORMALE = (0.0,1.0,0.0),
-                                       PRECISION = 1E-1,),),)
+                                       PRECISION = 1E-1)))
 
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
-                     AFFE=(_F(GROUP_MA=('VOLU',),
+                     AFFE=(_F(GROUP_MA=('VOLU'),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),),);       
+                              MODELISATION='3D')));       
 
 LN1=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Y-2.5');
 
@@ -54,16 +54,16 @@ LN2=FORMULE(NOM_PARA=('X','Y','Z'),VALE='-Y+6.5');
   
 FISS1=DEFI_FISS_XFEM(MODELE=MODELEIN,  
                      TYPE_DISCONTINUITE='INTERFACE',
-                     DEFI_FISS=_F(FONC_LN=LN1,),);
+                     DEFI_FISS=_F(FONC_LN=LN1));
 
 FISS2=DEFI_FISS_XFEM(MODELE=MODELEIN,  
                      TYPE_DISCONTINUITE='INTERFACE',
-                     DEFI_FISS=_F(FONC_LN=LN2,),);
+                     DEFI_FISS=_F(FONC_LN=LN2));
                     
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=(FISS1,FISS2),
                          CONTACT='P1P1',
-                         INFO=1,);
+                         INFO=1);
 
 
 CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
@@ -114,12 +114,12 @@ E=100.0E6
 nu=0.3
 ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
                             NU=nu,
-                            RHO=7800.0,),);
+                            RHO=7800.0));
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        MODELE=MODELEK,
                        AFFE=_F(TOUT='OUI',
-                                MATER=ACIER,),);
+                                MATER=ACIER));
 
 DEPX=2.00
 DEPY=1.E-3
@@ -129,49 +129,49 @@ CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                    DDL_IMPO=(_F(GROUP_MA='SINF',DY=DEPY,DZ=0.0),
                              _F(GROUP_MA='SSUP',DY=-DEPY,DZ=0.0),                        
                              _F(GROUP_MA=('L1','L2','L3','L4'),
-                                DX=0.0,),
+                                DX=0.0),
                              ),
-                   INFO=1,);
+                   INFO=1);
                     
 CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
                    DDL_IMPO=(_F(GROUP_MA='SCOTE',
-                               DX=DEPX,DZ=DEPZ),),
+                               DX=DEPX,DZ=DEPZ)),
                    # CONDITIONS IMPOSEES A LA MAIN
                    # POUR LES MAILLES XFEM INFERIEURE
                    # ET SUPERIEURE
-                   LIAISON_DDL=(_F(NOEUD=('N9','N9',),
-                                  DDL=('DX','H1X',),
-                                  COEF_MULT=(1,1,),
-                                  COEF_IMPO=DEPX,),
-                               _F(NOEUD=('N29','N29',),
-                                  DDL=('DX','H1X',),
-                                  COEF_MULT=(1,1,),
-                                  COEF_IMPO=DEPX,),
-                               _F(NOEUD=('N45','N45',),
-                                  DDL=('DX','H1X',),
-                                  COEF_MULT=(1,1,),
-                                  COEF_IMPO=DEPX,),
-                               _F(NOEUD=('N65','N65',),
-                                  DDL=('DX','H1X',),
-                                  COEF_MULT=(1,1,),
-                                  COEF_IMPO=DEPX,),
-                               _F(NOEUD=('N9','N9',),
-                                  DDL=('DZ','H1Z',),
-                                  COEF_MULT=(1,1,),
-                                  COEF_IMPO=DEPZ,),
-                               _F(NOEUD=('N29','N29',),
-                                  DDL=('DZ','H1Z',),
-                                  COEF_MULT=(1,1,),
-                                  COEF_IMPO=DEPZ,),
-                               _F(NOEUD=('N45','N45',),
-                                  DDL=('DZ','H1Z',),
-                                  COEF_MULT=(1,1,),
-                                  COEF_IMPO=DEPZ,),
-                               _F(NOEUD=('N65','N65',),
-                                  DDL=('DZ','H1Z',),
-                                  COEF_MULT=(1,1,),
-                                  COEF_IMPO=DEPZ,),),
-                    INFO=1,);
+                   LIAISON_DDL=(_F(NOEUD=('N9','N9'),
+                                  DDL=('DX','H1X'),
+                                  COEF_MULT=(1,1),
+                                  COEF_IMPO=DEPX),
+                               _F(NOEUD=('N29','N29'),
+                                  DDL=('DX','H1X'),
+                                  COEF_MULT=(1,1),
+                                  COEF_IMPO=DEPX),
+                               _F(NOEUD=('N45','N45'),
+                                  DDL=('DX','H1X'),
+                                  COEF_MULT=(1,1),
+                                  COEF_IMPO=DEPX),
+                               _F(NOEUD=('N65','N65'),
+                                  DDL=('DX','H1X'),
+                                  COEF_MULT=(1,1),
+                                  COEF_IMPO=DEPX),
+                               _F(NOEUD=('N9','N9'),
+                                  DDL=('DZ','H1Z'),
+                                  COEF_MULT=(1,1),
+                                  COEF_IMPO=DEPZ),
+                               _F(NOEUD=('N29','N29'),
+                                  DDL=('DZ','H1Z'),
+                                  COEF_MULT=(1,1),
+                                  COEF_IMPO=DEPZ),
+                               _F(NOEUD=('N45','N45'),
+                                  DDL=('DZ','H1Z'),
+                                  COEF_MULT=(1,1),
+                                  COEF_IMPO=DEPZ),
+                               _F(NOEUD=('N65','N65'),
+                                  DDL=('DZ','H1Z'),
+                                  COEF_MULT=(1,1),
+                                  COEF_IMPO=DEPZ)),
+                    INFO=1);
 
 VAR1=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.,0.,1.,1.),
@@ -183,30 +183,30 @@ VAR2=DEFI_FONCTION(NOM_PARA='INST',
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       CONTACT_XFEM=CTXFEM,
                       LIAISON_XFEM='OUI',
-                      INFO=1,);
+                      INFO=1);
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=4,),);
+                                    NOMBRE=4));
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                     CHAM_MATER=CHAMPMAT,              
                     EXCIT=(
-                           _F(CHARGE=CHXFEM,),                                    
+                           _F(CHARGE=CHXFEM),                                    
                            _F(CHARGE=CH1,FONC_MULT=VAR1),
-                           _F(CHARGE=CH2,FONC_MULT=VAR2),), 
+                           _F(CHARGE=CH2,FONC_MULT=VAR2)), 
                     CONTACT  = CTXFEM,
-                    NEWTON=_F(REAC_ITER=1,),        
+                    NEWTON=_F(REAC_ITER=1),        
                     COMP_ELAS=_F(RELATION='ELAS',
-                                 GROUP_MA='VOLU',),
-                    INCREMENT=_F(LIST_INST=L_INST,),
+                                 GROUP_MA='VOLU'),
+                    INCREMENT=_F(LIST_INST=L_INST),
                     CONVERGENCE=(_F(ITER_GLOB_MAXI=20,
                                     RESI_GLOB_MAXI=1E-06
                                     )),
                     SOLVEUR=_F(METHODE='MUMPS',
-                               PCENT_PIVOT=80,NPREC=-1,),
-                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                    INFO=1,);
+   NPREC=-1),
+                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA'),
+                    INFO=1);
 
 LAG=[None]*5
 inst=[0.0,0.25,0.5,0.75,1.0]
@@ -227,15 +227,15 @@ for i in [1,2,3,4]: #Boucle sur les increments
                                          NOM_CHAM='DEPL',
                                          INST=inst[i],
                                          NOM_CMP=('LAGS_C','LAGS_F1','LAGS_F2'),
-                                         OPERATION='EXTRACTION',),);
+                                         OPERATION='EXTRACTION'));
    IMPR_TABLE(TABLE=LAG[i],
               FORMAT='AGRAF',
               FORMAT_R='1PE12.7',
               FORMAT_C='MODULE_PHASE',
               NOM_PARA=('NOEUD','INST','COOR_X','COOR_Z','LAGS_C','LAGS_F1','LAGS_F2'),
               IMPR_FONCTION='NON',
-              TRI=_F(NOM_PARA=('COOR_X',),
-                     ORDRE='CROISSANT',),);
+              TRI=_F(NOM_PARA=('COOR_X'),
+                     ORDRE='CROISSANT'));
   
    for j in [0,1,2,3,4]: #Boucle sur les positions testees
       if (vale[i-1] [j] == 0.0):
@@ -254,24 +254,24 @@ for i in [1,2,3,4]: #Boucle sur les increments
                            CRIT_COMP='EQ',
                            VALE=j,
                            PRECISION=0.03,
-                           CRITERE='ABSOLU',),
+                           CRITERE='ABSOLU'),
                         _F(NOM_PARA='COOR_Z',
                            CRIT_COMP='EQ',
                            VALE=0.0,
                            PRECISION=0.01,
-                           CRITERE='ABSOLU',),),);
+                           CRITERE='ABSOLU')));
 
 MA_XFEM=POST_MAIL_XFEM(
                        MODELE=MODELEK,
                        PREF_NOEUD_X = 'nx',
                        PREF_NOEUD_M = 'nm',
                        PREF_NOEUD_P = 'np',
-                       PREF_MAILLE_X = 'mx',);
+                       PREF_MAILLE_X = 'mx');
 
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                    AFFE=_F(TOUT='OUI',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='3D',),) 
+                            MODELISATION='3D')) 
 
 RES_XFEM=POST_CHAM_XFEM(
                   MODELE_VISU= MOD_VISU,

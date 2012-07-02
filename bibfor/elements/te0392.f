@@ -1,7 +1,7 @@
       SUBROUTINE TE0392(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 
 C          ELEMENTS ISOPARAMETRIQUES 3D_SI
 C    FONCTION REALISEE:
@@ -29,6 +29,10 @@ C              ---> NOMTE  : NOM DU TYPE ELEMENT
 C.......................................................................
 
       INCLUDE 'jeveux.h'
+C-----------------------------------------------------------------------
+      INTEGER IDECNO ,IDECPG ,IDFDE2 ,IGAU ,IMATE ,IMATUU ,IPOID2 
+      INTEGER IVF2 ,NBRES ,NBSIG ,NNO ,NPG1 
+C-----------------------------------------------------------------------
       PARAMETER (NBRES=9)
       INTEGER ICODRE(NBRES)
       CHARACTER*2 K2BID

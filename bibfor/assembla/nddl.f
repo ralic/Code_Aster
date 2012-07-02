@@ -1,9 +1,9 @@
       INTEGER FUNCTION NDDL(ILI,NUNOEL,NEC,IDPRN1,IDPRN2)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER ILI, NUNOEL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ASSEMBLA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,11 +26,11 @@ C IN  ILI    I : NUMERO DU GROUPE DANS LE LIGREL
 C IN  NUNOEL I : NUMERO DU NOEUD
 C OUT NDDL   I : NOMBRE DE DDLS DE CE NOEUD
 C----------------------------------------------------------------------
-C----------------------------------------------------------------------
-C----------------------------------------------------------------------
 C     FONCTION D ACCES A PRNO
 C----------------------------------------------------------------------
-      INTEGER ZZPRNO
+      INTEGER ZZPRNO,IDPRN1 ,IDPRN2 ,IEC ,J ,K ,L ,NEC
+
+C-----------------------------------------------------------------------
       ZZPRNO(ILI,NUNOEL,L) = ZI(IDPRN1-1+ZI(IDPRN2+ILI-1)+
      +                     (NUNOEL-1)* (NEC+2)+L-1)
 C---- DEBUT

@@ -2,7 +2,7 @@
      &   NOMCMP,TITR,NOMEL,LOC,CELD,NBNOMA,PERMUT,MAXNOD,TYPMA,
      &   NOMSD,NOMSYM,IR,NBMAT,NUMMAI,LMASU,NCMPU,NUCMP,NBCMP,NCMPS,
      &   NOCMPL)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
       INTEGER       IFI, LIGREL(*), NBGREL, LONGR(*), NCMPMX,
@@ -14,7 +14,7 @@ C
       LOGICAL       LMASU
 C--------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,6 +73,20 @@ C     ------------------------------------------------------------------
 C
 C  --- INITIALISATIONS ----
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IACHML ,IAD ,IAEC ,IAST ,IBCMPS ,IC
+      INTEGER ICHS ,ICM ,ICMAX0 ,ICMP ,ICMPL ,ICMPS ,ICMS
+      INTEGER ICMSUP ,ICO ,ICOEF ,ICOMAX ,ICOMM ,ICOU ,ICP
+      INTEGER IDA ,IDEBU ,IDERN ,IEL ,IELG ,IER ,IES
+      INTEGER IFIN ,IGRE ,IGREL ,ILIG ,IMAI ,INBCG ,INBCTG
+      INTEGER INDATS ,INOA ,INOCHS ,INOGDS ,INOS ,INPER ,IPERM
+      INTEGER IPG ,IPOIN1 ,IPOIN2 ,IPOS ,IR ,IRES ,IRVG
+      INTEGER IRVN ,IS0 ,ISNBCS ,ISP ,ISPT ,ISUP ,ITABL
+      INTEGER ITSEG2 ,ITYPE ,IUTIL ,J ,JJ ,JMAX ,JMOD
+      INTEGER JSPT ,JT ,JTITR ,K ,L ,LL ,LXLGUT
+      INTEGER MAXNOD ,MODE ,NBCOU ,NBDATS ,NBELGR ,NBPG ,NCMPG
+      INTEGER NCMPP ,NEC ,NI ,NPCALC ,NSCA ,NSCAL,NBEC
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
       CALL WKVECT('&&IRCERS.NOMGDS','V V K8',NCMPMX,INOGDS)

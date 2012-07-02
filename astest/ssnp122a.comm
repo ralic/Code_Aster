@@ -1,5 +1,5 @@
 
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 #
 # TITRE TEST DE NON REGRESSION DU MODELE DE ROUSSELIER
 # ssnp122a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
@@ -33,34 +33,34 @@ DEBUT(CODE=_F(NOM='SSNP122A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 # GRANDE SENSIBILITE DE LA SOLUTION OBTENUE PAR RAPPORT AU SOLVEUR
 # UTILISE
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED');
 
 
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
               CREA_GROUP_MA=_F(NOM= 'ESSAI', TOUT='OUI'),
-              CREA_GROUP_NO=(_F(GROUP_MA='AB',),
-                             _F(GROUP_MA='DA',),
-                             _F(GROUP_MA='CD',),),);
+              CREA_GROUP_NO=(_F(GROUP_MA='AB'),
+                             _F(GROUP_MA='DA'),
+                             _F(GROUP_MA='CD')));
 
 MO_L=AFFE_MODELE(MAILLAGE=MA,
                VERIF='MAILLE',
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='D_PLAN_SI',),);
+                       MODELISATION='D_PLAN_SI'));
 
 # MO_NL=AFFE_MODELE(MAILLAGE=MA,
 #                VERIF='MAILLE',
 #                AFFE=_F(TOUT='OUI',
 #                        PHENOMENE='MECANIQUE',
-#                        MODELISATION='D_PLAN_GRAD_VARI',),);
+#                        MODELISATION='D_PLAN_GRAD_VARI'));
 
 MO_NLG=AFFE_MODELE(MAILLAGE=MA,
                VERIF='MAILLE',
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='D_PLAN_INCO_GD',),);
+                       MODELISATION='D_PLAN_INCO_GD'));
 
 TRACT= DEFI_FONCTION(
   NOM_PARA = 'EPSI',
@@ -80,55 +80,55 @@ ACIER = DEFI_MATERIAU(
 
 CHP_MAT=AFFE_MATERIAU(MAILLAGE=MA,
                       AFFE=_F(TOUT='OUI',
-                              MATER=ACIER,),);
+                              MATER=ACIER));
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(_F(JUSQU_A=1.5,
-                                     NOMBRE=50,),),);
+                                     NOMBRE=50)));
 
 U_CHAR=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(0.0,0.0,1.5,1.5),
-                     PROL_DROITE='CONSTANT',);
+                     PROL_DROITE='CONSTANT');
 
 CHA_L=AFFE_CHAR_MECA(MODELE=MO_L,
-                      DDL_IMPO=(_F(GROUP_NO='AB',DY=0.0,),
-                                _F(GROUP_NO='A',DX=0.0,),
-                                _F(GROUP_NO='CD',DY=1.0,),),);
+                      DDL_IMPO=(_F(GROUP_NO='AB',DY=0.0),
+                                _F(GROUP_NO='A',DX=0.0),
+                                _F(GROUP_NO='CD',DY=1.0)));
 # CHA_NL=AFFE_CHAR_MECA(MODELE=MO_NL,
-#                       DDL_IMPO=(_F(GROUP_NO='AB',DY=0.0,),
-#                                 _F(GROUP_NO='A',DX=0.0,),
-#                                 _F(GROUP_NO='CD',DY=1.0,),),);
+#                       DDL_IMPO=(_F(GROUP_NO='AB',DY=0.0),
+#                                 _F(GROUP_NO='A',DX=0.0),
+#                                 _F(GROUP_NO='CD',DY=1.0)));
 CHA_NLG=AFFE_CHAR_MECA(MODELE=MO_NLG,
-                      DDL_IMPO=(_F(GROUP_NO='AB',DY=0.0,),
-                                _F(GROUP_NO='A',DX=0.0,),
-                                _F(GROUP_NO='CD',DY=1.0,),),);
+                      DDL_IMPO=(_F(GROUP_NO='AB',DY=0.0),
+                                _F(GROUP_NO='A',DX=0.0),
+                                _F(GROUP_NO='CD',DY=1.0)));
 
 U_L=STAT_NON_LINE(MODELE=MO_L,
                 CHAM_MATER=CHP_MAT,
                 EXCIT=_F(CHARGE=CHA_L,
-                         FONC_MULT=U_CHAR,),
+                         FONC_MULT=U_CHAR),
                 COMP_INCR=_F(RELATION='ROUSSELIER',
                              DEFORMATION='SIMO_MIEHE',
                              RESI_INTE_RELA=1.E-06,
-                             ITER_INTE_MAXI=15,),
-                INCREMENT=_F(LIST_INST=L_INST,),
+                             ITER_INTE_MAXI=15),
+                INCREMENT=_F(LIST_INST=L_INST),
                 NEWTON=_F(MATRICE='TANGENTE',
-                          REAC_ITER=1,),
-                RECH_LINEAIRE=_F(ITER_LINE_MAXI=5,),
+                          REAC_ITER=1),
+                RECH_LINEAIRE=_F(ITER_LINE_MAXI=5),
                 CONVERGENCE=_F(RESI_GLOB_RELA=1.E-06,
-                               ITER_GLOB_MAXI=15),);
+                               ITER_GLOB_MAXI=15));
 
 # U_NL=STAT_NON_LINE(MODELE=MO_NL,
 #                 CHAM_MATER=CHP_MAT,
 #                 EXCIT=_F(CHARGE=CHA_NL,
-#                          FONC_MULT=U_CHAR,),
+#                          FONC_MULT=U_CHAR),
 #                 COMP_INCR=_F(RELATION='ROUSSELIER',
 #                              DEFORMATION='SIMO_MIEHE',
 #                              RESI_INTE_RELA=1.E-06,
-#                              ITER_INTE_MAXI=15,),
-#                 INCREMENT=_F(LIST_INST=L_INST,),
+#                              ITER_INTE_MAXI=15),
+#                 INCREMENT=_F(LIST_INST=L_INST),
 #                 NEWTON=_F(MATRICE='TANGENTE',
-#                           REAC_ITER=1,),
+#                           REAC_ITER=1),
 #                 CONVERGENCE=_F(RESI_GLOB_RELA=1.E-06,
 #                                ITER_GLOB_MAXI=150),
 #                 LAGR_NON_LOCAL=_F(
@@ -136,7 +136,7 @@ U_L=STAT_NON_LINE(MODELE=MO_L,
 #                   RESI_DUAL_ABSO=1.E-3,
 #                   RESI_PRIM_ABSO=1.E-5,
 #                   R=50.0,
-#                   ITER_PRIM_MAXI=10,),);
+#                   ITER_PRIM_MAXI=10));
 
 # LES SYSTEMES LINEAIRES SONT DIFFICILES A RESOUDRE.
 # ON DEVERROUILLE LA DETECTION DE SINGULARITE. LE PROCESSUS DE NEWTON
@@ -144,19 +144,19 @@ U_L=STAT_NON_LINE(MODELE=MO_L,
 U_NLG=STAT_NON_LINE(MODELE=MO_NLG,
                 CHAM_MATER=CHP_MAT,
                 EXCIT=_F(CHARGE=CHA_NLG,
-                         FONC_MULT=U_CHAR,),
+                         FONC_MULT=U_CHAR),
                 COMP_INCR=_F(RELATION='ROUSSELIER',
                              DEFORMATION='SIMO_MIEHE',
                              RESI_INTE_RELA=1.E-06,
-                             ITER_INTE_MAXI=15,),
-                INCREMENT=_F(LIST_INST=L_INST,),
+                             ITER_INTE_MAXI=15),
+                INCREMENT=_F(LIST_INST=L_INST),
                 NEWTON=_F(MATRICE='TANGENTE',
-                          REAC_ITER=1,),
-                SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=30,
-                           NPREC=-1,),
+                          REAC_ITER=1),
+                SOLVEUR=_F(METHODE='MUMPS',
+                           NPREC=-1),
                 CONVERGENCE=_F(RESI_REFE_RELA=1.E-4,
                                SIGM_REFE = 500 ,
-                               EPSI_REFE = 1),);
+                               EPSI_REFE = 1));
 
 
 TEST_RESU(RESU=(
@@ -191,7 +191,7 @@ TEST_RESU(RESU=(
       NOM_CMP = 'V2',
       PRECISION = 1.E-3,
       VALE = 0.22493,
-      REFERENCE = 'NON_REGRESSION'),),)
+      REFERENCE = 'NON_REGRESSION')))
 TEST_RESU(RESU=(
   _F(RESULTAT = U_L,
      NOM_CHAM = 'SIEF_ELGA',
@@ -208,7 +208,7 @@ TEST_RESU(RESU=(
      NOM_CMP = 'SIYY',
      PRECISION = 1.E-3,
      VALE = 721.687,
-     REFERENCE = 'NON_REGRESSION'),),)
+     REFERENCE = 'NON_REGRESSION')))
 
 
 TEST_RESU(RESU=(
@@ -243,7 +243,7 @@ TEST_RESU(RESU=(
       NOM_CMP = 'V2',
       PRECISION = 1.E-3,
       VALE = 0.22493,
-      REFERENCE = 'NON_REGRESSION'),),)
+      REFERENCE = 'NON_REGRESSION')))
 TEST_RESU(RESU=(
   _F(RESULTAT = U_NLG,
      NOM_CHAM = 'SIEF_ELGA',
@@ -260,5 +260,5 @@ TEST_RESU(RESU=(
      NOM_CMP = 'SIYY',
      PRECISION = 1.E-3,
      VALE = 721.687,
-     REFERENCE = 'NON_REGRESSION'),),)
+     REFERENCE = 'NON_REGRESSION')))
 FIN();

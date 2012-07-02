@@ -1,4 +1,4 @@
-# MODIF  DATE 30/01/2012   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE ROTATION D'UNE INCLUSION RIGIDE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,14 +29,14 @@
 
 DEBUT(CODE=_F(NOM='SSNV507H',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
 
-MAILLAG=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
+MAILLAG=LIRE_MAILLAGE(FORMAT='MED',INFO=1);
 
 R  = 8.;
 R1 = 1.;
 R2 = 20.;
 
 MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG,COPIE=_F(),
-#                        LINE_QUAD=_F(GROUP_MA='SURF',),
+#                        LINE_QUAD=_F(GROUP_MA='SURF'),
                        );
 
 
@@ -46,28 +46,28 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                                       OPTION ='ENV_SPHERE',
                                       POINT  = (0.0,0.0),
                                       RAYON = R1,
-                                      PRECISION = 2.0,),),);
+                                      PRECISION = 2.0)));
 
 
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
-                     AFFE=(_F(GROUP_MA=('SURF',),
+                     AFFE=(_F(GROUP_MA=('SURF'),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='D_PLAN',),
-                           _F(GROUP_MA=('LB','LH','LG','LD',),
+                              MODELISATION='D_PLAN'),
+                           _F(GROUP_MA=('LB','LH','LG','LD'),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='D_PLAN',),),);    
+                              MODELISATION='D_PLAN')));    
 
 LN=FORMULE(NOM_PARA=('X','Y'),VALE='-X*X-Y*Y+R*R');
 
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     TYPE_DISCONTINUITE='INTERFACE',
-                    DEFI_FISS=_F(FONC_LN=LN,),
-                    INFO=1,);
+                    DEFI_FISS=_F(FONC_LN=LN),
+                    INFO=1);
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
                          CONTACT='P2P1',
-                         INFO=1,);
+                         INFO=1);
 
 CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                       FORMULATION    = 'XFEM',
@@ -93,30 +93,30 @@ E=100.0E6
 nu=0.
 ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
                             NU=nu,
-                            RHO=7800.0,),);
+                            RHO=7800.0));
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        MODELE=MODELEK,
-                       AFFE=_F(TOUT=('OUI',),
+                       AFFE=_F(TOUT=('OUI'),
                                 MATER=ACIER,
-                                ),);
+                                ));
 
 DTH=-pi/2.
 
-VAR1=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,1.,1.,1.),);
+VAR1=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,1.,1.,1.));
 
 p=1.E6
 a=-(p/E)*( (R2*R2)/(R1*R1+R2*R2) )
 b=-a*R1*R1
-ux= FORMULE(NOM_PARA=('X','Y',),
+ux= FORMULE(NOM_PARA=('X','Y'),
     VALE='(a*sqrt(X*X+Y*Y)+b/sqrt(X*X+Y*Y))*cos(atan2(Y,X))');
 
-uy=FORMULE(NOM_PARA=('X','Y',),
+uy=FORMULE(NOM_PARA=('X','Y'),
    VALE='(a*sqrt(X*X+Y*Y)+b/sqrt(X*X+Y*Y))*sin(atan2(Y,X))');
 
 CH1=AFFE_CHAR_MECA_F(MODELE=MODELEK,
-                    DDL_IMPO=(_F(GROUP_MA=('LB','LG','LH','LD',),
-                                 DX=ux,DY=uy,),),);
+                    DDL_IMPO=(_F(GROUP_MA=('LB','LG','LH','LD'),
+                                 DX=ux,DY=uy)));
 
 tournex = FORMULE(NOM_PARA=('X','Y','INST'),
           VALE='sqrt(X*X+Y*Y)*cos(atan2(Y,X)+DTH*INST)-X');
@@ -126,32 +126,32 @@ tourney = FORMULE(NOM_PARA=('X','Y','INST'),
 
 ROT=AFFE_CHAR_MECA_F(MODELE=MODELEK,
                     DDL_IMPO=(_F(GROUP_NO='INTER',
-                                 DX=tournex,DY=tourney,),),);
+                                 DX=tournex,DY=tourney)));
 
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       LIAISON_XFEM='OUI',
-                      CONTACT_XFEM=CTXFEM,);
+                      CONTACT_XFEM=CTXFEM);
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1,
-                                    NOMBRE=4,),);
+                                    NOMBRE=4));
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
-                   EXCIT=(_F(CHARGE=CHXFEM,),
+                   EXCIT=(_F(CHARGE=CHXFEM),
                           _F(CHARGE=CH1,FONC_MULT=VAR1),
-                          _F(CHARGE=ROT),),
+                          _F(CHARGE=ROT)),
                    CONTACT  = CTXFEM, 
                    COMP_INCR=(_F(RELATION='ELAS',
-                                 DEFORMATION='GROT_GDEP',),),
+                                 DEFORMATION='GROT_GDEP')),
                    NEWTON=_F(REAC_INCR=1,REAC_ITER=1),
-                   INCREMENT=_F(LIST_INST=L_INST,),
+                   INCREMENT=_F(LIST_INST=L_INST),
                    CONVERGENCE=(_F(ITER_GLOB_MAXI=30,
                                   RESI_GLOB_RELA=1E-6)),
                    SOLVEUR=_F(METHODE='MUMPS',
-                              PCENT_PIVOT=100,NPREC=-1),
-                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                   INFO=1,);
+   NPREC=-1),
+                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA'),
+                   INFO=1);
 
 #-----------------------------------------------------------
 #             POST-TRAITEMENT POUR LA VISUALISATION
@@ -164,10 +164,10 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
                      PHENOMENE='MECANIQUE',
                      MODELISATION='D_PLAN',
-                ),)
+                ))
 
 RES_XFEM=POST_CHAM_XFEM( MODELE_VISU  = MOD_VISU,
-                         RESULTAT        = UTOT1,);
+                         RESULTAT        = UTOT1);
 
 #----------------------------------------------
 #                   POST RELEVE
@@ -184,25 +184,25 @@ LAGS_A = E*a-(E*b)/(8*8)
 
 for i in [1,2,3,4]: #Boucle sur les increments
   LAG[i]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
-                                 GROUP_NO=('NFISSU',),
+                                 GROUP_NO=('NFISSU'),
                                  RESULTAT=RES_XFEM,
                                  NOM_CHAM='DEPL',
                                  INST=inst[i],
                                  TOUT_CMP='OUI',
-                                 OPERATION='EXTRACTION',),);
+                                 OPERATION='EXTRACTION'));
 
   LAG[i] = CALC_TABLE(TABLE = LAG[i],
                   reuse = LAG[i],
                   ACTION = (_F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'NOEUD',
                                CRIT_COMP = 'REGEXP',
-                               VALE_K    = 'N[^P]',),
+                               VALE_K    = 'N[^P]'),
                             _F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'LAGS_C',
                                CRIT_COMP = 'NE',
-                               VALE      = 0,),),);
+                               VALE      = 0)));
 
-  IMPR_TABLE(TABLE=LAG[i],);
+  IMPR_TABLE(TABLE=LAG[i]);
 
   TEST_TABLE(TABLE=LAG[i],
                  NOM_PARA='LAGS_C',
@@ -210,7 +210,7 @@ for i in [1,2,3,4]: #Boucle sur les increments
                  VALE=LAGS_A,
                  REFERENCE ='ANALYTIQUE',
                  CRITERE='RELATIF',
-                 PRECISION=5.5E-2,);
+                 PRECISION=5.5E-2);
 
   TEST_TABLE(TABLE=LAG[i],
                  NOM_PARA='LAGS_C',
@@ -218,7 +218,7 @@ for i in [1,2,3,4]: #Boucle sur les increments
                  VALE=LAGS_A,
                  REFERENCE ='ANALYTIQUE',
                  CRITERE='RELATIF',
-                 PRECISION=5.5E-2,);
+                 PRECISION=5.5E-2);
 
   TEST_TABLE(TABLE=LAG[i],
                  NOM_PARA='LAGS_C',
@@ -226,7 +226,7 @@ for i in [1,2,3,4]: #Boucle sur les increments
                  VALE=valref[2*(i-1)],
                  REFERENCE ='NON_REGRESSION',
                  CRITERE='RELATIF',
-                 PRECISION=1.E-6,);
+                 PRECISION=1.E-6);
 
   TEST_TABLE(TABLE=LAG[i],
                  NOM_PARA='LAGS_C',
@@ -234,5 +234,5 @@ for i in [1,2,3,4]: #Boucle sur les increments
                  VALE=valref[2*(i-1)+1],
                  REFERENCE ='NON_REGRESSION',
                  CRITERE='RELATIF',
-                 PRECISION=1.E-6,);
+                 PRECISION=1.E-6);
 FIN();

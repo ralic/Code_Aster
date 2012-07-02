@@ -1,4 +1,4 @@
-# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE SOLLICITATION SISMIQUE D UNE COLONNE DE SOL APRES CONSTRUCTION
 # wdnp101b.para = tps_job 4500 mem_job 1000Mo mem_aster 90 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -182,11 +182,11 @@ AFFMAT1=AFFE_MATERIAU(MAILLAGE=MA,
                            ),
                      );
 
-PES=AFFE_CHAR_MECA(MODELE=MOD[nbcouche-2],
+PES=AFFE_CHAR_MECA(MODELE=MOD[0],
                    PESANTEUR=_F(GRAVITE=1.0,
                                 DIRECTION=(0.0,-1.0,0.0),),);
 
-CHPAR=AFFE_CHAR_MECA(MODELE=MOD[nbcouche-2],
+CHPAR=AFFE_CHAR_MECA(MODELE=MOD[0],
                      DDL_IMPO=_F(GROUP_MA='BAS',
                                  DY=0.0));
 
@@ -341,7 +341,7 @@ def PROJ(x,Hauteur) :
 # -->10: Boucle sur la pose des couches 3 a nbcouche
 for n in range(1,nbcouche-1):
 
-    DETRUIRE(INFO=1,OBJET=_F(CHAINE=('CHLAT','PHAUT','SIEF','CART1','CART2','CART3',)));
+    DETRUIRE(INFO=1,OBJET=_F(CHAINE=('CHLAT','PHAUT','PES', 'CHPAR', 'SIEF','CART1','CART2','CART3',)));
 
     n_couche = n+2
     print ' > n_couche          =',n_couche
@@ -359,6 +359,15 @@ for n in range(1,nbcouche-1):
                          MODELE=MOD[n],
                          DDL_IMPO=_F(GROUP_MA='HA'+str(n+1),
                                      PRE1=0.0));
+
+    PES=AFFE_CHAR_MECA(MODELE=MOD[n],
+                   PESANTEUR=_F(GRAVITE=1.0,
+                                DIRECTION=(0.0,-1.0,0.0),),);
+
+    CHPAR=AFFE_CHAR_MECA(MODELE=MOD[n],
+                     DDL_IMPO=_F(GROUP_MA='BAS',
+                                 DY=0.0));
+
 
     SIEF=CREA_CHAMP(INFO=1,
                     TYPE_CHAM='ELGA_SIEF_R',

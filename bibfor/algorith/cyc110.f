@@ -16,9 +16,9 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C
 C  BUT:  CREATION D'UN MAILLAGE SQUELETTE POUR LA SOUS-STRUCTURATION
 C        CYCLIQUE
@@ -42,6 +42,17 @@ C
       INTEGER      IARG
 C-----------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IATYMA ,IBID ,ICOMP ,IGD ,IOCTOU ,IRET 
+      INTEGER ITCON ,J ,K ,LDCONE ,LDCOO ,LDDESC ,LDDIME 
+      INTEGER LDGRMA ,LDREF ,LDSKIN ,LDTYP ,LLCONA ,LLCOO ,LLCOX 
+      INTEGER LLTITR ,LLTYP ,LTNMGR ,LTNMMA ,LTNUMA ,LTNUNO ,NBCON 
+      INTEGER NBGR ,NBID ,NBMA ,NBMATO ,NBNO ,NBNOTO ,NBSECT 
+      INTEGER NBSKMA ,NBSKNO ,NBTEMP ,NBTOUT ,NBUF ,NTACON ,NTEMNA 
+      INTEGER NTEMNO ,NUMA ,NUMMA ,NUMNO ,NUNEW 
+      REAL*8 TETA ,TETSEC ,XANC ,XNEW ,YANC ,YNEW ,ZANC 
+      REAL*8 ZNEW 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       DEPI = R8DEPI()
 C

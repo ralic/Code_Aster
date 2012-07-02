@@ -1,8 +1,8 @@
       SUBROUTINE JXLOCS ( ITAB, GENR, LTYP, LONO, IADM , LDEPS, JITAB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 27/06/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,7 +19,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_6 CRP_18 CRS_508 CRP_4
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER             ITAB(*),    LTYP, LONO, IADM ,        JITAB
       LOGICAL                                            LDEPS
       CHARACTER *(*)            GENR
@@ -48,6 +48,9 @@ C
       INTEGER          IDEC
       INTEGER*8        VALLOC,IA,LTYP2
 C DEB-------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER IR ,KADM ,LADM 
+C-----------------------------------------------------------------------
       KADM = IADM
       LADM = ISZON(JISZON + KADM - 3)
       JITAB = 0

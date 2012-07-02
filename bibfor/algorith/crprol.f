@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -251,7 +251,7 @@ C
             CALL U2MESG('F', 'ALGORITH12_73',1,VALK,1,VALI,0,0.D0)
          ENDIF
          CALL CNSCNO ( CNSINR,' ','NON', 'G', CNOINR,'F',IBID)
-         CALL RSNOCH ( RESU, 'TEMP', IORD, ' ')
+         CALL RSNOCH ( RESU,'TEMP',IORD)
          CALL DETRSD ( 'CHAM_NO_S', CNSINR )
 C
          CALL RSADPA ( RESU, 'E', 1, 'INST', IORD, 0, IAD, K8B )

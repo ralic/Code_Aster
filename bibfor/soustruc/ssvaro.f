@@ -1,6 +1,6 @@
       SUBROUTINE SSVARO(L,SENS,MATRIX,TYPNOE,NOMACR,IADM1,IADM2)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SOUSTRUC  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C     ARGUMENTS:
 C     ----------
@@ -74,12 +74,20 @@ C
 C
 C     OUT:
 C          LE VECTEUR A L'ADRESSE IADM2 EST CALCULE.
-      INTEGER LONG
-      CHARACTER*2 SENS2
+C-----------------------------------------------------------------------
 C     VARIABLES LOCALES:
 C     ------------------
-      INTEGER DI,DJ,DMI,DMJ,V1,V2,M1,M2,M1T
+      INTEGER LONG
+      CHARACTER*2 SENS2
+      INTEGER I ,I1 ,IACAGD ,IADEEQ ,IADESM ,IAIINO ,ICMP
+      INTEGER ICMPP ,ICUMUL ,IED ,IEQ ,IEQDEB ,IEQP ,IER
+      INTEGER II ,INO ,IRET ,J ,J1 ,JJ ,K
+      INTEGER N1 ,NBNO ,NDDLE ,NDDLI ,NDDLT ,NULAG ,NUNO
+      INTEGER NUNOLD ,NUNOP
+      INTEGER DI,DJ,DMI,DMJ,V1,V2,M1,M2,M1T,INDIK8
       REAL*8 P1(10,10),P2(10,10),L2(6,6),LI(10,10),LJ(10,10)
+C-----------------------------------------------------------------------
+
 C     P1 ET P2 MATRICES DE TRAVAIL.
 C
 C     FONCTIONS FORMULES:
@@ -89,7 +97,9 @@ C     -------------------
       M1T(I,J) = IADM1-1+(I-1)*I/2+J
       V1 (I)   = IADM1-1+I
       V2 (I)   = IADM2-1+I
+C-----------------------------------------------------------------------
 C
+      CALL JEMARQ()
       SENS2=SENS
 C
 C
@@ -162,7 +172,6 @@ C     .IINO(3+1) = NUMERO D'EQUATION DU 1ER CMP DU NOEUD 2
 C     .IINO(3+2) = NOMBRE D'EQUATIONS DU NOEUD 2  (DI(2))
 C     ....
 C
-      CALL JEMARQ()
       CALL JEEXIN('&&SSVARO.IINO',IRET)
       IF (IRET.GT.0) THEN
         CALL JELIRA('&&SSVARO.IINO','LONMAX',N1,KBID)

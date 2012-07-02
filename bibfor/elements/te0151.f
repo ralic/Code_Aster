@@ -16,11 +16,11 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT  REAL*8  (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*)       OPTION , NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C TOLE CRP_6
 C     CALCUL
 C       - ENERGIE DE DEFORMATION
@@ -36,6 +36,17 @@ C        'MECA_POU_D_T' : POUTRE DROITE DE TIMOSHENKO (SECTION VARIABLE)
 C        'MECA_POU_C_T' : POUTRE COURBE DE TIMOSHENKO(SECTION CONSTANTE)
 C     ------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IF ,IRET ,ISTRUC ,ITYPE ,JDEPL ,JENDE 
+      INTEGER JFREQ ,JMASD ,JVITE ,KANL ,LMATER ,LORIEN ,LRCOU 
+      INTEGER LSECT ,LSECT2 ,LX ,NBPAR ,NBRES ,NC ,NNO 
+      INTEGER NPG 
+      REAL*8 A ,A2 ,ALFAY ,ALFAY2 ,ALFAZ ,ALFAZ2 ,ANG 
+      REAL*8 ANGARC ,ANGS2 ,DEUX ,E ,ENERTH ,EY ,EZ 
+      REAL*8 G ,RAD ,RHO ,UN ,VALPAR ,X2IY ,X2IZ 
+      REAL*8 XFL ,XFLY ,XFLZ ,XIY ,XIY2 ,XIZ ,XIZ2 
+      REAL*8 XJX ,XJX2 ,XL ,XNU ,ZERO 
+C-----------------------------------------------------------------------
       PARAMETER    (             NBRES = 3 )
       REAL*8              VALRES(NBRES)
       INTEGER CODRES(NBRES)

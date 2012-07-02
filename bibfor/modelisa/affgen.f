@@ -1,5 +1,5 @@
       SUBROUTINE AFFGEN(TMP,NOM,NEL,NTEL,NAPCIS,FONCIS)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER                       NTEL(*)
       CHARACTER*8           NOM
@@ -7,7 +7,7 @@
       CHARACTER*24      TMP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,6 +40,11 @@ C     ------------------------------------------------------------------
         REAL*8    RE,     RI,     E
         REAL*8    VALPAY(2), VALPAZ(2), VALPAF
         CHARACTER*24 NOMPA(2), NOMPAF
+C-----------------------------------------------------------------------
+      INTEGER I ,IER ,IGEN ,IGEN2 ,IGEOC ,IGEOR ,ISEC 
+      INTEGER JDGE ,NEL 
+      REAL*8 AINT ,AY ,AZ 
+C-----------------------------------------------------------------------
         DATA    EPS     /1.D-3/
 C     ------------------------------------------------------------------
 C

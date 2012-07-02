@@ -1,9 +1,9 @@
       SUBROUTINE MLTF21(P,FRONT,FRN,N,T1,T2,EPS,IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C RESPONSABLE JFBHHUC C.ROSE
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,12 +20,14 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     VERSION MODIFIEE POUR L' APPEL A DGEMV (PRODUITS MATRICE-VECTEUR)
 C     LE STOCKAGE DES COLONNES DE LA FACTORISEE EST MODIFIE
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER P,N,IER
       REAL*8 FRONT(*),T1(*),T2(*),FRN(*),EPS
 C                                          VARIABLES LOCALES
       INTEGER DIA1,DIA2,J,L,M,R,DIA21,N1,JJ
       REAL*8 COEF1
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       M = P/2
       R = P - 2*M
       L = N

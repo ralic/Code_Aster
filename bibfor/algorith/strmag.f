@@ -1,6 +1,6 @@
       SUBROUTINE  STRMAG (NUGENE,TYPROF)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C***********************************************************************
 C    P. RICHARD     DATE 02/11/92
 C-----------------------------------------------------------------------
 C  BUT:      < REFE 127 >
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 
 C  CREER LE STOCKAGE DU NUME_DDL_GENE
 C-----------------------------------------------------------------------
@@ -44,6 +44,16 @@ C NUGENE   /I/: NOM K14 DU NUME_DDL_GENE
 
 C-----------------------------------------------------------------------
 
+C-----------------------------------------------------------------------
+      INTEGER I ,IAD1 ,IAD1C ,IAD1L ,IAD2L ,IADC ,IADCOU 
+      INTEGER IADL ,IBID ,IFIMES ,IUNIFI ,J ,JSCBL ,JSCDE 
+      INTEGER JSCDI ,JSCHC ,JSCIB ,K ,L ,LC ,LCOLMX 
+      INTEGER LCOMOY ,LH ,LL ,LLDEFL ,LLNEQU ,LLNUEQ ,LLORL 
+      INTEGER LLORS ,LLPRL ,LLPRS ,LLREF ,NBCOL ,NBLIG ,NBLOC 
+      INTEGER NBPRNO ,NBSST ,NEQ ,NSSTAR ,NTBLOC ,NTERBL ,NTERM 
+      INTEGER NTERMX ,NTPRNO ,NUANT ,NULIA ,NUSST 
+      REAL*8 RTBLOC 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       IFIMES=IUNIFI('MESSAGE')
       STOMOR=NUGENE//'.SMOS'

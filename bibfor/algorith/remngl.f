@@ -16,9 +16,9 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C
 C  BUT:  < RESTITUTION MAC-NEAL GLOBALE >
 C
@@ -55,6 +55,18 @@ C
 C
 C-----------------------------------------------------------------------
 C     
+C-----------------------------------------------------------------------
+      INTEGER I ,IAD ,IBIB ,IBID ,ICOMP ,IDDI ,IDI 
+      INTEGER IDIAM ,IDICOU ,IEQF ,IEQI ,IER ,II ,INUM 
+      INTEGER IORC ,IORMO ,J ,JJ ,K ,LDFREQ ,LDKGE 
+      INTEGER LDMGE ,LDOM2 ,LDOMO ,LDOTM ,LDTYD ,LLCHAM ,LLDESC 
+      INTEGER LLDIAM ,LLFREQ ,LLINSK ,LLMOC ,LLNSEC ,LLNUMI ,LLREF 
+      INTEGER LMASS ,LTETAX ,LTETGD ,LTFLAX ,LTFLDR ,LTFLGA ,LTINDS 
+      INTEGER LTORF ,LTORTO ,LTTSC ,LTVECO ,LTVERE ,LTVEZT ,MDIAPA 
+      INTEGER NBCMP ,NBDAX ,NBDDG ,NBDDR ,NBDIA ,NBMOC ,NBMOD 
+      INTEGER NBNOT ,NBORC ,NBSEC ,NDDCOU ,NEQ ,NEQSEC ,NUMA 
+      INTEGER NUMD ,NUMG 
+C-----------------------------------------------------------------------
       DATA DEPL   /'DEPL            '/
       DATA TYPSUP /'MODE_MECA       '/
 C
@@ -248,7 +260,7 @@ C***********************************************************************
 C
           CALL RSEXCH(NOMRES,DEPL,INUM,CHAMVA,IER)
           CALL VTCREA(CHAMVA,CREFE,'G','R',NEQ)
-          CALL RSNOCH(NOMRES,DEPL,INUM,' ')
+          CALL RSNOCH(NOMRES,DEPL,INUM)
           CALL JEVEUO(CHAMVA//'.VALE','E',LLCHAM)
 C
 C  CALCUL MODE COMPLEXE SECTEUR DE BASE
@@ -330,7 +342,7 @@ C
 C
             CALL RSEXCH(NOMRES,DEPL,INUM,CHAMVA,IER)
             CALL VTCREA(CHAMVA,CREFE,'G','R',NEQ)
-            CALL RSNOCH(NOMRES,DEPL,INUM,' ')
+            CALL RSNOCH(NOMRES,DEPL,INUM)
             CALL JEVEUO(CHAMVA//'.VALE','E',LLCHAM)
 C
 C  COMMUN POUR MODE_MECA ET BASE_MODALE

@@ -1,8 +1,8 @@
       SUBROUTINE OP0037()
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,6 +25,17 @@ C     ------------------------------------------------------------------
 C
 C     PARAMETRES "MODE_MECA"
       INCLUDE 'jeveux.h'
+C-----------------------------------------------------------------------
+      INTEGER I ,IB ,IC ,IDEB ,IE ,IEQ ,IERD 
+      INTEGER IEX ,IFIN ,ILGCON ,IM ,IND ,IPREC ,ISIGN 
+      INTEGER IVAL ,L ,LADPA ,LCMP ,LCOEF ,LG ,LMOD 
+      INTEGER LMODE ,LNORM ,LNUMOR ,LPROD ,LVALI ,LVALK ,LVALR 
+      INTEGER LXLGUT ,MOSIGN ,NBMOD ,NBMODE ,NBPAFI ,NBPAFK ,NBPAFR 
+      INTEGER NBPAFT ,NBPAMI ,NBPAMK ,NBPAMR ,NBPAMT ,NBPARA ,NBPARI 
+      INTEGER NBPARK ,NBPARR ,NBTROU ,NCMP ,NCMPAC ,NEQ ,NPARI 
+      INTEGER NPARK ,NPARR ,NUMDDL ,NUMNOE 
+      REAL*8 R8PREM ,XMASTR 
+C-----------------------------------------------------------------------
       PARAMETER   ( NBPAMI=1 , NBPAMR=15 , NBPAMK=1, NBPAMT=17 )
 C     PARAMETRES "MODE_FLAMB"
       PARAMETER   ( NBPAFI=1 , NBPAFR=1  , NBPAFK=1, NBPAFT=3  )

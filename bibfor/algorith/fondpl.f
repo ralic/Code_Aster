@@ -1,7 +1,7 @@
       SUBROUTINE FONDPL(MODELE,MATE,NUMEDD,NEQ,CHONDP,NCHOND,VECOND,
      &                  VEONDE,VAONDE,TEMPS,FOONDE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*8 LPAIN(5),LPAOUT(1),K8BID,CHONDP(NCHOND)
       CHARACTER*24 MODELE,MATE,NUMEDD,VECOND
@@ -28,6 +28,10 @@ C ======================================================================
       REAL*8 FOONDE(NEQ),TEMPS
       COMPLEX*16 CBID
 
+C-----------------------------------------------------------------------
+      INTEGER I ,IBID ,IRET ,J ,JNOMA ,JREOND ,JVAOND 
+      INTEGER NCHOND ,NEQ ,NPAIN 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 
       DO 10 I = 1,NEQ

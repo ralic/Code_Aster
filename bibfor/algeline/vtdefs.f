@@ -1,7 +1,7 @@
       SUBROUTINE VTDEFS(CHPOUT,CHPIN,BASE,TYPC)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,7 +37,7 @@ C       1) LE CHAM_... "CHPOUT" NE DOIT PAS EXISTER
 C       2) LES COEFFICIENTS DU CHAM_... "CHPOUT" NE SONT PAS AFFECTES
 C----------------------------------------------------------------------
 C CORPS DU PROGRAMME
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 
 C DECLARATION PARAMETRES D'APPELS
       INCLUDE 'jeveux.h'
@@ -50,6 +50,9 @@ C DECLARATION VARIABLES LOCALES
       CHARACTER*19 CH19,ARG1,ARG2
       LOGICAL      LFETI,IDDOK
 
+C-----------------------------------------------------------------------
+      INTEGER IER 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       CH19 = CHPIN
 

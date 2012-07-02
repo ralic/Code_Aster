@@ -1,6 +1,6 @@
       SUBROUTINE  VERILI (NOMRES,II,FPLI1,FPLI2,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C***********************************************************************
 C    P. RICHARD     DATE 13/10/92
 C-----------------------------------------------------------------------
 C  BUT:      < CALCUL DES LIAISONS >
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C  CALCULER LES NOUVELLES MATRICE DE LIAISON EN TENANT COMPTE
 C   DE L'ORIENTATION DES SOUS-STRUCTURES
@@ -44,6 +44,11 @@ C   PARAMETER REPRESENTANT LE NOMBRE MAX DE COMPOSANTE DE LA GRANDEUR
 C   SOUS-JACENTE TRAITES
 C
       INCLUDE 'jeveux.h'
+C-----------------------------------------------------------------------
+      INTEGER I ,IDIM1 ,IDIM2 ,IERD ,II ,IRET ,J 
+      INTEGER LLDESC ,LLLIA ,LLNCMP ,LLPL1 ,LLPL2 ,NBCMPM ,NBEC 
+      INTEGER NBECMX ,NBNOE1 ,NBNOE2 ,NUMGD 
+C-----------------------------------------------------------------------
       PARAMETER (NBCMPM =  10)
       PARAMETER (NBECMX =  10)
       CHARACTER*8 NOMRES,NOMG,KBID

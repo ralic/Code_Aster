@@ -1,15 +1,15 @@
       SUBROUTINE DIKFIN (NBT,DNSDU,DNSDT,DMSDT,DNSDU2,DNSDT2,DMSDT2,
      &                   KY,KZ,KRX,KRZ,KLV,KLV2)
 C ----------------------------------------------------------------------
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER NBT
       REAL*8  DNSDU,DNSDT,DMSDT,DNSDU2,DNSDT2,DMSDT2,KY,KZ,KRX,KRZ
       REAL*8  KLV(NBT),KLV2(NBT)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -46,6 +46,9 @@ C
 C ----------------------------------------------------------------------
 C --- MISE A ZERO DE KLV ET KLV2
 C
+C-----------------------------------------------------------------------
+      REAL*8 ZERO 
+C-----------------------------------------------------------------------
       ZERO = 0.D0
       CALL R8INIR (NBT,ZERO,KLV,1)
       CALL R8INIR (NBT,ZERO,KLV2,1)

@@ -1,5 +1,5 @@
       SUBROUTINE MTCONL(NBCOMB,TYPCST,CONST,LMAT,TYPRES,LRES)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER           NBCOMB,                    LMAT(*),    LRES
       CHARACTER*(*)            TYPCST(*)
@@ -8,7 +8,7 @@
       CHARACTER*1 TYPREZ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,8 +37,6 @@ C IN  TYPRES : K1: TYPE DES MATRICES   (R OU C)
 C IN  LRES   : I : POINTEUR DE MATRICE RESULTAT
 C     -----------------------------------------------------------------
 C
-      CHARACTER*6      PGC, PGCANC
-      COMMON  /NOMAJE/ PGC
 C
 C     ------------------------------------------------------------------
       CHARACTER*1   TYPE
@@ -48,9 +46,11 @@ C     ------------------------------------------------------------------
       CHARACTER*8   TPCST
 C     ------------------------------------------------------------------
 
+C-----------------------------------------------------------------------
+      INTEGER IBID ,ICOMB ,ICONST ,IER1 ,IER2 ,JCOMB ,LCONL1
+      INTEGER LCONL2 ,NEQ
+C-----------------------------------------------------------------------
       CALL JEMARQ()
-      PGCANC = PGC
-      PGC    = 'MTCONL'
       TYPREZ = TYPRES
 C
 C     --- DUPLICATION EVENTUELLE DU .CONL ---
@@ -121,6 +121,5 @@ C        --- PAS DE .CONL ---
          CALL JEEXIN(CBID(1)//'.CONL',IER1)
          IF ( IER1 .NE. 0 ) CALL JEDETR(CBID(1)//'.CONL')
       ENDIF
-      PGC = PGCANC
       CALL JEDEMA()
       END

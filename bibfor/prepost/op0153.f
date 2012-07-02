@@ -1,8 +1,8 @@
       SUBROUTINE OP0153()
-      IMPLICIT  REAL*8  ( A-H,O-Z )
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,6 +24,18 @@ C     OPERATEUR  "POST_USURE"
 C
 C ----------------------------------------------------------------------
       INCLUDE 'jeveux.h'
+C-----------------------------------------------------------------------
+      INTEGER I ,IBID ,IDANGT ,IDCOTU ,IDVCOB ,IDVCTU ,IFIRES 
+      INTEGER INDIC ,INFO ,IOBST ,IPOUPR ,IPOURP ,IPRFUO ,IPRFUT 
+      INTEGER IPUS ,IRE1 ,IRE2 ,IRET ,ITUBE ,IUNIFI ,IVUSO 
+      INTEGER IVUSOB ,IVUST ,IVUSTU ,JFN ,JINS2 ,JINST ,JINST3 
+      INTEGER JINST5 ,JPRUT ,JSECT ,JUSUO ,JUSUT ,JVG ,K 
+      INTEGER N0 ,N1 ,N5 ,NA ,NBINST ,NBPAIR ,NBPAR 
+      INTEGER NBPAR2 ,NBPMR ,NBPT ,NBSEC2 ,NBSECT ,NBTOTA ,NBV 
+      INTEGER NBVPU ,NI1 ,NIS ,NPU ,NTN 
+      REAL*8 COINST ,HAUT ,PUUSUR ,R8B ,R8PREM ,RAYOO ,RAYOT 
+
+C-----------------------------------------------------------------------
       PARAMETER    ( NBPAR = 16, NBPAR2 = 12, NBPMR = 5 )
       REAL*8       PMOYE, INSDEB, EPSIL, DINST
       CHARACTER*8  K8B

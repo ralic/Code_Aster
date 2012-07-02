@@ -1,5 +1,5 @@
       SUBROUTINE LXCADR(CHAINE)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       CHARACTER*(*)     CHAINE
 C
 C     ------------------------------------------------------------------
@@ -8,9 +8,9 @@ C     ------------------------------------------------------------------
 C VAR CHAINE CHAINE A CADRER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 05/01/95   AUTEUR G8BHHAC A.Y.PORTABILITE 
+C MODIF UTILIFOR  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -35,6 +35,9 @@ C FIN LXCADR
 C     ------------------------------------------------------------------
 C
 C
+C-----------------------------------------------------------------------
+      INTEGER ILONG ,LDEC ,LONG 
+C-----------------------------------------------------------------------
       LONG = LEN(CHAINE)
       DO 10 ILONG = 1, LONG
          IF ( CHAINE(ILONG:ILONG) .NE. ' ' ) THEN

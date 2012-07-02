@@ -1,6 +1,6 @@
       SUBROUTINE GDINOR(NORM,LOBJ2,IADNUM,COORN,IN2)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C     ------------------------------------------------------------------
 C
@@ -50,6 +50,12 @@ C
 C
 C
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IACOOR ,IADNUM ,IANORM ,IN2 ,LOBJ2 ,NUM1 
+      INTEGER NUM2 
+      REAL*8 X1 ,X2 ,X21 ,Y1 ,Y2 ,Y21 ,Z1 
+      REAL*8 Z2 ,Z21 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL JEVEUO(NORM,'L',IANORM)
       NX = ZR(IANORM)

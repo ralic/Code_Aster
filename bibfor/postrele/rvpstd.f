@@ -1,10 +1,10 @@
       SUBROUTINE RVPSTD(VALEE,TYPE,CODIR,VALDIR,VALEQ)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 23/09/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -24,6 +24,10 @@ C
       CHARACTER*2  TYPE
       INTEGER      CODIR, INDIR1(3), INDIR2(4), INDIR3(3)
 C
+C-----------------------------------------------------------------------
+      INTEGER I 
+      REAL*8 R8VIDE 
+C-----------------------------------------------------------------------
       DATA INDIR1 / 2 , 1 , 3 /
       DATA INDIR2 / 2 , 1 , 4 , 3 /
       DATA INDIR3 / 2 , 3 , 1  /

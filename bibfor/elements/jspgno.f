@@ -1,8 +1,8 @@
       SUBROUTINE JSPGNO(L,A,B)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       REAL*8 A(21),B(14), L
 C-----------------------------------------------------------------------
 C    PERMET LE PASSAGE DU CHAMPS DE CONTRAINTES CALCULEES AUX POINTS DE
@@ -33,6 +33,9 @@ C-----------------------------------------------------------------------
       REAL*8   MFYPG1, MFYPG2, MFZPG1, MFZPG2, MTPG1, MTPG2
       REAL*8 CONST1, CONST2, CONST3 , XPG
 C
+C-----------------------------------------------------------------------
+      REAL*8 DEUX ,UNDEMI 
+C-----------------------------------------------------------------------
       UNDEMI = 0.5D0
       DEUX   = 2.0D0
       XPG    = SQRT(0.6D0)

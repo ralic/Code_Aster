@@ -1,7 +1,7 @@
       SUBROUTINE RVCHL3(VALE,PADR,PNSP,PNBN,MA,NBMA,ITYPM,
      &                  NBCO,NBSP,NBPT,NBCP,FACE,CREF,NBNDF,CLOCF,
      &                  CONEC,VLCCNC,VAL,PTADR,TABAUX)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       INTEGER     PADR(*),PNBN(*),PNSP(*)
       INTEGER     MA(*),FACE(*),CONEC(*),VLCCNC(*),NBNDF(6,*)
@@ -10,7 +10,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 07/05/2012   AUTEUR DESROCHE X.DESROCHES 
+C MODIF POSTRELE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,6 +61,8 @@ C     ------------------------------------------------------------------
 C
 C======================================================================
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       UNSUR4 = 0.25D0
 C
       DO 300, IPT = 1, NBPT, 1

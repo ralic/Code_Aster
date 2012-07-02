@@ -1,7 +1,7 @@
       SUBROUTINE JEIMPM ( UNIT )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
-C MODIF JEVEUX  DATE 10/04/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_18 CRS_508 CRS_512
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER          UNIT
 C ----------------------------------------------------------------------
 C IMPRIME LA SEGMENTATION DE LA MEMOIRE
@@ -32,6 +32,14 @@ C ----------------------------------------------------------------------
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
       EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
 C ----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER IADMI ,IADMOC ,IADYN ,IADYOC ,IBACOL ,IBIADM ,IBMARQ 
+      INTEGER IC ,IDCO ,IDM ,IL ,IM ,ISD ,ISF 
+      INTEGER IXIADM ,IXMARQ ,J ,JCARA ,JDATE ,JDOCU ,JGENR 
+      INTEGER JHCOD ,JIADD ,JIADM ,JLONG ,JLONO ,JLTYP ,JLUTI 
+      INTEGER JMARQ ,JORIG ,JRNOM ,JTYPE ,N ,NCLA1 ,NCLA2 
+      INTEGER NMAX 
+C-----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
      +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ

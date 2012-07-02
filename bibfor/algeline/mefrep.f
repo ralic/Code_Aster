@@ -1,13 +1,13 @@
       SUBROUTINE MEFREP(NBZ,NBMOD,NBCYL,NBGRP,NUMGRP,Z,FREQ0,RHO,VISC,
      &                  RINT,PHIX,PHIY,DCENT,MATMA)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER NBZ,NBMOD,NBCYL,NBGRP,NUMGRP(*)
       REAL*8  Z(*),FREQ0(*),RHO(*),VISC(*),RINT(*),PHIX(*),PHIY(*),
      &        DCENT(*),MATMA(*)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,6 +63,11 @@ C ----------------------------------------------------------------------
       REAL*8       AMOR,RAYO
       REAL*8       MEFIN1
 C ----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER IFCT ,IPPXX ,IPPXY ,IPPYX ,IPPYY ,IVNXX ,IVNXY 
+      INTEGER IVNYX ,IVNYY ,NZ 
+      REAL*8 PI ,R8PI 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
 C

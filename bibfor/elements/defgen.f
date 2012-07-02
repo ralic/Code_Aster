@@ -1,9 +1,9 @@
       SUBROUTINE DEFGEN(TESTL1,TESTL2,NNO,R,X3,SINA,COSA,COUR,VF,
      &                                              DFDS,DEPL,EPS,EPSX3)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/11/2000   AUTEUR ADBHHPM P.MASSIN 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -18,7 +18,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       INTEGER NNO
       LOGICAL TESTL1,TESTL2
@@ -31,6 +31,11 @@ C
 C     PARTITION DU DEPL EN UX, UY ET BETAS
 C
 C     DO 10 INO=1,NNO
+C-----------------------------------------------------------------------
+      INTEGER I 
+      REAL*8 BETAS ,DBTDS ,DUXDS ,DUYDS ,RHOS ,RHOT ,UX 
+      REAL*8 UY 
+C-----------------------------------------------------------------------
          UXL(1)=DEPL(1)
          UXL(2)=DEPL(4)
          UXL(3)=DEPL(7)

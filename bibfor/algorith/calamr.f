@@ -1,7 +1,7 @@
       SUBROUTINE CALAMR(PHIB24,PHI1J,BI,NUM,J,CIJ2)
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C---------------------------------------------------------------------
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 CROUTINE STOCKANT LE VECTEUR PRESSION ISSUE D UNE RESOLUTION DE LAPLACE
 C IN : VECSOL : VECTEUR SOLUTION K*
@@ -40,6 +40,9 @@ C-----------------LA MEME DENSITE PARTOUT------------------------
 
 C-----------PLONGEMENT DE LA PRESSION----
 C---------------SUR LE MODELE THERMIQUE D INTERFACE--------------
+C-----------------------------------------------------------------------
+      INTEGER J 
+C-----------------------------------------------------------------------
        PHIB19='PHIB19'
        INCR='BID'
        CALL CHNUCN(PHIB24(1:19),NUM,0,K8BID,'V',PHIB19)

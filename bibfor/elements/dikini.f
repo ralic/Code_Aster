@@ -1,7 +1,7 @@
       SUBROUTINE DIKINI (NBT,NU1,MU1,DXU1,DRYU1,NU2,MU2,DXU2,
      &                   DRYU2,KY,KZ,KRX,KRZ,K01,K02,RBID)
 C ----------------------------------------------------------------------
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER NBT
       REAL*8  NU1,MU1,DXU1,DRYU1
       REAL*8  NU2,MU2,DXU2,DRYU2
@@ -9,9 +9,9 @@ C ----------------------------------------------------------------------
       REAL*8  K01(NBT),K02(NBT)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -51,6 +51,9 @@ C      RBID = 1.D4
 C
 C --- MISE A ZERO DE K01 ET K02
 C
+C-----------------------------------------------------------------------
+      REAL*8 ZERO 
+C-----------------------------------------------------------------------
       ZERO = 0.D0
       CALL R8INIR (NBT,ZERO,K01,1)
       CALL R8INIR (NBT,ZERO,K02,1)

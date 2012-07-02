@@ -1,4 +1,4 @@
-# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # RESPONSABLE FERNANDES R.FERNANDES
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL NON DRAINE AVEC LE MODELE DE TYPE
@@ -35,7 +35,7 @@ KINT     = DEFI_CONSTANTE( VALE=1.E-18)
 #    MAILLAGE + MODELE
 #***********************************************************************
 
-MAILLAGE = LIRE_MAILLAGE(FORMAT='MED', )
+MAILLAGE = LIRE_MAILLAGE(FORMAT='MED')
 
 MODELE   = AFFE_MODELE(  MAILLAGE =    MAILLAGE,
                          AFFE     =_F( TOUT         = 'OUI',
@@ -49,39 +49,39 @@ MAILLAGE = MODI_MAILLAGE( reuse        = MAILLAGE,
                           ORIE_PEAU_3D = _F( GROUP_MA =
                         ( 'HAUT',
             'DEVANT',
-            'DROITE',),)
+            'DROITE'))
                         )
 
 MAILLAGE = DEFI_GROUP( reuse        = MAILLAGE,
                           MAILLAGE     = MAILLAGE,
                           CREA_GROUP_MA=(_F(NOM='ROCHE',
-                                            TOUT='OUI',)),
+                                            TOUT='OUI')),
                           CREA_GROUP_NO=(_F(NOM='ROCHES',
                                             CRIT_NOEUD='SOMMET',
-                                            GROUP_MA='ROCHE'),),);
+                                            GROUP_MA='ROCHE')));
 
 SOL      = DEFI_MATERIAU( ELAS     = _F( E            = 5800.E6,
                                          RHO          = 2500.,
                                          NU           = 0.3,
-                                         ALPHA        = 1.E-5, ),
+                                         ALPHA        = 1.E-5),
 
                           DRUCK_PRAGER  = _F( ECROUISSAGE  = 'LINEAIRE',
                                          ALPHA        =    0.33   ,
                                          P_ULTM       =    0.01   ,
                                          SY           =    2.57E6 ,
-                                         H            =  - 2.00E8 ,),
+                                         H            =  - 2.00E8 ),
 
                           COMP_THM  = 'LIQU_SATU',
 
                           THM_INIT  = _F( PRE1        = 1.0,
-                                          PORO        = 0.14,),
+                                          PORO        = 0.14),
 
                           THM_DIFFU = _F( RHO         = 2400.,
                                           BIOT_COEF   = 1.,
                                           PERM_IN     = KINT,
                                           PESA_X      = 0.,
                                           PESA_Y      = 0.,
-                                          PESA_Z      = 0., ),
+                                          PESA_Z      = 0.),
 
                           THM_LIQU  = _F( RHO         = 1000.,
                                           UN_SUR_K    = 0.0,
@@ -92,11 +92,11 @@ SOL      = DEFI_MATERIAU( ELAS     = _F( E            = 5800.E6,
 
 CHMAT    = AFFE_MATERIAU( MAILLAGE = MAILLAGE,
                           AFFE     = _F( TOUT  = 'OUI',
-                           MATER = SOL,  )
+                           MATER = SOL)
                         )
 
 PR_LATE  = AFFE_CHAR_MECA( MODELE   = MODELE,
-                           PRES_REP = _F( GROUP_MA = ( 'DEVANT','DROITE', ),
+                           PRES_REP = _F( GROUP_MA = ( 'DEVANT','DROITE'),
                                           PRES     = 1.,
                                         )
                           )
@@ -109,84 +109,84 @@ PR_V     = AFFE_CHAR_MECA( MODELE   = MODELE,
 
 DEP_SYM  = AFFE_CHAR_MECA( MODELE    = MODELE,
                            FACE_IMPO = (
-                                        _F( GROUP_MA = 'BAS',      DZ = 0., ),
-                                        _F( GROUP_MA = 'DERRIERE', DX = 0., ),
-                                        _F( GROUP_MA = 'GAUCHE',   DY = 0., ))
+                                        _F( GROUP_MA = 'BAS',      DZ = 0.),
+                                        _F( GROUP_MA = 'DERRIERE', DX = 0.),
+                                        _F( GROUP_MA = 'GAUCHE',   DY = 0.))
                           )
 
 P0       = AFFE_CHAR_MECA( MODELE   = MODELE,
-                           DDL_IMPO = _F(GROUP_NO='ROCHES', PRE1 = 0., )
+                           DDL_IMPO = _F(GROUP_NO='ROCHES', PRE1 = 0.)
                          )
 
 EVOL_HYD = DEFI_FONCTION(  NOM_PARA    = 'INST',
                            PROL_DROITE = 'CONSTANT',
                            VALE        = ( 0.0,  0.0,
-                                           1.0,  2.E6,)
+                                           1.0,  2.E6)
                        )
 
 TEMPS1   = DEFI_LIST_REEL( DEBUT      = 0.,
-                           INTERVALLE = _F( JUSQU_A = 1., NOMBRE = 1, )
+                           INTERVALLE = _F( JUSQU_A = 1., NOMBRE = 1)
                          )
 
-U1       = STAT_NON_LINE( SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=50.),
+U1       = STAT_NON_LINE( SOLVEUR=_F(METHODE='MUMPS'),
                           MODELE     = MODELE,
                           CHAM_MATER = CHMAT,
      EXCIT      = ( _F( CHARGE    = PR_LATE,
-                                             FONC_MULT = EVOL_HYD, ),
+                                             FONC_MULT = EVOL_HYD),
       _F( CHARGE    = PR_V,
-                                             FONC_MULT = EVOL_HYD, ),
-      _F( CHARGE = DEP_SYM,     ),
-      _F( CHARGE = P0,          )),
+                                             FONC_MULT = EVOL_HYD),
+      _F( CHARGE = DEP_SYM),
+      _F( CHARGE = P0)),
                           COMP_INCR = _F( RELATION     = 'KIT_HM',
                                           RELATION_KIT = ('DRUCK_PRAGER',
                        'LIQU_SATU',
-                                                          'HYDR_UTIL',  ),
+                                                          'HYDR_UTIL'),
                                          ),
-                         INCREMENT  = _F( LIST_INST = TEMPS1,),
-                         CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-6,)
+                         INCREMENT  = _F( LIST_INST = TEMPS1),
+                         CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-6)
                         )
 
 U1=CALC_CHAMP(reuse=U1,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U1)
 
 
 TEMPS2   = DEFI_LIST_REEL( DEBUT      = 1.,
-                           INTERVALLE = ( _F( JUSQU_A = 2.  , NOMBRE = 1000,))
+                           INTERVALLE = ( _F( JUSQU_A = 2.  , NOMBRE = 1000))
                          )
 
 DEP_V    = AFFE_CHAR_MECA( MODELE    = MODELE,
-                           FACE_IMPO = _F( GROUP_MA = 'HAUT', DZ = 1., )
+                           FACE_IMPO = _F( GROUP_MA = 'HAUT', DZ = 1.)
                          )
 
 EVOL_DEV = DEFI_FONCTION( NOM_PARA    = 'INST',
                           PROL_DROITE = 'LINEAIRE',
                           PROL_GAUCHE = 'CONSTANT',
                           VALE=( 1.0,    0.00,
-                                 2.0,   -0.15,        )
+                                 2.0,   -0.15)
                        )
 
 #***********************************************************************
 #    CALCUL DE LA SOLUTION
 #***********************************************************************
-U2       = STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=50.),
+U2       = STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS'),
                  MODELE     = MODELE,
                           CHAM_MATER = CHMAT,
      EXCIT      = (
-                                         _F( CHARGE    = DEP_SYM, ),
+                                         _F( CHARGE    = DEP_SYM),
       _F( CHARGE    = PR_LATE,
-                                             FONC_MULT = EVOL_HYD,),
+                                             FONC_MULT = EVOL_HYD),
       _F( CHARGE    = DEP_V,
-                                             FONC_MULT = EVOL_DEV,)),
+                                             FONC_MULT = EVOL_DEV)),
                           COMP_INCR  = _F( RELATION     = 'KIT_HM',
                                            RELATION_KIT = ('DRUCK_PRAGER',
                  'LIQU_SATU',
-                                                           'HYDR_UTIL',),),
+                                                           'HYDR_UTIL')),
                           ETAT_INIT  = _F( EVOL_NOLI  = U1,
-                                           NUME_ORDRE = 1,),
-                          INCREMENT  = _F( LIST_INST  = TEMPS2, ),
+                                           NUME_ORDRE = 1),
+                          INCREMENT  = _F( LIST_INST  = TEMPS2),
                           NEWTON     = _F( MATRICE    = 'TANGENTE',
-                      REAC_ITER  = 1,),
+                      REAC_ITER  = 1),
                           CONVERGENCE= _F( RESI_GLOB_RELA = 1.E-6,
-                                           ITER_GLOB_MAXI = 30, )
+                                           ITER_GLOB_MAXI = 30)
                         )
 
 U2=CALC_CHAMP(reuse=U2,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U2)
@@ -341,25 +341,25 @@ TEST_RESU(RESU=(
 #           NOEUD  = 'NO8',
 #           NOM_CHAM  = 'SIGM_NOEU',
 #           TOUT_CMP  = 'OUI',
-#           OPERATION = 'EXTRACTION',),);
+#           OPERATION = 'EXTRACTION'));
 #
 #DEFORMAT = POST_RELEVE_T( ACTION = _F( INTITULE  = 'DEFORMATION',
 #           RESULTAT  =  U2,
 #           NOEUD  = 'NO8',
 #           NOM_CHAM  = 'VARI_NOEU',
 #           TOUT_CMP  = 'OUI',
-#           OPERATION = 'EXTRACTION',),);
+#           OPERATION = 'EXTRACTION'));
 #
 #DEPLACEM = POST_RELEVE_T( ACTION = _F( INTITULE  = 'DEPLACEMENT',
 #           RESULTAT  =  U2,
 #           NOEUD     = 'NO8',
 #           NOM_CHAM  = 'DEPL',
 #           TOUT_CMP  = 'OUI',
-#           OPERATION = 'EXTRACTION',),);
+#           OPERATION = 'EXTRACTION'));
 #
-#IMPR_TABLE(TABLE=SIGMA,   );
-#IMPR_TABLE(TABLE=DEFORMAT,);
-#IMPR_TABLE(TABLE=DEPLACEM,);
+#IMPR_TABLE(TABLE=SIGMA);
+#IMPR_TABLE(TABLE=DEFORMAT);
+#IMPR_TABLE(TABLE=DEPLACEM);
 #######################################################################
 
 FIN()

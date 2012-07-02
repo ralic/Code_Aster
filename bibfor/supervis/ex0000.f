@@ -1,9 +1,9 @@
       SUBROUTINE EX0000( NUOPER )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER            NUOPER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
+C MODIF SUPERVIS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,6 +25,8 @@ C     ------------------------------------------------------------------
 C     EXECUTION OU VERIFICATION DE SYNTAXE
       INTEGER IVERI, IRET
       INTEGER VALI
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       CALL GTOPTI('verif', IVERI, IRET)
       IF (IVERI .NE. 0) GOTO 9999
 C

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE   TEST HM, 2D , MODELISATION THMC=GAZ
 # wtnp126a.para = tps_job 200 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -265,30 +265,13 @@ SIGINIT=CREA_CHAMP(TYPE_CHAM='CART_SIEF_R',
                            NOM_CMP=('SIGN','SITX','SIP','M11','FH11X','LH1P','LH1M','DPRE1P','DPRE1M'),
                            VALE=(-sigp,0.0,-pini,ouvini*0.002,0.,0.,0.,0.,0.),),),);
 
-CH_X=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='CART_NEUT_R',
-                   MODELE=MO,
-                   AFFE=(
-           _F( GROUP_MA = ('MASSIF','JEU'),   NOM_CMP = ('X1','X2',  'X3'),
+CH_VARI=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='ELGA_VARI_R', MODELE=MO,
+       AFFE=(
+           _F( GROUP_MA = ('MASSIF','JEU'),   NOM_CMP = ('V1','V2',  'V3'),
                                      VALE = ( 0 , 0, 0)),
-           _F( GROUP_MA = 'JOINT',   NOM_CMP = ('X1',     'X2',  'X3',),
+           _F( GROUP_MA = 'JOINT',   NOM_CMP = ('V1',     'V2',  'V3',),
                                      VALE = ( ouvini**2/12, 0., ouvini)),
-                    ))
-
-
-
-CH_VARI=CREA_CHAMP( OPERATION='ASSE', TYPE_CHAM='ELGA_VARI_R',
-                   INFO=1,
-                   MODELE=MO,
-                   ASSE=(
-           _F( CHAM_GD = CH_X,
-               GROUP_MA = ('MASSIF','JEU'), NOM_CMP = ('X1',  'X2',  'X3'),NOM_CMP_RESU  = ('V1',  'V2',  'V3')),
-           _F( CHAM_GD = CH_X,
-               GROUP_MA = 'JOINT',
-               NOM_CMP      = ('X1',  'X2',  'X3',),
-               NOM_CMP_RESU = ('V1',  'V2',  'V3',),),
-                   ))
-
-
+                    ),);
 
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =LISTINST ),
@@ -332,7 +315,7 @@ U_1=STAT_NON_LINE(
                           REAC_ITER=1,),
   CONVERGENCE=_F(
                  ITER_GLOB_MAXI=10,),
-  SOLVEUR = _F(METHODE = 'MUMPS', PCENT_PIVOT=100,NPREC=-1),
+  SOLVEUR = _F(METHODE = 'MUMPS', NPREC=-1),
   );
 
 ####################################

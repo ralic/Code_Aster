@@ -1,6 +1,6 @@
       SUBROUTINE MEFASR(NDIM,NBCYL,NBGRP,NBTRON,NUMGRP,IDIR,IGRP,
      &                  XINT,YINT,RINT,SGN,ORIG,BETA,A,B)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       INTEGER       NDIM(14),NBCYL,NBGRP,NBTRON,NUMGRP(*),IDIR,IGRP
       INTEGER       SGN(*),ORIG(*)
@@ -8,9 +8,9 @@ C
       REAL*8        A(2*NBTRON*NBCYL,*),B(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -65,6 +65,10 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
 C
 C --- LECTURE DES DIMENSIONS
+C-----------------------------------------------------------------------
+      INTEGER NBFIN ,NBTOT ,NIMA ,NIMA2 
+      REAL*8 EPSIT ,R8PI 
+C-----------------------------------------------------------------------
       NBCYL  = NDIM(3)
       NBGRP  = NDIM(4)
       NBTRON = NDIM(5)

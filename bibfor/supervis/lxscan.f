@@ -1,13 +1,13 @@
       SUBROUTINE LXSCAN(CHIN,IDEB,ICLASS,IVAL,RVAL,CVAL)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       CHARACTER*(*)     CHIN,                      CVAL
       INTEGER                IDEB,ICLASS,IVAL
       REAL*8                                  RVAL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -45,6 +45,12 @@ C FIN LXSCAN
 C     ------------------------------------------------------------------
 C
 C     --- VARIABLES GLOBALES -------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER IETAT ,IEXP ,ILIRE ,ISIGNE ,ISMAEM ,KCLASS ,KDEB
+      INTEGER LGMAX ,MAXEXP ,MINEXP ,MXCHAR ,MXCLA1 ,MXCLAS ,MXDELI
+      INTEGER MXETAT
+      REAL*8 RINFIN
+C-----------------------------------------------------------------------
       PARAMETER ( MXCLAS = 10 , MXCHAR = 255 , MXDELI = 15 )
 C
       INTEGER           CLNUM , CLLET , CLSIG , CLPNT , CLEXP , CLQUO ,
@@ -64,7 +70,7 @@ C
       CHARACTER*1  CAREXT
       INTEGER    CLASSE
       REAL*8     XNDEC,XDEC
-      INTEGER    NIVAL,INIVAL
+      INTEGER    NIVAL,INIVAL,LCLASS,NUM
       CHARACTER*80 SERR
 C
 C     ------------------------------------------------------------------

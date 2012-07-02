@@ -1,8 +1,8 @@
       SUBROUTINE SIMONO
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,6 +37,10 @@ C
       CHARACTER*19 RESU
       INTEGER      IARG
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IDCHM ,IE ,IN ,JDDL ,JVEC ,NBD 
+      INTEGER NBDIR ,NBV 
+C-----------------------------------------------------------------------
       DATA   TABCMP / 'DX' , 'DY' , 'DZ' , 'DRX' , 'DRY' , 'DRZ' /
 C     ------------------------------------------------------------------
 C

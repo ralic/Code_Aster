@@ -9,7 +9,7 @@
       CHARACTER*(*)     MOME, RESU, TYPCDI
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -110,7 +110,7 @@ C           --- CHAMP RECOMBINE ---
                ZR(JVAL+IN-1) = SQRT( ABS ( REPDIR(IN,ID) ) )
  30         CONTINUE
             CALL JELIBE(VALE)
-            CALL RSNOCH(RESU,NOMSY,IORDR,' ')
+            CALL RSNOCH(RESU,NOMSY,IORDR)
 C
 C           --- PARAMETRE ---
             CALL RSADPA(RESU,'E',1,'NOEUD_CMP' ,IORDR,0,JDIR,K8B)
@@ -183,7 +183,7 @@ C        --- CHAMP RECOMBINE ---
  42         CONTINUE
          ENDIF
          CALL JELIBE(VALE)
-         CALL RSNOCH(RESU,NOMSY,IORDR,' ')
+         CALL RSNOCH(RESU,NOMSY,IORDR)
 C
 C        --- PARAMETRE ---
          CALL RSADPA(RESU,'E',1,'NOEUD_CMP',IORDR,0,JDIR,K8B)

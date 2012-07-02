@@ -1,12 +1,12 @@
       SUBROUTINE PEMICA(CHAMP,LONG,VR,NBMAIL,NUMMAI,ORIG,IORIG,ICAGE)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*)     CHAMP
       INTEGER                 LONG,   NBMAIL,NUMMAI(*),  IORIG
       REAL*8                       VR(*),           ORIG(3)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,6 +44,13 @@ C     ------------------------------------------------------------------
       REAL*8       AR(6),BR(6),VECPRO(3,3),VALPRO(3), TOL, TOLDYN
       REAL*8       V1(3), V2(3), V3(3), JACAUX(3),IXPR2,IYPR2
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IBID ,ICAGE ,ICOEF ,IDECGR ,IEL ,IM 
+      INTEGER J ,JCELD ,JGR ,JLIGR ,K ,LCELK ,LVALE 
+      INTEGER NBGR ,NBVEC ,NEL ,NITJAC 
+      REAL*8 DX ,DY ,DZ ,EPSI ,PGX ,PGY ,PGZ 
+      REAL*8 R8RDDG ,RDDG 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       CHAMP2  = CHAMP
       RDDG    = R8RDDG()

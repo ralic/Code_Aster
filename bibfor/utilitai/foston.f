@@ -1,11 +1,11 @@
       SUBROUTINE FOSTON(CHVAL,VECNOM,NBFONC)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER                        NBFONC
       CHARACTER*(*)     CHVAL,VECNOM(NBFONC)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,6 +38,8 @@ C     ------------------------------------------------------------------
       INTEGER      I,J,NBP,LVALN,LVALF,NBPT
       CHARACTER*24 CHFVAL
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       NBPT=0
       CHFVAL(20:24) = '.VALE'

@@ -1,6 +1,6 @@
       SUBROUTINE DISMCP(QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,10 +17,11 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
-C     --     DISMOI(CHAMP)
-C     ARGUMENTS:
-C     ----------
+      IMPLICIT NONE
+C     --     DISMOI(CHAMP)  CHAPEAU DE :
+C       CHAM_NO, CHAM_NO_S, CARTE, CHAM_ELEM, CHAM_ELEM_S,
+C       RESUELEM, CHAM_GENE
+
       INCLUDE 'jeveux.h'
       INTEGER REPI,IERD
       CHARACTER*(*) QUESTI
@@ -39,7 +40,8 @@ C       IERD   : CODE RETOUR (0--> OK, 1 --> PB)
 C ----------------------------------------------------------------------
 C     VARIABLES LOCALES:
 C     ------------------
-      CHARACTER*4 DOCU
+      CHARACTER*4 TYCH
+      INTEGER IBID,IEXI
 
 C DEB-------------------------------------------------------------------
 
@@ -47,31 +49,44 @@ C DEB-------------------------------------------------------------------
       NOMOB = NOMOBZ
       REPK = ' '
 
-      CALL JEEXIN(NOMOB(1:19)//'.DESC',IBID)
-      IF (IBID.GT.0) THEN
-        CALL JELIRA(NOMOB(1:19)//'.DESC','DOCU',IBID,DOCU)
+      CALL JEEXIN(NOMOB(1:19)//'.DESC',IEXI)
+      IF (IEXI.GT.0) THEN
+        CALL JELIRA(NOMOB(1:19)//'.DESC','DOCU',IBID,TYCH)
       ELSE
-        CALL JEEXIN(NOMOB(1:19)//'.CELD',IBI2)
-        IF (IBI2.GT.0) THEN
-          CALL JELIRA(NOMOB(1:19)//'.CELD','DOCU',IBID,DOCU)
+        CALL JEEXIN(NOMOB(1:19)//'.CELD',IEXI)
+        IF (IEXI.GT.0) THEN
+          CALL JELIRA(NOMOB(1:19)//'.CELD','DOCU',IBID,TYCH)
         ELSE
-          CALL U2MESK('F','UTILITAI_55',1,NOMOB(1:19))
-          REPK = ' '
-          GO TO 10
+          CALL JEEXIN(NOMOB(1:19)//'.CESD',IEXI)
+          IF (IEXI.GT.0) THEN
+            TYCH='CES'
+          ELSE
+            CALL JEEXIN(NOMOB(1:19)//'.CNSD',IEXI)
+            IF (IEXI.GT.0) THEN
+              TYCH='CNS'
+            ELSE
+              REPK = ' '
+              GO TO 10
+            END IF
+          END IF
         END IF
       END IF
 
 
-      IF (DOCU(1:4).EQ.'CHNO') THEN
+      IF (TYCH.EQ.'CHNO') THEN
         CALL DISMCN(QUESTI,NOMOB,REPI,REPK,IERD)
-      ELSE IF (DOCU(1:4).EQ.'CART') THEN
+      ELSE IF (TYCH.EQ.'CART') THEN
         CALL DISMCA(QUESTI,NOMOB,REPI,REPK,IERD)
-      ELSE IF (DOCU(1:4).EQ.'CHML') THEN
+      ELSE IF (TYCH.EQ.'CHML') THEN
         CALL DISMCE(QUESTI,NOMOB,REPI,REPK,IERD)
-      ELSE IF (DOCU(1:4).EQ.'RESL') THEN
+      ELSE IF (TYCH.EQ.'RESL') THEN
         CALL DISMRE(QUESTI,NOMOB,REPI,REPK,IERD)
-      ELSE IF (DOCU(1:4).EQ.'VGEN') THEN
+      ELSE IF (TYCH.EQ.'VGEN') THEN
         CALL DISMCG(QUESTI,NOMOB,REPI,REPK,IERD)
+      ELSE IF (TYCH.EQ.'CNS') THEN
+        CALL DISMNS(QUESTI,NOMOB,REPI,REPK,IERD)
+      ELSE IF (TYCH.EQ.'CES') THEN
+        CALL DISMES(QUESTI,NOMOB,REPI,REPK,IERD)
       ELSE
         IERD = 1
       END IF

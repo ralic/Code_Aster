@@ -1,8 +1,8 @@
       SUBROUTINE MULMAT(K,N,M,A,B,C)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2003   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -20,8 +20,12 @@ C ======================================================================
 C--------------------------------------------------------
 C ELEMENT SHB8-PS A.COMBESCURE, S.BAGUET INSA LYON 2003 /
 C-------------------------------------------------------
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       REAL*8 A(K,N),B(N,M),C(K,M)
+C-----------------------------------------------------------------------
+      INTEGER IA ,IB ,K ,K1 ,M ,M1 ,N 
+      INTEGER N1 
+C-----------------------------------------------------------------------
       DO 20 IB = 1,M
         DO 10 IA = 1,K
           C(IA,IB) = 0.D0

@@ -1,6 +1,6 @@
       SUBROUTINE RSINDI(TYSCA,IAOBJ,PAOBJ,JORDR,IVAL,RVAL,KVAL,CVAL,
      &                  EPSI,CRIT,NBORDR,NBTROU,NUTROU,NDIM)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER NBORDR,NBTROU,NUTROU(*),NDIM,IVAL,PAOBJ
       REAL*8 RVAL,EPSI
@@ -9,7 +9,7 @@
       COMPLEX*16 CVAL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,6 +56,9 @@ C ----------------------------------------------------------------------
       LOGICAL DEPASS,TROUVE
 C     ------------------------------------------------------------------
 
+C-----------------------------------------------------------------------
+      INTEGER I ,IAOBJ ,JORDR 
+C-----------------------------------------------------------------------
       CRIT2 = CRIT
       NBTROU = 0
       DEPASS = .FALSE.

@@ -1,12 +1,12 @@
       SUBROUTINE FOEC1N(IUNI,NOMF,VEC,NBFONC,VERIF)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER           IUNI,         NBFONC
       CHARACTER*(*)          NOMF,VEC(*),    VERIF
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -34,6 +34,9 @@ C     ------------------------------------------------------------------
       CHARACTER*8  INTERP,PROLGD,TPROL(3)
       CHARACTER*8  NOMPAN,NOMRES,NOMPAF
       CHARACTER*19 NOMFON
+C-----------------------------------------------------------------------
+      INTEGER I 
+C-----------------------------------------------------------------------
       DATA TPROL/'CONSTANT','LINEAIRE','EXCLU'/
 C
       NOMFON = NOMF

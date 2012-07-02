@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE VALIDATION INTERPENETRATION (ERREUR)
 # erreu08a.para = tps_job 60 mem_job 256Mo mem_aster 50 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -24,8 +24,8 @@
 
 DEBUT(CODE=_F(NOM='ERREU08A',
               NIV_PUB_WEB='INTERNET',
-              VISU_EFICAS='NON',),
-      ERREUR=_F(ERREUR_F='EXCEPTION',),
+              VISU_EFICAS='NON'),
+      ERREUR=_F(ERREUR_F='EXCEPTION'),
       IGNORE_ALARM='SUPERVIS_1',
       PAR_LOT='NON',
       DEBUG=_F(SDVERI='OUI'))
@@ -39,39 +39,39 @@ fmt_raison='-'*80+"""
 
 """+'-'*80+'\n'
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED');
 
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
-                 ORIE_PEAU_3D=_F(GROUP_MA=('ContVis','ContTrou',),),);
+                 ORIE_PEAU_3D=_F(GROUP_MA=('ContVis','ContTrou')));
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
-              CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+              CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI'));
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=2.0E+11,
-                            NU=0.3,),);
+                            NU=0.3));
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=ACIER,),);
+                            MATER=ACIER));
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),);
+                       MODELISATION='3D'));
 
 ENCAST=AFFE_CHAR_MECA(MODELE=MO,
                       DDL_IMPO=_F(GROUP_MA='Base',
-                                  LIAISON='ENCASTRE',),);
+                                  LIAISON='ENCASTRE'));
 
 ENCAST2=AFFE_CHAR_MECA(MODELE=MO,
                        DDL_IMPO=_F(GROUP_MA='Dimpo',
-                                   LIAISON='ENCASTRE',),);
+                                   LIAISON='ENCASTRE'));
 
 Dimpo=AFFE_CHAR_MECA(MODELE=MO,
                      DDL_IMPO=_F(GROUP_MA='ContVis',
-                                 DZ=-1,),);
+                                 DZ=-1));
 
 CONT2 = DEFI_CONTACT(MODELE      = MO,
                    FORMULATION   = 'DISCRETE',
@@ -90,32 +90,32 @@ CONT2 = DEFI_CONTACT(MODELE      = MO,
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,
                           1,1,
                           2,2,
-                          ),PROL_DROITE='LINEAIRE',);
+                          ),PROL_DROITE='LINEAIRE');
 
 TPS=DEFI_LIST_REEL(DEBUT=0,
                    INTERVALLE=(_F(JUSQU_A=2,
-                                  NOMBRE=1,),),);
+                                  NOMBRE=1)));
 
 is_ok = 0
 try :
     RESU2=STAT_NON_LINE(MODELE=MO,
                         CHAM_MATER=CHMAT,
-                        EXCIT=(_F(CHARGE=ENCAST,),
-                               _F(CHARGE=ENCAST2,),
+                        EXCIT=(_F(CHARGE=ENCAST),
+                               _F(CHARGE=ENCAST2),
                                _F(CHARGE=Dimpo,
-                                  FONC_MULT=RAMPE,),
+                                  FONC_MULT=RAMPE),
                                ),
                         CONTACT  = CONT2,
                         COMP_INCR=_F(RELATION='ELAS',
-                                     DEFORMATION='PETIT',),
-                        INCREMENT=_F(LIST_INST=TPS,),
+                                     DEFORMATION='PETIT'),
+                        INCREMENT=_F(LIST_INST=TPS),
                         NEWTON=_F(REAC_INCR=1,
                                   MATRICE='TANGENTE',
-                                  REAC_ITER=1,),
+                                  REAC_ITER=1),
                         SOLVEUR=_F(SYME='OUI',
-                                   METHODE='MUMPS',PCENT_PIVOT=10,),
+                                   METHODE='MUMPS'),
                         CONVERGENCE=_F(RESI_GLOB_RELA=1.0E-6,
-                                       ITER_GLOB_MAXI=10,),);
+                                       ITER_GLOB_MAXI=10));
 
 except aster.error,err:
    print fmt_raison % str(err)
@@ -124,13 +124,13 @@ except aster.error,err:
       is_ok = 1
 
 # TEST_RESU
-TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
-                       _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
+TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  '),
+                       _F(PARA='BOOLEEN',LISTE_I=is_ok)))
 
 TEST_TABLE(TABLE=TAB1,
-           FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
+           FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  '),
            NOM_PARA='BOOLEEN',
            VALE_I=1,
-           REFERENCE='ANALYTIQUE',)
+           REFERENCE='ANALYTIQUE')
 
 FIN();

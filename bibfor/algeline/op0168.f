@@ -1,8 +1,8 @@
       SUBROUTINE OP0168()
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,6 +23,17 @@ C     OPERATEUR  EXTR_MODE
 C     ------------------------------------------------------------------
 C
       INCLUDE 'jeveux.h'
+C-----------------------------------------------------------------------
+      INTEGER I ,IBID ,IFR ,IMPR ,IORD ,IPREC ,IRET 
+      INTEGER IUNIFI ,J ,JADR ,JME ,JNOM ,JOR ,JORDR 
+      INTEGER K ,LMOD ,LMODE ,LVALI ,LVALK ,LVALR ,N1 
+      INTEGER N10 ,N2 ,N3 ,N4 ,N5 ,N6 ,N7 
+      INTEGER N8 ,N9 ,NBFILT ,NBME ,NBMODE ,NBMODT ,NBMODU 
+      INTEGER NBMR ,NBPARA ,NBPARI ,NBPARK ,NBPARR ,NDIMT ,NEQ 
+      INTEGER NPARI ,NPARK ,NPARR ,NUME ,NUME1 ,NUME2 
+      REAL*8 CUMULX ,CUMULY ,CUMULZ ,DX ,DY ,DZ ,FREMAX 
+      REAL*8 FREMIN ,FREQ ,R8VIDE ,SEUIL ,UNDF 
+C-----------------------------------------------------------------------
       PARAMETER   ( NBPARI=1 , NBPARR=15 , NBPARK=3, NBPARA=19 )
       INTEGER       LPAR(3)
       INTEGER VALI(2)

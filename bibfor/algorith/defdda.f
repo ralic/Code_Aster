@@ -1,6 +1,6 @@
       SUBROUTINE DEFDDA(NBEC,NBCMP,NUMGD,IOC,MOTCLE,IOPT,ICOD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C***********************************************************************
 C    P. RICHARD     DATE 18/02/91
 C-----------------------------------------------------------------------
 C  BUT:  DETERMINER LA LISTE DES TYPE DDL DEFINIS PAR L'UTILISATEUR
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C       EN ARGUMENT D'UN MOT-CLE
 C     INDEPENDAMENT DES DDL ACTIFS DANS LE MODELE
 C             IL SORT UN ENTIER CODE
@@ -49,6 +49,10 @@ C
       INTEGER       ICOD(NBEC)
       LOGICAL       OK, OKG
       INTEGER      IARG
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IBID ,IEC ,IOC ,IOPT ,J ,LLNCMP 
+      INTEGER LTDDL ,LTIDEC ,NBCMP ,NBEC ,NBVAL ,NUMGD 
 C-----------------------------------------------------------------------
       DATA OKG/.FALSE./
 C-----------------------------------------------------------------------

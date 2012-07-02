@@ -1,6 +1,6 @@
       SUBROUTINE VERECY(INTF,NUMD,NUMG,NBSEC,PREC,DISTRF)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C***********************************************************************
 C    P. RICHARD     DATE 13/12/91
 C-----------------------------------------------------------------------
 C  BUT:       < VERIFICATION REPETITIVITE CYCLIQUE>
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C  VERIFICATION DE LA REPETITIVITE CYCLIQUE SUR LE MAILLAGE ET LA
 C  DEFINITION DES INTERFACES
@@ -48,6 +48,16 @@ C
       CHARACTER*50 DIAG
       LOGICAL     ORDRE
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IBID ,IRET ,J ,JNODE ,LLCOO ,LLINTG 
+      INTEGER LLISTA ,LLISTB ,LTND ,LTNG ,NBD ,NBG ,NBPBAX 
+      INTEGER NBPBR ,NBPBSE ,NBPBTO ,NBPBVT ,NBSEC ,NUMD ,NUMG 
+      INTEGER NUNOD ,NUNOG 
+      REAL*8 CRIT ,DIFR ,DIFZ ,DIST ,DISTJ ,DISTR ,DISTRF 
+      REAL*8 DISTRJ ,DISTZ ,DISTZJ ,PI ,PREC ,PVDIF ,RD 
+      REAL*8 RG ,TETA ,XD ,XG ,YD ,YG ,ZD 
+      REAL*8 ZG ,ZPV ,ZPVREF 
 C-----------------------------------------------------------------------
       DATA PGC /'VERECY'/
 C-----------------------------------------------------------------------

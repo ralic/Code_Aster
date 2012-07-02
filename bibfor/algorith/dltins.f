@@ -1,12 +1,12 @@
       SUBROUTINE DLTINS ( NBGRPA, LISPAS, LIBINT, LINBPA, NPATOT, TINIT,
      &                   LISINS )
-      IMPLICIT  REAL*8  (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*24  LISPAS, LIBINT, LINBPA, LISINS
       
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,6 +39,13 @@ C     ------------------------------------------------------------------
       INTEGER      IARG
             
 C     -----------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IBID ,IINT ,IP ,IV ,J ,JBIN2 
+      INTEGER JBINT ,JLPA2 ,JLPAS ,JNBP2 ,JNBPA ,JVAL2 ,JVALE 
+      INTEGER JVALR ,K ,N1 ,NBGRPA ,NBINSR ,NBINST ,NBINTN 
+      INTEGER NBP ,NBPD ,NBPF ,NDY ,NPATOT ,NUMEF 
+      REAL*8 DT ,EPS ,T0 ,TFIN ,TINIT 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL GETRES(NOMRES,TYPRES,NOMCMD)
 C

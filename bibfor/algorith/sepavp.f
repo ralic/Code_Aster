@@ -1,9 +1,9 @@
       SUBROUTINE SEPAVP(CK,CM,CMAT,NDIM,ALPHA,BETA,NBMOD,
      &                    LAMBD1,LAMBD2,INTERV,IFIC)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,7 +20,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C-----------------------------------------------------------------------
 C  BUT:  < SEPARATION DES VALEURS PROPRES >
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C   CETTE ROUTINE ENCADRE CHACUNE DES VALEURS PROPRES D'UN PROBLEME A
 C   MATRICES RAIDEUR ET MASSE COMPLEXES HERMITIENNES SYMETRIQUES
@@ -54,6 +54,8 @@ C
 C
 C-----------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       DO 10 I=1, NBMOD
         ALPHA(I)=-1
         BETA(I) =-1

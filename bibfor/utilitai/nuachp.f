@@ -1,11 +1,11 @@
       SUBROUTINE NUACHP ( NUAGE, LNO, CHPT )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       CHARACTER*(*)       NUAGE, LNO, CHPT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 14/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -30,6 +30,8 @@ C     ------------------------------------------------------------------
       CHARACTER*4   TYPE
 C     ------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       CALL DISMOI('F','TYPE_CHAMP',CHPT,'CHAMP',IBID,TYPE,IE)
 C
       IF ( TYPE .EQ. 'NOEU' ) THEN

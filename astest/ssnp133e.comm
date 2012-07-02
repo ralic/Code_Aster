@@ -1,4 +1,4 @@
-# MODIF  DATE 03/04/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE PLAQUE TROUEE ASYMETRIQUE, INTERFACE XFEM CONFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 # ssnp133e.para = tps_job 600 mem_job 128Mo ncpus 1 liste_test S
-DEBUT(CODE=_F( NOM = 'SSNP133E',NIV_PUB_WEB='INTERNET',),)
+DEBUT(CODE=_F( NOM = 'SSNP133E',NIV_PUB_WEB='INTERNET'))
 
 tfin=159
 nbpas=tfin
@@ -34,7 +34,7 @@ pena_adh = 1.E-3
 
 MA1 = LIRE_MAILLAGE(FORMAT='MED');
 
-MA = CREA_MAILLAGE(MAILLAGE=MA1,COPIE=_F(),);
+MA = CREA_MAILLAGE(MAILLAGE=MA1,COPIE=_F());
                  
 MA = DEFI_GROUP(reuse = MA,
        MAILLAGE = MA,
@@ -58,18 +58,18 @@ MO = AFFE_MODELE(
          _F(
            GROUP_MA     = ('MATIERE','FACE_SUP','FACE_INF'),
            PHENOMENE    = 'MECANIQUE',
-           MODELISATION = 'D_PLAN', ),
+           MODELISATION = 'D_PLAN'),
          );
  
  # FORME ANALYTIQUE POUR LA FISSURE
 
 LN = FORMULE(VALE='Y',
-             NOM_PARA=('X','Y',),);
+             NOM_PARA=('X','Y'));
 
 
 FISS=DEFI_FISS_XFEM(MODELE=MO,
                     TYPE_DISCONTINUITE='INTERFACE',
-                    DEFI_FISS=_F(FONC_LN=LN,),
+                    DEFI_FISS=_F(FONC_LN=LN),
                     GROUP_MA_ENRI='MATIERE',
                     );
 
@@ -80,7 +80,7 @@ MA=DEFI_GROUP(reuse=MA,
                                NOM='TRAVERS',
                                OPTION='FISS_XFEM',
                                TYPE_GROUP='HEAVISIDE',
-                               ),);
+                               ));
                                                                        
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MO,
                          FISSURE=FISS,
@@ -99,18 +99,18 @@ CTXFEM = DEFI_CONTACT(
                      FISS_MAIT = FISS,
                      ALGO_LAGR='VERSION2',
                      RELATION='CZM_EXP_REG',
-                     ),),);
+                     )));
                        
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       LIAISON_XFEM='OUI',
                       CONTACT_XFEM=CTXFEM,
-                      INFO=2,);      
+                      INFO=2);      
 #--------------------------------------------------------------
 # DEFINITION DES PARAMETRES MATERIAUX
 #--------------------------------------------------------------
 
 BETON = DEFI_MATERIAU(ELAS = _F( E = young,
-                                NU = poiss,),
+                                NU = poiss),
                       RUPT_FRAG = _F( GC = Gc,
                                       SIGM_C = Sc,
                                       PENA_ADHERENCE=pena_adh,
@@ -119,7 +119,7 @@ BETON = DEFI_MATERIAU(ELAS = _F( E = young,
                      
 CHAMPMA=AFFE_MATERIAU(MAILLAGE=MA,
                        MODELE=MODELEK,
-                       AFFE=(_F(GROUP_MA='MATIERE',MATER=BETON,),
+                       AFFE=(_F(GROUP_MA='MATIERE',MATER=BETON),
                             ),
                       ); 
       
@@ -127,15 +127,15 @@ CHAMPMA=AFFE_MATERIAU(MAILLAGE=MA,
 # ON BLOQUE LES MOUVEMENTS DE CORPS RIGIDE DS LA DIRECTION X AU POINT P_RIG
 RIGIDE = AFFE_CHAR_MECA(
   MODELE   = MODELEK,
-  DDL_IMPO = _F(GROUP_NO='P_RIG', DX = 0.0,),
+  DDL_IMPO = _F(GROUP_NO='P_RIG', DX = 0.0),
   ); 
 
 fyi=1.0;    
 # EFFORT IMPOSE SUR LA SURFACE SUPERIEURE DE LA PLAQUE
 TRACTION = AFFE_CHAR_MECA(
   MODELE = MODELEK,
-  FORCE_CONTOUR = (_F(GROUP_MA = 'FACE_SUP', FY = fyi,),
-              _F(GROUP_MA = 'FACE_INF', FY = -fyi,),
+  FORCE_CONTOUR = (_F(GROUP_MA = 'FACE_SUP', FY = fyi),
+              _F(GROUP_MA = 'FACE_INF', FY = -fyi),
                    ),
   );
 
@@ -147,18 +147,18 @@ SYMETRIE = AFFE_CHAR_MECA(
                     DDL_2 = 'DY',
                     COEF_MULT_1 = 0.5,
                     COEF_MULT_2 = 0.5,
-                    COEF_IMPO=0.,),
+                    COEF_IMPO=0.),
   )
  
   
 INSTANTS = DEFI_LIST_REEL(
                           DEBUT = 0.,
-                          INTERVALLE = (_F(JUSQU_A =  tfin, NOMBRE = nbpas), ), 
+                          INTERVALLE = (_F(JUSQU_A =  tfin, NOMBRE = nbpas)), 
                           )
  
 INS_ARCH = DEFI_LIST_REEL(
                           DEBUT = 0.,
-                          INTERVALLE = (_F(JUSQU_A =  tfin, NOMBRE = nbpas_arch), ), 
+                          INTERVALLE = (_F(JUSQU_A =  tfin, NOMBRE = nbpas_arch)), 
                           )
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INSTANTS ),
@@ -168,15 +168,15 @@ DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INSTANTS ),
                   SUBD_PAS  = 10,
                   SUBD_PAS_MINI = 1.E-20,
                   SUBD_NIVEAU=10,
-                                 ),)
+                                 ))
 
 EVOL = STAT_NON_LINE(
   MODELE = MODELEK,
   CHAM_MATER = CHAMPMA,
   EXCIT = (
-    _F(CHARGE = SYMETRIE,), 
-    _F(CHARGE = RIGIDE,),
-    _F(CHARGE = CHXFEM,),    
+    _F(CHARGE = SYMETRIE), 
+    _F(CHARGE = RIGIDE),
+    _F(CHARGE = CHXFEM),    
     _F(CHARGE = TRACTION, 
        TYPE_CHARGE = 'FIXE_PILO',
        ),     
@@ -185,7 +185,7 @@ EVOL = STAT_NON_LINE(
   COMP_INCR = (
     _F(RELATION = 'ELAS' , GROUP_MA = 'MATIERE'),    
     ),
-    INCREMENT = _F(LIST_INST = DEFLIST,),
+    INCREMENT = _F(LIST_INST = DEFLIST),
     PILOTAGE  = _F (
     TYPE = 'PRED_ELAS',
     SELECTION = 'NORM_INCR_DEPL',
@@ -195,14 +195,14 @@ EVOL = STAT_NON_LINE(
     COEF_MULT = c_mult_pilo,
     ETA_PILO_R_MIN = 0.0,
     ),
-  NEWTON  = _F(REAC_ITER = 1,),
+  NEWTON  = _F(REAC_ITER = 1),
   CONVERGENCE = _F(RESI_GLOB_RELA = 1.E-6,
-                   ITER_GLOB_MAXI = 10,),
+                   ITER_GLOB_MAXI = 10),
   SOLVEUR    = _F(METHODE = 'MUMPS',
                   NPREC=-1,
-                  PCENT_PIVOT=200,
+   
                   ),
-  ARCHIVAGE = _F(CHAM_EXCLU='VARI_ELGA',)
+  ARCHIVAGE = _F(CHAM_EXCLU='VARI_ELGA')
   ) 
 #--------------------------------------------------------------
 # POST-TRAITEMENT
@@ -210,7 +210,7 @@ EVOL = STAT_NON_LINE(
 
 EVOL=CALC_CHAMP(reuse =EVOL,
                 RESULTAT=EVOL,
-                FORCE='FORC_NODA',);
+                FORCE='FORC_NODA');
 
 FORCE = POST_RELEVE_T(
                       ACTION = _F(
@@ -250,34 +250,34 @@ FY = RECU_FONCTION ( TABLE  = FORCE,
 #-------------------------------------------------------------
 
 TEST_TABLE(TABLE=TAB_U,
-              FILTRE=(_F(NOM_PARA='INST',VALE=50,),),
+              FILTRE=(_F(NOM_PARA='INST',VALE=50)),
               NOM_PARA='DY',
               VALE=3.32215E-03,
               REFERENCE='AUTRE_ASTER')
 TEST_TABLE(TABLE=FORCE,
-              FILTRE=(_F(NOM_PARA='INST',VALE=50,),),
+              FILTRE=(_F(NOM_PARA='INST',VALE=50)),
               NOM_PARA='DY',
               VALE=4.21054E+07,
               REFERENCE='AUTRE_ASTER')
 
 TEST_TABLE(TABLE=TAB_U,
-              FILTRE=(_F(NOM_PARA='INST',VALE=100,),),
+              FILTRE=(_F(NOM_PARA='INST',VALE=100)),
               NOM_PARA='DY',
               VALE=2.52359E-03,
               REFERENCE='AUTRE_ASTER')
 TEST_TABLE(TABLE=FORCE,
-              FILTRE=(_F(NOM_PARA='INST',VALE=100,),),
+              FILTRE=(_F(NOM_PARA='INST',VALE=100)),
               NOM_PARA='DY',
               VALE=5.35460E+06,
               REFERENCE='AUTRE_ASTER')
 
 TEST_TABLE(TABLE=TAB_U,
-              FILTRE=(_F(NOM_PARA='INST',VALE=150,),),
+              FILTRE=(_F(NOM_PARA='INST',VALE=150)),
               NOM_PARA='DY',
               VALE=7.09118E-03,
               REFERENCE='AUTRE_ASTER')
 TEST_TABLE(TABLE=FORCE,
-              FILTRE=(_F(NOM_PARA='INST',VALE=150,),),
+              FILTRE=(_F(NOM_PARA='INST',VALE=150)),
               NOM_PARA='DY',
               VALE=6.75039E+06,
               REFERENCE='AUTRE_ASTER')

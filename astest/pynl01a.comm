@@ -1,9 +1,9 @@
-# MODIF  DATE 24/10/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE INTEGRATION DU COMPORTEMENT VMIS_ISOT_LINE PAR LA COMMANDE CALCUL
 # pynl01a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -103,23 +103,13 @@ SIGP=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                         ),);
 
 
-VARI0=CREA_CHAMP(OPERATION='AFFE',
-                 TYPE_CHAM='CART_NEUT_R',
-                 MODELE=MO,
-                 AFFE=_F(TOUT='OUI',
-                         NOM_CMP= ('X1','X2',),
-                         VALE = (0.,0.,))
-                 )
-
-VARIP=CREA_CHAMP(OPERATION='ASSE',
+VARIP=CREA_CHAMP(OPERATION='AFFE',
                  TYPE_CHAM='ELGA_VARI_R',
                  MODELE=MO,
-                 ASSE=_F(TOUT='OUI',
-                         NOM_CMP= ('X1','X2',),
-                         CHAM_GD=VARI0,
-                         NOM_CMP_RESU=('V1','V2'),
-                         ))
-
+                 AFFE=_F(TOUT='OUI',
+                         NOM_CMP= ('V1','V2',),
+                         VALE =   (  0.,  0.,))
+                 )
 
 #=========================================================
 #               PREDICTION ELASTIQUE
@@ -186,7 +176,7 @@ VARI=EXTR_TABLE(TYPE_RESU='CHAM_GD_SDASTER',
                  NOM_PARA='NOM_SD',
                  FILTRE=_F(NOM_PARA='NOM_OBJET',
                            VALE_K='VARI_ELGA'),)
-                
+
 
 F_EL=EXTR_TABLE(TYPE_RESU='VECT_ELEM_DEPL_R',
                  TABLE=CONT,
@@ -200,7 +190,7 @@ CODE=EXTR_TABLE(TYPE_RESU='CHAM_GD_SDASTER',
                  NOM_PARA='NOM_SD',
                  FILTRE=_F(NOM_PARA='NOM_OBJET',
                            VALE_K='CODE_RETOUR'),)
-                
+
 
 MATAS2=ASSE_MATRICE(MATR_ELEM=MATR,
                     NUME_DDL=NU,);
@@ -234,12 +224,12 @@ CALC=STAT_NON_LINE(MODELE=MO,
                    INCREMENT=_F(LIST_INST=LIST,),
                    NEWTON=_F(PREDICTION='DEPL_CALCULE',
                              EVOL_NOLI=PRED,),
-                   ####                      
-                   # NE PAS FAIRE D'ITERATIONS   
-                   ####                                  
+                   ####
+                   # NE PAS FAIRE D'ITERATIONS
+                   ####
                    CONVERGENCE = _F(ITER_GLOB_MAXI = 0,
-                                    ARRET = 'NON'),                   
-                   
+                                    ARRET = 'NON'),
+
                    );
 
 # ON EXTRAIT LES CHAMPS A TESTER
@@ -322,7 +312,7 @@ TEST_RESU(CHAM_ELEM=(_F(CHAM_GD=DIF_SIG,
                         ))
 #
 # ==============     VALIDATION DE : CALCUL/TABLE   ====================
-#  
+#
 
 LIST2=DEFI_LIST_REEL(DEBUT=0.0,
                     INTERVALLE=_F(JUSQU_A=1.0,
@@ -367,12 +357,12 @@ CALC3=STAT_NON_LINE(MODELE=MO,
                    INCREMENT=_F(LIST_INST=LIST2,),
                    NEWTON=_F(PREDICTION='DEPL_CALCULE',
                              EVOL_NOLI=PRED3,),
-                   ####                      
-                   # NE PAS FAIRE D'ITERATIONS   
-                   ####                                  
+                   ####
+                   # NE PAS FAIRE D'ITERATIONS
+                   ####
                    CONVERGENCE = _F(ITER_GLOB_MAXI = 0,
-                                    ARRET = 'NON'),                   
-                   
+                                    ARRET = 'NON'),
+
                    );
 
 
@@ -411,6 +401,6 @@ TEST_RESU(CHAM_ELEM=(_F(CHAM_GD=DIF_SIG3,
 
 #
 # ==========     FIN DE LA VALIDATION DE : CALCUL/TABLE   ==============
-#  
+#
 
 FIN();

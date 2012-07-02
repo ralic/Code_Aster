@@ -1,4 +1,4 @@
-# MODIF  DATE 30/01/2012   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE  FISSURE DE BORD EN ELASTOPLASTICITE DANS UNE PLAQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,10 +24,10 @@ DEBUT(CODE=_F( NOM = 'SSNP110D',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 relation = 'VMIS_ISOT_LINE',
 
-MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',)
+MAILLAG1=LIRE_MAILLAGE(FORMAT='MED')
 
 MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,
-                       LINE_QUAD=_F(GROUP_MA=('SURFTOT'),),);
+                       LINE_QUAD=_F(GROUP_MA=('SURFTOT')));
 
 
 #----------------------------------------
@@ -64,27 +64,27 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                  );
 
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
-                     AFFE=(_F(GROUP_MA=('SURFTOT',),
+                     AFFE=(_F(GROUP_MA=('SURFTOT'),
                               PHENOMENE='MECANIQUE',
                               MODELISATION='C_PLAN_XFEM_CONT',
                               ),
-                           _F(GROUP_MA=('LIG1','LIG3',),
+                           _F(GROUP_MA=('LIG1','LIG3'),
                               PHENOMENE='MECANIQUE',
                               MODELISATION='C_PLAN',
-                              ),),);  
+                              )));  
 
 
 LN=FORMULE(NOM_PARA=('X','Y'),VALE='Y');
 LT=FORMULE(NOM_PARA=('X','Y'),VALE='X');
 
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,  
-                    DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
+                    DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN),
                     );
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          CONTACT='P1P1A',
                          FISSURE=FISS,
-                         INFO=1,);
+                         INFO=1);
 
 
 CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
@@ -102,7 +102,7 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
 
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       CONTACT_XFEM=CTXFEM,
-                      LIAISON_XFEM='OUI',INFO=1,);
+                      LIAISON_XFEM='OUI',INFO=1);
 
 #----------------------------------------------
 #                   MATERIAU
@@ -125,16 +125,16 @@ CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
 # blocage des modes rigides 
 CH=AFFE_CHAR_MECA(MODELE=MODELEK,
                   LIAISON_DDL=(
-                               _F(GROUP_NO=('A1','A2',),DDL=('DX','DX',),COEF_MULT=(0.5,0.5),COEF_IMPO=0.,),
-                               _F(GROUP_NO=('A1','A2',),DDL=('DY','DY',),COEF_MULT=(0.5,0.5),COEF_IMPO=0.,),
-                               _F(GROUP_NO=('C1','C2',),DDL=('DY','DY',),COEF_MULT=(0.5,0.5),COEF_IMPO=0.,),
+                               _F(GROUP_NO=('A1','A2'),DDL=('DX','DX'),COEF_MULT=(0.5,0.5),COEF_IMPO=0.),
+                               _F(GROUP_NO=('A1','A2'),DDL=('DY','DY'),COEF_MULT=(0.5,0.5),COEF_IMPO=0.),
+                               _F(GROUP_NO=('C1','C2'),DDL=('DY','DY'),COEF_MULT=(0.5,0.5),COEF_IMPO=0.),
                               ),
                   );
 
 CHF=AFFE_CHAR_MECA(MODELE=MODELEK,
                    DDL_IMPO=(
-                             _F(GROUP_MA='LIG1',DY = -1.,),
-                             _F(GROUP_MA='LIG3',DY =  1.,),
+                             _F(GROUP_MA='LIG1',DY = -1.),
+                             _F(GROUP_MA='LIG3',DY =  1.),
                             ),
                    );
 
@@ -156,7 +156,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.,
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMA1,
-                   EXCIT=(_F(CHARGE=CHXFEM,),
+                   EXCIT=(_F(CHARGE=CHXFEM),
                           _F(CHARGE=CHF,FONC_MULT = RAMPE),
                           _F(CHARGE=CH),
                           ),
@@ -164,13 +164,13 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                        COMP_INCR=_F(
                                    RELATION = relation,
                                     DEFORMATION = 'PETIT'),
-                   INCREMENT=_F(LIST_INST = L_INST,),
+                   INCREMENT=_F(LIST_INST = L_INST),
                    CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-5),
-                   SOLVEUR=_F(PCENT_PIVOT = 10,METHODE='MUMPS',),
+                   SOLVEUR=_F(   METHODE='MUMPS'),
                    NEWTON=_F(REAC_ITER=1,
                              MATRICE='TANGENTE',
                             ),
-                   INFO=1,);
+                   INFO=1);
 
 #------------------------------------------------------------------------
 # POST-TRAITEMENT : VISUALISATION DES DEPLACEMENTS
@@ -182,7 +182,7 @@ MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAG1,
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=(_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='C_PLAN',),),
+                              MODELISATION='C_PLAN')),
                               );  
 
 RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
@@ -211,19 +211,19 @@ MA_XFEM=DEFI_GROUP(reuse=MA_XFEM,
                                      OPTION='ENV_SPHERE',
                                      POINT=(-a, 0.),
                                      PRECISION=0.0001,
-                                     RAYON=0.0001),);
+                                     RAYON=0.0001));
 
 TABDEP_1= POST_RELEVE_T ( ACTION =_F(INTITULE  = 'DEPLACEMENT_FISSURE',
                                    GROUP_NO  = 'NTEST',
                                    CHAM_GD   = DEPL_1,
                                    NOM_CMP   = ( 'DX','DY'),
-                                   OPERATION = 'EXTRACTION',),);
+                                   OPERATION = 'EXTRACTION'));
 
 TABDEP_2= POST_RELEVE_T ( ACTION =_F(INTITULE  = 'DEPLACEMENT_FISSURE',
                                    GROUP_NO  = 'NTEST',
                                    CHAM_GD   = DEPL_2,
                                    NOM_CMP   = ( 'DX','DY'),
-                                   OPERATION = 'EXTRACTION',),);
+                                   OPERATION = 'EXTRACTION'));
 
 # CETTE VALEUR A ETE OBTENUE PAR LA MODELISATION A
 DEPREF_1=9.8756898959655E-02;
@@ -236,7 +236,7 @@ TEST_TABLE(TABLE=TABDEP_1,
            VALE=-DEPREF_1,
            CRITERE='RELATIF',
            PRECISION=0.04,
-           REFERENCE='AUTRE_ASTER',);         
+           REFERENCE='AUTRE_ASTER');         
 
 TEST_TABLE(TABLE=TABDEP_1,
            NOM_PARA='DY',
@@ -244,7 +244,7 @@ TEST_TABLE(TABLE=TABDEP_1,
            VALE=DEPREF_1,
            CRITERE='RELATIF',
            PRECISION=0.04,
-           REFERENCE='AUTRE_ASTER',);         
+           REFERENCE='AUTRE_ASTER');         
 
 TEST_TABLE(TABLE=TABDEP_2,
            NOM_PARA='DY',
@@ -252,7 +252,7 @@ TEST_TABLE(TABLE=TABDEP_2,
            VALE=-DEPREF_2,
            CRITERE='RELATIF',
            PRECISION=1.e-5,
-           REFERENCE='NON_REGRESSION',);         
+           REFERENCE='NON_REGRESSION');         
 
 TEST_TABLE(TABLE=TABDEP_2,
            NOM_PARA='DY',
@@ -260,7 +260,7 @@ TEST_TABLE(TABLE=TABDEP_2,
            VALE=DEPREF_2,
            CRITERE='RELATIF',
            PRECISION=1.e-3,
-           REFERENCE='NON_REGRESSION',);  
+           REFERENCE='NON_REGRESSION');  
 
 # VALEUR DE NON REGRESSION  OBTENUE AVEC LA 10.01
 VREF_1=1.2697828769295E-02
@@ -276,7 +276,7 @@ TEST_RESU(RESU=(
                    POINT=10,
                    VALE=VREF_1,
            PRECISION=1.e-5,
-                   REFERENCE='NON_REGRESSION',),
+                   REFERENCE='NON_REGRESSION'),
                 _F(RESULTAT=UTOT1,
                    INST=0.14,
                    NOM_CHAM='VARI_ELGA',
@@ -285,7 +285,7 @@ TEST_RESU(RESU=(
                    POINT=10,
                    VALE=VREF_1,
            PRECISION=1.e-5,
-                   REFERENCE='NON_REGRESSION',),
+                   REFERENCE='NON_REGRESSION'),
                 _F(RESULTAT=UTOT1,
                    INST=0.3,
                    NOM_CHAM='VARI_ELGA',
@@ -294,13 +294,13 @@ TEST_RESU(RESU=(
                    POINT=10,
                    VALE=VREF_2,
            PRECISION=1.e-5,
-                   REFERENCE='NON_REGRESSION',),
-                   ),);
+                   REFERENCE='NON_REGRESSION'),
+                   ));
 
 #IMPR_RESU(MODELE=MODELEK,
 #          FORMAT='GMSH',
 #          RESU=_F(RESULTAT=UTOT1,
-#                  NOM_CHAM=('VARI_ELGA'),),);
+#                  NOM_CHAM=('VARI_ELGA')));
 
 FIN()
 #

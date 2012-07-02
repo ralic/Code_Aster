@@ -1,14 +1,14 @@
       SUBROUTINE FOVERF(V,NC,IER)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER         NC,IER,I,ISENS,ILARGE,NIV,IFM
       REAL*8          V(NC)
       CHARACTER*16 NOMCMD, TYPFON
       CHARACTER*19 NOMFON
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/12/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,6 +44,8 @@ C
 C     ISENS (TRAVAIL) : 1 SI CROIS, -1 SI DECROIS,
 C                      99 SI ON NE SAIT PAS, 0 NON MONOTONE
 C     ILARGE : 0 SI AU SENS LARGE, 1 SI STRICT
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       CALL INFNIV(IFM,NIV)
 C
       IF(NC.GT.1)THEN

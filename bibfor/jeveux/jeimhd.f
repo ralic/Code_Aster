@@ -1,7 +1,7 @@
        SUBROUTINE JEIMHD ( FICHDF, CLAS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C RESPONSABLE LEFEBVRE
-C MODIF JEVEUX  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_18 CRS_508 CRS_512
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       CHARACTER*(*)       FICHDF, CLAS
 C ----------------------------------------------------------------------
 C IMPRESSION DE L'ENSEMBLE DES OBJETS JEVEUX AU FORMAT HDF
@@ -36,6 +36,14 @@ C ----------------------------------------------------------------------
       LOGICAL          LSZON(1)
       EQUIVALENCE    ( ISZON(1) , K1ZON(1) , R8ZON(1) , LSZON(1) )
 C ----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER IBACOL ,IBIADD ,IBIADM ,IBLONO ,IBNOM ,IDECO ,IDENOM 
+      INTEGER INAT ,INAT0 ,IPGCEX ,IRET ,IUNIFI ,IX ,IXDESO 
+      INTEGER IXIADD ,IXIADM ,IXLONO ,IXNOM ,J ,JCARA ,JDATE 
+      INTEGER JDOCU ,JGENR ,JHCOD ,JIADD ,JIADM ,JLONG ,JLONO 
+      INTEGER JLTYP ,JLUTI ,JMARQ ,JORIG ,JRNOM ,JTYPE ,K 
+      INTEGER L ,LNOM ,LOUA ,N 
+C-----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
      &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ

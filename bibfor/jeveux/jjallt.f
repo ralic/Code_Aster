@@ -1,6 +1,6 @@
       SUBROUTINE JJALLT (LONOI, IC, GI, TYPEI, LTYPI, CI, JCTAB, JCDYN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C TOLE CRP_18  CRS_508 CRP_4
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER             LONOI,IC,LTYPI,JCTAB
       CHARACTER*(*)       GI,TYPEI,CI
@@ -42,6 +42,8 @@ C
       EQUIVALENCE    (IZR,ZR),(IZC,ZC),(IZL,ZL),(IZK8,ZK8),(IZK16,ZK16),
      &               (IZK24,ZK24),(IZK32,ZK32),(IZK80,ZK80),(IZI4,ZI4)
 C DEB ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       JCTAB = 0
       IF ( TYPEI(1:1) .EQ. 'I' ) THEN
         CALL JJALLS (LONOI,IC,GI,TYPEI,LTYPI,CI,ZI ,JBID,JCTAB,JCDYN)

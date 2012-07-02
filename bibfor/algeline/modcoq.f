@@ -1,9 +1,9 @@
       SUBROUTINE MODCOQ(BASE,NUOR,NBM,MATER1,MATER2,NOMA,NOMGRP,IAXE,
      &                  KEC,GEOM,VICOQ,TORCO,TCOEF,IFREBA)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,6 +69,16 @@ C
       CHARACTER*19 NOMRC
       CHARACTER*24 REFEBA,MATRIA,GRPNO,COORNO,RCVALK,RCVALR
 C
+C-----------------------------------------------------------------------
+      INTEGER IBI ,ICOOR ,ICOQ ,IDEC ,IDECM ,IDECMN ,IDEFM 
+      INTEGER IFM ,IFREBA ,IMOD ,INMAXE ,INMAXI ,INO ,INUNOE 
+      INTEGER INUNOI ,IOK1 ,IOK2 ,IOK3 ,IPARA ,IREFBA ,IRET 
+      INTEGER IUNIFI ,IVALK ,IVALR ,NBEQ ,NBNOEX ,NBNOIN ,NBNOTO 
+      INTEGER NBPARA ,NUMNOE ,NUMOD ,NUNOE0 
+      REAL*8 DPMAXE ,DPMAXI ,DPNORM ,DRMAX ,DX1 ,DX2 ,FREMOD 
+      REAL*8 POISS1 ,POISS2 ,RHO1 ,RHO2 ,RTEMP ,TOLE ,YOUNG1 
+      REAL*8 YOUNG2 
+C-----------------------------------------------------------------------
       DATA NOMPAR /'E       ','NU      ','RHO     '/
 C
 C-----------------------------------------------------------------------

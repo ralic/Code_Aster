@@ -1,4 +1,4 @@
-# MODIF  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE BARREAU FISSURE AVEC X-FEM
 # ssnv173i.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -21,15 +21,15 @@
 
 
 DEBUT(CODE=_F(NOM='SSNV173I', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
-      MESURE_TEMPS=_F(MOYENNE='NON'),)
+      MESURE_TEMPS=_F(MOYENNE='NON'))
 
-MAILLAGE=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
+MAILLAGE=LIRE_MAILLAGE(FORMAT='MED',INFO=1);
 
 MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                     MAILLAGE=MAILLAGE,
-                    CREA_GROUP_NO=_F(GROUP_MA='VOL',),);
+                    CREA_GROUP_NO=_F(GROUP_MA='VOL'));
 
-MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAGE,AFFE=_F(GROUP_MA=('VOL',), PHENOMENE='MECANIQUE', MODELISATION='3D',),
+MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAGE,AFFE=_F(GROUP_MA=('VOL'), PHENOMENE='MECANIQUE', MODELISATION='3D'),
                      PARTITION=_F(PARALLELISME='CENTRALISE'))
 
 LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-12.5 ');
@@ -37,31 +37,31 @@ LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='X-10. ');
 
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     TYPE_DISCONTINUITE='INTERFACE',
-                    DEFI_FISS=_F(FONC_LN=LN,),
+                    DEFI_FISS=_F(FONC_LN=LN),
                     INFO=3,
                     );
 
-MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN, FISSURE=FISS, INFO=2,);
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN, FISSURE=FISS, INFO=2);
 
 E=205000.0E6
 nu=0.3
 ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
                             NU=nu,
-                            RHO=7800.0,),);
+                            RHO=7800.0));
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                        MODELE=MODELEK,
-                       AFFE=(_F(GROUP_MA=('VOL',),
+                       AFFE=(_F(GROUP_MA=('VOL'),
                                 MATER=ACIER,
                                 ),
-                             ),);
+                             ));
 
 
 CH=AFFE_CHAR_MECA(MODELE=MODELEK,
                    DDL_IMPO=(_F(NOEUD=('N1','N2','N3','N4'),
                                 DX=0.,DY=0.,DZ=0.),
                              _F(NOEUD=('N5','N6','N7','N8'),
-                                DX=0.,DY=0.,DZ=1.E-6),),);
+                                DX=0.,DY=0.,DZ=1.E-6)));
 
 
 MODI_MODELE(reuse=MODELEK, MODELE=MODELEK, PARTITION=_F(PARALLELISME='CENTRALISE'))
@@ -70,7 +70,7 @@ UTOT=MECA_STATIQUE(MODELE=MODELEK,
                    EXCIT=(_F(CHARGE=CH),
                           
                           ),
-                   SOLVEUR=_F(PCENT_PIVOT=10,
+                   SOLVEUR=_F(   
                             METHODE='MUMPS'),
                    INFO=1,
                    ); 
@@ -89,7 +89,7 @@ MA_XFEM=POST_MAIL_XFEM(
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),
+                              MODELISATION='3D'),
                      PARTITION=_F(PARALLELISME='CENTRALISE'))
 
 RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
@@ -107,32 +107,32 @@ RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
 
 
 DEP=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
-                                GROUP_NO=('NFISSU',),
+                                GROUP_NO=('NFISSU'),
                                 RESULTAT=RES_XFEM,
                                 NOM_CHAM='DEPL',
                                 NUME_ORDRE=1,
                                 TOUT_CMP='OUI',
-                                OPERATION='EXTRACTION',),);
+                                OPERATION='EXTRACTION'));
 
 IMPR_TABLE(TABLE=DEP,
            FORMAT='AGRAF',
            FORMAT_R='1PE12.5',
            FORMAT_C='MODULE_PHASE',
-           IMPR_FONCTION='NON',);
+           IMPR_FONCTION='NON');
 
 
 DEPP = CALC_TABLE(TABLE = DEP,
                   ACTION = (_F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'NOEUD',
                                CRIT_COMP = 'REGEXP',
-                               VALE_K    = 'N[^P]',),),);
+                               VALE_K    = 'N[^P]')));
 
 
 DEPM = CALC_TABLE(TABLE = DEP,
                   ACTION = (_F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'NOEUD',
                                CRIT_COMP = 'REGEXP',
-                               VALE_K    = 'N[^M]',),),);
+                               VALE_K    = 'N[^M]')));
 
 TEST_TABLE(TABLE=DEPP,
            NOM_PARA='DX',
@@ -140,7 +140,7 @@ TEST_TABLE(TABLE=DEPP,
            VALE=0.,
            CRITERE='ABSOLU',
            PRECISION=1.0E-16,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEPP,
            NOM_PARA='DX',
@@ -148,7 +148,7 @@ TEST_TABLE(TABLE=DEPP,
            VALE=0.,
            CRITERE='ABSOLU',
            PRECISION=1.0E-16,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEPP,
            NOM_PARA='DY',
@@ -156,7 +156,7 @@ TEST_TABLE(TABLE=DEPP,
            VALE=0.,
            CRITERE='ABSOLU',
            PRECISION=1.0E-16,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEPP,
            NOM_PARA='DY',
@@ -164,7 +164,7 @@ TEST_TABLE(TABLE=DEPP,
            VALE=0.,
            CRITERE='ABSOLU',
            PRECISION=1.0E-16,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEPP,
            NOM_PARA='DZ',
@@ -172,7 +172,7 @@ TEST_TABLE(TABLE=DEPP,
            VALE=0,
            CRITERE='ABSOLU',
            PRECISION=1.0E-16,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEPP,
            NOM_PARA='DZ',
@@ -180,7 +180,7 @@ TEST_TABLE(TABLE=DEPP,
            VALE=0,
            CRITERE='ABSOLU',
            PRECISION=1.0E-16,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 
 
@@ -190,7 +190,7 @@ TEST_TABLE(TABLE=DEPM,
            VALE=0.,
            CRITERE='ABSOLU',
            PRECISION=1.0E-16,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEPM,
            NOM_PARA='DX',
@@ -198,7 +198,7 @@ TEST_TABLE(TABLE=DEPM,
            VALE=0.,
            CRITERE='ABSOLU',
            PRECISION=1.0E-16,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEPM,
            NOM_PARA='DY',
@@ -206,7 +206,7 @@ TEST_TABLE(TABLE=DEPM,
            VALE=0.,
            CRITERE='ABSOLU',
            PRECISION=1.0E-16,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEPM,
            NOM_PARA='DY',
@@ -214,7 +214,7 @@ TEST_TABLE(TABLE=DEPM,
            VALE=0.,
            CRITERE='ABSOLU',
            PRECISION=1.0E-16,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEPM,
            NOM_PARA='DZ',
@@ -222,7 +222,7 @@ TEST_TABLE(TABLE=DEPM,
            VALE=1.E-6,
            CRITERE='RELATIF',
            PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEPM,
            NOM_PARA='DZ',
@@ -230,6 +230,6 @@ TEST_TABLE(TABLE=DEPM,
            VALE=1.E-6,
            CRITERE='RELATIF',
            PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 FIN();

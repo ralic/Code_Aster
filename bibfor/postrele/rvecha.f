@@ -1,9 +1,9 @@
       SUBROUTINE RVECHA(DIM,EPSI,SSCH19,NBCP,NBCO,NBSP,ROR,REX,
      +                  MA1,FOR,FEX,N,PTADR,VAL)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,6 +76,9 @@ C
 C
 C==================== CORPS DE LA ROUTINE =============================
 C
+C-----------------------------------------------------------------------
+      INTEGER NBCM ,NBCO ,NBSM ,NBSP 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       NTABF = '&&RVECHD.NUM.FACE'
       NTABR = '&&RVECHD.VAL.PAR'

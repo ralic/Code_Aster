@@ -1,13 +1,13 @@
       SUBROUTINE GGUBSC (DSEED,NR,CR)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       REAL*8            DSEED
       COMPLEX*16        CR(*)
       INTEGER                 NR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 01/03/2000   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -35,6 +35,10 @@ C OUT CR     - TABLEAU CONTENANT LES VALEURS TIREES
 C     ------------------------------------------------------------------
 C             D2P31M=(2**31)-1,    D2P31 =(2**31)
       REAL*8  D2P31M,              D2P31
+C-----------------------------------------------------------------------
+      INTEGER I ,IDSEED 
+      REAL*8 DSEED0 
+C-----------------------------------------------------------------------
       DATA    D2P31M/2147483647.D0/, D2P31/2147483648.D0/
 C     ------------------------------------------------------------------
       DO 10 I=1,NR

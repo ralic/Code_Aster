@@ -1,6 +1,6 @@
       SUBROUTINE FGDOWH(NOMMAT,NBCYCL,SIGMIN,SIGMAX,LKE,RKE,
      &                  LHAIGH,RCORR,DOM)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*)     NOMMAT
       REAL*8                          SIGMIN(*),SIGMAX(*)
@@ -9,7 +9,7 @@
       LOGICAL           LHAIGH,                     LKE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,6 +47,9 @@ C
       REAL*8        NRUPT,DELTA
       LOGICAL       ENDUR
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,NBPAR 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       DO 10 I=1,NBCYCL
          DELTA = (ABS(SIGMAX(I)-SIGMIN(I)))/2.D0

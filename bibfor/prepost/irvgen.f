@@ -1,12 +1,12 @@
       SUBROUTINE IRVGEN ( GENEIN, IFI, NBCMPG,CMPG, LHIST )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER         CMPG(*)
       CHARACTER*(*)   GENEIN
       LOGICAL         LHIST
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,6 +35,13 @@ C     ------------------------------------------------------------------
       CHARACTER*24 TYPEBA
       LOGICAL      LBASE
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IAD ,IB ,IBID ,IFI ,IM ,IMODE 
+      INTEGER IR ,ISTRU ,J ,JDEEQ ,JDESC ,JFREQ ,JNUME 
+      INTEGER JORDR ,JPARA ,JREFE ,JVALE ,LTYBA ,NBCMPG ,NBMODE 
+
+      REAL*8 XIMAG ,XREAL 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       BLAN = ' '
       GENE = GENEIN

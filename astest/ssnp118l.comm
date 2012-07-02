@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE FISSURATION INTERFACE 3D PLAN (PENTA15), LOI CZM_FAT_MIX
 # ssnp118l.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -34,7 +34,7 @@ val_inf = 0.0
 val_sup = 1
 ampl=0.094
 
-MA=LIRE_MAILLAGE(FORMAT='MED', )
+MA=LIRE_MAILLAGE(FORMAT='MED')
 
 
 MO=AFFE_MODELE(
@@ -132,7 +132,7 @@ DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =L_INST ),
                                  SUBD_METHODE='MANUEL',
                                  SUBD_PAS     = 4,
                                  SUBD_NIVEAU  = 5,
-                                ),)
+                                ))
 
 
 #----------------------------------------------------------------------------------
@@ -148,8 +148,8 @@ U_FAT=STAT_NON_LINE(
     _F(CHARGE = TRAC_N, FONC_MULT = FCT),
   ),
   COMP_INCR  = (
-          _F(RELATION = 'CZM_FAT_MIX',MAILLE = 'PRISMDEG', ),
-          _F(RELATION = 'ELAS',       MAILLE = 'PRISM',),
+          _F(RELATION = 'CZM_FAT_MIX',MAILLE = 'PRISMDEG'),
+          _F(RELATION = 'ELAS',       MAILLE = 'PRISM'),
           ),
   INCREMENT = _F(
     LIST_INST    = DEFLIST,
@@ -161,7 +161,7 @@ U_FAT=STAT_NON_LINE(
     DEPL_REFE      = dc,
     ITER_GLOB_MAXI = 5,
     ),
-  SOLVEUR = _F(METHODE = 'MUMPS', PCENT_PIVOT = 100),
+  SOLVEUR = _F(METHODE = 'MUMPS'),
   NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
   ARCHIVAGE = _F(LIST_INST = INS_ARCH),
   )

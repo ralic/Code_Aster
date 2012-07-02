@@ -1,8 +1,8 @@
       SUBROUTINE I2EXTF (M,F,CONEC,TYPE,N1,N2)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,6 +50,9 @@ C
 C
       CHARACTER*1 K1BID
 C
+C-----------------------------------------------------------------------
+      INTEGER IATYMA 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       NBN   = 0
       NBF   = 0

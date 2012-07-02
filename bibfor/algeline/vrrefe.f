@@ -1,11 +1,11 @@
       SUBROUTINE VRREFE  ( OBJET1, OBJET2, IER )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*)        OBJET1, OBJET2
       INTEGER                              IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,6 +43,9 @@ C
       CHARACTER*24  REFE1, REFE2
       LOGICAL REFA,CELK,LGENE
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER IREFE1 ,IREFE2 ,IRET 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
       IER    = 0

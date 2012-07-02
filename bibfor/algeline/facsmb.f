@@ -3,7 +3,7 @@
      +     ADRESS,LFRONT,NBLIGN,LGSN,DEBFAC,DEBFSN,CHAINE,
      +     PLACE,NBASS,DELG,LGIND,IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C RESPONSABLE JFBHHUC C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     TOLE CRP_21 CRP_4
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER NBND,NBSN,LGIND,NBND1
       INTEGER SUPND(NBSN+1),INVSUP(NBND),PARENT(NBSN)
@@ -73,6 +73,8 @@ C==================================================================
       INTEGER IFM,NIV,LONG,DECAL,IRET,IFET1,IFET2,IFET3,NBSD,IAUX
       LOGICAL LFETI
 
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       CALL INFNIV(IFM,NIV)
 C FETI OR NOT FETI AVEC IMPRESSION NIVEAU 1?
       CALL JEEXIN('&FETI.MAILLE.NUMSD',IRET)

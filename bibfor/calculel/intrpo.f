@@ -1,9 +1,9 @@
       SUBROUTINE INTRPO(R,S,T,NNO,VH)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,7 +19,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C ......................................................................
 C     CALCUL DES VALEURS DES FONCTONS D'INTERPOLATION
 C     ET DE LEURS DERIVEES AU POINT (R,S,T)
@@ -32,6 +32,11 @@ C
       REAL*8 VH(50),HR(3),HS(3),HT(3)
       INTEGER N27(27)
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,I1 ,IH ,J ,K ,NNO 
+      REAL*8 DE ,HU ,R ,RM ,RP ,S ,SM 
+      REAL*8 SP ,T ,TM ,TP ,UH ,UN 
+C-----------------------------------------------------------------------
       DATA UN,DE,HU/1.D0,2.D0,8.D0/
       DATA N27/1,14,5,12,21,26,4,20,8,9,15,23,13,22,27,11,19,25,2,16,
      &         6,10,17,24,3,18,7/

@@ -1,10 +1,10 @@
       SUBROUTINE ASIMPR(NBSUP,TCOSUP,NOMSUP)
-      IMPLICIT  REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER          NBSUP,TCOSUP(NBSUP,*)
       CHARACTER*8      NOMSUP(NBSUP,*)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,6 +34,14 @@ C     ------------------------------------------------------------------
       REAL*8       R8VIDE
       INTEGER      IARG
 C
+C-----------------------------------------------------------------------
+      INTEGER IA ,IBID ,IC ,ICAS ,ID ,IDEP ,IFM 
+      INTEGER II ,IL ,INO ,IOCC ,IORDR ,IQ ,IS 
+      INTEGER IUNIFI ,JCAS ,JDIR ,JKNO ,JNO ,JNOE ,JNREF 
+      INTEGER JORD ,JREF ,JTYP ,LNOD ,NBNO ,NBOC ,NCAS 
+      INTEGER NDEP ,NUCAS ,NUME 
+      REAL*8 EPSIMA ,VALE 
+C-----------------------------------------------------------------------
       EPSIMA = R8VIDE()
       CALL JEMARQ()
       IFM    = IUNIFI('MESSAGE')

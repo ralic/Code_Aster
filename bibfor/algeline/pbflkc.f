@@ -1,11 +1,11 @@
       SUBROUTINE PBFLKC(UMOY,RHOF,HMOY,RMOY,LONG,CF0,MCF0,ICOQ,IMOD,
      &                  NBM,RKIP,TCOEF,S1,S2,KI,LAMBDA,KCALCU,PASSAG)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -62,6 +62,11 @@ C
 C
 C-----------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER ITAB ,M1 ,M2 
+      REAL*8 A1 ,A2 ,A3 ,A4 ,B1 ,B2 ,B3 
+      REAL*8 B4 ,POIDS ,W 
+C-----------------------------------------------------------------------
       ITAB = 0
       POIDS = -1.D0
       IF (ICOQ.EQ.2) THEN

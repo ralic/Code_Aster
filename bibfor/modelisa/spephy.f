@@ -1,10 +1,10 @@
       SUBROUTINE SPEPHY(IOPTCH,INTPHY,INTMOD,NOMU,TABLE,FREQ,CHAM,
      &                  SPECMR,SPECMI,DISC,NNOE,NOMCMP,NUOR,NBMR,NPV,
      &                  NBN,IMOD1,NBPF,NBM,VITE)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,6 +74,13 @@ C
       REAL*8       DISC(*), FREQ(2,NBM,*), VITE(*)
       CHARACTER*8  NOMU, TABLE, NNOE(NBN), NOMCMP
 C
+C-----------------------------------------------------------------------
+      INTEGER I1 ,I2 ,IDEB ,IDEBM ,IDEBN ,IF1 ,IFON 
+      INTEGER IL ,IM1 ,IM2 ,IMI ,IMJ ,INI ,INJ 
+      INTEGER IRET ,ISJ ,ISM ,IV ,LPROL ,LVALE ,NBPAR 
+
+      REAL*8 SPECI ,SPECR 
+C-----------------------------------------------------------------------
       PARAMETER   ( NBPAR = 7 )
       INTEGER       IBID, IVAL(3)
       REAL*8        R8B, PI, R8PI

@@ -1,11 +1,11 @@
       SUBROUTINE DXINER ( NNOE, XYZG1, RHO, EPAIS, MASS, CDG, INERTI )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER            NNOE
       REAL*8             XYZG1(3,*), RHO, EPAIS, MASS, CDG(*), INERTI(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,6 +33,16 @@ C     ------------------------------------------------------------------
 C
 C --- INITIALISATIONS :
 C     ---------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IDEC ,IDFDX ,IDFDY ,INO ,IPG ,IPOIDS 
+      INTEGER IVF ,J ,JDEC ,JGANO ,JNO ,K ,KDEC 
+      INTEGER LDEC ,NDIM ,NNO ,NNOS ,NPG1 
+      REAL*8 AIRE ,AXG ,AXGGAU ,AXL ,AXLGAU ,AXX ,AXXGAU 
+      REAL*8 AXY ,AXYGAU ,AYG ,AYGGAU ,AYL ,AYLGAU ,AYY 
+      REAL*8 AYYGAU ,AZG ,AZGGAU ,DOUZE ,R8PREM ,ROEP ,S1 
+      REAL*8 SIGAU ,UN ,UNDEMI ,XG ,XGAU ,XL ,YG 
+      REAL*8 YGAU ,YL ,ZG 
+C-----------------------------------------------------------------------
       ZERO  =  0.0D0
       UNDEMI=  0.5D0
       UN    =  1.0D0

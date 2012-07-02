@@ -1,9 +1,9 @@
         SUBROUTINE PUSURE(NBPT,FN,VT1,VT2,IADH,T,PUSEE)
 C***********************************************************************
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -23,10 +23,13 @@ C       CALCUL DE LA PUISSANCE D USURE (LOI D ARCHARD)
 C
 C
 C
-      IMPLICIT REAL *8 (A-H,O-Z)
+      IMPLICIT NONE
          REAL*8 FN(*),VT1(*),VT2(*),T(*),PUSEE
          INTEGER IADH(*)
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,NBPT 
+C-----------------------------------------------------------------------
          PUSEE=0.00D00
 C
          DO 10 I=1,NBPT-1

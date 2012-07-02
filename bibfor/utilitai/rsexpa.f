@@ -1,11 +1,11 @@
       SUBROUTINE RSEXPA(RESU,ICODE,NOMPAR,IRET)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER                 ICODE,       IRET
       CHARACTER*(*)     RESU,      NOMPAR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C RESPONSABLE VABHHTS J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -37,6 +37,9 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       INTEGER      NBAC,NBPA,LPOUT
 C
+C-----------------------------------------------------------------------
+      INTEGER IPA ,IRE1 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       IRET=0
 C

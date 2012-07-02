@@ -1,6 +1,6 @@
       SUBROUTINE DEFINT(MAILLA,NOMRES)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C***********************************************************************
 C    P. RICHARD     DATE 20/02/90
 C-----------------------------------------------------------------------
 C  BUT:  RECUPERATION DE LA DEFINITION UTLISATEUR DES INTERFACES
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C       CREATION DE LA STRUCTURE DE DONNEES CORRESPONDANTE
 C       CREATION DES LISTES GLOBALE DES NOEUDS D'INTERFACE LIBRES ET
 C        BLOQUEES
@@ -35,6 +35,15 @@ C
       INCLUDE 'jeveux.h'
 C
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IBID ,IDEB ,IEC ,IER ,IFIN ,IOC 
+      INTEGER IRET ,J ,K ,LDACT ,LDFREQ ,LLNIN ,LLTYP 
+      INTEGER LTGUI ,LTLGR ,LTLNO ,LTMAS ,MAXGR ,MAXNO ,NBALL 
+      INTEGER NBBID ,NBCMP ,NBCOU ,NBEC ,NBECMX ,NBGR ,NBINT 
+      INTEGER NBNO ,NBPRE ,NBTEMP ,NBUF ,NBVAG ,NBVAL ,NBVAN 
+      INTEGER NUMGD 
+      REAL*8 FREQ 
+C-----------------------------------------------------------------------
       PARAMETER   (NBECMX = 10)
       CHARACTER*8  NOMRES,MAILLA
       CHARACTER*8  NOMCOU,TYPE

@@ -1,13 +1,13 @@
       SUBROUTINE I3IQPS ( EPSI, K, F, DESC, DESCTM, CONEXK, COORDO,
      &                    SGT, NBPT, LSTPT, FINK)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER K,DESC(*),DESCTM(*),CONEXK(*),NBPT,LSTPT(*),F
       REAL*8  EPSI,SGT(*),COORDO(*)
       LOGICAL FINK
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,6 +51,8 @@ C
       LOGICAL     DEDANS,DJALA1,DJALA2
 C======================================================================
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       ZERO   = 0.0D0
       UN     = 1.0D0
       NORMAB = ZERO

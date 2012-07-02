@@ -1,12 +1,12 @@
       SUBROUTINE I3NLOC(T1,T2,N1,N2,T3)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       INTEGER T1(*),T2(*),T3(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,8 +34,8 @@ C            :   :            J=0 => T1(I) NON DANS T2
 C     ------------------------------------------------------------------
       INTEGER I,J,I1
       LOGICAL TROUVE
-C
-C=======================================================================
+      INTEGER N1 ,N2
+C-----------------------------------------------------------------------
 C
       DO 100, I = 1, N1, 1
          I1     =  T1(I)

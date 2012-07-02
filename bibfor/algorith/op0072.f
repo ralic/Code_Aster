@@ -1,7 +1,7 @@
       SUBROUTINE OP0072()
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,7 @@ C  CALCUL PROJECTION VECTEUR SUR BASE DE RITZ
 C
 C-----------------------------------------------------------------------
 C
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C
 C
@@ -43,6 +43,14 @@ C
 C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IADESC ,IADREF ,IADRIF ,IADVEC ,IAMATR ,IAREFE 
+      INTEGER IAVALE ,IBID ,ICOD ,IDBASE ,IDDEEQ ,IDVEC1 ,IDVEC2 
+      INTEGER IDVEC3 ,IDVEC4 ,IDVECT ,IRET ,J ,JREFA ,LLNEQU 
+      INTEGER N0 ,N1 ,N2 ,N3 ,N4 ,NBID ,NBMODE 
+      INTEGER NEQ 
+      REAL*8 BID ,EBID ,PIJ 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFMAJ()
       ZERO = 0.D0

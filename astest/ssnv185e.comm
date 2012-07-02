@@ -1,4 +1,4 @@
-# MODIF  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185e.para = tps_job 70 mem_job 256Mo mem_aster 50 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -27,15 +27,15 @@ DEBUT(CODE=_F(NOM='SSNV185E',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(
 #             MAILLAGE : hexa_3_11_31.mgib
 #----------------------------------------------
 
-MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
+MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1);
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
-                    CREA_GROUP_NO=_F(GROUP_MA='VOL',),);
+                    CREA_GROUP_NO=_F(GROUP_MA='VOL'));
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
-                    CREA_GROUP_NO=_F(GROUP_MA='SURFSUP',),
+                    CREA_GROUP_NO=_F(GROUP_MA='SURFSUP'),
                     );
 
 
@@ -51,8 +51,8 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                                                       'N556','N557','N558','N559','N560','N561','N1074',
 
                                                       'N1286','N1287','N1288','N1289','N1290','N1291','N1292',
-                                                      'N1297','N1298','N1299','N1300','N1301','N1302','N1303',),),
-                                _F(NOM='NCLA',DIFFE=('VOL','NXFEM',),),
+                                                      'N1297','N1298','N1299','N1300','N1301','N1302','N1303')),
+                                _F(NOM='NCLA',DIFFE=('VOL','NXFEM')),
                                 ),
                  );
 
@@ -62,29 +62,29 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
 #----------------------------------------------
 
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
-                     AFFE=(_F(GROUP_MA=('VOL',),
+                     AFFE=(_F(GROUP_MA=('VOL'),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),
-                           _F(GROUP_MA=('SURFINF','SURFSUP',),
+                              MODELISATION='3D'),
+                           _F(GROUP_MA=('SURFINF','SURFSUP'),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),),);
+                              MODELISATION='3D')));
 
 MAILLAG1=MODI_MAILLAGE(reuse =MAILLAG1,
                        MAILLAGE=MAILLAG1,
-                       ORIE_PEAU_3D=_F(GROUP_MA=('SURFSUP','SURFINF',),),
+                       ORIE_PEAU_3D=_F(GROUP_MA=('SURFSUP','SURFINF')),
                        );
 
 LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-15.');
 LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='-Y+5.');
 
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
-                    DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
+                    DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN),
                     ORIE_FOND=_F(PFON_INI= (0. ,5. ,15. ),
                                  VECT_ORIE=(0. ,0. ,1. ),
-                                 POINT_ORIG=(0. ,20. ,15. ),),
+                                 POINT_ORIG=(0. ,20. ,15. )),
                     );
 
-MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS,INFO=1,);
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS,INFO=1);
 
 
 #----------------------------------------------
@@ -94,7 +94,7 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS,INFO=1,);
 E=100.0E6
 nu=0.
 rho=7800.
-ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),);
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho));
 
 CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        MODELE=MODELEK,
@@ -116,21 +116,21 @@ OUAUX1 = FORMULE(NOM_PARA=('X','Y','Z'),VALE='-1.*coef*sqrt(R(X,Y,Z))*cos(T(X,Y,
 UAUX2 = FORMULE(NOM_PARA=('X','Y','Z'),VALE=' coef*sqrt(R(X,Y,Z))*sin(T(X,Y,Z)/2.)*(3.-4.*nu-cos(T(X,Y,Z)))');
 UAUX3 = FORMULE(NOM_PARA=('X','Y','Z'),VALE='0.');
 
-CHF=AFFE_CHAR_MECA_F(MODELE=MODELEK,DDL_IMPO=_F(GROUP_NO=('NCLA','NXFEM'),DX=UAUX3,DY=OUAUX1,DZ=UAUX2,),);
+CHF=AFFE_CHAR_MECA_F(MODELE=MODELEK,DDL_IMPO=_F(GROUP_NO=('NCLA','NXFEM'),DX=UAUX3,DY=OUAUX1,DZ=UAUX2));
 
 
 #----------------------------------------------
 #                   RESOLUTION
 #----------------------------------------------
 
-L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
+L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3));
 
 UTOT1=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMA1,
                    EXCIT=(
                           _F(CHARGE=CHF),
                           ),
-                   SOLVEUR=_F(PCENT_PIVOT=10,
+                   SOLVEUR=_F(   
                             METHODE='MUMPS'),
                    INFO=1,
                    ); 
@@ -151,12 +151,12 @@ for i in range(0,nbc) :
                  OPTION='CALC_K_G',
                  THETA=_F(FISSURE=FISS,
                           R_INF=RI[i],
-                          R_SUP=RS[i],),
+                          R_SUP=RS[i]),
                  LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
-                            LISSAGE_G='LAGRANGE',),
-                 INFO=2,);
+                            LISSAGE_G='LAGRANGE'),
+                 INFO=2);
 
-   IMPR_TABLE(TABLE=SIF[i],);
+   IMPR_TABLE(TABLE=SIF[i]);
 
 # SOLUTION ANALYTIQUE
 K1REF=1.
@@ -168,7 +168,7 @@ for i in range(0,nbc) :
               VALE=K1REF,
               CRITERE='RELATIF',
               PRECISION=0.03,
-              REFERENCE='ANALYTIQUE',);
+              REFERENCE='ANALYTIQUE');
 
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='K1',
@@ -176,7 +176,7 @@ for i in range(0,nbc) :
               VALE=K1REF,
               CRITERE='RELATIF',
               PRECISION=0.03,
-              REFERENCE='ANALYTIQUE',);
+              REFERENCE='ANALYTIQUE');
 
 # -------------------------------------------------------------   
 #            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   
@@ -189,7 +189,7 @@ MA_XFEM=POST_MAIL_XFEM(
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),) 
+                              MODELISATION='3D')) 
 
 RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT1,

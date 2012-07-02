@@ -1,5 +1,5 @@
       SUBROUTINE MECHDA (MODELE,NCHAR,LCHAR,EXITIM,TIME,CHEPSA)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER                   NCHAR
       REAL*8                                            TIME
@@ -8,7 +8,7 @@
       LOGICAL                                    EXITIM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,6 +37,9 @@ C     ------------------------------------------------------------------
       CHARACTER*8   NOMO, NOMA, EPSANE
       LOGICAL      EXITHE
 C
+C-----------------------------------------------------------------------
+      INTEGER IBID ,ICHA ,IE ,IRET ,JTEMP 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       IF (MODELE(1:1).NE.' ') THEN
          NOMO = MODELE

@@ -1,12 +1,12 @@
       SUBROUTINE POEFGR(NOMTE,KLC,MATER,E,XNU,RHO,EFFO)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*) NOMTE
       REAL*8 KLC(12,12),E,XNU,RHO,EFFO(*)
 C TOLE CRP_6
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,6 +34,13 @@ C     ------------------------------------------------------------------
       REAL*8 TRIGOM
 C     ------------------------------------------------------------------
 
+C-----------------------------------------------------------------------
+      INTEGER I ,IRET ,ITYPE ,J ,JDEPL ,KANL ,LDYNA 
+      INTEGER LMATER ,LOPT ,LORIEN ,LRCOU ,LSECT ,LSECT2 ,LX 
+      INTEGER MATER ,NC ,NCC ,NNO ,NNOC 
+      REAL*8 A ,A2 ,ALONG ,ANGARC ,ANGS2 ,DEUX ,F 
+      REAL*8 RAD ,XL ,ZERO 
+C-----------------------------------------------------------------------
       ZERO = 0.D0
       DEUX = 2.D0
       NNO = 2

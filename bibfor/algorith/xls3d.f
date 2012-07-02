@@ -2,7 +2,7 @@
      &                 JCOORG,NBMAF,JDLIMA,NBSEF,JDLISE,JCONX1,JCONX2,
      &                 NOMA)
 
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 
       INCLUDE 'jeveux.h'
       CHARACTER*8 NOMA
@@ -10,7 +10,7 @@
       LOGICAL     CALLST,GRILLE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,6 +45,9 @@ C RESPONSABLE GENIAUT S.GENIAUT
       REAL*8        MPRIM(3),PMPRIM(3),COS,SIN,VECT(3),NOVE,PRONOR,ANGLE
       REAL*8        ANGLEM,R8PREM
 
+C-----------------------------------------------------------------------
+      INTEGER JSENS 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 
       IF (GRILLE) THEN

@@ -1,7 +1,7 @@
       SUBROUTINE FLEXIB(BASMOD,NBMOD,FLEX,NL,NC,NUML,NUMC)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,6 +55,14 @@ C
       CHARACTER*1 K1BID
 C
 C----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IBID ,IDDEEQ ,IORD ,IRAN ,IRET ,J 
+      INTEGER JJ ,K ,KK ,LDKGE ,LDMGE ,LLCHAM ,LLDES 
+      INTEGER LLNOC ,LLNOL ,LLREF ,LLTYP ,LTEXTC ,LTEXTL ,LTORC 
+      INTEGER LTVEC ,NBMOD ,NBNOC ,NBNOL ,NBNOT ,NC ,NEQ 
+      INTEGER NL ,NUMC ,NUML 
+      REAL*8 TOTO ,XKGEN ,XX 
+C-----------------------------------------------------------------------
       DATA PGC /'FLEXIB'/
 C-----------------------------------------------------------------------
 C

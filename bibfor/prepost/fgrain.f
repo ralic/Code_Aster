@@ -1,7 +1,7 @@
         SUBROUTINE FGRAIN (PIC,NPIC,ITRV,NCYC,SIGMIN,SIGMAX)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/03/2012   AUTEUR TRAN V-X.TRAN 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,12 +29,15 @@ C          SIGMIN  CONTRAINTES MINIMALES DES CYCLES
 C      OUT  NCYC    NOMBRE  DE  CYCLE
 C       ----------------------------------------------------------------
 
-        IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
         REAL*8          PIC(*), X, Y,E1,E2,E3,SIGMAX(*),SIGMIN(*)
         REAL*8          R1,R2,RD,RAD
         INTEGER         NPIC,  NCYC,   ITRV(*) ,NPICB
         LOGICAL         LRESI, CYCZER
 C       ----------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IFM ,J ,K ,NIV ,NPICR 
+C-----------------------------------------------------------------------
         LRESI = .FALSE.
         NPICB = NPIC
         CYCZER = .TRUE.

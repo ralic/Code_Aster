@@ -1,4 +1,4 @@
-#@ MODIF prepost Messages  DATE 26/06/2012   AUTEUR TRAN V-X.TRAN 
+#@ MODIF prepost Messages  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,6 +23,15 @@ cata_msg = {
 
 1 : _(u"""
  GROUP_NO :  %(k1)s  inconnu dans le maillage
+"""),
+
+2 : _(u"""
+
+Attention :
+  Vous avez demandé l'impression d'un CHAM_ELEM de VARI_R :
+  on complète le nombre de composantes V1, V2, ... avec des zéros
+  pour que toutes les mailles aient le même nombre de composantes.
+
 """),
 
 4 : _(u"""

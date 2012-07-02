@@ -3,7 +3,7 @@
      &                  NUCMPU,NBNOT,NUMNOE,NBMAT,NUMMAI,LSUP,BORSUP,
      &                  LINF,BORINF,LMAX,LMIN,LCOR,NDIM,COOR,NOLILI,
      &                  FORMR,NCMPV,NUCMP)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
       INTEGER           IFI,NBEL,LIGREL(*),NBGREL,LONGR(*),NCMPMX,NBNOT,
@@ -15,7 +15,7 @@ C
       LOGICAL           LSUP,LINF,     LMAX,LMIN,LCOR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,6 +76,19 @@ C     ------------------------------------------------------------------
       LOGICAL       EXISDG, LIMPR
 C     ------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,I2 ,IACHML ,IAD ,IADR ,IAEC ,ICM
+      INTEGER ICMP ,ICMP2 ,ICOE ,ICOEF ,ICOEF2 ,ICOMAX ,ICOMP2
+      INTEGER ICOU ,ID ,IEL ,IELG ,IF ,IGRE ,IGREL
+      INTEGER IINO ,ILIG ,IMAI ,IMAIL ,IMAX ,IMIN ,IN
+      INTEGER INMAX ,INMIN ,INOM ,INOP ,INOT ,INU ,IPCA
+      INTEGER IPO2 ,IPOIN ,IPOIN1 ,IPOSG ,IPOSV ,IREPE ,IRES
+      INTEGER IVA ,IVAL ,IVMAX ,IVMIN ,J ,JCO ,JMOD
+      INTEGER LGR ,LXLGUT ,MODE ,MODSAU ,NBCPT ,NBNO ,NCMP
+      INTEGER NCMP2 ,NCMPP ,NCOU ,NEC ,NPCALC ,NSCA ,NSCAL
+      INTEGER NUNO,NBEC
+      REAL*8 R8VIDE
+C-----------------------------------------------------------------------
       CALL JEMARQ ( )
       RUNDF = R8VIDE()
       NOMCOR(1) = 'X'

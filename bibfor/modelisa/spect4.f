@@ -1,8 +1,8 @@
       FUNCTION  SPECT4(XX,Y,XLC,VITN,RHOE,DEFM,NBP,IM,JM)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,6 +37,11 @@ C
       INCLUDE 'jeveux.h'
         REAL*8       DEFM(NBP,*),VITN(NBP,*),RHOE(NBP,*),XLC,XX,Y
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IM ,JM ,NBP 
+      REAL*8 DELTA ,PHIX ,PHIY ,ROX ,ROY ,SPECT4 ,UX 
+      REAL*8 UY 
 C-----------------------------------------------------------------------
       IF (XX .LE. RHOE(2,1)) THEN
         I = 2

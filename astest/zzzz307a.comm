@@ -1,4 +1,4 @@
-# MODIF  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE VALIDATION INFORMATIQUE DU PARALLELISME DES CALCULS ELEMENTAIRES ET ASSEMBLAGES
 # zzzz307a.para = tps_job 80 mem_job 128Mo mem_aster 50 ncpus 1 liste_test SI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -19,7 +19,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='ZZZZ307A', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON',),
+DEBUT(CODE=_F(NOM='ZZZZ307A', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
       MESURE_TEMPS=_F(NIVE_DETAIL=2), MEMOIRE=_F(TAILLE_GROUP_ELEM=7),
       DEBUG=_F(SDVERI='OUI'))
 #===========================================================================================
@@ -63,14 +63,14 @@ for partit in ('CENTRALISE','MAIL_DISPERSE','MAIL_CONTIGU','GROUP_ELEM') :
                         DDL_IMPO=( _F(  GROUP_MA = 'CARRE', DRX = 0., DRY = 0., DRZ = 0.),
                                    _F(  GROUP_MA = 'BORD1', DX = 0., DY = 0.),
                                    _F(  GROUP_NO = 'C', DX = 2., DY = 1., DZ=3.)),
-                        LIAISON_UNIF= _F(GROUP_MA='CARRE', DDL='DZ',),
+                        LIAISON_UNIF= _F(GROUP_MA='CARRE', DDL='DZ'),
                         )
 
         for matr_distrib in ('OUI','NON') :
            for elim_lagr2 in ('OUI','NON') :
               RESU1=MECA_STATIQUE(  MODELE=MO,  CHAM_MATER=CHMAT, CARA_ELEM =CARELEM,
                                     SOLVEUR=_F(METHODE='MUMPS',MATR_DISTRIBUEE=matr_distrib,
-                                               PCENT_PIVOT=300,ELIM_LAGR2=elim_lagr2, ),
+   ELIM_LAGR2=elim_lagr2),
                                     EXCIT=(_F(  CHARGE = CL1), _F(  CHARGE = CL2))  )
               #IMPR_RESU(RESU=_F(RESULTAT=RESU1))
 
@@ -79,16 +79,16 @@ for partit in ('CENTRALISE','MAIL_DISPERSE','MAIL_CONTIGU','GROUP_ELEM') :
 
               if typ_CL=="dualise" :
                   TEST_RESU(OBJET=_F(NOM='RESU1   .001.000000.VALE',
-                             S_R=47.492727537032, REFERENCE='NON_REGRESSION',PRECISION = 1.E-10, ),)
+                             S_R=47.492727537032, REFERENCE='NON_REGRESSION',PRECISION = 1.E-10))
               elif typ_CL=="elimine":
                   TEST_RESU(OBJET=_F(NOM='RESU1   .001.000000.VALE',
-                             S_R=43.992727537032, REFERENCE='NON_REGRESSION',PRECISION = 1.E-10, ),)
+                             S_R=43.992727537032, REFERENCE='NON_REGRESSION',PRECISION = 1.E-10))
               elif typ_CL=="transverse":
                   TEST_RESU(OBJET=_F(NOM='RESU1   .001.000000.VALE',
-                             S_R=194.49272753703, REFERENCE='NON_REGRESSION',PRECISION = 1.E-10, ),)
+                             S_R=194.49272753703, REFERENCE='NON_REGRESSION',PRECISION = 1.E-10))
 
-              DETRUIRE(CONCEPT=_F(NOM=(RESU1,)))
-        DETRUIRE(CONCEPT=_F(NOM=(CL1,)))
-    DETRUIRE(CONCEPT=_F(NOM=(MO,MAT,CARELEM,CHMAT,CL2,)))
+              DETRUIRE(CONCEPT=_F(NOM=(RESU1)))
+        DETRUIRE(CONCEPT=_F(NOM=(CL1)))
+    DETRUIRE(CONCEPT=_F(NOM=(MO,MAT,CARELEM,CHMAT,CL2)))
 
 FIN()

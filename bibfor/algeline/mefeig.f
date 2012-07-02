@@ -1,6 +1,6 @@
       SUBROUTINE MEFEIG(NDIM,NBMOD,MATM,MATR,MATA,FRE,KSI,MAVR,ALFR,
      &                  ALFI,MAT1,MAVI,W,Z,IND)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       INTEGER       NBMOD,NDIM(14),IND(2*NBMOD)
       REAL*8        MATM(NBMOD,NBMOD),MATR(NBMOD,NBMOD)
@@ -10,9 +10,9 @@ C
       REAL*8        W(4*NBMOD),Z(4*NBMOD,2*NBMOD)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -73,6 +73,13 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
 C
 C --- LECTURE DES DIMENSIONS
+C-----------------------------------------------------------------------
+      INTEGER ICODE ,IER ,IFM ,IHH ,IUNIFI ,JHH ,N 
+      INTEGER NITQR 
+      REAL*8 A ,ADIV ,ALPHA ,ALPHAI ,ALPHAR ,B ,BDIV 
+      REAL*8 BETA ,BETAI ,BETAR ,C ,DET ,PI ,R8PI 
+      REAL*8 SNOR ,U ,V ,VNORMA ,VNORMB 
+C-----------------------------------------------------------------------
       NBMOD  = NDIM(2)
 C
 C

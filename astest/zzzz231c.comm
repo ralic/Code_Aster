@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE VALIDATION DU CONTACT EN GEOMETRIE INITIALE AVEC ETAT INITIAL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,41 +20,41 @@
 
 DEBUT(CODE=_F(NOM='ZZZZ231C',
               NIV_PUB_WEB='INTERNET',
-VISU_EFICAS='OUI',),DEBUG=_F(SDVERI='OUI'))
+VISU_EFICAS='OUI'),DEBUG=_F(SDVERI='OUI'))
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED');
 
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
-                 ORIE_PEAU_3D=_F(GROUP_MA=('ContVis','ContTrou',),),);
+                 ORIE_PEAU_3D=_F(GROUP_MA=('ContVis','ContTrou')));
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
-              CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+              CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI'));
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=2.0E+11,
-                            NU=0.3,),);
+                            NU=0.3));
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=ACIER,),);
+                            MATER=ACIER));
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),);
+                       MODELISATION='3D'));
 
 ENCAST=AFFE_CHAR_MECA(MODELE=MO,
                       DDL_IMPO=_F(GROUP_MA='Base',
-                                  LIAISON='ENCASTRE',),);
+                                  LIAISON='ENCASTRE'));
 
 ENCAST2=AFFE_CHAR_MECA(MODELE=MO,
                        DDL_IMPO=_F(GROUP_MA='Dimpo',
-                                   LIAISON='ENCASTRE',),);
+                                   LIAISON='ENCASTRE'));
 
 Dimpo=AFFE_CHAR_MECA(MODELE=MO,
                      DDL_IMPO=_F(GROUP_MA='ContVis',
-                                 DZ=-1,),);
+                                 DZ=-1));
 
 CONT = DEFI_CONTACT(MODELE      = MO,
                    FORMULATION  = 'DISCRETE',
@@ -71,40 +71,40 @@ CONT = DEFI_CONTACT(MODELE      = MO,
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,
                           1,1,
                           2,2,
-                          ),PROL_DROITE='LINEAIRE',);
+                          ),PROL_DROITE='LINEAIRE');
 
 TPS=DEFI_LIST_REEL(DEBUT=0,
                    INTERVALLE=(_F(JUSQU_A=2,
-                                  NOMBRE=2,),
+                                  NOMBRE=2),
                                _F(JUSQU_A=4,
-                                  NOMBRE=10,),),);
+                                  NOMBRE=10)));
 
 DEP_INI=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                    OPERATION='AFFE',
                    MAILLAGE=MA,
                    AFFE=_F(GROUP_MA='V_VIS',
                            NOM_CMP='DZ',
-                           VALE=+1.0,),);
+                           VALE=+1.0));
 
 RESU=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMAT,
-                   EXCIT=(_F(CHARGE=ENCAST,),
-                          _F(CHARGE=ENCAST2,),
+                   EXCIT=(_F(CHARGE=ENCAST),
+                          _F(CHARGE=ENCAST2),
                           _F(CHARGE=Dimpo,
-                             FONC_MULT=RAMPE,),
+                             FONC_MULT=RAMPE),
                           ),
                    CONTACT  = CONT,
                    COMP_INCR=_F(RELATION='ELAS',
-                                DEFORMATION='PETIT',),
-                   INCREMENT=_F(LIST_INST=TPS,),
-                   ETAT_INIT=_F(DEPL=DEP_INI,),
+                                DEFORMATION='PETIT'),
+                   INCREMENT=_F(LIST_INST=TPS),
+                   ETAT_INIT=_F(DEPL=DEP_INI),
                    NEWTON=_F(REAC_INCR=1,
                              MATRICE='TANGENTE',
-                             REAC_ITER=1,),
+                             REAC_ITER=1),
                    SOLVEUR=_F(SYME='OUI',
-                              METHODE='MUMPS',PCENT_PIVOT=10,),
+                              METHODE='MUMPS'),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1.0E-6,
-                                  ITER_GLOB_MAXI=10,),);
+                                  ITER_GLOB_MAXI=10));
 
 
 TAB_RESU=POST_RELEVE_T(ACTION=_F(OPERATION='MOYENNE',
@@ -112,32 +112,32 @@ TAB_RESU=POST_RELEVE_T(ACTION=_F(OPERATION='MOYENNE',
                                  RESULTAT=RESU,
                                  NOM_CHAM='DEPL',
                                  GROUP_NO='ContTrou',
-                                 NOM_CMP='DZ',),);
+                                 NOM_CMP='DZ'));
 
-IMPR_TABLE(TABLE=TAB_RESU,);
-
-TEST_TABLE(TABLE=TAB_RESU,
-           FILTRE=(_F(NOM_PARA='QUANTITE',
-                      VALE_K='MINIMUM',),
-                   _F(NOM_PARA='INST',
-                      VALE=3.0,),),
-           NOM_PARA='DZ',
-           VALE=-2.0,
-           REFERENCE='ANALYTIQUE',);
+IMPR_TABLE(TABLE=TAB_RESU);
 
 TEST_TABLE(TABLE=TAB_RESU,
            FILTRE=(_F(NOM_PARA='QUANTITE',
-                      VALE_K='MAXIMUM',),
+                      VALE_K='MINIMUM'),
                    _F(NOM_PARA='INST',
-                      VALE=3.0,),),
+                      VALE=3.0)),
            NOM_PARA='DZ',
            VALE=-2.0,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
+
+TEST_TABLE(TABLE=TAB_RESU,
+           FILTRE=(_F(NOM_PARA='QUANTITE',
+                      VALE_K='MAXIMUM'),
+                   _F(NOM_PARA='INST',
+                      VALE=3.0)),
+           NOM_PARA='DZ',
+           VALE=-2.0,
+           REFERENCE='ANALYTIQUE');
 
 IMPR_RESU(MODELE=MO,
           FORMAT='MED',
           RESU=_F(MAILLAGE=MA,
                   RESULTAT=RESU,
-                  TOUT_CHAM='OUI',),);
+                  TOUT_CHAM='OUI'));
 
 FIN();

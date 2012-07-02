@@ -1,8 +1,8 @@
       SUBROUTINE GEOCOQ(NOMA,NOMGRP,CAELEM,IAXE,GEOM)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,6 +56,16 @@ C
       CHARACTER*8  COQUEI,COQUEX,NOMCMP,K8BID
       CHARACTER*24 GRPNO,GRPMA,COORNO,CARTE,CADESC,CAVALE
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER IAS ,IASCQI ,IASCQX ,IASEDI ,IASMAX ,ICMP ,ICODE 
+      INTEGER ICOOR ,IDESC ,IDIR1 ,IDIR2 ,IDIR3 ,IER ,IGRAND 
+      INTEGER INO ,INOMCP ,INUNOE ,INUNOI ,IRANG ,IRANV ,IRET 
+      INTEGER ITAB ,IVALE ,NBCMP ,NBEC ,NBNOEX ,NBNOIN ,NUCOQI 
+      INTEGER NUCOQX ,NUENTI ,NUNOE ,NUNOEX ,NUNOI ,NUNOIN 
+      REAL*8 DIFZ ,DIFZ1 ,DIFZ2 ,EPEXT ,EPINT ,HMOY ,R8PREM 
+      REAL*8 REXT ,RINT ,RMOY ,TOLE ,X2 ,X3 ,Z0 
+      REAL*8 Z0EXT ,Z0INT ,Z1 ,Z1EXT ,Z1INT ,ZNO 
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 C

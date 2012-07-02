@@ -1,7 +1,7 @@
       SUBROUTINE OP0175()
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,7 +86,7 @@ C     -------------------------------------------
         CALL W175CA(MODELE,CARA,CHFER1,CHEFGE,CHFER2)
 
         IF (NIV.GT.1) CALL IMPRSD('CHAMP',CHFER2,6,'CHFER2=')
-        CALL RSNOCH(RESU19,'FERRAILLAGE',NUORDR,' ')
+        CALL RSNOCH(RESU19,'FERRAILLAGE',NUORDR)
  20   CONTINUE
 
 

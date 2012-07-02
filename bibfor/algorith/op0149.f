@@ -1,8 +1,8 @@
       SUBROUTINE OP0149()
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,6 +33,15 @@ C ----------------------------------------------------------------------
       INTEGER      IARG
 C     ------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IAMO1 ,IAMO2 ,IAMOR ,IBID ,IDEC ,IFM 
+      INTEGER IFSIC ,IFSVI ,IMASSE ,IMIN ,INUMO ,INUO1 ,INUO2 
+      INTEGER INUOR ,IREFFL ,ITYPFL ,J ,JORDR ,JPARA ,K 
+      INTEGER NA1 ,NBAMO1 ,NBAMUN ,NBMFL ,NBMOD2 ,NBMODE ,NBNUO1 
+      INTEGER NBNUO2 ,NBNUOR ,NBVITE ,NIV ,NUMODE ,NUMVIT ,NUOMIN 
+
+      REAL*8 AMORUN ,RBID ,RTAMP 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
 C-----0.VERIFICATIONS AVANT EXECUTION

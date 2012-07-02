@@ -1,4 +1,4 @@
-# MODIF  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
+# MODIF  DATE 02/07/2012   AUTEUR GENIAUT S.GENIAUT 
 # TITRE PROPAGATION PLANE D UNE FISSURE 3D SE DIVISANT ET FUSIONNANT AVEC X-FEM
 # sslv320a.para = tps_job 350 mem_job 2000Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -182,12 +182,13 @@ IMPR_RESU(FORMAT='MED',
           UNITE=80,
           RESU=_F(CHAM_GD=LST[0],),);
 
+CHERR[0] = RAFF_XFEM(FISSURE=FISS[0])
 
 for i in range(nbcalc) :
 
 
-   CHERR[0] = RAFF_XFEM(FISSURE=FISS[i])
-   MoH[0] = Mod[i]
+#   CHERR[0] = RAFF_XFEM(FISSURE=FISS[i])
+#   MoH[0] = Mod[i]
    LSNHT[0] = LSN[i]
    LSTHT[0] = LST[i]
 
@@ -338,7 +339,8 @@ for i in range(nbcalc) :
                         OPERATION='EXTR',
                         FISSURE=FISS[i+1],
                         NOM_CHAM='LTNO',);
- 
+
+      CHERR[0] = RAFF_XFEM(FISSURE=FISS[i+1])
       DETRUIRE(CONCEPT=_F(NOM=MODX[i],))
       DETRUIRE(CONCEPT=_F(NOM=ModH[i],))
 

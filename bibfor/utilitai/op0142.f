@@ -1,8 +1,8 @@
       SUBROUTINE OP0142()
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,6 +37,17 @@ C ----------------------------------------------------------------------
       INTEGER      IARG
 C     ------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IABS ,IACH ,IACNEX ,IAGM ,IAV1 ,IAV2 
+      INTEGER IBID ,IEXI ,IFM ,IJ ,IM ,IMA1 ,IMA2 
+      INTEGER IND ,ING ,INO ,IPLAC1 ,IPLAC2 ,ISEG2 ,ISENS 
+      INTEGER ITP ,ITYM ,ITYPM ,JGCNX ,KSEG ,L ,LABS 
+      INTEGER LNOE ,LPRO ,LVAL ,MI ,N3 ,NBBAV ,NBCHM 
+      INTEGER NBNOMA ,NBPOI1 ,NBRM21 ,NBRMA ,NBRMA1 ,NBRMA2 ,NBRSE1 
+      INTEGER NBRSE2 ,NBRSEG ,NBSEG2 ,NIV ,NNOE ,NUM1 ,NUM2 
+      INTEGER NUMNO 
+      REAL*8 RVALE 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
 C --- RECUPERATION DU NIVEAU D'IMPRESSION

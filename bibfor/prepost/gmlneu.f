@@ -1,6 +1,6 @@
       SUBROUTINE  GMLNEU(IGMSH, NBNODE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C.======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C      GMLNEU --   LECTURE DES NUMEROS DE NOEUDS ET DE LEURS
 C                  COORDONNEES SUR LE FICHIER DE SORTIE DE GMSH
@@ -34,6 +34,11 @@ C -----  VARIABLES LOCALES
 C
 C
 C.========================= DEBUT DU CODE EXECUTABLE ==================
+C-----------------------------------------------------------------------
+      INTEGER IMES ,INODE ,IUNIFI ,JCOOR ,JDETR ,JINFO ,NDMAX 
+      INTEGER NODE 
+      REAL*8 X ,Y ,Z 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
 C --- INITIALISATION :

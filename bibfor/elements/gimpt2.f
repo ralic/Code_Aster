@@ -1,7 +1,7 @@
       SUBROUTINE GIMPT2 (RESU,NBRE,TRAV1,TRAV2,TRAV3,CHFOND,STOK4,
      &                   LOBJ2,IMPR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C -----------------------------------------------------------------
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C FONCTION REALISEE:
 C
@@ -52,6 +52,9 @@ C
       CHARACTER*24 CHAMNO,TRAV1,TRAV2,TRAV3,STOK4,CHFOND
 C -----------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IUNIFI ,J ,JRESU 
+C-----------------------------------------------------------------------
       IF ( IMPR .GE. 1 ) THEN
          CALL JEMARQ()
          UNIT = IUNIFI('RESULTAT')

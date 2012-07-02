@@ -1,6 +1,6 @@
       SUBROUTINE VP2TRU(METHOD,TY,ALPHA,BETA,SIGNES,A,NBVECT,W,Z,WK,
      &                  MXITER,IER,NITQR)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       CHARACTER*1       TY
       CHARACTER*8       METHOD
       INTEGER           NBVECT,MXITER,IER,NITQR
@@ -10,9 +10,9 @@
       REAL*8 VALR(2)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/08/2009   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,6 +47,10 @@ C OUT NITQR : NOMBRE D'ITERATIONS QR POUT ATTEIENDRE LA CONVERGENCE
 C
 C     ------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IVAL1 ,J 
+      REAL*8 WW 
+C-----------------------------------------------------------------------
       IF (METHOD.EQ.'TRI_DIAG') THEN
         CALL MATINI(NBVECT,NBVECT,0.D0,A)
         A(1,1) = SIGNES(1) * ALPHA(1)

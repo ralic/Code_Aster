@@ -1,4 +1,4 @@
-# MODIF  DATE 30/01/2012   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE CALCUL DU CRITERE ENERGETIQUE GP EN 3D
 # ssnp131b.para = tps_job 500 mem_job 700Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -21,7 +21,7 @@
 
 DEBUT(CODE=_F(NOM='SSNP131B',
               NIV_PUB_WEB='INTERNET',
-              VISU_EFICAS='NON',));
+              VISU_EFICAS='NON'));
 
 # IDENTIFICATION DU GP CRITIQUE A RUPTURE (D'APRES TENACITES KJ CRIT. EXP.)
 # A TEMPERATURE CONSTANTE (35 DEGRES) SUR UNE EPROUVETTE CT
@@ -41,7 +41,7 @@ DEBUT(CODE=_F(NOM='SSNP131B',
 #      - DEPLACEMENT IMPOSE MONOTONE CROISSANT AU CENTRE DE LA GOUPILLE
 #        (DONNEE EN NEWTON CAR N/MM2 = MPA)
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED');
 TPCAL = 100;
 
 
@@ -50,9 +50,9 @@ TPCAL = 100;
 #----------------------------------------------------------------------
 
 MOD=AFFE_MODELE(MAILLAGE=MA,
-                AFFE=_F(GROUP_MA=('VEPRO','VGOUP','FACBE',),
+                AFFE=_F(GROUP_MA=('VEPRO','VGOUP','FACBE'),
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='3D',),);
+                        MODELISATION='3D'));
 
 
 #----------------------------------------------------------------------
@@ -74,11 +74,11 @@ CT_100=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(0.003439678,740.6632663,
                            0.046616375,1000.143035,
                            0.052903597,1010.004051,
                            0.058235889,1017.5664,
-                           ),PROL_DROITE='CONSTANT',PROL_GAUCHE='LINEAIRE',);
+                           ),PROL_DROITE='CONSTANT',PROL_GAUCHE='LINEAIRE');
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=214100,
-                               NU=0.3,),
-                    TRACTION=_F(SIGM=CT_100,),);
+                               NU=0.3),
+                    TRACTION=_F(SIGM=CT_100));
 
 #----------------------------------------------------------------------
 #---------------- DONNEES MECANIQUES GOUPILLE  -------------------
@@ -87,9 +87,9 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=214100,
 
 MATGOUP=DEFI_MATERIAU(ELAS=_F(E=2.E6,
                               NU=0.3,
-                              ALPHA=0.,),
+                              ALPHA=0.),
                       ECRO_LINE=_F(D_SIGM_EPSI=200000.,
-                                   SY=200000.,),);
+                                   SY=200000.));
 
 
 #----------------------------------------------------------------------
@@ -98,11 +98,11 @@ MATGOUP=DEFI_MATERIAU(ELAS=_F(E=2.E6,
 
 RAMPD=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                           100.,0.25,
-                          ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+                          ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE');
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=8.0,
-                                    NOMBRE=1,),);
+                                    NOMBRE=1));
 
 #----------------------------------------------------------------------
 # AFFECTATION DES PROPRIETES MECANIQUES
@@ -110,9 +110,9 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=(_F(GROUP_MA='VEPRO',
-                             MATER=ACIER,),
+                             MATER=ACIER),
                           _F(GROUP_MA='VGOUP',
-                             MATER=MATGOUP,),),);
+                             MATER=MATGOUP)));
 
 #----------------------------------------------------------------------
 # CHARGEMENT ET CONDITIONS LIMITES
@@ -120,20 +120,20 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
 
 COND_LIM=AFFE_CHAR_MECA(MODELE=MOD,
                         LIAISON_UNIF=_F(GROUP_MA='STOT_OPP',
-                                        DDL='DZ',),);
+                                        DDL='DZ'));
 
 COND_LI2=AFFE_CHAR_CINE(MODELE=MOD,
                         MECA_IMPO=(_F(GROUP_MA='FACBE',
-                                     DY=0.0,),
+                                     DY=0.0),
                                   _F(GROUP_MA='LGOUP',
                                      DX=0.0,
-                                     DZ=0.0,),
+                                     DZ=0.0),
                                   _F(GROUP_MA='STOT',
-                                     DZ=0.0,),),);
+                                     DZ=0.0)));
 
 CHAD=AFFE_CHAR_CINE_F(MODELE=MOD,
                       MECA_IMPO=_F(GROUP_MA='LGOUP',
-                                  DY=RAMPD,),);
+                                  DY=RAMPD));
 
 #----------------------------------------------------------------------
 #---------------  RESOLUTION   ------------------
@@ -141,22 +141,22 @@ CHAD=AFFE_CHAR_CINE_F(MODELE=MOD,
 
 RESU=STAT_NON_LINE(MODELE=MOD,
                    CHAM_MATER=CHMAT,
-                   EXCIT=(_F(CHARGE=COND_LIM,),
-                          _F(CHARGE=COND_LI2,),
-                          _F(CHARGE=CHAD,),),
+                   EXCIT=(_F(CHARGE=COND_LIM),
+                          _F(CHARGE=COND_LI2),
+                          _F(CHARGE=CHAD)),
                    COMP_INCR=(_F(RELATION='VMIS_ISOT_TRAC',
                                  DEFORMATION='PETIT',
-                                 GROUP_MA='VEPRO',),
+                                 GROUP_MA='VEPRO'),
                               _F(RELATION='VMIS_ISOT_LINE',
                                  DEFORMATION='PETIT',
-                                 GROUP_MA='VGOUP',),),
-                   INCREMENT=_F(LIST_INST=L_INST,),
-                   NEWTON=_F(REAC_ITER=1,),
-                   RECH_LINEAIRE=_F(ITER_LINE_MAXI=3,),
+                                 GROUP_MA='VGOUP')),
+                   INCREMENT=_F(LIST_INST=L_INST),
+                   NEWTON=_F(REAC_ITER=1),
+                   RECH_LINEAIRE=_F(ITER_LINE_MAXI=3),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1.E-8,
-                                  ITER_GLOB_MAXI=50,),
+                                  ITER_GLOB_MAXI=50),
                    SOLVEUR=_F(METHODE='MUMPS',
-                              PCENT_PIVOT=30),);
+                              ));
                               
 nbcop = 2;
 
@@ -198,72 +198,72 @@ tcal = 100.;
 
 FONFISS=DEFI_FOND_FISS(MAILLAGE=MA,
                        CONFIG_INIT='DECOLLEE',
-                       NORMALE=(0.,-1.,0.,),
+                       NORMALE=(0.,-1.,0.),
                        SYME='OUI',
                        FOND_FISS=_F(GROUP_MA='FONDFISS',
-                                    GROUP_NO_ORIG='PFON_0',),
+                                    GROUP_NO_ORIG='PFON_0'),
                        );
 
-L_INSTGP=DEFI_LIST_REEL(VALE=(8.0,),);
+L_INSTGP=DEFI_LIST_REEL(VALE=(8.0));
 
 tab=POST_GP(RESULTAT=RESU,
             MODELE=MOD,
             MATER=ACIER,
             COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',
-                         DEFORMATION='PETIT',),
-            EXCIT=(_F(CHARGE=COND_LIM,),
-                   _F(CHARGE=COND_LI2,),
-                   _F(CHARGE=CHAD,),),
+                         DEFORMATION='PETIT'),
+            EXCIT=(_F(CHARGE=COND_LIM),
+                   _F(CHARGE=COND_LI2),
+                   _F(CHARGE=CHAD)),
             LIST_INST=L_INSTGP,
             THETA_3D=(_F(GROUP_MA='FONDFISS',
                          R_INF=1,
-                         R_SUP=2,),
+                         R_SUP=2),
                       _F(GROUP_MA='FONDFISS',
                          R_INF=2,
-                         R_SUP=5,),
+                         R_SUP=5),
                       _F(GROUP_MA='FONDFISS',
                          R_INF=5,
-                         R_SUP=10,),
+                         R_SUP=10),
                       _F(GROUP_MA='FONDFISS',
                          R_INF=10,
-                         R_SUP=20,),
+                         R_SUP=20),
                          ),
             FOND_FISS=FONFISS,
             TRANCHE = (
-                       _F(GROUP_MA=l_copeaux1,),
-                       _F(GROUP_MA=l_copeaux2,),
+                       _F(GROUP_MA=l_copeaux1),
+                       _F(GROUP_MA=l_copeaux2),
                        ),
             PREDICTION=_F(GP_CRIT  =(0.678875,1.),
-                              TEMP = (tcal,150),),
+                              TEMP = (tcal,150)),
             TABL_GPMAX=CO('tabgpmax'),
             TABL_GP   =CO('tabgp'),
             LISSAGE=_F( LISSAGE_THETA='LEGENDRE',
-                           DEGRE=1,),
-            INFO=2,);
+                           DEGRE=1),
+            INFO=2);
            
 TEST_TABLE(TABLE=tabgpmax,
            FILTRE=(_F(NOM_PARA='NUME_TRANCHE',
-                      VALE_I=1,),
+                      VALE_I=1),
                    _F(NOM_PARA='INST',
                       VALE=8.0,
-                      PRECISION=1e-6,),
+                      PRECISION=1e-6),
                    ),
            NOM_PARA='PREDICTION',
            VALE_I=0,
            PRECISION=1.E-10,
-           REFERENCE='AUTRE_ASTER',);
+           REFERENCE='AUTRE_ASTER');
 
 TEST_TABLE(TABLE=tabgpmax,
            FILTRE=(_F(NOM_PARA='NUME_TRANCHE',
-                     VALE_I=1,),
+                     VALE_I=1),
                    _F(NOM_PARA='INST',
                      VALE=8.,
-           PRECISION=1e-6,),  ),
+           PRECISION=1e-6)),
            NOM_PARA='GPMAX',
            VALE=0.235657,
            CRITERE='RELATIF',
            PRECISION=0.0001,
-           REFERENCE='AUTRE_ASTER',);
+           REFERENCE='AUTRE_ASTER');
 
 
                               

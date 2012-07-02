@@ -1,7 +1,7 @@
       SUBROUTINE SIGIMC (FAMI,NNO,NDIM,NBSIG,NPG,NI,XYZ,INSTAN,
      +                   MATER,REPERE,EPSINI,SIGMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C.======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C      SIGIMC   -- CALCUL DES  CONTRAINTES INITIALES
 C                  AUX POINTS D'INTEGRATION
@@ -55,6 +55,11 @@ C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
 C --- INITIALISATIONS :
 C     -----------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IDIM ,IGAU ,J ,MATER ,NBSIG ,NDIM 
+      INTEGER NNO ,NPG 
+      REAL*8 ZERO 
+C-----------------------------------------------------------------------
       K2BID = '  '
       ZERO   = 0.0D0
 C

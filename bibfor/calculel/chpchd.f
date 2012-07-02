@@ -4,7 +4,7 @@
       CHARACTER*(*) CHIN,CHOU,BASE,CELMOD,TYPE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,6 +27,9 @@ C  BUT : CHANGER LE SUPPORT GEOMETRIQUE D'UN CHAMP
 C -----------------------------------------------------------------
 
 C CHIN IN/JXIN  K19 : NOM DU CHAMP A CHANGER
+C                     TYPE AUTORISE POUR CHIN :
+C        NOEU, CART, ELGA, ELNO, CESE
+C
 C CHOU IN/JXOUT K19 : NOM DU CHAMP RESULTAT
 C BASE IN       K1  : BASE DE CREATION DE CHOU : /'G' / 'V'
 C TYPE IN       K19 : TYPE DE SUPPORT GEOMETRIQUE VOULU POUR CHOU
@@ -39,6 +42,25 @@ C         PAR DES VALEURS NULLES LA OU IL N'EST PAS DEFINI.
 C        /'NON' : ERREUR <F> SI IL EXISTE DES
 C         DES VALEURS DE CHOU QUI NE SONT PAS AFFECTEES DANS CHIN
 C   CELMOD IN/JXIN  K19 : NOM D'UN CHAM_ELEM "MODELE" SI TYPE='EL..'
+
+C  LES CAS TRAITES AUJOURD'HUI SONT :
+
+C         /'NOEU->ELNO'   : CHAM_NO -> CHAM_ELEM/ELNO
+C         /'NOEU->ELGA'   : CHAM_NO -> CHAM_ELEM/ELGA
+
+C         /'CART->ELEM'   : CARTE   -> CHAM_ELEM/ELEM
+C         /'CART->ELGA'   : CARTE   -> CHAM_ELEM/ELGA
+C         /'CART->ELNO'   : CARTE   -> CHAM_ELEM/ELNO
+C         /'CART->NOEU'   : CARTE   -> CHAM_NO
+
+C         /'ELGA->NOEU'   : CHAM_ELEM/ELGA    -> CHAM_NO
+C         /'ELGA->ELNO'   : CHAM_ELEM/ELGA    -> CHAM_ELEM/ELNO
+C         /'ELNO->NOEU'   : CHAM_ELEM/ELNO    -> CHAM_NO
+C         /'ELNO->ELGA'   : CHAM_ELEM/ELNO    -> CHAM_ELEM/ELGA
+
+C         /'CESE->ELNO'   : CHAM_ELEM_S/ELEM  -> CHAM_ELEM/ELNO
+C         /'CESE->ELGA'   : CHAM_ELEM_S/ELEM  -> CHAM_ELEM/ELGA
+C         /'CESE->ELEM'   : CHAM_ELEM_S/ELEM  -> CHAM_ELEM/ELEM
 C -----------------------------------------------------------------
 
       INTEGER IB,IRET,NNCP,IBID
@@ -55,13 +77,16 @@ C     ------------------------------------------------------------------
 
 C 1- CALCUL DE:
 C      MA    : MAILLAGE ASSOCIE A CHIN
-C      TYCHI : TYPE DU CHAMP CHIN (CART/NOEU/ELNO/ELGA/ELEM)
+C      TYCHI : TYPE DU CHAMP CHIN (CART/NOEU/ELNO/ELGA/CESE)
 C      NOMGD : NOM DE LA GRANDEUR ASSOCIEE A CHIN
 C ------------------------------------------------------------------
 
       CALL DISMOI('F','NOM_MAILLA',CHIN,'CHAMP',IB,MA,IB)
       CALL DISMOI('F','TYPE_CHAMP',CHIN,'CHAMP',IB,TYCHI,IB)
       CALL DISMOI('F','NOM_GD',CHIN,'CHAMP',IB,NOMGD,IB)
+      CALL ASSERT(TYCHI.EQ.'NOEU'.OR.TYCHI.EQ.'CART'.OR.
+     &            TYCHI.EQ.'ELNO'.OR.TYCHI.EQ.'ELGA'.OR.
+     &            TYCHI.EQ.'CESE')
 
 
 C 2.  -- SI TYPE = 'EL..' : ON CREE UN CHAM_ELEM_S "MODELE" : CESMOD
@@ -87,19 +112,27 @@ C ---------------------------------------------------------------
 
 C 3.  -- CALCUL DE CAS :
 C ---------------------------------------
-C         /'NOEU->ELNO'   : CHAM_NO -> ELNO
-C         /'NOEU->ELGA'   : CHAM_NO -> ELGA
-C         /'CART->ELEM'   : CARTE   -> ELEM
-C         /'CART->ELGA'   : CARTE   -> ELGA
-C         /'CART->ELNO'   : CARTE   -> ELNO
+C     SONT TRAITES AUJOURD'HUI :
+
+C         /'NOEU->ELNO'   : CHAM_NO -> CHAM_ELEM/ELNO
+C         /'NOEU->ELGA'   : CHAM_NO -> CHAM_ELEM/ELGA
+
+C         /'CART->ELEM'   : CARTE   -> CHAM_ELEM/ELEM
+C         /'CART->ELGA'   : CARTE   -> CHAM_ELEM/ELGA
+C         /'CART->ELNO'   : CARTE   -> CHAM_ELEM/ELNO
 C         /'CART->NOEU'   : CARTE   -> CHAM_NO
-C         /'ELGA->NOEU'   : ELGA    -> CHAM_NO
-C         /'ELGA->ELNO'   : ELGA    -> ELNO
-C         /'ELNO->NOEU'   : ELNO    -> CHAM_NO
-C         /'ELNO->ELGA'   : ELNO    -> ELGA
+
+C         /'ELGA->NOEU'   : CHAM_ELEM/ELGA    -> CHAM_NO
+C         /'ELGA->ELNO'   : CHAM_ELEM/ELGA    -> CHAM_ELEM/ELNO
+C         /'ELNO->NOEU'   : CHAM_ELEM/ELNO    -> CHAM_NO
+C         /'ELNO->ELGA'   : CHAM_ELEM/ELNO    -> CHAM_ELEM/ELGA
+
+C         /'CESE->ELNO'   : CHAM_ELEM_S/ELEM  -> CHAM_ELEM/ELNO
+C         /'CESE->ELGA'   : CHAM_ELEM_S/ELEM  -> CHAM_ELEM/ELGA
+C         /'CESE->ELEM'   : CHAM_ELEM_S/ELEM  -> CHAM_ELEM/ELEM
 
       CAS = ' '
-      CAS(1:4) = TYCHI(1:4)
+      CAS(1:4) = TYCHI
       CAS(5:6) = '->'
       CAS(7:10) = TYPE
 
@@ -184,10 +217,29 @@ C     ----------------------------------------------------------------
       ELSEIF (CAS(1:8).EQ.'CART->EL') THEN
 C     ----------------------------------------------------------------
         CALL ASSERT(LIGREL.NE.' ')
-
         CES1 = '&&CHPCHD.CES1'
         CALL CARCES(CHIN,CAS(7:10),CESMOD,'V',CES1,'A',IB)
 
+        CALL CESCEL(CES1,LIGREL,OPTION,PARAM,PROL0,NNCP,BASE,CHOU,'F',
+     &              IBID)
+        CALL DETRSD('CHAM_ELEM_S',CES1)
+
+        IF (NNCP.NE.0) THEN
+          CALL GETRES(KBID,KBID,NOMCMD)
+          IF (NOMCMD.EQ.'CREA_CHAMP') THEN
+            VALK(1) = CHOU(1:8)
+            VALK(2) = OPTION
+            VALK(3) = PARAM
+            CALL U2MESK('A','CALCULEL6_77',3,VALK)
+          ENDIF
+        ENDIF
+
+
+      ELSEIF (CAS(1:8).EQ.'CESE->EL') THEN
+C     ----------------------------------------------------------------
+        CALL ASSERT(LIGREL.NE.' ')
+        CES1 = '&&CHPCHD.CES1'
+        CALL CESCES(CHIN,CAS(7:10),CESMOD,' ',' ','V',CES1)
         CALL CESCEL(CES1,LIGREL,OPTION,PARAM,PROL0,NNCP,BASE,CHOU,'F',
      &              IBID)
         CALL DETRSD('CHAM_ELEM_S',CES1)

@@ -1,4 +1,4 @@
-# MODIF  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE STAT_NON_LINE EN COMMANDES ECLATEES POUR UN CALCUL ELASTO-PLASTIQUE
 # pynl02a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -172,25 +172,9 @@ for i_inst in range(1,len(l_inst)) :
                               VALE=(0.,0.,0.,0.,0.,0.,),
                               ),);
 
-      # attention : il faut dimensionner la carte au bon nombre de variables internes
-      VARIT=CREA_CHAMP(OPERATION='AFFE',
-                       TYPE_CHAM='CART_NEUT_R',
-                       MODELE=MO,
-                       AFFE=_F(TOUT='OUI',
-                               NOM_CMP= ('X1','X2','X3','X4','X5','X6','X7','X8',),
-                               VALE = (0.,0.,0.,0.,0.,0.,0.,0.))
+      VARI=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='ELGA_VARI_R', MODELE=MO,  PROL_ZERO='OUI',
+                       AFFE=_F(TOUT='OUI', NOM_CMP= 'V8', VALE = 0.)
                        )
-
-      VARI=CREA_CHAMP(OPERATION='ASSE',
-                       TYPE_CHAM='ELGA_VARI_R',
-                       MODELE=MO,
-                       ASSE=_F(TOUT='OUI',
-                               NOM_CMP= ('X1','X2','X3','X4','X5','X6','X7','X8',),
-                               CHAM_GD=VARIT,
-                               NOM_CMP_RESU=('V1','V2','V3','V4','V5','V6','V7','V8',),
-                               ))
-
-      DETRUIRE(CONCEPT=_F(NOM=(VARIT),),INFO=1)
 
    else :
 
@@ -610,3 +594,4 @@ IMPR_RESU(FORMAT='GMSH',UNITE=37,
 
 
 FIN();
+

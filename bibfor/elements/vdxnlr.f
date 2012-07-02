@@ -1,6 +1,6 @@
       SUBROUTINE VDXNLR ( OPTION, NOMTE, XI, RIG, NB1, CODRET )
-      IMPLICIT REAL*8 (A-H,O-Z)
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+      IMPLICIT NONE
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,6 +44,16 @@ C ======================================================================
       REAL*8 SIGN(4),SIGMA(4),DSIDEP(6,6),ANGMAS(3),RBID
       REAL*8 LC
       LOGICAL VECTEU,MATRIC
+C-----------------------------------------------------------------------
+      INTEGER I ,IB ,ICARCR ,ICOMPO ,ICONTM ,ICONTP ,ICOU 
+      INTEGER IDEPLM ,IDEPLP ,IINSTM ,IINSTP ,IMATE ,INTE ,INTSN 
+      INTEGER INTSR ,IRET ,IVARIM ,IVARIP ,IVARIX ,IVECTU ,J 
+      INTEGER JCARA ,JCRF ,K1 ,K2 ,KPGS ,KWGT ,LGPG 
+      INTEGER LZI ,LZR ,NBCOU ,NBV ,NBVARI ,NDDLET ,NDIMV 
+
+      REAL*8 CISAIL ,COEF ,CRF ,GXZ ,GYZ ,HIC ,RAC2 
+      REAL*8 X ,ZIC ,ZMIN 
+C-----------------------------------------------------------------------
       PARAMETER (NPGE=3)
       REAL*8     KSI3S2
 C ----------------------------------------------------------------------

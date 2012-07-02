@@ -1,4 +1,4 @@
-# MODIF  DATE 30/01/2012   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE LBB CONDITION ET CONTACT FROTTANT AVEC X-FEM
 # ssnv186g.para = tps_job 80 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -21,34 +21,34 @@
 
 DEBUT(CODE=_F(NOM='SSNV186G',  NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
+MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1);
 
 MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,
-                        LINE_QUAD=_F(GROUP_MA='SURF',),);
+                        LINE_QUAD=_F(GROUP_MA='SURF'));
 
 MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                     MAILLAGE=MAILLAG2,
                     CREA_GROUP_NO=_F(NOM='SURFQUAD',
-                                     GROUP_MA='SURF',),);
+                                     GROUP_MA='SURF'));
 
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
-                     AFFE=(_F(GROUP_MA=('SURF',),
+                     AFFE=(_F(GROUP_MA=('SURF'),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='C_PLAN_XFEM_CONT',),
-                           _F(GROUP_MA=('LIG1','LIG3',),
+                              MODELISATION='C_PLAN_XFEM_CONT'),
+                           _F(GROUP_MA=('LIG1','LIG3'),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='C_PLAN',),),);
+                              MODELISATION='C_PLAN')));
 
 LN=FORMULE(NOM_PARA=('X','Y'),VALE='Y-17.5');
 
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     TYPE_DISCONTINUITE='INTERFACE',
-                    DEFI_FISS=_F(FONC_LN=LN),);
+                    DEFI_FISS=_F(FONC_LN=LN));
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
                          CONTACT='P1P1A',
-                         INFO=1,);
+                         INFO=1);
 
 
 CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
@@ -76,13 +76,13 @@ E=1.0E11
 nu=0.
 ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
                             NU=nu,
-                            RHO=7800.0,),);
+                            RHO=7800.0));
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        MODELE=MODELEK,
-                       AFFE=_F(GROUP_MA=('SURF','LIG1','LIG3',),
+                       AFFE=_F(GROUP_MA=('SURF','LIG1','LIG3'),
                                 MATER=ACIER,
-                                ),);
+                                ));
 
 PRES=100.
 FCTPRES=FORMULE(NOM_PARA=('X','Y'),VALE='(PRES-(X-10.)*(X-10.)/2.)*E/(1e6)');
@@ -90,41 +90,41 @@ FCTPRES=FORMULE(NOM_PARA=('X','Y'),VALE='(PRES-(X-10.)*(X-10.)/2.)*E/(1e6)');
 CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                    DDL_IMPO=(_F(GROUP_MA='LIG1',
                                           DX=0.0,
-                                          DY=0.0,),
+                                          DY=0.0),
                              _F(GROUP_MA='LIG3',
-                                          DX=0.0,),),
-                    INFO=1,);
+                                          DX=0.0)),
+                    INFO=1);
 
 CHF=AFFE_CHAR_MECA_F(MODELE=MODELEK,
                      PRES_REP=_F(GROUP_MA='LIG3',
-                                 PRES=FCTPRES,),);
+                                 PRES=FCTPRES));
 
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       LIAISON_XFEM='OUI',
-                      CONTACT_XFEM=CTXFEM,);
+                      CONTACT_XFEM=CTXFEM);
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=1,),);
+                                    NOMBRE=1));
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
-                   EXCIT=( _F(CHARGE=CHXFEM,),                  
-                           _F(CHARGE=CH1,),
-                           _F(CHARGE=CHF,),),
+                   EXCIT=( _F(CHARGE=CHXFEM),                  
+                           _F(CHARGE=CH1),
+                           _F(CHARGE=CHF)),
                    CONTACT  = CTXFEM,        
                    COMP_ELAS=_F(RELATION='ELAS',
-                                GROUP_MA='SURF',),
-                   INCREMENT=_F(LIST_INST=L_INST,),
-                   SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,
+                                GROUP_MA='SURF'),
+                   INCREMENT=_F(LIST_INST=L_INST),
+                   SOLVEUR=_F(METHODE='MUMPS',
                               ),
-                   NEWTON=_F(REAC_ITER=1,),
-                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                   INFO=1,);
+                   NEWTON=_F(REAC_ITER=1),
+                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA'),
+                   INFO=1);
 
 
 IMPR_RESU(MODELE=MODELEK,FORMAT='ASTER',UNITE=20,
-            RESU=(_F( MAILLAGE=MAILLAG2,),),);
+            RESU=(_F( MAILLAGE=MAILLAG2)));
 
 LAG=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                               NOEUD=('NS1061','NS1059','NS1058','NS1062','NS1063',
@@ -141,8 +141,8 @@ LAG=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                              RESULTAT=UTOT1,
                              NOM_CHAM='DEPL',
                              NUME_ORDRE=1,
-                             NOM_CMP=('LAGS_C','LAGS_F1',),
-                             OPERATION='EXTRACTION',),);
+                             NOM_CMP=('LAGS_C','LAGS_F1'),
+                             OPERATION='EXTRACTION'));
 
 IMPR_TABLE(TABLE=LAG);
 
@@ -156,15 +156,15 @@ TEST_TABLE(TABLE=LAG,
            NOM_PARA='LAGS_C',
            FILTRE=(_F(NOM_PARA='COOR_X',
                       CRIT_COMP='EQ',
-                      VALE=10.,),
+                      VALE=10.),
                    _F(NOM_PARA='COOR_Y',
                       CRIT_COMP='EQ',
-                      VALE=17.5,),
+                      VALE=17.5),
                   ),
            VALE=LAREF,
            CRITERE='RELATIF',
            PRECISION=0.007,
-           REFERENCE='AUTRE_ASTER',);
+           REFERENCE='AUTRE_ASTER');
 
 # LA2REF EST LA SOLUTION ANALYTIQUE (PAS DE FROTTEMENT AU POINT MILIEU)
 LA1REF=0.
@@ -173,15 +173,15 @@ TEST_TABLE(TABLE=LAG,
            NOM_PARA='LAGS_F1',
            FILTRE=(_F(NOM_PARA='COOR_X',
                       CRIT_COMP='EQ',
-                      VALE=10.,),
+                      VALE=10.),
                    _F(NOM_PARA='COOR_Y',
                       CRIT_COMP='EQ',
-                      VALE=17.5,),
+                      VALE=17.5),
                   ),
            VALE=LA1REF,
            CRITERE='ABSOLU',
            PRECISION=5.E-3,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 
 # -------------------------------------------------------------   
@@ -195,7 +195,7 @@ MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAG1,
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='C_PLAN',),) 
+                              MODELISATION='C_PLAN')) 
 
 RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
                         MODELE_VISU   = MOD_VISU,

@@ -1,8 +1,8 @@
       SUBROUTINE OP0161()
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,6 +28,14 @@ C     ------------------------------------------------------------------
       CHARACTER*24  NOMCH
       INTEGER      IARG
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER IAN ,IBID ,ICH ,IOR ,IORDR ,IRET ,JANGL 
+      INTEGER JCARA ,JCHAM ,JCOE ,JJAN ,JMAT ,JMOD ,JNCH 
+      INTEGER JNHA ,JNMO ,JORDR ,JPARA ,JTCH ,JTMO ,K 
+      INTEGER N1 ,N2 ,N3 ,NBANGL ,NBCHAM ,NBORDR ,NBTROU 
+
+      REAL*8 ANGLE ,R8DGRD ,RBID 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFMAJ()
 C
@@ -112,7 +120,7 @@ C
             ANGLE = ZR(JANGL+IAN-1) * R8DGRD()
             CALL REFODE ( K, ANGLE, ZK24(JNCH), ZI(JNHA), ZK8(JTCH),
      &                                    ZR(JCOE), 'G', NOMCH )
-            CALL RSNOCH ( RESU, NSYMB, IAN, ' ' )
+            CALL RSNOCH ( RESU,NSYMB,IAN)
             CALL RSADPA ( RESU,'E',1,'ANGL',IAN,0,JJAN,K8B)
             ZR(JJAN) = ZR(JANGL+IAN-1)
  110      CONTINUE

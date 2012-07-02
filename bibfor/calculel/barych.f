@@ -1,6 +1,6 @@
       SUBROUTINE BARYCH(CH1Z,CH2Z,R1,R2,CHZ,BASE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*)     CH1Z,CH2Z, CHZ
       CHARACTER*19      CH1, CH2,  CH
@@ -41,6 +41,10 @@ C
       CHARACTER*5  VALE
       CHARACTER*4  DOCU,SCAL
       CHARACTER*1 K1BID
+C-----------------------------------------------------------------------
+      INTEGER I ,IACH ,IACH1 ,IACH2 ,IBID ,IER ,JREFE 
+      INTEGER LON1 ,LON2 ,LONG 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       CH1=CH1Z
       CH2=CH2Z

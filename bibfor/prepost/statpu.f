@@ -3,9 +3,9 @@
      &                    IDEBUT,NBLOC,NBVAL,IFIRES,INOE,IMPR, PUSURN )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -33,10 +33,15 @@ C IN  : INOE   : NUMERO DE NOEUD TRAITE
 C IN  : IMPR   : IMPRESSION
 C OUT : PUSURN : PUISSANCE D'USURE MOYENNEE
 C-----------------------------------------------------------------------
-      IMPLICIT REAL *8 (A-H,O-Z)
+      IMPLICIT NONE
       REAL*8   TEMPS(*), FCHO(*), VGLI(*), WK1(*), WK2(*), WK3(*)
       INTEGER  IWK4(*),IADH(*)
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IBL ,IDEBUT ,IFIRES ,IMPR ,INOE ,NBLOC 
+      INTEGER NBOBST ,NBPT ,NBVAL 
+      REAL*8 PUSEE ,PUSURN 
+C-----------------------------------------------------------------------
       PUSURN = 0.D0
       CALL DCOPY(NBPT,FCHO(3*(INOE-1)+1),3*NBOBST,WK1,1)
       CALL DCOPY(NBPT,VGLI(3*(INOE-1)+2),3*NBOBST,WK2,1)

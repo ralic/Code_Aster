@@ -1,7 +1,7 @@
       SUBROUTINE FGDOMG(METHOD,NOMMAT,NOMNAP,NOMFON,VALMIN,
      &                  VALMAX,NCYC,DOMMAG)
 C       ================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
       CHARACTER*(*)      METHOD
@@ -10,7 +10,7 @@ C
       INTEGER            NCYC
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,6 +48,9 @@ C       ----------------------------------------------------------------
       CHARACTER*16  K16B
       LOGICAL       LKE,LHAIGH
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IVCORR ,IVDOME ,IVKE 
+C-----------------------------------------------------------------------
       DOMMAG = 0.D0
       PHENO = 'FATIGUE'
       CALL WKVECT ('&&FGDOMG.DOMMAG','V V R',NCYC,IVDOME)

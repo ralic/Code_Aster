@@ -1,7 +1,7 @@
       SUBROUTINE ALCART(BASE,CHINZ,MAZ,NOMGDZ)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,6 +54,9 @@ C     ------------------
       CHARACTER*1 BAS2
       INTEGER NOMA,JBID
       CHARACTER*1 K1BID
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER IBID ,J1 
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 C     NGDMX ET NMAMX : SERVENT A DIMENSIONNER LES OBJETS

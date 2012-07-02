@@ -5,7 +5,7 @@
      &                    BASE, COMPOR )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -147,7 +147,7 @@ C     NETTOYAGE DES SCORIES DE SD FETI, NORMALEMENT INUTILE, MAIS ON
 C     NE SAIT JAMAIS !
         CALL ASSDE2(DEPL)
         CALL COPISD('CHAMP_GD','G',DEPL(1:19),CHDEPL(1:19))
-        CALL RSNOCH(RESULT,'DEPL',ITPS,' ')
+        CALL RSNOCH(RESULT,'DEPL',ITPS)
       ENDIF
 
 C*** INST

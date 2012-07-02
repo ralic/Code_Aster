@@ -1,4 +1,4 @@
-# MODIF  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # CAS TEST SSNV508D 
 # TITRE BLOC AVEC INTERFACE EN TRACTION ET PRESSION LATERALE SANS CONTACT
 # ssnv508d.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
@@ -43,16 +43,16 @@ DEBUT(CODE=_F(NOM='SSNV508D', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 
 
-MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
+MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1);
 
 MAILLAG1=MODI_MAILLAGE(reuse =MAILLAG1,
                        MAILLAGE=MAILLAG1,
-                       ORIE_PEAU_3D=_F(GROUP_MA=('ENV','S5','S6'),),);
+                       ORIE_PEAU_3D=_F(GROUP_MA=('ENV','S5','S6')));
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
                     CREA_GROUP_NO= _F(GROUP_MA='MTOT',
-                                      NOM='VOL',),
+                                      NOM='VOL'),
                                       
                     );
 
@@ -63,16 +63,16 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                    MAILLAGE=MAILLAG1,
                    CREA_GROUP_MA=(_F(NOM='S1',
                                     OPTION='FACE_NORMALE',
-                                    VECT_NORMALE=(1,0,0,),),
+                                    VECT_NORMALE=(1,0,0)),
                                   _F(NOM='S2',
                                     OPTION='FACE_NORMALE',
-                                    VECT_NORMALE=(-1,0,0,),),
+                                    VECT_NORMALE=(-1,0,0)),
                                   _F(NOM='S3',
                                     OPTION='FACE_NORMALE',
-                                    VECT_NORMALE=(0,1,0,),),
+                                    VECT_NORMALE=(0,1,0)),
                                   _F(NOM='S4',
-                                  OPTION='FACE_NORMALE',VECT_NORMALE=(0,-1,0,),),),
-                                  CREA_GROUP_NO=(_F(NOM='S7',OPTION='PLAN',POINT =(0,0,0),VECT_NORMALE =(1,0,0),PRECISION=0.00001,),),);
+                                  OPTION='FACE_NORMALE',VECT_NORMALE=(0,-1,0))),
+                                  CREA_GROUP_NO=(_F(NOM='S7',OPTION='PLAN',POINT =(0,0,0),VECT_NORMALE =(1,0,0),PRECISION=0.00001)));
 #----------------------------------------------
 #                   MODELE ET FISSURE
 #----------------------------------------------
@@ -80,20 +80,20 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
 MO=AFFE_MODELE(MAILLAGE=MAILLAG1,
                AFFE=_F(GROUP_MA=('MTOT','S1','S2','S3','S4','S6'),
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),);
+                       MODELISATION='3D'));
 
 
 LN = FORMULE(NOM_PARA=('X','Y','Z'),VALE='Y');
 
 FISS=DEFI_FISS_XFEM(MODELE=MO,
                     TYPE_DISCONTINUITE='INTERFACE',
-                    DEFI_FISS=_F(FONC_LN=LN,),
+                    DEFI_FISS=_F(FONC_LN=LN),
                     GROUP_MA_ENRI='MTOT',
-                    INFO=1,);
+                    INFO=1);
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MO,
                          FISSURE=FISS,
-                         INFO=1,);
+                         INFO=1);
 
 #----------------------------------------------
 #                   MATERIAU
@@ -109,7 +109,7 @@ rho = 7800.0;
 ACIER=DEFI_MATERIAU(
                     ELAS=_F(E=E,
                             NU=nu,
-                            RHO=rho,),);
+                            RHO=rho));
 
 
 #----------------------------------------------
@@ -119,13 +119,13 @@ ACIER=DEFI_MATERIAU(
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        MODELE=MO,
                        AFFE=_F(GROUP_MA=('MTOT','S1','S2','S3','S4','S6'),
-                               MATER=ACIER,),);
+                               MATER=ACIER));
 #PLAN ABCD, X=0 BLOQUEE, PLAQUE INFERIEURE ENCASTREMENT
 
 CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
-                DDL_IMPO=( _F(GROUP_MA='S6',DZ=0.0,),
-                           _F(GROUP_NO='S7',DX=0.0,),
-                           _F(GROUP_MA='S4',DX=0.0,DY=0.0,DZ=0.0,),),INFO=1,);
+                DDL_IMPO=( _F(GROUP_MA='S6',DZ=0.0),
+                           _F(GROUP_NO='S7',DX=0.0),
+                           _F(GROUP_MA='S4',DX=0.0,DY=0.0,DZ=0.0)),INFO=1);
 d0 = 1.E-05 ;
 d2 = -2.5 * 1.E-06 ;
 
@@ -135,14 +135,14 @@ def deplv(x) :
    if x==0. :  return d2*x*x + d0
 
 FCTDEPLV = FORMULE(VALE='deplv(X)',
-                  NOM_PARA=('X','Y','Z'),);
-ZERO = FORMULE(VALE='0.',NOM_PARA=('X','Y','Z'),);
+                  NOM_PARA=('X','Y','Z'));
+ZERO = FORMULE(VALE='0.',NOM_PARA=('X','Y','Z'));
 
 
 # CONDITION LIMITE SUR LA SURFACE S3
 
 CH2=AFFE_CHAR_MECA_F(MODELE=MODELEK,
-                     FACE_IMPO=_F(GROUP_MA='S3',DY=FCTDEPLV,),INFO=1,);
+                     FACE_IMPO=_F(GROUP_MA='S3',DY=FCTDEPLV),INFO=1);
 #pression lineaire : une variable independante
 
 p2=100000.;
@@ -153,75 +153,75 @@ def pr1(y) :
    if y>0.  :  return  - p1*y - p2
    if y==0.  :  return  0.
 FCTPR1 = FORMULE(VALE='pr1(Y)',
-                  NOM_PARA=('X','Y','Z'),);
+                  NOM_PARA=('X','Y','Z'));
 
 def pr2(y) :
    if y<0.  :  return 0.
    if y>0.  :  return   p1*y + p2
    if y==0.  :  return  0.
 FCTPR2 = FORMULE(VALE='pr2(Y)',
-                  NOM_PARA=('X','Y','Z'),);
+                  NOM_PARA=('X','Y','Z'));
 
 
 
 # PRESSION IMPOSEE SUR S2 ET S1
 
 CH3=AFFE_CHAR_MECA_F(MODELE=MODELEK,
-                  FORCE_FACE=_F(GROUP_MA=('S1'),FX=FCTPR1,),INFO=1,);
+                  FORCE_FACE=_F(GROUP_MA=('S1'),FX=FCTPR1),INFO=1);
 
 CH4=AFFE_CHAR_MECA_F(MODELE=MODELEK,
-                  FORCE_FACE=_F(GROUP_MA=('S2'),FX=FCTPR2,),INFO=1,);
+                  FORCE_FACE=_F(GROUP_MA=('S2'),FX=FCTPR2),INFO=1);
 #----------------------------------------------
 #                   RESOLUTION
 #----------------------------------------------
 
 L_INS=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=1.0,
-                                   NOMBRE=1,),);
+                                   NOMBRE=1));
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                     CHAM_MATER=CHAMPMAT,
                     EXCIT=(
-                           _F(CHARGE=CH1,),
-                           _F(CHARGE=CH2,),
-                           _F(CHARGE=CH3,),
-                           _F(CHARGE=CH4,),),
+                           _F(CHARGE=CH1),
+                           _F(CHARGE=CH2),
+                           _F(CHARGE=CH3),
+                           _F(CHARGE=CH4)),
                     COMP_ELAS=_F(RELATION='ELAS',
-                                 GROUP_MA='MTOT',),
+                                 GROUP_MA='MTOT'),
                     INCREMENT=_F(LIST_INST=L_INS,
-                                 INST_FIN=1.0,),
-                    NEWTON=_F(REAC_ITER=1,),
+                                 INST_FIN=1.0),
+                    NEWTON=_F(REAC_ITER=1),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1E-6,
-                                   ARRET='OUI',),
-                    SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=200, ),INFO=1,);
+                                   ARRET='OUI'),
+                    SOLVEUR=_F(METHODE='MUMPS'),INFO=1);
 DEP=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 GROUP_NO='VOL',
                                 RESULTAT=UTOT1,
                                 NOM_CHAM='DEPL',
                                 NUME_ORDRE=1,
                                 TOUT_CMP='OUI',
-                                OPERATION='EXTRACTION',),);
+                                OPERATION='EXTRACTION'));
 
-IMPR_TABLE(TABLE=DEP,);
+IMPR_TABLE(TABLE=DEP);
 
 #----------------------------------------------
 #             IMPRESSION
 #----------------------------------------------
 
-MA_XFEM=POST_MAIL_XFEM(MODELE        = MODELEK,)
+MA_XFEM=POST_MAIL_XFEM(MODELE        = MODELEK)
 
-IMPR_RESU(FORMAT='RESULTAT',RESU=_F(MAILLAGE = MA_XFEM,))
+IMPR_RESU(FORMAT='RESULTAT',RESU=_F(MAILLAGE = MA_XFEM))
 
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=(_F(GROUP_MA=('MTOT','S1','S2','S3','S4','S6'),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),),);  
+                              MODELISATION='3D')));  
 
 RES_X1=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT1,
                         )
 
-IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RES_X1,));
+IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RES_X1));
 
 #----------------------------------------------
 #                  TESTS
@@ -233,17 +233,17 @@ DEP1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 NOM_CHAM='DEPL',
                                 NUME_ORDRE=1,
                                 TOUT_CMP='OUI',
-                                OPERATION='EXTRACTION',),);
+                                OPERATION='EXTRACTION'));
 
 DEP2 = CALC_TABLE(TABLE = DEP1,
                   ACTION = (_F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'NOEUD',
                                CRIT_COMP = 'REGEXP',
-                               VALE_K    = 'N[^M]',),
+                               VALE_K    = 'N[^M]'),
                             _F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'DY',
                                CRIT_COMP = 'NE',
-                               VALE      = 0,),),);
+                               VALE      = 0)));
 
 #DX=(-10*x + 0)*1.E-6
 
@@ -256,7 +256,7 @@ TEST_TABLE(TABLE=DEP2,
            VALE=DXMAX,
            CRITERE='ABSOLU',
            PRECISION=1.0E-10,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 
 TEST_TABLE(TABLE=DEP2,
@@ -265,7 +265,7 @@ TEST_TABLE(TABLE=DEP2,
            VALE=DXMIN,
            CRITERE='ABSOLU',
            PRECISION=1.0E-10,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 #DY=8.02*1.E-6 - 2.5*1.E-6*x*x*1.E-6-1/3 *z*z*1.E-6
 
 DYMIN=8.02*1.E-6 - 2.5*1.E-6-(1/3)*0.01*0.01*1.E-6
@@ -277,7 +277,7 @@ TEST_TABLE(TABLE=DEP2,
            VALE=DYMIN,
            CRITERE='ABSOLU',
            PRECISION=1.0E-10,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 
 TEST_TABLE(TABLE=DEP2,
@@ -286,7 +286,7 @@ TEST_TABLE(TABLE=DEP2,
            VALE=DYMAX,
            CRITERE='ABSOLU',
            PRECISION=1.0E-10,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 DZMIN=-2*1.E-8
 TEST_TABLE(TABLE=DEP2,
            NOM_PARA='DZ',
@@ -294,7 +294,7 @@ TEST_TABLE(TABLE=DEP2,
            VALE=DZMIN,
            CRITERE='ABSOLU',
            PRECISION=1.0E-10,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_RESU(RESU=(_F(  RESULTAT=RES_X1,NUME_ORDRE=1,
                      NOM_CHAM='DEPL',NOM_CMP='DX',
@@ -316,13 +316,13 @@ TEST_RESU(RESU=(_F(  RESULTAT=RES_X1,NUME_ORDRE=1,
                      CRITERE = 'RELATIF',
                      VALE =1.94703257E-05 ,PRECISION=1.E-6,
                      REFERENCE = 'NON_REGRESSION',
-                     VERSION = '10.2.12'),),);
+                     VERSION = '10.2.12')));
 
 IMPR_TABLE(TABLE=DEP2,
            FORMAT='AGRAF',
            FORMAT_R='1PE12.5',
            FORMAT_C='MODULE_PHASE',
-           IMPR_FONCTION='NON',);
+           IMPR_FONCTION='NON');
 
 
 FIN();

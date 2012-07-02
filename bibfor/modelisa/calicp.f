@@ -1,7 +1,7 @@
       SUBROUTINE CALICP (CHARGZ)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,6 +49,14 @@ C --------- VARIABLES LOCALES ---------------------------
       INTEGER      IARG
 C --------- FIN  DECLARATIONS  VARIABLES LOCALES --------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IBID ,ICOUPL ,IDLFI1 ,IDLFI2 ,IDLINO ,IDLITY 
+      INTEGER IDLOU1 ,IDLOU2 ,IER ,IN1 ,INDLIS ,INO ,IOCC 
+      INTEGER IRET1 ,IRET2 ,JIND1 ,JIND2 ,JNOMA ,LONFI1 ,LONFI2 
+      INTEGER LONLI1 ,LONLI2 ,LONLI3 ,LONLI4 ,LONLI5 ,LONLI6 ,LONLI7 
+      INTEGER LONLI8 ,NARL ,NDIMMO ,NLIAI ,NRL 
+      REAL*8 ZERO 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       LISNOE = '&&CALICP.LISTNOE'
       LISTYP = '&&CALICP.LISTYP'

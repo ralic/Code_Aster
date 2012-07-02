@@ -5,7 +5,7 @@
       CHARACTER*(*) QUESTI,NOMOBZ,REPKZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +50,6 @@ C DEB-------------------------------------------------------------------
 
       CALL JEEXIN ( NOMOB//'.CELD', IRET )
       IF ( IRET .EQ. 0 ) THEN
-          CALL U2MESK('F','UTILITAI_50',1,NOMOB)
           IERD = 1
           GOTO 9999
       END IF
@@ -111,8 +110,7 @@ C DEB-------------------------------------------------------------------
         REPI=MAX(1,ZI(JCELD-1+4))
 
       ELSEIF ( QUESTI .EQ. 'TYPE_SCA' ) THEN
-          L    = LXLGUT(NOGD)
-          REPK = NOGD(L:L)
+        CALL DISMGD(QUESTI,NOGD, REPI, REPK, IERD )
 
       ELSE
          IERD = 1

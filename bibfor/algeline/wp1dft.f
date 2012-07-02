@@ -1,12 +1,12 @@
       SUBROUTINE WP1DFT(LMAT,IMODE,ZEROPO,Z,DETNOR,DET,IDET,ISTURM)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER           LMAT,IMODE,                    IDET
       COMPLEX*16                   ZEROPO(*),Z,DETNOR
       REAL*8                                       DET
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,6 +27,9 @@ C     -----------------------------------------------------------------
       REAL*8         UN,ZERO ,DIST
       CHARACTER*24   NOMDIA
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IRET ,ISTURM ,LDIAG ,NEQ 
+C-----------------------------------------------------------------------
       DATA  NOMDIA/'                   .DIGS'/
 C
       CALL JEMARQ()

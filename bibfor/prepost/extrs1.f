@@ -7,7 +7,7 @@
       CHARACTER*(*) RESU0
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C RESPONSABLE PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,13 +33,13 @@ C 0.3. ==> VARIABLES LOCALES
 C
 C
       INTEGER IRANG,I,J,K,JTACH,IADIN,IADOU,IRE1
-      INTEGER KORDR,IUNDF,ISNNEM
+      INTEGER JORDR,IUNDF,ISNNEM,IORDR
       REAL*8 RUNDF,R8VIDE
       CHARACTER*3 TYPE
       CHARACTER*16 NOMSYM
       CHARACTER*16 NOPARA
       CHARACTER*19 NOMSDR
-      CHARACTER*19 CHAMIN
+      CHARACTER*19 CHAMIN,NOMCH1,NOMCH2
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -122,12 +122,12 @@ C     -------------------------------------------
 C     3. -- ON COMPACTE LES NUME_ORDRE ARCHIVES :
 C     -------------------------------------------
       CALL JEECRA(NOMSDR//'.ORDR','LONUTI',NBARCH,' ')
-      CALL JEVEUO(NOMSDR//'.ORDR','E',KORDR)
+      CALL JEVEUO(NOMSDR//'.ORDR','E',JORDR)
       IRANG=0
       DO 80 I=1,NBRANG
         IF (NUARCH(I).EQ.0)GOTO 80
         IRANG=IRANG+1
-        ZI(KORDR+IRANG-1)=NUORDR(I)
+        ZI(JORDR+IRANG-1)=NUORDR(I)
    80 CONTINUE
       CALL ASSERT(IRANG.EQ.NBARCH)
 
@@ -135,7 +135,7 @@ C     -------------------------------------------
 C     4. -- ON MET A "ZERO" LES IRANG INUTILISES :
 C     -------------------------------------------------
       DO 100 IRANG=NBARCH+1,NBRANG
-        ZI(KORDR+IRANG-1)=IUNDF
+        ZI(JORDR+IRANG-1)=IUNDF
         DO 90 J=1,NBPARA
           NOPARA=NOMPAR(J)
           CALL EXTRS3(NOMSDR,NOPARA,IRANG,'E',1,TYPE,IADOU)
@@ -160,7 +160,28 @@ C     -------------------------------------------------
   100 CONTINUE
 
 
-C     -- IL FAUT ENCORE DETRUIRE LES SCORIES INUTILES :
+C     5. -- IL FAUT RENOMMER LES CHAMPS POUR QU'ILS RESPECTENT
+C           LA REGLE DE NOMMAGE DE RSUTCH.F :
+C     ---------------------------------------------------------
+      DO 51 I=1,NBNOSY
+        CALL JENUNO(JEXNUM(NOMSDR//'.DESC',I),NOMSYM)
+        CALL JEVEUO(JEXNUM(NOMSDR//'.TACH',I),'E',JTACH)
+        DO 41 J=1,NBARCH
+          IORDR=ZI(JORDR-1+J)
+          NOMCH1=ZK24(JTACH-1+J)
+          IF (NOMCH1.EQ.' ')GOTO 41
+          CALL RSUTCH(NOMSDR,NOMSYM,IORDR,NOMCH2,.FALSE.)
+          IF (NOMCH1.NE.NOMCH2) THEN
+            CALL COPISD('CHAMP','G',NOMCH1,NOMCH2)
+            CALL DETRSD('CHAMP',NOMCH1)
+            ZK24(JTACH-1+J)=NOMCH2
+          ENDIF
+   41   CONTINUE
+   51 CONTINUE
+
+
+C     6. -- IL FAUT ENCORE DETRUIRE LES SCORIES INUTILES :
+C     ----------------------------------------------------
       CALL RSMENA(NOMSDR)
 
       CALL JEDEMA()

@@ -1,6 +1,6 @@
       SUBROUTINE RVECHS(SSCH19,NBCP,NBCO,NBSP,MA,VLC,FOR,FEX,
      &                  RSOR,RSEX,N,PTADR,VAL,NBNDF,CLOCF)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
       CHARACTER*19 SSCH19
@@ -9,7 +9,7 @@ C
       REAL*8      RSOR(*),RSEX(*),VAL(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,6 +61,8 @@ C
 C
 C==================== CORPS DE LA ROUTINE =============================
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL WKVECT('&&RVECHS.TABLE.AUX','V V R',4*NBCO*NBSP*NBCP,AUX)
       CALL JELIRA(SSCH19//'.VALE','DOCU',I,DOCU)

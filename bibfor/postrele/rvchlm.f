@@ -1,8 +1,8 @@
       SUBROUTINE RVCHLM(SSCH19,M2D,NOEUD,NBN,NBCMP,NBCO,NBSP,VAL)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,6 +72,9 @@ C
 C
 C==================== CORPS DE LA ROUTINE =============================
 C
+C-----------------------------------------------------------------------
+      INTEGER K 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       NVALE  = SSCH19//'.VALE'
       NPADR  = SSCH19//'.PADR'

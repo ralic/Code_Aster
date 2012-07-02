@@ -1,9 +1,9 @@
       SUBROUTINE UT2AGL ( NN , NC , P , SG , SL )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILIFOR  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,7 +19,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       REAL*8              P(3,3) , SL(*) , SG(*)
 C     ------------------------------------------------------------------
 C     PASSAGE EN 2D D'UNE MATRICE TRIANGULAIRE DE NN*NC LIGNES
@@ -34,6 +34,11 @@ C     ------------------------------------------------------------------
       REAL*8   R(4)
       INTEGER  IN(2)
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,J ,K ,L ,M ,N ,NB 
+      INTEGER NC ,NN 
+      REAL*8 ZERO 
+C-----------------------------------------------------------------------
       ZERO = 0.0D0
 C
       IF ( MOD(NC,2) .EQ. 0 ) THEN

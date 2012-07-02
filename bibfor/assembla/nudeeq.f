@@ -1,6 +1,6 @@
       SUBROUTINE NUDEEQ(BASE,NU14,NEQ,GDS,IDDLAG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ASSEMBLA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 
 C     ARGUMENTS:
 C     ----------
@@ -83,6 +83,13 @@ C     ------------------
 
 
 
+C-----------------------------------------------------------------------
+      INTEGER I ,IADG ,IBID ,IDDL ,IED ,IEQ ,IER 
+      INTEGER ILAG ,J ,JDEEQ ,JDELG ,JLBLQ ,JNCMP ,JNUEQ 
+      INTEGER JPRNO ,JTYPL ,K ,L ,NBLAG ,NBLIGR ,NBNL 
+      INTEGER NBNM ,NBNO ,NCMPMX ,NDDLB ,NEC ,NOB ,NUCMP 
+      INTEGER NUNO 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       NUMEQA=NU14//'.NUME'
       CALL DISMOI('F','NOM_MAILLA',NUMEQA,'NUME_EQUA',IBID,MA,IED)

@@ -1,9 +1,9 @@
       SUBROUTINE FLUST4(MELFLU,TYPFLU,BASE,NOMA,NUOR,AMOR,FREQ,MASG,
      &                  FACT,VITE,NBM,NPV,NIVPAR,NIVDEF)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,6 +59,15 @@ C
       CHARACTER*24 FSVI,FSVR,FSVK,FSGM
       COMPLEX*16   BII
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER IAMFR ,IAXE ,ICOEF ,ICOMP ,IER ,IFR ,IFREQI 
+      INTEGER IGEOM ,IICOQ ,IM ,IMAJ ,IMASSE ,IMOD ,IOR 
+      INTEGER IORCO ,IUNIFI ,IV ,IVABS ,IVCPR ,IWORK ,JMOD 
+      INTEGER KEC ,LFACT ,LFSGM ,LFSVI ,LFSVK ,LFSVR ,LMASG 
+      INTEGER LWORK ,N1 ,NT ,NUMOD 
+      REAL*8 CF0 ,FI ,HMOY ,PI ,R8PI ,RBID ,S0 
+      REAL*8 U0 
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       IFR = IUNIFI('RESULTAT')

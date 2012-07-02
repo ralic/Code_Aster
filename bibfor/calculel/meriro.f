@@ -1,8 +1,8 @@
       SUBROUTINE MERIRO(MODELE,CARA,NCHAR,LCHAR,MATE,EXITIM,TIME,MATEL)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,6 +61,9 @@ C     ------------------
       CHARACTER*19 CHVARC
       CHARACTER*24 CHGEOM,CHROTA,LCHIN(10),LCHOUT(10)
       CHARACTER*24 LIGRMO,CHCARA(18)
+C-----------------------------------------------------------------------
+      INTEGER ICHA ,IRET ,NBRO 
+C-----------------------------------------------------------------------
       DATA CHVARC /'&&MERIRO.CHVARC'/
 
 C     -- ON VERIFIE LA PRESENCE PARFOIS NECESSAIRE DE CHAM_MATER

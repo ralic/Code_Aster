@@ -1,6 +1,6 @@
       SUBROUTINE FOCRR0(NOMFON,INTERP,BASE,RESU,NOMCHA,MAILLE,NOEUD,CMP,
      &                  NPOINT,NUSP,IVARI,NBORDR,LORDR)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER NBORDR,LORDR(*),NPOINT,IVARI
       CHARACTER*1   BASE
@@ -8,7 +8,7 @@
       CHARACTER*16  NOMCHA
       CHARACTER*19  NOMFON,RESU
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,6 +51,12 @@ C     ------------------------------------------------------------------
       INTEGER NPOINZ,NUSPZ
 C     ------------------------------------------------------------------
 
+C-----------------------------------------------------------------------
+      INTEGER IBID ,IDDL ,IE ,IERD ,II ,INOEUD ,IORDR 
+      INTEGER IRET ,LACCE ,LFON ,LG1 ,LG2 ,LPRO ,LVACC 
+      INTEGER LVALE ,LVAR ,LXLGUT ,NBACC ,NUSP 
+      REAL*8 VALR 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL GETRES(K8B,TYPCON,NOMCMD)
 C GETTCO ne fonctionne pas avec les noms compose issus de sensibilite

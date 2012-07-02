@@ -1,6 +1,6 @@
       SUBROUTINE WP2AYC(LMATRA,LMASSE,LAMOR,SIGMA,LBLOQ,YH,YB,
      &                                      ZH,ZB,U1,U2,U3,N,SOLVEU)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       COMPLEX*16  SIGMA, U1(*),U2(*),U3(*),YH(*),YB(*),
      &            ZH(*),ZB(*)
@@ -9,7 +9,7 @@
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,6 +58,8 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C
 C INIT. OBJETS ASTER
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       MATASS=ZK24(ZI(LMATRA+1))
       CHCINE=' '
       CRITER=' '

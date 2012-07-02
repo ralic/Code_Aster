@@ -1,13 +1,13 @@
       SUBROUTINE RAIREP(NOMA,IOC,KM,RIGI,NBGR,LIGRMA,NBNO,
      &  TABNOE,RIGNOE,RIGTO,AMOTO,RIROT,NDIM)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER      IOC, NBGR, NBNO,NDIM
       CHARACTER*8  NOMA, LIGRMA(NBGR), TABNOE(*),KM
       REAL*8       RIGNOE(*), RIGTO(*), AMOTO(*),RIROT(3)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,6 +34,17 @@ C
       LOGICAL      LFONC, TRANS
       INTEGER      IARG,APPUI
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,ICOEF ,ICOEGR ,IDNO ,IER ,IFONGR ,II 
+      INTEGER IJ ,IM ,IN ,INOE ,IRET ,ISURMA ,JCOOR 
+      INTEGER LDGM ,LDGN ,LDNM ,LTYP ,NB ,NBMA ,NCG 
+      INTEGER NFG ,NGN ,NM ,NN ,NNO ,NOEMAX ,NTOPO 
+      INTEGER NUMA 
+      REAL*8 COEF ,DDOT ,DIST ,HC ,R1 ,R2 ,R3 
+      REAL*8 R4 ,R5 ,R6 ,RIG3 ,RIG4 ,RIG45 ,RIG46 
+      REAL*8 RIG5 ,RIG56 ,RIG6 ,SURF ,SURTOT ,XC ,XG 
+      REAL*8 XX ,YC ,YG ,YY ,ZG ,ZZ 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       ZERO = 0.D0
       LFONC = .FALSE.

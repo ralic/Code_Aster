@@ -1,10 +1,10 @@
       SUBROUTINE RVEGAL(EPSI,CRITER,X,Y,OK,ECCART)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 06/01/95   AUTEUR G8BHHAC A.Y.PORTABILITE 
+C MODIF POSTRELE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -35,6 +35,8 @@ C********************************************************************
 C
       REAL*8 SEUIL,Z
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       ECCART = X - Y
       SEUIL  = EPSI
       Z      = ABS(X)

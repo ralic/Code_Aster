@@ -1,8 +1,8 @@
       SUBROUTINE OP0151()
-        IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/06/2012   AUTEUR TRAN V-X.TRAN 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,6 +76,9 @@ C
         INTEGER         VALI(2), PARACT(30), IARG
 C
 C ------------ 
+C-----------------------------------------------------------------------
+      INTEGER I 
+C-----------------------------------------------------------------------
         CALL JEMARQ()
         CALL INFMAJ()
 C

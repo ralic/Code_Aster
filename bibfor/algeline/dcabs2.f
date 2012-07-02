@@ -1,9 +1,9 @@
       FUNCTION DCABS2(C)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -26,6 +26,8 @@ C-----------------------------------------------------------------------
       REAL*8     DCABS2
       COMPLEX*16 C
       COMPLEX*16 CBAR,CCBAR
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
       CBAR = DCONJG(C)
       CCBAR = C*CBAR

@@ -1,6 +1,6 @@
       SUBROUTINE XORIMA(NOMA,NBMAF,JDLIMA,JCONX1,JCONX2,JCOOR,SENS)
 
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 
       INCLUDE 'jeveux.h'
       CHARACTER*8  NOMA
@@ -8,7 +8,7 @@
       INTEGER      NBMAF,JDLIMA,JCONX1,JCONX2,JCOOR
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -70,6 +70,9 @@ C              CALCULER LA SIGNE DE LA LEVEL SET NORMALE.
       CHARACTER*19 CNXINV
       CHARACTER*8  K8B
 
+C-----------------------------------------------------------------------
+      INTEGER NUNO 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 
 C     CREATE THE VECTOR WHERE THE ORIENTATION OF THE ELEMENT NORMAL WILL

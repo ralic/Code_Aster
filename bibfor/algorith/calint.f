@@ -1,12 +1,12 @@
       SUBROUTINE  CALINT(I,J,VECT1,NBPTS,VECT2,LONG,TT)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER            I,J,      NBPTS
       REAL*8                              VECT2(NBPTS)
       COMPLEX*16         VECT1(LONG)
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,6 +32,10 @@ C     OUT : VECT2 : VALEURS DES AUTOSPECTRES ET INTERSPECTRES
 C           NBPTS : NOMBRE DE POINTS DE LA DISCRETISATION FREQUENTIELLE
 C           TT    : TEMPS TOTAL DE L'EVOLUTION TEMPORELLE
 C
+C-----------------------------------------------------------------------
+      INTEGER K ,LONG ,LVECT1 ,LVECT2 ,NPT ,NPT2 
+      REAL*8 TT 
+C-----------------------------------------------------------------------
       NPT= NBPTS
       NPT2 = NPT/2
       DO 10 K=1,NPT2

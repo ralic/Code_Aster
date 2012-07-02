@@ -1,13 +1,13 @@
       SUBROUTINE MECHAM (OPTION,MODELE,NCHAR,LCHAR,CARA,NH,
      &                          CHGEOZ,CHCARA,CHHARZ,ICODE )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER                          NCHAR,        ICODE,  NH
       CHARACTER*(*)      OPTION,MODELE,      LCHAR(*),CARA
       CHARACTER*(*)      CHGEOZ,CHCARA(*),CHHARZ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,6 +47,10 @@ C     ------------------------------------------------------------------
       CHARACTER*24  CHGEOM,CHHARM
       LOGICAL       EXIMOD, EXIGEO,  EXICAR
 C
+C-----------------------------------------------------------------------
+      INTEGER IANMCR ,IASSSA ,IBID ,IER ,IMA ,IRET ,NBSMA 
+      INTEGER NBSS 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       CHGEOM = CHGEOZ
       CHHARM = CHHARZ

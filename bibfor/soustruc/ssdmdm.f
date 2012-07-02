@@ -1,6 +1,6 @@
       SUBROUTINE SSDMDM(MAG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SOUSTRUC  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C     ARGUMENTS:
 C     ----------
       INCLUDE 'jeveux.h'
@@ -37,6 +37,14 @@ C
       REAL*8 LISR8(9),DIST,A1,A2,A3,DMIN,DMAX,R1,R8DGRD
       INTEGER      IARG
 C ----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,I1NOE ,I1NOL ,IACONX ,IACOO2 ,IACOOR ,IADESM 
+      INTEGER IADIM2 ,IADIME ,IALK81 ,IALK82 ,IANMCR ,IAPARR ,IASUPM 
+      INTEGER IBID ,IDIM ,IDIMTO ,IERD ,INO ,INOLD ,IOCC 
+      INTEGER IRET ,ISMA ,ITROU ,J ,JNO ,K ,N1 
+      INTEGER N2 ,N3 ,N4 ,N5 ,NBNOE ,NBNOET ,NBNOL 
+      INTEGER NBSMA ,NNNOE ,NNNOL ,NOCC 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       R1= R8DGRD()
 C

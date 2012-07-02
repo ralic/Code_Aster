@@ -1,11 +1,11 @@
       SUBROUTINE FOVERN(VECNOM,NBFONC,VECPRO,IER)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER                  NBFONC,       IER
       CHARACTER*(*)     VECNOM(NBFONC),    VECPRO(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,6 +42,8 @@ C     ------------------------------------------------------------------
       CHARACTER*24 VALK(3)
       CHARACTER*16 PROLGD,INTERP,TYPFON,NOMPF(10)
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       CHNOM(20:24) = '.PROL'
       DO 1 I=1,NBFONC

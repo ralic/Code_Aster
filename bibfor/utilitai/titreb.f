@@ -1,11 +1,11 @@
       SUBROUTINE TITREB( DONNEE,ILIGD,ICOLD,NBTITR,SORTIE,ILIGS,ICOLS)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*)      DONNEE(*),                SORTIE(*)
       INTEGER                   ILIGD,ICOLD,NBTITR,       ILIGS,ICOLS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,9 +30,13 @@ C IN ILIGD  : I :
 C IN ICOLD  : I : INDICE DE COLONNE OU SE SITUE LE &
 C IN NBTITR : I : NOMBRE MAXIMUM DE LIGNES DE TITRE EN ENTREE
 C     ------------------------------------------------------------------
+
 C
-      INTEGER       IVAL, IGEN,IPOSA,IPOSB,IPOSC
-      REAL*8        RVAL,RBID
+      INTEGER       IVAL, IGEN,IPOSA,IPOSB,IPOSC,MXDEMO,IACC,IAD
+      INTEGER       IBID,ICLASS,IDEB,IERD,ILG,IPLACE,IRET,ITIT,IUTI,JAD
+      INTEGER       JPARA,LTIT,NBACCE,NBPA,NBPARA,NL,IUNIFI,LXLGUT
+
+      REAL*8        RVAL,RBID,R8VIDE
       CHARACTER*4   CTYPE
       CHARACTER*4   CT(3)
       CHARACTER*80  CVAL
@@ -298,28 +302,18 @@ C        --- NOM SYMBOLIQUE POUR UN CHAMP D'UN RESULTAT ---
   170    CONTINUE
             CALL TITREC(DEMONS(IPLACE),DONNEE,ILIGD,ICOLD,
      &                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
-            CALL RSUTOR(PARA(1)(1:8),PARA(2)(1:19),K16BID,IBID,IRET)
-            CALL ASSERT(IRET.EQ.1)
-            IF (IRET.EQ.1) THEN
-               CGEN = K16BID
-               IGEN = LXLGUT(K16BID)
-            ELSE
-              CALL U2MESK('A','UTILITAI5_91',1,PARA(1))
-            ENDIF
+            CALL RSUTOR(PARA(1)(1:8),PARA(2)(1:19),K16BID,IBID)
+            CGEN = K16BID
+            IGEN = LXLGUT(K16BID)
          GOTO 9000
 C
 C        --- NUMERO D'ORDRE POUR UN CHAMP D'UN RESULTAT ---
   180    CONTINUE
             CALL TITREC(DEMONS(IPLACE),DONNEE,ILIGD,ICOLD,
      &                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
-            CALL RSUTOR(PARA(1)(1:8),PARA(2)(1:19),K16BID,IBID,IRET)
-            CALL ASSERT(IRET.EQ.1)
-            IF (IRET.EQ.1 ) THEN
-               CALL CODENT(IBID,'G',CGEN(1:16))
-               IGEN = LXLGUT(CGEN(1:16))
-            ELSE
-               CALL U2MESK('A','UTILITAI5_91',1,PARA(1))
-            ENDIF
+            CALL RSUTOR(PARA(1)(1:8),PARA(2)(1:19),K16BID,IBID)
+            CALL CODENT(IBID,'G',CGEN(1:16))
+            IGEN = LXLGUT(CGEN(1:16))
          GOTO 9000
 C
 C        --- ACCES ---
@@ -329,12 +323,7 @@ C        --- ACCES ---
             CALL RSNOPA(PARA(1)(1:8),0,'&&TITREB.NOM_ACCE',NBACCE,NBPA)
             CALL JEEXIN('&&TITREB.NOM_ACCE',IRET)
             IF (IRET.GT.0)  CALL JEVEUO('&&TITREB.NOM_ACCE','E',JPARA)
-            CALL RSUTOR(PARA(1)(1:8),PARA(2)(1:19),K16BID,IBID,IRET)
-            CALL ASSERT(IRET.EQ.1)
-            IF (IRET.NE.1 ) THEN
-              CALL U2MESK('A','UTILITAI5_91',1,PARA(1))
-              GOTO 9001
-            ENDIF
+            CALL RSUTOR(PARA(1)(1:8),PARA(2)(1:19),K16BID,IBID)
             DO 191  IACC=1,NBACCE
                CALL GETTCO(PARA(1)(1:8),TYSD)
                ILG = LXLGUT(ZK16(JPARA-1+IACC))

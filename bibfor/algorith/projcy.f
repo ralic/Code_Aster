@@ -1,6 +1,6 @@
       SUBROUTINE PROJCY(NOMRES)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C***********************************************************************
 C    P. RICHARD     DATE 11/03/91
 C-----------------------------------------------------------------------
 C  BUT:  CALCULER LES SOUS-MATRICES OBTENUES A PARTIR DES PROJECTIONS
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C     DES MATRICES MASSE ET RAIDEUR SUR LES MODES ET LES DEFORMEES
 C    STATIQUECS
 C
@@ -38,6 +38,9 @@ C
       CHARACTER*24 VALK
       LOGICAL NOOK
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER LDDTYP ,LLREF 
 C-----------------------------------------------------------------------
       DATA NOOK /.TRUE./
 C-----------------------------------------------------------------------

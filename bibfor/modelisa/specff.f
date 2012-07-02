@@ -1,9 +1,9 @@
       SUBROUTINE SPECFF(CASINT,NOMU,SPECTR,BASE,NUOR,IMODI,IMODF,NBM,
      &                  NBPF,NPV)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,6 +57,17 @@ C
       CHARACTER*24 SPVAIN,SPVATE,SPNNOE
       CHARACTER*24 REMF,FSIC,CHREFE,VALE
 C
+C-----------------------------------------------------------------------
+      INTEGER IAXE ,ICHREF ,IDEB ,IDEBIT ,IDEC ,IDEFM ,IDIAX 
+      INTEGER IDIFE ,IDIFF ,IER ,IFO ,IFO1 ,IFO2 ,IFOI 
+      INTEGER IFSIC ,IINTE ,IL ,IM1 ,IM1B ,IM2 ,IM2B 
+      INTEGER IMATA ,IMATB ,INOFE ,INOMF ,INUNO ,IREMF ,IRET 
+      INTEGER ISPIN ,ISPNO ,ISPTE ,ITYPFL ,IV ,IVAFF ,IVALE 
+      INTEGER LWR ,NBFONC ,NBMR ,NBN ,NBNFEN ,NBP ,NBP1 
+      INTEGER NBP2 
+      REAL*8 BETA11 ,BETA12 ,BETA21 ,BETA22 ,PHASE ,PTF ,RESUIM 
+      REAL*8 RESURE ,S0 
+C-----------------------------------------------------------------------
       DATA NOPART / 'NUME_ORDRE_I' , 'NUME_ORDRE_J' /
 C
       DATA PLA180 / 8.D-1  , 1.D0   , 1.3D0  , 1.5D-1 , 2.D-1  ,

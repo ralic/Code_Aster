@@ -1,9 +1,9 @@
       FUNCTION IORIV3(NUM,NOEUD,VECT,COOR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 06/05/2008   AUTEUR KHAM M.KHAM 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,7 +19,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C.======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C   IORIV3  --  ORIENTATION D'UNE MAILLE PAR RAPPORT A UN VECTEUR
 C
@@ -29,8 +29,10 @@ C
 C   CODE RETOUR IORIV3 : 0 SI LA MAILLE NE CONTIENT PAS LE NOEUD
 C                       -1 OU 1 SINON (SELON QU'IL AIT OU NON
 C                                      FALLU REORIENTER)
-      INTEGER NUM(2)
-      REAL*8  VECT(3),COOR(3,*)
+      INTEGER NUM(2),I ,IORIV3 ,K ,L ,N1 ,N2 ,NOEUD
+      REAL*8 SCAL ,X1 ,X2 ,Y1 ,Y2 ,Z1 ,Z2
+C-----------------------------------------------------------------------
+      REAL*8  VECT(3),COOR(3,*),X,Y,Z
       X(I)=COOR(1,I)
       Y(I)=COOR(2,I)
       Z(I)=COOR(3,I)

@@ -1,6 +1,6 @@
       SUBROUTINE SSDMRM ( MAG )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SOUSTRUC  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C     ARGUMENTS:
 C     ----------
       INCLUDE 'jeveux.h'
@@ -40,6 +40,15 @@ C INSPI SSDMRM  SSDMRG
       CHARACTER*24 VALK(2)
       INTEGER      IARG
 C ----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IACOO2 ,IADIM2 ,IADIME ,IAGNO ,IALIII ,IALIIJ
+      INTEGER IALIKG ,IALIKM ,IALINI ,IALINJ ,IAMACR ,IANCNF ,IAPARR
+      INTEGER IBI ,IBID ,ICO ,ICONF ,IER ,II ,INOI
+      INTEGER INOII ,INOJ ,INOJJ ,IOCC ,ISMAI ,ISMAJ ,J
+      INTEGER JJ ,KK ,LONGI ,LONGJ ,N1 ,N2 ,N3
+      INTEGER NBEXTI ,NBEXTJ ,NBID ,NBNGNO ,NBNORE ,NBNORI ,NBNORJ
+      INTEGER NBSMA ,NBSMAR ,NOCC,INDIIS
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL GETFAC('RECO_SUPER_MAILLE',NOCC)
       IF (NOCC.EQ.0) GO TO 9999

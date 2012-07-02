@@ -1,4 +1,4 @@
-# MODIF  DATE 30/01/2012   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,33 +21,33 @@
 
 DEBUT(CODE=_F(NOM='SSNV182K', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
+MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1);
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
                     CREA_GROUP_NO=(_F(NOM='SURFQUAD',
-                                     GROUP_MA='SURF',),
+                                     GROUP_MA='SURF'),
                                    _F(NOM='GN',
                                       OPTION='PLAN',
                                       NOEUD_CENTRE='N141',
                                       VECT_NORMALE=(0.,1.),
-                                      PRECISION=0.00001,),),
+                                      PRECISION=0.00001)),
                                      );
 
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
-                     AFFE=(_F(GROUP_MA=('SURF',),
+                     AFFE=(_F(GROUP_MA=('SURF'),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='C_PLAN',),
-                           _F(GROUP_MA=('LIG1','LIG3',),
+                              MODELISATION='C_PLAN'),
+                           _F(GROUP_MA=('LIG1','LIG3'),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='C_PLAN',),),);
+                              MODELISATION='C_PLAN')));
 
 
 LN=FORMULE(NOM_PARA=('X','Y'),VALE='Y-10');
 
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     TYPE_DISCONTINUITE='INTERFACE',
-                    DEFI_FISS=_F(FONC_LN=LN,),);
+                    DEFI_FISS=_F(FONC_LN=LN));
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
@@ -78,53 +78,53 @@ E=100.0E6
 nu=0.
 ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
                             NU=nu,
-                            RHO=7800.0,),);
+                            RHO=7800.0));
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        MODELE=MODELEK,
-                       AFFE=_F(GROUP_MA=('SURF','LIG1','LIG3',),
+                       AFFE=_F(GROUP_MA=('SURF','LIG1','LIG3'),
                                 MATER=ACIER,
-                                ),);
+                                ));
 
 CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                    DDL_IMPO=(_F(GROUP_MA='LIG1',
                                           DX=0.0,
-                                          DY=0.0,),
+                                          DY=0.0),
                                        _F(GROUP_MA='LIG3',
                                           DX=0.0,
-                                          DY=-1.E-6,),),
-                    INFO=1,);
+                                          DY=-1.E-6)),
+                    INFO=1);
 
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       LIAISON_XFEM='OUI',
-                      CONTACT_XFEM=CTXFEM,);
+                      CONTACT_XFEM=CTXFEM);
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=1,),);
+                                    NOMBRE=1));
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
-                   EXCIT=(_F(CHARGE=CHXFEM,),                     
-                          _F(CHARGE=CH1,),),
+                   EXCIT=(_F(CHARGE=CHXFEM),                     
+                          _F(CHARGE=CH1)),
                    CONTACT  = CTXFEM,       
                    COMP_ELAS=_F(RELATION='ELAS',TOUT='OUI'),
                    INCREMENT=_F(LIST_INST=L_INST,
-                                INST_FIN=1.0,),
-                   SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,
+                                INST_FIN=1.0),
+                   SOLVEUR=_F(METHODE='MUMPS',
                               ),
-                   NEWTON=_F(REAC_ITER=1,),
-                   INFO=1,);
+                   NEWTON=_F(REAC_ITER=1),
+                   INFO=1);
 
 
 LAG=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
 #                             GROUP_NO='SURFQUAD',
-                             GROUP_NO=('GN',),
+                             GROUP_NO=('GN'),
                              RESULTAT=UTOT1,
                              NOM_CHAM='DEPL',
                              NUME_ORDRE=1,
-                             NOM_CMP=('LAGS_C','LAGS_F1',),
-                             OPERATION='EXTRACTION',),);
+                             NOM_CMP=('LAGS_C','LAGS_F1'),
+                             OPERATION='EXTRACTION'));
 
 
 VI=CREA_CHAMP(
@@ -132,7 +132,7 @@ VI=CREA_CHAMP(
                 OPERATION='EXTR',
                 RESULTAT=UTOT1,
                 NUME_ORDRE=1,
-                NOM_CHAM='VARI_ELGA',);
+                NOM_CHAM='VARI_ELGA');
                 
 IMPR_RESU(RESU=_F(CHAM_GD = VI))                
 
@@ -141,7 +141,7 @@ IMPR_TABLE(TABLE=LAG,
            FORMAT='AGRAF',
            FORMAT_R='1PE12.5',
            FORMAT_C='MODULE_PHASE',
-           IMPR_FONCTION='NON',);
+           IMPR_FONCTION='NON');
 
 LAREF=-5.
 LA1REF=0.
@@ -154,7 +154,7 @@ TEST_TABLE(TABLE=LAG,
            VALE=LAREF,
            CRITERE='RELATIF',
            PRECISION=1.E-12,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=LAG,
            NOM_PARA='LAGS_C',
@@ -162,7 +162,7 @@ TEST_TABLE(TABLE=LAG,
            VALE=LAREF,
            CRITERE='RELATIF',
            PRECISION=1.E-12,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=LAG,
            NOM_PARA='LAGS_F1',
@@ -170,7 +170,7 @@ TEST_TABLE(TABLE=LAG,
            VALE=LA1REF,
            CRITERE='ABSOLU',
            PRECISION=1.E-7,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=LAG,
            NOM_PARA='LAGS_F1',
@@ -178,7 +178,7 @@ TEST_TABLE(TABLE=LAG,
            VALE=LA1REF,
            CRITERE='ABSOLU',
            PRECISION=1.E-7,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 
 # -------------------------------------------------------------   
@@ -194,7 +194,7 @@ IMPR_RESU(RESU=_F(MAILLAGE=MA_XFEM))
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='C_PLAN',),) 
+                              MODELISATION='C_PLAN')) 
 
 RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT1,

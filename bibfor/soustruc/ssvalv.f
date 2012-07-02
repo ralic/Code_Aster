@@ -1,6 +1,6 @@
       SUBROUTINE SSVALV(STATUT,NOMCAS,MO,MA,ISMA,IDRESL,LONG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SOUSTRUC  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
 C INSPI  SSVALM
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C     ARGUMENTS:
 C     ----------
@@ -67,6 +67,11 @@ C
 C
 C     1- SI APPEL INITIAL : ON ALLOUE UN OBJET SUFFISANT :
 C     ----------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IADESM ,IALICA ,IALICH ,IANMCR ,IAPARR ,IASSSA 
+      INTEGER IDRES2 ,IERD ,IRET ,J ,JSMA ,LONG ,NBSMA 
+      INTEGER NBSSA ,NDDLE ,NDDLI ,NDDLT ,NMXVAL 
+C-----------------------------------------------------------------------
       IF (STATUT(1:5).EQ.'DEBUT')THEN
         CALL DISMOI('F','NB_SM_MAILLA',MO,'MODELE',NBSMA,KBID,IERD)
         CALL DISMOI('F','NB_SS_ACTI',MO,'MODELE',NBSSA,KBID,IERD)

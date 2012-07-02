@@ -1,9 +1,9 @@
         SUBROUTINE RKDVEC(FAMI,KPG,KSP,IMAT,MATCST,
      &                    NVI,VINI,COEFT,X,DTIME,NMAT,SIGI,DVIN)
-        IMPLICIT REAL*8(A-H,O-Z)
+      IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/06/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,6 +40,11 @@ C     ----------------------------------------------------------------
       REAL*8 ECROU,DMG,DEVI(6),DEVCUM,DECROU,DDMG,ZE,TD,VALP(3)
       REAL*8 S,ALPHAD,BETAD,N,UNSMVP,KVP,RD,AD,KD,VPAR(2)
 C     ----------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER IRET1 ,IRET2 ,ITENS ,NDI ,NMAT ,NVI 
+      REAL*8 DETAT ,DOMCPL ,EPSI ,GRJ0 ,GRJ1 ,GRJ2V ,TRSIG 
+
+C-----------------------------------------------------------------------
       PARAMETER(ZE=0.0D0)
       PARAMETER(TD=1.5D0)
       PARAMETER ( EPSIEC = 1.D-8 )

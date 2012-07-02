@@ -2,9 +2,9 @@
      &                  SING,COSG,XGLOBA
      &                    )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -37,8 +37,11 @@ C    SINA,SINB,SING <--   SINUS DES ANGLES DE ROTATION REP. GLOBAL LOC.
 C    COSA,COSB,COSG <--   COSINUS DES ANGLES DE ROTATION REP. GLOB LOC.
 C    XGLOBA          -->  COORDONEES DANS LE REPERE GLOBAL
 C-----------------------------------------------------------------------
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       REAL*8 XGLOBA(3),XLOCAL(3)
 C
+C-----------------------------------------------------------------------
+      REAL*8 COSA ,COSB ,COSG ,SINA ,SINB ,SING 
+C-----------------------------------------------------------------------
       CALL ROT3DI(XLOCAL,-SINA,COSA,-SINB,COSB,-SING,COSG,XGLOBA)
       END

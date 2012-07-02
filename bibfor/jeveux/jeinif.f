@@ -1,7 +1,7 @@
       SUBROUTINE JEINIF ( STI, STO, NOMF, CLAS, NREP, NBLOC, LBLOC )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
-C MODIF JEVEUX  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_18 CRP_20 CRS_508
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER                                   NREP, NBLOC, LBLOC
       CHARACTER*(*)       STI, STO, NOMF, CLAS
 C ----------------------------------------------------------------------
@@ -44,6 +44,15 @@ C
       COMMON /NOMCJE/  NOMUTI , NOMOS , NOMCO , NOMOC , BL32
 C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IACCE ,IADRS ,IC ,ICRE ,INDIR ,IPGCA
+      INTEGER IRET ,IUSADI ,JCARA ,JDATE ,JDOCU ,JGENR ,JHCOD
+      INTEGER JIACCE ,JIADD ,JIADM ,JINDIR ,JLONG ,JLONO ,JLTYP
+      INTEGER JLUTI ,JMARQ ,JORIG ,JRNOM ,JTYPE ,JUSADI ,K
+      INTEGER L ,LCARAO ,LDYNOL ,LLOC ,LMARQ ,LON ,LON1
+      INTEGER LON2 ,N ,NBACCE ,NBEXT ,NBGROS ,NBLIM ,NBLMA1
+      INTEGER NBLMA2 ,NBLOCO ,NBPETI ,NREPO,JJPREM
+C-----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
      &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ

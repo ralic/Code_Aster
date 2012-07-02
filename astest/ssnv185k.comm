@@ -1,4 +1,4 @@
-# MODIF  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185k.para = tps_job 100 mem_job 1024Mo mem_aster 70 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -25,12 +25,12 @@ DEBUT(CODE=_F(NOM='SSNV185K',NIV_PUB_WEB='INTERNET',
 
 # MODELISATION K : X-FEM MULTI-FISSURE - TRACTION
 
-MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
+MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1);
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
                     CREA_GROUP_NO= (
-                             _F(GROUP_MA='VOL',),
+                             _F(GROUP_MA='VOL'),
                              _F(
                                 NOM = 'POINT1',
                                 OPTION = 'ENV_SPHERE',
@@ -52,7 +52,7 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
-                    CREA_GROUP_NO=_F(GROUP_MA='SURFSUP',),);
+                    CREA_GROUP_NO=_F(GROUP_MA='SURFSUP'));
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
@@ -62,7 +62,7 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                                 POINT  = (0.0,0.0,0.0),
                                 RAYON = 1E-3,
                                 PRECISION = 2E-3,
-                                ),);
+                                ));
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
@@ -72,23 +72,23 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                                       GROUP_NO_CENTRE  = 'ORIG',
                                       VECT_NORMALE = (0.0,0.0,1.0),
                                       PRECISION = 1E-3,
-                                      ),);
+                                      ));
 
 #----------------------------------------------
 #                   MODELE ET FISSURE
 #----------------------------------------------
 
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
-                     AFFE=(_F(GROUP_MA=('VOL',),
+                     AFFE=(_F(GROUP_MA=('VOL'),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),
-                           _F(GROUP_MA=('SURFINF','SURFSUP',),
+                              MODELISATION='3D'),
+                           _F(GROUP_MA=('SURFINF','SURFSUP'),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),),);
+                              MODELISATION='3D')));
 
 MAILLAG1=MODI_MAILLAGE(reuse =MAILLAG1,
                        MAILLAGE=MAILLAG1,
-                       ORIE_PEAU_3D=_F(GROUP_MA=('SURFSUP','SURFINF',),),
+                       ORIE_PEAU_3D=_F(GROUP_MA=('SURFSUP','SURFINF')),
                        );
 
 # PARAMETRES DE LA FISSURE : 0 < a < 6.5 -> influt sur le choix Rsup !
@@ -102,21 +102,21 @@ LN2=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z+15.');
 LT2=FORMULE(NOM_PARA=('X','Y','Z'),VALE='b-a-Y');
 
 FISS1=DEFI_FISS_XFEM(MODELE=MODELEIN,
-                    DEFI_FISS=_F(FONC_LT=LT1,FONC_LN=LN1,),
+                    DEFI_FISS=_F(FONC_LT=LT1,FONC_LN=LN1),
                     ORIE_FOND=_F(PFON_INI= (0. ,5. ,15. ),
                                  VECT_ORIE=(0. ,0. ,1. ),
-                                 POINT_ORIG=(0. ,20. ,15. ),),
+                                 POINT_ORIG=(0. ,20. ,15. )),
                     );
 
 FISS2=DEFI_FISS_XFEM(MODELE=MODELEIN,
-                    DEFI_FISS=_F(FONC_LT=LT2,FONC_LN=LN2,),
+                    DEFI_FISS=_F(FONC_LT=LT2,FONC_LN=LN2),
                     ORIE_FOND=_F(PFON_INI= (0. ,5. ,-15. ),
                                  VECT_ORIE=(0. ,0. ,1. ),
-                                 POINT_ORIG=(0. ,20. ,-15. ),),
+                                 POINT_ORIG=(0. ,20. ,-15. )),
                     );
 
 
-MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=(FISS1,FISS2),INFO=1,);
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=(FISS1,FISS2),INFO=1);
 
 
 #----------------------------------------------
@@ -126,7 +126,7 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=(FISS1,FISS2),INFO=1,);
 E=205000.0E6
 nu=0.
 rho=7800.
-ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),);
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho));
 
 CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        MODELE=MODELEK,
@@ -145,13 +145,13 @@ CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                                _F(GROUP_NO='SURFMED',
                                     DZ=0.0,
                                   ),
-                  _F(GROUP_NO='POINT2',DX=0.0,DY=0.0,),
-                              _F(GROUP_NO='POINT1',DX=0.0,DY=0.0,),
+                  _F(GROUP_NO='POINT2',DX=0.0,DY=0.0),
+                              _F(GROUP_NO='POINT1',DX=0.0,DY=0.0),
                     ),
               );
 
 CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
-                   PRES_REP=_F(GROUP_MA=('SURFSUP','SURFINF',),PRES=PRES,),);
+                   PRES_REP=_F(GROUP_MA=('SURFSUP','SURFINF'),PRES=PRES));
 
 #----------------------------------------------
 #                   RESOLUTION
@@ -163,7 +163,7 @@ UTOT1=MECA_STATIQUE(MODELE=MODELEK,
                           _F(CHARGE=CH1),
                           _F(CHARGE=CH2),
                           ),
-                   SOLVEUR=_F(PCENT_PIVOT=10,
+                   SOLVEUR=_F(   
                             METHODE='MUMPS'),
                    INFO=1,
                    ); 
@@ -189,11 +189,11 @@ for i in range(0,nbc) :
                  OPTION='CALC_K_G',
                  THETA=_F(FISSURE=FISS1,
                           R_INF=RI[i],
-                          R_SUP=RS[i],),
+                          R_SUP=RS[i]),
                  LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
-                            LISSAGE_G='LAGRANGE',),);
+                            LISSAGE_G='LAGRANGE'));
 
-   IMPR_TABLE(TABLE=SIF1[i],);
+   IMPR_TABLE(TABLE=SIF1[i]);
 
 SIF2 = [None]*nbc
 
@@ -203,11 +203,11 @@ for i in range(0,nbc) :
                  OPTION='CALC_K_G',
                  THETA=_F(FISSURE=FISS2,
                           R_INF=RI[i],
-                          R_SUP=RS[i],),
+                          R_SUP=RS[i]),
                  LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
-                            LISSAGE_G='LAGRANGE',),);
+                            LISSAGE_G='LAGRANGE'));
 
-   IMPR_TABLE(TABLE=SIF2[i],);
+   IMPR_TABLE(TABLE=SIF2[i]);
 
 
 # SOLUTION ANALYTIQUE (chaboche p.53)
@@ -227,7 +227,7 @@ for i in range(0,nbc) :
               VALE=K1REF,
               CRITERE='RELATIF',
               PRECISION=prec,
-              REFERENCE='ANALYTIQUE',);
+              REFERENCE='ANALYTIQUE');
 
    TEST_TABLE(TABLE=SIF1[i],
               NOM_PARA='K1',
@@ -235,7 +235,7 @@ for i in range(0,nbc) :
               VALE=K1REF,
               CRITERE='RELATIF',
               PRECISION=prec,
-              REFERENCE='ANALYTIQUE',);
+              REFERENCE='ANALYTIQUE');
 
 for i in range(0,nbc) :
    TEST_TABLE(TABLE=SIF2[i],
@@ -244,7 +244,7 @@ for i in range(0,nbc) :
               VALE=K1REF,
               CRITERE='RELATIF',
               PRECISION=prec,
-              REFERENCE='ANALYTIQUE',);
+              REFERENCE='ANALYTIQUE');
 
    TEST_TABLE(TABLE=SIF2[i],
               NOM_PARA='K1',
@@ -252,7 +252,7 @@ for i in range(0,nbc) :
               VALE=K1REF,
               CRITERE='RELATIF',
               PRECISION=prec,
-              REFERENCE='ANALYTIQUE',);
+              REFERENCE='ANALYTIQUE');
 
 # -------------------------------------------------------------
 #            POST-TRAITEMENT POUR LA VISUALISATION X-FEM
@@ -265,7 +265,7 @@ MA_XFEM=POST_MAIL_XFEM(
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),)
+                              MODELISATION='3D'))
 
 RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT1,

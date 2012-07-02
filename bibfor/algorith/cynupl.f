@@ -1,7 +1,7 @@
       SUBROUTINE CYNUPL(PROFNO,INDIRF,MODCYC,MAILSK,NBSEC,NBMCAL)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C***********************************************************************
 C    O. NICOLAS     DATE 10/01/06
@@ -49,6 +49,13 @@ C
       INCLUDE 'jeveux.h'
 C
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IAD ,IBID ,ICOMP ,IEC ,IEQ ,IER 
+      INTEGER IPOINT ,IRET ,J ,LDDEEQ ,LDNUEQ ,LDPRNO ,LINUEQ 
+      INTEGER LLINSK ,LLNUEQ ,LLPRNO ,LTINSE ,LTTDS ,NBCMP ,NBCPMX 
+      INTEGER NBDDL ,NBMCAL ,NBNOT ,NBSEC ,NDDLT ,NEQSEC ,NSECPR 
+      INTEGER NTAIL ,NUGD ,NUMNOS ,NUMSEC 
+C-----------------------------------------------------------------------
       PARAMETER    (NBCPMX=300)
       CHARACTER*6  PGC
       CHARACTER*8  MODCYC,MAILSK,NOMGD

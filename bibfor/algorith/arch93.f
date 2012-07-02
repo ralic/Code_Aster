@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -127,7 +127,7 @@ C              --- LE VECTEUR ---
                   ZR(LVALE+IE) = ZR(LMODD+IND+IE)
  52            CONTINUE
                CALL JELIBE(VALE)
-               CALL RSNOCH(RESU,'DEPL',IMODE,' ')
+               CALL RSNOCH(RESU,'DEPL',IMODE)
 C              --- LES PARAMETRES ---
               CALL RGNDAS(NUME,IEQ,NOMNOE,NOMCMP,K8B,K8B,K8B)
                CALL RSADPA(RESU,'E',1,'NOEUD_CMP',IMODE,0,LNOM,K8B)
@@ -178,7 +178,7 @@ C              --- LE VECTEUR ---
                   ZR(LVALE+IE) = ZR(LMODF+IND+IE)
  62            CONTINUE
                CALL JELIBE(VALE)
-               CALL RSNOCH(RESU,'DEPL',IMODE,' ')
+               CALL RSNOCH(RESU,'DEPL',IMODE)
 C
 C              --- LES PARAMETRES ---
               CALL RGNDAS(NUME,IEQ,NOMNOE,NOMCMP,K8B,K8B,K8B)
@@ -230,7 +230,7 @@ C              --- LE VECTEUR ---
                   ZR(LVALE+IE) = ZR(LMOAD+IND+IE)
  68            CONTINUE
                CALL JELIBE(VALE)
-               CALL RSNOCH(RESU,'DEPL',IMODE,' ')
+               CALL RSNOCH(RESU,'DEPL',IMODE)
 C
 C              --- LES PARAMETRES ---
               CALL RGNDAS(NUME,IEQ,NOMNOE,NOMCMP,K8B,K8B,K8B)
@@ -333,7 +333,7 @@ C              --- LE VECTEUR ---
                   ZR(LVALE+IE) = ZR(LMODA+IND+IE)
  76            CONTINUE
                CALL JELIBE(VALE)
-               CALL RSNOCH(RESU,'DEPL',IMODE,' ')
+               CALL RSNOCH(RESU,'DEPL',IMODE)
 C
 C              --- LES PARAMETRES ---
                CALL RSADPA(RESU,'E',1,'NOEUD_CMP',IMODE,0,LNOM ,K8B)
@@ -407,7 +407,7 @@ C              --- LE VECTEUR ---
                   ZR(LVALE+IE) = ZR(LMODD+IND+IE)
  100           CONTINUE
                CALL JELIBE(VALE)
-               CALL RSNOCH(RESU,'DEPL',IMODE,' ')
+               CALL RSNOCH(RESU,'DEPL',IMODE)
 C
 C              --- LES PARAMETRES ---
 

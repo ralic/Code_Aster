@@ -1,9 +1,9 @@
       SUBROUTINE MODEAU(MELFLU,NOMA,GEOM,FSVR,BASE,FREQI,NBM,NUOR,VICOQ,
      &                  TORCO,TCOEF,AMOR,MASG,FACT,AMFR,VECPR,MAJ)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,12 +65,22 @@ C
       REAL*8       MASG(NBM),AMFR(NBM,2),VECPR(NBM,NBM),MAJ(NBM)
 C
       INTEGER      IDDL(6)
-      REAL*8       MCF0,MI,MK,KI
+      REAL*8       MCF0,MI,MK,KI,DDOT
       CHARACTER*1  K1BID
       CHARACTER*8  K8B
       CHARACTER*14 NUMDDL
       CHARACTER*24 REFEI,MATRIA,NOMCHA
 C
+C-----------------------------------------------------------------------
+      INTEGER IBID ,ICALC ,IDEC1 ,IDEC2 ,IDPLA ,IDPLE ,IER
+      INTEGER IFACT ,IFR ,IMAT1 ,IMAT2 ,IMATA ,IMATM ,IMATZ
+      INTEGER IMAX ,IMOD ,IRE ,IREFEI ,IUNIFI ,IVALE ,IVAPR
+      INTEGER IVEC ,IVECW ,IWRK2 ,JMOD ,K ,KMOD ,LFACX
+      INTEGER LMASG ,NBM2 ,NBNOE ,NEQ ,NITQR ,NUMOD
+      REAL*8 CF0 ,CK ,FI ,FIM ,FK ,FRE ,OMEGAI
+      REAL*8 PI ,R8PI ,RMAX ,RTAMP ,S0 ,TOLE ,U0
+
+C-----------------------------------------------------------------------
       DATA IDDL    /1,2,3,4,5,6/
 C
 C-----------------------------------------------------------------------

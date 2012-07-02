@@ -1,8 +1,8 @@
       SUBROUTINE OP0157()
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,6 +31,13 @@ C     ------------------------------------------------------------------
       LOGICAL      LHIST, ULEXIS
       INTEGER      IARG
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER IBID ,IFI ,IOCC ,IRE2 ,IRET ,ISY ,JCMPG 
+      INTEGER JINST ,JNOSY ,JORDR ,JPARA ,JRANG ,N ,N01 
+      INTEGER N10 ,N11 ,N21 ,N22 ,NBCMPG ,NBINST ,NBNOSY 
+      INTEGER NBORDR ,NBPARA ,NC ,NOCC ,NP ,NR 
+      REAL*8 PREC 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFMAJ()
       CALL GETRES(K8B,K8B,NOMCMD)

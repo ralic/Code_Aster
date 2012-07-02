@@ -1,14 +1,14 @@
       SUBROUTINE GUIDE2(RCARTE,D,THET,RAYO)
-      IMPLICIT  REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       REAL*8 THETA,PAS,ALPHA1,ALPHA2,RCARTE,D,PI,RHO,RAD
       REAL*8 ALPHA3,ALPHA4
       REAL*8 THET(801),RAYO(801)
       REAL*8 TRIGOM
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 14/11/2006   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -28,6 +28,10 @@ C  CALCUL D'UN OBSTACLE GUIDE A 2 ENCOCHES
 C       
 C**********************************************************
 C NOMBRE DE PAS DE DISCRETISATION
+C-----------------------------------------------------------------------
+      INTEGER I ,N 
+      REAL*8 R8DGRD ,R8PI 
+C-----------------------------------------------------------------------
       N=800
 C**********************************************************
       PI = R8PI( )

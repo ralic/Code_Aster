@@ -1,7 +1,7 @@
       SUBROUTINE VDESGA(NOMTE,KWGT,INTE,INTSN,NB1,NB2,XI,DEPL,BTILD,
      &                    INDITH,ALPHA,TEMPGA,EPSILN,SIGMA,VECTT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C
       INCLUDE 'jeveux.h'
@@ -26,6 +26,11 @@ C
       REAL*8 XI(3,*),DEPL(*),BTILD(5,42),MATC(5,5),TEMPGA(*),VECTT(3,3)
       REAL*8 EPSI(5),EPSTOT(5),SIGM(5),EPSILN(6,*),SIGMA(6,*),KAPPA
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,INDITH ,INTE ,INTSN ,JCARA ,K ,KWGT 
+      INTEGER NB1 ,NB2 
+      REAL*8 ALPHA ,DEUX 
+C-----------------------------------------------------------------------
       DEUX = 2.0D0
 C
       DO 10 I=1,5

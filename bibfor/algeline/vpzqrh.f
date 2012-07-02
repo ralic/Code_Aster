@@ -1,12 +1,12 @@
       SUBROUTINE VPZQRH (H,NEQ,IH,K,L,WR,WI,Z,IZ,MXITER,IER,NITQR)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER              NEQ,IH,K,L,IZ,IER,NITQR
       REAL*8             H(IH,NEQ), WR(NEQ),WI(NEQ),Z(IZ,NEQ)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 01/09/2009   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -35,6 +35,10 @@ C     ------------------------------------------------------------------
       COMPLEX*16         Z3
       LOGICAL            NOTLAS
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER II ,MXITER ,NN 
+      REAL*8 R8PREM 
+C-----------------------------------------------------------------------
       IER = 0
       EPSMAC = R8PREM()
       NITQR = 0

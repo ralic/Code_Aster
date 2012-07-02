@@ -1,5 +1,5 @@
       SUBROUTINE SIMUL2(RESU,NOMCMD,MASSE,MODSTA,NBDIR,DIR,NOMNOE,NBNO)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER                                    NBDIR,           NBNO
       REAL*8                                          DIR(*)
@@ -7,7 +7,7 @@
       CHARACTER*19      MASS2
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,6 +42,12 @@ C
       CHARACTER*19 RESU2, CHAMNO
       COMPLEX*16   C16B
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,ID ,IDCHM ,IDDL ,IDMST ,IDVE ,IE 
+      INTEGER IN ,IRET ,NBA ,NBB ,NBL ,NBLIAI ,NBTROU 
+
+      REAL*8 R8PREM ,XD 
+C-----------------------------------------------------------------------
       DATA CMP / 'DX' , 'DY' , 'DZ' , 'DRX' , 'DRY' , 'DRZ' /
 C     ------------------------------------------------------------------
       CALL JEMARQ()

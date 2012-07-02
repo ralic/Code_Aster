@@ -1,11 +1,11 @@
       SUBROUTINE DLTP0 (T0,NUME)
-      IMPLICIT  REAL*8  (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       REAL*8    T0
       INTEGER   NUME
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,6 +34,11 @@ C     ------------------------------------------------------------------
       COMPLEX*16    C16B
       INTEGER      IARG
 C     -----------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IBID ,JADR ,JBINT ,JORDR ,N1 ,NBORDR 
+      INTEGER NBTROU ,NC ,NDY ,NNI ,NP ,NT 
+      REAL*8 PREC ,R8B ,TEMPS 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL GETRES(NOMRES,TYPRES,NOMCMD)
 C

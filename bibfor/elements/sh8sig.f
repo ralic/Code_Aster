@@ -1,6 +1,6 @@
       SUBROUTINE SH8SIG(XETEMP,PARA,XIDEPP,DUSX,SIGMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,7 @@ C ======================================================================
 C
 C               ELEMENT SHB8
 C
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER LAG,IRDC
       REAL*8 SIGMA(*),PARA(11)
@@ -53,6 +53,11 @@ C      IF (NOMSHB.EQ.'SHB8') THEN
 C
 C ON DEFINI LES POINTS GAUSS ET LES POIDS
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IP ,J 
+      REAL*8 AJAC ,RBID ,XCOOEF ,XMU ,XNU ,ZETA ,ZLAMB 
+
+C-----------------------------------------------------------------------
       XXG5(1) = -0.906179845938664D0
       XXG5(2) = -0.538469310105683D0
       XXG5(3) = 0.D0

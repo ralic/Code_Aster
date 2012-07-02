@@ -8,7 +8,7 @@
      +                   NBRFIS,FK,DFK,ANGINI,
      +                   NUMPAS,NBPAL,DT,DTSTO,TCF,
      +                   VROTAT,TYPAL,FINPAL,CNPAL,PRDEFF,CONV,FSAUV)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER       NBMODE,NBREDE,NBREVI,NBEXCI,LOGCHO(*),SAREDI(*)
       INTEGER       NBPAL,NBCHOC
       INTEGER       NUMPAS
@@ -24,6 +24,9 @@
       
       LOGICAL       PRDEFF    
       INTEGER       PALMAX 
+C-----------------------------------------------------------------------
+      INTEGER NBRFIS 
+C-----------------------------------------------------------------------
       PARAMETER (PALMAX=20)
       CHARACTER*3   FINPAL(PALMAX)
       CHARACTER*6   TYPAL(PALMAX)      
@@ -32,7 +35,7 @@
       
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/01/2012   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

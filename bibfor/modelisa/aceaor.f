@@ -1,13 +1,13 @@
       SUBROUTINE ACEAOR(NOMA,NOMO,LMAX,NBEPO,NBEDI,NBTEL,NTYELE,
      &                  NOMELE,IVR,IFM,NBOCC)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER           LMAX,NBEPO,NBEDI,NTYELE(*),IVR(*),NBOCC(*)
       CHARACTER*8       NOMA,NOMO
       CHARACTER*16      NOMELE(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,6 +31,16 @@ C ----------------------------------------------------------------------
 C IN  : NOMA   : NOM DU MAILLAGE
 C IN  : NOMO   : NOM DU MODELE
 C ----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IBID ,IER ,IFM ,IOC ,IXMA ,IXNO 
+      INTEGER IXNW ,J ,JAD ,JDCMPO ,JDCO ,JDGM ,JDGN 
+      INTEGER JDLS ,JDME ,JDNE ,JDNO ,JDNW ,JDOR ,JDTM 
+      INTEGER JDVLVO ,K ,NBCAR ,NBMAGR ,NBMAIL ,NBMTOT ,NBMTRD 
+      INTEGER NBNOGR ,NBTEL ,NBVAL ,NCAR ,NCO ,NG ,NJ 
+      INTEGER NM ,NN ,NO1 ,NO2 ,NOCAOR ,NTPOI ,NTSEG 
+      INTEGER NTSEG3 ,NTSEG4 ,NUMMAI ,NUMNOE ,NUMTRD ,NUTYEL ,NUTYMA 
+      INTEGER NVAL 
+C-----------------------------------------------------------------------
       PARAMETER    ( NBCAR = 100 , NBVAL = 1000 , NCO = 4 )
       REAL*8       VAL(NBVAL), X1(3), X2(3), X3(3)
       REAL*8       R8MIEM,TSM,R8RDDG,RDDG

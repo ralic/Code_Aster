@@ -1,7 +1,7 @@
       SUBROUTINE DRZ13D(LISNOZ,LONLIS,CHARGZ,TYPLAZ,LISREZ)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,14 @@ C -------------------------------------------------------
 
 
 C --------- VARIABLES LOCALES ---------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IBID ,ICMP1 ,ICMP2 ,ICMP3 ,ICMP4 ,ICMP5
+      INTEGER ICMP6 ,IER ,IERD ,ILISNO ,IN ,INO1 ,INOM
+      INTEGER J ,JCOOR ,JLISCC ,JLISCR ,JLISDI ,JLISDL ,JLISDM
+      INTEGER JLISNO ,JNOMA ,JPRNM ,LONLIS ,NBCMP ,NBEC ,NBTERM
+      INTEGER NDDLA ,NMOCL
+      REAL*8 BETA ,UN ,X ,Y ,Z
+C-----------------------------------------------------------------------
       PARAMETER (NMOCL=300)
       COMPLEX*16 BETAC
       CHARACTER*2 TYPLAG
@@ -65,7 +73,7 @@ C --------- VARIABLES LOCALES ---------------------------
       CHARACTER*16 TYPE,OPER
       CHARACTER*19 LIGRMO
       INTEGER NTYPEL(NMOCL)
-      INTEGER VALI(2)
+      INTEGER VALI(2), INDIK8
       LOGICAL EXISDG
       CHARACTER*1 K1BID
 C --------- FIN  DECLARATIONS  VARIABLES LOCALES --------

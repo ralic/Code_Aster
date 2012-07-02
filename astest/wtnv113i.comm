@@ -1,4 +1,4 @@
-# MODIF  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE TEST THMD 3D, MODELISATION THMC=LIQU_SATU
 # wtnv113i.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -25,7 +25,7 @@ DEBUT(CODE=_F(NOM='WTNV113I',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 #   OPERATIONS SUR LE MAILLAGE
 #
 ####################################
-MAIL=LIRE_MAILLAGE(FORMAT='MED',)
+MAIL=LIRE_MAILLAGE(FORMAT='MED')
 
 MODELE=AFFE_MODELE(   MAILLAGE=MAIL,
                         AFFE=_F(  TOUT = 'OUI',
@@ -112,12 +112,12 @@ MATERIAU=DEFI_MATERIAU(     THM_LIQU=_F(
    ALPHA = 1.E-4,
    CP = 2.85E6,
    VISC = VISCOLIQ,
-   D_VISC_TEMP = DVISCOL,),
+   D_VISC_TEMP = DVISCOL),
                               THM_GAZ=_F(
    MASS_MOL = 28.96E-3,
    CP = 1000.,
    VISC = UN,
-   D_VISC_TEMP = ZERO,),
+   D_VISC_TEMP = ZERO),
                               THM_DIFFU=_F(
    R_GAZ = 8.315,
    RHO = 1.6E3,
@@ -134,7 +134,7 @@ MATERIAU=DEFI_MATERIAU(     THM_LIQU=_F(
    PERM_GAZ = PERMGAZ,
    D_PERM_SATU_GAZ = DPERGSA,
    D_PERM_PRES_GAZ = DPERGPG,
-   LAMB_T = UN,),
+   LAMB_T = UN),
                               THM_INIT=_F(
    TEMP = 293.,
    PRE1 = 0.,
@@ -157,17 +157,17 @@ CHARHO=AFFE_CHAR_MECA(   MODELE=MODELE,
                           DDL_IMPO=(_F(  TOUT = 'OUI',
                                     DX = 0.,
                                     DY = 0.,
-                                    DZ = 0.,),
+                                    DZ = 0.),
                                     _F(NOEUD=('NO1','NO3','NO8','NO6','NO13','NO15','NO20','NO18'),
                                     TEMP = 0.),
-                                   ),)
+                                   ))
 
 RESU0=STAT_NON_LINE(   MODELE=MODELE,
-            SOLVEUR=_F( METHODE = 'MUMPS', PCENT_PIVOT=200),
+            SOLVEUR=_F( METHODE = 'MUMPS'),
                           CHAM_MATER=CHMAT0,
                           EXCIT=_F( CHARGE = CHARHO),
                           COMP_INCR=_F( RELATION = 'KIT_THM',PARM_THETA=1.,
-                          RELATION_KIT = ('ELAS', 'LIQU_SATU', 'HYDR_UTIL',),
+                          RELATION_KIT = ('ELAS', 'LIQU_SATU', 'HYDR_UTIL'),
                           ITER_INTE_MAXI = 5),
                           INCREMENT=_F( LIST_INST = LI),
                           NEWTON=_F( MATRICE = 'TANGENTE',
@@ -187,7 +187,7 @@ TEST_RESU(
              VALE = -65.,
              CRITERE = 'RELATIF',
              PRECISION = 2.E-2,
-             REFERENCE='NON_REGRESSION',)
+             REFERENCE='NON_REGRESSION')
            )
 
 TEST_RESU(
@@ -198,7 +198,7 @@ TEST_RESU(
              VALE = 65.,
              CRITERE = 'RELATIF',
              PRECISION = 2.E-2,
-             REFERENCE='NON_REGRESSION',)
+             REFERENCE='NON_REGRESSION')
            )
 
 TEST_RESU(
@@ -209,7 +209,7 @@ TEST_RESU(
              VALE = -5.E3,
              CRITERE = 'RELATIF',
              PRECISION = 1.E-2,
-             REFERENCE='NON_REGRESSION',)
+             REFERENCE='NON_REGRESSION')
            )
 
 TEST_RESU(
@@ -220,7 +220,7 @@ TEST_RESU(
              VALE = 5.E3,
              CRITERE = 'RELATIF',
              PRECISION = 1.E-2,
-             REFERENCE='NON_REGRESSION',)
+             REFERENCE='NON_REGRESSION')
            )
 
 TEST_RESU(
@@ -231,7 +231,7 @@ TEST_RESU(
              VALE = 5.E3,
              CRITERE = 'RELATIF',
              PRECISION = 1.E-1,
-             REFERENCE='AUTRE_ASTER',)
+             REFERENCE='AUTRE_ASTER')
            )
 FIN()
 #

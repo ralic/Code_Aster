@@ -1,9 +1,9 @@
       SUBROUTINE FLUST2 ( MELFLU, TYPFLU, BASE, NOMA, NUOR, AMOR, FREQ,
      &                    MASG, FACT, VITE, NBM, NPV, NIVPAR, NIVDEF )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,6 +76,12 @@ C     EXTERNAL      R8PI, R8PREM
 C
 C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER IAMFR ,ICODIM ,ICOUPL ,IER ,IFREQI ,IGRAP ,IMIST 
+      INTEGER IMOD ,IND ,IPOIDS ,IV ,IWORK ,LFACT ,LFSIC 
+      INTEGER LMASG ,LWORK ,N1 ,NT ,NUMOD 
+      REAL*8 FI ,PHID ,PHIE ,PI ,RBID ,VLIM 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
 C

@@ -1,8 +1,8 @@
       SUBROUTINE OP0148()
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,6 +25,15 @@ C   PHYSIQUE  OPERATEUR REST_SPEC_PHYS
 C-----------------------------------------------------------------------
 C
       INCLUDE 'jeveux.h'
+C-----------------------------------------------------------------------
+      INTEGER I ,IBID ,ICHAM ,ICHAM1 ,ICHREF ,ICODE ,IDEP 
+      INTEGER IDIS ,IFOI ,IFOR ,IFREQ ,IFSIC ,IFSVK ,IM 
+      INTEGER IMOD1 ,IMR ,IN ,INOEI ,INOEN ,INUMO ,INUOR 
+      INTEGER IREFBA ,IRET ,ISIP ,ISIP1 ,ISIP2 ,ISMF ,ITYPFL 
+      INTEGER IV ,IVALE ,IVALE1 ,IVITE ,JNUOR ,NBFO1 ,NBM 
+      INTEGER NBMR ,NBN ,NBP ,NBPAR ,NBPF ,NNN ,NPLACE 
+      INTEGER NPV ,NUMOD 
+C-----------------------------------------------------------------------
       PARAMETER   ( NBPAR = 10 )
       INTEGER      IOPTCH, IVAL(3)
       REAL*8       R8B

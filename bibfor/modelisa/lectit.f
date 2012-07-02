@@ -1,9 +1,9 @@
         SUBROUTINE LECTIT(IFL,ICL,IV,RV,CV,CNL,MCL,NBM,NBG,
      +  DIM,NBT,IER,IRTETI)
-        IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/01/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,6 +44,10 @@ C
         CHARACTER*16    NOP
         COMMON          /OPMAIL/        NOP
         CHARACTER*80    LIG
+C-----------------------------------------------------------------------
+      INTEGER ICL ,IDEB ,IER ,IFL ,IFM ,IRTET ,IRTETI 
+      INTEGER IUNIFI ,IV ,NBG ,NBM 
+C-----------------------------------------------------------------------
         IRTETI = 0
 C
         IFM = IUNIFI('MESSAGE')

@@ -1,11 +1,11 @@
       SUBROUTINE MACR78(NOMRES,TRANGE,TYPRES)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*8   NOMRES
       CHARACTER*16  TYPRES
       CHARACTER*19  TRANGE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,6 +39,17 @@ C      CHARACTER*3  TREDU
       LOGICAL      LREDU
       INTEGER      IARG
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IACONX ,IADREF ,IADRIF ,IAPRNO ,IARC0 ,IARCH 
+      INTEGER IBID ,ICMP ,IDBASE ,IDDL ,IE ,IERD ,IM 
+      INTEGER INOE ,INU0 ,INUM ,IRET ,IRETOU ,IVALE ,J 
+      INTEGER JINST ,JNOCMP ,JNUME ,JORDR ,JRESTR ,K ,LDNEW 
+      INTEGER LINST ,LNOCM2 ,LNOCMP ,LPA2 ,LPAR ,LREFE ,N0 
+      INTEGER N1 ,NBCHAM ,NBEC ,NBINST ,NBMDEF ,NBMDYN ,NBMODE 
+      INTEGER NBNDEF ,NBNDYN ,NBNOE ,NBNTOT ,NBTDYN ,NEC ,NEQ 
+      INTEGER NES ,NMC 
+      REAL*8 RBID 
+C-----------------------------------------------------------------------
       DATA NOMCMP   /'DX      ','DY      ','DZ      ',
      &               'DRX     ','DRY     ','DRZ     '/
 C     ------------------------------------------------------------------
@@ -216,7 +227,7 @@ C            WRITE(6,*) 'INUM IARCH ',INUM,IARCH
             CALL VTCREB(CHAMNO,NUMEDD,'G','R',NEQ)
             CALL JEVEUO(CHAMNO(1:19)//'.VALE','E',LDNEW)
             CALL MDGEPH(NEQ,NBMODE,ZR(IDBASE),ZR(JRESTR),ZR(LDNEW))
-            CALL RSNOCH(NOMRES,CHAMP(I)(1:4),IARCH,' ')
+            CALL RSNOCH(NOMRES,CHAMP(I)(1:4),IARCH)
             IF (I.EQ.1) THEN
                CALL RSADPA(NOMRES,'E',1,'INST',IARCH,0,LINST,K8B)
                ZR(LINST) = ZR(JINST+IARC0-1)

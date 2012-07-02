@@ -1,9 +1,9 @@
       SUBROUTINE GDSIG (FAMI,KPG,KSP,X0PG,PETIK,ROT0,ROTK,GRANC,IMATE,
      &                  GN,GM,PN,PM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -36,13 +36,17 @@ C           GM        : MOMENT RESULTANT AU PT DE GAUSS EN AXES LOCAUX
 C           PN        : RESULTANTE DES FORCES AU PT DE GAUSS EN AX.GENE.
 C           PM        : MOMENT RESULTANT AU PT DE GAUSS EN AXES GENERAUX
 C ------------------------------------------------------------------
-      IMPLICIT REAL*8(A-H,O-Z)
+      IMPLICIT NONE
       CHARACTER*(*) FAMI
       REAL*8 X0PG(3),PETIK(3),ROT0(3,3),ROTK(3,3),GRANC(6),
      &       PN(3),PM(3),GN(3),GM(3),ROTABS(3,3),ROTABT(3,3),
      &       GRANGA(3),GRANK(3)
       INTEGER IMATE
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IRET ,KPG ,KSP 
+      REAL*8 EPSTHE ,UN 
+C-----------------------------------------------------------------------
       UN = 1.D0
       CALL VERIFT(FAMI,KPG,KSP,'+',IMATE,'ELAS',1,EPSTHE,IRET)
 C

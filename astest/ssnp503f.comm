@@ -1,4 +1,4 @@
-# MODIF  DATE 30/01/2012   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
 # ssnp503f.para = tps_job 120 mem_job 256Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -30,27 +30,27 @@ DEBUT(CODE=_F(NOM='SSNP503F',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
 typma=1
 
 if (typma==1):
-  MAILLAG2=LIRE_MAILLAGE(INFO=1,FORMAT='MED',);
+  MAILLAG2=LIRE_MAILLAGE(INFO=1,FORMAT='MED');
   Y=2.625
 
 if (typma==2):
-  MAILLAG1=LIRE_MAILLAGE(INFO=1,FORMAT='MED',);
+  MAILLAG1=LIRE_MAILLAGE(INFO=1,FORMAT='MED');
   MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,
-                       LINE_QUAD=_F(GROUP_MA='SURF',),);
+                       LINE_QUAD=_F(GROUP_MA='SURF'));
   Y=2.5
 
 MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                     MAILLAGE=MAILLAG2,
                     CREA_GROUP_NO =(_F(NOM = 'NFISSU',
                                        OPTION = 'PLAN',
-                                       POINT  = (0.0,Y,),
+                                       POINT  = (0.0,Y),
                                        VECT_NORMALE = (0.0,1.0),
-                                       PRECISION = 1E-1,),),)
+                                       PRECISION = 1E-1)))
 
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
-                     AFFE=(_F(GROUP_MA=('SURF',),
+                     AFFE=(_F(GROUP_MA=('SURF'),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='D_PLAN',),),); 
+                              MODELISATION='D_PLAN'))); 
 
 LN1=FORMULE(NOM_PARA=('X','Y'),VALE='Y-2.5');
 
@@ -58,16 +58,16 @@ LN2=FORMULE(NOM_PARA=('X','Y'),VALE='-Y+6.5');
   
 FISS1=DEFI_FISS_XFEM(MODELE=MODELEIN,  
                      TYPE_DISCONTINUITE='INTERFACE',
-                     DEFI_FISS=_F(FONC_LN=LN1,),);
+                     DEFI_FISS=_F(FONC_LN=LN1));
 
 FISS2=DEFI_FISS_XFEM(MODELE=MODELEIN,  
                      TYPE_DISCONTINUITE='INTERFACE',
-                     DEFI_FISS=_F(FONC_LN=LN2,),);
+                     DEFI_FISS=_F(FONC_LN=LN2));
                     
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=(FISS1,FISS2),
                          CONTACT='P1P1',
-                         INFO=1,);
+                         INFO=1);
                          
 CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                       FORMULATION    = 'XFEM',
@@ -101,12 +101,12 @@ E=100.0E6
 nu=0.3
 ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
                             NU=nu,
-                            RHO=7800.0,),);
+                            RHO=7800.0));
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        MODELE=MODELEK,
                        AFFE=_F(TOUT='OUI',
-                                MATER=ACIER,),);
+                                MATER=ACIER));
 
 DEPX=2.0
 DEPY=1.E-3
@@ -114,30 +114,30 @@ ZERO=0.0
 
 CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                    DDL_IMPO=(_F(GROUP_MA='LIGINF',
-                                          DY=DEPY,),
+                                          DY=DEPY),
                              _F(GROUP_MA='LIGSUP',
-                                          DY=-DEPY,),                        
+                                          DY=-DEPY),                        
                              _F(GROUP_NO=('P1','P2','P3','P4'),
-                                DX=0.0,),),
-                   INFO=1,);
+                                DX=0.0)),
+                   INFO=1);
                     
 CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
                    DDL_IMPO=(_F(GROUP_MA='LICOTE',
-                                DX=DEPX,),),
+                                DX=DEPX)),
                    # CONDITIONS IMPOSEES A LA MAIN
                    # POUR LES MAILLES XFEM INFERIEURE
                    # ET SUPERIEURE
                    LIAISON_DDL=(_F(
-                                   NOEUD=('N390','N390',),
-                                   DDL=('DX','H1X',),
-                                   COEF_MULT=(1,1,),
-                                   COEF_IMPO=DEPX,),
+                                   NOEUD=('N390','N390'),
+                                   DDL=('DX','H1X'),
+                                   COEF_MULT=(1,1),
+                                   COEF_IMPO=DEPX),
                                 _F(
-                                   NOEUD=('N70','N70',),
-                                   DDL=('DX','H1X',),
-                                   COEF_MULT=(1,1,),
-                                   COEF_IMPO=DEPX,),
-                                ),);
+                                   NOEUD=('N70','N70'),
+                                   DDL=('DX','H1X'),
+                                   COEF_MULT=(1,1),
+                                   COEF_IMPO=DEPX),
+                                ));
 
 VAR1=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.,0.,1.,1.),
@@ -149,31 +149,31 @@ VAR2=DEFI_FONCTION(NOM_PARA='INST',
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       CONTACT_XFEM=CTXFEM,
                       LIAISON_XFEM='OUI',
-                      INFO=1,);
+                      INFO=1);
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=4,),);
+                                    NOMBRE=4));
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                     CHAM_MATER=CHAMPMAT,
                     CONTACT = CTXFEM,
                     EXCIT=(
-                           _F(CHARGE=CHXFEM,),                                    
+                           _F(CHARGE=CHXFEM),                                    
                            _F(CHARGE=CH1,FONC_MULT=VAR1),
-                           _F(CHARGE=CH2,FONC_MULT=VAR2),),  
+                           _F(CHARGE=CH2,FONC_MULT=VAR2)),  
                     COMP_ELAS=_F(RELATION='ELAS',
-                                 GROUP_MA='SURF',),
-                    INCREMENT=_F(LIST_INST=L_INST,),
+                                 GROUP_MA='SURF'),
+                    INCREMENT=_F(LIST_INST=L_INST),
                     CONVERGENCE=(_F(ITER_GLOB_MAXI=20,
                                     RESI_GLOB_MAXI=1E-06
                                     )),
-                    NEWTON=_F(REAC_ITER=1,),
+                    NEWTON=_F(REAC_ITER=1),
                     SOLVEUR=_F(METHODE='MUMPS',
-                               PCENT_PIVOT=80,
-                               NPREC=-1,),
-                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                    INFO=1,);
+   
+                               NPREC=-1),
+                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA'),
+                    INFO=1);
 
 LAG=[None]*5
 inst=[0.0,0.25,0.5,0.75,1.0]
@@ -189,16 +189,16 @@ for i in [1,2,3,4]: #Boucle sur les increments
                                          RESULTAT=UTOT1,
                                          NOM_CHAM='DEPL',
                                          INST=inst[i],
-                                         NOM_CMP=('LAGS_C','LAGS_F1',),
-                                         OPERATION='EXTRACTION',),);
+                                         NOM_CMP=('LAGS_C','LAGS_F1'),
+                                         OPERATION='EXTRACTION'));
    IMPR_TABLE(TABLE=LAG[i],
               FORMAT='AGRAF',
               FORMAT_R='1PE12.7',
               FORMAT_C='MODULE_PHASE',
-              NOM_PARA=('NOEUD','INST','COOR_X','LAGS_C','LAGS_F1',),
+              NOM_PARA=('NOEUD','INST','COOR_X','LAGS_C','LAGS_F1'),
               IMPR_FONCTION='NON',
-              TRI=_F(NOM_PARA=('COOR_X',),
-                     ORDRE='CROISSANT',),);
+              TRI=_F(NOM_PARA=('COOR_X'),
+                     ORDRE='CROISSANT'));
    
    for j in [0,1,2,3,4]: #Boucle sur les positions testees
       if (vale[i-1] [j] == 0):
@@ -218,6 +218,6 @@ for i in [1,2,3,4]: #Boucle sur les increments
                            CRIT_COMP='EQ',
                            VALE=j,
                            PRECISION=0.03,
-                           CRITERE='ABSOLU',),);
+                           CRITERE='ABSOLU'));
 FIN();                  
 

@@ -1,11 +1,11 @@
       SUBROUTINE RANGEN(PRGENE,ISST,INUMOD,IRANG)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*19     PRGENE
       INTEGER                         ISST,INUMOD,IRANG
 C     ------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,14 +35,14 @@ C                   LA SOUS-STRUCTURE
 C OUT IRANG  : I  : POSITION DANS LE VECTEUR DES DDLS GENERALISES
 C                   DU MODE
 C     -------------------------------------------------------------
-      CHARACTER*6      PGC
-      COMMON  /NOMAJE/ PGC
 C     -----------------------------------------------------------------
 C     FONCTION EXTERNE
 C     ----------------------------------------------------------------
 C     ----------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER IAPRNO ,IBID ,IDDL
+C-----------------------------------------------------------------------
       CALL JEMARQ()
-      PGC    = 'RANGEN'
 C
 C
 C     --- NUMERO DDL DU NOEUD NOEUD ET DE SA COMPOSANTE CMP

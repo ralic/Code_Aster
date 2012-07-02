@@ -1,7 +1,7 @@
       SUBROUTINE REC110(NOMRES,NOMSQU,MODGEN)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,6 +42,18 @@ C
       LOGICAL      FUSION
       INTEGER      IARG
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,I1 ,I2 ,IADRES ,IBID ,IGR ,IN 
+      INTEGER INCR ,INEW ,IOCC ,IOLD ,IPOSI ,IRECO ,IRET 
+      INTEGER ISTAC ,JLTNS ,JN ,JNCR ,JPOSI ,JSTAC ,LCONN 
+      INTEGER LCOORD ,LCORR ,LCORT ,LDIME ,LINTD ,LINVER ,LJNTD 
+      INTEGER LREFE ,LSK ,LSK2 ,LSTAC ,LTABI ,LTABJ ,LVNEW 
+      INTEGER LVOLD ,NBCOOR ,NBEC ,NBFUSE ,NBMA ,NBMOIN ,NBN 
+      INTEGER NBND ,NBND2 ,NBNEW ,NBNI ,NBNJ ,NBOCC ,NBRECO 
+      INTEGER NBSTAC ,NDIST ,NNODES ,NR ,NUMERO 
+      REAL*8 DIST ,DISTIJ ,PREC ,XII ,XJ ,YII ,YJ 
+      REAL*8 ZII ,ZJ 
 C-----------------------------------------------------------------------
       DATA TT      /'&&REC110'/
 C-----------------------------------------------------------------------

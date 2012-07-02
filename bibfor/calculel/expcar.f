@@ -1,6 +1,6 @@
       SUBROUTINE EXPCAR(CARTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C-----------------------------------------------------------------------
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C EXTENSION COMPLETE DE LA CARTE( EN VUE D'1 COMPRESSION ULTERIEURE )
 C ( LORSQUE LES CMPS D'1 GRANDEUR N'ONT PAS ETE DONNEES SIMULTANEMENT)
@@ -36,13 +36,7 @@ C               ( AVANT COMPRESSION)
 C     SORTIES:
 C      ON A CREE QUELQUES OBJETS SUR LA VOLATILE ...
 C ----------------------------------------------------------------------
-C
-C     FONCTIONS EXTERNES:
-C     -------------------
       CHARACTER*8 SCALAI
-C
-C     VARIABLES LOCALES:
-C     ------------------
       LOGICAL DEJAVU
       CHARACTER*8 SCAL,NOMA,KBID
       CHARACTER*24 NOLI
@@ -51,6 +45,13 @@ C
 C
 C     -- RECUPERATION DES OBJETS JEVEUX DE LA CARTE:
 C
+C-----------------------------------------------------------------------
+      INTEGER I1 ,I2 ,I3 ,I4 ,I5 ,IADESC ,IADGP
+      INTEGER IALIMA ,IANOLI ,IANOMA ,IANUMT ,IAVALE ,IAVALP ,ICODE
+      INTEGER IED ,IEDIT ,IENT ,IGD ,IMA ,IRET ,J
+      INTEGER NBEDIT ,NBGDMX ,NBMA ,NBMATO ,NCMPMX ,NEC ,NUM1
+      INTEGER NUM2 ,NUMAT,NBEC
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL JEVEUO(CARTE//'.DESC','L',IADESC)
       CALL JEVEUO(CARTE//'.LIMA','L',IALIMA)

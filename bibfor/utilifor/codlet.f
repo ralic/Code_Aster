@@ -1,12 +1,12 @@
       SUBROUTINE CODLET( ENTIER , CADRE , CHAINE  )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER            ENTIER
       CHARACTER*(*)               CADRE , CHAINE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 29/09/2004   AUTEUR MJBHHPE J.L.FLEJOU 
+C MODIF UTILIFOR  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -45,6 +45,8 @@ C         LEN    MOD
 C     ------------------------------------------------------------------
 C
       INTEGER     LG , ENT , IVAL, BASE , BASMAX , IL1, IL, IER, I
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       PARAMETER   (BASMAX = 36, BASE = 36 )
       CHARACTER*1 CHIFFR(0:BASMAX-1)
       DATA        CHIFFR/'0','1','2','3','4','5','6','7','8','9',

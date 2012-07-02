@@ -1,6 +1,6 @@
       SUBROUTINE CTETAX(BASMOD,NUMA,NBSEC,TETA,NBTET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C***********************************************************************
 C    P. RICHARD     DATE 11/03/91
@@ -46,6 +46,13 @@ C
 C
 C      NTA EST LE NOMBRE DE CMP TRAITEE EN CYCLIQUE
       INCLUDE 'jeveux.h'
+C-----------------------------------------------------------------------
+      INTEGER I ,IBID ,ICOMP ,IER ,ILOCI ,ILOCJ ,INOA 
+      INTEGER IRET ,J ,K ,LLDESC ,LLNOA ,LLREF ,NBCMP 
+      INTEGER NBCPMX ,NBDAX ,NBDCOU ,NBEC ,NBNOA ,NBNOT ,NBSEC 
+      INTEGER NBTET ,NOER ,NTA ,NUMA 
+      REAL*8 ANGLE ,PI ,R8PI ,X 
+C-----------------------------------------------------------------------
       PARAMETER   (NBCPMX=300)
       PARAMETER   (NTA=10)
       CHARACTER*1 K1BID

@@ -1,4 +1,4 @@
-# MODIF  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185m.para = tps_job 60 mem_job 256Mo mem_aster 50 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -31,7 +31,7 @@ DEBUT(CODE=_F(NOM='SSNV185M',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(
 #             MAILLAGE : hexa_3_11_31.mgib
 #----------------------------------------------
 
-MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
+MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1);
 
 
 #----------------------------------------
@@ -78,19 +78,19 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
                      AFFE=_F(GROUP_MA=('VOL','SURFGAU','SURFDRO','SURFFRO','SURFBAC','SURFINF','SURFSUP'),
                              PHENOMENE='MECANIQUE',
-                             MODELISATION='3D',),
+                             MODELISATION='3D'),
                     );
 
 LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-lz/2.');
 LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='-Y+ly/2.');
 
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
-                    DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
+                    DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN),
                     TYPE_ENRI_FOND='GEOMETRIQUE',
                     RAYON_ENRI=2.,
                     ORIE_FOND=_F(PFON_INI= (0. ,ly/2.    ,lz/2. ),
                                  VECT_ORIE=(0. ,0.       ,1.    ),
-                                 POINT_ORIG=(0. ,3.*ly/4. ,lz/2. ),),
+                                 POINT_ORIG=(0. ,3.*ly/4. ,lz/2. )),
                  );
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,INFO=2,
@@ -125,7 +125,7 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,INFO=2,
                                 _F(FISSURE=FISS,NOM='HEAV3D',TYPE_MAILLE='3D',
                                   OPTION='FISS_XFEM', TYPE_GROUP='HEAVISIDE'),
                                 _F(FISSURE=FISS,NOM='MIXT3D',TYPE_MAILLE='3D',
-                                  OPTION='FISS_XFEM', TYPE_GROUP='MIXTE'),)
+                                  OPTION='FISS_XFEM', TYPE_GROUP='MIXTE'))
 );
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,INFO=2,
                  MAILLAGE=MAILLAG1,
@@ -137,9 +137,9 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,INFO=2,
                                 _F(FISSURE=FISS,NOM='HEAV',
                                   OPTION='FISS_XFEM', TYPE_GROUP='HEAVISIDE'),
                                 _F(FISSURE=FISS,NOM='MIXT',
-                                  OPTION='FISS_XFEM', TYPE_GROUP='MIXTE'),)
+                                  OPTION='FISS_XFEM', TYPE_GROUP='MIXTE'))
 );
-MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS,INFO=1,);
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS,INFO=1);
 
 
 #----------------------------------------------
@@ -149,7 +149,7 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS,INFO=1,);
 E=100.0E6
 nu=0.
 rho=7800.
-ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),);
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho));
 
 CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        MODELE=MODELEK,
@@ -166,12 +166,12 @@ CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
 # blocage des modes rigides
 CH=AFFE_CHAR_MECA(MODELE=MODELEK,
                   LIAISON_DDL=(
-                               _F(GROUP_NO=('A1','A2',),DDL=('DX','DX',),COEF_MULT=(0.5,0.5),COEF_IMPO=0.,),
-                               _F(GROUP_NO=('A1','A2',),DDL=('DY','DY',),COEF_MULT=(0.5,0.5),COEF_IMPO=0.,),
-                               _F(GROUP_NO=('A1','A2',),DDL=('DZ','DZ',),COEF_MULT=(0.5,0.5),COEF_IMPO=0.,),
-                               _F(GROUP_NO=('B1','B2',),DDL=('DZ','DZ',),COEF_MULT=(0.5,0.5),COEF_IMPO=0.,),
-                               _F(GROUP_NO=('C1','C2',),DDL=('DX','DX',),COEF_MULT=(0.5,0.5),COEF_IMPO=0.,),
-                               _F(GROUP_NO=('C1','C2',),DDL=('DZ','DZ',),COEF_MULT=(0.5,0.5),COEF_IMPO=0.,),
+                               _F(GROUP_NO=('A1','A2'),DDL=('DX','DX'),COEF_MULT=(0.5,0.5),COEF_IMPO=0.),
+                               _F(GROUP_NO=('A1','A2'),DDL=('DY','DY'),COEF_MULT=(0.5,0.5),COEF_IMPO=0.),
+                               _F(GROUP_NO=('A1','A2'),DDL=('DZ','DZ'),COEF_MULT=(0.5,0.5),COEF_IMPO=0.),
+                               _F(GROUP_NO=('B1','B2'),DDL=('DZ','DZ'),COEF_MULT=(0.5,0.5),COEF_IMPO=0.),
+                               _F(GROUP_NO=('C1','C2'),DDL=('DX','DX'),COEF_MULT=(0.5,0.5),COEF_IMPO=0.),
+                               _F(GROUP_NO=('C1','C2'),DDL=('DZ','DZ'),COEF_MULT=(0.5,0.5),COEF_IMPO=0.),
                               ),
                   );
 
@@ -192,10 +192,10 @@ OSIG23 = FORMULE(NOM_PARA=('X','Y','Z'),VALE='-1.*coef/sqrt(R(X,Y,Z))*cos(T(X,Y,
 # chargement correspondant a un mode III pur
 CHF=AFFE_CHAR_MECA_F(MODELE=MODELEK,
                      FORCE_FACE=(
-                                 _F(GROUP_MA='SURFGAU',FX=OSIG13,),
-                                 _F(GROUP_MA='SURFDRO',FX=SIG13,),
-                                 _F(GROUP_MA='SURFSUP',FX=OSIG23,),
-                                 _F(GROUP_MA='SURFINF',FX=SIG23,),
+                                 _F(GROUP_MA='SURFGAU',FX=OSIG13),
+                                 _F(GROUP_MA='SURFDRO',FX=SIG13),
+                                 _F(GROUP_MA='SURFSUP',FX=OSIG23),
+                                 _F(GROUP_MA='SURFINF',FX=SIG23),
                                  _F(GROUP_MA='SURFFRO',FZ=OSIG23,FY=SIG13),
                                  _F(GROUP_MA='SURFBAC',FZ=SIG23,FY=OSIG13),
                                 ),
@@ -212,7 +212,7 @@ UTOT1=MECA_STATIQUE(MODELE=MODELEK,
                           _F(CHARGE=CHF),
                           _F(CHARGE=CH),
                           ),
-                   SOLVEUR=_F(PCENT_PIVOT=10,
+                   SOLVEUR=_F(   
                             METHODE='MUMPS'),
                    INFO=1,
                    ); 
@@ -227,7 +227,7 @@ MA_XFEM=POST_MAIL_XFEM(
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),)
+                              MODELISATION='3D'))
 
 RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT1,
@@ -253,12 +253,12 @@ for i in range(0,nbc) :
                  OPTION='CALC_K_G',
                  THETA=_F(FISSURE=FISS,
                           R_INF=RI[i],
-                          R_SUP=RS[i],),
+                          R_SUP=RS[i]),
                  LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
-                            LISSAGE_G='LAGRANGE',),
-                 INFO=2,);
+                            LISSAGE_G='LAGRANGE'),
+                 INFO=2);
 
-   IMPR_TABLE(TABLE=SIF[i],);
+   IMPR_TABLE(TABLE=SIF[i]);
 
 # SOLUTION ANALYTIQUE (MODE III PUR)
 K1REF=0.
@@ -275,7 +275,7 @@ for i in range(0,nbc) :
               VALE=K1REF,
               CRITERE='ABSOLU',
               PRECISION=0.02,
-              REFERENCE='ANALYTIQUE',);
+              REFERENCE='ANALYTIQUE');
 
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='K1',
@@ -283,7 +283,7 @@ for i in range(0,nbc) :
               VALE=K1REF,
               CRITERE='ABSOLU',
               PRECISION=0.02,
-              REFERENCE='ANALYTIQUE',);
+              REFERENCE='ANALYTIQUE');
 
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='K2',
@@ -291,7 +291,7 @@ for i in range(0,nbc) :
               VALE=K2REF,
               CRITERE='ABSOLU',
               PRECISION=0.02,
-              REFERENCE='ANALYTIQUE',);
+              REFERENCE='ANALYTIQUE');
 
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='K2',
@@ -299,7 +299,7 @@ for i in range(0,nbc) :
               VALE=K2REF,
               CRITERE='ABSOLU',
               PRECISION=0.02,
-              REFERENCE='ANALYTIQUE',);
+              REFERENCE='ANALYTIQUE');
 
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='K3',
@@ -307,7 +307,7 @@ for i in range(0,nbc) :
               VALE=K3REF,
               CRITERE='RELATIF',
               PRECISION=prec_k3,
-              REFERENCE='ANALYTIQUE',);
+              REFERENCE='ANALYTIQUE');
 
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='K3',
@@ -315,7 +315,7 @@ for i in range(0,nbc) :
               VALE=K3REF,
               CRITERE='RELATIF',
               PRECISION=prec_k3,
-              REFERENCE='ANALYTIQUE',);
+              REFERENCE='ANALYTIQUE');
 
 
 FIN();

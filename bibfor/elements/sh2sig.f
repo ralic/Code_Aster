@@ -1,6 +1,6 @@
       SUBROUTINE SH2SIG(XETEMP,PARA,XIDEPP,DUSX,SIGMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,7 @@ C ======================================================================
 C
 C               ELEMENT SHB20
 C
-      IMPLICIT REAL *8(A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER LAG,IRDC
       REAL*8 SIGMA(*),PARA(11)
@@ -49,6 +49,11 @@ C
 C Des points de gauss sur la facette 1-2-3:
 C
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IP ,IZ ,J 
+      REAL*8 AJAC ,RBID ,XCOOEF ,XMU ,XNU ,ZETA ,ZLAMB 
+
+C-----------------------------------------------------------------------
       XZG5(1) = -0.906179845938664D0
       XZG5(2) = -0.538469310105683D0
       XZG5(3) =  0.D0

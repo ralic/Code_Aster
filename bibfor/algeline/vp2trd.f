@@ -1,7 +1,7 @@
       SUBROUTINE VP2TRD(TYPE,NBVECT,ALPHA,BETA,SIGNES,VECPRO,MXITER,
      &                  NITQR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*1       TYPE
       INTEGER                NBVECT,MXITER,NITQR
@@ -56,6 +56,10 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C
 C     ---  ON DETECTE LES FREQUENCES INFERIEURES AU SHIFT ---
+C-----------------------------------------------------------------------
+      INTEGER IER ,IVEC ,IVECT ,LADW1 ,LADW2 ,LADWK1 ,LADWK2 
+      INTEGER LADZ1 ,LADZ2 ,N2 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       IF ( TYPE .EQ. 'G' ) THEN
          SYMET = SIGNES(1)

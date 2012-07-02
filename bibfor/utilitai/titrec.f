@@ -1,13 +1,13 @@
       SUBROUTINE TITREC(DEMON,DONNEE,ILIGD,ICOLD,NBTITR,MXPARA,
      &                                                     PARA,NBPARA)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       CHARACTER*(*)     DEMON,DONNEE(*),                   PARA(*)
       INTEGER                        ILIGD,ICOLD,NBTITR,MXPARA, NBPARA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -33,6 +33,9 @@ C     ------------------------------------------------------------------
       CHARACTER*80 CVAL
       CHARACTER*8  K8BID
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER ICLASS ,IPARA 
+C-----------------------------------------------------------------------
       NBPARA = 0
       ILIG   = ILIGD
       ICOL   = ICOLD

@@ -1,6 +1,6 @@
       SUBROUTINE IRMACA(IFC,NDIM,NNO,COORDO,NBMA,CONNEX,POINT,NOMA,
      +                  TYPMA,LMOD,NBGRN,NOGN,NBGRM,NOGM,NIVE)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*8  NOGN(*),NOGM(*),NOMA
       REAL*8       COORDO(*)
@@ -8,7 +8,7 @@
       LOGICAL      LMOD
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,6 +54,21 @@ C     ------------------------------------------------------------------
       CHARACTER*24  NOLILI, NOMJV
 C     ------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IACORR ,IAD ,IAGRMA ,IAGRNO ,IDEP ,IDEU 
+      INTEGER IDI ,IEL ,IGM ,IGN ,IGR ,IGRE ,IGREL 
+      INTEGER IJ ,IJK ,IJP ,ILONG ,IMA ,IMODL ,IMOIN 
+      INTEGER INO ,INUMM ,IOBJ ,IPLU ,IPOG ,IPOIN ,IPOIN1 
+      INTEGER IPOIN2 ,IRET ,ISO ,ITRDEU ,ITRTRO ,ITY ,ITYCA 
+      INTEGER ITYPE ,IUN ,IZERO ,J ,JCOO ,JCOUL ,JGN 
+      INTEGER JGRELE ,JJL ,JJM ,JLIGR ,JLONGR ,JMAI ,JMODL 
+      INTEGER JMT ,JNN ,JNO2 ,JNOE ,JNOM ,JNUM ,JPLA 
+      INTEGER JPOI ,JPOS ,JTY ,NBCOUL ,NBELGR ,NBELT ,NBGMA 
+      INTEGER NBGNO ,NBGR ,NBGREL ,NBGRM ,NBGRN ,NBM ,NBMA 
+      INTEGER NBMODL ,NBN ,NBOBJ ,NBOBJN ,NBPO ,NBR ,NBSMO 
+      INTEGER NBSOBJ ,NBTOT ,NDIM ,NMAMAX ,NNO ,NNOE ,NOMBRE 
+
+C-----------------------------------------------------------------------
       NOMJV = '&&OP0039.NOM_MODELE'
       CALL JEEXIN ( NOMJV , IRET )
       IF ( IRET .EQ. 0 ) THEN

@@ -1,6 +1,6 @@
       SUBROUTINE RSORAC(NOMSD,ACCES,IVAL,RVAL,KVAL,CVAL,EPSI,CRIT,
      &                  NUTROU,NDIM,NBTROU)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER NBTROU,NUTROU(*),IVAL,NDIM
       REAL*8 RVAL,EPSI
@@ -8,7 +8,7 @@
       COMPLEX*16 CVAL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,6 +58,11 @@ C ----------------------------------------------------------------------
       CHARACTER*19 NOMS2
 C ----------------------------------------------------------------------
 
+C-----------------------------------------------------------------------
+      INTEGER I ,IACCES ,IAOBJ ,IATAVA ,IBID ,IDEBU ,IER1 
+      INTEGER IER2 ,ILOTY ,IMAXI ,JORDR ,NBORDR ,NORDR ,NUMED 
+
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       NOMS2 = NOMSD
       ACCE2 = ACCES

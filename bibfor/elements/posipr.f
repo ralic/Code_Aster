@@ -1,11 +1,11 @@
       SUBROUTINE POSIPR(NOMTE,EFGE,SIPO)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*) NOMTE
       REAL*8 SIPO(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,6 +28,15 @@ C     ------------------------------------------------------------------
 
       REAL*8 EFGE(12)
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER ITSEC ,LRCOU ,LSECR ,LSECT ,LSECT2 
+      REAL*8 A ,A2 ,ALFAY ,ALFAY2 ,ALFAZ ,ALFAZ2 ,AREDY 
+      REAL*8 AREDY2 ,AREDZ ,AREDZ2 ,DEUX ,HY1 ,HY2 ,HZ1 
+      REAL*8 HZ2 ,R1 ,R2 ,RT ,RT2 ,RY ,RY2 
+      REAL*8 RZ ,RZ2 ,XFL ,XFLY ,XFLZ ,XIY ,XIY2 
+      REAL*8 XIZ ,XIZ2 ,XJX ,XJX2 ,XSI ,XSIY ,XSIZ 
+      REAL*8 XXY ,XXZ ,ZERO 
+C-----------------------------------------------------------------------
       ZERO = 0.D0
       DEUX = 2.D0
 C     ------------------------------------------------------------------

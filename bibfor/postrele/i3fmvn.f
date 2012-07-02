@@ -1,7 +1,7 @@
       SUBROUTINE I3FMVN(NIL,DESC,SUCC,PREC,DESCTM,PTMDEP,
      +                  CONNEC,VLC,
      +                  LND,NBND,NBCHER,NBTROU,MATROU)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
       INTEGER NIL,DESC(*),SUCC(*),PREC(*),DESCTM(*),PTMDEP
@@ -9,7 +9,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,6 +57,8 @@ C
 C
 C======================================================================
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       MATROU(1) = PTMDEP
       PTT       = 2
       NBTROU    = 1

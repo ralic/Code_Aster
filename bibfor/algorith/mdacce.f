@@ -1,7 +1,7 @@
       SUBROUTINE MDACCE (TYPBAS,NEQGEN,PULSA2,MASGEN,DESCM,
      &                   RIGGEN,DESCR,FEXGEN,LAMOR,AMOGEN,DESCA,
      &                   WORK1,DEPGEN,VITGEN,ACCGEN )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER            NEQGEN,DESCM,DESCR,DESCA
       REAL*8             MASGEN(*),RIGGEN(*),FEXGEN(*),AMOGEN(*)
@@ -12,7 +12,7 @@
       COMPLEX*16         CBID
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,6 +57,9 @@ C
 C
       REAL*8  X1, X2
 C
+C-----------------------------------------------------------------------
+      INTEGER IM ,IRET ,JMASS 
+C-----------------------------------------------------------------------
       IF (TYPBAS(1:9).EQ.'MODE_MECA'.OR.
      &    TYPBAS(1:9).EQ.'MODE_GENE') THEN
         IF ( LAMOR ) THEN

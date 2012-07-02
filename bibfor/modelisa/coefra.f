@@ -1,7 +1,7 @@
       SUBROUTINE COEFRA(IPAS,IRES,X,XSI0,CK)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,7 @@ C-----------------------------------------------------------------------
 C   CALCUL DU COEFFICIENT DE RAIDEUR AJOUTEE CK EN FONCTION DE LA
 C   VITESSE REDUITE  (FAISCEAU DE TUBES SOUS ECOULEMENT TRANSVERSE)
 C-----------------------------------------------------------------------
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C  IN   : IPAS      : TYPE DE PAS
 C  IN   : IRES      : TYPE DE RESEAU DU POINT COURANT
 C  IN   : X         : VITESSE REDUITE
@@ -44,6 +44,10 @@ C
 C
 C-----------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IPAS1 ,IRES1 ,J ,K 
+      REAL*8 X 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
       X = DBLE(ABS(X))

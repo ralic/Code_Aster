@@ -1,4 +1,4 @@
-# MODIF  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 # ssnv209a.para = tps_job 120 mem_job 128Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -140,7 +140,7 @@ U2M=STAT_NON_LINE(MODELE    = MO,
                                  ITER_GLOB_MAXI = 50,
                                  RESI_GLOB_RELA = 1.0E-6,),
                   SOLVEUR=_F(METHODE='MUMPS',
-                         PCENT_PIVOT=30,),
+                         ),
                )
 
 #----------------------------------------------

@@ -1,14 +1,14 @@
       SUBROUTINE EXTRAC(INTERP,PREC,CRIT,NBINST,TI,TEMPS,Y,NEQ,XTRACT,
      +                                                             IER)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER                            NBINST,           NEQ,    IER
       REAL*8                   PREC,            TI(*),  Y(*), XTRACT(*)
       CHARACTER*(*)     INTERP,     CRIT
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -39,6 +39,10 @@ C OUT : IER     : CODE RETOUR, = 0 : IL Y A EU EXTRACTION
 C-----------------------------------------------------------------------
       REAL*8  PREC2
 C
+C-----------------------------------------------------------------------
+      INTEGER I 
+      REAL*8 ALPHA ,TEMPS 
+C-----------------------------------------------------------------------
       IER = 0
 C
 C     --- RECUPERATION DU CHAMP ---

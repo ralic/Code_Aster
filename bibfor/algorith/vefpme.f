@@ -1,6 +1,6 @@
       SUBROUTINE VEFPME(MODELE,CARELE,MATE,CHARGZ,INFCHZ,PARTPS,TEMPLU,
      &                  LVECHZ,LIGREZ)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*) MODELE,CARELE,MATE,CHARGZ,INFCHZ
       CHARACTER*(*) TEMPLU,LVECHZ,LIGREZ
@@ -8,7 +8,7 @@
       REAL*8 PARTPS(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,6 +43,9 @@ C VAR LVECHZ  : VECT_ELEM
 
 
 
+C-----------------------------------------------------------------------
+      INTEGER JLCHIN ,NBCHMX 
+C-----------------------------------------------------------------------
       PARAMETER (NBCHMX=13)
       INTEGER JCHAR,JINF,JTYP
       INTEGER IBID,IRET,NCHAR,K,ICHA,NUMCHM,IER,NCHIN

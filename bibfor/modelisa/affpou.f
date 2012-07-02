@@ -1,7 +1,7 @@
       SUBROUTINE AFFPOU(TMP,TMPF,FCX,NOM,
      &                  ISEC,IVAR,CAR,NCAR,VAL,TAB,EXP,
      &                  NBO,IOC,IER)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       REAL*8                                       VAL(*)
       CHARACTER*6                                              IOC
@@ -9,7 +9,7 @@
       CHARACTER*24      TMP,TMPF
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,6 +55,10 @@ C     ------------------------------------------------------------------
       REAL*8       R8MAEM, TST, VALRM
 C     ------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IER ,IISEC ,IIVAR ,ISEC ,IVAR ,J 
+      INTEGER JDGE ,JDGEF ,NBO ,NCAR ,NUM 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       TST = R8MAEM()
 C

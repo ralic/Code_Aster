@@ -1,10 +1,10 @@
       SUBROUTINE TE0237(OPTION,NOMTE)
-      IMPLICIT REAL*8(A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,6 +42,11 @@ C ......................................................................
       INTEGER I,K,KP,IGEOM,IMATE,ICACO,IDEPL,ICONT,NBPAR,IDEFOR,ITAB(7)
       INTEGER NNO,NPG,IDFDK,IVF,IRET,IRET1,IRET2,IRET3,IDEC,INTE,NPGE
 
+C-----------------------------------------------------------------------
+      INTEGER ICOU ,IPOIDS ,IRET4 ,ISP ,JGANO ,JNBSPI ,NBCMP 
+      INTEGER NBCOU ,NDIM ,NNOS 
+      REAL*8 R8NNEM ,SI11 ,SI12 ,SI22 ,ZIC 
+C-----------------------------------------------------------------------
       CALL ELREF1(ELREFE)
 
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDK,JGANO)

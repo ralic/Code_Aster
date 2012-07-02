@@ -1,7 +1,7 @@
       SUBROUTINE ME2MME(MODELZ,NCHAR,LCHAR,MATE,CARAZ,EXITIM,TIME,
      &                  MATELZ,NH,BASEZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE  CRP_20
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 
 C     ARGUMENTS:
 C     ----------
@@ -85,6 +85,10 @@ C     ------------------
       CHARACTER*1 BASE
       CHARACTER*2 CODRET
       INTEGER NBIN
+C-----------------------------------------------------------------------
+      INTEGER IBID ,ICHA ,IER ,IERD ,IFLA ,ILIRES ,IRET 
+      INTEGER J ,JVEASS ,NH 
+C-----------------------------------------------------------------------
       PARAMETER (NBIN=43)
       CHARACTER*8 LPAIN(NBIN),LPAOUT(1),NOMA,EXIELE
       CHARACTER*16 OPTION

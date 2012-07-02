@@ -1,6 +1,6 @@
       SUBROUTINE MEMAM2(OPTION,MODELE,NCHAR,LCHAR,MATE,CARA,COMPOR,
      &                  EXITIM,TIME,CHACCE,VECEL,BASEZ,LIGREZ)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER NCHAR
       REAL*8 TIME
@@ -9,7 +9,7 @@
       LOGICAL EXITIM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,6 +50,9 @@ C ----------------------------------------------------------------------
       CHARACTER*19 CHVARC
       CHARACTER*24 LIGRMO,LCHIN(18),LCHOUT(1),COMPOR
       CHARACTER*24 CHGEOM,CHCARA(18),CHHARM,VECELZ
+C-----------------------------------------------------------------------
+      INTEGER IAREFE ,IBID ,ICODE ,IRET ,NH 
+C-----------------------------------------------------------------------
       DATA CHVARC /'&&MEMAM2.VARC'/
       CALL JEMARQ()
       NEWNOM = '.0000000'

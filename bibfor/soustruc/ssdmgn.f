@@ -1,6 +1,6 @@
       SUBROUTINE SSDMGN(MAG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 18/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SOUSTRUC  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C     ARGUMENTS:
 C     ----------
       INCLUDE 'jeveux.h'
@@ -39,6 +39,14 @@ C ----------------------------------------------------------------------
       CHARACTER*24 VALK(2)
       INTEGER      IARG
 C
+C-----------------------------------------------------------------------
+      INTEGER I1 ,I1NOE ,IADIM2 ,IADIME ,IAGNL ,IAGNO ,IALINO
+      INTEGER IANMCR ,IAWK1 ,IBID ,IED ,IGNO ,II ,INOL
+      INTEGER IOCC ,IRET ,ISMA ,KK ,LGNL ,LMAIL ,LONGT
+      INTEGER LONT ,LPREF ,N ,N1 ,N2 ,N3 ,NBGNO
+      INTEGER NBGNO2 ,NBGNOT ,NBID ,NBNO ,NBNOEX ,NBSMA ,NOCC
+      INTEGER NUSMA,INDIIS
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL JEVEUO(MAG//'.DIME','L',IADIME)
       CALL JEVEUO(MAG//'.DIME_2','L',IADIM2)

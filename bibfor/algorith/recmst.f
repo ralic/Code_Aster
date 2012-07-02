@@ -1,7 +1,7 @@
       SUBROUTINE RECMST(GRAEXC,GRDMOD,NNOEEX,ILNOEX,ILCPEX,
      &    NMOST1,MODSTA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C***********************************************************************
 C    C. DUVAL
 C-----------------------------------------------------------------------
 C  BUT: RECUPERER LES INFORMATIONS DE TYPE MODE STATIQUE POUR
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C        LE CALCUL DYNAMIQUE ALEATOIRE
 C
 C-----------------------------------------------------------------------
@@ -49,6 +49,11 @@ C
 
 C---------MODES STATIQUES
 C
+C-----------------------------------------------------------------------
+      INTEGER I1 ,I2 ,I3 ,I3B ,I4 ,IBID ,ILAMSC 
+      INTEGER ILAMST ,ILCPEX ,ILNOEX ,ILORMS ,JORDR ,JPARA ,N 
+      INTEGER NMOST1 ,NMOST2 ,NNOEEX 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL GETVID(' ','MODE_STAT',0,IARG,0,KBID,N)
       NMOST1=-N

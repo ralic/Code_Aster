@@ -5,7 +5,7 @@
       INTEGER NBORDR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,7 +59,7 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C                      C H A M P _ V A R C
 C     ------------------------------------------------------------------
-      PARAMETER (NCVARC=8)
+      PARAMETER (NCVARC=9)
       CHARACTER*16 CHVARC(NCVARC)
 C     ------------------------------------------------------------------
 C                      C H A M P _ A C O U S T I Q U E
@@ -162,7 +162,7 @@ C      '1234567890123456','1234567890123456','1234567890123456',
       DATA CHVARC/
      & 'IRRA',            'TEMP',            'HYDR_ELNO',
      & 'HYDR_NOEU',       'EPSA_ELNO',       'META_ELNO',
-     & 'PTOT',             'DIVU'         /
+     & 'PTOT',            'DIVU',            'NEUT'         /
 C     ------------------------------------------------------------------
 C                      C H A M P _ A C O U S T I Q U E
 C     ------------------------------------------------------------------

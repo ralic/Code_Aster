@@ -1,8 +1,8 @@
       SUBROUTINE SHAKST(KSTAB,K11,K22,K33,K12,K21,K13,K23,K31,K32)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2003   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -20,7 +20,7 @@ C ======================================================================
 C--------------------------------------------------------
 C ELEMENT SHB8-PS A.COMBESCURE, S.BAGUET INSA LYON 2003 /
 C-------------------------------------------------------
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       REAL*8 KSTAB(24,24),K11(8,8),K22(8,8),K33(8,8),K12(8,8)
       REAL*8 K21(8,8),K13(8,8),K23(8,8),K31(8,8),K32(8,8)
       INTEGER I,J
@@ -30,6 +30,8 @@ C ASSEMBLAGE DE LA MATRICE DE STABILISATION
 C AVEC LES 3 MATRICES 8*8 K11 K22 ET K33
 
 C      CALL ZDANUL(KSTAB,576)
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       CALL R8INIR(576,0.D0,KSTAB,1)
       DO 20 I = 1,8
         DO 10 J = 1,8

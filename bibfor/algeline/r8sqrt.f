@@ -1,10 +1,10 @@
       FUNCTION R8SQRT (A, B)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       REAL *8 A, B
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,6 +27,9 @@ C OUT : HYPOT: SQRT(A**2+B**2).
 C-----------------------------------------------------------------------
       REAL *8 P, R, S, T, U
 C
+C-----------------------------------------------------------------------
+      REAL*8 R8SQRT 
+C-----------------------------------------------------------------------
       P = MAX(ABS(A),ABS(B))
       IF (P .EQ. 0.0D0) GO TO 20
       R = (MIN(ABS(A),ABS(B))/P)**2

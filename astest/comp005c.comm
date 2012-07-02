@@ -1,4 +1,4 @@
-# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE VALIDATION DE LA MODELISATION AXIS_GRAD_VARI
 # comp005c.para = tps_job 120 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -35,8 +35,8 @@ MA_Q = CREA_MAILLAGE(
 
 L_INST = DEFI_LIST_REEL (
               DEBUT=0.0,
-              INTERVALLE=(_F(JUSQU_A=2.00,NOMBRE=20,),
-                          ),);
+              INTERVALLE=(_F(JUSQU_A=2.00,NOMBRE=20),
+                          ));
 
 
 
@@ -57,7 +57,7 @@ F_TEMP=DEFI_FONCTION(
 
 U_COMP=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(0.,0.,2.,5.e-3),
-                     PROL_DROITE='CONSTANT',);
+                     PROL_DROITE='CONSTANT');
 
 
 MO=[None]*2
@@ -111,9 +111,9 @@ for i in range(0,len(modelisation)):
                     AFFE_VARC = (_F(TOUT='OUI',
                                   EVOL =TEMP[i],
                                   NOM_VARC='TEMP',
-                                  VALE_REF=20.0),),
+                                  VALE_REF=20.0)),
                      AFFE=_F(TOUT='OUI',
-                             MATER=METAL2),);
+                             MATER=METAL2));
 
   MO[i]=AFFE_MODELE(MAILLAGE=MA[i],
               AFFE=_F(TOUT='OUI',
@@ -146,8 +146,8 @@ for i in range(0,len(modelisation)):
   U[i]=STAT_NON_LINE(MODELE=MO[i],
             CHAM_MATER=CHP_M[i],
             EXCIT=(_F(CHARGE=CHR_C[i],
-                     FONC_MULT=U_COMP,),
-                   _F(CHARGE=C_RIG[i],),
+                     FONC_MULT=U_COMP),
+                   _F(CHARGE=C_RIG[i]),
                    ),
             COMP_INCR=_F(RELATION='ENDO_ISOT_BETON'),
             INCREMENT=_F(LIST_INST=L_INST,
@@ -156,7 +156,7 @@ for i in range(0,len(modelisation)):
             NEWTON=_F(MATRICE='TANGENTE',
                       REAC_ITER=1,
                       ),
-            SOLVEUR = _F(METHODE='MUMPS',PCENT_PIVOT=50, SYME='OUI'),
+            SOLVEUR = _F(METHODE='MUMPS', SYME='OUI'),
             CONVERGENCE=_F(ITER_GLOB_MAXI=50,
                            RESI_GLOB_RELA=1.e-7,
                           ),
@@ -193,7 +193,7 @@ for i in range(0,len(modelisation)):
                  RESULTAT=U[i],
                  NOM_CHAM='DEPL',
                  NOM_CMP=('DX'),
-                 OPERATION='EXTRACTION',),);
+                 OPERATION='EXTRACTION'));
 
   TAB_S[i]=POST_RELEVE_T(
            ACTION=
@@ -202,19 +202,19 @@ for i in range(0,len(modelisation)):
                  RESULTAT=U[i],
                  NOM_CHAM='SIGM_NOEU',
                  NOM_CMP=('SIXX'),
-                 OPERATION='EXTRACTION',),);
+                 OPERATION='EXTRACTION'));
 
   TG_E[i]=RECU_FONCTION(TABLE=TAB_E[i],
                   PARA_X='INST',
                   PARA_Y='DX',
                   PROL_DROITE='CONSTANT',
-                  PROL_GAUCHE='CONSTANT',);
+                  PROL_GAUCHE='CONSTANT');
 
   if i==1 :
 
     DIFF=CALC_TABLE(TABLE=TAB_S[i],
                     TITRE = ' ',
-                    ACTION=(_F(OPERATION='RENOMME',NOM_PARA=('SIXX','SIXX_L'),),
+                    ACTION=(_F(OPERATION='RENOMME',NOM_PARA=('SIXX','SIXX_L')),
                             _F(OPERATION='COMB',TABLE=TAB_S[i-1],NOM_PARA='INST'),
                             _F(OPERATION='OPER',FORMULE=F_DIFF,NOM_PARA='DIFF'),
                             ),
@@ -233,7 +233,7 @@ TEST_TABLE(TABLE=DIFF,
          VALE=0.0,
          CRITERE='ABSOLU',
          PRECISION=1e-03,
-         REFERENCE='NON_REGRESSION',);
+         REFERENCE='NON_REGRESSION');
 
 
 FIN();

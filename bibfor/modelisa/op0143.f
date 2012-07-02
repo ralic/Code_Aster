@@ -1,7 +1,7 @@
       SUBROUTINE OP0143()
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C-----------------------------------------------------------------------
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C
 C     OPERATEUR "DEFI_FLUI_STRU"
@@ -46,6 +46,16 @@ C
       INTEGER      IARG
 C
 C       DATA TYPAS   /'CARRE_LIGN ','TRIA_LIGN'/
+C-----------------------------------------------------------------------
+      INTEGER I ,IBID ,ICAEL ,ICAR ,ICARA ,ICM ,ICMP 
+      INTEGER ICOOR ,ICOUP ,IDECCR ,IDECVR ,IENCE ,IEQUIV ,IOCC 
+      INTEGER IPAS ,IPESA ,IPRHO ,IPVIS ,IRHOE ,IRHOI ,IRUGO 
+      INTEGER ITPAS ,ITRES ,ITYPF2 ,ITYPFL ,IVECT ,J ,JCM 
+      INTEGER JCOUP ,JPAS ,JTPAS ,LFSCR ,LFSGM ,LFSGR ,LFSIC 
+      INTEGER LFSVI ,LFSVK ,LFSVR ,LNBCR ,NBANGL ,NBCARA ,NBCOOR 
+      INTEGER NBCR ,NBGRMA ,NBGTOT ,NBOCC ,NTYPG ,NZEX 
+      REAL*8 PAS ,PI ,R8PI ,RBID ,Y 
+C-----------------------------------------------------------------------
         DATA TYPAS   /'CARRE_LIG','TRIA_LIGN'/
         DATA MCFAC   /'FAISCEAU_TRANS ','GRAPPE',
      &                'FAISCEAU_AXIAL ','COQUE_COAX'/

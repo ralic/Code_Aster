@@ -1,7 +1,7 @@
       SUBROUTINE VPRI2D(SIG,SIGI)
 C ......................................................................
 C .  - FONCTION REALISEE:  CALCUL DU MAX DES VALEURS PROPRES D'UN      .
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C .         TENSEUR DE TYPE CONTRAINTE/DEFORMATION 2D                  .
 C .  - ARGUMENTS:                                                      .
 C .      DONNEES:          SIG      -->                                .
@@ -10,7 +10,7 @@ C ......................................................................
 
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,6 +34,8 @@ C
       REAL*8 S,SP,AL1,AL2,DELTA,SQD
 C     ------------------------------------------------------------------
 
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       S = SIG(1)+SIG(2)
       SP= SIG(1)-SIG(2)
       DELTA=SP**2+4.D0*SIG(4)**2

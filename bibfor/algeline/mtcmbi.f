@@ -1,12 +1,12 @@
       SUBROUTINE MTCMBI(TYPMAT,LMAT,COEF,CCOEF,LRES)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER LMAT,LRES
       CHARACTER*(*) TYPMAT
       COMPLEX*16 CCOEF
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,6 +44,13 @@ C     -----------------------------------------------------------------
       COMPLEX*16 CZERO
       LOGICAL MATSYM
 C     -----------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IATMAI ,IATMAT ,IATREI ,IATRES ,IBID ,ICOEF 
+      INTEGER IDEBLI ,IEQUA ,IERD ,IFINLI ,ILIG ,IND ,IVAL 
+      INTEGER JREFA ,JSMDI ,JSMHC ,KIN ,LDDL ,NBCOMB ,NEQ 
+
+      REAL*8 COEF ,ZERO 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 
       IF (TYPMAT(1:1).NE.'R' .AND. TYPMAT(1:1).NE.'C') THEN

@@ -1,10 +1,10 @@
       SUBROUTINE COEFMO(TYPFLU,ZRIGI,NBM,NMODE,INDIC,X,PULSC,VGAP,XSI0,
      &                  VECI1,VECR1,VECR2,VECR3,VECR4,VECR5,XMF,
      &                  XKF,XCF)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,6 +41,14 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
 C
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IMASSE ,IMATB ,IMOD ,IMODE ,IPAS ,IRES 
+      INTEGER ITYPFL ,IVECC ,J ,JMOD ,LFSIC ,LFSVI ,LFSVR 
+      INTEGER NBP 
+      REAL*8 AIRE ,CAJ1 ,CAJ2 ,CD ,CF0 ,CK ,COCAJ1 
+      REAL*8 COCAJ2 ,COKAJ1 ,COKAJ2 ,DE ,HMOY ,P1 ,P2 
+      REAL*8 PHIE ,RUG ,VAL1 ,VAL2 ,VISC ,VR 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       DEPI = R8DEPI()
 C

@@ -1,6 +1,6 @@
       SUBROUTINE OP0007()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C                           OPERATEUR :     AFFE_CHAR_MECA
 C
 C      MOTS-CLES ACTUELLEMENT TRAITES:
@@ -31,6 +31,9 @@ C
       CHARACTER*8  CHAR
       CHARACTER*16 CONCEP,OPER
 C
+C-----------------------------------------------------------------------
+      INTEGER IATYPE 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
       CALL INFMAJ

@@ -1,12 +1,12 @@
       SUBROUTINE FGLEMA(NBF,NBPOIN,SIG,DEFPLA,TEMP,NOMMAT,DOM)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*)                NOMMAT
       REAL*8                       SIG(*),DEFPLA(*),TEMP(*),DOM(*)
       INTEGER           NBF,NBPOIN
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,6 +47,10 @@ C
       REAL*8        SIHMOI,SIHPLU,SEQMOI,SEQPLU,VMOI,VPLU,VALE
       REAL*8        VSEUIL,EXPS,EXPO
       REAL*8        NULL,UN,DEUX,TROIS
+C-----------------------------------------------------------------------
+      INTEGER I ,IDE ,IDEV ,NBPAR 
+      REAL*8 RBID ,ZERO 
+C-----------------------------------------------------------------------
       DATA ZERO /1.D-13/
 C
       CALL JEMARQ()

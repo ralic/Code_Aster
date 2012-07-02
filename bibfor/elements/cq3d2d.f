@@ -1,12 +1,12 @@
       SUBROUTINE CQ3D2D(NNO,COOR3D,COTETA,SITETA,COOR2D)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER NNO
       REAL*8 COOR3D(*),COTETA,SITETA,COOR2D(*)
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/11/2006   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -43,6 +43,10 @@ C
       REAL*8 GAMMA,DELTA,ALPHA,ALPHA1,ALPHA2
       REAL*8 TRIGOM
 C
+C-----------------------------------------------------------------------
+      INTEGER I 
+      REAL*8 TETA 
+C-----------------------------------------------------------------------
       IF ((NNO.EQ.3).OR.(NNO.EQ.6).OR.(NNO.EQ.7)) THEN
 C
 C     CAS TRIANGLES A 3, 6, OU 7 NOEUDS

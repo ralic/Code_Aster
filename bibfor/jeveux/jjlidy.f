@@ -1,7 +1,7 @@
       SUBROUTINE JJLIDY ( IADYN , IADMI )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C RESPONSABLE LEFEBVRE
-C MODIF JEVEUX  DATE 06/03/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRS_505 CRS_508 CRP_18
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER             IADYN , IADMI
 C ----------------------------------------------------------------------
 C MISE A JOUR DU COMPTEUR DES SEGMENTS DE VALEURS U ET LIBERATION
@@ -50,6 +50,9 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       INTEGER          IET,IBID,LGS,LGSV
 C DEB ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER K 
+C-----------------------------------------------------------------------
       IF ( IADYN .NE. 0 ) THEN 
         IET = ISZON(JISZON+IADMI-1)
         LGS = ISZON(JISZON+IADMI-4) - IADMI + 4

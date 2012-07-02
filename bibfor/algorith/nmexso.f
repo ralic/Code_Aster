@@ -1,6 +1,6 @@
       SUBROUTINE NMEXSO(SDDYNA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C TOLE CRS_512
-      IMPLICIT REAL*8(A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*19 SDDYNA
 C
@@ -39,6 +39,15 @@ C
       INTEGER IARG,IFFOR,IFMIS
 C
 C     -----------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,I1 ,I2 ,IAMACR ,IBID ,IC ,ID1 
+      INTEGER IDDINT ,IDDL ,IDNO ,IDVEIS ,IE ,IEQINT ,IFR 
+      INTEGER IMA ,INO ,INOE ,IRET ,JAMOR ,JFRQ ,JINFO 
+      INTEGER JMASS ,JREFN ,JRIG ,NBEC ,NBEXCI ,NBMOD2 ,NBMODE 
+      INTEGER NBNO ,NC ,NCMP ,NDDINT ,NEC ,NEQ ,NFREQ 
+
+      REAL*8 AINST ,PAS ,RINST 
+C-----------------------------------------------------------------------
       DATA K8B/'        '/
 
       CALL JEMARQ()

@@ -1,13 +1,13 @@
       SUBROUTINE NOLIGR(LIGRZ,IGREL,NUMEL,NB,LI,LK,CODE,IREPE,
      &                  INEMA,NBNO,TYPLAZ)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*) LIGRZ, LK(*), TYPLAZ
       CHARACTER*8   TYPLAG
       CHARACTER*19  LIGR
       INTEGER      IGREL,NUMEL,NB,LI(*),CODE,IREPE,INEMA,NBNO(*)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,6 +74,10 @@ C                       LE SECOND LAGRANGE EST APRES
       CHARACTER*24 VALK
       CHARACTER*8 NOMA
 C --- DEBUT
+C-----------------------------------------------------------------------
+      INTEGER IC ,ILAG1 ,ILAG2 ,JDLGNS ,JLIGR ,JNEMA ,JNOMA 
+      INTEGER K ,KLIGR ,LONIGR ,NUMPOI ,NUMSEG ,NUNOEU 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       TYPLAG = TYPLAZ
       CALL POSLAG(TYPLAG,ILAG1,ILAG2)

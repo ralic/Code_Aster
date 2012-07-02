@@ -11,7 +11,7 @@
      &                   NOFDEP,NOFVIT,NOFACC,NOMFON,PSIDEL,MONMOT,
      &                   NOMRES,NBEXCI)
 C
-      IMPLICIT     REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
       INTEGER      LOGCHO(*),IORSTO(*),IREDST(*),IPARCH(*),ICHOST(*)
@@ -30,7 +30,7 @@ C
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -92,6 +92,18 @@ C
       REAL*8 RINT1, RINT2
       CHARACTER*8   TRAN
       INTEGER       PALMAX, ETAUSR
+C-----------------------------------------------------------------------
+      INTEGER I ,IARCHI ,IF ,IM ,IM1 ,IRET ,ISTO1 
+      INTEGER ISTO2 ,ISTO3 ,JACCE ,JBID1 ,JCHOR ,JDEP1 ,JDEP2 
+      INTEGER JDEP3 ,JDEP4 ,JDEPL ,JFEX1 ,JFEX2 ,JFEX3 ,JFEX4 
+      INTEGER JFEXT ,JREDI ,JREDR ,JTRA1 ,JVINT ,JVIT1 ,JVIT2 
+      INTEGER JVIT3 ,JVIT4 ,JVITE ,N100 ,NBCHOC ,NBEXCI ,NBMOD1 
+      INTEGER NBMODE ,NBPAS ,NBREDE ,NBREVI ,NBSAUV ,NBSCHO ,NDT 
+
+      REAL*8 DEUX ,DT ,DT1 ,DT2 ,DT3 ,DT4 ,DT5 
+      REAL*8 DT6 ,G1 ,G2 ,G3 ,G4 ,QUATRE ,SIX 
+      REAL*8 TARCHI ,TEMPS ,TINIT ,X1 ,X2 ,ZERO 
+C-----------------------------------------------------------------------
       PARAMETER (PALMAX=20)
       CHARACTER*6   TYPAL(PALMAX)
       CHARACTER*3   FINPAL(PALMAX)

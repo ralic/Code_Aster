@@ -1,6 +1,6 @@
       SUBROUTINE GESDEF(NOMRES,NUMDDL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C***********************************************************************
 C    P. RICHARD     DATE 19/02/91
 C-----------------------------------------------------------------------
 C  BUT: < GESTION DES DEFORMEES A CALCULER >
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C     EN FONCTION DES DDL ACTIFS
 C  ET DES MASQUE DE DDL AUX NOEUDS
@@ -59,6 +59,11 @@ C
       INTEGER IKYP(4)
       CHARACTER*8 K8BID
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IAD1 ,IAD2 ,IK ,IRET ,LDDESC ,LLDEEQ 
+      INTEGER LLDES ,LTIDEC ,LTMAT ,NBCMP ,NBDEF ,NBEC ,NBNO 
+      INTEGER NBNOT ,NBTEM ,NEQ ,NOMAX 
 C-----------------------------------------------------------------------
       DATA PGC/'GESDEF'/
 C-----------------------------------------------------------------------

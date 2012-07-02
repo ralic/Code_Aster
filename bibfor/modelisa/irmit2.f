@@ -1,6 +1,6 @@
       SUBROUTINE IRMIT2 (NBMODE,IFMIS,FREQ,TABRIG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C TOLE CRS_513
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
       CHARACTER*24 TABRIG, TABFRQ, TABRI2,TABRI0
@@ -26,6 +26,11 @@ C
 C      INTEGER*8    LONG1,LONG2,LONG3
 C-----------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,I1 ,IC ,IFMIS ,IFREQ ,JFRQ ,JRI0 
+      INTEGER JRI2 ,JRIG ,NBMODE ,NFREQ 
+      REAL*8 FREQ ,PAS ,R8PREM 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 
 C

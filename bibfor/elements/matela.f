@@ -1,13 +1,13 @@
       SUBROUTINE MATELA(ICODMA,MATERI,ITEMP,TEMP,E,NU)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       REAL*8 TEMP,E,NU
       INTEGER ICODMA,ITEMP
       CHARACTER*(*) MATERI
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -35,6 +35,8 @@ C OUT E      : R8  : MODULE D'YOUNG
 C OUT NU     : R8  : COEFFICIENT DE POISSON
 C
       INTEGER NBRES,NBPAR,I
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       PARAMETER    (NBRES=2)
       REAL*8       VALPAR,VALRES(NBRES)
       INTEGER CODRES(NBRES)

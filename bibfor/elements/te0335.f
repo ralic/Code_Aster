@@ -1,7 +1,7 @@
       SUBROUTINE TE0335(OPTION,NOMTE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ----------------------------------------------------------------------
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 
 C     BUT:       POUR LES ELEMENTS ISOPARAMETRIQUES 3D , CALCUL DES
 C                GRANDEURS EQUIVALENTES SUIVANTES
@@ -70,6 +70,10 @@ C                EQNO (CONT/DEF EQUIVALENT NOEUDS)
 C                DIMENSIONNE  A  NEQMAX CMP MAX * 27 NO MAX
 C ----------------------------------------------------------------------
       INCLUDE 'jeveux.h'
+C-----------------------------------------------------------------------
+      INTEGER IDFDE ,IPOIDS ,IVF ,JGANO ,NDIM ,NEQMAX ,NNOMAX 
+      INTEGER NPGMAX 
+C-----------------------------------------------------------------------
       PARAMETER (NPGMAX=27,NNOMAX=27,NEQMAX=17)
 C ----------------------------------------------------------------------
       INTEGER IDEFO,ICONT,IEQUIF

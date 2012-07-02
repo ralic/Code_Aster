@@ -1,9 +1,9 @@
       SUBROUTINE POIBIJ(NPV,VABS,GEOM,FSVR,NBM,VICOQ,TORCO,TCOEF,FREQ,
      &                  IMASSE,MAJ,VECPR)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,6 +65,12 @@ C
 C
 C-----------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IFM ,IMAT2 ,IMATB ,IMOD ,IUNIFI ,IV 
+      INTEGER J ,K 
+      REAL*8 CF0 ,CRIT ,FI ,HMOY ,OMEGAI ,PI ,RUG 
+      REAL*8 S1 ,S2 ,UMOY ,VISC 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
 C

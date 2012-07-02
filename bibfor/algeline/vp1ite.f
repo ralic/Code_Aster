@@ -1,6 +1,6 @@
       SUBROUTINE VP1ITE(LMASSE,LRAIDE,LDYNAM,X,IMODE,VALP,NEQ,MXITER,
      &                  TOL,ITER,X0,MX,ERR,IEXCL,PLACE,IQUOTI,SOLVEU)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
       REAL*8 X(NEQ,1),MX(NEQ,*),ERR,X0(NEQ)
@@ -10,7 +10,7 @@ C
       CHARACTER*19 SOLVEU
 C     ----------------------- ------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,6 +56,10 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C
 C     INIT. OBJETS ASTER
+C-----------------------------------------------------------------------
+      INTEGER IDET0 ,IEQ ,IER ,IQUOTI ,JTER 
+      REAL*8 DSEED ,TOL 
+C-----------------------------------------------------------------------
       MATASS=ZK24(ZI(LDYNAM+1))
       CHCINE=' '
       CRITER=' '

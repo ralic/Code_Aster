@@ -1,9 +1,9 @@
       SUBROUTINE DSTAT0(NBPT,D,DMOY,DETYP,DRMS,DMAX,DMIN)
 C***********************************************************************
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,7 +24,7 @@ C       MOYENNAGE STATISTIQUE DES DEPLACEMENTS AMV
 
 
 
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       REAL*8 D(*),DMOY,DETYP,DRMS,DMAX,DMIN,SD2,SD,SDD
 
 
@@ -49,6 +49,9 @@ C       SD SOMME DES VALEURS
 C       SD2 SOMME DES CARRES DES VALEURS
 C       SDD SOMME DES CARRES DES DIFFERENCES A LA MOYENNE
 
+C-----------------------------------------------------------------------
+      INTEGER I ,NBPT 
+C-----------------------------------------------------------------------
       SD = 0.D0
       SD2 = 0.D0
       SDD = 0.D0

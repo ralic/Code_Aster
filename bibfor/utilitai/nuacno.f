@@ -1,10 +1,10 @@
       SUBROUTINE NUACNO ( NUAGE, LNO, CHNO )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*)       NUAGE, LNO, CHNO
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,6 +34,13 @@ C     ------------------------------------------------------------------
       LOGICAL       EXISDG
 C     ------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IAD ,IAEC ,IANUEQ ,IAPRNO ,IBID ,ICMP 
+      INTEGER ICOMPT ,IE ,IEC ,IEQ ,INO ,ITYPE ,IVAL 
+      INTEGER J ,JDESC ,JLNO ,JNUAI ,JNUAV ,JREFE ,K 
+      INTEGER KCOMP ,KVALE ,NC ,NCMP ,NCMPMX ,NEC ,NP 
+      INTEGER NUM 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       KNUAGE = NUAGE
       KLNO   = LNO

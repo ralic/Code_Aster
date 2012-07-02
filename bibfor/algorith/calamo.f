@@ -1,7 +1,7 @@
       SUBROUTINE CALAMO(NOMRES,CLASSE,BASMOD)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,6 +47,12 @@ C
       INTEGER      IARG
 
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IAD ,IAM ,IDIFF ,IER ,IOC ,LAMO2 
+      INTEGER LAMOR ,LDDES ,LDREF ,LDRES ,LFREQ ,LMGEN ,NBAMOR 
+      INTEGER NBDEF ,NBMOD ,NTAIL 
+      REAL*8 BID ,COEFF 
 C-----------------------------------------------------------------------
       DATA BLANC /'        '/
 C-----------------------------------------------------------------------

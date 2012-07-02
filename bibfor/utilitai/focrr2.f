@@ -1,13 +1,13 @@
       SUBROUTINE FOCRR2(NOMFON,RESU,BASE,NOMCHA,MAILLE,NOEUD,CMP,
      &                  NPOINT,NUSP,IVARI,IER)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*1   BASE
       CHARACTER*8   MAILLE,NOEUD,CMP
       CHARACTER*16  NOMCHA
       CHARACTER*19  NOMFON,RESU
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,6 +53,17 @@ C     ------------------------------------------------------------------
       INTEGER      IARG
 C     ------------------------------------------------------------------
 
+C-----------------------------------------------------------------------
+      INTEGER I ,I1 ,I2 ,IACCES ,IALEXI ,IATACH ,IATAVA 
+      INTEGER IBID ,IDDL1 ,IDDL2 ,IE ,IER ,IERD ,IERR1 
+      INTEGER IERR2 ,II ,INOEUD ,IORDR ,IP1 ,IP2 ,IPOSIT 
+      INTEGER IRET ,IVARI ,JINST ,JLIR8 ,L1 ,L2 ,LFON 
+      INTEGER LG1 ,LG2 ,LPRO ,LVAL1 ,LVAL2 ,LVAR ,LXLGUT 
+      INTEGER N1 ,N2 ,N3 ,N4 ,NBINST ,NBORDR ,NPOINT 
+      INTEGER NUSP 
+      REAL*8 R1 ,R2 ,R8B ,RBASE ,RVAL ,VALR1 ,VALR2 
+
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 
       IER = 0

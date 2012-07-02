@@ -1,9 +1,9 @@
       SUBROUTINE GVERIG ( NOMA, NOCC, CHFOND, LOBJ2, NOMNO, COORN,
      &                    TRAV1, TRAV2, TRAV3, TRAV4 )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,6 +73,8 @@ C
       CHARACTER*8  K8BID
       INTEGER      IARG
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
       CALL JEVEUO ( CHFOND, 'L', IADRNO )

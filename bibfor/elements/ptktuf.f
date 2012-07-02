@@ -1,13 +1,13 @@
       SUBROUTINE PTKTUF(SK,E,ROF,C,A,AI,XL,XIY,XIZ,XJX,G,ALFAY,ALFAZ,
      &                  EY,EZ)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       REAL*8 SK(*)
       REAL*8 E,ROF,C,A,AI,XL,XIY,XIZ,XJX,G,ALFAY,ALFAZ,EY,EZ
 C    -------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -71,10 +71,13 @@ C LOC R*8 ! ASY    !   -     ! AIRE REDUITE CISAILLEE SUIVANT Y
 C LOC R*8 ! ASZ    !   -     ! AIRE REDUITE CISAILLEE SUIVANT Z
 C LOC I   ! IP     !   16    ! POINTEUR SUR L'ELEMENT DIAGONAL PRECEDENT
 C     ------------------------------------------------------------------
-      INTEGER IP(16)
+      INTEGER IP(16),I
       REAL*8 ZERO,R8GAEM
       REAL*8  C1,C2,C3,C4,C6,C12
       REAL*8  XL2,XL3, PHIY,PHIZ, EIY,EIZ, ASY,ASZ
+C-----------------------------------------------------------------------
+      DATA IP/ 0,1,3,6,10,15,21,28,36,45,55,66,78,91,105,120/
+C ---------------------------------------------------------------------
 C
       ZERO = 0.D0
       C1   = 1.D0
@@ -83,8 +86,6 @@ C
       C4   = 4.D0
       C6   = 6.D0
       C12  =12.D0
-      DATA IP/ 0,1,3,6,10,15,21,28,36,45,55,66,78,91,105,120/
-C ---------------------------------------------------------------------
       DO 1,I=1,136
          SK(I) =ZERO
     1 CONTINUE

@@ -1,4 +1,4 @@
-# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE SOLLICITATION SISMIQUE D UNE COLONNE DE SOL
 # wtnv132b.para = tps_job 800 mem_job 212Mo mem_aster 25 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -59,8 +59,8 @@ list_no_later_dro = ['N13','N14','N15','N16','N17','N18','N19','N20',
 
 
 DEBUT(CODE=_F(NOM='WTNV132B', NIV_PUB_WEB='INTERNET',
-              VISU_EFICAS='NON',),
-      IGNORE_ALARM=('MODELISA4_8','CALCULEL4_9'),);
+              VISU_EFICAS='NON'),
+      IGNORE_ALARM=('MODELISA4_8','CALCULEL4_9'));
 
 VISCOLIQ = DEFI_CONSTANTE(VALE=0.001 );
 DVISCOL  = DEFI_CONSTANTE(VALE=0.0   );
@@ -68,7 +68,7 @@ KINT     = DEFI_CONSTANTE(VALE=1.E-12);
 # KINT correspond a une conductivite lambda =1E-9
 #      soit a une permeabilite de K = 9.81E-6 m/s
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI',),);
+MAIL=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI'));
 # REMARQUE:
 # On sait que VERIF='OUI' produit une alarme sur la presence
 # de noeuds doubles: c'est volontairement qu'on a dedouble
@@ -81,10 +81,10 @@ for n in range(nbcouche-1): list_group_ma.append('ELEMS'+str(n+1));
 MA=CREA_MAILLAGE(INFO=2,
                  MAILLAGE=MAIL,
                  MODI_MAILLE=_F(GROUP_MA = list_group_ma,
-                                OPTION   = 'QUAD8_9',),);
+                                OPTION   = 'QUAD8_9'));
 
 
-#IMPR_RESU(FORMAT='IDEAS',RESU=_F(MAILLAGE=MA,));
+#IMPR_RESU(FORMAT='IDEAS',RESU=_F(MAILLAGE=MA));
 
 # Definition des differents modeles associes a chaque couche
 MOD=[None]*(nbcouche-1);
@@ -111,7 +111,7 @@ for n in range(nbcouche-1):
                                MODELISATION='D_PLAN_HM'),
                             _F(GROUP_MA    =tuple(list_group_ma_),
                                PHENOMENE   ='MECANIQUE',
-                               MODELISATION='D_PLAN_DIL'),),);
+                               MODELISATION='D_PLAN_DIL')));
 
 # <--5: fin boucle for
 
@@ -125,8 +125,8 @@ MAT2= DEFI_MATERIAU(ELAS_2NDG = _F(A1 =1.E+04,
                                    A2 = 0.0,
                                    A3 = 0.0,
                                    A4 = 0.0,
-                                   A5 = 0.0,),
-                    NON_LOCAL = _F(PENA_LAGR = 1.E+0,),);
+                                   A5 = 0.0),
+                    NON_LOCAL = _F(PENA_LAGR = 1.E+0));
 
 # ---- COUCHE1 : ELASTIQUE TRES RIGIDE
 MAT0=DEFI_MATERIAU(ELAS=_F(E     = 100.*YOUNG,
@@ -193,25 +193,25 @@ AFFMAT1=AFFE_MATERIAU(MAILLAGE=MA,
                             _F(GROUP_MA=list_group_ma[0],
                               MATER=MAT0),
                             _F(GROUP_MA=list_group_ma_[:nbcouche],
-                              MATER=MAT2,),),);
+                              MATER=MAT2)));
 
 PES=AFFE_CHAR_MECA(MODELE=MOD[nbcouche-2],
                    PESANTEUR=_F(GRAVITE=1.0,
-                                DIRECTION=(0.0,-1.0,0.0),),);
+                                DIRECTION=(0.0,-1.0,0.0)));
 
 CHPAR=AFFE_CHAR_CINE(MODELE=MOD[nbcouche-2],
                      MECA_IMPO=_F(GROUP_MA='BAS', DY=0.0));
 
 TEMPS=DEFI_LIST_REEL(DEBUT=0.0,
-                     INTERVALLE=(_F(JUSQU_A=2000000.0,NOMBRE=20,),
-                                 _F(JUSQU_A=3000000.0,NOMBRE=20,),
-                                 _F(JUSQU_A=4000000.0,NOMBRE=20,),
-                                 _F(JUSQU_A=5000000.0,NOMBRE=20,),
-                                 _F(JUSQU_A=6000000.0,NOMBRE=20,),
-                                 _F(JUSQU_A=7000000.0,NOMBRE=20,),
-                                 _F(JUSQU_A=8000000.0,NOMBRE=20,),
-                                 _F(JUSQU_A=9000000.0,NOMBRE=20,),
-                                 _F(JUSQU_A=10000000.0,NOMBRE=20,),
+                     INTERVALLE=(_F(JUSQU_A=2000000.0,NOMBRE=20),
+                                 _F(JUSQU_A=3000000.0,NOMBRE=20),
+                                 _F(JUSQU_A=4000000.0,NOMBRE=20),
+                                 _F(JUSQU_A=5000000.0,NOMBRE=20),
+                                 _F(JUSQU_A=6000000.0,NOMBRE=20),
+                                 _F(JUSQU_A=7000000.0,NOMBRE=20),
+                                 _F(JUSQU_A=8000000.0,NOMBRE=20),
+                                 _F(JUSQU_A=9000000.0,NOMBRE=20),
+                                 _F(JUSQU_A=10000000.0,NOMBRE=20),
                                  _F(JUSQU_A=11000000.0,NOMBRE=20)));
 
 F_EVOL=DEFI_FONCTION(NOM_PARA='INST',
@@ -231,11 +231,11 @@ FOC = DEFI_CONSTANTE( VALE=9.81) ;
 n_couche=2
 
 CHLAT=AFFE_CHAR_CINE(MODELE=MOD[0],
-                     MECA_IMPO=_F(GROUP_MA=('DR1','GA1'), DX=0.0),);
+                     MECA_IMPO=_F(GROUP_MA=('DR1','GA1'), DX=0.0));
 
 # Conditions hydrauliques
 PHAUT=AFFE_CHAR_CINE(MODELE=MOD[0],
-                     MECA_IMPO=_F(GROUP_MA='HA1', PRE1=0.0,),);
+                     MECA_IMPO=_F(GROUP_MA='HA1', PRE1=0.0));
 
 SIEF=CREA_CHAMP(INFO=1,
                 TYPE_CHAM='ELGA_SIEF_R',
@@ -244,13 +244,13 @@ SIEF=CREA_CHAMP(INFO=1,
                 PROL_ZERO='OUI',
                 AFFE=_F(GROUP_MA=list_group_ma[1],
                         NOM_CMP=('SIXX','SIYY','SIZZ'),
-                        VALE=(P0,P0,P0,),),);
+                        VALE=(P0,P0,P0)));
 
 DEFLISTT =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =TEMPS ),
                         ECHEC=_F(EVENEMENT     = 'ERREUR',
                                  ACTION        = 'DECOUPE',
                                  SUBD_METHODE  = 'MANUEL',
-                                 SUBD_PAS=5,SUBD_NIVEAU=10),)
+                                 SUBD_PAS=5,SUBD_NIVEAU=10))
 
 # Pas d Initialisation des contraintes
 # Mise en place de la premiere couche et de la seconde couche simultanement = 1ere couche
@@ -276,12 +276,12 @@ U[0]=STAT_NON_LINE(MODELE=MOD[0],
                                RELATION_KIT=('HUJEUX','LIQU_SATU','HYDR_UTIL'),
                                GROUP_MA=list_group_ma[1]),
                             _F(RELATION='ELAS',
-                               GROUP_MA=list_group_ma_[:2]),),
+                               GROUP_MA=list_group_ma_[:2])),
                  #RECH_LINEAIRE=_F( ),
                  INCREMENT=_F(LIST_INST=DEFLISTT,
                               INST_INIT=0,
-                              INST_FIN=2000000.0,),
-                 ARCHIVAGE=_F(LIST_INST=TEMPS,),
+                              INST_FIN=2000000.0),
+                 ARCHIVAGE=_F(LIST_INST=TEMPS),
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1),
                  CONVERGENCE=_F(ITER_GLOB_MAXI=10,RESI_GLOB_RELA=1E-12));
@@ -291,21 +291,21 @@ DEP[0]=CREA_CHAMP(INFO=2,
                 OPERATION='EXTR',
                 RESULTAT=U[0],
                 NOM_CHAM='DEPL',
-                INST=2000000.0,);
+                INST=2000000.0);
 
 SIG[0]=CREA_CHAMP(INFO=2,
                 TYPE_CHAM='ELGA_SIEF_R',
                 OPERATION='EXTR',
                 RESULTAT=U[0],
                 NOM_CHAM='SIEF_ELGA',
-                INST=2000000.0,);
+                INST=2000000.0);
 
 VAR[0]=CREA_CHAMP(INFO=2,
                 TYPE_CHAM='ELGA_VARI_R',
                 OPERATION='EXTR',
                 RESULTAT=U[0],
                 NOM_CHAM='VARI_ELGA',
-                INST=2000000.0,);
+                INST=2000000.0);
 
 U[0]=CALC_CHAMP(reuse=U[0],GROUP_MA=list_group_ma[0:2],CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U[0])
 
@@ -316,14 +316,14 @@ T_DEP[0]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLACEMENT',
                                  RESULTAT=U[0],
                                  NOM_CHAM='DEPL',
                                  NOM_CMP=('DY','PRE1'),
-                                 OPERATION='EXTRACTION'),);
+                                 OPERATION='EXTRACTION'));
 
 T_DEP[1]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLACEMENT',
                                  NOEUD=list_no_later_dro[:2],
                                  RESULTAT=U[0],
                                  NOM_CHAM='DEPL',
                                  NOM_CMP=('DY','PRE1'),
-                                 OPERATION='EXTRACTION'),);
+                                 OPERATION='EXTRACTION'));
 
 #         -------------------------
 # SUITE-  Pose couches 3 a nbcouche
@@ -342,7 +342,7 @@ list_noeu_haut=list_no_later_dro[:2]
 # -->10: Boucle sur la pose des couches 3 a nbcouche
 for n in range(1,nbcouche-1):
 
-    DETRUIRE(INFO=1,OBJET=_F(CHAINE=('CHLAT','PHAUT','SIEF','CART1',)));
+    DETRUIRE(INFO=1,OBJET=_F(CHAINE=('CHLAT','PHAUT','SIEF','CART1')));
 
     n_couche = n+2
     print ' > n_couche          =',n_couche
@@ -356,7 +356,7 @@ for n in range(1,nbcouche-1):
     CHLAT=AFFE_CHAR_CINE(INFO=1,
                          MODELE=MOD[n],
                          MECA_IMPO=_F(GROUP_MA=('GA'+str(n+1),'DR'+str(n+1)),
-                                     DX=0.0),);
+                                     DX=0.0));
 
     # Pression hydraulique nulle en haut de la couche posee (numero n)
     PHAUT=AFFE_CHAR_CINE(INFO=1,
@@ -438,7 +438,7 @@ for n in range(1,nbcouche-1):
                          AFFE=(_F(GROUP_MA=list_group_ma[n+1],
                                   VALE_F = (DXN,DYN),
                                   NOM_CMP= ('X1','X2')),
-                               ),);
+                               ));
 
     CH_EVAL = CREA_CHAMP(INFO=2,
                          TYPE_CHAM='NOEU_NEUT_R',
@@ -479,12 +479,12 @@ for n in range(1,nbcouche-1):
                             _F(GROUP_MA=list_group_ma[n+1],
                                CHAM_GD=CH_DEPL,
                                CUMUL='NON',
-                               COEF_R=1.0,),
+                               COEF_R=1.0),
                             _F(GROUP_MA=list_group_ma_[n+1],
                                CHAM_GD=CH_DDIL,
                                CUMUL='NON',
-                               COEF_R=1.0,),
-                               ),);
+                               COEF_R=1.0),
+                               ));
 
     INISIG=CREA_CHAMP(INFO=1,
                       TYPE_CHAM='ELGA_SIEF_R',
@@ -498,7 +498,7 @@ for n in range(1,nbcouche-1):
                             _F(GROUP_MA=GrMa,
                                CHAM_GD=SIG[n-1],
                                CUMUL='OUI',
-                               COEF_R=1.0),),);
+                               COEF_R=1.0)));
 
     CART1 = CREA_CHAMP(INFO = 1,
                    TYPE_CHAM='ELGA_NEUT_R',
@@ -531,19 +531,19 @@ for n in range(1,nbcouche-1):
                             _F(GROUP_MA=list_group_ma[n+1],
                                CHAM_GD=CART1,
                                NOM_CMP =('X1','X2','X3','X4','X5','X6','X7','X8','X9','X10','X11',
-                                     'X12','X13','X14','X15','X16','X17','X18','X19','X20',),
+                                     'X12','X13','X14','X15','X16','X17','X18','X19','X20'),
                                NOM_CMP_RESU=('V21','V22','V23','V24','V25','V26','V27','V28','V29','V30',
                                              'V31','V32','V33','V34','V35','V36','V37','V38','V39','V40'),
                                CUMUL='OUI',
                                COEF_R=1.0),
                             _F(GROUP_MA=list_group_ma[n+1],
                                CHAM_GD=CART1,
-                               NOM_CMP =('X1','X2','X3','X4','X5','X6','X7','X8','X9','X10','X11','X12',),
+                               NOM_CMP =('X1','X2','X3','X4','X5','X6','X7','X8','X9','X10','X11','X12'),
 
                                NOM_CMP_RESU=('V41','V42','V43','V44','V45','V46','V47','V48',
                                              'V49','V50','V51','V52'),
                                CUMUL='OUI',
-                               COEF_R=1.0),),);
+                               COEF_R=1.0)));
 
     t_init=(n+1)*1.E6
     t_fin =(n+2)*1.E6
@@ -556,7 +556,7 @@ for n in range(1,nbcouche-1):
                  EXCIT=(_F(CHARGE=PHAUT),
                         _F(CHARGE=CHPAR),
                         _F(CHARGE=CHLAT),
-                        _F(CHARGE=PES, FONC_MULT=FOC),),
+                        _F(CHARGE=PES, FONC_MULT=FOC)),
                  COMP_INCR=(_F(RELATION='KIT_HM',
                                ITER_INTE_PAS=-10,
                                RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),
@@ -568,17 +568,17 @@ for n in range(1,nbcouche-1):
                                RELATION_KIT=('HUJEUX','LIQU_SATU','HYDR_UTIL'),
                                GROUP_MA=list_group_ma[1:n+2]),
                             _F(RELATION='ELAS',
-                               GROUP_MA=list_group_ma_[:n+2]),),
+                               GROUP_MA=list_group_ma_[:n+2])),
                  ETAT_INIT=_F(DEPL=DEPL_IN,
                               SIGM=INISIG,
-                              VARI=INIVAR,),
+                              VARI=INIVAR),
                  INCREMENT=_F(LIST_INST=DEFLISTT,
                               INST_INIT=t_init,
-                              INST_FIN=t_fin,),
+                              INST_FIN=t_fin),
                  SOLVEUR = _F(METHODE='MUMPS',
-                             PCENT_PIVOT=100,
+   
                              RESI_RELA=1.,
-                             TYPE_RESOL='NONSYM',),
+                             TYPE_RESOL='NONSYM'),
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1),
                  CONVERGENCE=_F(ITER_GLOB_MAXI=50,
@@ -586,28 +586,28 @@ for n in range(1,nbcouche-1):
 
     DETRUIRE(INFO=1,CONCEPT=_F(NOM=(INIVAR,INIDEP,INISIG,DEPL_PJ,FX,FY,
                              CH_FONC,CH_EVAL,DEPL_IN,CH_GEOM,DXN,DYN,
-                             CH_DEPL,CH_BID,CH_DDIL),),);
+                             CH_DEPL,CH_BID,CH_DDIL)));
 
     DEP[n]=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                       OPERATION='EXTR',
                       RESULTAT=U[n],
                       NOM_CHAM='DEPL',
                       INST = t_fin,
-                      INFO=1,);
+                      INFO=1);
 
     SIG[n]=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                       OPERATION='EXTR',
                       RESULTAT=U[n],
                       NOM_CHAM='SIEF_ELGA',
                       INST = t_fin,
-                      INFO=1,);
+                      INFO=1);
 
     VAR[n]=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
                 OPERATION='EXTR',
                 RESULTAT=U[n],
                 NOM_CHAM='VARI_ELGA',
                 INST = t_fin,
-                INFO=1,);
+                INFO=1);
 
     U[n]=CALC_CHAMP(reuse=U[n],GROUP_MA=list_group_ma[0:n+2],CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U[n])
 
@@ -617,7 +617,7 @@ for n in range(1,nbcouche-1):
                                        RESULTAT=U[n],
                                        NOM_CHAM='DEPL',
                                        NOM_CMP=('DY','PRE1'),
-                                       OPERATION='EXTRACTION'),);
+                                       OPERATION='EXTRACTION'));
 
 #    IMPR_RESU(RESU=_F(CHAM_GD=DEP[n]));
 #    IMPR_RESU(RESU=_F(CHAM_GD=VAR[n]));
@@ -626,6 +626,6 @@ for n in range(1,nbcouche-1):
 
 # <--10: fin boucle for
 
-# INCLUDE(UNITE=38,);
+# INCLUDE(UNITE=38);
 
 FIN( );

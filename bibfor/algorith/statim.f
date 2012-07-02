@@ -2,7 +2,7 @@
      &                    DEFPLA,  WK1, WK2, WK3, TDEBUT, TFIN,
      &                    NBLOC, OFFSET,TREPOS, NBCLAS, NOECHO,
      &                    INTITU, NOMRES )
-      IMPLICIT     REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER       NBOBST, NBPT, NBLOC
       REAL*8        TEMPS(*), FCHO(*), VGLI(*), TDEBUT, TFIN
@@ -12,7 +12,7 @@
       CHARACTER*(*) NOMRES
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,6 +43,11 @@ C     NBCLAS       : NOMBRE DE CLASSES
 C
 C-----------------------------------------------------------------------
       INTEGER      IBID, NBPARA, NPARG, NPARP, NPARF
+C-----------------------------------------------------------------------
+      INTEGER I ,IDEBUT ,IDEC ,IFIN ,IPAS ,NBCHOC ,NBCLAS 
+      INTEGER NBPAS ,NDEC ,NPARI 
+      REAL*8 DT ,FMAX ,FMIN 
+C-----------------------------------------------------------------------
       PARAMETER    ( NPARG = 6 , NPARP = 7 , NPARI = 10 , NBPARA = 20 )
       PARAMETER    ( NPARF = 7 )
       REAL*8       PARA(3)

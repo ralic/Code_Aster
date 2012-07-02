@@ -1,12 +1,12 @@
       SUBROUTINE FOCAIN ( METHOD, NOMFON, CSTE, SORTIE ,BASE )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*)       METHOD, NOMFON,       SORTIE
       CHARACTER*1                                       BASE
       REAL*8                              CSTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,6 +46,10 @@ C     ----------------------------------------------------------------
       CHARACTER*1 K1BID
 C     ----------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,LFON ,LPRO ,LPROS ,LRES ,LVAR ,LXLGUT 
+      INTEGER NBPTS ,NBVAL 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       NOMFI = NOMFON
       NOMFS = SORTIE

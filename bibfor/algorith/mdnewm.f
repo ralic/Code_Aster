@@ -3,7 +3,7 @@
      &                   TINIT,IPARCH,DEPSTO,
      &                   VITSTO,ACCSTO,IORSTO,TEMSTO,NOMRES,NBEXCI,
      &                   IDESCF,NOMFON,COEFM,LIAD,INUMOR)
-      IMPLICIT     REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER      IORSTO(*), IPARCH(*),IDESCF(*)
       REAL*8       PULSAT(*),PULSA2(*),MASGEN(*),RIGGEN(*),
@@ -15,7 +15,7 @@
       REAL*8       R8B,COEFM(*)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,6 +68,17 @@ C     ------------------------------------------------------------------
 C
 C 1.1. ==> RECUPERATION DU NIVEAU D'IMPRESSION
 
+C-----------------------------------------------------------------------
+      INTEGER I ,IA ,IARCHI ,IB ,IBID ,IBID1 ,IBID2 
+      INTEGER IF ,IFE ,IM ,IM1 ,IND ,IPAS ,IPM 
+      INTEGER IRET ,ISTO1 ,JACCE ,JDEPL ,JFEXT ,JM ,JMASS 
+      INTEGER JTRA1 ,JTRA2 ,JTRA3 ,JTRA4 ,JTRA5 ,JTRA6 ,JVITE 
+      INTEGER N100 ,NBBLOC ,NBEXCI ,NBMOD1 ,NBMODE ,NBPAS ,NBPASB 
+      INTEGER NBPASF ,NBPP ,NDIM ,NDT 
+      REAL*8 A0 ,A1 ,A2 ,A3 ,A4 ,A5 ,A6 
+      REAL*8 A7 ,DEUX ,DT ,DT2 ,TARCHI ,TEMPS ,TINIT 
+      REAL*8 X1 ,X2 ,X3 ,ZERO 
+C-----------------------------------------------------------------------
       CALL INFNIV(IFM,NIV)
 C
       CALL JEMARQ()

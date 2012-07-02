@@ -1,6 +1,6 @@
       SUBROUTINE TE0189 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ......................................................................
 C    - FONCTION REALISEE:  CALCUL DES NIVEAUX DE PRESSION ACOUSTIQUE
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C                          OPTION : 'PRAC_ELNO'
 C    - ARGUMENTS:
 C        ENTREES:      OPTION       -->  OPTION DE CALCUL
@@ -32,6 +32,8 @@ C
       INTEGER            IPDEB,IPRES,IPOIDS,IVF,IDFDE
 C
 
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       CALL ASSERT(OPTION.EQ.'PRAC_ELNO')
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
 

@@ -1,6 +1,6 @@
       SUBROUTINE  INILAG (FMLI,ICAR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C***********************************************************************
 C    P. RICHARD     DATE 13/10/92
 C-----------------------------------------------------------------------
 C  BUT:      < INITIALISATION DES MATRICE LAGRANGE-LAGRANGE >
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C
 C-----------------------------------------------------------------------
@@ -44,6 +44,9 @@ C
       REAL*8 MOINUN,ZERO5
       INTEGER ICAR(4)
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IBLO ,LDMAT ,NBLIG 
 C-----------------------------------------------------------------------
       DATA MOINUN /-1.0D+00/
       DATA ZERO5 /0.5D+00/

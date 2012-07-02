@@ -1,6 +1,6 @@
       SUBROUTINE JJALTY ( TYPEI , LTYPI , CEL , INATB , JCTAB )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C TOLE CRP_18 CRP_4 CRS_508
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER                     LTYPI , INATB , JCTAB
       CHARACTER*(*)       TYPEI , CEL
@@ -37,6 +37,8 @@ C-----------------------------------------------------------------------
       EQUIVALENCE    (IZR,ZR),(IZC,ZC),(IZL,ZL),(IZK8,ZK8),(IZK16,ZK16),
      &               (IZK24,ZK24),(IZK32,ZK32),(IZK80,ZK80),(IZI4,ZI4)
 C DEB ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       JCTAB = 0
       IF ( TYPEI .EQ. 'I' ) THEN
         CALL JXVEUO ( CEL , ZI  , INATB , JCTAB )

@@ -1,11 +1,11 @@
       SUBROUTINE AFFONO(VALR,VALK,DESC,PRNM,NBCOMP,FONREE,NOMN,INO,
      &                  NSURCH,FORIMP,VALFOR,VALFOF,MOTCLE,VERIF,NBEC)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -60,6 +60,9 @@ C     NSURCH : COMPTEUR DU NOMBRE DE SURCHARGES DANS FORCE_NODALE
 C
 C
 C****************************************************************
+C-----------------------------------------------------------------------
+      INTEGER IEC ,INDIGD ,J ,NBEC ,NSURC0 
+C-----------------------------------------------------------------------
       INDIGD = 0
       DO 10 IEC = 1, NBEC
         IF (PRNM(IEC).NE.0)  THEN

@@ -1,6 +1,6 @@
       SUBROUTINE DESCCY(NOMRES)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C***********************************************************************
 C    P. RICHARD     DATE 07/03/91
 C-----------------------------------------------------------------------
 C  BUT:  CREATION DE LA NUMEROTATION GENERALISEE POUR LE PROBLEME
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C        CYCLIQUE
 C-----------------------------------------------------------------------
 C
@@ -42,6 +42,12 @@ C
       CHARACTER*1 K1BID
       INTEGER      IARG
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER IBID ,IER ,LDDNIN ,LDNOEA ,LDNOED ,LDNOEG ,LDNUMG 
+      INTEGER LLDESC ,LLREF ,NBA ,NBD ,NBDA ,NBDD ,NBDG 
+      INTEGER NBG ,NBMCAL ,NBMOD ,NBMOD1 ,NBMOD2 ,NBNOT ,NBOC 
+      INTEGER NBTEMP ,NUMA ,NUMD ,NUMG 
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       KBID=' '

@@ -1,6 +1,6 @@
       SUBROUTINE RETRGL(NOMRES,RESGEN,MAILSK,PROFNO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C***********************************************************************
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C  C. VARE     DATE 16/11/94
 C-----------------------------------------------------------------------
 C
@@ -53,6 +53,16 @@ C
      &             LMOET
       INTEGER      IARG
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,I1 ,IAD ,IAR ,IARCHI ,IBID ,ICH 
+      INTEGER IDEP ,IDINSG ,IDRESU ,IDVECG ,IEQ ,IER ,IRE1 
+      INTEGER IRE2 ,IRE3 ,IRET ,IRETOU ,J ,JINST ,JNUME 
+      INTEGER K ,K1 ,L ,LDNEW ,LINST ,LLCHAB ,LLIND 
+      INTEGER LLINSK ,LLNEQU ,LLNUEQ ,LLORS ,LLPRS ,LLREF1 ,LLREF2 
+      INTEGER LLROT ,LREFE ,LTROTX ,LTROTY ,LTROTZ ,LTVEC ,N1 
+      INTEGER NBBAS ,NBCHAM ,NBCMP ,NBCOU ,NBINSG ,NBINST ,NBNOT 
+      INTEGER NBSST ,NEQ ,NEQGEN ,NEQS ,NUMSST ,NUTARS 
 C-----------------------------------------------------------------------
       DATA PGC   /'RETRGL'/
       DATA SOUTR /'&SOUSSTR'/
@@ -326,7 +336,7 @@ C
               ENDIF
 C
 34          CONTINUE
-            CALL RSNOCH(NOMRES,CHMP(ICH),IARCHI,' ')
+            CALL RSNOCH(NOMRES,CHMP(ICH),IARCHI)
 C
 C --- ROTATION DU CHAMP AUX NOEUDS
 C
@@ -445,7 +455,7 @@ C
               ENDIF
 C
 54          CONTINUE
-            CALL RSNOCH(NOMRES,CHMP(ICH),IARCHI,' ')
+            CALL RSNOCH(NOMRES,CHMP(ICH),IARCHI)
 C
 C --- ROTATION DU CHAMP AUX NOEUDS
 C

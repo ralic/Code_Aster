@@ -1,6 +1,6 @@
       SUBROUTINE SH6SIG(XETEMP,PARA,XIDEPP,DUSX,SIGMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,7 @@ C ======================================================================
 C
 C               ELEMENT SHB6
 C
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER LAG,IRDC
       REAL*8 SIGMA(*),PARA(11)
@@ -33,6 +33,15 @@ C
       REAL*8 SIGLOC(6)
       REAL*8 BLOC(6,18),XMODIF(18)
       REAL*8 XETEMP(*),BLOCAL(3,6)
+      INTEGER I ,IP ,J
+      REAL*8 AJAC ,RBID ,XCOOEF ,XMU ,XNU ,ZETA ,ZLAMB
+C-----------------------------------------------------------------------
+         DATA XMODIF/1.D0,0.D0,0.D0,
+     &          0.D0,1.D0,0.D0,
+     &          0.D0,0.D0,1.D0,
+     &          1.D0,1.D0,0.D0,
+     &          0.D0,0.45D0,0.45D0,
+     &          0.45D0,0.D0,0.45D0/
 C
 C
 C
@@ -169,12 +178,6 @@ C                                     2 POUR TERMES CARRES EN PLUS
 C Transformer matrice BLOCAL(3,6) dans le repère local en BLOC(6,18)
 C dans le repère local et en tenant
 C compte également des modifications sur les termes croisés ZY,ZX :
-         DATA XMODIF/1.D0,0.D0,0.D0,
-     &          0.D0,1.D0,0.D0,
-     &          0.D0,0.D0,1.D0,
-     &          1.D0,1.D0,0.D0,
-     &          0.D0,0.45D0,0.45D0,
-     &          0.45D0,0.D0,0.45D0/
          CALL ASSEBG(BLOC,BLOCAL,XMODIF)
 C Transformer les déplacements UE dans le repère global en UELOC dans
 C le repère local

@@ -4,7 +4,7 @@
      +                   JDEPL,JVITE,JACCE,JPTEM,JORDR,JINST,
      +                   JFCHO,JDCHO,JVCHO, JADCHO,
      +                   JREDC,JREDD, LPSTO, METHOD)
-      IMPLICIT    REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*) BASEMO
       CHARACTER*8 NOMRES,MASGEN,RIGGEN,AMOGEN,INTITU(*),KBID,KB
@@ -13,7 +13,7 @@
       LOGICAL LPSTO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,6 +56,13 @@ C ----------------------------------------------------------------------
       INTEGER      NBSAUV, NBSTOC,J1REFE
       CHARACTER*8  NUMGEN,BLANC
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IC ,IRET ,JACCE ,JADCHO ,JDCHO ,JDEPL 
+      INTEGER JDESC ,JFCHO ,JINST ,JINTI ,JNCHO ,JORDR ,JPTEM 
+      INTEGER JREDC ,JREDD ,JREDN ,JREFE ,JSST ,JVCHO ,JVINT 
+      INTEGER JVITE ,NBCHOC ,NBMODE ,NBREDE ,NBREVI ,NBSTO1 
+      REAL*8 DT 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       NBSTOC = NBMODE * NBSAUV
       JFCHO = 1

@@ -1,9 +1,9 @@
       REAL*8 FUNCTION EDGEQU (NDIMSI,TENS,ANI)
       
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/05/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 
       INTEGER            NDIMSI
       REAL*8             TENS(NDIMSI),ANI(6,6)
@@ -39,6 +39,8 @@ C ----------------------------------------------------------------------
       INTEGER  I,J
       REAL*8   EQUI,PDTSCA(6)
       REAL*8   R8PREM
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       DATA     PDTSCA/1.D0,1.D0,1.D0,2.D0,2.D0,2.D0/
 
       EQUI = 0.D0

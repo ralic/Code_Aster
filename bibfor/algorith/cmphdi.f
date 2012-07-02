@@ -2,7 +2,7 @@
      &NDIMAX,CMAT1,CMAT2,CVECT,CVECT1,ALPHA,BETA,LAMBD1,LAMBD2,
      &INTERV,IFIC)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C***********************************************************************
 C    B. GUIGON     P. RICHARD                  DATE 06/04/92
@@ -71,7 +71,7 @@ C
       COMPLEX*16 CSHIFT
       REAL*8     ECART
       LOGICAL    SORTIE
-C
+      INTEGER IDIAG ,IRETOU ,IV ,IVDIAG ,NDIMAX
 C-----------------------------------------------------------------------
 C
       WRITE(IFIC,*)'     '

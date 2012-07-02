@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@
 TEST_RESU=PROC(nom="TEST_RESU",op=23,
             UIinfo={"groupes":("Résultats et champs","Utilitaires",)},
          fr="Extraction d'une valeur d'une structure de donnée et comparaison à une valeur de référence",
-         regles=(AU_MOINS_UN('CHAM_NO','CHAM_ELEM','RESU','GENE','OBJET','TEST_NAN',)),
+         regles=(AU_MOINS_UN('CHAM_NO','CHAM_ELEM','CARTE','RESU','GENE','OBJET','TEST_NAN',)),
 
          CHAM_NO         =FACT(statut='f',max='**',
            regles=(UN_PARMI('NOEUD','GROUP_NO','TYPE_TEST'),
@@ -44,6 +44,21 @@ TEST_RESU=PROC(nom="TEST_RESU",op=23,
            REFERENCE       =SIMP(statut='f',typ='TXM',into=("ANALYTIQUE","SOURCE_EXTERNE",
                                                             "NON_REGRESSION","AUTRE_ASTER")),
            VERSION         =SIMP(statut='f',typ='TXM'),
+           LEGENDE         =SIMP(statut='f',typ='TXM'),
+         ),
+
+         CARTE      =FACT(statut='f',max='**',
+           regles=(UN_PARMI('VALE','VALE_I','VALE_C',), ),
+           CHAM_GD         =SIMP(statut='o',typ=carte_sdaster),
+           MAILLE          =SIMP(statut='o',typ=ma),
+           NOM_CMP         =SIMP(statut='o',typ='TXM',max=1),
+           VALE            =SIMP(statut='f',typ='R',max=1 ),
+           VALE_I          =SIMP(statut='f',typ='I',max=1 ),
+           VALE_C          =SIMP(statut='f',typ='C',max=1 ),
+           CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU")),
+           PRECISION       =SIMP(statut='f',typ='R',defaut= 1.0E-3 ),
+           REFERENCE       =SIMP(statut='o',typ='TXM',into=("ANALYTIQUE","SOURCE_EXTERNE",
+                                                            "NON_REGRESSION","AUTRE_ASTER") ),
            LEGENDE         =SIMP(statut='f',typ='TXM'),
          ),
 

@@ -1,6 +1,6 @@
       SUBROUTINE PATRMA(LLIST1,LLIST2,T,NBTYMX,NOMMA,
      &                  LLISTT,NTYPM)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*) LLIST1,LLIST2,LLISTT
       CHARACTER*8   NOMMA
@@ -8,7 +8,7 @@
       INTEGER       NBTYMX,NTYPM
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,6 +61,15 @@ C ROUTINES APPELEES:
       CHARACTER*8 K8BID
       REAL*8 CENTRE(3)
       REAL*8 MROT(3,3)
+C-----------------------------------------------------------------------
+      INTEGER I1 ,IAGEOM ,IDBIJ ,IDCOO1 ,IDCOO2 ,IDCOPL ,IDL1 
+      INTEGER IDL2 ,IDLT ,IDNO1 ,IDNO2 ,IDTYP ,IDWCPL ,IFTYP 
+      INTEGER IMA ,IMA2 ,INO ,IRET ,ITYP ,ITYP1 ,J 
+      INTEGER J2 ,JDEB ,JFIN ,JTYP ,K ,LONMX ,NBMA 
+      INTEGER NBMA1 ,NBMA2 ,NBMATY ,NBNTOT ,NUMA1 ,NUMA2 ,NUMA3 
+
+      REAL*8 D ,DMIN 
+C-----------------------------------------------------------------------
       DATA CENTRE /0.D0,0.D0,0.D0/
       DATA MROT   /1.D0,0.D0,0.D0,0.D0,1.D0,0.D0,0.D0,0.D0,1.D0/
 

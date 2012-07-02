@@ -1,7 +1,7 @@
       SUBROUTINE  BMATMC ( IGAU, NBSIG, XYZ, IPOIDS, IVF, IDFDE,
      &                     NNO, NHARM, JACOB, B )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C.======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C      BMATMC  -- CALCUL DE LA MATRICE B RELIANT LES DEFORMATIONS
 C                 DU PREMIER ORDRE AUX DEPLACEMENTS AU POINT
@@ -52,6 +52,11 @@ C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
 C ---- INITIALISATIONS
 C      ---------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IDECNO ,IDFDE ,IGAU ,IPOIDS ,IVF ,J 
+      INTEGER K ,NBSIG ,NNO 
+      REAL*8 RAYON ,ZERO 
+C-----------------------------------------------------------------------
       ZERO   = 0.0D0
       CALL MATINI(NBSIG,81,ZERO,B)
 C

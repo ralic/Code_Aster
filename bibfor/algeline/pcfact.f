@@ -1,8 +1,8 @@
       SUBROUTINE PCFACT(MATAS,NEQU,IN,IP,AC,PRC,VECT,EPSI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/03/2010   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C TOLE CRP_4
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C  FONCTION  :  CREATION D'UNE MATRICE DE PRECONDITIONNEMENT PRC
 C     PAR LDLT INCOMPLET SUR LA MATRICE MAT STOCKEE SOUS FORME MORSE
@@ -38,6 +38,11 @@ C-----------------------------------------------------------------------
 
 C     TDEB = SECOND()
 C          ---- MISE A 0  DU VECTEUR AUXILIAIRE POUR PROD-SCAL CREUX
+C-----------------------------------------------------------------------
+      INTEGER I ,J ,JDEB ,JFIN ,JJ ,KDEB ,KFIN 
+      INTEGER KI ,KK ,NEQU 
+      REAL*8 CUMUL ,EPSI 
+C-----------------------------------------------------------------------
       DO 10 J = 1,NEQU
         VECT(J) = 0.D0
    10 CONTINUE

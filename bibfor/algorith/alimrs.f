@@ -1,10 +1,10 @@
       SUBROUTINE ALIMRS(MATE,MA1,MA2,MOINT,NDBLE,NUM,CN1,CHNO,CMP,ICOR)
-      IMPLICIT REAL*8  (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*) MOINT,CMP,CHNO,MATE
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,6 +58,12 @@ C -----------------------------------------------------------------
 C---------------------------------------------------------------------
 C TESTS PRELIMINAIRES : NUMERO DE COMPOSANTE A TRAITER
 C
+C-----------------------------------------------------------------------
+      INTEGER IADG1 ,IAVAL1 ,IAVAL2 ,IEQ1 ,IEQ2 ,IERD ,IGEOM1 
+      INTEGER IGEOM2 ,INUEQ1 ,INUEQ2 ,IPRN1 ,IPRN2 ,IVAL1 ,IVAL2 
+      INTEGER NBID ,NBNO1 ,NBNO2 ,NCMP2 ,NEC1 ,NEC2 ,NEQ 
+
+C-----------------------------------------------------------------------
       CALL JEMARQ()
          IF (CMP.EQ.'DX') NOCMP=1
          IF (CMP.EQ.'DY') NOCMP=2

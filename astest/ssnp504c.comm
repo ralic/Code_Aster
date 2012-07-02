@@ -1,4 +1,4 @@
-# MODIF  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE CONTACT-FROTTANT EN GRANDS GLISSEMENTS
 # ssnp504c.para = tps_job 80 mem_job 256Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -124,7 +124,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELE,
                    CONVERGENCE=(_F(ITER_GLOB_MAXI=8,
                                    RESI_GLOB_RELA=1E-06)),
                    SOLVEUR=_F(METHODE='MUMPS',
-                              PCENT_PIVOT=50,),
+                              ),
                    INFO=1,);
 
 LAG=[None]*5

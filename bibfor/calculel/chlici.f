@@ -1,8 +1,8 @@
       SUBROUTINE CHLICI(CHAINE,LONG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,7 +19,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE                            VABHHTS J.PELLET
 C TOLE CRP_6
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       CHARACTER*(*) CHAINE
       INTEGER LONG
 C ----------------------------------------------------------------------
@@ -32,6 +32,8 @@ C       SI CARACTERE ILLICITE : ERREUR FATALE <F>
 C IN  CHAINE    : CHAINE A VERIFIER
 C IN  LONG      : LA CHAINE EST VERIFIEE DE (1:LONG)
 C ----------------------------------------------------------------------
+      INTEGER I ,K
+C-----------------------------------------------------------------------
 
       DO 10,I = 1,LONG
         K = ICHAR(CHAINE(I:I))

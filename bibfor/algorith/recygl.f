@@ -1,6 +1,6 @@
       SUBROUTINE RECYGL(NMRESZ,TYPSDZ,MDCYCZ,MAILLZ,PROFNO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C***********************************************************************
 C    P. RICHARD     DATE 10/02/92
 C-----------------------------------------------------------------------
 C  BUT:           < RESTITUTION CYCLIQUE GLOBALE >
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C   RESTITUTION EN BASE PHYSIQUE DES RESULTATS CYCLIQUE
 C    SUR UN MAILLAGE SQUELETTE DE LA STRUCTURE GLOBALE
@@ -49,6 +49,11 @@ C
       CHARACTER*24 INDIRF
       CHARACTER*1 K1BID
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,ICOMP ,IDIA ,IRET ,LLDESC ,LLDIA ,LLNOMS 
+      INTEGER LLREF ,LLTYP ,MDIAPA ,NBDIA ,NBMCAL ,NBMOR ,NBSEC 
+
 C-----------------------------------------------------------------------
       DATA PGC /'RECYGL'/
 C-----------------------------------------------------------------------

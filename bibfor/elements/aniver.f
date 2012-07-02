@@ -1,6 +1,6 @@
       SUBROUTINE  ANIVER(MATER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C.======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C      ANIVER --   CALCUL DES VALEURS PROPRES DE LA MATRICE
 C                  HOOKE POUR S'ASSURER QUE CELLE EST BIEN
@@ -46,6 +46,13 @@ C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
 C ---- INITIALISATIONS
 C      ---------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IEL ,IEN ,IET ,IGLN ,IGLT ,IGTN
+      INTEGER INULN ,INULT ,INUTN ,J ,JNOMRC ,JTYPFO ,JVALRK
+      INTEGER JVALRM ,K ,NBCRME ,NBR ,NDIM, INDIK8
+      REAL*8 C1 ,DELTA ,DEUX ,E1 ,E2 ,E3 ,G12
+      REAL*8 G13 ,G23 ,UN ,UNDEMI ,ZERO
+C-----------------------------------------------------------------------
       ZERO   = 0.0D0
       UNDEMI = 0.5D0
       UN     = 1.0D0

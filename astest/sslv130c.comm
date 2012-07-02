@@ -1,4 +1,4 @@
-# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE EN INCOMPRESSIBLE (TRIA6 QUAD8) PLAN
 # sslv130c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -44,32 +44,31 @@ MO=AFFE_MODELE(MAILLAGE=M,
                        PHENOMENE='MECANIQUE',
                        MODELISATION='D_PLAN_INCO',),);
 
+L_INST1=DEFI_LIST_REEL(DEBUT=0.,
+                       INTERVALLE=_F(JUSQU_A=1., NOMBRE=1,),);
+
+
 # POUR TESTER LA POSSIBILITE DE FOURNIR DIRECTEMENT LE CHAMP DE MODULE D'YOUNG :
 #-------------------------------------------------------------------------------
 
-CHYOUNG=CREA_CHAMP(TYPE_CHAM='ELNO_NEUT_R',
-                   OPERATION='AFFE',
-                   MODELE=MO,
-                   PROL_ZERO='OUI',
-                   AFFE=_F(GROUP_MA='VOLUME',
-                           NOM_CMP='X1',
-                           VALE=200000.,),
-                   INFO=1,);
+CHYOUNG=CREA_CHAMP(TYPE_CHAM='ELNO_NEUT_R', OPERATION='AFFE', MODELE=MO, PROL_ZERO='OUI',
+                   AFFE=_F(GROUP_MA='VOLUME', NOM_CMP='X1', VALE=200000.,))
+
+# pour tester la possibilite de creer un evol_varc contenant des champs de NEUT_R (fiche 18801):
+EVYOUNG=CREA_RESU(OPERATION='AFFE', TYPE_RESU='EVOL_VARC', NOM_CHAM='NEUT',
+                  AFFE= _F(CHAM_GD = CHYOUNG,   LIST_INST =L_INST1))
 
 NU_F=DEFI_CONSTANTE(VALE=0.4999,);
 
-E_F=DEFI_FONCTION(NOM_PARA='NEUT1',VALE=(-1.E-9,-1.E-9,
-                        1.E+9,1.E+9,
-                        ),);
+E_F=DEFI_FONCTION(NOM_PARA='NEUT1',VALE=(-1.E-9,-1.E-9,  1.E+9,1.E+9, ),);
 
-MA=DEFI_MATERIAU(ELAS_FO=_F(E=E_F,
-                            NU=NU_F,),);
+MA=DEFI_MATERIAU(ELAS_FO=_F(E=E_F, NU=NU_F,),);
 
 CM=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
                          MATER=MA,),
-                 AFFE_VARC=_F(NOM_VARC='NEUT1',
-                              CHAMP_GD=CHYOUNG,),);
+               # AFFE_VARC=_F(NOM_VARC='NEUT1', CHAMP_GD=CHYOUNG,),);
+                 AFFE_VARC=_F(NOM_VARC='NEUT1', EVOL=EVYOUNG,),);
 
 CLIM=AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=_F(GROUP_NO='GRNM11',
@@ -81,9 +80,6 @@ CH=AFFE_CHAR_MECA(MODELE=MO,
                   PRES_REP=_F(GROUP_MA='GRMA13',
                               PRES=60.,),);
 
-L_INST1=DEFI_LIST_REEL(DEBUT=0.,
-                       INTERVALLE=_F(JUSQU_A=1.,
-                                     NOMBRE=1,),);
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
                           1.,1.,

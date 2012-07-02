@@ -1,6 +1,6 @@
       SUBROUTINE TE0057(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C.......................................................................
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C     BUT: CALCUL DES VECTEURS ELEMENTAIRES EN THERMIQUE
 C          CORRESPONDANT AU FLUX IMPOSE
@@ -39,9 +39,10 @@ C
 C
 C
 C
-      COMMON /NOMAJE/PGC
-      CHARACTER*6 PGC
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,INO ,J ,JNO
+C-----------------------------------------------------------------------
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDX,JGANO)
       IDFDY  = IDFDX  + 1
 C

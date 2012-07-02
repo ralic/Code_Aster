@@ -1,10 +1,10 @@
       SUBROUTINE DXEFNT(NOMTE,PGL,SIGT)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       REAL*8 PGL(3,3),SIGT(1)
       CHARACTER*16  NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,6 +46,11 @@ C     ------------------------------------------------------------------
 
 C --- INITIALISATIONS :
 C     -----------------
+C-----------------------------------------------------------------------
+      INTEGER I ,INDITH ,INO ,IRET1 ,IRET2 ,IRET3 ,IRET4 
+      INTEGER JCARA ,JMATE ,NNO 
+      REAL*8 COE1 ,COE2 ,EPAIS ,SOMIRE ,TREF ,ZERO 
+C-----------------------------------------------------------------------
       ZERO = 0.0D0
       IRET1 = 0
       IRET2 = 0

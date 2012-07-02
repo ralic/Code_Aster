@@ -1,10 +1,10 @@
       SUBROUTINE MTDSC3(NOMMAT)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*) NOMMAT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,6 +50,10 @@ C     ----- PARAMETRES DE DEFINITION DES MATRICES ----------------------
 C     ------------------------------------------------------------------
 
 
+C-----------------------------------------------------------------------
+      INTEGER IBID ,IER ,ISMAEM ,JREFA ,JSCDE ,K ,LMAT 
+      INTEGER LNOM 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       MAT19 = NOMMAT
 

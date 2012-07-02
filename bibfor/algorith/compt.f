@@ -2,9 +2,9 @@
      &                      TCHMAX,TCHMIN,NBREBO,TREBOM,TCHOCT,NBINST )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2004   AUTEUR BOYERE E.BOYERE 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -35,9 +35,16 @@ C OUT : TCHOCT : TEMPS DE CHOC CUMULE
 C IN  : NBINST : NB D'INSTANTS TOTAL DU CALCUL TRANSITOIRE
 C ----------------------------------------------------------------------
 C
-         IMPLICIT REAL *8 (A-H,O-Z)
+      IMPLICIT NONE
          REAL*8   FN(*), T(*)
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,ICHOC ,IDEBUR ,IDEBUT ,IDECH ,IFIN ,IFINR 
+      INTEGER IREBO ,J ,JFIN ,NBCHOC ,NBINST ,NBPAS ,NBPT 
+      INTEGER NBREBO 
+      REAL*8 DT ,ELAPSE ,OFFSET ,TCHMAX ,TCHMIN ,TCHOC ,TCHOCM 
+      REAL*8 TCHOCT ,TREBO ,TREBOM ,ZERO 
+C-----------------------------------------------------------------------
          ZERO   = 0.D0
          NBCHOC = 0
          NBREBO = 0

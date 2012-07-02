@@ -1,8 +1,8 @@
       SUBROUTINE FFGRA1(NBFONC,IDEBIT,NBP1,NBP2,LONG,DISC,VALE)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,6 +43,11 @@ C
       REAL*8       XDEB(3),X0(3),COEF18(90),COEF30(90)
       REAL*8       LAMBDA
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IMOD ,IP ,ITRON ,NBMOD ,NBP 
+      REAL*8 COEF1 ,COEF2 ,COEF3 ,COEF4 ,DX ,X ,XREF 
+
+C-----------------------------------------------------------------------
       PARAMETER   (NBTRON=3)
 C
       DATA IDEB   / 1 , 35 , 68  /

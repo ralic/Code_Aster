@@ -1,6 +1,6 @@
       SUBROUTINE NMVISS(NUMEDZ,SDDYNA,INSTAM,INSTAP,VECASZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-      IMPLICIT REAL*8(A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*24 NUMEDZ
       CHARACTER*19 SDDYNA
@@ -43,6 +43,14 @@ C
       COMPLEX*16   C16BID
 C
 C     -----------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER IARC ,IARC2 ,IBID ,ID1 ,ID2 ,IE ,IEQINT 
+      INTEGER IFFOR ,IFREQ ,IOR ,IRET ,IVAA2 ,IVAD2 ,IVALA 
+      INTEGER IVALD ,IVALV ,IVAV2 ,JAMOT ,JFOR ,JFRQ ,JINFO 
+      INTEGER JMAST ,JRIGT ,LDNEW ,LINST ,NBMODE ,NBTROU ,NDDINT 
+      INTEGER NEQ ,NUME ,NUME0 
+      REAL*8 COEF1 ,COEF2 ,EPSI ,PAS ,R8BID 
+C-----------------------------------------------------------------------
       DATA K8B/'        '/
 
       CALL JEMARQ()

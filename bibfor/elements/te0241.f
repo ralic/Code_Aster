@@ -1,10 +1,10 @@
       SUBROUTINE TE0241(OPTION,NOMTE)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*)     OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,6 +36,11 @@ C                         (SECTION CONSTANTE OU NON)
 C
 C
       INTEGER      IADZI,IAZK24
+C-----------------------------------------------------------------------
+      INTEGER I ,ISECT ,ITYPE ,LMAT ,LMATER ,LORIEN ,LSECT 
+      INTEGER LSECT2 ,LX ,NBPAR ,NBRES ,NC ,NNO 
+      REAL*8 EY ,EZ 
+C-----------------------------------------------------------------------
       PARAMETER                 (NBRES=3)
       REAL*8       VALPAR,VALRES(NBRES)
       INTEGER CODRES(NBRES),KPG,SPT

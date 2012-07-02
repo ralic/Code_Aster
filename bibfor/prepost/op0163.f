@@ -1,8 +1,8 @@
       SUBROUTINE OP0163()
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,6 +38,14 @@ C
       CHARACTER*80 TITRE
       INTEGER      IARG
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IADRIF ,IARCH ,IBI ,ICH ,IDBASE ,IDRESI 
+      INTEGER IDRESR ,IE ,IFMIS ,IMESS ,IORD ,IRET ,IUNIFI 
+      INTEGER J ,JINST ,JNUME ,JREFE ,LINST ,LREFE ,LVAL1 
+      INTEGER LVAL2 ,LVALE ,NBCHAM ,NBINST ,NBMODD ,NBMODE ,NBMODS 
+      INTEGER NBSAUV ,NBSTO ,NEQ ,NF ,NMM ,NTI ,NU 
+
+C-----------------------------------------------------------------------
       DATA  REFE  /'                  _REFE'/
       DATA  KINST /'&&OP0163.INSTANT'/
       DATA  KNUME /'&&OP0163.NUME_RANG'/
@@ -188,7 +196,7 @@ C     ----- RECUPERATION TYPE DE RESULTAT ---
      &                  ZR(IDRESR+(ZI(JNUME+I)-1)*NBMODE),ZR(LVALE))
             ENDIF
             CALL JELIBE(CHAMNO)
-            CALL RSNOCH(NOMRES,TYPE(ICH),IARCH,' ')
+            CALL RSNOCH(NOMRES,TYPE(ICH),IARCH)
  92      CONTINUE
          IF (TYPRES.EQ.'DYNA_HARMO') THEN
            CALL RSADPA(NOMRES,'E',1,'FREQ',IARCH,0,LINST,K8B)

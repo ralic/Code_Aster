@@ -1,13 +1,13 @@
       SUBROUTINE PACOA3(NOEUD1,NOEUD2,LONLI1,LONLI2,DMIN0,NOMAZ,
      +                  LISO1Z,LISO2Z,LONLIS)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER           NOEUD1(*), NOEUD2(*),LONLI1,LONLI2,LONLIS
       CHARACTER*(*) NOMAZ, LISO1Z, LISO2Z
       REAL*8        DMIN0
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,6 +61,8 @@ C
       INTEGER IRET,IDLOU1,IDLOU2,INO1, IAGEOM, LONLIM
       INTEGER LONMAX,IDLINV,I1,NUNO1,J2,I2,INO2,NUNO2,J1
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       LISOU1 = LISO1Z
       LISOU2 = LISO2Z

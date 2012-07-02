@@ -1,6 +1,6 @@
       SUBROUTINE UTESTO(NOMOBJ,TYPE,TBTXT,REFI,REFR,EPSI,CRIT,IFIC,
      &                  SSIGNE)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       CHARACTER*24 NOMOBJ
       REAL*8 REFR,EPSI
       CHARACTER*(*) CRIT,TYPE,SSIGNE
@@ -8,9 +8,9 @@
       INTEGER REFI,IFIC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 01/02/2010   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,6 +47,8 @@ C     VARIABLES LOCALES:
       REAL*8 RBID,SOMMR
       INTEGER IBID,RESUME,SOMMI,LONUTI,LONMAX,NI,IRET,IRET2
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       CALL TSTOBJ(NOMOBJ,'NON',RESUME,SOMMI,SOMMR,LONUTI,LONMAX,TYSC,
      &            IRET,NI)
 

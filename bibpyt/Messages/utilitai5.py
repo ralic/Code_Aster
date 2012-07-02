@@ -1,8 +1,8 @@
-#@ MODIF utilitai5 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utilitai5 Messages  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -263,9 +263,9 @@ Erreur Programmeur / UTTCPU  :
  On ne trouve pas le VALE_PARA_FONC exact dans la liste de la nappe
 """),
 
-91 : _(u"""
- %(k1)s n'est pas un champ de résultat.
-"""),
+
+
+
 
 92 : _(u"""
  Interpolation LOG et complexe en ordonnées sont incompatibles !

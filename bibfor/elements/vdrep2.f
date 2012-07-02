@@ -1,7 +1,7 @@
       SUBROUTINE VDREP2 ( ALPHA, BETA, ZILZI, ZRLZR,
      &                    MATEVN, MATEVG )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 12/03/2012   AUTEUR DESROCHE X.DESROCHES 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -19,7 +19,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C.======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C      VDREP2   -- DETERMINATION DES MATRICES DE PASSAGE
 C                  DES REPERES INTRINSEQUES AUX NOEUDS  DE L'ELEMENT
@@ -48,6 +48,12 @@ C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
 C --- NOMBRE DE NOEUDS DE L'ELEMENT  :
 C     -----------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IDEC ,IGAU ,INO ,J ,K ,NB2 
+      INTEGER NPGSN 
+      REAL*8 ALPHA ,BETA ,C ,DX ,DY ,DZ ,PJDX 
+      REAL*8 PJDY ,PJDZ ,PS ,R8DGRD ,R8PREM ,S 
+C-----------------------------------------------------------------------
       NB2  = ZILZI(2)
 C
 C --- NOMBRE DE POINTS D'INTEGRATION DE L'ELEMENT (SOUS-INTEGRE) :

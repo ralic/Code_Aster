@@ -1,6 +1,6 @@
       SUBROUTINE DISMPH(QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C     --     DISMOI(PHENOMENE)
 C     ARGUMENTS:
 C     ----------
@@ -43,6 +43,8 @@ C     ------------------
 
 C DEB-------------------------------------------------------------------
 
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       REPK=' '
       NOMOB = NOMOBZ
       IF (NOMOB(1:9).EQ.'THERMIQUE') THEN

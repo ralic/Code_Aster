@@ -1,11 +1,11 @@
       SUBROUTINE ACEAPF(NOMU,NOMA,LMAX,NBOCC)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER                     LMAX,NBOCC
       CHARACTER*8       NOMU,NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,6 +37,10 @@ C IN  : NBOCC  : NOMBRE D'OCCURENCES DU MOT CLE POUFL ------------------
 C     ------------------------------------------------------------------
 C
 C --- CONSTRUCTION DES CARTES ET ALLOCATION
+C-----------------------------------------------------------------------
+      INTEGER I ,IOC ,JDCC ,JDLS ,JDVC ,NACE ,NAFL 
+      INTEGER NB1 ,NB2 ,NB3 ,NG ,NM ,NR 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       CARTPF = NOMU//'.CARPOUFL'
       TMPNPF = CARTPF//'.NCMP'

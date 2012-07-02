@@ -2,7 +2,7 @@
      +                           F, TOL, IER,R1,ERR,NBP,IM,JM )
 C------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_7
 C-------------------------------------------------------------------
-       IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C                                 B  F2(X)
 C DESCRIPTION : CALCULE DINTEG = S  S F(X,Y) DY   DX
 C -----------                     A  F1(X)
@@ -77,6 +77,10 @@ C ---------
 C
 C DATAS
 C -----
+C-----------------------------------------------------------------------
+      INTEGER IM ,JM ,NBP 
+      REAL*8 SPECT2 
+C-----------------------------------------------------------------------
       DATA (COEFF(I),I=  1, 20) /
      S     0.7745966692414834D0  ,    0.5555555555555556D0  ,
      S     0.8888888888888889D0  ,    0.2684880898683334D0  ,

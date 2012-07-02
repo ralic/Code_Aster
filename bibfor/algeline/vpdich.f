@@ -1,6 +1,6 @@
       SUBROUTINE VPDICH(LRAIDE,LMASSE,LDYNAM,TOL,MXDICH,MXFREQ,NFREQ,
      +                  VALP,IEME,DET,IDET,NBPAS,TYPRES,NBLAGR,SOLVEU)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER          LRAIDE,LMASSE,LDYNAM
       REAL*8                                TOL
       INTEGER          MXFREQ,NFREQ,    IEME(*),IDET(*),NBPAS(*),NBLAGR
@@ -9,9 +9,9 @@
       CHARACTER*19 SOLVEU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -61,6 +61,11 @@ C
       REAL*8     FREQ1,  FREQ2
 C     ------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IBORN1 ,IBORN2 ,IEME0 ,IEME1 ,IEME2 ,IEME3 
+      INTEGER IENCOR ,IER ,INTERV ,IP ,IPAS ,IPLACE ,JDEC 
+      INTEGER MXDICH 
+C-----------------------------------------------------------------------
       DO 10 I = 2, NFREQ-1
         CALL VPSTUR(LRAIDE,VALP(I),LMASSE,LDYNAM,DET(I),IDET(I),
      +              IEME(I),IER,SOLVEU)

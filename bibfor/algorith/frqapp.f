@@ -1,15 +1,15 @@
       SUBROUTINE FRQAPP(DT,NEQ,DEP1,DEP2,ACC1,ACC2,
      +                    VMIN,FREQ)
 C
-      IMPLICIT     REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER      I
       REAL*8       DEP1(*),DEP2(*),ACC1(*),ACC2(*),VMIN(*)
       REAL*8       FREQ,DT,A,B,TEMP
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/01/98   AUTEUR A2BHHWS A.C.LEGER 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -35,6 +35,11 @@ C IN  : ACC2   : ACCELERATIONS AU TEMPS T+DT
 C IN  : VMIN   : VITESSES DE REFERENCE
 C OUT : FREQ   : FREQUENCE APPARENTE
 C ------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER NEQ 
+      REAL*8 DD ,DMIN ,EPS ,EPSMI ,R8DEPI ,R8MIEM ,R8PREM 
+      REAL*8 TT 
+C-----------------------------------------------------------------------
       TEMP = R8PREM()
       EPS = R8PREM()
       EPSMI = R8MIEM()

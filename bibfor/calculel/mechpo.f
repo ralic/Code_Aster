@@ -1,7 +1,7 @@
       SUBROUTINE MECHPO ( SOUCHE, CHARGE, MODELE, CHDEP2,
      +                    CHDYNR, SUROPT, LPAIN, LCHIN, NBOPT,
      +                    TYPCOE, ALPHA,  CALPHA )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*)       SOUCHE, CHARGE, MODELE, CHDEP2,
      +                    CHDYNR, SUROPT, LPAIN(*), LCHIN(*),
@@ -11,7 +11,7 @@
       COMPLEX*16                          CALPHA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,6 +45,10 @@ C
       CHARACTER*19 CH19
       CHARACTER*24  LIGRMO,CHDEPL
       COMPLEX*16   C16B, TPC(11)
+C-----------------------------------------------------------------------
+      INTEGER I ,IBID ,IER ,IRET 
+      REAL*8 R8B ,RBID ,ZERO 
+C-----------------------------------------------------------------------
       DATA         NCMPPE/ 'G' , 'AG' , 'BG' , 'CG' /
       DATA         NCMPFO/ 'FX' , 'FY' , 'FZ' , 'MX' , 'MY' , 'MZ' ,
      +                     'BX' , 'REP' , 'ALPHA' , 'BETA' , 'GAMMA' /

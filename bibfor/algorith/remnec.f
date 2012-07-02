@@ -16,9 +16,9 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C
 C  BUT:      < RESTITUTI0N MAC-NEAL ECLATEE >
 C
@@ -46,6 +46,18 @@ C
       COMPLEX*16    DEPHC
       REAL*8        PARA(2),DEPI,R8DEPI,FACT,GENEK,BETA
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IAD ,IBIB ,IBID ,ICOMP ,IDDI ,IDI 
+      INTEGER IDIA ,IDIAM ,IDICOU ,IER ,II ,INUM ,IORC 
+      INTEGER IORMO ,J ,JJ ,LDFRE ,LDKGE ,LDMGE ,LDOM2 
+      INTEGER LDOMO ,LDOTM ,LDTYD ,LLCHAM ,LLDESC ,LLDIAM ,LLFREQ 
+      INTEGER LLMOC ,LLNSEC ,LLNUMI ,LLREF ,LMASS ,LTETAX ,LTETGD 
+      INTEGER LTFLAX ,LTFLDR ,LTFLGA ,LTORF ,LTORTO ,LTVECO ,LTVERE 
+      INTEGER LTVEZT ,MDIAPA ,NBDAX ,NBDDG ,NBDDR ,NBDIA ,NBMOC 
+      INTEGER NBMOD ,NBMOR ,NBORC ,NBSEC ,NBTMP ,NEQ ,NUMA 
+      INTEGER NUMD ,NUMG ,NUMSEC 
+      REAL*8 AAA ,BBB ,BETSEC 
 C-----------------------------------------------------------------------
       DATA DEPL   /'DEPL            '/
       DATA TYPSUP /'MODE_MECA       '/
@@ -267,7 +279,7 @@ C
           CALL RSADPA(NOMRES,'E',1,'TYPE_DEFO',INUM,0,LDTYD,K8B)
           ZK16(LDTYD) = 'PROPRE          '
 C
-          CALL RSNOCH(NOMRES,DEPL,INUM,' ')
+          CALL RSNOCH(NOMRES,DEPL,INUM)
 C
 C ------- EVENTUELLE RESTITUTION DE LA PARTIE IMAGINAIRE
 C
@@ -303,7 +315,7 @@ C
             CALL RSADPA(NOMRES,'E',1,'TYPE_DEFO',INUM,0,LDTYD,K8B)
             ZK16(LDTYD) = 'PROPRE          '
 C
-            CALL RSNOCH(NOMRES,DEPL,INUM,' ')
+            CALL RSNOCH(NOMRES,DEPL,INUM)
 C
           ENDIF
 C

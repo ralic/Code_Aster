@@ -1,6 +1,6 @@
       SUBROUTINE CAVER1()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CATAELEM  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CATAELEM  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 
 C ----------------------------------------------------------------------
 C     BUT: VERIFIER LA COHERENCE DES OBJETS DES CATALOGUES.
@@ -39,6 +39,14 @@ C     ------------------
 
 
 
+C-----------------------------------------------------------------------
+      INTEGER IADESC ,IAMOLO ,IANBLC ,IAOPMO ,IAOPNO ,IAOPTE ,IAPARA
+      INTEGER ICODE ,IER ,IGD ,IGDOP ,IMOLO ,IOPTTE ,IPARA
+      INTEGER IRET ,ITROU ,JNBNO ,JNOCM1 ,JNOCM2 ,JTYPMA ,K
+      INTEGER KK ,LGCO ,N1 ,N2 ,NBGD ,NBIN ,NBINTE, INDIK8
+      INTEGER NBNO ,NBOPT ,NBOUT ,NBOUTE ,NBPT1 ,NBPT2 ,NBTE
+      INTEGER NBVOL ,NUCALC
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL JELIRA('&CATA.OP.NOMOPT','NOMMAX',NBOPT,KBID)
       CALL JELIRA('&CATA.TE.NOMTE','NOMMAX',NBTE,KBID)

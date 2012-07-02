@@ -1,4 +1,4 @@
-# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE MODELISATION HM D'UN BARREAU SATURE EN LIQUIDE COMPRESSIBLE
 # wtnp129b.para = tps_job 180 mem_job 200Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -45,9 +45,9 @@
 
 import numpy,aster
 
-DEBUT(CODE=_F(NOM='WTNP129B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON',));
+DEBUT(CODE=_F(NOM='WTNP129B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'));
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(FORMAT='MED');
 
 DEFI_GROUP(reuse=MAIL,MAILLAGE=MAIL, CREA_GROUP_NO=_F( TOUT_GROUP_MA = 'OUI'))
 
@@ -59,29 +59,29 @@ MAILLIN = CREA_MAILLAGE(
 MODELIN=AFFE_MODELE(MAILLAGE=MAILLIN,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='D_PLAN',),);
+                           MODELISATION='D_PLAN'));
 
 MODMEC=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='D_PLAN_SI',),);
+                           MODELISATION='D_PLAN_SI'));
 
 MODHYD=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='D_PLAN_HS',),);
+                           MODELISATION='D_PLAN_HS'));
 
 MATPROJ = PROJ_CHAMP(
                METHODE='COLLOCATION',
                PROJECTION='NON',
                MODELE_1=MODHYD,
-               MODELE_2=MODELIN,)
+               MODELE_2=MODELIN)
 
 MATPROJ2 = PROJ_CHAMP(
                METHODE='COLLOCATION',
                PROJECTION='NON',
                MODELE_1=MODHYD,
-               MODELE_2=MODMEC,)
+               MODELE_2=MODMEC)
 
 ##############################
 # LISTE DES INSTANTS DE CALCUL
@@ -135,94 +135,94 @@ aster.affiche('RESULTAT','################################\n\n');
 
 #LI=DEFI_LIST_REEL(DEBUT=0.0,
 #                  INTERVALLE=(_F(JUSQU_A=1.E-4,
-#                                 NOMBRE=10,),
+#                                 NOMBRE=10),
 #                              _F(JUSQU_A=1.E-3,
-#                                 NOMBRE=9,),
+#                                 NOMBRE=9),
 #                             _F(JUSQU_A=1.E-2,
-#                                 NOMBRE=10,),
+#                                 NOMBRE=10),
 #                              _F(JUSQU_A=0.10000000000000001,
-#                                 NOMBRE=20,),
+#                                 NOMBRE=20),
 #                              _F(JUSQU_A=1.0,
-#                                 NOMBRE=25,),
+#                                 NOMBRE=25),
 #                              _F(JUSQU_A=10,
-#                                 NOMBRE=30,),
+#                                 NOMBRE=30),
 #                              _F(JUSQU_A=100,
-#                                 NOMBRE=47,),
+#                                 NOMBRE=47),
 #                              _F(JUSQU_A=1000,
-#                                 NOMBRE=48,),
+#                                 NOMBRE=48),
 #                              _F(JUSQU_A=10000,
-#                                 NOMBRE=50,),),);
+#                                 NOMBRE=50)));
 
 lenlinst=len(linst)
 
-UN=DEFI_CONSTANTE(VALE=1.0,);
+UN=DEFI_CONSTANTE(VALE=1.0);
 
-ZERO=DEFI_CONSTANTE(VALE=0.0,);
+ZERO=DEFI_CONSTANTE(VALE=0.0);
 
-BIDON=DEFI_CONSTANTE(VALE=0.0,);
+BIDON=DEFI_CONSTANTE(VALE=0.0);
 
 #
 #
 #K=k*mu/(rhow*g)
 #
 
-KINT=DEFI_CONSTANTE(VALE=1.E-08,);
+KINT=DEFI_CONSTANTE(VALE=1.E-08);
 #
 
 MATERIAU=DEFI_MATERIAU(ELAS=_F(E=5.8E9,
                                NU=0.0,
                                RHO=2800.0,
-                               ALPHA=1.0000000000000001E-05,),
+                               ALPHA=1.0000000000000001E-05),
                        COMP_THM = 'LIQU_SATU',
                        THM_LIQU=_F(RHO=1000.0,
                                    UN_SUR_K=0.5E-9,
                                    VISC=UN,
-                                   D_VISC_TEMP=ZERO,),
+                                   D_VISC_TEMP=ZERO),
                        THM_INIT=_F(PRE1=1.E6,
-                                   PORO=0.5,),
+                                   PORO=0.5),
                        THM_DIFFU=_F(
                                     RHO=2800.0,
                                     BIOT_COEF=1.0,
                                     PESA_X=0.0,
                                     PESA_Y=0.0,
                                     PESA_Z=0.0,
-                                    PERM_IN=KINT,),);
+                                    PERM_IN=KINT));
 
 CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
                      AFFE=_F(TOUT='OUI',
-                             MATER=MATERIAU,),);
+                             MATER=MATERIAU));
 
 CHARMEC=AFFE_CHAR_CINE(MODELE=MODMEC,
                     MECA_IMPO=(_F(GROUP_MA='BAS',
                                  DX=0.0,
-                                 DY=0.0,),
-                              _F(GROUP_MA=('GAUCHE','DROITE',),
-                                 DX=0.0,),),);
+                                 DY=0.0),
+                              _F(GROUP_MA=('GAUCHE','DROITE'),
+                                 DX=0.0)));
 
 CHARHYD=AFFE_CHAR_CINE(MODELE=MODHYD,
                        MECA_IMPO=(_F(GROUP_MA='HAUT',
-                                 PRE1=2.E6,),),);
+                                 PRE1=2.E6)));
 
 CHAINAGE_THM(
              TYPE_CHAINAGE = 'INIT',
              MODELE_MECA   = MODMEC,
              MODELE_HYDR   = MODHYD,
-             MATR_MH       = CO('MATMH',),
-             MATR_HM1      = CO('MATHM1',),
-             MATR_HM2      = CO('MATHM2',),
+             MATR_MH       = CO('MATMH'),
+             MATR_HM1      = CO('MATHM1'),
+             MATR_HM2      = CO('MATHM2'),
 );
 
 for k in range(1,lenlinst) :
 
   UNPAS=DEFI_LIST_REEL(DEBUT=linst[k-1],
                        INTERVALLE=_F(JUSQU_A=linst[k],
-                                     NOMBRE=1,),);
+                                     NOMBRE=1));
 
   UNPASSUB =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =UNPAS ),
                            ECHEC=_F(
                                     SUBD_METHODE='MANUEL',
                                     SUBD_PAS  = 4,
-                                    SUBD_NIVEAU=5,),);
+                                    SUBD_NIVEAU=5));
 
   if (k>1) :
 
@@ -230,93 +230,93 @@ for k in range(1,lenlinst) :
                       MODELE_HYDR=MODHYD,
                       MATR_MH=MATMH,
                       TYPE_CHAINAGE='MECA_HYDR',
-                      INST=linst[k],);
+                      INST=linst[k]);
 
     MATEHY=AFFE_MATERIAU(MAILLAGE=MAIL,
                       AFFE=_F(TOUT='OUI',
-                              MATER=MATERIAU,),
+                              MATER=MATERIAU),
                       AFFE_VARC=_F(NOM_VARC='DIVU',
-                                   EVOL=DEFVHY,),);
+                                   EVOL=DEFVHY));
 
   else :
 
     MATEHY=AFFE_MATERIAU(MAILLAGE=MAIL,
                          AFFE=_F(TOUT='OUI',
-                                 MATER=MATERIAU,),);
+                                 MATER=MATERIAU));
 
   if (k==1) :
 
     PRELIQ=STAT_NON_LINE(MODELE=MODHYD,
                         CHAM_MATER=MATEHY,
-                        EXCIT=_F(CHARGE=CHARHYD,),
-                        SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=100,),
-                        ARCHIVAGE=_F(LIST_INST=UNPAS,),
+                        EXCIT=_F(CHARGE=CHARHYD),
+                        SOLVEUR=_F(METHODE='MUMPS'),
+                        ARCHIVAGE=_F(LIST_INST=UNPAS),
                         COMP_INCR=_F(RELATION='KIT_H',
-                                     RELATION_KIT=('LIQU_SATU','HYDR_UTIL',),),
-                        INCREMENT=_F(LIST_INST=UNPASSUB,),);
+                                     RELATION_KIT=('LIQU_SATU','HYDR_UTIL')),
+                        INCREMENT=_F(LIST_INST=UNPASSUB));
 
     PRELIN = PROJ_CHAMP(
                RESULTAT=PRELIQ,
                MATR_PROJECTION=MATPROJ,
                NOM_CHAM ='DEPL',
-               INST=linst[0],)
+               INST=linst[0])
 
-    IMPR_RESU(RESU=_F(RESULTAT=PRELIN,INST=linst[0],),FORMAT='MED',UNITE=81,);
+    IMPR_RESU(RESU=_F(RESULTAT=PRELIN,INST=linst[0]),FORMAT='MED',UNITE=81);
 
-    DETRUIRE(INFO=1,CONCEPT=_F(NOM=(PRELIN,),),);
+    DETRUIRE(INFO=1,CONCEPT=_F(NOM=(PRELIN)));
 
   else :
 
     PRELIQ=STAT_NON_LINE(reuse=PRELIQ,
                          MODELE=MODHYD,
                          CHAM_MATER=MATEHY,
-                         EXCIT=_F(CHARGE=CHARHYD,),
-                         SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=100,),
-                         ARCHIVAGE=_F(LIST_INST=UNPAS,),
+                         EXCIT=_F(CHARGE=CHARHYD),
+                         SOLVEUR=_F(METHODE='MUMPS'),
+                         ARCHIVAGE=_F(LIST_INST=UNPAS),
                          ETAT_INIT=_F(EVOL_NOLI=PRELIQ,
                                       INST=linst[k-1]),
                          COMP_INCR=_F(RELATION='KIT_H',
-                                      RELATION_KIT=('LIQU_SATU','HYDR_UTIL',),),
-                         INCREMENT=_F(LIST_INST=UNPASSUB,),);
+                                      RELATION_KIT=('LIQU_SATU','HYDR_UTIL')),
+                         INCREMENT=_F(LIST_INST=UNPASSUB));
 
-  IMPR_RESU(RESU=_F(RESULTAT=PRELIQ,INST=linst[k],),FORMAT='MED',UNITE=82,);
+  IMPR_RESU(RESU=_F(RESULTAT=PRELIQ,INST=linst[k]),FORMAT='MED',UNITE=82);
 
   PRELIN = PROJ_CHAMP(
                RESULTAT=PRELIQ,
                MATR_PROJECTION=MATPROJ,
                NOM_CHAM ='DEPL',
-               INST=linst[k],)
+               INST=linst[k])
 
-  IMPR_RESU(RESU=_F(RESULTAT=PRELIN,INST=linst[k],),FORMAT='MED',UNITE=81,);
+  IMPR_RESU(RESU=_F(RESULTAT=PRELIN,INST=linst[k]),FORMAT='MED',UNITE=81);
 
-  DETRUIRE(INFO=1,CONCEPT=_F(NOM=(PRELIN,),),);
+  DETRUIRE(INFO=1,CONCEPT=_F(NOM=(PRELIN)));
 
   if (k>1) :
-    DETRUIRE(INFO=1,CONCEPT=_F(NOM=(REPTOT,MATEME,),),);
+    DETRUIRE(INFO=1,CONCEPT=_F(NOM=(REPTOT,MATEME)));
 
   REPTOT=CHAINAGE_THM(RESU_HYDR=PRELIQ,
                       MODELE_MECA=MODMEC,
                       TYPE_CHAINAGE='HYDR_MECA',
                       MATR_HM1=MATHM1,
                       MATR_HM2=MATHM2,
-                      INST=linst[k],);
+                      INST=linst[k]);
 
   MATEME=AFFE_MATERIAU(MAILLAGE=MAIL,
                        AFFE=_F(TOUT='OUI',
-                               MATER=MATERIAU,),
+                               MATER=MATERIAU),
                        AFFE_VARC=_F(TOUT='OUI',
                                     EVOL=REPTOT,
-                                    NOM_VARC='PTOT',),);
+                                    NOM_VARC='PTOT'));
 
   if (k==1) :
 
     DEPLA=STAT_NON_LINE(MODELE=MODMEC,
                     CHAM_MATER=MATEME,
-                    EXCIT=_F(CHARGE=CHARMEC,),
-                    COMP_INCR=_F(RELATION='ELAS',),
-                    INCREMENT=_F(LIST_INST=UNPASSUB,),
-                    ARCHIVAGE=_F(LIST_INST=UNPAS,),
-                    SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=100,),);
+                    EXCIT=_F(CHARGE=CHARMEC),
+                    COMP_INCR=_F(RELATION='ELAS'),
+                    INCREMENT=_F(LIST_INST=UNPASSUB),
+                    ARCHIVAGE=_F(LIST_INST=UNPAS),
+                    SOLVEUR=_F(METHODE='MUMPS'));
 
     DEPLA=CALC_CHAMP(reuse=DEPLA,CONTRAINTE=('SIEF_ELNO'),RESULTAT=DEPLA,INST=linst[k])
 
@@ -332,13 +332,13 @@ for k in range(1,lenlinst) :
     DEPLA=STAT_NON_LINE(reuse=DEPLA,
                     MODELE=MODMEC,
                     CHAM_MATER=MATEME,
-                    EXCIT=_F(CHARGE=CHARMEC,),
-                    ARCHIVAGE=_F(LIST_INST=UNPAS,),
-                    COMP_INCR=_F(RELATION='ELAS',),
+                    EXCIT=_F(CHARGE=CHARMEC),
+                    ARCHIVAGE=_F(LIST_INST=UNPAS),
+                    COMP_INCR=_F(RELATION='ELAS'),
                     ETAT_INIT=_F(EVOL_NOLI=DEPLA,
                                       INST=linst[k-1]),
-                    INCREMENT=_F(LIST_INST=UNPASSUB,),
-                    SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=100,),);
+                    INCREMENT=_F(LIST_INST=UNPASSUB),
+                    SOLVEUR=_F(METHODE='MUMPS'));
 
     DEPLA=CALC_CHAMP(reuse=DEPLA,CONTRAINTE=('SIEF_ELNO'),RESULTAT=DEPLA,INST=linst[k])
 
@@ -357,19 +357,19 @@ for k in range(1,lenlinst) :
 
   SIG=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
                  NOM_CHAM='SIEF_ELGA', RESULTAT=DEPLA,
-                 INST=linst[k],)
+                 INST=linst[k])
 
   SIGNO=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='NOEU_SIEF_R',
                  NOM_CHAM='SIEF_NOEU', RESULTAT=DEPLA,
-                 INST=linst[k],)
+                 INST=linst[k])
 
-  PJNOEU=PROJ_CHAMP(RESULTAT=PRELIQ,MATR_PROJECTION=MATPROJ2,INST=linst[k],)
+  PJNOEU=PROJ_CHAMP(RESULTAT=PRELIQ,MATR_PROJECTION=MATPROJ2,INST=linst[k])
 
   DEP_P=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',INFO=1,
                  OPERATION='EXTR',
                  RESULTAT=PJNOEU,
                  NOM_CHAM='DEPL',
-                 INST=linst[k],);
+                 INST=linst[k]);
 
   DEP_PP=CREA_CHAMP(OPERATION='ASSE',
                  TYPE_CHAM='NOEU_DEPL_R',
@@ -377,12 +377,12 @@ for k in range(1,lenlinst) :
                  ASSE=_F(TOUT='OUI',
                          NOM_CMP= 'PRE1',
                          CHAM_GD=DEP_P,
-                         NOM_CMP_RESU='DX',))
+                         NOM_CMP_RESU='DX'))
 
   DEPPGA=CREA_CHAMP(TYPE_CHAM='ELGA_DEPL_R',
                   MODELE=MODMEC,PROL_ZERO='OUI',
                   OPERATION='DISC',
-                  CHAM_GD=DEP_PP,);
+                  CHAM_GD=DEP_PP);
 
   SIPGA=CREA_CHAMP(OPERATION='ASSE',INFO=1,
                  TYPE_CHAM='ELGA_SIEF_R',PROL_ZERO='OUI',
@@ -403,7 +403,7 @@ for k in range(1,lenlinst) :
                          CHAM_GD=DEPPGA,
                          NOM_CMP_RESU='SIZZ',
                          ),
-                       ),);
+                       ));
 
   SIPNO=CREA_CHAMP(OPERATION='ASSE',INFO=1,
                  TYPE_CHAM='NOEU_SIEF_R',PROL_ZERO='OUI',
@@ -424,7 +424,7 @@ for k in range(1,lenlinst) :
                          CHAM_GD=DEP_PP,
                          NOM_CMP_RESU='SIZZ',
                          ),
-                       ),);
+                       ));
 
   SIGEFFCH=CREA_CHAMP(OPERATION='ASSE',INFO=1,
                  TYPE_CHAM='ELGA_SIEF_R',PROL_ZERO='OUI',
@@ -465,7 +465,7 @@ for k in range(1,lenlinst) :
                    NOM_CHAM='SIEF_ELGA',
                    AFFE=_F(CHAM_GD=SIGEFFCH,
                            MODELE=MODMEC,
-                           INST=linst[k],),);
+                           INST=linst[k]));
 
 
     SIGEFFNO=CREA_RESU(OPERATION='AFFE',
@@ -473,7 +473,7 @@ for k in range(1,lenlinst) :
                    NOM_CHAM='SIEF_NOEU',
                    AFFE=_F(CHAM_GD=SIEFFNO,
                            MODELE=MODMEC,
-                           INST=linst[k],),);
+                           INST=linst[k]));
 
   else :
 
@@ -483,7 +483,7 @@ for k in range(1,lenlinst) :
                    NOM_CHAM='SIEF_ELGA',
                    AFFE=_F(CHAM_GD=SIGEFFCH,
                            MODELE=MODMEC,
-                           INST=linst[k],),);
+                           INST=linst[k]));
 
     SIGEFFNO=CREA_RESU(reuse=SIGEFFNO,
                    OPERATION='AFFE',
@@ -491,24 +491,24 @@ for k in range(1,lenlinst) :
                    NOM_CHAM='SIEF_NOEU',
                    AFFE=_F(CHAM_GD=SIEFFNO,
                            MODELE=MODMEC,
-                           INST=linst[k],),);
+                           INST=linst[k]));
 
 
-  IMPR_RESU(RESU=_F(RESULTAT=SIGEFF,INST=linst[k],),FORMAT='MED',UNITE=83,);
-  IMPR_RESU(RESU=_F(RESULTAT=SIGEFFNO,INST=linst[k],),FORMAT='MED',UNITE=84,);
+  IMPR_RESU(RESU=_F(RESULTAT=SIGEFF,INST=linst[k]),FORMAT='MED',UNITE=83);
+  IMPR_RESU(RESU=_F(RESULTAT=SIGEFFNO,INST=linst[k]),FORMAT='MED',UNITE=84);
 
-  DETRUIRE(INFO=1,CONCEPT=_F(NOM=(SIG,SIGNO,PJNOEU,SIPNO,SIEFFNO,DEP_P,DEP_PP,DEPPGA,SIPGA,SIGEFFCH,),),);
+  DETRUIRE(INFO=1,CONCEPT=_F(NOM=(SIG,SIGNO,PJNOEU,SIPNO,SIEFFNO,DEP_P,DEP_PP,DEPPGA,SIPGA,SIGEFFCH)));
 
 #########
 # Fin manipulation
 #########
 
-  IMPR_RESU(RESU=_F(RESULTAT=DEPLA,INST=linst[k],),FORMAT='MED',UNITE=80,);
+  IMPR_RESU(RESU=_F(RESULTAT=DEPLA,INST=linst[k]),FORMAT='MED',UNITE=80);
 
   if (k>1) :
-    DETRUIRE(INFO=1,CONCEPT=_F(NOM=(DEFVHY,),),);
+    DETRUIRE(INFO=1,CONCEPT=_F(NOM=(DEFVHY)));
 
-  DETRUIRE(INFO=1,CONCEPT=_F(NOM=(UNPAS,UNPASSUB,MATEHY,),),);
+  DETRUIRE(INFO=1,CONCEPT=_F(NOM=(UNPAS,UNPASSUB,MATEHY)));
 
 #########################
 # Tests de non-regression
@@ -520,7 +520,7 @@ EXDEP1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  NOM_CHAM='DEPL',
                                  NOM_CMP='DY',
                                  NUME_ORDRE=74,
-                                 GROUP_NO='DROITE',),);
+                                 GROUP_NO='DROITE'));
 
 EXPRE1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  INTITULE='MAIL',
@@ -528,7 +528,7 @@ EXPRE1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  NOM_CHAM='DEPL',
                                  NOM_CMP='PRE1',
                                  NUME_ORDRE=74,
-                                 GROUP_NO='DROITE',),);
+                                 GROUP_NO='DROITE'));
 
 EXDEP2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  INTITULE='MAIL',
@@ -536,7 +536,7 @@ EXDEP2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  NOM_CHAM='DEPL',
                                  NOM_CMP='DY',
                                  NUME_ORDRE=149,
-                                 GROUP_NO='DROITE',),);
+                                 GROUP_NO='DROITE'));
 
 EXPRE2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  INTITULE='MAIL',
@@ -544,7 +544,7 @@ EXPRE2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  NOM_CHAM='DEPL',
                                  NOM_CMP='PRE1',
                                  NUME_ORDRE=149,
-                                 GROUP_NO='DROITE',),);
+                                 GROUP_NO='DROITE'));
 
 EXSIG1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='MAIL',
@@ -552,7 +552,7 @@ EXSIG1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                NOM_CHAM='SIEF_NOEU',
                                NOM_CMP='SIYY',
                                NUME_ORDRE=74,
-                               GROUP_NO='DROITE',),);
+                               GROUP_NO='DROITE'));
 
 EXSIG2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='MAIL',
@@ -560,44 +560,44 @@ EXSIG2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                NOM_CHAM='SIEF_NOEU',
                                NOM_CMP='SIYY',
                                NUME_ORDRE=149,
-                               GROUP_NO='DROITE',),);
+                               GROUP_NO='DROITE'));
 
 IMPR_TABLE(TABLE=EXDEP1,
            FORMAT='TABLEAU',
            UNITE=8,
-           NOM_PARA=('INST','NOEUD','COOR_X','COOR_Y','DY',),);
+           NOM_PARA=('INST','NOEUD','COOR_X','COOR_Y','DY'));
 #########
 # Tests sur la pression a l'ordre 74 (t=1 s)
 #########
 
 TEST_TABLE(TABLE     = EXPRE1,
            FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N23',),
+                          VALE_K   = 'N23'),
            NOM_PARA  = 'PRE1',
            VALE      =  1.4477057505633E+06,
            PRECISION =  5.E-4,
-           REFERENCE = 'AUTRE_ASTER',);
+           REFERENCE = 'AUTRE_ASTER');
 TEST_TABLE(TABLE     = EXPRE1,
            FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N27',),
+                          VALE_K   = 'N27'),
            NOM_PARA  = 'PRE1',
            VALE      = 9.8618261792096E+05,
            PRECISION =  3.E-3,
-           REFERENCE = 'AUTRE_ASTER',);
+           REFERENCE = 'AUTRE_ASTER');
 TEST_TABLE(TABLE     = EXPRE1,
            FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N31',),
+                          VALE_K   = 'N31'),
            NOM_PARA  = 'PRE1',
            PRECISION =  9.E-3,
            VALE      = 6.8416253970115E+05,
-           REFERENCE = 'AUTRE_ASTER',);
+           REFERENCE = 'AUTRE_ASTER');
 TEST_TABLE(TABLE     = EXPRE1,
            FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N1',),
+                          VALE_K   = 'N1'),
            NOM_PARA  = 'PRE1',
            VALE      = 5.7968660741362E+05,
            PRECISION =  2.E-2,
-           REFERENCE = 'AUTRE_ASTER',);
+           REFERENCE = 'AUTRE_ASTER');
 
 #########
 # Tests sur DY a l'ordre 74 (t=1 s)
@@ -605,32 +605,32 @@ TEST_TABLE(TABLE     = EXPRE1,
 
 TEST_TABLE(TABLE     = EXDEP1,
            FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N4',),
+                          VALE_K   = 'N4'),
            NOM_PARA  = 'DY',
            PRECISION =  3.E-3,
            VALE      =  1.8807606329922E-03,
-           REFERENCE = 'AUTRE_ASTER',);
+           REFERENCE = 'AUTRE_ASTER');
 TEST_TABLE(TABLE     = EXDEP1,
            FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N23',),
+                          VALE_K   = 'N23'),
            PRECISION =  5.E-3,
            NOM_PARA  = 'DY',
            VALE      =  1.139326750168E-03,
-           REFERENCE = 'AUTRE_ASTER',);
+           REFERENCE = 'AUTRE_ASTER');
 TEST_TABLE(TABLE     = EXDEP1,
            FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N27',),
+                          VALE_K   = 'N27'),
            PRECISION =  0.8E-2,
            NOM_PARA  = 'DY',
            VALE      = 6.19182033214E-04,
-           REFERENCE = 'AUTRE_ASTER',);
+           REFERENCE = 'AUTRE_ASTER');
 TEST_TABLE(TABLE     = EXDEP1,
            FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N31',),
+                          VALE_K   = 'N31'),
            NOM_PARA  = 'DY',
            PRECISION =  1.1E-2,
            VALE      = 2.6539252530741E-04,
-           REFERENCE = 'AUTRE_ASTER',);
+           REFERENCE = 'AUTRE_ASTER');
 
 #########
 # Tests sur SIYY  a l'ordre 74 (t=1 s)
@@ -638,39 +638,39 @@ TEST_TABLE(TABLE     = EXDEP1,
 
 TEST_TABLE(TABLE     = EXSIG1,
            FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N4',),
+                          VALE_K   = 'N4'),
            PRECISION =  1.E-10,
            NOM_PARA  = 'SIYY',
            VALE      = 2.00000E+06,
-           REFERENCE = 'AUTRE_ASTER',);
+           REFERENCE = 'AUTRE_ASTER');
 TEST_TABLE(TABLE     = EXSIG1,
            FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N23',),
+                          VALE_K   = 'N23'),
            PRECISION =  5.E-4,
            NOM_PARA  = 'SIYY',
            VALE      =  1.4477057505633E+06,
-           REFERENCE = 'AUTRE_ASTER',);
+           REFERENCE = 'AUTRE_ASTER');
 TEST_TABLE(TABLE     = EXSIG1,
            FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N27',),
+                          VALE_K   = 'N27'),
            PRECISION =  3.E-3,
            NOM_PARA  = 'SIYY',
            VALE      = 9.8618261792096E+05,
-           REFERENCE = 'AUTRE_ASTER',);
+           REFERENCE = 'AUTRE_ASTER');
 TEST_TABLE(TABLE     = EXSIG1,
            FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N31',),
+                          VALE_K   = 'N31'),
            PRECISION =  9.E-3,
            NOM_PARA  = 'SIYY',
            VALE      = 6.8416253970115E+05,
-           REFERENCE = 'AUTRE_ASTER',);
+           REFERENCE = 'AUTRE_ASTER');
 TEST_TABLE(TABLE     = EXSIG1,
            FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N1',),
+                          VALE_K   = 'N1'),
            PRECISION =  1.3E-2,
            NOM_PARA  = 'SIYY',
            VALE      = 5.7968660741362E+05,
-           REFERENCE = 'AUTRE_ASTER',);
+           REFERENCE = 'AUTRE_ASTER');
 
 #########
 # Tests sur la pression a l'ordre 149 (t=10 s)
@@ -678,32 +678,32 @@ TEST_TABLE(TABLE     = EXSIG1,
 
 TEST_TABLE(TABLE     = EXPRE2,
            FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N23',),
+                          VALE_K   = 'N23'),
            NOM_PARA  = 'PRE1',
            PRECISION =  2.1E-4,
            VALE      =  1.9965914222579E+06,
-           REFERENCE = 'AUTRE_ASTER',);
+           REFERENCE = 'AUTRE_ASTER');
 TEST_TABLE(TABLE     = EXPRE2,
            FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N27',),
+                          VALE_K   = 'N27'),
            PRECISION =  4.E-4,
            NOM_PARA  = 'PRE1',
            VALE      = 1.9937017653319E+06,
-           REFERENCE = 'AUTRE_ASTER',);
+           REFERENCE = 'AUTRE_ASTER');
 TEST_TABLE(TABLE     = EXPRE2,
            FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N31',),
+                          VALE_K   = 'N31'),
            NOM_PARA  = 'PRE1',
            PRECISION =  5.E-4,
            VALE      = 1.9917709562082E+06,
-           REFERENCE = 'AUTRE_ASTER',);
+           REFERENCE = 'AUTRE_ASTER');
 TEST_TABLE(TABLE     = EXPRE2,
            FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N1',),
+                          VALE_K   = 'N1'),
            PRECISION =  6.E-4,
            NOM_PARA  = 'PRE1',
            VALE      = 1.991092945817E+06,
-           REFERENCE = 'AUTRE_ASTER',);
+           REFERENCE = 'AUTRE_ASTER');
 
 #########
 # Tests sur DY  a l'ordre 149 (t=10 s)
@@ -711,32 +711,32 @@ TEST_TABLE(TABLE     = EXPRE2,
 
 TEST_TABLE(TABLE     = EXDEP2,
            FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N4',),
+                          VALE_K   = 'N4'),
            PRECISION =  4.E-4,
            NOM_PARA  = 'DY',
            VALE      = 3.4385071565836E-03,
-           REFERENCE = 'AUTRE_ASTER',);
+           REFERENCE = 'AUTRE_ASTER');
 TEST_TABLE(TABLE     = EXDEP2,
            FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N23',),
+                          VALE_K   = 'N23'),
            PRECISION =  5.E-4,
            NOM_PARA  = 'DY',
            VALE      =  2.5771817886894E-03,
-           REFERENCE = 'AUTRE_ASTER',);
+           REFERENCE = 'AUTRE_ASTER');
 TEST_TABLE(TABLE     = EXDEP2,
            FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N27',),
+                          VALE_K   = 'N27'),
            PRECISION =  5.E-4,
            NOM_PARA  = 'DY',
            VALE      = 1.7172304114012E-03,
-           REFERENCE = 'AUTRE_ASTER',);
+           REFERENCE = 'AUTRE_ASTER');
 TEST_TABLE(TABLE     = EXDEP2,
            FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N31',),
+                          VALE_K   = 'N31'),
            PRECISION =  6.E-4,
            NOM_PARA  = 'DY',
            VALE      = 8.5833064233171E-04,
-           REFERENCE = 'AUTRE_ASTER',);
+           REFERENCE = 'AUTRE_ASTER');
 
 #########
 # Tests sur SIYY  a l'ordre 149 (t=10 s)
@@ -744,38 +744,38 @@ TEST_TABLE(TABLE     = EXDEP2,
 
 TEST_TABLE(TABLE     = EXSIG2,
            FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N4',),
+                          VALE_K   = 'N4'),
            PRECISION =  1.E-10,
            NOM_PARA  = 'SIYY',
            VALE      = 2.00000E+06,
-           REFERENCE = 'AUTRE_ASTER',);
+           REFERENCE = 'AUTRE_ASTER');
 TEST_TABLE(TABLE     = EXSIG2,
            FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N23',),
+                          VALE_K   = 'N23'),
            PRECISION =  3.E-4,
            NOM_PARA  = 'SIYY',
            VALE      =  1.9965914222579E+06,
-           REFERENCE = 'AUTRE_ASTER',);
+           REFERENCE = 'AUTRE_ASTER');
 TEST_TABLE(TABLE     = EXSIG2,
            FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N27',),
+                          VALE_K   = 'N27'),
            PRECISION =  4.E-4,
            NOM_PARA  = 'SIYY',
            VALE      = 1.9937017653319E+06,
-           REFERENCE = 'AUTRE_ASTER',);
+           REFERENCE = 'AUTRE_ASTER');
 TEST_TABLE(TABLE     = EXSIG2,
            FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N31',),
+                          VALE_K   = 'N31'),
            PRECISION =  5.E-4,
            NOM_PARA  = 'SIYY',
            VALE      = 1.9917709562082E+06,
-           REFERENCE = 'AUTRE_ASTER',);
+           REFERENCE = 'AUTRE_ASTER');
 TEST_TABLE(TABLE     = EXSIG2,
            FILTRE    = _F(NOM_PARA = 'NOEUD',
-                          VALE_K   = 'N1',),
+                          VALE_K   = 'N1'),
            PRECISION =  6.E-4,
            NOM_PARA  = 'SIYY',
            VALE      = 1.991092945817E+06,
-           REFERENCE = 'AUTRE_ASTER',);
+           REFERENCE = 'AUTRE_ASTER');
 
 FIN();

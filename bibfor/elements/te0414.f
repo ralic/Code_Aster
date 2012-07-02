@@ -1,9 +1,9 @@
       SUBROUTINE TE0414 ( OPTIOZ , NOMTZ )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*)   OPTIOZ , NOMTZ
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,6 +30,10 @@ C
       CHARACTER*16  OPTION , NOMTE
 C ----------------------------------------------------------------------
 
+C-----------------------------------------------------------------------
+      INTEGER I ,I1 ,I2 ,IBID ,ICOMPO ,IDEPLM ,IDEPLP 
+      INTEGER JGEOM ,JMATR ,LZI ,LZR ,NB2 ,NDDLET 
+C-----------------------------------------------------------------------
       OPTION = OPTIOZ
       NOMTE  = NOMTZ
 

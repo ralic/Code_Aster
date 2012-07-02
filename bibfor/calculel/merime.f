@@ -1,6 +1,6 @@
       SUBROUTINE MERIME(MODELZ,NCHAR,LCHAR,MATE,CARAZ,EXITIM,TIME,
      &                  COMPOR,MATELZ,NH,BASEZ)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER NCHAR,NH
       REAL*8 TIME
@@ -11,7 +11,7 @@
       CHARACTER*(1) BASE
       LOGICAL EXITIM
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,6 +57,10 @@ C     ------------------------------------------------------------------
       CHARACTER*24 CHGEOM,CHCARA(18),CHHARM
       CHARACTER*24 CHCHAR,ARGU,CHTIME
       COMPLEX*16 CBID
+C-----------------------------------------------------------------------
+      INTEGER IAREFE ,IBID ,ICHA ,ICODE ,IER ,ILIRES ,IRET 
+      INTEGER IRET1 
+C-----------------------------------------------------------------------
       DATA CHVARC/'&&MERIME.CH_VARC_R'/
 
       CALL JEMARQ()

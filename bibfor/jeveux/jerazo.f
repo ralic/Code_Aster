@@ -1,6 +1,6 @@
       SUBROUTINE JERAZO ( NOMLU , NI , I1 )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_18 CRS_508 CRS_512
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER *(*)      NOMLU
       INTEGER             NI , I1
@@ -34,6 +34,13 @@ C ----------------------------------------------------------------------
       INTEGER          LK1ZON , JK1ZON , LISZON , JISZON , ISZON(1)
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
       EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
+C-----------------------------------------------------------------------
+      INTEGER I ,IBACOL ,IBLONO ,ICRE ,INAT ,INATB ,IRET 
+      INTEGER IXDESO ,IXIADD ,IXLONO ,J1 ,J2 ,JCARA ,JCTAB 
+      INTEGER JDATE ,JDOCU ,JGENR ,JHCOD ,JIADD ,JIADM ,JINI 
+      INTEGER JLONG ,JLONO ,JLTYP ,JLUTI ,JMARQ ,JORIG ,JRNOM 
+      INTEGER JTYPE ,LONOI ,LTYPI ,N 
+C-----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
 C ----------------------------------------------------------------------
       INTEGER          ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC

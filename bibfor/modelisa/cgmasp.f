@@ -1,6 +1,6 @@
       SUBROUTINE CGMASP (MOFAZ, IOCC, NOMAZ, LISMAZ, NBMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C.======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C       CGMASP -- TRAITEMENT DE L'OPTION SPHERE
 C                 DU MOT FACTEUR CREA_GROUP_MA DE
@@ -57,6 +57,12 @@ C
       INTEGER      IARG
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
+C-----------------------------------------------------------------------
+      INTEGER IBID ,IDCOOR ,IDLIMA ,IDNOEU ,IER ,IMA ,INO 
+      INTEGER IOCC ,IRET ,NB ,NBMA ,NBMAI ,NDIM ,NRAYON 
+      INTEGER NUMNOE 
+      REAL*8 D2 ,RAYON ,ZERO 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
 C --- INITIALISATIONS :

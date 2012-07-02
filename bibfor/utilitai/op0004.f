@@ -1,8 +1,8 @@
       SUBROUTINE OP0004()
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,6 +34,14 @@ C     -----------------------------------------------------------------
       INTEGER      IARG
 C     ------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IFM ,IFONC ,IOCC ,IVAL ,JVAL ,L 
+      INTEGER L1 ,LADRF ,LNOMF ,LPAR ,LPAR2 ,LPARA ,LPARC 
+      INTEGER LPRO ,LVAL ,MXVA ,N ,N1 ,N2 ,N3 
+      INTEGER NBCOUP ,NBFONC ,NBPARA ,NBVAL ,NIV ,NPROL ,NV 
+
+      REAL*8 RBID ,TOTO 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
       VERIF = ' '

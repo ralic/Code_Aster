@@ -1,11 +1,11 @@
       SUBROUTINE DXTPGL ( XYZG , PGL )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       REAL*8               XYZG(3,*), PGL(3,3)
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/08/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -38,6 +38,8 @@ C
 C     -----------------------------------------------------------------
       REAL*8   X21 , Y21 , Z21 , X31 , Y31 , Z31 , NORM
 C     -----------------------------------------------------------------
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       X21 = XYZG(1,2) - XYZG(1,1)
       Y21 = XYZG(2,2) - XYZG(2,1)
       Z21 = XYZG(3,2) - XYZG(3,1)

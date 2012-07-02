@@ -6,7 +6,7 @@
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,9 +55,9 @@ C
 C----------------------------------------------------------------------
 C --- RECUPERATION DE LA MATRICE ASSEMBLEE
 C-----------------------------------------------------------------------
-    
+
       IF (RITZ .EQ. 1) THEN
-           
+
         CALL GETVTX('  ','ORTHO',1,IARG,8,ORTHO,IBID)
 
         IF (ORTHO .EQ. 'OUI     ') THEN
@@ -80,7 +80,7 @@ C-----------------------------------------------------------------------
      &              NUMDDA,IER)
       ELSE
           MATR=' '
-      ENDIF    
+      ENDIF
 
 C----------------------------------------------------------------------
 C --- RECUPERATION DES MODES PROPRES
@@ -90,8 +90,8 @@ C
         BASE=NOMRES
       ELSE
         CALL GETVID ( 'ORTHO_BASE', 'BASE', 1,IARG,1, BASE, N1 )
-      ENDIF  
-      
+      ENDIF
+
 C RECUPERATION DU TYPE ET DU NBRE DE MODES DES BASES
       CALL GETTCO ( BASE, TYPBAS )
       CALL RSORAC ( BASE, 'LONUTI', IBID, RBID, K8B, CBID, RBID,
@@ -111,9 +111,9 @@ C RECUPERATION DE LA NUMEROTATION DES BASES
       ELSE
         NUMDD1 = ZK24(IADRI1+3)(1:14)
       ENDIF
-      
+
       INTF=ZK24(IADRI1+4)(1:8)
-      
+
       IF (NUMDD1.NE.NUMDDA) THEN
           CALL U2MESS('I','ALGELINE2_81')
       ENDIF
@@ -127,7 +127,7 @@ C RECUPERATION DE LA NUMEROTATION DES BASES
       ELSE
          CALL COPMO2(BASE,NEQ,NU,NBMODE,ZR(IDMODE))
       ENDIF
-C-- FINALEMENT SI, DONC RECOPIE OK      
+C-- FINALEMENT SI, DONC RECOPIE OK
 
 C-----------------------------------------------------------------------
       CALL WKVECT ('&&ORTH99.TRAV1'   ,'V V R',NEQ       ,JTRAV1)
@@ -147,7 +147,7 @@ C ORTHONORMALISATION PAR RAPPORT A LA MATRICE
         CALL VPGSKP ( NEQ, NBMODE, ZR(IDMODE), ALPHA, IMATRA, 2,
      &                ZR(JTRAV1), ZI(JTRAV4), ZR(JTRAV3) )
       ENDIF
-C MISE A ZEROS DES VECTEURS NON INDEPENDANTS       
+C MISE A ZEROS DES VECTEURS NON INDEPENDANTS
       CALL VECIND(MATR,IDMODE,NEQ,NBMODE,0,NINDEP)
 C
 C-- GESTION DES CONCEPTS REENTRANTS
@@ -161,8 +161,8 @@ C-- GESTION DES CONCEPTS REENTRANTS
         CALL JEDETC('G',NOMRES,1)
       ENDIF
       CALL RSCRSD('G',NOMRES,'MODE_MECA',NBMODE)
-      
-C-- CREATION DU REFD POUR SD_VERI, ET REUTILISATION ULTERIEURE      
+
+C-- CREATION DU REFD POUR SD_VERI, ET REUTILISATION ULTERIEURE
       CALL JEEXIN(NOMRES(1:8)//'           .REFD',IBID)
       IF (IBID .EQ. 0) THEN
         CALL WKVECT(NOMRES//'           .REFD','G V K24',7,LREFE)
@@ -188,7 +188,7 @@ C
          DO 111 IEQ = 1 , NEQ
            ZR(JVALE+IEQ-1) = ZR(IDMODE+(I-1)*NEQ+IEQ-1)
  111     CONTINUE
-         CALL RSNOCH(NOMRES,'DEPL',IORNE,' ')
+         CALL RSNOCH(NOMRES,'DEPL',IORNE)
 C
          CALL RSADPA(  BASE, 'L',1,'NUME_MODE',IOROL,0, IAD,K8B)
          CALL RSADPA(NOMRES, 'E',1,'NUME_MODE',IORNE,0,JIAD,K8B)
@@ -228,9 +228,9 @@ C
 C
 
  9999 CONTINUE
- 
+
 C      CALL JELIBE(NOMRES//'           .REFD')
- 
- 
+
+
       CALL JEDEMA()
       END

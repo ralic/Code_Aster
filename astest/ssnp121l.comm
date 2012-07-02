@@ -1,4 +1,4 @@
-# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 
 # TITRE CONTACT DE DEUX PLAQUES
 # ssnp121l.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
@@ -28,43 +28,43 @@
 
 
 DEBUT(CODE=_F(NOM='SSNP121L', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),
-      MESURE_TEMPS=_F(MOYENNE='NON'),)
+      MESURE_TEMPS=_F(MOYENNE='NON'))
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED');
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
-              CREA_GROUP_NO=(_F(GROUP_MA='AB',),
-                             _F(GROUP_MA='CD',),
-                             _F(GROUP_MA='EF',),
-                             _F(GROUP_MA='FG',),
-                             _F(GROUP_MA='GH',),
-                             _F(GROUP_MA='HE',),),);
+              CREA_GROUP_NO=(_F(GROUP_MA='AB'),
+                             _F(GROUP_MA='CD'),
+                             _F(GROUP_MA='EF'),
+                             _F(GROUP_MA='FG'),
+                             _F(GROUP_MA='GH'),
+                             _F(GROUP_MA='HE')));
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=(_F(TOUT='OUI',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='D_PLAN',),),);
+                        MODELISATION='D_PLAN')));
 
 MAT2=DEFI_MATERIAU(ELAS=_F(E=2000000.0,
-                           NU=0.0,),);
+                           NU=0.0));
 
 MAT1=DEFI_MATERIAU(ELAS=_F(E=2000000.0,
-                           NU=0.0,),);
+                           NU=0.0));
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=(_F(GROUP_MA='PLAQUE1',
-                             MATER=MAT2,),
+                             MATER=MAT2),
                           _F(GROUP_MA='PLAQUE2',
-                             MATER=MAT1,),),);
+                             MATER=MAT1)));
 
 CHA1=AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=(_F(GROUP_NO='CD',
                                  DX=0.0,
-                                 DY=-0.1,),
+                                 DY=-0.1),
                               _F(GROUP_NO='GH',
                                  DX=0.0,
-                                 DY=0.0,),),);
+                                 DY=0.0)));
 
 CHA2   = DEFI_CONTACT(MODELE      = MO,
                       FORMULATION = 'DISCRETE',
@@ -80,20 +80,20 @@ CHA2   = DEFI_CONTACT(MODELE      = MO,
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=1,),);
+                                    NOMBRE=1));
 
 FONC=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,  0.0,
-                         1.0,  1.0,),);
+                         1.0,  1.0));
 
-RESU=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS', PCENT_PIVOT=10, SYME='OUI',MATR_DISTRIBUEE='OUI',),
+RESU=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS', SYME='OUI',MATR_DISTRIBUEE='OUI'),
                    MODELE=MO,
                    CHAM_MATER=CHMAT,
                    EXCIT=(_F(CHARGE=CHA1,
-                             FONC_MULT=FONC,),),
+                             FONC_MULT=FONC)),
                    CONTACT  = CHA2,
-                   COMP_ELAS=_F(RELATION='ELAS',),
-                   INCREMENT=_F(LIST_INST=L_INST),);
+                   COMP_ELAS=_F(RELATION='ELAS'),
+                   INCREMENT=_F(LIST_INST=L_INST));
 
 
 # STANLEY(RESU,MA,MO,CHMAT,None)
@@ -101,7 +101,7 @@ RESU=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS', PCENT_PIVOT=10, SYME='OUI',MATR_D
 
 RESU=CALC_CHAMP(reuse =RESU,
                 CONTRAINTE=('SIGM_ELNO'),
-               RESULTAT=RESU,);
+               RESULTAT=RESU);
 
 RESU=CALC_CHAMP(reuse =RESU,
              RESULTAT=RESU,
@@ -116,7 +116,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU,
                   VALE=-100000.0,
                   CRITERE='RELATIF',
                   PRECISION=0.01,
-                  REFERENCE='ANALYTIQUE',),);
+                  REFERENCE='ANALYTIQUE'));
 
 TEST_RESU(RESU=_F(RESULTAT=RESU,
                   NUME_ORDRE=1,
@@ -126,7 +126,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU,
                   VALE=-100000.0,
                   CRITERE='RELATIF',
                   PRECISION=0.061,
-                  REFERENCE='ANALYTIQUE',),);
+                  REFERENCE='ANALYTIQUE'));
 
 TEST_RESU(RESU=_F(RESULTAT=RESU,
                   NUME_ORDRE=1,
@@ -136,7 +136,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU,
                   VALE=-100000.0,
                   CRITERE='RELATIF',
                   PRECISION=0.061,
-                  REFERENCE='ANALYTIQUE',),);
+                  REFERENCE='ANALYTIQUE'));
 
 # -------------------------------------------------------
 
@@ -148,7 +148,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU,
                   VALE=-0.05,
                   CRITERE='RELATIF',
                   PRECISION=0.01,
-                  REFERENCE='ANALYTIQUE',),);
+                  REFERENCE='ANALYTIQUE'));
 
 TEST_RESU(RESU=_F(RESULTAT=RESU,
                   NUME_ORDRE=1,
@@ -158,7 +158,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU,
                   VALE=-0.05,
                   CRITERE='RELATIF',
                   PRECISION=0.0167,
-                  REFERENCE='ANALYTIQUE',),);
+                  REFERENCE='ANALYTIQUE'));
 
 TEST_RESU(RESU=_F(RESULTAT=RESU,
                   NUME_ORDRE=1,
@@ -168,7 +168,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU,
                   VALE=-0.05,
                   CRITERE='RELATIF',
                   PRECISION=0.0167,
-                  REFERENCE='ANALYTIQUE',),);
+                  REFERENCE='ANALYTIQUE'));
 
 FIN();
 

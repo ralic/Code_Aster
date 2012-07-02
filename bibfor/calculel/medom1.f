@@ -1,6 +1,6 @@
       SUBROUTINE MEDOM1(MODELE,MATE,CARA,KCHA,NCHA,CTYP,
      &                  RESULT,NUORD)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER                                 NCHA
       INTEGER                  NUORD
@@ -11,7 +11,7 @@
       CHARACTER*(*)                      KCHA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,6 +47,8 @@ C     ------------------------------------------------------------------
       INTEGER     IEXCIT, IERD,I, IBID, ICHA, IE, IKF, IN
       INTEGER     JFCHA, JINFC, JLCHA, N, N1, N2, N3, N5
       CHARACTER*6 NOMPRO
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       PARAMETER (NOMPRO='MEDOM1')
       CHARACTER*8  K8B, NOMO, MATERI
       CHARACTER*8   BLAN8

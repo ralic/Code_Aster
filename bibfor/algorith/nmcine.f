@@ -2,7 +2,7 @@
      &                   INSTAM,INSTAP,EPSM,DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/01/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER            KPG,KSP,NDIM,IMATE
       CHARACTER*(*)      FAMI
       CHARACTER*16       COMPOR(*),OPTION
@@ -61,6 +61,10 @@ C
       INTEGER ICODRE(3)
       CHARACTER*8 NOMRES(3)
       REAL*8      RAC2
+C-----------------------------------------------------------------------
+      INTEGER IBID ,IRET ,K ,L 
+      REAL*8 A1 ,A2 ,C ,CM ,DSDEM 
+C-----------------------------------------------------------------------
       DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
       RAC2 = SQRT(2.D0)
 C DEB ------------------------------------------------------------------

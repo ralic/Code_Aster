@@ -1,11 +1,11 @@
       SUBROUTINE TITRED(NIV,NOMCON,NOMCHA,NBTITR)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*)     NIV,NOMCON,NOMCHA
       INTEGER                             NBTITR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,6 +33,10 @@ C
 C
       CHARACTER*8    TYPESD
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IBID ,ICHOIX ,IERD ,LDON ,LLON ,MXDEF 
+      INTEGER MXLIG 
+C-----------------------------------------------------------------------
       PARAMETER            (MXDEF=9 , MXLIG= 8 )
       CHARACTER*72   DEFAUT(MXLIG,MXDEF)
       INTEGER        LONDEF(MXLIG,MXDEF), NBLIG(MXDEF)

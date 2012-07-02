@@ -1,11 +1,11 @@
       SUBROUTINE VTCREA(CHAMP,CREFE,BASE,TYPC,NEQ)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*)     CHAMP,      BASE,TYPC
       CHARACTER*24            CREFE(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,6 +54,9 @@ C     ------------------------------------------------------------------
       CHARACTER*14  NU
       CHARACTER*24 VALE,REFE,DESC
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IBID ,IED ,NEQ ,NUGDSI 
+C-----------------------------------------------------------------------
       DATA VALE/'                   .VALE'/
       DATA REFE/'                   .REFE'/
       DATA DESC/'                   .DESC'/

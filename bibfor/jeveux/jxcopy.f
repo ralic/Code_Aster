@@ -1,11 +1,11 @@
       SUBROUTINE JXCOPY ( CLSINZ , NOMINZ,  CLSOUZ , NMOUTZ , NBEXT )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       CHARACTER*(*) CLSINZ , NOMINZ,  CLSOUZ , NMOUTZ
       CHARACTER*1         CLASIN , CLASOU
       CHARACTER*8         NOMIN  , NOMOUT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 06/03/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,6 +44,10 @@ C     ------------------------------------------------------------------
       INTEGER          ISTAT
       COMMON /ISTAJE/  ISTAT(4)
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER IADLOC ,IADYN ,IB ,ICI ,ICO ,IERR ,K 
+      INTEGER LBLOC ,N ,NBEXT ,NBLOC ,NREP ,NUMEXT 
+C-----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
 C
       INTEGER          NBLMAX    , NBLUTI    , LONGBL    ,

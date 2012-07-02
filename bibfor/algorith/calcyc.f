@@ -1,6 +1,6 @@
       SUBROUTINE CALCYC(NOMRES)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_6
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C***********************************************************************
 C    P. RICHARD     DATE 14/03/91
@@ -45,6 +45,18 @@ C
       REAL*8 RLOME2(2)
       INTEGER      IARG
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IAD ,IBID ,ICOMP ,ICONE ,IDIA ,IDIAM 
+      INTEGER IF ,IMES ,IUNIFI ,LDFRE ,LDMOC ,LDNBD ,LLITMP 
+      INTEGER LLNBS ,LLNUM ,LLREF ,LLTYP ,LTEIG ,LTKCOM ,LTLAX0 
+      INTEGER LTLAX1 ,LTLBID ,LTMCOM ,LTNBD ,LTRV1 ,LTRV2 ,LTTRGE 
+      INTEGER LTZM1 ,LTZM2 ,LTZV1 ,LTZV2 ,LTZV3 ,MAXDIA ,NBDAX 
+      INTEGER NBDAX0 ,NBDAX1 ,NBDDEF ,NBDDG ,NBDDR ,NBDIA ,NBDIA1 
+      INTEGER NBDIA2 ,NBLIF ,NBMCAL ,NBMOBT ,NBMOS ,NBNEW ,NBSEC 
+      INTEGER NBTMP ,NMAXIT ,NTAIL ,NTT ,NUMA 
+      REAL*8 BETA ,BID ,OMEG2 ,PI ,PIMA ,PRECAJ ,PRECSE 
+
 C-----------------------------------------------------------------------
       DATA PGC /'CALCYC'/
 C-----------------------------------------------------------------------

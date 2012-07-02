@@ -1,8 +1,8 @@
       SUBROUTINE ME2MAC(MODELE,NCHAR,LCHAR,MATE,VECEL)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,6 +59,9 @@ C     ------------------
       CHARACTER*24 CHGEOM,LCHIN(5),LCHOUT(1)
       CHARACTER*24 LIGRMO,LIGRCH
 
+C-----------------------------------------------------------------------
+      INTEGER IBID ,ICHA ,IERD ,ILIRES ,IRET ,JNOMO 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 
       CALL MEGEOM(MODELE,LCHAR(1),EXIGEO,CHGEOM)

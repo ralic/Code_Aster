@@ -1,8 +1,8 @@
       SUBROUTINE VECHBN(MDGENE,NOMNO1,SST1,NOMNO2,SST2)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,6 +40,12 @@ C-----------------------------------------------------------------------
 C
 C --- LES SOUS-STRUCTURES SST1 ET SST2 SONT-ELLES LIAISONNEES
 C
+C-----------------------------------------------------------------------
+      INTEGER IBID ,ILIAI ,INOEU ,JLINO1 ,JLINO2 ,JNOEU1 ,JNOEU2 
+      INTEGER LBAMO1 ,LBAMO2 ,LDEFO1 ,LDEFO2 ,LLIAI ,LLINO1 ,LLINO2 
+      INTEGER LLNOM1 ,LLNOM2 ,LMACR1 ,LMACR2 ,LREFE1 ,LREFE2 ,NBLIAI 
+      INTEGER NBNOEU 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       MDLIAI = MDGENE(1:14)//'.MODG.LIDF'
       MDNOMS = MDGENE(1:14)//'.MODG.SSME'

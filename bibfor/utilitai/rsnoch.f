@@ -1,11 +1,11 @@
-      SUBROUTINE RSNOCH(NOMSD,NOMSY,IORDR,CHNOTZ)
+      SUBROUTINE RSNOCH(NOMSD,NOMSY,IORDR)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER IORDR
-      CHARACTER*(*) NOMSD,NOMSY,CHNOTZ
+      CHARACTER*(*) NOMSD,NOMSY
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,22 +22,20 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE SELLENET N.SELLENET
+C RESPONSABLE PELLET J.PELLET
 
-C  BUT : NOTER LE NOM D'UN CHAMP19 DANS UNE SD_RESULTAT
+C  BUT : "NOTER" UN CHAMP DANS UNE SD_RESULTAT
 C        ON VERIFIE QUE :
-C           - LE CHAMP CHNOTZ EXISTE
 C           - LA PLACE EST LICITE (NOMSY OK ET IORDR<=NBORDR_MAX)
-C        ON NE VERIFIE PAS QUE :
-C           - LA PLACE EST LIBRE (.TACH EST " ")
-C             (BECAUSE NORM_MODE/CALC_ELEM EN ECRASEMENT ...)
+C           - LE CHAMP QUI VA ETRE "NOTE" DANS NOMSD
+C             (REGLE DE NOMMAGE DE RSUTCH.F)
+C             EXISTE REELLEMENT (EXISD.F)
 C ----------------------------------------------------------------------
 C IN  : NOMSD  : NOM DE LA STRUCTURE "RESULTAT"
 C IN  : NOMSY  : NOM SYMBOLIQUE DU CHAMP A NOTER.
 C IN  : IORDR  : NUMERO D'ORDRE DU CHAMP A NOTER.
-C IN  : CHNOTZ : NOM DU CHAMP A NOTER.
-C                SI CHNOTZ=' ', ON PREND LE NOM DONNE PAR RSEXCH.
 C ----------------------------------------------------------------------
+
       CHARACTER*16 NOMS2
       CHARACTER*19 NOMD2,CHNOTE
       CHARACTER*24 VALK(2)
@@ -50,7 +48,6 @@ C ----------------------------------------------------------------------
 
       NOMS2 = NOMSY
       NOMD2 = NOMSD
-      CHNOTE = CHNOTZ
 
 
 C     -- CALCUL ET VALIDATION DU NUMERO DE RANGEMENT :IRANG
@@ -63,6 +60,8 @@ C     -----------------------------------------------------
         IF (IRANG.GT.NORMAX) CALL U2MESS('F','UTILITAI4_42')
         CALL JEECRA(NOMD2//'.ORDR','LONUTI',IRANG,' ')
         CALL JEVEUO(NOMD2//'.ORDR','E',JORDR)
+C       -- ON VERIFIE QUE LE NOUVEAU IORDR EST SUPERIEUR
+C          AU DERNIER IORDR DEJA STOCKE (IORDR CROISSANTS) :
         IF ( IRANG.GT.1 ) THEN
           CALL ASSERT(ZI(JORDR+IRANG-2).LT.IORDR)
         ENDIF
@@ -81,16 +80,16 @@ C     -------------------------------------------
         CALL U2MESK('F','UTILITAI4_43', 2 ,VALK)
       ENDIF
 
-C     -- SI LE NOM DU CHAMP (CHNOTE) N'EST PAS DONNE, ON PREND CELUI
-C        QUE RSEXCH LUI DONNERAIT :
-C     ---------------------------------------------------------------
-      IF (CHNOTE.EQ.' ') CALL RSEXCH(NOMD2,NOMS2,IORDR,CHNOTE,IRET)
 
+C     -- CHNOTE : NOM QUE DOIT AVOIR LE CHAMP A NOTER :
+C        (REGLE DE NOMMAGE DE RSUTCH.F)
+C     -------------------------------------------------
+      CALL RSEXCH(NOMD2,NOMS2,IORDR,CHNOTE,IRET)
 
-C     -- ON VERIFIE L'EXISTANCE DE CHNOTE :
+C     -- ON VERIFIE L'EXISTENCE DE CHNOTE :
 C     -------------------------------------------
-      CALL EXISD('CHAMP_GD',CHNOTE,IRET)
-      IF (IRET.EQ.0) CALL U2MESK('F','UTILITAI_55',1,CHNOTE)
+      IF (IRET.EQ.100) CALL U2MESK('F','UTILITAI_55',1,CHNOTE)
+      CALL ASSERT(IRET.EQ.0)
 
 
 C     --- ON STOCKE LE NOM DU CHAMP :
@@ -98,11 +97,11 @@ C     ------------------------------
       CALL JENONU(JEXNOM(NOMD2//'.DESC',NOMS2),IBID)
       CALL JEVEUO(JEXNUM(NOMD2//'.TACH',IBID),'E',JTACH)
 
-      ZK24(JTACH+IRANG-1) (1:19) = CHNOTE
+      ZK24(JTACH+IRANG-1)(1:19) = CHNOTE
 
 
-C     -- POUR COMMUNIQUER ENTRE PROC LES CHAM_ELEM INCOMPLETEMENT
-C        CALCULES :
+C     -- SI LE CHAMP EST UN CHAM_ELEM MPI_INCOMPLET, ON LE COMPLETE:
+C     --------------------------------------------------------------
       CALL DISMOI('F','TYPE_CHAMP',CHNOTE,'CHAMP',IBID,REPK,IRET)
       IF (REPK(1:2).EQ.'EL') CALL SDMPIC('CHAM_ELEM',CHNOTE)
 

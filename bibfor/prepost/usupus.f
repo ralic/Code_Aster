@@ -1,8 +1,8 @@
       SUBROUTINE USUPUS ( PUUSUR, KFORN, KVGLI, NBPT)
-      IMPLICIT REAL *8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,6 +30,14 @@ C-----------------------------------------------------------------------
       CHARACTER*19 TRANGE, KFORN, KVGLI
       INTEGER      IARG
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,ICHOC ,IDEBUT ,IDIADH ,IDWK4 ,IFIN ,IFIRES 
+      INTEGER IMPR ,IUNIFI ,J ,JDESC ,JFCHO ,JFN ,JINST 
+      INTEGER JNCHO ,JVG ,JVGLI ,JWK1 ,JWK2 ,JWK3 ,LG 
+      INTEGER LXLGUT ,N1 ,N2 ,N3 ,N4 ,NBCHOC ,NBLOC 
+      INTEGER NBPAS ,NBPT ,NBVAL ,NT 
+      REAL*8 PUUSUR ,TDEBUT ,TFIN ,TMAX ,TMIN 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       IFIRES = IUNIFI('RESULTAT')
       NBPT = 0

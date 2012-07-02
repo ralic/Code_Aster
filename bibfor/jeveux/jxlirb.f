@@ -1,7 +1,7 @@
       SUBROUTINE JXLIRB ( IC , IADDI , IADMO , LSO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
-C MODIF JEVEUX  DATE 06/03/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C TOLE CRP_18 CRP_6 CRS_508
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER             IC , IADDI , IADMO , LSO
 C ----------------------------------------------------------------------
 C LECTURE D'UN BLOC DU FICHIER D'ACCES DIRECT ASSOCIE A UNE BASE
@@ -40,6 +40,11 @@ C     ------------------------------------------------------------------
       INTEGER          LBIS , LOIS , LOLS , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOR8 , LOC8
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IACCE ,IADLOC ,IERR ,JIACCE ,JIECR ,N 
+      INTEGER NBACCE ,NBLENT ,NUMEXT 
+      REAL*8 R8BID 
+C-----------------------------------------------------------------------
       PARAMETER      ( N = 5 )
       INTEGER          NBLMAX    , NBLUTI    , LONGBL    ,
      +                 KITLEC    , KITECR    ,             KIADM    ,

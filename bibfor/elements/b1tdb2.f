@@ -1,8 +1,8 @@
       SUBROUTINE  B1TDB2( B1 , B2 ,D,JACOB,NBSIG,NBINCO,BTDB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/12/1999   AUTEUR SABJLMA P.LATRUBESSE 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C.======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C       B1TDB2  -- CALCUL DU PRODUIT B1T*D*B2 DONNANT LA MATRICE
 C                  DE RIGIDITE ELEMENTAIRE EN FAISANT LE PRODUIT  
@@ -48,6 +48,10 @@ C -----  VARIABLES LOCALES
       REAL*8 TAB1( 9 ), TAB2( 9 )
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,J ,J1 ,J2 ,NBINCO ,NBSIG 
+      REAL*8 S ,ZERO 
+C-----------------------------------------------------------------------
       ZERO = 0.0D0
 C
       DO 10 I = 1, NBINCO

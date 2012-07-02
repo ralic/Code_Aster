@@ -1,10 +1,10 @@
       SUBROUTINE ACEAPC ( NOMU, NOMA, LMAX, NBOCC )
-      IMPLICIT  REAL*8  ( A-H , O-Z )
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*8         NOMU, NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,6 +41,18 @@ C ----------------------------------------------------------------------
       CHARACTER*24 VALK(2)
       INTEGER      IARG
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IER ,IFM ,IGM ,IJM ,IMG ,IOC 
+      INTEGER ISPV ,IUNIFI ,JDCC ,JDCO ,JDGM ,JDLS ,JDNO 
+      INTEGER JDVC ,LMAX ,N1 ,N2 ,NA ,NBOCC ,NC 
+      INTEGER NDIM ,NF ,NFY ,NFZ ,NG ,NM ,NMG 
+      INTEGER NN1 ,NN2 ,NO1 ,NO2 ,NP ,NR ,NS 
+      INTEGER NSY ,NSZ ,NUMMAI 
+      REAL*8 DGRD ,DM ,EPSI ,PADIST ,PHI ,PHIS2 ,PI 
+      REAL*8 R8DGRD ,R8PI ,R8RDDG ,RDDG ,RR ,TOLE ,TX1 
+      REAL*8 TX2 ,XANG ,XFL ,XFLY ,XFLZ ,XRC ,XRC1 
+      REAL*8 XRC2 ,XSI ,XSIY ,XSIZ ,ZERO 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       IFM  = IUNIFI('MESSAGE')
       DGRD = R8DGRD()

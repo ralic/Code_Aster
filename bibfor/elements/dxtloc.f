@@ -1,7 +1,7 @@
       SUBROUTINE DXTLOC ( FLEX , MEMB , MEFL , CTOR ,
      &                    MATLOC )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       REAL*8            FLEX(*) , MEMB(*) , MEFL(*) , CTOR
       REAL*8            MATLOC(*)
@@ -42,6 +42,9 @@ C-----------------------
       REAL*8     COEF
       REAL*8     CF(45)   , CFM(36)  , CMF(18)
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,K 
+C-----------------------------------------------------------------------
       DATA CF   /      1.D0,    -1.D0, 2*  1.D0,    -1.D0, 2*  1.D0 ,
      &                -1.D0, 2*  1.D0,    -1.D0,     1.D0, 2* -1.D0 ,
      &             2*  1.D0,    -1.D0, 2*  1.D0,    -1.D0, 2*  1.D0 ,

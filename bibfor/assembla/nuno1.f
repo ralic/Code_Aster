@@ -1,11 +1,11 @@
       SUBROUTINE NUNO1(I,ILIGR,NUNOEL,N,INUM21,INUNO2,NLILI)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 
       INCLUDE 'jeveux.h'
       INTEGER I,ILIGR
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ASSEMBLA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,6 +38,10 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C----------------------------------------------------------------------
 
+C-----------------------------------------------------------------------
+      INTEGER I1 ,I2 ,ILI ,ILI1 ,INUM21 ,INUNO2 ,J 
+      INTEGER JLI ,N ,NLILI ,NUNOEL 
+C-----------------------------------------------------------------------
       CALL ASSERT((I.GT.0) .AND. (I.LE.N))
       J = ZI(INUM21+I)
       IF (J.EQ.0) THEN

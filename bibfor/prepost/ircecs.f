@@ -1,7 +1,7 @@
       SUBROUTINE IRCECS(IFI,LIGREL,NBGREL,LONGR,NCMPMX,VALE,
      &   NOMCMP,TITR,NOMEL,LOC,CELD,NBNOMA,PERMUT,MAXNOD,TYPMA,
      &   NOMSD,NOMSYM,IR,NBMAT,NUMMAI,LMASU,NCMPU,NUCMP)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
       INTEGER       IFI, LIGREL(*), NBGREL, LONGR(*), NCMPMX,
@@ -12,7 +12,7 @@ C
       LOGICAL       LMASU
 C--------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,6 +68,18 @@ C     ------------------------------------------------------------------
 C
 C  --- INITIALISATIONS ----
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IACHML ,IAD ,IAEC ,IAST ,IBCMPS ,IC
+      INTEGER ICHS ,ICMAX0 ,ICMP ,ICMPS ,ICMS ,ICMSUP ,ICO
+      INTEGER ICOEF ,ICOMAX ,ICOMM ,ICOU ,ICP ,ICVG ,ICVN
+      INTEGER IDA ,IDEBU ,IDERN ,IEL ,IELG ,IER ,IES
+      INTEGER IFIN ,IGRE ,IGREL ,ILIG ,IMAI ,INOA ,INOCHS
+      INTEGER INOGDS ,INOS ,IPG ,IPOIN1 ,IPOIN2 ,IR ,IRES
+      INTEGER IRVG ,IRVN ,IS0 ,ISP ,ISPT ,ISUP ,ITABL
+      INTEGER ITSEG2 ,ITYPE ,IUTIL ,J ,JMAX ,JMOD ,JSPT
+      INTEGER JTITR ,LXLGUT ,MAXNOD ,MODE ,NBCOU ,NBDATS ,NBELGR
+      INTEGER NBPG ,NCMPP ,NEC ,NPCALC ,NSCA ,NSCAL,NBEC
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
       CALL WKVECT('&&IRCECS.NOMGDS','V V K8',NCMPMX,INOGDS)

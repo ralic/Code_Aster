@@ -1,17 +1,17 @@
       SUBROUTINE UTEST2(CHAM19,NOMAIL,NONOEU,NUPO,NUSP,IVARI,NOCMP,
      &              NBREF,TBTXT,REFI,REFR,REFC,TYPRES,EPSI,CRIT,IFIC,
      &              SSIGNE)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER NBREF,REFI(NBREF),NUPO,IVARI,IFIC,NUSP
       REAL*8 REFR(NBREF),EPSI
       CHARACTER*(*) CHAM19,NOMAIL,NONOEU,TYPRES,NOCMP,CRIT,SSIGNE
       CHARACTER*16 TBTXT(2)
       COMPLEX*16 REFC(NBREF)
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 01/02/2010   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -51,6 +51,8 @@ C ----------------------------------------------------------------------
       CHARACTER*8 NOMMA
 C     ------------------------------------------------------------------
 
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       CALL DISMOI('F','NOM_MAILLA',CHAM19,'CHAM_ELEM',IBID,NOMMA,IE)
 
       CALL UTCH19(CHAM19,NOMMA,NOMAIL,NONOEU,NUPO,NUSP,IVARI,NOCMP,

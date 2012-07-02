@@ -1,6 +1,6 @@
       SUBROUTINE MELIMA(CHIN,MA,ICODE,IENT,LIMA,NB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C ----------------------------------------------------------------------
 C     RETOURNE LE NOMBRE DE MAILLE D'1 GROUPE AFFECTE D'1 CARTE
@@ -58,6 +58,8 @@ C
 C     TRAITE LES 2 CAS :  - GROUPE NOMME DU MAILLAGE MA
 C                         - GROUPE TARDIF DE LA CARTE CHIN
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       IF (ICODE.EQ.2) THEN
 C
 C        GROUPE DE MAILLES DU MAILLAGE:

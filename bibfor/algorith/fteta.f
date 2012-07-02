@@ -1,8 +1,8 @@
       SUBROUTINE FTETA( THETA, NEQ , F0 , F1 )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       REAL*8            THETA,       F0(*),F1(*)
 C**********************************************************************
 C
@@ -38,6 +38,9 @@ C   E.D.F DER   JACQUART G. 47-65-49-41      LE 19 JUILLET 1990
 C**********************************************************************
 C
       REAL *8  COEF
+C-----------------------------------------------------------------------
+      INTEGER NEQ 
+C-----------------------------------------------------------------------
       COEF = 1.0D0 - THETA
       CALL DSCAL ( NEQ , THETA , F1 , 1 )
       CALL DAXPY ( NEQ, COEF , F0 , 1 , F1 , 1 )

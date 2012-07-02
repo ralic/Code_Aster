@@ -1,12 +1,12 @@
       FUNCTION NORSIG(SIGMA,NBSIG)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       REAL*8 NORSIG
       REAL*8 SIGMA(NBSIG)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 10/05/96   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -31,6 +31,10 @@ C                     DONNE
 C-----------------------------------------------------------------------
       REAL*8 NORSI2
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,NBSIG 
+      REAL*8 DEUX ,ZERO 
+C-----------------------------------------------------------------------
       ZERO   = 0.0D0
       DEUX   = 2.0D0
       NORSIG = ZERO

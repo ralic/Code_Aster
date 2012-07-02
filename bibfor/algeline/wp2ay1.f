@@ -1,6 +1,6 @@
       SUBROUTINE WP2AY1(APPR,LMATRA,LMASSE,LAMOR,SIGMA,LBLOQ,YH,YB,
      &                  ZH,ZB,U1,U2,U3,V,N,SOLVEU)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*1 APPR
       COMPLEX*16  V(*),SIGMA
@@ -10,7 +10,7 @@
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,6 +60,8 @@ C     ------------------------------------------------------------------
       CHARACTER*1  KBID
       CHARACTER*19 K19BID,MATASS,CHCINE,CRITER
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       ZERO = 0.0D0
       SR   = DBLE(SIGMA)
       SI   = DIMAG(SIGMA)

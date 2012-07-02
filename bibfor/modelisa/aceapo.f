@@ -1,6 +1,6 @@
       SUBROUTINE ACEAPO(NOMA,NOMO,LMAX,NPOUTR,NBOCC,MCLF,
      &                  NBEPO,NTYELE,IVR,IFM,JDLM)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER           LMAX,NPOUTR,NBOCC,NBEPO,IFM,JDLM
       INTEGER           NTYELE(*),IVR(*)
@@ -8,7 +8,7 @@
       CHARACTER*(*)     MCLF
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,6 +51,18 @@ C     ------------------------------------------------------------------
       INTEGER      IARG
 C     ------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IDW ,IER ,IISEC ,IIVAR ,IOC ,ISEC 
+      INTEGER ITABL ,ITBLP ,ITBNP ,IVAR ,IVECT ,IXMA ,J 
+      INTEGER JCAR ,JCARA ,JDCGE ,JDCPO ,JDCPOF ,JDGE ,JDGEF 
+      INTEGER JDGM ,JDLS ,JDME ,JDVGE ,JDVPO ,JDVPOF ,JEXP 
+      INTEGER JJ ,JPARA ,JSECT ,JTAB ,JTYPE ,JVALE ,K 
+      INTEGER NBCAR ,NBCOLO ,NBLIGN ,NBMAGR ,NBMAIL ,NBO ,NBVAL 
+      INTEGER NCAR ,NCARAC ,NDIM ,NFCX ,NG ,NM ,NNOSEC 
+      INTEGER NPOAFF ,NSEC ,NSECPO ,NTAB ,NTYPSE ,NUMMAI ,NUTYEL 
+      INTEGER NVAL ,NVSEC 
+      REAL*8 EPY1 ,HY1 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL GETRES(NOMU,CONCEP,CMD)
 C

@@ -1,6 +1,6 @@
       SUBROUTINE JEIMPR ( UNIT , CLAS , CMESS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 10/04/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER           UNIT  
       CHARACTER*(*)           CLAS , CMESS
 C ----------------------------------------------------------------------
@@ -28,6 +28,12 @@ C IN  CLAS   : NOM DE LA CLASSE ASSOCIEE ( ' ' POUR TOUTES LES CLASSES )
 C IN  CMESS  : MESSAGE D'INFORMATION
 C
 C ----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IIADD ,IIBAS ,IIBDY ,ILONG ,ILONO ,ILTYP 
+      INTEGER J ,JCARA ,JDATE ,JDOCU ,JGENR ,JHCOD ,JIADD 
+      INTEGER JIADM ,JLONG ,JLONO ,JLTYP ,JLUTI ,JMARQ ,JORIG 
+      INTEGER JRNOM ,JTYPE ,K ,N ,NCLA1 ,NCLA2 
+C-----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
      +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   

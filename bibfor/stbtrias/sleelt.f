@@ -1,7 +1,7 @@
       SUBROUTINE SLEELT(IUNV,MAXNOD,NBTYMA,INDIC,PERMUT,NBMAIL,MINT,
      &                  MANT,DATSET,INUM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF STBTRIAS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF STBTRIAS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRS_512
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C     ==============================================================
 CA PRESUPER
 C
@@ -90,6 +90,10 @@ C
 C  --------- FIN DECLARATION ----------
 C
 C  --> N  D'UNITE LOGIQUE ASSOCIE AUX FICHIERS
+C-----------------------------------------------------------------------
+      INTEGER I ,IMES ,IPOS ,IRE1 ,IRET ,IUNIFI ,IUNV 
+      INTEGER JCONN ,JINFO ,NDECA ,NITER ,NNDEC 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       IMES=IUNIFI('MESSAGE')
 C

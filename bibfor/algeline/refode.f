@@ -1,13 +1,13 @@
       SUBROUTINE REFODE ( NBCMB, ANGLE, NOMCH, NUHARM, TYHARM, COEF,
      &                                                 BASZ, CHPRES )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER           NBCMB,            NUHARM(*)
       CHARACTER*(*)                 NOMCH(*),BASZ,TYHARM(*),  CHPRES
       REAL*8                  ANGLE,                    COEF(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,6 +42,14 @@ C     -----------------------------------------------------------------
       CHARACTER*19 CH19, LIGREL
       LOGICAL      LMECA,LTHER
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,I1 ,IC ,ICOEF ,IDECGR ,IE ,IER 
+      INTEGER IGREL ,IM ,INO ,IP ,IRET ,IVAL ,JCELD 
+      INTEGER JCELK ,JCELV ,JDESC ,JPRNO ,JREFE ,JVALE ,K 
+      INTEGER KDESC ,KREFE ,KVALE ,LVALE ,NBDESC ,NBEC ,NBELGR 
+      INTEGER NBGR ,NBNOEU ,NBPT ,NBREFE ,NBSCAL ,NBVALE 
+      REAL*8 ANG 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       BASE = BASZ
       CH19 = NOMCH(1)

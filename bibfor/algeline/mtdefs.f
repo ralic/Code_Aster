@@ -1,10 +1,10 @@
       SUBROUTINE MTDEFS ( MATOUT, MATIN, BASE, TYPC)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*)       MATOUT, MATIN, BASE, TYPC
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,6 +51,9 @@ C     ------------------------------------------------------------------
       CHARACTER*19  NOMOUT, NOMIN
       CHARACTER*24  VALM, REFA , LIME
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER IBLOC ,IRET ,JVALM ,LGBLOC ,NBBLOC 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       CLASSE = BASE(1:1)
 

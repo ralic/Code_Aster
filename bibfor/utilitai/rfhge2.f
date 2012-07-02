@@ -1,10 +1,10 @@
       SUBROUTINE RFHGE2 ( TRANGE )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*)       TRANGE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,6 +38,15 @@ C     ------------------------------------------------------------------
       INTEGER      IARG
 C     ------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER IAGNO ,IAREF2 ,IBID ,IDBASE ,IDDL ,IDINSG ,IDVECG 
+      INTEGER IE ,IERD ,IGN2 ,II ,INO ,INOEUD ,IORDR 
+      INTEGER IRET ,ITRESU ,JINST ,JJ ,LFON ,LG1 ,LG2 
+      INTEGER LORDR ,LPRO ,LREFE ,LVAR ,MXMODE ,N1 ,N2 
+      INTEGER N3 ,NBINSG ,NBMODE ,NBORDR ,NBPARI ,NBPARK ,NBPARR 
+      INTEGER NEQ ,NGN 
+      REAL*8 EPSI ,RBID 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
       CALL GETRES ( NOMFON , TYPCON , NOMCMD )

@@ -1,10 +1,10 @@
       SUBROUTINE RHOEQU(RHO,RHOS,RHOFI,RHOFE,CM,PHII,PHIE)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 06/01/95   AUTEUR G8BHHAC A.Y.PORTABILITE 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -24,6 +24,10 @@ C CALCUL D UN RHO EQUIVALENT D UNE STRUCTURE AVEC PRISE EN COMPTE
 C   DE L EFFET DE MASSE AJOUTEE ET DU CONFINEMENT DE LA STRUCTURE
 C     -----------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      REAL*8 CM ,PHIE ,PHIEQ ,PHII ,PI ,R8PI ,RHO 
+      REAL*8 RHOFE ,RHOFI ,RHOS 
+C-----------------------------------------------------------------------
           PI = R8PI()
           RHO = (RHOFI*PHII*PHII) + RHOS*(PHIE*PHIE - PHII*PHII)
           PHIEQ = (2.D0*CM/PI)*(PHIE*PHIE)

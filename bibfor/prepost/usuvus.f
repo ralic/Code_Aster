@@ -1,11 +1,11 @@
       SUBROUTINE USUVUS ( PUUSUR, VUSUR, NBINST, TEMPS, ISUPP,
      &                            NBPT, FN, VG, IRET )
-      IMPLICIT REAL *8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -36,6 +36,13 @@ C-----------------------------------------------------------------------
       CHARACTER*24 LOI, MATE
       INTEGER      IARG
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IFIRES ,IRET ,ISUPP ,IUNIFI ,N1 ,N2 
+      INTEGER N3 ,N4 ,N5 ,N6 ,NBINST ,NBPT ,NN 
+
+      REAL*8 PUUSUR ,T ,V0 ,W ,X1 ,XA ,XB 
+      REAL*8 XD ,XK ,XN ,XS 
+C-----------------------------------------------------------------------
       IFIRES = IUNIFI('RESULTAT')
 C
       CALL GETVTX(' ','LOI_USURE',0,IARG,1,LOI,N1)

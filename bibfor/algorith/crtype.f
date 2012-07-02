@@ -3,7 +3,7 @@
 C TOLE CRP_20
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -237,7 +237,7 @@ C ----- MOT CLE "NOM_CAS", "NUME_MODE", "FREQ"  PRESENT :
               ZK24(JREFE+1) = PROFCH
             ENDIF
           ENDIF
-          CALL RSNOCH(RESU,NSYMB,NUMINI,' ')
+          CALL RSNOCH(RESU,NSYMB,NUMINI)
 
           CALL RSSEPA(RESU,NUMINI,MODELE,MATERI,CARELE,EXCIT)
 
@@ -482,7 +482,7 @@ C           ----------------------------------
    60       CONTINUE
           ENDIF
 
-          CALL RSNOCH(RESU,NSYMB,ICOMPT,' ')
+          CALL RSNOCH(RESU,NSYMB,ICOMPT)
           CALL RSADPA(RESU,'E',1,TYPABS,ICOMPT,0,IAD,K8B)
           ZR(IAD) = TPS
           CALL RSSEPA(RESU,ICOMPT,MODELE,MATERI,CARELE,EXCIT)

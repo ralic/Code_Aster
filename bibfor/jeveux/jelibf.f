@@ -1,5 +1,5 @@
       SUBROUTINE JELIBF ( COND , CLAS , INFO )
-C MODIF JEVEUX  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ----------------------------------------------------------------------
 C ROUTINE UTILISATEUR PERMETTANT DE LIBERER TOUS LES OBJETS D'UNE BASE
 C         ET DE FERMER LES FICHIERS ASSOCIES
@@ -17,7 +17,7 @@ C TOLE CRS_505 CRS_508 CRP_18
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,7 +32,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       CHARACTER*(*)       COND , CLAS
       INTEGER             INFO
 C ----------------------------------------------------------------------
@@ -44,6 +44,15 @@ C ----------------------------------------------------------------------
       INTEGER          LBIS , LOIS , LOLS , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOR8 , LOC8
 C ----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IACCE ,IAD2 ,IADACC ,IADACY ,IADADI ,IADADY 
+      INTEGER IADMI ,IADYN ,IBACOL ,IC ,IDB ,INDIR ,IUSADI 
+      INTEGER JCARA ,JDATE ,JDOCU ,JGENR ,JHCOD ,JIACCE ,JIADD 
+      INTEGER JIADM ,JINDIR ,JLONG ,JLONO ,JLTYP ,JLUTI ,JMARQ 
+      INTEGER JORIG ,JRNOM ,JTYPE ,JUSADI ,K16 ,K17 ,K17I 
+      INTEGER K18 ,K18I ,K19 ,K19I ,K2 ,K20 ,LACC 
+      INTEGER LADI ,N ,NBACCE 
+C-----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
      &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ

@@ -1,12 +1,12 @@
         SUBROUTINE CVMRES ( MOD, NMAT, MATERD, MATERF,
      1                      TIMED, TIMEF, YD , YF, EPSD, DEPS,
      2                      DY, RES )
-        IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -79,6 +79,8 @@ C       ----------------------------------------------------------------
         COMMON /OPTI/   IOPTIO , IDNR
 C       ----------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
         CALL LCEQVN ( NDT , YD(1)       , SIGD)
         CALL LCEQVN ( NDT , YF(1)       , SIGF)
         CALL LCEQVN ( NDT , YF(NDT+1)   , X1  )

@@ -1,4 +1,4 @@
-# MODIF  DATE 16/04/2012   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE MODELISATION AXIS_GRAD_VARI + LOI ENDO_SCALAIRE
 # ssna119b.para = tps_job 90 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -53,13 +53,13 @@ assert pp>1
 
 
 # LE MAILLAGE EST LU AU FORMAT MED GENERE PAR SALOME
-MA_QU=LIRE_MAILLAGE(FORMAT='MED',);
+MA_QU=LIRE_MAILLAGE(FORMAT='MED');
 
 # AFFECTATION MODELE
 MO=AFFE_MODELE(MAILLAGE=MA_QU,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='AXIS_GRAD_VARI',),);
+                       MODELISATION='AXIS_GRAD_VARI'));
 
 
 # DEFINITION DU BETON 
@@ -73,21 +73,21 @@ BETON = DEFI_MATERIAU(
 # ATTRIBUTION DES PROPRIETES DU BETON AU MATERIAU
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA_QU,
                     AFFE=_F(TOUT='OUI',
-                            MATER=BETON,),);
+                            MATER=BETON));
 
 # ETABLISSEMENT DE CONDITIONS LIMITES:
 # AXE PEUX SE DEPLACER SELON -Y-
 CHARSY=AFFE_CHAR_MECA(MODELE=MO,
                       DDL_IMPO=_F(GROUP_MA='AXE',
-                                  DX=0.,),);
+                                  DX=0.));
 
 # ETABLISSEMENT DE CONDITION DU AU CHARGEMENT EN DEPLACEMENT
 # on s'approche de la limite d'endommagement
 EFFORT=AFFE_CHAR_MECA(MODELE=MO,
                       FACE_IMPO=(_F(GROUP_MA='HAUT',
-                                    DY=5*Sy/EE,),
+                                    DY=5*Sy/EE),
                                  _F(GROUP_MA='BAS',
-                                    DY=-5*Sy/EE,),),);
+                                    DY=-5*Sy/EE)));
                                     
 # DEFINITION DE LISTE DE PAS DE TEMPS 
 # SERIE LINEAIRE 0,1,2...INS_FIN
@@ -95,7 +95,7 @@ EFFORT=AFFE_CHAR_MECA(MODELE=MO,
 
 INSTANTS=DEFI_LIST_REEL(DEBUT=0,
                         INTERVALLE=_F(JUSQU_A=1000,
-                                      NOMBRE=1000,),);
+                                      NOMBRE=1000));
 TEMPS   = DEFI_LIST_INST(DEFI_LIST = _F(LIST_INST = INSTANTS),
                            ECHEC     = _F(ACTION='DECOUPE',
                                           SUBD_METHODE='MANUEL',
@@ -110,11 +110,11 @@ TEMPS   = DEFI_LIST_INST(DEFI_LIST = _F(LIST_INST = INSTANTS),
 EVOL = STAT_NON_LINE(
                    MODELE=MO,
                    CHAM_MATER=CHMAT,
-                   EXCIT=(_F(CHARGE=CHARSY,),
+                   EXCIT=(_F(CHARGE=CHARSY),
                           _F(CHARGE=EFFORT,
-                             TYPE_CHARGE='FIXE_PILO',),),
+                             TYPE_CHARGE='FIXE_PILO')),
                    COMP_INCR=_F(RELATION='ENDO_SCALAIRE',
-                                TOUT='OUI',),
+                                TOUT='OUI'),
                    INCREMENT=_F(LIST_INST=TEMPS),
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=1,
@@ -135,7 +135,7 @@ EVOL = STAT_NON_LINE(
                                 ITER_GLOB_MAXI = 15,
                                 ),                                  
                    SOLVEUR=_F(METHODE='MUMPS',
-                              PCENT_PIVOT=50,
+   
                               SYME = 'OUI',
                               ),
                    ARCHIVAGE=_F(PAS_ARCH=1000), 
@@ -194,7 +194,7 @@ U_HAUT = POST_RELEVE_T(
 T_U=CALC_TABLE(TABLE=U_HAUT,
                  ACTION=(
                          _F(OPERATION='EXTR',
-                            NOM_PARA=('NUME_ORDRE','DY',),
+                            NOM_PARA=('NUME_ORDRE','DY'),
                             ),
                         ),
                     );
@@ -209,7 +209,7 @@ T_U=CALC_TABLE(TABLE=T_U,reuse=T_U,
 T_F=CALC_TABLE(TABLE=FPILO,
                  ACTION=(
                          _F(OPERATION='EXTR',
-                            NOM_PARA=('NUME_ORDRE','DY',),
+                            NOM_PARA=('NUME_ORDRE','DY'),
                             ),
                         ),
                     );                 
@@ -225,20 +225,20 @@ T_F=CALC_TABLE(reuse =T_F,
           TABLE=T_F,
           ACTION=_F(OPERATION='COMB',
                     TABLE=T_U,
-                    NOM_PARA='NUME_ORDRE',),);  
+                    NOM_PARA='NUME_ORDRE'));  
 
 # CREATION DU TABLEAU FORCES-DEPL AVEC LES DEPLACEMENTS
 T_FU=CALC_TABLE(TABLE=T_F,
                  ACTION=(
                          _F(OPERATION='EXTR',
-                            NOM_PARA=('DEPL','FORCE',),
+                            NOM_PARA=('DEPL','FORCE'),
                             ),
                         ),
                     );
 
  
 
-IMPR_TABLE(TABLE=T_FU,COMM_PARA='#',)  
+IMPR_TABLE(TABLE=T_FU,COMM_PARA='#')  
 
 #***********************************************************************
 #    TEST COMPARAISON AVEC ENDOMMAGEMENT EN NON_REGRESSION
@@ -253,7 +253,7 @@ TEST_RESU(RESU=_F(RESULTAT=EVOL,
                   NOM_CMP='DY',
                   GROUP_NO='P_HAUT',
                   VALE=7.5E-04,
-                  PRECISION=1.E-4,),); 
+                  PRECISION=1.E-4)); 
                   
 # TEST SIEF          
 TEST_RESU(RESU=_F(RESULTAT=EVOL,
@@ -264,7 +264,7 @@ TEST_RESU(RESU=_F(RESULTAT=EVOL,
                   MAILLE='M160',
                   POINT=1,
                   VALE=-3.538,
-                  PRECISION=1.E-2,),); 
+                  PRECISION=1.E-2)); 
 
 # TEST FORC_NODA          
 TEST_RESU(RESU=_F(RESULTAT=EVOL,
@@ -274,7 +274,7 @@ TEST_RESU(RESU=_F(RESULTAT=EVOL,
                   NOM_CMP='DY',
                   GROUP_NO='P_HAUT',
                   VALE=3435,
-                  PRECISION=1.E-2,),); 
+                  PRECISION=1.E-2)); 
 
 ################## IMPRESSION DANS LE FICHIER (visualisation avec xmgrace)########
 ## visu xmgrace possible avec  DEBUT(PAR_LOT='NON'); seulement
@@ -301,7 +301,7 @@ TEST_RESU(RESU=_F(RESULTAT=EVOL,
 #
 #
 ## IMPRESSION DANS LE FICHIER                    
-#IMPR_TABLE(UNITE=38,TABLE=T_FU,COMM_PARA='#',)  
+#IMPR_TABLE(UNITE=38,TABLE=T_FU,COMM_PARA='#')  
 
 ## visualisation avec xmgrace
 #use_grace(nomfich,'force(depl)')
@@ -312,10 +312,10 @@ TEST_RESU(RESU=_F(RESULTAT=EVOL,
 #IMPR_RESU(FORMAT='MED',
 #          RESU=(_F(RESULTAT=EVOL,
 #                   NOM_CHAM='DEPL',
-#                   NOM_CMP=('DX','DY',),
-#                   TOUT='OUI',),
+#                   NOM_CMP=('DX','DY'),
+#                   TOUT='OUI'),
 #                _F(RESULTAT=EVOL,
 #                   NOM_CHAM='VARI_ELGA',
-#                   NOM_CMP='V3',),),);
+#                   NOM_CMP='V3')));
 
 FIN();

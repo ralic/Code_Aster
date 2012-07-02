@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,7 +60,7 @@ C     --------------------------------
       ELSE
          IORD2=0
       ENDIF
-      
+
 
 C       BOUCLE SUR LES OCCURRENCES DE ASSE :
 C       -----------------------------------------------------------
@@ -70,7 +70,7 @@ C       -----------------------------------------------------------
         RESU19=RESU1
         CALL JELIRA(RESU19//'.ORDR','LONUTI',NBORD1,K8B)
         CALL JEVEUO(RESU19//'.ORDR','L',JORD1)
-      
+
         CALL JEEXIN(RESU19//'.DESC',IRET)
         CALL JELIRA(RESU19//'.DESC','NOMUTI',NBCHAM,K8B)
 
@@ -78,7 +78,7 @@ C       -----------------------------------------------------------
 C       BOUCLE SUR LES CHAMPS 'TEMP' DE RESU1 ET RECOPIE DANS RESU2:
 C       -----------------------------------------------------------
         DO 110, KORD1=1,NBORD1
-          IORD1 = ZI(JORD1-1+KORD1)      
+          IORD1 = ZI(JORD1-1+KORD1)
           IF(EXIST) IORD2 = IORD2 + 1
           EXIST = .FALSE.
           DO 115 KCH=1,NBCHAM
@@ -94,11 +94,11 @@ C            2- STOCKAGE DE CHAM1 :
              CALL RSEXCH(RESU2, CHTER, IORD2, NOMCH, IRET )
              IF ( IRET .EQ. 110 )  CALL RSAGSD ( RESU2, 0 )
              CALL COPISD('CHAMP_GD','G',CHAM1,NOMCH)
-             CALL RSNOCH(RESU2, CHTER, IORD2, ' ' )
+             CALL RSNOCH(RESU2,CHTER,IORD2)
              EXIST = .TRUE.
 
  115       CONTINUE
- 
+
 C          3- STOCKAGE DE L'INSTANT ASSOCIE A CHAM1 :
 
            CALL RSADPA(RESU1,'L',1,'INST',IORD1,0,IAD,K8B)

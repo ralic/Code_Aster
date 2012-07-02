@@ -1,8 +1,8 @@
       SUBROUTINE OP0109()
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,6 +26,19 @@ C
 C     ------------------------------------------------------------------
       INCLUDE 'jeveux.h'
       INTEGER VALI(2)
+C-----------------------------------------------------------------------
+      INTEGER IAM ,IBID ,ID ,IERD ,IFM ,IFU ,II 
+      INTEGER IM ,INFO ,IRET ,IUNIFI ,J ,JAMO2 ,JAMOG 
+      INTEGER JAMOR ,JARM ,JASY ,JCSU ,JDEP ,JDESC ,JDIR 
+      INTEGER JKNO ,JNSU ,JOPT ,JORDR ,JREA ,JREFC ,JSPE 
+      INTEGER LMOD ,LMODE ,LVAL ,N1 ,NA ,NA1 ,NBAMOR 
+      INTEGER NBFAC ,NBMODE ,NBOPT ,NBORDR ,NBPARA ,NBPARI ,NBPARK 
+      INTEGER NBPARR ,NBSUP ,NC ,NCD ,NCM ,NCMT ,NDEPL 
+      INTEGER NEQ ,NF1 ,NF2 ,NIMPR ,NLA ,NMM ,NMULT 
+      INTEGER NNA ,NP ,NPM ,NRET1 ,NRET2 ,NS ,NT 
+      INTEGER NTY2 
+      REAL*8 R8VIDE ,RUNDEF ,XCUMUL ,XFM 
+C-----------------------------------------------------------------------
       PARAMETER    ( NBPARA = 11 )
       REAL*8       R8B, TEMPS, PREC, XMASTR, MASUNI, F1GUP, F2GUP
       REAL*8       FREQ, FACPAR, MASMOD, MASTOT(3), ZERO, CUMUL(3)

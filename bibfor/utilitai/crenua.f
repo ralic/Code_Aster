@@ -1,12 +1,12 @@
       SUBROUTINE CRENUA ( NUAGE, NOMGD, NP, NX, NC, LNUAL )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER                           NP, NX, NC
       CHARACTER*(*)       NUAGE, NOMGD
       LOGICAL                                       LNUAL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,6 +36,9 @@ C     ------------------------------------------------------------------
       CHARACTER*19  KNUAGE
 C     ------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER JNUAI ,JNUAL ,JNUAV ,JNUAX 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       KNUAGE = NUAGE
 C

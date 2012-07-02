@@ -1,6 +1,6 @@
       SUBROUTINE CALDIS ( FREMAX, FREMIN, PAS, FREXCI, NBPTMD, NBMODE,
      &                 LISMOD, FREMOD, AMOMOD, NINDEX, NPDSC3, FREFIN )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER             NBPTMD, NBMODE, NINDEX, NPDSC3, LISMOD(*)
       REAL*8              FREMAX, FREMIN, PAS, FREMOD(*), AMOMOD(*),
@@ -8,7 +8,7 @@
       CHARACTER*4         FREXCI
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,6 +45,13 @@ C-----------------------------------------------------------------------
 C
 C
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I1 ,I2 ,IADII1 ,IADR1 ,IADSC1 ,IADSC2 ,IADSC3 
+      INTEGER IBID1 ,ICONT1 ,IFREQ1 ,IGEX1 ,ILFEX ,ILLEX ,ILONG1 
+      INTEGER IMODE ,INAJOU ,NBMAX ,NPDSC0 ,NPDSC2 
+      REAL*8 AMOR ,F0 ,F1 ,F2 ,FREDEB ,FREMA1 ,FREQ 
+      REAL*8 PASMIN ,R8ECAR 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
 C---------CAS D UNE DISCRETISATION DEMANDEE PAR L UTILISATEUR

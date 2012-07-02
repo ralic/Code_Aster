@@ -1,13 +1,13 @@
       SUBROUTINE ACEAT2(NBTUY,ELTUY,NOTUY,NBPART,NOEX1,NOEX2,
      &           NBMAP,ELPAR,NOPAR,NNO)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER NBTUY,ELTUY(NBTUY),NOTUY(NNO*NBTUY),NBPART,NOEX1(NBPART)
       INTEGER NOEX2(NBPART),NBMAP(NBPART),ELPAR(NBPART,NBTUY)
       INTEGER NOPAR(NBPART,NNO,NBTUY)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,6 +33,11 @@ C ----------------------------------------------------------------------
 C
 C     STOCKAGE DES NUMEROS DE NOEUDS EXTREMITES
 C
+C-----------------------------------------------------------------------
+      INTEGER IEXT1 ,IEXT2 ,IM1 ,IMA ,IPA ,JMA ,KP 
+      INTEGER NBE ,NBEXT1 ,NBEXT2 ,NEX1 ,NI1 ,NI2 ,NI3 
+      INTEGER NI4 ,NJ1 ,NJ2 ,NJ3 ,NJ4 ,NNO 
+C-----------------------------------------------------------------------
       NBEXT1=0
       NBEXT2=0
       DO 30 IMA = 1 , NBTUY

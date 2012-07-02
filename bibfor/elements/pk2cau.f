@@ -1,5 +1,5 @@
       SUBROUTINE  PK2CAU(NOMTE,NCMP,PK2,SIGMA)
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C.======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C      PK2CAU  -- CALCUL DES CONTAINTES DE CAUCHY A PARTIR DES
 C                 CONTRAINTES DE PIOLA-KIRCHHOFF DE SECONDE ESPECE
@@ -43,6 +43,14 @@ C -----  ARGUMENTS
            REAL*8        PK2(NCMP,1), SIGMA(NCMP,1)
            INTEGER       NCMP,JNBSPI
 C -----  VARIABLES LOCALES
+C-----------------------------------------------------------------------
+      INTEGER I ,ICARA ,ICOMPO ,ICOU ,IDEPL ,IGEOM ,II 
+      INTEGER IN ,INTE ,INTSN ,IRET ,J ,KPGS ,LZI 
+      INTEGER LZR ,NB1 ,NB2 ,NBCOU ,NBINCO ,NPGE ,NPGSN 
+
+      REAL*8 COF11 ,COF21 ,COF31 ,DETF ,DETFM1 ,DETJ ,DEUX 
+      REAL*8 EPAIS ,EPTOT ,R8PREM ,UN ,ZIC ,ZMIN 
+C-----------------------------------------------------------------------
            PARAMETER (NBINCO=51)
            PARAMETER (NPGE=3)
 C

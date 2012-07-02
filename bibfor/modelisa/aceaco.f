@@ -1,11 +1,11 @@
       SUBROUTINE ACEACO ( NOMU,NOMA,LMAX,NBCAGR,NBOCC)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER             LMAX,NBOCC,NBCAGR
       CHARACTER*8         NOMU,NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,6 +42,12 @@ C ----------------------------------------------------------------------
       INTEGER      IARG
 C     ------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IOC ,JDCC ,JDLS ,JDVC ,NA ,NCO 
+      INTEGER NCR ,NEX ,NG ,NIN ,NK ,NM ,NV 
+
+      REAL*8 PI ,XINER 
+C-----------------------------------------------------------------------
       PI=R8PI()
 C
 C --- CONSTRUCTION DES CARTES ET ALLOCATION

@@ -1,4 +1,4 @@
-#@ MODIF macr_spectre_ops Macro  DATE 25/06/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF macr_spectre_ops Macro  DATE 03/07/2012   AUTEUR TARDIEU N.TARDIEU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -134,6 +134,7 @@ def macr_spectre_ops(self,MAILLAGE,PLANCHER,NOM_CHAM,CALCUL,RESU,IMPRESSION=None
                     __spo=RECU_FONCTION(TABLE=resu['TABLE'],
                                         PARA_X  = 'INST',
                                         PARA_Y  = 'VALE',
+                                        INTERPOL='LIN',
                                         FILTRE  = (_F(NOM_PARA='NOEUD',   VALE_K=node     ),
                                                    _F(NOM_PARA='NOM_CHAM',VALE_K=NOM_CHAM ),
                                                    _F(NOM_PARA='NOM_CMP', VALE_K='D'+dd   ),) )

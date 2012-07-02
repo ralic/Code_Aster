@@ -1,4 +1,4 @@
-# MODIF  DATE 20/06/2012   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185g.para = tps_job 310 mem_job 1024Mo mem_aster 70 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -33,54 +33,54 @@ h = 15.
 #                MAILLAGE : hexa_5_31_51.mgib
 #----------------------------------------------
 
-MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
+MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1);
 
 MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLAG1,COPIE=_F());
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
-                    CREA_GROUP_NO=_F(GROUP_MA='VOL',),);
+                    CREA_GROUP_NO=_F(GROUP_MA='VOL'));
 
 MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,
-                       LINE_QUAD=_F(GROUP_MA='VOL',),);
+                       LINE_QUAD=_F(GROUP_MA='VOL'));
 
 MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                     MAILLAGE=MAILLAG2,
-                    CREA_GROUP_NO=(_F(NOM='VOLQUAD',GROUP_MA='VOL',),
-                                   _F(NOM='NFISSU',OPTION='PLAN',POINT=(0.,0.,h),VECT_NORMALE=(0.,0.,1.),PRECISION=0.01,),),);
+                    CREA_GROUP_NO=(_F(NOM='VOLQUAD',GROUP_MA='VOL'),
+                                   _F(NOM='NFISSU',OPTION='PLAN',POINT=(0.,0.,h),VECT_NORMALE=(0.,0.,1.),PRECISION=0.01)));
 
 #----------------------------------------------
 #                   MODELE ET FISSURE
 #----------------------------------------------
 
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
-                     AFFE=(_F(GROUP_MA=('VOL',),
+                     AFFE=(_F(GROUP_MA=('VOL'),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D_XFEM_CONT',),
-                           _F(GROUP_MA=('SURFINF','SURFSUP',),
+                              MODELISATION='3D_XFEM_CONT'),
+                           _F(GROUP_MA=('SURFINF','SURFSUP'),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),),);
+                              MODELISATION='3D')));
 
 MAILLAG2=MODI_MAILLAGE(reuse =MAILLAG2,
                        MAILLAGE=MAILLAG2,
-                       ORIE_PEAU_3D=_F(GROUP_MA=('SURFSUP','SURFINF',),),
+                       ORIE_PEAU_3D=_F(GROUP_MA=('SURFSUP','SURFINF')),
                        );
 
 LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-h');
 LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='-Y+a');
 
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
-                    DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
+                    DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN),
                     ORIE_FOND=_F(PFON_INI= (0. ,a ,h ),
                                  VECT_ORIE=(0. ,0. ,1. ),
-                                 POINT_ORIG=(0. ,20. ,h ),),
+                                 POINT_ORIG=(0. ,20. ,h )),
                     );
 
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
                          CONTACT='P1P1A',
-                         INFO=1,);
+                         INFO=1);
 
 
 CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
@@ -98,7 +98,7 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
 
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       LIAISON_XFEM='OUI',
-                      CONTACT_XFEM=CTXFEM,);
+                      CONTACT_XFEM=CTXFEM);
 
 #----------------------------------------------
 #                   MATERIAU
@@ -107,7 +107,7 @@ CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
 E=205000.0E6
 nu=0.
 rho=7800.
-ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),);
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho));
 
 CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        MODELE=MODELEK,
@@ -120,58 +120,58 @@ CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
 #----------------------------------------------
 
 CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
-                   LIAISON_DDL=(_F(NOEUD=('N4031','N3876',),
-                                   DDL=('DX','DX',),
+                   LIAISON_DDL=(_F(NOEUD=('N4031','N3876'),
+                                   DDL=('DX','DX'),
                                    COEF_MULT=(1.0,1.0),
-                                   COEF_IMPO=0.0,),
-                                _F(NOEUD=('N4031','N3876',),
-                                   DDL=('DY','DY',),
+                                   COEF_IMPO=0.0),
+                                _F(NOEUD=('N4031','N3876'),
+                                   DDL=('DY','DY'),
                                    COEF_MULT=(1.0,1.0),
-                                   COEF_IMPO=0.0,),
-                                _F(NOEUD=('N4031','N3876',),
-                                   DDL=('DZ','DZ',),
+                                   COEF_IMPO=0.0),
+                                _F(NOEUD=('N4031','N3876'),
+                                   DDL=('DZ','DZ'),
                                    COEF_MULT=(1.0,1.0),
-                                   COEF_IMPO=0.0,),
-                                _F(NOEUD=('N3886','N4041',),
-                                   DDL=('DX','DX',),
+                                   COEF_IMPO=0.0),
+                                _F(NOEUD=('N3886','N4041'),
+                                   DDL=('DX','DX'),
                                    COEF_MULT=(1.0,1.0),
-                                   COEF_IMPO=0.0,),
-                                _F(NOEUD=('N3886','N4041',),
-                                   DDL=('DZ','DZ',),
+                                   COEF_IMPO=0.0),
+                                _F(NOEUD=('N3886','N4041'),
+                                   DDL=('DZ','DZ'),
                                    COEF_MULT=(1.0,1.0),
-                                   COEF_IMPO=0.0,),
-                                _F(NOEUD=('N9768','N9767',),
-                                   DDL=('DZ','DZ',),
+                                   COEF_IMPO=0.0),
+                                _F(NOEUD=('N9768','N9767'),
+                                   DDL=('DZ','DZ'),
                                    COEF_MULT=(1.0,1.0),
-                                   COEF_IMPO=0.0,),
-                             ),);
+                                   COEF_IMPO=0.0),
+                             ));
 
 # PRESSION POSITIVE = COMPRESSION
 PRES=1.E6
 CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
-                PRES_REP=_F(GROUP_MA=('SURFSUP','SURFINF',),PRES=PRES,),);
+                PRES_REP=_F(GROUP_MA=('SURFSUP','SURFINF'),PRES=PRES));
 
 #----------------------------------------------
 #                   RESOLUTION
 #----------------------------------------------
 
-L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
+L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3));
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMA1,
-                   EXCIT=(_F(CHARGE=CHXFEM,),
-                          _F(CHARGE=CH1,),
-                          _F(CHARGE=CH2,),),
+                   EXCIT=(_F(CHARGE=CHXFEM),
+                          _F(CHARGE=CH1),
+                          _F(CHARGE=CH2)),
                    CONTACT  =CTXFEM,
                    COMP_ELAS=_F(RELATION='ELAS',
-                                GROUP_MA='VOL',),
+                                GROUP_MA='VOL'),
                    INCREMENT=_F(LIST_INST=L_INS1,
-                                INST_FIN=1.0,),
-                   SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,
+                                INST_FIN=1.0),
+                   SOLVEUR=_F(METHODE='MUMPS',
                               ),
-                   NEWTON=_F(REAC_ITER=1,),
-                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                   INFO=1,);
+                   NEWTON=_F(REAC_ITER=1),
+                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA'),
+                   INFO=1);
 
 #------------------------------------------------------------------------
 # POST-TRAITEMENT : RECUPERATION DES PRESSIONS DE CONTACT
@@ -181,23 +181,23 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
 TABLAG0=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                NOEUD=('NS14287','NS14290','NS14293','NS14296','NS14299',
                                       'NS14302','NS14305','NS14308','NS14311','NS14314',
-                                      'NS14317','NS14320','NS14323','NS14326','NS14329','NS14332',),
+                                      'NS14317','NS14320','NS14323','NS14326','NS14329','NS14332'),
                                RESULTAT=UTOT1,
                                NOM_CHAM='DEPL',
                                NUME_ORDRE=1,
                                NOM_CMP='LAGS_C',
-                               OPERATION='EXTRACTION',),);
+                               OPERATION='EXTRACTION'));
 
 # table des pressions de contact suivant y, en x=1
 TABLAG1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                NOEUD=('NS13875','NS13880','NS13885','NS13890','NS13895',
                                       'NS13900','NS13905','NS13910','NS13915','NS13920',
-                                      'NS13925','NS13930','NS13935','NS13940','NS13945','NS13950',),
+                                      'NS13925','NS13930','NS13935','NS13940','NS13945','NS13950'),
                                RESULTAT=UTOT1,
                                NOM_CHAM='DEPL',
                                NUME_ORDRE=1,
                                NOM_CMP='LAGS_C',
-                               OPERATION='EXTRACTION',),);
+                               OPERATION='EXTRACTION'));
 
 LAGREF=-PRES
 
@@ -207,7 +207,7 @@ TEST_TABLE(TABLE=TABLAG0,
               VALE=LAGREF,
               CRITERE='RELATIF',
               PRECISION=0.04,
-              REFERENCE='ANALYTIQUE',);
+              REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=TABLAG0,
               NOM_PARA='LAGS_C',
@@ -215,7 +215,7 @@ TEST_TABLE(TABLE=TABLAG0,
               VALE=LAGREF,
               CRITERE='RELATIF',
               PRECISION=0.04,
-              REFERENCE='ANALYTIQUE',);
+              REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=TABLAG1,
               NOM_PARA='LAGS_C',
@@ -223,7 +223,7 @@ TEST_TABLE(TABLE=TABLAG1,
               VALE=LAGREF,
               CRITERE='RELATIF',
               PRECISION=0.04,
-              REFERENCE='ANALYTIQUE',);
+              REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=TABLAG1,
               NOM_PARA='LAGS_C',
@@ -231,7 +231,7 @@ TEST_TABLE(TABLE=TABLAG1,
               VALE=LAGREF,
               CRITERE='RELATIF',
               PRECISION=0.04,
-              REFERENCE='ANALYTIQUE',);
+              REFERENCE='ANALYTIQUE');
 
 #------------------------------------------------------------------------
 # POST-TRAITEMENT : CALCUL DES SIFS PAR LA METHODE ENERGETIQUE AVEC X-FEM
@@ -251,22 +251,22 @@ for i in range(0,nbc) :
                  INST=1.0,
                  THETA=_F(FISSURE=FISS,
                           R_INF=RI[i],
-                          R_SUP=RS[i],),
+                          R_SUP=RS[i]),
                  LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
-                            LISSAGE_G='LAGRANGE',),);
+                            LISSAGE_G='LAGRANGE'));
 
-   IMPR_TABLE(TABLE=SIF[i],);
+   IMPR_TABLE(TABLE=SIF[i]);
 
 SIF[nbc]=CALC_G(RESULTAT=UTOT1,
                 OPTION='CALC_K_G',
                 INST=1.0,
                 THETA=_F(FISSURE=FISS,
                          R_INF=RI[0],
-                         R_SUP=RS[0],),
+                         R_SUP=RS[0]),
                 LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
-                           LISSAGE_G='LAGRANGE_NO_NO',),);
+                           LISSAGE_G='LAGRANGE_NO_NO'));
 
-IMPR_TABLE(TABLE=SIF[nbc],);
+IMPR_TABLE(TABLE=SIF[nbc]);
 
 GREF=0.
 
@@ -277,7 +277,7 @@ for i in range(0,nbc+1) :
               VALE=GREF,
               CRITERE='ABSOLU',
               PRECISION=0.0005,
-              REFERENCE='ANALYTIQUE',);
+              REFERENCE='ANALYTIQUE');
 
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='G',
@@ -285,7 +285,7 @@ for i in range(0,nbc+1) :
               VALE=GREF,
               CRITERE='ABSOLU',
               PRECISION=0.0005,
-              REFERENCE='ANALYTIQUE',);
+              REFERENCE='ANALYTIQUE');
 
 
 PK=POST_K1_K2_K3(MODELISATION='3D',
@@ -299,11 +299,11 @@ PK=POST_K1_K2_K3(MODELISATION='3D',
 
 IMPR_TABLE(TABLE = PK)
 TEST_TABLE(TABLE=PK,
-           FILTRE=(_F(NOM_PARA='PT_FOND',VALE_I=1),),
+           FILTRE=(_F(NOM_PARA='PT_FOND',VALE_I=1)),
            NOM_PARA='G',
            VALE= 0.,
            CRITERE='ABSOLU',
-           PRECISION=1.e-6,);
+           PRECISION=1.e-6);
 
 # -------------------------------------------------------------
 #            POST-TRAITEMENT POUR LA VISUALISATION X-FEM
@@ -316,7 +316,7 @@ MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAG1,
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),)
+                              MODELISATION='3D'))
 
 RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
                         MODELE_VISU   = MOD_VISU,

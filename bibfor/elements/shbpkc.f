@@ -1,8 +1,8 @@
       SUBROUTINE SHBPKC(SIGPK,SIGCA,DUSDX,NPG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 12/08/2008   AUTEUR DESROCHES X.DESROCHES 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -21,7 +21,7 @@ C ======================================================================
 C--------------------------------------------------------
 C ELEMENT SHB8-PS A.COMBESCURE, S.BAGUET INSA LYON 2003 /
 C-------------------------------------------------------
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       REAL*8 SIGPK(*),SIGCA(*),SIG(6),SIG33(3,3)
       REAL*8 SIGTMP(120)
       REAL*8 DUSDX(*),F(3,3),TMPTAB(3,3),FT(3,3)
@@ -48,6 +48,8 @@ C  SORTIE
 
 C      SIGCA
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       NSIG = NPG*6
       DO 100 IP = 1,NPG
 CCCCCCCCCCCCCCC CALCUL DE F: PASSAGE AU PAS FINAL

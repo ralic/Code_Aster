@@ -1,9 +1,9 @@
       SUBROUTINE MDGEP3(NEQ,NBEXCI,PSIDEL,TEMPS,
      &                  NOMFON,TAB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -30,7 +30,7 @@ C IN  : TEMPS  : INSTANT DE CALCUL DES DEPL_IMPO
 C IN  : NOMFON : NOM DE LA FONCTION DEPL_IMPO
 C OUT : TAB    : VALEUR DE PSIDEL*VALE_NOMFOM(TEMPS)
 C .________________.____.______________________________________________.
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       REAL*8 TAB(NEQ)
       REAL*8 PSIDEL(NEQ,NBEXCI),TEMPS
       CHARACTER*8 NOMFON(2*NBEXCI)
@@ -39,6 +39,9 @@ C ----------------------------------------------------------------------
       CHARACTER*24 VALK
       REAL*8 COEF
 C
+C-----------------------------------------------------------------------
+      INTEGER IEQ ,IER ,IEX ,NBEXCI ,NEQ 
+C-----------------------------------------------------------------------
       K8BID = '        '
       CALL R8INIR(NEQ,0.D0,TAB,1)
       NOMPAR = 'INST'

@@ -1,9 +1,9 @@
         SUBROUTINE FGCOTA (NPIC,PIC,NCYC,SIGMIN,SIGMAX)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/10/2011   AUTEUR TRAN V-X.TRAN 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,11 +27,14 @@ C      OUT NCYC    NOMBRE  DE  CYCLE
 C      OUT SIGMAX  CONTRAINTES MAXIMALES DES CYCLES
 C          SIGMIN  CONTRAINTES MINIMALES DES CYCLES
 C       ----------------------------------------------------------------
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       REAL*8          PIC(*),E1,E2,SIGMAX(*),SIGMIN(*)
       INTEGER         NPIC,  NCYC, K
       LOGICAL         CYCZER
 C       ----------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I 
+C-----------------------------------------------------------------------
       NCYC  = 0
       I     = 1
       CYCZER = .TRUE.

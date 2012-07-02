@@ -5,7 +5,7 @@
      &                  NBMAT,NUMMAI,NBCMP,NOMCMP,LSUP,
      &                  BORSUP,LINF,BORINF,LMAX,LMIN,
      &                  FORMR,NIVE,VERSIO )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
       CHARACTER*(*)     NOMCON
@@ -20,7 +20,7 @@ C
       LOGICAL                                   LRESU,LCOR
       LOGICAL           LSUP,LINF,              LMAX,LMIN,LGMSH
 C-----------------------------------------------------------------------
-C MODIF PREPOST  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -100,6 +100,8 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C     --- IMPRESSION D'UN TABLEAU SYNTHETIQUE DES PARAMETRES-----
 C         (UNIQUEMENT FORMAT 'RESULTAT')
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       IF ( CECR(1:1) .EQ. 'E' ) THEN
          CALL IRPARA(NOMCON,FORM,IFI,NBORDR,ORDR,NBPARA,PARA,'E')

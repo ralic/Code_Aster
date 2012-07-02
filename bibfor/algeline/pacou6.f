@@ -1,8 +1,8 @@
       SUBROUTINE PACOU6 ( R, QT, N,I, A, B )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,6 +27,10 @@ C ---------
       REAL*8 A, B, R(N,*), QT(N,*)
 C ---------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER J 
+      REAL*8 C ,FACT ,S ,W ,Y 
+C-----------------------------------------------------------------------
       IF ( ABS(A) .LE. 1.0D-30 ) THEN
          C = 0.0D0
          S = SIGN(1.0D0,B)

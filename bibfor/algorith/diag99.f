@@ -4,7 +4,7 @@
       CHARACTER*8         NOMRES
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,7 +45,7 @@ C
       CHARACTER*8   K8B, MECA, STAT
       CHARACTER*14  NU
       CHARACTER*24  MASSE, NUMDDL, MAILLA
-      CHARACTER*19  CHAMOL
+      CHARACTER*19  CHAMOL,CHAMNE
       INTEGER      IARG
 C----------------------------------------------------------------------
       CALL JEMARQ()
@@ -143,7 +143,9 @@ C
          IORNE = IORNE+1
 C
          CALL RSEXCH(  MECA,'DEPL',IOROL,CHAMOL,IER)
-         CALL RSNOCH(NOMRES,'DEPL',IORNE,CHAMOL)
+         CALL RSEXCH(NOMRES,'DEPL',IORNE,CHAMNE,IER)
+         CALL COPISD('CHAMP','G',CHAMOL,CHAMNE)
+         CALL RSNOCH(NOMRES,'DEPL',IORNE)
 C
          CALL RSADPA(  MECA, 'L',1,'NUME_MODE',IOROL,0, IAD,K8B)
          CALL RSADPA(NOMRES, 'E',1,'NUME_MODE',IORNE,0,JIAD,K8B)
@@ -212,7 +214,7 @@ C
          DO 111 IEQ = 1 , NEQ
            ZR(JVALE+IEQ-1) = ZR(JNSTA+(I-1)*NEQ+IEQ-1)
  111     CONTINUE
-        CALL RSNOCH(NOMRES,'DEPL',IORNE,' ')
+        CALL RSNOCH(NOMRES,'DEPL',IORNE)
  90    CONTINUE
 C
       CALL JEDETR('&&DIAG99.TRAV1')

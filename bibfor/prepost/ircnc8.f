@@ -1,7 +1,7 @@
       SUBROUTINE IRCNC8(IFI,NBNO,PRNO,NUEQ,NEC,DG,NCMPMX,VALE,
      +      NOMCMP,NOMNOE,LCOR,NDIM,COOR,NUMNOE,NBCMPT,NUCMPU,
      +      LSUP,BORSUP,LINF,BORINF,LMAX,LMIN,FORMR)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
       INTEGER           IFI,NBNO,PRNO(*),NUEQ(*),NEC,DG(*),NCMPMX
@@ -11,7 +11,7 @@ C
       COMPLEX*16                                        VALE(*)
       LOGICAL           LSUP,LINF,         LCOR,              LMAX,LMIN
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,6 +67,14 @@ C     ------------------------------------------------------------------
       CHARACTER*50 FMT, FORM1
       REAL*8       VALUE,VALMIN,VALMAX
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,ICM ,ICMAX ,ICMIN ,ICMP ,ICMP2 ,ICOMP2 
+      INTEGER ICOMPT ,ID ,IEC ,IEQ ,IF ,IIVAL ,ILIGN 
+      INTEGER IMPRE ,INEC ,INMAX ,INMIN ,INNO ,INO ,IPOS 
+      INTEGER IPRES ,IREST ,IRMAX ,IRMIN ,IRVAL ,IVA ,IVAL 
+      INTEGER IVMAX ,IVMIN ,LGR ,LXLGUT ,NCMP 
+      REAL*8 R8VIDE ,RUNDF 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       RUNDF = R8VIDE()
       NOMCOR(1) = 'X'

@@ -1,5 +1,5 @@
       SUBROUTINE SNDBG (IFM,ICLASS,IVAL,RVAL,KVAL)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER           IFM,ICLASS,IVAL
       REAL*8                            RVAL(*)
       CHARACTER*(*)                          KVAL
@@ -28,9 +28,9 @@ C      12   ';'
 C      13   SEPARATEUR INDEFINI
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 23/06/97   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF UTILIFOR  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -56,6 +56,8 @@ C     ------------------------------------------------------------------
 C
       CHARACTER*12 PGM
       CHARACTER*80 CVAL
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       CVAL = KVAL
       PGM = ' <SNDBG >:  '
       WRITE(IFM,'(1X,72(''-''))')

@@ -1,12 +1,12 @@
       SUBROUTINE CHGREP ( TYPE, PGL1, PGL2, MATL, MATG )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       CHARACTER*2         TYPE
       REAL*8                    PGL1(3,3), PGL2(3,3), MATL(*), MATG(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,6 +34,9 @@ C     (MA) = (R) (ML) (R)   OU  (ML) = (R) (MA) (R)  CAR (R)  = (R)
 C     ------------------------------------------------------------------
       REAL*8     ML12(12,12), MR12(12,12), MTR12(12,12), MV12(12,12)
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,J 
+C-----------------------------------------------------------------------
       CALL ASSERT(( TYPE .EQ. 'LG' ).OR.( TYPE .EQ. 'GL' ))
       IF ( TYPE .EQ. 'LG' ) THEN
          DO 10 I = 1 , 3

@@ -1,6 +1,6 @@
       SUBROUTINE FLUST3 ( MELFLU, TYPFLU, BASE, NUOR, AMOR, FREQ, MASG,
      &                    FACT, VITE, NBM, NPV, NIVPAR, NIVDEF)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER      NBM, NPV, NIVPAR, NIVDEF, NUOR(*)
       REAL*8       AMOR(*), FREQ(*), MASG(*), VITE(*), FACT(*)
@@ -8,7 +8,7 @@
       CHARACTER*19 MELFLU
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,6 +64,23 @@ C
       REAL*8       SOM(9), RU, ALPHA, COORPE(3), DON(5), CARAC(2)
       INTEGER      IROT(3),IDDL(6),NDIM(14)
       LOGICAL      CALCUL(2)
+C-----------------------------------------------------------------------
+      INTEGER I ,IADMAG ,IADNOG ,IAXE ,IBI ,ICDG ,ICENCY 
+      INTEGER ICPG ,IDEFM ,IENCEI ,IEPAIG ,IEQUIV ,IFPART ,IFREQI 
+      INTEGER IFSCR ,IFSGM ,IFSGR ,IFSVI ,IFSVK ,IFSVR ,IGREQ 
+      INTEGER IGRMA ,IKN ,ILARGG ,ILONGG ,IM ,IMATAA ,IMATMA 
+      INTEGER IMATRA ,INBMAG ,INBNEQ ,INBNOG ,INOMCY ,INOMEQ ,INUM 
+      INTEGER IOR ,IPHIX ,IPHIY ,IRE ,IREFEI ,IREQ ,IRINT 
+      INTEGER IRUGG ,IXINT ,IYINT ,IZ ,IZG ,IZINT ,J 
+      INTEGER JDCO ,JTYPG ,LFACX ,LMASG ,LRIGG ,N ,N1 
+      INTEGER NBCYL ,NBDDL ,NBFIN ,NBGRMA ,NBGRMX ,NBGRP ,NBGTOT 
+      INTEGER NBNOE ,NBTOT ,NBTRON ,NBZ ,NCOOR ,NDIR ,NEQ 
+      INTEGER NIMA ,NIMA2 ,NN ,NT ,NTYPG ,NUMNO1 ,NUMNO2 
+
+      REAL*8 ANG ,EPSIT ,G ,PI ,R8PI ,RBID ,X1 
+      REAL*8 X2 ,Y1 ,Y2 ,Z1 ,Z2 ,ZMAX ,ZMIN 
+
+C-----------------------------------------------------------------------
       DATA IDDL    /1,2,3,4,5,6/
 C
 C-----------------------------------------------------------------------

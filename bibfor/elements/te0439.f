@@ -1,10 +1,10 @@
       SUBROUTINE TE0439 ( OPTION, NOMTE )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*16        OPTION, NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,6 +39,11 @@ C     OPTION :  'EPEQ_ELNO'
 C
 C ----------------------------------------------------------------------
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IDCP ,IDEFO ,IDFDE ,IEQUIF ,INO ,IPOIDS 
+      INTEGER IVF ,J ,JGANO ,NCEQ ,NDIM ,NEQMAX ,NNOMAX 
+
+C-----------------------------------------------------------------------
       PARAMETER         ( NNOMAX = 27 , NEQMAX = 6 )
       INTEGER            NNO, NPG, NNOS
       REAL*8             EQNO(NEQMAX*NNOMAX), DEFORM(6)

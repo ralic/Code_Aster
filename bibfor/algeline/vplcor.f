@@ -1,13 +1,13 @@
       SUBROUTINE VPLCOR(LDYNAM,NEQ,NBVECT,NBORTO,PRORTO,SIGNES,VECT,
      &                  IVECP,PKX,PLX)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER  LDYNAM,NEQ,NBORTO,NBVECT,IVECP
       REAL*8   PRORTO
       REAL*8   SIGNES(NBVECT),VECT(NEQ,NBVECT),PKX(NEQ,NBVECT),PLX(NEQ)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,6 +51,9 @@ C     -----------------------------------------------------------------
 C
 C         --- K-REORTHOGONALISATION COMPLETE DU VECTEUR IVECP
 C
+C-----------------------------------------------------------------------
+      INTEGER IOR ,IORTHO ,JVEC 
+C-----------------------------------------------------------------------
           IOR = 0
 C
           DO 10 JVEC = 1, IVECP-1

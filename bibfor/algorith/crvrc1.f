@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -99,7 +99,7 @@ C     --------------------------------
         CALL CALCUL('S','PREP_VRC',LIGRMO,NBIN,LCHIN,LPAIN,1,CHOUT,
      &              PAOUT,'G','OUI')
         CALL DETRSD('CHAM_ELEM_S',CHOUT)
-        CALL RSNOCH(RESU,'TEMP',KINST,' ')
+        CALL RSNOCH(RESU,'TEMP',KINST)
         CALL RSADPA(RESU,'E',1,'INST',KINST,0,JINST,KBID)
         ZR(JINST) = VINST
         CALL DETRSD('CHAMP',CHINST)

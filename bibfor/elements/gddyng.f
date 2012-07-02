@@ -1,9 +1,9 @@
       SUBROUTINE GDDYNG (KP,NNO,EN,X0SK,RMKM1,RMK,OMKM1,OMPKM1,OMK,
      &                   OMPK, X0SEC,RGMKM,RGMK,OMGKM,OMPGKM,OMGK,OMPGK)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -46,12 +46,16 @@ C           OMPGKM    : ACCELERATION ANGULAIRE, A L'ITERATION I
 C           OMGK      : VITESSE      ANGULAIRE, A L'ITERATION I+1
 C           OMPGK     : ACCELERATION ANGULAIRE, A L'ITERATION I+1
 C ------------------------------------------------------------------
-      IMPLICIT REAL*8(A-H,O-Z)
+      IMPLICIT NONE
       REAL*8 EN(3,2),X0SK(3,3),RMKM1(3,3),RMK(3,3),OMKM1(3,3),
      &OMPKM1(3,3),OMK(3,3),OMPK(3,3),    X0SEC(3),RGMKM(3),RGMK(3),
      &OMGKM(3),OMPGKM(3),OMGK(3),OMPGK(3)
 C
 C
+C-----------------------------------------------------------------------
+      INTEGER KC ,KP ,NE ,NNO 
+      REAL*8 ZERO 
+C-----------------------------------------------------------------------
       ZERO = 0.D0
       DO 1 KC=1,3
       X0SEC (KC) = ZERO

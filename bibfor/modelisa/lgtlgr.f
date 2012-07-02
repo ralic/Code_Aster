@@ -1,7 +1,7 @@
       SUBROUTINE LGTLGR (BASEZ, LIGREY, LIGREZ)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,6 +46,13 @@ C ----- VARIABLES LOCALES -------------------------------
       CHARACTER*19 LIGRET, LIGREL
 C ====================== DEBUT DU CODE EXECUTABLE ======================
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IBID ,IDAPMA ,IDAPNO ,IDLIGI ,IDLIMA ,IDLINO 
+      INTEGER IDLITY ,IDMODE ,IDNEMA ,IDPHEN ,IDPOMA ,IDPONO ,IER 
+      INTEGER IJ ,IMODL ,IRET ,J ,JDNBNO ,JDPM ,K 
+      INTEGER K1 ,LONLIE ,NBAPMA ,NBAPNO ,NBMATO ,NBMATY ,NBNO 
+      INTEGER NBNO2 ,NBNOTO ,NTYPOI ,NUTYP1 ,NUTYPE 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
 C --- INITIALISATIONS :

@@ -3,7 +3,7 @@
      +                   NBCHOC,LOGCHO,DPLMOD,PARCHO,NOECHO,SAUCHO,
      +                   TEMPS,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,
      +                   NONMOT)
-      IMPLICIT  REAL*8  (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER            LOGCHO(NBCHOC,*)
       REAL*8             DEPGEN(*),VITGEN(*),FEXGEN(*),
      +                   ACCGEN(*),PARCHO(NBCHOC,*),SAUCHO(NBCHOC,*),
@@ -16,9 +16,9 @@
       REAL*8             TEMPS,PSIDEL(NBCHOC,NBEXCI,*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/12/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -72,6 +72,17 @@ C     ------------------------------------------------------------------
       CHARACTER*8   NOMPAR
       REAL*8        COEDEP(NBEXCI), COEVIT(NBEXCI), COEACC(NBEXCI)
 C
+C-----------------------------------------------------------------------
+      INTEGER IER ,NBCHOC ,NBMODE 
+      REAL*8 ANORM ,AX1 ,AX2 ,AY1 ,AY2 ,AZ1 ,AZ2 
+      REAL*8 CFROTD ,CFROTS ,CL ,CNORM ,COEFA ,COEFAD ,COEFB 
+      REAL*8 COEFC ,COEFCC ,COEFD ,COEFK1 ,COEFK2 ,COEFPY ,COSA 
+      REAL*8 COSB ,COSG ,COST ,CTANG ,DEFPLA ,DIST1 ,DIST2 
+      REAL*8 DNORM ,FFLUID ,FLIM ,FN ,FSEUIL ,RIGIFL ,SINA 
+      REAL*8 SINB ,SING ,SINT ,UX1 ,UX2 ,UY1 ,UY2 
+      REAL*8 UZ1 ,UZ2 ,VNORM ,VX1 ,VX2 ,VY1 ,VY2 
+      REAL*8 VZ1 ,VZ2 ,XJEU ,XMAX ,ZERO 
+C-----------------------------------------------------------------------
       ZERO = 0.D0
       ORIG(1) = ZERO
       ORIG(2) = ZERO

@@ -1,6 +1,6 @@
       SUBROUTINE PCCOEF(N,IN,IP,AC,ICPL,ICPC,ACPC,CX)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,7 @@ C   ICPC       : IDEM IP POUR LA MATRICE DE PRECOND.
 C   SORTIE
 C   ACPC       : COEFS DE LA MATRICE DE PRECOND.
 C--------------------------------------------------------
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       REAL*8 AC(*)
       INTEGER IN(N)
@@ -44,6 +44,10 @@ C----------------------------------------------------------------------
 C AC ---> ACPC
 C ==========================
 C   MISE A 0 DE ACPC
+C-----------------------------------------------------------------------
+      INTEGER I ,IMP ,J ,JIND ,K ,K1 ,K2 
+      INTEGER KK ,KK1 ,KK2 ,N 
+C-----------------------------------------------------------------------
       KK2 = ICPL(N-1)
       DO 10 KK = 1,KK2
         ACPC(KK) = 0.D0

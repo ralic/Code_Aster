@@ -1,9 +1,9 @@
       SUBROUTINE EPTHMC (FAMI,NNO,NDIM,NBSIG,NPG,NI,XYZ,REPERE,
      +                  INSTAN,MATER,OPTION,EPSITH)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/10/2011   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,7 +19,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C.======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C      EPTHMC   -- CALCUL DES  DEFORMATIONS THERMIQUES+RETRAIT
 C                  AUX POINTS D'INTEGRATION
@@ -58,6 +58,11 @@ C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
 C --- INITIALISATIONS :
 C     -----------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IDIM ,IGAU ,MATER ,NBSIG ,NDIM2 ,NNO 
+      INTEGER NPG 
+      REAL*8 ZERO 
+C-----------------------------------------------------------------------
       ZERO   = 0.0D0
       K16BID = ' '
 C

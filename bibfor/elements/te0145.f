@@ -1,11 +1,11 @@
       SUBROUTINE TE0145(OPTION,NOMTE)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*)     OPTION,NOMTE
 C TOLE CRP_6
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,6 +43,10 @@ C
       REAL*8 FORCE(12)
       INTEGER IPT
       INTEGER IADZI,IAZK24
+C-----------------------------------------------------------------------
+      INTEGER I ,IFORC ,IVECT ,J ,LRCOU ,LX 
+      REAL*8 DD 
+C-----------------------------------------------------------------------
       ZERO = 0.D0
       DEUX = 2.D0
 C     ------------------------------------------------------------------

@@ -2,9 +2,9 @@
      &               IADHER,OLDVT,OLDFT,OLDXLO,COST,SINT,FTANGE,FLOCAL,
      &                VT )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -48,7 +48,7 @@ C    FTANGE          -->  FORCE TANGENTIELLE DE CHOC (MODULE)
 C    FLOCAL          -->  FORCE TANGENTIELLE DE CHOC REP. LOCAL
 C    VT              -->  VITESSE TANGENTIELLE DE CHOC REP. LOCAL
 C-----------------------------------------------------------------------
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER IADHER
       REAL*8 VITLOC(3),FLOCAL(3),XLOCAL(3),OLDXLO(3),VT(2)
       REAL*8 FN,FTANGE(2),KTANG,CTANG,DXT(2)
@@ -56,6 +56,9 @@ C-----------------------------------------------------------------------
 C
 C     CALCUL DE LA VITESSE TANGENTIELLE
 C
+C-----------------------------------------------------------------------
+      REAL*8 XNFTAN ,XNORVT ,XSCAL 
+C-----------------------------------------------------------------------
       VT(1) = -SINT*VITLOC(2) + COST*VITLOC(3)
       VT(2) = VITLOC(1)
 C

@@ -1,4 +1,4 @@
-# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE EPROUVETTE AE 2D AXIS AVEC ELEMENTS D'INTERFACE (QUAD8) ET LOI DE RUPTURE DUCTILE CZM_TRA_MIX
 # ssna120a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -39,20 +39,20 @@ delp=coep*delc
 #-----------------------------------------------------------
 # LECTURE DU MAILLAGE
 #-------------------------------------------------------------
-MAIL0=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL0=LIRE_MAILLAGE(FORMAT='MED');
 
 #-----------------------------------------------------------
 # TRANSFORME EN MAILLAGE QUADRATIQUE
 #-------------------------------------------------------------
-MAIL=CREA_MAILLAGE(MAILLAGE  = MAIL0, LINE_QUAD = _F(TOUT='OUI'),);
+MAIL=CREA_MAILLAGE(MAILLAGE  = MAIL0, LINE_QUAD = _F(TOUT='OUI'));
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
-                CREA_GROUP_NO=_F(GROUP_MA='top',),);
+                CREA_GROUP_NO=_F(GROUP_MA='top'));
 
 MAIL=MODI_MAILLAGE(reuse=MAIL,
                    MAILLAGE=MAIL,
-                   ORIE_FISSURE=_F(GROUP_MA='joint'),);
+                   ORIE_FISSURE=_F(GROUP_MA='joint'));
 
 #-----------------------------------------------------------
 # MODELISATION DU MAILLAGE
@@ -60,14 +60,14 @@ MAIL=MODI_MAILLAGE(reuse=MAIL,
 MO=AFFE_MODELE(MAILLAGE=MAIL,
                AFFE=(_F(GROUP_MA=('cylind', 'sym_b', 'top', 'axe'),
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='AXIS',),
+                       MODELISATION='AXIS'),
                     _F(GROUP_MA='joint',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='AXIS_INTERFACE',),
-                     ), );
+                       MODELISATION='AXIS_INTERFACE'),
+                     ));
 
 ORIEN_FI=AFFE_CARA_ELEM(MODELE=MO,
-                     MASSIF=( _F(GROUP_MA='joint',ANGL_REP=(90, 0 ,0)), ));
+                     MASSIF=( _F(GROUP_MA='joint',ANGL_REP=(90, 0 ,0))));
 
 #-----------------------------------------------------------
 # RELATION CONTRAINTE-DEFORMATION DE L'EPROUVETTE CT
@@ -98,59 +98,59 @@ SIGM_F=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(0.0025,495.,
                            0.8,977.,
                            0.9,993.,
                            1.0,1008.,
-                           ),PROL_DROITE='LINEAIRE',);
+                           ),PROL_DROITE='LINEAIRE');
 
 #-----------------------------------------------------------
 # MODELISATION DU MATERIAU DE L'EPROUVETTE AE, ZONE COHESIVE Y COMPRISE
 #-------------------------------------------------------------
 MA_EPR=DEFI_MATERIAU(ELAS=_F(E=2.07E5,
                              NU=0.3,
-                             ALPHA=0.0,),
-                             TRACTION=_F(SIGM=SIGM_F,),
+                             ALPHA=0.0),
+                             TRACTION=_F(SIGM=SIGM_F),
                              RUPT_DUCT = _F(
                                      GC = tenac,
                                      SIGM_C = sigc,
                                      COEF_EXTR = coee,
                                      COEF_PLAS = coep,
-                            ),);
+                            ));
 
 CM=AFFE_MATERIAU(MAILLAGE=MAIL,
                  AFFE=_F(TOUT='OUI',
-                         MATER=MA_EPR,),);
+                         MATER=MA_EPR));
 
 #-----------------------------------------------------------
 # CONDITIONS AUX LIMITES DE CHARGEMENT ET DE SYMETRIE
 #-------------------------------------------------------------
 CH=AFFE_CHAR_MECA(MODELE=MO,
                   DDL_IMPO=(_F(GROUP_MA='axe',
-                               DX=0.0,),
+                               DX=0.0),
                             _F(GROUP_MA='top',
-                               DY=0.5,),),);
+                               DY=0.5)));
 
 #-----------------------------------------------------------
 # CONDITION LIMITE DE SYMETRIE SUR LES ELEMENTS DE JOINT
 #-------------------------------------------------------------
-SYM=AFFE_CHAR_MECA(MODELE=MO,DDL_IMPO=(_F(GROUP_MA='joint_b',DY=0.0,),),);
+SYM=AFFE_CHAR_MECA(MODELE=MO,DDL_IMPO=(_F(GROUP_MA='joint_b',DY=0.0)));
 
 #-----------------------------------------------------------
 # LISTE DES INSTANTS DE CALCUL
 #-------------------------------------------------------------
 L_INST1=DEFI_LIST_REEL(DEBUT=0.0,
                        INTERVALLE=_F(JUSQU_A=1.0,
-                                     NOMBRE=20,),);
+                                     NOMBRE=20));
 
 LINST=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
-                                  LIST_INST=L_INST1,),
+                                  LIST_INST=L_INST1),
                      ECHEC=_F(ACTION='DECOUPE',
                                  SUBD_METHODE='MANUEL',
-                              SUBD_NIVEAU=10,),);
+                              SUBD_NIVEAU=10));
 
 #-----------------------------------------------------------
 # LISTE DES INSTANTS D'ARCHIVAGE
 #-------------------------------------------------------------
 LIS_ARCH=DEFI_LIST_REEL(DEBUT=0.0,
                         INTERVALLE=_F(JUSQU_A=1.0,
-                                      NOMBRE=20,),);
+                                      NOMBRE=20));
 
 FCT = DEFI_FONCTION(
           NOM_PARA = 'INST',
@@ -163,24 +163,24 @@ FCT = DEFI_FONCTION(
 UP=STAT_NON_LINE(MODELE=MO,
                  CHAM_MATER=CM,
                          CARA_ELEM  = ORIEN_FI,
-                 EXCIT=(_F(CHARGE=CH,FONC_MULT = FCT,),
-                        _F(CHARGE=SYM,),
+                 EXCIT=(_F(CHARGE=CH,FONC_MULT = FCT),
+                        _F(CHARGE=SYM),
                         ),
                  COMP_INCR=(_F(RELATION='VMIS_ISOT_TRAC',
                                DEFORMATION='PETIT_REAC',
                                GROUP_MA='cylind'),
                             _F(RELATION = 'CZM_TRA_MIX',
-                               GROUP_MA = 'joint',),),
-                 INCREMENT=_F(LIST_INST=LINST,),
+                               GROUP_MA = 'joint')),
+                 INCREMENT=_F(LIST_INST=LINST),
                  CONVERGENCE = _F(
                                   RESI_REFE_RELA = 1.E-6,
                                   SIGM_REFE      = sigc,
                                   DEPL_REFE      = delc,
                                   ITER_GLOB_MAXI = 12,
                   ),
-                 SOLVEUR    = _F(METHODE = 'MUMPS', PCENT_PIVOT = 100, NPREC=-1),
+                 SOLVEUR    = _F(METHODE = 'MUMPS', NPREC=-1),
                  NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
-                 ARCHIVAGE=_F(LIST_INST=LIS_ARCH,),
+                 ARCHIVAGE=_F(LIST_INST=LIS_ARCH),
                            );
 
 #-----------------------------------------------------------
@@ -195,20 +195,20 @@ contra=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                 RESULTAT=UP,
                                 NOM_CHAM='DEPL',
                                 GROUP_NO='fond_ent',
-                                NOM_CMP='DX',),);
+                                NOM_CMP='DX'));
 
 force=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='force',
                                RESULTAT=UP,
                                NOM_CHAM='REAC_NODA',
                                GROUP_NO='top',
-                               RESULTANTE='DY',),);
+                               RESULTANTE='DY'));
 
 coefDX = FORMULE(VALE='-2*DX',
-                NOM_PARA='DX',);
+                NOM_PARA='DX');
 
 coefDY = FORMULE(VALE='2*DY*3.1415926/1000',
-                NOM_PARA='DY',);
+                NOM_PARA='DY');
 
 #-----------------------------------------------------------
 # CONTRACTION DU DIAMETRE
@@ -216,7 +216,7 @@ coefDY = FORMULE(VALE='2*DY*3.1415926/1000',
 contra1=CALC_TABLE(TABLE=contra,
                 ACTION=_F(OPERATION='OPER',
                           FORMULE=coefDX,
-                          NOM_PARA='NDX',),);
+                          NOM_PARA='NDX'));
 
 #-----------------------------------------------------------
 # FORCE APPLIQUEE SUR L'EPROUVETTE
@@ -224,7 +224,7 @@ contra1=CALC_TABLE(TABLE=contra,
 force1=CALC_TABLE(TABLE=force,
                 ACTION=_F(OPERATION='OPER',
                           FORMULE=coefDY,
-                          NOM_PARA='FR',),);
+                          NOM_PARA='FR'));
 
 #-----------------------------------------------------------
 # TEST SUR LE CONTRACTION DU DIAMETRE
@@ -234,7 +234,7 @@ TEST_TABLE(TABLE=contra1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.6),
            VALE=6.05676E-01,
-           REFERENCE='NON_REGRESSION',);
+           REFERENCE='NON_REGRESSION');
 
 #-----------------------------------------------------------
 # TEST SUR LA FORCE
@@ -244,7 +244,7 @@ TEST_TABLE(TABLE=force1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.6),
            VALE=2.88696E+01,
-           REFERENCE='NON_REGRESSION',);
+           REFERENCE='NON_REGRESSION');
 
 #-----------------------------------------------------------
 # TEST SUR LE CONTRACTION DU DIAMETRE
@@ -254,7 +254,7 @@ TEST_TABLE(TABLE=contra1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.8),
            VALE=9.31629E-01,
-           REFERENCE='NON_REGRESSION',);
+           REFERENCE='NON_REGRESSION');
 
 #-----------------------------------------------------------
 # TEST SUR LA FORCE
@@ -264,7 +264,7 @@ TEST_TABLE(TABLE=force1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.8),
            VALE=2.35744E+01,
-           REFERENCE='NON_REGRESSION',);
+           REFERENCE='NON_REGRESSION');
 
 #-----------------------------------------------------------
 # TEST SUR LE CONTRACTION DU DIAMETRE
@@ -277,7 +277,7 @@ TEST_TABLE(TABLE=contra1,
                      VALE=0.4),
            VALE=3.49885E-01,
            PRECISION=0.05,
-           REFERENCE='AUTRE_ASTER',);
+           REFERENCE='AUTRE_ASTER');
 
 #-----------------------------------------------------------
 # TEST SUR LA FORCE
@@ -290,7 +290,7 @@ TEST_TABLE(TABLE=force1,
                      VALE=0.4),
            VALE=2.93597E+01,
            PRECISION=0.05,
-           REFERENCE='AUTRE_ASTER',);
+           REFERENCE='AUTRE_ASTER');
 
 #-----------------------------------------------------------
 # TEST SUR LE CONTRACTION DU DIAMETRE
@@ -303,7 +303,7 @@ TEST_TABLE(TABLE=contra1,
                      VALE=0.6),
            VALE=6.20591E-01,
            PRECISION=0.05,
-           REFERENCE='AUTRE_ASTER',);
+           REFERENCE='AUTRE_ASTER');
 
 #-----------------------------------------------------------
 # TEST SUR LA FORCE
@@ -316,7 +316,7 @@ TEST_TABLE(TABLE=force1,
                      VALE=0.6),
            VALE=2.86069E+01,
            PRECISION=0.05,
-           REFERENCE='AUTRE_ASTER',);
+           REFERENCE='AUTRE_ASTER');
 
 #-----------------------------------------------------------
 # TEST SUR LE CONTRACTION DU DIAMETRE
@@ -329,7 +329,7 @@ TEST_TABLE(TABLE=contra1,
                      VALE=0.8),
            VALE=9.54683E-01,
            PRECISION=0.05,
-           REFERENCE='AUTRE_ASTER',);
+           REFERENCE='AUTRE_ASTER');
 
 #-----------------------------------------------------------
 # TEST SUR LA FORCE
@@ -342,7 +342,7 @@ TEST_TABLE(TABLE=force1,
                      VALE=0.8),
            VALE=2.26731E+01,
            PRECISION=0.05,
-           REFERENCE='AUTRE_ASTER',);
+           REFERENCE='AUTRE_ASTER');
 
 #-----------------------------------------------------------
 # RELATION ENTRE LE CONTRACTION DU DIAMETRE
@@ -351,13 +351,13 @@ TEST_TABLE(TABLE=force1,
 frcontra=CALC_TABLE(TABLE=contra1,
                 ACTION=(_F(OPERATION='COMB',
                            TABLE=force1,
-                           NOM_PARA='INST',),
+                           NOM_PARA='INST'),
                         _F(OPERATION='EXTR',
-                           NOM_PARA=('NDX','FR',),),
-                        ),);
+                           NOM_PARA=('NDX','FR')),
+                        ));
 
 IMPR_TABLE(TABLE=frcontra,
-           FORMAT='TABLEAU',);
+           FORMAT='TABLEAU');
 
 
 FIN();

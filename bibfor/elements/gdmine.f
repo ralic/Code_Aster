@@ -1,9 +1,9 @@
       SUBROUTINE GDMINE (KP,NNO,PJACOB,EN,GRANI,ALFNMK,DELNMK,PAS,
      &ROT0,ROTM,ROTKM1,ROTK,RMKM1,RMK,OMGKM,OMPGKM,OMGK,OMPGK,  RIGI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -51,7 +51,7 @@ C
 C     OUT : RIGI      : MATRICE DE RIGIDITE (CUMUL DES CONTRIBUTIONS DES
 C                       POINTS DE GAUSS)
 C ------------------------------------------------------------------
-      IMPLICIT REAL*8(A-H,O-Z)
+      IMPLICIT NONE
       REAL*8 INERT(6,6),IRO(3,3),IROOMT(3,3)
       REAL*8 EN(3,2),GRANI(4),ROT0(3,3),ROTM(3,3),ROTKM1(3,3),
      &ROTK(3,3),RMKM1(3),RMK(3),OMGKM(3),OMPGKM(3),OMGK(3),OMPGK(3),
@@ -59,6 +59,11 @@ C ------------------------------------------------------------------
      &AMAT1(3,3),AMAT2(3,3),AMAT3(3,3),AMAT4(3,3),AMAT5(3,3),AMAT6(3,3),
      &AMAT7(3,3),   VECT1(3),VECT2(3)
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,J ,KP ,NNO 
+      REAL*8 ALFNMK ,COEF ,DELNMK ,PAS ,PJACOB ,UN ,ZERO 
+
+C-----------------------------------------------------------------------
       ZERO = 0.D0
       UN   = 1.D0
 C

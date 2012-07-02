@@ -1,6 +1,6 @@
       SUBROUTINE CMPCAR(CARTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C-----------------------------------------------------------------------
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C     COMPRESSION D'1 CARTE :
 C ( LORSQUE LES CMPS D'1 GRANDEUR N'ONT PAS ETE DONNEES SIMULTANEMENT)
@@ -36,19 +36,25 @@ C     SORTIES:
 C      ON A RESTAURE LES OBJETS INITIAUX DE LA CARTE : .VALE,.NOLI,.LIMA
 C ----------------------------------------------------------------------
 C
-C     FONCTIONS EXTERNES:
-C     -------------------
-      CHARACTER*8 SCALAI
-      LOGICAL MEIDEN,EXISDG
-C
 C     VARIABLES LOCALES:
 C     ------------------
+      CHARACTER*8 SCALAI
+      LOGICAL MEIDEN,EXISDG
       CHARACTER*8 SCAL,CTYPE
       CHARACTER*1 K1BID,BAS1
 C
 C
 C     -- RECUPERATION DES OBJETS JEVEUX DE LA CARTE:
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,I1 ,I2 ,I2LIMA ,I3 ,I3DESC ,I3LIMA
+      INTEGER I3NOLI ,I3VALE ,I4 ,IAD ,IAD1 ,IAD2 ,IADESC
+      INTEGER IADGP ,IALIM2 ,IALIPR ,IANOLI ,IANOMA ,IANUMT ,IAVALE
+      INTEGER IAVALP ,IAVRET ,IAVTRA ,IBID ,ICO ,ICOMPT ,IEDIT
+      INTEGER IGD ,II ,IRTNU ,ISIGNE ,J ,K ,N
+      INTEGER N1 ,NB ,NBEDI3 ,NBEDIT ,NBMATO ,NBOC ,NCMP
+      INTEGER NEC ,NUM1 ,NUM2,NBEC
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL JEVEUO(CARTE//'.DESC','L',IADESC)
       CALL JEVEUO(CARTE//'.VALE','L',IAVALE)

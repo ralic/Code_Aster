@@ -1,7 +1,7 @@
       SUBROUTINE RLBFR8(NOMMAT,NEQ,XSOL,NBSM,TYPSYM)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C     TOLE CRP_4
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,8 +47,6 @@ C                    EN ENTREE LES SOLUTIONS
 C IN  NBSM   : IS : NOMBRE DE SOLUTIONS / SECONDS MEMBRES
 C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
-      CHARACTER*6 PGC
-      COMMON /NOMAJE/PGC
 C
 C     ------------------------------------------------------------------
       CHARACTER*24 FACTOL,FACTOU
@@ -74,7 +72,6 @@ C     ------------------------------------------------------------------
       CALL INFNIV(IFM,NIV)
 C
       CALL DISMOI('F','NOM_NUME_DDL',NOMMAT,'MATR_ASSE',IBID,NU,IERD)
-      PGC = 'RLBFR8'
       FACTOL(1:19) = NOMMAT
       FACTOU(1:19) = NOMMAT
       CALL MLNMIN(NU,NOMP01,NOMP02,NOMP03,NOMP04,NOMP05,

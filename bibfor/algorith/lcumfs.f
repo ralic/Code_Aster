@@ -2,9 +2,9 @@
      &                   ISPH,TDT,HINI,HFIN,
      &                   AFPS,BFPS,CFPS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,7 +52,7 @@ C OUT BFPS     : IDEM
 C OUT CFPS     : IDEM
 C_______________________________________________________________________
 C
-      IMPLICIT REAL*8(A-H,O-Z)
+      IMPLICIT NONE
       INTEGER          NVARI,NMAT
       INTEGER          IFLU,IFPO,ISPH
       REAL*8 AFPS, BFPS, CFPS
@@ -65,6 +65,8 @@ C
 C
 C RECUPERATION DES VALEURS DES PARAMETRES MATERIAU
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       RRSP = CMAT(3)
       VRSP = CMAT(4)
       RISP = CMAT(5)

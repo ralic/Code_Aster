@@ -1,6 +1,6 @@
       SUBROUTINE SH6FOR(XETEMP,PARA,XIDEPM,SIGMA,XIVECT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,7 @@ C ======================================================================
 C
 C               ELEMENT SHB6
 C
-      IMPLICIT REAL *8(A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER LAG
       REAL*8 PARA(*)
@@ -33,6 +33,15 @@ C
       REAL*8 XXG5(5),PXG5(5),FTEMP(18),BLOC(6,18),BLOCAL(3,6)
       REAL*8 SIGLOC(6),SITMP2(6,6),XMODIF(18)
       REAL*8 F(3,6),FQ(18),FLOC(3,6),FGLOB(3,6)
+      INTEGER I ,IP ,J ,K ,KK
+      REAL*8 AJAC ,POIDS ,RBID ,ZETA ,ZLAMB
+C-----------------------------------------------------------------------
+         DATA XMODIF/1.D0,0.D0,0.D0,
+     &          0.D0,1.D0,0.D0,
+     &          0.D0,0.D0,1.D0,
+     &          1.D0,1.D0,0.D0,
+     &          0.D0,0.45D0,0.45D0,
+     &          0.45D0,0.D0,0.45D0/
 
 C INFOS:
 C XE EST RANGE COMME CA: (XNOEUD1 YNOEUD1 ZNOEUD1, XNOEUD2 YNOEUD2
@@ -118,12 +127,6 @@ C
 C Transformer matrice BLOCAL(3,6) dans le repère local en BLOC(6,18)
 C  dans le repère local et en tenant
 C compte également des modifications sur les termes croisés ZY,ZX :
-         DATA XMODIF/1.D0,0.D0,0.D0,
-     &          0.D0,1.D0,0.D0,
-     &          0.D0,0.D0,1.D0,
-     &          1.D0,1.D0,0.D0,
-     &          0.D0,0.45D0,0.45D0,
-     &          0.45D0,0.D0,0.45D0/
          CALL ASSEBG(BLOC,BLOCAL,XMODIF)
 CC
 CC CALCUL DE B.SIGMA EN GLOBAL

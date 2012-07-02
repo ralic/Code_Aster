@@ -1,10 +1,10 @@
       SUBROUTINE AJLAGR ( RIGID , MASSE , MASINV )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*)       RIGID , MASSE , MASINV
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,6 +40,11 @@ C-----------------------------------------------------------------------
       CHARACTER*24 VALK(2)
 C     ------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IMATI ,IMATM ,IMATR ,IMTRER ,J ,JCONL 
+      INTEGER JMASS ,JRAID ,JREFA1 ,JREFA2 ,JSMDE ,LDDL ,NBMAT 
+
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       ZERO   = 0.D0
       UN     = 1.D0

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE  CTJ25 - SANS RENUM / AFFE_CHAR_MECA / SOLVE
 # gcpc001a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -22,120 +22,120 @@
 #======================================================================
 
 DEBUT(CODE=_F(NOM='GCPC001a',
-              NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),);
+              NIV_PUB_WEB='INTERNET'),
+      DEBUG=_F(SDVERI='OUI'));
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED');
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),);
+                       MODELISATION='3D'));
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=202702.7,
-                          NU=.3,),
+                          NU=.3),
                   THER=_F(LAMBDA=2.7,
-                          RHO_CP=.3,),);
+                          RHO_CP=.3));
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MAT,),);
+                            MATER=MAT));
 
 CHA=AFFE_CHAR_MECA(MODELE=MO,
                    DDL_IMPO=(_F(GROUP_NO='GRNO7',
                                 DX=0.,
-                                DY=0.01,),
+                                DY=0.01),
                              _F(GROUP_NO='GRNO1',
-                                DZ=0.,),
+                                DZ=0.),
                              _F(GROUP_NO='GRNO8',
-                                DY=0.,),),);
+                                DY=0.)));
 
 MEL=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                    MODELE=MO,
                    CHAM_MATER=CHMAT,
-                   CHARGE=CHA,);
+                   CHARGE=CHA);
 
 NU=NUME_DDL(MATR_RIGI=MEL,
             METHODE='GCPC',
-            RENUM='SANS',);
+            RENUM='SANS');
 
 MATAS=ASSE_MATRICE(MATR_ELEM=MEL,
-                   NUME_DDL=NU,);
+                   NUME_DDL=NU);
 
 VEL=CALC_VECT_ELEM(OPTION='CHAR_MECA',
-                   CHARGE=CHA,);
+                   CHARGE=CHA);
 
 VECAS=ASSE_VECTEUR(VECT_ELEM=VEL,
-                   NUME_DDL=NU,);
+                   NUME_DDL=NU);
 
 # ----------------------------------------------------------------------
 # GCP + LDLT_INC
 
-KMATAS=FACTORISER(MATR_ASSE=MATAS,);
+KMATAS=FACTORISER(MATR_ASSE=MATAS);
 
 KVECAS=RESOUDRE(MATR=MATAS,
                 CHAM_NO=VECAS,
-                MATR_PREC=KMATAS,);
+                MATR_PREC=KMATAS);
 
 TEST_RESU(CHAM_NO=(_F(CHAM_GD=KVECAS,
                       NOEUD='NO2958',
                       NOM_CMP='DY',
                       VALE=0.01,
-                      PRECISION=0.00015,),
+                      PRECISION=0.00015),
                    _F(CHAM_GD=KVECAS,
                       NOEUD='NO2958',
                       NOM_CMP='DZ',
                       VALE=0.00010296,
-                      PRECISION=0.00015,),
+                      PRECISION=0.00015),
                    _F(CHAM_GD=KVECAS,
                       NOEUD='NO2974',
                       NOM_CMP='DX',
                       VALE=0.0043006,
-                      PRECISION=0.00015,),
+                      PRECISION=0.00015),
                    _F(CHAM_GD=KVECAS,
                       NOEUD='NO2974',
                       NOM_CMP='DY',
                       VALE=0.009289,
-                      PRECISION=0.00015,),
+                      PRECISION=0.00015),
                    _F(CHAM_GD=KVECAS,
                       NOEUD='NO2974',
                       NOM_CMP='DZ',
                       VALE=-2.9173e-05,
-                      PRECISION=0.0002,),),);
+                      PRECISION=0.0002)));
 
 # ----------------------------------------------------------------------
 # GCP + LDLT_SP
 
-KMATAS2=FACTORISER(MATR_ASSE=MATAS,PRE_COND='LDLT_SP',PCENT_PIVOT=20,);
+KMATAS2=FACTORISER(MATR_ASSE=MATAS,PRE_COND='LDLT_SP');
 
 KVECAS2=RESOUDRE(MATR=MATAS,
                 CHAM_NO=VECAS,
-                MATR_PREC=KMATAS2,);
+                MATR_PREC=KMATAS2);
 
 TEST_RESU(CHAM_NO=(_F(CHAM_GD=KVECAS2,
                       NOEUD='NO2958',
                       NOM_CMP='DY',
                       VALE=0.01,
-                      PRECISION=0.00015,),
+                      PRECISION=0.00015),
                    _F(CHAM_GD=KVECAS2,
                       NOEUD='NO2958',
                       NOM_CMP='DZ',
                       VALE=0.00010296,
-                      PRECISION=0.00015,),
+                      PRECISION=0.00015),
                    _F(CHAM_GD=KVECAS2,
                       NOEUD='NO2974',
                       NOM_CMP='DX',
                       VALE=0.0043006,
-                      PRECISION=0.00015,),
+                      PRECISION=0.00015),
                    _F(CHAM_GD=KVECAS2,
                       NOEUD='NO2974',
                       NOM_CMP='DY',
                       VALE=0.009289,
-                      PRECISION=0.00015,),
+                      PRECISION=0.00015),
                    _F(CHAM_GD=KVECAS2,
                       NOEUD='NO2974',
                       NOM_CMP='DZ',
                       VALE=-2.9173e-05,
-                      PRECISION=0.0002,),),);
+                      PRECISION=0.0002)));
 
 FIN();

@@ -1,11 +1,11 @@
       SUBROUTINE POCHPV ( TRANGE, NBBLOC, TDEBUT, TFIN, OFFSET, TREPOS,
      &                    NBCLAS,NOMRES, LOPTIO )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*)      TRANGE, NOMRES
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,6 +34,12 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C
 C     --- RECUPERATION DES VECTEURS CONTENANT LES RESULTATS ---
+C-----------------------------------------------------------------------
+      INTEGER IDDESC ,IDDLOC ,IDFCHO ,IDIADH ,IDINST ,IDNCHO ,IDNINT 
+      INTEGER IDVGLI ,IDVINT ,IDWK1 ,IDWK2 ,IDWK3 ,IDWK4 ,NBBLOC 
+      INTEGER NBCHOC ,NBCLAS ,NBPT 
+      REAL*8 OFFSET ,TDEBUT ,TFIN ,TMAX ,TMIN ,TREPOS 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       NOMK19='                   '
       NOMK19(1:8)=TRANGE

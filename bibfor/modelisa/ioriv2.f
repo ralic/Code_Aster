@@ -1,8 +1,8 @@
       FUNCTION IORIV2(NUM,N,NOEUD,VECT,COOR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C.======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C     IORIV2  --  ORIENTATION D'UNE MAILLE PAR RAPPORT A UN VECTEUR
 C
@@ -35,6 +35,13 @@ C
 C     DONNEES POUR TRIA3,TRIA6,TRIA7,QUAD4,QUAD8,QUAD9
 C     NOMBRE DE SOMMETS EN FONCTION DU NOMBRE DE NOEUDS DE L'ELEMENT
       INTEGER NSOM(9)
+C-----------------------------------------------------------------------
+      INTEGER I ,I1 ,I2 ,I3 ,IORIV2 ,K ,L
+      INTEGER N1 ,N2 ,N3 ,NOEUD ,NSO
+      REAL*8 SCAL ,X1 ,X2 ,X3 ,XA ,XB ,XN
+      REAL*8 Y1 ,Y2 ,Y3 ,YA ,YB ,YN ,Z1
+      REAL*8 Z2 ,Z3 ,ZA ,ZB ,ZN,X,Y,Z
+C-----------------------------------------------------------------------
       DATA NSOM /0,0,3,4,0,3,3,4,4/
 C
       X(I)=COOR(1,I)

@@ -1,10 +1,10 @@
       SUBROUTINE TE0040(OPTION,NOMTE)
-      IMPLICIT REAL*8(A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,6 +30,14 @@ C
 C
 C
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IC ,ICMP ,ICOMPO ,II ,IINPG ,INO 
+      INTEGER INTE ,INTSN ,INTSR ,IOUTNO ,IRET ,ISP ,J 
+      INTEGER JCARA ,JGEOM ,JJ ,K ,K1 ,KPGS ,L 
+      INTEGER LZI ,LZR ,NBCOU ,NCMP ,NPGE ,NPGT ,NSO 
+
+      REAL*8 S ,ZERO 
+C-----------------------------------------------------------------------
       PARAMETER(NPGE=3)
       PARAMETER(NPGT=10)
 

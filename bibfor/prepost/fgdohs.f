@@ -1,6 +1,6 @@
       SUBROUTINE FGDOHS(NOMMAT,NBCYCL,SIGMIN,SIGMAX,
      &                  LKE,RKE,LHAIGH,RCORR,DOM)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*8       NOMMAT
       REAL*8                          SIGMIN(*),SIGMAX(*)
@@ -9,7 +9,7 @@
       LOGICAL           LKE,    LHAIGH
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,6 +47,9 @@ C
 
       REAL*8       DELTA,SALT,X,Y,NRUPT,SLMODI,VAL(6),RBID,RE
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,NBPAR 
+C-----------------------------------------------------------------------
       NOMRES(1) = 'E_REFE'
       NOMRES(2) = 'A0'
       NOMRES(3) = 'A1'

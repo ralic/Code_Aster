@@ -1,11 +1,11 @@
       SUBROUTINE CALIAI(FONREE,CHARGE)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*4 FONREE
       CHARACTER*8 CHARGE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,6 +45,15 @@ C ----------------------------------------------------------------------
       CHARACTER*1 K1BID,NOMPAR(3)
       REAL*8       VALPAR(3),VALE
       INTEGER      IARG
+C-----------------------------------------------------------------------
+      INTEGER I ,IBID ,IER ,IGR ,IN ,INDNOE ,INO 
+      INTEGER IOCC ,IRET ,J ,JCMUC ,JCMUF ,JCMUR ,JCOOR 
+      INTEGER JDDL ,JDIME ,JDIREC ,JGR0 ,JJJ ,JLIST1 ,JLIST2 
+      INTEGER K ,N ,N1 ,N2 ,N3 ,NB ,NBGT 
+      INTEGER NBNO ,NDIM1 ,NDIM2 ,NENT ,NG ,NGR ,NLIAI 
+      INTEGER NNO 
+      REAL*8 BETA 
+C-----------------------------------------------------------------------
       DATA NOMPAR /'X','Y','Z'/
 C ----------------------------------------------------------------------
 

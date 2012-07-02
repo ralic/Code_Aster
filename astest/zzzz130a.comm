@@ -1,4 +1,4 @@
-# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DE LA COMMANDE CREA_CHAMP/OPERATION='EVAL'
 #                                 CREA_CHAMP/OPERATION='DISC'
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -230,29 +230,15 @@ TEST_RESU( CHAM_ELEM=_F( CHAM_GD = VAIN22, MAILLE = 'MASSIF', POINT = 3,
 
 # 3.2.1 creation d'un cham_elem_NEUT_R contenant exactement ce qu'il faut :
 #-------------------------------------------------------------------------------------------
-VAIN1=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='CART_NEUT_R', MODELE=MO,
+VAIN11=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='ELGA_VARI_R', MODELE=MO, INFO=2, PROL_ZERO='OUI',
      AFFE=(
-           _F( GROUP_MA= 'BETON' , NOM_CMP= ('X1','X2',), VALE = (0.,2.,)),
-           _F( GROUP_MA= 'MASSIF', NOM_CMP= ('X1','X2','X3','X4','X5','X6','X7','X8','X9','X10',
-                                             'X11','X12','X13','X14','X15','X16',),
-                                   VALE = (1.,0.,0.,0.,0.,0.,0.,0.,9.,0.,0.,0.,0.,0.,0.,0.,)),
+           _F( GROUP_MA= 'BETON' , NOM_CMP= 'V2', VALE = 2.),
+           _F( GROUP_MA= 'MASSIF', NOM_CMP= ('V1','V9','V16',),
+                                   VALE   = ( 1.,   9.,  0.,)),
           )
      )
 
-# 3.2.2 transformation du cham_elem_NEUT_R en cham_elem_VARI_R :
-#-------------------------------------------------------------------------------------------
-VAIN11=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELGA_VARI_R',MODELE=MO,
-   ASSE=(
-         _F(CHAM_GD = VAIN1, GROUP_MA= 'BETON',
-                  NOM_CMP=      ('X1','X2',),
-                  NOM_CMP_RESU= ('V1','V2',),),
-         _F(CHAM_GD = VAIN1, GROUP_MA= 'MASSIF',
-                  NOM_CMP=('X1','X2','X3','X4','X5','X6','X7','X8','X9','X10','X11','X12','X13','X14','X15','X16',),
-                  NOM_CMP_RESU=('V1','V2','V3','V4','V5','V6','V7','V8','V9','V10','V11','V12','V13','V14','V15','V16',),),
-         )
-    )
-
-# 3.2.3 test des valeurs obtenues :
+# 3.2.2 test des valeurs obtenues :
 #-------------------------------------------------------------------------------------------
 TEST_RESU( CHAM_ELEM=_F( CHAM_GD = VAIN11, MAILLE = 'CUBE', POINT = 8,
            NOM_CMP = 'V2',  VALE = 2., REFERENCE = 'ANALYTIQUE'))

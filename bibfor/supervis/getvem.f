@@ -1,13 +1,13 @@
       SUBROUTINE GETVEM( NOMA,TYPENT,MOTFAC, MOTCLE, IOCC, IARG,
      .                   MXVAL, VK8, NBVAL )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       CHARACTER*(*)      NOMA,TYPENT,MOTFAC, MOTCLE,VK8(*)
       INTEGER            IOCC, IARG, MXVAL,      NBVAL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -39,6 +39,9 @@ C                       SI NBVAL < 0 ==> NOMBRE DE VALEUR DE LA LISTE
 C                                        SACHANT QUE L'ON NE FOURNIT QUE
 C                                        LES MXVAL PREMIERES
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER MM 
+C-----------------------------------------------------------------------
       CALL GETVTX ( MOTFAC, MOTCLE, IOCC, IARG, MXVAL, VK8, NBVAL )
       IF (MXVAL.NE.0) THEN
         MM=MIN(MXVAL,ABS(NBVAL))

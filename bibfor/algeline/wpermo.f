@@ -1,13 +1,13 @@
       SUBROUTINE WPERMO(LMASSE,LRAIDE,LAMOR,NBPROP,VECP,FR,AM,EXCL,
      &                                                  OMECOR,ERNORM)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER           LMASSE,LRAIDE,LAMOR,NBPROP,EXCL(*)
       COMPLEX*16        VECP(*)
       REAL*8            FR(*),AM(*),OMECOR,ERNORM(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,10 +51,15 @@ C     ------------------------------------------------------------------
       CHARACTER*24 VALK(2)
       REAL*8       ANORM1, ANORM2, XSEUIL
       REAL*8 VALR
-      REAL*8       DEPI, R8DEPI, ISIG
+      REAL*8       DEPI, R8DEPI, ISIG,FREQOM
       COMPLEX*16   FREQ, FREQ2
 C     ------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IAUX1 ,IAUX2 ,IAUX3 ,IAUX4 ,IVEC ,J
+      INTEGER NEQ
+      REAL*8 AMI ,FRI
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       DEPI   = R8DEPI()
       XSEUIL = OMECOR

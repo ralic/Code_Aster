@@ -1,7 +1,7 @@
       SUBROUTINE EPS2MC (NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
      &                   XYZ,DEPL,EPS2)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C.======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C      EPS2MC   -- CALCUL DES  DEFORMATIONS DU SECOND ORDRE AUX
 C                  POINTS D'INTEGRATION POUR LES ELEMENTS
@@ -53,6 +53,12 @@ C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
 C --- INITIALISATIONS :
 C     -----------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IDECNO ,IDFDE ,IGAU ,IPOIDS ,IVF ,K 
+      INTEGER NBSIG ,NDIM ,NNO ,NPG 
+      REAL*8 DUDX ,DUDY ,DUDZ ,DVDX ,DVDY ,DVDZ ,DWDX 
+      REAL*8 DWDY ,DWDZ ,DX ,RAYON ,UNDEMI ,ZERO 
+C-----------------------------------------------------------------------
       ZERO   = 0.0D0
       UNDEMI = 0.5D0
 C

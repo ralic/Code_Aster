@@ -1,8 +1,8 @@
       SUBROUTINE GDMD (X0PG,PN,PM,   D)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -30,9 +30,13 @@ C           PM        : MOMENT RESULTANT EN AXES GENERAUX
 C
 C     OUT : D         : MATRICE 9*9
 C ------------------------------------------------------------------
-      IMPLICIT REAL*8(A-H,O-Z)
+      IMPLICIT NONE
       REAL*8 X0PG(3),PN(3),PM(3),D(9,9),PNTILD(3,3),PMTILD(3,3)
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,J 
+      REAL*8 DDOT ,SCAL ,UN ,ZERO 
+C-----------------------------------------------------------------------
       ZERO = 0.D0
       UN   = 1.D0
       DO 2 J=1,9

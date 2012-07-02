@@ -1,12 +1,12 @@
       SUBROUTINE PTENPO(N,X,MAT,EP,ITYPE,IFORM)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER           N,         ITYPE,IFORM
       REAL*8              X(*),MAT(N,N),EP(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -38,6 +38,10 @@ C     ------------------------------------------------------------------
 C-DEL LOGICAL  LTEST
 C
 C             COUPLAGE FLEXION-TORSION
+C-----------------------------------------------------------------------
+      INTEGER I ,J ,KK ,L ,NN 
+      REAL*8 DEUX ,R ,ZERO 
+C-----------------------------------------------------------------------
       DATA JCFT/  2 ,  3 ,  5 ,  6 ,  8 ,  9 , 11 , 12 /
       DATA NCFT/  2 ,  6 ,  6 /
       DATA ICFT/  1 ,  7 ,  0 ,  0 ,  0 ,  0 ,

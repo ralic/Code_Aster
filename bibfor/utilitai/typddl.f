@@ -1,6 +1,6 @@
       SUBROUTINE TYPDDL(CHOIXZ,NUMEZ,NEQ,TABDDL,NBACTI,NBBLOQ,NBLAGR,
      &                  NBLIAI)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER           NEQ,TABDDL(*),NBACTI,NBBLOQ,NBLAGR,NBLIAI
       CHARACTER*4       CHOIX
@@ -8,7 +8,7 @@
       CHARACTER*(*)     CHOIXZ, NUMEZ
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,6 +61,11 @@ C
       LOGICAL      EXISDG
 C
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IBID ,ICMP ,ICO ,J ,JORIG ,JPRNO 
+      INTEGER JREFE ,N1DDL ,N2DDL ,NBDEFO ,NBEC ,NBPRNO ,NBSST 
+      INTEGER NUSST 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 
       NBLIAI = 0

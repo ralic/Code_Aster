@@ -1,11 +1,11 @@
       SUBROUTINE VPCREA( ICOND, MODES, MASSE, AMOR, RAIDE, NUME , IER)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER            ICOND,IER
       CHARACTER*(*)      MODES,MASSE, AMOR, RAIDE, NUME
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,8 +25,6 @@ C ======================================================================
 C     CREATION OU VERIFICATION DE COHERENCE DES MODES
 C     ------------------------------------------------------------------
 C
-      CHARACTER*6      PGC
-      COMMON  /NOMAJE/ PGC
 C     ------------------------------------------------------------------
 C
       INTEGER       NBVAL, LMODE, IRET, IBID,IMAT(3), I4,I,IER1
@@ -37,11 +35,12 @@ C
       CHARACTER*24   REFD
       CHARACTER*24 VALK(4)
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       DATA  REFD  /'                   .REFD'/
 C     ------------------------------------------------------------------
       CALL JEMARQ()
       IER    = 0
-      PGC    = 'VPCREA'
 C
 C     VERIFICATION DE L'EXISTENCE DES MATRICES ET DE LA NUMEROTATION
       CALL EXISD('MATR_ASSE',RAIDE,IMAT(1))

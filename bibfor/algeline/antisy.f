@@ -1,8 +1,8 @@
       SUBROUTINE ANTISY (AXIAL,COEF,   AMAT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,9 +26,13 @@ C           COEF      : SCALAIRE
 C
 C     OUT : AMAT      : MATRICE D'ORDRE 3
 C ------------------------------------------------------------------
-      IMPLICIT REAL*8(A-H,O-Z)
+      IMPLICIT NONE
       REAL*8 AXIAL(3),AMAT(3,3)
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,J 
+      REAL*8 COEF ,ZERO 
+C-----------------------------------------------------------------------
       ZERO = 0.D0
       DO 2 J=1,3
       DO 1 I=1,3

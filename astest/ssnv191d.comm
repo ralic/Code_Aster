@@ -1,4 +1,4 @@
-# MODIF  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE : VALIDATION DES CONDITIONS DE NEUMANN AVEC X-FEM EN 3D MAILLAGE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,18 +36,18 @@ lx=1.
 ly=2.
 lz=3.
 
-MA_INIT=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
+MA_INIT=LIRE_MAILLAGE(FORMAT='MED',INFO=1);
 
 MAILLAG1=CREA_MAILLAGE(MAILLAGE=MA_INIT,LINE_QUAD=_F(TOUT='OUI'))
 
 MAILLAG1=MODI_MAILLAGE(reuse =MAILLAG1,
                        MAILLAGE=MAILLAG1,
-                       ORIE_PEAU_3D=_F(GROUP_MA=('SURFGAU','SURFDRO',),),
+                       ORIE_PEAU_3D=_F(GROUP_MA=('SURFGAU','SURFDRO')),
                        );
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
-                    CREA_GROUP_NO=(_F(GROUP_MA=('VOL','SURFSUP','SURFINF',),),
+                    CREA_GROUP_NO=(_F(GROUP_MA=('VOL','SURFSUP','SURFINF')),
                                    _F(NOM='A',OPTION='ENV_SPHERE',POINT=(lx  ,ly/2. ,0. ),PRECISION=1/(4.*n),RAYON=1/(4.*n)),
                                    _F(NOM='B',OPTION='ENV_SPHERE',POINT=(0.  ,ly/2. ,0. ),PRECISION=1/(4.*n),RAYON=1/(4.*n)),
                                    _F(NOM='C',OPTION='ENV_SPHERE',POINT=(lx  ,ly/2. ,3./5. ),PRECISION=1/(4.*n),RAYON=1/(4.*n)),
@@ -57,28 +57,28 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                                    _F(NOM='SURFGAU',OPTION='PLAN',POINT=(0.,0.,0.),VECT_NORMALE=(0.,1.,0.),PRECISION=1/(4.*n)),
                                    _F(NOM='SURFDRO',OPTION='PLAN',POINT=(0.,ly,0.),VECT_NORMALE=(0.,1.,0.),PRECISION=1/(4.*n)),
                                   ),
-                    INFO=2,);
+                    INFO=2);
 
 #----------------------------------------------
 #                   MODELE ET FISSURE
 #----------------------------------------------
 
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
-                     AFFE=_F(GROUP_MA=('VOL','SURFGAU','SURFDRO',),
+                     AFFE=_F(GROUP_MA=('VOL','SURFGAU','SURFDRO'),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),
+                              MODELISATION='3D'),
                      );
 
 LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-1.5');
 
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     TYPE_DISCONTINUITE='INTERFACE',
-                    DEFI_FISS=_F(FONC_LN=LN,),
-                    GROUP_MA_ENRI='VOL',);
+                    DEFI_FISS=_F(FONC_LN=LN),
+                    GROUP_MA_ENRI='VOL');
 
 
 
-MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS,INFO=1,);
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS,INFO=1);
 
 
 #----------------------------------------------
@@ -88,11 +88,11 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS,INFO=1,);
 E=1.E10
 nu=0.
 rho=7800.
-ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),);
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho));
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        MODELE=MODELEK,
-                       AFFE=_F(GROUP_MA=('VOL',),
+                       AFFE=_F(GROUP_MA=('VOL'),
                                 MATER=ACIER,
                                 ),
                              );
@@ -102,17 +102,17 @@ CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
 #----------------------------------------------
 
 CH=AFFE_CHAR_MECA(MODELE=MODELEK,
-                          DDL_IMPO=(_F(GROUP_NO='A',DX=0.0,DY=0.0,DZ=0.0,),
-                                    _F(GROUP_NO='B',       DY=0.0,),
-                                    _F(GROUP_NO='C',DX=0.0,DY=0.0,),
-                                    _F(GROUP_NO='D',DX=0.0,DY=0.0,DZ=0.0,),
-                                    _F(GROUP_NO='E',       DY=0.0,),
-                                    _F(GROUP_NO='F',DX=0.0,DY=0.0,),
+                          DDL_IMPO=(_F(GROUP_NO='A',DX=0.0,DY=0.0,DZ=0.0),
+                                    _F(GROUP_NO='B',       DY=0.0),
+                                    _F(GROUP_NO='C',DX=0.0,DY=0.0),
+                                    _F(GROUP_NO='D',DX=0.0,DY=0.0,DZ=0.0),
+                                    _F(GROUP_NO='E',       DY=0.0),
+                                    _F(GROUP_NO='F',DX=0.0,DY=0.0),
                                     ),
-                          INFO=1,);
+                          INFO=1);
 
 # pour tester l'option CHAR_MECA_PRES_R
-CH1=AFFE_CHAR_MECA(MODELE=MODELEK,PRES_REP=_F(GROUP_MA=('SURFGAU','SURFDRO',),PRES=10000.,),);
+CH1=AFFE_CHAR_MECA(MODELE=MODELEK,PRES_REP=_F(GROUP_MA=('SURFGAU','SURFDRO'),PRES=10000.));
 
 
 def pr(z) :
@@ -121,13 +121,13 @@ def pr(z) :
    if z==1.5  :  return  0.
 FCTPRES=FORMULE(NOM_PARA=('X','Y','Z'),VALE='pr(Z)');
 # pour tester l'option CHAR_MECA_PRES_F
-CH2=AFFE_CHAR_MECA_F(MODELE=MODELEK,PRES_REP=_F(GROUP_MA=('SURFGAU','SURFDRO',),PRES=FCTPRES,),);
+CH2=AFFE_CHAR_MECA_F(MODELE=MODELEK,PRES_REP=_F(GROUP_MA=('SURFGAU','SURFDRO'),PRES=FCTPRES));
 
 # pour tester l'option CHAR_MECA_FR2D3D
 CH3=AFFE_CHAR_MECA(MODELE=MODELEK,
-                   FORCE_FACE=(_F(GROUP_MA='SURFGAU',FY=10000.,),
-                               _F(GROUP_MA='SURFDRO',FY=-10000.,),
-                             ),);
+                   FORCE_FACE=(_F(GROUP_MA='SURFGAU',FY=10000.),
+                               _F(GROUP_MA='SURFDRO',FY=-10000.),
+                             ));
 
 # pour tester l'option CHAR_MECA_FF2D3D
 def prinv(z) :
@@ -136,15 +136,15 @@ def prinv(z) :
    if z==1.5  :  return  0.
 FCTPRES2=FORMULE(NOM_PARA=('X','Y','Z'),VALE='prinv(Z)');
 CH4=AFFE_CHAR_MECA_F(MODELE=MODELEK,
-                     FORCE_FACE=(_F(GROUP_MA='SURFGAU',FY=FCTPRES,),
-                               _F(GROUP_MA='SURFDRO',FY=FCTPRES2,),
-                              ),);
+                     FORCE_FACE=(_F(GROUP_MA='SURFGAU',FY=FCTPRES),
+                               _F(GROUP_MA='SURFDRO',FY=FCTPRES2),
+                              ));
 
 #----------------------------------------------
 #                   RESOLUTION
 #----------------------------------------------
 
-L_INS=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
+L_INS=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3));
 
 UTOT1=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
@@ -152,8 +152,8 @@ UTOT1=MECA_STATIQUE(MODELE=MODELEK,
                           _F(CHARGE=CH),
                           _F(CHARGE=CH1),
                           ),
-                   SOLVEUR=_F( METHODE='MUMPS',PCENT_PIVOT=10,
-                               TYPE_RESOL='AUTO', ),
+                   SOLVEUR=_F( METHODE='MUMPS',
+                               TYPE_RESOL='AUTO'),
                    INFO=1,
                    ); 
 UTOT2=MECA_STATIQUE(MODELE=MODELEK,
@@ -162,8 +162,8 @@ UTOT2=MECA_STATIQUE(MODELE=MODELEK,
                           _F(CHARGE=CH),
                           _F(CHARGE=CH2),
                           ),
-                   SOLVEUR=_F( METHODE='MUMPS',PCENT_PIVOT=10,
-                               TYPE_RESOL='AUTO', ),
+                   SOLVEUR=_F( METHODE='MUMPS',
+                               TYPE_RESOL='AUTO'),
                    INFO=1,
                    ); 
 UTOT3=MECA_STATIQUE(MODELE=MODELEK,
@@ -172,8 +172,8 @@ UTOT3=MECA_STATIQUE(MODELE=MODELEK,
                           _F(CHARGE=CH),
                           _F(CHARGE=CH3),
                           ),
-                   SOLVEUR=_F( METHODE='MUMPS',PCENT_PIVOT=10,
-                               TYPE_RESOL='AUTO', ),
+                   SOLVEUR=_F( METHODE='MUMPS',
+                               TYPE_RESOL='AUTO'),
                    INFO=1,
                    ); 
 UTOT4=MECA_STATIQUE(MODELE=MODELEK,
@@ -182,8 +182,8 @@ UTOT4=MECA_STATIQUE(MODELE=MODELEK,
                           _F(CHARGE=CH),
                           _F(CHARGE=CH4),
                           ),
-                   SOLVEUR=_F( METHODE='MUMPS',PCENT_PIVOT=10,
-                               TYPE_RESOL='AUTO', ),
+                   SOLVEUR=_F( METHODE='MUMPS',
+                               TYPE_RESOL='AUTO'),
                    INFO=1,
                    ); 
 #----------------------------------------------
@@ -193,15 +193,15 @@ UTOT4=MECA_STATIQUE(MODELE=MODELEK,
 MA_XFEM=POST_MAIL_XFEM(
                        MODELE        = MODELEK)
 
-IMPR_RESU(FORMAT='RESULTAT',RESU=_F(MAILLAGE = MA_XFEM,))
-IMPR_RESU(FORMAT='GMSH',UNITE=81,RESU=_F(MAILLAGE = MA_XFEM,))
+IMPR_RESU(FORMAT='RESULTAT',RESU=_F(MAILLAGE = MA_XFEM))
+IMPR_RESU(FORMAT='GMSH',UNITE=81,RESU=_F(MAILLAGE = MA_XFEM))
 
 
 
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
-                     AFFE=(_F(GROUP_MA=('VOL',),
+                     AFFE=(_F(GROUP_MA=('VOL'),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),),
+                              MODELISATION='3D')),
                               );  
 
 RES_X1=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
@@ -220,7 +220,7 @@ RES_X4=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT4,
                         )
 
-#IMPR_RESU(FORMAT='GMSH',UNITE=82,RESU=_F(RESULTAT=RES_X1,));
+#IMPR_RESU(FORMAT='GMSH',UNITE=82,RESU=_F(RESULTAT=RES_X1));
 
 #----------------------------------------------
 #                  TESTS
@@ -229,427 +229,427 @@ RES_X4=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
 #PREMIER CHARGEMENT
 
 DEP1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
-                                GROUP_NO=('NFISSU',),
+                                GROUP_NO=('NFISSU'),
                                 RESULTAT=RES_X1,
                                 NOM_CHAM='DEPL',
                                 NUME_ORDRE=1,
                                 TOUT_CMP='OUI',
-                                OPERATION='EXTRACTION',),);
+                                OPERATION='EXTRACTION'));
 
-IMPR_TABLE(TABLE=DEP1,);
+IMPR_TABLE(TABLE=DEP1);
 
 
 DEP1P = CALC_TABLE(TABLE = DEP1,
                   ACTION = (_F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'NOEUD',
                                CRIT_COMP = 'REGEXP',
-                               VALE_K    = 'N[^P]',),),);
+                               VALE_K    = 'N[^P]')));
 
 
 DEP1M = CALC_TABLE(TABLE = DEP1,
                   ACTION = (_F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'NOEUD',
                                CRIT_COMP = 'REGEXP',
-                               VALE_K    = 'N[^M]',),),);
+                               VALE_K    = 'N[^M]')));
 
 TEST_TABLE(TABLE=DEP1P,
            FILTRE=_F(NOM_PARA='COOR_Y',
-                     VALE=0,),
+                     VALE=0),
            NOM_PARA='DY',
            TYPE_TEST='MIN',
            VALE= 1e-06,
            CRITERE='RELATIF',
            PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEP1P,
            FILTRE=_F(NOM_PARA='COOR_Y',
-                     VALE=0,),
+                     VALE=0),
            NOM_PARA='DY',
            TYPE_TEST='MAX',
            VALE= 1e-06,
            CRITERE='RELATIF',
            PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEP1P,
            FILTRE=_F(NOM_PARA='COOR_Y',
-                     VALE=ly,),
+                     VALE=ly),
            NOM_PARA='DY',
            TYPE_TEST='MIN',
            VALE=-1e-06,
            CRITERE='RELATIF',
            PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEP1P,
            FILTRE=_F(NOM_PARA='COOR_Y',
-                     VALE=ly,),
+                     VALE=ly),
            NOM_PARA='DY',
            TYPE_TEST='MAX',
            VALE=-1e-06,
            CRITERE='RELATIF',
            PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEP1M,
            FILTRE=_F(NOM_PARA='COOR_Y',
-                     VALE=0,),
+                     VALE=0),
            NOM_PARA='DY',
            TYPE_TEST='MIN',
            VALE= 1e-06,
            CRITERE='RELATIF',
            PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEP1M,
            FILTRE=_F(NOM_PARA='COOR_Y',
-                     VALE=0,),
+                     VALE=0),
            NOM_PARA='DY',
            TYPE_TEST='MAX',
            VALE= 1e-06,
            CRITERE='RELATIF',
            PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEP1M,
            FILTRE=_F(NOM_PARA='COOR_Y',
-                     VALE=ly,),
+                     VALE=ly),
            NOM_PARA='DY',
            TYPE_TEST='MIN',
            VALE=-1e-06,
            CRITERE='RELATIF',
            PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEP1M,
            FILTRE=_F(NOM_PARA='COOR_Y',
-                     VALE=ly,),
+                     VALE=ly),
            NOM_PARA='DY',
            TYPE_TEST='MAX',
            VALE=-1e-06,
            CRITERE='RELATIF',
            PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 #DEUXIEME CHARGEMENT
 
 DEP2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
-                                GROUP_NO=('NFISSU',),
+                                GROUP_NO=('NFISSU'),
                                 RESULTAT=RES_X2,
                                 NOM_CHAM='DEPL',
                                 NUME_ORDRE=1,
                                 TOUT_CMP='OUI',
-                                OPERATION='EXTRACTION',),);
+                                OPERATION='EXTRACTION'));
 
-IMPR_TABLE(TABLE=DEP1,);
+IMPR_TABLE(TABLE=DEP1);
 
 
 DEP2P = CALC_TABLE(TABLE = DEP2,
                   ACTION = (_F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'NOEUD',
                                CRIT_COMP = 'REGEXP',
-                               VALE_K    = 'N[^P]',),),);
+                               VALE_K    = 'N[^P]')));
 
 
 DEP2M = CALC_TABLE(TABLE = DEP2,
                   ACTION = (_F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'NOEUD',
                                CRIT_COMP = 'REGEXP',
-                               VALE_K    = 'N[^M]',),),);
+                               VALE_K    = 'N[^M]')));
 
 TEST_TABLE(TABLE=DEP2P,
            FILTRE=_F(NOM_PARA='COOR_Y',
-                     VALE=0,),
+                     VALE=0),
            NOM_PARA='DY',
            TYPE_TEST='MIN',
            VALE=-1e-06,
            CRITERE='RELATIF',
            PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEP2P,
            FILTRE=_F(NOM_PARA='COOR_Y',
-                     VALE=0,),
+                     VALE=0),
            NOM_PARA='DY',
            TYPE_TEST='MAX',
            VALE=-1e-06,
            CRITERE='RELATIF',
            PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEP2P,
            FILTRE=_F(NOM_PARA='COOR_Y',
-                     VALE=ly,),
+                     VALE=ly),
            NOM_PARA='DY',
            TYPE_TEST='MIN',
            VALE= 1e-06,
            CRITERE='RELATIF',
            PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEP2P,
            FILTRE=_F(NOM_PARA='COOR_Y',
-                     VALE=ly,),
+                     VALE=ly),
            NOM_PARA='DY',
            TYPE_TEST='MAX',
            VALE= 1e-06,
            CRITERE='RELATIF',
            PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEP2M,
            FILTRE=_F(NOM_PARA='COOR_Y',
-                     VALE=0,),
+                     VALE=0),
            NOM_PARA='DY',
            TYPE_TEST='MIN',
            VALE= 1e-06,
            CRITERE='RELATIF',
            PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEP2M,
            FILTRE=_F(NOM_PARA='COOR_Y',
-                     VALE=0,),
+                     VALE=0),
            NOM_PARA='DY',
            TYPE_TEST='MAX',
            VALE= 1e-06,
            CRITERE='RELATIF',
            PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEP2M,
            FILTRE=_F(NOM_PARA='COOR_Y',
-                     VALE=ly,),
+                     VALE=ly),
            NOM_PARA='DY',
            TYPE_TEST='MIN',
            VALE=-1e-06,
            CRITERE='RELATIF',
            PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEP2M,
            FILTRE=_F(NOM_PARA='COOR_Y',
-                     VALE=ly,),
+                     VALE=ly),
            NOM_PARA='DY',
            TYPE_TEST='MAX',
            VALE=-1e-06,
            CRITERE='RELATIF',
            PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
            
 #TROISIEME CHARGEMENT
 
 DEP3=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
-                                GROUP_NO=('NFISSU',),
+                                GROUP_NO=('NFISSU'),
                                 RESULTAT=RES_X3,
                                 NOM_CHAM='DEPL',
                                 NUME_ORDRE=1,
                                 TOUT_CMP='OUI',
-                                OPERATION='EXTRACTION',),);
+                                OPERATION='EXTRACTION'));
 
-IMPR_TABLE(TABLE=DEP3,);
+IMPR_TABLE(TABLE=DEP3);
 
 
 DEP3P = CALC_TABLE(TABLE = DEP3,
                   ACTION = (_F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'NOEUD',
                                CRIT_COMP = 'REGEXP',
-                               VALE_K    = 'N[^P]',),),);
-IMPR_TABLE(TABLE=DEP3P,);
+                               VALE_K    = 'N[^P]')));
+IMPR_TABLE(TABLE=DEP3P);
 
 
 DEP3M = CALC_TABLE(TABLE = DEP3,
                   ACTION = (_F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'NOEUD',
                                CRIT_COMP = 'REGEXP',
-                               VALE_K    = 'N[^M]',),),);
-IMPR_TABLE(TABLE=DEP3M,);
+                               VALE_K    = 'N[^M]')));
+IMPR_TABLE(TABLE=DEP3M);
 
 TEST_TABLE(TABLE=DEP3P,
            FILTRE=_F(NOM_PARA='COOR_Y',
-                     VALE=0,),
+                     VALE=0),
            NOM_PARA='DY',
            TYPE_TEST='MIN',
            VALE= 1e-06,
            CRITERE='RELATIF',
            PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEP3P,
            FILTRE=_F(NOM_PARA='COOR_Y',
-                     VALE=0,),
+                     VALE=0),
            NOM_PARA='DY',
            TYPE_TEST='MAX',
            VALE= 1e-06,
            CRITERE='RELATIF',
            PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEP3P,
            FILTRE=_F(NOM_PARA='COOR_Y',
-                     VALE=ly,),
+                     VALE=ly),
            NOM_PARA='DY',
            TYPE_TEST='MIN',
            VALE=-1e-06,
            CRITERE='RELATIF',
            PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEP3P,
            FILTRE=_F(NOM_PARA='COOR_Y',
-                     VALE=ly,),
+                     VALE=ly),
            NOM_PARA='DY',
            TYPE_TEST='MAX',
            VALE=-1e-06,
            CRITERE='RELATIF',
            PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEP3M,
            FILTRE=_F(NOM_PARA='COOR_Y',
-                     VALE=0,),
+                     VALE=0),
            NOM_PARA='DY',
            TYPE_TEST='MIN',
            VALE= 1e-06,
            CRITERE='RELATIF',
            PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEP3M,
            FILTRE=_F(NOM_PARA='COOR_Y',
-                     VALE=0,),
+                     VALE=0),
            NOM_PARA='DY',
            TYPE_TEST='MAX',
            VALE= 1e-06,
            CRITERE='RELATIF',
            PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEP3M,
            FILTRE=_F(NOM_PARA='COOR_Y',
-                     VALE=ly,),
+                     VALE=ly),
            NOM_PARA='DY',
            TYPE_TEST='MIN',
            VALE=-1e-06,
            CRITERE='RELATIF',
            PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEP3M,
            FILTRE=_F(NOM_PARA='COOR_Y',
-                     VALE=ly,),
+                     VALE=ly),
            NOM_PARA='DY',
            TYPE_TEST='MAX',
            VALE=-1e-06,
            CRITERE='RELATIF',
            PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);    
+           REFERENCE='ANALYTIQUE');    
 
 #QUATRIEME CHARGEMENT
 
 DEP4=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
-                                GROUP_NO=('NFISSU',),
+                                GROUP_NO=('NFISSU'),
                                 RESULTAT=RES_X4,
                                 NOM_CHAM='DEPL',
                                 NUME_ORDRE=1,
                                 TOUT_CMP='OUI',
-                                OPERATION='EXTRACTION',),);
+                                OPERATION='EXTRACTION'));
 
-IMPR_TABLE(TABLE=DEP4,);
+IMPR_TABLE(TABLE=DEP4);
 
 
 DEP4P = CALC_TABLE(TABLE = DEP4,
                   ACTION = (_F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'NOEUD',
                                CRIT_COMP = 'REGEXP',
-                               VALE_K    = 'N[^P]',),),);
+                               VALE_K    = 'N[^P]')));
 
 
 DEP4M = CALC_TABLE(TABLE = DEP4,
                   ACTION = (_F(OPERATION = 'FILTRE',
                                NOM_PARA  = 'NOEUD',
                                CRIT_COMP = 'REGEXP',
-                               VALE_K    = 'N[^M]',),),);
+                               VALE_K    = 'N[^M]')));
 
 TEST_TABLE(TABLE=DEP4P,
            FILTRE=_F(NOM_PARA='COOR_Y',
-                     VALE=0,),
+                     VALE=0),
            NOM_PARA='DY',
            TYPE_TEST='MIN',
            VALE=-1e-06,
            CRITERE='RELATIF',
            PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEP4P,
            FILTRE=_F(NOM_PARA='COOR_Y',
-                     VALE=0,),
+                     VALE=0),
            NOM_PARA='DY',
            TYPE_TEST='MAX',
            VALE=-1e-06,
            CRITERE='RELATIF',
            PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEP4P,
            FILTRE=_F(NOM_PARA='COOR_Y',
-                     VALE=ly,),
+                     VALE=ly),
            NOM_PARA='DY',
            TYPE_TEST='MIN',
            VALE= 1e-06,
            CRITERE='RELATIF',
            PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEP4P,
            FILTRE=_F(NOM_PARA='COOR_Y',
-                     VALE=ly,),
+                     VALE=ly),
            NOM_PARA='DY',
            TYPE_TEST='MAX',
            VALE= 1e-06,
            CRITERE='RELATIF',
            PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEP4M,
            FILTRE=_F(NOM_PARA='COOR_Y',
-                     VALE=0,),
+                     VALE=0),
            NOM_PARA='DY',
            TYPE_TEST='MIN',
            VALE= 1e-06,
            CRITERE='RELATIF',
            PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEP4M,
            FILTRE=_F(NOM_PARA='COOR_Y',
-                     VALE=0,),
+                     VALE=0),
            NOM_PARA='DY',
            TYPE_TEST='MAX',
            VALE= 1e-06,
            CRITERE='RELATIF',
            PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEP4M,
            FILTRE=_F(NOM_PARA='COOR_Y',
-                     VALE=ly,),
+                     VALE=ly),
            NOM_PARA='DY',
            TYPE_TEST='MIN',
            VALE=-1e-06,
            CRITERE='RELATIF',
            PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEP4M,
            FILTRE=_F(NOM_PARA='COOR_Y',
-                     VALE=ly,),
+                     VALE=ly),
            NOM_PARA='DY',
            TYPE_TEST='MAX',
            VALE=-1e-06,
            CRITERE='RELATIF',
            PRECISION=1e-11,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 FIN();

@@ -1,10 +1,10 @@
       SUBROUTINE GDIREC ( NOMA, FOND, CHAINE, NOMOBJ, NOMNOE, COORN,
      &                    NBNOEU, DIRE3, MILIEU )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,6 +84,10 @@ C
 C
 C OBJETS DEFINISSANT LA CONNECTIVITE  ET LE TYPE DES MAILLES
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IADTYP ,IATYMA ,IBID ,IL ,IN2 ,INO2 
+      INTEGER IR ,J ,K ,NOEUD3 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       CONEX = NOMA//'.CONNEX'
       CALL JEVEUO (NOMA//'.TYPMAIL','L',IATYMA)

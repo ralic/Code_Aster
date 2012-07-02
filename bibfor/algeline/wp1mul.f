@@ -1,13 +1,13 @@
       SUBROUTINE WP1MUL(LMASSE,LAMOR,LRAIDE,PTORIG,TOLF,NITF,NBFREQ,
      &                  MXRESF,NPREC,RESUFI,RESUFR)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER          LMASSE,LAMOR,LRAIDE,NITF,NBFREQ,RESUFI(MXRESF,*)
       COMPLEX*16       PTORIG(3,*)
       REAL*8           TOLF,RESUFR(MXRESF,*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,6 +54,10 @@ C
       REAL*8        DET0,DET1,DET2,RN1,RN2,ERR,ERRZ,
      &              CONST(6)
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,ICOMB ,IMODE ,ISTU ,ITER ,LDYNAM ,LZERO 
+      INTEGER MXRESF ,NPREC 
+C-----------------------------------------------------------------------
       DATA          NOMDDL /'        '/
 C     ------------------------------------------------------------------
 C

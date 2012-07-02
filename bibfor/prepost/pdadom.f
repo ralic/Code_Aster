@@ -1,9 +1,9 @@
       SUBROUTINE PDADOM ( XM0, XM2, XM4, DOM )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       REAL*8  XM0,XM2,XM4,DOM
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,6 +38,12 @@ C
       INTEGER      IARG
 C
 C     ----------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER IAPICS ,IPOINT ,NBPAR ,NBPOIN 
+      REAL*8 ERFCAM ,R8PI ,R8VIDE ,RBID ,X1 ,X2 ,XNPOIN 
+      REAL*8 XP ,Y ,Y1 ,YD1 ,YD2 ,YPIC1 ,YPIC2 
+
+C-----------------------------------------------------------------------
       IFONC  = 0
       IBASK  = 0
       IHOSIN = 0

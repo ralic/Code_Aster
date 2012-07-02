@@ -1,10 +1,10 @@
       SUBROUTINE MDCONF(TYPFLU, BASE, NOMA, NBM, LNOE, NUOR,
      &                  IIMPR, INDIC, VECI1, VECR1, VECR2,
      &                  VECR3, VECR4, VECR5)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,6 +78,19 @@ C     EXTERNAL      JEXNOM
 C
 C DATA
 C ----
+C-----------------------------------------------------------------------
+      INTEGER IAXE ,IBID ,ICOUPL ,IDE ,IDEEQ ,IDEP ,IFSIC 
+      INTEGER IFSVI ,IFSVK ,IGRAP ,IK ,IMAIL ,IMOD ,IPAS 
+      INTEGER IPM ,IPV ,IRE ,IRESZO ,IRET ,IRHOE ,IRHOI 
+      INTEGER IROTA1 ,IROTA2 ,ITRAN1 ,ITRAN2 ,ITYPFL ,IVALE ,IZONE 
+      INTEGER J ,KREF ,LFSVK ,LFSVR ,LMASG ,LMASSE ,N1 
+      INTEGER N2 ,NBMA ,NBMANO ,NEQ ,NUMNO0 ,NUMOD ,NUZO 
+      INTEGER NZEX 
+      REAL*8 AIRE ,ALONTO ,CM1 ,CM2 ,COCAJ ,COKAJ ,COMAJ 
+      REAL*8 COMAJ1 ,COMAJ2 ,DIFPHI ,DRYI ,DRZI ,DYI ,DZI 
+      REAL*8 EP ,PHI1 ,PHI2 ,PHIE ,PROTA ,PTRAN ,RHOF 
+      REAL*8 TOLR ,VMOY ,VMOYTO ,X1 ,X2 
+C-----------------------------------------------------------------------
       DATA DEPLA  /'DX      ','DY      ','DZ      '/
       DATA CONFIG /'ASC_CEN ','ASC_EXC ','DES_CEN ','DES_EXC '/
 C

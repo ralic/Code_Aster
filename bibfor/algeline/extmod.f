@@ -1,9 +1,9 @@
       SUBROUTINE EXTMOD(BASEMO,NUMDDL,NUME,NBNUMO,DMODE,NBEQ,NBNOE,
      &                  IDDL,NBDDL)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,6 +43,10 @@ C
       CHARACTER*24 DEEQ, NOMCHA
 C-----------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IADMOD ,ICM ,IDEEQ ,INUMO ,IPM ,IRET 
+      INTEGER J ,K ,NBDDL ,NBEQ ,NBNOE ,NBNUMO 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
         DEEQ = NUMDDL//'.NUME.DEEQ'
         CALL JEVEUO(DEEQ,'L',IDEEQ)

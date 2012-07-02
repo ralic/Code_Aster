@@ -1,5 +1,5 @@
       SUBROUTINE CAFONO ( CHAR,LIGRCZ,IGREL,INEMA,NOMA,LIGRMZ,FONREE )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER                         IGREL,INEMA
       CHARACTER*4                                             FONREE
@@ -7,7 +7,7 @@
       CHARACTER*(*)            LIGRCZ,                 LIGRMZ
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,6 +38,12 @@ C      FONREE  : 'FONC' OU 'REEL'
 C     -----------------------------------------------------------------
 C     ------------------------------------------------------------------
       INTEGER       NMOCL, NFONO, N2DL, N3DL, N6DL, NCOQ2D, NBCOMP
+C-----------------------------------------------------------------------
+      INTEGER I ,IDGEX ,IERD ,II ,IN ,INO ,IRET 
+      INTEGER J ,JDESGI ,JJ ,JL ,JNBNO ,JNCMP ,JNO 
+      INTEGER JNONO ,JPRNM ,JVAL ,JVALV ,NANGL ,NBEC ,NBECF 
+      INTEGER NBNO ,NBNOEU ,NSURCH ,NUMEL 
+C-----------------------------------------------------------------------
       PARAMETER     (NMOCL=10)
       INTEGER       NTYPEL(NMOCL), FORIMP(NMOCL)
       REAL*8        R8DGRD, DGRD, VALFOR(NMOCL)

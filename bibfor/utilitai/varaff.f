@@ -1,0 +1,147 @@
+      SUBROUTINE VARAFF ( NOMA, GRAN, BASE, CESELZ )
+      IMPLICIT NONE
+      INCLUDE 'jeveux.h'
+      CHARACTER*1                     BASE
+      CHARACTER*8         NOMA, GRAN
+      CHARACTER*(*)                         CESELZ
+C-----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C BUT :
+C  - TRAITER L'OPTION 'AFFE' DE LA COMMANDE CREA_CHAMP POUR VARI_R
+C  - CREER LE CHAM_ELEM_S / ELEM  (CESELZ)
+C-----------------------------------------------------------------------
+      INTEGER       IBID,NOCC,NBTOU,N1
+      INTEGER       IAD,K,IOCC,NBMAIL
+      CHARACTER*8   KBID, TYPMCL(2)
+      CHARACTER*6 KNUVA
+      CHARACTER*16  MOTCLF, MOTCLS(2)
+      CHARACTER*19  CESELM
+      CHARACTER*24  MESMAI
+      INTEGER      IARG,NVARMX,JCESD,JCESL,JCESV,JLNOVA,JLNOVX,JLVAVX
+      INTEGER JMESMA,KVARI,N2,NUMA,NUVA,NUVAMX,NBMATO
+      PARAMETER  (NVARMX=10000)
+      LOGICAL LTOU
+C     ------------------------------------------------------------------
+      CALL JEMARQ()
+
+      IF (NOMA.EQ.' ') CALL U2MESS('F','UTILITAI_10')
+      CALL DISMOI('F','NB_MA_MAILLA',NOMA,'MAILLAGE',NBMATO,KBID,IBID)
+
+      CALL ASSERT(GRAN.EQ.'VARI_R')
+      CALL WKVECT('&&VARAFF.LNOVX','V V K8',NVARMX,JLNOVX)
+      CALL WKVECT('&&VARAFF.LVAVX','V V R',NVARMX,JLVAVX)
+
+      MOTCLF = 'AFFE'
+      CALL GETFAC ( MOTCLF, NOCC )
+
+      MESMAI = '&&VARAFF.MES_MAILLES'
+      MOTCLS(1) = 'GROUP_MA'
+      MOTCLS(2) = 'MAILLE'
+      TYPMCL(1) = 'GROUP_MA'
+      TYPMCL(2) = 'MAILLE'
+
+
+C     0- CALCUL DU PLUS GRAND NUMERO DE VARI UTILISE (NUVAMX):
+C     --------------------------------------------------------
+      NUVAMX=0
+      DO 29 IOCC = 1,NOCC
+        CALL GETVTX(MOTCLF,'NOM_CMP',IOCC,IARG,NVARMX,ZK8(JLNOVX),N1)
+        CALL ASSERT(N1.GT.0)
+        DO 28, K=1,N1
+          CALL ASSERT(ZK8(JLNOVX-1+K)(1:1).EQ.'V')
+          READ (ZK8(JLNOVX-1+K)(2:8),'(I7)') NUVA
+          NUVAMX=MAX(NUVAMX,NUVA)
+ 28     CONTINUE
+ 29   CONTINUE
+      CALL ASSERT(NUVAMX.GT.0)
+
+
+C     1- ALLOCATION DE CESELM
+C     --------------------------------------------
+      CALL WKVECT('&&VARAFF.LNOVA','V V K8',NUVAMX,JLNOVA)
+      DO 27, K=1,NUVAMX
+        CALL CODENT(K,'G',KNUVA)
+        ZK8(JLNOVA-1+K)='V'//KNUVA
+ 27   CONTINUE
+      CESELM = CESELZ
+C     -- REMARQUE : LES CMPS SERONT DANS L'ORDRE V1,V2,...
+      CALL CESCRE(BASE,CESELM,'ELEM',NOMA,'VARI_R',
+     &     NUVAMX,ZK8(JLNOVA),0,-1,-NUVAMX)
+
+      CALL JEVEUO ( CESELM//'.CESD', 'L', JCESD )
+      CALL JEVEUO ( CESELM//'.CESV', 'E', JCESV )
+      CALL JEVEUO ( CESELM//'.CESL', 'E', JCESL )
+
+
+C     2- BOUCLE SUR LES OCCURENCES DU MOT CLE AFFE
+C     --------------------------------------------
+      DO 30 IOCC = 1,NOCC
+
+        CALL GETVTX ( MOTCLF,'NOEUD',IOCC,IARG,0,KBID,N1)
+        IF (N1.NE.0) CALL U2MESS('F','UTILITAI_12')
+        CALL GETVTX ( MOTCLF,'GROUP_NO',IOCC,IARG,0,KBID,N1)
+        IF (N1.NE.0) CALL U2MESS('F','UTILITAI_13')
+
+        CALL GETVTX(MOTCLF,'NOM_CMP',IOCC,IARG,NVARMX,ZK8(JLNOVX),N1)
+        CALL GETVR8(MOTCLF,'VALE',IOCC,IARG,NVARMX,ZR(JLVAVX),N2)
+        CALL ASSERT(N1.EQ.N2)
+
+
+
+        CALL GETVTX ( MOTCLF, 'TOUT', IOCC,IARG, 1, KBID, NBTOU )
+        IF ( NBTOU .EQ. 1 ) THEN
+          LTOU=.TRUE.
+          NBMAIL=NBMATO
+        ELSE
+          LTOU=.FALSE.
+          CALL RELIEM(' ', NOMA, 'NU_MAILLE', MOTCLF, IOCC, 2,
+     &                MOTCLS, TYPMCL, MESMAI,NBMAIL )
+          CALL ASSERT(NBMAIL.GT.0)
+          CALL JEVEUO(MESMAI,'L',JMESMA)
+        ENDIF
+
+        DO 31, KVARI=1,N1
+          READ (ZK8(JLNOVX-1+KVARI)(2:8),'(I7)') NUVA
+          CALL ASSERT(NUVA.GT.0.AND.NUVA.LE.NUVAMX)
+          DO 32, K=1,NBMAIL
+            IF (LTOU) THEN
+              NUMA=K
+            ELSE
+              NUMA=ZI(JMESMA-1+K)
+            ENDIF
+            CALL ASSERT(NUMA.GT.0.AND.NUMA.LE.NBMATO)
+
+            CALL CESEXI('C',JCESD,JCESL,NUMA,1,1,NUVA,IAD)
+            CALL ASSERT(IAD.LT.0)
+
+C           -- RECOPIE DE LA VALEUR:
+            ZL(JCESL-1-IAD) = .TRUE.
+            ZR(JCESV-1-IAD) = ZR(JLVAVX-1+KVARI)
+   32       CONTINUE
+   31   CONTINUE
+
+        CALL JEDETR ( MESMAI )
+   30 CONTINUE
+
+
+      CALL JEDETR('&&VARAFF.LNOVX')
+      CALL JEDETR('&&VARAFF.LNOVA')
+      CALL JEDEMA()
+      END

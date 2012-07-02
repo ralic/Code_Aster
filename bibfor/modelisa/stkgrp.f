@@ -1,9 +1,9 @@
         SUBROUTINE STKGRP(IFL,ICL,IV,RV,CV,CNL,MCL,NBM,NUMN,NUMM,
      &  GRN,GRM,IRTETI)
-        IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,23 +37,25 @@ C                                                  OU ERREUR DETECTE)
 C       ----------------------------------------------------------------
 C
       INCLUDE 'jeveux.h'
-        REAL*8          RV
-        CHARACTER*8     MCL(NBM),       NOMG,   NOM,    B8
-        INTEGER         DEBLIG
-        CHARACTER*14    CNL
-        CHARACTER*(*)   CV
-        CHARACTER*16    CMD
-        CHARACTER*24    GRN,    GRM,    GRP
-        SAVE B8
-        COMMON          /OPMAIL/        CMD
-C
-      CHARACTER*6        PGC
-      COMMON  / NOMAJE / PGC
+      REAL*8          RV
+      CHARACTER*8     MCL(NBM),       NOMG,   NOM,    B8
+      INTEGER         DEBLIG
+      CHARACTER*14    CNL
+      CHARACTER*(*)   CV
+      CHARACTER*16    CMD
+      CHARACTER*24    GRN,    GRM,    GRP
+      SAVE B8
+      COMMON          /OPMAIL/        CMD
+C-----------------------------------------------------------------------
+      INTEGER I ,IADG ,ICL ,IFL ,IFM ,IFN ,IRET
+      INTEGER IRTET ,IRTETI ,IUNIFI ,IV ,NBITEM ,NBM ,NUM
+      INTEGER NUMM ,NUMN
+C-----------------------------------------------------------------------
+      DATA B8         /'        '/
+
       CALL JEMARQ()
       IRTETI = 0
-        DATA B8         /'        '/
 C
-        PGC = 'OP0001'
         IFM = IUNIFI('MESSAGE')
 C
 C - ITEM = MOT CLE TYPE GROUPE ?

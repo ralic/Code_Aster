@@ -1,10 +1,10 @@
       SUBROUTINE VTCREM(CHAMNO,MATASS,BASE,TYPC)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*)     CHAMNO,MATASS,BASE,TYPC
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,17 +28,16 @@ C     IN  MATASS : K19 : NOM DE LA MATRICE
 C     IN  BASE   : K1 : BASE JEVEUX ('G', 'V' , ... )
 C     IN  TYPC   : K1 : TYPE JEVEUX DE BASE
 C     ------------------------------------------------------------------
-      CHARACTER*6 PGC,PGCANC
-      COMMON /NOMAJE/PGC
 C     ------------------------------------------------------------------
       CHARACTER*8 CBID
       CHARACTER*24 REFA,CREFE(2)
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER IERD ,JREFA ,NEQ
+C-----------------------------------------------------------------------
       DATA REFA/'                   .REFA'/
 C     ------------------------------------------------------------------
       CALL JEMARQ()
-      PGCANC = PGC
-      PGC    = 'VTCREM'
 C
       REFA(1:19) = MATASS
       CALL JEVEUO(REFA,'L',JREFA)
@@ -47,6 +46,5 @@ C
       CREFE(2)=ZK24(JREFA-1+2)(1:14)//'.NUME'
       CALL VTCREA(CHAMNO,CREFE,BASE,TYPC,NEQ)
 C
-      PGC = PGCANC
       CALL JEDEMA()
       END

@@ -1,12 +1,12 @@
       SUBROUTINE PAROTR(NOMMA,IAGEOM,IMA,NBNO,O,MROT,T,COOR)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*8       NOMMA
       INTEGER                 IMA,NBNO
       REAL*8            O(3),MROT(3,3),T(3),COOR(*)
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,6 +43,9 @@ C                   COOR(3*(INO-1)+2)= X2'(INO)
 C                   COOR(3*(INO-1)+3)= X3'(INO) ( EN 2D 0)
       REAL*8 X(3)
 C --- DEBUT
+C-----------------------------------------------------------------------
+      INTEGER I ,IAGEOM ,ICOOR ,INO ,J ,NBNOT 
+C-----------------------------------------------------------------------
       IF (NBNO.EQ.0) THEN
         NBNOT = 1
         COOR(1)=ZR(IAGEOM-1+3*(IMA-1)+1)

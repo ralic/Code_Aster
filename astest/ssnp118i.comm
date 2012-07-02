@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE FISSURATION INTERFACE 3D (PENTA15) LOIS CZM_OUV_MIX ET CZM_TAC_MIX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,7 +27,7 @@ Sc = 1.1
 young  = 0.5
 dc = 2*Gc/Sc
 
-MA=LIRE_MAILLAGE(FORMAT='MED',)
+MA=LIRE_MAILLAGE(FORMAT='MED')
 
 
 MO=AFFE_MODELE(
@@ -103,7 +103,7 @@ L_INST=DEFI_LIST_REEL(
       )
      )
 
-DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =L_INST ),)
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =L_INST ))
 
 FCT = DEFI_FONCTION(
   NOM_PARA = 'INST',
@@ -121,14 +121,14 @@ U_OUV=STAT_NON_LINE(
   CHAM_MATER = CM,
   CARA_ELEM  = ORIEN_FI,
   EXCIT      = (
-    _F(CHARGE = LIAISON , ),
+    _F(CHARGE = LIAISON ),
     _F(CHARGE = TRAC_N, FONC_MULT = FCT),
   ),
   COMP_INCR  = (
           _F(RELATION = 'CZM_OUV_MIX',
-             MAILLE = 'PRISMDEG', ),
+             MAILLE = 'PRISMDEG'),
           _F(RELATION = 'ELAS',
-             MAILLE = 'PRISM',),
+             MAILLE = 'PRISM'),
           ),
   INCREMENT  = _F(LIST_INST = L_INST, INST_FIN = 0.),
   CONVERGENCE = _F(
@@ -137,7 +137,7 @@ U_OUV=STAT_NON_LINE(
     DEPL_REFE      = dc,
     ITER_GLOB_MAXI = 5,
     ),
-  SOLVEUR = _F(METHODE = 'MUMPS', PCENT_PIVOT=10),
+  SOLVEUR = _F(METHODE = 'MUMPS'),
   NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
   )
 
@@ -159,9 +159,9 @@ STAT_NON_LINE(reuse = U_OUV,
     ),
   COMP_INCR  = (
           _F(RELATION = 'CZM_OUV_MIX',
-             MAILLE = 'PRISMDEG', ),
+             MAILLE = 'PRISMDEG'),
           _F(RELATION = 'ELAS',
-             GROUP_MA = 'G_PRISM',),
+             GROUP_MA = 'G_PRISM'),
           ),
   INCREMENT  = _F(LIST_INST = L_INST),
   CONVERGENCE = _F(
@@ -170,7 +170,7 @@ STAT_NON_LINE(reuse = U_OUV,
     DEPL_REFE      = dc,
     ITER_GLOB_MAXI = 5,
     ),
-  SOLVEUR = _F(METHODE = 'MUMPS', PCENT_PIVOT=10),
+  SOLVEUR = _F(METHODE = 'MUMPS'),
   NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
   ARCHIVAGE  = _F(LIST_INST = L_INST)
   )
@@ -184,14 +184,14 @@ U_TAC=STAT_NON_LINE(
   CHAM_MATER = CM,
   CARA_ELEM  = ORIEN_FI,
   EXCIT      = (
-    _F(CHARGE = LIAISON , ),
+    _F(CHARGE = LIAISON ),
     _F(CHARGE = TRAC_N, FONC_MULT = FCT),
   ),
   COMP_INCR  = (
           _F(RELATION = 'CZM_TAC_MIX',
-             MAILLE = 'PRISMDEG', ),
+             MAILLE = 'PRISMDEG'),
           _F(RELATION = 'ELAS',
-             MAILLE = 'PRISM',),
+             MAILLE = 'PRISM'),
           ),
   INCREMENT  = _F(LIST_INST = L_INST, INST_FIN = 0.),
   CONVERGENCE = _F(
@@ -200,7 +200,7 @@ U_TAC=STAT_NON_LINE(
     DEPL_REFE      = dc,
     ITER_GLOB_MAXI = 5,
     ),
-  SOLVEUR = _F(METHODE = 'MUMPS', PCENT_PIVOT=10),
+  SOLVEUR = _F(METHODE = 'MUMPS'),
   NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
   )
 
@@ -222,9 +222,9 @@ STAT_NON_LINE(reuse = U_TAC,
     ),
   COMP_INCR  = (
           _F(RELATION = 'CZM_TAC_MIX',
-             MAILLE = 'PRISMDEG', ),
+             MAILLE = 'PRISMDEG'),
           _F(RELATION = 'ELAS',
-             GROUP_MA = 'G_PRISM',),
+             GROUP_MA = 'G_PRISM'),
           ),
   INCREMENT  = _F(LIST_INST = DEFLIST),
   CONVERGENCE = _F(
@@ -233,7 +233,7 @@ STAT_NON_LINE(reuse = U_TAC,
     DEPL_REFE      = dc,
     ITER_GLOB_MAXI = 5,
     ),
-  SOLVEUR = _F(METHODE = 'MUMPS', PCENT_PIVOT=10),
+  SOLVEUR = _F(METHODE = 'MUMPS'),
   NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
   ARCHIVAGE  = _F(LIST_INST = L_INST)
   )
@@ -254,16 +254,16 @@ TETA_OUV=CREA_TABLE(FONCTION=_F(FONCTION=FETA_OUV))
 
 
 TEST_TABLE(TABLE=TDX_OUV,
-           FILTRE=(_F(NOM_PARA='INST', VALE=4.00006E+00,),),
+           FILTRE=(_F(NOM_PARA='INST', VALE=4.00006E+00)),
            NOM_PARA='DX',
            VALE=1.79523E+00,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=TETA_OUV,
-           FILTRE=(_F(NOM_PARA='INST', VALE=4.00006E+00,),),
+           FILTRE=(_F(NOM_PARA='INST', VALE=4.00006E+00)),
            NOM_PARA='ETA_PILO',
            VALE=8.29181E-01,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_RESU(
   RESU = (
@@ -387,16 +387,16 @@ TETA_TAC=CREA_TABLE(FONCTION=_F(FONCTION=FETA_TAC))
 
 
 TEST_TABLE(TABLE=TDX_TAC,
-           FILTRE=(_F(NOM_PARA='INST', VALE=4.00006E+00,),),
+           FILTRE=(_F(NOM_PARA='INST', VALE=4.00006E+00)),
            NOM_PARA='DX',
            VALE=1.79523E+00,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=TETA_TAC,
-           FILTRE=(_F(NOM_PARA='INST', VALE=4.00006E+00,),),
+           FILTRE=(_F(NOM_PARA='INST', VALE=4.00006E+00)),
            NOM_PARA='ETA_PILO',
            VALE=8.29181E-01,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_RESU(
   RESU = (

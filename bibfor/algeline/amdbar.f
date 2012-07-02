@@ -2,10 +2,10 @@
      >          (N, PE, IW, LEN, IWLEN, PFREE, NV, NEXT,
      >          LAST, HEAD, ELEN, DEGREE, NCMPA, W, IOVFLO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C RESPONSABLE JFBHHUC C.ROSE
 C TOLE CRP_20
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER N, IWLEN, PFREE, NCMPA, IOVFLO, IW (IWLEN), PE (N),
      >          DEGREE (N), NV (N), NEXT (N), LAST (N), HEAD (N),
      >          ELEN (N), W (N), LEN (N)
@@ -514,6 +514,8 @@ C=======================================================================
 C  INITIALIZATIONS
 C=======================================================================
 
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
         WFLG = 2
         MINDEG = 1
         NCMPA = 0

@@ -1,10 +1,10 @@
       SUBROUTINE TE0001(OPTION,NOMTE)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*16      OPTION,NOMTE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,6 +33,10 @@ C     -----------------------------------------------------------------
       CHARACTER*8  NOMPAR(4),NOMFON
       LOGICAL      LANGL
 C     -----------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IER ,J ,JDIMP ,JGEOM ,JTIME ,JVEC 
+      INTEGER NBPAR ,NDDL ,NDDL1 
+C-----------------------------------------------------------------------
       IF (NOMTE .EQ. 'FORCE_NOD_6DDL')  NDDL1 = 6
       IF (NOMTE .EQ. 'FORCE_NOD_3DDL')  NDDL1 = 3
       IF (NOMTE .EQ. 'FORCE_NOD_2DDL')  NDDL1 = 2

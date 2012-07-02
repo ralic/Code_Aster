@@ -1,8 +1,8 @@
       SUBROUTINE JACBM1(EPAIS,VECTG,VECTT,MATJ,JM1,DETJ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/05/96   AUTEUR F6BHHBU D.BUI 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -18,13 +18,15 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       REAL*8 EPAIS,VECTG(2,3),VECTT(3,3)
       REAL*8 MATJ(3,3),JM1(3,3),DETJ
 C
 C     CONSTRUCTION DU JACOBIEN J (3,3) AUX X PTS D'INTEGRATION
 C                                          X=REDUIT OU NORMAL
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       MATJ(1,1)=VECTG(1,1)
       MATJ(1,2)=VECTG(1,2)
       MATJ(1,3)=VECTG(1,3)

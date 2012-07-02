@@ -1,9 +1,9 @@
-# MODIF  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE SOUS-STRUCTURATION DYNAMIQUE : PLAQUE MINCE APPUYEE SUR SES BORDS
 # perf006a.para = tps_job 500 mem_job 350Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,16 +28,16 @@ DEBUT(CODE=_F(NOM='PERF006A',NIV_PUB_WEB='INTERNET'))
 MAILLA=LIRE_MAILLAGE(FORMAT='MED')
 
 MODELE=AFFE_MODELE(MAILLAGE=MAILLA,
-            AFFE=_F(GROUP_MA='CALCUL', PHENOMENE='MECANIQUE', MODELISATION='DKT',),);
+            AFFE=_F(GROUP_MA='CALCUL', PHENOMENE='MECANIQUE', MODELISATION='DKT'));
 
 
-MATER=DEFI_MATERIAU(ELAS=_F(E=2.1E11, NU=0.30, RHO=7800.0,),);
+MATER=DEFI_MATERIAU(ELAS=_F(E=2.1E11, NU=0.30, RHO=7800.0));
 
 
 
-CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLA, AFFE=_F(GROUP_MA='CALCUL', MATER=MATER,),);
+CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLA, AFFE=_F(GROUP_MA='CALCUL', MATER=MATER));
 
-CARELE=AFFE_CARA_ELEM(MODELE=MODELE, COQUE=_F(GROUP_MA='CALCUL', EPAIS=0.1,),);
+CARELE=AFFE_CARA_ELEM(MODELE=MODELE, COQUE=_F(GROUP_MA='CALCUL', EPAIS=0.1));
 
 ########################################################################
 #
@@ -55,22 +55,22 @@ CHARGE=AFFE_CHAR_MECA(MODELE=MODELE,
                                    DZ=0.0,
                                    DRX=0.0,
                                    DRY=0.0,
-                                   DRZ=0.0,),
+                                   DRZ=0.0),
                                 _F(GROUP_NO='GAUCHE',
                                    DX=0.0,
                                    DY=0.0,
                                    DZ=0.0,
                                    DRX=0.0,
                                    DRY=0.0,
-                                   DRZ=0.0,),
+                                   DRZ=0.0),
                                 _F(GROUP_NO='APPUI_1',
                                    DX=0.0,
                                    DY=0.0,
-                                   DZ=0.0,),
+                                   DZ=0.0),
                                 _F(GROUP_NO='APPUI_2',
                                    DX=0.0,
                                    DY=0.0,
-                                   DZ=0.0,),),);
+                                   DZ=0.0)));
 
 #
 
@@ -78,7 +78,7 @@ MERIME=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                       MODELE=MODELE,
                       CHAM_MATER=CHAMPMAT,
                       CARA_ELEM=CARELE,
-                      CHARGE=CHARGE,);
+                      CHARGE=CHARGE);
 
 #
 
@@ -86,21 +86,21 @@ MEMAME=CALC_MATR_ELEM(OPTION='MASS_MECA',
                       MODELE=MODELE,
                       CHAM_MATER=CHAMPMAT,
                       CARA_ELEM=CARELE,
-                      CHARGE=CHARGE,);
+                      CHARGE=CHARGE);
 
 #
 
-NUMDDL=NUME_DDL(MATR_RIGI=MERIME,);
+NUMDDL=NUME_DDL(MATR_RIGI=MERIME);
 
 #
 
 RAIDASS=ASSE_MATRICE(MATR_ELEM=MERIME,
-                     NUME_DDL=NUMDDL,);
+                     NUME_DDL=NUMDDL);
 
 #
 
 MASSASS=ASSE_MATRICE(MATR_ELEM=MEMAME,
-                     NUME_DDL=NUMDDL,);
+                     NUME_DDL=NUMDDL);
 
 #
 
@@ -111,7 +111,7 @@ MODES=MODE_ITER_SIMULT(MATR_A=RAIDASS,
                                       STURM='OUI',
                                       SEUIL=5E-04),
                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                    NMAX_FREQ=12,),);
+                                    NMAX_FREQ=12));
 
 #
 #  DEFINITION DES INTERFACES
@@ -119,22 +119,22 @@ MODES=MODE_ITER_SIMULT(MATR_A=RAIDASS,
 LINT_CL=DEFI_INTERF_DYNA(NUME_DDL=NUMDDL,
                          INTERFACE=(_F(NOM='DROITE',
                                        TYPE='CRAIGB',
-                                       GROUP_NO='DROITE',),
+                                       GROUP_NO='DROITE'),
                                     _F(NOM='GAUCHE',
                                        TYPE='CRAIGB',
-                                       GROUP_NO='GAUCHE',),),);
+                                       GROUP_NO='GAUCHE')));
 
 #
 #  CALCUL DE LA BASE MODALE DES SOUS-STRUCTURES
 
 BAMO_CL=DEFI_BASE_MODALE(CLASSIQUE=_F(INTERF_DYNA=LINT_CL,
                                       MODE_MECA=MODES,
-                                      NMAX_MODE=10,),);
+                                      NMAX_MODE=10));
 
 #
 #  CALCUL DU MACRO-ELEMENT
 
-MAC_EL=MACR_ELEM_DYNA(BASE_MODALE=BAMO_CL,);
+MAC_EL=MACR_ELEM_DYNA(BASE_MODALE=BAMO_CL);
 
 #
 #
@@ -142,54 +142,54 @@ MAC_EL=MACR_ELEM_DYNA(BASE_MODALE=BAMO_CL,);
 
 MODEGE=DEFI_MODELE_GENE(SOUS_STRUC=(_F(NOM='M_EL1',
                                        MACR_ELEM_DYNA=MAC_EL,
-                                       ANGL_NAUT = (0., 0., 0.,),
+                                       ANGL_NAUT = (0., 0., 0.),
                                        TRANS=(0.,0.,0.)),
                                     _F(NOM='M_EL2',
                                        MACR_ELEM_DYNA=MAC_EL,
-                                       ANGL_NAUT=(90.,0.,0.,),
+                                       ANGL_NAUT=(90.,0.,0.),
                                        TRANS=(0.,0.,0.)),
                                     _F(NOM='M_EL3',
                                        MACR_ELEM_DYNA=MAC_EL,
-                                       ANGL_NAUT=(180.,0.,0.,),
+                                       ANGL_NAUT=(180.,0.,0.),
                                        TRANS=(0.,0.,0.)),
                                     _F(NOM='M_EL4',
                                        MACR_ELEM_DYNA=MAC_EL,
-                                       ANGL_NAUT=(270.,0.,0.,),
-                                       TRANS=(0.,0.,0.)),),
+                                       ANGL_NAUT=(270.,0.,0.),
+                                       TRANS=(0.,0.,0.))),
                         LIAISON=(_F(SOUS_STRUC_1='M_EL1',
                                     INTERFACE_1='GAUCHE',
                                     SOUS_STRUC_2='M_EL2',
-                                    INTERFACE_2='DROITE',),
+                                    INTERFACE_2='DROITE'),
                                  _F(SOUS_STRUC_1='M_EL2',
                                     INTERFACE_1='GAUCHE',
                                     SOUS_STRUC_2='M_EL3',
-                                    INTERFACE_2='DROITE',),
+                                    INTERFACE_2='DROITE'),
                                  _F(SOUS_STRUC_1='M_EL3',
                                     INTERFACE_1='GAUCHE',
                                     SOUS_STRUC_2='M_EL4',
-                                    INTERFACE_2='DROITE',),
+                                    INTERFACE_2='DROITE'),
                                  _F(SOUS_STRUC_1='M_EL4',
                                     INTERFACE_1='GAUCHE',
                                     SOUS_STRUC_2='M_EL1',
-                                    INTERFACE_2='DROITE',),),
+                                    INTERFACE_2='DROITE')),
                         VERIF=_F(PRECISION=1.E-3,
-                                 CRITERE='RELATIF',),);
+                                 CRITERE='RELATIF'));
 
 #
 #  NUMEROTATION DU PROBLEME GENERALISE
 
-NUMEGE=NUME_DDL_GENE(MODELE_GENE=MODEGE,);
+NUMEGE=NUME_DDL_GENE(MODELE_GENE=MODEGE);
 
 #
 #  ASSEMBLAGE DES MATRICES RAIDEUR ET MASSE
 
 MASGEN=ASSE_MATR_GENE(NUME_DDL_GENE=NUMEGE,
-                      OPTION='MASS_GENE',);
+                      OPTION='MASS_GENE');
 
 #
 
 RIGGEN=ASSE_MATR_GENE(NUME_DDL_GENE=NUMEGE,
-                      OPTION='RIGI_GENE',);
+                      OPTION='RIGI_GENE');
 
 #
 #   CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE
@@ -200,14 +200,14 @@ RESGEN=MODE_ITER_SIMULT(MATR_A=RIGGEN,
                                       STOP_ERREUR='OUI',
                                       STURM='OUI',
                                       SEUIL=5E-04),
-                       SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=50,NPREC=9),
+                       SOLVEUR=_F(METHODE='MUMPS',NPREC=9,PCENT_PIVOT=20),
                         CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                     NMAX_FREQ=12,),);
+                                     NMAX_FREQ=12));
 
 
 TEST_RESU(RESU=
        _F( RESULTAT = RESGEN, PARA = 'FREQ', CRITERE = 'RELATIF',
-           PRECISION = 5.E-4, NUME_ORDRE = 5, VALE = 8.28, REFERENCE = 'AUTRE_ASTER'),)
+           PRECISION = 5.E-4, NUME_ORDRE = 5, VALE = 8.28, REFERENCE = 'AUTRE_ASTER'))
 
 
 FIN();

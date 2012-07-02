@@ -1,4 +1,4 @@
-# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE ONDE DE COMPRESSION DANS UNE COLONNE POROELASTIQUE
 # wdnp102a.para = tps_job 100 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -53,8 +53,8 @@ print '>> Onde %s CS= %f CP= %f' %(Onde,CS,CP)
 # ------------------------------------------------------------------------------
 
 
-DEBUT(CODE=_F(NOM='WDNP102A',NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',JXVERI='OUI',),);
+DEBUT(CODE=_F(NOM='WDNP102A',NIV_PUB_WEB='INTERNET'),
+      DEBUG=_F(SDVERI='OUI',JXVERI='OUI'));
 
 INV_K_EAU = 1.E-5 ;
 
@@ -68,28 +68,28 @@ MA=LIRE_MAILLAGE(FORMAT='MED');
 
 MAIL = CREA_MAILLAGE(MAILLAGE=MA,
                   CREA_POI1=_F(NOM_GROUP_MA ='RESBAS',
-                                GROUP_MA ='BAS',),);
+                                GROUP_MA ='BAS'));
 
 MAIL = DEFI_GROUP(reuse=MAIL,
                 MAILLAGE=MAIL,
                 INFO=1,
-                CREA_GROUP_NO=(_F(TOUT_GROUP_MA='OUI',),
+                CREA_GROUP_NO=(_F(TOUT_GROUP_MA='OUI'),
 
                                _F(NOM='LATBG',
-                                  DIFFE=('LAT_LEFT','BAS',),),
+                                  DIFFE=('LAT_LEFT','BAS')),
                                _F(NOM='LATBD',
-                                  DIFFE=('LAT_RIGH','BAS',),),
+                                  DIFFE=('LAT_RIGH','BAS')),
 
                                _F(NOM='LATHG',
-                                  DIFFE=('LAT_LEFT','HA10',),),
+                                  DIFFE=('LAT_LEFT','HA10')),
                                _F(NOM='LATHD',
-                                  DIFFE=('LAT_RIGH','HA10',),),),);
+                                  DIFFE=('LAT_RIGH','HA10'))));
 
 list_group_ma=['ELEM'+str(n) for n in range(nbcouche)];
 
 print '>> list_group_ma=',list_group_ma
 
-MAT1=DEFI_MATERIAU(ELAS=_F(E =YOUNG, NU =NU, RHO =RHO, ALPHA=0.,),
+MAT1=DEFI_MATERIAU(ELAS=_F(E =YOUNG, NU =NU, RHO =RHO, ALPHA=0.),
                    COMP_THM='LIQU_SATU',
                    THM_INIT=_F(PRE1 = 0.0,
                                PORO = 0.23),
@@ -104,7 +104,7 @@ MAT1=DEFI_MATERIAU(ELAS=_F(E =YOUNG, NU =NU, RHO =RHO, ALPHA=0.,),
                                VISC       = VISCOLIQ,
                                D_VISC_TEMP= DVISCOL));
 
-MAT_PAR=DEFI_MATERIAU(ELAS=_F(E =YOUNG, NU =NU, RHO =RHO,),);
+MAT_PAR=DEFI_MATERIAU(ELAS=_F(E =YOUNG, NU =NU, RHO =RHO));
 
 INCLUDE(UNITE=38,INFO=1);
 
@@ -119,116 +119,116 @@ MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                             MODELISATION='2D_DIS_T'),
                          _F(GROUP_MA = Paraxia,
                             PHENOMENE = 'MECANIQUE',
-                            MODELISATION = 'D_PLAN_ABSO',),),);
+                            MODELISATION = 'D_PLAN_ABSO')));
 
 CARA=AFFE_CARA_ELEM(MODELE=MODELE,
                     DISCRET_2D=(_F(GROUP_MA='RESBAS',
                                   CARA='K_T_D_N',
-                                  VALE=(1.E+14,1.E+14,),),
+                                  VALE=(1.E+14,1.E+14)),
                                _F(GROUP_MA='RESBAS',
                                   CARA='M_T_D_N',
-                                  VALE=0.,),
+                                  VALE=0.),
                                _F(GROUP_MA='RESBAS',
                                   CARA='A_T_D_N',
-                                  VALE=(0.,0.,),),),);
+                                  VALE=(0.,0.))));
 
 CARA1=AFFE_CARA_ELEM(MODELE=MODELE,
                     DISCRET_2D=(_F(GROUP_MA='RESBAS',
                                   CARA='K_T_D_N',
-                                  VALE=(1.E+01,1.E+01,),),
+                                  VALE=(1.E+01,1.E+01)),
                                _F(GROUP_MA='RESBAS',
                                   CARA='M_T_D_N',
-                                  VALE=0.,),
+                                  VALE=0.),
                                _F(GROUP_MA='RESBAS',
                                   CARA='A_T_D_N',
-                                  VALE=(0.,0.,),),),);
+                                  VALE=(0.,0.))));
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
-                       AFFE=(_F(GROUP_MA = list_group_ma, MATER = MAT1,),
-                             _F(GROUP_MA = Paraxia, MATER = MAT_PAR,),),);
+                       AFFE=(_F(GROUP_MA = list_group_ma, MATER = MAT1),
+                             _F(GROUP_MA = Paraxia, MATER = MAT_PAR)));
 
 LIAISON0=AFFE_CHAR_MECA(MODELE=MODELE,
                         VERI_NORM='NON',
                         LIAISON_GROUP=(_F(GROUP_NO_1='LAT_LEFT',
                                          GROUP_NO_2='LAT_RIGH',
-                                         DDL_1=('DX',),
-                                         DDL_2=('DX',),
+                                         DDL_1=('DX'),
+                                         DDL_2=('DX'),
                                          COEF_MULT_1 = 1.,
                                          COEF_MULT_2 = -1.,
-                                         COEF_IMPO = 0.,),
+                                         COEF_IMPO = 0.),
                                       _F(GROUP_NO_1='LATHG',
                                          GROUP_NO_2='LATHD',
-                                         DDL_1=('DY',),
-                                         DDL_2=('DY',),
+                                         DDL_1=('DY'),
+                                         DDL_2=('DY'),
                                          COEF_MULT_1 = 1.,
                                          COEF_MULT_2 = -1.,
-                                         COEF_IMPO = 0.,),),);
+                                         COEF_IMPO = 0.)));
 LIAISON=AFFE_CHAR_MECA(MODELE=MODELE,
                         VERI_NORM='NON',
                         LIAISON_GROUP=(_F(GROUP_NO_1='LAT_LEFT',
                                          GROUP_NO_2='LAT_RIGH',
-                                         DDL_1=('DX',),
-                                         DDL_2=('DX',),
+                                         DDL_1=('DX'),
+                                         DDL_2=('DX'),
                                          COEF_MULT_1 = 1.,
                                          COEF_MULT_2 = -1.,
-                                         COEF_IMPO = 0.,),
+                                         COEF_IMPO = 0.),
                                       _F(GROUP_NO_1='LAT_LEFT',
                                          GROUP_NO_2='LAT_RIGH',
-                                         DDL_1=('DY',),
-                                         DDL_2=('DY',),
+                                         DDL_1=('DY'),
+                                         DDL_2=('DY'),
                                          COEF_MULT_1 = 1.,
                                          COEF_MULT_2 = -1.,
-                                         COEF_IMPO = 0.,),),);
+                                         COEF_IMPO = 0.)));
 
 BLOQ_BAS=AFFE_CHAR_CINE(MODELE=MODELE,
-                    MECA_IMPO=_F(GROUP_MA=('BAS',),DX=0.0,DY=0.0,),);
+                    MECA_IMPO=_F(GROUP_MA=('BAS'),DX=0.0,DY=0.0));
 
 BLOQ_HAU=AFFE_CHAR_MECA(MODELE=MODELE,
-                    DDL_IMPO=_F(GROUP_MA=('HA10',),DY=0.0,),);
+                    DDL_IMPO=_F(GROUP_MA=('HA10'),DY=0.0));
 
 BLOQ_PRE=AFFE_CHAR_CINE(MODELE=MODELE,
-                    MECA_IMPO=_F(GROUP_MA=('HA10',),PRE1=0.0,),);
+                    MECA_IMPO=_F(GROUP_MA=('HA10'),PRE1=0.0));
 
 ONDE=AFFE_CHAR_MECA_F(MODELE=MODELE,INFO=2,
-                      ONDE_PLANE=_F(DIRECTION = (0., 1.,),
+                      ONDE_PLANE=_F(DIRECTION = (0., 1.),
                             TYPE_ONDE = Onde,
                             FONC_SIGNAL = vite,
                             #GROUP_MA= 'BAS',
-                            MAILLE='M128',),);
+                            MAILLE='M128'));
 # ---Fin
 IMPR_CO(CONCEPT=_F(NOM=ONDE))
 
 PES =AFFE_CHAR_MECA(MODELE=MODELE,
                     PESANTEUR=_F(GRAVITE=9.81,
-                                DIRECTION=(0.0,-1.0,0.0,),),);
+                                DIRECTION=(0.0,-1.0,0.0)));
 
 TANBID=DEFI_LIST_REEL(DEBUT=-1.E-1,
-                      INTERVALLE=_F(JUSQU_A=0., NOMBRE=2,),);
+                      INTERVALLE=_F(JUSQU_A=0., NOMBRE=2));
 
 UBID=STAT_NON_LINE(MODELE=MODELE,
                  CARA_ELEM=CARA,
                  CHAM_MATER=CHAMPMAT,
                  EXCIT=(_F(CHARGE = LIAISON),
-                        _F(CHARGE = PES,),),
+                        _F(CHARGE = PES)),
                  COMP_INCR=(_F(RELATION = 'KIT_HM',
                                 RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),
-                                GROUP_MA=list_group_ma,),
+                                GROUP_MA=list_group_ma),
                               _F(RELATION='ELAS',
                                DEFORMATION='PETIT',
                                GROUP_MA=Paraxia,
-                               PARM_THETA=0.57,),),
-                 INCREMENT=_F(LIST_INST=TANBID,),
+                               PARM_THETA=0.57)),
+                 INCREMENT=_F(LIST_INST=TANBID),
                  NEWTON=_F(MATRICE='TANGENTE',
-                           REAC_ITER=1,),
+                           REAC_ITER=1),
                  CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-10,
-                                ARRET='OUI',),);
+                                ARRET='OUI'));
 
 BIDDEP0=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                 OPERATION='EXTR',
                 RESULTAT=UBID,
                 NOM_CHAM='DEPL',
                 INST=0.,
-                INFO=1,);
+                INFO=1);
 
 UBID=CALC_CHAMP(reuse=UBID,FORCE='FORC_NODA',
             #INST=0.2,
@@ -241,7 +241,7 @@ FORCE0=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                 RESULTAT=UBID,
                 NOM_CHAM='FORC_NODA',
                 INST=0.,
-                INFO=1,);
+                INFO=1);
 
 IMPR_RESU(RESU=_F(CHAM_GD=BIDDEP0));
 
@@ -252,40 +252,40 @@ CHFORCE0=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                   ASSE=(_F(TOUT='OUI',
                            CHAM_GD=BIDDEP0,
                            CUMUL='OUI',
-                           COEF_R=0.0,),
+                           COEF_R=0.0),
                         _F(TOUT='OUI',
                            CHAM_GD=FORCE0,
                            CUMUL='OUI',
-                           COEF_R=-1.0,),),);
+                           COEF_R=-1.0)));
 
-VFORCE0 = AFFE_CHAR_MECA(MODELE=MODELE,VECT_ASSE=CHFORCE0,INFO=1,);
+VFORCE0 = AFFE_CHAR_MECA(MODELE=MODELE,VECT_ASSE=CHFORCE0,INFO=1);
 
 DYNB=STAT_NON_LINE(MODELE=MODELE,
                  CHAM_MATER=CHAMPMAT,
                  CARA_ELEM=CARA1,
-                 EXCIT=(_F(CHARGE = BLOQ_HAU,TYPE_CHARGE='DIDI',),
+                 EXCIT=(_F(CHARGE = BLOQ_HAU,TYPE_CHARGE='DIDI'),
                         _F(CHARGE = VFORCE0),
                         _F(CHARGE = LIAISON0),
-                        _F(CHARGE = PES,),),
+                        _F(CHARGE = PES)),
                  COMP_INCR=(_F(RELATION = 'KIT_HM',
                                 RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),
-                                GROUP_MA=list_group_ma,),
+                                GROUP_MA=list_group_ma),
                               _F(RELATION='ELAS',
                                DEFORMATION='PETIT',
                                GROUP_MA=Paraxia,
-                               PARM_THETA=0.57,),),
-                 INCREMENT=_F(LIST_INST=TANBID,),
+                               PARM_THETA=0.57)),
+                 INCREMENT=_F(LIST_INST=TANBID),
                  NEWTON=_F(MATRICE='TANGENTE',
-                           REAC_ITER=1,),
+                           REAC_ITER=1),
                  CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-10,
-                                ARRET='OUI',),);
+                                ARRET='OUI'));
 
 BIDDEP=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                 OPERATION='EXTR',
                 RESULTAT=DYNB,
                 NOM_CHAM='DEPL',
                 INST=0.,
-                INFO=1,);
+                INFO=1);
 
 INIZERO=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                    OPERATION='ASSE',
@@ -294,43 +294,43 @@ INIZERO=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                    ASSE=(_F(TOUT   ='OUI',
                             CHAM_GD=BIDDEP,
                             CUMUL  ='OUI',
-                            COEF_R =0.0,),),);
+                            COEF_R =0.0)));
 
 pas_ttfin = 0.001;
 
 TEMLI=DEFI_LIST_REEL(DEBUT=0.,
-                     INTERVALLE=_F(JUSQU_A = 0.3, PAS =pas_ttfin,),);
+                     INTERVALLE=_F(JUSQU_A = 0.3, PAS =pas_ttfin));
 
 DYNB=DYNA_NON_LINE(reuse=DYNB,INFO=1,MODELE=MODELE,
                    CHAM_MATER=CHAMPMAT,
                    CARA_ELEM=CARA1,
                    EXCIT=(# Si on bloque, il ne se passe rien ...
-                          _F(CHARGE = BLOQ_HAU,TYPE_CHARGE='DIDI',),
+                          _F(CHARGE = BLOQ_HAU,TYPE_CHARGE='DIDI'),
                           _F(CHARGE = VFORCE0),
                           _F(CHARGE = LIAISON0),
-                          _F(CHARGE = PES,),
-                          _F(CHARGE = ONDE,),),
+                          _F(CHARGE = PES),
+                          _F(CHARGE = ONDE)),
                    ETAT_INIT=_F(EVOL_NOLI=DYNB, INST=0.,
-                                VITE=INIZERO, ACCE=INIZERO,),
+                                VITE=INIZERO, ACCE=INIZERO),
                    COMP_INCR=(_F(RELATION = 'KIT_HM',
                                 RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),
-                                GROUP_MA=list_group_ma,),
+                                GROUP_MA=list_group_ma),
                               _F(RELATION='ELAS',
                                DEFORMATION='PETIT',
                                GROUP_MA=Paraxia,
-                               PARM_THETA=0.57,),),
+                               PARM_THETA=0.57)),
                    CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-10,
                                   ITER_GLOB_MAXI = 10,
-                                  ARRET='OUI',),
-                   SOLVEUR=_F(METHODE = 'MUMPS',PCENT_PIVOT=120,),
+                                  ARRET='OUI'),
+                   SOLVEUR=_F(METHODE = 'MUMPS'),
                    NEWTON=_F(MATRICE = 'TANGENTE',
-                             REAC_ITER = 1,),
+                             REAC_ITER = 1),
                    INCREMENT=_F(LIST_INST = TEMLI,
                                 INST_INIT = 0.,
-                                INST_FIN  = 0.18,),
-                   #ARCHIVAGE=_F(LIST_INST = L_ARCH,),
+                                INST_FIN  = 0.18),
+                   #ARCHIVAGE=_F(LIST_INST = L_ARCH),
                    SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
-                                   FORMULATION='DEPLACEMENT',),);
+                                   FORMULATION='DEPLACEMENT'));
 
 
 # TEST DE LA VITESSE
@@ -338,7 +338,7 @@ DYNB=DYNA_NON_LINE(reuse=DYNB,INFO=1,MODELE=MODELE,
 DYNV56=RECU_FONCTION(RESULTAT=DYNB,
                     NOEUD='N56',
                     NOM_CHAM='VITE',
-                    NOM_CMP='DY',);
+                    NOM_CMP='DY');
 
 TEST_FONCTION(VALEUR=(_F(
                    FONCTION = DYNV56,
@@ -361,14 +361,14 @@ TEST_FONCTION(VALEUR=(_F(
                    CRITERE = 'ABSOLU',
                    PRECISION = 1.E-5,
                    REFERENCE = 'ANALYTIQUE'),
-                ),);
+                ));
 
 # TEST DE LA PRESSION HYDRAULIQUE
 
 DYNP56=RECU_FONCTION(RESULTAT=DYNB,
                     NOEUD='N56',
                     NOM_CHAM='DEPL',
-                    NOM_CMP='PRE1',);
+                    NOM_CMP='PRE1');
 
 TEST_FONCTION(VALEUR=(_F(
                    FONCTION = DYNP56,
@@ -391,6 +391,6 @@ TEST_FONCTION(VALEUR=(_F(
                    CRITERE = 'RELATIF',
                    PRECISION = 1.E-3,
                    REFERENCE = 'NON_REGRESSION'),
-                ),);
+                ));
 
 FIN();

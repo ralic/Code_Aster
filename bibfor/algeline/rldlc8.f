@@ -1,6 +1,6 @@
       SUBROUTINE RLDLC8 ( NOMMAT, HCOL, ADIA , ABLO ,
      &                     NEQ   , NBBLOC , XSOL , NBSOL )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
       CHARACTER*(*)       NOMMAT
@@ -8,7 +8,7 @@ C
       COMPLEX*16                 XSOL (NEQ,*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -89,20 +89,21 @@ C
 C
 C
 C     ------------------------------------------------------------------
-      CHARACTER*6      PGC, PGCANC
-      COMMON  /NOMAJE/ PGC
 C
 C     ------------------------------------------------------------------
       COMPLEX*16           C8VAL
       CHARACTER*24     NOMDIA, UALF
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IADIA ,IBLOC ,IDE ,IDERBL ,IEQUA ,ILONG
+      INTEGER ISOL ,IXX ,LDIAG ,LMAT ,NBBLOC ,NBSOL ,NEQ
+
+C-----------------------------------------------------------------------
       DATA  UALF  /'                   .UALF'/
       DATA  NOMDIA/'                   .&VDI'/
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
-      PGCANC       = PGC
-      PGC          = 'RLDLC8'
       UALF(1:19)   = NOMMAT
       NOMDIA(1:19) = NOMMAT
 C
@@ -176,7 +177,6 @@ CMIC$*       PRIVATE(ISOL,C8VAL,I)
  300  CONTINUE
 C
       CALL JEDETR(NOMDIA)
-      PGC = PGCANC
 C
       CALL JEDEMA()
       END

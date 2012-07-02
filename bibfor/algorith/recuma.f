@@ -1,6 +1,6 @@
       SUBROUTINE RECUMA (MAILLA,NBMA,NBGR,NOMMA,NOMGR,NBTO,NUMNOT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C***********************************************************************
 C    P. RICHARD     DATE 13/07/90
 C-----------------------------------------------------------------------
 C  BUT: RASSEMBLER LES MAILLES DE NOMMA ET DES GROUPNO DE NOMGR
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C          ET TRANSCODER DANS NUMNOT
 C
 C-----------------------------------------------------------------------
@@ -46,6 +46,10 @@ C
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IADG ,ICOMP ,J ,NB ,NBGR ,NBMA 
+      INTEGER NBTO ,NUMA 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       ICOMP=0
 C

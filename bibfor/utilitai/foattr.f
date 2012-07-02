@@ -1,11 +1,11 @@
       SUBROUTINE FOATTR( MOTCLE, IOCC, NOMFON )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER                    IOCC
       CHARACTER*(*)      MOTCLE,       NOMFON
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,6 +33,11 @@ C     ----------------------------------------------------------------
       INTEGER      IARG
 C     ----------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER IF ,L1 ,L2 ,L3 ,L4 ,L5 ,L6 
+      INTEGER L7 ,L8 ,L9 ,LPRO ,LXLGUT ,NBFONC ,NBPROL 
+
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       TEMP = NOMFON
       CALL ASSERT(LXLGUT(TEMP).LE.24)

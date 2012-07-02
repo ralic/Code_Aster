@@ -1,6 +1,6 @@
       SUBROUTINE CONVNU(NUMIN,NUMOUT,NOMVEC,BASE,NEQOUT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,7 +25,7 @@ C    CREER UN VECTEUR PERMETTANT DE PASSER D'UNE NUMEROTATION
 C  A UNE AUTRE, CE VECTEUR DONNE POUR CHAQUEEQUATION DE LA NUMEROTATION
 C  RESULTAT LE RANG DE L'EQUTION CORRESPONDANTE DANS LA NUMEROTATION
 C   DE DEPART
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C   SEULS LES DDL PHYSIQUES SONT RESTITUE, DONC SLES LAGRANGES SONT
 C   AUTOMATIQUEMENT MIS A ZERO
@@ -57,6 +57,10 @@ C
       INTEGER IBID
       INTEGER VALI(2)
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IRAN ,IRET ,ITYP ,LDCVN ,LLDEIN ,LLDEOU 
+      INTEGER NBID ,NEQIN ,NEQOUT ,NUNO 
 C-----------------------------------------------------------------------
       DATA IBID/0/
 C-----------------------------------------------------------------------

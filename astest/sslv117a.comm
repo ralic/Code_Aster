@@ -1,4 +1,4 @@
-# MODIF  DATE 20/06/2012   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE  - VALIDATION 3D DE LA MODELISATION A MICRO-DILATATION
 # sslv117a.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -32,11 +32,11 @@ MA2 = CREA_MAILLAGE(
 MA = CREA_MAILLAGE(MAILLAGE=MA2,
                   CREA_GROUP_MA=(_F(NOM         = 'CUBE_REG',
                                     GROUP_MA    = 'CUBE',
-                                    PREF_MAILLE = 'MR'),),);
+                                    PREF_MAILLE = 'MR')));
 
 MA = DEFI_GROUP( reuse    = MA,
                  MAILLAGE = MA,
-                 CREA_GROUP_NO = ( _F(TOUT_GROUP_MA='OUI',),),);
+                 CREA_GROUP_NO = ( _F(TOUT_GROUP_MA='OUI')));
 
 MO = AFFE_MODELE(
   MAILLAGE = MA,
@@ -55,13 +55,13 @@ MAT2= DEFI_MATERIAU( ELAS_2NDG = _F(A1          =  1.0/4.0,
                                     A2          =  0.0,
                                     A3          =  0.0,
                                     A4          =  0.0,
-                                    A5          =  0.0,),
-                     NON_LOCAL  = _F(PENA_LAGR  =  0.0,),);
+                                    A5          =  0.0),
+                     NON_LOCAL  = _F(PENA_LAGR  =  0.0));
 
 CHMAT = AFFE_MATERIAU(
   MAILLAGE = MA,
   AFFE     = (_F(GROUP_MA = 'CUBE', MATER = MAT),
-              _F(GROUP_MA = 'CUBE_REG', MATER = MAT2),))
+              _F(GROUP_MA = 'CUBE_REG', MATER = MAT2)))
 
 R2   = FORMULE(NOM_PARA = ('X','Y','Z'), VALE = "X*X+Y*Y+Z*Z" )
 GF   = FORMULE(NOM_PARA = ('X','Y','Z'), VALE = "-1.+R2(X,Y,Z)*R2(X,Y,Z)" )
@@ -76,7 +76,7 @@ ZERO = DEFI_CONSTANTE(VALE = 0)
 DEPL_IMP = AFFE_CHAR_MECA_F(
   MODELE    = MO,
   DDL_IMPO = (
-    _F(GROUP_NO='BORD_EXT', GONF=GF),),
+    _F(GROUP_NO='BORD_EXT', GONF=GF)),
   FACE_IMPO = (
     _F(GROUP_MA='BORD_EXT', DX=UX, DY=UY, DZ=UZ),
     _F(GROUP_MA='SYME_X',   DX=ZERO),
@@ -100,7 +100,7 @@ EVOL = STAT_NON_LINE(
   CHAM_MATER = CHMAT,
   INCREMENT  = _F(LIST_INST=INSTANTS),
   COMP_INCR  = _F(RELATION='ELAS'),
-  SOLVEUR    = _F(METHODE='MUMPS',PCENT_PIVOT=50),
+  SOLVEUR    = _F(METHODE='MUMPS'),
   EXCIT      = (
     _F(CHARGE = DEPL_IMP),
     _F(CHARGE = FORC_IMP),

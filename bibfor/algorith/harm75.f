@@ -1,8 +1,8 @@
       SUBROUTINE HARM75(NOMRES,TYPRES,NOMIN,NOMCMD,BASEMO)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,6 +51,13 @@ C
       INTEGER      IARG
 C
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IADESC ,IADRIF ,IARCHI ,IAREF2 ,IAREFE ,ICH 
+      INTEGER IDBASE ,IDVECG ,IRET ,IRETOU ,ISK ,JFREQ ,JFRREC 
+      INTEGER JNUME ,LINST ,LLCHA ,LREFE ,LVALE ,N1 ,NBCHAM 
+      INTEGER NBFREQ ,NBID ,NBREC ,NEQ 
+      REAL*8 BID ,EBID 
+C-----------------------------------------------------------------------
       DATA CHAMNO   /'&&HARM75.CHAMNO'/
 C     ------------------------------------------------------------------
 C
@@ -202,7 +209,7 @@ C
                CALL MDGEPC(NEQ,NBMODE,ZR(IDBASE),
      &                 ZC(IDVECG),ZC(LVALE))
                CALL JELIBE(CHAMNO)
-               CALL RSNOCH(NOMRES,TYPE(ICH),IARCHI,' ')
+               CALL RSNOCH(NOMRES,TYPE(ICH),IARCHI)
  32         CONTINUE
             CALL RSADPA(NOMRES,'E',1,'FREQ',IARCHI,0,LINST,K8B)
             ZR(LINST) = ZR(JFREQ+I)

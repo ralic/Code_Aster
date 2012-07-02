@@ -1,6 +1,6 @@
       SUBROUTINE MODSTA(MOTCLE,MATFAC,MATPRE,SOLVEU,LMATM,NUME,
      &                  IDDL,COEF,NEQ,NBMODE,ZRMOD)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER    LMATM,IDDL(*),NEQ,NBMODE
       REAL*8     COEF(*),ZRMOD(NEQ,*)
@@ -8,7 +8,7 @@
       COMPLEX*16        CBID
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,6 +58,10 @@ C     ------------------------------------------------------------------
       REAL*8       UN
       CHARACTER*8  NOMCMP(3)
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER IC ,IE ,ILA1 ,ILA2 ,IM ,IMOD ,IN 
+      INTEGER IN2 ,IND ,JDDL ,JDDR 
+C-----------------------------------------------------------------------
       DATA  NOMCMP / 'DX' , 'DY' , 'DZ' /
 C     ------------------------------------------------------------------
       CALL JEMARQ()

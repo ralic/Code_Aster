@@ -1,12 +1,12 @@
       SUBROUTINE TRMULT(MODSTA,NUMEXI,MAILLA,NEQ,IDDEEQ,PSIDE)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*8   MODSTA,MAILLA
       INTEGER       NUMEXI,NEQ,IDDEEQ
       REAL*8        PSIDE(NEQ)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,6 +48,12 @@ C OUT : PSIDE  : VALEURS DU VECTEUR PSI*DELTA
       COMPLEX*16   C16B
       INTEGER      IARG
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,ID ,IDGN ,IDMST ,IDNO ,II ,IN 
+      INTEGER IRET ,LDGN ,NB ,NBD ,NBDIR ,NBGR ,NBNO 
+      INTEGER NBTROU ,NBV 
+      REAL*8 XD 
+C-----------------------------------------------------------------------
       DATA CMP / 'DX' , 'DY' , 'DZ' , 'DRX' , 'DRY' , 'DRZ' /
 C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------

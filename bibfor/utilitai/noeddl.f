@@ -1,12 +1,12 @@
       SUBROUTINE NOEDDL(NUME,NBNOE,LNONOE,NEQ,IVEC)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER                NBNOE,       NEQ,IVEC(NEQ)
       CHARACTER*14      NUME
       CHARACTER*(*)                LNONOE(NBNOE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,6 +45,10 @@ C
 C     - MISE A ZERO DE IVEC:
 C     - NON NECESSAIRE, L'OBJET EST CREE/DETRUIT A CHAQUE FOIS 
 C     - DANS MSTGET
+C-----------------------------------------------------------------------
+      INTEGER I ,IANUEQ ,IAPRNO ,IBID ,IEQ ,IERD ,IN 
+      INTEGER NBCMP ,NEC ,NUNOE 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 C      DO 10 I = 1,NEQ
 C          DO 10 J = 1,NBNOE

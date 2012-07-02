@@ -6,7 +6,7 @@
       CHARACTER*19 VECTOT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -99,7 +99,7 @@ C  Nombre d'equations : NEQ
          CALL JEVEUO(RESIN(1:19)//'.'//GRANDE ,'L',LVAL)
          CHDEP2 = RESIN(1:19)//'.'//GRANDE
          CALL JELIRA(CHDEP2,'LONMAX',NEQ,K1B)
-         NEQ = NEQ / NBORDR         
+         NEQ = NEQ / NBORDR
       ENDIF
       CALL WKVECT('&&ECRESU.PARAMACC','V V R',NBVA,LTPS)
 C
@@ -107,7 +107,7 @@ C  Creation objet resultat en sortie si non existence
 C
 C      NBORDR = NBVA
       CALL JEEXIN ( RESOU(1:8)//'           .DESC', IRES )
-      IF ( (IRES.EQ.0).AND.(TYPOUT(1:9).NE.'TRAN_GENE')) 
+      IF ( (IRES.EQ.0).AND.(TYPOUT(1:9).NE.'TRAN_GENE'))
      &     CALL RSCRSD('G',RESOU,TYPOUT,NBORDR)
 C
       REFE(1:8) = RESIN
@@ -140,7 +140,7 @@ C  Temps
             DO 30 IEQ = 1,NEQ
                ZC(LVALS+IEQ-1) = ZC(NPARA+NBVA*(IEQ-1)+I-1)
  30         CONTINUE
-            CALL RSNOCH(RESOU,GRANDE,I,' ')
+            CALL RSNOCH(RESOU,GRANDE,I)
  20      CONTINUE
       ELSEIF ( TYPOUT(1:10).EQ.'DYNA_TRANS' ) THEN
          DO  100 I = 1,NBVA
@@ -157,7 +157,7 @@ C  Temps
               CALL VTCREB(CHDEPS,ZK24(JREFE+3),'G','R',N1)
               CALL ASSERT(N1.EQ.NEQ)
             ENDIF
-            
+
             CALL JEVEUO(CHDEPS//'.VALE', 'E', LVALS )
             CALL JELIRA(CHDEPS//'.VALE', 'LONMAX', N1,K1B )
             CALL ASSERT(N1.EQ.NEQ)
@@ -167,7 +167,7 @@ C  Temps
                R1 = ZR(NPARA+NBVA*(IEQ-1)+I-1)
                ZR(LVALS+IEQ-1) = R1
  300        CONTINUE
-            CALL RSNOCH(RESOU,GRANDE,(I-1),' ')
+            CALL RSNOCH(RESOU,GRANDE,(I-1))
  200     CONTINUE
       ELSEIF ( TYPOUT(1:9).EQ.'TRAN_GENE' ) THEN
          IF ( IRES .EQ. 0 ) THEN
@@ -179,11 +179,11 @@ C  Temps
             ISTO3 = 0
             LPSTO = .FALSE.
             JVINT = 1
- 
+
 C         CALL MDGENE(BASEMO,NBMODE,K14B,MASGEN,RIGGEN,AMOGEN,NEXCIT,
 C     &            JVEC,IRET)
 C         IF (IRET.NE.0) CALL U2MESS('F','ALGORITH5_24')
-         
+
             RIGGEN = ZK24(JREFE)(1:8)
             MASGEN = ZK24(JREFE+1)(1:8)
             AMOGEN = ZK24(JREFE+2)(1:8)
@@ -196,7 +196,7 @@ C         IF (IRET.NE.0) CALL U2MESS('F','ALGORITH5_24')
 C Bizarre !!!!
 C            NBSAUV = NBSAUV + 1
 
-         
+
             K8B = '        '
             CALL MDALLO(RESOU(1:8),BASEMO,MASGEN,RIGGEN,AMOGEN,NBMODE,
      &            DT,NBSAUV,0,K8B,K8B,0,K8B,0,
@@ -215,7 +215,7 @@ C            NBSAUV = NBSAUV + 1
                LV1 = LVALA
                LV3 = LVALS
             ENDIF
-         
+
 C            DO 500 I = 1,NBORDR+1
             DO 500 I = 1,NBORDR
                J = I - 1
@@ -227,7 +227,7 @@ C            DO 500 I = 1,NBORDR+1
                   ZR(LV2+IEQ-1)=0.D0
                   ZR(LV3+IEQ-1)=0.D0
  600           CONTINUE
-           
+
                CALL MDARCH(ISTO1,IARCHI,ZR(LTPS+I-1),DT,NEQ,ZR(LVALS),
      &            ZR(LVALV),ZR(LVALA),
      &            ISTO2,0,0.D0,0, ISTO3,0,0.D0,

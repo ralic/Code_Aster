@@ -1,8 +1,8 @@
       SUBROUTINE KAJGR2(IGRAP,VR,COKAJ1,COKAJ2)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,6 +44,10 @@ C     UN COMMON AJOUTE POUR RESORBER UNE GLUTE ANTIQUE (VOIR HISTOR):
       SAVE         COECA1, COECA2
 C ----------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IRET ,IUNIT ,J ,NBLOC ,NBOMAX 
+      REAL*8 ZERO 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       NKAMAX = 11
       NBOMAX = 20

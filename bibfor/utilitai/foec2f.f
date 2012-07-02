@@ -1,13 +1,13 @@
       SUBROUTINE FOEC2F(IUNI,V,NBCOUP,N1,N2,NOMPAR,NOMRES)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER           IUNI,  NBCOUP,N1,N2
       REAL*8                 V(2*NBCOUP)
       CHARACTER*(*)                         NOMPAR,NOMRES
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/01/95   AUTEUR G8BHHAC A.Y.PORTABILITE 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -35,6 +35,9 @@ C        NOMRES: NOM DU RESULTAT
 C     ------------------------------------------------------------------
       CHARACTER*8  GVA, GFO
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,J 
+C-----------------------------------------------------------------------
       N1=MIN(N1,NBCOUP)
       N2=MIN(N2,NBCOUP)
 C

@@ -4,7 +4,7 @@
       CHARACTER*8         NOMRES, RESGEN
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -206,7 +206,7 @@ C
              CALL MDGEPH ( NEQ,NBMO2,ZR(IDBASE),ZR(LLCHOL),ZR(LDNEW))
             ENDIF
 
-            CALL RSNOCH ( NOMRES, DEPL, I, ' ' )
+            CALL RSNOCH ( NOMRES,DEPL,I)
             CALL RSADPA ( NOMRES, 'E', 7,NOMPAR, I,0,IADPAR,KBID)
             ZR(IADPAR(1)) = FREQ
             ZR(IADPAR(2)) = GENEK
@@ -274,7 +274,7 @@ C
              CALL MDGEPH ( NEQ,NBMO2,ZR(IDBASE),ZR(LLCHOL),ZR(LDNEW))
             ENDIF
 
-            CALL RSNOCH ( NOMRES, DEPL, I, ' ' )
+            CALL RSNOCH ( NOMRES,DEPL,I)
 
             CALL RSADPA ( NOMRES, 'E', 7,NOMPAR, I,0, IADPAR,KBID)
             ZR(IADPAR(1)) = FREQ

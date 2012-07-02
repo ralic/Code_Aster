@@ -1,4 +1,4 @@
-# MODIF  DATE 20/06/2012   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE CALCUL DE PERFORMANCE : DIABOLO PLEIN
 # perf010g.para = tps_job 2000 mem_job 16000Mo ncpus 1 liste_test PI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -25,30 +25,30 @@
 
 DEBUT(CODE=_F(NOM='PERF010G',
               NIV_PUB_WEB='INTERNET',
-              VISU_EFICAS='OUI',),
+              VISU_EFICAS='OUI'),
       IGNORE_ALARM='ASSEMBLA_3',
-      IMPR_MACRO='OUI',);
+      IMPR_MACRO='OUI');
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED');
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),);
+                       MODELISATION='3D'));
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=5.e11,
                           NU=0.3,
                           RHO=9800.,
-                          ALPHA=1.e-6,),);
+                          ALPHA=1.e-6));
 PI = 3.14;
 
 FCHAR = FORMULE(VALE='cos(Z/PI)',
-                NOM_PARA='Z',);
+                NOM_PARA='Z');
 
 CHGEOM=CREA_CHAMP(TYPE_CHAM='NOEU_GEOM_R',
                   OPERATION='EXTR',
                   MAILLAGE=MA,
-                  NOM_CHAM='GEOMETRIE',);
+                  NOM_CHAM='GEOMETRIE');
 
 CHFONC=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_F',
                   OPERATION='AFFE',
@@ -56,12 +56,12 @@ CHFONC=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_F',
                   PROL_ZERO='OUI',
                   AFFE=_F(TOUT='OUI',
                           NOM_CMP='X1',
-                          VALE_F=FCHAR,),);
+                          VALE_F=FCHAR));
 
 CHTEMPF=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                    OPERATION='EVAL',
                    CHAM_F=CHFONC,
-                   CHAM_PARA=CHGEOM,);
+                   CHAM_PARA=CHGEOM);
 
 CHTEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                   OPERATION='ASSE',
@@ -70,26 +70,26 @@ CHTEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                   ASSE=_F(TOUT='OUI',
                           CHAM_GD=CHTEMPF,
                           NOM_CMP='X1',
-                          NOM_CMP_RESU='TEMP',),);
+                          NOM_CMP_RESU='TEMP'));
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MAT,),
+                            MATER=MAT),
                     AFFE_VARC=_F(TOUT='OUI',
                                  NOM_VARC='TEMP',
                                  CHAMP_GD=CHTEMP,
-                                 VALE_REF=0.,),);
+                                 VALE_REF=0.));
 
 CHAR=AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=(_F(GROUP_NO='POINT_A',
                                  DX=0.0,
                                  DY=0.0,
-                                 DZ=0.0,),
+                                 DZ=0.0),
                               _F(GROUP_NO='POINT_B',
                                  DX=0.0,
-                                 DY=0.0,),
+                                 DY=0.0),
                               _F(GROUP_NO='POINT_C',
-                                 DY=0.0,),),);
+                                 DY=0.0)));
 
 PART=DEFI_PART_FETI(NB_PART=8,
                     MODELE=MO,
@@ -97,24 +97,24 @@ PART=DEFI_PART_FETI(NB_PART=8,
                              ),
                     CORRECTION_CONNEX='NON',
                     METHODE='KMETIS',
-                    NOM_GROUP_MA='SD',);
+                    NOM_GROUP_MA='SD');
 
 MO=MODI_MODELE(reuse =MO,
                MODELE=MO,
                  PARTITION=_F(PARALLELISME='SOUS_DOMAINE',
-                              PARTITION=PART,),);
+                              PARTITION=PART));
 
 RESU=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CHMAT,
-                   EXCIT=_F(CHARGE=CHAR,),
+                   EXCIT=_F(CHARGE=CHAR),
                    OPTION='SANS',
                    SOLVEUR=_F(METHODE='MUMPS',
                               GESTION_MEMOIRE='IN_CORE',
                               RESI_RELA=-1.0,
-                              PCENT_PIVOT=30,
+   
                               MATR_DISTRIBUEE='OUI',
                               ),
-                   INFO=1,);
+                   INFO=1);
 
 TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    NUME_ORDRE=1,
@@ -124,7 +124,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    VALE=5.2e-5,
                    CRITERE='RELATIF',
                    PRECISION=0.003,
-                   REFERENCE='NON_REGRESSION',),
+                   REFERENCE='NON_REGRESSION'),
                 _F(RESULTAT=RESU,
                    NUME_ORDRE=1,
                    NOM_CHAM='DEPL',
@@ -133,6 +133,6 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    VALE=2.6e-5,
                    CRITERE='RELATIF',
                    PRECISION=0.003,
-                   REFERENCE='NON_REGRESSION',),),);
+                   REFERENCE='NON_REGRESSION')));
 
 FIN();

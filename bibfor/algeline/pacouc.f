@@ -1,9 +1,9 @@
       SUBROUTINE PACOUC(TYPFLU,VECR1,VECR2,VITE,VECR3,MASG,FREQ,
      +                  AMOR,NBNO,INDIC,NBPV,W,VECI1,VECR4,VECR5,IER)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,6 +33,15 @@ C
       REAL*8       KSI0,KCAJ,VGAP
 C-----------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,I1 ,I2 ,ITYPFL ,J ,JCOMPT ,JEXTR 
+      INTEGER JZONE ,K ,K1 ,K10 ,K11 ,K12 ,K2 
+      INTEGER K3 ,K4 ,K5 ,K6 ,K7 ,K8 ,K9 
+      INTEGER L1 ,L2 ,L3 ,LFSIC ,LFSVR ,NB ,NT 
+      INTEGER NZONE 
+      REAL*8 BMAX ,BMIN ,DELTA ,HMOY ,PI ,PULSAM ,R8PI 
+      REAL*8 VISC 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
       NOM1 = '&&COEFMO.COMPT'

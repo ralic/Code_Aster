@@ -1,9 +1,9 @@
       SUBROUTINE FENEXC(NOMA,NOMNOA,LONG,NBN,NUNO,DIAX,
      &                  NBNFEN,NOEFEN,DISFEN)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,6 +59,13 @@ C
       CHARACTER*1   K1BID
       CHARACTER*24  CONNEX, TYPMAI, NNOEMA, NOMMAI
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER IDISCP ,IDISCS ,INDAP ,INO ,INUNOP ,INUNOS ,ISENSP 
+      INTEGER ISENSS ,LP ,LS ,NBNOP ,NBNOS ,NBRMA ,NUNOAP 
+      INTEGER NUNOD ,NUNOG 
+      REAL*8 DIFX1 ,DIFX2 ,R8PREM ,REFX1 ,TOL ,X ,X1 
+      REAL*8 X2 ,XAP ,XDECAL 
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       TOL = 100.D0 * R8PREM()

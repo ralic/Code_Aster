@@ -1,9 +1,9 @@
       SUBROUTINE JJIMHD (IDFIC,INAT,CRNOM,NGRP,KATTR,IADMI,GENRI,
      &                   TYPEI,LT,LONOI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 14/06/2011   AUTEUR TARDIEU N.TARDIEU 
+C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,7 +20,7 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_18 CRS_508 CRS_512
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER            IDFIC,INAT,IADMI,LT,LONOI
       CHARACTER*(*)      CRNOM,NGRP,GENRI,TYPEI
       CHARACTER*24       KATTR(*)
@@ -39,6 +39,10 @@ C IN  TYPEI  : TYPE DE L'OBJET
 C IN  LT     : LONGUEUR DU TYPE
 C IN  LONOI  : LONGEUR EN ENTIER DU SEGMENT
 C ----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER IPS ,JDOCU ,JGENR ,JI ,JITAB ,JORIG ,JRNOM 
+      INTEGER JTYPE ,KITAB ,N 
+C-----------------------------------------------------------------------
       PARAMETER      ( N = 5 )
       CHARACTER*1      GENR    , TYPE
       CHARACTER*4      DOCU

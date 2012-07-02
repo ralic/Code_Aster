@@ -1,8 +1,8 @@
       SUBROUTINE USUPRU ( VUSURT, VUSURO, NBINST, PRUST )
-      IMPLICIT REAL *8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,6 +33,14 @@ C-----------------------------------------------------------------------
       CHARACTER*24 TYPE, TYP1, TYP2
       INTEGER      IARG
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IRE1 ,IRE2 ,IRET ,N1 ,N2 ,N3 
+      INTEGER N4 ,N5 ,NBINST 
+      REAL*8 AIMP ,ANGL ,CST1 ,CST2 ,DE ,DEPI ,DES3 
+      REAL*8 DES5 ,DF ,EPSI ,R8DEPI ,R8DGRD ,RAPP ,RAYO 
+      REAL*8 RAYT ,RESU ,UN ,UNS3 ,UNS5 ,V1 ,V2 
+      REAL*8 VULIM ,X1 ,X11 ,X2 ,XLA ,ZERO 
+C-----------------------------------------------------------------------
       ZERO = 0.D0
       UN   = 1.D0
       DE   = 2.D0

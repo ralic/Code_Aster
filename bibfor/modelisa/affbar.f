@@ -1,6 +1,6 @@
       SUBROUTINE AFFBAR(TMP,TMPF,FCX,NOMMAI,
      &                  ISEC,CAR,VAL,EXP,NBO,KIOC,IER)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER                      ISEC,            NBO,     IER
       REAL*8                                VAL(*)
@@ -9,7 +9,7 @@
       CHARACTER*24      TMP,TMPF
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,6 +46,9 @@ C-----------------------------------------------------------------------
       LOGICAL      SECPLE
 C     ------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IISEC ,J ,JDGE ,JDGEF ,NUM 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL GETRES(RESU,CONCEP,CMD)
       TST = R8MAEM()

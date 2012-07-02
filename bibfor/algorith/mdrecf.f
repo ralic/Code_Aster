@@ -1,7 +1,7 @@
       SUBROUTINE MDRECF (NEXCI,NEXCIR,IDESCF,NOMFON,COEFM,
      &                   IADVEC,INUMOR,FONDEP,FONVIT,FONACC,PSDEL,
      &                   NEQ,TYPBAS,BASEMO,NBMODE,RIGGEN,NOMMOT)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER            NEXCI,NEXCIR,NEQ,NBMODE
       INTEGER            IDESCF(*),INUMOR(*),IADVEC(*)
@@ -14,7 +14,7 @@
       CHARACTER*16       TYPBAS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,6 +66,12 @@ C
       CHARACTER*24  DEEQ,TYPEBA
       INTEGER      IARG
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER IB ,IBID ,IDDEEQ ,IEQ ,II ,IINST ,IMOD 
+      INTEGER IMODCO ,INUM ,IRET ,JDEPL ,JDRIF ,JMOD ,JORDR 
+      INTEGER JVALE ,L1 ,LPROL ,M1 ,N1 ,N2 ,N3 
+      INTEGER N4 ,N5 ,NA ,NBV ,NF ,NM 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       IER = 0
 C ---    CALCUL TRANSITOIRE CLASSIQUE

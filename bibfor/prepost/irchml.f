@@ -2,7 +2,7 @@
      &            NUMORD,LCOR,NBNOT,NUMNOE,NBMAT,NUMMAI,NBCMP,NOMCMP,
      &            LSUP,BORSUP,LINF,BORINF,LMAX,LMIN,LRESU,FORMR,NCMP,
      &            NUCMP,NIVE )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
       CHARACTER*(*)     CHAMEL,NOMCMP(*),FORM,TITRE,LOC,NOMSD,NOMSYM
@@ -12,7 +12,7 @@ C
      &                  NUMORD,NCMP,NUCMP(*),NIVE
       LOGICAL           LCOR,LSUP,LINF,LMAX,LMIN,LRESU
 C     ------------------------------------------------------------------
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -62,7 +62,7 @@ C     NIVE   : NIVEAU IMPRESSION CASTEM 3 OU 10
 C ----------------------------------------------------------------------
 C
       CHARACTER*1  K1BID, TYPE
-      INTEGER      GD, NUTI, JCELV
+      INTEGER      GD, NUTI, JCELV,IPREM
       INTEGER VALI(2),VERSIO
       CHARACTER*8  NOMMA, NOMGD, NOMEL, NOMNO, CBID
       CHARACTER*16 NOMSY2
@@ -71,8 +71,20 @@ C
       CHARACTER*80 TITMAI
       LOGICAL      LMASU
       INTEGER      IARG
+      INTEGER I ,IACELK ,IAD ,IADR ,IANOMA ,IBID ,IEL 
+      INTEGER IER ,IM ,IMOD ,IN ,INO ,IRET ,ITYPE 
+      INTEGER JCELD ,JCNCIN ,JCNX ,JCOOR ,JDRVLC ,JLIGR ,JLISTE 
+      INTEGER JLONGR ,JMODE ,JNBNM ,JNCMP ,JNMN ,JNOEL ,JPERM 
+      INTEGER JPNT ,JTITR ,JTYPM ,JVALE ,KK ,LIBRE ,LON1 
+      INTEGER MAXNOD ,N ,N2 ,NBCMPT ,NBEL ,NBGREL ,NBM 
+      INTEGER NBMAC ,NBMODL ,NBN ,NBNO ,NBTITR ,NBTMA ,NCMPMX 
+      INTEGER NDIM ,NGR 
+      REAL*8 RBID 
+C-----------------------------------------------------------------------
+      DATA IPREM /0/
 C
       CALL JEMARQ ( )
+      IPREM=IPREM+1
       CHAME  = CHAMEL(1:19)
       NOMSY2 = NOMSYM
       NBCMPT=0
@@ -96,6 +108,7 @@ C        SINON ON LE REMET SOUS SON ANCIENNE FORME :
 C     ----------------------------------------------------------
       CALL CELVER(CHAME,'NBVARI_CST','COOL',KK)
       IF (KK.EQ.1) THEN
+        IF (IPREM.EQ.1) CALL U2MESS('I','PREPOST_2')
         CALL CELCEL('NBVARI_CST',CHAME,'V','&&IRCHML.CHAMEL1')
         CHAME= '&&IRCHML.CHAMEL1'
       END IF

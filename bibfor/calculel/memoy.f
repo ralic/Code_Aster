@@ -1,12 +1,12 @@
       SUBROUTINE MEMOY ( CHAMPA, NCPA, CHAMPB, NCPB,VR,NBMAIL,NUMAIL)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*)     CHAMPA, CHAMPB
       INTEGER           NCPA, NCPB, NBMAIL, NUMAIL(*)
       REAL*8            VR(2)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,6 +52,11 @@ C     ------------------------------------------------------------------
       CHARACTER*19 CHAMP1, CHAMP2, LIGREL, LIGRE1, LIGRE2
       LOGICAL      FIRST
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IACELK ,IAVAL1 ,IAVAL2 ,IBID ,ICOEF ,IDECG1 
+      INTEGER IDECG2 ,IEL ,IM ,INUM ,JCELD1 ,JCELD2 ,JLIGR 
+      INTEGER K ,MODE1 ,MODE2 ,NBGR ,NEL 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       CHAMP1 = CHAMPA
       CHAMP2 = CHAMPB

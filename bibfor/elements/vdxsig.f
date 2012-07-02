@@ -1,9 +1,9 @@
       SUBROUTINE VDXSIG(NOMTE,OPTION,XI,NB1,NPGSR,SIGMPG,EFFGT)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       REAL*8 SIGMPG(*)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,6 +29,12 @@ C ======================================================================
       CHARACTER*16 NOMTE,OPTION
       INTEGER NB1,NB2,NPGE,NPGSR,NPGSN
       INTEGER NBCOU,JCOU,IMOY,IRET,IRET1,IRET2,IRET3
+C-----------------------------------------------------------------------
+      INTEGER I ,ICOU ,INDITH ,INTE ,INTSN ,INTSR ,J 
+      INTEGER JCARA ,JDEPG ,K ,K1 ,KPGS ,KWGT ,LZI 
+      INTEGER LZR ,NCOUMX 
+      REAL*8 TREF 
+C-----------------------------------------------------------------------
       PARAMETER(NCOUMX=10)
       REAL*8 XI(3,9),SIG(NCOUMX*162),EPS(NCOUMX*162),TEM(NCOUMX*27)
       REAL*8 VECTA(9,2,3),VECTN(9,3),VECTPT(9,2,3)

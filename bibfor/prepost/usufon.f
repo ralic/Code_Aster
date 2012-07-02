@@ -1,10 +1,10 @@
       SUBROUTINE USUFON ( TYPE , PARA, D , F , DF )
-      IMPLICIT   REAL*8 ( A-H , O-Z )
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,6 +25,14 @@ C ----------------------------------------------------------------------
       CHARACTER*(*)  TYPE
 C     ------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      REAL*8 A ,B ,C ,C0 ,C0B ,C1 ,C1B 
+      REAL*8 D ,D1 ,D2 ,DA ,DF ,DI ,DL 
+      REAL*8 DR ,F ,FS ,FT ,RS ,RT ,S 
+      REAL*8 S1 ,U ,U1 ,UPK ,US ,UT ,VU 
+      REAL*8 X ,X1 ,XCOS1 ,XCOS2 ,XK ,XSIN1 ,XSIN2 
+      REAL*8 ZERO 
+C-----------------------------------------------------------------------
       ZERO = 0.D0
       F  = 9999.D0
       DF = 9999.D0

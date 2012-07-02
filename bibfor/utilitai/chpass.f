@@ -6,7 +6,7 @@
       CHARACTER*4 TYCHR,TYCH2
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -112,20 +112,26 @@ C       ------------------------------------------------
         ENDIF
 
 
+        VALK(1)=CHAMP
+        VALK(2)=TYCHR
         IF (TYCHR.EQ.'NOEU') THEN
-          IF (TYCH2.NE.'NOEU') CALL U2MESK('F','UTILITAI_28',1,CHAMP)
+          IF (TYCH2.NE.'NOEU') CALL U2MESK('F','UTILITAI_28',2,VALK)
 
         ELSEIF (TYCHR.EQ.'ELGA') THEN
           IF ((TYCH2.NE.'CART') .AND. (TYCH2.NE.'ELEM') .AND.
-     &        (TYCH2.NE.'ELGA')) CALL U2MESK('F','UTILITAI_29',1,CHAMP)
+     &        (TYCH2.NE.'ELGA')) CALL U2MESK('F','UTILITAI_28',2,VALK)
 
         ELSEIF (TYCHR.EQ.'ELNO') THEN
           IF ((TYCH2.NE.'CART') .AND. (TYCH2.NE.
-     &        'ELNO')) CALL U2MESK('F','UTILITAI_29',1,CHAMP)
+     &        'ELNO')) CALL U2MESK('F','UTILITAI_28',2,VALK)
 
         ELSEIF (TYCHR.EQ.'ELEM') THEN
           IF ((TYCH2.NE.'CART') .AND. (TYCH2.NE.
-     &        'ELEM')) CALL U2MESK('F','UTILITAI_29',1,CHAMP)
+     &        'ELEM')) CALL U2MESK('F','UTILITAI_28',2,VALK)
+
+        ELSEIF (TYCHR.EQ.'CART') THEN
+          IF ((TYCH2.NE.'CART') .AND. (TYCH2.NE.
+     &        'ELEM')) CALL U2MESK('F','UTILITAI_28',2,VALK)
 
         ELSE
           CALL ASSERT(.FALSE.)
@@ -237,7 +243,11 @@ C       ------------------------------------------
           CALL CESRED(CHS1,NBTROU,ZI(JNUTRO),NCMP,ZK8(JLICMP),'V',CHS2)
 
         ELSEIF (TYCH2.EQ.'CART') THEN
-          CALL CARCES(CHAMP,TYCHR,CESMOD,'V',CHS1,'A',IB)
+          IF (TYCHR.EQ.'CART') THEN
+            CALL CARCES(CHAMP,'ELEM',CESMOD,'V',CHS1,'A',IB)
+          ELSE
+            CALL CARCES(CHAMP,TYCHR,CESMOD,'V',CHS1,'A',IB)
+          ENDIF
           CALL CESRED(CHS1,NBTROU,ZI(JNUTRO),NCMP,ZK8(JLICMP),'V',CHS2)
 
         ELSE
@@ -274,11 +284,14 @@ C       ----------------------------------------------------
 
 C     5 TRANSFORMATION DU CHAMP_S EN CHAMP :
 C     ----------------------------------------------------
-      IF (TYCH2.EQ.'NOEU') THEN
+      IF (TYCHR.EQ.'NOEU') THEN
         CALL CNSCNO(CHS3,' ','NON','G',CHOU,'F',IBID)
-
-      ELSE
+      ELSE IF (TYCHR(1:2).EQ.'EL') THEN
         CALL CESCEL(CHS3,LIGREL,OPTION,' ',PROL0,NNCP,'G',CHOU,'F',IBID)
+      ELSE IF (TYCHR.EQ.'CART') THEN
+        CALL CESCAR(CHS3,CHOU,'G')
+      ELSE
+        CALL ASSERT(.FALSE.)
       ENDIF
 
 

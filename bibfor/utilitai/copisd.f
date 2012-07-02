@@ -4,7 +4,7 @@
       CHARACTER*(*) TYPESD,BASE,SD1,SD2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,7 @@ C-----------------------------------------------------------------------
       CHARACTER*14  COM1, COM2, NU1, NU2
       CHARACTER*16  TYP2SD, CORR1, CORR2
       CHARACTER*19  CH1, CH2, SDR1, K191, K192
-      CHARACTER*24  MASFE1,MASFE2
+      CHARACTER*24  MASFE1,MASFE2,X1,X2
       INTEGER       IFETM1,IFETM2
       LOGICAL       LFETI
 
@@ -63,6 +63,9 @@ C DEB-------------------------------------------------------------------
 
       CALL JEMARQ
       BAS2 = BASE
+      X1=SD1
+      X2=SD2
+      CALL ASSERT(X1.NE.X2)
 
 C ----------------------------------------------------------------------
 C     SUPRESSION DE SD2 :

@@ -1,11 +1,11 @@
       SUBROUTINE RVECHB (EPSI,TYPMAI,NDFAC,R,VALCPM,NBCP,
      +                   NBSO,NBSI,VALCP)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -55,6 +55,9 @@ C  -----------------
       CHARACTER*2 DIM
       REAL*8      R1
       INTEGER     ND,NF,NI,I
+      INTEGER LNG
+      REAL*8 R8VIDE
+C-----------------------------------------------------------------------
 C
 C================== CORPS DE LA ROUTINE ================================
 C

@@ -1,10 +1,10 @@
       SUBROUTINE CRCHNO(CHAMP,PRNO,GRAN,NOMA,BASE,TYPC,NBNOEU,LONVAL)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*)     CHAMP,PRNO,GRAN,NOMA,BASE,TYPC
       INTEGER                                          NBNOEU,LONVAL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,6 +50,8 @@ C
       CHARACTER*8   CBID
       CHARACTER*24  VALE, REFE, DESC
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       DATA  VALE  /'                   .VALE'/
       DATA  REFE  /'                   .REFE'/
       DATA  DESC  /'                   .DESC'/

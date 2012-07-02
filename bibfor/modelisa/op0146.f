@@ -1,8 +1,8 @@
       SUBROUTINE OP0146()
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,6 +26,17 @@ C     MODALE PERTURBEE PAR PRISE EN COMPTE DU COUPLAGE FLUIDE STRUCTURE
 C-----------------------------------------------------------------------
 C
       INCLUDE 'jeveux.h'
+C-----------------------------------------------------------------------
+      INTEGER IBID ,IDEB ,IDISC ,IFREQ ,IK ,IM1 ,IM2 
+      INTEGER INUMO ,IPF ,IPV ,IS ,ISPECT ,IV ,IVALI 
+      INTEGER IVATE ,IVITE ,IZ ,JS ,JVAVF ,LBAREF ,LFSVI 
+      INTEGER LFSVK ,LINDS ,LNOE ,LNOZO ,LPASF ,LPROL ,LSPEC 
+      INTEGER LVALE ,LVMOY ,N1 ,N2 ,NB ,NBM ,NBPAR 
+      INTEGER NBPF ,NBSPEC ,NFF ,NFI ,NMODF ,NMODI ,NPOI 
+      INTEGER NPV ,NSPELO ,NUZO ,NZEX 
+      REAL*8 AIRE ,ALONTO ,FREQF ,FREQI ,PAS ,PUI ,PUI2 
+      REAL*8 PUI2D ,PUI3D ,VMOY ,VMOYTO ,X1 ,X2 
+C-----------------------------------------------------------------------
       PARAMETER   ( NBPAR = 8 , NB = 1024 )
       INTEGER       DIM, IVAL(3)
       REAL*8        R8B

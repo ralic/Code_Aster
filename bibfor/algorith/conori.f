@@ -1,6 +1,6 @@
       SUBROUTINE CONORI(MA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,7 +67,7 @@ C    NIV    : NIVEAU D'IMPRESSION (OPTION INFO)
 C
 C
 C
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C
       INCLUDE 'jeveux.h'
@@ -89,6 +89,11 @@ C
       LOGICAL     LOMODI,LOREO0,LOREOR,LOMOD0,LOCOR0,LFACE,LFACE0
       CHARACTER*1 K1BID
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IKMAR ,IKTYR ,IMAI ,IMARC ,IMAZ ,INOE 
+      INTEGER INOR ,JMB ,JMIC ,NBMAC ,NBMARC ,NBNOE ,NBNOMX 
+
+C-----------------------------------------------------------------------
       PARAMETER ( NBNOMX = 100 )
       CHARACTER*8 MACOR(NBNOMX+2),MACOC(NBNOMX+2),MACOS(NBNOMX+2)
       INTEGER      IARG

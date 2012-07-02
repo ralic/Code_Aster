@@ -2,7 +2,7 @@
      +                  ADRESS,GLOBAL,LGSN,FACTOL,FACTOU,SM,X,
      +                  INVP,PERM,AD,TRAV,TYPSYM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C RESPONSABLE JFBHHUC C.ROSE
 C     TOLE CRP_4
 C ======================================================================
@@ -21,7 +21,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER NBSN,NBND,NBLOC,LGBLOC(NBSN),NCBLOC(NBND),DECAL(NBSN)
       INTEGER*4 GLOBAL(*)
@@ -36,6 +36,8 @@ C
       INTEGER DEB1,INCX,INCY
       INTEGER SNI,K,J,DEB,FIN,ADFAC,NDK,GJ,DEBNDK,IFAC
       INTEGER SEUIN,SEUIK
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       PARAMETER(SEUIN=1500,SEUIK=300)
       INTEGER LDA,NN,KK
       REAL*8 S,ALPHA,BETA

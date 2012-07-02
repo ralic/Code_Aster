@@ -1,5 +1,5 @@
       SUBROUTINE LXLIIS(CHAINE,IVAL,IER)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       CHARACTER*(*)     CHAINE
       INTEGER                  IVAL,IER
 C    -------------------------------------------------------------------
@@ -42,7 +42,7 @@ C              = 0  PAS D'ERREUR ON A BIEN LU UN ENTIER (IVAL)
 C              = 1  ON A LU AUTRE CHOSE QU'UN ENTIER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 24/01/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF UTILIFOR  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,6 +71,9 @@ C
       CHARACTER*80 CVAL
       REAL*8       RVAL
 C
+C-----------------------------------------------------------------------
+      INTEGER ICLASS ,ICOL 
+C-----------------------------------------------------------------------
       IER  = 0
       ICOL = 1
       CALL LXSCAN(CHAINE,ICOL,ICLASS,IVAL,RVAL,CVAL)

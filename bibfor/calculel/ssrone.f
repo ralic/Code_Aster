@@ -1,6 +1,6 @@
       SUBROUTINE SSRONE(MAG,ISMA,ROTA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C     ARGUMENTS:
 C     ----------
@@ -38,6 +38,9 @@ C     ------------------
       INTEGER ROT1,ROT2
 C
 C
+C-----------------------------------------------------------------------
+      INTEGER IAPARR ,IRET ,K 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
         CALL JEEXIN(MAG//'.PARA_R',IRET)
         IF (IRET.GT.0) THEN

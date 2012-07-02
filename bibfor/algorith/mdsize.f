@@ -1,13 +1,13 @@
       SUBROUTINE MDSIZE (NOMRES,NBSAUV,NBMODE,LPSTO,NBCHOC,NBREDE)
 C
-      IMPLICIT      REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       CHARACTER*8   NOMRES
       LOGICAL       LPSTO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/02/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -34,6 +34,9 @@ C IN  : NBREDE : NOMBRE DE RELATION EFFORT DEPLACEMENT (RED)
 C-----------------------------------------------------------------------
       CHARACTER*8   K8BID
 C
+C-----------------------------------------------------------------------
+      INTEGER NBCHOC ,NBMODE ,NBREDE ,NBSAUV ,NBSTO1 ,NBSTOC 
+C-----------------------------------------------------------------------
       NBSTOC = NBSAUV * NBMODE
       CALL JEECRA(NOMRES//'           .DEPL' ,'LONUTI',NBSTOC,K8BID)
       CALL JEECRA(NOMRES//'           .VITE' ,'LONUTI',NBSTOC,K8BID)

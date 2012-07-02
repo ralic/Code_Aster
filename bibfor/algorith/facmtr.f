@@ -1,6 +1,6 @@
       SUBROUTINE FACMTR (MATIN,MATOUT,IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C***********************************************************************
 C    P. RICHARD     DATE 23/11/90
 C-----------------------------------------------------------------------
 C  BUT: DELIVRER UN MATRICE FACTORISEE LDLT ET GENERATION DE
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C            SON NOM
 C
 C       CODE RETOUR:    0  TOUT S'EST BIEN PASSE
@@ -45,6 +45,9 @@ C
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER IER ,IRE 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       IF(MATIN.EQ.' ') GOTO 9999
       HPLOG=.FALSE.

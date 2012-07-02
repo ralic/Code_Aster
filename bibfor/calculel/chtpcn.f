@@ -1,8 +1,8 @@
       SUBROUTINE CHTPCN(CHNO1,TGEOM,TAILMI,TMIN,EPSI,BASE,CHNO2)
-      IMPLICIT REAL*8  (A-H,O-Z)
+      IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,6 +64,11 @@ C
       CHARACTER*19 CN1,CN2,PCHNO1,PCHNO2
       CHARACTER*1 K1BID
 
+C-----------------------------------------------------------------------
+      INTEGER IAVAL1 ,IAVAL2 ,IBID ,IEQ1 ,IEQ2 ,IERD ,INO2 
+      INTEGER INUEQ1 ,INUEQ2 ,IPRN1 ,IPRN2 ,IVAL1 ,IVAL2 ,NBCN1 
+      INTEGER NBNAFF ,NBNO ,NBNRCP ,NCMP1 ,NCMP2 ,NEC 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       CN1 = CHNO1
       CN2 = CHNO2

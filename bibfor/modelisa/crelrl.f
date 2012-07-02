@@ -1,7 +1,7 @@
       SUBROUTINE CRELRL (TYPCOZ, TYPVAZ, BASEZ, LISREZ)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,11 @@ C             - JXOUT -     -
 C-------------------------------------------------------------
 C
 C
+C-----------------------------------------------------------------------
+      INTEGER IDBETA ,IDCOEF ,IDDL ,IDLAGR ,IDNBRE ,IDNOEU ,IDPOIN 
+      INTEGER IDSURC ,IDTERM ,IDTYCO ,IDTYVA ,IRET ,LVECRL ,NBRELA 
+
+C-----------------------------------------------------------------------
       PARAMETER (LVECRL = 10000)
       PARAMETER (NBRELA = 1000)
 C

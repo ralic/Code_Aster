@@ -1,10 +1,10 @@
       SUBROUTINE COEDEF(IMOD,FREMOD,NBM,YOUNG,POISS,RHO,ICOQ,NBNO,
      &                  NUMNO,NUNOE0,NBNOTO,COORDO,IAXE,KEC,GEOM,
      &                  DEFM,DRMAX,TORCO,TCOEF)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,6 +66,18 @@ C
       REAL*8   R8PI
       REAL*8   LONG,LONG2,LONG4
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER IB ,IC ,ICOEA ,IDEC ,IDEC1 ,IDIR1 ,IDIR2 
+      INTEGER IDR ,IL ,ILIGNE ,IMATA ,INO ,INOGEN ,ITAB 
+      INTEGER IVECB ,IZ ,IZAXE ,NBNOGE ,NUMNOE 
+      REAL*8 A ,B ,COSHIZ ,COSIZ ,DELTAI ,DIFX ,DIFY 
+      REAL*8 DR ,DRNOE0 ,DX ,DY ,EPAIS ,ERR ,FONC 
+      REAL*8 ORCOQ ,ORCQ2 ,ORCQ4 ,PI ,R8PREM ,RAPSI ,RAYO2 
+      REAL*8 RAYO4 ,RAYON ,SINHIZ ,SINIZ ,SOMM1 ,SOMM2 ,THETAG 
+      REAL*8 TOLE ,X ,XGEN ,XNO ,XX ,Y ,YGEN 
+      REAL*8 YNO ,Z ,Z0 ,Z1 ,ZNO ,ZZ ,ZZNOE0 
+
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 C

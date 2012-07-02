@@ -1,13 +1,13 @@
       SUBROUTINE FOINTR(NOMFON,CHPROL,NBVAR,VAR,FON,
      &                                         NBRES,VARRES,FONRES,IER)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*)     NOMFON,CHPROL(*)
       INTEGER                         NBVAR,   NBRES,              IER
       REAL*8                         VAR(*),FON(*),VARRES(*),FONRES(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +58,9 @@ C     ------------------------------------------------------------------
       CHARACTER*24 VALK(3)
       REAL*8       LINLIN, LINLOG, LOGLIN, LOGLOG
       REAL*8 VALR(3)
-C     ------------------------------------------------------------------
+      INTEGER I ,IRES ,IVAR ,JRES ,LNOVA ,LONUTI
+      REAL*8 X ,X1 ,X2 ,Y1 ,Y2
+C-----------------------------------------------------------------------
 C     FONCTION EN LIGNE
 C
       LINLIN(X,X1,Y1,X2,Y2)= Y1+(X-X1)*(Y2-Y1)/(X2-X1)

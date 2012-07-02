@@ -1,7 +1,7 @@
       SUBROUTINE COEFRL(NOM1,NOM2,NOM3,NCKMAX,IPAS,IRES,BORNCK,NBORCK,
      &                  COEFCK,IPAS1,IRES1)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C-----------------------------------------------------------------------
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C  IN    : NOM1      : A RENSEIGNER
 C  IN    : NOM2      : A RENSEIGNER
 C  IN    : NOM3      : A RENSEIGNER
@@ -49,6 +49,10 @@ C     UN COMMON AJOUTE POUR RESORBER UNE GLUTE ANTIQUE (VOIR HISTOR):
 C
 C ----------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IPAS1 ,IRES1 ,IUNIT ,J ,K ,KK 
+      INTEGER NB1 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
 C --- LECTURE DU FICHIER DE DONNEES

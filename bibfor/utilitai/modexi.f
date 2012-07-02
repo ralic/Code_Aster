@@ -1,6 +1,6 @@
       SUBROUTINE MODEXI(MODELZ, NOMODZ, IEXI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C.======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C     MODEXI  -- SI LA MODELISATION NOMODZ EXISTE DANS LE MODELE
 C                MODELZ ALORS IEXI = 1
@@ -43,6 +43,10 @@ C -----  VARIABLES LOCALES
       CHARACTER*24  REPK
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
+C-----------------------------------------------------------------------
+      INTEGER IALIEL ,IERD ,IEXI ,IGREL ,IRET ,ITYPEL ,L 
+      INTEGER NBGREL ,NEL 
+C-----------------------------------------------------------------------
       CALL JEMARQ ( )
 C
 C --- INITIALISATIONS :

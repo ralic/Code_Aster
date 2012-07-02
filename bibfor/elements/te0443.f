@@ -1,6 +1,6 @@
       SUBROUTINE TE0443(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*16 OPTION,NOMTE
 C......................................................................
@@ -36,6 +36,11 @@ C ......................................................................
       INTEGER       NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO,IRET(4)
       INTEGER       JGEOM,JIN,JOUT,JANG,NP,I,ITAB(7),IRET1,IRET2,NBSP
       INTEGER       VALI(2)
+C-----------------------------------------------------------------------
+      INTEGER INTSN ,J ,JCARA ,K ,LZI ,LZR ,NB1 
+      INTEGER NB2 ,NCMP ,NCPMAX ,NPGSN ,NPTMAX ,NSPMAX 
+      REAL*8 EPAIS ,ZERO 
+C-----------------------------------------------------------------------
       PARAMETER    (NPTMAX=9,NCPMAX=8,NSPMAX=162)
       REAL*8         ALPHA, BETA, S
       REAL*8        MATVN1(2,2,10), MATVG1(2,2,10)

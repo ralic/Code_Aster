@@ -1,8 +1,8 @@
       SUBROUTINE ENLIRD(DATEUR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 05/07/99   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF UTILIFOR  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C ......................................................................
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C   - FONCTION REALISEE:
 C       ECRITURE DE LA D.A.T.E D'AUJOURD'HUI SUR LA VARIABLE DATEUR
 C   - OUT :
@@ -31,6 +31,8 @@ C ......................................................................
       CHARACTER*(*) DATEUR
       CHARACTER*24  DATEUZ
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       DATA JOUR2/'LU','MA','ME','JE','VE','SA','DI'/
       DATA MOIS4/'JANV','FEVR','MARS','AVRI','MAI ','JUIN',
      &           'JUIL','AOUT','SEPT','OCTO','NOVE','DECE'/

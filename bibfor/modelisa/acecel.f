@@ -3,7 +3,7 @@
      &                   NCOQUE,NCABLE,NBARRE,NMASSI,NGRILL,NGRIBT,
      &                   JDLM,JDLN,IER)
 
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
       INTEGER           NBOCC(*),NBEPO,NBEDI,NBECO,NBECA,NBEBA,NBEMA,
@@ -14,7 +14,7 @@ C
       CHARACTER*8       NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,6 +45,11 @@ C ----------------------------------------------------------------------
       CHARACTER*1 K1BID
 C     ------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IER ,IFM ,IUNIFI ,IXMA ,IXNO ,IXNW 
+      INTEGER JDLM ,JDLN ,JDME ,JDNE ,JDNW ,K ,NBMAIL 
+      INTEGER NBMTRD ,NUMMAI ,NUMNOE ,NUTYEL 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL GETRES(NOMU,CONCEP,CMD)
       MODMAI = NOMO//'.MAILLE'

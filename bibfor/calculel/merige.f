@@ -1,5 +1,5 @@
       SUBROUTINE MERIGE(MODELE,CARA,SIGG,STRX,MATEL,BASE,NH)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER NH
       CHARACTER*1 BASE
@@ -8,7 +8,7 @@
       CHARACTER*19 MATEL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,6 +43,9 @@ C     ------------------------------------------------------------------
       CHARACTER*19 PINTTO,CNSETO,HEAVTO,LONCHA,BASLOC,LSN,LST,STANO
       CHARACTER*19 PMILTO
 
+C-----------------------------------------------------------------------
+      INTEGER ICODE ,IER 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       IF (MODELE(1:1).EQ.' ') CALL U2MESS('F','CALCULEL2_82')
 

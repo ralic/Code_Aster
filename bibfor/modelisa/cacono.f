@@ -1,6 +1,6 @@
       SUBROUTINE CACONO(NOMA,NDIM,LLIST1,LLIST2,NO1,NO2,NORM1,NORM2,
      &                  INOMA)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER NDIM,NO1,NO2
       CHARACTER*8 NOMA
@@ -8,7 +8,7 @@
       REAL*8 NORM1(*),NORM2(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,6 +56,8 @@ C DEBUT ----------------------------------------------------------------
 C
 C     INORM = 0 POUR VECTEUR NORMAL DE NORME "SURFACE"
 C     INORM = 1 POUR VECTEUR NORMAL UNITAIRE
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       INORM = 1
       DO 1 I = 1,3

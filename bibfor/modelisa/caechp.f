@@ -1,5 +1,5 @@
       SUBROUTINE CAECHP (CHAR,LIGRCH,LIGRMO,IGREL,INEMA,NOMA,FONREE)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER           IGREL, INEMA
       CHARACTER*4       FONREE
@@ -7,7 +7,7 @@
       CHARACTER*(*)     LIGRCH, LIGRMO
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,6 +40,9 @@ C
       INTEGER       NBTYMX,NECHP,IBID, IERD,
      &              JNCMP, JVALV, IOCC, NH, NT, NR, NO, I, J,
      &              NBTYP, JLISTT, NBM
+C-----------------------------------------------------------------------
+      INTEGER JLIGR ,NCMP 
+C-----------------------------------------------------------------------
       PARAMETER    (NBTYMX=7)
 C --- NOMBRE MAX DE TYPE_MAIL DE COUPLAGE ENTRE 2 PAROIS
       REAL*8        T(3)

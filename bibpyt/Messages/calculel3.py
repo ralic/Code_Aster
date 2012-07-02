@@ -1,4 +1,4 @@
-#@ MODIF calculel3 Messages  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+#@ MODIF calculel3 Messages  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,6 +38,14 @@ cata_msg = {
 4 : _(u"""
  l'utilisation du mot-clé FONC_MULT n'est licite que pour
  les structures de données résultat :  EVOL_ELAS, DYNA_TRANS, DYNA_HARMO
+"""),
+
+5 : _(u"""
+ La composante %(k1)s n'existe pas dans le champ.
+"""),
+
+6 : _(u"""
+ La composante %(k1)s n'existe pas dans le champ sur la maille spécifiée.
 """),
 
 7 : _(u"""
@@ -389,6 +397,10 @@ Risque et conseils :
 
 89 : _(u"""
  les charges ne s'appuient pas toutes sur le même modèle.
+"""),
+
+90 : _(u"""
+ le champ %(k1)s doit être une CARTE.
 """),
 
 91 : _(u"""

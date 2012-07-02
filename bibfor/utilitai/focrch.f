@@ -1,7 +1,7 @@
       SUBROUTINE FOCRCH ( NOMFON, RESU, NOEUD, PARAX, PARAY, BASE,
      &                                  INT, INTITU, IND, LISTR,
      &                    SST,    NSST,                          IER)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER                     NSST, INT,         IND,        IER
       CHARACTER*1                                            BASE
@@ -10,7 +10,7 @@
       CHARACTER*19        NOMFON, RESU,                   LISTR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,6 +49,12 @@ C     ------------------------------------------------------------------
       CHARACTER*16 NOMCMD
       CHARACTER*19 FONCT1, FONCT2
 C     ----------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER IC ,ICHOC ,IDEC ,IE ,IVAL ,JDESC ,JINST 
+      INTEGER JINTI ,JNCHO ,JPARX ,JPARY ,JVAL ,JVALX ,JVALY 
+      INTEGER LFON ,LG ,LPRO ,LVAL ,NBCHOC ,NBINST ,NBPARA 
+      INTEGER NBVAL 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       IER = 9999
       CALL GETRES(K8B,K8B,NOMCMD)

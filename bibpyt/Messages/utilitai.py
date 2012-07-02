@@ -1,4 +1,4 @@
-#@ MODIF utilitai Messages  DATE 18/06/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utilitai Messages  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -147,12 +147,19 @@ Cette grandeur ne peut pas accepter plus de %(i2)d composantes (%(i1)d fournies)
 """),
 
 28 : _(u"""
- Le champ ne peut pas être assemblé en CHAM_NO :  %(k1)s
+ Le champ : %(k1)s ne peut pas être assemblé en :  %(k2)s
 """),
 
 29 : _(u"""
- Le champ ne peut pas être assemblé en CHAM_ELEM (ELGA) :  %(k1)s
+Erreur utilisateur :
+ La structure de donnée résultat %(k1)s est associée au maillage %(k2)s
+ Mais la structure de donnée nume_ddl %(k3)s est associée au maillage %(k4)s
+ Il n'y a pas de cohérence.
 """),
+
+
+
+
 
 31 : _(u"""
  NOM_CMP2 et NOM_CMP de longueur différentes.
@@ -217,9 +224,9 @@ Cette grandeur ne peut pas accepter plus de %(i2)d composantes (%(i1)d fournies)
   la question : " %(k1)s " est inconnue
 """),
 
-50 : _(u"""
- CHAM_ELEM inexistant:  %(k1)s
-"""),
+
+
+
 
 51 : _(u"""
  il n y a pas de NUME_DDL pour ce CHAM_NO

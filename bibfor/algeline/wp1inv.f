@@ -1,6 +1,6 @@
       SUBROUTINE WP1INV(LMASSE,LAMOR,LRAIDE,TOLF,NITF,MXRESF,NBFREQ,NEQ,
      &                  RESUFI,RESUFR,RESUFK,VECPRO,SOLVEU)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER           LMASSE,LAMOR,LRAIDE,NITF,NBFREQ,NEQ
       INTEGER           RESUFI(MXRESF,*)
@@ -10,7 +10,7 @@
       CHARACTER*19      SOLVEU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,6 +44,11 @@ C     -----------------------------------------------------------------
       COMPLEX*16    RMASSE, RAMOR, RRAIDE
       REAL*8        CONST(6),FREQOM,RBID
 C     -----------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER ICOMB ,IEQ ,IMODE ,ITER ,JTER ,LACC1 ,LACC2 
+      INTEGER LDYNAM ,LYN ,MXRESF 
+      REAL*8 DSEED ,ERR ,ERR2 
+C-----------------------------------------------------------------------
       DATA          NOMDDL /'        '/
 C     -----------------------------------------------------------------
       CALL JEMARQ()

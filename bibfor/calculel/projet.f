@@ -1,9 +1,9 @@
       SUBROUTINE PROJET(NDIM,NPG1,NNO,VECT,RES)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/02/2000   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -29,12 +29,18 @@ C        CALCUL DE L'ENTHALPIE AUX NOEUDS 'RES' A PARTIR DE
 C             L'ENTHALPIE AUX POINTS D INTEGRATION 'VECT'
 
 C=======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 
       REAL*8 VLOC(3,27),VL(81),VH(50)
       INTEGER J8(8),J27(27)
       REAL*8 VECT(50),RES(50),MPT(4,4),MPP(6,6),MP(3,3),MPQ(4,4)
 
+C-----------------------------------------------------------------------
+      INTEGER I ,IC ,IN ,J ,NDIM ,NNO ,NPG1 
+
+      REAL*8 A ,B ,C ,CINQ ,DE ,S ,TROIS 
+      REAL*8 UN ,XAB ,ZERO 
+C-----------------------------------------------------------------------
       DATA ZERO,TROIS,CINQ/0.D0,3.D0,5.D0/
       DATA DE,UN/.5D0,1.D0/
       DATA J8/1,5,7,3,2,6,8,4/

@@ -1,7 +1,7 @@
       SUBROUTINE TE0531(OPTION,NOMTE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ----------------------------------------------------------------------
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 
 C      ROUTINE PROCHE DE TE0335 (3D)
 C
@@ -46,6 +46,10 @@ C                PARTICULIEREMENT POUR DES CALCULS DE CUMUL DE
 C                DOMMAGE EN FATIGUE
 C ----------------------------------------------------------------------
       INCLUDE 'jeveux.h'
+C-----------------------------------------------------------------------
+      INTEGER IDFDE ,IPOIDS ,IVF ,JGANO ,NDIM ,NEQMAX ,NPGMAX 
+
+C-----------------------------------------------------------------------
       PARAMETER (NPGMAX=27,NEQMAX=17)
 C ----------------------------------------------------------------------
       INTEGER ICONT,IEQUIF

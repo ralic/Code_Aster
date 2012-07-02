@@ -1,9 +1,9 @@
       SUBROUTINE JJIMPO (UNIT , IADMI , IDECI , IDATOC , GENRI , TYPEI,
      &                   LT    , LONOI , MESS , PARM )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 27/06/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,7 +20,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_18 CRP_4 CRS_508 CRS_512
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER            UNIT
       INTEGER            IADMI , IDECI , IDATOC        , LT , LONOI
       CHARACTER*(*)      MESS  , PARM  , GENRI , TYPEI
@@ -38,6 +38,12 @@ C IN  LONOI  : LONGEUR EN ENTIER DU SEGMENT
 C IN  MESS   : MESSAGE D'INFORMATION
 C IN  PARM   : ?
 C ----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER ICLS ,IDCO ,IDENOM ,IDOS ,IEP ,IES ,IPS 
+      INTEGER J ,JDOCU ,JGENR ,JI ,JORIG ,JRNOM ,JTYPE 
+      INTEGER K ,KADM ,L ,LADM ,N ,NB ,ND 
+      INTEGER NL ,NM ,NU 
+C-----------------------------------------------------------------------
       PARAMETER      ( N = 5 )
       CHARACTER*1      GENR    , TYPE
       CHARACTER*4      DOCU

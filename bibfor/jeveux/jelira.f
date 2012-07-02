@@ -1,8 +1,8 @@
       SUBROUTINE JELIRA ( NOMLU , CATR , IVAL , CVAL )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 27/06/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_18 CRP_6 CRS_508  CRS_512
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       CHARACTER *(*)      NOMLU , CATR        , CVAL
       INTEGER                            IVAL
 C     ------------------------------------------------------------------
@@ -31,6 +31,14 @@ C     ------------------------------------------------------------------
       INTEGER          ISSTAT
       COMMON /ICONJE/  ISSTAT
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER IADMI ,IB ,IBACOL ,IBNUM ,IC ,ID ,IPGCEX 
+      INTEGER IS ,ISS ,IU ,IUU ,IVA ,IXDESO ,IXIADD 
+      INTEGER IXIADM ,IXLONG ,IXLONO ,IXLUTI ,IXNOM ,IXNUM ,JCARA 
+      INTEGER JDATE ,JDOCU ,JGENR ,JHCOD ,JIADD ,JIADM ,JLONG 
+      INTEGER JLONO ,JLTYP ,JLUTI ,JMARQ ,JORIG ,JRNOM ,JTYPE 
+      INTEGER LTYPI ,N 
+C-----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
      &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ

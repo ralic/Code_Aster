@@ -1,7 +1,7 @@
       SUBROUTINE GIECMA(NFIC,TROUVE,NBELE,NOMOBJ,TYMAIL,NBNO,ECRMA,
      &          ICOMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C     ARGUMENTS:
 C     ----------
@@ -45,6 +45,12 @@ C
 C ----------------------------------------------------------------------
 C
 C     VARIABLES LOCALES:
+C-----------------------------------------------------------------------
+      INTEGER I ,IACNEX ,IACORR ,IANEMA ,IAPTIN ,IBVEC ,ICOJ
+      INTEGER ICOK ,II ,ITYMAI ,IVECT ,J ,K ,L
+      INTEGER MAILI ,MAILLE ,NBELEM ,NBFOIS ,NBREST ,NMTOT ,NUMNO
+
+C-----------------------------------------------------------------------
       PARAMETER (NBELEM = 18)
       CHARACTER*7 K7NOM(8)
       CHARACTER*8 K8NOM(8),TYMAGI(NBELEM),TYMAAS(NBELEM)
@@ -53,7 +59,7 @@ C     VARIABLES LOCALES:
 C
 C     COGIAS EST UN TAMPON POUR ECRIRE LA CONNECTIVITE DES MAILLES
 C        DANS L'ORDRE ASTER . (27 EST LE MAX DE NOEUDS POSSIBLE).
-      INTEGER COGIAS(27)
+      INTEGER COGIAS(27), INDIK8
       DATA TYMAAS/    'POI1    ','SEG2    ','SEG3    ','TRIA3   ',
      &     'TRIA6   ','QUAD4   ','QUAD8   ','QUAD9   ','TETRA4  ',
      &     'TETRA10 ','PENTA6  ','PENTA15 ','HEXA8   ','HEXA20  ',

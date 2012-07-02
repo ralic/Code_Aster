@@ -1,5 +1,5 @@
       SUBROUTINE CSMBGG(LMAT,VSMB,VCINE,CVSMB,CVCINE,TYPE)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       REAL*8 VSMB(*),VCINE(*)
       COMPLEX*16 CVSMB(*),CVCINE(*)
@@ -7,7 +7,7 @@
       CHARACTER*(*) TYPE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,6 +64,8 @@ C-----------------------------------------------------------------------
       INTEGER NEQ,NIMPO,JCCLL,JCCII,ECCLL
 C-----------------------------------------------------------------------
 C     DEBUT
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 C-----------------------------------------------------------------------
       NEQ = ZI(LMAT+2)

@@ -5,7 +5,7 @@
       CHARACTER*(*) QUESTI,NOMOBZ,REPKZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 02/07/2012   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -222,6 +222,7 @@ C     -- SORTIE ERREUR :
 C     ------------------
    80 CONTINUE
       IERD=1
+      GOTO 999
 
 C     -- SORTIE NORMALE :
 C     ------------------
@@ -230,5 +231,6 @@ C     ------------------
       REPKZ=REPK
 
 C
+ 999  CONTINUE
       CALL JEDEMA()
       END

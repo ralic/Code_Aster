@@ -1,9 +1,9 @@
       SUBROUTINE TE0142(OPTION,NOMTE)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,6 +35,12 @@ C        'MECA_POU_D_T' : POUTRE DROITE DE TIMOSHENKO (SECTION VARIABLE)
 C        'MECA_POU_C_T' : POUTRE COURBE DE TIMOSHENKO(SECTION CONSTANTE)
 C     ------------------------------------------------------------------
 
+C-----------------------------------------------------------------------
+      INTEGER I ,JEFFO ,LABSC ,LCAGE ,LMATER ,LOPT ,NBPAR 
+      INTEGER NBREF ,NBRES 
+      REAL*8 ABSMOY ,CM ,PHIE ,PHII ,RHOFE ,RHOFI ,RHOS 
+      REAL*8 VALPAR 
+C-----------------------------------------------------------------------
       PARAMETER (NBRES=3,NBREF=6)
       REAL*8 VALRES(NBRES),VALREF(NBREF)
       INTEGER CODRES(NBRES),CODREF(NBREF)

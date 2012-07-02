@@ -1,13 +1,13 @@
       SUBROUTINE MECHNC (NOMA,MOTCLE,IOCC,CHNUMC)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER                        IOCC
       CHARACTER*(*)      NOMA,MOTCLE
       CHARACTER*24                        CHNUMC
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -37,6 +37,9 @@ C     ------------------------------------------------------------------
       INTEGER      IARG
 C DEB-------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER N1 ,N2 ,N3 ,NX3 
+C-----------------------------------------------------------------------
       CALL GETVIS (MOTCLE,'NUME_COUCHE',IOCC,IARG,1,NCOU,N1)
       CALL GETVTX (MOTCLE,'NIVE_COUCHE',IOCC,IARG,1,ORDO,N2)
       CALL GETVIS (MOTCLE,'ANGLE',IOCC,IARG,1,NANGL,N3)

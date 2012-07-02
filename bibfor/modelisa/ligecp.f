@@ -1,11 +1,11 @@
       SUBROUTINE LIGECP(NOMA,NBTOUT,LONLIG,LONEMA,NBGREL)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*8          NOMA
       INTEGER                    NBTOUT(10),LONLIG,LONEMA,NBGREL
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,6 +43,10 @@ C                                                             *
       INTEGER NECHPA
       CHARACTER*24 LISTE
 C --- DEBUT
+C-----------------------------------------------------------------------
+      INTEGER I ,IIMA ,ILISTE ,IMA ,INBNO ,IOCC ,IRET 
+      INTEGER ITYPC ,ITYPE ,NBMA ,NBNOMA 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       DO 1 I=1,10
         NBTOUT(I) = 0

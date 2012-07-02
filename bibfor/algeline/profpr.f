@@ -1,10 +1,10 @@
       SUBROUTINE PROFPR(ICOQ,RKI,R1,R2,COEPR1,COEPR2,WPR)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 31/10/96   AUTEUR KXBADNG N.GAY 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -40,6 +40,11 @@ C-----------------------------------------------------------------------
 C
 C --- 1.INITIALISATIONS
 C
+C-----------------------------------------------------------------------
+      INTEGER KI 
+      REAL*8 A ,H0 ,R0 ,RC ,T ,X ,Y 
+      REAL*8 Z ,Z1 ,Z2 
+C-----------------------------------------------------------------------
       R0 = (R1+R2)/2.D0
       H0 = R2 - R1
 C

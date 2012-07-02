@@ -1,6 +1,6 @@
       SUBROUTINE JEDEBU(NBFI, MXZON, IDB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 06/03/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +19,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_18 CRP_6 CRS_508 CRS_512
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER             NBFI, MXZON, IDB
 C ----------------------------------------------------------------------
 C ROUTINE UTILISATEUR D'INITIALISATION GENERALE POUR LE GESTIONNAIRE
@@ -42,6 +42,13 @@ C ----------------------------------------------------------------------
       INTEGER          ILOC
       COMMON /ILOCJE/  ILOC
 C ----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IACCE ,JCARA ,JDATE ,JDOCU ,JGENR ,JHCOD 
+      INTEGER JIACCE ,JIADD ,JIADM ,JJPREM ,JLONG ,JLONO ,JLTYP 
+      INTEGER JLUTI ,JMARQ ,JORIG ,JRNOM ,JTYPE ,K ,LOFIEM 
+      INTEGER MOFIEM ,N ,NBACCE 
+      REAL*8 VAL 
+C-----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
 C
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,

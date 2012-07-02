@@ -1,8 +1,8 @@
       SUBROUTINE KPOULI (E,A,NX,L0,L1,L2,NORML1,NORML2,   AMAT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 05/01/95   AUTEUR G8BHHAC A.Y.PORTABILITE 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -19,7 +19,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ......................................................................
 C    - FONCTION REALISEE:  CALCUL MATRICE DE RIGIDITE MEPOULI
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C                          OPTION : 'FULL_MECA        '
 C                          OPTION : 'RIGI_MECA_TANG   '
 C
@@ -34,6 +34,8 @@ C
       INTEGER            I,J,IMAT
 C
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       COEF1 = (E*A/L0 - NX/NORML1) / NORML1**2
       COEF2 = E*A / (L0*NORML1*NORML2)
       COEF3 = (E*A/L0 - NX/NORML2) / NORML2**2

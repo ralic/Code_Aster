@@ -1,9 +1,9 @@
       SUBROUTINE MERITH(MODELZ,NCHAR,LCHAR,MATE,CARAZ,TIMEZ,
      &                  MATELZ,NH,BASEZ)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,6 +65,10 @@ C
 C     VARIABLES LOCALES:
 C     ------------------
       CHARACTER*8  K8BID
+C-----------------------------------------------------------------------
+      INTEGER I ,IRET ,JLIRE1 ,JLIRE2 ,JLIRE3 ,LONG1 ,LONG2 
+      INTEGER LONG3 ,NH ,NUMOR3 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       MODELE = MODELZ
       CARA   = CARAZ

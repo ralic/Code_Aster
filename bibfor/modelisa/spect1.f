@@ -1,9 +1,9 @@
       SUBROUTINE SPECT1(CASINT,NOMU,SPECTR,ISPECT,BASE,VITE,NUOR,
      &                  IMODI,IMODF,NBM,NBPF,NPV,NOMZON,VMOYZI,VMOYTO)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,6 +64,19 @@ C
       REAL*8       SPECT2,SPECT4,RBID,VALX(3)
       INTEGER      IARG
       EXTERNAL     SPECT4
+C-----------------------------------------------------------------------
+      INTEGER I ,IC ,ICHA ,IDE ,IDEB ,IDEFM ,IDEP 
+      INTEGER IER ,IFRE ,IFSIC ,IFSVI ,IFSVK ,II ,IK 
+      INTEGER IL ,ILC2 ,IM ,IM1 ,IM1B ,IM2 ,IM2B 
+      INTEGER IMB ,IMODF ,IMODI ,IP ,IPVN ,IREFE ,IRHOE 
+      INTEGER IRSP ,ISPECT ,ITYPFL ,IV ,IVALE ,IVITN ,IZ 
+      INTEGER JM ,JMB ,KK ,LWR ,N1 ,N2 ,NBCMP 
+      INTEGER NBFONC ,NBM ,NBP ,NBPF ,NPV ,NZEX 
+      REAL*8 BETA ,BETA1 ,BETA2 ,EPS ,ERR ,FR ,FRC 
+      REAL*8 GAMMA ,PHI0 ,PHI01 ,PHI02 ,PHIE ,R1 ,REN 
+      REAL*8 ROM ,ROV ,SX ,TAUXV ,TOL ,VITEZI ,X1 
+      REAL*8 X2 ,XLC ,XNU 
+C-----------------------------------------------------------------------
       DATA DEPLA   /'DX      ','DY      ','DZ      '/
 C-----------------------------------------------------------------------
       CALL JEMARQ()

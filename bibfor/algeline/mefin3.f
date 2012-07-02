@@ -1,13 +1,13 @@
       FUNCTION MEFIN3(NBZ,NBGRP,IMOD,ICYL,JMOD,JCYL,Z,F1,F2,F3,G,H)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       INTEGER       NBZ,NBGRP,IMOD,ICYL,JMOD,JCYL
       REAL*8        Z(*),F1(NBZ*NBGRP,*),F2(NBZ*NBGRP,*),F3(*),G(*),H(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -51,6 +51,9 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
 C
 C
+C-----------------------------------------------------------------------
+      INTEGER N ,NBZ1 ,NBZ2 
+C-----------------------------------------------------------------------
       NBZ1 = NBZ*(ICYL-1)
       NBZ2 = NBZ*(JCYL-1)
 C

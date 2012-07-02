@@ -1,9 +1,9 @@
       SUBROUTINE  EPSTMC(FAMI,NDIM, INSTAN, POUM, IGAU,ISGAU,
      &                   XYZGAU,REPERE,MATER,OPTION, EPSTH)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/10/2011   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,7 +19,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C.======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C      EPSTMC :   CALCUL DES DEFORMATIONS THERMIQUES / HYDRIQUE (RETRAIT
 C                 ENDOGENE) / DE SECHAGE (RETRAIT DE DESSICCATION)
@@ -46,6 +46,10 @@ C -----  ARGUMENTS
            REAL*8       REPERE(7)
            INTEGER      NDIM,IGAU,ISGAU
 C -----  VARIABLES LOCALES
+C-----------------------------------------------------------------------
+      INTEGER MATER ,NBRES ,NBV 
+      REAL*8 BIOT ,E ,ZERO 
+C-----------------------------------------------------------------------
            PARAMETER (NBRES = 3)
 C
       INTEGER ICODRE(NBRES)

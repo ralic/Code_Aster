@@ -1,11 +1,11 @@
         SUBROUTINE CVMINI (TYPESS, ESSAI, MOD, NMAT, MATERF,
      1                      TIMED,  TIMEF, YD, EPSD,DEPS,DY)
-        IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -79,6 +79,10 @@ C       ----------------------------------------------------------------
         COMMON /COED/   C1D , C2D
 C       ----------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I 
+      REAL*8 DIFC1 ,DIFC2 
+C-----------------------------------------------------------------------
         IF ( TYPESS .EQ. -1 ) TYPESS = 2
 C
 C

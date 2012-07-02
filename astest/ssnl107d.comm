@@ -1,4 +1,4 @@
-# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 
 # TITRE PLAQUE ENCASTREE SOUSMISE A UNE FLEXION PAR DES POUTRES
 # ssnl107d.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test S
@@ -27,45 +27,45 @@
 
 DEBUT(CODE=_F(NOM='SSNL107D',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI',),FORMAT='MED',);
+MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),FORMAT='MED');
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
-              CREA_GROUP_NO=_F(GROUP_MA='L1',),);
+              CREA_GROUP_NO=_F(GROUP_MA='L1'));
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=(_F(GROUP_MA='S1',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='DKT',),
+                        MODELISATION='DKT'),
                      _F(GROUP_MA=('COQU1','COQU2','POUT1','POUT2'),
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='DIS_TR',),
+                        MODELISATION='DIS_TR'),
                      _F(GROUP_MA='POUTRE',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='POU_D_E',),),);
+                        MODELISATION='POU_D_E')));
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=200000.0,
-                          NU=0.3,),);
+                          NU=0.3));
 
 CARA=AFFE_CARA_ELEM(MODELE=MO,
                     POUTRE=_F(GROUP_MA='POUTRE',
                               SECTION='CERCLE',
-                              CARA=('R','EP',),
-                              VALE=(0.002,0.0002,),),
+                              CARA=('R','EP'),
+                              VALE=(0.002,0.0002)),
                     COQUE=_F(GROUP_MA='S1',
                              EPAIS=0.1,
-                             COQUE_NCOU=19,),
+                             COQUE_NCOU=19),
                     DISCRET=(_F(GROUP_MA=('COQU1','COQU2','POUT1','POUT2'),
                                CARA='M_TR_D_N',
-                               VALE=(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,),),
+                               VALE=(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0)),
                              _F(GROUP_MA=('COQU1','COQU2','POUT1','POUT2'),
                                CARA='K_TR_D_N',
-                               VALE=(0.0,0.0,0.0,0.0,0.0,0.0,),),
+                               VALE=(0.0,0.0,0.0,0.0,0.0,0.0)),
                              ));
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MAT,),);
+                            MATER=MAT));
 
 F_DIST_E=DEFI_CONSTANTE(VALE=-0.2)
 
@@ -77,14 +77,14 @@ CHA=AFFE_CHAR_MECA(VERI_NORM='NON',
                                 DZ=0.0,
                                 DRX=0.0,
                                 DRY=0.0,
-                                DRZ=0.0,),
-                             _F(GROUP_NO=('P5','P6',),
+                                DRZ=0.0),
+                             _F(GROUP_NO=('P5','P6'),
                                 DX=0.0,
                                 DY=0.0,
                                 DZ=-0.2,
                                 DRX=0.0,
                                 DRY=0.0,
-                                DRZ=0.0,),),
+                                DRZ=0.0)),
                    );
 
 
@@ -100,7 +100,7 @@ CHA2 = DEFI_CONTACT   (MODELE      = MO,
                                    GROUP_MA_ESCL = 'POUT1',
                                    NORMALE       = 'ESCL',
                                    VECT_ESCL     = 'FIXE',
-                                   ESCL_FIXE     = (0.0,0.0,-1.0,),
+                                   ESCL_FIXE     = (0.0,0.0,-1.0),
                                    DIST_ESCL     = F_DIST_E,
                                   ),
                                 _F(
@@ -110,18 +110,18 @@ CHA2 = DEFI_CONTACT   (MODELE      = MO,
                                    GROUP_MA_ESCL = 'POUT2',
                                    NORMALE       = 'ESCL',
                                    VECT_ESCL     = 'FIXE',
-                                   ESCL_FIXE     = (0.0,0.0,-1.0,),
+                                   ESCL_FIXE     = (0.0,0.0,-1.0),
                                   ),
                               ),
                       );
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=5.0,
-                                    NOMBRE=5,),);
+                                    NOMBRE=5));
 
 
 FONCM=DEFI_FONCTION(NOM_PARA='INST',
-                    VALE=(0.0,0.0,100.0,100.0,),);
+                    VALE=(0.0,0.0,100.0,100.0));
 
 
 # RESOLUTION PAR LE SOLVEUR PAR DEFAUT
@@ -130,15 +130,15 @@ RESU1=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMAT,
                    CARA_ELEM=CARA,
                    EXCIT=_F(CHARGE=CHA,
-                            FONC_MULT=FONCM,),
+                            FONC_MULT=FONCM),
                    CONTACT  = CHA2,
-                   COMP_INCR=_F(RELATION='ELAS',),
+                   COMP_INCR=_F(RELATION='ELAS'),
                    INCREMENT=_F(LIST_INST=L_INST,
-                                NUME_INST_FIN=2,),
-                   NEWTON=_F(MATRICE='ELASTIQUE',),
-                   CONVERGENCE=_F(RESI_GLOB_MAXI=1e-06,),
-                   SOLVEUR=_F(SYME='OUI',),
-                   INFO=1,);
+                                NUME_INST_FIN=2),
+                   NEWTON=_F(MATRICE='ELASTIQUE'),
+                   CONVERGENCE=_F(RESI_GLOB_MAXI=1e-06),
+                   SOLVEUR=_F(SYME='OUI'),
+                   INFO=1);
 
 RESU1=CALC_CHAMP(reuse=RESU1,CONTRAINTE=('EFGE_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=RESU1)
 
@@ -150,7 +150,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NOEUD='N45',
                    VALE=-0.19005,
                    REFERENCE='ANALYTIQUE',
-                   PRECISION=0.001,),
+                   PRECISION=0.001),
                 _F(RESULTAT=RESU1,
                    NUME_ORDRE=2,
                    NOM_CHAM='DEPL',
@@ -158,7 +158,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NOEUD='N46',
                    VALE=-0.19005,
                    REFERENCE='ANALYTIQUE',
-                   PRECISION=0.001,),
+                   PRECISION=0.001),
                 _F(RESULTAT=RESU1,
                    NUME_ORDRE=2,
                    NOM_CHAM='EFGE_ELNO',
@@ -167,7 +167,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NOEUD='N3',
                    VALE=-0.00475126,
                    REFERENCE='ANALYTIQUE',
-                   PRECISION=0.01,),
+                   PRECISION=0.01),
                 _F(RESULTAT=RESU1,
                    NUME_ORDRE=2,
                    NOM_CHAM='EFGE_ELNO',
@@ -176,7 +176,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NOEUD='N1',
                    VALE=-0.00475126,
                    REFERENCE='ANALYTIQUE',
-                   PRECISION=0.01,),),);
+                   PRECISION=0.01)));
 
 
 
@@ -186,16 +186,16 @@ RESU2=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMAT,
                    CARA_ELEM=CARA,
                    EXCIT=_F(CHARGE=CHA,
-                            FONC_MULT=FONCM,),
+                            FONC_MULT=FONCM),
                    CONTACT  = CHA2,
-                   COMP_INCR=_F(RELATION='ELAS',),
+                   COMP_INCR=_F(RELATION='ELAS'),
                    INCREMENT=_F(LIST_INST=L_INST,
-                                NUME_INST_FIN=2,),
-                   NEWTON=_F(MATRICE='ELASTIQUE',),
-                   CONVERGENCE=_F(RESI_GLOB_MAXI=1e-06,),
+                                NUME_INST_FIN=2),
+                   NEWTON=_F(MATRICE='ELASTIQUE'),
+                   CONVERGENCE=_F(RESI_GLOB_MAXI=1e-06),
                    SOLVEUR=_F(SYME='OUI',
-                              METHODE='MUMPS',PCENT_PIVOT=10,),
-                   INFO=1,);
+                              METHODE='MUMPS'),
+                   INFO=1);
 
 RESU2=CALC_CHAMP(reuse=RESU2,CONTRAINTE=('EFGE_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=RESU2)
 
@@ -207,7 +207,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU2,
                    NOEUD='N45',
                    VALE=-0.19005,
                    REFERENCE='ANALYTIQUE',
-                   PRECISION=0.001,),
+                   PRECISION=0.001),
                 _F(RESULTAT=RESU2,
                    NUME_ORDRE=2,
                    NOM_CHAM='DEPL',
@@ -215,7 +215,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU2,
                    NOEUD='N46',
                    VALE=-0.19005,
                    REFERENCE='ANALYTIQUE',
-                   PRECISION=0.001,),
+                   PRECISION=0.001),
                 _F(RESULTAT=RESU2,
                    NUME_ORDRE=2,
                    NOM_CHAM='EFGE_ELNO',
@@ -224,7 +224,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU2,
                    NOEUD='N3',
                    VALE=-0.00475126,
                    REFERENCE='ANALYTIQUE',
-                   PRECISION=0.01,),
+                   PRECISION=0.01),
                 _F(RESULTAT=RESU2,
                    NUME_ORDRE=2,
                    NOM_CHAM='EFGE_ELNO',
@@ -233,6 +233,6 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU2,
                    NOEUD='N1',
                    VALE=-0.00475126,
                    REFERENCE='ANALYTIQUE',
-                   PRECISION=0.01,),),);
+                   PRECISION=0.01)));
 FIN();
 

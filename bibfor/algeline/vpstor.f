@@ -11,7 +11,7 @@
       COMPLEX*16        VECPC8(NEQ,*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,7 @@ C     ------------------------------------------------------------------
       DATA  REFD  /'                   .REFD'/
 C
 C --- PARAMETRES STOCKES DANS LA SD RESULTAT DYNAMIQUE
-      DATA  NOPAST /        'NUME_MODE'       , 
+      DATA  NOPAST /        'NUME_MODE'       ,
      &  'NORME'           , 'TYPE_MODE'       , 'NOEUD_CMP'       ,
      &  'FREQ'            , 'OMEGA2'          , 'AMOR_REDUIT'     ,
      &  'MASS_GENE'       , 'RIGI_GENE'       , 'AMOR_GENE'       ,
@@ -280,7 +280,7 @@ C DE TAILLE 2 ET NON 4 COMME UN CHAM_NO
         ENDIF
 C       SI LE CHAMP A DEJA ETE NOTE PAR SEMOCO, ON NE LE REFAIT PAS
         IF ( IER.NE.0 ) THEN
-          CALL RSNOCH (MODES, NOSY, NORDR, ' ' )
+          CALL RSNOCH (MODES,NOSY,NORDR)
         ENDIF
 C
 C ----- ON STOCKE 'NUME_MODE'
@@ -303,7 +303,7 @@ C ----- ON STOCKE 'TYPE_MODE' POUR LES MODES PROPRES 'MODE_MECA'
 C
         IF ( TYPCON(1:9).EQ.'MODE_MECA'.OR.
      &       TYPCON(1:9).EQ.'MODE_GENE') THEN
-         
+
            IRANG = INDK24(NOPARA(NBPARI+1),NOPAST(3),1,NBPARK)
            IF ( IRANG .GT. 0 ) THEN
              TYPMOD = RESUFK(KMODE,IRANG)

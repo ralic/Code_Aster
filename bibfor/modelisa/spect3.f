@@ -2,7 +2,7 @@
      +                  RHOE, NBP,IM,JM )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C **********************************************************************
-       IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C                                 A
 C DESCRIPTION : CALCULE DINTG2 = S F(X,Y) DY   POUR DINTEG.
@@ -56,6 +56,10 @@ C -----------------
 C
 C *****************    DEBUT DU CODE EXECUTABLE    *********************
 C
+C-----------------------------------------------------------------------
+      INTEGER IM ,JM ,NBP 
+      REAL*8 SPECT3 ,XLC 
+C-----------------------------------------------------------------------
       RES = 0.0D0
 C
       IF ( ABS(A-B) .LT. 1.0D-30 ) THEN

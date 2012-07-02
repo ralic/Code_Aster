@@ -1,6 +1,6 @@
       SUBROUTINE ECRTES(NOMSD,TITRE,NOMGDS,NUMOR,FITYPE,NBCMP,ITYP,
      &                  ENTETE,LCMP)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
       INTEGER                              NUMOR,             ITYP
@@ -10,7 +10,7 @@ C
       LOGICAL           LCMP
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,6 +59,11 @@ C     ------------------------------------------------------------------
       CHARACTER*24  NOMST
       CHARACTER*80  STITR,STITRB
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IAD ,IBID ,IER ,IRET ,ISTMAX ,ITIMAX 
+      INTEGER JPAR ,JTITR ,LXLGUT ,NBAC ,NBCMP ,NBPA 
+      REAL*8 R8VIDE 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       ITYPE = ITYP
       RVIDE = R8VIDE()

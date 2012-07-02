@@ -1,8 +1,8 @@
-#@ MODIF sd_resultat SD  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF sd_resultat SD  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -50,9 +50,14 @@ class sd_resultat(sd_titre):
     # indirection vers les champs de .TACH :
     def check_resultat_i_TACH(self, checker):
         tach = self.TACH.get()
-        for nosym in tach.keys():
-            for nom in tach[nosym] :
+        for nosym in tach.keys() :
+            for kordr in range(len(tach[nosym])) :
+                nom=tach[nosym][kordr]
                 if not nom.strip(): continue
+
+                # on vérifie la règle de nommage des champs (numéro de rangement)
+                assert int(nom[13:19])==kordr , nom
+
                 sd2 = sd_champ(nom)
                 sd2.check(checker)
 
@@ -94,7 +99,7 @@ class sd_resultat(sd_titre):
         # les numeros d'ordre doivent etre tous différents :
         sdu_tous_differents(V,checker,V.get()[:nuti],'1:NUTI')
 
-        # les numeros d'ordre doivent etre croissants
+        # les numeros d'ordre doivent etre croissants (voir rsutrg.f)
         if nuti > 1:
             assert sdu_monotone(V.get()[:nuti]) in (1,)
 

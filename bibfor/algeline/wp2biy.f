@@ -1,12 +1,12 @@
       SUBROUTINE WP2BIY(LM,LC,LK,S2,DSR,ISI,YH,YB,ZH,ZB,LBLOQ,
      &                  U1,U2,U3,U4,N)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       REAL*8      U1(*),U2(*),U3(*),U4(*),YH(*),YB(*),ZH(*),ZB(*)
       REAL*8      S2,DSR,ISI
       INTEGER     LM,LC,LK,N,LBLOQ(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,6 +48,8 @@ C     ------------------------------------------------------------------
       INTEGER   I
       REAL*8    ZERO
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       ZERO = 0.0D0
 C
       CALL MRMULT('ZERO',LK,YH,U1,1,.FALSE.)

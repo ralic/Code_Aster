@@ -1,12 +1,12 @@
       SUBROUTINE UTTRIR(NBVALE, VALE ,  EPS)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER           NBVALE
       REAL*8                    VALE(*),EPS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 13/02/2004   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILIFOR  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -36,6 +36,9 @@ C
 C     --- RIEN A FAIRE SI NBVALE=0 OU 1 (ET NE PAS MODIFIER NBVALE)
 C
 C     --- TRI BULLE ---
+C-----------------------------------------------------------------------
+      INTEGER I ,J ,L 
+C-----------------------------------------------------------------------
       IF ( NBVALE .GT. 1 ) THEN
 C        --- CHOIX DE L'INCREMENT ---
          INCRS = 1

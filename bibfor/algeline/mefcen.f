@@ -1,7 +1,7 @@
       SUBROUTINE MEFCEN(CAELEM,IEQUIV,NBCYL,NBZ,IROT,NUMNOG,
      &                  NBNOG,NUMMAG,NUMGRP,COOR,CENT,REQ,
      &                  XINT,YINT,ZINT,RINT,NBGRP)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
       INTEGER      IEQUIV,NBCYL,NUMNOG(*),NBNOG(*),NUMMAG(*)
@@ -11,7 +11,7 @@ C
       CHARACTER*19 CAELEM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,6 +69,11 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C
 C
+C-----------------------------------------------------------------------
+      INTEGER IAD ,ICESC ,ICESD ,ICESL ,ICESV ,ICMP ,IDESC 
+      INTEGER NBZ ,NPMAX ,NUMMA ,NUMNO1 ,NUMNO2 
+      REAL*8 EPSIT 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       EPSIT = 1.D-5
 C

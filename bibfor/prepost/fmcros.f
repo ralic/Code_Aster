@@ -1,6 +1,6 @@
       SUBROUTINE FMCROS(NBFONC,NBPTOT,SIGM,RD0,RTAU0,RCRIT,
      +                    RPHMAX,RTAUA)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
       INTEGER           NBFONC,NBPTOT
@@ -8,7 +8,7 @@ C
       REAL*8                             RD0,RTAU0,RCRIT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,6 +40,8 @@ C     ------------------------------------------------------------------
 C
 C------- CALCUL DE L'AMPLITUDE DE CISSION
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       CALL FMAMPC(NBFONC,NBPTOT,SIGM,RTAUA)
 C
 C------- CALCUL DE LA PRESSION HYDROSTATIQUE MAXIMALE -----

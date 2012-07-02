@@ -1,7 +1,7 @@
       SUBROUTINE IRDRSR(IFI,NBNO,DESC,NEC,DG,NCMPMX,VALE,
      +              NOMCMP,TITR,NOMNOE,NOMSD,NOMSYM,IR,NUMNOE,LMASU,
      +              NBCMP,NCMPS,NOCMPL)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
       INTEGER           IFI,NBNO,DESC(*),NEC,DG(*),NCMPMX
@@ -12,7 +12,7 @@ C
       LOGICAL           LMASU
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,6 +62,14 @@ C     ------------------------------------------------------------------
 C
 C  --- INITIALISATIONS ----
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IBCMPS ,IC ,ICHS ,ICMP ,ICMPS ,ICMS 
+      INTEGER ICOMPT ,ICP ,IDA ,IDEBU ,IEC ,IER ,IFIN 
+      INTEGER ILIG ,INDATS ,INNO ,INO ,INOCHS ,INOGDS ,INOM 
+      INTEGER IRES ,IRET ,IRVAL ,IVAL ,J ,JADM ,JJ 
+      INTEGER JL ,JMAX ,JPOS ,JTITR ,K ,L ,LL 
+      INTEGER LXLGUT ,NBCMPT ,NBDATS ,NI 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
       CALL WKVECT('&&IRDRSR.NOMGDS','V V K8',NCMPMX,INOGDS)

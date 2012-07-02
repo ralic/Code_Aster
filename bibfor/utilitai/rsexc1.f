@@ -1,5 +1,5 @@
       SUBROUTINE RSEXC1(NOMSD,NOMSY,IORDR,CHEXTR)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER IORDR
       CHARACTER*(*) NOMSD,NOMSY,CHEXTR
       CHARACTER*16  NOMCMD,OPTION,TYSD
@@ -9,9 +9,9 @@
       INTEGER VALI
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -41,6 +41,9 @@ C IN  : NOMSY  : NOM SYMBOLIQUE DU CHAMP A CHERCHER.
 C IN  : IORDR  : NUMERO D'ORDRE DU CHAMP A CHERCHER.
 C OUT : CHEXTR : NOM DU CHAMP EXTRAIT.
 C ----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER ICODE 
+C-----------------------------------------------------------------------
       OPTION=NOMSY
       CALL RSEXCH(NOMSD,NOMSY,IORDR,CHEXTR,ICODE)
 C --- SI L'OPTION A DEJA ETE CALCULEE, ON LA RECALCULE EN

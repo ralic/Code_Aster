@@ -1,6 +1,6 @@
       SUBROUTINE SSDMRC(MAG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SOUSTRUC  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C     ARGUMENTS:
 C     ----------
       INCLUDE 'jeveux.h'
@@ -36,6 +36,9 @@ C     IN:
 C        MAG : NOM DU MAILLAGE QUE L'ON DEFINIT.
 C
 C ----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IADIME ,IANCNF ,NNNOE 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL JEVEUO(MAG//'.DIME','L',IADIME)
       NNNOE=ZI(IADIME-1+1)

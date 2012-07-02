@@ -1,8 +1,8 @@
       SUBROUTINE TE0029(OPTION,NOMTE)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,6 +39,11 @@ C
       INTEGER            NDIM,NNO,IPG,NPG1,IFORC,NNOS
       INTEGER            IDEC,JDEC,KDEC,LDEC,JGANO
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IER ,II ,INO ,IRES ,J ,JNO 
+
+      REAL*8 FX ,FY ,FZ ,XX ,YY ,ZZ 
+C-----------------------------------------------------------------------
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDX,JGANO)
       IDFDY  = IDFDX  + 1
 C

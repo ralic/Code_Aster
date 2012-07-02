@@ -1,4 +1,4 @@
-# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE EPROUVETTE CT 2D AVEC ELEMENTS D'INTERFACE (QUAD8) ET LOI DE RUPTURE DUCTILE CZM_TRA_MIX
 # ssnp151a.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -40,16 +40,16 @@ delp=coep*delc
 #-----------------------------------------------------------
 # LECTURE DU MAILLAGE
 #-------------------------------------------------------------
-MAIL0=LIRE_MAILLAGE(FORMAT='MED',);
+MAIL0=LIRE_MAILLAGE(FORMAT='MED');
 
 #-----------------------------------------------------------
 # TRANSFORME EN MAILLAGE QUADRATIQUE
 #-------------------------------------------------------------
-MAIL=CREA_MAILLAGE(MAILLAGE  = MAIL0, LINE_QUAD = _F(TOUT='OUI'),);
+MAIL=CREA_MAILLAGE(MAILLAGE  = MAIL0, LINE_QUAD = _F(TOUT='OUI'));
 
 MAIL=MODI_MAILLAGE(reuse=MAIL,
                    MAILLAGE=MAIL,
-                   ORIE_FISSURE=_F(GROUP_MA='joint'),);
+                   ORIE_FISSURE=_F(GROUP_MA='joint'));
 
 
 #-----------------------------------------------------------
@@ -58,15 +58,15 @@ MAIL=MODI_MAILLAGE(reuse=MAIL,
 MO=AFFE_MODELE(MAILLAGE=MAIL,
                AFFE=(_F(GROUP_MA=('CT', 'goupi'),
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='D_PLAN',),
+                       MODELISATION='D_PLAN'),
                      _F(GROUP_MA='joint',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='PLAN_INTERFACE',),
-             ), );
+                       MODELISATION='PLAN_INTERFACE'),
+             ));
 
 # DEFINITION DU REPERE LOCAL A LA FISSURE
 ORIEN_FI=AFFE_CARA_ELEM(MODELE=MO,
-                     MASSIF=( _F(GROUP_MA='joint',ANGL_REP=(90, 0 ,0,)), ));
+                     MASSIF=( _F(GROUP_MA='joint',ANGL_REP=(90, 0 ,0))));
 
 
 #-----------------------------------------------------------
@@ -98,7 +98,7 @@ SIGM_F=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(0.0025,495.,
                            0.8,977.,
                            0.9,993.,
                            1.0,1008.,
-                           ),PROL_DROITE='LINEAIRE',);
+                           ),PROL_DROITE='LINEAIRE');
 
 
 #-----------------------------------------------------------
@@ -106,26 +106,26 @@ SIGM_F=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(0.0025,495.,
 #-------------------------------------------------------------
 MA_EPR=DEFI_MATERIAU(ELAS=_F(E=2.07E5,
                              NU=0.3,
-                             ALPHA=0.0,),
-                             TRACTION=_F(SIGM=SIGM_F,),
+                             ALPHA=0.0),
+                             TRACTION=_F(SIGM=SIGM_F),
                      RUPT_DUCT = _F(
                                     GC = tenac,
                                     SIGM_C = sigc,
                                     COEF_EXTR = coee,
                                     COEF_PLAS = coep,
-                            ),);
+                            ));
 
 #-----------------------------------------------------------
 # MODELISATION DU MATERIAU DE LA GOUPILLE
 #-------------------------------------------------------------
 MA_GOUPI=DEFI_MATERIAU(ELAS=_F(E=1E9,
-                     NU=0.3,),);
+                     NU=0.3));
 
 CM=AFFE_MATERIAU(MAILLAGE=MAIL,
                  AFFE=(_F(GROUP_MA=('CT','joint'),
-                         MATER=MA_EPR,),
+                         MATER=MA_EPR),
                        _F(GROUP_MA='goupi',
-                         MATER=MA_GOUPI,),),);
+                         MATER=MA_GOUPI)));
 
 #-----------------------------------------------------------
 # CONDITIONS AUX LIMITES DE CHARGEMENT
@@ -135,31 +135,31 @@ CH=AFFE_CHAR_MECA(MODELE=MO,
                                DY=4.0,
                                DX=0.0,
                                ),
-                ),);
+                ));
 
 #-----------------------------------------------------------
 # CONDITION LIMITE DE SYMETRIE SUR LES ELEMENTS DE JOINT
 #-------------------------------------------------------------
-SYM=AFFE_CHAR_CINE(MODELE=MO,MECA_IMPO=(_F(GROUP_MA='joint_b',DY=0.0,),),);
+SYM=AFFE_CHAR_CINE(MODELE=MO,MECA_IMPO=(_F(GROUP_MA='joint_b',DY=0.0)));
 
 
 #-----------------------------------------------------------
 # LISTE DES INSTANTS DE CALCUL
 #-------------------------------------------------------------
 L_INST1=DEFI_LIST_REEL(DEBUT=0.0,
-                       INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=40,),);
+                       INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=40));
 
 LINST=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
-                                  LIST_INST=L_INST1,),
+                                  LIST_INST=L_INST1),
                      ECHEC=_F(ACTION        = 'DECOUPE',
                               SUBD_METHODE  = 'MANUEL',
-                              SUBD_NIVEAU=10,),);
+                              SUBD_NIVEAU=10));
 
 #-----------------------------------------------------------
 # LISTE DES INSTANTS D'ARCHIVAGE
 #-------------------------------------------------------------
 LIS_ARCH=DEFI_LIST_REEL(DEBUT=0.0,
-                        INTERVALLE=_F(JUSQU_A=1.0,NOMBRE=40,),);
+                        INTERVALLE=_F(JUSQU_A=1.0,NOMBRE=40));
 
 FCT = DEFI_FONCTION(
       NOM_PARA = 'INST',
@@ -173,8 +173,8 @@ FCT = DEFI_FONCTION(
 UP=STAT_NON_LINE(MODELE=MO,
                  CHAM_MATER=CM,
                  CARA_ELEM  = ORIEN_FI,
-                 EXCIT=(_F(CHARGE=CH,FONC_MULT = FCT,),
-                        _F(CHARGE=SYM,),
+                 EXCIT=(_F(CHARGE=CH,FONC_MULT = FCT),
+                        _F(CHARGE=SYM),
                         ),
                  COMP_ELAS=_F(RELATION='ELAS',
                               GROUP_MA='goupi',
@@ -183,7 +183,7 @@ UP=STAT_NON_LINE(MODELE=MO,
                               DEFORMATION='PETIT_REAC',
                               GROUP_MA='CT'),
                              _F(RELATION = 'CZM_TRA_MIX',
-                                GROUP_MA = 'joint',),),
+                                GROUP_MA = 'joint')),
                  INCREMENT=_F(LIST_INST=LINST,
                                INST_FIN=1.0),
                  CONVERGENCE = _F(
@@ -192,14 +192,14 @@ UP=STAT_NON_LINE(MODELE=MO,
                         DEPL_REFE      = delc,
                         ITER_GLOB_MAXI = 12,
                   ),
-                 SOLVEUR    = _F(METHODE = 'MUMPS', PCENT_PIVOT = 100, NPREC=-1),
+                 SOLVEUR    = _F(METHODE = 'MUMPS', NPREC=-1),
                  NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
-                 ARCHIVAGE=_F(LIST_INST=LIS_ARCH,),
+                 ARCHIVAGE=_F(LIST_INST=LIS_ARCH),
                );
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
-                CREA_GROUP_NO=_F(GROUP_MA='goupi',),);
+                CREA_GROUP_NO=_F(GROUP_MA='goupi'));
 
 #-----------------------------------------------------------
 # CALCUL DE CHAMPS COMPLEMENTAIRES
@@ -216,10 +216,10 @@ TFORCE=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                RESULTAT=UP,
                                NOM_CHAM='REAC_NODA',
                                GROUP_NO='goupi',
-                               RESULTANTE='DY',),);
+                               RESULTANTE='DY'));
 
 COEF = FORMULE(VALE='4*INST',
-                NOM_PARA='INST',);
+                NOM_PARA='INST');
 
 #-----------------------------------------------------------
 # LA REPONSE GLOBALE (FORCE EN FONCTION DU DEPLACEMENT)
@@ -227,7 +227,7 @@ COEF = FORMULE(VALE='4*INST',
 FORCE=CALC_TABLE(TABLE=TFORCE,
                 ACTION=_F(OPERATION='OPER',
                            FORMULE=COEF,
-                           NOM_PARA='DEPLACE',),);
+                           NOM_PARA='DEPLACE'));
 #-----------------------------------------------------------
 # TEST SUR LA REPONSE GLOBALE
 # ----------------------------------------------------------
@@ -236,28 +236,28 @@ TEST_TABLE(TABLE=FORCE,
            FILTRE=_F(NOM_PARA='DEPLACE',
                      VALE=0.5),
            VALE=4.26954E+03,
-           REFERENCE='NON_REGRESSION',);
+           REFERENCE='NON_REGRESSION');
 
 TEST_TABLE(TABLE=FORCE,
            NOM_PARA='DY',
            FILTRE=_F(NOM_PARA='DEPLACE',
                      VALE=1.0),
            VALE=4.75650E+03,
-           REFERENCE='NON_REGRESSION',);
+           REFERENCE='NON_REGRESSION');
 
 TEST_TABLE(TABLE=FORCE,
            NOM_PARA='DY',
            FILTRE=_F(NOM_PARA='DEPLACE',
                      VALE=1.5),
            VALE=5.10977E+03,
-           REFERENCE='NON_REGRESSION',);
+           REFERENCE='NON_REGRESSION');
 
 TEST_TABLE(TABLE=FORCE,
            NOM_PARA='DY',
            FILTRE=_F(NOM_PARA='DEPLACE',
                      VALE=2.0),
            VALE=5.38376E+03,
-           REFERENCE='NON_REGRESSION',);
+           REFERENCE='NON_REGRESSION');
 
 
 #-----------------------------------------------------------
@@ -265,7 +265,7 @@ TEST_TABLE(TABLE=FORCE,
 # ----------------------------------------------------------
 IMPR_TABLE(TABLE=FORCE,
            FORMAT='TABLEAU',
-           NOM_PARA=('DEPLACE','DY',),);
+           NOM_PARA=('DEPLACE','DY'));
 
 
 FIN(FORMAT_HDF='OUI')

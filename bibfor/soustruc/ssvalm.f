@@ -1,6 +1,6 @@
       SUBROUTINE SSVALM(STATUT,OPTION,MO,MA,ISMA,JRESL,NBVEL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SOUSTRUC  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
-      IMPLICIT REAL*8(A-H,O-Z)
+      IMPLICIT NONE
 C
 C     ARGUMENTS:
 C     ----------
@@ -64,6 +64,11 @@ C     ------------------
       CHARACTER*8 KBID,NOMACR
       REAL*8 LAMBDA(6,6),ANGL(3),PGL(3,3)
       CHARACTER*24 NOMOB
+C-----------------------------------------------------------------------
+      INTEGER I ,IADESM ,IANMCR ,IAPARR ,IASSSA ,IAVMAT ,IERD 
+      INTEGER IRET ,J ,JSMA ,NBSMA ,NBSSA ,NBVEL ,NDDLE 
+      INTEGER NDIM ,NMXVAL 
+C-----------------------------------------------------------------------
       OPTIO2=OPTION
 C
 C     -- SI APPEL INITIAL : ON ALLOUE UN OBJET SUFFISANT :

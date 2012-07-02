@@ -1,7 +1,7 @@
       SUBROUTINE LRMAST ( NOMU,NOMMAI,NOMNOE,COOVAL,COODSC,COOREF,
      &                    GRPNOE,GRPMAI,CONNEX,TITRE,TYPMAI,ADAPMA,
      &                    IFM,IFL,NBNOEU,NBMAIL,NBCOOR )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C     IN
       INCLUDE 'jeveux.h'
       INTEGER         IFM,    IFL
@@ -13,7 +13,7 @@ C     OUT
       INTEGER         NBNOEU,NBMAIL,NBCOOR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -143,6 +143,15 @@ C
 C
 C ----- DECLARATIONS
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IAD ,IBID ,ICL ,IER ,II ,IM1 
+      INTEGER INBN ,IRET ,IRTET ,IV ,J ,JGCNX ,JGG 
+      INTEGER JMAIL ,JMAIL2 ,JNOEU ,JNOEU2 ,JVCNX ,JVG ,NBG 
+      INTEGER NBGRMA ,NBGRMP ,NBGRNO ,NBGRNP ,NBLTIT ,NBMA ,NBMA1 
+      INTEGER NBMAGM ,NBMCOO ,NBMDBG ,NBMGRP ,NBMINT ,NBMMAI ,NBMMAX 
+      INTEGER NBMTIT ,NBNO ,NBNO1 ,NBNOGN ,NBNOMA ,NTGEO ,NUM 
+      INTEGER NUMELE ,NUMGRM ,NUMGRN ,NUMLTI ,NUMNEU ,NUMNOD 
+C-----------------------------------------------------------------------
         PARAMETER       (NBMTIT  = 1  )
         PARAMETER       (NBMGRP  = 2  )
         PARAMETER       (NBMCOO  = 3  )

@@ -1,12 +1,12 @@
       SUBROUTINE  RMS(IMATR,VECT1,LONG1,VECT2,LONG2,NBPTS,NFCOD,DF,
      +                NFONC)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER         IMATR,      LONG1,      LONG2,NBPTS,NFCOD
       REAL*8                VECT1(LONG1),VECT2(LONG2)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,6 +30,12 @@ C                   DES INTERSPECTRES EN FONCTION DU NOMBRE DE TIRAGES
 C     OUT : VECT2 : VALEURS DES INTEGRALES
 C           IMATR : NOMBRE DE TIRAGES REALISES
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,I1 ,II ,J ,J1 ,JJ ,K 
+      INTEGER KB ,KF ,KFONC ,KK ,LAUTO ,LAUTOR ,LINT1 
+      INTEGER LINT2 ,LINTR ,NBPTS2 ,NFONC ,NMATR 
+      REAL*8 DF ,VAR1 ,VAR2 ,VARIJ1 ,VARIJ2 ,VARMOD 
+C-----------------------------------------------------------------------
       NMATR = LONG2 / NFCOD
       KB = 0
       NBPTS2 = NBPTS/2

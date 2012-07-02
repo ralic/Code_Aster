@@ -1,7 +1,7 @@
       SUBROUTINE IRDEPL(CHAMNO,PARTIE,IFI,FORM,TITRE,NOMSD,NOMSYM,
      &             NUMORD,LCOR,NBNOT,NUMNOE,NBCMP,NOMCMP,
      &             LSUP,BORSUP,LINF,BORINF,LMAX,LMIN,LRESU,FORMR,NIVE )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
       CHARACTER*(*)     CHAMNO,    FORM,TITRE,NOMSD,NOMSYM
@@ -14,7 +14,7 @@ C
       REAL*8            BORSUP,     BORINF
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,6 +72,13 @@ C
       INTEGER      IARG
 C     ------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IAD ,IADESC ,IAEC ,IANUEQ ,IAPRNO ,IAREFE 
+      INTEGER IAVALE ,IBID ,IER ,INO ,IRET ,ITYPE ,JCOOR 
+      INTEGER JNCMP ,JNO ,JNU ,JTITR ,LXLGUT ,NBCMPT ,NBEC 
+      INTEGER NBNO ,NBNOT2 ,NBTITR ,NCMPMX ,NDIM ,NEC ,NUM 
+
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
       CHAMN  = CHAMNO(1:19)

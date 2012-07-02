@@ -1,6 +1,6 @@
       SUBROUTINE FGDOBA(NOMMAT,NBCYCL,SIGMIN,SIGMAX,LKE,RKE,
      &                  LHAIGH,RCORR,DOM)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*8       NOMMAT
       REAL*8                          SIGMIN(*),SIGMAX(*)
@@ -9,7 +9,7 @@
       LOGICAL           LHAIGH,                     LKE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,6 +46,9 @@ C
       INTEGER ICODRE(2)
       CHARACTER*8    NOMRES(2),NOMPAR
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,NBPAR 
+C-----------------------------------------------------------------------
       NOMPAR = ' '
       NBPAR  = 0
       NOMRES(1) = 'A_BASQUI'

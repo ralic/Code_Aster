@@ -1,9 +1,9 @@
       SUBROUTINE SCALEP(SPECTR,NOMA,BASE,NUOR,NBM,IMODI,NBMR,NBEXCP,
      &                  LTABLE,IAXE,SCAL)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,6 +51,12 @@ C
       REAL*8       R8DGRD,DGRD
       CHARACTER*24 SPNNOE,SPVARE,SPVATE,NNOEMA,CHVALE
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER IDEC ,IDEFM ,IDIR1 ,IDIR2 ,IEX ,IMOD ,IMODF 
+      INTEGER IMR ,INAT ,INATU ,INUNO ,IROT1 ,IROT2 ,ISPNO 
+      INTEGER ISPRE ,ISPTE ,ITETA ,IV ,IVALE ,NUNO 
+      REAL*8 THETA 
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 C

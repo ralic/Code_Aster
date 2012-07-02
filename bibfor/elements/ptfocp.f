@@ -1,6 +1,6 @@
       SUBROUTINE PTFOCP(ITYPE,OPTION,NOMTE,XL,RAD,ANGS2,
      &                  NNO,NC,PGL,PGL1,PGL2, FER, FEI )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER           ITYPE
       CHARACTER*(*)           OPTION,NOMTE
@@ -8,7 +8,7 @@
       REAL*8                               XL,RAD,ANGS2
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,6 +37,11 @@ C
 C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C     --- INITIALISATION  ---
+C-----------------------------------------------------------------------
+      INTEGER I ,ICOEC ,ICOER ,IRET ,LFORC ,LX ,NC 
+      INTEGER NCC ,NNO ,NNOC 
+      REAL*8 DDOT ,S3 ,S4 ,S5 
+C-----------------------------------------------------------------------
       ZERO = 0.0D0
       UN   = 1.0D0
       DO 10 I =1,12

@@ -1,8 +1,8 @@
       SUBROUTINE CPDEPL(MELFLU,BASE,NUOR,NBM)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,6 +42,10 @@ C
       CHARACTER*8  MAILLA,K8BID
       CHARACTER*14 NUMDDL
       CHARACTER*24 NOMCHA,REFEI,MATRIA,NOMNOE
+C-----------------------------------------------------------------------
+      INTEGER IBI ,ICHAM ,IM ,IMOD ,IREFEI ,IRET ,LNOE 
+      INTEGER NEQ 
+C-----------------------------------------------------------------------
       DATA IDDL    /1,2,3,4,5,6/
 C
 C-----------------------------------------------------------------------

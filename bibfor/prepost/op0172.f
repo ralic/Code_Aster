@@ -1,8 +1,8 @@
       SUBROUTINE OP0172()
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,6 +39,20 @@ C
       CHARACTER*24  MAGRNO, MANONO, MAGRMA, MANOMA
       INTEGER      IARG
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IADMO1 ,IAMOMO ,IC ,IDAM ,IDDEEQ ,IDEPMO 
+      INTEGER IDGA ,IDGM ,IDGN ,IDN2 ,IDNO ,IENEMO ,IENMOT 
+      INTEGER IFR ,II ,IJ ,IM ,IMOD ,IN ,INO 
+      INTEGER INOE ,IRE ,IRET ,IRIGNO ,IUNIFI ,JBOR ,JCOOR 
+      INTEGER JFREQ ,JNBP ,JNUME ,JNUOR ,JPAS ,JREFD ,JVAL 
+      INTEGER LDGM ,LDGN ,LDNM ,NB ,NBA ,NBB ,NBEC 
+      INTEGER NBEN ,NBG ,NBGA ,NBGR ,NBMD ,NBMOD2 ,NBNO 
+      INTEGER NBNOEU ,NBOCC ,NBS ,NBV ,NBVALE ,NCG ,NCO 
+      INTEGER NCOMPO ,NEQ ,NGN ,NK ,NKR ,NM ,NMM 
+      INTEGER NMT ,NN ,NNO ,NRP 
+      REAL*8 ALFA ,AMOGE ,BETA ,ENESOL ,F ,OMEGA ,PI 
+      REAL*8 R8PREM ,XG ,YG ,ZG ,ZRIG 
+C-----------------------------------------------------------------------
       DATA  REFD  /'                   .REFD'/
 C     ------------------------------------------------------------------
 C

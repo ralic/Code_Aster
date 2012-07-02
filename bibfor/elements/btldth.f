@@ -1,7 +1,7 @@
       SUBROUTINE BTLDTH(FAMI,XI3,NB1,KPG,BTILD,WGT,INDIC,YOUNG,NU,
      &                  ALPHA,TEMPER,FORTHI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
       INTEGER NB1,KPG
@@ -35,6 +35,11 @@ C
 C     CALCUL DE TEMPERATURE AUX PTS D'INTEGRATION
 C
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,INDIC ,IRET1 ,IRET2 ,IRET3 ,IRET4 ,K 
+
+      REAL*8 R8NNEM ,TEMPER ,TINF ,TMOY ,TREF ,TSUP 
+C-----------------------------------------------------------------------
       P1XI3= 1-XI3*XI3
       P2XI3=-XI3*(1-XI3)/2.D0
       P3XI3= XI3*(1+XI3)/2.D0

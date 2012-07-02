@@ -1,11 +1,11 @@
       SUBROUTINE FOIMPR(NOMF,IMPR,IUL,IND,FONINS)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*)     NOMF,             FONINS
       INTEGER                IMPR,IUL,IND
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,6 +32,13 @@ C
       INTEGER       NBPU
       CHARACTER*8   NOMPU
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IDEB ,IFIN ,II ,IRET ,IVAL ,JVAL 
+      INTEGER LFON ,LFON1 ,LNOVA ,LPROL ,LPROL1 ,LTITR ,LVAL 
+      INTEGER LVAL1 ,LXLGUT ,NBFONC ,NBNOVA ,NBTITR ,NBV ,NBV2 
+      INTEGER NBVAL 
+      REAL*8 RESUIM ,RESURE 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       IF ( IMPR .LE. 0) GOTO 9999
       IF ( IUL .LE. 0 ) THEN

@@ -1,6 +1,6 @@
       SUBROUTINE TE0490(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C.......................................................................
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C     BUTS: .CALCUL DES INDICATEURS GLOBAUX
 C            DE PERTE DE PROPORTIONNALITE DU CHARGEMENT
@@ -115,6 +115,19 @@ C              ---> NOMTE  : NOM DU TYPE ELEMENT
 C.......................................................................
 C
       INCLUDE 'jeveux.h'
+C-----------------------------------------------------------------------
+      INTEGER IDCOMP ,IDCONM ,IDENE1 ,IDENE2 ,IDEPL ,IDEPLM ,IDEPMM 
+      INTEGER IDFDE ,IDSIG ,IDSIGM ,IDVARI ,IGAU ,IGEOM ,IMATE 
+      INTEGER IPOIDS ,IRET1 ,IVF ,JGANO ,JPROL ,JVALE ,MXCMEL 
+      INTEGER NBSGM ,NBSIG ,NBSIG2 ,NBVAL ,NBVARI ,NDIM ,NNO 
+      INTEGER NNOS ,NPG 
+      REAL*8 AIREP ,C1 ,C2 ,DEUX ,DEUXMU ,DSDE ,E 
+      REAL*8 ENELAS ,ENELDV ,ENELSP ,ENELTO ,EPLAEQ ,EPLAST ,EPSEQ 
+      REAL*8 EPSTHE ,OMEGA ,P ,POIDS ,PSI ,R8PREM ,RP 
+      REAL*8 RPRIM ,SIGEQ ,SIGY ,TEMPG ,TREPSM ,TROIS ,TRSIG 
+      REAL*8 TRT ,UN ,UNDEMI ,UNTIER ,VOLUME ,WELAS ,WTOTAL 
+      REAL*8 ZERO 
+C-----------------------------------------------------------------------
       PARAMETER          (MXCMEL = 162)
       PARAMETER          (NBSGM  =   6)
       INTEGER ICODRE(5)

@@ -1,6 +1,6 @@
       INTEGER FUNCTION ENTCOD ( ADMODL, LCMODL, NEC, MODE, K, L )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C-----------------------------------------------------------------------
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C     IN:
 C     MODE: MODE_LOCAL DE TYPE CHNO,VECT,OU MATR.
 C     NEC : NBRE D ENTIERS POUR LA GRANDEUR
@@ -34,6 +34,10 @@ C-----------------------------------------------------------------------
 C
 C
 C
+C-----------------------------------------------------------------------
+      INTEGER IAD ,IADM ,IADM1 ,K ,L ,N1 ,N2 
+      INTEGER NEC 
+C-----------------------------------------------------------------------
       IADM = ADMODL + ZI(LCMODL+MODE-1) - 1
       CODE = ZI(IADM)
       IF (CODE.GT.3) THEN

@@ -1,8 +1,8 @@
       SUBROUTINE RECUGD(CAELEM,NOMCMP,VALRES,NBGD,IASSEF,IASSMX)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,6 +41,11 @@ C
 C
 C-----------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IASSEF ,IASSMX ,ICARD ,ICARV ,ICMP ,ICODE 
+      INTEGER IDECA ,IDECAL ,IGD ,II ,IJ ,IRANG ,IRANV 
+      INTEGER ITAB ,JJ ,KK ,LL ,NBCMP ,NBGD 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       CARAV = CAELEM(1:19)//'.VALE'
       CARAD = CAELEM(1:19)//'.DESC'

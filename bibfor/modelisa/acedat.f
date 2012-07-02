@@ -1,12 +1,12 @@
       SUBROUTINE ACEDAT(MOTFAC,IN,NPARA,SEC,EXP,TAB,CAR)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER                  IN,NPARA(*)
       CHARACTER*(*)     MOTFAC,         SEC(*),EXP(*),TAB(*),CAR(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/05/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,6 +27,11 @@ C     INITIALISATION DES PARAMETRES ET DES DATAS
 C ----------------------------------------------------------------------
 C
 C     --- MOT CLE FACTEUR "POUTRE"-------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,K ,NBOBAR ,NBOPOU ,NCERBA ,NCERPO ,NGENBA 
+      INTEGER NGENPO ,NRECBA ,NRECPO ,NSECBA ,NSECPO ,NTSEBA ,NTSEPO 
+
+C-----------------------------------------------------------------------
       PARAMETER ( NGENPO = 15 , NRECPO = 6  , NCERPO = 2  )
       PARAMETER ( NSECPO = 2  , NTSEPO = 3  , NBOPOU = 44 )
       CHARACTER*8  EXPPOU(NBOPOU), TABPOU(NBOPOU)

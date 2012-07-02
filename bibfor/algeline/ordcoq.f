@@ -1,9 +1,9 @@
       SUBROUTINE ORDCOQ(IMOD,NBM,ICOQ,NBNO,NUMNO,INOMAX,NBNOTO,COORDO,
      &                  IAXE,DEFM,NUNOE0,DRMAX,TORCO)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,6 +63,18 @@ C
       CHARACTER*8  NOMPAR
       LOGICAL      DEFINI
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IDIR1 ,IDIR2 ,IDISC ,IDR ,IDR2 ,IER 
+      INTEGER IFFTDR ,IFM ,ILIGNE ,IMIN ,INO ,INOCR ,IP 
+      INTEGER IPMAX ,IPROL ,ITHETA ,IUNIFI ,JNO ,NBNOCR ,NBPT 
+      INTEGER NBPT2 ,NUMNOE ,NUNOMX 
+      REAL*8 ALPHA ,AN ,BETA ,BN ,CRIT ,DELTA ,DIF 
+      REAL*8 DIF1 ,DIF2 ,DIFZ ,DR ,ERR ,FONC ,GAMMA 
+      REAL*8 PAS ,PI ,R8PREM ,RAP ,RKI ,S11 ,S12 
+      REAL*8 S22 ,SOMM ,SOMM1 ,SOMM2 ,THEMIN ,THETA ,THETA0 
+      REAL*8 THETA1 ,THETA2 ,TOLE ,X1 ,X2 ,Y1 ,Y2 
+      REAL*8 ZCR ,ZNO 
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 C

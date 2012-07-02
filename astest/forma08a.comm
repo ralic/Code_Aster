@@ -1,4 +1,4 @@
-# MODIF  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 02/07/2012   AUTEUR SELLENET N.SELLENET 
 # TITRE TP RUPTURE : POUTRE DCB 3D ELASTIQUE
 # forma08a.para = tps_job 400 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -187,7 +187,7 @@ U=STAT_NON_LINE(
                    RESI_GLOB_RELA = 5.E-5,
                    ITER_GLOB_MAXI = 20,
                   ),
-  SOLVEUR = _F(METHODE = 'MUMPS', PCENT_PIVOT=30, NPREC=-1),
+  SOLVEUR = _F(METHODE = 'MUMPS', NPREC=-1),
   ARCHIVAGE = _F(
     LIST_INST     = INS_ARCH
   ))
@@ -234,19 +234,9 @@ IMPR_TABLE(TABLE = DEP_IMP)
 IMPR_TABLE(TABLE = FRES)
 
 # IMPRESSION DU RESULTAT POUR VISUALISATION MED
-MA2 = CREA_MAILLAGE(MAILLAGE=MA,RESTREINT=_F(GROUP_MA=('DCB_1','DCB_2',),),)
-MO2=AFFE_MODELE(MAILLAGE=MA2,
-                AFFE=(_F(GROUP_MA = ('DCB_1','DCB_2'),
-                         PHENOMENE = 'MECANIQUE',
-                         MODELISATION = '3D',
-                        ),
-                     ),
-               )
-U2=EXTR_RESU(RESULTAT=U,
-             RESTREINT=_F(MODELE=MO2))
-
 IMPR_RESU(  FORMAT  = 'MED',
-  RESU=_F(RESULTAT=U2),
+  RESU=_F(RESULTAT=U),
+  RESTREINT=_F(GROUP_MA=('DCB_1','DCB_2',)),
   UNITE=80
          )
 ##########################################################################

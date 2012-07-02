@@ -1,11 +1,11 @@
       SUBROUTINE FGDOMM(NBCYCL,DOM,RDOMM)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       REAL*8                   DOM(*),RDOMM
       INTEGER           NBCYCL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,6 +30,9 @@ C IN  DOM    : R   : VALEURS DES DOMMAGES ELEMENTAIRES
 C OUT RDOMM  : R   : VALEUR DU DOMMAGE TOTAL
 C     ------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I 
+C-----------------------------------------------------------------------
       RDOMM = 0.D0
       DO 10 I=1,NBCYCL
         RDOMM = RDOMM + DOM(I)

@@ -1,7 +1,7 @@
       SUBROUTINE WP2INI(APPR,LMASSE,LAMOR,LRAIDE,LMATRA,LMTPSC,SIGMA,
      &                  XH,XB,OPTIOF,PRORTO,NBORTO,NBVECT,NEQ,LBLOQ,
      &                  LDDL,ALPHA,BETA,SIGNE,YH,YB,SOLVEU)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*1       APPR
       INTEGER           LMASSE,LAMOR,LRAIDE,LMATRA,LMTPSC
@@ -14,7 +14,7 @@
       CHARACTER*19      SOLVEU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,6 +87,10 @@ C     ------------------------------------------------------------------
       REAL*8       A,B,C,SR,SI,DEUXSR,MODS2,INVSI,SI2,D1,D2
       LOGICAL      OC,RO
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER II ,IPS 
+      REAL*8 DSEED 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       SI     = DIMAG(SIGMA)
       SI2    = SI*SI

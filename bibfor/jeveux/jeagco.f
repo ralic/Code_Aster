@@ -1,6 +1,6 @@
       SUBROUTINE JEAGCO(SCHIN, SCHOUT, NBOCNW, LONTNW, CLAOUT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C TOLE CRP_18 CRS_508  CRS_512
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*)     SCHIN, SCHOUT, CLAOUT
       INTEGER           NBOCNW, LONTNW
@@ -44,6 +44,17 @@ C ----------------------------------------------------------------------
       EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
       INTEGER          ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
       COMMON /IATCJE/  ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
+C-----------------------------------------------------------------------
+      INTEGER IADMI ,IADMO1 ,IADMO2 ,IADOUT ,IADYN ,IADZON ,IBACOL 
+      INTEGER IBAOUT ,IBIADD ,IBIADM ,IBIADO ,IBLONO ,IBMARO ,ICIN 
+      INTEGER ICOUT ,IDAT ,IDCOUT ,IDIN ,IDOUT ,IOC ,IRET1 
+      INTEGER IRET2 ,IRET3 ,ISTA1 ,ISTA2 ,IXDESO ,IXIADD ,IXIADM 
+      INTEGER IXIADO ,IXLONG ,IXLONO ,IXMARO ,IXNOM ,JCARA ,JDATE 
+      INTEGER JDOCU ,JGENR ,JHCOD ,JIADD ,JIADM ,JLONG ,JLONO 
+      INTEGER JLTYP ,JLUTI ,JMARQ ,JORIG ,JRNOM ,JTYPE ,K 
+      INTEGER LLECT ,LONOI ,N ,NBL ,NMAX 
+      REAL*8 VAL 
+C-----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
      +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ

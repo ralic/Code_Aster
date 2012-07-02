@@ -1,4 +1,4 @@
-# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE FISSURATION INTERFACE 2D PLAN (QUAD8), LOI CZM_TRA_MIX
 # ssnp118v.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -51,7 +51,7 @@ MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
               CREA_GROUP_NO=(_F(
                                 GROUP_MA='GM_DROI',
-                                NOM='DROITE',),),
+                                NOM='DROITE')),
                                );
 
 MO=AFFE_MODELE(
@@ -184,7 +184,7 @@ FCT=DEFI_FONCTION(NOM_PARA='INST',VALE=(       0.0,   0.0,
                                               tfin,   delc*1.1,
 
                                                         ),
-                                 PROL_DROITE='LINEAIRE',);
+                                 PROL_DROITE='LINEAIRE');
 
 
 LISTCY =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =LREEL1 ),
@@ -192,7 +192,7 @@ LISTCY =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =LREEL1 ),
                                  SUBD_METHODE = 'MANUEL',
                                  SUBD_PAS     = 4,
                                  SUBD_NIVEAU  = 5,
-                                ),)
+                                ))
 
 # CREATION DE LISTE D'INSTANT POUR CHARGEMENT MONOTONE
 
@@ -200,7 +200,7 @@ LREEL2=DEFI_LIST_REEL(DEBUT   = 0.0,INTERVALLE=(
                                                  _F( JUSQU_A =   tfin,    NOMBRE = 10*tfin ),
       ))
 
-FCTMON=DEFI_FONCTION(NOM_PARA='INST',VALE=( 0.0,   0.0, tfin,   delc*1.1,),  PROL_DROITE='LINEAIRE',);
+FCTMON=DEFI_FONCTION(NOM_PARA='INST',VALE=( 0.0,   0.0, tfin,   delc*1.1),  PROL_DROITE='LINEAIRE');
 
 
 LISTMO =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =LREEL2 ),
@@ -208,7 +208,7 @@ LISTMO =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =LREEL2 ),
                                  SUBD_METHODE='MANUEL',
                                  SUBD_PAS     = 4,
                                  SUBD_NIVEAU  = 5,
-                                ),)
+                                ))
 
 #----------------------------------------------------------------------------------
 # CALCUL AVEC CHARGEMENT EN MODE I AVEC LOI CZM_TRA_MIX
@@ -220,12 +220,12 @@ U_TRA=STAT_NON_LINE(
   CHAM_MATER = CM,
   CARA_ELEM  = ORIEN_FI,
   EXCIT      = (
-    _F(CHARGE = LIAISON , ),
+    _F(CHARGE = LIAISON ),
     _F(CHARGE = TRAC_N, FONC_MULT = FCT),
   ),
   COMP_INCR  = (
-          _F(RELATION = 'CZM_TRA_MIX',  MAILLE = 'CUBEDEG', ),
-          _F(RELATION = 'ELAS',         MAILLE = 'CUBE',),
+          _F(RELATION = 'CZM_TRA_MIX',  MAILLE = 'CUBEDEG'),
+          _F(RELATION = 'ELAS',         MAILLE = 'CUBE'),
           ),
   INCREMENT = _F(
     LIST_INST    = LISTCY,
@@ -237,9 +237,9 @@ U_TRA=STAT_NON_LINE(
     DEPL_REFE      = delc,
     ITER_GLOB_MAXI = 5,
     ),
-  SOLVEUR = _F(METHODE = 'MUMPS', PCENT_PIVOT = 100),
+  SOLVEUR = _F(METHODE = 'MUMPS'),
   NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
-  ARCHIVAGE = _F(LIST_INST = LREEL1,),
+  ARCHIVAGE = _F(LIST_INST = LREEL1),
   )
 
 # CHARGEMENT MONOTONE
@@ -248,12 +248,12 @@ U_MON=STAT_NON_LINE(
   CHAM_MATER = CM,
   CARA_ELEM  = ORIEN_FI,
   EXCIT      = (
-    _F(CHARGE = LIAISON , ),
+    _F(CHARGE = LIAISON ),
     _F(CHARGE = TRAC_N, FONC_MULT = FCTMON),
   ),
   COMP_INCR  = (
-          _F(RELATION = 'CZM_TRA_MIX',  MAILLE = 'CUBEDEG', ),
-          _F(RELATION = 'ELAS',         MAILLE = 'CUBE',),
+          _F(RELATION = 'CZM_TRA_MIX',  MAILLE = 'CUBEDEG'),
+          _F(RELATION = 'ELAS',         MAILLE = 'CUBE'),
           ),
   INCREMENT = _F(
     LIST_INST    = LISTMO,
@@ -265,9 +265,9 @@ U_MON=STAT_NON_LINE(
     DEPL_REFE      = delc,
     ITER_GLOB_MAXI = 5,
     ),
-  SOLVEUR = _F(METHODE = 'MUMPS', PCENT_PIVOT = 100),
+  SOLVEUR = _F(METHODE = 'MUMPS'),
   NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
-  ARCHIVAGE = _F(LIST_INST = LREEL2,),
+  ARCHIVAGE = _F(LIST_INST = LREEL2),
   )
 
 #----------------------------------------------------------------------------------
@@ -288,19 +288,19 @@ TF_N=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                NOM_CHAM='FORC_NODA',
                                TOUT_ORDRE='OUI',
                                GROUP_NO='DROITE',
-                               RESULTANTE=('DX','DY'),),);
+                               RESULTANTE=('DX','DY')));
 
 
 # PROJECTEUR SUR LA NORMALE
 PNOR = FORMULE(VALE='DX*cos(angle)+DY*sin(angle)',
-              NOM_PARA=('DX','DY',),);
+              NOM_PARA=('DX','DY'));
 
 # INSERTION D'UNE COLONNE AVEC LA PROJECTION NORMALE DE LA FORCE NODALE
 TF_N=CALC_TABLE(reuse =TF_N,
                   TABLE=TF_N,
                   ACTION=_F(OPERATION='OPER',
                             FORMULE=PNOR,
-                            NOM_PARA='F_N',),);
+                            NOM_PARA='F_N'));
 
 # DEPLACEMENT DU NOEUD EN_HAUT
 TU_N=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
@@ -309,31 +309,31 @@ TU_N=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               NOM_CHAM='DEPL',
                               TOUT_ORDRE='OUI',
                               NOEUD='NO2',
-                              NOM_CMP=('DX','DY',),),);
+                              NOM_CMP=('DX','DY')));
 
 # INSERTION D'UNE COLONNE AVEC LA PROJECTION NORMALE DE DEPLACEMENT
 TU_N=CALC_TABLE(reuse =TU_N,
                     TABLE=TU_N,
                     ACTION=_F(OPERATION='OPER',
                             FORMULE=PNOR,
-                            NOM_PARA='U_N',),);
+                            NOM_PARA='U_N'));
 
 
 # MANIPULATION POUR IMPRIMER LA COURBE FORCE-DEPLACEMENT AU FORMAT XMGRACE
 FN=RECU_FONCTION(TABLE=TF_N,
                   PARA_X='INST',
-                  PARA_Y='F_N',);
+                  PARA_Y='F_N');
 
 DN=RECU_FONCTION(TABLE=TU_N,
                   PARA_X='INST',
-                  PARA_Y='U_N',);
+                  PARA_Y='U_N');
 
 
 # RECUPERATION DES VALEURS DE VI EN FONCTION DES INSTANT ET IMPRESSION DANS UNE TABLE UNIQUE : TRESU
 
 VARI_1=RECU_FONCTION(   RESULTAT=U_TRA,
                         NOM_CHAM='VARI_ELGA',
-                        NOM_CMP=('V1',),
+                        NOM_CMP=('V1'),
                         MAILLE='CUBEDEG',
                         POINT=1)
 T_VARI_1=CREA_TABLE(FONCTION=_F(FONCTION=VARI_1))
@@ -384,21 +384,21 @@ T_SIGN=CREA_TABLE(FONCTION=_F(FONCTION=SIGN))
 
 SN=RECU_FONCTION(TABLE=T_SIGN,
                   PARA_X='INST',
-                  PARA_Y='SIGN',);
+                  PARA_Y='SIGN');
 
 DN2=RECU_FONCTION(TABLE=T_VARI_7,
                   PARA_X='INST',
-                  PARA_Y='V7',);
+                  PARA_Y='V7');
 
 
 TRESU = CALC_TABLE(reuse = TRESU,
                      TABLE = TRESU,
                      ACTION = (
-                     _F(OPERATION = 'COMB',NOM_PARA  = 'INST',TABLE = T_VARI_2,),
-                     _F(OPERATION = 'COMB',NOM_PARA  = 'INST',TABLE = T_VARI_3,),
-                     _F(OPERATION = 'COMB',NOM_PARA  = 'INST',TABLE = T_VARI_4,),
-                     _F(OPERATION = 'COMB',NOM_PARA  = 'INST',TABLE = T_VARI_7,),
-                     _F(OPERATION = 'COMB',NOM_PARA  = 'INST',TABLE = T_SIGN,),
+                     _F(OPERATION = 'COMB',NOM_PARA  = 'INST',TABLE = T_VARI_2),
+                     _F(OPERATION = 'COMB',NOM_PARA  = 'INST',TABLE = T_VARI_3),
+                     _F(OPERATION = 'COMB',NOM_PARA  = 'INST',TABLE = T_VARI_4),
+                     _F(OPERATION = 'COMB',NOM_PARA  = 'INST',TABLE = T_VARI_7),
+                     _F(OPERATION = 'COMB',NOM_PARA  = 'INST',TABLE = T_SIGN),
 
                                ),
                         );
@@ -407,12 +407,12 @@ TRESU = CALC_TABLE(reuse = TRESU,
 #              PILOTE='INTERACTIF',
 #              COURBE=_F(FONC_X=DN2,
 #                        FONC_Y=SN,
-#                        LEGENDE='Ldc CZM ductile',),
+#                        LEGENDE='Ldc CZM ductile'),
 #              BORNE_X=(-0.001,1.3*delc),
 #              BORNE_Y=(-2*sigc,1.2*sigc),
 #              LEGENDE_X='\\xd\\s\\0n',
 #              LEGENDE_Y='SIG\\sn',
-#              TITRE='Reponse Ldc Mode I avec charge-decharge',)
+#              TITRE='Reponse Ldc Mode I avec charge-decharge')
 
 
 #----------------------------------------------------------------------------------
@@ -514,7 +514,7 @@ TEST_RESU(
       MAILLE    = 'CUBEDEG',
       POINT     = 1,
       INST      = 2.5,
-      ),))
+      )))
 
 TEST_RESU(
   RESU = (
@@ -528,7 +528,7 @@ TEST_RESU(
       MAILLE    = 'CUBEDEG',
       POINT     = 2,
       INST      = 2.5,
-      ),))
+      )))
 
 # PLATEAU (VI2 = 3)
 TEST_RESU(
@@ -542,7 +542,7 @@ TEST_RESU(
       MAILLE    = 'CUBEDEG',
       POINT     = 1,
       INST      = 5.4,
-      ),))
+      )))
 
 TEST_RESU(
   RESU = (
@@ -555,7 +555,7 @@ TEST_RESU(
       MAILLE    = 'CUBEDEG',
       POINT     = 2,
       INST      = 5.4,
-      ),))
+      )))
 
 # ADHERENCE OU DECHARGE (VI2 = 0)
 TEST_RESU(
@@ -569,7 +569,7 @@ TEST_RESU(
       MAILLE    = 'CUBEDEG',
       POINT     = 1,
       INST      = 7.4,
-      ),))
+      )))
 
 TEST_RESU(
   RESU = (
@@ -582,7 +582,7 @@ TEST_RESU(
       MAILLE    = 'CUBEDEG',
       POINT     = 2,
       INST      = 7.4,
-      ),))
+      )))
 
 # ENDOMMAGEMENT (VI2 = 1)
 TEST_RESU(
@@ -596,7 +596,7 @@ TEST_RESU(
       MAILLE    = 'CUBEDEG',
       POINT     = 1,
       INST      = 12.6,
-      ),))
+      )))
 
 TEST_RESU(
   RESU = (
@@ -609,7 +609,7 @@ TEST_RESU(
       MAILLE    = 'CUBEDEG',
       POINT     = 2,
       INST      = 12.6,
-      ),))
+      )))
 
 # RUPTURE TOTALE (VI2 = 2)
 TEST_RESU(
@@ -623,7 +623,7 @@ TEST_RESU(
       MAILLE    = 'CUBEDEG',
       POINT     = 1,
       INST      = 23.0,
-      ),))
+      )))
 
 TEST_RESU(
   RESU = (
@@ -636,14 +636,14 @@ TEST_RESU(
       MAILLE    = 'CUBEDEG',
       POINT     = 2,
       INST      = 23.0,
-      ),))
+      )))
 
 
 # IMPRESSION DES RESULTATS DANS LE FICHIER RESU
 IMPR_FONCTION(FORMAT='TABLEAU',
               COURBE=_F(FONC_X=DN,
                         FONC_Y=FN,
-                        LEGENDE='REPONSE GLOBALE',),
+                        LEGENDE='REPONSE GLOBALE'),
              );
 
 IMPR_TABLE(TABLE = TRESU);

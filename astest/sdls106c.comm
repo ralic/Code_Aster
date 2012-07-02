@@ -1,9 +1,9 @@
-# MODIF  DATE 24/10/2011   AUTEUR CORUS M.CORUS 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE SOUS STRUCTURATION DYNAMIQUE : PLAQUE MINCE APPUYEE-APPUYEE
 # sdls106c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -53,19 +53,19 @@ PRE_IDEAS(UNITE_MAILLAGE=30,
           UNITE_IDEAS=29,
           );         
 
-MAILLA1=LIRE_MAILLAGE(UNITE=20,FORMAT='ASTER',)
-MAILLA2=LIRE_MAILLAGE(UNITE=30,FORMAT='ASTER',)
+MAILLA1=LIRE_MAILLAGE(UNITE=20,FORMAT='ASTER')
+MAILLA2=LIRE_MAILLAGE(UNITE=30,FORMAT='ASTER')
 
 
 MODELE1=AFFE_MODELE(MAILLAGE=MAILLA1,
                     AFFE=_F( GROUP_MA = 'CALCUL',
                              PHENOMENE = 'MECANIQUE',
-                             MODELISATION = 'DKT'),);
+                             MODELISATION = 'DKT'));
 
 MODELE2=AFFE_MODELE(MAILLAGE=MAILLA2,
                     AFFE=_F( GROUP_MA = 'CALCUL',
                              PHENOMENE = 'MECANIQUE',
-                             MODELISATION = 'DKT'),);
+                             MODELISATION = 'DKT'));
                              
                              
 #
@@ -199,14 +199,14 @@ MODESTA1=MODE_STATIQUE(MATR_RIGI=RAID_1,
                         MODE_INTERF=_F(GROUP_NO = 'GAUCHE',
                                      TOUT_CMP='OUI',
                                      NBMOD=20,
-                                     SHIFT=1.,),);
+                                     SHIFT=1.));
  
 MODESTA2=MODE_STATIQUE(MATR_RIGI=RAID_2,
                         MATR_MASS=MASS_2,
                         MODE_INTERF=_F(GROUP_NO = 'BLOQUE',
                                      TOUT_CMP='OUI',
                                      NBMOD=20,
-                                     SHIFT=1.,),);
+                                     SHIFT=1.));
 #
 #  CALCUL DE LA BASE MODALE DES SOUS-STRUCTURES
 BAMO1_CL=DEFI_BASE_MODALE( RITZ=( _F( MODE_MECA = MODES_1),
@@ -227,7 +227,7 @@ BAMO2_CL=DEFI_BASE_MODALE( RITZ=( _F( MODE_MECA = MODES_2),
 
 MACEL1=MACR_ELEM_DYNA( BASE_MODALE=BAMO1_CL,
                        MATR_MASS=MASS_1,
-                       MATR_RIGI=RAID_1,)
+                       MATR_RIGI=RAID_1)
 
 #
 MACEL2=MACR_ELEM_DYNA( BASE_MODALE=BAMO2_CL,
@@ -238,12 +238,12 @@ MACEL2=MACR_ELEM_DYNA( BASE_MODALE=BAMO2_CL,
 #
 MODEGE=DEFI_MODELE_GENE(SOUS_STRUC=( _F( NOM = 'CARRE1',
                                          MACR_ELEM_DYNA = MACEL1,
-                                         ANGL_NAUT = (0., 0., 0.,),
-                                         TRANS=(0.,0.,0.),),
+                                         ANGL_NAUT = (0., 0., 0.),
+                                         TRANS=(0.,0.,0.)),
                                      _F( NOM = 'CARRE2',
                                          MACR_ELEM_DYNA = MACEL2,
                                          ANGL_NAUT=(-90.,0.,0.),
-                                         TRANS=(0.,0.5,0.),),),
+                                         TRANS=(0.,0.5,0.))),
                              LIAISON=_F( SOUS_STRUC_1 = 'CARRE1',
                                       SOUS_STRUC_2 = 'CARRE2',
                                       INTERFACE_1 = 'GAUCHE',
@@ -264,11 +264,11 @@ NUMEGE=NUME_DDL_GENE(  MODELE_GENE=MODEGE,
 #  ASSEMBLAGE DES MATRICES RAIDEUR ET MASSE
 #
 MASGEN=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE,
-                                  OPTION='MASS_GENE',);
+                                  OPTION='MASS_GENE');
 
 #
 RIGGEN=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE,
-                                  OPTION='RIGI_GENE',);
+                                  OPTION='RIGI_GENE');
 #
 #   CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE
 #
@@ -278,9 +278,9 @@ RESGEN=MODE_ITER_SIMULT( MATR_A=RIGGEN,
                          METHODE='TRI_DIAG',
                          OPTION='MODE_RIGIDE',
                          CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
-                                       NMAX_FREQ=10,),
+                                       NMAX_FREQ=10),
                          SOLVEUR=_F(METHODE='MUMPS',
-                                    PCENT_PIVOT=50,
+   
                                     NPREC=9),
                          VERI_MODE=_F(PREC_SHIFT=5.0000000000000001E-3,
                                       STOP_ERREUR='NON',
@@ -309,26 +309,26 @@ MODGLO=REST_SOUS_STRUC(RESU_GENE=RESGEN,
                        TOUT_CHAM='OUI')
                        
 IMPR_RESU(FORMAT='MED',
-          RESU=_F(RESULTAT=MODGLO,),);                       
+          RESU=_F(RESULTAT=MODGLO));                       
 
 TEST_RESU(RESU=(_F( RESULTAT = MODGLO, PARA = 'FREQ',
                 CRITERE = 'ABSOLU', PRECISION = 1.E-1,
-                NUME_MODE = 1,  VALE = 0.0, REFERENCE = 'ANALYTIQUE',),
+                NUME_MODE = 1,  VALE = 0.0, REFERENCE = 'ANALYTIQUE'),
           _F( RESULTAT = MODGLO, PARA = 'FREQ',
                 CRITERE = 'ABSOLU', PRECISION = 1.E-1,
-                NUME_MODE = 2,  VALE = 0.0, REFERENCE = 'ANALYTIQUE',),
+                NUME_MODE = 2,  VALE = 0.0, REFERENCE = 'ANALYTIQUE'),
           _F( RESULTAT = MODGLO, PARA = 'FREQ',
                 CRITERE = 'ABSOLU', PRECISION = 1.E-1,
-                NUME_MODE = 3,  VALE = 0.0, REFERENCE = 'ANALYTIQUE',),
+                NUME_MODE = 3,  VALE = 0.0, REFERENCE = 'ANALYTIQUE'),
           _F( RESULTAT = MODGLO, PARA = 'FREQ',
                 CRITERE = 'ABSOLU', PRECISION = 1.E-1,
-                NUME_MODE = 4,  VALE = 0.0, REFERENCE = 'ANALYTIQUE',),
+                NUME_MODE = 4,  VALE = 0.0, REFERENCE = 'ANALYTIQUE'),
           _F( RESULTAT = MODGLO, PARA = 'FREQ',
                 CRITERE = 'ABSOLU', PRECISION = 1.E-1,
-                NUME_MODE = 5,  VALE = 0.0, REFERENCE = 'ANALYTIQUE',),
+                NUME_MODE = 5,  VALE = 0.0, REFERENCE = 'ANALYTIQUE'),
           _F( RESULTAT = MODGLO, PARA = 'FREQ',
                 CRITERE = 'ABSOLU', PRECISION = 1.E-1,
-                NUME_MODE = 6,  VALE = 0.0, REFERENCE = 'ANALYTIQUE',),      
+                NUME_MODE = 6,  VALE = 0.0, REFERENCE = 'ANALYTIQUE'),      
                 ) )
 
 FIN()

@@ -1,9 +1,9 @@
       SUBROUTINE PCTRII(TAB,LTAB)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/05/2000   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -20,6 +20,9 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       INTEGER TAB(LTAB)
 
+C-----------------------------------------------------------------------
+      INTEGER I ,INDIC ,IP1 ,ITAB ,K ,LTAB 
+C-----------------------------------------------------------------------
       DO 20 K = LTAB,2,-1
         INDIC = 0
         DO 10 I = 1,K - 1

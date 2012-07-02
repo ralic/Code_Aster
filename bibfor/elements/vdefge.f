@@ -1,27 +1,32 @@
       SUBROUTINE VDEFGE(NOMTE,OPTION,NB1,NPGSR,XR,EPAIS,SIGMA,EFFGT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       CHARACTER*16 NOMTE,OPTION
       REAL*8 EPAIS
       REAL*8 XR(*),SIGMA(6,*),EFFGT(8,*),EFFGTG(8,8)
+      INTEGER I ,I1 ,J ,K ,L1 ,NB1 ,NPGSR
+
+      REAL*8 DEMIEP ,WNC1 ,WNC2 ,WNC3 ,ZIC ,ZIC1 ,ZIC2
+      REAL*8 ZIC3
+C-----------------------------------------------------------------------
 C
 C     DANS LE CAS DE EFGE_ELNO, ON CALCULE AUX NB1 NOEUDS
 C     ON NE CALCULE PAS AU NOEUD INTERNE
@@ -47,7 +52,7 @@ C
 C
       IF (NOMTE.EQ.'MEC3QU9H') THEN
          EFFGTG(1,1)=DEMIEP*(WNC1*SIGMA(1,1)+WNC2*SIGMA(1,5)
-     &                                      +WNC3*SIGMA(1,9)) 
+     &                                      +WNC3*SIGMA(1,9))
          EFFGTG(1,2)=DEMIEP*(WNC1*SIGMA(1,2)+WNC2*SIGMA(1,6)
      &                                      +WNC3*SIGMA(1,10))
          EFFGTG(1,3)=DEMIEP*(WNC1*SIGMA(1,3)+WNC2*SIGMA(1,7)
@@ -56,7 +61,7 @@ C
      &                                      +WNC3*SIGMA(1,12))
 C
          EFFGTG(2,1)=DEMIEP*(WNC1*SIGMA(2,1)+WNC2*SIGMA(2,5)
-     &                                      +WNC3*SIGMA(2,9)) 
+     &                                      +WNC3*SIGMA(2,9))
          EFFGTG(2,2)=DEMIEP*(WNC1*SIGMA(2,2)+WNC2*SIGMA(2,6)
      &                                      +WNC3*SIGMA(2,10))
          EFFGTG(2,3)=DEMIEP*(WNC1*SIGMA(2,3)+WNC2*SIGMA(2,7)
@@ -65,7 +70,7 @@ C
      &                                      +WNC3*SIGMA(2,12))
 C
          EFFGTG(3,1)=DEMIEP*(WNC1*SIGMA(4,1)+WNC2*SIGMA(4,5)
-     &                                      +WNC3*SIGMA(4,9)) 
+     &                                      +WNC3*SIGMA(4,9))
          EFFGTG(3,2)=DEMIEP*(WNC1*SIGMA(4,2)+WNC2*SIGMA(4,6)
      &                                      +WNC3*SIGMA(4,10))
          EFFGTG(3,3)=DEMIEP*(WNC1*SIGMA(4,3)+WNC2*SIGMA(4,7)
@@ -113,7 +118,7 @@ C
      &                      +WNC3*ZIC3*SIGMA(4,12))
 C
          EFFGTG(7,1)=DEMIEP*(WNC1*SIGMA(5,1)+WNC2*SIGMA(5,5)
-     &                                      +WNC3*SIGMA(5,9)) 
+     &                                      +WNC3*SIGMA(5,9))
          EFFGTG(7,2)=DEMIEP*(WNC1*SIGMA(5,2)+WNC2*SIGMA(5,6)
      &                                      +WNC3*SIGMA(5,10))
          EFFGTG(7,3)=DEMIEP*(WNC1*SIGMA(5,3)+WNC2*SIGMA(5,7)
@@ -122,7 +127,7 @@ C
      &                                      +WNC3*SIGMA(5,12))
 C
          EFFGTG(8,1)=DEMIEP*(WNC1*SIGMA(6,1)+WNC2*SIGMA(6,5)
-     &                                      +WNC3*SIGMA(6,9)) 
+     &                                      +WNC3*SIGMA(6,9))
          EFFGTG(8,2)=DEMIEP*(WNC1*SIGMA(6,2)+WNC2*SIGMA(6,6)
      &                                      +WNC3*SIGMA(6,10))
          EFFGTG(8,3)=DEMIEP*(WNC1*SIGMA(6,3)+WNC2*SIGMA(6,7)
@@ -159,21 +164,21 @@ C
       ELSE IF (NOMTE.EQ.'MEC3TR7H') THEN
 C
          EFFGTG(1,1)=DEMIEP*(WNC1*SIGMA(1,1)+WNC2*SIGMA(1,4)
-     &                                      +WNC3*SIGMA(1,7)) 
+     &                                      +WNC3*SIGMA(1,7))
          EFFGTG(1,2)=DEMIEP*(WNC1*SIGMA(1,2)+WNC2*SIGMA(1,5)
      &                                      +WNC3*SIGMA(1,8))
          EFFGTG(1,3)=DEMIEP*(WNC1*SIGMA(1,3)+WNC2*SIGMA(1,6)
      &                                      +WNC3*SIGMA(1,9))
 C
          EFFGTG(2,1)=DEMIEP*(WNC1*SIGMA(2,1)+WNC2*SIGMA(2,4)
-     &                                      +WNC3*SIGMA(2,7)) 
+     &                                      +WNC3*SIGMA(2,7))
          EFFGTG(2,2)=DEMIEP*(WNC1*SIGMA(2,2)+WNC2*SIGMA(2,5)
      &                                      +WNC3*SIGMA(2,8))
          EFFGTG(2,3)=DEMIEP*(WNC1*SIGMA(2,3)+WNC2*SIGMA(2,6)
      &                                      +WNC3*SIGMA(2,9))
 C
          EFFGTG(3,1)=DEMIEP*(WNC1*SIGMA(4,1)+WNC2*SIGMA(4,4)
-     &                                      +WNC3*SIGMA(4,7)) 
+     &                                      +WNC3*SIGMA(4,7))
          EFFGTG(3,2)=DEMIEP*(WNC1*SIGMA(4,2)+WNC2*SIGMA(4,5)
      &                                      +WNC3*SIGMA(4,8))
          EFFGTG(3,3)=DEMIEP*(WNC1*SIGMA(4,3)+WNC2*SIGMA(4,6)
@@ -210,14 +215,14 @@ C
      &                      +WNC3*ZIC3*SIGMA(4,9))
 C
          EFFGTG(7,1)=DEMIEP*(WNC1*SIGMA(5,1)+WNC2*SIGMA(5,4)
-     &                                      +WNC3*SIGMA(5,7)) 
+     &                                      +WNC3*SIGMA(5,7))
          EFFGTG(7,2)=DEMIEP*(WNC1*SIGMA(5,2)+WNC2*SIGMA(5,5)
      &                                      +WNC3*SIGMA(5,8))
          EFFGTG(7,3)=DEMIEP*(WNC1*SIGMA(5,3)+WNC2*SIGMA(5,6)
      &                                      +WNC3*SIGMA(5,9))
 C
          EFFGTG(8,1)=DEMIEP*(WNC1*SIGMA(6,1)+WNC2*SIGMA(6,4)
-     &                                      +WNC3*SIGMA(6,7)) 
+     &                                      +WNC3*SIGMA(6,7))
          EFFGTG(8,2)=DEMIEP*(WNC1*SIGMA(6,2)+WNC2*SIGMA(6,5)
      &                                      +WNC3*SIGMA(6,8))
          EFFGTG(8,3)=DEMIEP*(WNC1*SIGMA(6,3)+WNC2*SIGMA(6,6)

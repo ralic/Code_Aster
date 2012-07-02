@@ -1,8 +1,8 @@
       SUBROUTINE  DPAO2D(REPERE, IREP, PASSAG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/01/96   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C.======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C      DPAO2D  -- CALCUL DE LA MATRICE DE PASSAGE DU REPERE
 C                 D'ORTHOTROPIE AU REPERE GLOBAL POUR LE 
@@ -42,6 +42,10 @@ C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
 C ---- INITIALISATIONS
 C      ---------------
+C-----------------------------------------------------------------------
+      INTEGER IREP 
+      REAL*8 ANGL ,COSA ,DEUX ,SINA ,UN ,ZERO 
+C-----------------------------------------------------------------------
       ZERO   = 0.0D0
       UN     = 1.0D0
       DEUX   = 2.0D0

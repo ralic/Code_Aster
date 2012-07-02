@@ -2,9 +2,9 @@
      &                  DHSJ1M,HSJ1S,DHSJ1S,DBTDM,DBTDS)
 C 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 17/12/2007   AUTEUR DESROCHES X.DESROCHES 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -20,7 +20,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER NB1,NB2,INTE,INTSR
       REAL*8 XR(*),VECTPT(9,2,3),DBTDM(4,3,42),DBTDS(4,2,42)
       REAL*8 DHSJ1M(3,9),HSJ1S(2,9),DHSJ1S(2,9),DZICDH
@@ -28,6 +28,11 @@ C
       COMMON /COUCHE/NBCOU,ICOU,INTE
       COMMON /DNSMS/DNSDSM,DNSDS
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,I3 ,I4 ,I5 ,ICOU ,INTSR2 ,J 
+      INTEGER J1 ,JB ,K ,K1 ,L3 ,L4 ,L5 
+      INTEGER NBCOU 
+C-----------------------------------------------------------------------
       DZICDH = (ICOU-1+(INTE-1)/2.D0)/NBCOU
 C
          L3=351

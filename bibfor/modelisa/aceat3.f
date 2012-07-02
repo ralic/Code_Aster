@@ -1,6 +1,6 @@
       SUBROUTINE ACEAT3(NOMA,NOMU,NBTUY,NBPART,NBMAP,ELPAR,NOPAR,IVR,
      &                IFM,NBZK,NOZK,COZK,ISENS,COOR,EPSI,CRIT,NNO,NMMT)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*8       NOMA,NOMU,CRIT
       INTEGER NBPART,NBTUY,NBMAP(NBPART),ELPAR(NBPART,NBTUY),IVR(3)
@@ -10,7 +10,7 @@
       REAL*8  ANGL1(3),ANGL2(3),ANGL3(3),EPSI,ANGL4(3)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,6 +54,10 @@ C ----------------------------------------------------------------------
       INTEGER NO1,NO2,NO3,ICOUDE,IM0,NBDROI,NBCOUD
       REAL*8  PGL1(3,3),PGL2(3,3),PGL3(3,3),NORME,PGL4(3,3)
 C
+C-----------------------------------------------------------------------
+      REAL*8 DN1N2 ,OMEGA ,RAYON ,THETA ,VX ,VY ,VZ 
+
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
 C     VERIFICATION QUE LES NOEUDS DONNES SONT DES EXTREMITES

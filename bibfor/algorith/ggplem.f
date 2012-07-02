@@ -1,10 +1,10 @@
       SUBROUTINE GGPLEM(S,DPC,VALDEN,UNSURK,UNSURM,THETA,
      *                  DEUXMU,G,DGDST,DGDEV)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/04/2004   AUTEUR F6BHHBO P.DEBONNIERES 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -48,6 +48,10 @@ C     ET LA DERIVEE TOTALE DE CETTE FONCTION G PAR RAPPORT A SIGMA
 C---------------------------------------------------------------
 CFIN
 C
+C-----------------------------------------------------------------------
+      REAL*8 DEUXMU ,DGDEV ,DGDST ,DPC ,G ,S ,THETA 
+      REAL*8 UNSURK ,UNSURM ,VALDEN 
+C-----------------------------------------------------------------------
       IF (S.EQ.0.D0.OR.DPC.EQ.0.D0.OR.UNSURK.EQ.0.D0)THEN
         G = 0.D0
         DGDST = 0.D0

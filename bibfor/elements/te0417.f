@@ -1,10 +1,10 @@
       SUBROUTINE TE0417(OPTION,NOMTE)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*)     OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,6 +29,13 @@ C
 C
 C     RECUPERATION DES OBJETS
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,INTSN ,INTSX ,J ,JGEOM ,K ,L1 
+      INTEGER L2 ,LCASTR ,LZI ,LZR ,NB1 ,NB2 ,NPGSN 
+
+      REAL*8 EPAIS ,EPAIS2 ,EPAIS3 ,RHO ,RNORMC ,VOLUME ,WGT 
+      REAL*8 XX ,XY ,XZ ,YY ,YZ ,ZZ 
+C-----------------------------------------------------------------------
       CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESI',' ', LZI )
       NB1  =ZI(LZI-1+1)
       NB2  =ZI(LZI-1+2)

@@ -1,9 +1,9 @@
       SUBROUTINE DEFFEN(BASE,NUOR,IMODI,NBMR,NBM,IAXE,LONG,NBNFEN,NOFE,
      &                  DISCFE,NBP1,NBP2,DISCFF,DEFM)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,6 +78,11 @@ C
       CHARACTER*8  NOMPAR
       CHARACTER*24 CHVALE
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER IDIR1 ,IDIR2 ,IER1 ,IER2 ,IFEN2 ,IMOD ,IMODF 
+      INTEGER IMR ,IPROL ,IV ,IVALE ,IVALE1 ,IVALE2 ,J 
+      INTEGER NUMNOE 
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 C

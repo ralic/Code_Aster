@@ -1,10 +1,10 @@
       SUBROUTINE COCALI (LIS1Z, LIS2Z, TYPZ)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*)      LIS1Z, LIS2Z, TYPZ
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,6 +47,9 @@ C
       CHARACTER*24       LIS1, LIS2
       CHARACTER*24 VALK(2)
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IDLIS1 ,IDLIS2 ,IRET ,LONLI1 ,LONLI2 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       LIS1   = LIS1Z
       LIS2   = LIS2Z

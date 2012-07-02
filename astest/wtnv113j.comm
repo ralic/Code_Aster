@@ -1,4 +1,4 @@
-# MODIF  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE TEST THMS 3D, MODELISATION THMC=LIQU_SATU
 # wtnv113j.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -163,7 +163,7 @@ CHARHO=AFFE_CHAR_MECA(   MODELE=MODELE,
                                    ),)
 
 RESU0=STAT_NON_LINE(   MODELE=MODELE,
-            SOLVEUR=_F( METHODE = 'MUMPS', PCENT_PIVOT=200),
+            SOLVEUR=_F( METHODE = 'MUMPS', ),
                           CHAM_MATER=CHMAT0,
                           EXCIT=_F( CHARGE = CHARHO),
                           COMP_INCR=_F( RELATION = 'KIT_THM',PARM_THETA=1.,

@@ -2,10 +2,10 @@
      &                       CRIT, EPSDT,
      &                       DEPST, SIGD, VIND, OPT, ELGEOM, SIGF,
      &                       VINF,  DSDE,  ICOMP, NVI,  IRTETI)
-        IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -159,6 +159,10 @@ C       ----------------------------------------------------------------
         REAL*8          TOLER
         REAL*8          EPSI
 C
+C-----------------------------------------------------------------------
+      INTEGER IRET ,KPG ,KSP 
+      REAL*8 TNEG ,TREF 
+C-----------------------------------------------------------------------
         PARAMETER       ( EPSI = 1.D-15 )
         PARAMETER       ( NMAT = 90     )
         PARAMETER       ( TNEG = -1.D3  )

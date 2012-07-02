@@ -1,4 +1,4 @@
-# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE POUTRE DCB 2D PLASTIQUE AVEC ELEMENTS D'INTERFACE EN CHARGEMENT MONOTONE : LOI CZM_OUV_MIX
 # ssnp139a.para = tps_job 400 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -178,7 +178,7 @@ DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =L_INST ),
                   SUBD_PAS  = 5,
                   SUBD_PAS_MINI = 1.E-10,
                   SUBD_NIVEAU=10,
-                                 ),)
+                                 ))
 
 # CALCUL
 # LES SYSTEMES LINEAIRES SONT DIFFICILES A RESOUDRE.
@@ -207,7 +207,7 @@ U=STAT_NON_LINE( INFO=1,
                    DEPL_REFE      = dc,
                    ITER_GLOB_MAXI = 8,
                   ),
-  SOLVEUR = _F(METHODE = 'MUMPS', PCENT_PIVOT = 100,NPREC=-1),
+  SOLVEUR = _F(METHODE = 'MUMPS',NPREC=-1),
   ARCHIVAGE = _F(
      LIST_INST     = INS_ARCH
     )
@@ -249,21 +249,21 @@ DEPLA = POST_RELEVE_T(
 
 TEST_TABLE(TABLE=FORC,
            FILTRE=(_F(NOM_PARA='INST',
-                      VALE=3.0,),),
+                      VALE=3.0)),
            NOM_PARA='DY',
            VALE=3.71601140,
            REFERENCE='NON_REGRESSION')
 
 TEST_TABLE(TABLE=FORC,
            FILTRE=(_F(NOM_PARA='INST',
-                      VALE=5.0,),),
+                      VALE=5.0)),
            NOM_PARA='DY',
            VALE = 4.03671411,
            REFERENCE='NON_REGRESSION')
 
 TEST_TABLE(TABLE=FORC,
            FILTRE=(_F(NOM_PARA='INST',
-                      VALE=10.0,),),
+                      VALE=10.0)),
            NOM_PARA='DY',
            VALE=4.59001512,
            REFERENCE='NON_REGRESSION')

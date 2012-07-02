@@ -1,4 +1,4 @@
-# MODIF  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE TEST THM_D_PLAN_DPQ8, MASSIF POREUX SATURE CHAUFFE PAR UN FLUX
 # wtnv111b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -96,7 +96,7 @@ MATERIAU=DEFI_MATERIAU(     THM_LIQU=_F(
    MASS_MOL = 28.96E-3,
    CP = 1000.,
    VISC = UN,
-   D_VISC_TEMP = ZERO,),
+   D_VISC_TEMP = ZERO),
 #
                               THM_DIFFU=_F(
    R_GAZ = 8.315,
@@ -114,7 +114,7 @@ MATERIAU=DEFI_MATERIAU(     THM_LIQU=_F(
    PERM_GAZ = PERMGAZ,
    D_PERM_SATU_GAZ = DPERGSA,
    D_PERM_PRES_GAZ = DPERGPG,
-   LAMB_T = CONDHOMO,),
+   LAMB_T = CONDHOMO),
                               THM_INIT=_F(
    TEMP = 273.,
    PRE1 = 0.,
@@ -147,11 +147,11 @@ CHAR0=AFFE_CHAR_MECA(   MODELE=MODELE,DDL_IMPO=(
                   )
 
 MESTAT=STAT_NON_LINE(   MODELE=MODELE,
-                SOLVEUR=_F( METHODE = 'MUMPS', PCENT_PIVOT=200),
+                SOLVEUR=_F( METHODE = 'MUMPS'),
                           CHAM_MATER=CHMAT0,
                           EXCIT=_F( CHARGE = CHAR0),
                           COMP_INCR=_F( RELATION = 'KIT_THM',PARM_THETA=1.,
-                          RELATION_KIT = ('ELAS', 'LIQU_SATU',  'HYDR_UTIL',),
+                          RELATION_KIT = ('ELAS', 'LIQU_SATU',  'HYDR_UTIL'),
                           ITER_INTE_MAXI = 5),
                           INCREMENT=_F( LIST_INST = LI),
                           NEWTON=_F( MATRICE = 'TANGENTE',

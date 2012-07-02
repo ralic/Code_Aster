@@ -1,6 +1,6 @@
       SUBROUTINE PECAG3 ( NDIM, NSYMX, NSYMY, NOMA, MOTCLE, NBMAIL,
      &                    NOMMAI, VALPAR )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER             NDIM,                             NBMAIL
       REAL*8                      VALPAR(*)
@@ -9,7 +9,7 @@
       LOGICAL                   NSYMX, NSYMY
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,6 +35,14 @@ C
       CHARACTER*24  MLGGMA, MLGVAL, MLGCOX
 C     ------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IBID ,IG ,IM ,IN ,JCOOR ,JDES 
+      INTEGER JGRO ,NBMA ,NBNO ,NBNOEU ,NUMAIL ,NUNO 
+      REAL*8 ALPHA ,CDX ,CDY ,COSA ,R ,R8DGRD ,R8MAEM 
+      REAL*8 RMAX ,RX ,RY ,SINA ,TAMP ,X ,X0 
+      REAL*8 XMAX ,XMIN ,Y ,Y0 ,YMAX ,YMIN ,ZMAX 
+      REAL*8 ZMIN 
+C-----------------------------------------------------------------------
       CALL JEMARQ ( )
       MLGGMA = NOMA//'.GROUPEMA'
       MLGCOX = NOMA//'.CONNEX'

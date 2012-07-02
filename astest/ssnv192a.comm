@@ -1,4 +1,4 @@
-# MODIF  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE EPROUVETTE AVEC FISSURE CENTRALE XFEM
 # ssnv192a.para = tps_job 130 mem_job 512Mo mem_aster 50 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -101,7 +101,7 @@ FCTPRES = FORMULE(NOM_PARA=('X','Y','Z'),VALE='PRES*Y');
 #                   MAILLAGE
 #----------------------------------------------
 
-MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
+MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1);
 
 if blocage == 1 :
    PT1 = [ 0. , -W , 0. ]
@@ -133,7 +133,7 @@ MAILLAG1=DEFI_GROUP( reuse =MAILLAG1,
                                         PRECISION=PRECIS,
                                         RAYON=PRECIS),
                                     ),
-                      INFO=1, );
+                      INFO=1);
 
 if blocage == 2 :
    MAILLAG1=DEFI_GROUP( reuse =MAILLAG1,
@@ -154,22 +154,22 @@ if blocage == 2 :
                                            PRECISION=PRECIS,
                                            RAYON=PRECIS),
                                        ),
-                      INFO=1, );
+                      INFO=1);
 
 #----------------------------------------------
 #                   MODELE
 #----------------------------------------------
 
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
-                     AFFE=(_F(GROUP_MA=('VOL','SURFSUP','SURFINF',),
+                     AFFE=(_F(GROUP_MA=('VOL','SURFSUP','SURFINF'),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),
+                              MODELISATION='3D'),
                            ),
                      );
 
 MAILLAG1=MODI_MAILLAGE(reuse =MAILLAG1,
                        MAILLAGE=MAILLAG1,
-                       ORIE_PEAU_3D=_F(GROUP_MA=('SURFSUP','SURFINF',),),
+                       ORIE_PEAU_3D=_F(GROUP_MA=('SURFSUP','SURFINF')),
                        );
 
 #----------------------------------------------
@@ -177,9 +177,9 @@ MAILLAG1=MODI_MAILLAGE(reuse =MAILLAG1,
 #----------------------------------------------
 
 LN = FORMULE(VALE='Z*cos(ALPHA)-Y*sin(ALPHA)',
-             NOM_PARA=('X','Y','Z',),);
+             NOM_PARA=('X','Y','Z'));
 LT = FORMULE(VALE='abs(Z*sin(ALPHA)+Y*cos(ALPHA))-A',
-             NOM_PARA=('X','Y','Z',),);
+             NOM_PARA=('X','Y','Z'));
 
 XFONI = 0. ;
 YFONI = -A*cos(ALPHA) ;
@@ -193,10 +193,10 @@ ZVECT = cos(ALPHA) ;
 
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     DEFI_FISS=_F(FONC_LT=LT,
-                                 FONC_LN=LN,),
-                    ORIE_FOND=_F(PFON_INI=(XFONI, YFONI, ZFONI,),
-                                 VECT_ORIE=(XVECT, YVECT, ZVECT,),
-                                 POINT_ORIG=(XORI, YORI, ZORI,),),
+                                 FONC_LN=LN),
+                    ORIE_FOND=_F(PFON_INI=(XFONI, YFONI, ZFONI),
+                                 VECT_ORIE=(XVECT, YVECT, ZVECT),
+                                 POINT_ORIG=(XORI, YORI, ZORI)),
                      )
 
 # RECUPERATION DE LA TABLE CONTENANT LE NOMBRE DE FONDS DE FISSURE
@@ -217,7 +217,7 @@ IMPR_TABLE(TABLE=TB_FOND)
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
-                         INFO=1,);
+                         INFO=1);
 
 
 #----------------------------------------------
@@ -226,13 +226,13 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
                             NU=nu,
-                            RHO=rho,),);
+                            RHO=rho));
 
 CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        MODELE=MODELEK,
                        AFFE=_F(TOUT='OUI',
                                MATER=ACIER,
-                               ),);
+                               ));
 
 #----------------------------------------------
 #         BLOCAGE DES MODES RIGIDES
@@ -243,54 +243,54 @@ if blocage == 1 :
                          DDL_IMPO=( _F(GROUP_NO='NOEUD1',
                                        DX=0.0,
                                        DY=0.0,
-                                       DZ=0.0,),
+                                       DZ=0.0),
                                     _F(GROUP_NO='NOEUD2',
                                        DX=0.0,
-                                       DZ=0.0,),
+                                       DZ=0.0),
                                     _F(GROUP_NO='NOEUD3',
-                                       DZ=0.0,),   ), );
+                                       DZ=0.0)));
 
 elif blocage == 2 :
    CHRIGI=AFFE_CHAR_MECA(MODELE=MODELEK,
-                         LIAISON_DDL=(_F(GROUP_NO=('NOEUD1','NOEUD1S',),
-                                         DDL=('DX','DX',),
+                         LIAISON_DDL=(_F(GROUP_NO=('NOEUD1','NOEUD1S'),
+                                         DDL=('DX','DX'),
                                          COEF_MULT=(1.0,1.0),
-                                         COEF_IMPO=0.0,),
-                                      _F(GROUP_NO=('NOEUD1','NOEUD1S',),
-                                         DDL=('DY','DY',),
+                                         COEF_IMPO=0.0),
+                                      _F(GROUP_NO=('NOEUD1','NOEUD1S'),
+                                         DDL=('DY','DY'),
                                          COEF_MULT=(1.0,1.0),
-                                         COEF_IMPO=0.0,),
-                                      _F(GROUP_NO=('NOEUD1','NOEUD1S',),
-                                         DDL=('DZ','DZ',),
+                                         COEF_IMPO=0.0),
+                                      _F(GROUP_NO=('NOEUD1','NOEUD1S'),
+                                         DDL=('DZ','DZ'),
                                          COEF_MULT=(1.0,1.0),
-                                         COEF_IMPO=0.0,),
+                                         COEF_IMPO=0.0),
 
-                                      _F(GROUP_NO=('NOEUD2','NOEUD2S',),
-                                         DDL=('DX','DX',),
+                                      _F(GROUP_NO=('NOEUD2','NOEUD2S'),
+                                         DDL=('DX','DX'),
                                          COEF_MULT=(1.0,1.0),
-                                         COEF_IMPO=0.0,),
-                                      _F(GROUP_NO=('NOEUD2','NOEUD2S',),
-                                         DDL=('DZ','DZ',),
+                                         COEF_IMPO=0.0),
+                                      _F(GROUP_NO=('NOEUD2','NOEUD2S'),
+                                         DDL=('DZ','DZ'),
                                          COEF_MULT=(1.0,1.0),
-                                         COEF_IMPO=0.0,),
+                                         COEF_IMPO=0.0),
 
-                                      _F(GROUP_NO=('NOEUD3','NOEUD3S',),
-                                         DDL=('DZ','DZ',),
+                                      _F(GROUP_NO=('NOEUD3','NOEUD3S'),
+                                         DDL=('DZ','DZ'),
                                          COEF_MULT=(1.0,1.0),
-                                         COEF_IMPO=0.0,), ), );
+                                         COEF_IMPO=0.0)));
 
 #----------------------------------------------
 #              CHARGEMENT
 #----------------------------------------------
 if fonction == 0 :
    CHPRES=AFFE_CHAR_MECA(MODELE=MODELEK,
-                         PRES_REP=_F(GROUP_MA=('SURFSUP','SURFINF',),
-                                     PRES=PRES,),
+                         PRES_REP=_F(GROUP_MA=('SURFSUP','SURFINF'),
+                                     PRES=PRES),
                          );
 elif fonction == 1 :
    CHPRES=AFFE_CHAR_MECA_F(MODELE=MODELEK,
-                           PRES_REP=_F(GROUP_MA=('SURFSUP','SURFINF',),
-                                       PRES=FCTPRES,),
+                           PRES_REP=_F(GROUP_MA=('SURFSUP','SURFINF'),
+                                       PRES=FCTPRES),
                            );
 
 #----------------------------------------------
@@ -303,7 +303,7 @@ RESU1=MECA_STATIQUE(MODELE=MODELEK,
                           _F(CHARGE=CHRIGI),
                           _F(CHARGE=CHPRES),
                           ),
-                   SOLVEUR=_F(PCENT_PIVOT=10,
+                   SOLVEUR=_F(   
                             METHODE='MUMPS',
                             RESI_RELA=-1.0),
                    INFO=1,
@@ -334,7 +334,7 @@ for i in range(n) :
                               R_SUP=RS[i],
                               NUME_FOND=ifond),
                     LISSAGE=_F( LISSAGE_THETA='LAGRANGE',
-                                LISSAGE_G='LAGRANGE',),
+                                LISSAGE_G='LAGRANGE'),
                   )
 
       IMPR_TABLE(TABLE=SIF[k])
@@ -395,7 +395,7 @@ MA_XFEM=POST_MAIL_XFEM(MODELE= MODELEK,
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),) 
+                              MODELISATION='3D')) 
 
 RES_XFEM=POST_CHAM_XFEM(MODELE_VISU = MOD_VISU,
                         RESULTAT    = RESU1,

@@ -2,14 +2,14 @@
      &                   SIM,VARIM,
      &                   KLV,KLV2,VARIP)
 C ----------------------------------------------------------------------
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER IRMETG,NBT,NEQ,ITERAT,ICODMA
       REAL*8  UL(NEQ),DUL(NEQ),UTL(NEQ)
       REAL*8  SIM(NEQ),VARIM(7)
       REAL*8  KLV(NBT),KLV2(NBT),VARIP(7)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,6 +49,16 @@ C       VARIP$ : VARIABLES INTERNES REACTUALISEES (7 VALEURS)
 C
 C***************** DECLARATION DES VARIABLES LOCALES *******************
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,NBPAR ,NBRE1 
+      REAL*8 A1 ,A2 ,C1 ,C2 ,DBAR1 ,DBAR2 ,DMSDT 
+      REAL*8 DMSDT2 ,DNSDT ,DNSDT2 ,DNSDU ,DNSDU2 ,DRY2 ,DRYR 
+      REAL*8 DRYU1 ,DRYU2 ,DU2 ,DUR ,DXU1 ,DXU2 ,FEQ1 
+      REAL*8 FEQ2 ,G1 ,G2 ,P1 ,P2 ,PI ,PLOUF 
+      REAL*8 RG1 ,RG2 ,T2 ,TEST ,TI ,TR2 ,TT 
+      REAL*8 TTOT ,U2 ,UI ,UR2 ,UTOT ,UU ,VALPAR 
+      REAL*8 ZERO 
+C-----------------------------------------------------------------------
       PARAMETER    ( NBRE1 = 15 )
       REAL*8       NU1,MU1,NU2,MU2,KY,KZ,KRX,KRZ,RP0
       REAL*8       SI(12),K01(78),K02(78),KLC(144), VALRE1(NBRE1)

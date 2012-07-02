@@ -1,12 +1,12 @@
       SUBROUTINE TITREA(NIV,NOMCON,NOMCHA,NOMOBJ,ST,MOTFAC,IOCC,BASE )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*1       NIV,              ST,                   BASE
       CHARACTER*(*)         NOMCON,NOMCHA,NOMOBJ,   MOTFAC
       INTEGER                                              IOCC
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,6 +45,9 @@ C
       INTEGER      IARG
 C     ------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER L ,LDON ,LLON ,NBOCC ,NBTITR 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       CBID   = '  '
       IF ( MOTFAC .NE. '  ' ) THEN

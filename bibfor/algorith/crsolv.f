@@ -1,10 +1,10 @@
       SUBROUTINE CRSOLV ( METHOD, RENUM, SOLVE , BAS )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*)      METHOD, RENUM, SOLVE , BAS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,10 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     CREATION D'UNE STRUCTURE SOLVEUR
 C
-C
+C-----------------------------------------------------------------------
+       INTEGER ISLVI,ISLVK,ISLVR,NPREC
+       REAL*8  RESIRE
+C-----------------------------------------------------------------------
 C
 C
       REAL*8             JEVTBL,EPSMAT
@@ -53,7 +56,11 @@ C
       CALL WKVECT(SOLVEU//'.SLVI',BASE//' V I'  ,7,ISLVI)
 C
       ZK24(ISLVK-1+1) = METHOD
-      ZK24(ISLVK-1+2) = PRECO
+      IF ((METHOD.EQ.'MULT_FRONT').OR.(METHOD.EQ.'LDLT')) THEN
+        ZK24(ISLVK-1+2) = 'XXXX'
+      ELSE
+        ZK24(ISLVK-1+2) = PRECO
+      ENDIF
       IF (METHOD.EQ.'MUMPS') THEN
         ZK24(ISLVK-1+3) = 'AUTO'
         ZK24(ISLVK-1+6) = 'OUI'

@@ -1,12 +1,12 @@
       SUBROUTINE VPVOPT( OPTION, TYPRES, NBFREQ , FREQ, IER )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       CHARACTER*(*)      OPTION
       REAL*8                              FREQ(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 21/04/2008   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,6 +24,9 @@ C ======================================================================
 C     CONTROLE DE VALIDITE DE L'OPTION SUR LES FREQUENCES
 C     ------------------------------------------------------------------
       CHARACTER*16   LOPTFR(4), OPTIOM, TYPRES
+C-----------------------------------------------------------------------
+      INTEGER IER ,IRET ,NBFREQ 
+C-----------------------------------------------------------------------
       DATA  LOPTFR / 'CENTRE ', 'BANDE   ', 'PLUS_PETITE', 'TOUT    ' /
 C     ------------------------------------------------------------------
 C IN  OPTION   : K : NOM DE L'OPTION

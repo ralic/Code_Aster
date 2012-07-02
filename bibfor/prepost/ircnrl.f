@@ -1,7 +1,7 @@
       SUBROUTINE IRCNRL(IFI,NBNO,PRNO,NUEQ,NEC,DG,NCMPMX,VALE,
      +      NOMCMP,NOMNOE,LCOR,NDIM,COOR,NUMNOE,NBCMPT,NUCMPU,
      +      LSUP,BORSUP,LINF,BORINF,LMAX,LMIN,FORMR)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
       INTEGER           IFI,NBNO,PRNO(*),NUEQ(*),NEC,DG(*),NCMPMX
@@ -12,7 +12,7 @@ C
 C
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,6 +67,14 @@ C
       CHARACTER*10 FORMAT
       CHARACTER*50 FMT, FORM1
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,ICM ,ICMP ,ICMP2 ,ICOMP2 ,ICOMPT ,ID 
+      INTEGER IEC ,IEQ ,IF ,ILIGN ,IMAX ,IMIN ,INEC 
+      INTEGER INMAX ,INMIN ,INNO ,INO ,IPOS ,IPRES ,IREST 
+      INTEGER IRVAL ,IVA ,IVAL ,IVMAX ,IVMIN ,LGR ,LXLGUT 
+      INTEGER NCMP 
+      REAL*8 R8VIDE 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       RUNDF = R8VIDE()
       NOMCOR(1) = 'X'

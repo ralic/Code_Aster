@@ -1,8 +1,8 @@
-# MODIF  DATE 22/06/2010   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE FISSURATION JOINT 2D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -126,18 +126,18 @@ FCT = DEFI_FONCTION(
 #-----------------------------------------------------------------------------------
 
 U_1=STAT_NON_LINE(
-  SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,MATR_DISTRIBUEE='OUI',),
+  SOLVEUR=_F(METHODE='MUMPS',MATR_DISTRIBUEE='OUI'),
   MODELE     = MO,
   CHAM_MATER = CM,
   EXCIT      = (
-    _F(CHARGE = LIAISON , ),
+    _F(CHARGE = LIAISON ),
     _F(CHARGE = TRAC_1, FONC_MULT = FCT),
   ),
   COMP_INCR  = (
           _F(RELATION = 'CZM_EXP_REG',
-             MAILLE = 'CUBEDEG', ),
+             MAILLE = 'CUBEDEG'),
           _F(RELATION = 'ELAS',
-             MAILLE = 'CUBE',),
+             MAILLE = 'CUBE'),
           ),
   INCREMENT  = _F(LIST_INST = L_INST, INST_FIN = 0.),
   CONVERGENCE= _F(ITER_GLOB_MAXI = 20),
@@ -145,12 +145,12 @@ U_1=STAT_NON_LINE(
   )
 
 STAT_NON_LINE(reuse = U_1,
-  SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,MATR_DISTRIBUEE='OUI',),
+  SOLVEUR=_F(METHODE='MUMPS',MATR_DISTRIBUEE='OUI'),
   ETAT_INIT  = _F(EVOL_NOLI = U_1),
   MODELE     = MO,
   CHAM_MATER = CM,
   EXCIT      = (
-    _F(CHARGE = LIAISON  , ),
+    _F(CHARGE = LIAISON  ),
     _F(CHARGE = TRAC_1 , TYPE_CHARGE = 'FIXE_PILO'),
   ),
   PILOTAGE   = _F(
@@ -163,9 +163,9 @@ STAT_NON_LINE(reuse = U_1,
     ),
   COMP_INCR  = (
           _F(RELATION = 'CZM_EXP_REG',
-             MAILLE = 'CUBEDEG', ),
+             MAILLE = 'CUBEDEG'),
           _F(RELATION = 'ELAS',
-             GROUP_MA = 'G_CUBE',),
+             GROUP_MA = 'G_CUBE'),
           ),
   INCREMENT  = _F(LIST_INST = L_INST),
   CONVERGENCE= _F(ITER_GLOB_MAXI = 5),
@@ -177,18 +177,18 @@ STAT_NON_LINE(reuse = U_1,
 # CALCUL AVEC CHARGEMENT EN MODE II
 #-----------------------------------------------------------------------------------
 U_2=STAT_NON_LINE(
-  SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,MATR_DISTRIBUEE='OUI',),
+  SOLVEUR=_F(METHODE='MUMPS',MATR_DISTRIBUEE='OUI'),
   MODELE     = MO,
   CHAM_MATER = CM,
   EXCIT      = (
-    _F(CHARGE = LIAISON , ),
+    _F(CHARGE = LIAISON ),
     _F(CHARGE = TRAC_2, FONC_MULT = FCT),
   ),
   COMP_INCR  = (
           _F(RELATION = 'CZM_EXP_REG',
-             MAILLE = 'CUBEDEG', ),
+             MAILLE = 'CUBEDEG'),
           _F(RELATION = 'ELAS',
-             MAILLE = 'CUBE',),
+             MAILLE = 'CUBE'),
           ),
   INCREMENT  = _F(LIST_INST = L_INST, INST_FIN = 0.),
   CONVERGENCE= _F(ITER_GLOB_MAXI = 20),
@@ -196,12 +196,12 @@ U_2=STAT_NON_LINE(
   )
 
 STAT_NON_LINE(reuse = U_2,
-  SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,MATR_DISTRIBUEE='OUI',),
+  SOLVEUR=_F(METHODE='MUMPS',MATR_DISTRIBUEE='OUI'),
   ETAT_INIT  = _F(EVOL_NOLI = U_2),
   MODELE     = MO,
   CHAM_MATER = CM,
   EXCIT      = (
-    _F(CHARGE = LIAISON  , ),
+    _F(CHARGE = LIAISON  ),
     _F(CHARGE = TRAC_2 , TYPE_CHARGE = 'FIXE_PILO'),
   ),
   PILOTAGE   = _F(
@@ -214,9 +214,9 @@ STAT_NON_LINE(reuse = U_2,
     ),
   COMP_INCR  = (
           _F(RELATION = 'CZM_EXP_REG',
-             MAILLE = 'CUBEDEG', ),
+             MAILLE = 'CUBEDEG'),
           _F(RELATION = 'ELAS',
-             GROUP_MA = 'G_CUBE',),
+             GROUP_MA = 'G_CUBE'),
           ),
   INCREMENT  = _F(LIST_INST = L_INST),
   CONVERGENCE= _F(ITER_GLOB_MAXI = 5),
@@ -252,19 +252,19 @@ IMPR_TABLE(TABLE=T_SIGN_1)
 
 TEST_TABLE(TABLE=T_DX_1,
            FILTRE=(_F(NOM_PARA='INST',
-                      VALE=2.20004,),),
+                      VALE=2.20004)),
            NOM_PARA='DX',
            VALE=2.16506,
            PRECISION=0.001,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=T_ETA_1,
            FILTRE=(_F(NOM_PARA='INST',
-                      VALE=2.20004,),),
+                      VALE=2.20004)),
            NOM_PARA='ETA_PILO',
            VALE=1.,
            PRECISION=0.001,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_RESU (
   RESU = (

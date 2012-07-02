@@ -1,7 +1,7 @@
       SUBROUTINE RECIEX ( INTEXC, IDEREX, NINDEX, NNOEEX, NCMPEX,
      &                    NVASEX, GRAEXC, EXCMOD, NAPEXC )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C***********************************************************************
 C    C. DUVAL
 C-----------------------------------------------------------------------
 C  BUT: RECUPERER LES INFORMATIONS DE TYPE EXCITATION POUR
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C        LE CALCUL DYNAMIQUE ALEATOIRE
 C
 C INTEXC   /OUT/: NOM DE L INTERSPECTRE  EXCITATION
@@ -49,6 +49,12 @@ C
       LOGICAL       TABL, LINDI, EXISP
       INTEGER      IARG
 C
+C-----------------------------------------------------------------------
+      INTEGER I1 ,I2 ,IBID1 ,IDEREX ,II ,IJ2 ,ILCMPI 
+      INTEGER ILCMPJ ,ILCPEX ,ILFEX ,ILINDI ,ILINDJ ,ILLEX ,ILNOEX 
+      INTEGER ILVAEX ,IP ,IVITE ,JJ ,NAPEXC ,NBI ,NCMPEX 
+      INTEGER NDIM ,NINDEX ,NNOEEX ,NVASEX 
+C-----------------------------------------------------------------------
       DATA NOPART / 'NUME_VITE_FLUI', 'NUME_ORDRE_I', 'NUME_ORDRE_J' /
       DATA NOPARN / 'NUME_VITE_FLUI', 'NOEUD_I'     , 'NOM_CMP_I'    ,
      &                                'NOEUD_J'     , 'NOM_CMP_J'    /

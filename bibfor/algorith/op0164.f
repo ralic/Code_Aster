@@ -1,9 +1,9 @@
       SUBROUTINE OP0164 ()
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C TOLE CRP_4
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,6 +41,14 @@ C
       INTEGER      IARG
 C-----------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,I1 ,I2 ,IACONL ,IADESC ,IALIME ,IC 
+      INTEGER IER ,IFMIS ,IFR ,IFREQ ,II ,J ,JFRQ 
+      INTEGER JJ ,JREFA ,JRI2 ,JRIG ,JRIT ,LDBLO ,LDBLO2 
+      INTEGER NBMODD ,NBMODE ,NBMODS ,NFR ,NFREQ ,NIT ,NSAUT 
+      INTEGER NTERM ,NUEQ 
+      REAL*8 FREQ ,R8PREM 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFMAJ()
 C

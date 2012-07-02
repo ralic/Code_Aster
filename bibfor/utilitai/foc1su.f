@@ -1,6 +1,6 @@
       SUBROUTINE FOC1SU ( SORTIE, NBFON, NOMFON, COEF, COEFZ, TYPE,
      .  CCPLX,FCPLX,LPARA, BASE )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER                     NBFON
       CHARACTER*(*)       SORTIE,        NOMFON(*), LPARA
@@ -11,7 +11,7 @@
       CHARACTER*(*) TYPE
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,6 +37,12 @@ C
       CHARACTER*16 NOPARA, NORESU, INTERP, PROLGD
       CHARACTER*1  K1BID
 C     ----------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IER ,IOCC ,IPERM ,ISUITE ,LFON ,LPRO 
+      INTEGER LPROS ,LRES ,LRESF ,LTRES ,LVAR ,LXLGUT ,NBINST 
+      INTEGER NBPTS ,NBVAL ,NN 
+      REAL*8 AIM ,ARE ,RESUIM ,RESURE ,VIM ,VRE 
+C-----------------------------------------------------------------------
       DATA     NOMTEM/'&&FOC1SU.TEMPORAIRE1', '&&FOC1SU.TEMPORAIRE2'/
       DATA     IP    /2,1/
 C     ----------------------------------------------------------------

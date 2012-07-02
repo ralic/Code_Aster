@@ -1,4 +1,4 @@
-# MODIF  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE : VALIDATION DES CONDITIONS DE DIRICHLET AVEC X-FEM EN 3D
 # ssnv198b.para = tps_job 60 mem_job 256Mo mem_aster 50 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -27,17 +27,17 @@ DEBUT(CODE=_F(NOM='SSNV198B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 lx=1.
 lz=1.
 ly=1.
-MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
+MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1);
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
-                    CREA_GROUP_NO=(_F(GROUP_MA='SURFBAC',),
-                                   _F(GROUP_MA='SURFFRO',),)
+                    CREA_GROUP_NO=(_F(GROUP_MA='SURFBAC'),
+                                   _F(GROUP_MA='SURFFRO'))
                                    );
                                    
 MAILLAG1=MODI_MAILLAGE(reuse =MAILLAG1,
                        MAILLAGE=MAILLAG1,
-                       ORIE_PEAU_3D=_F(GROUP_MA=('SURFBAC','SURFFRO'),),
+                       ORIE_PEAU_3D=_F(GROUP_MA=('SURFBAC','SURFFRO')),
                        );
                                    
 #----------------------------------------------
@@ -47,7 +47,7 @@ MAILLAG1=MODI_MAILLAGE(reuse =MAILLAG1,
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
                      AFFE=_F(GROUP_MA='VOL',
                              PHENOMENE='MECANIQUE',
-                             MODELISATION='3D',),
+                             MODELISATION='3D'),
                     );
 
 
@@ -55,14 +55,14 @@ LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-lz/2.');
 LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Y-ly/2.');
 
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
-                    DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
+                    DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN),
                     ORIE_FOND=_F(PFON_INI= (0. ,ly/2.    ,lz/2. ),
                                  VECT_ORIE=(0. ,0.       ,1.    ),
-                                 POINT_ORIG=(0. ,ly ,lz/2. ),),
+                                 POINT_ORIG=(0. ,ly ,lz/2. )),
                     );
 
 
-MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS,INFO=1,);
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS,INFO=1);
 
 
 #----------------------------------------------
@@ -72,7 +72,7 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS,INFO=1,);
 E=100.0E6
 nu=0.
 rho=7800.
-ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),);
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho));
 
 CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        MODELE=MODELEK,
@@ -87,8 +87,8 @@ CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
 #----------------------------------------------------------
 
 CH=AFFE_CHAR_MECA(MODELE=MODELEK,
-                  DDL_IMPO =(_F(GROUP_NO='SURFBAC',DX=0.,DY=0.,DZ=0.),),
-                  FACE_IMPO=(_F(GROUP_MA='SURFFRO',DNOR=1.E-6),),            
+                  DDL_IMPO =(_F(GROUP_NO='SURFBAC',DX=0.,DY=0.,DZ=0.)),
+                  FACE_IMPO=(_F(GROUP_MA='SURFFRO',DNOR=1.E-6)),            
                   INFO=2,
                   );
 
@@ -97,14 +97,14 @@ CH=AFFE_CHAR_MECA(MODELE=MODELEK,
 #                   RESOLUTION
 #----------------------------------------------
 
-L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=1.0,NOMBRE=1,),);
+L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=1.0,NOMBRE=1));
 
 UTOT1=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMA1,
                    EXCIT=(
                           _F(CHARGE=CH),
                           ),
-                   SOLVEUR=_F(PCENT_PIVOT=30,
+                   SOLVEUR=_F(   
                             METHODE='MUMPS'),
                    INFO=1,
                    ); 
@@ -119,7 +119,7 @@ MA_XFEM=POST_MAIL_XFEM(
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),) 
+                              MODELISATION='3D')) 
 
 RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT1,
@@ -127,7 +127,7 @@ RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         INFO          = 2)
 
 #IMPR_RESU(FORMAT='GMSH',UNITE=83,RESU=_F(RESULTAT=RES_XFEM));
-#IMPR_RESU(FORMAT='GMSH',UNITE=83,RESU=_F(CHAM_GD=DEPL_1,),);
+#IMPR_RESU(FORMAT='GMSH',UNITE=83,RESU=_F(CHAM_GD=DEPL_1));
 
 MA_XFEM=DEFI_GROUP(reuse =MA_XFEM,
                     MAILLAGE=MA_XFEM,
@@ -136,13 +136,13 @@ MA_XFEM=DEFI_GROUP(reuse =MA_XFEM,
                                       OPTION='PLAN',
                                       POINT=(0.,0.,0.),
                                       VECT_NORMALE=(1.,0.,0.),
-                                      PRECISION=1.E-6,),
+                                      PRECISION=1.E-6),
                                    _F(NOM='SURFFRO',
                                       OPTION='PLAN',
                                       POINT=(lx,0.,0.),
                                       VECT_NORMALE=(1.,0.,0.),
-                                      PRECISION=1.E-6,),
-                                      ),);
+                                      PRECISION=1.E-6),
+                                      ));
 
 DEP_BACK= POST_RELEVE_T ( ACTION =_F(INTITULE   = 'DEPLACEMENT',
                                      GROUP_NO   = 'SURFBAC',
@@ -150,7 +150,7 @@ DEP_BACK= POST_RELEVE_T ( ACTION =_F(INTITULE   = 'DEPLACEMENT',
                                      NUME_ORDRE = 1,
                                      NOM_CHAM   = 'DEPL',
                                      NOM_CMP    = ( 'DX','DY','DZ'),
-                                     OPERATION  = 'EXTRACTION',),);
+                                     OPERATION  = 'EXTRACTION'));
 
 DEP_FRON= POST_RELEVE_T ( ACTION =_F(INTITULE   = 'DEPLACEMENT',
                                      GROUP_NO   = 'SURFFRO',
@@ -158,7 +158,7 @@ DEP_FRON= POST_RELEVE_T ( ACTION =_F(INTITULE   = 'DEPLACEMENT',
                                      NUME_ORDRE = 1,
                                      NOM_CHAM   = 'DEPL',
                                      NOM_CMP    = ( 'DX','DY','DZ'),
-                                     OPERATION  = 'EXTRACTION',),);
+                                     OPERATION  = 'EXTRACTION'));
 
 
 # test des noeuds bloques
@@ -168,7 +168,7 @@ TEST_TABLE(TABLE=DEP_BACK,
            VALE=0.,
            CRITERE='ABSOLU',
            PRECISION=1e-12,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEP_BACK,
            NOM_PARA='DX',
@@ -176,7 +176,7 @@ TEST_TABLE(TABLE=DEP_BACK,
            VALE=0.,
            CRITERE='ABSOLU',
            PRECISION=1e-12,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEP_BACK,
            NOM_PARA='DY',
@@ -184,7 +184,7 @@ TEST_TABLE(TABLE=DEP_BACK,
            VALE=0.,
            CRITERE='ABSOLU',
            PRECISION=1e-12,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEP_BACK,
            NOM_PARA='DY',
@@ -192,7 +192,7 @@ TEST_TABLE(TABLE=DEP_BACK,
            VALE=0.,
            CRITERE='ABSOLU',
            PRECISION=1e-12,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEP_BACK,
            NOM_PARA='DZ',
@@ -200,7 +200,7 @@ TEST_TABLE(TABLE=DEP_BACK,
            VALE=0.,
            CRITERE='ABSOLU',
            PRECISION=1e-12,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEP_BACK,
            NOM_PARA='DZ',
@@ -208,7 +208,7 @@ TEST_TABLE(TABLE=DEP_BACK,
            VALE=0.,
            CRITERE='ABSOLU',
            PRECISION=1e-12,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 
 # test des noeuds de traction
@@ -218,7 +218,7 @@ TEST_TABLE(TABLE=DEP_FRON,
            VALE=1.E-6,
            CRITERE='RELATIF',
            PRECISION=1e-06,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 TEST_TABLE(TABLE=DEP_FRON,
            NOM_PARA='DX',
@@ -226,7 +226,7 @@ TEST_TABLE(TABLE=DEP_FRON,
            VALE=1.E-6,
            CRITERE='RELATIF',
            PRECISION=1e-06,
-           REFERENCE='ANALYTIQUE',);
+           REFERENCE='ANALYTIQUE');
 
 
 FIN();

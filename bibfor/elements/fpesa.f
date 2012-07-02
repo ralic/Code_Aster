@@ -1,6 +1,6 @@
       SUBROUTINE FPESA(NOMTE,XI,NB1,VECL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*16  NOMTE
 C
@@ -27,6 +27,9 @@ C
       REAL*8 XI(3,*),VPESAN(3),VECL(51),VECL1(42)
 C     REAL*8 VECTC(3),VECPTX(3,3)
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,INTSN ,JPESA ,LZI ,LZR 
+C-----------------------------------------------------------------------
       CALL JEVECH ('PPESANR','L',JPESA)
       PESAN = ZR(JPESA)
       DO 5 I=1,3

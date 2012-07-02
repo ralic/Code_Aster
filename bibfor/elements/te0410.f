@@ -1,6 +1,6 @@
       SUBROUTINE TE0410 ( OPTIOZ , NOMTZ )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*)   OPTIOZ , NOMTZ
 
@@ -29,6 +29,11 @@ C                SIEF_ELGA
 C                EFGE_ELNO
 C
       INTEGER    NPGT,NCOUMX,VALI(2)
+C-----------------------------------------------------------------------
+      INTEGER I ,ICONTR ,JCOU ,JEFFG ,JGEOM ,LZI ,NB2 
+      INTEGER NBCOU ,NP ,NPGSN ,NPGSR 
+      REAL*8 R8BID 
+C-----------------------------------------------------------------------
       PARAMETER (NPGT=10,NCOUMX=10)
       INTEGER    NB1,ITAB(7),IRET
       REAL*8     EFFGT(8,9),SIGPG(162*NCOUMX)

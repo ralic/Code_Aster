@@ -1,6 +1,6 @@
       SUBROUTINE FFT(S,N,IFFT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       COMPLEX*16       S(N)
 C-----------------------------------------------------------------------
@@ -28,6 +28,12 @@ C               < 0 => FFT INVERSE
 C
       COMPLEX*16       U,W,T
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IFFT ,IP ,ISGN ,J ,K ,L
+      INTEGER LE ,LE1 ,M ,N ,N2 ,NM1 ,NV2
+
+      REAL*8 PI,R8PI
+C-----------------------------------------------------------------------
       M= INT(LOG(DBLE(N))/LOG(2.D0))
       IF (M.GT.30) CALL VERI32()
       N2 = 2**M

@@ -1,4 +1,4 @@
-# MODIF  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # CAS TEST : SSNP152A
 # TITRE INCLUSION DE DEUX COURONNES
 # ssnp152a.para = tps_job 200 mem_job 512Mo ncpus 1 liste_test S
@@ -178,7 +178,7 @@ RESU1 =  STAT_NON_LINE(MODELE      = MO,
                        INCREMENT   = _F(LIST_INST=INSTS,),
                        CONVERGENCE = _F(ITER_GLOB_MAXI = 20,),
                        SOLVEUR     = _F(METHODE     = 'MUMPS',
-                                        PCENT_PIVOT = 250,),
+                                        ),
                        ARCHIVAGE   = _F(CHAM_EXCLU = 'VARI_ELGA',),
                        INFO=1,);
 
@@ -193,7 +193,7 @@ RESU2 =  STAT_NON_LINE(MODELE      = MO,
                        INCREMENT   = _F(LIST_INST=INSTS,),
                        CONVERGENCE = _F(ITER_GLOB_MAXI = 20,),
                        SOLVEUR     = _F(METHODE     = 'MUMPS',
-                                        PCENT_PIVOT = 250,),
+                                        ),
                        ARCHIVAGE   = _F(CHAM_EXCLU = 'VARI_ELGA',),
                        INFO=1,);
 

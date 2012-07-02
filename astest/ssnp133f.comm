@@ -1,4 +1,4 @@
-# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE PLAQUE TROUEE ASYMETRIQUE, INTERFACE XFEM NON CONFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # ssnp133f.para = tps_job 800 mem_job 128Mo ncpus 1 liste_test S
-DEBUT(CODE=_F( NOM = 'SSNP133F',NIV_PUB_WEB='INTERNET',),)
+DEBUT(CODE=_F( NOM = 'SSNP133F',NIV_PUB_WEB='INTERNET'))
 
 # NB DE PAS DE TEMPS DE CALCUL ET NOMBRE DE PAS DE TEMPS ARCHIVE
 tfin=159
@@ -72,13 +72,13 @@ MO = AFFE_MODELE(
  # FORME ANALYTIQUE POUR LA FISSURE
 
 LN = FORMULE(VALE='Y',
-             NOM_PARA=('X','Y',),);
+             NOM_PARA=('X','Y'));
 
 FISS=DEFI_FISS_XFEM(MODELE=MO,
                     TYPE_DISCONTINUITE='INTERFACE',
-                    DEFI_FISS=_F(FONC_LN=LN,),
+                    DEFI_FISS=_F(FONC_LN=LN),
                     GROUP_MA_ENRI='MATIERE',
-                    INFO=1,);
+                    INFO=1);
 
 MA=DEFI_GROUP(reuse=MA,
               MAILLAGE=MA,
@@ -86,7 +86,7 @@ MA=DEFI_GROUP(reuse=MA,
               CREA_GROUP_MA=_F(FISSURE=FISS,
                                NOM='TRAVERS',
                                OPTION='FISS_XFEM',
-                               TYPE_GROUP='HEAVISIDE',),);
+                               TYPE_GROUP='HEAVISIDE'));
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MO,
                          FISSURE=FISS,
@@ -105,19 +105,19 @@ CTXFEM = DEFI_CONTACT(
                      FISS_MAIT = FISS,
                      ALGO_LAGR='VERSION2',
                      RELATION='CZM_EXP_REG',
-                     ),),);
+                     )));
 
 
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       LIAISON_XFEM='OUI',
                       CONTACT_XFEM=CTXFEM,
-                      INFO=2,);
+                      INFO=2);
 #--------------------------------------------------------------
 # DEFINITION DES PARAMETRES MATERIAUX
 #--------------------------------------------------------------
 
 BETON = DEFI_MATERIAU(ELAS = _F( E = young,
-                                NU = poiss,),
+                                NU = poiss),
                       RUPT_FRAG = _F( GC = Gc,
                                       SIGM_C = Sc,
                                       PENA_ADHERENCE=pena_adh,
@@ -126,7 +126,7 @@ BETON = DEFI_MATERIAU(ELAS = _F( E = young,
 
 CHAMPMA=AFFE_MATERIAU(MAILLAGE=MA,
                        MODELE=MODELEK,
-                       AFFE=(_F(GROUP_MA='MATIERE',MATER=BETON,),
+                       AFFE=(_F(GROUP_MA='MATIERE',MATER=BETON),
                             ),
                       );
 
@@ -134,15 +134,15 @@ CHAMPMA=AFFE_MATERIAU(MAILLAGE=MA,
 # ON BLOQUE LES MOUVEMENTS DE CORPS RIGIDE DS LA DIRECTION X AU POINT P_RIG
 RIGIDE = AFFE_CHAR_MECA(
   MODELE   = MODELEK,
-  DDL_IMPO = _F(GROUP_NO='P_RIG', DX = 0.0,),
+  DDL_IMPO = _F(GROUP_NO='P_RIG', DX = 0.0),
   );
 
 fyi=1.0;
 # EFFORT IMPOSE SUR LA SURFACE SUPERIEURE DE LA PLAQUE
 TRACTION = AFFE_CHAR_MECA(
   MODELE = MODELEK,
-  FORCE_CONTOUR = (_F(GROUP_MA = 'FACE_SUP', FY = fyi,),
-                   _F(GROUP_MA = 'FACE_INF', FY = -fyi,),
+  FORCE_CONTOUR = (_F(GROUP_MA = 'FACE_SUP', FY = fyi),
+                   _F(GROUP_MA = 'FACE_INF', FY = -fyi),
                    ),
   );
 
@@ -154,18 +154,18 @@ SYMETRIE = AFFE_CHAR_MECA(
                     DDL_2 = 'DY',
                     COEF_MULT_1 = 1.,
                     COEF_MULT_2 = 1.,
-                    COEF_IMPO=0.,),
+                    COEF_IMPO=0.),
   )
 
 
 INSTANTS = DEFI_LIST_REEL(
                           DEBUT = 0.,
-                          INTERVALLE = (_F(JUSQU_A =  tfin, NOMBRE = nbpas), ),
+                          INTERVALLE = (_F(JUSQU_A =  tfin, NOMBRE = nbpas)),
                           )
 
 INS_ARCH = DEFI_LIST_REEL(
                           DEBUT = 0.,
-                          INTERVALLE = (_F(JUSQU_A =  tfin, NOMBRE = nbpas_arch), ),
+                          INTERVALLE = (_F(JUSQU_A =  tfin, NOMBRE = nbpas_arch)),
                           )
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INSTANTS ),
@@ -174,7 +174,7 @@ DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =INSTANTS ),
                                  SUBD_METHODE  = 'MANUEL',
                                  SUBD_PAS      = 10,
                                  SUBD_PAS_MINI = 1.E-20,
-                                 SUBD_NIVEAU   = 20,),
+                                 SUBD_NIVEAU   = 20),
                         )
 EVOL = STAT_NON_LINE(
   MODELE = MODELEK,
@@ -202,14 +202,14 @@ EVOL = STAT_NON_LINE(
     COEF_MULT = c_mult_pilo,
     ETA_PILO_R_MIN=0.0,
     ),
-  NEWTON  = _F(REAC_ITER = 1,),
+  NEWTON  = _F(REAC_ITER = 1),
   CONVERGENCE = _F(RESI_GLOB_RELA = 1.E-6,
-                   ITER_GLOB_MAXI = 10,),
+                   ITER_GLOB_MAXI = 10),
   SOLVEUR    = _F(METHODE = 'MUMPS',
                   NPREC=-1,
-                  PCENT_PIVOT=100,
+   
                   ),
-  ARCHIVAGE = _F(CHAM_EXCLU='VARI_ELGA',)
+  ARCHIVAGE = _F(CHAM_EXCLU='VARI_ELGA')
   )
 
 #--------------------------------------------------------------
@@ -258,34 +258,34 @@ FY = RECU_FONCTION ( TABLE  = FORCE,
 # TESTS SUR LA REPONSE GLOBALE
 #-------------------------------------------------------------
 TEST_TABLE(TABLE=TAB_U,
-              FILTRE=(_F(NOM_PARA='INST',VALE=50,),),
+              FILTRE=(_F(NOM_PARA='INST',VALE=50)),
               NOM_PARA='DY',
               VALE=3.34481E-03,
               REFERENCE='NON_REGRESSION')
 TEST_TABLE(TABLE=FORCE,
-              FILTRE=(_F(NOM_PARA='INST',VALE=50,),),
+              FILTRE=(_F(NOM_PARA='INST',VALE=50)),
               NOM_PARA='DY',
               VALE=4.26501E+07,
               REFERENCE='NON_REGRESSION')
 
 TEST_TABLE(TABLE=TAB_U,
-              FILTRE=(_F(NOM_PARA='INST',VALE=100,),),
+              FILTRE=(_F(NOM_PARA='INST',VALE=100)),
               NOM_PARA='DY',
               VALE=2.28519E-03,
               REFERENCE='NON_REGRESSION')
 TEST_TABLE(TABLE=FORCE,
-              FILTRE=(_F(NOM_PARA='INST',VALE=100,),),
+              FILTRE=(_F(NOM_PARA='INST',VALE=100)),
               NOM_PARA='DY',
               VALE=4.85041E+06,
               REFERENCE='NON_REGRESSION')
 
 TEST_TABLE(TABLE=TAB_U,
-              FILTRE=(_F(NOM_PARA='INST',VALE=150,),),
+              FILTRE=(_F(NOM_PARA='INST',VALE=150)),
               NOM_PARA='DY',
               VALE=6.83775E-03,
               REFERENCE='NON_REGRESSION')
 TEST_TABLE(TABLE=FORCE,
-              FILTRE=(_F(NOM_PARA='INST',VALE=150,),),
+              FILTRE=(_F(NOM_PARA='INST',VALE=150)),
               NOM_PARA='DY',
               VALE=6.86061E+06,
               REFERENCE='NON_REGRESSION')

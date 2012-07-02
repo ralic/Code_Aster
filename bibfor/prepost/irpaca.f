@@ -1,13 +1,13 @@
       SUBROUTINE IRPACA(NOMCOM,IFI,NBORDR,IOCC,ORDR,NBACC,CHACC,
      &                  NBCHCA,CHAMCA,NBK16,NIVE)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*)     NOMCOM,                     CHACC(*),CHAMCA(*)
       INTEGER           NBORDR,       IFI,IOCC,ORDR(*),NBACC,NBCHCA
       INTEGER           NBK16,              NIVE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,6 +43,12 @@ C     ------------------------------------------------------------------
       CHARACTER*16 TOTO
       CHARACTER*19 NOCH19
       INTEGER MAXLEN
+C-----------------------------------------------------------------------
+      INTEGER I ,IAD ,IBID ,IDEU ,IERD ,IOR ,IREST 
+      INTEGER IRET ,ISEIZE ,ITYPE ,IUN ,IZERO ,J ,JENTI 
+      INTEGER JLAST ,JPOSI ,JTABL ,LXLGUT ,NBOBJ ,NFOR ,NP 
+
+C-----------------------------------------------------------------------
       PARAMETER ( MAXLEN = 255)
       CHARACTER*(MAXLEN) CHAINE
       CHARACTER*72 CTMP

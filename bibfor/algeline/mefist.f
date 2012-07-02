@@ -2,7 +2,7 @@
      &                  NUMGRP,NUOR,FREQ,MASG,FACT,FACPAR,VITE,XINT,
      &                  YINT,RINT,Z,PHIX,PHIY,DEFM,
      &                  ITYPG,ZG,HG,DG,TG,CDG,CPG,RUGG, BASE )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
       INTEGER      NDIM(14),NUMGRP(*),NUOR(*)
@@ -15,7 +15,7 @@ C
       REAL*8       ZG(*),HG(*),DG(*),TG(*),CDG(*),CPG(*),RUGG(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -91,6 +91,20 @@ C                MODALE DU SYSTEME AVANT PRISE EN COMPTE DU COUPLAGE
 C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       INTEGER       I, J, NBPARA, IRET
+C-----------------------------------------------------------------------
+      INTEGER IAFLU ,IALFI ,IALFR ,IAXG ,IBETA ,ICF ,ICFG
+      INTEGER ICHAM ,ICP ,ID ,IDCENT ,IDPST ,IDVIT ,IENCEI
+      INTEGER IFI ,IFICEN ,IFM ,IFRE ,II ,IIMAG ,IIND
+      INTEGER IKSI ,IMAT1 ,IMAT2 ,IMATA ,IMATC ,IMATM ,IMATR
+      INTEGER IMATV ,IND ,IORIG ,IPM ,IPPXX ,IPPXY ,IPPYX
+      INTEGER IPPYY ,IPST ,IRE ,IREEL ,IRHO ,IRHOG ,ISGN
+      INTEGER ITMP ,IUNIFI ,IVEC ,IVISC ,IVISCG ,IVIT ,IVITG
+      INTEGER IVNXX ,IVNXY ,IVNYX ,IVNYY ,IWCT ,IXIG ,JJ
+      INTEGER K ,KK ,M ,N ,NBCYL ,NBFIN ,NBGRP
+      INTEGER NBGTOT ,NBMOD ,NBNOE ,NBTOT ,NBV ,NBZ ,NIMA
+      INTEGER NIMA2 ,NN ,NTYPG ,NV ,NV0
+      REAL*8 DH ,VIT0,DDOT
+C-----------------------------------------------------------------------
       PARAMETER    ( NBPARA = 5 )
       COMPLEX*16    C16B
       CHARACTER*8   TYPARA(NBPARA)

@@ -1,5 +1,5 @@
       SUBROUTINE NUMOCH(TLIMAT,NBMAT,BASE,LMOCH)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*24      TLIMAT(*)
       INTEGER                  NBMAT
@@ -7,7 +7,7 @@
       CHARACTER*(*)                       LMOCH
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ASSEMBLA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,8 +38,6 @@ C                  ARGUMENT 'LONUTI' EST DIMENSIONNE EXACTEMENT A SON
 C                  NOMBRE D'ELEMENTS
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      CHARACTER*6 PGC
-      COMMON /NOMAJE/PGC
 C----------------------------------------------------------------------
 C     VARIABLES LOCALES
 C----------------------------------------------------------------------
@@ -48,6 +46,11 @@ C----------------------------------------------------------------------
 C----------------------------------------------------------------------
 C                DEBUT DES INSTRUCTIONS
 C----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER IAD ,IDEJA ,IDIML ,IDLRES ,IED ,IERD ,ILI
+      INTEGER ILMOCH ,IMAT ,IRESU ,IRET ,N1 ,NBRESU ,NLMOCH
+
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
 C---- CALCUL DU NBRE MAX DE MODELES ET DE CHARGES

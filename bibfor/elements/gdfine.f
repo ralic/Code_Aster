@@ -1,9 +1,9 @@
       SUBROUTINE GDFINE (KP,NNO,PJACOB,EN,GRANI,ROT0,ROTK,
      &                   OMGK,OMPGK,   FINT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -39,12 +39,16 @@ C           OMPGK     : ACCELERATION ANGULAIRE ACTUELLE
 C
 C     OUT : FINT      : FORCES INT. (CUMUL DES CONTRIB. DES PTS DE GAUS)
 C ------------------------------------------------------------------
-      IMPLICIT REAL*8(A-H,O-Z)
+      IMPLICIT NONE
       REAL*8 IROTT(3,3)
       REAL*8 EN(3,2),GRANI(4),ROT0(3,3),ROTK(3,3),OMGK(3),
      &OMPGK(3),FINT(6,3),ROTABS(3,3),OMEGAT(3,3),AMATI(3,3),AMAT1(3,3),
      &AMAT2(3,3),FORS(6),V1(3),V2(3),V3(3)
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,J ,K ,KP ,NE ,NNO 
+      REAL*8 COEF ,PJACOB ,UN 
+C-----------------------------------------------------------------------
       UN   = 1.D0
 C
       CALL PROMAT (ROTK,3,3,3,ROT0,3,3,3,   ROTABS)

@@ -1,8 +1,8 @@
       SUBROUTINE OP0162()
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,6 +37,16 @@ C
       REAL*8       TINI, TFIN, FINI, FFIN, PAS
       INTEGER      IARG
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IADMO1 ,IADMO2 ,IBID ,IC ,IDBASE ,IDDEEQ
+      INTEGER IDVEC1 ,IDVEC2 ,IFM ,IFMIS ,IRET ,ISVECT ,J
+      INTEGER J2 ,JFONC ,JREFE ,JTYP ,JVAL ,JVECT ,K
+      INTEGER N ,N1 ,N2 ,N3 ,N4 ,NBMODE ,NBMODS
+      INTEGER NBMODT ,NBNOEU ,NBVAL ,NC ,NCHARB ,NCHARS ,NEQ
+      INTEGER NFO ,NIV ,NMM ,NSOURF ,NSOURS ,NTI ,NU
+
+      REAL*8 COEF ,PIJ ,T,DDOT
+C-----------------------------------------------------------------------
       DATA  REFE  /'                  _REFE'/
       DATA  VALE  /'                   .VALE'/
       DATA  NOMCH0 /'&&OP0162.CHAMNO'/

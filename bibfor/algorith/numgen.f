@@ -1,6 +1,6 @@
       SUBROUTINE NUMGEN(NUGENE,MODGEN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C***********************************************************************
 C    P. RICHARD     DATE 13/10/92
 C-----------------------------------------------------------------------
 C  BUT:      < NUMEROTATION GENERALISEE >
-      IMPLICIT REAL*8(A-H,O-Z)
+      IMPLICIT NONE
 C
 C  DETERMINER LA NUMEROTATION DES DEGRES DE LIBERTE GENERALISES
 C   A PARTIR D'UN MODELE GENERALISE
@@ -48,6 +48,14 @@ C
 C
       CHARACTER*1 K8BID
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IBID ,ICOMP ,ICOMPL ,ICOMPS ,IFIMES ,IUNIFI 
+      INTEGER J ,JREFN ,K ,LDDEEQ ,LDDESC ,LDNEQU ,LDNUEQ 
+      INTEGER LDORL ,LDORS ,LDPRL ,LDPRS ,LLDEFL ,LLDESC ,LLPROF 
+      INTEGER LTLIA ,LTORAS ,LTSSNB ,LTSST ,NBDDL ,NBLIA ,NBLIG 
+      INTEGER NBMOD ,NBSST ,NEQ ,NTAIL ,NUAS ,NULIA ,NULL 
+      INTEGER NULT ,NUSST ,NUSST1 ,NUSST2 ,NUT ,NUTARL 
 C-----------------------------------------------------------------------
       DATA PGC/'NUMGEN'/
 C-----------------------------------------------------------------------

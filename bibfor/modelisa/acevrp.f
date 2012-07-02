@@ -1,11 +1,11 @@
       SUBROUTINE ACEVRP(NBOCC,NOMA,NOEMAX,NOEMAF,IER)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER      NBOCC,NOEMAX,IER
       CHARACTER*8  NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,6 +33,11 @@ C ----------------------------------------------------------------------
       CHARACTER*24 MAGRMA, MANOMA
       CHARACTER*8  K8B
       INTEGER      IARG
+C-----------------------------------------------------------------------
+      INTEGER I ,IDGM ,IDNO2 ,II ,IJ ,IN ,INOE 
+      INTEGER IOC ,LDGM ,LDNM ,NB ,NBGR ,NBGRMX ,NBV 
+      INTEGER NM ,NN ,NOEMA2 ,NOEMAF 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       NBGRMX = 0
       MAGRMA = NOMA//'.GROUPEMA'

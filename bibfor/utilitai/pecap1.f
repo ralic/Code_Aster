@@ -1,6 +1,6 @@
       SUBROUTINE PECAP1(CHGEOZ,TEMPEZ,NGI,LISGMA,CT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C.======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 
 C      PECAP1  -- CALCUL DE LA CONSTANTE DE TORSION D'UNE POUTRE
 C                 DEFINIE PAR SA SECTION MAILLEE EN ELEMENTS
@@ -94,6 +94,15 @@ C.========================= DEBUT DU CODE EXECUTABLE ==================
 
 C ---- INITIALISATIONS
 C      ---------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IANUEQ ,IAPRNO ,IBID ,IDCOOR ,IDDESC ,IDNOMA 
+      INTEGER IDVALE ,IERD ,IGR ,IRET ,IRET1 ,IRET2 ,IVAL 
+      INTEGER JDES ,JGRO ,M ,NBMAIL ,NBNO ,NBORDR ,NEC 
+      INTEGER NGI ,NUMA ,NUMAIL 
+      REAL*8 CT ,DEUX ,PREC ,R8B ,STRAP ,TEMP ,UNDEMI 
+      REAL*8 X1 ,X2 ,XMIN ,Y1 ,Y2 ,YMIN ,ZERO 
+
+C-----------------------------------------------------------------------
       ZERO = 0.0D0
       UNDEMI = 0.5D0
       DEUX = 2.0D0

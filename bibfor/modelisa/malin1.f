@@ -1,10 +1,10 @@
       SUBROUTINE MALIN1(MOTFAZ, CHARGZ, IOCC, INDMOT, LISNOZ, LONLIS)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*)     MOTFAZ, CHARGZ, LISNOZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,6 +51,13 @@ C
       INTEGER      IARG
 C ----------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER IBID ,IDIM1 ,IDIM2 ,IDIMAX ,IER ,IGR ,IMA 
+      INTEGER IN1 ,INDLIS ,INDMOT ,INDNOE ,INO ,IOCC ,JDES 
+      INTEGER JGRO ,JIND ,JJJ1 ,JJJ2 ,JLIST ,LONLIS ,M 
+      INTEGER N1 ,N2 ,NBMA ,NBMAIL ,NG ,NGR ,NLIAI 
+      INTEGER NMAI ,NUMAIL 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       CHARGE = CHARGZ
       MOTFAC = MOTFAZ

@@ -1,12 +1,12 @@
       SUBROUTINE AFFDEF(TMP,NOM,NEL,NTEL,TAB,IER)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER                       NTEL(*)
       CHARACTER*8           NOM,         TAB(*)
       CHARACTER*24      TMP
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,6 +41,11 @@ C        2    RZ2  RT2  TVAR HY1  HZ1  EPY1 EPZ1 HY2  HZ2  EPY2
 C        3    EPZ2 R1   E1   R2   E2   TSEC AI1  AI2  JG1  JG2
 C        4    IYR21 IYR22 IZR21 IZR22
 C       ----------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER IER ,ISEC ,J ,JDGE ,NC ,ND ,NE 
+      INTEGER NEL ,NG ,NR ,NT ,NX ,NY ,NZ 
+
+C-----------------------------------------------------------------------
         PARAMETER       ( NR = 4 ,      NC = 2,    NG = 8 )
         PARAMETER       ( NT = 4 ,      NE =12,    ND = 6 )
         PARAMETER       ( NX = 10,      NY = 8,    NZ = 4 )

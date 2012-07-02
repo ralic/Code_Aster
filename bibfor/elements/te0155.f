@@ -1,10 +1,10 @@
       SUBROUTINE TE0155(OPTION,NOMTE)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*)     OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,6 +52,10 @@ C
 
       REAL*8       KENDOG,KDESSI,SECH,HYDR
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER IRET1 
+      REAL*8 DDOT ,EPSTH ,R8MIEM ,SREF 
+C-----------------------------------------------------------------------
       DATA         NOMPAR / 'X' , 'Y' , 'Z' , 'INST' /
       DATA         NOMPAV /'VITE'/
 C     ------------------------------------------------------------------

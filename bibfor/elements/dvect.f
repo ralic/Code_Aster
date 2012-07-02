@@ -1,9 +1,9 @@
       SUBROUTINE DVECT(IND,NB1,INTSX,ZR,VECTN,
      &                  VECTG,VECTT,DVECTG,DVECTT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 17/12/2007   AUTEUR DESROCHES X.DESROCHES 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -19,7 +19,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER IND,NB1,INTSX,NBCOU,ICOU,INTE
       REAL*8 ZR(*),VECTN(9,3)
       REAL*8 VECTG(2,3),VECTT(3,3)
@@ -27,6 +27,11 @@ C
       REAL*8 RNORM,DRNORM
       COMMON /COUCHE/NBCOU,ICOU,INTE
 C
+C-----------------------------------------------------------------------
+      INTEGER I1 ,I2 ,INTSX1 ,J ,K ,L2 ,L3 
+
+      REAL*8 DZICDH 
+C-----------------------------------------------------------------------
       DZICDH = (ICOU-1+(INTE-1)/2.D0)/NBCOU
 C
       IF  (IND.EQ.0) THEN

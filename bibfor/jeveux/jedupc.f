@@ -1,8 +1,8 @@
       SUBROUTINE JEDUPC ( CLAIN, SCHIN, IPOS, CLAOUT, SCHOUT, DUPCOL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       CHARACTER*(*)       CLAIN, SCHIN,       CLAOUT, SCHOUT
       INTEGER                           IPOS
       LOGICAL                                                 DUPCOL
@@ -37,6 +37,10 @@ C
 C ----------------------------------------------------------------------
       CHARACTER *6     PGMA
       COMMON /KAPPJE/  PGMA
+C-----------------------------------------------------------------------
+      INTEGER JDOCU ,JGENR ,JORIG ,JRNOM ,JTYPE ,N ,NCLA1 
+      INTEGER NCLA2 
+C-----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       CHARACTER*2      DN2
       CHARACTER*5      CLASSE

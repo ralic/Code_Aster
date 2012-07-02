@@ -1,4 +1,4 @@
-# MODIF  DATE 20/06/2012   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE VALIDATION DU SOLVEUR MUMPS EN PARALLELE AVEC MATRICE CENTRALISEE
 # mumps05b.para = tps_job 8660 mem_job 23000Mo mpi_nbcpu 1 mpi_nbnoeud 1 ncpus 1 liste_test MI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -40,12 +40,8 @@ solveur = 'MUMPS';
 #                                                               #
 #    ou MEM est la memoire totale indiquee dans ASTK            #
 #                                                               #
+#        #
 # --------------------------------------------------------------#
-#  Dans cette memoire 'DISPO', MUMPS decide qu'il aura besoin   #
-#  de XX, le parametre mem_pivot autorise MUMPS a en prendre    #
-#  (1+mem_pivot/100)*XX                                         #
-# --------------------------------------------------------------#
-mem_pivot = 40;
 #
 # Choix de la methode de renumeration
 meth_renum = 'METIS';
@@ -62,36 +58,36 @@ DEBUT(CODE=_F( NOM = 'MUMPS05B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 # pour obtenir un maillage lineaire :
 #----------------------------------------
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED');
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=1.E+05,
-                          NU=0.3,),);
+                          NU=0.3));
 
 CHAM_MAT=AFFE_MATERIAU(MAILLAGE=MA,
                        AFFE=_F(TOUT='OUI',
-                               MATER=MAT,),);
+                               MATER=MAT));
 
 MO=AFFE_MODELE(MAILLAGE=MA,
-               AFFE=_F(GROUP_MA=('BLOC','COTE_B','COTE_H',),
+               AFFE=_F(GROUP_MA=('BLOC','COTE_B','COTE_H'),
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),);
+                       MODELISATION='3D'));
 
 CHARF=AFFE_CHAR_MECA(MODELE=MO,
                      FORCE_FACE=_F(GROUP_MA='COTE_H',
-                                   FZ=1.E+4,),);
+                                   FZ=1.E+4));
 
 CHARD=AFFE_CHAR_MECA(MODELE=MO,
                      DDL_IMPO=(_F(GROUP_NO='A',
                                   DX=0.,
-                                  DY=0.,),
+                                  DY=0.),
                                _F(GROUP_NO='B',
-                                  DY=0.,),
+                                  DY=0.),
                                _F(GROUP_MA='COTE_B',
-                                  DZ=0.,),),);
+                                  DZ=0.)));
 
 TPS=DEFI_LIST_REEL(DEBUT=0.0,
                    INTERVALLE=_F(JUSQU_A=1,
-                                 NOMBRE=1,),);
+                                 NOMBRE=1));
 
 # 1.1 : AVEC CHARGE DUALISEE ET MUMPS CENTRALISE
 #----------------------------------------------------------
@@ -100,11 +96,11 @@ MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='CENTRALISE'))
 MECAC=MECA_STATIQUE(INFO=niv_info,
                      MODELE=MO,
                      CHAM_MATER=CHAM_MAT,
-                     EXCIT=(_F(CHARGE=CHARF,),
-                            _F(CHARGE=CHARD,),),
+                     EXCIT=(_F(CHARGE=CHARF),
+                            _F(CHARGE=CHARD)),
                      OPTION='SANS',
-                     SOLVEUR=_F(METHODE=solveur, RENUM=meth_renum, RESI_RELA=-1.0, PCENT_PIVOT=mem_pivot, 
-                     GESTION_MEMOIRE='IN_CORE'),);
+                     SOLVEUR=_F(METHODE=solveur, RENUM=meth_renum, RESI_RELA=-1.0, 
+                     GESTION_MEMOIRE='IN_CORE'));
 
 TEST_RESU(RESU=_F(RESULTAT=MECAC,
                   NUME_ORDRE=1,
@@ -112,7 +108,7 @@ TEST_RESU(RESU=_F(RESULTAT=MECAC,
                   NOM_CMP='DZ',
                   GROUP_NO='D',
                   VALE=0.1,
-                  REFERENCE='ANALYTIQUE',),);
+                  REFERENCE='ANALYTIQUE'));
 
 TEST_RESU(RESU=_F(RESULTAT=MECAC,
                   NUME_ORDRE=1,
@@ -122,7 +118,7 @@ TEST_RESU(RESU=_F(RESULTAT=MECAC,
                   VALE=0.0,
                   CRITERE='ABSOLU',
                   PRECISION=1e-08,
-                  REFERENCE='ANALYTIQUE',),);
+                  REFERENCE='ANALYTIQUE'));
 
 # 2.1 : AVEC CHARGE DUALISEE ET MUMPS DISTRIBUE PAR MAILLES
 #       EQUILIBRAGE DE CHARGE AUTOMATIQUE
@@ -132,11 +128,11 @@ X="""MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='MAIL_DISPERSE')
 MECAD1=MECA_STATIQUE(INFO=niv_info,
                      MODELE=MO,
                      CHAM_MATER=CHAM_MAT,
-                     EXCIT=(_F(CHARGE=CHARF,),
-                            _F(CHARGE=CHARD,),),
+                     EXCIT=(_F(CHARGE=CHARF),
+                            _F(CHARGE=CHARD)),
                      OPTION='SANS',
-                     SOLVEUR=_F(METHODE=solveur, RENUM=meth_renum, RESI_RELA=-1.0, PCENT_PIVOT=mem_pivot, 
-                     GESTION_MEMOIRE='IN_CORE'),);
+                     SOLVEUR=_F(METHODE=solveur, RENUM=meth_renum, RESI_RELA=-1.0, 
+                     GESTION_MEMOIRE='IN_CORE'));
 
 TEST_RESU(RESU=_F(RESULTAT=MECAD1,
                   NUME_ORDRE=1,
@@ -144,7 +140,7 @@ TEST_RESU(RESU=_F(RESULTAT=MECAD1,
                   NOM_CMP='DZ',
                   GROUP_NO='D',
                   VALE=0.1,
-                  REFERENCE='ANALYTIQUE',),);
+                  REFERENCE='ANALYTIQUE'));
 
 TEST_RESU(RESU=_F(RESULTAT=MECAD1,
                   NUME_ORDRE=1,
@@ -154,6 +150,6 @@ TEST_RESU(RESU=_F(RESULTAT=MECAD1,
                   VALE=0.0,
                   CRITERE='ABSOLU',
                   PRECISION=1e-08,
-                  REFERENCE='ANALYTIQUE',),);"""
+                  REFERENCE='ANALYTIQUE'));"""
 
 FIN();

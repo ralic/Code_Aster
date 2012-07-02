@@ -1,7 +1,7 @@
       SUBROUTINE MDFEDY (NBPAL,NBMODE,NUMPAS,DT,DTSTO,TCF,VROTAT,
      &                   DPLMOD,DEPGEN,VITGEN, FEXGEN,
      &                   TYPAL,FINPAL,CNPAL,PRDEFF,CONV,FSAUV)
-      IMPLICIT  REAL*8  (A-H,O-Z)
+      IMPLICIT NONE
       REAL*8             DEPGEN(*),VITGEN(*),FEXGEN(*)
       REAL*8             DPLMOD(NBPAL,NBMODE,*),DT,DTSTO,TCF
       REAL*8             VROTAT,CONV
@@ -9,9 +9,9 @@
       LOGICAL            PRDEFF
       
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/10/2011   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,6 +52,9 @@ C ----------------------------------------------------------------------
       REAL*8        DEP(NBPAL,6),VIT(NBPAL,6),FORCE(NBPAL,3)
 C
       INTEGER       PALMAX
+C-----------------------------------------------------------------------
+      INTEGER NBMODE ,NBPAL 
+C-----------------------------------------------------------------------
       PARAMETER (PALMAX=20)
       CHARACTER*3   FINPAL(PALMAX)
       CHARACTER*6   TYPAL(PALMAX)

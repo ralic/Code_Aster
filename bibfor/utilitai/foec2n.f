@@ -1,12 +1,12 @@
       SUBROUTINE FOEC2N(IUNI,VECPRO,VALPAR,CHVAL,NBFONC,IMPR)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER           IUNI,                    NBFONC,IMPR
       REAL*8                        VALPAR(NBFONC)
       CHARACTER*(*)          VECPRO(*),    CHVAL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,6 +42,11 @@ C     ------------------------------------------------------------------
       CHARACTER*8   NOMPAN,NOMRES,NOMPAF
       CHARACTER*24  CHBID
       CHARACTER*8   TPROL(3),PROLGD,INTERP
+C-----------------------------------------------------------------------
+      INTEGER I ,IK ,J ,K ,LF ,LFON ,LR 
+      INTEGER LVAR ,N0 ,NDOM ,NF1 ,NF2 ,NN ,NPAS 
+
+C-----------------------------------------------------------------------
       DATA TPROL/'CONSTANT','LINEAIRE','EXCLU'/
 C
       CALL JEMARQ()

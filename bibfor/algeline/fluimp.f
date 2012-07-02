@@ -1,9 +1,9 @@
       SUBROUTINE FLUIMP(ITYPFL,NIVPAR,NIVDEF,MELFLU,TYPFLU,NUOR,FREQ,
      &                  FREQI,NBM,VITE,NPV,CARAC,CALCUL,AMOC)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,6 +72,14 @@ C
       CHARACTER*255  CTRAV1,CTRAV2,CTRAV3
       LOGICAL        LCOR,LSUP,LINF,LMIN,LMAX,LRESU,CALCUL(2)
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IBID ,IFR ,IK ,IM ,IMOD ,IND 
+      INTEGER IUNIFI ,IV ,J ,JPROFV ,JTRAV5 ,K ,L1 
+      INTEGER L2 ,L3 ,N1 ,N2 ,NBNO ,NPASV ,NZONE 
+
+      REAL*8 AMOR1 ,BMAX ,BMIN ,DIF1 ,FREQ1 ,RBID ,VRED 
+
+C-----------------------------------------------------------------------
       DATA           NOMCMP /'DX      ','DY      ','DZ      ',
      &                     'DRX     ','DRY     ','DRZ     '/
 C

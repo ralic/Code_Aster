@@ -1,7 +1,7 @@
       SUBROUTINE JJALLS(LONOI,IC,GENRI,TYPEI,LTY,CI,ITAB,JITAB,IADMI,
      &                  IADYN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 10/04/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_18 CRP_6 CRS_508 CRS_512 CRS_505 CRP_20
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER            LONOI,LTY,ITAB(*),JITAB,IADMI,IADYN
       CHARACTER*(*)            GENRI,TYPEI     ,CI
 C ----------------------------------------------------------------------
@@ -42,6 +42,12 @@ C ----------------------------------------------------------------------
       INTEGER          LK1ZON , JK1ZON , LISZON , JISZON , ISZON(1)
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
       EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
+C-----------------------------------------------------------------------
+      INTEGER I ,IADA ,IDM ,IERR ,IESSAI ,ILDYNA ,JCARA 
+      INTEGER JDATE ,JHCOD ,JIADD ,JIADM ,JISZO2 ,JLONG ,JLONO 
+      INTEGER JLTYP ,JLUTI ,JMARQ ,LGBL ,LOISEM ,LSI ,LSO 
+      INTEGER LTOT ,N ,NDE 
+C-----------------------------------------------------------------------
       PARAMETER      ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
      &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ

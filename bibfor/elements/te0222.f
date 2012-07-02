@@ -1,6 +1,6 @@
       SUBROUTINE TE0222(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +30,7 @@ C     ENTREES  ---> OPTION : OPTION DE CALCUL
 C              ---> NOMTE  : NOM DU TYPE ELEMENT
 C.......................................................................
 C
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*16       OPTION, NOMTE
       REAL*8             UNDEMI
@@ -38,6 +38,9 @@ C
       INTEGER            IJ, IDDL, JDDL, NDDL, IDMAT1, IDMAT2
 C
 C
+C-----------------------------------------------------------------------
+      INTEGER IRET 
+C-----------------------------------------------------------------------
       UNDEMI = 0.5D0
 C
       CALL TECACH('OON','PNOSYM',3,ITAB1,IRET)

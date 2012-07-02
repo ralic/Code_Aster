@@ -1,11 +1,11 @@
       SUBROUTINE I2REQ4 (EPSI,A,B,C,D,E,NBR,R1,R2,R3,R4,
      +                   MULT1,MULT2,MULT3,MULT4)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 05/01/95   AUTEUR G8BHHAC A.Y.PORTABILITE 
+C MODIF POSTRELE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -29,6 +29,8 @@ C
       REAL*8  INVA,B3,B2,B1,B0,A2
       REAL*8  AUX,AUX1,AUX2,P1,P2,Q1,Q2,COND
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       NBR = 0
       R1  = 0.0D0
       R2  = 0.0D0

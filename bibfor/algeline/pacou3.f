@@ -1,10 +1,10 @@
       SUBROUTINE PACOU3(XOLD,FOLD,G,P,X,F,FVEC,STPMAX,CHECK,TOLX,VECR1,
      +                  VECR2,TYPFLU,VECR3,AMOR,MASG,VECR4,VECR5,VECI1,
      +                  VG,INDIC,NBM,NMODE,N)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,6 +35,12 @@ C ---------
 C
 C
 C ALF ASSURE UNE DECROISSANCE SUFFISANTE DE LA VALEUR DE LA FONCTION.
+C-----------------------------------------------------------------------
+      INTEGER I ,INDIC ,N ,NBM ,NMODE 
+      REAL*8 A ,ALAM ,ALAM2 ,ALAMIN ,ALF ,B ,DISC 
+      REAL*8 F2 ,FOLD2 ,RHS1 ,RHS2 ,SLOPE ,SUM ,TEMP 
+      REAL*8 TEST ,TMPLAM 
+C-----------------------------------------------------------------------
       PARAMETER (ALF=1.0D-4)
       REAL*8 PACOU2
 C ******************   DEBUT DU CODE EXECUTABLE   **********************

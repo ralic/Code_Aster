@@ -1,8 +1,8 @@
       SUBROUTINE DEELPO(CAELEM,NOMA,NUMAIL,PHIE)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,6 +39,13 @@ C
       CHARACTER*19 CARTE
       CHARACTER*24 CADESC,CAVALE,CALIMA,GPMAMA,NOMAMA
 C
+C-----------------------------------------------------------------------
+      INTEGER IAS ,IASBON ,IASEDI ,IASMAX ,ICAD ,ICAV ,ICMP 
+      INTEGER ICODE ,IGPMA ,IGRAND ,ILIMA ,IMA ,INOMCP ,IRANG1 
+      INTEGER IRANG2 ,IRANV1 ,IRANV2 ,IRET ,ITAB ,NBCMP ,NBMA 
+      INTEGER NUENTI ,NUMA 
+      REAL*8 DIFR ,R1 ,R2 ,TOLR 
+C-----------------------------------------------------------------------
       DATA NOMCMP /'R1      ','R2      '/
 C
 C-----------------------------------------------------------------------

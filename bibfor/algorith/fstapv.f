@@ -3,7 +3,7 @@
      +                  SFN,SFN2,TCHOC,NBMAXR,NBMINR)
 C***********************************************************************
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,7 +25,7 @@ C       MOYENNAGE STATISTIQUE DES FORCES
 C       ALGORITHME TEMPOREL A PAS VARIABLE
 C
 C
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       REAL*8 FN(*),T(*),FNMOYT,FNMOYC,FNRMSC,FNRMST,FNMAX,FNMIN
       REAL*8 SMINR,SMAXR,OFFSET,FMAXMO,FMINMO,SFN2,SFN,TCHOC
@@ -58,6 +58,10 @@ C       NBMINR  NOMBRE DE MINIMAS RELATIFS RENCONTRES
 C       SMAXR   SOMME DES MAXIMAS RELATIFS
 C       SMINR   SOMME DES MINIMAS RELATIFS
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IFT ,ITCT ,NBMAXR ,NBMINR ,NBPT 
+      REAL*8 TTOT 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       SFN = 0.D0
       SFN2 = 0.D0

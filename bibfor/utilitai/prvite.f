@@ -1,8 +1,8 @@
       SUBROUTINE PRVITE(VEC1,LONG,IP1,IP2,ITP)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,6 +26,11 @@ C
       REAL*8     ANGLE(71), VITE(71), ANGL, VEC1(LONG)
       INTEGER    IP(3)
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IJ ,IP1 ,IP2 ,ITP ,J ,K 
+      INTEGER KK ,LONG ,LONG2 
+      REAL*8 ALFA ,BETA 
+C-----------------------------------------------------------------------
       DATA (ANGLE(I),I=1,17)   /
      +   0.D0   ,  15.3D0  ,  30.D0   ,  40.D0   ,  48.5D0  ,  61.3D0  ,
      +  75.D0   ,  83.6D0  ,  90.D0   ,  96.4D0  , 105.D0   , 118.7D0  ,

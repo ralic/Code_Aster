@@ -14,7 +14,7 @@
      &                   NBPAL,DTSTO,TCF,VROTAT,PRDEFF,
      &                   NOMRES,NBEXCI)
 C
-      IMPLICIT     REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
       INTEGER      IORSTO(*),IREDST(*),ITEMAX,DESCMM,DESCMR,DESCMA,
@@ -38,7 +38,7 @@ C
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -116,6 +116,17 @@ C     ------------------------------------------------------------------
       INTEGER       ETAUSR
 C
       INTEGER       PALMAX
+C-----------------------------------------------------------------------
+      INTEGER I ,IARCHI ,ICHO ,IF ,IM ,IRET ,ISTO1 
+      INTEGER ISTO2 ,ISTO3 ,ITER ,JACCE ,JACCGI ,JAMOGI ,JCHOR 
+      INTEGER JDEPL ,JFEXT ,JFEXTI ,JM ,JMASS ,JPHI2 ,JPULS 
+      INTEGER JREDI ,JREDR ,JTRA1 ,JVINT ,JVITE ,N100 ,NBCHOC 
+      INTEGER NBEXCI ,NBMOD1 ,NBPAS ,NBREDE ,NBREVI ,NBSAUV ,NBSCHO 
+      INTEGER NDT ,NEQGEN 
+      REAL*8 DEUX ,R8BID1 ,R8BID2 ,R8BID3 ,R8BID4 ,R8BID5 ,TARCHI 
+      REAL*8 TEMPS ,TINIT ,XLAMBD ,XNORM ,XREF ,XX ,ZERO 
+
+C-----------------------------------------------------------------------
       PARAMETER (PALMAX=20)
       INTEGER       IADRK,IAPP
       INTEGER       DIMNAS

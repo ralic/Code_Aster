@@ -1,8 +1,8 @@
       SUBROUTINE PASFRE(DISC,FREQ,PASF,DIM,NBM,IV,IMODI,FREQI,FREQF,NB)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,6 +52,12 @@ C
       REAL*8       FREQ(2,NBM,*), PASF(DIM*NB),DISC(2,*)
 C-----------------------------------------------------------------------
 CC
+C-----------------------------------------------------------------------
+      INTEGER IF ,IM ,IMODI ,IP ,IV ,IZ ,NB 
+      INTEGER NB4 ,NBM ,NBPF ,NBZ ,NUMO 
+      REAL*8 DF ,DFF ,FMAX ,FMIN ,FREQF ,FREQI ,PAS 
+      REAL*8 PI ,R8PI 
+C-----------------------------------------------------------------------
       NB4 = NB/4
       PI = R8PI()
       NBPF = NB*DIM

@@ -1,11 +1,11 @@
       SUBROUTINE PADTMA(COOR1,COOR2,NBNOTT,ICOUPL,DMIN)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       REAL*8     COOR1(*),COOR2(*),D
       INTEGER    ICOUPL(*),NBNOTT(3)
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,6 +51,11 @@ C OUT  DMIN   R   : DISTANCE ENTRE LES 2 MAILLES
       REAL*8  X1(3),XN1(3),XN2(3),X2(3),X3(3),X4(3)
       INTEGER IPERM(106)
 C --- DATA DES PERMUTATIONS REPRESENTANT LES VIS A VIS
+C-----------------------------------------------------------------------
+      INTEGER I ,IDEB ,J ,K ,KDEB ,KDEB0 ,KDEB1
+      INTEGER KDEB2 ,N ,NBNO ,NBPERM ,NBSOM ,NNO
+      REAL*8 DMIN ,S,PADIST
+C-----------------------------------------------------------------------
       DATA IPERM /1,2,3,              2,1,3,
      &            1,2,3,4,5,6,        2,3,1,5,6,4,        3,1,2,6,4,5,
      &            1,3,2,6,5,4,        3,2,1,5,4,6,        2,1,3,4,6,5,

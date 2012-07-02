@@ -1,6 +1,6 @@
       SUBROUTINE PTFORP ( ITYPE,OPTION,NOMTE,A,A2,XL,RAD,ANGS2,IST,
      &                    NNO, NC, PGL, PGL1, PGL2, FER, FEI)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER           ITYPE,IST,NNO,NC
 
@@ -9,7 +9,7 @@
       REAL*8            A,A2,XL,RAD,ANGS2
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,6 +47,9 @@ C
       LOGICAL      OKVENT
       REAL*8  DIMAG,DDOT,R8MIEM
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER K 
+C-----------------------------------------------------------------------
       DATA         NOMPAR/'X','Y','Z','INST'/
       DATA         NOMPAV/'VITE'/
 C     ------------------------------------------------------------------

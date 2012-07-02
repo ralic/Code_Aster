@@ -1,8 +1,8 @@
       FUNCTION JJCODN(ICRE , NOMREP , NOMEC , IREP, CREP , NMAX , NUTI )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 26/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,11 +19,15 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRS_512
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       CHARACTER*(*)          NOMREP , NOMEC ,       CREP(*)
       INTEGER         ICRE                  , IREP(*)    , NMAX , NUTI
 C ----------------------------------------------------------------------
-      INTEGER          ILOREP , IDENO , ILNOM , ILMAX , ILUTI , IDEHC
+      INTEGER  ILOREP , IDENO , ILNOM , ILMAX , ILUTI , IDEHC,JXHCOD
+C-----------------------------------------------------------------------
+      INTEGER I ,IDEHCO ,IDENOM ,IIN ,IN ,J ,JIN
+      INTEGER JJCODN ,K ,LL ,LNOM ,LOREP ,NE
+C-----------------------------------------------------------------------
       PARAMETER      ( ILOREP=1,IDENO=2,ILNOM=3,ILMAX=4,ILUTI=5,IDEHC=6)
       INTEGER          IRET
       CHARACTER*32     CLE , NOM , VALK(2)

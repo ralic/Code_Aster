@@ -1,6 +1,6 @@
       SUBROUTINE  REFE81 (NOMRES,BASMOD,RAIDF,MASSF,AMORF,MAILLA)
-      IMPLICIT REAL*8 (A-H,O-Z)
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+      IMPLICIT NONE
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,6 +46,10 @@ C
       CHARACTER*19 RAID,RAIDB,MASS,MASSB,MASSF,RAIDF,AMORF,AMORB
       INTEGER      IARG
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER IADREF ,IBID ,IOC ,IRET ,L ,LDDESC ,LLDESC 
+      INTEGER LLREF ,LLREFB ,NBVAL 
 C-----------------------------------------------------------------------
       DATA BLANC         /'        '/
 C-----------------------------------------------------------------------

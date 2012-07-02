@@ -2,7 +2,7 @@
      &                   CRIT,TMOINS,TPLUS,XLONG0,A,COEFFL,IRRAM,IRRAP,
      &                   KLS,FLC,EFFNOC,PP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/01/2012   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,8 +22,13 @@ C ======================================================================
 C TOLE CRP_21
 C TOLE CRP_7
 C ----------------------------------------------------------------------
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER NNO,NC,NEQ,NBT,NCOEFF,NITMAX,IRET
+C-----------------------------------------------------------------------
+      INTEGER ICODMA ,ITEMP ,ITER ,NPG 
+      REAL*8 A ,DEPSI ,DLONG0 ,DP ,PREC ,SIGM ,T1 
+      REAL*8 T2 ,TEMPP2 ,THETA 
+C-----------------------------------------------------------------------
       PARAMETER (NEQ = 12, NBT = 78, NCOEFF = 7)
       REAL*8  CRIT(*)
       REAL*8  XLONG0

@@ -7,7 +7,7 @@ C
       REAL*8 XSOL(NEQ,*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C RESPONSABLE JFBHHUC C.ROSE
 C     TOLE CRP_4
 C ======================================================================
@@ -48,8 +48,6 @@ C                    EN ENTREE LES SOLUTIONS
 C IN  NBSOL   : IS : NOMBRE DE SOLUTIONS / SECONDS MEMBRES
 C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
-      CHARACTER*6 PGC
-      COMMON /NOMAJE/PGC
 C
 C     ------------------------------------------------------------------
       CHARACTER*24 FACTOL,FACTOU
@@ -83,7 +81,6 @@ C        LA RESOLUTION PAR BLOCS :
 
 
       CALL DISMOI('F','NOM_NUME_DDL',NOMMAT,'MATR_ASSE',IBID,NU,IERD)
-      PGC = 'RLTFR8'
       FACTOL(1:19) = NOMMAT
       FACTOU(1:19) = NOMMAT
       CALL MLNMIN(NU,NOMP01,NOMP02,NOMP03,NOMP04,NOMP05,

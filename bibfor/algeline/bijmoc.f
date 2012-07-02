@@ -1,9 +1,9 @@
       SUBROUTINE BIJMOC(UMOY,GEOM,CF0,MCF0,FSVR,IMOD,JMOD,NBM,VICOQ,
      &                  TORCO,TCOEF,S1,S2,BIJ)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,6 +59,13 @@ C
 C
 C-----------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER ICOQ ,ILIGNE ,IYSOL ,IYSOL1 ,IYSOL2 ,JCOQ ,JLIGNE 
+      INTEGER K1I ,K1J ,K2I ,K2J ,KI ,KJ 
+      REAL*8 HMOY ,R1 ,R2 ,RHOF ,RK1I ,RK1J ,RK2I 
+      REAL*8 RK2J ,RKI ,RKJ ,RMOY ,THET1I ,THET1J ,THET2I 
+      REAL*8 THET2J ,THETAI ,THETAJ 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
 C

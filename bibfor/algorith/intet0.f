@@ -1,8 +1,8 @@
       SUBROUTINE INTET0(ANGLE,TET0,IAX)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,7 +22,7 @@ C    P. RICHARD     DATE 11/03/91
 C-----------------------------------------------------------------------
 C  BUT:  CALCULER LA MATRICE 6X6 DE CHANGEMENT DE REPERE PERMETTANT
 C    D'EFFECTUER UNE ROTATION D'AXE OZ SUR LES DDL SUIVANTS:
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C                 DX  DY  DZ  DRX  DRY  DRZ  ? ? PRES PHI
 C
@@ -35,7 +35,8 @@ C
 C-----------------------------------------------------------------------
 C
       REAL*8 TET0(10,10)
-C
+      INTEGER I ,IAX ,J ,JJ
+      REAL*8 A ,ANGLE ,B
 C-----------------------------------------------------------------------
 C
       DO 10 I=1,10

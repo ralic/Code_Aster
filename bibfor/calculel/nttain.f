@@ -4,7 +4,7 @@
      &                   CI2,TESTI)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_21
 C
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER      LONCH
       REAL*8       EPSR,TESTI
@@ -53,6 +53,9 @@ C
       CHARACTER*19 CHSOL
       CHARACTER*24 BIDON,VERESI,VARESI,CRITER
 C
+C-----------------------------------------------------------------------
+      INTEGER IRET 
+C-----------------------------------------------------------------------
       DATA TYPRES        /'R'/
       DATA CHSOL         /'&&NTTAIN.SOLUTION'/
       DATA BIDON         /'&&FOMULT.BIDON'/

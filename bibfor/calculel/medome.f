@@ -1,5 +1,5 @@
       SUBROUTINE MEDOME(MODELE,MATE,CARA,KCHA,NCHA,CTYP,RESULT)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER                                 NCHA
       CHARACTER*4                                       CTYP
@@ -8,7 +8,7 @@
       CHARACTER*(*)                      KCHA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,6 +40,12 @@ C ----------------------------------------------------------------------
 C     ------------------------------------------------------------------
       INTEGER     IEXCIT,IRET, ICHA
       CHARACTER*6 NOMPRO
+C-----------------------------------------------------------------------
+      INTEGER I ,IBID ,IE ,IER ,IERD ,IN ,INUORD 
+      INTEGER IORDR ,JINFC ,JLCHA ,JORDR ,N1 ,N2 ,N3 
+      INTEGER N4 ,NBORDR ,NC ,NP ,NUORD 
+      REAL*8 PREC 
+C-----------------------------------------------------------------------
       PARAMETER (NOMPRO='MEDOME')
       CHARACTER*8  K8B, NOMO, MATERI, BLAN8, MODNEW
       CHARACTER*16 CONCEP, NOMCMD, PHENOM

@@ -1,8 +1,8 @@
       SUBROUTINE  D1MADP(FAMI,MATER,INSTAN,POUM,KPG,KSP,REPERE,D1)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C.======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C      D1MADP --   CALCUL DE L'INVERSE DE LA MATRICE DE HOOKE
 C                  POUR LES ELEMENTS MASSIFS 2D
@@ -41,6 +41,11 @@ C -----  ARGUMENTS
            INTEGER KPG,KSP
            REAL*8       REPERE(7), D1(4,*), INSTAN
 C -----  VARIABLES LOCALES
+C-----------------------------------------------------------------------
+      INTEGER I ,IREP ,J ,MATER ,NBRES ,NBV 
+      REAL*8 DEUX ,E ,E1 ,E2 ,E3 ,UN ,ZERO 
+
+C-----------------------------------------------------------------------
            PARAMETER (NBRES = 7)
 C
       INTEGER ICODRE(NBRES)

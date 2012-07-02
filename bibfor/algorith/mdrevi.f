@@ -1,6 +1,6 @@
       SUBROUTINE MDREVI (NUMDDL,NBREVI,NBMODE,BMODAL,NEQ,DPLREV,
      &                   FONREV,IER)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER       NBREVI,NBMODE,NEQ,IER
       REAL*8        DPLREV(NBREVI,NBMODE,*),BMODAL(NEQ,*)
@@ -8,7 +8,7 @@
       CHARACTER*14  NUMDDL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,6 +52,10 @@ C
 C
 C     ------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER IBID ,IRET ,J ,JDPL ,LLREFE ,NC ,NF 
+      INTEGER NN ,NS 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       IER = 0
       CALL GETTCO(NUMDDL,TYPNUM)

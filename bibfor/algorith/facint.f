@@ -1,8 +1,8 @@
       SUBROUTINE FACINT(NBPAS,DIM,LONGH,VEC1,VEC2,LONG,S,R,D,U,V,W)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,6 +35,12 @@ C             D  : VECTEUR DE TRAVAIL
       COMPLEX*16 S(DIM,DIM),R(DIM,DIM),U(*),W(*)
       REAL*8     D(DIM),VEC1(LONG),VEC2(LONGH),V(*)
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,ICO ,ICOMP ,IX ,IY ,J ,K 
+      INTEGER L ,LONG ,LONGH ,NBPAS ,NBPT1 ,NBPT2 
+      REAL*8 AI ,AR ,AZ ,BZ ,SI ,SR ,UU 
+
+C-----------------------------------------------------------------------
       NBPT1 = NBPAS
       NBPT2 = NBPT1*2
       DO 10 L=1,NBPT1

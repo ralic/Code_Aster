@@ -1,7 +1,7 @@
       SUBROUTINE MEFMAT(NDIM,NUMGRP,NBZ,NBGRP,NBMOD,MATMA,DCENT,CP,CF,
      &               VIT,RHO,PSTAT,DPSTAT,RINT,PHIX,PHIY,Z,MATM,
      &               MATR,MATA,ITYPG,AXG,ZG,RHOG,VITG,CDG,CPG)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
       INTEGER       NDIM(14),NUMGRP(*),NBMOD
@@ -15,7 +15,7 @@ C
       REAL*8        ZG(*),AXG(*),RHOG(*),VITG(*),CDG(*),CPG(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -92,6 +92,13 @@ C
       INTEGER      KG,K,NGZ1,NGZ2
       REAL*8       ECART
 C ----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER IAIREG ,IDPHXG ,IDPHYG ,IG ,IH ,IMATAA ,IMATRA 
+      INTEGER IPHIXG ,IPHIYG ,IPPXX ,IPPXY ,IPPYX ,IPPYY ,IVNXX 
+      INTEGER IVNXY ,IVNYX ,IVNYY ,NBCYL ,NBGRP ,NBGTOT ,NBZ 
+      INTEGER NTYPG 
+      REAL*8 AIRE ,PI ,R8PI ,RHO0 ,VIT0 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
 C --- LECTURE DES DIMENSIONS

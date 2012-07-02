@@ -1,10 +1,10 @@
       SUBROUTINE CAGROU(FONREZ,CHARGZ)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*) FONREZ,CHARGZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,6 +41,11 @@ C ----------------------------------------------------------------------
       REAL*8 COEMUR(2),DIRECT(6)
       INTEGER IDIM(2)
       INTEGER      IARG
+C-----------------------------------------------------------------------
+      INTEGER IDDL ,INO ,IOCC ,JDDL ,JLIST ,LONLIM ,LONLIS 
+      INTEGER N1 ,N2 ,NLIAI 
+      REAL*8 BETA 
+C-----------------------------------------------------------------------
       DATA DIRECT/0.0D0,0.0D0,0.0D0,0.0D0,0.0D0,0.0D0/
 C ----------------------------------------------------------------------
 

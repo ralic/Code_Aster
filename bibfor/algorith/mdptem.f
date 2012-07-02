@@ -1,7 +1,7 @@
       SUBROUTINE MDPTEM (NBMODE,MASGEN,PULSAT,NBCHOC,DPLMOD,
      &       PARCHO,NOECHO,DT,DTS,DTU,DTMAX,TINIT,TFIN,NBPAS,INFO,IER,
      &       LISINS)
-      IMPLICIT   REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER            NBCHOC, NBPAS, INFO,IER, NBMODE
       REAL*8             MASGEN(*),PULSAT(*),
@@ -11,7 +11,7 @@
       CHARACTER*24       LISINS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,6 +62,9 @@ C ----------------------------------------------------------------------
       INTEGER      IARG
 C     ------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER K ,N7 ,NUME 
+C-----------------------------------------------------------------------
       CALL GETRES(NOMRES,TYPRES,NOMCMD)
 C
       TINIT = 0.D0

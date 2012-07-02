@@ -1,11 +1,11 @@
       SUBROUTINE RSHARM(INTERP,RESU,MOTCLE,IOCC,KINST,KRANG,NBINST,IER)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*) INTERP,MOTCLE
       CHARACTER*19 RESU,KINST,KRANG
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,12 @@ C     ------------------------------------------------------------------
       INTEGER      IARG
 C     ------------------------------------------------------------------
 
+C-----------------------------------------------------------------------
+      INTEGER I ,IER ,IOCC ,IORD ,IRET ,IVAL ,JINST 
+      INTEGER JRANG ,L ,LACCR ,LINST ,LLI ,LT ,N 
+      INTEGER NBI ,NBINST ,NBORDR ,NBTROU ,NTO ,NUTROU 
+      REAL*8 EPSI ,RBID ,TUSR 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       IER = 0
       NBINST = 0

@@ -1,8 +1,8 @@
       SUBROUTINE MAROTA (TETAG,   DROT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,9 +25,14 @@ C     IN  : TETAG     : VECTEUR D'ORDRE 3
 C
 C     OUT : DROT      : MATRICE ORTHOGONALE D'ORDRE 3
 C ------------------------------------------------------------------
-      IMPLICIT REAL*8(A-H,O-Z)
+      IMPLICIT NONE
       REAL*8 TETAG(3),DROT(3,3),AMAT1(3,3),AMAT2(3,3)
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,J 
+      REAL*8 COEF ,COEF1 ,COEF2 ,DDOT ,EPSIL ,R8PREM ,TETA1 
+      REAL*8 TETA2 ,UN ,ZERO 
+C-----------------------------------------------------------------------
       ZERO  = 0.D0
       EPSIL = R8PREM( )**4
       UN    = 1.D0

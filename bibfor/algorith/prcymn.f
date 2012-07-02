@@ -1,7 +1,7 @@
       SUBROUTINE PRCYMN(NOMRES,SOUMAT,REPMAT)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,6 +43,18 @@ C
       CHARACTER*24 REPMAT,SOUMAT,NOEINT,CHAMVA
       CHARACTER*1  K1BID
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IBID ,IDDEEQ ,IRAN ,IRET ,J ,K 
+      INTEGER LDK0AA ,LDK0AI ,LDK0AJ ,LDK0II ,LDK0JI ,LDK0JJ ,LDKPAA 
+      INTEGER LDKPAI ,LDKPAJ ,LDKPJA ,LDKPJI ,LDKPJJ ,LDM0II ,LLCHAM 
+      INTEGER LLDESC ,LLKGE ,LLMGE ,LLNIN ,LLNOA ,LLNOD ,LLNOG 
+      INTEGER LLNOMS ,LLREF1 ,LLREF2 ,LTCAP ,LTCDP ,LTCGP ,LTETAX 
+      INTEGER LTETGD ,LTEXA ,LTEXD ,LTEXG ,LTFLEX ,LTMAT ,LTVEC 
+      INTEGER NBDAX ,NBDDR ,NBMOD ,NBNOA ,NBNOD ,NBNOG ,NBSEC 
+      INTEGER NBSMA ,NBV ,NEQ ,NTAIL ,NTRIAN ,NUMA ,NUMD 
+      INTEGER NUMG 
+      REAL*8 XX 
 C-----------------------------------------------------------------------
        DATA PGC /'PRCYMN'/
 C-----------------------------------------------------------------------

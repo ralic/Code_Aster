@@ -1,7 +1,7 @@
       SUBROUTINE LCEDGA (FAMI,KPG,KSP,NDIM,IMAT,CRIT,TYPMOD,
      &                   INSTAM,INSTAP,COORD,DEPS2,SIGM2,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER        NDIM,IMAT,IRET,KPG,KSP
       CHARACTER*16   OPTION
       CHARACTER*8    TYPMOD(2)
@@ -12,9 +12,9 @@
       REAL*8         DSIDEP(6,6)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -84,6 +84,8 @@ C ----------------------------------------------------------------------
       CHARACTER*1 C1
       CHARACTER*8 ZIRC(2)
       LOGICAL      RESI,RIGI
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       DATA          KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
       DATA          ZIRC /'ALPHPUR','ALPHBETA'/
 

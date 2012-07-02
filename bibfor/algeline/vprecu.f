@@ -1,7 +1,7 @@
       SUBROUTINE VPRECU ( MODES, NOMSY, NBVECT, LPOSI, NOMVEC,
      &                    NBPARA, NOPARA, NOMVAI, NOMVAR, NOMVAK,
      &                    NEQ, NBMODE, TYPMOD, NBPARI, NBPARR, NBPARK )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*)     MODES, NOMSY, NOMVEC, TYPMOD, NOPARA
       CHARACTER*(*)     NOMVAI, NOMVAR, NOMVAK
@@ -9,7 +9,7 @@
       INTEGER           NBPARI, NBPARR, NBPARK
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,6 +73,12 @@ C     ------------------------------------------------------------------
       COMPLEX*16    C16B
       LOGICAL       RECUNP
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IBID ,IEQ ,II ,IK ,IMODE ,IR 
+      INTEGER IRET ,J ,JPARA ,LMODE ,LNOPAR ,LNUME ,LNUMOR 
+      INTEGER LRESUI ,LRESUK ,LRESUR ,LVALE ,NBMODT ,NBOUT ,NBTPAR 
+      INTEGER NBTROU ,NEQ1 ,NORDR 
+C-----------------------------------------------------------------------
       DATA  VALE  /'                   .VALE'/
 C     ------------------------------------------------------------------
       CALL JEMARQ()

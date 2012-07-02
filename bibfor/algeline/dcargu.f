@@ -1,10 +1,10 @@
       FUNCTION DCARGU(C)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 14/11/2006   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -27,6 +27,9 @@ C  IN : C : NOMBRE COMPLEXE DONT ON VEUT CALCULER L'ARGUMENT
 C-----------------------------------------------------------------------
       REAL*8     DCARGU
       COMPLEX*16 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      REAL*8 PI ,R8PI 
 C-----------------------------------------------------------------------
       PI  = R8PI()
 C

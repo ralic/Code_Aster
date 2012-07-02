@@ -1,9 +1,9 @@
       SUBROUTINE PACOUF(X,FVECT,VECR1,VECR2,TYPFLU,VECR3,AMOR,MASG,
      +                  VECR4,VECR5,VECI1,VGAP,INDIC,NBM,NMODE)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,6 +37,10 @@ C
 C ----------------------------------------------------------------------
 C
 C
+C-----------------------------------------------------------------------
+      INTEGER INDIC ,NBM ,NMODE 
+      REAL*8 PULSC ,XCF ,XCS ,XKS ,XMF ,XMS 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       DEPI = R8DEPI()
 C

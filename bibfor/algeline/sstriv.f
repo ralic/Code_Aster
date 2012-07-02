@@ -1,10 +1,10 @@
       SUBROUTINE SSTRIV(RDIAK,RDIAM,LPROD,IPOS,NEQ)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       REAL*8            RDIAK(NEQ),RDIAM(NEQ)
       INTEGER                       LPROD(NEQ),IPOS(NEQ),NEQ
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,6 +31,9 @@ C     IN NEQ   : NOMBRE D EQUATIONS
 C     OUT IPOS : TABLEAU DES INDIRECTIONS APRES LE TRI
 C
 
+C-----------------------------------------------------------------------
+      INTEGER I ,ICONT ,INDIC ,ITEMP ,LL 
+C-----------------------------------------------------------------------
       ICONT = 0
       DO 1 I = 1, NEQ
         IPOS(I) = I

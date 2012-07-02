@@ -1,12 +1,12 @@
       SUBROUTINE PTKA10(K,   E,AREA,IY,IZ,IX,G,KY,KZ,R,A,IST)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       REAL*8            K(*),E,AREA,IY,IZ,IX,G,KY,KZ,R,A
       INTEGER                                            IST
 C    -------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -48,6 +48,9 @@ C LOC  I   !   IP   !    12     ! TABLEAU DESCRIPTEUR DE LA MATRICE
       REAL*8  EA,EIZ,EIY,GA,GIX, RCA1,R2,R3,S,S2,DET
 C
 C
+C-----------------------------------------------------------------------
+      INTEGER I 
+C-----------------------------------------------------------------------
       PARAMETER (ZERO=0.D0)
       DATA   IP/0,1,3,6,10,15,21,28,36,45,55,66/
 C     ------------------------------------------------------------------

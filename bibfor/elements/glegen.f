@@ -1,6 +1,6 @@
       SUBROUTINE GLEGEN(NBRE,LOBJ2,XL,ABSGAM,LEGEN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C     ------------------------------------------------------------------
 C
@@ -44,6 +44,8 @@ C
 C
       CHARACTER*24 ABSGAM
       REAL*8 LEGEN(1)
+      INTEGER I ,J
+      REAL*8 COF1 ,COF2 ,X,PLEG2,PLEG3,PLEG4,PLEG5,PLEG6,PLEG7
 C
 C   POLYNOMES DE LEGENDRE
 C
@@ -54,6 +56,7 @@ C
       PLEG6(X) = (231.D0*X**6-315.D0*X**4+105.D0*X*X-5.D0)/16.D0
       PLEG7(X) = X*(429.D0*X**6-693.D0*X**4+315.D0*X*X-35.D0)/16.D0
 C
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL JEVEUO(ABSGAM,'L',IADABS)
 C

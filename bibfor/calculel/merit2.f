@@ -1,9 +1,9 @@
       SUBROUTINE MERIT2(MODELE,NCHAR,LCHAR,CARA,TIME,MATEL,PREFCH,
      &                  NUMERO,BASE)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,6 +69,9 @@ C     ------------------
       LOGICAL EXIGEO,EXICAR
 C ----------------------------------------------------------------------
       INTEGER NBCHMX
+C-----------------------------------------------------------------------
+      INTEGER IERD ,IRET3 ,K 
+C-----------------------------------------------------------------------
       PARAMETER (NBCHMX=2)
       INTEGER NLIGR(NBCHMX)
       CHARACTER*6 NOMPAR(NBCHMX),NOMCHP(NBCHMX),NOMOPT(NBCHMX)

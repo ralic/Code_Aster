@@ -2,7 +2,7 @@
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/03/2012   AUTEUR TRAN V-X.TRAN 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -29,12 +29,15 @@ C          SIGMIN  CONTRAINTES MINIMALES DES CYCLES APRES RAINFLOW
 C      OUT SMAX  CONTRAINTES MAXIMALES DES CYCLES APRES RAINFLOW_MAX
 C          SMIN  CONTRAINTES MINIMALES DES CYCLES APRES RAINFLOW
 C       ----------------------------------------------------------------
-        IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
         REAL*8          SIGMAX(*),SIGMIN(*)
         REAL*8          AMPMAX, SMAX(*),SMIN(*)
         INTEGER         NCYC, CYCMAX
 C       ----------------------------------------------------------------
         
+C-----------------------------------------------------------------------
+      INTEGER I ,IFM ,NIV 
+C-----------------------------------------------------------------------
         CALL INFNIV(IFM,NIV)
         
         CYCMAX = 1

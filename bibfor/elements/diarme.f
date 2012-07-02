@@ -1,13 +1,13 @@
       SUBROUTINE DIARME (NBT,NEQ,ICODMA,UL,DUL,UTL,SIM,VARIM,
      &                   KLV,VARIP,KTY2,DULY)
 C ----------------------------------------------------------------------
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER NBT,NEQ,ICODMA
       REAL*8  UL(NEQ),DUL(NEQ),UTL(NEQ),SIM(NEQ),VARIM
       REAL*8  KLV(NBT),VARIP,KTY2,DULY
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,6 +45,11 @@ C       DULY   :
 C
 C**************** DECLARATION DES VARIABLES LOCALES ********************
 C
+C-----------------------------------------------------------------------
+      INTEGER NBPAR ,NBRE2 
+      REAL*8 DLE ,DLP ,EFFOY ,FLE ,FLP ,RAP ,ULY 
+      REAL*8 UTOT ,VALPAR ,VARMAX ,ZERO 
+C-----------------------------------------------------------------------
       PARAMETER    ( NBRE2 = 5 )
       REAL*8       KTY, KYE, KYP, KYG
       REAL*8       VALRE2(NBRE2)

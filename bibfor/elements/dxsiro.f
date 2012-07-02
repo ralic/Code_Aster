@@ -1,8 +1,8 @@
       SUBROUTINE DXSIRO ( NE , T2VE , TENSAV , TENSAP )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/09/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER  NE
       REAL*8   T2VE(2,2)
       REAL*8   TENSAV(*)
@@ -39,6 +39,9 @@ C     ------------------------------------------------------------------
       REAL*8        XAB(2,2) , T2EV(2,2)
 C
 C     TRANSPOSEE DE T2VE
+C-----------------------------------------------------------------------
+      INTEGER I 
+C-----------------------------------------------------------------------
       T2EV(1,1) = T2VE(1,1)
       T2EV(1,2) = T2VE(2,1)
       T2EV(2,1) = T2VE(1,2)

@@ -1,6 +1,6 @@
       SUBROUTINE REHAGL(NOMRES,RESGEN,MAILSK,PROFNO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C***********************************************************************
 C    T. KERBER     DATE 16/05/93
 C-----------------------------------------------------------------------
 C  BUT:      < RESTITUTION HARMONIQUE GLOBALE >
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C      RESTITUER EN BASE PHYSIQUE SUR UN MAILLAGE SQUELETTE
 C  LES RESULTATS ISSUS DE LA SOUS-STRUCTURATION GENERALE
@@ -55,6 +55,15 @@ C
       COMPLEX*16  CBID
       CHARACTER*1 K1BID
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IAD ,IAR ,IBID ,IDEP ,IEQ ,IER 
+      INTEGER IRET ,ISYMB ,J ,K ,L ,LDNEW ,LLCHAB 
+      INTEGER LLCHOL ,LLIND ,LLINSK ,LLNUEQ ,LLORS ,LLPRS ,LLREF 
+      INTEGER LLROT ,LREF ,LTROTX ,LTROTY ,LTROTZ ,LTVEC ,NBBAS 
+      INTEGER NBCMP ,NBCOU ,NBFREQ ,NBNOT ,NBSST ,NBSYMB ,NEQ 
+      INTEGER NEQS ,NUTARS 
+      REAL*8 FREQ ,RBID 
 C-----------------------------------------------------------------------
       DATA PGC/'REHAGL'/
       DATA SOUTR/'&SOUSSTR'/
@@ -279,7 +288,7 @@ C
             END IF
 
    40     CONTINUE
-          CALL RSNOCH(NOMRES,CHSYMB,I,' ')
+          CALL RSNOCH(NOMRES,CHSYMB,I)
 C
           CALL JELIBE(CHAMOL)
 C

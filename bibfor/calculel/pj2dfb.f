@@ -1,12 +1,12 @@
       SUBROUTINE PJ2DFB(BOITE,TRIA3,GEOM1,GEOM2)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       REAL*8 GEOM1(*),GEOM2(*)
       INTEGER TRIA3(*)
       CHARACTER*14 BOITE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,6 +41,12 @@ C ----------------------------------------------------------------------
       LOGICAL DBG
 
 C DEB ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IABTCO ,IABTDI ,IABTLC ,IABTNB ,IABTVR ,IALIN1 
+      INTEGER IALIN2 ,IB ,IFM ,INO ,IPOSI ,IUNIFI ,K 
+      INTEGER LONT ,NNO1 ,NNO2 ,NTR3 
+      REAL*8 R8MAEM 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       NTR3 = TRIA3(1)
       RBIG = R8MAEM()

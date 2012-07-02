@@ -1,8 +1,8 @@
       SUBROUTINE DEFCUR(VECR1,VECK1,NB,VECR2,NV,NOMMAI,NM,PROLGD,INTERP)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,6 +39,15 @@ C     IN  : NM     : NOMBRE DE MAILLES.
       CHARACTER*24 CONSEG, TYPSEG
 C     ------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IACH ,IACNEX ,IAGM ,IAV1 ,IAV2 ,IEXI 
+      INTEGER II ,IM ,IMA1 ,IMA2 ,IND ,ING ,INO 
+      INTEGER ISEG2 ,ISENS ,ITYM ,ITYPM ,JGCNX ,JI ,JJ 
+      INTEGER JP ,KK ,KSEG ,LABS ,LNOE ,LVALI ,MI 
+      INTEGER NB ,NBCHM ,NBNOMA ,NBPOI1 ,NBRMA ,NBRMA1 ,NBRMA2 
+      INTEGER NBRSE1 ,NBRSE2 ,NBRSEG ,NBSEG2 ,NM ,NUMNO ,NV 
+
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       NBRMA = NM
 C

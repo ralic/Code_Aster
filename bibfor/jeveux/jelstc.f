@@ -1,8 +1,8 @@
       SUBROUTINE JELSTC ( CLAS , SOUCH , IPOS , MAXVAL , KLST , NBVAL )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 26/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       CHARACTER*(*)       CLAS , SOUCH                 , KLST(*)
       INTEGER                            IPOS , MAXVAL        , NBVAL
 C ----------------------------------------------------------------------
@@ -34,6 +34,10 @@ C  OUT : KLST  : TABLEAU DE K24 CONTENANT LES NOMS TROUVES
 C  OUT : NBVAL : NOMBRE DE NOMS TROUVES (NBVAL = -NBVAL SI < MAXVAL)
 C
 C ----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER JDOCU ,JGENR ,JORIG ,JRNOM ,JTYPE ,L ,N 
+      INTEGER NBL 
+C-----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
 C
       CHARACTER*1      GENR    , TYPE

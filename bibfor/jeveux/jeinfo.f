@@ -1,12 +1,12 @@
       SUBROUTINE JEINFO(RVAL)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       REAL*8           RVAL(9)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 26/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C TOLE CRS_512
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -40,6 +40,9 @@ C DEB ------------------------------------------------------------------
       COMMON /XDYNJE/  ICDYN , MXLTOT
 C FIN ------------------------------------------------------------------
       INTEGER LOISEM,IV(3),IVAL
+C-----------------------------------------------------------------------
+      INTEGER MEMPID 
+C-----------------------------------------------------------------------
       IV(1) = 0
       IV(2) = 0
       IV(3) = 0

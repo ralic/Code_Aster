@@ -1,4 +1,4 @@
-# MODIF  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
+# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
 # TITRE GRANDES ROTATIONS AVEC X-FEM
 # ssnv507c.para = tps_job 150 mem_job 64Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -25,7 +25,7 @@
 
 DEBUT(CODE=_F(NOM='SSNV507C',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
 
-MAILLAG=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
+MAILLAG=LIRE_MAILLAGE(FORMAT='MED',INFO=1);
 
 R = 8;
 
@@ -36,46 +36,46 @@ MAILLAG=DEFI_GROUP(reuse =MAILLAG,
                                       POINT  = (0.0,0.0,0.0),
                                       VECT_NORMALE=(0.0,0.0,1.0),
                                       RAYON = 1,
-                                      PRECISION = 2.0,),),);
+                                      PRECISION = 2.0)));
 
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG,
-                     AFFE=(_F(GROUP_MA=('VOLU',),
+                     AFFE=(_F(GROUP_MA=('VOLU'),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),),);
+                              MODELISATION='3D')));
 
 LN1=FORMULE(NOM_PARA=('X','Y','Z'),VALE='-X*X-Y*Y+R*R');
 
 FISS1=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     TYPE_DISCONTINUITE='INTERFACE',
-                    DEFI_FISS=_F(FONC_LN=LN1,),
-                    INFO=1,);
+                    DEFI_FISS=_F(FONC_LN=LN1),
+                    INFO=1);
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=(FISS1),
                          CONTACT='SANS',
-                         INFO=1,);
+                         INFO=1);
 
 E=100.0E6
 nu=0.3
 ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
                             NU=nu,
-                            RHO=7800.0,),);
+                            RHO=7800.0));
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG,
                        MODELE=MODELEK,
-                       AFFE=_F(TOUT=('OUI',),
+                       AFFE=_F(TOUT=('OUI'),
                                 MATER=ACIER,
-                                ),);
+                                ));
 
 DTH=-2*pi
 
 VAR1=DEFI_FONCTION(NOM_PARA='INST',
-                    VALE=(0.,0.,1.,1.),);
+                    VALE=(0.,0.,1.,1.));
 
 CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
-                   DDL_IMPO=(_F(GROUP_MA=('SB','SH','SD','SG',),DX=0,DY=0,DZ=0),
-                             _F(GROUP_NO='INTER',DZ=0),),
-                   INFO=1,);
+                   DDL_IMPO=(_F(GROUP_MA=('SB','SH','SD','SG'),DX=0,DY=0,DZ=0),
+                             _F(GROUP_NO='INTER',DZ=0)),
+                   INFO=1);
 
 tournex = FORMULE(NOM_PARA=('X','Y','INST'),
           VALE='sqrt(X*X+Y*Y)*cos(atan2(Y,X)+DTH*INST)-X');
@@ -85,28 +85,28 @@ tourney = FORMULE(NOM_PARA=('X','Y','INST'),
 
 ROT=AFFE_CHAR_MECA_F(MODELE=MODELEK,
                     DDL_IMPO=(_F(GROUP_NO='INTER',
-                                 DX=tournex,DY=tourney,),),);
+                                 DX=tournex,DY=tourney)));
 
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1,
-                                    NOMBRE=4,),);
+                                    NOMBRE=4));
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
                    EXCIT=(
                           _F(CHARGE=CH1),
-                          _F(CHARGE=ROT),),
+                          _F(CHARGE=ROT)),
                    COMP_INCR=(_F(RELATION='ELAS',
-                                 DEFORMATION='GROT_GDEP',),),
+                                 DEFORMATION='GROT_GDEP')),
                    NEWTON=_F(REAC_INCR=1,REAC_ITER=1),
-                   INCREMENT=_F(LIST_INST=L_INST,),
+                   INCREMENT=_F(LIST_INST=L_INST),
                    CONVERGENCE=(_F(ITER_GLOB_MAXI=20,
                                   RESI_GLOB_MAXI=1E-5)),
                    SOLVEUR=_F(METHODE='MUMPS',
-                              PCENT_PIVOT=250,),
-                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                   INFO=1,);
+   ),
+                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA'),
+                   INFO=1);
 
 #-----------------------------------------------------------
 #             POST-TRAITEMENT POUR LA VISUALISATION
@@ -123,13 +123,13 @@ MA_XFEM=DEFI_GROUP(reuse =MA_XFEM,
                                                                               POINT  = (0.0,0.0,0.0),
                                                                               VECT_NORMALE=(0.0,0.0,1.0),
                                                                               RAYON = 1,
-                                                                              PRECISION = RINF),),);
+                                                                              PRECISION = RINF)));
 
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                                             AFFE=_F(TOUT='OUI',
                                                             PHENOMENE='MECANIQUE',
                                                             MODELISATION='3D',
-                ),)
+                ))
 
 RES_XFEM=POST_CHAM_XFEM(
                                                     
@@ -143,41 +143,41 @@ RES_XFEM=POST_CHAM_XFEM(
 
 DEP=[None]*5
 inst=[0.0,0.25,0.5,0.75,1.0]
-distance = FORMULE(NOM_PARA=('DX','DY','DX_C','DY_C',),
+distance = FORMULE(NOM_PARA=('DX','DY','DX_C','DY_C'),
                    VALE='sqrt((DX-DX_C)**2+(DY-DY_C)**2)');
 
 for i in [1,2,3,4]: #Boucle sur les increments
   DEP[i]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
-                                 GROUP_NO=('N_INT',),
+                                 GROUP_NO=('N_INT'),
                                  RESULTAT=RES_XFEM,
                                  NOM_CHAM='DEPL',
                                  INST=inst[i],
                                  TOUT_CMP='OUI',
-                                 OPERATION='EXTRACTION',),);
+                                 OPERATION='EXTRACTION'));
 
   DEP[i]=CALC_TABLE(reuse = DEP[i],
                     TABLE = DEP[i],
                     ACTION = (_F(OPERATION = 'RENOMME',
-                                 NOM_PARA  = ('COOR_X','X',),),
+                                 NOM_PARA  = ('COOR_X','X')),
                               _F(OPERATION = 'RENOMME',
-                                 NOM_PARA  = ('COOR_Y','Y',),),
+                                 NOM_PARA  = ('COOR_Y','Y')),
                               _F(OPERATION = 'OPER',
                                  NOM_PARA  = 'DX_C',
-                                 FORMULE = tournex,),
+                                 FORMULE = tournex),
                               _F(OPERATION = 'OPER',
                                  NOM_PARA  = 'DY_C',
-                                 FORMULE = tourney,),
+                                 FORMULE = tourney),
                               _F(OPERATION = 'OPER',
                                  NOM_PARA  = 'DIST',
-                                 FORMULE = distance,),
+                                 FORMULE = distance),
                               _F(OPERATION = 'EXTR',
-                                 NOM_PARA=('NOEUD','INST','DIST',),),
+                                 NOM_PARA=('NOEUD','INST','DIST')),
                               _F(OPERATION = 'FILTRE',
                                  NOM_PARA  = 'NOEUD',
                                  CRIT_COMP = 'REGEXP',
-                                 VALE_K    = 'N[^M]',),),);
+                                 VALE_K    = 'N[^M]')));
 
-  IMPR_TABLE(TABLE=DEP[i],);
+  IMPR_TABLE(TABLE=DEP[i]);
 
   TEST_TABLE(TABLE=DEP[i],
                  NOM_PARA='DIST',
@@ -185,6 +185,6 @@ for i in [1,2,3,4]: #Boucle sur les increments
                  VALE=0.0,
                  REFERENCE ='ANALYTIQUE',
                  CRITERE='ABSOLU',
-                 PRECISION=1E-10,);
+                 PRECISION=1E-10);
 
 FIN();                  

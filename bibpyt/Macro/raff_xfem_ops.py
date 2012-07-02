@@ -1,4 +1,4 @@
-#@ MODIF raff_xfem_ops Macro  DATE 20/06/2012   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF raff_xfem_ops Macro  DATE 02/07/2012   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,6 +18,17 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
+def get_nom_maillage_sdfiss(FISS) :
+   """ retourne le nom du maillage associe au concept FISS"""
+
+   import aster
+   from Utilitai.Utmess     import  UTMESS
+
+   iret,ibid,nom_mo = aster.dismoi('F','NOM_MODELE',FISS.nom,'FISS_XFEM')
+   nom_mo=nom_mo.strip()
+
+   iret,ibid,nom_ma = aster.dismoi('F','NOM_MAILLA',nom_mo,'MODELE')
+   return nom_ma.strip()
 
 
 def raff_xfem_ops(self,FISSURE,TYPE,**args):
@@ -35,7 +46,6 @@ def raff_xfem_ops(self,FISSURE,TYPE,**args):
    from types import ListType, TupleType
    from Accas import _F
    from SD.sd_xfem import sd_fiss_xfem
-   from Utilitai.Utmess     import  UTMESS
    EnumTypes = (ListType, TupleType)
 
    macro = 'RAFF_XFEM'
@@ -62,20 +72,14 @@ def raff_xfem_ops(self,FISSURE,TYPE,**args):
    nbfiss = len(FISSURE)
 
    # on recupere le concept maillage "associe a la sd"
-   iret,ibid,nom_mo = aster.dismoi('F','NOM_MODELE',FISSURE[0].nom,'FISS_XFEM')
-   nom_mo=nom_mo.strip()
-   iret,ibid,nom_ma = aster.dismoi('F','NOM_MAILLA',nom_mo,'MODELE')
-   nom_ma=nom_ma.strip()
+   nom_ma = get_nom_maillage_sdfiss(FISSURE[0])
    MA = self.get_concept(nom_ma)
 
    # on verifie que toutes les fissures/interfaces sont rattachees au meme maillage
    for i in range(1,nbfiss) :
-      iret,ibid,nom_mo_i = aster.dismoi('F','NOM_MODELE',FISSURE[i].nom,'FISS_XFEM')
-      nom_mo_i=nom_mo_i.strip()
-      iret,ibid,nom_ma_i = aster.dismoi('F','NOM_MAILLA',nom_mo_i,'MODELE')
-      nom_ma_i=nom_ma_i.strip()
+      nom_ma_i= get_nom_maillage_sdfiss(FISSURE[i])
       if nom_ma_i != nom_ma :
-          UTMESS('F','XFEM2_10',valk=(FISSURE[0].nom, nom_ma, FISSURE[i].nom, nom_ma_i))
+          UTMESS('F','XFEM2_10',valk= (FISSURE[0].nom, nom_ma, FISSURE[i].nom, nom_ma_i) )
 
 
    # indicateur de type 'DISTANCE'

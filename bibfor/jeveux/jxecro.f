@@ -1,9 +1,9 @@
       SUBROUTINE JXECRO ( IC , IADMI , IADDI , LSO , IDCO , IDOS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
-C MODIF JEVEUX  DATE 27/06/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -19,7 +19,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C TOLE CRP_18 CRP_6  CRS_508
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER             IC , IADMI , IADDI(2) , LSO , IDCO , IDOS
 C ----------------------------------------------------------------------
 C ECRITURE D'UN SEGMENT DE VALEUR
@@ -40,6 +40,11 @@ C     ------------------------------------------------------------------
       INTEGER          LBIS , LOIS , LOLS , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOR8 , LOC8
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER IADM ,ISO ,IUSADI ,JIECR ,JUSADI ,K ,KD 
+      INTEGER KL ,LADM ,LSA ,LSADI ,N ,NBL ,NUMDEB 
+      INTEGER NUMEXT 
+C-----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          NBLMAX    , NBLUTI    , LONGBL    ,
      +                 KITLEC    , KITECR    ,             KIADM    ,

@@ -2,9 +2,9 @@
      & A,XIY,XIZ,XJX,ALFAY,ALFAZ,EY,EZ,A2,XIY2,XIZ2,XJX2,ALFAY2,ALFAZ2)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,7 +20,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER ITYPE
       REAL*8       A   ,  XIY ,  XIZ ,  ALFAY ,  ALFAZ ,  XJX ,  EZ,  EY
       REAL*8       A2  ,  XIY2,  XIZ2,  ALFAY2,  ALFAZ2,  XJX2,  XL
@@ -38,6 +38,8 @@ C OUT XL     : R8 : LONGUEUR DE L'ELEMENT
 C OUT PGL    : R8 : MATRICE (3,3) DE ROTATION
 C OUT ITYPE  : IS : TYPE DE VARIATION DE SECTION
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       ITYPE =  NINT(SECT(23))
 C     --- SECTION INITIALE ---
       A     =  SECT(1)

@@ -1,9 +1,9 @@
       SUBROUTINE CONTAC(MACOR,NBCOR,MACOC,NBCOC,
-     .           LFACE,LOMODI,LOCORR,LOREOR,MA)
+     &           LFACE,LOMODI,LOCORR,LOREOR,MA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/09/2011   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -36,7 +36,7 @@ C
 C  MOT_CLEF : ORIE_FISSURE
 C
 C
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C     ------------------------------------------------------------------
 C
@@ -46,6 +46,8 @@ C
       LOGICAL      LFACE,LOMODI,LOCORR,LOREOR
 C
       LOGICAL  QUA,PEN,HEX
+      INTEGER NBCOC ,NBCOR
+C-----------------------------------------------------------------------
 C     FONCTIONS FORMULES PERMETTANT DE SAVOIR SI L'APPUI EST POSSIBLE
       QUA()=(KTYC.EQ.'QUAD4'.AND.(KTYR.EQ.'QUAD4'.OR.KTYR.EQ.'TRIA3'))
      . .OR. (KTYC.EQ.'QUAD8'.AND.(KTYR.EQ.'QUAD9'.OR.KTYR.EQ.'QUAD8'
@@ -79,10 +81,10 @@ C
      .              LFACE,LOMODI,LOCORR,LOREOR,MA)
 C
       ELSE
-      
+
         LOREOR=.FALSE.
 
-      ENDIF   
-      
+      ENDIF
+
 C     ------------------------------------------------------------------
       END

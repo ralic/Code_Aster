@@ -16,11 +16,11 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*) FONREZ,CHARGZ
 C ----------------------------------------------------------------------
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 
 C     CREER LES CARTES CHAR.CHME.CMULT ET CHAR.CHME.CIMPO
 C          ET REMPLIR LIGRCH, POUR LE MOT-CLE LIAISON_GROUP
@@ -31,6 +31,14 @@ C-----------------------------------------------------------------------
 
       INTEGER I,J,K,IRET,IER,IOCC,IBID,IFM,NIV,NMOCL
       INTEGER VALI(2)
+C-----------------------------------------------------------------------
+      INTEGER ICMPZ ,IDCO1 ,IDCO2 ,IDCOEF ,IDCONI ,IDCONR ,IDDL1
+      INTEGER IDDL2 ,IDG1 ,IDG2 ,IDIM ,IDIMEN ,IDIREC ,IDMAX
+      INTEGER IDNBN ,IDNOMD ,IDNOMN ,IEC ,IEXCM1 ,IEXCM2 ,IMULT1
+      INTEGER IMULT2 ,INO1 ,INO2 ,INOM ,JCMUC ,JNOMA ,JPRNM
+      INTEGER LONLI1 ,LONLI2 ,NB ,NBCMP ,NBEC ,NBNO ,NBTERM
+      INTEGER NDDL1 ,NDDL2 ,NDDLA ,NLIAG ,NMULT1 ,NMULT2, INDIK8
+C-----------------------------------------------------------------------
       PARAMETER (NMOCL=300)
       REAL*8 RBID,BETA
       COMPLEX*16 BETAC
@@ -337,7 +345,7 @@ C ---  AFFECTATION DE CE VECTEUR ---
             CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',INO2),NOMNO2)
             VALK(1) = NOMNO2
             VALK(2) = MOTFAC
-            CALL U2MESK('F','AFFECHARMECA_3',2,VALK)    
+            CALL U2MESK('F','AFFECHARMECA_3',2,VALK)
           END IF
           ZI(IDNBN-1+2* (J-1)+2) = 3
           IF ((ICMPZ.EQ.0) .OR. (.NOT.EXISDG(ZI(IDG2),ICMPZ))) THEN

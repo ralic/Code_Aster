@@ -1,6 +1,6 @@
       SUBROUTINE CGMAFN (MOFAZ, IOCC, NOMAZ, LISMAZ, NBMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_6
 C.======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C       CGMAFN -- TRAITEMENT DE L'OPTION FACE_NORMALE
 C                 DU MOT FACTEUR CREA_GROUP_MA DE
@@ -64,6 +64,15 @@ C
       INTEGER      IARG
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
+C-----------------------------------------------------------------------
+      INTEGER IATYMA ,IBID ,IDCOOR ,IDLIMA ,IDNOEU ,IER ,IMA 
+      INTEGER INO1 ,INO2 ,INO3 ,IOCC ,ITYP ,JTYP ,NANGLE 
+      INTEGER NB ,NBANG ,NBMA ,NBMAI ,NBNO ,NBO ,NBOUI 
+      INTEGER NDIM ,NDIM1 ,NV ,NVECT 
+      REAL*8 A ,ANG ,ANGPRE ,B ,C ,EPS ,PSCA 
+      REAL*8 R8BID ,R8DGRD ,R8PREM ,UN ,UNDEMI ,XNOREL ,XNORM 
+      REAL*8 XNORM2 ,ZERO 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
 C --- INITIALISATIONS :

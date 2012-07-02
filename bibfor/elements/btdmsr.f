@@ -1,9 +1,9 @@
       SUBROUTINE BTDMSR(NB1,NB2,KSI3S2,INTSR,XR,EPAIS,VECTPT,
      &                                           HSJ1M,HSJ1S,BTDM,BTDS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,7 +19,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER NB1,NB2,INTSR
       REAL*8 XR(*),EPAIS,VECTPT(9,2,3)
       REAL*8 HSJ1M(3,9),HSJ1S(2,9),BTDM(4,3,42),BTDS(4,2,42)
@@ -27,6 +27,11 @@ C
       REAL*8 KSI3S2
       COMMON/DNSMS/DNSDSM,DNSDS
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,I1 ,I2 ,I3 ,I4 ,I5 ,INTSR1 
+      INTEGER INTSR2 ,J ,J1 ,JB ,K ,K1 ,L1 
+      INTEGER L2 ,L3 ,L4 ,L5 
+C-----------------------------------------------------------------------
          L1= 44
          L2= 76
          L3=351

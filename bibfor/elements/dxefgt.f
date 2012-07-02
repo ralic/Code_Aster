@@ -1,9 +1,9 @@
       SUBROUTINE DXEFGT(PGL,SIGT)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       REAL*8 PGL(3,3),SIGT(1)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,6 +42,11 @@ C                        AUX POINTS D'INTEGRATION
       CHARACTER*10  PHENOM
 C     ------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER IGAU ,INDITH ,IRET1 ,IRET2 ,IRET3 ,IRET4 ,JCARA 
+      INTEGER JCOU ,JMATE 
+      REAL*8 COE1 ,COE2 ,EPAIS ,TREF 
+C-----------------------------------------------------------------------
       FAMI = 'RIGI'
       CALL ELREF5(' ',FAMI,NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
      &                                         IVF,IDFDX,IDFD2,JGANO)

@@ -1,7 +1,7 @@
       SUBROUTINE IREDM1 ( MASSE, NOMA, BASEMO, NBMODE, NBMODS, IAMOR,
      &                    MASS , RIGI , AMORED, FREQ,
      &                    SMASS, SRIGI, SAMOR, CMASS, CRIGI, CAMOR )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*8        MASSE, NOMA, BASEMO
       REAL*8             MASS(*), RIGI(*), SMASS(*), SRIGI(*),
@@ -9,7 +9,7 @@
      &                   AMORED(*), FREQ(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,6 +41,18 @@ C
       INTEGER      IARG
 C     ------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IADMO1 ,IADMO2 ,IAMOR ,IBID ,IC ,IDBASE 
+      INTEGER IDDL ,IDDL0 ,IDGM ,IDGM2 ,IDGM3 ,IDGM4 ,IDGM5 
+      INTEGER IDNO ,IE ,IFMIS ,II ,IJ ,IMESS ,IN 
+      INTEGER INO ,INOE ,IPARNO ,IUNIFI ,J ,J2 ,JCOOR 
+      INTEGER JTYP ,JVAL ,K ,L ,LDGM ,LDNM ,NB 
+      INTEGER NBGR ,NBGR2 ,NBGR3 ,NBGR4 ,NBGR5 ,NBMA ,NBMA2 
+      INTEGER NBMA3 ,NBMA4 ,NBMA5 ,NBMODE ,NBMODS ,NBMODT ,NBNO 
+      INTEGER NBNOEU ,NBV ,NCMP ,NEC ,NEQ ,NF ,NI 
+      INTEGER NM ,NN ,NTI ,NU 
+      REAL*8 ZERO 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       IMESS = IUNIFI('MESSAGE')
       ZERO = 0.D0

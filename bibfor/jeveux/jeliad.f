@@ -1,6 +1,6 @@
       SUBROUTINE JELIAD ( CLAS , NUMR , NBOCT )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 12/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -27,7 +27,7 @@ C OUT : NBOCT NOMBRE D'OCTETS STOCKES AVANT L'ENREGISTREMENT CONTENANT
 C       $$RNOM
 C
 C ----------------------------------------------------------------------
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       CHARACTER*(*)       CLAS
       INTEGER             NUMR , NBOCT , N 
 C ----------------------------------------------------------------------
@@ -39,6 +39,10 @@ C ----------------------------------------------------------------------
       INTEGER          LBIS , LOIS , LOLS , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOR8 , LOC8
 C ----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER JCARA ,JDATE ,JHCOD ,JIADD ,JIADM ,JLONG ,JLONO 
+      INTEGER JLTYP ,JLUTI ,JMARQ 
+C-----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
      &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ

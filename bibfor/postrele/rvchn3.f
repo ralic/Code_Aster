@@ -1,6 +1,6 @@
       SUBROUTINE RVCHN3(VALE,PADR,MA,ITYPM,NBPT,NBCP,FACE,CREF,NBNDF,
      +                  CLOCF,CONEC,VLCCNC,VAL,PTADR,TABAUX)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       INTEGER PADR(*),MA(*),FACE(*),CONEC(*),VLCCNC(*),NBNDF(6,*)
       INTEGER NBPT,NBCP,PTADR,ITYPM,CLOCF(6,4,*)
@@ -8,9 +8,9 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 06/01/95   AUTEUR G8BHHAC A.Y.PORTABILITE 
+C MODIF POSTRELE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -47,6 +47,8 @@ C     ------------------------------------------------------------------
 C
 C======================================================================
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       UNSUR4 = 0.25D0
       M      = MA(1)
       F      = FACE(1)

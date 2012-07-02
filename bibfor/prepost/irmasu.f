@@ -3,7 +3,7 @@
      &            NOMA,NBGRN,NOGN,NBGRM,NOGM,
      &                  LMASU,NOMAI,NONOE,VERSIO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_21
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C     BUT :   ECRITURE DU MAILLAGE SUR FICHIER UNIVERSEL SUPERTAB
 C     ENTREE:
@@ -63,6 +63,17 @@ C     ------------------------------------------------------------------
       LOGICAL LMASU,LPOUT,LMOD
       CHARACTER*8 KBID
 C ---------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IAGRMA ,IAGRNO ,ICA ,ICC ,ICF ,ICOD 
+      INTEGER ICOD1 ,ICOD2 ,ICOL ,ICOLD ,ICOLE ,ICOLL ,ICOLP 
+      INTEGER ICOLT ,ICOU ,ICS ,ICSS ,ICST ,ICSV ,IER 
+      INTEGER IFC ,IGM ,IGM2 ,IGN ,IMA ,IMAIL ,IMAS 
+      INTEGER IMAT ,INBO ,INO ,IOFF ,IPHY ,IPOIN ,IRET 
+      INTEGER ISUP ,ITSEG2 ,ITYPE ,J ,JM ,JMAGR ,JN 
+      INTEGER JNOGR ,K ,L ,M ,MAXNOD ,NBGRM ,NBGRN 
+      INTEGER NBM ,NBM2 ,NBMA ,NBN ,NDIM ,NNO ,NNOE 
+
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       LPOUT=.FALSE.
       ITRI7  = 0

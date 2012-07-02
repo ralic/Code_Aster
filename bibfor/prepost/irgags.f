@@ -1,13 +1,13 @@
       SUBROUTINE IRGAGS(NCMPMX,NOMCMP,NOMSYM,NBCHS,NOMCHS,NBCMPS,NOMGDS
      +                        ,IPCMPS)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
       INTEGER           NCMPMX,       NBCHS,   NBCMPS(*),IPCMPS(*)
       CHARACTER*(*)            NOMCMP(*),NOMSYM,NOMCHS(*),NOMGDS(*)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,6 +47,13 @@ C     ------------------------------------------------------------------
       INTEGER     NBFLU,NBFLUI,NBFLUS
       INTEGER     NBFH11,NBFH12,NBFH21,NBFH22,NBFHT,NBSIP
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,ICMAS ,IDEPL ,IENT ,IEPSI ,IEPSM ,IEPSS 
+      INTEGER IFH11 ,IFH12 ,IFH21 ,IFH22 ,IFHT ,IFLU ,IFLUI 
+      INTEGER IFLUS ,IPRE1 ,IPRE2 ,IPRES ,IRES ,ISIGI ,ISIGM 
+      INTEGER ISIGS ,ISIP ,ITEMI ,ITEMP ,ITEMS ,IVA ,IVAR 
+      INTEGER IVARI ,J 
+C-----------------------------------------------------------------------
       CALL WKVECT('&&IRGAGS.IDEPL','V V I',6,IDEPL)
       CALL WKVECT('&&IRGAGS.ITEMP','V V I',1,ITEMP)
       CALL WKVECT('&&IRGAGS.ITEMI','V V I',1,ITEMI)

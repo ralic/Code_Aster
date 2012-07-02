@@ -1,12 +1,12 @@
       SUBROUTINE MEAMAC(MODELZ,NCHA,LCHA,MATE,MATELZ)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER                  NCHA
       CHARACTER*(*)     MODELZ,          MATE,MATELZ
       CHARACTER*8                   LCHA(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,9 @@ C
       CHARACTER*8 K8BID, MODELE
       CHARACTER*19 MATEL
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IRET ,JLIRE2 ,LONG2 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       MODELE = MODELZ
       MATEL  = MATELZ

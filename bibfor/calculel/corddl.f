@@ -1,9 +1,9 @@
       SUBROUTINE CORDDL(ADMODL,LCMODL,IDPRN1,IDPRN2,ILI,MODE,NEC,NCMP,
      +                  N,K,NDDLOC,POS)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,6 +39,11 @@ C     POS    : TABLEAU DE CORRESPONDANCE AVEC LES DDL SUR LE NOEUD
 C          EN TANT QUE NOEUD GLOBAL
 C ----------------------------------------------------------------------
       INCLUDE 'jeveux.h'
+C-----------------------------------------------------------------------
+      INTEGER I ,IDPRN1 ,IDPRN2 ,IEC ,IECDG ,IECDL ,ILI 
+      INTEGER IN ,K ,L ,MODE ,N ,NBECMX ,NCMP 
+      INTEGER NDDLOC ,NEC ,NUNOEL 
+C-----------------------------------------------------------------------
       PARAMETER (NBECMX = 10)
       INTEGER IFIN(NBECMX)
       INTEGER PRNO

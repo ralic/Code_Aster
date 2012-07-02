@@ -1,7 +1,7 @@
       SUBROUTINE RESECI(CARELE,NUMMAI,AI1,AI2)
 C**********************************************************************C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,7 @@ C               REUPERE SON NUMERO, ON VA VOIR SI NUMMAI Y EST
 C               SI NON ON PASSE A LA GRANDEUR SUIVANTE
 C               SI OUI ON RECUPER SON ENTIER CODE, ON VERI......
 C**********************************************************************C
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
       CHARACTER*1 KBID
@@ -40,6 +40,13 @@ C
 C**********************************************************************C
 C***1.      RECUPERATION DU TYPE GRANDEUR NB ASSOCIATION***************C
 C**********************************************************************C
+C-----------------------------------------------------------------------
+      INTEGER IAD1 ,IALIMA ,IASS1 ,IAVALE ,IBID1 ,ICMP ,ICODE1 
+      INTEGER IEC1 ,IGD ,IGDNCM ,IMAI1 ,INASMX ,INBMAI ,INECGD 
+      INTEGER INULIM ,IRGAI1 ,IRGAI2 ,ITEST1 ,ITEST2 ,NUMAI1 ,NUMGD 
+      INTEGER NUMMAI 
+      REAL*8 AI1 ,AI2 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       K24BI1 = CARELE//'.CARGENPO  .DESC'
       CALL JEVEUO(K24BI1,'L',IAD1)

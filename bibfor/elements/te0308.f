@@ -1,6 +1,6 @@
       SUBROUTINE TE0308 ( OPTION,NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*16        OPTION,NOMTE
 C ......................................................................
@@ -34,6 +34,11 @@ C
       INTEGER            IPOIDS,IVF,IDFDX,IDFDY,IGEOM
       INTEGER            NDIM,NNO,IPG,NPG1,IVERES,IECH
       INTEGER            IDEC,JDEC,KDEC,LDEC,NNOS,JGANO
+C-----------------------------------------------------------------------
+      INTEGER I ,IER ,INO ,ITEMP ,ITEMPS ,J ,JNO 
+
+      REAL*8 ECHNP1 ,XX ,YY ,ZZ 
+C-----------------------------------------------------------------------
       DATA               NOMPAR/'X','Y','Z','INST'/
 C DEB ------------------------------------------------------------------
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDX,JGANO)

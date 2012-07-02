@@ -1,9 +1,9 @@
         SUBROUTINE STKMAI(IFL,ICL,IV,RV,CV,CNL,MCL,NBM,NUME,NUMN,
      &  CNX,TYP,FMT,IRTETI)
-        IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,13 +46,15 @@ C
         CHARACTER*24    CNX,    TYP
         SAVE B8
 C
-      CHARACTER*6        PGC
-      COMMON  / NOMAJE / PGC
+C-----------------------------------------------------------------------
+      INTEGER I ,IADC ,IADT ,ICL ,IFL ,IFM ,IRET
+      INTEGER IRTET ,IRTETI ,IUNIFI ,IV ,NBM ,NUME ,NUMN
+      INTEGER NUMTCL
+C-----------------------------------------------------------------------
         DATA B8         /'        '/
       CALL JEMARQ()
         IRTETI = 0
 C
-        PGC = 'OP0001'
         IFM = IUNIFI('MESSAGE')
 C
 C - ITEM = MOT CLE  TYPE MAILLE ?

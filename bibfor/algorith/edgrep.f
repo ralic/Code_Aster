@@ -1,15 +1,15 @@
       SUBROUTINE EDGREP (TYPMOD,COORD,ANIC,ANI)
 
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/11/2009   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 
       REAL*8         COORD(3),ANIC(6,6),ANI(6,6)
       CHARACTER*8   TYPMOD(2)
 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -39,6 +39,8 @@ C ----------------------------------------------------------------------
       INTEGER IND(3,3)
       REAL*8  R8PREM,ZERO,NORME,COST,SINT       
       REAL*8  PAS(3,3),PASI(3,3)        
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       DATA    IND/1,4,5,
      &            4,2,6,
      &            5,6,3/

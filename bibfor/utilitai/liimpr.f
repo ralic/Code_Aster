@@ -1,11 +1,11 @@
       SUBROUTINE LIIMPR(NOML,IMPR,FICHIE)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*)     NOML,     FICHIE
       INTEGER                IMPR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,6 +31,11 @@ C
       CHARACTER*24  LPAS, NBPA, VALE, BINT, TITR
       LOGICAL       LISREE
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IBID ,IRET ,IUL ,IUNIFI ,JBOR ,JNBP 
+      INTEGER JPAS ,JVAL ,K ,L ,LG ,LTITR ,LXLGUT 
+      INTEGER NBINT ,NBTITR ,NBVAL ,ND ,NL 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       IF ( IMPR .LE. 0) GOTO 9999
       FILE = FICHIE

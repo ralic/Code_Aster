@@ -1,8 +1,8 @@
       SUBROUTINE OP0144()
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,6 +42,17 @@ C     UN COMMON AJOUTE POUR RESORBER UNE GLUTE ANTIQUE (VOIR HISTOR):
       CHARACTER*32 NOMVAR
       INTEGER      IARG
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IACMP ,IAMOR ,IAV ,ICMP ,IDEC ,IDESC
+      INTEGER IEC ,IER ,IFACT ,IFM ,IFR ,IFREQ ,IFSIC
+      INTEGER II ,IMASG ,INEC ,INO ,INUMO ,IO ,IPAR
+      INTEGER IREFBM ,IREFE ,IRET ,ITYPFL ,IUNIFI ,IV ,IVITE
+      INTEGER J ,JCDESC ,JCREFE ,JDESC ,JJ ,JPRNO ,LONG
+      INTEGER NBAM ,NBCOMP ,NBNO ,NBNOEU ,NBOCC ,NBPAR ,NBPV
+      INTEGER NEC ,NIVDEF ,NIVPAR ,NUMGD, INDIK8
+      REAL*8 AMOR ,RBID ,UMIN ,VMAX ,VMIN ,VMOY ,VPAS
+
+C-----------------------------------------------------------------------
       DATA         NOMCMP /'DX      ','DY      ','DZ      ',
      &                     'DRX     ','DRY     ','DRZ     '/
 C

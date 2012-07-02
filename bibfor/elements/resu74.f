@@ -1,8 +1,8 @@
       SUBROUTINE RESU74 (TRAN,NOMRES)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,6 +45,14 @@ C
       INTEGER      IARG
 C     ------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,JACCE ,JACCE1 ,JACCE2 ,JDCH1 ,JDCH2 ,JDCHO 
+      INTEGER JDEPL ,JDEPL1 ,JDEPL2 ,JDESC ,JFCH1 ,JFCH2 ,JFCHO 
+      INTEGER JICHO ,JICHO1 ,JICHO2 ,JINST ,JINST1 ,JINST2 ,JORDR 
+      INTEGER JORDR1 ,JORDR2 ,JTEM1 ,JTEM2 ,JTEMP ,JVCH1 ,JVCH2 
+      INTEGER JVCHO ,JVINT ,JVINT1 ,JVINT2 ,JVITE ,JVITE1 ,JVITE2 
+
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       RESU = '88888'
 C

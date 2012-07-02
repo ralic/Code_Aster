@@ -1,12 +1,12 @@
       SUBROUTINE PTKG00(SF,A1,A2,XIZ,XIZ2,XIY,XIY2,XL,EY,EZ,DSM)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       REAL*8                A1,A2,XIZ,XIZ2,XIY,XIY2,XL,EY,EZ
       REAL*8             SF(*),                        DSM(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -38,6 +38,8 @@ C     ------------------------------------------------------------------
       REAL*8  Z1,UN2,DEUX,SIX,QUINZE,TRENTE
       REAL*8  FX, A, XIA1, XIA2, XIA, MY1, MY2, MZ1, MZ2
       INTEGER IP(12)
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       DATA             IP/ 0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66 /
 C     ------------------------------------------------------------------
       Z1     =  0.1D0

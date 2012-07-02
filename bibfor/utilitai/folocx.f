@@ -1,14 +1,14 @@
       SUBROUTINE FOLOCX ( VALE, N, X, PROLGD, I, EPSI, COLI, IER )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       REAL*8              VALE(N)
       REAL*8 VALR(2)
       CHARACTER*(*)                   PROLGD
       CHARACTER*1                                      COLI
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 05/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -45,6 +45,11 @@ C                IER = 20 --->  EXTRAPOLATION INCONNUE
 C                IER = 30 --->  ON DEBORDE A GAUCHE
 C                IER = 40 --->  ON DEBORDE A DROITE
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,ID ,IE ,IER ,IND ,J ,N 
+
+      REAL*8 EPSI ,TOLE ,X 
+C-----------------------------------------------------------------------
       IER  = 0
       COLI = '?'
       IF (N.LT.1) THEN

@@ -1,13 +1,13 @@
       SUBROUTINE WPPGEN(LMASSE,LAMOR,LRAIDE,MASSEG,AMORG,RAIDEG,VECT,
      &                  NEQ,NBVECT,IDDL)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER           LMASSE,LAMOR,LRAIDE  ,NEQ,NBVECT,IDDL(*)
       REAL*8                             MASSEG(*),AMORG(*),RAIDEG(*)
       COMPLEX*16                                             VECT(NEQ,*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,6 +42,9 @@ C
       COMPLEX*16   RVAL,  ZERO
       CHARACTER*24 VECAUX,VECAU1
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER IEQ ,IVECT ,LAUX ,LAUX1 
+C-----------------------------------------------------------------------
       DATA  VECAUX/'&&VPPGEN.VECTEUR.AUX0'/
       DATA  VECAU1/'&&VPPGEN.VECTEUR.AUX1'/
 C     ------------------------------------------------------------------

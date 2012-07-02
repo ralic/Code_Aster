@@ -1,7 +1,7 @@
       SUBROUTINE ACEINC(NOMA,NOMO,NBMCF,MCLF,NTYELE,NBOCC,IVR,
      &                  NBEPO,NBEDI,NBECO,NBECA,NBEBA,NBEMA,NBEGB,
      &                  NBTEL,NOCACO,NOCAGB,JDLM,JDLN,LMAX,IER)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER           NOCACO,NBMCF,NTYELE(*),NBOCC(*),IVR(*),NOCAGB
       INTEGER           NBEPO,NBEDI,NBECO,NBECA,NBEBA,NBEGB,NBTEL
@@ -10,7 +10,7 @@
       CHARACTER*16      MCLF(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,6 +36,14 @@ C     VERIFICATION QUE TOUS LES ELEMENTS DU MODELE ONT ETE AFFECTES
 C        PAR DES CARACTERISTIQUES.
 C ----------------------------------------------------------------------
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IBID ,IOC ,IXMA ,IXNO ,IXNW ,J 
+      INTEGER JDGM ,JDGN ,JDLS ,JDME ,JDNE ,JDNW ,K 
+      INTEGER MCL ,NBCAR ,NBEMA ,NBMAGR ,NBMAIL ,NBMTRD ,NBNOGR 
+      INTEGER NCAR ,NCARA ,NG ,NJ ,NM ,NN ,NNOE 
+      INTEGER NORIG ,NUMMAI ,NUMNOE ,NUTYEL 
+      REAL*8 R8B 
+C-----------------------------------------------------------------------
       PARAMETER    ( NBCAR = 100 )
       CHARACTER*4  EXITUY
       CHARACTER*6  KIOC

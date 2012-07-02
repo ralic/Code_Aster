@@ -1,12 +1,12 @@
       SUBROUTINE TITRE1(ST,NOMOBJ,BASE,NBTITR,TITDON,LGDON)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*1       ST
       CHARACTER*(*)     NOMOBJ,   BASE,       TITDON(*)
       INTEGER                  NBTITR,       LGDON(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,6 +25,11 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C                           MXLIGS MAX DE LIGNES EN SORTIE
+C-----------------------------------------------------------------------
+      INTEGER I ,ICOLD ,ICOLS ,IDEB ,IERX ,ILIG ,ILIGD 
+      INTEGER ILIGS ,LDONS ,LDONS1 ,LONMAX ,LSORT ,MXCOLD ,MXLIGS 
+
+C-----------------------------------------------------------------------
       PARAMETER            (MXLIGS=50 )
       CHARACTER*1    KAVANT, KCOURA
       CHARACTER*16    CBID

@@ -1,6 +1,6 @@
       SUBROUTINE UTESTR(CHAM19,NONOEU,NOCMP,NBREF,TBTXT,REFI,REFR,REFC,
      +                                     TYPRES,EPSI,CRIT,IFIC,SSIGNE)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*19      CHAM19
       CHARACTER*17             NONOEU
@@ -15,7 +15,7 @@
       INTEGER                               REFI(NBREF),           IFIC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,6 +62,11 @@ C     VARIABLES LOCALES:
       CHARACTER*1 K1BID
 C
 C
+C-----------------------------------------------------------------------
+      INTEGER IADESC ,IANCMP ,IANUEQ ,IAPRNO ,IAREFE ,IAVALE ,IBID
+      INTEGER ICMP ,IDECAL ,IERD ,IICMP ,INO ,IVAL ,NCMP
+      INTEGER NCMPMX ,NEC ,NUM, INDIK8
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       TESTOK = 'NOOK'
 C

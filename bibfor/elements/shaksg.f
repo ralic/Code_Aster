@@ -1,8 +1,8 @@
       SUBROUTINE SHAKSG(K,R)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -21,12 +21,14 @@ C--------------------------------------------------------
 C ELEMENT SHB8-PS A.COMBESCURE, S.BAGUET INSA LYON 2003 /
 C-------------------------------------------------------
 C TOURNE KSTAB VERS LE REPERE GLOBAL
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       REAL*8 K(24,24),R(3,3),KRT(24,24),TMP(24,24),KR(24,24)
       INTEGER I,J,KK
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C      CALL ZDANUL(KRT,576)
 C      CALL ZDANUL(KR,576)
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       CALL R8INIR(576,0.D0,KRT,1)
       CALL R8INIR(576,0.D0,KR,1)
       DO 30 KK = 1,8

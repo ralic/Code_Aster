@@ -1,11 +1,11 @@
       SUBROUTINE ORIEN2 ( XP, XQ, XR, ANGL )
-      IMPLICIT  REAL*8  ( A-H , O-Z )
+      IMPLICIT NONE
       REAL*8              XP(*), XQ(*), XR(*), ANGL(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,6 +28,10 @@ C OUT : A B G  : ANGLES D'ORIENTATION DE L'AXE
 C ----------------------------------------------------------------------
       REAL*8   XPR(3), XPQ(3), XXPR(3), MRO(3,3)
 C ----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I 
+      REAL*8 R ,S ,ZERO 
+C-----------------------------------------------------------------------
       ZERO = 0.D0
 C
       R = ZERO

@@ -1,11 +1,11 @@
       SUBROUTINE VPRECO(NBVECT,NEQ,VECRED,VECT)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER         NBVECT,NEQ
       REAL*8          VECT(NEQ,NBVECT), VECRED(NBVECT,NBVECT)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,6 +34,10 @@ C     VECT   : IN  : MATRICE DE PASSAGE (RECTANGULAIRE)
 C              OUT : MATRICE MODALE (RECTANGULAIRE) DU SYSTEME COMPLET
 C     ------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,ILIG ,J ,K ,L 
+      REAL*8 RT 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL WKVECT('&&VPRECO.ILIG','V V R',NBVECT,ILIG)
 C

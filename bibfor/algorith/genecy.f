@@ -1,7 +1,7 @@
       SUBROUTINE GENECY(CMOD1,CMOD2,NEQ,LMAT,PARA,NBSEC,
      &                  BETA1,BETA2,CTRAV)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C***********************************************************************
 C    C. VARE     DATE 20/01/94
 C-----------------------------------------------------------------------
 C  BUT: CALCULER LES PARAMETRES GENERALISES DES MODES CALCULES
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C       PAR UNE METHODE CYCLIQUE
 C
 C       LES MODES ETANT A PRIORI DOUBLES, IL Y A DEUX PARAMETRES
@@ -44,6 +44,10 @@ C
       REAL*8       PARA(2),ZERO
       COMPLEX*16   CMOD1(NEQ),CMOD2(NEQ),CTRAV(NEQ),CFACT1,CFACT2
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,J ,LMAT ,NBSEC ,NEQ 
+      REAL*8 BETA1 ,BETA2 ,XIMA ,XREA 
 C-----------------------------------------------------------------------
       DATA ZERO /0.D+00/
 C-----------------------------------------------------------------------

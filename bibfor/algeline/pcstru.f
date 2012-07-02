@@ -1,7 +1,7 @@
       SUBROUTINE PCSTRU(N,IN,IP,ICPL,ICPC,ICPD,ICPCX,ICPLX,NIVEAU,
      &                  COMPLT,LCA,IMP,IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_4
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 
 C----------------------------------------------------------------------
 C   ENTREE
@@ -55,6 +55,10 @@ C     NCOEF = IN(N)
 C     WRITE (6,*) ' TAILLE INITIALE ',NCOEF
 C IN-IP---> IPL-IPC
 C =================
+C-----------------------------------------------------------------------
+      INTEGER I ,IER ,IMP ,JIND ,K ,K1 ,K2 
+      INTEGER KK ,LCA ,N ,NIV ,NIVEAU ,NZ 
+C-----------------------------------------------------------------------
       CALL WKVECT('&&PCSTRU.IND','V V I',N,JIND)
       CALL PCFALU(N,IN,IP,ICPL,ICPC,ZI(JIND),IMP)
 

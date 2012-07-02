@@ -1,8 +1,8 @@
       SUBROUTINE TRAN77(NOMRES,TYPRES,NOMIN,BASEMO)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,6 +46,14 @@ C ----------------------------------------------------------------------
       LOGICAL       TOUSNO, MULTAP, LEFFOR, PREMS
       INTEGER      IARG
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER IADESC ,IADRIF ,IARCHI ,IAREFE ,IBID ,ICH ,IDBASE 
+      INTEGER IDEC ,IDEFM ,IDINSG ,IDRESU ,IDVECG ,IE ,INOCMP 
+      INTEGER INOECP ,INUDDL ,INUMNO ,IRET ,IRETOU ,ISK ,J2REFE 
+      INTEGER J3REFE ,JC ,JINST ,JNUME ,LINST ,LLCHA ,LREFE 
+      INTEGER LVALE ,N1 ,N2 ,N3 ,N4 ,NBCHAM ,NBINSG 
+      INTEGER NBINST ,NBMODE ,NBNOEU ,NCMP ,NEQ ,NFONCT 
+C-----------------------------------------------------------------------
       DATA BLANC    /'        '/
 C      DATA CHAMN2   /'&&TRAN77.CHAMN2'/
 C      DATA NOMCMP   /'DX      ','DY      ','DZ      ',
@@ -368,7 +376,7 @@ C 254            CONTINUE
 C                CALL JEDETR ('&&TRAN77.VECTEUR')
 C                CALL JEDETR ('&&TRAN77.DDL')
 C             ENDIF
-             CALL RSNOCH(NOMRES,TYPE(ICH),IARCHI,' ')
+             CALL RSNOCH(NOMRES,TYPE(ICH),IARCHI)
              CALL RSADPA(NOMRES,'E',1,'INST',IARCHI,0,LINST,K8B)
              ZR(LINST) = ZR(JINST+I)
  200      CONTINUE

@@ -1,9 +1,9 @@
       SUBROUTINE GCOURO ( BASE, RESU, NOMA, NOMNO, COORN, LOBJ2, TRAV1,
      &                   TRAV2, TRAV3, DIR, NOMNOE, FOND, DIREC, STOK4 )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,6 +83,10 @@ C
       INTEGER      IARG
 C     ------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IAEXTR ,IAORIG ,IDESC ,IDIRI ,IDIRS ,IELSUP 
+      INTEGER ITANEX ,ITANOR ,J ,LNDIR ,NBEL 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL GETRES(K8B,K16B,NOMCMD)
       IF (NOMCMD .EQ. 'CALC_G')THEN

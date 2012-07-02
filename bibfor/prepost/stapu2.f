@@ -5,9 +5,9 @@
 
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -35,7 +35,7 @@ C IN  : NBLOC  : NB DE BLOCS POUR LE MOYENNAGE
 C IN  : INOE   : NUMERO DE NOEUD TRAITE
 C OUT : PUSURN : PUISSANCE D'USURE MOYENNEE
 C-----------------------------------------------------------------------
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER OCCURE(100)
       REAL*8 TEMPS(*),FCHO(*),VGLI(*),WK1(*),WK2(*),WK3(*),WK4(*),
      &       WK5(*),WK6(*),DLOC(*),ANG(*),COEF(*),TMPVU(*),
@@ -43,6 +43,12 @@ C-----------------------------------------------------------------------
      &       POURPU(*),PUS(*)
       REAL*8 ZERO,PUSEE
 C     REAL*8   TMPV(10)
+C-----------------------------------------------------------------------
+      INTEGER IBL ,IDEBUT ,IN ,INOE ,ISUPP ,J ,JDG 
+      INTEGER K ,NBINST ,NBLOC ,NBOBST ,NBPAIR ,NBPT ,NBVAL 
+      INTEGER NOCCUR ,NTOT 
+      REAL*8 PUSURN ,R8RDDG ,RAD 
+C-----------------------------------------------------------------------
       RAD = R8RDDG()
       ZERO = 0.D0
       PUSURN = 0.D0

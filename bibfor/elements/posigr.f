@@ -1,12 +1,12 @@
       SUBROUTINE POSIGR(NOMTE,EFGE,SIGM)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*) NOMTE
       REAL*8 SIGM(*)
       REAL*8 EFGE(12)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,6 +28,17 @@ C     POUR LES ELEMENTS DE POUTRE D'EULER ET DE TIMOSHENKO.
 C     ------------------------------------------------------------------
 
 C     ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER ITSEC ,LRCOU ,LSECR ,LSECT ,LSECT2 
+      REAL*8 A ,A2 ,ALFAY ,ALFAY2 ,ALFAZ ,ALFAZ2 ,AREDY 
+      REAL*8 AREDY2 ,AREDZ ,AREDZ2 ,DEUX ,HY1 ,HY2 ,HZ1 
+      REAL*8 HZ2 ,R1 ,R2 ,RT ,RT2 ,RY ,RY2 
+      REAL*8 RZ ,RZ2 ,SGNSN1 ,SGNSN2 ,SMF1 ,SMF2 ,SMFY1 
+      REAL*8 SMFY2 ,SMFZ1 ,SMFZ2 ,SN1 ,SN2 ,UN ,XFL 
+      REAL*8 XFLY ,XFLZ ,XIY ,XIY2 ,XIZ ,XIZ2 ,XJX 
+      REAL*8 XJX2 ,XSI ,XSIY ,XSIZ ,XXY ,XXZ ,ZERO 
+
+C-----------------------------------------------------------------------
       ZERO = 0.D0
       UN = 1.D0
       DEUX = 2.D0

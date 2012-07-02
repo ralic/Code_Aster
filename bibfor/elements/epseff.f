@@ -1,9 +1,9 @@
       SUBROUTINE EPSEFF(APPLIC,NB1,DEPL,BTILD,SGMTD,EPSI,WGT,
      &                                                        EFFINT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/10/96   AUTEUR SABHHLA A.LAULUSA 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -18,13 +18,16 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       CHARACTER*6 APPLIC
       INTEGER     NB1
       REAL*8      BTILD(5,*),DEPL(*),EPSI(*),SGMTD(*),EFFINB(42)
       REAL*8      WGT,EFFINT(*)
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,K ,NDDLE 
+C-----------------------------------------------------------------------
       NDDLE=5*NB1+2
       IF (APPLIC .EQ. 'DEFORM') THEN
 C

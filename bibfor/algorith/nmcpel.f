@@ -2,7 +2,7 @@
      &             COMPOR,CRIT,OPTION,EPS,SIG,VI,DSIDEP,CODRET)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/05/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,7 @@ C                      RAJOUT DE PARAMETRE DANS L'APPEL A NMELNL POUR
 C                      COHERENCE AVEC TE0096 ET OPTION='CALC_DG' EN 2D.
 C-----------------------------------------------------------------------
 C CORPS DU PROGRAMME
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 
 C DECLARATION PARAMETRES D'APPELS
       INTEGER            NDIM,IMATE,CODRET,KPG,KSP
@@ -72,6 +72,10 @@ C DECLARATION VARIABLES LOCALES
 
 
 C INITIALISATIONS POUR APPEL A NMELNL
+C-----------------------------------------------------------------------
+      INTEGER I 
+      REAL*8 R8BID 
+C-----------------------------------------------------------------------
       LPIPO = .FALSE.
       RPIPO = 0.D0
       T2PIPO(1) = 0.D0

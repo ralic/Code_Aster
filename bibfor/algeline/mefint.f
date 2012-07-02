@@ -1,6 +1,6 @@
       SUBROUTINE MEFINT(NBZ,NBGRP,NBMOD,NBNOE,NBDDL,IROT,NUMNOG,
      &                  NBNOG,ZINT,DEFM,PHIX,PHIY,Z,NUM)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
       INTEGER     NBZ,NBGRP,NBMOD,NBNOE,NBDDL
@@ -9,7 +9,7 @@ C
       REAL*8      PHIX(NBZ,NBGRP,NBMOD),PHIY(NBZ,NBGRP,NBMOD)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,6 +68,11 @@ C
 C
 C --- DETERMINATION DES COTES MAXIMALE ET MINIMALE DE L ENSEMBLE DES
 C --- CYLINDRES
+C-----------------------------------------------------------------------
+      INTEGER ICOMP ,IND ,IND1 ,IND2 ,K ,NM ,NN 
+      INTEGER NNO1 ,NNO2 
+      REAL*8 WMAX ,WMIN ,Z0 ,ZMAX ,ZMIN 
+C-----------------------------------------------------------------------
       ZMAX = ZINT(1,1)
       ZMIN = ZINT(1,1)
       DO 10 J = 2,NBNOG(1)

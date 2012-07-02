@@ -1,7 +1,7 @@
       SUBROUTINE EXTDIA(MATR,NUMDDL,ICODE,DIAG)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,6 +46,11 @@ C
 C
 C-----------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
+      INTEGER IDIA ,J ,JADIA ,JBLOC ,JSMDE ,JTYP ,K 
+      INTEGER L ,LMAT ,NBACTI ,NBBLOQ ,NBLAGR ,NBLIAI ,NEQ 
+
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL MTDSCR(MATR)
       CALL JEVEUO(MATR//'           .&INT','L',LMAT)

@@ -1,6 +1,6 @@
       SUBROUTINE IMBINT ( NOMRES, IFM )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C***********************************************************************
 C    P. RICHARD     DATE 21/02/1991
 C-----------------------------------------------------------------------
 C  BUT:  IMPRIMER LES RESULTATS RELATIFS A LA BASE MODALE
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C-----------------------------------------------------------------------
 C
@@ -34,6 +34,13 @@ C
 C
 C
       INCLUDE 'jeveux.h'
+C-----------------------------------------------------------------------
+      INTEGER I ,IBID ,IDAU ,IDCB ,IDDA ,IDHA ,IDMN 
+      INTEGER IFAU ,IFCB ,IFHA ,IFMN ,INO ,IPOIN ,IRET 
+      INTEGER ITYP ,J ,K ,LLACT ,LLDES ,LLDESC ,LLNCMP 
+      INTEGER LLNOE ,LLTYP ,NBCMP ,NBCPMX ,NBDEF ,NBEC ,NBINT 
+      INTEGER NBNO ,NBNOT ,NCOMP ,NUMGD 
+C-----------------------------------------------------------------------
       PARAMETER    (NBCPMX=300)
       CHARACTER*1  K1BID
       CHARACTER*8  NOMCOU,TYPCOU,NOMNOE,TYP,TYPBAS(3),NOMTYP

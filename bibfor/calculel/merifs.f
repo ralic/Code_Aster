@@ -1,6 +1,6 @@
       SUBROUTINE MERIFS(MODELE,NCHAR,LCHAR,MATE,CARA,EXITIM,TIME,MATEL,
      &                  NH)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER NCHAR,NH
       REAL*8 TIME
@@ -10,7 +10,7 @@
       LOGICAL EXITIM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,6 +47,9 @@ C     ------------------------------------------------------------------
       CHARACTER*19 CHVARC
       CHARACTER*24 LIGRMO,LIGRCH,LCHIN(15),LCHOUT(10)
       CHARACTER*24 CHGEOM,CHCARA(18),CHHARM
+C-----------------------------------------------------------------------
+      INTEGER IAREFE ,ICHA ,ICODE ,ILIRES ,IRET ,IRET1 
+C-----------------------------------------------------------------------
       DATA CHVARC /'&&MERIFS.CHVARC'/
 
       CALL JEMARQ()

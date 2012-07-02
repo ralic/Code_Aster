@@ -1,8 +1,8 @@
       SUBROUTINE CONCOM(MACOR,NBLIR,MACOC,NBLIC,NBNOCO,NOCOC)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/03/2007   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -32,7 +32,7 @@ C    NOCOC  : TABLEAU DE RANG DES NOEUDS    POUR UNE MAILLE FISSURE
 C
 C  MOT_CLEF : ORIE_FISSURE
 C
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 
 C     ------------------------------------------------------------------
 
@@ -42,6 +42,8 @@ C
 
 C     ------------------------------------------------------------------
 
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       NBNOCO = 0
       DO 20 INC = 1,NBLIC
          DO 10 INR =1,NBLIR

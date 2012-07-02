@@ -1,8 +1,8 @@
       SUBROUTINE REBDFR(FREQ,NFI,NFF,FREQI,FREQF,NMODI,NMODF,NBM,NPV)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,6 +48,10 @@ C
       INTEGER      NFI, NFF, NMODI, NMODF
       REAL*8       FREQI, FREQF, FREQ(2,NBM,NPV)
 C
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER I ,IND ,J ,NBM ,NPV 
+      REAL*8 FRQMAX ,FRQMIN ,FRQMMA ,R8MAEM 
 C-----------------------------------------------------------------------
       NMODI = 0
       NMODF = 0

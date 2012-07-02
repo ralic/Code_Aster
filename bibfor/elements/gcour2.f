@@ -1,10 +1,10 @@
       SUBROUTINE GCOUR2 ( RESU, NOMA, NOMO, NOMNO, COORN, NBNOEU, TRAV1,
      &          TRAV2,TRAV3,CHFOND,FOND,CONNEX,STOK4,THLAGR,THLAG2,NBRE,
      &          MILIEU,NDIMTE,PAIR)
-       IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,6 +85,11 @@ C
       LOGICAL           THLAGR,MILIEU,CONNEX,THLAG2,PAIR
       INTEGER      IARG
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,I1 ,IBID ,IDESC ,IDIRI ,IDIRS ,IELSUP 
+      INTEGER IENORM ,IREFE ,J ,JRESU ,K ,NBEL 
+      REAL*8 S0 ,S1 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
 
       CALL GETRES(K8B,K16B,NOMCMD)

@@ -1,6 +1,6 @@
       SUBROUTINE TE0485(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,7 @@ C ======================================================================
 C ======================================================================
 C ELEMENT SHB15
 C.......................................................................
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C          ELEMENT SHB
 C    FONCTION REALISEE:
@@ -32,6 +32,12 @@ C     ENTREES  ---> OPTION : OPTION DE CALCUL
 C              ---> NOMTE  : NOM DU TYPE ELEMENT
 C
       INCLUDE 'jeveux.h'
+C-----------------------------------------------------------------------
+      INTEGER I ,ICONT ,IDEPL ,IDFDE ,IGEOM ,IMATE ,IPOIDS 
+      INTEGER IRET ,IVF ,J ,JGANO ,LAG ,NBRES ,NBV 
+      INTEGER NDIM ,NNO ,NNOS ,NPG 
+      REAL*8 TEMPM ,YGOT 
+C-----------------------------------------------------------------------
       PARAMETER (NBRES=2)
       CHARACTER*4 FAMI
       INTEGER ICODRE(NBRES),KPG,SPT

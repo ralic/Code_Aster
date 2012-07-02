@@ -1,5 +1,5 @@
       SUBROUTINE FMPRHM(NBFONC,NBPTOT,SIGM,RPHMAX)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
       INTEGER           NBFONC,NBPTOT
@@ -7,7 +7,7 @@ C
       REAL*8                             RPHMAX
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,6 +34,9 @@ C
 C
 C ------- CALCUL DE LA PRESSION HYDROSTATIQUE MAXIMALE---
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IDE 
+C-----------------------------------------------------------------------
       RPHMAX=(SIGM(1)+SIGM(2)+SIGM(3))/3.D0
       DO 10 I=2,NBPTOT
         IDE = (I-1)*NBFONC

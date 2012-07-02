@@ -1,7 +1,7 @@
       SUBROUTINE IRDRCA (IFI,NBNO,DESC,NEC,DG,NCMPMX,VALE,NOMGD,
      +               NCMPGD,NOMSYM,NUMNOE,LRESU,NBCPUT,NCMPUT,
      +               NIVE )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
       INTEGER        IFI, NBNO, DESC(*), NEC, DG(*), NCMPMX,
@@ -12,7 +12,7 @@ C
       LOGICAL        LRESU
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,6 +58,12 @@ C     ------------------------------------------------------------------
 C
 C  --- INITIALISATIONS ----
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,IAD ,IADR ,IBI ,IBID ,IC ,ICM 
+      INTEGER ICMP ,IEC ,INNO ,INO ,INOM ,INUM ,IPOS 
+      INTEGER IRVAL ,IUN ,IVA ,IVAL ,IZERO ,JLAST ,LXLGUT 
+      INTEGER NCMP 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       BLANC  = '      '
       CALL WKVECT('&&IRDRCA.POS','V V I',NCMPMX,IPOS)

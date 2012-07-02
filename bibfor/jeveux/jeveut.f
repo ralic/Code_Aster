@@ -1,8 +1,8 @@
       SUBROUTINE JEVEUT ( NOMLU , CEL  , JCTAB )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,13 +24,16 @@ C IN  NOMLU  : NOM DE L'OBJET A ALLOUER
 C IN  CEL    : TYPE D'ACCES 'E' OU 'L'
 C OUT JCTAB  : ADRESSE DANS LE COMMUN DE REFERENCE ASSOCIE
 C ----------------------------------------------------------------------
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER                            JCTAB
       CHARACTER*(*)       NOMLU , CEL
 C     ------------------------------------------------------------------
       INTEGER          IPGC,KDESMA(2),LGD,LGDUTI,KPOSMA(2),LGP,LGPUTI
       COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
 C DEB ------------------------------------------------------------------
+C-----------------------------------------------------------------------
+      INTEGER IPGCEX 
+C-----------------------------------------------------------------------
       IPGCEX = IPGC
       IPGC   = -1
       CALL JEVEUO ( NOMLU , CEL  , JCTAB )

@@ -1,5 +1,5 @@
       SUBROUTINE TE0415(OPTIOZ,NOMTZ)
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*) OPTIOZ,NOMTZ
       CHARACTER*16 OPTION,NOMTE
@@ -26,6 +26,16 @@ C     CALCUL DES OPTIONS DES ELEMENTS DE COQUE 3D
 C     OPTIONS : EFGE_ELNO , VARI_ELNO
 C          -----------------------------------------------------------
 
+C-----------------------------------------------------------------------
+      INTEGER I ,I1 ,IC ,ICHG ,ICOMP ,ICOMPO ,II 
+      INTEGER INO ,INP ,INTE ,INTSN ,INTSR ,IRET ,ISOM 
+      INTEGER J ,J1 ,JCARA ,JCONN ,JEFFG ,JGEOM ,JJ 
+      INTEGER JVARI ,K ,K1 ,K2 ,KPGS ,L ,LGPG 
+      INTEGER LZI ,LZR ,NBCOU ,NBVARI ,NCMP ,NEP ,NP1 
+      INTEGER NP2 ,NP3 ,NP4 ,NPGE ,NPGT ,NPO ,NPP 
+      INTEGER NSO 
+      REAL*8 HIC ,S ,ZERO ,ZIC ,ZMIN 
+C-----------------------------------------------------------------------
       PARAMETER (NPGE=3)
       PARAMETER (NPGT=10)
       INTEGER JNUMC,ICOU,NORDO,JMAT,JNBSPI

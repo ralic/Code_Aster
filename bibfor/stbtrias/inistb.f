@@ -1,9 +1,9 @@
       SUBROUTINE INISTB(MAXNOD,NBTYMA,NOMAIL,INDIC,PERMUT,
      &                  LIMAIL,INDICF,PERMUF,MAXFA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF STBTRIAS  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF STBTRIAS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -18,7 +18,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C     ====================================================
 CA PRESUPER
 C
@@ -182,6 +182,8 @@ C     121                BARRE RIGIDE          2           LINEAIRE
 C     172                LINEIQUE              3           PARABOLIQUE
 C
 C --> DONNES POUR LA RENUMEROTATION LOCALE DES ELEMENTS
+C-----------------------------------------------------------------------
+C-----------------------------------------------------------------------
       DATA NBNOMA/6,9,4,8,12,6,12,18,8,16,24,4,10,6,15,24,8,20,0,0,0,0,
      &            0,0,0,0,0,0,0,0,0,0,3/
       DATA (PERMU2(I,3),I=1,6)/1,4,2,5,3,6/

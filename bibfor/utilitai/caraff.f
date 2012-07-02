@@ -6,7 +6,7 @@
       CHARACTER*(*)                         CARTZ
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,7 +25,8 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C BUT :
 C  - TRAITER L'OPTION 'AFFE' DE LA COMMANDE CREA_CHAMP
-C
+C    POUR LES CARTES ET LES CHAM_ELEM (SAUF POUR VARI_R)
+C  - CREER LA CARTE  (CARTZ)
 C-----------------------------------------------------------------------
       INTEGER       GD,IBID,IED,NOCC,NCMPMX,NBTOU,N1,VALI(2)
       INTEGER       IAD,JNCMP,JVALV,JMAIL,NBCMP,K,IOCC,NBMAIL,NBVAR
@@ -74,7 +75,7 @@ C
    10    CONTINUE
          CALL NOCART( CARTE, 1, ' ', 'NOM', 0, ' ', 0, ' ', NBCMP )
       END IF
-C
+
 C     2- BOUCLE SUR LES OCCURENCES DU MOT CLE AFFE
 C     --------------------------------------------
       DO 30 IOCC = 1,NOCC

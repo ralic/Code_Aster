@@ -1,6 +1,6 @@
       SUBROUTINE TE0086 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
@@ -36,6 +36,13 @@ C
       INTEGER          IDIM
 C
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,ICONT ,IDEPL ,IDFDE ,IGAU ,IGEOM ,IMATE 
+      INTEGER INO ,IPOIDS ,ISIG ,IVF ,J ,JGANO ,NBSIG 
+      INTEGER NBSIG1 ,NBSIG2 ,NBSIGM ,NDIM ,NNO ,NNOS ,NPG 
+
+      REAL*8 ZERO 
+C-----------------------------------------------------------------------
       IF ( OPTION(6:9) .EQ.'ELNO' ) THEN
         FAMI='GANO'
       ELSE

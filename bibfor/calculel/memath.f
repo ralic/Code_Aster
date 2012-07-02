@@ -1,7 +1,7 @@
       SUBROUTINE MEMATH(OPTION,MODELE,MATE,CARA,TIME,MATEL)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -59,6 +59,9 @@ C     ------------------
 
 C     -- ON VERIFIE LA PRESENCE PARFOIS NECESSAIRE DE CARA_ELEM
 C        ET CHAM_MATER :
+C-----------------------------------------------------------------------
+      INTEGER ILIRES ,IRET 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       IF (MODELE(1:1).EQ.' ') THEN
         CALL U2MESS('F','CALCULEL3_50')

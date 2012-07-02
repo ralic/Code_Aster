@@ -1,11 +1,11 @@
       SUBROUTINE NUMDDL(NU,BASE,NBMAT,TLIMAT,METHOD)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 20/12/2010   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C TOLE CRS_1404
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,6 +47,9 @@ C----------------------------------------------------------------------
       CHARACTER*24 TLIMA2(NBMAT)
 C
 C------RECUPERATION DU NIVEAU D'IMPRESSION
+C-----------------------------------------------------------------------
+      INTEGER I ,IFM ,NIV 
+C-----------------------------------------------------------------------
       CALL INFNIV(IFM,NIV)
 
       NUPGM = NU

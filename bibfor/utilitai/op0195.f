@@ -1,7 +1,7 @@
       SUBROUTINE OP0195()
       IMPLICIT  NONE
 C     -----------------------------------------------------------------
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,7 +29,7 @@ C     -----------------------------------------------------------------
       CHARACTER*8 KBID,MO,MA,CHOU,NOMGD,NOMGD2,NOMPAR,MA2,NOPAR2,TA
       CHARACTER*8 TSCA,NOGD
       CHARACTER*16 TYCHR1,OPERA,OPTIO2,TYPCO,OPTION
-      CHARACTER*19 LIGREL,CARTEM,CELMOD,PRCHN1,CNS1,CH1,PRCHN2,CHIN
+      CHARACTER*19 LIGREL,CHATMP,CELMOD,PRCHN1,CNS1,CH1,PRCHN2,CHIN
       CHARACTER*8 NU1
 C     -----------------------------------------------------------------
       LOGICAL DBG
@@ -177,10 +177,16 @@ C     -----------------------------------------
           CALL CARAFF(MA,NOMGD,'G',CHOU)
 
         ELSEIF (TYCHR(1:2).EQ.'EL') THEN
-          CARTEM = '&&OP0195.CARTEM'
-          CALL CARAFF(MA,NOMGD,'V',CARTEM)
-          CALL CHPCHD(CARTEM,TYCHR,CELMOD,PROL0,'G',CHOU)
-          CALL DETRSD('CHAMP_GD',CARTEM)
+          CHATMP = '&&OP0195.CHATMP'
+          IF (NOMGD.EQ.'VARI_R') THEN
+            CALL VARAFF(MA,NOMGD,'V',CHATMP)
+            CALL CHPCHD(CHATMP,TYCHR,CELMOD,PROL0,'G',CHOU)
+            CALL DETRSD('CHAM_ELEM_S',CHATMP)
+          ELSE
+            CALL CARAFF(MA,NOMGD,'V',CHATMP)
+            CALL CHPCHD(CHATMP,TYCHR,CELMOD,PROL0,'G',CHOU)
+            CALL DETRSD('CARTE',CHATMP)
+          ENDIF
         ENDIF
 
 

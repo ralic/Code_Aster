@@ -1,6 +1,6 @@
       SUBROUTINE RSINCH(NOMSD,NOMCH,ACCES,RVAL,CHEXTR,PROLDR,PROLGA,
      &                  ISTOP,BASE,IER)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER           ISTOP,IER
       REAL*8                              RVAL
@@ -8,7 +8,7 @@
       CHARACTER*(*)           BASE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,6 +68,12 @@ C ----------------------------------------------------------------------
       CHARACTER*24 VALK(3)
 C
 C
+C-----------------------------------------------------------------------
+      INTEGER I ,I1 ,I2 ,IACCES ,IALEXI ,IAOBJ ,IATACH 
+      INTEGER IATAVA ,IBID ,IDEBU ,IER1 ,IER2 ,IERR1 ,IERR2 
+      INTEGER ILOTY ,IMAXI ,INOMCH ,IP1 ,IP2 ,IPOSIT ,NBORD2 
+      INTEGER NBORDR 
+C-----------------------------------------------------------------------
       CALL JEMARQ()
       ACCE2 = ACCES
       NOMS2 = NOMSD

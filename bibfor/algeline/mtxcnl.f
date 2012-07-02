@@ -1,5 +1,5 @@
       SUBROUTINE MTXCNL(CUMUL,TYPCST,CONST,TYPMAT,LMAT,TYPRES,LRES,NEQ)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER                                     LMAT,       LRES
       CHARACTER*(*)     CUMUL, TYPCST
@@ -7,7 +7,7 @@
       REAL*8                         CONST(2)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,6 +36,9 @@ C
       REAL*8      UN,ZERO,RCUM
       COMPLEX*16 CUN,C8CST
 C
+C-----------------------------------------------------------------------
+      INTEGER IVAL ,NEQ 
+C-----------------------------------------------------------------------
       ZERO= 0.D0
       UN  = 1.D0
       CUN = DCMPLX(UN,0.D0)
