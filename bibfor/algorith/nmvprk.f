@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/06/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 09/07/2012   AUTEUR PROIX J-M.PROIX 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -195,7 +195,7 @@ C --  CALCUL DES CONTRAINTES
       ENDIF
       
       CALL LCDPEQ (VIND, VINF,COMP,NBCOMM,CPMONO,NMAT,NVI,SIGF,
-     &                DETOT,EPSD,MATERF)
+     &                DETOT,EPSD,MATERF,PGL)
      
  9000 CONTINUE
 

@@ -1,7 +1,7 @@
       SUBROUTINE ME2MME(MODELZ,NCHAR,LCHAR,MATE,CARAZ,EXITIM,TIME,
      &                  MATELZ,NH,BASEZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -86,8 +86,8 @@ C     ------------------
       CHARACTER*2 CODRET
       INTEGER NBIN
 C-----------------------------------------------------------------------
-      INTEGER IBID ,ICHA ,IER ,IERD ,IFLA ,ILIRES ,IRET 
-      INTEGER J ,JVEASS ,NH 
+      INTEGER IBID ,ICHA ,IER ,IERD ,IFLA ,ILIRES ,IRET
+      INTEGER J ,JVEASS ,NH
 C-----------------------------------------------------------------------
       PARAMETER (NBIN=43)
       CHARACTER*8 LPAIN(NBIN),LPAOUT(1),NOMA,EXIELE
@@ -192,7 +192,7 @@ C  ---  CAS DU MODELE X-FEM-----------
         FISSNO = '&&ME2MME.FISSNO.BID'
         PINTER = '&&ME2MME.PINTER.BID'
       ENDIF
-      
+
       IF (IER.NE.0) THEN
         LPAIN(33) = 'PPINTTO'
         LCHIN(33) = PINTTO
@@ -616,9 +616,9 @@ C CHARGE DE TYPE EVOL_CHAR
           IF (IRET.NE.0) THEN
             ILIRES = ILIRES + 1
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
-            CALL REAJRE(MATEL,LCHOUT(1),BASE)
             CALL COPISD('CHAMP_GD',BASE,RESUFV(I),LCHOUT(1))
             CALL DETRSD('CHAMP_GD',RESUFV(I))
+            CALL REAJRE(MATEL,LCHOUT(1),BASE)
           END IF
  200    CONTINUE
 

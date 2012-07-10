@@ -19,7 +19,7 @@
       COMMON/POLYCR/IRR,DECIRR,NBSYST,DECAL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/06/2012   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 09/07/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -107,6 +107,11 @@ C initialisation des arguments en sortie
          RHOM(IR)=VIND(DECAL+3*(IR-1)+1)
          RHOP(IR)=RHOM(IR)+DY(IR)
  55   CONTINUE
+   
+      IF (RHOP(IS).LT.RMIN) THEN
+         IRET=1
+         GOTO 9999
+      ENDIF
       
 C     on resout en alpha=rho
 
@@ -128,7 +133,7 @@ C rho tot represente rho_f (foret)
          GOTO 9999
       ENDIF
       IF (IRR.GT.0) THEN
-         RHOIRR=VIND(DECIRR+NBSYST+IS)
+         RHOIRR=VIND(DECIRR+IS)
          RHOTOT=RHOTOT+RHOIRR
       ENDIF
 

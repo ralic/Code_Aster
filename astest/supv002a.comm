@@ -1,6 +1,6 @@
-# MODIF  DATE 25/06/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 09/07/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST DES MESSAGES - INTERNATIONALISATION
-# supv002a.para = tps_job 180 mem_job 128Mo ncpus 1 liste_test R
+# supv002a.para = tps_job 180 mem_job 385Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,7 +64,7 @@ errors = checker.get_errors() + """\nNumber of errors : %d""" % nberr
 # Permet d'afficher la liste des nouveaux mots interdits ajoutes.
 previous_errors = set([
     'ALCHML', 'ALITMI', 'AMDBAR', 'AMUMPS.F', 'ASCSEP', 'AU-YANG',
-    'AXI', 'BiCG', 'CHABOCHE', 'CHARAC', 'CHARACTER', 'CHNO', 'CHNO.NUEQ', 'CHOUT', 'CHPVER',
+    'BiCG', 'CHABOCHE', 'CHARAC', 'CHARACTER', 'CHNO', 'CHNO.NUEQ', 'CHOUT', 'CHPVER',
     'CINX', 'CINx', 'CLAV', 'CLO', 'COMBU', 'CVRC', 'D-POUTRE', 'DAMAX', 'DEEQ', 'DELG',
     'DEP', 'DEPSEQ', 'DEPSI', 'DEPSIMAX', 'DEUXMU', 'DISMOI', 'DLAHQR', 'DOMM', 'DPMAT',
     'DPMAX', 'DPSIDS', 'DRMAX', 'DSIGM', 'DTREVC', 'DVP', 'ECLAU', 'EDITGD', 'EFNEMA',
@@ -75,28 +75,28 @@ previous_errors = set([
     'IM', 'INFOG', 'JECROC', 'JENONU', 'JENUNO', 'JEXNOM', 'JEXNUM', 'JM', 'JUVECA', 'K.PHI',
     'K.U', 'KMOD', 'KSIB', 'KTILDA', 'Kcam', "L'elrefe", 'LCDPPA', 'LIBRARY', 'LIGREL',
     'LIGRELs', 'LMAT', 'LONCUM', 'LONT', 'LTNT', 'MOLOC', 'Map', 'NBCMP', 'NBCYCL', 'NBDDL',
-    'NBMECA', 'NBNOCO', 'NBNOEUD', 'NBPOIN', 'NBRUP', 'NBSIGM', 'NDDL', 'NDS',
+    'NBMECA', 'NBNOEUD', 'NBPOIN', 'NBRUP', 'NBSIGM', 'NDDL', 'NDS',
     'NEMA', 'NEQ', 'NEQUA', 'NMCOMP', 'NMCONV', 'NMHUJ', 'NMVPIR', 'NMXINS', 'NNOE', 'NOCART',
     'NOCP', 'NODE', 'NOMLI', 'NOSOLVE', 'NPQ', 'NSEUIL', 'NUEQ', 'NUME.LILI', 'NUMER',
     'NUMERO.F', 'NUMERO.f', 'NUTIOC', 'NV', 'NVI', 'NVIMAX', 'NaN', 'OMEGA', 'OPENDR',
-    'OUT-OF-CORE', 'PARAMETER', 'PATH', 'PERMEA', 'PFACY', 'PHYSICAL', 'PMAX', 'POLYNOME',
+    'PARAMETER', 'PATH', 'PERMEA', 'PFACY', 'PHYSICAL', 'PMAX', 'POLYNOME',
     'POSTK', 'PREML', 'PRNO', 'Ptrac', 'RAPH', 'RCVALA', 'READDR', 'RESUEL', 'RINF', 'RM-EP',
     'ROMBOUT', 'ROOT', 'RREUR', 'RSEXCH', 'RSUP', 'SCHUR', 'SECHM', 'SECHP', 'SIF', 'SIGMMO',
     'SOCIE', 'SOLVE', 'SPD', 'SQRT', 'SSP', 'STOGI', 'SV', 'Scalar', 'TBLIVA', 'TGU', 'TGV',
-    'TRIA-QUAD', 'TYPB', 'TYPEKE', 'TYPL', 'TYPVF', 'Tmax', 'UMC', 'UMOY', 'UNILATER',
+    'TRIA-QUAD', 'TYPB', 'TYPEKE', 'TYPL', 'TYPVF', 'Tmax', 'UMC', 'UMOY',
     'USASTE.F', 'UTTCPU', 'VALF', 'VCINE', 'VITG', 'VPSTOR', 'WORKD', 'WRITDR', 'XMIN',
-    'XOUS', 'YM', 'ZEDGAR', 'abs', 'acearp', 'alchml', 'alfint', 'apetsc.F',
+    'XOUS', 'YM', 'ZEDGAR', 'acearp', 'alchml', 'alfint', 'apetsc.F',
     'autor', 'breakdown', 'cabl', 'cagnba', 'cata', 'chckma', 'chno', 'chvari', 'clcplq.f',
     'coefal', 'coefam', 'coefra', 'coefrl', 'cuon', 'cupn', 'cvon', 'cvpn', "d'ACIER",
     'deltat', 'dfdi', 'eO', 'efferm', 'effoco', 'efouvr', 'elem', 'elrefa', 'elrefe', 'ep',
     'er', 'error', 'etanca', 'etenca', 'exchml.f', 'exe', 'export',
     'flag', 'floating', 'fointa', 'fonree', 'gl', 'grels', 'hexa',
-    'i.e', 'icoret', 'indn', 'inpsco', 'ipos', 'kapa', 'kr', "l'AXE", "l'EVOL", 'lg',
+    'i.e', 'icoret', 'indn', 'ipos', 'kapa', 'kr', "l'AXE", "l'EVOL", 'lg',
     'ligrel', 'lkcaln', 'lkdhds', 'lkds', 'lklmat', 'lmat', 'longt', 'lumpe', 'majpad',
-    'materiau.nomrc', 'matns', 'mdump', 'medconforme', 'medimport', 'mem', 'memjeveux',
+    'materiau.nomrc', 'mdump', 'medconforme', 'medimport', 'mem', 'memjeveux',
     'modelisation', 'nadm', 'nbmmai', 'nbmmax', 'nbtyp', 'ncmp', 'nmaxcmp', 'nmaxocl',
-    'nmocl', 'nomres', 'nomta', 'nomte', 'nomtyp', 'nosimp', 'not', 'nt', 'number', 'nume',
-    'numeli', 'overflow', 'phenomene', 'pnosym', 'post', 'pr', 'precont',
+    'nmocl', 'nomres', 'nomta', 'nomte', 'nomtyp', 'not', 'nt', 'number', 'nume',
+    'numeli', 'overflow', 'phenomene', 'pnosym', 'post', 'precont',
     'raymin', 'rayon-raymin', 'rcmaco', 'relcom',
     'resuelem', 'resultat', 'rhocp', 'rof', 'rsexch', 'runSalomeScript', 'sch', 'sd',
     'skin.pos', 'svp', 'tbliva', 'texxxx.f', 'tmax', 'tmin', 'typelem', 'typesd',

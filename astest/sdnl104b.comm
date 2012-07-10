@@ -1,9 +1,9 @@
-# MODIF  DATE 03/10/2011   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE CHOC D UNE POUTRE SUR UN APPUI : SOUS-STRUCTURATION
 # sdnl104b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -261,7 +261,7 @@ TRAN_GE1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                              SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                              MATR_MASS=M_PROJ,
                              MATR_RIGI=K_PROJ,
-                                EXCIT=_F(VECT_ASSE = F_PROJ,
+                                EXCIT=_F(VECT_ASSE_GENE = F_PROJ,
                                        COEF_MULT = 1.),
                             INCREMENT=_F(  INST_INIT = 0.,
                                         INST_FIN = 1.,
@@ -282,7 +282,7 @@ TRAN_GE2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                              SCHEMA_TEMPS=_F(SCHEMA='DEVOGE',),
                              MATR_MASS=M_PROJ,
                              MATR_RIGI=K_PROJ,
-                                EXCIT=_F(VECT_ASSE = F_PROJ,
+                                EXCIT=_F(VECT_ASSE_GENE = F_PROJ,
                                        COEF_MULT = 1.),
                             INCREMENT=_F(  INST_INIT = 0.,
                                         INST_FIN = 1.,
@@ -302,7 +302,7 @@ TRAN_GE3=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                              SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
                              MATR_MASS=M_PROJ,
                              MATR_RIGI=K_PROJ,
-                             EXCIT=_F(VECT_ASSE = F_PROJ,
+                             EXCIT=_F(VECT_ASSE_GENE = F_PROJ,
                                        COEF_MULT = 1.),
                             INCREMENT=_F(  INST_INIT = 0.,
                                         INST_FIN = 1.,

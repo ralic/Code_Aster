@@ -1,4 +1,4 @@
-# MODIF  DATE 23/04/2012   AUTEUR ALARCON A.ALARCON 
+# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE LACHER D'UNE MASSE AVEC DISPOSITIF ANTI SISMIQUE
 # sdnd120a.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -28,9 +28,9 @@ MAILLAGE=DEFI_GROUP(reuse=MAILLAGE,
                     MAILLAGE=MAILLAGE,
                     CREA_GROUP_NO=_F( NOM='GN2',
                                       NOEUD=('NO2',),),)
-                                      
+
 MAILLAGE=DEFI_GROUP(reuse=MAILLAGE,
-                    MAILLAGE=MAILLAGE,                                     
+                    MAILLAGE=MAILLAGE,
                     CREA_GROUP_NO=_F( NOM='GN12',
                                       NOEUD=('NO12',),),)
 
@@ -170,17 +170,17 @@ PROJ_BASE(BASE=MODE_MEC,
 # -------------------------------------------
 TRAN_GE1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                     MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
-                    SCHEMA_TEMPS=_F(SCHEMA='EULER',),                
+                    SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                     INCREMENT=_F( INST_INIT = 0.,  INST_FIN = 1.,  PAS = 1.25E-5),
                     MODE_STAT=MODE_STA,
                     EXCIT=(
-                _F( VECT_ASSE = VECT_X1,
+                _F( VECT_ASSE_GENE = VECT_X1,
                        MULT_APPUI = 'OUI',
                        DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO1',
 ###                       MODE_STAT=MODE_STA,
                        ACCE = ACCELER1,
                        VITE = VITESSE1,  DEPL = DEPLACE1),
-                _F( VECT_ASSE = VECT_X2,  ACCE = ACCELER2,
+                _F( VECT_ASSE_GENE = VECT_X2,  ACCE = ACCELER2,
                        MULT_APPUI = 'OUI',
 ###                       MODE_STAT=MODE_STA,
                        DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO11',
@@ -199,17 +199,17 @@ TRAN_GE1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
 
 TRAN_GE2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                     MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
-                    SCHEMA_TEMPS=_F(SCHEMA='EULER',),                
+                    SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                     INCREMENT=_F( INST_INIT = 0.,  INST_FIN = 1.,  PAS = 1.25E-5),
                     MODE_STAT=MODE_STA,
                     EXCIT=(
-                _F( VECT_ASSE = VECT_X1,
+                _F( VECT_ASSE_GENE = VECT_X1,
                        MULT_APPUI = 'OUI',
                        DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO1',
 ###                       MODE_STAT=MODE_STA,
                        ACCE = ACCELER1,
                        VITE = VITESSE1,  DEPL = DEPLACE1),
-                _F( VECT_ASSE = VECT_X2,  ACCE = ACCELER2,
+                _F( VECT_ASSE_GENE = VECT_X2,  ACCE = ACCELER2,
                        MULT_APPUI = 'OUI',
 ###                       MODE_STAT=MODE_STA,
                        DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO11',
@@ -271,7 +271,7 @@ TEST_TABLE( TABLE=MAX_N2A2,FILTRE=(
             _F( NOM_PARA = 'TYPE',  VALE_K = 'MAXI')),
              NOM_PARA='DEPL',
               PRECISION=0.01,
-             VALE=1.67E-2 )             
+             VALE=1.67E-2 )
 
 TEST_TABLE( TABLE=RMS_N2A1,FILTRE=(
             _F( NOM_PARA = 'FONCTION', VALE_K = 'N2_DXA1'),

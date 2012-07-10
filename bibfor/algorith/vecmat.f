@@ -4,7 +4,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 09/07/2012   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -287,6 +287,9 @@ C
      &                  NOMC(7),  MATERF(4,2),  CERR(7), 2)
 
       ENDIF
+C     NOMBRE DE COEF MATERIAU
+      MATERD(NMAT,2)=9
+      MATERF(NMAT,2)=9
 
 C
 C
@@ -307,5 +310,5 @@ C
  40     CONTINUE
       ENDIF
 C
- 9999   CONTINUE
-        END
+ 9999 CONTINUE
+      END

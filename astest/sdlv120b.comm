@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE ABSORPTION D UNE ONDE DE COMPRESSION DANS UN BARREAU ELASTIQUE
 # sdlv120b.para = tps_job 980 mem_job 300Mo ncpus 1 liste_test L
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -6,22 +6,22 @@
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # CAS_TEST__: SDLV120B
 #
 # PROPAGATION D'UNE ONDE DE COMPRESSION DANS UN BARREAU
-# ELASTIQUE INFINI - ABSORPTION DE L'ONDE A LA FRONTIERE DU MAILLAGE 
+# ELASTIQUE INFINI - ABSORPTION DE L'ONDE A LA FRONTIERE DU MAILLAGE
 # ELEMENTS FINIS
 # CAS 2D
 #=======================================================================
@@ -71,12 +71,12 @@ MASS_ELE=CALC_MATR_ELEM(    MODELE=MODELE,
                               CHAM_MATER=CHAMPMAT,
                               CHARGE=COND_LIM
                             )
-                            
+
 AMOR_ELE=CALC_MATR_ELEM(    MODELE=MODELE,
                               OPTION='AMOR_MECA',
                               CHAM_MATER=CHAMPMAT,
                               RIGI_MECA = RIGI_ELE,
-                              MASS_MECA = MASS_ELE,                              
+                              MASS_MECA = MASS_ELE,
                               CHARGE=COND_LIM
                             )
 
@@ -95,7 +95,7 @@ RIGIDITE=ASSE_MATRICE(    MATR_ELEM=RIGI_ELE,
 MASSE=ASSE_MATRICE(    MATR_ELEM=MASS_ELE,
                          NUME_DDL=NUMEDDL
                        )
-                       
+
 AMORT=ASSE_MATRICE(    MATR_ELEM=AMOR_ELE,
                          NUME_DDL=NUMEDDL
                        )
@@ -117,10 +117,8 @@ DYN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                        MATR_AMOR=AMORT,
                        EXCIT=_F(  VECT_ASSE = VECTASS,
                                   FONC_MULT = FONC),
-####CDURAND            ETAT_INIT=_F(  INST_INIT = 0.),
                        INCREMENT=_F( LIST_INST = TEMPLI),
-####CDURAND            ARCHIVAGE=_F(  LIST_INST = INTLI),
-                       SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),  
+                       SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                         )
 
 DXN3=RECU_FONCTION(    LIST_INST=TEMPLI,   PRECISION=1.E-4,
@@ -141,41 +139,41 @@ DXN14=RECU_FONCTION(    LIST_INST=TEMPLI,   PRECISION=1.E-4,
                         NOM_CMP='DX'
                       )
 
-TEST_FONCTION(VALEUR=(   _F( 
+TEST_FONCTION(VALEUR=(   _F(
                    FONCTION = DXN32,
                    VALE_PARA = 5.09500E-01,
                    VALE_REFE = 9.99536E-04,
                    CRITERE = 'RELATIF',
-                   PRECISION = 1.E-3, 
+                   PRECISION = 1.E-3,
                    REFERENCE = 'NON_REGRESSION'),
-                  _F( 
+                  _F(
                    FONCTION = DXN32,
                    VALE_PARA = 1.20000E+00,
                    VALE_REFE = 0.E0,
                    CRITERE = 'ABSOLU',
-                   PRECISION = 1.E-9, 
+                   PRECISION = 1.E-9,
                    REFERENCE = 'ANALYTIQUE'))
                 )
 
-TEST_FONCTION(VALEUR=(   _F( 
+TEST_FONCTION(VALEUR=(   _F(
                    FONCTION = DXN3,
                    VALE_PARA = 5.00000E-01,
                    VALE_REFE = 1.00000E-03,
                    CRITERE = 'RELATIF',
-                   PRECISION = 1.E-3, 
+                   PRECISION = 1.E-3,
                    REFERENCE = 'ANALYTIQUE'),
-                  _F( 
+                  _F(
                    FONCTION = DXN14,
                    VALE_PARA = 5.09500E-01,
                    VALE_REFE = 9.99536E-04,
                    CRITERE = 'RELATIF',
-                   PRECISION = 1.E-3, 
+                   PRECISION = 1.E-3,
                    REFERENCE = 'NON_REGRESSION'))
                 )
 
 TEMLI=DEFI_LIST_REEL(DEBUT=0., INTERVALLE=_F( JUSQU_A = 1.2, NOMBRE = 2400))
 
-TEMLI2=DEFI_LIST_REEL(DEBUT=0.0005, 
+TEMLI2=DEFI_LIST_REEL(DEBUT=0.0005,
                        INTERVALLE=_F( JUSQU_A = 1.2, NOMBRE = 2399))
 
 INLI=DEFI_LIST_ENTI( DEBUT=1, INTERVALLE=_F( JUSQU_A = 2401, PAS = 1))
@@ -214,35 +212,35 @@ DXNA14=RECU_FONCTION(    LIST_INST=TEMLI2,   PRECISION=1.E-4,
                         NOM_CMP='DX'
                       )
 
-TEST_FONCTION(VALEUR=(   _F( 
+TEST_FONCTION(VALEUR=(   _F(
                    FONCTION = DXNA32,
                    VALE_PARA = 5.09500E-01,
                    VALE_REFE = 9.99867E-04,
                    CRITERE = 'RELATIF',
-                   PRECISION = 1.E-3, 
+                   PRECISION = 1.E-3,
                    REFERENCE = 'NON_REGRESSION'),
-                  _F( 
+                  _F(
                    FONCTION = DXNA32,
                    VALE_PARA = 1.20000E+00,
                    VALE_REFE = 0.E0,
                    CRITERE = 'ABSOLU',
-                   PRECISION = 1.E-8, 
+                   PRECISION = 1.E-8,
                    REFERENCE = 'ANALYTIQUE'))
                 )
 
-TEST_FONCTION(VALEUR=(   _F( 
+TEST_FONCTION(VALEUR=(   _F(
                    FONCTION = DXNA3,
                    VALE_PARA = 5.00000E-01,
                    VALE_REFE = 1.00000E-03,
                    CRITERE = 'RELATIF',
-                   PRECISION = 1.E-3, 
+                   PRECISION = 1.E-3,
                    REFERENCE = 'ANALYTIQUE'),
-                  _F( 
+                  _F(
                    FONCTION = DXNA14,
                    VALE_PARA = 5.09500E-01,
                    VALE_REFE = 9.99867E-04,
                    CRITERE = 'RELATIF',
-                   PRECISION = 1.E-3, 
+                   PRECISION = 1.E-3,
                    REFERENCE = 'NON_REGRESSION'))
                 )
 

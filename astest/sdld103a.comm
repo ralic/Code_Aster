@@ -1,4 +1,4 @@
-# MODIF  DATE 23/04/2012   AUTEUR ALARCON A.ALARCON 
+# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE SYSTEME MASSES-RESSORTS LINEAIRE MULTI-SUPPORTE (TRANSLATION)
 # sdld103a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -52,7 +52,7 @@ CARA_ELE=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=(
                           VALE = (10000., 0., 10000., )),
                 _F(  CARA = 'M_T_L',  REPERE = 'GLOBAL',
                           GROUP_MA = 'RESSORT',
-                          VALE = (0., 0., 0., 0., 0., 0., 0., 0., 0., 
+                          VALE = (0., 0., 0., 0., 0., 0., 0., 0., 0.,
                           0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., )),
                         _F(  CARA = 'M_T_D_N',  GROUP_NO = 'MASSES',  VALE = 10.))
                          )
@@ -92,7 +92,7 @@ MODE_STA=MODE_STATIQUE(  MATR_RIGI=RIGIDITE,   MATR_MASS=MASSE,
 L_INST=DEFI_LIST_REEL(  DEBUT=0.,
                         INTERVALLE=_F(  JUSQU_A = 1., PAS = 0.0001) )
 
- 
+
 #
 # DEFINITION DES PAS DE CALCUL AVEC UNE LISTE D'INSTANTS
 # (ceci n'est pas la forme canonique de definir la liste d'instants
@@ -206,7 +206,7 @@ TRAN_PHY=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                      ARCHIVAGE=_F(  PAS_ARCH = 100, CHAM_EXCLU=('VITE','ACCE',),),
                      INCREMENT=_F(  LIST_INST=L_INST2,),
                     )
-                    
+
 #
 # CALCUL TRANSITOIRE PAR SUPERPOSITION MODALE
 # -------------------------------------------
@@ -215,11 +215,11 @@ TRAN_GEE=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                  SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                  MODE_STAT=MODE_STA,
                  EXCIT=(
-                _F( VECT_ASSE = VECT_X1,  ACCE = ACCELER1,
+                _F( VECT_ASSE_GENE = VECT_X1,  ACCE = ACCELER1,
                         MULT_APPUI = 'OUI',
                         DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO1',
                         VITE = VITESSE1, DEPL = DEPLACE1),
-                _F( VECT_ASSE = VECT_X2,  ACCE = ACCELER2,
+                _F( VECT_ASSE_GENE = VECT_X2,  ACCE = ACCELER2,
                         MULT_APPUI = 'OUI',
                         DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO5',
                         VITE = VITESSE2, DEPL = DEPLACE2)),
@@ -234,11 +234,11 @@ TRAN_GED=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                  SCHEMA_TEMPS=_F(SCHEMA='DEVOGE',),
                  MODE_STAT=MODE_STA,
                  EXCIT=(
-                _F( VECT_ASSE = VECT_X1,  ACCE = ACCELER1,
+                _F( VECT_ASSE_GENE = VECT_X1,  ACCE = ACCELER1,
                         MULT_APPUI = 'OUI',
                         DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO1',
                         VITE = VITESSE1, DEPL = DEPLACE1),
-                _F( VECT_ASSE = VECT_X2,  ACCE = ACCELER2,
+                _F( VECT_ASSE_GENE = VECT_X2,  ACCE = ACCELER2,
                         MULT_APPUI = 'OUI',
                         DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO5',
                         VITE = VITESSE2, DEPL = DEPLACE2)),
@@ -252,11 +252,11 @@ TRAN_GEA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                 SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
                 MODE_STAT=MODE_STA,
                 EXCIT=(
-                _F( VECT_ASSE = VECT_X1,  ACCE = ACCELER1,
+                _F( VECT_ASSE_GENE = VECT_X1,  ACCE = ACCELER1,
                         MULT_APPUI = 'OUI',
                         DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO1',
                         VITE = VITESSE1, DEPL = DEPLACE1),
-                _F( VECT_ASSE = VECT_X2,  ACCE = ACCELER2,
+                _F( VECT_ASSE_GENE = VECT_X2,  ACCE = ACCELER2,
                         MULT_APPUI = 'OUI',
                         DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO5',
                         VITE = VITESSE2, DEPL = DEPLACE2)),

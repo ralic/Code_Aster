@@ -10,7 +10,7 @@
       CHARACTER*8   ELP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/06/2012   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 09/07/2012   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,15 +83,33 @@ C     (VOIR CRS 1404)
 
       AXI = LTEATT(' ','AXIS','OUI')
 
-      IF (NDIME .EQ. 3) THEN
-         TYPMA='TETRA4'
-         PTMAX=4
-      ELSEIF (NDIME.EQ.2) THEN
-         TYPMA='TRIA3'
-         PTMAX=2
-      ELSEIF (NDIME.EQ.1) THEN
-         TYPMA='SEG2'
-         PTMAX=1
+      IF (NDIM.EQ.3) THEN
+
+        IF (NDIME .EQ. 3) THEN
+          TYPMA='TETRA4'
+          PTMAX=4
+        ELSEIF (NDIME.EQ.2) THEN
+          TYPMA='TRIA3'
+          PTMAX=3
+        ELSEIF (NDIME.EQ.1) THEN
+          TYPMA='SEG2'
+          PTMAX=2
+        ENDIF
+
+      ELSEIF (NDIM.EQ.2) THEN
+
+        IF (NDIME.EQ.2) THEN
+          TYPMA='TRIA3'
+          PTMAX=2
+        ELSEIF (NDIME.EQ.1) THEN
+          TYPMA='SEG2'
+          PTMAX=2
+        ENDIF
+
+      ELSEIF (NDIM.EQ.1) THEN
+
+        CALL ASSERT(.FALSE.)
+
       ENDIF
 
 C     VECTEUR REEL A ZXAIN COMPOSANTES, POUR CHAQUE PT D'INTER :

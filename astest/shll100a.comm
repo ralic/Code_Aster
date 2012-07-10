@@ -1,9 +1,9 @@
-# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE  REPONSE HARMONIQUE D'UNE BARRE PAR SOUS-STRUCTURATION DYNAMIQUE
 # shll100a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -183,7 +183,7 @@ DYNPROD=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
                             SOLVEUR=_F( METHODE='LDLT', ),
                             FREQ=FD,
                             TOUT_CHAM='OUI',
-                            EXCIT=_F( VECT_ASSE = VECPROD,
+                            EXCIT=_F( VECT_ASSE_GENE = VECPROD,
                                    COEF_MULT = 1.))
 
 HFOG1 = RECU_FONCTION ( RESU_GENE = DYNPROD,
@@ -551,7 +551,7 @@ DYNGEN=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
                             SOLVEUR=_F( METHODE='LDLT', ),
                             FREQ=F,
                            TOUT_CHAM='OUI',
-                            EXCIT=_F( VECT_ASSE = VECTGEN,
+                            EXCIT=_F( VECT_ASSE_GENE = VECTGEN,
                                    COEF_MULT = 1.))
 
 #CALCUL HARMONIQUE A DEUX NIVEAUX DE PROJECTION
@@ -563,7 +563,7 @@ DYNPRO=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
                             SOLVEUR=_F( METHODE='LDLT', ),
                             FREQ=F,
                            TOUT_CHAM='OUI',
-                            EXCIT=_F( VECT_ASSE = VECPRO,
+                            EXCIT=_F( VECT_ASSE_GENE = VECPRO,
                                    COEF_MULT = 1.))
 
 #RESULTATS DU CALCUL HARMONIQUE A 2 NIVEAUX DE PROJECTION

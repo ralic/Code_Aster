@@ -1,4 +1,4 @@
-# MODIF  DATE 03/04/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 #  -*- coding: iso-8859-1 -*-
 # TITRE FORMATION DE BASE A L'UTILISATION D'ASTER - TP DYNAMIQUE
 # forma02d.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
@@ -104,8 +104,7 @@ MODES=MODE_ITER_SIMULT(MATR_A=RIGIDITE,
 #
 # ECRITURE DES MODES AU FORMAT MED
 
-IMPR_RESU(MODELE=MODELE,
-          FORMAT='MED',
+IMPR_RESU(FORMAT='MED',
           RESU=_F(MAILLAGE=MAIL,
                   RESULTAT=MODES,
                   NOM_CHAM='DEPL',),);
@@ -179,7 +178,7 @@ TRANGEN1=DYNA_TRAN_MODAL(MATR_MASS=MASS_GEN,
                                       INST_INIT=0.0,
                                       INST_FIN=2.0,),
                          SCHEMA_TEMPS=_F(SCHEMA='EULER'),
-                         EXCIT=_F(VECT_ASSE=VGEN_FY,
+                         EXCIT=_F(VECT_ASSE_GENE=VGEN_FY,
                                   FONC_MULT=EVINT_FY,),);
 
 #

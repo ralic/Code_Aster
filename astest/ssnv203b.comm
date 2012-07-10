@@ -1,4 +1,4 @@
-# MODIF  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
+# MODIF  DATE 10/07/2012   AUTEUR LADIER A.LADIER 
 # TITRE : APPLICATION D'UNE PRESSION SUR LES LEVRES D'UNE FISSURE AVEC X-FEM EN 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -98,8 +98,8 @@ CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                    )
 
 # pour tester option CHAR_MECA_PRES_F
-FCTPRES = FORMULE(VALE='Y*10000.',
-                  NOM_PARA=('Y',),);
+FCTPRES = FORMULE(VALE='Z*20000.',
+                  NOM_PARA=('Z',),);
 
 CH2=AFFE_CHAR_MECA_F(MODELE=MODELEK,
                      PRES_REP=_F(FISSURE=FISS,PRES=FCTPRES)
@@ -121,6 +121,7 @@ UTOT1=MECA_STATIQUE(MODELE=MODELEK,
                           ),
                    INFO=1,
                    ); 
+
 UTOT2=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
                    EXCIT=(
@@ -243,46 +244,40 @@ TEST_TABLE(TABLE=DEP1M,
            PRECISION=1.0E-11,
            REFERENCE='ANALYTIQUE',);
 
-# POUR LE CHARGEMENT 2              DCY            DCZ            H1Y          H1Z
-# DEPLE            N75           1.20823E-07  9.95560E-08    4.28977E-08  4.94111E-07  
-# DEPLE            N80           1.20823E-07 -9.95560E-08   -4.28977E-08  4.94111E-07
-
-TEST_TABLE(TABLE=DEP2P,
-           NOM_PARA='DY',
-           FILTRE=(_F(NOM_PARA='COOR_Y',VALE=1.0,),
-                   _F(NOM_PARA='COOR_X',VALE=0.0,),),
-           VALE= 1.2082287802957E-07,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-11,
-           REFERENCE='NON_REGRESSION',);
+# POUR LE CHARGEMENT 2
 
 TEST_TABLE(TABLE=DEP2P,
            NOM_PARA='DZ',
-           FILTRE=(_F(NOM_PARA='COOR_Y',VALE=1.0,),
-                   _F(NOM_PARA='COOR_X',VALE=0.0,),),
-           VALE=-4.9411069583244E-07,
+           TYPE_TEST='MIN',
+           VALE=-5.0E-7,
            CRITERE='RELATIF',
            PRECISION=1.0E-11,
-           REFERENCE='NON_REGRESSION',);
+           REFERENCE='ANALYTIQUE',);
 
-
-TEST_TABLE(TABLE=DEP2M,
-           NOM_PARA='DY',
-           FILTRE=(_F(NOM_PARA='COOR_Y',VALE=1.0,),
-                   _F(NOM_PARA='COOR_X',VALE=0.0,),),
-           VALE= 1.2082287802957E-07,
+TEST_TABLE(TABLE=DEP2P,
+           NOM_PARA='DZ',
+           TYPE_TEST='MAX',
+           VALE=-5.0E-7,
            CRITERE='RELATIF',
            PRECISION=1.0E-11,
-           REFERENCE='NON_REGRESSION',);
+           REFERENCE='ANALYTIQUE',);
+
 
 TEST_TABLE(TABLE=DEP2M,
            NOM_PARA='DZ',
-           FILTRE=(_F(NOM_PARA='COOR_Y',VALE=1.0,),
-                   _F(NOM_PARA='COOR_X',VALE=0.0,),),
-           VALE= 4.9411069583244E-07,
+           TYPE_TEST='MIN',
+           VALE= 5.0E-7,
            CRITERE='RELATIF',
            PRECISION=1.0E-11,
-           REFERENCE='NON_REGRESSION',);
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=DEP2M,
+           NOM_PARA='DZ',
+           TYPE_TEST='MAX',
+           VALE= 5.0E-7,
+           CRITERE='RELATIF',
+           PRECISION=1.0E-11,
+           REFERENCE='ANALYTIQUE',);
 
 
 FIN();

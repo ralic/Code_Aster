@@ -1,4 +1,4 @@
-# MODIF  DATE 23/04/2012   AUTEUR ALARCON A.ALARCON 
+# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE TP DYNAMIQUE LINEAIRE
 # forma12d.para = tps_job 180 mem_job 60Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -116,7 +116,7 @@ DYNACORR=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                          SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                          INCREMENT=_F(INST_FIN=1.0,
                                       PAS=1.E-4,),
-                         EXCIT=_F(VECT_ASSE=FOGENE,
+                         EXCIT=_F(VECT_ASSE_GENE=FOGENE,
                                   FONC_MULT=sin25,
                                   CORR_STAT='OUI',
                                   D_FONC_DT=dsin25,
@@ -129,7 +129,7 @@ DYNASAN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                         SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                         INCREMENT=_F(INST_FIN=1.0,
                                      PAS=1.E-4,),
-                        EXCIT=_F(VECT_ASSE=FOGENE,
+                        EXCIT=_F(VECT_ASSE_GENE=FOGENE,
                                  FONC_MULT=sin25,),);
 
 

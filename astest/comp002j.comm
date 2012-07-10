@@ -1,6 +1,6 @@
-# MODIF  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 09/07/2012   AUTEUR PROIX J-M.PROIX 
 # TITRE TEST MONOCRISTAL  3D UTILISANT SIMU_POINT_MAT
-# comp002j.para = tps_job 300 mem_job 512Mo mem_aster 20 ncpus 1 liste_test S
+# comp002j.para = tps_job 300 mem_job 454Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -144,7 +144,7 @@ prec_tgt=2.e-2
 prec_zero=[1.E-10, 0.01, 0.01]
 
 # les quantites (invariants...) sur lequels portent les calculs d'erreur et les test_resu
-ch_param2=['V44','VMIS','TRACE']
+ch_param2=['V56','VMIS','TRACE']
 # coefficients pour ch_param2 pour calculer l'erreur sur le cas "Pa"
 coef_para=[1.,C_Pa,C_Pa]
 
@@ -161,7 +161,7 @@ INCLUDE(UNITE=93)
 ##################################################################################
 
 # les quantites extraites du calcul
-ch_param=['V44','VMIS','TRACE','SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ']
+ch_param=['V56','VMIS','TRACE','SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ']
 
 # resultats
 RESU=[None]*Ncal
@@ -224,10 +224,6 @@ TEST_ECART(ch_param2,label_cal,N_pas,Ncal,nbequi,R_SI,prec_ecart,prec_zero,coef_
 
 
 # TESTS DE NON REGRESSION DES QUANTITES SIGNIFICATIVES
-TEST_TABLE(TABLE=R_SI[0],
-           NOM_PARA='V44_Pa_1',VALE=3.29182E-02,
-           FILTRE=_F(NOM_PARA='INST',VALE=8.0*t_0),
-           REFERENCE='NON_REGRESSION',);
 
 TEST_TABLE(TABLE=R_SI[1],
            NOM_PARA='VMIS_Pa_1',VALE=3.31336E+08,

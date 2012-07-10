@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
+# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE SYSTEME MASSE-RESSORT A 8 DDL AVEC AMORTISSEMENT VISQUEUX
 # sdld21b.para = tps_job 240 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -98,38 +98,38 @@ DYNHARGA=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
 #                                         544.56 900.00 819.43 900.00)
                        LIST_FREQ=LIFREQ,
                        TOUT_CHAM='OUI',
-                       EXCIT=_F(  COEF_MULT = 1.,VECT_ASSE = EFFOGENE)
+                       EXCIT=_F(  COEF_MULT = 1.,VECT_ASSE_GENE = EFFOGENE)
                             )
 
 
 L_AMORT = DEFI_LIST_REEL(VALE=(8.6824E-3, 0.017101, 0.0250, 3.21393E-2,
                                3.83022E-2, 4.33012E-2, 4.69846E-2, 4.92403E-2,),)
- 
+
 DYNHARGB=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
                        MATR_MASS=MASSEGEN, MATR_RIGI=RIGIDGEN,
                        AMOR_MODAL=_F(LIST_AMOR=L_AMORT,),
                        LIST_FREQ=LIFREQ,
                        TOUT_CHAM='OUI',
-                       EXCIT=_F(  COEF_MULT = 1.,VECT_ASSE = EFFOGENE)
+                       EXCIT=_F(  COEF_MULT = 1.,VECT_ASSE_GENE = EFFOGENE)
                             )
-                                                       
-DYNTPST = REST_SPEC_TEMP( RESU_GENE = DYNHARGA , 
+
+DYNTPST = REST_SPEC_TEMP( RESU_GENE = DYNHARGA ,
                           METHODE = 'PROL_ZERO' ,
                           SYMETRIE = 'NON' ,
                           TOUT_CHAM = 'OUI'  );
-DYNTPSUA = REST_SPEC_TEMP( RESU_GENE = DYNHARGA , 
+DYNTPSUA = REST_SPEC_TEMP( RESU_GENE = DYNHARGA ,
                           METHODE = 'PROL_ZERO' ,
                           SYMETRIE = 'NON' ,
                           NOM_CHAM = 'DEPL'  );
-DYNTPSUB = REST_SPEC_TEMP( RESU_GENE = DYNHARGB , 
+DYNTPSUB = REST_SPEC_TEMP( RESU_GENE = DYNHARGB ,
                           METHODE = 'PROL_ZERO' ,
                           SYMETRIE = 'NON' ,
                           NOM_CHAM = 'DEPL'  );
-DYNTPSV = REST_SPEC_TEMP( RESU_GENE = DYNHARGA , 
+DYNTPSV = REST_SPEC_TEMP( RESU_GENE = DYNHARGA ,
                           METHODE = 'PROL_ZERO' ,
                           SYMETRIE = 'NON' ,
                           NOM_CHAM = 'VITE'  );
-DYNTPSA = REST_SPEC_TEMP( RESU_GENE = DYNHARGA , 
+DYNTPSA = REST_SPEC_TEMP( RESU_GENE = DYNHARGA ,
                           METHODE = 'PROL_ZERO' ,
                           SYMETRIE = 'NON' ,
                           NOM_CHAM = 'ACCE'  );
@@ -143,7 +143,7 @@ DYNTA = RECU_FONCTION(RESU_GENE=DYNTPST,
 DYNUA = RECU_FONCTION(RESU_GENE=DYNTPSUA,
                       NOEUD = 'P4',NOM_CMP = 'DX',NOM_CHAM = 'DEPL', )
 DYNUB = RECU_FONCTION(RESU_GENE=DYNTPSUB,
-                      NOEUD = 'P4',NOM_CMP = 'DX',NOM_CHAM = 'DEPL', )                      
+                      NOEUD = 'P4',NOM_CMP = 'DX',NOM_CHAM = 'DEPL', )
 DYNV = RECU_FONCTION(RESU_GENE=DYNTPSV,
                       NOEUD = 'P4',NOM_CMP = 'DX',NOM_CHAM = 'VITE', )
 DYNA = RECU_FONCTION(RESU_GENE=DYNTPSA,
@@ -156,7 +156,7 @@ COMPU1A = CALC_FONCTION(COMB=( _F(  FONCTION = DYNTU, COEF = 1.),
 COMPU1B = CALC_FONCTION(COMB=( _F(  FONCTION = DYNTU, COEF = 1.),
                               _F(  FONCTION = DYNUB, COEF = -1.))
                        )
-                                              
+
 COMPV1 = CALC_FONCTION(COMB=( _F(  FONCTION = DYNTV, COEF = 1.),
                               _F(  FONCTION = DYNV, COEF = -1.))
                        )
@@ -211,19 +211,19 @@ DYNAHARP=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
                     EXCIT=_F(  COEF_MULT = 1.,VECT_ASSE = VECTASS)
                             )
 
-DYNTPSTP = REST_SPEC_TEMP( RESULTAT = DYNAHARP , 
+DYNTPSTP = REST_SPEC_TEMP( RESULTAT = DYNAHARP ,
                           METHODE = 'PROL_ZERO' ,
                           SYMETRIE = 'NON' ,
                           TOUT_CHAM = 'OUI'  );
-DYNTPSUP = REST_SPEC_TEMP( RESULTAT = DYNAHARP , 
+DYNTPSUP = REST_SPEC_TEMP( RESULTAT = DYNAHARP ,
                           METHODE = 'PROL_ZERO' ,
                           SYMETRIE = 'NON' ,
                           NOM_CHAM = 'DEPL'  );
-DYNTPSVP = REST_SPEC_TEMP( RESULTAT = DYNAHARP , 
+DYNTPSVP = REST_SPEC_TEMP( RESULTAT = DYNAHARP ,
                           METHODE = 'PROL_ZERO' ,
                           SYMETRIE = 'NON' ,
                           NOM_CHAM = 'VITE'  );
-DYNTPSAP = REST_SPEC_TEMP( RESULTAT = DYNAHARP , 
+DYNTPSAP = REST_SPEC_TEMP( RESULTAT = DYNAHARP ,
                           METHODE = 'PROL_ZERO' ,
                           SYMETRIE = 'NON' ,
                           NOM_CHAM = 'ACCE'  );
@@ -269,24 +269,24 @@ DYNAHARM=REST_GENE_PHYS(    RESU_GENE=DYNHARGA,
                                 TOUT_CHAM='OUI',
                               LIST_FREQ=LIFREQ
                                                       )
-                                                      
-DYNTPST2 = REST_SPEC_TEMP( RESULTAT = DYNAHARM , 
+
+DYNTPST2 = REST_SPEC_TEMP( RESULTAT = DYNAHARM ,
                           METHODE = 'PROL_ZERO' ,
                           SYMETRIE = 'NON' ,
                           TOUT_CHAM = 'OUI'  );
-DYNTPSU2 = REST_SPEC_TEMP( RESULTAT = DYNAHARM , 
+DYNTPSU2 = REST_SPEC_TEMP( RESULTAT = DYNAHARM ,
                           METHODE = 'PROL_ZERO' ,
                           SYMETRIE = 'NON' ,
                           NOM_CHAM = 'DEPL'  );
-DYNTPSV2 = REST_SPEC_TEMP( RESULTAT = DYNAHARM , 
+DYNTPSV2 = REST_SPEC_TEMP( RESULTAT = DYNAHARM ,
                           METHODE = 'PROL_ZERO' ,
                           SYMETRIE = 'NON' ,
                           NOM_CHAM = 'VITE'  );
-DYNTPSA2 = REST_SPEC_TEMP( RESULTAT = DYNAHARM , 
+DYNTPSA2 = REST_SPEC_TEMP( RESULTAT = DYNAHARM ,
                           METHODE = 'PROL_ZERO' ,
                           SYMETRIE = 'NON' ,
                           NOM_CHAM = 'ACCE'  );
-                                                      
+
 DYNTUP2 = RECU_FONCTION(RESULTAT=DYNTPST2,
                       NOEUD = 'P4',NOM_CMP = 'DX',NOM_CHAM = 'DEPL', )
 DYNTVP2 = RECU_FONCTION(RESULTAT=DYNTPST2,
@@ -299,7 +299,7 @@ DYNVP2 = RECU_FONCTION(RESULTAT=DYNTPSV2,
                       NOEUD = 'P4',NOM_CMP = 'DX',NOM_CHAM = 'VITE', )
 DYNAP2 = RECU_FONCTION(RESULTAT=DYNTPSA2,
                       NOEUD = 'P4',NOM_CMP = 'DX',NOM_CHAM = 'ACCE', )
-                                                      
+
 COMPU1P2 = CALC_FONCTION(COMB=( _F(  FONCTION = DYNTUP2, COEF = 1.),
                               _F(  FONCTION = DYNUP2, COEF = -1.))
                        )
@@ -323,7 +323,7 @@ TEST_TABLE(TABLE=MAXCV1P2,TYPE_TEST='SOMM_ABS',
 TEST_TABLE(TABLE=MAXCA1P2,TYPE_TEST='SOMM_ABS',
            NOM_PARA='DX',VALE=0.,REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
             );
-                                                      
+
 COMPU = CALC_FONCTION(COMB=( _F(  FONCTION = DYNTUP2, COEF = 1.),
                              _F(  FONCTION = DYNTU, COEF = -1.))
                        )

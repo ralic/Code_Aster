@@ -1,4 +1,4 @@
-# MODIF  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES
 # sdls114a.para = tps_job 240 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -234,7 +234,7 @@ RES_DYNA=DYNA_VIBRA(TYPE_CALCUL='TRAN',
                                  INST_FIN=t_fin,
                                  VERI_PAS = 'OUI',
                                  PAS=pas,),
-                    EXCIT=_F(VECT_ASSE=CHA_ASS,
+                    EXCIT=_F(VECT_ASSE_GENE=CHA_ASS,
                             FONC_MULT=RAMPE,),
                     ARCHIVAGE=_F(PAS_ARCH = 200,),
                     IMPRESSION = _F(TOUT='OUI',),);

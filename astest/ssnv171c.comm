@@ -1,10 +1,10 @@
-# MODIF  DATE 21/02/2012   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 09/07/2012   AUTEUR PROIX J-M.PROIX 
 # TITRE VALIDATION MONOCRISTAL ET POLYCRISTAL
 # RESPONSABLE JMBHH01 J.M.PROIX
 # VALIDATION DEFORMATION PLASTIQUE EQUIVALENTE CUMULEE
 # VALIDATION ANGLES POLYCRISTAL
 # VALIDATION WEIBULL
-# ssnv171c.para = tps_job 150 mem_job 60Mo ncpus 1 liste_test R
+# ssnv171c.para = tps_job 150 mem_job 480Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -151,7 +151,7 @@ TEST_RESU(RESU=(_F(RESULTAT=MONOEXPL,
                 _F(RESULTAT=MONOEXPL,
                    INST=TFIN,
                    NOM_CHAM='VARI_ELGA',
-                   NOM_CMP='V44',
+                   NOM_CMP='V56',
                    MAILLE='MA1',
                    POINT=1,
                    VALE=0.000481367,
@@ -215,7 +215,7 @@ TEST_RESU(RESU=(_F(RESULTAT=MONO1IMP,
                 _F(RESULTAT=MONO1IMP,
                    INST=TFIN,
                    NOM_CHAM='VARI_ELGA',
-                   NOM_CMP='V44',
+                   NOM_CMP='V56',
                    MAILLE='MA1',
                    POINT=1,
                    VALE=0.0004813675,
@@ -267,16 +267,8 @@ MONO2IMP=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
                       NOM_CHAM_MED='MONO1IMPEPSG_ELGA',),
                    _F(NOM_CHAM='VARI_ELGA',
                       NOM_CHAM_MED='MONO1IMPVARI_ELGA',
-                      NOM_CMP=
-                      ('V1','V2','V3','V4','V5','V6','V7','V8','V9','V10','V11','V12','V13','V14',
-                                'V15','V16','V17','V18','V19','V20','V21','V22','V23','V24','V25','V26','V27','V28','V29',
-                                'V30','V31','V32','V33','V34','V35','V36','V37','V38','V39','V40','V41','V42','V43','V44',
-                                'V45',),
-                      NOM_CMP_MED=
-                      ('V1','V2','V3','V4','V5','V6','V7','V8','V9','V10','V11','V12','V13',
-                                    'V14','V15','V16','V17','V18','V19','V20','V21','V22','V23','V24','V25','V26','V27',
-                                    'V28','V29','V30','V31','V32','V33','V34','V35','V36','V37','V38','V39','V40','V41',
-                                    'V42','V43','V44','V45',),),),
+                     ),
+                  ),
                    TOUT_ORDRE='OUI',);
 
 AE3=POST_ELEM(WEIBULL=_F(TOUT='OUI',

@@ -1,22 +1,22 @@
-# MODIF  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
+# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE SYSTEME MASSE-RESSORT AVEC CHOCS SOUS EXCITATION FORCEE
 # sdnd121a.para = tps_job 600 mem_job 600Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE BRIE N.BRIE
 #
@@ -42,7 +42,7 @@ CARA_ELE=AFFE_CARA_ELEM(MODELE=MODEL,
                                     VALE=(k_rappel,0.,0.,),),
                                  _F(CARA='M_T_D_N',
                                     GROUP_MA='M_PATIN',
-                                    VALE=m,),   
+                                    VALE=m,),
                                     ),);
 
 # Le patin ne se deplace que suivant X :
@@ -122,7 +122,7 @@ DTMEULER=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                       PAS=pdt,
                                       ),
                          ARCHIVAGE=_F(PAS_ARCH=pas_archi,),
-                         EXCIT=_F(VECT_ASSE=F_GENE,
+                         EXCIT=_F(VECT_ASSE_GENE=F_GENE,
                                   FONC_MULT=EXCIT,),
                          CHOC=(
                                _F(GROUP_NO_1='N_PATIN',
@@ -133,7 +133,7 @@ DTMEULER=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                   RIGI_NOR=kn_choc,
                                   AMOR_NOR=cn_choc,
                                  ),
-                               ),   
+                               ),
                         );
 
 # Schema des differences centrees ('ADAPT' a pas constant):
@@ -153,7 +153,7 @@ DTMADAPT=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                          ARCHIVAGE=_F(
                                       PAS_ARCH=pas_archi,
                                       ),
-                         EXCIT=_F(VECT_ASSE=F_GENE,
+                         EXCIT=_F(VECT_ASSE_GENE=F_GENE,
                                   FONC_MULT=EXCIT,),
                          CHOC=(
                                _F(GROUP_NO_1='N_PATIN',
@@ -164,7 +164,7 @@ DTMADAPT=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                   RIGI_NOR=kn_choc,
                                   AMOR_NOR=cn_choc,
                                  ),
-                               ),   
+                               ),
                         );
 
 # Schema 'ADAPT' (ne sert que pour verifier les forces de contact) :
@@ -184,7 +184,7 @@ DTMADAP2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                          ARCHIVAGE=_F(
                                       PAS_ARCH=100,
                                       ),
-                         EXCIT=_F(VECT_ASSE=F_GENE,
+                         EXCIT=_F(VECT_ASSE_GENE=F_GENE,
                                   FONC_MULT=EXCIT,),
                          CHOC=(
                                _F(GROUP_NO_1='N_PATIN',
@@ -195,7 +195,7 @@ DTMADAP2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                   RIGI_NOR=kn_choc,
                                   AMOR_NOR=cn_choc,
                                  ),
-                               ),   
+                               ),
                         );
 
 ### Grandeurs cinematiques et force de choc :

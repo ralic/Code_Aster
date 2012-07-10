@@ -1,0 +1,142 @@
+# MODIF  DATE 10/07/2012   AUTEUR LADIER A.LADIER 
+# TITRE VALIDATION INFORMATIQUE DE DEFI_FOND_FISS
+# zzzz314a.para = tps_job 30 mem_job 32Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#
+
+DEBUT(CODE=_F(NOM='ZZZZ314A',NIV_PUB_WEB='INTERNET'),PAR_LOT='NON',DEBUG=_F(SDVERI='OUI'))
+
+M=LIRE_MAILLAGE(FORMAT='MED',)
+
+FISS0=DEFI_FOND_FISS(MAILLAGE=M,
+                    FOND_FISS=_F(GROUP_NO='FOND',),
+                    LEVRE_SUP=_F(GROUP_MA='LEVR_SUP',),
+                    LEVRE_INF=_F(GROUP_MA='LEVR_INF',),);
+
+FISS1=DEFI_FOND_FISS(MAILLAGE=M,
+                    FOND_FISS=_F(GROUP_NO='FOND',),);
+
+basefond0=FISS0.sdj.BASEFOND.get()
+basefond1=FISS1.sdj.BASEFOND.get()
+
+ndfon=[]
+vnorX=[]
+vnorY=[]
+vdirX=[]
+vdirY=[]
+
+for i in range(0,len(basefond0)/4):
+  ndfon.append(i+1)
+  vnorX.append(basefond0[4*i])
+  vnorY.append(basefond0[4*i+1])
+  vdirX.append(basefond0[4*i+2])
+  vdirY.append(basefond0[4*i+3])
+
+TABL0=CREA_TABLE(LISTE=(_F(LISTE_I=ndfon,PARA='ND_FOND'),
+                        _F(LISTE_R=vnorX,PARA='VNORX'),
+                        _F(LISTE_R=vnorY,PARA='VNORY'),
+                        _F(LISTE_R=vdirX,PARA='VDIRX'),
+                        _F(LISTE_R=vdirY,PARA='VDIRY'),
+                        ),);
+ndfon=[]
+vnorX=[]
+vnorY=[]
+vdirX=[]
+vdirY=[]
+
+for i in range(0,len(basefond1)/4):
+  ndfon.append(i+1)
+  vnorX.append(basefond1[4*i])
+  vnorY.append(basefond1[4*i+1])
+  vdirX.append(basefond1[4*i+2])
+  vdirY.append(basefond1[4*i+3])
+
+TABL1=CREA_TABLE(LISTE=(_F(LISTE_I=ndfon,PARA='ND_FOND'),
+                        _F(LISTE_R=vnorX,PARA='VNORX'),
+                        _F(LISTE_R=vnorY,PARA='VNORY'),
+                        _F(LISTE_R=vdirX,PARA='VDIRX'),
+                        _F(LISTE_R=vdirY,PARA='VDIRY'),
+                        ),);
+
+for i in range(0,len(basefond0)/4):
+   TEST_TABLE(TABLE=TABL0,
+              FILTRE=_F(  NOM_PARA = 'ND_FOND',
+                          VALE_I = i+1),
+                          NOM_PARA='VNORX',
+                          VALE=0.,
+              CRITERE='ABSOLU',
+              REFERENCE='ANALYTIQUE' )
+
+   TEST_TABLE(TABLE=TABL0,
+              FILTRE=_F(  NOM_PARA = 'ND_FOND',
+                          VALE_I = i+1),
+                          NOM_PARA='VNORY',
+                          VALE=-1.,
+              CRITERE='ABSOLU',
+              REFERENCE='ANALYTIQUE' )
+
+   TEST_TABLE(TABLE=TABL0,
+              FILTRE=_F(  NOM_PARA = 'ND_FOND',
+                          VALE_I = i+1),
+                          NOM_PARA='VDIRX',
+                          VALE=1.,
+              CRITERE='ABSOLU',
+              REFERENCE='ANALYTIQUE' )
+
+   TEST_TABLE(TABLE=TABL0,
+              FILTRE=_F(  NOM_PARA = 'ND_FOND',
+                          VALE_I = i+1),
+                          NOM_PARA='VDIRY',
+                          VALE=0.,
+              CRITERE='ABSOLU',
+              REFERENCE='ANALYTIQUE' )
+
+   TEST_TABLE(TABLE=TABL1,
+              FILTRE=_F(  NOM_PARA = 'ND_FOND',
+                          VALE_I = i+1),
+                          NOM_PARA='VNORX',
+                          VALE=0.,
+              CRITERE='ABSOLU',
+              REFERENCE='ANALYTIQUE' )
+
+   TEST_TABLE(TABLE=TABL1,
+              FILTRE=_F(  NOM_PARA = 'ND_FOND',
+                          VALE_I = i+1),
+                          NOM_PARA='VNORY',
+                          VALE=1.,
+              CRITERE='ABSOLU',
+              REFERENCE='ANALYTIQUE' )
+
+   TEST_TABLE(TABLE=TABL1,
+              FILTRE=_F(  NOM_PARA = 'ND_FOND',
+                          VALE_I = i+1),
+                          NOM_PARA='VDIRX',
+                          VALE=1.,
+              CRITERE='ABSOLU',
+              REFERENCE='ANALYTIQUE' )
+
+   TEST_TABLE(TABLE=TABL1,
+              FILTRE=_F(  NOM_PARA = 'ND_FOND',
+                          VALE_I = i+1),
+                          NOM_PARA='VDIRY',
+                          VALE=0.,
+              CRITERE='ABSOLU',
+              REFERENCE='ANALYTIQUE' )
+
+FIN();

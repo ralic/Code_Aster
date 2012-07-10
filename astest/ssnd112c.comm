@@ -1,7 +1,7 @@
 
-# MODIF  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 09/07/2012   AUTEUR PROIX J-M.PROIX 
 # TITRE : EFFET DE ROTATION DE RESEAU SUR UN CUBE MONOCRISTALLIN
-# ssnd112c.para = tps_job 300 mem_job 64Mo ncpus 1 liste_test S
+# ssnd112c.para = tps_job 300 mem_job 483Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -200,8 +200,8 @@ if mode=='hpp'  : nvarsup=0
 if mode=='gdef' : nvarsup=9+9
 if mode=='rota' : nvarsup=16
 
-liste_var = tuple(['V' + str(i) for i in range(1, 6 + 3*nb_syst +  nvarsup + 3 + 1)])
-liste_vale = 6*[0.0] + nb_syst*[RHO_0, 0.0, 0.0] + (nvarsup + 3) *[0.0]
+liste_var = tuple(['V' + str(i) for i in range(1, 6 + 3*nb_syst +  12+nvarsup + 3 + 1)])
+liste_vale = 6*[0.0] + nb_syst*[RHO_0, 0.0, 0.0] + (12+nvarsup + 3) *[0.0]
 
 VAIN11= CREA_CHAMP(OPERATION = 'AFFE', TYPE_CHAM = 'ELGA_VARI_R', MODELE = TROISD,
                    AFFE=(_F(GROUP_MA = 'VOL', NOM_CMP = liste_var, VALE = liste_vale, ),

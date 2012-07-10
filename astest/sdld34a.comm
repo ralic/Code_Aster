@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
+# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE LACHER D'UN SIMPLE MASSE-RESSORT
 # sdld34a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -190,6 +190,11 @@ TRANSMOV=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                      CRITERE='ABSOLU',
                                      PRECISION=1E-6,),);
 
+IMPR_GENE(GENE=_F(RESU_GENE=TRANSMOV,
+                  NOM_CHAM='VITE',
+                  NUME_CMP_GENE=1,
+                  TOUT_INST=('OUI'),),);
+                  
 VXGEDIS2=RECU_FONCTION(RESU_GENE=TRANSMOV,
                        NOM_CHAM='VITE',
                        NOM_CMP='DX',

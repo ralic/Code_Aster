@@ -1,6 +1,6 @@
-# MODIF  DATE 25/06/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 09/07/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST DE LA LEVEE DE L'EXCEPTION ARRETCPUERROR
-# erreu09b.para = tps_job 30 mem_job 64Mo liste_test R
+# erreu09b.para = tps_job 30 mem_job 288Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,6 +25,9 @@ DEBUT(CODE=_F(NOM='ERREU09B',
               NIV_PUB_WEB='INTERNET',
               VISU_EFICAS='NON',),
 PAR_LOT='NON',DEBUG=_F(SDVERI='OUI'))
+
+import aster_core
+print "timit limit is actually set to:", aster_core.get_option('tpmax')
 
 MA=LIRE_MAILLAGE(FORMAT='MED',);
 
@@ -95,7 +98,7 @@ CONT = DEFI_CONTACT(MODELE      = MO,
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=200,),);
+                                    NOMBRE=1000,),);
 
 F=DEFI_FONCTION(NOM_PARA='INST',
                 VALE=(0.0,  0.0,

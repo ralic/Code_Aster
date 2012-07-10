@@ -1,0 +1,171 @@
+# MODIF  DATE 10/07/2012   AUTEUR LADIER A.LADIER 
+# TITRE VALIDATION INFORMATIQUE DE DEFI_FOND_FISS
+# zzzz314f.para = tps_job 30 mem_job 32Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# CAS D'UN FOND FERME CIRCULAIRE AVEC SYMETRIE DE LA FISSURE
+
+DEBUT(CODE=_F(NOM='ZZZZ314F',NIV_PUB_WEB='INTERNET'),PAR_LOT='NON',DEBUG=_F(SDVERI='OUI'))
+
+M=LIRE_MAILLAGE(FORMAT='MED',)
+
+FISS0=DEFI_FOND_FISS(MAILLAGE=M,
+                   FOND_FISS=_F(TYPE_FOND='FERME',
+                                GROUP_MA = 'LFF',
+                                NOEUD_ORIG = 'N49',
+                                MAILLE_ORIG = 'M3219',),
+                   SYME='OUI',
+                   LEVRE_SUP=_F(GROUP_MA = 'LEVINF',)
+                  )
+
+
+basefond0=FISS0.sdj.BASEFOND.get()
+
+ndfon=[]
+# listes des composantes des vecteurs normaux au plan de la fissure
+vnorX=[]
+vnorY=[]
+vnorZ=[]
+# listes des composantes des vecteurs de direction de propagation de
+# la fissure
+vdirX=[]
+vdirY=[]
+vdirZ=[]
+
+for i in range(0,len(basefond0)/6):
+  ndfon.append(i+1)
+  vnorX.append(basefond0[6*i])
+  vnorY.append(basefond0[6*i+1])
+  vnorZ.append(basefond0[6*i+2])
+  vdirX.append(basefond0[6*i+3])
+  vdirY.append(basefond0[6*i+4])
+  vdirZ.append(basefond0[6*i+5])
+
+TABL0=CREA_TABLE(LISTE=(_F(LISTE_I=ndfon,PARA='ND_FOND'),
+                        _F(LISTE_R=vnorX,PARA='VNORX'),
+                        _F(LISTE_R=vnorY,PARA='VNORY') ,
+                        _F(LISTE_R=vnorZ,PARA='VNORZ'),
+                        _F(LISTE_R=vdirX,PARA='VDIRX'),
+                        _F(LISTE_R=vdirY,PARA='VDIRY') ,
+                        _F(LISTE_R=vdirZ,PARA='VDIRZ'),
+                        ),);
+
+# Calcul des valeurs analytiques des vecteurs de direction de
+# propagation de fissure :
+# Comme la fissure est un cercle ayant pour centre, l'origine du repere:
+# les valeurs analytiques des vecteurs de direction de
+# propagation de la fissure sont les coordonnees des noeuds du fond
+
+vdirX_ana=[]
+vdirY_ana=[]
+vdirZ_ana=[]
+
+# Noms des noeuds du maillage
+t_noms_noeuds_maillage = aster.getvectjev('M'.ljust(8)+'.NOMNOE')
+l_noms_noeuds_maillage = list(t_noms_noeuds_maillage)
+
+l_numeros_noeuds_fissure = []
+# Noms des noeuds du fond
+l_noms_noeuds_fissure=FISS0.sdj.FOND_NOEU.get()
+
+for i in range(0,len(ndfon)):
+  nom = l_noms_noeuds_fissure[i]
+  index = l_noms_noeuds_maillage.index(nom)
+  l_numeros_noeuds_fissure.append(index)
+
+  coor=aster.getvectjev('M'.ljust(8)+'.COORDO    .VALE        ',
+                    l_numeros_noeuds_fissure[i]*3,3)
+  norme=sqrt( coor[0]**2+coor[1]**2+coor[2]**2 )
+
+  vdirX_ana.append(coor[0]/norme)
+  vdirY_ana.append(coor[1]/norme)
+  vdirZ_ana.append(coor[2]/norme)
+
+
+# Quand la fissure est definie avec un plan de symetrie,
+# le vecteur de direction de propagation appartient au plan de
+# la levre.
+# Or,la levre definie n'est pas plane. Donc, la precision des
+# resultats est alteree suivant l'axe Z pour vdir et comme
+# la normale au plan de la fissure est calculee a partir de vdir,
+# la precission de vnorx et/ou de vnory l'est egalement.
+
+for i in range(0,len(ndfon)):
+
+   if abs(vnorX[i])>=1.e-3:
+     prec= 1.8e-3
+   else :
+     prec= 1.e-3
+
+   TEST_TABLE(TABLE=TABL0,
+              FILTRE=_F(  NOM_PARA = 'ND_FOND',
+                          VALE_I = i+1),
+              NOM_PARA='VNORX',
+              VALE=0.,
+              CRITERE='ABSOLU',
+              PRECISION=prec,
+              REFERENCE='ANALYTIQUE' )
+
+   if abs(vnorY[i])>=1.e-3:
+     prec= 1.8e-3
+   else :
+     prec= 1.e-3
+
+   TEST_TABLE(TABLE=TABL0,
+              FILTRE=_F(  NOM_PARA = 'ND_FOND',
+                          VALE_I = i+1),
+              NOM_PARA='VNORY',
+              VALE=0.,
+              CRITERE='ABSOLU',
+              PRECISION=prec,
+              REFERENCE='ANALYTIQUE' )
+
+   TEST_TABLE(TABLE=TABL0,
+              FILTRE=_F(  NOM_PARA = 'ND_FOND',
+                          VALE_I = i+1),
+              NOM_PARA='VNORZ',
+              VALE=-1.,
+              CRITERE='ABSOLU',
+              REFERENCE='ANALYTIQUE' )
+
+   TEST_TABLE(TABLE=TABL0,
+              FILTRE=_F(  NOM_PARA = 'ND_FOND',
+                          VALE_I = i+1),
+              NOM_PARA='VDIRX',
+              VALE=vdirX_ana[i],
+              CRITERE='ABSOLU',
+              REFERENCE='ANALYTIQUE' )
+
+   TEST_TABLE(TABLE=TABL0,
+              FILTRE=_F(  NOM_PARA = 'ND_FOND',
+                          VALE_I = i+1),
+              NOM_PARA='VDIRY',
+              VALE=vdirY_ana[i],
+              CRITERE='ABSOLU',
+              REFERENCE='ANALYTIQUE' )
+
+   TEST_TABLE(TABLE=TABL0,
+              FILTRE=_F(  NOM_PARA = 'ND_FOND',
+                          VALE_I = i+1),
+              NOM_PARA='VDIRZ',
+              VALE=vdirZ_ana[i],
+              CRITERE='ABSOLU',
+              PRECISION=1.8e-3,
+              REFERENCE='ANALYTIQUE' )
+
+FIN();

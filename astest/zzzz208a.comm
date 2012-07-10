@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE FONCTIONNALITES PYTHON SUR GRANDEUR GENERALISEES : POUTRE 3D ENCASTREE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -206,7 +206,7 @@ DYNDIAG=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
                     MATR_RIGI=KDIAGC,
                     SOLVEUR=_F( METHODE='LDLT', ),
                     FREQ=500.,
-                    EXCIT=_F(VECT_ASSE=FDIAGC,
+                    EXCIT=_F(VECT_ASSE_GENE=FDIAGC,
                              COEF_MULT=1.0,),);
 
 # CALCUL PAR NUMPY
@@ -389,7 +389,7 @@ DYNPLEIN=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
                     MATR_RIGI=KPLEINC,
                     SOLVEUR=_F( METHODE='LDLT', ),
                     FREQ=500.,
-                    EXCIT=_F(VECT_ASSE=FPLEINC,
+                    EXCIT=_F(VECT_ASSE_GENE=FPLEINC,
                              COEF_MULT=1.0,),);
 
 # EXTRACTION DES MATRICES & VECTEURS GENERALISES VERS PYTHON
@@ -427,7 +427,7 @@ DYNPLEI2=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
                     MATR_RIGI=KPLEINC,
                     SOLVEUR=_F( METHODE='LDLT', ),
                     FREQ=500.,
-                    EXCIT=_F(VECT_ASSE=FPLEINC,
+                    EXCIT=_F(VECT_ASSE_GENE=FPLEINC,
                              COEF_MULT=1.0,),);
 
 # MEME CALCUL PAR NUMPY

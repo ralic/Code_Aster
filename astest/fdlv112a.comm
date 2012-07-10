@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL DE BARRAGE AVEC RETENUE SOUS SOLLICITATION SISMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -249,17 +249,17 @@ DYNGEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                        ARCHIVAGE=_F(PAS_ARCH=5,
                        ),
                        EXCIT=(
-                             _F(VECT_ASSE=CHARGENX,
+                             _F(VECT_ASSE_GENE=CHARGENX,
                                  FONC_MULT=ACC_X,),
-                              _F(VECT_ASSE=CHARGENY,
+                              _F(VECT_ASSE_GENE=CHARGENY,
                                  FONC_MULT=ACC_Y,),
-                              _F(VECT_ASSE=CHARGENZ,
+                              _F(VECT_ASSE_GENE=CHARGENZ,
                                  FONC_MULT=ACC_Z,),
-                              _F(VECT_ASSE=VGENX,
+                              _F(VECT_ASSE_GENE=VGENX,
                                  FONC_MULT=ACC_X,),
-                              _F(VECT_ASSE=VGENY,
+                              _F(VECT_ASSE_GENE=VGENY,
                                  FONC_MULT=ACC_Y,),
-                              _F(VECT_ASSE=VGENZ,
+                              _F(VECT_ASSE_GENE=VGENZ,
                                  FONC_MULT=ACC_Z,),
                           ),);
 

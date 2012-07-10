@@ -1,4 +1,4 @@
-#@ MODIF dyna_iss_vari_ops Macro  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF dyna_iss_vari_ops Macro  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -417,12 +417,11 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
         #  Calcul harmonique
          __fosi.RECU_VECT_GENE_C(FS2[0])
          __dyge = DYNA_LINE_HARM(
-                          MODELE=modele,
                           MATR_MASS = MATR_GENE['MATR_MASS'],
                           MATR_RIGI = __rito,
                           FREQ = freqk,
                           MATR_AMOR = __ma_amort,
-                          EXCIT =_F ( VECT_ASSE = __fosi,
+                          EXCIT =_F ( VECT_ASSE_GENE = __fosi,
                                       COEF_MULT= 1.0,
                                   ),
                         );
@@ -446,12 +445,11 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
         #  Calcul harmonique
             __fosi.RECU_VECT_GENE_C(FS2[0])
             __dyge = DYNA_LINE_HARM(
-                          MODELE=modele,
                           MATR_MASS = MATR_GENE['MATR_MASS'],
                           MATR_RIGI = __rito,
                           FREQ = freqk,
                           MATR_AMOR = __ma_amort,
-                          EXCIT =_F ( VECT_ASSE = __fosi,
+                          EXCIT =_F ( VECT_ASSE_GENE = __fosi,
                                       COEF_MULT= 1.0,
                                   ),
                         );
@@ -539,12 +537,11 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
 #      print ' creation SD DYNA_LINE_HARM'
         # on cree la SD resultat - factice (le champ ACCE sera remplace dans la suit par celui calcule)
       __dyge0 = DYNA_LINE_HARM(
-                          MODELE=modele,
                           MATR_MASS = MATR_GENE['MATR_MASS'],
                           MATR_RIGI = __rito,
                           LIST_FREQ= __lfre,              #tuple(l_freq_sig),
                           MATR_AMOR = __ma_amort,
-                          EXCIT =_F ( VECT_ASSE = __fosi,
+                          EXCIT =_F ( VECT_ASSE_GENE = __fosi,
                                       COEF_MULT_C=1.,
                                   ),
                         );

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 23/04/2012   AUTEUR ALARCON A.ALARCON 
+#& MODIF COMMANDE  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,7 +56,7 @@ DYNA_TRAN_MODAL=OPER(nom="DYNA_TRAN_MODAL",op=  74,sd_prod=tran_gene,
                              PAS_TPS_EDYOS      = SIMP(statut='o',typ='R' ),
          ),
 
-         ROTOR_FISS = FACT(statut='f',max='**',         
+         ROTOR_FISS = FACT(statut='f',max='**',
                            regles=(UN_PARMI('NOEUD_D','GROUP_NO_D'),
                                    EXCLUS('NOEUD_G','GROUP_NO_G'),
                                    PRESENT_PRESENT('NOEUD_D','NOEUD_G'),
@@ -135,12 +135,12 @@ DYNA_TRAN_MODAL=OPER(nom="DYNA_TRAN_MODAL",op=  74,sd_prod=tran_gene,
          ),
          EXCIT           =FACT(statut='f',max='**',
            regles=(UN_PARMI('FONC_MULT','COEF_MULT','ACCE'),
-                   UN_PARMI('VECT_ASSE','NUME_ORDRE',),
-                   PRESENT_PRESENT('ACCE','VITE','DEPL'),                   
-#                   PRESENT_ABSENT('NUME_ORDRE','VECT_ASSE','COEF_MULT'),
+                   UN_PARMI('VECT_ASSE_GENE','NUME_ORDRE',),
+                   PRESENT_PRESENT('ACCE','VITE','DEPL'),
+#                   PRESENT_ABSENT('NUME_ORDRE','VECT_ASSE_GENE','COEF_MULT'),
                    EXCLUS('MULT_APPUI','CORR_STAT'),
                    PRESENT_PRESENT('MULT_APPUI','ACCE'),),
-           VECT_ASSE       =SIMP(statut='f',typ=vect_asse_gene ),
+           VECT_ASSE_GENE  =SIMP(statut='f',typ=vect_asse_gene ),
            NUME_ORDRE      =SIMP(statut='f',typ='I' ),
            FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
            COEF_MULT       =SIMP(statut='f',typ='R' ),
@@ -149,7 +149,6 @@ DYNA_TRAN_MODAL=OPER(nom="DYNA_TRAN_MODAL",op=  74,sd_prod=tran_gene,
            DEPL            =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
            MULT_APPUI      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            b_mult_appui     =BLOC(condition = "MULT_APPUI == 'OUI'",
-###           MODE_STAT       =SIMP(statut='f',typ=mode_meca ),
            DIRECTION       =SIMP(statut='f',typ='R',max='**'),
              regles=(EXCLUS('NOEUD','GROUP_NO'),),
              NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
@@ -157,14 +156,13 @@ DYNA_TRAN_MODAL=OPER(nom="DYNA_TRAN_MODAL",op=  74,sd_prod=tran_gene,
            ),
            CORR_STAT       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            b_corr_stat     =BLOC(condition = "CORR_STAT == 'OUI'",
-###           MODE_CORR       =SIMP(statut='o',typ=(mult_elas,mode_meca),),
            D_FONC_DT       =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule) ),
            D_FONC_DT2      =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule) ),
          ),),
-####                  
+
          MODE_STAT       =SIMP(statut='f',typ=mode_meca ),
          MODE_CORR       =SIMP(statut='f',typ=(mult_elas,mode_meca),),
-####
+
          EXCIT_RESU      =FACT(statut='f',max='**',
            RESULTAT        =SIMP(statut='o',typ=tran_gene ),
            COEF_MULT       =SIMP(statut='f',typ='R',defaut=1.0 ),

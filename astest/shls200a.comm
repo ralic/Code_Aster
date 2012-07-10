@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE MODELE PROBABILISTE NONPARAMETRIQUE EN HARMONIQUE SOUS-STRUCTURE
 # shls200a.para = tps_job 310 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -405,7 +405,7 @@ for k in range(1,ns+1):
                             MATR_AMOR=A_GENE,
                             SOLVEUR=_F( METHODE='LDLT', ),
                             LIST_FREQ=LFREQ,
-                            EXCIT=_F( VECT_ASSE = EFFO1,
+                            EXCIT=_F( VECT_ASSE_GENE = EFFO1,
                             COEF_MULT = 1.,
                                     ),
                          )

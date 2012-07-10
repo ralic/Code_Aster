@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
+# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE SOUS-STRUCTURATION TRANSITOIRE : POUTRE AMORTIE EN TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -47,6 +47,10 @@ MAYA=LIRE_MAILLAGE( UNITE=20)
 
 MAYA=DEFI_GROUP( reuse=MAYA,   MAILLAGE=MAYA,
   CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+MAYA=DEFI_GROUP( reuse=MAYA,   MAILLAGE=MAYA,
+                 CREA_GROUP_MA=_F(  NOM = 'EXTREM', MAILLE=('S10')))
+
 
 #
 CHMAT=AFFE_MATERIAU(  MAILLAGE=MAYA,
@@ -130,13 +134,12 @@ MOD_CAL=MODE_ITER_SIMULT(     MATR_A=K_ASSE,
                              CALC_FREQ=_F( NMAX_FREQ = 10))
 
 # CE BLOC POUR TESTER LIRE_RESU POUR LES BASES
-IMPR_RESU(MODELE=POUTRE,
-          FORMAT='MED',
+IMPR_RESU(FORMAT='MED',
           UNITE=81,
           RESU=_F(MAILLAGE=MAYA,
                   RESULTAT=MOD_CAL,
                   NOM_CHAM='DEPL',),);
-
+# 
 MODES=LIRE_RESU(FORMAT='MED',
                 UNITE=81,
                 FORMAT_MED=_F(NOM_CHAM='DEPL',
@@ -171,21 +174,58 @@ TRAN_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                   MATR_RIGI=K_PROJ,
                                   MATR_AMOR=A_PROJ,
                                   SCHEMA_TEMPS=_F(SCHEMA='EULER',),
-                                  EXCIT=_F(VECT_ASSE = F_PROJ,
+                                  EXCIT=_F(VECT_ASSE_GENE = F_PROJ,
                                             COEF_MULT = 1.),
                                  INCREMENT=_F(  INST_INIT = 0.,
                                              INST_FIN = 0.0195,
                                              PAS = 1.E-6),
                                  ARCHIVAGE=_F( PAS_ARCH = 5)
                             )
-
 #
 RESULT1=REST_GENE_PHYS(   RESU_GENE=TRAN_GEN,
                             TOUT_CHAM='OUI',
                              LIST_INST=LIST_R,
                              INTERPOL='LIN')
-
+# CES TEST EST AJOUTE POUR LA COUVERTURE DE CODE
 #
+# RESTITUTION SUR UNE GROUPE_MA AVEC UNE BASE MODALE ISSUE DE LIRE_RESU
+#
+RESULT2=REST_GENE_PHYS(   RESU_GENE=TRAN_GEN,
+                          TOUT_CHAM='OUI',
+                          GROUP_MA='EXTREM',
+                          LIST_INST=LIST_R,
+                          INTERPOL='LIN')
+#
+TEST_RESU( RESU=_F( RESULTAT = RESULT1,
+                  NOM_CHAM = 'DEPL',
+                  INST = 1.95E-2,
+                  CRITERE = 'RELATIF',
+                  REFERENCE='AUTRE_ASTER',
+                  PRECISION = 1.E-4,
+                  NOEUD = 'N10',
+                  NOM_CMP = 'DX',
+                  VALE = -9.54882E-07));
+#
+TEST_RESU( RESU=_F( RESULTAT = RESULT1,
+                  NOM_CHAM = 'VITE',
+                  INST = 1.95E-2,
+                  CRITERE = 'RELATIF',
+                  REFERENCE='AUTRE_ASTER',
+                  PRECISION = 1.E-4,
+                  NOEUD = 'N10',
+                  NOM_CMP = 'DX',
+                  VALE = 1.22190E-03));
+#
+TEST_RESU( RESU=_F( RESULTAT = RESULT1,
+                  NOM_CHAM = 'ACCE',
+                  INST = 1.95E-2,
+                  CRITERE = 'RELATIF',
+                  REFERENCE='AUTRE_ASTER',
+                  PRECISION = 1.E-4,
+                  NOEUD = 'N10',
+                  NOM_CMP = 'DX',
+                  VALE = -1.91712E+00));
+
 ########################################################################
 #          CALCUL PAR SOUS-STRUCTURATION DYNAMIQUE TRANSITOIRE         #
 ########################################################################
@@ -428,13 +468,20 @@ TRANGENE=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                 SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                                 SOLVEUR=_F(METHODE='LDLT',),
 
-                                     EXCIT=_F(VECT_ASSE = F_GENE,
+                                     EXCIT=_F(VECT_ASSE_GENE = F_GENE,
                                             COEF_MULT = 1.),
                                  INCREMENT=_F(  INST_INIT = 0.,
                                              INST_FIN = 0.0195,
                                              PAS = 1.E-6),
                                  ARCHIVAGE=_F( PAS_ARCH = 5)
                             )
+
+IMPR_GENE(GENE=_F(RESU_GENE=TRANGENE,
+                  NOM_CHAM='DEPL',
+                  TOUT_CMP_GENE='OUI',
+                  INST=0.00975,
+                  CRITERE='ABSOLU',
+                  PRECISION=1.E-6,),);
 
 #
 SQUEL=DEFI_SQUELETTE(  MODELE_GENE=MODEGE,SOUS_STRUC=(
@@ -486,7 +533,123 @@ TEST_RESU( RESU=_F( RESULTAT = TRAN_GLO,
                   NOEUD = 'NO12',
                   NOM_CMP = 'DX',
                   VALE = -1.91712E+00))
-
 #
+#####################################################################################
+#          VERIFICATION QUE LE CACUL DIRECT ET SSD DONNENT LE MEME RESULTAT         #
+#####################################################################################
+#
+D_direct=CREA_CHAMP(OPERATION='EXTR', 
+                    INST=1.95E-2,
+                    NOM_CHAM = 'DEPL',
+                    TYPE_CHAM = 'NOEU_DEPL_R',
+                    RESULTAT = RESULT1,);
+#
+V_direct=CREA_CHAMP(OPERATION='EXTR', 
+                    INST=1.95E-2,
+                    NOM_CHAM = 'VITE',
+                    TYPE_CHAM = 'NOEU_DEPL_R',
+                    RESULTAT = RESULT1,);
+#
+A_direct=CREA_CHAMP(OPERATION='EXTR', 
+                    INST=1.95E-2,
+                    NOM_CHAM = 'ACCE',
+                    TYPE_CHAM = 'NOEU_DEPL_R',
+                    RESULTAT = RESULT1,);
+#
+TRG_PROJ = PROJ_CHAMP( RESULTAT = TRAN_GLO,
+                      MAILLAGE_1 = SQUEL ,
+                      MODELE_2 = POUTRE,
+                      TOUT_CHAM='OUI',
+                      NUME_DDL=NUMERO,
+                      INST=1.95E-2,
+                      VIS_A_VIS=_F(TOUT_1='OUI',
+                                   TOUT_2='OUI',),);
+#
+D_ssd=CREA_CHAMP(OPERATION='EXTR', 
+                    INST=1.95E-2,
+                    NOM_CHAM = 'DEPL',
+                    TYPE_CHAM = 'NOEU_DEPL_R',
+                    RESULTAT = TRG_PROJ,);
+#
+V_ssd=CREA_CHAMP(OPERATION='EXTR', 
+                    INST=1.95E-2,
+                    NOM_CHAM = 'VITE',
+                    TYPE_CHAM = 'NOEU_DEPL_R',
+                    RESULTAT = TRG_PROJ,);
+#
+A_ssd=CREA_CHAMP(OPERATION='EXTR', 
+                    INST=1.95E-2,
+                    NOM_CHAM = 'ACCE',
+                    TYPE_CHAM = 'NOEU_DEPL_R',
+                    RESULTAT = TRG_PROJ,);
+#
+DIFF_D=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',MODELE=POUTRE,
+                  PROL_ZERO='OUI',
+                ASSE=(_F(TOUT='OUI', CHAM_GD=D_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DX',NOM_CMP_RESU='DX',),
+                      _F(TOUT='OUI', CHAM_GD=D_ssd, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DX',NOM_CMP_RESU='DX',),
+                      _F(TOUT='OUI', CHAM_GD=D_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DY',NOM_CMP_RESU='DY',),
+                      _F(TOUT='OUI', CHAM_GD=D_ssd, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DY',NOM_CMP_RESU='DY',),
+                      _F(TOUT='OUI', CHAM_GD=D_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DZ',NOM_CMP_RESU='DZ',),
+                      _F(TOUT='OUI', CHAM_GD=D_ssd, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DZ',NOM_CMP_RESU='DZ',),
+                      _F(TOUT='OUI', CHAM_GD=D_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DRX',NOM_CMP_RESU='DRX',),
+                      _F(TOUT='OUI', CHAM_GD=D_ssd, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DRX',NOM_CMP_RESU='DRX',),
+                      _F(TOUT='OUI', CHAM_GD=D_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DRY',NOM_CMP_RESU='DRY',),
+                      _F(TOUT='OUI', CHAM_GD=D_ssd, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DRY',NOM_CMP_RESU='DRY',),
+                      _F(TOUT='OUI', CHAM_GD=D_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DRZ',NOM_CMP_RESU='DRZ',),
+                      _F(TOUT='OUI', CHAM_GD=D_ssd, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DRZ',NOM_CMP_RESU='DRZ',),
+                      ),);
+#
+DIFF_V=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',MODELE=POUTRE,
+                  PROL_ZERO='OUI',
+                ASSE=(_F(TOUT='OUI', CHAM_GD=V_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DX',NOM_CMP_RESU='DX',),
+                      _F(TOUT='OUI', CHAM_GD=V_ssd, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DX',NOM_CMP_RESU='DX',),
+                      _F(TOUT='OUI', CHAM_GD=V_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DY',NOM_CMP_RESU='DY',),
+                      _F(TOUT='OUI', CHAM_GD=V_ssd, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DY',NOM_CMP_RESU='DY',),
+                      _F(TOUT='OUI', CHAM_GD=V_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DZ',NOM_CMP_RESU='DZ',),
+                      _F(TOUT='OUI', CHAM_GD=V_ssd, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DZ',NOM_CMP_RESU='DZ',),
+                      _F(TOUT='OUI', CHAM_GD=V_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DRX',NOM_CMP_RESU='DRX',),
+                      _F(TOUT='OUI', CHAM_GD=V_ssd, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DRX',NOM_CMP_RESU='DRX',),
+                      _F(TOUT='OUI', CHAM_GD=V_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DRY',NOM_CMP_RESU='DRY',),
+                      _F(TOUT='OUI', CHAM_GD=V_ssd, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DRY',NOM_CMP_RESU='DRY',),
+                      _F(TOUT='OUI', CHAM_GD=V_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DRZ',NOM_CMP_RESU='DRZ',),
+                      _F(TOUT='OUI', CHAM_GD=V_ssd, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DRZ',NOM_CMP_RESU='DRZ',),
+                      ),);
+#
+DIFF_A=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',MODELE=POUTRE,
+                  PROL_ZERO='OUI',
+                ASSE=(_F(TOUT='OUI', CHAM_GD=A_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DX',NOM_CMP_RESU='DX',),
+                      _F(TOUT='OUI', CHAM_GD=A_ssd, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DX',NOM_CMP_RESU='DX',),
+                      _F(TOUT='OUI', CHAM_GD=A_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DY',NOM_CMP_RESU='DY',),
+                      _F(TOUT='OUI', CHAM_GD=A_ssd, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DY',NOM_CMP_RESU='DY',),
+                      _F(TOUT='OUI', CHAM_GD=A_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DZ',NOM_CMP_RESU='DZ',),
+                      _F(TOUT='OUI', CHAM_GD=A_ssd, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DZ',NOM_CMP_RESU='DZ',),
+                      _F(TOUT='OUI', CHAM_GD=A_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DRX',NOM_CMP_RESU='DRX',),
+                      _F(TOUT='OUI', CHAM_GD=A_ssd, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DRX',NOM_CMP_RESU='DRX',),
+                      _F(TOUT='OUI', CHAM_GD=A_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DRY',NOM_CMP_RESU='DRY',),
+                      _F(TOUT='OUI', CHAM_GD=A_ssd, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DRY',NOM_CMP_RESU='DRY',),
+                      _F(TOUT='OUI', CHAM_GD=A_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DRZ',NOM_CMP_RESU='DRZ',),
+                      _F(TOUT='OUI', CHAM_GD=A_ssd, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DRZ',NOM_CMP_RESU='DRZ',),
+                      ),);
+#
+TEST_RESU(CHAM_NO=_F(CHAM_GD= DIFF_D,
+                     CRITERE='ABSOLU',
+                     REFERENCE='AUTRE_ASTER', 
+                     PRECISION=1.E-15    ,
+                     TYPE_TEST='SOMM_ABS', 
+                     VALE=0.0 ),)
+#
+TEST_RESU(CHAM_NO=_F(CHAM_GD= DIFF_V,
+                     CRITERE='ABSOLU',
+                     REFERENCE='AUTRE_ASTER',
+                     PRECISION=1.E-12    ,
+                     TYPE_TEST='SOMM_ABS', 
+                     VALE=0.0 ),)
+#
+TEST_RESU(CHAM_NO=_F(CHAM_GD= DIFF_A,
+                     CRITERE='ABSOLU',
+                     REFERENCE='AUTRE_ASTER', 
+                     PRECISION=1.E-9    ,
+                     TYPE_TEST='SOMM_ABS', 
+                     VALE=0.0 ),)
 FIN()
 #

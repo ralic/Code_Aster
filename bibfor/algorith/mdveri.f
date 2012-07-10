@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,8 +37,8 @@ C
 C-----------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
-      INTEGER KF ,N1 ,NAGEN ,NARED ,NBASFL ,NBEXC ,NM 
-      INTEGER NPAS ,NTS 
+      INTEGER KF ,N1 ,NAGEN ,NARED ,NBASFL ,NBEXC ,NM
+      INTEGER NPAS ,NTS
 C-----------------------------------------------------------------------
       CALL GETRES(NOMRES,TYPRES,NOMCMD)
       CALL GETVTX('SCHEMA_TEMPS','SCHEMA' ,1,IARG,1,METHOD,N1)
@@ -97,7 +97,7 @@ C
       CALL GETFAC('EXCIT',NBEXC)
       KF = 0
       DO 20 I=1,NBEXC
-        CALL GETVID('EXCIT','VECT_ASSE',I,IARG,0,K8BID,NM)
+        CALL GETVID('EXCIT','VECT_ASSE_GENE',I,IARG,0,K8BID,NM)
         IF (NM .NE. 0) THEN
           KF = KF+1
         ENDIF
@@ -117,10 +117,10 @@ C     COHERENCE MATRICES
         CALL U2MESS('E','ALGORITH5_42')
       ENDIF
 C
-C     COHERENCE EXCITATIONS SOUS LE MC EXCIT/VECT_ASSE ET LES MATRICES
+C     COHERENCE SOUS LE MC EXCIT/VECT_ASSE_GENE ET LES MATRICES
       BASEMO=REF1(1:8)
       DO 21 I=1,NBEXC
-        CALL GETVID('EXCIT','VECT_ASSE',I,IARG,IBID,CHANNO,NM)
+        CALL GETVID('EXCIT','VECT_ASSE_GENE',I,IARG,IBID,CHANNO,NM)
         IF (NM .NE. 0) THEN
           CALL JEVEUO(CHANNO//'           .REFE','L',JREF1)
           REF1=ZK24(JREF1)
@@ -129,7 +129,7 @@ C     COHERENCE EXCITATIONS SOUS LE MC EXCIT/VECT_ASSE ET LES MATRICES
           ENDIF
         ENDIF
   21  CONTINUE
-        
-      
+
+
 
       END

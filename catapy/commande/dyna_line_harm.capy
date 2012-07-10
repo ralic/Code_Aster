@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,10 +51,11 @@ DYNA_LINE_HARM=OPER(nom="DYNA_LINE_HARM",op=  60,sd_prod=dyna_line_harm_prod,
              RESULTAT      =SIMP(statut='o',typ=(dyna_harmo,harm_gene)),
          ),
          EXCIT           =FACT(statut='o',max='**',
-           regles=(UN_PARMI('VECT_ASSE','CHARGE'),
+           regles=(UN_PARMI('VECT_ASSE','VECT_ASSE_GENE','CHARGE'),
                    UN_PARMI('FONC_MULT','FONC_MULT_C','COEF_MULT','COEF_MULT_C'),
                   ),
-           VECT_ASSE       =SIMP(statut='f',position='global',typ=(cham_no_sdaster,vect_asse_gene) ),
+           VECT_ASSE       =SIMP(statut='f',position='global',typ=cham_no_sdaster),
+           VECT_ASSE_GENE  =SIMP(statut='f',position='global',typ=vect_asse_gene),
            CHARGE          =SIMP(statut='f',position='global', typ=char_meca ),
            FONC_MULT_C     =SIMP(statut='f',typ=(fonction_c,formule_c) ),
            COEF_MULT_C     =SIMP(statut='f',typ='C' ),

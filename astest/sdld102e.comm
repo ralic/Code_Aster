@@ -1,21 +1,21 @@
-# MODIF  DATE 28/11/2011   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
+# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE SOUS-STRUCTURATION TRANSITOIRE : SYSTEME MASSES-RESSORTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # sdld102e.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 # CAS_TEST__: SDLD102E  (EQUIVALENT SDLD102A AVEC UTILISATION DE
@@ -284,7 +284,7 @@ TRANGEN1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                          ETAT_INIT=_F( DEPL = DEPINI,
                                        VITE = VITINI,),
                          ARCHIVAGE=_F(PAS_ARCH=10,),
-                         EXCIT=_F(VECT_ASSE=VECPRO,
+                         EXCIT=_F(VECT_ASSE_GENE=VECPRO,
                                   COEF_MULT=1.,),);
 
 #
@@ -297,7 +297,7 @@ TRANGEN2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                       INST_FIN=82.,
                                       PAS=0.01,),
                          ARCHIVAGE=_F(PAS_ARCH=10,),
-                         EXCIT=_F(VECT_ASSE=VECPRO,
+                         EXCIT=_F(VECT_ASSE_GENE=VECPRO,
                                   COEF_MULT=1.,),);
 
 #
@@ -310,7 +310,7 @@ TRANGEN3=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                       INST_FIN=82.,
                                       PAS=0.01,),
                          ARCHIVAGE=_F(PAS_ARCH=10,),
-                         EXCIT=_F(VECT_ASSE=VECPRO,
+                         EXCIT=_F(VECT_ASSE_GENE=VECPRO,
                                   COEF_MULT=1.,),);
 
 #
@@ -327,7 +327,7 @@ TRANGEN4=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                       VITE_MIN='MAXI',
                                       NB_POIN_PERIODE=300,),
                          ARCHIVAGE=_F(PAS_ARCH=1,),
-                         EXCIT=_F(VECT_ASSE=VECPRO,
+                         EXCIT=_F(VECT_ASSE_GENE=VECPRO,
                                   COEF_MULT=1.,),);
 
 #
@@ -346,7 +346,7 @@ TRANGEN5=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                       NB_POIN_PERIODE=300,
                                       NMAX_ITER_PAS = 300,),
                          ARCHIVAGE=_F(PAS_ARCH=1,),
-                         EXCIT=_F(VECT_ASSE=FGEN,
+                         EXCIT=_F(VECT_ASSE_GENE=FGEN,
                                   COEF_MULT=1.,),);
 
 #

@@ -1,6 +1,6 @@
-# MODIF  DATE 25/06/2012   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 09/07/2012   AUTEUR PROIX J-M.PROIX 
 # TITRE VALIDATION MONOCRISTAL LOI DD_CC THERMIQUE + A-THERMIQUE
-# ssnd110b.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
+# ssnd110b.para = tps_job 300 mem_job 459Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -147,7 +147,7 @@ S6=DEFI_FONCTION(NOM_PARA='INST',
 
 
 # densites de dislocation initiales : variables internes de 0 a 44
-avari = zeros(45)
+avari = zeros(45+12)
 for i in range(12):
   avari[6+i*3]=RHO_0
 
@@ -394,7 +394,7 @@ SI6=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_GAUCHE='LINEAIRE',);
 
 # densites de dislocation initiales : variables internes de 0 a 44
-avari = zeros(45)
+avari = zeros(45+12)
 for i in range(12):
   avari[6+i*3]=rho_ini
 avari[6+4*3]=rho_ini5

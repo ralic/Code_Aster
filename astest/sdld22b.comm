@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
+# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE SYSTEME MAS RES A 8 DDL (AMORTISSEMENT VISQ. PROPORTION.)
 # sdld22b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -206,7 +206,7 @@ DYNMOD_E=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                             MATR_MASS=MASSEGEN,
                              MATR_RIGI=RIGIDGEN,
                              MATR_AMOR=AMORTGEN,
-                            EXCIT=_F(  VECT_ASSE = EFFOGENE,
+                            EXCIT=_F(  VECT_ASSE_GENE = EFFOGENE,
                                     FONC_MULT = FONCTIO1),
                              INCREMENT=_F(  INST_INIT = 0.,
                                          INST_FIN = 1.5,  PAS = 0.001)
@@ -276,7 +276,7 @@ DYNMOD_A=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                             MATR_MASS=MASSEGEN,
                             MATR_RIGI=RIGIDGEN,
                             MATR_AMOR=AMORTGEN,
-                            EXCIT=_F(  VECT_ASSE = EFFOGENE,
+                            EXCIT=_F(  VECT_ASSE_GENE = EFFOGENE,
                                     FONC_MULT = FONCTIO1),
                             INCREMENT=_F( INST_INIT = 0., INST_FIN = 1.5,
                                           PAS=0.0001,),
@@ -343,12 +343,12 @@ TEST_RESU(RESU=(
 DYNAADAP=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                             MATR_MASS=MATRMASS,   MATR_RIGI=MATRRIGI,
                             MATR_AMOR=MATRAMOR,
-                            SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',), 
+                            SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
                             EXCIT=_F(  VECT_ASSE = VECTASS,
                                     FONC_MULT = FONCTIO1),
                             INCREMENT=_F( INST_INIT = 0., INST_FIN = 1.5,
-                                          PAS = 0.001, 
-                                          PAS_MINI = 1E-10, VITE_MIN = ('MAXI',), 
+                                          PAS = 0.001,
+                                          PAS_MINI = 1E-10, VITE_MIN = ('MAXI',),
                                           ),
                             ARCHIVAGE=_F(  PAS_ARCH = 1))
 

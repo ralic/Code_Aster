@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
+%& MODIF OPTIONS  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 % RESPONSABLE DESROCHES
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -38,13 +38,9 @@ OPTION__
         PLSN     NEUT_R
         PLST     NEUT_R
         PSTANO   NEUT_I
-        
         PPMILTO  NEUT_R
+        PCINFDI  CINFDI  'CARA!.CARDINFO' << PCINFDI : INFORMATIONS SUR LES DISCRETS, PAR AFFE_CARA_ELEM >>
+
         OUT__
         PVECTUR VDEP_R RESL__
-
-
-
-
-
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE SOUS-STRUCTURATION TRANSITOIRE : POUTRE EN TRACTION SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -140,7 +140,7 @@ TRAN_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                             SCHEMA_TEMPS=_F(SCHEMA='EULER'),
                             MATR_MASS=M_PROJ,
                             MATR_RIGI=K_PROJ,
-                            EXCIT=_F(VECT_ASSE = F_PROJ,
+                            EXCIT=_F(VECT_ASSE_GENE = F_PROJ,
                                             COEF_MULT = 1.),
                             INCREMENT=_F(  INST_INIT = 0.,
                                              INST_FIN = 0.0195,
@@ -374,7 +374,7 @@ F_GENE=ASSE_VECT_GENE(    NUME_DDL_GENE=NUMEGE,
 #
 TRANGENE=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                           MATR_MASS=M_GENE, MATR_RIGI=K_GENE,
-                          EXCIT=_F(VECT_ASSE = F_GENE, COEF_MULT = 1.),
+                          EXCIT=_F(VECT_ASSE_GENE = F_GENE, COEF_MULT = 1.),
                           SOLVEUR=_F(METHODE='MUMPS'),
                           INCREMENT=_F(  INST_INIT = 0.,
                                        INST_FIN = 0.0195,
@@ -435,7 +435,124 @@ TEST_RESU( RESU=_F( RESULTAT = TRAN_GLO,
                   NOEUD = 'NO12',
                   NOM_CMP = 'DX',
                   VALE = 1.1139E+01))
-
+#
+#####################################################################################
+#          VERIFICATION QUE LE CACUL DIRECT ET SSD DONNENT LE MEME RESULTAT         #
+#####################################################################################
+#
+D_direct=CREA_CHAMP(OPERATION='EXTR', 
+                    INST=1.95E-2,
+                    NOM_CHAM = 'DEPL',
+                    TYPE_CHAM = 'NOEU_DEPL_R',
+                    RESULTAT = RESULT1,);
+#
+V_direct=CREA_CHAMP(OPERATION='EXTR', 
+                    INST=1.95E-2,
+                    NOM_CHAM = 'VITE',
+                    TYPE_CHAM = 'NOEU_DEPL_R',
+                    RESULTAT = RESULT1,);
+#
+A_direct=CREA_CHAMP(OPERATION='EXTR', 
+                    INST=1.95E-2,
+                    NOM_CHAM = 'ACCE',
+                    TYPE_CHAM = 'NOEU_DEPL_R',
+                    RESULTAT = RESULT1,);
+#
+TRG_PROJ = PROJ_CHAMP( RESULTAT = TRAN_GLO,
+                      MAILLAGE_1 = SQUEL ,
+                      MODELE_2 = POUTRE,
+                      TOUT_CHAM='OUI',
+                      NUME_DDL=NUMERO,
+                      INST=1.95E-2,
+                      VIS_A_VIS=_F(TOUT_1='OUI',
+                                   TOUT_2='OUI',),);
+#
+D_ssd=CREA_CHAMP(OPERATION='EXTR', 
+                    INST=1.95E-2,
+                    NOM_CHAM = 'DEPL',
+                    TYPE_CHAM = 'NOEU_DEPL_R',
+                    RESULTAT = TRG_PROJ,);
+#
+V_ssd=CREA_CHAMP(OPERATION='EXTR', 
+                    INST=1.95E-2,
+                    NOM_CHAM = 'VITE',
+                    TYPE_CHAM = 'NOEU_DEPL_R',
+                    RESULTAT = TRG_PROJ,);
+#
+A_ssd=CREA_CHAMP(OPERATION='EXTR', 
+                    INST=1.95E-2,
+                    NOM_CHAM = 'ACCE',
+                    TYPE_CHAM = 'NOEU_DEPL_R',
+                    RESULTAT = TRG_PROJ,);
+#
+DIFF_D=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',MODELE=POUTRE,
+                  PROL_ZERO='OUI',
+                ASSE=(_F(TOUT='OUI', CHAM_GD=D_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DX',NOM_CMP_RESU='DX',),
+                      _F(TOUT='OUI', CHAM_GD=D_ssd, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DX',NOM_CMP_RESU='DX',),
+                      _F(TOUT='OUI', CHAM_GD=D_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DY',NOM_CMP_RESU='DY',),
+                      _F(TOUT='OUI', CHAM_GD=D_ssd, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DY',NOM_CMP_RESU='DY',),
+                      _F(TOUT='OUI', CHAM_GD=D_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DZ',NOM_CMP_RESU='DZ',),
+                      _F(TOUT='OUI', CHAM_GD=D_ssd, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DZ',NOM_CMP_RESU='DZ',),
+                      _F(TOUT='OUI', CHAM_GD=D_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DRX',NOM_CMP_RESU='DRX',),
+                      _F(TOUT='OUI', CHAM_GD=D_ssd, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DRX',NOM_CMP_RESU='DRX',),
+                      _F(TOUT='OUI', CHAM_GD=D_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DRY',NOM_CMP_RESU='DRY',),
+                      _F(TOUT='OUI', CHAM_GD=D_ssd, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DRY',NOM_CMP_RESU='DRY',),
+                      _F(TOUT='OUI', CHAM_GD=D_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DRZ',NOM_CMP_RESU='DRZ',),
+                      _F(TOUT='OUI', CHAM_GD=D_ssd, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DRZ',NOM_CMP_RESU='DRZ',),
+                      ),);
+#
+DIFF_V=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',MODELE=POUTRE,
+                  PROL_ZERO='OUI',
+                ASSE=(_F(TOUT='OUI', CHAM_GD=V_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DX',NOM_CMP_RESU='DX',),
+                      _F(TOUT='OUI', CHAM_GD=V_ssd, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DX',NOM_CMP_RESU='DX',),
+                      _F(TOUT='OUI', CHAM_GD=V_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DY',NOM_CMP_RESU='DY',),
+                      _F(TOUT='OUI', CHAM_GD=V_ssd, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DY',NOM_CMP_RESU='DY',),
+                      _F(TOUT='OUI', CHAM_GD=V_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DZ',NOM_CMP_RESU='DZ',),
+                      _F(TOUT='OUI', CHAM_GD=V_ssd, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DZ',NOM_CMP_RESU='DZ',),
+                      _F(TOUT='OUI', CHAM_GD=V_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DRX',NOM_CMP_RESU='DRX',),
+                      _F(TOUT='OUI', CHAM_GD=V_ssd, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DRX',NOM_CMP_RESU='DRX',),
+                      _F(TOUT='OUI', CHAM_GD=V_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DRY',NOM_CMP_RESU='DRY',),
+                      _F(TOUT='OUI', CHAM_GD=V_ssd, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DRY',NOM_CMP_RESU='DRY',),
+                      _F(TOUT='OUI', CHAM_GD=V_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DRZ',NOM_CMP_RESU='DRZ',),
+                      _F(TOUT='OUI', CHAM_GD=V_ssd, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DRZ',NOM_CMP_RESU='DRZ',),
+                      ),);
+#
+DIFF_A=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',MODELE=POUTRE,
+                  PROL_ZERO='OUI',
+                ASSE=(_F(TOUT='OUI', CHAM_GD=A_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DX',NOM_CMP_RESU='DX',),
+                      _F(TOUT='OUI', CHAM_GD=A_ssd, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DX',NOM_CMP_RESU='DX',),
+                      _F(TOUT='OUI', CHAM_GD=A_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DY',NOM_CMP_RESU='DY',),
+                      _F(TOUT='OUI', CHAM_GD=A_ssd, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DY',NOM_CMP_RESU='DY',),
+                      _F(TOUT='OUI', CHAM_GD=A_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DZ',NOM_CMP_RESU='DZ',),
+                      _F(TOUT='OUI', CHAM_GD=A_ssd, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DZ',NOM_CMP_RESU='DZ',),
+                      _F(TOUT='OUI', CHAM_GD=A_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DRX',NOM_CMP_RESU='DRX',),
+                      _F(TOUT='OUI', CHAM_GD=A_ssd, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DRX',NOM_CMP_RESU='DRX',),
+                      _F(TOUT='OUI', CHAM_GD=A_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DRY',NOM_CMP_RESU='DRY',),
+                      _F(TOUT='OUI', CHAM_GD=A_ssd, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DRY',NOM_CMP_RESU='DRY',),
+                      _F(TOUT='OUI', CHAM_GD=A_direct,CUMUL='OUI',COEF_R=+1.,NOM_CMP='DRZ',NOM_CMP_RESU='DRZ',),
+                      _F(TOUT='OUI', CHAM_GD=A_ssd, CUMUL='OUI',COEF_R=-1.,NOM_CMP='DRZ',NOM_CMP_RESU='DRZ',),
+                      ),);
+#
+TEST_RESU(CHAM_NO=_F(CHAM_GD= DIFF_D,
+                     CRITERE='ABSOLU',
+                     REFERENCE='AUTRE_ASTER', 
+                     PRECISION=1.E-15    ,
+                     TYPE_TEST='SOMM_ABS', 
+                     VALE=0.0 ),)
+#
+TEST_RESU(CHAM_NO=_F(CHAM_GD= DIFF_V,
+                     CRITERE='ABSOLU',
+                     REFERENCE='AUTRE_ASTER',
+                     PRECISION=1.E-12    ,
+                     TYPE_TEST='SOMM_ABS', 
+                     VALE=0.0 ),)
+#
+TEST_RESU(CHAM_NO=_F(CHAM_GD= DIFF_A,
+                     CRITERE='ABSOLU',
+                     REFERENCE='AUTRE_ASTER', 
+                     PRECISION=1.E-9    ,
+                     TYPE_TEST='SOMM_ABS', 
+                     VALE=0.0 ),)
 #
 FIN()
 #

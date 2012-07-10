@@ -1,4 +1,4 @@
-#@ MODIF reca_calcul_aster Macro  DATE 07/02/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF reca_calcul_aster Macro  DATE 10/07/2012   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -495,23 +495,23 @@ class CALCUL_ASTER:
          else:
 
            # Nom du fichier .mess (pour recuperation dans REPE_OUT)
-           if dico['ul'] == '6':
+           if dico['ul'] == 6:
              self.nom_fichier_mess_fils = os.path.basename(dico['path'])
 
            # Nom du fichier .resu (pour recuperation dans REPE_OUT)
-           if dico['ul'] == '8':
+           if dico['ul'] == 8:
              self.nom_fichier_resu_fils = os.path.basename(dico['path'])
 
            # Ancien .comm non pris en compte
            # Fichier d'unite logique UNITE_RESU (rapport de MACR_RECAL) non pris en compte
-           if dico['type'] == 'comm' or (dico['ul'] == str(self.UNITE_RESU) and lab == 'resu'):
+           if dico['type'] == 'comm' or (dico['ul'] == self.UNITE_RESU and lab == 'resu'):
              l_fr.remove(dico)
 
            # Fichier d'unite logique UL devient le nouveau .comm
-           elif dico['ul'] == str(self.UNITE_ESCL):
+           elif dico['ul'] == self.UNITE_ESCL:
              self.fichier_esclave = dico['path']
              dico['type'] = 'comm'
-             dico['ul']   = '1'
+             dico['ul']   = 1
              dico['path'] = user_mach + os.path.join(os.getcwd(), 'fort.%d' % self.UNITE_ESCL)
 
            # Tous les autres fichiers en Resultat
@@ -521,7 +521,7 @@ class CALCUL_ASTER:
            # Tous les autres fichiers en Donnees
            elif lab == 'data':
               if dico['type'] not in ('exec', 'ele'):
-                 if dico['ul']   != '0':   # Traite le cas des sources python sourchargees
+                 if dico['ul'] != 0:   # Traite le cas des sources python sourchargees
                      # Si distant/distribue on doit prendre les fichiers de donnes dans un endroit partage entre les machines/noeuds
                      if user_mach:
                         src = dico['path']

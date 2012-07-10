@@ -1,7 +1,7 @@
-# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 09/07/2012   AUTEUR PROIX J-M.PROIX 
 # TITRE : TRACTION SUR UN AGREGAT A 10 GRAINS, ACIER BAINITIQUE
 # RESPONSABLE JMBHH01 J.M.PROIX
-# ssnv194a.para = tps_job 900 mem_job 128Mo ncpus 1 liste_test S
+# ssnv194a.para = tps_job 900 mem_job 326Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -193,13 +193,13 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLNL,
 
 
 
-IMPR_RESU(RESU=_F(RESULTAT=SOLNL,INST=TFIN,NOM_CHAM='VARI_ELGA',NOM_CMP=('V79','V80','V81'),VALE_MIN='OUI',VALE_MAX='OUI'))
+# SIGM_CLIV et EPSP_EQ
 
 TEST_RESU(RESU=(
                 _F(RESULTAT=SOLNL,
                    INST=TFIN,
                    NOM_CHAM='VARI_ELGA',
-                   NOM_CMP='V79',
+                   NOM_CMP='V103',
                    TYPE_TEST='MAX',
                    PRECISION=1e-06,
                    VALE=488.168492,
@@ -207,7 +207,7 @@ TEST_RESU(RESU=(
                 _F(RESULTAT=SOLNL,
                    INST=TFIN,
                    NOM_CHAM='VARI_ELGA',
-                   NOM_CMP='V80',
+                   NOM_CMP='V104',
                    TYPE_TEST='MAX',
                    PRECISION=1e-06,
                    VALE=8.015907E-03,
@@ -296,13 +296,12 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLNL_CI,
 
 
 
-IMPR_RESU(RESU=_F(RESULTAT=SOLNL_CI,INST=TFIN,NOM_CHAM='VARI_ELGA',NOM_CMP=('V79','V80','V81'),VALE_MIN='OUI',VALE_MAX='OUI'))
 
 TEST_RESU(RESU=(
                 _F(RESULTAT=SOLNL_CI,
                    INST=TFIN,
                    NOM_CHAM='VARI_ELGA',
-                   NOM_CMP='V79',
+                   NOM_CMP='V103',
                    TYPE_TEST='MAX',
                    PRECISION=1e-06,
                    VALE=488.168492,
@@ -310,7 +309,7 @@ TEST_RESU(RESU=(
                 _F(RESULTAT=SOLNL_CI,
                    INST=TFIN,
                    NOM_CHAM='VARI_ELGA',
-                   NOM_CMP='V80',
+                   NOM_CMP='V104',
                    TYPE_TEST='MAX',
                    PRECISION=1e-06,
                    VALE=8.015907E-03,

@@ -1,0 +1,352 @@
+# MODIF  DATE 10/07/2012   AUTEUR LADIER A.LADIER 
+# TITRE : APPLICATION D'UNE PRESSION SUR DES ELEMENTS QUADRATIQUES DES LEVRES
+# ssnv203c.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#         D'UNE FISSURE AVEC X-FEM EN 2D
+
+DEBUT(CODE=_F(NOM='SSNV203C', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+              
+# CETTE MODELISATION TESTE L'APPLICATION D'UNE PRESSION (CONSTANTE ET AFFINE) 
+# SUR LES LEVRES D'UNE FISSURE X-FEM EN 2D (EN FAIT, C'EST PLUTOT UNE INTERFACE)
+
+
+#----------------------------------------------
+#                   MAILLAGE
+#----------------------------------------------
+# precision
+n = 1000.0;
+
+# dimensions de la structure
+lx = 1.0;
+ly = 1.0;
+
+MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
+
+MAILLAG2=CREA_MAILLAGE(
+            MAILLAGE = MAILLAG1,
+            LINE_QUAD = _F(TOUT='OUI'))
+
+MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
+                    MAILLAGE=MAILLAG2,
+                    CREA_GROUP_NO=(_F(GROUP_MA='SURF'),
+                                   _F(GROUP_MA='LIGB'),
+                                   _F(GROUP_MA='LIGH'),),
+                    INFO=2,);
+
+#IMPR_RESU(FORMAT='RESULTAT',RESU=_F(MAILLAGE=MAILLAG2))
+
+#----------------------------------------------
+#                   MODELE ET FISSURE
+#----------------------------------------------
+
+MO=AFFE_MODELE(MAILLAGE=MAILLAG2,
+               AFFE=_F(GROUP_MA=('SURF',),
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='D_PLAN',),);
+
+LN = FORMULE(VALE='Y-0.5',NOM_PARA=('X','Y',),);
+
+FISS=DEFI_FISS_XFEM(MODELE=MO,
+                    TYPE_DISCONTINUITE='INTERFACE',
+                    DEFI_FISS=_F(FONC_LN=LN,),
+                    INFO=1,);
+
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MO,
+                         FISSURE=FISS,
+                         INFO=1,);
+
+
+#----------------------------------------------
+#                   MATERIAU
+#----------------------------------------------
+E = 10000000000.0;
+nu = 0.;
+rho = 7800.0;
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
+                            NU=nu,
+                            RHO=rho,),);
+
+CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
+                       MODELE=MO,
+                       AFFE=_F(GROUP_MA='SURF',
+                               MATER=ACIER,
+                               ),);
+
+#----------------------------------------------
+#                   CHARGEMENTS
+#----------------------------------------------
+
+CH=AFFE_CHAR_MECA(MODELE=MODELEK,
+                  DDL_IMPO=(_F(GROUP_NO='LIGB',DX=0.,DY=0.,),
+                            _F(GROUP_NO='LIGH',DX=0.,DY=0.,),),
+                  INFO=1,);
+
+
+# pour tester option CHAR_MECA_PRES_R
+CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
+                   PRES_REP=_F(FISSURE=FISS,PRES=10000.)
+                   )
+
+# pour tester option CHAR_MECA_PRES_F
+FCTPRES = FORMULE(VALE='Y*20000.',
+                  NOM_PARA=('Y',),);
+
+CH2=AFFE_CHAR_MECA_F(MODELE=MODELEK,
+                     PRES_REP=_F(FISSURE=FISS,PRES=FCTPRES)
+                   )
+
+#----------------------------------------------
+#                   RESOLUTION
+#----------------------------------------------
+
+L_INS=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=_F(JUSQU_A=3.0,
+                                   NOMBRE=3,),);
+
+UTOT1=MECA_STATIQUE(MODELE=MODELEK,
+                   CHAM_MATER=CHAMPMAT,
+                   EXCIT=(
+                          _F(CHARGE=CH),
+                          _F(CHARGE=CH1),
+                          ),
+                   INFO=1,
+                   ); 
+
+UTOT2=MECA_STATIQUE(MODELE=MODELEK,
+                   CHAM_MATER=CHAMPMAT,
+                   EXCIT=(
+                          _F(CHARGE=CH),
+                          _F(CHARGE=CH2),
+                          ),
+                   INFO=1,
+                   ); 
+# -------------------------------------------------------------   
+#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   
+# -------------------------------------------------------------   
+
+MA_XFEM=POST_MAIL_XFEM(
+                       MODELE        = MODELEK)
+
+#IMPR_RESU(FORMAT='RESULTAT',RESU=_F(MAILLAGE = MA_XFEM,))
+#IMPR_RESU(FORMAT='GMSH',UNITE=81,RESU=_F(MAILLAGE = MA_XFEM,))
+
+MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
+                     AFFE=(_F(TOUT='OUI',
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='D_PLAN',),),
+                              );  
+
+RES_X1=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
+                        RESULTAT      = UTOT1,
+                        )
+
+RES_X2=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
+                        RESULTAT      = UTOT2,
+                        )
+
+IMPR_RESU(FORMAT='GMSH',UNITE=82,RESU=_F(RESULTAT=RES_X1,));
+
+# -------------------------------------------------------------   
+#            TEST_TABLE
+# -------------------------------------------------------------   
+
+DEP1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
+                                GROUP_NO=('NFISSU',),
+                                RESULTAT=RES_X1,
+                                NOM_CHAM='DEPL',
+                                NUME_ORDRE=1,
+                                TOUT_CMP='OUI',
+                                OPERATION='EXTRACTION',),);
+
+DEP2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
+                                GROUP_NO=('NFISSU',),
+                                RESULTAT=RES_X2,
+                                NOM_CHAM='DEPL',
+                                NUME_ORDRE=1,
+                                TOUT_CMP='OUI',
+                                OPERATION='EXTRACTION',),);
+
+
+IMPR_TABLE(TABLE=DEP1,);
+IMPR_TABLE(TABLE=DEP2,);
+
+
+DEP1P = CALC_TABLE(TABLE = DEP1,
+                  ACTION = (_F(OPERATION = 'FILTRE',
+                               NOM_PARA  = 'NOEUD',
+                               CRIT_COMP = 'REGEXP',
+                               VALE_K    = 'N[^P]',),),);
+
+
+DEP1M = CALC_TABLE(TABLE = DEP1,
+                  ACTION = (_F(OPERATION = 'FILTRE',
+                               NOM_PARA  = 'NOEUD',
+                               CRIT_COMP = 'REGEXP',
+                               VALE_K    = 'N[^M]',),),);
+
+
+DEP2P = CALC_TABLE(TABLE = DEP2,
+                  ACTION = (_F(OPERATION = 'FILTRE',
+                               NOM_PARA  = 'NOEUD',
+                               CRIT_COMP = 'REGEXP',
+                               VALE_K    = 'N[^P]',),),);
+
+
+DEP2M = CALC_TABLE(TABLE = DEP2,
+                  ACTION = (_F(OPERATION = 'FILTRE',
+                               NOM_PARA  = 'NOEUD',
+                               CRIT_COMP = 'REGEXP',
+                               VALE_K    = 'N[^M]',),),);
+
+# POUR LE CHARGEMENT 1
+
+TEST_TABLE(TABLE=DEP1P,
+           NOM_PARA='DX',
+           TYPE_TEST='MIN',
+           VALE= 0.0,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=DEP1P,
+           NOM_PARA='DX',
+           TYPE_TEST='MAX',
+           VALE= 0.0,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=DEP1P,
+           NOM_PARA='DY',
+           TYPE_TEST='MIN',
+           VALE=-5.0E-7,
+           CRITERE='RELATIF',
+           PRECISION=1.0E-11,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=DEP1P,
+           NOM_PARA='DY',
+           TYPE_TEST='MAX',
+           VALE=-5.0E-7,
+           CRITERE='RELATIF',
+           PRECISION=1.0E-11,
+           REFERENCE='ANALYTIQUE',);
+
+
+TEST_TABLE(TABLE=DEP1M,
+           NOM_PARA='DX',
+           TYPE_TEST='MIN',
+           VALE= 0.0,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=DEP1M,
+           NOM_PARA='DX',
+           TYPE_TEST='MAX',
+           VALE= 0.0,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=DEP1M,
+           NOM_PARA='DY',
+           TYPE_TEST='MIN',
+           VALE= 5.0E-7,
+           CRITERE='RELATIF',
+           PRECISION=1.0E-11,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=DEP1M,
+           NOM_PARA='DY',
+           TYPE_TEST='MAX',
+           VALE= 5.0E-7,
+           CRITERE='RELATIF',
+           PRECISION=1.0E-11,
+           REFERENCE='ANALYTIQUE',);
+
+# POUR LE CHARGEMENT 2
+
+TEST_TABLE(TABLE=DEP2P,
+           NOM_PARA='DX',
+           TYPE_TEST='MIN',
+           VALE= 0.0,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=DEP2P,
+           NOM_PARA='DX',
+           TYPE_TEST='MAX',
+           VALE= 0.0,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=DEP2P,
+           NOM_PARA='DY',
+           TYPE_TEST='MIN',
+           VALE=-5.0E-7,
+           CRITERE='RELATIF',
+           PRECISION=1.0E-11,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=DEP2P,
+           NOM_PARA='DY',
+           TYPE_TEST='MAX',
+           VALE=-5.0E-7,
+           CRITERE='RELATIF',
+           PRECISION=1.0E-11,
+           REFERENCE='ANALYTIQUE',);
+
+
+TEST_TABLE(TABLE=DEP2M,
+           NOM_PARA='DX',
+           TYPE_TEST='MIN',
+           VALE= 0.0,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=DEP2M,
+           NOM_PARA='DX',
+           TYPE_TEST='MAX',
+           VALE= 0.0,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=DEP2M,
+           NOM_PARA='DY',
+           TYPE_TEST='MIN',
+           VALE= 5.0E-7,
+           CRITERE='RELATIF',
+           PRECISION=1.0E-11,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=DEP2M,
+           NOM_PARA='DY',
+           TYPE_TEST='MAX',
+           VALE= 5.0E-7,
+           CRITERE='RELATIF',
+           PRECISION=1.0E-11,
+           REFERENCE='ANALYTIQUE',);
+
+FIN();

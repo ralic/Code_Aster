@@ -1,22 +1,22 @@
-# MODIF  DATE 19/12/2011   AUTEUR BERRO H.BERRO 
+# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE SOUS-STRUCT. TRANSITOIRE : SYSTEME MASSES-RESSORTS AMORTI
 # sdld102c.para = tps_job 120 mem_job 200Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # CAS_TEST__: SDLD102C
 #
@@ -35,9 +35,9 @@
 #
 # A PARTIR DU NUME_DDL_GENE, ON DUPLIQUE LE CALCUL (L'UN BASE SUR LES
 # MODES CALCULES PAR MODE_ITER_SIMULT ET L'AUTRE BASE SUR MODE_ITER_INV)
-# POUR TESTER L'ISOFONCTIONNALITE DES 2 OPERATEURS EN CAS DE 
+# POUR TESTER L'ISOFONCTIONNALITE DES 2 OPERATEURS EN CAS DE
 # NUME_DDL_GENE. D'AUTRE PART ON CHOISIT (A TORT) L'USAGE DU SOLVEUR
-# LINEAIRE MULT_FRONT POUR FORCER LE CHANGEMENT EN INTERNE OPERATEUR 
+# LINEAIRE MULT_FRONT POUR FORCER LE CHANGEMENT EN INTERNE OPERATEUR
 # POUR MUMPS.
 # ON TESTE AUSSI DS CETTE CONFIGURATION L'OPERATEUR INFO_MODE
 #
@@ -47,16 +47,16 @@ DEBUT(CODE=_F( NOM = 'SDLD102C',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 MAILLA=LIRE_MAILLAGE( )
 
 #
-MODELE=AFFE_MODELE(  MAILLAGE=MAILLA,AFFE=( 
+MODELE=AFFE_MODELE(  MAILLAGE=MAILLA,AFFE=(
                             _F( GROUP_MA = 'RESSORT',
-                                  PHENOMENE = 'MECANIQUE', 
+                                  PHENOMENE = 'MECANIQUE',
                                   MODELISATION = 'DIS_TR'),
                             _F( GROUP_NO = 'MASSE',
-                                  PHENOMENE = 'MECANIQUE', 
+                                  PHENOMENE = 'MECANIQUE',
                                   MODELISATION = 'DIS_T')))
 
 #
-PARAM=AFFE_CARA_ELEM(    MODELE=MODELE,DISCRET=( 
+PARAM=AFFE_CARA_ELEM(    MODELE=MODELE,DISCRET=(
                             _F( GROUP_MA = 'RESSORT',
                                      CARA = 'K_TR_D_L',
                                      VALE = (1., 0., 0., 0., 0., 0., )),
@@ -73,9 +73,9 @@ PARAM=AFFE_CARA_ELEM(    MODELE=MODELE,DISCRET=(
 #  DEFINITION DU CHARGEMENT
 #------------------------------------------------------------------
 
-CHARGE=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=( 
+CHARGE=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
          _F( TOUT = 'OUI', DY = 0.0,  DZ = 0.0, DRX = 0., DRY = 0., DRZ = 0.),
-         _F( NOEUD = 'NO1',  DX = 0.0), 
+         _F( NOEUD = 'NO1',  DX = 0.0),
          _F( NOEUD = 'NO3',  DX = 0.0)))
 
 #
@@ -85,19 +85,19 @@ CHARTRAN=AFFE_CHAR_MECA(        MODELE=MODELE,
 #  MATRICES ET VECTEURS ELEMENTS FINIS
 #------------------------------------------------------------------
 
-K_ELEM=CALC_MATR_ELEM(      MODELE=MODELE, 
-                                CHARGE=CHARGE, 
-                             CARA_ELEM=PARAM, 
+K_ELEM=CALC_MATR_ELEM(      MODELE=MODELE,
+                                CHARGE=CHARGE,
+                             CARA_ELEM=PARAM,
                                OPTION='RIGI_MECA')
 
 #
-M_ELEM=CALC_MATR_ELEM(      MODELE=MODELE, 
-                                CHARGE=CHARGE, 
-                             CARA_ELEM=PARAM, 
+M_ELEM=CALC_MATR_ELEM(      MODELE=MODELE,
+                                CHARGE=CHARGE,
+                             CARA_ELEM=PARAM,
                                OPTION='MASS_MECA')
 
 #
-V_ELEM=CALC_VECT_ELEM( OPTION='CHAR_MECA', 
+V_ELEM=CALC_VECT_ELEM( OPTION='CHAR_MECA',
                             CHARGE=CHARTRAN)
 
 #  NUMEROTATION DU PROBLEME ELEMENTS FINIS
@@ -108,21 +108,21 @@ NUMDDL=NUME_DDL(  MATR_RIGI=K_ELEM)
 #  ASSEMBLAGE DES MATRICES ET VECTEURS
 #------------------------------------------------------------------
 
-K_ASSE=ASSE_MATRICE(  MATR_ELEM=K_ELEM, 
+K_ASSE=ASSE_MATRICE(  MATR_ELEM=K_ELEM,
                            NUME_DDL=NUMDDL)
 
 #
-M_ASSE=ASSE_MATRICE(  MATR_ELEM=M_ELEM, 
+M_ASSE=ASSE_MATRICE(  MATR_ELEM=M_ELEM,
                            NUME_DDL=NUMDDL)
 
 #
-V_ASSE=ASSE_VECTEUR(  VECT_ELEM=V_ELEM, 
+V_ASSE=ASSE_VECTEUR(  VECT_ELEM=V_ELEM,
                            NUME_DDL=NUMDDL)
 
 #  CALCUL DES MODES PROPRES DES SOUS-STRUCTURES
 #------------------------------------------------------------------
 
-MODES=MODE_ITER_SIMULT(     MATR_A=K_ASSE, 
+MODES=MODE_ITER_SIMULT(     MATR_A=K_ASSE,
                                  MATR_B=M_ASSE, INFO=2,
                           SOLVEUR=_F(METHODE='MUMPS',),
                              CALC_FREQ=_F( NMAX_FREQ = 1))
@@ -130,28 +130,28 @@ MODES=MODE_ITER_SIMULT(     MATR_A=K_ASSE,
 #  DEFINITION DES INTERFACES
 #------------------------------------------------------------------
 
-LINT1=DEFI_INTERF_DYNA(   NUME_DDL=NUMDDL, 
-                             INTERFACE=_F( NOM = 'DROITE', 
-                                        TYPE = 'CRAIGB', 
+LINT1=DEFI_INTERF_DYNA(   NUME_DDL=NUMDDL,
+                             INTERFACE=_F( NOM = 'DROITE',
+                                        TYPE = 'CRAIGB',
                                         NOEUD = 'NO3',
                          MASQUE = ('DY', 'DZ', 'DRX', 'DRY', 'DRZ',)))
 
 #
-LINT2=DEFI_INTERF_DYNA(   NUME_DDL=NUMDDL, 
-                             INTERFACE=_F( NOM = 'GAUCHE', 
-                                        TYPE = 'CRAIGB', 
+LINT2=DEFI_INTERF_DYNA(   NUME_DDL=NUMDDL,
+                             INTERFACE=_F( NOM = 'GAUCHE',
+                                        TYPE = 'CRAIGB',
                                         NOEUD = 'NO1',
                          MASQUE = ('DY', 'DZ', 'DRX', 'DRY', 'DRZ',)))
 
 #  CALCUL DE LA BASE MODALE DES SOUS-STRUCTURES
 #------------------------------------------------------------------
 
-BAMO1=DEFI_BASE_MODALE( CLASSIQUE=_F( INTERF_DYNA = LINT1, 
-                                        MODE_MECA = MODES, 
+BAMO1=DEFI_BASE_MODALE( CLASSIQUE=_F( INTERF_DYNA = LINT1,
+                                        MODE_MECA = MODES,
                                         NMAX_MODE = 1))
 
 #
-BAMO2=DEFI_BASE_MODALE( CLASSIQUE=_F( INTERF_DYNA = LINT2, 
+BAMO2=DEFI_BASE_MODALE( CLASSIQUE=_F( INTERF_DYNA = LINT2,
                                         MODE_MECA = MODES,
                                         NMAX_MODE = 1))
 
@@ -188,23 +188,23 @@ MODEGE=DEFI_MODELE_GENE(SOUS_STRUC=(_F(NOM='COTE1',
 
 NUMEGE=NUME_DDL_GENE(  MODELE_GENE=MODEGE)
 
-#  ASSEMBLAGE DES MATRICES ET VECTEURS 
+#  ASSEMBLAGE DES MATRICES ET VECTEURS
 #------------------------------------------------------------------
 
-MASGEN=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE, 
+MASGEN=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE,
                                   OPTION='MASS_GENE')
 
 #
-RIGGEN=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE, 
+RIGGEN=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE,
                                   OPTION='RIGI_GENE')
 
 #
-AMOGEN=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE, 
+AMOGEN=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE,
                                   OPTION='AMOR_GENE')
 
 #
-FGEN=ASSE_VECT_GENE(    NUME_DDL_GENE=NUMEGE, 
-                         CHAR_SOUS_STRUC=_F( SOUS_STRUC = 'COTE1', 
+FGEN=ASSE_VECT_GENE(    NUME_DDL_GENE=NUMEGE,
+                         CHAR_SOUS_STRUC=_F( SOUS_STRUC = 'COTE1',
                                           VECT_ASSE = V_ASSE))
 
 #  CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE (SUIVANT  2 SOLVEURS
@@ -214,26 +214,26 @@ FGEN=ASSE_VECT_GENE(    NUME_DDL_GENE=NUMEGE,
 # LE CHANGEMENT EN INTERNE OPERATEUR POUR MUMPS
 NB_MODES=INFO_MODE(MATR_A=RIGGEN,MATR_B=MASGEN,FREQ_MAX=3.E-1,
            SOLVEUR=_F(METHODE='MULT_FRONT'))
-           
+
 TEST_TABLE(TABLE=NB_MODES,REFERENCE='ANALYTIQUE',
-           NOM_PARA='NB_MODE', VALE_I=3)           
-           
+           NOM_PARA='NB_MODE', VALE_I=3)
+
 # CAS 1
 RESGEN=MODE_ITER_SIMULT(MATR_A=RIGGEN, MATR_B=MASGEN,INFO=2,
-                        CALC_FREQ=_F(OPTION = 'PLUS_PETITE', 
+                        CALC_FREQ=_F(OPTION = 'PLUS_PETITE',
                                      NMAX_FREQ = 3),
                         SOLVEUR=_F(METHODE='MULT_FRONT',),)
 
-MODGLO=REST_SOUS_STRUC(   RESU_GENE=RESGEN, 
-                           SOUS_STRUC='COTE1', 
+MODGLO=REST_SOUS_STRUC(   RESU_GENE=RESGEN,
+                           SOUS_STRUC='COTE1',
                            TOUT_ORDRE='OUI')
 # CAS 2
 RESGEN2=MODE_ITER_INV(MATR_A=RIGGEN,MATR_B=MASGEN,
                         SOLVEUR=_F(METHODE='MULT_FRONT',),
                  CALC_FREQ=_F( OPTION = 'PROCHE',
                FREQ = ( 1.21E-1,  2.25E-1, 2.94E-1,)) )
-MODGLO2=REST_SOUS_STRUC(   RESU_GENE=RESGEN2, 
-                           SOUS_STRUC='COTE1', 
+MODGLO2=REST_SOUS_STRUC(   RESU_GENE=RESGEN2,
+                           SOUS_STRUC='COTE1',
                            TOUT_ORDRE='OUI')
 
 #  NUMEROTATION DU PROBLEME GENERALISE
@@ -264,19 +264,19 @@ VECPRO2=PROJ_VECT_BASE( BASE=RESGEN2,NUME_DDL_GENE=NUMEMOD2,
                        VECT_ASSE_GENE=FGEN)
 
 LIST_R=DEFI_LIST_REEL(       DEBUT=0.,
-                           INTERVALLE=_F( JUSQU_A = 80., 
+                           INTERVALLE=_F( JUSQU_A = 80.,
                                        NOMBRE = 10))
 
-#  CALCULS TRANSITOIRES 
+#  CALCULS TRANSITOIRES
 #-----------------------------------------------------------------
 
 # CAS 1
 TRANGEN1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                              SCHEMA_TEMPS=_F(SCHEMA='EULER',),
-                             MATR_MASS=MASPRO, 
-                             MATR_RIGI=RIGPRO, 
-                             MATR_AMOR=AMOPRO, 
-                                EXCIT=_F( VECT_ASSE = VECPRO,
+                             MATR_MASS=MASPRO,
+                             MATR_RIGI=RIGPRO,
+                             MATR_AMOR=AMOPRO,
+                                EXCIT=_F( VECT_ASSE_GENE = VECPRO,
                                        COEF_MULT = 1.),
                             INCREMENT=_F( INST_INIT = 0.,
                                        INST_FIN = 82.,
@@ -286,10 +286,10 @@ TRANGEN1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
 TRANGEN2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                              SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
                                             BETA=0.27,GAMMA=0.52),
-                             MATR_MASS=MASPRO, 
-                             MATR_RIGI=RIGPRO, 
-                             MATR_AMOR=AMOPRO, 
-                                EXCIT=_F( VECT_ASSE = VECPRO,
+                             MATR_MASS=MASPRO,
+                             MATR_RIGI=RIGPRO,
+                             MATR_AMOR=AMOPRO,
+                                EXCIT=_F( VECT_ASSE_GENE = VECPRO,
                                        COEF_MULT = 1.),
                             INCREMENT=_F( INST_INIT = 0.,
                                        INST_FIN = 82.,
@@ -298,10 +298,10 @@ TRANGEN2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                             )
 TRANGEN3=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                              SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
-                             MATR_MASS=MASPRO, 
-                             MATR_RIGI=RIGPRO, 
-                             MATR_AMOR=AMOPRO, 
-                                EXCIT=_F( VECT_ASSE = VECPRO,
+                             MATR_MASS=MASPRO,
+                             MATR_RIGI=RIGPRO,
+                             MATR_AMOR=AMOPRO,
+                                EXCIT=_F( VECT_ASSE_GENE = VECPRO,
                                        COEF_MULT = 1.),
                             INCREMENT=_F( INST_INIT = 0.,
                                        INST_FIN = 82.,
@@ -315,10 +315,10 @@ TRANGEN3=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
 # CAS 2
 TRANGEN4=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                              SCHEMA_TEMPS=_F(SCHEMA='EULER',),
-                             MATR_MASS=MASPRO2, 
-                             MATR_RIGI=RIGPRO2, 
-                             MATR_AMOR=AMOPRO2, 
-                                EXCIT=_F( VECT_ASSE = VECPRO2,
+                             MATR_MASS=MASPRO2,
+                             MATR_RIGI=RIGPRO2,
+                             MATR_AMOR=AMOPRO2,
+                                EXCIT=_F( VECT_ASSE_GENE = VECPRO2,
                                        COEF_MULT = 1.),
                             INCREMENT=_F( INST_INIT = 0.,
                                        INST_FIN = 82.,
@@ -327,10 +327,10 @@ TRANGEN4=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                             )
 TRANGEN5=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                              SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
-                             MATR_MASS=MASPRO2, 
-                             MATR_RIGI=RIGPRO2, 
-                             MATR_AMOR=AMOPRO2, 
-                                EXCIT=_F( VECT_ASSE = VECPRO2,
+                             MATR_MASS=MASPRO2,
+                             MATR_RIGI=RIGPRO2,
+                             MATR_AMOR=AMOPRO2,
+                                EXCIT=_F( VECT_ASSE_GENE = VECPRO2,
                                        COEF_MULT = 1.),
                             INCREMENT=_F( INST_INIT = 0.,
                                        INST_FIN = 82.,
@@ -339,10 +339,10 @@ TRANGEN5=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                             )
 TRANGEN6=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                              SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',),
-                             MATR_MASS=MASPRO2, 
-                             MATR_RIGI=RIGPRO2, 
-                             MATR_AMOR=AMOPRO2, 
-                                EXCIT=_F( VECT_ASSE = VECPRO2,
+                             MATR_MASS=MASPRO2,
+                             MATR_RIGI=RIGPRO2,
+                             MATR_AMOR=AMOPRO2,
+                                EXCIT=_F( VECT_ASSE_GENE = VECPRO2,
                                        COEF_MULT = 1.),
                             INCREMENT=_F( INST_INIT = 0.,
                                        INST_FIN = 82.,

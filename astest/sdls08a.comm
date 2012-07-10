@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE : MODE PROPRE D'UNE PLAQUE CARREE CALCULES SUR BASE REDUITE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -265,7 +265,7 @@ DYNGEN=DYNA_VIBRA(TYPE_CALCUL='HARM',
                       MATR_AMOR=CGEN,
                       SOLVEUR=_F( METHODE='LDLT', ),
                       LIST_FREQ=LIFREQ,
-                      EXCIT=_F(VECT_ASSE=FGEN,
+                      EXCIT=_F(VECT_ASSE_GENE=FGEN,
                                COEF_MULT=1.0,),);
 
 KGENC=COMB_MATR_ASSE(COMB_C=_F(MATR_ASSE=KGEN,
@@ -278,7 +278,7 @@ DYNGENC=DYNA_VIBRA(TYPE_CALCUL='HARM',
                       AMOR_MODAL=_F(AMOR_REDUIT=(0.01,),),
                       SOLVEUR=_F( METHODE='LDLT', ),
                       LIST_FREQ=LIFREQ,
-                      EXCIT=_F(VECT_ASSE=FGEN,
+                      EXCIT=_F(VECT_ASSE_GENE=FGEN,
                                COEF_MULT=1.0,),);
 
 DYNEXP=REST_GENE_PHYS(RESU_GENE=DYNGEN,

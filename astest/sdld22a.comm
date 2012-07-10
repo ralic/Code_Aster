@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
+# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE SYSTEME MAS RES A 8 DDL (AMORTISSEMENT VISQ. PROPORTION.)
 # sdld22a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -40,12 +40,12 @@ CHAMPCAR=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=(
                           CARA = 'K_T_D_L',    VALE = (1.E5, 0., 0.,),),
 
                 _F(  MAILLE = ('E1', 'E2', 'E3', 'E4', 'E5', 'E6', 'E7', 'E8', ),
-                          CARA = 'M_T_L',    
+                          CARA = 'M_T_L',
                           VALE = (0., 0., 0.,0., 0., 0.,0., 0., 0.,0.,
                                   0., 0., 0.,0., 0., 0.,0., 0., 0.,0.,0.),),
 
                 _F(  MAILLE = ('E1', 'E2', 'E3', 'E4', 'E5', 'E6', 'E7', 'E8', ),
-                          CARA = 'A_T_L',    
+                          CARA = 'A_T_L',
                           VALE = (0., 0., 0.,0., 0., 0.,0., 0., 0.,0.,
                                   0., 0., 0.,0., 0., 0.,0., 0., 0.,0.,0.),),
 
@@ -138,7 +138,7 @@ DYNAMODA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                              MATR_RIGI=RIGIDGEN,
                              MATR_AMOR=AMORTGEN,
                            SCHEMA_TEMPS=_F(SCHEMA='EULER',),
-                            EXCIT=_F( VECT_ASSE = EFFOGENE,
+                            EXCIT=_F( VECT_ASSE_GENE = EFFOGENE,
                                     FONC_MULT = FONCTIO1,   ),
                              INCREMENT=_F( INST_INIT = 0.,
                                         INST_FIN = 1.5,    PAS = 0.001,  )
@@ -190,7 +190,7 @@ DYNAMOD2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                             SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                             ETAT_INIT=_F( DEPL = RECUP1,
                                        VITE = RECUP2,  ),
-                            EXCIT=_F( VECT_ASSE = EFFOGENE,
+                            EXCIT=_F( VECT_ASSE_GENE = EFFOGENE,
                                     FONC_MULT = FONCTIO2,   ),
                             INCREMENT=_F( INST_INIT = 0.455,
                                        INST_FIN = 1.5,

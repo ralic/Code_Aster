@@ -1,4 +1,4 @@
-#@ MODIF sd_carte SD  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_carte SD  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,7 +27,7 @@ class sd_carte(sd_titre):
 
     DESC = AsVI(docu='CART', )
     NOMA = AsVK8(lonmax=1, )
-    VALE = AsVect(type=Parmi('C', 'K', 'R', 'I',), ltyp=Parmi(16, 24, 8), )
+    VALE = AsVect(type=Parmi('C', 'K', 'R', 'I',), ltyp=Parmi(4,8,16,24,), )
 
     NOLI = Facultatif(AsVK24())
     LIMA = Facultatif(AsColl(acces='NU', stockage='CONTIG', modelong='VARIABLE', type='I', ))

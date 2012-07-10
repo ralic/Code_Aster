@@ -1,22 +1,22 @@
-# MODIF  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
+# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE ROTOR FISSURE TOURNANT SOUMIS A UN MOMENT DE FLEXION
 # sdnl133a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='SDNL133A', NIV_PUB_WEB='INTERNET',),
@@ -41,8 +41,8 @@ raidmax = coef*PEN
 
 MAIL1=LIRE_MAILLAGE(FORMAT='MED',);
 
-MAIL1=DEFI_GROUP(reuse =MAIL1,       
-              MAILLAGE=MAIL1,          
+MAIL1=DEFI_GROUP(reuse =MAIL1,
+              MAILLAGE=MAIL1,
               CREA_GROUP_NO=(_F(GROUP_MA=('ROTOR',),),),)
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL1,
@@ -165,7 +165,7 @@ VEC_FY=CALC_VECT_ELEM(  CHARGE=(CHA_FY,),
                          OPTION='CHAR_MECA',
                          CARA_ELEM=CARELEM,
     );
-    
+
 VEC_FZ=CALC_VECT_ELEM(  CHARGE=(CHA_FZ,),
                          OPTION='CHAR_MECA',
                          CARA_ELEM=CARELEM,
@@ -182,7 +182,7 @@ F_K1=LIRE_FONCTION(UNITE=38,
                   PROL_DROITE="LINEAIRE",
                   PROL_GAUCHE="LINEAIRE",
     INTERPOL='LIN')
-    
+
 F_KP1=LIRE_FONCTION(UNITE=38,
                   NOM_PARA='ABSC',
     INDIC_PARA=[1,1],
@@ -199,7 +199,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',
        COURBE=(_F(FONCTION=F_K,MARQUEUR=0),
                _F(FONCTION=F_KP,MARQUEUR=0),),)
 
-    
+
 RAMP=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0,0,
                          0.2,1,
@@ -223,16 +223,16 @@ PROJ_BASE(  BASE=BMOD,
 
 
 TRANGEN = DYNA_VIBRA   (     MATR_MASS=MASGEN,   MATR_RIGI=RIGGEN,
-                             BASE_CALCUL ='GENE',         
+                             BASE_CALCUL ='GENE',
                              TYPE_CALCUL ='TRAN',
                              SCHEMA_TEMPS=_F(SCHEMA='EULER'),
                              AMOR_MODAL= _F(AMOR_REDUIT=.5),
                              INCREMENT=_F(  INST_INIT = 0.,  INST_FIN = tfin, PAS = pas, VERI_PAS='NON'),
                              EXCIT=(
-                                    _F(VECT_ASSE=VAGFZ,FONC_MULT=RAMP,),
-                                    _F(VECT_ASSE=VAGFY,FONC_MULT=RAMP,),
+                                    _F(VECT_ASSE_GENE=VAGFZ,FONC_MULT=RAMP,),
+                                    _F(VECT_ASSE_GENE=VAGFY,FONC_MULT=RAMP,),
                                     ),
-                             ROTOR_FISS =  _F( 
+                             ROTOR_FISS =  _F(
                                                 GROUP_NO_G = 'FISS_G',
                                                 GROUP_NO_D = 'FISS_D',
                                                 VITE_ROTA=-10.*pi,
@@ -252,7 +252,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',
               UNITE=31,
               COURBE=(
                       _F(FONCTION=DEPN4Z, MARQUEUR=0,),
-              )) 
+              ))
 
 
 TEST_FONCTION(VALEUR=(_F(FONCTION=DEPN4Z,

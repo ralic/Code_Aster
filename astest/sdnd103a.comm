@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
+# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE RESSORT AVEC UNE NON-LINEARITE SOUMIS A UNE ACCELERATION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -132,7 +132,7 @@ TRAN_GEE=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                  MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
                  SCHEMA_TEMPS=_F(SCHEMA=METHOD1,),
                  ETAT_INIT=_F( VITE = VECT_GEN),
-                EXCIT=_F( VECT_ASSE = VECT_X,  FONC_MULT = ACCE_X),
+                EXCIT=_F( VECT_ASSE_GENE = VECT_X,  FONC_MULT = ACCE_X),
                 RELA_EFFO_DEPL=_F(  NOEUD = 'N01',  NOM_CMP = 'DX',
                                  RELATION = f_NLIN),
                  INCREMENT=_F( INST_INIT = 0., INST_FIN = DER, PAS = PAS)
@@ -143,7 +143,7 @@ TRAN_GED=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                  MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
                  SCHEMA_TEMPS=_F(SCHEMA=METHOD2,),
                  ETAT_INIT=_F( VITE= VECT_GEN),
-                EXCIT=_F( VECT_ASSE = VECT_X,  FONC_MULT = ACCE_X),
+                EXCIT=_F( VECT_ASSE_GENE = VECT_X,  FONC_MULT = ACCE_X),
                 RELA_EFFO_DEPL=_F(  NOEUD = 'N01',  NOM_CMP = 'DX',
                                  RELATION = f_NLIN),
                  INCREMENT=_F( INST_INIT = 0., INST_FIN = DER, PAS = PAS)
@@ -270,7 +270,7 @@ TRAN_GE3=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                        MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
                         SCHEMA_TEMPS=_F(SCHEMA=METHOD1,),
                         ETAT_INIT=_F( VITE = VECT_GEN),
-                       EXCIT=_F( VECT_ASSE = VECT_X, FONC_MULT = ACCE_X),
+                       EXCIT=_F( VECT_ASSE_GENE = VECT_X, FONC_MULT = ACCE_X),
                        RELA_EFFO_DEPL=_F(  NOEUD = 'N01',  NOM_CMP = 'DX',
                                         RELATION = f_NLIN),
                         INCREMENT=_F( INST_INIT = 0.,  INST_FIN = DER,
@@ -281,7 +281,7 @@ TRAN_GE4=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                        MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
                         SCHEMA_TEMPS=_F(SCHEMA=METHOD2,),
                         ETAT_INIT=_F( VITE = VECT_GEN),
-                       EXCIT=_F( VECT_ASSE = VECT_X, FONC_MULT = ACCE_X),
+                       EXCIT=_F( VECT_ASSE_GENE = VECT_X, FONC_MULT = ACCE_X),
                        RELA_EFFO_DEPL=_F(  NOEUD = 'N01',  NOM_CMP = 'DX',
                                         RELATION = f_NLIN),
                         INCREMENT=_F( INST_INIT = 0.,  INST_FIN = DER,

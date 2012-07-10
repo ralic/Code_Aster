@@ -1,22 +1,22 @@
-# MODIF  DATE 26/09/2011   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE SOUS-STRUCTURATION TRANSITOIRE : SYSTEME MASSES-RESSORTS
 # sdld102d.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
 # CE FICHIER DE COMMANDE CONTIENT LES INSTRUCTIONS POUR CALCULER LA
@@ -149,7 +149,7 @@ V_ASSE=ASSE_VECTEUR(VECT_ELEM=V_ELEM,
 MODES_L=MODE_ITER_SIMULT(MATR_A=RAID_L,
                          MATR_B=MASS_L,
                          CALC_FREQ=_F(NMAX_FREQ=1,),);
-                         
+
 MODES_L=NORM_MODE(reuse=MODES_L,
                   MODE=MODES_L,
                   NORME='MASS_GENE',);
@@ -236,7 +236,7 @@ RIGGEN=ASSE_MATR_GENE(NUME_DDL_GENE=NUMEGE,
 FGEN=ASSE_VECT_GENE(NUME_DDL_GENE=NUMEGE,
                     CHAR_SOUS_STRUC=_F(SOUS_STRUC='COTE1',
                                        VECT_ASSE=V_ASSE,),);
-                                       
+
 #---------------------------------------------------------------------
 #
 # ----- CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE
@@ -286,7 +286,7 @@ MASPRO=PROJ_MATR_BASE(BASE=RESGEN,
 RIGPRO=PROJ_MATR_BASE(BASE=RESGEN,
                       NUME_DDL_GENE=NUMEMODE,
                       MATR_ASSE_GENE=RIGGEN,);
-                      
+
 
 VECPRO=PROJ_VECT_BASE(BASE=RESGEN,
                       NUME_DDL_GENE=NUMEMODE,
@@ -302,7 +302,7 @@ TRANGEN1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                       INST_FIN=82.,
                                       PAS=0.01,),
                          ARCHIVAGE=_F(PAS_ARCH=1,),
-                         EXCIT=_F(VECT_ASSE=VECPRO,
+                         EXCIT=_F(VECT_ASSE_GENE=VECPRO,
                                   COEF_MULT=1.,),);
 
 
@@ -316,14 +316,14 @@ TRAN1=REST_GENE_PHYS(RESU_GENE=TRANGEN1,
                      INTERPOL='LIN',
                      TOUT_CHAM='OUI',
                      NOEUD='NO3',);
-                     
+
 # CAS RAJOUTES POUR LA COUVERTURE DE CODE
 TRAN11=REST_SOUS_STRUC(RESU_GENE=TRANGEN1,
                        MODE_MECA=MODGLO,
                        SQUELETTE=SQUEL,
                        LIST_INST=LIST_R,
                        INTERPOL='LIN',
-                       TOUT_CHAM='OUI',);                     
+                       TOUT_CHAM='OUI',);
 
 TRAN_SS=REST_GENE_PHYS(RESU_GENE=TRANGEN1,
                        MODE_MECA=MODCOT,

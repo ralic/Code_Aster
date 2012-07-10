@@ -1,10 +1,10 @@
-      SUBROUTINE IRCHME ( IFICHI, CHANOM, MODELE, PARTIE, NOCHMD,
-     &                    NORESU, NOMSYM, TYPECH, NUMORD, NBRCMP,
-     &                    NOMCMP, NBNOEC, LINOEC, NBMAEC, LIMAEC,
-     &                    LVARIE, CODRET )
+      SUBROUTINE IRCHME ( IFICHI, CHANOM, PARTIE, NOCHMD, NORESU,
+     &                    NOMSYM, TYPECH, NUMORD, NBRCMP, NOMCMP,
+     &                    NBNOEC, LINOEC, NBMAEC, LIMAEC, LVARIE,
+     &                    CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 02/07/2012   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 C RESPONSABLE SELLENET N.SELLENET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,7 +27,6 @@ C        AU FORMAT MED
 C     ENTREES:
 C        IFICHI : UNITE LOGIQUE D'IMPRESSION DU CHAMP
 C        CHANOM : NOM ASTER DU CHAM A ECRIRE
-C        MODELE : NOM DU MODELE
 C        PARTIE : IMPRESSION DE LA PARTIE IMAGINAIRE OU REELLE POUR
 C                  UN CHAMP COMPLEXE AU FORMAT CASTEM OU GMSH OU MED
 C        NORESU : NOM DU RESULTAT D'OU PROVIENT LE CHAMP A IMPRIMER.
@@ -65,7 +64,7 @@ C
       CHARACTER*16 NOMSYM
       CHARACTER*19 CHANOM
       CHARACTER*24 NOCELK
-      CHARACTER*(*) NOMCMP(*),MODELE,PARTIE
+      CHARACTER*(*) NOMCMP(*),PARTIE
 C
       INTEGER NUMORD, NBRCMP, IFICHI, IRET
       INTEGER NBNOEC, NBMAEC, ICELK
@@ -86,7 +85,7 @@ C
 C
       INTEGER IFM,NIVINF,NUMPT,IAUX
 C
-      CHARACTER*8 SAUX08,MODEL1
+      CHARACTER*8 SAUX08,MODELE
       CHARACTER*24 VALK(1)
       CHARACTER*64 NOCHMD
 C
@@ -175,22 +174,18 @@ C
       IF ( CODRET.EQ.0 ) THEN
 C
         IF(TYPECH(1:4).NE.'ELGA')THEN
-          MODEL1 = ' '
+          MODELE = ' '
         ELSE
-          IF ( MODELE.EQ.' ' ) THEN
-            NOCELK = CHANOM//'.CELK'
-            CALL JEVEUO(NOCELK,'L',ICELK)
-            MODEL1 = ZK24(ICELK)(1:8)
-          ELSE
-            MODEL1 = MODELE
-          ENDIF
-          CALL JEEXIN ( MODEL1//'.MAILLE', IRET)
+          NOCELK = CHANOM//'.CELK'
+          CALL JEVEUO(NOCELK,'L',ICELK)
+          MODELE = ZK24(ICELK)(1:8)
+          CALL JEEXIN ( MODELE//'.MAILLE', IRET)
           IF(IRET.EQ.0)THEN
                IF ( NORESU.NE.' ' ) THEN
                   CALL RSADPA(NORESU,'L',1,'MODELE',NUMORD, 0, IAUX,
      &                        SAUX08 )
-                  MODEL1 = ZK8(IAUX)
-                  CALL JEEXIN ( MODEL1//'.MAILLE', IRET)
+                  MODELE = ZK8(IAUX)
+                  CALL JEEXIN ( MODELE//'.MAILLE', IRET)
                ENDIF
             ENDIF
             IF(IRET.EQ.0)THEN
@@ -200,7 +195,7 @@ C
         ENDIF
 C
         IF ( NIVINF.GT.1 ) THEN
-          WRITE (IFM,13001) MODEL1
+          WRITE (IFM,13001) MODELE
 13001 FORMAT(2X,'MODELE ASSOCIE AU CHAMP : ',A)
         ENDIF
       ENDIF
@@ -212,7 +207,7 @@ C
       IF ( CODRET.EQ.0 ) THEN
 C
         IF ( TYPECH(1:4).EQ.'NOEU' ) THEN
-          CALL IRCNME ( IFICHI, NOCHMD, CHANOM, TYPECH, MODEL1,
+          CALL IRCNME ( IFICHI, NOCHMD, CHANOM, TYPECH, MODELE,
      &                  NBRCMP, NOMCMP, PARTIE,
      &                  NUMPT, INSTAN, NUMORD,
      &                  NBNOEC, LINOEC,
@@ -223,13 +218,13 @@ C         SI ON EST DANS LE CAS VARI ET QU'ON A DEMANDE L'EXPLOSION
 C         DU CHAMP SUIVANT LE COMPORTEMENT, ON DOIT RAJOUTER
 C         CERTAINS TRAITEMENT
           IF ( (NOMSYM(1:5).EQ.'VARI_').AND.LVARIE ) THEN
-            CALL IRVARI ( IFICHI, NOCHMD, CHANOM, TYPECH, MODEL1,
+            CALL IRVARI ( IFICHI, NOCHMD, CHANOM, TYPECH, MODELE,
      &                    NBRCMP, NOMCMP, PARTIE,
      &                    NUMPT, INSTAN, NUMORD,
      &                    NBMAEC, LIMAEC, NORESU,
      &                    CODRET )
           ELSE
-            CALL IRCEME ( IFICHI, NOCHMD, CHANOM, TYPECH, MODEL1,
+            CALL IRCEME ( IFICHI, NOCHMD, CHANOM, TYPECH, MODELE,
      &                    NBRCMP, NOMCMP, ' ', PARTIE,
      &                    NUMPT, INSTAN, NUMORD,
      &                    NBMAEC, LIMAEC,
@@ -237,7 +232,7 @@ C         CERTAINS TRAITEMENT
           ENDIF
         ELSE IF ( TYPECH(1:4).EQ.'CART' ) THEN
 C
-          CALL IRCEME ( IFICHI, NOCHMD, CHANOM, TYPECH, MODEL1,
+          CALL IRCEME ( IFICHI, NOCHMD, CHANOM, TYPECH, MODELE,
      &                  NBRCMP, NOMCMP, ' ', PARTIE,
      &                  NUMPT, INSTAN, NUMORD,
      &                  NBMAEC, LIMAEC,

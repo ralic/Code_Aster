@@ -1,4 +1,4 @@
-# MODIF  DATE 17/04/2012   AUTEUR CHANSARD F.CHANSARD 
+# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE TRANSITOIRE D'UN ARBRE MUNI DE TROIS DISQUES : DYNA_VIBRA
 # sdll126b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -171,9 +171,9 @@ TRANSMO=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                         INCREMENT=_F(INST_FIN=tfin,
                                      PAS=pdtf,
                                      VERI_PAS='NON',),
-                        EXCIT=(_F(VECT_ASSE=BZGE,
+                        EXCIT=(_F(VECT_ASSE_GENE=BZGE,
                                   FONC_MULT=forz,),
-                               _F(VECT_ASSE=BYGE,
+                               _F(VECT_ASSE_GENE=BYGE,
                                   FONC_MULT=fory,),),);
 
 DZ_GED2=RECU_FONCTION(RESU_GENE=TRANSMO,

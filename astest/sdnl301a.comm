@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
+# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE  VIBRATION D'UNE POUTRE AVEC IMPACT MULTI-POINTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -104,7 +104,7 @@ FORCE=AFFE_CHAR_MECA(MODELE=MO,
                                                'N39','N40','N41','N42',
                                                'N43','N44','N45','N46',
                                                'N47','N48','N49',))));
-                                               
+
 BUTE=DEFI_OBSTACLE(TYPE='PLAN_Y');
 
 # ASSEMBLAGE MATRICE
@@ -180,7 +180,7 @@ TRANGENE=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                       INST_FIN = TFIN,
                                       PAS      = DELT),
                          ARCHIVAGE=_F(PAS_ARCH  =10),
-                         EXCIT=_F(VECT_ASSE= VECTPROJ,
+                         EXCIT=_F(VECT_ASSE_GENE= VECTPROJ,
                                   FONC_MULT= SINOT),
                          CHOC=(_F(NOEUD_1  = 'N14',
                                   JEU      = .406E-3,
@@ -252,8 +252,8 @@ dN25_Y1b = RECU_FONCTION(RESU_GENE= TRANGENE,
                          NOEUD    = 'N2',
                          INTERPOL = 'LIN',
                          NOM_CMP  = 'DY');
-                        
-                        
+
+
 # ---- PRISE EN COMPTE DES MODES STATIQUES DANS LA BASE MODALE
 #      =======================================================
 
@@ -262,7 +262,7 @@ MODE_STA = MODE_STATIQUE(MATR_RIGI   = MATR,
                          FORCE_NODALE=_F(NOEUD=('N14','N26','N38','N2'),
                                          AVEC_CMP=('DX','DY',)),
                          INFO=1);
-                         
+
 BASEMODA = DEFI_BASE_MODALE(RITZ =(_F(MODE_MECA=MODE,
                                       NMAX_MODE=30),
                                    _F(MODE_INTF=MODE_STA)),
@@ -288,7 +288,7 @@ PROJ_BASE(BASE=BASEMODA,
                           _F(MATRICE  =CO('AMORPRO2'),
                              MATR_ASSE=MATA)),
           STOCKAGE='PLEIN');
-                
+
 VECTPRO2=PROJ_VECT_BASE(BASE         =BASEMODA,
                         VECT_ASSE    =VECT,
                         NUME_DDL_GENE=NDDLGEN2,
@@ -299,12 +299,12 @@ TRANGEN2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                          MATR_MASS=MASSPRO2,
                          MATR_RIGI=RIGIPRO2,
                          MATR_AMOR=AMORPRO2,
-                         
+
                          INCREMENT=_F(INST_INIT= 0.,
                                       INST_FIN = TFIN,
                                       PAS      = DELT),
                          ARCHIVAGE=_F(PAS_ARCH=10),
-                         EXCIT=_F(VECT_ASSE = VECTPRO2,
+                         EXCIT=_F(VECT_ASSE_GENE = VECTPRO2,
                                   FONC_MULT = SINOT),
                          CHOC=(_F(NOEUD_1  = 'N14',
                                   JEU      = .406E-3,
@@ -360,37 +360,37 @@ TEST_TABLE(TABLE=POST2,
 # RESPHY = REST_GENE_PHYS(RESU_GENE =TRANGEN2,
 #                         TOUT_ORDRE='OUI',
 #                         NOM_CHAM  ='DEPL');
-# 
+#
 # dN25_Y2a = RECU_FONCTION(RESULTAT= RESPHY,
 #                         NOM_CHAM= 'DEPL',
 #                         NOEUD   = 'N2',
 #                         INTERPOL= 'LIN',
 #                         NOM_CMP = 'DY');
-# 
+#
 # dN7_Y2b = RECU_FONCTION(RESU_GENE= TRANGEN2,
 #                         NOM_CHAM = 'DEPL',
 #                         NOEUD    = 'N14',
 #                         INTERPOL = 'LIN',
 #                         NOM_CMP  = 'DY');
-# 
+#
 # dN13_Y2b = RECU_FONCTION(RESU_GENE= TRANGEN2,
 #                         NOM_CHAM = 'DEPL',
 #                         NOEUD    = 'N26',
 #                         INTERPOL = 'LIN',
 #                         NOM_CMP  = 'DY');
-#                         
+#
 # dN19_Y2b = RECU_FONCTION(RESU_GENE= TRANGEN2,
 #                         NOM_CHAM = 'DEPL',
 #                         NOEUD    = 'N38',
 #                         INTERPOL = 'LIN',
 #                         NOM_CMP  = 'DY',);
-#                         
+#
 # dN25_Y2b = RECU_FONCTION(RESU_GENE= TRANGEN2,
 #                         NOM_CHAM = 'DEPL',
 #                         NOEUD    = 'N2',
 #                         INTERPOL = 'LIN',
 #                         NOM_CMP  = 'DY');
-#                         
+#
 # IMPR_FONCTION(FORMAT='XMGRACE',
 #             UNITE = 25,
 #             LEGENDE_X='TEMPS',
@@ -403,8 +403,8 @@ TEST_TABLE(TABLE=POST2,
 #                        LEGENDE='dN25_Y2b',
 #                        COULEUR=6,
 #                        MARQUEUR=0,)));
-# 
-# 
+#
+#
 # IMPR_FONCTION(FORMAT='XMGRACE',
 #             UNITE = 26,
 #             LEGENDE_X='TEMPS',
@@ -425,5 +425,5 @@ TEST_TABLE(TABLE=POST2,
 #                        LEGENDE='dN25_Y2b',
 #                        COULEUR=6,
 #                        MARQUEUR=0,)));
-                       
+
 FIN();

@@ -1,4 +1,4 @@
-#@ MODIF sd_fond_fiss SD  DATE 20/02/2012   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF sd_fond_fiss SD  DATE 10/07/2012   AUTEUR LADIER A.LADIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,4 +36,13 @@ class sd_fond_fiss(AsBase):
     LEVRESUP_MAIL  = Facultatif(AsVK8(SDNom(nomj='.LEVRESUP.MAIL'), ))
     INFO           = AsVK8(SDNom(nomj='.INFO'), lonmax=2, )
     FOND_TAILLE_R  = Facultatif(AsVR(SDNom(nomj='.FOND.TAILLE_R'),))
+
+    def check_BASEFOND(self,checker):
+        info = self.INFO.get_stripped()
+        config = info[1]
+        basefond = self.BASEFOND.get()
+        if config == 'DECOLLEE' :
+           assert basefond is None,config
+        else:
+           pass
 

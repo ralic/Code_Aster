@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
+# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION ELEMENTAIRE DES SCHEMAS EN TEMPS DANS DYNA_VIBRA
 # sdld31b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -243,7 +243,7 @@ TRANGE=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                        SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                        INCREMENT=_F(INST_FIN=tfin,
                                     PAS=pasdt,),
-                       EXCIT=_F(VECT_ASSE=PRACTION,
+                       EXCIT=_F(VECT_ASSE_GENE=PRACTION,
                                 FONC_MULT=FSIN,),);
 
 BTRANGE=RECU_FONCTION(RESU_GENE=TRANGE,
@@ -309,7 +309,7 @@ NEWTRANG=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                          AMOR_MODAL=_F(AMOR_REDUIT=HYHY,),
                          INCREMENT=_F(INST_FIN=tfin,
                                       PAS=pasdt,),
-                         EXCIT=_F(VECT_ASSE=PRACTION,
+                         EXCIT=_F(VECT_ASSE_GENE=PRACTION,
                                   FONC_MULT=FSIN,),);
 
 BNEWTRAN=RECU_FONCTION(RESU_GENE=NEWTRANG,
@@ -347,7 +347,7 @@ DEVTRANG=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                          AMOR_MODAL=_F(AMOR_REDUIT=HYHY,),
                          INCREMENT=_F(INST_FIN=tfin,
                                       PAS=pasdt,),
-                         EXCIT=_F(VECT_ASSE=PRACTION,
+                         EXCIT=_F(VECT_ASSE_GENE=PRACTION,
                                   FONC_MULT=FSIN,),);
 
 BDEVTRAN=RECU_FONCTION(RESU_GENE=DEVTRANG,

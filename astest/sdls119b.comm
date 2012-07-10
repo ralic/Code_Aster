@@ -1,21 +1,21 @@
-# MODIF  DATE 07/05/2012   AUTEUR BODEL C.BODEL 
+# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE SUR APPUI SOUMISE A UNE ACCELERATION DE RICKER (METHODE TEMPS-FREQUENCE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # sdls119b.para = tps_job 300 mem_job 1000Mo mem_aster 80 ncpus 1 liste_test R
 
@@ -172,6 +172,7 @@ chpesa = AFFE_CHAR_MECA(  MODELE = mode ,
 mono_x = CALC_CHAR_SEISME( MATR_MASS = masse ,
                            DIRECTION=( 1. , 0. , 0. ,) ,
                            MONO_APPUI = 'OUI' , );
+CHVA_x=AFFE_CHAR_MECA(MODELE=mode,VECT_ASSE=mono_x)
 #
 chseism = AFFE_CHAR_MECA( MODELE = mode ,
                           VECT_ASSE = mono_x , );
@@ -187,6 +188,7 @@ FELEM=CALC_VECT_ELEM(OPTION='CHAR_MECA',
 
 FASSE=ASSE_VECTEUR(VECT_ELEM=FELEM,
                    NUME_DDL=NUM,);
+CHVA_F=AFFE_CHAR_MECA(MODELE=mode,VECT_ASSE=FASSE)
 
 L_INST=DEFI_LIST_REEL(DEBUT=-0.01,
                       INTERVALLE=_F(JUSQU_A=0.0,
@@ -249,10 +251,10 @@ PROJ_BASE(BASE=MODES,
 
 EVOL0gen=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                     MATR_MASS=mgene, MATR_RIGI=kgene,
-                    SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',BETA =1.0,GAMMA =1.5,), 
+                    SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',BETA =1.0,GAMMA =1.5,),
                     INCREMENT=_F( LIST_INST = L_INST),
                     ARCHIVAGE=_F( PAS_ARCH=10),
-                    EXCIT=_F( VECT_ASSE=fgene, COEF_MULT = 1.0,),
+                    EXCIT=_F( VECT_ASSE_GENE=fgene, COEF_MULT = 1.0,),
                    );
 
 EVOL0=REST_GENE_PHYS(RESU_GENE=EVOL0gen,NOM_CHAM=('DEPL','VITE'))
@@ -292,20 +294,20 @@ for k in range(1,NF):
                        INCREMENT=_F(LIST_INST=TEMPL2C,),
                        ARCHIVAGE=_F(PAS_ARCH=2,),
                        EXCIT=(
-                              _F( VECT_ASSE=fgene, COEF_MULT = 1.0,),
-                              _F( VECT_ASSE=monogene, FONC_MULT = accel2t,),
+                              _F( VECT_ASSE_GENE=fgene, COEF_MULT = 1.0,),
+                              _F( VECT_ASSE_GENE=monogene, FONC_MULT = accel2t,),
                              ),
                       );
 
     EVOL=REST_GENE_PHYS(RESU_GENE=EVOLgen,NOM_CHAM='DEPL');
 
-    EVOLH = DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
+    EVOLH = DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS', MODELE=mode,
                        MATR_MASS=masse, MATR_RIGI=rigidite,
                        MATR_AMOR=amorto,
                        LIST_FREQ = listfreq,
                        EXCIT=(
-                            _F( VECT_ASSE=FASSE, FONC_MULT_C= FFUN,),
-                            _F( VECT_ASSE=mono_x, FONC_MULT_C= FFACCE,),
+                            _F( CHARGE=CHVA_F, FONC_MULT_C= FFUN,),
+                            _F( CHARGE=CHVA_x, FONC_MULT_C= FFACCE,),
                              ),
                       );
 
@@ -391,14 +393,14 @@ for k in range(1,NF):
                        INCREMENT=_F(LIST_INST=TEMPL2C,),
                        ARCHIVAGE=_F(PAS_ARCH=2,),
                        EXCIT=(
-                              _F( VECT_ASSE=fgene, COEF_MULT = 1.0,),
-                              _F( VECT_ASSE=monogene, FONC_MULT = accel2t,),
+                              _F( VECT_ASSE_GENE=fgene, COEF_MULT = 1.0,),
+                              _F( VECT_ASSE_GENE=monogene, FONC_MULT = accel2t,),
                              ),
                       EXCIT_RESU=(
                               _F( RESULTAT = resupro, COEF_MULT = -1.0,),
                                  ),
                      );
-    
+
     EVOL=REST_GENE_PHYS(RESU_GENE=EVOLgen,NOM_CHAM='DEPL');
 
     DETRUIRE(INFO=1,CONCEPT=_F(NOM=resunl));
@@ -420,13 +422,13 @@ for k in range(1,NF):
                           SYMETRIE = 'NON' ,
                           NOM_CHAM = 'DEPL' ,  );
 
-    EVOLH = DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
+    EVOLH = DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS', MODELE=mode,
                          MATR_MASS=masse, MATR_RIGI=rigidite,
                          MATR_AMOR=amorto,
                          LIST_FREQ = listfreq,
                          EXCIT=(
-                            _F( VECT_ASSE=FASSE, FONC_MULT_C= FFUN,),
-                            _F( VECT_ASSE=mono_x, FONC_MULT_C= FFACCE,),
+                            _F( CHARGE=CHVA_F, FONC_MULT_C= FFUN,),
+                            _F( CHARGE=CHVA_x, FONC_MULT_C= FFACCE,),
                                 ),
                          EXCIT_RESU=(
                                  _F( RESULTAT = resunlf,
@@ -487,7 +489,7 @@ TEST_RESU(RESU=(
             REFERENCE = 'AUTRE_ASTER', ),)
    );
 
-          
+
 #
 # Calcul de la solution de reference en passant par la FFT (python) de CALC_FONCTION :
 #

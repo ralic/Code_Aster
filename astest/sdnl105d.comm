@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE CHOC DE 3 POUTRES ENTRE ELLES : SOUS-STRUCTURATION ELEMENTAIRE
 # sdnl105d.para = tps_job 80 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -202,7 +202,7 @@ IMPR_RESU(MODELE=BARRE,
                    RESULTAT=BAMO2,),)
                    )
 #
-IMPR_RESU(MODELE=BARRE,FORMAT='MED',
+IMPR_RESU(FORMAT='MED',
           RESU=(_F(MAILLAGE=MAYA,
                    RESULTAT=BAMO2,),)
                    )
@@ -372,7 +372,7 @@ for k in range(1,ns+1):
                              MATR_MASS=M_PROJ,
                              MATR_RIGI=K_PROJ,
 #                             MATR_AMOR=A_PROJ,
-                                EXCIT=_F( VECT_ASSE = F_PROJ,
+                                EXCIT=_F( VECT_ASSE_GENE = F_PROJ,
                                        COEF_MULT = 1000.),
                              INCREMENT=_F(  INST_INIT = 0.,
                                           INST_FIN = 4.,

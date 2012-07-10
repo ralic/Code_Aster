@@ -1,4 +1,4 @@
-# MODIF  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
+# MODIF  DATE 10/07/2012   AUTEUR LADIER A.LADIER 
 # TITRE : APPLICATION D'UNE PRESSION SUR LES LEVRES D'UNE FISSURE AVEC X-FEM EN 2D
 # ssnv203a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -100,8 +100,8 @@ CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                    )
 
 # pour tester option CHAR_MECA_PRES_F
-FCTPRES = FORMULE(VALE='X*10000.',
-                  NOM_PARA=('X',),);
+FCTPRES = FORMULE(VALE='Y*20000.',
+                  NOM_PARA=('Y',),);
 
 CH2=AFFE_CHAR_MECA_F(MODELE=MODELEK,
                      PRES_REP=_F(FISSURE=FISS,PRES=FCTPRES)
@@ -123,6 +123,7 @@ UTOT1=MECA_STATIQUE(MODELE=MODELEK,
                           ),
                    INFO=1,
                    ); 
+
 UTOT2=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
                    EXCIT=(
@@ -276,43 +277,71 @@ TEST_TABLE(TABLE=DEP1M,
            PRECISION=1.0E-11,
            REFERENCE='ANALYTIQUE',);
 
-# POUR LE CHARGEMENT 2              DCX            DCY            H1X          H1Y
-# DEPLE            N3           1.20823E-07  9.95560E-08    4.28977E-08  4.94111E-07  
-# DEPLE            N4           1.20823E-07 -9.95560E-08   -4.28977E-08  4.94111E-07  
-# DEPLE            N3       UTOT2    DEPL                        1  1.00000E+00  4.00000E-01  1.00000E+00  4.00000E-01  0.00000E+00 -            -             5.28869E-07  7.46305E-07  1.24721E-06  5.37078E-07  0.00000E+00  0.00000E+00
-# DEPLE            N4       UTOT2    DEPL                        1  1.00000E+00  6.00000E-01  1.00000E+00  6.00000E-01  0.00000E+00 -            -            -2.87224E-07  5.47193E-07  1.16142E-06  4.51144E-07  0.00000E+00  0.00000E+00
+# POUR LE CHARGEMENT 2
 
 TEST_TABLE(TABLE=DEP2P,
            NOM_PARA='DX',
-           FILTRE=_F(NOM_PARA='COOR_X',VALE=1.0,),
-           VALE= 1.2082287802957E-07,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-11,
-           REFERENCE='NON_REGRESSION',);
+           TYPE_TEST='MIN',
+           VALE= 0.0,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=DEP2P,
+           NOM_PARA='DX',
+           TYPE_TEST='MAX',
+           VALE= 0.0,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);
 
 TEST_TABLE(TABLE=DEP2P,
            NOM_PARA='DY',
-           FILTRE=_F(NOM_PARA='COOR_X',VALE=1.0,),
-           VALE=-4.9411069583244E-07,
+           TYPE_TEST='MIN',
+           VALE=-5.0E-7,
            CRITERE='RELATIF',
            PRECISION=1.0E-11,
-           REFERENCE='NON_REGRESSION',);
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=DEP2P,
+           NOM_PARA='DY',
+           TYPE_TEST='MAX',
+           VALE=-5.0E-7,
+           CRITERE='RELATIF',
+           PRECISION=1.0E-11,
+           REFERENCE='ANALYTIQUE',);
 
 
 TEST_TABLE(TABLE=DEP2M,
            NOM_PARA='DX',
-           FILTRE=_F(NOM_PARA='COOR_X',VALE=1.0,),
-           VALE= 1.2082287802957E-07,
-           CRITERE='RELATIF',
-           PRECISION=1.0E-11,
-           REFERENCE='NON_REGRESSION',);
+           TYPE_TEST='MIN',
+           VALE= 0.0,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=DEP2M,
+           NOM_PARA='DX',
+           TYPE_TEST='MAX',
+           VALE= 0.0,
+           CRITERE='ABSOLU',
+           PRECISION=1.0E-16,
+           REFERENCE='ANALYTIQUE',);
 
 TEST_TABLE(TABLE=DEP2M,
            NOM_PARA='DY',
-           FILTRE=_F(NOM_PARA='COOR_X',VALE=1.0,),
-           VALE= 4.9411069583244E-07,
+           TYPE_TEST='MIN',
+           VALE= 5.0E-7,
            CRITERE='RELATIF',
            PRECISION=1.0E-11,
-           REFERENCE='NON_REGRESSION',);
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=DEP2M,
+           NOM_PARA='DY',
+           TYPE_TEST='MAX',
+           VALE= 5.0E-7,
+           CRITERE='RELATIF',
+           PRECISION=1.0E-11,
+           REFERENCE='ANALYTIQUE',);
 
 FIN();

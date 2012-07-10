@@ -297,8 +297,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',
               );
 # ===========================================
 
-IMPR_RESU(MODELE=MO,
-          FORMAT='MED',
+IMPR_RESU(FORMAT='MED',
           UNITE=80,
           RESU=_F(RESULTAT=RESU,NOM_CHAM=('DEPL','FORC_NODA','SIEQ_ELGA','VALE_CONT',),),);
 # ===========================================

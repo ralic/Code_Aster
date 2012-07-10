@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE REPONSE HARMONIQUE : POUTRE BI-APPUYEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -428,7 +428,7 @@ DYNGEN=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
                             FREQ=F,
                            TOUT_CHAM='OUI',
 
-                            EXCIT=_F( VECT_ASSE = VECTGEN,
+                            EXCIT=_F( VECT_ASSE_GENE = VECTGEN,
                                    COEF_MULT = 1.))
 
 #

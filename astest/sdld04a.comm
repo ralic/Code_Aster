@@ -1,4 +1,4 @@
-# MODIF  DATE 23/04/2012   AUTEUR ALARCON A.ALARCON 
+# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE REPONSE TRANSITOIRE D'UN SYSTEME A UNE ACCELERATION IMPOSEE
 # sdld04a.para = tps_job 60 mem_job 164Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -144,7 +144,7 @@ PROJ_BASE(  BASE=MODE_MEC,
 TRAN_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                    MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
                    SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
-                    EXCIT=_F(  VECT_ASSE = VECT_X, FONC_MULT = ACCELERO),
+                    EXCIT=_F(  VECT_ASSE_GENE = VECT_X, FONC_MULT = ACCELERO),
                  INCREMENT=_F( INST_INIT = 0.,  INST_FIN = 0.06,  PAS = 0.001)
                            )
 
@@ -156,8 +156,8 @@ TRAN_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                      SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',BETA=0.27,GAMMA=0.52),
                   ETAT_INIT=_F(  RESULTAT = TRAN_GEN,NUME_ORDRE = 60,),
 #                              INST_INIT = 0.06, PRECISION = 1.E-4),
-                               
-                      EXCIT=_F( VECT_ASSE = VECT_X, FONC_MULT = ACCELERO),
+
+                      EXCIT=_F( VECT_ASSE_GENE = VECT_X, FONC_MULT = ACCELERO),
                   INCREMENT=_F(  LIST_INST=L_INC,
                                  INST_FIN= 0.08,)  )
 
@@ -167,8 +167,8 @@ TRAN_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                      SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                   ETAT_INIT=_F(  RESULTAT = TRAN_GEN,
                               INST_INIT = 0.07, PRECISION = 1.E-4, CRITERE = 'ABSOLU'),
-                      EXCIT=_F(  VECT_ASSE = VECT_X, FONC_MULT = ACCELERO),
-                  INCREMENT=_F(  INST_FIN = 0.1, PAS = 0.001) , 
+                      EXCIT=_F(  VECT_ASSE_GENE = VECT_X, FONC_MULT = ACCELERO),
+                  INCREMENT=_F(  INST_FIN = 0.1, PAS = 0.001) ,
                   )
 
 N04_DX_1=RECU_FONCTION(  NOEUD='N04',   NOM_CMP='DX',   NOM_CHAM='DEPL',
@@ -233,7 +233,7 @@ TRAN_NUC=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                  MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
                  SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                  EXCIT=(
-                 _F(  VECT_ASSE = VECT_X,  FONC_MULT = ACCELERO),
+                 _F(  VECT_ASSE_GENE = VECT_X,  FONC_MULT = ACCELERO),
                  _F(  NUME_ORDRE = 1,  FONC_MULT = F1),
                  _F(  NUME_ORDRE = 2,  FONC_MULT = F2),
                  _F(  NUME_ORDRE = 3,  FONC_MULT = F3)),
@@ -314,7 +314,7 @@ TRA_GCS=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                  MATR_MASS=MASG_CS2,   MATR_RIGI=RIGG_CS2,
                  SCHEMA_TEMPS=_F(SCHEMA='DEVOGE',),
                  MODE_CORR=MODCOR,
-                 EXCIT=_F(  VECT_ASSE = VECT_GC2,  FONC_MULT = ACCELERO,
+                 EXCIT=_F(  VECT_ASSE_GENE = VECT_GC2,  FONC_MULT = ACCELERO,
                         CORR_STAT = 'OUI',
                         D_FONC_DT = DERI_PRE,  D_FONC_DT2 = DERI_SEC),
                 INCREMENT=_F(  INST_INIT = 0.,  INST_FIN = 0.1,  PAS = 0.001)
@@ -345,7 +345,7 @@ TEST_FONCTION(VALEUR=(
 
 L_INS=DEFI_LIST_REEL(  DEBUT=0.,
                            INTERVALLE=_F(  JUSQU_A = 0.1,  PAS = 0.01))
-                           
+
 TRAN_LI1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                            ENERGIE=_F(),
                            MATR_MASS=MASSE,      MATR_RIGI=RIGIDITE,
@@ -378,7 +378,7 @@ TEST_TABLE(TABLE=ENERLI1,
 
 TEST_TABLE(TABLE=ENERLI1,
            NOM_PARA='ENER_CIN',
-           FILTRE=_F(NOM_PARA='INST',   
+           FILTRE=_F(NOM_PARA='INST',
                      VALE=0.06,),
            PRECISION=1e-8,
            VALE=279.09900226382,
@@ -394,7 +394,7 @@ TEST_TABLE(TABLE=ENERLI1,
 
 TEST_TABLE(TABLE=ENERLI1,
            NOM_PARA='ENER_TOT',
-           FILTRE=_F(NOM_PARA='INST',   
+           FILTRE=_F(NOM_PARA='INST',
                      VALE=0.11,),
            PRECISION=1e-8,
            VALE=1718.1508336655,
@@ -439,13 +439,13 @@ TRAN_LI2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                              SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                              INCREMENT=_F( LIST_INST = L_INS1),
 #                             ARCHIVAGE=_F(  LIST_ARCH = L_ARCH,
-                              ARCHIVAGE=_F(  LIST_INST = L_INS11,                            
+                              ARCHIVAGE=_F(  LIST_INST = L_INS11,
                                     CHAM_EXCLU = ( 'VITE',  'ACCE', )),
                      EXCIT=_F(  VECT_ASSE = MULT_X,  FONC_MULT = ACCELERO)
                            )
 L_INS22=DEFI_LIST_REEL(  DEBUT=0.06,
                            INTERVALLE=_F(  JUSQU_A = 0.11,  PAS = 0.01))
-                           
+
 TRAN_LI2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                              ENERGIE=_F(),
                              reuse=TRAN_LI2,   MATR_MASS=MASSE,   MATR_RIGI=RIGIDITE,
@@ -542,7 +542,7 @@ LISTDIF=DEFI_LIST_REEL(  DEBUT=0.,INTERVALLE=(
 TRAN_LI4=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                              ENERGIE=_F(),
                              MATR_MASS=MASSE,   MATR_RIGI=RIGIDITE,
-                             SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',), 
+                             SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),
                              INCREMENT=_F( LIST_INST=LISTDIF),
                              ARCHIVAGE=_F(  LIST_INST = LISTDIF,
                                     CHAM_EXCLU = ( 'VITE',  'ACCE', )),
@@ -555,7 +555,7 @@ LIST=DEFI_LIST_REEL(  DEBUT=0.06,
 TRAN_LI4=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                           ENERGIE=_F(),
                           reuse=TRAN_LI4,   MATR_MASS=MASSE,   MATR_RIGI=RIGIDITE,
-                               SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',), 
+                               SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),
 #                             INCREMENT=_F(  PAS = 0.001,
 #                                        INST_FIN = 0.11),
                              INCREMENT=_F(LIST_INST=LIST,),
@@ -657,7 +657,7 @@ TRAN_LI3=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                              MATR_MASS=MASSE,   MATR_RIGI=RIGIDITE,
                              ETAT_INIT=_F( DEPL = DEPL_INI,
                                         VITE = VITE_INI),
-                             SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',), 
+                             SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
                              INCREMENT=_F(  LIST_INST = L_INS2),
                              ARCHIVAGE=_F(  PAS_ARCH = 10),
                      EXCIT=_F(  VECT_ASSE = MULT_X,  FONC_MULT = ACCELERO)

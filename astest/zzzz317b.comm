@@ -1,0 +1,104 @@
+# MODIF  DATE 10/07/2012   AUTEUR ZENTNER I.ZENTNER 
+# TITRE GENERATION DE SIGNAUX SISMIQUES
+# zzzz317b.para = tps_job 200 mem_job 400Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE ZENTNER I.ZENTNER  
+DEBUT(CODE=_F(NOM='zzzz317b',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'))
+#
+from math import pi,sqrt,log,exp, ceil
+import numpy as NP
+from Utilitai.optimize   import fmin
+TMID= 5.0
+DUREE   =10.
+arias =0.05
+DT=0.01     
+      
+frr=2.0
+amor=0.4
+wg=frr*2.*pi
+
+########################################################
+# SIMULATION POUR DSP NON SEPARABLE - FREQ FOND VARIABLE
+########################################################
+fp=-0.01
+TSM=5.0
+tini=0.5
+
+ACCE4=GENE_ACCE_SEISME( INFO            =2, INIT_ALEA=1000,
+              PAS_INST       =DT,
+              DSP        = _F(AMOR_REDUIT  =amor,  FREQ_FOND =frr, FREQ_PENTE=fp),
+              MODULATION      = _F(TYPE=   "JENNINGS_HOUSNER", PARA=(0.4, 1.),
+                       DUREE_PHASE_FORTE =TSM, INST_INI= tini,INTE_ARIAS =arias), )
+
+FONCT4=RECU_FONCTION(    TABLE=ACCE4,
+                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                       VALE_I = 1),
+                              NOM_PARA_TABL='FONCTION',)
+
+N4=INFO_FONCTION(  NOCI_SEISME=_F(
+                             FONCTION = FONCT4,
+                             PESANTEUR = 9.81,AMOR_REDUIT=0.05,
+                             OPTION = ('TOUT') ))
+
+RMS4=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT4))
+#
+#IMPR_TABLE (TABLE=RMS4,  UNITE=8,);
+#
+#IMPR_FONCTION(   FORMAT='XMGRACE', UNITE=25, COURBE= (
+#                     _F(FONCTION=FONCT4 ,)))
+
+TEST_TABLE( TABLE=N4,
+                NOM_PARA='INTE_ARIAS', REFERENCE='NON_REGRESSION', PRECISION=1.E-4,
+                    VALE= 0.051179461360687    )
+TEST_TABLE( TABLE=N4, NOM_PARA='DUREE_PHAS_FORT',
+             REFERENCE='NON_REGRESSION', PRECISION=1.E-4, VALE=5.82)
+TEST_TABLE( TABLE=RMS4,
+                NOM_PARA='ECART_TYPE', REFERENCE='NON_REGRESSION', PRECISION=1.E-4,
+                    VALE=0.12483439160218   )
+#################################################################
+
+ACCE5=GENE_ACCE_SEISME( INFO            =2,INIT_ALEA=1000, PAS_INST       =DT,
+               DSP        = _F(AMOR_REDUIT  =amor,  FREQ_FOND =frr,  FREQ_PENTE=0.0),
+               MODULATION      = _F( TYPE=   "GAMMA", DUREE_PHASE_FORTE  = TSM,
+                                             INST_INI= tini, INTE_ARIAS=arias),)
+
+
+FONCT5=RECU_FONCTION(    TABLE=ACCE5,
+                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                       VALE_I = 1),
+                              NOM_PARA_TABL='FONCTION',)
+
+N5=INFO_FONCTION(  NOCI_SEISME=_F(
+                             FONCTION = FONCT5,
+                             PESANTEUR = 9.81,AMOR_REDUIT=0.05, OPTION = ('TOUT') ))
+
+RMS5=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT5))
+TEST_TABLE( TABLE=N5,
+                NOM_PARA='INTE_ARIAS', REFERENCE='NON_REGRESSION', PRECISION=1.E-4,
+                    VALE=0.049645179843448 )
+TEST_TABLE( TABLE=N5,
+                NOM_PARA='DUREE_PHAS_FORT',REFERENCE='NON_REGRESSION', PRECISION=1.E-3,
+                VALE=5.39,)
+TEST_TABLE( TABLE=RMS5,
+                NOM_PARA='ECART_TYPE', REFERENCE='NON_REGRESSION', PRECISION=1.E-4,
+                    VALE=0.12294935036707  )
+
+################################################################
+################################################################
+FIN( )

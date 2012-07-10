@@ -1,4 +1,4 @@
-# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 09/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE VALIDATION DU SOLVEUR MUMPS EN PARALLELE AVEC MATRICE CENTRALISEE
 # mumps05b.para = tps_job 8660 mem_job 23000Mo mpi_nbcpu 1 mpi_nbnoeud 1 ncpus 1 liste_test MI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -42,6 +42,11 @@ solveur = 'MUMPS';
 #                                                               #
 #        #
 # --------------------------------------------------------------#
+#  Dans cette memoire 'DISPO', MUMPS decide qu'il aura besoin   #
+#  de XX, le parametre mem_pivot autorise MUMPS a en prendre    #
+#  (1+mem_pivot/100)*XX                                         #
+# --------------------------------------------------------------#
+mem_pivot = 40;
 #
 # Choix de la methode de renumeration
 meth_renum = 'METIS';
@@ -99,7 +104,7 @@ MECAC=MECA_STATIQUE(INFO=niv_info,
                      EXCIT=(_F(CHARGE=CHARF),
                             _F(CHARGE=CHARD)),
                      OPTION='SANS',
-                     SOLVEUR=_F(METHODE=solveur, RENUM=meth_renum, RESI_RELA=-1.0, 
+                     SOLVEUR=_F(METHODE=solveur, RENUM=meth_renum, RESI_RELA=-1.0, PCENT_PIVOT=mem_pivot,
                      GESTION_MEMOIRE='IN_CORE'));
 
 TEST_RESU(RESU=_F(RESULTAT=MECAC,

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
+# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL TEMPOREL POUTRE SOUS EXCITATION ALEATOIRE AVEC DSP
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1755,8 +1755,8 @@ DYNAMODE=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                       0.01, 0.01,  0.01, 0.01,
                                       0.01, 0.01,),),
                       EXCIT=(
-                 _F(  VECT_ASSE = EFPROJ1,  FONC_MULT = FONCT1),
-                 _F(  VECT_ASSE = EFPROJ2,  FONC_MULT = FONCT2)),
+                 _F(  VECT_ASSE_GENE = EFPROJ1,  FONC_MULT = FONCT1),
+                 _F(  VECT_ASSE_GENE = EFPROJ2,  FONC_MULT = FONCT2)),
                  INCREMENT=_F(  INST_INIT = 0.,
                              INST_FIN = 2.,  PAS = 3.5E-5),
                        ARCHIVAGE=_F(  PAS_ARCH = 4),CHOC=(

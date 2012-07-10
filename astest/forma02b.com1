@@ -51,7 +51,7 @@ DTM=DYNA_TRAN_MODAL(MATR_MASS=MASPRO,
                     INCREMENT=_F(INST_FIN=tfi,
                                  PAS=pas,),
                     SCHEMA_TEMPS=_F(SCHEMA='EULER'),
-                    EXCIT=_F(VECT_ASSE=FYPRO,
+                    EXCIT=_F(VECT_ASSE_GENE=FYPRO,
                              FONC_MULT=FSI,),);
 
 DEPY_B=RECU_FONCTION(RESU_GENE=DTM,
@@ -84,7 +84,7 @@ DLH=DYNA_LINE_HARM(MATR_MASS=MASPRO,
                    MATR_RIGI=RIPRO,
                    AMOR_MODAL=_F(AMOR_REDUIT=.05,),
                    LIST_FREQ=LFR,
-                   EXCIT=_F(VECT_ASSE=FYPRO,
+                   EXCIT=_F(VECT_ASSE_GENE=FYPRO,
                             COEF_MULT=amF,),);
 
 DHB=REST_GENE_PHYS(RESU_GENE=DLH,

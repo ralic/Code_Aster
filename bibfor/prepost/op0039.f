@@ -1,7 +1,7 @@
       SUBROUTINE OP0039 ()
       IMPLICIT   NONE
 C ----------------------------------------------------------------------
-C MODIF PREPOST  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF PREPOST  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 C RESPONSABLE SELLENET N.SELLENET
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
@@ -953,7 +953,7 @@ C          - ECRITURE DU CONCEPT LERESU SUR FICHIER FICH AU FORMAT FORM
             IF ( LNCMED ) THEN
             CALL IREMED(LERESU,IFI,NBNOSY,ZK16(JNOSY),NBCMDU,
      &                  ZK80(JNCMED),PARTIE,NBORDR,ZI(JORDR),LRESU,
-     &                  MODELE,NBNOT,ZI(JNUNOT),NBMAT,ZI(JNUMA),
+     &                  NBNOT,ZI(JNUNOT),NBMAT,ZI(JNUMA),
      &                  NBCMP,ZK8(JCMP),LVARIE)
 
 
@@ -961,7 +961,7 @@ C          - ECRITURE DU CONCEPT LERESU SUR FICHIER FICH AU FORMAT FORM
             ELSE
             CALL IREMED(LERESU,IFI,NBNOSY,ZK16(JNOSY),NBCMDU,
      &                  ' ',PARTIE,NBORDR,ZI(JORDR),LRESU,
-     &                  MODELE,NBNOT,ZI(JNUNOT),NBMAT,ZI(JNUMA),
+     &                  NBNOT,ZI(JNUNOT),NBMAT,ZI(JNUMA),
      &                  NBCMP,ZK8(JCMP),LVARIE)
             ENDIF
           ELSE

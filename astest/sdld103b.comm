@@ -1,4 +1,4 @@
-# MODIF  DATE 23/04/2012   AUTEUR ALARCON A.ALARCON 
+# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE SYSTEME MASSES-RESSORTS LINEAIRE MULTI-SUPPORTE (ROTATION)
 # sdld103b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -45,13 +45,13 @@ CARA_ELE=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=(
                           VALE = ( 0., 0., 0., 10000., 0., 10000., )),
                 _F(  CARA = 'M_TR_L',  REPERE = 'GLOBAL',
                           GROUP_MA = 'RESSORT',
-                          VALE = (0., 0., 0., 0., 0., 0., 0., 0., 0., 
+                          VALE = (0., 0., 0., 0., 0., 0., 0., 0., 0.,
                           0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
-                          0., 0., 0., 0., 0., 0., 0., 0., 0., 
+                          0., 0., 0., 0., 0., 0., 0., 0., 0.,
                           0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
-                          0., 0., 0., 0., 0., 0., 0., 0., 0., 
+                          0., 0., 0., 0., 0., 0., 0., 0., 0.,
                           0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
-                          0., 0., 0., 0., 0., 0., 0., 0., 0., 
+                          0., 0., 0., 0., 0., 0., 0., 0., 0.,
                           0., 0., 0., 0., 0., 0., 0., 0., 0.,  )),
                         _F(  GROUP_NO = 'MASSES',
                           CARA = 'M_TR_N',
@@ -185,14 +185,14 @@ TRAN_GEE=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                  SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                  MODE_STAT=MODE_STA,
                  EXCIT=(
-                _F( VECT_ASSE = VECT_X1,
+                _F( VECT_ASSE_GENE = VECT_X1,
                         ACCE = ACCELER1,
                         MULT_APPUI = 'OUI',
                         DIRECTION = ( 0., 0., 0., 1., 0., 0.,),
                         NOEUD = 'NO1',
                         VITE = VITESSE1,
                         DEPL = DEPLACE1),
-                _F( VECT_ASSE = VECT_X2,
+                _F( VECT_ASSE_GENE = VECT_X2,
                         ACCE = ACCELER2,
                         MULT_APPUI = 'OUI',
                         DIRECTION = ( 0., 0., 0., 1., 0., 0.,),

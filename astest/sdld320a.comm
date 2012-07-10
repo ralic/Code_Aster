@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2012   AUTEUR BODEL C.BODEL 
+# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE SYSTEME 3 MASSES 2 RESSORTS  A 18 DDL (+AMORTISSEURS DISCRETS)
 # sdld320a.para = tps_job 360 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -181,7 +181,7 @@ DYNAMODA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                          INCREMENT=_F(INST_INIT=0.,
                                       INST_FIN=5.,
                                       PAS=0.0001,),
-                         EXCIT=_F(VECT_ASSE=EFFOGENE,
+                         EXCIT=_F(VECT_ASSE_GENE=EFFOGENE,
                                   FONC_MULT=SINOMEGT,),);
 
 #

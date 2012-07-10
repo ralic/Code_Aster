@@ -9,7 +9,7 @@
       LOGICAL         LHIST
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +30,7 @@ C
 C     IMPRESSION D'UN CONCEPT GENERALISE
 C     ------------------------------------------------------------------
       CHARACTER*1  CECR, K1BID
-      CHARACTER*16 TYPCON
+      CHARACTER*16 TYPCON, TYPREM
       CHARACTER*19 GENE,  NOCH19
       CHARACTER*24 NOMST
       LOGICAL      LORDR
@@ -38,13 +38,13 @@ C     ------------------------------------------------------------------
       CALL JEMARQ()
       NOMST = '&&IRGENE.SOUS_TITRE.TITR'
 C
-C     --- QUEL TYPE DE CONCEPT ? ---
+C     --- QUEL TYPE DE CONCEPT  ---
 C
       CALL GETTCO ( RESU , TYPCON )
 C
 C=======================================================================
 C
-C               --- IMPRESSION D'UN "VECT_ASSE_GENE" ---
+C               --- IMPRESSION D'UN VECT_ASSE_GENE ---
 C
 C=======================================================================
       IF ( TYPCON .EQ. 'VECT_ASSE_GENE' ) THEN
@@ -53,7 +53,7 @@ C
 C
 C=======================================================================
 C
-C         --- IMPRESSION D'UN "MODE_GENE" ET D'UN "HARM_GENE" ---
+C         --- IMPRESSION D'UN MODE_GENE ET D'UN HARM_GENE ---
 C
 C=======================================================================
       ELSEIF ( TYPCON .EQ. 'HARM_GENE' .OR.
@@ -65,7 +65,7 @@ C=======================================================================
          ELSE
             JPARA=1
          ENDIF
-
+C
          CECR = 'L'
          DO 100 IORD = 1,NBORDR
             WRITE(IFI,2000)
@@ -89,7 +89,7 @@ C=======================================================================
 C
 C=======================================================================
 C
-C                     --- IMPRESSION D'UN "TRAN_GENE" ---
+C                     --- IMPRESSION D'UN TRAN_GENE ---
 C
 C=======================================================================
       ELSEIF ( TYPCON .EQ. 'TRAN_GENE' ) THEN
@@ -108,7 +108,23 @@ C=======================================================================
          CALL WKVECT(NOCH19//'.REFE','V V K24',2,KREFE)
          CALL WKVECT(NOCH19//'.VALE','V V R'  ,NBMODE,KVALE)
          ZI(KDESC+1) = NBMODE
-         ZK24(KREFE) = ZK24(JREFE+5)
+C
+C        --- TYPE DE CONCEPT AU 6EME ENTREE DE .REFD DU TRAN_GENE  --
+         CALL GETTCO ( ZK24(JREFE+5) , TYPREM )
+C
+C        --- TEST POUR LE CAS DE LA SOUS-STRUCTURATION             --
+         IF ( TYPREM(1:8).EQ. 'NUME_DDL' ) THEN
+C        --- MANQUE D'UNE BASE MODALE GLOBALE, DU COUP NOUS        --
+C        --- SAUVEGARDONS LE NUME_DDL_GENE AU 2EME ENTREE DU REFE  --
+            ZK24(KREFE) = ' '
+            ZK24(KREFE+1) = ZK24(JREFE+5)
+         ELSE
+C        --- POUR LES AUTRES CAS, UNE BASE MODALE EST DEFINIE      --
+C        --- ELLE EST SAUVEGARDEE DANS LA 1ERE ENTREE DU REFE      --
+            ZK24(KREFE) = ZK24(JREFE+5)
+            ZK24(KREFE+1) = ' '
+         ENDIF
+C
          DO 200 I = 1 , NBINST
            IORD = NUME(I)
            WRITE(IFI,2000)

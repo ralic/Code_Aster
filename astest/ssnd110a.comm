@@ -1,6 +1,6 @@
-# MODIF  DATE 25/06/2012   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 09/07/2012   AUTEUR PROIX J-M.PROIX 
 # TITRE VALIDATION MONOCRISTAL LOI DD_CFC 
-# ssnd110a.para = tps_job 60 mem_job 60Mo ncpus 1 liste_test S
+# ssnd110a.para = tps_job 60 mem_job 475Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -140,7 +140,7 @@ S6=DEFI_FONCTION(NOM_PARA='INST',
 
 
 # densites de dislocation initiales : variables internes de 0 a 44
-avari = zeros(45)
+avari = zeros(6+3*12+12+3)
 for i in range(12):
   avari[6+i*3]=RHO_0
 
@@ -414,7 +414,7 @@ COMPODDI=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIERDD,
                                     ROTA_RESEAU='POST');
 
 # densites de dislocation initiales : variables internes de 0 a 60
-avari = zeros(61)
+avari = zeros(61+12)
 for i in range(12):
   avari[6+i*3]=RHO_0
 
@@ -709,7 +709,7 @@ TEST_FONCTION(VALEUR=_F(FONCTION=EVIpYZ,
 
 OMP1=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_X='INST',
-                   PARA_Y='V52',
+                   PARA_Y='V64',
                    INTERPOL='LIN');
                    
 TEST_FONCTION(VALEUR=_F(FONCTION=OMP1,
@@ -722,7 +722,7 @@ TEST_FONCTION(VALEUR=_F(FONCTION=OMP1,
 
 OMP2=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_X='INST',
-                   PARA_Y='V53',
+                   PARA_Y='V65',
                    INTERPOL='LIN');
                    
 TEST_FONCTION(VALEUR=_F(FONCTION=OMP2,
@@ -735,7 +735,7 @@ TEST_FONCTION(VALEUR=_F(FONCTION=OMP2,
 
 OMP3=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_X='INST',
-                   PARA_Y='V54',
+                   PARA_Y='V66',
                    INTERPOL='LIN');
                    
 TEST_FONCTION(VALEUR=_F(FONCTION=OMP3,
@@ -748,7 +748,7 @@ TEST_FONCTION(VALEUR=_F(FONCTION=OMP3,
 
 OME1=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_X='INST',
-                   PARA_Y='V55',
+                   PARA_Y='V67',
                    INTERPOL='LIN');
                    
 TEST_FONCTION(VALEUR=_F(FONCTION=OME1,
@@ -761,7 +761,7 @@ TEST_FONCTION(VALEUR=_F(FONCTION=OME1,
 
 OME2=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_X='INST',
-                   PARA_Y='V56',
+                   PARA_Y='V68',
                    INTERPOL='LIN');
                    
 TEST_FONCTION(VALEUR=_F(FONCTION=OME2,
@@ -774,7 +774,7 @@ TEST_FONCTION(VALEUR=_F(FONCTION=OME2,
 
 OME3=RECU_FONCTION(TABLE=IMPLDD,
                    PARA_X='INST',
-                   PARA_Y='V57',
+                   PARA_Y='V69',
                    INTERPOL='LIN');
                    
 TEST_FONCTION(VALEUR=_F(FONCTION=OME3,

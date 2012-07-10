@@ -1,4 +1,4 @@
-# MODIF  DATE 07/05/2012   AUTEUR BODEL C.BODEL 
+# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE SOUS-STRUCTURATION TRANSITOIRE : SYSTEME MASSES-RESSORTS
 # sdld102a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -355,7 +355,7 @@ TRANGEN1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                       INST_FIN=82.,
                                       PAS=0.01,),
                          ARCHIVAGE=_F(PAS_ARCH=10,),
-                         EXCIT=_F(VECT_ASSE=VECPRO,
+                         EXCIT=_F(VECT_ASSE_GENE=VECPRO,
                                   COEF_MULT=1.,),);
 
 #
@@ -368,7 +368,7 @@ TRANGEN2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                       INST_FIN=82.,
                                       PAS=0.01,),
                          ARCHIVAGE=_F(PAS_ARCH=10,),
-                         EXCIT=_F(VECT_ASSE=VECPRO,
+                         EXCIT=_F(VECT_ASSE_GENE=VECPRO,
                                   COEF_MULT=1.,),);
 
 #
@@ -381,7 +381,7 @@ TRANGEN3=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                       INST_FIN=82.,
                                       PAS=0.01,),
                          ARCHIVAGE=_F(PAS_ARCH=10,),
-                         EXCIT=_F(VECT_ASSE=VECPRO,
+                         EXCIT=_F(VECT_ASSE_GENE=VECPRO,
                                   COEF_MULT=1.,),);
 
 #
@@ -398,7 +398,7 @@ TRANGEN4=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                       VITE_MIN='MAXI',
                                       NB_POIN_PERIODE=300,),
                          ARCHIVAGE=_F(PAS_ARCH=1,),
-                         EXCIT=_F(VECT_ASSE=VECPRO,
+                         EXCIT=_F(VECT_ASSE_GENE=VECPRO,
                                   COEF_MULT=1.,),);
 
 #
@@ -417,7 +417,7 @@ TRANGEN5=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                       NB_POIN_PERIODE=300,
                                       NMAX_ITER_PAS = 300,),
                          ARCHIVAGE=_F(PAS_ARCH=1,),
-                         EXCIT=_F(VECT_ASSE=FGEN,
+                         EXCIT=_F(VECT_ASSE_GENE=FGEN,
                                   COEF_MULT=1.,),);
 
 #
@@ -767,7 +767,7 @@ TRANG1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                     INST_FIN=82.,
                                     PAS=0.01,),
                        ARCHIVAGE=_F(PAS_ARCH=10,),
-                       EXCIT=_F(VECT_ASSE=F_PROJ,
+                       EXCIT=_F(VECT_ASSE_GENE=F_PROJ,
                                 COEF_MULT=1.,),);
 
 #
@@ -780,7 +780,7 @@ TRANG2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                     INST_FIN=82.,
                                     PAS=0.01,),
                        ARCHIVAGE=_F(PAS_ARCH=10,),
-                       EXCIT=_F(VECT_ASSE=F_PROJ,
+                       EXCIT=_F(VECT_ASSE_GENE=F_PROJ,
                                 COEF_MULT=1.,),);
 
 #
@@ -793,7 +793,7 @@ TRANG3=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                     INST_FIN=82.,
                                     PAS=0.01,),
                        ARCHIVAGE=_F(PAS_ARCH=10,),
-                       EXCIT=_F(VECT_ASSE=F_PROJ,
+                       EXCIT=_F(VECT_ASSE_GENE=F_PROJ,
                                 COEF_MULT=1.,),);
 
 #
@@ -810,7 +810,7 @@ TRANG4=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                     VITE_MIN='NORM',
                                     NB_POIN_PERIODE=300,),
                        ARCHIVAGE=_F(PAS_ARCH=1,),
-                       EXCIT=_F(VECT_ASSE=F_PROJ,
+                       EXCIT=_F(VECT_ASSE_GENE=F_PROJ,
                                 COEF_MULT=1.,),);
 
 #

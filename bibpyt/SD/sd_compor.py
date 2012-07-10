@@ -1,4 +1,4 @@
-#@ MODIF sd_compor SD  DATE 11/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
+#@ MODIF sd_compor SD  DATE 09/07/2012   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -53,11 +53,11 @@ class sd_compor(AsBase):
         nboccm=cpri[4]
         nvi   =cpri[2]
         if cpri[5] > 0 :
-            nbsys=(nvi-25)/3
-            assert nvi==25+3*nbsys , (nvi, nbsys, cpri)
+            nbsys=(nvi-25)/4
+            assert nvi==25+4*nbsys , (nvi, nbsys, cpri)
         else :
-            nbsys=(nvi-9)/3
-            assert nvi==9+3*nbsys , (nvi, nbsys, cpri)
+            nbsys=(nvi-9)/4
+            assert nvi==9+4*nbsys , (nvi, nbsys, cpri)
         cprk=self.CPRK.get_stripped()
 
         # vérif existence et longueur

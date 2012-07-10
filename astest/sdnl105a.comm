@@ -1,4 +1,4 @@
-# MODIF  DATE 23/04/2012   AUTEUR ALARCON A.ALARCON 
+# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE CHOC DE 3 POUTRES ENTRE ELLES : CALCUL DE REFERENCE
 # sdnl105a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -175,7 +175,7 @@ TRAN_GE1=DYNA_VIBRA( TYPE_CALCUL='TRAN',
                                       INST_FIN=1.,
                                       PAS=2.E-4,),
                          ARCHIVAGE=_F(PAS_ARCH=5,),
-                         EXCIT=_F(VECT_ASSE=F_PROJ,
+                         EXCIT=_F(VECT_ASSE_GENE=F_PROJ,
                                   COEF_MULT=1000.,),
                          CHOC=_F(INTITULE='CHOC1_2',
                                  GROUP_MA='GMC12',
@@ -199,7 +199,7 @@ TRAN_GE2=DYNA_VIBRA( TYPE_CALCUL='TRAN',
                                       INST_FIN=1.,
                                       PAS=2.E-4,),
                          ARCHIVAGE=_F(PAS_ARCH=5,),
-                         EXCIT=_F(VECT_ASSE=F_PROJ,
+                         EXCIT=_F(VECT_ASSE_GENE=F_PROJ,
                                   COEF_MULT=1000.,),
                          CHOC=(_F(INTITULE='CHOC1',
                                   NOEUD_1='N8',
@@ -231,7 +231,7 @@ TRAN_GE3=DYNA_VIBRA( TYPE_CALCUL='TRAN',
                                       PAS_MAXI=2.E-4,
                                       PAS=2.E-4),
                          ARCHIVAGE=_F(PAS_ARCH=5,),
-                         EXCIT=_F(VECT_ASSE=F_PROJ,
+                         EXCIT=_F(VECT_ASSE_GENE=F_PROJ,
                                   COEF_MULT=1000.,),
                          CHOC=_F(INTITULE='CHOC1_2',
                                  MAILLE=('MC1','MC2',),
@@ -239,7 +239,7 @@ TRAN_GE3=DYNA_VIBRA( TYPE_CALCUL='TRAN',
                                  NORM_OBST=(1.,0.,0.,),
                                  DIST_1=0.0995,
                                  DIST_2=0.0995,
-                                 RIGI_NOR=1.E+8,), 
+                                 RIGI_NOR=1.E+8,),
                          VERI_CHOC=_F(STOP_CRITERE='NON',),);
 
 #
