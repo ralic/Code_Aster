@@ -1,9 +1,8 @@
-      SUBROUTINE TBIMPR ( TABLE, NOPASE, FORMAZ, IFR,
-     &                    NPARIM, LIPAIM,
+      SUBROUTINE TBIMPR ( TABLE , FORMAZ, IFR   , NPARIM, LIPAIM,
      &                    NPARPG, LIPAPG, FORMAR, FORMAC )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +22,6 @@ C ======================================================================
 C      IMPRESSION DE LA TABLE "TABLE".
 C ----------------------------------------------------------------------
 C IN  : TABLE  : NOM D'UNE STRUCTURE "TABLE"
-C IN  : NOPASE : NOM DE L'EVENTUEL PARAMERE SENSIBLE ASSOCIE
 C IN  : FORMAZ : FORMAT D'IMPRESSION DE LA TABLE
 C IN  : IFR    : UNITE LOGIQUE D'IMPRESSION
 C IN  : NPARIM : NOMBRE DE PARAMETRES D'IMPRESSION
@@ -40,9 +38,9 @@ C 0.1. ==> ARGUMENTS
 C
       INCLUDE 'jeveux.h'
       INTEGER       NPARIM, NPARPG, IFR
-      CHARACTER*(*) TABLE, NOPASE
+      CHARACTER*(*) TABLE
       CHARACTER*(*) FORMAZ, LIPAIM(*), LIPAPG(*)
-      CHARACTER*(*)  FORMAR, FORMAC
+      CHARACTER*(*) FORMAR, FORMAC
 C
 C 0.2. ==> COMMUNS
 C
@@ -104,12 +102,6 @@ C
                  WRITE(IFR,'(1X,A)') ZK80(LTITR+ITITR-1)
              ENDIF
  10      CONTINUE
-C
-C       SOUS-TITRE POUR LES CAS DE SENSIBILITE
-        IF ( NOPASE.NE.' ' ) THEN
-          WRITE (IFR,'(1X,A,1X,A)')
-     &                        '... SENSIBILITE AU PARAMETRE',NOPASE
-        ENDIF
       ENDIF
 C
       IF ( NPARPG .EQ. 0 ) THEN

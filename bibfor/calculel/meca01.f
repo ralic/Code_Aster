@@ -1,11 +1,10 @@
-      SUBROUTINE MECA01 ( OPTIO0, NBORDR, JORDR ,
-     &                    NCHAR , JCHA  , KCHA  , CTYP  ,
-     &                    TBGRCA, RESUCO, RESUC1, LERES1,
-     &                    NOMA  , MODELE, LIGRMO, MATE  , CARA,
-     &                    CHVARC, TYPESE, NPASS , CODRET )
+      SUBROUTINE MECA01 ( OPTIO0, NBORDR, JORDR , NCHAR , JCHA  ,
+     &                    KCHA  , CTYP  , TBGRCA, RESUCO, RESUC1,
+     &                    LERES1, NOMA  , MODELE, LIGRMO, MATE  ,
+     &                    CARA  , CHVARC, NPASS , CODRET )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,12 +42,10 @@ C IN  MODELE : NOM DU MODELE
 C IN  LIGRMO : LISTE DES GROUPES DU MODELE
 C IN  MATE   : NOM DU CHAMP MATERIAU
 C IN  CARA   : NOM DU CHAMP DES CARACTERISTIQUES ELEMENTAIRES
-C IN  TYPESE : TYPE DE SENSIBILITE
 C IN/OUT     : NPASS  : NOMBRE DE PASSAGE DANS LA ROUTINE MEDOM2.F
 C OUT CODRET : CODE DE RETOUR AVEC 0 SI TOUT VA BIEN
-C              1 : ERREUR LIEE A LA SENSIBILITE
-C              2 : PROBLEMES DE DONNEES
-C              3 : PROBLEMES DE RESULTATS
+C              1 : PROBLEMES DE DONNEES
+C              2 : PROBLEMES DE RESULTATS
 C ----------------------------------------------------------------------
 C
       IMPLICIT NONE
@@ -57,7 +54,7 @@ C     --- ARGUMENTS ---
 
       INCLUDE 'jeveux.h'
       INTEGER NBORDR, JORDR, NCHAR, JCHA
-      INTEGER TYPESE, NPASS
+      INTEGER  NPASS
       INTEGER CODRET
       REAL*8      TBGRCA(3)
       CHARACTER*4 CTYP
@@ -130,13 +127,6 @@ C
 C                 1234567890123456
         OPTION = '                '
         OPTION(1:IAUX) = OPTIO0(1:IAUX)
-      ENDIF
-C
-C 1.1.2. ==> PAS DE SENSIBILITE
-C
-      IF ( TYPESE.NE.0 ) THEN
-        CODRET = 1
-        GOTO 9999
       ENDIF
 C
       DO 101 , II = 1 , NCHAR
@@ -377,7 +367,7 @@ C 2.2.9. ==> VERIFIE L'EXISTENCE DU CHAMP CHELEM
 
 C--- SI LE CHAMP N'EXISTE PAS, ON SORT
           IF ( IRET.EQ.0 ) THEN
-            CODRET = 2
+            CODRET = 1
             CALL JEDEMA
             GOTO 9999
           ENDIF
@@ -537,7 +527,7 @@ C 4.2.11. ==> VERIFIE L'EXISTENCE DU CHAMP CHELEM
 
 C--- SI LE CHAMP N'EXISTE PAS, ON SORT
           IF ( IRET.EQ.0 ) THEN
-            CODRET = 2
+            CODRET = 1
             CALL JEDEMA
             GOTO 9999
           ENDIF
@@ -675,7 +665,7 @@ C
           CALL RSEXC2(1,1,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,IRET)
           IF (IRET.GT.0) THEN
             CALL U2MESK('A','CALCULEL3_7',1,OPTION)
-            CODRET = 3
+            CODRET = 2
             GO TO 9999
           END IF
 C

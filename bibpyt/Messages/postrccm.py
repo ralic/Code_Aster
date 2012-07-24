@@ -1,21 +1,21 @@
-#@ MODIF postrccm Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF postrccm Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
@@ -60,17 +60,17 @@ cata_msg={
 """),
 
 8: _(u"""
- erreur données, pour le noeud %(k1)s de la maille %(k2)s 
+ erreur données, pour le noeud %(k1)s de la maille %(k2)s
  il manque les caractéristiques élémentaires (le CARA_ELEM)
 """),
 
 9: _(u"""
- erreur données, pour le noeud %(k1)s de la maille %(k2)s 
- il manque l'indice de contraintes %(k3)s 
+ erreur données, pour le noeud %(k1)s de la maille %(k2)s
+ il manque l'indice de contraintes %(k3)s
 """),
 
 10: _(u"""
- matériau non défini, maille %(k1)s 
+ matériau non défini, maille %(k1)s
 """),
 
 12: _(u"""
@@ -88,7 +88,7 @@ cata_msg={
 """),
 
 15: _(u"""
- erreur données, pour la situation numéro %(i1)d sur la maille numéro %(i2)d 
+ erreur données, pour la situation numéro %(i1)d sur la maille numéro %(i2)d
  il manque le %(k1)s
 """),
 
@@ -104,8 +104,8 @@ cata_msg={
 """),
 
 18: _(u"""
- erreur données, il manque le %(k1)s 
-   pour la maille numéro %(i1)d et le noeud numéro %(i2)d 
+ erreur données, il manque le %(k1)s
+   pour la maille numéro %(i1)d et le noeud numéro %(i2)d
 """),
 
 19: _(u"""
@@ -123,19 +123,19 @@ cata_msg={
  défini sous l'occurrence numéro %(i1)d
 """),
 
-22: _(u"""
- problème pour récupérer le champ de nom symbolique %(k1)s pour le RESULTAT %(k2)s
- défini sous l'occurrence numéro %(i1)d
-"""),
+
+
+
+
 
 23: _(u"""
- on n'a pas pu récupérer le résultat thermique correspondant au numéro %(i2)d 
+ on n'a pas pu récupérer le résultat thermique correspondant au numéro %(i2)d
  défini par le mot clé "NUME_RESU_THER" sous le mot clé facteur "RESU_THER"
  occurrence numéro %(i1)d
 """),
 
 24: _(u"""
- erreur données, pour la situation numéro %(i1)d sur la maille numéro %(i2)d 
+ erreur données, pour la situation numéro %(i1)d sur la maille numéro %(i2)d
    problème sur le résultat thermique
 """),
 
@@ -146,17 +146,17 @@ cata_msg={
 
 26: _(u"""
  il faut définir qu'un seul séisme dans un groupe
-   groupe numéro %(i1)d 
-   occurrence situation %(i2)d et %(i3)d 
+   groupe numéro %(i1)d
+   occurrence situation %(i2)d et %(i3)d
 """),
 
 28: _(u"""
- erreur données, pour la situation numéro %(i1)d 
- on n'a pas pu récupérer le "RESU_MECA" correspondant au numéro du cas de charge %(i2)d 
+ erreur données, pour la situation numéro %(i1)d
+ on n'a pas pu récupérer le "RESU_MECA" correspondant au numéro du cas de charge %(i2)d
 """),
 
 29: _(u"""
- erreur données, pour la situation numéro %(i1)d 
+ erreur données, pour la situation numéro %(i1)d
  on ne peut pas avoir des charges de type "séisme" et "autre".
 """),
 
@@ -226,13 +226,13 @@ cata_msg={
     - table %(k2)s : %(k3)s = %(r2)f
  -> Risque & Conseil:
     Veuillez revoir le contenu de vos tables
-"""),    
+"""),
 
  42: _(u"""
  -> Les tables %(k1)s et %(k2)s ne sont pas cohérentes en terme de nombre
     de ligaments:
-    - table %(k1)s : %(i1)d ligaments 
-    - table %(k2)s : %(i2)d ligaments 
+    - table %(k1)s : %(i1)d ligaments
+    - table %(k2)s : %(i2)d ligaments
  -> Risque & Conseil:
     Veuillez revoir le contenu de vos tables
 """),
@@ -244,7 +244,7 @@ cata_msg={
     - table %(k2)s : INST = %(r2)f
  -> Risque & Conseil:
     Veuillez revoir le contenu de vos tables
-   
+
 """),
 
 44: _(u"""

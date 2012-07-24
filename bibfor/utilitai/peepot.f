@@ -4,7 +4,7 @@
       INTEGER NCHAR,NH,NBOCC
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(*)
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -159,11 +159,11 @@ C        --- ON RECUPERE LES INSTANTS ---
         IF (EXITIM) CALL MECHTI(NOMA,INST,RUNDF,RUNDF,CHTIME)
 
         IF (NR.NE.0) THEN
-          CALL RSEXCH(RESUL,'EPOT_ELEM',NUMORD,DEPLA,IRET)
+          CALL RSEXCH(' ',RESUL,'EPOT_ELEM',NUMORD,DEPLA,IRET)
           IF (IRET.GT.0) THEN
-            CALL RSEXCH(RESUL,'DEPL',NUMORD,DEPLA,IRE1)
+            CALL RSEXCH(' ',RESUL,'DEPL',NUMORD,DEPLA,IRE1)
             IF (IRE1.GT.0) THEN
-              CALL RSEXCH(RESUL,'TEMP',NUMORD,DEPLA,IRE2)
+              CALL RSEXCH(' ',RESUL,'TEMP',NUMORD,DEPLA,IRE2)
               IF (IRE2.GT.0) GO TO 72
             END IF
           END IF

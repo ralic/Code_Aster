@@ -1,6 +1,9 @@
-      SUBROUTINE TE0266 ( OPTION , NOMTE )
+      SUBROUTINE TE0266(OPTION,NOMTE)
+      IMPLICIT NONE
+      CHARACTER*16 OPTION,NOMTE
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,32 +20,28 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT NONE
-      INCLUDE 'jeveux.h'
-      CHARACTER*16        OPTION , NOMTE
-C ......................................................................
-C    - FONCTION REALISEE:  CALCUL DE FLUX AUX POINTS DE GAUSS
-C                          OPTION : 'FLUX_ELGA  '
-C                             ELEMENTS FOURIER
 C
-C    - ARGUMENTS:
-C        DONNEES:      OPTION       -->  OPTION DE CALCUL
-C                      NOMTE        -->  NOM DU TYPE ELEMENT
-C ......................................................................
+C     BUT:
+C       CALCUL DES FLUX DE TEMPERATURE AUX POINTS DE GAUSS
+C       ELEMENTS 2D AXI
+C       OPTION : 'FLUX_ELGA'
+C
+C ---------------------------------------------------------------------
+C
+      INCLUDE 'jeveux.h'
 C
       INTEGER ICODRE
-      REAL*8             VALRES, FLUXR,FLUXZ,FLUXT
-      REAL*8             DFDR(9),DFDZ(9),POIDS,XH
-      CHARACTER*8        FAMI,POUM
-      INTEGER            NNO,KP,I,K,ITEMPE,ITEMP,IFLUX,IHARM,NH
-      INTEGER            IPOIDS,IVF,IDFDE,IGEOM,IMATE
-      INTEGER            NPG,NNOS,JGANO,NDIM,KPG,SPT
-C
+      INTEGER NNO,KP,I,K,ITEMPE,ITEMP,IFLUX,IHARM,NH
+      INTEGER IPOIDS,IVF,IDFDE,IGEOM,IMATE
+      INTEGER NPG,NNOS,JGANO,NDIM,KPG,SPT,J,NBCMP
+
+      REAL*8 VALRES,FLUXR,FLUXZ,FLUXT
+      REAL*8 DFDR(9),DFDZ(9),POIDS,XH,R
+
+      CHARACTER*8 FAMI,POUM
 C
 C-----------------------------------------------------------------------
-      INTEGER J 
-      REAL*8 R 
-C-----------------------------------------------------------------------
+C
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C
       CALL JEVECH('PGEOMER','L',IGEOM)
@@ -52,12 +51,13 @@ C
       CALL JEVECH('PMATERC','L',IMATE)
       CALL JEVECH('PTEMPSR','L',ITEMP)
       CALL JEVECH('PTEMPER','L',ITEMPE)
-      CALL JEVECH('PFLUX_R','E',IFLUX)
+      CALL JEVECH('PFLUXPG','E',IFLUX)
 C
       FAMI='FPG1'
       KPG=1
       SPT=1
       POUM='+'
+      NBCMP=3
       CALL RCVALB (FAMI,KPG,SPT,POUM, ZI(IMATE),' ','THER',1,'INST',
      &             ZR(ITEMP),1,'LAMBDA', VALRES, ICODRE, 1)
 C
@@ -79,9 +79,9 @@ C
              FLUXT = FLUXT - ZR(ITEMPE+J-1)*ZR(IVF+K+J-1)*XH/R
  110      CONTINUE
 C
-         ZR(IFLUX+(KP-1)*3)   = -VALRES*FLUXR
-         ZR(IFLUX+(KP-1)*3+1) = -VALRES*FLUXZ
-         ZR(IFLUX+(KP-1)*3+2) = -VALRES*FLUXT
+         ZR(IFLUX+(KP-1)*NBCMP-1+1) = -VALRES*FLUXR
+         ZR(IFLUX+(KP-1)*NBCMP-1+2) = -VALRES*FLUXZ
+         ZR(IFLUX+(KP-1)*NBCMP-1+3) = -VALRES*FLUXT
 C
  101  CONTINUE
 C

@@ -7,7 +7,7 @@
       INTEGER           NBK16,              NIVE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,9 +44,9 @@ C     ------------------------------------------------------------------
       CHARACTER*19 NOCH19
       INTEGER MAXLEN
 C-----------------------------------------------------------------------
-      INTEGER I ,IAD ,IBID ,IDEU ,IERD ,IOR ,IREST 
-      INTEGER IRET ,ISEIZE ,ITYPE ,IUN ,IZERO ,J ,JENTI 
-      INTEGER JLAST ,JPOSI ,JTABL ,LXLGUT ,NBOBJ ,NFOR ,NP 
+      INTEGER I ,IAD ,IBID ,IDEU ,IERD ,IOR ,IREST
+      INTEGER IRET ,ISEIZE ,ITYPE ,IUN ,IZERO ,J ,JENTI
+      INTEGER JLAST ,JPOSI ,JTABL ,LXLGUT ,NBOBJ ,NFOR ,NP
 
 C-----------------------------------------------------------------------
       PARAMETER ( MAXLEN = 255)
@@ -87,7 +87,7 @@ C
   34  CONTINUE
       J=0
       DO 33 I=1,NBCHCA
-         CALL RSEXCH (NOMCO,CHAMCA(I),ORDR(IOCC),NOCH19,IRET)
+         CALL RSEXCH(' ',NOMCO,CHAMCA(I),ORDR(IOCC),NOCH19,IRET)
          IF (IRET.EQ.0) THEN
             J=J+1
             CALL DISMOI('C','TYPE_CHAMP',NOCH19,'CHAMP',IBID,TYCH,IERD)

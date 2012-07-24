@@ -1,4 +1,4 @@
-#@ MODIF algorith10 Messages  DATE 29/05/2012   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith10 Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -53,9 +53,9 @@ cata_msg = {
  développement non prévu pour la sous-structuration.
 """),
 
-16 : _(u"""
- le champ  %(k1)s  n'a pas été calculé dans le MODE_MECA  %(k2)s
-"""),
+
+
+
 
 17 : _(u"""
  l'option  %(k1)s  s'applique sur toute la structure

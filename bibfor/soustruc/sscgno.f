@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF SOUSTRUC  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,15 +42,15 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 
 C-----------------------------------------------------------------------
-      INTEGER I ,IAGM1 ,IAGM2 ,IAGMA ,IAGN2 ,IAGNO ,IALII1 
-      INTEGER IALII2 ,IALIK8 ,IDLINO ,IERD ,IFM ,IGN ,IGN1 
-      INTEGER IGN2 ,II ,III ,ILI1 ,ILI2 ,ILNOK8 ,IM1 
-      INTEGER IND1 ,IND2 ,INO ,IOCC ,IRESTE ,IRET ,JJJ 
-      INTEGER JNOEU ,JNOEU2 ,JVALE ,KKK ,MAXCOL ,N ,N1 
-      INTEGER N2 ,N3 ,N4 ,N5 ,N6 ,N6A ,N6B 
-      INTEGER N7 ,N8 ,N9 ,NB ,NBCOL ,NBGNA2 ,NBGNAJ 
-      INTEGER NBGNIN ,NBGRMN ,NBID ,NBIS ,NBK8 ,NBLINE ,NBNO 
-      INTEGER NBNOT ,NBOCC ,NIV ,NTROU ,NUM 
+      INTEGER I ,IAGM1 ,IAGM2 ,IAGMA ,IAGN2 ,IAGNO ,IALII1
+      INTEGER IALII2 ,IALIK8 ,IDLINO ,IERD ,IFM ,IGN ,IGN1
+      INTEGER IGN2 ,II ,III ,ILI1 ,ILI2 ,ILNOK8 ,IM1
+      INTEGER IND1 ,IND2 ,INO ,IOCC ,IRESTE ,IRET ,JJJ
+      INTEGER JNOEU ,JNOEU2 ,JVALE ,KKK ,MAXCOL ,N ,N1
+      INTEGER N2 ,N3 ,N4 ,N5 ,N6 ,N6A ,N6B
+      INTEGER N7 ,N8 ,N9 ,NB ,NBCOL ,NBGNA2 ,NBGNAJ
+      INTEGER NBGNIN ,NBGRMN ,NBID ,NBIS ,NBK8 ,NBLINE ,NBNO
+      INTEGER NBNOT ,NBOCC ,NIV ,NTROU ,NUM
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 
@@ -323,8 +323,14 @@ C         ------------------------------------
             CALL CGNOFU(MOTFAC,IOCC,MA,LISNO,NBNO)
 
 C         -- TRAITEMENT DE L'OPTION INCLUSION :
+C         ------------------------------------
           ELSE IF (OPTION.EQ.'INCLUSION') THEN
             CALL CGNOIN(MOTFAC,IOCC,MA,LISNO,NBNO)
+
+C         -- TRAITEMENT DE L'OPTION INTERVALLE_VALE :
+C         --------------------------------------------
+          ELSE IF (OPTION.EQ.'INTERVALLE_VALE') THEN
+            CALL CGNOIV(IOCC,MA,LISNO,NBNO)
 
 C         -- TRAITEMENT DE L'OPTION "NOEUD_ORDO" :
 C         ----------------------------------------

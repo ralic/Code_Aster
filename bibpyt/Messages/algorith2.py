@@ -1,4 +1,4 @@
-#@ MODIF algorith2 Messages  DATE 22/05/2012   AUTEUR FOUCAULT A.FOUCAULT 
+#@ MODIF algorith2 Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,23 +38,23 @@ Erreur utilisateur dans la commande CREA_RESU / AFFE :
 """),
 
 7 : _(u"""
- il faut définir 3 angles nautiques.
+ Il faut définir 3 angles nautiques.
 """),
 
 8 : _(u"""
- l'origine doit être définie par 3 coordonnées.
+ L'origine doit être définie par 3 coordonnées.
 """),
 
 9 : _(u"""
- l axe z est obligatoire en 3d.
+ L'axe z est obligatoire en 3D.
 """),
 
 10 : _(u"""
- pour le 2d, on ne prend que 2 coordonnées pour l'origine.
+ En 2D, seules les premières 2 coordonnées sont considérées pour l'origine.
 """),
 
 11 : _(u"""
- l axe z est n'a pas de sens en 2d.
+ L'axe z n'a pas de sens en 2D. Le mot-clé AXE_Z est inutile.
 """),
 
 12 : _(u"""

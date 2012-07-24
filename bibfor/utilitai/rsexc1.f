@@ -9,7 +9,7 @@
       INTEGER VALI
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,10 +42,10 @@ C IN  : IORDR  : NUMERO D'ORDRE DU CHAMP A CHERCHER.
 C OUT : CHEXTR : NOM DU CHAMP EXTRAIT.
 C ----------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER ICODE 
+      INTEGER ICODE
 C-----------------------------------------------------------------------
       OPTION=NOMSY
-      CALL RSEXCH(NOMSD,NOMSY,IORDR,CHEXTR,ICODE)
+      CALL RSEXCH(' ',NOMSD,NOMSY,IORDR,CHEXTR,ICODE)
 C --- SI L'OPTION A DEJA ETE CALCULEE, ON LA RECALCULE EN
 C     EMETTANT UN MESSAGE D'ALARME
       IF (ICODE.EQ.0) THEN

@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,11 +39,11 @@ C
       INTEGER      IARG
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER I ,IADRIF ,IARCH ,IBI ,ICH ,IDBASE ,IDRESI 
-      INTEGER IDRESR ,IE ,IFMIS ,IMESS ,IORD ,IRET ,IUNIFI 
-      INTEGER J ,JINST ,JNUME ,JREFE ,LINST ,LREFE ,LVAL1 
-      INTEGER LVAL2 ,LVALE ,NBCHAM ,NBINST ,NBMODD ,NBMODE ,NBMODS 
-      INTEGER NBSAUV ,NBSTO ,NEQ ,NF ,NMM ,NTI ,NU 
+      INTEGER I ,IADRIF ,IARCH ,IBI ,ICH ,IDBASE ,IDRESI
+      INTEGER IDRESR ,IE ,IFMIS ,IMESS ,IORD ,IRET ,IUNIFI
+      INTEGER J ,JINST ,JNUME ,JREFE ,LINST ,LREFE ,LVAL1
+      INTEGER LVAL2 ,LVALE ,NBCHAM ,NBINST ,NBMODD ,NBMODE ,NBMODS
+      INTEGER NBSAUV ,NBSTO ,NEQ ,NF ,NMM ,NTI ,NU
 
 C-----------------------------------------------------------------------
       DATA  REFE  /'                  _REFE'/
@@ -163,7 +163,7 @@ C     ----- RECUPERATION TYPE DE RESULTAT ---
       DO 90 I = 0,NBINST-1
          IARCH = IARCH + 1
          DO 92 ICH = 1,NBCHAM
-            CALL RSEXCH(NOMRES,TYPE(ICH),IARCH,CHAMNO,IRET)
+            CALL RSEXCH(' ',NOMRES,TYPE(ICH),IARCH,CHAMNO,IRET)
             IF ( IRET .EQ. 0 ) THEN
              CALL U2MESK('A','ALGORITH2_64',1,CHAMNO)
             ELSEIF ( IRET .EQ. 100 ) THEN

@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,11 +24,11 @@ C      OPERATEUR :     DEFI_FOND_FISS
 C
 C-----------------------------------------------------------------------
 C
-C
+C 
       INCLUDE 'jeveux.h'
-      INTEGER       IADR1,JDRVLC,JCNCIN
+      INTEGER       IADR1,IFM,NIV
       INTEGER       NBOCC, NBNOFF
-      INTEGER       IBID, IOCC, IDON, IDONN, NDONN
+      INTEGER       IBAS, IBID, IOCC, IDON, IDONN, NDONN
       INTEGER       IRET1, IRET2, IRET, IRETS
       INTEGER       N1, N2
       CHARACTER*6   K6B, TYPFON, NOMPRO
@@ -36,14 +36,15 @@ C
       CHARACTER*9   ENTIT(8)
       CHARACTER*13  MOTCL(8)
       CHARACTER*16  TYPRES, OPER
-      CHARACTER*19  CNXINV
-      CHARACTER*24  VALK(3)
+      CHARACTER*19  BASFON, BASLOC, CNXINV, FONTYP, LNNO, LTNO
+      CHARACTER*24  VALK(3), FONDFI, FONOEU
       INTEGER      IARG
 C DEB-------------------------------------------------------------------
 C
       CALL JEMARQ()
       NOMPRO = 'OP0055'
-C
+
+      CALL INFNIV(IFM,NIV)
 C
 C ---  RECUPERATION DES ARGUMENTS DE LA COMMANDE
 C
@@ -184,6 +185,42 @@ C
       CALL FONVEC(RESU,NOMA,CNXINV)
 
       CALL JEDETR(CNXINV)
+
+C     ---------------------------------------------------------------
+C     CREATION DU VECTEUR .FONDFISS CONTENANT LES COORDONNEES ET LES
+C     ABSCISSES CURVILIGNES DES NOEUDS DU FOND
+C     ---------------------------------------------------------------
+
+C     VECTEUR CONTENANT LES NOMS DES NOEUDS DU FOND DE FISSURE
+C     ----------------------------------------
+      CALL JEEXIN(RESU//'.FOND.NOEU',IRET)
+      IF (IRET.NE.0) THEN
+        FONOEU = RESU//'.FOND.NOEU'
+      ELSE
+        FONOEU = RESU//'.FOND_SUP.NOEU'
+      ENDIF
+
+      FONDFI = RESU//'.FONDFISS'
+      CALL FONFIS(NOMA,NBNOFF,FONOEU,FONDFI)
+
+C     ---------------------------------------------------------------
+C     CREATION DE LA BASE LOCALE ET DES LEVEL SETS EN CHAQUE NOEUD
+C     ---------------------------------------------------------------
+
+C     LA BASE LOCALE ET DES LEVEL SETS SONT CALCULEES EN CHAQUE NOEUD
+C     QUE SI L'OBJET .BASEFOND EXISTE DEJA
+      CALL JEEXIN(RESU//'.BASEFOND',IBAS)
+      IF (IBAS.NE.0)THEN
+        BASFON = RESU//'.BASEFOND'
+        IF (NBNOFF.NE.1)THEN
+          FONTYP = RESU//'.FOND.TYPE'
+        ENDIF
+        BASLOC = RESU//'.BASLOC'
+        LNNO   = RESU//'.LNNO'
+        LTNO   = RESU//'.LTNO'
+        CALL FONBAS( NOMA, BASFON, FONTYP, FONDFI, NBNOFF, BASLOC,
+     &               LNNO, LTNO)
+      ENDIF
 C
 C
 C     ---------------------------------------------------------------
@@ -200,6 +237,14 @@ C     STOCKAGE D'INFOS UTILES DANS LA SD EN SORTIE
 C     ---------------------------------------------------------------
 C
       CALL FONINF(RESU)
+
+C     ---------------------------------------------------------------
+C     IMPRESSIONS SI INFO=2
+C     ---------------------------------------------------------------
+C
+      IF (NIV.EQ.2) THEN
+        CALL FONIMP(RESU)
+      ENDIF
 
       CALL JEDEMA()
       END

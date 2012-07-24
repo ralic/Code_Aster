@@ -9,7 +9,7 @@
       CHARACTER*(*)     MOME, RESU, TYPCDI
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,8 +73,7 @@ C     --- CREATION DE LA STRUCTURE D'ACCUEIL ---
       IF (NOMSY(1:4).EQ.'ACCE') NOMS2 = 'DEPL'
       CALL RSORAC(MOME,'TOUT_ORDRE',IBID,R8B,K8B,C16B,R8B,K8B,
      &                                                  IORDR,1,NBTROU)
-      CALL RSEXCH(MOME,NOMS2,IORDR,MONCHA,IER)
-      IF (IER.NE.0)  CALL U2MESS('F','SEISME_9')
+      CALL RSEXCH('F',MOME,NOMS2,IORDR,MONCHA,IER)
 C
       IORDR = 0
 
@@ -88,7 +87,7 @@ C
           IORDR = IORDR + 1
 
 C           --- CHAMP RECOMBINE ---
-            CALL RSEXCH(RESU,NOMSY,IORDR,CHAMP,IER)
+            CALL RSEXCH(' ',RESU,NOMSY,IORDR,CHAMP,IER)
             IF ( IER .EQ. 100 ) THEN
                CALL VTDEFS(CHAMP,MONCHA,'G','R')
             ELSE
@@ -124,7 +123,7 @@ C
          IORDR = IORDR + 1
 C
 C        --- CHAMP RECOMBINE ---
-         CALL RSEXCH(RESU,NOMSY,IORDR,CHAMP,IER)
+         CALL RSEXCH(' ',RESU,NOMSY,IORDR,CHAMP,IER)
          IF ( IER .EQ. 100 ) THEN
             CALL VTDEFS(CHAMP,MONCHA,'G','R')
          ELSE

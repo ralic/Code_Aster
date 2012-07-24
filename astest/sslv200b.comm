@@ -1,4 +1,4 @@
-# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE NON-REGRESSION D ASTER : MECANIQUE LINEAIRE 3D_SI
 # RESPONSABLE PELLET J.PELLET
 # sslv200b.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test R
@@ -395,7 +395,7 @@ CHMEC=AFFE_CHAR_MECA(           MODELE=MO,
                                            FY = 0.51,
                                            FZ = 0.70),
                            _F(  MAILLE = ('M140', 'M192',),
-                                           FX = 0.84)),EPSI_INIT=(
+                                           FX = 0.84)),PRE_EPSI=(
                            _F(  GROUP_MA = 'GMA3',
                                        EPYZ = -1.8,
                                        EPXY = 1.4),
@@ -482,7 +482,7 @@ CHMECF=AFFE_CHAR_MECA_F(         MODELE=MO,
                               _F(  GROUP_MA = 'GMA2',
                                               FY = FO4),
                               _F(  MAILLE = ('M157', 'M184',),
-                                              FZ = FO5)),EPSI_INIT=(
+                                              FZ = FO5)),PRE_EPSI=(
                               _F(  GROUP_MA = 'GMA4',
                                           EPYY = FO8),
                               _F(  MAILLE = ('M95', 'M206',),

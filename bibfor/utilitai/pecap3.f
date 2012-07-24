@@ -1,6 +1,6 @@
       SUBROUTINE PECAP3(CHGEOZ,TEMPEZ,IOMEGA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -89,8 +89,8 @@ C.========================= DEBUT DU CODE EXECUTABLE ==================
 C ---- INITIALISATIONS
 C      ---------------
 C-----------------------------------------------------------------------
-      INTEGER I ,IBID ,IERD ,IRET ,NBORDR 
-      REAL*8 PREC ,ZERO 
+      INTEGER I ,IBID ,IERD ,IRET ,NBORDR
+      REAL*8 PREC ,ZERO
 C-----------------------------------------------------------------------
       ZERO = 0.0D0
       PREC = 1.0D-3
@@ -122,10 +122,7 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
 C --- RECUPERATION DU CHAMP DE TEMPERATURES DU RESULTAT :
 C     -------------------------------------------------
-      CALL RSEXCH(TEMPER,'TEMP',0,CHTEMP,IRET)
-      IF (IRET.GT.0) THEN
-        CALL U2MESK('F','UTILITAI3_52',1,TEMPER)
-      END IF
+      CALL RSEXCH('F',TEMPER,'TEMP',0,CHTEMP,IRET)
 
 C --- RECUPERATION DU NUME_DDL ASSOCIE AU CHAMP DE TEMPERATURES :
 C     ---------------------------------------------------------

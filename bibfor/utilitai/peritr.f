@@ -5,7 +5,7 @@
       CHARACTER*(*) RESU,MODELE,CARA,LCHAR(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -143,31 +143,19 @@ C      VARIPG = '&&PERITR.VARIPG'
         INST = ZR(JINS+IORD-1)
         VALER(1) = INST
 
-        CALL RSEXCH(RESUL,'COMPORTEMENT',NUMORD,COMPOR,IRET)
+        CALL RSEXCH(' ',RESUL,'COMPORTEMENT',NUMORD,COMPOR,IRET)
         IF (NR.NE.0) THEN
-          CALL RSEXCH(RESUL,'SIEF_ELGA',NUMORD,CONTG,IRET)
-          IF (IRET.GT.0) THEN
-            CALL U2MESS('F','UTILITAI3_85')
-          END IF
-          CALL RSEXCH(RESUL,'VARI_ELGA',NUMORD,VARIPG,IRET)
-          IF (IRET.GT.0) THEN
-            CALL U2MESS('F','UTILITAI3_86')
-          END IF
+          CALL RSEXCH('F',RESUL,'SIEF_ELGA',NUMORD,CONTG,IRET)
+          CALL RSEXCH('F',RESUL,'VARI_ELGA',NUMORD,VARIPG,IRET)
           IF (IORD.GE.2) THEN
             NUMOMU = ZI(JORD+IORD-2)
-            CALL RSEXCH(RESUL,'VARI_ELGA',NUMOMU,VARIMG,IRET)
-            IF (IRET.GT.0) THEN
-              CALL U2MESS('F','UTILITAI3_86')
-            END IF
+            CALL RSEXCH('F',RESUL,'VARI_ELGA',NUMOMU,VARIMG,IRET)
           ELSE
             CALL COPISD('CHAMP_GD','V',VARIPG,VARNUL)
             CALL JELIRA(VARNUL//'.CELV','LONUTI',LONG,K1BID)
             CALL JERAZO(VARNUL//'.CELV',LONG,1)
           END IF
-          CALL RSEXCH(RESUL,'DEPL',NUMORD,DEPLA,IRET)
-          IF (IRET.GT.0) THEN
-            CALL U2MESS('F','UTILITAI3_87')
-          END IF
+          CALL RSEXCH('F',RESUL,'DEPL',NUMORD,DEPLA,IRET)
         END IF
 
 C        --- AFFECTATION D'UNE CARTE CONSTANTE SUR LE MAILLAGE :
@@ -216,7 +204,7 @@ C            OPTION DE CALCUL RICE_TRACEY ---
 
           IF (NT.NE.0) THEN
             IF (OPTCAL(2).EQ.'OUI') THEN
-              CALL MEMAX('MAX',CHELEM,'RSR0',MXVALE,TABCMP,VR,0,IBID)
+              CALL MEMAXM('MAX',CHELEM,'RSR0',MXVALE,TABCMP,VR,0,IBID)
               DO 30 KK = 1,MXVALE
                 ZR(LVALE+KK-1) = VR(KK)
    30         CONTINUE
@@ -275,7 +263,7 @@ C            OPTION DE CALCUL RICE_TRACEY ---
               END IF
               CALL JEVEUO(JEXNOM(MLGGMA,NOMMAI),'L',JAD)
               IF (OPTCAL(2).EQ.'OUI') THEN
-                CALL MEMAX('MAX',CHELEM,'RSR0',MXVALE,TABCMP,
+                CALL MEMAXM('MAX',CHELEM,'RSR0',MXVALE,TABCMP,
      &                            VR,NBMA,ZI(JAD))
                 DO 40 KK = 1,MXVALE
                   ZR(LVALE+KK-1) = VR(KK)
@@ -333,7 +321,7 @@ C            OPTION DE CALCUL RICE_TRACEY ---
               END IF
               CALL JENONU(JEXNOM(MLGNMA,NOMMAI),NUME)
               IF (OPTCAL(2).EQ.'OUI') THEN
-                CALL MEMAX('MAX',CHELEM,'RSR0',MXVALE,TABCMP,VR,1,NUME)
+                CALL MEMAXM('MAX',CHELEM,'RSR0',MXVALE,TABCMP,VR,1,NUME)
                 DO 60 KK = 1,MXVALE
                   ZR(LVALE+KK-1) = VR(KK)
    60           CONTINUE

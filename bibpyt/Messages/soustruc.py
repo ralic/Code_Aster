@@ -1,4 +1,4 @@
-#@ MODIF soustruc Messages  DATE 30/01/2012   AUTEUR DELMAS J.DELMAS 
+#@ MODIF soustruc Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -367,9 +367,9 @@ cata_msg={
  nombre ddl interface insuffisant ou nombre modes identifies trop élevé, nombre ddl interface : %(i1)d ,nombre modes identifies : %(i2)d
 """),
 
-84: _(u"""
-  champ inexistant  base  %(k1)s  NOM_CHAM  %(k2)s  NUME_ORDRE  %(i1)d
-"""),
+
+
+
 
 85: _(u"""
   au noeud de choc:  %(k1)s
@@ -393,7 +393,7 @@ cata_msg={
 
 90: _(u"""
  Or, pour une modélisation axisymétrique, la coordonnée x doit être positive ou nulle.
- 
+
  Conseil :
   Vérifiez votre maillage.
 """),

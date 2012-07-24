@@ -1,8 +1,8 @@
-#@ MODIF utilitai3 Messages  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utilitai3 Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -86,9 +86,9 @@ cata_msg = {
  problème maillage <-> modèle
 """),
 
-20 : _(u"""
- le champ de META_ELNO:ETAT_INIT(NUM_INIT) n'existe pas.
-"""),
+
+
+
 
 21 : _(u"""
  maillage et modèle incohérents.
@@ -210,9 +210,9 @@ Erreur :
  de torsion doit être égal a 1.
 """),
 
-52 : _(u"""
- On n'arrive pas a récupérer le champ de températures du résultat  %(k1)s
-"""),
+
+
+
 
 53 : _(u"""
  La table "CARA_GEOM" n'existe pas.
@@ -314,10 +314,10 @@ Erreur :
  on attend un résultat de type "EVOL_NOLI" .
 """),
 
-78 : _(u"""
- Le résultat  %(k1)s  doit comporter la relation de comportement au numéro
- d'ordre  %(k2)s  .
-"""),
+
+
+
+
 
 79 : _(u"""
  Le résultat  %(k1)s  doit comporter un champ de variables internes au numéro
@@ -345,21 +345,21 @@ Erreur :
  on attend un concept "EVOL_NOLI"
 """),
 
-85 : _(u"""
- erreur: le champ SIEF_ELGA n'existe pas
-"""),
 
-86 : _(u"""
- erreur: le champ VARI_ELGA n'existe pas
-"""),
 
-87 : _(u"""
- erreur: le champ DEPL_ELNO n'existe pas
-"""),
 
-88 : _(u"""
- erreur: le champ EPSG_ELGA n'existe pas
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
 
 89 : _(u"""
  les 2 nuages : %(k1)s  et  %(k2)s  doivent avoir le même nombre de coordonnées.

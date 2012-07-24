@@ -1,6 +1,6 @@
       SUBROUTINE VECGEN(NOMRES,NUMEG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,12 +56,12 @@ C
 C
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER I ,IADMOD ,IAVALE ,IDDEEQ ,IDVALE ,IDVECT ,IOC 
-      INTEGER IPOS ,IRET ,J ,LADRVE ,LDDESC ,LDESC ,LDNDDL 
-      INTEGER LDNSST ,LDNVEC ,LDPRS ,LDSTR ,LLNEQ ,LLREF ,LLREFB 
-      INTEGER LRDESC ,LREFE ,LRREF ,LRVAL ,NBCHAR ,NBMOD ,NDDL0 
-      INTEGER NEQ ,NEQGEN ,NUM ,NUSST 
-      REAL*8 RBID 
+      INTEGER I ,IADMOD ,IAVALE ,IDDEEQ ,IDVALE ,IDVECT ,IOC
+      INTEGER IPOS ,IRET ,J ,LADRVE ,LDDESC ,LDESC ,LDNDDL
+      INTEGER LDNSST ,LDNVEC ,LDPRS ,LDSTR ,LLNEQ ,LLREF ,LLREFB
+      INTEGER LRDESC ,LREFE ,LRREF ,LRVAL ,NBCHAR ,NBMOD ,NDDL0
+      INTEGER NEQ ,NEQGEN ,NUM ,NUSST
+      REAL*8 RBID
 C-----------------------------------------------------------------------
       DATA PGC/'VECGEN'/
 C-----------------------------------------------------------------------
@@ -75,7 +75,7 @@ C
       PROFG = NUMEG//'      .NUME'
       CALL JEVEUO(PROFG//'.REFN','E',LLREF)
       MODGEN = ZK24(LLREF) (1:8)
-      
+
 C     0/ TEST SI ON ELIMINE LES CONTRAINTES
 C     =====================================
 
@@ -86,8 +86,8 @@ C     =====================================
       CALL JEEXIN(SELIAI,ELIM)
 C
 C     RECUPERATION DE LA BASE SI ELIMINATION
-C 
-      IF (ELIM .NE. 0) THEN 
+C
+      IF (ELIM .NE. 0) THEN
         CALL JELIRA(MODGEN//'      .MODG.SSNO','NOMMAX',NBSST,K1BID)
         NEQET=0
         CALL JEVEUO(NUMEG//'      .NUME.NEQU','L',IBID)
@@ -99,7 +99,7 @@ C
           NEQET=NEQET+ZI(LSILIA+I-1)
    9    CONTINUE
       ENDIF
-            
+
 C     1/ LECTURE ET STOCKAGE DES INFORMATIONS
 C     =======================================
 
@@ -127,7 +127,7 @@ C       INFERIEUR AU NOMBRE TOTAL NBSST DE SOUS-STRUCTURES
           VALI (2) = NBSST
           CALL U2MESG('F','ALGORITH15_69',0,' ',2,VALI,0,0.D0)
         ENDIF
-      ENDIF 
+      ENDIF
 C
 C-----------------------------------------------------------------------
 C     1.2/ CREATION DE LA STRUCTURE DE DONNEES NOMRES
@@ -277,7 +277,7 @@ C
 C
         TYPEBA = ZK24(LLREFB+6)
 
-        IF (TYPEBA(1:4).NE.'RITZ' .AND. 
+        IF (TYPEBA(1:4).NE.'RITZ' .AND.
      &      TYPEBA(1:9).NE.'CLASSIQUE') THEN
           VALK (1) = NOMSST
           CALL U2MESG('F','ALGORITH15_74',1,VALK,0,0,0,0.D0)
@@ -296,7 +296,7 @@ C
 C     COPIE DU NUME_DDL DANS LE .LICH
         ZK8(LDNDDL+I-1) = NUBAMO(1:8)
    10 CONTINUE
-   
+
 C     ECRITURE DU .REFE
       ZK24(LLREF) = MODGEN
       ZK24(LRREF+1) = PROFG
@@ -345,7 +345,7 @@ C-----------------------------------------------------------------------
 C     2.2/ CREATION DE L'OBJET CHARGEMENT PROJETE DU .VALE
 C-----------------------------------------------------------------------
 
-        CALL JECROC(JEXNOM(CHAVAL,NOMSST))     
+        CALL JECROC(JEXNOM(CHAVAL,NOMSST))
         CALL JEECRA(JEXNOM(CHAVAL,NOMSST),'LONMAX',NBMOD,' ')
 
 C-----------------------------------------------------------------------
@@ -360,11 +360,11 @@ C     ACCES AU CHAMP DE CHARVAL ASSOCIE A NOMSST
 
 C     BOUCLE SUR LES MODES
         DO 20 J = 1,NBMOD
-        
+
 C     EXTRACTION DU CHAMP DE DEPLACEMENTS ASSOCIE AU MODE J
-          CALL RSEXCH(BASMOD,'DEPL',J,NOMCHA,IRET)
+          CALL RSEXCH('F',BASMOD,'DEPL',J,NOMCHA,IRET)
           NOMCHA = NOMCHA(1:19)//'.VALE'
-          CALL JEVEUO(NOMCHA,'L',IADMOD)          
+          CALL JEVEUO(NOMCHA,'L',IADMOD)
 C
 C     RECOPIE DU CHAMP DANS LE VECTEUR TEMPORAIRE
           CALL DCOPY(NEQ,ZR(IADMOD),1,ZR(IDVECT),1)
@@ -378,7 +378,7 @@ C
    20   CONTINUE
         CALL JEDETR('&&'//PGC//'.VECTA')
    50 CONTINUE
-   
+
 C     3/ ASSEMBLAGE
 C     =============
 
@@ -400,13 +400,13 @@ C     RECUPERATION DU NUMERO GLOBAL DE LA SOUS-STRUCTURE
         IF (ELIM .EQ. 0) THEN
           CALL JENONU(JEXNOM(MODGEN//'      .MODG.SSNO',NOMSST),NUSST)
         ELSE
-C     CAS OU ON RECOURS A L'ELIMINATION                
+C     CAS OU ON RECOURS A L'ELIMINATION
           DO 60 I1=1,NBSST
             IF ( ZK8(LSST+I1-1) .EQ. NOMSST ) THEN
               NUSST=I1
-            ENDIF  
-  60      CONTINUE   
-        ENDIF  
+            ENDIF
+  60      CONTINUE
+        ENDIF
 
 C     RECUPERATION DU D.D.L. GENERALISE DE DEPART ET DU NOMBRE TOTAL
 C     DE D.D.L., ASSOCIES A LA SOUS-STRUCTURE.
@@ -414,12 +414,12 @@ C     DE D.D.L., ASSOCIES A LA SOUS-STRUCTURE.
           NDDL0 = ZI(LDPRS+2*NUSST-2)
           NBMOD = ZI(LDPRS+2*NUSST-1)
         ELSE
-C     CAS OU ON RECOURS A L'ELIMINATION                
+C     CAS OU ON RECOURS A L'ELIMINATION
           NDDL0=0
           NBMOD=0
-          DO 70 I1=1,NUSST-1    
+          DO 70 I1=1,NUSST-1
             NDDL0 = NDDL0 + ZI(LSILIA+I1-1)
-   70     CONTINUE     
+   70     CONTINUE
           NBMOD = ZI(LSILIA+NUSST-1)
         ENDIF
 
@@ -436,17 +436,17 @@ C     BOUCLE SUR LES MODES DE LA SOUS-STRUCTURE
             ZR(LRVAL+IPOS) = ZR(LRVAL+IPOS) + ZR(IDVALE+J-1)
    80     CONTINUE
         ELSE
-C     CAS OU ON RECOURS A L'ELIMINATION   
-C     ON RE PROJETTE SUR LA BASE T : F_proj = T^t * (Phi^t * F) 
+C     CAS OU ON RECOURS A L'ELIMINATION
+C     ON RE PROJETTE SUR LA BASE T : F_proj = T^t * (Phi^t * F)
           DO 100 J1 = 1,NEQRED
             ZR(LRVAL+J1-1)=0.0D0
             DO 90 I1=1,NBMOD
-            ZR(LRVAL+J1-1) = ZR(LRVAL+J1-1) + 
+            ZR(LRVAL+J1-1) = ZR(LRVAL+J1-1) +
      &                       ZR(IDVALE+I1-1)*
      &                       ZR(LMAPRO+(J1-1)*NEQET+NDDL0+I1-1)
-   90       CONTINUE  
+   90       CONTINUE
   100     CONTINUE
-        ENDIF          
+        ENDIF
   200 CONTINUE
 
       CALL JEDEMA()

@@ -1,8 +1,8 @@
       SUBROUTINE NMELRU(FAMI,KPG,KSP,POUM,IMATE,COMPOR,EPSEQ,P,DIVU,
-     &                  NONLIN,ENER,DERIVL,DDIVU,DEPSEQ,DENER,DLAGTG)
-C-----------------------------------------------------------------------
+     &                  NONLIN,ENER)
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C-----------------------------------------------------------------------
+C ----------------------------------------------------------------------
 C
 C FONCTION REALISEE:
 C
@@ -34,57 +34,44 @@ C IN  EPSEQ   : DEFORMATION EQUIVALENTE
 C IN  P       : DEFORMATION ELASTIQUE CUMULEE
 C IN  DIVU    : TRACE DES DEFORMATIONS
 C IN  NONLIN  : NON LINEARITE DU MATERIAU
-C IN  DERIVL  : FLAG POUR LE CALCUL DE LA DERIVEE LAGRANGIENNE (SI DG).
-C IN  DDIVU   : DERIVEE LAGRANGIENNE DE DIVU (SI DG).
-C IN  DEPSEQ  : DERIVEE LAGRANGIENNE DE EPSEQ (SI DG).
-C IN  DLAGTG  : DERIVEE LAGRANGIENNE DE LA TEMPERATURE (SI DG).
 C OUT ENER(1) : ENERGIE LIBRE (POUR LE CALCUL DE G)
 C OUT ENER(2) : DERIVEE DE L'ENERGIE LIBRE / TEMPERATURE
-C OUT DENER(1): DERIVEE LAGRANGIENNE DE L'ENERGIE LIBRE (SI DG).
-C OUT DENER(2): DERIVEE LAGRANGIENNE DE LA DERIVEE EN TEMP (SI DG).
 C
-C   -------------------------------------------------------------------
-C     SUBROUTINES APPELLEES:
-C       MATERIAUX: RCVAD2, RCTRAC, RCFONC.
-C
-C     FONCTIONS INTRINSEQUES:
-C       AUCUNE.
-C   -------------------------------------------------------------------
-C     ASTER INFORMATIONS:
-C       11/12/00 (OB): TOILETTAGE FORTRAN,
-C                      MISE EN PLACE DE LA DERIVEE DE L'ENERGIE PAR
-C                      RAPPORT A UNE VARIATION DE DOMAINE.
-C-----------------------------------------------------------------------
+C ----------------------------------------------------------------------
 C CORPS DU PROGRAMME
       IMPLICIT NONE
 
 C DECLARATION PARAMETRES D'APPELS
       INCLUDE 'jeveux.h'
       INTEGER       KPG,KSP,IMATE
+      REAL*8        EPSEQ,P,DIVU,ENER(2)
       CHARACTER*(*) FAMI,POUM
       CHARACTER*16  COMPOR(*)
-      REAL*8        TEMP,TREF,EPSEQ,DIVU,ENER(2),DENER(2),DDIVU,
-     &              DEPSEQ,DLAGTG
-      LOGICAL       NONLIN,DERIVL
-      INTEGER ICODRE(3)
-      CHARACTER*8   NOMRES(3),TYPE
+      LOGICAL       NONLIN
 
 C DECLARATION VARIABLES LOCALES
-      REAL*8       E,NU,DEMU,K,K3,ALPHA,DUM,RESU
-      REAL*8       DE,DNU,DEMUDT,DK,DALPHA
-      REAL*8       DSDE,SIGY,RPRIM,P,RP,AIREP
-      REAL*8       DSDEDT,DSIGY,DRPRIM,DP,DRP,DAIREP
-      REAL*8       NRJ,DNRJ,VALRES(3),DEVRES(3),SIELEQ,DLNRJ,DDNRJ
-      INTEGER      JPROL,JVALE,NBVALE,IRET1,IRET2
-      LOGICAL      TRAC,LINE,PUIS
-      REAL*8       COCO
-      COMMON /RCONM2/ALFAFA,UNSURN,SIELEQ
-      REAL*8         ALFAFA,UNSURN
+      INTEGER       ICODRE(3)
+      INTEGER       JPROL,JVALE,NBVALE,IRET1,IRET2
 
+      REAL*8        TEMP,TREF
+      REAL*8        E,NU,DEMU,K,K3,ALPHA,DUM,RESU
+      REAL*8        DE,DNU,DEMUDT,DK,DALPHA
+      REAL*8        DSDE,SIGY,RPRIM,RP,AIREP,COCO
+      REAL*8        DSDEDT,DSIGY,DRPRIM,DP,DRP,DAIREP
+      REAL*8        NRJ,DNRJ,VALRES(3),DEVRES(3)
 
-      TRAC  = (COMPOR(1)(1:14).EQ. 'ELAS_VMIS_TRAC')
-      LINE  = (COMPOR(1)(1:14).EQ. 'ELAS_VMIS_LINE')
-      PUIS  = (COMPOR(1)(1:14).EQ. 'ELAS_VMIS_PUIS')
+      CHARACTER*8   NOMRES(3),TYPE
+
+      LOGICAL       TRAC,LINE,PUIS
+
+      COMMON        /RCONM2/ALFAFA,UNSURN,SIELEQ
+      REAL*8        ALFAFA,UNSURN,SIELEQ
+C
+C ----------------------------------------------------------------------
+C
+      TRAC = (COMPOR(1)(1:14).EQ.'ELAS_VMIS_TRAC')
+      LINE = (COMPOR(1)(1:14).EQ.'ELAS_VMIS_LINE')
+      PUIS = (COMPOR(1)(1:14).EQ.'ELAS_VMIS_PUIS')
 
 C====================================================================
 C -  LECTURE DE E, NU, ALPHA ET DERIVEES / TEMPERATRURE
@@ -201,28 +188,12 @@ C=====================================================================
         DNRJ = 0.5D0*DK*DIVU*DIVU-K3*DIVU*ALPHA
       ENDIF
 
-C TRAITEMENTS AUXILIAIRES LIE A LA DERIVATION LAGRANGIENNE
-C (CAR DL(K),DL(DK), DL(K3),DL(ALPHA),DL(DALPHA),DL(TREF)=0 PAR
-C ELEMENT).
-      IF (DERIVL) THEN
-        DLNRJ = K*DIVU*DDIVU
-        DDNRJ = DK*DIVU*DDIVU-K3*DDIVU*(ALPHA+DALPHA*(TEMP-TREF))-
-     &          K3*DIVU*DALPHA*DLAGTG
-      ENDIF
-
       IF (NONLIN) THEN
         ENER(1) = NRJ +RP*RP/DEMU/3.D0 + AIREP
         ENER(2) = DNRJ+RP*(DRP-DEMUDT*RP/DEMU/2.D0)/DEMU/1.5D0+DAIREP
       ELSE
         ENER(1) = NRJ +DEMU*EPSEQ*EPSEQ/3.D0
         ENER(2) = DNRJ+DEMUDT*EPSEQ*EPSEQ/3.D0
-
-C CALCUL DE LA DERIVEE DE L'ENERGIE (CAR DL(DEMU),DL(DDEMUDT)=0
-C PAR ELEMENT).
-        IF (DERIVL) THEN
-          DENER(1) = DLNRJ + 2.D0*DEMU*EPSEQ*DEPSEQ/3.D0
-          DENER(2) = DDNRJ + 2.D0*DEMUDT*EPSEQ*DEPSEQ/3.D0
-        ENDIF
       ENDIF
 
       END

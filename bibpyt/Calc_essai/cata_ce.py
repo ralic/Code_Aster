@@ -1,8 +1,8 @@
-#@ MODIF cata_ce Calc_essai  DATE 28/11/2011   AUTEUR BODEL C.BODEL 
+#@ MODIF cata_ce Calc_essai  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: utf-8 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -37,7 +37,7 @@ import aster
 from Utilitai.Utmess import UTMESS
 from Cata.cata import modele_sdaster , mode_meca, matr_asse_depl_r, maillage_sdaster
 from Cata.cata import cara_elem, cham_mater, table_sdaster, table_fonction
-from Cata.cata import nume_ddl_sdaster, dyna_harmo, matr_asse_gene_r
+from Cata.cata import nume_ddl_sdaster, dyna_harmo, matr_asse_gene_r,interspectre
 from Accas import _F
 
 
@@ -420,16 +420,14 @@ class ChampMateriau:
 #--------------------------------------------------------------------------------------
 
 class InterSpectre:
-    """!Gestion des concepts de type table interspectrale
+    """!Gestion des concepts de type interspectre
 
-    Regroupe les concepts aster de type table interspectrale :
-    - Differencie les tabl_instp des autres tables tabl_sdaster,
-    - Extrait les tabl_intsp sous forme d'une matrice python interspectrale
+    Regroupe les concepts aster de type interspectre :
+    - Extrait les sd_interspectre sous forme d'une matrice python interspectrale
     - Cree un lien entre les numerotations des ddl de cette matrice
       avec les numerotations d'un modele EF. ex : la ligne/colonne 3 de la
       matrice interspectrale correspond au noeud 1DZ du modele
-    - Cree une table inter-spectrale sd_aster a partir d'une matrice python
-         - Cree une table inter-spectrale sd_aster a partir d'une matrice python
+    - Cree une sd_interspectre a partir d'une matrice python
         On peut creer une table avec le nom, la table format aster (obj_ast) ou la matrice
         format python (mat)
     """
@@ -471,9 +469,7 @@ class InterSpectre:
 
     def make_inte_spec(self, titre, paras_out):
         """
-        Fabrique un objet aster de type table inter-spectre :
-         - Creation de n(n+1)/2 fonctions, ou n = dim(matrice interspectrale)
-         - Creation d'une table
+        Fabrique un objet aster de type sd_interspectre :
         """
         from Cata.cata import DEFI_FONCTION
         dim = self.matr_inte_spec.shape[1]
@@ -488,27 +484,23 @@ class InterSpectre:
                     fonc.append(self.matr_inte_spec[ind_freq,i,j].real)
                     fonc.append(self.matr_inte_spec[ind_freq,i,j].imag)
                 nume_ordr.append([int(i),int(j)])
-
                 _fonc=DEFI_FONCTION( NOM_PARA   ="FREQ",
                                      NOM_RESU   ="DSP",
                                      INTERPOL   ="NON",
                                      INFO       =1,
                                      VALE_C     =fonc,)
-                l_fonc.append(_fonc.nom)
+                l_fonc.append(_fonc)
 
         nume_ordr = numpy.array(nume_ordr)
         nume_i = nume_ordr[:,0]
         nume_j = nume_ordr[:,1]
         mcfact=[]
-        mcfact.append(_F(PARA='NOM_CHAM'    ,LISTE_K=('DSP')   ,NUME_LIGN=(1,)))
-        mcfact.append(_F(PARA='OPTION'      ,LISTE_K=('TOUT',) ,NUME_LIGN=(1,)))
-        mcfact.append(_F(PARA='DIMENSION'   ,LISTE_I=(dim,)    ,NUME_LIGN=(1,)))
         if isinstance(self.resu, Resultat):
             # Si on associe l'inter-spectre a un resultat,
             # on range les fonctions par rapport aux noeuds et composantes
             if not self.nume_phy:
                 self.nume_phy = nume_ddl_phy(self.resu)
-            ddl = self.nume_phy
+            ddl = self.nume_phy 
             noeu_i = []
             noeu_j = []
             cmp_i = []
@@ -520,22 +512,25 @@ class InterSpectre:
                 noeu_j.append(lj[0])
                 cmp_i.append(li[1])
                 cmp_j.append(lj[1])
-            mcfact.append(_F(PARA='NOEUD_I',LISTE_K=noeu_i  ,NUME_LIGN=range(2,len(nume_i)+2)))
-            mcfact.append(_F(PARA='NOEUD_J',LISTE_K=noeu_j  ,NUME_LIGN=range(2,len(nume_j)+2)))
-            mcfact.append(_F(PARA='NOM_CMP_I',LISTE_K=cmp_i   ,NUME_LIGN=range(2,len(nume_i)+2)))
-            mcfact.append(_F(PARA='NOM_CMP_J',LISTE_K=cmp_j   ,NUME_LIGN=range(2,len(nume_j)+2)))
+            for k in range(len(nume_i)):
+                mcfact.append(_F(NOEUD_I=noeu_i[k],
+                             NOEUD_J=noeu_j[k],
+                             NOM_CMP_I=cmp_i[k],
+                             NOM_CMP_J=cmp_j[k],
+                             FONCTION=l_fonc[k]),)
         else:
-            mcfact.append(_F(PARA='NUME_ORDRE_I',LISTE_I=(1+nume_i).tolist()    ,NUME_LIGN=range(2,len(nume_i)+2)))
-            mcfact.append(_F(PARA='NUME_ORDRE_J',LISTE_I=(1+nume_j).tolist()    ,NUME_LIGN=range(2,len(nume_j)+2)))
-        mcfact.append(_F(PARA='FONCTION_C'  ,LISTE_K=l_fonc             ,NUME_LIGN=range(2,len(l_fonc)+2)))
+            for k in range(len(nume_i)):
+                mcfact.append(_F(NUME_ORDRE_I=1+nume_i[k],
+                             NUME_ORDRE_J=1+nume_j[k],
+                             FONCTION=l_fonc[k]),)
 
-        self.obj = CreaTable(mcfact, titre,
-                             paras_out,
-                             self.mess,
-                            )
+        __inte_out = CreaTable(mcfact,titre,
+                              paras_out,
+                              self.mess,
+                             )
 
     def def_inte_spec(self, intsp):
-        """ Associe une table intsp aster a l'instance de InterSpectre"""
+        """ Associe une sd_interspectre intsp a l'instance de InterSpectre"""
         self.obj = intsp
 
     def def_nom(self, nom):
@@ -563,14 +558,33 @@ class InterSpectre:
 
 
     def extr_inte_spec(self, resu):
-        """!Extraction d'une matrice inter-spectrale a partir d'une tabl_insp
+        """!Extraction d'une matrice inter-spectrale a partir d'une sd_interspectre
            Verification de la coherence entre les ddl de l'inter-spectre et du concept resultat"""
-        from Cata.cata import RECU_FONCTION
-        from Cata.cata import DETRUIRE
         self.mess.disp_mess("Extraction de l'inter-spectre " + self.nom)
         self.mess.disp_mess(" ")
-        tabl_py = self.obj.EXTR_TABLE()
-        nom_fonc= tabl_py['FONCTION_C'].values()['FONCTION_C']
+        
+        coupl_ddl = []
+        try:
+            # Cas ou l'inter-spectre est defini par ses noeuds et composantes
+            noeudi  = aster.getvectjev(self.obj.nom.ljust(8)+'.NOEI')
+            noeudj  = aster.getvectjev(self.obj.nom.ljust(8)+'.NOEJ')
+            cmpi    = aster.getvectjev(self.obj.nom.ljust(8)+'.CMPI')
+            cmpj    = aster.getvectjev(self.obj.nom.ljust(8)+'.CMPJ')
+            for ind in range(len(noeudi)):
+                coupl_ddl.append( (noeudi[ind].split()[0] + '_' + cmpi[ind].split()[0],
+                                   noeudj[ind].split()[0] + '_' + cmpj[ind].split()[0]) )
+            isnume = 0
+            nb_fonc = len(noeudi)
+
+        except:
+            # l'inter-spectre n'est defini qu'avec des numeros d'ordre independants du modele
+            numi  = aster.getvectjev(self.obj.nom.ljust(8)+'.NUMI')
+            numj  = aster.getvectjev(self.obj.nom.ljust(8)+'.NUMJ')
+            for ind in range(len(numi)):
+                coupl_ddl.append((numi[ind],numj[ind]))
+            isnume = 1
+            nb_fonc = len(numi)
+
         nb_freq = len(self.f)
 
         self.set_model(resu)
@@ -578,8 +592,8 @@ class InterSpectre:
         nb_mes = len(self.nume_phy)
 
         # il doit y avoir coherence de longueur entre taille de l'inter-spectre et le nombre de DDL du resu
-        if nb_mes*(nb_mes+1)/2 != len(nom_fonc):
-            nb_mes_intsp = 0.5*(-1+numpy.sqrt(1+8*len(nom_fonc)))
+        if nb_mes*(nb_mes+1)/2 != nb_fonc:
+            nb_mes_intsp = 0.5*(-1+numpy.sqrt(1+8*nb_fonc))
             self.mess.disp_mess(" Nombre de mesures de CPhi : " + str(int(nb_mes)))
             self.mess.disp_mess(" Nombre de mesures de l'inter-spectre : "
                                 + str(int(nb_mes_intsp)))
@@ -588,74 +602,31 @@ class InterSpectre:
 
         self.matr_inte_spec = numpy.zeros((nb_freq, nb_mes, nb_mes), complex)
 
-        coupl_ddl = []
-        try:
-            # Cas ou l'inter-spectre est defini par ses noeuds et composantes
-            noeudi  = tabl_py['NOEUD_I'].values()['NOEUD_I']
-            noeudj  = tabl_py['NOEUD_J'].values()['NOEUD_J']
-            cmpi    = tabl_py['NOM_CMP_I'].values()['NOM_CMP_I']
-            cmpj    = tabl_py['NOM_CMP_J'].values()['NOM_CMP_J']
-            ddli = []
-            ddlj = []
-            for ind in range(len(cmpi)):
-                coupl_ddl.append( (noeudi[ind].split()[0] + '_' + cmpi[ind].split()[0],
-                                   noeudj[ind].split()[0] + '_' + cmpj[ind].split()[0]) )
-            isnume = 1
-
-        except KeyError:
-            # l'inter-spectre n'est defini qu'avec des numeros d'ordre independants du modele
-            numi  = tabl_py['NUME_ORDRE_I'].values()['NUME_ORDRE_I']
-            numj  = tabl_py['NUME_ORDRE_J'].values()['NUME_ORDRE_J']
-            coupl_ddl.append((numi,numj))
-            isnume = 0
-
-
-        try:
-            # Methode de recherche rapide des fonctions
-            ctx = CONTEXT.get_current_step().get_contexte_courant()
-            fonc_py = [ ctx[fonc].convert('complex') for fonc in nom_fonc ]
-        except KeyError:
-            fonc_py = []
-            ind_fonc = 0
-            nb_fonc = nb_mes*(nb_mes+1)/2
-            for ind_fonc in range(nb_fonc):
-                __FONC = RECU_FONCTION( TABLE = self.obj,
-                                        NOM_PARA_TABL = 'FONCTION_C',
-                                        FILTRE = _F(NOM_PARA='FONCTION_C',VALE_K=nom_fonc[ind_fonc])
-                                       )
-                fonc_py.append( __FONC.convert('complex'))
-                DETRUIRE( CONCEPT = _F( NOM = __FONC ),INFO=1 )
-                ind_fonc = ind_fonc + 1
+        intspec = aster.getcolljev(self.obj.nom.ljust(8)+'.VALE')
 
         # Rangement dans l'ordre des fonctions (par rapport a la numerotation du self.resu)
         nume = self.nume_phy
         for ind_coupl in range(len(coupl_ddl)):
-            try:
+            if isnume:
+                ind_l = coupl_ddl[ind_coupl][0]-1
+                ind_c = coupl_ddl[ind_coupl][1]-1
+            else:
                 ind_l = nume.index(coupl_ddl[ind_coupl][0])
                 ind_c = nume.index(coupl_ddl[ind_coupl][1])
-            except ValueError:
-                raise TypeError
             for ind_freq in range(nb_freq):
-                self.matr_inte_spec[ind_freq,ind_l,ind_c] = fonc_py[ind_coupl].vale_y[ind_freq]
                 if ind_l != ind_c:
-                    self.matr_inte_spec[ind_freq,ind_c,ind_l] = numpy.conjugate(self.matr_inte_spec[ind_freq,ind_l,ind_c])
-
+                    valc=complex(intspec[ind_coupl+1][2*ind_freq],intspec[ind_coupl+1][2*ind_freq+1])
+                    self.matr_inte_spec[ind_freq,ind_l,ind_c] = valc
+                    self.matr_inte_spec[ind_freq,ind_c,ind_l] = numpy.conjugate(valc)
+                else:
+                    valc=complex(intspec[ind_coupl+1][ind_freq],0.0)
+                    self.matr_inte_spec[ind_freq,ind_l,ind_c] = valc
 
 
     def extr_freq(self):
         """Extraction des frequences d'etude dans la tabl_intsp qui contient
         les inter-spectres mesures"""
-        from Cata.cata import RECU_FONCTION
-        from Cata.cata import DETRUIRE
-        tabl_py=self.obj.EXTR_TABLE()
-        toto=tabl_py['FONCTION_C']
-        nom_fonc = toto.values()['FONCTION_C'][0]
-        __FONC = RECU_FONCTION(TABLE = self.obj,
-                               NOM_PARA_TABL = 'FONCTION_C',
-                               FILTRE = _F(NOM_PARA='FONCTION_C',VALE_K=nom_fonc)
-                               )
-        freq=__FONC.Absc()
-        DETRUIRE(CONCEPT=_F(NOM=__FONC),INFO=1)
+        freq  = aster.getvectjev(self.obj.nom.ljust(8)+'.FREQ')
         self.f = freq
         self.intsp = 1
 
@@ -923,13 +894,13 @@ class CalcEssaiObjects:
                 self.cara_elem[i] = v
             elif isinstance( v, cham_mater ):
                 self.cham_mater[i] = v
+            elif isinstance( v, interspectre ):
+                self.inter_spec[i] = InterSpectre(nom=i,obj_ast=v,mess=self.mess)
             elif isinstance( v, table_sdaster ):
                 # test du type de table :
                 typ_table = self.test_table(v)
                 if typ_table == 'tempo':
                     self.list_tempo[i] = Tempo(nom = i, obj_ast = v, mess = self.mess)
-                elif typ_table == 'intespec':
-                    self.inter_spec[i] = InterSpectre(nom = i, obj_ast = v, mess = self.mess)
                 else:
                     pass
             elif isinstance( v, nume_ddl_sdaster ):
@@ -965,6 +936,8 @@ class CalcEssaiObjects:
             self.nume_ddl[name] = obj
         if isinstance( obj, maillage_sdaster):
             self.maillages[name] = obj
+        if isinstance( obj, interspectre):
+            self.inter_spec[name] = InterSpectre(nom = name, obj_ast = obj, mess = self.mess)
         if isinstance( obj, mode_meca ):
             self.mode_meca[name] = ModeMeca(self,name,obj,self.mess)
             self.mode_meca[name].get_modele()
@@ -981,8 +954,6 @@ class CalcEssaiObjects:
             typ_table = self.test_table(obj)
             if typ_table == 'tempo':
                 self.list_tempo[name] = Tempo(nom = name, obj_ast = obj, mess = self.mess)
-            elif typ_table == 'intespec':
-                self.inter_spec[name] = InterSpectre(nom = name, obj_ast = obj, mess = self.mess)
             else:
                 pass
         self.resultats = self.mode_meca.copy()
@@ -1184,10 +1155,9 @@ def nume_ddl_gene(resu, extract_mode = None):
 
 
 def CreaTable(mcfact, titre, paras_out, mess):
-    """!Sortie des donnees sous forme de sd_table"""
-    from Cata.cata import CREA_TABLE
+    """!Sortie des donnees sous forme de sd_interspectre"""
+    from Cata.cata import DEFI_INTE_SPEC
     TablesOut = paras_out["TablesOut"]
-    TypeTable = paras_out["TypeTables"]
     DeclareOut = paras_out["DeclareOut"]
     compteur = paras_out["ComptTable"]
     paras_out["ComptTable"] = paras_out["ComptTable"] + 1
@@ -1200,9 +1170,9 @@ def CreaTable(mcfact, titre, paras_out, mess):
 
     DeclareOut('__TAB', TablesOut[compteur])
 
-    __TAB = CREA_TABLE(LISTE=mcfact,
-                       TITRE = titre,
-                       TYPE_TABLE=TypeTable)
+    __TAB = DEFI_INTE_SPEC(PAR_FONCTION=mcfact,
+                             TITRE = titre,
+                            )
 
     mess.disp_mess("Les resultats sont sauves dans la table "
                    + TablesOut[compteur].nom)

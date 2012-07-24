@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,9 +19,11 @@
 # RESPONSABLE COURTOIS M.COURTOIS
 def recu_fonction_prod(RESULTAT=None,TABLE=None,RESU_GENE=None,
                        BASE_ELAS_FLUI=None,CHAM_GD=None,NAPPE=None,
+                       INTE_SPEC=None,NOEUD_J=None,NUME_ORDRE_J=None,
                        NOM_PARA_TABL=None,**args):
    if AsType(RESULTAT)  == dyna_harmo or \
       AsType(RESU_GENE) == harm_gene or \
+      (INTE_SPEC != None and (NOEUD_J != None or NUME_ORDRE_J != None)) or \
       (TABLE != None and NOM_PARA_TABL == "FONCTION_C"):
       return fonction_c
    else:
@@ -31,7 +33,7 @@ RECU_FONCTION=OPER(nom="RECU_FONCTION",op=90,sd_prod=recu_fonction_prod,
                    fr="Extraire sous forme d'une fonction, l'évolution d'une grandeur en fonction d'une autre",
                    reentrant='f',
             UIinfo={"groupes":("Résultats et champs","Fonctions",)},
-         regles=(UN_PARMI('CHAM_GD','RESULTAT','RESU_GENE','TABLE','BASE_ELAS_FLUI','NAPPE'),),
+         regles=(UN_PARMI('CHAM_GD','RESULTAT','RESU_GENE','TABLE','BASE_ELAS_FLUI','NAPPE','INTE_SPEC'),),
 
          CHAM_GD         =SIMP(statut='f',typ=(cham_no_sdaster,cham_elem,),),
          RESULTAT        =SIMP(statut='f',typ=resultat_sdaster),
@@ -39,6 +41,8 @@ RECU_FONCTION=OPER(nom="RECU_FONCTION",op=90,sd_prod=recu_fonction_prod,
          TABLE           =SIMP(statut='f',typ=(table_sdaster,table_fonction)),
          BASE_ELAS_FLUI  =SIMP(statut='f',typ=melasflu_sdaster),
          NAPPE           =SIMP(statut='f',typ=nappe_sdaster),
+         INTE_SPEC       =SIMP(statut='f',typ=interspectre),
+
 # ======= ACCES A LA SD RESULTAT =================================================
          b_acces = BLOC ( condition = "(RESULTAT != None) or (RESU_GENE != None)",
                           fr="acces a une SD résultat",
@@ -70,6 +74,23 @@ RECU_FONCTION=OPER(nom="RECU_FONCTION",op=90,sd_prod=recu_fonction_prod,
            NUME_MODE       =SIMP(statut='o',typ='I' ),
            PARA_X          =SIMP(statut='o',typ='TXM',into=("VITE_FLU",) ),
            PARA_Y          =SIMP(statut='o',typ='TXM',into=("FREQ","AMOR") ),
+         ),
+
+# ======= INTERSPECTRE =================================================
+         b_inte_spec = BLOC ( condition = "INTE_SPEC != None",
+                              fr="Récupération de fonction dans un concept interspectre",
+           regles=(UN_PARMI('NUME_ORDRE_I','NOEUD_I'),),
+           NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),into=C_NOM_CHAM_INTO()),
+           NOEUD_I         =SIMP(statut='f',typ=no,max=1),
+           NUME_ORDRE_I    =SIMP(statut='f',typ='I',max=1 ),
+           b_nume_ordre_i = BLOC (condition = "NUME_ORDRE_I != None",
+             NUME_ORDRE_J    =SIMP(statut='f',typ='I',max=1 ),
+           ),
+           b_noeud_i = BLOC (condition = "NOEUD_I != None",
+             NOEUD_J         =SIMP(statut='f',typ=no,max=1),
+             NOM_CMP_I       =SIMP(statut='o',typ='TXM',max=1 ),
+             NOM_CMP_J       =SIMP(statut='f',typ='TXM',max=1 ),
+           ),
          ),
 
 # ======= TABLE =================================================

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,33 +43,31 @@ MODE_LOCAL__
     CTEMPSR  = INST_R   ELEM__         (INST     )
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
     DDL_MECA = DEPL_R   ELNO__ DIFF__
-                                 EN1   (DX       DY     DZ)
-                                 EN2   (PRE1       )
-
+                                 EN1   (DX       DY       DZ       )
+                                 EN2   (PRE1     )
     ECOURAN  = NEUT_R   ELEM__         (X1       )
     NGEOMER  = GEOM_R   ELNO__ DIFF__
                                  EN1   ()
-                                 EN2   (X        Y       Z)
-    EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y       Z      W)
+                                 EN2   (X        Y       Z      )
+    EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y       Z      W        )
     ENORME   = NEUT_R   ELEM__         (X1       )
-    EMNEUT_R = NEUT_R   ELEM__         (X[30]     )
+    EMNEUT_R = NEUT_R   ELEM__         (X[30]    )
     CTYPEPI  = PILO_K   ELEM__         (TYPE     )
-    ECOPILO  = PILO_R   ELGA__ RIGI    (A0       A1       A2       A3       ETA      )
-    CBORNPI  = PILO_R   ELEM__         (A0       A1       )
+    ECOPILO  = PILO_R   ELGA__ RIGI    (A0       A1      A2       A3       ETA      )
+    CBORNPI  = PILO_R   ELEM__         (A0       A1      )
     CCDTAU   = PILO_R   ELEM__         (A0       )
     
-    ECONTPG  = SIEF_R   ELGA__ RIGI    (SIGN     SITX    SITY    FH11X    FH11Y)
-    ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIGN     SITX    SITY    FH11X    FH11Y)
-    ECONTNC  = SIEF_C   ELNO__ IDEN__  (SIGN     SITX    SITY    FH11X    FH11Y)
+    ECONTPG  = SIEF_R   ELGA__ RIGI    (SIGN     SITX    SITY     FH11X    FH11Y    )
+    ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIGN     SITX    SITY     FH11X    FH11Y    )
+    ECONTNC  = SIEF_C   ELNO__ IDEN__  (SIGN     SITX    SITY     FH11X    FH11Y    )
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
     EGINST_R = INST_R   ELGA__ RIGI    (INST     )
-    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30])
-    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30])
-    ENGEOM_R = GEOM_R   ELNO__ IDEN__  (X        Y       Z)
+    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30]    )
+    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30]    )
+    ENGEOM_R = GEOM_R   ELNO__ IDEN__  (X        Y       Z        )
     ENINST_R = INST_R   ELNO__ IDEN__  (INST     )
-    EREFCO   = PREC     ELEM__         (SIGM    FHYDR1)
-
+    EREFCO   = PREC     ELEM__         (SIGM     FHYDR1  )
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
     ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    )
 
@@ -104,12 +102,9 @@ OPTION__
     INIT_VARC           99    IN__  
                               OUT__  ZVARCPG  PVARCPR
     MASS_INER           -1    IN__     OUT__  XXXXXX   XXXXXX     
-    MECA_SENS_MATE      -1    IN__     OUT__  XXXXXX   XXXXXX
-    MECA_SENS_RAPH      -1    IN__     OUT__  XXXXXX   XXXXXX
     NSPG_NBVA           496   IN__   CCOMPO2  PCOMPOR
                               OUT__  EDCEL_I  PDCEL_I
-    NORME_L2            -1    IN__   XXXXXX   XXXXXX  
-                              OUT__  XXXXXX   XXXXXX
+    NORME_L2            -1    IN__     OUT__  XXXXXX   XXXXXX
     PAS_COURANT         405   IN__   CMATERC  PMATERC  NGEOMER  PGEOMER
                               OUT__  ECOURAN  PCOURAN
     RAPH_MECA           322   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR

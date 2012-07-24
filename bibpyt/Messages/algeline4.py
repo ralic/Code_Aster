@@ -1,8 +1,8 @@
-#@ MODIF algeline4 Messages  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF algeline4 Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -293,12 +293,12 @@ Risques & conseils :
  composante   :  %(k3)s
 """),
 
-63 : _(u"""
- champ inexistant.
- champ    :  %(k1)s
- noeud    :  %(k2)s
- composante      :  %(k3)s
-"""),
+
+
+
+
+
+
 
 64 : _(u"""
  détection d'un terme nul sur la sur diagonale
@@ -340,17 +340,17 @@ Risques & conseils :
  l'option de normalisation  %(k1)s  n'est pas implantée.
 """),
 
-79 : _(u"""
- champ inexistant  %(k1)s impossible de récupérer NEQ %(k2)s
-"""),
+
+
+
 
 80 : _(u"""
  type de valeurs inconnu   %(k1)s
 """),
 
-81 : _(u"""
- champ inexistant  %(k1)s
-"""),
+
+
+
 
 82 : _(u"""
  incohérence de certains paramètres modaux propres à ARPACK

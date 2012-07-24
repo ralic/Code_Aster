@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 11/06/2012   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 % RESPONSABLE GRANET S.GRANET
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -186,8 +186,6 @@ OPTION__
                               OUT__  MMATUUR  PMATUUR
     MASS_MECA_EXPLI     12    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
                               OUT__  MMATUUR  PMATUUR
-    MECA_SENS_MATE      -1    IN__    OUT__    XXXXXX   XXXXXX
-    MECA_SENS_RAPH      -1    IN__    OUT__    XXXXXX   XXXXXX
     M_GAMMA             12    IN__   DDL_MECA PACCELR  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
                               OUT__  MVECTUR  PVECTUR
     NORME_L2            -1    IN__    OUT__    XXXXXX   XXXXXX

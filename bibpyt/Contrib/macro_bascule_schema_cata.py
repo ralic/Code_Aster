@@ -1,4 +1,4 @@
-#@ MODIF macro_bascule_schema_cata Contrib  DATE 07/05/2012   AUTEUR GREFFET N.GREFFET 
+#@ MODIF macro_bascule_schema_cata Contrib  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,7 +24,6 @@ from Cata.cata import *
 MACRO_BASCULE_SCHEMA = MACRO(nom="MACRO_BASCULE_SCHEMA", op=macro_bascule_schema_ops, sd_prod=evol_noli,reentrant='f',
             fr="Macro permettant la bascule de schema en temps dans DYNA_NON_LINE",
             UIinfo={"groupes":("Résolution",)},
-            regles=(CONCEPT_SENSIBLE('ENSEMBLE'),),
          MODE          =SIMP(statut='o',typ=modele_sdaster),
          MATE      =SIMP(statut='o',typ=cham_mater),
          MODE_STAT       =SIMP(statut='f',typ=(mode_meca,)),
@@ -249,10 +248,6 @@ MACRO_BASCULE_SCHEMA = MACRO(nom="MACRO_BASCULE_SCHEMA", op=macro_bascule_schema
                             fr="Valeur des deux fréquences délimitant la bande de recherche",),
            INST_CALCUL       =SIMP(statut='f',typ='TXM',defaut="LISTE_ARCHIVAGE",into=("LISTE_ARCHIVAGE","TOUT_PAS",) ),
          ),
-#-------------------------------------------------------------------
-           SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),max='**',
-                               fr="Liste des paramètres de sensibilité",
-                               ang="List of sensitivity parameters"),
 #-------------------------------------------------------------------
 #
 #  Specificite bascules

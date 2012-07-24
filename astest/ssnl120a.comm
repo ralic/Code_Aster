@@ -1,4 +1,4 @@
-# MODIF  DATE 05/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/07/2012   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE  POUTRE EULER_BERNOULLI MULTIFIBRES (STATIQUE NON-LINEAIRE LABORDERIE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -106,14 +106,8 @@ U1=STAT_NON_LINE(MODELE=MOPOU,
                  );
 
 
-U1=CALC_CHAMP(FORCE='REAC_NODA',
-           reuse =U1, RESULTAT=U1,
-
-           );
-
-U1=CALC_CHAMP(  DEFORMATION=('DEGE_ELNO'),
-             reuse =U1,RESULTAT=U1,
-             );
+U1=CALC_CHAMP(FORCE='REAC_NODA', reuse =U1, RESULTAT=U1,)
+U1=CALC_CHAMP(DEFORMATION=('DEGE_ELNO'),reuse =U1,RESULTAT=U1,)
 
 #test de quelques resultats
 
@@ -168,5 +162,21 @@ NOM_CMP='EPXX',VALE=-1.8E-3,REFERENCE='NON_REGRESSION',PRECISION=1.E-5),
 
 ))
 
+"""
+# ===========================================================================
+# COURBES DES FIGURES DE LA DOCUMENTATION : EN COMMENTAIRE CI-DESSOUS
+# ===========================================================================
+CONBET=RECU_FONCTION(RESULTAT=U1, NOM_CHAM='SIEF_ELGA',NOM_CMP='SIXX', MAILLE='M1', POINT=1, SOUS_POINT=1,)
+DEFBET=RECU_FONCTION(RESULTAT=U1, NOM_CHAM='DEPL',     NOM_CMP='DX',   GROUP_NO='B',)
 
-FIN();
+fic = './REPE_OUT/courbes.post'
+unit = DEFI_FICHIER(FICHIER = fic, ACTION='ASSOCIER', TYPE='ASCII',ACCES='NEW')
+IMPR_FONCTION(UNITE=unit,FORMAT='TABLEAU',
+   COURBE=(
+      _F(FONCTION=DEFBET), _F(FONCTION=CONBET), )
+)
+DEFI_FICHIER(UNITE = unit, ACTION='LIBERER',)
+DETRUIRE(INFO=1,ALARME='NON',CONCEPT=(_F(NOM=unit,),),)
+"""
+
+FIN()

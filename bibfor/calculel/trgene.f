@@ -4,7 +4,7 @@
       INTEGER    IFIC, NOCC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -174,7 +174,7 @@ C
 
 C ----------------------------------------------------------------------
         ELSEIF ( TYSD .EQ. 'MODE_GENE' .OR.
-     +           TYSD .EQ. 'HARM_GENE' ) THEN
+     &           TYSD .EQ. 'HARM_GENE' ) THEN
 
           KNUM = '&&TRGENE.NUME_ORDRE'
           CALL RSUTNU(RESU19,'GENE',IOCC,KNUM,NBORDR,PREC,CRIT2,IRET)
@@ -247,8 +247,7 @@ C ----------------------------------------------------------------------
 
           CALL GETVTX('GENE','NOM_CHAM'     ,IOCC,IARG,1,NSYM,N1)
           CALL GETVIS('GENE','NUME_CMP_GENE',IOCC,IARG,1,NCMP,N1)
-          CALL RSEXCH(RESU19,NSYM,NUMORD,CHAM19,IRET)
-          IF (IRET.NE.0) CALL U2MESK('F','CALCULEL6_99',1,RESU19)
+          CALL RSEXCH('F',RESU19,NSYM,NUMORD,CHAM19,IRET)
           CALL JEVEUO(CHAM19//'.VALE','L',JLUE)
           CALL JELIRA(CHAM19//'.VALE','TYPE',IBID,K16B)
 C
@@ -360,7 +359,7 @@ C
           NBMODE = ZI(JDESC+2-1)
           CALL WKVECT('&&TRGENE.CHAMP','V V R',NBMODE,JVECG)
           CALL EXTRAC(INTERP,PREC,CRIT2,NBINST,ZR(JINST),TEMPS,
-     +                ZR(JCHAM),NBMODE,ZR(JVECG),IRET)
+     &                ZR(JCHAM),NBMODE,ZR(JVECG),IRET)
           IF (IRET.NE.0) CALL U2MESK('F','CALCULEL6_2',1,RESU19)
           VALR = ZR(JVECG+NCMP-1)
 

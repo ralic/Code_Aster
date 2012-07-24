@@ -20,7 +20,7 @@ C
       LOGICAL                                   LRESU,LCOR
       LOGICAL           LSUP,LINF,              LMAX,LMIN,LGMSH
 C-----------------------------------------------------------------------
-C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -123,7 +123,7 @@ C         (UNIQUEMENT FORMAT 'CASTEM')
         CALL WKVECT('&&IRECRI.CHAM.CASTEM','V V K16',NBCHAM,JCHAM)
         DO 50 ICHA = 1,NBCHAM
           DO 51 IORD = 1,NBORDR
-            CALL RSEXCH (NOMCO,CHAM(ICHA),ORDR(IORD),NOCH19,IRET)
+            CALL RSEXCH(' ',NOMCO,CHAM(ICHA),ORDR(IORD),NOCH19,IRET)
             IF (IRET.EQ.0) THEN
               CALL DISMOI('C','TYPE_CHAMP',NOCH19,'CHAMP',IBIB,
      &                TYCH,IERD)
@@ -199,7 +199,7 @@ C           * RESULTAT COMPOSE
 C             - VERIFICATION EXISTENCE DANS LA SD RESULTAT NOMCON
 C               DU CHAMP CHAM(ISY) POUR LE NO. D'ORDRE ORDR(IORDR)
 C               ET RECUPERATION DANS NOCH19 DU NOM SE LE CHAM_GD EXISTE
-              CALL RSEXCH(NOMCON,CHAM(ISY),ORDR(IORDR),NOCH19,IRET)
+              CALL RSEXCH(' ',NOMCON,CHAM(ISY),ORDR(IORDR),NOCH19,IRET)
               IF(IRET.NE.0) GOTO 20
             ELSE
 C           * CHAM_GD

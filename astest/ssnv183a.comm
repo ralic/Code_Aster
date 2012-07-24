@@ -1,5 +1,5 @@
 
-# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE FLUAGE EN 3D VENDOCHAB
 # ssnv183a.para = tps_job 300 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -402,7 +402,7 @@ IMPR_TABLE(TABLE=TABD,UNITE=29,
            NOM_PARA=('INST','V9',),);
 
 ####
-# TEST DE SIGM_INTERNE
+# TEST DE PRE_SIGM
 ####
 
 SIG_CART=CREA_CHAMP(TYPE_CHAM='CART_SIEF_R',
@@ -444,11 +444,11 @@ CL=AFFE_CHAR_MECA(MODELE=EPD3,
                                      DX=0.0,),),
                                     );
 CHA_CART=AFFE_CHAR_MECA(MODELE=EPD3,
-                        SIGM_INTERNE=_F(SIGM=SIG_CART),
+                        PRE_SIGM=_F(SIGM=SIG_CART),
                                     );
 
 CHA_CHAM=AFFE_CHAR_MECA(MODELE=EPD3,
-                        SIGM_INTERNE=_F(SIGM=SIG_CHAM),
+                        PRE_SIGM=_F(SIGM=SIG_CHAM),
                                     );
 
 

@@ -1,8 +1,8 @@
-#@ MODIF post_dyna_alea_ops Macro  DATE 31/10/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF post_dyna_alea_ops Macro  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,6 +19,7 @@
 # ======================================================================
 
 import random
+import string
 from types import ListType, TupleType
 from math  import pi,sqrt,log,exp
 
@@ -225,13 +226,6 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
       DUREE=args['DUREE']
 
 
-
-      intespec=INTE_SPEC.EXTR_TABLE()
-      # pour la clarté !
-      NUME_VITE_FLUI_present = 'NUME_VITE_FLUI' in intespec.para
-      NUME_ORDRE_I_present   = 'NUME_ORDRE_I'   in intespec.para
-      NOEUD_I_present        = 'NOEUD_I'        in intespec.para
-
       # table résultat
       tabres = Table(titr='POST_DYNA_ALEA concept : %s' % self.sd.nom)
 
@@ -241,12 +235,10 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
 #                   1- concept interspectre
 #                   2- table de table d interspectre
 
-      if NUME_VITE_FLUI_present :
-         if TOUT_ORDRE != None :
-            jvite = list(set(intespec.NUME_VITE_FLUI.not_none_values()))
-            jvite.sort()
-         else :
-            jvite=[NUME_VITE_FLUI,]
+      intespec = INTE_SPEC.nom.ljust(8)
+
+      if NUME_VITE_FLUI :
+         jvite=[NUME_VITE_FLUI,]
       else :
          jvite  =[None]
 
@@ -256,28 +248,39 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
 
       if NUME_ORDRE_I!=None :
         l_ind_i=NUME_ORDRE_I
-        l_ind_j=args['NUME_ORDRE_J']
         if type(l_ind_i) not in EnumTypes : l_ind_i=[l_ind_i]
-        if type(l_ind_j) not in EnumTypes : l_ind_j=[l_ind_j]
-        if len(l_ind_i)!=len(l_ind_j) :
-           UTMESS('F','PROBA0_8')
+        l_ind_j=args['NUME_ORDRE_J']
+        if l_ind_j:
+          if type(l_ind_j) not in EnumTypes : l_ind_j=[l_ind_j]
+          if len(l_ind_i)!=len(l_ind_j) :
+             UTMESS('F','PROBA0_8')
+        else:
+          l_ind_j=NUME_ORDRE_I
+          if type(l_ind_j) not in EnumTypes : l_ind_j=[l_ind_j]
+          
         # paramètres fixes de la table
         tabres.add_para(['NUME_ORDRE_I','NUME_ORDRE_J'], 'I')
       elif NOEUD_I!=None :
         l_ind_i=NOEUD_I
-        l_ind_j=args['NOEUD_J']
         l_cmp_i=args['NOM_CMP_I']
-        l_cmp_j=args['NOM_CMP_J']
-        if type(l_cmp_i) not in EnumTypes : l_cmp_i=[l_cmp_i]
-        if type(l_cmp_j) not in EnumTypes : l_cmp_j=[l_cmp_j]
         if type(l_ind_i) not in EnumTypes : l_ind_i=[l_ind_i]
-        if type(l_ind_j) not in EnumTypes : l_ind_j=[l_ind_j]
-        if len(l_ind_i)!=len(l_ind_j) :
-           UTMESS('F','PROBA0_8')
-        if len(l_cmp_i)!=len(l_cmp_j) :
-           UTMESS('F','PROBA0_9')
-        if len(l_ind_i)!=len(l_cmp_i) :
-           UTMESS('F','PROBA0_10')
+        if type(l_cmp_i) not in EnumTypes : l_cmp_i=[l_cmp_i]
+        l_ind_j=args['NOEUD_J']
+        if l_ind_j:
+          l_cmp_j=args['NOM_CMP_J']
+          if type(l_ind_j) not in EnumTypes : l_ind_j=[l_ind_j]
+          if type(l_cmp_j) not in EnumTypes : l_cmp_j=[l_cmp_j]
+          if len(l_ind_i)!=len(l_ind_j) :
+             UTMESS('F','PROBA0_8')
+          if len(l_cmp_i)!=len(l_cmp_j) :
+             UTMESS('F','PROBA0_9')
+          if len(l_ind_i)!=len(l_cmp_i) :
+             UTMESS('F','PROBA0_10')
+        else:
+          l_ind_j=NOEUD_I
+          l_cmp_j=args['NOM_CMP_I']
+          if type(l_ind_j) not in EnumTypes : l_ind_j=[l_ind_j]
+          if type(l_cmp_j) not in EnumTypes : l_cmp_j=[l_cmp_j]
         # paramètres fixes de la table
         tabres.add_para(['NOEUD_I','NOEUD_J','NOM_CMP_I','NOM_CMP_J'], 'K8')
 
@@ -285,22 +288,23 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
 #     Cas de tous les indices centraux
 
       elif OPTION!=None :
-         if NUME_VITE_FLUI_present :
-               intespec = intespec.NUME_VITE_FLUI == jvite[0]
+         if NUME_VITE_FLUI :
+            jvite=[NUME_VITE_FLUI,]
+         else :
+            jvite  =[None]
 
-         if NUME_ORDRE_I_present :
-            imode = list(set(intespec.NUME_ORDRE_I.not_none_values()))
-            l_ind_i=imode
-            l_ind_j=imode
+         if NUME_ORDRE_I :
+            l_ind_i = aster.getvectjev(intespec+'.NUMI')
+            l_ind_j = aster.getvectjev(intespec+'.NUMJ')
             # paramètres fixes de la table
             tabres.add_para(['NUME_ORDRE_I','NUME_ORDRE_J'], 'I')
-         else :
-            l_ind_i = intespec.NOEUD_I.values()
-            l_ind_j = intespec.NOEUD_J.values()
+         elif NOEUD_I :
+            l_ind_i = aster.getvectjev(intespec+'.NOEI')
+            l_ind_j = aster.getvectjev(intespec+'.NOEJ')
             if len(l_ind_i) != len(l_ind_j) :
                UTMESS('F','PROBA0_8')
-            l_cmp_i = intespec.NOM_CMP_I.values()
-            l_cmp_j = intespec.NOM_CMP_J.values()
+            l_cmp_i = aster.getvectjev(intespec+'.CMPI')
+            l_cmp_j = aster.getvectjev(intespec+'.CMPJ')
             if (len(l_ind_i) != len(l_cmp_i) or len(l_ind_j) != len(l_cmp_j)) :
                UTMESS('F','PROBA0_10')
             l_l=zip(zip(l_ind_i,l_cmp_i),zip(l_ind_j,l_cmp_j))
@@ -316,10 +320,20 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
                    l_cmp_j.append(aj[1])
             # paramètres fixes de la table
             tabres.add_para(['NOEUD_I','NOEUD_J','NOM_CMP_I','NOM_CMP_J'], 'K8')
+         else: #TOUT_ORDRE
+           if aster.getvectjev(intespec+'.NUMI'):
+             l_ind_i = aster.getvectjev(intespec+'.NUMI')
+             l_ind_j = aster.getvectjev(intespec+'.NUMJ')
+             tabres.add_para(['NUME_ORDRE_I','NUME_ORDRE_J'], 'I')
+           if aster.getvectjev(intespec+'.NOEI'):
+             l_ind_i = aster.getvectjev(intespec+'.NOEI')
+             l_ind_j = aster.getvectjev(intespec+'.NOEJ')
+             l_cmp_i = aster.getvectjev(intespec+'.CMPI')
+             l_cmp_j = aster.getvectjev(intespec+'.CMPJ')
+             tabres.add_para(['NOEUD_I','NOEUD_J','NOM_CMP_I','NOM_CMP_J'], 'K8')
 
       if jvite[0]!=None :
          tabres.add_para('NUME_VITE_FLUI', 'I')
-
 
 #     ------------------------------------------------------------------
 #     Liste des moments spectraux
@@ -332,7 +346,7 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
 #     ------------------------------------------------------------------
 #     Boucle sur les fonctions
 
-      if NOEUD_I_present :
+      if aster.getvectjev(intespec+'.NOEI') :
          l_ind=zip(l_ind_i,l_ind_j, l_cmp_i,l_cmp_j)
       else :
          l_ind=zip(l_ind_i, l_ind_j )
@@ -347,33 +361,51 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
            aster.affiche('MESSAGE',texte)
         for ind in l_ind :
            dlign = {}
-           mcfact=[]
+           dlrecu = {}
            if vite!=None :
              dlign['NUME_VITE_FLUI'] = vite
-             mcfact.append(_F(NOM_PARA='NUME_VITE_FLUI',VALE_I=vite))
-           if NOEUD_I_present :
+           if NOEUD_I :
              i_foncstat = ind[0] == ind[1] and  ind[2] == ind[3]
              dlign['NOEUD_I'], dlign['NOEUD_J'], dlign['NOM_CMP_I'], dlign['NOM_CMP_J'] = \
                   ind[0], ind[1], ind[2], ind[3]
-             mcfact.append(_F(NOM_PARA='NOEUD_I',VALE_K=ind[0]))
-             mcfact.append(_F(NOM_PARA='NOEUD_J',VALE_K=ind[1]))
-             mcfact.append(_F(NOM_PARA='NOM_CMP_I',VALE_K=ind[2]))
-             mcfact.append(_F(NOM_PARA='NOM_CMP_J',VALE_K=ind[3]))
+             if ind[0] == ind[1] and  ind[2] == ind[3]:
+                 dlrecu['NOEUD_I'], dlrecu['NOM_CMP_I'] = ind[0], ind[2]
+             else:
+                 dlrecu['NOEUD_I'], dlrecu['NOEUD_J'], dlrecu['NOM_CMP_I'], \
+                  dlrecu['NOM_CMP_J'] = ind[0], ind[1], ind[2], ind[3]
              if INFO==2 :
                 aster.affiche('MESSAGE','INDICES :'+ind[0]+' - '+ind[1])
                 aster.affiche('MESSAGE','INDICES :'+ind[2]+' - '+ind[3]+'\n')
-           else :
+           elif NUME_ORDRE_I:
              i_foncstat = ind[0] == ind[1]
              dlign['NUME_ORDRE_I'], dlign['NUME_ORDRE_J'] = ind[0], ind[1]
-             mcfact.append(_F(NOM_PARA='NUME_ORDRE_I',VALE_I=ind[0]))
-             mcfact.append(_F(NOM_PARA='NUME_ORDRE_J',VALE_I=ind[1]))
+             if ind[0] == ind[1]:
+                 dlrecu['NUME_ORDRE_I'] = ind[0]
+             else:
+                 dlrecu['NUME_ORDRE_I'], dlrecu['NUME_ORDRE_J'] = ind[0], ind[1]
              if INFO==2 :
                 aster.affiche('MESSAGE','INDICES :'+str(ind[0])+' - '\
                                                    +str(ind[1])+'\n')
+           else:  #TOUT_ORDRE
+             if aster.getvectjev(intespec+'.NUMI'):
+               i_foncstat = ind[0] == ind[1]
+               dlign['NUME_ORDRE_I'], dlign['NUME_ORDRE_J'] = ind[0], ind[1]
+               if ind[0] == ind[1]:
+                 dlrecu['NUME_ORDRE_I'] = ind[0]
+               else:
+                 dlrecu['NUME_ORDRE_I'], dlrecu['NUME_ORDRE_J'] = ind[0], ind[1]
+             if aster.getvectjev(intespec+'.NOEI'):
+               i_foncstat = ind[0] == ind[1] and  ind[2] == ind[3]
+               dlign['NOEUD_I'], dlign['NOEUD_J'], dlign['NOM_CMP_I'], dlign['NOM_CMP_J'] = \
+                  ind[0], ind[1], ind[2], ind[3]
+               if ind[0] == ind[1] and  ind[2] == ind[3]:
+                 dlrecu['NOEUD_I'], dlrecu['NOM_CMP_I'] = ind[0], ind[2]
+               else:
+                 dlrecu['NOEUD_I'], dlrecu['NOEUD_J'], dlrecu['NOM_CMP_I'], \
+                  dlrecu['NOM_CMP_J'] = ind[0], ind[1], ind[2], ind[3]
 
-           __fon1=RECU_FONCTION(TABLE        = INTE_SPEC,
-                                NOM_PARA_TABL= 'FONCTION_C',
-                                FILTRE       = mcfact, )
+           __fon1=RECU_FONCTION(INTE_SPEC    = INTE_SPEC,
+                                 **dlrecu )
 
            val  = __fon1.Valeurs()
            fvalx= NP.array(val[0])
@@ -408,7 +440,6 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
               # -- fonctions statistiques
 
               dlign['ECART'] = sqrt(val_mom[0])
-
 
               if DUREE != None :
                  Ts=DUREE

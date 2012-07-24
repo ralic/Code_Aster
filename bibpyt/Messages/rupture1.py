@@ -1,4 +1,4 @@
-#@ MODIF rupture1 Messages  DATE 20/03/2012   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF rupture1 Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,6 +28,21 @@ Veuillez utiliser une autre option de lissage
 (par exemple, le lissage 'LAGRANGE' pour le champ thêta)
 """),
 
+2: _(u"""
+Lorsque le modèle n'est pas de type X-FEM il n'est pas possible d'utiliser
+le mot-clé FISSURE de la commande CALC_G.
+-> Risque et Conseil :
+Veuillez utiliser les mots-clés FOND_FISS ou THETA ou revoir votre modèle.
+"""),
+
+3: _(u"""
+Lorsque le modèle est de type X-FEM il faut obligatoirement utiliser
+le mot-clé FISSURE de la commande CALC_G.
+"""),
+
+4: _(u"""
+La commande CALC_G ne traite pas le cas des fonds doubles.
+"""),
 
 5: _(u"""
 La commande POST_RUPTURE / OPERATION = '%(k1)s' traite uniquement
@@ -88,9 +103,9 @@ On doit en avoir autant que de numéros d'ordre.
 Le résultat n'est pas un EVOL_NOLI.
 """),
 
-16: _(u"""
-Le champ %(k1)s n'a pas été trouvé.
-"""),
+
+
+
 
 17: _(u"""
 L'association: lissage du champ THETA par les polynômes de Lagrange
@@ -108,15 +123,6 @@ avec la contrainte initiale sigma_INIT.
 -> Risque et Conseil :
 On ne peut pas faire de calcul en introduisant simultanément une contrainte
 initiale ET une déformation initiale. Veuillez revoir les données.
-"""),
-
-21: _(u"""
-Seule une loi de comportement élastique isotrope est valide pour
-le calcul de DG.
-"""),
-
-22: _(u"""
-Le calcul de DG n'a pas été étendu à la plasticité !
 """),
 
 23: _(u"""

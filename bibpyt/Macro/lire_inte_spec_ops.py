@@ -1,8 +1,8 @@
-#@ MODIF lire_inte_spec_ops Macro  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF lire_inte_spec_ops Macro  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -39,7 +39,7 @@ def lire_inte_spec_ops(self,
     from Utilitai.UniteAster import UniteAster
     # On importe les definitions des commandes a utiliser dans la macro
     DEFI_FONCTION  =self.get_cmd('DEFI_FONCTION')
-    CREA_TABLE     =self.get_cmd('CREA_TABLE')
+    DEFI_INTE_SPEC     =self.get_cmd('DEFI_INTE_SPEC')
 
     # La macro compte pour 1 dans la numerotation des commandes
     self.set_icmd(1)
@@ -136,7 +136,7 @@ def lire_inte_spec_ops(self,
                                  INFO       = INFO,
                                  TITRE      = TITRE,
                                  VALE_C     = liste,)
-            l_fonc.append(_fonc.nom)     # Liste des fonctions
+            l_fonc.append(_fonc)     # Liste des fonctions
             l_noi.append('N'+str(nuno))  # Liste des noeuds de mesure
             l_cmpi.append(ddl_no)        # DDL associes
             l_noj.append('N'+str(nuref)) # Liste des noeuds de ref
@@ -150,20 +150,16 @@ def lire_inte_spec_ops(self,
         if dim != tmp :
             UTMESS('F', 'SPECTRAL0_6')
 
-            
         mcfact=[]
-        mcfact.append(_F(PARA='NOM_CHAM'    ,LISTE_K=(NOM_RESU),NUME_LIGN=(1,)))
-        mcfact.append(_F(PARA='OPTION'      ,LISTE_K=('TOUT',) ,NUME_LIGN=(1,)))
-        mcfact.append(_F(PARA='DIMENSION'   ,LISTE_I=(dim)     ,NUME_LIGN=(1,)))
-        mcfact.append(_F(PARA='NOEUD_I'     ,LISTE_K=l_noi     ,NUME_LIGN=range(2,nb_fonc+2)))
-        mcfact.append(_F(PARA='NOM_CMP_I'   ,LISTE_K=l_cmpi    ,NUME_LIGN=range(2,nb_fonc+2)))
-        mcfact.append(_F(PARA='NOEUD_J'     ,LISTE_K=l_noj     ,NUME_LIGN=range(2,nb_fonc+2)))
-        mcfact.append(_F(PARA='NOM_CMP_J'   ,LISTE_K=l_cmpj    ,NUME_LIGN=range(2,nb_fonc+2)))
-        mcfact.append(_F(PARA='FONCTION_C'  ,LISTE_K=l_fonc    ,NUME_LIGN=range(2,nb_fonc+2)))
-        self.DeclareOut('tab_inte',self.sd)
-        tab_inte=CREA_TABLE(LISTE=mcfact,
-                          TITRE=TITRE,
-                          TYPE_TABLE='TABLE_FONCTION')
+        for i in range(dim*(dim+1)/2):
+            mcfact.append(_F(NOEUD_I=l_noi[i],
+                             NOM_CMP_I=l_cmpi[i],
+                             NOEUD_J=l_noj[i],
+                             NOM_CMP_J=l_cmpj[i],
+                             FONCTION=l_fonc[i],))
+        self.DeclareOut('inte_out',self.sd)
+        inte_out=DEFI_INTE_SPEC(PAR_FONCTION=mcfact,
+                          TITRE=TITRE,)
 
         
     elif FORMAT == 'ASTER':
@@ -214,7 +210,7 @@ def lire_inte_spec_ops(self,
                                  INFO       =INFO,
                                  TITRE      =TITRE,
                                  VALE_C     =liste,)
-            l_fonc.append(_fonc.nom)
+            l_fonc.append(_fonc)
 
         nume_ib=[]
         nume_jb=[]
@@ -225,16 +221,13 @@ def lire_inte_spec_ops(self,
         if nume_i!=nume_ib or nume_j!=nume_jb : 
             UTMESS('F', 'SPECTRAL0_3')
         mcfact=[]
-        mcfact.append(_F(PARA='NOM_CHAM'    ,LISTE_K=(NOM_RESU),NUME_LIGN=(1,)))
-        mcfact.append(_F(PARA='OPTION'      ,LISTE_K=('TOUT',) ,NUME_LIGN=(1,)))
-        mcfact.append(_F(PARA='DIMENSION'   ,LISTE_I=(dim,)    ,NUME_LIGN=(1,)))
-        mcfact.append(_F(PARA='NUME_ORDRE_I',LISTE_I=nume_i    ,NUME_LIGN=range(2,len(nume_i)+2)))
-        mcfact.append(_F(PARA='NUME_ORDRE_J',LISTE_I=nume_j    ,NUME_LIGN=range(2,len(nume_j)+2)))
-        mcfact.append(_F(PARA='FONCTION_C'  ,LISTE_K=l_fonc    ,NUME_LIGN=range(2,len(list_fonc)+2)))
-        self.DeclareOut('tab_inte',self.sd)
-        tab_inte=CREA_TABLE(LISTE=mcfact,
-                          TITRE=TITRE,
-                          TYPE_TABLE='TABLE_FONCTION')
+        for i in range(dim*(dim+1)/2):
+            mcfact.append(_F(NUME_ORDRE_I=nume_i[i],
+                             NUME_ORDRE_J=nume_j[i],
+                             FONCTION=l_fonc[i],))
+        self.DeclareOut('inte_out',self.sd)
+        inte_out=DEFI_INTE_SPEC(PAR_FONCTION=mcfact,
+                          TITRE=TITRE,)
 
     else:
         # mot-clé != 'ASTER', ou 'IDEAS' => ERREUR !

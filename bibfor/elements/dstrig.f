@@ -3,8 +3,9 @@
       INCLUDE 'jeveux.h'
       REAL*8        XYZL(3,*), PGL(*), RIG(*), ENER(*)
       CHARACTER*16  OPTION , NOMTE
-C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -20,13 +21,11 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C
 C     MATRICE DE RIGIDITE DE L'ELEMENT DE PLAQUE DST (AVEC CISAILLEMENT)
 C     ------------------------------------------------------------------
 C     IN  XYZL   : COORDONNEES LOCALES DES TROIS NOEUDS
-C     IN  OPTION : OPTION RIGI_MECA, RIGI_MECA_SENS* OU EPOT_ELEM
+C     IN  OPTION : OPTION RIGI_MECA OU EPOT_ELEM
 C     IN  PGL    : MATRICE DE PASSAGE GLOBAL/LOCAL
 C     OUT RIG    : MATRICE DE RIGIDITE
 C     OUT ENER   : TERMES POUR ENER_POT (EPOT_ELEM)
@@ -302,9 +301,7 @@ C         --------------------------------------
 
   170 CONTINUE
 
-      IF ( OPTION.EQ.'RIGI_MECA'      .OR.
-     +     OPTION.EQ.'RIGI_MECA_SENSI' .OR.
-     +     OPTION.EQ.'RIGI_MECA_SENS_C' ) THEN
+      IF ( OPTION.EQ.'RIGI_MECA' ) THEN
         CALL DXTLOC(FLEX,MEMB,MEFL,CTOR,RIG)
 C
       ELSE IF (OPTION.EQ.'EPOT_ELEM') THEN

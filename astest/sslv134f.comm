@@ -1,4 +1,4 @@
-# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL 3D DE G LOCAL FISSURE CIRCULAIRE EN MILIEU INFINI
 # sslv134f.para = tps_job 160 mem_job 200Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -180,21 +180,13 @@ GLMAX2=CALC_G(THETA=_F(FOND_FISS=FOND,
                  VALE_MAX=1.0,),),
               TITRE='GMAX_LOCAL AVEC R_INF =  5.00000E-01 ET R_SUP =  1.50000E+00',);
 
-FFX=DEFI_FISS_XFEM(MODELE=MO,
-                   DEFI_FISS=_F(GROUP_MA_FISS='LEVREINF',
-                                GROUP_MA_FOND='LFF',),
-                   ORIE_FOND=_F(PFON_INI=(-0.005,0.0,0.0,),
-                                VECT_ORIE=(0.0,1.0,0.0,),
-                                POINT_ORIG=(0.0,0.0,0.0,),),
-                   INFO=1,);
-
 KLMAX1=CALC_G(
            TITRE='K_MAX AVEC R_INF =  0.1 ET R_SUP =  0.5',
            RESULTAT=RESU,
            OPTION='CALC_K_MAX',
-           LISSAGE=_F( LISSAGE_THETA = 'LAGRANGE',
-                       LISSAGE_G = 'LAGRANGE',),
-           THETA=_F( FISSURE=FFX,
+           LISSAGE=_F( LISSAGE_THETA = 'LAGRANGE_REGU',
+                       LISSAGE_G = 'LAGRANGE_REGU',),
+           THETA=_F( FOND_FISS=FOND,
                      R_INF=0.1,
                      R_SUP=0.5,),
            SIGNES = _F( CHARGE_S = (1,3),
@@ -310,7 +302,7 @@ TEST_TABLE(TABLE=KLMAX1,
                    _F(NOM_PARA='NUM_PT',
                       VALE_I=5,),),
            NOM_PARA='G',
-           VALE=76.330476,
+           VALE=152.660952,
            PRECISION=0.005,
            REFERENCE='NON_REGRESSION',);
 

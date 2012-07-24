@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE INFINIE SOUMISE A DES FLUX ANTISYMETRIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -79,10 +79,9 @@ TEMPE=THER_LINEAIRE(MODELE=MO,
                     EXCIT=_F(CHARGE = CHANTF),
                     );
 
-TEMPE=CALC_ELEM(reuse=TEMPE,
-                RESULTAT=TEMPE,
-                OPTION='FLUX_ELNO',
-                REPE_COQUE=_F(NIVE_COUCHE='SUP',),);
+TEMPE=CALC_CHAMP(reuse=TEMPE,
+                 RESULTAT=TEMPE,
+                 THERMIQUE='FLUX_ELNO',);
 
 
 MEANT2=CALC_MATR_ELEM(  MODELE=MO,CHARGE=CHANTF,CHAM_MATER=CMANT2,
@@ -121,31 +120,31 @@ TEST_RESU(RESU=(
                          VALE = 0.07679, PRECISION = 1.8E-3),
 
                 _F( RESULTAT = TEMPE, NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO',
-                MAILLE = 'M297', NOEUD = 'N176',NOM_CMP = 'FLUX',
+                MAILLE = 'M297', NOEUD = 'N176',NOM_CMP = 'FLUX_SUP',
                          VALE = 0.2992,  PRECISION = 3.0E-2),
                 _F( RESULTAT = TEMPE, NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO',
-                MAILLE = 'M289',NOEUD = 'N176',NOM_CMP = 'FLUX',
+                MAILLE = 'M289',NOEUD = 'N176',NOM_CMP = 'FLUX_SUP',
                          VALE = 0.2992,  PRECISION = 8.0E-2),
                 _F( RESULTAT = TEMPE, NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO',
-                MAILLE = 'M290',NOEUD = 'N176',NOM_CMP = 'FLUX',
+                MAILLE = 'M290',NOEUD = 'N176',NOM_CMP = 'FLUX_SUP',
                          VALE = 0.2992,  PRECISION = 7.0E-2),
                 _F( RESULTAT = TEMPE, NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO',
-                MAILLE = 'M265',NOEUD = 'N161',NOM_CMP = 'FLUX',
+                MAILLE = 'M265',NOEUD = 'N161',NOM_CMP = 'FLUX_SUP',
                          VALE = 2.287,   PRECISION = 5.E-2),
                 _F( RESULTAT = TEMPE, NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO',
-                MAILLE = 'M266',NOEUD = 'N161',NOM_CMP = 'FLUX',
+                MAILLE = 'M266',NOEUD = 'N161',NOM_CMP = 'FLUX_SUP',
                          VALE = 2.287,   PRECISION = 4.0E-2),
                 _F( RESULTAT = TEMPE, NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO',
-                MAILLE = 'M273',NOEUD = 'N161',NOM_CMP = 'FLUX',
+                MAILLE = 'M273',NOEUD = 'N161',NOM_CMP = 'FLUX_SUP',
                          VALE = 2.287,   PRECISION = 3.4E-2),
                 _F( RESULTAT = TEMPE, NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO',
-                MAILLE = 'M1',  NOEUD = 'N1',  NOM_CMP = 'FLUX',
+                MAILLE = 'M1',  NOEUD = 'N1',  NOM_CMP = 'FLUX_SUP',
                          VALE = 25.98,   PRECISION = 3.4E-2),
                 _F( RESULTAT = TEMPE, NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO',
-                MAILLE = 'M225',NOEUD = 'N1',  NOM_CMP = 'FLUX',
+                MAILLE = 'M225',NOEUD = 'N1',  NOM_CMP = 'FLUX_SUP',
                          VALE = 25.98,   PRECISION = 3.4E-2),
                 _F( RESULTAT = TEMPE, NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO',
-                MAILLE = 'M337',NOEUD = 'N1',  NOM_CMP = 'FLUX',
+                MAILLE = 'M337',NOEUD = 'N1',  NOM_CMP = 'FLUX_SUP',
                          VALE = 25.98,   PRECISION = 3.4E-2),
                   ),
 

@@ -1,4 +1,4 @@
-#@ MODIF utilitai Messages  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF utilitai Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -130,13 +130,13 @@ Cette grandeur ne peut pas accepter plus de %(i2)d composantes (%(i1)d fournies)
  on ne trouve aucun champ.
 """),
 
-24 : _(u"""
- le nom symbolique:  %(k1)s  est illicite pour ce résultat
-"""),
 
-25 : _(u"""
- le champ cherché n'a pas encore été calculé.
-"""),
+
+
+
+
+
+
 
 26 : _(u"""
  pas la même numérotation sur les CHAM_NO.

@@ -1,7 +1,7 @@
       SUBROUTINE RECIEX ( INTEXC, IDEREX, NINDEX, NNOEEX, NCMPEX,
      &                    NVASEX, GRAEXC, EXCMOD, NAPEXC )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,7 @@ C INTEXC   /OUT/: NOM DE L INTERSPECTRE  EXCITATION
 C IDEREX   /OUT/: ORDRE DE DERIVATION
 C NINDEX   /OUT/: NOMBRE  D INDICES RECUPERES
 C NNOEEX   /OUT/: NOMBRE DE NOEUDS DONNES EN EXCITATION
-C NCMPXC   /OUT/: NOMBRE DE CMP DONNES EN EXCITATION
+C NCMPEX   /OUT/: NOMBRE DE CMP DONNES EN EXCITATION
 C NVASEX   /OUT/: NOMBRE DE VECTEURS ASSEMBLES DONNES EN EXCITATION
 C GRAEXC  /OUT/ : GRANDEUR EXCITATION
 C EXCMOD  /OUT/ : TYPE MODAL
@@ -38,34 +38,27 @@ C
 C-----------------------------------------------------------------------
 C
       INCLUDE 'jeveux.h'
-      INTEGER       IBID, IVAL(3), IRET
-      REAL*8        R8B
-      COMPLEX*16    C16B
-      CHARACTER*3  TYPPAR
-      CHARACTER*4   EXCMOD
-      CHARACTER*8   K8B, INTEXC, KVAL(4)
-      CHARACTER*16  GRAEXC, NOPART(3), NOPARN(5)
-      CHARACTER*19  NOMFON
-      LOGICAL       TABL, LINDI, EXISP
-      INTEGER      IARG
-C
 C-----------------------------------------------------------------------
-      INTEGER I1 ,I2 ,IBID1 ,IDEREX ,II ,IJ2 ,ILCMPI 
+      INTEGER I1 ,I2 ,IBID1 ,IDEREX ,IJ2 ,ILCMPI 
       INTEGER ILCMPJ ,ILCPEX ,ILFEX ,ILINDI ,ILINDJ ,ILLEX ,ILNOEX 
-      INTEGER ILVAEX ,IP ,IVITE ,JJ ,NAPEXC ,NBI ,NCMPEX 
+      INTEGER ILVAEX ,IVITE ,NAPEXC ,NCMPEX 
       INTEGER NDIM ,NINDEX ,NNOEEX ,NVASEX 
 C-----------------------------------------------------------------------
-      DATA NOPART / 'NUME_VITE_FLUI', 'NUME_ORDRE_I', 'NUME_ORDRE_J' /
-      DATA NOPARN / 'NUME_VITE_FLUI', 'NOEUD_I'     , 'NOM_CMP_I'    ,
-     &                                'NOEUD_J'     , 'NOM_CMP_J'    /
-C     ------------------------------------------------------------------
+      INTEGER       IBID, IRET
+      CHARACTER*4   EXCMOD
+      CHARACTER*8   K8B, INTEXC
+      CHARACTER*16  GRAEXC
+      CHARACTER*24  CHNUMI,CHNUMJ,CHNOEI,CHNOEJ,CHCMPI,CHCMPJ,CHVALE
+      CHARACTER*24  CHFREQ
+
+      LOGICAL      LINDI, EXIIND
+      INTEGER      IARG,LNUMI,LNUMJ,MXVAL,NUM,LCMPI,LCMPJ
+      INTEGER      NBFREQ,IFREQ
+C
 C
       CALL JEMARQ()
 C
       CALL GETVID ( 'EXCIT', 'INTE_SPEC'    ,1,IARG,1, INTEXC, IBID   )
-      TABL = .FALSE.
-      CALL TBEXIP ( INTEXC, 'NUME_VITE_FLUI', EXISP ,TYPPAR)
-      IF ( EXISP ) TABL = .TRUE.
 C
       CALL GETVIS ( 'EXCIT', 'DERIVATION'   ,1,IARG,1, IDEREX, IBID   )
 C
@@ -94,62 +87,68 @@ C
       ENDIF
       CALL GETVIS('EXCIT','NUME_VITE_FLUI',1,IARG,1,IVITE,IBID)
 C
-C     VERIFICATIONS DES PARAMETRES DE LA TABLE 'INTEXC'
-      CALL TBEXP2(INTEXC,'FONCTION_C')
-      IF(LINDI)THEN
-        CALL TBEXP2(INTEXC,'NUME_ORDRE_I')
-        CALL TBEXP2(INTEXC,'NUME_ORDRE_J')
-      ELSE
-        CALL TBEXP2(INTEXC,'NOEUD_I')
-        CALL TBEXP2(INTEXC,'NOM_CMP_I')
-        CALL TBEXP2(INTEXC,'NOEUD_J')
-        CALL TBEXP2(INTEXC,'NOM_CMP_J')
-      ENDIF
-C
       NDIM = NINDEX * ( NINDEX + 1 ) / 2
       CALL WKVECT('&&OP0131.LIADRFEX1','V V I',NDIM,ILFEX)
-      CALL WKVECT('&&OP0131.LIADRLEX1','V V I',NDIM,ILLEX)
+      CALL WKVECT('&&OP0131.LIADRLEX1','V V I',NDIM+2,ILLEX)
+
+      CHFREQ = INTEXC//'.FREQ'
+      CALL JELIRA(CHFREQ,'LONMAX',NBFREQ,K8B)
+      CALL JEVEUO(CHFREQ,'L',IFREQ)
+      ZI(ILLEX) = NBFREQ
+      ZI(ILLEX+NDIM+1) = IFREQ
+      CHVALE = INTEXC//'.VALE'
 C
-      IF ( TABL ) THEN
-         NBI = 3
-         IP = 1
-         IVAL(1) = IVITE
-         II = 2
-         JJ = 3
-      ELSE
-         NBI = 2
-         IP = 2
-         II = 1
-         JJ = 2
-      ENDIF
-      IF ( .NOT. LINDI ) NBI = NBI + 2
-      DO 103 I1 = 1,NINDEX
-         IF ( LINDI ) THEN
-            IVAL(II) = ZI(ILINDI+I1-1)
-         ELSE
-            KVAL(1) = ZK8(ILINDI+I1-1)
-            KVAL(2) = ZK8(ILCMPI+I1-1)
-         ENDIF
-         DO 108 I2 = I1 , NINDEX
+C     VERIFICATIONS EXISTENCE PARAMETRES DE LA SD
+      EXIIND = .FALSE.
+      IF(LINDI)THEN
+        CHNUMI = INTEXC//'.NUMI'
+        CHNUMJ = INTEXC//'.NUMJ'
+        CALL JEVEUO(CHNUMI,'L',LNUMI)
+        CALL JEVEUO(CHNUMJ,'L',LNUMJ)
+        CALL JELIRA(CHNUMI,'LONMAX',MXVAL,K8B)
+        DO 103 I1 = 1,NINDEX
+          DO 108 I2 = I1 , NINDEX
             IJ2 = (I2*(I2-1))/2+I1
-            IF ( LINDI ) THEN
-               IVAL(JJ) = ZI(ILINDJ+I2-1)
-               CALL TBLIVA ( INTEXC, NBI, NOPART(IP), IVAL, R8B, C16B,
-     &                       K8B, K8B, R8B, 'FONCTION_C',
-     &                       K8B, IBID, R8B, C16B, NOMFON, IRET )
-               IF (IRET.NE.0) CALL U2MESS('F','MODELISA2_89')
-            ELSE
-               KVAL(3) = ZK8(ILINDJ+I2-1)
-               KVAL(4) = ZK8(ILCMPJ+I2-1)
-               CALL TBLIVA ( INTEXC, NBI, NOPARN(IP), IVAL, R8B, C16B,
-     &                       KVAL, K8B, R8B, 'FONCTION_C',
-     &                       K8B, IBID, R8B, C16B, NOMFON, IRET )
-               IF (IRET.NE.0) CALL U2MESS('F','MODELISA2_89')
-            ENDIF
-            CALL JELIRA( NOMFON//'.VALE', 'LONMAX', ZI(ILLEX-1+IJ2),K8B)
-            CALL JEVEUT( NOMFON//'.VALE','L', ZI(ILFEX-1+IJ2) )
- 108     CONTINUE
- 103  CONTINUE
+            DO 111 NUM=1,MXVAL
+              IF ((ZI(LNUMI-1+NUM) .EQ. ZI(ILINDI-1+I1)) .AND.
+     &            (ZI(LNUMJ-1+NUM) .EQ. ZI(ILINDJ-1+I2))) THEN
+                EXIIND = .TRUE.
+        CALL JEVEUO(JEXNUM(CHVALE,NUM),'L',ZI(ILFEX-1+IJ2))
+        CALL JELIRA(JEXNUM(CHVALE,NUM),'LONMAX',ZI(ILLEX+IJ2),K8B )
+              ENDIF
+111         CONTINUE
+108       CONTINUE
+103     CONTINUE
+      ELSE
+        CHNOEI = INTEXC//'.NOEI'
+        CHNOEJ = INTEXC//'.NOEJ'
+        CHCMPI = INTEXC//'.CMPI'
+        CHCMPJ = INTEXC//'.CMPJ'
+        CALL JEVEUO(CHNOEI,'L',LNUMI)
+        CALL JEVEUO(CHNOEJ,'L',LNUMJ)
+        CALL JEVEUO(CHCMPI,'L',LCMPI)
+        CALL JEVEUO(CHCMPJ,'L',LCMPJ)
+        CALL JELIRA(CHNOEI,'LONMAX',MXVAL,K8B)
+        DO 120 I1=1,NINDEX
+          DO 122 I2 = I1 , NINDEX
+            IJ2 = (I2*(I2-1))/2+I1
+            DO 121 NUM=1,MXVAL
+              IF ((ZK8(LNUMI-1+NUM) .EQ. ZK8(ILINDI-1+I1)) .AND.
+     &            (ZK8(LNUMJ-1+NUM) .EQ. ZK8(ILINDJ-1+I2)) .AND.
+     &            (ZK8(LCMPI-1+NUM) .EQ. ZK8(ILCMPI-1+I1)) .AND.
+     &            (ZK8(LCMPJ-1+NUM) .EQ. ZK8(ILCMPJ-1+I2))) THEN
+                EXIIND = .TRUE.
+        CALL JEVEUO(JEXNUM(CHVALE,NUM),'L',ZI(ILFEX-1+IJ2))
+        CALL JELIRA(JEXNUM(CHVALE,NUM),'LONMAX',ZI(ILLEX+IJ2),K8B )
+              ENDIF
+121         CONTINUE
+122       CONTINUE
+120     CONTINUE
+      ENDIF
+
+      IF(.NOT. EXIIND) THEN
+        CALL U2MESS('F','UTILITAI4_53')
+      ENDIF
 C
 C----TYPE MODAL ('NON' PAR DEFAUT)
 C

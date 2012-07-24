@@ -1,0 +1,472 @@
+# MODIF  DATE 11/07/2012   AUTEUR MARTIN A.MARTIN 
+# TITRE FISSURE PLANE SEMI-INFINIE
+# sslp114c.para = tps_job 120 mem_job 512Mo mem_aster 50 ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# sslp114a.para=tps_job 120 mem_job 512Mo mem_aster 50 ncpus 1 liste_test S
+
+DEBUT(CODE=_F(NOM='SSLP114C',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),PAR_LOT='OUI');
+
+import math;
+
+#
+# DEFINITION DU MATERIAU
+E   = 1.E5;
+nu  = 0.;
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu),);
+
+#facteurs intensite de contrainte 
+KI=1.;
+KII=0.;
+
+MAIL=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI'));
+   
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_MA=(_F(NOM='TEST_0',OPTION='SPHERE',POINT=(0.,0.),RAYON=0.5),
+                               _F(NOM='TEST_1',OPTION='SPHERE',POINT=(0.,1.),RAYON=0.5),
+                               _F(NOM='TEST_2',OPTION='SPHERE',POINT=(1.,1.),RAYON=0.5),
+                               _F(NOM='TEST_3',OPTION='SPHERE',POINT=(1.,0.),RAYON=0.5),
+                                   ),
+                ); 
+
+MODELEIN=AFFE_MODELE(MAILLAGE=MAIL,
+                     AFFE=_F(GROUP_MA=('SURF','LIG1','LIG2','LIG3','LIG4','TEST_0','TEST_1','TEST_2','TEST_3'),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='D_PLAN'
+                            ),
+#                    INFO=2,
+                     );
+
+MAIL=MODI_MAILLAGE(reuse =MAIL,
+                   MAILLAGE=MAIL,
+                   ORIE_PEAU_2D=(_F(GROUP_MA=('LIG1','LIG2','LIG3','LIG4'),),),
+                   INFO=2,
+                       );
+
+#ANGLE INCLINAISON :: -135 (degres) < alpha < 135 (degres)
+#Pour un tour complet voir conditions limites 
+#BOUCLE SUR DES ANGLES QUELCONQUES
+pas=30
+alphamin=0
+alphamax=121
+alphaREF = range(alphamin,alphamax,pas)
+alpha=[None]*len(alphaREF);
+for J in range(len(alphaREF)):
+   alpha[J]=alphaREF[J]*math.pi/180.
+
+#Definition exhaustive des champs et concepts
+FISS=[None]*len(alphaREF);
+MODELK=[None]*len(alphaREF);
+CHMA=[None]*len(alphaREF);
+U1=[None]*len(alphaREF);
+U2=[None]*len(alphaREF);
+FXX=[None]*len(alphaREF);
+FXY=[None]*len(alphaREF);
+FYX=[None]*len(alphaREF);
+FYY=[None]*len(alphaREF);
+FXXF=[None]*len(alphaREF);
+FXYF=[None]*len(alphaREF);
+FYXF=[None]*len(alphaREF);
+FYXF=[None]*len(alphaREF);
+FYYF=[None]*len(alphaREF);
+CH2=[None]*len(alphaREF);
+CH2B=[None]*len(alphaREF);
+UTOT=[None]*len(alphaREF);
+CH_G=[None]*len(alphaREF);
+DEPL=[None]*len(alphaREF);
+CH_AF=[None]*len(alphaREF);
+CH_GEO=[None]*len(alphaREF);
+CH_EV=[None]*len(alphaREF);
+Uana=[None]*len(alphaREF);
+DIFF=[None]*len(alphaREF);
+tab_du=[None]*len(alphaREF);
+tab_u=[None]*len(alphaREF);
+
+#Definition des fonctions globales :: alpha passe en argument, cela evite une ambiguite dans le calcul
+def r(X,Y) :
+    return ((X-0.5)**2+(Y-0.5)**2)**0.5
+ 
+def theta(X,Y,alphain) :
+    if X==0.5 :
+        if Y==0.5 :
+             theta0=0.
+        else :
+             theta0=math.atan2((Y-0.5),(X-0.5))
+    else :
+        theta0=math.atan2((Y-0.5),(X-0.5))
+#la rotation de la fissure propage une discontinuite angulaire!!!
+    if abs(alphain)>0 :
+        if alphain<0 :
+           if theta0>(math.pi+alphain) :
+              return theta0-alphain-2*math.pi
+           else :
+              return theta0-alphain
+        else :
+           if theta0<(-math.pi+alphain) :
+              return theta0-alphain+2*math.pi
+           else :
+              return theta0-alphain 
+    else :
+        return theta0
+
+def cos1(X,Y,alphain) :
+    return math.cos(theta(X,Y,alphain)) 
+    
+def sin1(X,Y,alphain) :
+    return math.sin(theta(X,Y,alphain))     
+        
+def cos12(X,Y,alphain) :
+    return math.cos(theta(X,Y,alphain)/2.) 
+    
+def sin12(X,Y,alphain) :
+    return math.sin(theta(X,Y,alphain)/2.)   
+        
+#CHAMP DE DEPLACEMENT ANALYTIQUE ::
+def Ux(X,Y,alph) : 
+    global KI,E,nu
+    return KI*(1+nu)/E*((r(X,Y)/(2*math.pi))**0.5)*cos12(X,Y,alph)*(3-4*nu-cos1(X,Y,alph))
+     
+def Uy(X,Y,alphain) :
+    global KI,E,nu
+    return KI*(1+nu)/E*((r(X,Y)/(2*math.pi))**0.5)*sin12(X,Y,alphain)*(3-4*nu-cos1(X,Y,alphain))   
+
+#Rotation du champ de DEPL
+def Vx(X,Y,alphain) : 
+    return Ux(X,Y,alphain)*math.cos(alphain)-Uy(X,Y,alphain)*math.sin(alphain)
+    
+def Vy(X,Y,alphain) :
+    return Ux(X,Y,alphain)*math.sin(alphain)+Uy(X,Y,alphain)*math.cos(alphain)
+
+#TENSEUR DES CONTRAINTES ANALYTIQUE :: 
+PI=math.pi
+expo = [None]*2
+A1 = [None]*2
+A2 = [None]*2
+expo[0]=1
+expo[1]=3
+A1[0]=KI*(1+nu)/(E*(2*PI)**0.5)*(4-4*nu)
+A1[1]=-KI*(1+nu)/(E*(2*PI)**0.5)*2 
+A2[0]=KI*(1+nu)/(E*(2*PI)**0.5)*(2-4*nu)
+A2[1]=KI*(1+nu)/(E*(2*PI)**0.5)*2
+
+def SIGMA(X,Y,IND,alphain) : 
+   global   PI,A1,A2,expo,E,nu
+   rxy=r(X,Y) 
+   EPSREF = [None]*3
+   SIGMAREF = [None]*3
+   EPSREF[0]=0.
+   EPSREF[1]=0.
+   EPSREF[2]=0.   
+   for I in range(2) :
+       EPSREF[0]=EPSREF[0]+A1[I]*(cos12(X,Y,alphain)**(expo[I]-1))/(2*rxy**0.5)*(cos12(X,Y,alphain)*cos1(X,Y,alphain)+expo[I]*sin12(X,Y,alphain)*sin1(X,Y,alphain))
+
+   for I in range(2) :      
+       EPSREF[1]=EPSREF[1]+A2[I]*(sin12(X,Y,alphain)**(expo[I]-1))/(2*rxy**0.5)*(sin12(X,Y,alphain)*sin1(X,Y,alphain)+expo[I]*cos12(X,Y,alphain)*cos1(X,Y,alphain))
+
+   for I in range(2) :
+       EPSREF[2]=EPSREF[2]+A1[I]*(cos12(X,Y,alphain)**(expo[I]-1))/(2*rxy**0.5)*(cos12(X,Y,alphain)*sin1(X,Y,alphain)-expo[I]*sin12(X,Y,alphain)*cos1(X,Y,alphain))
+       EPSREF[2]=EPSREF[2]+A2[I]*(sin12(X,Y,alphain)**(expo[I]-1))/(2*rxy**0.5)*(sin12(X,Y,alphain)*cos1(X,Y,alphain)-expo[I]*cos12(X,Y,alphain)*sin1(X,Y,alphain))
+
+   EPSREF[2]=0.5*EPSREF[2]
+    
+   for I in range(2) :  
+       SIGMAREF[I]=E/(1+nu)*(EPSREF[I]+nu/(1-2*nu)*(EPSREF[0]+EPSREF[1]))
+    
+   SIGMAREF[2]=E/(1+nu)*EPSREF[2]
+    
+#COPIE DE SIGMAREF :: WARNING :: TMP=SIGMAREF UTILISE UN POINTEUR ET NE COPIE PAS LES DONNEES ==> CARTON MEMOIRE DRAMATIQUE
+   TMP=[None]*3
+   for I in range(3) :
+       TMP[I]=SIGMAREF[I] 
+
+#Rotation du tenseur     
+   cosa = math.cos(alphain)
+   sina = math.sin(alphain)
+   cos2a= math.cos(2*alphain)
+   sin2a= math.sin(2*alphain)
+   SIGMAREF[0]=(cosa**2)*TMP[0]-sin2a*TMP[2]+(sina**2)*TMP[1]
+   SIGMAREF[1]=(sina**2)*TMP[0]+sin2a*TMP[2]+(cosa**2)*TMP[1]
+   SIGMAREF[2]=-0.5*sin2a*(-TMP[0]+TMP[1])+cos2a*TMP[2]
+
+   return SIGMAREF[IND]  
+   
+
+#Definition des valeurs de reference pour les test de non-regression
+KI_nr       =[1.0000300917111,       1.0002465956454,      1.0002715716787,     1.0000020562816,     0.99997972157408]
+KII_nr      =[-1.0368264513655E-04, -4.5030256478202E-05, -1.4837478855274E-05, 7.3087656789106E-05, 4.0041668401666E-05]
+G_nr        =[1.0000718957718E-05,   1.000489030041E-05,   1.0005390362528E-05, 1.000015846203E-05,  9.9995309570879E-06]
+NormeL2_U_nr=[6.8327757467283E-10,   2.0924466972382E-10,  1.7512188786812E-10, 3.7275133543595E-10, 4.5174922170405E-10]
+ 
+#DEBUT BOUCLE ANGLES
+for K in range(len(alphaREF)):
+
+# LONGUEUR DE LA FISSURE
+   A= 0.5/max(abs(math.cos(alpha[K])),abs(math.sin(alpha[K])));
+
+#Pour utiliser sereinement la TAN :
+#Diviser quand TAN tend vers l'infini, multiplier quand TAN tend vers 0 !
+   if abs(alpha[K])<45*math.pi/180. :
+      PFONDX=-1.5
+      PFONDY=0.5-2*math.tan(alpha[K])
+   else :
+      if alpha[K]<0 :
+         PFONDX=0.5+2/math.tan(alpha[K])
+         PFONDY=2.5
+      if alpha[K]>0 :
+         PFONDX=0.5-2/math.tan(alpha[K])
+         PFONDY=-1.5
+
+   FISS[K]=DEFI_FISS_XFEM(MODELE=MODELEIN,
+                          DEFI_FISS=_F(
+                                 FORM_FISS  = 'SEGMENT',
+                                 PFON_ORIG  = (0.5 , 0.5,0.),
+                                 PFON_EXTR  = ( PFONDX, PFONDY,0.),
+                                 ),
+                          TYPE_ENRI_FOND='GEOMETRIQUE',
+                          RAYON_ENRI=0.2*A,
+#                         TYPE_ENRI_FOND='TOPOLOGIQUE',
+                          );
+
+   MODELK[K]=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS[K]);
+
+   CHMA[K]=AFFE_MATERIAU(MAILLAGE=MAIL,
+                   MODELE=MODELK[K],
+                   AFFE=_F(TOUT = 'OUI',MATER=ACIER),
+                   );
+#PROGRAMMATION : IL FAUT FORCER PYTHON A EVALUER K EN GLOBAL LORS DE L APPEL DE L OPERATEUR FORMULE ! => EN LOCAL K A UNE VALEUR QUELCONQUE  
+#EN SEQUENTIEL : PAS DE PB CAR K PREND UNE VALEUR A LA FOIS
+#EN PARALLELE : IL Y A CARTON
+   U1[K]=FORMULE(NOM_PARA=('X','Y',),VALE='Vx(X,Y,'+str(alpha[K])+')');
+   U2[K]=FORMULE(NOM_PARA=('X','Y',),VALE='Vy(X,Y,'+str(alpha[K])+')');
+    
+#Calcul des densites de force suivant les normales ex,ey,-ex,-ey
+   FXX[K]=FORMULE(NOM_PARA=('X','Y',),VALE='SIGMA(X,Y,0,'+str(alpha[K])+')');
+   FXY[K]=FORMULE(NOM_PARA=('X','Y',),VALE='SIGMA(X,Y,2,'+str(alpha[K])+')');       
+
+   FYX[K]=FORMULE(NOM_PARA=('X','Y',),VALE='SIGMA(X,Y,2,'+str(alpha[K])+')');
+   FYY[K]=FORMULE(NOM_PARA=('X','Y',),VALE='SIGMA(X,Y,1,'+str(alpha[K])+')');
+
+   FXXF[K]=FORMULE(NOM_PARA=('X','Y',),VALE='-SIGMA(X,Y,0,'+str(alpha[K])+')');
+   FXYF[K]=FORMULE(NOM_PARA=('X','Y',),VALE='-SIGMA(X,Y,2,'+str(alpha[K])+')');
+    
+   FYXF[K]=FORMULE(NOM_PARA=('X','Y',),VALE='-SIGMA(X,Y,2,'+str(alpha[K])+')');
+   FYYF[K]=FORMULE(NOM_PARA=('X','Y',),VALE='-SIGMA(X,Y,1,'+str(alpha[K])+')');
+
+#Conditions limites: Diriclet + Neumann 
+#Neumann => fissure
+#Dirichlet => modes rigides
+
+#Combinaison 1 : Dirichletx3+Neumannx1 : A eviter si |alpha[K]| > 45
+   CH2[K]=AFFE_CHAR_MECA_F(MODELE=MODELK[K],
+                           DDL_IMPO=_F(GROUP_MA=('LIG1','LIG2','LIG3'),DX=U1[K],DY=U2[K],),
+                           FORCE_CONTOUR=(_F(GROUP_MA=('LIG4'),FX=FXXF[K],FY=FXYF[K]),),
+                          );
+
+#Combinaison 2 : Dirichletx1+Neumannx3
+   CH2B[K]=AFFE_CHAR_MECA_F(MODELE=MODELK[K],
+                            DDL_IMPO=_F(GROUP_MA=('LIG2'),DX=U1[K],DY=U2[K],),
+                            FORCE_CONTOUR=(_F(GROUP_MA=('LIG3'),FX=FYX[K],FY=FYY[K]),
+                                           _F(GROUP_MA=('LIG4'),FX=FXXF[K],FY=FXYF[K]),
+                                           _F(GROUP_MA=('LIG1'),FX=FYXF[K],FY=FYYF[K]),
+                                          ),
+                             );
+
+   UTOT[K]=MECA_STATIQUE(MODELE=MODELK[K],
+                         CHAM_MATER=CHMA[K],
+                         EXCIT=(
+                                _F(CHARGE=CH2B[K]),
+                               ),
+                         SOLVEUR=_F(RENUM='METIS',
+                                    METHODE='MUMPS',
+                                    NPREC=10,
+                                    RESI_RELA=1.E-3,
+                                    PCENT_PIVOT=100,
+                                    ),
+                         );
+ 
+   CH_G[K]=CALC_G(RESULTAT=UTOT[K],
+            OPTION='CALC_K_G',
+            THETA=_F(FISSURE=FISS[K],
+                     R_INF=0.1*A,
+                     R_SUP=0.3*A,),
+            INFO=2);
+
+#CHAMP DEPL :: calcul ERREUR SUR TEST_NO
+   DEPL[K] = CREA_CHAMP (OPERATION='EXTR',
+                         NOM_CHAM = 'DEPL',
+                         TYPE_CHAM = 'NOEU_DEPL_R',
+                         RESULTAT = UTOT[K],
+                        );
+
+   CH_AF[K]=CREA_CHAMP(OPERATION='AFFE',
+                 TYPE_CHAM='NOEU_NEUT_F',
+                 MAILLAGE=MAIL,
+                 AFFE=(_F( TOUT='OUI', NOM_CMP = 'X1', VALE_F = U1[K]),
+                       _F( TOUT='OUI', NOM_CMP = 'X2', VALE_F = U2[K]),
+                      )
+                );
+
+   CH_GEO[K]=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='NOEU_GEOM_R',
+                NOM_CHAM='GEOMETRIE', MAILLAGE=MAIL, INFO=1);
+
+   CH_EV[K]=CREA_CHAMP(OPERATION='EVAL',
+                 TYPE_CHAM='NOEU_NEUT_R',
+                 CHAM_F=CH_AF[K],
+                 CHAM_PARA=CH_GEO[K]);
+
+   Uana[K]=CREA_CHAMP(OPERATION='ASSE',
+                TYPE_CHAM='NOEU_DEPL_R',
+                MAILLAGE=MAIL,
+                ASSE=(_F(TOUT='OUI',
+                         CHAM_GD = CH_EV[K],
+                         NOM_CMP = 'X1',
+                         NOM_CMP_RESU = 'DX',),
+                      _F(TOUT='OUI',
+                         CHAM_GD = CH_EV[K],
+                         NOM_CMP = 'X2',
+                         NOM_CMP_RESU = 'DY',)
+                      ),
+                );
+
+   DIFF[K]=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',MODELE=MODELEIN,
+                PROL_ZERO='OUI',
+                ASSE=(_F(TOUT='OUI', CHAM_GD=DEPL[K],CUMUL='OUI', COEF_R=+1., NOM_CMP='DX', NOM_CMP_RESU='DX',),
+                      _F(TOUT='OUI', CHAM_GD=Uana[K], CUMUL='OUI', COEF_R=-1., NOM_CMP='DX', NOM_CMP_RESU='DX',),
+                      _F(TOUT='OUI', CHAM_GD=DEPL[K],CUMUL='OUI', COEF_R=+1., NOM_CMP='DY', NOM_CMP_RESU='DY',),
+                      _F(TOUT='OUI', CHAM_GD=Uana[K], CUMUL='OUI', COEF_R=-1., NOM_CMP='DY', NOM_CMP_RESU='DY',),
+                      ),
+                );
+#La zone de test ne doit pas etre coupee par la fissure ::
+#on teste le deplacement sur le coin oppose, avec la convention :
+#test=0 =>le coin (0.,0.) 
+#test=1 =>le coin (0.,1.) 
+#test=2 =>le coin (1.,1.)
+#test=3 =>le coin (1.,0.)
+
+   if (alpha[K]>=0)&(alpha[K]<=math.pi/2.) :
+       test=2
+   elif (alpha[K]<0)&(alpha[K]>=-math.pi/2.) :
+       test=3
+   elif alpha[K]<-math.pi/2 :
+       test=0 
+   elif alpha[K]>math.pi :
+       test=1
+
+   tab_du[K]=POST_ELEM(NORME=(_F(TYPE_NORM='L2', GROUP_MA='TEST_'+str(test),CHAM_GD=DIFF[K], MODELE=MODELEIN),),INFO=1);
+
+   tab_u[K]=POST_ELEM(NORME=(_F(TYPE_NORM='L2', GROUP_MA='TEST_'+str(test),CHAM_GD=Uana[K], MODELE=MODELEIN),),INFO=1);
+
+   TEST_TABLE(TABLE=CH_G[K],
+           NOM_PARA='K1',
+           VALE=KI,
+           CRITERE='RELATIF',
+           LEGENDE='alpha='+str(alphaREF[K]),
+           PRECISION=1.E-3,
+           REFERENCE='ANALYTIQUE',);
+
+   TEST_TABLE(TABLE=CH_G[K],
+           NOM_PARA='K1',
+           VALE=KI_nr[K],
+           CRITERE='RELATIF',
+           LEGENDE='alpha='+str(alphaREF[K]),
+           PRECISION=1.E-8,
+           REFERENCE='NON_REGRESSION',
+           VERSION='11.2.5',);
+   
+   TEST_TABLE(TABLE=CH_G[K],
+           NOM_PARA='K2',
+           VALE=KII,
+           CRITERE='ABSOLU',
+           LEGENDE='alpha='+str(alphaREF[K]),
+           PRECISION=1.E-3,
+           REFERENCE='ANALYTIQUE',);
+
+   TEST_TABLE(TABLE=CH_G[K],
+           NOM_PARA='K2',
+           VALE=KII_nr[K],
+           CRITERE='ABSOLU',
+           LEGENDE='alpha='+str(alphaREF[K]),
+           PRECISION=1.E-8,
+           REFERENCE='NON_REGRESSION',
+           VERSION='11.2.5',);
+
+   TEST_TABLE(TABLE=CH_G[K],
+           NOM_PARA='G',
+           VALE=(1-nu**2.)/E*(KI**2.+KII**2.),
+           CRITERE='RELATIF',
+           PRECISION=1.E-3,
+           LEGENDE='alpha='+str(alphaREF[K]),
+           REFERENCE='ANALYTIQUE',);
+
+   TEST_TABLE(TABLE=CH_G[K],
+           NOM_PARA='G',
+           VALE=G_nr[K],
+           CRITERE='RELATIF',
+           PRECISION=1.E-8,
+           LEGENDE='alpha='+str(alphaREF[K]),
+           REFERENCE='NON_REGRESSION',
+           VERSION='11.2.5',);
+
+#TOLERANCE RELATIVE A LA NORME DU CHAMP DE DEPLACEMENT!
+   NormeL2_U=7.72403392144e-06
+   TEST_TABLE(TABLE=tab_du[K],
+           NOM_PARA='VALE_NORM',
+           VALE=0.,
+           CRITERE='ABSOLU',
+           PRECISION=1.E-3*NormeL2_U,
+           LEGENDE='ERREUR DEPL NORME_L2',
+           REFERENCE='ANALYTIQUE',);
+          
+   TEST_TABLE(TABLE=tab_du[K],
+           NOM_PARA='VALE_NORM',
+           VALE=NormeL2_U_nr[K],
+           CRITERE='ABSOLU',
+           PRECISION=1.E-8*NormeL2_U,
+           LEGENDE='ERREUR DEPL NORME_L2',
+           REFERENCE='NON_REGRESSION',
+           VERSION='11.2.5',);               
+
+#Visualisation
+K=len(alphaREF)-1
+MA_X=POST_MAIL_XFEM(MODELE=MODELK[K]);
+
+VISU=AFFE_MODELE(MAILLAGE=MA_X,
+                     AFFE=_F(GROUP_MA='SURF',
+                     PHENOMENE='MECANIQUE',
+                     MODELISATION='D_PLAN',
+                     ),)
+
+RES_X=POST_CHAM_XFEM(MODELE_VISU  = VISU,
+                        RESULTAT = UTOT[K],INFO=2,)
+
+RES_X=CALC_ELEM(reuse =RES_X,
+                   RESULTAT=RES_X,
+                   OPTION=('SIEQ_ELGA','SIEQ_ELNO'),
+                );
+
+RES_X=CALC_CHAMP(reuse =RES_X,
+                 RESULTAT=RES_X,
+                 CRITERES='SIEQ_NOEU');
+
+IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=RES_X,
+                                 NOM_CHAM=('DEPL'),
+                                 TYPE_CHAM='VECT_2D',
+                                 NOM_CMP=('DX','DY',),),),);
+
+FIN();

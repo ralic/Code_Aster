@@ -7,7 +7,7 @@
 
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,12 +69,12 @@ C -----------------------------------------------------------------
 C---------------------------------------------------------------------
 
 C-----------------------------------------------------------------------
-      INTEGER IADIRG ,IADRX ,IADRY ,IADRZ ,IADX ,IADY ,IADZ 
-      INTEGER IBAMO ,ICOMPT ,IDELAT ,IERD ,IGEO ,ILIRES ,ILMAX 
-      INTEGER IMACL ,IMODG ,IND ,IOR ,IPRS ,IRANG ,IRET 
-      INTEGER IROT ,ITABL ,ITZSTO ,K ,NBMO ,NBMOD ,NBMODG 
-      INTEGER NBSST ,NN 
-      REAL*8 BID ,EBID 
+      INTEGER IADIRG ,IADRX ,IADRY ,IADRZ ,IADX ,IADY ,IADZ
+      INTEGER IBAMO ,ICOMPT ,IDELAT ,IERD ,IGEO ,ILIRES ,ILMAX
+      INTEGER IMACL ,IMODG ,IND ,IOR ,IPRS ,IRANG ,IRET
+      INTEGER IROT ,ITABL ,ITZSTO ,K ,NBMO ,NBMOD ,NBMODG
+      INTEGER NBSST ,NN
+      REAL*8 BID ,EBID
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 
@@ -85,7 +85,7 @@ C---------------------------------------------------------------------
 C=====================================================================
 
         CALL JELIRA(MODGEN//'      .MODG.SSNO        '
-     +           ,'NOMMAX',NBSST,K8BID)
+     &           ,'NOMMAX',NBSST,K8BID)
         CALL GETVTX(' ','AVEC_MODE_STAT',0,IARG,1,REPON,NN)
         IF(REPON(1:3).EQ.'NON') THEN
            CALL DELAT(MODGEN,NBSST,NBMO)
@@ -99,7 +99,7 @@ C NOMS DES CHAMNO DE DEPL_R PAR COMPOSANTES ET LA PRESSION
         CALL WKVECT('&&CALMDG.TABL_ADRX','V V I',NBSST,IADRX)
         CALL WKVECT('&&CALMDG.TABL_ADRY','V V I',NBSST,IADRY)
         IF(MODEL.EQ.'3D') CALL WKVECT('&&CALMDG.TABL_ADRZ','V V I',
-     +                                NBSST,IADRZ)
+     &                                NBSST,IADRZ)
         CALL WKVECT('&&CALMDG.TABL_ADRP','V V I',NBSST,IADRP)
         CALL WKVECT('&&CALMDG.TABL_LONMAX','V V I',NBSST,ILMAX)
 
@@ -109,7 +109,7 @@ C NOMS DES CHAMNO DE DEPL_R PAR COMPOSANTES ET LA PRESSION
        DO 1 ISST=1,NBSST
         K=0
         CALL JEVEUO(JEXNUM(MODGEN//'      .MODG.SSME',ISST),
-     +            'L',IMACL)
+     &            'L',IMACL)
         MACEL=ZK8(IMACL)
 
         CALL JEVEUO(MACEL//'.MAEL_REFE','L',IBAMO)
@@ -118,11 +118,11 @@ C NOMS DES CHAMNO DE DEPL_R PAR COMPOSANTES ET LA PRESSION
 C TEST POUR DETERMINER SI FLUIDE ET STRUCTURE S APPUIENT SUR
 C DES MAILLAGES COMMUNS
 
-        CALL RSEXCH(BAMO,'DEPL',1,NOMCHA,IRET)
+        CALL RSEXCH('F',BAMO,'DEPL',1,NOMCHA,IRET)
         CALL DISMOI('F','NOM_MAILLA',NOMCHA(1:19),
-     +              'CHAM_NO',IBID,MAILLA,IERD)
+     &              'CHAM_NO',IBID,MAILLA,IERD)
         CALL DISMOI('F','NOM_MAILLA',MOINT,
-     +              'MODELE',IBID,MAFLUI,IERD)
+     &              'MODELE',IBID,MAFLUI,IERD)
         IF (MAFLUI.NE.MAILLA) THEN
          CALL TABCOR(MODEL,MATE,MAILLA,MAFLUI,MOINT,NUM,NDBLE,ICOR)
         ENDIF
@@ -130,7 +130,7 @@ C DES MAILLAGES COMMUNS
 C RECUPERATION DES CMPS DE TRANSLATION
 
         CALL JEVEUO(JEXNUM(MODGEN//'      .MODG.SSTR',ISST),
-     +            'L',IGEO)
+     &            'L',IGEO)
 
        TGEOM(1)=ZR(IGEO)
        TGEOM(2)=ZR(IGEO+1)
@@ -139,7 +139,7 @@ C RECUPERATION DES CMPS DE TRANSLATION
 C RECUPERATION DES CMPS DE ROTATION
 
         CALL JEVEUO(JEXNUM(MODGEN//'      .MODG.SSOR',ISST),
-     +            'L',IROT)
+     &            'L',IROT)
 
        TGEOM(4)=ZR(IROT)
        TGEOM(5)=ZR(IROT+1)
@@ -156,7 +156,7 @@ C RECUPERATION DES CMPS DE ROTATION
 3      CONTINUE
 
        IF ((RESTE(1).EQ.0.0D0).AND.(RESTE(2).EQ.0.0D0).AND.
-     +  (RESTE(3).EQ.0.0D0)) THEN
+     &  (RESTE(3).EQ.0.0D0)) THEN
          NORM2 = 0.0D0
        ELSE
          NORM2 = 1.0D0
@@ -168,7 +168,7 @@ C ON RECUPERE LE NOMBRE DE MODES DANS LA BASE MODALE DU MACRO-ELEMENT
 C DEFINI
 
       CALL RSORAC(BAMO,'LONUTI',IBID,BID,K8BID,CBID,EBID,'ABSOLU',
-     +             NBMODG,1,NBID)
+     &             NBMODG,1,NBID)
 
       ZI(ITABL+ISST-1)=NBMODG
 

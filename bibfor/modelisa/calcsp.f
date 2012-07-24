@@ -1,9 +1,9 @@
-      SUBROUTINE  CALCSP ( CASINT, NOMU, TABLE, FREQ, MASG, NBM, NPV,
-     &                     NBMR, IMOD1, NUOR, VITE )
+      SUBROUTINE  CALCSP ( CASINT, NOMU, TABLE, FREQ, MASG, NBM,
+     &                     NBMR, IMOD1, NUOR, IVITE )
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,83 +33,80 @@ C               AUX INTERSPECTRES D'EXCITATIONS : DONNEE DU CALCUL
 C IN  : FREQ  : TABLEAU DES FREQUENCES ET AMORTISSEMENTS
 C IN  : MASG  : TABLEAU DES MASSES GENERALISEES
 C IN  : NBM   : NOMBRE DE MODES DE LA BASE DE CONCEPT MELASFLU
-C IN  : NPV   : NOMBRE DE VITESSES ETUDIEES
 C IN  : NBMR  : NOMBRE DE MODES PRIS EN COMPTE
 C IN  : IMOD1 : INDICE DU PREMIER MODE PRIS EN COMPTE DANS LA BASE DE
 C               CONCEPT MELASFLU
 C IN  : NUOR  : LISTE DES NUMEROS D'ORDRE DES MODES PRIS EN COMPTE
-C IN  : VITE  : TABLEAU DES VITESSES DE FLUIDE
+C IN  : IVITE : NUMERO VITESSE DU FLUIDE
 C     ----------------------------------------------------------------
 C
       INCLUDE 'jeveux.h'
       LOGICAL       CASINT
       CHARACTER*8   NOMU, TABLE
-      INTEGER       NBM, NPV, NBMR, IMOD1, NUOR(*)
-      REAL*8        FREQ(*), MASG(*), VITE(*)
+      INTEGER       NBM, NBMR, IMOD1, NUOR(*),IVITE
+      REAL*8        FREQ(*), MASG(*)
 C
 C-----------------------------------------------------------------------
-      INTEGER IBID ,IDEB ,IFO ,IFONC ,IHI ,IHI1 ,IHR 
+      INTEGER IDEB ,IFONC ,IHI ,IHI1 ,IHR 
       INTEGER IHR1 ,IL ,IM ,IM1 ,IM2 ,IMB ,IMODF 
-      INTEGER IP ,IRET ,IV ,LPROL ,LVALE ,NBPAR ,NBPF 
+      INTEGER IP ,IV ,LVALE ,NBPF 
 
       REAL*8 FR ,FRI ,HHI ,HHR ,HII1 ,HII2 ,HIR1 
-      REAL*8 HIR2 ,PI ,R8B ,R8PI 
+      REAL*8 HIR2 ,PI ,R8PI 
 C-----------------------------------------------------------------------
-      PARAMETER   ( NBPAR = 5 )
       INTEGER       IVAL(3), VALI(2)
+      INTEGER       LNUMI,LNUMJ,LFREQ,I1,NBABS
+      INTEGER       LRNUMI,LRNUMJ,LRFREQ,MXVAL,MRXVAL,IPF
       REAL*8        MGI, KSI
       CHARACTER*8   K8B
-      CHARACTER*19  NOMCOD
-      CHARACTER*16  NOPAR(NBPAR)
-      CHARACTER*24  NOMFON, VALE, PROL, NOMFO, VALK(2)
-      COMPLEX*16    C16B
+      CHARACTER*24  CHNUMI,CHNUMJ,CHFREQ,CHVALE
+      CHARACTER*24  CRNUMI,CRNUMJ,CRFREQ,CRVALE
 C
-      DATA NOPAR  / 'VITE_FLUIDE'  , 'NUME_VITE_FLUI'   ,
-     &              'NUME_ORDRE_I' , 'NUME_ORDRE_J' , 'FONCTION_C' /
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
       PI = R8PI()
       IMODF = IMOD1 + NBMR - 1
 C
-      IVAL(1) = 1
-      IVAL(2) = NUOR(1)
-      IVAL(3) = NUOR(1)
+      CHNUMI = TABLE//'.NUMI'
+      CHNUMJ = TABLE//'.NUMJ'
+      CHFREQ = TABLE//'.FREQ'
+      CHVALE = TABLE//'.VALE'
+      CALL JEVEUO(CHNUMI,'L',LNUMI)
+      CALL JEVEUO(CHNUMJ,'L',LNUMJ)
+      CALL JEVEUO(CHFREQ,'L',LFREQ)
+      CALL JELIRA(CHNUMI,'LONMAX',MXVAL,K8B)
+      CALL JELIRA(CHFREQ,'LONMAX',NBPF,K8B)
 C
-      CALL TBLIVA ( TABLE, 3, NOPAR(2), IVAL, R8B, C16B, K8B, K8B,
-     &          R8B, 'FONCTION_C', K8B, IBID, R8B, C16B, NOMCOD, IRET )
-      IF ( IRET .NE. 0 ) THEN
-         VALK(1) = 'FONCTION_C'
-         VALK(2) = TABLE
-         CALL U2MESK('F','MODELISA2_91', 2, VALK)
-      ENDIF
+      CRNUMI = NOMU//'.NUMI'
+      CRNUMJ = NOMU//'.NUMJ'
+      CRFREQ = NOMU//'.FREQ'
+      CRVALE = NOMU//'.VALE'
+      CALL WKVECT(CRFREQ,'G V R',NBPF,LRFREQ)
+      DO 240 IP = 1,NBPF
+        ZR(LRFREQ+IP-1) = ZR(LFREQ+IP-1)
+240   CONTINUE
+
+      MRXVAL = 0
+      DO 250 IM2 = 1,NBMR
+        IDEB = IM2
+        IF ( CASINT ) IDEB = 1
+        DO 260 IM1 = IDEB,IM2
+          MRXVAL = MRXVAL+1
+260     CONTINUE
+250   CONTINUE
 C
-      NOMFO = NOMCOD//'.VALE'
-      CALL JELIRA ( NOMFO, 'LONUTI', NBPF, K8B )
-      NBPF = NBPF/3
+      CALL WKVECT(CRNUMI,'G V I',MRXVAL,LRNUMI)
+      CALL WKVECT(CRNUMJ,'G V I',MRXVAL,LRNUMJ)
 C
+      CALL JECREC(CRVALE,'G V R','NU','DISPERSE','VARIABLE',MRXVAL)
+
 C --- CREATION DE VECTEURS DE TRAVAIL ---
 C
       CALL WKVECT('&&CALCSP.TEMP.HR  ','V V R8',NBMR*NBPF,IHR  )
       CALL WKVECT('&&CALCSP.TEMP.HI  ','V V R8',NBMR*NBPF,IHI  )
 C
-      DO 20 IV = 1,NPV
-C
-        IVAL(1) = IV
-        IVAL(2) = NUOR(1)
-        IVAL(3) = NUOR(1)
-C
-        CALL TBLIVA ( TABLE, 3, NOPAR(2), IVAL, R8B, C16B, K8B, K8B,
-     &          R8B, 'FONCTION_C', K8B, IBID, R8B, C16B, NOMCOD, IRET )
-        IF ( IRET .NE. 0 ) THEN
-           VALK(1) = 'FONCTION_C'
-           VALK(2) = TABLE
-           CALL U2MESK('F','MODELISA2_91', 2, VALK)
-        ENDIF
-C
-        NOMFO = NOMCOD//'.VALE'
-        CALL JEVEUO ( NOMFO, 'L', IFO )
-C
+      IV = IVITE
         DO 25 IM = IMOD1,IMODF
           FRI = FREQ(2*NBM*(IV-1)+2*(IM-1)+1)
           IF ( FRI.LT.0.D0 ) THEN
@@ -130,7 +127,7 @@ C
           IMB = IM - IMOD1 + 1
 C
           DO 40 IP = 1,NBPF
-            FR = ZR(IFO+IP-1)
+            FR = ZR(LFREQ+IP-1)
             IHR1 = IHR+NBPF*(IMB-1)+IP-1
             IHI1 = IHI+NBPF*(IMB-1)+IP-1
             ZR(IHR1) = (MGI*(FRI*FRI - FR*FR))
@@ -139,6 +136,7 @@ C
  40       CONTINUE
  30     CONTINUE
 C
+        IPF = 1
         DO 50 IM2 = 1,NBMR
 C
           IVAL(3) = NUOR(IM2)
@@ -150,37 +148,25 @@ C
 C
             IVAL(2) = NUOR(IM1)
 C
-            CALL TBLIVA ( TABLE, 3, NOPAR(2), IVAL, R8B, C16B, K8B, K8B,
-     &           R8B, 'FONCTION_C', K8B, IBID, R8B, C16B, NOMFON, IRET )
-            IF ( IRET .NE. 0 ) THEN
-               VALK(1) = 'FONCTION_C'
-               VALK(2) = TABLE
-               CALL U2MESK('F','MODELISA2_91', 2, VALK)
-            ENDIF
-C
-            WRITE(NOMCOD,'(A8,A2,3I3.3)') NOMU,'.S',IV,NUOR(IM1),
-     &                                    NUOR(IM2)
-C
-            CALL TBAJLI ( NOMU, NBPAR, NOPAR,
-     &                          IVAL, VITE(IV), C16B, NOMCOD, 0 )
-C
-            VALE = NOMCOD(1:19)//'.VALE'
-            PROL = NOMCOD(1:19)//'.PROL'
-            CALL WKVECT(VALE,'G V R ',3*NBPF,LVALE)
-            CALL WKVECT(PROL,'G V K24',6     ,LPROL)
-C
-            ZK24(LPROL)   = 'FONCT_C '
-            ZK24(LPROL+1) = 'LIN LIN '
-            ZK24(LPROL+2) = 'FREQ    '
-            ZK24(LPROL+3) = 'DSP     '
-            ZK24(LPROL+4) = 'LL      '
-            ZK24(LPROL+5) = NOMCOD
-C
-            CALL JEVEUO ( NOMFON(1:19)//'.VALE', 'L', IFONC )
-C
-            DO 70 IL = 1,NBPF
-              ZR(LVALE+IL-1) = ZR(IFONC+IL-1)
- 70         CONTINUE
+            DO 200 I1 = 1,MXVAL
+              IF ((ZI(LNUMI-1+I1) .EQ. IVAL(3)) .AND.
+     &            (ZI(LNUMJ-1+I1) .EQ. IVAL(2))) THEN
+                CALL JEVEUO(JEXNUM(CHVALE,I1),'L',IFONC)
+              ENDIF
+200         CONTINUE
+
+        CALL JECROC(JEXNUM(CRVALE,IPF))
+          ZI(LRNUMI-1+IPF) = IVAL(3)
+          ZI(LRNUMJ-1+IPF) = IVAL(2)
+        IF (IVAL(2) .EQ. IVAL(3)) THEN
+          NBABS = NBPF
+        ELSE
+          NBABS = 2*NBPF
+        ENDIF
+        CALL JEECRA(JEXNUM(CRVALE,IPF),'LONMAX',NBABS,' ')
+        CALL JEECRA(JEXNUM(CRVALE,IPF),'LONUTI',NBABS,' ')
+        CALL JEVEUO(JEXNUM(CRVALE,IPF),'E',LVALE)
+            IPF = IPF + 1
 C
             DO 80 IL = 1,NBPF
               HIR1 = ZR(IHR+NBPF*(IM1-1)+IL-1)
@@ -194,9 +180,13 @@ C
               ELSE
                 HHI = 1.D0/HHI
               ENDIF
-              ZR(LVALE+NBPF+2*(IL-1))   = HHR*ZR(IFONC+NBPF+2*(IL-1))
-              ZR(LVALE+NBPF+2*(IL-1)+1) = HHI*
-     &                                    ZR(IFONC+NBPF+2*(IL-1)+1)
+        IF (IVAL(2) .EQ. IVAL(3)) THEN
+              ZR(LVALE+IL-1)   = HHR*ZR(IFONC+IL-1)
+        ELSE
+              ZR(LVALE+2*(IL-1))   = HHR*ZR(IFONC+2*(IL-1))
+              ZR(LVALE+2*(IL-1)+1) = HHI*
+     &                               ZR(IFONC+2*(IL-1)+1)
+        ENDIF
  80         CONTINUE
 C
  60       CONTINUE

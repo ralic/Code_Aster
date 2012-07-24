@@ -1,7 +1,7 @@
       SUBROUTINE CHPREC(CHOU)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -186,28 +186,22 @@ C         ===============================
               CALL U2MESS('F','UTILITAI_23')
             END IF
             CALL JEVEUO(KNUM,'L',JORDR)
-            CALL RSEXCH(RESUCO,NOMCH,ZI(JORDR),CHEXTR,IRET)
-            IF (IRET.EQ.0) THEN
-C
-C     ON VERIFIE QUE LE MOT-CLE TYPE_CHAMP EST COHERENT AVEC LE
-C     TYPE DU CHAMP EXTRAIT.
-C
-              CALL DISMOI('F','TYPE_CHAMP',CHEXTR,'CHAMP',IBID,TYCH,IE)
-              CALL DISMOI('F','NOM_GD',CHEXTR,'CHAMP',IBID,NOMGD,IE)
+            CALL RSEXCH('F',RESUCO,NOMCH,ZI(JORDR),CHEXTR,IRET)
 
-              IF ((TYCHLU(1:4).NE.TYCH).OR.(TYCHLU(6:12).NE.NOMGD)) THEN
-            VALK(1) = TYCHLU
-            VALK(2) = TYCH(1:4)
-            VALK(3) = NOMGD
-            CALL U2MESK('F','MODELISA4_18', 3 ,VALK)
-            END IF
+C
+C           ON VERIFIE QUE LE MOT-CLE TYPE_CHAMP EST COHERENT AVEC LE
+C           TYPE DU CHAMP EXTRAIT.
+C
+            CALL DISMOI('F','TYPE_CHAMP',CHEXTR,'CHAMP',IBID,TYCH,IE)
+            CALL DISMOI('F','NOM_GD',CHEXTR,'CHAMP',IBID,NOMGD,IE)
 
-              CALL COPISD('CHAMP_GD','G',CHEXTR,NOCH19)
-            ELSE IF (IRET.EQ.101 .OR. IRET.EQ.111) THEN
-              CALL U2MESK('F','UTILITAI_24',1,NOMCH)
-            ELSE
-              CALL U2MESS('F','UTILITAI_25')
+            IF ((TYCHLU(1:4).NE.TYCH).OR.(TYCHLU(6:12).NE.NOMGD)) THEN
+              VALK(1) = TYCHLU
+              VALK(2) = TYCH(1:4)
+              VALK(3) = NOMGD
+              CALL U2MESK('F','MODELISA4_18', 3 ,VALK)
             END IF
+            CALL COPISD('CHAMP_GD','G',CHEXTR,NOCH19)
             CALL JEDETR(KNUM)
           END IF
         END IF
@@ -228,8 +222,7 @@ C         ===========================
             CALL U2MESS('F','UTILITAI_23')
           END IF
           CALL JEVEUO(KNUM,'L',JORDR)
-          CALL RSEXCH(RESUCO,NOMCH,ZI(JORDR),CHEXTR,IRET)
-          IF (IRET.EQ.0) THEN
+          CALL RSEXCH('F',RESUCO,NOMCH,ZI(JORDR),CHEXTR,IRET)
               CALL DISMOI('F','TYPE_CHAMP',CHEXTR,'CHAMP',IBID,TYCH,IE)
               CALL DISMOI('F','NOM_GD',CHEXTR,'CHAMP',IBID,NOMGD,IE)
 
@@ -241,11 +234,6 @@ C         ===========================
             END IF
 
             CALL COPISD('CHAMP_GD','G',CHEXTR,NOCH19)
-          ELSE IF (IRET.EQ.101 .OR. IRET.EQ.111) THEN
-            CALL U2MESK('F','UTILITAI_24',1,NOMCH)
-          ELSE
-            CALL U2MESS('F','UTILITAI_25')
-          END IF
           CALL JEDETR(KNUM)
         END IF
       END IF

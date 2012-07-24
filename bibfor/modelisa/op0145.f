@@ -1,7 +1,7 @@
       SUBROUTINE OP0145()
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,18 +27,17 @@ C
 C-----------------------------------------------------------------------
 C
       INCLUDE 'jeveux.h'
-      INTEGER       IBID, DIM, IARG
-      REAL*8        R8B
-      COMPLEX*16    C16B
+      INTEGER       IBID, DIM,MXVAL
       CHARACTER*1   TYPSPE
       CHARACTER*8   K8B,K8BID,INTSPE,CAELEM,MODELE,NOMZON
       CHARACTER*16  CONCEP, CMD, NOMMCF, MCFAC(9)
       CHARACTER*19  NOMU
-      CHARACTER*24  VAIN, VARE, VATE, NNOE
+      CHARACTER*24  VAIN, VARE, VATE, NNOE,CHNUMI
+      INTEGER      IARG
 C
 C-----------------------------------------------------------------------
       INTEGER IANGL ,IFO ,IFONCT ,IINTER ,IMC ,IMCF ,IMCI 
-      INTEGER INAT ,INATUR ,INOEUD ,IOCC ,IRET ,ISPECT ,JVAVF 
+      INTEGER INAT ,INATUR ,INOEUD ,IOCC ,ISPECT ,JVAVF 
       INTEGER LFON ,LNAT ,LNNOE ,LNOM ,LONG ,LVAIN ,LVARE 
       INTEGER LVATE ,NBMCL ,NNAP 
       REAL*8 RBID 
@@ -106,18 +105,20 @@ C
         CALL GETVID(NOMMCF,'INTE_SPEC',1,IARG,0,K8BID,IINTER)
         IF ( IINTER .NE. 0 ) THEN
           CALL GETVID(NOMMCF,'INTE_SPEC',1,IARG,1,INTSPE,IBID)
-          CALL TBEXP2(INTSPE,'DIMENSION')
-          CALL TBLIVA ( INTSPE, 0, K8B, IBID, R8B, C16B, K8B, K8B, R8B,
-     &              'DIMENSION', K8B, DIM, R8B, C16B, K8B, IRET )
-          IF ( IRET .NE. 0 ) CALL U2MESS('F','MODELISA2_89')
+          CHNUMI = INTSPE//'.NUMI'
+          CALL JELIRA(CHNUMI,'LONMAX',MXVAL,K8B)
           IF (ISPECT.EQ.11) THEN
             CALL GETVID(NOMMCF,'FONCTION',1,IARG,0,K8BID,IFONCT)
-            IF ( ABS(IFONCT) .NE. DIM ) THEN
+            DIM = ABS(IFONCT)
+            DIM = DIM*(DIM+1)/2
+            IF ( DIM .NE. MXVAL ) THEN
               CALL U2MESS('F','MODELISA5_68')
             ENDIF
           ELSE
             CALL GETVTX(NOMMCF,'NOEUD',1,IARG,0,K8BID,INOEUD)
-            IF ( ABS(INOEUD) .NE. DIM ) THEN
+            DIM = ABS(INOEUD)
+            DIM = DIM*(DIM+1)/2
+            IF ( DIM .NE. MXVAL ) THEN
               CALL U2MESS('F','MODELISA5_69')
             ENDIF
           ENDIF
@@ -301,11 +302,6 @@ C
             CALL WKVECT('OP0145.TEMP.FON','V V K8',IFONCT,LFON)
             CALL GETVID(NOMMCF,'FONCTION',1,IARG,IFONCT,ZK8(LFON),IBID)
             ZK16(LVATE+3) = INTSPE
-            CALL TBEXP2(INTSPE,'FONCTION_C')
-            CALL TBEXP2(INTSPE,'NUME_ORDRE_I')
-            CALL TBEXP2(INTSPE,'NUME_ORDRE_J')
-            CALL TBEXP2(INTSPE,'NOM_CHAM')
-            CALL TBEXP2(INTSPE,'OPTION')
             DO 30 IFO = 1,IFONCT
               ZK16(LVATE+3+IFO) = ZK8(LFON+IFO-1)
   30        CONTINUE
@@ -322,11 +318,6 @@ C
             CALL GETVR8(NOMMCF,'RHO_FLUI',1,IARG,1,ZR(LVARE),IBID)
 C
           ELSE
-            CALL TBEXP2(INTSPE,'FONCTION_C')
-            CALL TBEXP2(INTSPE,'NUME_ORDRE_I')
-            CALL TBEXP2(INTSPE,'NUME_ORDRE_J')
-            CALL TBEXP2(INTSPE,'NOM_CHAM')
-            CALL TBEXP2(INTSPE,'OPTION')
             CALL WKVECT('OP0145.TEMP.NAT','V V K8',INOEUD,LNAT)
             CALL GETVTX(NOMMCF,'NATURE',1,IARG,INOEUD,ZK8(LNAT),IBID)
             ZK16(LVATE+3) = INTSPE

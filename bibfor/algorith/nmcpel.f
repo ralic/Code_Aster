@@ -1,8 +1,14 @@
       SUBROUTINE NMCPEL (FAMI,KPG,KSP,POUM,NDIM,TYPMOD,ANGMAS,IMATE,
      &             COMPOR,CRIT,OPTION,EPS,SIG,VI,DSIDEP,CODRET)
+      IMPLICIT NONE
+      INTEGER KPG,KSP,NDIM,IMATE,CODRET
+      REAL*8 ANGMAS(3),CRIT(3),EPS(6),SIG(6),VI(*),DSIDEP(6,6)
+      CHARACTER*(*) FAMI,POUM
+      CHARACTER*8 TYPMOD(*)
+      CHARACTER*16 COMPOR(4),OPTION
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,45 +52,15 @@ C OUT DSIDEP  : RIGIDITE TANGENTE
 C
 C               ATTENTION LES TENSEURS ET MATRICES SONT RANGES DANS
 C               L'ORDRE :  XX YY ZZ SQRT(2)*XY SQRT(2)*XZ SQRT(2)*YZ
-C   -------------------------------------------------------------------
-C     ASTER INFORMATIONS:
-C       11/12/00 (OB): TOILETTAGE FORTRAN,
-C                      RAJOUT DE PARAMETRE DANS L'APPEL A NMELNL POUR
-C                      COHERENCE AVEC TE0096 ET OPTION='CALC_DG' EN 2D.
-C-----------------------------------------------------------------------
-C CORPS DU PROGRAMME
-      IMPLICIT NONE
-
-C DECLARATION PARAMETRES D'APPELS
-      INTEGER            NDIM,IMATE,CODRET,KPG,KSP
-      CHARACTER*8        TYPMOD(*)
-      CHARACTER*16       COMPOR(4),OPTION
-      REAL*8             CRIT(3),SIGM(6)
-      REAL*8             EPS(6), SIG(6), VI(*), DSIDEP(6,6),ANGMAS(3)
-      INTEGER  ICODRE
-      CHARACTER*(*)  FAMI,POUM
+C
+C ----------------------------------------------------------------------
+C
+      INTEGER I,ICODRE
+      REAL*8  SIGM(6),ENERGI(2),R8BID
       CHARACTER*16 PHENOM
-      REAL*8       ENERGI(2)
-
-C DECLARATION VARIABLES LOCALES
-      LOGICAL  LPIPO
-      REAL*8   RPIPO,T1PIPO(6),T2PIPO(2),T3PIPO(6)
-
-
-C INITIALISATIONS POUR APPEL A NMELNL
+C
 C-----------------------------------------------------------------------
-      INTEGER I 
-      REAL*8 R8BID 
-C-----------------------------------------------------------------------
-      LPIPO = .FALSE.
-      RPIPO = 0.D0
-      T2PIPO(1) = 0.D0
-      T2PIPO(2) = 0.D0
-      DO 1 I=1,6
-        T1PIPO(I) = 0.D0
-        T3PIPO(I) = 0.D0
-1     CONTINUE
-
+C
       CODRET = 0
 
       CALL RCCOMA(IMATE,'ELAS',PHENOM,ICODRE)
@@ -110,8 +86,7 @@ C   ELASTICITE NON LINEAIRE ISOTROPE
      &         COMPOR(1)(1:14) .EQ. 'ELAS_VMIS_TRAC' ) THEN
            CALL NMELNL ( FAMI,KPG,KSP,POUM,NDIM, TYPMOD, IMATE,
      &                   COMPOR, CRIT,
-     &                   OPTION, EPS, SIG, VI, DSIDEP, ENERGI,
-     &                   LPIPO, RPIPO, T1PIPO, T2PIPO, T3PIPO)
+     &                   OPTION, EPS, SIG, VI, DSIDEP, ENERGI)
 
 C    LOI ELASTIQUE POUR MODELE SIGNORINI
       ELSEIF (COMPOR(1)(1:10).EQ. 'ELAS_HYPER') THEN

@@ -1,4 +1,4 @@
-# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE CIRCULAIRE POSEE SOUS PRESSION  147 SHB8
 # ssls101c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -128,7 +128,7 @@ CHF3=AFFE_CHAR_MECA(MODELE=MODEL,
                                      FZ=-10.0,),);
 
 EPSI=AFFE_CHAR_MECA(MODELE=MODEL,
-                    EPSI_INIT=_F(TOUT='OUI',
+                    PRE_EPSI=_F(TOUT='OUI',
                                      EPZZ=-1.E-5,),);
 
 FZC=DEFI_CONSTANTE(VALE=-10.0)
@@ -381,7 +381,7 @@ TEST_RESU(CHAM_NO=(_F(CHAM_GD=DEPR,
                       VALE=-435.8974,
                       CRITERE='RELATIF',
                       REFERENCE='ANALYTIQUE',PRECISION=0.005,),
-# EPSI_INIT
+# PRE_EPSI
                    _F(CHAM_GD=DEEP,
                       NOEUD='N2',
                       NOM_CMP='DY',

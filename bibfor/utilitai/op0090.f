@@ -1,7 +1,7 @@
       SUBROUTINE OP0090()
       IMPLICIT NONE
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -88,6 +88,16 @@ C     -----------------------------------------------------------------
         GO TO 10
       END IF
 
+C     -----------------------------------------------------------------
+C                 --- CAS D'UNE SD_INTERSPECTRE ---
+C     -----------------------------------------------------------------
+      CALL GETVID(' ','INTE_SPEC',0,IARG,1,RESU,NRB)
+      IF (NRB.NE.0) THEN
+        CALL RFINTE(RESU)
+        GO TO 10
+      END IF
+
+C     -----------------------------------------------------------------
 C     -----------------------------------------------------------------
 C                     --- CAS D'UNE NAPPE ---
 C     -----------------------------------------------------------------

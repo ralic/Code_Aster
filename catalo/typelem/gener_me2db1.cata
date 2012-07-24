@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 11/06/2012   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -161,8 +161,6 @@ OPTION__
                               OUT__  MMATUUR  PMATUUR
     MASS_MECA_DIAG      -1    IN__     OUT__  XXXXXX   XXXXXX
     MASS_MECA_EXPLI     -1    IN__     OUT__  XXXXXX   XXXXXX
-    MECA_SENS_MATE      -1    IN__     OUT__  XXXXXX   XXXXXX
-    MECA_SENS_RAPH      -1    IN__     OUT__  XXXXXX   XXXXXX
     M_GAMMA             153   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  DDL_MECA PACCELR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR
                               OUT__  MVECTUR  PVECTUR

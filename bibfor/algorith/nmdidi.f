@@ -1,7 +1,7 @@
       SUBROUTINE NMDIDI(MODELE,LISCHA,DEPMOI,VEDIDI)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,13 +25,13 @@ C
       CHARACTER*19  LISCHA,VEDIDI
       CHARACTER*24  MODELE
       CHARACTER*19  DEPMOI
-C 
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE MECA_NON_LINE (CALCUL)
 C
 C CALCUL DES VECT_ELEM POUR DIRICHLET DIFFERENTIEL
-C      
+C
 C ----------------------------------------------------------------------
 C
 C
@@ -50,15 +50,15 @@ C
 C
 C ----------------------------------------------------------------------
 C
-      CALL JEMARQ()                         
+      CALL JEMARQ()
 C
 C --- CONSTRUCTION DE LA CONFIGURATION DE REFERENCE
-C 
+C
       DEPDID = DEPMOI
       CALL GETVIS('ETAT_INIT','NUME_DIDI',1,IARG,1,NUMREF,N1)
       CALL GETVID('ETAT_INIT','EVOL_NOLI',1,IARG,1,EVOL,NEVO)
       IF ((N1.GT.0) .AND. (NEVO.GT.0)) THEN
-        CALL RSEXCH(EVOL,'DEPL',NUMREF,DEPDID,IRET)
+        CALL RSEXCH(' ',EVOL,'DEPL',NUMREF,DEPDID,IRET)
         IF (IRET.NE.0) CALL U2MESK('F','ALGORITH7_20',1,EVOL)
       END IF
 C

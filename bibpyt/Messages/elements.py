@@ -1,4 +1,4 @@
-#@ MODIF elements Messages  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+#@ MODIF elements Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -194,10 +194,6 @@ Risque & Conseil : mettre un léger écrouissage peut permettre de passer cette di
  le champ  %(k1)s n'a pas la bonne grandeur :
    grandeur autorisée  :%(k2)s
    grandeur du champ   :%(k3)s
-"""),
-
-38 : _(u"""
- Le phénomène sensible %(k1)s choisi ne correspond pas au phénomène %(k2)s dont il est issu
 """),
 
 39 : _(u"""

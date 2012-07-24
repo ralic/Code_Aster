@@ -9,7 +9,7 @@
       LOGICAL             NEWRES
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -104,7 +104,7 @@ C
          ZK24(LREF+3) = ZK24(KREF+3)
          ZK24(LREF+4) = ZK24(KREF+4)
          ZK24(LREF+5) = ZK24(KREF+5)
-         ZK24(LREF+6) = ZK24(KREF+6) 
+         ZK24(LREF+6) = ZK24(KREF+6)
       ENDIF
 C
 C     --- PARAMETRES SOUS ECOULEMENT ---
@@ -131,7 +131,7 @@ C
 C
 C     --- ON RECUPERE UN NUME_DDL ---
 C
-      CALL RSEXCH ( BASEMO,'DEPL',NUOR(1),NOMCHA,IRET)
+      CALL RSEXCH('F',BASEMO,'DEPL',NUOR(1),NOMCHA,IRET)
       CALL DISMOI('F','PROF_CHNO',NOMCHA,'CHAM_NO',IBID,PRCHNO,IRET)
       CALL JEVEUO ( PRCHNO//'.DEEQ', 'L', IDEEQ )
 C

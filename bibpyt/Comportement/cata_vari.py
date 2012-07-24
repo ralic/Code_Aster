@@ -1,21 +1,21 @@
-#@ MODIF cata_vari Comportement  DATE 23/04/2012   AUTEUR HAELEWYN J.HAELEWYN 
+#@ MODIF cata_vari Comportement  DATE 23/07/2012   AUTEUR FLEJOU J-L.FLEJOU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE PROIX J.M.PROIX
 
@@ -67,6 +67,8 @@ DICT_NOM_VARI = {
     "COHESION" : _(u"cohésion"),
     "COMPT" : _(u"itération de Newton courante,"),
     "COMR" : _(u"itération de Newton de rupture,"),
+    "CRITELS": _(u"Critère ELS, utilisé en Génie Civil"),
+    "CRITELU": _(u"Critère ELU, utilisé en Génie Civil"),
     "CRITHILL" : _(u"Critère de Hill : pour Hujeux : densité normalisée pour le travail du second ordre"),
     "DB1" : _(u"c_plan ou 1d algo Deborst, variable interne 1"),
     "DB2" : _(u"c_plan ou 1d algo Deborst, variable interne 2"),
@@ -97,8 +99,9 @@ DICT_NOM_VARI = {
     "DIS7" : _(u"éléments discrets, variable interne 7"),
     "DIS8" : _(u"éléments discrets, variable interne 8"),
     "DIS9" : _(u"éléments discrets, variable interne 9"),
-    "DISSENDO" : _(u"dissipation d'endommagement,"),
-    "DISSIP" : _(u"dissipation plastique"),
+    "DISSENDO" : _(u"dissipation d'endommagement"),
+    "DISSIP"   : _(u"dissipation plastique"),
+    "DISSTHER" : _(u"dissipation Thermodynamique"),
     "DISTSDEV" : _(u"CJS distance normalisée au seuil déviatoire"),
     "DISTSISO" : _(u"CJS distance normalisée au seuil isotrope"),
     "DOMCOMP" : _(u"Laigle : domaine de comportement de la roche"),

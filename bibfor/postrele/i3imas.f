@@ -11,7 +11,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF POSTRELE  DATE 23/07/2012   AUTEUR DESROCHE X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -296,6 +296,20 @@ CCC         MXSGEL = MXSGEL + 100
             T2  = ZR(ZI(ALSTPT+1-1)+J2-1)
             F1  = ZI(ZI(ALSTPT+2-1)+J1-1)
             F2  = ZI(ZI(ALSTPT+2-1)+J2-1)
+C
+C SI UN NUMERO DE FACE EST NUL ALORS ON NE TRAITE PAS
+C LE SEGMENT ELEMENTAIRE (ON NE TRAITE QUE LES SEGMENTS
+C REPERABLES PAR DES NUMEROS DE FACE NON NULS)
+C ON EMET UNE ALARME DANS CE CAS
+            IF(F1.EQ.0) THEN
+               CALL U2MESS('A','PREPOST6_44')
+               GO TO 100   
+            ENDIF
+            IF(F2.EQ.0) THEN
+               CALL U2MESS('A','PREPOST6_45')
+               GO TO 100   
+            ENDIF
+C
             A1  = ZI(ZI(ALSTPT+3-1)+J1-1)
             A2  = ZI(ZI(ALSTPT+3-1)+J2-1)
             TF1 = ZI(ZI(ALSTPT+4-1)+J1-1)

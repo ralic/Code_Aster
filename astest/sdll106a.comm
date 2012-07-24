@@ -1,9 +1,9 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE SOUS EXCITATION ALEATOIRE IMPOSEE SUR FONCTION DE FORME
 # sdll106a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -213,56 +213,46 @@ INTERRE2=REST_SPEC_PHYS(         MODE_MECA=MODES,
                                        NOM_CMP=('DY', 'DY', 'DY', ),
                                         OPTION='TOUT_TOUT'  )
 
-TEST_FONCTION(TABL_INTSP=(
-      _F(  INTE_SPEC = INTERRE1,
-                   NOEUD_I = 'P3',   NOEUD_J = 'P3',
-                   NOM_CMP_I = 'DY',  NOM_CMP_J = 'DY',
-                   VALE_PARA = 4., VALE_REFE_C = ('RI',4.0298E-2,0.,),
+REP1=RECU_FONCTION(    INTE_SPEC=INTERRE1,
+                   NOEUD_I = 'P3',
+                   NOM_CMP_I = 'DY',
+                      )
+
+REP2=RECU_FONCTION(    INTE_SPEC=INTERRE2,
+                   NOEUD_I = 'P3',
+                   NOM_CMP_I = 'DY',
+                      )
+
+TEST_FONCTION(VALEUR=(
+      _F(  FONCTION = REP1,
+                   VALE_PARA = 4., VALE_REFE = 4.0298E-2,
                    PRECISION = 1.E-3),
-      _F(  INTE_SPEC = INTERRE1,
-                   NOEUD_I = 'P3',   NOEUD_J = 'P3',
-                   NOM_CMP_I = 'DY',  NOM_CMP_J = 'DY',
-                   VALE_PARA = 6., VALE_REFE_C = ('MP',9.2971E-2,0.,),
+      _F(  FONCTION = REP1,
+                   VALE_PARA = 6., VALE_REFE = 9.2971E-2,
                    PRECISION = 1.E-3),
-      _F(  INTE_SPEC = INTERRE1,
-                   NOEUD_I = 'P3',   NOEUD_J = 'P3',
-                   NOM_CMP_I = 'DY',  NOM_CMP_J = 'DY',
-                   VALE_PARA = 8., VALE_REFE_C = ('RI',9.5164E-1,0.,),
+      _F(  FONCTION = REP1,
+                   VALE_PARA = 8., VALE_REFE = 9.5164E-1,
                    PRECISION = 1.E-3),
-      _F(  INTE_SPEC = INTERRE1,
-                   NOEUD_I = 'P3',   NOEUD_J = 'P3',
-                   NOM_CMP_I = 'DY',  NOM_CMP_J = 'DY',
-                   VALE_PARA = 10., VALE_REFE_C = ('RI',1.7617E-1,0.,),
+      _F(  FONCTION = REP1,
+                   VALE_PARA = 10., VALE_REFE = 1.7617E-1,
                    PRECISION = 1.E-3),
-      _F(  INTE_SPEC = INTERRE1,
-                   NOEUD_I = 'P3',   NOEUD_J = 'P3',
-                   NOM_CMP_I = 'DY',  NOM_CMP_J = 'DY',
-                   VALE_PARA = 12., VALE_REFE_C = ('RI',2.6695E-2,0.,),
+      _F(  FONCTION = REP1,
+                   VALE_PARA = 12., VALE_REFE = 2.6695E-2,
                    PRECISION = 1.E-3),
-      _F(  INTE_SPEC = INTERRE2,
-                   NOEUD_I = 'P3',   NOEUD_J = 'P3',
-                   NOM_CMP_I = 'DY',  NOM_CMP_J = 'DY',
-                   VALE_PARA = 4., VALE_REFE_C = ('RI',4.0298E-2,0.,),
+      _F(  FONCTION = REP2,
+                   VALE_PARA = 4., VALE_REFE = 4.0298E-2,
                    PRECISION = 1.E-3),
-      _F(  INTE_SPEC = INTERRE2,
-                   NOEUD_I = 'P3',   NOEUD_J = 'P3',
-                   NOM_CMP_I = 'DY',  NOM_CMP_J = 'DY',
-                   VALE_PARA = 6., VALE_REFE_C = ('RI',9.2971E-2,0.,),
+      _F(  FONCTION = REP2,
+                   VALE_PARA = 6., VALE_REFE = 9.2971E-2,
                    PRECISION = 1.E-3),
-      _F(  INTE_SPEC = INTERRE2,
-                   NOEUD_I = 'P3',   NOEUD_J = 'P3',
-                   NOM_CMP_I = 'DY',  NOM_CMP_J = 'DY',
-                   VALE_PARA = 8., VALE_REFE_C = ('RI',9.5164E-1,0.,),
+      _F(  FONCTION = REP2,
+                   VALE_PARA = 8., VALE_REFE = 9.5164E-1,
                    PRECISION = 1.E-3),
-      _F(  INTE_SPEC = INTERRE2,
-                   NOEUD_I = 'P3',   NOEUD_J = 'P3',
-                   NOM_CMP_I = 'DY',  NOM_CMP_J = 'DY',
-                   VALE_PARA = 10., VALE_REFE_C = ('RI',1.7617E-1,0.,),
+      _F(  FONCTION = REP2,
+                   VALE_PARA = 10., VALE_REFE = 1.7617E-1,
                    PRECISION = 1.E-3),
-      _F(  INTE_SPEC = INTERRE2,
-                   NOEUD_I = 'P3',   NOEUD_J = 'P3',
-                   NOM_CMP_I = 'DY',  NOM_CMP_J = 'DY',
-                   VALE_PARA = 12., VALE_REFE_C = ('RI',2.6695E-2,0.,),
+      _F(  FONCTION = REP2,
+                   VALE_PARA = 12., VALE_REFE = 2.6695E-2,
                    PRECISION = 1.E-3)) )
 
 FIN( )

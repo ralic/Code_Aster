@@ -4,7 +4,7 @@
       CHARACTER*16        OPTION , NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,14 +27,6 @@ C  BORDS ELEMENTS ISOPARAMETRIQUES 3D AVEC PRESSION
 C
 C  OPTION : 'CALC_G'   (CHARGES REELLES)
 C           'CALC_G_F' (CHARGES FONCTIONS)
-C           'CALC_DG_E'   ( DG/DE AVEC CHARGES REELLES)
-C           'CALC_DG_E_F' ( DG/DE AVEC CHARGES FONCTIONS)
-C           'CALC_DG_FORC'   ( DG/DF AVEC CHARGES REELLES)
-C           'CALC_DG_FORC_F' ( DG/DF AVEC CHARGES FONCTIONS)
-C           'CALC_DGG_E'   ( DG/DE AVEC CHARGES REELLES, GLOBAL)
-C           'CALC_DGG_E_F' ( DG/DE AVEC CHARGES FONCTIONS, GLOBAL)
-C           'CALC_DGG_FORC'   ( DG/DF AVEC CHARGES REELLES, GLOBAL)
-C           'CALC_DGG_FORC_F' ( DG/DF AVEC CHARGES FONCTIONS, GLOBAL)
 C
 C ENTREES  ---> OPTION : OPTION DE CALCUL
 C          ---> NOMTE  : NOM DU TYPE ELEMENT
@@ -43,9 +35,8 @@ C VECTEURS DIMENSIONNES POUR  NNO = 9 , NPG = 9
 C.......................................................................
 C
       INTEGER       NDIM,NNO,NPG1,COMPT,IFORF
-      INTEGER       IPOIDS,IVF,IDFDE,I,J,K,KP,IFORC,KK
+      INTEGER       IPOIDS,IVF,IDFDE,I,J,K,KP,IFORC
       INTEGER       IDEPL,IPRES,ITHET,IGTHET,IGEOM,IPREF,ITEMPS,ICODE
-      INTEGER       IDEPSE,IFO23R,IFO23F,IPRESS,IPRESF
       INTEGER       NNOS,JGANO
 C
       REAL*8        A1(3),A2(3),A3(3),I1(3),I2(3),EPSI,DFDX(9),DFDY(9)
@@ -54,18 +45,14 @@ C
       REAL*8        DTH1D1,DTH2D2,POIDS,TH1,TH2,TSOM,TSURF,TSURP
       REAL*8        FORC,DFORD1(3),DFORD2(3),DFOR(3),COORG(3)
 C                                         NNO       3*NNO
-      REAL*8        PRESG, FORCG(3), PRESN(9), FORCN(27), DUDMDE(3)
-      REAL*8        DGNOP(9), DGNO(27), FLAG(3), FLAGP , VF
+      REAL*8        PRESG, FORCG(3), PRESN(9), FORCN(27)
 C
       CHARACTER*8   NOMPAR(4)
 C
-      LOGICAL       FONC,DERIVE,DERFOR,DPRES,DFORC
+      LOGICAL       FONC
 C.......................................................................
 C
       CALL JEMARQ()
-      DERFOR=.FALSE.
-      DFORC = .FALSE.
-      DPRES = .FALSE.
 C
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
       CALL JEVECH ( 'PTHETAR', 'L', ITHET )
@@ -93,9 +80,7 @@ C RECUPERATION DES CHAMPS LOCAUX
 C
       CALL JEVECH ( 'PGEOMER', 'L', IGEOM )
       CALL JEVECH ( 'PDEPLAR', 'L', IDEPL )
-      IF (OPTION.EQ.'CALC_G_F' .OR. OPTION.EQ.'CALC_DG_E_F' .OR.
-     &   OPTION.EQ.'CALC_G_GLOB_F'.OR. OPTION.EQ.'CALC_DG_FORC_F'.OR.
-     &   OPTION.EQ.'CALC_DGG_E_F'.OR.OPTION.EQ.'CALC_DGG_FORC_F') THEN
+      IF ((OPTION.EQ.'CALC_G_F').OR.(OPTION.EQ.'CALC_G_GLOB_F')) THEN
         FONC = .TRUE.
         CALL JEVECH ( 'PFF2D3D', 'L', IFORF  )
         CALL JEVECH ( 'PPRESSF', 'L', IPREF  )
@@ -105,28 +90,10 @@ C
         NOMPAR(3) = 'Z'
         NOMPAR(4) = 'INST'
         VALPAR(4) = ZR(ITEMPS)
-        IF (OPTION.EQ.'CALC_DG_FORC_F' .OR.
-     &      OPTION.EQ.'CALC_DGG_FORC_F' ) THEN
-          CALL JEVECH('PFF23SS','L',IFO23F)
-          CALL JEVECH('PPRESSSF','L',IPRESF)
-          DERFOR = .TRUE.
-        ENDIF
       ELSE
         FONC =.FALSE.
         CALL JEVECH ( 'PFR2D3D', 'L', IFORC )
         CALL JEVECH ( 'PPRESSR', 'L', IPRES )
-        IF (OPTION.EQ.'CALC_DG_FORC'.OR.
-     &      OPTION.EQ.'CALC_DGG_FORC') THEN
-          CALL JEVECH('PFR23SS','L',IFO23R)
-          CALL JEVECH('PPRESSSR','L',IPRESS)
-          DERFOR = .TRUE.
-        ENDIF
-      ENDIF
-      DERIVE = .FALSE.
-      IF (OPTION(6:9).EQ.'DG_E'.OR.OPTION(6:12).EQ.'DG_FORC'.OR.
-     & OPTION(6:10).EQ.'DGG_E'.OR.OPTION(6:13).EQ.'DGG_FORC') THEN
-        DERIVE = .TRUE.
-        CALL JEVECH('PDEPLSE','L',IDEPSE)
       ENDIF
 C
 C - SI CHARGE FONCTION RECUPERATION DES VALEURS AUX PG ET NOEUDS
@@ -141,21 +108,6 @@ C
                CALL FOINTE ('FM', ZK8(IFORF+J-1), 4,NOMPAR,VALPAR,
      &                                       FORCN(3*(I-1)+J),ICODE)
 75          CONTINUE
-          IF(DERFOR) THEN
-             DO 76 J=1,3
-               KK = 3*(I-1)+J
-C DGNO :INDICATEUR DE LA(OU DES) CMP DES DERIVEES SENSIBLES % AUX FORCES
-C       DGNO(KK) = 0 OU 1
-               CALL FOINTE('FM',ZK8(IFO23F+J-1),3,NOMPAR,VALPAR,DGNO(KK)
-     &                     ,ICODE)
-               IF(DGNO(KK).NE.0.0D0) DFORC=.TRUE.
-76           CONTINUE
-C  DGNOP : INDICATEUR DE LA DERIVEE SENSIBLE % A LA PRESSION
-C         DGNOP = 0 OU 1
-             CALL FOINTE('FM',ZK8(IPRESF),3,NOMPAR,VALPAR,DGNOP(I)
-     &                   ,ICODE)
-             IF(DGNOP(I).NE.0.0D0) DPRES=.TRUE.
-           ENDIF
 70       CONTINUE
       ENDIF
 C
@@ -203,33 +155,21 @@ C
 C
          DO 810 J=1,3
             DEPL(J)   = 0.D0
-            DUDMDE(J) = 0.D0
             DFORD1(J) = 0.D0
             DFORD2(J) = 0.D0
             DFOR(J)   = 0.D0
             COORG(J)  = 0.D0
-            FLAG(J)  = 0.D0
 810      CONTINUE
          TH1 = 0.D0
          TH2 = 0.D0
          DTH1D1 = 0.D0
          DTH2D2 = 0.D0
-         FLAGP = 0.D0
 C
          DO 820 I=1,NNO
             DO 830 J=1,3
                COORG(J) = COORG(J)+ZR(IVF+K+I-1)*ZR(IGEOM+3*(I-1)+J-1)
 830         CONTINUE
 820      CONTINUE
-         IF(DERFOR) THEN
-            DO 831 I = 1 , NNO
-               VF  = ZR(IVF+K+I-1)
-               FLAG(1)  = FLAG(1)      +   VF  *DGNO(3*I-2)
-               FLAG(2)  = FLAG(2)      +   VF  *DGNO(3*I-1)
-               FLAG(3)  = FLAG(3)      +   VF  *DGNO(3*I)
-               FLAGP    = FLAGP        +   VF  *DGNOP(I)
-  831       CONTINUE
-         ENDIF
 C
          CALL DFDM2D ( NNO, KP,IPOIDS, IDFDE, COOR,
      &                 DFDX, DFDY, POIDS )
@@ -273,12 +213,6 @@ C
                DTH1D1= DTH1D1+ ZR(ITHET+3*(I-1)+J-1)*I1(J)*DFDX(I)
                DTH2D2= DTH2D2+ ZR(ITHET+3*(I-1)+J-1)*I2(J)*DFDY(I)
 310         CONTINUE
-            IF(DERIVE) THEN
-              DO 311 J=1,3
-                DUDMDE(J) = DUDMDE(J) + ZR(IDEPSE+NDIM*(I-1)+J-1)
-     &                                * ZR(IVF+K+I-1)
-311           CONTINUE
-            ENDIF
 300      CONTINUE
 C
          DO 320 J=1,3
@@ -286,35 +220,13 @@ C
 320      CONTINUE
 C
          DIVT = DTH1D1+DTH2D2
-         IF(DERIVE) THEN
-           DO 500 J =1,3
-              FORC = FORCG(J) - PRESG*A3(J)
-              TCLA = TCLA + POIDS*(FORC*DIVT+DFOR(J))*DUDMDE(J)
-500        CONTINUE
-C
-C DANS LE CAS D'UNE DERIVEE PAR RAPPORT A UN CHARGEMENT SURFACIQUE
-C (NEUMANN), IL Y A UN TERME DE PLUS
-           IF ( DFORC ) THEN
-             TSURF = TSURF + DIVT*POIDS*
-     &         (DEPL(1)*FLAG(1)+DEPL(2)*FLAG(2)+DEPL(3)*FLAG(3))
-           ENDIF
-           IF ( DPRES ) THEN
-             TSURP = TSURP - DIVT*POIDS*FLAGP*
-     &          (DEPL(1)*A3(1)+DEPL(2)*A3(2)+DEPL(3)*A3(3))
-           ENDIF
-C
-         ELSE
-           DO 510 J =1,3
-              FORC = FORCG(J) - PRESG*A3(J)
-              TCLA = TCLA + POIDS*(FORC*DIVT+DFOR(J))*DEPL(J)
-510        CONTINUE
-         ENDIF
+         DO 510 J =1,3
+            FORC = FORCG(J) - PRESG*A3(J)
+            TCLA = TCLA + POIDS*(FORC*DIVT+DFOR(J))*DEPL(J)
+510      CONTINUE
 800   CONTINUE
 9999  CONTINUE
 C
-C SI LE PARAMETRE SENSIBLE FIGURE A LA FOIS DANS UNE FORCE ET UNE
-C PRESSION IL FAUT MULTIPLIER PAR 2 LE TERME CLASSIQUE
-      IF (DFORC.AND.DPRES) TCLA = 2.0D0*TCLA
       TSOM = TCLA + TSURF + TSURP
       ZR(IGTHET) = TSOM
 C

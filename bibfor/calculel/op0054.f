@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,7 +72,7 @@ C
 C --- CREATION DU NOM DU CHAMP CORRESPONDANT AU NOM SYMBOLIQUE THETA
 C --- POUR LE NUMERO D'ORDRE 0 :
 C     ------------------------
-      CALL RSEXCH (RESU,'THETA',0,THETA,ICODE)
+      CALL RSEXCH(' ',RESU,'THETA',0,THETA,ICODE)
 C
 C --- SI LE CHAMP THETA EXISTE DEJA, ON SORT EN ERREUR FATALE :
 C     -------------------------------------------------------
@@ -85,7 +85,7 @@ C
 C --- CREATION DU NOM DU CHAMP CORRESPONDANT AU NOM SYMBOLIQUE
 C --- GRAD_NOEU_THETA POUR LE NUMERO D'ORDRE 0 :
 C     ----------------------------------------
-      CALL RSEXCH (RESU,'GRAD_NOEU_THETA',0,GDTETA,ICODE)
+      CALL RSEXCH(' ',RESU,'GRAD_NOEU_THETA',0,GDTETA,ICODE)
 C
 C --- SI LE CHAMP THETA EXISTE DEJA, ON SORT EN ERREUR FATALE :
 C     -------------------------------------------------------

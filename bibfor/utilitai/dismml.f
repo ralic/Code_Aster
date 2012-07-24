@@ -1,6 +1,6 @@
       SUBROUTINE DISMML(QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,7 @@ C
 C ----------------------------------------------------------------------
 C     VARIABLES LOCALES:
 C     ------------------
-      INTEGER JREFM
+      INTEGER JREFM,IEXI
       CHARACTER*8 MODELE
 
 C
@@ -61,6 +61,14 @@ C
       ELSE IF (QUESTI.EQ.'DIM_GEOM') THEN
          MODELE=ZK8(JREFM)
          CALL DISMMO(QUESTI,MODELE,REPI,REPK,IERD)
+
+      ELSE IF (QUESTI.EQ.'EXI_AMOR') THEN
+         CALL JEEXIN(NOMOB//'.MAEL_AMOR_VALE',IEXI)
+         IF (IEXI.NE.0) THEN
+           REPK='OUI'
+         ELSE
+           REPK='NON'
+         ENDIF
       ELSE
          IERD=1
       END IF

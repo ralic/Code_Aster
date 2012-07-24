@@ -1,6 +1,6 @@
       SUBROUTINE PECAP1(CHGEOZ,TEMPEZ,NGI,LISGMA,CT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -95,12 +95,12 @@ C.========================= DEBUT DU CODE EXECUTABLE ==================
 C ---- INITIALISATIONS
 C      ---------------
 C-----------------------------------------------------------------------
-      INTEGER I ,IANUEQ ,IAPRNO ,IBID ,IDCOOR ,IDDESC ,IDNOMA 
-      INTEGER IDVALE ,IERD ,IGR ,IRET ,IRET1 ,IRET2 ,IVAL 
-      INTEGER JDES ,JGRO ,M ,NBMAIL ,NBNO ,NBORDR ,NEC 
-      INTEGER NGI ,NUMA ,NUMAIL 
-      REAL*8 CT ,DEUX ,PREC ,R8B ,STRAP ,TEMP ,UNDEMI 
-      REAL*8 X1 ,X2 ,XMIN ,Y1 ,Y2 ,YMIN ,ZERO 
+      INTEGER I ,IANUEQ ,IAPRNO ,IBID ,IDCOOR ,IDDESC ,IDNOMA
+      INTEGER IDVALE ,IERD ,IGR ,IRET ,IRET1 ,IRET2 ,IVAL
+      INTEGER JDES ,JGRO ,M ,NBMAIL ,NBNO ,NBORDR ,NEC
+      INTEGER NGI ,NUMA ,NUMAIL
+      REAL*8 CT ,DEUX ,PREC ,R8B ,STRAP ,TEMP ,UNDEMI
+      REAL*8 X1 ,X2 ,XMIN ,Y1 ,Y2 ,YMIN ,ZERO
 
 C-----------------------------------------------------------------------
       ZERO = 0.0D0
@@ -134,10 +134,7 @@ C     -------------------------------------------
 
 C --- RECUPERATION DU CHAMP DE TEMPERATURES DU RESULTAT :
 C     -------------------------------------------------
-      CALL RSEXCH(TEMPER,'TEMP',0,CHTEMP,IRET)
-      IF (IRET.GT.0) THEN
-        CALL U2MESK('F','UTILITAI3_52',1,TEMPER)
-      END IF
+      CALL RSEXCH('F',TEMPER,'TEMP',0,CHTEMP,IRET)
 
 C --- RECUPERATION DU NUME_DDL ASSOCIE AU CHAMP DE TEMPERATURES :
 C     ---------------------------------------------------------

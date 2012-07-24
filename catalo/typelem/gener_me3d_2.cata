@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 29/05/2012   AUTEUR ABBAS M.ABBAS 
+%& MODIF TYPELEM  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -130,32 +130,6 @@ OPTION__
                                      DDL_MECA PDEPINR  N9NEUT_R PBASLOR  G27NEUTR PCOURB   CFORCEF  PFF2D3D
                                      CPRESSF  PPRESSF  CTEMPSR  PTEMPSR  N1NEUT_R PLSN     N1NEUT_R PLST
                               OUT__  EKTHETA  PGTHETA
-    CALC_DG_E           280   IN__   DDL_MECA PDEPLAR  NFORCER  PFR2D3D  NGEOMER  PGEOMER  EPRESNO  PPRESSR
-                                     DDL_MECA PTHETAR  DDL_MECA PDEPLSE
-                              OUT__  EGTHETA  PGTHETA
-    CALC_DG_E_F         280   IN__   DDL_MECA PDEPLAR  CFORCEF  PFF2D3D  NGEOMER  PGEOMER  CPRESSF  PPRESSF
-                                     CTEMPSR  PTEMPSR  DDL_MECA PTHETAR  DDL_MECA PDEPLSE
-                              OUT__  EGTHETA  PGTHETA
-    CALC_DG_FORC        280   IN__   DDL_MECA PDEPLAR  NFORCER  PFR2D3D  NGEOMER  PGEOMER  EPRESNO  PPRESSR
-                                     DDL_MECA PTHETAR  DDL_MECA PDEPLSE  NFORCER  PFR23SS  EPRESNO  PPRESSSR
-                              OUT__  EGTHETA  PGTHETA
-    CALC_DG_FORC_F      280   IN__   DDL_MECA PDEPLAR  CFORCEF  PFF2D3D  NGEOMER  PGEOMER  CPRESSF  PPRESSF
-                                     CTEMPSR  PTEMPSR  DDL_MECA PTHETAR  DDL_MECA PDEPLSE  CFORCEF  PFF23SS
-                                     CPRESSF  PPRESSSF
-                              OUT__  EGTHETA  PGTHETA
-    CALC_DGG_E          280   IN__   DDL_MECA PDEPLAR  NFORCER  PFR2D3D  NGEOMER  PGEOMER  EPRESNO  PPRESSR
-                                     DDL_MECA PTHETAR  DDL_MECA PDEPLSE
-                              OUT__  EGTHETA  PGTHETA
-    CALC_DGG_E_F        280   IN__   DDL_MECA PDEPLAR  CFORCEF  PFF2D3D  NGEOMER  PGEOMER  CPRESSF  PPRESSF
-                                     CTEMPSR  PTEMPSR  DDL_MECA PTHETAR  DDL_MECA PDEPLSE
-                              OUT__  EGTHETA  PGTHETA
-    CALC_DGG_FORC       280   IN__   DDL_MECA PDEPLAR  NFORCER  PFR2D3D  NGEOMER  PGEOMER  EPRESNO  PPRESSR
-                                     DDL_MECA PTHETAR  DDL_MECA PDEPLSE  NFORCER  PFR23SS  EPRESNO  PPRESSSR
-                              OUT__  EGTHETA  PGTHETA
-    CALC_DGG_FORC_F     280   IN__   DDL_MECA PDEPLAR  CFORCEF  PFF2D3D  NGEOMER  PGEOMER  CPRESSF  PPRESSF
-                                     CTEMPSR  PTEMPSR  DDL_MECA PTHETAR  DDL_MECA PDEPLSE  CFORCEF  PFF23SS
-                                     CPRESSF  PPRESSSF
-                              OUT__  EGTHETA  PGTHETA
     CARA_SECT_POU3R     337   IN__   NGEOMER  PGEOMER  CGEOMER  PORIGIN
                               OUT__  ERAYONM  PRAYONM
     CARA_SECT_POUT3     337   IN__   NGEOMER  PGEOMER

@@ -7,7 +7,7 @@
       CHARACTER*19      MASS2
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,10 +43,10 @@ C
       COMPLEX*16   C16B
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER I ,ID ,IDCHM ,IDDL ,IDMST ,IDVE ,IE 
-      INTEGER IN ,IRET ,NBA ,NBB ,NBL ,NBLIAI ,NBTROU 
+      INTEGER I ,ID ,IDCHM ,IDDL ,IDMST ,IDVE ,IE
+      INTEGER IN ,IRET ,NBA ,NBB ,NBL ,NBLIAI ,NBTROU
 
-      REAL*8 R8PREM ,XD 
+      REAL*8 R8PREM ,XD
 C-----------------------------------------------------------------------
       DATA CMP / 'DX' , 'DY' , 'DZ' , 'DRX' , 'DRY' , 'DRZ' /
 C     ------------------------------------------------------------------
@@ -96,7 +96,7 @@ C              --- ON RECUPERE LE MODE STATIQUE ASSOCIE AU NOEUD ---
                   CALL U2MESG('E','ALGELINE5_42',3,VALK,0,0,0,0.D0)
                   GOTO 20
                ENDIF
-               CALL RSEXCH(MODSTA,'DEPL',IORDR,CHAMNO,IRET)
+               CALL RSEXCH(' ',MODSTA,'DEPL',IORDR,CHAMNO,IRET)
                IF (IRET.NE.0) THEN
                   IER = IER + 1
                   VALK (1) = CHAMNO

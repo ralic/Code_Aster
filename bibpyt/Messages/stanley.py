@@ -1,8 +1,8 @@
-#@ MODIF stanley Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF stanley Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -162,10 +162,6 @@ Nouveaux paramètres sauvegardés dans : %(k1)s
 Impossible de sauvegarder les paramètres dans : %(k1)s
 """),
 
-30 : _(u"""
-La visualisation aux points de Gauss n'est pas permise avec la sensibilité.
-"""),
-
 31 : _(u"""
 Problème : %(k1)s
 """),
@@ -180,10 +176,6 @@ Attention : on ne peut pas tracer un champ aux points de Gauss sur la déformée..
 
 34 : _(u"""
 Le champ est tracé avec la déformée.
-"""),
-
-35 : _(u"""
-Concept ignoré : %(k1)s
 """),
 
 36 : _(u"""

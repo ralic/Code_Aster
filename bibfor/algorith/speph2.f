@@ -9,7 +9,7 @@
       CHARACTER*16        MOVREP
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,16 +28,13 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C-----------------------------------------------------------------------
 C
-      INTEGER       IBID, NBPAR, IVAL(2), IDEB1, IFIN1, I, J, IMI, IMJ,
-     &              IDEB, ISJ, IRET, IFON, IF1
-      PARAMETER   ( NBPAR = 2 )
-      REAL*8        R8B
+      INTEGER       IVAL(2), IDEB1, IFIN1, I, J, IMI, IMJ,
+     &              IDEB, ISJ, IFON, IF1
+      INTEGER       MXVAL,LNUMI,LNUMJ,I1
+
       CHARACTER*8   K8B
-      CHARACTER*16  NOPAR(NBPAR)
-      CHARACTER*24  NOMFON, VALK(2)
-      COMPLEX*16    C16B
+      CHARACTER*24  CHNUMI,CHNUMJ,CHVALE
 C
-      DATA NOPAR / 'NUME_ORDRE_I' , 'NUME_ORDRE_J' /
 C     ------------------------------------------------------------------
 C
       IF ( MOVREP .EQ. 'ABSOLU' ) THEN
@@ -51,6 +48,13 @@ C
          IFIN1 = NAPEXC
       ENDIF
 C
+      CHNUMI = TABLE//'.NUMI'
+      CHNUMJ = TABLE//'.NUMJ'
+      CHVALE = TABLE//'.VALE'
+      CALL JEVEUO(CHNUMI,'L',LNUMI)
+      CALL JEVEUO(CHNUMJ,'L',LNUMJ)
+      CALL JELIRA(CHNUMI,'LONMAX',MXVAL,K8B)
+
       J = 0
       DO 30 IMJ = IDEB1 , IFIN1
          J = J + 1
@@ -66,20 +70,23 @@ C
 C
             IVAL(1) = IMI
 C
-            CALL TBLIVA ( TABLE, NBPAR, NOPAR, IVAL, R8B, C16B, K8B,
-     &       K8B, R8B, 'FONCTION_C', K8B, IBID, R8B, C16B, NOMFON, IRET)
-             IF (IRET.NE.0) THEN
-                VALK(1)(1:10) = 'FONCTION_C'
-                VALK(2)(1:8) = TABLE
-                CALL U2MESK('F','MODELISA2_91', 2, VALK)
-             ENDIF
-C
-            CALL JEVEUO ( NOMFON(1:19)//'.VALE', 'L', IFON )
+            DO 200 I1 = 1,MXVAL
+              IF ((ZI(LNUMI-1+I1) .EQ. IVAL(1)) .AND.
+     &            (ZI(LNUMJ-1+I1) .EQ. IVAL(2))) THEN
+                CALL JEVEUO(JEXNUM(CHVALE,I1),'L',IFON)
+              ENDIF
+200         CONTINUE
+
             ISJ = J * ( J - 1 ) / 2 + I
 C
             DO 50 IF1 = 1 , NBPF
-               SPECMR(IF1,ISJ) = ZR(IFON+NBPF+ (IF1-1)*2)
-               SPECMI(IF1,ISJ) = ZR(IFON+NBPF+ (IF1-1)*2+1)
+              IF (IVAL(1) .EQ. IVAL(2)) THEN
+                SPECMR(IF1,ISJ) = ZR(IFON-1 + IF1)
+                SPECMI(IF1,ISJ) = 0.D0
+              ELSE
+                SPECMR(IF1,ISJ) = ZR(IFON+ (IF1-1)*2)
+                SPECMI(IF1,ISJ) = ZR(IFON+ (IF1-1)*2+1)
+              ENDIF
  50         CONTINUE
  40      CONTINUE
 C

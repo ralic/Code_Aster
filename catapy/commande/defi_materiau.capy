@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/06/2012   AUTEUR PROIX J-M.PROIX 
+#& MODIF COMMANDE  DATE 23/07/2012   AUTEUR FLEJOU J-L.FLEJOU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -306,6 +306,8 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
            ECRO_LINE       =FACT(statut='f',
              D_SIGM_EPSI     =SIMP(statut='o',typ='R',),
              SY              =SIMP(statut='o',typ='R',),
+             SIGM_ELS        =SIMP(statut='f',typ='R'),
+             EPSI_ELU        =SIMP(statut='f',typ='R'),
            ),
            ENDO_HETEROGENE   =FACT(statut='f',
              WEIBULL         =SIMP(statut='o',typ='R',),
@@ -789,6 +791,8 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              AT              =SIMP(statut='o',typ='R'),
              BT              =SIMP(statut='o',typ='R'),
              CHI             =SIMP(statut='f',typ='R',val_min=0.0E+0,val_max=1.0E+0),
+             SIGM_ELS        =SIMP(statut='f',typ='R'),
+             EPSI_ELU        =SIMP(statut='f',typ='R'),
            ),
          MAZARS_FO=FACT(statut='f',min=0 ,
              EPSD0           =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),

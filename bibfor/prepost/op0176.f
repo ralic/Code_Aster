@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF PREPOST  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,7 +66,7 @@ C
       CALL INFMAJ()
       TRUE = .TRUE.
       FALS = .FALSE.
-C 
+C
       LISARC = '&&'//NOMPRO//'.LISTE.ARCH'
       LICHEX = '&&'//NOMPRO//'.LISTE.CHAM'
       NOMPAR = '&&'//NOMPRO//'.NOMS_PARA '
@@ -120,8 +120,6 @@ C     --- MOT-CLE RESTREINT
       CALL JEVEUO ( LICHEX, 'L', JEXCL )
 C
 C     --- ALLOCATION DE LA STRUCTURE SORTIE SI ELLE N'EXISTE PAS ---
-C     --- IL FAUT LE FAIRE AVANT L'APPEL A PSRESE, SINON IL Y A  ---
-C     --- PLANTAGE SI ON VEUT ARCHIVER UN RESULTAT SENSIBLE SEUL  ---
 C
       CALL JEEXIN (RESUOU//'.DESC',IRET)
       IF ( IRET.EQ.0 ) THEN
@@ -135,7 +133,7 @@ C
      &                  NBORDR, ZI(JORDR), NBPARA, ZK16(JPA),
      &                  NBARCH, ZI(JARCH), NBEXCL, ZK16(JEXCL), NBNOSY )
         ELSE
-          CALL EXTRS2 ( RESUIN, RESUOU, TYPCON,  
+          CALL EXTRS2 ( RESUIN, RESUOU, TYPCON,
      &                  LREST, NOMA, NOMO,
      &                  NBORDR, ZI(JORDR), NBPARA, ZK16(JPA),
      &                  NBARCH, ZI(JARCH), NBEXCL, ZK16(JEXCL), NBNOSY )

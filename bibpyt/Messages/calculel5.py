@@ -1,4 +1,4 @@
-#@ MODIF calculel5 Messages  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel5 Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,6 +35,13 @@ Conseils :
 
 
 
+
+3 : _(u"""
+ Erreur d'utilisation de POST_CHAMP :
+   Dans la structure de données %(k2)s,
+   vous avez demandé l'extraction du champ %(k1)s pour le numéro d'ordre %(i1)d.
+   Mais ce champ n'existe pas.
+"""),
 
 4 : _(u"""
  !! problème création CHAM_ELEM nul dans alchml !!
@@ -332,10 +339,10 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
   doit contenir qu'un seul NUME_ORDRE %(k2)s
 """),
 
-74 : _(u"""
- manque le champ  %(k1)s  dans la sd resultat  %(k2)s
-  pour le NUME_ORDRE  %(i1)d
-"""),
+
+
+
+
 
 76 : _(u"""
  Il n'est pas encore possible de découper le type_élément :  %(k1)s  en sous-éléments

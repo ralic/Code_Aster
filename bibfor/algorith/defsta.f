@@ -2,7 +2,7 @@
      &                  NBDEF,TYDEF,INORD)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,8 +49,8 @@ C
 C
       INCLUDE 'jeveux.h'
 C-----------------------------------------------------------------------
-      INTEGER I ,IADVAL ,IBID ,IER ,INORD ,IRT ,LMAT 
-      INTEGER LTCHAM ,LTCVN ,NBDEF ,NBFOR ,NBPABM ,NEQ ,NEQR 
+      INTEGER I ,IADVAL ,IBID ,IER ,INORD ,IRT ,LMAT
+      INTEGER LTCHAM ,LTCVN ,NBDEF ,NBFOR ,NBPABM ,NEQ ,NEQR
 
 C-----------------------------------------------------------------------
       PARAMETER    (NBPABM=9)
@@ -111,7 +111,7 @@ C
 C
 C ----- GENERATION DU NOM DU CHAMP RESULTAT
 C
-        CALL RSEXCH(NOMRES,DEPL,INORD,CHAMNO,IER)
+        CALL RSEXCH(' ',NOMRES,DEPL,INORD,CHAMNO,IER)
         IF ( IER .EQ. 0 ) THEN
           CALL U2MESK('A','ALGORITH2_64',1,CHAMNO)
         ELSE IF ( IER .EQ. 100 ) THEN

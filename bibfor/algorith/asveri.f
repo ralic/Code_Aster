@@ -7,7 +7,7 @@
       LOGICAL           TRONC,MONOAP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,10 +50,10 @@ C     ------------------------------------------------------------------
       INTEGER      IARG
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER IB ,IBID ,ID ,IER ,IM ,IN ,INUM 
-      INTEGER IORDR ,IRET ,IRT ,IRT1 ,IRT2 ,IS ,NBMODE 
-      INTEGER NBOPT ,NBSUP ,NBTROU ,NS 
-      REAL*8 R8B ,RB 
+      INTEGER IB ,IBID ,ID ,IER ,IM ,IN ,INUM
+      INTEGER IORDR ,IRET ,IRT ,IRT1 ,IRT2 ,IS ,NBMODE
+      INTEGER NBOPT ,NBSUP ,NBTROU ,NS
+      REAL*8 R8B ,RB
 C-----------------------------------------------------------------------
       DATA  NOMCMP / 'DX' , 'DY' , 'DZ' /
       DATA  ACCES  / 'ACCE    X       ' , 'ACCE    Y       ',
@@ -164,7 +164,7 @@ C     --- VERIFICATION DES OPTIONS DE CALCUL ---
             GOTO 20
          ENDIF
          DO 22 IM = 1,NBMODE
-            CALL RSEXCH(MECA,NOMSY,NORDR(IM),CHEXT2,IRET)
+            CALL RSEXCH(' ',MECA,NOMSY,NORDR(IM),CHEXT2,IRET)
             IF (IRET.NE.0) THEN
                INUM = NORDR(IM)
                IER = IER + 1
@@ -201,12 +201,12 @@ C     --- ON VERIFIE QUE LES CHAM_NOS ET CHAM_ELEMS SONT IDENTIQUES ---
          IF (NOMSY(1:4).EQ.'ACCE') GOTO 30
 C
 C        --- ON RECUPERE LE PREMIER CHAMP ---
-         CALL RSEXCH(MECA,NOMSY,NORDR(1),CHEXTR,IRET)
+         CALL RSEXCH('F',MECA,NOMSY,NORDR(1),CHEXTR,IRET)
          CALL DISMOI('F','TYPE_CHAMP',CHEXTR,'CHAMP',IBID,CTYP,IRET)
 C
 C        --- ON VERIFIE QUE LES SUIVANTS SONT IDENTIQUES ---
          DO 32 IM = 2,NBMODE
-            CALL RSEXCH(MECA,NOMSY,NORDR(IM),CHEXT2,IRET)
+            CALL RSEXCH('F',MECA,NOMSY,NORDR(IM),CHEXT2,IRET)
             IF (CTYP(1:2).EQ.'NO') THEN
                CALL VRREFE(CHEXTR,CHEXT2,IRT)
             ELSEIF (CTYP(1:2).EQ.'EL') THEN
@@ -228,7 +228,7 @@ C        --- ON VERIFIE QUE LES SUIVANTS SONT IDENTIQUES ---
                      CALL RSORAC(PSMO,'NOEUD_CMP',IBID,R8B,ACCES(ID),
      &                                     CBID,R8B,K8B,IORDR,1,NBTROU)
                      IF (NBTROU.EQ.1) THEN
-                        CALL RSEXCH(PSMO,NOMSY,IORDR,CHEXT2,IRET)
+                        CALL RSEXCH('F',PSMO,NOMSY,IORDR,CHEXT2,IRET)
                         IF (CTYP(1:2).EQ.'NO') THEN
                            CALL VRREFE(CHEXTR,CHEXT2,IRT)
                         ELSEIF (CTYP(1:2).EQ.'EL') THEN
@@ -247,7 +247,7 @@ C        --- ON VERIFIE QUE LES SUIVANTS SONT IDENTIQUES ---
  34            CONTINUE
             ENDIF
          ELSE
-            
+
             DO 36 ID = 1,3
                IF (NDIR(ID).EQ.1) THEN
                   DO 38 IS = 1,NSUPP(ID)
@@ -258,7 +258,7 @@ C        --- ON VERIFIE QUE LES SUIVANTS SONT IDENTIQUES ---
                      CALL RSORAC(STAT,'NOEUD_CMP',IBID,R8B,MONACC,CBID,
      &                                          R8B,K8B,IORDR,1,NBTROU)
                      IF (NBTROU.EQ.1) THEN
-                        CALL RSEXCH(STAT,NOMSY,IORDR,CHEXT2,IRET)
+                        CALL RSEXCH('F',STAT,NOMSY,IORDR,CHEXT2,IRET)
                         IF (CTYP(1:2).EQ.'NO') THEN
                            CALL VRREFE(CHEXTR,CHEXT2,IRT)
                         ELSEIF (CTYP(1:2).EQ.'EL') THEN
@@ -278,7 +278,7 @@ C        --- ON VERIFIE QUE LES SUIVANTS SONT IDENTIQUES ---
                         CALL RSORAC(PSMO,'NOEUD_CMP',IBID,R8B,MONACC,
      &                              CBID,R8B,K8B,IORDR,1,NBTROU)
                         IF (NBTROU.EQ.1) THEN
-                           CALL RSEXCH(PSMO,NOMSY,IORDR,CHEXT2,IRET)
+                           CALL RSEXCH('F',PSMO,NOMSY,IORDR,CHEXT2,IRET)
                            IF (CTYP(1:2).EQ.'NO') THEN
                               CALL VRREFE(CHEXTR,CHEXT2,IRT)
                            ELSEIF (CTYP(1:2).EQ.'EL') THEN

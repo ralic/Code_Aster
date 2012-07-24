@@ -4,7 +4,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,6 +24,7 @@ C ======================================================================
 C     ----------------------------------------------------------------
 C     CALCUL DES OPTIONS DES ELEMENTS DE COQUE 3D
 C     OPTIONS : EPSI_ELNO
+C               SIEF_ELNO
 C               SIGM_ELNO
 C          -----------------------------------------------------------
 C
@@ -31,12 +32,12 @@ C
 C
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IC ,ICMP ,ICOMPO ,II ,IINPG ,INO 
-      INTEGER INTE ,INTSN ,INTSR ,IOUTNO ,IRET ,ISP ,J 
-      INTEGER JCARA ,JGEOM ,JJ ,K ,K1 ,KPGS ,L 
-      INTEGER LZI ,LZR ,NBCOU ,NCMP ,NPGE ,NPGT ,NSO 
+      INTEGER I ,IC ,ICMP ,ICOMPO ,II ,IINPG ,INO
+      INTEGER INTE ,INTSN ,INTSR ,IOUTNO ,IRET ,ISP ,J
+      INTEGER JCARA ,JGEOM ,JJ ,K ,K1 ,KPGS ,L
+      INTEGER LZI ,LZR ,NBCOU ,NCMP ,NPGE ,NPGT ,NSO
 
-      REAL*8 S ,ZERO 
+      REAL*8 S ,ZERO
 C-----------------------------------------------------------------------
       PARAMETER(NPGE=3)
       PARAMETER(NPGT=10)
@@ -80,7 +81,8 @@ C
         CALL JEVECH('PDEFOPG','L',IINPG)
         CALL JEVECH('PDEFONO','E',IOUTNO)
 C
-      ELSE IF (OPTION.EQ.'SIGM_ELNO') THEN
+      ELSE IF ((OPTION.EQ.'SIEF_ELNO') .OR.
+     &         (OPTION.EQ.'SIGM_ELNO')) THEN
         CALL COSIRO(NOMTE,'PCONTRR','UI','G',IINPG,'S')
         CALL JEVECH('PSIEFNOR','E',IOUTNO)
         CALL TECACH('ONN','PCOMPOR',1,ICOMPO,IRET)
@@ -89,6 +91,8 @@ C
             LGREEN = .TRUE.
           ENDIF
         ENDIF
+      ELSE
+        CALL ASSERT(.FALSE.)
       ENDIF
 
       CALL JEVECH('PNBSP_I','L',JNBSPI)
@@ -217,13 +221,16 @@ C
      &                                                   MATGN(ICMP,INO)
   160         CONTINUE
   170       CONTINUE
-          ELSE IF (OPTION.EQ.'SIGM_ELNO') THEN
+          ELSE IF ((OPTION.EQ.'SIEF_ELNO') .OR.
+     &             (OPTION.EQ.'SIGM_ELNO')) THEN
             DO 190 ICMP=1,NCMP
               DO 180 INO=1,NB2
                 ZR(IOUTNO-1+(INO-1)*NCMP*NBCOU*NPGE+(ISP-1)*NCMP+ICMP)=
      &                                                   SIGNO(ICMP,INO)
   180         CONTINUE
   190       CONTINUE
+          ELSE
+            CALL ASSERT(.FALSE.)
           ENDIF
 
   200   CONTINUE

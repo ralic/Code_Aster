@@ -11,7 +11,7 @@
       CHARACTER*(*)                      KCHA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,7 +74,6 @@ C
      &     (NOMCMD.EQ.'CALC_CHAMP'    ).OR.
      &     (NOMCMD.EQ.'CALC_ERREUR'   ).OR.
      &     (NOMCMD.EQ.'CALC_META  '   ).OR.
-     &     (NOMCMD.EQ.'CALC_SENSI'    ).OR.
      &     (NOMCMD.EQ.'POST_ELEM'     ).OR.
      &     (NOMCMD.EQ.'CALC_G'        )) THEN
 C

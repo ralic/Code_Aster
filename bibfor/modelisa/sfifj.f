@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,31 +26,23 @@ C     AUTEUR : G. ROUSSEAU
 C-----------------------------------------------------------------------
 C
       INCLUDE 'jeveux.h'
-      INTEGER       NFINIT, NFIN,NBM,NBPOIN,NBPAR,NBID,IBAS,IPG,IARG
-      INTEGER       NPOIN, IFF, IVARE, LVALE, LPROL, IBID, IN,IVAL(3)
+      INTEGER       NFINIT, NFIN, NBM, NBPOIN, NBID,IARG
+      INTEGER       NPOIN, IFF, IVARE, LVALE, IBID, IN
       INTEGER       IM1, IM2, IVATE, IVECX, IVECY, IVECZ, NVECX, NVECY
-      INTEGER       NVECO,IER,NCHAM,JPARA,JORDR,PGJ,NPG,INOMS,IND,NBPA2
-      PARAMETER     ( NBPAR = 8,NBPA2 = 6 )
+      INTEGER       NVECO,IER,NCHAM,JPARA,JORDR
+      INTEGER      LNUMI,LNUMJ,LFREQ,MXVAL,NBABS,IJ
       REAL*8        FMIN, FMAX, FINIT, FFIN, DF, F, R8PREM, DSPPRS, PRS
       REAL*8        KSTE, UFLUI, DHYD, RHO, RBID, JC, FCOUPU, FMODEL
-      REAL*8        R8B, DIR(3,3), FCOUP, COOPGJ(4)
+      REAL*8         DIR(3,3), FCOUP
       REAL*8        DEUXPI,PULS,UC,UT,LONG1,LONG2
       REAL*8 VALR
-      COMPLEX*16    C16B
       CHARACTER*8   K8B, NOMRES, IS
-      CHARACTER*8   SPECTR, METHOD, TYPAR(NBPAR),TYPA2(NBPA2)
-      CHARACTER*16  NOPAR(NBPAR),NOPA2(NBPA2), KVAL(2), LOCOR
-      CHARACTER*19  BASE, NOFON,FONCT, CHAMNO, PG, PHI,SPHI,NOFONS
+      CHARACTER*8   SPECTR, METHOD
+      CHARACTER*19  BASE, FONCT, CHAMNO, PG, PHI,SPHI
       CHARACTER*24  LIGRMO
+      CHARACTER*24  CHNUMI,CHNUMJ,CHFREQ,CHVALE
       LOGICAL       YANG
 C
-      DATA NOPAR / 'NOM_CHAM' , 'OPTION' , 'DIMENSION' ,
-     &             'NUME_VITE_FLUI' , 'VITE_FLUIDE' ,
-     &             'NUME_ORDRE_I' , 'NUME_ORDRE_J' , 'FONCTION_C' /
-      DATA TYPAR / 'K16' , 'K16' , 'I' , 'I' , 'R' , 'I' , 'I' , 'K24' /
-      DATA NOPA2 / 'NOM_CHAM' , 'OPTION' , 'DIMENSION' ,
-     &             'NUME_ORDRE_I' , 'NUME_ORDRE_J' , 'FONCTION_C' /
-      DATA TYPA2 / 'K16' , 'K16' , 'I' , 'I' , 'I' , 'K24' /
       DATA         DEUXPI/6.28318530718D0/,YANG/.FALSE./
 C
 C-----------------------------------------------------------------------
@@ -219,115 +211,91 @@ C
       ENDIF 
 
 
+C CAS SPEC_CORR_CONV_1 ET 2                             
+      MXVAL = NBM*(NBM+1)/2
+      CHNUMI = NOMRES//'.NUMI'
+      CALL WKVECT(CHNUMI,'G V I',MXVAL,LNUMI)
+      CHNUMJ = NOMRES//'.NUMJ'
+      CALL WKVECT(CHNUMJ,'G V I',MXVAL,LNUMJ)
+      CHVALE = NOMRES//'.VALE'
+      CALL JECREC(CHVALE,'G V R','NU','DISPERSE','VARIABLE',MXVAL)
+      CHFREQ = NOMRES//'.FREQ'
+      CALL WKVECT(CHFREQ,'G V R',NBPOIN,LFREQ)
 
-C BOUCLE POUR LE CAS SPEC_CORR_CONV_3
+      DO 310 IFF=0,NBPOIN-1
+        F=FINIT+IFF*DF
+        ZR(LFREQ+IFF) = F
+310   CONTINUE
+
+C  POUR LE CAS SPEC_CORR_CONV_3
       IF (ZK16(IVATE).EQ.'SPEC_CORR_CONV_3') THEN
-
-C CREATION DE LA TABLE D'INTERSPECTRES
-        CALL TBCRSD ( NOMRES, 'G' )
-        CALL TBAJPA ( NOMRES, NBPA2, NOPA2, TYPA2 )
-
-        KVAL(1) = 'DEPL'
-        KVAL(2) = 'TOUT'
-        CALL TBAJLI ( NOMRES, 3, NOPA2, NBM, R8B, C16B, KVAL, 0 )
-
-
 C TABLE CONTENANT LES FONCTIONS DE FORME
         IS=ZK16(IVATE+1)
-C VECTEUR CONTENANT LA LISTE DES NOMS DE FONCTIONS
-        NOFONS='&&SFIFJ.NOMS'
-        CALL WKVECT(NOFONS,'V V K24',NBM*(NBM+1)/2,INOMS)
-C CREATION DE LA LISTE DES NOMS DE FONCTIONS
-        IND=1
-        DO 21 IM1 = 1 , NBM
-           IVAL(1) = IM1
-           DO 31 IM2 = IM1 , NBM              
-             IVAL(2) = IM2
-             WRITE (NOFON,'(A8,A2,3I3.3)') NOMRES, '.S', 1, IM1, IM2
-             ZK24(INOMS-1+IND)=NOFON
-             CALL TBAJLI ( NOMRES, 3, NOPA2(4),
-     &                     IVAL, 0.D0, C16B, NOFON, 0 )
-             CALL WKVECT (NOFON(1:19)//'.VALE','G V R ',3*NBPOIN,LVALE)
-             CALL WKVECT (NOFON(1:19)//'.PROL','G V K24',6      ,LPROL)
-             ZK24(LPROL  ) = 'FONCT_C '
-             ZK24(LPROL+1) = 'LIN LIN '
-             ZK24(LPROL+2) = 'FREQ'
-             ZK24(LPROL+3) = 'DSP     '
-             ZK24(LPROL+4) = 'LL      '
-             ZK24(LPROL+5) = NOFON
-             IND=IND+1
-31         CONTINUE
-21      CONTINUE
-
-C BOUCLE SUR LES FREQUENCES        
-        F = 0.D0
-        DO 100 IFF=0,NBPOIN-1
+        DO 320 IFF=0,NBPOIN-1
           F=FINIT+IFF*DF
-          CALL EVALIS(IS,PG,PHI,SPHI,F,NOFONS,IFF,NBPOIN)
-100     CONTINUE
-
-
-  
-C CAS SPEC_CORR_CONV_1 ET 2                             
+          ZR(LFREQ+IFF) = F
+          CALL EVALIS(IS,PG,PHI,SPHI,F,IFF,NOMRES)
+320     CONTINUE
       ELSE
-C CREATION DE LA TABLE D'INTERSPECTRES ---
+      IJ = 0
+      DO 220 IM2 = 1 , NBM
+C
+         DO 210 IM1 = IM2 , NBM
+            IJ = IJ + 1
 
-      CALL TBCRSD ( NOMRES, 'G' )
-      CALL TBAJPA ( NOMRES, NBPAR, NOPAR, TYPAR )
+            ZI(LNUMI-1+IJ) = IM1
+            ZI(LNUMJ-1+IJ) = IM2
 
-      KVAL(1) = 'DEPL'
-      KVAL(2) = 'TOUT'
-      CALL TBAJLI ( NOMRES, 3, NOPAR, NBM, R8B, C16B, KVAL, 0 )
+            CALL JECROC(JEXNUM(CHVALE,IJ))
+            IF (IM1 .EQ. IM2) THEN
+              NBABS = NBPOIN
+            ELSE
+              NBABS = 2*NBPOIN
+            ENDIF
 
-      IVAL(1) = 0
-
-        DO 221 IM2 = 1 , NBM
-          IVAL(3) = IM2
-          DO 211 IM1 = IM2 , NBM              
-            IVAL(2) = IM1
-            WRITE (NOFON,'(A8,A2,3I3.3)') NOMRES, '.S', 1, IM1, IM2
-            CALL TBAJLI ( NOMRES, 5, NOPAR(4),
-     &                    IVAL, 0.D0, C16B, NOFON, 0 )
-            CALL WKVECT (NOFON(1:19)//'.VALE','G V R ',3*NBPOIN,LVALE)
-            CALL WKVECT (NOFON(1:19)//'.PROL','G V K24',6      ,LPROL)
-            ZK24(LPROL  ) = 'FONCT_C '
-            ZK24(LPROL+1) = 'LIN LIN '
-            ZK24(LPROL+2) = 'FREQ'
-            ZK24(LPROL+3) = 'DSP     '
-            ZK24(LPROL+4) = 'LL      '
-            ZK24(LPROL+5) = NOFON
-
+            CALL JEECRA(JEXNUM(CHVALE,IJ),'LONMAX',NBABS,' ')
+            CALL JEECRA(JEXNUM(CHVALE,IJ),'LONUTI',NBABS,' ')
+            CALL JEVEUO(JEXNUM(CHVALE,IJ),'E',LVALE)
+C
 C BOUCLE SUR LES FREQUENCES ET REMPLISSAGE DU .VALE
 C IE VALEURS DES INTERSPECTRS
 
-            F = 0.D0
             IER = 0
             DO 201 IFF=0,NBPOIN-1
               F=FINIT+IFF*DF
-              ZR(LVALE+IFF) = F
               IF (F.GT.FCOUP) THEN
-                PRS = 0.D0
+                 PRS = 0.D0
               ELSEIF(ZK16(IVATE).EQ.'SPEC_CORR_CONV_2') THEN
-                PULS = DEUXPI*F
-                CALL FOINTE('F',FONCT,1,'PULS',PULS,PRS,IER)
-                CALL ACCEPT(F,NBM,METHOD,IM2,IM1,
-     &                      UFLUI,JC,DIR,UC,UT,LONG1,LONG2)
-              ELSE
-                PRS = DSPPRS(KSTE,UFLUI,DHYD,RHO,F,FCOUP)
-                CALL ACCEPT(F,NBM,METHOD,IM2,IM1,
-     &                      UFLUI,JC,DIR,UC,UT,LONG1,LONG2)
-              ENDIF
-              ZR(LVALE+NBPOIN+2*IFF)=PRS*JC
-201         CONTINUE
-211       CONTINUE
-221     CONTINUE
+                 PULS = DEUXPI*F
+                 CALL FOINTE('F',FONCT,1,'PULS',PULS,PRS,IER)
+                 CALL ACCEPT(F,NBM,METHOD,IM2,IM1,
+     &                       UFLUI,JC,DIR,UC,UT,LONG1,LONG2)
+             ELSE
+                 PRS = DSPPRS(KSTE,UFLUI,DHYD,RHO,F,FCOUP)
+                 CALL ACCEPT(F,NBM,METHOD,IM2,IM1,
+     &                       UFLUI,JC,DIR,UC,UT,LONG1,LONG2)
+             ENDIF
+             IF (IM1 .EQ. IM2) THEN
+               ZR(LVALE+IFF)=PRS*JC
+             ELSE
+               ZR(LVALE+2*IFF)=PRS*JC
+               ZR(LVALE+2*IFF+1)=0.D0
+             ENDIF
+ 201        CONTINUE
+C
+ 210     CONTINUE
+C
+ 220  CONTINUE
 
       ENDIF
 C
-      CALL JEDETC('V','&&329',1)
-      CALL JEDETC('V','&&SFIFJ',1)
-      CALL JEDETC('V','&&V.M',1)
-      CALL JEDETC('V','&&GROTAB.TAB',1)
+      IF (ZK16(IVATE).EQ.'SPEC_CORR_CONV_3') THEN
+        CALL JEDETC('V','&&SFIFJ',1)
+      ELSE
+        CALL JEDETC('V','&&329',1)
+        CALL JEDETC('V','&&V.M',1)
+        CALL JEDETC('V','&&GROTAB.TAB',1)
+      ENDIF
 C
       CALL JEDEMA()
       END

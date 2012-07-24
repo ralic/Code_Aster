@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,9 +87,9 @@ C
 C
       IF ( N5 .NE. 0 ) THEN
          CALL RSORAC ( MODMEC, 'LONUTI', IBID, RBID, K8BID, CBID,
-     +                 RBID, 'ABSOLU', NBMODE, 1, IBID )
+     &                 RBID, 'ABSOLU', NBMODE, 1, IBID )
          NBMO = NBMODE
-         CALL RSEXCH ( MODMEC, 'DEPL', 1, NOCHAM, IRET )
+         CALL RSEXCH(' ',MODMEC, 'DEPL', 1, NOCHAM, IRET )
       ENDIF
 C
       IF ( N7.NE.0 ) THEN
@@ -112,7 +112,7 @@ C CALCUL DES MATRICES MODALES BI POUR L OPTION AMOR_AJOU
 C--------------------------------------------------------------
 C
       CALL MAT152 ( 'MASS_AJOU', MODEL, MOINT, NOCHAM, IVALK, NBMO,
-     +               MAX, MAY, MAZ, NUM )
+     &               MAX, MAY, MAZ, NUM )
 C
       CALL JEEXIN ( '&&MAT152.MADE', IRET )
       IF ( IRET.GT.0 ) CALL JEVEUO ( '&&MAT152.MADE', 'E', IMADE )

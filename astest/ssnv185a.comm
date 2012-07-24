@@ -1,8 +1,8 @@
-# MODIF  DATE 20/12/2011   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -160,14 +160,12 @@ IMPR_RESU(FORMAT='GMSH',UNITE=37,RESU=_F(RESULTAT=UTOT4,NOM_CHAM='DEPL'))
 # POST-TRAITEMENT : CALCUL DES SIFS PAR LA METHODE ENERGETIQUE AVEC X-FEM
 #------------------------------------------------------------------------
 
-LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-15.');
-LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='-Y+5.');
-FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,  
-                    DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
-                    ORIE_FOND=_F(PFON_INI= (0. ,5. ,15. ),
-                                 VECT_ORIE=(0. ,0. ,1. ),
-                                 POINT_ORIG=(0. ,20. ,15. ),),
-                    );
+FISS=DEFI_FOND_FISS(MAILLAGE=MAILLAGE,
+                    FOND_FISS=_F(GROUP_NO='FONFIS',),
+                    LEVRE_SUP=_F(GROUP_MA='LEVSUP',),
+                    LEVRE_INF=_F(GROUP_MA='LEVINF',),
+                    )
+
 
 # TEST AVEC PLUSIEURS COURONNES
 RI=[2. , 0.666 , 1. , 1. , 1. , 2.1]
@@ -187,7 +185,7 @@ for i in range(0,nbc) :
                                LISSAGE_G='LAGRANGE',),
                   THETA=_F(R_INF=RI[i],
                            R_SUP=RS[i],
-                           FISSURE=FISS,),);
+                           FOND_FISS=FISS,),);
 
    IMPR_TABLE(TABLE=SIF1[i],);
 
@@ -197,7 +195,7 @@ for i in range(0,nbc) :
                                LISSAGE_G='LAGRANGE',),
                   THETA=_F(R_INF=RI[i],
                            R_SUP=RS[i],
-                  FISSURE=FISS,),);
+                  FOND_FISS=FISS,),);
 
    IMPR_TABLE(TABLE=SIF2[i],);
 
@@ -207,7 +205,7 @@ for i in range(0,nbc) :
                                LISSAGE_G='LAGRANGE',),
                   THETA=_F(R_INF=RI[i],
                            R_SUP=RS[i],
-                  FISSURE=FISS,),);
+                  FOND_FISS=FISS,),);
 
    IMPR_TABLE(TABLE=SIF3[i],);
 
@@ -217,7 +215,7 @@ for i in range(0,nbc) :
                                LISSAGE_G='LAGRANGE',),
                   THETA=_F(R_INF=RI[i],
                            R_SUP=RS[i],
-                  FISSURE=FISS,),);
+                  FOND_FISS=FISS,),);
 
    IMPR_TABLE(TABLE=SIF4[i],);
    

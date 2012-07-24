@@ -1,15 +1,15 @@
-      SUBROUTINE GKMET4(NNOFF,NDIMTE,CHFOND,PAIR,IADRGK,
+      SUBROUTINE GKMET4(NNOFF,NDIMTE,CHFOND,PAIR,IADRGK,MILIEU,CONNEX,
      &                   IADGKS,IADGKI,ABSCUR,NUM)
       IMPLICIT NONE
 
       INCLUDE 'jeveux.h'
-      INTEGER         NNOFF,IADRGK,IADGKS,IADGKI,NUM
+      INTEGER         NNOFF,NDIMTE,IADRGK,IADGKS,IADGKI,NUM
       CHARACTER*24    CHFOND,ABSCUR
-      LOGICAL          PAIR
+      LOGICAL         PAIR,MILIEU,CONNEX
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,16 +30,20 @@ C ======================================================================
 
 C ......................................................................
 C      METHODE LAGRANGE_REGU POUR LE CALCUL DE G(S)
-C      K1(S) K2(S) ET K3(S) DANS LE CADRE X-FEM
+C      K1(S) K2(S) ET K3(S)
 C
 C ENTREE
 C
-C     MODELE   --> NOM DU MODELE
 C     NNOFF    --> NOMBRE DE NOEUDS DU FOND DE FISSURE
-C     NORMFF   --> VALEURS DE LA NORMALE SUR LE FOND DE FISSURE
-C     FOND     --> NOMS DES NOEUDS DU FOND DE FISSURE
-C     IADRGK    --> ADRESSE DE VALEURS DE GKTHI
+C     NDIMTE   --> NOMBRE de CHAMPS THETA CHOISIS
+C     CHFOND   --> COORDONNEES ET ABSCISSES CURVILIGNES DES NOEUDS
+C                  DU FOND DE FISSURE
+C     IADRGK   --> ADRESSE DE VALEURS DE GKTHI
 C                 (G, K1, K2, K3 POUR LES CHAMPS THETAI)
+C     MILIEU   --> .TRUE.  : ELEMENT QUADRATIQUE
+C                  .FALSE. : ELEMENT LINEAIRE
+C     CONNEX   --> .TRUE.  : SI FOND FERME
+C                  .FALSE. : SI FOND OUVERT
 C
 C  SORTIE
 C
@@ -51,7 +55,7 @@ C   ABSCUR     --> VALEURS DES ABSCISSES CURVILIGNES S
 C      NUM     --> 5 (LAGRANGE_REGU)
 C
       INTEGER      IFON,IADABS,IMATR
-      INTEGER      I,KK,NDIMTE,NUMP,NN,J
+      INTEGER      I,I1,KK,NUMP,NN,J
       REAL*8       S1,S2,DELTA,S3
       REAL*8       GTHI(NNOFF),K1TH(NNOFF),K2TH(NNOFF),K3TH(NNOFF)
       REAL*8       GS(NDIMTE),K1S(NDIMTE),K2S(NDIMTE),K3S(NDIMTE)
@@ -88,10 +92,14 @@ C
 
       CALL WKVECT(MATR,'V V R8',NDIMTE*NDIMTE,IMATR)
 
+      I1 = 2
+      IF (MILIEU) I1 = 4
+
       DO 40 I = 1,NDIMTE-2
         NUMP = 2*I-1
+        IF (MILIEU) NUMP = 4*I-3
         S1 = ZR(IADABS+NUMP-1)
-        S2 = ZR(IADABS+NUMP-1+2)
+        S2 = ZR(IADABS+NUMP-1+I1)
         DELTA = (S2-S1)/6.D0
 C
         KK = IMATR+(I-1  )*NDIMTE+I-1
@@ -106,7 +114,7 @@ C
       NUMP = 2*(I-1)
       IF (PAIR) THEN
         S1 = ZR(IADABS+NUMP-1)
-        S2 = ZR(IADABS+NUMP-1+1)
+        S2 = ZR(IADABS+NUMP-1+I1/2)
         DELTA = (S2-S1)/6.D0
         KK = IMATR+(I-1  )*NDIMTE+I-1
         ZR(KK )= ZR(KK) +         3.5D0*DELTA
@@ -115,7 +123,7 @@ C
         ZR(IMATR+(I-1+1)*NDIMTE+I-1+1)= 0.5D0*DELTA
       ELSE
         S1 = ZR(IADABS+NUMP)
-        S2 = ZR(IADABS+NUMP+2)
+        S2 = ZR(IADABS+NUMP+I1)
         DELTA = (S2-S1)/6.D0
         KK = IMATR+(I-1  )*NDIMTE+I-1
         ZR(KK )= ZR(KK) +               2.D0*DELTA
@@ -134,6 +142,19 @@ C
         ZR(IMATR + 3)= 0.5D0*DELTA
       ENDIF
 
+      IF (CONNEX) THEN
+        ZR(IMATR) = 2.D0*ZR(IMATR)
+        S1 = ZR(IADABS-1+NUMP-I1+1)
+        S2 = ZR(IADABS-1+NUMP+1)
+        DELTA = (S2-S1)/6.D0
+        ZR(IMATR+(1-1)*NDIMTE+NDIMTE-1-1)= 1.D0*DELTA
+        KK = IMATR+(NDIMTE-1)*NDIMTE+NDIMTE-1
+        ZR(KK) = 2.D0*ZR(KK)
+        S1 = ZR(IADABS-1+1)
+        S2 = ZR(IADABS-1+I1+1)
+        DELTA = (S2-S1)/6.D0
+        ZR(IMATR+(NDIMTE-1)*NDIMTE+2-1)= 1.D0*DELTA
+      ENDIF
 
 C     SYSTEME LINEAIRE:  MATR*GS = GTHI
       CALL GSYSTE(MATR,NDIMTE,NDIMTE,GTHI,GS)
@@ -178,29 +199,87 @@ C     CALCUL DES ANGLES DE PROPAGATION DE FISSURE LOCAUX BETA
 
       ELSE
        DO 60 I=1,NDIMTE-1
-         NN = 2*I-1
-         ZR(IADGKS-1+(NN-1)*6+1)=GS(I)
-         ZR(IADGKS-1+(NN-1)*6+2)=K1S(I)
-         ZR(IADGKS-1+(NN-1)*6+3)=K2S(I)
-         ZR(IADGKS-1+(NN-1)*6+4)=K3S(I)
-         ZR(IADGKS-1+(NN-1)*6+5)=GIS(I)
-         ZR(IADGKS-1+(NN-1)*6+6)=BETAS(I)
-         S1 = ZR(IADABS+NN-1)
-         S2 = ZR(IADABS+NN-1+1)
-         S3 = ZR(IADABS+NN-1+2)
+         IF (MILIEU) THEN
+           NN = 4*I-3
+           ZR(IADGKS-1+(NN-1)*6+1)=GS(I)
+           ZR(IADGKS-1+(NN-1)*6+2)=K1S(I)
+           ZR(IADGKS-1+(NN-1)*6+3)=K2S(I)
+           ZR(IADGKS-1+(NN-1)*6+4)=K3S(I)
+           ZR(IADGKS-1+(NN-1)*6+5)=GIS(I)
+           ZR(IADGKS-1+(NN-1)*6+6)=BETAS(I)
+           S1 = ZR(IADABS+NN-1)
+           S3 = ZR(IADABS+NN+4-1)
 
-         ZR(IADGKS-1+(NN-1+1)*6+1)=GS(I)+(S2-S1)*
+           ZR(IADGKS-1+(NN-1+1)*6+1)=GS(I)+(ZR(IADABS+NN+1-1)-S1)*
      &                         (GS(I+1)-GS(I))/(S3-S1)
-         ZR(IADGKS-1+(NN-1+1)*6+2)=K1S(I)+(S2-S1)*
+           ZR(IADGKS-1+(NN-1+2)*6+1)=GS(I)+(ZR(IADABS+NN+2-1)-S1)*
+     &                         (GS(I+1)-GS(I))/(S3-S1)
+           ZR(IADGKS-1+(NN-1+3)*6+1)=GS(I)+(ZR(IADABS+NN+3-1)-S1)*
+     &                         (GS(I+1)-GS(I))/(S3-S1)
+
+           ZR(IADGKS-1+(NN-1+1)*6+2)=K1S(I)+(ZR(IADABS+NN+1-1)-S1)*
      &                        (K1S(I+1)-K1S(I))/(S3-S1)
-         ZR(IADGKS-1+(NN-1+1)*6+3)=K2S(I)+(S2-S1)*
+           ZR(IADGKS-1+(NN-1+2)*6+2)=K1S(I)+(ZR(IADABS+NN+2-1)-S1)*
+     &                        (K1S(I+1)-K1S(I))/(S3-S1)
+           ZR(IADGKS-1+(NN-1+3)*6+2)=K1S(I)+(ZR(IADABS+NN+3-1)-S1)*
+     &                        (K1S(I+1)-K1S(I))/(S3-S1)
+
+
+           ZR(IADGKS-1+(NN-1+1)*6+3)=K2S(I)+(ZR(IADABS+NN+1-1)-S1)*
      &                        (K2S(I+1)-K2S(I))/(S3-S1)
-         ZR(IADGKS-1+(NN-1+1)*6+4)=K3S(I)+(S2-S1)*
+           ZR(IADGKS-1+(NN-1+2)*6+3)=K2S(I)+(ZR(IADABS+NN+2-1)-S1)*
+     &                        (K2S(I+1)-K2S(I))/(S3-S1)
+           ZR(IADGKS-1+(NN-1+3)*6+3)=K2S(I)+(ZR(IADABS+NN+3-1)-S1)*
+     &                        (K2S(I+1)-K2S(I))/(S3-S1)
+
+
+           ZR(IADGKS-1+(NN-1+1)*6+4)=K3S(I)+(ZR(IADABS+NN+1-1)-S1)*
      &                      (K3S(I+1)-K3S(I))/(S3-S1)
-         ZR(IADGKS-1+(NN-1+1)*6+5)=GIS(I)+(S2-S1)*
+           ZR(IADGKS-1+(NN-1+2)*6+4)=K3S(I)+(ZR(IADABS+NN+2-1)-S1)*
+     &                      (K3S(I+1)-K3S(I))/(S3-S1)
+           ZR(IADGKS-1+(NN-1+3)*6+4)=K3S(I)+(ZR(IADABS+NN+3-1)-S1)*
+     &                      (K3S(I+1)-K3S(I))/(S3-S1)
+
+
+           ZR(IADGKS-1+(NN-1+1)*6+5)=GIS(I)+(ZR(IADABS+NN+1-1)-S1)*
      &                      (GIS(I+1)-GIS(I))/(S3-S1)
-         ZR(IADGKS-1+(NN-1+1)*6+6)=BETAS(I)+(S2-S1)*
+           ZR(IADGKS-1+(NN-1+2)*6+5)=GIS(I)+(ZR(IADABS+NN+2-1)-S1)*
+     &                      (GIS(I+1)-GIS(I))/(S3-S1)
+           ZR(IADGKS-1+(NN-1+3)*6+5)=GIS(I)+(ZR(IADABS+NN+3-1)-S1)*
+     &                      (GIS(I+1)-GIS(I))/(S3-S1)
+
+
+           ZR(IADGKS-1+(NN-1+1)*6+6)=BETAS(I)+(ZR(IADABS+NN+1-1)-S1)*
+     &                      (BETAS(I+1)-BETAS(I))/(S3-S1)           
+           ZR(IADGKS-1+(NN-1+2)*6+6)=BETAS(I)+(ZR(IADABS+NN+2-1)-S1)*
      &                      (BETAS(I+1)-BETAS(I))/(S3-S1)
+           ZR(IADGKS-1+(NN-1+3)*6+6)=BETAS(I)+(ZR(IADABS+NN+3-1)-S1)*
+     &                      (BETAS(I+1)-BETAS(I))/(S3-S1)
+         ELSE
+           NN = 2*I-1
+           ZR(IADGKS-1+(NN-1)*6+1)=GS(I)
+           ZR(IADGKS-1+(NN-1)*6+2)=K1S(I)
+           ZR(IADGKS-1+(NN-1)*6+3)=K2S(I)
+           ZR(IADGKS-1+(NN-1)*6+4)=K3S(I)
+           ZR(IADGKS-1+(NN-1)*6+5)=GIS(I)
+           ZR(IADGKS-1+(NN-1)*6+6)=BETAS(I)
+           S1 = ZR(IADABS+NN-1)
+           S2 = ZR(IADABS+NN-1+1)
+           S3 = ZR(IADABS+NN-1+2)
+
+           ZR(IADGKS-1+(NN-1+1)*6+1)=GS(I)+(S2-S1)*
+     &                         (GS(I+1)-GS(I))/(S3-S1)
+           ZR(IADGKS-1+(NN-1+1)*6+2)=K1S(I)+(S2-S1)*
+     &                        (K1S(I+1)-K1S(I))/(S3-S1)
+           ZR(IADGKS-1+(NN-1+1)*6+3)=K2S(I)+(S2-S1)*
+     &                        (K2S(I+1)-K2S(I))/(S3-S1)
+           ZR(IADGKS-1+(NN-1+1)*6+4)=K3S(I)+(S2-S1)*
+     &                      (K3S(I+1)-K3S(I))/(S3-S1)
+           ZR(IADGKS-1+(NN-1+1)*6+5)=GIS(I)+(S2-S1)*
+     &                      (GIS(I+1)-GIS(I))/(S3-S1)
+           ZR(IADGKS-1+(NN-1+1)*6+6)=BETAS(I)+(S2-S1)*
+     &                      (BETAS(I+1)-BETAS(I))/(S3-S1)
+         ENDIF
 60     CONTINUE
 
        IF(PAIR)THEN

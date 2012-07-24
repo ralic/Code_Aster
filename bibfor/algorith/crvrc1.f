@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -93,7 +93,7 @@ C     --------------------------------
         VINST = ZR(JLINST-1+KINST)
         CALL MECACT('V',CHINST,'MODELE',LIGRMO,'INST_R',1,'INST',IBID,
      &              VINST,CBID,KBID)
-        CALL RSEXCH(RESU,'TEMP',KINST,CHOUT,IRET)
+        CALL RSEXCH(' ',RESU,'TEMP',KINST,CHOUT,IRET)
 
         CALL CESVAR(CARELE,' ',LIGRMO,CHOUT)
         CALL CALCUL('S','PREP_VRC',LIGRMO,NBIN,LCHIN,LPAIN,1,CHOUT,

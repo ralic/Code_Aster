@@ -10,7 +10,7 @@
       CHARACTER*24  CONNEX
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,7 +78,7 @@ C
       CH19=' '
       DO 11 IOR = 1 , NBORD2
         IF (LRESU) THEN
-          CALL RSEXCH(NOMCO2,CHAMS2,ORDR(IOR),CH19,IRET)
+          CALL RSEXCH(' ',NOMCO2,CHAMS2,ORDR(IOR),CH19,IRET)
           IF (IRET.NE.0) GO TO 11
         END IF
         JCESD = TABD(IOR)

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE TEST ANALYTIQUE DE LA GENERATION DE FONCTIONS ALEATOIRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -239,21 +239,14 @@ TEST_TABLE(      TABLE=POST,
 ##############################
 
 
-F11=RECU_FONCTION(TABLE=INTERS,
-      FILTRE=(
-        _F(NOM_PARA='NUME_ORDRE_I',VALE_I=1),
-        _F(NOM_PARA='NUME_ORDRE_J',VALE_I=1),),
-      NOM_PARA_TABL='FONCTION_C',
-      PROL_DROITE='CONSTANT',
-      PROL_GAUCHE='CONSTANT')
+MF11=RECU_FONCTION(    INTE_SPEC=INTERS,
+                    NUME_ORDRE_I = 1,
+                      )
 
-tt =  aster.getvectjev("F11                .VALE        ");
+
+tt =  aster.getvectjev("MF11               .VALE        ");
 fmin=tt[0]
-fmax=tt[len(tt)/3-1]
-
-MF11=CALC_FONCTION(   EXTRACTION=_F(   FONCTION = F11,
-                                    PARTIE = 'MODULE'),
-                      INTERPOL=('LIN','LOG'),)
+fmax=tt[len(tt)/2-1]
 
 RMS11=INFO_FONCTION( RMS=_F(  FONCTION = MF11))
 
@@ -263,16 +256,11 @@ TEST_TABLE(      TABLE=RMS11,
                  VALE=1.334183*sqrt(300./(fmax-fmin))  ,
                   PRECISION=1.E-2)
 
-PF11=CALC_FONCTION(   EXTRACTION=_F(   FONCTION = F11,
-                                    PARTIE = 'PHASE') )
 
-F12=RECU_FONCTION(TABLE=INTERS,
-      FILTRE=(
-        _F(NOM_PARA='NUME_ORDRE_I',VALE_I=1),
-        _F(NOM_PARA='NUME_ORDRE_J',VALE_I=2),),
-      NOM_PARA_TABL='FONCTION_C',
-      PROL_DROITE='CONSTANT',
-      PROL_GAUCHE='CONSTANT')
+F12=RECU_FONCTION(    INTE_SPEC=INTERS,
+                    NUME_ORDRE_I = 1,
+                    NUME_ORDRE_J = 2,
+                      )
 
 MF12=CALC_FONCTION(   EXTRACTION=_F(   FONCTION = F12,
                                     PARTIE = 'MODULE'),
@@ -289,17 +277,9 @@ TEST_TABLE(      TABLE=RMS12,
 PF12=CALC_FONCTION(   EXTRACTION=_F(   FONCTION = F12,
                                     PARTIE = 'PHASE') )
 
-F22=RECU_FONCTION(TABLE=INTERS,
-      FILTRE=(
-        _F(NOM_PARA='NUME_ORDRE_I',VALE_I=2),
-        _F(NOM_PARA='NUME_ORDRE_J',VALE_I=2),),
-      NOM_PARA_TABL='FONCTION_C',
-      PROL_DROITE='CONSTANT',
-      PROL_GAUCHE='CONSTANT')
-
-MF22=CALC_FONCTION(   EXTRACTION=_F(   FONCTION = F22,
-                                    PARTIE = 'MODULE') ,
-                      INTERPOL=('LIN','LOG'),)
+MF22=RECU_FONCTION(    INTE_SPEC=INTERS,
+                    NUME_ORDRE_I = 2,
+                      )
 
 RMS22=INFO_FONCTION( RMS=_F(  FONCTION = MF22))
 
@@ -309,9 +289,6 @@ TEST_TABLE(      TABLE=RMS22,
                  VALE=1.E+00*sqrt(300./(fmax-fmin))  ,
                   PRECISION=1.E-2 )
 
-
-PF22=CALC_FONCTION(   EXTRACTION=_F(   FONCTION = F22,
-                                    PARTIE = 'PHASE') )
 
 
 ##############################
@@ -355,20 +332,10 @@ TEST_FONCTION(VALEUR=(
                       VALE_REFE = log(2.),
                       PRECISION = log(1.3),
                       REFERENCE = 'ANALYTIQUE', CRITERE='ABSOLU'),
-                    _F(  FONCTION = PF11,
-                      VALE_PARA = 10.,
-                      VALE_REFE = 0.,
-                      PRECISION = 1.E-10,
-                      REFERENCE = 'ANALYTIQUE', CRITERE='ABSOLU'),
                      _F(  FONCTION = LOGF11,
                       VALE_PARA = 150.,
                       VALE_REFE = log(1.005),
                       PRECISION = log(1.3),
-                      REFERENCE = 'ANALYTIQUE', CRITERE='ABSOLU'),
-                    _F(  FONCTION = PF11,
-                      VALE_PARA = 150.,
-                      VALE_REFE = 0.,
-                      PRECISION = 1.E-10,
                       REFERENCE = 'ANALYTIQUE', CRITERE='ABSOLU'),
 
                     _F(  FONCTION = LOGF12,
@@ -397,20 +364,10 @@ TEST_FONCTION(VALEUR=(
                       VALE_REFE = log(1.),
                       PRECISION = log(1.3),
                       REFERENCE = 'ANALYTIQUE', CRITERE='ABSOLU'),
-                    _F(  FONCTION = PF22,
-                      VALE_PARA = 10.,
-                      VALE_REFE = 0.,
-                      PRECISION = 1.E-10,
-                      REFERENCE = 'ANALYTIQUE', CRITERE='ABSOLU'),
                      _F(  FONCTION = LOGF22,
                       VALE_PARA = 150.,
                       VALE_REFE = log(1.),
                       PRECISION = log(1.3),
-                      REFERENCE = 'ANALYTIQUE', CRITERE='ABSOLU'),
-                    _F(  FONCTION = PF22,
-                      VALE_PARA = 150.,
-                      VALE_REFE = 0.,
-                      PRECISION = 1.E-10,
                       REFERENCE = 'ANALYTIQUE', CRITERE='ABSOLU'),
                       ))
 
@@ -759,14 +716,6 @@ IMPR_FONCTION( UNITE=25,
 
 IMPR_FONCTION( UNITE=25,
               FORMAT= 'TABLEAU',
-              TITRE= 'PHASE DSP F11',
-              LEGENDE_X= 'Freq. (Hz)',
-              COURBE=(_F(
-                       FONCTION = PF11,) ,),
-            )
-
-IMPR_FONCTION( UNITE=25,
-              FORMAT= 'TABLEAU',
               TITRE= 'MODULE DSP F12',
               LEGENDE_X= 'Freq. (Hz)',
               ECHELLE_Y = 'LOG',
@@ -790,15 +739,6 @@ IMPR_FONCTION( UNITE=25,
               COURBE=(_F(
                        FONCTION = MF22,) ,),
             )
-
-IMPR_FONCTION( UNITE=25,
-              FORMAT= 'TABLEAU',
-              TITRE= 'PHASE DSP F22',
-              LEGENDE_X= 'Freq. (Hz)',
-              COURBE=(_F(
-                       FONCTION = PF22,) ,),
-            )
-
 
 MSPECT11=CALC_FONCTION(   EXTRACTION=_F(   FONCTION = SPECT11,
                                     PARTIE = 'MODULE') )

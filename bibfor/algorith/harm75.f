@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,11 +52,11 @@ C
 C
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER I ,IADESC ,IADRIF ,IARCHI ,IAREF2 ,IAREFE ,ICH 
-      INTEGER IDBASE ,IDVECG ,IRET ,IRETOU ,ISK ,JFREQ ,JFRREC 
-      INTEGER JNUME ,LINST ,LLCHA ,LREFE ,LVALE ,N1 ,NBCHAM 
-      INTEGER NBFREQ ,NBID ,NBREC ,NEQ 
-      REAL*8 BID ,EBID 
+      INTEGER I ,IADESC ,IADRIF ,IARCHI ,IAREF2 ,IAREFE ,ICH
+      INTEGER IDBASE ,IDVECG ,IRET ,IRETOU ,ISK ,JFREQ ,JFRREC
+      INTEGER JNUME ,LINST ,LLCHA ,LREFE ,LVALE ,N1 ,NBCHAM
+      INTEGER NBFREQ ,NBID ,NBREC ,NEQ
+      REAL*8 BID ,EBID
 C-----------------------------------------------------------------------
       DATA CHAMNO   /'&&HARM75.CHAMNO'/
 C     ------------------------------------------------------------------
@@ -128,7 +128,7 @@ C --- BASE MODALE CALCULEE PAR SOUS-STRUCTURATION
 C
          CALL RSORAC(MODE,'LONUTI',IBID,BID,' ',CBID,
      &               EBID,'ABSOLU',NBMODE,1,NBID)
-         CALL RSEXCH(BASEMO,'DEPL',1,CHMOD,IRET)
+         CALL RSEXCH('F',BASEMO,'DEPL',1,CHMOD,IRET)
          CHMOD = CHMOD(1:19)//'.REFE'
          CALL JEVEUO(CHMOD,'L',LLCHA)
          MAILLA = ZK24(LLCHA)
@@ -188,7 +188,7 @@ C
          DO 30 I = 0,NBREC-1
             IARCHI = IARCHI + 1
             DO 32 ICH = 1,NBCHAM
-               CALL RSEXCH(NOMRES,TYPE(ICH),IARCHI,CHAMNO,IRET)
+               CALL RSEXCH(' ',NOMRES,TYPE(ICH),IARCHI,CHAMNO,IRET)
                IF ( IRET .EQ. 0 ) THEN
                CALL U2MESK('A','ALGORITH2_64',1,CHAMNO)
                ELSEIF ( IRET .EQ. 100 ) THEN

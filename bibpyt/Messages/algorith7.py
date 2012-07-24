@@ -1,21 +1,21 @@
-#@ MODIF algorith7 Messages  DATE 05/03/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF algorith7 Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
@@ -23,7 +23,7 @@ cata_msg = {
 
 1 : _(u"""
  couplage fluage/fissuration :
- il faut définir deux lois de comportement exactement. 
+ il faut définir deux lois de comportement exactement.
 """),
 
 2 : _(u"""
@@ -38,7 +38,7 @@ cata_msg = {
  DEBORST non compatible avec couplage UMLV/Mazars.
  Mais le traitement analytique est réalisé, il suffit de supprimer le
  mot-clé DEBORST),
- 
+
 """),
 5 : _(u"""
  pas de C_PLAN pour ENDO_ISOT_BETON
@@ -72,7 +72,7 @@ cata_msg = {
 
 12 : _(u"""
  couplage fluage/fissuration :
- nombre total de variables internes incohérent <--> erreur de programmation. 
+ nombre total de variables internes incohérent <--> erreur de programmation.
 """),
 
 15 : _(u"""
@@ -84,7 +84,7 @@ cata_msg = {
 """),
 
 20 : _(u"""
- le champ de déplacement DIDI n'est pas trouvé dans le concept  %(k1)s 
+ le champ de déplacement DIDI n'est pas trouvé dans le concept  %(k1)s
 """),
 
 
@@ -140,12 +140,12 @@ cata_msg = {
 """),
 
 69 : _(u"""
- loi %(k1)s  non implantée pour les éléments discrets 
+ loi %(k1)s  non implantée pour les éléments discrets
 """),
 
-73 : _(u"""
- le tenseur EPSEQ vaut  0 on a donc une dérivée lagrangienne DEPSEQ très grande !
-"""),
+
+
+
 
 74 : _(u"""
   valeur de D_SIGM_EPSI non trouvée

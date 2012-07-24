@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,10 +70,10 @@ C-----------------------------------------------------------------
 C ON RECUPERE LE NOMBRE DE MODES DANS LE MODE_MECA
 C DEFINI
 C-----------------------------------------------------------------------
-      INTEGER IADIRG ,IADPR ,IADX ,IADY ,IADZ ,IDESP ,IERD 
-      INTEGER IREFP ,IRET ,IVALP ,JCHFLU ,JORDR ,JPARA ,NBNUMO 
+      INTEGER IADIRG ,IADPR ,IADX ,IADY ,IADZ ,IDESP ,IERD
+      INTEGER IREFP ,IRET ,IVALP ,JCHFLU ,JORDR ,JPARA ,NBNUMO
 
-      REAL*8 BID ,EBID 
+      REAL*8 BID ,EBID
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -91,7 +91,7 @@ C     INITIALISATIONS
       CHAMNZ = '&&MAJOU.CHAMNZ'
 C
       CALL RSORAC(MODMEC,'LONUTI',IBID,BID,K8BID,CBID,EBID,'ABSOLU',
-     +             NBMODE,1,NBID)
+     &             NBMODE,1,NBID)
 
 
 C CREATION DE VECTEURS CONTENANT LES NOMS DES VECTEURS DE CHAMP AUX
@@ -135,11 +135,11 @@ C FORMATION DU TABLEAU DES ADRESSES DES TABLEAUX
         TABAD(5)=IADIRG
 
 C RECUPERATION DES NOMS DE MAILLAGES
-        CALL RSEXCH(MODMEC,'DEPL',1,NOMCHA,IRET)
+        CALL RSEXCH('F',MODMEC,'DEPL',1,NOMCHA,IRET)
         CALL DISMOI('F','NOM_MAILLA',NOMCHA(1:19),
-     +              'CHAM_NO',IBID,MAILLA,IERD)
+     &              'CHAM_NO',IBID,MAILLA,IERD)
         CALL DISMOI('F','NOM_MAILLA',MOINT,
-     +              'MODELE',IBID,MAFLUI,IERD)
+     &              'MODELE',IBID,MAFLUI,IERD)
 
 C RECUPERATION DES MODES SELECTIONNES
 
@@ -184,7 +184,7 @@ C SORTIE DE BOUCLE POUR LES MODES NON-SELECTIONNES
           ENDIF
 
 
-          CALL RSEXCH(MODMEC,'DEPL',ILIRES,NOMCHA,IRET)
+          CALL RSEXCH('F',MODMEC,'DEPL',ILIRES,NOMCHA,IRET)
           CALL ALIMRS(MATE,MAILLA,MAFLUI,MOINT,NDBLE,NUM,NOMCHA(1:19),
      &              CHAMNX, 'DX',ICOR)
           CALL ALIMRS(MATE,MAILLA,MAFLUI,MOINT,NDBLE,NUM,NOMCHA(1:19),
@@ -213,21 +213,21 @@ C-----SUR LES CONTOURS DE LA INTERFACE FLUIDE
 
 
           CALL CALFLU(CHAMNX,MOINT,MATE,NUM,VESOLX,NBDESC,NBREFE,
-     +                 NBVALE,'X')
+     &                 NBVALE,'X')
         CALL CALFLU(CHAMNY,MOINT,MATE,NUM,VESOLY,NBDESC,NBREFE,
-     +                 NBVALE,'Y')
+     &                 NBVALE,'Y')
 
         VESTOC='&&MAJOU.TPXSTO'
         CALL PRSTOC(CHAMNX,VESTOC,ILIRES,ILIRES,IADX,
-     +                  NBVALE,NBREFE,NBDESC)
+     &                  NBVALE,NBREFE,NBDESC)
 
         VESTOC='&&MAJOU.TPYSTO'
         CALL PRSTOC(CHAMNY,VESTOC,ILIRES,ILIRES,IADY,
-     +                NBVALE,NBREFE,NBDESC)
+     &                NBVALE,NBREFE,NBDESC)
 
           IF (MODEL.EQ.'3D') THEN
             CALL CALFLU(CHAMNZ,MOINT,MATE,NUM,VESOLZ,NBDESC,NBREFE,
-     +                 NBVALE,'Z')
+     &                 NBVALE,'Z')
             VESTOC='&&MAJOU.TPZSTO'
             CALL PRSTOC(CHAMNZ,VESTOC,ILIRES,ILIRES,IADZ,
      &                                    NBVALE,NBREFE,NBDESC)
@@ -299,33 +299,33 @@ C TABLEAUX POUR LA PRESSION
           VESTOC= '&&MAJOU.VESTOC'
           ZK24(IADPR+ILIRES-1) = VESTOC(1:14)//CHAINE(1:5)
           CALL WKVECT(ZK24(IADPR+ILIRES-1)(1:19)//'.VALE',
-     +                'V V R',NBVALE,IVALP)
+     &                'V V R',NBVALE,IVALP)
           CALL WKVECT(ZK24(IADPR+ILIRES-1)(1:19)//'.REFE',
-     +                'V V K24',NBREFE,IREFP)
+     &                'V V K24',NBREFE,IREFP)
           CALL WKVECT(ZK24(IADPR+ILIRES-1)(1:19)//'.DESC',
-     +                'V V I',NBDESC,IDESP)
+     &                'V V I',NBDESC,IDESP)
 
 C TABLEAUX POUR LES DEPLACEMENTS EN X
 
           VESTOC= '&&MAJOU.TPXSTO'
           ZK24(IADX+ILIRES-1) = VESTOC(1:14)//CHAINE(1:5)
           CALL WKVECT(ZK24(IADX+ILIRES-1)(1:19)//'.VALE',
-     +                'V V R',NBVALE,IVALP)
+     &                'V V R',NBVALE,IVALP)
           CALL WKVECT(ZK24(IADX+ILIRES-1)(1:19)//'.REFE',
-     +                'V V K24',NBREFE,IREFP)
+     &                'V V K24',NBREFE,IREFP)
           CALL WKVECT(ZK24(IADX+ILIRES-1)(1:19)//'.DESC',
-     +                'V V I',NBDESC,IDESP)
+     &                'V V I',NBDESC,IDESP)
 
 C TABLEAUX POUR LES DEPLACEMENTS EN Y
 
           VESTOC= '&&MAJOU.TPYSTO'
           ZK24(IADY+ILIRES-1) = VESTOC(1:14)//CHAINE(1:5)
           CALL WKVECT(ZK24(IADY+ILIRES-1)(1:19)//'.VALE',
-     +                'V V R',NBVALE,IVALP)
+     &                'V V R',NBVALE,IVALP)
           CALL WKVECT(ZK24(IADY+ILIRES-1)(1:19)//'.REFE',
-     +                'V V K24',NBREFE,IREFP)
+     &                'V V K24',NBREFE,IREFP)
           CALL WKVECT(ZK24(IADY+ILIRES-1)(1:19)//'.DESC',
-     +                'V V I',NBDESC,IDESP)
+     &                'V V I',NBDESC,IDESP)
 
 C TABLEAUX POUR LES DEPLACEMENTS EN Z
 
@@ -333,11 +333,11 @@ C TABLEAUX POUR LES DEPLACEMENTS EN Z
             VESTOC= '&&MAJOU.TPZSTO'
             ZK24(IADZ+ILIRES-1) = VESTOC(1:14)//CHAINE(1:5)
             CALL WKVECT(ZK24(IADZ+ILIRES-1)(1:19)//'.VALE',
-     +                  'V V R',NBVALE,IVALP)
+     &                  'V V R',NBVALE,IVALP)
             CALL WKVECT(ZK24(IADZ+ILIRES-1)(1:19)//'.REFE',
-     +                  'V V K24',NBREFE,IREFP)
+     &                  'V V K24',NBREFE,IREFP)
             CALL WKVECT(ZK24(IADZ+ILIRES-1)(1:19)//'.DESC',
-     +                  'V V I',NBDESC,IDESP)
+     &                  'V V I',NBDESC,IDESP)
           ENDIF
 
     3   CONTINUE

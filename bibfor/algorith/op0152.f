@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,7 +105,7 @@ C VERIFICATIONS SUPPLEMENTAIRES
 C EXTRACTION DU POTENTIEL PERMANENT DES VITESSES
 
       IF(OPTION.EQ.'AMOR_AJOU'.OR.OPTION.EQ.'RIGI_AJOU')THEN
-        CALL RSEXCH(PHIBAR,'TEMP',0,PHIB24,IRET)
+        CALL RSEXCH(' ',PHIBAR,'TEMP',0,PHIB24,IRET)
       ENDIF
 
 
@@ -180,9 +180,9 @@ C=====================================================================
 C----------------------------------------------------------------
          IF (N5.GT.0) THEN
              CALL RSORAC(MODMEC,'LONUTI',IBID,BID,K8BID,CBID,
-     +             EBID,'ABSOLU',NBMODE,1,NBID)
+     &             EBID,'ABSOLU',NBMODE,1,NBID)
              NBMO = NBMODE
-             CALL RSEXCH(MODMEC,'DEPL',1,NOMCHA,IRET)
+             CALL RSEXCH(' ',MODMEC,'DEPL',1,NOMCHA,IRET)
              NOCHAM = NOMCHA
          ELSE
             IF(N7.GT.0) THEN
@@ -205,7 +205,7 @@ C---------------SUR LE MODELE INTERFACE(THERMIQUE)-------------
 C CALCUL DES MATRICES MODALES BI POUR L OPTION AMOR_AJOU
 C--------------------------------------------------------------
          CALL MAT152(OPTION,MODEL,MOINT,NOCHAM,IVALK,NBMO,
-     +               MAX,MAY,MAZ,NUM)
+     &               MAX,MAY,MAZ,NUM)
          CALL JEEXIN('&&MAT152.MADE',IRET)
          IF (IRET.GT.0) CALL JEVEUO('&&MAT152.MADE','E',IMADE)
 C DESTRUCTION DU VECTEUR DE NOMS DES DEPL-R POUR RECREATION DS

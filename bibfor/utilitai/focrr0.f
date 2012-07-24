@@ -8,7 +8,7 @@
       CHARACTER*16  NOMCHA
       CHARACTER*19  NOMFON,RESU
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,10 +52,10 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 
 C-----------------------------------------------------------------------
-      INTEGER IBID ,IDDL ,IE ,IERD ,II ,INOEUD ,IORDR 
-      INTEGER IRET ,LACCE ,LFON ,LG1 ,LG2 ,LPRO ,LVACC 
-      INTEGER LVALE ,LVAR ,LXLGUT ,NBACC ,NUSP 
-      REAL*8 VALR 
+      INTEGER IBID ,IDDL ,IE ,IERD ,II ,INOEUD ,IORDR
+      INTEGER IRET ,LACCE ,LFON ,LG1 ,LG2 ,LPRO ,LVACC
+      INTEGER LVALE ,LVAR ,LXLGUT ,NBACC ,NUSP
+      REAL*8 VALR
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL GETRES(K8B,TYPCON,NOMCMD)
@@ -92,7 +92,7 @@ C     --- REMPLISSAGE DU .PROL ---
         CALL WKVECT(NOMFON//'.VALE',BASE//' V R',2*NBORDR,LVAR)
       END IF
       LFON = LVAR + NBORDR
-      CALL RSEXCH(RESU,NOMCHA,LORDR(1),CHAM19,IE)
+      CALL RSEXCH('F',RESU,NOMCHA,LORDR(1),CHAM19,IE)
       CALL DISMOI('F','TYPE_SUPERVIS',CHAM19,'CHAMP',IBID,TYPCHA,IE)
 
       IF (TYPCHA(1:7).EQ.'CHAM_NO') THEN
@@ -114,7 +114,7 @@ C     --- REMPLISSAGE DU .PROL ---
           CALL JEMARQ()
 
 C           --- EXTRACTION DU CHAMP ET DE LA VALEUR DE L'ACCES ----
-          CALL RSEXCH(RESU,NOMCHA,LORDR(IORDR),CHAM19,IE)
+          CALL RSEXCH(' ',RESU,NOMCHA,LORDR(IORDR),CHAM19,IE)
           IF (IE.EQ.0) THEN
             CALL DISMOI('F','PROF_CHNO',CHAM19,'CHAM_NO',IBID,PROFC2,IE)
             IF (PROFC2.NE.PROFCH) THEN
@@ -178,7 +178,7 @@ C        -------------------------------------------------------------
           CALL JEMARQ()
 
 C           --- EXTRACTION DU CHAMP ET DE LA VALEUR DE L'ACCES ----
-          CALL RSEXCH(RESU,NOMCHA,LORDR(IORDR),CHAM19,IE)
+          CALL RSEXCH(' ',RESU,NOMCHA,LORDR(IORDR),CHAM19,IE)
           IF (IE.EQ.0) THEN
             CALL RSADPA(RESU,'L',1,NOMACC,LORDR(IORDR),0,LACCE,K8B)
             CALL UTCH19(CHAM19,NOMA,MAILLE,NOEUZ,NPOINZ,NUSPZ,IVARI,CMP,

@@ -1,15 +1,14 @@
       SUBROUTINE SPEPH1 ( INTPHY, INTMOD, NOMU, CHAM, SPECMR,
-     &                   SPECMI, DISC, NNOE, NOMCMP, NBMODE, NBN, NBPF )
+     &                   SPECMI, NNOE, NOMCMP, NBMODE, NBN, NBPF )
       IMPLICIT   NONE
       INCLUDE 'jeveux.h'
       LOGICAL             INTPHY, INTMOD
       INTEGER             NBMODE, NBN, NBPF
-      REAL*8              CHAM(NBN,*), SPECMR(NBPF,*), SPECMI(NBPF,*),
-     +                    DISC(*)
+      REAL*8              CHAM(NBN,*), SPECMR(NBPF,*), SPECMI(NBPF,*)
       CHARACTER*8         NOMU, NNOE(*), NOMCMP(*)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,22 +50,38 @@ C IN  : NBN    : NBR. DE NOEUDS DE REPONSE
 C IN  : NBPF   : NBR. DE POINTS DE LA DISCRETISATION FREQUENTIELLE
 C-----------------------------------------------------------------------
 C
-      INTEGER       NBPAR, IVAL(2), INJ, IDEBN, INI, LVALE, LPROL, IL,
+      INTEGER       NBPAR, INJ, IDEBN, INI, IL,
      +              IM2, IDEBM, IM1, ISM
+      INTEGER       NBABS,ISPEC,MXVAL,LNOEI,LNOEJ,LCMPI,LCMPJ,IJ
       PARAMETER   ( NBPAR = 5 )
-      REAL*8        R8B, SPECR, SPECI
-      CHARACTER*16  NOPAOU(NBPAR)
-      CHARACTER*19  NOMCOD
-      CHARACTER*24  VALE, PROL, KVAL(NBPAR)
-      COMPLEX*16    C16B
+      REAL*8        SPECR, SPECI
+      CHARACTER*24  KVAL(NBPAR)
+      CHARACTER*24 CHNOEI,CHNOEJ,CHCMPI,CHCMPJ,CHVALS
 C
-      DATA NOPAOU / 'NOEUD_I'  , 'NOM_CMP_I'  ,
-     +              'NOEUD_J'  , 'NOM_CMP_J' , 'FONCTION_C'     /
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
 C    --- CREATION ET REMPLISSAGE DES FONCTIONS - SPECTRES REPONSES
 C
+      CHNOEI = NOMU//'.NOEI'
+      CHNOEJ = NOMU//'.NOEJ'
+      CHCMPI = NOMU//'.CMPI'
+      CHCMPJ = NOMU//'.CMPJ'
+      CHVALS = NOMU//'.VALE'
+
+      IF ( INTPHY ) THEN
+        MXVAL = NBN*(NBN+1)/2
+      ELSE
+        MXVAL = NBN
+      ENDIF
+
+      CALL WKVECT(CHNOEI,'G V K8',MXVAL,LNOEI)
+      CALL WKVECT(CHNOEJ,'G V K8',MXVAL,LNOEJ)
+      CALL WKVECT(CHCMPI,'G V K8',MXVAL,LCMPI)
+      CALL WKVECT(CHCMPJ,'G V K8',MXVAL,LCMPJ)
+      CALL JECREC(CHVALS,'G V R','NU','DISPERSE','VARIABLE',MXVAL)
+
+      IJ = 0
       DO 60 INJ = 1,NBN
 C
          KVAL(3) = NNOE(INJ)
@@ -77,30 +92,26 @@ C
 C
          DO 70 INI = IDEBN,INJ
 C
+            IJ = IJ+1
             KVAL(1) = NNOE(INI)
             KVAL(2) = NOMCMP(INI)
 C
-            WRITE(NOMCOD,'(A8,A3,2I4.4)') NOMU,'.FO',INI,INJ
-C
-            KVAL(5) = NOMCOD
-            CALL TBAJLI ( NOMU, NBPAR, NOPAOU,
-     +                          IVAL, R8B, C16B, KVAL, 0 )
-C
-            VALE = NOMCOD(1:19)//'.VALE'
-            PROL = NOMCOD(1:19)//'.PROL'
-            CALL WKVECT ( VALE, 'G V R ', 3*NBPF, LVALE )
-            CALL WKVECT ( PROL, 'G V K24', 6, LPROL )
-C
-            ZK24(LPROL  ) = 'FONCT_C '
-            ZK24(LPROL+1) = 'LIN LIN '
-            ZK24(LPROL+2) = 'FREQ    '
-            ZK24(LPROL+3) = 'DSP     '
-            ZK24(LPROL+4) = 'LL      '
-            ZK24(LPROL+5) = NOMCOD
-C
-            DO 80 IL = 1,NBPF
-              ZR(LVALE+IL-1) = DISC(IL)
-   80       CONTINUE
+            ZK8(LNOEI-1+IJ) = KVAL(1)(1:8)
+            ZK8(LNOEJ-1+IJ) = KVAL(3)(1:8)
+            ZK8(LCMPI-1+IJ) = KVAL(2)(1:8)
+            ZK8(LCMPJ-1+IJ) = KVAL(4)(1:8)
+
+            IF ((KVAL(1) .EQ. KVAL(3)) .AND.
+     &            (KVAL(2) .EQ. KVAL(4)))  THEN
+                NBABS = NBPF
+            ELSE
+                NBABS = 2*NBPF
+            ENDIF
+
+            CALL JECROC(JEXNUM(CHVALS,IJ))
+            CALL JEECRA(JEXNUM(CHVALS,IJ),'LONMAX',NBABS,' ')
+            CALL JEECRA(JEXNUM(CHVALS,IJ),'LONUTI',NBABS,' ')
+            CALL JEVEUO(JEXNUM(CHVALS,IJ),'E',ISPEC)
 C
             DO 90 IL = 1,NBPF
 C
@@ -138,8 +149,13 @@ C
   110           CONTINUE
   100         CONTINUE
 C
-              ZR(LVALE+NBPF+2*(IL-1)  ) = SPECR
-              ZR(LVALE+NBPF+2*(IL-1)+1) = SPECI
+              IF ((KVAL(1) .EQ. KVAL(3)) .AND.
+     &            (KVAL(2) .EQ. KVAL(4)))  THEN
+                ZR(ISPEC-1+IL) = SPECR
+              ELSE
+                ZR(ISPEC+2*(IL-1)  ) = SPECR
+                ZR(ISPEC+2*(IL-1)+1) = SPECI
+              ENDIF
    90       CONTINUE
 C
    70     CONTINUE

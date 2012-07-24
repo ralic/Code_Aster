@@ -2,7 +2,7 @@
      &                   ZCMPLX)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,7 +72,7 @@ C recuperation des parametres a garder dans le modele gene
 
       DO 100 IMODE = 1, NBSAUV
 C        --- VECTEUR PROPRE ---
-        CALL RSEXCH (RESU2, 'DEPL', IMODE, CHAMGE, IER )
+        CALL RSEXCH(' ',RESU2, 'DEPL', IMODE, CHAMGE, IER )
         IF     ( IER .EQ. 0   ) THEN
         ELSEIF ( IER .EQ. 100 .AND. LREFE ) THEN
           IF (.NOT. ZCMPLX) THEN

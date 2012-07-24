@@ -1,4 +1,4 @@
-#@ MODIF algorith3 Messages  DATE 19/03/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith3 Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -194,16 +194,8 @@ Nombre d'itérations     : %(i2)d
  donnée erronée, multiplicité nulle
 """),
 
-76 : _(u"""
- le type de concept: TABLE_SDASTER doit être associé au mot clé NUME_VITE_FLUI
-"""),
-
 78 : _(u"""
  pas de discrétisation de l'interspectre non constant.
-"""),
-
-79 : _(u"""
- discrétisations différentes selon les fonctions de l'interspectre
 """),
 
 80 : _(u"""

@@ -1,4 +1,4 @@
-# MODIF  DATE 02/04/2012   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 23/07/2012   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE  POUTRE EULER_BERNOULLI MULTIFIBRES (STATIQUE NON-LINEAIRE)
 # ssnl119a.para = tps_job 480 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -29,33 +29,39 @@ MASEC=LIRE_MAILLAGE(UNITE=18,FORMAT='MED',);
 
 
 GF=DEFI_GEOM_FIBRE(INFO=2,
-
-                    FIBRE = (_F(GROUP_FIBRE='SACI',
-                            CARA = 'DIAMETRE',
-                            COOR_AXE_POUTRE = (0.,0.,),
-                            VALE =( 0.066, -0.218, 32.E-3,
-                                   -0.066, -0.218, 32.E-3,
-                                    0.066, 0.218, 8.E-3,
-                                   -0.066, 0.218,8.E-3,),),
-                                   ),
-                   SECTION = _F( GROUP_FIBRE='SBET',
-                           MAILLAGE_SECT = MASEC, TOUT_SECT = 'OUI',
-                           COOR_AXE_POUTRE = (0., 0.,),),
-                     )
-
-
-MOPOU=AFFE_MODELE(MAILLAGE=MAPOU,
-                  AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='POU_D_EM',),);
+   FIBRE = (
+      _F(GROUP_FIBRE='SACI', CARA = 'DIAMETRE',
+         COOR_AXE_POUTRE = (0.,0.,),
+         VALE =(   0.066, -0.218, 32.E-3,
+                  -0.066, -0.218, 32.E-3,
+                   0.066,  0.218,  8.E-3,
+                  -0.066,  0.218,  8.E-3,),),
+               ),
+   SECTION = _F(
+      GROUP_FIBRE='SBET',
+      MAILLAGE_SECT = MASEC, TOUT_SECT = 'OUI',
+      COOR_AXE_POUTRE = (0., 0.,),
+   ),
+)
 
 
-BETON=DEFI_MATERIAU(ELAS=_F(E=3.7272000000E10, NU=0.0,  RHO=2400.0,),
-     LABORD_1D=_F(Y01 = 310. , Y02 = 0.070E+5, A1  = 9.E-3 ,  A2  = .52E-5 ,
-                         B1  = 1.2 ,  B2  = 2. , BETA1  = .1E+7 ,  BETA2  =  -.4E+8, SIGF = 3.5E+6))
+MOPOU=AFFE_MODELE(
+   MAILLAGE=MAPOU,
+   AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='POU_D_EM',),)
 
-ACIER=DEFI_MATERIAU(ELAS=_F(E=2.E11,  NU=0.0, RHO=7800.0,),
-                    ECRO_LINE=_F(D_SIGM_EPSI=3.28E9, SY=4.E8,),);
-MATOR=DEFI_MATERIAU(ELAS=_F(E=2.E11,  NU=0.0, RHO=7800.0,),
-                    );
+
+BETON=DEFI_MATERIAU(
+   ELAS=_F(E=3.7272000000E10, NU=0.0,  RHO=2400.0,),
+   LABORD_1D=_F(Y01 = 310. , Y02 = 0.070E+5, A1  = 9.E-3 ,  A2  = .52E-5 ,
+                B1  = 1.2 ,  B2  = 2. , BETA1  = .1E+7 ,  BETA2  =  -.4E+8, SIGF = 3.5E+6),
+)
+
+ACIER=DEFI_MATERIAU(
+   ELAS=_F(E=2.E11,  NU=0.0, RHO=7800.0,),
+   ECRO_LINE=_F(D_SIGM_EPSI=3.28E9, SY=4.E8,),
+)
+
+MATOR=DEFI_MATERIAU(ELAS=_F(E=2.E11,  NU=0.0, RHO=7800.0,), )
 
 
 
@@ -74,7 +80,7 @@ POUCA=AFFE_CARA_ELEM(MODELE=MOPOU, INFO=1,
            MULTIFIBRE=(_F(GROUP_MA=('POUTRE'),
                          GROUP_FIBRE=('SBET','SACI')),
                        )
-                  );
+)
 
 COMPPMF=DEFI_COMPOR(GEOM_FIBRE=GF,
                     MATER_SECT=MATOR,
@@ -293,96 +299,43 @@ TEST_RESU(RESU=(
 )
 
 
-
 """
 #####################################################################
 # COURBES DES FIGURES DE LA DOCUMENTATION : EN COMMENTAIRE CI-DESSOUS
 ######################################################################
 # reaction
-DEP=RECU_FONCTION(RESULTAT=U1,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DY',
-                  GROUP_NO='C',
-                  )
-
-REA=RECU_FONCTION(RESULTAT=U1,
-                  NOM_CHAM='REAC_NODA',
-                  NOM_CMP='DY',
-                  GROUP_NO='A',
-                  )
-
-IMPR_FONCTION(UNITE=30,FORMAT='XMGRACE',
-              COURBE=_F(FONC_X=DEP,FONC_Y=REA))
-
+DEPCY=RECU_FONCTION(RESULTAT=U1, NOM_CHAM='DEPL',           NOM_CMP='DY', GROUP_NO='C', )
+DEPBX=RECU_FONCTION(RESULTAT=U1, NOM_CHAM='DEPL',           NOM_CMP='DX', GROUP_NO='B', )
+REACA=RECU_FONCTION(RESULTAT=U1, NOM_CHAM='REAC_NODA',      NOM_CMP='DY', GROUP_NO='A', )
 # defo acier tendu
-DEFAT=RECU_FONCTION(RESULTAT=U1,
-                  NOM_CHAM='EPSI_ELGA_DEPL',
-                  NOM_CMP='EPXX',
-                  MAILLE='M9',
-                  POINT=1,
-                  SOUS_POINT=41
-                  )
-
-IMPR_FONCTION(UNITE=31,FORMAT='XMGRACE',
-              COURBE=_F(FONC_X=DEP,FONC_Y=DEFAT))
-
-# cont beton tendu
-CONBT=RECU_FONCTION(RESULTAT=U1,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXX',
-                  MAILLE='M9',
-                  POINT=1,
-                  SOUS_POINT=40
-                  )
-
-IMPR_FONCTION(UNITE=32,FORMAT='XMGRACE',
-              COURBE=_F(FONC_X=DEP,FONC_Y=CONBT))
-
-# cont beton comprime
-CONBC=RECU_FONCTION(RESULTAT=U1,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXX',
-                  MAILLE='M9',
-                  POINT=1,
-                  SOUS_POINT=1
-                  )
-
-IMPR_FONCTION(UNITE=33,FORMAT='XMGRACE',
-              COURBE=_F(FONC_X=DEP,FONC_Y=CONBC))
-
+DEFAT=RECU_FONCTION(RESULTAT=U1, NOM_CHAM='EPSI_ELGA', NOM_CMP='EPXX', MAILLE='M9', POINT=1, SOUS_POINT=41)
+# defo acier comprime
+DEFAC=RECU_FONCTION(RESULTAT=U1, NOM_CHAM='EPSI_ELGA', NOM_CMP='EPXX', MAILLE='M9', POINT=1, SOUS_POINT=44)
+# defo beton tendu
+DEFBT=RECU_FONCTION(RESULTAT=U1, NOM_CHAM='EPSI_ELGA', NOM_CMP='EPXX', MAILLE='M9', POINT=1, SOUS_POINT=40)
+# defo beton comprime
+DEFBC=RECU_FONCTION(RESULTAT=U1, NOM_CHAM='EPSI_ELGA', NOM_CMP='EPXX', MAILLE='M9', POINT=1, SOUS_POINT= 1)
 # cont acier tendu
-CONAT=RECU_FONCTION(RESULTAT=U1,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXX',
-                  MAILLE='M9',
-                  POINT=1,
-                  SOUS_POINT=41
-                  )
-
-IMPR_FONCTION(UNITE=34,FORMAT='XMGRACE',
-              COURBE=_F(FONC_X=DEP,FONC_Y=CONAT))
-
+CONAT=RECU_FONCTION(RESULTAT=U1, NOM_CHAM='SIEF_ELGA', NOM_CMP='SIXX', MAILLE='M9', POINT=1, SOUS_POINT=41)
 # cont acier comprime
-CONAC=RECU_FONCTION(RESULTAT=U1,
-                  NOM_CHAM='SIEF_ELGA',
-                  NOM_CMP='SIXX',
-                  MAILLE='M9',
-                  POINT=1,
-                  SOUS_POINT=44
-                  )
+CONAC=RECU_FONCTION(RESULTAT=U1, NOM_CHAM='SIEF_ELGA', NOM_CMP='SIXX', MAILLE='M9', POINT=1, SOUS_POINT=44)
+# cont beton tendu
+CONBT=RECU_FONCTION(RESULTAT=U1, NOM_CHAM='SIEF_ELGA', NOM_CMP='SIXX', MAILLE='M9', POINT=1, SOUS_POINT=40)
+# cont beton comprime
+CONBC=RECU_FONCTION(RESULTAT=U1, NOM_CHAM='SIEF_ELGA', NOM_CMP='SIXX', MAILLE='M9', POINT=1, SOUS_POINT= 1)
 
-IMPR_FONCTION(UNITE=35,FORMAT='XMGRACE',
-              COURBE=_F(FONC_X=DEP,FONC_Y=CONAC))
-
-DEPX=RECU_FONCTION(RESULTAT=U1,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DX',
-                  GROUP_NO='B',
-                  )
-
-IMPR_FONCTION(UNITE=36,FORMAT='XMGRACE',
-              COURBE=_F(FONC_X=DEP,FONC_Y=DEPX))
-
+fic = './REPE_OUT/courbes.post'
+unit = DEFI_FICHIER(FICHIER = fic, ACTION='ASSOCIER', TYPE='ASCII',ACCES='NEW')
+IMPR_FONCTION(UNITE=unit,FORMAT='TABLEAU',
+   COURBE=(
+      _F(FONCTION=DEPCY), _F(FONCTION=DEPBX),
+      _F(FONCTION=REACA),
+      _F(FONCTION=DEFAT), _F(FONCTION=DEFAC), _F(FONCTION=DEFBT), _F(FONCTION=DEFBC),
+      _F(FONCTION=CONAT), _F(FONCTION=CONAC), _F(FONCTION=CONBT), _F(FONCTION=CONBC),
+   )
+)
+DEFI_FICHIER(UNITE = unit, ACTION='LIBERER',)
+DETRUIRE(INFO=1,ALARME='NON',CONCEPT=(_F(NOM=unit,),),)
 """
 FIN()
 

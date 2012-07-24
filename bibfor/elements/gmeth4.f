@@ -1,9 +1,9 @@
-      SUBROUTINE GMETH4(MODELE,OPTION,NNOFF,NDIMTE,FOND,GTHI,MILIEU,
-     &                  PAIR,GS,OBJCUR,GI,GXFEM)
+      SUBROUTINE GMETH4(NNOFF,NDIMTE,FOND,GTHI,MILIEU,PAIR,GS,OBJCUR,
+     &                  GI,GXFEM)
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,12 +26,11 @@ C      METHODE LAGRANGE_REGU POUR LE CALCUL DE G(S)
 C
 C ENTREE
 C
-C   MODELE   --> NOM DU MODELE
 C   NNOFF    --> NOMBRE DE NOEUDS DU FOND DE FISSURE
 C   NDIMTE   --> NOMBRE de CHAMPS THETA CHOISIS
 C   FOND     --> NOMS DES NOEUDS DU FOND DE FISSURE
 C   GTHI     --> VALEURS DE G POUR LES CHAMPS THETAI
-C   OBJCUR  --> ABSCISSES CURVILIGNES S
+C   OBJCUR   --> ABSCISSES CURVILIGNES S
 C
 C
 C SORTIE
@@ -41,24 +40,15 @@ C   GI      --> VALEUR DE GI
 C ......................................................................
 C
       INCLUDE 'jeveux.h'
-      INTEGER         NNOFF,I,NUMP,IMATR,NN
-      INTEGER         I1,IADRNO,KK,NDIMTE
-C
+      INTEGER         I,I1,IABSC,IADRNO,IMATR
+      INTEGER         KK,NDIMTE,NN,NNOFF,NUMP
       REAL*8          GTHI(1),GS(1),GI(1),S1,S2,S3,DELTA
-      REAL*8          OBJCUR(*)
-C
-      CHARACTER*8     MODELE
-      CHARACTER*16    OPTION
-      CHARACTER*24    MATR,FOND
-      LOGICAL          CONNEX,MILIEU,PAIR,GXFEM
-C
-C
+      CHARACTER*24    MATR,FOND,OBJCUR
+      LOGICAL         CONNEX,MILIEU,PAIR,GXFEM
 C
 C
 C OBJET DECRIVANT LE MAILLAGE
 C
-C-----------------------------------------------------------------------
-C-----------------------------------------------------------------------
       CALL JEMARQ()
 
       CONNEX = .FALSE.
@@ -66,7 +56,9 @@ C-----------------------------------------------------------------------
         CALL JEVEUO (FOND,'L',IADRNO)
         IF (ZK8(IADRNO+1-1).EQ.ZK8(IADRNO+NNOFF-1)) CONNEX = .TRUE.
       ENDIF
-
+C
+C     ABSCISSES CURVILIGNES DES NOEUDS DU FOND DE FISSURE
+      CALL JEVEUO(OBJCUR,'L',IABSC)
 C
 C CONSTRUCTION DE LA MATRICE (NDIMTE x NDIMTE)
       MATR = '&&METHO4.MATRI'
@@ -79,8 +71,8 @@ C
       DO 120 I=1,NDIMTE-2
         NUMP = 2*I-1
         IF (MILIEU) NUMP = 4*I-3
-        S1 = OBJCUR(NUMP)
-        S2 = OBJCUR(NUMP+I1)
+        S1 = ZR(IABSC-1+NUMP)
+        S2 = ZR(IABSC-1+NUMP+I1)
         DELTA = (S2-S1)/6.D0
         KK = IMATR+(I-1  )*NDIMTE+I-1
         ZR(KK )= ZR(KK) +               2.D0*DELTA
@@ -92,8 +84,8 @@ C
       I = NDIMTE -1
       NUMP = 2*(I-1)
       IF (PAIR) THEN
-        S1 = OBJCUR(NUMP)
-        S2 = OBJCUR(NUMP+I1/2)
+        S1 = ZR(IABSC-1+NUMP)
+        S2 = ZR(IABSC-1+NUMP+I1/2)
         DELTA = (S2-S1)/6.D0
         KK = IMATR+(I-1  )*NDIMTE+I-1
         ZR(KK )= ZR(KK) +         3.5D0*DELTA
@@ -101,8 +93,8 @@ C
         ZR(IMATR+(I-1  )*NDIMTE+I-1+1)=  1.D0*DELTA
         ZR(IMATR+(I-1+1)*NDIMTE+I-1+1)= 0.5D0*DELTA
       ELSE
-        S1 = OBJCUR(NUMP+1)
-        S2 = OBJCUR(NUMP+I1+1)
+        S1 = ZR(IABSC-1+NUMP+1)
+        S2 = ZR(IABSC-1+NUMP+I1+1)
         DELTA = (S2-S1)/6.D0
         KK = IMATR+(I-1  )*NDIMTE+I-1
         ZR(KK )= ZR(KK) +               2.D0*DELTA
@@ -112,8 +104,8 @@ C
       ENDIF
 
       IF (NNOFF .EQ. 2) THEN
-        S1 = OBJCUR(1)
-        S2 = OBJCUR(2)
+        S1 = ZR(IABSC-1+1)
+        S2 = ZR(IABSC-1+2)
         DELTA = (S2-S1)/6.D0
         ZR(IMATR + 0)=  3.5D0*DELTA
         ZR(IMATR + 1)=  1.D0*DELTA
@@ -123,14 +115,14 @@ C
 
       IF (CONNEX) THEN
         ZR(IMATR) = 2.D0*ZR(IMATR)
-        S1 = OBJCUR(NUMP-I1+1)
-        S2 = OBJCUR(NUMP+1)
+        S1 = ZR(IABSC-1+NUMP-I1+1)
+        S2 = ZR(IABSC-1+NUMP+1)
         DELTA = (S2-S1)/6.D0
         ZR(IMATR+(1-1)*NDIMTE+NDIMTE-1-1)= 1.D0*DELTA
         KK = IMATR+(NDIMTE-1)*NDIMTE+NDIMTE-1
         ZR(KK) = 2.D0*ZR(KK)
-        S1 = OBJCUR(1)
-        S2 = OBJCUR(I1+1)
+        S1 = ZR(IABSC-1+1)
+        S2 = ZR(IABSC-1+I1+1)
         DELTA = (S2-S1)/6.D0
         ZR(IMATR+(NDIMTE-1)*NDIMTE+2-1)= 1.D0*DELTA
       ENDIF
@@ -147,17 +139,17 @@ C
         IF (MILIEU) THEN
           NN = 4*I-3
           GS(NN) = GI(I)
-          S1 = OBJCUR(NN)
-          S3 = OBJCUR(NN+4)
-          GS(NN+1)=GI(I)+(OBJCUR(NN+1)-S1)*(GI(I+1)-GI(I))/(S3-S1)
-          GS(NN+2)=GI(I)+(OBJCUR(NN+2)-S1)*(GI(I+1)-GI(I))/(S3-S1)
-          GS(NN+3)=GI(I)+(OBJCUR(NN+3)-S1)*(GI(I+1)-GI(I))/(S3-S1)
+          S1 = ZR(IABSC-1+NN)
+          S3 = ZR(IABSC-1+NN+4)
+          GS(NN+1)=GI(I)+(ZR(IABSC-1+NN+1)-S1)*(GI(I+1)-GI(I))/(S3-S1)
+          GS(NN+2)=GI(I)+(ZR(IABSC-1+NN+2)-S1)*(GI(I+1)-GI(I))/(S3-S1)
+          GS(NN+3)=GI(I)+(ZR(IABSC-1+NN+3)-S1)*(GI(I+1)-GI(I))/(S3-S1)
         ELSE
           NN = 2*I-1
           GS(NN) = GI(I)
-          S1 = OBJCUR(NN)
-          S2 = OBJCUR(NN+1)
-          S3 = OBJCUR(NN+2)
+          S1 = ZR(IABSC-1+NN)
+          S2 = ZR(IABSC-1+NN+1)
+          S3 = ZR(IABSC-1+NN+2)
           GS(NN+1) = GI(I)+(S2-S1)*(GI(I+1)-GI(I))/(S3-S1)
         ENDIF
 200    CONTINUE
@@ -166,9 +158,9 @@ C
 C     SI PAIR, ON CORRIGE LA VALEUR DE G AU DERNIER NOEUD
        IF(PAIR)THEN
          NN=2*(NDIMTE-2)
-         S1 = OBJCUR(NN)
-         S2 = OBJCUR(NN+1)
-         S3 = OBJCUR(NN+2)
+         S1 = ZR(IABSC-1+NN)
+         S2 = ZR(IABSC-1+NN+1)
+         S3 = ZR(IABSC-1+NN+2)
          GS(NNOFF) = GS(NNOFF-1)+
      &              (S3-S2)*(GS(NNOFF-2)-GS(NNOFF-1))/(S1-S2)
        ENDIF

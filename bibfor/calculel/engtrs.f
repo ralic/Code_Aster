@@ -7,7 +7,7 @@
       CHARACTER*19 NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,8 +34,8 @@ C IN  : PRECI  : PRECISION POUR LE TEST_RESU
 C ----------------------------------------------------------------------
 C
       INTEGER      IBID, NBORDT, VALI, JORDR, NBNOSY, ISY, IATACH, LG,
-     +             LXLGUT, I, J, IORD, IRET, JVALE, LONG,
-     +             LG1, LG2, ISMAEM
+     &             LXLGUT, I, J, IORD, IRET, JVALE, LONG,
+     &             LG1, LG2, ISMAEM
       REAL*8       R8B, VALR, R8PREM, R8MAEM
       COMPLEX*16   C16B
       CHARACTER*3  TYPE
@@ -50,9 +50,9 @@ C
       LG1 = LXLGUT( FORMR  )
       LG2 = LXLGUT( TYPTES )
       FORM1 = '(''              TYPE_TEST= '''''//TYPTES(1:LG2)//
-     +          ''''', VALE= '','//FORMR(1:LG1)//','' ),'')'
+     &          ''''', VALE= '','//FORMR(1:LG1)//','' ),'')'
       FORM2 = '(''              TYPE_TEST= '''''//TYPTES(1:LG2)//
-     +          ''''', VALE_I= '',I9,'' ),'')'
+     &          ''''', VALE_I= '',I9,'' ),'')'
 C
       WRITE(IFIC,1000)
 C
@@ -74,12 +74,12 @@ C
          LG = LXLGUT( NOMSYM )
 C
          FORM3 = '(''          _F( RESULTAT= '',A8,'', NOM_CHAM= '''''//
-     +           NOMSYM(1:LG)//''''', NUME_ORDRE= '',I6,'','')'
+     &           NOMSYM(1:LG)//''''', NUME_ORDRE= '',I6,'','')'
 C
          DO 110 J = 1 , NBORDT
             IORD = ZI(JORDR+J-1)
             IF ( ZK24(IATACH-1+J)(1:1) .NE. ' ' ) THEN
-               CALL RSEXCH ( NOMSD, NOMSYM, IORD, CHEXTR, IBID )
+               CALL RSEXCH(' ',NOMSD, NOMSYM, IORD, CHEXTR, IBID )
 
                CALL JEEXIN ( CHEXTR//'.VALE', IRET )
                IF ( IRET .NE. 0 ) THEN
@@ -167,7 +167,7 @@ C
  1000 FORMAT ( 'TEST_RESU(RESU=( ' )
  1010 FORMAT ('              CRITERE= ''ABSOLU'', ')
  1020 FORMAT ('              REFERENCE= ''NON_REGRESSION'', ',
-     +                      'PRECISION= ',A10,',')
+     &                      'PRECISION= ',A10,',')
  1030 FORMAT ( '          ),)' )
 C
       END

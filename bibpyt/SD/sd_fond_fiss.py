@@ -1,4 +1,4 @@
-#@ MODIF sd_fond_fiss SD  DATE 10/07/2012   AUTEUR LADIER A.LADIER 
+#@ MODIF sd_fond_fiss SD  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,6 +19,7 @@
 # ======================================================================
 
 from SD import *
+from SD.sd_cham_no   import sd_cham_no
 
 class sd_fond_fiss(AsBase):
     nomj           = SDNom(fin=8)
@@ -36,6 +37,10 @@ class sd_fond_fiss(AsBase):
     LEVRESUP_MAIL  = Facultatif(AsVK8(SDNom(nomj='.LEVRESUP.MAIL'), ))
     INFO           = AsVK8(SDNom(nomj='.INFO'), lonmax=2, )
     FOND_TAILLE_R  = Facultatif(AsVR(SDNom(nomj='.FOND.TAILLE_R'),))
+    FONDFISS       = AsVR()
+    LNNO           = Facultatif(sd_cham_no())
+    LTNO           = Facultatif(sd_cham_no())
+    BASLOC         = Facultatif(sd_cham_no())
 
     def check_BASEFOND(self,checker):
         info = self.INFO.get_stripped()

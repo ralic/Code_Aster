@@ -1,4 +1,4 @@
-#@ MODIF stanley_engine Stanley  DATE 11/06/2012   AUTEUR DESOZA T.DESOZA 
+#@ MODIF stanley_engine Stanley  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -95,9 +95,6 @@ cata = cata_champs.CATA_CHAMPS()
 
 # Gestion des Exceptions
 texte_onFatalError = "Une erreur est intervenue. L'operation a ete annulee."
-
-# Texte sensibilite
-texte_sensibilite = "Résultat non dérivé"
 
 # Pour la gestion des Exceptions
 prev_onFatalError = aster.onFatalError()
@@ -748,7 +745,7 @@ Ce mode est indisponible car Salome n'existe pas encore sous Windows.
 
 class CONTEXTE:
 
-  def __init__(self, jdc, resultat, maillage, modele, cham_mater, cara_elem, para_sensi) :
+  def __init__(self, jdc, resultat, maillage, modele, cham_mater, cara_elem) :
 
     self.jdc        = jdc
     self.resultat   = resultat
@@ -756,19 +753,9 @@ class CONTEXTE:
     self.modele     = modele
     self.cham_mater = cham_mater
     self.cara_elem  = cara_elem
-    self.para_sensi = para_sensi
-    self.resultat_sensible = None
-
-    if self.para_sensi:
-       nom_resu_sensible = self.jdc.memo_sensi.get_nocomp(self.resultat.nom, self.para_sensi.nom)
-       self.resultat_sensible = resultat_jeveux(nom_resu_sensible)
-
-
 
 
 # ==============================================================================
-
-
 
 class ETAT_GEOM:
 
@@ -946,7 +933,6 @@ class ETAT_GEOM:
 # ==============================================================================
 
 
-
 class ETAT_RESU:
 
   """
@@ -1022,23 +1008,9 @@ class ETAT_RESU:
         ch    champs references dans la SD et le catalogue
     """
 
-
-    # Si on n'est pas en sensibilite...
-    if not self.contexte.para_sensi:
-       self.va  = self.contexte.resultat.LIST_PARA()
-#       self.va  = self.contexte.resultat.LIST_VARI_ACCES()
-       self.cmp = self.contexte.resultat.LIST_NOM_CMP()
-       self.ch  = self.contexte.resultat.LIST_CHAMPS()
-
-    # Si on est en sensibilite...
-    else:
-       nom_resu_sensible = self.contexte.jdc.memo_sensi.get_nocomp(self.contexte.resultat.nom, self.contexte.para_sensi.nom)
-       resu_sensible = resultat_jeveux(nom_resu_sensible)
-
-       self.va  = resu_sensible.LIST_PARA()
-#       self.va  = resu_sensible.LIST_VARI_ACCES()
-       self.cmp = resu_sensible.LIST_NOM_CMP()
-       self.ch  = resu_sensible.LIST_CHAMPS()
+    self.va  = self.contexte.resultat.LIST_PARA()
+    self.cmp = self.contexte.resultat.LIST_NOM_CMP()
+    self.ch  = self.contexte.resultat.LIST_CHAMPS()
 
     for nom_cham in self.ch.keys() :
       if nom_cham not in cata.Champs_presents() :
@@ -1488,13 +1460,13 @@ class STANLEY:
 
   """
 
-  def __init__ (self, resultat, maillage, modele, cham_mater, cara_elem, para_sensi, FICHIER_VALID=None) :
+  def __init__ (self, resultat, maillage, modele, cham_mater, cara_elem, FICHIER_VALID=None) :
 
     # Gestion des erreurs
     self.erreur = ERREUR()
 
     self.jdc        = CONTEXT.get_current_step().jdc
-    self.contexte   = CONTEXTE(self.jdc, resultat, maillage, modele, cham_mater, cara_elem, para_sensi)
+    self.contexte   = CONTEXTE(self.jdc, resultat, maillage, modele, cham_mater, cara_elem)
     self.etat_geom  = ETAT_GEOM(maillage)
     self.etat_resu  = ETAT_RESU(self.contexte)
     self.selection  = SELECTION(self.contexte,self.etat_geom,self.etat_resu)
@@ -2127,8 +2099,6 @@ class DRIVER :
       return self.erreur.Remonte_Erreur(err, [], 2, texte)
 
     motscles = { 'METHODE' : 'COLLOCATION' }
-    if contexte.para_sensi:
-       motscles['SENSIBILITE'] = contexte.para_sensi
 
     try:
        DETRUIRE(CONCEPT = _F(NOM    = _RESU_P), INFO=2)
@@ -2151,7 +2121,7 @@ class DRIVER :
       texte = "Cette action n'est pas realisable.\n"+str(err)
       return self.erreur.Remonte_Erreur(err, [__MO_P], 2, texte)
 
-    return CONTEXTE(contexte.jdc,__RESU_P, __MA, __MO_P, None, None, contexte.para_sensi), [__MO_P, __RESU_P]
+    return CONTEXTE(contexte.jdc,__RESU_P, __MA, __MO_P, None, None), [__MO_P, __RESU_P]
 
 
   # ----------------------------------------------------------------------------
@@ -2169,10 +2139,6 @@ class DRIVER :
         CONTEXTE lie au nouveau resultat produit
         liste des concepts Aster a detruire
     """
-
-    if contexte.para_sensi:
-      UTMESS('A','STANLEY_30')
-      return False, []
 
     if   contexte.resultat.__class__ == evol_elas  : type_resu = 'EVOL_ELAS'
     elif contexte.resultat.__class__ == evol_ther  : type_resu = 'EVOL_THER'
@@ -2251,7 +2217,7 @@ class DRIVER :
 
         ldetr = [__MA_G, __MO_G, __RESU_G]
 
-    return CONTEXTE(contexte.jdc, __RESU_G, __MA_G, __MO_G, None, None, contexte.para_sensi), ldetr
+    return CONTEXTE(contexte.jdc, __RESU_G, __MA_G, __MO_G, None, None), ldetr
 
 
   # ----------------------------------------------------------------------------
@@ -2332,9 +2298,6 @@ class DRIVER_ISOVALEURS(DRIVER):
 
     if 'TOUT_CMP' not in selection.nom_cmp :
       para['NOM_CMP'] = tuple(selection.nom_cmp)
-
-    if contexte.para_sensi:
-       para['SENSIBILITE'] = contexte.para_sensi
 
     return para
 
@@ -2606,11 +2569,6 @@ class DRIVER_COURBES(DRIVER) :
         l_nom_cmp = selection.nom_cmp
 
 
-    # Options supplementaires du IMPR_RESU pour la SENSIBILITE
-    if contexte.para_sensi:
-         para['SENSIBILITE'] = contexte.para_sensi
-         DETR( 'STNTBLG2' )
-
     DETR( 'STNTBLGR' )
 
 
@@ -2626,9 +2584,7 @@ class DRIVER_COURBES(DRIVER) :
             para['GROUP_NO'] = point
 
             try:
-                if contexte.para_sensi: contexte.jdc.memo_sensi.register_names('STNTBLGR', contexte.para_sensi.nom, 'STNTBLG2')
                 STNTBLGR = POST_RELEVE_T(ACTION = para)
-                if contexte.para_sensi: contexte.jdc.memo_sensi.register_final(STNTBLGR, contexte.para_sensi, 'STNTBLG2')
             except aster.error,err:
                 return self.erreur.Remonte_Erreur(err, ['STNTBLGR'], 1)
             except Exception,err:
@@ -2640,23 +2596,15 @@ class DRIVER_COURBES(DRIVER) :
                     vale_x = selection.vale_va
                     courbe = as_courbes.Courbe(vale_x,vale_x)
 
-                    # Sensibilite
-                    if contexte.para_sensi:
-                        table_sensible_jeveux = table_jeveux( contexte.jdc.memo_sensi.get_nocomp(STNTBLGR.nom, contexte.para_sensi.nom) )
-                        courbe.Lire_y(table_sensible_jeveux, comp)
-                        tmp0 = repr(courbe)   # laisser cette ligne car elle permet de filtrer les cas ou la SD STNTBLGR n'est pas complete
-                        nom = comp + ' - ' + contexte.para_sensi.nom + ' --- ' + string.ljust(point,8)
-                    else:
-                        courbe.Lire_y(STNTBLGR,comp)
-                        tmp0 = repr(courbe)   # laisser cette ligne car elle permet de filtrer les cas ou la SD STNTBLGR n'est pas complete
-                        nom = comp + ' --- ' + string.ljust(point,8)
+                    courbe.Lire_y(STNTBLGR,comp)
+                    tmp0 = repr(courbe)   # laisser cette ligne car elle permet de filtrer les cas ou la SD STNTBLGR n'est pas complete
+                    nom = comp + ' --- ' + string.ljust(point,8)
                 except Exception, e:
                     print e
                 else:
                     l_courbes.append( (courbe, nom) )
 
             DETR( 'STNTBLGR' )
-            if contexte.para_sensi: DETR( contexte.jdc.memo_sensi.get_nocomp(STNTBLGR.nom, contexte.para_sensi.nom) )
             if l_detr: DETR( tuple(l_detr) )
 
 
@@ -2675,9 +2623,7 @@ class DRIVER_COURBES(DRIVER) :
         for no, va in map(lambda x,y : (x,y), selection.numeros, selection.vale_va) :
             para['NUME_ORDRE'] = no,
             try:
-                if contexte.para_sensi: contexte.jdc.memo_sensi.register_names('STNTBLGR', contexte.para_sensi.nom, 'STNTBLG2')
                 STNTBLGR = POST_RELEVE_T(ACTION = para)
-                if contexte.para_sensi: contexte.jdc.memo_sensi.register_final(STNTBLGR, contexte.para_sensi, 'STNTBLG2')
             except aster.error,err:
                 return self.erreur.Remonte_Erreur(err, ['STNTBLGR'], 1)
             except Exception,err:
@@ -2688,19 +2634,10 @@ class DRIVER_COURBES(DRIVER) :
                 courbe = as_courbes.Courbe()
 
                 try:
-                    # Sensibilite
-                    if contexte.para_sensi:
-                        table_sensible_jeveux = table_jeveux( contexte.jdc.memo_sensi.get_nocomp(STNTBLGR.nom, contexte.para_sensi.nom) )
-                        courbe.Lire_x(table_sensible_jeveux, 'ABSC_CURV')
-                        courbe.Lire_y(table_sensible_jeveux, comp)
-                        tmp0 = repr(courbe)   # laisser cette ligne car elle permet de filtrer les cas ou la SD STNTBLGR n'est pas complete
-                        nom = comp + ' - ' + contexte.para_sensi.nom + ' --- ' + selection.nom_va + ' = ' + repr(va)
-      #                  nom = comp + ' --- ' + selection.nom_va + ' = ' + repr(va)
-                    else:
-                        courbe.Lire_x(STNTBLGR, 'ABSC_CURV')
-                        courbe.Lire_y(STNTBLGR, comp)
-                        tmp0 = repr(courbe)   # laisser cette ligne car elle permet de filtrer les cas ou la SD STNTBLGR n'est pas complete
-                        nom = comp + ' --- ' + selection.nom_va + ' = ' + repr(va)
+                    courbe.Lire_x(STNTBLGR, 'ABSC_CURV')
+                    courbe.Lire_y(STNTBLGR, comp)
+                    tmp0 = repr(courbe)   # laisser cette ligne car elle permet de filtrer les cas ou la SD STNTBLGR n'est pas complete
+                    nom = comp + ' --- ' + selection.nom_va + ' = ' + repr(va)
                     #l_courbes.append( (courbe, nom) )
                 except Exception, e:
                     print e
@@ -2709,7 +2646,6 @@ class DRIVER_COURBES(DRIVER) :
                 #l_courbes.append( (courbe, nom) )
 
             DETR( 'STNTBLGR' )
-            if contexte.para_sensi: DETR( contexte.jdc.memo_sensi.get_nocomp(STNTBLGR.nom, contexte.para_sensi.nom) )
 
         if l_detr: DETR( tuple(l_detr) )
 
@@ -3041,7 +2977,6 @@ class PRE_STANLEY :
       frame_evol          : LIST_BOX champ selection des concepts Aster de type "evol_*"
       frame_cham_mater    : LIST_BOX champ selection des concepts Aster de type "cham_mater"
       frame_cara_elem     : LIST_BOX champ selection des concepts Aster de type "cara_elem"
-      frame_para_sensi    : LIST_BOX champ selection des concepts Aster de type "para_sensi"
 
      Methode publique
       Exec       : lancement du scan des evenements
@@ -3072,47 +3007,35 @@ class PRE_STANLEY :
     t_evol=[]
     t_cham_mater=[]
     t_cara_elem=[]
-    t_para_sensi=[]
 
-    lst = [ 'maillage_sdaster', 'modele_sdaster', 'evol_elas', 'evol_noli', 'evol_ther', 'mode_meca', 'dyna_harmo', 'dyna_trans', 'cham_mater', 'cara_elem_sdaster', 'para_sensi', 'evol_char' ]
+    lst = [ 'maillage_sdaster', 'modele_sdaster', 'evol_elas', 'evol_noli', 'evol_ther', 'mode_meca', 'dyna_harmo', 'dyna_trans', 'cham_mater', 'cara_elem_sdaster', 'evol_char' ]
 
     current_context = self.macro.get_contexte_courant()
     for i in current_context.keys( ):
 
-      # On supprime de la liste les concept issus de la sensibilite
-      if i.startswith(ignore_prefixe) and current_context[i].__class__.__name__ in lst:
-          UTMESS('I','STANLEY_35',valk=[i])
-
-      else:
-
-         concept_exists_and_intypes(i, self.macro,
+      concept_exists_and_intypes(i, self.macro,
                                     types='maillage_sdaster', append_to=t_maillage)
-         concept_exists_and_intypes(i, self.macro,
+      concept_exists_and_intypes(i, self.macro,
                                     types='modele_sdaster', append_to=t_modele)
-         concept_exists_and_intypes(i, self.macro,
+      concept_exists_and_intypes(i, self.macro,
                                     types=('evol_elas', 'evol_noli', 'evol_ther', 'mode_meca', 'dyna_harmo', 'dyna_trans', 'evol_char'),
                                     append_to=t_evol)
-         concept_exists_and_intypes(i, self.macro,
+      concept_exists_and_intypes(i, self.macro,
                                     types='cham_mater', append_to=t_cham_mater)
-         concept_exists_and_intypes(i, self.macro,
+      concept_exists_and_intypes(i, self.macro,
                                     types='cara_elem', append_to=t_cara_elem)
-         # AA desactivation temporaire des para sensibles
-         #concept_exists_and_intypes(i, self.macro,
-                                    #types='para_sensi', append_to=t_para_sensi)
 
     self.t_maillage=t_maillage
     self.t_modele=t_modele
     self.t_evol=t_evol
     self.t_cham_mater=t_cham_mater
     self.t_cara_elem=t_cara_elem
-    self.t_para_sensi=t_para_sensi
 
     self.t_maillage.sort()
     self.t_modele.sort()
     self.t_evol.sort()
     self.t_cham_mater.sort()
     self.t_cara_elem.sort()
-    self.t_para_sensi.sort()
 
     # Si un des concepts n'a pas été trouvé au moins une fois on arrete
     _lst = []
@@ -3132,9 +3055,6 @@ class PRE_STANLEY :
 
       # Detecte les concepts associés a chaque resultat
       self.concepts = self.Autodetecte_Concepts(self.t_evol)
-
-      # Detecte les parametres sensibles associés a chaque resultat
-      self.dico_para_sensi = self.Autodetecte_Para_Sensi(self.t_evol, self.t_para_sensi)
 
       # Sinon on continue
       self.Dessin()
@@ -3186,26 +3106,6 @@ class PRE_STANLEY :
 
 
 
-  def Autodetecte_Para_Sensi(self, t_evol, t_para_sensi) :
-    """
-       Detecte les parametres sensibles d'un resultat
-    """
-
-    dico = {}
-
-    for evol in t_evol:
-       dico[evol] = []
-       for para_sensi in t_para_sensi:
-          resu_sensible = resultat_jeveux( self.jdc.memo_sensi.get_nocomp(evol, para_sensi) )
-          if resu_sensible.nom:
-             test_existance = aster.getvectjev( resu_sensible.nom.ljust(19) + '.DESC' )
-             if test_existance:
-                dico[evol].append( para_sensi )
-
-    return dico
-
-
-
   def Exec(self) :
     """
       Demarre le scan des evenements
@@ -3226,8 +3126,6 @@ class PRE_STANLEY :
     modele     = self.concepts[evol][0].strip()
     cham_mater = self.concepts[evol][1].strip()
     cara_elem  = self.concepts[evol][2].strip()
-    t_para = copy.copy(self.dico_para_sensi[evol])
-    t_para.insert(0, texte_sensibilite)
 
     self.modele.Selectionne( modele )
     self.cham_mater.Selectionne( cham_mater )
@@ -3235,9 +3133,6 @@ class PRE_STANLEY :
     if self.t_cara_elem != []:
        if cara_elem:
           self.cara_elem.Selectionne( cara_elem )
-
-    if self.t_para_sensi != []:
-       self.para_sensi.Change( t_para, t_para[0] )
 
 
 
@@ -3279,18 +3174,6 @@ class PRE_STANLEY :
         cara_elem=self.t_cara_elem[i]
         c_cara_elem = self.macro.get_concept(cara_elem)
 
-     if self.t_para_sensi == []:
-        para_sensi=None
-        c_para_sensi=None
-     else:
-        i=int(self.para_sensi.listbox.curselection()[0])
-        if i == 0:
-           para_sensi=None
-           c_para_sensi=None
-        else:
-           para_sensi=self.t_para_sensi[i-1]
-           c_para_sensi = self.macro.get_concept(para_sensi)
-
      self.Sortir()
 
 
@@ -3301,7 +3184,7 @@ class PRE_STANLEY :
 
         date = time.localtime()
         txt = 50*'-'+'\n'+str(date[2])+'/'+str(date[1])+'/'+str(date[0])+' - '+str(date[3])+':'+str(date[4])+'\n'
-        txt += nom_cas_test + ' [' + ' / '.join([str(evol), str(modele), str(cham_mater), str(cara_elem), str(para_sensi)]) + ' ]\n'
+        txt += nom_cas_test + ' [' + ' / '.join([str(evol), str(modele), str(cham_mater), str(cara_elem)]) + ' ]\n'
         try:
            f=open(self.FICHIER_VALID, 'a')
            f.write(txt)
@@ -3311,7 +3194,7 @@ class PRE_STANLEY :
            self.FICHIER_VALID = None
 
      # Lancement de Stanley
-     STANLEY(self.macro.get_concept(evol), self.macro.get_concept(maillage), self.macro.get_concept(modele), self.macro.get_concept(cham_mater), c_cara_elem, c_para_sensi, self.FICHIER_VALID)
+     STANLEY(self.macro.get_concept(evol), self.macro.get_concept(maillage), self.macro.get_concept(modele), self.macro.get_concept(cham_mater), c_cara_elem, self.FICHIER_VALID)
 #
 
   def Sortir(self):
@@ -3362,13 +3245,6 @@ class PRE_STANLEY :
       frame_cara_elem.pack(side=Tk.LEFT,padx=5)
       MENU_RADIO_BOX(frame_cara_elem, "cara_elem",fonte=fonte)
       self.cara_elem = LIST_BOX(frame_cara_elem,self.t_cara_elem,Tk.SINGLE,self.t_cara_elem[-1],fonte=fonte)
-
-   # boite de saisie des champs
-    if self.t_para_sensi != []:
-      frame_para_sensi = Tk.Frame(frame_selection)
-      frame_para_sensi.pack(side=Tk.LEFT,padx=5)
-      MENU_RADIO_BOX(frame_para_sensi, "para_sensi",fonte=fonte)
-      self.para_sensi = LIST_BOX(frame_para_sensi,self.t_para_sensi,Tk.SINGLE,self.t_para_sensi[-1],fonte=fonte)
 
    # Boutons
     BOUTON(frame_boutons,'PaleGreen1','STANLEY',self.Lancer,fonte=fonte)

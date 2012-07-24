@@ -1,7 +1,7 @@
       SUBROUTINE RVMOYE ( NOMRES, IOCC )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -101,7 +101,7 @@ C
          IORD = ZI(JORDR+I100-1)
          VALI(1) = IORD
 C
-         CALL RSEXCH( RESU, NOMCHA, IORD, CHAMP, IRET)
+         CALL RSEXCH(' ',RESU, NOMCHA, IORD, CHAMP, IRET)
          IF (IRET.NE.0) GOTO 101
          CALL DISMOI('F','TYPE_CHAMP',CHAMP,'CHAMP',IBID,TYCH,IRET)
 C

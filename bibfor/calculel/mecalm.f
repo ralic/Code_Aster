@@ -2,7 +2,7 @@
      &                  NBORDR,MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -154,7 +154,7 @@ C     &      CONCEP.EQ.'MODE_ACOU' .OR. CONCEP.EQ.'DYNA_HARMO') THEN
      &      CONCEP.EQ.'DYNA_HARMO') THEN
           REFE=RESUCO
           SOP='MASS_MECA'
-          CALL RSEXCH(RESUCO,'DEPL',1,CHDEPL,IRET)
+          CALL RSEXCH('F',RESUCO,'DEPL',1,CHDEPL,IRET)
           CALL JELIRA(CHDEPL(1:19)//'.VALE','LONMAX',NEQ,K8B)
           CALL JEVEUO(REFE//'.REFD','L',LREFE)
           MASSE=ZK24(LREFE+1)(1:19)
@@ -270,9 +270,9 @@ C    ------------------------------------------------------------------
 
 C============ DEBUT DE LA BOUCLE SUR LES OPTIONS A CALCULER ============
       DO 660 IOPT=1,NBOPT
-C
         OPTION=ZK16(JOPT+IOPT-1)
-C
+        IF ( OPTION.EQ.' ' ) GOTO 660
+
         CALL JEVEUO(KNUM,'L',JORDR)
 
 C    -- PASSAGE CALC_CHAMP

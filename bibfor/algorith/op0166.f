@@ -1,7 +1,7 @@
       SUBROUTINE OP0166()
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -335,7 +335,6 @@ C       =====================
         ENDIF
 
  9999 CONTINUE
-C     ============= FIN DE LA BOUCLE SENSIBILITE
 
       IF (TYPCAL.NE.'2') THEN
         CALL DETRSD('CORRESP_2_MAILLA',LCORRE(1))

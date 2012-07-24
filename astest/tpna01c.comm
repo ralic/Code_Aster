@@ -1,8 +1,8 @@
-# MODIF  DATE 23/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE PB 3D STATIONNAIRE AVEC RAYONNEMENT - HEXA20 SOLVEUR: MULT_FRONT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -256,7 +256,7 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPE,
                    NOEUD='N123',
                    VALE=0.0,
                    CRITERE='ABSOLU',
-                   PRECISION=20.0,),
+                   PRECISION=21.0,),
                 _F(RESULTAT=TEMPE,
                    NUME_ORDRE=0,
                    NOM_CHAM='FLUX_ELNO',
@@ -282,7 +282,7 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPE,
                    NOEUD='N119',
                    VALE=0.0,
                    CRITERE='ABSOLU',
-                   PRECISION=20.0,),
+                   PRECISION=21.0,),
                 _F(RESULTAT=TEMPE,
                    NUME_ORDRE=0,
                    NOM_CHAM='FLUX_ELNO',
@@ -308,7 +308,7 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPE,
                    NOEUD='N106',
                    VALE=0.0,
                    CRITERE='ABSOLU',
-                   PRECISION=20.0,),
+                   PRECISION=26.0,),
                 _F(RESULTAT=TEMPE,
                    NUME_ORDRE=0,
                    NOM_CHAM='FLUX_ELNO',
@@ -334,7 +334,7 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPE,
                    NOEUD='N103',
                    VALE=0.0,
                    CRITERE='ABSOLU',
-                   PRECISION=20.0,),),);
+                   PRECISION=26.0,),),);
 
 FIN();
 

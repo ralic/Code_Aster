@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 20/06/2012   AUTEUR GENIAUT S.GENIAUT 
+%& MODIF TYPELEM  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -107,7 +107,7 @@ MODE_LOCAL__
     E1NEUTR  = NEUT_R   ELEM__         (X1       )
     E1NEUTI  = NEUT_I   ELEM__         (X1       )
     E3NEUTI  = NEUT_I   ELEM__         (X[3]     )
-    E10NEUTI  = NEUT_I   ELEM__        (X[10]    )
+    E10NEUTI = NEUT_I   ELEM__        (X[10]    )
     E15NEUTI = NEUT_I   ELEM__         (X[15]    )
     E21NEUTR = NEUT_R   ELEM__         (X[21]    )
     E30NEUTR = NEUT_R   ELEM__         (X[30]    )
@@ -139,7 +139,7 @@ MODE_LOCAL__
     EPRESNO  = PRES_R   ELNO__ IDEN__  (PRES     )
     G27NEUTR = NEUT_R   ELGA__ RIGI    (X[27]    )
     N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
-    N3NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       )
+    N3NEUT_R = NEUT_R   ELNO__ IDEN__  (X[3]     )
     N9NEUT_R = NEUT_R   ELNO__ IDEN__  (X[9]     )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W       )

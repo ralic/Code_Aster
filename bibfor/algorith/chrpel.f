@@ -2,7 +2,7 @@
      &                  MODELE, CARELE, CHAMP0)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -392,7 +392,7 @@ C REPERE CYLINDRIQUE
             ENDIF
             CALL GETVR8('AFFE','AXE_Z',1,IARG,0,AXEZ,IBID)
             IF (IBID.NE.0) THEN
-               CALL U2MESS('A','ALGORITH2_1')
+               CALL U2MESS('A','ALGORITH2_11')
             ENDIF
             AXEZ(1) = 0.0D0
             AXEZ(2) = 0.0D0

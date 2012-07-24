@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,16 +36,10 @@ def extr_resu_prod(RESULTAT,**args):
 EXTR_RESU=OPER(nom="EXTR_RESU",op=176,sd_prod=extr_resu_prod,reentrant='f',
             UIinfo={"groupes":("Résultats et champs",)},
             fr="Extraire des champs au sein d'une SD Résultat",
-         regles=(CONCEPT_SENSIBLE('SEPARE'),
-                 #REUSE_SENSIBLE(),
-                 DERIVABLE('RESULTAT'),),
          RESULTAT        =SIMP(statut='o',typ=(evol_elas,dyna_trans,dyna_harmo,acou_harmo,mode_meca,
                                                mode_acou,evol_ther,evol_noli,evol_varc,
                                                mult_elas,fourier_elas,fourier_ther ) ),
 
-         SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),max='**',
-                                   fr="Liste des paramètres de sensibilité.",
-                                   ang="List of sensitivity parameters"),
 
          ARCHIVAGE       =FACT(statut='f',
            regles=(  UN_PARMI('NUME_ORDRE', 'INST', 'FREQ', 'NUME_MODE',

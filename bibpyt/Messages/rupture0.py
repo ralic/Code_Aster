@@ -1,4 +1,4 @@
-#@ MODIF rupture0 Messages  DATE 20/06/2012   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF rupture0 Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -126,7 +126,7 @@ POST_K1_K2_K3 ne fonctionne que sur des lèvres initialement collées.
 17: _(u"""
 La différence entre la taille maximale et la taille minimale des mailles connectées aux
 noeuds du fond de fissure est importante.
-La taille minimale vaut : %(r1)f 
+La taille minimale vaut : %(r1)f
 La taille maximale vaut : %(r2)f
 -> Risque et Conseil :
 Il a été choisi de multiplier par quatre la taille maximale des mailles connectées aux
@@ -134,7 +134,7 @@ noeuds du fond de fissure pour calculer le paramètre ABSC_CURV_MAXI. Or, si cett
 est importante, vous risquez de post-traiter vos résultats sur une zone trop éloignée
 du fond de fissure et d'obtenir des valeurs de facteurs d'intensité moins précises.
 Vérifiez que la valeur de ABSC_CURV_MAXI calculée est licite.
-Sinon, veuillez spécifier directement la valeur de ABSC_CURV_MAXI ou bien revoir 
+Sinon, veuillez spécifier directement la valeur de ABSC_CURV_MAXI ou bien revoir
 le maillage de manière à rendre les mailles proches du fond de fissure de taille homogène.
 """),
 
@@ -203,8 +203,10 @@ Veuillez vérifier les données fournies au mot-clé NOM_CAS.
 """),
 
 29: _(u"""
-Le mot-clé 'FISSURE' est obligatoire avec l'option  %(k1)s.
-Veuillez le renseigner.
+Lorsque une modélisation 3D est de type FEM l'option %(k1)s nécessite une
+fissure en configuration collée.
+-> Risque et Conseil :
+Veuillez mettre CONFIG_INIT='COLLEE' dans DEFI_FOND_FISS.
 """),
 
 30: _(u"""
@@ -321,8 +323,7 @@ Aucun instant ou numéro d'ordre trouvé.
 
 55: _(u"""
 -> Attention: Le mot-clé EXCIT est facultatif, il n'est pas nécessaire dans tous les cas.
-Il n'est utile que si le résultat à post-traiter a été créé avec la commande CREA_RESU ou
-lors d'un calcul de sensibilité.
+Il n'est utile que si le résultat à post-traiter a été créé avec la commande CREA_RESU.
 -> Risque et Conseil :
 Si vous utilisez CALC_G en dehors des deux cas spécifiques précisés ci-dessus,
 vérifiez la présence de tous les chargements ayant servi à créer le résultat.
@@ -347,12 +348,12 @@ mots-clés FOND_FISS, R_SUP, R_INF, MODULE, et DIRECTION pour la détermination
 automatique du champ thêta.
 """),
 
-59 : _(u"""
-Le champ de THETA est inexistant dans la structure de données  %(k1)s
-de type THETA_GEOM.
--> Risque et Conseil :
-Veuillez revoir la création du champ thêta (opérateur CALC_THETA).
-"""),
+
+
+
+
+
+
 
 60 : _(u"""
 Mélange de mailles de type SEG2 et SEG3 dans la définition du fond de fissure.
@@ -549,9 +550,9 @@ Si la fissure n'est pas plane, on ne peut pas utiliser le mot-clé NORMALE
 dans DEFI_FOND_FISS: définissez la fissure à partir des mailles de ses lèvres.
 """),
 
-95: _(u"""
-Accès impossible au mode propre champ : %(k1)s pour le numéro d'ordre : %(i1)d.
-"""),
+
+
+
 
 96: _(u"""
 Option non disponible actuellement.

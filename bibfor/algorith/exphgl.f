@@ -2,7 +2,7 @@
      &                  NBSEC,NUMDIA,NBMODE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,8 +62,8 @@ C
 C-----------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,ICOMP ,IEQF ,IEQI ,IER ,J ,K 
-      INTEGER LDTYD ,LLINSK ,LTINDS ,N1 ,NDDCOU 
+      INTEGER I ,ICOMP ,IEQF ,IEQI ,IER ,J ,K
+      INTEGER LDTYD ,LLINSK ,LTINDS ,N1 ,NDDCOU
 C-----------------------------------------------------------------------
       DATA DEPL   /'DEPL            '/
 C
@@ -80,7 +80,7 @@ C
 C
 C-----RECUPERATION DU NOMBRE DE DDL PHYSIQUES DU SECTEUR----------------
 C
-      CALL RSEXCH(MODCYC,'DEPL',1,CHAMNO,IER)
+      CALL RSEXCH('F',MODCYC,'DEPL',1,CHAMNO,IER)
       CALL DISMOI('F','PROF_CHNO',CHAMNO,'CHAM_NO',IBID,PFCHNO,IRET)
 
       CALL DISMOI('F','NB_EQUA',PFCHNO,'PROF_CHNO',NEQSEC,K8B,IRET)
@@ -132,17 +132,17 @@ C  BOUCLE SUR LES MODES PROPRES DU DIAMETRE COURANT
 C
       DO 15 I=1,NBMODE
         ICOMP = ICOMP + 1
-        CALL RSEXCH ( MODCYC, 'DEPL', I, NOMCHC, IRET )
+        CALL RSEXCH('F',MODCYC, 'DEPL', I, NOMCHC, IRET )
         CALL JEVEUO ( NOMCHC(1:19)//'.VALE', 'L', LTVECO )
         IF (IRES2.NE.0) THEN
-          CALL RSEXCH ( MODCYS, 'DEPL', I, NOMCHS, IRET )
+          CALL RSEXCH('F',MODCYS, 'DEPL', I, NOMCHS, IRET )
           CALL JEVEUO ( NOMCHS(1:19)//'.VALE', 'L', LTVESI )
         ENDIF
 C
 
 C***********************************************************************
 C
-        CALL RSEXCH(NOMRES,DEPL,I,CHAMVA,IRET)
+        CALL RSEXCH(' ',NOMRES,DEPL,I,CHAMVA,IRET)
         CALL VTCREA(CHAMVA,CREFE,'G','R',NEQ)
         CALL RSNOCH(NOMRES,DEPL,I)
         CALL JEVEUO(CHAMVA//'.VALE','E',LLCHAM)
@@ -192,7 +192,7 @@ C
 C  PRISE EN COMPTE ROTATION SUR CHAQUE SECTEUR
 C
         CALL ROTCHM(PROFNO,ZR(LLCHAM),ZR(LTTSC),NBSEC,ZI(LLINSK),
-     +              NBNOT,NBCMP,3)
+     &              NBNOT,NBCMP,3)
 C
         CALL JELIBE ( NOMCHC(1:19)//'.VALE' )
         IF (IRES2.NE.0) THEN

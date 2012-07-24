@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 11/06/2012   AUTEUR PROIX J-M.PROIX 
+%& MODIF TYPELEM  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,8 +42,8 @@ ENTETE__ ELEMENT__ THER_PYRAM13     MAILLE__ PYRAM13
    ELREFE__  TR6       GAUSS__  RIGI=FPG6   MASS=FPG6
    OPTION__   CHAR_THER_GRAI_F        -1
    OPTION__   CHAR_THER_GRAI_R        -1
-   OPTION__   DURT_ELNO          -1
-   OPTION__   META_ELNO          -1
+   OPTION__   DURT_ELNO               -1
+   OPTION__   META_ELNO               -1
    OPTION__   META_INIT_ELNO          -1
    OPTION__   ERTH_ELEM               -1
    OPTION__   ERTH_ELNO               -1
@@ -53,8 +53,8 @@ ENTETE__ ELEMENT__ THER_PYRAM5      MAILLE__ PYRAM5
    ELREFE__  TR3       GAUSS__  RIGI=COT3  MASS=COT3
    OPTION__   CHAR_THER_GRAI_F        -1
    OPTION__   CHAR_THER_GRAI_R        -1
-   OPTION__   DURT_ELNO          -1
-   OPTION__   META_ELNO          -1
+   OPTION__   DURT_ELNO               -1
+   OPTION__   META_ELNO               -1
    OPTION__   META_INIT_ELNO          -1
    OPTION__   ERTH_ELEM               -1
    OPTION__   ERTH_ELNO               -1
@@ -102,32 +102,31 @@ MODE_LOCAL__
                                         TERMEC   TERME2   TERME1   )
     CGRAINF  = FLUX_F   ELEM__         (FLUX     FLUY     FLUZ     )
     CGRAINR  = FLUX_R   ELEM__         (FLUX     FLUY     FLUZ     )
-    EFLUXPG  = FLUX_R   ELGA__ RIGI     (FLUX     FLUY     FLUZ     )
+    EFLUXPG  = FLUX_R   ELGA__ RIGI    (FLUX     FLUY     FLUZ     )
     EFLUXNO  = FLUX_R   ELNO__ IDEN__  (FLUX     FLUY     FLUZ     )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
-    EGGEOP_R = GEOM_R   ELGA__ RIGI     (X        Y        Z        W       )
+    EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W       )
     ENORME   = NEUT_R   ELEM__         (X1       )
     ENGEOM_R = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     EHYDRNO  = HYDR_R   ELNO__ IDEN__  (HYDR     )
     CTEMPSR  = INST_R   ELEM__         (INST     DELTAT   THETA    KHI      R        RHO      )
     ENINST_R = INST_R   ELNO__ IDEN__  (INST     )
     CDECENT  = NEUT_K24 ELEM__         (Z1       )
-    CREFERK  = NEUT_K24 ELEM__         (Z[19])
-    EGNEUT1R = NEUT_R   ELGA__ RIGI     (X1       )
+    CREFERK  = NEUT_K24 ELEM__         (Z[19]    )
+    EGNEUT1R = NEUT_R   ELGA__ RIGI    (X1       )
     CSOURCF  = SOUR_F   ELEM__         (SOUR     )
     ESOURCR  = SOUR_R   ELGA__ RIGI    (SOUR     )
     CSOURCR  = SOUR_R   ELEM__         (SOUR     )
     NSOURCR  = SOUR_R   ELNO__ IDEN__  (SOUR     )
     DDL_THER = TEMP_R   ELNO__ IDEN__  (TEMP     )
-    CPHASIN_ = VAR2_R   ELEM__         (V1       V2       V3       V4       V5       )
+    CPHASIN_ = VAR2_R   ELEM__         (V[5]    )
     EPHASNO_ = VARI_R   ELNO__ IDEN__  (VARI     )
-    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30])
-    EMNEUT_R = NEUT_R   ELEM__         (X[30]     )
-    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30])
+    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30]    )
+    EMNEUT_R = NEUT_R   ELEM__         (X[30]    )
+    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30]    )
     EVOISIN  = VOISIN   ELEM__         (V0       V1       V2       V3       V4       V5
                                         V6       T0       T1       T2       T3       T4
                                         T5       T6       )
-
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
     ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    )
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
@@ -140,11 +139,8 @@ MATRICE__
     MMATTSR = MTNS_R DDL_THER DDL_THER
 
 OPTION__
-    VERI_JACOBIEN      328    IN__   NGEOMER  PGEOMER     OUT__  ECODRET  PCODRET
-    CARA_GEOM           -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    CHAR_LIMITE         -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+    CARA_GEOM           -1    IN__   XXXXXX   XXXXXX    OUT__  XXXXXX   XXXXXX
+    CHAR_LIMITE         -1    IN__   XXXXXX   XXXXXX    OUT__  XXXXXX   XXXXXX
     CHAR_THER_EVOL      61    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER
                                      CTEMPSR  PTEMPSR  ZVARCPG  PVARCPR
                               OUT__  MVECTTR  PVECTTR
@@ -166,16 +162,12 @@ OPTION__
                               OUT__  EGNEUT1R PLAGRP   MVECTTR  PRESIDU  MVECTTR  PVECTTR
     COOR_ELGA           488   IN__   NGEOMER  PGEOMER
                               OUT__  EGGEOP_R PCOORPG
-    DURT_ELNO      552        IN__   CMATERC  PMATERC  EPHASNO_ PPHASIN
+    DURT_ELNO           551   IN__   CMATERC  PMATERC  EPHASNO_ PPHASIN
                               OUT__  EDURTNO  PDURT_R
-    ECIN_ELEM      -1         IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    ENER_ELAS           -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    ENER_TOTALE         -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    EPOT_ELEM      -1         IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+    ECIN_ELEM           -1    IN__   XXXXXX   XXXXXX    OUT__  XXXXXX   XXXXXX
+    ENER_ELAS           -1    IN__   XXXXXX   XXXXXX    OUT__  XXXXXX   XXXXXX
+    ENER_TOTALE         -1    IN__   XXXXXX   XXXXXX    OUT__  XXXXXX   XXXXXX
+    EPOT_ELEM           -1    IN__   XXXXXX   XXXXXX    OUT__  XXXXXX   XXXXXX
     EPOT_ELEM_TEMP      66    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER  CTEMPSR  PTEMPSR
                                      ZVARCPG  PVARCPR
                               OUT__  EENEDNO  PENERDR  
@@ -185,26 +177,22 @@ OPTION__
                               OUT__  EERREURT PERREUR
     ERTH_ELNO           379   IN__   EERREURT PERREUR
                               OUT__  EERRENOT PERRENO
-    FLUX_ELGA      62         IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER
+    FLUX_ELGA           62    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER
                                      CTEMPSR  PTEMPSR  ZVARCPG  PVARCPR
-                              OUT__  EFLUXPG  PFLUX_R
-    FLUX_ELNO      63         IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER
-                                     CTEMPSR  PTEMPSR  ZVARCPG  PVARCPR
-                              OUT__  EFLUXNO  PFLUX_R
-    INDIC_ENER          -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    INDIC_SEUIL         -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+                              OUT__  EFLUXPG  PFLUXPG
+    FLUX_ELNO           4     IN__   EFLUXPG  PFLUXPG
+                              OUT__  EFLUXNO  PFLUXNO
+    INDIC_ENER          -1    IN__   XXXXXX   XXXXXX    OUT__  XXXXXX   XXXXXX
+    INDIC_SEUIL         -1    IN__   XXXXXX   XXXXXX    OUT__  XXXXXX   XXXXXX
     INIT_MAIL_VOIS      99    IN__  
                               OUT__  EVOISIN  PVOISIN
     INIT_VARC           99    IN__  
                               OUT__  ZVARCPG  PVARCPR
-    MASS_INER           -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+    MASS_INER           -1    IN__   XXXXXX   XXXXXX    OUT__  XXXXXX   XXXXXX
     MASS_THER           54    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPSR  PTEMPSR
                                      ZVARCPG  PVARCPR
                               OUT__  MMATTTR  PMATTTR
-    META_ELNO      64         IN__   CCOMPOR  PCOMPOR  CFTRC    PFTRC    CMATERC  PMATERC  EPHASNO_ PPHASIN
+    META_ELNO           64    IN__   CCOMPOR  PCOMPOR  CFTRC    PFTRC    CMATERC  PMATERC  EPHASNO_ PPHASIN
                                      DDL_THER PTEMPAR  DDL_THER PTEMPER  DDL_THER PTEMPIR  CTEMPSR  PTEMPSR
                               OUT__  EPHASNO_ PPHASNOU
     META_INIT_ELNO      321   IN__   CCOMPOR  PCOMPOR  CMATERC  PMATERC  CPHASIN_ PPHASIN  DDL_THER PTEMPER
@@ -220,8 +208,7 @@ OPTION__
                                      DDL_THER PTEMPEI  DDL_THER PTEMPER  CTEMPSR  PTEMPSR  DDL_THER PTMPCHF
                                      DDL_THER PTMPCHI
                               OUT__  EHYDRNO  PHYDRPP  MVECTTR  PRESIDU
-    RICE_TRACEY         -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+    RICE_TRACEY         -1    IN__   XXXXXX   XXXXXX    OUT__  XXXXXX   XXXXXX
     RIGI_THER           51    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPSR  PTEMPSR
                                      ZVARCPG  PVARCPR
                               OUT__  MMATTTR  PMATTTR
@@ -244,5 +231,6 @@ OPTION__
     TOU_INI_ELGA        99    IN__  
                               OUT__  ESOURCR  PSOUR_R  EGNEUT1R PNEUT_R  EGNEUT_R PNEUT_R EGNEUT_F PNEUT_F 
                                      EFLUXPG  PFLUX_R
-    WEIBULL             -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+    VERI_JACOBIEN       328   IN__   NGEOMER  PGEOMER
+                              OUT__  ECODRET  PCODRET
+    WEIBULL             -1    IN__   XXXXXX   XXXXXX    OUT__  XXXXXX   XXXXXX

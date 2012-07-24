@@ -4,7 +4,7 @@
       INTEGER    IFIC, NOCC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF CALCULEL  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -174,13 +174,7 @@ C     ------------------------------------------------------------------
 
           IF (N1.NE.0) THEN
 
-            CALL RSEXCH(LERESU,NOPARA,NUMORD,CHAM19,IRET)
-            IF (IRET.NE.0) THEN
-              VALK(1) = NORESU
-              VALK(2) = NOPARA
-              VALK(3) = TITRES
-              CALL U2MESG('F','CALCULEL6_96',3,VALK,1,NUMORD,0,0.D0)
-            END IF
+            CALL RSEXCH('F',LERESU,NOPARA,NUMORD,CHAM19,IRET)
 
             NL1 = LXLGUT(LIGN1)
             NL2 = LXLGUT(LIGN2)

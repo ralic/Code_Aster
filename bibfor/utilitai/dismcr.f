@@ -1,6 +1,6 @@
       SUBROUTINE DISMCR(QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,8 @@ C       IERD   : CODE RETOUR (0--> OK, 1 --> PB)
 C
 C ----------------------------------------------------------------------
 C
-      INTEGER K,NCARTE
+      INTEGER K,NCARTE,IEXI
+      LOGICAL ZEROBJ
       CHARACTER*8 KBID
       PARAMETER (NCARTE=13)
       CHARACTER*16 CARTES(NCARTE)
@@ -57,12 +58,21 @@ C -------------------------------------------------------------------
 
       IF (QUESTI.EQ.'NOM_MAILLA' ) THEN
 C     ---------------------------------------------------------------
-      DO 1, K=1,NCARTE
-        CART1=NOMOB//CARTES(K)
-        CALL DISMCA(QUESTI,CART1,REPI,REPK,IERD)
-        IF (IERD.EQ.0) GOTO 2
-1     CONTINUE
-2     CONTINUE
+        DO 1, K=1,NCARTE
+          CART1=NOMOB//CARTES(K)
+          CALL DISMCA(QUESTI,CART1,REPI,REPK,IERD)
+          IF (IERD.EQ.0) GOTO 2
+1       CONTINUE
+2       CONTINUE
+
+
+      ELSE IF (QUESTI.EQ.'EXI_AMOR' ) THEN
+C     ---------------------------------------------------------------
+        REPK='NON'
+        CALL JEEXIN(NOMOB//'.CARDISCA  .VALE',IEXI)
+        IF (IEXI.NE.0) THEN
+          IF (.NOT.ZEROBJ(NOMOB//'.CARDISCA  .VALE')) REPK='OUI'
+        ENDIF
 
 
       ELSE

@@ -1,7 +1,7 @@
-      SUBROUTINE GMETH3(MODELE,NNOFF,FOND,
-     &                 GTHI,MILIEU,GS,OBJCUR,GI,NUM,GXFEM)
+      SUBROUTINE GMETH3(NNOFF,FOND,GTHI,MILIEU,GS,OBJCUR,GI,NUM,GXFEM)
+
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,9 +22,8 @@ C ======================================================================
 C
       INCLUDE 'jeveux.h'
       INTEGER         NNOFF,NUM
-      REAL*8          GTHI(1),GS(1),GI(1),OBJCUR(*)
-      CHARACTER*8     MODELE
-      CHARACTER*24    FOND
+      REAL*8          GTHI(1),GS(1),GI(1)
+      CHARACTER*24    FOND,OBJCUR
       LOGICAL         MILIEU,GXFEM
 C
 C ......................................................................
@@ -32,7 +31,6 @@ C      METHODE THETA-LAGRANGE ET G-LAGRANGE POUR LE CALCUL DE G(S)
 C
 C ENTREE
 C
-C     MODELE   --> NOM DU MODELE
 C     NNOFF    --> NOMBRE DE NOEUDS DU FOND DE FISSURE
 C     FOND     --> NOMS DES NOEUDS DU FOND DE FISSURE
 C     GTHI     --> VALEURS DE G POUR LES CHAMPS THETAI
@@ -50,7 +48,7 @@ C
 C
 C
 C
-      INTEGER      I,KK,IADRNO
+      INTEGER      I,KK,IADRNO,IABSC
       INTEGER      IMATR,IVECT,IBID
 C
       REAL*8       DELTA,S1,S2,S3
@@ -71,6 +69,9 @@ C
         IF (ZK8(IADRNO+1-1).EQ.ZK8(IADRNO+NNOFF-1))  CONNEX = .TRUE.
       ENDIF
 C
+C     ABSCISSES CURVILIGNES DES NOEUDS DU FOND DE FISSURE
+      CALL JEVEUO(OBJCUR,'L',IABSC)
+C
       CALL GETVTX('LISSAGE', 'LISSAGE_G',1,IARG,1,LISSG,IBID)
 C
       IF (LISSG.EQ.'LAGRANGE_NO_NO') THEN
@@ -80,8 +81,8 @@ C
 C
         IF (MILIEU) THEN
           DO 10 I=1,NNOFF-2,2
-            S1 = OBJCUR(I)
-            S3 = OBJCUR(I+2)
+            S1 = ZR(IABSC-1+I)
+            S3 = ZR(IABSC-1+I+2)
             DELTA = (S3-S1)/6.D0
             ZR(IVECT+I  -1)= ZR(IVECT+I-1) + DELTA
             ZR(IVECT+I+1-1)= 4.D0*DELTA
@@ -93,8 +94,8 @@ C
           ENDIF
         ELSE
           DO 20 I=1,NNOFF-1
-            S1 = OBJCUR(I)
-            S2 = OBJCUR(I+1)
+            S1 = ZR(IABSC-1+I)
+            S2 = ZR(IABSC-1+I+1)
             DELTA = (S2-S1)/3.D0
             ZR(IVECT+I  -1)= ZR(IVECT+I-1) + DELTA
             ZR(IVECT+I+1-1)= 2.D0*DELTA
@@ -115,8 +116,8 @@ C
 C
         IF (MILIEU) THEN
           DO 100 I=1,NNOFF-2,2
-            S1 = OBJCUR(I)
-            S3 = OBJCUR(I+2)
+            S1 = ZR(IABSC-1+I)
+            S3 = ZR(IABSC-1+I+2)
             DELTA = (S3-S1)/30.D0
 C
             KK = IMATR+(I-1  )*NNOFF+I-1
@@ -135,16 +136,16 @@ C
           IF (CONNEX) THEN
             KK = IMATR+(1-1  )*NNOFF+1-1
             ZR(KK )= ZR(KK) + 5.D0*DELTA
-            S1 = OBJCUR(1)
-            S3 = OBJCUR(3)
+            S1 = ZR(IABSC-1+1)
+            S3 = ZR(IABSC-1+3)
             DELTA = (S3-S1)/30.D0
             KK = IMATR+(NNOFF-1)*NNOFF+NNOFF-1
             ZR(KK )= ZR(KK) + 5.D0*DELTA
           ENDIF
         ELSE
           DO 120 I=1,NNOFF-1
-            S1 = OBJCUR(I)
-            S2 = OBJCUR(I+1)
+            S1 = ZR(IABSC-1+I)
+            S2 = ZR(IABSC-1+I+1)
             DELTA = (S2-S1)/6.D0
 C
             KK = IMATR+(I-1  )*NNOFF+I-1
@@ -157,8 +158,8 @@ C
           IF (CONNEX) THEN
             KK = IMATR+(1-1  )*NNOFF+1-1
             ZR(KK )= ZR(KK) + 3.D0*DELTA
-            S1 = OBJCUR(1)
-            S3 = OBJCUR(3)
+            S1 = ZR(IABSC-1+1)
+            S3 = ZR(IABSC-1+3)
             DELTA = (S3-S1)/6.D0
             KK = IMATR+(NNOFF-1)*NNOFF+NNOFF-1
             ZR(KK )= ZR(KK) + 3.D0*DELTA

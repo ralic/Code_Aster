@@ -15,7 +15,7 @@
      &                    IFORC2, TABWK1, TABWK2, ARCHIV,NBTYAR,TYPEAR )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -269,7 +269,7 @@ C
      &                  CBID,EPS0,'ABSOLU',ITEM2,1,IBID)
           ENDIF
           IF (IBID.GT.0) THEN
-            CALL RSEXCH(ZK8(LRESU+IRESU-1),'DEPL',ITEM2,CHAM19,IRET)
+            CALL RSEXCH('F',ZK8(LRESU+IRESU-1),'DEPL',ITEM2,CHAM19,IRET)
             CALL VTCOPY(CHAM19,CHAMNO)
             CALL JEVEUO(CHAMNO//'.VALE','L',LVALE)
 
@@ -286,17 +286,18 @@ C        --- INTERPOLATION LINEAIRE ---
               CALL RSADPA(ZK8(LRESU+IRESU-1),'L',1,'INST',I+1,0,
      &                    LTPS1,K8BID)
               IF ( I.EQ.1 .AND. TEMPS.LT.ZR(LTPS0) ) THEN
-                CALL RSEXCH(ZK8(LRESU+IRESU-1),'DEPL',I,CHAM19,IRET)
+                CALL RSEXCH('F',ZK8(LRESU+IRESU-1),'DEPL',I,CHAM19,IRET)
                 CALL VTCOPY(CHAM19,CHAMNO)
                 CALL JEVEUO(CHAMNO//'.VALE','L',LVALE)
                 GOTO 213
               ENDIF
               IF ( TEMPS.GE.ZR(LTPS0).AND.TEMPS.LT.ZR(LTPS1)) THEN
                 ALPHA = (TEMPS - ZR(LTPS0)) / (ZR(LTPS1) - ZR(LTPS0))
-                CALL RSEXCH(ZK8(LRESU+IRESU-1),'DEPL',I,CHAM19,IRET)
+                CALL RSEXCH('F',ZK8(LRESU+IRESU-1),'DEPL',I,CHAM19,IRET)
                 CALL VTCOPY(CHAM19,CHAMNO)
                 CALL JEVEUO(CHAMNO//'.VALE','L',LVAL1)
-                CALL RSEXCH(ZK8(LRESU+IRESU-1),'DEPL',I+1,CHAM19,IRET)
+                CALL RSEXCH('F',ZK8(LRESU+IRESU-1),'DEPL',I+1,CHAM19,
+     &                      IRET)
                 CALL VTCOPY(CHAM19,CHAMN2)
                 CALL JEVEUO(CHAMN2//'.VALE','L',LVAL2)
                 CALL DCOPY(NEQ,ZR(LVAL1),1,ZR(LVALE),1)
@@ -305,7 +306,8 @@ C        --- INTERPOLATION LINEAIRE ---
                 GOTO 213
               ENDIF
               IF ( I.EQ.NBINST-1 .AND. TEMPS.GE.ZR(LTPS1) ) THEN
-                CALL RSEXCH(ZK8(LRESU+IRESU-1),'DEPL',I+1,CHAM19,IRET)
+                CALL RSEXCH('F',ZK8(LRESU+IRESU-1),'DEPL',I+1,CHAM19,
+     &                      IRET)
                 CALL VTCOPY(CHAM19,CHAMNO)
                 CALL JEVEUO(CHAMNO//'.VALE','L',LVALE)
                 GOTO 213

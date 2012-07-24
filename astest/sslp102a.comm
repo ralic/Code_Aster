@@ -1,4 +1,4 @@
-# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE TAUX DE RESTITUTION AVEC ETAT INITIAL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -55,7 +55,7 @@ CH=AFFE_CHAR_MECA_F(       MODELE=MO,DDL_IMPO=(
                            _F(  GROUP_NO = 'GRNM2',      DY = ZERO),
                            _F(  GROUP_NO = 'GRNM4',      DY = ZERO),
                            _F(  NOEUD = 'N695',      DX = ZERO)),
-                          EPSI_INIT=_F(  TOUT = 'OUI', EPXX = EPSINI,
+                          PRE_EPSI=_F(  TOUT = 'OUI', EPXX = EPSINI,
                                                  EPYY = EPSINI,
                                                  EPZZ = EPSINI)
                         )

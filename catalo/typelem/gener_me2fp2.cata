@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 12/03/2012   AUTEUR GREFFET N.GREFFET 
+%& MODIF TYPELEM  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -65,33 +65,23 @@ MATRICE__
     MMATUUR = MDEP_R DDL_MECA DDL_MECA
 
 OPTION__
-    CARA_GEOM           -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    CHAR_LIMITE         -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+    CARA_GEOM           -1    IN__    OUT__    XXXXXX   XXXXXX
+    CHAR_LIMITE         -1    IN__    OUT__    XXXXXX   XXXXXX
     COOR_ELGA           488   IN__   NGEOMER  PGEOMER
                               OUT__  EGGEOP_R PCOORPG
-    ECIN_ELEM      -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    ENER_ELAS           -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    ENER_TOTALE         -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    EPOT_ELEM      -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    INDIC_ENER          -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    INDIC_SEUIL         -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    MASS_INER           -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+    ECIN_ELEM           -1    IN__    OUT__    XXXXXX   XXXXXX
+    ENER_ELAS           -1    IN__    OUT__    XXXXXX   XXXXXX
+    ENER_TOTALE         -1    IN__    OUT__    XXXXXX   XXXXXX
+    EPOT_ELEM           -1    IN__    OUT__    XXXXXX   XXXXXX
+    INDIC_ENER          -1    IN__    OUT__    XXXXXX   XXXXXX
+    INDIC_SEUIL         -1    IN__    OUT__    XXXXXX   XXXXXX
+    MASS_INER           -1    IN__    OUT__    XXXXXX   XXXXXX
     MASS_MECA           371   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC
                               OUT__  MMATUUR  PMATUUR
-    MASS_MECA_DIAG      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
-    MASS_MECA_EXPLI     -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
-    M_GAMMA             -1    IN__   XXXXXX   XXXXXX   OUT__  XXXXXX   XXXXXX
-    NORME_L2            -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+    MASS_MECA_DIAG      -1    IN__    OUT__    XXXXXX   XXXXXX
+    MASS_MECA_EXPLI     -1    IN__    OUT__    XXXXXX   XXXXXX
+    M_GAMMA             -1    IN__    OUT__    XXXXXX   XXXXXX
+    NORME_L2            -1    IN__    OUT__    XXXXXX   XXXXXX
     RIGI_MECA           370   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR
                               OUT__  MMATUUR  PMATUUR
     FORC_NODA           370   IN__   DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CMATERC  PMATERC
@@ -100,21 +90,14 @@ OPTION__
     FULL_MECA           370   IN__   CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  CPESANR  PPESANR  CPESANR  PPESANR
                               OUT__  ECODRET  PCODRET  MMATUUR  PMATUUR  MVECTUR  PVECTUR
-    FULL_MECA_ELAS      -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    MECA_SENS_MATE      -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    MECA_SENS_RAPH      -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+    FULL_MECA_ELAS      -1    IN__    OUT__    XXXXXX   XXXXXX
     PAS_COURANT         405   IN__   CMATERC  PMATERC  NGEOMER  PGEOMER
                               OUT__  ECOURAN  PCOURAN
     RAPH_MECA           370   IN__   CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  CPESANR  PPESANR
                               OUT__  ECODRET  PCODRET  MVECTUR  PVECTUR
-    RICE_TRACEY         -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    RIGI_MECA_ELAS      -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+    RICE_TRACEY         -1    IN__    OUT__    XXXXXX   XXXXXX
+    RIGI_MECA_ELAS      -1    IN__    OUT__    XXXXXX   XXXXXX
     RIGI_MECA_HYST      370   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC 
                               OUT__  MMATUUC  PMATUUC
     RIGI_MECA_TANG      370   IN__   CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
@@ -122,5 +105,4 @@ OPTION__
                               OUT__  MMATUUR  PMATUUR
     NSPG_NBVA           99    IN__   CCOMPO2  PCOMPOR
                               OUT__  EDCEL_I  PDCEL_I
-    WEIBULL             -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+    WEIBULL             -1    IN__    OUT__    XXXXXX   XXXXXX

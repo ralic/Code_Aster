@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,27 +27,25 @@ C
 C-----------------------------------------------------------------------
       INTEGER I ,IFFT ,IFM ,IMATR ,IT ,J ,K 
       INTEGER KB ,KF ,KK ,KTABL ,L ,L1 ,L2 
-      INTEGER LCOD ,LCOMP1 ,LFON ,LINT ,LONG1 ,LONG2 ,LPROL 
+      INTEGER LCOMP1 ,LFON ,LINT ,LONG1 ,LONG2
       INTEGER LRESU1 ,LRMS ,LS1 ,LSSX ,LTABL ,LVALC ,LVALE 
-      INTEGER NBF1 ,NBPAR ,NBPTS ,NBPTS2 ,NBPTS3 ,NDA ,NDD 
+      INTEGER NBPTS ,NBPTS2 ,NDA ,NDD 
       INTEGER NFCOD ,NFONC ,NIV ,NMATR 
       REAL*8 BMATR ,DFREQ ,DT ,DURANA ,DURDEC ,FREFIN ,FREINI 
-      REAL*8 PTS ,PTS1 ,PTS2 ,PTS3 ,R8B ,TINST ,TINST1 
+      REAL*8 PTS ,PTS1 ,PTS2 ,PTS3 ,TINST ,TINST1 
       REAL*8 TINST2 
 C-----------------------------------------------------------------------
-      PARAMETER   ( NBPAR = 6 )
       INTEGER       LONG, IVAL(2), IER
       REAL*8        RESU, ZERO
-      COMPLEX*16    C16B
-      CHARACTER*8   K8B, NOMU, TYPAR(NBPAR)
-      CHARACTER*16  CONCEP, NOMCMD, NOPAR(NBPAR), KVAL(2)
-      CHARACTER*19  NOMFON, NOMCOD
-      CHARACTER*24  CHVALE, CHPROL, NOMOBJ
-      INTEGER      IARG
+      CHARACTER*8   K8B, NOMU, NOMREF
+      CHARACTER*16  CONCEP, NOMCMD
+      CHARACTER*19  NOMFON
+      CHARACTER*24  NOMOBJ
+      CHARACTER*24  CHNUMI,CHNUMJ,CHFREQ,CHVALE
+
+      INTEGER      IARG,ISPEC
+      INTEGER       LNUMI,LNUMJ,LFREQ,LREFE,NBABS,MXVAL,IPF
 C
-      DATA NOPAR / 'NOM_CHAM' , 'OPTION' , 'DIMENSION' ,
-     &             'NUME_ORDRE_I' , 'NUME_ORDRE_J' ,'FONCTION_C' /
-      DATA TYPAR / 'K16' , 'K16' , 'I' , 'I' , 'I' , 'K24' /
 C     ------------------------------------------------------------------
 C
 C     --- INITIALISATION DES DIVERS ---
@@ -73,12 +71,11 @@ C
       CALL INFMAJ
       CALL INFNIV ( IFM , NIV )
 C
-      CALL TBCRSD ( NOMU, 'G' )
-      CALL TBAJPA ( NOMU, NBPAR, NOPAR, TYPAR )
-C
-      KVAL(1) = 'DSP'
-      KVAL(2) = 'TOUT'
-      CALL TBAJLI ( NOMU, 3, NOPAR, NFONC, R8B, C16B, KVAL, 0 )
+      NOMREF=NOMU(1:8)
+
+      CALL WKVECT(NOMREF//'.REFE','G V K16',2,LREFE)
+      ZK16(LREFE) = 'DSP'
+      ZK16(LREFE+1) = 'TOUT'
 C
       DURANA = TINST2 - TINST1
       CALL GETVR8 ( ' ', 'DUREE_ANALYSE' , 0,IARG,1, DURANA, NDA )
@@ -104,7 +101,6 @@ C
       LONG1  = NBPTS * NFCOD
       LONG2  = NMATR * NFCOD
       NBPTS2 = NBPTS / 2
-      NBPTS3 = NBPTS2 * 3
       DFREQ  = 1.D0 / DURANA
 CC
       CALL WKVECT('&&OP0120.TEMP.VALC','V V C',LONG,LVALC)
@@ -154,37 +150,53 @@ C
   110 CONTINUE
 C
 C     --- CREATION DES NOMS DE FONCTIONS ---
+      MXVAL = NFONC*(NFONC+1)/2
+      CHVALE = NOMREF//'.VALE'
+      CALL JECREC(CHVALE,'G V R','NU','DISPERSE','VARIABLE',MXVAL)
+      CHFREQ = NOMREF//'.FREQ'
+      CHNUMI = NOMREF//'.NUMI'
+      CHNUMJ = NOMREF//'.NUMJ'
+      CALL WKVECT(CHNUMI,'G V I',MXVAL,LNUMI)
+      CALL WKVECT(CHNUMJ,'G V I',MXVAL,LNUMJ)
+      CALL WKVECT(CHFREQ,'G V R',NBPTS2,LFREQ)
+
+      DO 250 K = 1,NBPTS2
+        ZR(LFREQ+K-1) = (K-1)*DFREQ
+250   CONTINUE
+
       KTABL = 1
+      IPF = 0
       DO 130 J = 1,NFONC
         IVAL(2) = J
 C
         DO 140 I = 1,J
           IVAL(1) = I
+          IPF = IPF+1
+          ZI(LNUMI-1+IPF) = IVAL(1)
+          ZI(LNUMJ-1+IPF) = IVAL(2)
 C
-          WRITE(NOMCOD,'(A8,A3,2I4.4)') NOMU,'.FO',I,J
-C
-          CALL TBAJLI ( NOMU, 3, NOPAR(4),
-     &                        IVAL, R8B, C16B, NOMCOD, 0 )
-C
-C           --- CREATION DE L'OBJET NOMCOD//'.VALE' ---
-C           --- CREATION DE L'OBJET NOMCOD//'.PROL' ---
-          CHVALE = NOMCOD//'.VALE'
-          CALL WKVECT ( CHVALE, 'G V R', NBPTS3, LCOD )
-          CHPROL = NOMCOD//'.PROL'
-          CALL WKVECT ( CHPROL, 'G V K24', 6, LPROL )
-          ZK24(LPROL  ) = 'FONCT_C '
-          ZK24(LPROL+1) = 'LIN LIN '
-          ZK24(LPROL+2) = 'FREQ    '
-          ZK24(LPROL+3) = 'DSP     '
-          ZK24(LPROL+4) = 'EE      '
-          ZK24(LPROL+5) = NOMCOD
-C
+          IF (IVAL(1) .EQ. IVAL(2)) THEN
+            NBABS = NBPTS2
+          ELSE
+            NBABS = 2*NBPTS2
+          ENDIF
+
+          CALL JECROC(JEXNUM(CHVALE,IPF))
+          CALL JEECRA(JEXNUM(CHVALE,IPF),'LONMAX',NBABS,' ')
+          CALL JEECRA(JEXNUM(CHVALE,IPF),'LONUTI',NBABS,' ')
+          CALL JEVEUO(JEXNUM(CHVALE,IPF),'E',ISPEC)
+
           DO 150 K = 1,NBPTS2
-            L1 = LCOD + NBPTS2 + (K-1)*2
-            L2 = LSSX + NBPTS* (KTABL-1) + K - 1
-            ZR(LCOD+K-1) = (K-1)*DFREQ
-            ZR(L1) = ZR(L2)
-            ZR(L1+1) = ZR(L2+NBPTS2)
+            IF (IVAL(1) .EQ. IVAL(2)) THEN
+              L1 = ISPEC + K-1
+              L2 = LSSX + NBPTS* (KTABL-1) + K - 1
+              ZR(L1) = ZR(L2)
+            ELSE
+              L1 = ISPEC + (K-1)*2
+              L2 = LSSX + NBPTS* (KTABL-1) + K - 1
+              ZR(L1) = ZR(L2)
+              ZR(L1+1) = ZR(L2+NBPTS2)
+            ENDIF
   150     CONTINUE
           KTABL = KTABL + 1
   140   CONTINUE
@@ -198,8 +210,7 @@ C
       ENDIF
       IF ( NIV .GE. 2 ) THEN
          NOMOBJ = '&&OP0117.FONCTION'
-         CALL TBEXVE ( NOMU, 'FONCTION_C', NOMOBJ, 'V', NBF1, K8B )
-         IF (NFCOD.NE.NBF1) CALL U2MESS('F','MODELISA2_89')
+         IF (NFCOD.NE.MXVAL) CALL U2MESS('F','MODELISA2_89')
          CALL JEVEUO ( NOMOBJ, 'L', LTABL )
          CALL INTIMP ( IFM, ZR(LRMS), ZK24(LTABL), NMATR, NFCOD )
       ENDIF

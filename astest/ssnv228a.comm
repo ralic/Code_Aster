@@ -1,0 +1,199 @@
+# MODIF  DATE 23/07/2012   AUTEUR FLEJOU J-L.FLEJOU 
+# TITRE PRETENSION DUN GOUJON : METHODE MANUELLE
+# ssnv228a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='SSNV228A',
+              NIV_PUB_WEB='INTERNET'),);
+
+# =====================================================================
+#                 MAILLAGE
+# =====================================================================
+MA=LIRE_MAILLAGE(FORMAT='MED')
+
+MA=DEFI_GROUP(
+   reuse=MA,
+   MAILLAGE=MA,
+   CREA_GROUP_NO=(
+      _F(GROUP_MA='M_L_SA', NOM='N_M_L_SA',),
+      _F(INTERSEC=('N_SCJB','N_M_L_SA',), NOM='N_ISA',),
+      _F(INTERSEC=('N_SCJB','N_M_L_AA',), NOM='N_IAA',),
+      _F(DIFFE=('N_M_L_AA','N_SCEG','N_SCGE',), NOM='N_ILAA',),
+   ),
+)
+
+MA=MODI_MAILLAGE(
+   reuse=MA,
+   MAILLAGE=MA,
+   ORIE_PEAU_3D=_F(GROUP_MA=('M_TUB','M_INT','SCBJ','SCJB','M_L_AA','M_L_SA',),),
+)
+
+# =====================================================================
+#                 MODELE ET MATERIAU
+# =====================================================================
+MO_ME=AFFE_MODELE(
+   MAILLAGE=MA,
+   AFFE=_F(TOUT='OUI',PHENOMENE='MECANIQUE',MODELISATION='3D',),
+)
+
+MAT=DEFI_MATERIAU(ELAS=_F(E=200000.0, NU=0.3,),)
+
+CHMTM=AFFE_MATERIAU(
+   MAILLAGE=MA,
+   MODELE=MO_ME,
+   AFFE=_F(TOUT='OUI', MATER=MAT,),
+)
+
+# =====================================================================
+#                 CONDITIONS AUX LIMITES
+# =====================================================================
+# Blocage suivant z du deplacement du dessous du goujon, M_GOU, et du joint,M_JOI.
+# Conditions de symetrie : blocage lateral (face laterale, N_ILAA, avec alesage).
+# Conditions de symetrie : blocage lateral (face laterale, M_L_SA, sans alesage).
+# Condition de planeite de la face de coupe du tube, M_TUB.
+# Serrage ecrou/goujon (N_SCEG/N_SCGE).
+# Pression sur M_INT.
+CL=AFFE_CHAR_MECA(
+   MODELE=MO_ME,
+   DDL_IMPO=(
+      _F(GROUP_MA=('M_GOU','M_JOI'), DZ=0.0,),
+      _F(GROUP_NO='N_ILAA', DY=0.0,),
+      ),
+   FACE_IMPO=_F(GROUP_MA='M_L_SA', DNOR=0.0,),
+   LIAISON_UNIF=_F(GROUP_MA=('M_TUB'), DDL='DZ',),
+   LIAISON_GROUP=(
+      _F(GROUP_NO_1='N_SCEG', GROUP_NO_2='N_SCGE',
+         DDL_1='DX', COEF_MULT_1= 1.0,
+         DDL_2='DX', COEF_MULT_2=-1.0, COEF_IMPO=0.0,),
+      _F(GROUP_NO_1='N_SCEG', GROUP_NO_2='N_SCGE',
+         DDL_1='DY', COEF_MULT_1=1.0,
+         DDL_2='DY', COEF_MULT_2=-1.0, COEF_IMPO=0.0,),
+   ),
+   PRES_REP=_F(GROUP_MA='M_INT', PRES=1.0,),
+)
+
+# =====================================================================
+#                 CONTACT JOINT/BRIDE
+# =====================================================================
+CON_BJ=DEFI_CONTACT(
+   MODELE=MO_ME,
+   FORMULATION='CONTINUE',
+   ZONE=_F(GROUP_MA_MAIT=('SCBJ',), GROUP_MA_ESCL=('SCJB',),
+           SANS_GROUP_NO=('N_ISA','N_IAA'),
+           CONTACT_INIT='INTERPENETRE',),
+)
+
+# =====================================================================
+#                 CHARGEMENT
+# =====================================================================
+# Contrainte moyenne dans le du goujon = 30 MPa
+# Recherche par tatonnement du DEPL_R correspondant
+# DEPL_R : deplacement relatif suivant z entre N_SCEG et N_SCGE
+# ATTENTION : 1/2 section de modelisee
+SIG_PRET = 30.0
+R_GOUJON =  6.0
+F_RESULT = -SIG_PRET*3.14*R_GOUJON*R_GOUJON/2.0
+#
+DEPL_R = 0.008
+#
+F_PRET=DEFI_FONCTION(
+   NOM_PARA='INST',
+   VALE=( 0.0, 0.0,
+          1.0, -DEPL_R,),
+   PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',
+)
+
+CHAR=AFFE_CHAR_MECA_F(
+   MODELE=MO_ME,
+   LIAISON_GROUP=_F(GROUP_NO_1='N_SCEG', GROUP_NO_2='N_SCGE',
+                    DDL_1='DZ', COEF_MULT_1=1.0,
+                    DDL_2='DZ', COEF_MULT_2=-1.0, COEF_IMPO=F_PRET,),
+)
+
+# =====================================================================
+#                 RESOLUTION
+# =====================================================================
+LR=DEFI_LIST_REEL(
+   DEBUT=0.0,
+   INTERVALLE=_F(JUSQU_A=1.0,  NOMBRE=1,),
+)
+
+RESU=STAT_NON_LINE(
+   MODELE=MO_ME,
+   CHAM_MATER=CHMTM,
+   CONTACT=CON_BJ,
+   EXCIT=(
+      _F(CHARGE=CL,),
+      _F(CHARGE=CHAR,),
+   ),
+   COMP_INCR=_F(RELATION='ELAS',),
+   INCREMENT=_F(LIST_INST=LR,),
+   NEWTON=_F(REAC_ITER=1,),
+)
+
+# =====================================================================
+#                 POST-TRAITEMENT
+# =====================================================================
+RESU=CALC_CHAMP(
+   reuse=RESU,
+   RESULTAT=RESU, FORCE='REAC_NODA',
+)
+
+REACF=POST_RELEVE_T(
+   ACTION=(
+      _F(INTITULE='FZ_GOU', OPERATION='EXTRACTION', INST=1.0, RESULTAT=RESU,
+         NOM_CHAM='REAC_NODA', RESULTANTE='DZ', GROUP_NO='N_M_GOU',),
+      _F(INTITULE='FZ_CEG', OPERATION='EXTRACTION', INST=1.0, RESULTAT=RESU,
+         NOM_CHAM='REAC_NODA', RESULTANTE='DZ', GROUP_NO='N_SCEG',),
+      _F(INTITULE='FZ_CGE', OPERATION='EXTRACTION', INST=1.0, RESULTAT=RESU,
+         NOM_CHAM='REAC_NODA', RESULTANTE='DZ', GROUP_NO='N_SCGE',),
+      _F(INTITULE='FZ_CBJ', OPERATION='EXTRACTION', INST=1.0, RESULTAT=RESU,
+         NOM_CHAM='REAC_NODA', RESULTANTE='DZ', GROUP_NO='N_SCBJ',),
+      _F(INTITULE='FZ_CJB', OPERATION='EXTRACTION', INST=1.0, RESULTAT=RESU,
+         NOM_CHAM='REAC_NODA', RESULTANTE='DZ', GROUP_NO='N_SCJB',),
+   ),
+)
+
+# =====================================================================
+#                 TEST_RESU
+# =====================================================================
+# Test par rapport a la valeur cible : F_result
+# Test sur une surface d'application de DEPL_R
+TEST_TABLE(
+   TABLE=REACF,
+   FILTRE=_F(NOM_PARA='INTITULE', VALE_K='FZ_CEG',),
+   NOM_PARA='DZ', PRECISION=1.E-2, VALE=F_RESULT,
+   REFERENCE = 'ANALYTIQUE',
+)
+
+# Test de non-regression sur differentes surfaces
+ForceS    = 1704.23549149
+# surfaces GOUJON/ECROU , ECROU/GOUJON, GOUJON, BRIDE/JOINT, JOINT/BRIDE
+SurfNom   = ['FZ_CEG','FZ_CGE','FZ_GOU','FZ_CBJ','FZ_CJB']
+SurfForce = [-ForceS,  ForceS, -ForceS,  ForceS, -ForceS ]
+
+for ii in range(len(SurfNom)):
+   TEST_TABLE(
+      TABLE=REACF,
+      FILTRE=_F(NOM_PARA='INTITULE', VALE_K= SurfNom[ii],),
+      NOM_PARA='DZ', VALE= SurfForce[ii], PRECISION=1.E-6,
+      REFERENCE = 'NON_REGRESSION',
+   )
+
+FIN()

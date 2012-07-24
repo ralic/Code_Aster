@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -73,10 +73,6 @@ MATRICE__
     MMATUNS = MDNS_R DDL_MECA DDL_MECA
 
 OPTION__
-    EFGE_ELGA           546   IN__   EEFGEGA  PSIEFR
-                              OUT__  EEFGEGA  PEFGER    EEFGEGC  PEFGEC
-    INIT_VARC           99    IN__  
-                              OUT__  ZVARCPG  PVARCPR
     ADD_SIGM            581   IN__   EEFGEGA  PEPCON1  EEFGEGA  PEPCON2
                               OUT__  EEFGEGA  PEPCON3
     AMOR_MECA           -1    IN__     OUT__  XXXXXX   XXXXXX
@@ -107,6 +103,8 @@ OPTION__
                               OUT__  EGGEOP_R PCOORPG
     DEGE_ELNO           -1    IN__     OUT__  XXXXXX   XXXXXX
     ECIN_ELEM           -1    IN__     OUT__  XXXXXX   XXXXXX
+    EFGE_ELGA           546   IN__   EEFGEGA  PSIEFR
+                              OUT__  EEFGEGA  PEFGER   EEFGEGC  PEFGEC
     EFGE_ELNO           185   IN__   EEFGEGA  PCONTRR  ENONLIN  PNONLIN
                               OUT__  EEFGENO  PEFFORR  EEFGENC  PEFFORC
     ENER_ELAS           -1    IN__     OUT__  XXXXXX   XXXXXX
@@ -125,14 +123,14 @@ OPTION__
                                      MVECTUR  PVECTUR
     INDIC_ENER          -1    IN__     OUT__  XXXXXX   XXXXXX
     INDIC_SEUIL         -1    IN__     OUT__  XXXXXX   XXXXXX
+    INIT_VARC           99    IN__  
+                              OUT__  ZVARCPG  PVARCPR
     MASS_FLUI_STRU      -1    IN__     OUT__  XXXXXX   XXXXXX
     MASS_INER           -1    IN__     OUT__  XXXXXX   XXXXXX
     MASS_MECA           391   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CMATERC  PMATERC
                               OUT__  MMATUNS  PMATUNS
     MASS_MECA_DIAG      -1    IN__     OUT__  XXXXXX   XXXXXX
     MASS_MECA_EXPLI     -1    IN__     OUT__  XXXXXX   XXXXXX
-    MECA_SENS_MATE      -1    IN__     OUT__  XXXXXX   XXXXXX
-    MECA_SENS_RAPH      -1    IN__     OUT__  XXXXXX   XXXXXX
     M_GAMMA             391   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PACCELR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC
                               OUT__  MVECTUR  PVECTUR

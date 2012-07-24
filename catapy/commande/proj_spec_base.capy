@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 07/05/2012   AUTEUR BODEL C.BODEL 
+#& MODIF COMMANDE  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 # RESPONSABLE ADOBES A.ADOBES
-PROJ_SPEC_BASE=OPER(nom="PROJ_SPEC_BASE",op= 146,sd_prod=table_fonction,reentrant='n',
+PROJ_SPEC_BASE=OPER(nom="PROJ_SPEC_BASE",op= 146,sd_prod=interspectre,reentrant='n',
             UIinfo={"groupes":("Matrices et vecteurs",)},
             fr="Projecter un ou plusieurs spectres de turbulence sur une (ou plusieurs) base(s) modale(s) ",
       regles=(UN_PARMI('BASE_ELAS_FLUI','MODE_MECA','CHAM_NO'),
@@ -25,6 +25,10 @@ PROJ_SPEC_BASE=OPER(nom="PROJ_SPEC_BASE",op= 146,sd_prod=table_fonction,reentran
          SPEC_TURB      =SIMP(statut='o',typ=spectre_sdaster,validators=NoRepeat(),max='**' ),
          TOUT_CMP       =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
          BASE_ELAS_FLUI =SIMP(statut='f',typ=melasflu_sdaster ),
+         b_fluide = BLOC(condition="BASE_ELAS_FLUI !=None",
+           VITE_FLUI      =SIMP(statut='o',typ='R'),
+           PRECISION       =SIMP(statut='f',typ='R',defaut=1.0E-3 ),
+         ),
          MODE_MECA      =SIMP(statut='f',typ=mode_meca ),
          CHAM_NO        =SIMP(statut='f',typ=cham_no_sdaster),
          FREQ_INIT      =SIMP(statut='o',typ='R',val_min=0.E+0 ),  

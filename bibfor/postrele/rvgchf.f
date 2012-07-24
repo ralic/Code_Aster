@@ -1,6 +1,6 @@
       SUBROUTINE RVGCHF ( EPSI, CRITER,
-     >                    NOMSD, CHPSYM, ACCES,
-     >                    IVAL, RVAL, NBVAL, NCHEFF)
+     &                    NOMSD, CHPSYM, ACCES,
+     &                    IVAL, RVAL, NBVAL, NCHEFF)
       IMPLICIT   NONE
 C
       INCLUDE 'jeveux.h'
@@ -13,7 +13,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF POSTRELE  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -90,7 +90,7 @@ C
 C     /* ACCES A TOUS LES NUMEROS D' ORDRES */
          CBID = DCMPLX(0,0)
          CALL RSORAC(NOMSD,'LONUTI',IBID,RBID,K8BID,CBID,RBID,
-     >                                           K8BID,NBORDR,1,NBTROU)
+     &                                           K8BID,NBORDR,1,NBTROU)
          CALL WKVECT(NVALAC,'V V I',NBORDR,AVALAC)
          CALL RSORAC(NOMSD,'TOUT_ORDRE',IBID,RBID,K8BID,CBID,
      &               RBID,K8BID,ZI(AVALAC),NBORDR,NBTROU)
@@ -101,7 +101,7 @@ C     /* ACCES A TOUS LES NUMEROS D' ORDRES */
             CALL JECROC(JEXNUM(NLSCHP,I))
             CALL JEECRA(JEXNUM(NLSCHP,I),'LONMAX',1,' ')
             CALL JEVEUO(JEXNUM(NLSCHP,I),'E',ALSCHP)
-            CALL RSEXCH(NOMSD,CHPSYM,IORDR,ZK24(ALSCHP + 1-1),N1)
+            CALL RSEXCH(' ',NOMSD,CHPSYM,IORDR,ZK24(ALSCHP + 1-1),N1)
             IF ( N1 .NE. 0 ) THEN
                VALK = CHPSYM
                VALI = IORDR
@@ -137,8 +137,8 @@ C        /* CAS D' UNE LISTE DE NUMERO ORDRE */
                CALL JECROC(JEXNUM(NLSCHP,J))
                CALL JEECRA(JEXNUM(NLSCHP,J),'LONMAX',1,' ')
                CALL JEVEUO(JEXNUM(NLSCHP,J),'E',ALSCHP)
-               CALL RSEXCH(NOMSD,CHPSYM,ZI(AVALAC + J-1),
-     >                           ZK24(ALSCHP + 1-1),N2)
+               CALL RSEXCH(' ',NOMSD,CHPSYM,ZI(AVALAC + J-1),
+     &                               ZK24(ALSCHP + 1-1),N2)
                IF ( N2 .NE. 0 ) THEN
                   VALK = CHPSYM
                   VALI = ZI(AVALAC + J-1)
@@ -157,7 +157,7 @@ C        /* CAS D' UNE LISTE DE NUMERO DE MODE */
             DO 800, I = 1, NBORDR, 1
                CBID = DCMPLX(0,0)
                CALL RSORAC(NOMSD,MODACC,ZI(AVALAC + I-1),0.D0,K8BID,
-     >                     CBID,EPSI,CRITER,ZI,0,N1)
+     &                     CBID,EPSI,CRITER,ZI,0,N1)
                N1 = -N1
                CALL JECROC(JEXNUM(NLSCHP,I))
                N3=MAX(N1,1)
@@ -169,11 +169,11 @@ C        /* CAS D' UNE LISTE DE NUMERO DE MODE */
                   CALL WKVECT('&&OP0051.LISTE.ORDRE','V V I',N1,ALISTE)
                   CBID = DCMPLX(0,0)
                   CALL RSORAC(NOMSD,MODACC,ZI(AVALAC + I-1),0.0D0,K8BID,
-     >                        CBID,EPSI,CRITER,ZI(ALISTE),
-     >                        N1,N2)
+     &                        CBID,EPSI,CRITER,ZI(ALISTE),
+     &                        N1,N2)
                   DO 810, J = 1, N1, 1
-                     CALL RSEXCH(NOMSD,CHPSYM,ZI(ALISTE + J-1),
-     >                           ZK24(ALSCHP + J-1),N2)
+                     CALL RSEXCH(' ',NOMSD,CHPSYM,ZI(ALISTE + J-1),
+     &                               ZK24(ALSCHP + J-1),N2)
                      IF ( N2 .NE. 0 ) THEN
                         VALK = CHPSYM
                         VALI = ZI(ALISTE+J-1)
@@ -200,7 +200,7 @@ C        /* CAS D' UNE LISTE DE REELS */
             DO 600, I = 1, NBORDR, 1
                CBID = DCMPLX(0,0)
                CALL RSORAC(NOMSD,MODACC,0,ZR(AVALAC + I-1),K8BID,
-     >                     CBID,EPSI,CRITER,ZI,0,N1)
+     &                     CBID,EPSI,CRITER,ZI,0,N1)
                N1 = -N1
                CALL JECROC(JEXNUM(NLSCHP,I))
                N3=MAX(N1,1)
@@ -214,10 +214,10 @@ C        /* CAS D' UNE LISTE DE REELS */
                   CALL JEVEUO('&&OP0051.LISTE.ORDRE','E',ALISTE)
                   CBID = DCMPLX(0,0)
                   CALL RSORAC(NOMSD,MODACC,0,ZR(AVALAC + I-1),K8BID,
-     >                   CBID,EPSI,CRITER,ZI(ALISTE),N1,N2)
+     &                   CBID,EPSI,CRITER,ZI(ALISTE),N1,N2)
                   DO 610, J = 1, N1, 1
-                     CALL RSEXCH(NOMSD,CHPSYM,ZI(ALISTE + J-1),
-     >                           ZK24(ALSCHP + J-1),N2)
+                     CALL RSEXCH(' ',NOMSD,CHPSYM,ZI(ALISTE + J-1),
+     &                               ZK24(ALSCHP + J-1),N2)
                      IF ( N2 .NE. 0 ) THEN
                         VALK = CHPSYM
                         VALI = ZI(ALISTE+J-1)

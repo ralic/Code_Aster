@@ -8,7 +8,7 @@
       CHARACTER*(*)       MATE, SOLVEZ
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,7 +78,7 @@ C
       IF ( N3.GT.0 ) THEN
          CALL RSORAC ( MODMEC,'LONUTI',IBID,RBID,K8BID,CBID,RBID,
      &                 'ABSOLU',NBMODE,1,IBID)
-         CALL RSEXCH ( MODMEC, 'DEPL', 1, NOMCHA, IRET )
+         CALL RSEXCH('F',MODMEC, 'DEPL', 1, NOMCHA, IRET )
          CALL DISMOI('F','NOM_MAILLA',NOMCHA,'CHAM_NO',IBID,MAILLA,IER)
          CALL DISMOI('F','NOM_MAILLA',MOINT ,'MODELE' ,IBID,MAFLUI,IER)
          IF ( MAFLUI .NE. MAILLA ) THEN
@@ -111,7 +111,7 @@ C BOUCLE SUR LE NOMBRE DE MODES: CALCUL DU FLUX FLUIDE MODAL
 C======================================================================
         ILIRES = 0
         NOMCHA = '&&PHI199.CHAMREF'
-        CALL RSEXCH(MODMEC,'DEPL',1,NOCHAM,IRET)
+        CALL RSEXCH('F',MODMEC,'DEPL',1,NOCHAM,IRET)
         NOCHAM = NOCHAM(1:19)//'.REFE'
         CALL JEVEUO(NOCHAM,'L',JREF)
         NUME = ZK24(JREF+1)(1:14)
@@ -188,23 +188,14 @@ C              --- ON RECUPERE LE MODE STATIQUE ASSOCIE AU NOEUD ---
                   CALL U2MESG('E', 'ALGELINE4_62',3,VALK,0,0,0,0.D0)
                   GOTO 26
                ENDIF
-               CALL RSEXCH(MODSTA,'DEPL',IORDR,CHAMNO,IRET)
-               IF (IRET.NE.0) THEN
-                  IER = IER + 1
-                  VALK (1) = CHAMNO
-                  VALK (2) = ACCES(1:8)
-                  VALK (3) = ACCES(9:16)
-                  CALL U2MESG('E', 'ALGELINE4_63',3,VALK,0,0,0,0.D0)
-                  GOTO 26
-               ELSE
-                  CALL JEVEUO(CHAMNO//'.VALE','L',IDMST)
+               CALL RSEXCH('F',MODSTA,'DEPL',IORDR,CHAMNO,IRET)
+               CALL JEVEUO(CHAMNO//'.VALE','L',IDMST)
 C
-                  DO 27 I = 0,NEQ-1
-                     ZR(JVEC+I) = ZR(JVEC+I)
-     &                - ZI(JDDL+(ID-1)*NEQ+I)*XD*ZR(IDMST+I)
- 27               CONTINUE
-                  CALL JELIBE(CHAMNO//'.VALE')
-               ENDIF
+               DO 27 I = 0,NEQ-1
+                  ZR(JVEC+I) = ZR(JVEC+I)
+     &             - ZI(JDDL+(ID-1)*NEQ+I)*XD*ZR(IDMST+I)
+ 27            CONTINUE
+               CALL JELIBE(CHAMNO//'.VALE')
  26         CONTINUE
           ENDIF
  25     CONTINUE

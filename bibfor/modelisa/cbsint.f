@@ -7,7 +7,7 @@
       CHARACTER*(*)     LIGRMO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,13 +50,13 @@ C     ------------------------------------------------------------------
       CALL JEMARQ()
 C
       IF (FONREE.EQ.'REEL') THEN
-          MOTCLF = 'SIGM_INTERNE'
-          CALL GETFAC ( 'SIGM_INTERNE' , NBFAC )
+          MOTCLF = 'PRE_SIGM'
+          CALL GETFAC ( 'PRE_SIGM' , NBFAC )
 C
           IF ( NBFAC.NE.0 ) THEN
              PARAM = 'SIINT'
 
-             CALL GETFAC ( 'SIGM_INTERNE' , NCHEI )
+             CALL GETFAC ( 'PRE_SIGM' , NCHEI )
 C
              CARTE  = CHAR//'.CHME.'//PARAM
 C

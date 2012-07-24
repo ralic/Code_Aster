@@ -1,7 +1,7 @@
       SUBROUTINE LISCCM(NOMCMD,LISCHA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -116,7 +116,6 @@ C
      &        (NOMCMD.EQ.'MECA_STATIQUE').OR.
      &        (NOMCMD.EQ.'STAT_NON_LINE').OR.
      &        (NOMCMD.EQ.'DYNA_NON_LINE').OR.
-     &        (NOMCMD.EQ.'CALC_SENSI').OR.
      &        (NOMCMD.EQ.'CALC_CHAMP')) LCOMP = .TRUE.
           IF (.NOT.LCOMP) CALL U2MESK('F','CHARGES5_3',1,VALK)
         ENDIF
@@ -156,7 +155,6 @@ C
      &        (NOMCMD.EQ.'MACR_ELEM_STAT').OR.
      &        (NOMCMD.EQ.'STAT_NON_LINE').OR.
      &        (NOMCMD.EQ.'DYNA_NON_LINE').OR.
-     &        (NOMCMD.EQ.'CALC_SENSI').OR.
      &        (NOMCMD.EQ.'CALC_CHAMP')) LCOMP = .TRUE.
           IF (.NOT.LCOMP) CALL U2MESK('F','CHARGES5_3',1,VALK)
         ENDIF
@@ -202,7 +200,6 @@ C
      &        (NOMCMD.EQ.'MECA_STATIQUE').OR.
      &        (NOMCMD.EQ.'STAT_NON_LINE').OR.
      &        (NOMCMD.EQ.'DYNA_NON_LINE').OR.
-     &        (NOMCMD.EQ.'CALC_SENSI').OR.
      &        (NOMCMD.EQ.'CALC_CHAMP')) LCOMP = .TRUE.
           IF (.NOT.LCOMP) CALL U2MESK('F','CHARGES5_3',1,VALK)
         ENDIF

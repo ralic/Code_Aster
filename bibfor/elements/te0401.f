@@ -1,6 +1,8 @@
       SUBROUTINE TE0401 ( OPTIOZ , NOMTZ )
-C ======================================================================
+C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,7 +18,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
       CHARACTER*(*)   OPTIOZ , NOMTZ
@@ -27,10 +28,10 @@ C     ----------------------------------------------------------------
 C
       INTEGER       NB1 , NB2 , NDDLET
       INTEGER       LZR
-      INTEGER       JGEOM , JENER , JVECT , JVAPR
+      INTEGER       JGEOM , JENER
       INTEGER       I , J , KOMPT
       INTEGER       IU , IMATUU
-      REAL*8        MATLOC(51,51),PLG(9,3,3),MATP(51,51)
+      REAL*8        MATLOC(51,51),PLG(9,3,3)
       REAL*8        VRS (1326)
       REAL*8        BSIGTH(51), ENERTH
       LOGICAL       INDITH
@@ -47,8 +48,6 @@ C
      &                     CALL JEVECH ( 'PMATUUR' , 'E' , IMATUU )
 C
       IF ( OPTION .EQ. 'RIGI_MECA'      .OR.
-     &     OPTION .EQ. 'RIGI_MECA_SENSI' .OR.
-     &     OPTION .EQ. 'RIGI_MECA_SENS_C' .OR.
      &     OPTION .EQ. 'EPOT_ELEM'      ) THEN
 C
          CALL VDXRIG (NOMTE,ZR(JGEOM),MATLOC,NB1 , 0 , 0 )
@@ -86,40 +85,6 @@ C
  110          CONTINUE
  100       CONTINUE
 C
-      END IF
-C
-      IF (OPTION(11:14).EQ.'SENS') THEN
-        IF (OPTION(15:16).EQ.'_C') THEN
-          CALL JEVECH('PVECTUC','E',JVECT)
-        ELSE
-          CALL JEVECH('PVECTUR','E',JVECT)
-        END IF
-        CALL JEVECH('PVAPRIN','L',JVAPR)
-C PASSAGE VECTEUR - MATRICE
-        KOMPT = 0
-        DO 220 J = 1,NDDLET
-          DO 230 I = 1,J
-             KOMPT = KOMPT+1
-             MATP(J,I) = VRS(KOMPT)
-             MATP(I,J) = VRS(KOMPT)
- 230      CONTINUE
- 220    CONTINUE
-        DO 200 I = 1,NDDLET
-          IF (OPTION(15:16).EQ.'_C') THEN
-            ZC(JVECT-1+I) = DCMPLX(0.D0,0.D0)
-          ELSE
-            ZR(JVECT-1+I) = 0.D0
-          END IF
-          DO 210 J = 1,NDDLET
-            IF (OPTION(15:16).EQ.'_C') THEN
-              ZC(JVECT-1+I) = ZC(JVECT-1+I)
-     &             - MATP(I,J)*ZC(JVAPR-1+J)
-            ELSE
-              ZR(JVECT-1+I) = ZR(JVECT-1+I)
-     &             - MATP(I,J)*ZR(JVAPR-1+J)
-            END IF
- 210      CONTINUE
- 200    CONTINUE
       END IF
 C
 C---- ENERGIES DE DEFORMATION ELASTIQUE

@@ -1,6 +1,6 @@
       SUBROUTINE OP0100()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/07/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,6 @@ C ======================================================================
 C TOLE CRP_20
 C
       IMPLICIT NONE
-C ==> COMMUNS
 
 C ==> VARIABLES LOCALES
 C
@@ -39,7 +38,7 @@ C
       INTEGER NBR8,IADRCO,IADRNO,NBNO,J,IPULS,IORD1,IORD2
       INTEGER NBORN,NBCO,IBOR,IG,LNOEU,LABSCU,NBVAL
       INTEGER NDIMTE,NCELAS,IER,ITHET,NDIM,IFISS
-      INTEGER NXPARA
+      INTEGER NXPARA,IRXFEM
       PARAMETER (NXPARA = 11)
 
 C
@@ -53,13 +52,13 @@ C
       PARAMETER ( NOMPRO = 'OP0100' )
       CHARACTER*8 MODELE,RESUCO,K8B,K8BID,KCALC
       CHARACTER*8 FOND,FISS,LITYPA(NXPARA),SYMECH,CRIT
-      CHARACTER*8 LATABL,NOMA,THETAI,NOEUD,CAS
+      CHARACTER*8 LATABL,NOMA,THETAI,NOEUD,CAS,TYPFIS,CONFIG
       CHARACTER*16 TYPCO,OPER,OPTION,TYSD, LINOPA(NXPARA),SUITE
       CHARACTER*16 OPTIO2,K16B,NOMCAS,K16BID
-      CHARACTER*19 GRLT,GRLN
+      CHARACTER*19 GRLT
       CHARACTER*19 VCHAR
       CHARACTER*24 DEPLA,MATE,K24B,COMPOR,CHVITE,CHACCE,VECORD
-      CHARACTER*24 VALK(3),BASFON
+      CHARACTER*24 VALK(3),BASFON,FONOEU
       CHARACTER*24 SDTHET,CHFOND,BASLOC,THETA
       CHARACTER*24 LISSTH,LISSG,OBJMA,NOMNO,COORN
       CHARACTER*24 TRAV1,TRAV2,TRAV3,STOK4
@@ -205,6 +204,22 @@ C----------------
       CALL GETVID('THETA','FOND_FISS',1,IARG,1,FOND,IFOND)
       CALL GETVID('THETA','FISSURE',  1,IARG,1,FISS,IFISS)
 
+C     AVEC UN MODELE FEM ON NE DOIT PAS AVOIR FISSURE
+      CALL EXIXFE(MODELE, IRXFEM)
+      IF (IRXFEM.EQ.0.AND.IFISS.NE.0) CALL U2MESS('F','RUPTURE1_2')
+
+C     AVEC UN MODELE XFEM ON DOIT AVOIR FISSURE
+      IF (IRXFEM.NE.0.AND.IFISS.EQ.0) CALL U2MESS('F','RUPTURE1_3')
+
+      IF (IRXFEM.EQ.0.AND.ITHET.EQ.0) THEN
+         TYPFIS = FOND
+C        LE CAS DES FONDS DOUBLES N'EST PAS TRAITE
+         CALL JEEXIN(FOND//'.FOND.NOEU',IRET)
+         IF (IRET.EQ.0) CALL U2MESS('F','RUPTURE1_4')
+      ELSE IF (IRXFEM.NE.0.AND.ITHET.EQ.0) THEN
+         TYPFIS = FISS
+      ENDIF
+
 C     ATTENTION, IL SE PEUT QUE NI FOND_FISS NI FISSURE SOIT PRESENT
 C     (EN DONNANT THETA PAR EX...)
       LLEVST=.FALSE.
@@ -230,8 +245,7 @@ C       NORMALEMENT, LE CAPY L'INTERDIT...
 
         CALL GETTCO(SDTHET,TYPCO)
         IF (TYPCO(1:10).EQ.'THETA_GEOM') THEN
-          CALL RSEXCH(SDTHET,'THETA',0,THETA,N1)
-          IF (N1.GT.0) CALL U2MESK('F','RUPTURE0_59',1,SDTHET)
+          CALL RSEXCH('F',SDTHET,'THETA',0,THETA,N1)
         ELSE
           THETA=SDTHET
         ENDIF
@@ -256,8 +270,7 @@ C     2.6.2 : THETA CALCULE ????
             IF ( NBR8 .NE. 3 ) THEN
                CALL U2MESK('F','RUPTURE0_30',1,SUITE)
             ELSE
-               CALL GETVR8 ('THETA','DIRECTION',1,IARG,3,
-     &                      DIR, NBR8 )
+               CALL GETVR8 ('THETA','DIRECTION',1,IARG,3,DIR,NBR8)
                DIREC=.TRUE.
             ENDIF
          ELSE
@@ -272,10 +285,10 @@ C      - THETA 2D (COURONNE)
      &                    RSUP, MODULE, DIREC, DIR )
 C     - THETA 3D
         ELSE IF(NDIM.EQ.3)THEN
-          CHFOND  = FOND//'.FOND.NOEU'
-          CALL JELIRA ( CHFOND, 'LONMAX', NBNO, K8B )
-          CALL JEVEUO ( CHFOND, 'L', IADRNO )
-          CALL GVERIG ( NOMA,1,CHFOND, NBNO, NOMNO, COORN,
+          FONOEU  = FOND//'.FOND.NOEU'
+          CALL JELIRA ( FONOEU, 'LONMAX', NBNO, K8B )
+          CALL JEVEUO ( FONOEU, 'L', IADRNO )
+          CALL GVERIG ( NOMA,1,FONOEU, NBNO, NOMNO, COORN,
      &                  TRAV1, TRAV2, TRAV3, TRAV4 )
           CALL GCOURO ( 'V',THETA, NOMA, NOMNO,COORN,NBNO,TRAV1,TRAV2,
      &                    TRAV3,DIR,ZK8(IADRNO),FOND,DIREC,STOK4)
@@ -287,19 +300,19 @@ C----------------------------------------------------
 C 2.7. ==> FOND_FISS, FISSURE, LISSAGE,
 C----------------------------------------------------
 
-
-C     SI 3D ET OPTION = CALC_K_G OU K_G_MODA, ALORS IL FAUT FISSURE
-      IF ( NDIM.EQ.3.AND.
-     &    (OPTION.EQ.'CALC_K_G'.OR.
-     &     OPTION.EQ.'K_G_MODA'.OR.
-     &     OPTION.EQ.'CALC_K_MAX' ).AND.
-     &     IFISS.EQ.0) THEN
-        CALL U2MESK('F','RUPTURE0_29',1,OPTION)
-      ENDIF
-
 C     CERTAINES OPTIONS DEMANDENT FOND_FISS OBLIGATOIREMENT
       IF (OPTION.EQ.'G_MAX'.OR.OPTION.EQ.'G_BILI') THEN
         IF (IFOND.EQ.0) CALL U2MESK('F','RUPTURE0_48',1,OPTION)
+      ENDIF
+C
+C     CERTAINES OPTIONS EN MODELISATION FEM 3D NE TRAITENT PAS LES
+C     FISSURES EN CONFIGURATION DECOLLEE
+      IF (IFOND.NE.0.AND.CAS.EQ.'3D_LOCAL'.AND.
+     &    (OPTION.EQ.'CALC_K_G'.OR.
+     &     OPTION.EQ.'K_G_MODA'.OR.
+     &     OPTION.EQ.'CALC_K_MAX' )) THEN
+        CALL DISMOI('F','CONFIG_INIT',FOND,'FOND_FISS',IBID,CONFIG,IER)
+        IF(CONFIG.EQ.'DECOLLEE') CALL U2MESK('F','RUPTURE0_29',1,OPTION)
       ENDIF
 C
 C     2.7.1 FOND DE FISSURE SI 3D LOCAL :
@@ -312,13 +325,12 @@ C       SI FISSURE
 C         CREATION DE LA LISTE DES POINTS DU FOND A CALCULER
           CALL XRECFF(FISS,CHFOND,BASFON,LNOFF)
           GRLT=FISS//'.GRLTNO'
-          GRLN=FISS//'.GRLNNO'
-          BASLOC=FISS//'.BASLOC'
 
 C       SI FOND_FISS
         ELSEIF (IFOND.NE.0) THEN
-          CHFOND = FOND//'.FOND.NOEU'
-          CALL JELIRA(CHFOND,'LONMAX',LNOFF,K8B)
+          CHFOND = FOND//'.FONDFISS'
+          FONOEU = FOND//'.FOND.NOEU'
+          CALL JELIRA(FONOEU,'LONMAX',LNOFF,K8B)
           LLEVST=.FALSE.
         ENDIF
 
@@ -347,7 +359,8 @@ C     ON NE PEUT PAS
           GLAGR = .FALSE.
           NBRE = LNOFF
           IF (OPTION.EQ.'G_MAX'.OR.
-     &        OPTION.EQ.'G_BILI') THEN
+     &        OPTION.EQ.'G_BILI'.OR.
+     &       (OPTION.EQ.'CALC_G'.AND.IFISS.NE.0)) THEN
              CALL U2MESK('F','RUPTURE0_83',1,OPTION)
           ENDIF
           IF (NDEG.GE.LNOFF) THEN
@@ -384,7 +397,7 @@ C     DETERMINATION AUTOMATIQUE DE THETA (CAS 3D LOCAL)
 C
       IF (CAS.EQ.'3D_LOCAL'.AND.IFISS.NE.0) THEN
 
-C         ON A TOUJOURS À FAIRE À UN FOND OUVERT
+C         ON A TOUJOURS
           CONNEX = .FALSE.
           THETAI = '&&THETA '
           OBJMA = MODELE//'.MODELE    .LGRF'
@@ -397,11 +410,11 @@ C         ON A TOUJOURS À FAIRE À UN FOND OUVERT
           CALL GCOUR3(THETAI,NOMA,COORN,LNOFF,TRAV1,TRAV2,
      &                TRAV3,CHFOND,GRLT,THLAGR,THLAG2,
      &                BASFON,NDEG,MILIEU,PAIR,NDIMTE)
-          CALL XCOURB(GRLT,GRLN,NOMA,MODELE,COURB)
 
-      ELSEIF (CAS.EQ.'3D_LOCAL'.AND.IFOND.NE.0) THEN
 
-         CALL JEVEUO(CHFOND,'L',IADNUM)
+        ELSEIF (CAS.EQ.'3D_LOCAL'.AND.IFOND.NE.0) THEN
+
+         CALL JEVEUO(FONOEU,'L',IADNUM)
          IF (ZK8(IADNUM+1-1).EQ.ZK8(IADNUM+LNOFF-1)) THEN
           CONNEX = .TRUE.
          ELSE
@@ -419,12 +432,12 @@ C         ON A TOUJOURS À FAIRE À UN FOND OUVERT
          NOMA = ZK8(IADRMA)
          NOMNO = NOMA//'.NOMNOE'
          COORN = NOMA//'.COORDO    .VALE'
-         CALL GVERI2(CHFOND,LNOFF,NOMNO,COORN,TRAV1,TRAV2,TRAV3,
-     &              THLAGR,THLAG2,NDEG)
+
+         CALL GVERI3(CHFOND,LNOFF,THLAGR,THLAG2,NDEG,TRAV1,TRAV2,TRAV3)
          CALL GCOUR2(THETAI,NOMA,MODELE,NOMNO,COORN,LNOFF,TRAV1,TRAV2,
-     &              TRAV3,CHFOND,FOND,CONNEX,STOK4,THLAGR,THLAG2,NDEG,
+     &              TRAV3,FONOEU,FOND,CONNEX,STOK4,THLAGR,THLAG2,NDEG,
      &              MILIEU,NDIMTE,PAIR)
-         CALL GIMPT2(THETAI,NBRE,TRAV1,TRAV2,TRAV3,CHFOND,STOK4,LNOFF,0)
+         CALL GIMPT2(THETAI,NBRE,TRAV1,TRAV2,TRAV3,FONOEU,STOK4,LNOFF,0)
 
       ENDIF
 
@@ -470,18 +483,13 @@ C
               IORD1 = ZI(IVEC-1+I)
               CALL MEDOM1(MODELE,MATE,K8B,VCHAR,NCHA,K4B,RESUCO,IORD1)
               CALL JEVEUO(VCHAR,'L',ICHA)
-              CALL RSEXCH(RESUCO,'DEPL',IORD1,DEPLA1,IRET)
+              CALL RSEXCH(' ',RESUCO,'DEPL',IORD1,DEPLA1,IRET)
               IF(LONVEC.EQ.1)THEN
                 IORD2  = IORD1
                 DEPLA2 = DEPLA1
               ELSE
                 IORD2 = ZI(IVEC-1+J)
-                CALL RSEXCH(RESUCO,'DEPL',IORD2,DEPLA2,IRET)
-                IF(IRET.NE.0) THEN
-                  VALK(1) = 'DEPL'
-                  VALI    = IORD2
-                  CALL U2MESG('F', 'RUPTURE0_93',1,VALK,1,VALI,0,0.D0)
-                ENDIF
+                CALL RSEXCH('F',RESUCO,'DEPL',IORD2,DEPLA2,IRET)
               ENDIF
 
               IF(.NOT.LMELAS)THEN
@@ -498,7 +506,7 @@ C
      &                       MATE,NCHA,ZK8(ICHA),SYMECH,CHFOND,LNOFF,
      &                       NDEG,THLAGR,GLAGR,THLAG2,MILIEU,NDIMTE,
      &                       PAIR,EXITIM,TIMEU,TIMEV,I,J,NBPARA,LINOPA,
-     &                       LMELAS,NOMCAS)
+     &                       LMELAS,NOMCAS,FONOEU)
               ELSE
                  CALL MEBILG(OPTIO2,LATABL,MODELE,DEPLA1,DEPLA2,THETA,
      &                       MATE,NCHA,ZK8(ICHA),SYMECH,EXITIM,TIMEU,
@@ -560,6 +568,9 @@ C       -------------------------------
 C
       ELSE IF (CAS.EQ.'3D_LOCAL'.AND.OPTION.EQ.'CALC_K_G') THEN
 
+          BASLOC=TYPFIS//'.BASLOC'
+          CALL XCOURB(BASLOC,NOMA,MODELE,COURB)
+
           DO 33 I = 1,LONVEC
             IORD = ZI(IVEC-1+I)
 
@@ -579,18 +590,14 @@ C
 
             CALL MEDOM1(MODELE,MATE,K8B,VCHAR,NCHA,K4B,RESUCO,IORD)
             CALL JEVEUO(VCHAR,'L',ICHA)
-            CALL RSEXCH(RESUCO,'DEPL',IORD,DEPLA,IRET)
-            IF (IRET.NE.0) THEN
-                VALK (1) = 'DEPL'
-                VALI     = IORD
-              CALL U2MESG('F', 'RUPTURE0_93',1,VALK,1,VALI,0,0.D0)
-            ENDIF
+            CALL RSEXCH('F',RESUCO,'DEPL',IORD,DEPLA,IRET)
 
             CALL CAKG3D(OPTION,LATABL,MODELE,DEPLA,THETAI,MATE,COMPOR,
      &              NCHA,ZK8(ICHA),SYMECH,CHFOND,LNOFF,BASLOC,COURB,
      &              IORD,NDEG,THLAGR,GLAGR,THLAG2,PAIR,NDIMTE,
-     &              EXITIM,TIME,NBPARA,LINOPA,FISS,
-     &              LMELAS,NOMCAS)
+     &              EXITIM,TIME,NBPARA,LINOPA,TYPFIS,
+     &              LMELAS,NOMCAS,MILIEU,CONNEX)
+
    33     CONTINUE
 C
 C       ------------------------
@@ -598,11 +605,15 @@ C     3.3.2. ==>OPTION CALC_K_MAX
 C       ------------------------
 C
       ELSE IF (OPTION .EQ.'CALC_K_MAX') THEN
+
+          BASLOC=TYPFIS//'.BASLOC'
+          CALL XCOURB(BASLOC,NOMA,MODELE,COURB)
+
           CALL MMAXKL(LATABL,MODELE,THETAI,MATE,COMPOR,NCHA,SYMECH,
      &               CHFOND,LNOFF,BASLOC,COURB,NDEG,THLAGR,GLAGR,
      &               THLAG2,PAIR,NDIMTE,NBPARA,LINOPA,
-     &               FISS,LONVEC,IVEC,VCHAR,RESUCO,
-     &               LMELAS,LNCAS,ZL(JNORD))
+     &               TYPFIS,LONVEC,IVEC,VCHAR,RESUCO,
+     &               LMELAS,LNCAS,ZL(JNORD),MILIEU,CONNEX)
 C
 C       ------------------------
 C     3.4. ==>OPTION K_G_MODA
@@ -619,12 +630,7 @@ C           FEM
             IF (N1.NE.0) THEN
               DO 341 I = 1 , LONVEC
                 IORD = ZI(IVEC-1+I)
-                CALL RSEXCH(RESUCO,'DEPL',IORD,DEPLA,IRET)
-                IF(IRET.NE.0) THEN
-                    VALK(1) = 'DEPL'
-                    VALI = IORD
-                    CALL U2MESG('F', 'RUPTURE0_95',1,VALK,1,VALI,0,0.D0)
-                ENDIF
+                CALL RSEXCH('F',RESUCO,'DEPL',IORD,DEPLA,IRET)
                 CALL RSADPA(RESUCO,'L',1,'OMEGA2',IORD,0,IPULS,K8BID)
                 PULS = ZR(IPULS)
                 PULS = SQRT(PULS)
@@ -640,12 +646,7 @@ C           X-FEM
 
               DO 3422 I = 1 , LONVEC
                 IORD = ZI(IVEC-1+I)
-                CALL RSEXCH(RESUCO,'DEPL',IORD,DEPLA,IRET)
-                IF(IRET.NE.0) THEN
-                    VALK(1) = 'DEPL'
-                    VALI = IORD
-                    CALL U2MESG('F', 'RUPTURE0_95',1,VALK,1,VALI,0,0.D0)
-                ENDIF
+                CALL RSEXCH('F',RESUCO,'DEPL',IORD,DEPLA,IRET)
                 CALL RSADPA(RESUCO,'L',1,'OMEGA2',IORD,0,IPULS,K8BID)
                 PULS = ZR(IPULS)
                 PULS = SQRT(PULS)
@@ -663,16 +664,15 @@ C
 C         3.4.2 ==> K_G_MODA 3D LOC
 C         -------------------------
           ELSE
+
+            BASLOC=TYPFIS//'.BASLOC'
+            CALL XCOURB(BASLOC,NOMA,MODELE,COURB)
+
             DO 342 I = 1,LONVEC
               IORD = ZI(IVEC-1+I)
               CALL MEDOM1(MODELE,MATE,K8BID,VCHAR,NCHA,K4B,RESUCO,IORD)
               CALL JEVEUO(VCHAR,'L',ICHA)
-              CALL RSEXCH(RESUCO,'DEPL',IORD,DEPLA,IRET)
-              IF (IRET.NE.0) THEN
-                  VALK (1) = 'DEPL'
-                  VALI = IORD
-                CALL U2MESG('F', 'RUPTURE0_95',1,VALK,1,VALI,0,0.D0)
-              ENDIF
+              CALL RSEXCH('F',RESUCO,'DEPL',IORD,DEPLA,IRET)
               CALL RSADPA(RESUCO,'L',1,'OMEGA2',IORD,0,IPULS,K8B)
               PULS = ZR(IPULS)
               PULS = SQRT(PULS)
@@ -681,7 +681,8 @@ C         -------------------------
               CALL CAKGMO(OPTION,LATABL,MODELE,DEPLA,THETAI,MATE,COMPOR,
      &                    NCHA,ZK8(ICHA),SYMECH,CHFOND,LNOFF,BASLOC,
      &                    COURB,IORD,NDEG,THLAGR,GLAGR,THLAG2,PAIR,
-     &                    NDIMTE,PULS,NBPARA,LINOPA,FISS)
+     &                    NDIMTE,PULS,NBPARA,LINOPA,TYPFIS,MILIEU,
+     &                    CONNEX)
  342        CONTINUE
           ENDIF
 C
@@ -713,23 +714,18 @@ C
             CALL MEDOM1(MODELE,MATE,K8B,VCHAR,NCHA,K4B,
      &      RESUCO,IORD)
             CALL JEVEUO(VCHAR,'L',ICHA)
-            CALL RSEXCH(RESUCO,'DEPL',IORD,DEPLA,IRET)
-            IF(IRET.NE.0) THEN
-                  VALK (1) = 'DEPL'
-                  VALI = IORD
-                CALL U2MESG('F', 'RUPTURE0_93',1,VALK,1,VALI,0,0.D0)
-            ENDIF
-            CALL RSEXCH(RESUCO,'VITE',IORD,CHVITE,IRET)
+            CALL RSEXCH('F',RESUCO,'DEPL',IORD,DEPLA,IRET)
+            CALL RSEXCH(' ',RESUCO,'VITE',IORD,CHVITE,IRET)
             IF(IRET.NE.0) THEN
               CHVITE = ' '
             ELSE
-              CALL RSEXCH(RESUCO,'ACCE',IORD,CHACCE,IRET)
+              CALL RSEXCH(' ',RESUCO,'ACCE',IORD,CHACCE,IRET)
             ENDIF
 C
 C           VERIFICATION DE LA PRESENCE DU CHAMPS SIEF_ELGA
 C           LORSQUE CALCUL_CONTRAINTE='NON'
             IF(KCALC.EQ.'NON')THEN
-               CALL RSEXCH(RESUCO,'SIEF_ELGA',IORD,K24B,IRET)
+               CALL RSEXCH(' ',RESUCO,'SIEF_ELGA',IORD,K24B,IRET)
                IF (IRET.NE.0) THEN
                   VALK (1) = 'SIEF_ELGA'
                   VALI = IORD
@@ -754,7 +750,7 @@ C
      &                    NCHA,ZK8(ICHA),SYMECH,CHFOND,LNOFF,IORD,NDEG,
      &                    THLAGR,GLAGR,THLAG2,MILIEU,NDIMTE,PAIR,EXITIM,
      &                    TIME,NBPARA,LINOPA,CHVITE,CHACCE,LMELAS,
-     &                    NOMCAS,KCALC)
+     &                    NOMCAS,KCALC,FONOEU)
 C
             ELSE IF (OPTION(1:6).EQ.'CALC_K'.AND.CAS.EQ.'2D') THEN
 C

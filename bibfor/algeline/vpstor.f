@@ -11,7 +11,7 @@
       COMPLEX*16        VECPC8(NEQ,*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -247,7 +247,7 @@ C
         NORDR = IPREC + IMODE
 C
 C        --- VECTEUR PROPRE ---
-        CALL RSEXCH (MODES, NOSY, NORDR, CHAMNO, IER )
+        CALL RSEXCH(' ',MODES, NOSY, NORDR, CHAMNO, IER )
         IF     ( IER .EQ. 0   ) THEN
         ELSEIF ( IER .EQ. 100 .AND. LREFD ) THEN
           IF (LNUME) THEN

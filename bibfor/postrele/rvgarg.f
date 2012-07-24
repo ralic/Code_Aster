@@ -6,7 +6,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -104,7 +104,8 @@ C           /* LE CHAMP SYMBOLIQUE EXISTE (POTENTIELLEMENT)*/
                    CALL RSORAC(NRESU,'TOUT_ORDRE',IBID,RBID,K8B,CBID,
      &                        RBID,'RELATIF',ZI(JORDR),N3,IBID)
                    DO 10 J = 1 , N3
-                     CALL RSEXCH(NRESU,NCHSYM,ZI(JORDR+J-1),NAUX24,N2)
+                     CALL RSEXCH(' ',NRESU,NCHSYM,ZI(JORDR+J-1),NAUX24,
+     &                           N2)
                      IF ( N2 .EQ. 0 ) GOTO 12
  10                CONTINUE
  12                CONTINUE

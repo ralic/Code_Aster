@@ -1,6 +1,6 @@
       SUBROUTINE TE0011(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,17 +24,15 @@ C          ELEMENTS ISOPARAMETRIQUES 3D
 C    FONCTION REALISEE:
 C            OPTION : 'RIGI_MECA      '
 C                            CALCUL DES MATRICES ELEMENTAIRES  3D
-C            OPTION : 'RIGI_MECA_SENSI' OU 'RIGI_MECA_SENS_C'
-C                            CALCUL DU VECTEUR ELEMENTAIRE -DK/DP*U
 C     ENTREES  ---> OPTION : OPTION DE CALCUL
 C              ---> NOMTE  : NOM DU TYPE ELEMENT
 C.......................................................................
 
       INCLUDE 'jeveux.h'
 C-----------------------------------------------------------------------
-      INTEGER I ,IDECNO ,IDECPG ,IGAU ,IMATE ,IMATUU ,J 
-      INTEGER JGANO ,K ,NBINCO ,NBRES ,NBSIG ,NDIM ,NNO 
-      INTEGER NNOS ,NPG1 
+      INTEGER I ,IDECNO ,IDECPG ,IGAU ,IMATE ,IMATUU ,J
+      INTEGER JGANO ,K ,NBINCO ,NBRES ,NBSIG ,NDIM ,NNO
+      INTEGER NNOS ,NPG1
 C-----------------------------------------------------------------------
       PARAMETER (NBRES=9)
       INTEGER ICODRE(NBRES)

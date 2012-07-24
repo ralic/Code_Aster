@@ -4,7 +4,7 @@
       CHARACTER*(*) TYPESD,NOMSD,TITRE
       INTEGER IFIC
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -109,7 +109,7 @@ C     --------------------------------------
         DO 1, K=1,NPARA
           ZK16(J3-1+K)=ZK24(J2-1+4*(K-1)+1)
 1       CONTINUE
-        CALL TBIMPR(TABLE,' ','ASTER',IFIC,NPARA,ZK16(J3),0,
+        CALL TBIMPR(TABLE,'ASTER',IFIC,NPARA,ZK16(J3),0,
      &   ' ','1PE12.5','RI')
         CALL JEDETR('&&IMPRSD.LIPARA')
 

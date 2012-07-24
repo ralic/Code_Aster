@@ -1,4 +1,4 @@
-#@ MODIF test_fonction_ops Macro  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
+#@ MODIF test_fonction_ops Macro  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -327,7 +327,7 @@ def AfficherResultat(dicoValeur, nomPara, ref, legende, crit, res, valPu, txt):
    txt.append(' ')
 
 # -----------------------------------------------------------------------------
-def test_fonction_ops(self,TEST_NOOK,VALEUR,ATTRIBUT,TABL_INTSP,**args):
+def test_fonction_ops(self,TEST_NOOK,VALEUR,ATTRIBUT,**args):
    """
       Corps de la macro TEST_FONCTION
    """
@@ -345,9 +345,6 @@ def test_fonction_ops(self,TEST_NOOK,VALEUR,ATTRIBUT,TABL_INTSP,**args):
    ier=0
    # La macro compte pour 1 dans la numerotation des commandes
    self.set_icmd(1)
-
-   if ( TEST_NOOK=='OUI' ) & ( TABL_INTSP != None ):
-      UTMESS('F','PREPOST3_92')
 
    # txt sert a l'affichage dans le fichier RESULTAT
    txt = ['',]
@@ -784,146 +781,6 @@ def test_fonction_ops(self,TEST_NOOK,VALEUR,ATTRIBUT,TABL_INTSP,**args):
       current = {}
       current['testOk']  = resu_test_attr
       txt.append(ligne_att_3 % current)
-
-   if TABL_INTSP != None:
-      # Boucle sur interspectres
-      for intSpec in TABL_INTSP:
-         dres = intSpec.cree_dict_valeurs(intSpec.mc_liste)
-         ref = dres['REFERENCE']
-         ver = None
-         if ref == 'NON_REGRESSION':
-            ver = dres['VERSION']
-         crit = dres['CRITERE']
-         epsi = dres['PRECISION']
-         legende = dres['LEGENDE']
-         if legende == None:
-            legende='XXXX'
-         table = dres['INTE_SPEC']
-
-         dataTable = table.EXTR_TABLE().values()
-         valePara = dres['VALE_PARA']
-         valeRef = dres['VALE_REFE_C']
-         numeOrdreI = dres['NUME_ORDRE_I']
-         noeudI = dres['NOEUD_I']
-         numeOrdreJ = None
-         noeudJ = None
-         nomCmpI = None
-         nomCmpJ = None
-
-         i = -1
-         numeViteF = dres['NUME_VITE_FLUI']
-         presNumeVF = False
-         dTNumVF = None
-         if numeViteF != None:
-            presNumeVF = True
-            dTNumVF = dataTable['NUME_VITE_FLUI']
-         if numeOrdreI != None:
-            numeOrdreJ = dres['NUME_ORDRE_J']
-
-            dTNumOrdreI = dataTable['NUME_ORDRE_I']
-            dTNumOrdreJ = dataTable['NUME_ORDRE_J']
-
-            for i in range(len(dTNumOrdreI)):
-               if dTNumOrdreI[i] == None: continue
-               test1 = (dTNumOrdreI[i] == numeOrdreI)
-               test2 = (dTNumOrdreJ[i] == numeOrdreJ)
-               test3 = False
-               if presNumeVF:
-                  test3 = (dTNumVF[i] == numeViteF)
-               else:
-                  test3 = True
-               if test1 and test2 and test3:
-                  break
-         elif noeudI != None:
-            noeudJ = dres['NOEUD_J']
-            nomCmpI = dres['NOM_CMP_I']
-            nomCmpJ = dres['NOM_CMP_J']
-
-            dTNoeudI = dataTable['NOEUD_I']
-            dTNoeudJ = dataTable['NOEUD_J']
-            dTNomCmpI = dataTable['NOM_CMP_I']
-            dTNomCmpJ = dataTable['NOM_CMP_J']
-
-            for i in range(len(dTNoeudI)):
-               if dTNoeudI[i] == None: continue
-               nom1 = dTNoeudI[i]
-               nom1 = nom1[0:len(noeudI)]
-               nom2 = dTNoeudJ[i]
-               nom2 = nom2[0:len(noeudJ)]
-               nom3 = dTNomCmpI[i]
-               nom3 = nom3[0:len(nomCmpI)]
-               nom4 = dTNomCmpJ[i]
-               nom4 = nom4[0:len(nomCmpJ)]
-               test1 = (nom1 == noeudI)
-               test2 = (nom2 == noeudJ)
-               test3 = (nom3 == nomCmpI)
-               test4 = (nom4 == nomCmpJ)
-               test5 = False
-               if presNumeVF:
-                  test5 = (dTNumVF[i] == numeViteF)
-               else:
-                  test5 = True
-               if test1 and test2 and test3 and test4 and test5:
-                  break
-
-         if i == -1:
-             UTMESS('F','MODELISA2_91',valk=('FONCTION_C', table.get_name()))
-         nomFctC = dataTable['FONCTION_C'][i]
-
-         # Lecture JEVEUX du .PROL et .VALE
-         fctProl = aster.getvectjev(nomFctC[0:19]+'.PROL')
-         fctVale = aster.getvectjev(nomFctC[0:19]+'.VALE')
-
-         TypeProl={'E':'EXCLU', 'L':'LINEAIRE', 'C':'CONSTANT' }
-         dico={
-          'INTERPOL'    : [fctProl[1][0:3],fctProl[1][4:7]],
-          'NOM_PARA'    : fctProl[2][0:16].strip(),
-          'NOM_RESU'    : fctProl[3][0:16].strip(),
-          'PROL_DROITE' : TypeProl[fctProl[4][1]],
-          'PROL_GAUCHE' : TypeProl[fctProl[4][0]],
-         }
-         sdf = sd_fonction(nomFctC)
-         val = sdf.VALE.get()
-         dim = len(val)/3
-         lx = val[0:dim]
-         lr = []
-         li = []
-         for i in range(dim):
-            lr.append(val[dim+2*i])
-            li.append(val[dim+2*i+1])
-         fctIntSp = t_fonction_c(lx, map(complex,lr,li),dico,nomFctC)
-
-         # Affichage
-
-         # ligne 1
-         current = {}
-         nb_espace = 16-len(fctProl[2].strip())
-         espace = nb_espace*' '
-         current['nom_para'] = fctProl[2].strip()+espace
-         txt.append(ligne_intspc % current)
-
-         # ligne 2
-         current = {}
-         nb_espace = 19-len(nomFctC.strip())
-         espace = nb_espace*' '
-         current['nom'] = nomFctC.strip()+espace
-         nb_espace = 16-len(str(valePara))
-         espace = nb_espace*' '
-         current['val_para'] = str(valePara)+espace
-         txt.append(ligne_intspc_1 % current)
-
-         if ref == None : ref = 'NON_DEFINI'
-
-         # Calcul de la valeur de l'interspectre
-         x = valePara
-         res = fctIntSp(x)
-
-         if ier != 0:
-            txt.append('NOOK PB INTERPOLATION. VOIR MESSAGE CI-DESSUS')
-         else:
-            # Test et affichage de la valeur
-            curDict=TesterValeur(fctProl[2],valePara,valeRef,res,epsi,crit,'NON')
-            AfficherResultat(curDict,fctProl[2].strip(),ref,legende,crit,res,valePara,txt)
 
    # On affiche txt dans le fichier RESULTAT
    aster.affiche('RESULTAT', os.linesep.join(txt))

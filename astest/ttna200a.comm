@@ -1,4 +1,4 @@
-# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE NON-REGRESSION D'ASTER : THERMIQUE AXIS
 # RESPONSABLE PELLET J.PELLET
 # ttna200a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
@@ -305,7 +305,7 @@ CHTH1B=AFFE_CHAR_THER(         MODELE=MO,ECHANGE=(
                                      TEMP_EXT = 1.8)),
                            CONVECTION=_F(  VITESSE = CHAMNO1) )
 
-CHTH2=AFFE_CHAR_THER(            MODELE=MO,GRAD_TEMP_INIT=(
+CHTH2=AFFE_CHAR_THER(            MODELE=MO,PRE_GRAD_TEMP=(
                            _F(  GROUP_MA = 'GMA10',
                                             FLUX_Y = -0.7),
                            _F(  MAILLE = ( 'M60', 'M81', 'M93', ),
@@ -417,8 +417,11 @@ THNL6=THER_NON_LINE(        MODELE=MO,
                           CONVERGENCE=_F(),
                           PARM_THETA=1.,
                            ARCHIVAGE=_F(  PAS_ARCH = 2),
-                           ETAT_INIT=_F( VALE = 0.),
-                          OPTION=( 'FLUX_ELGA', 'FLUX_ELNO',))
+                           ETAT_INIT=_F( VALE = 0.),);
+
+THNL6=CALC_CHAMP(reuse=THNL6,
+                 RESULTAT=THNL6,
+                 THERMIQUE=('FLUX_ELGA','FLUX_ELNO',),);
 
 THNL6=CALC_META(reuse=THNL6,
                 MODELE=MO,
@@ -498,9 +501,8 @@ TEST_RESU(RESU=(
                       NUME_ORDRE = 1,
                       NOM_CHAM = 'FLUX_ELNO',
                       TYPE_TEST = 'SOMM_ABS',
-                      VALE =  1.2475899482193E+03   ,
-                      REFERENCE = 'NON_REGRESSION',
-                      VERSION = '6.2.3'),
+                      VALE =  1.2450042888379E+03   ,
+                      REFERENCE = 'NON_REGRESSION',),
                               _F(
                       RESULTAT = THL10,
                       NUME_ORDRE = 2,
@@ -531,9 +533,8 @@ TEST_RESU(RESU=(
                       NUME_ORDRE = 2,
                       NOM_CHAM = 'FLUX_ELNO',
                       TYPE_TEST = 'SOMM_ABS',
-                      VALE =  1.2375722850438E+03   ,
-                      REFERENCE = 'NON_REGRESSION',
-                      VERSION = '6.2.3'),
+                      VALE =  1.2330444127143E+03   ,
+                      REFERENCE = 'NON_REGRESSION',),
                               _F(
                       RESULTAT = THNL1,
                       NUME_ORDRE = 0,
@@ -608,9 +609,8 @@ TEST_RESU(RESU=(
                       NUME_ORDRE = 1,
                       NOM_CHAM = 'FLUX_ELNO',
                       TYPE_TEST = 'SOMM_ABS',
-                      VALE =  1.1269315857782E+03  ,
-                      REFERENCE = 'NON_REGRESSION',
-                      VERSION = '6.2.3'))
+                      VALE =  1.1192818620109E+03  ,
+                      REFERENCE = 'NON_REGRESSION',))
                        )
 
 FIN( )

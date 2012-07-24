@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,12 +86,12 @@ C       -----------------------------------------------------------
 
 C            1- RECUPERATION DU CHAMP : CHAM1
 
-             CALL RSEXCH(RESU1, CHTER, IORD1, CHAM1, IRET )
+             CALL RSEXCH(' ',RESU1, CHTER, IORD1, CHAM1, IRET )
              IF (IRET.NE.0) GOTO 115
 
 C            2- STOCKAGE DE CHAM1 :
 
-             CALL RSEXCH(RESU2, CHTER, IORD2, NOMCH, IRET )
+             CALL RSEXCH(' ',RESU2, CHTER, IORD2, NOMCH, IRET )
              IF ( IRET .EQ. 110 )  CALL RSAGSD ( RESU2, 0 )
              CALL COPISD('CHAMP_GD','G',CHAM1,NOMCH)
              CALL RSNOCH(RESU2,CHTER,IORD2)

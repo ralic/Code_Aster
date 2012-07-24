@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -36,7 +36,7 @@ POST_DYNA_ALEA=MACRO(nom="POST_DYNA_ALEA",
                     b_inte_spec_f  = BLOC(condition="""FRACTILE !=None""",
                         NB_TIRAGE =SIMP(statut='f',typ='I' ),),
                  ),
-         INTE_SPEC       =SIMP(statut='f',typ=table_fonction),
+         INTE_SPEC       =SIMP(statut='f',typ=interspectre),
          b_inte_spec_f      =BLOC(condition="""INTE_SPEC !=None""",
             regles=(UN_PARMI('NOEUD_I','NUME_ORDRE_I','OPTION'),),
             NUME_VITE_FLUI  =SIMP(statut='f',typ='I' ),

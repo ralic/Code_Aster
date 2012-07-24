@@ -5,8 +5,7 @@
      &                  CHVARI,COMPOR,CHTESE,CHDESE,NOPASE,
      &                  TYPESE,CHACSE,CODRET)
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
-C TOLE CRP_20 CRP_21
+C MODIF CALCULEL  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,6 +22,8 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_21
+C
 C     - FONCTION REALISEE : APPEL A "CALCUL"
 C                           CALCUL DES CONTRAINTES ELEMENTAIRES
 C                           CALCUL DES EFFORTS ELEMENTAIRES
@@ -46,10 +47,6 @@ C OUT : CHELEX : CHAMELEM RESULTAT POUR L'OPTION 'SIEF_SENO_SEGA'
 C                PRODUIT LORS DU CALCUL DE L'OPTION 'SIEF_ELNO'
 C                POUR X-FEM UNIQUEMENT
 C OUT : CODRET : CODE DE RETOUR (0 SI TOUT VA BIEN)
-C   -------------------------------------------------------------------
-C     ASTER INFORMATIONS:
-C       15/05/02 (OB): CALCUL DE LA SENSIBILITE DU FLUX THERMIQUE +
-C                      MODIFS FORMELLES (INDENTATION...)
 C----------------------------------------------------------------------
 C CORPS DU PROGRAMME
       IMPLICIT NONE
@@ -72,15 +69,13 @@ C PARAMETRES D'APPELS
 
       CHARACTER*1 BASE2
       CHARACTER*8 POUX,NOMODE,LPAIN(MAXIN),LPAOUT(MAXOUT),CAREL
-      CHARACTER*8 MATERI,MATERS,NOMA
+      CHARACTER*8 NOMA
       CHARACTER*16 OPTIO2,VARI
       CHARACTER*19 CANBSP,CANBVA,CHXFEM(11)
       CHARACTER*24 VALK
-      CHARACTER*24 LCHIN(MAXIN),LCHOUT(MAXOUT),CHDEP2,CHELE2,CHC,CHTHET,
-     &             MATSEN,CHNOVA
+      CHARACTER*24 LCHIN(MAXIN),LCHOUT(MAXOUT),CHDEP2,CHELE2,CHC,
+     &             CHNOVA
       INTEGER IAUX,IBID,IRET1,IRET2,IER,NB,NBIN,NBOUT,IFM,NIV,IRET,IFISS
-      INTEGER I1,I2,INDIK8
-      LOGICAL INDMEC
       INTEGER      IARG
 
       CHDEP2 = CHDEPL
@@ -103,11 +98,6 @@ C PARAMETRES D'APPELS
       NBOUT = 1
       LCHOUT(1) = CHELE2
       POUX = 'NON'
-
-      IF (TYPESE.EQ.-1) THEN
-         IAUX = 0
-         CALL RSEXC2(1,1,NOPASE,'THETA',IAUX,CHTHET,OPTIO2,CODRET)
-      END IF
 
       IF (CODRET.EQ.0) THEN
 
@@ -145,8 +135,6 @@ C           IL FAUT DONC APPELER CESVAR SYSTEMATIQUEMENT
 
          END IF
 
-C -------------------
-         INDMEC = .TRUE.
 C ----------------------------------------------------------------------
          IF (OPTIO2.EQ.'VARI_ELNO') THEN
             LPAIN(1) = 'PVARIGR'
@@ -163,7 +151,6 @@ C ----------------------------------------------------------------------
          ELSE IF (OPTIO2.EQ.'DETE_ELNO') THEN
             LPAIN(1) = 'PTEMPER'
             LPAOUT(1) = 'PDETENO'
-            INDMEC = .FALSE.
          ELSE IF (OPTIO2.EQ.'ENEL_ELGA' .OR.
      &            OPTIO2.EQ.'ENEL_ELNO') THEN
             LPAIN(1) = 'PDEPLAR'
@@ -229,10 +216,10 @@ C ----------------------------------------------------------------------
                LPAOUT(1) = 'PENERCR'
                CALL AJCHCA('POMEGA2',CHFREQ,LPAIN,
      &                     LCHIN,NBIN,MAXIN,'N')
-            ELSE IF (OPTIO2.EQ.'FLUX_ELNO' .OR.
-     &               OPTIO2.EQ.'FLUX_ELGA') THEN
-               LPAOUT(1) = 'PFLUX_R'
-               INDMEC = .FALSE.
+            ELSE IF (OPTIO2.EQ.'FLUX_ELGA') THEN
+               LPAOUT(1) = 'PFLUXPG'
+            ELSE IF (OPTIO2.EQ.'FLUX_ELNO') THEN
+               LPAOUT(1) = 'PFLUXNO'
             ELSE IF (OPTIO2.EQ.'SOUR_ELGA') THEN
                LPAOUT(1) = 'PSOUR_R'
             ELSE IF (OPTIO2.EQ.'DURT_ELNO') THEN
@@ -381,53 +368,6 @@ C         DE DEPLACEMENT : 'NOMUTILI.C00.000000'
          END IF
          CALL AJCHCA('PTEMPSR',CHTIME,LPAIN,LCHIN,NBIN,MAXIN,'N')
          CALL AJCHCA('PTEREF',CHTREF,LPAIN,LCHIN,NBIN,MAXIN,'N')
-
-
-         IF (TYPESE.EQ.-1) THEN
-C         -- DERIVEE LAGRANGIENNE
-            CALL AJCHCA('PDLAGDE',CHDESE,LPAIN,LCHIN,NBIN,MAXIN,'N')
-            CALL AJCHCA('PDLAGTE',CHTESE,LPAIN,LCHIN,NBIN,MAXIN,'N')
-            CALL AJCHCA('PVECTTH',CHTHET,LPAIN,LCHIN,NBIN,MAXIN,'N')
-
-         ELSE IF (TYPESE.EQ.3) THEN
-            IF (OPTIO2(1:4).EQ.'EPSI') GO TO 20
-            IF (OPTIO2(11:14).EQ.'ELGA') GO TO 20
-            IF (OPTIO2.EQ.'SIEF_ELNO') GO TO 20
-            IF (OPTIO2.EQ.'VARI_ELNO') GO TO 20
-
-C         -- SENSIBILITE PAR RAPPORT A UNE CARACTERISTIQUE MATERIAU
-C            DETERMINATION DU CHAMP MATERIAU A PARTIR DE LA CARTE CODEE
-            MATERI = CHMATE(1:8)
-C         -- DETERMINATION DU CHAMP MATERIAU DERIVE NON CODE MATSEN
-            CALL PSGENC(MATERI,NOPASE,MATERS,IRET)
-            IF (IRET.NE.0) THEN
-               CALL U2MESK('A','CALCULEL2_87',1,MATERI)
-               GO TO 40
-            END IF
-C         -- TRANSFORMATION EN CHAMP MATERIAU DERIVE CODE
-            MATSEN = ' '
-            MATSEN(1:24) = MATERS(1:8)//CHMATE(9:24)
-C         -- ON RAJOUTE LPAIN LIES AU MATERIAU ET AU CHAMP DERIVES
-            CALL AJCHCA('PMATSEN',MATSEN,LPAIN,LCHIN,NBIN,MAXIN,'N')
-            IF (INDMEC) THEN
-               CALL AJCHCA('PDEPSEN',CHDESE,LPAIN,LCHIN,NBIN,MAXIN,'N')
-               CALL AJCHCA('PACCSEN',CHACSE,LPAIN,LCHIN,NBIN,MAXIN,'N')
-            ELSE
-               CALL AJCHCA('PTEMSEN',CHTESE,LPAIN,LCHIN,NBIN,MAXIN,'N')
-            END IF
-C         -- REDEFINITION DE L'OPTION
-            OPTIO2 = OPTIO2(1:9)//'_SENS'
-            IF (OPTIO2(1:4).NE.'FLUX') THEN
-C           -- GLUTE MECALM.F : IL FAUT PERMUTER PDEPLAR ET PDEPSEN
-               I1=INDIK8(LPAIN,'PDEPSEN',1,NBIN)
-               CALL ASSERT(I1.GT.0 .AND. I1.LE.NBIN)
-               I2=INDIK8(LPAIN,'PDEPLAR',1,NBIN)
-               CALL ASSERT(I2.GT.0 .AND. I2.LE.NBIN)
-               LPAIN(I1)='PDEPLAR'
-               LPAIN(I2)='PDEPSEN'
-            ENDIF
-20          CONTINUE
-         END IF
 
          CALL MECEUC('C',POUX,OPTIO2,CAREL,LIGREL,NBIN,LCHIN,LPAIN,
      &               NBOUT,LCHOUT,LPAOUT,BASE2)

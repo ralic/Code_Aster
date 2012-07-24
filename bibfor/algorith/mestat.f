@@ -1,7 +1,7 @@
       SUBROUTINE MESTAT(MODELZ,FOMULZ,LISCHZ,MATE  ,CARAZ ,LTPSZ ,
      &                  SOLVEZ,COMPOR,MATASZ  )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -160,7 +160,7 @@ C====
         CALL JERECU('V')
 
 C       SI LE PAS DE TEMPS A DEJA ETE CALCULE, ON SAUTE L'ITERATION
-        CALL RSEXCH(RESULT,'DEPL',ITPS,CHDEPL,IRET)
+        CALL RSEXCH(' ',RESULT,'DEPL',ITPS,CHDEPL,IRET)
         IF (IRET.EQ.0) GO TO 2
 
 C 2.1. ==> L'INSTANT
@@ -184,11 +184,11 @@ C 2.2.1. ==> Y-A-T'IL ASSEMBLAGE DES MATRICES ?
 C 2.2.2. ==> RESOLUTION
 
         CALL MERESO ( RESULT,
-     >                  MODELE, MATE, CARELE, FOMULT, LISCHA,
-     >                  ITPS0, PARTPS,
-     >                  NUMEDD, VECASS,
-     >                  ASSMAT, SOLVEU, MATASS, MAPREC,
-     >                  BASE, COMPOR )
+     &                  MODELE, MATE, CARELE, FOMULT, LISCHA,
+     &                  ITPS0, PARTPS,
+     &                  NUMEDD, VECASS,
+     &                  ASSMAT, SOLVEU, MATASS, MAPREC,
+     &                  BASE, COMPOR )
 
 C       -- IMPRESSION EVENTUELLE DES MESURES DE TEMPS:
         CALL UTTCPG('IMPR','INCR')
@@ -210,8 +210,8 @@ C 2.3. ==> CONTROLE DU TEMPS CPU
           TCPU = TPS3(4)
         ENDIF
         IF ( NBVAL .GT. 1    .AND.
-     >       ITPS .LT. NBVAL .AND.
-     >       TCPU .GT. .95D0*TPS3(1)  ) THEN
+     &       ITPS .LT. NBVAL .AND.
+     &       TCPU .GT. .95D0*TPS3(1)  ) THEN
              VALI     = ITPS
              VALR (1) = TIME
              VALR (2) = TCPU

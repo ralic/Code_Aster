@@ -1,10 +1,9 @@
       SUBROUTINE TE0004 (OPTION,NOMTE)
       IMPLICIT NONE
-      INCLUDE 'jeveux.h'
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,8 +28,7 @@ C       ASSURER LE PASSAGE ELGA -> ELNO
 C
 C.......................................................................
 C
-C
-C
+      INCLUDE 'jeveux.h'
 C
       INTEGER NDIM,NNO,NNOS,NPG,NBSP
       INTEGER IPOIDS,IVF,IDFDE,JGANO
@@ -100,6 +98,11 @@ C
         FAMI = 'RIGI'
         CALL TECACH('OOO','PDEFOPG' ,7,ITABIN,IRET)
         CALL TECACH('OOO','PDEFONO' ,7,ITABOU,IRET)
+
+      ELSEIF (OPTION.EQ.'FLUX_ELNO') THEN
+        FAMI = 'RIGI'
+        CALL TECACH('OOO','PFLUXPG' ,7,ITABIN,IRET)
+        CALL TECACH('OOO','PFLUXNO' ,7,ITABOU,IRET)
 
       ELSEIF (OPTION.EQ.'SIGM_ELNO') THEN
         FAMI = 'RIGI'

@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,28 +26,24 @@ C ----------------------------------------------------------------------
       INTEGER       IDEREX, IDERRE, IVAL(2), IRET, ILNOEX, ILCPEX, I1,
      +              ILVAEX, NAPEXC, NINDEX, NNOEEX, NCMPEX, NVASEX, I2,
      +              NBPTMD, IADFRQ, ILAMOR, IJ1, IGIM, IGRE,
-     +              ILMODE, ILAMSC, NMOST1, IADPIM, IADSC3, ILFEX2, N1,
+     +              ILMODE, ILAMSC, NMOST1, IADPIM, IADSC3, N1,
      +              IADHII, IMODDY, IFREQ2, IFREQ1, NMOST3, NDIMRE, NI,
-     +              ITAIL1, ILFOR1, ILAPRL, IBID1, IEXP, ISIGN, IADJ, J,
+     +              ITAIL1, IEXP, ISIGN, IADJ, J,
      +              IADJS, IADG, IADJG, IADJGJ, NJ, NI1, NI2, I, NK, IJ,
-     +              IADIJ, NBPARM, NBMODE, NBDDL, NBAMOR, NPDSC3
-      PARAMETER   ( NBPARM = 6 )
-      REAL*8        R8B, BANDE(2), DEPI, R8DEPI, FREMIN, FREMAX, PAS,
+     +              NBMODE, NBDDL, NBAMOR, NPDSC3
+      INTEGER       ISPEC,LFREQ,LNUMI,LNUMJ,LREFE,NBABS,NUM,ILFEX2
+      REAL*8        BANDE(2), DEPI, R8DEPI, FREMIN, FREMAX, PAS,
      +              R8AMOR, R8FREQ, R8BID1, R8SIGN, R8OMEG, R8OMG2, PIM,
      +              FREFIN
-      COMPLEX*16    C16B, XCJ, XCGREP, XCG, XCH
+      COMPLEX*16    XCJ, XCGREP, XCG, XCH
       CHARACTER*4   TYPOPT, EXCMOD, FREXCI
       CHARACTER*8   MTRMAS, MODMEC, INTEXC, MODSTA, MAILLA, NUMER
-      CHARACTER*8   INTREP, TYPARM(NBPARM)
+      CHARACTER*8   INTREP, NOMREF
       CHARACTER*8   CHAMAT, CELEM, TYMMEC
-      CHARACTER*16  TYCONC, NOMCMD, GRAEXC, GRDMOD, KVAL(2),
-     +              NOPARM(NBPARM), NOCHAM
-      CHARACTER*19  NOMCOD
-      CHARACTER*24  LIFEX2
+      CHARACTER*16  TYCONC, NOMCMD, GRAEXC, GRDMOD,
+     +              NOCHAM
+      CHARACTER*24  LIFEX2,CHVALE,CHFREQ,CHNUMI,CHNUMJ
 C
-      DATA NOPARM / 'NOM_CHAM' , 'OPTION' , 'DIMENSION' ,
-     +              'NUME_ORDRE_I' , 'NUME_ORDRE_J' ,'FONCTION_C' /
-      DATA TYPARM / 'K16' , 'K16' , 'I' , 'I' , 'I' , 'K24' /
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -63,6 +59,8 @@ C---1-----RECUPERATION DES ARGUMENTS DE LA COMMANDE
 C---1.1---NOM DU RESULTAT, TYPE DU RESULTAT, ET NOM DE LA COMMANDE
 C
       CALL GETRES ( INTREP, TYCONC, NOMCMD )
+
+      NOMREF=INTREP(1:8)
 C
 C---1.2---INTERSPECTRE EXCIT
 C
@@ -177,39 +175,39 @@ C
       ELSE
          NOCHAM = 'ACCE_GENE'
       ENDIF
-      KVAL(1) = NOCHAM
-      KVAL(2) = TYPOPT
-C
-      CALL TBCRSD ( INTREP, 'G' )
-      CALL TBAJPA ( INTREP, NBPARM, NOPARM, TYPARM )
-      CALL TBAJLI ( INTREP, 3, NOPARM, NDIMRE, R8B, C16B, KVAL, 0 )
+
+      CALL WKVECT(NOMREF//'.REFE','G V K16',2,LREFE)
+      ZK16(LREFE) = NOCHAM
+      ZK16(LREFE+1) = TYPOPT
 C
       ITAIL1 = NDIMRE * ( 1 + NDIMRE ) / 2
-      CALL WKVECT ('&&OP0131.LIADRFOR1', 'V V I', ITAIL1, ILFOR1 )
-      CALL WKVECT ('&&OP0131.LIADRPROL', 'V V I', ITAIL1, ILAPRL )
+      CHNUMI = NOMREF//'.NUMI'
+      CALL WKVECT(CHNUMI,'G V I',ITAIL1,LNUMI)
+      CHNUMJ = NOMREF//'.NUMJ'
+      CALL WKVECT(CHNUMJ,'G V I',ITAIL1,LNUMJ)
+      CHVALE = NOMREF//'.VALE'
+      CALL JECREC(CHVALE,'G V R','NU','DISPERSE','VARIABLE',ITAIL1)
+      CHFREQ = NOMREF//'.FREQ'
+      CALL WKVECT(CHFREQ,'G V R',NPDSC3,LFREQ)
+C
+      IJ1 = 0
       DO 401 I1 = 1 , NDIMRE
-         IVAL(1) = I1
          DO 402 I2 = I1 , NDIMRE
-            IVAL(2) = I2
-            WRITE(NOMCOD,'(A8,A3,2I4.4)') INTREP,'.FO',I1,I2
-               CALL TBAJLI ( INTREP, 3, NOPARM(4),
-     +                        IVAL, R8B, C16B, NOMCOD, 0 )
-            IJ1=(I2*(I2-1))/2+I1
+            IJ1=IJ1+1
+            ZI(LNUMI-1+IJ1) = I1
+            ZI(LNUMJ-1+IJ1) = I2
             IF ( (TYPOPT.EQ.'TOUT') .OR. (I1.EQ.I2) ) THEN
-               CALL WKVECT ( NOMCOD//'.VALE',
-     &                             'G V R8',NPDSC3*3,ZI(ILFOR1-1+IJ1))
+              IF (I1.EQ.I2) THEN 
+               NBABS = NPDSC3
+              ELSE
+               NBABS = 2*NPDSC3
+              ENDIF
             ELSE
-               CALL WKVECT ( NOMCOD//'.VALE',
-     &                             'G V R8',6,ZI(ILFOR1-1+IJ1))
+              NBABS = 6
             ENDIF
-            CALL WKVECT(NOMCOD//'.PROL','G V K24',6,ZI(ILAPRL-1+IJ1))
-            IBID1=ZI(ILAPRL-1+IJ1)
-            ZK24(IBID1  ) = 'FONCT_C '
-            ZK24(IBID1+1) = 'LIN LIN '
-            ZK24(IBID1+2) = NOCHAM
-            ZK24(IBID1+3) = 'DSP     '
-            ZK24(IBID1+4) = 'EE      '
-            ZK24(IBID1+5) = NOMCOD
+        CALL JECROC(JEXNUM(CHVALE,IJ1))
+        CALL JEECRA(JEXNUM(CHVALE,IJ1),'LONMAX',NBABS,' ')
+        CALL JEECRA(JEXNUM(CHVALE,IJ1),'LONUTI',NBABS,' ')
  402     CONTINUE
  401  CONTINUE
 C
@@ -246,6 +244,7 @@ C
       DO 607 IFREQ1 = 1 , NPDSC3
 C
          R8FREQ = ZR(IADSC3+IFREQ1-1)
+         ZR(LFREQ-1+IFREQ1) = R8FREQ
          R8OMEG = DEPI*R8FREQ
          R8OMG2 = R8OMEG*R8OMEG
          IF ( R8OMEG .EQ. 0.D0 ) THEN
@@ -263,7 +262,7 @@ C
          DO 611 J = 1 , NJ
 C  MATRICES DES MODES STATIQUES EST L IDENTITE
             IF ( J .LE. NI1 ) THEN
-               XCJ = 1.D0
+               XCJ = DCMPLX(1.D0,0.D0)
                ZC(IADJ -1+NI*(J-1)+J) = XCJ
                ZC(IADJS-1+NJ*(J-1)+J) = DCONJG(XCJ)
             ENDIF
@@ -311,28 +310,36 @@ C
                NK = NDIMRE
             ENDIF
             DO 641 J = I , NK
-               IJ = ((J-1)*J)/2+I
-               IADIJ = ZI(ILFOR1-1+IJ)
+               IJ = 0
+               DO 650 NUM = 1,ITAIL1
+                  IF ((I .EQ. ZI(LNUMI-1+NUM)) .AND.
+     &                (J .EQ. ZI(LNUMJ-1+NUM))) IJ = NUM
+650            CONTINUE
                XCGREP = ZC(IADJGJ-1+(J-1)*NDIMRE+I)
-               ZR(IADIJ-1+IFREQ1) = R8FREQ
-               ZR(IADIJ-1+NPDSC3+2*(IFREQ1-1)+1) = DBLE(XCGREP)
-               ZR(IADIJ-1+NPDSC3+2*(IFREQ1-1)+2) = DIMAG(XCGREP)
+               CALL JEVEUO(JEXNUM(CHVALE,IJ),'E',ISPEC)
+               IF (I .EQ. J) THEN
+                 ZR(ISPEC-1+IFREQ1) = DBLE(XCGREP)
+               ELSE
+                 ZR(ISPEC-1+2*(IFREQ1-1)+1) = DBLE(XCGREP)
+                 ZR(ISPEC-1+2*(IFREQ1-1)+2) = DIMAG(XCGREP)
+               ENDIF
  641        CONTINUE
  640     CONTINUE
 C
  607  CONTINUE
 C
       IF ( TYPOPT .EQ. 'DIAG' ) THEN
+         IJ = 0
          DO 630 I=1,NDIMRE
             DO 631 J = I+1 , NDIMRE
-               IJ = J*(J-1)/2+I
-               IBID1 = ZI(ILFOR1-1+IJ)
-               ZR(IBID1  ) = 0.D0
-               ZR(IBID1+1) = FREFIN
-               ZR(IBID1+2) = 0.D0
-               ZR(IBID1+3) = 0.D0
-               ZR(IBID1+4) = 0.D0
-               ZR(IBID1+5) = 0.D0
+               IJ = IJ+1
+               CALL JEVEUO(JEXNUM(CHVALE,IJ),'E',ISPEC)
+               ZR(ISPEC  ) = 0.D0
+               ZR(ISPEC+1) = FREFIN
+               ZR(ISPEC+2) = 0.D0
+               ZR(ISPEC+3) = 0.D0
+               ZR(ISPEC+4) = 0.D0
+               ZR(ISPEC+5) = 0.D0
  631        CONTINUE
  630     CONTINUE
       ENDIF

@@ -1,13 +1,16 @@
-      SUBROUTINE GKMET3(NNOFF,CHFOND,IADRGK,IADGKS,IADGKI,ABSCUR,NUM)
+      SUBROUTINE GKMET3(NNOFF,CHFOND,IADRGK,MILIEU,CONNEX,IADGKS,IADGKI,
+     &                  ABSCUR,NUM,MODELE)
       IMPLICIT NONE
 
       INCLUDE 'jeveux.h'
       INTEGER         NNOFF,IADRGK,IADGKS,IADGKI,NUM
+      CHARACTER*8     MODELE
       CHARACTER*24    CHFOND,ABSCUR
+      LOGICAL         MILIEU,CONNEX
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,16 +31,19 @@ C ======================================================================
 C
 C ......................................................................
 C      METHODE THETA-LAGRANGE ET G-LAGRANGE POUR LE CALCUL DE G(S)
-C      K1(S) K2(S) ET K3(S) DANS LE CADRE X-FEM
+C      K1(S) K2(S) ET K3(S)
 C
 C ENTREE
 C
-C     MODELE   --> NOM DU MODELE
 C     NNOFF    --> NOMBRE DE NOEUDS DU FOND DE FISSURE
-C     NORMFF   --> VALEURS DE LA NORMALE SUR LE FOND DE FISSURE
-C     FOND     --> NOMS DES NOEUDS DU FOND DE FISSURE
-C     IADRGK    --> ADRESSE DE VALEURS DE GKTHI
+C     CHFOND   --> COORDONNEES ET ABSCISSES CURVILIGNES DES NOEUDS
+C                  DU FOND DE FISSURE
+C     IADRGK   --> ADRESSE DE VALEURS DE GKTHI
 C                 (G, K1, K2, K3 POUR LES CHAMPS THETAI)
+C     MILIEU   --> .TRUE.  : ELEMENT QUADRATIQUE
+C                  .FALSE. : ELEMENT LINEAIRE
+C     CONNEX   --> .TRUE.  : SI FOND FERME
+C                  .FALSE. : SI FOND OUVERT
 C
 C  SORTIE
 C
@@ -50,7 +56,7 @@ C      NUM     --> 3 (LAGRANGE-LAGRANGE)
 C              --> 4 (NOEUD-NOEUD)
 C
       INTEGER      IFON,IADABS,IVECT,IMATR
-      INTEGER      I,IBID,KK
+      INTEGER      I,IARG,IBID,KK
       REAL*8       S1,S2,DELTA,S3,SN2,SN1,SN
       REAL*8       GTHI(NNOFF),K1TH(NNOFF),K2TH(NNOFF),K3TH(NNOFF)
       REAL*8       GS(NNOFF),K1S(NNOFF),K2S(NNOFF),K3S(NNOFF)
@@ -59,9 +65,6 @@ C
       REAL*8       G1S(NNOFF),G2S(NNOFF),G3S(NNOFF)
       CHARACTER*24 LISSG,VECT,MATR
 
-C
-      INTEGER      IARG
-C
 
       CALL JEMARQ()
 C
@@ -82,26 +85,49 @@ C
       CALL GETVTX('LISSAGE','LISSAGE_G',1,IARG,1,LISSG,IBID)
 C
       IF (LISSG .EQ. 'LAGRANGE_NO_NO') THEN
+
+C       ----------------------------------------------------------------
+C                    TRAITEMENT DU LISSAGE LAGRANGE_NO_NO
+C       ----------------------------------------------------------------
+C
         VECT = '&&METHO3.VECT'
         CALL WKVECT(VECT,'V V R8',NNOFF,IVECT)
         NUM = 4
-        DO 20 I = 1,NNOFF-1
-          S1 = ZR(IADABS+I-1)
-          S2 = ZR(IADABS+I+1-1)
-          DELTA = (S2-S1) / 3.D0
-          ZR(IVECT+I-1) = ZR(IVECT+I-1) + DELTA
-          ZR(IVECT+I+1-1) = 2.D0 * DELTA
- 20     CONTINUE
-        DO 30 I=1,NNOFF
-          GS(I) = GTHI(I)/ZR(IVECT+I-1 )
+        IF (MILIEU)THEN
+          DO 20 I=1,NNOFF-2,2
+            S1 = ZR(IADABS+I-1)
+            S3 = ZR(IADABS+I+1)
+            DELTA = (S3-S1) / 6.D0
+            ZR(IVECT+I  -1)= ZR(IVECT+I-1) + DELTA
+            ZR(IVECT+I+1-1)= 4.D0*DELTA
+            ZR(IVECT+I+2-1)= DELTA
+20        CONTINUE
+        ELSE
+          DO 30 I = 1,NNOFF-1
+            S1 = ZR(IADABS+I-1)
+            S2 = ZR(IADABS+I+1-1)
+            DELTA = (S2-S1) / 3.D0
+            ZR(IVECT+I  -1) = ZR(IVECT+I-1) + DELTA
+            ZR(IVECT+I+1-1) = 2.D0 * DELTA
+ 30       CONTINUE
+        ENDIF
+
+C       CORRECTION DANS LE CAS D UN FOND FERME
+        IF (CONNEX) THEN
+          ZR(IVECT+NNOFF-1)= ZR(IVECT+NNOFF-1) + ZR(IVECT+1-1)
+          ZR(IVECT+1    -1)= ZR(IVECT+NNOFF-1)
+        ENDIF
+
+        DO 40 I=1,NNOFF
+          GS(I)  = GTHI(I)/ZR(IVECT+I-1 )
           K1S(I) = K1TH(I)/ZR(IVECT+I-1 )
           K2S(I) = K2TH(I)/ZR(IVECT+I-1 )
           K3S(I) = K3TH(I)/ZR(IVECT+I-1 )
           GIS(I) = GITH(I)/(ZR(IVECT+I-1 ) * ZR(IVECT+I-1 ))
 
-30      CONTINUE
+40      CONTINUE
 
-C       CORRECTION DES VALEURS AUX EXTREMITES (RESULTAT + PRECIS)
+C       CORRECTION DES VALEURS ASSOCIEES AU 1ER ET DERNIER CHAMPS THETA
         IF (NNOFF .GT. 2) THEN
           S1 = ZR(IADABS-1+1)
           S2 = ZR(IADABS-1+2)
@@ -128,28 +154,77 @@ C       CORRECTION DES VALEURS AUX EXTREMITES (RESULTAT + PRECIS)
 
         ENDIF
 
+
       ELSEIF (LISSG .EQ. 'LAGRANGE') THEN
+
+C       ----------------------------------------------------------------
+C                    TRAITEMENT DU LISSAGE LAGRANGE
+C       ----------------------------------------------------------------
+
         MATR = '&&METHO3.MATRI'
 
         CALL WKVECT(MATR,'V V R8',NNOFF*NNOFF,IMATR)
 
         NUM = 3
-        DO 40 I = 1,NNOFF-1
-          S1 = ZR(IADABS+I-1)
-          S2 = ZR(IADABS+I)
-          DELTA = (S2-S1) / 6.D0
-C
-          KK = IMATR + (I-1)*NNOFF + I - 1
-          ZR(KK) = ZR(KK) + 2.D0*DELTA
-          ZR(IMATR+(I-1+1)*NNOFF+I-1) = 1.D0 * DELTA
-C
-          ZR(IMATR+(I-1)*NNOFF+I-1+1) = 1.D0 * DELTA
-          ZR(IMATR+(I-1+1)*NNOFF+I-1+1) = 2.D0 * DELTA
- 40     CONTINUE
 
+        IF (MILIEU) THEN
 
-C       CORRECTION DES VALEURS AUX EXTREMITES (RESULTAT + PRECIS)
+          DO 50 I=1,NNOFF-2,2
+            S1 = ZR(IADABS+I-1)
+            S3 = ZR(IADABS+I+1)
+            DELTA = (S3-S1) / 30.D0
+C
+            KK = IMATR+(I-1  )*NNOFF+I-1
+            ZR(KK )= ZR(KK) + 4.D0*DELTA
+            ZR(IMATR+(I-1+1)*NNOFF+I-1  ) =  2.D0 * DELTA
+            ZR(IMATR+(I-1+2)*NNOFF+I-1  ) = -1.D0 * DELTA
+C
+            ZR(IMATR+(I-1  )*NNOFF+I-1+1) =  2.D0 * DELTA
+            ZR(IMATR+(I-1+1)*NNOFF+I-1+1) = 16.D0 * DELTA
+            ZR(IMATR+(I-1+2)*NNOFF+I-1+1) =  2.D0 * DELTA
+C
+            ZR(IMATR+(I-1  )*NNOFF+I-1+2) = -1.D0 * DELTA
+            ZR(IMATR+(I-1+1)*NNOFF+I-1+2) =  2.D0 * DELTA
+            ZR(IMATR+(I-1+2)*NNOFF+I-1+2) =  4.D0 * DELTA
+50        CONTINUE
+          IF (CONNEX) THEN
+            KK = IMATR+(1-1  )*NNOFF+1-1
+            ZR(KK )= ZR(KK) + 5.D0*DELTA
+            S1 = ZR(IADABS-1+1)
+            S3 = ZR(IADABS-1+3)
+            DELTA = (S3-S1)/30.D0
+            KK = IMATR+(NNOFF-1)*NNOFF+NNOFF-1
+            ZR(KK )= ZR(KK) + 5.D0*DELTA
+          ENDIF
+
+        ELSE
+
+          DO 60 I = 1,NNOFF-1
+            S1 = ZR(IADABS+I-1)
+            S2 = ZR(IADABS+I)
+            DELTA = (S2-S1) / 6.D0
+C
+            KK = IMATR + (I-1)*NNOFF + I - 1
+            ZR(KK) = ZR(KK) + 2.D0*DELTA
+            ZR(IMATR+(I-1+1)*NNOFF+I-1  ) = 1.D0 * DELTA
+C
+            ZR(IMATR+(I-1  )*NNOFF+I-1+1) = 1.D0 * DELTA
+            ZR(IMATR+(I-1+1)*NNOFF+I-1+1) = 2.D0 * DELTA
+ 60       CONTINUE
+          IF (CONNEX) THEN
+            KK = IMATR+(1-1  )*NNOFF+1-1
+            ZR(KK )= ZR(KK) + 3.D0*DELTA
+            S1 = ZR(IADABS-1+1)
+            S3 = ZR(IADABS-1+3)
+            DELTA = (S3-S1)/6.D0
+            KK = IMATR+(NNOFF-1)*NNOFF+NNOFF-1
+            ZR(KK )= ZR(KK) + 3.D0*DELTA
+          ENDIF
+        ENDIF
+
+C       X-FEM : CORRECTION VALEURS EXTREMITES (RESULTAT + PRECIS)
         IF (NNOFF .NE. 2) THEN
+
           S1 = ZR(IADABS-1+1)
           S2 = ZR(IADABS-1+2)
           S3 = ZR(IADABS-1+3)
@@ -157,16 +232,36 @@ C       CORRECTION DES VALEURS AUX EXTREMITES (RESULTAT + PRECIS)
           SN1 = ZR(IADABS-1+NNOFF-1)
           SN =  ZR(IADABS-1+NNOFF)
 
-          GTHI(1)=GTHI(2)*(S2-S1)/(S3-S1)
-          K1TH(1)=K1TH(2)*(S2-S1)/(S3-S1)
-          K2TH(1)=K2TH(2)*(S2-S1)/(S3-S1)
-          K3TH(1)=K3TH(2)*(S2-S1)/(S3-S1)
-          GITH(1)=GITH(2)*(S2-S1)/(S3-S1)
-          GTHI(NNOFF)=GTHI(NNOFF-1)*(SN-SN1)/(SN-SN2)
-          K1TH(NNOFF)=K1TH(NNOFF-1)*(SN-SN1)/(SN-SN2)
-          K2TH(NNOFF)=K2TH(NNOFF-1)*(SN-SN1)/(SN-SN2)
-          K3TH(NNOFF)=K3TH(NNOFF-1)*(SN-SN1)/(SN-SN2)
-          GITH(NNOFF)=GITH(NNOFF-1)*(SN-SN1)/(SN-SN2)
+C         CORRECTION DANS LE CAS LINEAIRE
+          IF (.NOT.MILIEU) THEN
+
+            GTHI(1)=GTHI(2)*(S2-S1)/(S3-S1)
+            K1TH(1)=K1TH(2)*(S2-S1)/(S3-S1)
+            K2TH(1)=K2TH(2)*(S2-S1)/(S3-S1)
+            K3TH(1)=K3TH(2)*(S2-S1)/(S3-S1)
+            GITH(1)=GITH(2)*(S2-S1)/(S3-S1)
+            GTHI(NNOFF)=GTHI(NNOFF-1)*(SN-SN1)/(SN-SN2)
+            K1TH(NNOFF)=K1TH(NNOFF-1)*(SN-SN1)/(SN-SN2)
+            K2TH(NNOFF)=K2TH(NNOFF-1)*(SN-SN1)/(SN-SN2)
+            K3TH(NNOFF)=K3TH(NNOFF-1)*(SN-SN1)/(SN-SN2)
+            GITH(NNOFF)=GITH(NNOFF-1)*(SN-SN1)/(SN-SN2)
+
+C         CORRECTION DANS LE CAS QUADRATIQUE
+          ELSEIF (MILIEU) THEN
+
+            GTHI(1)=GTHI(2)/4.D0
+            K1TH(1)=K1TH(2)/4.D0
+            K2TH(1)=K2TH(2)/4.D0
+            K3TH(1)=K3TH(2)/4.D0
+            GITH(1)=GITH(2)/4.D0
+            GTHI(NNOFF)=GTHI(NNOFF-1)/4.D0
+            K1TH(NNOFF)=K1TH(NNOFF-1)/4.D0
+            K2TH(NNOFF)=K2TH(NNOFF-1)/4.D0
+            K3TH(NNOFF)=K3TH(NNOFF-1)/4.D0
+            GITH(NNOFF)=GITH(NNOFF-1)/4.D0
+
+          ENDIF
+
         ENDIF
 
 C       SYSTEME LINEAIRE:  MATR*GS = GTHI
@@ -185,35 +280,39 @@ C       SYSTEMES LINEAIRES POUR GIRWIN
         CALL GSYSTE(MATR,NNOFF,NNOFF,G1TH,G1S)
         CALL GSYSTE(MATR,NNOFF,NNOFF,G2TH,G2S)
         CALL GSYSTE(MATR,NNOFF,NNOFF,G3TH,G3S)
-        DO 50 I=1,NNOFF
+        DO 70 I=1,NNOFF
           GIS(I)=G1S(I)*G1S(I) + G2S(I)*G2S(I) +G3S(I)*G3S(I)
- 50     CONTINUE
+ 70     CONTINUE
 
       ENDIF
 
-      DO 60 I=1,NNOFF
+C     ----------------------------------------------------------------
+C                  RECOPIES
+C     ----------------------------------------------------------------
+
+      DO 80 I=1,NNOFF
         ZR(IADGKS-1+(I-1)*6+1)=GS(I)
         ZR(IADGKS-1+(I-1)*6+2)=K1S(I)
         ZR(IADGKS-1+(I-1)*6+3)=K2S(I)
         ZR(IADGKS-1+(I-1)*6+4)=K3S(I)
         ZR(IADGKS-1+(I-1)*6+5)=GIS(I)
- 60   CONTINUE
+ 80   CONTINUE
 
-      DO 70 I=1,NNOFF
+      DO 90 I=1,NNOFF
         ZR(IADGKI-1+(I-1)*5+1) = ZR(IADRGK-1+(I-1)*8+1)
         ZR(IADGKI-1+(I-1)*5+2) = ZR(IADRGK-1+(I-1)*8+5)
         ZR(IADGKI-1+(I-1)*5+3) = ZR(IADRGK-1+(I-1)*8+6)
         ZR(IADGKI-1+(I-1)*5+4) = ZR(IADRGK-1+(I-1)*8+7)
- 70   CONTINUE
+ 90   CONTINUE
 
 
 C     CALCUL DES ANGLES DE PROPAGATION DE FISSURE LOCAUX BETA
-      DO 80 I=1,NNOFF
+      DO 100 I=1,NNOFF
         BETAS(I) = 0.0D0
         IF (K2S(I).NE.0.D0) BETAS(I) = 2.0D0*ATAN2(0.25D0*(K1S(I)/K2S(I)
      &    -SIGN(1.0D0,K2S(I))*SQRT((K1S(I)/K2S(I))**2.0D0+8.0D0)),1.0D0)
           ZR(IADGKS-1+(I-1)*6+6)=BETAS(I)
- 80   CONTINUE
+ 100  CONTINUE
 
       CALL JEDETR('&&METHO3.MATRI')
       CALL JEDETR('&&METHO3.VECT')

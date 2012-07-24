@@ -4,7 +4,7 @@
       CHARACTER*8         NOMRES, MAILSK,         RESULT
 C***********************************************************************
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,7 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 
-      CALL RSEXCH(RESULT,'DEPL',1,CHAMNO,IRET)
+      CALL RSEXCH('F',RESULT,'DEPL',1,CHAMNO,IRET)
       CALL DISMOI('F','PROF_CHNO',CHAMNO,'CHAM_NO',IBID,PFCHN1,IERD)
 
 
@@ -114,20 +114,8 @@ C --- MISE A JOUR DES OBJETS .NUEQ ET .PRNO
 
 
       DO 60 IORD=1,NBORD
-         CALL RSEXCH (RESULT, 'DEPL', ZI(LORD-1+IORD), CHEXIN, IRET )
-         IF (IRET.NE.0) THEN
-         VALK(1)=RESULT
-         VALK(2) = 'DEPL'
-         VALI = ZI(LORD-1+IORD)
-            CALL U2MESG('F', 'ALGORITH14_32',2,VALK,1,VALI,0,0.D0)
-         ENDIF
-         CALL RSEXCH (NOMRES, 'DEPL', ZI(LORD-1+IORD), CHEXOU, IRET )
-         IF (IRET.NE.0) THEN
-         VALK(1)=NOMRES
-         VALK(2) = 'DEPL'
-         VALI = ZI(LORD-1+IORD)
-            CALL U2MESG('F', 'ALGORITH14_33',2,VALK,1,VALI,0,0.D0)
-         ENDIF
+         CALL RSEXCH('F',RESULT, 'DEPL', ZI(LORD-1+IORD), CHEXIN, IRET)
+         CALL RSEXCH('F',NOMRES, 'DEPL', ZI(LORD-1+IORD), CHEXOU, IRET)
 C
 C     --- MISE A JOUR DU .REFE
          CALL JEVEUO ( CHEXOU//'.REFE', 'E', LREFE )

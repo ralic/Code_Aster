@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -173,14 +173,6 @@ OPTION__
                                      CPESANR  PPESANR  CSUROPT  PSUROPT  ZVARCPG  PVARCPR
                                      CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
                               OUT__  EEFGENO  PEFFORR  EEFGENC  PEFFORC
-    EFGE_ELNO_SENS      142   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE
-                                     DDL_MECA PDEPLAR
-                                     NGEOMER  PGEOMER  CMATERC  PMATERC
-                                     CSUROPT  PSUROPT  ZVARCPG  PVARCPR
-                                     ZVARCPG  PVARCRR  CMATERC  PMATSEN  DDL_MECA PDEPSEN
-                                     DDL_MECA PACCSEN
-                              OUT__  EEFGENO  PEFFORR
-                                     EEFGENC  PEFFORC
     ENER_ELAS           -1    IN__     OUT__  XXXXXX   XXXXXX
     ENER_TOTALE         -1    IN__     OUT__  XXXXXX   XXXXXX
     EPOT_ELEM           151   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
@@ -218,8 +210,6 @@ OPTION__
                               OUT__  MMATUUR  PMATUUR
     MECA_GYRO           259   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CMATERC  PMATERC
                               OUT__  MMATUNS  PMATUNS
-    MECA_SENS_MATE      -1    IN__     OUT__  XXXXXX   XXXXXX
-    MECA_SENS_RAPH      -1    IN__     OUT__  XXXXXX   XXXXXX
     M_GAMMA             141   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PACCELR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR
                               OUT__  MVECTUR  PVECTUR
@@ -248,12 +238,6 @@ OPTION__
     RIGI_MECA_HYST      50    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  MMATUUR  PRIGIEL  ZVARCPG  PVARCPR
                               OUT__  MMATUUC  PMATUUC
     RIGI_MECA_RO        -1    IN__     OUT__  XXXXXX   XXXXXX
-    RIGI_MECA_SENSI     140   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CMATERC  PMATERC
-                                     ZVARCPG  PVARCPR  DDL_MECA PVAPRIN  CMATERC  PMATSEN
-                              OUT__  MVECTUR  PVECTUR
-    RIGI_MECA_SENS_C    140   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CMATERC  PMATERC
-                                     ZVARCPG  PVARCPR  NDEPLAC  PVAPRIN  CMATERC  PMATSEN
-                              OUT__  MVECTUC  PVECTUC
     RIGI_MECA_TANG      247   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR
                                      EEFGEGA  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                                      CTEMPSR  PINSTMR  CTEMPSR  PINSTPR ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
@@ -281,14 +265,6 @@ OPTION__
                                      CFORCEF  PFF1D1D  CFORCER  PFR1D1D  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      CPESANR  PPESANR  CSUROPT  PSUROPT  ZVARCPG  PVARCPR
                                      CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
-                              OUT__  ECONTPO  PCONTPO
-                                     ECONTPC  PCONTPC
-    SIPO_ELNO_SENS      142   IN__   CCAGRPO  PCAGEPO  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE
-                                     DDL_MECA PDEPLAR
-                                     NGEOMER  PGEOMER  CMATERC  PMATERC
-                                     CSUROPT  PSUROPT  ZVARCPG  PVARCPR
-                                     ZVARCPG  PVARCRR  CMATERC  PMATSEN  DDL_MECA PDEPSEN
-                                     DDL_MECA PACCSEN
                               OUT__  ECONTPO  PCONTPO
                                      ECONTPC  PCONTPC
     SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM OUT__  MMATUUR  PSYM

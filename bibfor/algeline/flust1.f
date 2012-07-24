@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,12 +82,12 @@ C
 C DATA
 C ----
 C-----------------------------------------------------------------------
-      INTEGER IAMFR ,IBID ,ICOUPL ,IEQ ,IER ,IFREQI ,IFSIC 
-      INTEGER IFSVK ,IM ,IMOD ,IND ,INDIC ,IOR ,IRE 
-      INTEGER IRET ,IV ,IVALE ,KMASG ,KREF ,LABSC ,LAUX1 
-      INTEGER LAUX2 ,LDDL ,LDEFM ,LFACT ,LIRES ,LMASG ,LMASSE 
-      INTEGER LNOE ,LPROFV ,LRHO ,LVALE ,NEQ ,NT 
-      REAL*8 PI ,RVAL1 
+      INTEGER IAMFR ,IBID ,ICOUPL ,IEQ ,IER ,IFREQI ,IFSIC
+      INTEGER IFSVK ,IM ,IMOD ,IND ,INDIC ,IOR ,IRE
+      INTEGER IRET ,IV ,IVALE ,KMASG ,KREF ,LABSC ,LAUX1
+      INTEGER LAUX2 ,LDDL ,LDEFM ,LFACT ,LIRES ,LMASG ,LMASSE
+      INTEGER LNOE ,LPROFV ,LRHO ,LVALE ,NEQ ,NT
+      REAL*8 PI ,RVAL1
 C-----------------------------------------------------------------------
       DATA  VALE  /'                   .VALE'/
 C
@@ -167,8 +167,7 @@ C
       CALL MRMULT ( 'ZERO',LMASSE,ZR(LAUX1),ZR(LAUX2),1,.TRUE.)
       DO 100 IM = 1,NBM
          IOR = NUOR(IM)
-         CALL RSEXCH ( BASE, 'DEPL', IOR, VALE(1:19), IRET )
-         CALL ASSERT( IRET .EQ. 0 )
+         CALL RSEXCH('F',BASE, 'DEPL', IOR, VALE(1:19), IRET )
          CALL JEVEUO ( VALE, 'L', LVALE )
          RVAL1 = 0.0D0
          DO 90 IEQ = 0, NEQ-1

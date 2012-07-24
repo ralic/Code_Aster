@@ -1,18 +1,18 @@
       SUBROUTINE ASTRON ( NOMSY, PSMO, MONOAP, MUAPDE, NBSUP, NSUPP,
-     +                    NEQ, NBMODE, ID, VECMOD, PARMOD, SPECTR,
-     +                    NOMSUP, REASUP, RECMOR, RECMOP )
+     &                    NEQ, NBMODE, ID, VECMOD, PARMOD, SPECTR,
+     &                    NOMSUP, REASUP, RECMOR, RECMOP )
       IMPLICIT  NONE
       INCLUDE 'jeveux.h'
       INTEGER           NBSUP, NSUPP(*), NEQ, NBMODE, ID
       REAL*8            VECMOD(NEQ,*),PARMOD(NBMODE,*),SPECTR(*),
-     +                  REASUP(NBSUP,NBMODE,*),RECMOP(NBSUP,NEQ,*),
-     +                  RECMOR(NBSUP,NEQ,*)
+     &                  REASUP(NBSUP,NBMODE,*),RECMOP(NBSUP,NEQ,*),
+     &                  RECMOR(NBSUP,NEQ,*)
       CHARACTER*16      NOMSY
       CHARACTER*(*)     PSMO, NOMSUP(NBSUP,*)
       LOGICAL           MONOAP, MUAPDE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,7 +61,7 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
       DATA NOMCMP / 'DX' , 'DY' , 'DZ' /
       DATA ACCES  / 'ACCE    X       ' , 'ACCE    Y       ',
-     +              'ACCE    Z       ' /
+     &              'ACCE    Z       ' /
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -84,8 +84,8 @@ C           --- CONTRIBUTION MODALE ---
 C
 C           --- DEFORMEE STATIQUE ---
             CALL RSORAC(PSMO,'NOEUD_CMP',IBID,R8B,ACCES(ID),CBID,R8B,
-     +                                              K8B,IORDR,1,NBTROU)
-            CALL RSEXCH(PSMO,NOMSY,IORDR,CHEXTR,IRET)
+     &                                              K8B,IORDR,1,NBTROU)
+            CALL RSEXCH('F',PSMO,NOMSY,IORDR,CHEXTR,IRET)
             CALL JEEXIN(CHEXTR//'.VALE',IBID)
             IF (IBID.GT.0) THEN
               CALL JEVEUO(CHEXTR//'.VALE','L',JVALE)
@@ -102,7 +102,7 @@ C
             CALL JEDETR('&&ASTRON.VECTEUR_MODA')
 C
          ELSE
-C 
+C
             CMP = NOMCMP(ID)
             DO 40 IS = 1,NSUPP(ID)
                NOEU   = NOMSUP(IS,ID)
@@ -110,8 +110,8 @@ C
                IND = ID + 3*(NBMODE-1) + 3*NBMODE*(IS-1)
                GAMMA0 = SPECTR(IND)
                CALL RSORAC(PSMO,'NOEUD_CMP',IBID,R8B,MONACC,CBID,R8B,
-     +                                              K8B,IORDR,1,NBTROU)
-               CALL RSEXCH(PSMO,NOMSY,IORDR,CHEXTR,IRET)
+     &                                              K8B,IORDR,1,NBTROU)
+               CALL RSEXCH('F',PSMO,NOMSY,IORDR,CHEXTR,IRET)
                CALL JEEXIN(CHEXTR//'.VALE',IBID)
                IF (IBID.GT.0) THEN
                  CALL JEVEUO(CHEXTR//'.VALE','L',JVALE)

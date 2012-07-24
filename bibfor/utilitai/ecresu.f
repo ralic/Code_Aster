@@ -6,7 +6,7 @@
       CHARACTER*19 VECTOT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,7 +88,7 @@ C  Creation objet de stockage en LTPS pour les valeurs d'instants
 C
 C  Champs
       IF ( TYPRES(1:9).NE.'TRAN_GENE') THEN
-         CALL RSEXCH(RESIN,GRANDE,1,CHDEP,IRET)
+         CALL RSEXCH('F',RESIN,GRANDE,1,CHDEP,IRET)
          CALL JEVEUO(CHDEP//'.VALE','L',LVAL)
 C  Nombre d'equations : NEQ
          CHDEP2 = CHDEP(1:19)//'.VALE'
@@ -124,7 +124,7 @@ C
 C  Temps
             CALL RSADPA(RESOU,'E',1,'FREQ',I,0,LTPS2,K8B)
             ZR(LTPS2) = ZR(LTPS+I-1)
-            CALL RSEXCH (RESOU,GRANDE,I,CHDEPS,IRET)
+            CALL RSEXCH(' ',RESOU,GRANDE,I,CHDEPS,IRET)
             IF (TYPOUT(1:10).EQ.'DYNA_HARMO') THEN
               IF (RAIDE(1:1).NE.' ') THEN
                 CALL VTCREM (CHDEPS, RAIDE, 'G', 'C' )
@@ -150,7 +150,7 @@ C  Temps
 C  Temps
             CALL RSADPA(RESOU,'E',1,'INST',(I-1),0,LTPS2,K8B)
             ZR(LTPS2) = ZR(LTPS+I-1)
-            CALL RSEXCH (RESOU,GRANDE,(I-1),CHDEPS,IRET)
+            CALL RSEXCH(' ',RESOU,GRANDE,(I-1),CHDEPS,IRET)
             IF (RAIDE(1:1).NE.' ') THEN
               CALL VTCREM (CHDEPS, RAIDE, 'G', 'R' )
             ELSE

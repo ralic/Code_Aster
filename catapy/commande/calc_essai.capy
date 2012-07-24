@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +26,7 @@ def calc_essai_prod(self,RESU_IDENTIFICATION,
 
     if RESU_IDENTIFICATION != None:
         for res in RESU_IDENTIFICATION:
-            self.type_sdprod(res['TABLE'],table_fonction)
+            self.type_sdprod(res['TABLE'],interspectre)
 
     MTYPES = {
         'MODELE'    : modele_sdaster,
@@ -94,7 +94,7 @@ CALC_ESSAI = MACRO(nom       = 'CALC_ESSAI',
                                                       EPS     = SIMP(statut='f',typ='R', defaut = 0.),
                                                       OBSERVABILITE  = SIMP(statut='o',typ=mode_meca),
                                                       COMMANDABILITE = SIMP(statut='o',typ=mode_meca),
-                                                      INTE_SPEC      = SIMP(statut='o',typ=table_sdaster),
+                                                      INTE_SPEC      = SIMP(statut='o',typ=interspectre),
                                                       RESU_EXPANSION = SIMP(statut='f',typ='TXM',defaut='NON',into=('OUI','NON')),
                                                       BASE           = SIMP(statut='o',typ=mode_meca),
                                                      ),

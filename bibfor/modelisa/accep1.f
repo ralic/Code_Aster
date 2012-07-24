@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,7 +60,7 @@ C-----------------------------------------------------------------------
       CALL GETVID(' ','MODELE_INTERFACE',0,IARG,1,MOINT,NI)
       IF (NI.LE.0) THEN
         CALL JEVEUO(MODMEC//'           .REFD','L',IREFE)
-        CALL RSEXCH(MODMEC,'DEPL',1,NOMCHA,IRET)
+        CALL RSEXCH(' ',MODMEC,'DEPL',1,NOMCHA,IRET)
         MATAS = ZK24(IREFE) (1:19)
         CALL JEVEUO(MATAS//'.LIME','L',ILIME)
         CALL JEVEUO(ZK24(ILIME)(1:8)//'.ME001     .NOLI','L',INOLI)
@@ -161,7 +161,7 @@ C BOUCLE SUR LES MODES FORMATIONS DES VECTEURS ELEMENTAIRES
         VETEL = '&&V.M'//INCR
         LCHOUT(1) = VETEL//'.VE000'
         IF (NCHAM.EQ.0) THEN
-          CALL RSEXCH(MODMEC,'DEPL',I,NOMCHA,IRET)
+          CALL RSEXCH(' ',MODMEC,'DEPL',I,NOMCHA,IRET)
         ELSE
           IF (I.LE.NCHAM) NOMCHA = ZK8(ICHAM+I-1)
         END IF

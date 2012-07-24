@@ -1,19 +1,13 @@
-      SUBROUTINE PMFCOM(KPG,OPTION,COMPOR,CRIT,
-     &                  NF,
-     &                  INSTAM,INSTAP,
-     &                  NPG,NSPG,
-     &                  ICDMAT,NBVALC,
-     &                  DEFAM,DEFAP,
-     &                  VARIM,VARIMP,
-     &                  CONTM,DEFM,DEFP,
-     &                  EPSM,
-     &                  MODF,SIGF,VARIP,ISECAN,CODRET)
-
+      SUBROUTINE PMFCOM(KPG,OPTION,COMPOR,CRIT,NF,
+     &                  INSTAM,INSTAP,NPG,NSPG,ICDMAT,
+     &                  NBVALC,DEFAM,DEFAP,VARIM,VARIMP,
+     &                  CONTM,DEFM,DDEFP,EPSM,MODF,
+     &                  SIGF,VARIP,ISECAN,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/12/2011   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ELEMENTS  DATE 23/07/2012   AUTEUR FLEJOU J-L.FLEJOU 
 C TOLE CRP_21
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -29,16 +23,19 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
-      CHARACTER*16 OPTION,COMPOR(*)
-      INTEGER NF,ICDMAT,NBVALC,ISECAN,KPG,NPG,NSPG
-      REAL*8 VARIM(NBVALC*NF),CONTM(NF),DEFM(NF),DEFP(NF),MODF(NF),
-     &       SIGF(NF),VARIMP(NBVALC*NF),VARIP(NBVALC*NF)
-      REAL*8 TEMPM,TEMPP,TREF,SIGX,EPSX,DEPSX
-      REAL*8 CRIT(*),INSTAM,INSTAP
-      REAL*8 DEFAP(*), DEFAM(*)
-C     ------------------------------------------------------------------
-C     AIGUILLAGE COMPORTEMENT DES ELEMENTS DE POUTRE MULTIFIBRES
-
+      INTEGER  NF,ICDMAT,NBVALC,ISECAN,KPG,NPG,NSPG
+      REAL*8   CONTM(NF),DEFM(NF),DDEFP(NF),MODF(NF),SIGF(NF)
+      REAL*8   VARIMP(NBVALC*NF),VARIP(NBVALC*NF),VARIM(NBVALC*NF)
+      REAL*8   TEMPM,TEMPP,TREF,SIGX,EPSX,DEPSX,INSTAM,INSTAP
+      REAL*8   CRIT(*),DEFAP(*),DEFAM(*)
+C
+      CHARACTER*16   OPTION,COMPOR(*)
+C --- ------------------------------------------------------------------
+C
+C        AIGUILLAGE COMPORTEMENT DES ELEMENTS DE POUTRE MULTIFIBRES
+C
+C --- ------------------------------------------------------------------
+C
 C IN  COMPO : NOM DU COMPORTEMENT
 C IN  CRIT  : CRITERES DE CONVERGENCE LOCAUX
 C IN  NF    : NOMBRE DE FIBRES
@@ -49,284 +46,287 @@ C IN  ICDMAT: CODE MATERIAU
 C IN  NV    : NOMBRE DE VARIABLES INTERNES DU MODELE
 C IN  VARIM : VARIABLES INTERNES MOINS
 C IN  VARIMP: VARIABLES INTERNES ITERATION PRECEDENTE (POUR DEBORST)
-C IN  DEFAM   : DEFORMATIONS ANELASTIQUES A L'INSTANT PRECEDENT
-C IN  DEFAP   : DEFORMATIONS ANELASTIQUES A L'INSTANT DU CALCUL
-C IN  CONTM : CONTRAINTES MOINS (ATTENTION POUR L'INSTANT EFGEGA ET
-C              PAS PAR FIBRE !)
+C IN  DEFAM : DEFORMATIONS ANELASTIQUES A L'INSTANT PRECEDENT
+C IN  DEFAP : DEFORMATIONS ANELASTIQUES A L'INSTANT DU CALCUL
+C IN  CONTM : CONTRAINTES MOINS PAR FIBRE
 C IN  DEFM  : DEFORMATION  A L'INSTANT DU CALCUL PRECEDENT
-C IN  DEFP  : INCREMENT DE DEFORMATION
+C IN  DDEFP : INCREMENT DE DEFORMATION
 C IN  EPSM  : DEFORMATION A L'INSTANT PRECEDENT
 C OUT MODF  : MODULE TANGENT DES FIBRES
 C OUT SIGF  : CONTRAINTE A L'INSTANT ACTUEL DES FIBRES
 C OUT VARIP : VARIABLES INTERNES A L'INSTANT ACTUEL
-C OUT ISECAN:
-C     ------------------------------------------------------------------
-
-      INTEGER     NBVAL,NBPAR,NBRES,NBVARI,CODREP
-      PARAMETER   (NBVAL=12)
-      REAL*8      VALPAR,VALRES(NBVAL),EP,EM
-      INTEGER ICODRE(NBVAL)
-      CHARACTER*8 NOMPAR,NOECLB(9),NOMPIM(12)
-      REAL*8       DEPSTH
-      REAL*8      A1,A2,BETA1,BETA2,Y01,Y02,B1,B2,SIGF1
-      REAL*8      CSTPM(13),EPSM,ANGMAS(3),DEPSM
-
-      REAL*8     ALPHA
-      INTEGER     I,IVARI,CODRET,IRET,IRET1,IRET2,IRET3,IRET4
-      CHARACTER*4 FAMI
-      CHARACTER*8 MATERI,NOMRES
-      CHARACTER*16 COMPO,ALGO
-      CHARACTER*30 VALKM(2)
-      DATA NOECLB/'Y01','Y02','A1','A2','B1','B2','BETA1','BETA2',
-     &     'SIGF'/
-C     DATA NOMPIM/'SY','EPSI_ULTM','SIGM_ULTM','EPSP_HARD','R_PM',
-C    &     'EP_SUR_E','A1_PM','A2_PM','ELAN','A6_PM','C_PM','A_PM'/
+C OUT ISECAN: EVALUATION DU MODULE SECANT
+C              0 :
+C              1 :
+C
+C --- ------------------------------------------------------------------
+      INTEGER        NBVAL,NBVARI,CODREP
+      PARAMETER     (NBVAL=12)
+      INTEGER        ICODRE(NBVAL)
+      INTEGER        I,IVARI,CODRET,IRET,IRET1,IRET2,IRET3,IRET4
+      REAL*8         VALRES(NBVAL),EP,EM,DEPSTH
+      REAL*8         CSTPM(13),EPSM,ANGMAS(3),DEPSM,NU
+      CHARACTER*4    FAMI
+      CHARACTER*8    NOECLB(9),NOMPIM(12),MAZARS(8),ECROLI(4)
+      CHARACTER*8    MATERI,NOMRES(2)
+      CHARACTER*16   COMPO,ALGO
+      CHARACTER*30   VALKM(3)
+C
+      DATA NOECLB /'Y01','Y02','A1','A2','B1','B2','BETA1','BETA2',
+     &            'SIGF'/
       DATA NOMPIM /'SY','EPSI_ULT','SIGM_ULT','EPSP_HAR','R_PM',
-     &     'EP_SUR_E','A1_PM','A2_PM','ELAN','A6_PM','C_PM','A_PM'/
+     &             'EP_SUR_E','A1_PM','A2_PM','ELAN','A6_PM','C_PM',
+     &              'A_PM'/
+      DATA MAZARS /'EPSD0','BETA','AC','BC','AT','BT',
+     &             'SIGM_ELS','EPSI_ELU'/
 
-C     ------------------------------------------------------------------
-      CODRET=0
-      CODREP=0
-      FAMI = 'RIGI'
-      MATERI=COMPOR(1)(1:8)
-      COMPO=COMPOR(2)
-      ALGO=COMPOR(3)
+      DATA ECROLI /'D_SIGM_E','SY','SIGM_ELS','EPSI_ELU'/
 
+C
+C --- ------------------------------------------------------------------
+      CODRET = 0
+      CODREP = 0
+      FAMI   = 'RIGI'
+      MATERI = COMPOR(1)(1:8)
+      COMPO  = COMPOR(2)
+      ALGO   = COMPOR(3)
+C
 C     CALCUL DE LA TEMPERATURE
       CALL RCVARC(' ','TEMP','REF',FAMI,1,1,TREF,IRET1)
       CALL MOYTEM(FAMI,NPG,NSPG,'+',TEMPP,IRET2)
       CALL MOYTEM(FAMI,NPG,NSPG,'-',TEMPM,IRET3)
 C     S'IL N'Y A PAS DE TEMPERATURE
-      IF ( IRET1.EQ.1 ) THEN
-         TREF = 0.0D0
+      IF ( IRET1.EQ.1 ) TREF  = 0.0D0
+      IF ( IRET2.EQ.1 ) TEMPP = TREF
+      IF ( IRET3.EQ.1 ) TEMPM = TREF
+C
+      IF ( COMPO(1:6).EQ.'MAZARS' ) THEN
+         NOMRES(1) = 'E'
+         NOMRES(2) = 'NU'
+         CALL RCVALB(FAMI,1,1,'+',ICDMAT,MATERI,'ELAS',1,
+     &               'TEMP',TEMPP,2,NOMRES,VALRES,ICODRE,1)
+         EP = VALRES(1)
+         NU = VALRES(2)
+      ELSE
+         NOMRES(1) = 'E'
+         CALL RCVALB(FAMI,1,1,'-',ICDMAT,MATERI,'ELAS',1,
+     &               'TEMP',TEMPM,1,NOMRES,VALRES,ICODRE,1)
+         EM = VALRES(1)
+         CALL RCVALB(FAMI,1,1,'+',ICDMAT,MATERI,'ELAS',1,
+     &               'TEMP',TEMPP,1,NOMRES,VALRES,ICODRE,1)
+         EP = VALRES(1)
       ENDIF
-      IF ( IRET2.EQ.1 ) THEN
-         TEMPP = TREF
-      ENDIF
-      IF ( IRET3.EQ.1 ) THEN
-         TEMPM = TREF
-      ENDIF
-
-      NOMRES = 'E'
-      CALL RCVALB(FAMI,1,1,'-',ICDMAT,MATERI,'ELAS',1,
-     &            'TEMP',TEMPM,1,NOMRES,VALRES,ICODRE,1)
-      EM = VALRES(1)
-
-      CALL RCVALB(FAMI,1,1,'+',ICDMAT,MATERI,'ELAS',1,
-     &            'TEMP',TEMPP,1,NOMRES,VALRES,ICODRE,1)
-      EP = VALRES(1)
 C     EVALUATION DU MODULE SECANT
       ISECAN = 0
-
 C --- ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
 C --- INITIALISE A 0.D0 (ON NE S'EN SERT PAS)
       CALL R8INIR(3, 0.D0, ANGMAS ,1)
-
-
+C
       IF (COMPO.EQ.'ELAS') THEN
          CALL VERIFM(FAMI,KPG,NSPG,'T',ICDMAT,'ELAS',1,DEPSTH,IRET4)
-         DO 10 I = 1,NF
+         DO 100 I = 1,NF
             MODF(I) = EP
-            SIGF(I) = EP *(CONTM(I)/EM + DEFP(I) - DEPSTH)
-10       CONTINUE
-
-      ELSE IF (COMPO.EQ.'LABORD_1D') THEN
-C ---    ON RECUPERE LES PARAMETRES MATERIAU
-         DEPSTH = 0.D0
-         NBPAR  = 0
-         NOMPAR = '  '
-         VALPAR = 0.D0
-         NBRES  = 1
-         CALL RCVALB(FAMI,1,1,'+',ICDMAT,MATERI,'ELAS',
-     &               NBPAR,NOMPAR,VALPAR,NBRES,
-     &               'ALPHA',ALPHA,ICODRE,0)
-         IF(ICODRE(1).EQ.0) DEPSTH = ALPHA*(TEMPP-TREF)
+            SIGF(I) = EP*(CONTM(I)/EM + DDEFP(I) - DEPSTH)
+100      CONTINUE
 C
+      ELSE IF (COMPO.EQ.'LABORD_1D') THEN
+         DEPSTH = 0.D0
+         CALL VERIFM(FAMI,KPG,NSPG,'T',ICDMAT,'ELAS',1,DEPSTH,IRET4)
+C ---    ON RECUPERE LES PARAMETRES MATERIAU
          CALL R8INIR(NBVAL,0.D0,VALRES,1)
-         NBPAR = 0
-         NOMPAR = '  '
-         VALPAR = 0.D0
-         NBRES = 9
-         CALL RCVALB(FAMI,1,1,'-',ICDMAT,MATERI,'LABORD_1D',
-     &               NBPAR,NOMPAR,VALPAR,NBRES,
-     &               NOECLB,VALRES,ICODRE,1)
-         Y01 = VALRES(1)
-         Y02 = VALRES(2)
-         A1 = VALRES(3)
-         A2 = VALRES(4)
-         B1 = VALRES(5)
-         B2 = VALRES(6)
-         BETA1 = VALRES(7)
-         BETA2 = VALRES(8)
-         SIGF1 = VALRES(9)
-
-C ---   BOUCLE COMPORTEMENT SUR CHAQUE FIBRE
-         DO 20 I = 1,NF
-            IVARI = NBVALC* (I-1) + 1
-            EPSM = DEFM(I)-DEPSTH
-            CALL NMCB1D(EP,Y01,Y02,A1,A2,B1,B2,BETA1,BETA2,SIGF1,
-     &                  CONTM(I),VARIM(IVARI),EPSM,
-     &                  DEFP(I),MODF(I),SIGF(I),VARIP(IVARI),CRIT)
-20       CONTINUE
-
+         CALL RCVALB(FAMI,1,1,'+',ICDMAT,MATERI,'LABORD_1D',
+     &               0,' ',0.0D0,9,NOECLB,VALRES,ICODRE,1)
+C ---    BOUCLE COMPORTEMENT SUR CHAQUE FIBRE
+         DO 250 I = 1,NF
+            IVARI = NBVALC*(I-1) + 1
+            EPSM = DEFM(I) - DEPSTH
+            CALL NMCB1D(EP,VALRES,CONTM(I),VARIM(IVARI),EPSM,
+     &                  DDEFP(I),MODF(I),SIGF(I),VARIP(IVARI),CRIT,
+     &                  OPTION)
+250      CONTINUE
+C
+      ELSE IF (COMPO.EQ.'MAZARS_1D') THEN
+         DEPSTH = 0.D0
+         CALL VERIFM(FAMI,KPG,NSPG,'T',ICDMAT,'ELAS',1,DEPSTH,IRET4)
+C ---    ON RECUPERE LES PARAMETRES MATERIAU
+         CALL R8INIR(NBVAL,0.D0,VALRES,1)
+         CALL RCVALB(FAMI,1,1,'+',ICDMAT,MATERI,'MAZARS',
+     &               0,' ',0.0D0,8,MAZARS,VALRES,ICODRE,1)
+         IF ( ICODRE(7)+ICODRE(8).NE.0 ) THEN
+            VALKM(1)='MAZARS_1D'
+            VALKM(2)=MAZARS(7)
+            VALKM(3)=MAZARS(8)
+            CALL U2MESK('F','COMPOR1_76',3,VALKM)
+         ENDIF
+C ---    AJOUT DE NU DANS VALRES
+         VALRES(9) = NU
+C ---    BOUCLE COMPORTEMENT SUR CHAQUE FIBRE
+         DO 275 I = 1,NF
+            IVARI = NBVALC*(I-1) + 1
+            EPSM  = DEFM(I) - DEPSTH
+            CALL MAZU1D(EP,VALRES,CONTM(I),VARIM(IVARI),EPSM,
+     &                  DDEFP(I),MODF(I),SIGF(I),VARIP(IVARI),OPTION)
+275      CONTINUE
+C
+      ELSE IF (COMPO.EQ.'ECRO_CINE_1D') THEN
+         CALL VERIFT(FAMI,KPG,NSPG,'T',ICDMAT,'ELAS',1,DEPSTH,IRET4)
+C ---    VERIFICATION SI SIGM_ELS, EPSI_ELU PRESENT
+         CALL R8INIR(NBVAL,0.D0,VALRES,1)
+         CALL RCVALB(FAMI,1,1,'+',ICDMAT,MATERI,'ECRO_LINE',
+     &               0,' ',0.D0,4,ECROLI,VALRES,ICODRE,1)
+         IF ( ICODRE(3)+ICODRE(4).NE.0 ) THEN
+            VALKM(1)='ECRO_CINE_1D'
+            VALKM(2)=ECROLI(3)
+            VALKM(3)=ECROLI(4)
+            CALL U2MESK('F','COMPOR1_76',3,VALKM)
+         ENDIF
+C ---    BOUCLE SUR CHAQUE FIBRE
+         DO 200 I = 1,NF
+            IVARI = NBVALC*(I-1) + 1
+            DEPSM = DDEFP(I)-DEPSTH
+            CALL VMCI1D('RIGI',KPG,I,ICDMAT,EM,EP,CONTM(I),
+     &                  DEPSM,VARIM(IVARI),OPTION,MATERI,SIGF(I),
+     &                  VARIP(IVARI),MODF(I))
+200      CONTINUE
 
       ELSE IF (COMPO.EQ.'PINTO_MENEGOTTO') THEN
          CALL VERIFT(FAMI,KPG,1,'T',ICDMAT,'ELAS',1,DEPSTH,IRET4)
-         NBRES = 12
+C ---    ON RECUPERE LES PARAMETRES MATERIAU
          CALL R8INIR(NBVAL,0.D0,VALRES,1)
-         NBPAR = 0
-         NOMPAR = '  '
-         VALPAR = 0.D0
          CALL RCVALB(FAMI,1,1,'-',ICDMAT,MATERI,'PINTO_MENEGOTTO',
-     &               NBPAR,NOMPAR,VALPAR,
-     &               NBRES,NOMPIM,VALRES,ICODRE,0)
-         IF (ICODRE(7).NE.0) VALRES(7) = -1.D0
+     &               0,' ',0.0D0,12,NOMPIM,VALRES,ICODRE,0)
+         IF (ICODRE(7).NE.0) VALRES(7) = -1.0D0
          CSTPM(1) = EP
-         DO 30 I = 1,12
+         DO 300 I = 1,12
             CSTPM(I+1) = VALRES(I)
-30       CONTINUE
-         DO 40 I = 1,NF
-            IVARI = NBVALC* (I-1) + 1
-            DEPSM = DEFP(I)-DEPSTH
+300      CONTINUE
+         DO 350 I = 1,NF
+            IVARI = NBVALC*(I-1) + 1
+            DEPSM = DDEFP(I)-DEPSTH
             CALL NM1DPM('RIGI',KPG,I,ICDMAT,OPTION,NBVALC,13,CSTPM,
      &                  CONTM(I),VARIM(IVARI),DEPSM,VARIP(IVARI),
      &                  SIGF(I),MODF(I))
-40       CONTINUE
-
-
-      ELSEIF ( (COMPO.EQ.'VMIS_ISOT_LINE') .OR.
-     &         (COMPO.EQ.'VMIS_CINE_LINE') .OR.
-     &         (COMPO.EQ.'CORR_ACIER') ) THEN
-         IF (COMPO.EQ.'VMIS_CINE_LINE') THEN
-            CALL VERIFT(FAMI,KPG,1,'T',ICDMAT,'ELAS',1,DEPSTH,IRET4)
-            DO 50 I = 1,NF
-               IVARI = NBVALC* (I-1) + 1
-               DEPSM = DEFP(I)-DEPSTH
-               CALL NM1DCI('RIGI',KPG,I,ICDMAT,EM,EP,CONTM(I),
-     &                     DEPSM,VARIM(IVARI),OPTION,MATERI,SIGF(I),
-     &                     VARIP(IVARI),MODF(I))
-50          CONTINUE
-         ELSE IF (COMPO.EQ.'VMIS_ISOT_LINE') THEN
-            CALL VERIFT(FAMI,KPG,1,'T',ICDMAT,'ELAS',1,DEPSTH,IRET4)
-            DO 60 I = 1,NF
-               IVARI = NBVALC* (I-1) + 1
-               DEPSM = DEFP(I)-DEPSTH
-               CALL NM1DIS('RIGI',KPG,I,ICDMAT,EM,EP,CONTM(I),
-     &                     DEPSM,VARIM(IVARI),OPTION,COMPO,MATERI,
-     &                     SIGF(I),VARIP(IVARI),MODF(I))
-60          CONTINUE
-         ELSE IF (COMPO.EQ.'CORR_ACIER') THEN
-            DO 65 I = 1,NF
-               IVARI = NBVALC* (I-1) + 1
-               CALL NM1DCO('RIGI',KPG,I,OPTION,ICDMAT,MATERI,
-     &                     EP,CONTM(I),EPSM,DEFP(I),VARIM(IVARI),
-     &                     SIGF(I),VARIP(IVARI),MODF(I),
-     &                     CRIT,CODRET)
-            IF (CODRET.NE.0) GOTO 900
-65          CONTINUE
-         ENDIF
-
+350      CONTINUE
+C
+      ELSE IF (COMPO.EQ.'VMIS_CINE_LINE') THEN
+         CALL VERIFT(FAMI,KPG,1,'T',ICDMAT,'ELAS',1,DEPSTH,IRET4)
+         DO 400 I = 1,NF
+            IVARI = NBVALC* (I-1) + 1
+            DEPSM = DDEFP(I)-DEPSTH
+            CALL NM1DCI('RIGI',KPG,I,ICDMAT,EM,EP,CONTM(I),
+     &                  DEPSM,VARIM(IVARI),OPTION,MATERI,SIGF(I),
+     &                  VARIP(IVARI),MODF(I))
+400      CONTINUE
+C
+      ELSE IF (COMPO.EQ.'VMIS_ISOT_LINE') THEN
+         CALL VERIFT(FAMI,KPG,1,'T',ICDMAT,'ELAS',1,DEPSTH,IRET4)
+         DO 450 I = 1,NF
+            IVARI = NBVALC* (I-1) + 1
+            DEPSM = DDEFP(I)-DEPSTH
+            CALL NM1DIS('RIGI',KPG,I,ICDMAT,EM,EP,CONTM(I),
+     &                  DEPSM,VARIM(IVARI),OPTION,COMPO,MATERI,
+     &                  SIGF(I),VARIP(IVARI),MODF(I))
+450      CONTINUE
+C
+      ELSE IF (COMPO.EQ.'CORR_ACIER') THEN
+         DO 500 I = 1,NF
+            IVARI = NBVALC* (I-1) + 1
+            CALL NM1DCO('RIGI',KPG,I,OPTION,ICDMAT,MATERI,
+     &                  EP,CONTM(I),EPSM,DDEFP(I),VARIM(IVARI),
+     &                  SIGF(I),VARIP(IVARI),MODF(I),
+     &                  CRIT,CODRET)
+            IF (CODRET.NE.0) GOTO 9999
+500      CONTINUE
+C
       ELSE IF (COMPO.EQ.'VMIS_ISOT_TRAC') THEN
-         DO 55 I = 1,NF
+         DO 550 I = 1,NF
             IVARI = NBVALC* (I-1) + 1
 C           NM1TRA NE FONCTIONNE QUE POUR 1 MATERIAU PAR MAILLE
 C           (VERIFIE DANS RCTRAC)
-            CALL NM1TRA(ICDMAT,TEMPP,DEFM(I),DEFP(I),
+            CALL NM1TRA(ICDMAT,TEMPP,DEFM(I),DDEFP(I),
      &                  VARIM(IVARI),VARIM(IVARI+1),
      &                  SIGF(I),VARIP(IVARI),VARIP(IVARI+1),MODF(I))
-55       CONTINUE
-
-
+550      CONTINUE
+C
       ELSE IF ((COMPO.EQ.'GRAN_IRRA_LOG').OR.
      &         (COMPO.EQ.'VISC_IRRA_LOG')) THEN
          IF (ALGO(1:10).EQ.'ANALYTIQUE') THEN
             CALL VERIFT(FAMI,KPG,1,'T',ICDMAT,'ELAS',1,DEPSTH,IRET)
-            DO 56 I = 1,NF
-              IVARI = NBVALC* (I-1) + 1
-              DEPSM = DEFP(I)-DEPSTH
-              IF ((IRET1+IRET2+IRET3).GE.1)
-     &              CALL U2MESS('F','CALCULEL_31')
-              CALL NM1VIL('RIGI',KPG,I,ICDMAT,MATERI,CRIT,
-     &                   INSTAM,INSTAP,
-     &                   TEMPM,TEMPP,TREF,
-     &                   DEPSM,
-     &                   CONTM(I),VARIM(IVARI),
-     &                   OPTION,
-     &                   DEFAM(1),DEFAP(1),
-     &                   ANGMAS,
-     &                   SIGF(I),VARIP(IVARI),MODF(I),CODRET,
-     &                   COMPO,NBVALC)
-            IF (CODRET.NE.0) GOTO 900
-56          CONTINUE
-
+            DO 600 I = 1,NF
+               IVARI = NBVALC* (I-1) + 1
+               DEPSM = DDEFP(I)-DEPSTH
+               IF ((IRET1+IRET2+IRET3).GE.1)
+     &            CALL U2MESS('F','CALCULEL_31')
+               CALL NM1VIL('RIGI',KPG,I,ICDMAT,MATERI,CRIT,
+     &                     INSTAM,INSTAP, TEMPM,TEMPP,TREF,
+     &                     DEPSM, CONTM(I),VARIM(IVARI), OPTION,
+     &                     DEFAM(1),DEFAP(1), ANGMAS,
+     &                     SIGF(I),VARIP(IVARI),MODF(I),CODRET,
+     &                     COMPO,NBVALC)
+               IF (CODRET.NE.0) GOTO 9999
+600         CONTINUE
          ELSE
             IF ((OPTION(1:9).EQ.'FULL_MECA') .OR.
      &          (OPTION(1:9).EQ.'RAPH_MECA')) THEN
                NBVARI = NBVALC*NF
                CALL DCOPY(NBVARI,VARIMP,1,VARIP,1)
             ENDIF
-
-            DO 57 I = 1,NF
+            DO 700 I = 1,NF
                IVARI = NBVALC* (I-1) + 1
                SIGX  = CONTM(I)
                EPSX  = DEFM(I)
-               DEPSX = DEFP(I)
+               DEPSX = DDEFP(I)
 C              ATTENTION, QUE POUR 1 MATERIAU PAR ELEMENT !!!!!
                CALL COMP1D('RIGI',KPG,I,OPTION,SIGX,EPSX,DEPSX,
      &                     ANGMAS,VARIM(IVARI),VARIP(IVARI),
      &                     SIGF(I),MODF(I),CODREP)
-
                IF (CODREP.NE.0) THEN
-                    CODRET=CODREP
-C                   CODE 3: ON CONTINUE ET ON LE RENVOIE A LA FIN
-C                   AUTRE CODES: SORTIE IMMEDIATE
-                    IF (CODREP.NE.3) GOTO 900
+                  CODRET=CODREP
+C                 CODE 3: ON CONTINUE ET ON LE RENVOIE A LA FIN
+C                 AUTRE CODES: SORTIE IMMEDIATE
+                  IF (CODREP.NE.3) GOTO 9999
                ENDIF
-
 C              SI MODULE TANGENT PAS CALCULE EXACTEMENT -> EVALUATION
                ISECAN = 0
-
-57          CONTINUE
+700         CONTINUE
          ENDIF
-
+C
       ELSE IF (COMPO.EQ.'LEMA_SEUIL') THEN
          CALL U2MESS('F','ELEMENTS2_39')
-
       ELSE
-
-C       APPEL A COMP1D POUR BENEFICIER DE TOUS LES COMPORTEMENTS AXIS
-C       PAR UNE EXTENSION DE LA METHODE DE DEBORST
+C        APPEL A COMP1D POUR BENEFICIER DE TOUS LES COMPORTEMENTS AXIS
+C        PAR UNE EXTENSION DE LA METHODE DE DEBORST
          IF ((ALGO(1:7).NE.'DEBORST').AND.
      &       (COMPO(1:4).NE.'SANS')) THEN
-               VALKM(1) = COMPO
-               VALKM(2) = 'DEFI_COMPOR/MULTIFIBRE'
-               CALL U2MESK('F','ALGORITH6_81',2,VALKM)
+            VALKM(1) = COMPO
+            VALKM(2) = 'DEFI_COMPOR/MULTIFIBRE'
+            CALL U2MESK('F','ALGORITH6_81',2,VALKM)
          ELSE
             IF ((OPTION(1:9).EQ.'FULL_MECA') .OR.
      &          (OPTION(1:9).EQ.'RAPH_MECA')) THEN
                NBVARI = NBVALC*NF
                CALL DCOPY(NBVARI,VARIMP,1,VARIP,1)
             ENDIF
-            DO 70 I = 1,NF
+            DO 750 I = 1,NF
                IVARI = NBVALC* (I-1) + 1
                SIGX  = CONTM(I)
                EPSX  = DEFM(I)
-               DEPSX = DEFP(I)
+               DEPSX = DDEFP(I)
 C              ATTENTION, QUE POUR 1 MATERIAU PAR ELEMENT !!!!!
                CALL COMP1D('RIGI',KPG,I,OPTION,SIGX,EPSX,DEPSX,
      &                     ANGMAS,VARIM(IVARI),VARIP(IVARI),
      &                     SIGF(I),MODF(I),CODREP)
                IF (CODREP.NE.0) THEN
-                    CODRET=CODREP
-C                   CODE 3: ON CONTINUE ET ON LE RENVOIE A LA FIN
-C                   AUTRE CODES: SORTIE IMMEDIATE
-                    IF (CODREP.NE.3) GOTO 900
+                  CODRET=CODREP
+C                 CODE 3: ON CONTINUE ET ON LE RENVOIE A LA FIN
+C                 AUTRE CODES: SORTIE IMMEDIATE
+                  IF (CODREP.NE.3) GOTO 9999
                ENDIF
 C              SI MODULE TANGENT PAS CALCULE EXACTEMENT -> EVALUATION
                ISECAN = 1
-70          CONTINUE
+750         CONTINUE
          END IF
       END IF
-
-900   CONTINUE
+C
+9999  CONTINUE
       END

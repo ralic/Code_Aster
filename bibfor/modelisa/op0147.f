@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,33 +20,23 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C-----------------------------------------------------------------------
-C   CALCUL DES INTERSPECTRES DE REPONSE MODALE
-C      LE CONCEPT PRODUIT EST TABL_INTSP
-C   LE CONCEPT TABL_INTSP SE COMPOSE :
-C      D UNE STRUCTURE TABLE QUI POINTE SUR UNE TABLE DE FONCTIONS
-C      COMPLEXE
+C   CALCUL DES INTERSPECTRES DE REPONSE MODALE (DYNA_SPEC_MODAL)
+C      LE CONCEPT PRODUIT EST UN INTERSPECTRE
 C-----------------------------------------------------------------------
 C
       INCLUDE 'jeveux.h'
 C-----------------------------------------------------------------------
       INTEGER I ,IBID ,IFREQ ,IM ,IMASG ,IMOD1 ,INUMO 
-      INTEGER INUOR ,IRET ,IVITE ,JNUOR ,NBM ,NBMR ,NBPAR 
-      INTEGER NNN ,NPV 
+      INTEGER INUOR ,IVITE ,JNUOR ,NBM ,NBMR
+      INTEGER NNN ,NPV ,I1,I3,IVITEF
 C-----------------------------------------------------------------------
-      PARAMETER   ( NBPAR = 8 )
-      REAL*8        R8B
-      COMPLEX*16    C16B
       LOGICAL       CASINT
-      CHARACTER*8   K8B, TABLE, NOMU, OPTION, TYPAR(NBPAR)
-      CHARACTER*16  CONCEP, CMD, NOPAR(NBPAR), KVAL(2)
+      CHARACTER*8   K8B, TABLE, NOMU, OPTION
+      CHARACTER*16  CONCEP, CMD
       CHARACTER*19  BASE
-      CHARACTER*24  FREQ, MASG, VITE, NUMO, NOMOBJ
-      INTEGER      IARG
-C
-      DATA NOPAR / 'NOM_CHAM' , 'OPTION' , 'DIMENSION' ,
-     &             'NUME_VITE_FLUI' , 'VITE_FLUIDE' ,
-     &             'NUME_ORDRE_I' , 'NUME_ORDRE_J' , 'FONCTION_C' /
-      DATA TYPAR / 'K16' , 'K16' , 'I' , 'I' , 'R' , 'I' , 'I' , 'K24' /
+      CHARACTER*24  FREQ, MASG, VITE, NUMO, NOMOBJ,CHNUMI
+      INTEGER      IARG,LNUMI,LREFE,LREFES
+      REAL*8 EPSI,VAL,VITEF
 C
 C-----------------------------------------------------------------------
       CALL JEMARQ()
@@ -67,7 +57,17 @@ C
 C
       CALL JEVEUO(VITE,'L',IVITE)
       CALL JELIRA(VITE,'LONUTI',NPV,K8B)
+      CALL GETVR8(' ','VITE_FLUI',0,IARG,1,VITEF,ZI)
+      CALL GETVR8(' ','PRECISION',0,IARG,1,EPSI,ZI)
 C
+      IVITEF = 1
+      DO 300 I3 = 1,NPV
+        VAL = ZR(IVITE-1+I3)-VITEF
+        IF (ABS(VAL) .LT. EPSI) THEN
+          IVITEF = I3
+        ENDIF
+300   CONTINUE
+
       CALL JEVEUO(FREQ,'L',IFREQ)
       CALL JELIRA(FREQ,'LONUTI',NBM,K8B)
       NBM = NBM / ( 2 * NPV )
@@ -79,15 +79,16 @@ C
       CALL GETVID('EXCIT ','INTE_SPEC_GENE',1,IARG,1,TABLE,ZI)
 C
 C     VERIFICATION DES PARAMETRES DE LA TABLE
-      CALL TBEXP2(TABLE,'OPTION')
-      CALL TBEXP2(TABLE,'FONCTION_C')
-      CALL TBEXP2(TABLE,'NUME_VITE_FLUI')
-      CALL TBEXP2(TABLE,'NUME_ORDRE_I')
-      CALL TBEXP2(TABLE,'NUME_ORDRE_J')
 C
+      CHNUMI = TABLE//'.NUMI'
+      CALL JEVEUO(CHNUMI,'L',LNUMI)
+      CALL JELIRA(CHNUMI,'LONMAX',NBMR,K8B)
+
       NOMOBJ = '&&OP0147.TEMP.NUOR'
-      CALL TBEXVE ( TABLE, 'NUME_ORDRE_I', NOMOBJ, 'V', NBMR, K8B )
-      CALL JEVEUO ( NOMOBJ, 'L', JNUOR )
+      CALL WKVECT ( NOMOBJ, 'V V I', NBMR, JNUOR )
+      DO 150 I1 = 1,NBMR
+        ZI(JNUOR-1+I1) = ZI(LNUMI-1+I1)
+150   CONTINUE
       CALL ORDIS  ( ZI(JNUOR) , NBMR )
       CALL WKVECT ( '&&OP0147.MODE', 'V V I', NBMR, INUOR )
       NNN = 1
@@ -113,25 +114,20 @@ C
       CALL GETVTX ( ' ', 'OPTION', 0,IARG,1, OPTION, IBID )
       IF ( OPTION(1:4) .EQ. 'DIAG' ) CASINT = .FALSE.
 C
-      CALL TBLIVA ( TABLE, 0, K8B, IBID, R8B, C16B, K8B, K8B, R8B,
-     &             'OPTION', K8B, IBID, R8B, C16B, K8B, IRET )
-      IF ( IRET .NE. 0 ) CALL U2MESS('F','ALGELINE_7')
-      IF ( K8B(1:4) .EQ. 'DIAG' .AND. CASINT ) THEN
+      CALL JEVEUO(TABLE//'.REFE','L',LREFE)
+      IF ( ZK16(LREFE+1)(1:4) .EQ. 'DIAG' .AND. CASINT ) THEN
         CALL U2MESS('F','MODELISA5_79')
       ENDIF
 C
 C --- 4.CREATION DE LA STRUCTURE RESULTAT ET CALCUL DE LA REPONSE ---
 C ---   PAR CALCSP                                                ---
 C
-      CALL TBCRSD ( NOMU, 'G' )
-      CALL TBAJPA ( NOMU, NBPAR, NOPAR, TYPAR )
+      CALL WKVECT(NOMU//'.REFE','G V K16',2,LREFES)
+      ZK16(LREFES) = 'DEPL_GENE'
+      ZK16(LREFES+1) = OPTION
 C
-      KVAL(1) = 'DEPL_GENE'
-      KVAL(2) = OPTION
-      CALL TBAJLI ( NOMU, 3, NOPAR, NBMR, R8B, C16B, KVAL, 0 )
-C
-      CALL CALCSP ( CASINT, NOMU, TABLE, ZR(IFREQ), ZR(IMASG), NBM, NPV,
-     &              NBMR, IMOD1, ZI(INUOR), ZR(IVITE) )
+      CALL CALCSP ( CASINT, NOMU, TABLE, ZR(IFREQ), ZR(IMASG), NBM,
+     &              NBMR, IMOD1, ZI(INUOR), IVITEF )
 C
       CALL TITRE
 C

@@ -1,4 +1,4 @@
-# MODIF  DATE 26/06/2012   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE NON-REGRESSION ASTER : MECANIQUE LINEAIRE 2D C_PLAN_SI
 # RESPONSABLE PELLET J.PELLET
 # sslp201b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
@@ -372,7 +372,7 @@ CHMEC=AFFE_CHAR_MECA(VERI_NORM='NON',
                                       FX=0.84,),
                      PRES_REP=_F(MAILLE='M120',
                                  PRES=-1.07E1,),
-                     EPSI_INIT=_F(MAILLE='M67',
+                     PRE_EPSI=_F(MAILLE='M67',
                                   EPXX=2.2,),);
 
 CHMECF=AFFE_CHAR_MECA_F(VERI_NORM='NON',
@@ -407,7 +407,7 @@ CHMECF=AFFE_CHAR_MECA_F(VERI_NORM='NON',
                                          FY=FO4,),
                         PRES_REP=_F(GROUP_MA='GMA5',
                                     CISA_2D=FO6,),
-                        EPSI_INIT=_F(GROUP_MA='GMA2',
+                        PRE_EPSI=_F(GROUP_MA='GMA2',
                                      EPYY=FO7,),);
 
 CHCI=AFFE_CHAR_CINE(MODELE=MO,

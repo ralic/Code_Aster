@@ -1,7 +1,7 @@
       SUBROUTINE OP0039 ()
       IMPLICIT   NONE
 C ----------------------------------------------------------------------
-C MODIF PREPOST  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C RESPONSABLE SELLENET N.SELLENET
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
@@ -550,8 +550,8 @@ C
            IF( N22 .LT. 0 ) THEN
            DO 16 I = 0 , NBNOSY-1
              DO 14 J = 0 , NBORDR-1
-               CALL RSEXCH (LERESU,ZK16(JNOSY+I),ZI(JORDR+J),
-     &                      NOCH19,IRET)
+               CALL RSEXCH(' ',LERESU,ZK16(JNOSY+I),ZI(JORDR+J),
+     &                         NOCH19,IRET)
                IF ( IRET .NE. 0 ) THEN
                VALK (1) = ZK16(JNOSY+I)
                VALI = ZI(JORDR+J)
@@ -563,7 +563,8 @@ C
            DO 15 ICMP = 0 , NVCMP-1
              NBCMPT = 0
              DO 17 I = 0 , NBNOSY-1
-               CALL RSEXCH (LERESU,ZK16(JNOSY+I),ZI(JORDR),NOCH19,IRET)
+               CALL RSEXCH(' ',LERESU,ZK16(JNOSY+I),ZI(JORDR),NOCH19,
+     &                     IRET)
                IF ( IRET .EQ. 0 ) THEN
                  CALL DISMOI('F','NUM_GD',NOCH19,'CHAMP',GD,K8B,IBID)
                  CALL JENUNO(JEXNUM('&CATA.GD.NOMGD',GD),NOMGD)

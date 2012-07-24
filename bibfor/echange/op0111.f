@@ -1,21 +1,21 @@
       SUBROUTINE OP0111 ()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ECHANGE  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ECHANGE  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE GREFFET N.GREFFET
 C TOLE CRP_4
@@ -56,7 +56,7 @@ C     COUPLAGE =>
       PARAMETER (CPITER= 41)
       INTEGER            ICOMPO,NUMPAS,IADR
       REAL*8             TF,DT
-      CHARACTER*24       AYACS   
+      CHARACTER*24       AYACS
       INTEGER      IARG
 C     COUPLAGE <=
 C     ------------------------------------------------------------------
@@ -69,9 +69,9 @@ C     ------------------------------------------------------------
       AYACS='&ADR_YACS'
 C
 C     RECUPERATION DE L'ADRESSE YACS
-C     ------------------------------        
+C     ------------------------------
       CALL JEVEUO(AYACS,'L',IADR)
-      ICOMPO=ZI(IADR) 
+      ICOMPO=ZI(IADR)
 C     ------------------------------------------------------------------
 
 C     ! ========================== !
@@ -95,12 +95,12 @@ C     ! ========================== !
         CALL GETVIS('RESULTAT', 'NUME_ORDRE', 1,IARG, 1, NORDRE, IBID)
         IF (NIV.EQ.2) THEN
           VALK(1) = 'OP0111'
-          VALK(2) = 'NUME_ORDRE'      
+          VALK(2) = 'NUME_ORDRE'
           CALL U2MESG('I+','COUPLAGEIFS_8',2,VALK,1,NORDRE,0,0.D0)
         ENDIF
-        CALL RSEXCH(RESU, 'DEPL', NORDRE, CHDEPL, ICODE)
-        CALL RSEXCH(RESU, 'VITE', NORDRE, CHVITE, ICODE)
-        CALL RSEXCH(RESU, 'ACCE', NORDRE, CHACCE, ICODE)
+        CALL RSEXCH(' ',RESU, 'DEPL', NORDRE, CHDEPL, ICODE)
+        CALL RSEXCH(' ',RESU, 'VITE', NORDRE, CHVITE, ICODE)
+        CALL RSEXCH(' ',RESU, 'ACCE', NORDRE, CHACCE, ICODE)
         IDEPL = 1
         IVITE = 1
         IACCE = 1
@@ -228,7 +228,7 @@ C     Condition if pour le cas ETAT_INIT == None
                 IF (DDLDEP(ICMP).NE.0) THEN
                   ICMPG = DDLDEP(ICMP)+NBCMP*(INO1-1)
                   IF (ZL(JDEPSL-1+ICMPG)) THEN
-                    ZR(JDEPL-1+3*(INO2-1)+ICMP) = 
+                    ZR(JDEPL-1+3*(INO2-1)+ICMP) =
      &                       + ZR(JDEPL-1+3*(INO2-1)+ICMP)
      &                       + ZR(JDEPSV-1+ICMPG)*ZR(JACOCF-1+IDECAL+II)
                   ENDIF
@@ -236,7 +236,7 @@ C     Condition if pour le cas ETAT_INIT == None
                 IF (DDLVIT(ICMP).NE.0) THEN
                   ICMPG = DDLVIT(ICMP)+NBCMP*(INO1-1)
                   IF (ZL(JVITSL-1+ICMPG)) THEN
-                    ZR(JVITE-1+3*(INO2-1)+ICMP) = 
+                    ZR(JVITE-1+3*(INO2-1)+ICMP) =
      &                       + ZR(JVITE-1+3*(INO2-1)+ICMP)
      &                       + ZR(JVITSV-1+ICMPG)*ZR(JACOCF-1+IDECAL+II)
                   ENDIF
@@ -244,7 +244,7 @@ C     Condition if pour le cas ETAT_INIT == None
                 IF (DDLACC(ICMP).NE.0) THEN
                   ICMPG = DDLACC(ICMP)+NBCMP*(INO1-1)
                   IF (ZL(JACCSL-1+ICMPG)) THEN
-                    ZR(JACCE-1+3*(INO2-1)+ICMP) = 
+                    ZR(JACCE-1+3*(INO2-1)+ICMP) =
      &                       + ZR(JACCE-1+3*(INO2-1)+ICMP)
      &                       + ZR(JACCSV-1+ICMPG)*ZR(JACOCF-1+IDECAL+II)
                   ENDIF

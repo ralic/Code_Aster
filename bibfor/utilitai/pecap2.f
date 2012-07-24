@@ -1,7 +1,7 @@
       SUBROUTINE PECAP2(CHGEOZ,IY,IZ,S,ALPHA,XG,YG,TEMP1Z,TEMP2Z,AY,AZ,
      &                  EY,EZ,PCTX,PCTY)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -129,9 +129,9 @@ C.========================= DEBUT DU CODE EXECUTABLE ==================
 C ---- INITIALISATIONS
 C      ---------------
 C-----------------------------------------------------------------------
-      INTEGER I ,IBID ,IERD ,IRET ,NBORDR 
-      REAL*8 ALPHA ,ALPHAR ,AY ,AZ ,EY ,EZ ,PCTX 
-      REAL*8 PCTY ,PREC ,R8DGRD ,S ,XG ,YG ,ZERO 
+      INTEGER I ,IBID ,IERD ,IRET ,NBORDR
+      REAL*8 ALPHA ,ALPHAR ,AY ,AZ ,EY ,EZ ,PCTX
+      REAL*8 PCTY ,PREC ,R8DGRD ,S ,XG ,YG ,ZERO
 
 C-----------------------------------------------------------------------
       ZERO = 0.0D0
@@ -173,15 +173,8 @@ C     ---------------------------------------------
 
 C --- RECUPERATION DES CHAMPS DE TEMPERATURES DES RESULTATS :
 C     -----------------------------------------------------
-      CALL RSEXCH(TEMPE1,'TEMP',0,CHTEM1,IRET)
-      IF (IRET.GT.0) THEN
-        CALL U2MESK('F','UTILITAI3_52',1,TEMPE1)
-      END IF
-
-      CALL RSEXCH(TEMPE2,'TEMP',0,CHTEM2,IRET)
-      IF (IRET.GT.0) THEN
-        CALL U2MESK('F','UTILITAI3_52',1,TEMPE2)
-      END IF
+      CALL RSEXCH('F',TEMPE1,'TEMP',0,CHTEM1,IRET)
+      CALL RSEXCH('F',TEMPE2,'TEMP',0,CHTEM2,IRET)
 
 C --- RECUPERATION DU NUME_DDL ASSOCIE AU CHAMP DE TEMPERATURES :
 C     ---------------------------------------------------------

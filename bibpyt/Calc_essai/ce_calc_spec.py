@@ -1,4 +1,4 @@
-#@ MODIF ce_calc_spec Calc_essai  DATE 09/01/2012   AUTEUR REZETTE C.REZETTE 
+#@ MODIF ce_calc_spec Calc_essai  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,6 +20,7 @@
 
 # RESPONSABLE BODEL C.BODEL
 
+import aster
 import numpy
 
 from Tkinter import Frame, Menubutton, Checkbutton, Menu, StringVar, IntVar
@@ -72,6 +73,8 @@ class InterfaceCalcSpec(Frame):
         self.Cur_Tab=None,
         self.list_temp = aster_objects.list_tempo
         self.InterfaceCalcSpec(self)
+        self.nume_i=None
+        self.nume_j=None
 
 
     def InterfaceCalcSpec(self,root_tab) :
@@ -328,19 +331,6 @@ class InterfaceCalcSpec(Frame):
 
         ind_visu=[ind_v[i1] for i1 in range(len(ind_v))]
 
-        if type_res[0]=='I' :
-           tab_py=root_tab.Spec.EXTR_TABLE()
-           nom_fonc=tab_py['FONCTION_C'].values()['FONCTION_C']
-        if type_res[0]=='T' :
-           tab_py=root_tab.FRF.EXTR_TABLE()
-           nom_fonc=tab_py['FONCTION_C'].values()['FONCTION_C']
-        if type_res[0]=='C' :
-           tab_py=root_tab.Coh.EXTR_TABLE()
-           nom_fonc=tab_py['FONCTION_C'].values()['FONCTION_C']
-        if type_res[0]=='E' :
-           tab_py=root_tab.tab_temp.EXTR_TABLE()
-           nom_fonc=tab_py['FONCTION'].values()['FONCTION']
-
         couleur=[4,15,2,1,10,6,7,8,9,11,12,13]
         #Pour xmgrace, les couleurs sont :
         # 0 blanc       1 noir    2 rouge   3 vert    4 bleu
@@ -354,30 +344,38 @@ class InterfaceCalcSpec(Frame):
         legende=[]
         for i1 in ind_visu :
            if type_res[0]=='I' :
-              fonc_t = RECU_FONCTION(TABLE=root_tab.Spec,
-                                     NOM_PARA_TABL = 'FONCTION_C',
-                                     FILTRE=_F(NOM_PARA='FONCTION_C',
-                                     VALE_K = nom_fonc[i1],),
+              if self.nume_i[i1] == self.nume_j[i1]:
+                  fonc_t = RECU_FONCTION(INTE_SPEC=root_tab.Spec,
+                                     NUME_ORDRE_I = self.nume_i[i1],
+                                    )
+              else:
+                  fonc_t = RECU_FONCTION(INTE_SPEC=root_tab.Spec,
+                                     NUME_ORDRE_I = self.nume_i[i1],
+                                     NUME_ORDRE_J = self.nume_j[i1],
                                     )
            if type_res[0]=='T' :
-              fonc_t = RECU_FONCTION(TABLE=root_tab.FRF,
-                                     NOM_PARA_TABL = 'FONCTION_C',
-                                     FILTRE=_F(NOM_PARA='FONCTION_C',
-                                     VALE_K = nom_fonc[i1],),
+              if self.nume_i[i1] == self.nume_j[i1]:
+                  fonc_t = RECU_FONCTION(INTE_SPEC=root_tab.FRF,
+                                     NUME_ORDRE_I = self.nume_i[i1],
+                                    )
+              else:
+                  fonc_t = RECU_FONCTION(INTE_SPEC=root_tab.FRF,
+                                     NUME_ORDRE_I = self.nume_i[i1],
+                                     NUME_ORDRE_J = self.nume_j[i1],
                                     )
            if type_res[0]=='C' :
-              fonc_t = RECU_FONCTION(TABLE=root_tab.Coh,
-                                     NOM_PARA_TABL = 'FONCTION_C',
-                                     FILTRE=_F(NOM_PARA='FONCTION_C',
-                                     VALE_K = nom_fonc[i1],),
+              if self.nume_i[i1] == self.nume_j[i1]:
+                  fonc_t = RECU_FONCTION(INTE_SPEC=root_tab.Coh,
+                                     NUME_ORDRE_I = self.nume_i[i1],
+                                    )
+              else:
+                  fonc_t = RECU_FONCTION(INTE_SPEC=root_tab.Coh,
+                                     NUME_ORDRE_I = self.nume_i[i1],
+                                     NUME_ORDRE_J = self.nume_j[i1],
                                     )
            if type_res[0]=='E' :
-              fonc_t = RECU_FONCTION(TABLE=root_tab.tab_temp,
-                                     NOM_PARA_TABL = 'FONCTION',
-                                     FILTRE=_F(NOM_PARA='FONCTION',
-                                     VALE_K = nom_fonc[i1],),
-                                    )
-
+              tab_py=root_tab.tab_temp.EXTR_TABLE()
+              fonc_t=tab_py['FONCTION'].values()['FONCTION'][i1]
 
            valeurs=fonc_t.sdj.VALE.get()
 
@@ -490,22 +488,32 @@ class InterfaceCalcSpec(Frame):
         rec=root_tab.entry_rec.get()
 
         mcfact_tabechant=[]
-
-        mcfact_tabechant.append(_F(NOM_TAB=root_tab.tab_temp))
+        arg_tab_ech = {}
 
         if len(lon)>0 :
-           st="mcfact_tabechant.append(_F(" + longueur[root_tab.radio_long.get()] + "="
-           st=st + root_tab.entry_long.get() + "))"
-           exec(st)
+           arg = longueur[root_tab.radio_long.get()]
+           val = root_tab.entry_long.get()
+           if (arg[-1] == 'S'):
+             val = int(val)
+           else:
+             val = float(val)
+           arg_tab_ech[arg] = val
         else :
-           mcfact_echant.append(_F(LONGUEUR_POURCENT=100.))
+           arg_tab_ech['LONGUEUR_POURCENT'] = float('100')
 
         if len(rec)>0 :
-           st="mcfact_tabechant.append(_F(" + recouvrement[root_tab.radio_rec.get()] + "="
-           st=st + root_tab.entry_rec.get() + "))"
-           exec(st)
+           arg = recouvrement[root_tab.radio_rec.get()]
+           val = root_tab.entry_rec.get()
+           if (arg[-1] == 'S'):
+             val = int(val)
+           else:
+             val = float(val)
+           arg_tab_ech[arg] = val
         else :
-           mcfact_tabechant.append(_F(RECOUVREMENT_POURCENT=0.))
+           arg_tab_ech['RECOUVREMENT_POURCENT'] = float('0')
+
+        mcfact_tabechant.append(_F(NOM_TAB=root_tab.tab_temp,
+                                **arg_tab_ech))
 
         mcfact_win=[]
         if root_tab.radio_win.get() <= 2 :
@@ -529,13 +537,12 @@ class InterfaceCalcSpec(Frame):
 
         root_tab.list_visu.delete(0,'end')
 
-        tab_py=root_tab.Spec.EXTR_TABLE()
-        nume_i=tab_py['NUME_ORDRE_I'].values()['NUME_ORDRE_I']
-        nume_j=tab_py['NUME_ORDRE_J'].values()['NUME_ORDRE_J']
+        intespec = Spec.nom.ljust(8)
+        self.nume_i = aster.getvectjev(intespec+'.NUMI')
+        self.nume_j = aster.getvectjev(intespec+'.NUMJ')
 
-
-        for i1 in range(len(nume_i)) :
-           root_tab.list_visu.insert('end','Pt. ' + str(nume_i[i1]) + ' - Pt. ' + str(nume_j[i1]) )
+        for i1 in range(len(self.nume_i)) :
+           root_tab.list_visu.insert('end','Pt. ' + str(self.nume_i[i1]) + ' - Pt. ' + str(self.nume_j[i1]) )
 
         root_tab.label_visu.set("Interspectres :")
 
@@ -591,21 +598,32 @@ class InterfaceCalcSpec(Frame):
         rec=root_tab.entry_rec.get()
 
         mcfact_tabechant=[]
-        mcfact_tabechant.append(_F(NOM_TAB=root_tab.tab_temp))
+        arg_tab_ech = {}
 
         if len(lon)>0 :
-           st="mcfact_tabechant.append(_F(" + longueur[root_tab.radio_long.get()] + "="
-           st=st + root_tab.entry_long.get() + "))"
-           exec(st)
+           arg = longueur[root_tab.radio_long.get()]
+           val = root_tab.entry_long.get()
+           if (arg[-1] == 'S'):
+             val = int(val)
+           else:
+             val = float(val)
+           arg_tab_ech[arg] = val
         else :
-           mcfact_echant.append(_F(LONGUEUR_POURCENT=100.))
+           arg_tab_ech['LONGUEUR_POURCENT'] = float('100')
 
         if len(rec)>0 :
-           st="mcfact_tabechant.append(_F(" + recouvrement[root_tab.radio_rec.get()] + "="
-           st=st + root_tab.entry_rec.get() + "))"
-           exec(st)
+           arg = recouvrement[root_tab.radio_rec.get()]
+           val = root_tab.entry_rec.get()
+           if (arg[-1] == 'S'):
+             val = int(val)
+           else:
+             val = float(val)
+           arg_tab_ech[arg] = val
         else :
-           mcfact_tabechant.append(_F(RECOUVREMENT_POURCENT=0.))
+           arg_tab_ech['RECOUVREMENT_POURCENT'] = float('0')
+
+        mcfact_tabechant.append(_F(NOM_TAB=root_tab.tab_temp,
+                                **arg_tab_ech))
 
         # recuperation des points de reference
         ind_ref='['
@@ -645,13 +663,12 @@ class InterfaceCalcSpec(Frame):
 
         root_tab.list_visu.delete(0,'end')
 
-        tab_py=root_tab.Coh.EXTR_TABLE()
-        nume_i=tab_py['NUME_ORDRE_I'].values()['NUME_ORDRE_I']
-        nume_j=tab_py['NUME_ORDRE_J'].values()['NUME_ORDRE_J']
+        intespec = Coh.nom.ljust(8)
+        self.nume_i = aster.getvectjev(intespec+'.NUMI')
+        self.nume_j = aster.getvectjev(intespec+'.NUMJ')
 
-
-        for i1 in range(len(nume_i)) :
-           root_tab.list_visu.insert('end','Pt. ' + str(nume_j[i1]) + ' / Pt. ' + str(nume_i[i1]) )
+        for i1 in range(len(self.nume_i)) :
+           root_tab.list_visu.insert('end','Pt. ' + str(self.nume_j[i1]) + ' / Pt. ' + str(self.nume_i[i1]) )
 
         root_tab.label_visu.set("Coherences :")
 
@@ -707,21 +724,32 @@ class InterfaceCalcSpec(Frame):
         rec=root_tab.entry_rec.get()
 
         mcfact_tabechant=[]
-        mcfact_tabechant.append(_F(NOM_TAB=root_tab.tab_temp))
+        arg_tab_ech = {}
 
         if len(lon)>0 :
-           st="mcfact_tabechant.append(_F(" + longueur[root_tab.radio_long.get()] + "="
-           st=st + root_tab.entry_long.get() + "))"
-           exec(st)
+           arg = longueur[root_tab.radio_long.get()]
+           val = root_tab.entry_long.get()
+           if (arg[-1] == 'S'):
+             val = int(val)
+           else:
+             val = float(val)
+           arg_tab_ech[arg] = val
         else :
-           mcfact_echant.append(_F(LONGUEUR_POURCENT=100.))
+           arg_tab_ech['LONGUEUR_POURCENT'] = float('100')
 
         if len(rec)>0 :
-           st="mcfact_tabechant.append(_F(" + recouvrement[root_tab.radio_rec.get()] + "="
-           st=st + root_tab.entry_rec.get() + "))"
-           exec(st)
+           arg = recouvrement[root_tab.radio_rec.get()]
+           val = root_tab.entry_rec.get()
+           if (arg[-1] == 'S'):
+             val = int(val)
+           else:
+             val = float(val)
+           arg_tab_ech[arg] = val
         else :
-           mcfact_tabechant.append(_F(RECOUVREMENT_POURCENT=0.))
+           arg_tab_ech['RECOUVREMENT_POURCENT'] = float('0')
+
+        mcfact_tabechant.append(_F(NOM_TAB=root_tab.tab_temp,
+                                **arg_tab_ech))
 
         # recuperation des points de reference
 
@@ -736,23 +764,6 @@ class InterfaceCalcSpec(Frame):
            ind_ref=ind_ref + lab +','
 
         ind_ref=ind_ref + '],'
-
-
-        mcfact_long=[]
-        if len(lon)>0 :
-           st="mcfact_long.append(_F(" + longueur[root_tab.radio_long.get()] + "="
-           st=st + root_tab.entry_long.get() + "))"
-           exec(st)
-        else :
-           mcfact_long.append(_F(POURCENT=100))
-
-        mcfact_rec=[]
-        if len(rec)>0 :
-           st="mcfact_rec.append(_F(" + longueur[root_tab.radio_rec.get()] + "="
-           st=st + root_tab.entry_rec.get() + "))"
-           exec(st)
-        else :
-           mcfact_rec.append(_F(POURCENT=0))
 
         mcfact_win=[]
         if root_tab.radio_win.get() <= 2 :
@@ -777,13 +788,12 @@ class InterfaceCalcSpec(Frame):
 
         root_tab.list_visu.delete(0,'end')
 
-        tab_py=root_tab.FRF.EXTR_TABLE()
-        nume_i=tab_py['NUME_ORDRE_I'].values()['NUME_ORDRE_I']
-        nume_j=tab_py['NUME_ORDRE_J'].values()['NUME_ORDRE_J']
+        intespec = FRF.nom.ljust(8)
+        self.nume_i = aster.getvectjev(intespec+'.NUMI')
+        self.nume_j = aster.getvectjev(intespec+'.NUMJ')
 
-
-        for i1 in range(len(nume_i)) :
-           root_tab.list_visu.insert('end','Pt. ' + str(nume_j[i1]) + ' / Pt. ' + str(nume_i[i1]) )
+        for i1 in range(len(self.nume_i)) :
+           root_tab.list_visu.insert('end','Pt. ' + str(self.nume_j[i1]) + ' / Pt. ' + str(self.nume_i[i1]) )
 
         root_tab.label_visu.set("Transferts (H" + str(root_tab.radio_h1h2.get()+1) + ") :")
 

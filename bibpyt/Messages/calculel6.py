@@ -1,4 +1,4 @@
-#@ MODIF calculel6 Messages  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel6 Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -449,10 +449,10 @@ Risques et conseils :
   Type de la valeur de référence incompatible avec le type des valeurs du champ.
 """),
 
-96: _(u"""
-  Champ absent au numéro d'ordre %(i1)d dans le résultat %(k1)s:
-    -> champ : %(k2)s %(k3)s
-"""),
+
+
+
+
 
 97: _(u"""
   Mot-clé POINT interdit pour le champ au noeud issu de %(k1)s à l'ordre %(i1)d:

@@ -20,7 +20,7 @@ C     NBRE, NOM D'OBJET POUR CHAQUE TYPE D'ELEMENT
       CHARACTER*8 TYCHA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF PREPOST  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,7 +84,7 @@ C
 C
       DO 100 IOR = 1 , NBORD2
          IF ( LRESU ) THEN
-           CALL RSEXCH ( NOMCON, CHAMSY, ORDR(IOR), NOCH19, IRET )
+           CALL RSEXCH(' ',NOMCON, CHAMSY, ORDR(IOR), NOCH19, IRET )
            IF( IRET .NE. 0 ) GOTO 100
          ELSE
            NOCH19 = NOMCON

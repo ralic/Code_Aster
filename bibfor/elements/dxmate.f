@@ -7,8 +7,9 @@
       REAL*8 PGL(3,3),T2EV(4),T2VE(4),T1VE(9)
       LOGICAL COUPMF
       CHARACTER*4 FAMI
-C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -24,8 +25,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
 C TOLE CRP_20
 C     ------------------------------------------------------------------
 C     CALCUL DES MATRICES DE RIGIDITE DE FLEXION, MEMBRANE , COUPLAGE
@@ -47,12 +46,10 @@ C  ------------------------------------------------------------------
       REAL*8       ALPHA,BETA,R8DGRD,R8PREM,DET
       REAL*8       ZERO,DEUX
       INTEGER  ICODRE(33)
-      CHARACTER*2  DERIVE
       CHARACTER*3  NUM
       CHARACTER*8  NOMRES(33),NOMPAR
       CHARACTER*10 PHENOM
       CHARACTER*16 NOMTE
-      CHARACTER*24 OPTION
 
 C     ------------------------------------------------------------------
 
@@ -60,7 +57,6 @@ C     ------------------------------------------------------------------
       DEUX   = 2.0D0
       ELASCO = 0
       COUPMF = .FALSE.
-      DERIVE = '  '
       CALL R8INIR(9,ZERO,DMF,1)
       CALL R8INIR(6,ZERO,DMC,1)
       CALL R8INIR(6,ZERO,DFC,1)
@@ -69,7 +65,6 @@ C
      &                  IDFDE,JGANO)
       CALL TECAEL(IAZI,IAZK24)
       NOMTE  = ZK24(IAZK24-1+3+NNO+1)(1:16)
-      OPTION = ZK24(IAZK24-1+3+NNO+2)
 C
       CALL JEVECH('PCACOQU','L',JCOQU)
       EPAIS = ZR(JCOQU)
@@ -254,59 +249,12 @@ C
 
 C        ------ MATERIAU ISOTROPE --------------------------------------
 
-        IF (OPTION(11:14).EQ.'SENS') THEN
+        CALL RCVALB(FAMI,1,1,'+',ZI(JMATE),' ',
+     &             PHENOM,NBPAR,NOMPAR,VALPAR,NBV,
+     &             NOMRES, VALRES,ICODRE,1)
 
-          CALL JEVECH('PMATSEN','L',JMATE)
-          CALL RCVALB(FAMI,1,1,'+',ZI(JMATE),' ',
-     &            PHENOM,NBPAR,NOMPAR,VALPAR,NBV,
-     &            NOMRES,VALRES,ICODRE,1)
-          YOUNG = VALRES(1)
-          NU = VALRES(2)
-
-C A CE NIVEAU : LA PROCEDURE HABITUELLE DE CALCUL DE SENSIBILITE DONNE :
-C   SI : DERIVATION PAR RAPPORT A YOUNG ALORS : YOUNG = 1 ET NU = 0
-C   SI : DERIVATION PAR RAPPORT A NU ALORS : YOUNG = 0 ET NU = 1
-C   SINON  : DERIVATION PAR RAPPORT A L EPAISSEUR
-C            (EVITE DE DEFINIR UNE OPTION EN PLUS)
-
-          CALL JEVECH('PMATERC','L',JMATE)
-          CALL RCVALB(FAMI,1,1,'+',ZI(JMATE),' ',
-     &            PHENOM,NBPAR,NOMPAR,VALPAR,NBV,
-     &            NOMRES,VALRES,ICODRE,1)
-          IF(ABS(NU).LT.R8PREM()) THEN
-            DERIVE = 'E'
-            NU = VALRES(2)
-          ELSE IF(ABS(YOUNG).LT.R8PREM()) THEN
-            DERIVE = 'NU'
-            YOUNG = VALRES(1)
-            NU = VALRES(2)
-          ELSE
-            DERIVE = 'EP'
-          END IF
-C ET REFORMULATION DES TERMES DE LA MATRICE (VOIR PLUS BAS)
-        ELSE
-
-          CALL RCVALB(FAMI,1,1,'+',ZI(JMATE),' ',
-     &               PHENOM,NBPAR,NOMPAR,VALPAR,NBV,
-     &               NOMRES, VALRES,ICODRE,1)
-
-          YOUNG = VALRES(1)
-          NU = VALRES(2)
-
-C POUR LES MATRICES ELEMENTAIRES SENSIBILITE SANS PASSAGE PAR VECHDE
-C AFFECTATION FICTIVE DE YOUNG ET NU
-C LE CALCUL EFFECTIF DU SECOND MEMBRE FERA PAR APPEL A VECHDE
-          IF(ABS(NU).LT.R8PREM() .AND. ABS(YOUNG-1).LT.R8PREM())THEN
-            DERIVE = 'E'
-            YOUNG = 1.D0
-            NU = 1.D-1
-          ELSEIF(ABS(YOUNG).LT.R8PREM().AND.ABS(NU-1).LT.R8PREM())THEN
-            DERIVE = 'NU'
-            YOUNG = 1.D0
-            NU = 1.D-1
-          END IF
-
-        END IF
+        YOUNG = VALRES(1)
+        NU = VALRES(2)
 
         MULTIC = 0
         KCIS = 5.D0/6.D0
@@ -322,18 +270,6 @@ C      ---- CALCUL DE LA MATRICE DE RIGIDITE EN FLEXION --------------
         DF(2,1) = DF(1,2)
         DF(2,2) = DF(1,1)
         DF(3,3) = CDF* (1.D0-NU)/2.D0
-        IF(DERIVE(1:2).EQ.'NU') THEN
-          DF(1,1) = DF(1,1)*2.D0*NU/(1.D0-NU*NU)
-          DF(1,2) = DF(1,2)*(1.D0+NU*NU)/(NU*(1.D0-NU*NU))
-          DF(2,1) = DF(1,2)
-          DF(2,2) = DF(1,1)
-          DF(3,3) = -DF(3,3)/(1.D0+NU)
-        ELSE IF(DERIVE(1:2).EQ.'EP') THEN
-          DO 51 I = 1,3
-          DO 51 J = 1,3
-            DF(I,J) = DF(I,J)*3.D0/EPAIS
-   51     CONTINUE
-        ENDIF
 C      ---- CALCUL DE LA MATRICE DE RIGIDITE EN MEMBRANE -------------
         CDM = EPAIS*YOUNG/ (1.D0-NU*NU)
         DO 60 K = 1,9
@@ -344,18 +280,6 @@ C      ---- CALCUL DE LA MATRICE DE RIGIDITE EN MEMBRANE -------------
         DM(2,1) = DM(1,2)
         DM(2,2) = DM(1,1)
         DM(3,3) = CDM* (1.D0-NU)/2.D0
-        IF(DERIVE(1:2).EQ.'NU') THEN
-          DM(1,1) = DM(1,1)*2.D0*NU/(1.D0-NU*NU)
-          DM(1,2) = DM(1,2)*(1.D0+NU*NU)/(NU*(1.D0-NU*NU))
-          DM(2,1) = DM(1,2)
-          DM(2,2) = DM(1,1)
-          DM(3,3) = -DM(3,3)/(1.D0+NU)
-        ELSE IF(DERIVE(1:2).EQ.'EP') THEN
-          DO 52 I = 1,3
-          DO 52 J = 1,3
-            DM(I,J) = DM(I,J)/EPAIS
-   52     CONTINUE
-        ENDIF
 C      --- CALCUL DE LA MATRICE DE RIGIDITE EN CISAILLEMENT ----------
         GCIS = YOUNG/2.D0/ (1.D0+NU)
         CDC = GCIS*KCIS*EPAIS
@@ -363,15 +287,6 @@ C      --- CALCUL DE LA MATRICE DE RIGIDITE EN CISAILLEMENT ----------
         DC(2,2) = DC(1,1)
         DC(1,2) = 0.D0
         DC(2,1) = 0.D0
-        IF(DERIVE(1:2).EQ.'NU') THEN
-          DC(1,1) = -DC(1,1)/(1.D0+NU)
-          DC(2,2) = DC(1,1)
-        ELSE IF(DERIVE(1:2).EQ.'EP') THEN
-          DO 53 I = 1,3
-          DO 53 J = 1,3
-            DC(I,J) = DC(I,J)/EPAIS
-   53     CONTINUE
-        ENDIF
 C      --- CALCUL DE SON INVERSE ------------------------------------
         DCI(1,1) = 1.D0/DC(1,1)
         DCI(2,2) = DCI(1,1)

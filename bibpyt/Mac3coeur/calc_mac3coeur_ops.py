@@ -1,4 +1,4 @@
-#@ MODIF calc_mac3coeur_ops Mac3coeur  DATE 20/06/2012   AUTEUR BOITEAU O.BOITEAU 
+#@ MODIF calc_mac3coeur_ops Mac3coeur  DATE 24/07/2012   AUTEUR PERONY R.PERONY 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -91,13 +91,15 @@ def calc_mac3coeur_ops(self, **args):
        _FLUENC  = _coeur.definition_fluence(_fluence,_MA_N)
        print 'DEFINITION DU CHAMP DE TEMPERATURE'
        _CHTH    = _coeur.definition_champ_temperature(_MA_N)
+       print 'DEFINITION DU CHAMP DE DEPLACEMENT DES INTERNES DE CUVE'
+       _DILAT   = _coeur.dilatation_cuve(_MO_N,_MA_N)
        print 'DEFINITION DES MATERIAUX'
        _AF_MAC  = _coeur.definition_materiau(_MA_N,_GFF,_AVEC_CONTACT,_FLUENC,_CHTH)
        _AF_MSC  = _coeur.definition_materiau(_MA_N,_GFF,_SANS_CONTACT,_FLUENC,_CHTH)
        print 'DEFINITION DU CHAMP PESANTEUR'
        _PESANT  = _coeur.definition_pesanteur(_MO_N)
        print 'DEFINITION DES EFFORTS DE MAINTIEN'
-       _F_EBS   = _coeur.definition_effor_maintien()
+       _F_EMBO   = _coeur.definition_effor_maintien(_MO_N)
        print 'DEFINITION DU CHAMP DE POUSSE D ARCHIMEDE'
        _ARCH_1  = _coeur.definition_archimede1(_MO_N)
        _FOARCH_1= _coeur.definition_archimede2(_MO_N)
@@ -111,14 +113,24 @@ def calc_mac3coeur_ops(self, **args):
        _CL_PER_1  = AFFE_CHAR_MECA( MODELE   = _MO_N,
                                  DDL_IMPO = ( _F(GROUP_MA = 'CRAYON',           DRX=0.,               ),
                                               _F(GROUP_NO = 'LISPG',            DRX=0., DRY=0., DRZ=0.),
-                                              _F(GROUP_NO = 'FIX',              DX=0.,  DY=0.,  DZ=0.),
-                                              _F(GROUP_MA =('EBOSUP','EBOINF'),         DY=0.,  DZ=0.,
-                                                                                DRX=0., DRY=0., DRZ=0.),
-                                              _F(GROUP_NO = 'P_CUV',            DX=0.,  DY=0.,  DZ=0. )),
+                                              _F(GROUP_MA =('EBOSUP','EBOINF'), DRX=0., DRY=0., DRZ=0.),),
+                                 LIAISON_GROUP = (_F(GROUP_NO_1='PMNT_S', GROUP_NO_2='PEBO_S',SOMMET='OUI',
+                                                     DDL_1='DY', DDL_2='DY', COEF_MULT_1=1., COEF_MULT_2=-1., COEF_IMPO=0.,),
+                                                  _F(GROUP_NO_1='PMNT_S', GROUP_NO_2='PEBO_S',SOMMET='OUI',
+                                                     DDL_1='DZ', DDL_2='DZ', COEF_MULT_1=1., COEF_MULT_2=-1., COEF_IMPO=0.,),
+                                                     
+                                                  _F(GROUP_NO_1='PSUP', GROUP_NO_2='PEBO_S',SOMMET='OUI',
+                                                     DDL_1='DY', DDL_2='DY', COEF_MULT_1=1., COEF_MULT_2=-1., COEF_IMPO=0.,),
+                                                  _F(GROUP_NO_1='PSUP', GROUP_NO_2='PEBO_S',SOMMET='OUI',
+                                                     DDL_1='DZ', DDL_2='DZ', COEF_MULT_1=1., COEF_MULT_2=-1., COEF_IMPO=0.,),
+                                                     
+                                                  _F(GROUP_NO_1='PINF', GROUP_NO_2='FIX',SOMMET='OUI',
+                                                     DDL_1='DY', DDL_2='DY', COEF_MULT_1=1., COEF_MULT_2=-1., COEF_IMPO=0.,),
+                                                  _F(GROUP_NO_1='PINF', GROUP_NO_2='FIX',SOMMET='OUI',
+                                                     DDL_1='DZ', DDL_2='DZ', COEF_MULT_1=1., COEF_MULT_2=-1., COEF_IMPO=0.,),
+                                                 ),
                                  LIAISON_SOLIDE = cl_liaison_solide,
                                 );
-
-       _F_EMBO = AFFE_CHAR_MECA( MODELE = _MO_N, FORCE_NODALE = _F(GROUP_NO='PEBO_S',FX=(-1.),),);
 
        self.DeclareOut('RESUC1',self.sd)
 
@@ -131,24 +143,21 @@ def calc_mac3coeur_ops(self, **args):
                                     _F(CHARGE = _FOARCH_1, FONC_MULT = _ARCH_F1,),
                                     _F(CHARGE = _HYDR_1,   FONC_MULT = _HYDR_F1,),
                                     _F(CHARGE = _FOHYDR_1, FONC_MULT = _HYDR_F1,),
-                                    _F(CHARGE = _F_EMBO,   FONC_MULT = _F_EBS,  ),
                                     _F(CHARGE = _CH_TRNO,  FONC_MULT = _F_TRAN1,),
                                     _F(CHARGE = _CH_TRFX,  FONC_MULT = _F_TRAN1,),
+                                    _F(CHARGE = _F_EMBO,  ),
+                                    _F(CHARGE = _DILAT,   ),
                                     _F(CHARGE = _CL_PER_1,),
                                     _F(CHARGE = _PESANT,),),
                       COMP_INCR   =(
-                                    _F(RELATION='ELAS',       TOUT     = 'OUI',),
                                     _F(RELATION='MULTIFIBRE', GROUP_MA =('CRAYON','T_GUIDE'), PARM_THETA=0.5, ),
                                     _F(RELATION='DIS_GRICRA', GROUP_MA = 'ELA',),
                                     _F(RELATION='DIS_CHOC',   GROUP_MA =('RES_EXT','RES_CONT'),),
-                                    _F(RELATION='ELAS',       GROUP_MA =('EBOINF','EBOSUP','RIG','DIL',),),),
+                                    _F(RELATION='ELAS',       GROUP_MA =('EBOINF','EBOSUP','RIG','DIL',),),
+                                    _F(RELATION='DIS_BILI_ELAS',GROUP_MA ='MAINTIEN',),),
                       INCREMENT   = _F(LIST_INST = _time, INST_FIN=_coeur.temps_simu['T8']),
                       NEWTON      = _F(MATRICE='TANGENTE', REAC_ITER=1,),
                       SOLVEUR     = _F(METHODE='MUMPS',RENUM='AMF',GESTION_MEMOIRE='OUT_OF_CORE',ELIM_LAGR2='NON',PCENT_PIVOT=200,),
-                      SUIVI_DDL   = (_F(NOM_CHAM  = 'DEPL',
-                                      EVAL_CHAM = 'MIN',
-                                      NOM_CMP   = ('DX'),
-                                      GROUP_NO  = ('CRAYON'))),
                       CONVERGENCE=_F(ITER_GLOB_MAXI=NITER),
                                       );
 
@@ -160,28 +169,43 @@ def calc_mac3coeur_ops(self, **args):
                       EXCIT       =(
                                     _F(CHARGE = _ARCH_1,   FONC_MULT = _ARCH_F1,),
                                     _F(CHARGE = _FOARCH_1, FONC_MULT = _ARCH_F1,),
-                                    _F(CHARGE = _HYDR_1,   FONC_MULT = _HYDR_F1,),
-                                    _F(CHARGE = _FOHYDR_1, FONC_MULT = _HYDR_F1,),
-                                    _F(CHARGE = _F_EMBO,   FONC_MULT = _F_EBS,  ),
-                                    _F(CHARGE = _CH_TRNO,  FONC_MULT = _F_TRAN1,),
-                                    _F(CHARGE = _CH_TRFX,  FONC_MULT = _F_TRAN1,),
+                                    _F(CHARGE = _F_EMBO,  ),
+                                    _F(CHARGE = _DILAT,   ),
                                     _F(CHARGE = _CL_PER_1,),
                                     _F(CHARGE = _PESANT,),),
                       COMP_INCR   =(
-                                    _F(RELATION='ELAS',       TOUT     = 'OUI',),
                                     _F(RELATION='MULTIFIBRE', GROUP_MA =('CRAYON','T_GUIDE'), PARM_THETA=0.5, ),
                                     _F(RELATION='DIS_GRICRA', GROUP_MA = 'ELA',),
                                     _F(RELATION='DIS_CHOC',   GROUP_MA =('RES_EXT','RES_CONT'),),
-                                    _F(RELATION='ELAS',       GROUP_MA =('EBOINF','EBOSUP','RIG','DIL',),),),
+                                    _F(RELATION='ELAS',       GROUP_MA =('EBOINF','EBOSUP','RIG','DIL',),),
+                                    _F(RELATION='DIS_BILI_ELAS',GROUP_MA ='MAINTIEN',),),
+                      INCREMENT   = _F(LIST_INST = _time, INST_FIN=_coeur.temps_simu['T8b']),
+                      NEWTON      = _F(MATRICE='TANGENTE', REAC_ITER=1,),
+                      SOLVEUR     = _F(METHODE='MUMPS',RENUM='AMF',GESTION_MEMOIRE='OUT_OF_CORE',ELIM_LAGR2='NON',PCENT_PIVOT=200,),
+                      CONVERGENCE=_F(ITER_GLOB_MAXI=NITER),
+                       );
+                       
+       RESUC1 = STAT_NON_LINE( reuse = RESUC1,
+                      MODELE      = _MO_N,
+                      CHAM_MATER  = _AF_MSC,
+                      CARA_ELEM   = _CARA,
+                      ETAT_INIT   = _F(EVOL_NOLI=RESUC1),
+                      EXCIT       =(
+                                    _F(CHARGE = _ARCH_1,   FONC_MULT = _ARCH_F1,),
+                                    _F(CHARGE = _FOARCH_1, FONC_MULT = _ARCH_F1,),
+                                    _F(CHARGE = _DILAT,   ),
+                                    _F(CHARGE = _CL_PER_1,),
+                                    _F(CHARGE = _PESANT,),),
+                      COMP_INCR   =(
+                                    _F(RELATION='MULTIFIBRE', GROUP_MA =('CRAYON','T_GUIDE'), PARM_THETA=0.5, ),
+                                    _F(RELATION='DIS_GRICRA', GROUP_MA = 'ELA',),
+                                    _F(RELATION='DIS_CHOC',   GROUP_MA =('RES_EXT','RES_CONT'),),
+                                    _F(RELATION='ELAS',       GROUP_MA =('EBOINF','EBOSUP','RIG','DIL',),),
+                                    _F(RELATION='DIS_BILI_ELAS',GROUP_MA ='MAINTIEN',),),
                       INCREMENT   = _F(LIST_INST = _time),
                       NEWTON      = _F(MATRICE='TANGENTE', REAC_ITER=1,),
                       SOLVEUR     = _F(METHODE='MUMPS',RENUM='AMF',GESTION_MEMOIRE='OUT_OF_CORE',ELIM_LAGR2='NON',PCENT_PIVOT=200,),
-                      SUIVI_DDL   = (_F(NOM_CHAM  = 'DEPL',
-                                        EVAL_CHAM = 'MIN',
-                                        NOM_CMP   = ('DX'),
-                                        GROUP_NO  = ('CRAYON'),)
-                       ),
-                       CONVERGENCE=_F(ITER_GLOB_MAXI=NITER),
+                      CONVERGENCE=_F(ITER_GLOB_MAXI=NITER),
                        );
 
 
@@ -195,27 +219,52 @@ def calc_mac3coeur_ops(self, **args):
        _time    = _coeur.definition_time(_fluence)
        _FLUENC  = _coeur.definition_fluence(_fluence,_MA_N)
        _CHTH    = _coeur.definition_champ_temperature(_MA_N)
-       _AF_MAC  = _coeur.definition_materiau(_MA_N,_GFF,_AVEC_CONTACT,_FLUENC,_CHTH)
+       _DILAT   = _coeur.dilatation_cuve(_MO_N,_MA_N)
        _AF_MSC  = _coeur.definition_materiau(_MA_N,_GFF,_SANS_CONTACT,_FLUENC,_CHTH)
        _PESANT  = _coeur.definition_pesanteur(_MO_N)
-       _F_EBS   = _coeur.definition_effor_maintien()
+       _F_EMBO  = _coeur.definition_effor_maintien(_MO_N)
        _ARCH_1  = _coeur.definition_archimede1(_MO_N)
        _FOARCH_1= _coeur.definition_archimede2(_MO_N)
        _ARCH_F1 = _coeur.definition_temp_archimede()
-       _HYDR_F1 = _coeur.definition_temp_hydro_axiale()
-       _F_TRAN1 = _coeur.definition_effort_transverse()
 
        _CL_LAME = _coeur.affe_char_lame(_MO_N)
 
+       _CL_PER_2  = AFFE_CHAR_MECA( MODELE   = _MO_N,
+                                 LIAISON_GROUP = (_F(GROUP_NO_1='PMNT_S', GROUP_NO_2='PEBO_S',SOMMET='OUI',
+                                                     DDL_1='DY', DDL_2='DY', COEF_MULT_1=1., COEF_MULT_2=-1., COEF_IMPO=0.,),
+                                                  _F(GROUP_NO_1='PMNT_S', GROUP_NO_2='PEBO_S',SOMMET='OUI',
+                                                     DDL_1='DZ', DDL_2='DZ', COEF_MULT_1=1., COEF_MULT_2=-1., COEF_IMPO=0.,),
+                                                     
+                                                  _F(GROUP_NO_1='PSUP', GROUP_NO_2='PEBO_S',SOMMET='OUI',
+                                                     DDL_1='DY', DDL_2='DY', COEF_MULT_1=1., COEF_MULT_2=-1., COEF_IMPO=0.,),
+                                                  _F(GROUP_NO_1='PSUP', GROUP_NO_2='PEBO_S',SOMMET='OUI',
+                                                     DDL_1='DZ', DDL_2='DZ', COEF_MULT_1=1., COEF_MULT_2=-1., COEF_IMPO=0.,),
+                                                     
+                                                  _F(GROUP_NO_1='PINF', GROUP_NO_2='FIX',SOMMET='OUI',
+                                                     DDL_1='DY', DDL_2='DY', COEF_MULT_1=1., COEF_MULT_2=-1., COEF_IMPO=0.,),
+                                                  _F(GROUP_NO_1='PINF', GROUP_NO_2='FIX',SOMMET='OUI',
+                                                     DDL_1='DZ', DDL_2='DZ', COEF_MULT_1=1., COEF_MULT_2=-1., COEF_IMPO=0.,),
+                                                 ),
+                                );
+
+       # calcul de deformation d'apres DAMAC
        _SNL_LAME = STAT_NON_LINE( MODELE  = _MO_N,
                               CHAM_MATER  = _AF_MSC,
                               CARA_ELEM   = _CARA,
-                              EXCIT       = (_F(CHARGE = _CL_LAME,),),
-                              COMP_INCR   = (_F(RELATION='ELAS',       TOUT     = 'OUI',),
-                                             _F(RELATION='MULTIFIBRE', GROUP_MA =('CRAYON','T_GUIDE'), PARM_THETA=0.5, ),
-                                             _F(RELATION='DIS_GRICRA', GROUP_MA = 'ELA',),
-                                             _F(RELATION='DIS_CHOC',   GROUP_MA =('RES_EXT','RES_CONT'),),
-                                             _F(RELATION='ELAS',       GROUP_MA =('EBOINF','EBOSUP','RIG',),),),
+                              EXCIT       = (
+                                    _F(CHARGE = _ARCH_1,   FONC_MULT = _ARCH_F1,),
+                                    _F(CHARGE = _FOARCH_1, FONC_MULT = _ARCH_F1,),
+                                    _F(CHARGE = _F_EMBO,  ),
+                                    _F(CHARGE = _DILAT,   ),
+                                    _F(CHARGE = _PESANT,  ),
+                                    _F(CHARGE = _CL_LAME, ),
+                                    _F(CHARGE = _CL_PER_2,),),
+                              COMP_INCR   =(
+                                    _F(RELATION='MULTIFIBRE', GROUP_MA =('CRAYON','T_GUIDE'), PARM_THETA=0.5, ),
+                                    _F(RELATION='DIS_GRICRA', GROUP_MA = 'ELA',),
+                                    _F(RELATION='DIS_CHOC',   GROUP_MA =('RES_EXT','RES_CONT'),),
+                                    _F(RELATION='ELAS',       GROUP_MA =('EBOINF','EBOSUP','RIG','DIL',),),
+                                    _F(RELATION='DIS_BILI_ELAS',GROUP_MA ='MAINTIEN',),),
                               INCREMENT   = _F(LIST_INST = _time, INST_FIN = _coeur.temps_simu['T1'],),
                               NEWTON      = _F(MATRICE='TANGENTE', REAC_ITER=1,),
                               SOLVEUR     = _F(METHODE='MUMPS',RENUM='AMF',GESTION_MEMOIRE='OUT_OF_CORE',ELIM_LAGR2='NON',PCENT_PIVOT=80,),
@@ -243,8 +292,15 @@ def calc_mac3coeur_ops(self, **args):
        _timep1   = _coeurp1.definition_time(_fluence)
        _FLU_NP1  = _coeurp1.definition_fluence(_fluence,_MA_NP1)
        _CHTHNP1  = _coeurp1.definition_champ_temperature(_MA_NP1)
+       _DILATP1  = _coeurp1.dilatation_cuve(_MO_NP1,_MA_NP1)
        _AFACNP1  = _coeurp1.definition_materiau(_MA_NP1,_GFF_NP1,_AVEC_CONTACT,_FLU_NP1,_CHTHNP1)
        _AFSCNP1  = _coeurp1.definition_materiau(_MA_NP1,_GFF_NP1,_SANS_CONTACT,_FLU_NP1,_CHTHNP1)
+       
+       _PESANT1  = _coeurp1.definition_pesanteur(_MO_NP1)
+       _F_EMBO1  = _coeurp1.definition_effor_maintien(_MO_NP1)
+       _ARCH_11  = _coeurp1.definition_archimede1(_MO_NP1)
+       _FOARCH1  = _coeurp1.definition_archimede2(_MO_NP1)
+       _ARCHF11  = _coeurp1.definition_temp_archimede()
 
        _CL_BID = AFFE_CHAR_CINE(MODELE=_MO_NP1,MECA_IMPO = (_F(TOUT = 'OUI', DX = 0.0, DY = 0.0, DZ = 0.0, DRX = 0.0, DRY = 0.0, DRZ = 0.0,),))
 
@@ -258,15 +314,17 @@ def calc_mac3coeur_ops(self, **args):
 
        indice = 0
 
+       # calcul bidon aster pour initialisation de donnees
        _BIDON = STAT_NON_LINE( MODELE     = _MO_NP1,
                               CHAM_MATER  = _AFSCNP1,
                               CARA_ELEM   = _CARANP1,
                               EXCIT       = (_F(CHARGE = _CL_BID,),),
-                              COMP_INCR   = (_F(RELATION='ELAS',       TOUT     = 'OUI',),
-                                             _F(RELATION='MULTIFIBRE', GROUP_MA =('CRAYON','T_GUIDE'), PARM_THETA=0.5, ),
-                                             _F(RELATION='DIS_GRICRA', GROUP_MA = 'ELA',),
-                                             _F(RELATION='DIS_CHOC',   GROUP_MA =('RES_EXT','RES_CONT'),),
-                                             _F(RELATION='ELAS',       GROUP_MA =('EBOINF','EBOSUP','RIG',),),),
+                              COMP_INCR   =(
+                                    _F(RELATION='MULTIFIBRE', GROUP_MA =('CRAYON','T_GUIDE'), PARM_THETA=0.5, ),
+                                    _F(RELATION='DIS_GRICRA', GROUP_MA = 'ELA',),
+                                    _F(RELATION='DIS_CHOC',   GROUP_MA =('RES_EXT','RES_CONT'),),
+                                    _F(RELATION='ELAS',       GROUP_MA =('EBOINF','EBOSUP','RIG','DIL',),),
+                                    _F(RELATION='DIS_BILI_ELAS',GROUP_MA ='MAINTIEN',),),
                               INCREMENT   = _F(LIST_INST = _timep1, NUME_INST_FIN = 1,),
                               NEWTON      = _F(MATRICE='TANGENTE', REAC_ITER=1,),
                               SOLVEUR     = _F(METHODE='MUMPS',RENUM='AMF',GESTION_MEMOIRE='OUT_OF_CORE',ELIM_LAGR2='NON',PCENT_PIVOT=80,),
@@ -353,25 +411,45 @@ def calc_mac3coeur_ops(self, **args):
        _BLOC2  = AFFE_CHAR_MECA( MODELE   = _MO_NP1,
                                  DDL_IMPO = ( _F(GROUP_MA = 'CRAYON',           DRX=0.,               ),
                                               _F(GROUP_NO = 'LISPG',            DRX=0., DRY=0., DRZ=0.),
-                                              _F(GROUP_MA =('EBOSUP','EBOINF'), DX=0.,  DY=0.,  DZ=0.,
-                                                                                DRX=0., DRY=0., DRZ=0.),
-                                              _F(GROUP_NO = 'P_CUV',            DX=0.,  DY=0.,  DZ=0. )),
+                                              _F(GROUP_MA =('EBOSUP','EBOINF'), DRX=0., DRY=0., DRZ=0.),),
+                                 LIAISON_GROUP = (_F(GROUP_NO_1='PMNT_S', GROUP_NO_2='PEBO_S',SOMMET='OUI',
+                                                     DDL_1='DY', DDL_2='DY', COEF_MULT_1=1., COEF_MULT_2=-1., COEF_IMPO=0.,),
+                                                  _F(GROUP_NO_1='PMNT_S', GROUP_NO_2='PEBO_S',SOMMET='OUI',
+                                                     DDL_1='DZ', DDL_2='DZ', COEF_MULT_1=1., COEF_MULT_2=-1., COEF_IMPO=0.,),
+                                                     
+                                                  _F(GROUP_NO_1='PSUP', GROUP_NO_2='PEBO_S',SOMMET='OUI',
+                                                     DDL_1='DY', DDL_2='DY', COEF_MULT_1=1., COEF_MULT_2=-1., COEF_IMPO=0.,),
+                                                  _F(GROUP_NO_1='PSUP', GROUP_NO_2='PEBO_S',SOMMET='OUI',
+                                                     DDL_1='DZ', DDL_2='DZ', COEF_MULT_1=1., COEF_MULT_2=-1., COEF_IMPO=0.,),
+                                                     
+                                                  _F(GROUP_NO_1='PINF', GROUP_NO_2='FIX',SOMMET='OUI',
+                                                     DDL_1='DY', DDL_2='DY', COEF_MULT_1=1., COEF_MULT_2=-1., COEF_IMPO=0.,),
+                                                  _F(GROUP_NO_1='PINF', GROUP_NO_2='FIX',SOMMET='OUI',
+                                                     DDL_1='DZ', DDL_2='DZ', COEF_MULT_1=1., COEF_MULT_2=-1., COEF_IMPO=0.,),
+                                                 ),
                                  LIAISON_SOLIDE = cl_liaison_solide,
                                 );
 
        self.DeclareOut('RESUJ',self.sd)
        RESUJ = STAT_NON_LINE( MODELE      = _MO_NP1,
-                                CHAM_MATER  = _AFACNP1,
-                                CARA_ELEM   = _CARANP1,
-                                EXCIT       =(_F(CHARGE = _BLOC2,),),
-                                COMP_INCR   =(_F(RELATION='ELAS', TOUT = 'OUI',),
-                                              _F(RELATION='MULTIFIBRE', GROUP_MA =('CRAYON','T_GUIDE'), PARM_THETA=0.5, ),
-                                              _F(RELATION='DIS_GRICRA', GROUP_MA = 'ELA',),
-                                              _F(RELATION='DIS_CHOC',   GROUP_MA =('RES_EXT','RES_CONT'),),
-                                              _F(RELATION='ELAS',       GROUP_MA =('EBOINF','EBOSUP','RIG',),),),
-                                INCREMENT   = _F(LIST_INST = _timep1, INST_FIN = _coeurp1.temps_simu['T1'],),
-                                NEWTON      = _F(MATRICE='TANGENTE',REAC_ITER=1,),
-                                SOLVEUR     = _F(METHODE='MUMPS',RENUM='AMF',GESTION_MEMOIRE='OUT_OF_CORE',ELIM_LAGR2='NON',PCENT_PIVOT=200,),
-                                CONVERGENCE=_F(ITER_GLOB_MAXI=NITER),
-                                );
+                              CHAM_MATER  = _AFACNP1,
+                              CARA_ELEM   = _CARANP1,
+                              EXCIT          =(
+                                    _F(CHARGE = _ARCH_11,  FONC_MULT = _ARCHF11,),
+                                    _F(CHARGE = _FOARCH1,  FONC_MULT = _ARCHF11,),
+                                    _F(CHARGE = _F_EMBO1,  ),
+                                    _F(CHARGE = _PESANT1,  ),
+                                    _F(CHARGE = _DILATP1,  ),
+                                    _F(CHARGE = _BLOC2,),),
+                              COMP_INCR   =(
+                                    _F(RELATION='MULTIFIBRE', GROUP_MA =('CRAYON','T_GUIDE'), PARM_THETA=0.5, ),
+                                    _F(RELATION='DIS_GRICRA', GROUP_MA = 'ELA',),
+                                    _F(RELATION='DIS_CHOC',   GROUP_MA =('RES_EXT','RES_CONT'),),
+                                    _F(RELATION='ELAS',       GROUP_MA =('EBOINF','EBOSUP','RIG','DIL',),),
+                                    _F(RELATION='DIS_BILI_ELAS',GROUP_MA ='MAINTIEN',),),
+                              INCREMENT   = _F(LIST_INST = _timep1, INST_FIN = _coeurp1.temps_simu['T4'],),
+                              NEWTON          = _F(MATRICE='TANGENTE',REAC_ITER=1,),
+                              SOLVEUR          = _F(METHODE='MUMPS',RENUM='AMF',GESTION_MEMOIRE='OUT_OF_CORE',ELIM_LAGR2='NON',PCENT_PIVOT=200,),
+                              CONVERGENCE=_F(ITER_GLOB_MAXI=NITER),
+                              );
 

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 23/01/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -206,8 +206,6 @@ OPTION__
     MECA_GYRO           259   IN__   CCAGNPO  PCAGNPO  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  NGEOMER  PGEOMER
                                      CMATERC  PMATERC
                               OUT__  MMATUNS  PMATUNS
-    MECA_SENS_MATE      -1    IN__     OUT__  XXXXXX   XXXXXX
-    MECA_SENS_RAPH      -1    IN__     OUT__  XXXXXX   XXXXXX
     M_GAMMA             141   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PACCELR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR
                               OUT__  MVECTUR  PVECTUR
@@ -238,8 +236,6 @@ OPTION__
     RIGI_MECA_RO        235   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CROTATR  PROTATR  ZVARCPG  PVARCPR
                                      CCAGNPO  PCAGNPO  CCAORIE  PCAORIE
                               OUT__  MMATUUR  PMATUUR
-    RIGI_MECA_SENSI     -1    IN__     OUT__  XXXXXX   XXXXXX
-    RIGI_MECA_SENS_C    -1    IN__     OUT__  XXXXXX   XXXXXX
     RIGI_MECA_TANG      346   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR
                                      EEFGEGA  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                                      CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC

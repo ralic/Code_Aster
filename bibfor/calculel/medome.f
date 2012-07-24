@@ -8,7 +8,7 @@
       CHARACTER*(*)                      KCHA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,10 +41,10 @@ C     ------------------------------------------------------------------
       INTEGER     IEXCIT,IRET, ICHA
       CHARACTER*6 NOMPRO
 C-----------------------------------------------------------------------
-      INTEGER I ,IBID ,IE ,IER ,IERD ,IN ,INUORD 
-      INTEGER IORDR ,JINFC ,JLCHA ,JORDR ,N1 ,N2 ,N3 
-      INTEGER N4 ,NBORDR ,NC ,NP ,NUORD 
-      REAL*8 PREC 
+      INTEGER I ,IBID ,IE ,IER ,IERD ,IN ,INUORD
+      INTEGER IORDR ,JINFC ,JLCHA ,JORDR ,N1 ,N2 ,N3
+      INTEGER N4 ,NBORDR ,NC ,NP ,NUORD
+      REAL*8 PREC
 C-----------------------------------------------------------------------
       PARAMETER (NOMPRO='MEDOME')
       CHARACTER*8  K8B, NOMO, MATERI, BLAN8, MODNEW
@@ -70,7 +70,6 @@ C
       CALL GETRES(K8B,CONCEP,NOMCMD)
 C
       LPOST = (NOMCMD.EQ.'CALC_ELEM').OR.
-     &        (NOMCMD.EQ.'CALC_SENSI').OR.
      &        (NOMCMD.EQ.'POST_ELEM')
 
       IF ( LPOST.AND.(RESULT(1:1).NE.' '))THEN

@@ -7,7 +7,7 @@
       CHARACTER*16  NOMCHA
       CHARACTER*19  NOMFON,RESU
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -54,14 +54,14 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 
 C-----------------------------------------------------------------------
-      INTEGER I ,I1 ,I2 ,IACCES ,IALEXI ,IATACH ,IATAVA 
-      INTEGER IBID ,IDDL1 ,IDDL2 ,IE ,IER ,IERD ,IERR1 
-      INTEGER IERR2 ,II ,INOEUD ,IORDR ,IP1 ,IP2 ,IPOSIT 
-      INTEGER IRET ,IVARI ,JINST ,JLIR8 ,L1 ,L2 ,LFON 
-      INTEGER LG1 ,LG2 ,LPRO ,LVAL1 ,LVAL2 ,LVAR ,LXLGUT 
-      INTEGER N1 ,N2 ,N3 ,N4 ,NBINST ,NBORDR ,NPOINT 
-      INTEGER NUSP 
-      REAL*8 R1 ,R2 ,R8B ,RBASE ,RVAL ,VALR1 ,VALR2 
+      INTEGER I ,I1 ,I2 ,IACCES ,IALEXI ,IATACH ,IATAVA
+      INTEGER IBID ,IDDL1 ,IDDL2 ,IE ,IER ,IERD ,IERR1
+      INTEGER IERR2 ,II ,INOEUD ,IORDR ,IP1 ,IP2 ,IPOSIT
+      INTEGER IRET ,IVARI ,JINST ,JLIR8 ,L1 ,L2 ,LFON
+      INTEGER LG1 ,LG2 ,LPRO ,LVAL1 ,LVAL2 ,LVAR ,LXLGUT
+      INTEGER N1 ,N2 ,N3 ,N4 ,NBINST ,NBORDR ,NPOINT
+      INTEGER NUSP
+      REAL*8 R1 ,R2 ,R8B ,RBASE ,RVAL ,VALR1 ,VALR2
 
 C-----------------------------------------------------------------------
       CALL JEMARQ()
@@ -158,7 +158,7 @@ C     -- ON REPERE QUELS SONT LES CHAMPS EXISTANT REELLEMENT:
       RVAL = ZR(JINST)
       CALL RSBARY(ZR(JLIR8),NBORDR,.FALSE.,ZL(IALEXI),RVAL,I1,I2,IPOSIT)
       CALL RSUTRO(RESU,I1,IP1,IERR1)
-      CALL RSEXCH(RESU,NOMCHA,IP1,CH1,IERD)
+      CALL RSEXCH('F',RESU,NOMCHA,IP1,CH1,IERD)
       CALL DISMOI('F','TYPE_SUPERVIS',CH1,'CHAMP',IBID,TYPCHA,IERD)
 
 C               ----- EXTRACTION SUR UN "CHAM_NO" -----
@@ -208,22 +208,8 @@ C           -------------------------
           CALL ASSERT(IERR1+IERR2.LE.0)
           RBASE = ZR(JLIR8-1+I2) - ZR(JLIR8-1+I1)
 
-          CALL RSEXCH(RESU,NOMCHA,IP1,CH1,L1)
-          CALL RSEXCH(RESU,NOMCHA,IP2,CH2,L2)
-          IF (L1.GT.0) THEN
-            VALK (1) = NOMCHA
-            VALK (2) = RESU
-            VALI = IP1
-            VALR (1) = RVAL
-            CALL U2MESG('F', 'UTILITAI6_19',2,VALK,1,VALI,1,VALR)
-          END IF
-          IF (L2.GT.0) THEN
-            VALK (1) = NOMCHA
-            VALK (2) = RESU
-            VALI = IP2
-            VALR (1) = RVAL
-            CALL U2MESG('F', 'UTILITAI6_19',2,VALK,1,VALI,1,VALR)
-          END IF
+          CALL RSEXCH('F',RESU,NOMCHA,IP1,CH1,L1)
+          CALL RSEXCH('F',RESU,NOMCHA,IP2,CH2,L2)
 
           CALL DISMOI('F','PROF_CHNO',CH1,'CHAM_NO',IBID,PROFC2,IE)
           IF (PROFC2.NE.PROFCH) THEN
@@ -336,22 +322,8 @@ C           -------------------------
           CALL ASSERT(IERR1+IERR2.LE.0)
           RBASE = ZR(JLIR8-1+I2) - ZR(JLIR8-1+I1)
 
-          CALL RSEXCH(RESU,NOMCHA,IP1,CH1,L1)
-          CALL RSEXCH(RESU,NOMCHA,IP2,CH2,L2)
-          IF (L1.GT.0) THEN
-            VALK (1) = NOMCHA
-            VALK (2) = RESU
-            VALI = IP1
-            VALR (1) = RVAL
-            CALL U2MESG('F', 'UTILITAI6_25',2,VALK,1,VALI,1,VALR)
-          END IF
-          IF (L2.GT.0) THEN
-            VALK (1) = NOMCHA
-            VALK (2) = RESU
-            VALI = IP2
-            VALR (1) = RVAL
-            CALL U2MESG('F', 'UTILITAI6_25',2,VALK,1,VALI,1,VALR)
-          END IF
+          CALL RSEXCH('F',RESU,NOMCHA,IP1,CH1,L1)
+          CALL RSEXCH('F',RESU,NOMCHA,IP2,CH2,L2)
 
           IF (RBASE.EQ.0.0D0) THEN
             CALL UTCH19(CH1,NOMA,MAILLE,NOEUZ,NPOINZ,NUSPZ,IVARI,CMP,

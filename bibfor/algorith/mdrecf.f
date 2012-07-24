@@ -14,7 +14,7 @@
       CHARACTER*16       TYPBAS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,15 +82,15 @@ C ---    CALCUL TRANSITOIRE CLASSIQUE
       IF (TYPBAS(1:9).EQ.'MODE_MECA'.AND.TYPEBA(1:1).EQ.' ') THEN
          MATASS =  ZK24(JDRIF)(1:8)
          CALL DISMOI('F','NOM_MAILLA'  ,MATASS,'MATR_ASSE',
-     +          IB,MAILLA,IER)
+     &          IB,MAILLA,IER)
          CALL DISMOI('F','NOM_NUME_DDL',MATASS,'MATR_ASSE',
-     +         IBID,NUMDDL,IER)
+     &         IBID,NUMDDL,IER)
          DEEQ = NUMDDL//'.NUME.DEEQ'
          CALL JEVEUO(DEEQ,'L',IDDEEQ)
       ELSEIF (TYPEBA(1:1).NE.' ') THEN
          NUMDDL = ZK24(JDRIF+3)(1:14)
          CALL DISMOI('F','NOM_MAILLA',NUMDDL,'NUME_DDL',
-     +          IB,MAILLA,IER)
+     &          IB,MAILLA,IER)
          DEEQ = NUMDDL//'.NUME.DEEQ'
          CALL JEVEUO(DEEQ,'L',IDDEEQ)
       ENDIF
@@ -202,14 +202,14 @@ C           CAS D'UN NUME_ORDRE
             FONDEP(I) = NOMFON(I)
             FONDEP(I+NEXCIT) = NOMFON(I+NEXCIT)
 C
-            CALL RSEXCH(MODCOR,'DEPL',I,CHAMNO,IRET)
+            CALL RSEXCH('F',MODCOR,'DEPL',I,CHAMNO,IRET)
             CALL JEVEUO(CHAMNO//'.VALE','L',IMODCO)
             DO 30 IEQ = 1,NEQ
                PSDEL(IEQ,I) = ZR(IMODCO+IEQ-1)
   30        CONTINUE
             DO 40 NM = 1,NBMODE
                COEF = ZR(IADVEC(I)+NM-1)/RIGGEN(NM)
-               CALL RSEXCH(BASEMO,'DEPL',NM,CHAMN2,IRET)
+               CALL RSEXCH('F',BASEMO,'DEPL',NM,CHAMN2,IRET)
                CALL JEVEUO(CHAMN2//'.VALE','L',IMOD)
                DO 50 IEQ = 1,NEQ
                   PSDEL(IEQ,I) = PSDEL(IEQ,I) - COEF*ZR(IMOD+IEQ-1)

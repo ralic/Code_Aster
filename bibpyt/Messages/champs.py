@@ -1,4 +1,4 @@
-#@ MODIF champs Messages  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF champs Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,9 +25,9 @@ cata_msg={
  On ne trouve pas de valeurs dans le champ.
 """),
 
-2: _(u"""
- Impossible de récupérer le nom du champ.
-"""),
+
+
+
 
 3: _(u"""
  La composante %(k1)s du champ  n'existe pas.

@@ -1,7 +1,7 @@
       SUBROUTINE TE0027(OPTION,NOMTE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,13 +33,8 @@ C               'CALC_G_GLOB_F'   (GLOBAL,CHARGES FONCTIONS)
 
 C ENTREES  ---> OPTION : OPTION DE CALCUL
 C          ---> NOMTE  : NOM DU TYPE ELEMENT
-C   -------------------------------------------------------------------
-C     ASTER INFORMATIONS:
-C       11/12/00 (OB): DEPLACEMENT DU TEST DE LA NULLITE DU THETAFISS,
-C                      TOILETTAGE FORTRAN,
-C                      RAJOUT DE PARAMETRE DANS L'APPEL A NMELNL POUR
-C                      COHERENCE AVEC TE0096 ET OPTION='CALC_DG' EN 2D.
-C-----------------------------------------------------------------------
+C
+C ----------------------------------------------------------------------
 C CORPS DU PROGRAMME
       IMPLICIT NONE
 
@@ -67,10 +62,9 @@ C DECLARATION VARIABLES LOCALES
       REAL*8 TCLA,TTHE,TFOR,TPLAS,TINI,POIDS,RBID
       REAL*8 DUDM(3,4),DFDM(3,4),DTDM(3,4),DER(4),DVDM(3,4)
       REAL*8 P,PPG,DPDM(3),RP,ENERGI(2),RHO,OM,OMO
-      REAL*8 RPIPO,T1PIPO(6),T2PIPO(2),T3PIPO(6)
       REAL*8 ECIN,PROD3,PROD4,ACCELE(3)
 
-      LOGICAL GRAND,FONC,INCR,EPSINI,LPIPO
+      LOGICAL GRAND,FONC,INCR,EPSINI
 
       INTEGER ICODRE
       CHARACTER*4 FAMI
@@ -79,18 +73,8 @@ C DECLARATION VARIABLES LOCALES
 
 C DEB ------------------------------------------------------------------
 
-
-C INITIALISATIONS POUR APPEL A NMELNL
-      LPIPO = .FALSE.
-      RPIPO = 0.D0
-      T2PIPO(1) = 0.D0
-      T2PIPO(2) = 0.D0
-      DO 10 I = 1,6
-        T1PIPO(I) = 0.D0
-        T3PIPO(I) = 0.D0
-   10 CONTINUE
-
       CALL JEMARQ()
+
       EPSI = R8PREM()
       RAC2 = SQRT(2.D0)
       OPRUPT = 'RUPTURE'
@@ -412,8 +396,7 @@ C -  CONTRAINTES LAGRANGIENNES (SIGL),ENERGIE LIBRE ET DERIVEE / T
           CRIT(2) = 0.D0
           CRIT(3) = 1.D-3
           CALL NMELNL(FAMI,KP,1,'+',NDIM,TYPMOD,ZI(IMATE),COMPOR,CRIT,
-     &                OPRUPT,EPS,SIGL,RBID,RBID,ENERGI,LPIPO,RPIPO,
-     &                T1PIPO,T2PIPO,T3PIPO)
+     &                OPRUPT,EPS,SIGL,RBID,RBID,ENERGI)
           CALL TECACH('NNN','PCONTGR',1,ISIGM,IRET)
           IF(IRET.EQ.0)THEN
             CALL JEVECH('PCONTGR','L',ISIGM)

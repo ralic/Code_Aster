@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,18 +40,18 @@ C
       INTEGER      IARG
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER I ,IADMO1 ,IAMOMO ,IC ,IDAM ,IDDEEQ ,IDEPMO 
-      INTEGER IDGA ,IDGM ,IDGN ,IDN2 ,IDNO ,IENEMO ,IENMOT 
-      INTEGER IFR ,II ,IJ ,IM ,IMOD ,IN ,INO 
-      INTEGER INOE ,IRE ,IRET ,IRIGNO ,IUNIFI ,JBOR ,JCOOR 
-      INTEGER JFREQ ,JNBP ,JNUME ,JNUOR ,JPAS ,JREFD ,JVAL 
-      INTEGER LDGM ,LDGN ,LDNM ,NB ,NBA ,NBB ,NBEC 
-      INTEGER NBEN ,NBG ,NBGA ,NBGR ,NBMD ,NBMOD2 ,NBNO 
-      INTEGER NBNOEU ,NBOCC ,NBS ,NBV ,NBVALE ,NCG ,NCO 
-      INTEGER NCOMPO ,NEQ ,NGN ,NK ,NKR ,NM ,NMM 
-      INTEGER NMT ,NN ,NNO ,NRP 
-      REAL*8 ALFA ,AMOGE ,BETA ,ENESOL ,F ,OMEGA ,PI 
-      REAL*8 R8PREM ,XG ,YG ,ZG ,ZRIG 
+      INTEGER I ,IADMO1 ,IAMOMO ,IC ,IDAM ,IDDEEQ ,IDEPMO
+      INTEGER IDGA ,IDGM ,IDGN ,IDN2 ,IDNO ,IENEMO ,IENMOT
+      INTEGER IFR ,II ,IJ ,IM ,IMOD ,IN ,INO
+      INTEGER INOE ,IRE ,IRET ,IRIGNO ,IUNIFI ,JBOR ,JCOOR
+      INTEGER JFREQ ,JNBP ,JNUME ,JNUOR ,JPAS ,JREFD ,JVAL
+      INTEGER LDGM ,LDGN ,LDNM ,NB ,NBA ,NBB ,NBEC
+      INTEGER NBEN ,NBG ,NBGA ,NBGR ,NBMD ,NBMOD2 ,NBNO
+      INTEGER NBNOEU ,NBOCC ,NBS ,NBV ,NBVALE ,NCG ,NCO
+      INTEGER NCOMPO ,NEQ ,NGN ,NK ,NKR ,NM ,NMM
+      INTEGER NMT ,NN ,NNO ,NRP
+      REAL*8 ALFA ,AMOGE ,BETA ,ENESOL ,F ,OMEGA ,PI
+      REAL*8 R8PREM ,XG ,YG ,ZG ,ZRIG
 C-----------------------------------------------------------------------
       DATA  REFD  /'                   .REFD'/
 C     ------------------------------------------------------------------
@@ -273,8 +273,7 @@ C
 C
       DO 51 I = 1 , NBMODE
         IF (METHOD.EQ.'DEPL') THEN
-         CALL RSEXCH ( MECA, 'DEPL', ZI(JNUME+I-1), NOMCH1, IRET )
-         IF ( IRET .NE. 0 ) CALL U2MESS('F','CHAMPS_2')
+         CALL RSEXCH('F',MECA, 'DEPL', ZI(JNUME+I-1), NOMCH1, IRET )
          NOMCH1 = NOMCH1(1:19)//'.VALE'
          CALL JEVEUO ( NOMCH1, 'L', IADMO1 )
          DO 52 INO = 1 , NBNO
@@ -290,8 +289,7 @@ C
  53         CONTINUE
  52      CONTINUE
         ELSEIF (METHOD.EQ.'RIGI_PARASOL') THEN
-         CALL RSEXCH( MECA,'DEPL',ZI(JNUME+I-1),NOMCH1,IRET )
-         IF ( IRET .NE. 0 ) CALL U2MESS('F','CHAMPS_2')
+         CALL RSEXCH('F',MECA,'DEPL',ZI(JNUME+I-1),NOMCH1,IRET )
          NOMCH1 = NOMCH1(1:19)//'.VALE'
          CALL JEVEUO ( NOMCH1, 'L', IADMO1 )
          DO 72 INO = 1 , NBNO

@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,7 +71,7 @@ C
 C TEST POUR DETERMINER SI FLUIDE ET STRUCTURE S APPUIENT SUR
 C DES MAILLAGES COMMUNS
       IF (N5.GT.0) THEN
-        CALL RSEXCH(MODMEC,'DEPL',1,NOMCHA,IRET)
+        CALL RSEXCH(' ',MODMEC,'DEPL',1,NOMCHA,IRET)
         CALL RSORAC(MODMEC,'LONUTI',IBID,BID,K8BID,CBID,EBID,'ABSOLU',
      &             NBMODE,1,NBID)
         CALL DISMOI('F','NOM_MAILLA',NOMCHA(1:19),
@@ -120,7 +120,7 @@ C======================================================================
 
         DO 20 J=1,NBMODE
 
-           CALL RSEXCH(MODMEC,'DEPL',J,NOMCHA,IRET)
+           CALL RSEXCH(' ',MODMEC,'DEPL',J,NOMCHA,IRET)
 
            NOMCHA=NOMCHA(1:19)
            VECSO1 = '&&OP0152.VECSOL1'

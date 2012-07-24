@@ -3,7 +3,7 @@
       INTEGER           NBOCC,NLM,NLG,IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,7 +34,7 @@ C ----------------------------------------------------------------------
       INTEGER      IARG
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER IOC ,NCO ,NE ,NEF ,NEX ,NG ,NIN 
+      INTEGER IOC ,NCO ,NE ,NEX ,NG ,NIN 
       INTEGER NK ,NM ,NSOM 
 C-----------------------------------------------------------------------
       CALL GETRES(NOMU,CONCEP,CMD)
@@ -45,13 +45,12 @@ C
          CALL GETVTX('COQUE','GROUP_MA'     ,IOC,IARG,0,K8B,NG  )
          CALL GETVTX('COQUE','MAILLE'       ,IOC,IARG,0,K8B,NM  )
          CALL GETVR8('COQUE','EPAIS'        ,IOC,IARG,0,R8B,NE  )
-         CALL GETVID('COQUE','EPAIS_F'      ,IOC,IARG,0,K8B,NEF )
          CALL GETVR8('COQUE','A_CIS'        ,IOC,IARG,0,R8B,NK  )
          CALL GETVR8('COQUE','EXCENTREMENT' ,IOC,IARG,0,R8B,NEX )
          CALL GETVTX('COQUE','INER_ROTA'    ,IOC,IARG,0,INT,NIN )
          CALL GETVTX('COQUE','MODI_METRIQUE',IOC,IARG,0,K8B,NCO )
 C
-         IF (IOC.EQ.1 .AND. NE.EQ.0 .AND. NEF.EQ.0) THEN
+         IF (IOC.EQ.1 .AND. NE.EQ.0) THEN
             CALL U2MESS('E','MODELISA_53')
             IER = IER + 1
          ENDIF

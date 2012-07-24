@@ -5,7 +5,7 @@
       CHARACTER*19                                PROFNO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,16 +41,16 @@ C
 C
 C
       INTEGER      I,IAD,IAR,IBID,IDEP,IEQ,IER,IORD,IRET,J,JBID,K,L,
-     +             LDNEW,LLCHAB,LLCHOL,LLIND,LLINER,LLINSK,LLMASS,
-     +             I1,K1,LLNUEQ,LLORS,LLPRS,LLROT,LREFE,LTROTX,
-     +             LTROTY,LTROTZ,LTVEC,LTYPE,NBBAS,NBCMP,NBCOU,NBMAS,
-     +             NBMAX,NBMOD,NBNOT,NBSST,NEQ, NEQS,NNO,NUMO,NUTARS,
-     +             LLREF1,LLREF2,LLREF3,ELIM,LMOET,NEQET,LMAPRO,
-     +             NEQRED,LSILIA,NUMSST,LSST
+     &             LDNEW,LLCHAB,LLCHOL,LLIND,LLINER,LLINSK,LLMASS,
+     &             I1,K1,LLNUEQ,LLORS,LLPRS,LLROT,LREFE,LTROTX,
+     &             LTROTY,LTROTZ,LTVEC,LTYPE,NBBAS,NBCMP,NBCOU,NBMAS,
+     &             NBMAX,NBMOD,NBNOT,NBSST,NEQ, NEQS,NNO,NUMO,NUTARS,
+     &             LLREF1,LLREF2,LLREF3,ELIM,LMOET,NEQET,LMAPRO,
+     &             NEQRED,LSILIA,NUMSST,LSST
       INTEGER      IADPAR(9)
       INTEGER VALI(2)
       REAL*8       COMPX,COMPY,COMPZ,EFMASX,EFMASY,EFMASZ,FREQ,GENEK,
-     +             GENEM,MAT(3,3),OMEG2,RBID
+     &             GENEM,MAT(3,3),OMEG2,RBID
       CHARACTER*8  BASMOD,MACREL,MODGEN,SOUTR,KBID
       CHARACTER*16 DEPL,NOMPAR(9)
       CHARACTER*19 RAID,NUMDDL,NUMGEN,CHAMNE
@@ -215,7 +215,7 @@ C-- SI ELIMINATION, ON RESTITUE D'ABORD LES MODES GENERALISES
 C
 C  REQUETTE NOM ET ADRESSE NOUVEAU CHAMNO
 C
-        CALL RSEXCH ( NOMRES, DEPL, I, CHAMNE, IER )
+        CALL RSEXCH(' ',NOMRES, DEPL, I, CHAMNE, IER )
         CALL VTCREA ( CHAMNE, CREFE, 'G', 'R', NEQ )
         CALL JEVEUO ( CHAMNE//'.VALE', 'E', LDNEW )
 C
@@ -306,11 +306,11 @@ C           --- CALCUL DES MASSES EFFECTIVES ---
               COMPZ = ZR(LLINER+2*NBBAS+J-1)
 C             --- UTILISATION DE MAT TRANSPOSEE (TRANSFORMATION INVERSE)
               EFMASX = EFMASX + ZR(IAD)*(COMPX*MAT(1,1) + COMPY*MAT(2,1)
-     +                                   + COMPZ*MAT(3,1))
+     &                                   + COMPZ*MAT(3,1))
               EFMASY = EFMASY + ZR(IAD)*(COMPX*MAT(1,2) + COMPY*MAT(2,2)
-     +                                   + COMPZ*MAT(3,2))
+     &                                   + COMPZ*MAT(3,2))
               EFMASZ = EFMASZ + ZR(IAD)*(COMPX*MAT(1,3) + COMPY*MAT(2,3)
-     +                                   + COMPZ*MAT(3,3))
+     &                                   + COMPZ*MAT(3,3))
 C
 C  BOUCLE SUR LES DDL DE LA BASE
 C

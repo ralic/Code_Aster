@@ -11,7 +11,7 @@
       LOGICAL           MUAPDE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -211,7 +211,7 @@ C
         IF (NS.NE.0) THEN
           CALL RSORAC(STAT,'NOEUD_CMP',IBID,R8B,MONACC,CBID,R8B,K8B,
      &                                               IORDR,1,NBTROU)
-          CALL RSEXCH(STAT,NOMSY,IORDR,CHEXTR,IRET)
+          CALL RSEXCH('F',STAT,NOMSY,IORDR,CHEXTR,IRET)
           CALL JEEXIN(CHEXTR//'.VALE',IBID)
           IF (IBID.GT.0) THEN
             CALL JEVEUO(CHEXTR//'.VALE','L',JVALE)

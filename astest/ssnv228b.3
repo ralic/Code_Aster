@@ -1,0 +1,138 @@
+# AJOUT
+# TITRE PRETENSION DUN GOUJON : FICHIER ESCLAVE POUR MACR_RECAL
+
+DEBUT(CODE=_F(NOM='SSNV228B',
+              NIV_PUB_WEB='INTERNET'),);
+
+# =====================================================================
+#                 MAILLAGE
+# =====================================================================
+MA=LIRE_MAILLAGE(FORMAT='MED')
+
+MA=DEFI_GROUP(
+   reuse=MA,
+   MAILLAGE=MA,
+   CREA_GROUP_NO=(
+      _F(GROUP_MA='M_L_SA', NOM='N_M_L_SA',),
+      _F(INTERSEC=('N_SCJB','N_M_L_SA',), NOM='N_ISA',),
+      _F(INTERSEC=('N_SCJB','N_M_L_AA',), NOM='N_IAA',),
+      _F(DIFFE=('N_M_L_AA','N_SCEG','N_SCGE',), NOM='N_ILAA',),
+   ),
+)
+
+MA=MODI_MAILLAGE(
+   reuse=MA,
+   MAILLAGE=MA,
+   ORIE_PEAU_3D=_F(GROUP_MA=('M_TUB','M_INT','SCBJ','SCJB','M_L_AA','M_L_SA',),),
+)
+
+# =====================================================================
+#                 MODELE ET MATERIAU
+# =====================================================================
+MO_ME=AFFE_MODELE(
+   MAILLAGE=MA,
+   AFFE=_F(TOUT='OUI',PHENOMENE='MECANIQUE',MODELISATION='3D',),
+)
+
+MAT=DEFI_MATERIAU(ELAS=_F(E=200000.0, NU=0.3,),)
+
+CHMTM=AFFE_MATERIAU(
+   MAILLAGE=MA,
+   MODELE=MO_ME,
+   AFFE=_F(TOUT='OUI', MATER=MAT,),
+)
+
+# =====================================================================
+#                 CONDITIONS AUX LIMITES
+# =====================================================================
+# Blocage suivant z du deplacement du dessous du goujon, M_GOU, et du joint,M_JOI.
+# Conditions de symetrie : blocage lateral (face laterale, N_ILAA, avec alesage).
+# Conditions de symetrie : blocage lateral (face laterale, M_L_SA, sans alesage).
+# Condition de planeite de la face de coupe du tube, M_TUB.
+# Serrage ecrou/goujon (N_SCEG/N_SCGE).
+# Pression sur M_INT.
+CL=AFFE_CHAR_MECA(
+   MODELE=MO_ME,
+   DDL_IMPO=(
+      _F(GROUP_MA=('M_GOU','M_JOI'), DZ=0.0,),
+      _F(GROUP_NO='N_ILAA', DY=0.0,),
+      ),
+   FACE_IMPO=_F(GROUP_MA='M_L_SA', DNOR=0.0,),
+   LIAISON_UNIF=_F(GROUP_MA=('M_TUB'), DDL='DZ',),
+   LIAISON_GROUP=(
+      _F(GROUP_NO_1='N_SCEG', GROUP_NO_2='N_SCGE',
+         DDL_1='DX', COEF_MULT_1= 1.0,
+         DDL_2='DX', COEF_MULT_2=-1.0, COEF_IMPO=0.0,),
+      _F(GROUP_NO_1='N_SCEG', GROUP_NO_2='N_SCGE',
+         DDL_1='DY', COEF_MULT_1=1.0,
+         DDL_2='DY', COEF_MULT_2=-1.0, COEF_IMPO=0.0,),
+   ),
+   PRES_REP=_F(GROUP_MA='M_INT', PRES=1.0,),
+)
+
+# =====================================================================
+#                 CONTACT JOINT/BRIDE
+# =====================================================================
+CON_BJ=DEFI_CONTACT(
+   MODELE=MO_ME,
+   FORMULATION='CONTINUE',
+   ZONE=_F(GROUP_MA_MAIT=('SCBJ',), GROUP_MA_ESCL=('SCJB',),
+           SANS_GROUP_NO=('N_ISA','N_IAA'),
+           CONTACT_INIT='INTERPENETRE',),
+)
+
+# =====================================================================
+#                 CHARGEMENT
+# =====================================================================
+DEPL_R__ = 0.008
+#
+F_PRET=DEFI_FONCTION(
+   NOM_PARA='INST',
+   VALE=( 0.0, 0.0,
+          1.0, -DEPL_R__,),
+   PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',
+)
+
+CHAR=AFFE_CHAR_MECA_F(
+   MODELE=MO_ME,
+   LIAISON_GROUP=_F(GROUP_NO_1='N_SCEG', GROUP_NO_2='N_SCGE',
+                    DDL_1='DZ', COEF_MULT_1=1.0,
+                    DDL_2='DZ', COEF_MULT_2=-1.0, COEF_IMPO=F_PRET,),
+)
+
+# =====================================================================
+#                 RESOLUTION
+# =====================================================================
+LR=DEFI_LIST_REEL(
+   DEBUT=0.0,
+   INTERVALLE=_F(JUSQU_A=1.0,  NOMBRE=1,),
+)
+
+RESU=STAT_NON_LINE(
+   MODELE=MO_ME,
+   CHAM_MATER=CHMTM,
+   CONTACT=CON_BJ,
+   EXCIT=(
+      _F(CHARGE=CL,),
+      _F(CHARGE=CHAR,),
+   ),
+   COMP_INCR=_F(RELATION='ELAS',),
+   INCREMENT=_F(LIST_INST=LR,),
+   NEWTON=_F(REAC_ITER=1,),
+)
+
+# =====================================================================
+#                 POST-TRAITEMENT
+# =====================================================================
+RESU=CALC_CHAMP(
+   reuse=RESU,
+   RESULTAT=RESU, FORCE='REAC_NODA',
+)
+
+REACF=POST_RELEVE_T(
+   ACTION=_F(INTITULE='FZ_CEG', OPERATION='EXTRACTION', RESULTAT=RESU,
+             NOM_CHAM='REAC_NODA', RESULTANTE='DZ', GROUP_NO='N_SCEG',),
+)
+
+IMPR_TABLE(TABLE=REACF)
+FIN()

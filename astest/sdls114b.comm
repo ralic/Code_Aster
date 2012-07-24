@@ -1,4 +1,4 @@
-# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES
 # sdls114b.para = tps_job 210 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -146,41 +146,31 @@ FF1=DEFI_FOND_FISS(MAILLAGE=M,
                                 #GROUP_NO_ORIG='PFINI',),
                    LEVRE_SUP=_F(GROUP_MA='LEV_SUP',),
                    LEVRE_INF=_F(GROUP_MA='LEV_INF',),
-                   );
+                   )
 
-
-FF2=DEFI_FISS_XFEM(MODELE=MO,
-                   DEFI_FISS=_F(
-                                GROUP_MA_FISS='LEV_SUP',
-                                GROUP_MA_FOND='FN_FS',
-                                ),
-                   ORIE_FOND=_F(PFON_INI=(-0.005, 0.0, 0.0),
-                                VECT_ORIE=(0.0, 1.0, 0.0),
-                                POINT_ORIG=(0.0, 0.0, 0.0),),
-                   INFO=1,
-                  );
 
 GLMO1=CALC_G(OPTION='K_G_MODA',
              RESULTAT=MODE,
              TOUT_MODE = 'OUI',
-             THETA=_F( FISSURE=FF2,
+             THETA=_F( FOND_FISS=FF1,
                        R_INF=9.E-5,
                        R_SUP=3.E-4,),
              LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
                         LISSAGE_G='LAGRANGE',),
-            );
+            )
 
-#IMPR_TABLE(TABLE = GLMO1);
+IMPR_TABLE(TABLE = GLMO1)
 
 
 T1_K = POST_K1_K2_K3(MODELISATION='3D',
-                           MATER=MA,
-                           FOND_FISS=FF1,
-                           RESULTAT=MODE,
-                           ABSC_CURV_MAXI=2.E-4,
-                           TOUT_ORDRE='OUI',
-                          );
+                     MATER=MA,
+                     FOND_FISS=FF1,
+                     RESULTAT=MODE,
+                     ABSC_CURV_MAXI=2.E-4,
+                     TOUT_ORDRE='OUI',
+                          )
 
+IMPR_TABLE(TABLE = T1_K)
 
 
 # TEST DE NON REGRESSION SUR LES 5 PREMIERS MODES
@@ -194,12 +184,12 @@ for i in range(0,5) :
               FILTRE=(_F(NOM_PARA = 'NUME_MODE',
                          VALE_I = imode),
                       _F(NOM_PARA = 'NUM_PT',
-                         VALE_I = 3),),
+                         VALE_I = 3),),  
               VALE=Kg_ref[i],
               PRECISION=1E-5,
               REFERENCE = 'NON_REGRESSION',
              );
-
+             
    TEST_TABLE(TABLE=T1_K,
               NOM_PARA='K1',
               FILTRE=(_F(NOM_PARA = 'ABSC_CURV',
@@ -246,8 +236,8 @@ RES_DYNA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
 KT2 = POST_K_TRANS(RESU_TRANS = RES_DYNA,
                   NUME_ORDRE = 2500,
                   K_MODAL = _F(TABL_K_MODA =GLMO1,
-                              FISSURE=FF2,),);
-
+                              FOND_FISS=FF1,),);
+                              
 IMPR_TABLE(TABLE=KT2,TRI=_F(NOM_PARA=('ABSC_CURV','INST'),ORDRE='CROISSANT'),)
 TEST_TABLE(TABLE=KT2,
            NOM_PARA='K1',
@@ -261,4 +251,4 @@ TEST_TABLE(TABLE=KT2,
           );
 
 
-FIN();
+FIN();         

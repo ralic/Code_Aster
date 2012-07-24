@@ -5,7 +5,7 @@
       IMPLICIT  NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C RESPONSABLE SELLENET N.SELLENET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -303,11 +303,11 @@ C         LE PROF_CHNO PRECEDENT :
           ORDINS = ORDINS + 1
         ENDIF
 
-        CALL RSEXCH(RESU,LINOCH(I),NUMORD,NOMCH,IRET)
+        CALL RSEXCH(' ',RESU,LINOCH(I),NUMORD,NOMCH,IRET)
         IF (IRET.EQ.100) THEN
         ELSE IF (IRET.EQ.110) THEN
           CALL RSAGSD(RESU,0)
-          CALL RSEXCH(RESU,LINOCH(I),NUMORD,NOMCH,IRET)
+          CALL RSEXCH(' ',RESU,LINOCH(I),NUMORD,NOMCH,IRET)
         ELSE
           VALK (1) = RESU
           VALK (2) = CHANOM

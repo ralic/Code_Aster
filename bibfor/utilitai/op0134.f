@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,12 +78,6 @@ C
 C
       ELSEIF (TYPCO(1:5).EQ.'NAPPE') THEN
          NBNOVA = 2
-         CALL JEVEUO ( NOMFIN//'.PROL', 'L', LPROL )
-         NOPARP = ZK24(LPROL+2)
-         NOPARF = ZK24(LPROL+6)
-C
-      ELSEIF (TYPCO(1:10).EQ.'PARA_SENSI') THEN
-         NBNOVA = 1
          CALL JEVEUO ( NOMFIN//'.PROL', 'L', LPROL )
          NOPARP = ZK24(LPROL+2)
          NOPARF = ZK24(LPROL+6)

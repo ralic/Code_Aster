@@ -1,9 +1,9 @@
       SUBROUTINE SPECEP(CASINT,NOMU,SPECTR,BASE,VITE,NUOR,IMODI,IMODF,
-     &                  NBM,NBPF,NPV)
+     &                  NBM,NBPF)
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,22 +32,21 @@ C       CASINT  = .FALSE. => CALCUL DES AUTOSPECTRES UNIQUEMENT
 C IN  : NOMU    : NOM UTILISATEUR
 C IN  : SPECTR  : NOM DU CONCEPT SPECTRE
 C IN  : BASE    : NOM DU CONCEPT MELASFLU
-C IN  : VITE    : VITESSES ETUDIEES, VECTEUR DE DIMENSION NPV
+C IN  : VITE    : VITESSE ETUDIEE
 C IN  : NUOR    : NUMEROS D'ORDRE DES MODES DU CONCEPT MELASFLU
 C IN  : IMODI   : INDICE DU PREMIER MODE PRIS EN COMPTE
 C IN  : IMODF   : INDICE DU DERNIER MODE PRIS EN COMPTE
 C IN  : NBM     : NOMBRE DE MODES DU CONCEPT MELASFLU
 C IN  : NBPF    : NOMBRE DE POINTS DE LA DISCRETISATION FREQUENTIELLE
-C IN  : NPV     : NOMBRE DE VITESSES ETUDIEES
 C
 C     ------------------------------------------------------------------
 C
       INCLUDE 'jeveux.h'
       LOGICAL      CASINT
-      INTEGER      IMODI,IMODF,NBM,NUOR(NBM),NBPF,NPV
+      INTEGER      IMODI,IMODF,NBM,NUOR(NBM),NBPF,IJ,NBVAL
       CHARACTER*8  NOMU
       CHARACTER*19 SPECTR,BASE
-      REAL*8       VITE(NPV)
+      REAL*8       VITE
 C
       INTEGER      IBID,DIM,IVAL(2)
       REAL*8       R8B,R8PREM,MODULE
@@ -58,7 +57,8 @@ C
       CHARACTER*16 CONFIG, NOPART(2)
       CHARACTER*19 TYPFLU,NOMFON
       CHARACTER*24 SPVAIN,SPVATE,SPVARE,SPNNOE
-      CHARACTER*24 REMF,FSIC,CHREFE,VALE,MLGNNO,MLGNMA
+      CHARACTER*24 CHVALE
+      CHARACTER*24 REMF,FSIC,CHREFE,MLGNNO,MLGNMA
 C
 C-----------------------------------------------------------------------
       INTEGER IAXE ,ICHREF ,IDEB ,IDEC ,IER ,IEX ,IEX1 
@@ -195,20 +195,8 @@ C
       DIM = 2*NBPF*DIM
       CALL WKVECT('&&SPECEP.TEMP.INTE','V V R',DIM,IINTE)
 C
-      DO 10 IV = 1,NPV
-C
 C --- 6.1.RECUPERATION DE LA DISCRETISATION FREQUENTIELLE
-C        (NBPF PREMIERES VALEURS DE L'OBJET .VALE DE LA PREMIERE
-C         FONCTION DE LA TABLE)
-C
-        WRITE(NOMFON,'(A8,A2,3I3.3)') NOMU,'.S',IV,NUOR(IMODI),
-     &                                NUOR(IMODI)
-        VALE = NOMFON//'.VALE'
-        CALL JEVEUO(VALE,'L',IVALE)
-C
-        DO 11 IL = 1,NBPF
-          ZR(LWR+IL-1) = ZR(IVALE+IL-1)
-  11    CONTINUE
+        CALL JEVEUO(NOMU//'.FREQ','L',LWR)
 C
 C --- 6.2.INTERPOLATION DES INTERSPECTRES A PROJETER
 C
@@ -238,7 +226,7 @@ C
 C
         ELSE IF (CONFIG(1:7).EQ.'ASC_CEN') THEN
 C
-          UABS = DBLE(ABS(VITE(IV)))
+          UABS = DBLE(ABS(VITE))
 C
           DO 30 IEX2 = 1,NBEXCP
             SREF  = COEFAC(4*(IEX2-1)+1)
@@ -261,7 +249,7 @@ C
 C
         ELSE IF (CONFIG(1:7).EQ.'ASC_EXC') THEN
 C
-          UABS = DBLE(ABS(VITE(IV)))
+          UABS = DBLE(ABS(VITE))
 C
           DO 40 IEX2 = 1,NBEXCP
             SREF  = COEFAE(4*(IEX2-1)+1)
@@ -284,7 +272,7 @@ C
 C
         ELSE IF (CONFIG(1:7).EQ.'DES_CEN') THEN
 C
-          UABS = DBLE(ABS(VITE(IV)))
+          UABS = DBLE(ABS(VITE))
 C
           DO 50 IEX2 = 1,NBEXCP
             S0   = COEFDC(3*(IEX2-1)+1)
@@ -305,7 +293,7 @@ C
 C
         ELSE IF (CONFIG(1:7).EQ.'DES_EXC') THEN
 C
-          UABS = DBLE(ABS(VITE(IV)))
+          UABS = DBLE(ABS(VITE))
 C
           DO 60 IEX2 = 1,NBEXCP
             S0   = COEFDE(3*(IEX2-1)+1)
@@ -328,14 +316,15 @@ C
 C
 C --- 6.3.PROJECTION DES INTERSPECTRES
 C
+        IJ = 0
+        CHVALE = NOMU//'.VALE'
         DO 70 IM2 = IMODI,IMODF
           IDEB = IM2
           IF (CASINT) IDEB = IMODI
           DO 71 IM1 = IDEB,IM2
-            WRITE (NOMFON,'(A8,A2,3I3.3)') NOMU,'.S',IV,NUOR(IM1),
-     &                                     NUOR(IM2)
-            VALE = NOMFON(1:19)//'.VALE'
-            CALL JEVEUO(VALE,'E',IVALE)
+            IJ = IJ + 1
+            CALL JEVEUO(JEXNUM(CHVALE,IJ),'E',IVALE)
+            CALL JELIRA(JEXNUM(CHVALE,IJ),'LONMAX',NBVAL,K8B)
 C
             IM2B = IM2 - IMODI + 1
             IM1B = IM1 - IMODI + 1
@@ -349,8 +338,13 @@ C
                   SCAL22 = ZR(ISCAL+NBEXCP*(IM2B-1)+IEX2-1)
                   IEX = IEX2*(IEX2+1)/2
                   IDEC = 2*NBPF*(IEX-1)+2*(IL-1)
-                  ZR(IVALE+NBPF+2*(IL-1)) = ZR(IVALE+NBPF+2*(IL-1))
-     &                                  + SCAL12*SCAL22 * ZR(IINTE+IDEC)
+                  IF (NBVAL .EQ. NBPF) THEN
+                    ZR(IVALE+IL-1) = ZR(IVALE+IL-1)
+     &                            + SCAL12*SCAL22 * ZR(IINTE+IDEC)
+                  ELSE
+                    ZR(IVALE+2*(IL-1)) = ZR(IVALE+2*(IL-1))
+     &                            + SCAL12*SCAL22 * ZR(IINTE+IDEC)
+                  ENDIF
   81            CONTINUE
 C
                 IF (NBEXCP.GT.1) THEN
@@ -362,12 +356,18 @@ C
                       SCAL21 = ZR(ISCAL+NBEXCP*(IM2B-1)+IEX1-1)
                       IEX = IEX2*(IEX2-1)/2 + IEX1
                       IDEC = 2*NBPF*(IEX-1)+2*(IL-1)
-                      ZR(IVALE+NBPF+2*(IL-1))
-     &                  = ZR(IVALE+NBPF+2*(IL-1)) + ( SCAL11*SCAL22
-     &                  + SCAL12*SCAL21 ) * ZR(IINTE+IDEC)
-                      ZR(IVALE+NBPF+2*(IL-1)+1)
-     &                  = ZR(IVALE+NBPF+2*(IL-1)+1) + ( SCAL11*SCAL22
-     &                  - SCAL12*SCAL21 ) * ZR(IINTE+IDEC+1)
+                      IF (NBVAL .EQ. NBPF) THEN
+                        ZR(IVALE+IL-1)
+     &                    = ZR(IVALE+IL-1) + ( SCAL11*SCAL22
+     &                    + SCAL12*SCAL21 ) * ZR(IINTE+IDEC)
+                      ELSE
+                        ZR(IVALE+2*(IL-1))
+     &                    = ZR(IVALE+2*(IL-1)) + ( SCAL11*SCAL22
+     &                    + SCAL12*SCAL21 ) * ZR(IINTE+IDEC)
+                        ZR(IVALE+2*(IL-1)+1)
+     &                    = ZR(IVALE+2*(IL-1)+1) + ( SCAL11*SCAL22
+     &                    - SCAL12*SCAL21 ) * ZR(IINTE+IDEC+1)
+                      ENDIF
   83                CONTINUE
   82              CONTINUE
                 ENDIF
@@ -384,16 +384,19 @@ C
                   SCAL22 = ZR(ISCAL+NBEXCP*(IM2B-1)+IEX2-1)
                   IEX = IEX2*(IEX2+1)/2
                   IDEC = 2*NBPF*(IEX-1)+2*(IL-1)
-                  ZR(IVALE+NBPF+2*(IL-1)) = ZR(IVALE+NBPF+2*(IL-1))
+                  IF (NBVAL .EQ. NBPF) THEN
+                    ZR(IVALE+IL-1) = ZR(IVALE+IL-1)
      &                         + COEDIM * SCAL12*SCAL22 * ZR(IINTE+IDEC)
+                  ELSE
+                    ZR(IVALE+2*(IL-1)) = ZR(IVALE+2*(IL-1))
+     &                         + COEDIM * SCAL12*SCAL22 * ZR(IINTE+IDEC)
+                  ENDIF
   91            CONTINUE
   90          CONTINUE
 C
             ENDIF
   71      CONTINUE
   70    CONTINUE
-C
-  10  CONTINUE
 C
       CALL JEDETR('&&SPECEP.TEMP.MAIL')
       CALL JEDETR('&&SPECEP.TEMP.SCAL')

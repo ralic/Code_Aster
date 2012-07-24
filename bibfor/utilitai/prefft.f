@@ -8,7 +8,7 @@
       CHARACTER*19  RESIN,VECTOT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,7 +84,7 @@ C
       FONOUT = '&&PREFFT.FCTFFT'
 C
       IF (TYPRES .NE. 'TRAN_GENE') THEN
-         CALL RSEXCH(RESIN,GRANDE,1,CHDEP,IRET)
+         CALL RSEXCH('F',RESIN,GRANDE,1,CHDEP,IRET)
          CALL JEVEUO(CHDEP//'.VALE','L',LVAL)
 C  Nombre d'equations : NEQ
          CHDEP2 = CHDEP(1:19)//'.VALE'
@@ -105,7 +105,7 @@ C         NBORDR = NBORDR -1
 C
          IF (TYPRES .NE. 'TRAN_GENE') THEN
             DO 5 IORDR = 0 , NBORDR-1
-               CALL RSEXCH(RESIN,GRANDE,IORDR,CHAM19,IRET)
+               CALL RSEXCH('F',RESIN,GRANDE,IORDR,CHAM19,IRET)
                CALL RSADPA(RESIN,'L',1,'INST',IORDR,0,LACCE,K8B)
                CALL JEVEUO(CHAM19//'.VALE','L',LVALE)
                ZR(LVAR+IORDR) = ZR(LACCE)
@@ -145,7 +145,7 @@ C         ENDIF
             DO 10 IDDL = 2 , NEQ
                II = 0
                DO 20 IORDR = 0 , NBORDR-1
-                  CALL RSEXCH(RESIN,GRANDE,IORDR,CHAM19,IRET)
+                  CALL RSEXCH('F',RESIN,GRANDE,IORDR,CHAM19,IRET)
                   CALL RSADPA(RESIN,'L',1,'INST',IORDR,0,LACCE,K8B)
                   CALL JEVEUO(CHAM19//'.VALE','L',LVALE)
                   ZR(LFON+II) = ZR(LVALE+IDDL-1)
@@ -198,7 +198,7 @@ C
 C  Sens inverse
       ELSEIF ( NSENS.EQ.-1 ) THEN
          DO 50 IORDR = 1 , NBORDR
-            CALL RSEXCH(RESIN,GRANDE,IORDR,CHAM19,IRET)
+            CALL RSEXCH('F',RESIN,GRANDE,IORDR,CHAM19,IRET)
             CALL RSADPA(RESIN,'L',1,'FREQ',IORDR,0,LACCE,K8B)
             CALL JEVEUO(CHAM19//'.VALE','L',LVALE)
             ZR(LVAR+IORDR-1) = ZR(LACCE)
@@ -234,7 +234,7 @@ C         ENDIF
          DO 100 IDDL = 2 , NEQ
             II = 0
             DO 70 IORDR = 1 , NBORDR
-               CALL RSEXCH(RESIN,GRANDE,IORDR,CHAM19,IRET)
+               CALL RSEXCH('F',RESIN,GRANDE,IORDR,CHAM19,IRET)
                CALL RSADPA(RESIN,'L',1,'FREQ',IORDR,0,LACCE,K8B)
                CALL JEVEUO(CHAM19//'.VALE','L',LVALE)
                ZR(LFON+II) = DBLE(ZC(LVALE+IDDL-1))

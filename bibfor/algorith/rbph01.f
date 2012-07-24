@@ -8,9 +8,9 @@
       LOGICAL             TOUSNO, MULTAP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/09/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -78,7 +78,7 @@ C
             TYPREF(3) = ' '
             TYPREF(4) = ' '
          ELSE
-            CALL RSEXCH ( BASEMO, 'DEPL', 1, NOMCHA, IRET )
+            CALL RSEXCH(' ',BASEMO, 'DEPL', 1, NOMCHA, IRET )
             TYPREF(1) = NOMCHA
             TYPREF(2) = NOMCHA
             TYPREF(3) = NOMCHA
@@ -107,7 +107,7 @@ C
             IF ( MODE .EQ. BLANC ) THEN
                TYPREF(I) = ' '
             ELSE
-               CALL RSEXCH ( BASEMO, TYPE(I), 1, NOMCHA, IRET )
+               CALL RSEXCH(' ',BASEMO, TYPE(I), 1, NOMCHA, IRET )
                TYPREF(I) = NOMCHA
             ENDIF
             TYPBAS(I) = 'DEPL'
@@ -123,7 +123,7 @@ C
             IF ( MODE .EQ. BLANC ) THEN
                TYPREF(I) = ' '
             ELSE
-               CALL RSEXCH ( BASEMO, 'DEPL', 1, NOMCHA, IRET )
+               CALL RSEXCH(' ',BASEMO, 'DEPL', 1, NOMCHA, IRET )
                TYPREF(I) = NOMCHA
             ENDIF
             TYPBAS(I) = 'DEPL'
@@ -139,7 +139,7 @@ C
             IF ( MODE .EQ. BLANC ) THEN
                TYPREF(I) = ' '
             ELSE
-               CALL RSEXCH ( BASEMO, 'DEPL', 1, NOMCHA, IRET )
+               CALL RSEXCH(' ',BASEMO, 'DEPL', 1, NOMCHA, IRET )
                TYPREF(I) = NOMCHA
             ENDIF
             TYPBAS(I) = 'DEPL'
@@ -155,7 +155,7 @@ C
             IF ( MODE .EQ. BLANC ) THEN
                TYPREF(I) = ' '
             ELSE
-               CALL RSEXCH ( BASEMO, 'DEPL', 1, NOMCHA, IRET )
+               CALL RSEXCH(' ',BASEMO, 'DEPL', 1, NOMCHA, IRET )
                TYPREF(I) = NOMCHA
             ENDIF
             TYPBAS(I) = 'DEPL'
@@ -175,12 +175,7 @@ C
             IF ( MODE .EQ. BLANC ) THEN
              CALL U2MESS('F','ALGORITH10_15')
             ELSE
-               CALL RSEXCH ( BASEMO, TYPE(I), 1, NOMCHA, IRET )
-               IF ( IRET .NE. 0 ) THEN
-                 VALK(1) = TYPE(I)
-                 VALK(2) = MODE
-                 CALL U2MESK('F','ALGORITH10_16', 2 ,VALK)
-               ENDIF
+               CALL RSEXCH('F',BASEMO, TYPE(I), 1, NOMCHA, IRET )
                TYPREF(I) = NOMCHA
             ENDIF
             TYPBAS(I) = TYPE(I)
@@ -202,12 +197,7 @@ C
             IF ( MODE .EQ. BLANC ) THEN
              CALL U2MESS('F','ALGORITH10_15')
             ELSE
-               CALL RSEXCH ( BASEMO, TYPE(I), 1, NOMCHA, IRET )
-               IF ( IRET .NE. 0 ) THEN
-                 VALK(1) = TYPE(I)
-                 VALK(2) = MODE
-                 CALL U2MESK('F','ALGORITH10_16', 2 ,VALK)
-               ENDIF
+               CALL RSEXCH('F',BASEMO, TYPE(I), 1, NOMCHA, IRET )
                TYPREF(I) = NOMCHA
             ENDIF
             TYPBAS(I) = TYPE(I)

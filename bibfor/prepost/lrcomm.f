@@ -6,7 +6,7 @@
       CHARACTER*16 TYPRES
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -98,7 +98,7 @@ C
           IF (COMPOR.NE.BLAN24) THEN
             DO 30 I=1,NBORDR
               IORDR=ZI(LORDR+I-1)
-              CALL RSEXCH(RESU,'COMPORTEMENT',IORDR,CHAMP,IRET)
+              CALL RSEXCH(' ',RESU,'COMPORTEMENT',IORDR,CHAMP,IRET)
               IF (IRET.LE.100) THEN
                 CALL COPISD('CHAMP_GD','G',COMPOR(1:19),CHAMP(1:19))
                 CALL RSNOCH(RESU,'COMPORTEMENT',IORDR)

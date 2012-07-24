@@ -1,7 +1,7 @@
       SUBROUTINE W155MX(NOMRES,RESU,NBORDR,LIORDR)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,7 +71,7 @@ C     --------------------------------------------------
         MODEAV=' '
         DO 10,I=1,NBORDR
           NUORDR=LIORDR(I)
-          CALL RSEXCH(RESU19,NOMSYM,NUORDR,CHIN,IRET)
+          CALL RSEXCH(' ',RESU19,NOMSYM,NUORDR,CHIN,IRET)
           IF (IRET.EQ.0) THEN
 
 C         -- 3.1 : MODELE, CARELE, LIGREL :
@@ -93,7 +93,7 @@ C         -- 3.1 : MODELE, CARELE, LIGREL :
               CALL ASSERT(.FALSE.)
             ENDIF
 
-            CALL RSEXCH(NOMRES,NOMSY2,NUORDR,CHEXTR,IRET)
+            CALL RSEXCH(' ',NOMRES,NOMSY2,NUORDR,CHEXTR,IRET)
             CALL ASSERT(IRET.EQ.100)
             CALL ALCHML(LIGREL,'MINMAX_SP',NOMPAR,'G',CHEXTR,IRET,' ')
             CALL ASSERT(IRET.EQ.0)

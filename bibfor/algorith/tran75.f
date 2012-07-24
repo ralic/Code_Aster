@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,15 +54,15 @@ C ----------------------------------------------------------------------
       INTEGER      IARG
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER IADESC ,IADRIF ,IARCHI ,IAREFE ,IBID ,ICH ,ID 
-      INTEGER IDBASE ,IDEC ,IDEFM ,IDINSG ,IDRESU ,IDVECG ,IE 
-      INTEGER IER ,INOCMP ,INOECP ,INUDDL ,INUMNO ,IPSDEL ,IRET 
-      INTEGER IRETOU ,J2REFE ,J3REFE ,JC ,JDDL ,JINST ,JNOACC 
-      INTEGER JNODEP ,JNOVIT ,JNUME ,JPSDEL ,JVEC ,LINST ,LLCHA 
-      INTEGER LPSDEL ,LREFE ,LVAL2 ,LVALE ,N1 ,N2 ,N3 
-      INTEGER N4 ,NBCHAM ,NBD ,NBDIR ,NBEXCI ,NBINSG ,NBINST 
-      INTEGER NBMODE ,NBNOEU ,NCMP ,NEQ ,NFONCT 
-      REAL*8 R8PREM 
+      INTEGER IADESC ,IADRIF ,IARCHI ,IAREFE ,IBID ,ICH ,ID
+      INTEGER IDBASE ,IDEC ,IDEFM ,IDINSG ,IDRESU ,IDVECG ,IE
+      INTEGER IER ,INOCMP ,INOECP ,INUDDL ,INUMNO ,IPSDEL ,IRET
+      INTEGER IRETOU ,J2REFE ,J3REFE ,JC ,JDDL ,JINST ,JNOACC
+      INTEGER JNODEP ,JNOVIT ,JNUME ,JPSDEL ,JVEC ,LINST ,LLCHA
+      INTEGER LPSDEL ,LREFE ,LVAL2 ,LVALE ,N1 ,N2 ,N3
+      INTEGER N4 ,NBCHAM ,NBD ,NBDIR ,NBEXCI ,NBINSG ,NBINST
+      INTEGER NBMODE ,NBNOEU ,NCMP ,NEQ ,NFONCT
+      REAL*8 R8PREM
 C-----------------------------------------------------------------------
       DATA BLANC    /'        '/
       DATA CHAMN2   /'&&TRAN75.CHAMN2'/
@@ -166,7 +166,7 @@ C
       ELSE
 C         --- BASE MODALE CALCULEE PAR SOUS-STRUCTURATION
 C
-         CALL RSEXCH ( BASEMO, 'DEPL', 1, CHMOD, IRET )
+         CALL RSEXCH('F',BASEMO, 'DEPL', 1, CHMOD, IRET )
          CHMOD = CHMOD(1:19)//'.REFE'
          CALL DISMOI('F','NOM_GD',CHMOD,'CHAM_NO',IBID,NOMGD,IE)
          CALL DISMOI('F','PROF_CHNO',CHMOD,'CHAM_NO',IBID,PRCHNO,IE)
@@ -294,7 +294,7 @@ C
 C            --- RECUPERATION DES DEFORMEES MODALES ---
 C
           TYPCHA = TYPBAS(ICH)
-          CALL RSEXCH(BASEMO,TYPCHA,1,NOMCHA,IRET)
+          CALL RSEXCH('F',BASEMO,TYPCHA,1,NOMCHA,IRET)
           NOMCHA = NOMCHA(1:19)//'.VALE'
           CALL JEEXIN(NOMCHA,IBID)
           IF (IBID.GT.0) THEN
@@ -315,13 +315,7 @@ C
             ENDIF
           ELSE
             DO 110 J = 1,NBMODE
-               CALL RSEXCH ( BASEMO, TYPCHA, J, NOMCHA, IRET )
-               IF ( IRET .NE. 0 ) THEN
-                  VALK (1) = TYPCHA
-                  VALK (2) = BASEMO
-                  VALI = J
-      CALL U2MESG('F', 'ALGORITH12_66',2,VALK,1,VALI,0,0.D0)
-               ENDIF
+               CALL RSEXCH('F',BASEMO, TYPCHA, J, NOMCHA, IRET )
                CALL JEEXIN ( NOMCHA(1:19)//'.VALE', IBID )
                IF (IBID.GT.0) THEN
                   NOMCHA(20:24)='.VALE'
@@ -350,7 +344,7 @@ C
           PREMS=.TRUE.
           DO 200 I = 0,NBINST-1
              IARCHI = IARCHI + 1
-             CALL RSEXCH(NOMRES,TYPE(ICH),IARCHI,CHAMNO,IRET)
+             CALL RSEXCH(' ',NOMRES,TYPE(ICH),IARCHI,CHAMNO,IRET)
              IF ( IRET .EQ. 0 ) THEN
              CALL U2MESK('A','ALGORITH2_64',1,CHAMNO)
              ELSEIF ( IRET .EQ. 100 ) THEN

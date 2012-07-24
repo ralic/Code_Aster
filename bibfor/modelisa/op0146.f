@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,34 +26,30 @@ C     MODALE PERTURBEE PAR PRISE EN COMPTE DU COUPLAGE FLUIDE STRUCTURE
 C-----------------------------------------------------------------------
 C
       INCLUDE 'jeveux.h'
+      INTEGER LVMOY ,N1 ,N2 ,NB ,NBM
+      INTEGER       DIM,IJ,NBABS
 C-----------------------------------------------------------------------
       INTEGER IBID ,IDEB ,IDISC ,IFREQ ,IK ,IM1 ,IM2 
       INTEGER INUMO ,IPF ,IPV ,IS ,ISPECT ,IV ,IVALI 
       INTEGER IVATE ,IVITE ,IZ ,JS ,JVAVF ,LBAREF ,LFSVI 
-      INTEGER LFSVK ,LINDS ,LNOE ,LNOZO ,LPASF ,LPROL ,LSPEC 
-      INTEGER LVALE ,LVMOY ,N1 ,N2 ,NB ,NBM ,NBPAR 
+      INTEGER LFSVK ,LINDS ,LNOE ,LNOZO ,LPASF ,LSPEC 
       INTEGER NBPF ,NBSPEC ,NFF ,NFI ,NMODF ,NMODI ,NPOI 
       INTEGER NPV ,NSPELO ,NUZO ,NZEX 
       REAL*8 AIRE ,ALONTO ,FREQF ,FREQI ,PAS ,PUI ,PUI2 
-      REAL*8 PUI2D ,PUI3D ,VMOY ,VMOYTO ,X1 ,X2 
+      REAL*8 PUI2D ,PUI3D ,VMOY ,VMOYTO ,X1 ,X2 ,EPSI
 C-----------------------------------------------------------------------
-      PARAMETER   ( NBPAR = 8 , NB = 1024 )
-      INTEGER       DIM, IVAL(3)
-      REAL*8        R8B
-      COMPLEX*16    C16B
+      PARAMETER   ( NB = 1024 )
+      INTEGER       I3,IVITEF,LFREQ,LNUMI,LNUMJ,LREFE
+      REAL*8        VAL,VITEF
       LOGICAL       CASINT
-      CHARACTER*8   K8B, NOMU, OPTION, NOMZON, NOMPRO, TYPAR(NBPAR)
-      CHARACTER*16  CONCEP, CMD, NOPAR(NBPAR), KVAL(2)
-      CHARACTER*19  BASE, NOMFON, SPECTR, TYPFLU
-      CHARACTER*24  VALI, VITE, FREQ, NUMO, PROL, VALE
+      CHARACTER*8   K8B, NOMU, OPTION, NOMZON, NOMPRO
+      CHARACTER*16  CONCEP, CMD
+      CHARACTER*19  BASE, SPECTR, TYPFLU
+      CHARACTER*24  VALI, VITE, FREQ, NUMO
       CHARACTER*24  FSVI, FSVK, BASREF, PVITE
       CHARACTER*24 VALK(3)
-      INTEGER      IARG
-C
-      DATA NOPAR / 'NOM_CHAM' , 'OPTION' , 'DIMENSION' ,
-     &             'NUME_VITE_FLUI' , 'VITE_FLUIDE' ,
-     &             'NUME_ORDRE_I' , 'NUME_ORDRE_J' , 'FONCTION_C' /
-      DATA TYPAR / 'K16' , 'K16' , 'I' , 'I' , 'R' , 'I' , 'I' , 'K24' /
+      CHARACTER*24  CHNUMI,CHNUMJ,CHFREQ,CHVALE
+      INTEGER      IARG,MXVAL
 C
 C-----------------------------------------------------------------------
       CALL JEMARQ()
@@ -126,6 +122,16 @@ C
 C --- 2.0 TRAITEMENT SPECIAL POUR SPEC-LONG-COR-5
 C
       CALL JEVEUO(ZK8(LSPEC)//'           .VATE','L',IVATE)
+      CALL WKVECT(NOMU//'.REFE','G V K16',2,LREFE)
+      IF (ZK16(IVATE).EQ.'SPEC_CORR_CONV_3') THEN
+        ZK16(LREFE) = 'DEPL'
+        ZK16(LREFE+1) = 'TOUT'
+      ELSE
+        CALL GETVTX(' ','OPTION',0,IARG,1,OPTION,ZI)
+        ZK16(LREFE) = 'SPEC_GENE'
+        ZK16(LREFE+1) = OPTION
+      ENDIF
+
       IF (ZK16(IVATE)(1:14).EQ.'SPEC_CORR_CONV') THEN
         CALL SFIFJ ( NOMU )
       ELSE
@@ -140,6 +146,17 @@ C
 C
         CALL JEVEUO ( VITE, 'L', IVITE )
         CALL JELIRA ( VITE, 'LONUTI', NPV, K8B )
+        CALL GETVR8(' ','VITE_FLUI',0,IARG,1,VITEF,ZI)
+        CALL GETVR8(' ','PRECISION',0,IARG,1,EPSI,ZI)
+C
+        IVITEF = 1
+        DO 300 I3 = 1,NPV
+          VAL = ZR(IVITE-1+I3)-VITEF
+          IF (ABS(VAL) .LT. EPSI) THEN
+            IVITEF = I3
+          ENDIF
+300     CONTINUE
+
         CALL JEVEUO ( FREQ, 'L', IFREQ )
         CALL JELIRA ( FREQ, 'LONUTI', NBM, K8B )
         CALL JEVEUO ( NUMO, 'L', INUMO )
@@ -178,7 +195,7 @@ C
          LNOE = LNOE / 2
 C
          DO 40 IS = 1,NBSPEC
-            NOMZON = ZK16(LNOZO+IS-1)
+            NOMZON = ZK16(LNOZO+IS-1)(1:8)
             DO 30 IZ = 1,NZEX
                IF(NOMZON.EQ.ZK8(LFSVK+3+IZ)) GOTO 31
   30        CONTINUE
@@ -200,8 +217,8 @@ C
             IF(ZK8(LSPEC+IS-1).EQ.ZK8(LSPEC+JS-1)) THEN
                CALL U2MESS('F','MODELISA5_76')
             ENDIF
-            NOMPRO = ZK16(LNOZO+IS-1)
-            NOMZON = ZK16(LNOZO+JS-1)
+            NOMPRO = ZK16(LNOZO+IS-1)(1:8)
+            NOMZON = ZK16(LNOZO+JS-1)(1:8)
             IF(NOMPRO.EQ.NOMZON) THEN
                 VALK(1) = ZK8(LSPEC+IS-1)
                 VALK(2) = ZK8(LSPEC+JS-1)
@@ -257,7 +274,7 @@ C ---   FIN DE BOUCLE SUR LES ZONES D EXCITATION DU FLUIDE
 C
         VMOYTO = VMOYTO / ALONTO
 C
-          ENDIF
+      ENDIF
 C
 C --- 3.RECUPERATION DE L'OPTION DE CALCUL
 C
@@ -280,12 +297,6 @@ C
 C --- 5.CREATION DE LA TABLE D'INTERSPECTRES ---
 C
 C
-      CALL TBCRSD ( NOMU, 'G' )
-      CALL TBAJPA ( NOMU, NBPAR, NOPAR, TYPAR )
-C
-      KVAL(1) = 'SPEC_GENE'
-      KVAL(2) = OPTION
-      CALL TBAJLI ( NOMU, 3, NOPAR, DIM, R8B, C16B, KVAL, 0 )
 C
 C
 C --- CREATION D'UN VECTEUR DE TRAVAIL POUR STOCKER LA DISCRETISATION
@@ -305,51 +316,51 @@ C
 C
 C --- CREATION DE CHAQUE INTERSPECTRE
 C
-      DO 230 IV = 1 , NPV
-C
-        IVAL(1) = IV
-C
+      MXVAL = DIM*(DIM+1)/2
+      CHNUMI = NOMU//'.NUMI'
+      CALL WKVECT(CHNUMI,'G V I',MXVAL,LNUMI)
+      CHNUMJ = NOMU//'.NUMJ'
+      CALL WKVECT(CHNUMJ,'G V I',MXVAL,LNUMJ)
+      CHVALE = NOMU//'.VALE'
+      CALL JECREC(CHVALE,'G V R','NU','DISPERSE','VARIABLE',MXVAL)
+      CHFREQ = NOMU//'.FREQ'
+      CALL WKVECT(CHFREQ,'G V R',NBPF,LFREQ)
+
+      
+        IV = IVITEF
+
         IF (NPOI.EQ.0) THEN
           CALL PASFRE(ZR(IDISC),ZR(IFREQ),ZR(LPASF),DIM,NBM,IV,NMODI,
      &                FREQI,FREQF,NB)
         ENDIF
 C
-        DO 220 IM2 = NMODI,NMODF
+        DO 200 IPF = 1,NBPF
+          ZR(LFREQ-1+IPF) = ZR(LPASF-1+IPF)
+ 200    CONTINUE
 C
-          IVAL(3) = ZI(INUMO+IM2-1)
+        IJ = 0
+        DO 220 IM2 = NMODI,NMODF
 C
           IDEB = IM2
           IF ( CASINT ) IDEB = NMODI
 C
           DO 210 IM1 = IDEB,IM2
+            IJ = IJ + 1
 C
-            IVAL(2) = ZI(INUMO+IM1-1)
+            ZI(LNUMJ-1+IJ) = ZI(INUMO+IM1-1)
+            ZI(LNUMI-1+IJ) = ZI(INUMO+IM2-1)
 
-            WRITE (NOMFON,'(A8,A2,3I3.3)') NOMU,'.S',IV,ZI(INUMO+IM1-1),
-     &                                     ZI(INUMO+IM2-1)
-C
-            CALL TBAJLI ( NOMU, 5, NOPAR(4),
-     &                          IVAL, ZR(IVITE+IV-1), C16B, NOMFON, 0 )
-C
-            VALE = NOMFON(1:19)//'.VALE'
-            PROL = NOMFON(1:19)//'.PROL'
-            CALL WKVECT(VALE,'G V R ',3*NBPF,LVALE)
-            CALL WKVECT(PROL,'G V K24',6,LPROL)
-C
-            ZK24(LPROL  ) = 'FONCT_C '
-            ZK24(LPROL+1) = 'LIN LIN '
-            ZK24(LPROL+2) = 'FREQ    '
-            ZK24(LPROL+3) = 'DSP     '
-            ZK24(LPROL+4) = 'LL      '
-            ZK24(LPROL+5) = NOMFON
-C
-            DO 200 IPF = 1,NBPF
-              ZR(LVALE+IPF-1) = ZR(LPASF+IPF-1)
- 200        CONTINUE
+            CALL JECROC(JEXNUM(CHVALE,IJ))
+            IF (ZI(LNUMI-1+IJ) .EQ. ZI(LNUMJ-1+IJ)) THEN
+              NBABS = NBPF
+            ELSE
+              NBABS = 2*NBPF
+            ENDIF
+            CALL JEECRA(JEXNUM(CHVALE,IJ),'LONMAX',NBABS,' ')
+            CALL JEECRA(JEXNUM(CHVALE,IJ),'LONUTI',NBABS,' ')
 C
  210      CONTINUE
  220    CONTINUE
- 230  CONTINUE
 C
 C
 C --- 6.CALCUL DES INTERSPECTRES D'EXCITATIONS MODALES
@@ -359,20 +370,20 @@ C
         ISPECT = ZI(LINDS+IS-1)
         SPECTR = ZK8(LSPEC+IS-1)
         IF (ISPECT.LT.10) THEN
-          NOMZON = ZK16(LNOZO+IS-1)
-          CALL SPECT1(CASINT,NOMU,SPECTR,ISPECT,BASE,ZR(IVITE),
-     &                ZI(INUMO),NMODI,NMODF,NBM,NBPF,NPV,
+          NOMZON = ZK16(LNOZO+IS-1)(1:8)
+          CALL SPECT1(CASINT,NOMU,SPECTR,ISPECT,BASE,VITEF,
+     &                ZI(INUMO),NMODI,NMODF,NBM,NBPF,
      &                NOMZON,ZR(LVMOY+IS-1),VMOYTO)
         ELSE IF (ISPECT.EQ.11) THEN
           CALL SPECFF(CASINT,NOMU,SPECTR,BASE,ZI(INUMO),NMODI,NMODF,
-     &                NBM,NBPF,NPV)
+     &                NBM,NBPF)
         ELSE
-          CALL SPECEP(CASINT,NOMU,SPECTR,BASE,ZR(IVITE),ZI(INUMO),
-     &                NMODI,NMODF,NBM,NBPF,NPV)
+          CALL SPECEP(CASINT,NOMU,SPECTR,BASE,VITEF,ZI(INUMO),
+     &                NMODI,NMODF,NBM,NBPF)
         ENDIF
  240  CONTINUE
 C FINSI ALTERNATIVE SPEC-LONG-COR-5
-        ENDIF
+      ENDIF
 C
       CALL TITRE
 C

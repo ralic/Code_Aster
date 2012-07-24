@@ -11,7 +11,7 @@
       CHARACTER*24       NOMCHA
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,8 +50,8 @@ C
       REAL*8  PREC2
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IRE ,ITRESU 
-      REAL*8 TEMPS 
+      INTEGER I ,IRE ,ITRESU
+      REAL*8 TEMPS
 C-----------------------------------------------------------------------
       IER = 0
 C
@@ -60,14 +60,14 @@ C
       PREC2 = PREC
       IF ( CRIT(1:7).EQ.'RELATIF') PREC2 = PREC * TI(1)
       IF ( ABS( TEMPS - TI(1) ).LE.PREC2 ) THEN
-         CALL RSEXCH(NOMIN,TYPE,1,NOMCHA,IRE)
+         CALL RSEXCH('F',NOMIN,TYPE,1,NOMCHA,IRE)
          CALL JEVEUO(NOMCHA(1:19)//'.VALE','L',ITRESU)
          CALL ZCOPY(NEQ,ZC(ITRESU),1,ZTRACT,1)
          GOTO 9999
       ENDIF
       IF ( CRIT(1:7).EQ.'RELATIF') PREC2 = PREC * TI(NBINST)
       IF ( ABS( TEMPS - TI(NBINST) ).LE.PREC2 ) THEN
-         CALL RSEXCH(NOMIN,TYPE,NBINST,NOMCHA,IRE)
+         CALL RSEXCH('F',NOMIN,TYPE,NBINST,NOMCHA,IRE)
          CALL JEVEUO(NOMCHA(1:19)//'.VALE','L',ITRESU)
          CALL ZCOPY(NEQ,ZC(ITRESU),1,ZTRACT,1)
          GOTO 9999
@@ -90,7 +90,7 @@ C SI
          DO 20 I = 2, NBINST-1
             IF ( CRIT(1:7).EQ.'RELATIF') PREC2 = PREC * TI(I)
             IF ( ABS( TEMPS - TI(I) ).LE.PREC2 ) THEN
-                CALL RSEXCH(NOMIN,TYPE,I,NOMCHA,IRE)
+                CALL RSEXCH('F',NOMIN,TYPE,I,NOMCHA,IRE)
                 CALL JEVEUO(NOMCHA(1:19)//'.VALE','L',ITRESU)
                 CALL ZCOPY(NEQ,ZC(ITRESU),1,ZTRACT,1)
                 GOTO 9999

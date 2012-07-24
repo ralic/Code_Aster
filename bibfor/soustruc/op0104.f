@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SOUSTRUC  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,9 +32,7 @@ C
       CHARACTER*24  GRPMAI, GRPNOE, GRPMAV, GRPNOV
       INTEGER      IARG
 C     ------------------------------------------------------------------
-C
       CALL JEMARQ ( )
-C
       CALL INFMAJ()
 C
       CALL GETRES ( MA2, TYPCON, NOMCMD )
@@ -43,26 +41,29 @@ C
       IF ( MA .NE. MA2 ) THEN
        CALL U2MESS('F','SOUSTRUC_15')
       ENDIF
-C
-C     --- ON REGARDE S'IL Y A DES GROUPES A DETRUIRE ---
-C
+      GRPMAI  = MA//'.GROUPEMA'
+      GRPNOE  = MA//'.GROUPENO'
+      GRPMAV  = '&&OP0104'//'.GROUPEMA'
+      GRPNOV  = '&&OP0104'//'.GROUPENO'
+
+
+C     1. ON DETRUIT SI DEMANDE (DETR_GROUP_MA ET DETR_GROUP_NO):
+C     ------------------------------------------------------------
       CALL GETFAC('DETR_GROUP_MA',N1)
       CALL GETFAC('DETR_GROUP_NO',N2)
       IF(N1.NE.0 .OR. N2.NE.0)THEN
          CALL DETGNM(MA)
       ENDIF
 
-      GRPMAI  = MA//'.GROUPEMA       '
-      GRPNOE  = MA//'.GROUPENO       '
-      GRPMAV  = '&&OP0104'//'.GROUPEMA       '
-      GRPNOV  = '&&OP0104'//'.GROUPENO       '
-C
-C     --- ON COMPTE LE NOMBRE DE NOUVEAUX GROUP_MA ---
-C
+
+
+C     2. CREA_GROUP_MA :
+C     ------------------------------------------------------------
+C     --- ON COMPTE LE NOMBRE DE NOUVEAUX GROUP_MA :
       CALL GETFAC ( 'CREA_GROUP_MA' , NBGRMA )
-C
-C     --- ON AGRANDIT LA COLLECTION ---
-C
+      IF (NBGRMA.EQ.0) GOTO 107
+
+C     --- ON AGRANDIT LA COLLECTION SI NECESSAIRE :
       NBGMIN = 0
       CALL JEEXIN(GRPMAI,IRET)
       IF ( IRET .EQ. 0  .AND.  NBGRMA .NE. 0 ) THEN
@@ -88,9 +89,12 @@ C
  102        CONTINUE
  100     CONTINUE
       ENDIF
-C
-C     --- ON COMPTE LE NOMBRE DE NOUVEAUX GROUP_NO ---
-C
+ 107  CONTINUE
+
+
+C     3. CREA_GROUP_NO :
+C     ------------------------------------------------------------
+C     --- ON COMPTE LE NOMBRE DE NOUVEAUX GROUP_NO :
       CALL GETFAC ( 'CREA_GROUP_NO' , NBOCC )
       NBGRNO = 0
       DO 10 IOCC = 1 , NBOCC
@@ -109,9 +113,10 @@ C
 C        -- ON CREE UN GROUP_NO PAR MOT CLE FACTEUR --
          NBGRNO = NBGRNO + 1
 10    CONTINUE
-C
-C     --- ON AGRANDIT LA COLLECTION ---
-C
+      IF (NBGRNO.EQ.0) GOTO 207
+
+
+C     --- ON AGRANDIT LA COLLECTION SI NECESSAIRE :
       CALL JEEXIN(GRPNOE,IRET)
       NBGNIN = 0
       IF ( IRET .EQ. 0  .AND.  NBGRNO .NE. 0 ) THEN
@@ -137,16 +142,14 @@ C
  202        CONTINUE
  200     CONTINUE
       ENDIF
-C
-C     --- TRAITEMENT DU MOT CLEF CREA_GROUP_MA ---
-C
+ 207  CONTINUE
+
+C     --- TRAITEMENT DU MOT CLEF CREA_GROUP_MA :
       IF ( NBGRMA .GT. 0 ) CALL SSCGMA ( MA , NBGRMA , NBGMIN )
-C
-C     --- TRAITEMENT DU MOT CLEF CREA_GROUP_NO ---
-C
+
+C     --- TRAITEMENT DU MOT CLEF CREA_GROUP_NO :
       IF ( NBGRNO .GT. 0 ) CALL SSCGNO ( MA , NBGNIN )
 C
 C
       CALL JEDEMA ( )
-C
       END

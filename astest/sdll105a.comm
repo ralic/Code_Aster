@@ -1,9 +1,9 @@
-# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
+# MODIF  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE TUBE REMPLI DE FLUIDE SOUS EXCITATIONS FLUIDES ALEATOIRES
 # sdll105a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -166,48 +166,28 @@ INTPRESS=REST_SPEC_PHYS(         MODE_MECA=MODES,
                                        NOM_CMP='PRES',
                                         OPTION='TOUT_TOUT'  )
 
-FP1=RECU_FONCTION(    TABLE=INTPRESS,
-                      FILTRE=(
-                            _F(  NOM_PARA = 'NOEUD_I',
-                                     VALE_K = 'NBAM10'),
-                                   _F(  NOM_PARA = 'NOEUD_J',
-                                     VALE_K = 'NBAM10')),
-                             NOM_PARA_TABL='FONCTION_C',
-                                  INTERPOL='LIN',
-                                PROL_DROITE='LINEAIRE',
-                               PROL_GAUCHE='LINEAIRE'
-                         )
-
+FP1=RECU_FONCTION(    INTE_SPEC=INTPRESS,
+                            NOEUD_I = 'NBAM10',
+                            NOM_CMP_I = 'PRES',
+                      )
 #
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTPRESS,
-                            NOEUD_I = 'NBAM10',   NOEUD_J = 'NBAM10',
-                            NOM_CMP_I = 'PRES', NOM_CMP_J = 'PRES',
-               VALE_PARA = 10., VALE_REFE_C = ('RI',9.5991E+00,0.,)))
+TEST_FONCTION( VALEUR=_F(  FONCTION = FP1,
+               VALE_PARA = 10., VALE_REFE = 9.5991E+00,))
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTPRESS,
-                            NOEUD_I = 'NBAM10',   NOEUD_J = 'NBAM10',
-                            NOM_CMP_I = 'PRES', NOM_CMP_J = 'PRES',
-               VALE_PARA = 12., VALE_REFE_C = ('RI',2.5952E+02,0.,)))
+TEST_FONCTION( VALEUR=_F(  FONCTION = FP1,
+               VALE_PARA = 12., VALE_REFE = 2.5952E+02))
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTPRESS,
-                            NOEUD_I = 'NBAM10',   NOEUD_J = 'NBAM10',
-                            NOM_CMP_I = 'PRES', NOM_CMP_J = 'PRES',
-               VALE_PARA = 14., VALE_REFE_C = ('RI',1.2365E+01,0.,)))
+TEST_FONCTION( VALEUR=_F(  FONCTION = FP1,
+               VALE_PARA = 14., VALE_REFE = 1.2365E+01))
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTPRESS,
-                            NOEUD_I = 'NBAM10',   NOEUD_J = 'NBAM10',
-                            NOM_CMP_I = 'PRES', NOM_CMP_J = 'PRES',
-               VALE_PARA = 36., VALE_REFE_C = ('RI',3.2428E+00,0.,)))
+TEST_FONCTION( VALEUR=_F(  FONCTION = FP1,
+               VALE_PARA = 36., VALE_REFE = 3.2428E+00,))
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTPRESS,
-                            NOEUD_I = 'NBAM10',   NOEUD_J = 'NBAM10',
-                            NOM_CMP_I = 'PRES', NOM_CMP_J = 'PRES',
-               VALE_PARA = 38., VALE_REFE_C = ('RI',1.3681E+01,0.,)))
+TEST_FONCTION( VALEUR=_F(  FONCTION = FP1,
+               VALE_PARA = 38., VALE_REFE = 1.3681E+01,))
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTPRESS,
-                            NOEUD_I = 'NBAM10',   NOEUD_J = 'NBAM10',
-                            NOM_CMP_I = 'PRES', NOM_CMP_J = 'PRES',
-               VALE_PARA = 40., VALE_REFE_C = ('RI',1.1649E+00,0.,)))
+TEST_FONCTION( VALEUR=_F(  FONCTION = FP1,
+               VALE_PARA = 40., VALE_REFE = 1.1649E+00,))
 
 #**********************************************************************#
 #*********   SOURCE DE FORCE******************************************#
@@ -236,36 +216,28 @@ INTFORCE=REST_SPEC_PHYS(         MODE_MECA=MODES,
                                        NOM_CMP='PRES',
                                         OPTION='TOUT_TOUT'  )
 
+REP2=RECU_FONCTION(    INTE_SPEC=INTFORCE,
+                            NOEUD_I = 'NBAM10',
+                            NOM_CMP_I = 'PRES',
+                      )
 #
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTFORCE,
-                            NOEUD_I = 'NBAM10',   NOEUD_J = 'NBAM10',
-                            NOM_CMP_I = 'PRES', NOM_CMP_J = 'PRES',
-               VALE_PARA = 10., VALE_REFE_C = ('RI',1.9931E+05,0.,)))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP2,
+               VALE_PARA = 10., VALE_REFE = 1.9931E+05,))
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTFORCE,
-                            NOEUD_I = 'NBAM10',   NOEUD_J = 'NBAM10',
-                            NOM_CMP_I = 'PRES', NOM_CMP_J = 'PRES',
-               VALE_PARA = 12., VALE_REFE_C = ('RI',5.3887E+06,0.,)))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP2,
+               VALE_PARA = 12., VALE_REFE = 5.3887E+06,))
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTFORCE,
-                            NOEUD_I = 'NBAM10',   NOEUD_J = 'NBAM10',
-                            NOM_CMP_I = 'PRES', NOM_CMP_J = 'PRES',
-               VALE_PARA = 14., VALE_REFE_C = ('RI',2.5675E+05,0.,)))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP2,
+               VALE_PARA = 14., VALE_REFE = 2.5675E+05,))
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTFORCE,
-                            NOEUD_I = 'NBAM10',   NOEUD_J = 'NBAM10',
-                            NOM_CMP_I = 'PRES', NOM_CMP_J = 'PRES',
-               VALE_PARA = 36., VALE_REFE_C = ('RI',6.7334E+04,0.,)))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP2,
+               VALE_PARA = 36., VALE_REFE = 6.7334E+04,))
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTFORCE,
-                            NOEUD_I = 'NBAM10',   NOEUD_J = 'NBAM10',
-                            NOM_CMP_I = 'PRES', NOM_CMP_J = 'PRES',
-               VALE_PARA = 38., VALE_REFE_C = ('RI',2.8408E+05,0.,)))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP2,
+               VALE_PARA = 38., VALE_REFE = 2.8408E+05,))
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTFORCE,
-                            NOEUD_I = 'NBAM10',   NOEUD_J = 'NBAM10',
-                            NOM_CMP_I = 'PRES', NOM_CMP_J = 'PRES',
-               VALE_PARA = 40., VALE_REFE_C = ('RI',2.4189E+04,0.,)))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP2,
+               VALE_PARA = 40., VALE_REFE = 2.4189E+04,))
 
 #**********************************************************************#
 #*********   SOURCE DE DEBIT-VOLUME***********************************#
@@ -294,36 +266,28 @@ INTDEBVO=REST_SPEC_PHYS(         MODE_MECA=MODES,
                                        NOM_CMP='PRES',
                                         OPTION='TOUT_TOUT'  )
 
+REP3=RECU_FONCTION(    INTE_SPEC=INTDEBVO,
+                            NOEUD_I = 'NBAM10',
+                            NOM_CMP_I = 'PRES',
+                      )
 #
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTDEBVO,
-                            NOEUD_I = 'NBAM10',   NOEUD_J = 'NBAM10',
-                            NOM_CMP_I = 'PRES', NOM_CMP_J = 'PRES',
-               VALE_PARA = 10., VALE_REFE_C = ('RI',9.1954E+11,0.,)))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP3,
+               VALE_PARA = 10., VALE_REFE = 9.1954E+11,))
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTDEBVO,
-                            NOEUD_I = 'NBAM10',   NOEUD_J = 'NBAM10',
-                            NOM_CMP_I = 'PRES', NOM_CMP_J = 'PRES',
-               VALE_PARA = 12., VALE_REFE_C = ('RI',4.3709E+13,0.,)))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP3,
+               VALE_PARA = 12., VALE_REFE = 4.3709E+13,))
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTDEBVO,
-                            NOEUD_I = 'NBAM10',   NOEUD_J = 'NBAM10',
-                            NOM_CMP_I = 'PRES', NOM_CMP_J = 'PRES',
-               VALE_PARA = 14., VALE_REFE_C = ('RI',3.6428E+12,0.,)))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP3,
+               VALE_PARA = 14., VALE_REFE = 3.6428E+12,))
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTDEBVO,
-                            NOEUD_I = 'NBAM10',   NOEUD_J = 'NBAM10',
-                            NOM_CMP_I = 'PRES', NOM_CMP_J = 'PRES',
-               VALE_PARA = 36., VALE_REFE_C = ('RI',1.1142E+13,0.,)))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP3,
+               VALE_PARA = 36., VALE_REFE = 1.1142E+13,))
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTDEBVO,
-                            NOEUD_I = 'NBAM10',   NOEUD_J = 'NBAM10',
-                            NOM_CMP_I = 'PRES', NOM_CMP_J = 'PRES',
-               VALE_PARA = 38., VALE_REFE_C = ('RI',3.6976E+13,0.,)))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP3,
+               VALE_PARA = 38., VALE_REFE = 3.6976E+13,))
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTDEBVO,
-                            NOEUD_I = 'NBAM10',   NOEUD_J = 'NBAM10',
-                            NOM_CMP_I = 'PRES', NOM_CMP_J = 'PRES',
-               VALE_PARA = 40., VALE_REFE_C = ('RI',2.6238E+12,0.,)))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP3,
+               VALE_PARA = 40., VALE_REFE = 2.6238E+12,))
 
 #**********************************************************************#
 #*********   SOURCE DE DEBIT-MASSE************************************#
@@ -352,36 +316,28 @@ INTDEBMA=REST_SPEC_PHYS(         MODE_MECA=MODES,
                                        NOM_CMP='PRES',
                                         OPTION='TOUT_TOUT'  )
 
+REP4=RECU_FONCTION(    INTE_SPEC=INTDEBMA,
+                            NOEUD_I = 'NBAM10',
+                            NOM_CMP_I = 'PRES',
+                      )
 #
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTDEBMA,
-                            NOEUD_I = 'NBAM10',   NOEUD_J = 'NBAM10',
-                            NOM_CMP_I = 'PRES', NOM_CMP_J = 'PRES',
-               VALE_PARA = 10., VALE_REFE_C = ('RI',1.3347E+10,0.,)))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP4,
+               VALE_PARA = 10., VALE_REFE = 1.3347E+10,))
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTDEBMA,
-                            NOEUD_I = 'NBAM10',   NOEUD_J = 'NBAM10',
-                            NOM_CMP_I = 'PRES', NOM_CMP_J = 'PRES',
-               VALE_PARA = 12., VALE_REFE_C = ('RI',6.3448E+11,0.,)))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP4,
+               VALE_PARA = 12., VALE_REFE = 6.3448E+11,))
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTDEBMA,
-                            NOEUD_I = 'NBAM10',   NOEUD_J = 'NBAM10',
-                            NOM_CMP_I = 'PRES', NOM_CMP_J = 'PRES',
-               VALE_PARA = 14., VALE_REFE_C = ('RI',5.2879E+10,0.,)))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP4,
+               VALE_PARA = 14., VALE_REFE = 5.2879E+10,))
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTDEBMA,
-                            NOEUD_I = 'NBAM10',   NOEUD_J = 'NBAM10',
-                            NOM_CMP_I = 'PRES', NOM_CMP_J = 'PRES',
-               VALE_PARA = 36., VALE_REFE_C = ('RI',1.6173E+11,0.,)))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP4,
+               VALE_PARA = 36., VALE_REFE = 1.6173E+11,))
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTDEBMA,
-                            NOEUD_I = 'NBAM10',   NOEUD_J = 'NBAM10',
-                            NOM_CMP_I = 'PRES', NOM_CMP_J = 'PRES',
-               VALE_PARA = 38., VALE_REFE_C = ('RI',5.3675E+11,0.,)))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP4,
+               VALE_PARA = 38., VALE_REFE = 5.3675E+11,))
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTDEBMA,
-                            NOEUD_I = 'NBAM10',   NOEUD_J = 'NBAM10',
-                            NOM_CMP_I = 'PRES', NOM_CMP_J = 'PRES',
-               VALE_PARA = 40., VALE_REFE_C = ('RI',3.8088E+10,0.,)))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP4,
+               VALE_PARA = 40., VALE_REFE = 3.8088E+10,))
 
 #**********************************************************************#
 #*********   FORCE MECANIQUE SUR LA MASSE*****************************#
@@ -410,36 +366,28 @@ INTFORMA=REST_SPEC_PHYS(         MODE_MECA=MODES,
                                        NOM_CMP='PRES',
                                         OPTION='TOUT_TOUT'  )
 
+REP5=RECU_FONCTION(    INTE_SPEC=INTFORMA,
+                            NOEUD_I = 'NBAM10',
+                            NOM_CMP_I = 'PRES',
+                      )
 #
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTFORMA,
-                            NOEUD_I = 'NBAM10',   NOEUD_J = 'NBAM10',
-                            NOM_CMP_I = 'PRES', NOM_CMP_J = 'PRES',
-               VALE_PARA = 10., VALE_REFE_C = ('MP',2.6542E-03,0.,)))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP5,
+               VALE_PARA = 10., VALE_REFE = 2.6542E-03,))
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTFORMA,
-                            NOEUD_I = 'NBAM10',   NOEUD_J = 'NBAM10',
-                            NOM_CMP_I = 'PRES', NOM_CMP_J = 'PRES',
-               VALE_PARA = 12., VALE_REFE_C = ('MP',4.5780E-02,0.,)))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP5,
+               VALE_PARA = 12., VALE_REFE = 4.5780E-02,))
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTFORMA,
-                            NOEUD_I = 'NBAM10',   NOEUD_J = 'NBAM10',
-                            NOM_CMP_I = 'PRES', NOM_CMP_J = 'PRES',
-               VALE_PARA = 14., VALE_REFE_C = ('MP',9.0979E-04,0.,)))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP5,
+               VALE_PARA = 14., VALE_REFE = 9.0979E-04,))
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTFORMA,
-                            NOEUD_I = 'NBAM10',   NOEUD_J = 'NBAM10',
-                            NOM_CMP_I = 'PRES', NOM_CMP_J = 'PRES',
-               VALE_PARA = 36., VALE_REFE_C = ('MP',3.3472E-02,0.,)))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP5,
+               VALE_PARA = 36., VALE_REFE = 3.3472E-02,))
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTFORMA,
-                            NOEUD_I = 'NBAM10',   NOEUD_J = 'NBAM10',
-                            NOM_CMP_I = 'PRES', NOM_CMP_J = 'PRES',
-               VALE_PARA = 38., VALE_REFE_C = ('MP',1.1863E-01,0.,)))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP5,
+               VALE_PARA = 38., VALE_REFE = 1.1863E-01,))
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTFORMA,
-                            NOEUD_I = 'NBAM10',   NOEUD_J = 'NBAM10',
-                            NOM_CMP_I = 'PRES', NOM_CMP_J = 'PRES',
-               VALE_PARA = 40., VALE_REFE_C = ('MP',8.8587E-03,0.,)))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP5,
+               VALE_PARA = 40., VALE_REFE = 8.8587E-03,))
 
 #
 

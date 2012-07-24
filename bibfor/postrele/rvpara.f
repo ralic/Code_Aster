@@ -1,7 +1,7 @@
       SUBROUTINE RVPARA ( NOMTAB,MCF, NBPOST )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF POSTRELE  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -193,7 +193,7 @@ C
      &                                        ZI(JNUME),NBORDR,IBID)
                DO 14 I = 1 , NBORDR
                   NUME = ZI(JNUME+I-1)
-                  CALL RSEXCH ( RESU, NOMSY, NUME, CHEXTR, IRET )
+                  CALL RSEXCH(' ',RESU, NOMSY, NUME, CHEXTR, IRET )
                   IF ( IRET .EQ. 0 ) GOTO 16
  14            CONTINUE
                CALL U2MESK('F','POSTRELE_9',1,NOMSY)

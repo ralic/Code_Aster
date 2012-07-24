@@ -1,7 +1,7 @@
       SUBROUTINE IRGENE (IOCC, RESU, FORM, IFI, NBNOSY,NOSY,
      &                   NBCMPG,CMPG, NBPARA,PARA,
      &                   NBORDR,ORDR, NBINST,TEMP,NUME, LHIST )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER         CMPG(*), ORDR(*), NUME(*)
       REAL*8          TEMP(*)
@@ -9,7 +9,7 @@
       LOGICAL         LHIST
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,6 +34,9 @@ C     ------------------------------------------------------------------
       CHARACTER*19 GENE,  NOCH19
       CHARACTER*24 NOMST
       LOGICAL      LORDR
+      INTEGER IOCC,IFI,NBNOSY,NBCMPG,NBPARA,NBORDR,NBINST,I,IM,IORD
+      INTEGER IRET,ISY,ITRESU,JDESC,JORDR,JPARA,JREFE,JTITR,KDESC
+      INTEGER KREFE,KVALE,NBMODE,NBTITR,NPARA
 C     ------------------------------------------------------------------
       CALL JEMARQ()
       NOMST = '&&IRGENE.SOUS_TITRE.TITR'
@@ -72,7 +75,7 @@ C
             CALL IRPARA (RESU, FORM,IFI, 1,ORDR(IORD),
      &                                      NPARA,ZK16(JPARA), CECR )
             DO 110 ISY = 1,NBNOSY
-              CALL RSEXCH(RESU,NOSY(ISY),ORDR(IORD),NOCH19,IRET)
+              CALL RSEXCH(' ',RESU,NOSY(ISY),ORDR(IORD),NOCH19,IRET)
               IF(IRET.EQ.0) THEN
                 CALL TITRE2 (RESU,NOCH19,NOMST,'GENE',IOCC)
                 WRITE(IFI,2010)

@@ -4,7 +4,7 @@
       CHARACTER*(*)       TRANGE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,13 +39,13 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
-      INTEGER IAGNO ,IAREF2 ,IBID ,IDBASE ,IDDL ,IDINSG ,IDVECG 
-      INTEGER IE ,IERD ,IGN2 ,II ,INO ,INOEUD ,IORDR 
-      INTEGER IRET ,ITRESU ,JINST ,JJ ,LFON ,LG1 ,LG2 
-      INTEGER LORDR ,LPRO ,LREFE ,LVAR ,MXMODE ,N1 ,N2 
-      INTEGER N3 ,NBINSG ,NBMODE ,NBORDR ,NBPARI ,NBPARK ,NBPARR 
-      INTEGER NEQ ,NGN 
-      REAL*8 EPSI ,RBID 
+      INTEGER IAGNO ,IAREF2 ,IBID ,IDBASE ,IDDL ,IDINSG ,IDVECG
+      INTEGER IE ,IERD ,IGN2 ,II ,INO ,INOEUD ,IORDR
+      INTEGER IRET ,ITRESU ,JINST ,JJ ,LFON ,LG1 ,LG2
+      INTEGER LORDR ,LPRO ,LREFE ,LVAR ,MXMODE ,N1 ,N2
+      INTEGER N3 ,NBINSG ,NBMODE ,NBORDR ,NBPARI ,NBPARK ,NBPARR
+      INTEGER NEQ ,NGN
+      REAL*8 EPSI ,RBID
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -165,7 +165,7 @@ C
       ELSE
          DO 52 IORDR = 0, NBORDR-1
             II = ZI(LORDR+IORDR)
-            CALL RSEXCH(RESU,NOMCHA,II,CHAMP,IRET)
+            CALL RSEXCH('F',RESU,NOMCHA,II,CHAMP,IRET)
             CALL JEVEUO(CHAMP(1:19)//'.VALE','L',ITRESU)
             CALL MDGEP5(NEQ,NBMODE,ZR(IDBASE),ZC(ITRESU),IDDL,CREP)
             ZR(LVAR+IORDR) = ZR(JINST+IORDR)

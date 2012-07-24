@@ -1,4 +1,4 @@
-#@ MODIF calculel3 Messages  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel3 Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -79,9 +79,9 @@ cata_msg = {
  Par défaut on utilise l'estimateur basé sur les contraintes lissées version 2 ERZ2_ELEM.
 """),
 
-17 : _(u"""
- le résultat  %(k1)s  doit comporter un champ de contraintes au numéro d'ordre  %(k2)s  .
-"""),
+
+
+
 
 
 19 : _(u"""

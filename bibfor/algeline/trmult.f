@@ -6,7 +6,7 @@
       REAL*8        PSIDE(NEQ)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,10 +49,10 @@ C OUT : PSIDE  : VALEURS DU VECTEUR PSI*DELTA
       INTEGER      IARG
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER I ,ID ,IDGN ,IDMST ,IDNO ,II ,IN 
-      INTEGER IRET ,LDGN ,NB ,NBD ,NBDIR ,NBGR ,NBNO 
-      INTEGER NBTROU ,NBV 
-      REAL*8 XD 
+      INTEGER I ,ID ,IDGN ,IDMST ,IDNO ,II ,IN
+      INTEGER IRET ,LDGN ,NB ,NBD ,NBDIR ,NBGR ,NBNO
+      INTEGER NBTROU ,NBV
+      REAL*8 XD
 C-----------------------------------------------------------------------
       DATA CMP / 'DX' , 'DY' , 'DZ' , 'DRX' , 'DRY' , 'DRZ' /
 C     ------------------------------------------------------------------
@@ -152,23 +152,14 @@ C              --- ON RECUPERE LE MODE STATIQUE ASSOCIE AU NOEUD ---
                   CALL U2MESG('F', 'ALGELINE4_62',3,VALK,0,0,0,0.D0)
                   GOTO 40
                ENDIF
-               CALL RSEXCH(MODSTA,'DEPL',IORDR,CHAMNO,IRET)
-               IF (IRET.NE.0) THEN
-                  IER = IER + 1
-                  VALK (1) = CHAMNO
-                  VALK (2) = ACCES(1:8)
-                  VALK (3) = ACCES(9:16)
-                  CALL U2MESG('E', 'ALGELINE4_63',3,VALK,0,0,0,0.D0)
-                  GOTO 40
-               ELSE
-                  CALL JEVEUO(CHAMNO//'.VALE','L',IDMST)
+               CALL RSEXCH('F',MODSTA,'DEPL',IORDR,CHAMNO,IRET)
+               CALL JEVEUO(CHAMNO//'.VALE','L',IDMST)
 C
-C                 --- ON EFFECTUE LE PRODUIT  MODE_STAT * DIR ---
-                  DO 42 I = 1,NEQ
-                     PSIDE(I) = PSIDE(I)+ XD * ZR(IDMST+I-1)
- 42               CONTINUE
-                  CALL JELIBE(CHAMNO//'.VALE')
-               ENDIF
+C              --- ON EFFECTUE LE PRODUIT  MODE_STAT * DIR ---
+               DO 42 I = 1,NEQ
+                  PSIDE(I) = PSIDE(I)+ XD * ZR(IDMST+I-1)
+ 42            CONTINUE
+               CALL JELIBE(CHAMNO//'.VALE')
  40         CONTINUE
          ENDIF
  30   CONTINUE

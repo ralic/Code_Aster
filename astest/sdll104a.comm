@@ -1,8 +1,8 @@
-# MODIF  DATE 13/12/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE SYSTEME DE DEUX POUTRES SOUMIS A UNE EXCITATION ALEATOIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -475,57 +475,45 @@ INTERRE3=REST_SPEC_PHYS(         MODE_MECA=FREQ3,
                                  NOM_CMP=('DY', 'DY', 'DY',  ),
                                       OPTION='TOUT_TOUT'   )
 
+REP1=RECU_FONCTION(    INTE_SPEC=INTERRE1,
+                            NOEUD_I = 'PB25',
+                            NOM_CMP_I = 'DY',
+                      )
 
+REP3=RECU_FONCTION(    INTE_SPEC=INTERRE3,
+                            NOEUD_I = 'PB25',
+                            NOM_CMP_I = 'DY',
+                      )
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTERRE1,
-                            NOEUD_I = 'PB25',    NOEUD_J = 'PB25',
-                            NOM_CMP_I = 'DY',  NOM_CMP_J = 'DY',
-   VALE_PARA = 5., VALE_REFE_C = ('RI',3.6913,0.0,),  PRECISION = 1.E-2))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP1,
+   VALE_PARA = 5., VALE_REFE = 3.6913,  PRECISION = 1.E-2))
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTERRE1,
-                            NOEUD_I = 'PB25',    NOEUD_J = 'PB25',
-                            NOM_CMP_I = 'DY',  NOM_CMP_J = 'DY',
-   VALE_PARA = 10., VALE_REFE_C = ('RI',75.439,0.0,),  PRECISION = 1.E-2))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP1,
+   VALE_PARA = 10., VALE_REFE = 75.439,  PRECISION = 1.E-2))
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTERRE1,
-                            NOEUD_I = 'PB25',    NOEUD_J = 'PB25',
-                            NOM_CMP_I = 'DY',  NOM_CMP_J = 'DY',
-   VALE_PARA = 15., VALE_REFE_C = ('RI',1.6776,0.0,),  PRECISION = 1.E-2))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP1,
+   VALE_PARA = 15., VALE_REFE = 1.6776,  PRECISION = 1.E-2))
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTERRE1,
-                            NOEUD_I = 'PB25',    NOEUD_J = 'PB25',
-                            NOM_CMP_I = 'DY',  NOM_CMP_J = 'DY',
-   VALE_PARA = 20., VALE_REFE_C = ('RI',1.1367,0.0,),  PRECISION = 1.E-2))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP1,
+   VALE_PARA = 20., VALE_REFE = 1.1367,  PRECISION = 1.E-2))
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTERRE1,
-                            NOEUD_I = 'PB25',    NOEUD_J = 'PB25',
-                            NOM_CMP_I = 'DY',  NOM_CMP_J = 'DY',
-   VALE_PARA = 25., VALE_REFE_C = ('RI',0.2926,0.0,),  PRECISION = 1.E-2))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP1,
+   VALE_PARA = 25., VALE_REFE = 0.2926,  PRECISION = 1.E-2))
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTERRE3,
-                            NOEUD_I = 'PB25',    NOEUD_J = 'PB25',
-                            NOM_CMP_I = 'DY',  NOM_CMP_J = 'DY',
-   VALE_PARA = 5., VALE_REFE_C = ('MP',3.6913,0.0,),  PRECISION = 1.E-2))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP3,
+   VALE_PARA = 5., VALE_REFE = 3.6913,  PRECISION = 1.E-2))
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTERRE3,
-                            NOEUD_I = 'PB25',    NOEUD_J = 'PB25',
-                            NOM_CMP_I = 'DY',  NOM_CMP_J = 'DY',
-   VALE_PARA = 10., VALE_REFE_C = ('MP',75.439,0.0,),  PRECISION = 1.E-2))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP3,
+   VALE_PARA = 10., VALE_REFE = 75.439,  PRECISION = 1.E-2))
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTERRE3,
-                            NOEUD_I = 'PB25',    NOEUD_J = 'PB25',
-                            NOM_CMP_I = 'DY',  NOM_CMP_J = 'DY',
-   VALE_PARA = 15., VALE_REFE_C = ('MP',1.6776,0.0,),  PRECISION = 1.E-2))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP3,
+   VALE_PARA = 15., VALE_REFE = 1.6776,  PRECISION = 1.E-2))
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTERRE3,
-                            NOEUD_I = 'PB25',    NOEUD_J = 'PB25',
-                            NOM_CMP_I = 'DY',  NOM_CMP_J = 'DY',
-   VALE_PARA = 20., VALE_REFE_C = ('MP',1.1367,0.0,),  PRECISION = 4.E-2))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP3,
+   VALE_PARA = 20., VALE_REFE = 1.1367,  PRECISION = 4.E-2))
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTERRE3,
-                            NOEUD_I = 'PB25',    NOEUD_J = 'PB25',
-                            NOM_CMP_I = 'DY',  NOM_CMP_J = 'DY',
-   VALE_PARA = 25., VALE_REFE_C = ('MP',0.2926,0.0,),  PRECISION = 11.E-2))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP3,
+   VALE_PARA = 25., VALE_REFE = 0.2926,  PRECISION = 11.E-2))
 
 FIN( )
 #

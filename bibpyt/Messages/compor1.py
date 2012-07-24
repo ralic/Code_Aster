@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 25/06/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF compor1 Messages  DATE 23/07/2012   AUTEUR FLEJOU J-L.FLEJOU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -374,5 +374,17 @@ Erreur dans le calcul du tenseur équivalent au sens de HILL.
  Le nombre de variables internes initiales est incorrect : %(i1)d ; il devrait valoir %(i2)d
 """),
 
+75 : _(u""" == Paramètres de la loi %(k1)s ==
+ Partie élasticité :
+   %(k2)s
+ Partie non-linéaire :
+   %(k3)s
+ Pour information :
+   %(k4)s
+ =================================================="""),
+
+76 : _(u"""
+Pour le comportement %(k1)s les paramètres %(k2)s et %(k3)s sont obligatoires.
+"""),
 
 }

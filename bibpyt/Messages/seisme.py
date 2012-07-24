@@ -1,21 +1,21 @@
-#@ MODIF seisme Messages  DATE 06/02/2012   AUTEUR CHANSARD F.CHANSARD 
+#@ MODIF seisme Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
@@ -53,9 +53,9 @@ cata_msg={
  on ne peut pas traiter du MONO_APPUI et du MULTI_APPUI simultanément.
 """),
 
- 9: _(u"""
- on n'a pas pu extraire le premier champ des modes mécaniques.
-"""),
+
+
+
 
 10: _(u"""
  correction statique non prise en compte pour l'option: %(k1)s
@@ -148,32 +148,32 @@ cata_msg={
 """),
 
 27: _(u"""
-  La base modale utilisé %(k1)s ne contient pas tous les paramètres modaux 
+  La base modale utilisé %(k1)s ne contient pas tous les paramètres modaux
   nécessaires au calcul.
   Il faut que le concept soit issu d'un calcul sur coordonnées physiques et
   non pas généralisées.
 """),
 
 28: _(u"""
-  Dans le cas d'excitations décorrélées, 
+  Dans le cas d'excitations décorrélées,
   le mot-clé COMB_MULT_APPUI n'est pas pris en compte.
 """),
 
 29: _(u"""
   La définition du groupe d'appuis n'est pas correcte dans le cas décorrélé:
-  au moins une excitation appartient à plusieurs groupes d'appuis. 
+  au moins une excitation appartient à plusieurs groupes d'appuis.
   Les groupes d'appuis doivent être disjoints.
 """),
 
 30: _(u"""
   La définition du groupe d'appuis n'est pas correcte dans le cas décorrélé.
-  Un seul groupe d'appuis a été constitué contenant tous les appuis. 
+  Un seul groupe d'appuis a été constitué contenant tous les appuis.
   Relancez le calcul avec le mot-clé MULTI_APPUI=CORRELE.
 """),
 
 31: _(u"""
- Attention, 
- il n'y a pas de déplacements différentiels pris en compte dans votre calcul 
+ Attention,
+ il n'y a pas de déplacements différentiels pris en compte dans votre calcul
  spectral multi-appui.
 """),
 

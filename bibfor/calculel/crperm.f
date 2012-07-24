@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,20 +105,8 @@ C
       ENDIF
 C
       DO 100 IC = 1 , NBCHAM
-         CALL RSEXCH ( RESU1, CHAM(IC), IORD1, CH1, IRET )
-         IF ( IRET .NE. 0 ) THEN
-            VALK (1) = CHAM(IC)
-            VALK (2) = RESU1
-            VALI = IORD1
-            CALL U2MESG('F', 'CALCULEL5_74',2,VALK,1,VALI,0,0.D0)
-         ENDIF
-         CALL RSEXCH ( RESU2, CHAM(IC), IORD2, CH2, IRET )
-         IF ( IRET .NE. 0 ) THEN
-            VALK (1) = CHAM(IC)
-            VALK (2) = RESU2
-            VALI = IORD2
-            CALL U2MESG('F', 'CALCULEL5_74',2,VALK,1,VALI,0,0.D0)
-         ENDIF
+         CALL RSEXCH('F',RESU1, CHAM(IC), IORD1, CH1, IRET )
+         CALL RSEXCH('F',RESU2, CHAM(IC), IORD2, CH2, IRET )
 C
          IF ( CHAM(IC) .EQ. 'DEPL' ) THEN
             CHS1 = '&&CRPERM.DEPL_1'
@@ -208,7 +196,7 @@ C
  10   CONTINUE
 C
       DO 110 IC = 1 , NBCHAM
-         CALL RSEXCH ( RESU2, CHAM(IC), IORD2, CH2, IRET )
+         CALL RSEXCH('F',RESU2, CHAM(IC), IORD2, CH2, IRET )
          CHS1 = CHSI1(IC)
          CHS2 = CHSI2(IC)
          IF ( CHAM(IC) .EQ. 'DEPL' ) THEN

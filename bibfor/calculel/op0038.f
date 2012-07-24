@@ -1,7 +1,7 @@
       SUBROUTINE OP0038()
       IMPLICIT NONE
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,43 +22,45 @@ C ======================================================================
 C ----------------------------------------------------------------------
 C     COMMANDE:  CALC_CHAM_ELEM
 C     - FONCTION REALISEE:
-C         CALCUL DES CONTRAINTES (DEFORM ...) ELEMENTAIRES EN MECANIQUE.
-C         CALCUL DES FLUX ELEMENTAIRES EN THERMIQUE.
-C         CALCUL DES GRANDEURS ACOUSTIQUES : DECIBEL,
-C           PARTIE REELLE DE LA PRESSION,
-C           PARTIE IMAGINAIRE DE LA PRESSION.
+C         CALCUL DES FLUX ELEMENTAIRES EN THERMIQUE ;
+C         CALCUL DE LA PRESSION ACOUSTIQUE ;
+C         CALCUL DES COOREDONNEES DES POINTS DE GAUSS
+C
 C ----------------------------------------------------------------------
-C     ------------------------------------------------------------------
-
+C
       INCLUDE 'jeveux.h'
-      INTEGER IBID,IERD,IRET,JCHA,N1,N3,N4,N6,N7,NCHAR,NH
-      REAL*8 TIME,COEF
-      REAL*8      RUNDF,R8VIDE
+C
+      INTEGER IBID,IERD,IRET,JCHA,N1,N3,N4,N6,N7,NCHAR,NH,IARG
+
+      REAL*8 TIME,RUNDF,R8VIDE
+
       CHARACTER*1 BASE
       CHARACTER*4 CTYP
-      CHARACTER*8 MODELE,CARA,TEMP,NOMA,K8BID,BLAN8,KMPIC
+      CHARACTER*8 MODELE,CARA,TEMP,NOMA,BLAN8,KMPIC
+      CHARACTER*8 LPAIN(8),LPAOUT(1)
       CHARACTER*16 TYPE,OPER,OPTION
       CHARACTER*19 KCHA,CHELEM,PRESS,LIGREL
-      CHARACTER*24 CHGEOM,CHCARA(18),CHHARM,CHAMGD,CHSIG,CHEPS,MATE,K24B
-      CHARACTER*24 CHTEMP,CHTREF,CHTIME,CHNUMC,CHMASS,CHFREQ
-      COMPLEX*16 CCOEF
+      CHARACTER*24 CHGEOM,CHCARA(18),CHHARM,MATE,K24B
+      CHARACTER*24 CHTEMP,CHTIME,CHFLUG,CHPRES
+      CHARACTER*24 LCHIN(8),LCHOUT(1)
+
       LOGICAL EXITIM
-      CHARACTER*8 LPAIN(6),LPAOUT(1)
-      CHARACTER*24 LCHIN(6),LCHOUT(1)
-      INTEGER      IARG
-C DEB ------------------------------------------------------------------
+C
+C ----------------------------------------------------------------------
+C
       CALL JEMARQ()
       CALL INFMAJ()
-C
-C               1234567890123456789
+C               123456789012345678901234
+      K24B   = '                        '
+C               12345678
       BLAN8  = '        '
 C
-      BASE = 'G'
-      COEF = 1.D0
-      CCOEF = (1.D0,1.D0)
-      CHFREQ = ' '
-      K24B = ' '
-      RUNDF = R8VIDE()
+      BASE   = 'G'
+      RUNDF  = R8VIDE()
+      KCHA   = '&&OP0038.CHARGES'
+      PRESS  = ' '
+      CHTIME = ' '
+      EXITIM = .FALSE.
 
       CALL GETRES(CHELEM,TYPE,OPER)
       CALL GETVID(' ','ACCE',0,IARG,0,OPTION,N1)
@@ -66,7 +68,6 @@ C
          CALL U2MESS('A','CALCULEL3_96')
       ENDIF
 
-      KCHA = '&&OP0038.CHARGES'
       CALL UTALRM('OFF', 'CALCULEL3_40')
       CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,BLAN8,1)
       CALL UTALRM('ON', 'CALCULEL3_40')
@@ -74,16 +75,18 @@ C
 
       CALL EXLIMA(' ',0,'G',MODELE,LIGREL)
 
-      EXITIM = .FALSE.
-      PRESS = ' '
       CALL GETVTX(' ','OPTION',0,IARG,1,OPTION,N1)
       CALL GETVID(' ','TEMP',0,IARG,1,TEMP,N3)
       CALL GETVID(' ','PRES',0,IARG,1,PRESS,N4)
       CALL GETVR8(' ','INST',0,IARG,1,TIME,N6)
       CALL GETVIS(' ','MODE_FOURIER',0,IARG,1,NH,N7)
       IF (N3.NE.0) THEN
-          CHTEMP = TEMP
-          CALL CHPVER('F',CHTEMP,'NOEU','TEMP_R',IERD)
+        CHTEMP = TEMP
+        CALL CHPVER('F',CHTEMP,'NOEU','TEMP_R',IERD)
+      ENDIF
+      IF (N4.NE.0) THEN
+        CHPRES = PRESS
+        CALL CHPVER('F',CHPRES,'NOEU','PRES_C',IERD)
       ENDIF
       IF (N6.NE.0) EXITIM = .TRUE.
       IF (N7.EQ.0) NH = 0
@@ -92,27 +95,51 @@ C
      &            CHHARM,IRET)
       IF (IRET.NE.0) GO TO 10
       NOMA = CHGEOM(1:8)
-      CHMASS = ' '
-      CHTIME = ' '
       IF (EXITIM) CALL MECHTI(NOMA,TIME,RUNDF,RUNDF,CHTIME)
-      CALL MECHNC(NOMA,' ',0,CHNUMC)
 
+C        -------------------------
+C        -- OPTIONS DE THERMIQUE :
+C        -------------------------
+      IF (OPTION(1:7).EQ.'FLUX_EL') THEN
+        CHFLUG='&&OP0038.FLUXGAUSS'
+        LCHIN(1)=CHGEOM
+        LPAIN(1)='PGEOMER'
+        LCHIN(2)=MATE
+        LPAIN(2)='PMATERC'
+        LCHIN(3)=CHCARA(7)
+        LPAIN(3)='PCACOQU'
+        LCHIN(4)=CHCARA(12)
+        LPAIN(4)='PCAMASS'
+        LCHIN(5)=CHTEMP
+        LPAIN(5)='PTEMPER'
+        LCHIN(6)=CHTIME
+        LPAIN(6)='PTEMPSR'
+        LCHIN(7)=CHHARM
+        LPAIN(7)='PHARMON'
+        LCHIN(8)=K24B
+        LPAIN(8)='PVARCPR'
+        LCHOUT(1)=CHFLUG
+        LPAOUT(1)='PFLUXPG'
+C
+        CALL CALCUL('S','FLUX_ELGA',LIGREL,8,LCHIN,LPAIN,1,LCHOUT,
+     &              LPAOUT,'V','OUI')
+C
+        IF (OPTION.EQ.'FLUX_ELNO') THEN
+          LCHIN(1)=CHFLUG
+          LPAIN(1)='PFLUXPG'
+          LCHOUT(1)=CHELEM
+          LPAOUT(1)='PFLUXNO'
+C
+          CALL CALCUL('S',OPTION,LIGREL,1,LCHIN,LPAIN,1,LCHOUT,
+     &                LPAOUT,BASE,'OUI')
+C
+        ELSE IF (OPTION.EQ.'FLUX_ELGA') THEN
+          CALL COPISD('CHAMP','G',CHFLUG,CHELEM)
+        ENDIF
 
-C        -- OPTIONS DE THERMIQUE:
-C        ------------------------
-      IF (OPTION.EQ.'FLUX_ELNO' .OR.
-     &    OPTION.EQ.'FLUX_ELGA') THEN
-        CHAMGD = ' '
-        CHTREF = ' '
-        IBID = 0
-        CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,CHTEMP,
-     &              CHTREF,CHTIME,CHNUMC,CHHARM,CHSIG,CHEPS,CHFREQ,
-     &              CHMASS,K24B,ZK8(JCHA),K24B,COEF,CCOEF,K24B,K24B,
-     &              CHELEM,K24B,LIGREL,BASE,K24B,K24B,K24B,K24B,K24B,
-     &              K24B,K8BID,IBID,K24B,IRET)
-
-
+C        ---------------------------
 C        -- OPTION POINTS DE GAUSS :
+C        ---------------------------
       ELSE IF (OPTION.EQ.'COOR_ELGA') THEN
         LCHIN(1)=CHGEOM
         LPAIN(1)='PGEOMER'
@@ -136,24 +163,20 @@ C        ------------------------
 C        -- OPTIONS ACOUSTIQUES :
 C        ------------------------
       ELSE IF (OPTION.EQ.'PRAC_ELNO') THEN
-
-        CALL CHPVER('F',PRESS,'NOEU','PRES_C',IERD)
-
         LPAIN(1)='PPRESSC'
-        LCHIN(1)=PRESS
+        LCHIN(1)=CHPRES
         LCHOUT(1)=CHELEM
         LPAOUT(1)='PPRAC_R'
 
         CALL CALCUL('S',OPTION,LIGREL,1,LCHIN,LPAIN,1,LCHOUT,LPAOUT,'G',
      &                 'OUI')
 
-
-C        -- OPTIONS INCONNUES:
-C        ---------------------
+C        ----------------------
+C        -- OPTIONS INCONNUES :
+C        ----------------------
       ELSE
         CALL U2MESK('F','CALCULEL3_22',1,OPTION)
       END IF
-
 
    10 CONTINUE
 

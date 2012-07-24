@@ -5,7 +5,7 @@
       CHARACTER*(*)       NOMSD , NOMJV
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,7 +75,7 @@ C
       DO 20 I = 1 , NBORDT
          DO 24 ISY = 1 , NBNOSY
             NOMSYM = ZK16(JNOSY+ISY-1)
-            CALL RSEXCH(NOMSD,NOMSYM,ZI(JNUME+I-1),NOCH19,IRET)
+            CALL RSEXCH(' ',NOMSD,NOMSYM,ZI(JNUME+I-1),NOCH19,IRET)
             IF ( IRET .EQ. 0 ) THEN
                CALL JEEXIN(NOCH19//'.DESC',IBID)
                IF (IBID.GT.0) THEN

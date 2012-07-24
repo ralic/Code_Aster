@@ -1,4 +1,4 @@
-#@ MODIF utilitai6 Messages  DATE 26/03/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF utilitai6 Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -95,17 +95,17 @@ cata_msg = {
  borne supérieure    : %(r2)f
 """),
 
-19 : _(u"""
- CHAM_NO inexistant pour l'accès %(k1)s sur le résultat %(k2)s
- pour le NUME_ORDRE %(i1)d
- instant à interpoler %(r1)f
-"""),
 
-25 : _(u"""
- CHAM_ELEM inexistant pour l'accès %(k1)s sur le résultat %(k2)s
- pour le NUME_ORDRE %(i1)d
- instant à interpoler %(r1)f
-"""),
+
+
+
+
+
+
+
+
+
+
 
 37 : _(u"""
  la fonction  %(k1)s  a  %(i1)d arguments

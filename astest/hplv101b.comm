@@ -1,4 +1,4 @@
-# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE HOMOGENEISATION D'UN MATERIAU HOMOGENE - 3D - HEXA20
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -116,7 +116,7 @@ ESSAI00=AFFE_CARA_ELEM(MODELE=MODME,
 
 CHARTH=AFFE_CHAR_THER(  MODELE=MODTH,
              TEMP_IMPO=_F( GROUP_NO = 'XEGAL0', TEMP = 0.0),
-             GRAD_TEMP_INIT=_F( TOUT = 'OUI',FLUX_X = -1.0))
+             PRE_GRAD_TEMP=_F( TOUT = 'OUI',FLUX_X = -1.0))
 
 CHARMM=AFFE_CHAR_MECA(  MODELE=MODME,DDL_IMPO=(
               _F( GROUP_NO = 'ZEGAL0',   DZ = 0.),
@@ -124,7 +124,7 @@ CHARMM=AFFE_CHAR_MECA(  MODELE=MODME,DDL_IMPO=(
                        _F( GROUP_NO = 'XEGAL1',   DX = 0.),
                        _F( GROUP_NO = 'YEGAL1',   DY = 0.),
                        _F( GROUP_NO = 'XEGAL0',   DX = 0.)),
-              EPSI_INIT=_F( TOUT = 'OUI',EPXX = -1.0)      )
+              PRE_EPSI=_F( TOUT = 'OUI',EPXX = -1.0)      )
 
 FCT1=DEFI_FONCTION(   NOM_PARA='Z',  PROL_DROITE='LINEAIRE',
                                      PROL_GAUCHE='LINEAIRE',
@@ -133,7 +133,7 @@ FCT1=DEFI_FONCTION(   NOM_PARA='Z',  PROL_DROITE='LINEAIRE',
 ZERO=DEFI_CONSTANTE( VALE=0.00)
 
 CHARMF=AFFE_CHAR_MECA_F(  MODELE=MODME,
-              EPSI_INIT=_F(   TOUT = 'OUI',EPXX = FCT1),DDL_IMPO=(
+              PRE_EPSI=_F(   TOUT = 'OUI',EPXX = FCT1),DDL_IMPO=(
               _F( GROUP_NO = 'ZEGAL0',  DX = ZERO,  DY = ZERO),
                        _F( GROUP_NO = 'YEGAL0',  DY = ZERO),
                        _F( GROUP_NO = 'XEGAL1',  DX = ZERO),

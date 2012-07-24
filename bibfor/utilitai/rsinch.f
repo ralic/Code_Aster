@@ -8,7 +8,7 @@
       CHARACTER*(*)           BASE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,10 +69,10 @@ C ----------------------------------------------------------------------
 C
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,I1 ,I2 ,IACCES ,IALEXI ,IAOBJ ,IATACH 
-      INTEGER IATAVA ,IBID ,IDEBU ,IER1 ,IER2 ,IERR1 ,IERR2 
-      INTEGER ILOTY ,IMAXI ,INOMCH ,IP1 ,IP2 ,IPOSIT ,NBORD2 
-      INTEGER NBORDR 
+      INTEGER I ,I1 ,I2 ,IACCES ,IALEXI ,IAOBJ ,IATACH
+      INTEGER IATAVA ,IBID ,IDEBU ,IER1 ,IER2 ,IERR1 ,IERR2
+      INTEGER ILOTY ,IMAXI ,INOMCH ,IP1 ,IP2 ,IPOSIT ,NBORD2
+      INTEGER NBORDR
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       ACCE2 = ACCES
@@ -151,8 +151,8 @@ C
       CALL ASSERT(IERR1+IERR2.LE.0)
       RBASE = ZR(IAOBJ-1+I2) - ZR(IAOBJ-1+I1)
 C
-      CALL RSEXCH(NOMSD,NOMC2,IP1,CH1,L1)
-      CALL RSEXCH(NOMSD,NOMC2,IP2,CH2,L2)
+      CALL RSEXCH(' ',NOMSD,NOMC2,IP1,CH1,L1)
+      CALL RSEXCH(' ',NOMSD,NOMC2,IP2,CH2,L2)
       CALL ASSERT(L1+L2.LE.0)
 C
 C     -- SI LES 2 POINTS IP1 ET IP2 ONT MEME ABSCISSE, ON RECOPIE

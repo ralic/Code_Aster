@@ -1,4 +1,4 @@
-#@ MODIF algorith13 Messages  DATE 23/04/2012   AUTEUR ALARCON A.ALARCON 
+#@ MODIF algorith13 Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -132,11 +132,11 @@ cata_msg = {
  numéro sous-structure demandée -->  %(i1)d
 """),
 
-53 : _(u"""
-  champ inexistant
-  mesure    %(k1)s
-  NOM_CHAM  %(k2)s
-"""),
+
+
+
+
+
 
 56 : _(u"""
  problème interpolation volumique 3d:
@@ -244,12 +244,12 @@ cata_msg = {
  pour l'intervalle  %(i1)d
 """),
 
-85 : _(u"""
- champ inexistant
- résultat   : %(k1)s
- NOM_CHAM   : %(k2)s
- NUME_ORDRE : %(i1)d
-"""),
+
+
+
+
+
+
 
 91 : _(u"""
  problème de dimension de la matrice à multiplier

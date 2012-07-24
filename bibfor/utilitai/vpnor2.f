@@ -6,7 +6,7 @@
       CHARACTER*(*)       NOMCON
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,7 @@ C
          CALL JENUNO ( JEXNUM(NOMD2//'.DESC',ISY), NOMSYM )
          DO 12 IM = 1 , NBMODE
             IORDR = NUMORD(IM)
-            CALL RSEXCH ( NOMCON, NOMSYM, IORDR, VALE(1:19), IRET )
+            CALL RSEXCH(' ',NOMCON, NOMSYM, IORDR, VALE(1:19), IRET )
             IF ( IRET .EQ. 0 ) THEN
                CALL JEEXIN ( VALE(1:19)//'.VALE',IBID)
                IF (IBID.GT.0) THEN

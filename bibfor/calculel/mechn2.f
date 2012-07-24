@@ -5,7 +5,7 @@
       CHARACTER*24              CHNUMC
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,17 +31,16 @@ C OUT : CHNUMC : NOM DE LA CARTE CREEE POUR "PLAN"
 C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
       INTEGER      IBID, NX3, NCOU, NANGL, IOC, N1,
-     +             NREP, NBMA, JMAIL, JDCC, JDVC, JDCP, JDVP, IRET
-      REAL*8        RPLAN
+     +             NREP, NBMA, JMAIL, JDCC, JDVC, IRET
       CHARACTER*3  ORDO
-      CHARACTER*8  K8B, MOTCLS(2), TYPMCL(2), PLAN
+      CHARACTER*8  K8B, MOTCLS(2), TYPMCL(2)
       CHARACTER*16 MOTCLE,KBID,NOMCMD
       CHARACTER*24 MESMAI
       INTEGER      IARG
 C DEB-------------------------------------------------------------------
 C
       CALL GETRES(KBID,KBID,NOMCMD)
-      IF (NOMCMD.EQ.'CALC_SENSI') GOTO 9999
+
 
       MOTCLE = 'REPE_COQUE'
 C
@@ -118,5 +117,4 @@ C
 C
       ENDIF
 
- 9999 CONTINUE
       END

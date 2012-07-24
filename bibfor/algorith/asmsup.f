@@ -9,7 +9,7 @@
       CHARACTER*14      NUME
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,9 +48,9 @@ C                TCOSUP(I) = 2 : COMBINAISON LINEAIRE
 C                TCOSUP(I) = 3 : COMBINAISON ABSOLUE
 C     ------------------------------------------------------------------
       INTEGER      IBID, ID, IDDL, IER, IGR, IM, IN, INO, IOC, IRET, IS,
-     +             JDDL1, JDDL2, JDGN, JGRN, JNOE, LVALE, NBA, NBB, N1,
-     +             NBBD, NBL, NBLIAI, NBOCC, NBTROU, NGR, NNO, NT,
-     +             VALI(2)
+     &             JDDL1, JDDL2, JDGN, JGRN, JNOE, LVALE, NBA, NBB, N1,
+     &             NBBD, NBL, NBLIAI, NBOCC, NBTROU, NGR, NNO, NT,
+     &             VALI(2)
       CHARACTER*1  K1B
       CHARACTER*4  CTYP, DIR(3)
       CHARACTER*8  K8B, NOMA, GRNOEU, NOEU, NOMCMP(3)
@@ -107,7 +107,7 @@ C     --- VERIFICATION DE L'OPTION "REAC_NODA" ---
 C
 C     --- RECUPERATION DES REACTIONS NODALES ---
       DO 60 IM = 1,NBMODE
-         CALL RSEXCH(MECA,NOMSY,LORDR(IM),CHAM19,IRET)
+         CALL RSEXCH('F',MECA,NOMSY,LORDR(IM),CHAM19,IRET)
          CALL JEVEUO(CHAM19//'.VALE','L',LVALE)
          DO 62 ID = 1,3
             IF (NDIR(ID).EQ.1) THEN

@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -107,8 +107,7 @@ C                   -----------
                ENDIF
                IF ( IRET .NE. 0 ) GOTO 9999
                CALL JEVEUO ( KNUM, 'L', JORDR )
-               CALL RSEXCH ( RESUCO, 'DEPL', ZI(JORDR), CHDEF, IRET )
-               IF ( IRET .GT. 0 ) CALL U2MESS('F','CHAMPS_2')
+               CALL RSEXCH('F',RESUCO, 'DEPL', ZI(JORDR), CHDEF, IRET )
                CALL CHPVE2(CHDEF,3,TABTYP,IER)
             ENDIF
          ENDIF

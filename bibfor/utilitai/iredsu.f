@@ -5,7 +5,7 @@
       CHARACTER*(*) MACR,FORM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF UTILITAI  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -151,7 +151,7 @@ C     ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
               ENDIF
  26         CONTINUE
             WRITE (IFC,'(2I10,6I2)')
-     >             INOE, ICOL, IDX, IDY, IDZ, IDRX, IDRY, IDRZ
+     &             INOE, ICOL, IDX, IDY, IDZ, IDRX, IDRY, IDRZ
  24       CONTINUE
           WRITE (IFC,'(A)') '    -1'
         ENDIF
@@ -170,7 +170,7 @@ C     ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
       DO 100 I = 1 , NBORDR
         IORD = ZI(JORDR+I-1)
         IF (ZK16(JNOEU+I-1).NE.' ') THEN
-          CALL RSEXCH ( BASEMO,'DEPL',IORD,NOCH19,IRET)
+          CALL RSEXCH(' ',BASEMO,'DEPL',IORD,NOCH19,IRET)
           IF ( IRET .EQ. 0 ) THEN
             NSTAT = NSTAT + 1
             ZK24(JMST+NSTAT-1) = NOCH19
@@ -183,12 +183,12 @@ C     ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
           WRITE (IFC,'(A)') '    -1'
           TITRE = 'MODE DYNAMIQUE'
           CALL IRECRI ( BASEMO,FORM,IFC,TITRE,LBID,
-     >                 1,'DEPL',' ',IERO,K8B, 
+     &                 1,'DEPL',' ',IERO,K8B,
      &                 1,IORD,.TRUE.,B,IERO,
-     >                 CECR,K8B,F,IERO,IBID,
-     >                 IERO,IBID,IERO,K8B,F,
-     >                 ZERO,F,ZERO,F,F,
-     >                 FORMAR,NIVE,VERSIO)
+     &                 CECR,K8B,F,IERO,IBID,
+     &                 IERO,IBID,IERO,K8B,F,
+     &                 ZERO,F,ZERO,F,F,
+     &                 FORMAR,NIVE,VERSIO)
         ENDIF
  100  CONTINUE
       IF ( NSTAT .NE. 0 ) THEN

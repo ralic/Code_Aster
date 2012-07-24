@@ -7,7 +7,7 @@
       CHARACTER*(*) RESU0
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C RESPONSABLE PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -58,8 +58,7 @@ C     -------------------------------------------------------
           IF (CHEXCL(J).EQ.NOMSYM) THEN
             DO 10 K=1,NBRANG
               IF (ZK24(JTACH+K-1)(1:1).EQ.' ')GOTO 10
-              CALL RSEXCH(NOMSDR,NOMSYM,NUORDR(K),CHAMIN,IRE1)
-              CALL ASSERT(IRE1.EQ.0)
+              CALL RSEXCH('F',NOMSDR,NOMSYM,NUORDR(K),CHAMIN,IRE1)
               CALL DETRSD('CHAMP_GD',CHAMIN)
               ZK24(JTACH+K-1)=' '
    10       CONTINUE
@@ -71,8 +70,7 @@ C     -------------------------------------------------------
         IRANG=0
         DO 30 J=1,NBRANG
           IF (ZK24(JTACH+J-1)(1:1).EQ.' ')GOTO 30
-          CALL RSEXCH(NOMSDR,NOMSYM,NUORDR(J),CHAMIN,IRE1)
-          CALL ASSERT(IRE1.EQ.0)
+          CALL RSEXCH('F',NOMSDR,NOMSYM,NUORDR(J),CHAMIN,IRE1)
           IF (NUARCH(J).EQ.0) THEN
             CALL DETRSD('CHAMP_GD',CHAMIN)
           ELSE

@@ -1,4 +1,4 @@
-#@ MODIF algorith12 Messages  DATE 07/05/2012   AUTEUR BODEL C.BODEL 
+#@ MODIF algorith12 Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -229,12 +229,12 @@ cata_msg = {
  arrêt sur perte d'information DDL physique
 """),
 
-66 : _(u"""
- champ inexistant
- CHAMP      :  %(k1)s
- NUME_ORDRE :  %(i1)d
- MODE_MECA  :  %(k2)s
-"""),
+
+
+
+
+
+
 
 67 : _(u"""
  arrêt sur problème de conditions d'interface
@@ -276,11 +276,11 @@ cata_msg = {
  pour le NUME_ORDRE  %(i1)d
 """),
 
-76 : _(u"""
-  problème de récupération du champ aux noeuds
-  concept résultat:  %(k1)s
-  numéro d'ordre  :  %(i1)d
-"""),
+
+
+
+
+
 
 77 : _(u"""
  pas d'interface définie

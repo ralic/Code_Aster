@@ -8,7 +8,7 @@
       CHARACTER*16        GRDMOD
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -112,11 +112,7 @@ C
       CALL WKVECT ( '&&OP0131.LISTADRMODE' ,'V V I', NBMODE, ILAMOD )
       DO 211 IM = 1 , NBMODE
          IMOD1 = ZI(ILMODE+IM-1)
-         CALL RSEXCH ( MODMEC, GRDMOD, IMOD1, NOMCHA, IRET )
-         IF ( IRET.NE. 0 ) THEN
-            VALI = IMOD1
-            CALL U2MESG('F', 'ALGORITH14_8',0,' ',1,VALI,0,0.D0)
-         ENDIF
+         CALL RSEXCH('F',MODMEC, GRDMOD, IMOD1, NOMCHA, IRET )
          CALL JEVEUT ( NOMCHA(1:19)//'.VALE', 'L', ZI(ILAMOD+IM-1) )
  211  CONTINUE
       CALL JELIRA ( NOMCHA(1:19)//'.VALE', 'TYPE', IBID, TYMMEC )

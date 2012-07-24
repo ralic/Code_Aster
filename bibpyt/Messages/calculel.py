@@ -1,4 +1,4 @@
-#@ MODIF calculel Messages  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
+#@ MODIF calculel Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -214,9 +214,16 @@ Conseil :
 """),
 
 
+29 : _(u"""
+ Erreur utilisateur :
+   Le programme a besoin d'accéder au champ %(k2)s de la structure sd_resultat %(k1)s
+   pour le NUME_ORDRE: %(i1)d
+   Mais ce champ n'existe pas dans la structure de données fournie.
+   On ne peut pas continuer.
 
-
-
+ Risques & conseils :
+ Vérifiez que la structure de données %(k1)s est bien celle qu'il faut utiliser.
+"""),
 
 30 : _(u"""
 Erreur utilisateur :
@@ -291,6 +298,7 @@ dans la structure de sonnées Résultat. Dans ce cas, le reuse est interdit.
 Conseil :
   Relancez le calcul en créant une nouvelle structure de données résultat.
 """),
+
 
 
 
@@ -429,7 +437,7 @@ Risques et conseils :
 """),
 
 76 : _(u"""
- Votre modèle contient un mélange d'éléments 1D,2D ou 3D. 
+ Votre modèle contient un mélange d'éléments 1D,2D ou 3D.
  Le lissage global n'est possible que pour les éléments 2D soit 3D.
 """),
 

@@ -2,7 +2,7 @@
      &                   JDEPL,JVITE,JACCE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,7 +78,7 @@ C CREATION DE LA MATRICE GENERALISE SUPPORT
       ZK24(JREFA-1+10) = 'GENE'
 
       DO 100 IABS = 1, NBSAUV
-        CALL RSEXCH (NOMRES, 'DEPL', IABS, CHAMGE, IER )
+        CALL RSEXCH(' ',NOMRES, 'DEPL', IABS, CHAMGE, IER )
         IF     ( IER .EQ. 0   ) THEN
         ELSEIF ( IER .EQ. 100 ) THEN
             CALL VTCREM (CHAMGE, MATGEN, 'G', 'C' )
@@ -95,7 +95,7 @@ C DE TAILLE 2 ET NON 4 COMME UN CHAM_NO
  110    CONTINUE
         CALL RSNOCH (NOMRES,'DEPL',IABS)
 
-        CALL RSEXCH (NOMRES, 'VITE', IABS, CHAMGE, IER )
+        CALL RSEXCH(' ',NOMRES, 'VITE', IABS, CHAMGE, IER )
         IF     ( IER .EQ. 0   ) THEN
         ELSEIF ( IER .EQ. 100 ) THEN
             CALL VTCREM (CHAMGE, MATGEN, 'G', 'C' )
@@ -112,7 +112,7 @@ C DE TAILLE 2 ET NON 4 COMME UN CHAM_NO
  120    CONTINUE
         CALL RSNOCH (NOMRES,'VITE',IABS)
 
-        CALL RSEXCH (NOMRES, 'ACCE', IABS, CHAMGE, IER )
+        CALL RSEXCH(' ',NOMRES, 'ACCE', IABS, CHAMGE, IER )
         IF     ( IER .EQ. 0   ) THEN
         ELSEIF ( IER .EQ. 100 ) THEN
             CALL VTCREM (CHAMGE, MATGEN, 'G', 'C' )

@@ -1,4 +1,4 @@
-#@ MODIF dyna_iss_vari_ops Macro  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF dyna_iss_vari_ops Macro  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -60,7 +60,7 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
 
    DEFI_FONCTION  = self.get_cmd('DEFI_FONCTION')
    CALC_FONCTION  = self.get_cmd('CALC_FONCTION')
-   CREA_TABLE     = self.get_cmd('CREA_TABLE')
+   DEFI_INTE_SPEC     = self.get_cmd('DEFI_INTE_SPEC')
    REST_SPEC_TEMP     = self.get_cmd('REST_SPEC_TEMP')
    DEFI_LIST_REEL=self.get_cmd('DEFI_LIST_REEL')
 
@@ -74,7 +74,7 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
       self.DeclareOut('dyha', self.sd)
    else:
       TYPE_RESU='SPEC'
-      self.DeclareOut('tab_out', self.sd)
+      self.DeclareOut('inte_out', self.sd)
 
 #--------------------------------------------------------------------------------
  # -------- DISCRETISATION frequentielle ou temporelle --------
@@ -490,8 +490,7 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
    if TYPE_RESU=='SPEC':
 
 #   ------ CREATION DE L OBJET TABLE
-      tab = Table()
-      tab.append({'NOM_CHAM' : 'DSP', 'OPTION' : 'TOUT',  'DIMENSION' : nbmodt})
+      mcfact = []
       for k2 in range(nbmodt):
          if OPTION =='DIAG' : # on ecrit uniquement les termes diagonaux (autospectres) de la matrice
             foncc=[]
@@ -503,7 +502,9 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
                       NOM_RESU='SPEC',
                       VALE_C  = foncc )
          # Ajout d'une ligne dans la Table
-            tab.append({'NUME_ORDRE_I' : k2+1, 'NUME_ORDRE_J' : k2+1, 'FONCTION_C' : _f.nom})
+            mcfact.append(_F(NUME_ORDRE_I=k2+1,
+                             NUME_ORDRE_J=k2+1,
+                             FONCTION=_f),)
 
          else: # on ecrit tout
             for k1 in range(k2+1):
@@ -516,12 +517,13 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
                       NOM_RESU='SPEC',
                       VALE_C  = foncc )
             # Ajout d'une ligne dans la Table
-               tab.append({'NUME_ORDRE_I' : k1+1, 'NUME_ORDRE_J' : k2+1, 'FONCTION_C' : _f.nom})
+               mcfact.append(_F(NUME_ORDRE_I=k1+1,
+                             NUME_ORDRE_J=k2+1,
+                             FONCTION=_f),)
 
    # Creation du concept en sortie
-      dict_keywords = tab.dict_CREA_TABLE()
-      tab_out = CREA_TABLE(TYPE_TABLE='TABLE_FONCTION',
-                        **dict_keywords)
+      inte_out = DEFI_INTE_SPEC(PAR_FONCTION=mcfact,
+                        TITRE='DSP',)
 
 #-
 ##---------------------------------------------------------------------

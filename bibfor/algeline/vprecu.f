@@ -9,7 +9,7 @@
       INTEGER           NBPARI, NBPARR, NBPARK
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,10 +74,10 @@ C     ------------------------------------------------------------------
       LOGICAL       RECUNP
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER I ,IBID ,IEQ ,II ,IK ,IMODE ,IR 
-      INTEGER IRET ,J ,JPARA ,LMODE ,LNOPAR ,LNUME ,LNUMOR 
-      INTEGER LRESUI ,LRESUK ,LRESUR ,LVALE ,NBMODT ,NBOUT ,NBTPAR 
-      INTEGER NBTROU ,NEQ1 ,NORDR 
+      INTEGER I ,IBID ,IEQ ,II ,IK ,IMODE ,IR
+      INTEGER IRET ,J ,JPARA ,LMODE ,LNOPAR ,LNUME ,LNUMOR
+      INTEGER LRESUI ,LRESUK ,LRESUR ,LVALE ,NBMODT ,NBOUT ,NBTPAR
+      INTEGER NBTROU ,NEQ1 ,NORDR
 C-----------------------------------------------------------------------
       DATA  VALE  /'                   .VALE'/
 C     ------------------------------------------------------------------
@@ -114,23 +114,16 @@ C
 C          *************** ON RECUPERE LES CHAMPS ***************
 C
 C     --- RECUPERATION DE NEQ ---
-      CALL RSEXCH(MODES,NOMSY,ZI(LNUMOR),VALE(1:19),IRET)
-      IF (IRET.NE.0) THEN
-         CALL GETRES(K8B,K8B,NOMCMD)
-            VALK (1) = VALE(1:19)
-            VALK (2) = ' '
-         CALL U2MESG('F', 'ALGELINE4_79',2,VALK,0,0,0,0.D0)
-       ELSE
-         CALL JEEXIN(VALE(1:19)//'.VALE',IBID)
-         IF (IBID.GT.0) THEN
-           VALE(20:24)='.VALE'
-         ELSE
-           VALE(20:24)='.CELV'
-         END IF
+      CALL RSEXCH('F',MODES,NOMSY,ZI(LNUMOR),VALE(1:19),IRET)
+      CALL JEEXIN(VALE(1:19)//'.VALE',IBID)
+      IF (IBID.GT.0) THEN
+        VALE(20:24)='.VALE'
+      ELSE
+        VALE(20:24)='.CELV'
+      END IF
 
-         CALL JELIRA(VALE,'LONMAX',NEQ,K8B)
-         CALL JELIRA(VALE,'TYPE',IBID,TYPMOD)
-       ENDIF
+      CALL JELIRA(VALE,'LONMAX',NEQ,K8B)
+      CALL JELIRA(VALE,'TYPE',IBID,TYPMOD)
 C
 C     --- CREATION DES OBJETS DE NOM NOMVEC ET NOMVAL ---
       IF ( TYPMOD(1:1) .EQ. 'R' ) THEN
@@ -145,38 +138,32 @@ C
 C        --- VECTEUR PROPRE ---
       DO 20 IMODE = 1,NBMODE
          NORDR =  ZI(LNUMOR-1+IMODE)
-         CALL RSEXCH ( MODES, NOMSY, NORDR, VALE(1:19), IRET)
-         IF (IRET.NE.0) THEN
-            CALL GETRES(K8B,K8B,NOMCMD)
-            VALK (1) = VALE(1:19)
-            CALL U2MESG('E', 'ALGELINE4_81',1,VALK,0,0,0,0.D0)
+         CALL RSEXCH('F',MODES, NOMSY, NORDR, VALE(1:19), IRET)
+         CALL JEEXIN(VALE(1:19)//'.VALE',IBID)
+         IF (IBID.GT.0) THEN
+           VALE(20:24)='.VALE'
          ELSE
-            CALL JEEXIN(VALE(1:19)//'.VALE',IBID)
-            IF (IBID.GT.0) THEN
-              VALE(20:24)='.VALE'
-            ELSE
-              VALE(20:24)='.CELV'
-            END IF
+           VALE(20:24)='.CELV'
+         END IF
 
-            CALL JEVEUO(VALE,'L',LVALE)
-            CALL JELIRA(VALE,'LONMAX',NEQ1,K8B)
-            CALL JELIRA(VALE,'TYPE',IBID,K8B)
-            IF ( TYPMOD(1:1) .NE. K8B(1:1) ) THEN
-             CALL U2MESS('F','ALGELINE3_70')
-            ELSEIF ( NEQ .EQ. NEQ1 ) THEN
-               IF ( TYPMOD(1:1) .EQ. 'R' ) THEN
-                  DO 22 IEQ = 0, NEQ-1
-                     ZR(LMODE+NEQ*(IMODE-1)+IEQ) = ZR(LVALE+IEQ)
- 22               CONTINUE
-               ELSEIF ( TYPMOD(1:1) .EQ. 'C' ) THEN
-                  DO 24 IEQ = 0, NEQ-1
-                     ZC(LMODE+NEQ*(IMODE-1)+IEQ) = ZC(LVALE+IEQ)
- 24               CONTINUE
-               ENDIF
-               CALL JELIBE(VALE)
-            ELSE
-             CALL U2MESS('F','ALGELINE3_71')
+         CALL JEVEUO(VALE,'L',LVALE)
+         CALL JELIRA(VALE,'LONMAX',NEQ1,K8B)
+         CALL JELIRA(VALE,'TYPE',IBID,K8B)
+         IF ( TYPMOD(1:1) .NE. K8B(1:1) ) THEN
+          CALL U2MESS('F','ALGELINE3_70')
+         ELSEIF ( NEQ .EQ. NEQ1 ) THEN
+            IF ( TYPMOD(1:1) .EQ. 'R' ) THEN
+               DO 22 IEQ = 0, NEQ-1
+                  ZR(LMODE+NEQ*(IMODE-1)+IEQ) = ZR(LVALE+IEQ)
+ 22            CONTINUE
+            ELSEIF ( TYPMOD(1:1) .EQ. 'C' ) THEN
+               DO 24 IEQ = 0, NEQ-1
+                  ZC(LMODE+NEQ*(IMODE-1)+IEQ) = ZC(LVALE+IEQ)
+ 24            CONTINUE
             ENDIF
+            CALL JELIBE(VALE)
+         ELSE
+          CALL U2MESS('F','ALGELINE3_71')
          ENDIF
  20   CONTINUE
  100  CONTINUE

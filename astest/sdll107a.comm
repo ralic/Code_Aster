@@ -1,4 +1,4 @@
-# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL TEMPOREL POUTRE SOUS EXCITATION ALEATOIRE AVEC DSP
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1692,16 +1692,22 @@ INTERS=CALC_INTE_SPEC(          INST_INIT=0.,
 
 #
 
-TEST_FONCTION(TABL_INTSP=(
-        _F(  INTE_SPEC = INTERS,
-                    NUME_ORDRE_I = 1,    NUME_ORDRE_J = 1,
-                    VALE_PARA = 2.,       VALE_REFE_C = ('RI',0.1,0.,),
+REP1=RECU_FONCTION(    INTE_SPEC=INTERS,
+                    NUME_ORDRE_I = 1,
+                      )
+
+REP2=RECU_FONCTION(    INTE_SPEC=INTERS,
+                    NUME_ORDRE_I = 2,
+                      )
+
+TEST_FONCTION(VALEUR=(
+    _F(  FONCTION = REP1,
+                    VALE_PARA = 2.,       VALE_REFE = 0.1,
                     PRECISION = 10.E-2),
-        _F(  INTE_SPEC = INTERS,
-                    NUME_ORDRE_I = 2,    NUME_ORDRE_J = 2,
-                    VALE_PARA = 2.,       VALE_REFE_C = ('RI',0.025,0.,),
-                    PRECISION = 10.E-2))
-               )
+    _F(  FONCTION = REP2,
+                    VALE_PARA = 2.,       VALE_REFE = 0.025,
+                    PRECISION = 10.E-2),
+           ),)
 
 ##
 PROJ_BASE(  BASE=MODES,
@@ -2002,20 +2008,22 @@ INT2=CALC_INTE_SPEC(   INST_INIT=0.,
 # les versions de python
 
 version=sys.version_info[:2]
+REP3=RECU_FONCTION(    INTE_SPEC=INT2,
+                    NUME_ORDRE_I = 1,
+                      )
+
 if version<(2,3) :
-  TEST_FONCTION(
-       TABL_INTSP=_F(  INTE_SPEC = INT2,
-                   NUME_ORDRE_I = 1,    NUME_ORDRE_J = 1,
-                   VALE_PARA = 4.2,      VALE_REFE_C = ('MP',6.1E-8,0.,),
+  TEST_FONCTION(VALEUR=(
+      _F(  FONCTION = REP3,
+                   VALE_PARA = 4.2,      VALE_REFE = 6.1E-8,
                    PRECISION = 1.E-2)
-               )
+           ),)
 else :
-  TEST_FONCTION(
-       TABL_INTSP=_F(  INTE_SPEC = INT2,
-                   NUME_ORDRE_I = 1,    NUME_ORDRE_J = 1,
-                   VALE_PARA = 4.2,      VALE_REFE_C = ('MP',7.4E-8,0.,),
+  TEST_FONCTION(VALEUR=(
+      _F(  FONCTION = REP3,
+                   VALE_PARA = 4.2,      VALE_REFE = 7.4E-8,
                    PRECISION = 1.E-2)
-               )
+           ),)
 
 
 FIN( )

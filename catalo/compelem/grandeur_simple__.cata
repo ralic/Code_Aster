@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 10/05/2012   AUTEUR CHEIGNON E.CHEIGNON 
+%& MODIF COMPELEM  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 % RESPONSABLE PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -1073,15 +1073,15 @@ GRANDEUR_SIMPLE__
       FLUX : composante suivante OX de f
       FLUY : composante suivante OY de f
       FLUZ : composante suivante OZ de f
-      FLUX_SUP : flux sur un point de la face supérieure des coques
-      FLUY_SUP : flux sur un point de la face supérieure des coques
-      FLUZ_SUP : flux sur un point de la face supérieure des coques
       FLUX_INF : flux sur un point de la face inférieure des coques
       FLUY_INF : flux sur un point de la face inférieure des coques
       FLUZ_INF : flux sur un point de la face inférieure des coques
+      FLUX_SUP : flux sur un point de la face supérieure des coques
+      FLUY_SUP : flux sur un point de la face supérieure des coques
+      FLUZ_SUP : flux sur un point de la face supérieure des coques
 >>
-    FLUX_R   = R    FLUX     FLUY     FLUZ     FLUX_SUP FLUY_SUP FLUZ_SUP FLUX_INF FLUY_INF
-                    FLUZ_INF
+    FLUX_R   = R    FLUX     FLUY     FLUZ     FLUX_INF FLUY_INF FLUZ_INF
+                    FLUX_SUP FLUY_SUP FLUZ_SUP
 
 <<  FORC_C Type:C Force complexe (ponctuelle, linéique, surfacique ou
     volumique) appliquée sur un modèle mécanique
@@ -1955,6 +1955,8 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        SIGV_GX: GRAD_VARI - COMPOSANTE ASSOCIEA AU GRADIENT SELON X
        SIGV_GY: GRAD_VARI - COMPOSANTE ASSOCIEA AU GRADIENT SELON Y
        SIGV_GZ: GRAD_VARI - COMPOSANTE ASSOCIEA AU GRADIENT SELON Z
+       SIG_NX, SIG_NY, SIG_NZ, ...  ,SIG_T2Z, SIG_T2 : contraintes de "rosette":
+               Voir option SIRO_ELEM dans U4.81.04
 >>
     SIEF_R   = R    SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     N        VY
        VZ       MT       MFY      MFZ      BX       NXX      NYY      NXY

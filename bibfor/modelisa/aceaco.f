@@ -5,7 +5,7 @@
       CHARACTER*8         NOMU,NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,20 +33,20 @@ C IN  : NOCACO : NOMBRE
 C IN  : NMTGCO : NOMBRE
 C IN  : NBOCC  : NOMBRE D'OCCURENCES DU MOT CLE COQUE
 C ----------------------------------------------------------------------
+      INTEGER      NVEC
       REAL*8       ANG(2), EPA, KAPPA, CORREC, RIGI, EXCENT
       REAL*8       VECT(3),R8PI
-      INTEGER NVEC, LVAL, NVALF
-      CHARACTER*8  INERT, KORREC, K8B
-      CHARACTER*19 CARTCO, K19B
+      CHARACTER*8  INERT, KORREC
+      CHARACTER*19 CARTCO
       CHARACTER*24 TMPNCO, TMPVCO
       INTEGER      IARG
 C     ------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IOC ,JDCC ,JDLS ,JDVC ,NA ,NCO 
-      INTEGER NCR ,NEX ,NG ,NIN ,NK ,NM ,NV 
+      INTEGER I ,IOC ,JDCC ,JDLS ,JDVC ,NA ,NCO
+      INTEGER NCR ,NEX ,NG ,NIN ,NK ,NM ,NV
 
-      REAL*8 PI ,XINER 
+      REAL*8 PI ,XINER
 C-----------------------------------------------------------------------
       PI=R8PI()
 C
@@ -81,18 +81,11 @@ C --- LECTURE DES VALEURS ET AFFECTATION DANS LA CARTE CARTCO
          XINER  = 0.D0
          INERT = 'NON'
          CALL GETVEM(NOMA,'GROUP_MA','COQUE','GROUP_MA',
-     +                                IOC,IARG,LMAX,ZK8(JDLS),NG)
+     &                                IOC,IARG,LMAX,ZK8(JDLS),NG)
          CALL GETVEM(NOMA,'MAILLE',  'COQUE','MAILLE',
-     +                                IOC,IARG,LMAX,ZK8(JDLS),NM)
+     &                                IOC,IARG,LMAX,ZK8(JDLS),NM)
          CALL GETVR8('COQUE','EPAIS',IOC,IARG,1,
      &               EPA      ,NV  )
-C ET POUR LES PARA_SENSI
-         CALL GETVID ( 'COQUE', 'EPAIS_F',IOC,IARG,0, K8B , NVALF)
-         IF (NVALF .NE. 0) THEN
-           CALL GETVID ('COQUE','EPAIS_F',IOC,IARG,1, K19B ,NVALF)
-           CALL JEVEUO(K19B//'.VALE','L',LVAL)
-           EPA = ZR(LVAL+1)
-         ENDIF
          CALL GETVR8('COQUE','ANGL_REP',IOC,IARG,2,
      &               ANG(1)   ,NA  )
          CALL GETVR8('COQUE','VECTEUR',IOC,IARG,3,

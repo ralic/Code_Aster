@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ def dyna_iss_vari_prod(self, FONC_SIGNAL,**args):
    if FONC_SIGNAL !=None :
        return tran_gene
    else:
-      return  table_fonction
+      return  interspectre
    raise AsException("type de concept resultat non prevu")
 
 DYNA_ISS_VARI=MACRO(nom="DYNA_ISS_VARI",

@@ -1,4 +1,4 @@
-# MODIF  DATE 20/06/2012   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE  FISSURE LENTILLE EN TRACTION
 # sslv155a.para = tps_job 30 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -94,6 +94,8 @@ FISS=DEFI_FOND_FISS(MAILLAGE=MA,
                     LEVRE_INF=_F(GROUP_MA='LEV_INF',),
                     )
 
+# ici, la direction est facultative mais permet d'ameliorer la 
+# precision sur K2 : de 10% -> 5%
 CG=CALC_G(THETA=_F(FOND_FISS=FISS,
                    DIRECTION=(cos(alpha),sin(alpha),0),
                    R_INF=2*h,

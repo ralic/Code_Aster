@@ -1,4 +1,4 @@
-#@ MODIF prepost4 Messages  DATE 26/06/2012   AUTEUR TRAN V-X.TRAN 
+#@ MODIF prepost4 Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -113,13 +113,13 @@ cata_msg = {
  le champ simple qui contient les valeurs des contraintes n existe pas.
 """),
 
-32 : _(u"""
- le champ de contraintes aux points de gauss  SIEF_ELGA n'a pas été calcule.
-"""),
 
-33 : _(u"""
- le champ de déformations aux points de gauss EPSI_ELGA n'a pas été calcule.
-"""),
+
+
+
+
+
+
 
 34 : _(u"""
  les champs de déformations aux points de gauss n'existent pas.
@@ -129,10 +129,10 @@ cata_msg = {
  le champ simple qui contient les valeurs des déformations n existe pas.
 """),
 
-36 : _(u"""
- le champ de déformations plastiques aux points de gauss EPSP_ELGA n'a pas été calcule.
- On prendre la valeur zéro. Si la déformation existe, il faut calculer EPSP_ELGA.
-"""),
+
+
+
+
 
 37 : _(u"""
  le champ simple qui contient les valeurs des déformations plastiques n'existe pas.
@@ -142,9 +142,9 @@ cata_msg = {
  le champ de contraintes aux noeuds SIEF_NOEU ou SIEF_NOEU n'a pas été calculé.
 """),
 
-39 : _(u"""
- le champ de déformations aux noeuds EPSI_NOEU n'a pas été calcule.
-"""),
+
+
+
 
 40 : _(u"""
  le champ de contraintes aux noeuds n'existe pas.
@@ -154,9 +154,9 @@ cata_msg = {
  le champ de déformations aux noeuds n'existe pas.
 """),
 
-42 : _(u"""
- le champ de déformations plastiques aux noeuds EPSP_NOEU n'a pas été calculé.
-"""),
+
+
+
 
 43 : _(u"""
  le champ de déformations plastiques aux noeuds n'existe pas.
@@ -167,8 +167,8 @@ cata_msg = {
 """),
 
 46: _(u"""
- On note que déformation élastique  = déformation TOTALE - déformation PLASTIQUE. Si la déformation 
- plastique n'est pas calculée dans le resultat, on prendre la valeur zéro. 
+ On note que déformation élastique  = déformation TOTALE - déformation PLASTIQUE. Si la déformation
+ plastique n'est pas calculée dans le resultat, on prendre la valeur zéro.
 """),
 
 47 : _(u"""

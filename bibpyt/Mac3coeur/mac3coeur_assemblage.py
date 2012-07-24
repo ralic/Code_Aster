@@ -1,4 +1,4 @@
-#@ MODIF mac3coeur_assemblage Mac3coeur  DATE 04/01/2012   AUTEUR SELLENET N.SELLENET 
+#@ MODIF mac3coeur_assemblage Mac3coeur  DATE 24/07/2012   AUTEUR PERONY R.PERONY 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -239,6 +239,7 @@ class Assemblage(object):
             _F(GROUP_MA = 'TG_' + self.idAST, MATER = self.mate.mate['TG'],),
             _F(GROUP_MA = 'ES_' + self.idAST, MATER = self.mate.mate['ES'],),
             _F(GROUP_MA = 'EI_' + self.idAST, MATER = self.mate.mate['EI'],),
+            _F(GROUP_MA = 'MNT_' + self.idAST, MATER = self.mate.mate['MNT'],),
             _F(GROUP_MA = 'GC_' + self.idAST + '_B', MATER = self.mate.mate['GC_EB'],),
             _F(GROUP_MA = 'GC_' + self.idAST + '_T', MATER = self.mate.mate['GC_EH'],),
             _F(GROUP_MA = 'GC_' + self.idAST + '_M', MATER = self.mate.mate['GC_ME'],),
@@ -317,11 +318,19 @@ class Assemblage(object):
                REPERE='LOCAL',
                CARA='K_TR_L',
                VALE=vale_K_TR_L(self.KNAXM, self.KY_CM, self.KM1, self.KM2, self.NBCR),),
+            _F(GROUP_MA='GC_' + self.idAST + '_M',
+               REPERE='LOCAL',
+               CARA='M_TR_D_L',
+               VALE=(0.,0.,0.,0.,),),
             # --- Pour les grilles extremites
-        _F(GROUP_MA=('GC_' + self.idAST + '_B','GC_' + self.idAST + '_T',),
+            _F(GROUP_MA=('GC_' + self.idAST + '_B','GC_' + self.idAST + '_T',),
                REPERE='LOCAL',
                CARA='K_TR_L',
                VALE=vale_K_TR_L(self.KNAXE, self.KY_CE, self.KE1, self.KE2, self.NBCR),),
+            _F(GROUP_MA=('GC_' + self.idAST + '_B','GC_' + self.idAST + '_T',),
+               REPERE='LOCAL',
+               CARA='M_TR_D_L',
+               VALE=(0.,0.,0.,0.,),),
 
         # discrets des liaisons grilles / tubes-guide
             # grilles de mélanges
@@ -329,16 +338,35 @@ class Assemblage(object):
                REPERE='LOCAL',
                CARA='K_TR_D_L',
                VALE=vale_K_TR_D_L(self.NBTG, self.KR_GM),),
+            _F(GROUP_MA='GT_' + self.idAST+ '_M',
+               REPERE='LOCAL',
+               CARA='M_TR_D_L',
+               VALE=(0.,0.,0.,0.,),),
             # grilles extrémités
             _F(GROUP_MA='GT_' + self.idAST + '_E',
                REPERE='LOCAL',
                CARA='K_TR_D_L',
                VALE=vale_K_TR_D_L(self.NBTG, self.KR_GE),),
+            _F(GROUP_MA='GT_' + self.idAST + '_E',
+               REPERE='LOCAL',
+               CARA='M_TR_D_L',
+               VALE=(0.,0.,0.,0.,),),
             # poids des grilles
             _F(GROUP_MA='GR_' + self.idAST,
                REPERE='LOCAL',
                CARA='M_T_D_N',
                VALE=self.m_gri / 4.,),
+
+        # discrets des ressorts de maintien
+        #(valeurs arbitraires car raideurs définies dans materiau DIS_BILI_ELAS)
+            _F(GROUP_MA='MNT_' + self.idAST,
+               REPERE='LOCAL',
+               CARA='K_T_D_L',
+               VALE=(1.e9, 1.e9, 1.e9,),),
+            _F(GROUP_MA='MNT_' + self.idAST,
+               REPERE='LOCAL',
+               CARA='M_T_D_L',
+               VALE=0.,),
         )
         return mcf
 

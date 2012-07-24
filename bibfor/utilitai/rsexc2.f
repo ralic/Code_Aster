@@ -1,7 +1,7 @@
       SUBROUTINE RSEXC2(I1,I2,NOMSD,NOMSY,IORDR,CHEXTR,OPTION,IRET)
       IMPLICIT NONE
 C-----------------------------------------------------------------------
-      INTEGER I1 ,I2 ,ICODE ,IRET ,J ,NMAX 
+      INTEGER I1 ,I2 ,ICODE ,IRET ,J ,NMAX
 C-----------------------------------------------------------------------
       PARAMETER (NMAX=10)
       CHARACTER*15 NOMS(NMAX)
@@ -18,7 +18,7 @@ C-----------------------------------------------------------------------
       INTEGER VALI
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,7 +74,7 @@ C ----------------------------------------------------------------------
       NOMS(I1)=NOMSY
       IF (I1.EQ.1) ALARME=.TRUE.
       NB=I2
-      CALL RSEXCH(NOMSD,NOMSY,IORDR,CHEXTR,ICODE)
+      CALL RSEXCH(' ',NOMSD,NOMSY,IORDR,CHEXTR,ICODE)
       ALARME=ALARME.AND.ICODE.GT.0
       IF ( ALARME.AND.I1.EQ.I2) THEN
          CALL GETRES(CONCEP,TYPCON,NOMCMD)

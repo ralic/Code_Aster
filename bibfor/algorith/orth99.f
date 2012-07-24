@@ -6,7 +6,7 @@
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -182,7 +182,7 @@ C
          IOROL = ZI(JORDM+I-1)
          IORNE = IORNE+1
 C
-         CALL RSEXCH(NOMRES,'DEPL',IORNE,CHAMOL,IER)
+         CALL RSEXCH(' ',NOMRES,'DEPL',IORNE,CHAMOL,IER)
          CALL VTCREM(CHAMOL,MATRAS,'G','R')
          CALL JEVEUO(CHAMOL//'.VALE','E',JVALE)
          DO 111 IEQ = 1 , NEQ

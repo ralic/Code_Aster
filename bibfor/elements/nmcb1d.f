@@ -1,10 +1,11 @@
-      SUBROUTINE NMCB1D(E0,Y01,Y02,A1,A2,B1,B2,BETA1,BETA2,SIGF1,
-     &            SIG0,VAR0,EPSM,DEPS,EF,SIGF,VARF,CRIT)
+      SUBROUTINE NMCB1D(E0,LABORD,SIGM,VARM,EPSM,
+     &                  DEPS,ESOUT,SIGP,VARP,CRIT,
+     &                  OPTION)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/09/2011   AUTEUR GREFFET N.GREFFET 
+C MODIF ELEMENTS  DATE 23/07/2012   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,123 +21,150 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
+C ----------------------------------------------------------------------
+C
+C              LOI DE LABORDERIE EN 1D
+C
+C ----------------------------------------------------------------------
+      IMPLICIT       NONE
+      CHARACTER*(*)  OPTION
+      REAL*8         E0,SIGM,EPSM,DEPS,ESOUT,SIGP
+      REAL*8         LABORD(*),VARM(*),VARP(*),CRIT(*)
+C
+C ----------------------------------------------------------------------
 C  IN :
-C       E0 : MODULE D'YOUNG INITIAL
-C       Y01,Y02,A1,A2,B1,B2,BETA1,BETA2,SIGF1 = PARAMETRES DE LA LOI
-
-C       TR  : TEMPERATURE DE REFERENCE
-C       TP  : TEMPERATURE A L'INSTANT PLUS
-C       SIG0 : CONTRAINTE A L'INSTANT MOINS
-C       VAR0 : VARIABLES INTERNES A L'INSTANT MOINS
-C       EPSM : DEFORMATION TOTALE A L'INSTANT MOINS
-C       DEPS : INCREMENT DE DEFORMATION TOTALE
-C              - INCREMENT DEFORMATION THERMIQUE
+C     E0       : MODULE D'YOUNG INITIAL
+C     LABORD   : LES 9 COEFFICIENTS DE LA LOI, DANS CET ORDRE
+C                    Y01,Y02,A1,A2,B1,B2,BETA1,BETA2,SIGF1
+C     SIGM     : CONTRAINTE A L'INSTANT MOINS
+C     VARM     : VARIABLES INTERNES A L'INSTANT MOINS
+C     EPSM     : DEFORMATION TOTALE A L'INSTANT MOINS
+C     DEPS     : INCREMENT DE DEFORMATION TOTALE
+C     CRIT     : CRITERES DE CONVERGENGE
+C     OPTION   : FULL_MECA,      MISE A JOUR DE MAT VI SIG
+C                RAPH_MECA       MISE A JOUR DE     VI SIG
+C                RIGI_MECA_TANG, MISE A JOUR DE MAT
 C
 C  OUT :
-C       EF : MODULE D'YOUNG TANGENT (ACTUELLEMENT (SIGP - SIGM)/DEPS )
-C       SIGF : CONTRAINTE A L'INSTANT PLUS
-C       VARF : VARIABLES INTERNES A L'INSTANT PLUS
-
-      IMPLICIT NONE
-      REAL*8 E0,EF,EPSM,DEPS,SIG0,VAR0(5),SIGF,VARF(5)
-      REAL*8 ZERO,UN
-      PARAMETER (ZERO=0.0D+0,UN=1.D+0)
-      REAL*8 ESEC,ETAN,D2,D1,DD1,DD2,EPS,YLIM1,YLIM2
-      REAL*8 Y1,Y2,SIG
-      REAL*8 A1,A2,BETA1,BETA2,Y01,Y02,B1,B2,SIGF1
-      REAL*8 X1,X2,EPSF,Z1,Z2,CRIT(*)
-      INTEGER CAS,CCAS
+C     ESOUT    : MODULE SECANT OU TANGENT
+C     SIGP     : CONTRAINTE A L'INSTANT PLUS
+C     VARP     : VARIABLES INTERNES A L'INSTANT PLUS
 C
-
+C ----------------------------------------------------------------------
+      LOGICAL     RIGI,RESI
+      REAL*8      Y01,Y02,A1,A2,B1,B2,BETA1,BETA2,SIGF1,ESEC
+      REAL*8      D2,D1,YLIM1,YLIM2,SIG,D1M,D2M,Y1,Y2,Z1,Z2
+      REAL*8      EPS,X1,X2,EPSF,UN,R8PREM
+      INTEGER     CAS,CCAS
+      PARAMETER  (UN=1.0D+0)
+C ----------------------------------------------------------------------
+C
+C     RIGI_MECA_TANG ->       DSIDEP       -->  RIGI
+C     FULL_MECA      ->  SIG  DSIDEP  VIP  -->  RIGI  RESI
+C     RAPH_MECA      ->  SIG          VIP  -->        RESI
+      RIGI   = (OPTION(1:4).EQ.'RIGI' .OR. OPTION(1:4).EQ.'FULL')
+      RESI   = (OPTION(1:4).EQ.'RAPH' .OR. OPTION(1:4).EQ.'FULL')
+      RIGI=.TRUE.
+C
+C --- DEFORMATION MECANIQUE TOTALE
+      EPS = EPSM + DEPS
+C
+C --- VARIABLES INTERNES
+      D1M   = VARM(1)
+      D2M   = VARM(2)
+      YLIM1 = VARM(3)
+      YLIM2 = VARM(4)
+C
+C --- CARACTERISTIQUES MATERIAUX
+      Y01   =  ABS( LABORD(1) )
+      Y02   =  ABS( LABORD(2) )
+      A1    =  ABS( LABORD(3) )
+      A2    =  ABS( LABORD(4) )
+      B1    =  ABS( LABORD(5) )
+      B2    =  ABS( LABORD(6) )
+      BETA1 =  ABS( LABORD(7) )
+      BETA2 = -ABS( LABORD(8) )
+      SIGF1 =  ABS( LABORD(9) )
+C
+C --- AU DEBUT DU PAS DE TEMPS, ON SOUSTRAIT 1 POUR QUE L'ENDOMMAGEMENT
+C     N'EVOLUE PLUS A CAUSE DU TEST DE DEPASSEMENT DE SEUIL
       Y1 = YLIM1 - UN
       Y2 = YLIM2 - UN
 
-C ----VARIABLES HISTORIQUES
-      DD1 = VAR0(1)
-      DD2 = VAR0(2)
-      YLIM1 = VAR0(3)
-      YLIM2 = VAR0(4)
-C ---- ON PASSE EN MECANIQUE
-C     (ON ENLEVE LA PARTIE THERMIQUE EN CONSIDERANT ALPHA CONSTANTE)
-C  ON A : EPSM = EPSM - ALPHA (TM - TR)
-C     ET  DEPS = DEPS - ALPHA (TP - TR)
-C     ET EPS = EPSM + DEPS
-      EPS = EPSM + DEPS
+C     ON PREND LE MAX POUR EVITER QUE Z1 ET Z2 SOIT "NAN"
+      Z1=MAX(YLIM1 - UN , Y01)
+      Z2=MAX(YLIM2 - UN , Y02)
 
+C --- ON DUPLIQUE L'ENDOMMAGEMENT :
+      D1=D1M
+      D2=D2M
 
-C --- ON PREND LE MAX POUR EVITER QUE Z1 ET Z2 SOIT "NAN"
-C --- AU DEBUT DU PAS DE TEMPS, ON SOUSTRAIT 1 POUR NE PAS QUE
-C --- L'ENDOMMAGEMENT N'EVOLUE PLUS A CAUSE DU TEST DE DEPASSEMENT DE
-C --- SEUIL
-      Z1=MAX(YLIM1-1,Y01)
-      Z2=MAX(YLIM2-1,Y02)
-C     ON DUPLIQUE L'ENDOMMAGEMENT :
-C         DD -> VALEURS DU PAS DE TEMPS PRECEDENT
-C         D  -> VALEURS MISES A JOUR
-      D1=DD1
-      D2=DD2
+C --- BORNES DES DEFORMATIONS INITIALES
+      X1 = (BETA1*D1/(UN-D1)+BETA2*D2/(UN-D2))/E0
+      X2 = (BETA2*D2-SIGF1)/(UN-D2)/E0
 C --- BOUCLE TANT QUE L'ON CHANGE DE CAS
-   10 CONTINUE
-      X1 = (BETA1*D1/ (UN-D1)+BETA2*D2/ (UN-D2))/E0
-      X2 = (BETA2*D2-SIGF1)/ (UN-D2)/E0
-C     CAS 1 : TRACTION DOC R7.01.07 §3.2.1
-      IF (X1.LE.EPS) THEN
-        EPSF = EPS - BETA2*D2/ (UN-D2)/E0
-        CALL NMCB13(EPSF,SIG,ESEC,E0,DD1,D1,BETA1,A1,B1,Y1,Y01,Z1,CRIT)
-        CAS = 1
-C     CAS 3 : COMPRESSION AU DELA DE LA FERMETURE DES FISSURES (3.2.3)
-      ELSE IF (EPS.LE.X2) THEN
-        CALL NMCB13(EPS,SIG,ESEC,E0,DD2,D2,BETA2,A2,B2,Y2,Y02,Z2,CRIT)
-        CAS = 3
-C     CAS 2 : FAIBLE COMPRESSION     §3.2.3
-      ELSE
-        CALL NMCB2(EPS,BETA1,E0,D1,SIGF1,BETA2,D2,SIG,ESEC)
-        CAS = 2
-      END IF
-      X1 = (BETA1*D1/ (UN-D1)+BETA2*D2/ (UN-D2))/E0
-      X2 = (BETA2*D2-SIGF1)/ (UN-D2)/E0
-      IF (X1.LE.EPS) THEN
-        CCAS = 1
-      ELSE IF (EPS.LE.X2) THEN
-        CCAS = 3
-      ELSE
-        CCAS = 2
-      END IF
-      IF (CCAS.NE.CAS) GO TO 10
+10    CONTINUE
+C        TRAITEMENT EN FONCTION DE LA DEFORMATION
+         IF      ( X1.LE.EPS ) THEN
+C           TRACTION
+            CAS  = 1
+            EPSF = EPS - BETA2*D2/(UN-D2)/E0
+            CALL NMCB13(EPSF,SIG,ESEC,E0,D1M,D1,BETA1,A1,B1,Y1,Y01,Z1,
+     &                  CRIT)
+         ELSE IF ( EPS.LE.X2 ) THEN
+C           COMPRESSION AU DELA DE LA FERMETURE DES FISSURES
+            CAS = 3
+            CALL NMCB13(EPS ,SIG,ESEC,E0,D2M,D2,BETA2,A2,B2,Y2,Y02,Z2,
+     &                  CRIT)
+         ELSE
+C           FAIBLE COMPRESSION
+            CAS = 2
+            CALL NMCB2(EPS,BETA1,E0,D1M,SIGF1,BETA2,D2M,SIG)
+         END IF
+C        BORNES DES DEFORMATIONS FINALES
+         X1 = (BETA1*D1/(UN-D1)+BETA2*D2/(UN-D2))/E0
+         X2 = (BETA2*D2-SIGF1)/(UN-D2)/E0
+         IF      ( X1.LE.EPS ) THEN
+            CCAS = 1
+         ELSE IF ( EPS.LE.X2 ) THEN
+            CCAS = 3
+         ELSE
+            CCAS = 2
+         END IF
+      IF ( CCAS.NE.CAS ) GOTO 10
 C --- FIN BOUCLE
 
-C --- MODULE TANGENT
-C        IF(CAS.EQ.1)THEN
-C          CALL NMCBMT(CAS,E0,D1,D2,A1,B1,Y1,Y01,BETA1,BETA2,
-C     +            SIGF1,EPS,ETAN)
-C        ELSE
-C          CALL NMCBMT(CAS,E0,D1,D2,A2,B2,Y2,Y02,BETA1,BETA2,
-C     +            SIGF1,EPS,ETAN)
-C        ENDIF
-C --- MODULE TANGENT NUMERIQUE + 10% D'INITIAL
-       IF (DEPS.NE.ZERO) THEN
-         ETAN=(SIG-SIG0)/DEPS + 0.1D0 * E0
-         IF(ETAN.GT.E0)ETAN=E0
-       ELSE
-         IF(VAR0(5).NE.ZERO)THEN
-           ETAN=VAR0(5)
+      IF (  RIGI ) THEN
+C ------ MODULE TANGENT NUMERIQUE + 10% D'INITIAL
+         IF ( ABS(DEPS).GT.R8PREM() ) THEN
+            ESOUT = MIN( (SIG-SIGM)/DEPS+E0*0.10D+0 , E0 )
          ELSE
-           ETAN=E0
+            IF ( ABS(VARM(5)).GT.R8PREM() ) THEN
+               ESOUT = VARM(5)
+            ELSE
+               ESOUT = E0
+            ENDIF
          ENDIF
-       ENDIF
-
-C --- ACTUALISATION DES SEUILS
-      YLIM1 = MAX(Y1,YLIM1)
-      YLIM2 = MAX(Y2,YLIM2)
-C --- STOCKAGE DES VARIABLES HISTORIQUES
-      VARF(1) = D1
-      VARF(2) = D2
-      VARF(3) = YLIM1
-      VARF(4) = YLIM2
-      VARF(5) = ETAN
-C --- CONTRAINTE
-      SIGF = SIG
-C --- MODULE
-      EF = ETAN
-
+      ENDIF
+C
+      IF ( RESI ) THEN
+C ------ CONTRAINTE
+         SIGP = SIG
+C ------ VARIABLES INTERNES REACTUALISEES
+         IF ( Y1 .GT. VARM(3) ) THEN
+            VARP(1) = D1
+            VARP(3) = Y1
+         ELSE
+            VARP(1) = VARM(1)
+            VARP(3) = VARM(3)
+         ENDIF
+         IF ( Y2 .GT. VARM(4) ) THEN
+            VARP(2) = D2
+            VARP(4) = Y2
+         ELSE
+            VARP(2) = VARM(2)
+            VARP(4) = VARM(4)
+         ENDIF
+         VARP(5) = ESOUT
+      ENDIF
       END

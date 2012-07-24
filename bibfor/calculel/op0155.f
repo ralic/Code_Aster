@@ -1,7 +1,7 @@
       SUBROUTINE OP0155()
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -121,6 +121,11 @@ C     --------------------------------------------------
    10   CONTINUE
    20 CONTINUE
       CALL JEDETR(NOMPAR)
+
+
+C     -- 6. RECOPIE DE L'OBJET .REFD (SI NECESSAIRE) :
+C     --------------------------------------------------
+        CALL JEDUP1(RESU19//'.REFD','G',NOMR19//'.REFD')
 
 
 

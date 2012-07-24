@@ -1,4 +1,4 @@
-#@ MODIF calculel2 Messages  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel2 Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -258,6 +258,11 @@ Erreur :
  carte inexistante.
 """),
 
+50: _(u"""
+Erreur utilisateur :
+  Le champ %(k1)s n'est pas associé au maillage %(k2)s.
+"""),
+
 51: _(u"""
  Erreur :
    Le code cherche à utiliser dans un calcul élémentaire un CHAM_ELEM "étendu" (VARI_R ou sous-points).
@@ -448,10 +453,6 @@ Attention : les numéros d'ordre ne sont pas contigus.
  La carte de COMPORTEMENT est absente.
  Votre résultat a peut-être été produit par LIRE_RESU ou CREA_RESU.
  Si votre résultat a été produit par LIRE_RESU, il faut renseigner le mot-clé COMP_INCR.
-"""),
-
-87: _(u"""
- impossible lire  %(k1)s
 """),
 
 88: _(u"""

@@ -1,4 +1,4 @@
-# MODIF  DATE 11/04/2012   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE  FISSURE CIRCULAIRE EN MODE MIXTE
 # sslv154a.para = tps_job 120 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -38,25 +38,38 @@ sig = 1000000.
 # rayon de la fissure
 a = 2
 
+#-----------------------------------------------------------------------------------------------------------------------------
+#                                 CALCUL
+#-----------------------------------------------------------------------------------------------------------------------------
 
-MA=LIRE_MAILLAGE(FORMAT='MED',);
+MA=LIRE_MAILLAGE(FORMAT='MED')
+
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=_F(OPTION='NOEUD_ORDO',
+                               NOM='NFF3',
+                               GROUP_MA='LFF1',
+                               GROUP_NO_ORIG='NFF1',
+                               GROUP_NO_EXTR='NFF2',),);
+
+# Barsoum
+MA=MODI_MAILLAGE(reuse=MA,
+                 MAILLAGE=MA,
+                 MODI_MAILLE=_F(OPTION='NOEUD_QUART',
+                                GROUP_NO_FOND='NFF3'))
 
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
                  ORIE_PEAU_3D=_F(GROUP_MA=('FACE_AV','FACE_SUP','FACE_INF','FACE_LAD','FACE_LAG',),),);
-
-MA=DEFI_GROUP(reuse =MA,
-              MAILLAGE=MA,
-              CREA_GROUP_MA=_F(NOM='CUBE',
-                               TOUT='OUI',),);
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='3D',),);
 
+E=2.E11
 nu = 0.3
-MAT=DEFI_MATERIAU(ELAS=_F(E=2.E11,
+MAT=DEFI_MATERIAU(ELAS=_F(E=E,
                           NU=nu),)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
@@ -86,47 +99,25 @@ RESU=MECA_STATIQUE(MODELE=MO,
                           _F(CHARGE=SYMETR,),)
                    )
 
-k1ref = 2/pi * sig*sin(alpha)**2 * sqrt(pi*a)
 
-angle = 0
-k2ref_0 = 4./(pi*(2.-nu)) * sig*sin(alpha)*cos(alpha) * cos(angle) * sqrt(pi*a)
-
-angle = pi/2.
-k3ref_90 = 4.*(1 - nu)/(pi*(2.-nu)) * sig*sin(alpha)*cos(alpha) * sin(angle) * sqrt(pi*a)
-
-
-MA=DEFI_GROUP(reuse =MA,
-              MAILLAGE=MA,
-              CREA_GROUP_NO=_F(OPTION='NOEUD_ORDO',
-                               NOM='NFF3',
-                               GROUP_MA='LFF1',
-                               GROUP_NO_ORIG='NFF1',
-                               GROUP_NO_EXTR='NFF2',),);
+#-----------------------------------------------------------------------------------------------------------------------------
+#                                 POST-TRAITEMENT
+#-----------------------------------------------------------------------------------------------------------------------------
 
 FISS=DEFI_FOND_FISS(MAILLAGE=MA,
-                    FOND_FISS=_F(GROUP_NO='NFF3',),
-                    LEVRE_SUP=_F(GROUP_MA='LEVSUP',),
-                    LEVRE_INF=_F(GROUP_MA='LEVINF',),
-                    );
+                    FOND_FISS=_F(GROUP_NO='NFF3'),
+                    LEVRE_SUP=_F(GROUP_MA='LEVSUP'),
+                    LEVRE_INF=_F(GROUP_MA='LEVINF'),
+                    )
 
-FISSX=DEFI_FISS_XFEM(MODELE=MO,
-                     DEFI_FISS=_F(GROUP_MA_FISS='LEVINF',
-                                  GROUP_MA_FOND='LFF1',),
-                     GROUP_MA_ENRI='CUBE',
-                     ORIE_FOND=_F(PFON_INI=(2.0,0.0,0.0,),
-                                  VECT_ORIE=(0.0,0.0,1.0,),
-                                  POINT_ORIG=(0.0,0.0,0.0,),),);
 RSUP = 0.5
 RINF = 0.1
 
-
 # Methode G-theta
-CG=CALC_G(THETA=_F(FISSURE=FISSX,
+CG=CALC_G(THETA=_F(FOND_FISS=FISS,
                    R_INF=RINF,
                    R_SUP=RSUP),
           RESULTAT=RESU,
-          LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
-                     LISSAGE_G='LAGRANGE',),
           OPTION='CALC_K_G')
 
 # Extrapolation des sauts de deplacements
@@ -139,22 +130,46 @@ PK=POST_K1_K2_K3(MODELISATION='3D',
 # formule pour le calcul de l'angle en degre
 ANGLE=FORMULE(NOM_PARA=('ABSC_CURV'),VALE='ABSC_CURV/a * 180./pi')
 
-# ajout de la colonne angle dans chaque table
+# formules pour les valeurs de reference
+K1REF=FORMULE(NOM_PARA=('ANGLE'),VALE=' 2/pi * sig * sin(alpha)**2 * sqrt(pi*a) ')
+K2REF=FORMULE(NOM_PARA=('ANGLE'),VALE=' 4./(pi*(2.-nu)) * sig*sin(alpha)*cos(alpha) * cos(ANGLE/180*pi) * sqrt(pi*a)')
+K3REF=FORMULE(NOM_PARA=('ANGLE'),VALE=' 4.*(1 - nu)/(pi*(2.-nu)) * sig*sin(alpha)*cos(alpha) * sin(ANGLE/180*pi) * sqrt(pi*a) ')
+GREF =FORMULE(NOM_PARA=('ANGLE'),VALE=' (1-nu**2)/E * ( K1REF(ANGLE)**2 + K2REF(ANGLE)**2 ) + (1+nu)/E * K3REF(ANGLE)**2 ')
+
+# ajout des colonnes 'angle' et valeurs de ref dans les tables
 CG=CALC_TABLE(TABLE=CG,
               reuse=CG,
-              ACTION=_F(OPERATION='OPER',
-                        FORMULE=ANGLE,
-                        NOM_PARA='ANGLE'))
+              ACTION=(_F(OPERATION='OPER',FORMULE=ANGLE,NOM_PARA='ANGLE'),
+                      _F(OPERATION='OPER',FORMULE=K1REF,NOM_PARA='K1REF'),
+                      _F(OPERATION='OPER',FORMULE=K2REF,NOM_PARA='K2REF'),
+                      _F(OPERATION='OPER',FORMULE=K3REF,NOM_PARA='K3REF'),
+                      _F(OPERATION='OPER',FORMULE=GREF ,NOM_PARA='GREF'),
+                      )
+              )
 
 PK=CALC_TABLE(TABLE=PK,
               reuse=PK,
-              ACTION=_F(OPERATION='OPER',
-                        FORMULE=ANGLE,
-                        NOM_PARA='ANGLE'))
+              ACTION=(_F(OPERATION='OPER',FORMULE=ANGLE,NOM_PARA='ANGLE'),
+                      _F(OPERATION='OPER',FORMULE=K1REF,NOM_PARA='K1REF'),
+                      _F(OPERATION='OPER',FORMULE=K2REF,NOM_PARA='K2REF'),
+                      _F(OPERATION='OPER',FORMULE=K3REF,NOM_PARA='K3REF'),
+                      _F(OPERATION='OPER',FORMULE=GREF ,NOM_PARA='GREF'),
+                      )
+               )
 
 # impression de chaque table
 IMPR_TABLE(TABLE=CG)
 IMPR_TABLE(TABLE=PK)
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+#                                 TESTS DES TABLES
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# valeurs de ref pour les tests
+k1ref = K1REF(0)
+k2ref_0 = K2REF(0)
+k3ref_90 = K3REF(90)
 
 
 # TEST DE CALC_G
@@ -166,7 +181,7 @@ TEST_TABLE(TABLE=CG,
            NOM_PARA='K1',
            VALE=k1ref,
            CRITERE='RELATIF',
-           PRECISION=0.08,
+           PRECISION=0.05,
            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(TABLE=CG,
@@ -174,7 +189,7 @@ TEST_TABLE(TABLE=CG,
            NOM_PARA='K1',
            VALE=k1ref,
            CRITERE='RELATIF',
-           PRECISION=0.02,
+           PRECISION=0.04,
            REFERENCE='ANALYTIQUE')
 
 # test de KII au premier point du fond (angle = 0)
@@ -184,9 +199,9 @@ TEST_TABLE(TABLE=CG,
            FILTRE=_F(NOM_PARA='ANGLE',
                      VALE=0.),
            NOM_PARA='K2',
-           VALE=-k2ref_0,
+           VALE=k2ref_0,
            CRITERE='RELATIF',
-           PRECISION=0.14,
+           PRECISION=0.08,
            REFERENCE='ANALYTIQUE')
 
 # test de KIII au milieu du fond (angle = 90 avec + ou -0.5 degre)
@@ -200,7 +215,7 @@ TEST_TABLE(TABLE=CG,
            NOM_PARA='K3',
            VALE=k3ref_90,
            CRITERE='RELATIF',
-           PRECISION=0.09,
+           PRECISION=0.03,
            REFERENCE='ANALYTIQUE')
 
 
@@ -221,7 +236,7 @@ TEST_TABLE(TABLE=PK,
            NOM_PARA='K1',
            VALE=k1ref,
            CRITERE='RELATIF',
-           PRECISION=0.05,
+           PRECISION=0.02,
            REFERENCE='ANALYTIQUE')
 
 # test de KII au premier point du fond (angle = 0)
@@ -231,7 +246,7 @@ TEST_TABLE(TABLE=PK,
            NOM_PARA='K2',
            VALE=k2ref_0,
            CRITERE='RELATIF',
-           PRECISION=0.05,
+           PRECISION=0.02,
            REFERENCE='ANALYTIQUE')
 
 # test de KIII au milieu du fond (angle = 90 avec + ou -0.5 degre)
@@ -245,8 +260,159 @@ TEST_TABLE(TABLE=PK,
            NOM_PARA='K3',
            VALE=-k3ref_90,
            CRITERE='RELATIF',
-           PRECISION=0.05,
+           PRECISION=0.02,
            REFERENCE='ANALYTIQUE')
             
+            
+#-----------------------------------------------------------------------------------------------------------------------------
+#                                 TRACE DES COURBES
+#-----------------------------------------------------------------------------------------------------------------------------
 
-FIN();
+# courbe de G
+C_G_REF=RECU_FONCTION(TABLE=CG,
+                      PARA_X='ANGLE',
+                      PARA_Y='GREF',)
+
+C_G_CG=RECU_FONCTION(TABLE=CG,
+                     PARA_X='ANGLE',
+                     PARA_Y='G',)
+
+C_G_PK=RECU_FONCTION(TABLE=PK,
+                     PARA_X='ANGLE',
+                     PARA_Y='G',)
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=30,
+              COURBE=(_F(FONCTION=C_G_REF,
+                         LEGENDE='G reference',
+                         MARQUEUR=0,
+                         COULEUR=1),
+                      _F(FONCTION=C_G_CG,
+                         LEGENDE='G CALC_G',
+                         MARQUEUR=0,
+                         COULEUR=2),
+                      _F(FONCTION=C_G_PK,
+                         LEGENDE='G POST_K1_K2_K3',
+                         MARQUEUR=0,
+                         COULEUR=3),
+                       ),
+              TITRE='Taux de restitution d energie',
+              BORNE_X=(0.0,180,),
+              BORNE_Y=(0.0,10,),
+              GRILLE_X=20,
+              GRILLE_Y=1.0,
+              LEGENDE_X='angle (degre)',
+              LEGENDE_Y='G (J.m\S-2\N)',);
+
+
+# courbe de K1
+C_K1_REF=RECU_FONCTION(TABLE=CG,
+                       PARA_X='ANGLE',
+                       PARA_Y='K1REF',)
+
+C_K1_CG=RECU_FONCTION(TABLE=CG,
+                      PARA_X='ANGLE',
+                      PARA_Y='K1',)
+
+C_K1_PK=RECU_FONCTION(TABLE=PK,
+                      PARA_X='ANGLE',
+                      PARA_Y='K1',)
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=31,
+              COURBE=(_F(FONCTION=C_K1_REF,
+                         LEGENDE='K1 reference',
+                         MARQUEUR=0,
+                         COULEUR=1),
+                      _F(FONCTION=C_K1_CG,
+                         LEGENDE='K1 CALC_G',
+                         MARQUEUR=0,
+                         COULEUR=2),
+                      _F(FONCTION=C_K1_PK,
+                         LEGENDE='K1 POST_K1_K2_K3',
+                         MARQUEUR=0,
+                         COULEUR=3),
+                       ),
+              TITRE='K1',
+              BORNE_X=(0.0,180,),
+              BORNE_Y=(0.0,1e6,),
+              GRILLE_X=20,
+              GRILLE_Y=1e5,
+              LEGENDE_X='angle (degre)',
+              LEGENDE_Y='KI (Pa.m\S-1/2\N)',)
+
+# courbe de K2
+C_K2_REF=RECU_FONCTION(TABLE=CG,
+                       PARA_X='ANGLE',
+                       PARA_Y='K2REF',)
+
+C_K2_CG=RECU_FONCTION(TABLE=CG,
+                      PARA_X='ANGLE',
+                      PARA_Y='K2',)
+
+C_K2_PK=RECU_FONCTION(TABLE=PK,
+                      PARA_X='ANGLE',
+                      PARA_Y='K2',)
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=32,
+              COURBE=(_F(FONCTION=C_K2_REF,
+                         LEGENDE='K2 reference',
+                         MARQUEUR=0,
+                         COULEUR=1),
+                      _F(FONCTION=C_K2_CG,
+                         LEGENDE='K2 CALC_G',
+                         MARQUEUR=0,
+                         COULEUR=2),
+                      _F(FONCTION=C_K2_PK,
+                         LEGENDE='K2 POST_K2_K2_K3',
+                         MARQUEUR=0,
+                         COULEUR=3),
+                       ),
+              TITRE='K2',
+              BORNE_X=(0.0,180,),
+              BORNE_Y=(-1e6,1e6,),
+              GRILLE_X=20,
+              GRILLE_Y=1e5,
+              LEGENDE_X='angle (degre)',
+              LEGENDE_Y='KII (Pa.m\S-1/2\N)',)
+
+# courbe de K3
+C_K3_REF=RECU_FONCTION(TABLE=CG,
+                       PARA_X='ANGLE',
+                       PARA_Y='K3REF',)
+
+C_K3_CG=RECU_FONCTION(TABLE=CG,
+                      PARA_X='ANGLE',
+                      PARA_Y='K3',)
+
+C_K3_PK=RECU_FONCTION(TABLE=PK,
+                      PARA_X='ANGLE',
+                      PARA_Y='K3',)
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=33,
+              COURBE=(_F(FONCTION=C_K3_REF,
+                         LEGENDE='K3 reference',
+                         MARQUEUR=0,
+                         COULEUR=1),
+                      _F(FONCTION=C_K3_CG,
+                         LEGENDE='K3 CALC_G',
+                         MARQUEUR=0,
+                         COULEUR=2),
+                      _F(FONCTION=C_K3_PK,
+                         LEGENDE='K3 POST_K3_K3_K3',
+                         MARQUEUR=0,
+                         COULEUR=3),
+                       ),
+              TITRE='K3',
+              BORNE_X=(0.0,180,),
+              BORNE_Y=(0.0,1e6,),
+              GRILLE_X=20,
+              GRILLE_Y=1e5,
+              LEGENDE_X='angle (degre)',
+              LEGENDE_Y='KIII (Pa.m\S-1/2\N)',)
+
+
+
+FIN()

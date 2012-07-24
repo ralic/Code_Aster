@@ -1,4 +1,4 @@
-# MODIF  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE SOUMIS A UNE TUBULENCE
 # sdls107a.para = tps_job 60 mem_job 240Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -370,31 +370,22 @@ SSPROJ=PROJ_SPEC_BASE( SPEC_TURB=SPECTRE,
 
 #EXTRACTION DE L AUTOSPECTRE D EFFORT MODAL TURBULENT
 
-
-AUTOSPEC=RECU_FONCTION(    TABLE=SSPROJ,
-                           FILTRE=(
-                            _F(  NOM_PARA = 'NUME_ORDRE_I',
-                                     VALE_I = 1),
-                                   _F(  NOM_PARA = 'NUME_ORDRE_J',
-                                     VALE_I = 1)),
-                             NOM_PARA_TABL='FONCTION_C',
-                                  INTERPOL='LIN',
-                                PROL_DROITE='LINEAIRE',
-                               PROL_GAUCHE='LINEAIRE'
-                         )
+AUTOSPEC=RECU_FONCTION(    INTE_SPEC=SSPROJ,
+                    NUME_ORDRE_I = 1,
+                      )
 
 #VALEURS DE REFERENCE DE LA DSP D EFFORT TURBULENT MODALE
 # CALCULEES AVEC MAPLE
 
-I1=2.13612E5+0.j,
+I1=2.13612E5
 
-I2=2.14159E5+0.j,
+I2=2.14159E5
 
 TEST_FONCTION(VALEUR=(
     _F(  FONCTION = AUTOSPEC, VALE_PARA = 1.59155E-3,
-             VALE_REFE_C = I1, REFERENCE = 'SOURCE_EXTERNE', PRECISION = 2.E-2),
+             VALE_REFE = I1, REFERENCE = 'SOURCE_EXTERNE', PRECISION = 2.E-2),
     _F(  FONCTION = AUTOSPEC, VALE_PARA = 1.59155E-2,
-             VALE_REFE_C = I2, REFERENCE = 'SOURCE_EXTERNE', PRECISION = 2.E-2))
+             VALE_REFE = I2, REFERENCE = 'SOURCE_EXTERNE', PRECISION = 2.E-2))
              )
 
 FIN()

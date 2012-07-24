@@ -4,7 +4,7 @@
       CHARACTER*16      OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,7 +32,6 @@ C        POUR DISCRETS : SYMETRIQUES  ET NON-SYMETRIQUES
 C           RIGI_MECA   MASS_MECA  MASS_MECA_DIAG  AMOR_MECA
 C        POUR DISCRETS : SYMETRIQUES
 C           RIGI_MECA_HYST   RIGI_MECA_TANG   RIGI_FLUI_STRU
-C           RIGI_MECA_SENSI  MASS_MECA_SENSI  RIGI_MECA_SENS_C
 C           M_GAMMA          MASS_FLUI_STRU   MASS_MECA_EXPLI
 C     NOMTE  : NOM DU TYPE_ELEMENT
 C           MECA_DIS_T_N      MECA_DIS_T_L
@@ -40,7 +39,6 @@ C           MECA_DIS_TR_N     MECA_DIS_TR_L
 C           MECA_2D_DIS_T_N   MECA_2D_DIS_T_L
 C           MECA_2D_DIS_TR_N  MECA_2D_DIS_TR_L
 C --- --------------------------------------------------------------
-C TOLE  CRP_20
 C
 C --- ------------------------------------------------------------------
       INTEGER        NDDLM,NL1,NL2,INFODI
@@ -53,7 +51,7 @@ C --- ------------------------------------------------------------------
       INTEGER        ICODRE(3),KPG,SPT
       CHARACTER*8    NOMRES(3),K8BID,FAMI,POUM
       INTEGER        IBID,ITYPE,IREP,NBTERM,NNO,NC,NDIM,NDDL,I,IRET,J
-      INTEGER        JDR,JDM,LORIEN,JDC,JMA,IACCE,IVECT,LVAPR,LVECT
+      INTEGER        JDR,JDM,LORIEN,JDC,JMA,IACCE,IVECT
       INTEGER        NTERMX
       PARAMETER     (ZERO=0.0D0,UN=1.0D0,NTERMX=144)
       REAL*8         TEMPO(NTERMX)
@@ -213,26 +211,6 @@ C           DISCRET DE TYPE MASSE
             CALL INFDIS('REPM',IREP,R8BID,K8BID)
             CALL JEVECH('PACCELR','L',IACCE)
             CALL JEVECH('PVECTUR','E',IVECT)
-         ELSEIF (OPTION.EQ.'RIGI_MECA_SENSI') THEN
-            CALL JEVECH('PSEDISK','L',JDC)
-            CALL INFDIS('REPK',IREP,R8BID,K8BID)
-            CALL JEVECH('PVAPRIN','L',LVAPR)
-            CALL JEVECH('PVECTUR','E',LVECT)
-         ELSEIF (OPTION.EQ.'MASS_MECA_SENSI') THEN
-            CALL JEVECH('PSEDISM','L',JDC)
-            CALL INFDIS('REPM',IREP,R8BID,K8BID)
-            CALL JEVECH('PVAPRIN','L',LVAPR)
-            CALL JEVECH('PVECTUR','E',LVECT)
-         ELSEIF (OPTION.EQ.'RIGI_MECA_SENS_C') THEN
-            CALL JEVECH('PSEDISK','L',JDC)
-            CALL INFDIS('REPK',IREP,R8BID,K8BID)
-            CALL JEVECH('PVAPRIN','L',LVAPR)
-            CALL JEVECH('PVECTUC','E',LVECT)
-         ELSEIF (OPTION.EQ.'MASS_MECA_SENS_C') THEN
-            CALL JEVECH('PSEDISM','L',JDC)
-            CALL INFDIS('REPM',IREP,R8BID,K8BID)
-            CALL JEVECH('PVAPRIN','L',LVAPR)
-            CALL JEVECH('PVECTUC','E',LVECT)
          ELSE
 C --- ---   OPTION DE CALCUL INVALIDE
             CALL ASSERT(.FALSE.)
@@ -244,28 +222,6 @@ C --- ---   REPERE GLOBAL ==> PAS DE ROTATION ---
             IF (OPTION.EQ.'M_GAMMA') THEN
                CALL VECMA(ZR(JDC),NBTERM,MATP,NDDL)
                CALL PMAVEC('ZERO',NDDL,MATP,ZR(IACCE),ZR(IVECT))
-            ELSE IF (OPTION(11:14).EQ.'SENS') THEN
-               CALL R8INIR(NL1,ZERO,MATV1,1)
-               DO 430 I = 1,NBTERM
-                  MATV1(I) = ZR(JDC+I-1)
-430            CONTINUE
-               CALL VECMA(MATV1,NL1,MATP,NDDLM)
-               DO 400 I = 1,NDDL
-                  IF (OPTION(15:16).EQ.'_C') THEN
-                     ZC(LVECT-1+I) = DCMPLX(0.D0,0.D0)
-                  ELSE
-                     ZR(LVECT-1+I) = 0.D0
-                  END IF
-                  DO 410 J = 1,NDDL
-                     IF (OPTION(15:16).EQ.'_C') THEN
-                        ZC(LVECT-1+I) = ZC(LVECT-1+I)
-     &                              - MATP(I,J)*ZC(LVAPR-1+J)
-                     ELSE
-                        ZR(LVECT-1+I) = ZR(LVECT-1+I)
-     &                              - MATP(I,J)*ZR(LVAPR-1+J)
-                     END IF
-410               CONTINUE
-400            CONTINUE
             ELSE
                DO 20 I = 1,NBTERM
                   ZR(JDM+I-1) = ZR(JDC+I-1)
@@ -284,28 +240,6 @@ C --- --- ---  ANGLES NULS  ===>  PAS DE ROTATION ---
                IF (OPTION.EQ.'M_GAMMA') THEN
                   CALL VECMA(ZR(JDC),NBTERM,MATP,NDDL)
                   CALL PMAVEC('ZERO',NDDL,MATP,ZR(IACCE),ZR(IVECT))
-               ELSE IF (OPTION(11:14).EQ.'SENS') THEN
-                  CALL R8INIR(NL1,ZERO,MATV1,1)
-                  DO 130 I = 1,NBTERM
-                     MATV1(I) = ZR(JDC+I-1)
-130               CONTINUE
-                  CALL VECMA(MATV1,NL1,MATP,NDDLM)
-                  DO 100 I = 1,NDDL
-                     IF (OPTION(15:16).EQ.'_C') THEN
-                        ZC(LVECT-1+I) = DCMPLX(0.D0,0.D0)
-                     ELSE
-                        ZR(LVECT-1+I) = 0.D0
-                     END IF
-                     DO 110 J = 1,NDDL
-                        IF (OPTION(15:16).EQ.'_C') THEN
-                           ZC(LVECT-1+I) = ZC(LVECT-1+I)
-     &                                 - MATP(I,J)*ZC(LVAPR-1+J)
-                        ELSE
-                           ZR(LVECT-1+I) = ZR(LVECT-1+I)
-     &                                 - MATP(I,J)*ZR(LVAPR-1+J)
-                        END IF
-110                  CONTINUE
-100               CONTINUE
                ELSE
                   DO 30 I = 1,NBTERM
                      ZR(JDM+I-1) = ZR(JDC+I-1)
@@ -327,60 +261,14 @@ C              CALL MATROT ( ZR(LORIEN) , PGL )
                   CALL PMAVEC('ZERO',NDDL,MATP,ZR(IACCE),ZR(IVECT))
                ELSE
                   IF (NDIM.EQ.3) THEN
-                     IF (OPTION(11:14).EQ.'SENS') THEN
-                        CALL R8INIR(NL1,ZERO,MATV1,1)
-C                       VECTEUR DE TRAVAIL, ON FAIT LE PRODUIT
-                        CALL UTPSLG ( NNO, NC, PGL, ZR(JDC), MATV1 )
-                        CALL VECMA(MATV1,NL1,MATP,NDDLM)
-                        DO 200 I = 1,NDDL
-                           IF (OPTION(15:16).EQ.'_C') THEN
-                              ZC(LVECT-1+I) = DCMPLX(0.D0,0.D0)
-                           ELSE
-                              ZR(LVECT-1+I) = 0.D0
-                           END IF
-                           DO 210 J = 1,NDDL
-                              IF (OPTION(15:16).EQ.'_C') THEN
-                                 ZC(LVECT-1+I) = ZC(LVECT-1+I)
-     &                                       - MATP(I,J)*ZC(LVAPR-1+J)
-                              ELSE
-                                 ZR(LVECT-1+I) = ZR(LVECT-1+I)
-     &                                       - MATP(I,J)*ZR(LVAPR-1+J)
-                              ENDIF
-210                        CONTINUE
-200                     CONTINUE
-                     ELSE
-                        CALL UTPSLG ( NNO, NC, PGL, ZR(JDC), ZR(JDM) )
-                        IF (OPTION.EQ.'AMOR_MECA') THEN
-                           DO 25 I = 1,NBTERM
-                              ZR(JDM+I-1) = ZR(JDM+I-1) + MATA2(I)
- 25                        CONTINUE
-                        ENDIF
+                     CALL UTPSLG ( NNO, NC, PGL, ZR(JDC), ZR(JDM) )
+                     IF (OPTION.EQ.'AMOR_MECA') THEN
+                        DO 25 I = 1,NBTERM
+                           ZR(JDM+I-1) = ZR(JDM+I-1) + MATA2(I)
+ 25                     CONTINUE
                      ENDIF
                   ELSEIF (NDIM.EQ.2) THEN
-                     IF (OPTION(11:14).EQ.'SENS') THEN
-                        CALL R8INIR(NL1,ZERO,MATV1,1)
-C                       VECTEUR DE TRAVAIL, ON FAIT LE PRODUIT
-                        CALL UT2MLG ( NNO, NC, PGL, ZR(JDC), MATV1 )
-                        CALL VECMA(MATV1,NL1,MATP,NDDLM)
-                        DO 300 I = 1,NDDL
-                           IF (OPTION(15:16).EQ.'_C') THEN
-                              ZC(LVECT-1+I) = DCMPLX(0.D0,0.D0)
-                           ELSE
-                              ZR(LVECT-1+I) = 0.D0
-                           END IF
-                           DO 310 J = 1,NDDL
-                              IF (OPTION(15:16).EQ.'_C') THEN
-                                 ZC(LVECT-1+I) = ZC(LVECT-1+I)
-     &                                    - MATP(I,J)*ZC(LVAPR-1+J)
-                              ELSE
-                                 ZR(LVECT-1+I) = ZR(LVECT-1+I)
-     &                                    - MATP(I,J)*ZR(LVAPR-1+J)
-                              ENDIF
-310                        CONTINUE
-300                     CONTINUE
-                     ELSE
-                        CALL UT2MLG ( NNO, NC, PGL, ZR(JDC), ZR(JDM) )
-                     ENDIF
+                     CALL UT2MLG ( NNO, NC, PGL, ZR(JDC), ZR(JDM) )
                   ENDIF
                ENDIF
             ENDIF

@@ -1,4 +1,4 @@
-#@ MODIF prepost3 Messages  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF prepost3 Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -159,10 +159,6 @@ cata_msg = {
 
 85 : _(u"""
  il faut autant de composantes que de noeuds
-"""),
-
-92 : _(u"""
- mot clé "TEST_NOOK" non validé avec le mot clé facteur "INTE_SPEC".
 """),
 
 93 : _(u"""

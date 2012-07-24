@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 13/03/2012   AUTEUR SIAVELIS M.SIAVELIS 
+%& MODIF TYPELEM  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -181,7 +181,7 @@ MODE_LOCAL__
     EPRESNO  = PRES_R   ELNO__ IDEN__  (PRES     )
     G27NEUTR = NEUT_R   ELGA__ RIGI    (X[27]    )
     N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
-    N3NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       )
+    N3NEUT_R = NEUT_R   ELNO__ IDEN__  (X[3]     )
     N9NEUT_R = NEUT_R   ELNO__ IDEN__  (X[9]     )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       FZ       )
@@ -237,12 +237,12 @@ OPTION__
     CHAR_LIMITE         -1    IN__    OUT__    XXXXXX   XXXXXX
     CHAR_MECA_PESA_R    441   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR  STANO_I  PSTANO
                                      N1NEUT_R PLSN     N1NEUT_R PLST     E198NEUR PPINTTO  E768NEUI PCNSETO
-                                     E192NEUI PHEAVTO  E10NEUTI  PLONCHA 
+                                     E192NEUI PHEAVTO  E10NEUTI  PLONCHA
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_ROTA_R    441   IN__   DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      CROTATR  PROTATR  STANO_I  PSTANO   N1NEUT_R PLSN     N1NEUT_R PLST
                                      E198NEUR PPINTTO  E768NEUI PCNSETO  E192NEUI PHEAVTO  E10NEUTI  PLONCHA
-                                    
+
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_TEMP_R    99    IN__   CCAMASS  PCAMASS  CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
@@ -273,7 +273,7 @@ OPTION__
                               OUT__  G27NEUTR PGNEUTR
     INDIC_ENER          -1    IN__    OUT__    XXXXXX   XXXXXX
     INDIC_SEUIL         -1    IN__    OUT__    XXXXXX   XXXXXX
-    INIT_VARC           99    IN__  
+    INIT_VARC           99    IN__
                               OUT__  ZVARCPG  PVARCPR
     MASS_INER           -1    IN__    OUT__    XXXXXX   XXXXXX
     MOY_NOEU_S          118   IN__   N1NEUT_R PNEUTR
@@ -287,7 +287,7 @@ OPTION__
                                      ZVARCPG  PVARCRR
                                      ZVARIPG  PVARIMP  ZVARIPG  PVARIMR  E198NEUR PPINTTO  E768NEUI PCNSETO
                                      E192NEUI PHEAVTO  E10NEUTI  PLONCHA  N9NEUT_R PBASLOR  N1NEUT_R PLSN
-                                     N1NEUT_R PLST     STANO_I  PSTANO  
+                                     N1NEUT_R PLST     STANO_I  PSTANO
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     REFE_FORC_NODA      -1    IN__    OUT__    XXXXXX   XXXXXX
     RICE_TRACEY         -1    IN__    OUT__    XXXXXX   XXXXXX
@@ -321,7 +321,7 @@ OPTION__
     TOPOSE              514   IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET  FISCO_I PFISCO
                               OUT__  E198NEUR PPINTTO  E768NEUI PCNSETO  E192NEUI PHEAVTO  E10NEUTI  PLONCHA
                                      E30NEUTR PAINTER
-    TOU_INI_ELGA        99    IN__  
+    TOU_INI_ELGA        99    IN__
                               OUT__  EDOMGGA  PDOMMAG  EFACY_R  PFACY_R  EGGEOM_R PGEOM_R  EGINST_R PINST_R
                                      EGNEUT_F PNEUT_F  EGNEUT_R PNEUT_R  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R
     VERI_JACOBIEN       328   IN__   NGEOMER  PGEOMER

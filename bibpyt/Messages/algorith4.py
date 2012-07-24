@@ -1,8 +1,8 @@
-#@ MODIF algorith4 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith4 Messages  DATE 24/07/2012   AUTEUR PERONY R.PERONY 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -60,7 +60,8 @@ cata_msg = {
 """),
 
 57 : _(u"""
- Problème de convergence (DG négatif)
+ Problème de convergence (l'accroissement de déformation plastique est négatif).
+ On active le redécoupage du pas de temps.
 """),
 
 58 : _(u"""
@@ -68,15 +69,16 @@ cata_msg = {
 """),
 
 59 : _(u"""
- erreur: Problème de convergence
+ erreur: Problème de convergence. Le nombre d'itération maximal est atteint. On active le redécoupage du pas de temps.
 """),
 
 60 : _(u"""
- Problème de convergence 2 (DG négatif)
+ Problème de convergence (l'accroissement de déformation plastique est négatif).
+ Pensez à activer le redécoupage du pas de temps.
 """),
 
 61 : _(u"""
- erreur: Problème de convergence 2
+ erreur: Problème de convergence. Le nombre d'itération maximal est atteint. Pensez à activer le redécoupage du pas de temps.
 """),
 
 62 : _(u"""

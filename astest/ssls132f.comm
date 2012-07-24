@@ -1,5 +1,5 @@
-# MODIF  DATE 03/04/2012   AUTEUR SELLENET N.SELLENET 
-# TITRE PLAQUE CONSOLE EN FLEXION QUAD4 GRILLE_EXCENTREE EPSI_INIT
+# MODIF  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+# TITRE PLAQUE CONSOLE EN FLEXION QUAD4 GRILLE_EXCENTREE PRE_EPSI
 # ssls132f.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -130,7 +130,7 @@ ZCHM=AFFE_CHAR_MECA(
                    _F( GROUP_MA  = 'B0X',
                        DX = 0., DY=0., DZ = 0., DRX = 0., DRY = 0., DRZ = 0. ),
                   ),
-            EPSI_INIT = _F(
+            PRE_EPSI = _F(
                    GROUP_MA = ('ACPLUS','ACMOINS'),
                    EXX     = 1.E-3,)
 

@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,12 +29,12 @@ C     ------------------------------------------------------------------
       INTEGER      IARG
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER IAN ,IBID ,ICH ,IOR ,IORDR ,IRET ,JANGL 
-      INTEGER JCARA ,JCHAM ,JCOE ,JJAN ,JMAT ,JMOD ,JNCH 
-      INTEGER JNHA ,JNMO ,JORDR ,JPARA ,JTCH ,JTMO ,K 
-      INTEGER N1 ,N2 ,N3 ,NBANGL ,NBCHAM ,NBORDR ,NBTROU 
+      INTEGER IAN ,IBID ,ICH ,IOR ,IORDR ,IRET ,JANGL
+      INTEGER JCARA ,JCHAM ,JCOE ,JJAN ,JMAT ,JMOD ,JNCH
+      INTEGER JNHA ,JNMO ,JORDR ,JPARA ,JTCH ,JTMO ,K
+      INTEGER N1 ,N2 ,N3 ,NBANGL ,NBCHAM ,NBORDR ,NBTROU
 
-      REAL*8 ANGLE ,R8DGRD ,RBID 
+      REAL*8 ANGLE ,R8DGRD ,RBID
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFMAJ()
@@ -70,7 +70,7 @@ C
         K = 0
         DO 120 IOR = 0 , NBORDR-1
           IORDR = ZI(JORDR+IOR)
-          CALL RSEXCH ( RESUIN, NSYMB, IORDR, NOMCH, IRET )
+          CALL RSEXCH(' ',RESUIN, NSYMB, IORDR, NOMCH, IRET )
           IF ( IRET .EQ. 0 ) THEN
             K = K + 1
             ZK24(JNCH+K-1) = NOMCH
@@ -109,10 +109,10 @@ C
 C
         IF ( K .NE. 0 ) THEN
           DO 110 IAN = 1 , NBANGL
-            CALL RSEXCH ( RESU, NSYMB, IAN, NOMCH, IRET )
+            CALL RSEXCH(' ',RESU, NSYMB, IAN, NOMCH, IRET )
             IF ( IRET .EQ. 110 ) THEN
               CALL RSAGSD ( RESU , 0 )
-              CALL RSEXCH ( RESU, NSYMB, IAN, NOMCH, IRET )
+              CALL RSEXCH(' ',RESU, NSYMB, IAN, NOMCH, IRET )
             ELSEIF ( IRET .EQ. 100 ) THEN
             ELSE
               CALL ASSERT(.FALSE.)

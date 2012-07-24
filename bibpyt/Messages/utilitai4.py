@@ -1,4 +1,4 @@
-#@ MODIF utilitai4 Messages  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+#@ MODIF utilitai4 Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,7 @@
 cata_msg={
 
 8: _(u"""
- la composante  %(k1)s  n existe pas dans le champ de la grandeur.
+ La composante %(k1)s n'existe pas dans le champ de la grandeur.
 """),
 
 9: _(u"""
@@ -30,19 +30,19 @@ cata_msg={
 """),
 
 10: _(u"""
- le mode demande n'est pas un mode couple.
+ Le mode demandé n'est pas un mode couplé.
 """),
 
 11: _(u"""
  problème(s) rencontre(s) lors de l'accès au RESU_GENE
 """),
 
-12: _(u"""
- Problème lors de l'extraction du champ
-"""),
+
+
+
 
 13: _(u"""
- on ne traite que le type complexe
+ Seul le type complexe est traité.
 """),
 
 14: _(u"""
@@ -59,7 +59,7 @@ cata_msg={
 """),
 
 17: _(u"""
- on ne traite que le type réel
+ Seul le type réel est traité.
 """),
 
 19: _(u"""
@@ -116,10 +116,6 @@ cata_msg={
 
 34: _(u"""
  sd  %(k1)s  inexistante
-"""),
-
-35: _(u"""
- pas de numéro d'ordre pour  %(k1)s
 """),
 
 36: _(u"""

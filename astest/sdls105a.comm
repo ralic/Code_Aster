@@ -1,4 +1,4 @@
-# MODIF  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE SOUMISE A UNE TURBULENCE HOMOGENE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -210,17 +210,9 @@ SPPROJ=PROJ_SPEC_BASE( SPEC_TURB=SPECTRE,
 
 #EXTRACTION DE L AUTOSPECTRE D EFFORT MODAL TURBULENT
 
-AUTOSPEC=RECU_FONCTION(    TABLE=SPPROJ,
-                           FILTRE=(
-                            _F(  NOM_PARA = 'NUME_ORDRE_I',
-                                     VALE_I = 1),
-                                   _F(  NOM_PARA = 'NUME_ORDRE_J',
-                                     VALE_I = 1)),
-                             NOM_PARA_TABL='FONCTION_C',
-                                  INTERPOL='LIN',
-                                PROL_DROITE='LINEAIRE',
-                               PROL_GAUCHE='LINEAIRE'
-                         )
+AUTOSPEC=RECU_FONCTION(    INTE_SPEC=SPPROJ,
+                    NUME_ORDRE_I = 1,
+                      )
 
 #MEME CALCUL QUE PRECEDEMMENT EN UTILISANT LES ELEMENTS
 # DE COQUES DKT SUR QUAD4
@@ -261,61 +253,52 @@ SPPROJP=PROJ_SPEC_BASE( SPEC_TURB=SPECTREP,
                         NB_POIN=2
                            )
 
-#
-AUTOSPEP=RECU_FONCTION(    TABLE=SPPROJP,
-                           FILTRE=(
-                            _F(  NOM_PARA = 'NUME_ORDRE_I',
-                                     VALE_I = 1),
-                                   _F(  NOM_PARA = 'NUME_ORDRE_J',
-                                     VALE_I = 1)),
-                             NOM_PARA_TABL='FONCTION_C',
-                                  INTERPOL='LIN',
-                                PROL_DROITE='LINEAIRE',
-                               PROL_GAUCHE='LINEAIRE'
-                         )
+AUTOSPEP=RECU_FONCTION(    INTE_SPEC=SPPROJP,
+                    NUME_ORDRE_I = 1,
+                      )
 
 #
 #VALEURS DE REFERENCE DE LA DSP D EFFORT TURBULENT MODALE
 # CALCULEES AVEC MAPLE
 
-I1=7.28848E8+0.j,
+I1=7.28848E8
 
-I2=7.53237E6+0.j,
+I2=7.53237E6
 
-I3=24.827E13+0.j,
+I3=24.827E13
 
-I4=7.2342E13+0.j,
+I4=7.2342E13
 
 TEST_FONCTION(VALEUR=(
     _F(  FONCTION = AUTOSPEC, VALE_PARA = 1.59155E-3,
-             VALE_REFE_C = I1, REFERENCE='NON_REGRESSION',),
+             VALE_REFE = I1, REFERENCE='NON_REGRESSION',),
     _F(  FONCTION = AUTOSPEC, VALE_PARA = 1.59155E-1,
-             VALE_REFE_C = I2, REFERENCE='NON_REGRESSION', PRECISION = 8.E-3))
+             VALE_REFE = I2, REFERENCE='NON_REGRESSION', PRECISION = 8.E-3))
              )
 
-TEST_FONCTION(TABL_INTSP=(
-       _F(  INTE_SPEC = SPPROJ1,
-                   NUME_ORDRE_I = 1,
-                   NUME_ORDRE_J = 1,
+REP1=RECU_FONCTION(    INTE_SPEC=SPPROJ1,
+                    NUME_ORDRE_I = 1,
+                      )
+
+TEST_FONCTION(VALEUR=(
+       _F(  FONCTION = REP1,
                    VALE_PARA = 1.59155E-3,
-                   VALE_REFE_C = I1,
+                   VALE_REFE = I1,
                    PRECISION = 1.1E-3,
                    REFERENCE='NON_REGRESSION',),
-       _F(  INTE_SPEC = SPPROJ1,
-                   NUME_ORDRE_I = 1,
-                   NUME_ORDRE_J = 1,
+       _F(  FONCTION = REP1,
                    VALE_PARA = 1.59155E-1,
-                   VALE_REFE_C = I2,
+                   VALE_REFE = I2,
                    PRECISION = 8.E-3,
                    REFERENCE='NON_REGRESSION',))
                )
 
 TEST_FONCTION(VALEUR=(
     _F(  FONCTION = AUTOSPEP, VALE_PARA = 1.59155E-3,
-             VALE_REFE_C = I3,  PRECISION = 1.E-3,
+             VALE_REFE = I3,  PRECISION = 1.E-3,
                    REFERENCE='NON_REGRESSION',),
     _F(  FONCTION = AUTOSPEP, VALE_PARA = 1.59155E-2,
-             VALE_REFE_C = I4,  PRECISION = 1.E-3,
+             VALE_REFE = I4,  PRECISION = 1.E-3,
                    REFERENCE='NON_REGRESSION',))
              )
 

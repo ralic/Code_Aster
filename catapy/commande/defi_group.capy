@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/04/2012   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -125,7 +125,8 @@ DEFI_GROUP=OPER(nom="DEFI_GROUP",op= 104,sd_prod=defi_group_prod,
 
          CREA_GROUP_NO   =FACT(statut='f',max='**',
            OPTION          =SIMP(statut='f',typ='TXM',into=("ENV_SPHERE","ENV_CYLINDRE","PLAN",
-                                               "SEGM_DROI_ORDO","NOEUD_ORDO","TUNNEL","INCLUSION","FISS_XFEM") ),
+                                               "SEGM_DROI_ORDO","NOEUD_ORDO","TUNNEL",
+                                               "INCLUSION","FISS_XFEM","INTERVALLE_VALE") ),
 
            b_option =BLOC(condition = "OPTION == None" ,
                           regles=(UN_PARMI('TOUT_GROUP_MA','GROUP_MA','GROUP_NO','NOEUD',
@@ -249,6 +250,12 @@ DEFI_GROUP=OPER(nom="DEFI_GROUP",op= 104,sd_prod=defi_group_prod,
                   b_rayon         =BLOC(condition = "TYPE_GROUP == 'TORE'",
                         RAYON_TORE     =SIMP(statut='o',typ='R',max=1,val_min=0.0),
                   ),
+           ),
+           b_intervalle_vale      =BLOC(condition = "OPTION == 'INTERVALLE_VALE'",
+                  NOM             =SIMP(statut='o',typ=geom),
+                  CHAM_GD         =SIMP(statut='o',typ=cham_no_sdaster),
+                  NOM_CMP         =SIMP(statut='o',typ='TXM',max=1),
+                  VALE            =SIMP(statut='o',typ='R',min=2,max=2),
            ),
           ),
          ALARME          =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),

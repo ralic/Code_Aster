@@ -5,7 +5,7 @@
       CHARACTER*(*) QUESTI,NOMOBZ,REPKZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 02/07/2012   AUTEUR GENIAUT S.GENIAUT 
+C MODIF UTILITAI  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,10 +65,18 @@ C     -----------------------------------
       ELSEIF ((QUESTI.EQ.'DIM_GEOM') .OR.
      &        (QUESTI.EQ.'NB_SM_MAILLA') .OR.
      &        (QUESTI.EQ.'NB_SS_ACTI') .OR.
-     &        (QUESTI.EQ.'NB_NL_MAILLA') .OR.
-     &        (QUESTI.EQ.'CALC_RIGI') .OR. (QUESTI.EQ.'PHENOMENE')) THEN
+     &        (QUESTI.EQ.'NB_NL_MAILLA') .OR. (QUESTI.EQ.'AXIS') .OR.
+     &        (QUESTI.EQ.'EXI_AXIS') .OR. (QUESTI.EQ.'CALC_RIGI') .OR.
+     &        (QUESTI.EQ.'PHENOMENE') .OR. (QUESTI.EQ.'EXI_AMOR') .OR.
+     &        (QUESTI.EQ.'EXI_RDM') .OR. (QUESTI.EQ.'EXI_POUX') .OR.
+     &        (QUESTI(1:7).EQ.'EXI_THM') .OR.
+     &        (QUESTI.EQ.'EXI_TUYAU') .OR. (QUESTI.EQ.'EXI_COQ3D') .OR.
+     &        (QUESTI.EQ.'EXI_COQ1D') .OR. (QUESTI.EQ.'EXI_PLAQUE') .OR.
+     &        (QUESTI.EQ.'EXI_COQUE') .OR. (QUESTI.EQ.'EXI_GRILLE') .OR.
+     &        (QUESTI.EQ.'EXI_STRX')) THEN
 C     -----------------------------------
         CALL DISMLG(QUESTI,NOLIG,REPI,REPK,IERD)
+
 C     -----------------------------------------
       ELSEIF (QUESTI.EQ.'ELEM_VOLU_QUAD') THEN
 C     -----------------------------------------
@@ -134,10 +142,10 @@ C     ------------------------------------
 C     ------------------------------------
         CALL JEEXIN(NOMOB//'.NFIS',IRET)
         IF (IRET.GT.0) THEN
-           CALL JEVEUO(NOMOB//'.NFIS','L',JNFIS)
-           REPI = ZI(JNFIS)
+          CALL JEVEUO(NOMOB//'.NFIS','L',JNFIS)
+          REPI=ZI(JNFIS)
         ELSE
-           REPI = 0
+          REPI=0
         ENDIF
 
 C     ------------------------------------
@@ -147,18 +155,6 @@ C     ------------------------------------
         CALL JEEXIN(NOLIG//'.LIEL',IRET)
         IF (IRET.GT.0)REPK='OUI'
 
-C     -----------------------------------------------------------------
-      ELSEIF ((QUESTI.EQ.'EXI_RDM') .OR. (QUESTI.EQ.'EXI_POUX') .OR.
-     &        (QUESTI(1:7).EQ.'EXI_THM') .OR.
-     &        (QUESTI.EQ.'EXI_TUYAU') .OR. (QUESTI.EQ.'EXI_COQ3D') .OR.
-     &        (QUESTI.EQ.'EXI_COQ1D') .OR. (QUESTI.EQ.'EXI_PLAQUE') .OR.
-     &        (QUESTI.EQ.'EXI_COQUE') .OR.
-     &        (QUESTI.EQ.'EXI_GRILLE').OR.
-     &        (QUESTI.EQ.'EXI_STRX')) THEN
-
-C     -----------------------------------------------------------------
-        CALL DISMLG(QUESTI,NOLIG,REPI,REPK,IERD)
-C
 C     ----------------------------------------
       ELSEIF (QUESTI.EQ.'BESOIN_MATER') THEN
 C     ----------------------------------------
@@ -166,7 +162,7 @@ C     ----------------------------------------
         IF (IRET.GT.0) THEN
           CALL JELIRA(NOLIG//'.LIEL','NUTIOC',NBGREL,K1BID)
           REPK='NON'
-          DO 60,IGREL=1,NBGREL
+          DO 40,IGREL=1,NBGREL
             CALL JEVEUO(JEXNUM(NOLIG//'.LIEL',IGREL),'L',IALIEL)
             CALL JELIRA(JEXNUM(NOLIG//'.LIEL',IGREL),'LONMAX',NEL,K1BID)
             ITYPEL=ZI(IALIEL-1+NEL)
@@ -175,10 +171,10 @@ C     ----------------------------------------
             NOMODL=REPK(1:16)
             IF (NOMODL(1:4).NE.'DIS_') THEN
               REPK='OUI'
-              GOTO 90
+              GOTO 70
 
             ENDIF
-   60     CONTINUE
+   40     CONTINUE
         ELSE
           REPK='NON'
         ENDIF
@@ -192,7 +188,7 @@ C
         IF (IRET.GT.0) THEN
           CALL JELIRA(NOLIG//'.LIEL','NUTIOC',NBGREL,K1BID)
           REPK='NON'
-          DO 70,IGREL=1,NBGREL
+          DO 50,IGREL=1,NBGREL
             CALL JEVEUO(JEXNUM(NOLIG//'.LIEL',IGREL),'L',IALIEL)
             CALL JELIRA(JEXNUM(NOLIG//'.LIEL',IGREL),'LONMAX',NEL,K1BID)
             ITYPEL=ZI(IALIEL-1+NEL)
@@ -200,10 +196,10 @@ C
             CALL DISMTE('TYPE_TYPMAIL',NOMTE,REPI,TYTM,IERD)
             IF (TYTM.EQ.'VOLU') THEN
               REPK='OUI'
-              GOTO 90
+              GOTO 70
 
             ENDIF
-   70     CONTINUE
+   50     CONTINUE
         ELSE
           REPK='NON'
         ENDIF
@@ -211,26 +207,26 @@ C
 
       ELSE
 C     ----
-        GOTO 80
+        GOTO 60
 
       ENDIF
 
-      GOTO 90
+      GOTO 70
 
 
 C     -- SORTIE ERREUR :
 C     ------------------
-   80 CONTINUE
+   60 CONTINUE
       IERD=1
-      GOTO 999
+      GOTO 80
 
 C     -- SORTIE NORMALE :
 C     ------------------
-   90 CONTINUE
+   70 CONTINUE
       IERD=0
       REPKZ=REPK
 
 C
- 999  CONTINUE
+   80 CONTINUE
       CALL JEDEMA()
       END

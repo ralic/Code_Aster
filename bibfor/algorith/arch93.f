@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -111,7 +111,7 @@ C--
             IF (ZI(LDDLD+IEQ-1).EQ.1) THEN
                IMODE = IMODE + 1
 C              --- LE VECTEUR ---
-               CALL RSEXCH(RESU,'DEPL',IMODE,CHAMNO,IERD)
+               CALL RSEXCH(' ',RESU,'DEPL',IMODE,CHAMNO,IERD)
                IF ( IERD .EQ. 100 ) THEN
                   CALL VTCREM(CHAMNO,RAIDE,'G','R')
                ELSE
@@ -162,7 +162,7 @@ C--
                IMODF = IMODF + 1
 C
 C              --- LE VECTEUR ---
-               CALL RSEXCH(RESU,'DEPL',IMODE,CHAMNO,IERD)
+               CALL RSEXCH(' ',RESU,'DEPL',IMODE,CHAMNO,IERD)
                IF ( IERD .EQ. 100 ) THEN
                   CALL VTCREM(CHAMNO,RAIDE,'G','R')
                ELSE
@@ -214,7 +214,7 @@ C--
                IMOAD = IMOAD + 1
 C
 C              --- LE VECTEUR ---
-               CALL RSEXCH(RESU,'DEPL',IMODE,CHAMNO,IERD)
+               CALL RSEXCH(' ',RESU,'DEPL',IMODE,CHAMNO,IERD)
                IF ( IERD .EQ. 100 ) THEN
                   CALL VTCREM(CHAMNO,RAIDE,'G','R')
                ELSE
@@ -317,7 +317,7 @@ C              --- ON NORME LA DIRECTION ---
                IMODA = IMODA + 1
 C
 C              --- LE VECTEUR ---
-               CALL RSEXCH(RESU,'DEPL',IMODE,CHAMNO,IERD)
+               CALL RSEXCH(' ',RESU,'DEPL',IMODE,CHAMNO,IERD)
                IF ( IERD .EQ. 100 ) THEN
                   CALL VTCREM(CHAMNO,RAIDE,'G','R')
                ELSE
@@ -391,7 +391,7 @@ C--
                IMODE = IMODE + 1
 C
 C              --- LE VECTEUR ---
-               CALL RSEXCH(RESU,'DEPL',IMODE,CHAMNO,IERD)
+               CALL RSEXCH(' ',RESU,'DEPL',IMODE,CHAMNO,IERD)
                IF ( IERD .EQ. 100 ) THEN
                   CALL VTCREM(CHAMNO,RAIDE,'G','R')
                ELSE

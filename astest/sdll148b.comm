@@ -1,4 +1,4 @@
-# MODIF  DATE 17/04/2012   AUTEUR CHANSARD F.CHANSARD 
+# MODIF  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE DEFINITION D'UN INTER-SPECTRE D'EXCITATION ANALYTIQUE
 # sdll148b.para = tps_job 120 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -152,19 +152,33 @@ SPPROJ=PROJ_SPEC_BASE( SPEC_TURB=SPECTRE1,
 # PAS POSSIBLE. ON SE BASE SUR DES VALEURS DE NON REGRESSION.
 vale_i=[1,1,2]
 vale_j=[1,2,2]
-vale_refe=[0.110,-0.110+0.01534j,0.110]
+#vale_refe=[0.110,-0.110+0.01534j,0.110]
+#on prend la valeur absolue, les vecteurs propres sont definis a un coeff pres
+inter=abs(-0.110+0.01534j)
+vale_refe=[0.110,inter,0.110]
 for ind in range(3):
-    TEST_FONCTION(TABL_INTSP=_F(INTE_SPEC=SPPROJ,
+    if vale_i[ind] == vale_j[ind] :
+        REP0=RECU_FONCTION(    INTE_SPEC=SPPROJ,
                                 NUME_ORDRE_I=vale_i[ind],
-                                NUME_ORDRE_J=vale_j[ind],
+                      )
+        TEST_FONCTION( VALEUR=_F(  FONCTION = REP0,
                                 PRECISION=1.0E-2,
                                 VALE_PARA=1.0,
+                                VALE_REFE=vale_refe[ind],
+                                REFERENCE='NON_REGRESSION'));
+    else:
+        REP0=RECU_FONCTION(    INTE_SPEC=SPPROJ,
+                                NUME_ORDRE_I=vale_i[ind],
+                                NUME_ORDRE_J=vale_j[ind],
+                      )
+        TEST_FONCTION( VALEUR=_F(  FONCTION = REP0,
+                                PRECISION=1.0E-2,
+                                VALE_PARA=1.0,
+                                VALE_ABS='OUI',
                                 VALE_REFE_C=vale_refe[ind],
                                 REFERENCE='NON_REGRESSION'));
 
-
-
-
+    DETRUIRE( CONCEPT = _F(NOM = (REP0,)))
 
 FIN( )
 #

@@ -8,7 +8,7 @@
       CHARACTER*4         FREXCI
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,14 +43,14 @@ C OUT : NPDSC3 : NOMBRE DE VALEURS DE FREQUENCE
 C OUT : FREFIN : DERNIERE FREQUENCE ( LA PLUS GRANDE)
 C-----------------------------------------------------------------------
 C
-C
+      REAL*8          FREMA1,FREDEB
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
       INTEGER I1 ,I2 ,IADII1 ,IADR1 ,IADSC1 ,IADSC2 ,IADSC3 
       INTEGER IBID1 ,ICONT1 ,IFREQ1 ,IGEX1 ,ILFEX ,ILLEX ,ILONG1 
-      INTEGER IMODE ,INAJOU ,NBMAX ,NPDSC0 ,NPDSC2 
-      REAL*8 AMOR ,F0 ,F1 ,F2 ,FREDEB ,FREMA1 ,FREQ 
-      REAL*8 PASMIN ,R8ECAR 
+      INTEGER IMODE ,INAJOU ,NBMAX ,NPDSC0 ,NPDSC2 ,MXVAL
+      REAL*8 AMOR ,F0 ,F1 ,F2 ,FREQ 
+      REAL*8 PASMIN ,R8ECAR
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -83,7 +83,7 @@ C
       ILONG1=0
       IF (FREXCI.EQ.'AVEC') THEN
         DO 329,IGEX1=1,NINDEX*(NINDEX+1)/2
-          ILONG1=ILONG1+ZI(ILLEX-1+IGEX1)/3
+          ILONG1=ILONG1+ZI(ILLEX)
  329    CONTINUE
       ENDIF
       CALL WKVECT('&&OP0131.DISCR1','V V R8',NBMODE*NBPTMD+ILONG1
@@ -100,10 +100,11 @@ C
      &              (I1-1)*NBPTMD))
  301  CONTINUE
       ICONT1=0
+      MXVAL = NINDEX*(NINDEX+1)/2
       IF(FREXCI.EQ.'AVEC')THEN
         DO 330,IGEX1=1,NINDEX*(NINDEX+1)/2
-          IADR1=ZI(ILFEX+IGEX1-1)
-          DO 316,I2=1,ZI(ILLEX-1+IGEX1)/3
+          IADR1=ZI(ILLEX+MXVAL+1)
+          DO 316,I2=1,ZI(ILLEX)
             ICONT1=ICONT1+1 
             ZR(IADSC1+NBMODE*NBPTMD-1+ICONT1)=ZR(IADR1-1+I2)
  316      CONTINUE

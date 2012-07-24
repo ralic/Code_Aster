@@ -1,10 +1,10 @@
       SUBROUTINE SPEPHY(IOPTCH,INTPHY,INTMOD,NOMU,TABLE,FREQ,CHAM,
-     &                  SPECMR,SPECMI,DISC,NNOE,NOMCMP,NUOR,NBMR,NPV,
-     &                  NBN,IMOD1,NBPF,NBM,VITE)
+     &                  SPECMR,SPECMI,DISC,NNOE,NOMCMP,NUOR,NBMR,
+     &                  NBN,IMOD1,NBPF,NBM,IVITEF)
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,52 +56,55 @@ C I/O : DISC   : DISCRETISATION FREQUENTIELLE POUR CHAQUE VITESSE
 C IN  : NNOE   : LISTE DES NOEUDS OU LA REPONSE EST CALCULEE
 C IN  : NUOR   : LISTE DES NUMEROS D'ORDRE DES MODES PRIS EN COMPTE
 C IN  : NBMR   : NBR. DE MODES PRIS EN COMPTE
-C IN  : NPV    : NBR. DE VITESSES ETUDIEES
 C IN  : NBN    : NBR. DE NOEUDS DE REPONSE
 C IN  : NBFO1  : NBR. DE SPECTRES D EXCITATION DEFINIS
 C IN  : IMOD1  : INDICE DU PREMIER MODE PRIS EN COMPTE DANS LA BASE DE
 C                CONCEPT MELASFLU
 C IN  : NBPF   : NBR. DE POINTS DE LA DISCRETISATION FREQUENTIELLE
 C IN  : NBM    : NBR. DE MODES DE LA BASE DE CONCEPT MELASFLU
-C IN  : VITE   : TABLEAU DES VITESSES DE FLUIDE
+C IN  : IVITEF : INDICE VITESSE DE FLUIDE
 C-----------------------------------------------------------------------
 C
       INCLUDE 'jeveux.h'
-      LOGICAL      INTPHY,INTMOD
-      INTEGER      IOPTCH,NBMR,NPV,NBN,IMOD1,NBPF,NBM
-      INTEGER      NUOR(NBMR)
+      LOGICAL      INTPHY,INTMOD,EXIIND
+      INTEGER      IOPTCH,NBMR,NBN,IMOD1,NBPF,NBM,IVITEF
+      INTEGER      NUOR(NBMR),LNUMI,LNUMJ,IJ
       REAL*8       CHAM(NBN,NBMR),SPECMR(NBPF,*),SPECMI(NBPF,*)
-      REAL*8       DISC(*), FREQ(2,NBM,*), VITE(*)
+      REAL*8       DISC(*), FREQ(2,NBM,*)
       CHARACTER*8  NOMU, TABLE, NNOE(NBN), NOMCMP
 C
+      INTEGER       IVAL(3)
+      INTEGER       NBABS,ISPEC,MXVAL,MXVALS,LNOEI,LNOEJ,LCMPI,LCMPJ
+      REAL*8        PI, R8PI
 C-----------------------------------------------------------------------
       INTEGER I1 ,I2 ,IDEB ,IDEBM ,IDEBN ,IF1 ,IFON 
-      INTEGER IL ,IM1 ,IM2 ,IMI ,IMJ ,INI ,INJ 
-      INTEGER IRET ,ISJ ,ISM ,IV ,LPROL ,LVALE ,NBPAR 
+      INTEGER IL ,IM1 ,IM2 ,IMI ,IMJ ,INI ,INJ ,LFREQ,LFREQS
+      INTEGER ISJ ,ISM ,IV
 
       REAL*8 SPECI ,SPECR 
-C-----------------------------------------------------------------------
-      PARAMETER   ( NBPAR = 7 )
-      INTEGER       IBID, IVAL(3)
-      REAL*8        R8B, PI, R8PI
-      CHARACTER*8   K8B
-      CHARACTER*16  NOPAIN(3), NOPAOU(NBPAR)
-      CHARACTER*19  NOMCOD
-      CHARACTER*24  NOMFON, VALE, PROL, KVAL(5), VALK(2)
-      COMPLEX*16    C16B
 C
-      DATA NOPAIN / 'NUME_VITE_FLUI' , 'NUME_ORDRE_I' , 'NUME_ORDRE_J' /
-      DATA NOPAOU / 'NUME_VITE_FLUI' , 'VITE_FLUIDE' ,
-     &              'NOEUD_I'  , 'NOM_CMP_I'  ,
-     &              'NOEUD_J'  , 'NOM_CMP_J' , 'FONCTION_C'     /
+      CHARACTER*8   K8B
+      CHARACTER*24  KVAL(5), VALK(2),CHVALS,CHFREQ
+      CHARACTER*24  CHNUMI,CHNUMJ,CHVALE,CHNOEI,CHNOEJ,CHCMPI,CHCMPJ
+C
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       PI = R8PI()
+
+      CHNUMI = TABLE//'.NUMI'
+      CHNUMJ = TABLE//'.NUMJ'
+      CHFREQ = TABLE//'.FREQ'
+      CHVALE = TABLE//'.VALE'
+      CALL JEVEUO(CHNUMI,'L',LNUMI)
+      CALL JEVEUO(CHNUMJ,'L',LNUMJ)
+      CALL JEVEUO(CHFREQ,'L',LFREQ)
+      CALL JELIRA(CHNUMI,'LONMAX',MXVAL,K8B)
+
 C
 C --- POUR CHAQUE PAS EN VITESSE ON CALCULE L INTERSPECTRE DE REPONSE
 C
-      DO 20 IV = 1,NPV
-C
+      IV = IVITEF
+
         IVAL(1) = IV
 C
 C ---   TEST POUR DETECTER UN EVENTUEL PROBLEME DE CONVERGENCE EN AMONT
@@ -113,9 +116,13 @@ C ---   => ON PASSE A LA VITESSE SUIVANTE
 C
         IVAL(2) = NUOR(1)
         IVAL(3) = NUOR(1)
-        CALL TBLIVA ( TABLE, 3, NOPAIN, IVAL, R8B, C16B, K8B, K8B,
-     &         R8B, 'FONCTION_C', K8B, IBID, R8B, C16B, NOMFON, IRET )
-        IF ( IRET .NE. 0 ) GO TO 20
+        EXIIND = .FALSE.
+        DO 200 I1 = 1,MXVAL
+          IF ((ZI(LNUMI-1+I1) .EQ. IVAL(2)) .AND.
+     &        (ZI(LNUMJ-1+I1) .EQ. IVAL(3))) EXIIND = .TRUE.
+200     CONTINUE
+
+        IF ( .NOT. EXIIND ) GO TO 20
 C
 C     --- RECUPERATION DES FONCTIONS (SPECTRES) ET STOCKAGE DANS
 C     ---          SPECMR,SPECMI
@@ -131,25 +138,36 @@ C
 C
             IVAL(2) = NUOR(IMI)
 C
-            CALL TBLIVA ( TABLE, 3, NOPAIN, IVAL, R8B, C16B, K8B, K8B,
-     &           R8B, 'FONCTION_C', K8B, IBID, R8B, C16B, NOMFON, IRET )
-            IF (IRET.NE.0) THEN
-               VALK(1)(1:10) = 'FONCTION_C'
+            EXIIND = .FALSE.
+            DO 210 I1 = 1,MXVAL
+              IF ((ZI(LNUMI-1+I1) .EQ. IVAL(3)) .AND.
+     &            (ZI(LNUMJ-1+I1) .EQ. IVAL(2))) THEN
+                EXIIND = .TRUE.
+                CALL JEVEUO(JEXNUM(CHVALE,I1),'L',IFON)
+              ENDIF
+210         CONTINUE
+
+            IF (.NOT.EXIIND) THEN
+               VALK(1)(1:10) = 'INTE_SPEC'
                VALK(2)(1:8) = TABLE
                CALL U2MESK('F','MODELISA2_91', 2, VALK)
             ENDIF
 C
-            CALL JEVEUO ( NOMFON(1:19)//'.VALE', 'L', IFON )
             ISJ = (IMJ* (IMJ-1))/2 + IMI
             IF ( ISJ .EQ. 1 ) THEN
                DO 51 IF1 = 1,NBPF
-                  DISC(IF1) = ZR(IFON+ (IF1-1))
+                  DISC(IF1) = ZR(LFREQ+ (IF1-1))
    51          CONTINUE
             ENDIF
 C
             DO 50 IF1 = 1,NBPF
-               SPECMR(IF1,ISJ) = ZR(IFON+NBPF+ (IF1-1)*2)
-               SPECMI(IF1,ISJ) = ZR(IFON+NBPF+ (IF1-1)*2+1)
+              IF (IVAL(2) .EQ. IVAL(3)) THEN
+               SPECMR(IF1,ISJ) = ZR(IFON+(IF1-1))
+               SPECMI(IF1,ISJ) = 0.D0
+              ELSE
+               SPECMR(IF1,ISJ) = ZR(IFON+ (IF1-1)*2)
+               SPECMI(IF1,ISJ) = ZR(IFON+ (IF1-1)*2+1)
+              ENDIF
    50       CONTINUE
    40     CONTINUE
 C
@@ -157,6 +175,29 @@ C
 C
 C    --- CREATION ET REMPLISSAGE DES FONCTIONS - SPECTRES REPONSES
 C
+        CHNOEI = NOMU//'.NOEI'
+        CHNOEJ = NOMU//'.NOEJ'
+        CHCMPI = NOMU//'.CMPI'
+        CHCMPJ = NOMU//'.CMPJ'
+        CHVALS = NOMU//'.VALE'
+        CALL WKVECT(NOMU//'.FREQ','G V R',NBPF,LFREQS)
+        DO 80 IL = 1,NBPF
+          ZR(LFREQS+IL-1) = DISC(IL)
+80      CONTINUE
+
+        IF ( INTPHY ) THEN
+          MXVALS = NBN*(NBN+1)/2
+        ELSE
+          MXVALS = NBN
+        ENDIF
+
+        CALL WKVECT(CHNOEI,'G V K8',MXVALS,LNOEI)
+        CALL WKVECT(CHNOEJ,'G V K8',MXVALS,LNOEJ)
+        CALL WKVECT(CHCMPI,'G V K8',MXVALS,LCMPI)
+        CALL WKVECT(CHCMPJ,'G V K8',MXVALS,LCMPJ)
+        CALL JECREC(CHVALS,'G V R','NU','DISPERSE','VARIABLE',MXVALS)
+
+        IJ = 0
         DO 60 INJ = 1,NBN
 C
           KVAL(3) = NNOE(INJ)
@@ -167,30 +208,26 @@ C
 C
           DO 70 INI = IDEBN,INJ
 C
+            IJ = IJ+1
             KVAL(1) = NNOE(INI)
             KVAL(2) = NOMCMP
 C
-            WRITE (NOMCOD,'(A8,A2,3I3.3)') NOMU,'.S',IV,INI,INJ
-C
-            KVAL(5) = NOMCOD
-            CALL TBAJLI ( NOMU, NBPAR, NOPAOU,
-     &                          IVAL, VITE(IV), C16B, KVAL, 0 )
-C
-            VALE = NOMCOD(1:19)//'.VALE'
-            PROL = NOMCOD(1:19)//'.PROL'
-            CALL WKVECT(VALE,'G V R ',3*NBPF,LVALE)
-            CALL WKVECT(PROL,'G V K24',6,LPROL)
-C
-            ZK24(LPROL  ) = 'FONCT_C '
-            ZK24(LPROL+1) = 'LIN LIN '
-            ZK24(LPROL+2) = 'FREQ    '
-            ZK24(LPROL+3) = 'DSP     '
-            ZK24(LPROL+4) = 'LL      '
-            ZK24(LPROL+5) = NOMCOD
-C
-            DO 80 IL = 1,NBPF
-              ZR(LVALE+IL-1) = DISC(IL)
-   80       CONTINUE
+            ZK8(LNOEI-1+IJ) = KVAL(1)
+            ZK8(LNOEJ-1+IJ) = KVAL(3)
+            ZK8(LCMPI-1+IJ) = KVAL(2)
+            ZK8(LCMPJ-1+IJ) = KVAL(4)
+
+            IF ((KVAL(1) .EQ. KVAL(3)) .AND.
+     &           (KVAL(2) .EQ. KVAL(4))) THEN
+              NBABS = NBPF
+            ELSE
+              NBABS = 2*NBPF
+            ENDIF
+
+            CALL JECROC(JEXNUM(CHVALS,IJ))
+            CALL JEECRA(JEXNUM(CHVALS,IJ),'LONMAX',NBABS,' ')
+            CALL JEECRA(JEXNUM(CHVALS,IJ),'LONUTI',NBABS,' ')
+            CALL JEVEUO(JEXNUM(CHVALS,IJ),'E',ISPEC)
 C
             DO 90 IL = 1,NBPF
 C
@@ -275,8 +312,13 @@ C
                 SPECR = SPECR * 16.D0 * PI * PI * PI * PI
                 SPECI = SPECI * 16.D0 * PI * PI * PI * PI
               ENDIF
-              ZR(LVALE+NBPF+2* (IL-1)  ) = SPECR
-              ZR(LVALE+NBPF+2* (IL-1)+1) = SPECI
+              IF ((KVAL(1) .EQ. KVAL(3)) .AND.
+     &            (KVAL(2) .EQ. KVAL(4))) THEN
+                ZR(ISPEC-1+IL) = SPECR
+              ELSE
+                ZR(ISPEC+2*(IL-1)  ) = SPECR
+                ZR(ISPEC+2*(IL-1)+1) = SPECI
+              ENDIF
    90       CONTINUE
 C
    70     CONTINUE

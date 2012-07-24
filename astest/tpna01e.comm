@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE PB 2D AXISYMETRIQUE STATIONNAIRE AVEC RAYONNEMENT - QUAD4 DIAG
 # tpna01e.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -172,8 +172,11 @@ TEMPE=THER_NON_LINE(MODELE=MOTH,
                            _F(CHARGE=CHTHB,),),
                     ETAT_INIT=_F(STATIONNAIRE='OUI',),
                     NEWTON=_F(REAC_ITER=1,),
-                    TITRE=(' CAS TEST &CODE','&RL COMMANDE &COMMANDE',),
-                    OPTION='FLUX_ELNO',);
+                    TITRE=(' CAS TEST &CODE','&RL COMMANDE &COMMANDE',),);
+
+TEMPE=CALC_CHAMP(reuse=TEMPE,
+                 RESULTAT=TEMPE,
+                 THERMIQUE='FLUX_ELNO',);                          
 
 resu=MACR_LIGN_COUPE(RESULTAT=TEMPE,
                      NOM_CHAM='TEMP',

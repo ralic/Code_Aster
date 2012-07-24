@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/06/2012   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,6 +21,13 @@
 def post_champ_prod(RESULTAT,**args):
    if AsType(RESULTAT) != None : return AsType(RESULTAT)
    raise AsException("type de concept resultat non prevu")
+
+
+# liste des options possibles pour les 4 mots clés EXTR_COQUE, EXTR_TUYAY, EXTR_PMF et MIN_MAX_SP :
+liste_option_extr=("EPEQ_ELGA","EPEQ_ELNO","EPSI_ELGA","EPSI_ELNO",
+                   "SIEF_ELGA","SIEF_ELNO",
+                   "SIEQ_ELGA","SIEQ_ELNO","SIGM_ELGA","SIGM_ELNO",
+                   "VARI_ELGA","VARI_ELNO",)
 
 
 POST_CHAMP=OPER(nom="POST_CHAMP",op=155,sd_prod=post_champ_prod, reentrant='n',
@@ -72,15 +79,7 @@ POST_CHAMP=OPER(nom="POST_CHAMP",op=155,sd_prod=post_champ_prod, reentrant='n',
 #====
          EXTR_COQUE  =FACT(statut='f', max=1, fr="extraction sur un sous-point d'une coque",
            NOM_CHAM     =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
-                              into=(
-                                    "EFGE_ELGA",
-                                    "EPEQ_ELGA","EPEQ_ELNO",
-                                    "EPSI_ELGA","EPSI_ELNO",
-                                    "SIEF_ELGA","SIEF_ELNO",
-                                    "SIEQ_ELGA","SIEQ_ELNO",
-                                    "SIGM_ELGA","SIGM_ELNO",
-                                    "VARI_ELGA","VARI_ELNO",
-                                    ),),
+                              into=liste_option_extr,),
            NUME_COUCHE  =SIMP(statut='o',typ='I',val_min=1,
                              fr="numero de couche dans l'épaisseur de la coque" ),
            NIVE_COUCHE  =SIMP(statut='o',typ='TXM',into=("SUP","INF","MOY"),
@@ -93,15 +92,7 @@ POST_CHAMP=OPER(nom="POST_CHAMP",op=155,sd_prod=post_champ_prod, reentrant='n',
 #====
          EXTR_TUYAU  =FACT(statut='f', max=1, fr="extraction sur un sous-point d'un tuyau",
            NOM_CHAM     =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
-                              into=(
-                                    "EFGE_ELGA",
-                                    "EPEQ_ELGA","EPEQ_ELNO",
-                                    "EPSI_ELGA","EPSI_ELNO",
-                                    "SIEF_ELGA","SIEF_ELNO",
-                                    "SIEQ_ELGA","SIEQ_ELNO",
-                                    "SIGM_ELGA","SIGM_ELNO",
-                                    "VARI_ELGA","VARI_ELNO",
-                                    ),),
+                              into=liste_option_extr ,),
            NUME_COUCHE  =SIMP(statut='o',typ='I',val_min=1,
                              fr="numero de couche dans l'épaisseur du tuyau" ),
            NIVE_COUCHE  =SIMP(statut='o',typ='TXM',into=("SUP","INF","MOY"),
@@ -116,12 +107,7 @@ POST_CHAMP=OPER(nom="POST_CHAMP",op=155,sd_prod=post_champ_prod, reentrant='n',
 #====
          EXTR_PMF  =FACT(statut='f', max=1, fr="extraction sur un sous-point d'une poutre multi-fibre",
            NOM_CHAM     =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
-                              into=(
-                                    "EPSI_ELGA","EPSI_ELNO",
-                                    "SIEF_ELGA","SIEF_ELNO",
-                                    "SIGM_ELGA","SIGM_ELNO",
-                                    "VARI_ELGA",
-                                    ),),
+                              into=liste_option_extr,),
            NUME_FIBRE  =SIMP(statut='o',typ='I',val_min=1,
                              fr="numéro de la fibre dans la poutre multi-fibre" ),
            ),
@@ -132,15 +118,7 @@ POST_CHAMP=OPER(nom="POST_CHAMP",op=155,sd_prod=post_champ_prod, reentrant='n',
 #====
          MIN_MAX_SP  =FACT(statut='f', max='**', fr="extraction du min/max d'une composante pour un champ",
            NOM_CHAM     =SIMP(statut='o',typ='TXM',
-                              into=(
-                                    "EFGE_ELGA",
-                                    "EPEQ_ELGA","EPEQ_ELNO",
-                                    "EPSI_ELGA","EPSI_ELNO",
-                                    "SIEF_ELGA","SIEF_ELNO",
-                                    "SIEQ_ELGA","SIEQ_ELNO",
-                                    "SIGM_ELGA","SIGM_ELNO",
-                                    "VARI_ELGA","VARI_ELNO",
-                                    ),),
+                              into=liste_option_extr,),
            NOM_CMP        =SIMP(statut='o',typ='TXM',fr="nom de la composante",  ),
            TYPE_MAXI      =SIMP(statut='o',typ='TXM',into=("MAXI","MINI","MAXI_ABS","MINI_ABS",) ),
            NUME_CHAM_RESU = SIMP(statut='o', typ='I', val_min=1, val_max=20,

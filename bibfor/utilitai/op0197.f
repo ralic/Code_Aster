@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,7 +34,6 @@ C     ------------------------------------------------------------------
       CHARACTER*8  TAPAIT, K8BID, CARA, TYPARR(NBPARR), TYPARS(NBPARS),
      &             TYPART(NBPART), TABTRI, TYPARK(NBPARK), TABOUT,RESU,
      &             CHCOP1,CHCOP2
-      CHARACTER*8  NOPASE
       CHARACTER*16 OPTCAL(2), METHOD, NOMCMD, NOMRC, CONCEP, PARCAL(2),
      &             NOPARR(NBPARR), NOPARK(NBPARK), NOPARS(NBPARS),
      &             NOPART(NBPART), K16BID
@@ -596,8 +595,7 @@ C
       VALRR (1) = TEST
       CALL U2MESG('I', 'UTILITAI6_56',0,' ',1,VALII,1,VALRR)
 C
-      NOPASE = '        '
-      CALL TBIMPR ( TAPAIT, NOPASE, 'EXCEL', IFM, NTPSI+2, ZK16(INOPA),
+      CALL TBIMPR ( TAPAIT, 'EXCEL', IFM, NTPSI+2, ZK16(INOPA),
      &              0, K16BID, '1PE12.5', ' ')
 C
       CALL JEDEMA()

@@ -5,7 +5,7 @@
      &                    FEXTE,FAMOR,FLIAI )
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -96,7 +96,7 @@ C
 C
         IF ( TYPEAR(ITYPE).NE.'    ' ) THEN
 C
-          CALL RSEXCH(RESULT,TYPEAR(ITYPE),IARCHI,CHAMNO,IAUX)
+          CALL RSEXCH(' ',RESULT,TYPEAR(ITYPE),IARCHI,CHAMNO,IAUX)
           IF ( IAUX.EQ.0 ) THEN
             IF ( ALARM.GT.0 ) THEN
               CALL U2MESK('A','ALGORITH2_64',1,CHAMNO)

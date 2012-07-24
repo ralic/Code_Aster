@@ -1,4 +1,4 @@
-# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE OSCILLATEUR SIMPLE SOUMIS A UNE EXCITATION ALEATOIRE
 # sdld101a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -210,82 +210,67 @@ INTER3=REST_SPEC_PHYS(         MODE_MECA=FREQ1,
                                      NOM_CMP=('DX', 'DX'),
                                       OPTION='TOUT_TOUT'   )
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTER1,
-                            NOEUD_I = 'P2',      NOEUD_J = 'P2',
-                            NOM_CMP_I = 'DX',  NOM_CMP_J = 'DX',
-               VALE_PARA = 5., VALE_REFE_C = ('RI',1.2307,0.0)))
+REP1=RECU_FONCTION(    INTE_SPEC=INTER1,
+                            NOEUD_I = 'P2',
+                            NOM_CMP_I = 'DX',
+                      )
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTER1,
-                            NOEUD_I = 'P2',   NOEUD_J = 'P2',
-                            NOM_CMP_I = 'DX',  NOM_CMP_J = 'DX',
-               VALE_PARA = 10., VALE_REFE_C = ('RI',2.7116,0.0)))
+REP2=RECU_FONCTION(    INTE_SPEC=INTER2,
+                            NOEUD_I = 'P2',
+                            NOM_CMP_I = 'DX',
+                      )
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTER1,
-                            NOEUD_I = 'P2',   NOEUD_J = 'P2',
-                            NOM_CMP_I = 'DX',  NOM_CMP_J = 'DX',
-               VALE_PARA = 15., VALE_REFE_C = ('RI',47.2154,0.0)))
+REP3=RECU_FONCTION(    INTE_SPEC=INTER3,
+                            NOEUD_I = 'P2',
+                            NOM_CMP_I = 'DX',
+                      )
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTER1,
-                            NOEUD_I = 'P2',   NOEUD_J = 'P2',
-                            NOM_CMP_I = 'DX',  NOM_CMP_J = 'DX',
-               VALE_PARA = 20., VALE_REFE_C = ('RI',2.8924,0.0)))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP1,
+               VALE_PARA = 5., VALE_REFE = 1.2307))
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTER1,
-                            NOEUD_I = 'P2',   NOEUD_J = 'P2',
-                            NOM_CMP_I = 'DX',  NOM_CMP_J = 'DX',
-               VALE_PARA = 25., VALE_REFE_C = ('RI',0.47047,0.0)))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP1,
+               VALE_PARA = 10., VALE_REFE = 2.7116))
 
-#*********************************************************************#
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTER2,
-                            NOEUD_I = 'P2',   NOEUD_J = 'P2',
-                            NOM_CMP_I = 'DX',  NOM_CMP_J = 'DX',
-               VALE_PARA = 5., VALE_REFE_C = ('MP',0.011976,0.0)))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP1,
+               VALE_PARA = 15., VALE_REFE = 47.2154))
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTER2,
-                            NOEUD_I = 'P2',   NOEUD_J = 'P2',
-                            NOM_CMP_I = 'DX',  NOM_CMP_J = 'DX',
-               VALE_PARA = 10., VALE_REFE_C = ('MP',0.42096,0.0)))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP1,
+               VALE_PARA = 20., VALE_REFE = 2.8924))
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTER2,
-                            NOEUD_I = 'P2',   NOEUD_J = 'P2',
-                            NOM_CMP_I = 'DX',  NOM_CMP_J = 'DX',
-               VALE_PARA = 15., VALE_REFE_C = ('MP',36.9225,0.0)))
-
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTER2,
-                            NOEUD_I = 'P2',   NOEUD_J = 'P2',
-                            NOM_CMP_I = 'DX',  NOM_CMP_J = 'DX',
-               VALE_PARA = 20., VALE_REFE_C = ('MP',7.1006,0.0)))
-
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTER2,
-                            NOEUD_I = 'P2',   NOEUD_J = 'P2',
-                            NOM_CMP_I = 'DX',  NOM_CMP_J = 'DX',
-               VALE_PARA = 25., VALE_REFE_C = ('MP',2.7953,0.0)))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP1,
+               VALE_PARA = 25., VALE_REFE = 0.47047,))
 
 #*********************************************************************#
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTER3,
-                            NOEUD_I = 'P2',   NOEUD_J = 'P2',
-                            NOM_CMP_I = 'DX',  NOM_CMP_J = 'DX',
-               VALE_PARA = 5., VALE_REFE_C = ('MP',1.,0.)))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP2,
+               VALE_PARA = 5., VALE_REFE = 0.011976))
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTER3,
-                            NOEUD_I = 'P2',   NOEUD_J = 'P2',
-                            NOM_CMP_I = 'DX',  NOM_CMP_J = 'DX',
-               VALE_PARA = 10., VALE_REFE_C = ('MP',1.,0.)))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP2,
+               VALE_PARA = 10., VALE_REFE = 0.42096))
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTER3,
-                            NOEUD_I = 'P2',   NOEUD_J = 'P2',
-                            NOM_CMP_I = 'DX',  NOM_CMP_J = 'DX',
-               VALE_PARA = 15., VALE_REFE_C = ('MP',1.,0.)))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP2,
+               VALE_PARA = 15., VALE_REFE = 36.9225))
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTER3,
-                            NOEUD_I = 'P2',   NOEUD_J = 'P2',
-                            NOM_CMP_I = 'DX',  NOM_CMP_J = 'DX',
-               VALE_PARA = 20., VALE_REFE_C = ('MP',1.,0.)))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP2,
+               VALE_PARA = 20., VALE_REFE = 7.1006))
 
-TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTER3,
-                            NOEUD_I = 'P2',   NOEUD_J = 'P2',
-                            NOM_CMP_I = 'DX',  NOM_CMP_J = 'DX',
-               VALE_PARA = 25., VALE_REFE_C = ('MP',1.,0.)))
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP2,
+               VALE_PARA = 25., VALE_REFE = 2.7953))
+
+#*********************************************************************#
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP3,
+               VALE_PARA = 5., VALE_REFE = 1.))
+
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP3,
+               VALE_PARA = 10., VALE_REFE = 1.))
+
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP3,
+               VALE_PARA = 15., VALE_REFE = 1.))
+
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP3,
+               VALE_PARA = 20., VALE_REFE = 1.))
+
+TEST_FONCTION( VALEUR=_F(  FONCTION = REP3,
+               VALE_PARA = 25., VALE_REFE = 1.))
 
 #
 #*****************************************************#

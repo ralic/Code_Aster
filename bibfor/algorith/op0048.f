@@ -1,7 +1,7 @@
       SUBROUTINE OP0048()
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -263,7 +263,7 @@ C
           ALPHA = 1.D0
         ENDIF
         DO 62 , IORDR = 0 , NBORD
-          CALL RSEXCH(RESULT,'DEPL',IORDR,CHAMGD,IRET)
+          CALL RSEXCH(' ',RESULT,'DEPL',IORDR,CHAMGD,IRET)
           IF (IRET.GT.0) GOTO 62
           CALL MECHAM('STRX_ELGA',MODELE(1:8),0,' ',CARAEL(1:8),0,
      &                           CHGEOM,CHCARA,CHHARM,IRET )
@@ -277,7 +277,7 @@ C
           IF ( EXIPOU .AND. NFON.NE.0 ) THEN
             CALL FOINTE('F ',NOMFON,1,'INST',TIME,ALPHA,IRET)
           ENDIF
-          CALL RSEXCH(RESULT,'STRX_ELGA',IORDR,CHSTRU,IRET)
+          CALL RSEXCH(' ',RESULT,'STRX_ELGA',IORDR,CHSTRU,IRET)
           IF (IRET.EQ.0) GOTO 62
           IBID = 0
           CALL MECALC('STRX_ELGA',MODELE,CHAMGD,CHGEOM,MATE ,

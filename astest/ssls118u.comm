@@ -1,4 +1,4 @@
-# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE  PLAQUE CARREE EN APPUI SIMPLE SOUS PRESSION SINUSOIDALE
 # ssls118u.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -43,7 +43,7 @@ E  = 25.;    # Module d'Young
 NU = 0.25;   # Coefficient de poisson
 
 
-MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),FORMAT='MED');
+MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),FORMAT='MED',INFO=2);
 MA=DEFI_GROUP(reuse =MA,
               CREA_GROUP_MA=_F(TOUT='OUI',
                                NOM='TOUT',),
@@ -394,4 +394,115 @@ TEST_RESU(RESU=(_F(NOM_CHAM='DEPL',
                         CRITERE='ABSOLU',),
                       ))
 
+#------- SIEF_ELGA A PARTIR DE MECA_STATIQUE (MS)
+
+RESU_MS=MECA_STATIQUE( MODELE=MO,OPTION='SIEF_ELGA',
+                       CHAM_MATER= CHAM_MAT,
+                       CARA_ELEM = CAR_ELE,
+                       EXCIT=(_F(CHARGE=CHA,),
+                              _F(CHARGE=CHA_P,),)
+                     );
+
+#------- SIEF_ELGA A PARTIR DU DEPLACEMENT
+
+U_MS=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                OPERATION='EXTR',
+                RESULTAT=RESU_MS,
+                NOM_CHAM='DEPL',);
+
+RU_MS=CREA_RESU(OPERATION='AFFE', 
+                TYPE_RESU='EVOL_ELAS', 
+                NOM_CHAM='DEPL',
+                AFFE= _F( CHAM_GD = U_MS, 
+                          INST=1.,
+                          MODELE=MO,
+                          CHAM_MATER= CHAM_MAT,
+                          CARA_ELEM = CAR_ELE,))
+
+EF_RU_MS=CALC_CHAMP(RESULTAT=RU_MS,CONTRAINTE=('SIEF_ELGA'))
+
+TEST_RESU(RESU=(_F(RESULTAT=RESU,
+                   REFERENCE = 'ANALYTIQUE',
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIEF_ELGA',
+                   MAILLE='M126',
+                   VALE=-0.031422381,
+                   PRECISION=2.E-2,
+                   POINT=1,
+                   NOM_CMP='MXX',
+                   CRITERE='RELATIF',),
+                _F(RESULTAT=RESU,
+                   REFERENCE = 'ANALYTIQUE',
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIEF_ELGA',
+                   MAILLE='M259',
+                   VALE=-0.03156608,
+                   PRECISION=3.5E-2,
+                   POINT=3,
+                   NOM_CMP='MYY',
+                   CRITERE='RELATIF')))
+
+TEST_RESU(RESU=(_F(RESULTAT=RESU_MS,
+                   REFERENCE = 'ANALYTIQUE',
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIEF_ELGA',
+                   MAILLE='M126',
+                   VALE=-0.031422381,
+                   PRECISION=2.E-2,
+                   POINT=1,
+                   NOM_CMP='MXX',
+                   CRITERE='RELATIF'),
+                _F(RESULTAT=RESU_MS,
+                   REFERENCE = 'ANALYTIQUE',
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIEF_ELGA',
+                   MAILLE='M259',
+                   VALE=-0.03156608,
+                   PRECISION=3.5E-2,
+                   POINT=3,
+                   NOM_CMP='MYY',
+                   CRITERE='RELATIF')))
+
+
+TEST_RESU(RESU=(_F(RESULTAT=EF_RU_MS,
+                   REFERENCE = 'ANALYTIQUE',
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIEF_ELGA',
+                   MAILLE='M126',
+                   VALE=-0.031422381,
+                   PRECISION=2.E-2,
+                   POINT=1,
+                   NOM_CMP='MXX',
+                   CRITERE='RELATIF'),
+                _F(RESULTAT=EF_RU_MS,
+                   REFERENCE = 'ANALYTIQUE',
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIEF_ELGA',
+                   MAILLE='M259',
+                   VALE=-0.03156608,
+                   PRECISION=3.5E-2,
+                   POINT=3,
+                   NOM_CMP='MYY',
+                   CRITERE='RELATIF')))
+
+TEST_RESU(RESU=(_F(RESULTAT=EF_RU_MS,
+                   REFERENCE = 'NON_REGRESSION',
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIEF_ELGA',
+                   MAILLE='M126',
+                   VALE=-0.031053446791856,
+                   PRECISION=1.0E-10,
+                   POINT=1,
+                   NOM_CMP='MXX',
+                   CRITERE='RELATIF'),
+                _F(RESULTAT=EF_RU_MS,
+                   REFERENCE = 'NON_REGRESSION',
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIEF_ELGA',
+                   MAILLE='M259',
+                   VALE=-0.030622108007623,
+                   PRECISION=1.0E-10,
+                   POINT=3,
+                   NOM_CMP='MYY',
+                   CRITERE='RELATIF')))
 FIN()

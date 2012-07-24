@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2012   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE L'ESTIMATEUR D'ERREUR EN QUANTITE D'INTERET
 # sslv113d.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -104,7 +104,7 @@ CHARDUAL=AFFE_CHAR_MECA(MODELE=MO,
                                           FX=0.0,),
                                        _F(GROUP_MA='GRMA4',
                                           FX=0.0,),),
-                        EPSI_INIT=_F(TOUT='OUI',
+                        PRE_EPSI =_F(TOUT='OUI',
                                      EPXX=1.0,),);
 
 RESUDUAL=MECA_STATIQUE(MODELE=MO,

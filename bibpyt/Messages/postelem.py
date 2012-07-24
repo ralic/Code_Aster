@@ -1,4 +1,4 @@
-#@ MODIF postelem Messages  DATE 02/04/2012   AUTEUR BARGELLI R.BARGELLINI 
+#@ MODIF postelem Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,9 +26,9 @@ cata_msg={
  Un instant demandé dans POST_ELEM, option CHAR_LIMITE n'est pas présent dans le résultat <%(k1)s>.
 """),
 
-2: _(u"""
- Impossible de trouver les déplacements de numéro d'ordre %(i1)d dans POST_ELEM, option CHAR_LIMITE.
-"""),
+
+
+
 
 3: _(u"""
  Le résultat <%(k1)s> utilisé dans POST_ELEM, option CHAR_LIMITE n'a pas été produit par un STAT_NON_LINE avec pilotage.
@@ -47,13 +47,13 @@ cata_msg={
  Un instant demandé dans POST_ELEM, option TRAV_EXT n'est pas présent dans le résultat <%(k1)s>.
 """),
 
-12: _(u"""
- Impossible de trouver les déplacements <DEPL> de numéro d'ordre %(i1)d dans POST_ELEM, option TRAV_EXT.
-"""),
 
-13: _(u"""
- Impossible de trouver les forces nodales <FORC_NODA> de numéro d'ordre %(i1)d dans POST_ELEM, option TRAV_EXT.
-"""),
+
+
+
+
+
+
 
 
 }

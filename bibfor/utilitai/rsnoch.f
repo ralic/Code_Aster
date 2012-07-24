@@ -5,7 +5,7 @@
       CHARACTER*(*) NOMSD,NOMSY
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,7 +84,7 @@ C     -------------------------------------------
 C     -- CHNOTE : NOM QUE DOIT AVOIR LE CHAMP A NOTER :
 C        (REGLE DE NOMMAGE DE RSUTCH.F)
 C     -------------------------------------------------
-      CALL RSEXCH(NOMD2,NOMS2,IORDR,CHNOTE,IRET)
+      CALL RSEXCH(' ',NOMD2,NOMS2,IORDR,CHNOTE,IRET)
 
 C     -- ON VERIFIE L'EXISTENCE DE CHNOTE :
 C     -------------------------------------------

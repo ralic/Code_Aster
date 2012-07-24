@@ -1,4 +1,4 @@
-#@ MODIF calc_spec_ops Macro  DATE 09/01/2012   AUTEUR REZETTE C.REZETTE 
+#@ MODIF calc_spec_ops Macro  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -55,7 +55,7 @@ def calc_spec_ops(self,TAB_ECHANT,ECHANT,INTERSPE,TRANSFERT,TITRE,INFO,**args):
    
    # On importe les definitions des commandes a utiliser dans la macro
    # Le nom de la variable doit etre obligatoirement le nom de la commande
-   CREA_TABLE    = self.get_cmd('CREA_TABLE')
+   DEFI_INTE_SPEC    = self.get_cmd('DEFI_INTE_SPEC')
    CALC_TABLE    = self.get_cmd('CALC_TABLE')
    DEFI_FONCTION = self.get_cmd('DEFI_FONCTION')
 
@@ -241,8 +241,8 @@ def calc_spec_ops(self,TAB_ECHANT,ECHANT,INTERSPE,TRANSFERT,TITRE,INFO,**args):
          crit.sort();
          if abs((crit[-1]-crit[0])/crit[-1]) > 1.e-5 :
             raise FonctionError, 'L'+"'"+'echantillonage doit etre fait a pas constant'
-         print "vale_sig[1]= ", len(vale_sig[1]), vale_sig[1]
-         print "  fene = ",len(fene), fene
+       #  print "vale_sig[1]= ", len(vale_sig[1]), vale_sig[1]
+       #  print "  fene = ",len(fene), fene
          fft.append(FFT.fft(numpy.multiply(vale_sig[1],fene)))
          df.append(1./(crit[-1])/len(vale_sig[0]));
       
@@ -321,21 +321,18 @@ def calc_spec_ops(self,TAB_ECHANT,ECHANT,INTERSPE,TRANSFERT,TITRE,INFO,**args):
                   dsp_r=dsp_r+[frq[k1],dsp[k1].real,dsp[k1].imag]
     
                _fonc = DEFI_FONCTION(NOM_PARA='FREQ',VALE_C=dsp_r,);
-               l_fc.append(_fonc.nom)
+               l_fc.append(_fonc)
                nume_i1.append(list_ord[i1])
                nume_j1.append(list_ord[j1])
    
       mcfact=[]
-      mcfact.append(_F(PARA='NOM_CHAM'    ,LISTE_K='DSP'   ,NUME_LIGN=(1,) ))
-      mcfact.append(_F(PARA='OPTION'      ,LISTE_K='TOUT'  ,NUME_LIGN=(1,) ))
-      mcfact.append(_F(PARA='DIMENSION'   ,LISTE_I=(dimh,) ,NUME_LIGN=(1,) ))
-      mcfact.append(_F(PARA='NUME_ORDRE_I',LISTE_I=nume_i1 ,NUME_LIGN=range(2,dimh+2) ))
-      mcfact.append(_F(PARA='NUME_ORDRE_J',LISTE_I=nume_j1 ,NUME_LIGN=range(2,dimh+2) ))
-      mcfact.append(_F(PARA='FONCTION_C'  ,LISTE_K=l_fc    ,NUME_LIGN=range(2,dimh+2)))
-      self.DeclareOut('tab_inte',self.sd)
-      tab_inte=CREA_TABLE(LISTE=mcfact,
-                          TITRE='',
-                          TYPE_TABLE='TABLE_FONCTION')
+      for i in range(nb_ord*(nb_ord+1)/2):
+          mcfact.append(_F(NUME_ORDRE_I=nume_i1[i] , 
+                           NUME_ORDRE_J=nume_j1[i] , 
+                           FONCTION=l_fc[i] ),)
+      self.DeclareOut('inte_out',self.sd)
+      inte_out=DEFI_INTE_SPEC(PAR_FONCTION=mcfact,
+                          TITRE='DSP',)
       
             
       
@@ -411,21 +408,18 @@ def calc_spec_ops(self,TAB_ECHANT,ECHANT,INTERSPE,TRANSFERT,TITRE,INFO,**args):
                         frf_r=frf_r+[frq[k1],frf[k1].real,frf[k1].imag]
 
                      _fonc = DEFI_FONCTION(NOM_PARA='FREQ',VALE_C=frf_r,);
-                     l_fc.append(_fonc.nom)
+                     l_fc.append(_fonc)
                      nume_i1.append(refer[i1])
                      nume_j1.append(list_ord[j1])
 
       #-- On remplit la table_fonction avec tout ce qui va bien 
  
       mcfact=[]
-      mcfact.append(_F(PARA='NOM_CHAM'    ,LISTE_K=nom_frf ))
-      mcfact.append(_F(PARA='OPTION'      ,LISTE_K='TOUT'  ))
-      mcfact.append(_F(PARA='DIMENSION'   ,LISTE_I=(dimh,) ))
-      mcfact.append(_F(PARA='NUME_ORDRE_I',LISTE_I=nume_i1 ))
-      mcfact.append(_F(PARA='NUME_ORDRE_J',LISTE_I=nume_j1 ))
-      mcfact.append(_F(PARA='FONCTION_C'  ,LISTE_K=l_fc  ))
-      self.DeclareOut('tab_inte',self.sd)
-      tab_inte=CREA_TABLE(LISTE=mcfact,
-                          TITRE='',
-                          TYPE_TABLE='TABLE_FONCTION')
-
+      for i in range(len(nume_i1)):
+          mcfact.append(_F(NUME_ORDRE_I=nume_i1[i] ,
+                           NUME_ORDRE_J=nume_j1[i] ,
+                           FONCTION=l_fc[i] ),)
+      self.DeclareOut('inte_out',self.sd)
+      inte_out=DEFI_INTE_SPEC(PAR_FONCTION=mcfact,
+                          TITRE=nom_frf,)
+      

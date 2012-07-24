@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/01/2012   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@
 
 CALC_SPEC=MACRO(nom="CALC_SPEC",
                 op=OPS('Macro.calc_spec_ops.calc_spec_ops'),
-                sd_prod=table_fonction,
+                sd_prod=interspectre,
                 reentrant='n',
                 fr="Calcule une matrice interspectrale ou des fonctions de transferts",
                 UIinfo={"groupes":("Fonctions",)},

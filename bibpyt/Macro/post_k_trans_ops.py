@@ -1,4 +1,4 @@
-#@ MODIF post_k_trans_ops Macro  DATE 17/04/2012   AUTEUR DELMAS J.DELMAS 
+#@ MODIF post_k_trans_ops Macro  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -57,15 +57,6 @@ def post_k_trans_ops(self,RESU_TRANS,K_MODAL,TOUT_ORDRE, NUME_ORDRE,
      DIME = 3
   else :
      DIME = 2
-      
-  F2D = K_MODAL['FOND_FISS']
-  F3D = []
-  if DIME == 3 :
-    F3D = K_MODAL['FISSURE']
-  
-  F2Db = []
-  if DIME == 2 :  
-    F2Db = K_MODAL['FISSURE'] 
    
 #-----------------------------------------
 #  
@@ -76,13 +67,10 @@ def post_k_trans_ops(self,RESU_TRANS,K_MODAL,TOUT_ORDRE, NUME_ORDRE,
   coef=aster.getvectjev(nomresu.ljust(19)+'.DEPL')
   nmodtr=aster.getvectjev(nomresu.ljust(19)+'.DESC')[1]
 # BASE MODALE
-  if F2D : 
+  if DIME == 2 : 
     n_mode = len((__kgtheta.EXTR_TABLE())['K1'])
     nbno = 1
-  if F2Db : 
-    n_mode = len((__kgtheta.EXTR_TABLE())['K1'])
-    nbno = 1
-  if F3D : 
+  else : 
     n_mode = max((__kgtheta.EXTR_TABLE())['NUME_MODE'].values()['NUME_MODE'])
     nbno = max((__kgtheta.EXTR_TABLE())['NUM_PT'].values()['NUM_PT'])
     labsc = (__kgtheta.EXTR_TABLE())['ABSC_CURV'].values()['ABSC_CURV'][0:nbno]
@@ -154,7 +142,7 @@ def post_k_trans_ops(self,RESU_TRANS,K_MODAL,TOUT_ORDRE, NUME_ORDRE,
   K2mod = [None]*n_mode*nbno
   K1t = [None]*nbarch*nbno
   K2t = [None]*nbarch*nbno
-  if F3D : 
+  if DIME == 3 : 
     K3mod = [None]*n_mode*nbno
     K3t = [None]*nbarch*nbno
     k1 = 'K1'
@@ -169,34 +157,28 @@ def post_k_trans_ops(self,RESU_TRANS,K_MODAL,TOUT_ORDRE, NUME_ORDRE,
     for k in range(0,n_mode) :
       K1mod[k*nbno + x] = __kgtheta[k1,k*nbno + x+1]
       K2mod[k*nbno + x] = __kgtheta[k2,k*nbno + x+1]
-      if F3D : K3mod[k*nbno + x] = __kgtheta[k3,k*nbno + x+1]
+      if DIME == 3 : K3mod[k*nbno + x] = __kgtheta[k3,k*nbno + x+1]
    
     for num in range(0,nbarch) :
       K1t[num*nbno + x] = 0.0
       K2t[num*nbno + x] = 0.0
-      if F3D : K3t[num*nbno + x] = 0.0
+      if DIME == 3 : K3t[num*nbno + x] = 0.0
       for k in range(0,n_mode) :
         num_ord = d_num[l_ord[num]][0]
         alpha = coef[n_mode*num_ord+k]
         K1t[num*nbno + x] = K1t[num*nbno + x] + alpha*K1mod[k*nbno + x]
         K2t[num*nbno + x] = K2t[num*nbno + x] + alpha*K2mod[k*nbno + x]
-        if F3D : K3t[num*nbno + x] = K3t[num*nbno + x] + alpha*K3mod[k*nbno + x]
+        if DIME == 3 : K3t[num*nbno + x] = K3t[num*nbno + x] + alpha*K3mod[k*nbno + x]
  
   v = aster.__version__
   titre = 'ASTER %s - CONCEPT CALCULE PAR POST_K_TRANS LE &DATE A &HEURE \n'%v
-  if F2D :
+  if DIME == 2 :
     tabout = CREA_TABLE(LISTE = (_F(LISTE_I =l_ord, PARA = 'NUME_ORDRE'),
                            _F(LISTE_R =l_inst, PARA = 'INST'),
                            _F(LISTE_R =K1t, PARA = k1),
                            _F(LISTE_R =K2t, PARA = k2),),
                         TITRE = titre,  );
-  if F2Db :
-    tabout = CREA_TABLE(LISTE = (_F(LISTE_I =l_ord, PARA = 'NUME_ORDRE'),
-                           _F(LISTE_R =l_inst, PARA = 'INST'),
-                           _F(LISTE_R =K1t, PARA = k1),
-                           _F(LISTE_R =K2t, PARA = k2),),
-                        TITRE = titre,  );
-  if F3D : 
+  else : 
    lo = []
    li = []
    for i in range(nbarch) :
