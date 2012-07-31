@@ -1,6 +1,6 @@
-# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE MODELISATION DES SOUS PRESSION D'UN BARRAGE 2D A L'AIDE DES ELEMENTS DE JOINT HYME ET DE LA LOI JOINT_MECA_RUPT
-# ssnp142e.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
+# ssnp142e.para = tps_job 120 mem_job 768Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

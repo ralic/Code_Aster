@@ -1,6 +1,6 @@
-# MODIF  DATE 09/07/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE TEST DES MESSAGES - INTERNATIONALISATION
-# supv002a.para = tps_job 180 mem_job 385Mo ncpus 1 liste_test R
+# supv002a.para = tps_job 180 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -97,7 +97,7 @@ previous_errors = set([
     'modelisation', 'nadm', 'nbmmai', 'nbmmax', 'nbtyp', 'ncmp', 'nmaxcmp', 'nmaxocl',
     'nmocl', 'nomres', 'nomta', 'nomte', 'nomtyp', 'not', 'nt', 'number', 'nume',
     'numeli', 'overflow', 'phenomene', 'pnosym', 'post', 'precont',
-    'raymin', 'rayon-raymin', 'rcmaco', 'relcom',
+    'raymin', 'rayon-raymin', 'rcmaco', 'relcom', 'VmSize', 'VmPeak',
     'resuelem', 'resultat', 'rhocp', 'rof', 'rsexch', 'runSalomeScript', 'sch', 'sd',
     'skin.pos', 'svp', 'tbliva', 'texxxx.f', 'tmax', 'tmin', 'typelem', 'typesd',
     'typf', 'typgeo', 'uttcpu', 'uttrif', 'vari', 'vect', 'xxx', 'xxxxxx.py'])
@@ -141,7 +141,7 @@ TEST_TABLE(TABLE=tabw,
            NOM_PARA='NBWARN',
            VALE_I=0,
            CRITERE='ABSOLU',
-           PRECISION=323.1,
+           PRECISION=325.1,
            REFERENCE='NON_REGRESSION',)
     
 FIN()

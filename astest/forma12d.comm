@@ -1,6 +1,6 @@
-# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE TP DYNAMIQUE LINEAIRE
-# forma12d.para = tps_job 180 mem_job 60Mo ncpus 1 liste_test S
+# forma12d.para = tps_job 180 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

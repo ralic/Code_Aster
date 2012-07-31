@@ -1,4 +1,4 @@
-# MODIF  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
+# MODIF  DATE 31/07/2012   AUTEUR LADIER A.LADIER 
 # TITRE PROPAGATION MIXTE D'UNE FISSURE 3D AVEC X-FEM ET RAFFINEMENT ADAPTATIF
 # sslv317a.para = tps_job 180 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -51,9 +51,6 @@ x0=0.
 y0=0.
 z0=0.
 rayon = 1e-3
-pfx= 0.10588E-02
-pfy= 0
-pfz=0
 
 
 # nombre de pas de propagation a simuler
@@ -179,10 +176,7 @@ for i_propa in xrange(pas_debut,nb_pas) :
    #Definition de la fissure sur le maillage en entree
    FISS=DEFI_FISS_XFEM(MODELE=MOD,
                        DEFI_FISS=_F(GROUP_MA_FISS='FISS_'+str(i_propa),
-                                    GROUP_MA_FOND='FOND_'+str(i_propa),),
-                       ORIE_FOND=_F(PFON_INI  = (pfx,pfy,pfz),
-                                    VECT_ORIE = ( 0., 0., 1.),
-                                    POINT_ORIG= ( x0, y0, z0),),)
+                                    GROUP_MA_FOND='FOND_'+str(i_propa),),)
 
    # Extraction des level sets
    LSN[0]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
@@ -323,10 +317,7 @@ for i_propa in xrange(pas_debut,nb_pas) :
    # Definition de la fissure
    FISS=DEFI_FISS_XFEM(MODELE=MOD_SAIN,
                        DEFI_FISS=_F(GROUP_MA_FISS='FISS_'+str(i_propa),
-                                    GROUP_MA_FOND='FOND_'+str(i_propa),),
-                       ORIE_FOND=_F(PFON_INI  = (pfx,pfy,pfz),
-                                    VECT_ORIE = ( 0., 0., 1.),
-                                    POINT_ORIG= ( x0, y0, z0),),)
+                                    GROUP_MA_FOND='FOND_'+str(i_propa),),)
 
 #    #On verifie que la fissure a bien un seul fond, sinon arret immediat du calcul
 #    NBFOND=FISS.sdj.FONDMULT.get()

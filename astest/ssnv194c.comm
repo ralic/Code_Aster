@@ -1,6 +1,6 @@
-# MODIF  DATE 21/02/2012   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE : TRACTION SUR UN POLYCRISTAL A 10 GRAINS, AVEC SIMU_POINT_MAT
-# ssnv194c.para = tps_job 150 mem_job 60Mo ncpus 1 liste_test S
+# ssnv194c.para = tps_job 150 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -1,4 +1,4 @@
-#@ MODIF sd_xfem SD  DATE 20/06/2012   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF sd_xfem SD  DATE 31/07/2012   AUTEUR LADIER A.LADIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,7 +35,7 @@ from SD.sd_l_table import sd_l_table
 class sd_fiss_xfem(AsBase):
     nomj = SDNom(fin=8)
 
-    INFO   = AsVK16(lonmax=2,)   # info discontinuite
+    INFO   = AsVK16(lonmax=3,)   # info discontinuite et type de fissure
     MODELE = AsVK8(lonmax=1,)
 
 # I.1) objets relatifs aux level sets
@@ -48,7 +48,7 @@ class sd_fiss_xfem(AsBase):
     FONDFISS        = Facultatif(AsVR())
     BASEFOND        = Facultatif(AsVR())
     FONDMULT        = Facultatif(AsVI())
-    CARAFOND        = Facultatif(AsVR(lonmax=12,))
+    CARAFOND        = Facultatif(AsVR(lonmax=2,))
     JONFISS = Facultatif(AsVK8())
     JONCOEF = Facultatif(AsVI())
     CHAMPS_LVS = Facultatif(AsVL(SDNom(nomj='.CHAMPS.LVS'),lonmax=1))

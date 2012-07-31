@@ -1,6 +1,6 @@
-# MODIF  DATE 02/04/2012   AUTEUR HAELEWYN J.HAELEWYN 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE SECHAGE DU BETON - CALCUL DE LA PERTE DE MASSE
-# ttnv101a.para = tps_job 200 mem_job 100Mo ncpus 1 liste_test S
+# ttnv101a.para = tps_job 200 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

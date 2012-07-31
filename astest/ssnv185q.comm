@@ -1,4 +1,4 @@
-# MODIF  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
+# MODIF  DATE 31/07/2012   AUTEUR LADIER A.LADIER 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185q.para = tps_job 100 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -108,9 +108,6 @@ FISS = [None]*5
 
 FISS[0]=DEFI_FISS_XFEM(MODELE=MODELE[0],
                        DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
-                       ORIE_FOND=_F(PFON_INI= (0. ,5. ,15. ),
-                                    VECT_ORIE=(0. ,0. ,1. ),
-                                    POINT_ORIG=(0. ,20. ,15. ),),
                        );
 
 #----------------------------------------------

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 31/07/2012   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,16 +27,6 @@ THER_LINEAIRE=OPER(nom="THER_LINEAIRE",op=25,sd_prod=evol_ther,reentrant='f',
            CHARGE          =SIMP(statut='o',typ=(char_ther,char_cine_ther)),
            FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
          ),
-         INCREMENT       =FACT(statut='f',
-           regles=(EXCLUS('NUME_INST_INIT','INST_INIT'),
-                   EXCLUS('NUME_INST_FIN','INST_FIN'),),
-           LIST_INST       =SIMP(statut='o',typ=listr8_sdaster),
-           NUME_INST_INIT  =SIMP(statut='f',typ='I'),
-           INST_INIT       =SIMP(statut='f',typ='R'),
-           NUME_INST_FIN   =SIMP(statut='f',typ='I'),
-           INST_FIN        =SIMP(statut='f',typ='R'),
-           PRECISION       =SIMP(statut='f',typ='R',defaut=1.0E-6 ),
-         ),
          ETAT_INIT       =FACT(statut='f',
            regles=(EXCLUS('STATIONNAIRE','EVOL_THER','CHAM_NO','VALE'),),
            STATIONNAIRE    =SIMP(statut='f',typ='TXM',into=("OUI",)),
@@ -52,6 +42,8 @@ THER_LINEAIRE=OPER(nom="THER_LINEAIRE",op=25,sd_prod=evol_ther,reentrant='f',
               PRECISION       =SIMP(statut='o',typ='R',),),
            INST_ETAT_INIT  =SIMP(statut='f',typ='R'),
          ),
+#-------------------------------------------------------------------
+         INCREMENT       =C_INCREMENT('THERMIQUE'),
 #-------------------------------------------------------------------
 #        Catalogue commun SOLVEUR
          SOLVEUR         =C_SOLVEUR('THER_LINEAIRE'),

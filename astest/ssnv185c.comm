@@ -1,5 +1,6 @@
-# MODIF  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
+# MODIF  DATE 31/07/2012   AUTEUR LADIER A.LADIER 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
+# ssnv185c.para = tps_job 550 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,9 +65,6 @@ LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='-Y+5.');
 
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
-                    ORIE_FOND=_F(PFON_INI= (0. ,5. ,15. ),
-                                 VECT_ORIE=(0. ,0. ,1. ),
-                                 POINT_ORIG=(0. ,20. ,15. ),),
                     INFO=1,
                     );
 
@@ -293,7 +291,7 @@ for i in range(0,nbc) :
               TYPE_TEST='MIN',
               VALE=K1REF,
               CRITERE='RELATIF',
-              PRECISION=0.04,
+              PRECISION=0.041,
               REFERENCE='NON_REGRESSION',
               VERSION='8.03.09');
 
@@ -315,7 +313,7 @@ for i in range(0,nbc) :
 
    TEST_TABLE(TABLE=SIF3[i],
               NOM_PARA='K1',
-              FILTRE=_F(NOM_PARA='NUM_PT',VALE_I=1),
+              FILTRE=_F(NOM_PARA='NUM_PT',VALE_I=6),
               VALE=K1REF4I,
               CRITERE='RELATIF',
               PRECISION=0.04,
@@ -323,7 +321,7 @@ for i in range(0,nbc) :
 
    TEST_TABLE(TABLE=SIF3[i],
               NOM_PARA='K1',
-              FILTRE=_F(NOM_PARA='NUM_PT',VALE_I=6,),
+              FILTRE=_F(NOM_PARA='NUM_PT',VALE_I=1,),
               VALE=K1REF4F,
               CRITERE='RELATIF',
               PRECISION=0.05,

@@ -1,4 +1,4 @@
-# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE Maillage adaptatif thermo-mecanique sur une culasse fissuree
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -18,7 +18,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# forma21a.para = tps_job 160 mem_job 128Mo ncpus 1 liste_test R
+# forma21a.para = tps_job 160 mem_job 512Mo ncpus 1 liste_test R
 #-------------------------------------------------------------------
 # REMARQUE GENERALE : IL FAUDRA FAIRE EVOLUER CE CAS-TEST POUR QU'IL
 #                     PRENNE EN COMPTE LE SUIVI DES FRONTIERES COURBES

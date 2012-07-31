@@ -1,6 +1,6 @@
-# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE SYSTEME MASSE-RESSORT AVEC CHOCS SOUS EXCITATION FORCEE
-# sdnd121a.para = tps_job 600 mem_job 600Mo ncpus 1 liste_test S
+# sdnd121a.para = tps_job 600 mem_job 768Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

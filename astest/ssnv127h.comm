@@ -1,4 +1,4 @@
-# MODIF  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 31/07/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE CYLINDRE DANS UN ALESAGE AVEC CONTACT ET FROTTEMENT
 # ssnv127h.para = tps_job 110 mem_job 1500Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -117,11 +117,6 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
 CHA2 = DEFI_CONTACT(MODELE         = MO,
                     FORMULATION    = 'CONTINUE',
                     FROTTEMENT     = 'COULOMB',
-                    #REAC_GEOM      = 'CONTROLE',
-                    #REAC_FROT      = 'CONTROLE',
-                    #NB_ITER_FROT   = 5,
-                    #NB_ITER_GEOM   = 3,
-                    #ITER_CONT_MAXI = 25,
                     ALGO_RESO_CONT = 'NEWTON',
                     ALGO_RESO_GEOM = 'NEWTON',
                     ALGO_RESO_FROT = 'NEWTON',

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/01/2012   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE CHAINETTE EN CONTACT FROTTANT AVEC X-FEM QUADRATIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +17,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# ssnv509a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
+# ssnv509a.para = tps_job 60 mem_job 768Mo ncpus 1 liste_test R
 
 
 

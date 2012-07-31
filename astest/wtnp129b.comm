@@ -1,6 +1,6 @@
-# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE MODELISATION HM D'UN BARREAU SATURE EN LIQUIDE COMPRESSIBLE
-# wtnp129b.para = tps_job 180 mem_job 200Mo ncpus 1 liste_test R
+# wtnp129b.para = tps_job 180 mem_job 768Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

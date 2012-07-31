@@ -1,8 +1,8 @@
 
-# MODIF  DATE 09/07/2012   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE COMPORTEMENTS ELASTOVISCOPLASTIQUES MONOCRISTALLINS
 # RESPONSABLE JMBHH01 J.M.PROIX
-# ssnv172a.para = tps_job 300 mem_job 269Mo ncpus 1 liste_test R
+# ssnv172a.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

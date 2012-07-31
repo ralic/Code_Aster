@@ -1,7 +1,7 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE VIBRATIONS D UN PENDULE EN ROTATION
 # RESPONSABLE VABHHTS J.PELLET
-# sdll403a.para = tps_job 60 mem_job 130Mo ncpus 1 liste_test S
+# sdll403a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

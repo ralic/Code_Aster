@@ -1,6 +1,6 @@
-# MODIF  DATE 29/05/2012   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE VALIDATION DE L'ASSISTANT CRACK ANALYSIS DU MODULE ASTER SALOME-MECA : FISSURE CIRCULAIRE EN MILIEU INFINI
-# crack01a.para = tps_job 100 mem_job 512Mo liste_test S
+# crack01a.para = tps_job 100 mem_job 768Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

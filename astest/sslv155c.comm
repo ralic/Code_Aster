@@ -1,6 +1,6 @@
-# MODIF  DATE 20/06/2012   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 31/07/2012   AUTEUR LADIER A.LADIER 
 # TITRE  FISSURE LENTILLE EN TRACTION
-# sslv155c.para = tps_job 300 mem_job 1024Mo liste_test S
+# sslv155c.para = tps_job 300 mem_job 1536Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -97,9 +97,6 @@ for i_raff in range(nb_iter) :
    FISS[i_raff]=DEFI_FISS_XFEM(MODELE=MO[i_raff],
                                DEFI_FISS=_F(FONC_LT=LT,
                                             FONC_LN=LN),
-                               ORIE_FOND=_F(PFON_INI  =(a ,0.,0.),
-                                            VECT_ORIE =(0.,1.,0.),
-                                            POINT_ORIG=(0.,0.,0.))
                                )
       
    # evaluation de l'erreur       
@@ -136,9 +133,6 @@ MODE=AFFE_MODELE(MAILLAGE=MA[nb_iter],
 FISSX=DEFI_FISS_XFEM(MODELE=MODE,
                      DEFI_FISS=_F(FONC_LT=LT,
                                   FONC_LN=LN),
-                     ORIE_FOND=_F(PFON_INI  =(a ,0.,0.),
-                                  VECT_ORIE =(0.,1.,0.),
-                                  POINT_ORIG=(0.,0.,0.))
                                )
 
 MODX=MODI_MODELE_XFEM(MODELE_IN=MODE,

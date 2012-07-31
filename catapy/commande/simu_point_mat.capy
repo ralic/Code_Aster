@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/06/2012   AUTEUR PROIX J-M.PROIX 
+#& MODIF COMMANDE  DATE 31/07/2012   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,7 +38,7 @@ SIMU_POINT_MAT=MACRO(nom="SIMU_POINT_MAT",
      ANGL_REP        =SIMP(statut='f',typ='R',min=1,max=3),
      ANGL_EULER      =SIMP(statut='f',typ='R',min=1,max=3),
    ),
-   INCREMENT       =C_INCREMENT(),
+   INCREMENT       =C_INCREMENT('MECANIQUE'),
    NEWTON          =C_NEWTON(),
    CONVERGENCE     =C_CONVERGENCE(),
 

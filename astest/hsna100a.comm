@@ -1,5 +1,6 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 31/07/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE SECHAGE EN 2D AXISYMETRIQUE  - QUAD8
+# hsna100a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -78,13 +79,16 @@ LISTTHER=DEFI_LIST_REEL(
         _F( JUSQU_A = 1.70294E+09,       NOMBRE = 1,  )) #  54   ANS
                           )
 
+DEFLISTH =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LISTTHER),)
+
+
 RESUTHER=THER_LINEAIRE(          MODELE=MOTH,
                                      EXCIT=_F( CHARGE = CHARTH05,   ),
                                 CHAM_MATER=CHMAT,
                                    SOLVEUR=_F(  METHODE = 'MULT_FRONT',   ),
                                  PARM_THETA=0.57,
                                  ETAT_INIT=_F( VALE = 15.,   ),
-                                 INCREMENT=_F( LIST_INST = LISTTHER,
+                                 INCREMENT=_F( LIST_INST = DEFLISTH,
                                             NUME_INST_INIT = 0,
                                             NUME_INST_FIN = 6,       ),
                                       INFO=1
@@ -97,7 +101,7 @@ RESUTHER=THER_LINEAIRE(reuse=RESUTHER,          MODELE=MOTH,
                                  PARM_THETA=0.57,
                                  ETAT_INIT=_F( EVOL_THER = RESUTHER,
                                             NUME_ORDRE = 6,   ),
-                                 INCREMENT=_F( LIST_INST = LISTTHER,
+                                 INCREMENT=_F( LIST_INST = DEFLISTH,
                                             NUME_INST_INIT = 6,
                                             NUME_INST_FIN = 14,      ),
                                       INFO=1
@@ -216,13 +220,15 @@ LISTSECH=DEFI_LIST_REEL(
         _F( JUSQU_A = 1.70294E+09,       NOMBRE = 4,  )) #  54   ANS
                           )
 
+DEFLISTS =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LISTSECH),)
+
 RESUSECH=THER_NON_LINE(          MODELE=MOTH,
                                      EXCIT=_F( CHARGE = CHARSE05,   ),
                                 CHAM_MATER=CHMAT,
                                    SOLVEUR=_F( METHODE = 'MULT_FRONT',   ),
                                  PARM_THETA=0.57,
                                  ETAT_INIT=_F( VALE = 105.7,   ),
-                                 INCREMENT=_F( LIST_INST = LISTSECH,
+                                 INCREMENT=_F( LIST_INST = DEFLISTS,
                                             NUME_INST_INIT = 0,
                                             NUME_INST_FIN = 44,       ),
                               COMP_THER_NL=_F( RELATION = 'SECH_GRANGER',
@@ -239,7 +245,7 @@ RESUSECH=THER_NON_LINE(reuse=RESUSECH,          MODELE=MOTH,
                                  PARM_THETA=0.57,
                                  ETAT_INIT=_F( EVOL_THER = RESUSECH,
                                             NUME_ORDRE = 32,   ),
-                                 INCREMENT=_F( LIST_INST = LISTSECH,
+                                 INCREMENT=_F( LIST_INST = DEFLISTS,
                                             NUME_INST_INIT = 32,
                                             NUME_INST_FIN = 72,       ),
                               COMP_THER_NL=_F( RELATION = 'SECH_GRANGER',

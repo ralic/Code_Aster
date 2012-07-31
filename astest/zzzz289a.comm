@@ -1,6 +1,6 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE TEST DES OPTIONS RIGI_MECA ET MASS_MECA DES ELEMENTS INCO ET INCO_UP EN 3D
-# zzzz289a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
+# zzzz289a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -1,6 +1,6 @@
-# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE VALIDATION DE EVOL_CHAR EN THM
-# zzzz272b.para = tps_job 300 mem_job 400Mo ncpus 1 liste_test S
+# zzzz272b.para = tps_job 300 mem_job 768Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

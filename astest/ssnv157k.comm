@@ -1,6 +1,6 @@
-# MODIF  DATE 02/04/2012   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE LOIS NON LOCALES A DEFO REGULARISEES SUR BARREAU 2D DPLAN
-# ssnv157k.para = tps_job 60 mem_job 64Mo liste_test S
+# ssnv157k.para = tps_job 60 mem_job 512Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

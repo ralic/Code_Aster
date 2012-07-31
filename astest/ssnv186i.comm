@@ -1,6 +1,6 @@
-# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE LBB CONDITION ET CONTACT FROTTANT AVEC X-FEM
-# ssnv186i.para = tps_job 60 mem_job 800Mo mem_aster 80 ncpus 1 liste_test S
+# ssnv186i.para = tps_job 60 mem_job 1024Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

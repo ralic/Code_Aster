@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2012   AUTEUR CHEIGNON E.CHEIGNON 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE PLAQUE DE BETON PRECONTRAINT AVEC CABLE EXCENTRE EN FLEXION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-# ssls137a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
+# ssls137a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 DEBUT(CODE=_F(  NOM = 'ssls137a',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM=('CALCULEL3_47'),)
 # ------------------------------------------------------------------------
 #                       Lecture du maillage

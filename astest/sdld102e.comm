@@ -1,4 +1,4 @@
-# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE SOUS-STRUCTURATION TRANSITOIRE : SYSTEME MASSES-RESSORTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +17,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# sdld102e.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
+# sdld102e.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 # CAS_TEST__: SDLD102E  (EQUIVALENT SDLD102A AVEC UTILISATION DE
 #          CREA_ELEM_SSD ET ASSE_ELEM_SSD ET SANS LE CALCUL DIRECT)
 #

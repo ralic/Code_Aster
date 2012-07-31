@@ -1,6 +1,6 @@
-# MODIF  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE PLAQUE 3D FISSUREE SOUMISE A UN CHARGEMENT EN MODE I.
-# sdlv130b.para = tps_job 120 mem_job 512Mo liste_test S
+# sdlv130b.para = tps_job 120 mem_job 768Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

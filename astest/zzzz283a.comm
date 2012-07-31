@@ -1,6 +1,6 @@
-# MODIF  DATE 11/04/2012   AUTEUR NICOLAS G.NICOLAS 
+# MODIF  DATE 31/07/2012   AUTEUR LADIER A.LADIER 
 # TITRE VALIDATION DE L'UTILISATION D'UNE GRILLE AVEC UNE FISSURE X-FEM SUR UN MAILLAGE RAFFINE PAR HOMARD
-# zzzz283a.para = tps_job 120 mem_job 256Mo ncpus 1 liste_test S
+# zzzz283a.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -73,9 +73,6 @@ fLST=FORMULE(NOM_PARA='Y',
 
 FISS[0]=DEFI_FISS_XFEM(DEFI_FISS=_F(FONC_LN=fLSN,
                                     FONC_LT=fLST),
-                       ORIE_FOND=_F(PFON_INI  = (4., 1., 0.),
-                                    VECT_ORIE = (0. , 0. , 1. ),
-                                    POINT_ORIG = (2., 0., 0.),),
                        MODELE_GRILLE=GriAux,
                        MODELE=MODbox10,);
 
@@ -199,9 +196,6 @@ MODraff=AFFE_MODELE(MAILLAGE=boxRaf,
 
 FISSlast=DEFI_FISS_XFEM(DEFI_FISS=_F(CHAM_NO_LSN=LSNlast,
                                      CHAM_NO_LST=LSTlast,),
-                         ORIE_FOND=_F(PFON_INI  = (4., 1., 0.),
-                                      VECT_ORIE = (0. , 0. , 1. ),
-                                      POINT_ORIG = (2., 0., 0.),),
                          FISS_GRILLE=FISS[i+1],
                          MODELE=MODraff,);
 

@@ -1,6 +1,6 @@
-# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE CONSTRUCTION PAR COUCHES D'UNE COLONNE DE SOL AVEC MODELE DE HUJEUX
-# wtnv132c.para = tps_job 450 mem_job 212Mo mem_aster 25 ncpus 1 liste_test S
+# wtnv132c.para = tps_job 450 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

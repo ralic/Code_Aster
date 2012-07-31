@@ -1,6 +1,6 @@
-# MODIF  DATE 16/01/2012   AUTEUR BEAURAIN J.BEAURAIN 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE ANALYSE AUX VALEURS PROPRES DANS DYNA_NON_LINE
-# sdnv106a.para = tps_job 900 mem_job 200Mo ncpus 1 liste_test S
+# sdnv106a.para = tps_job 900 mem_job 768Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

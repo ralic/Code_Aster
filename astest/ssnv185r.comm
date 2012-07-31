@@ -1,6 +1,6 @@
-# MODIF  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
+# MODIF  DATE 31/07/2012   AUTEUR LADIER A.LADIER 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
-# ssnv185r.para = tps_job 200 mem_job 500Mo ncpus 1 liste_test S
+# ssnv185r.para = tps_job 200 mem_job 768Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,9 +39,6 @@ LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='-Y+5.');
 
 FISS0=DEFI_FISS_XFEM(MODELE=MOD0,
                      DEFI_FISS=_F(FONC_LN=LN,FONC_LT=LT),
-                     ORIE_FOND=_F(PFON_INI= (0. ,5. ,15. ),
-                                  VECT_ORIE=(0. ,0. ,1. ),
-                                  POINT_ORIG=(0. ,20. ,15. ),),
                      )
 
 CHERR= RAFF_XFEM(FISSURE=FISS0)
@@ -77,10 +74,7 @@ MAILLAG1=MODI_MAILLAGE(reuse =MAILLAG1,
                        ORIE_PEAU_3D=_F(GROUP_MA=('SURFSUP','SURFINF',),),)
 
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
-                    DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
-                    ORIE_FOND=_F(PFON_INI= (0. ,5. ,15. ),
-                                 VECT_ORIE=(0. ,0. ,1. ),
-                                 POINT_ORIG=(0. ,20. ,15. ),),)
+                    DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),)
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS)
 

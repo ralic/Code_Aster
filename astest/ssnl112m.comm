@@ -1,5 +1,6 @@
-# MODIF  DATE 05/03/2012   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE ESSAI DE THERMOPLASTICITE (MISES ECR. ECMI.)
+# ssnl112m.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

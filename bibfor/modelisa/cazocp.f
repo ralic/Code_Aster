@@ -1,7 +1,7 @@
       SUBROUTINE CAZOCP(CHAR  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 31/07/2012   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -218,39 +218,19 @@ C
       IF (LFROT) THEN
         IF (LCTCC) THEN
           IF (ALGOFR.EQ.'POINT_FIXE') THEN
-            CALL GETVTX(' ','REAC_FROT',1 ,IARG,1,REAC,NOC)
-            IF (REAC .EQ. 'AUTOMATIQUE') THEN
-              ZI(JPARCI+20-1) = -1
-              CALL GETVIS(' ','ITER_FROT_MAXI',1 ,IARG,1,REACBS,NOC)
-              ZI(JPARCI+7-1) = REACBS
-              CALL GETVR8(' ','RESI_FROT',1 ,IARG,1,RESIFR,NOC)
-              ZR(JPARCR+2-1) = RESIFR
-            ELSEIF (REAC .EQ. 'CONTROLE') THEN
-              CALL GETVIS(' ','NB_ITER_FROT',1 ,IARG,1,NBREAC,NOC)
-              ZI(JPARCI+20-1) = NBREAC
-              ZR(JPARCR+2-1) = RESIFR
-            ELSE
-              CALL ASSERT(.FALSE.)
-            ENDIF
+            CALL GETVIS(' ','ITER_FROT_MAXI',1 ,IARG,1,REACBS,NOC)
+            ZI(JPARCI+7-1) = REACBS
+            CALL GETVR8(' ','RESI_FROT',1 ,IARG,1,RESIFR,NOC)
+            ZR(JPARCR+2-1) = RESIFR
           ELSE
             CALL GETVR8(' ','RESI_FROT',1 ,IARG,1,RESIFR,NOC)
             ZR(JPARCR+2-1) = RESIFR
           ENDIF
         ELSEIF (LXFCM) THEN
-          CALL GETVTX(' ','REAC_FROT',1 ,IARG,1,REAC,NOC)
-          IF (REAC .EQ. 'AUTOMATIQUE') THEN
-            ZI(JPARCI+20-1) = -1
-            CALL GETVIS(' ','ITER_FROT_MAXI',1 ,IARG,1,REACBS,NOC)
-            ZI(JPARCI+7-1) = REACBS
-            CALL GETVR8(' ','RESI_FROT',1 ,IARG,1,RESIFR,NOC)
-            ZR(JPARCR+2-1) = RESIFR
-          ELSEIF (REAC .EQ. 'CONTROLE') THEN
-            CALL GETVIS(' ','NB_ITER_FROT',1 ,IARG,1,NBREAC,NOC)
-            ZI(JPARCI+20-1) = NBREAC
-            ZR(JPARCR+2-1) = RESIFR
-          ELSE
-            CALL ASSERT(.FALSE.)
-          ENDIF
+          CALL GETVIS(' ','ITER_FROT_MAXI',1 ,IARG,1,REACBS,NOC)
+          ZI(JPARCI+7-1) = REACBS
+          CALL GETVR8(' ','RESI_FROT',1 ,IARG,1,RESIFR,NOC)
+          ZR(JPARCR+2-1) = RESIFR
         ENDIF
       ELSE
         ZI(JPARCI+20-1) = 0

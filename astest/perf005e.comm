@@ -1,6 +1,6 @@
-# MODIF  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE CONTACT DE HERTZ ENTRE 2 DEMI-SPHERES
-# perf005e.para = tps_job 1500 mem_job 384Mo ncpus 1 liste_test S
+# perf005e.para = tps_job 1500 mem_job 768Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

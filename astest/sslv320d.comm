@@ -1,6 +1,6 @@
-# MODIF  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
+# MODIF  DATE 31/07/2012   AUTEUR LADIER A.LADIER 
 # TITRE PROPAGATION PLANE D UNE FISSURE 3D SE DIVISANT ET FUSIONNANT AVEC X-FEM
-# sslv320d.para = tps_job 350 mem_job 2000Mo ncpus 1 liste_test S
+# sslv320d.para = tps_job 350 mem_job 1024Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -127,9 +127,6 @@ Mod=AFFE_MODELE(MAILLAGE=MATOT[0],
 FISS[0]=DEFI_FISS_XFEM(MODELE=Mod,
                        DEFI_FISS=_F(GROUP_MA_FISS='FISS_'+str(0),
                                     GROUP_MA_FOND='FOND_'+str(0)),
-                       ORIE_FOND=_F(PFON_INI  = (30.0,a0,5.0),
-                                    VECT_ORIE = (0.,0.,1.0),
-                                    POINT_ORIG= (15.0,0.,5.0),),
                         );
 
 
@@ -229,10 +226,7 @@ for i in range(nbcalc) :
    FISSH[i] = DEFI_FISS_XFEM(MODELE=ModH[i],
                              DEFI_FISS=_F(GROUP_MA_FISS='FISS_'+str(i),
                                           GROUP_MA_FOND='FOND_'+str(i)),
-                             GROUP_MA_ENRI='All',
-                             ORIE_FOND=_F(PFON_INI  = (30.0,a0,5.0),
-                                          VECT_ORIE = (0.,0.,1.0),
-                                          POINT_ORIG= (15.0,0.,5.0),),)
+                             GROUP_MA_ENRI='All',)
 
    LSNH[i]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                        OPERATION='EXTR',
@@ -320,9 +314,6 @@ for i in range(nbcalc) :
       FISS[i+1]=DEFI_FISS_XFEM(MODELE=Mod,
                                DEFI_FISS=_F(GROUP_MA_FISS='FISS_'+str(i+1),
                                             GROUP_MA_FOND='FOND_'+str(i+1)),
-                               ORIE_FOND=_F(PFON_INI  = (30.0,a0,5.0),
-                                            VECT_ORIE = (0.,0.,1.0),
-                                            POINT_ORIG= (15.0,0.,5.0),),
                                );
 
       

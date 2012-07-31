@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 31/07/2012   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -97,7 +97,7 @@ MACR_ASCOUF_CALC=MACRO(nom="MACR_ASCOUF_CALC",
 
          RECH_LINEAIRE   =C_RECH_LINEAIRE(),
 
-         INCREMENT       =C_INCREMENT(),
+         INCREMENT       =C_INCREMENT('MECANIQUE'),
 
          THETA_3D        =FACT(statut='f',max='**',
            R_INF           =SIMP(statut='o',typ='R' ),

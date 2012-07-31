@@ -1,4 +1,4 @@
-# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE PLAQUE SUR APPUI SOUMISE A UNE ACCELERATION DE RICKER (METHODE TEMPS-FREQUENCE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +17,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# sdls119b.para = tps_job 300 mem_job 1000Mo mem_aster 80 ncpus 1 liste_test R
+# sdls119b.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test R
 
 DEBUT(CODE=_F(NOM='SDLS119B', NIV_PUB_WEB='INTERNET',),
       IMPR_MACRO='OUI');

@@ -1,9 +1,9 @@
-# MODIF  DATE 08/03/2011   AUTEUR MASSIN P.MASSIN 
+# MODIF  DATE 31/07/2012   AUTEUR LADIER A.LADIER 
 # TITRE VALIDATION DE LA DEFINITION D'UNE FISSURE SUR UN GRILLE PAR DEFI_FISS_XFEM
-# zzzz282a.para = tps_job 120 mem_job 256Mo ncpus 1 liste_test S
+# zzzz282a.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -92,9 +92,6 @@ MODmai=AFFE_MODELE(MAILLAGE=MA,
 
 FISS[1]=DEFI_FISS_XFEM(DEFI_FISS=_F(GROUP_MA_FISS='FISS_0',
                                     GROUP_MA_FOND='FOND_0'),
-                       ORIE_FOND=_F(PFON_INI  = (4., 1., 0.),
-                                    VECT_ORIE = (0. , 0. , 1. ),
-                                    POINT_ORIG = (2., 0., 0.),),
                        MODELE_GRILLE=GriAux,
                        MODELE=MODmai,);
 
@@ -109,9 +106,6 @@ fLST=FORMULE(NOM_PARA='Y',
 
 FISS[2]=DEFI_FISS_XFEM(DEFI_FISS=_F(FONC_LN=fLSN,
                                     FONC_LT=fLST),
-                       ORIE_FOND=_F(PFON_INI  = (4., 1., 0.),
-                                    VECT_ORIE = (0. , 0. , 1. ),
-                                    POINT_ORIG = (2., 0., 0.),),
                        MODELE_GRILLE=GriAux,
                        MODELE=MODmai,);
 
@@ -123,9 +117,6 @@ FISS[3]=DEFI_FISS_XFEM(DEFI_FISS=_F(FORM_FISS='DEMI_PLAN',
                                     NORMALE = (0., 0., 1.),
                                     PFON =  (4., 1., 0.),
                                     DTAN = (0., 1., 0.),),
-                       ORIE_FOND=_F(PFON_INI  = (4., 1., 0.),
-                                    VECT_ORIE = (0. , 0. , 1. ),
-                                    POINT_ORIG = (2., 0., 0.),),
                        MODELE_GRILLE=GriAux,
                        MODELE=MODmai,);
 
@@ -145,9 +136,6 @@ LST=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
 
 FISS[4]=DEFI_FISS_XFEM(DEFI_FISS=_F(CHAM_NO_LSN=LSN,
                                   CHAM_NO_LST=LST),
-                     ORIE_FOND=_F(PFON_INI  = (4., 1., 0.),
-                                  VECT_ORIE = (0. , 0. , 1. ),
-                                  POINT_ORIG = (2., 0., 0.),),
                      MODELE_GRILLE=GriAux,
                      MODELE=MODmai,);
 

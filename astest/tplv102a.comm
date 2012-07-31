@@ -1,6 +1,6 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE TRANSPORT DE CHALEUR PAR CONVECTION DANS UN PARALLELEPIPEDE
-# tplv102a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
+# tplv102a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

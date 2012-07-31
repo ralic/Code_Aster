@@ -1,4 +1,4 @@
-# MODIF  DATE 20/06/2012   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE MODES PROPRES D'UNE PLAQUE CARRE ENCASTREE SUR 2 BORDS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +17,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# perf013f.para = tps_job 3000 mem_job 4000Mo ncpus 1 liste_test P
+# perf013f.para = tps_job 3000 mem_job 7813Mo ncpus 1 liste_test P
 # ======================================================================
 #       INTERET : CALCULER 10 MODES EN POSITION 11, 12, ..., 20
 #---------------------------------------------------------------------------

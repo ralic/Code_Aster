@@ -1,6 +1,6 @@
-# MODIF  DATE 10/07/2012   AUTEUR ASSIRE A.ASSIRE 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE TEST DU MODE EXTERNE DE LA MACRO-COMMANDE DE RECALAGE
-# zzzz159f.para = tps_job 150 mem_job 300Mo mem_aster 20 ncpus 1 liste_test S
+# zzzz159f.para = tps_job 150 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

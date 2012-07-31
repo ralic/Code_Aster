@@ -1,4 +1,4 @@
-# MODIF  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +17,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# sslv314d.para = tps_job 230 mem_job 512Mo liste_test R
+# sslv314d.para = tps_job 230 mem_job 512Mo liste_test S
 # METHODE PAR REACTUALISATION DES LEVEL SET - PROPAGATION EN MODE I
 # RESPONSABLE GENIAUT S.GENIAUT
 

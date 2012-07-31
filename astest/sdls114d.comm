@@ -1,6 +1,6 @@
-# MODIF  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 31/07/2012   AUTEUR LADIER A.LADIER 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES POUR UNE MODE PROPRE
-# sdls114d.para = tps_job 480 mem_job 256Mo liste_test S
+# sdls114d.para = tps_job 480 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -54,9 +54,6 @@ FF2=DEFI_FISS_XFEM(MODELE=MODELIN,
                                 FONC_LT = LT,
                                 FONC_LN = LN,
                                 ),
-                   ORIE_FOND=_F(PFON_INI=(0.045, 0.05, 0.0),
-                                VECT_ORIE=(0.0, 1.0, 0.0),
-                                POINT_ORIG=(0.05, 0.05, 0.0),),
                    GROUP_MA_ENRI='VOL',
                   );
 

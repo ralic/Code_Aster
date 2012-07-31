@@ -1,6 +1,6 @@
-# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 31/07/2012   AUTEUR LADIER A.LADIER 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
-# ssnv185m.para = tps_job 60 mem_job 256Mo mem_aster 50 ncpus 1 liste_test R
+# ssnv185m.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -88,9 +88,6 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN),
                     TYPE_ENRI_FOND='GEOMETRIQUE',
                     RAYON_ENRI=2.,
-                    ORIE_FOND=_F(PFON_INI= (0. ,ly/2.    ,lz/2. ),
-                                 VECT_ORIE=(0. ,0.       ,1.    ),
-                                 POINT_ORIG=(0. ,3.*ly/4. ,lz/2. )),
                  );
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,INFO=2,

@@ -1,4 +1,4 @@
-# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 #
 # TITRE : MODI_MAILLAGE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -21,7 +21,7 @@
 #         Validation de ORIE_PEAU_2D/GROUP_MA_SURF et
 #                    de ORIE_PEAU_3D/GROUP_MA_VOLU
 # ---------------------------------------------------
-# zzzz250a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
+# zzzz250a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 
 DEBUT(CODE=_F(NOM='ZZZZ250A', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 

@@ -1,4 +1,4 @@
-#@ MODIF diffusion_H2 Contrib  DATE 11/06/2012   AUTEUR PROIX J-M.PROIX 
+#@ MODIF diffusion_H2 Contrib  DATE 31/07/2012   AUTEUR DESROCHE X.DESROCHES 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -151,7 +151,7 @@ def char_grad_impo_ops(self,RESU_H2,TINIT,TFIN,RESUMECA,GRMAVOL,DIME,Ctot0,CHARG
          grsigz=0.
          fx[ino],fx[ino]=FLUX(cl,grsigx,grsigy,DIME,grsigz,Vh,R,T)
          
-   # pour gagner du temps on evite la construction du mot-cle GRAD_TEMP_INI
+   # pour gagner du temps on evite la construction du mot-cle PRE_GRAD_TEMP
    nomvale=CHARGRD0.nom.ljust(8)+'.CHTH.GRAIN.VALE'
    nomlima=CHARGRD0.nom.ljust(8)+'.CHTH.GRAIN.LIMA'
    nomdesc=CHARGRD0.nom.ljust(8)+'.CHTH.GRAIN.DESC'
@@ -256,7 +256,7 @@ def char_grad_ini_ops(self,RESU_H2,GRMAVOL,DIME,INFO,**args):
       # mais dans la connectivite, les noeuds commencent a 1!
       lnoeu=NP.array(connex[ima])-1
       nbno=len(lnoeu)
-      # ajout dans le mot-cle facteur GRAD_TEMP_INIT
+      # ajout dans le mot-cle facteur PRE_GRAD_TEMP
       nom_maille=nommai[ima-1]
       mon_dico={}
       mon_dico["MAILLE"]=nom_maille
@@ -267,7 +267,7 @@ def char_grad_ini_ops(self,RESU_H2,GRMAVOL,DIME,INFO,**args):
       grad.append(mon_dico)
  
    chth=AFFE_CHAR_THER(MODELE=__MOTH,
-                       GRAD_TEMP_INIT=grad,INFO=1,
+                       PRE_GRAD_TEMP=grad,INFO=1,
                        )
                        
    ################################################################

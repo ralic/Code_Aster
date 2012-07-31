@@ -1,6 +1,6 @@
-# MODIF  DATE 20/06/2012   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE FISSURE INCLINEE EN 2D AVEC X-FEM
-# ssnp138a.para = tps_job 360 mem_job 256Mo mem_aster 50 ncpus 1 liste_test S
+# ssnp138a.para = tps_job 360 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

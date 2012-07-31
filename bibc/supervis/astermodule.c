@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 24/07/2012   AUTEUR PELLET J.PELLET */
+/* MODIF astermodule supervis  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -2747,29 +2747,44 @@ static PyObject *jeveux_exists( PyObject* self, PyObject* args)
 }
 
 /* ---------------------------------------------------------------------- */
-static char jeinfo_doc[] =
-"Interface d'appel a la routine fortran JEINFO.\n";
+static char utgtme_doc[] =
+"Interface d'appel a la routine fortran UTGTME.\n";
 
-static PyObject * aster_jeinfo(self, args)
+static PyObject * aster_utgtme(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
 {
-   DOUBLE *rval;
-   int i, longueur=9;
-   PyObject *tup;
+   PyObject *t_valres, *t_codret, *t_res;
+   int inbpar;
+   INTEGER nbpar, codret;
+   char *nompar;
+   DOUBLE *valres;
+   STRING_SIZE long_nompar = 8;       /* doivent impérativement correspondre aux longueurs des chaines de caractères      */
+   void *malloc(size_t size);
 
-   rval = (DOUBLE *)malloc((longueur)*sizeof(DOUBLE));
-   CALL_JEINFO(rval);
+   /* Conversion en tableaux de chaines */
+   inbpar = (int)PyTuple_Size(args);
+   nbpar = (INTEGER)inbpar;
+   nompar = MakeTabFStr(inbpar, long_nompar);
+   convertxt(inbpar, args, nompar, long_nompar);
 
-   tup = PyTuple_New( (Py_ssize_t)longueur ) ;
-   for(i=0; i < longueur; i++) {
-      PyTuple_SetItem( tup, i, PyFloat_FromDouble( (double)rval[i] )) ;
-   }
-   free((char *)rval);
+   /* allocation des variables de sortie */
+   valres = (DOUBLE *)malloc(nbpar*sizeof(DOUBLE));
 
-   return tup;
+   CALL_UTGTME(&nbpar, nompar, valres, &codret); 
+   
+   t_valres = MakeTupleFloat((long)inbpar, valres);
+
+   /* retour de la fonction */
+   t_res = PyTuple_New(2);
+   PyTuple_SetItem(t_res, 0, t_valres);
+   PyTuple_SetItem(t_res, 1, PyInt_FromLong((long)codret));
+
+   FreeStr(nompar);
+   free(valres);
+
+   return t_res;
 }
-/* ------------------------------------------------------------------ */
 
 /* ------------------------------------------------------------------ */
 /*   Routines d'interface pour le catalogue de loi de comportement    */
@@ -2971,8 +2986,8 @@ static PyMethodDef aster_methods[] = {
                 {"jeveux_getobjects", jeveux_getobjects, METH_VARARGS},
                 {"jeveux_getattr", jeveux_getattr,   METH_VARARGS},
                 {"jeveux_exists", jeveux_exists,     METH_VARARGS},
-                {"jeinfo",       aster_jeinfo,       METH_VARARGS, jeinfo_doc},
                 {"get_nom_concept_unique", aster_gcncon, METH_VARARGS},
+                {"utgtme",       aster_utgtme,       METH_VARARGS, utgtme_doc},
                 {NULL,                NULL}/* sentinel */
 };
 

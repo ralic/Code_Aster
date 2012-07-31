@@ -1,4 +1,4 @@
-#@ MODIF xfem Messages  DATE 22/05/2012   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF xfem Messages  DATE 31/07/2012   AUTEUR LADIER A.LADIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,16 +22,6 @@
 
 cata_msg={
 
-1: _(u"""
-  -> Problème lors de l'orientation du fond de fissure : le nombre 
-     de points de bords du fond de fissure devrait être pair. Or on 
-     en trouve %(i1)d. 
-  -> Conseil:
-     Vérifiez la mise en données de la fissure.
-     Notamment si GROUP_MA_FOND est utilisé, il ne doit pas coïncider
-     avec un bord de la structure.
-     Si vous êtes sûr de votre mise en données, contactez l'assistance.
-"""),
 
 2: _(u"""
   -> Le calcul de la distance d'un noeud à l'ellipse n'a pas convergé
@@ -180,19 +170,6 @@ cata_msg={
      Il y a %(i1)d mailles dans la zone fissure.
 """),
 
-20: _(u"""
-   Le mot-clef ORIE_FOND est indispensable en 3D si vous n'utilisez pas
-   le catalogue des formes de fissure prédéfinies : FORM_FISS pour définir
-   les level-sets.
-"""),
-
-21: _(u"""
-     Le mot-clef ORIE_FOND n'est pas nécessaire en 2D.
-"""),
-
-22: _(u"""
-     Plus d'une occurrence du mot-clef ORIE_FOND.
-"""),
 
 23: _(u"""
      Erreur dans le choix de la méthode de calcul des level-sets.
@@ -372,6 +349,17 @@ cata_msg={
      La méthode X-FEM n'est pas disponible avec 'PETIT_REAC'.
 """),
 
+51: _(u"""
+     La maille %(k1)s possède %(i1)d points de fond de fissure de coordonnées :
+"""),
+
+52: _(u"""
+     Une ou des mailles contenant plus de 2 points du fond de fissure ont été détectées.
+     Le fond ne peut pas être orienté sous cette condition. Il n'est donc pas possible
+     de calculer les abscisses curvilignes du fond et de détecter les fonds multiples.
+     Par conséquent le post-traitement avec la commande CALC_G n'est pas possible.
+"""),
+
 57: _(u"""
   -> Aucune maille de fissure n'a été trouvée.
   -> Risque & Conseil :
@@ -394,12 +382,6 @@ cata_msg={
      est en dehors de la structure.
 """),
 
-60: _(u"""
-  -> Le point initial de fissure n'est pas un point de bord de fissure,
-     bien que la fissure soit débouchante
-  -> Risque & Conseil:
-     Assurez-vous de la bonne définition de PFON_INI.
-"""),
 
 61: _(u"""
   -> Une face contient au moins 3 points d'intersection avec la courbe d'isovaleur zéro du champ

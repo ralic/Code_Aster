@@ -1,6 +1,6 @@
       SUBROUTINE JEDEBU(NBFI, MXZON, IDB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF JEVEUX  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,7 +46,7 @@ C-----------------------------------------------------------------------
       INTEGER I ,IACCE ,JCARA ,JDATE ,JDOCU ,JGENR ,JHCOD 
       INTEGER JIACCE ,JIADD ,JIADM ,JJPREM ,JLONG ,JLONO ,JLTYP 
       INTEGER JLUTI ,JMARQ ,JORIG ,JRNOM ,JTYPE ,K ,LOFIEM 
-      INTEGER MOFIEM ,N ,NBACCE 
+      INTEGER MOFIEM ,N ,NBACCE, IBID 
       REAL*8 VAL 
 C-----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
@@ -119,17 +119,18 @@ C ----------------------------------------------------------------------
       COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
       INTEGER          ICDYN , MXLTOT
       COMMON /XDYNJE/  ICDYN , MXLTOT
-      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN , LGIO
-      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN , LGIO(2)
+      REAL *8         MXDYN, MCDYN, MLDYN, VMXDYN, VMET, LGIO
+      COMMON /R8DYJE/ MXDYN, MCDYN, MLDYN, VMXDYN, VMET, LGIO(2)
       REAL *8          SVUSE,SMXUSE
       COMMON /STATJE/  SVUSE,SMXUSE
       COMMON /IACCED/  IACCE(1)
       COMMON /JIACCE/  JIACCE(N),NBACCE(2*N)
 C --------------------------------- ------------------------------------
-      INTEGER          MXLICI , IPREM  , INIT,    IRET
+      INTEGER          MXLICI , IPREM  , INIT,    IRET, IRET2
       INTEGER          ISPBEM , LBISEM , LOISEM , LOLSEM
       INTEGER          LOR8EM , LOC8EM , ISNNEM , IRT
-      REAL*8           R8BID
+      REAL*8           R8BID,RVAL(6),RV(2)
+      CHARACTER*8      K8TAB(6)
       PARAMETER      ( MXLICI = 67 )
       CHARACTER *(MXLICI) CLICIT
       DATA CLICIT/' ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.$&_abcdefghijkl
@@ -199,6 +200,36 @@ C -----------------  ZONE MEMOIRE  -------------------------------------
       IF ( MXZON .EQ. 0 ) THEN
         VMXDYN = 1024
       ENDIF
+      VMET = VMXDYN
+C
+      CALL UTPTME(1,'MEM_MUMP',0.D0,IRET)
+      CALL UTGTME(1,'VMPEAK  ',RVAL,IRET)
+      IF ( RVAL(1) .LE. 0 ) THEN
+        CALL U2MESG('I','JEVEUX1_75',0,' ',0,IBID,0,RVAL)  
+      ENDIF
+      K8TAB(1) = 'LIMIT_JV'
+      K8TAB(2) = 'MEM_TOTA'   
+      K8TAB(3) = 'VMSIZE'
+      K8TAB(4) = 'CMAX_JV'  
+      K8TAB(5) = 'COUR_JV'  
+      K8TAB(6) = 'MEM_MUMP'  
+      CALL UTGTME(6,K8TAB,RVAL,IRET)
+C  
+      IF ( RVAL(3) .GT. 0 ) THEN
+C     
+        CALL UTPTME(1,'RLQ_MEM ',RVAL(3),IRET)
+        IF ( RVAL(1)-RVAL(3) .LE. 0 ) THEN
+          CALL U2MESG('F' ,'JEVEUX1_71',0,' ',0,IBID,3,RVAL)
+        ENDIF 
+        CALL JERMXD((RVAL(1)-RVAL(3))*1024*1024,IRET)
+        IF ( IRET.EQ.0 ) THEN
+          K8TAB(5) = 'RLQ_MEM'       
+          K8TAB(6) = 'COUR_JV'  
+          CALL UTGTME(6,K8TAB,RVAL,IRET2)
+          CALL U2MESG('I' ,'JEVEUX1_74',0,' ',0,IBID,5,RVAL) 
+        ENDIF 
+      ENDIF 
+C 
       LISZON = 1
       JISZON = 1
       LK1ZON = LISZON * LOIS

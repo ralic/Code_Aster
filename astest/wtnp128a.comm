@@ -1,6 +1,6 @@
-# MODIF  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE   TEST HM, 2D , MODELISATION THMC=LIQU_SATU
-# wtnp128a.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
+# wtnp128a.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

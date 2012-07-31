@@ -1,6 +1,6 @@
-# MODIF  DATE 10/07/2012   AUTEUR ZENTNER I.ZENTNER 
+# MODIF  DATE 30/07/2012   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 # TITRE GENERATION DE SIGNAUX SISMIQUES
-# zzzz317a.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
+# zzzz317a.para = tps_job 300 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -158,17 +158,10 @@ TT=10.
 INTERS=CALC_INTE_SPEC( INST_INIT=0.0,
                        INST_FIN=TT, NB_POIN=nbp, FONCTION=( FONCT2 ),  )
 
-FONCC=RECU_FONCTION(TABLE=INTERS,
-                      NOM_PARA_TABL='FONCTION_C',
-                      FILTRE=(
-                      _F(NOM_PARA='NUME_ORDRE_I',
-                         VALE_I=1,),
-                      _F(NOM_PARA='NUME_ORDRE_J',
-                         VALE_I=1,),),);
+FOM[iii]=RECU_FONCTION(INTE_SPEC=INTERS,
+                      NUME_ORDRE_I=1,),
 
-FOM[iii]=CALC_FONCTION(  EXTRACTION=_F( FONCTION = FONCC, PARTIE = 'REEL'),)
-
-DETRUIRE(CONCEPT=_F(NOM=(FONCC, INTERS))) 
+DETRUIRE(CONCEPT=_F(NOM=(INTERS))) 
 #
 ## --------------------------------
 #
@@ -187,18 +180,14 @@ for iii in range(1, Nsim+1):
 
    INTERS=CALC_INTE_SPEC( INST_INIT=0.0, INST_FIN=TT, NB_POIN=nbp, FONCTION=( TRI1 ), )
 
-   FONCC=RECU_FONCTION(TABLE=INTERS,
-                      NOM_PARA_TABL='FONCTION_C',
-                      FILTRE=( _F(NOM_PARA='NUME_ORDRE_I', VALE_I=1,),
-                               _F(NOM_PARA='NUME_ORDRE_J', VALE_I=1,),),);
-
-   FO2[iii]=CALC_FONCTION(  EXTRACTION=_F( FONCTION = FONCC, PARTIE = 'REEL'),)
+   FO2[iii]=RECU_FONCTION(INTE_SPEC=INTERS,
+                      NUME_ORDRE_I=1,)
 
    FOM[iii]=CALC_FONCTION(COMB=(_F( FONCTION = FOM[iii-1], COEF = 1.0),
                                 _F( FONCTION = FO2[iii], COEF = 1.0),), )
 
 
-   DETRUIRE(CONCEPT=_F(NOM=(VECT,FONCC, INTERS)))
+   DETRUIRE(CONCEPT=_F(NOM=(VECT, INTERS)))
    DETRUIRE(CONCEPT=_F(NOM=(TRI1)))
 
 

@@ -1,6 +1,6 @@
-# MODIF  DATE 10/04/2012   AUTEUR KAZYMYRE K.KAZYMYRENKO 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE LOIS NON LOCALES A DEFORMATIONS REGULARISEES SUR BARREAU 3D
-# ssnv157d.para = tps_job 90 mem_job 256Mo ncpus 1 liste_test S
+# ssnv157d.para = tps_job 90 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

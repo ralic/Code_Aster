@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 31/07/2012   AUTEUR ABBAS M.ABBAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -163,7 +163,7 @@ OPTION__
                                      EFORCER  PFRVOLU  CFORCEF  PFFVOLU  ECONTNO  PCONTNO  ECONTNO  PCONTNM
                                      DDL_MECA PDEPLMR  DDL_MECA PDEPLAR  EERREUR  PERREM   E2NEUTR  PGRDCA
                               OUT__  EERREUR  PERREUR
-    ERRE_TEMPS          500   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  ECONTPG  PCONTGP  ECONTPG  PCONTGM
+    ERRE_TEMPS_THM      500   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  ECONTPG  PCONTGP  ECONTPG  PCONTGM
                                      CPDTTH_R PTEMPSR  E2NEUTR  PGRDCA
                               OUT__  EERREUT  PERREUR
     ERME_ELNO           379   IN__   EERREUR  PERREUR

@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF aster_fort include  DATE 12/06/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF aster_fort include  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -102,9 +102,6 @@ extern void DEFSSPS(JELIRA,jelira, char*, STRING_SIZE, char*, STRING_SIZE, INTEG
 #define CALL_JEEXIN(a,b)  CALLSP(JEEXIN,jeexin,a,b)
 extern void DEFSP(JEEXIN,jeexin, char*, STRING_SIZE, INTEGER* );
 
-#define CALL_JEINFO(a) CALLP(JEINFO,jeinfo,a)
-extern void DEFP(JEINFO, jeinfo, DOUBLE *);
-
 
 /* routines d'accès aux OBJETS JEVEUX (vecteurs, collections, champs) */
 #define CALL_GETCON(nomsd,iob,ishf,ilng,ctype,lcon,iaddr,nomob) CALLSPPPPPPS(GETCON,getcon,nomsd,iob,ishf,ilng,ctype,lcon,iaddr,nomob)
@@ -119,6 +116,9 @@ extern void DEFSSPP(TAILSD,tailsd,char *,STRING_SIZE,char *,STRING_SIZE,INTEGER 
 #define CALL_PRCOCH(nomce,nomcs,nomcmp,ktype,itopo,nval,groups) CALLSSSSPPS(PRCOCH,prcoch,nomce,nomcs,nomcmp,ktype,itopo,nval,groups)
 extern void DEFSSSSPPS(PRCOCH,prcoch,char *,STRING_SIZE,char *,STRING_SIZE,char *,STRING_SIZE,char *,STRING_SIZE,INTEGER *,INTEGER *,char *,STRING_SIZE);
 
+/* routine d'acces aux parametres memoire */
+#define CALL_UTGTME(a,b,c,d) CALLPSPP(UTGTME,utgtme,a,b,c,d)
+extern void DEFPSPP(UTGTME, utgtme, INTEGER *, char *,  STRING_SIZE,  DOUBLE *, INTEGER *);
 
 /* routines de manipulation de la SD RESULTAT */
 extern void DEFSPPSPPPSP(RSACPA,rsacpa,char *, STRING_SIZE, INTEGER *, INTEGER *, char *, STRING_SIZE, INTEGER *, INTEGER *, DOUBLE *, char *, STRING_SIZE, INTEGER *);

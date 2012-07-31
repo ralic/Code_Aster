@@ -1,6 +1,6 @@
-# MODIF  DATE 20/06/2012   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 31/07/2012   AUTEUR LADIER A.LADIER 
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
-# sslv110f.para = tps_job 450 mem_job 1200Mo mem_aster 40 ncpus 1 liste_test S
+# sslv110f.para = tps_job 450 mem_job 1024Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -224,7 +224,7 @@ TEST_TABLE(TABLE=CG,
            FILTRE=_F(NOM_PARA = 'ABSC_CURV',
                      VALE = 0.),
            NOM_PARA='K1',
-           VALE=1.9929E+00,
+           VALE=4.068E+00,
            PRECISION=0.02,
            REFERENCE='ANALYTIQUE')
 
@@ -232,7 +232,7 @@ TEST_TABLE(TABLE=CG,
            FILTRE=_F(NOM_PARA = 'ABSC_CURV',
                      VALE = s_max),
            NOM_PARA='K1',
-           VALE=4.068E+00,
+           VALE=1.9929E+00,
            PRECISION=0.02,
            REFERENCE='ANALYTIQUE')
 
@@ -241,7 +241,7 @@ TEST_TABLE(TABLE=PK,
            FILTRE=_F(NOM_PARA = 'ABSC_CURV',
                      VALE = 0.),
            NOM_PARA='K1',
-           VALE=1.9929E+00,
+           VALE=4.068E+00,
            PRECISION=0.06,
            REFERENCE='ANALYTIQUE')
 
@@ -249,7 +249,7 @@ TEST_TABLE(TABLE=PK,
            FILTRE=_F(NOM_PARA = 'ABSC_CURV',
                      VALE = s_max),
            NOM_PARA='K1',
-           VALE=4.068E+00,
+           VALE=1.9929E+00,
            PRECISION=0.06,
            REFERENCE='ANALYTIQUE')
 

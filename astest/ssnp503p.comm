@@ -1,6 +1,6 @@
-# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 31/07/2012   AUTEUR LADIER A.LADIER 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
-# ssnp503p.para = tps_job 400 mem_job 64Mo liste_test S
+# ssnp503p.para = tps_job 400 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -66,16 +66,10 @@ LT2=FORMULE(NOM_PARA=('X','Y','Z'),VALE='X-3');
 
 FISS1=DEFI_FISS_XFEM(MODELE=MODELEIN,
                      DEFI_FISS=_F(FONC_LT=LT1,FONC_LN=LN1),
-                     ORIE_FOND=_F(PFON_INI=(3,2.5,1.),
-                                  VECT_ORIE=(0.,1.,0.),
-                                  POINT_ORIG=(1.5,2.5,1.)),
                      INFO=1);
 
 FISS2=DEFI_FISS_XFEM(MODELE=MODELEIN,
                      DEFI_FISS=_F(FONC_LT=LT2,FONC_LN=LN2),
-                     ORIE_FOND=_F(PFON_INI=(3,6.5,0.),
-                                  VECT_ORIE=(0.,1.,0.),
-                                  POINT_ORIG=(1.5,6.5,1.)),
                      INFO=1);
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,

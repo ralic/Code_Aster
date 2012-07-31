@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 12/10/2011   AUTEUR BARGELLI R.BARGELLINI 
+#& MODIF COMMANDE  DATE 31/07/2012   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -30,7 +30,7 @@ CALC_PRECONT=MACRO(nom="CALC_PRECONT",
          CARA_ELEM        =SIMP(statut='o',typ=cara_elem),
          CABLE_BP         =SIMP(statut='o',typ=cabl_precont,validators=NoRepeat(),max='**'),
          CABLE_BP_INACTIF =SIMP(statut='f',typ=cabl_precont,validators=NoRepeat(),max='**'),
-         INCREMENT        =C_INCREMENT(),
+         INCREMENT        =C_INCREMENT('MECANIQUE'),
          RECH_LINEAIRE    =C_RECH_LINEAIRE(),
          CONVERGENCE      =C_CONVERGENCE(),
          ETAT_INIT       =FACT(statut='f',

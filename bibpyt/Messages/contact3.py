@@ -1,4 +1,4 @@
-#@ MODIF contact3 Messages  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+#@ MODIF contact3 Messages  DATE 31/07/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -193,17 +193,6 @@ Contact.
        Si vous avez volontairement négligé la non-linéarité géométrique de contact (pour des raisons
        de performance), nous vous invitons à vérifier visuellement qu'il n'y a effectivement
        pas d'interpénétrations.
-"""),
-
-97 : _(u"""
-Contact formulation continue.
-    -> Le seuil de frottement a bougé de plus de 1%% depuis la dernière réactualisation.
-       Or vous utilisez la réactualisation contrôlée (REAC_FROT='CONTROLE') dans la commande DEFI_CONTACT.
-    -> Risque & Conseil :
-       Vos résultats risquent d'être faux, le seuil de Coulomb ne sera peut être pas le bon
-       et le frottement pas bien pris en compte.
-       Si vous avez volontairement négligé la non-linéarité de frottement (pour des raisons
-       de performance), nous vous invitons à vérifier la validité de vos résultats.
 """),
 
 98 : _(u"""

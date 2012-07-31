@@ -1,6 +1,6 @@
-# MODIF  DATE 21/02/2012   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE TEST DE L'ESTIMATEUR EN RESIDU SUR UN CYLINDRE CREUX
-# sslv113a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
+# sslv113a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

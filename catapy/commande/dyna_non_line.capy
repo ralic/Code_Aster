@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 31/07/2012   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -133,7 +133,7 @@ DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
            INST_ETAT_INIT  =SIMP(statut='f',typ='R'),
          ),),
 #-------------------------------------------------------------------
-         INCREMENT       =C_INCREMENT(),
+         INCREMENT       =C_INCREMENT('MECANIQUE'),
 #-------------------------------------------------------------------
          SCHEMA_TEMPS     =FACT(statut='o',
             SCHEMA          =SIMP(statut='o',min=1,max=1,typ='TXM',

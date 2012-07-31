@@ -1,6 +1,6 @@
-# MODIF  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
+# MODIF  DATE 31/07/2012   AUTEUR LADIER A.LADIER 
 # TITRE : FISSURE X-FEM EN THERMO-ELASTICITE 3D 
-# hsnv132d.para = tps_job 100 mem_job 500Mo ncpus 1 liste_test S
+# hsnv132d.para = tps_job 100 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -80,9 +80,6 @@ LT=FORMULE(NOM_PARA=('X','Y'),VALE='-X+0.5');
 
 FISS=DEFI_FISS_XFEM(MODELE=MODELE,  
                     DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
-                    ORIE_FOND=_F(PFON_INI= (0.5 ,0.5 ,0. ),
-                                 VECT_ORIE=(0.  ,-1.  ,0. ),
-                                 POINT_ORIG=(0.  ,0.  ,0. ),),
                     INFO=1,
                     );
 

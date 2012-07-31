@@ -1,4 +1,4 @@
-#@ MODIF jeveux1 Messages  DATE 12/03/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF jeveux1 Messages  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -410,4 +410,44 @@ cata_msg = {
 
  Le nom de répertoire associé à la base Volatile est trop long %(k1)s, il comporte %(i1)d caractères, il ne doit pas dépasser 119.
  
-"""),}
+"""),
+ 
+71 : _(u"""
+
+ La mémoire totale allouée à l'étude %(r1).2f Mo est insuffisante, il est nécessaire de disposer d'au moins %(r3).2f Mo uniquement pour démarrer l'exécution.
+ 
+"""),
+ 
+72 : _(u"""
+
+ Il n'est pas possible de modifier la valeur limite totale de l'allocation dynamique JEVEUX. La valeur fournie en argument vaut %(r2).2f.
+ Actuellement %(r1).2f Mo sont nécessaires au gestionnaire de mémoire.
+ 
+"""),
+
+74 : _(u"""
+
+ L'exécution a été lancée avec une limite mémoire de %(r2).2f Mo. La consommation mémoire actuelle (VmSize) est de %(r3).2f Mo.
+ La limite de l'allocation dynamique JEVEUX est modifiée, elle est fixée à %(r1).2f Mo. 
+ 
+"""),
+
+
+75 : _(u"""
+
+ La plate-forme utilisée ne permet pas d'avoir accès à la valeur de VmPeak, cette dernière est ignorée.
+ 
+"""),
+
+
+77 : _(u"""
+ La mémoire demandée au lancement est sous estimée, elle de %(r2).2f Mo, le pic mémoire utilisée est de %(r1).2f Mo.
+ 
+"""),
+
+78 : _(u"""
+
+ La mémoire demandée au lancement est surestimée, elle de %(r2).2f Mo, le pic mémoire utilisée est de %(r1).2f Mo.
+ 
+"""),
+}

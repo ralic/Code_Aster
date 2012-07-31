@@ -1,7 +1,7 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # RESPONSABLE COURTOIS M.COURTOIS
 # TITRE VERIFICATION DE LA RECUPERATION DES ERREURS FATALES DANS STAT_NON_LINE
-# erreu05a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
+# erreu05a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

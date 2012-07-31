@@ -1,6 +1,6 @@
-# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE VALIDATION DU SOLVEUR MUMPS EN PARALLELE AVEC MATRICE CENTRALISEE
-# mumps05a.para = tps_job 3000 mem_job 15800Mo mpi_nbcpu 1 mpi_nbnoeud 1 ncpus 2 liste_test MI
+# mumps05a.para = tps_job 3000 mem_job 15521Mo mpi_nbcpu 1 mpi_nbnoeud 1 ncpus 2 liste_test MI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

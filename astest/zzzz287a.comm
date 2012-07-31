@@ -1,6 +1,6 @@
-# MODIF  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE VALIDATION ELEMENTAIRE DE L'OPERATEUR POST_RUPTURE
-# zzzz287a.para = tps_job 20 mem_job 32Mo liste_test S
+# zzzz287a.para = tps_job 20 mem_job 256Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

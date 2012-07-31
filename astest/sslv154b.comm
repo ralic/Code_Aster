@@ -1,6 +1,6 @@
-# MODIF  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
+# MODIF  DATE 31/07/2012   AUTEUR LADIER A.LADIER 
 # TITRE  FISSURE CIRCULAIRE EN MODE MIXTE
-# sslv154b.para = tps_job 120 mem_job 512Mo liste_test S
+# sslv154b.para = tps_job 120 mem_job 768Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -173,10 +173,10 @@ TEST_TABLE(TABLE=CG,
            PRECISION=0.01,
            REFERENCE='ANALYTIQUE')
 
-# test de KII au premier point du fond (angle = 0)
+# test de KII au dernier point du fond
 TEST_TABLE(TABLE=CG,
-           FILTRE=_F(NOM_PARA='ANGLE',
-                     VALE=0.),
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=21),
            NOM_PARA='K2',
            VALE=k2ref_0,
            CRITERE='RELATIF',
@@ -216,10 +216,10 @@ TEST_TABLE(TABLE=PK,
            PRECISION=0.11,
            REFERENCE='ANALYTIQUE')
 
-# test de KII au premier point du fond (angle = 0)
+# test de KII au dernier point du fond
 TEST_TABLE(TABLE=PK,
-           FILTRE=_F(NOM_PARA='ANGLE',
-                     VALE=0.),
+           FILTRE=_F(NOM_PARA='PT_FOND',
+                     VALE_I=21),
            NOM_PARA='K2',
            VALE=k2ref_0,
            CRITERE='RELATIF',

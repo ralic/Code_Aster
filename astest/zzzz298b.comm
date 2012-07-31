@@ -1,6 +1,6 @@
-# MODIF  DATE 18/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
+# MODIF  DATE 31/07/2012   AUTEUR LADIER A.LADIER 
 # TITRE : VALIDATION INFORMATIQUE DE POST_K1_K2_K3
-# zzzz298b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
+# zzzz298b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,10 +56,7 @@ LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='-Y-X/2.+1.');
 
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     DEFI_FISS=_F(FONC_LT=LT,
-                                 FONC_LN=LN,),
-                    ORIE_FOND=_F(PFON_INI=(0. ,1. ,0.5 ),
-                                 VECT_ORIE=(0. ,0. ,1. ),
-                                 POINT_ORIG=(0. ,2. ,0.5 ),),);
+                                 FONC_LN=LN,),);
                                  
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,);
@@ -132,7 +129,7 @@ k1_fin = 1.45592e6
 
 TEST_TABLE(TABLE=TABK,
            FILTRE=(_F(NOM_PARA='NUM_PT', 
-                      VALE_I=1 ),),
+                      VALE_I=24 ),),
            NOM_PARA='K1',
            REFERENCE='NON_REGRESSION',
            VERSION='11.0.28',
@@ -140,7 +137,7 @@ TEST_TABLE(TABLE=TABK,
 
 TEST_TABLE(TABLE=TABK,
            FILTRE=(_F(NOM_PARA='NUM_PT', 
-                      VALE_I=2 ),),
+                      VALE_I=23 ),),
            NOM_PARA='K1',
            REFERENCE='NON_REGRESSION',
            VERSION='11.0.28',
@@ -148,7 +145,7 @@ TEST_TABLE(TABLE=TABK,
 
 TEST_TABLE(TABLE=TABK,
            FILTRE=(_F(NOM_PARA='NUM_PT', 
-                      VALE_I=3 ),),
+                      VALE_I=22 ),),
            NOM_PARA='K1',
            REFERENCE='NON_REGRESSION',
            VERSION='11.0.28',
@@ -156,7 +153,7 @@ TEST_TABLE(TABLE=TABK,
            
 TEST_TABLE(TABLE=TABK,
            FILTRE=(_F(NOM_PARA='NUM_PT', 
-                      VALE_I=23 ),),
+                      VALE_I=2 ),),
            NOM_PARA='K1',
            REFERENCE='NON_REGRESSION',
            VERSION='11.0.28',

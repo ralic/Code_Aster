@@ -1,7 +1,7 @@
-# MODIF  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE  TEST LOI DE COMPORTEMENT 3D  VISC_ISOT_LINE
-# comp002f.para = tps_job 200 mem_job 512Mo mem_aster 20 ncpus 1 liste_test S
+# comp002f.para = tps_job 200 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

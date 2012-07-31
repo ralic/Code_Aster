@@ -1,6 +1,6 @@
-# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 31/07/2012   AUTEUR ABBAS M.ABBAS 
 # TITRE CONSOLIDATION TERZAGHI 2D Q8
-# wtnl100e.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
+# wtnl100e.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -151,8 +151,8 @@ for k in range(1,nbadap+1):
                                      PARM_THETA=0.56999999999999995,),
                         INCREMENT=_F(LIST_INST=LI,
                                      INST_INIT = 0.0,
-                                     INST_FIN = T1_FIN,
-                                     ERRE_TEMPS='OUI',),
+                                     INST_FIN = T1_FIN,),
+                        CRIT_QUALITE = _F(ERRE_TEMPS_THM='OUI',),
                         NEWTON=_F(MATRICE='TANGENTE',
                                   REAC_ITER=10,),
                         CONVERGENCE=_F(ITER_GLOB_MAXI=10,),

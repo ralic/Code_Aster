@@ -1,6 +1,6 @@
-# MODIF  DATE 26/03/2012   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE  TEST LOI DE COMPORTEMENT HAYHURST
-# comp002l.para = tps_job 120 mem_job 128Mo ncpus 1 liste_test S
+# comp002l.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

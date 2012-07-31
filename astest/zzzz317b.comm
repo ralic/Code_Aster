@@ -1,6 +1,6 @@
-# MODIF  DATE 10/07/2012   AUTEUR ZENTNER I.ZENTNER 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE GENERATION DE SIGNAUX SISMIQUES
-# zzzz317b.para = tps_job 200 mem_job 400Mo ncpus 1 liste_test S
+# zzzz317b.para = tps_job 200 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

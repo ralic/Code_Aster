@@ -1,6 +1,6 @@
-# MODIF  DATE 03/04/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE ESSAI HYDROSTATIQUE SUIVI D UN TRIAXIAL A SUCCION FIXE
-# wtnv123f.para = tps_job 200 mem_job 128Mo ncpus 1 liste_test S
+# wtnv123f.para = tps_job 200 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

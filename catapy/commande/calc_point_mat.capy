@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/06/2012   AUTEUR PROIX J-M.PROIX 
+#& MODIF COMMANDE  DATE 31/07/2012   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,7 +23,7 @@ CALC_POINT_MAT=OPER(nom="CALC_POINT_MAT",op=33,sd_prod=table_sdaster,reentrant='
      MATER           =SIMP(statut='o',typ=mater_sdaster,max=1),
      COMP_INCR       =C_COMP_INCR(),
      COMP_ELAS       =C_COMP_ELAS('CALC_POINT_MAT'),
-     INCREMENT       =C_INCREMENT(),
+     INCREMENT       =C_INCREMENT('MECANIQUE'),
      NEWTON          =C_NEWTON(),
      CONVERGENCE     =C_CONVERGENCE(),
 

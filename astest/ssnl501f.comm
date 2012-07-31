@@ -1,4 +1,4 @@
-# MODIF  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE  : POUTRE ENCASTREE SOUMISE A UNE PRESSION UNIFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
-# ssnl501f.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test V
+# ssnl501f.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test V
 #---------------------------------------------------------------------
 #  - CALCUL QUASI-STATIQUE D'UNE POUTRE CONSTITUEE D'UN MATERIAU
 #    ELASTIQUE PARFAITEMENT PLASTIQUE

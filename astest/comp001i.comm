@@ -1,6 +1,6 @@
-# MODIF  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE TEST EN 3D VMIS_ISOT_PUIS UTILISANT SIMU_POINT_MAT
-# comp001i.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
+# comp001i.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

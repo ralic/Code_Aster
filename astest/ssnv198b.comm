@@ -1,6 +1,6 @@
-# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 31/07/2012   AUTEUR LADIER A.LADIER 
 # TITRE : VALIDATION DES CONDITIONS DE DIRICHLET AVEC X-FEM EN 3D
-# ssnv198b.para = tps_job 60 mem_job 256Mo mem_aster 50 ncpus 1 liste_test S
+# ssnv198b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,9 +56,6 @@ LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Y-ly/2.');
 
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN),
-                    ORIE_FOND=_F(PFON_INI= (0. ,ly/2.    ,lz/2. ),
-                                 VECT_ORIE=(0. ,0.       ,1.    ),
-                                 POINT_ORIG=(0. ,ly ,lz/2. )),
                     );
 
 

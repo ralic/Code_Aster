@@ -1,6 +1,6 @@
-# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE COMPRESSION UNIAXIALE D UN BLOC MULTI-FISSURE
-# ssnv510f.para = tps_job 100 mem_job 256Mo ncpus 1 liste_test S
+# ssnv510f.para = tps_job 100 mem_job 768Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

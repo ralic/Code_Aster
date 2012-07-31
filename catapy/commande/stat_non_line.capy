@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 31/07/2012   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -91,7 +91,7 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
              INST_ETAT_INIT  =SIMP(statut='f',typ='R'),
          ),),
 #-------------------------------------------------------------------
-         INCREMENT       =C_INCREMENT(),
+         INCREMENT       =C_INCREMENT('MECANIQUE'),
 #-------------------------------------------------------------------
          METHODE         =SIMP(statut='d',typ='TXM',defaut="NEWTON",into=("NEWTON","IMPLEX","NEWTON_KRYLOV")),
              b_meth_newton = BLOC(condition = "METHODE == 'NEWTON' or METHODE == 'NEWTON_KRYLOV'",
@@ -111,6 +111,12 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
          SUIVI_DDL       =C_SUIVI_DDL(),
 #-------------------------------------------------------------------
          ARCHIVAGE       =C_ARCHIVAGE(),
+#-------------------------------------------------------------------
+         CRIT_QUALITE    =FACT(statut='f',max=1,
+           ERRE_TEMPS_THM  =SIMP(statut='f',typ='TXM',into=("OUI","NON"),defaut="NON",
+                                 fr="Adaptation temporelle pour les modélisations HM instationnaires",
+                                 ang="Time adaptation for unstationary HM models"),
+         ),
 #-------------------------------------------------------------------
          ENERGIE         =FACT(statut='f',max=1),
 #-------------------------------------------------------------------

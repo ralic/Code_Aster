@@ -1,6 +1,6 @@
-# MODIF  DATE 17/01/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE METHODE DES SOLUTIONS MANUFACTUREES : THERMIQUE 2D
-# tplp107b.para = tps_job 600 mem_job 800Mo ncpus 1 liste_test S
+# tplp107b.para = tps_job 600 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

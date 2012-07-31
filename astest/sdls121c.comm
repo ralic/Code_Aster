@@ -1,7 +1,7 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE RECALAGE DES PARAMETRES D'UN MODELE DYNAMIQUE PAR ANALYSE MODALE
 # 1 calcul esclave : ncpus = 1 + 1 (maitre)
-# sdls121c.para = tps_job 1000 mem_job 300Mo mem_aster 64 ncpus 2 liste_test S
+# sdls121c.para = tps_job 1000 mem_job 512Mo ncpus 2 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/04/2012   AUTEUR CHANSARD F.CHANSARD 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # RESPONSABLE TORKHANI M.TORKHANI
 # TITRE DIAGRAMME DE CAMPBELL D'UNE LIGNE D'ARBRE SIMPLIFIEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -18,7 +18,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# sdll125c.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
+# sdll125c.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 
 # CAS_TEST__:SDLL125C
 #

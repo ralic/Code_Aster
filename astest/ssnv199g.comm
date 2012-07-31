@@ -1,6 +1,6 @@
-# MODIF  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE FISSURATION INTERFACE 3D (HEXA20) SUR DCB AVEC FISSURE INITIALE MAILLEE, LOI CZM_OUV_MIX
-# ssnv199g.para = tps_job 150 mem_job 128Mo ncpus 1 liste_test S
+# ssnv199g.para = tps_job 150 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

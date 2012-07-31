@@ -1,6 +1,6 @@
-# MODIF  DATE 31/01/2012   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE ABSORPTION D UNE ONDE DE COMPRESSION DANS UN BARREAU ELASTIQUE
-# sdlv120a.para = tps_job 420 mem_job 128Mo ncpus 1 liste_test S
+# sdlv120a.para = tps_job 420 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

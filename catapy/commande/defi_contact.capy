@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 31/07/2012   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -179,17 +179,8 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                                         into=("POINT_FIXE","NEWTON",),
                                                         defaut="NEWTON"),
                                   b_algo_reso_frotPF = BLOC(condition = "ALGO_RESO_FROT=='POINT_FIXE'",
-                                    REAC_FROT =SIMP(statut='f',
-                                                    typ='TXM',
-                                                    into=("AUTOMATIQUE","CONTROLE",),
-                                                    defaut="AUTOMATIQUE"),
-                                    b_automatique = BLOC(condition = "REAC_FROT == 'AUTOMATIQUE' ",
-                                                         ITER_FROT_MAXI = SIMP(statut='f',typ='I',defaut=10),
-                                                         RESI_FROT      = SIMP(statut='f',typ='R',defaut=0.0001),
-                                    ),
-                                    b_controle    = BLOC(condition = "REAC_FROT == 'CONTROLE' ",
-                                                         NB_ITER_FROT   = SIMP(statut='f',typ='I',defaut = 2),
-                                    ),
+                                    ITER_FROT_MAXI = SIMP(statut='f',typ='I',defaut=10),
+                                    RESI_FROT      = SIMP(statut='f',typ='R',defaut=0.0001),
                                   ),
                                   b_algo_reso_frotNE = BLOC(condition = "ALGO_RESO_FROT=='NEWTON'",
 
@@ -200,18 +191,8 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
 # PARAMETRE GENERAL : BOUCLE DE FROTTEMENT - Cas XFEM
 
            b_bouc_frot_xfem= BLOC(condition = "FROTTEMENT=='COULOMB' and FORMULATION == 'XFEM' ",
-                                  REAC_FROT =SIMP(statut='f',
-                                                  typ='TXM',
-                                                  defaut="AUTOMATIQUE",
-                                                  into=("AUTOMATIQUE","CONTROLE",),
-                                                  ),
-                                  b_automatique = BLOC(condition = "REAC_FROT == 'AUTOMATIQUE' ",
-                                                       ITER_FROT_MAXI = SIMP(statut='f',typ='I',defaut=10),
-                                                       RESI_FROT      = SIMP(statut='f',typ='R',defaut=0.0001),
-                                    ),
-                                  b_controle    = BLOC(condition = "REAC_FROT == 'CONTROLE' ",
-                                                       NB_ITER_FROT   = SIMP(statut='f',typ='I',defaut = 2),
-                                    ),
+                                  ITER_FROT_MAXI = SIMP(statut='f',typ='I',defaut=10),
+                                  RESI_FROT      = SIMP(statut='f',typ='R',defaut=0.0001),
                                   ),
 
 # PARAMETRES GENERAUX : METHODES DISCRETES
@@ -458,11 +439,6 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                                        ),
 # -- Fonctionnalités spécifiques 'CONTINUE'
 
-
-# -- Controle des statuts
-                                          REAC_PARA       =SIMP(statut='f',typ='TXM',defaut="NON",
-                                                                into=("NON","OUI")),
-# --
                                           INTEGRATION     =SIMP(statut='f',typ='TXM',defaut="AUTO",
                                           into=("AUTO","GAUSS","SIMPSON","NCOTES",),),
                                           b_gauss   =BLOC(condition = "INTEGRATION == 'GAUSS' ",

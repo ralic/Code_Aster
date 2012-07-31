@@ -1,4 +1,4 @@
-#@ MODIF xfem2 Messages  DATE 20/06/2012   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF xfem2 Messages  DATE 31/07/2012   AUTEUR LADIER A.LADIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -113,33 +113,6 @@ cata_msg = {
      Veuillez revoir la définition des level-sets.
 """),
 
-20 : _(u"""
-  -> PFON_INI = POINT_ORIG
-  -> Risque & Conseil :
-     Veuillez définir deux points différents pour PFON_INI et POINT_ORIG.
-"""),
-
-21 : _(u"""
-  -> Problème dans l'orientation du fond de fissure : POINT_ORIG mal choisi.
-  -> Risque & Conseil :
-     Veuillez redéfinir POINT_ORIG.
-"""),
-
-22 : _(u"""
-  -> Tous les points du fond de fissure sont des points de bord.
-  -> Risque & Conseil :
-     Assurez-vous du bon choix des paramètres d'orientation de fissure.
-"""),
-
-23 : _(u"""
-  -> PFON_INI semble être un point mal choisi, on le modifie automatiquement.
-"""),
-
-25 : _(u"""
-  -> La norme du vecteur VECT_ORIE est nulle.
-  -> Risque & Conseil :
-     Veuillez redéfinir VECT_ORIE.
-"""),
 
 
 50 : _(u"""

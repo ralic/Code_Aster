@@ -1,6 +1,6 @@
       SUBROUTINE JEFINI ( COND )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF JEVEUX  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,13 +46,13 @@ C
       COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
       INTEGER          ICDYN , MXLTOT
       COMMON /XDYNJE/  ICDYN , MXLTOT
-      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN , LGIO
-      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN , LGIO(2)
+      REAL *8         MXDYN, MCDYN, MLDYN, VMXDYN, VMET, LGIO
+      COMMON /R8DYJE/ MXDYN, MCDYN, MLDYN, VMXDYN, VMET, LGIO(2)
 C     ==================================================================
-      INTEGER          VALI(7) , INFO, IFM, IRES
-      CHARACTER*8      KCOND , STAOU
+      INTEGER          VALI(7) , INFO, IFM, IRES, IRET, IBID
+      CHARACTER*8      KCOND , STAOU , K8TAB(3)
       CHARACTER*24     LADATE
-      REAL*8           RVAL(9)
+      REAL*8           RVAL(3)
 C     ------------------------------------------------------------------
 C
       KCOND  = COND ( 1: MIN( LEN(COND) , LEN(KCOND) ) )
@@ -63,6 +63,20 @@ C
       ELSE
          STAOU = 'SAUVE   '
       ENDIF
+C
+C     EVALUATION DE LA CONSOMMATION MEMOIRE
+C      
+      K8TAB(1)='VMPEAK'
+      K8TAB(2)='MEM_TOTA'
+      CALL UTGTME(2,K8TAB,RVAL,IRET)
+C      
+      IF ( RVAL(2) .LT. RVAL(1) ) THEN
+        CALL U2MESG('I','JEVEUX1_77',0,' ',0,IBID,2,RVAL)
+      ELSE IF ( (RVAL(2)-RVAL(1))/RVAL(1) .GT. 0.5D0 ) THEN
+        CALL U2MESG('I','JEVEUX1_78',0,' ',0,IBID,2,RVAL)
+      ENDIF
+      WRITE(IFM,*) ' '
+C
 C     -------------  EDITION DES REPERTOIRES ---------------------------
       IF ( KCOND .EQ. 'TEST    '  ) THEN
         DO 5 I = 1 , NBFIC
@@ -94,7 +108,11 @@ C
       ENDIF
 C
 C     --- IMPRESSION DES CONSOMMATIONS MEMOIRE ---
-      CALL JEINFO(RVAL)
+C
+      K8TAB(1) = 'CMXU_JV'
+      K8TAB(2) = 'CMAX_JV'   
+      K8TAB(3) = 'VMPEAK'
+      CALL UTGTME(3,K8TAB,RVAL,IRET)
       IFM = IUNIFI('MESSAGE')
       IRES = IUNIFI('RESULTAT')
 C
@@ -102,14 +120,14 @@ C
         WRITE(IRES,*) ' '
         WRITE(IRES,'(2A,F11.2,A)')
      &        ' <I> <FIN> MEMOIRE JEVEUX MINIMALE REQUISE POUR ',
-     &        'L''EXECUTION :                ',RVAL(2),' Mo'
+     &        'L''EXECUTION :                ',RVAL(1),' Mo'
         WRITE(IRES,'(2A,F11.2,A)')
      &        ' <I> <FIN> MEMOIRE JEVEUX OPTIMALE REQUISE POUR ',
-     &        'L''EXECUTION :                ',RVAL(5),' Mo'
-        IF (RVAL(9).GT.0) THEN
+     &        'L''EXECUTION :                ',RVAL(2),' Mo'
+        IF (RVAL(3).GT.0) THEN
           WRITE(IRES,'(2A,F11.2,A)')
      &        ' <I> <FIN> MAXIMUM DE MEMOIRE UTILISEE PAR LE PROCESSUS'
-     &        ,' LORS DE L''EXECUTION :',RVAL(9)/1024,' Mo'
+     &        ,' LORS DE L''EXECUTION :',RVAL(3),' Mo'
         ENDIF
       ENDIF
 C
@@ -148,24 +166,25 @@ C
           ENDIF
           WRITE(IFM,'(A,F11.2,A)')
      &       '   MEMOIRE JEVEUX MINIMALE REQUISE POUR L''EXECUTION :',
-     &       RVAL(2),' Mo'
+     &       RVAL(1),' Mo'
           WRITE(IFM,'(A)') '     - IMPOSE DE NOMBREUX ACCES DISQUE'
           WRITE(IFM,'(A)') '     - RALENTIT LA VITESSE D''EXECUTION'
           WRITE(IFM,'(A,F11.2,A)')
      &       '   MEMOIRE JEVEUX OPTIMALE REQUISE POUR L''EXECUTION :',
-     &       RVAL(5),' Mo'
+     &       RVAL(2),' Mo'
           WRITE(IFM,'(A)') '     - LIMITE LES ACCES DISQUE'
           WRITE(IFM,'(A)') '     - AMELIORE LA VITESSE D''EXECUTION'
-          IF (RVAL(9).GT.0) THEN
+          IF (RVAL(3).GT.0) THEN
             WRITE(IFM,'(A,F11.2,A)')
      &       '   MAXIMUM DE MEMOIRE UTILISEE PAR LE PROCESSUS     :',
-     &       RVAL(9)/1024,' Mo'
+     &       RVAL(3),' Mo'
           WRITE(IFM,'(A)') '     - COMPREND LA MEMOIRE CONSOMMEE PAR '//
      &       ' JEVEUX, '
           WRITE(IFM,'(A)') '       LE SUPERVISEUR PYTHON, '//
      &       'LES LIBRAIRIES EXTERNES'
           ENDIF
           WRITE(IFM,*) ' '
+C
           CALL ENLIRD(LADATE)
           WRITE(IFM,*) '<I>       FIN D''EXECUTION LE : '//LADATE
 C

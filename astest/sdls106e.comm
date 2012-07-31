@@ -1,4 +1,4 @@
-# MODIF  DATE 24/01/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE SOUS STRUCTURATION DYNAMIQUE : PLAQUE MINCE APPUYEE-APPUYEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +17,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# sdls106e.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
+# sdls106e.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #
 # CAS_TEST__: PLAQUERITZ
 #             VALIDATION SOUS-STRUCTURATION CLASSIQUE AVEC BASE MODALE

@@ -1,4 +1,4 @@
-#@ MODIF supervis2 Messages  DATE 12/06/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF supervis2 Messages  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -157,9 +157,9 @@ Taille limite des fichiers d'échange : %(r2).2f Go
 72 : _(u"""  # Commande :
   # ----------"""),
 
-73 : _(u"""  # Statistiques mémoire (Mo) : %(r1)9.2f / %(r2)9.2f / %(r3)9.2f (VmPeak / Optimum / Minimum)"""),
+73 : _(u"""  # Statistiques mémoire (Mo) : %(r1)9.2f / %(r2)9.2f / %(r3)9.2f / %(r4)9.2f (VmPeak / VmSize / Optimum / Minimum)"""),
 
-74 : _(u"""  # Statistiques mémoire (Mo) : %(r1)9.2f / %(r2)9.2f (Optimum / Minimum)"""),
+74 : _(u"""  # Statistiques mémoire (Mo) : %(r1)9.2f / %(r2)9.2f / %(r3)9.2f (VmSize / Optimum / Minimum)"""),
 
 75 : _(u"""  # Fin commande No : %(i1)04d   user+syst:%(r1)12.2fs (syst:%(r2)12.2fs, elaps:%(r3)12.2fs)"""),
 

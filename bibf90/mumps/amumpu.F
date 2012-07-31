@@ -1,7 +1,7 @@
       SUBROUTINE AMUMPU(OPTION,TYPE,KXMPS,USERSM,NPREC,LRESOL)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF AMUMPU MUMPS  DATE 20/06/2012   AUTEUR BOITEAU O.BOITEAU 
+!& MODIF AMUMPU MUMPS  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -63,13 +63,14 @@ C============================================================
       TYPE (ZMUMPS_STRUC) , TARGET  :: ZMPS(NMXINS)
       TYPE (DMUMPS_STRUC) , POINTER :: DMPSK
       TYPE (ZMUMPS_STRUC) , POINTER :: ZMPSK
-      REAL*8       RVAL(9)
+      REAL*8       RVAL(3)
       INTEGER      INFO16,INFO26,VALI(10),ICOEFM,ICN22,ICN23,RANG,N,
      &             IAUX1,IAUX2,INFO3,NBPROC,IFM,NIV,IBID,IPIV,INFO28,
-     &             INFO12,I,IERR,TMAX,TMAXB,LTOT
+     &             INFO12,I,IERR,TMAX,TMAXB,LTOT,IRET
       LOGICAL      LPARA
       CHARACTER*1  ROUCS(NMXINS),PRECS(NMXINS)
       CHARACTER*4  ETAMS(NMXINS)
+      CHARACTER*8  K8TAB(3)
       CHARACTER*14 NONUS(NMXINS)
       CHARACTER*19 NOMATS(NMXINS),NOSOLS(NMXINS)
       CHARACTER*24 KPIV,VALK(2)
@@ -174,8 +175,15 @@ C ---       EST NEGLIGEABLE.
 C ---   PROCHAINEMENT UNE FONCTIONNALITE GENERIQUE DEVRAIT PERMETTRE
 C ---   D'ACCEDER A UNE VALEUR PLUS REALISTE DE CE CHIFFRE
 C ---
-        CALL JEINFO(RVAL) 
-        TMAX=INT(RVAL(4)-RVAL(3))
+        K8TAB(1)='MEM_TOTA'
+        K8TAB(2)='COUR_JV '
+        K8TAB(3)='RLQ_MEM '
+        CALL UTGTME(3,K8TAB,RVAL,IRET) 
+        IF ( IRET .EQ. 0 ) THEN 
+          TMAX=INT(RVAL(1)-(RVAL(2)+RVAL(3)))
+        ELSE
+          CALL ASSERT(.FALSE.)   
+        ENDIF
         TMAXB=-999
         ICN22=-999
         ICN23=-999
@@ -223,8 +231,15 @@ C -----------------------------------------------------------------
             ICN23=TMAX
           ELSE
             CALL JJLDYN(0,-1,LTOT)
-            CALL JEINFO(RVAL) 
-            TMAXB=INT(RVAL(4)-RVAL(3))
+            K8TAB(1)='MEM_TOTA'
+            K8TAB(2)='COUR_JV'
+            K8TAB(3)='RLQ_MEM'
+            CALL UTGTME(3,K8TAB,RVAL,IRET) 
+            IF ( IRET .EQ. 0 ) THEN 
+              TMAXB=INT(RVAL(1)-(RVAL(2)+RVAL(3)))
+            ELSE
+              CALL ASSERT(.FALSE.)   
+            ENDIF
             ICN23=TMAXB
             IF (NIV.GE.2) THEN
               VALI(1)=TMAXB-TMAX
@@ -249,8 +264,9 @@ C ---   OPTION DE PRE-EVALUATION DES CONSOS MEMOIRE
 C --------------------------------------------------
           ICN22=-1
           ICN23=-1
-          CALL JEINFO(RVAL)
-          IAUX1=INT(RVAL(2))
+          K8TAB(1)='CUSE_JV'
+          CALL UTGTME(1,K8TAB,RVAL,IRET)
+          IAUX1=INT(RVAL(1))
           VALI(1)=N
           VALI(2)=MAX(IAUX1,1)
           VALI(3)=MAX(INFO16,1)

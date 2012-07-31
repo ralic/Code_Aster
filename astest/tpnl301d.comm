@@ -1,6 +1,6 @@
-# MODIF  DATE 03/04/2012   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE THERMO-HYDRATATION D'UN CYLINDRE DE BETON AXIS AXIS_DIAG QUA9 TRIA6
-# tpnl301d.para = tps_job 300 mem_job 100Mo ncpus 1 liste_test S
+# tpnl301d.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

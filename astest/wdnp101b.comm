@@ -1,6 +1,6 @@
-# MODIF  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE SOLLICITATION SISMIQUE D UNE COLONNE DE SOL APRES CONSTRUCTION
-# wdnp101b.para = tps_job 4500 mem_job 1000Mo mem_aster 90 ncpus 1 liste_test S
+# wdnp101b.para = tps_job 4500 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

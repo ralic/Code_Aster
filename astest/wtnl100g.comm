@@ -1,4 +1,4 @@
-# MODIF  DATE 02/07/2012   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE  - CONSOLIDATION TERZAGHI 2D Q8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # tps_job 180 mem_job 200Mo ncpus 1 liste_test R
-# wtnl100g.para = tps_job 180 mem_job 200Mo ncpus 1 liste_test R
+# wtnl100g.para = tps_job 180 mem_job 512Mo ncpus 1 liste_test R
 
 DEBUT(CODE=_F(NOM='WTNL100G',
               NIV_PUB_WEB='INTERNET'),PAR_LOT='NON');

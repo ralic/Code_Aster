@@ -1,7 +1,7 @@
-# MODIF  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # RESPONSABLE PELLET J.PELLET
 # TITRE Validation de CREA_RESU/ASSE et AFFE_MATERIAU/AFFE_VARC/FONC_INST
-# zzzz223a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
+# zzzz223a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

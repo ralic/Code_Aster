@@ -1,6 +1,6 @@
-# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE MISE EN TENSION DE CABLES DE PRECONTRAINTES DANS UNE POUTRE 3D
-# ssnv164b.para = tps_job 170 mem_job 256Mo ncpus 1 liste_test R
+# ssnv164b.para = tps_job 170 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

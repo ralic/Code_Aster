@@ -1,4 +1,4 @@
-# MODIF  DATE 11/06/2012   AUTEUR CHEIGNON E.CHEIGNON 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
-# ssnl106c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
+# ssnl106c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 # --------------------------------------------------------------------
 # MODELISATION POU_D_ E. DEUX SECTIONS : RECTANGLE ET CERCLE
 # --------------------------------------------------------------------

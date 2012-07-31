@@ -1,4 +1,4 @@
-# MODIF  DATE 16/01/2012   AUTEUR BEAURAIN J.BEAURAIN 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE VALIDATION DE L'ALGORITHME D'OPTIMISATION DE DDL_STAB
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +17,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# ssnl138a.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
+# ssnl138a.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 
 DEBUT(CODE=_F(NOM='SSNL138A', NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'), DEBUG=_F(SDVERI='OUI'))
 

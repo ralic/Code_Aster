@@ -1,4 +1,4 @@
-#@ MODIF indicateur Messages  DATE 07/05/2012   AUTEUR DELMAS J.DELMAS 
+#@ MODIF indicateur Messages  DATE 31/07/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -112,8 +112,7 @@ Vous n'utilisez pas une modélisation HM saturée élastique.
 
 
 25: _(u"""
-Il faut renseigner le mot-clef COMP_INCR avec ELAS et LIQU_SATU pour calculer l'
-indicateur d'erreur temporelle.
+Il faut renseigner le mot-clef COMP_INCR avec ELAS et LIQU_SATU pour calculer l'indicateur d'erreur temporelle.
 """),
 
 28 : _(u"""

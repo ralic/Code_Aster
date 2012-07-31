@@ -1,6 +1,6 @@
-# MODIF  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE CALCUL THERMO-ELASTIQUE D'UN ANNEAU CREUX SOUMIS A UN CHARGEMENT THERMIQUE
-# perf002b.para = tps_job 900 mem_job 810Mo ncpus 1 liste_test P
+# perf002b.para = tps_job 900 mem_job 1536Mo ncpus 1 liste_test P
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -1,6 +1,7 @@
-# MODIF  DATE 26/06/2012   AUTEUR TRAN V-X.TRAN 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE  CRITERES DE FATIGUE CROSSLAND ET DANG VAN PAPADOPOULOS
 # ET CRITERE EN FORMULE
+# szlz107a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

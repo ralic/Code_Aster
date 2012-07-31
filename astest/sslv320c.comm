@@ -1,6 +1,6 @@
-# MODIF  DATE 02/07/2012   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 31/07/2012   AUTEUR LADIER A.LADIER 
 # TITRE PROPAGATION PLANE D UNE FISSURE 3D SE DIVISANT ET FUSIONNANT AVEC X-FEM
-# sslv320c.para = tps_job 350 mem_job 2000Mo ncpus 1 liste_test S
+# sslv320c.para = tps_job 350 mem_job 1536Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -226,10 +226,7 @@ for i in range(nbcalc) :
                                    FISS_GRILLE=FISS[i],
                                    DEFI_FISS=_F(CHAM_NO_LSN=LSNH[i],
                                                 CHAM_NO_LST=LSTH[i],),
-                                   GROUP_MA_ENRI='All',
-                                   ORIE_FOND=_F(PFON_INI   = (30.0,4.0+(i+1)*da,5.0),
-                                                VECT_ORIE  = (0.0,0.0,1.0),
-                                                POINT_ORIG = (15.0,0.0,5.0),),);
+                                   GROUP_MA_ENRI='All',);
 
    DETRUIRE(CONCEPT=_F(NOM=CHERR[0],))          
 

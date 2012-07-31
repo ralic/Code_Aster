@@ -1,4 +1,4 @@
-#@ MODIF algorith7 Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF algorith7 Messages  DATE 31/07/2012   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -85,22 +85,6 @@ cata_msg = {
 
 20 : _(u"""
  le champ de déplacement DIDI n'est pas trouvé dans le concept  %(k1)s
-"""),
-
-
-
-
-
-
-
-
-
-56 : _(u"""
- liste RELATION_KIT vide
-"""),
-
-57 : _(u"""
- liste RELATION_KIT trop longue
 """),
 
 60 : _(u"""

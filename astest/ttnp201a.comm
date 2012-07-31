@@ -1,6 +1,6 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE TRANSFERT THERMIQUE AVEC CONDUCTIVITE DEPENDANTE DU TEMPS MODELE 3D
-# ttnp201a.para = tps_job 200 mem_job 300Mo ncpus 1 liste_test S
+# ttnp201a.para = tps_job 200 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

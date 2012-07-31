@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 13/03/2012   AUTEUR PELLET J.PELLET 
+C MODIF SUPERVIS  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,10 +26,10 @@ C     COMMON POUR LE NIVEAU D'"INFO"
       COMMON /INF001/ NIVUTI,NIVPGM,UNITE
 
       INTEGER    NUOPER,IUNIFI,NUOP2,IBID,IMAAV,IMAAP
-      REAL*8     TPRES,PCENT
+      REAL*8     TPRES,PCENT,RVAL(12),RV(2)
       CHARACTER*6  NOMMAR
-      CHARACTER*8  K8BID
-      INTEGER    ETAUSR
+      CHARACTER*8  K8BID,K8TAB(7)
+      INTEGER    ETAUSR,IRET,IRET2
 C     ------------------------------------------------------------------
       CALL GCECDU(NUOPER)
 
@@ -56,7 +56,31 @@ C     -- ON MET A JOUR LE COMMON INF001 :
 
 C     -- ON INITIALISE LA VARIABLE IACTIF D'UN COMMON DE CALCUL:
       CALL MECOEL(0)
-
+      
+      K8TAB(1) = 'LIMIT_JV'
+      K8TAB(2) = 'MEM_TOTA'   
+      K8TAB(3) = 'VMSIZE'
+      K8TAB(4) = 'CMAX_JV'  
+      K8TAB(5) = 'RLQ_MEM'  
+      K8TAB(6) = 'COUR_JV'  
+      K8TAB(7) = 'VMPEAK'  
+      CALL UTGTME(7,K8TAB,RVAL,IRET)
+      IF ( RVAL(5)+RVAL(6) .GT. RVAL(3) ) THEN  
+C
+C --- ON AJUSTE LE RELIQUAT CAR IL A DIMINUE
+C
+         CALL UTPTME(1,'RLQ_MEM ',(RVAL(3)-RVAL(6)),IRET) 
+      ENDIF
+      IF (RVAL(2)-RVAL(5) .GE. 0 ) THEN
+        IF ( (RVAL(2)-RVAL(5)) .GT. RVAL(1) ) THEN 
+          CALL JERMXD((RVAL(2)-RVAL(5))*1024*1024,IRET)
+          IF ( IRET.EQ.0 ) THEN
+            CALL UTGTME(6,K8TAB,RVAL,IRET2)
+            CALL U2MESG('I' ,'JEVEUX1_74',0,' ',0,IBID,5,RVAL) 
+          ENDIF 
+        ENDIF      
+      ENDIF 
+C
       IF ( NUOPER .LT. 0 ) THEN
         NUOP2 = ABS(NUOPER)
         CALL OPSEXE(NUOP2)

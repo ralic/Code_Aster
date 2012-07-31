@@ -1,8 +1,8 @@
-# MODIF  DATE 07/02/2012   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE TEST DE LA MACRO COMMANDE DE RECALAGE
 # 4 calculs esclaves distribues : ncpus = 4 + 1 (maitre),
 # on met 4 car c'est une limite courante en interactif (interactif_nbpmax)
-# zzzz159b.para = tps_job 600 mem_job 300Mo mem_aster 10 ncpus 4 liste_test S
+# zzzz159b.para = tps_job 600 mem_job 512Mo ncpus 4 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

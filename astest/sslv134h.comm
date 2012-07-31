@@ -1,6 +1,6 @@
-# MODIF  DATE 20/06/2012   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE CALCUL 3D DE K1 FISSURE CIRCULAIRE EN MILIEU INFINI
-# sslv134h.para = tps_job 280 mem_job 1600Mo mem_aster 33 ncpus 1 liste_test S
+# sslv134h.para = tps_job 280 mem_job 768Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

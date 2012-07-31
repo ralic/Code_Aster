@@ -1,4 +1,4 @@
-#@ MODIF jeveux Messages  DATE 06/03/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF jeveux Messages  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -158,11 +158,11 @@ Conseil :
 """),
 
 33 : _(u"""
-  Statistiques mémoire (Mo) : %(r9)9.2f / %(r5)9.2f / %(r2)9.2f (VmPeak / Optimum / Minimum)
+  Statistiques mémoire (Mo) : %(r1)9.2f / %(r2)9.2f / %(r3)9.2f (VmPeak / Optimum / Minimum)
 """),
 
 34 : _(u"""
-  Statistiques mémoire (Mo) : %(r5)9.2f / %(r2)9.2f (Optimum / Minimum)
+  Statistiques mémoire (Mo) : %(r2)9.2f / %(r3)9.2f (Optimum / Minimum)
 """),
 
 36 : _(u"""

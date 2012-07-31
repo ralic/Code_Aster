@@ -1,6 +1,6 @@
-# MODIF  DATE 05/03/2012   AUTEUR SFAYOLLE S.FAYOLLE 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE Expansion d'un cylindre creux infini avec prise en compte des dissipations thermiques dues aux deformations mecaniques
-# hsna105b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
+# hsna105b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

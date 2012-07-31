@@ -1,6 +1,6 @@
-# MODIF  DATE 21/05/2012   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE POUTRE EN FLAMBEMENT
-# ssnl502d.para = tps_job 90 mem_job 128Mo ncpus 1 liste_test S
+# ssnl502d.para = tps_job 90 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
