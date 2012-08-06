@@ -1,4 +1,4 @@
-#@ MODIF N_VALIDATOR Noyau  DATE 21/05/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_VALIDATOR Noyau  DATE 06/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -252,7 +252,7 @@ class MinStr:
                        valeur, self.min, self.max))
 
     def __repr__(self):
-        return "TXM de longueur entre %s et %s" %(self.min,self.max)
+        return ufmt(_(u"TXM de longueur entre %s et %s", self.min, self.max))
 
 class Valid(PProtocol):
    """
@@ -274,7 +274,7 @@ class Valid(PProtocol):
           la validation demandée par le validateur. Elle est utilisée
           pour produire le compte-rendu de validité du mot clé associé.
        """
-       return "valeur valide"
+       return _(u"valeur valide")
 
    def aide(self):
        """
@@ -461,7 +461,7 @@ class Compulsory(ListVal):
           self.cata_info=""
 
       def info(self):
-          return "valeur %s obligatoire" % `self.elem`
+          return ufmt(_(u"valeur %s obligatoire"), `self.elem`)
 
       def default(self,valeur,elem):
           return valeur
@@ -561,7 +561,7 @@ class LongStr(ListVal):
           self.cata_info=""
 
       def info(self):
-          return ufmt(_(u"longueur de la chaine entre %s et %s", self.low, self.high))
+          return ufmt(_(u"longueur de la chaine entre %s et %s"), self.low, self.high)
 
       def info_erreur_item(self):
           return _(u"Longueur de la chaine incorrecte")
@@ -580,12 +580,12 @@ class LongStr(ListVal):
 
       def default(self,valeur,low,high):
           if not is_str(valeur):
-             raise ValError(ufmt(_(u"%s n'est pas une chaine", repr(valeur))))
+             raise ValError(ufmt(_(u"%s n'est pas une chaine"), repr(valeur)))
           if valeur[0]=="'" and valeur[-1]=="'" :
              low=low+2
              high=high+2
           if len(valeur) < low or len(valeur) > high :
-             raise ValError(ufmt(_(u"%s n'est pas de la bonne longueur", repr(valeur))))
+             raise ValError(ufmt(_(u"%s n'est pas de la bonne longueur"), repr(valeur)))
           return valeur
 
 class OnlyStr(ListVal):
@@ -978,21 +978,21 @@ class RangeVal(ListVal):
       def __init__(self,low,high):
           self.low=low
           self.high=high
-          self.cata_info=ufmt(_(u"%s doit être inférieur a %s", low,high))
+          self.cata_info=ufmt(_(u"%s doit être inférieur a %s"), low,high)
 
       def info(self):
-          return ufmt(_(u"valeur dans l'intervalle %s , %s", self.low, self.high))
+          return ufmt(_(u"valeur dans l'intervalle %s , %s"), self.low, self.high)
 
       def convert_item(self,valeur):
           if valeur > self.low and valeur < self.high:return valeur
-          raise ValError(ufmt(_(u"%s devrait être comprise entre %s et %s",
-                              valeur, self.low, self.high)))
+          raise ValError(ufmt(_(u"%s devrait être comprise entre %s et %s"),
+                              valeur, self.low, self.high))
 
       def verif_item(self,valeur):
           return valeur > self.low and valeur < self.high
 
       def info_erreur_item(self) :
-          return ufmt(_(u"La valeur doit etre comprise entre %s et %s", self.low, self.high))
+          return ufmt(_(u"La valeur doit etre comprise entre %s et %s"), self.low, self.high)
 
       def verif_cata(self):
           if self.low > self.high : return 0
@@ -1082,10 +1082,10 @@ class PairVal(ListVal):
           self.cata_info=""
 
       def info(self):
-          return "valeur paire"
+          return _(u"valeur paire")
 
       def info_erreur_item(self):
-          return "La valeur saisie doit etre paire"
+          return _(u"La valeur saisie doit etre paire")
 
       def convert(self,valeur):
           for val in valeur:
@@ -1128,8 +1128,8 @@ class EnumVal(ListVal):
 
       def convert_item(self,valeur):
           if valeur in self.into:return valeur
-          raise ValError(ufmt(_(u"%s contient des valeurs hors des choix possibles: %s ",
-                              valeur, self.into)))
+          raise ValError(ufmt(_(u"%s contient des valeurs hors des choix possibles: %s "),
+                              valeur, self.into))
 
       def verif_item(self,valeur):
           if valeur not in self.into:return 0
@@ -1236,7 +1236,7 @@ class TypeVal(ListVal):
              self.coerce = self.identity
 
       def info(self):
-          return "valeur de %s" % self.aType
+          return ufmt(_(u"valeur de %s"), self.aType)
 
       def identity ( self, value ):
           if type( value ) == self.aType:

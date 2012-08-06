@@ -1,4 +1,4 @@
-#@ MODIF gene_acce_seisme_ops Macro  DATE 10/07/2012   AUTEUR ZENTNER I.ZENTNER 
+#@ MODIF gene_acce_seisme_ops Macro  DATE 06/08/2012   AUTEUR ZENTNER I.ZENTNER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,7 +28,7 @@ import aster_core
 EnumTypes = (ListType, TupleType)
 
 
-def gene_acce_seisme_ops(self,PAS_INST,DSP,MODULATION, NB_POIN, TITRE,INFO,**args):
+def gene_acce_seisme_ops(self,PAS_INST,DSP,MODULATION, NB_POIN,PESANTEUR,  TITRE,INFO,**args):
 
    import numpy as NP
    import aster
@@ -40,7 +40,7 @@ def gene_acce_seisme_ops(self,PAS_INST,DSP,MODULATION, NB_POIN, TITRE,INFO,**arg
    from Cata.cata import nappe_sdaster,fonction_sdaster,fonction_c
    import aster_fonctions
    from Utilitai.optimize   import fmin
-   from Utilitai.gauss_process  import  gene_traj_gauss, gene_traj_gauss_evol 
+   from Utilitai.gauss_process  import  gene_traj_gauss, gene_traj_gauss_evol , Rice2, peak
    from Utilitai.gauss_process  import  calc_dsp_KT, f_ARIAS, f_ARIAS_TSM,fonctm_gam,f_opta, fonctm_JetH
    EnumTypes = (list, tuple)
    
@@ -85,12 +85,19 @@ def gene_acce_seisme_ops(self,PAS_INST,DSP,MODULATION, NB_POIN, TITRE,INFO,**arg
       FN=DSP['FREQ_PENTE']
       wn=FN*2.*pi   
 
-# donnees fonction modulation
-   DUREE=MODULATION['DUREE_PHASE_FORTE']    
-   ARIAS=MODULATION['INTE_ARIAS'] 
-   TYPE=MODULATION['TYPE']       
-   TMID=MODULATION['INST_INI']   
-   
+# donnees fonction modulation   
+   NORME=PESANTEUR
+   DUREE=MODULATION['DUREE_PHASE_FORTE']
+   ARIAS=MODULATION['INTE_ARIAS']
+   PGA=MODULATION['ACCE_MAX']
+   ECART=MODULATION['ECART_TYPE']
+   TYPE=MODULATION['TYPE']
+   if  ECART!= None:
+      ECART=ECART*NORME
+   if TYPE!='CONSTANT':
+      TMID=MODULATION['INST_INI']
+   else:
+      TMID=0.0
    print "TYPE MODULATION",  TYPE
 
 #  ------------------------------------------------------------------
@@ -106,8 +113,7 @@ def gene_acce_seisme_ops(self,PAS_INST,DSP,MODULATION, NB_POIN, TITRE,INFO,**arg
       if  NB_POIN % 2 != 0:
          NB_POIN=NB_POIN+1
       TT=(NB_POIN-1)*DT   
-      DW=2.*OM/NB_POIN  
-      assert DUREE < TT , "Duree de la phase forte > duree du seisme"   
+      DW=2.*OM/NB_POIN
    else:
       if TYPE=='CONSTANT':
          TTS=DUREE # on prend  phase forte si CONSTANT      
@@ -117,6 +123,10 @@ def gene_acce_seisme_ops(self,PAS_INST,DSP,MODULATION, NB_POIN, TITRE,INFO,**arg
       NB_POIN= int(ceil((TTS/DT+1)/2.) *2. )     # on prend NB_POIN pair uniquement   
       DW=2.*OM/NB_POIN     
       TT=(NB_POIN-1)*DT
+
+   if TYPE=='CONSTANT':
+      DUREE=TT
+   
 
    l_temps=NP.arange(0., NB_POIN*DT,  DT)
    l_w=NP.arange(-OM+DW/2., OM+DW/2., DW)     
@@ -132,7 +142,7 @@ def gene_acce_seisme_ops(self,PAS_INST,DSP,MODULATION, NB_POIN, TITRE,INFO,**arg
       print  'FREQUENCE DE COUPURE =',FREQ_COUP ,'     NB_POIN =', NB_POIN ,'     FREQ_PAS =', DW/2./pi
       print  'PAS DE TEMPS =',DT,  '     INTERVALLE DE TEMPS =',TT
 
-
+   assert DUREE+TMID <= TT , "Duree de la phase forte > duree du seisme" 
    assert  NB_POIN==nbfreq
    assert len(l_temps)==NB_POIN   
    assert len(l_w)==NB_POIN      
@@ -142,42 +152,68 @@ def gene_acce_seisme_ops(self,PAS_INST,DSP,MODULATION, NB_POIN, TITRE,INFO,**arg
 #     ----------------------------------------------------------------- 
 #          MODULATION   GAMMA et JH
 #     -----------------------------------------------------------------
+
+   if PGA!= None:      
+      spec=calc_dsp_KT(l_w2,wg, amo)
+      m0,m1,m2,vop,delta=Rice2(l_w2,spec) 
+      nup=peak(0.5, DUREE, vop,delta)
+      sigma=PGA*NORME/nup
+      if INFO==2:
+         print "FACTEUR DE PIC = ", nup,  " SIGMA = ", sigma
+
 # identification des parametres a1, a2,a3 a partir de q2
 #x=(a1,a2, ARIAS)
-
+   T1=TMID
+   T2=TMID+DUREE 
    if TYPE=='GAMMA':
-
-      x0=[1.5,0.5 ]
-      assert x0[0]>1.0
-      liste_t=NP.arange(0., TT,  0.01)
-      
-      fqt_ini=fonctm_gam(liste_t, 1.0,x0[0],x0[1]) 
-      aria,TSM, t1, t2 =f_ARIAS_TSM (liste_t, fqt_ini) 
-      T1=TMID
-      T2=TMID+DUREE  
+      x0=[1.3,0.25 ]
+#      assert x0[0]>1.0
+      liste_t=NP.arange(0., TT,  0.01)       
       N1= NP.searchsorted(liste_t,T1)  
-      N2= NP.searchsorted(liste_t,T2)           
-      x_opt=fmin(f_opta,x0,args=(liste_t, N1, N2))
-#      print x0, x_opt        
+      N2= NP.searchsorted(liste_t,T2)         
+      fqt_ini=fonctm_gam(liste_t, 1.0,x0[0],x0[1]) 
+      aria,TSM, t1, t2 =f_ARIAS_TSM (liste_t, fqt_ini, NORME) 
+      x_opt=fmin(f_opta,x0,args=(liste_t, N1, N2))     
       a2=x_opt[0]
       a3=x_opt[1]   
       fqt=fonctm_gam(l_temps, 1.0,a2,a3)
 #
-      aria,TSM, t1, t2 =f_ARIAS_TSM (l_temps, fqt)
+      aria,TSM, t1, t2 =f_ARIAS_TSM (l_temps, fqt, NORME)
       if INFO==2:
-         print 'PHASE FORTE, T1, T2 MODELE :', TSM, t1, t2
-         print 'DATA :',DUREE, TMID, DUREE + TMID
-      
+         print 'PARAMETRES GAMMA alpha_2, alpha_3:',a2, a3 
+         print 'ARIAS  PHASE FORTE, T1, T2 MODELE :', aria , TSM, t1, t2
+         print 'ARIAS  PHASE FORTE, T1 T2  DONNES :',DUREE, TMID, DUREE + TMID
+      if  ARIAS!= None:
+         vale_arias=f_ARIAS (l_temps, fqt, NORME)      
+         fqt=fqt*sqrt(ARIAS/vale_arias)
+      if  ECART!= None:
+         int12 =NP.trapz(fqt[N1:N2]**2,l_temps[N1:N2])
+         fqt=fqt*ECART*sqrt(DUREE/int12)
+      if PGA!= None:
+         int12 =NP.trapz(fqt[N1:N2]**2,l_temps[N1:N2])
+         fqt=fqt*sigma*sqrt(DUREE/int12)
 
    if TYPE=='JENNINGS_HOUSNER': 
       (alpha, beta)=MODULATION['PARA'] 
       assert alpha>=0.0, "ERROR MODULATION: PARA VALUE NOT POSITIVE"
       assert beta>=0.0, "ERROR MODULATION: PARA VALUE NOT POSITIVE"          
-      fqt=fonctm_JetH(l_temps, TMID,DUREE,alpha, beta)
-         
+      fqt=fonctm_JetH(l_temps, TMID,DUREE,alpha, beta) 
+      if  ARIAS!= None:
+         vale_arias=f_ARIAS (l_temps, fqt, NORME)
+         fqt=fqt*sqrt(ARIAS/vale_arias)
+      if  ECART!= None:
+         fqt=fqt*ECART
+      if PGA!= None:
+         fqt=fqt*sigma      
 
-      
-
+   if TYPE == 'CONSTANT':
+      if  ARIAS!= None:
+         vale_arias=TT*pi/(2.*NORME)
+         fqt=sqrt(ARIAS/vale_arias)
+      if  ECART!= None:
+         fqt=ECART
+      if PGA!= None:
+         fqt=sigma 
 
 ##     ----------------------------------------------------------------- 
 ##     ALGORITHME DE GENERATION DE SIGNAUX GAUSSIENS -----
@@ -190,44 +226,16 @@ def gene_acce_seisme_ops(self,PAS_INST,DSP,MODULATION, NB_POIN, TITRE,INFO,**arg
       if INFO==2:
          print "CAS DSP NON SEPARABLE" 
 
-      Xt=gene_traj_gauss_evol(calc_dsp_KT, l_w2, l_temps,TMID,  wg,wn,amo )
+      Xt=gene_traj_gauss_evol(calc_dsp_KT, l_w2, l_temps,T1,T2,wg,wn,amo )
+      Xt[0,:]  =NP.array([Xt[0,iii]*fqti  for iii,fqti in enumerate(fqt) ])  
 
-
-      if TYPE != 'CONSTANT':
-         Xt[0,:]  =NP.array([Xt[0,iii]*fqti  for iii,fqti in enumerate(fqt) ])      
-      # Normalisation pour ARIAS
-         vale_arias=f_ARIAS (l_temps, fqt)
-      else:
-         vale_arias=TT*pi/(2.*9.81)
-
-      Xt=Xt*sqrt(ARIAS/vale_arias)
-
-
- #     -----------------------------------------------------------------    
+#     -----------------------------------------------------------------    
    else :
       if INFO==2:
          print "CAS DSP SEPARABLE"
    
-      Xt=gene_traj_gauss(calc_dsp_KT, l_w2, wg,amo)     
-
-      if TYPE != 'CONSTANT':
-         Xt=NP.array(Xt)*fqt 
-      # Normalisation pour ARIAS
-         vale_arias=f_ARIAS (l_temps, fqt)  
-      else:
-         vale_arias=TT*pi/(2.*9.81)
-
-      Xt=Xt*sqrt(ARIAS/vale_arias)   
-
-
-
-#    vale=[]
-#    for ii in range(len(l_temps)):
-#      vale.append(Xt[0,ii ])
-#    
-#    aria,TSM, t1, t2 =f_ARIAS_TSM (l_temps, vale)
-#    print 'PHASE FORTE, T1, T2 SIMULE :', TSM, t1, t2
-
+      Xt=gene_traj_gauss(calc_dsp_KT, l_w2, wg,amo) 
+      Xt=NP.array(Xt)*fqt           
 #    
 #
 #

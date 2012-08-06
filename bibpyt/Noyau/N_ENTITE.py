@@ -1,4 +1,4 @@
-#@ MODIF N_ENTITE Noyau  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_ENTITE Noyau  DATE 06/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -96,8 +96,8 @@ class ENTITE:
       for k,v in self.entites.items() :
          try :
             cr = v.report()
-            cr.debut = "Début "+v.__class__.__name__+ ' : ' + k
-            cr.fin = "Fin "+v.__class__.__name__+ ' : ' + k
+            cr.debut = u"Début "+v.__class__.__name__+ ' : ' + k
+            cr.fin = u"Fin "+v.__class__.__name__+ ' : ' + k
             self.cr.add(cr)
          except:
             self.cr.fatal(_(u"Impossible d'obtenir le rapport de %s %s"), k,`v`)

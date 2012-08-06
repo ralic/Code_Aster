@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 06/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST DES MESSAGES - INTERNATIONALISATION
 # supv002a.para = tps_job 180 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,9 +20,9 @@
 # ======================================================================
 # RESPONSABLE COURTOIS M.COURTOIS
 
-# Note: aspell is required to pass this testcase.
+# Note: aspell and relevant dictionnaries are required to pass this testcase.
 #       If this message is emitted: No word lists can be found for the language "XX",
-#       you must also install the dictionnary for the language "XX".
+#       you must also install the dictionnary for the language "XX" (*.per).
 
 DEBUT(CODE=_F(NOM='SUPV002A', NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'),
       PAR_LOT='OUI')
@@ -47,7 +47,7 @@ execfile('fort.33', globals())
 checker = Checker()
 
 LCATA = [osp.basename(osp.splitext(cata)[0]) for cata in glob(osp.join(MSGDIR, '*.py'))]
-#LCATA = [osp.basename(osp.splitext(cata)[0]) for cata in glob(osp.join(MSGDIR, 'c*.py'))]
+#LCATA = [osp.basename(osp.splitext(cata)[0]) for cata in glob(osp.join(MSGDIR, 'sup*.py'))]
 
 # check default/native messages
 check_catamess(checker, 'fr', LCATA)
@@ -66,9 +66,9 @@ previous_errors = set([
     'ALCHML', 'ALITMI', 'AMDBAR', 'AMUMPS.F', 'ASCSEP', 'AU-YANG',
     'BiCG', 'CHABOCHE', 'CHARAC', 'CHARACTER', 'CHNO', 'CHNO.NUEQ', 'CHOUT', 'CHPVER',
     'CINX', 'CINx', 'CLAV', 'CLO', 'COMBU', 'CVRC', 'D-POUTRE', 'DAMAX', 'DEEQ', 'DELG',
-    'DEP', 'DEPSEQ', 'DEPSI', 'DEPSIMAX', 'DEUXMU', 'DISMOI', 'DLAHQR', 'DOMM', 'DPMAT',
+    'DEP', 'DEPSI', 'DEPSIMAX', 'DEUXMU', 'DISMOI', 'DLAHQR', 'DOMM', 'DPMAT',
     'DPMAX', 'DPSIDS', 'DRMAX', 'DSIGM', 'DTREVC', 'DVP', 'ECLAU', 'EDITGD', 'EFNEMA',
-    'ELREFA', 'ELREFE', 'EPSEQ', 'ETENCA', 'EXICHA', 'FATEMI', 'FETG', 'FINSF', 'FLAHQR',
+    'ELREFA', 'ELREFE', 'ETENCA', 'FATEMI', 'FETG', 'FINSF', 'FLAHQR',
     'FONREE', 'FTREVC', 'GAMDEV', 'GERPAS', 'GILIRE.INDIRECT', 'GL', 'GREL', 'Gnuplot.py',
     'HDFCRF', 'HEXS', 'HUJCI', 'HUJCRI', 'HUJDDD', 'HUJDP', 'HUJELA', 'HUJIID', 'HUJJID',
     'HUJKSI', 'HUJNVI', 'HUJPLA', 'HUJPOT', 'HUJTEL', 'HUJTID', 'ICHIN', 'ICOEF', 'IDDL',
@@ -76,7 +76,7 @@ previous_errors = set([
     'K.U', 'KMOD', 'KSIB', 'KTILDA', 'Kcam', "L'elrefe", 'LCDPPA', 'LIBRARY', 'LIGREL',
     'LIGRELs', 'LMAT', 'LONCUM', 'LONT', 'LTNT', 'MOLOC', 'Map', 'NBCMP', 'NBCYCL', 'NBDDL',
     'NBMECA', 'NBNOEUD', 'NBPOIN', 'NBRUP', 'NBSIGM', 'NDDL', 'NDS',
-    'NEMA', 'NEQ', 'NEQUA', 'NMCOMP', 'NMCONV', 'NMHUJ', 'NMVPIR', 'NMXINS', 'NNOE', 'NOCART',
+    'NEMA', 'NEQUA', 'NMCOMP', 'NMCONV', 'NMHUJ', 'NMVPIR', 'NMXINS', 'NNOE', 'NOCART',
     'NOCP', 'NODE', 'NOMLI', 'NOSOLVE', 'NPQ', 'NSEUIL', 'NUEQ', 'NUME.LILI', 'NUMER',
     'NUMERO.F', 'NUMERO.f', 'NUTIOC', 'NV', 'NVI', 'NVIMAX', 'NaN', 'OMEGA', 'OPENDR',
     'PARAMETER', 'PATH', 'PERMEA', 'PFACY', 'PHYSICAL', 'PMAX', 'POLYNOME',
@@ -97,7 +97,7 @@ previous_errors = set([
     'modelisation', 'nadm', 'nbmmai', 'nbmmax', 'nbtyp', 'ncmp', 'nmaxcmp', 'nmaxocl',
     'nmocl', 'nomres', 'nomta', 'nomte', 'nomtyp', 'not', 'nt', 'number', 'nume',
     'numeli', 'overflow', 'phenomene', 'pnosym', 'post', 'precont',
-    'raymin', 'rayon-raymin', 'rcmaco', 'relcom', 'VmSize', 'VmPeak',
+    'raymin', 'rayon-raymin', 'rcmaco', 'relcom',
     'resuelem', 'resultat', 'rhocp', 'rof', 'rsexch', 'runSalomeScript', 'sch', 'sd',
     'skin.pos', 'svp', 'tbliva', 'texxxx.f', 'tmax', 'tmin', 'typelem', 'typesd',
     'typf', 'typgeo', 'uttcpu', 'uttrif', 'vari', 'vect', 'xxx', 'xxxxxx.py'])
@@ -141,7 +141,7 @@ TEST_TABLE(TABLE=tabw,
            NOM_PARA='NBWARN',
            VALE_I=0,
            CRITERE='ABSOLU',
-           PRECISION=325.1,
+           PRECISION=316.1,
            REFERENCE='NON_REGRESSION',)
     
 FIN()

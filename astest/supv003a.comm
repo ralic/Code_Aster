@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 06/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST DE LA METHODE D'INTERROGATION DES OPTIONS get_option_dependency
 # supv003a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -21,7 +21,8 @@
 # RESPONSABLE COURTOIS M.COURTOIS
 
 DEBUT(CODE=_F(NOM='SUPV003A', NIV_PUB_WEB='INTERNET'),
-      PAR_LOT='NON', IGNORE_ALARM='SUPERVIS_1')
+      PAR_LOT='NON', IGNORE_ALARM='SUPERVIS_1',
+      LANG='EN')
 
 import aster
 lopt = aster.get_option_dependency('SIGM_ELGA')
@@ -48,5 +49,19 @@ TEST_TABLE(TABLE=tab,
            REFERENCE='ANALYTIQUE',)
 
 help(aster.get_option_dependency)
+
+# test que le dictionnaire anglais est disponible
+#: Noyau/N_ASSD.py:225
+translation = _("On attend un objet concept.")
+test = translation == "A concept object is expected."
+
+tab2 = CREA_TABLE(LISTE=(_F(PARA='BOOL',
+                            LISTE_I=int(test),),),)
+TEST_TABLE(TABLE=tab2,
+           NOM_PARA='BOOL',
+           VALE_I=1,
+           CRITERE='ABSOLU',
+           PRECISION=0,
+           REFERENCE='ANALYTIQUE',)
 
 FIN()

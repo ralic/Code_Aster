@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 07/05/2012   AUTEUR BODEL C.BODEL 
+#& MODIF COMMANDE  DATE 06/08/2012   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,11 +23,8 @@
 def proj_base_prod(self,MATR_ASSE_GENE,VECT_ASSE_GENE,
                    RESU_GENE, NUME_DDL_GENE,
                    STOCKAGE,**args ):
-  if NUME_DDL_GENE != None:
-    if isinstance(NUME_DDL_GENE,CO) :
-      self.type_sdprod(NUME_DDL_GENE,nume_ddl_gene)
-    else:
-      self.type_sdprod(NUME_DDL_GENE,NUME_DDL_GENE.__class__)
+  if NUME_DDL_GENE is not None and NUME_DDL_GENE.is_typco():
+      self.type_sdprod(NUME_DDL_GENE, nume_ddl_gene)
   if MATR_ASSE_GENE != None:
     for m in MATR_ASSE_GENE:
       self.type_sdprod(m['MATRICE'],matr_asse_gene_r)

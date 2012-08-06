@@ -1,4 +1,4 @@
-#@ MODIF i18n Execution  DATE 12/06/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF i18n Execution  DATE 06/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,6 +28,7 @@ import os.path as osp
 import gettext
 import locale
 
+from Noyau.N_utils import Singleton
 from Noyau.N_types import force_list
 from strfunc import get_encoding
 from E_Core import get_branch_orig
@@ -41,14 +42,16 @@ def get_language():
         lang = ""
     return lang
 
-class Language():
+class Language(Singleton):
     """Simple class to switch between languages."""
+    _singleton_id = 'i18n.Language'
     def __init__(self):
         """Initialization"""
         self.localedir = os.environ.get('ASTER_LOCALEDIR') or \
             osp.join(os.environ.get('ASTER_ROOT', ''), 'share', 'locale')
         try:
             shortname = get_branch_orig()
+            shortname = shortname != '?' and shortname or 'unstable'
         except ImportError:
             shortname = 'stable'
         self.domain = 'aster_%s' % shortname

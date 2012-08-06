@@ -1,0 +1,148 @@
+#& MODIF COMMANDE  DATE 06/08/2012   AUTEUR CUVILLIE M.CUVILLIEZ 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                  
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE CUVILLIEZ S.CUVILLIEZ
+
+def calc_essai_geomeca_prod(self,                            
+                            ESSAI_TD,
+                            ESSAI_TND,
+                            ESSAI_CISA_C,
+                            ESSAI_TND_C,
+                            #ESSAI_XXX,
+                            **args):
+  List_essais = []
+  if ESSAI_TD     != None : List_essais += ESSAI_TD.List_F()
+  if ESSAI_TND    != None : List_essais += ESSAI_TND.List_F()
+  if ESSAI_CISA_C != None : List_essais += ESSAI_CISA_C.List_F()
+  if ESSAI_TND_C  != None : List_essais += ESSAI_TND_C.List_F()
+  #if ESSAI_XXX    != None : List_essais += ESSAI_XXX.List_F()
+  for DicoEssai in List_essais :
+    if DicoEssai.has_key('TABLE_RESU'): 
+      for Table in DicoEssai['TABLE_RESU']:
+        self.type_sdprod(Table,table_sdaster)
+  return None 
+
+
+CALC_ESSAI_GEOMECA = MACRO(nom="CALC_ESSAI_GEOMECA",
+                     op=OPS('Macro.calc_essai_geomeca_ops.calc_essai_geomeca_ops'),
+                     sd_prod=calc_essai_geomeca_prod,
+                     UIinfo={"groupes":("",)},
+                     reentrant='n',
+                     fr="",
+                     MATER       = SIMP(statut='o',typ=mater_sdaster),
+                     COMP_INCR   = C_COMP_INCR(),
+                     CONVERGENCE = C_CONVERGENCE(),
+                     regles=(AU_MOINS_UN('COMP_INCR'), # car COMP_INCR est facultatif dans C_COMP_INCR
+                             AU_MOINS_UN(
+                                         'ESSAI_TD'    ,
+                                         'ESSAI_TND'   ,
+                                         'ESSAI_CISA_C',
+                                         'ESSAI_TND_C' ,
+                                         #'ESSAI_XXX'   ,
+                                         ),),
+                     # ---
+                     # Essai Triaxial Monotone Draine ('TD')
+                     # ---
+                     ESSAI_TD = FACT(statut='f',max='**',
+ 
+                          PRES_CONF   = SIMP(statut='o',typ='R',max='**',),
+                          EPSI_IMPOSE = SIMP(statut='o',typ='R',max='**',),
+                          NB_INST     = SIMP(statut='f',typ='I',val_min=100,defaut=100),
+
+                          TABLE_RESU  = SIMP(statut='f',typ=CO,max='**',validators=NoRepeat(),),
+                          GRAPHIQUE   = SIMP(statut='f',typ='TXM',max='**',validators=NoRepeat(),
+                                             into=  ('P-Q','EPS_AXI-Q','EPS_AXI-EPS_VOL',),
+                                             defaut=('P-Q','EPS_AXI-Q','EPS_AXI-EPS_VOL',),),
+                          TABLE_REF   = SIMP(statut='f',typ=table_sdaster,max='**',),
+
+                                      ),
+
+                     # ---
+                     #  Essai Triaxial Monotone Non Draine ('TND')
+                     # ---
+                     ESSAI_TND = FACT(statut='f',max='**',
+ 
+                          PRES_CONF   = SIMP(statut='o',typ='R',max='**',),
+                          EPSI_IMPOSE = SIMP(statut='o',typ='R',max='**',),
+                          BIOT_COEF   = SIMP(statut='f',typ='R',defaut=1.,),
+                          NB_INST     = SIMP(statut='f',typ='I',val_min=100,defaut=100),
+
+                          TABLE_RESU  = SIMP(statut='f',typ=CO,max='**',validators=NoRepeat(),),
+                          GRAPHIQUE   = SIMP(statut='f',typ='TXM',max='**',validators=NoRepeat(),
+                                             into=  ('P-Q','EPS_AXI-Q','EPS_AXI-PRE_EAU',),
+                                             defaut=('P-Q','EPS_AXI-Q','EPS_AXI-PRE_EAU',),),
+                          TABLE_REF   = SIMP(statut='f',typ=table_sdaster,max='**',),
+
+                                      ),
+
+                     # ---
+                     #  Essai de Cisaillement Cyclique Draine ('CISA_C')
+                     # ---
+                     ESSAI_CISA_C = FACT(statut='f',max='**',
+ 
+                          PRES_CONF   = SIMP(statut='o',typ='R',max='**',),
+                          EPSI_IMPOSE = SIMP(statut='o',typ='R',max='**',),
+                          EPSI_ELAS   = SIMP(statut='f',typ='R',defaut=1.E-7,val_max=1.E-7),
+                          NB_CYCLE    = SIMP(statut='o',typ='I',val_min=1),
+                          NB_INST     = SIMP(statut='f',typ='I',val_min=25,defaut=25),
+
+                          TABLE_RESU  = SIMP(statut='f',typ=CO,max='**',validators=NoRepeat(),),
+                          GRAPHIQUE   = SIMP(statut='f',typ='TXM',max='**',validators=NoRepeat(),
+                                             into=  ('EPSXY-SIGXY','EPSXY-G','EPSXY-D',),
+                                             defaut=('EPSXY-SIGXY','EPSXY-G','EPSXY-D',),),
+                          TABLE_REF   = SIMP(statut='f',typ=table_sdaster,max='**',),
+
+                                      ),
+
+                     # ---
+                     #  Essai Triaxial Non Draine Cyclique ('TND_C')
+                     # ---
+                     ESSAI_TND_C = FACT(statut='f',max='**',
+ 
+                          PRES_CONF   = SIMP(statut='o',typ='R',max='**',),
+                          SIGM_IMPOSE = SIMP(statut='o',typ='R',max='**',),
+                          BIOT_COEF   = SIMP(statut='f',typ='R',defaut=1.,),
+                          UN_SUR_K    = SIMP(statut='o',typ='R',),
+                          NB_CYCLE    = SIMP(statut='o',typ='I',val_min=1),
+                          NB_INST     = SIMP(statut='f',typ='I',val_min=25,defaut=25),
+
+                          TABLE_RESU  = SIMP(statut='f',typ=CO,max='**',validators=NoRepeat(),),
+                          GRAPHIQUE   = SIMP(statut='f',typ='TXM',max='**',validators=NoRepeat(),
+                                             into=  ('NCYCL-DSIGM','P-Q','SIG_AXI-PRE_EAU',),
+                                             defaut=('NCYCL-DSIGM','P-Q','SIG_AXI-PRE_EAU',),),
+                          TABLE_REF   = SIMP(statut='f',typ=table_sdaster,max='**',),
+
+                                      ),
+
+                     # ---
+                     #  Essai ... ('XXX')
+                     # ---
+                     #ESSAI_XXX = FACT(statut='f',max='**',
+                     #
+                     #     PRES_CONF  = SIMP(statut='o',typ='R',max='**',),
+                     #     ...
+                     #
+                     #     TABLE_RESU = SIMP(statut='f',typ=CO,max='**',validators=NoRepeat(),),
+                     #     GRAPHIQUE  = SIMP(statut='f',typ='TXM',max='**',validators=NoRepeat(),
+                     #                        into=  ('XXX','XXX','XXX',),
+                     #                        defaut=('XXX','XXX','XXX',),),
+                     #     TABLE_REF  = SIMP(statut='f',typ=table_sdaster,max='**',),
+                     #
+                     #                 ),
+
+                    INFO = SIMP(statut='f',typ='I',defaut= 1,into=(1,2) ),)

@@ -1,4 +1,4 @@
-#@ MODIF N_OBJECT Noyau  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_OBJECT Noyau  DATE 06/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -126,8 +126,8 @@ class ErrorObj(OBJECT):
     def report(self):
       """ génère le rapport de validation de self """
       self.cr=CR()
-      self.cr.debut = "Mot-clé invalide : "+self.nom
-      self.cr.fin = "Fin Mot-clé invalide : "+self.nom
+      self.cr.debut = u"Mot-clé invalide : "+self.nom
+      self.cr.fin = u"Fin Mot-clé invalide : "+self.nom
       self.cr.fatal(_(u"Type non autorisé pour le mot-clé %s : '%s'"),
                         self.nom, self.valeur)
       return self.cr

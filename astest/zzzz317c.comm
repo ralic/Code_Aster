@@ -1,0 +1,250 @@
+# MODIF  DATE 06/08/2012   AUTEUR ZENTNER I.ZENTNER 
+# TITRE GENERATION DE SIGNAUX SISMIQUES
+# zzzz317c.para = tps_job 400 mem_job 512Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE ZENTNER I.ZENTNER  
+DEBUT(CODE=_F(NOM='zzzz317c',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'), PAR_LOT='NON')
+#
+from math import pi,sqrt,log,exp, ceil
+import numpy as NP
+###############################################
+DT=0.01
+NBPO=2**10
+frr=2.0
+amor=0.6
+wg=frr*2.*pi
+ecart=5.
+####################################################
+#
+####################################################
+# SIMULATION POUR DSP SEPARABLE ET DONNE ACCE_MAXI
+####################################################
+#
+####################################################
+TSM=8.
+t_ini=0.5
+ecart=1.0
+pga=0.2
+#
+#Attention: ces valeurs sont les moyennes utilises pour la simulation
+# - on peut faire des tests de non regression pour une realisation
+# - on teste les moyennes pour le cas TYPE=   "CONST"
+#
+##############################
+# TYPE "JH"
+##############################
+# OPTION ACCE_MAXI
+#####
+ACCE1=GENE_ACCE_SEISME( INFO =2,  INIT_ALEA=1000000,TITRE='DSP1',
+              PAS_INST       =DT,NB_POIN=2**10,PESANTEUR =9.81,
+              DSP        = _F(AMOR_REDUIT  =amor,FREQ_FOND =frr,),
+              MODULATION      = _F(TYPE=   "JENNINGS_HOUSNER", PARA=(0.4, 1.0),
+                           DUREE_PHASE_FORTE   =10.1, INST_INI= 0.1,  ACCE_MAX=pga),),
+
+FONCT1=RECU_FONCTION( TABLE=ACCE1,
+                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                       VALE_I = 1),
+                              NOM_PARA_TABL='FONCTION',)
+
+RMS1=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT1))
+N1=INFO_FONCTION(  NOCI_SEISME=_F(FONCTION = FONCT1,  OPTION = 'MAXI') )
+
+IMPR_TABLE (TABLE=N1,  UNITE=8,);
+IMPR_FONCTION(   FORMAT='XMGRACE', UNITE=25, COURBE= (
+                     _F(FONCTION=FONCT1 ,)))
+#
+TEST_TABLE( TABLE=N1,
+                NOM_PARA='ACCE_MAX', REFERENCE='NON_REGRESSION', PRECISION=1.E-4,
+                    VALE=1.848407252607 )
+TEST_TABLE( TABLE=RMS1,
+                NOM_PARA='ECART_TYPE', REFERENCE='ANALYTIQUE', PRECISION=1.E-1,
+                    VALE=0.603 )
+
+##############################
+# TYPE "GAMMA"
+##############################
+#  ACCE_MAXI
+#####
+ACCE3=GENE_ACCE_SEISME( INFO =2,INIT_ALEA=1000000,TITRE='DSP3',
+              PAS_INST       =DT,PESANTEUR =9.81,
+              DSP        = _F(AMOR_REDUIT  =amor,FREQ_FOND =frr,),
+              MODULATION      = _F(TYPE=   "GAMMA",
+                                   DUREE_PHASE_FORTE =TSM, INST_INI= t_ini,  ACCE_MAX=pga), )
+
+FONCT3=RECU_FONCTION(TABLE=ACCE3,
+                     FILTRE=_F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 1),
+                              NOM_PARA_TABL='FONCTION',)
+
+N3=INFO_FONCTION(  NOCI_SEISME=_F(
+                             FONCTION = FONCT3,OPTION = ('MAXI'), ))
+
+#IMPR_TABLE (TABLE=N3,  UNITE=8,);
+RMS3=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT3))
+#IMPR_TABLE (TABLE=RMS3,  UNITE=8,);
+#
+IMPR_FONCTION(   FORMAT='XMGRACE', UNITE=25, COURBE= (
+                     _F(FONCTION=FONCT3 ,)))
+
+TEST_TABLE( TABLE=N3,
+                NOM_PARA='ACCE_MAX',REFERENCE='NON_REGRESSION', PRECISION=1.E-4,
+                    VALE=2.0435963124221  )
+
+#TEST_TABLE( TABLE=RMS3,
+#                NOM_PARA='ECART_TYPE', REFERENCE='AUTRE_ASTER', PRECISION=1.E-1,
+#                    VALE=0.60178 )
+
+##############################
+# TYPE "CONSTANT"
+##############################
+# OPTION ACCE_MAXI
+########
+ACCE2b=GENE_ACCE_SEISME( INFO =2,INIT_ALEA=10000, TITRE='DSP2',
+              PAS_INST       =DT,NB_POIN=2**10,PESANTEUR =9.81,
+              DSP        = _F(AMOR_REDUIT  =amor,FREQ_FOND =frr,),
+               MODULATION      = _F(TYPE="CONSTANT",  ACCE_MAX=pga),)
+
+FONCT2b=RECU_FONCTION(    TABLE=ACCE2b,
+                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                       VALE_I = 1),
+                              NOM_PARA_TABL='FONCTION',)
+RMS2b=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT2b))
+N2b=INFO_FONCTION(  NOCI_SEISME=_F(
+                             FONCTION = FONCT2b, OPTION = ('MAXI'),
+) )
+
+IMPR_TABLE (TABLE=N2b,  UNITE=8,);
+
+
+TEST_TABLE( TABLE=N2b,
+            NOM_PARA='ACCE_MAX',REFERENCE='NON_REGRESSION', PRECISION=1.E-4,VALE=2.0937320352324 )
+
+TEST_TABLE( TABLE=RMS2b,
+                NOM_PARA='ECART_TYPE', REFERENCE='NON_REGRESSION', PRECISION=1.E-4,
+                    VALE=0.65130966480153 )
+
+TEST_TABLE( TABLE=RMS2b,
+            NOM_PARA='ECART_TYPE', REFERENCE='AUTRE_ASTER', PRECISION=1.E-1, VALE=0.60178 )
+
+
+########################################################
+# TEST DU MAX MEDIAN DES SIGNAUX AVEC OPTION PGA
+########################################################
+# CONSTANT
+l_PGA2=[]
+Nsim2=25
+for iii in range(Nsim2):
+   DETRUIRE(CONCEPT=_F(NOM=(ACCE2b, FONCT2b, N2b))) 
+   ACCE2b=GENE_ACCE_SEISME( PAS_INST       =DT, NB_POIN=2**10,PESANTEUR =9.81,
+              DSP        = _F(AMOR_REDUIT  =amor,FREQ_FOND =frr,),
+               MODULATION      = _F(TYPE="CONSTANT",  ACCE_MAX=pga),)
+
+   FONCT2b=RECU_FONCTION(    TABLE=ACCE2b,
+                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                       VALE_I = 1),
+                              NOM_PARA_TABL='FONCTION',)
+
+   N2b=INFO_FONCTION(  NOCI_SEISME=_F(
+                             FONCTION = FONCT2b, OPTION = ('MAXI')) )
+
+   tab2b = N2b.EXTR_TABLE()
+   l_PGA2.append(tab2b.ACCE_MAX[0])
+
+PGA_MED2=NP.median(NP.array(l_PGA2))/9.81
+print "median PGA", PGA_MED2
+print 'mean PGA FIN', NP.mean(NP.array(l_PGA2))/9.81
+
+########################################################
+#JH
+#
+l_PGA1=[]
+Nsim1=25
+for iii in range(Nsim1): 
+   print iii , ' JH'
+   
+   ACCE1b=GENE_ACCE_SEISME(PAS_INST       =DT,PESANTEUR =9.81,
+              DSP        = _F(AMOR_REDUIT  =amor,FREQ_FOND =frr,),
+              MODULATION      = _F(TYPE=   "JENNINGS_HOUSNER", PARA=(0.4, 1.0),
+                                   DUREE_PHASE_FORTE =TSM, INST_INI= t_ini, ACCE_MAX =pga), )
+
+   FONCT1b=RECU_FONCTION(    TABLE=ACCE1b,
+                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                       VALE_I = 1),
+                              NOM_PARA_TABL='FONCTION',)
+
+   N1b=INFO_FONCTION(  NOCI_SEISME=_F(
+                             FONCTION = FONCT1, OPTION = ('MAXI')) )
+   tab1 = N1b.EXTR_TABLE()
+   l_PGA1.append(tab1.ACCE_MAX[0])
+   DETRUIRE(CONCEPT=_F(NOM=(ACCE1b, FONCT1b, N1b)))
+      
+PGA_MED1=NP.median(NP.array(l_PGA1))/9.81
+print "median PGA", PGA_MED1
+print 'mean PGA FIN', NP.mean(NP.array(l_PGA1))/9.81
+
+
+
+########################################################
+#GAMMA
+#
+l_PGA3=[]
+Nsim3=25
+for iii in range(Nsim3):
+   DETRUIRE(CONCEPT=_F(NOM=(ACCE3, FONCT3, N3)))
+    
+   ACCE3=GENE_ACCE_SEISME(PAS_INST       =DT,PESANTEUR =9.81,
+              DSP        = _F(AMOR_REDUIT  =amor,FREQ_FOND =frr,),
+              MODULATION      = _F(TYPE=   "GAMMA",
+                                   DUREE_PHASE_FORTE =TSM, INST_INI= t_ini,  ACCE_MAX =pga), )
+
+   FONCT3=RECU_FONCTION(    TABLE=ACCE3,
+                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                       VALE_I = 1),
+                              NOM_PARA_TABL='FONCTION',)
+
+   N3=INFO_FONCTION(  NOCI_SEISME=_F(
+                             FONCTION = FONCT3, OPTION = ('MAXI')) )
+
+   tab3 = N3.EXTR_TABLE()
+   l_PGA3.append(tab3.ACCE_MAX[0])
+
+PGA_MED3=NP.median(NP.array(l_PGA3))/9.81
+print "median PGA", PGA_MED3
+print 'mean PGA FIN', NP.mean(NP.array(l_PGA3))/9.81
+
+
+########################################################
+## TEST TABLE
+
+tabres=CREA_TABLE(LISTE = (
+          _F(    PARA='GAMMA',      LISTE_R=(PGA_MED3,),),
+          _F(    PARA='CONSTANT', LISTE_R=(PGA_MED2,),),
+          _F(    PARA='JH',         LISTE_R=(PGA_MED1,),),))
+
+TEST_TABLE( TABLE=tabres,
+                NOM_PARA='GAMMA', REFERENCE='NON_REGRESSION', PRECISION=1.E-4,
+                    VALE= 0.21915400236872  )
+TEST_TABLE( TABLE=tabres,
+                NOM_PARA='JH', REFERENCE='NON_REGRESSION', PRECISION=1.E-4,
+                    VALE= 0.18842071892  )
+TEST_TABLE( TABLE=tabres,
+                NOM_PARA='CONSTANT', REFERENCE='NON_REGRESSION', PRECISION=1.E-4,
+                    VALE= 0.191238783735  )
+
+
+FIN( )

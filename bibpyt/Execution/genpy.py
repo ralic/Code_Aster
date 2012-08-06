@@ -1,9 +1,9 @@
-#@ MODIF genpy Execution  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF genpy Execution  DATE 06/08/2012   AUTEUR CUVILLIE M.CUVILLIEZ 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -188,7 +188,7 @@ class genpy:
         if isinstance(val, ASSD):
           val.accept(self)
           if hasattr(node.etape,'sdprods') and val in node.etape.sdprods:
-            st = st.append("CO('"+ self.sdname+ "')")
+            st.append("CO('"+ self.sdname+ "')")
           else:
             st.append(self.sdname)
         elif is_float(val):

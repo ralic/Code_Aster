@@ -3,7 +3,7 @@
       INTEGER DG(*),CMP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 06/08/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,7 +27,7 @@ C     INDIQUE L'EXISTENCE D'1 CMP DANS UN DESCRIPTEUR-GRANDEUR DG
 C     ------------------------------------------------------------------
 C     EXTERNAL:
 C     ---------
-      INTEGER IAND
+      INTEGER IAND,LSHIFT
 
 C     VARIABLES LOCALES:
 C     ------------------

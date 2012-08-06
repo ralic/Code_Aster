@@ -1,6 +1,6 @@
       SUBROUTINE JEFINI ( COND )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 06/08/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -75,7 +75,6 @@ C
       ELSE IF ( (RVAL(2)-RVAL(1))/RVAL(1) .GT. 0.5D0 ) THEN
         CALL U2MESG('I','JEVEUX1_78',0,' ',0,IBID,2,RVAL)
       ENDIF
-      WRITE(IFM,*) ' '
 C
 C     -------------  EDITION DES REPERTOIRES ---------------------------
       IF ( KCOND .EQ. 'TEST    '  ) THEN

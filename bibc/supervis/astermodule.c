@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE */
+/* MODIF astermodule supervis  DATE 06/08/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -29,6 +29,7 @@
 #include "aster_core.h"
 #include "aster_fort.h"
 #include "aster_utils.h"
+#include "aster_exceptions.h"
 
 /*
  *   PRIVATE FUNCTIONS
@@ -36,81 +37,6 @@
  */
 
 void TraiteMessageErreur( _IN char* ) ;
-
-void convert( _IN int nval, _IN PyObject *tup, _OUT INTEGER *val) ;
-void convertxt( _IN int nval, _IN PyObject *tup, _OUT char *val, _IN STRING_SIZE taille) ;
-void converltx( _IN int nval, _IN PyObject *tup, _OUT char *val, _IN STRING_SIZE taille) ;
-
-void TraitementFinAster( _IN int val ) ;
-
-#define _UTILISATION_SETJMP_
-/*
- *   Emulation d'exceptions en C : on utilise le couple de fonctions systemes setjmp/longjmp
- *   pour reproduire le comportement des exceptions en C.
- *   Pour initier une exception, le Fortran doit appeler la fonction XFINI
- *   avec en argument le code de l'exception.
- *   La fonction XFINI fait appel à longjmp pour effectuer le debranchement necessaire.
- *
- *   La variable exception_flag indique comment toute anomalie intervenant pendant
- *   le try doit etre traitée :  par une exception (si try(1)) ou par un abort (si try(0))
- */
-
-#define CodeAbortAster     18
-#define CodeFinAster       19
-
-static PyObject* exception_args = NULL;
-
-int exception_status=-1;
-
-#define NIVMAX 10
-static int niveau=0;
-
-#ifdef _UTILISATION_SETJMP_
-#include <setjmp.h>
-
-static jmp_buf env[NIVMAX+1] ;   /* utilise par longjmp, le type jmp_buf est defini dans setjmp.h */
-static int exception_flag[NIVMAX+1];
-
-#define try(val) exception_flag[niveau]=val;if((exception_status = setjmp(env[niveau])) == 0)
-#define catch(val) else if (exception_status == val)
-#define throw(val) longjmp(env[niveau],val)
-#define finally else
-
-void TraiteErreur( _IN int code )
-{
-        if(exception_flag[niveau]==1){
-          exception_flag[niveau]=0;
-          throw(code);
-        }
-        else{
-          abort();
-        }
-}
-
-#else
-#define try(val) if(1)
-#define catch(val) else if (0)
-#define throw(val)
-#define finally else
-
-void TraiteErreur( _IN int code )
-{
-        switch( code ){
-
-        case CodeFinAster :
-                exit(0);
-                break ;
-        default :
-                INTERRUPTION(1) ;
-                break ;
-        }
-}
-
-#endif                /* #ifdef _UTILISATION_SETJMP_ */
-
-/* Fin emulation exceptions en C */
-
-
 
 /* --- liste des variables globales au fonctions  de ce fichier --- */
 
@@ -125,7 +51,6 @@ static int jeveux_status = 0;
 /* commande (la commande courante) est definie par les fonctions aster_debut et aster_oper */
 static PyObject *commande       = (PyObject*)0 ;
 static PyObject *pile_commandes = (PyObject*)0 ;
-static PyObject *except_module = NULL;
 
 /* NomCas est initialise dans aster_debut() */
 /* NomCas est initialise a blanc pour permettre la recuperation de la
@@ -142,36 +67,10 @@ INTEGER DEF0(ISJVUP, isjvup)
 
 void DEFP(XFINI,xfini, _IN INTEGER *code)
 {
-   /* XFINI est n'appelé que par JEFINI avec code=19 (=CodeFinAster) */
+   /* XFINI est n'appelé que par JEFINI avec code=19 (=EOFError) */
    /* jeveux est fermé */
    jeveux_status = 0;
-
-   TraiteErreur(*code);
-}
-
-
-void initExceptions(PyObject *dict)
-{
-    /*
-     * Les exceptions du module 'aster' sont définies dans Execution/E_Exception.py.
-     * Elles sont ajoutées au module par la fonction add_to_dict_module.
-     */
-    PyObject *res;
-
-    except_module = PyImport_ImportModule("Execution.E_Exception");
-    if ( ! except_module ) {
-        fprintf(stderr, "\n\nWARNING:\n    ImportError of Execution.E_Exception module!\n");
-        fprintf(stderr, "    No exception defined in the aster module.\n");
-        fprintf(stderr, "    It may be unusable.\n\n");
-        PyErr_Clear();
-        Py_XDECREF(except_module);
-        return;
-    }
-
-    /* affectation du dict par le module E_Exception */
-    res = PyObject_CallMethod(except_module, "add_to_dict_module", "O", dict);
-    Py_DECREF(res);
-    Py_DECREF(except_module);
+   interruptTry(*code);
 }
 
 /* ------------------------------------------------------------------ */
@@ -204,13 +103,13 @@ void DEFPSPSPPPP(UEXCEP,uexcep, _IN INTEGER *exc_type,
        PyTuple_SetItem( tup_valr, i, PyFloat_FromDouble(valr[i]) ) ;
     }
 
-    exception_args = PyTuple_New( 4 );
-    PyTuple_SetItem( exception_args, (Py_ssize_t)0, PyString_FromStringAndSize(idmess, lidmess) );
-    PyTuple_SetItem( exception_args, (Py_ssize_t)1, tup_valk );
-    PyTuple_SetItem( exception_args, (Py_ssize_t)2, tup_vali );
-    PyTuple_SetItem( exception_args, (Py_ssize_t)3, tup_valr );
+    gExcArgs = PyTuple_New( 4 );
+    PyTuple_SetItem( gExcArgs, (Py_ssize_t)0, PyString_FromStringAndSize(idmess, lidmess) );
+    PyTuple_SetItem( gExcArgs, (Py_ssize_t)1, tup_valk );
+    PyTuple_SetItem( gExcArgs, (Py_ssize_t)2, tup_vali );
+    PyTuple_SetItem( gExcArgs, (Py_ssize_t)3, tup_valr );
 
-    TraiteErreur((int)*exc_type);
+    interruptTry((int)*exc_type);
 }
 
 
@@ -1394,11 +1293,6 @@ static PyObject * empile(PyObject *c)
 {
         /* PyList_Append incremente de 1 le compteur de references de c (commande courante) */
         PyList_Append(pile_commandes,c);
-        niveau=niveau+1;
-        if(NIVMAX < niveau){
-          printf("Le nombre de niveau max prevus %d est insuffisant pour le nombre demande %d\n",NIVMAX,niveau);
-          abort();
-        }
         return c;
 }
 
@@ -1407,7 +1301,6 @@ static PyObject * depile()
 {
         PyObject * com;
         int l=PyList_Size(pile_commandes);
-        niveau=niveau-1;
         if(l == 0){
           /* Pile vide */
           Py_INCREF( Py_None ) ;
@@ -1478,8 +1371,7 @@ PyObject *args;
           groups = MakeBlankFStr(long_nomcham);
         }
 
-        commande = empile(get_active_command());
-        try(1){
+        try {
           CALL_JEMARQ();
           CALL_PRCOCH(Fce,Fcs,Fcm,Fty,&topo,&nval,groups);
           Py_INCREF( Py_None ) ;
@@ -1489,10 +1381,8 @@ PyObject *args;
           FreeStr(Fcs);
           FreeStr(Fcm);
           FreeStr(Fty);
-          commande = depile();
-          return Py_None;
         }
-        catch(CodeAbortAster){
+        except(FatalError) {
           /* une exception a ete levee, elle est destinee a etre traitee dans l'appelant */
           PyErr_SetString(PyExc_KeyError, "Concept inexistant");
           CALL_JEDEMA();
@@ -1501,11 +1391,11 @@ PyObject *args;
           FreeStr(Fcs);
           FreeStr(Fcm);
           FreeStr(Fty);
-          commande = depile();
+          endTry();
           return NULL;
         }
-   commande = depile();
-   return NULL;
+        endTry();
+        return Py_None;
 }
 
 /* ------------------------------------------------------------------ */
@@ -1538,8 +1428,7 @@ PyObject *args;
         shf = (INTEGER)ishf;
         lng = (INTEGER)ilng;
 
-        commande = empile(get_active_command());
-        try(1){
+        try {
           iob=0 ;
           nomsd32 = MakeFStrFromCStr(nomsd, 32);
           nomob = MakeBlankFStr(8);
@@ -1549,7 +1438,7 @@ PyObject *args;
             /* Erreur : vecteur jeveux inexistant, on retourne None */
             Py_INCREF( Py_None ) ;
             CALL_JEDEMA();
-            commande = depile();
+            endTry();
             return Py_None;
           }
           else if(ctype == 0){
@@ -1608,17 +1497,17 @@ PyObject *args;
           CALL_JEDEMA();
           FreeStr(nomsd32);
           FreeStr(nomob);
-          commande = depile();
+          endTry();
           return tup;
         }
-        catch(CodeAbortAster){
+        except(FatalError) {
           /* une exception a ete levee, elle est destinee a etre traitee dans l'appelant */
           PyErr_SetString(PyExc_KeyError, "Concept inexistant");
           CALL_JEDEMA();
-          commande = depile();
+          endTry();
           return NULL;
         }
-   commande = depile();
+   endTry();
    return NULL;
 }
 
@@ -1661,8 +1550,7 @@ PyObject *args;
 #define DictSetAndDecRef(dico, key, item)   PyDict_SetItem(dico, key, item); \
                                             Py_DECREF(key);  Py_DECREF(item);
         dico = PyDict_New();
-        commande = empile(get_active_command());
-        try(1){
+        try {
           for(j=1;j<iob+1;j++){
                 ishf=0 ;
                 ilng=0 ;
@@ -1737,7 +1625,7 @@ PyObject *args;
                     default :
                         /* Erreur */
                         PyErr_SetString(PyExc_KeyError, "Concept inexistant, type inconnu");
-                        commande = depile();
+                        endTry();
                         return NULL;
                 }
           }
@@ -1747,21 +1635,21 @@ PyObject *args;
           FreeStr(nomob);
           FreeStr(nomsd32);
           free(val);
-          commande = depile();
+          endTry();
           return dico;
         }
-        catch(CodeAbortAster){
+        except(FatalError) {
           /* une exception a ete levee, elle est destinee a etre traitee dans l'appelant */
           PyErr_SetString(PyExc_KeyError, "Concept inexistant");
           CALL_JEDEMA();
-          commande = depile();
+          endTry();
           return NULL;
         }
         FreeStr(nom);
         FreeStr(nomob);
         FreeStr(nomsd32);
         free(val);
-   commande = depile();
+   endTry();
    return NULL;
 }
 
@@ -1813,8 +1701,7 @@ PyObject *args;
                  convr8(nind,tupr,valr);
                  convr8(nind,tupc,valc);
         }
-        commande = empile(get_active_command());
-        try(1){
+        try {
           CALL_JEMARQ();
           CALL_PUTCON(nomsd32,&nbind,ind,valr,valc,&num,&iret);
           CALL_JEDEMA();
@@ -1822,7 +1709,7 @@ PyObject *args;
           if(iret == 0){
             /* Erreur */
             PyErr_SetString(PyExc_KeyError, "Concept inexistant");
-            commande = depile();
+            endTry();
             return NULL;
           }
 
@@ -1831,14 +1718,14 @@ PyObject *args;
           free((char *)ind);
           FreeStr(nomsd32);
         }
-        catch(CodeAbortAster){
+        except(FatalError) {
           /* une exception a ete levee, elle est destinee a etre traitee dans l'appelant */
           PyErr_SetString(PyExc_KeyError, "Concept inexistant");
-          commande = depile();
+          endTry();
           return NULL;
         }
-        Py_INCREF( Py_None ) ;
-        commande = depile();
+        endTry();
+        Py_INCREF( Py_None );
         return Py_None;
 }
 
@@ -2106,19 +1993,19 @@ PyObject *args;
         fflush(stderr) ;
         fflush(stdout) ;
 
-        try(1){
+        try {
                 /*  appel du sous programme expass pour verif ou exec */
                 CALL_EXPASS (&jxvrf);
                 /* On depile l appel */
-                commande = depile();
+                commande = depile(); endTry();
                 Py_INCREF(Py_None);
                 return Py_None;
         }
-        finally{
+        finally {
                 /* On depile l appel */
-                commande = depile();
+                commande = depile(); endTry();
                 /* une exception a ete levee, elle est destinee a etre traitee dans JDC.py */
-                TraitementFinAster( exception_status ) ;
+                raiseException();
                 return NULL;
         }
 }
@@ -2148,19 +2035,19 @@ PyObject *args;
         fflush(stderr) ;
         fflush(stdout) ;
 
-        try(1){
+        try {
                 /*  appel du sous programme opsexe */
                 CALL_OPSEXE (&oper);
                 /* On depile l appel */
-                commande = depile();
+                commande = depile(); endTry();
                 Py_INCREF(Py_None);
                 return Py_None;
         }
-        finally{
+        finally {
                 /* On depile l appel */
-                commande = depile();
+                commande = depile(); endTry();
                 /* une exception a ete levee, elle est destinee a etre traitee dans JDC.py */
-                TraitementFinAster( exception_status ) ;
+                raiseException();
                 return NULL;
         }
 }
@@ -2489,21 +2376,6 @@ PyObject *args;
 
 
 /* ------------------------------------------------------------------ */
-void TraitementFinAster( _IN int val )
-{
-    PyObject *exc;
-
-    if ( val == CodeFinAster ) {
-        PyErr_SetString(PyExc_EOFError, "exit ASTER");
-    } else {
-        exc = PyObject_CallMethod(except_module, "get_exception", "i", val);
-        PyErr_SetObject(exc, exception_args);
-    }
-
-    return ;
-}
-
-/* ------------------------------------------------------------------ */
 int RecupNomCas(void)
 {
    /* recuperation du nom du cas */
@@ -2564,28 +2436,27 @@ PyObject *args;
         }
         fflush(stderr) ;
         fflush(stdout) ;
-        try(1){
+        try {
                 /*  appel de la commande POURSUTE */
                 CALL_POURSU();
         }
-        finally{
+        finally {
                 /* On depile l appel */
-                commande = depile();
+                commande = depile(); endTry();
                 /* une exception a ete levee, elle est destinee a etre traitee dans JDC.py */
-                TraitementFinAster( exception_status ) ;
+                raiseException();
                 return NULL;
         }
         /* On recupere le nom du cas */
         if(RecupNomCas() == -1){
           /* Erreur a la recuperation */
           /* On depile l appel */
-          commande = depile();
+          commande = depile(); endTry();
           return NULL;
         }
         else{
           /* On depile l appel */
-          commande = depile();
-
+          commande = depile(); endTry();
           /*  retour de la fonction poursu sous la forme
            *  d'un tuple d'un entier et un objet */
           Py_INCREF(Py_None);
@@ -2618,16 +2489,15 @@ PyObject *args;
         fflush(stderr) ;
         fflush(stdout) ;
 
-        try(1){
+        try {
                 /*  appel de la commande debut */
                 CALL_DEBUT();
         }
-        finally{
+        finally {
                 /* On depile l appel */
-                commande = depile();
-
+                commande = depile(); endTry();
                 /* une exception a ete levee, elle est destinee a etre traitee dans JDC.py */
-                TraitementFinAster( exception_status ) ;
+                raiseException();
                 return NULL;
         }
 
@@ -2635,12 +2505,12 @@ PyObject *args;
         if(RecupNomCas() == -1){
           /* Erreur a la recuperation */
           /* On depile l appel */
-          commande = depile();
+          commande = depile(); endTry();
           return NULL;
         }
         else{
           /* On depile l appel */
-          commande = depile();
+          commande = depile(); endTry();
           Py_INCREF(Py_None);
           return Py_None;
         }

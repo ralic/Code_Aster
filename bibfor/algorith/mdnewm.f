@@ -1,21 +1,22 @@
       SUBROUTINE MDNEWM (NBPAS,DT,NBMODE,PULSAT,PULSA2,
-     &                   MASGEN,RIGGEN,LAMOR,AMOGEN,TYPBAS,BASEMO,
-     &                   TINIT,IPARCH,DEPSTO,
-     &                   VITSTO,ACCSTO,IORSTO,TEMSTO,NOMRES,NBEXCI,
-     &                   IDESCF,NOMFON,COEFM,LIAD,INUMOR)
+     &                   MASGEN,RIGGEN,RGYGEN,LAMOR,AMOGEN,GYOGEN,
+     &                   FONCV,FONCA,TYPBAS,BASEMO,TINIT,IPARCH,
+     &                   DEPSTO,VITSTO,ACCSTO,IORSTO,TEMSTO,NOMRES,
+     &                   NBEXCI,IDESCF,NOMFON,COEFM,LIAD,INUMOR)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER      IORSTO(*), IPARCH(*),IDESCF(*)
-      REAL*8       PULSAT(*),PULSA2(*),MASGEN(*),RIGGEN(*),
-     &             AMOGEN(*),DEPSTO(*),VITSTO(*),ACCSTO(*),TEMSTO(*)
-      CHARACTER*8  BASEMO,NOMRES,NOMFON(*)
+      REAL*8       PULSAT(*),PULSA2(*),MASGEN(*),RIGGEN(*),AMOGEN(*),
+     &             GYOGEN(*),DEPSTO(*),VITSTO(*),ACCSTO(*),TEMSTO(*),
+     &             RGYGEN(*)
+      CHARACTER*8  BASEMO,NOMRES,NOMFON(*),FONCV,FONCA
       CHARACTER*16 TYPBAS
       LOGICAL      LAMOR, LPSTO
       INTEGER      DESCMM,DESCMR,DESCMA,LIAD(*),INUMOR(*)
       REAL*8       R8B,COEFM(*)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 07/08/2012   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,21 +61,22 @@ C IN  : NUMOR  : NUME_ORDRE DU MODE EXCITE
 C ----------------------------------------------------------------------
 C
       REAL*8      TPS1(4),VALR(3),BETA,GAMMA,RES,TOL,ACCE
+      REAL*8      VROT,VROTIN,AROT,AROTIN
       INTEGER     VALI(2),N1, IFM, NIV
       INTEGER     ETAUSR
-      CHARACTER*8 TRAN
+      CHARACTER*8 TRAN, K8B
       INTEGER      IARG
 C     ------------------------------------------------------------------
 C
 C 1.1. ==> RECUPERATION DU NIVEAU D'IMPRESSION
 
 C-----------------------------------------------------------------------
-      INTEGER I ,IA ,IARCHI ,IB ,IBID ,IBID1 ,IBID2 
+      INTEGER I ,IA ,IARCHI ,IB ,IBID ,IBID1 ,IBID2  ,IER
       INTEGER IF ,IFE ,IM ,IM1 ,IND ,IPAS ,IPM 
       INTEGER IRET ,ISTO1 ,JACCE ,JDEPL ,JFEXT ,JM ,JMASS 
       INTEGER JTRA1 ,JTRA2 ,JTRA3 ,JTRA4 ,JTRA5 ,JTRA6 ,JVITE 
       INTEGER N100 ,NBBLOC ,NBEXCI ,NBMOD1 ,NBMODE ,NBPAS ,NBPASB 
-      INTEGER NBPASF ,NBPP ,NDIM ,NDT 
+      INTEGER NBPASF ,NBPP ,NDIM ,NDT ,JAMGY ,JRIGY
       REAL*8 A0 ,A1 ,A2 ,A3 ,A4 ,A5 ,A6 
       REAL*8 A7 ,DEUX ,DT ,DT2 ,TARCHI ,TEMPS ,TINIT 
       REAL*8 X1 ,X2 ,X3 ,ZERO 
@@ -123,6 +125,8 @@ C     --- VECTEURS DE TRAVAIL ---
       CALL WKVECT('&&MDNEWM.FTILD1','V V R8',NBMODE*NBMODE,JTRA4)
       CALL WKVECT('&&MDNEWM.FTILD2','V V R8',NBMODE*NBMODE,JTRA5)
       CALL WKVECT('&&MDNEWM.FTILD3','V V R8',NBMODE*NBMODE,JTRA6)
+      CALL WKVECT('&&MDNEWM.AMOGYR','V V R8',NBMODE*NBMODE,JAMGY)
+      CALL WKVECT('&&MDNEWM.RIGGYR','V V R8',NBMODE*NBMODE,JRIGY)
 C
 C     --- A-T-ON ASSEZ DE PLACE POUR CREER LE VECTEUR "FEXT" ? ---
       CALL JEDISP(1,IPM)
@@ -187,16 +191,38 @@ C           --- FACTORISATION DE LA MATRICE KTILDA ---
      &                           A5*AMOGEN(IM)*MASGEN(IND)
  120        CONTINUE
          ELSE
-            DO 130 IM = 1 , NBMODE
-               DO 132 JM = 1 , NBMODE
-                  IND = JM + NBMODE*(IM-1)
-                  ZR(JTRA3+IND-1) = A0*MASGEN(IND) + RIGGEN(IND)
-     &                                         + A1*AMOGEN(IND)
-                  ZR(JTRA4+IND-1) = A2*MASGEN(IND) + A4*AMOGEN(IND)
-                  ZR(JTRA5+IND-1) = A0*MASGEN(IND) + A1*AMOGEN(IND)
-                  ZR(JTRA6+IND-1) = A3*MASGEN(IND) + A5*AMOGEN(IND)
- 132           CONTINUE
- 130        CONTINUE
+           CALL GETVTX(' ','VITESSE_VARIABLE',1,IARG,1,K8B,N1)
+           VROTIN = 0.D0
+           AROTIN = 0.D0
+           IF (K8B.EQ.'OUI') THEN
+             CALL FOINTE('F ',FONCV,1,'INST',TINIT,VROTIN,IER)
+             CALL FOINTE('F ',FONCA,1,'INST',TINIT,AROTIN,IER)
+             DO 113 IM = 1 , NBMODE
+               DO 114 JM = 1 , NBMODE
+                 IND = JM + NBMODE*(IM-1)
+                 ZR(JAMGY+IND-1) = AMOGEN(IND)+VROTIN*GYOGEN(IND)
+                 ZR(JRIGY+IND-1) = RIGGEN(IND)+AROTIN*RGYGEN(IND)
+ 114           CONTINUE
+ 113         CONTINUE
+           ELSE
+             DO 117 IM = 1 , NBMODE
+               DO 118 JM = 1 , NBMODE
+                 IND = JM + NBMODE*(IM-1)
+                 ZR(JAMGY+IND-1) = AMOGEN(IND)
+                 ZR(JRIGY+IND-1) = RIGGEN(IND)
+ 118           CONTINUE
+ 117         CONTINUE
+           ENDIF
+           DO 130 IM = 1 , NBMODE
+             DO 132 JM = 1 , NBMODE
+               IND = JM + NBMODE*(IM-1)
+               ZR(JTRA3+IND-1) = A0*MASGEN(IND) + ZR(JRIGY+IND-1)
+     &                                   + A1*ZR(JAMGY+IND-1)
+               ZR(JTRA4+IND-1) = A2*MASGEN(IND) + A4*ZR(JAMGY+IND-1)
+               ZR(JTRA5+IND-1) = A0*MASGEN(IND) + A1*ZR(JAMGY+IND-1)
+               ZR(JTRA6+IND-1) = A3*MASGEN(IND) + A5*ZR(JAMGY+IND-1)
+ 132         CONTINUE
+ 130       CONTINUE
          ENDIF
 C        --- FACTORISATION DE LA MATRICE MASSE ---
          CALL WKVECT('&&MDNEWM.MASS','V V R8',NBMODE*NBMODE,JMASS)
@@ -294,14 +320,46 @@ C
                   CALL RRLDS(ZR(JTRA3),NBMODE,NBMODE,ZR(JDEPL),1)
                ENDIF
             ELSE
-               DO 216 IM = 0,NBMOD1
-                  ZR(JTRA1+IM) = ZR(JDEPL+IM)
-                  ZR(JDEPL+IM) = ZR(JFEXT+IFE+IM)
- 216           CONTINUE
-               CALL PMAVEC('CUMUL',NBMODE,ZR(JTRA6),ZR(JACCE),ZR(JDEPL))
-               CALL PMAVEC('CUMUL',NBMODE,ZR(JTRA4),ZR(JVITE),ZR(JDEPL))
-               CALL PMAVEC('CUMUL',NBMODE,ZR(JTRA5),ZR(JTRA1),ZR(JDEPL))
-               CALL RRLDS(ZR(JTRA3),NBMODE,NBMODE,ZR(JDEPL),1)
+              VROT = 0.D0
+              AROT = 0.D0
+              IF (K8B.EQ.'OUI') THEN
+                 CALL FOINTE('F ',FONCV,1,'INST',TEMPS,VROT,IER)
+                 CALL FOINTE('F ',FONCA,1,'INST',TEMPS,AROT,IER)
+                 DO 115 IM = 1 , NBMODE
+                   DO 116 JM = 1 , NBMODE
+                     IND = JM + NBMODE*(IM-1)
+                     ZR(JAMGY+IND-1) = AMOGEN(IND) + VROT*GYOGEN(IND)
+                     ZR(JRIGY+IND-1) = RIGGEN(IND) + AROT*RGYGEN(IND)
+ 116               CONTINUE
+ 115             CONTINUE
+              ELSE
+                 DO 119 IM = 1 , NBMODE
+                   DO 121 JM = 1 , NBMODE
+                     IND = JM + NBMODE*(IM-1)
+                     ZR(JAMGY+IND-1) = AMOGEN(IND)
+                     ZR(JRIGY+IND-1) = RIGGEN(IND)
+ 121               CONTINUE
+ 119             CONTINUE
+              ENDIF
+              DO 135 IM = 1 , NBMODE
+                DO 136 JM = 1 , NBMODE
+                  IND = JM + NBMODE*(IM-1)
+                  ZR(JTRA3+IND-1) = A0*MASGEN(IND) + ZR(JRIGY+IND-1)
+     &                                   + A1*ZR(JAMGY+IND-1)
+                  ZR(JTRA4+IND-1) = A2*MASGEN(IND)+A4*ZR(JAMGY+IND-1)
+                  ZR(JTRA5+IND-1) = A0*MASGEN(IND)+A1*ZR(JAMGY+IND-1)
+                  ZR(JTRA6+IND-1) = A3*MASGEN(IND)+A5*ZR(JAMGY+IND-1)
+ 136            CONTINUE
+ 135          CONTINUE
+              CALL TRLDS(ZR(JTRA3),NBMODE,NBMODE,IRET)
+              DO 216 IM = 0,NBMOD1
+                 ZR(JTRA1+IM) = ZR(JDEPL+IM)
+                 ZR(JDEPL+IM) = ZR(JFEXT+IFE+IM)
+ 216          CONTINUE
+              CALL PMAVEC('CUMUL',NBMODE,ZR(JTRA6),ZR(JACCE),ZR(JDEPL))
+              CALL PMAVEC('CUMUL',NBMODE,ZR(JTRA4),ZR(JVITE),ZR(JDEPL))
+              CALL PMAVEC('CUMUL',NBMODE,ZR(JTRA5),ZR(JTRA1),ZR(JDEPL))
+              CALL RRLDS(ZR(JTRA3),NBMODE,NBMODE,ZR(JDEPL),1)
             ENDIF
             DO 218 IM = 0,NBMOD1
                ACCE=ZR(JACCE+IM)
@@ -374,6 +432,8 @@ C
       CALL JEDETR('&&MDNEWM.FTILD1')
       CALL JEDETR('&&MDNEWM.FTILD2')
       CALL JEDETR('&&MDNEWM.FTILD3')
+      CALL JEDETR('&&MDNEWM.AMOGYR')
+      CALL JEDETR('&&MDNEWM.RIGGYR')
       CALL JEDETR('&&MDNEWM.FEXT')
       IF (IRET.NE.0)
      &   CALL U2MESS('F','ALGORITH5_24')

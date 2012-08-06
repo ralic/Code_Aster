@@ -1,4 +1,4 @@
-#@ MODIF utilitai4 Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF utilitai4 Messages  DATE 06/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -317,7 +317,7 @@ cata_msg={
 """),
 
 89: _(u"""
- seules les 50 premières lignes du titre sont conservées.
+ seules les %(i1)d premières lignes du titre sont conservées (%(i2)d au total).
 """),
 
 99: _(u"""

@@ -1,4 +1,4 @@
-#@ MODIF V_MCCOMPO Validation  DATE 18/06/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF V_MCCOMPO Validation  DATE 06/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -44,7 +44,9 @@ class MCCOMPO:
    CR=N_CR.CR
 
    def __init__(self):
-      self.state='undetermined'
+      self.state = 'undetermined'
+      # défini dans les classes dérivées
+      self.txt_nat = ''
 
    def init_modif_up(self):
       """
@@ -60,7 +62,7 @@ class MCCOMPO:
       """
       self.cr=self.CR()
       self.cr.debut = self.txt_nat+self.nom
-      self.cr.fin = "Fin "+self.txt_nat+self.nom
+      self.cr.fin = u"Fin "+self.txt_nat+self.nom
       for child in self.mc_liste:
         self.cr.add(child.report())
       self.state = 'modified'

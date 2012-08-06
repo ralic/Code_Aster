@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 05/09/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 07/08/2012   AUTEUR TORKHANI M.TORKHANI 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,6 +25,7 @@ def calc_matr_elem_prod(OPTION,**args):
   if OPTION == "RIGI_GEOM"        : return matr_elem_depl_r
   if OPTION == "RIGI_ROTA"        : return matr_elem_depl_r
   if OPTION == "MECA_GYRO"        : return matr_elem_depl_r
+  if OPTION == "RIGI_GYRO"        : return matr_elem_depl_r
   if OPTION == "AMOR_MECA"        : return matr_elem_depl_r
   if OPTION == "IMPE_MECA"        : return matr_elem_depl_r
   if OPTION == "ONDE_FLUI"        : return matr_elem_depl_r
@@ -46,7 +47,7 @@ CALC_MATR_ELEM=OPER(nom="CALC_MATR_ELEM",op=   9,sd_prod=calc_matr_elem_prod
                                into=("RIGI_MECA","MASS_MECA","RIGI_GEOM",
                                      "AMOR_MECA","RIGI_THER","MASS_THER","IMPE_MECA",
                                      "ONDE_FLUI","AMOR_MECA_ABSO","MASS_FLUI_STRU","RIGI_FLUI_STRU",
-                                     "RIGI_ROTA","MECA_GYRO","MASS_MECA_DIAG","RIGI_ACOU",
+                                     "RIGI_ROTA","MECA_GYRO","RIGI_GYRO","MASS_MECA_DIAG","RIGI_ACOU",
                                      "MASS_ACOU","AMOR_ACOU","RIGI_MECA_HYST") ),
          MODELE            =SIMP(statut='o',typ=modele_sdaster ),
 
@@ -83,6 +84,12 @@ CALC_MATR_ELEM=OPER(nom="CALC_MATR_ELEM",op=   9,sd_prod=calc_matr_elem_prod
          ),
 
          b_meca_gyro = BLOC( condition = "OPTION=='MECA_GYRO'",
+           CHAM_MATER      =SIMP(statut='f',typ=cham_mater ),
+           CARA_ELEM       =SIMP(statut='o',typ=cara_elem ),
+           CHARGE          =SIMP(statut='f',typ=char_meca,validators=NoRepeat(),max='**' ),
+         ),
+
+         b_rigi_gyro = BLOC( condition = "OPTION=='RIGI_GYRO'",
            CHAM_MATER      =SIMP(statut='f',typ=cham_mater ),
            CARA_ELEM       =SIMP(statut='o',typ=cara_elem ),
            CHARGE          =SIMP(statut='f',typ=char_meca,validators=NoRepeat(),max='**' ),

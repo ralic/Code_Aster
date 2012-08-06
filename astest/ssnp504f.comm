@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 06/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
 # ssnp504f.para = tps_job 500 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -195,8 +195,7 @@ for i in [1,2,3,4]: #Boucle sur les increments
    IMPR_TABLE(TABLE=LAG[i],
               FORMAT='AGRAF',
               FORMAT_R='1PE12.7',
-              FORMAT_C='MODULE_PHASE',
-                   NOM_PARA=('NOEUD','INST','COOR_X','LAGS_C','LAGS_F1'),
+              NOM_PARA=('NOEUD','INST','COOR_X','LAGS_C','LAGS_F1'),
               IMPR_FONCTION='NON',
               FILTRE=_F(NOM_PARA='LAGS_F1',
                         CRIT_COMP='NE',

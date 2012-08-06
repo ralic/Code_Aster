@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 06/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # TITRE BLOC AVEC INTERFACE EN CONTACT GLISSIERE AVEC X-FEM
 # ssnv201b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -240,7 +240,6 @@ for i in [1,2,3]: #Boucle sur les increments
   IMPR_TABLE(TABLE=DEPM[i],
              FORMAT='AGRAF',
              FORMAT_R='1PE12.9',
-             FORMAT_C='MODULE_PHASE',
              IMPR_FONCTION='NON');
                                       
   DEPP[i] = CALC_TABLE(TABLE = DEP[i],
@@ -252,7 +251,6 @@ for i in [1,2,3]: #Boucle sur les increments
   IMPR_TABLE(TABLE=DEPP[i],
              FORMAT='AGRAF',
              FORMAT_R='1PE12.9',
-             FORMAT_C='MODULE_PHASE',
              IMPR_FONCTION='NON');
 
 

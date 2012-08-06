@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 06/08/2012   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -62,8 +62,6 @@ IMPR_TABLE=MACRO(nom="IMPR_TABLE",
    ),
    PAGINATION     =SIMP(statut='f',typ='TXM',max='**'),
    FORMAT_R       =SIMP(statut='f',typ='TXM',defaut="E12.5"),
-   FORMAT_C       =SIMP(statut='f',typ='TXM',defaut="MODULE_PHASE",
-                              into=("MODULE_PHASE","REEL_IMAG") ),
    NOM_PARA       =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),
    IMPR_FONCTION  =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
 

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/07/2012   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 07/08/2012   AUTEUR TORKHANI M.TORKHANI 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,6 +57,16 @@ DYNA_VIBRA=MACRO(nom="DYNA_VIBRA",
             MATR_MASS       =SIMP(statut='o',typ=matr_asse_gene_r),
             MATR_RIGI       =SIMP(statut='o',typ=matr_asse_gene_r),
             MATR_AMOR       =SIMP(statut='f',typ=matr_asse_gene_r),
+            VITESSE_VARIABLE     =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
+            b_variable          =BLOC(condition="VITESSE_VARIABLE=='OUI'",
+               MATR_GYRO       =SIMP(statut='o',typ=matr_asse_gene_r ),
+               VITE_ROTA       =SIMP(statut='o',typ=(fonction_sdaster,formule) ),
+               MATR_RIGY       =SIMP(statut='f',typ=matr_asse_gene_r ),
+               ACCE_ROTA       =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
+            ),
+            b_constante         =BLOC(condition="VITESSE_VARIABLE=='NON'",
+               VITE_ROTA          = SIMP(statut='o',typ='R',defaut=0.E0),
+            ),
         ),
         b_reuse_harm =BLOC(condition = "reuse and TYPE_CALCUL == 'HARM'",fr="en mode concept reentrant : RESULTAT obligatoire",
              RESULTAT      =SIMP(statut='o',typ=(dyna_harmo,harm_gene)),
@@ -357,8 +367,8 @@ regles=(ENSEMBLE('BASE_ELAS_FLUI','NUME_VITE_FLUI'),),
                                    EXCLUS('NOEUD_G','GROUP_NO_G'),
                                    PRESENT_PRESENT('NOEUD_D','NOEUD_G'),
                                    PRESENT_PRESENT('GROUP_NO_D','GROUP_NO_G',),),
-                             VITE_ROTA          = SIMP(statut='o',typ='R',defaut=0.E0),
-                             ANGL_INIT           = SIMP(statut='o',typ='R',defaut=0.E0),
+                             ANGL_INIT          = SIMP(statut='o',typ='R',defaut=0.E0),
+                             ANGL_ROTA          = SIMP(statut='f',typ=(fonction_sdaster,formule) ),
                              NOEUD_G            = SIMP(statut='f',typ=no),
                              NOEUD_D            = SIMP(statut='f',typ=no),
                              GROUP_NO_G         = SIMP(statut='f',typ=grno),

@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ops Cata  DATE 06/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -65,10 +65,10 @@ def commun_DEBUT_POURSUITE(jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, 
    jdc.hist_etape = (DEBUG != None and DEBUG['HIST_ETAPE'] == 'OUI')
    if CODE != None:
       jdc.fico = CODE['NOM']
-   if LANG:
-       from Execution.i18n import localization
-       localization.install(LANG)
    if aster_exists:
+      if LANG:
+         from Execution.i18n import localization
+         localization.install(LANG)
       # pb en cas d'erreur dans FIN : appeler reset_print_function dans traiter_fin_exec ?
       #from functools import partial
       #asprint = partial(aster.affiche, 'MESSAGE')

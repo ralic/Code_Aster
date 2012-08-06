@@ -1,4 +1,4 @@
-#@ MODIF B_ETAPE Build  DATE 18/06/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_ETAPE Build  DATE 06/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -434,17 +434,17 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
         """
         if CONTEXT.debug : prbanner("getltx %s %s %d %d" %(nom_motfac, nom_motcle, iocc, mxval))
         # Recuperation des chaines elles memes
-        tup = self.getvtx(nom_motfac, nom_motcle, iocc, mxval)
+        nbval, tup, iarg = self.getvtx(nom_motfac, nom_motcle, iocc, mxval)
         # stockage des longueurs des chaines dans un tuple
         longueurs = []
         k = 0
-        for  chaine in tup[1] :
+        for chaine in tup:
             assert is_str(chaine)
             longueurs.append(min(len(chaine), taille))
             k = k + 1
-        assert(k == tup[0])
+        assert k == abs(nbval), (k, nbval, tup)
         if CONTEXT.debug : print "\tGETLTX : isval =", longueurs
-        return k, tuple(longueurs)
+        return nbval, tuple(longueurs)
 
     def getvis(self, nom_motfac, nom_motcle, iocc, mxval):
         """

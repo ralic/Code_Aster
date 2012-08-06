@@ -1,4 +1,4 @@
-#@ MODIF N_JDC_CATA Noyau  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_JDC_CATA Noyau  DATE 06/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -108,13 +108,13 @@ class JDC_CATA(N_ENTITE.ENTITE):
       """
          Methode pour produire un compte-rendu de validation d'un catalogue de commandes
       """
-      self.cr = self.CR(debut = "Compte-rendu de validation du catalogue "+self.code,
-                        fin = "Fin Compte-rendu de validation du catalogue "+self.code)
+      self.cr = self.CR(debut = u"Compte-rendu de validation du catalogue "+self.code,
+                        fin = u"Fin Compte-rendu de validation du catalogue "+self.code)
       self.verif_cata()
       for commande in self.commandes:
         cr = commande.report()
         cr.debut = u"Début Commande :"+commande.nom
-        cr.fin = "Fin commande :"+commande.nom
+        cr.fin = u"Fin commande :"+commande.nom
         self.cr.add(cr)
       return self.cr
 

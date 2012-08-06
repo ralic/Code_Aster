@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 07/08/2012   AUTEUR TORKHANI M.TORKHANI 
 # TITRE ROTOR FISSURE TOURNANT SOUMIS A UN MOMENT DE FLEXION
 # sdnl133a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -227,6 +227,8 @@ TRANGEN = DYNA_VIBRA   (     MATR_MASS=MASGEN,   MATR_RIGI=RIGGEN,
                              TYPE_CALCUL ='TRAN',
                              SCHEMA_TEMPS=_F(SCHEMA='EULER'),
                              AMOR_MODAL= _F(AMOR_REDUIT=.5),
+                             VITESSE_VARIABLE='NON',
+                             VITE_ROTA=-10.*pi,
                              INCREMENT=_F(  INST_INIT = 0.,  INST_FIN = tfin, PAS = pas, VERI_PAS='NON'),
                              EXCIT=(
                                     _F(VECT_ASSE_GENE=VAGFZ,FONC_MULT=RAMP,),
@@ -235,7 +237,6 @@ TRANGEN = DYNA_VIBRA   (     MATR_MASS=MASGEN,   MATR_RIGI=RIGGEN,
                              ROTOR_FISS =  _F(
                                                 GROUP_NO_G = 'FISS_G',
                                                 GROUP_NO_D = 'FISS_D',
-                                                VITE_ROTA=-10.*pi,
                                                 K_PHI=F_K,
                                                 DK_DPHI=F_KP,)
                              )

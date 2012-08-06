@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 07/08/2012   AUTEUR TORKHANI M.TORKHANI 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -235,6 +235,9 @@ OPTION__
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  ENBSP_I  PNBSP_I  ECAFIEL  PFIBRES
                                      CCOMPOR  PCOMPOR
                               OUT__  MMATUUR  PMATUUR
+    RIGI_GYRO           262   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  NGEOMER  PGEOMER  ECAFIEL  PFIBRES
+                                     CMATERC  PMATERC  CCOMPOR  PCOMPOR  ENBSP_I  PNBSP_I
+                              OUT__  MMATUNS  PMATUNS
     RIGI_MECA           140   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  ECAFIEL  PFIBRES  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ENBSP_I  PNBSP_I  ZVARCPG  PVARCPR  CCOMPOR  PCOMPOR
                               OUT__  MMATUUR  PMATUUR

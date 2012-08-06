@@ -1,4 +1,4 @@
-#@ MODIF N_ASSD Noyau  DATE 12/06/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_ASSD Noyau  DATE 06/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -119,7 +119,7 @@ class ASSD(object):
    def change_type(self, new_type):
       """Type connu a posteriori (type CO)."""
       self.__class__ = new_type
-      assert self._as_co != 0
+      assert self._as_co != 0, 'it should only be called on CO object.'
       self._as_co = 2
 
    def get_name(self):
@@ -194,7 +194,9 @@ class ASSD(object):
       import types
       ctxt = {}
       for key, value in context.items():
-         if type(value) in (types.ModuleType, types.ClassType) :
+         if type(value) is types.ClassType:
+            continue
+         if type(value) is types.ModuleType and value.__name__.startswith('Accas'):
             continue
          if issubclass(type(value), types.TypeType):
             continue

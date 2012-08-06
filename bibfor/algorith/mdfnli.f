@@ -5,7 +5,7 @@
      +                   NBREVI,DPLREV,FONREV,  
      +                   TEMPS,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,
      +                   MONMOT,
-     +                   NBRFIS,FK,DFK,ANGINI,
+     +                   NBRFIS,FK,DFK,ANGINI,FONCP,
      +                   NUMPAS,NBPAL,DT,DTSTO,TCF,
      +                   VROTAT,TYPAL,FINPAL,CNPAL,PRDEFF,CONV,FSAUV)
       IMPLICIT NONE
@@ -20,7 +20,7 @@
       REAL*8        TEMPS,PSIDEL(NBCHOC,NBEXCI,*)
       CHARACTER*8   NOECHO(*),FONRED(*),FONREV(*),MONMOT
       CHARACTER*8   NOFDEP(NBEXCI),NOFVIT(NBEXCI),NOFACC(NBEXCI)
-      CHARACTER*8   FK(2),DFK(2)
+      CHARACTER*8   FK(2),DFK(2),FONCP
       
       LOGICAL       PRDEFF    
       INTEGER       PALMAX 
@@ -35,7 +35,7 @@ C-----------------------------------------------------------------------
       
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 07/08/2012   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -107,7 +107,7 @@ C
 C     --- NON-LINEARITE DE TYPE ROTOR FISSURE ---
       IF ( NBRFIS.GT.0 ) CALL MDRFIS ( NBMODE,DEPGEN,FEXGEN,NBCHOC,
      +                                 NBRFIS,DPLMOD,FK,DFK,PARCHO,
-     +                                 ANGINI,VROTAT,TEMPS) 
+     +                                 ANGINI,VROTAT,FONCP,TEMPS) 
 C
 C     --- NON-LINEARITE DE TYPE RELA_EFFO_VITE ---
       IF ( NBREVI.NE.0 ) CALL MDFREV ( NBMODE,VITGEN,FEXGEN,NBREVI,

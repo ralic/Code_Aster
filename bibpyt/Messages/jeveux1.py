@@ -1,4 +1,4 @@
-#@ MODIF jeveux1 Messages  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF jeveux1 Messages  DATE 06/08/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -441,13 +441,13 @@ cata_msg = {
 
 
 77 : _(u"""
- La mémoire demandée au lancement est sous estimée, elle de %(r2).2f Mo, le pic mémoire utilisée est de %(r1).2f Mo.
+ La mémoire demandée au lancement est sous estimée, elle est de %(r2).2f Mo, le pic mémoire utilisée est de %(r1).2f Mo.
  
 """),
 
 78 : _(u"""
 
- La mémoire demandée au lancement est surestimée, elle de %(r2).2f Mo, le pic mémoire utilisée est de %(r1).2f Mo.
+ La mémoire demandée au lancement est surestimée, elle est de %(r2).2f Mo, le pic mémoire utilisée est de %(r1).2f Mo.
  
 """),
 }

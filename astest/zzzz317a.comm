@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
+# MODIF  DATE 06/08/2012   AUTEUR ZENTNER I.ZENTNER 
 # TITRE GENERATION DE SIGNAUX SISMIQUES
 # zzzz317a.para = tps_job 300 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -22,22 +22,26 @@
 DEBUT(CODE=_F(NOM='zzzz317a',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'))
 #
 from math import pi,sqrt,log,exp, ceil
-import numpy as NP
-from Utilitai.optimize   import fmin
-TMID= 5.0
-DUREE   =10.
+#import numpy as NP
+###############################################
 DT=0.01
 NBPO=2**10
 frr=2.0
 amor=0.6
 wg=frr*2.*pi
-
-###############################################
-# SIMULATION POUR DSP SEPARABLE FREQ FOND CONST
-###############################################
+ecart=5.
+#################################################
+#
+######################################################
+# A : SIMULATION POUR DSP SEPARABLE (FREQ FOND CONST)
+######################################################
+#
+#################################################
 TSM=8.0
 t_ini=0.5
-arias =0.05
+arias =0.05#(en g)
+ecart=1.0/9.81 #(en g)
+pga=0.2  #(en g)
 #
 #Attention: ces valeurs sont les moyennes utilises pour la simulation
 # - on peut faire des tests de non regression pour une realisation
@@ -46,14 +50,15 @@ arias =0.05
 ##############################
 # OPTION "JH"
 ##############################
-
-ACCE1=GENE_ACCE_SEISME( INFO =2,  INIT_ALEA=100000,
-              PAS_INST       =DT,
+#  ARIAS
+#####
+ACCE1a=GENE_ACCE_SEISME( INFO =2,  INIT_ALEA=100000,
+              PAS_INST       =DT, PESANTEUR =9.81,
               DSP        = _F(AMOR_REDUIT  =amor,FREQ_FOND =frr,),
               MODULATION      = _F(TYPE=   "JENNINGS_HOUSNER", PARA=(0.4, 1.0),
                            DUREE_PHASE_FORTE   =TSM, INST_INI= t_ini, INTE_ARIAS=arias),),
 
-FONCT1=RECU_FONCTION( TABLE=ACCE1,
+FONCT1=RECU_FONCTION( TABLE=ACCE1a,
                               FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
                                        VALE_I = 1),
                               NOM_PARA_TABL='FONCTION',)
@@ -78,38 +83,36 @@ TEST_TABLE( TABLE=N1,
                 VALE=8.52
             )
 
-##############################
-# OPTION "CONSTANT"
-##############################
-ACCE2=GENE_ACCE_SEISME( INFO =2,INIT_ALEA=100000,
-              PAS_INST       =DT, NB_POIN=NBPO,
+# ECART
+########
+ACCE1b=GENE_ACCE_SEISME( INFO =2,  
+              INIT_ALEA=100000,NB_POIN=2**10,
+              PAS_INST       =DT,PESANTEUR =9.81,
               DSP        = _F(AMOR_REDUIT  =amor,FREQ_FOND =frr,),
-               MODULATION      = _F(TYPE="CONSTANT",
-                                   DUREE_PHASE_FORTE   =TSM, INTE_ARIAS=arias),)
+              MODULATION      = _F(TYPE=   "JENNINGS_HOUSNER", PARA=(0.4, 1.0),
+                           DUREE_PHASE_FORTE   =10., INST_INI= 0.1, ECART_TYPE=ecart),),
 
-FONCT2=RECU_FONCTION(    TABLE=ACCE2,
+
+FONCT1b=RECU_FONCTION( TABLE=ACCE1b,
                               FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
                                        VALE_I = 1),
                               NOM_PARA_TABL='FONCTION',)
 
-N2=INFO_FONCTION(  NOCI_SEISME=_F(
-                             FONCTION = FONCT2, BORNE_SUP = 0.95,BORNE_INF = 0.05,
-                             PESANTEUR = 9.81, AMOR_REDUIT=0.05,OPTION = ('TOUT')) )
+RMS1b=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT1b))
 
-
-RMS2=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT2))
-IMPR_TABLE (TABLE=RMS2,  UNITE=8,);
-
-#IMPR_FONCTION(   FORMAT='XMGRACE', UNITE=25, COURBE= ( _F(FONCTION=FONCT2 ,)))
-TEST_TABLE( TABLE=N2,
-            NOM_PARA='INTE_ARIAS',REFERENCE='NON_REGRESSION', PRECISION=1.E-4,VALE= 0.046655817603434 )
-
+TEST_TABLE( TABLE=RMS1b,
+                NOM_PARA='ECART_TYPE', REFERENCE='ANALYTIQUE', PRECISION=1.E-1,
+                    VALE=ecart*9.81 )
+IMPR_FONCTION(   FORMAT='XMGRACE', UNITE=25, COURBE= (
+                     _F(FONCTION=FONCT1b ,)))
 
 ##############################
 # OPTION "GAMMA"
 ##############################
-ACCE3=GENE_ACCE_SEISME( INFO =2,
-              PAS_INST       =DT,
+#  ARIAS
+#####
+ACCE3=GENE_ACCE_SEISME( INFO =2,INIT_ALEA=1000000,
+              PAS_INST       =DT,PESANTEUR =9.81,
               DSP        = _F(AMOR_REDUIT  =amor,FREQ_FOND =frr,),
               MODULATION      = _F(TYPE=   "GAMMA",
                                    DUREE_PHASE_FORTE =TSM, INST_INI= t_ini, INTE_ARIAS =arias), )
@@ -131,14 +134,100 @@ RMS3=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT3))
 #                     _F(FONCTION=FONCT3 ,)))
 
 TEST_TABLE( TABLE=N3,
-                NOM_PARA='INTE_ARIAS',REFERENCE='NON_REGRESSION', PRECISION=1.E-3,
-                    VALE=0.03745  )
+                NOM_PARA='INTE_ARIAS',REFERENCE='NON_REGRESSION', PRECISION=1.E-4,
+                    VALE= 0.050175176284679 )
 
 
-TEST_TABLE( TABLE=N3,REFERENCE='AUTRE_ASTER', PRECISION=1.E-3,
+TEST_TABLE( TABLE=N3,REFERENCE='NON_REGRESSION', PRECISION=1.E-4,
                 NOM_PARA='DUREE_PHAS_FORT',
-                VALE=8.15
+                VALE=8.25
             )
+
+# ECART
+########
+ACCE3b=GENE_ACCE_SEISME( INFO =2,INIT_ALEA=10000,
+              PAS_INST       =DT,NB_POIN=2**10,PESANTEUR =9.81,
+              DSP        = _F(AMOR_REDUIT  =amor,FREQ_FOND =frr,),
+              MODULATION      = _F(TYPE=   "GAMMA",
+                                   DUREE_PHASE_FORTE =TSM, INST_INI= 0.5, ECART_TYPE =ecart), )
+
+FONCT3b=RECU_FONCTION( TABLE=ACCE3b,
+                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                       VALE_I = 1),
+                              NOM_PARA_TABL='FONCTION',)
+
+RMS3b=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT3b))
+
+IMPR_FONCTION(   FORMAT='XMGRACE', UNITE=25, COURBE= (
+                     _F(FONCTION=FONCT3b ,)))
+
+TEST_TABLE( TABLE=RMS3b,
+                NOM_PARA='ECART_TYPE', REFERENCE='NON_REGRESSION', PRECISION=1.E-4,
+                   VALE=1.0070159976669 )
+#
+##############################
+# OPTION "CONSTANT"
+##############################
+# ECART
+########
+ACCE2a=GENE_ACCE_SEISME( INFO =2,
+#        INIT_ALEA=100000,
+              PAS_INST       =DT, NB_POIN=2**11,PESANTEUR =9.81,
+              DSP        = _F(AMOR_REDUIT  =amor,FREQ_FOND =frr,),
+              MODULATION      = _F(TYPE="CONSTANT", ECART_TYPE=ecart),)
+
+FONCT2a=RECU_FONCTION(    TABLE=ACCE2a,
+                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                       VALE_I = 1),
+                              NOM_PARA_TABL='FONCTION',)
+
+
+RMS2a=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT2a))
+IMPR_TABLE (TABLE=RMS2a,  UNITE=8,);
+
+TEST_TABLE( TABLE=RMS2a,
+                NOM_PARA='ECART_TYPE', REFERENCE='ANALYTIQUE', PRECISION=1.E-1,
+                    VALE=ecart*9.81 )
+
+#IMPR_FONCTION(   FORMAT='XMGRACE', UNITE=25, COURBE= ( _F(FONCTION=FONCT2 ,)))
+
+
+
+
+
+#  ARIAS
+#####
+
+ACCE2b=GENE_ACCE_SEISME( INFO =2,INIT_ALEA=100000,
+              PAS_INST       =DT, PESANTEUR =9.81,
+              DSP             = _F(AMOR_REDUIT  =amor,FREQ_FOND =frr,),
+              MODULATION      = _F(TYPE="CONSTANT",DUREE_PHASE_FORTE =TSM, INTE_ARIAS=arias),)
+
+
+ACCE2=GENE_ACCE_SEISME( INFO =2,INIT_ALEA=100000,
+              PAS_INST       =DT, NB_POIN=NBPO,PESANTEUR =9.81,
+              DSP        = _F(AMOR_REDUIT  =amor,FREQ_FOND =frr,),
+               MODULATION      = _F(TYPE="CONSTANT",
+                                   INTE_ARIAS=arias),)
+
+FONCT2=RECU_FONCTION(    TABLE=ACCE2,
+                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                       VALE_I = 1),
+                              NOM_PARA_TABL='FONCTION',)
+
+N2=INFO_FONCTION(  NOCI_SEISME=_F(
+                             FONCTION = FONCT2, BORNE_SUP = 0.95,BORNE_INF = 0.05,
+                             PESANTEUR = 9.81, AMOR_REDUIT=0.05,OPTION = ('TOUT')) )
+
+
+RMS2=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT2))
+IMPR_TABLE (TABLE=RMS2,  UNITE=8,);
+
+#IMPR_FONCTION(   FORMAT='XMGRACE', UNITE=25, COURBE= ( _F(FONCTION=FONCT2 ,)))
+TEST_TABLE( TABLE=N2,
+            NOM_PARA='INTE_ARIAS',REFERENCE='NON_REGRESSION', PRECISION=1.E-4,VALE= 0.046655817603434 )
+
+
 ############################################
 # TEST DE L INTERSPECTRE DES FCTS GENEREES
 ############################################
@@ -157,10 +246,7 @@ TT=10.
 
 INTERS=CALC_INTE_SPEC( INST_INIT=0.0,
                        INST_FIN=TT, NB_POIN=nbp, FONCTION=( FONCT2 ),  )
-
-FOM[iii]=RECU_FONCTION(INTE_SPEC=INTERS,
-                      NUME_ORDRE_I=1,),
-
+FOM[iii]=RECU_FONCTION(INTE_SPEC=INTERS,NUME_ORDRE_I=1,),
 DETRUIRE(CONCEPT=_F(NOM=(INTERS))) 
 #
 ## --------------------------------
@@ -169,9 +255,9 @@ for iii in range(1, Nsim+1):
    print "RUN  ", iii+1
 #
    VECT=GENE_ACCE_SEISME(
-              PAS_INST       =DT,NB_POIN=NBPO,
+              PAS_INST       =DT,NB_POIN=NBPO,PESANTEUR =9.81,
               DSP        = _F(AMOR_REDUIT  =amor,FREQ_FOND =frr,),
-              MODULATION      = _F(TYPE="CONSTANT", DUREE_PHASE_FORTE   =TSM,  INTE_ARIAS =arias),)
+              MODULATION      = _F(TYPE="CONSTANT", INTE_ARIAS =arias),)
 
 
    TRI1=RECU_FONCTION( TABLE=VECT,
@@ -180,12 +266,10 @@ for iii in range(1, Nsim+1):
 
    INTERS=CALC_INTE_SPEC( INST_INIT=0.0, INST_FIN=TT, NB_POIN=nbp, FONCTION=( TRI1 ), )
 
-   FO2[iii]=RECU_FONCTION(INTE_SPEC=INTERS,
-                      NUME_ORDRE_I=1,)
+   FO2[iii]=RECU_FONCTION(INTE_SPEC=INTERS, NUME_ORDRE_I=1,)
 
    FOM[iii]=CALC_FONCTION(COMB=(_F( FONCTION = FOM[iii-1], COEF = 1.0),
                                 _F( FONCTION = FO2[iii], COEF = 1.0),), )
-
 
    DETRUIRE(CONCEPT=_F(NOM=(VECT, INTERS)))
    DETRUIRE(CONCEPT=_F(NOM=(TRI1)))
@@ -208,28 +292,31 @@ POST_DSP=POST_DYNA_ALEA(  INTE_SPEC=DSP_M,
 ##############################
 # TEST DSP de  KT
 ##############################
+#REFERENCE [ 0.00324168  0.00014989] (DSP CP)
 
 TEST_FONCTION(VALEUR=(
                     _F(  FONCTION = FONCMF,
                       VALE_PARA = 10.,
                       VALE_REFE =0.00014899 ,
                       REFERENCE='ANALYTIQUE',
-                      PRECISION = 5.E-1,),
+                      PRECISION = 2.5E-1,),
+
                      _F(  FONCTION = FONCMF,
                       VALE_PARA = 10.,
-                      VALE_REFE = 1.3107900E-04  ,
+                      VALE_REFE = 1.267472288E-04 ,
                       REFERENCE='NON_REGRESSION',
                       PRECISION = 1.E-6,),),);
 
 TEST_FONCTION(VALEUR=(
                     _F(  FONCTION = FONCMF,
                       VALE_PARA = 1.,
-                      VALE_REFE =0.00322237 ,
+                      VALE_REFE =0.00324168 ,
                       REFERENCE='ANALYTIQUE',
-                      PRECISION = 5.E-1,),
+                      PRECISION = 1.E-1,),
+
                      _F(  FONCTION = FONCMF,
                       VALE_PARA = 1.,
-                      VALE_REFE =2.97075741163E-03  ,
+                      VALE_REFE = 3.05556620279E-03 ,
                       REFERENCE='NON_REGRESSION',
                       PRECISION = 1.E-6,),),);
 
@@ -243,11 +330,14 @@ TEST_TABLE(TABLE=POST_DSP,
         VALE=ecart0,
         PRECISION=1.E-2)
 
+
+#
+###############################
+####    TEST  visuel
+###############################
 ## ---------------------------------------------------------------------
-###    TEST  visuel
-# ---------------------------------------------------------------------
 #def calc_dsp_KT(lfreq, w0,amor, So=1.):
-# KT model 
+## KT model 
 # 
 #      x11  =NP.array([4.*(amor**2)*(w0**2)*FREQ**2  for FREQ in lfreq ])
 #      xnum =x11+w0**4
@@ -267,43 +357,5 @@ TEST_TABLE(TABLE=POST_DSP,
 #      dsp=dsp/vari*So*.5
 #      dsp=dsp*So
 #      return dsp
-#------------------------------------------
-#PHAS=(NBPO-1)*DT
-#vale_arias=PHAS*pi/(2.*9.81)
-#coef=arias/vale_arias
-#
-#lfreq=NP.arange(1.0, 50.*2*pi, 1.0)
-#t11=[] 
-#dsp_kt=calc_dsp_KT(lfreq, wg,amor)
-#S_cst=1./NP.trapz(dsp_kt,lfreq)*0.5 # constante de normalisation
-#dsp_kt=dsp_kt*S_cst
 ##
-#for (x, y) in zip(lfreq/2./pi, dsp_kt*2.*pi):
-#       t11.extend([x, y*coef, 0.0])       
-##
-##
-#SPECT11=DEFI_FONCTION(    NOM_PARA='FREQ',  VALE_C=t11  )
-##
-#Sw_cst=NP.trapz(dsp_kt,lfreq)*2. # ect
-#Sf_cst=NP.trapz(dsp_kt*2.*pi,lfreq/2./pi)*2. # ect
-##
-###
-#
-# ---------------------------------------------------------------------
-#
-#IMPR_FONCTION(FORMAT='XMGRACE',UNITE=26,
-#              COURBE=(
-#                     _F(FONCTION=SPECT11,
-#                         PARTIE='REEL',
-#                         MARQUEUR=0,),
-#                      _F(FONCTION=FONCMF,
-#                         MARQUEUR=0,), ),
-#              ECHELLE_X='LIN',
-#              ECHELLE_Y='LIN',);
-##freq1=[1.,10.]
-##w1=[2.*pi ,2.*10.*pi]
-#vale_ref10=calc_dsp_KT(w1, wg,amor)
-##vale_ref10=vale_ref10*2.*pi*S_cst*coef
-
-
 FIN( )

@@ -4,7 +4,7 @@ C
       INTEGER DG(*),CMP
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF POSTRELE  DATE 06/08/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,7 +47,7 @@ C         LA COMPOSAMTE DZ APPARAIT EN POSITION 2 DANS LA DESCRIPTION
 C
 C***********************************************************************
 C
-      INTEGER PAQUET,VALEC,NBEC,RESTE,CODE,CMPT,I
+      INTEGER PAQUET,VALEC,NBEC,RESTE,CODE,CMPT,I,LSHIFT
 C
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------

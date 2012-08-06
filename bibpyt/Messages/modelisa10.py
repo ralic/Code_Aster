@@ -1,4 +1,4 @@
-#@ MODIF modelisa10 Messages  DATE 17/04/2012   AUTEUR CHANSARD F.CHANSARD 
+#@ MODIF modelisa10 Messages  DATE 06/08/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -92,6 +92,10 @@ MODELE_INTERFACE dans PROJ_SPEC_BASE
 La géométrie de la section utilisée n'est pas prévue par l'opérande SECTION = 'RECTANGLE' de AFFE_CARA_ELEM.
 L'un des bords est trop fin. 
 Utilisez l'opérande SECTION = 'GENERALE'.
+"""),
+
+16 : _(u"""
+Il est obligatoire de fournir au moins un comportement pour définir le matériau.
 """),
 
 }

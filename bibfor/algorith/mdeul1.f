@@ -1,6 +1,7 @@
       SUBROUTINE MDEUL1 (NBPAS,DT,NEQGEN,PULSAT,PULSA2,
-     &                   MASGEN,DESCMM,RIGGEN,DESCMR,LAMOR,AMOGEN,
-     &                   DESCMA,TYPBAS,BASEMO,TINIT,IPARCH,NBSAUV,
+     &                   MASGEN,DESCMM,RIGGEN,DESCMR,RGYGEN,LAMOR,
+     &                   AMOGEN,DESCMA,GYOGEN,FONCV,FONCA,
+     &                   TYPBAS,BASEMO,TINIT,IPARCH,NBSAUV,
      &                   ITEMAX,PREC,XLAMBD,LFLU,
      &                   NBCHOC,LOGCHO,DPLMOD,PARCHO,NOECHO,
      &                   NBREDE,DPLRED,PARRED,FONRED,
@@ -10,7 +11,7 @@
      &                   IREDST,DREDST,
      &                   COEFM,LIAD,INUMOR,IDESCF,
      &                   NOFDEP,NOFVIT,NOFACC,NOMFON,PSIDEL,MONMOT,
-     &                   NBRFIS,FK,DFK,ANGINI,
+     &                   NBRFIS,FK,DFK,ANGINI,FONCP,
      &                   NBPAL,DTSTO,TCF,VROTAT,PRDEFF,
      &                   NOMRES,NBEXCI)
 C
@@ -20,6 +21,7 @@ C
       INTEGER      IORSTO(*),IREDST(*),ITEMAX,DESCMM,DESCMR,DESCMA,
      &             IPARCH(*),LOGCHO(NBCHOC,*),ICHOST(*),IBID
       REAL*8       PULSAT(*),PULSA2(*),MASGEN(*),RIGGEN(*),AMOGEN(*),
+     &             GYOGEN(*),RGYGEN(*),
      &             PARCHO(*),PARRED(*),DEPSTO(*),VITSTO(*),ACCSTO(*),
      &             TEMSTO(*),FCHOST(*),DCHOST(*),VCHOST(*),DREDST(*),
      &             PREC,RBID,DPLMOD(NBCHOC,NEQGEN,*),
@@ -34,11 +36,11 @@ C
       INTEGER      LIAD(*),INUMOR(*),IDESCF(*)
       INTEGER      NBPAL,NBRFIS
       CHARACTER*8  NOFDEP(*),NOFVIT(*),NOFACC(*),NOMFON(*)
-      CHARACTER*8  FK(2),DFK(2)
+      CHARACTER*8  FK(2),DFK(2),FONCV,FONCA,FONCP
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 07/08/2012   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -109,20 +111,20 @@ C
 C
       REAL*8       TPS1(4), RINT1, RINT2, CONV
       REAL*8       VALR(3)
-      INTEGER      VALI(2), NBCONV, NBMXCV
-      CHARACTER*8  TRAN
+      INTEGER      VALI(2), NBCONV, NBMXCV, N1
+      CHARACTER*8  TRAN, K8B
       CHARACTER*19 MATPRE, MATASM
 C     ------------------------------------------------------------------
       INTEGER       ETAUSR
 C
       INTEGER       PALMAX
 C-----------------------------------------------------------------------
-      INTEGER I ,IARCHI ,ICHO ,IF ,IM ,IRET ,ISTO1 
+      INTEGER I ,IARCHI ,ICHO ,IF ,IM ,IRET, ISTO1, IER, IND 
       INTEGER ISTO2 ,ISTO3 ,ITER ,JACCE ,JACCGI ,JAMOGI ,JCHOR 
       INTEGER JDEPL ,JFEXT ,JFEXTI ,JM ,JMASS ,JPHI2 ,JPULS 
       INTEGER JREDI ,JREDR ,JTRA1 ,JVINT ,JVITE ,N100 ,NBCHOC 
       INTEGER NBEXCI ,NBMOD1 ,NBPAS ,NBREDE ,NBREVI ,NBSAUV ,NBSCHO 
-      INTEGER NDT ,NEQGEN 
+      INTEGER NDT ,NEQGEN, JAMGY, JRIGY
       REAL*8 DEUX ,R8BID1 ,R8BID2 ,R8BID3 ,R8BID4 ,R8BID5 ,TARCHI 
       REAL*8 TEMPS ,TINIT ,XLAMBD ,XNORM ,XREF ,XX ,ZERO 
 
@@ -136,7 +138,7 @@ C-----------------------------------------------------------------------
       CHARACTER*8   CNPAL(PALMAX)
       CHARACTER*24  CPAL
       INTEGER       IARG
-      REAL*8        FSAUV(PALMAX,3)      
+      REAL*8        FSAUV(PALMAX,3),VROT,AROT,VROTIN,AROTIN
 C
 C
       CALL JEMARQ()
@@ -166,10 +168,35 @@ C  PRECEDENTES EN CAS DE NON-CONVERGENCE EDYOS :
         CNPAL(IAPP)=' '
  111   CONTINUE
 C
+      CALL WKVECT('&&MDNEWM.AMOGYR','V V R8',NEQGEN*NEQGEN,JAMGY)
+      CALL WKVECT('&&MDNEWM.RIGGYR','V V R8',NEQGEN*NEQGEN,JRIGY)
       IF ( LAMOR ) THEN
         DO 100 IM = 1,NEQGEN
           AMOGEN(IM) = DEUX * AMOGEN(IM) * PULSAT(IM)
  100    CONTINUE
+      ELSE
+        CALL GETVTX(' ','VITESSE_VARIABLE',1,IARG,1,K8B,N1)
+        VROTIN = 0.D0
+        AROTIN = 0.D0
+        IF (K8B.EQ.'OUI') THEN
+          CALL FOINTE('F ',FONCV,1,'INST',TINIT,VROTIN,IER)
+          CALL FOINTE('F ',FONCA,1,'INST',TINIT,AROTIN,IER)
+          DO 113 IM = 1 , NEQGEN
+            DO 114 JM = 1 , NEQGEN
+              IND = JM + NEQGEN*(IM-1)
+              ZR(JAMGY+IND-1) = AMOGEN(IND) + VROTIN * GYOGEN(IND)
+              ZR(JRIGY+IND-1) = RIGGEN(IND) + AROTIN * RGYGEN(IND)
+ 114        CONTINUE
+ 113      CONTINUE
+        ELSE
+          DO 117 IM = 1 , NEQGEN
+            DO 118 JM = 1 , NEQGEN
+              IND = JM + NEQGEN*(IM-1)
+              ZR(JAMGY+IND-1) = AMOGEN(IND)
+              ZR(JRIGY+IND-1) = RIGGEN(IND)
+ 118        CONTINUE
+ 117      CONTINUE
+        ENDIF
       ENDIF
 C
 C     --- FACTORISATION DE LA MATRICE MASSE ---
@@ -278,7 +305,7 @@ C
      &            NBREDE,DPLRED,PARRED,FONRED,ZR(JREDR),ZI(JREDI),
      &            NBREVI,DPLREV,FONREV,
      &            TINIT,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
-     &            NBRFIS,FK,DFK,ANGINI,
+     &            NBRFIS,FK,DFK,ANGINI,FONCP,
      &            1,0,DT,DTSTO,TCF,VROTAT,
      &            TYPAL, FINPAL,CNPAL,PRDEFF,CONV,FSAUV)
         IF ((CONV.LE.0.D0) .AND. (NBCONV.GT.NBMXCV)) THEN
@@ -318,12 +345,12 @@ C
         IF (NBPAL.NE.0) NBCHOC = 0
         CALL MDFNLI(NEQGEN,ZR(JDEPL),ZR(JVITE),
      &            ZR(JACCE),ZR(JFEXT),MASGEN,R8BID1,
-     &            PULSA2,AMOGEN,
+     &            PULSA2,ZR(JAMGY),
      &            NBCHOC,LOGCHO,DPLMOD,PARCHO,NOECHO,ZR(JCHOR),
      &            NBREDE,DPLRED,PARRED,FONRED,ZR(JREDR),ZI(JREDI),
      &            NBREVI,DPLREV,FONREV,
      &            TINIT,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
-     &            NBRFIS,FK,DFK,ANGINI,
+     &            NBRFIS,FK,DFK,ANGINI,FONCP,
      &            1,NBPAL,DT,DTSTO,TCF,VROTAT,
      &            TYPAL, FINPAL,CNPAL,PRDEFF,CONV,FSAUV)
         IF ((CONV.LE.0.D0) .AND. (NBCONV.GT.NBMXCV)) THEN
@@ -336,7 +363,7 @@ C
 C     --- ACCELERATIONS GENERALISEES INITIALES ---
 C
         CALL MDACCE(TYPBAS,NEQGEN,PULSA2,MASGEN,DESCMM,RIGGEN,
-     &              DESCMR,ZR(JFEXT),LAMOR,AMOGEN,DESCMA,ZR(JTRA1),
+     &              DESCMR,ZR(JFEXT),LAMOR,ZR(JAMGY),DESCMA,ZR(JTRA1),
      &              ZR(JDEPL),ZR(JVITE),ZR(JACCE))
 C
       ENDIF
@@ -362,6 +389,27 @@ C
 C
          IF (MOD(I,N100).EQ.0) CALL UTTCPU('CPU.MDEUL1','DEBUT',' ')
 C
+         VROT = 0.D0
+         AROT = 0.D0
+         IF (K8B.EQ.'OUI') THEN
+           CALL FOINTE('F ',FONCV,1,'INST',TEMPS,VROT,IER)
+           CALL FOINTE('F ',FONCA,1,'INST',TEMPS,AROT,IER)
+           DO 115 IM = 1 , NEQGEN
+             DO 116 JM = 1 , NEQGEN
+               IND = JM + NEQGEN*(IM-1)
+               ZR(JAMGY+IND-1) = AMOGEN(IND) + VROT * GYOGEN(IND)
+               ZR(JRIGY+IND-1) = RIGGEN(IND) + AROT * RGYGEN(IND)
+ 116         CONTINUE
+ 115       CONTINUE
+         ELSE
+           DO 119 IM = 1 , NEQGEN
+             DO 120 JM = 1 , NEQGEN
+               IND = JM + NEQGEN*(IM-1)
+               ZR(JAMGY+IND-1) = AMOGEN(IND)
+               ZR(JRIGY+IND-1) = RIGGEN(IND)
+ 120         CONTINUE
+ 119       CONTINUE
+         ENDIF
          DO 40 IM = 0,NBMOD1
 C           --- VITESSES GENERALISEES ---
             ZR(JVITE+IM) = ZR(JVITE+IM) + ( DT * ZR(JACCE+IM) )
@@ -405,7 +453,7 @@ C
      &                  ZR(JCHOR), NBREDE,DPLRED,PARRED,FONRED,
      &                  ZR(JREDR),ZI(JREDI),NBREVI,DPLREV,FONREV,
      &                  TEMPS,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
-     &                  NBRFIS,FK,DFK,ANGINI,
+     &                  NBRFIS,FK,DFK,ANGINI,FONCP,
      &                  (I+1),NBPAL,DT,DTSTO,TCF,VROTAT,
      &                  TYPAL, FINPAL,CNPAL,PRDEFF,CONV,FSAUV)
             IF ((CONV.LE.0.D0) .AND. (NBCONV.GT.NBMXCV)) THEN
@@ -451,7 +499,7 @@ C
      &               ZR(JCHOR), NBREDE,DPLRED,PARRED,FONRED,
      &               ZR(JREDR),ZI(JREDI),NBREVI,DPLREV,FONREV,
      &               TEMPS,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
-     &               NBRFIS,FK,DFK,ANGINI,
+     &               NBRFIS,FK,DFK,ANGINI,FONCP,
      &               (I+1),NBPAL,DT,DTSTO,TCF,VROTAT,
      &               TYPAL, FINPAL,CNPAL,PRDEFF,CONV,FSAUV)
          IF ((CONV.LE.0.D0) .AND. (NBCONV.GT.NBMXCV)) THEN
@@ -463,7 +511,7 @@ C
 C        --- ACCELERATIONS GENERALISEES ---
 C
          CALL MDACCE(TYPBAS,NEQGEN,PULSA2,MASGEN,DESCMM,
-     &               RIGGEN,DESCMR,ZR(JFEXT),LAMOR,AMOGEN,
+     &               RIGGEN,DESCMR,ZR(JFEXT),LAMOR,ZR(JAMGY),
      &               DESCMA,ZR(JTRA1),ZR(JDEPL),ZR(JVITE),
      &               ZR(JACCE))
 C

@@ -30,7 +30,7 @@ C
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 07/08/2012   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -194,7 +194,7 @@ C     --- CONTRIBUTION DES FORCES NON LINEAIRES ---
      &            NBREDE,DPLRED,PARRED,FONRED,ZR(JREDR),ZI(JREDI),
      &            NBREVI,DPLREV,FONREV,
      &            TINIT,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
-     &            0,FBID,FBID,0.D0,
+     &            0,FBID,FBID,0.D0,FBID,
      &            0,0,0.D0,0.D0,0.D0,0.D0,
      &            TYPAL,FINPAL,CNPAL,PRDEFF,R8B2,FSAUV)
 C
@@ -261,7 +261,7 @@ C        --- CONTRIBUTION DES FORCES NON LINEAIRES ---
      &               NBREDE,DPLRED,PARRED,FONRED,ZR(JREDR),
      &               ZI(JREDI),NBREVI,DPLREV,FONREV,
      &               TEMPS,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
-     &               0,FBID,FBID,0.D0,
+     &               0,FBID,FBID,0.D0,FBID,
      &               0,0,0.D0,0.D0,0.D0,0.D0,
      &               TYPAL,FINPAL,CNPAL,PRDEFF,R8B2,FSAUV)
 C
@@ -298,7 +298,7 @@ C        --- CONTRIBUTION DES FORCES NON LINEAIRES ---
      &               NBREDE,DPLRED,PARRED,FONRED,ZR(JREDR),
      &               ZI(JREDI),NBREVI,DPLREV,FONREV,
      &               TEMPS,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
-     &               0,FBID,FBID,0.D0,
+     &               0,FBID,FBID,0.D0,FBID,
      &               0,0,0.D0,0.D0,0.D0,0.D0,
      &               TYPAL,FINPAL,CNPAL,PRDEFF,R8B2,FSAUV)
 

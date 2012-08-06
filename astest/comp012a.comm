@@ -1,0 +1,410 @@
+# MODIF  DATE 06/08/2012   AUTEUR CUVILLIE M.CUVILLIEZ 
+# TITRE TEST DE LA LOI DE HUJEUX SUR UN POINT MATERIEL
+# comp012a.para = tps_job 60 mem_job 256Mo liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='COMP012A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+K = 516.2E6
+G = 238.2E6
+YOUNG   = 9.*K*G /(3.*K+G)
+POISSON = (3.*K-2.*G) /(6.*K+2.*G)
+
+MATE1=DEFI_MATERIAU(ELAS=_F(E=YOUNG, NU=POISSON, RHO=2500., ALPHA=0.),
+                    HUJEUX=_F(N        = 0.4,
+                              BETA     = 24.,
+                              D        = 2.5,
+                              B        = 0.2,
+                              PHI      = 33.,
+                              ANGDIL   = 33.,
+                              PCO      = -1.E6,
+                              PREF     = -1.E6,
+                              AMON     = 0.008,
+                              ACYC     = 0.0001,
+                              CMON     = 0.2,
+                              CCYC     = 0.1,
+                              RD_ELA   = 0.005,
+                              RI_ELA   = 0.001,
+                              RHYS     = 0.05,
+                              RMOB     = 0.9,
+                              XM       = 1.,
+                              RD_CYC   = 0.005,
+                              RI_CYC   = 0.001,
+                              DILA     = 1.0,),)
+
+
+# declaration des tables (TABLE_RESU) qui sortiront de la macro
+TABTD    = CO('TTD')
+TABTND   = CO('TTND')
+TABCISA1 = CO('TCISA1')
+TABCISA2 = CO('TCISA2')
+TABTNDC1 = CO('TTNDC1')
+TABTNDC2 = CO('TTNDC2')
+
+CALC_ESSAI_GEOMECA(INFO=1,
+                   MATER=MATE1,
+                   COMP_INCR=_F(RELATION='HUJEUX',
+                                ITER_INTE_MAXI=20,
+                                RESI_INTE_RELA=1.E-8,),
+                   CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
+                                  ITER_GLOB_MAXI = 20,
+                                  ARRET = 'OUI',),
+
+                   ESSAI_TD = _F(PRES_CONF   = -5.E+4,
+                                 EPSI_IMPOSE = -0.2, 
+                                 TABLE_RESU  = TABTD),
+
+                   ESSAI_TND = _F(PRES_CONF   = -5.E+4,
+                                  EPSI_IMPOSE = -0.02, 
+                                  TABLE_RESU  = TABTND),
+
+                   ESSAI_TND_C = _F(PRES_CONF   = -3.E4,
+                                    SIGM_IMPOSE = 1.5E+4,
+                                    NB_CYCLE    =  3,
+                                    UN_SUR_K    =  1.E-12,
+                                    TABLE_RESU  = (TABTNDC1,TABTNDC2),),
+
+                   ESSAI_CISA_C = _F(PRES_CONF   = -5.E+4,
+                                     EPSI_IMPOSE =  1.95E-4 , 
+                                     NB_CYCLE    = 1, 
+                                     TABLE_RESU  = (TABCISA1,TABCISA2),),
+
+                   )
+
+#IMPR_TABLE(TABLE=TABTD)
+#IMPR_TABLE(TABLE=TABTND)
+#IMPR_TABLE(TABLE=TABTNDC1)
+#IMPR_TABLE(TABLE=TABTNDC2)
+#IMPR_TABLE(TABLE=TABCISA1)
+#IMPR_TABLE(TABLE=TABCISA2)
+
+# trace de sigma : p = trace(sig)/3.
+FORMU1   = FORMULE(NOM_PARA='P',  VALE='3.*P'  )
+FORMU2   = FORMULE(NOM_PARA='P_1',VALE='3.*P_1')
+TABTND2  = CALC_TABLE(TABLE=TABTND,
+                      ACTION= _F(OPERATION='OPER',NOM_PARA='TRSIG',FORMULE=FORMU1),)
+TABTNDC3 = CALC_TABLE(TABLE=TABTNDC1,
+                      ACTION= _F(OPERATION='OPER',NOM_PARA='TRSIG',FORMULE=FORMU2),)
+
+# pour l'essai 'TD' -> valeurs de reference de ssnv197a ('TRACE' pour sigma et epsilon)
+
+TEST_TABLE(TABLE=TABTD,
+           NOM_PARA='Q',
+           VALE=117640,
+           PRECISION=0.02,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='EPS_AXI',
+                     VALE=-0.01,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=TABTD,
+           NOM_PARA='Q',
+           VALE=157072,
+           PRECISION=0.02,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='EPS_AXI',
+                     VALE=-0.02,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=TABTD,
+           NOM_PARA='Q',
+           VALE=200850,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='EPS_AXI',
+                     VALE=-0.05,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=TABTD,
+           NOM_PARA='Q',
+           VALE=207649,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='EPS_AXI',
+                     VALE=-0.1,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=TABTD,
+           NOM_PARA='Q',
+           VALE=185854,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='EPS_AXI',
+                     VALE=-0.2,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=TABTD,
+           NOM_PARA='EPS_VOL',
+           VALE=-.00382,
+           PRECISION=0.02,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='EPS_AXI',
+                     VALE=-0.01,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=TABTD,
+           NOM_PARA='EPS_VOL',
+           VALE=-.00434,
+           PRECISION=0.02,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='EPS_AXI',
+                     VALE=-0.02,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=TABTD,
+           NOM_PARA='EPS_VOL',
+           VALE=.0107,
+           PRECISION=0.03,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='EPS_AXI',
+                     VALE=-0.1,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=TABTD,
+           NOM_PARA='EPS_VOL',
+           VALE=.03191,
+           PRECISION=0.05,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='EPS_AXI',
+                     VALE=-0.2,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+# pour l'essai 'TND' -> valeurs de reference de wtnv133a ('VMIS','TRACE')
+
+TEST_TABLE(TABLE=TABTND,
+           NOM_PARA='Q',
+           VALE=31547,
+           PRECISION=0.03,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='EPS_AXI',
+                     VALE=-0.001,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=TABTND,
+           NOM_PARA='Q',
+           VALE=40129,
+           PRECISION=0.02,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='EPS_AXI',
+                     VALE=-0.002,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=TABTND,
+           NOM_PARA='Q',
+           VALE=51937,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='EPS_AXI',
+                     VALE=-0.005,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=TABTND,
+           NOM_PARA='Q',
+           VALE=68286,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='EPS_AXI',
+                     VALE=-0.01,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=TABTND,
+           NOM_PARA='Q',
+           VALE=103161,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='EPS_AXI',
+                     VALE=-0.02,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=TABTND2,
+           NOM_PARA='TRSIG',
+           VALE=-138887,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='EPS_AXI',
+                     VALE=-0.001,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=TABTND2,
+           NOM_PARA='TRSIG',
+           VALE=-133789,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='EPS_AXI',
+                     VALE=-0.002,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=TABTND2,
+           NOM_PARA='TRSIG',
+           VALE=-124952,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='EPS_AXI',
+                     VALE=-0.005,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=TABTND2,
+           NOM_PARA='TRSIG',
+           VALE=-136801,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='EPS_AXI',
+                     VALE=-0.01,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=TABTND2,
+           NOM_PARA='TRSIG',
+           VALE=-185971,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='EPS_AXI',
+                     VALE=-0.02,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+
+# pour l'essai 'TND_C' -> valeurs de reference de wtnv134b ('TRACE')
+
+
+TEST_TABLE(TABLE=TABTNDC3,
+           NOM_PARA='TRSIG',
+           VALE=-80193.7,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='INST_1',
+                     VALE=10.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=TABTNDC3,
+           NOM_PARA='TRSIG',
+           VALE=-74078.1,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='INST_1',
+                     VALE=30.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=TABTNDC3,
+           NOM_PARA='TRSIG',
+           VALE=-66250.1,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='INST_1',
+                     VALE=50.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=TABTNDC3,
+           NOM_PARA='TRSIG',
+           VALE=-52999,
+           PRECISION=0.02,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='INST_1',
+                     VALE=70.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=TABTNDC3,
+           NOM_PARA='TRSIG',
+           VALE=-45671.9,
+           PRECISION=0.02,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='INST_1',
+                     VALE=90.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+# pour l'essai 'CISA_C' -> non regression
+
+TEST_TABLE(TABLE=TABCISA1,
+           NOM_PARA='SIG_XY_1',
+           VALE=-9.99205E+03,
+           CRITERE='RELATIF',
+           REFERENCE='NON_REGRESSION',
+           FILTRE=_F(NOM_PARA='INST_1',
+                     VALE=10.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=TABCISA1,
+           NOM_PARA='SIG_XY_1',
+           VALE=1.00784E+04,
+           CRITERE='RELATIF',
+           REFERENCE='NON_REGRESSION',
+           FILTRE=_F(NOM_PARA='INST_1',
+                     VALE=30.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=TABCISA1,
+           NOM_PARA='SIG_XY_1',
+           VALE=-9.95414E+03,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='NON_REGRESSION',
+           FILTRE=_F(NOM_PARA='INST_1',
+                     VALE=50.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+FIN()

@@ -3,7 +3,7 @@
       INCLUDE 'jeveux.h'
       INTEGER ILI, NUNOEL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 06/08/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,7 @@ C OUT NDDL   I : NOMBRE DE DDLS DE CE NOEUD
 C----------------------------------------------------------------------
 C     FONCTION D ACCES A PRNO
 C----------------------------------------------------------------------
-      INTEGER ZZPRNO,IDPRN1 ,IDPRN2 ,IEC ,J ,K ,L ,NEC
+      INTEGER ZZPRNO,IDPRN1 ,IDPRN2 ,IEC ,J ,K ,L ,NEC,LSHIFT
 
 C-----------------------------------------------------------------------
       ZZPRNO(ILI,NUNOEL,L) = ZI(IDPRN1-1+ZI(IDPRN2+ILI-1)+

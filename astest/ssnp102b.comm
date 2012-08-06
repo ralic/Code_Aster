@@ -1,6 +1,6 @@
-# MODIF  DATE 10/07/2012   AUTEUR LADIER A.LADIER 
+# MODIF  DATE 06/08/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE CALCUL DE G POUR UN PB ELASTOPLASTIQUE : APPROCHE GTP
-# ssnp102b.para = tps_job 200 mem_job 500Mo ncpus 1 liste_test S
+# ssnp102b.para = tps_job 200 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

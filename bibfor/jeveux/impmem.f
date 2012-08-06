@@ -1,7 +1,7 @@
       SUBROUTINE IMPMEM()
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 06/08/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -32,7 +32,7 @@ C ======================================================================
       K8TAB(3) = 'CUSE_JV'  
       CALL UTGTME(3,K8TAB,RVAL,IRET)
       IF ( IRET .EQ. 0 ) THEN
-        IF (RVAL(3).GT.0.D0) THEN
+        IF (RVAL(1).GT.0.D0) THEN
           CALL U2MESR('I','JEVEUX_33',3,RVAL)
         ELSE
           CALL U2MESR('I','JEVEUX_34',3,RVAL)

@@ -1,0 +1,580 @@
+# MODIF  DATE 07/08/2012   AUTEUR TORKHANI M.TORKHANI 
+# TITRE BOUT DE ROTOR 3D FISSURE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# sdnl133d.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test R
+# RESPONSABLE TORKHANI M.TORKHANI
+#
+
+DEBUT( CODE=_F(NOM='SDNL133D', NIV_PUB_WEB='INTERNET'),
+       PAR_LOT='NON')
+
+# les parametres de reference Cadyro
+YOUNG = 2.1E11
+DIAM = 1.
+I = pi*DIAM*DIAM*DIAM*DIAM/64.
+LONG= 2.*DIAM
+
+
+MAILLE=LIRE_MAILLAGE(FORMAT='MED',);
+
+MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLE,
+                       CREA_POI1=(_F(NOM_GROUP_MA='POCOUPE1',
+                                     GROUP_NO='PCOUPE1',),
+                                  _F(NOM_GROUP_MA='POCOUPE2',
+                                     GROUP_NO='PCOUPE2',),),);
+
+# GROUP_NO='PCOUPE1',  : (0,0,LONG)
+# GROUP_NO='PCOUPE2',  : (0,0,-LONG)
+
+MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,       
+              MAILLAGE=MAILLAGE,          
+              CREA_GROUP_NO=(_F(GROUP_MA=('NOFONFIS',),),),)
+
+MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
+                       MAILLAGE=MAILLAGE,
+                       ORIE_PEAU_3D=_F(GROUP_MA=('SCOUPE1','SCOUPE2','SFISS1','SFISS2',),),
+                       );
+
+MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
+                   AFFE=(_F(GROUP_MA=('VROTOR','SCOUPE1','SCOUPE2',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D',),
+                         _F(GROUP_MA=('POCOUPE1','POCOUPE2',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DIS_TR',),),);
+
+IMPR_RESU(FORMAT='RESULTAT',UNITE=20,
+          RESU=_F(MAILLAGE=MAILLAGE,),);
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
+                            NU=0.3,
+                            RHO=7800.0,),);
+
+CARA=AFFE_CARA_ELEM(MODELE=MODELE,
+                    DISCRET=_F(GROUP_MA=('POCOUPE1','POCOUPE2',),
+                               CARA='K_TR_D_N',
+                               VALE=(0.0,0.0,0.0,0.0,0.0,0.0,),),);
+
+CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                       MODELE=MODELE,
+                       AFFE=(_F(GROUP_MA=('VROTOR',),
+                                MATER=ACIER,),
+                             _F(GROUP_MA=('POCOUPE1','POCOUPE2',),
+                                MATER=ACIER,),),);
+
+#*********************************************************************
+#                          CONDITIONS AUX LIMITES                    *
+#*********************************************************************
+
+SINUS = FORMULE(NOM_PARA='INST',VALE='sin(INST*pi/180.)')
+COSINUS = FORMULE(NOM_PARA='INST',VALE='cos(INST*pi/180.)')
+
+CHARBLO=AFFE_CHAR_MECA(MODELE=MODELE,
+                       DDL_IMPO=_F(GROUP_NO='PCOUPE2',
+                                   DX=0.0,
+                                   DY=0.0,
+                                   DZ=0.0,
+                                   DRX=0.0,
+                                   DRY=0.0,
+                                   DRZ=0.0,
+                                  ),
+                       LIAISON_ELEM=(_F(OPTION='3D_POU',
+                                        GROUP_MA_1='SCOUPE1',
+                                        GROUP_NO_2='PCOUPE1',),
+                                     _F(OPTION='3D_POU',
+                                        GROUP_MA_1='SCOUPE2',
+                                        GROUP_NO_2='PCOUPE2',),),
+                       INFO=1,);
+
+CHARFISS=DEFI_CONTACT(MODELE=MODELE,
+                      FORMULATION = 'DISCRETE',
+                      REAC_GEOM='SANS',
+                      ZONE=_F(GROUP_MA_MAIT='SFISS1',
+                              GROUP_MA_ESCL='SFISS2',
+                              APPARIEMENT    = 'MAIT_ESCL',
+                              ALGO_CONT      = 'CONTRAINTE',
+                              SANS_GROUP_NO='NOFONFIS',),
+                      INFO=1,);
+
+CHARTOFL=AFFE_CHAR_MECA_F(MODELE=MODELE,
+                          FORCE_NODALE=_F(GROUP_NO='PCOUPE1',
+                                          MX=COSINUS,
+                                          MY=SINUS,
+                                        ),);
+
+nb_int = 36
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A=360.0,
+                                    NOMBRE=nb_int,),);
+
+L_ORDRE=DEFI_LIST_ENTI(DEBUT=1,
+                       INTERVALLE=_F(JUSQU_A=nb_int,
+                                     PAS=1,),);
+
+UTOTC=STAT_NON_LINE(MODELE=MODELE,
+                    CHAM_MATER=CHAMPMAT,
+                    CARA_ELEM=CARA,
+                    CONTACT=CHARFISS, 
+                    EXCIT=(_F(CHARGE=CHARBLO,),
+                           _F(CHARGE=CHARTOFL,),
+                          ),
+                    COMP_INCR=_F(RELATION='ELAS',
+                                 GROUP_MA=('POCOUPE1','POCOUPE2'),),
+                    COMP_ELAS=_F(RELATION='ELAS',DEFORMATION='PETIT',
+                                 GROUP_MA='VROTOR',),
+                    INCREMENT=_F(LIST_INST=L_INST,
+                                ),
+                    NEWTON=_F(MATRICE='ELASTIQUE',),
+                    CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
+                                   ITER_GLOB_MAXI=100,),
+                    SOLVEUR=_F(SYME='OUI',
+                               METHODE='MULT_FRONT',
+                               RENUM='METIS',),
+                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
+                    INFO=1,);
+
+DEPE_1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                             INTITULE='DEPE_1',
+                             RESULTAT=UTOTC,
+                             NOM_CHAM='DEPL',
+                             LIST_ORDRE=L_ORDRE,
+                             GROUP_NO='PCOUPE1',
+                             TOUT_CMP='OUI',),);
+
+####################
+# Calcul de kphi et dkphi
+####################
+
+from math import *
+
+table1 = DEPE_1.EXTR_TABLE()
+
+l_angle= []
+l_drx= []
+l_dry= []
+
+for row in table1.rows:
+    l_angle.append(radians(row['INST']))    # INST en degree
+    l_drx.append(row['DRX'])
+    l_dry.append(row['DRY'])
+
+wf = []
+
+# l_angle en radian
+for i in range(len(l_angle)):
+    wfcal = 0.5*(cos(l_angle[i])*l_drx[i]+sin(l_angle[i])*l_dry[i])
+    wf.append(wfcal)
+
+souplesse = []
+for i in range(len(l_angle)):
+    soupcal = wf[i]*YOUNG*I/LONG - 1.
+    souplesse.append(soupcal)
+
+# souplesse doit etre >= 0, on la ramene a zero si negative
+smin = min(souplesse)
+
+# introduire la notion de SOUPRES (voir *.awk)
+SOUPRES = 5.e-3
+
+if smin < 0.:  # on recalcule la souplesse avec valeur min = 0
+  wfmin = min(wf)
+  souplesse = []
+  for i in range(len(l_angle)):
+    soupcal = wf[i]/wfmin - 1.+SOUPRES
+    souplesse.append(soupcal)
+
+def interpexp(x,y):
+    """Interpolation exponentielle  y=A(x-x0)**alpha
+       x : abscisse des trois points avec y[x0] = 0
+       y : ordonnee des trois points (y[x0] = 0)
+       on retourne A et alpha
+    """
+
+    alpha = log(y[1])-log(y[2])
+    alpha = alpha/(log(abs(x[1]-x[0]))-log(abs(x[2]-x[0])))
+    A = y[1]/pow(abs(x[1]-x[0]),alpha)
+
+    return A,alpha
+
+
+def interpquad(x,y):
+    """Interpolation parabolique (y=a*x*x+b*x+c)
+       x : abscisses des trois points
+       y : ordonnees des trois points
+       on retourne les coef a,b,c
+    """
+
+    a1 = y[0]/((x[0]-x[1])*(x[0]-x[2]))
+    a2 = y[1]/((x[1]-x[0])*(x[1]-x[2]))
+    a3 = y[2]/((x[2]-x[1])*(x[2]-x[0]))
+    a = a1+a2+a3
+    b1 = y[0]*(x[1]+x[2])/((x[0]-x[1])*(x[0]-x[2]))
+    b2 = y[1]*(x[0]+x[2])/((x[1]-x[0])*(x[1]-x[2]))
+    b3 = y[2]*(x[0]+x[1])/((x[2]-x[1])*(x[2]-x[0]))
+    b =-b1-b2-b3
+    c1 = y[0]*x[1]*x[2]/((x[0]-x[1])*(x[0]-x[2]))
+    c2 = y[1]*x[0]*x[2]/((x[1]-x[0])*(x[1]-x[2]))
+    c3 = y[2]*x[0]*x[1]/((x[2]-x[1])*(x[2]-x[0]))
+    c = c1+c2+c3
+
+    return a,b,c
+
+
+def interplin(abs_cour,x,y):
+    """Interpolation parabolique (y=a*x*x+b*x+c)
+       abs_cour : abscisse courante
+       x : abscisses des deux points
+       y : ordonnees des deux points
+       on retourne la valeur de la droite a l'abscisse courante
+    """
+
+    a = (y[0]-y[1])/(x[0]-x[1])
+    b = (x[0]*y[1]-x[1]*y[0])/(x[0]-x[1])
+    val = a*abs_cour+b
+
+    return val
+
+
+def calvalmoy(abs_cour,para1,para2):
+    """Calcul de la valeur moyenne sur deux paraboles
+       abs_cour : abscisse courante
+       para1 : parametres (a,b,c) de la premiere parabole
+       para2 : parametres (a,b,c) de la deuxieme parabole
+   
+       para[0] = a
+       para[1] = b
+       para[2] = c
+     
+       on retourne la valeur moyenne y a l'abscisse courante
+       et l'ecart relatif entre les deux valeurs a moyenner
+    """
+
+    y1 = para1[0]*abs_cour*abs_cour+para1[1]*abs_cour+para1[2]
+    y2 = para2[0]*abs_cour*abs_cour+para2[1]*abs_cour+para2[2]
+    y = 0.5*(y1+y2)
+    ecart = abs(y1-y2)/abs(y1+y2)
+
+    return y,ecart
+
+
+
+#interpolation quadratique ou exponentielle de la souplesse
+souplf = []
+anglef = []
+nb_abs = int(360./nb_int)  # finesse : 1 degre
+crit = 0.1   # facteur de qualite de l'interpolation parabolique (crit = 0 : parfait)
+
+
+# pour l'intervalle  0 degre=2pi et le premier point
+if souplesse[(len(l_angle)-1)] == 0.:
+    x = [0.,l_angle[0],l_angle[1]]
+    y = [souplesse[(len(l_angle)-1)],souplesse[0],souplesse[1]]
+    A,alpha=interpexp(x,y)
+elif souplesse[0] == 0.:
+    x = [l_angle[0],0.,l_angle[(len(l_angle)-2)]-2*pi]
+    y = [souplesse[0],souplesse[(len(l_angle)-1)],souplesse[(len(l_angle)-2)]]
+    A,alpha=interpexp(x,y)
+else:
+    x = [0.,l_angle[0],l_angle[1]]
+    y = [souplesse[(len(l_angle)-1)],souplesse[0],souplesse[1]]
+    a,b,c=interpquad(x,y)
+    para1=[a,b,c]
+    x = [l_angle[(len(l_angle)-2)]-2.*pi,0.,l_angle[0]]
+    y = [souplesse[(len(l_angle)-2)],souplesse[(len(l_angle)-1)],souplesse[0]]
+    a,b,c=interpquad(x,y)
+    para2=[a,b,c]
+
+delta = l_angle[0]/nb_abs
+valint = []
+valmoy = 0
+valecart = []
+for j in range(nb_abs):
+    abs_cour = j*delta
+    if souplesse[(len(l_angle)-1)] == 0.:
+        val = A*pow(abs(abs_cour),alpha)
+    elif souplesse[0] == 0.:
+        val = A*pow(abs(abs_cour-l_angle[0]),alpha)
+    else:
+        val,ecart = calvalmoy(abs_cour,para1,para2)
+        valmoy = 1
+        valecart.append(ecart)
+    valint.append(val)
+    anglef.append(abs_cour)
+
+if valmoy and max(valecart)>crit:
+    for j in range(nb_abs):
+        abs_cour = j*delta
+        x = [0.,l_angle[0]]
+        y = [souplesse[(len(l_angle)-1)],souplesse[0]]
+        val = interplin(abs_cour,x,y)
+        souplf.append(val)
+else:
+    for j in range(nb_abs):
+        souplf.append(valint[j])
+
+
+#pour les points suivants
+for i in range(len(l_angle)-1):
+    if i == 0:
+        if souplesse[0] == 0.:
+            x = [l_angle[0],l_angle[1],l_angle[2]]
+            y = [souplesse[0],souplesse[1],souplesse[2]]
+            A,alpha=interpexp(x,y)
+        elif souplesse[1] == 0.:
+            x = [l_angle[1],l_angle[0],0.]
+            y = [souplesse[1],souplesse[0],souplesse[(len(l_angle)-1)]]
+            A,alpha=interpexp(x,y)
+        else:
+            x = [l_angle[0],l_angle[1],l_angle[2]]
+            y = [souplesse[0],souplesse[1],souplesse[2]]
+            a,b,c=interpquad(x,y)
+            para1=[a,b,c]
+            x = [0.,l_angle[0],l_angle[1]]
+            y = [souplesse[(len(l_angle)-1)],souplesse[0],souplesse[1]]
+            a,b,c=interpquad(x,y)
+            para2=[a,b,c]
+
+        delta = (l_angle[1]-l_angle[0])/nb_abs
+        valint = []
+        valmoy = 0
+        valecart = []
+        for j in range(nb_abs):
+            abs_cour = l_angle[0]+j*delta
+            if souplesse[0] == 0.:
+                val = A*pow(abs(abs_cour-l_angle[0]),alpha)
+            elif souplesse[1] == 0.:
+                val = A*pow(abs(abs_cour-l_angle[1]),alpha)
+            else:
+                val,ecart = calvalmoy(abs_cour,para1,para2)
+                valmoy = 1
+                valecart.append(ecart)
+            valint.append(val)
+            anglef.append(abs_cour)
+
+        if valmoy and max(valecart)>crit:
+            for j in range(nb_abs):
+                abs_cour = l_angle[0]+j*delta
+                x = [l_angle[0],l_angle[1]]
+                y = [souplesse[0],souplesse[1]]
+                val = interplin(abs_cour,x,y)
+                souplf.append(val)
+        else:
+            for j in range(nb_abs):
+                souplf.append(valint[j])
+
+
+    elif i == (len(l_angle)-2):
+        if souplesse[i+1] == 0.:
+            x = [l_angle[i+1],l_angle[i],l_angle[i-1]]
+            y = [souplesse[i+1],souplesse[i],souplesse[i-1]]
+            A,alpha=interpexp(x,y)
+        elif souplesse[i] == 0.:
+            x = [l_angle[i],l_angle[i+1],l_angle[0]+2.*pi]
+            y = [souplesse[i],souplesse[i+1],souplesse[0]]
+            A,alpha=interpexp(x,y)
+        else:
+            x = [l_angle[i+1],l_angle[i],l_angle[i-1]]
+            y = [souplesse[i+1],souplesse[i],souplesse[i-1]]
+            a,b,c=interpquad(x,y)
+            para1=[a,b,c]
+            x = [l_angle[i-1],l_angle[i],l_angle[0]+2.*pi]
+            y = [souplesse[(len(l_angle)-1)],souplesse[i],souplesse[0]]
+            a,b,c=interpquad(x,y)
+            para2=[a,b,c]
+
+        delta = (l_angle[i+1]-l_angle[i])/nb_abs
+        valint = []
+        valmoy = 0
+        valecart = []
+        for j in range(nb_abs):
+            abs_cour = l_angle[i]+j*delta
+            if souplesse[i+1] == 0.:
+                val = A*pow(abs(abs_cour-l_angle[i+1]),alpha)
+            elif souplesse[i] == 0.:
+                val = A*pow(abs(abs_cour-l_angle[i]),alpha)
+            else:
+                val,ecart = calvalmoy(abs_cour,para1,para2)
+                valmoy = 1
+                valecart.append(ecart)
+            valint.append(val)
+            anglef.append(abs_cour)
+    
+        if valmoy and max(valecart)>crit:
+            for j in range(nb_abs):
+                abs_cour = l_angle[i]+j*delta
+                x = [l_angle[i],l_angle[i+1]]
+                y = [souplesse[i],souplesse[i+1]]
+                val = interplin(abs_cour,x,y)
+                souplf.append(val)
+        else:
+            for j in range(nb_abs):
+                souplf.append(valint[j])
+
+    else :
+        if souplesse[i] == 0.:
+            x = [l_angle[i],l_angle[i+1],l_angle[i+2]]
+            y = [souplesse[i],souplesse[i+1],souplesse[i+2]]
+            A,alpha=interpexp(x,y)
+        elif souplesse[i+1] == 0.:
+            x = [l_angle[i+1],l_angle[i],l_angle[i-1]]
+            y = [souplesse[i+1],souplesse[i],souplesse[i-1]]
+            A,alpha=interpexp(x,y)
+        else:
+            x = [l_angle[i-1],l_angle[i],l_angle[i+1]]
+            y = [souplesse[i-1],souplesse[i],souplesse[i+1]]
+            a,b,c=interpquad(x,y)
+            para1=[a,b,c]
+            x = [l_angle[i],l_angle[i+1],l_angle[i+2]]
+            y = [souplesse[i],souplesse[i+1],souplesse[i+2]]
+            a,b,c=interpquad(x,y)
+            para2=[a,b,c]
+
+        delta = (l_angle[i+1]-l_angle[i])/nb_abs
+        valint = []
+        valmoy = 0
+        valecart = []
+        for j in range(nb_abs):
+            abs_cour = l_angle[i]+j*delta
+            if souplesse[i] == 0.:
+                val = A*pow(abs(abs_cour-l_angle[i]),alpha)
+            elif souplesse[i+1] == 0.:
+                val = A*pow(abs(abs_cour-l_angle[i+1]),alpha)
+            else:
+                val,ecart = calvalmoy(abs_cour,para1,para2)
+                valmoy = 1
+                valecart.append(ecart)
+            valint.append(val)
+            anglef.append(abs_cour)
+
+        if valmoy and max(valecart)>crit:
+            for j in range(nb_abs):
+                abs_cour = l_angle[i]+j*delta
+                x = [l_angle[i],l_angle[i+1]]
+                y = [souplesse[i],souplesse[i+1]]
+                val = interplin(abs_cour,x,y)
+                souplf.append(val)
+        else:
+            for j in range(nb_abs):
+                souplf.append(valint[j])
+
+
+# pour avoir un pas de 1 degre sur kphi
+phi = []
+for i in range(360):
+    phi_cour = radians(i)
+    if phi_cour< 0:    # pour avoir un phi compris entre 0 et 2pi
+        phi_cour = 2*pi+phi_cour
+    phi.append(phi_cour)
+
+
+# calcul de kphi
+kphi=[]
+for j in range(len(phi)):
+  tetha=phi[j]
+  kphi_cour = []
+  for i in range(len(souplf)):
+      phim=anglef[i]
+      m_tetha=cos(phim-tetha)
+      if m_tetha<0.:
+        m_tetha = 0.
+      if souplf[i]!=0.:    # il faut introduire SRES = 0.005
+        kphi_cour.append(m_tetha*m_tetha/souplf[i])
+      else:
+        if m_tetha <= 0.:
+            kphi_cour.append(0.)
+        else:    
+            kphi_cour.append(1.e15)   #valeur max de kphi
+  try:
+    kphi.append(max(kphi_cour))
+  except:
+    kphi.append(0.)    # max non evalue
+
+
+# calcul de la derivee par differences centrees
+dkphi=[]
+for i in range(len(phi)):
+    if i == 0:
+        imoins = len(phi)-1
+        iplus = 1
+        phimoins = phi[imoins]-2.*pi
+        phiplus = phi[iplus]
+    elif i == len(phi)-1:
+        imoins = i-1
+        iplus = 0
+        phimoins = phi[imoins]
+        phiplus = phi[iplus]+2.*pi
+    else:
+        imoins = i-1
+        iplus = i+1
+        phimoins = phi[imoins]
+        phiplus = phi[iplus]
+    kphimoins = kphi[imoins]
+    kphiplus = kphi[iplus]
+    dkphi_cour = (kphiplus-kphimoins)/(phiplus-phimoins)
+    dkphi.append(dkphi_cour)
+
+
+TAB_RESU=CREA_TABLE(LISTE=(_F(PARA='PHI',LISTE_R = phi,),
+                       _F(PARA='KPHI',LISTE_R =kphi ,),
+                       _F(PARA='DKPHI',LISTE_R =dkphi ,),),);
+
+IMPR_TABLE(TABLE=TAB_RESU,);
+
+TEST_TABLE(TABLE=TAB_RESU, NOM_PARA='KPHI', VALE=1.88325E+01,
+           FILTRE=( _F(  NOM_PARA = 'PHI', VALE = 0.00000E+00,),),
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TAB_RESU, NOM_PARA='DKPHI', VALE=5.84080E+01,
+           FILTRE=( _F(  NOM_PARA = 'PHI', VALE = 0.00000E+00,),),
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TAB_RESU, NOM_PARA='KPHI', VALE=1.88325E+01,
+           FILTRE=( _F(  NOM_PARA = 'PHI', VALE = 3.14159E+00,),),
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TAB_RESU, NOM_PARA='DKPHI', VALE=-5.84080E+01,
+           FILTRE=( _F(  NOM_PARA = 'PHI', VALE = 3.14159E+00,),),
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TAB_RESU, NOM_PARA='KPHI', VALE=1.78360E+01,
+           FILTRE=( _F(  NOM_PARA = 'PHI', VALE = 6.26573E+00,),),
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TAB_RESU, NOM_PARA='DKPHI', VALE=5.57160E+01,
+           FILTRE=( _F(  NOM_PARA = 'PHI', VALE = 6.26573E+00,),),
+           REFERENCE='NON_REGRESSION',)
+
+TAB_SOUP=CREA_TABLE(LISTE=(_F(PARA='ANGLE',LISTE_R = anglef,),
+                       _F(PARA='SOUPLESSE',LISTE_R =souplf ,),),);
+
+IMPR_TABLE(TABLE=TAB_SOUP,);
+
+TEST_TABLE(TABLE=TAB_SOUP, NOM_PARA='SOUPLESSE', VALE=2.41380E-01,
+           FILTRE=( _F(  NOM_PARA = 'ANGLE', VALE = 0.00000E+00,),),
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TAB_SOUP, NOM_PARA='SOUPLESSE', VALE=2.41380E-01,
+           FILTRE=( _F(  NOM_PARA = 'ANGLE', VALE = 3.14159E+00,),),
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TAB_SOUP, NOM_PARA='SOUPLESSE', VALE=2.53195E-01,
+           FILTRE=( _F(  NOM_PARA = 'ANGLE', VALE = 6.26573E+00,),),
+           REFERENCE='NON_REGRESSION',)
+
+FIN();

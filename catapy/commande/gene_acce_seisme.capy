@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/07/2012   AUTEUR ZENTNER I.ZENTNER 
+#& MODIF COMMANDE  DATE 06/08/2012   AUTEUR ZENTNER I.ZENTNER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,21 +29,30 @@ GENE_ACCE_SEISME=MACRO(nom="GENE_ACCE_SEISME",
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
          PAS_INST       =SIMP(statut='o',typ='R' ),
          NB_POIN           =SIMP(statut='f',typ='I',fr="nombre de points" ),
+         PESANTEUR       =SIMP(statut='o', typ='R', fr="constante de normalisation de ACCE_MAX, ECART_TYPE et INTE_ARIAS (g)" ),
 
          DSP        = FACT(statut='o',max='**',
-            AMOR_REDUIT    =SIMP(statut='o',typ='R'),
-            FREQ_FOND    =SIMP(statut='o',typ='R', fr="fundamental frequency"),
+            AMOR_REDUIT   =SIMP(statut='o',typ='R'),
+            FREQ_FOND     =SIMP(statut='o',typ='R', fr="frequence fondamentale"),
             FREQ_PENTE    =SIMP(statut='f',typ='R',  fr="slope fundamental frequency"),),
 
          MODULATION      = FACT(statut='o',max='**',
+            regles=(UN_PARMI('ACCE_MAX','INTE_ARIAS','ECART_TYPE'),), 
             TYPE         = SIMP(statut='o',typ='TXM' , into=("GAMMA","JENNINGS_HOUSNER","CONSTANT")),
-            INTE_ARIAS        = SIMP(statut='o',typ='R',fr="Arias intensity" ),
-            INST_INI     = SIMP(statut='f',typ='R',fr="debut phase forte",defaut= 0.0 ),   
-            DUREE_PHASE_FORTE=SIMP(statut='o',typ='R',fr="durée phase forte du signal" ),
+            ACCE_MAX     = SIMP(statut='f',typ='R',fr="PGA: acceleration max au sol (g)" ),
+            ECART_TYPE   = SIMP(statut='f',typ='R',fr="ecart-type" ),
+            INTE_ARIAS   = SIMP(statut='f',typ='R',fr="intensite d'Arias" ),
+#            INST_INI     = SIMP(statut='f',typ='R',fr="debut phase forte",defaut= 0.0 ), 
+#           DUREE_PHASE_FORTE=SIMP(statut='o',typ='R',fr="durée phase forte du signal" ),
+            a_type_mod = BLOC(condition="TYPE=='CONSTANT' ",
+                         DUREE_PHASE_FORTE=SIMP(statut='f',typ='R',fr="durée phase forte du signal" ),),
             b_type_mod = BLOC(condition="TYPE=='JENNINGS_HOUSNER' ",
-                         PARA  =SIMP(statut='o',typ='R',min=1,max=2,fr="parametres alpha, beta"),),
-       ),
-
+                         PARA  =SIMP(statut='o',typ='R',min=2,max=2,fr="parametres alpha, beta"),
+                         INST_INI     = SIMP(statut='o',typ='R',fr="instant debut phase forte" ),
+                         DUREE_PHASE_FORTE=SIMP(statut='o',typ='R',fr="durée phase forte du signal" ),),
+            c_type_mod = BLOC(condition="TYPE=='GAMMA' ",
+                         INST_INI     = SIMP(statut='o',typ='R',fr="instant debut phase forte" ),
+                         DUREE_PHASE_FORTE=SIMP(statut='o',typ='R',fr="durée phase forte du signal" ),),
 #         NB_TRAJ        =SIMP(statut='f',typ='I',defaut= 1,,fr="nombre accelerogrammes" ),
-)  ;
+),)  ;
  

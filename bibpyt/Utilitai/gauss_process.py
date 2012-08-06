@@ -1,4 +1,4 @@
-#@ MODIF gauss_process Utilitai  DATE 10/07/2012   AUTEUR ZENTNER I.ZENTNER 
+#@ MODIF gauss_process Utilitai  DATE 06/08/2012   AUTEUR ZENTNER I.ZENTNER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -52,7 +52,7 @@ def gene_traj_gauss(calc_dsp_KT, lw2,wgt,amo , FMIN=0.0, nbtraj=1, **args):
 
 #calcul du facteur de normalisation
    dsp=calc_dsp_KT(lw2,wgt, amo)
-   S_cst=1./NP.trapz(dsp,lw2)*0.5 # constante de normalisation
+   S_cst=1./(NP.trapz(dsp,lw2)*2.) # constante de normalisation pour que ecart_type=1
 
 
 #ajouter:   FMIN, FMAX
@@ -104,7 +104,7 @@ def gene_traj_gauss(calc_dsp_KT, lw2,wgt,amo , FMIN=0.0, nbtraj=1, **args):
 #  ALGORITHME DE GENERATION DE SIGNAUX GAUSSIENS DSP evolutive non separable-----
 #------------------------------------------------------------------------ 
 
-def gene_traj_gauss_evol(calc_dsp_KT, l_w2,l_temps,t_ini, wg,wp,amo , FMIN=0.0, nbtraj=1, **args):
+def gene_traj_gauss_evol(calc_dsp_KT, l_w2,l_temps,t_ini, t_fin, wg,wp,amo , FMIN=0.0, nbtraj=1, **args):
    from math import cos , sin
 #    IN: 
 #      calc_dsp_KT   :  function for the definition of the PSD matrix
@@ -127,18 +127,20 @@ def gene_traj_gauss_evol(calc_dsp_KT, l_w2,l_temps,t_ini, wg,wp,amo , FMIN=0.0, 
    DW=l_w2[1]-l_w2[0]   
    vecc1=NP.transpose(NP.array(NP.random.normal(0.0,1.,nbfreq2)+1j*NP.random.normal(0.0,1.,nbfreq2)))
    vecc2=NP.transpose(NP.array(NP.random.normal(0.0,1.,nbfreq2)+1j*NP.random.normal(0.0,1.,nbfreq2)))
-          
+   wmm= wg+wp*(t_fin-t_ini)    
    for (nii, tii) in enumerate(l_temps):   
 
       if tii<t_ini:
-         wgt=wg      
-      else:   
-         wgt=wg+wp*(tii-t_ini)      
+         wgt=wg
+      elif  tii>t_fin:
+         wgt= wmm
+      else:
+         wgt=wg+wp*(tii-t_ini)
       assert wgt>0.0,  "ATTENTION, FREQ_FOND <0 A L INSTANT "+ str(tii)
    
     #calcul du facteur de normalisation
       dsp=calc_dsp_KT(l_w2,wgt, amo)
-      S_cst=1./NP.trapz(dsp,l_w2)*0.5 # constante de normalisation
+      S_cst=1./NP.trapz(dsp,l_w2)*0.5 # constante de normalisation pour que ecart_type=1 a pour tout t
 
       if nbtraj==1:
          MAT=calc_dsp_KT(l_w2,wgt, amo, S_cst)
@@ -164,11 +166,10 @@ def gene_traj_gauss_evol(calc_dsp_KT, l_w2,l_temps,t_ini, wg,wp,amo , FMIN=0.0, 
 ##            vecc2=NP.array(NP.random.uniform(0.0,1.,nbtraj))
 # #           vale_xn= NP.conjugate(MATc)*NP.exp(-1.j*freq*tii+1.j*vecc2*2.*pi)
 ##            vale_xp= (MATc)*NP.exp(1.j*freq*tii+1.j*vecc1*2.*pi)
-##            print "MATc", MATc
-# 
+##            print "MATc", MATc 
 #             vec_rand=NP.random.uniform(0.0,1.)*2.*pi
 #             vale_Xt=vale_Xt+ MATc*cos(freq*tii+vec_rand)     
-#          print vale_Xt 
+
       Xt[0,nii]=NP.real(vale_Xt)*sqrt(DW)       
 
    aster_core.matfpe(1)
@@ -207,19 +208,19 @@ def calc_dsp_KT(lfreq, w0,amor, So=1.0):
 #-----------------------------------------------------------------
  
 
-def f_ARIAS (ta, acce)   :
+def f_ARIAS (ta, acce, norme)   :
       acce2=NP.array(acce)**2   
       arias = NP.trapz(acce2,ta)   # energie 
-      arias =arias*pi/(2.*9.81)   # indic Arias      
+      arias =arias*pi/(2.*norme)   # indic Arias      
       return arias     
 
-def f_ARIAS_TSM (ta, acce)   :
-      arias =f_ARIAS (ta, acce)  # indic Arias   
-      ener=arias*(2.*9.81)/pi
+def f_ARIAS_TSM (ta, acce, norme)   :
+      arias =f_ARIAS (ta, acce, norme)  # indic Arias   
+      ener=arias*(2.*norme)/pi
       acce2=NP.array(acce)**2 
       cumener=NP.array([NP.trapz(acce2[0:ii+1],ta[0:ii+1])  for ii in range(len(ta))])
       fract=cumener/ener 
-      n1= NP.searchsorted(fract, 0.05)  
+      n1= NP.searchsorted(fract, 0.05) -1 
       n2= NP.searchsorted(fract,0.95)
 #      n45= NP.searchsorted(fract,0.45)      
       TSM=ta[n2]-ta[n1]
@@ -227,7 +228,8 @@ def f_ARIAS_TSM (ta, acce)   :
       T2=ta[n2]      
       return arias, TSM , T1,  T2     
          
-def f_ENER_qt (ta, acce2, n1, n2)   :
+def f_ENER_qt (ta, acce, n1, n2)   :
+      acce2=acce**2
       ener= NP.trapz(acce2,ta)   # energie    
       P1=NP.trapz(acce2[0:n1],ta[0:n1])/ener
       P2=NP.trapz(acce2[0:n2],ta[0:n2])/ener             
@@ -249,12 +251,12 @@ def f_opta(x0,  ltemps, n1, n2) :
       alpha=x0[0]
       beta=x0[1]
       if alpha<=1.:
-         resu=10000
-      elif beta<0.01:
-         resu=10000
+         resu=10.
+      elif beta<0.0:
+         resu=1000.
       else:
          qt=fonctm_gam(ltemps, 1.0,alpha,beta)
-         ener, PINI, PFIN = f_ENER_qt (ltemps, qt**2, n1, n2)
+         ener, PINI, PFIN = f_ENER_qt (ltemps, qt, n1, n2)
          resu=sqrt((PINI-0.05)**2+ (PFIN-0.95)**2)
       return resu
 
@@ -277,4 +279,25 @@ def fonctm_JetH(ltemps, T1,DUREE, a1,a2) :
       return NP.array(qt)
 
 
-    
+# ----------------------------------------------------------------- 
+#     MOMENTS, FORMULE DE RICE
+# -----------------------------------------------------------------
+def Rice2(w2,DSP) :   
+    m0 = NP.trapz(DSP,w2)*2.
+    m1 = NP.trapz(DSP*abs(w2),w2)*2.  
+    m2 = NP.trapz(DSP*w2**2,w2)*2.        
+    vop=1/(2.*pi)*sqrt(m2/m0)
+    delta=sqrt(1.-m1**2/(m0*m2))
+    return m0,m1,m2,vop,delta
+
+# ----------------------------------------------------------------- 
+#     FACTEUR DE PIC
+# -----------------------------------------------------------------
+ 
+ # calcul de sigma pour max median donne 
+def peak(p,TSM, vop,delta) :     
+      from math import pow
+      deuxn = 2. * vop * TSM / ( -log(p) )
+      sexp = - pow(delta, 1.2) * sqrt(pi * log(deuxn))      
+      nup2= 2. * log( deuxn * ( 1. - exp(sexp)) )
+      return sqrt(nup2)

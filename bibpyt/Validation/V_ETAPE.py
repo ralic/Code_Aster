@@ -1,4 +1,4 @@
-#@ MODIF V_ETAPE Validation  DATE 07/05/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF V_ETAPE Validation  DATE 06/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -223,10 +223,10 @@ class ETAPE(V_MCCOMPO.MCCOMPO):
       """
           Methode pour generation d un rapport de validite
       """
-      self.cr=self.CR(debut='Etape : '+self.nom \
-                + '    ligne : '+`self.appel[0]`\
-                + '    fichier : '+`self.appel[1]`,
-                 fin = 'Fin Etape : '+self.nom)
+      self.cr=self.CR(debut=u'Etape : '+self.nom \
+                + u'    ligne : '+`self.appel[0]`\
+                + u'    fichier : '+`self.appel[1]`,
+                 fin = u'Fin Etape : '+self.nom)
       self.state = 'modified'
       try:
         self.isvalid(cr='oui')

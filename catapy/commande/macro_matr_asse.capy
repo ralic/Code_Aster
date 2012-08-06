@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 07/08/2012   AUTEUR TORKHANI M.TORKHANI 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,17 +22,15 @@
 def macro_matr_asse_prod(self,NUME_DDL,MATR_ASSE,**args):
   if not MATR_ASSE:  raise AsException("Impossible de typer les concepts resultats")
   if not NUME_DDL :  raise AsException("Impossible de typer les concepts resultats")
-  if isinstance(NUME_DDL,CO) :
+  if NUME_DDL.is_typco():
     self.type_sdprod(NUME_DDL,nume_ddl_sdaster)
-  else:
-    self.type_sdprod(NUME_DDL,NUME_DDL.__class__)
   for m in MATR_ASSE:
     opti=m['OPTION']
 
     if opti in ( "RIGI_MECA","RIGI_FLUI_STRU","RIGI_MECA_LAGR" ,
        "MASS_MECA" , "MASS_FLUI_STRU" ,"RIGI_GEOM" ,"RIGI_ROTA",
        "AMOR_MECA","IMPE_MECA",
-       "ONDE_FLUI","MASS_MECA_DIAG","MECA_GYRO" ) : t=matr_asse_depl_r
+       "ONDE_FLUI","MASS_MECA_DIAG","MECA_GYRO","RIGI_GYRO" ) : t=matr_asse_depl_r
 
     if opti in ( "RIGI_ACOU","MASS_ACOU","AMOR_ACOU",) : t=matr_asse_pres_c
 
@@ -81,7 +79,7 @@ MACRO_MATR_ASSE=MACRO(nom="MACRO_MATR_ASSE",
                                    into=("RIGI_MECA","MASS_MECA","MASS_MECA_DIAG",
                                          "AMOR_MECA","RIGI_MECA_HYST","IMPE_MECA",
                                          "ONDE_FLUI","RIGI_FLUI_STRU","MASS_FLUI_STRU",
-                                         "RIGI_ROTA","RIGI_GEOM","RIGI_MECA_LAGR","MECA_GYRO",
+                                         "RIGI_ROTA","RIGI_GEOM","RIGI_MECA_LAGR","MECA_GYRO","RIGI_GYRO",
                                          "RIGI_THER","MASS_THER",
                                          "RIGI_ACOU","MASS_ACOU","AMOR_ACOU",)
                                    ),
