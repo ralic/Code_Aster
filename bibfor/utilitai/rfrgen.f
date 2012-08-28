@@ -1,10 +1,10 @@
       SUBROUTINE RFRGEN ( TRANGE )
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
-      CHARACTER*(*)       TRANGE
+      CHARACTER*19       TRANGE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,6 +55,7 @@ C
       CALL GETRES ( NOMFON , TYPCON , NOMCMD )
 
       CALL GETTCO ( TRANGE, TYSD )
+C TRAITEMENT DU MODE_GENE      
       IF ( TYSD .EQ. 'MODE_GENE' ) THEN
          CALL GETVTX ( ' ', 'NOM_PARA_RESU', 1,IARG,1, K8B,  N1 )
          CALL GETVIS ( ' ', 'NUME_CMP_GENE', 1,IARG,1, IBID, N2 )
@@ -65,17 +66,21 @@ CCC  FONCTIONNALITE NON DEVELOPPEE
             CALL ASSERT(.FALSE.)
          ENDIF
          GOTO 9999
+C TRAITEMENT DU HARM_GENE   
       ELSEIF ( TYSD .EQ. 'HARM_GENE' ) THEN
-         CALL GETVTX ( ' ', 'NOM_PARA_RESU', 1,IARG,1, K8B,  N1 )
-         CALL GETVIS ( ' ', 'NUME_CMP_GENE', 1,IARG,1, IBID, N2 )
-         IF ( (N1+N2) .NE. 0 ) THEN
-            CALL RFHGE1 ( TRANGE )
-         ELSE
-            CALL RFHGE2 ( TRANGE )
-         ENDIF
+C --> ALBERT: JE DECIDE DE CHANGER LA FACON DE FAIRE
+C             POUR HARM_GENE.       
+        CALL  RFHGE2 ( TRANGE )
+C         CALL GETVTX ( ' ', 'NOM_PARA_RESU', 1,IARG,1, K8B,  N1 )
+C         CALL GETVIS ( ' ', 'NUME_CMP_GENE', 1,IARG,1, IBID, N2 )
+C         IF ( (N1+N2) .NE. 0 ) THEN
+C            CALL RFHGE1 ( TRANGE )
+C         ELSE
+C            CALL RFHGE2 ( TRANGE )
+C         ENDIF
          GOTO 9999
       ENDIF
-C
+C TRAITEMENT DU TRAN_GENE
       RESU = TRANGE
       INTERP(1) = 'NON '
       INTERP(2) = 'NON '
@@ -130,19 +135,19 @@ C
       IF ( NOMCHA(1:4) .EQ. 'PTEM' ) THEN
          CALL JEVEUO(RESU//'.PTEM','L',IPAS)
          CALL JELIRA(RESU//'.PTEM','LONMAX',NBPAS,K8B)
-         IF (NBPAS.LE.1) THEN
-            CALL U2MESS('F','UTILITAI4_25')
-         ENDIF
+C NORMALEMENT ON SORT LE dt SI ADAPT. MAIS AVEC DYNA_GENE ON PEUT
+C TOUJOURS LE SORTIR
          CALL WKVECT('&&RFRGEN.DT','V V R',NBPAS,LPAS)
          DO 58 IP = 1,NBPAS
-            ZR(LPAS+IP-1) = LOG10(ZR(IPAS+IP-1))
+            ZR(LPAS+IP-1) = ZR(IPAS+IP-1)
+C            ZR(LPAS+IP-1) = LOG10(ZR(IPAS+IP-1))
  58      CONTINUE
 C
          CALL WKVECT(NOMFON//'.VALE','G V R',2*NBORDR,LVAR)
          LFON = LVAR + NBORDR
          IF ( INTRES(1:3) .NE. 'NON' ) THEN
-            CALL JEVEUO(RESU//'.INST','L',IDINSG)
-            CALL JELIRA(RESU//'.INST','LONMAX',NBINSG,K8B)
+            CALL JEVEUO(RESU//'.DISC','L',IDINSG)
+            CALL JELIRA(RESU//'.DISC','LONMAX',NBINSG,K8B)
             DO 54 IORDR = 0, NBORDR-1
                CALL EXTRAC ( INTRES,EPSI,CRIT,NBINSG-2,ZR(IDINSG),
      &                       ZR(JINST+IORDR),ZR(LPAS),1,REP,IERD)
@@ -171,8 +176,8 @@ C
            CALL WKVECT(NOMFON//'.VALE','G V R',2*NBORDR,LVAR)
            LFON = LVAR + NBORDR
            IF ( INTRES(1:3) .NE. 'NON' ) THEN
-            CALL JEVEUO(RESU//'.INST','L',IDINSG)
-            CALL JELIRA(RESU//'.INST','LONMAX',NBINSG,K8B)
+            CALL JEVEUO(RESU//'.DISC','L',IDINSG)
+            CALL JELIRA(RESU//'.DISC','LONMAX',NBINSG,K8B)
             DO 40 IORDR = 0, NBORDR-1
                CALL EXTRAC ( INTRES,EPSI,CRIT,NBINSG,ZR(IDINSG),
      &               ZR(JINST+IORDR),ZR(ITRESU),NBMODE,REP,IERD)
@@ -188,10 +193,12 @@ C
            ENDIF
          ELSE
            CALL JEVEUO(RESU//'.REFD','L',LREFE1)
-           BASEMO = ZK24(LREFE1+5)(1:8)
+           BASEMO = ZK24(LREFE1+4)(1:8)
            CALL JEVEUO(BASEMO//'           .REFD','L',LREFE2)
            MATRAS = ZK24(LREFE2)(1:19)
            NOMSY = 'DEPL'
+
+           
            IF (MATRAS.NE.' ') THEN
              CALL VPRECU( BASEMO, NOMSY,-1,IBID, '&&RFRGEN.VECT.PROPRE',
      &                   0, K8B, K8B,  K8B, K8B,
@@ -213,6 +220,7 @@ C
      &                   NEQ*NBMODE,IDBASE)
              CALL COPMO2(BASEMO,NEQ,NUME,NBMODE,ZR(IDBASE))
            ENDIF
+
            CALL GETVTX(' ','GROUP_NO',0,IARG,1,NOGNO,NGN)
            IF (NGN.NE.0) THEN
              CALL JENONU(JEXNOM(NOMA//'.GROUPENO',NOGNO),IGN2)
@@ -249,8 +257,8 @@ C        --------------------------------------------------------------
            CALL WKVECT(NOMFON//'.VALE','G V R',2*NBORDR,LVAR)
            LFON = LVAR + NBORDR
            IF ( INTRES(1:3) .NE. 'NON' ) THEN
-            CALL JEVEUO(RESU//'.INST','L',IDINSG)
-            CALL JELIRA(RESU//'.INST','LONMAX',NBINSG,K8B)
+            CALL JEVEUO(RESU//'.DISC','L',IDINSG)
+            CALL JELIRA(RESU//'.DISC','LONMAX',NBINSG,K8B)
             CALL WKVECT('&&RFRGEN.VECTGENE','V V R',NBMODE,IDVECG)
             DO 50 IORDR = 0, NBORDR-1
                CALL EXTRAC ( INTRES,EPSI,CRIT,NBINSG,ZR(IDINSG),

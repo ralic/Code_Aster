@@ -1,8 +1,8 @@
-#@ MODIF impr_diag_campbell_utils Macro  DATE 11/10/2011   AUTEUR TORKHANI M.TORKHANI 
+#@ MODIF impr_diag_campbell_utils Macro  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -74,9 +74,9 @@ def CLASS_MODES(self,L_MODES, NFREQ, NFREQ_CAMP, L_GR_NOEUD, VITE_ROTA) :
 
     NBV=len(L_MODES);
     NOEU=len(L_GR_NOEUD);
-    Mf=[0]*NBV ;
-    Mt=[0]*NBV ;
-    Ml=[0]*NBV ;
+    __Mf=[0]*NBV ;
+    __Mt=[0]*NBV ;
+    __Ml=[0]*NBV ;
     NVT =numpy.zeros((NFREQ, NBV));
 
     NVT_f=0
@@ -88,7 +88,7 @@ def CLASS_MODES(self,L_MODES, NFREQ, NFREQ_CAMP, L_GR_NOEUD, VITE_ROTA) :
         # Extraire les modes en module, definir les differents types de modes
         # -------------------------------------------------------------------
 
-        tabmoN=POST_RELEVE_T(ACTION=_F(INTITULE='MODES_MODULE',
+        __tabmoN=POST_RELEVE_T(ACTION=_F(INTITULE='MODES_MODULE',
                                 NOEUD=L_GR_NOEUD,
                                 RESULTAT=L_MODES[ii],
                                 NOM_CHAM='DEPL',
@@ -97,7 +97,7 @@ def CLASS_MODES(self,L_MODES, NFREQ, NFREQ_CAMP, L_GR_NOEUD, VITE_ROTA) :
                                 FORMAT_C='MODULE',
                                 OPERATION='EXTRACTION',),);
 
-        tw = tabmoN.EXTR_TABLE(lpara + ['NUME_MODE', ])
+        tw = __tabmoN.EXTR_TABLE(lpara + ['NUME_MODE', ])
         tw.fromfunction('NTOT', fNtot, lpara)
         tw.fromfunction('NFLEX', fNflex, lpara)
         tw.fromfunction('NTORS', fNtors, lpara)
@@ -112,7 +112,7 @@ def CLASS_MODES(self,L_MODES, NFREQ, NFREQ_CAMP, L_GR_NOEUD, VITE_ROTA) :
                 Ntors[jj] = sqrt(sum(twi.NTORS.values()))/ Ntot[jj]
                 Nlong[jj] = sqrt(sum(twi.NLONG.values()))/ Ntot[jj]
 
-        DETRUIRE(CONCEPT=_F(NOM=(tabmoN)),INFO=1)
+        DETRUIRE(CONCEPT=_F(NOM=(__tabmoN)),INFO=1)
 
         jf=0;
         jt=0;
@@ -172,12 +172,12 @@ def CLASS_MODES(self,L_MODES, NFREQ, NFREQ_CAMP, L_GR_NOEUD, VITE_ROTA) :
         # ----------------------------------------------
         if NFREQ_f >0:
             lmodef =list(l_f[ii]);
-            Mf[ii] = EXTR_MODE ( FILTRE_MODE = _F ( MODE = L_MODES[ii],
+            __Mf[ii] = EXTR_MODE ( FILTRE_MODE = _F ( MODE = L_MODES[ii],
                                                         NUME_MODE = lmodef)
                                 );
 
-            Mf[ii]= NORM_MODE (MODE=Mf[ii],
-                             reuse = Mf[ii],
+            __Mf[ii]= NORM_MODE (MODE=__Mf[ii],
+                             reuse = __Mf[ii],
                              NORME='TRAN',
                              );
 
@@ -186,11 +186,11 @@ def CLASS_MODES(self,L_MODES, NFREQ, NFREQ_CAMP, L_GR_NOEUD, VITE_ROTA) :
         # ----------------------------------------------
         if NFREQ_t >0:
             lmodet =list(l_t[ii]);
-            Mt[ii] = EXTR_MODE ( FILTRE_MODE = _F ( MODE = L_MODES[ii],
+            __Mt[ii] = EXTR_MODE ( FILTRE_MODE = _F ( MODE = L_MODES[ii],
                                                         NUME_MODE = lmodet)
                                 );
-            Mt[ii]= NORM_MODE (MODE=Mt[ii],
-                             reuse = Mt[ii],
+            __Mt[ii]= NORM_MODE (MODE=__Mt[ii],
+                             reuse = __Mt[ii],
                              AVEC_CMP=('DRX','DRY', 'DRZ'),
                              );
 
@@ -199,12 +199,12 @@ def CLASS_MODES(self,L_MODES, NFREQ, NFREQ_CAMP, L_GR_NOEUD, VITE_ROTA) :
         # ----------------------------------------------
         if NFREQ_l >0:
             lmodel =list(l_l[ii]);
-            Ml[ii] = EXTR_MODE ( FILTRE_MODE = _F ( MODE = L_MODES[ii],
+            __Ml[ii] = EXTR_MODE ( FILTRE_MODE = _F ( MODE = L_MODES[ii],
                                                         NUME_MODE = lmodel)
                                 );
 
-            Ml[ii]= NORM_MODE (MODE=Ml[ii],
-                             reuse = Ml[ii],
+            __Ml[ii]= NORM_MODE (MODE=__Ml[ii],
+                             reuse = __Ml[ii],
                              NORME='TRAN',
                              );
 
@@ -226,7 +226,7 @@ def CLASS_MODES(self,L_MODES, NFREQ, NFREQ_CAMP, L_GR_NOEUD, VITE_ROTA) :
         if NVT_l[jj][NBV-1]<= NFREQ_CAMP:
             NFREQ_lc=NFREQ_lc+1;
 
-    RESULT =[NFREQ_f,NFREQ_t,NFREQ_l,Mf,Mt,Ml,NVT,NVT_f,NVT_t,NVT_l,NFREQ_fc,NFREQ_tc,NFREQ_lc]
+    RESULT =[NFREQ_f,NFREQ_t,NFREQ_l,__Mf,__Mt,__Ml,NVT,NVT_f,NVT_t,NVT_l,NFREQ_fc,NFREQ_tc,NFREQ_lc]
 
     return RESULT
 
@@ -251,15 +251,15 @@ def EXTR_FREQ(self,L_MODES, L_MODEf,L_MODEt,L_MODEl, NFREQ, NFREQ_f, NFREQ_t, NF
     for ii in range(NBV):
 
         # frequences totales
-        tabfreq = RECU_TABLE(CO=L_MODES[ii],NOM_PARA=('NUME_MODE','FREQ','AMOR_REDUIT'),);
-        valf = tabfreq.EXTR_TABLE('FREQ')
+        __tfreq = RECU_TABLE(CO=L_MODES[ii],NOM_PARA=('NUME_MODE','FREQ','AMOR_REDUIT'),);
+        valf = __tfreq.EXTR_TABLE('FREQ')
         FRQ[:, ii] = valf.FREQ.values()
         FRQ_max = max(FRQ[:, ii])
 
         if NFREQ_f > 0:
             # frequences des modes en flexion
-            tabfr_f = RECU_TABLE(CO=L_MODEf[ii],NOM_PARA=('FREQ','AMOR_REDUIT'),)
-            valf = tabfr_f.EXTR_TABLE(['FREQ', 'AMOR_REDUIT'])
+            __tfr_f = RECU_TABLE(CO=L_MODEf[ii],NOM_PARA=('FREQ','AMOR_REDUIT'),)
+            valf = __tfr_f.EXTR_TABLE(['FREQ', 'AMOR_REDUIT'])
             FRQ_f[:, ii] = valf.FREQ.values()
             amor = []
             for vamo in valf.AMOR_REDUIT.values():
@@ -267,23 +267,23 @@ def EXTR_FREQ(self,L_MODES, L_MODEf,L_MODEt,L_MODEl, NFREQ, NFREQ_f, NFREQ_t, NF
                     vamo = 0.
                 amor.append(vamo)
             AMO_f[:, ii] = amor
-            DETRUIRE(CONCEPT=_F(NOM=(tabfr_f)),INFO=1)
+            DETRUIRE(CONCEPT=_F(NOM=(__tfr_f)),INFO=1)
 
         if NFREQ_t>0:
             # frequences des modes en torsion
-            tabfr_t = RECU_TABLE(CO=L_MODEt[ii],NOM_PARA='FREQ',)
-            valf = tabfr_t.EXTR_TABLE('FREQ')
+            __tfr_t = RECU_TABLE(CO=L_MODEt[ii],NOM_PARA='FREQ',)
+            valf = __tfr_t.EXTR_TABLE('FREQ')
             FRQ_t[:, ii] = valf.FREQ.values()
-            DETRUIRE(CONCEPT=_F(NOM=(tabfr_t)),INFO=1)
+            DETRUIRE(CONCEPT=_F(NOM=(__tfr_t)),INFO=1)
 
         if NFREQ_l>0:
             # frequences des modes en traction / compression
-            tabfr_l = RECU_TABLE(CO=L_MODEl[ii],NOM_PARA='FREQ',)
-            valf = tabfr_l.EXTR_TABLE('FREQ')
+            __tfr_l = RECU_TABLE(CO=L_MODEl[ii],NOM_PARA='FREQ',)
+            valf = __tfr_l.EXTR_TABLE('FREQ')
             FRQ_l[:, ii] = valf.FREQ.values()
-            DETRUIRE(CONCEPT=_F(NOM=(tabfr_l)),INFO=1)
+            DETRUIRE(CONCEPT=_F(NOM=(__tfr_l)),INFO=1)
 
-        DETRUIRE(CONCEPT=_F(NOM=(tabfreq)),INFO=1)
+        DETRUIRE(CONCEPT=_F(NOM=(__tfreq)),INFO=1)
 
 
     RESULT = [FRQ,FRQ_f,FRQ_t, FRQ_l, FRQ_max, AMO_f];
@@ -408,15 +408,15 @@ def CALC_MACf(self, L_MODEf, NFREQ_f) :
 
     NBV=len(L_MODEf);
     tmacf =numpy.zeros((NFREQ_f,NFREQ_f));
-    MACf=[0]*NBV
+    __MACf=[0]*NBV
 
     for ii in range(NBV-1):
         if NFREQ_f>0:
-             MACf[ii]=MAC_MODES(BASE_1=L_MODEf[ii],
+             __MACf[ii]=MAC_MODES(BASE_1=L_MODEf[ii],
                    BASE_2=L_MODEf[ii+1],
                    INFO  =2,
                    );
-    return MACf
+    return __MACf
 
 
 #------------------------------------------------------------------------------------------------
@@ -427,15 +427,15 @@ def CALC_MACt(self, L_MODEt, NFREQ_t) :
 
     NBV=len(L_MODEt);
     tmact =numpy.zeros((NFREQ_t,NFREQ_t));
-    MACt=[0]*NBV
+    __MACt=[0]*NBV
 
     for ii in range(NBV-1):
         if NFREQ_t>0:
-             MACt[ii]=MAC_MODES(BASE_1=L_MODEt[ii],
+             __MACt[ii]=MAC_MODES(BASE_1=L_MODEt[ii],
                    BASE_2=L_MODEt[ii+1],
                    INFO  =1,
                    );
-    return MACt
+    return __MACt
 
 #-----------------------------------------------------------------------------------------------
 def CALC_MACl(self, L_MODEl, NFREQ_l) :
@@ -445,15 +445,15 @@ def CALC_MACl(self, L_MODEl, NFREQ_l) :
 
     NBV=len(L_MODEl);
     tmacl =numpy.zeros((NFREQ_l,NFREQ_l));
-    MACl=[0]*NBV
+    __MACl=[0]*NBV
 
     for ii in range(NBV-1):
         if NFREQ_l>0:
-             MACl[ii]=MAC_MODES(BASE_1=L_MODEl[ii],
+             __MACl[ii]=MAC_MODES(BASE_1=L_MODEl[ii],
                    BASE_2=L_MODEl[ii+1],
                    INFO  =1,
                    );
-    return MACl
+    return __MACl
 
 #-----------------------------------------------------------------------------------------------
 def CALC_PREC(self,Mf,NFREQ_f,L_GR_NOEUD, typ_prec) :
@@ -500,7 +500,7 @@ def CALC_PREC(self,Mf,NFREQ_f,L_GR_NOEUD, typ_prec) :
         # Extraire les parties reelles, imaginaires et modules des modes en flexion
         # -------------------------------------------------------------------------
 
-        tabmoR_f=POST_RELEVE_T(ACTION=_F(INTITULE='MODES_REEL',
+        __tabmoR_f=POST_RELEVE_T(ACTION=_F(INTITULE='MODES_REEL',
                                 NOEUD=L_GR_NOEUD,
                                 RESULTAT=Mf[ii],
                                 NOM_CHAM='DEPL',
@@ -508,7 +508,7 @@ def CALC_PREC(self,Mf,NFREQ_f,L_GR_NOEUD, typ_prec) :
                                 NOM_CMP=('DX','DY','DZ'),
                                 FORMAT_C='REEL',
                                 OPERATION='EXTRACTION',),);
-        tabmoI_f=POST_RELEVE_T(ACTION=_F(INTITULE='MODES_IMAG',
+        __tabmoI_f=POST_RELEVE_T(ACTION=_F(INTITULE='MODES_IMAG',
                                 NOEUD=L_GR_NOEUD,
                                 RESULTAT=Mf[ii],
                                 NOM_CHAM='DEPL',
@@ -516,7 +516,7 @@ def CALC_PREC(self,Mf,NFREQ_f,L_GR_NOEUD, typ_prec) :
                                 NOM_CMP=('DX','DY','DZ'),
                                 FORMAT_C='IMAG',
                                 OPERATION='EXTRACTION',),);
-        tabmoN_f=POST_RELEVE_T(ACTION=_F(INTITULE='MODES_MODULE',
+        __tabmoN_f=POST_RELEVE_T(ACTION=_F(INTITULE='MODES_MODULE',
                                 NOEUD=L_GR_NOEUD,
                                 RESULTAT=Mf[ii],
                                 NOM_CHAM='DEPL',
@@ -525,13 +525,13 @@ def CALC_PREC(self,Mf,NFREQ_f,L_GR_NOEUD, typ_prec) :
                                 FORMAT_C='MODULE',
                                 OPERATION='EXTRACTION',),);
         lpara_extr = lpara + ['NOEUD','NUME_ORDRE']
-        twR = tabmoR_f.EXTR_TABLE(lpara_extr)
+        twR = __tabmoR_f.EXTR_TABLE(lpara_extr)
         twR.Renomme('DY', 'DY_R')
         twR.Renomme('DZ', 'DZ_R')
-        twI = tabmoI_f.EXTR_TABLE(lpara_extr)
+        twI = __tabmoI_f.EXTR_TABLE(lpara_extr)
         twI.Renomme('DY', 'DY_I')
         twI.Renomme('DZ', 'DZ_I')
-        twM = tabmoN_f.EXTR_TABLE(lpara_extr)
+        twM = __tabmoN_f.EXTR_TABLE(lpara_extr)
         twM.Renomme('DY', 'DY_M')
         twM.Renomme('DZ', 'DZ_M')
         tw = merge(twR, twI, ('NOEUD','NUME_ORDRE'), restrict=True)
@@ -552,7 +552,7 @@ def CALC_PREC(self,Mf,NFREQ_f,L_GR_NOEUD, typ_prec) :
             else:
                 SENS[jj][ii] = 0.0
 
-        DETRUIRE(CONCEPT=_F(NOM=(tabmoR_f, tabmoI_f, tabmoN_f)),INFO=1)
+        DETRUIRE(CONCEPT=_F(NOM=(__tabmoR_f, __tabmoI_f, __tabmoN_f)),INFO=1)
 
     return SENS
 

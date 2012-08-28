@@ -1,4 +1,4 @@
-#@ MODIF jeveux1 Messages  DATE 06/08/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF jeveux1 Messages  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -310,19 +310,22 @@ cata_msg = {
 
 54 : _(u"""
 
-  Un écrasement amont est détecté, la zone mémoire (adresse %(i1)d) a été utilisée devant l'adresse autorisée %(i1)d.
+  Un écrasement amont est détecté, la zone mémoire (adresse %(i1)d) a été utilisée
+  devant l'adresse autorisée %(i1)d.
 
 """),
 
 55 : _(u"""
 
-  Un écrasement aval est détecté, la zone mémoire (adresse %(i1)d) a été utilisée au-delà de la longueur autorisée.
+  Un écrasement aval est détecté, la zone mémoire (adresse %(i1)d) a été utilisée
+  au-delà de la longueur autorisée.
 
 """),
 
 56 : _(u"""
 
-  La structure du nom de l'objet est invalide au-delà des 24 premiers caractères, elle vaut %(k1)s.
+  La structure du nom de l'objet est invalide au-delà des 24 premiers caractères,
+  elle vaut %(k1)s.
 
 """),
 
@@ -346,7 +349,8 @@ cata_msg = {
 
 60 : _(u"""
 
-  L'objet de type K (chaîne de caractères) est déjà alloué en mémoire, il n'est pas possible de le déplacer sans l'avoir auparavant libéré.
+  L'objet de type K (chaîne de caractères) est déjà alloué en mémoire, il n'est pas
+  possible de le déplacer sans l'avoir auparavant libéré.
 
 """),
 
@@ -377,14 +381,16 @@ cata_msg = {
 
 65 : _(u"""
 
- Le segment de valeurs associé à l'objet %(i1)d de la collection %(k1)s ne possède ni adresse mémoire, ni adresse disque.
+ Le segment de valeurs associé à l'objet %(i1)d de la collection %(k1)s ne possède
+ ni adresse mémoire, ni adresse disque.
 
 """),
 
 
 66 : _(u"""
 
- Le segment de valeurs associé à l'objet simple %(k1)s ne possède ni adresse mémoire, ni adresse disque.
+ Le segment de valeurs associé à l'objet simple %(k1)s ne possède ni adresse mémoire,
+ ni adresse disque.
 
 """),
 
@@ -396,58 +402,54 @@ cata_msg = {
 
 68 : _(u"""
 
- L'accès à l'objet simple %(k1)s par la fonction JEXNOM ou JEXNUM est invalide. Il faut que l'objet simple soit de genre répertoire de noms.
+ L'accès à l'objet simple %(k1)s par la fonction JEXNOM ou JEXNUM est invalide.
+ Il faut que l'objet simple soit de genre répertoire de noms.
  
 """),
 
 69 : _(u"""
 
- Le nom de répertoire associé à la base Globale est trop long %(k1)s, il comporte %(i1)d caractères, il ne doit pas dépasser 119.
+ Le nom de répertoire associé à la base Globale est trop long %(k1)s,
+ il comporte %(i1)d caractères, il ne doit pas dépasser 119.
  
 """),
 
 70 : _(u"""
 
- Le nom de répertoire associé à la base Volatile est trop long %(k1)s, il comporte %(i1)d caractères, il ne doit pas dépasser 119.
+ Le nom de répertoire associé à la base Volatile est trop long %(k1)s,
+ il comporte %(i1)d caractères, il ne doit pas dépasser 119.
  
 """),
  
 71 : _(u"""
-
- La mémoire totale allouée à l'étude %(r1).2f Mo est insuffisante, il est nécessaire de disposer d'au moins %(r3).2f Mo uniquement pour démarrer l'exécution.
- 
+ La mémoire totale de %(r1).2f Mo allouée à l'étude est insuffisante, il est nécessaire
+ de disposer d'au moins %(r3).2f Mo uniquement pour démarrer l'exécution.
 """),
  
 72 : _(u"""
-
- Il n'est pas possible de modifier la valeur limite totale de l'allocation dynamique JEVEUX. La valeur fournie en argument vaut %(r2).2f.
+ Il n'est pas possible de modifier la valeur limite totale de l'allocation dynamique JEVEUX.
+ La valeur fournie en argument vaut %(r2).2f.
  Actuellement %(r1).2f Mo sont nécessaires au gestionnaire de mémoire.
- 
 """),
 
-74 : _(u"""
-
- L'exécution a été lancée avec une limite mémoire de %(r2).2f Mo. La consommation mémoire actuelle (VmSize) est de %(r3).2f Mo.
- La limite de l'allocation dynamique JEVEUX est modifiée, elle est fixée à %(r1).2f Mo. 
- 
+74 : _(u"""  La mémoire consommée actuellement hors JEVEUX est de %(r1).2f Mo.
+  La limite de l'allocation dynamique JEVEUX est fixée à %(r2).2f Mo.
 """),
-
 
 75 : _(u"""
-
- La plate-forme utilisée ne permet pas d'avoir accès à la valeur de VmPeak, cette dernière est ignorée.
- 
+ La plate-forme utilisée ne permet pas d'avoir accès à la valeur de VmPeak.
 """),
 
 
 77 : _(u"""
- La mémoire demandée au lancement est sous estimée, elle est de %(r2).2f Mo, le pic mémoire utilisée est de %(r1).2f Mo.
- 
+ La mémoire demandée au lancement est sous estimée, elle est de %(r2).2f Mo.
+ Le pic mémoire utilisée est de %(r1).2f Mo.
+
 """),
 
 78 : _(u"""
+ La mémoire demandée au lancement est surestimée, elle est de %(r2).2f Mo.
+ Le pic mémoire utilisée est de %(r1).2f Mo.
 
- La mémoire demandée au lancement est surestimée, elle est de %(r2).2f Mo, le pic mémoire utilisée est de %(r1).2f Mo.
- 
 """),
 }

@@ -1,4 +1,4 @@
-# MODIF  DATE 06/08/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 28/08/2012   AUTEUR TRAN V-X.TRAN 
 # TITRE  FISSURE DE BORD EN ELASTOPLASTICITE DANS UNE PLAQUE
 # ssnp110c.para = tps_job 150 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -196,8 +196,10 @@ MAT_VISU=AFFE_MATERIAU(MAILLAGE=MA_XFEM,
                        AFFE=_F(TOUT='OUI',MATER=MAT))
 
 # CALCUL DE DERA_ELGA A TOUS LES INSTANTS ARCHIVES, SAUF AU DERNIER INSTANT
-RES_XFEM=CALC_CHAMP(reuse=RES_XFEM,RESULTAT=RES_XFEM,CHAM_MATER=MAT_VISU,CRITERES=('DERA_ELGA'))
-
+RES_XFEM=CALC_ELEM(reuse =RES_XFEM,
+                   RESULTAT=RES_XFEM,
+                   CHAM_MATER=MAT_VISU,
+                   OPTION='DERA_ELGA')
 
 IMPR_RESU(FORMAT='MED', RESU=_F(RESULTAT=RES_XFEM))
 
@@ -264,7 +266,7 @@ G_1=CALC_G(THETA=_F(FISSURE=FISS,
                     R_INF = 1*h,
                     R_SUP = 4*h),
            RESULTAT=UTOT1,
-           COMP_ELAS=_F(RELATION='ELAS_VMIS_LINE'))
+           )
 
 IMPR_TABLE(TABLE=G_1)
 
@@ -273,7 +275,7 @@ G_2=CALC_G(THETA=_F(FISSURE=FISS,
                     R_INF = 2*h,
                     R_SUP = 6*h),
            RESULTAT=UTOT1,
-           COMP_ELAS=_F(RELATION='ELAS_VMIS_LINE'))
+           )
 
 IMPR_TABLE(TABLE=G_2)
 
@@ -316,8 +318,8 @@ TEST_TABLE(TABLE=G_1,
            VALE=9.1415076304037E+01,
            PRECISION=0.04,
            REFERENCE='AUTRE_ASTER',  )
-
-
+       
+       
 TEST_TABLE(TABLE=G_2,
            FILTRE=_F(NOM_PARA = 'INST',
                      VALE = 0.02),
@@ -357,7 +359,7 @@ TEST_TABLE(TABLE=G_2,
            VALE=9.1415076304037E+01,
            PRECISION=0.04,
            REFERENCE='AUTRE_ASTER', )
-
+           
 TEST_TABLE(TABLE=G_2,
            FILTRE=_F(NOM_PARA = 'INST',
                      VALE = 0.10),

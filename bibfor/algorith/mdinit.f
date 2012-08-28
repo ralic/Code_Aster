@@ -7,7 +7,7 @@
       CHARACTER*8        BASEMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -101,8 +101,8 @@ C     --- RECUPERATION DES CHAMPS DEPL VITE ET ACCE ---
          CALL GETVR8('ETAT_INIT','PRECISION',1,IARG,1,PREC,NP)
          CALL GETVR8('ETAT_INIT','INST_INIT',1,IARG,1,TINIT,NI)
          CALL JEVEUO(TRAN//'           .DEPL' ,'E',JDEPLT)
-         CALL JEVEUO(TRAN//'           .INST' ,'E',JINST)
-         CALL JELIRA(TRAN//'           .INST' ,'LONUTI',NBINST,K1BID)
+         CALL JEVEUO(TRAN//'           .DISC' ,'E',JINST)
+         CALL JELIRA(TRAN//'           .DISC' ,'LONUTI',NBINST,K1BID)
          IF (NI.EQ.0) TINIT = ZR(JINST+NBINST-1)
          INTER = 'NON'
          CALL EXTRAC(INTER,PREC,CRIT,NBINST,ZR(JINST),TINIT,

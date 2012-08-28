@@ -1,0 +1,120 @@
+DEBUT(PAR_LOT='NON')
+
+#Disque complet fissure
+#La fissure démarre au centre et se propage sur la droite avec une taille a
+from Utilitai.sup_gmsh import *
+from math import *
+
+a = 23. #taille fissure
+R = 100. #rayon exterieur du disque
+
+
+h1=0.1
+# ---------------------------------------
+H  = Point(0,0)
+A = Point(1,0.0)
+B = Point(0,1)
+C = Point(-1,0)
+D = Point(0,-1)
+G = Point(23,0)
+I = Point(0,23)
+J = Point(-23,0)
+K = Point(0,-23)
+L = Point(100,0)
+M = Point(0,100)
+N = Point(-100,0)
+O = Point(0,-100)
+
+
+HA = Line(H,A)
+AB = Circle(A,H,B)
+BC = Circle(B,H,C)
+CD = Circle(C,H,D)
+DA = Circle(D,H,A)
+AH = Line(A,H)
+
+AG = Line(A,G)
+GI = Circle(G,H,I)
+IJ = Circle(I,H,J)
+JK = Circle(J,H,K)
+KG = Circle(K,H,G)
+GA = Line(G,A)
+IB = Line(I,B)
+JC = Line(J,C)
+KD = Line(K,D)   
+
+GL = Line(G,L)
+LM = Circle(L,H,M)
+MN = Circle(M,H,N)
+NO = Circle(N,H,O)
+OL = Circle(O,H,L)
+MI = Line(M,I)
+NJ = Line(N,J)
+OK = Line(O,K) 
+
+
+
+AG.Transfinite(22)
+GA.Transfinite(22)
+IB.Transfinite(22)
+JC.Transfinite(22)
+KD.Transfinite(22)
+LM.Transfinite(25)
+MN.Transfinite(25)
+NO.Transfinite(25)
+OL.Transfinite(25)
+GL.Transfinite(25)
+MI.Transfinite(25)
+NJ.Transfinite(25)
+OK.Transfinite(25)
+
+
+
+INT = Surface(HA,AB,BC,CD,DA,AH)
+DEMIHD = Surface(AG,GI,IB,AB)
+DEMIHG = Surface(IB,BC,JC,IJ)
+DEMIBG = Surface(JC, CD,KD,JK)
+DEMIBD = Surface(KD,DA,GA,KG)
+GRANHD = Surface(GL, LM, MI,GI)
+GRANHG = Surface(MI,IJ,NJ,MN)
+GRANBG = Surface(NJ,JK,OK,NO)
+GRANBD = Surface(OK,KG,GL,OL)
+DEMIHD.Recombine()
+DEMIHG.Recombine()
+DEMIBD.Recombine()
+DEMIBG.Recombine()
+GRANHD.Recombine()
+GRANHG.Recombine()
+GRANBG.Recombine()
+GRANBD.Recombine()
+# ---------------------------------------
+
+
+
+# ---------------------------------------
+
+
+mesh = Mesh(order=2)
+mesh.Physical('TOUT',INT, DEMIHD, DEMIHG, DEMIBG, DEMIBD, GRANHD, GRANHG,GRANBD, GRANBG)
+mesh.Physical('CONTOUR',LM,MN,NO,OL)
+mesh.Physical('lev_sup',AG)
+mesh.Physical('lev_inf',GA)
+mesh.Physical('G',G)
+mesh.Physical('H',H)
+#mesh.Physical('BE',BE)
+#mesh.View()
+
+MA = mesh.LIRE_GMSH()
+
+IMPR_RESU(FORMAT='ASTER',
+          UNITE=12,
+          RESU=_F(MAILLAGE=MA),
+          )
+
+IMPR_RESU(FORMAT='GMSH',
+          UNITE=13,
+          RESU=_F(MAILLAGE=MA),
+          )
+
+
+FIN()

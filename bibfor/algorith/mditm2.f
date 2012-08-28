@@ -17,7 +17,7 @@ C
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -102,19 +102,20 @@ C
 C VARIABLES LOCALES
 C -----------------
       INTEGER       ITEST, TESTC, IER, IVAR, INDNEW, INDNE0,
-     &              XIT0, IT0, IDECRT, NTRANS, XNBR0,
+     &              XIT0, IT0, IDECRT, NTRANS, XNBR0,IBID,
      &              ILONG, NPF, NPFMAX, NPFTS, NTTR, NDEF, INDT, NBR0
       INTEGER       JORDRE, JTEMPS, JDEPG, JVITG, JACCG, JDEP, JFOR,
      &              JVIT, KDEPL, KVITE, KACCE, KORDR, KINST, KPTEM,
-     &              KFCHO, KDCHO, KVCHO, KADCHO
+     &              KFCHO, KDCHO, KVCHO, KADCHO,KREVC,KREVD
       INTEGER       IFR, IFM, LATEST, IERCPU,
      &              NBREDE, NBREVI, KREDC, KREDD
       REAL*8        TC, DT, DIV, TC0, TS0, TOL, TOLC, TOLN, TOLV,
      &              FTEST, FTEST0, TTRANS, PREMAC, PREREL, TPS1(4)
-      LOGICAL       LSAUV, LPSTO
+      LOGICAL       LSAUV
       CHARACTER*8   RESU, K8B
       CHARACTER*16  NOMCMD, TYPRES, CHAIN1, CHAIN2, CHAIN3, CHAIN4,
      &              CHAIN5, CHAIN6, CHAIN7, CHAIN8, METHOD
+      CHARACTER*4   K4BID(3)
 C
 C FONCTIONS INTRINSEQUES
 C ----------------------
@@ -459,13 +460,15 @@ C     -----------------------
       NBSAUV = NBR0
       NBREDE = 0
       NBREVI = 0
-      LPSTO = .FALSE.
       METHOD = 'ITMI'
-
-      CALL MDALLO ( RESU,K8B,K8B,K8B,K8B,NBM,DT0,NBSAUV,NBNL,K8B,K8B,
-     &              NBREDE,K8B,NBREVI,KDEPL,KVITE,KACCE,KPTEM,KORDR,
-     &              KINST,KFCHO,KDCHO,KVCHO,KADCHO,KREDC,KREDD,LPSTO,
-     &              METHOD)
+C
+      CALL MDALLO(RESU,K8B,K8B,K8B,K8B,NBM,DT0,
+     &            NBSAUV,NBNL,K8B,K8B,
+     &            NBREDE,K8B,NBREVI,K8B,
+     &            KDEPL,KVITE,KACCE,KPTEM,KORDR,KINST,
+     &            KFCHO,KDCHO,KVCHO,KADCHO,
+     &            KREDC,KREDD, KREVC,KREVD,METHOD,IBID,K4BID,'TRAN')
+C
       CALL ECRBAS ( NBSAUV,NBNL,NBM,ZR(JDEPG),ZR(JVITG),ZR(JACCG),
      &              ZR(JTEMPS),ZI(JORDRE),ZR(JDEP),ZR(JVIT),ZR(JFOR),
      &              ZR(KDEPL),ZR(KVITE),ZR(KACCE),ZR(KINST),ZI(KORDR),
@@ -476,7 +479,7 @@ C     --- IMPRESSION DES RESULTATS DE CHOC
         CALL MDICHO(RESU,NBSAUV,ZR(KINST),ZR(KFCHO),ZR(KDCHO),
      &              ZR(KVCHO),NBNL,NBCHOC,PARCHO,NOECHO)
       END IF
-
+C
 C 7.6 IMPRESSIONS SUPPLEMENTAIRES SI ARRET PAR MANQUE DE TEMPS CPU
 C     ------------------------------------------------------------
       IF ( IERCPU.EQ.1 ) THEN

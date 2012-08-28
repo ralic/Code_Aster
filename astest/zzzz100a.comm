@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE MCOURTOI M.COURTOIS
 # TITRE FONCTIONS, NAPPES, FORMULES.
 # zzzz100a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
@@ -1677,6 +1677,21 @@ TEST_FONCTION(VALEUR=(_F(FONCTION=FF3,
                          CRITERE='RELATIF',
                          REFERENCE='ANALYTIQUE',),)
                );
+
+#=======================================================================
+#
+#          VALIDATION DE MULT DE L'OPERATEUR CALC_FONCTION
+#
+#=======================================================================
+sifco=CALC_FONCTION(MULT=(_F(FONCTION = SIi,),
+                          _F(FONCTION = COi,)),)
+
+TEST_FONCTION(VALEUR=(_F(FONCTION=sifco,
+                         VALE_PARA=1.,
+                         VALE_REFE=sin(1.) * cos(1.),
+                         CRITERE='RELATIF',
+                         REFERENCE='ANALYTIQUE',),)
+               )
 
 #=======================================================================
 #

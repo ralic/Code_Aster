@@ -1,4 +1,4 @@
-#@ MODIF factor Messages  DATE 20/06/2012   AUTEUR BOITEAU O.BOITEAU 
+#@ MODIF factor Messages  DATE 28/08/2012   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -128,14 +128,14 @@ Conseils :
 51: _(u"""
 Solveur MUMPS :
   JEVEUX a déchargé sur disque le maximum d'objets possibles afin de laisser de la
-  place à MUMPS. Il a ainsi gagné %(i1)d Mo.
+  place à MUMPS. Il a ainsi gagné %(i1)d Mo. Mais ce déchargement peut ralentir le calcul.
 
 Conseils :
   La prochaine fois, relancez avec plus de mémoire globale ou avec une option de calcul plus économe
   (par ordre décroissant d'efficacité):
     - Si le calcul est parallèle, réduisez la consommation MUMPS en augmentant le nombre de processeurs,
     - Dans tous les cas, réduisez la consommation MUMPS en activant l'option OUT_OF_CORE (SOLVEUR/GESTION_MEMOIRE='OUT_OF_CORE'),
-    - Si le calcul est parallèle, réduisez la consommation Aster en activant l'option SOLVEUR/MATR_DISTRIBUEE='OUI'.
+    - Si le calcul est parallèle, réduisez la consommation JEVEUX en activant l'option SOLVEUR/MATR_DISTRIBUEE.
 """),
 
 52: _(u"""
@@ -302,7 +302,7 @@ Conseils :
 
 70: _(u"""
 Solveur MUMPS :
-  Vous avez activé l'option IMPR='OUI_SOLVE' en surchargeant AMUMPS.F. La résolution
+  Vous avez activé l'option IMPR="OUI_SOLVE" en surchargeant AMUMPS.F. La résolution
   du système linéaire en cours va donc s'effectuer normalement mais en plus
   sa matrice et son second membre vont être écrits dans le fichier d'unité logique
   %(i1)d. Vous pouvez le récupérer (sur le processeur 0) via ASTK.
@@ -310,7 +310,7 @@ Solveur MUMPS :
 
 71: _(u"""
 Solveur MUMPS :
-  Vous avez activé l'option IMPR='OUI_NOSOLVE' en surchargeant AMUMPS.F. La résolution
+  Vous avez activé l'option IMPR="OUI_NOSOLVE" en surchargeant AMUMPS.F. La résolution
   du système linéaire en cours ne va donc pas s'effectuer mais sa matrice et
   son second membre vont être écrits dans le fichier d'unité logique %(i1)d.
   Après cette écriture, l'exécution Aster s'arrête en ERREUR_FATALE pour vous
@@ -356,7 +356,7 @@ Conseils :
     - Si le calcul est parallèle, réduisez la consommation MUMPS en augmentant le nombre de processeurs,
     - Dans tous les cas, réduisez la consommation MUMPS en activant l'option OUT_OF_CORE (SOLVEUR/GESTION_MEMOIRE='OUT_OF_CORE')
       ou passer en mode automatique (SOLVEUR/GESTION_MEMOIRE='AUTO'),
-    - Si le calcul est parallèle, réduisez la consommation Aster en activant l'option SOLVEUR/MATR_DISTRIBUEE='OUI'.
+    - Si le calcul est parallèle, réduisez la consommation Aster en activant l'option SOLVEUR/MATR_DISTRIBUEE.
 """),
 
 75: _(u"""
@@ -369,25 +369,29 @@ Conseils :
   La prochaine fois, relancez avec plus de mémoire globale ou avec une option de calcul plus économe
   (par ordre décroissant d'efficacité):
    - Si le calcul est parallèle, réduisez la consommation MUMPS en augmentant le nombre de processeurs,
-   - Si le calcul est parallèle, réduisez la consommation Aster en activant l'option SOLVEUR/MATR_DISTRIBUEE='OUI',
-   - Utilisez un solveur moins exigeant en mémoire (SOLVEUR/METHODE='PETSC' + PRECOND='LDLT_SP').
+   - Si le calcul est parallèle, réduisez la consommation Aster en activant l'option SOLVEUR/MATR_DISTRIBUEE,
+  Ou, plus radicalement:
+   - Utilisez un solveur moins exigeant en mémoire (par exemple: SOLVEUR/METHODE='PETSC' + PRECOND='LDLT_SP').
 """),
 
 76: _(u"""
 Solveur MUMPS :
-  En déchargeant sur disque tous les objets JEVEUX, la mémoire disponible est passée de %(i1)d Mo à
-  %(i2)d Mo. Or MUMPS a besoin, suivant la gestion mémoire, de:
+  Pour essayer de passer en mémoire, il a fallut décharger sur disque un maximum d'objets JEVEUX.
+  Ce déchargement a pu ralentir le calcul.
+  La mémoire disponible est ainsi passée de %(i1)d Mo à %(i2)d Mo. Mais cela n'a pas été suffisant car
+  MUMPS a besoin, suivant son mode de gestion mémoire (paramétré par le mot-clé SOLVEUR/GESTION_MEMOIRE),
+  d'au moins:
      - IN_CORE    : %(i3)d Mo,
      - OUT_OF_CORE: %(i4)d Mo.
   Estimations à %(i5)d %% de marge près.
   
 Conseils :
-  Attention, le mode GESTION_MEMOIRE='AUTO' peut être perturbée si la case "dont Aster" dans ASTK est
-  cochée. Si c'est le cas, décochez la.
-  Sinon, relancez avec plus de mémoire globale ou avec une option de calcul plus économe
-  (par ordre décroissant d'efficacité):
-   - Si le calcul est parallèle, réduisez la consommation MUMPS en augmentant le nombre de processeurs,
-   - Utilisez un solveur moins exigeant en mémoire (SOLVEUR/METHODE='PETSC' + PRECOND='LDLT_SP').
+  La prochaine fois, relancez avec plus de mémoire globale ou avec une option de calcul
+  plus économe (par ordre décroissant d'efficacité):
+   - Si le calcul est parallèle, réduisez la consommation MUMPS en augmentant le nombre de processeurs ou
+     réduisez celle de JEVEUX en activant l'option MATR_DISTRIBUEE.
+  Ou, plus radicalement:
+   - Utilisez un solveur moins exigeant en mémoire (par exemple: SOLVEUR/METHODE='PETSC' + PRECOND='LDLT_SP').
 """),
 
 77: _(u"""
@@ -422,23 +426,42 @@ Conseil :
 """),
 
 81: _(u"""
-*****************************************************************************************************
 
 - Taille du système linéaire: %(i1)d
  
-- Mémoire minimale consommée par Code_Aster                                  : %(i2)d Mo
+- Mémoire minimale consommée par Code_Aster (JEVEUX, Superviseur, Python...) : %(i2)d Mo
 - Estimation de la mémoire MUMPS avec GESTION_MEMOIRE='IN_CORE'              : %(i3)d Mo
 - Estimation de la mémoire MUMPS avec GESTION_MEMOIRE='OUT_OF_CORE'          : %(i4)d Mo
 - Estimation de l'espace disque pour MUMPS avec GESTION_MEMOIRE='OUT_OF_CORE': %(i5)d Mo
  
-===> Pour ce calcul, il faut donc une quantité de mémoire au minimum de 
+  > Pour ce calcul, il faudrait donc une quantité de mémoire au minimum de 
         - %(i6)d Mo si GESTION_MEMOIRE='IN_CORE',
         - %(i7)d Mo si GESTION_MEMOIRE='OUT_OF_CORE'. 
-En cas de doute, utilisez GESTION_MEMOIRE='AUTO'.
+  En cas de doute, utilisez GESTION_MEMOIRE='AUTO'.
 
-*****************************************************************************************************
 """),
+82: _(u"""
+Solveur MUMPS :
+  La machine sur laquelle ce calcul a été lance ne permet pas l'évaluation du pic mémoire
+  'VmPeak'. En mode SOLVEUR/GESTION_MEMOIRE='AUTO' cela peut fausser les évaluations
+  de mémoire disponibles.
+  > Par précaution on bascule automatiquement en mode GESTION_MEMOIRE='OUT_OF_CORE'.
 
+Conseils :
+  Pour accélérer le calcul vous pouvez (conseils cumulatifs):
+    - passer en mode IN_CORE (GESTION_MEMOIRE='IN_CORE'),
+    - lancer le calcul en parallèle,
+    - changer de machine en laissant le mode GESTION_MEMOIRE='AUTO'.
+"""),
+83: _(u"""
+Solveur MUMPS :
+  La machine sur laquelle ce calcul a été lancé ne permet pas l'évaluation du pic mémoire
+  'VmPeak'. En mode SOLVEUR/GESTION_MEMOIRE='EVAL' cela peut fausser la calibration
+  de la mémoire minimale consommée par Code_Aster.
+
+Conseil :
+  Pour lancer le calcul, il faut donc se fier plutôt aux estimations mémoire MUMPS.
+"""),
 84: _(u"""
 Solveur MUMPS :
 
@@ -451,4 +474,17 @@ Conseil :
   avec TYPE_RESOL='AUTO'.
 """),
 
+85: _(u"""
+Solveur MUMPS :
+  MUMPS essaye d'allouer %(i1)d Mo de mémoire mais il n'y arrive pas. Il se base
+  sur une estimation de la mémoire disponible et celle-ci est sans doute faussée. Cela peut 
+   arriver, par exemple, sur d'anciens noyaux système.
+
+  > Par précaution, on va réessayer en laissant complètement la main à MUMPS. Le calcul sera
+    potentiellement plus lent, mais cela gommera ces problèmes d'estimations mémoire préalables.
+  
+Conseil :
+  Contactez l'équipe de développement.
+
+"""),
 }

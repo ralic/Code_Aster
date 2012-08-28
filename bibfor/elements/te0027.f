@@ -1,7 +1,7 @@
       SUBROUTINE TE0027(OPTION,NOMTE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 28/08/2012   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,13 +46,13 @@ C DECLARATION PARAMETRES D'APPELS
 C DECLARATION VARIABLES LOCALES
       INTEGER IPOIDS,IVF,IDFDE
       INTEGER ICOMP,IGEOM,ITEMPS,IDEPL,IMATE
-      INTEGER IEPSR,IEPSF,ISIGI,IDEPI,ISIGM,IEPSP,IVARI
+      INTEGER IEPSR,IEPSF,ISIGI,ISIGM,IEPSP,IVARI
       INTEGER IFORC,IFORF,ITHET,IGTHET,IROTA,IPESA,IER
       INTEGER JGANO,NNO,NNOS,NPG,NCMP
       INTEGER I,J,K,KK,L,M,KP,NDIM,COMPT,NBVARI,IRET
-      INTEGER IVITES,IACCEL,J1,J2,IRETH
+      INTEGER IVITES,IACCEL,J1,J2,IRETH,MATCOD
 
-      REAL*8 EPSI,RAC2,R8PREM,CRIT(3)
+      REAL*8 EPSREF(6),EPSI,RAC2,R8PREM,CRIT(3)
       REAL*8 DFDI(81),F(3,3),SR(3,3)
       REAL*8 EPS(6),EPSIN(6),DEPSIN(6,3),EPSP(6),DEPSP(6,3)
       REAL*8 EPSINO(162),EPSIPG(162),FNO(81),EPSNO(162)
@@ -62,7 +62,7 @@ C DECLARATION VARIABLES LOCALES
       REAL*8 TCLA,TTHE,TFOR,TPLAS,TINI,POIDS,RBID
       REAL*8 DUDM(3,4),DFDM(3,4),DTDM(3,4),DER(4),DVDM(3,4)
       REAL*8 P,PPG,DPDM(3),RP,ENERGI(2),RHO,OM,OMO
-      REAL*8 ECIN,PROD3,PROD4,ACCELE(3)
+      REAL*8 ECIN,PROD3,PROD4,ACCELE(3),E,NU,MU
 
       LOGICAL GRAND,FONC,INCR,EPSINI
 
@@ -104,7 +104,7 @@ C - PAS DE CALCUL DE G POUR LES ELEMENTS OU LA VALEUR DE THETA EST NULLE
         IF (THET.LT.EPSI) COMPT = COMPT + 1
    40 CONTINUE
 
-      IF (COMPT.EQ.NNO) GO TO 650
+      IF (COMPT.EQ.NNO) GO TO 9999
 
       IVITES = 0
       IACCEL = 0
@@ -113,6 +113,9 @@ C - PAS DE CALCUL DE G POUR LES ELEMENTS OU LA VALEUR DE THETA EST NULLE
       CALL JEVECH('PDEPLAR','L',IDEPL)
       CALL JEVECH('PMATERC','L',IMATE)
       CALL JEVECH('PCOMPOR','L',ICOMP)
+      MATCOD = ZI(IMATE)
+C RECUPERATION DU CHAMP LOCAL (CARTE) ASSOCIE AU PRE-EPSI
+C CE CHAMP EST ISSU D UN CHARGEMENT PRE-EPSI
       IF (OPTION.EQ.'CALC_G_F'.OR.
      &    OPTION.EQ.'CALC_G_GLOB_F') THEN
         FONC = .TRUE.
@@ -131,6 +134,8 @@ C - PAS DE CALCUL DE G POUR LES ELEMENTS OU LA VALEUR DE THETA EST NULLE
         CALL TECACH('ONN','PEPSINR',1,IEPSR,IRET)
         IF (IEPSR.NE.0) EPSINI = .TRUE.
       END IF
+      
+C LOI DE COMPORTEMENT      
       DO 50 I = 1,4
         COMPOR(I) = ZK16(ICOMP+I-1)
    50 CONTINUE
@@ -145,23 +150,28 @@ C - PAS DE CALCUL DE G POUR LES ELEMENTS OU LA VALEUR DE THETA EST NULLE
       CALL TECACH('ONN','PPESANR',1,IPESA,IRET)
       CALL TECACH('ONN','PROTATR',1,IROTA,IRET)
       CALL TECACH('ONN','PSIGINR',1,ISIGI,IRET)
-      CALL TECACH('ONN','PDEPINR',1,IDEPI,IRET)
       IF (OPTION.EQ.'CALC_G'     .OR. OPTION.EQ.'CALC_G_F' .OR.
      &    OPTION.EQ.'CALC_G_GLOB'.OR. OPTION.EQ.'CALC_G_GLOB_F') THEN
         CALL TECACH('ONN','PVITESS',1,IVITES,IRET)
         CALL TECACH('ONN','PACCELE',1,IACCEL,IRET)
       ENDIF
+      
+      DO 60 I = 1,NCMP*NNO
+        EPSINO(I) = 0.D0
+   60 CONTINUE
+   
+C =====================================================================
+C MESSAGES D'ERREURS
+C =====================================================================
 
+C ON NE PEUT AVOIR SIMULTANEMENT PRE-DEFORMATIONS ET CONTRAINTES INIT.
       IF ((ISIGI.NE.0) .AND. EPSINI) THEN
         CALL U2MESS('F','RUPTURE1_20')
       END IF
 
-      DO 60 I = 1,NCMP*NNO
-        EPSINO(I) = 0.D0
-   60 CONTINUE
-
-C - RECUPERATION DES CHARGES ET DEFORMATIONS INITIALES ----------------
-
+C =====================================================================
+C RECUPERATION DES CHARGES ET PRE-DEFORMATIONS (CHARGEMENT PRE-EPSI)
+C =====================================================================
       IF (FONC) THEN
         DO 100 I = 1,NNO
           DO 70 J = 1,NDIM
@@ -194,15 +204,17 @@ C - RECUPERATION DES CHARGES ET DEFORMATIONS INITIALES ----------------
       END IF
 
       IF (IVITES.NE.0) THEN
-        CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,ICODRE)
-        CALL RCVALB('RIGI',1,1,'+',ZI(IMATE),' ',PHENOM,
+        CALL RCCOMA(MATCOD,'ELAS',PHENOM,ICODRE)
+        CALL RCVALB('RIGI',1,1,'+',MATCOD,' ',PHENOM,
      &              1,' ',RBID,1,'RHO',RHO,
      &              ICODRE,1)
       ENDIF
 
+
+C CORRECTION DES FORCES VOLUMIQUES
       IF ((IPESA.NE.0) .OR. (IROTA.NE.0)) THEN
-        CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,ICODRE)
-        CALL RCVALB('RIGI',1,1,'+',ZI(IMATE),' ',PHENOM,
+        CALL RCCOMA(MATCOD,'ELAS',PHENOM,ICODRE)
+        CALL RCVALB('RIGI',1,1,'+',MATCOD,' ',PHENOM,
      &               1,' ',RBID,1,'RHO',RHO,
      &              ICODRE,1)
         IF (IPESA.NE.0) THEN
@@ -229,22 +241,7 @@ C - RECUPERATION DES CHARGES ET DEFORMATIONS INITIALES ----------------
         END IF
       END IF
 
-      IF (IDEPI.NE.0) THEN
-        DO 200 KP = 1,NPG
-          L = (KP-1)*NNO
-          CALL NMGEOM(NDIM,NNO,.FALSE.,GRAND,ZR(IGEOM),KP,
-     &                IPOIDS,IVF,IDFDE,
-     &                ZR(IDEPI),.TRUE.,RBID,DFDI,F,EPS,RBID)
-          DO 190 I = 1,NCMP
-            EPSIPG((KP-1)*NCMP+I) = EPS(I)
-  190     CONTINUE
-  200   CONTINUE
-
-        CALL PPGAN2(JGANO,1,NCMP,EPSIPG,EPSNO)
-        DO 210 I = 1,NNO*NCMP
-          EPSINO(I) = EPSINO(I) + EPSNO(I)
-  210   CONTINUE
-      END IF
+      
 
 C ======================================================================
 
@@ -255,7 +252,14 @@ C SI LA TEMPERATURE N'EXISTE PAS, ON LUI IMPOSE UNE VALEUR NULLE
         IF (IRETH.EQ.1) TGD(KP) = 0.D0
   645 CONTINUE
 
-      DO 640 KP = 1,NPG
+
+C ======================================================================
+C BOUCLE PRINCIPALE SUR LES POINTS DE GAUSS
+C ======================================================================
+
+      DO 800 KP = 1,NPG
+      
+C INITIALISATIONS
         L = (KP-1)*NNO
         PPG = 0.D0
         DO 240 I = 1,3
@@ -273,11 +277,12 @@ C SI LA TEMPERATURE N'EXISTE PAS, ON LUI IMPOSE UNE VALEUR NULLE
   230     CONTINUE
   240   CONTINUE
         DO 260 I = 1,6
-          SIGL(I) = 0.D0
-          SIGIN(I) = 0.D0
-          EPSIN(I) = 0.D0
-          EPSP(I) = 0.D0
-          EPS(I) = 0.D0
+          SIGL(I)   = 0.D0
+          SIGIN(I)  = 0.D0
+          EPSIN(I)  = 0.D0
+          EPSP(I)   = 0.D0
+          EPS(I)    = 0.D0
+          EPSREF(I) =0.D0
           DO 250 J = 1,3
             DSIGIN(I,J) = 0.D0
             DEPSIN(I,J) = 0.D0
@@ -318,7 +323,9 @@ C   DU GRADIENT (TGDM) DE LA TEMPERATURE AUX POINTS DE GAUSS (TG)
             DFDM(J,4) = DFDM(J,4) + FNO(NDIM* (I-1)+J)*DER(4)
   280     CONTINUE
   290   CONTINUE
-
+C =======================================================
+C PLASTICITE
+C =======================================================
 C - CALCULS DES GRADIENTS DE P (DPDM) ET EPSP (DEPSP) EN PLASTICITE
 
         IF (INCR) THEN
@@ -358,9 +365,12 @@ C - CALCULS DES GRADIENTS DE P (DPDM) ET EPSP (DEPSP) EN PLASTICITE
           END IF
         END IF
 
-C -  DEFORMATIONS INITIALES
+C =======================================================
+C PRE DEFORMATIONS ET LEUR GRADIENT DEPSIN
+C (seule intervenant dans le calcul de G)
+C =======================================================
 
-        IF ((IDEPI.NE.0) .OR. EPSINI) THEN
+        IF (EPSINI) THEN
           DO 410 I = 1,NNO
             DER(1) = DFDI(I)
             DER(2) = DFDI(I+NNO)
@@ -380,10 +390,13 @@ C -  DEFORMATIONS INITIALES
   420     CONTINUE
         END IF
 
-C -  CONTRAINTES LAGRANGIENNES (SIGL),ENERGIE LIBRE ET DERIVEE / T
+C =======================================================
+C CALCUL DES CONTRAINTES LAGRANDIENNES SIGL ET DE L'ENERGIE LIBRE
+C =======================================================
 
         IF (INCR) THEN
-          CALL NMPLRU(FAMI,KP,1,'+',NDIM,TYPMOD,ZI(IMATE),COMPOR,
+C EN PLASTICITE
+          CALL NMPLRU(FAMI,KP,1,'+',NDIM,TYPMOD,MATCOD,COMPOR,
      &                PPG,EPS,EPSP,RP,ENERGI)
           DO 430 I = 1,3
             SIGL(I) = ZR(ISIGM+NCMP* (KP-1)+I-1)
@@ -395,7 +408,7 @@ C -  CONTRAINTES LAGRANGIENNES (SIGL),ENERGIE LIBRE ET DERIVEE / T
           CRIT(1) = 300
           CRIT(2) = 0.D0
           CRIT(3) = 1.D-3
-          CALL NMELNL(FAMI,KP,1,'+',NDIM,TYPMOD,ZI(IMATE),COMPOR,CRIT,
+          CALL NMELNL(FAMI,KP,1,'+',NDIM,TYPMOD,MATCOD,COMPOR,CRIT,
      &                OPRUPT,EPS,SIGL,RBID,RBID,ENERGI)
           CALL TECACH('NNN','PCONTGR',1,ISIGM,IRET)
           IF(IRET.EQ.0)THEN
@@ -408,7 +421,10 @@ C -  CONTRAINTES LAGRANGIENNES (SIGL),ENERGIE LIBRE ET DERIVEE / T
         END IF
         DIVT = DTDM(1,1) + DTDM(2,2) + DTDM(3,3)
 
-C  - CONTRAINTES INITIALES
+C =======================================================
+C CORRECTIONS LIEES A LA CONTRAINTE INITIALE (SIGM_INIT DE CALC_G)
+C CONTRAINTE, DEFORMATION DE REFERENCE, ENERGIE ELASTIQUE
+C =======================================================
 
         IF (ISIGI.NE.0) THEN
           DO 470 I = 1,NNO
@@ -416,9 +432,11 @@ C  - CONTRAINTES INITIALES
             DER(2) = DFDI(I+NNO)
             DER(3) = DFDI(I+2*NNO)
             DER(4) = ZR(IVF+L+I-1)
+C CALCUL DE SIGMA INITIAL
             DO 440 J = 1,NCMP
               SIGIN(J) = SIGIN(J) + ZR(ISIGI+NCMP* (I-1)+J-1)*DER(4)
   440       CONTINUE
+C CALCUL DU GRADIENT DE SIGMA INITIAL
             DO 460 J = 1,NCMP
               DO 450 K = 1,NDIM
                 DSIGIN(J,K) = DSIGIN(J,K) +
@@ -426,20 +444,40 @@ C  - CONTRAINTES INITIALES
   450         CONTINUE
   460       CONTINUE
   470     CONTINUE
+
+C TRAITEMENTS PARTICULIERS DES TERMES CROISES  
           DO 490 I = 4,NCMP
             SIGIN(I) = SIGIN(I)*RAC2
             DO 480 J = 1,NDIM
               DSIGIN(I,J) = DSIGIN(4,1)*RAC2
   480       CONTINUE
   490     CONTINUE
-          DO 500 I = 1,NCMP
-            SIGL(I) = SIGL(I) + SIGIN(I)
-  500     CONTINUE
-          DO 510 I = 1,NCMP
-            ENERGI(1) = ENERGI(1) + (EPS(I)+0.5D0*EPSIN(I))*SIGIN(I)
-  510     CONTINUE
-        END IF
 
+C CALCUL DE LA DEFORMATION DE REFERENCE
+          CALL RCCOMA(MATCOD,'ELAS',PHENOM,ICODRE)
+          CALL RCVALA(MATCOD,' ',PHENOM,1,' ',RBID,1,'NU',NU,
+     &              ICODRE,1)
+          CALL RCVALA(MATCOD,' ',PHENOM,1,' ',RBID,1,'E',E,
+     &              ICODRE,1)
+        
+          MU = E/(2.D0*(1.D0+NU))
+          
+          EPSREF(1)=-(1.D0/E)*(SIGIN(1)-(NU*(SIGIN(2)+SIGIN(3))))
+          EPSREF(2)=-(1.D0/E)*(SIGIN(2)-(NU*(SIGIN(3)+SIGIN(1))))    
+          EPSREF(3)=-(1.D0/E)*(SIGIN(3)-(NU*(SIGIN(1)+SIGIN(2)))) 
+          EPSREF(4)=-(1.D0/MU)*SIGIN(4)
+          EPSREF(5)=-(1.D0/MU)*SIGIN(5)
+          EPSREF(6)=-(1.D0/MU)*SIGIN(6)
+
+C ENERGIE ELASTIQUE (expression WADIER)
+          DO 465 I=1,NCMP
+            ENERGI(1) = ENERGI(1) + (EPS(I)-0.5D0*EPSREF(I))*SIGIN(I)
+465       CONTINUE
+        ENDIF
+        
+C =======================================================
+C STOCKAGE DE SIGMA ET TRAITEMENTS DES TERMES CROISES
+C =======================================================
         SR(1,1) = SIGL(1)
         SR(2,2) = SIGL(2)
         SR(3,3) = SIGL(3)
@@ -452,8 +490,9 @@ C  - CONTRAINTES INITIALES
 
 C - CALCUL DE G
 
+C =======================================================
 C - TERME THERMOELASTIQUE CLASSIQUE F.SIG:(GRAD(U).GRAD(THET))-ENER*DIVT
-
+C =======================================================
         ECIN  = 0.D0
         PROD3 = 0.D0
         PROD4 = 0.D0
@@ -485,8 +524,9 @@ C - TERME THERMOELASTIQUE CLASSIQUE F.SIG:(GRAD(U).GRAD(THET))-ENER*DIVT
         PROD = PROD - ECIN*DIVT + PROD3 - PROD4
         TCLA = TCLA + POIDS* (PROD-ENERGI(1)*DIVT)
 
+C =======================================================
 C - TERME THERMIQUE :   -(D(ENER)/DT)(GRAD(T).THETA)
-
+C =======================================================
         IF (IRETH.EQ.0) THEN
           PROD = 0.D0
           DO 560 I = 1,NDIM
@@ -494,9 +534,9 @@ C - TERME THERMIQUE :   -(D(ENER)/DT)(GRAD(T).THETA)
   560     CONTINUE
           TTHE = TTHE - POIDS*PROD*ENERGI(2)
         ENDIF
-
+C =======================================================
 C - TERME FORCE VOLUMIQUE
-
+C =======================================================
         DO 580 I = 1,NDIM
           PROD = 0.D0
           DO 570 J = 1,NDIM
@@ -505,8 +545,9 @@ C - TERME FORCE VOLUMIQUE
           TFOR = TFOR + DUDM(I,4)* (PROD+DFDM(I,4)*DIVT)*POIDS
   580   CONTINUE
 
+C =======================================================
 C - TERME PLASTIQUE :   SIG:(GRAD(EPSP).THETA)- R(P).GRAD(P).THETA
-
+C =======================================================
         IF (INCR) THEN
           PROD1 = 0.D0
           PROD2 = 0.D0
@@ -521,25 +562,36 @@ C - TERME PLASTIQUE :   SIG:(GRAD(EPSP).THETA)- R(P).GRAD(P).THETA
           TPLAS = TPLAS + (PROD1-PROD2)*POIDS
         END IF
 
-C - TERME INITIAL:  SIG:GRAD(EPSIN).THETA-(EPS-EPSIN):GRAD(SIGIN).THETA
+C =======================================================
+C TERME INITIAL:PROD1 LIE A LA CONTRAINTE (EPS-EPSREF):GRAD(SIGIN).THETA
+C               PROD2 LIE A LA PREDEFORMATION SIG:GRAD(EPSIN).THETA
+C =======================================================
 
-        IF ((ISIGI.NE.0) .OR. (IDEPI.NE.0) .OR. EPSINI) THEN
+        IF ((ISIGI.NE.0) .OR. EPSINI) THEN
           PROD1 = 0.D0
           PROD2 = 0.D0
-          DO 630 I = 1,NCMP
-            DO 620 J = 1,NDIM
-              PROD1 = PROD1 + (SIGL(I)-0.5D0*SIGIN(I))*DEPSIN(I,J)*
-     &                DTDM(J,4)
-              PROD2 = PROD2 + (EPS(I)+0.5D0*EPSIN(I))*DSIGIN(I,J)*
-     &                DTDM(J,4)
-  620       CONTINUE
-  630     CONTINUE
-          TINI = TINI + (PROD1-PROD2)*POIDS
+          IF (ISIGI.NE.0) THEN
+            DO 630 I=1,NCMP
+              DO 620 J=1,NDIM
+              PROD1=PROD1-(EPS(I)-EPSREF(I))*DSIGIN(I,J)*DTDM(J,4)
+620           CONTINUE
+630         CONTINUE
+          ELSE IF (EPSINI) THEN
+            DO 631 I=1,NCMP
+              DO 621 J=1,NDIM
+              PROD2=PROD2+SIGL(I)*DEPSIN(I,J)*DTDM(J,4)
+621           CONTINUE
+631         CONTINUE
+          END IF 
         END IF
+C ==================================================================
+C FIN DE BOUCLE PRINCIPALE SUR LES POINTS DE GAUSS
+C ==================================================================
+800   CONTINUE
+C EXIT EN CAS DE THETA FISSURE NUL PARTOUT
+9999   CONTINUE
 
-  640 CONTINUE
-  650 CONTINUE
-
+C ASSEMBLAGE FINAL DES TERMES DE G OU DG
       ZR(IGTHET) = TTHE + TCLA + TFOR + TPLAS + TINI
       CALL JEDEMA()
       END

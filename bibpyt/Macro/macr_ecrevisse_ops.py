@@ -1,4 +1,4 @@
-#@ MODIF macr_ecrevisse_ops Macro  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF macr_ecrevisse_ops Macro  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -78,12 +78,9 @@ def macr_ecrevisse_ops(self, reuse,
     DETRUIRE       = self.get_cmd("DETRUIRE")
     AFFE_MATERIAU  = self.get_cmd("AFFE_MATERIAU")
     STAT_NON_LINE  = self.get_cmd("STAT_NON_LINE")
-    POST_RELEVE_T  = self.get_cmd("POST_RELEVE_T")
     CALC_ECREVISSE = self.get_cmd("CALC_ECREVISSE")
     CO             = self.get_cmd("CO")
     CREA_TABLE     = self.get_cmd("CREA_TABLE")
-    CREA_RESU      = self.get_cmd("CREA_RESU")
-    CREA_CHAMP     = self.get_cmd("CREA_CHAMP")
 
     # Concepts sortants
     # TABLE creees par concatenation des tables sorties par CALC_ECREVISSE a chaque iteration

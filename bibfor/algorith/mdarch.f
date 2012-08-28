@@ -1,19 +1,19 @@
-      SUBROUTINE MDARCH (ISTO1,IPAS,T,DT,NBMODE,DEPGEN,VITGEN,ACCGEN,
-     +                   ISTO2,NBCHOC,SAUCHO,NBSCHO,
-     +                   ISTO3,NBREDE,SAURED,SAREDI,
-     +                   DEPSTO,VITSTO,ACCSTO,PASSTO,LPSTO, IORSTO,
-     +                   TEMSTO,FCHOST,DCHOST,VCHOST, ICHOST, VINT,
-     +                   IREDST,DREDST )
+      SUBROUTINE MDARCH (ISTO1,IPAS,DISC,DT,NBMODE,TYPCAL,NBSYM,NOMSYM,
+     +                   DEPGER,VITGER,ACCGER,DEPSTR,VITSTR,ACCSTR, 
+     +                   DEPGEC,VITGEC,ACCGEC,DEPSTC,VITSTC,ACCSTC,
+     +                   PASSTO,IORSTO,DISCST)
       IMPLICIT NONE
-      INTEGER    IORSTO(*),IREDST(*),SAREDI(*),ICHOST(*)
-      REAL*8     DEPGEN(*),VITGEN(*),ACCGEN(*),DEPSTO(*),VITSTO(*),
-     +           SAUCHO(NBCHOC,*),SAURED(*),DREDST(*),PASSTO(*),
-     +           ACCSTO(*),TEMSTO(*),FCHOST(*),DCHOST(*),VCHOST(*)
-      REAL*8     VINT(*)
-      LOGICAL LPSTO
+      INTEGER    IORSTO(*)
+      REAL*8     DEPGER(*),VITGER(*),ACCGER(*),
+     +           DEPSTR(*),VITSTR(*),ACCSTR(*),
+     +           PASSTO(*),DISCST(*)
+      COMPLEX*16 DEPGEC(*),VITGEC(*),ACCGEC(*),
+     +           DEPSTC(*),VITSTC(*),ACCSTC(*)
+      CHARACTER*4 TYPCAL
+      CHARACTER*4 NOMSYM(3)   
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,54 +31,52 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C TOLE CRP_21
+C 
+C-----------------------------------------------------------------------
 C
-C     ARCHIVAGE DES VALEURS
-C     ------------------------------------------------------------------
+C   ARCHIVAGE DES CHAMPS GENERALISES OBLIGATOIRES POUR LA SD_DYNA_GENE
 C
 C-----------------------------------------------------------------------
-      INTEGER IC ,IM ,IND ,IPAS ,IR ,ISTO1 ,ISTO2 
-      INTEGER ISTO3 ,NBCHOC ,NBMODE ,NBREDE ,NBSCHO ,NDEC 
-      REAL*8 DT ,T 
+      INTEGER IM, IND, IPAS, ISTO1, NBSYM, ICH
+      INTEGER NBMODE 
+      REAL*8 DT, DISC 
 C-----------------------------------------------------------------------
+C
+      CALL ASSERT ((TYPCAL(1:4).EQ.'TRAN').OR.(TYPCAL(1:4).EQ.'HARM'))
+C 
       IORSTO(ISTO1+1) = IPAS
-      TEMSTO(ISTO1+1) = T
-      NDEC = NBCHOC*ISTO1
-      IF (LPSTO) PASSTO(ISTO1+1) = DT
+      DISCST(ISTO1+1) = DISC
       IND = NBMODE * ISTO1
-      DO 202 IM = 1,NBMODE
-         DEPSTO(IND+IM) = DEPGEN(IM)
-         VITSTO(IND+IM) = VITGEN(IM)
-         ACCSTO(IND+IM) = ACCGEN(IM)
- 202  CONTINUE
-      IF ( NBCHOC.NE.0 ) THEN
-         IND = NBCHOC * ISTO1
-         DO 204 IC = 1,NBCHOC
-            ISTO2 = ISTO2 + 1
-            FCHOST(ISTO2) = SAUCHO(IC,1)
-            DCHOST(ISTO2) = SAUCHO(IC,4)
-            VCHOST(ISTO2) = SAUCHO(IC,7)
-            DCHOST(NBSCHO+ISTO2) = SAUCHO(IC,10)
-            ISTO2 = ISTO2 + 1
-            FCHOST(ISTO2) = SAUCHO(IC,2)
-            DCHOST(ISTO2) = SAUCHO(IC,5)
-            VCHOST(ISTO2) = SAUCHO(IC,8)
-            DCHOST(NBSCHO+ISTO2) = SAUCHO(IC,11)
-            ISTO2 = ISTO2 + 1
-            FCHOST(ISTO2) = SAUCHO(IC,3)
-            DCHOST(ISTO2) = SAUCHO(IC,6)
-            VCHOST(ISTO2) = SAUCHO(IC,9)
-            DCHOST(NBSCHO+ISTO2) = SAUCHO(IC,12)
-            ICHOST(NDEC+IC) = NINT(SAUCHO(IC,13))
-C           --- VARIABLES INTERNES : FLAMBAGE ---
-            VINT(IND+IC) = SAUCHO(IC,14)
- 204     CONTINUE
-      ENDIF
-      IF ( NBREDE.NE.0 ) THEN
-         DO 206 IR = 1,NBREDE
-            ISTO3 = ISTO3 + 1
-            IREDST(ISTO3) = SAREDI(IR)
-            DREDST(ISTO3) = SAURED(IR)
- 206     CONTINUE
+C      
+      IF (TYPCAL(1:4).EQ.'TRAN') THEN
+C
+          PASSTO(ISTO1+1) = DT
+          DO 69 IM = 1,NBMODE
+             DEPSTR(IND+IM) = DEPGER(IM)
+             VITSTR(IND+IM) = VITGER(IM)
+             ACCSTR(IND+IM) = ACCGER(IM)
+ 69      CONTINUE
+C
+      ELSE
+C
+          DO 100 ICH=1,NBSYM
+C                
+              IF (NOMSYM(ICH)(1:4).EQ.'DEPL') THEN
+                  DO 101 IM = 1,NBMODE
+                     DEPSTC(IND+IM) = DEPGEC(IM)      
+ 101              CONTINUE
+              ELSE IF (NOMSYM(ICH)(1:4).EQ.'VITE') THEN
+                  DO 102 IM = 1,NBMODE
+                     VITSTC(IND+IM) = VITGEC(IM)      
+ 102              CONTINUE
+              ELSE 
+                  DO 103 IM = 1,NBMODE
+                     ACCSTC(IND+IM) = ACCGEC(IM)      
+ 103              CONTINUE
+              ENDIF
+C
+ 100      CONTINUE         
+C
       ENDIF
 C
       END

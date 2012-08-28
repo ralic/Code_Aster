@@ -1,4 +1,4 @@
-# MODIF  DATE 06/08/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 28/08/2012   AUTEUR TRAN V-X.TRAN 
 # TITRE CALCUL DU CRITERE ENERGETIQUE GP EN 3D
 # ssnp131b.para = tps_job 500 mem_job 1536Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -205,6 +205,15 @@ FONFISS=DEFI_FOND_FISS(MAILLAGE=MA,
                        );
 
 L_INSTGP=DEFI_LIST_REEL(VALE=(8.0));
+
+# Ici, la loi de comportement dans CALC_G (ELAS_VMIS_TRAC) 
+# differe de la loi de
+# comportement de STAT_NON_LINE (VMIS_ISOT_TRAC).
+# Ceci est du au fait que l'on veut calculer G en supposant 
+# que le chargement est monotone
+# proportionnel. L'utilisation de la loi VMIS_ISOT_TRAC dans 
+# CALC_G aurait conduit a
+# calculer le parametre GTP (voir doc U2.82.03).
 
 tab=POST_GP(RESULTAT=RESU,
             MODELE=MOD,

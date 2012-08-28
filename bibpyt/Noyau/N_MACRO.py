@@ -1,4 +1,4 @@
-#@ MODIF N_MACRO Noyau  DATE 11/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_MACRO Noyau  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -139,15 +139,8 @@ class MACRO(N_ENTITE.ENTITE):
           Construit l'objet MACRO_ETAPE a partir de sa definition (self),
           puis demande la construction de ses sous-objets et du concept produit.
       """
-      # Glut MC (2007-05) / Sensibilité
-      # Précaution nécessaire pour la sensibilité (on fait 'exec' du texte d'une commande)
-      # car on n'a pas de "ligne" à décoder pour trouver le nom du résultat (à gauche
-      # du signe égal). Cà tombe bien, dans ce cas, sd_prod=None : pas de résultat !
-      if self.sd_prod != None:
-         nomsd=self.nommage.GetNomConceptResultat(self.nom)
-      else:
-         nomsd = None
-      etape= self.class_instance(oper=self,reuse=reuse,args=args)
+      nomsd = self.nommage.GetNomConceptResultat(self.nom)
+      etape = self.class_instance(oper=self,reuse=reuse,args=args)
       etape.McBuild()
       return etape.Build_sd(nomsd)
 

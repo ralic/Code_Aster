@@ -1,4 +1,4 @@
-#@ MODIF elements Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF elements Messages  DATE 28/08/2012   AUTEUR SFAYOLLE S.FAYOLLE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -168,17 +168,6 @@ Risque & Conseil : mettre un léger écrouissage peut permettre de passer cette di
 
 32 : _(u"""
  le comportement %(k1)s est inattendu
-"""),
-
-33 : _(u"""
- la convergence d'un processus itératif local de la loi GLRC_DAMAGE
- n'a pas été atteinte en 1000 itérations :
- XM1 vaut %(r1)f
- XM2 vaut %(r2)f
- YM1 vaut %(r3)f
- YM2 vaut %(r4)f
- Si cette alarme n'est pas suivie d'une erreur fatale, alors le résultat
- est correct.
 """),
 
 34 : _(u"""

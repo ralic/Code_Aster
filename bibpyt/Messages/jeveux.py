@@ -1,4 +1,4 @@
-#@ MODIF jeveux Messages  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF jeveux Messages  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -155,14 +155,6 @@ Conseil :
      Erreur programmeur :
      La routine JUVECA n'a pas prévu de redimensionner l'objet :%(k1)s
      de type :%(k2)s
-"""),
-
-33 : _(u"""
-  Statistiques mémoire (Mo) : %(r1)9.2f / %(r2)9.2f / %(r3)9.2f (VmPeak / Optimum / Minimum)
-"""),
-
-34 : _(u"""
-  Statistiques mémoire (Mo) : %(r2)9.2f / %(r3)9.2f (Optimum / Minimum)
 """),
 
 36 : _(u"""

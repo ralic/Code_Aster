@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 28/08/2012   AUTEUR TRAN V-X.TRAN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -146,17 +146,16 @@ OPTION__
     CALC_ESTI_ERRE      291   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  ECONTPG  PSIEF_R  ESIGMNO  PSIGMA
                                      ZVARCPG  PVARCPR
                               OUT__  EERREUR  PERREUR
-    CALC_G              96    IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  EDEFPNO  PDEFOPL  DDL_MECA PDEPINR
+    CALC_G              96    IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  EDEFPNO  PDEFOPL  ECONTPG  PCONTGR
                                      DDL_MECA PDEPLAR  CEPSINR  PEPSINR  NFORCER  PFRVOLU  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR  ESIGMNO  PSIGINR
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  DDL_MECA PTHETAR  ZVARINO  PVARIPR
-                                     ECONTPG  PCONTGR
                               OUT__  EGTHETA  PGTHETA
-    CALC_G_F            96    IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  EDEFPNO  PDEFOPL  DDL_MECA PDEPINR
+    CALC_G_F            96    IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  EDEFPNO  PDEFOPL  ECONTPG  PCONTGR
                                      DDL_MECA PDEPLAR  CEPSINF  PEPSINF  CFORCEF  PFFVOLU  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR  ESIGMNO  PSIGINR
                                      ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR   DDL_MECA PTHETAR
-                                     ZVARINO  PVARIPR  ECONTPG  PCONTGR
+                                     ZVARINO  PVARIPR  
                               OUT__  EGTHETA  PGTHETA
     CALC_K_G            299   IN__   DDL_MECA PDEPLAR  CFISSR   PFISSR   NFORCER  PFRVOLU  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR  ZVARCPG  PVARCPR

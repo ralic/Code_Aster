@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -390,7 +390,7 @@ C   --------------------------------------------------------
       CALL GETVID(' ','MODELE',0,IARG,0,K8BID,N3)
 C
       IF (((N1.NE.0).OR.(N2.NE.0).OR.(N3.NE.0)).AND.
-     &    ((TYPRES.EQ.'EVOL_CHAR').OR.(TYPRES.EQ.'HARM_GENE'))) THEN
+     &    ((TYPRES.EQ.'EVOL_CHAR'))) THEN
         IF ((N3.NE.0).AND.(FORM.EQ.'ENSIGHT')) THEN
           CALL U2MESK('I','UTILITAI5_98',1,TYPRES)
           GOTO 265
@@ -431,8 +431,7 @@ C     --------------------------------------------
 
 C     -- CREATION D'UN .REFD VIDE SI NECESSAIRE :
 C     ---------------------------------------------------
-      IF( TYPRES.EQ.'HARM_GENE'  .OR.
-     &    TYPRES.EQ.'DYNA_TRANS' .OR.
+      IF( TYPRES.EQ.'DYNA_TRANS' .OR.
      &    TYPRES.EQ.'DYNA_HARMO' .OR.
      &    TYPRES(1:9).EQ.'MODE_MECA' )THEN
          CALL AJREFD(' ',RESU,'FORCE')

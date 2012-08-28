@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 28/08/2012   AUTEUR TRAN V-X.TRAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,7 +51,13 @@ CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
             ),
 
          RESULTAT        =SIMP(statut='o',typ=(evol_elas,evol_noli,dyna_trans,mode_meca,mult_elas),),
-
+         TOUT             = SIMP(statut='f',typ='TXM',into=("OUI",),
+                             fr="le calcul sera effectue sur toutes les mailles"),
+         GROUP_MA         = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',
+                             fr="le calcul ne sera effectue que sur ces groupes de mailles"),
+         MAILLE           = SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**',
+                             fr="le calcul ne sera effectue que sur ces mailles"),
+                    
          b_no_mult          =BLOC(condition="(AsType(RESULTAT) != mult_elas)",
          regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','LIST_ORDRE','INST','LIST_INST',
                   'TOUT_MODE','NUME_MODE','LIST_MODE','FREQ','LIST_FREQ'),),
@@ -94,16 +100,19 @@ CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
                RELATION        =SIMP(statut='f',typ='TXM',defaut="ELAS",
                                      into=("ELAS","VMIS_ISOT_TRAC","VMIS_ISOT_LINE","VMIS_CINE_LINE","VMIS_ISOT_PUIS") ),
                DEFORMATION     =SIMP(statut='f',typ='TXM',defaut="PETIT",into=("PETIT","PETIT_REAC") ),
-      regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),
+             regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),
                TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
                GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
                MAILLE          =SIMP(statut='f',typ=ma,validators=NoRepeat(),max='**'),
-         ),
-         ETAT_INIT       =FACT(statut='f',
-           SIGM            =SIMP(statut='f',typ=cham_elem),
-           DEPL            =SIMP(statut='f',typ=cham_no_sdaster),
-         ),
-
+               
+               b_init          =BLOC(condition="RELATION=='ELAS'",),
+                        SIGM_INIT=SIMP(statut='f', typ=(cham_no_sdaster,cham_elem)),
+                        ),         
+                        
+#         ETAT_INIT       =FACT(statut='f',
+#           SIGM            =SIMP(statut='f',typ=cham_elem),
+#           DEPL            =SIMP(statut='f',typ=cham_no_sdaster),
+#         ),
          LISSAGE         =FACT(statut='d',
            LISSAGE_THETA   =SIMP(statut='f',typ='TXM',defaut="LEGENDRE",into=("LEGENDRE","LAGRANGE","LAGRANGE_REGU"),),
            LISSAGE_G       =SIMP(statut='f',typ='TXM',defaut="LEGENDRE",into=("LEGENDRE","LAGRANGE",
@@ -139,7 +148,7 @@ CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
                                 ),
          ),
 
-        b_cal_contrainte =BLOC(condition="(COMP_ELAS!=None and ETAT_INIT==None and (OPTION=='CALC_G' or OPTION=='CALC_G_GLOB'))",
+        b_cal_contrainte =BLOC(condition="(COMP_ELAS!=None and (OPTION=='CALC_G' or OPTION=='CALC_G_GLOB'))",
           CALCUL_CONTRAINTE =SIMP(statut='f',typ='TXM',into=("NON",),),
          ),
 

@@ -4,7 +4,7 @@
       CHARACTER*(*)       TRANGE, NOEU, CMP, NOMREZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,8 +57,8 @@ C
       CALL JEVEUO ( NOMK19//'.REDN', 'L', JREDN )
       CALL JEVEUO ( NOMK19//'.REDC', 'L', JREDC )
       CALL JEVEUO ( NOMK19//'.REDD', 'L', JREDD )
-      CALL JEVEUO ( NOMK19//'.INST', 'L', JINST )
-      CALL JELIRA ( NOMK19//'.INST', 'LONUTI', NBINST, K8B )
+      CALL JEVEUO ( NOMK19//'.DISC', 'L', JINST )
+      CALL JELIRA ( NOMK19//'.DISC', 'LONUTI', NBINST, K8B )
       NBRED = ZI(JDESC+3)
 C
       DO 10 INUME = 0,NBRED-1

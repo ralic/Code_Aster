@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE  REPONSE HARMONIQUE D'UNE BARRE PAR SOUS-STRUCTURATION DYNAMIQUE
 # shll100b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -549,7 +549,8 @@ DYNHAR1=REST_SOUS_STRUC(  RESU_GENE=DYNGEN,
 
 #
 DYNHAR2=REST_SOUS_STRUC( RESU_GENE=DYNGEN,
-                          SOUS_STRUC='COTE2')
+                         TOUT_CHAM='OUI',
+                         SOUS_STRUC='COTE2')
 
 #RESTITUTION SUR BASE PHYSIQUE
 
@@ -613,50 +614,6 @@ TEST_RESU( RESU=_F( RESULTAT = DYNHARM2,
 IMPR_RESU( FORMAT = 'IDEAS', UNITE = 38,
            RESU=_F( RESULTAT = HARMDIR,
                     TOUT_ORDRE = 'OUI',  ))
-
-#
-#----------------------------------------------------------
-# TEST DE LIRE_RESU
-#----------------------------------------------------------
-#
-
-
-HARM=LIRE_RESU(      MAILLAGE=MAYAD,
-                               UNITE=38,
-                              FORMAT='IDEAS',
-                           TYPE_RESU='HARM_GENE',
-                            NOM_CHAM=('DEPL','VITE','ACCE',),
-                          TOUT_ORDRE='OUI',FORMAT_IDEAS=(
-                        _F(     NOM_CHAM = 'DEPL',
-                             NUME_DATASET = 55,
-                                       RECORD_6 = ( 1, 5, 3, 8, 5, 6, ),
-                             POSI_ORDRE = ( 7, 4,),
-                             POSI_FREQ = ( 8, 1,),
-                             NOM_CMP = ('DX', 'DY',)),
-                        _F(     NOM_CHAM = 'VITE',
-                             NUME_DATASET = 55,
-                                       RECORD_6 = ( 1, 5, 3, 11, 5, 6, ),
-                             POSI_ORDRE = ( 7, 4,),
-                             POSI_FREQ = ( 8, 1,),
-                             NOM_CMP = ('DX', 'DY')),
-                        _F(     NOM_CHAM = 'ACCE',
-                             NUME_DATASET = 55,
-                                       RECORD_6 = ( 1, 5, 3, 12, 5, 6, ),
-                             POSI_ORDRE = ( 7, 4,),
-                             POSI_FREQ = ( 8, 1,),
-                             NOM_CMP = ('DX', 'DY' )))
-                      )
-
-#
-TEST_RESU( RESU=_F( RESULTAT = HARM,
-                  NOM_CHAM = 'DEPL',
-                  NUME_ORDRE = 01,
-                  CRITERE = 'RELATIF',
-                  PRECISION = 2.E-3,
-                  NOEUD = 'N11',
-                  NOM_CMP = 'DX',
-                  VALE_C = -7.00E-11+5.07E-9j,
-                  REFERENCE = 'AUTRE_ASTER'))
 
 FIN()
 #

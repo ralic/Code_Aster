@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 06/08/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ops Cata  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -45,7 +45,6 @@ try:
    Build.B_CODE.CODE.codex=aster
 
    from Utilitai.Utmess   import UTMESS, MessageLog
-   from Build.B_SENSIBILITE_MEMO_NOM_SENSI import MEMORISATION_SENSIBILITE
 except:
    aster_exists = False
 
@@ -73,10 +72,6 @@ def commun_DEBUT_POURSUITE(jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, 
       #from functools import partial
       #asprint = partial(aster.affiche, 'MESSAGE')
       #message.register_print_function(asprint)
-      # en POURSUITE, ne pas écraser la mémorisation existante.
-      if not hasattr(jdc, 'memo_sensi'):
-         jdc.memo_sensi = MEMORISATION_SENSIBILITE()
-      jdc.memo_sensi.reparent(jdc)
       # ne faire qu'une fois
       if not hasattr(jdc, 'msg_init'):
          # messages d'alarmes désactivés

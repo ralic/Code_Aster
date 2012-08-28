@@ -1,7 +1,7 @@
       SUBROUTINE IMPMEM()
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 06/08/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,20 +22,21 @@ C ======================================================================
 C     RENVOIE LA VALEUR EN MEGA OCTETS DE LA MEMOIRE UTILISEE PAR JEVEUX
 C
 C ======================================================================
-      REAL*8           RVAL(3)
-      CHARACTER*8      K8TAB(3)
+      REAL*8           RVAL(4)
+      CHARACTER*8      K8TAB(4)
       INTEGER          IRET
       
-      CALL R8INIR(3,-1.D0,RVAL,1)
+      CALL R8INIR(4,-1.D0,RVAL,1)
       K8TAB(1) = 'VMPEAK'
-      K8TAB(2) = 'CMAX_JV'  
-      K8TAB(3) = 'CUSE_JV'  
-      CALL UTGTME(3,K8TAB,RVAL,IRET)
+      K8TAB(2) = 'VMSIZE'
+      K8TAB(3) = 'CMAX_JV'  
+      K8TAB(4) = 'CUSE_JV'  
+      CALL UTGTME(4,K8TAB,RVAL,IRET)
       IF ( IRET .EQ. 0 ) THEN
         IF (RVAL(1).GT.0.D0) THEN
-          CALL U2MESR('I','JEVEUX_33',3,RVAL)
+          CALL U2MESR('I','SUPERVIS2_77',4,RVAL)
         ELSE
-          CALL U2MESR('I','JEVEUX_34',3,RVAL)
+          CALL U2MESR('I','SUPERVIS2_78',4,RVAL)
         ENDIF
       ELSE  
         CALL ASSERT(.FALSE.)

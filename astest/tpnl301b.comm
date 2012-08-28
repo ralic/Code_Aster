@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 27/08/2012   AUTEUR HAELEWYN J.HAELEWYN 
 # TITRE THERMO-HYDRATATION D'UN CYLINDRE DE BETON 3D HEXA20 PENTA15 TETRA10
 # tpnl301b.para = tps_job 1000 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -40,7 +40,6 @@ MODELETH=AFFE_MODELE(MAILLAGE=MAIL2,
 #------------------------------------------------------------------
 # Definition des constantes materiaux
 #------------------------------------------------------------------
-# definition des teneurs en eau dans le beton [litre/m3]
 # Le beton
 # CONDUCTION EN KJ/H/M/K
 
@@ -133,16 +132,13 @@ LINST=DEFI_LIST_REEL(DEBUT=-1.0,
                                  _F(JUSQU_A=t730h,
                                     PAS=10,),),);
 # ---------------------------------------------------------------------------------
-#   Calcul Hydrique / Sechage
+#   Calcul Hydrique 
 # ---------------------------------------------------------------------------------
 #Champ de temperature
 
 CHMATTH=AFFE_MATERIAU(MAILLAGE=MAIL2,
                       AFFE=_F(TOUT='OUI',
-                              MATER=BETON,),
-                      AFFE_VARC=_F(TOUT='OUI',
-                                   NOM_VARC='TEMP',
-                                   VALE_REF=15.0,),);
+                              MATER=BETON,),);
 
 TEMP_INT=DEFI_FONCTION(NOM_PARA='INST',VALE=(-1000.0,40.0,
                              tps_10an,40.0,

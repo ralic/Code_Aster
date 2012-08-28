@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE MODELE PROBABILISTE NONPARAMETRIQUE EN HARMONIQUE SOUS-STRUCTURE
 # shls200a.para = tps_job 310 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -412,7 +412,8 @@ for k in range(1,ns+1):
 # BOUCLE SUR SOUS STRUCTURES
    for i in range(2):
      DYNHAR[i]=REST_SOUS_STRUC(  RESU_GENE=HARM,
-                          SOUS_STRUC=ss_struct[i])
+                          SOUS_STRUC=ss_struct[i],
+                          NOM_CHAM='DEPL',)
 
 # POST-TRAITEMENT
 # BOUCLE SUR POINTS D'OBSERVATION

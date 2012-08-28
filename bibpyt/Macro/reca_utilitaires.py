@@ -1,4 +1,4 @@
-#@ MODIF reca_utilitaires Macro  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF reca_utilitaires Macro  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -123,9 +123,9 @@ def temps_CPU(restant_old,temps_iter_old):
    """
       Fonction controlant le temps CPU restant
    """
-   CPU=INFO_EXEC_ASTER(LISTE_INFO = ("CPU_RESTANT",))
-   TEMPS=CPU['CPU_RESTANT',1]
-   DETRUIRE(CONCEPT=_F(NOM=CPU),INFO=1)
+   __cpu=INFO_EXEC_ASTER(LISTE_INFO = ("CPU_RESTANT",))
+   TEMPS=__cpu['CPU_RESTANT',1]
+   DETRUIRE(CONCEPT=_F(NOM=__cpu),INFO=1)
    err=0
    # Indique une execution interactive
    if (TEMPS>1.E+9):

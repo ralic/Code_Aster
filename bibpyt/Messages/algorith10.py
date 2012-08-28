@@ -1,4 +1,4 @@
-#@ MODIF algorith10 Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF algorith10 Messages  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -53,9 +53,10 @@ cata_msg = {
  développement non prévu pour la sous-structuration.
 """),
 
-
-
-
+16 : _(u"""
+ dans le cas harmonique les seuls champs restituables sont 
+ 'DEPL', 'VITE' et 'ACCE'.
+"""),
 
 17 : _(u"""
  l'option  %(k1)s  s'applique sur toute la structure

@@ -1,4 +1,4 @@
-#@ MODIF B_JDC Build  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_JDC Build  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -29,9 +29,6 @@ import sys
 
 from Noyau import N_ASSD
 from Noyau.N_info import message, SUPERV
-
-# Modules liés à la sensibilité
-from B_SENSIBILITE_JDC import SENSIBILITE_JDC
 
 # Modules Eficas
 from B_CODE import CODE
@@ -136,35 +133,3 @@ class JDC(CODE):
      if not isinstance(sd, N_ASSD.ASSD):
          sd = None
      return sd
-
-  def is_sensible(self) :
-     """
-         Détermine si le jdc est concerné par la sensibilité
-         1. On construit une classe SENSIBILITE_JDC à partir du jdc à analyser.
-         2. On applique la méthode ad_hoc de cette classe. Elle retourne 1 ou 0
-            selon que le jdc fait l'objet d'une étude de sensibilité ou pas.
-         3. S'il y a sensibilite, on mémorise la classe SENSIBILITE_JDC en tant
-            qu'attribut de la classe du jdc courant pour traiter les modifications
-            ultérieures.
-      Retourne deux entiers :
-      . codret : 0 : tout s'est bien passé
-                 1 : une commande MEMO_NOM_SENSI est présente dans le jdc
-      . est_sensible : 1 : le jdc fait l'objet d'une étude de sensibilité
-                       0 : pas de sensibilite dans ce jdc.
-     """
-     sensibilite_jdc = SENSIBILITE_JDC(self)
-
-     codret, est_sensible = sensibilite_jdc.is_sensible()
-
-     if codret == 0 :
-       if est_sensible :
-         self.sensibilite_jdc = sensibilite_jdc
-
-     return codret, est_sensible
-
-
-  def cree_jdc_sensible(self) :
-     """
-         Crée un nouveau jdc dans le cas de calcul de sensibilité.
-     """
-     return self.sensibilite_jdc.new_jdc()

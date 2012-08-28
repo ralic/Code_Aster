@@ -1,4 +1,4 @@
-#@ MODIF macr_aspic_calc_ops Macro  DATE 18/06/2012   AUTEUR DELMAS J.DELMAS 
+#@ MODIF macr_aspic_calc_ops Macro  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -117,7 +117,8 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
 #
 #     --- commande AFFE_MODELE ---
 #
-  if MODELE!=None : self.DeclareOut('modele',MODELE)
+  if MODELE!=None :
+      self.DeclareOut('_modele',MODELE)
   mcfact=[]
   if (PRES_REP['PRES_LEVRE']=='OUI') and (TYPE_MAILLAGE[-4:]=='_DEB') :
      mcfact.append(_F(GROUP_MA=GRMAIL,     PHENOMENE='MECANIQUE',MODELISATION='3D'    ))
@@ -126,7 +127,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
   mcfact.append(   _F(GROUP_MA='P1_CORP'  ,PHENOMENE='MECANIQUE',MODELISATION='DIS_TR'))
   mcfact.append(   _F(GROUP_MA='P2_CORP'  ,PHENOMENE='MECANIQUE',MODELISATION='DIS_TR'))
   mcfact.append(   _F(GROUP_MA='P_TUBU'   ,PHENOMENE='MECANIQUE',MODELISATION='DIS_TR'))
-  modele = AFFE_MODELE( MAILLAGE = MAILLAGE ,
+  _modele = AFFE_MODELE( MAILLAGE = MAILLAGE ,
                         AFFE     = mcfact    )
   if ECHANGE!=None :                                # modele thermique
      __modthe = AFFE_MODELE( MAILLAGE = MAILLAGE ,
@@ -141,13 +142,14 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
      if mater['TOUT']!=None : mcfact.append(_F(TOUT    =mater['TOUT'    ],MATER=mater['MATER']))
      else                   : mcfact.append(_F(GROUP_MA=mater['GROUP_MA'],MATER=mater['MATER']))
   __affmat = AFFE_MATERIAU( MAILLAGE = MAILLAGE ,
-                          MODELE   = modele ,
+                          MODELE   = _modele ,
                           AFFE     = mcfact    )
 #
 #     --- commande AFFE_CARA_ELEM ---
 #
-  if CARA_ELEM!=None : self.DeclareOut('carael',CARA_ELEM)
-  carael = AFFE_CARA_ELEM( MODELE   = modele ,
+  if CARA_ELEM!=None :
+      self.DeclareOut('_carael',CARA_ELEM)
+  _carael = AFFE_CARA_ELEM( MODELE   = _modele ,
                            DISCRET  = ( _F( GROUP_MA='P1_CORP' ,
                                             CARA    ='K_TR_D_N',
                                             VALE    = ( 0.0 , 0.0 , 0.0 , 0.0 , 0.0 , 0.0 ) ),
@@ -172,12 +174,13 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
 #
 #     --- calcul thermique ---
 #
-     if RESU_THER!=None : self.DeclareOut('resuth',RESU_THER)
+     if RESU_THER!=None :
+         self.DeclareOut('_resuth',RESU_THER)
      mcsimp={}
      if INCREMENT['NUME_INST_INIT']!=None : mcsimp['NUME_INST_INIT']=INCREMENT['NUME_INST_INIT']
      if INCREMENT['NUME_INST_FIN' ]!=None : mcsimp['NUME_INST_FIN' ]=INCREMENT['NUME_INST_FIN' ]
      mcfact=_F(LIST_INST=INCREMENT['LIST_INST'],**mcsimp)
-     resuth = THER_LINEAIRE( MODELE     = __modthe ,
+     _resuth = THER_LINEAIRE( MODELE     = __modthe ,
                              CHAM_MATER = __affmat ,
                              ETAT_INIT  = _F(STATIONNAIRE='OUI',),
                              EXCIT      = _F(CHARGE=__chther,),
@@ -185,7 +188,8 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
 #
 #     --- commande AFFE_MATERIAU (mécanique)---
 #
-  if CHAM_MATER!=None : self.DeclareOut('affmth',CHAM_MATER)
+  if CHAM_MATER!=None :
+      self.DeclareOut('_affmth',CHAM_MATER)
   indther=0
   if ECHANGE!=None and RESU_THER!=None : indther=1
   mcfact=[]
@@ -195,14 +199,14 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
        mcfact.append(_F(TOUT    =mater['TOUT'    ],MATER=mater['MATER'],))
        if indther==1:
          mcfac2.append(_F(NOM_VARC='TEMP',TOUT='OUI',
-                        EVOL=resuth,NOM_CHAM='TEMP',VALE_REF=mater['TEMP_REF']),)
+                        EVOL=_resuth,NOM_CHAM='TEMP',VALE_REF=mater['TEMP_REF']),)
      else:
        mcfact.append(_F(GROUP_MA=mater['GROUP_MA'],MATER=mater['MATER'],))
        if indther==1:
          mcfac2.append(_F(NOM_VARC='TEMP',GROUP_MA=mater['GROUP_MA'],
-                        EVOL=resuth,NOM_CHAM='TEMP',VALE_REF=mater['TEMP_REF']),)
-  affmth = AFFE_MATERIAU( MAILLAGE = MAILLAGE ,
-                          MODELE   = modele ,
+                        EVOL=_resuth,NOM_CHAM='TEMP',VALE_REF=mater['TEMP_REF']),)
+  _affmth = AFFE_MATERIAU( MAILLAGE = MAILLAGE ,
+                          MODELE   = _modele ,
                           AFFE     = mcfact,
                           AFFE_VARC= mcfac2,)
 #
@@ -219,7 +223,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
          AEFOCO = 'EXCORP1'
          ATORCO = 'P1_CORP'
          LINTC  = 'L_INT_C1'
-  _conlim = AFFE_CHAR_MECA(  MODELE   = modele ,
+  _conlim = AFFE_CHAR_MECA(  MODELE   = _modele ,
                              LIAISON_ELEM  = ( _F( OPTION    ='3D_POU'  ,
                                                    GROUP_MA_1='EXCORP1',
                                                    GROUP_NO_2='P1_CORP'),
@@ -252,7 +256,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
                               _F(GROUP_MA    =AEFOCO,
                                  GROUP_MA_INT=LINTC,
                                  PRES        =PRES_REP['PRES']))
-  _chpres = AFFE_CHAR_MECA( MODELE   = modele ,**motscles)
+  _chpres = AFFE_CHAR_MECA( MODELE   = _modele ,**motscles)
 #
 #     --- commande AFFE_CHAR_MECA ---
 #         chargement mecanique : torseur sur le corps
@@ -269,7 +273,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
        if tors['MY']!=None : mcsimp['MY']=tors['MY']
        if tors['MZ']!=None : mcsimp['MZ']=tors['MZ']
        mcfact=_F(GROUP_NO=ATORCO,**mcsimp)
-       _chtrc[i] = AFFE_CHAR_MECA(  MODELE       = modele ,
+       _chtrc[i] = AFFE_CHAR_MECA(  MODELE       = _modele ,
                                     FORCE_NODALE = mcfact , )
        i=i+1
 #
@@ -288,7 +292,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
        if tors['MY']!=None : mcsimp['MY']=tors['MY']
        if tors['MZ']!=None : mcsimp['MZ']=tors['MZ']
        mcfact=_F(GROUP_NO='P_TUBU  ',**mcsimp)
-       _chtrt[i] = AFFE_CHAR_MECA( MODELE       = modele ,
+       _chtrt[i] = AFFE_CHAR_MECA( MODELE       = _modele ,
                                     FORCE_NODALE = mcfact , )
        i=i+1
 
@@ -301,7 +305,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
        mcfond = ('FOND_SUP','FOND_INF')
     else :
        mcfond = ('FONDFISS')
-       _chcont = DEFI_CONTACT( MODELE      = modele ,
+       _chcont = DEFI_CONTACT( MODELE      = _modele ,
                             FORMULATION = 'DISCRETE',
                             
                             ZONE =_F(GROUP_MA_MAIT = 'LEVRCORP',
@@ -386,14 +390,14 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
   
   
   if contact==None:
-    nomres = STAT_NON_LINE( MODELE     = modele ,
-                            CHAM_MATER = affmth ,
-                            CARA_ELEM  = carael ,
+    nomres = STAT_NON_LINE( MODELE     = _modele ,
+                            CHAM_MATER = _affmth ,
+                            CARA_ELEM  = _carael ,
                             INFO       = INFO   , **motscles)
   else :
-    nomres = STAT_NON_LINE( MODELE     = modele ,
-                            CHAM_MATER = affmth ,
-                            CARA_ELEM  = carael ,
+    nomres = STAT_NON_LINE( MODELE     = _modele ,
+                            CHAM_MATER = _affmth ,
+                            CARA_ELEM  = _carael ,
                             CONTACT    = contact,
                             INFO       = INFO   , **motscles)                            
                           
@@ -488,7 +492,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
         else    : NUME =     str(i)
         mcsimp={}
         mcsimp['GROUP_NO'   ]='LD'+str(i)
-        mcsimp['RESULTAT'   ]=resuth
+        mcsimp['RESULTAT'   ]=_resuth
         mcsimp['TOUT_ORDRE' ]='OUI'
         mcsimp['NOM_CHAM'   ]='TEMP'
         mcsimp['PRECISION'  ]=55.E-1
@@ -508,7 +512,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
         else    : NUME =     str(i)
         mcsimp={}
         mcsimp['GROUP_NO'   ]='LD'+str(i)
-        mcsimp['RESULTAT'   ]=resuth
+        mcsimp['RESULTAT'   ]=_resuth
         mcsimp['TOUT_ORDRE' ]='OUI'
         mcsimp['NOM_CHAM'   ]='TEMP'
         mcsimp['PRECISION'  ]=55.E-1
@@ -578,7 +582,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
         else    : NUME =     str(i)
         mcsimp={}
         mcsimp['GROUP_NO'   ]='LI'+str(i)
-        mcsimp['RESULTAT'   ]=resuth
+        mcsimp['RESULTAT'   ]=_resuth
         mcsimp['TOUT_ORDRE' ]='OUI'
         mcsimp['NOM_CHAM'   ]='TEMP'
         mcsimp['PRECISION'  ]=55.E-1
@@ -599,7 +603,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
         else    : NUME =     str(i)
         mcsimp={}
         mcsimp['GROUP_NO'   ]='LI'+str(i)
-        mcsimp['RESULTAT'   ]=resuth
+        mcsimp['RESULTAT'   ]=_resuth
         mcsimp['TOUT_ORDRE' ]='OUI'
         mcsimp['NOM_CHAM'   ]='TEMP'
         mcsimp['PRECISION'  ]=55.E-1
@@ -650,7 +654,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
 #
       if NBFIS==1:
         __rthfis=POST_RELEVE_T(ACTION=_F(GROUP_NO   ='FONDFISS',
-                                         RESULTAT   =resuth,
+                                         RESULTAT   =_resuth,
                                          TOUT_ORDRE ='OUI',
                                          NOM_CHAM   ='TEMP',
                                          PRECISION  =55.E-1,
@@ -665,7 +669,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
       elif NBFIS==2:
 #
         __rthfis1=POST_RELEVE_T(ACTION=_F(GROUP_NO   ='FOND_SUP',
-                                          RESULTAT   =resuth,
+                                          RESULTAT   =_resuth,
                                           TOUT_ORDRE ='OUI',
                                           NOM_CHAM   ='TEMP',
                                           PRECISION  =55.E-1,
@@ -674,7 +678,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
                                           OPERATION  ='EXTRACTION',))
         IMPR_TABLE(TABLE = __rthfis1, )
         __rthfis2=POST_RELEVE_T(ACTION=_F(GROUP_NO   ='FOND_INF',
-                                          RESULTAT   =resuth,
+                                          RESULTAT   =_resuth,
                                           TOUT_ORDRE ='OUI',
                                           NOM_CHAM   ='TEMP',
                                           PRECISION  =55.E-1,
@@ -711,10 +715,10 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
 #
 #        boucle sur le nombre de fond de fissure
 #
-    fond3d = [None]*2
+    _fd3d = [None]*2
     for j in range(NBFIS):
-      if FOND_FISS_1!=None : self.DeclareOut('fond3d_0',FOND_FISS_1)
-      if FOND_FISS_2!=None : self.DeclareOut('fond3d_1',FOND_FISS_2)
+      if FOND_FISS_1!=None : self.DeclareOut('_fd3d_0',FOND_FISS_1)
+      if FOND_FISS_2!=None : self.DeclareOut('_fd3d_1',FOND_FISS_2)
 #
 #          --- commande DEFI_FOND_FISS ---
 #
@@ -734,7 +738,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
                                    GROUP_MA     =TABMA8[j],
                                    GROUP_NO_ORIG=grnoorig,
                                    GROUP_MA_ORIG=NOMMA[j],)
-      fond3d[j]=DEFI_FOND_FISS( MAILLAGE  = MAILLAGE,
+      _fd3d[j]=DEFI_FOND_FISS( MAILLAGE  = MAILLAGE,
                                 LEVRE_SUP = _F(GROUP_MA='LEVRCORP',),
                                 LEVRE_INF = _F(GROUP_MA='LEVRTUBU',),**motscles)
       if THETA_3D!=None:
@@ -742,8 +746,8 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
 #
 #          --- commande CALC_THETA ---
 #
-          __theta = CALC_THETA( MODELE    = modele,
-                                FOND_FISS = fond3d[j],
+          __theta = CALC_THETA( MODELE    = _modele,
+                                FOND_FISS = _fd3d[j],
                                 THETA_3D  = _F( TOUT    = 'OUI',
                                                 MODULE  =  1.0 ,
                                                 R_INF   = tht3d['R_INF'],
@@ -790,7 +794,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
           if FERME:
                                motscles['LISSAGE']=_F(LISSAGE_THETA= 'LAGRANGE',
                                                       LISSAGE_G= 'LAGRANGE',)
-          __glocal = CALC_G( THETA=_F( FOND_FISS  = fond3d[j],
+          __glocal = CALC_G( THETA=_F( FOND_FISS  = _fd3d[j],
                                        R_INF      = tht3d['R_INF'],
                                        R_SUP      = tht3d['R_SUP'],),
                              RESULTAT   = nomres,
@@ -812,7 +816,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
                                   VALE_MIN   = born['VALE_MIN'  ] ,
                                   VALE_MAX   = born['VALE_MAX'  ]   ) )
               motscles['BORNES']=mcfact
-              __glbil = CALC_G( THETA=_F( FOND_FISS  = fond3d[j],
+              __glbil = CALC_G( THETA=_F( FOND_FISS  = _fd3d[j],
                                           R_INF      = tht3d['R_INF'],
                                           R_SUP      = tht3d['R_SUP'],),
                                 RESULTAT   = nomres,
@@ -874,8 +878,8 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
                                     motsclei['VERSION'   ]= IMPRESSION['VERSION']
       if IMPRESSION['FORMAT']=='CASTEM' :
                                     motsclei['NIVE_GIBI' ]= IMPRESSION['NIVE_GIBI']
-      mcfresu.append(_F(RESULTAT=resuth,**motscles))
-    IMPR_RESU( MODELE = modele,
+      mcfresu.append(_F(RESULTAT=_resuth,**motscles))
+    IMPR_RESU( MODELE = _modele,
                RESU   = mcfresu,
                FORMAT=IMPRESSION['FORMAT'],**motsclei)
 #

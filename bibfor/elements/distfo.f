@@ -4,7 +4,7 @@
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/01/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 28/08/2012   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -93,12 +93,6 @@ C OUT NORMY :
         DYI = DYI * NORMX / NORMY
 
  20   CONTINUE
-
-      VALR(1) = XM1
-      VALR(2) = XM2
-      VALR(1) = YM1
-      VALR(2) = YM2
-      CALL U2MESR('A','ELEMENTS_33',4,VALR)
 
  30   CONTINUE
 

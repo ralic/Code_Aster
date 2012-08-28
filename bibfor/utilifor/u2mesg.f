@@ -1,6 +1,6 @@
       SUBROUTINE U2MESG (CH1, IDMESS, NK, VALK, NI, VALI, NR, VALR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 06/08/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILIFOR  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +30,7 @@ C     ------------------------------------------------------------------
       INTEGER          RECURS
       CHARACTER *16    COMPEX
       CHARACTER *8     NOMRES, K8B
-      LOGICAL          LERROR, LVALID, LABORT, LTRACE, SUITE
+      LOGICAL          LERROR, LVALID, LABORT, LTRACE, SUITE, LREC
       INTEGER          LOUT,IDF,I,LC,ICMD,IMAAP,LXLGUT, ISJVUP
 C     ------------------------------------------------------------------
       SAVE             RECURS
@@ -40,25 +40,28 @@ C     --- 'Z' (IDF=8) = LEVEE D'EXCEPTION
 
 C --- ERREUR = F, S, Z
       LERROR = IDF.EQ.2 .OR. IDF.EQ.6 .OR. IDF.EQ.8
+      LREC = IDF.NE.3 .AND. IDF.NE.5
 
       SUITE = .FALSE.
       IF (LEN(CH1) .GT. 1) THEN
          IF (CH1(2:2) .EQ. '+') SUITE=.TRUE.
       ENDIF
 C
-C --- SE PROTEGER DES APPELS RECURSIFS
-      IF ( RECURS .EQ. 1234567891 ) THEN
-         CALL JEFINI('ERREUR')
+C --- SE PROTEGER DES APPELS RECURSIFS POUR LES MESSAGES D'ERREUR
+      IF ( LREC ) THEN
+        IF ( RECURS .EQ. 1234567891 ) THEN
+           CALL JEFINI('ERREUR')
+        ENDIF
+        
+        IF ( RECURS .EQ. 1234567890 ) THEN
+           RECURS = 1234567891
+C          ON EST DEJA PASSE PAR U2MESG... SANS EN ETRE SORTI
+           CALL UTPRIN('F', 0, 'CATAMESS_55', 0, VALK, 0, VALI, 0, VALR)
+C          ON NE FAIT PLUS RIEN ET ON SORT DE LA ROUTINE
+           GOTO 9999
+        ENDIF
+        RECURS = 1234567890
       ENDIF
-
-      IF ( RECURS .EQ. 1234567890 ) THEN
-         RECURS = 1234567891
-C        ON EST DEJA PASSE PAR U2MESG... SANS EN ETRE SORTI
-         CALL UTPRIN('F', 0, 'CATAMESS_55', 0, VALK, 0, VALI, 0, VALR)
-C        ON NE FAIT PLUS RIEN ET ON SORT DE LA ROUTINE
-         GOTO 9999
-      ENDIF
-      RECURS = 1234567890
 
       CALL JEVEMA(IMAAP)
       IF (IMAAP.GE.200) CALL JEFINI('ERREUR')
@@ -120,23 +123,27 @@ C           SINON LE CONCEPT COURANT EST DETRUIT
                ENDIF
             ENDIF
 
-C           -- MENAGE SUR LA BASE VOLATILE
-            CALL JEDETV()
-
-C           REMONTER LES N JEDEMA COURT-CIRCUITES
-            CALL JEVEMA(IMAAP)
-            DO 10 I=IMAAP, 1, -1
-               CALL JEDEMA()
- 10         CONTINUE
+            IF ( ISJVUP() .EQ. 1 ) THEN
+C
+C             -- MENAGE SUR LA BASE VOLATILE
+              CALL JEDETV()
+              
+C             REMONTER LES N JEDEMA COURT-CIRCUITES
+              CALL JEVEMA(IMAAP)
+              DO 10 I=IMAAP, 1, -1
+                 CALL JEDEMA()
+ 10           CONTINUE
+C
+            ENDIF
 C
 C           ON REMONTE UNE EXCEPTION AU LIEU DE FERMER LES BASES
-            RECURS = 0
+            IF ( LREC) RECURS = 0
             CALL UEXCEP(NEXCEP, IDMESS, NK, VALK, NI, VALI, NR, VALR)
          ENDIF
 C
       ENDIF
 C
-      RECURS = 0
+      IF ( LREC) RECURS = 0
  9999 CONTINUE
       IF ( ISJVUP() .EQ. 1 ) THEN
         CALL JEDEMA()

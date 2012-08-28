@@ -8,7 +8,7 @@
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 27/08/2012   AUTEUR NICOLAS G.NICOLAS 
 C RESPONSABLE SELLENET N.SELLENET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,7 +41,7 @@ C                          DU FICHIER
 C        NOMAAS : NOM ASTER DU MAILLAGE
 C        NBVATO : NOMBRE DE VALEURS TOTAL
 C        TYPECH : TYPE DE CHAMP AUX ELEMENTS : ELEM/ELGA/ELNO/NOEU
-C        TYPEN  : TYPE D'ENTITE DU CHAMP 
+C        TYPEN  : TYPE D'ENTITE DU CHAMP
 C                (MED_NOEUD=3,MED_MAILLE=0,MED_NOEUD_MAILLE=4)
 C        NPGMA  : NOMBRE DE POINTS DE GAUSS PAR MAILLE (ASTER)
 C        NPGMM  : NOMBRE DE POINTS DE GAUSS PAR MAILLE (MED)
@@ -87,7 +87,6 @@ C
       REAL*8 PREC
 C
 C 0.2. ==> COMMUNS
-      REAL*8 VALR
 C
 C 0.3. ==> VARIABLES LOCALES
 C
@@ -147,6 +146,8 @@ C
       CHARACTER*255 KFIC
       CHARACTER*2 K2BID
 C
+      REAL*8 VALR
+C
       LOGICAL EXISTM, EXISTT
       LOGICAL LOGAUX
 C
@@ -163,7 +164,7 @@ C
 C
       IF ( NIVINF.GT.1 ) THEN
         WRITE (IFM,1001) 'DEBUT DE '//NOMPRO
-        WRITE (IFM,*) '.. NOM DU CHAMP A LIRE : ',NOMAMD
+        WRITE (IFM,*) '.. NOM DU CHAMP A LIRE : ', NOCHMD
       ENDIF
  1001 FORMAT(/,10('='),A,10('='),/)
 C
@@ -264,8 +265,8 @@ C
       ENDIF
 C
       IF ( NIVINF.GT.1 ) THEN
-        WRITE (IFM,*) '.. NOM DU MAILLAGE MED ASSOCIE : ',NOMAMD,
-     &                '   DE DIMENSION', NDIM
+        WRITE (IFM,*) '.. NOM DU MAILLAGE MED ASSOCIE : ', NOMAMD
+        WRITE (IFM,*) '   DE DIMENSION ', NDIM
       ENDIF
 C
 C 2.2. ==> VERIFICATIONS DES COMPOSANTES ASTER DEMANDEES
@@ -560,7 +561,7 @@ C=====================================================================
 C 4. TRAITEMENT DES CHAMPS AUX ELEMENTS                           ====
 C=====================================================================
 C
-C  ON BOUCLE (71) SUR LES TYPES DE MAILLE LUES DANS LE CHAMP MED. 
+C  ON BOUCLE (71) SUR LES TYPES DE MAILLE LUES DANS LE CHAMP MED.
 C  LES VALEURS NUMERIQUES SONT SAUVEES DANS LE TABLEAU D ADRESSE ADSV
 C  CE TABLEAU A ETE DIMENSIONNE PAR CESCRE A :
 C  NB DE TYPE DE MAIL * NB DE VALEURS PAR MAILLE * NB DE COMPOSANTES
@@ -578,6 +579,9 @@ C
          NBNOMA=1
          IF     (TYPECH(1:4).EQ.'ELNO') THEN
             NBNOMA = NNOTYP(LTYP(LETYPE))
+         ENDIF
+         IF ( NIVINF.GT.1 ) THEN
+           WRITE (IFM,*) '.... NBNOMA : ', NBNOMA
          ENDIF
 C
 C====
@@ -633,7 +637,7 @@ C
      &                 JNUMTY, NOCHMD,NBMA,NPGMA,NPGMM,TYPECH,
      &                 LTYP(LETYPE),ADSL, ADSV, ADSD,
      &                 CODRET )
-C 
+C
 C
    71 CONTINUE
       ENDIF

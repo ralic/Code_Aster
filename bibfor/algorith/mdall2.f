@@ -1,11 +1,11 @@
       SUBROUTINE MDALL2 (NOMRES,BASEMO,NUMGEN,RES,NBO,NBMODE)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
-      CHARACTER*8 BASEMO,NOMRES,NUMGEN,RES,KBID
-      INTEGER     NBO,NBMOD,NBSTOC
+      CHARACTER*8 BASEMO,NOMRES,NUMGEN,RES,BLANC8
+      CHARACTER*16 BLAN16
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -25,7 +25,7 @@ C ======================================================================
 C
 C TOLE CRP_21
 C
-C     ALLOCATION DES VECTEURS DE SORTIE
+C     ALLOCATION DES VECTEURS DE SORTIE POUR PROJ_RESU_BASE
 C     ------------------------------------------------------------------
 C IN  : NOMRES : NOM DU RESULTAT DELA COMMANDE (RESU_GENE)
 C IN  : BASEMO : BASE MODALE SUR LAQUELLE ON PROJETTE RES
@@ -37,67 +37,38 @@ C ----------------------------------------------------------------------
 
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER IINST ,INORD ,IORDR ,IRET ,JACCE ,JDEPL ,JDESC 
-      INTEGER JINST ,JORDR ,JPTEM ,JREFE ,JVITE ,NBMODE 
+      INTEGER IINST,INORD,IORDR,IPTEM,JACCE,JVITE,JDEPL,JPASS 
+      INTEGER IBID,JINST,JORDR,JREFE,NBMODE,NBO
+      REAL*8  DTBID
+      CHARACTER*4 K4BID(3)
 C-----------------------------------------------------------------------
+      BLANC8 =  '        '
+      BLAN16 = '                '
+      IBID = 0
+      DTBID = 0.D0
+C       
       CALL JEMARQ()
-      NBSTOC = NBMODE * NBO
 
-C --- REMPLISSAGE DU .REFD
+C----- INITIALISATION DE LA SD TYPE
 
-      CALL JEEXIN(NOMRES//'           .REFD',IRET)
-      IF (IRET.EQ.0) THEN
-C On recupere la numerotation generalisee
-         CALL WKVECT(NOMRES//'           .REFD','G V K24',7,JREFE)
-         ZK24(JREFE)   = ' '
-         ZK24(JREFE+1) = ' '
-         ZK24(JREFE+2) = ' '
-         ZK24(JREFE+3) = NUMGEN
-         ZK24(JREFE+4) = ' '
-         ZK24(JREFE+5) = BASEMO(1:8)
-         ZK24(JREFE+6) = ' '
-      ENDIF
-C
-C --- REMPLSSAGE DU .DESC
+      CALL MDALLO(NOMRES,BASEMO,BLANC8,BLANC8,BLANC8,NBMODE,DTBID,NBO,
+     &            0,BLANC8,BLANC8,0,BLANC8,0,
+     &            BLANC8,JDEPL,JVITE,JACCE,JPASS,JORDR,JINST,
+     &            IBID,IBID,IBID,IBID,IBID,IBID,IBID,IBID,
+     &            BLAN16,IBID,K4BID,'TRAN')
 
-      CALL JEEXIN(NOMRES//'           .DESC',IRET)
-      IF (IRET.EQ.0) THEN
-         CALL WKVECT(NOMRES//'           .DESC','G V I',5,JDESC)
-         ZI(JDESC) = 1
-         ZI(JDESC+1) = NBMODE
-         ZI(JDESC+2) = 0
-         ZI(JDESC+3) = 0
-         ZI(JDESC+4) = 0
-      ENDIF
-C
+C---- MODIFICATION DU .REFD POUR Y AJOUTER LE NUMGEN
+      CALL JEVEUO(NOMRES//'           .REFD','E',JREFE)
+      ZK24(JREFE+3) = NUMGEN
+
+C---- EN ABSENCE D'INFORMATION SUR LE PAS DE TEMPS, LE .PTEM EST 
+C---- EST FORCE A ZERO
       IF (NBO.NE.0) THEN
-        CALL JECREO(NOMRES//'           .DEPL' ,'G V R')
-        CALL JEECRA(NOMRES//'           .DEPL' ,'LONMAX',NBSTOC,KBID)
-        CALL JEECRA(NOMRES//'           .DEPL' ,'LONUTI',NBSTOC,KBID)
-        CALL JEVEUT(NOMRES//'           .DEPL' ,'E',JDEPL)
-        CALL JECREO(NOMRES//'           .VITE' ,'G V R')
-        CALL JEECRA(NOMRES//'           .VITE' ,'LONMAX',NBSTOC,KBID)
-        CALL JEECRA(NOMRES//'           .VITE' ,'LONUTI',NBSTOC,KBID)
-        CALL JEVEUT(NOMRES//'           .VITE' ,'E',JVITE)
-        CALL JECREO(NOMRES//'           .ACCE' ,'G V R')
-        CALL JEECRA(NOMRES//'           .ACCE' ,'LONMAX',NBSTOC,KBID)
-        CALL JEECRA(NOMRES//'           .ACCE' ,'LONUTI',NBSTOC,KBID)
-        CALL JEVEUT(NOMRES//'           .ACCE' ,'E',JACCE)
-        CALL JECREO(NOMRES//'           .ORDR' ,'G V I')
-        CALL JEECRA(NOMRES//'           .ORDR' ,'LONMAX',NBO,KBID)
-        CALL JEECRA(NOMRES//'           .ORDR' ,'LONUTI',NBO,KBID)
-        CALL JEVEUT(NOMRES//'           .ORDR' ,'E',JORDR)
-        CALL JECREO(NOMRES//'           .INST' ,'G V R')
-        CALL JEECRA(NOMRES//'           .INST' ,'LONMAX',NBO,KBID)
-        CALL JEECRA(NOMRES//'           .INST' ,'LONUTI',NBO,KBID)
-        CALL JEVEUT(NOMRES//'           .INST' ,'E',JINST)
-        CALL JECREO(NOMRES//'           .PTEM' ,'G V R')
-        CALL JEECRA(NOMRES//'           .PTEM' ,'LONMAX',1,KBID)
-        CALL JEECRA(NOMRES//'           .PTEM' ,'LONUTI',1,KBID)
-        CALL JEVEUT(NOMRES//'           .PTEM' ,'E',JPTEM)
+           DO 66 IPTEM=0,NBO-1
+                ZR(JPASS+IPTEM) = DTBID
+66         CONTINUE
       ENDIF
-
-C --- REMPLISSAGE DU .ORDR
+C --- REMPLISSAGE DU .ORDR ET DU .DISC 
 C
       CALL JEVEUO(RES//'           .RSPR','E',IINST)
       CALL JEVEUO(RES//'           .ORDR','E',IORDR)

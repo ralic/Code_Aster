@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,11 +33,9 @@ C                (SI CALCUL MODAL PAR SOUS-STRUCTURATION)
 C                BLANC SINON
 C ----------------------------------------------------------------------
       INCLUDE 'jeveux.h'
-      CHARACTER*24 VALK(2)
 C ----------------------------------------------------------------------
-      INTEGER        I, J, ITRESU(8)
+      INTEGER       I, J, ITRESU(8)
       INTEGER       FOCI, FOCF, FOMI, FOMF, FOMO
-      INTEGER VALI
       REAL*8        R8B, EPSI, ALPHA, XNORM, DEPL(6)
       CHARACTER*1    K1BID
       CHARACTER*8   K8B, BLANC, BASEMO, CRIT, INTERP, BASEM2,
@@ -54,15 +52,15 @@ C ----------------------------------------------------------------------
       INTEGER      IARG
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER IADESC ,IADRIF ,IARCHI ,IAREFE ,IBID ,ICH ,ID
-      INTEGER IDBASE ,IDEC ,IDEFM ,IDINSG ,IDRESU ,IDVECG ,IE
-      INTEGER IER ,INOCMP ,INOECP ,INUDDL ,INUMNO ,IPSDEL ,IRET
-      INTEGER IRETOU ,J2REFE ,J3REFE ,JC ,JDDL ,JINST ,JNOACC
-      INTEGER JNODEP ,JNOVIT ,JNUME ,JPSDEL ,JVEC ,LINST ,LLCHA
-      INTEGER LPSDEL ,LREFE ,LVAL2 ,LVALE ,N1 ,N2 ,N3
-      INTEGER N4 ,NBCHAM ,NBD ,NBDIR ,NBEXCI ,NBINSG ,NBINST
-      INTEGER NBMODE ,NBNOEU ,NCMP ,NEQ ,NFONCT
-      REAL*8 R8PREM
+      INTEGER IADESC ,IADRIF ,IARCHI ,IAREFE ,IBID ,ICH ,ID 
+      INTEGER IDBASE ,IDEC ,IDEFM ,IDINSG ,IDRESU ,IDVECG ,IE 
+      INTEGER IER ,INOCMP ,INOECP ,INUDDL ,INUMNO ,IPSDEL ,IRET 
+      INTEGER IRETOU ,J2REFE ,J3REFE ,JC ,JDDL ,JINST ,JNOACC 
+      INTEGER JNODEP ,JNOVIT ,JNUME ,JPSDEL ,JVEC ,LINST ,LLCHA 
+      INTEGER LPSDEL ,LREFE ,LVAL2 ,LVALE ,N1 ,N2 ,N3 
+      INTEGER N4 ,NBCHAM ,NBD ,NBDIR ,NBEXCI ,NBINSG ,NBINST 
+      INTEGER NBMODE ,NBNOEU ,NCMP ,NEQ ,NFONCT 
+      REAL*8 R8PREM 
 C-----------------------------------------------------------------------
       DATA BLANC    /'        '/
       DATA CHAMN2   /'&&TRAN75.CHAMN2'/
@@ -120,7 +118,7 @@ C
       IF ( MODE .EQ. BLANC) THEN
          CALL JEVEUO(TRANGE//'.REFD','L',IAREFE)
          MATGEN = ZK24(IAREFE)(1:8)
-         BASEMO = ZK24(IAREFE+5)(1:8)
+         BASEMO = ZK24(IAREFE+4)(1:8)
          CALL JEVEUO(BASEMO//'           .REFD','L',IADRIF)
          IF (MATGEN(1:8) .NE. BLANC) THEN
            CALL JEVEUO(MATGEN//'           .REFA','L',J2REFE)
@@ -171,7 +169,7 @@ C
          CALL DISMOI('F','NOM_GD',CHMOD,'CHAM_NO',IBID,NOMGD,IE)
          CALL DISMOI('F','PROF_CHNO',CHMOD,'CHAM_NO',IBID,PRCHNO,IE)
          CALL JEVEUO ( CHMOD, 'L', LLCHA )
-         MAILLA = ZK24(LLCHA)
+         MAILLA = ZK24(LLCHA)(1:8)
          CREFE(1) = ZK24(LLCHA)
          CREFE(2) = ZK24(LLCHA+1)
          IF ( TOUSNO ) CALL JELIRA(CREFE(2)(1:19)//'.NUEQ','LONMAX',
@@ -281,9 +279,8 @@ C APRES UNE DOUBLE PROJECTION (PRESENCE DU MOT CLEF 'MODE_MECA')
      &     FOMI.EQ.0 .AND. FOMF.EQ.0 .AND. FOMO.EQ.0 )) THEN
           CALL U2MESS('F','ALGORITH10_95')
        ENDIF
-
-       CALL JEVEUO(TRANGE//'.INST','L',IDINSG)
-       CALL JELIRA(TRANGE//'.INST','LONMAX',NBINSG,K8B)
+       CALL JEVEUO(TRANGE//'.DISC','L',IDINSG)
+       CALL JELIRA(TRANGE//'.DISC','LONMAX',NBINSG,K8B)
        CALL WKVECT('&&TRAN75.VECTGENE','V V R',NBMODE,IDVECG)
        DO 210 ICH = 1,NBCHAM
           LEFFOR=.TRUE.
@@ -442,9 +439,9 @@ C
       IF (MODE.EQ.BLANC) THEN
         ZK24(LREFE) = ZK24(IADRIF)
         ZK24(LREFE+1) = ZK24(IADRIF+1)
-        ZK24(LREFE+2  ) = ZK24(IADRIF+2)
-        ZK24(LREFE+3  ) = ZK24(IADRIF+3)
-        ZK24(LREFE+4  ) = ZK24(IADRIF+4)
+        ZK24(LREFE+2) = ZK24(IADRIF+2)
+        ZK24(LREFE+3) = ZK24(IADRIF+3)
+        ZK24(LREFE+4) = ZK24(IADRIF+4)
         ZK24(LREFE+5  ) = ZK24(IADRIF+5)
         ZK24(LREFE+6  ) = ZK24(IADRIF+6)
       ENDIF

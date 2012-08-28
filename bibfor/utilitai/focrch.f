@@ -10,7 +10,7 @@
       CHARACTER*19        NOMFON, RESU,                   LISTR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,8 +61,8 @@ C-----------------------------------------------------------------------
 C
       CALL JEVEUO(RESU//'.DESC','L',JDESC)
       NBCHOC = ZI(JDESC+2)
-      CALL JELIRA(RESU//'.INST','LONUTI',NBINST,K8B)
-      CALL JEVEUO(RESU//'.INST','L',JINST)
+      CALL JELIRA(RESU//'.DISC','LONUTI',NBINST,K8B)
+      CALL JEVEUO(RESU//'.DISC','L',JINST)
       CALL JEVEUO(RESU//'.NCHO','L',JNCHO)
       CALL JEVEUO(RESU//'.INTI','L',JINTI)
       IF (NSST.NE.0) CALL JEVEUO(RESU//'.SST','L',JSST)

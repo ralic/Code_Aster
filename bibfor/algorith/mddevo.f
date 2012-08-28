@@ -9,20 +9,20 @@
      &                   IREDST,DREDST,
      &                   COEFM,LIAD,INUMOR,IDESCF,
      &                   NOFDEP,NOFVIT,NOFACC,NOMFON,PSIDEL,MONMOT,
-     &                   NOMRES,NBEXCI)
+     &                   NOMRES,NBEXCI,PASSTO,IREVST,DREVST)
 C
       IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
-      INTEGER      LOGCHO(*),IORSTO(*),IREDST(*),IPARCH(*),ICHOST(*)
+      INTEGER      LOGCHO(*),IORSTO(*),IREDST(*),IPARCH(*),ICHOST(*),
+     &             IREVST(*)  
       REAL*8       PULSAT(*),PULSA2(*),MASGEN(*),
      &             AMOGEN(*),PARCHO(*),PARRED(*),DEPSTO(*),VITSTO(*),
      &             ACCSTO(*),TEMSTO(*),FCHOST(*),DCHOST(*),VCHOST(*),
-     &             DREDST(*),DPLRED(*),DPLREV(*),
-     &             DPLMOD(NBCHOC,NBMODE,*)
+     &             DREDST(*),DPLRED(*),DPLREV(*),PASSTO(*),
+     &             DPLMOD(NBCHOC,NBMODE,*),DREVST(*)
       CHARACTER*8  BASEMO,NOECHO(*),FONRED(*),FONREV(*),NOMRES,MONMOT
       CHARACTER*8  FBID(2)
-      LOGICAL      LPSTO
 C
       REAL*8       COEFM(*),PSIDEL(*)
       INTEGER      LIAD(*),INUMOR(*),IDESCF(*)
@@ -30,7 +30,7 @@ C
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/08/2012   AUTEUR TORKHANI M.TORKHANI 
+C MODIF ALGORITH  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,7 +88,7 @@ C     ------------------------------------------------------------------
 C
       LOGICAL PRDEFF
       INTEGER VALI(2)
-      REAL*8 R8BID2,R8BID3,R8BID4,R8BID5,R8B,R8B2,TPS1(4),VALR(3)
+      REAL*8 R8BID2,R8BID3,R8BID4,R8BID5,R8B2,TPS1(4),VALR(3)
       REAL*8 RINT1, RINT2
       CHARACTER*8   TRAN
       INTEGER       PALMAX, ETAUSR
@@ -97,7 +97,8 @@ C-----------------------------------------------------------------------
       INTEGER ISTO2 ,ISTO3 ,JACCE ,JBID1 ,JCHOR ,JDEP1 ,JDEP2 
       INTEGER JDEP3 ,JDEP4 ,JDEPL ,JFEX1 ,JFEX2 ,JFEX3 ,JFEX4 
       INTEGER JFEXT ,JREDI ,JREDR ,JTRA1 ,JVINT ,JVIT1 ,JVIT2 
-      INTEGER JVIT3 ,JVIT4 ,JVITE ,N100 ,NBCHOC ,NBEXCI ,NBMOD1 
+      INTEGER JVIT3 ,JVIT4 ,JVITE ,N100 ,NBCHOC ,NBEXCI ,NBMOD1
+      INTEGER ISTO4, JREVR, JREVI
       INTEGER NBMODE ,NBPAS ,NBREDE ,NBREVI ,NBSAUV ,NBSCHO ,NDT 
 
       REAL*8 DEUX ,DT ,DT1 ,DT2 ,DT3 ,DT4 ,DT5 
@@ -113,7 +114,6 @@ C-----------------------------------------------------------------------
 C
       CALL JEMARQ()
       ZERO = 0.D0
-      R8B = ZERO
       JVINT = 1
       CALL WKVECT('&&MDDEVO.BID','V V R8',NBMODE,JBID1)
       DO 10 I=1,NBMODE
@@ -135,7 +135,6 @@ C
       ISTO1 = 0
       ISTO2 = 0
       ISTO3 = 0
-      LPSTO = .FALSE.
       NBMOD1 = NBMODE - 1
       NBSCHO = NBSAUV * 3 * NBCHOC
       PRDEFF = .FALSE.
@@ -159,6 +158,10 @@ C        INITIALISATION POUR LE FLAMBAGE
          CALL WKVECT('&&MDDEVO.SREDR','V V R8',NBREDE,JREDR)
          CALL WKVECT('&&MDDEVO.SREDI','V V I' ,NBREDE,JREDI)
       ENDIF
+      IF (NBREVI.NE.0) THEN
+         CALL WKVECT('&&MDEUL1.SREVR','V V R8',NBREVI,JREVR)
+         CALL WKVECT('&&MDEUL1.SREVI','V V I' ,NBREVI,JREVI)
+      ENDIF     
 C
       JDEP1 = JDEPL
       JDEP2 = JDEP1 + NBMODE
@@ -216,11 +219,16 @@ C     --- INITIALISATION DE L'ALGORITHME ---
 C
 C     --- ARCHIVAGE DONNEES INITIALES ---
       TARCHI = TINIT
-      CALL MDARCH(ISTO1,0,TINIT,DT,NBMODE,ZR(JDEP2),ZR(JVIT2),ZR(JACCE),
-     &            ISTO2,NBCHOC,ZR(JCHOR),NBSCHO,ISTO3,NBREDE,ZR(JREDR),
-     &            ZI(JREDI),DEPSTO,VITSTO,ACCSTO,R8B,LPSTO, IORSTO,
-     &            TEMSTO,FCHOST,DCHOST,VCHOST,ICHOST,
-     &            ZR(JVINT),IREDST,DREDST )
+C
+      CALL MDARNL (ISTO1,0,TINIT,DT,NBMODE,
+     &        ZR(JDEP2),ZR(JVIT2),ZR(JACCE),
+     &        ISTO2,NBCHOC,ZR(JCHOR),NBSCHO,
+     &        ISTO3,NBREDE,ZR(JREDR),ZI(JREDI),
+     &        ISTO4,NBREVI,ZR(JREVR),ZI(JREVI),
+     &        DEPSTO,VITSTO,ACCSTO,PASSTO,IORSTO,
+     &        TEMSTO,FCHOST,DCHOST,VCHOST,ICHOST,ZR(JVINT),
+     &        IREDST,DREDST,IREVST,DREVST)
+
 C
       TEMPS = TINIT + DT1
       CALL UTTCPU('CPU.MDDEVO','INIT',' ')
@@ -324,14 +332,16 @@ C        --- ARCHIVAGE ---
          IF (IPARCH(IARCHI) .EQ. 1) THEN
             ISTO1 = ISTO1 + 1
             TARCHI = TEMPS
-            CALL MDARCH(ISTO1,IARCHI,TEMPS,DT,NBMODE,
-     &                  ZR(JDEP4),ZR(JVIT4),ZR(JACCE),
-     &                  ISTO2,NBCHOC,ZR(JCHOR),NBSCHO,
-     &                  ISTO3,NBREDE,ZR(JREDR),ZI(JREDI),
-     &                  DEPSTO,VITSTO,ACCSTO,
-     &                  R8B,LPSTO,IORSTO,TEMSTO,
-     &                  FCHOST,DCHOST,VCHOST,ICHOST,
-     &                  ZR(JVINT), IREDST,DREDST )
+
+            CALL MDARNL (ISTO1,IARCHI,TEMPS,DT,NBMODE,
+     &              ZR(JDEP4),ZR(JVIT4),ZR(JACCE),
+     &              ISTO2,NBCHOC,ZR(JCHOR),NBSCHO,
+     &              ISTO3,NBREDE,ZR(JREDR),ZI(JREDI),
+     &              ISTO4,NBREVI,ZR(JREVR),ZI(JREVI),
+     &              DEPSTO,VITSTO,ACCSTO,PASSTO,IORSTO,
+     &              TEMSTO,FCHOST,DCHOST,VCHOST,ICHOST,ZR(JVINT),
+     &              IREDST,DREDST,IREVST,DREVST)
+
          ENDIF
 C
          DO 40 IM = 0,NBMOD1
@@ -358,7 +368,7 @@ C
           RINT1 = 5.D0
           RINT2 = 0.90D0
           IF (MAX(RINT1,N100*TPS1(4)).GT.(RINT2*TPS1(1))) THEN
-           CALL MDSIZE (NOMRES,ISTO1,NBMODE,LPSTO,NBCHOC,NBREDE)
+           CALL MDSIZE (NOMRES,ISTO1,NBMODE,NBCHOC,NBREDE,NBREVI)
            IF (NOMRES.EQ.'&&OP0074') THEN
 C          --- CAS D'UNE POURSUITE ---
               CALL GETVID('ETAT_INIT','RESULTAT',1,IARG,1,TRAN,NDT)

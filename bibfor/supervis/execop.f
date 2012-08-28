@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF SUPERVIS  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,8 +75,10 @@ C
         IF ( (RVAL(2)-RVAL(5)) .GT. RVAL(1) ) THEN 
           CALL JERMXD((RVAL(2)-RVAL(5))*1024*1024,IRET)
           IF ( IRET.EQ.0 ) THEN
-            CALL UTGTME(6,K8TAB,RVAL,IRET2)
-            CALL U2MESG('I' ,'JEVEUX1_74',0,' ',0,IBID,5,RVAL) 
+            K8TAB(1) = 'RLQ_MEM'  
+            K8TAB(2) = 'LIMIT_JV'  
+            CALL UTGTME(2,K8TAB,RVAL,IRET2)
+            CALL U2MESR('I' ,'JEVEUX1_74',2,RVAL) 
           ENDIF 
         ENDIF      
       ENDIF 

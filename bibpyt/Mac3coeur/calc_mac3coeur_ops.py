@@ -1,4 +1,4 @@
-#@ MODIF calc_mac3coeur_ops Mac3coeur  DATE 24/07/2012   AUTEUR PERONY R.PERONY 
+#@ MODIF calc_mac3coeur_ops Mac3coeur  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -305,9 +305,9 @@ def calc_mac3coeur_ops(self, **args):
        _CL_BID = AFFE_CHAR_CINE(MODELE=_MO_NP1,MECA_IMPO = (_F(TOUT = 'OUI', DX = 0.0, DY = 0.0, DZ = 0.0, DRX = 0.0, DRY = 0.0, DRZ = 0.0,),))
 
        tran_x = 0.0
-       COE    = [None]*_coeurp1.nbac
-       DEP    = [None]*_coeurp1.nbac
-       VAR    = [None]*_coeurp1.nbac
+       _coe   = [None]*_coeurp1.nbac
+       _dep   = [None]*_coeurp1.nbac
+       _var   = [None]*_coeurp1.nbac
        lisdep = []
        lisvar = []
        lisdet = []
@@ -336,7 +336,7 @@ def calc_mac3coeur_ops(self, **args):
               tran_z = _coeurp1.pas_assemblage * (_coeurp1.ALPHAMAC.index(_coeurp1.nameAC[nom][0]) - _coeurp1.ALPHAMAC.index(_coeur.nameAC[nom][0]))
               tran_y = _coeurp1.pas_assemblage * (_coeurp1.ALPHAMAC.index(_coeurp1.nameAC[nom][2]) - _coeurp1.ALPHAMAC.index(_coeur.nameAC[nom][2]))
 
-              COE[indice]  = MACRO_AC_PERMUTE(POS_INIT       = _coeur.nameAC[nom],
+              _coe[indice]  = MACRO_AC_PERMUTE(POS_INIT       = _coeur.nameAC[nom],
                               POS_FIN        = _coeurp1.nameAC[nom],
                               RESU_INI       = _SNL_LAME,
                               RESU_FIN       = _BIDON,
@@ -346,27 +346,27 @@ def calc_mac3coeur_ops(self, **args):
                               MODELE_FINAL   = _MO_NP1,
                               TRAN       = (tran_x,tran_y,tran_z))
 
-              DEP[indice] = CREA_CHAMP(TYPE_CHAM = 'NOEU_DEPL_R',
+              _dep[indice] = CREA_CHAMP(TYPE_CHAM = 'NOEU_DEPL_R',
                            OPERATION = 'EXTR',
                            PRECISION =  1.0E-10,
-                           RESULTAT  =  COE[indice],
+                           RESULTAT  =  _coe[indice],
                            NOM_CHAM  = 'DEPL',
                            INST  =  0.0,);
 
-              VAR[indice] = CREA_CHAMP(TYPE_CHAM = 'ELGA_VARI_R',
+              _var[indice] = CREA_CHAMP(TYPE_CHAM = 'ELGA_VARI_R',
                            OPERATION = 'EXTR',
                            PRECISION =  1.0E-10,
-                           RESULTAT  =  COE[indice],
+                           RESULTAT  =  _coe[indice],
                            NOM_CHAM  = 'VARI_ELGA',
                            INST  =  0.0,);
 
-              mtdep = (_F(TOUT = 'OUI', CHAM_GD = DEP[indice], CUMUL = 'OUI', COEF_R = 1.0),)
-              mtvar = (_F(TOUT = 'OUI', CHAM_GD = VAR[indice], CUMUL = 'OUI', COEF_R = 1.0),)
+              mtdep = (_F(TOUT = 'OUI', CHAM_GD = _dep[indice], CUMUL = 'OUI', COEF_R = 1.0),)
+              mtvar = (_F(TOUT = 'OUI', CHAM_GD = _var[indice], CUMUL = 'OUI', COEF_R = 1.0),)
               lisdep.extend(mtdep)
               lisvar.extend(mtvar)
 
               mtdet={}
-              mtdet["NOM"] =  (COE[indice],DEP[indice],VAR[indice])
+              mtdet["NOM"] =  (_coe[indice],_dep[indice],_var[indice])
               lisdet.append(mtdet)
 
               indice = indice + 1
@@ -379,7 +379,7 @@ def calc_mac3coeur_ops(self, **args):
        _RES_SIG = CREA_CHAMP(TYPE_CHAM = 'ELGA_SIEF_R',
                      OPERATION = 'EXTR',
                      PRECISION =  1.0E-10,
-                     RESULTAT  =  COE[0],
+                     RESULTAT  =  _coe[0],
                      NOM_CHAM  = 'SIEF_ELGA',
                      INST      =  0.0,);
 

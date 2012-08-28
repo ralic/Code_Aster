@@ -8,7 +8,7 @@ C
       CHARACTER*8 RESULT,NOEU(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 28/08/2012   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,7 +47,7 @@ C
 C ----------------------------------------------------------------------
 C
 C
-      INTEGER      I,J,K,N,IBID,NBPRUP,NBPAR,NCOMB,NFREQ
+      INTEGER      I,J,K,N,IBID,NBPRUP,NBPAR,NCOMB,NFREQ,INIT,IARG
       INTEGER      IG,IND,INDOLD,IPROV,IQ,IGQ,IPA,INOPR,ITYPR,NI,NJ
       INTEGER      IRMAX,IKMAX
 C
@@ -56,11 +56,20 @@ C
 C
       CHARACTER*3  CHNU
       CHARACTER*8  K8BID,TABGMA,TABLE(2)
-      CHARACTER*24 COLLEC
+      CHARACTER*24 COLLEC, CHSIGI
+      CHARACTER*16 VALK
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
+C
+C- RECUPERATION DE L'ETAT INITIAL (NON TRAITE DANS CETTE OPTION)
+C-INUTILE ???
+      CALL GETVID('COMP_INCR','SIGM_INIT',1,IARG,1,CHSIGI,INIT)
+      IF (INIT.NE.0) THEN
+        VALK='CALC_G_MAX'
+        CALL U2MESK('F','RUPTURE1_13',1,VALK)
+      END IF
 C
       NBPRUP = LONVEC+5
       NCOMB = 2**LONVEC

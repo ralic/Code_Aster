@@ -1,4 +1,4 @@
-#@ MODIF algorith14 Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF algorith14 Messages  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,9 +31,6 @@ cata_msg = {
  type donné      -->  %(k1)s
  types supportés -->  %(k2)s %(k3)s
 """),
-
-
-
 
 
 10 : _(u"""
@@ -132,23 +129,8 @@ cata_msg = {
 """),
 
 
-
-
-
-
-
-
-
-
-
 35 : _(u"""
  aucun champ n'est calculé dans la structure de données  %(k1)s
-"""),
-
-36 : _(u"""
- les numérotations des champs ne coïncident pas celui de  %(k1)s  est :  %(k2)s
- et celui de  %(k3)s
-  est :  %(k4)s
 """),
 
 50 : _(u"""
@@ -158,14 +140,6 @@ cata_msg = {
 51 : _(u"""
  il faut au moins un MODE_MECA a la 1ère occurrence de RITZ
 """),
-
-
-
-
-
-
-
-
 
 61 : _(u"""
  le pas de temps du calcul métallurgique ne correspond pas
@@ -177,16 +151,11 @@ cata_msg = {
 
 
 
-
-
 63 : _(u"""
  données incompatibles :
  pour le MODE_STAT  :  %(k1)s
  il manque le champ :  %(k2)s
 """),
-
-
-
 
 
 66 : _(u"""

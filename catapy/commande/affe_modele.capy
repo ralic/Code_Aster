@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 19/03/2012   AUTEUR LEBOUVIER F.LEBOUVIER 
+#& MODIF COMMANDE  DATE 28/08/2012   AUTEUR SFAYOLLE S.FAYOLLE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -74,9 +74,10 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                   "3D_FLUI_ABSO",    # RESP. : DEVESA G.DEVESA
                                   "3D_FLUIDE",       # RESP. : GREFFET N.GREFFET
                                   "3D_INCO",         # RESP. : MICHEL S.MICHEL
-                                  "3D_INCO_UP",      # RESP. : SFAYOLLE
-                                  "3D_INCO_OSGS",    # RESP. : SFAYOLLE
+                                  "3D_INCO_UP",      # RESP. : SFAYOLLE S.FAYOLLE
+                                  "3D_INCO_OSGS",    # RESP. : SFAYOLLE S.FAYOLLE
                                   "3D_INCO_GD",      # RESP. : MICHEL S.MICHEL
+                                  "3D_INCO_LOG",     # RESP. : SFAYOLLE S.FAYOLLE
                                   "3D_SI",           # RESP. : DESROCHES X.DESROCHES
                                   "3D_GRAD_EPSI",    # RESP. : MICHEL S.MICHEL
                                   "3D_GRAD_VARI",    # RESP. : MICHEL S.MICHEL
@@ -90,9 +91,10 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                   "AXIS_FLUIDE",     # RESP. : GREFFET N.GREFFET
                                   "AXIS_FOURIER",    # RESP. : DESROCHES X.DESROCHES
                                   "AXIS_INCO",       # RESP. : MICHEL S.MICHEL
-                                  "AXIS_INCO_UP",    # RESP. : SFAYOLLE
-                                  "AXIS_INCO_OSGS",  # RESP. : SFAYOLLE
+                                  "AXIS_INCO_UP",    # RESP. : SFAYOLLE S.FAYOLLE
+                                  "AXIS_INCO_OSGS",  # RESP. : SFAYOLLE S.FAYOLLE
                                   "AXIS_INCO_GD",    # RESP. : MICHEL S.MICHEL
+                                  "AXIS_INCO_LOG",   # RESP. : SFAYOLLE S.FAYOLLE
                                   "AXIS_SI",         # RESP. : DESROCHES X.DESROCHES
                                   "AXIS_GRAD_VARI",  # RESP. : MICHEL S.MICHEL
                                   "AXIS_GVNO",       # RESP. : BEAURAIN J.BEAURAIN
@@ -123,9 +125,10 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                   "PLAN_ELDI",       # RESP. : LAVERNE J.LAVERNE
                                   "D_PLAN_ABSO",     # RESP. : DEVESA G.DEVESA
                                   "D_PLAN_INCO",     # RESP. : MICHEL S.MICHEL
-                                  "D_PLAN_INCO_UP",  # RESP. : SFAYOLLE
-                                  "D_PLAN_INCO_OSGS",# RESP. : SFAYOLLE
+                                  "D_PLAN_INCO_UP",  # RESP. : SFAYOLLE S.FAYOLLE
+                                  "D_PLAN_INCO_OSGS",# RESP. : SFAYOLLE S.FAYOLLE
                                   "D_PLAN_INCO_GD",  # RESP. : MICHEL S.MICHEL
+                                  "D_PLAN_INCO_LOG", # RESP. : SFAYOLLE S.FAYOLLE
                                   "D_PLAN_SI",       # RESP. : DESROCHES X.DESROCHES
                                   "DIS_T",           # RESP. : FLEJOU J.L.FLEJOU
                                   "DIS_TR",          # RESP. : FLEJOU J.L.FLEJOU

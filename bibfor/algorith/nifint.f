@@ -5,7 +5,7 @@
      &   CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 28/08/2012   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -182,7 +182,7 @@ C      CALCUL DE LA PRESSION ET DU GONFLEMENT AU POINT DE GAUSS
         PP = PM + PD
 
 C     CALCUL DES FONCTIONS A, B,... DETERMINANT LA RELATION LIANT G ET J
-        CALL NIRELA(JP,GM,GP,AM,AP,BP,BOA,AA,BB,DAA,DBB,DBOA,D2BOA)
+        CALL NIRELA(1,JP,GM,GP,AM,AP,BP,BOA,AA,BB,DAA,DBB,DBOA,D2BOA)
 
 C      PERTINENCE DES GRANDEURS
         IF (JD.LE.1.D-2 .OR. JD.GT.1.D2) THEN
@@ -208,7 +208,7 @@ C     CALCUL DES DEFORMATIONS ENRICHIES
         CALL DCOPY(9,FM,1,FTM,1)
         CALL DSCAL(9,CORM,FTM,1)
 
-        CORD = (AP/AM/JD)**(1.D0/3)
+        CORD = (AP/AM/JD)**(1.D0/3.D0)
         CALL DCOPY(9,FD,1,FTD,1)
         CALL DSCAL(9,CORD,FTD,1)
 
@@ -250,7 +250,7 @@ C        CONTRAINTE DE CAUCHY A PARTIR DE KIRCHHOFF
           CALL DSCAL(2*NDIM,1.D0/JP,SIGP(1,G),1)
 
 C        CONTRAINTE HYDROSTATIQUE ET DEVIATEUR
-          TAUHY = (TAUP(1)+TAUP(2)+TAUP(3))/3
+          TAUHY = (TAUP(1)+TAUP(2)+TAUP(3))/3.D0
           DO 200 KL = 1,6
             TAUDV(KL) = TAUP(KL) - TAUHY*KR(KL)
  200      CONTINUE
@@ -259,7 +259,7 @@ C        VECTEUR FINT:U
           DO 300 NA=1,NNO1
             DO 310 IA=1,NDU
               KK = VU(IA,NA)
-              T1 = 0
+              T1 = 0.D0
               DO 320 JA = 1,NDU
                 T2 = TAUDV(VIJ(IA,JA)) + PP*BB*ID(IA,JA)
                 T1 = T1 + T2*DFF1(NA,LIJ(IA,JA))
@@ -305,7 +305,7 @@ C - MATRICE TANGENTE
           END IF
 
 C        CALCUL DU TENSEUR DE CONTRAINTE
-          TAUHY = (TAUP(1)+TAUP(2)+TAUP(3))/3
+          TAUHY = (TAUP(1)+TAUP(2)+TAUP(3))/3.D0
           DO 380 KL = 1,6
             TAULDC(KL) = TAUP(KL) + (PP*BB-TAUHY)*KR(KL)
  380      CONTINUE
@@ -313,7 +313,8 @@ C        CALCUL DU TENSEUR DE CONTRAINTE
 C        PROJECTIONS DEVIATORIQUES ET HYDROSTATIQUES DE LA MAT. TANG.
           DO 400 IA = 1,3
           DO 410 JA = 1,3
-            H(IA,JA)=(DSIDEP(1,IA,JA)+DSIDEP(2,IA,JA)+DSIDEP(3,IA,JA))/3
+            H(IA,JA)=(DSIDEP(1,IA,JA)+DSIDEP(2,IA,JA)
+     &               +DSIDEP(3,IA,JA))/3.D0
             DO 420 KL = 1,6
               D(KL,IA,JA) = DSIDEP(KL,IA,JA) - KR(KL)*H(IA,JA)
  420        CONTINUE
@@ -327,7 +328,7 @@ C        PROJECTIONS DEVIATORIQUES ET HYDROSTATIQUES DE LA MAT. TANG.
  455      CONTINUE
  450      CONTINUE
           DO 460 KL = 1,6
-            DHY(KL) = (D(KL,1,1)+D(KL,2,2)+D(KL,3,3))/3
+            DHY(KL) = (D(KL,1,1)+D(KL,2,2)+D(KL,3,3))/3.D0
  460      CONTINUE
 
           DO 500 NA = 1,NNO1
@@ -338,7 +339,7 @@ C          TERME K:UU
             DO 520 NB = 1,NNO1
             DO 530 IB = 1,NDU
               KK = OS+VU(IB,NB)
-              T1 = 0
+              T1 = 0.D0
               DO 550 JA = 1,NDU
               DO 560 JB = 1,NDU
                 IJA = VIJ(IA,JA)
@@ -363,7 +364,7 @@ C            RIGIDITE GEOMETRIQUE
 C          TERME K:UG
             DO 600 RB = 1,NNO2
               KK = OS + VG(RB)
-              T1 = 0
+              T1 = 0.D0
               DO 610 JA = 1,NDU
                 T2 = DHY(VIJ(IA,JA))*AA
                 T1 = T1 + DFF1(NA,LIJ(IA,JA))*T2*VFF2(RB,G)
@@ -387,7 +388,7 @@ C          TERME K:GU
             DO 710 NB = 1,NNO1
             DO 715 IB = 1,NDU
               KK = OS + VU(IB,NB)
-              T1 = 0
+              T1 = 0.D0
               DO 720 JB = 1,NDU
                 T1 = T1 + VFF2(RA,G)*AA*HDV(IB,JB)*DFF1(NB,LIJ(IB,JB))
  720          CONTINUE
@@ -443,7 +444,6 @@ C          TERME K:PG
         END IF
 
  1000 CONTINUE
-
 
 C - SYNTHESE DES CODES RETOURS
       CALL CODERE(COD,NPG,CODRET)

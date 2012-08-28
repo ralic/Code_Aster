@@ -1,7 +1,7 @@
       SUBROUTINE TE0096(OPTION,NOMTE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 28/08/2012   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,10 +48,11 @@ C
       CHARACTER*8   NOMPAR(3),TYPMOD(2),FAMIL,POUM
       CHARACTER*16  COMPOR(4),OPRUPT,PHENOM
 
+      REAL*8   EPSREF(6), E, TROISK, MU, ALPHA
       REAL*8   EPSI,RAC2,R8PREM,CRIT(3)
       REAL*8   DFDI(27),F(3,3),SR(3,3),SIGL(6),SIGIN(6),DSIGIN(6,3)
       REAL*8   EPS(6),EPSIN(6),DEPSIN(6,3),EPSP(6),DEPSP(6,3)
-      REAL*8   EPSINO(36),EPSIPG(36),FNO(18),EPSNO(36)
+      REAL*8   EPSINO(36),FNO(18)
       REAL*8   THET,TN(20),TGDM(3),PROD,PROD1,PROD2,DIVT
       REAL*8   VALPAR(3),TCLA,TTHE,TFOR,TPLAS,TINI,POIDS,R,RBID
       REAL*8   P,PPG,DPDM(3),RP,ENERGI(2),RHO,OM,OMO
@@ -60,7 +61,7 @@ C
 
       INTEGER  IPOIDS,IVF,IDFDE,IPOI1,IVF1,IDFDE1
       INTEGER  ICOMP,IGEOM,ITEMPS,IDEPL,IMATE
-      INTEGER  IEPSR,IEPSF,ISIGI,IDEPI,ISIGM,IEPSP,IVARI
+      INTEGER  IEPSR,IEPSF,ISIGI,ISIGM,IEPSP,IVARI
       INTEGER  IFORC,IFORF,ITHET,IGTHET,IROTA,IPESA,IER
       INTEGER  IVITES,IACCEL,J1,J2
       INTEGER  NNO,NNOS,NPG,NCMP,JGANO
@@ -73,7 +74,6 @@ C =====================================================================
 C INITIALISATIONS
 C =====================================================================
       CALL JEMARQ()
-
       FAMI = 'RIGI'
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
 
@@ -138,7 +138,8 @@ C =====================================================================
         COMPOR(I)= ZK16(ICOMP+I-1)
 10    CONTINUE
 
-C RECUPERATION DU CHAMP LOCAL (CARTE) ASSOCIE AU EPS INIT
+C RECUPERATION DU CHAMP LOCAL (CARTE) ASSOCIE AU PRE-EPSI
+C CE CHAMP EST ISSU D UN CHARGEMENT PRE-EPSI
       IF (OPTION.EQ.'CALC_G_F') THEN
         FONC = .TRUE.
         CALL JEVECH('PFFVOLU','L',IFORF)
@@ -156,6 +157,7 @@ C RECUPERATION DU CHAMP LOCAL (CARTE) ASSOCIE AU EPS INIT
         IF (IEPSR.NE.0) EPSINI = .TRUE.
       ENDIF
 
+
 C LOI DE COMPORTEMENT
       GRAND = COMPOR(3).EQ.'GROT_GDEP'
       INCR  = COMPOR(4)(1:9).EQ.'COMP_INCR'
@@ -168,13 +170,16 @@ C LOI DE COMPORTEMENT
       CALL TECACH('ONN','PPESANR',1,IPESA,IRET)
       CALL TECACH('ONN','PROTATR',1,IROTA,IRET)
       CALL TECACH('ONN','PSIGINR',1,ISIGI,IRET)
-      CALL TECACH('ONN','PDEPINR',1,IDEPI,IRET)
+C      WRITE(6,*)'ISIGI',ISIGI
+C      WRITE(6,*)'IDEPI',IDEPI
+C      WRITE(6,*)'EPSINI',EPSINI
+C      WRITE(6,*)'IEPSF',IEPSF
+C      WRITE(6,*)'IEPSR',IEPSR
       IF (OPTION.EQ.'CALC_G'.OR.OPTION.EQ.'CALC_G_F') THEN
         CALL TECACH('ONN','PVITESS',1,IVITES,IRET)
         CALL TECACH('ONN','PACCELE',1,IACCEL,IRET)
       ENDIF
 
-C    DEFORMATION INITIALE PAR NOEUD
       DO 20 I=1,NCMP*NNO
         EPSINO(I) = 0.D0
 20    CONTINUE
@@ -183,13 +188,13 @@ C =====================================================================
 C MESSAGES D'ERREURS
 C =====================================================================
 
-C ON NE PEUT AVOIR SIMULTANEMENT DEFORMATIONS ET CONTRAINTES INIT.
+C ON NE PEUT AVOIR SIMULTANEMENT PRE-DEFORMATIONS ET CONTRAINTES INIT.
       IF ((ISIGI.NE.0).AND.EPSINI) THEN
         CALL U2MESS('F','RUPTURE1_20')
       ENDIF
 
 C =====================================================================
-C RECUPERATION DES CHARGES ET DEFORMATIONS INITIALES
+C RECUPERATION DES CHARGES ET PRE-DEFORMATIONS (CHARGEMENT PRE-EPSI)
 C =====================================================================
       IF (FONC) THEN
         DO 50 I=1,NNO
@@ -267,29 +272,6 @@ C CORRECTION DES FORCES VOLUMIQUES
         ENDIF
       ENDIF
 
-C =====================================================================
-C TRAITEMENTS PARTICULIERS LIES A UN DEPLACEMENT INITIAL
-C =====================================================================
-C
-      IF (IDEPI.NE.0) THEN
-        CALL ELREF4(' ','GANO',NDIM,NNO,NNOS,NPG,IPOI1,IVF1,
-     &                     IDFDE1,JGANO)
-C
-        DO 120 KP=1,NPG
-          L    = (KP-1)*NNO
-          CALL NMGEOM (NDIM,NNO,AXI,GRAND,ZR(IGEOM),KP,IPOI1,
-     &                 IVF1,IDFDE1,ZR(IDEPI),
-     &                 .TRUE.,RBID,DFDI,F,EPS,RBID)
-          DO 110 I=1,NCMP
-            EPSIPG((KP-1)*NCMP+I)= EPS(I)
-110       CONTINUE
-120     CONTINUE
-C
-        CALL PPGAN2(JGANO,1,NCMP,EPSIPG,EPSNO)
-        DO 121 I=1,NNO*NCMP
-          EPSINO(I) = EPSINO(I)+EPSNO(I)
-121     CONTINUE
-      ENDIF
 
 C ======================================================================
 C CALCUL DE LA TEMPERATURE AUX NOEUDS ET RECUPERATION DE LA TEMPERATURE
@@ -332,6 +314,7 @@ C INITIALISATIONS
           EPSIN(I) = 0.D0
           EPSP(I)  = 0.D0
           EPS (I)  = 0.D0
+          EPSREF(I)= 0.D0
           DO 230 J=1,3
             DSIGIN(I,J) = 0.D0
             DEPSIN(I,J) = 0.D0
@@ -426,10 +409,11 @@ C CALCULS DES GRADIENTS DE P (DPDM) ET EPSP (DEPSP) EN PLASTICITE
         ENDIF
 
 C =======================================================
-C DEFORMATIONS INITIALES
+C PRE DEFORMATIONS ET LEUR GRADIENT DEPSIN
+C (seule intervenant dans le calcul de G)
 C =======================================================
 
-        IF ((IDEPI.NE.0).OR.EPSINI) THEN
+        IF (EPSINI) THEN
           DO 420 I=1,NNO
             I1 = I-1
             DER(1) = DFDI(I)
@@ -453,7 +437,7 @@ C =======================================================
         ENDIF
 
 C =======================================================
-C CALCUL DES CONTRAINTES ET DE L'ENERGIE LIBRE
+C CALCUL DES CONTRAINTES LAGRANGIENNES SIGL ET DE L'ENERGIE LIBRE
 C =======================================================
 
         IF (INCR) THEN
@@ -510,8 +494,10 @@ C CALCUL DE LA DIVERGENCE DU THETA FISSURE (DIVT)
           DIVT  = DIVT + DTDM(I,I)
 437     CONTINUE
 
+
 C =======================================================
-C CONTRAINTES INITIALES
+C CORRECTIONS LIEES A LA CONTRAINTE INITIALE (SIGM_INIT DE CALC_G)
+C CONTRAINTE, DEFORMATION DE REFERENCE, ENERGIE ELASTIQUE
 C =======================================================
 
         IF (ISIGI.NE.0) THEN
@@ -544,17 +530,34 @@ C TRAITEMENTS PARTICULIERS DES TERMES CROISES
 462         CONTINUE
 463       CONTINUE
 
-C CORRECTION DE SIGMA ET DE L'ENERGIE LIBRE TOTALE
-          DO 464 I=1,NCMP
-            SIGL(I) = SIGL(I)+ SIGIN(I)
-464       CONTINUE
+C CALCUL DE LA DEFORMATION DE REFERENCE
+          CALL RCCOMA(MATCOD,'ELAS',PHENOM,ICODRE)
+          CALL RCVALA(MATCOD,' ',PHENOM,1,' ',RBID,1,'NU',NU,
+     &              ICODRE,1)
+          CALL RCVALA(MATCOD,' ',PHENOM,1,' ',RBID,1,'E',E,
+     &              ICODRE,1)
+        
+          MU = E/(2.D0*(1.D0+NU))
+          
+          EPSREF(1)=-(1.D0/E)*(SIGIN(1)-(NU*(SIGIN(2)+SIGIN(3))))
+          EPSREF(2)=-(1.D0/E)*(SIGIN(2)-(NU*(SIGIN(3)+SIGIN(1))))    
+          EPSREF(3)=-(1.D0/E)*(SIGIN(3)-(NU*(SIGIN(1)+SIGIN(2)))) 
+          EPSREF(4)=-(1.D0/MU)*SIGIN(4)
+          
+C 
+
+C ENERGIE ELASTIQUE (expression WADIER)
+
           DO 465 I=1,NCMP
-            ENERGI(1) = ENERGI(1) + (EPS(I)+0.5D0*EPSIN(I))*SIGIN(I)
+            ENERGI(1) = ENERGI(1) + (EPS(I)-0.5D0*EPSREF(I))*SIGIN(I)
 465       CONTINUE
         ENDIF
 
+
+
+
 C =======================================================
-C STOCKAGE DE SIGMA - SIGMAINI ET TRAITEMENTS DES TERMES CROISES
+C STOCKAGE DE SIGMA ET TRAITEMENTS DES TERMES CROISES
 C =======================================================
         SR(1,1)= SIGL(1)
         SR(2,2)= SIGL(2)
@@ -604,7 +607,7 @@ C =======================================================
 490     CONTINUE
         PROD  = PROD - ECIN*DIVT + PROD3 - PROD4
         PROD2 = POIDS*( PROD - ENERGI(1)*DIVT)
-C
+
         TCLA  = TCLA + PROD2
 
 C =======================================================
@@ -658,23 +661,27 @@ C
         ENDIF
 
 C =======================================================
-C TERME INITIAL:  SIG:GRAD(EPSIN).THETA-(EPS-EPSIN):GRAD(SIGIN).THETA
-C REMARQUE : POUR LA DERIVEE, TINI EST INUTILE.
-C            MAIS ON A BESOIN DE PROD1 ET PROD2 SI TSENUL EST FAUX.
+C TERME INITIAL:PROD1 LIE A LA CONTRAINTE (EPS-EPSREF):GRAD(SIGIN).THETA
+C               PROD2 LIE A LA PREDEFORMATION SIG:GRAD(EPSIN).THETA
 C =======================================================
 C
-        IF ((ISIGI.NE.0).OR.(IDEPI.NE.0).OR.EPSINI) THEN
-C
+        IF ((ISIGI.NE.0).OR.EPSINI) THEN
           PROD1=0.D0
           PROD2=0.D0
-          DO 670 I=1,NCMP
-            DO 660 J=1,NDIM
-            PROD1=PROD1+(SIGL(I)-0.5D0*SIGIN(I))*DEPSIN(I,J)*DTDM(J,4)
-            PROD2=PROD2+(EPS(I) +0.5D0*EPSIN(I))*DSIGIN(I,J)*DTDM(J,4)
-660         CONTINUE
-670       CONTINUE
-C
-          TINI = TINI + (PROD1-PROD2)*POIDS
+          IF (ISIGI.NE.0) THEN
+            DO 670 I=1,NCMP
+              DO 660 J=1,NDIM
+              PROD1=PROD1-(EPS(I)-EPSREF(I))*DSIGIN(I,J)*DTDM(J,4)
+660           CONTINUE
+670         CONTINUE
+          ELSE IF (EPSINI) THEN
+            DO 671 I=1,NCMP
+              DO 661 J=1,NDIM
+              PROD2=PROD2+SIGL(I)*DEPSIN(I,J)*DTDM(J,4)
+661           CONTINUE
+671         CONTINUE
+          END IF 
+          TINI = TINI + (PROD1+PROD2)*POIDS
 C
         ENDIF
 
@@ -688,6 +695,5 @@ C EXIT EN CAS DE THETA FISSURE NUL PARTOUT
 
 C ASSEMBLAGE FINAL DES TERMES DE G OU DG
       ZR(IGTHET) = TTHE  + TCLA  + TFOR  + TPLAS  + TINI
-
       CALL JEDEMA()
       END

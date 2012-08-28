@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,8 +72,8 @@ C           --- RECHERCHE DU NOEUD DE CHOC ---
             GOTO 9999
  12         CONTINUE
 C
-            CALL JEVEUO(TRANGE//'.INST','L',JINST)
-            CALL JELIRA(TRANGE//'.INST','LONMAX',NBPT,K8B)
+            CALL JEVEUO(TRANGE//'.DISC','L',JINST)
+            CALL JELIRA(TRANGE//'.DISC','LONMAX',NBPT,K8B)
             TMAX = ZR(JINST+NBPT-1)
             TMIN = ZR(JINST)
             IF ( N2 .EQ. 0 ) THEN

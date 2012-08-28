@@ -1,4 +1,4 @@
-# MODIF  DATE 06/08/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 28/08/2012   AUTEUR TRAN V-X.TRAN 
 # TITRE CALCUL DE G POUR UN PB ELASTOPLASTIQUE : APPROCHE GTP
 # ssnp102b.para = tps_job 200 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -196,7 +196,6 @@ THET4=CALC_THETA(       MODELE=MO,
 G1=CALC_G(
             RESULTAT=UP,
             THETA=_F(THETA=THET1,SYME='OUI'),
-            COMP_INCR=_F(RELATION = 'VMIS_ISOT_TRAC'),
             OPTION='CALC_G_GLOB'
              );
 
@@ -204,21 +203,18 @@ G1=CALC_G(
 G2=CALC_G(
             RESULTAT=UP,
             THETA=_F(THETA=THET2,SYME='OUI'),
-            COMP_INCR=_F(RELATION = 'VMIS_ISOT_TRAC'),
             OPTION='CALC_G_GLOB'
              );
 
 G3=CALC_G(
             RESULTAT=UP,
             THETA=_F(THETA=THET3,SYME='OUI'),
-            COMP_INCR=_F(RELATION = 'VMIS_ISOT_TRAC'),
             OPTION='CALC_G_GLOB'
              );
 
 G4=CALC_G(
             RESULTAT=UP,
             THETA=_F(THETA=THET4,SYME='OUI'),
-            COMP_INCR=_F(RELATION = 'VMIS_ISOT_TRAC'),
             OPTION='CALC_G_GLOB'
              );
 

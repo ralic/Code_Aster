@@ -1,8 +1,8 @@
-#@ MODIF calc_mode_rotation_ops Macro  DATE 14/06/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calc_mode_rotation_ops Macro  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -40,8 +40,6 @@ def calc_mode_rotation_ops(self,MATR_A, MATR_B, MATR_AMOR, MATR_GYRO,
     # On importe les definitions des commandes a utiliser dans la macro
     MODE_ITER_SIMULT  =self.get_cmd('MODE_ITER_SIMULT')
     COMB_MATR_ASSE    =self.get_cmd('COMB_MATR_ASSE')
-    IMPR_RESU         =self.get_cmd('IMPR_RESU')
-    DETRUIRE          =self.get_cmd('DETRUIRE')
     CREA_TABLE        =self.get_cmd('CREA_TABLE')
 
     # La macro compte pour 1 dans la numerotation des commandes
@@ -72,7 +70,6 @@ def calc_mode_rotation_ops(self,MATR_A, MATR_B, MATR_AMOR, MATR_GYRO,
     tab=Table()
     for ii in range(0,NBV):
         OM=VITE_ROTA[ii]
-        nom = 'OM_'+str(ii)
 
         # ----------------------------------
         # Ajout des effets gyroscopiques w*G
@@ -80,16 +77,15 @@ def calc_mode_rotation_ops(self,MATR_A, MATR_B, MATR_AMOR, MATR_GYRO,
         # ----------------------------------
 
         
-        GYOM=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=MATR_GYRO, COEF_R=OM,),
+        __gyom=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=MATR_GYRO, COEF_R=OM,),
                             _F(MATR_ASSE=MATR_AMOR, COEF_R=1.,),))
 
         _mod[ii]=MODE_ITER_SIMULT(MATR_A=MATR_A,
                        MATR_B=MATR_B,
-                       MATR_C=GYOM,
+                       MATR_C=__gyom,
                        METHODE=METHODE,
                        **motscit)
         
-        DETRUIRE(CONCEPT=_F(NOM=GYOM),INFO=1,)
         tab.append({'NUME_VITE' : ii, 'VITE_ROTA' : OM, 'NOM_OBJET': 'MODE_MECA', 'TYPE_OBJET': 'MODE_MECA', 'NOM_SD' : _mod[ii].nom})
 
     motcles=tab.dict_CREA_TABLE()

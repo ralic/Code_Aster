@@ -1,8 +1,8 @@
-#@ MODIF macro_expans_ops Macro  DATE 28/06/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF macro_expans_ops Macro  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -79,35 +79,33 @@ def macro_expans_ops( self,
     # Extraction des modes numériques
     # -------------------------------
     if not is_nume_num:
-        resu_nx = RESU_NUM
+        __resunx = RESU_NUM
     else:
         if RESU_NX:
-            self.DeclareOut( "RESU_NX", RESU_NX )
+            self.DeclareOut( "__resunx", RESU_NX )
         mfact = {'MODE':RESU_NUM}
         if MODELE_CALCUL['NUME_MODE']:
             mfact.update({'NUME_MODE':MODELE_CALCUL['NUME_MODE']})
         elif MODELE_CALCUL['NUME_ORDRE']:
             mfact.update({'NUME_ORDRE':MODELE_CALCUL['NUME_ORDRE']})
 
-        RESU_NX = EXTR_MODE( FILTRE_MODE = mfact )
-        resu_nx = RESU_NX
+        __resunx = EXTR_MODE( FILTRE_MODE = mfact )
 
 
     # Extraction des modes expérimentaux
     # ----------------------------------
     if not is_nume_exp:
-        resu_ex = RESU_EXP
+        __resuex = RESU_EXP
     else:
         if RESU_EX:
-            self.DeclareOut( "RESU_EX", RESU_EX )
+            self.DeclareOut( "__resuex", RESU_EX )
         mfact = {'MODE':RESU_EXP}
         if MODELE_MESURE['NUME_MODE']:
             mfact.update({'NUME_MODE':MODELE_MESURE['NUME_MODE']})
         elif MODELE_MESURE['NUME_ORDRE']:
             mfact.update({'NUME_ORDRE':MODELE_MESURE['NUME_ORDRE']})
 
-        RESU_EX = EXTR_MODE( FILTRE_MODE = mfact )
-        resu_ex = RESU_EX
+        __resuex = EXTR_MODE( FILTRE_MODE = mfact )
 
 
 
@@ -142,10 +140,10 @@ def macro_expans_ops( self,
 
 
     try:
-        __PROJ = PROJ_MESU_MODAL(MODELE_CALCUL = _F( BASE=resu_nx,
+        __PROJ = PROJ_MESU_MODAL(MODELE_CALCUL = _F( BASE=__resunx,
                                                      MODELE=MOD_CALCUL,
                                                    ),
-                                 MODELE_MESURE = _F( MESURE=resu_ex,
+                                 MODELE_MESURE = _F( MESURE=__resuex,
                                                      MODELE=MOD_MESURE,
                                                      NOM_CHAM=NOM_CHAM,
                                                    ),
@@ -159,8 +157,8 @@ def macro_expans_ops( self,
     # numerique
     # ------------------------------------------------------------
     if RESU_ET:
-        self.DeclareOut( "RESU_ET", RESU_ET )
-    RESU_ET = REST_GENE_PHYS( RESU_GENE  = __PROJ,
+        self.DeclareOut( "__resuet", RESU_ET )
+    __resuet = REST_GENE_PHYS( RESU_GENE  = __PROJ,
                               TOUT_ORDRE  = 'OUI',
                               NOM_CHAM    = NOM_CHAM);
 
@@ -169,20 +167,20 @@ def macro_expans_ops( self,
     # Restriction des modes mesures etendus sur le maillage capteur
     # -------------------------------------------------------------
     if RESU_RD:
-        self.DeclareOut( "RESU_RD", RESU_RD )
+        self.DeclareOut( "__resurd", RESU_RD )
 
     nume=None
     if NUME_DDL:
         nume = NUME_DDL
     if not nume :
-        if resu_ex.sdj.REFD.get():
-            tmp = resu_ex.sdj.REFD.get()[3]
+        if __resuex.sdj.REFD.get():
+            tmp = __resuex.sdj.REFD.get()[3]
             if tmp.strip() :
                 nume = self.get_concept(tmp)
         else:
             UTMESS('A','CALCESSAI0_5')
-    RESU_RD = PROJ_CHAMP( METHODE    = 'COLLOCATION',
-                          RESULTAT   = RESU_ET,
+    __resurd = PROJ_CHAMP( METHODE    = 'COLLOCATION',
+                          RESULTAT   = __resuet,
                           MODELE_1   = MOD_CALCUL,
                           MODELE_2   = MOD_MESURE,
                           NOM_CHAM   = NOM_CHAM,

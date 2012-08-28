@@ -1,4 +1,4 @@
-#@ MODIF algorith9 Messages  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF algorith9 Messages  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -133,6 +133,19 @@ cata_msg = {
 
 49 : _(u"""
  l'instant de récupération est en dehors du domaine de calcul.
+"""),
+
+50 : _(u"""
+ la fréquence  de récupération n'a pas été calculée.
+"""),
+
+51 : _(u"""
+ Vous avez demandé de restituer sur une fréquence (mot-clé FREQ) pour un concept transitoire
+ sur base généralisée. Pour ce type de concept vous devez utiliser le mot-clé 'INST'.
+"""),
+52 : _(u"""
+ Vous avez demandé de restituer sur un instant (mot-clé INST) pour un concept harmonique
+ sur base généralisée. Pour ce type de concept vous devez utiliser le mot-clé 'FREQ'.
 """),
 
 55 : _(u"""

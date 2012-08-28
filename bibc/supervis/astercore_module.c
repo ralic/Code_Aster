@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astercore_module supervis  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astercore_module supervis  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -308,6 +308,100 @@ void DEFSSP(GTOPTK,gtoptk, _IN char *option, STRING_SIZE lopt,
     FreeStr(value);
 }
 
+static char get_mem_stat_doc[] =
+"Interface d'appel a la routine fortran UTGTME.\n";
+
+static PyObject * asterc_get_mem_stat(self, args)
+PyObject *self; /* Not used */
+PyObject *args;
+{
+    /*
+     *  Interface d'appel à la routine fortran UTGTME
+     */
+    PyObject *t_valres, *t_res;
+    int inbpar;
+    INTEGER nbpar, codret;
+    char *nompar;
+    DOUBLE *valres;
+    /* doit impérativement correspondre aux longueurs des chaines de caractères fortran */
+    STRING_SIZE long_nompar = 8;
+    void *malloc(size_t size);
+
+    /* Conversion en tableaux de chaines */
+    inbpar = (int)PyTuple_Size(args);
+    nbpar = (INTEGER)inbpar;
+    nompar = MakeTabFStr(inbpar, long_nompar);
+    convertxt(inbpar, args, nompar, long_nompar);
+
+    /* allocation des variables de sortie */
+    valres = (DOUBLE *)malloc(nbpar*sizeof(DOUBLE));
+
+    CALL_UTGTME(&nbpar, nompar, valres, &codret); 
+
+    t_valres = MakeTupleFloat((long)inbpar, valres);
+
+    /* retour de la fonction */
+    t_res = PyTuple_New(2);
+    PyTuple_SetItem(t_res, 0, t_valres);
+    PyTuple_SetItem(t_res, 1, PyInt_FromLong((long)codret));
+
+    FreeStr(nompar);
+    free(valres);
+
+    return t_res;
+}
+
+static char set_mem_stat_doc[] =
+"Interface d'appel a la routine fortran UTPTME.\n"
+"   set_mem_stat(tuple_of_parameters, tuple_of_values)\n\n"
+"   The number of values must be the same as the number of parameters.";
+
+static PyObject * asterc_set_mem_stat(self, args)
+PyObject *self; /* Not used */
+PyObject *args;
+{
+    /*
+     *  Interface d'appel à la routine fortran UTGTME
+     */
+    PyObject *tup_par, *tup_val;
+    PyObject *res;
+    int inbpar, inbval;
+    INTEGER nbpar, codret;
+    char *nompar;
+    DOUBLE *values;
+    /* doit impérativement correspondre aux longueurs des chaines de caractères fortran */
+    STRING_SIZE long_nompar = 8;
+    void *malloc(size_t size);
+
+    if ( !PyArg_ParseTuple(args, "OO:set_mem_stat", &tup_par, &tup_val) )
+        return NULL;
+
+    inbpar = (int)PyTuple_Size(tup_par);
+    inbval = (int)PyTuple_Size(tup_val);
+    if (inbpar != inbval) {
+        MYABORT("sizes of the tuples of parameters & values mismatch\n");
+    }
+
+    /* Conversion en tableaux de chaines */
+    nbpar = (INTEGER)inbpar;
+    nompar = MakeTabFStr(inbpar, long_nompar);
+    convertxt(inbpar, tup_par, nompar, long_nompar);
+
+    /* allocation des valeurs des variables */
+    values = (DOUBLE *)malloc(inbval*sizeof(DOUBLE));
+    convr8(inbval, tup_val, values);
+
+    CALL_UTPTME(&nbpar, nompar, values, &codret); 
+
+    /* retour de la fonction */
+    res = PyInt_FromLong((long)codret);
+
+    FreeStr(nompar);
+    free(values);
+
+    return res;
+}
+
 /*
  * Functions based on MessageLog object.
  */
@@ -449,27 +543,32 @@ PyObject* asterc_matfpe(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
 {
-   int iactif;
-   INTEGER actif;
+    /*
+     * Interface Python d'appel à la routine matfpe.
+     */
+    int iactif;
+    INTEGER actif;
 
-   if (!PyArg_ParseTuple(args, "i:matfpe", &iactif)) return NULL;
+    if (!PyArg_ParseTuple(args, "i:matfpe", &iactif)) return NULL;
 
-   if (iactif >= -1  && iactif <= 1) {
-      actif = (INTEGER)iactif;
-      CALL_MATFPE(&actif);
-   } else {
-      MYABORT("Valeur incorrecte : seuls -1 et 1 sont valides.");
-   }
-   Py_INCREF( Py_None ) ;
-   return Py_None;
+    if (iactif >= -1  && iactif <= 1) {
+        actif = (INTEGER)iactif;
+        CALL_MATFPE(&actif);
+    } else {
+        MYABORT("Valeur incorrecte : seuls -1 et 1 sont valides.");
+    }
+    Py_INCREF( Py_None ) ;
+    return Py_None;
 }
 
 /*
  * Methods of the aster_core module.
  */
 static PyMethodDef methods[] = {
-    { "register",   register_jdc,       METH_VARARGS, register_jdc_doc },
-    { "matfpe",     asterc_matfpe,      METH_VARARGS, matfpe_doc},
+    { "register",       register_jdc,        METH_VARARGS, register_jdc_doc },
+    { "matfpe",         asterc_matfpe,       METH_VARARGS, matfpe_doc },
+    { "get_mem_stat",   asterc_get_mem_stat, METH_VARARGS, get_mem_stat_doc },
+    { "set_mem_stat",   asterc_set_mem_stat, METH_VARARGS, set_mem_stat_doc },
     // { "get_option",  ... } : method added in register_jdc
     // { "set_info",  ... } : method added in register_jdc
     { NULL, NULL, 0, NULL }

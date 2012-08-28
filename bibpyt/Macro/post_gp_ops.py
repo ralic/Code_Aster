@@ -1,4 +1,4 @@
-#@ MODIF post_gp_ops Macro  DATE 18/06/2012   AUTEUR DELMAS J.DELMAS 
+#@ MODIF post_gp_ops Macro  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -50,7 +50,6 @@ def post_gp_ops(self, **args):
    DEFI_GROUP    = self.get_cmd('DEFI_GROUP')
    EXTR_RESU     = self.get_cmd('EXTR_RESU')
    DETRUIRE      = self.get_cmd('DETRUIRE')
-   FIN           = self.get_cmd('FIN')
 
    tmp_liste_inst_postgp = []
 
@@ -61,19 +60,19 @@ def post_gp_ops(self, **args):
    self.DeclareOut('result', self.sd)
    self.DeclareOut('tabresult', self['TABL_GPMAX'])
    if (self['TABL_GP']!= None ):
-       self.DeclareOut('tabgp', self['TABL_GP'])
+       self.DeclareOut('__tabgp', self['TABL_GP'])
 
    liste_inst_post = self['LIST_INST']
-   Resultat = EXTR_RESU(RESULTAT=self['RESULTAT'],ARCHIVAGE=_F(LIST_INST=liste_inst_post))
+   __resu = EXTR_RESU(RESULTAT=self['RESULTAT'],ARCHIVAGE=_F(LIST_INST=liste_inst_post))
    liste_inst_postgp = aster.getvectjev(string.ljust(liste_inst_post.nom,19)+'.VALE')
 
 
    #----------------------------------------------------------
    # ---- Recuperation du nombre d'instants deja calculés
    #----------------------------------------------------------
-   if aster.getvectjev(string.ljust(Resultat.nom,19)+'.ORDR        ').__contains__(0):UTMESS('F','POST0_37')
-   num_ord = len(aster.getvectjev(string.ljust(Resultat.nom,19)+'.ORDR        '))
-   liste_ord = aster.getvectjev(string.ljust(Resultat.nom,19)+'.ORDR        ')
+   if aster.getvectjev(string.ljust(__resu.nom,19)+'.ORDR        ').__contains__(0):UTMESS('F','POST0_37')
+   num_ord = len(aster.getvectjev(string.ljust(__resu.nom,19)+'.ORDR        '))
+   liste_ord = aster.getvectjev(string.ljust(__resu.nom,19)+'.ORDR        ')
 
 
    # Cas 2D
@@ -156,7 +155,7 @@ def post_gp_ops(self, **args):
                                           R_SUP=dMC['R_SUP']),)
 
          __gtheta = CALC_G(THETA=_F(THETA=__theta, SYME=self['SYME'],),
-                           RESULTAT=Resultat,
+                           RESULTAT=__resu,
                            TOUT_ORDRE='OUI',
                            COMP_ELAS=self['COMP_ELAS'].List_F(),
                            **args)
@@ -188,7 +187,7 @@ def post_gp_ops(self, **args):
                                     MODULE=1.0,
                                     FOND_FISS=self['FOND_FISS'],
                                     **dpar_theta),
-                           RESULTAT=Resultat,
+                           RESULTAT=__resu,
                            TOUT_ORDRE='OUI',
                            COMP_ELAS=self['COMP_ELAS'].List_F(),
                            LISSAGE=self['LISSAGE'].List_F(),
@@ -224,14 +223,14 @@ def post_gp_ops(self, **args):
        lnormale = (self['DIRECTION'][1],self['DIRECTION'][0])
        Nds_fdfiss = dMC['GROUP_NO']
        Recup_Noeuds_Surf(is_2D,maya,Nds_fdfiss,lnormale)
-       mesure = Calcul_mesure_2D(is_2D,maya,nbcop,num_ord,l_copo_tot,ltyma,Resultat,type_def)
+       mesure = Calcul_mesure_2D(is_2D,maya,nbcop,num_ord,l_copo_tot,ltyma,__resu,type_def)
 
    else:
       # Récupération des noeuds appartenant à la surface de symétrie
       # le vecteur normal est récuperé dans FOND_FISS
        FOND_FISS =  self['FOND_FISS']
        Recup_Noeuds_Surf(is_2D,maya,l_noeuds_fissure[0],lnormale,l_noeuds_fissure)
-       mesure, l_ep_copeaux_tot_3D = Calcul_mesure_3D(is_2D,maya,nbcop,num_ord,l_copo_tot,ltyma,Resultat,type_def)
+       mesure, l_ep_copeaux_tot_3D = Calcul_mesure_3D(is_2D,maya,nbcop,num_ord,l_copo_tot,ltyma,__resu,type_def)
        l_ep_copeaux_tot_3D = l_ep_copeaux_tot_3D*num_ord
 
    #----------------------------------------------------------
@@ -246,8 +245,8 @@ def post_gp_ops(self, **args):
 
    if self['TRAC_COMP']=='OUI':
       # prise en compte de la traction-compression dans le calcul de l'energie
-      resu2=CALC_CHAMP(CRITERES='SIEQ_ELNO',
-                      RESULTAT=Resultat,
+      __res2=CALC_CHAMP(CRITERES='SIEQ_ELNO',
+                      RESULTAT=__resu,
                       )
 
       # indices des mailles du dernier group_ma
@@ -259,7 +258,7 @@ def post_gp_ops(self, **args):
 
       kk = 0
 
-      E_el = [None]*len(l_mailles_last_gm)*nb_tranches
+      __Eel = [None]*len(l_mailles_last_gm)*nb_tranches
 
       T_el = [None]*len(l_mailles_last_gm)*nb_tranches
 
@@ -312,14 +311,14 @@ def post_gp_ops(self, **args):
             elem = maya_NOMMAI[id_elem-1]
             d_nomma[id_elem]=elem
 
-            E_el[kk] = POST_ELEM(MODELE=self['MODELE'],
-                                 RESULTAT=Resultat,
+            __Eel[kk] = POST_ELEM(MODELE=self['MODELE'],
+                                 RESULTAT=__resu,
                                  TOUT_ORDRE='OUI',
                                  ENER_ELAS=_F(MAILLE=elem),
                                  TITRE='Energie élastique',
                                  **args)
 
-            T_el[kk] = E_el[kk].EXTR_TABLE()
+            T_el[kk] = __Eel[kk].EXTR_TABLE()
 
             l_enel = T_el[kk].TOTALE.values()
 
@@ -341,7 +340,7 @@ def post_gp_ops(self, **args):
             # pour chaque noeud de l'element on recupere sa trace
             for noeud in list_no:
 
-               __VM=RECU_FONCTION(RESULTAT=resu2,
+               __VM=RECU_FONCTION(RESULTAT=__res2,
                                     TOUT_INST='OUI',
                                     NOM_CHAM='SIEQ_ELNO',
                                     NOM_CMP='VMIS_SG',
@@ -428,7 +427,7 @@ def post_gp_ops(self, **args):
          # calcul classique de l'energie elastique
 
          __ener = POST_ELEM(MODELE=self['MODELE'],
-                                 RESULTAT=Resultat,
+                                 RESULTAT=__resu,
                                  TOUT_ORDRE='OUI',
                                  ENER_ELAS=_F(GROUP_MA=l_copo),
                                  TITRE='Energie élastique',
@@ -581,12 +580,12 @@ def post_gp_ops(self, **args):
                     CREA_GROUP_NO=_F(GROUP_MA=grma_fond,
                                      NOM=grno_fond,),);
 
-      l_ordres = DEFI_LIST_ENTI(VALE=l_numord)
+      __lord = DEFI_LIST_ENTI(VALE=l_numord)
       __relev = POST_RELEVE_T(ACTION=_F(RESULTAT=self['RESU_THER'],
                                         OPERATION='EXTRACTION',
                                         INTITULE='Temperature',
                                         NOM_CHAM='TEMP',
-                                        LIST_ORDRE=l_ordres,
+                                        LIST_ORDRE=__lord,
                                         NOM_CMP='TEMP',
                                         GROUP_NO=grno_fond,),)
 
@@ -895,7 +894,7 @@ def post_gp_ops(self, **args):
    result = CREA_TABLE(**dprod)
    tabresult = CREA_TABLE(**dprod_result)
 
-   # 9. ----- création de la table_sdaster tabgp
+   # 9. ----- création de la table_sdaster __tabgp
    if (self['TABL_GP']!= None ):
 
      temps_agarde_gp = []
@@ -944,8 +943,7 @@ def post_gp_ops(self, **args):
 
 
      dprod_tabgp = tab_tabgp.dict_CREA_TABLE()
-     tabgp = CREA_TABLE(**dprod_tabgp)
-   DETRUIRE(CONCEPT=_F(NOM=Resultat),INFO=1);
+     __tabgp = CREA_TABLE(**dprod_tabgp)
 
 # -----------------------------------------------------------------------------
 def CallRCVALE(TEMP, para, MATER):
@@ -1437,9 +1435,9 @@ def Coord_Recup(noeud_courant,maille_courante,resu):
                     TOUT_CMP='OUI',NOM_CHAM='DEPL',  TOUT_ORDRE='OUI',
                     NOEUD=noeud_courant))
 
-   DEP_el_i = POST_RELEVE_T(ACTION=dicarg)
-   tab_DEP_el = DEP_el_i.EXTR_TABLE()
-   DETRUIRE(CONCEPT=_F(NOM=DEP_el_i),INFO=1);
+   __depeli = POST_RELEVE_T(ACTION=dicarg)
+   tab_DEP_el = __depeli.EXTR_TABLE()
+   DETRUIRE(CONCEPT=_F(NOM=__depeli),INFO=1);
    return tab_DEP_el
 
 def Supr_mano(maya,mon_nom):

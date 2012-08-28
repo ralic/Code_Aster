@@ -10,19 +10,19 @@ def test_init_ops(self,TINI,TFIN,TMIL,MATER,LIST_INST,**args):
   # Le concept sortant dans le contexte de la macro
     self.DeclareOut('SPM',self.sd)
 
-    COEF1B=DEFI_FONCTION(NOM_PARA='INST',
+    __coef1b=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(0 ,0,
                            10,-1.E4,
                            25,1.E4,
                            40,-1.E4,),
                      PROL_DROITE='CONSTANT',);
 
-    COEF2B=DEFI_FONCTION(NOM_PARA='INST',
+    __coef2b=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(0 ,- 5.E4,
                            50,- 5.E4,),
                      PROL_DROITE='CONSTANT',);
 
-    U2=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='HUJEUX',
+    __u2=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='HUJEUX',
                                ITER_INTE_MAXI=20,
                                RESI_INTE_RELA=1E-8,
                                ITER_INTE_PAS =-5,),
@@ -35,10 +35,10 @@ def test_init_ops(self,TINI,TFIN,TMIL,MATER,LIST_INST,**args):
                   CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
                                  ITER_GLOB_MAXI = 10),
                   ARCHIVAGE=_F(LIST_INST=TEMPS1,),
-                  SIGM_IMPOSE=_F(SIXX=COEF2B,
-                                 SIYY=COEF2B,
-                                 SIZZ=COEF2B,
-                                 SIXY=COEF1B,),
+                  SIGM_IMPOSE=_F(SIXX=__coef2b,
+                                 SIYY=__coef2b,
+                                 SIZZ=__coef2b,
+                                 SIXY=__coef1b,),
                   SIGM_INIT=_F(SIXX=- 5.E4,
                                SIYY=- 5.E4,
                                SIZZ=- 5.E4,),
@@ -49,7 +49,7 @@ def test_init_ops(self,TINI,TFIN,TMIL,MATER,LIST_INST,**args):
                                EPXZ=0,
                                EPYZ=0,),);
 
-    Vpyth = U2.EXTR_TABLE().values();
+    Vpyth = __u2.EXTR_TABLE().values();
 
     SIXX_INI = Vpyth['SIXX'][-1];
     SIYY_INI = Vpyth['SIYY'][-1];
@@ -82,10 +82,10 @@ def test_init_ops(self,TINI,TFIN,TMIL,MATER,LIST_INST,**args):
                   CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
                                  ITER_GLOB_MAXI = 10),
                   ARCHIVAGE=_F(LIST_INST=TEMPS1,),
-                  SIGM_IMPOSE=_F(SIXX=COEF2B,
-                                 SIYY=COEF2B,
-                                 SIZZ=COEF2B,
-                                 SIXY=COEF1B,),
+                  SIGM_IMPOSE=_F(SIXX=__coef2b,
+                                 SIYY=__coef2b,
+                                 SIZZ=__coef2b,
+                                 SIXY=__coef1b,),
                   VARI_INIT=_F(VALE=VARI_INI),
                   SIGM_INIT=_F(SIXX=SIXX_INI,
                                SIYY=SIYY_INI,

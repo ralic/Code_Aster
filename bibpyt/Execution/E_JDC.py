@@ -1,4 +1,4 @@
-#@ MODIF E_JDC Execution  DATE 18/06/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_JDC Execution  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -55,7 +55,7 @@ class JDC:
 
    # attributs du jdc "picklés" (ceux qui contiennent des infos de l'exécution).
    # nsd : nombre de sd produites
-   l_pick_attr = ('memo_sensi', 'catalc', 'nsd', 'jeveux_sysaddr')
+   l_pick_attr = ('catalc', 'nsd', 'jeveux_sysaddr')
 
    def __init__(self):
       self.info_level = 1

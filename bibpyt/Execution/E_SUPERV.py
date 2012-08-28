@@ -1,4 +1,4 @@
-#@ MODIF E_SUPERV Execution  DATE 16/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_SUPERV Execution  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -51,7 +51,7 @@ class SUPERV:
  Exemple:
 
     asteru JDC.py ---bibpyt=/opt/aster/stable/bibpyt --commandes=sslp09a.comm --memory=128
-"""
+    """
 
     def __init__(self):
         self.jdc = None
@@ -76,8 +76,8 @@ class SUPERV:
     def error(self, *args):
         """Cet enrobage permet de s'assurer que le sys.path a été enrichi
         pour permettre d'importer Noyau."""
-        from Noyau.N_info import message, SUPERV
-        message.error(SUPERV, *args)
+        from Noyau.N_info import message, SUPERV as SUPCAT
+        message.error(SUPCAT, *args)
 
     def register(self):
         """Enregistre le JDC et les objets nécessaires à aster_core."""
@@ -149,14 +149,14 @@ class SUPERV:
         args = {}
         self.jdc = self.JdC(procedure=text, cata=self.cata, nom=fort1,
                             context_ini=params, **args)
+        # on enregistre les objets dans aster_core dès que le jdc est créé
+        self.register()
 
     def CompileJDC(self):
         """Compile the JDC content (byte-compile).
         Python syntax errors will be detected here."""
-        assert self.jdc is not None, 'jdc must be initialized (call Init(...) before)'
+        assert self.jdc is not None, 'jdc must be initialized (call InitJDC(...) before)'
         j = self.jdc
-        # on enregistre les objets dans aster_core dès que le jdc est créé
-        self.register()
         # on transmet le timer au jdc
         j.timer = self.timer
         # On compile le texte Python
@@ -175,7 +175,7 @@ class SUPERV:
         - with PAR_LOT='NON', the operators are immediatly called after its ETAPE
         object is created.
         """
-        assert self.jdc is not None, 'jdc must be initialized (call Init(...) before)'
+        assert self.jdc is not None, 'jdc must be initialized (call InitJDC(...) before)'
         j = self.jdc
         j.timer.Start(" . exec_compile")
         j.exec_compile()
@@ -192,7 +192,7 @@ class SUPERV:
 
     def CheckCata(self):
         """Check Code_Aster syntax (using cata.py)."""
-        assert self.jdc is not None, 'jdc must be initialized (call Init(...) before)'
+        assert self.jdc is not None, 'jdc must be initialized (call InitJDC(...) before)'
         j = self.jdc
         j.timer.Start(" . report")
         cr = j.report()
@@ -203,35 +203,9 @@ class SUPERV:
             return 1
 
     def ChangeJDC(self):
-        """Modify the JDC object depending on the called features.
-        Only for sensitivity yet."""
-        assert self.jdc is not None, 'jdc must be initialized (call Init(...) before)'
+        """Modify the JDC object depending on the called features."""
+        assert self.jdc is not None, 'jdc must be initialized (call InitJDC(...) before)'
         j = self.jdc
-        # Modification du JDC dans le cas de sensibilité
-        # On détermine si le jdc en cours est concerné par un calcul de sensibilité
-        # . Si c'est le cas, on crée un nouveau jdc. On controle ce nouveau jdc. Si tout
-        #   va bien, on remplace l'objet qui contenait le jdc initial par le nouveau.
-        # . Sinon, on ne fait rien.
-        codret, est_sensible = j.is_sensible()
-        if codret == 0 :
-            if est_sensible :
-                j.timer.Start(" . sensi")
-                codret, new_j = j.cree_jdc_sensible()
-                j.timer.Stop(" . sensi")
-                if codret == 0 :
-                    cr=new_j.report()
-                    if not cr.estvide():
-                        codret = 1
-                        print convert(self.format_CR(cr))
-        if codret == 0:
-            if est_sensible :
-                # ne pas appeler la methode supprime car on ne copie pas les etapes
-                # (risque de perte d'informations)
-                # j.supprime()
-                self.jdc = new_j
-        else:
-            self.MESSAGE("ERREUR AU DECODAGE DES SENSIBILITES - INTERRUPTION")
-            return 1
         # fin des initialisations
         j.timer.Stop("init (jdc)")
 
@@ -243,7 +217,7 @@ class SUPERV:
     def ParLot(self):
         """Execute the JDC calling Build and Exec methods."""
         # not used for Code_Aster
-        assert self.jdc is not None, 'jdc must be initialized (call Init(...) before)'
+        assert self.jdc is not None, 'jdc must be initialized (call InitJDC(...) before)'
         j = self.jdc
         try:
             ier=j.Build()
@@ -275,7 +249,7 @@ class SUPERV:
     def ParLotMixte(self):
         """Execute the JDC using BuildExec"""
         from Noyau.N_JDC    import MemoryErrorMsg
-        assert self.jdc is not None, 'jdc must be initialized (call Init(...) before)'
+        assert self.jdc is not None, 'jdc must be initialized (call InitJDC(...) before)'
         j = self.jdc
         j.set_par_lot("NON")
         try:
@@ -335,10 +309,12 @@ class SUPERV:
         if ier:
            return ier
         self.InitJDC(params)
+        self._mem_stat_init()
         ier = self.CompileJDC()
         if ier:
            return ier
         ier = self.ExecCompileJDC()
+        self._mem_stat_jdc()
         if ier:
            return ier
         if self.jdc.par_lot == 'NON':
@@ -356,6 +332,21 @@ class SUPERV:
         self.Finish()
         return ier or 0
 
+    def _mem_stat_init(self, tag=None):
+        """Set the initial memory consumption"""
+        import aster_core
+        rval, iret = aster_core.get_mem_stat('VMSIZE')
+        assert iret == 0
+        self._mem_ini = rval[0]
+        aster_core.set_mem_stat(('MEM_INIT', ), (self._mem_ini, ))
+        
+    def _mem_stat_jdc(self, tag=None):
+        """Set the memory"""
+        import aster_core
+        rval, iret = aster_core.get_mem_stat('VMSIZE')
+        assert iret == 0
+        mjdc = rval[0] - self._mem_ini
+        aster_core.set_mem_stat(('MEM_JDC', ), (mjdc, ))
 
 def main():
     """Main."""

@@ -11,7 +11,7 @@
       CHARACTER*24       LISINS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -93,8 +93,8 @@ C     RECUPERATION de TINIT
          IF ( NNI .EQ. 0 ) THEN
             CALL GETVR8('ETAT_INIT','INST_INIT',1,IARG,1, TINIT,NT)
             IF (NT .EQ. 0 ) THEN
-               CALL JEVEUO(TRAN//'           .INST' ,'L',JINST)
-               CALL JELIRA(TRAN//'           .INST' ,'LONUTI',NBINST,
+               CALL JEVEUO(TRAN//'           .DISC' ,'L',JINST)
+               CALL JELIRA(TRAN//'           .DISC' ,'LONUTI',NBINST,
      &                     K1BID)
                TINIT = ZR(JINST+NBINST-1)
             ENDIF   
@@ -107,7 +107,7 @@ C     RECUPERATION de TINIT
  100        CONTINUE
             CALL U2MESK('F','ALGORITH3_36',1,TRAN)
  101        CONTINUE
-            CALL JEVEUO(TRAN//'           .INST' ,'L',JINST)
+            CALL JEVEUO(TRAN//'           .DISC' ,'L',JINST)
             TINIT = ZR(JINST+I-1)
          ENDIF    
       ELSE

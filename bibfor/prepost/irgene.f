@@ -1,15 +1,15 @@
       SUBROUTINE IRGENE (IOCC, RESU, FORM, IFI, NBNOSY,NOSY,
      &                   NBCMPG,CMPG, NBPARA,PARA,
-     &                   NBORDR,ORDR, NBINST,TEMP,NUME, LHIST )
+     &                   NBORDR,ORDR, NBDISC,DISC,NUME, LHIST )
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER         CMPG(*), ORDR(*), NUME(*)
-      REAL*8          TEMP(*)
+      REAL*8          DISC(*)
       CHARACTER*(*)   RESU, NOSY(*), PARA(*), FORM
       LOGICAL         LHIST
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,9 +34,9 @@ C     ------------------------------------------------------------------
       CHARACTER*19 GENE,  NOCH19
       CHARACTER*24 NOMST
       LOGICAL      LORDR
-      INTEGER IOCC,IFI,NBNOSY,NBCMPG,NBPARA,NBORDR,NBINST,I,IM,IORD
+      INTEGER IOCC,IFI,NBNOSY,NBCMPG,NBPARA,NBORDR,I,IM,IORD
       INTEGER IRET,ISY,ITRESU,JDESC,JORDR,JPARA,JREFE,JTITR,KDESC
-      INTEGER KREFE,KVALE,NBMODE,NBTITR,NPARA
+      INTEGER KREFE,KVALE,NBMODE,NBTITR,NPARA,ITCAL,NBDISC
 C     ------------------------------------------------------------------
       CALL JEMARQ()
       NOMST = '&&IRGENE.SOUS_TITRE.TITR'
@@ -47,7 +47,7 @@ C
 C
 C=======================================================================
 C
-C               --- IMPRESSION D'UN VECT_ASSE_GENE ---
+C               --- IMPRESSION D'UNE SD VECT_ASSE_GENE ---
 C
 C=======================================================================
       IF ( TYPCON .EQ. 'VECT_ASSE_GENE' ) THEN
@@ -56,11 +56,10 @@ C
 C
 C=======================================================================
 C
-C         --- IMPRESSION D'UN MODE_GENE ET D'UN HARM_GENE ---
+C         --- IMPRESSION D'UNE SD MODE_GENE ---
 C
 C=======================================================================
-      ELSEIF ( TYPCON .EQ. 'HARM_GENE' .OR.
-     &         TYPCON .EQ. 'MODE_GENE' ) THEN
+      ELSEIF ( TYPCON .EQ. 'MODE_GENE' ) THEN
          CALL IRPARB (RESU,NBPARA,PARA,'&&IRGENE.PARAMETRE',NPARA)
          CALL JEEXIN('&&IRGENE.PARAMETRE',IRET)
          IF (IRET.GT.0) THEN
@@ -92,10 +91,11 @@ C
 C
 C=======================================================================
 C
-C                     --- IMPRESSION D'UN TRAN_GENE ---
+C             --- IMPRESSION D'UNE SD DYNA_GENE ---
 C
 C=======================================================================
-      ELSEIF ( TYPCON .EQ. 'TRAN_GENE' ) THEN
+      ELSEIF ( ( TYPCON .EQ. 'TRAN_GENE' )
+     &       .OR. (TYPCON .EQ. 'HARM_GENE') ) THEN
          GENE = RESU
          LORDR = .FALSE.
          CALL JEEXIN(GENE//'.ORDR',IRET)
@@ -109,26 +109,39 @@ C=======================================================================
          NOCH19 = '&&IRGENE_VECTEUR'
          CALL WKVECT(NOCH19//'.DESC','V V I'  ,2,KDESC)
          CALL WKVECT(NOCH19//'.REFE','V V K24',2,KREFE)
-         CALL WKVECT(NOCH19//'.VALE','V V R'  ,NBMODE,KVALE)
+C
+         IF (ZI(JDESC).EQ.4) THEN
+           ITCAL = 1
+         ELSE
+           ITCAL = 0
+         ENDIF
+C
+         IF (ITCAL.EQ.1) THEN
+C        --- CAS D'UNE SD HARM_GENE => VALEURS COMPLEXES
+           CALL WKVECT(NOCH19//'.VALE','V V C'  ,NBMODE,KVALE)
+         ELSE
+           CALL WKVECT(NOCH19//'.VALE','V V R'  ,NBMODE,KVALE)
+         ENDIF
+C
          ZI(KDESC+1) = NBMODE
 C
-C        --- TYPE DE CONCEPT AU 6EME ENTREE DE .REFD DU TRAN_GENE  --
-         CALL GETTCO ( ZK24(JREFE+5) , TYPREM )
+C        --- TYPE DE CONCEPT AU 5EME ENTREE DE .REFD DU TRAN_GENE  --
+         CALL GETTCO ( ZK24(JREFE+4) , TYPREM )
 C
 C        --- TEST POUR LE CAS DE LA SOUS-STRUCTURATION             --
          IF ( TYPREM(1:8).EQ. 'NUME_DDL' ) THEN
 C        --- MANQUE D'UNE BASE MODALE GLOBALE, DU COUP NOUS        --
 C        --- SAUVEGARDONS LE NUME_DDL_GENE AU 2EME ENTREE DU REFE  --
             ZK24(KREFE) = ' '
-            ZK24(KREFE+1) = ZK24(JREFE+5)
+            ZK24(KREFE+1) = ZK24(JREFE+4)
          ELSE
 C        --- POUR LES AUTRES CAS, UNE BASE MODALE EST DEFINIE      --
 C        --- ELLE EST SAUVEGARDEE DANS LA 1ERE ENTREE DU REFE      --
-            ZK24(KREFE) = ZK24(JREFE+5)
+            ZK24(KREFE) = ZK24(JREFE+4)
             ZK24(KREFE+1) = ' '
          ENDIF
 C
-         DO 200 I = 1 , NBINST
+         DO 200 I = 1 , NBDISC
            IORD = NUME(I)
            WRITE(IFI,2000)
            DO 210 ISY = 1,NBNOSY
@@ -137,13 +150,25 @@ C
               WRITE(IFI,2010)
               WRITE(IFI,3010) NOSY(ISY)
               IF ( LORDR ) THEN
-                 WRITE(IFI,3020) ZI(JORDR+IORD-1), TEMP(I)
+                IF (ITCAL.EQ.1) THEN
+                  WRITE(IFI,3021) ZI(JORDR+IORD-1), DISC(I)
+                ELSE
+                  WRITE(IFI,3020) ZI(JORDR+IORD-1), DISC(I)
+                ENDIF 
               ELSE
-                 WRITE(IFI,3020) IORD, TEMP(I)
+                IF (ITCAL.EQ.1) THEN
+                  WRITE(IFI,3021) IORD, DISC(I)
+                ELSE
+                  WRITE(IFI,3020) IORD, DISC(I)
+                ENDIF 
               ENDIF
               CALL JEVEUO(GENE//'.'//NOSY(ISY)(1:4),'L',ITRESU)
-              DO 220 IM = 1 , NBMODE
-                 ZR(KVALE+IM-1) = ZR(ITRESU+(IORD-1)*NBMODE+IM-1)
+              DO 220 IM = 0 , NBMODE-1
+                IF (ITCAL.EQ.1) THEN
+                  ZC(KVALE+IM) = ZC(ITRESU+(IORD-1)*NBMODE+IM)
+                ELSE
+                  ZR(KVALE+IM) = ZR(ITRESU+(IORD-1)*NBMODE+IM)
+                ENDIF
  220          CONTINUE
               CALL IRVGEN ( NOCH19, IFI, NBCMPG,CMPG, LHIST )
  210       CONTINUE
@@ -161,6 +186,7 @@ C
  2010 FORMAT(/,1X,'------>')
  3010 FORMAT(' VECTEUR GENERALISE DE NOM SYMBOLIQUE  ',A)
  3020 FORMAT(1P,' NUMERO D''ORDRE: ',I8,' INSTANT: ',D12.5)
+ 3021 FORMAT(1P,' NUMERO D''ORDRE: ',I8,' FREQUENCE: ',D12.5)
 C
       CALL JEDEMA()
       END

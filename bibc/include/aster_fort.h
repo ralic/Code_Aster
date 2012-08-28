@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF aster_fort include  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE */
+/* MODIF aster_fort include  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -119,6 +119,9 @@ extern void DEFSSSSPPS(PRCOCH,prcoch,char *,STRING_SIZE,char *,STRING_SIZE,char 
 /* routine d'acces aux parametres memoire */
 #define CALL_UTGTME(a,b,c,d) CALLPSPP(UTGTME,utgtme,a,b,c,d)
 extern void DEFPSPP(UTGTME, utgtme, INTEGER *, char *,  STRING_SIZE,  DOUBLE *, INTEGER *);
+
+#define CALL_UTPTME(a,b,c,d) CALLPSPP(UTPTME,utptme,a,b,c,d)
+extern void DEFPSPP(UTpTME, utptme, INTEGER *, char *,  STRING_SIZE,  DOUBLE *, INTEGER *);
 
 /* routines de manipulation de la SD RESULTAT */
 extern void DEFSPPSPPPSP(RSACPA,rsacpa,char *, STRING_SIZE, INTEGER *, INTEGER *, char *, STRING_SIZE, INTEGER *, INTEGER *, DOUBLE *, char *, STRING_SIZE, INTEGER *);

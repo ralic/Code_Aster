@@ -1,4 +1,4 @@
-#@ MODIF utilitai4 Messages  DATE 06/08/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utilitai4 Messages  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,10 +36,6 @@ cata_msg={
 11: _(u"""
  problème(s) rencontre(s) lors de l'accès au RESU_GENE
 """),
-
-
-
-
 
 13: _(u"""
  Seul le type complexe est traité.
@@ -83,11 +79,7 @@ cata_msg={
 """),
 
 24: _(u"""
- problème(s) rencontre(s) lors de la lecture des instants.
-"""),
-
-25: _(u"""
- problème récupération de PTEM uniquement pour méthode ADAPT
+ problème(s) rencontre(s) lors de la lecture de la discrétisation ( instants ou fréquences )
 """),
 
 26: _(u"""

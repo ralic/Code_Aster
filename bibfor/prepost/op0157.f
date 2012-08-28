@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,15 +26,15 @@ C     ------------------------------------------------------------------
       CHARACTER*4  MOTFAC
       CHARACTER*8  K8B, FORM
       CHARACTER*16 NOMCMD, TYPCON, CRIT, K16BID, FICH
-      CHARACTER*19 GENE, KNUM, KINST, KRANG
+      CHARACTER*19 GENE, KNUM, KDISC, KRANG
       CHARACTER*80 TITRE
       LOGICAL      LHIST, ULEXIS
       INTEGER      IARG
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
       INTEGER IBID ,IFI ,IOCC ,IRE2 ,IRET ,ISY ,JCMPG 
-      INTEGER JINST ,JNOSY ,JORDR ,JPARA ,JRANG ,N ,N01 
-      INTEGER N10 ,N11 ,N21 ,N22 ,NBCMPG ,NBINST ,NBNOSY 
+      INTEGER JDISC ,JNOSY ,JORDR ,JPARA ,JRANG ,N ,N01 
+      INTEGER N10 ,N11 ,N21 ,N22 ,NBCMPG ,NBDISC ,NBNOSY 
       INTEGER NBORDR ,NBPARA ,NC ,NOCC ,NP ,NR 
       REAL*8 PREC 
 C-----------------------------------------------------------------------
@@ -74,7 +74,7 @@ C
 C
 C        --- IMPRESSION DE LA STRUCTURE DU RESU_GENE ---
 C
-         IF (TYPCON.EQ.'MODE_GENE' .OR. TYPCON.EQ.'HARM_GENE') THEN
+         IF (TYPCON.EQ.'MODE_GENE') THEN
             CALL GETVTX(MOTFAC,'INFO_GENE',IOCC,IARG,1,K8B,N01)
             IF( K8B(1:3) .EQ. 'OUI' ) CALL RSINFO ( GENE , IFI )
          ENDIF
@@ -90,7 +90,7 @@ C
             CALL GETVTX(MOTFAC,'NOM_CHAM',IOCC,IARG,NBNOSY,
      &                  ZK16(JNOSY),N)
          ELSEIF ( TOUCHA .EQ. 'OUI' ) THEN
-            IF (TYPCON.EQ.'MODE_GENE' .OR. TYPCON.EQ.'HARM_GENE') THEN
+            IF (TYPCON.EQ.'MODE_GENE') THEN
               CALL JELIRA(GENE//'.DESC','NOMUTI',NBNOSY,K8B)
               CALL WKVECT('&&OP0157.NOM_SYMB','V V K16',NBNOSY,JNOSY)
               DO 20 ISY = 1,NBNOSY
@@ -144,25 +144,26 @@ C        --- LES ACCES ---
 C
          NBORDR = 0
          JORDR  = 1
-         NBINST = 0
-         JINST  = 1
+         NBDISC = 0
+         JDISC  = 1
          JRANG  = 1
-         IF ( TYPCON.EQ.'MODE_GENE' .OR. TYPCON.EQ.'HARM_GENE' ) THEN
+         IF ( TYPCON.EQ.'MODE_GENE') THEN
             KNUM = '&&OP0157.NUME_ORDRE'
             CALL GETVR8(MOTFAC,'PRECISION',IOCC,IARG,1,PREC,NP)
             CALL GETVTX(MOTFAC,'CRITERE'  ,IOCC,IARG,1,CRIT,NC)
             CALL RSUTNU(GENE,MOTFAC,IOCC,KNUM,NBORDR,PREC,CRIT,IRET)
             IF (IRET.NE.0) GOTO 12
             CALL JEVEUO ( KNUM, 'L', JORDR )
-         ELSEIF ( TYPCON.EQ.'TRAN_GENE' ) THEN
-            KINST = '&&OP0157.INSTANT'
+         ELSEIF ((TYPCON.EQ.'HARM_GENE')
+     &              .OR.(TYPCON.EQ.'TRAN_GENE')) THEN
+            KDISC = '&&OP0157.DISCRET'
             KRANG = '&&OP0157.NUME_ORDRE'
             INTERP = 'NON'
-            CALL RSTRAN(INTERP,GENE,MOTFAC,IOCC,KINST,KRANG,NBINST,IRET)
+            CALL RSTRAN(INTERP,GENE,MOTFAC,IOCC,KDISC,KRANG,NBDISC,IRET)
             IF (IRET.NE.0) GOTO 12
-            CALL JEEXIN(KINST,IRE2)
+            CALL JEEXIN(KDISC,IRE2)
             IF (IRE2.GT.0) THEN
-              CALL JEVEUO(KINST,'E',JINST)
+              CALL JEVEUO(KDISC,'E',JDISC)
               CALL JEVEUO(KRANG,'E',JRANG)
             END IF
          ENDIF
@@ -175,14 +176,14 @@ C
 C
          CALL IRGENE (IOCC, GENE, FORM,IFI, NBNOSY,ZK16(JNOSY),
      +                NBCMPG,ZI(JCMPG), NBPARA,ZK16(JPARA),
-     +            NBORDR,ZI(JORDR), NBINST,ZR(JINST),ZI(JRANG), LHIST )
+     +            NBORDR,ZI(JORDR), NBDISC,ZR(JDISC),ZI(JRANG), LHIST )
 C
  12      CONTINUE
          CALL JEDETR ( '&&OP0157.NOM_SYMB')
          CALL JEDETR ( '&&OP0157.NOM_CMPG')
          CALL JEDETR ( '&&OP0157.NOMUTI_PARA')
          CALL JEDETR ( '&&OP0157.NUME_ORDRE')
-         CALL JEDETR ( '&&OP0157.INSTANT')
+         CALL JEDETR ( '&&OP0157.DISCRET')
  10   CONTINUE
 C
       CALL JEDEMA()

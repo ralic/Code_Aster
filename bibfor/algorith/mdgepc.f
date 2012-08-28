@@ -1,6 +1,6 @@
       SUBROUTINE MDGEPC(NEQ,NBMODE,BMODAL,XGENE,U)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,13 +32,14 @@ C    BMODAL         <--   BASE MODALE CONSIDEREE
 C    XGENE          <--   VECTEUR DES COORDONNEES GENERALISEES
 C    U              <--   VECTEUR DES COORDONNEES PHYSIQUES
 C .________________.____.______________________________________________.
-      IMPLICIT NONE
+      IMPLICIT NONE      
+      INTEGER I,J,NBMODE,NEQ
       COMPLEX*16 XGENE(NBMODE),U(NEQ)
       REAL*8 BMODAL(NEQ,NBMODE)
-      INTEGER I ,J ,NBMODE ,NEQ
 C-----------------------------------------------------------------------
       DO 10 I=1,NEQ
-        U(I)=0.0D0
+        U(I)=DCMPLX(0.D0,0.D0)
+C        U(I)=0.D0
         DO 10 J=1,NBMODE
           U(I) = U(I) + BMODAL(I,J)*XGENE(J)
  10   CONTINUE

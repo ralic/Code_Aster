@@ -1,6 +1,6 @@
       SUBROUTINE TE0097(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 28/08/2012   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,11 +44,13 @@ C ......................................................................
       CHARACTER*8 LIELRF(10)
 
 
-C     QUELLE FORMULATION MIXTE 3CH 2CH
+C     QUELLE FORMULATION MIXTE 3CH OU 2CH
       IF (NOMTE(1:4).EQ.'MIAX' .OR.
      &    NOMTE(1:4).EQ.'MIPL' .OR.
      &    NOMTE(1:4).EQ.'GIPL' .OR.
-     &    NOMTE(1:4).EQ.'GIAX') THEN
+     &    NOMTE(1:4).EQ.'GIAX' .OR.
+     &    NOMTE(1:4).EQ.'LGAX' .OR.
+     &    NOMTE(1:4).EQ.'LGPL') THEN
         IF (NOMTE(1:6).EQ.'MIAXUP' .OR.
      &      NOMTE(1:6).EQ.'MIPLUP') THEN
           NDDL1 = 3
@@ -57,7 +59,8 @@ C     QUELLE FORMULATION MIXTE 3CH 2CH
         ENDIF
         CALL METAU1(OPTION,NOMTE,IRET)
       ELSEIF (NOMTE(1:4).EQ.'MINC' .OR.
-     &        NOMTE(1:4).EQ.'GDIN') THEN
+     &        NOMTE(1:4).EQ.'GDIN' .OR.
+     &        NOMTE(1:4).EQ.'LGIN') THEN
         IF (NOMTE(1:6).EQ.'MINCUP') THEN
           NDDL1 = 4
         ELSE
@@ -148,7 +151,10 @@ C      -------------------------------------
 
       IF(NOMTE(1:4).EQ.'GIPL' .OR.
      &   NOMTE(1:4).EQ.'GIAX' .OR.
-     &   NOMTE(1:4).EQ.'GDIN')THEN
+     &   NOMTE(1:4).EQ.'GDIN' .OR.
+     &   NOMTE(1:4).EQ.'LGIN' .OR.
+     &   NOMTE(1:4).EQ.'LGAX' .OR.
+     &   NOMTE(1:4).EQ.'LGPL')THEN
 C - ELEMENT P2-P1-P2
         KK = 0
         DO 50 N = 1, NNO1

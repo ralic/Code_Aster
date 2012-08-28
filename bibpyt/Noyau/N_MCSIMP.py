@@ -1,4 +1,4 @@
-#@ MODIF N_MCSIMP Noyau  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_MCSIMP Noyau  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -167,8 +167,8 @@ class MCSIMP(N_OBJECT.OBJECT):
               la liste des sd attenante.
 
               Exemple ::
-                      { 'VALE_F': [ <Cata.cata.para_sensi instance at 0x9419854>,
-                                    <Cata.cata.para_sensi instance at 0x941a204> ] }
+                      { 'VALE_F': [ <Cata.cata.fonction_sdaster instance at 0x9419854>,
+                                    <Cata.cata.fonction_sdaster instance at 0x941a204> ] }
       """
       l=self.get_sd_utilisees()
       dico = {}

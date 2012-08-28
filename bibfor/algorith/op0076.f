@@ -1,7 +1,7 @@
       SUBROUTINE OP0076()
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,7 @@ C     TRAN_GENE.
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
       INCLUDE 'jeveux.h'
-      REAL*8        TEMPS, PREC
+      REAL*8        TEMPS,PREC,FREQ
       CHARACTER*8   NOMRES, TRANGE, BASEMO, NOMCHA, INTERP, CRIT
       CHARACTER*16  CONCEP, NOMCMD
       CHARACTER*1 K1BID
@@ -32,7 +32,7 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
       INTEGER IADESC ,IAREFE ,IDCHAM ,IDDESC ,IDINST ,IDREFE ,IDVECG 
-      INTEGER IERD ,N1 ,NBINST ,NBMODE 
+      INTEGER IERD ,N1 ,NBINST ,NBMODE, NT, NF
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFMAJ()
@@ -43,7 +43,8 @@ C     --- RECUPERATION DES ARGUMENTS DE LA COMMANDE ---
 C
       CALL GETVID(' ','RESU_GENE',0,IARG,1,TRANGE,N1)
       CALL GETVTX(' ','NOM_CHAM' ,0,IARG,1,NOMCHA,N1)
-      CALL GETVR8(' ','INST'     ,0,IARG,1,TEMPS ,N1)
+      CALL GETVR8(' ','INST'     ,0,IARG,1,TEMPS ,NT)
+      CALL GETVR8(' ','FREQ'     ,0,IARG,1,FREQ ,NF)
       CALL GETVTX(' ','INTERPOL',0,IARG,1,INTERP,N1)
       CALL GETVTX(' ','CRITERE'  ,0,IARG,1,CRIT  ,N1)
       CALL GETVR8(' ','PRECISION',0,IARG,1,PREC  ,N1)
@@ -52,30 +53,55 @@ C     --- RECUPERATION DES INFORMATIONS MODALES ---
 C
       CALL JEVEUO(TRANGE//'           .DESC','L',IADESC)
       CALL JEVEUO(TRANGE//'           .REFD','L',IAREFE)
-      CALL JEVEUO(TRANGE//'           .INST','L',IDINST)
-      CALL JELIRA(TRANGE//'           .INST','LONMAX',NBINST,K1BID)
+      CALL JEVEUO(TRANGE//'           .DISC','L',IDINST)
+      CALL JELIRA(TRANGE//'           .DISC','LONMAX',NBINST,K1BID)
       CALL JEVEUO(TRANGE//'           .'//NOMCHA(1:4),'L',IDCHAM)
-      BASEMO = ZK24(IAREFE+5)(1:8)
+      BASEMO = ZK24(IAREFE+4)(1:8)
       NBMODE = ZI(IADESC+1)
-C
-C     --- CREATION DU VECT_ASSE_GENE RESULTAT ---
-C
-      CALL WKVECT(NOMRES//'           .VALE','G V R'  ,NBMODE,IDVECG)
+      
       CALL WKVECT(NOMRES//'           .REFE','G V K24',2     ,IDREFE)
       CALL WKVECT(NOMRES//'           .DESC','G V I'  ,2     ,IDDESC)
-      CALL JEECRA(NOMRES//'           .DESC','DOCU',0,'VGEN')
-C
-      ZI(IDDESC)     = 1
+      CALL JEECRA(NOMRES//'           .DESC','DOCU',0,'VGEN')   
+
       ZI(IDDESC+1)   = NBMODE
       ZK24(IDREFE)   = BASEMO
-      ZK24(IDREFE+1) = '$TRAN_GENE'
 C
-C     --- RECUPERATION DU CHAMP ---
+C --- CAS DU TRAN_GENE      
 C
-      CALL EXTRAC(INTERP,PREC,CRIT,NBINST,ZR(IDINST),TEMPS,ZR(IDCHAM),
-     &                                           NBMODE,ZR(IDVECG),IERD)
-      IF ( IERD.NE.0) THEN
-       CALL U2MESS('E','ALGORITH9_49')
+      IF (ZI(IADESC).NE.4) THEN 
+C
+C ---  ON PLANTE SI LE MOT CLE DEMANDE EST FREQ POUR UN TRAN_GENE
+        IF (NF.NE.0) CALL U2MESS('E','ALGORITH9_51')
+C       --- CREATION DU VECT_ASSE_GENE RESULTAT ---
+        CALL WKVECT(NOMRES//'           .VALE','G V R'  ,NBMODE,IDVECG)
+C  
+        ZI(IDDESC)     = 1
+        ZK24(IDREFE+1) = '$TRAN_GENE'
+C       --- RECUPERATION DU CHAMP ---
+        CALL EXTRAC(INTERP,PREC,CRIT,NBINST,ZR(IDINST),TEMPS,ZR(IDCHAM),
+     &              NBMODE,ZR(IDVECG),IERD)
+        IF ( IERD.NE.0) THEN
+         CALL U2MESS('E','ALGORITH9_49')
+        ENDIF
+C
+C --- CAS DU HARM_GENE
+C
+      ELSE 
+C ---  ON PLANTE SI LE MOT CLE DEMANDE EST INST POUR UN HARM_GENE 
+        IF (NT.NE.0) CALL U2MESS('E','ALGORITH9_52')
+
+C       --- CREATION DU VECT_ASSE_GENE RESULTAT ---
+        CALL WKVECT(NOMRES//'           .VALE','G V C'  ,NBMODE,IDVECG)
+C
+        ZI(IDDESC)     = 4
+        ZK24(IDREFE+1) = '$HARM_GENE'
+        CALL ZXTRAC(INTERP,PREC,CRIT,NBINST,ZR(IDINST),FREQ,ZC(IDCHAM),
+     &              NBMODE,ZC(IDVECG),IERD)
+
+        IF ( IERD.NE.0) THEN
+         CALL U2MESS('E','ALGORITH9_50')
+        ENDIF
+C
       ENDIF
 C
       CALL JEDEMA()

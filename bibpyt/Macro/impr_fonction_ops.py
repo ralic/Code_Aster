@@ -1,4 +1,4 @@
-#@ MODIF impr_fonction_ops Macro  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF impr_fonction_ops Macro  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -46,7 +46,6 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
    # Le nom de la variable doit etre obligatoirement le nom de la commande
    CALC_FONC_INTERP = self.get_cmd('CALC_FONC_INTERP')
    DEFI_LIST_REEL   = self.get_cmd('DEFI_LIST_REEL')
-   DETRUIRE         = self.get_cmd('DETRUIRE')
 
    #----------------------------------------------
    # 0. Traitement des arguments, initialisations
@@ -86,14 +85,14 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
       aster.affiche('MESSAGE',' Nombre de fonctions à analyser : '+str(len(Courbe)))
 
    # 0.3. Devra-t-on interpoler globalement ?
-   #      Dans ce cas, linter__ est le LIST_PARA
+   #      Dans ce cas, __linter est le LIST_PARA
    #      ou, à défaut, les abscisses de la première courbe
    interp=False
    if FORMAT=='TABLEAU':
       interp=True
       dCi=Courbe[i0]
       if dCi.has_key('LIST_PARA'):
-         linter__=dCi['LIST_PARA']
+         __linter=dCi['LIST_PARA']
       else:
          obj=None
          for typi in unparmi:
@@ -112,10 +111,10 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
             lbid,linterp=obj.Valeurs()
          elif typi=='ABSCISSE':
             linterp=obj
-         linter__=DEFI_LIST_REEL(VALE=linterp)
+         __linter=DEFI_LIST_REEL(VALE=linterp)
       if INFO==2:
          aster.affiche('MESSAGE', ' Interpolation globale sur la liste :')
-         aster.affiche('MESSAGE', pprint.pformat(linter__.Valeurs()))
+         aster.affiche('MESSAGE', pprint.pformat(__linter.Valeurs()))
 
 
    #----------------------------------------------
@@ -159,23 +158,23 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
                # sur quelle liste interpoler chaque fonction
                if i==0:
                   if interp:
-                     li__=linter__
+                     __li=__linter
                   elif dCi.has_key('LIST_PARA'):
-                     li__=dCi['LIST_PARA']
+                     __li=dCi['LIST_PARA']
                   else:
-                     li__=DEFI_LIST_REEL(VALE=lx)
+                     __li=DEFI_LIST_REEL(VALE=lx)
                # compléter les paramètres d'interpolation
                dic=dico.copy()
                dic.update(ldicf[i])
                
                if (interp or dCi.has_key('LIST_PARA')) and i>0:
-                  ftmp__=CALC_FONC_INTERP(
+                  __ftmp=CALC_FONC_INTERP(
                      FONCTION=obj,
                      VALE_PARA=p,
-                     LIST_PARA_FONC=li__,
+                     LIST_PARA_FONC=__li,
                      **dic
                   )
-                  pv,lv2=ftmp__.Valeurs()
+                  pv,lv2=__ftmp.Valeurs()
                   lx=lv2[0][0]
                   ly=lv2[0][1]
                # on stocke les données dans le Graph
@@ -188,26 +187,25 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
                dCi['LEGENDE'] = '%s %s=%g' % (Leg,dic['NOM_PARA'].strip(),p)
                Graph.AjoutParaCourbe(dicC, args=dCi)
                graph.AjoutCourbe(**dicC)
-               DETRUIRE(OBJET=_F(CHAINE=('li__','ftmp__'),), INFO=1)
          else:
-            ftmp__=obj
-            dpar=ftmp__.Parametres()
+            __ftmp=obj
+            dpar=__ftmp.Parametres()
             # pour les formules à un paramètre (test plus haut)
             if type(dpar['NOM_PARA']) in (list, tuple):
                dpar['NOM_PARA'] = dpar['NOM_PARA'][0]
             if interp:
-               ftmp__=CALC_FONC_INTERP(
+               __ftmp=CALC_FONC_INTERP(
                   FONCTION=obj,
-                  LIST_PARA=linter__,
+                  LIST_PARA=__linter,
                   **dpar
                )
             elif dCi.has_key('LIST_PARA'):
-               ftmp__=CALC_FONC_INTERP(
+               __ftmp=CALC_FONC_INTERP(
                   FONCTION=obj,
                   LIST_PARA=dCi['LIST_PARA'],
                   **dpar
                )
-            lval=list(ftmp__.Valeurs())
+            lval=list(__ftmp.Valeurs())
             lx=lval[0]
             lr=lval[1]
             if isinstance(obj, (fonction_c, formule_c)) and dCi.get('PARTIE') == 'IMAG':
@@ -254,40 +252,40 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
             UTMESS('S', 'FONCT0_4')
          if interp and iocc>0:
             UTMESS('S', 'FONCT0_5')
-         ftmp__=obj
-         dpar=ftmp__.Parametres()
-         ftm2__=ob2
-         dpa2=ftm2__.Parametres()
+         __ftmp=obj
+         dpar=__ftmp.Parametres()
+         __ftm2=ob2
+         dpa2=__ftm2.Parametres()
          intloc=False
          if interp and not dCi.has_key('LIST_PARA'):
-            # dans ce cas, linter__ contient les ordonnées de FONC_X
+            # dans ce cas, __linter contient les ordonnées de FONC_X
             intloc=False
-            li__=linter__
+            __li=__linter
          elif dCi.has_key('LIST_PARA'):
             intloc=True
-            li__=dCi['LIST_PARA']
+            __li=dCi['LIST_PARA']
          if intloc:
-            ftmp__=CALC_FONC_INTERP(
+            __ftmp=CALC_FONC_INTERP(
                FONCTION=obj,
-               LIST_PARA=li__,
+               LIST_PARA=__li,
                **dpar
             )
-            lt,lx=ftmp__.Valeurs()
-            ftm2__=CALC_FONC_INTERP(
+            lt,lx=__ftmp.Valeurs()
+            __ftm2=CALC_FONC_INTERP(
                FONCTION=ob2,
-               LIST_PARA=li__,
+               LIST_PARA=__li,
                **dpa2
             )
          else:
-            lt,lx=ftmp__.Valeurs()
-            li__=DEFI_LIST_REEL(VALE=lt)
-            ftm2__=CALC_FONC_INTERP(
+            lt,lx=__ftmp.Valeurs()
+            __li=DEFI_LIST_REEL(VALE=lt)
+            __ftm2=CALC_FONC_INTERP(
                FONCTION=ob2,
-               LIST_PARA=li__,
+               LIST_PARA=__li,
                **dpa2
             )
          
-         lbid,ly=ftm2__.Valeurs()
+         lbid,ly=__ftm2.Valeurs()
          # on stocke les données dans le Graph
          # on imprime la liste des paramètres seulement si LIST_PARA
          if intloc:
@@ -322,12 +320,6 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
          }
          Graph.AjoutParaCourbe(dicC, args=dCi)
          graph.AjoutCourbe(**dicC)
-
-      # 1.2.9. ménage
-      DETRUIRE(OBJET=_F(CHAINE=('li__','ftmp__','ftm2__'),), INFO=1)
-
-   # 1.2.99. ménage hors boucle
-   DETRUIRE(OBJET=_F(CHAINE='linter__',), INFO=1)
 
    # 1.3. dbg
    if INFO==2:

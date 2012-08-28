@@ -1,4 +1,4 @@
-#@ MODIF test_fichier_ops Macro  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF test_fichier_ops Macro  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -95,8 +95,8 @@ def test_fichier_ops(self, FICHIER, NB_VALE, VALE, VALE_K, TYPE_TEST,
    is_ok = 0
 
    # vérifier que le fichier a été fermé
-   tinfo__ = INFO_EXEC_ASTER(LISTE_INFO='ETAT_UNITE', FICHIER=FICHIER)
-   if tinfo__['ETAT_UNITE', 1].find('OUVERT') > -1:
+   __tinfo = INFO_EXEC_ASTER(LISTE_INFO='ETAT_UNITE', FICHIER=FICHIER)
+   if __tinfo['ETAT_UNITE', 1].find('OUVERT') > -1:
       UTMESS('S','TEST0_2',valk=FICHIER)
 
    # lecture du fichier
@@ -117,7 +117,7 @@ def test_fichier_ops(self, FICHIER, NB_VALE, VALE, VALE_K, TYPE_TEST,
    # produit le TEST_TABLE
    refsum = VALE_K or 'non testé'
    is_ok = int(chksum == refsum)
-   tab1__ = CREA_TABLE(LISTE=(_F(PARA='NBVAL',  LISTE_I=nbval,),
+   __tab1 = CREA_TABLE(LISTE=(_F(PARA='NBVAL',  LISTE_I=nbval,),
                               _F(PARA='VALEUR', LISTE_R=valeur,),
                               _F(PARA='TEXTE',  LISTE_I=is_ok),),)
    if VALE is not None:
@@ -130,7 +130,7 @@ def test_fichier_ops(self, FICHIER, NB_VALE, VALE, VALE_K, TYPE_TEST,
    if kwargs['REFERENCE'] == 'NON_REGRESSION':
       kwopt['VERSION'] = kwargs['VERSION']
    
-   TEST_TABLE(TABLE=tab1__,
+   TEST_TABLE(TABLE=__tab1,
               NOM_PARA='NBVAL',
               VALE_I=NB_VALE,
               CRITERE='ABSOLU',
@@ -138,7 +138,7 @@ def test_fichier_ops(self, FICHIER, NB_VALE, VALE, VALE_K, TYPE_TEST,
               **kwopt)
 
    if VALE:
-      TEST_TABLE(TABLE=tab1__,
+      TEST_TABLE(TABLE=__tab1,
                  NOM_PARA='VALEUR',
                  VALE=VALE,
                  CRITERE=CRITERE,
@@ -146,14 +146,13 @@ def test_fichier_ops(self, FICHIER, NB_VALE, VALE, VALE_K, TYPE_TEST,
                  **kwopt)
 
    if VALE_K:
-      TEST_TABLE(TABLE=tab1__,
+      TEST_TABLE(TABLE=__tab1,
                  NOM_PARA='TEXTE',
                  VALE_I=int(True),
                  PRECISION=0,
                  CRITERE='ABSOLU',
                  **kwopt)
 
-   DETRUIRE(CONCEPT=_F(NOM=(tinfo__, tab1__),), INFO=1,)
    return ier
 
 #-------------------------------------------------------------------------------

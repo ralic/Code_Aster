@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 28/08/2012   AUTEUR TRAN V-X.TRAN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -265,16 +265,16 @@ OPTION__
                                      ZVARCPG  PVARCPR
                               OUT__  EERREUR  PERREUR
     CALC_G              27    IN__   DDL_MECA PACCELE  CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  EDEFONO  PDEFOPL
-                                     DDL_MECA PDEPINR  DDL_MECA PDEPLAR  CEPSINR  PEPSINR  NFORCER  PFRVOLU
+                                     ECONTPG  PCONTGR  DDL_MECA PDEPLAR  CEPSINR  PEPSINR  NFORCER  PFRVOLU
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR
                                      ECONTNO  PSIGINR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR   DDL_MECA PTHETAR
-                                     ZVARINO  PVARIPR  DDL_MECA PVITESS  ECONTPG  PCONTGR
+                                     ZVARINO  PVARIPR  DDL_MECA PVITESS  
                               OUT__  EGTHETA  PGTHETA
     CALC_G_F            27    IN__   DDL_MECA PACCELE  CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  EDEFONO  PDEFOPL
-                                     DDL_MECA PDEPINR  DDL_MECA PDEPLAR  CEPSINF  PEPSINF  CFORCEF  PFFVOLU
+                                     ECONTPG  PCONTGR  DDL_MECA PDEPLAR  CEPSINF  PEPSINF  CFORCEF  PFFVOLU
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR
                                      ECONTNO  PSIGINR  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
-                                     DDL_MECA PTHETAR  ZVARINO  PVARIPR  DDL_MECA PVITESS  ECONTPG  PCONTGR
+                                     DDL_MECA PTHETAR  ZVARINO  PVARIPR  DDL_MECA PVITESS  
                               OUT__  EGTHETA  PGTHETA
     CALC_G_GLOB         27    IN__   DDL_MECA PACCELE  CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  EDEFONO  PDEFOPL
                                      DDL_MECA PDEPINR  DDL_MECA PDEPLAR  CEPSINR  PEPSINR  NFORCER  PFRVOLU

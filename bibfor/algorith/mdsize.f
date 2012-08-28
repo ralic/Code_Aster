@@ -1,11 +1,10 @@
-      SUBROUTINE MDSIZE (NOMRES,NBSAUV,NBMODE,LPSTO,NBCHOC,NBREDE)
+      SUBROUTINE MDSIZE (NOMRES,NBSAUV,NBMODE,NBCHOC,NBREDE,NBREVI)
 C
       IMPLICIT NONE
       CHARACTER*8   NOMRES
-      LOGICAL       LPSTO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,23 +27,22 @@ C IN  : NOMRES : NOM DU TRAN_GENE RESULTAT
 C IN  : NBSAUV : NOMBRE DE RESULTATS ARCHIVES (SELON ARCHIVAGE DES PAS 
 C                DE TEMPS).NOUVELLE TAILLE DE NOMRES
 C IN  : NBMODE : NOMBRE DE MODES OU D'EQUATIONS GENERALISEES
-C IN  : LPSTO  : LOGICAL =VRAI SI STOCKAGE DU PAS DE TEMPS VARIABLE
 C IN  : NBCHOC : NOMBRE DE CHOCS
 C IN  : NBREDE : NOMBRE DE RELATION EFFORT DEPLACEMENT (RED)
 C-----------------------------------------------------------------------
       CHARACTER*8   K8BID
 C
 C-----------------------------------------------------------------------
-      INTEGER NBCHOC ,NBMODE ,NBREDE ,NBSAUV ,NBSTO1 ,NBSTOC 
+      INTEGER NBCHOC ,NBMODE ,NBREDE ,NBSAUV ,NBSTO1 ,NBSTOC ,NBREVI 
 C-----------------------------------------------------------------------
       NBSTOC = NBSAUV * NBMODE
       CALL JEECRA(NOMRES//'           .DEPL' ,'LONUTI',NBSTOC,K8BID)
       CALL JEECRA(NOMRES//'           .VITE' ,'LONUTI',NBSTOC,K8BID)
       CALL JEECRA(NOMRES//'           .ACCE' ,'LONUTI',NBSTOC,K8BID)
       CALL JEECRA(NOMRES//'           .ORDR' ,'LONUTI',NBSAUV,K8BID)
-      CALL JEECRA(NOMRES//'           .INST' ,'LONUTI',NBSAUV,K8BID)
-      IF (LPSTO) 
-     +   CALL JEECRA(NOMRES//'           .PTEM' ,'LONUTI',NBSAUV,K8BID)
+      CALL JEECRA(NOMRES//'           .DISC' ,'LONUTI',NBSAUV,K8BID)
+      CALL JEECRA(NOMRES//'           .PTEM' ,'LONUTI',NBSAUV,K8BID)
+      
       IF (NBCHOC.GT.0) THEN
          NBSTOC = 3 * NBCHOC * NBSAUV
          NBSTO1 = NBCHOC * NBSAUV
@@ -59,4 +57,9 @@ C-----------------------------------------------------------------------
          CALL JEECRA(NOMRES//'           .REDD' ,'LONUTI',NBSTOC,K8BID)
       ENDIF
 C
+      IF (NBREVI.GT.0) THEN
+         NBSTOC = NBREVI * NBSAUV
+         CALL JEECRA(NOMRES//'           .REVC' ,'LONUTI',NBSTOC,K8BID)
+         CALL JEECRA(NOMRES//'           .REVD' ,'LONUTI',NBSTOC,K8BID)
+      ENDIF
       END

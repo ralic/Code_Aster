@@ -32,16 +32,15 @@ def char_rota_ops(self,ANGLE_DEGRES,TINI,TFIN,RESU,MAIL,**args):
         X1=X[ino]+dx[ino]
         Z1=Z[ino]+dz[ino]
         self.update_const_context({ 'X1' : X1, 'Z1' : Z1 , 'angle' : angle, 'TFIN' : TFIN, 'TINI' : TINI  })
-        DXTprov = FORMULE(VALE='X1*(cos(angle*(INST-TINI)/(TFIN-TINI))-1.0)-Z1*sin(angle*(INST-TINI)/(TFIN-TINI))',NOM_PARA=('INST'));
-        _DXT  =CALC_FONC_INTERP( FONCTION=DXTprov,LIST_PARA=__interp,NOM_PARA='INST',INTERPOL='LIN')
-        DZTprov = FORMULE(VALE='X1*sin(angle*(INST-TINI)/(TFIN-TINI))+Z1*(cos(angle*(INST-TINI)/(TFIN-TINI))-1.0)',NOM_PARA=('INST'));
-        _DZT  =CALC_FONC_INTERP( FONCTION=DZTprov,LIST_PARA=__interp,NOM_PARA='INST',INTERPOL='LIN')
+        __DXTf = FORMULE(VALE='X1*(cos(angle*(INST-TINI)/(TFIN-TINI))-1.0)-Z1*sin(angle*(INST-TINI)/(TFIN-TINI))',NOM_PARA=('INST'));
+        _DXT  =CALC_FONC_INTERP( FONCTION=__DXTf,LIST_PARA=__interp,NOM_PARA='INST',INTERPOL='LIN')
+        __DZTf = FORMULE(VALE='X1*sin(angle*(INST-TINI)/(TFIN-TINI))+Z1*(cos(angle*(INST-TINI)/(TFIN-TINI))-1.0)',NOM_PARA=('INST'));
+        _DZT  =CALC_FONC_INTERP( FONCTION=__DZTf,LIST_PARA=__interp,NOM_PARA='INST',INTERPOL='LIN')
         dico={}
         dico["NOEUD"]=nomnoe[ino]
         dico["DX"]=_DXT
         dico["DZ"]=_DZT
         ddlimpo.append(dico)
-        DETRUIRE(CONCEPT=_F(NOM=(DXTprov,DZTprov)),INFO=1)
     CharRota=AFFE_CHAR_MECA_F(MODELE=modele,DDL_IMPO=ddlimpo);
     return ier
 

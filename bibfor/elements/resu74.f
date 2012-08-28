@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,12 +67,12 @@ C
 C
 C      --- RECHERCHE DU NUMERO D'ORDRE DE L'INSTANT DE REPRISE
 C
-      CALL JEVEUO(TRAN//'           .INST','E',JINST1)
+      CALL JEVEUO(TRAN//'           .DISC','E',JINST1)
       IF (NI.EQ.0) THEN
-         CALL JELIRA(TRAN//'           .INST' ,'LONUTI',NBINST,K1BID)
+         CALL JELIRA(TRAN//'           .DISC' ,'LONUTI',NBINST,K1BID)
          TINIT = ZR(JINST1+NBINST-1)
       ENDIF
-      CALL JELIRA(TRAN//'           .INST' ,'LONUTI',NBINST,K1BID)
+      CALL JELIRA(TRAN//'           .DISC' ,'LONUTI',NBINST,K1BID)
       CALL JELIRA(TRAN//'           .DEPL','LONUTI',NBSTO1,K1BID)
       NBSTO1 = NBSTO1/NBMODE
       PREC2 = PREC
@@ -136,8 +136,8 @@ C
       DO 20 I = 1,NBSAU2-1
          ZI(JORDR+NBINST-1+I) = ZI(JORDR2+I+1) + ZI(JORDR1+NBINST-1)
   20  CONTINUE
-      CALL JEVEUO(NOMRES//'           .INST' ,'E',JINST2)
-      CALL WKVECT(RESU//'           .INST','G V R',NBSAUV,JINST)
+      CALL JEVEUO(NOMRES//'           .DISC' ,'E',JINST2)
+      CALL WKVECT(RESU//'           .DISC','G V R',NBSAUV,JINST)
       CALL DCOPY(NBINST,ZR(JINST1),1,ZR(JINST),1)
       CALL DCOPY(NBSAU2-1,ZR(JINST2+1),1,ZR(JINST+NBINST),1)
 C
@@ -212,8 +212,8 @@ C
      +            'G',TRAN//'           .ACCE',.FALSE.)
       CALL JEDUPO(RESU//'           .ORDR',
      +            'G',TRAN//'           .ORDR',.FALSE.)
-      CALL JEDUPO(RESU//'           .INST',
-     +            'G',TRAN//'           .INST',.FALSE.)
+      CALL JEDUPO(RESU//'           .DISC',
+     +            'G',TRAN//'           .DISC',.FALSE.)
       IF (NTEM2.GT.1) THEN
          CALL JEDUPO(RESU//'           .PTEM',
      +               'G',TRAN//'           .PTEM',.FALSE.)

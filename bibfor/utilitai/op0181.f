@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,25 +23,29 @@ C     REALISATION N.GREFFET
 C     OPERATEUR "REST_SPEC_TEMP"
 C     ------------------------------------------------------------------
       INCLUDE 'jeveux.h'
-      INTEGER      NBVA,NVAL,NSENS,NGRAND,I,IER
-      CHARACTER*4  GRAND(3)
+      INTEGER      NBVA,NVAL,NSENS,NGRAND,I,IER, NGRAN0
+      CHARACTER*4  GRAND(3), GRAND0(3),CHAM
       CHARACTER*16 TYPE,CMD,SYMETR,METHOD
-      CHARACTER*19 RESIN,RESOU,VECTOT
+      CHARACTER*19 RESIN,RESOU,VECTOT,K19BID
       CHARACTER*24 TYPRES
-      INTEGER      IARG
+      CHARACTER*12 BL11PT
+      INTEGER      IARG, IRET, IGRAND
 C     ------------------------------------------------------------------
       CALL JEMARQ()
       CALL GETRES(RESOU,TYPE,CMD)
 C
-C   Recuperation arguments utilisateurs
+C     --- RECUPERATION DES ARGUMENTS UTILISATEUR
 C
+C     --- CAS D'UN CONCEPT SD_RESULTAT ENTRANT (BASE PHYS)
       CALL GETVID(' ','RESULTAT',1,IARG,1,RESIN,NVAL)
       IF ( NVAL.EQ.0 ) THEN
+C        --- CAS D'UN CONCEPT SD_DYNA_GENE ENTRANT (BASE GENE)
          CALL GETVID(' ','RESU_GENE',1,IARG,1,RESIN,NVAL)
       ENDIF
       CALL GETVTX(' ','METHODE',1,IARG,1,METHOD,NVAL)
       CALL GETVTX(' ','SYMETRIE',1,IARG,1,SYMETR,NVAL)
-C   Evaluation sens de la FFT
+C
+C     --- EVALUATION DU SENS DE LA FFT
       CALL GETTCO(RESIN,TYPRES)
       IF ((TYPRES(1:10).EQ.'DYNA_HARMO').OR.
      &   (TYPRES(1:9).EQ.'HARM_GENE')) THEN
@@ -50,25 +54,61 @@ C   Evaluation sens de la FFT
          NSENS = 1
       ENDIF
 C
-      CALL GETVTX(' ','NOM_CHAM',1,IARG,3,GRAND,NGRAND)
-      IF (NGRAND .EQ. 0) THEN
-          NGRAND = 3
-          GRAND(1) = 'DEPL'
-          GRAND(2) = 'VITE'
-          GRAND(3) = 'ACCE'
+C     --- RECUPERER LA LISTE DES CHAMPS RENSEIGNEE
+      CALL GETVTX(' ','NOM_CHAM',1,IARG,3,GRAND0,NGRAN0)
+C     --- CAS DE TOUT_CHAMP='OUI'
+      IF (NGRAN0 .EQ. 0) THEN
+        NGRAN0 = 3
+        GRAND0(1) = 'DEPL'
+        GRAND0(2) = 'VITE'
+        GRAND0(3) = 'ACCE'
       ENDIF
+C     --- POUR LES CAS HARMONIQUES, IL FAUT VERIFIER QUE
+C         LES CHAMPS A RESTITUER EXISTENT REELEMENT DANS
+C         LA SD_RESULTANT ENTRANTE
+      NGRAND = 0
+C               12345678901.
+      BL11PT = '           .'
+      DO 5, IGRAND=1,NGRAN0
+        CHAM = GRAND0(IGRAND)
+        IF (TYPRES(1:9).EQ.'HARM_GENE') THEN
+C  
+          CALL JEEXIN (RESIN(1:8)//BL11PT//CHAM,IRET)
+          IF (IRET.NE.0) THEN
+            GRAND(NGRAND+1)=CHAM
+            NGRAND = NGRAND + 1
+          ENDIF 
+C
+        ELSEIF (TYPRES(1:10).EQ.'DYNA_HARMO') THEN
+C
+          CALL RSEXCH (' ',RESIN(1:8), CHAM, 1, K19BID, IRET)
+          IF (IRET.EQ.0) THEN
+            GRAND(NGRAND+1)=CHAM
+            NGRAND = NGRAND + 1
+          ENDIF
+C  
+        ELSE
+C       --- CAS DES SD TRANSITOIRES => LES 3 CHAMPS EXISTENT
+C  
+          GRAND(NGRAND+1)=CHAM
+          NGRAND = NGRAND + 1
+        ENDIF
+   5  CONTINUE
+C
+C     --- SI AUCUN CHAMP DEMANDE NE PEUT ETRE TRAITE => ERREUR
+      IF (NGRAND.EQ.0) CALL U2MESS('F','ALGORITH17_28')
+C
       VECTOT = '&&OP0181.VECTOT'
+C
+C     --- BOUCLE SUR LES CHAMPS A CALCULER
       DO 10 I = 1,NGRAND
-C
-C  Calcul des FFT
-C
+C        --- CALCUL DES FFT DES CHAMPS
          CALL PREFFT(RESIN,METHOD,SYMETR,NSENS,GRAND(I),
      &               VECTOT,NBVA,IER)
 C
-C   Ecriture du resultat
+C     --- ECRITURE DES RESULTATS
 C
          CALL ECRESU(RESIN,VECTOT,NBVA,GRAND(I),RESOU,IER)
-C         CALL ECRESU(RESIN,NPARA,NBVA,GRAND(I),RESOU,IER)
   10  CONTINUE
 C
       CALL JEDEMA()

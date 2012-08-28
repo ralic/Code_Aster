@@ -6,7 +6,7 @@
       CHARACTER*19 VECTOT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,23 +40,24 @@ C
 C
 C
 C     ------------------------------------------------------------------
-      INTEGER      NBORDR,LTPS,JORDR,IBID,I
+      INTEGER      NBORDR,LTPS,JORDR,IBID,I, NBSYM, IARG
       INTEGER      LTPS2,IEQ,IER,NEQ,LVAL,LVALS,JREFE,IRET,NBVA2
-      INTEGER      NBSAUV,IARCHI,ISTO1,ISTO2,ISTO3,JDEPS,JVITS,JACCS
-      INTEGER      JPASS,JINST,JFCHO,JDCHO,JVCHO,JICHO,JREDC,JREDD
+      INTEGER      NBSAUV,IARCHI,ISTO1,ISTO2,ISTO3,ISTO4
+      INTEGER      JDEPS,JVITS,JACCS,JPASS,JINST
+      INTEGER      JFCHO,JDCHO,JVCHO,JICHO,JREDC,JREDD,JREVC,JREVD
       INTEGER      IRES,N1,JDESC,NBMODE,LVALV,LVALA,J,LV1,LV2,LV3
-      INTEGER      JREFAM,JVINT
+      INTEGER      JREFAM,JVINT, JFREQ
       REAL*8       R1,RBID
       REAL*8       DT
-      LOGICAL      LPSTO
       CHARACTER*1  K1B,KTYP
-      CHARACTER*4  GRANDE
+      CHARACTER*4  GRANDE, K4BID, NOMSYM(3)
       CHARACTER*8  K8B
       CHARACTER*8  MASGEN,RIGGEN,AMOGEN,BASEMO
       CHARACTER*16 TYPOUT
       CHARACTER*19 CHDEP,CHDEPS,KREFE
       CHARACTER*24 TYPRES,CHDEP2,REFE
       CHARACTER*24 RAIDE
+      COMPLEX*16   R1C
 C
       DATA  REFE  /'                   .REFD'/
 C     ------------------------------------------------------------------
@@ -79,21 +80,20 @@ C   Recuperation type RESU
          TYPOUT='HARM_GENE'
          NBVA2=2*NBVA
          CALL JEVEUO(RESIN(1:8)//'           .REFD','L',JREFE)
-         RIGGEN = ZK24(JREFE)
-         MASGEN = ZK24(JREFE+1)
-         AMOGEN = ZK24(JREFE+2)
+         RIGGEN = ZK24(JREFE)(1:8)
+         MASGEN = ZK24(JREFE+1)(1:8)
+         AMOGEN = ZK24(JREFE+2)(1:8)
       ENDIF
 C
 C  Creation objet de stockage en LTPS pour les valeurs d'instants
 C
 C  Champs
-      IF ( TYPRES(1:9).NE.'TRAN_GENE') THEN
+      IF ( TYPRES(6:9).NE.'GENE') THEN
          CALL RSEXCH('F',RESIN,GRANDE,1,CHDEP,IRET)
          CALL JEVEUO(CHDEP//'.VALE','L',LVAL)
 C  Nombre d'equations : NEQ
          CHDEP2 = CHDEP(1:19)//'.VALE'
          CALL JELIRA(CHDEP2,'LONMAX',NEQ,K1B)
-         NBORDR = NBVA
       ELSE
          CALL JELIRA(RESIN(1:19)//'.ORDR','LONUTI',NBORDR,K1B)
          CALL JEVEUO(RESIN(1:19)//'.'//GRANDE ,'L',LVAL)
@@ -101,46 +101,52 @@ C  Nombre d'equations : NEQ
          CALL JELIRA(CHDEP2,'LONMAX',NEQ,K1B)
          NEQ = NEQ / NBORDR
       ENDIF
+      NBORDR = NBVA
       CALL WKVECT('&&ECRESU.PARAMACC','V V R',NBVA,LTPS)
 C
 C  Creation objet resultat en sortie si non existence
 C
 C      NBORDR = NBVA
       CALL JEEXIN ( RESOU(1:8)//'           .DESC', IRES )
-      IF ( (IRES.EQ.0).AND.(TYPOUT(1:9).NE.'TRAN_GENE'))
+      IF ( (IRES.EQ.0).AND.(TYPOUT(6:9).NE.'GENE'))
      &     CALL RSCRSD('G',RESOU,TYPOUT,NBORDR)
 C
       REFE(1:8) = RESIN
       CALL JEVEUO(REFE, 'L', JREFE )
       RAIDE = ZK24(JREFE)
-
 C
-      IF ( (TYPOUT(1:10).EQ.'DYNA_HARMO').OR.
-     &     (TYPOUT(1:9).EQ.'HARM_GENE') ) THEN
-         DO  10 I = 1,NBVA
-            ZR(LTPS+I-1) =  DBLE(ZC(NPARA+(NEQ*NBVA)+I-1))
+      IF (TYPOUT(1:10).EQ.'DYNA_HARMO') THEN
+C        --- CAS OU RESULTAT EST HARMO SUR BASE PHYSIQUE
+C        --- RECUPERER LA LISTE DES FREQUENCES DE LA TABLE FFT
+         DO  10 I = 0,NBVA-1
+C           --- LES FREQUENCES SONT DECALEES PAR (NEQ*NBVA) DS LA TBLE
+            ZR(LTPS+I) =  DBLE(ZC(NPARA+(NEQ*NBVA)+I))
  10      CONTINUE
-         DO 20 I = 1,NBORDR
-C  Temps
-            CALL RSADPA(RESOU,'E',1,'FREQ',I,0,LTPS2,K8B)
-            ZR(LTPS2) = ZR(LTPS+I-1)
-            CALL RSEXCH(' ',RESOU,GRANDE,I,CHDEPS,IRET)
-            IF (TYPOUT(1:10).EQ.'DYNA_HARMO') THEN
-              IF (RAIDE(1:1).NE.' ') THEN
-                CALL VTCREM (CHDEPS, RAIDE, 'G', 'C' )
-              ELSE
-                CALL VTCREB(CHDEPS,ZK24(JREFE+3),'G','C',N1)
-                CALL ASSERT(N1.EQ.NEQ)
-              ENDIF
+C
+C        --- BOUCLE SUR LES FREQUENCES A SAUVEGARDER (NUM ORDRE RESU)
+         DO 20 I = 0,NBORDR-1
+            CALL RSADPA(RESOU,'E',1,'FREQ',I+1,0,LTPS2,K8B)
+            ZR(LTPS2) = ZR(LTPS+I)
+            CALL RSEXCH (' ',RESOU,GRANDE,I+1,CHDEPS,IRET)
+
+            IF (RAIDE(1:1).NE.' ') THEN
+C              --- CREATION D'UNE STRUCTURE CHAM_NO BASEE SUR MATRICE
+C                  DE RAIDEUR
+              CALL VTCREM (CHDEPS, RAIDE, 'G', 'C' )
             ELSE
-               CALL VTCREM (CHDEPS, MASGEN, 'G', 'C' )
-               CALL JEECRA(CHDEPS//'.DESC','DOCU',0,'VGEN')
+C              --- CREATION D'UNE STRUCTURE CHAM_NO "CHAMP" BASEE
+C                  SUR BASE MODALE (.REFD[3])
+              CALL VTCREB(CHDEPS,ZK24(JREFE+3),'G','C',N1)
+              CALL ASSERT(N1.EQ.NEQ)
             ENDIF
+C           -------------------------------------------------------
+C
+C           --- REMPLIR LE .VALE PAR LES RESULTATS DANS LA TABLE FFT
             CALL JEVEUO(CHDEPS//'.VALE', 'E', LVALS )
-            DO 30 IEQ = 1,NEQ
-               ZC(LVALS+IEQ-1) = ZC(NPARA+NBVA*(IEQ-1)+I-1)
+            DO 30 IEQ = 0,NEQ-1
+               ZC(LVALS+IEQ) = ZC(NPARA+NBVA*IEQ+I)
  30         CONTINUE
-            CALL RSNOCH(RESOU,GRANDE,I)
+            CALL RSNOCH(RESOU,GRANDE,I+1)
  20      CONTINUE
       ELSEIF ( TYPOUT(1:10).EQ.'DYNA_TRANS' ) THEN
          DO  100 I = 1,NBVA
@@ -150,7 +156,7 @@ C  Temps
 C  Temps
             CALL RSADPA(RESOU,'E',1,'INST',(I-1),0,LTPS2,K8B)
             ZR(LTPS2) = ZR(LTPS+I-1)
-            CALL RSEXCH(' ',RESOU,GRANDE,(I-1),CHDEPS,IRET)
+            CALL RSEXCH (' ',RESOU,GRANDE,(I-1),CHDEPS,IRET)
             IF (RAIDE(1:1).NE.' ') THEN
               CALL VTCREM (CHDEPS, RAIDE, 'G', 'R' )
             ELSE
@@ -170,44 +176,55 @@ C  Temps
             CALL RSNOCH(RESOU,GRANDE,(I-1))
  200     CONTINUE
       ELSEIF ( TYPOUT(1:9).EQ.'TRAN_GENE' ) THEN
+C        --- SI NOUVEAU RESULTAT TRAN_GENE 
          IF ( IRES .EQ. 0 ) THEN
-            DO  400 I = 1,NBVA
-               ZR(LTPS+I-1) =  ZR(NPARA+(NEQ*NBVA2)+I-1)
+C           --- BOUCLE SUR LES INSTANTS A ARCHIVER
+            DO  400 I = 0,NBVA-1
+C              --- INSTANTS SAUVEGARDEES DANS LA TABLE FFT MAIS
+C                  DECALEES PAR (NEQ*NBVA2)
+               ZR(LTPS+I) =  ZR(NPARA+(NEQ*NBVA2)+I)
  400        CONTINUE
+C           --- INITIALISATION DES INDICES D'ARCHIVAGE POUR MDARCH
             ISTO1 = 0
             ISTO2 = 0
             ISTO3 = 0
-            LPSTO = .FALSE.
+            ISTO4 = 0
+C
             JVINT = 1
-
-C         CALL MDGENE(BASEMO,NBMODE,K14B,MASGEN,RIGGEN,AMOGEN,NEXCIT,
-C     &            JVEC,IRET)
-C         IF (IRET.NE.0) CALL U2MESS('F','ALGORITH5_24')
-
+C           --- INFORMATIONS POUR LE .REFD TRANSMIS DIRECTEMENT DE
+C               HARM_GENE A TRAN_GENE
             RIGGEN = ZK24(JREFE)(1:8)
             MASGEN = ZK24(JREFE+1)(1:8)
             AMOGEN = ZK24(JREFE+2)(1:8)
+C
             NBSAUV = NBORDR
+C           --- RECUPERATION DU PAS DE TEMPS, NOMBRE DE MODES ET 
+C               ENFIN LA BASE MODALE
             DT = ZR(LTPS+1) - ZR(LTPS)
             CALL JEVEUO(MASGEN(1:8)//'           .DESC','L',JDESC)
             NBMODE = ZI(JDESC+1)
             CALL JEVEUO(MASGEN(1:8)//'           .REFA','L',JREFAM)
-            BASEMO = ZK24(JREFAM-1+1)(1:8)
-C Bizarre !!!!
-C            NBSAUV = NBSAUV + 1
-
-
+            BASEMO = ZK24(JREFAM)(1:8)
+C
             K8B = '        '
-            CALL MDALLO(RESOU(1:8),BASEMO,MASGEN,RIGGEN,AMOGEN,NBMODE,
-     &            DT,NBSAUV,0,K8B,K8B,0,K8B,0,
-     &            JDEPS,JVITS,JACCS,JPASS,JORDR,JINST,JFCHO,JDCHO,JVCHO,
-     &            JICHO,JREDC,JREDD,.FALSE.,'EULER           ')
+C
+C           --- ALLOCATION DE LA SD DYNA_GENE RESULTAT
+            CALL MDALLO (RESOU(1:8),BASEMO,MASGEN,RIGGEN,AMOGEN,NBMODE,
+     &                   DT,NBSAUV, 0,K8B,K8B,
+     &                   0,K8B,0,K8B,
+     &                   JDEPS,JVITS,JACCS,JPASS,JORDR,JINST,
+     &                   JFCHO,JDCHO,JVCHO, JICHO,
+     &                   JREDC,JREDD, JREVC, JREVD, 'EULER           ',
+     &                   IBID,K4BID,'TRAN')
+C
+C           --- CREATION DES VECTEURS DE TRAVAIL TEMPORAIRES
             CALL WKVECT('&&ECRESU.DEPL','V V R',NEQ,LVALS)
             CALL WKVECT('&&ECRESU.VITE','V V R',NEQ,LVALV)
             CALL WKVECT('&&ECRESU.ACCE','V V R',NEQ,LVALA)
             LV1 = LVALS
             LV2 = LVALV
             LV3 = LVALA
+C           --- SWITCHER L'ORDRE DE LV(X) SELON LE TYPE DE GRANDEUR
             IF (GRANDE.EQ.'VITE') THEN
                LV1 = LVALV
                LV2 = LVALS
@@ -215,43 +232,154 @@ C            NBSAUV = NBSAUV + 1
                LV1 = LVALA
                LV3 = LVALS
             ENDIF
-
-C            DO 500 I = 1,NBORDR+1
-            DO 500 I = 1,NBORDR
-               J = I - 1
+C           --- BOUCLE SUR LES INSTANTS D'ARCHIVAGE (NUM ORDRE)
+            DO 500 J = 0,NBORDR-1
                IARCHI = J
                ISTO1 = J
-               DO 600 IEQ = 1,NEQ
-                  R1 = ZR(NPARA+NBVA*(IEQ-1)+I-1)
-                  ZR(LV1+IEQ-1) = R1
-                  ZR(LV2+IEQ-1)=0.D0
-                  ZR(LV3+IEQ-1)=0.D0
+C              --- BOUCLE SUR LES MODES
+               DO 600 IEQ = 0,NEQ-1
+C                 --- RECUPERER LA VALEUR DANS LA TABLE FFT
+                  R1 = ZR(NPARA+NBVA*IEQ+J)
+C                 --- SAUVER LA VALEUR DANS LE VECT DE TRAVAIL ASSOCIE
+                  ZR(LV1+IEQ) = R1
+                  ZR(LV2+IEQ) = 0.D0
+                  ZR(LV3+IEQ) = 0.D0
  600           CONTINUE
-
-               CALL MDARCH(ISTO1,IARCHI,ZR(LTPS+I-1),DT,NEQ,ZR(LVALS),
-     &            ZR(LVALV),ZR(LVALA),
-     &            ISTO2,0,0.D0,0, ISTO3,0,0.D0,
-     &            0, ZR(JDEPS),ZR(JVITS),ZR(JACCS),RBID,LPSTO,ZI(JORDR),
-     &            ZR(JINST),ZR(JFCHO),ZR(JDCHO),ZR(JVCHO),ZI(JICHO),
-     &            ZR(JVINT),ZI(JREDC),ZR(JREDD))
+C
+C              --- ARCHIVER LES RESULTATS POUR L'INSTANT EN COURS
+               CALL MDARNL (ISTO1,IARCHI,ZR(LTPS+J),DT,NEQ,
+     &             ZR(LVALS),ZR(LVALV),ZR(LVALA),
+     &             ISTO2,0,0.D0,0,
+     &             ISTO3,0,0.D0,0,
+     &             ISTO4,0,0.D0,0,
+     &             ZR(JDEPS),ZR(JVITS),ZR(JACCS),ZR(JPASS),ZI(JORDR),
+     &             ZR(JINST),ZR(JFCHO),ZR(JDCHO),ZR(JVCHO),ZI(JICHO),
+     &             ZR(JVINT),ZI(JREDC),ZR(JREDD),ZI(JREVC),ZR(JREVD))
  500        CONTINUE
          ELSE
+C           --- SI LE RESULTAT TRAN_GENE N'EST PAS UN NOUVEAU CONCEPT,
+C               ALORS MODIFIER DIRECTEMENT LES VALEURS DANS LA SD
+C               (FONCTION AVEC APPELS RECURSIFS)
             CALL JEVEUO(RESOU(1:8)//'           .'//GRANDE ,'E',LVALS)
             CALL JELIRA(RESOU(1:8)//'           .'//GRANDE,'LONMAX',
      &              IBID,K1B)
-            DO 700 I = 1,NBORDR
-               J = I - 1
+            DO 700 J = 0,NBORDR-1
                IARCHI = J
                ISTO1 = J
-               DO 800 IEQ = 1,NEQ
-                  R1 = ZR(NPARA+NBVA*(IEQ-1)+I-1)
-                  ZR(LVALS+(NEQ*ISTO1)+IEQ-1) = R1
+               DO 800 IEQ = 0,NEQ-1
+                  R1 = ZR(NPARA+NBVA*IEQ+J)
+                  ZR(LVALS+(NEQ*ISTO1)+IEQ) = R1
  800           CONTINUE
  700        CONTINUE
          ENDIF
+      ELSEIF (TYPOUT(1:9).EQ.'HARM_GENE' ) THEN
+
+C        --- CAS OU LE RESULTAT EST HARMO SUR BASE GENERALISEE
+C        --- RECUPERER LA LISTE DES FREQUENCES DE LA TABLE FFT
+         IF ( IRES .EQ. 0 ) THEN
+
+            DO  11 I = 0,NBVA-1
+C             --- LES FREQUENCES SONT DECALEES PAR (NEQ*NBVA) DS LA TBLE
+              ZR(LTPS+I) =  DBLE(ZC(NPARA+(NEQ*NBVA)+I))
+ 11         CONTINUE
+C
+C           --- INITIALISATION DES INDICES D'ARCHIVAGE POUR MDARCH
+            ISTO1 = 0
+C
+C           --- INFORMATIONS POUR LE .REFD TRANSMIS DIRECTEMENT DE
+C               TRAN_GENE A HARM_GENE
+            RIGGEN = ZK24(JREFE)(1:8)
+            MASGEN = ZK24(JREFE+1)(1:8)
+            AMOGEN = ZK24(JREFE+2)(1:8)
+C
+            NBSAUV = NBORDR
+C           --- RECUPERATION DU NOMBRE DE MODES ET LA BASE MODALE
+            CALL JEVEUO(MASGEN(1:8)//'           .DESC','L',JDESC)
+            NBMODE = ZI(JDESC+1)
+            CALL JEVEUO(MASGEN(1:8)//'           .REFA','L',JREFAM)
+            BASEMO = ZK24(JREFAM)(1:8)
+C
+            K8B = '        '
+C           --- ALLOCATION DE LA SD DYNA_GENE RESULTAT
+C           ON RECHERCHE LES CHAMPS A REMPLIR POUR LE CAS HARMONIQUE
+            CALL GETVTX(' ','NOM_CHAM',1,IARG,3,NOMSYM,NBSYM)
+            IF (NBSYM .EQ. 0) THEN
+              NBSYM     = 3
+              NOMSYM(1) = 'DEPL'
+              NOMSYM(2) = 'VITE'
+              NOMSYM(3) = 'ACCE'
+            ENDIF
+C
+            CALL MDALLO (RESOU(1:8),BASEMO,MASGEN,RIGGEN,AMOGEN,NBMODE,
+     &                   RBID,NBSAUV, 0,K8B,K8B,
+     &                   0,K8B,0,K8B,
+     &                   JDEPS,JVITS,JACCS,JPASS,JORDR,JFREQ,
+     &                   IBID,IBID,IBID, IBID,
+     &                   IBID,IBID, IBID, IBID, 'EULER           ',
+     &                   NBSYM,NOMSYM,'HARM')
+C
+C           --- CREATION DES VECTEURS DE TRAVAIL TEMPORAIRES
+            CALL WKVECT('&&ECRESU.DEPLC','V V C',NEQ,LVALS)
+            CALL WKVECT('&&ECRESU.VITEC','V V C',NEQ,LVALV)
+            CALL WKVECT('&&ECRESU.ACCEC','V V C',NEQ,LVALA)
+            LV1 = LVALS
+            LV2 = LVALV
+            LV3 = LVALA
+C           --- SWITCHER L'ORDRE DE LV(X) SELON LE TYPE DE GRANDEUR
+            IF (GRANDE.EQ.'VITE') THEN
+               LV1 = LVALV
+               LV2 = LVALS
+            ELSEIF (GRANDE.EQ.'ACCE') THEN
+               LV1 = LVALA
+               LV3 = LVALS
+            ENDIF
+C
+C           --- BOUCLE SUR LES FREQUENCES A SAUVEGARDER (NUM ORDRE RESU)
+            DO 21 J = 0,NBORDR-1
+               IARCHI = J
+               ISTO1 = J
+C              --- BOUCLE SUR LES MODES
+               DO 22 IEQ = 0,NEQ-1
+C                 --- RECUPERER LA VALEUR DANS LA TABLE FFT
+                  R1C = ZC(NPARA+NBVA*IEQ+J)
+C                 --- SAUVER LA VALEUR DANS LE VECT DE TRAVAIL ASSOCIE
+                  ZC(LV1+IEQ) = R1C
+                  ZC(LV2+IEQ) = 0.D0
+                  ZC(LV3+IEQ) = 0.D0
+ 22            CONTINUE
+               NBSYM     = 3
+               NOMSYM(1) = 'DEPL'
+               NOMSYM(2) = 'VITE'
+               NOMSYM(3) = 'ACCE'
+C
+C              --- ARCHIVER LES RESULTATS POUR LA FREQUENCE EN COURS
+               CALL MDARCH (ISTO1,IARCHI,ZR(LTPS+J),RBID,NEQ,'HARM',
+     &                      NBSYM,NOMSYM,
+     &                      RBID,RBID,RBID,RBID,RBID,RBID, 
+     &                      ZC(LVALS),ZC(LVALV),ZC(LVALA),
+     &                      ZC(JDEPS),ZC(JVITS),ZC(JACCS),
+     &                      RBID,ZI(JORDR),ZR(JFREQ))
+ 21        CONTINUE
+         ELSE
+C           --- SI LE RESULTAT HARM_GENE N'EST PAS UN NOUVEAU CONCEPT,
+C               ALORS MODIFIER DIRECTEMENT LES VALEURS DANS LA SD
+C               (FONCTION AVEC APPELS RECURSIFS)
+            CALL JEVEUO(RESOU(1:8)//'           .'//GRANDE ,'E',LVALS)
+            CALL JELIRA(RESOU(1:8)//'           .'//GRANDE,'LONMAX',
+     &              IBID,K1B)
+            DO 23 J = 0,NBORDR-1
+               IARCHI = J
+               ISTO1 = J
+               DO 24 IEQ = 0,NEQ-1
+                  R1C = ZC(NPARA+NBVA*IEQ+J)
+                  ZC(LVALS+(NEQ*ISTO1)+IEQ) = R1C
+ 24            CONTINUE
+ 23        CONTINUE
+         ENDIF
       ENDIF
-C  On finalise le RESOU
-      IF ( (IRES.EQ.0) .AND. (TYPOUT(1:9).NE.'TRAN_GENE') ) THEN
+C
+C     --- FINALISER LE .REFD POUR LES CAS AVEC RESU SUR BASE PHYSIQUE
+      IF ( (IRES.EQ.0) .AND. (TYPOUT(6:9).NE.'GENE') ) THEN
          KREFE = RESOU(1:8)
          CALL WKVECT(KREFE//'.REFD','G V K24',7,JORDR)
          ZK24(JORDR) = ZK24(JREFE)

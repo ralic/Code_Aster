@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 06/08/2012   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2012  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -2616,46 +2616,6 @@ static PyObject *jeveux_exists( PyObject* self, PyObject* args)
     }
 }
 
-/* ---------------------------------------------------------------------- */
-static char utgtme_doc[] =
-"Interface d'appel a la routine fortran UTGTME.\n";
-
-static PyObject * aster_utgtme(self, args)
-PyObject *self; /* Not used */
-PyObject *args;
-{
-   PyObject *t_valres, *t_codret, *t_res;
-   int inbpar;
-   INTEGER nbpar, codret;
-   char *nompar;
-   DOUBLE *valres;
-   STRING_SIZE long_nompar = 8;       /* doivent impérativement correspondre aux longueurs des chaines de caractères      */
-   void *malloc(size_t size);
-
-   /* Conversion en tableaux de chaines */
-   inbpar = (int)PyTuple_Size(args);
-   nbpar = (INTEGER)inbpar;
-   nompar = MakeTabFStr(inbpar, long_nompar);
-   convertxt(inbpar, args, nompar, long_nompar);
-
-   /* allocation des variables de sortie */
-   valres = (DOUBLE *)malloc(nbpar*sizeof(DOUBLE));
-
-   CALL_UTGTME(&nbpar, nompar, valres, &codret); 
-   
-   t_valres = MakeTupleFloat((long)inbpar, valres);
-
-   /* retour de la fonction */
-   t_res = PyTuple_New(2);
-   PyTuple_SetItem(t_res, 0, t_valres);
-   PyTuple_SetItem(t_res, 1, PyInt_FromLong((long)codret));
-
-   FreeStr(nompar);
-   free(valres);
-
-   return t_res;
-}
-
 /* ------------------------------------------------------------------ */
 /*   Routines d'interface pour le catalogue de loi de comportement    */
 /* ------------------------------------------------------------------ */
@@ -2857,7 +2817,6 @@ static PyMethodDef aster_methods[] = {
                 {"jeveux_getattr", jeveux_getattr,   METH_VARARGS},
                 {"jeveux_exists", jeveux_exists,     METH_VARARGS},
                 {"get_nom_concept_unique", aster_gcncon, METH_VARARGS},
-                {"utgtme",       aster_utgtme,       METH_VARARGS, utgtme_doc},
                 {NULL,                NULL}/* sentinel */
 };
 

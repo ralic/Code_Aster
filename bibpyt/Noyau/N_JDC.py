@@ -1,4 +1,4 @@
-#@ MODIF N_JDC Noyau  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_JDC Noyau  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -560,9 +560,20 @@ Causes possibles :
 
    def get_concept(self, nomsd):
       """
-          Méthode pour recuperer un concept à partir de son nom
+          Méthode pour récuperer un concept à partir de son nom
       """
       return self.get_contexte_courant().get(nomsd.strip(), None)
+
+   def get_concept_by_type(self, nomsd, typesd, etape):
+      """
+          Méthode pour récuperer un concept à partir de son nom et de son type.
+          Il aura comme père 'etape'.
+      """
+      assert issubclass(typesd, ASSD), typesd
+      co = typesd(etape=etape)
+      co.set_name(nomsd)
+      co.executed = 1
+      return co
 
    def del_concept(self, nomsd):
       """

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/06/2012   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,7 +25,6 @@ def lire_resu_prod(TYPE_RESU,**args):
   if TYPE_RESU == "EVOL_NOLI" :  return evol_noli
   if TYPE_RESU == "DYNA_TRANS" : return dyna_trans
   if TYPE_RESU == "DYNA_HARMO" : return dyna_harmo
-  if TYPE_RESU == "HARM_GENE" :  return harm_gene
   if TYPE_RESU == "MODE_MECA" :  return mode_meca
   if TYPE_RESU == "MODE_MECA_C" : return mode_meca_c
   if TYPE_RESU == "EVOL_VARC" :  return evol_varc
@@ -135,7 +134,7 @@ LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,reentrant='n',
 # 0) mots cles generaux :
 #----------------------
          TYPE_RESU       =SIMP(statut='o',typ='TXM',into=("EVOL_THER","EVOL_ELAS","EVOL_NOLI","MODE_MECA",
-                                                          "MODE_MECA_C","DYNA_TRANS","DYNA_HARMO","HARM_GENE",
+                                                          "MODE_MECA_C","DYNA_TRANS","DYNA_HARMO",
                                                           "EVOL_CHAR","EVOL_VARC") ),
 
          FORMAT          =SIMP(statut='o',typ='TXM',into=("IDEAS","IDEAS_DS58","ENSIGHT","MED") ),
@@ -191,7 +190,7 @@ LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,reentrant='n',
            UNITE           =SIMP(statut='f',typ='I',defaut= 19 ),
          ),
          b_dataset_58_b = BLOC(condition="(FORMAT=='IDEAS_DS58') and ((TYPE_RESU=='DYNA_TRANS') or\
-                                        (TYPE_RESU=='DYNA_HARMO') or (TYPE_RESU=='HARM_GENE'))",
+                                        (TYPE_RESU=='DYNA_HARMO'))",
            NOM_CHAM=SIMP(statut='o',typ='TXM',validators=NoRepeat(),into=("DEPL","VITE","ACCE","EPSI_NOEU","SIEF_NOEU",),max='**'),
            REDEFI_ORIENT=FACT(statut='f',max='**',
                               regles=(PRESENT_PRESENT('CODE_DIR','DIRECTION','NOEUD',),),

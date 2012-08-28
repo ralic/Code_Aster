@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -18,11 +18,13 @@
 # ======================================================================
 # RESPONSABLE BOYERE E.BOYERE
 RECU_GENE=OPER(nom="RECU_GENE",op=  76,sd_prod=vect_asse_gene,reentrant='n',
-            UIinfo={"groupes":("Résultats et champs",)},
+               UIinfo={"groupes":("Résultats et champs",)},
                fr="Extraire d'un champ de grandeur (déplacements, vitesses ou accélérations) à partir de résultats"
                   +" en coordonnées généralisées",
-         RESU_GENE       =SIMP(statut='o',typ=tran_gene ),
-         INST            =SIMP(statut='o',typ='R' ),
+               regles=(UN_PARMI('FREQ','INST'),EXCLUS('FREQ','INTERPOL')),
+         RESU_GENE       =SIMP(statut='o',typ=(tran_gene,harm_gene)),
+         INST            =SIMP(statut='f',typ='R' ),
+         FREQ            =SIMP(statut='f',typ='R' ),
          NOM_CHAM        =SIMP(statut='f',typ='TXM',defaut="DEPL",into=("DEPL","VITE","ACCE") ),
          INTERPOL        =SIMP(statut='f',typ='TXM',defaut="NON",into=("NON","LIN") ),
          CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU",),),

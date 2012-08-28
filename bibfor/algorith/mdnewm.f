@@ -2,7 +2,7 @@
      &                   MASGEN,RIGGEN,RGYGEN,LAMOR,AMOGEN,GYOGEN,
      &                   FONCV,FONCA,TYPBAS,BASEMO,TINIT,IPARCH,
      &                   DEPSTO,VITSTO,ACCSTO,IORSTO,TEMSTO,NOMRES,
-     &                   NBEXCI,IDESCF,NOMFON,COEFM,LIAD,INUMOR)
+     &                   NBEXCI,IDESCF,NOMFON,COEFM,LIAD,INUMOR,PASSTO)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER      IORSTO(*), IPARCH(*),IDESCF(*)
@@ -11,12 +11,12 @@
      &             RGYGEN(*)
       CHARACTER*8  BASEMO,NOMRES,NOMFON(*),FONCV,FONCA
       CHARACTER*16 TYPBAS
-      LOGICAL      LAMOR, LPSTO
+      LOGICAL      LAMOR
       INTEGER      DESCMM,DESCMR,DESCMA,LIAD(*),INUMOR(*)
-      REAL*8       R8B,COEFM(*)
+      REAL*8       R8B,COEFM(*),PASSTO(*)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/08/2012   AUTEUR TORKHANI M.TORKHANI 
+C MODIF ALGORITH  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,13 +65,14 @@ C
       INTEGER     VALI(2),N1, IFM, NIV
       INTEGER     ETAUSR
       CHARACTER*8 TRAN, K8B
+      CHARACTER*4 K4BID
       INTEGER      IARG
 C     ------------------------------------------------------------------
 C
 C 1.1. ==> RECUPERATION DU NIVEAU D'IMPRESSION
 
 C-----------------------------------------------------------------------
-      INTEGER I ,IA ,IARCHI ,IB ,IBID ,IBID1 ,IBID2  ,IER
+      INTEGER I ,IA ,IARCHI ,IB ,IBID ,IER
       INTEGER IF ,IFE ,IM ,IM1 ,IND ,IPAS ,IPM 
       INTEGER IRET ,ISTO1 ,JACCE ,JDEPL ,JFEXT ,JM ,JMASS 
       INTEGER JTRA1 ,JTRA2 ,JTRA3 ,JTRA4 ,JTRA5 ,JTRA6 ,JVITE 
@@ -79,7 +80,8 @@ C-----------------------------------------------------------------------
       INTEGER NBPASF ,NBPP ,NDIM ,NDT ,JAMGY ,JRIGY
       REAL*8 A0 ,A1 ,A2 ,A3 ,A4 ,A5 ,A6 
       REAL*8 A7 ,DEUX ,DT ,DT2 ,TARCHI ,TEMPS ,TINIT 
-      REAL*8 X1 ,X2 ,X3 ,ZERO 
+      REAL*8 X1 ,X2 ,X3 ,ZERO
+      COMPLEX*16 CBID 
 C-----------------------------------------------------------------------
       CALL INFNIV(IFM,NIV)
 C
@@ -111,7 +113,6 @@ C
       A7=GAMMA*DT
 C      
       ISTO1  = 0
-      LPSTO = .FALSE.
       R8B = ZERO
       NBMOD1 = NBMODE - 1
 C
@@ -252,14 +253,14 @@ C     --- ACCELERATIONS GENERALISEES INITIALES ---
      &            ZR(JDEPL),ZR(JVITE),ZR(JACCE))
 C
 C     --- ARCHIVAGE DONNEES INITIALES ---
-      IBID1 = 0
-      IBID2 = 0
       TARCHI = TINIT
-      CALL MDARCH(ISTO1,0,TINIT,DT, NBMODE,ZR(JDEPL),ZR(JVITE),
-     &            ZR(JACCE),IBID1,0,R8B,0,IBID2,0,R8B,IBID,
-     &            DEPSTO,VITSTO,
-     &            ACCSTO,R8B,LPSTO,IORSTO,TEMSTO, R8B,R8B,R8B, IBID,
-     &            R8B, IBID, R8B )
+C
+              CALL MDARCH (ISTO1,0,TINIT,DT,NBMODE,
+     &                     'TRAN',IBID,K4BID,
+     &                     ZR(JDEPL),ZR(JVITE),ZR(JACCE),
+     &                     DEPSTO,VITSTO,ACCSTO, 
+     &                     CBID,CBID,CBID,CBID,CBID,CBID,
+     &                     PASSTO,IORSTO,TEMSTO)
 C
       TEMPS = TINIT + DT
       CALL UTTCPU('CPU.MDNEWM','INIT',' ')
@@ -375,14 +376,15 @@ C           --- ARCHIVAGE ---
             IF (IPARCH(IARCHI) .EQ. 1) THEN
                ISTO1 = ISTO1 + 1
                TEMPS = TINIT + IARCHI*DT
-              IBID2 = 0
-              IBID1 = 0
-              TARCHI = TEMPS
-              CALL MDARCH(ISTO1,IARCHI,TEMPS,DT,NBMODE,ZR(JDEPL),
-     &                     ZR(JVITE),ZR(JACCE), IBID1,0,R8B,0,
-     &                     IBID2,0,R8B,IBID,
-     &                     DEPSTO,VITSTO,ACCSTO,R8B,LPSTO,IORSTO,TEMSTO,
-     &                     R8B,R8B,R8B,IBID, R8B, IBID,R8B )
+               TARCHI = TEMPS
+C
+              CALL MDARCH (ISTO1,IARCHI,TEMPS,DT,NBMODE,
+     &                     'TRAN',IBID,K4BID,
+     &                     ZR(JDEPL),ZR(JVITE),ZR(JACCE),
+     &                     DEPSTO,VITSTO,ACCSTO, 
+     &                     CBID,CBID,CBID,CBID,CBID,CBID,
+     &                     PASSTO,IORSTO,TEMSTO)
+C
             ENDIF
 C
 C       --- VERIFICATION SI INTERRUPTION DEMANDEE PAR SIGNAL USR1 ---
@@ -398,7 +400,7 @@ C
              CALL UTTCPR('CPU.MDNEWM',4,TPS1)
 C
              IF (MAX(5.D0,N100*TPS1(4)).GT.0.90D0*TPS1(1)) THEN
-              CALL MDSIZE (NOMRES,ISTO1,NBMODE,LPSTO,0,0)
+              CALL MDSIZE (NOMRES,ISTO1,NBMODE,0,0,0)
               IF (NOMRES.EQ.'&&OP0074') THEN
 C             --- CAS D'UNE POURSUITE ---
                  CALL GETVID('ETAT_INIT','RESULTAT',1,IARG,1,TRAN,NDT)

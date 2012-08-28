@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +30,6 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       INTEGER       I, J, ITRESU(8)
       INTEGER       FOCI, FOCF, FOMI, FOMF, FOMO
-      INTEGER VALI
       REAL*8        R8B, EPSI
       CHARACTER*1   K1BID
       CHARACTER*8   K8B, BLANC, BASEMO, CRIT, INTERP, BASEM2,
@@ -47,12 +46,12 @@ C ----------------------------------------------------------------------
       INTEGER      IARG
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER IADESC ,IADRIF ,IARCHI ,IAREFE ,IBID ,ICH ,IDBASE
-      INTEGER IDEC ,IDEFM ,IDINSG ,IDRESU ,IDVECG ,IE ,INOCMP
-      INTEGER INOECP ,INUDDL ,INUMNO ,IRET ,IRETOU ,ISK ,J2REFE
-      INTEGER J3REFE ,JC ,JINST ,JNUME ,LINST ,LLCHA ,LREFE
-      INTEGER LVALE ,N1 ,N2 ,N3 ,N4 ,NBCHAM ,NBINSG
-      INTEGER NBINST ,NBMODE ,NBNOEU ,NCMP ,NEQ ,NFONCT
+      INTEGER IADESC ,IADRIF ,IARCHI ,IAREFE ,IBID ,ICH ,IDBASE 
+      INTEGER IDEC ,IDEFM ,IDINSG ,IDRESU ,IDVECG ,IE ,INOCMP 
+      INTEGER INOECP ,INUDDL ,INUMNO ,IRET ,IRETOU ,ISK ,J2REFE 
+      INTEGER J3REFE ,JC ,JINST ,JNUME ,LINST ,LLCHA ,LREFE 
+      INTEGER LVALE ,N1 ,N2 ,N3 ,N4 ,NBCHAM ,NBINSG 
+      INTEGER NBINST ,NBMODE ,NBNOEU ,NCMP ,NEQ ,NFONCT 
 C-----------------------------------------------------------------------
       DATA BLANC    /'        '/
 C      DATA CHAMN2   /'&&TRAN77.CHAMN2'/
@@ -85,7 +84,7 @@ C
       IF ( MODE .EQ. BLANC) THEN
         CALL JEVEUO(TRANGE//'.REFD','L',IAREFE)
         MATGEN = ZK24(IAREFE)(1:8)
-        BASEMO = ZK24(IAREFE+5)(1:8)
+        BASEMO = ZK24(IAREFE+4)(1:8)
         CALL JEVEUO(BASEMO//'           .REFD','L',IADRIF)
         IF (MATGEN(1:8) .NE. BLANC) THEN
           CALL JEVEUO(MATGEN//'           .REFA','L',J2REFE)
@@ -164,6 +163,7 @@ C
 
 C     ---   RECUPERATION DES VECTEURS DEPLACEMENT, VITESSE ET   ---
 C     --- ACCELERATION GENERALISES SUIVANT LES CHAMPS SOUHAITES ---
+      NFONCT = 0
       CALL RBPH01 ( TRANGE, NBCHAM, TYPE, ITRESU, NFONCT, BASEM2,
      &              TYPREF, TYPBAS, TOUSNO, MULTAP )
 C
@@ -225,8 +225,8 @@ C APRES UNE DOUBLE PROJECTION (PRESENCE DU MOT CLEF 'MODE_MECA')
           CALL U2MESS('F','ALGORITH10_95')
        ENDIF
 
-       CALL JEVEUO(TRANGE//'.INST','L',IDINSG)
-       CALL JELIRA(TRANGE//'.INST','LONMAX',NBINSG,K8B)
+       CALL JEVEUO(TRANGE//'.DISC','L',IDINSG)
+       CALL JELIRA(TRANGE//'.DISC','LONMAX',NBINSG,K8B)
        CALL WKVECT('&&TRAN77.VECTGENE','V V R',NBMODE,IDVECG)
        DO 210 ICH = 1,NBCHAM
           LEFFOR=.TRUE.
@@ -333,43 +333,7 @@ C
                CALL MDGEPH(NEQ,NBMODE,ZR(IDBASE),
      &                     ZR(IDRESU+(ZI(JNUME+I)-1)*NBMODE),ZR(LVALE))
              ENDIF
-C             IF ( MULTAP ) THEN
-C                IF (TYPE(ICH).EQ.'DEPL')
-C     &           CALL MDGEP3(NEQ,NBEXCI,ZR(LPSDEL),
-C     &                       ZR(JINST+I),ZK8(JNODEP),ZR(LVAL2))
-C                IF (TYPE(ICH).EQ.'VITE')
-C     &           CALL MDGEP3(NEQ,NBEXCI,ZR(LPSDEL),
-C     &                       ZR(JINST+I),ZK8(JNOVIT),ZR(LVAL2))
-C                IF (TYPE(ICH).EQ.'ACCE')
-C     &           CALL MDGEP3(NEQ,NBEXCI,ZR(LPSDEL),
-C     &                       ZR(JINST+I),ZK8(JNOACC),ZR(LVAL2))
-C                IF (TYPE(ICH).EQ.'ACCE_ABSOLU')
-C     &           CALL MDGEP3(NEQ,NBEXCI,ZR(LPSDEL),
-C     &                       ZR(JINST+I),ZK8(JNOACC),ZR(LVAL2))
-C                DO 240 IE =1,NEQ
-C                   ZR(LVALE+IE-1)=ZR(LVALE+IE-1)+ZR(LVAL2+IE-1)
-C 240            CONTINUE
-C             ENDIF
-C            --- PRISE EN COMPTE D'UNE ACCELERATION D'ENTRAINEMENT
-C             IF ( TYPE(ICH) .EQ. 'ACCE_ABSOLU'.AND.NFONCT.NE.0 ) THEN
-C                IRET = 0
-C                CALL FOINTE('F',FONCT,1,'INST',ZR(JINST+I),ALPHA,IER)
-CC               --- ACCELERATION ABSOLUE = RELATIVE + ENTRAINEMENT
-C               CALL WKVECT('&&TRAN77.VECTEUR','V V R',NEQ,JVEC)
-C              CALL WKVECT('&&TRAN77.DDL','V V I',NEQ*NBDIR,JDDL)
-C              CALL PTEDDL('NUME_DDL',NUMDDL,NBDIR,NOMCMP,NEQ,ZI(JDDL))
-C                DO 250 ID = 1 , NBDIR
-C                   DO 252 IE = 0 , NEQ-1
-C                      ZR(JVEC+IE) =  ZR(JVEC+IE) +
-C     &                         ZI(JDDL+NEQ*(ID-1)+IE)*ALPHA*DEPL(ID)
-C 252               CONTINUE
-C 250            CONTINUE
-C                DO 254 IE = 0 , NEQ-1
-C                   ZR(LVALE+IE) = ZR(LVALE+IE) + ZR(JVEC+IE)
-C 254            CONTINUE
-C                CALL JEDETR ('&&TRAN77.VECTEUR')
-C                CALL JEDETR ('&&TRAN77.DDL')
-C             ENDIF
+C
              CALL RSNOCH(NOMRES,TYPE(ICH),IARCHI)
              CALL RSADPA(NOMRES,'E',1,'INST',IARCHI,0,LINST,K8B)
              ZR(LINST) = ZR(JINST+I)
@@ -381,13 +345,15 @@ C
       KREFE  = NOMRES
       CALL WKVECT(KREFE//'.REFD','G V K24',7,LREFE)
       IF (MODE.EQ.BLANC) THEN
-        ZK24(LREFE) = ZK24(IADRIF)
+
+        ZK24(LREFE  ) = ZK24(IADRIF)
         ZK24(LREFE+1) = ZK24(IADRIF+1)
-        ZK24(LREFE+2  ) = ZK24(IADRIF+2)
-        ZK24(LREFE+3  ) = ZK24(IADRIF+3)
-        ZK24(LREFE+4  ) = ZK24(IADRIF+4)
-        ZK24(LREFE+5  ) = ZK24(IADRIF+5)
-        ZK24(LREFE+6  ) = ZK24(IADRIF+6)
+        ZK24(LREFE+2) = ZK24(IADRIF+2)
+        ZK24(LREFE+3) = ZK24(IADRIF+3)
+        ZK24(LREFE+4) = '        '
+        ZK24(LREFE+5) = ZK24(IADRIF+4)
+        ZK24(LREFE+6) = '        '
+C
       ENDIF
       CALL JELIBE(KREFE//'.REFD')
 C

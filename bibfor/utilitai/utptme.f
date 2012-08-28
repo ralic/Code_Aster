@@ -4,7 +4,7 @@
       CHARACTER*8      NOMARG(*)
       REAL*8           VALARG(*)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF UTILITAI  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -35,8 +35,8 @@ C
 C DEB ------------------------------------------------------------------
       REAL *8         MXDYN, MCDYN, MLDYN, VMXDYN, VMET, LGIO
       COMMON /R8DYJE/ MXDYN, MCDYN, MLDYN, VMXDYN, VMET, LGIO(2)
-      REAL *8         VMUMPS,VPETSC,RLQMEM
-      COMMON /MSOLVE/ VMUMPS,VPETSC,RLQMEM    
+      REAL *8         VMUMPS,VPETSC,RLQMEM,VMINIT,VMJDC
+      COMMON /MSOLVE/ VMUMPS,VPETSC,RLQMEM,VMINIT,VMJDC   
 C ----------------------------------------------------------------------
       INTEGER K
       CHARACTER*8 NOM
@@ -71,6 +71,18 @@ C
 C --------- CONSOMMATION MEMOIRE DU SOLVEUR PETSC  
 C
             VPETSC = VALARG(K)*(1024*1024)  
+C                   
+           ELSE IF ( NOM .EQ. 'MEM_INIT' ) THEN
+C
+C --------- CONSOMMATION MEMOIRE DU JDC  
+C
+            VMINIT = VALARG(K)*(1024*1024)  
+C                   
+           ELSE IF ( NOM .EQ. 'MEM_JDC' ) THEN
+C
+C --------- CONSOMMATION MEMOIRE DU JDC  
+C
+            VMJDC = VALARG(K)*(1024*1024)  
 C                   
            ELSE
              IRET = IRET + 1          

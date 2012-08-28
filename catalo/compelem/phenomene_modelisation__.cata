@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 26/03/2012   AUTEUR PELLET J.PELLET 
+%& MODIF COMPELEM  DATE 28/08/2012   AUTEUR SFAYOLLE S.FAYOLLE 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -532,6 +532,15 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG3      ELEMENT__ MECA_ARETE3
               MAILLE__ SEG2      ELEMENT__ MECA_ARETE2
 
+       MODELISATION__ '3D_INCO_LOG'       DIM__ 3 3   CODE__ '3LG'
+              ATTRIBUT__  NBSIGM=X6  TYPMOD=COMP3D
+              MAILLE__ TETRA10   ELEMENT__ LGIN_TETRA10
+              MAILLE__ PENTA15   ELEMENT__ LGIN_PENTA15
+              MAILLE__ HEXA20    ELEMENT__ LGIN_HEXA20
+              MAILLE__ TRIA6     ELEMENT__ MECA_FACE6
+              MAILLE__ QUAD8     ELEMENT__ MECA_FACE8
+              MAILLE__ SEG3      ELEMENT__ MECA_ARETE3
+
        MODELISATION__ '3D_INCO_GD'        DIM__ 3 3   CODE__ '3GI'
               ATTRIBUT__  NBSIGM=X6  TYPMOD=COMP3D
               MAILLE__ TETRA10   ELEMENT__ GDIN_TETRA10
@@ -616,6 +625,12 @@ PHENOMENE_MODELISATION__
               MAILLE__ QUAD4     ELEMENT__ MIAXOSQU4
               MAILLE__ SEG3      ELEMENT__ MEAXSE3
               MAILLE__ SEG2      ELEMENT__ MEAXSE2
+
+       MODELISATION__ 'AXIS_INCO_LOG'    DIM__ 2 2   CODE__ 'ALG'
+              ATTRIBUT__ AXIS=OUI  NBSIGM=X4   TYPMOD=AXIS
+              MAILLE__ TRIA6     ELEMENT__ LGAXTR6
+              MAILLE__ QUAD8     ELEMENT__ LGAXQU8
+              MAILLE__ SEG3      ELEMENT__ MEAXSE3
 
        MODELISATION__ 'AXIS_INCO_GD'     DIM__ 2 2   CODE__ 'AGI'
               ATTRIBUT__ AXIS=OUI  NBSIGM=X4   TYPMOD=AXIS
@@ -1053,6 +1068,12 @@ PHENOMENE_MODELISATION__
               MAILLE__ QUAD4     ELEMENT__ MIPLOSQU4
               MAILLE__ SEG3      ELEMENT__ MEPLSE3
               MAILLE__ SEG2      ELEMENT__ MEPLSE2
+
+       MODELISATION__ 'D_PLAN_INCO_LOG'     DIM__ 2 2   CODE__ 'PLG'
+              ATTRIBUT__  NBSIGM=X4  TYPMOD=D_PLAN
+              MAILLE__ TRIA6     ELEMENT__ LGPLTR6
+              MAILLE__ QUAD8     ELEMENT__ LGPLQU8
+              MAILLE__ SEG3      ELEMENT__ MEPLSE3
 
        MODELISATION__ 'D_PLAN_INCO_GD'      DIM__ 2 2   CODE__ 'PGI'
               ATTRIBUT__  NBSIGM=X4  TYPMOD=D_PLAN

@@ -4,7 +4,7 @@
       INTEGER    IFIC, NOCC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,19 +21,17 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_20
 C ----------------------------------------------------------------------
-C     COMMANDE:  TEST_RESU
-C                MOT CLE FACTEUR "GENE"
+C     COMMANDE:  TEST_RESU      MOT CLE FACTEUR "GENE"
 C ----------------------------------------------------------------------
-
       CHARACTER*6 NOMPRO
       PARAMETER (NOMPRO='TRGENE')
-
       INTEGER      VALI,IBID,IOCC,IRET,JLUE,JORDR,JDESC,JREFE,
      &             N1,N2,N3,NBORDR,NUMORD,NCMP,NBINST,IM,
      &             JINST,JCHAM,NBMODE,JVECG,JNUME,JDEEQ,ISTRU,I,
-     &             IREFR,IREFI,IREFC,NREF,LXLGUT,NL1,NL2
-      REAL*8       VALR,EPSI,PREC,TEMPS,R8B
+     &             IREFR,IREFI,IREFC,NREF,LXLGUT,NL1,NL2,JFREQ,NBFREQ
+      REAL*8       VALR,EPSI,PREC,TEMPS,R8B,FREQ
       COMPLEX*16   VALC,C16B
       CHARACTER*1  TYPRES
       CHARACTER*3  SSIGNE
@@ -48,7 +46,6 @@ C ----------------------------------------------------------------------
       INTEGER      IARG
 C     ------------------------------------------------------------------
       CALL JEMARQ()
-
       MOTCLE = 'RESU_GENE'
       TRAVR  = '&&'//NOMPRO//'_TRAVR          '
       TRAVI  = '&&'//NOMPRO//'_TRAVI          '
@@ -87,7 +84,6 @@ C     ------------------------------------------------------------------
 
         CALL GETVID('GENE','RESU_GENE',IOCC,IARG,1,RESU19,N1)
         CALL GETTCO(RESU19,TYSD)
-
 C ----------------------------------------------------------------------
         IF ( TYSD .EQ. 'VECT_ASSE_GENE_R' ) THEN
           CALL GETVIS('GENE','NUME_CMP_GENE',IOCC,IARG,1,NCMP,N1)
@@ -171,10 +167,8 @@ C
 
           CALL UTITES(TBTXT(1),TBTXT(2),TYPRES,NREF,ZI(IREFI),ZR(IREFR),
      &                ZC(IREFC),VALI,VALR,VALC,EPSI,CRIT,IFIC,SSIGNE)
-
 C ----------------------------------------------------------------------
-        ELSEIF ( TYSD .EQ. 'MODE_GENE' .OR.
-     &           TYSD .EQ. 'HARM_GENE' ) THEN
+        ELSEIF ( TYSD .EQ. 'MODE_GENE') THEN
 
           KNUM = '&&TRGENE.NUME_ORDRE'
           CALL RSUTNU(RESU19,'GENE',IOCC,KNUM,NBORDR,PREC,CRIT2,IRET)
@@ -336,15 +330,93 @@ C
           CALL UTITES(TBTXT(1),TBTXT(2),TYPRES,NREF,ZI(IREFI),ZR(IREFR),
      &                ZC(IREFC),VALI,VALR,VALC,EPSI,CRIT,IFIC,SSIGNE)
           CALL JEDETR ( KNUM )
+C ----------------------------------------------------------------------
+        ELSEIF ( TYSD .EQ. 'HARM_GENE' ) THEN
+          CALL GETVTX('GENE','NOM_CHAM'     ,IOCC,IARG,1,NSYM,N1)
+          CALL GETVIS('GENE','NUME_CMP_GENE',IOCC,IARG,1,NCMP,N1)
+C
+          INTERP = 'NON'
+          CALL JEVEUO(RESU19//'.DISC','L',JFREQ)
+          CALL JELIRA(RESU19//'.DISC','LONMAX',NBFREQ,K16B)
+C
+          CALL GETVR8('GENE','FREQ',IOCC,IARG,1,FREQ,N1)
+          IF ( N1 .EQ. 0 ) THEN
+            CALL GETVIS('GENE','NUME_ORDRE',IOCC,IARG,1,NUMORD,N1)
+            FREQ = ZR(JFREQ+NUMORD-1)
+          END IF
+C
+          CALL JEEXIN(RESU19//'.'//NSYM(1:4),IRET)
+          IF (IRET.EQ.0) CALL U2MESK('F','CALCULEL6_99',1,RESU19)
+          CALL JEVEUO(RESU19//'.'//NSYM(1:4),'L',JCHAM)
+          CALL JEVEUO(RESU19//'.DESC','L',JDESC)
+          NBMODE = ZI(JDESC+2-1)
+          CALL WKVECT('&&TRGENE.CHAMP','V V C',NBMODE,JVECG)
+          CALL ZXTRAC(INTERP,PREC,CRIT2,NBFREQ,ZR(JFREQ),FREQ,
+     &                ZC(JCHAM),NBMODE,ZC(JVECG),IRET)
+          IF (IRET.NE.0) CALL U2MESK('F','CALCULEL6_2',1,RESU19)
+          VALC = ZC(JVECG+NCMP-1)
 
+          LIGN1(1:21)='---- '//MOTCLE(1:9)
+          LIGN1(22:22)='.'
+          LIGN2(1:21)='     '//RESU19(1:8)
+          LIGN2(22:22)='.'
+          NL1 = LXLGUT(LIGN1)
+          NL2 = LXLGUT(LIGN2)
+          LIGN1(1:NL1+16)=LIGN1(1:NL1-1)//' FREQ'
+          CH16=' '
+          CALL CODREE(FREQ,'E',CH16)
+          LIGN2(1:NL2+16)=LIGN2(1:NL2-1)//' '//CH16
+          LIGN1(NL1+17:NL1+17)='.'
+          LIGN2(NL2+17:NL2+17)='.'
+          NL1 = LXLGUT(LIGN1)
+          NL2 = LXLGUT(LIGN2)
+          LIGN1(1:NL1+16)=LIGN1(1:NL1-1)//' NOM_CHAM'
+          LIGN2(1:NL2+16)=LIGN2(1:NL2-1)//' '//NSYM(1:4)
+          LIGN1(NL1+17:NL1+17)='.'
+          LIGN2(NL2+17:NL2+17)='.'
+          NL1 = LXLGUT(LIGN1)
+          NL2 = LXLGUT(LIGN2)
+          LIGN1(1:NL1+16)=LIGN1(1:NL1-1)//' NUME_CMP_GENE'
+          CH4=' '
+          CALL CODENT( NCMP , 'G' , CH4  )
+          LIGN2(1:NL2+16)=LIGN2(1:NL2-1)//' '//CH4
+
+          NL1 = LXLGUT(LIGN1)
+          NL2 = LXLGUT(LIGN2)
+          IF(NL1.LT.80)THEN
+             WRITE (IFIC,*) LIGN1(1:NL1)
+          ELSEIF(NL1.LT.160)THEN
+             WRITE (IFIC,1160) LIGN1(1:80),
+     &                         LIGN1(81:NL1)
+          ELSE
+             WRITE (IFIC,1200) LIGN1(1:80),
+     &                         LIGN1(81:160),
+     &                         LIGN1(161:NL1)
+          ENDIF
+          IF(NL2.LT.80)THEN
+             WRITE (IFIC,*) LIGN2(1:NL2)
+          ELSEIF(NL2.LT.160)THEN
+             WRITE (IFIC,1160) LIGN2(1:80),
+     &                         LIGN2(81:NL2)
+          ELSE
+             WRITE (IFIC,1200) LIGN2(1:80),
+     &                         LIGN2(81:160),
+     &                         LIGN2(161:NL2)
+          ENDIF
+
+          CALL UTEST3('GENE',IOCC,TBTXT)
+          CALL UTITES(TBTXT(1),TBTXT(2),'C',NREF,ZI(IREFI),ZR(IREFR),
+     &               ZC(IREFC),VALI,VALR,VALC,EPSI,CRIT,IFIC,SSIGNE)
+
+          CALL JEDETR ('&&TRGENE.CHAMP')
 C ----------------------------------------------------------------------
         ELSEIF ( TYSD .EQ. 'TRAN_GENE' ) THEN
           CALL GETVTX('GENE','NOM_CHAM'     ,IOCC,IARG,1,NSYM,N1)
           CALL GETVIS('GENE','NUME_CMP_GENE',IOCC,IARG,1,NCMP,N1)
 C
           INTERP = 'NON'
-          CALL JEVEUO(RESU19//'.INST','L',JINST)
-          CALL JELIRA(RESU19//'.INST','LONMAX',NBINST,K16B)
+          CALL JEVEUO(RESU19//'.DISC','L',JINST)
+          CALL JELIRA(RESU19//'.DISC','LONMAX',NBINST,K16B)
 C
           CALL GETVR8('GENE','INST',IOCC,IARG,1,TEMPS,N1)
           IF ( N1 .EQ. 0 ) THEN
@@ -414,18 +486,15 @@ C
           CALL UTEST3('GENE',IOCC,TBTXT)
           CALL UTITES(TBTXT(1),TBTXT(2),'R',NREF,ZI(IREFI),ZR(IREFR),
      &               ZC(IREFC),VALI,VALR,VALC,EPSI,CRIT,IFIC,SSIGNE)
+
           CALL JEDETR ('&&TRGENE.CHAMP')
         ENDIF
         WRITE (IFIC,*)' '
-
  100  CONTINUE
-
 1160  FORMAT(1X,A80,A)
 1200  FORMAT(1X,2(A80),A)
-
       CALL JEDETR(TRAVR)
       CALL JEDETR(TRAVC)
       CALL JEDETR(TRAVI)
-
       CALL JEDEMA()
       END

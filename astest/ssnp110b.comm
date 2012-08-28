@@ -1,4 +1,4 @@
-# MODIF  DATE 06/08/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 28/08/2012   AUTEUR TRAN V-X.TRAN 
 # TITRE  FISSURE DE BORD EN ELASTOPLASTICITE DANS UNE PLAQUE
 # ssnp110b.para = tps_job 180 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -104,6 +104,11 @@ THETA2=CALC_THETA(    MODELE=MO,
                                    R_SUP = 1.5),
                                      DIRECTION=(1., 0., 0.,)
                      )
+                     
+# L'objectif de ce cas-test est d'examiner l'influence de la 
+# prise en compte de grande
+# deformation dans le calcul mecanique sur les parametres
+# de la mecanqiue de la rupture
 
 G_0=CALC_G( THETA=_F(THETA=THETA0,SYME='OUI'),
             RESULTAT=CHAMDEP,

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 28/08/2012   AUTEUR TRAN V-X.TRAN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -121,14 +121,14 @@ OPTION__
     CALC_K_G            311   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPLAR  DDL_MECA PTHETAR  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  NFORCER  PFRVOLU  CPESANR  PPESANR
                                      CROTATR  PROTATR  CEPSINR  PEPSINR  CCOMPOR  PCOMPOR  ECONTNO  PSIGINR
-                                     DDL_MECA PDEPINR  N9NEUT_R PBASLOR  G27NEUTR PCOURB   NFORCER  PFR2D3D
-                                     EPRESNO  PPRESSR  N1NEUT_R PLSN     N1NEUT_R PLST
+                                     N1NEUT_R PLST     N9NEUT_R PBASLOR  G27NEUTR PCOURB   NFORCER  PFR2D3D
+                                     EPRESNO  PPRESSR  N1NEUT_R PLSN     
                               OUT__  EKTHETA  PGTHETA
     CALC_K_G_F          311   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPLAR  DDL_MECA PTHETAR  CMATERC  PMATERC
-                                     ZVARCPG  PVARCPR  ZVARCPG  PVARCRR   CFORCEF  PFFVOLU  CPESANR  PPESANR
+                                     ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  CFORCEF  PFFVOLU  CPESANR  PPESANR
                                      CROTATR  PROTATR  CEPSINF  PEPSINF  CCOMPOR  PCOMPOR  ECONTNO  PSIGINR
-                                     DDL_MECA PDEPINR  N9NEUT_R PBASLOR  G27NEUTR PCOURB   CFORCEF  PFF2D3D
-                                     CPRESSF  PPRESSF  CTEMPSR  PTEMPSR  N1NEUT_R PLSN     N1NEUT_R PLST
+                                     N1NEUT_R PLST     N9NEUT_R PBASLOR  G27NEUTR PCOURB   CFORCEF  PFF2D3D
+                                     CPRESSF  PPRESSF  CTEMPSR  PTEMPSR  N1NEUT_R PLSN     
                               OUT__  EKTHETA  PGTHETA
     CARA_SECT_POU3R     337   IN__   NGEOMER  PGEOMER  CGEOMER  PORIGIN
                               OUT__  ERAYONM  PRAYONM

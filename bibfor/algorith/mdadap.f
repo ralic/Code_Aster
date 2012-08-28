@@ -11,7 +11,7 @@
      &                   COEFM,LIAD,INUMOR,IDESCF,
      &                   NOFDEP,NOFVIT,NOFACC,NOMFON,PSIDEL,MONMOT,
      &                   NBPAL,DTSTO,TCF,VROTAT,PRDEFF,METHOD,
-     &                   NOMRES,NBEXCI)
+     &                   NOMRES,NBEXCI,IREVST,DREVST)
 C
       IMPLICIT NONE
 C
@@ -22,13 +22,13 @@ C
      &             PARCHO(*),PARRED(*),DEPSTO(*),VITSTO(*),ACCSTO(*),
      &             PASSTO(*),TEMSTO(*),FCHOST(*),DCHOST(*),VCHOST(*),
      &             DREDST(*),PREC,EPSI,DPLMOD(NBCHOC,NEQGEN,*),
-     &             DPLREV(*),DPLRED(*)
+     &             DPLREV(*),DPLRED(*),DREVST(*)
       REAL*8       DTI,DTMAX
       REAL*8       DT,DTSTO,TCF,VROTAT
       CHARACTER*8  BASEMO,NOECHO(NBCHOC,*),FONRED(*),FONREV(*),VVAR
       CHARACTER*8  NOMRES,MONMOT
       CHARACTER*16 TYPBAS,METHOD
-      LOGICAL      LAMOR,LFLU,LPSTO,PRDEFF
+      LOGICAL      LAMOR,LFLU,PRDEFF
 C
       REAL*8       COEFM(*),PSIDEL(*)
       INTEGER      LIAD(*),INUMOR(*),IDESCF(*)
@@ -37,7 +37,7 @@ C
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/08/2012   AUTEUR TORKHANI M.TORKHANI 
+C MODIF ALGORITH  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -121,7 +121,8 @@ C-----------------------------------------------------------------------
       INTEGER JREDR ,JSLVI ,JTRA1 ,JVINT ,JVIP1 ,JVIP2 ,JVIT2 
       INTEGER JVITE ,JVMIN ,NBACC ,NBCHOC ,NBEXCI ,NBMOD1 ,NBPASC 
       INTEGER NBREDE ,NBREVI ,NBSAUV ,NBSCHO ,NDT ,NEQGEN ,NPAS 
-      INTEGER NPER ,NR ,NRMAX 
+      INTEGER NPER ,NR ,NRMAX
+      INTEGER ISTO4, JREVR, JREVI, IREVST
       REAL*8 CDP ,CMP ,DEUX ,DT1 ,DT2 ,DTARCH ,DTMIN 
       REAL*8 ERR ,FREQ ,PAS1 ,PAS2 ,R8BID1 ,R8BID2 ,R8BID3 
       REAL*8 R8BID4 ,R8BID5 ,R8PREM ,R8VAL ,TARCH ,TARCHI ,TEMP2 
@@ -148,16 +149,18 @@ C
       JCHOR = 1
       JREDR = 1
       JREDI = 1
+      JREVR = 1
+      JREVI = 1
       JVINT = 1
       IPAS  = 0
       ISTO1 = 0
       ISTO2 = 0
       ISTO3 = 0
+      ISTO4 = 0
       NPAS  = 0
       NBACC = 0
       CONV = 1.D0
       II = 1
-      LPSTO = .TRUE.
       NBMOD1 = NEQGEN - 1
       NBSCHO = NBSAUV * 3 * NBCHOC
       EPSI = R8PREM()
@@ -191,7 +194,7 @@ C
         ENDIF
         CALL DCOPY(NEQGEN*NEQGEN,MASGEN,1,ZR(JMASS),1)
       ELSEIF (TYPBAS.EQ.'MODELE_GENE     ') THEN
-        MAMASS=ZK24(ZI(DESCM+1))
+        MAMASS=ZK24(ZI(DESCM+1))(1:19)
         CALL DISMOI('F','SOLVEUR',MAMASS,'MATR_ASSE',IBID,
      &              SOLVEU,IBID)
         CALL ASSERT(SOLVEU.EQ.'&&OP0074.SOLVEUR')
@@ -273,6 +276,11 @@ C        INITIALISATION POUR LE FLAMBAGE
          CALL WKVECT('&&MDADAP.SREDR','V V R8',NBREDE,JREDR)
          CALL WKVECT('&&MDADAP.SREDI','V V I' ,NBREDE,JREDI)
       ENDIF
+      IF (NBREVI.NE.0) THEN
+         CALL WKVECT('&&MDEUL1.SREVR','V V R8',NBREVI,JREVR)
+         CALL WKVECT('&&MDEUL1.SREVI','V V I' ,NBREVI,JREVI)
+      ENDIF
+
 C
 C     --- CONDITIONS INITIALES ---
 C
@@ -363,12 +371,15 @@ C
 C     --- ARCHIVAGE DONNEES INITIALES ---
 C
       TARCHI = TINIT
-      CALL MDARCH(ISTO1,0,TINIT,DT2,NEQGEN,
-     &            ZR(JDEPL),ZR(JVITE),ZR(JACCE),
-     &            ISTO2,NBCHOC,ZR(JCHOR),NBSCHO, ISTO3,NBREDE,ZR(JREDR),
-     &            ZI(JREDI), DEPSTO,VITSTO,ACCSTO,PASSTO,LPSTO,IORSTO,
-     &            TEMSTO,FCHOST,DCHOST,VCHOST, ICHOST,
-     &            ZR(JVINT),IREDST,DREDST )
+C
+           CALL MDARNL (ISTO1,0,TINIT,DT2,NEQGEN,
+     &                  ZR(JDEPL),ZR(JVITE),ZR(JACCE),
+     &                  ISTO2,NBCHOC,ZR(JCHOR),NBSCHO,
+     &                  ISTO3,NBREDE,ZR(JREDR),ZI(JREDI),
+     &                  ISTO4,NBREVI,ZR(JREVR),ZI(JREVI),
+     &                  DEPSTO,VITSTO,ACCSTO,PASSTO,IORSTO,
+     &                  TEMSTO,FCHOST,DCHOST,VCHOST,ICHOST,ZR(JVINT),
+     &                  IREDST,DREDST,IREVST,DREVST)
 C
       TEMPS = TINIT
       TCF = TEMPS + DT2
@@ -584,22 +595,30 @@ C
               ISTO1 = ISTO1+1
               IF((TEMP2-TARCH).LE.(TARCH-TEMPS)) THEN
                 TARCHI = TEMP2
-                CALL MDARCH(ISTO1,IPAS,TEMP2,DT2,NEQGEN,
-     &                     ZR(JDEP2),ZR(JVIP2),ZR(JACC2),ISTO2,
-     &                     NBCHOC,ZR(JCHO2),NBSCHO,
-     &                     ISTO3,NBREDE,ZR(JREDR),ZI(JREDI),
-     &                     DEPSTO,VITSTO,ACCSTO,PASSTO,LPSTO,IORSTO,
-     &                     TEMSTO,FCHOST,DCHOST,VCHOST, ICHOST,
-     &                     ZR(JVINT),IREDST,DREDST )
+C
+           CALL MDARNL (ISTO1,IPAS,TEMP2,DT2,NEQGEN,
+     &                  ZR(JDEP2),ZR(JVIP2),ZR(JACC2),
+     &                  ISTO2,NBCHOC,ZR(JCHO2),NBSCHO,
+     &                  ISTO3,NBREDE,ZR(JREDR),ZI(JREDI),
+     &                  ISTO4,NBREVI,ZR(JREVR),ZI(JREVI),
+     &                  DEPSTO,VITSTO,ACCSTO,PASSTO,IORSTO,
+     &                  TEMSTO,FCHOST,DCHOST,VCHOST,ICHOST,ZR(JVINT),
+     &                  IREDST,DREDST,IREVST,DREVST)
+C
               ELSE
                 TARCHI = TEMPS
-                CALL MDARCH(ISTO1,IPAS-1,TEMPS,DT2,NEQGEN,
-     &                     ZR(JDEPL),ZR(JVIP1),ZR(JACCE),ISTO2,
-     &                     NBCHOC,ZR(JCHOR),NBSCHO,
-     &                     ISTO3,NBREDE,ZR(JREDR),ZI(JREDI),
-     &                     DEPSTO,VITSTO,ACCSTO,PASSTO,LPSTO,IORSTO,
-     &                     TEMSTO,FCHOST,DCHOST,VCHOST, ICHOST,
-     &                     ZR(JVINT),IREDST,DREDST )
+C
+           CALL MDARNL (ISTO1,IPAS-1,TEMPS,DT2,NEQGEN,
+     &                  ZR(JDEPL),ZR(JVIP1),ZR(JACCE),
+     &                  ISTO2,NBCHOC,ZR(JCHOR),NBSCHO,
+     &                  ISTO3,NBREDE,ZR(JREDR),ZI(JREDI),
+     &                  ISTO4,NBREVI,ZR(JREVR),ZI(JREVI),
+     &                  DEPSTO,VITSTO,ACCSTO,PASSTO,IORSTO,
+     &                  TEMSTO,FCHOST,DCHOST,VCHOST,ICHOST,ZR(JVINT),
+     &                  IREDST,DREDST,IREVST,DREVST)
+C
+C
+
               ENDIF
                 TARCH = TARCH + DTARCH
             ENDIF
@@ -668,12 +687,16 @@ C
       IF(NBSAUV .GT. (ISTO1+1)) THEN
         ISTO1 = ISTO1 + 1
             TARCHI = TEMPS
-            CALL MDARCH(ISTO1,IPAS,TEMPS,DT2,NEQGEN,ZR(JDEP2),ZR(JVIP2),
-     &                     ZR(JACC2), ISTO2,NBCHOC,ZR(JCHOR),NBSCHO,
-     &                     ISTO3,NBREDE,ZR(JREDR),ZI(JREDI),
-     &                     DEPSTO,VITSTO,ACCSTO,PASSTO,LPSTO,IORSTO,
-     &                     TEMSTO,FCHOST,DCHOST,VCHOST, ICHOST,
-     &                     ZR(JVINT),IREDST,DREDST )
+C
+           CALL MDARNL (ISTO1,IPAS,TEMPS,DT2,NEQGEN,
+     &                  ZR(JDEP2),ZR(JVIP2),ZR(JACC2),
+     &                  ISTO2,NBCHOC,ZR(JCHOR),NBSCHO,
+     &                  ISTO3,NBREDE,ZR(JREDR),ZI(JREDI),
+     &                  ISTO4,NBREVI,ZR(JREVR),ZI(JREVI),
+     &                  DEPSTO,VITSTO,ACCSTO,PASSTO,IORSTO,
+     &                  TEMSTO,FCHOST,DCHOST,VCHOST,ICHOST,ZR(JVINT),
+     &                  IREDST,DREDST,IREVST,DREVST)
+C
       GOTO 31
       ENDIF
 C
@@ -693,7 +716,7 @@ C       --- CAS D'UNE POURSUITE ---
            CALL GETVID('ETAT_INIT','RESULTAT',1,IARG,1,TRAN,NDT)
            IF (NDT.NE.0) CALL RESU74(TRAN,NOMRES)
         ENDIF
-        CALL MDSIZE (NOMRES,ISTO1,NEQGEN,LPSTO,NBCHOC,NBREDE)
+        CALL MDSIZE (NOMRES,ISTO1,NEQGEN,NBCHOC,NBREDE,NBREVI)
                 VALI (1) = IPAS
                 VALI (2) = ISTO1
                 VALR (1) = TARCHI

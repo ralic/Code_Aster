@@ -1,4 +1,4 @@
-#@ MODIF supervis2 Messages  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF supervis2 Messages  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -142,12 +142,19 @@ dernière au format HDF (mot clé FORMAT_HDF="OUI" dans la commande FIN).
         'flags' : 'CENTER | ALL_UNIT',
 },
 
-22 : {  'message' : _(u"""Limite de la mémoire dynamique : %(r1).2f Mo
-Taille limite des fichiers d'échange : %(r2).2f Go
-"""), 'flags' : 'CENTER | ALL_UNIT',
+22 : {  'message' : _(u"""Mémoire limite pour l'exécution : %(r2).2f Mo      
+                          consommée par l'initialisation : %(r3).2f Mo
+                         par les objets du jeu de commandes : %(r4).2f Mo
+                         reste pour l'allocation dynamique : %(r1).2f Mo"""),
+        'flags' : 'CENTER | ALL_UNIT',
 },
 
 # 23 plus haut avec 10
+
+24 : {  'message' : _(u"""Taille limite des fichiers d'échange : %(r1).2f Go
+"""), 'flags' : 'CENTER | ALL_UNIT',
+},
+
 
 # Affichage des commandes
 70 : u"""  # ------------------------------------------------------------------------------------------""",
@@ -157,13 +164,24 @@ Taille limite des fichiers d'échange : %(r2).2f Go
 72 : _(u"""  # Commande :
   # ----------"""),
 
-73 : _(u"""  # Statistiques mémoire (Mo) : %(r1)9.2f / %(r2)9.2f / %(r3)9.2f / %(r4)9.2f (VmPeak / VmSize / Optimum / Minimum)"""),
+73 : _(u"""  # Mémoire (Mo) : %(r1)8.2f / %(r2)8.2f / %(r3)8.2f / %(r4)8.2f (VmPeak / VmSize / Optimum / Minimum)"""),
 
-74 : _(u"""  # Statistiques mémoire (Mo) : %(r1)9.2f / %(r2)9.2f / %(r3)9.2f (VmSize / Optimum / Minimum)"""),
+# attention au décalage
+74 : _(u"""  # Mémoire (Mo) : %(r2)8.2f / %(r3)8.2f / %(r4)8.2f (VmSize / Optimum / Minimum)"""),
 
 75 : _(u"""  # Fin commande No : %(i1)04d   user+syst:%(r1)12.2fs (syst:%(r2)12.2fs, elaps:%(r3)12.2fs)"""),
 
 76 : _(u"""  # Fin commande : %(k1)s"""),
+
+# sans formatage pour STAT_NON_LINE (impmem)
+77 : _(u"""
+  Mémoire (Mo) : %(r1)8.2f / %(r2)8.2f / %(r3)8.2f / %(r4)8.2f (VmPeak / VmSize / Optimum / Minimum)
+"""),
+
+# attention au décalage
+78 : _(u"""
+  Mémoire (Mo) : %(r2)8.2f / %(r3)8.2f / %(r4)8.2f (VmSize / Optimum / Minimum)
+"""),
 
 
 97 : {  'message' : _(u"""

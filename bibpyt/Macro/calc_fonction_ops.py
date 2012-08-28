@@ -1,4 +1,4 @@
-#@ MODIF calc_fonction_ops Macro  DATE 30/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calc_fonction_ops Macro  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,331 +19,487 @@
 # ======================================================================
 # RESPONSABLE COURTOIS M.COURTOIS
 
+"""Commande CALC_FONCTION"""
+
 import os
-import copy
 import traceback
 import math
 
-def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
-                      SPEC_OSCI,ABS,COMB,COMB_C,COMPOSE,EXTRACTION,
-                      ENVELOPPE,FRACTILE,ASSE,CORR_ACCE,PUISSANCE,INVERSE,
-                      REGR_POLYNOMIALE,DSP,
-                      NOM_PARA,NOM_RESU,INTERPOL,PROL_DROITE,
-                      PROL_GAUCHE,NOM_PARA_FONC,INTERPOL_FONC,PROL_DROITE_FONC,
-                      PROL_GAUCHE_FONC,INFO,**args):
-   """
-      Ecriture de la macro CALC_FONCTION
-   """
-   ier=0
-   import numpy as NP
+import numpy as NP
 
-   from Cata_Utils.t_fonction import t_fonction, t_fonction_c, t_nappe, homo_support_nappe, \
-            FonctionError, ParametreError, InterpolationError, ProlongementError, enveloppe, fractile
-   from Utilitai import liss_enveloppe
-   from Macro.defi_inte_spec_ops import tocomplex
-   from Accas import _F
-   from Cata.cata import nappe_sdaster,fonction_sdaster,fonction_c
-   from Utilitai.Utmess import  UTMESS
-   import aster_fonctions
-   EnumTypes = (list, tuple)
+from Noyau.N_types import force_list
+from Noyau.N_utils import AsType
+from Cata.cata import _F, fonction_sdaster, fonction_c, nappe_sdaster
 
-   ### On importe les definitions des commandes a utiliser dans la macro
-   DEFI_FONCTION  = self.get_cmd('DEFI_FONCTION')
-   IMPR_FONCTION  = self.get_cmd('IMPR_FONCTION')
-   DEFI_NAPPE     = self.get_cmd('DEFI_NAPPE')
+from Cata_Utils.t_fonction import (
+    t_fonction, t_nappe,
+    homo_support_nappe, enveloppe, fractile,
+    FonctionError, ParametreError, InterpolationError, ProlongementError,
+)
+from Utilitai import liss_enveloppe
+from Utilitai.Utmess import  UTMESS
+from Macro.defi_inte_spec_ops import tocomplex
 
-   ### Comptage commandes + déclaration concept sortant
-   self.set_icmd(1)
-   self.DeclareOut('C_out',self.sd)
+def calc_fonction_ops(self, **args):
+    """Corps de la macro CALC_FONCTION"""
+    self.set_icmd(1)
+    # éléments de contexte
+    ctxt = Context()
 
-   # éléments de contexte
-   ctxt = Context()
-   ### l'ensemble est dans un try/except pour recuperer les erreurs du module t_fonction
-   try:
-      ###
-      if (INTEGRE     != None):
-         __ff=INTEGRE['FONCTION'].convert()
-         ctxt.f = __ff.nom
-         if INTEGRE['METHODE']=='TRAPEZE' :
-            __ex=__ff.trapeze(INTEGRE['COEF'])
-         elif INTEGRE['METHODE']=='SIMPSON' :
-            __ex=__ff.simpson(INTEGRE['COEF'])
-      ###
-      if (DERIVE      != None):
-         __ff=DERIVE['FONCTION'].convert()
-         ctxt.f = __ff.nom
-         __ex=__ff.derive()
-      ###
-      if (INVERSE     != None):
-         __ff=INVERSE['FONCTION'].convert()
-         ctxt.f = __ff.nom
-         __ex=__ff.inverse()
-      ###
-      if (ABS         != None):
-         __ff=ABS['FONCTION'].convert()
-         ctxt.f = __ff.nom
-         __ex=__ff.abs()
-      ###
-      if (COMPOSE     != None):
-         __ff=COMPOSE['FONC_RESU'].convert()
-         __fg=COMPOSE['FONC_PARA'].convert()
-         ctxt.f = [__ff.nom, __fg.nom]
-         __ex=__ff[__fg]
-      ###
-      if (ASSE        != None):
-         __f0=ASSE['FONCTION'][0].convert()
-         __f1=ASSE['FONCTION'][1].convert()
-         ctxt.f = [__f0.nom, __f1.nom]
-         __ex=__f0.cat(__f1,ASSE['SURCHARGE'])
-      ###
-      if (COMB != None):
-         list_fonc=[]
-         if isinstance(self.sd,nappe_sdaster):
-            for mcfact in COMB :
-               list_fonc.append(mcfact['FONCTION'].convert())
-            ctxt.f = [f.nom for f in list_fonc]
+    operation = calc_fonction_operation(self, ctxt, args)
+    try:
+        operation.run()
+    except InterpolationError, msg:
+        UTMESS('F', 'FONCT0_27', valk=(ctxt.f, str(msg)))
+    except ParametreError, msg:
+        UTMESS('F', 'FONCT0_28', valk=(ctxt.f, str(msg)))
+    except ProlongementError, msg:
+        UTMESS('F', 'FONCT0_29', valk=(ctxt.f, str(msg)))
+    except FonctionError, msg:
+        UTMESS('F', 'FONCT0_30',
+               valk=(ctxt.f, str(msg), traceback.format_exc()))
+
+def calc_fonction_operation(macro, ctxt, kwargs):
+    """Factory that returns the operation object."""
+    un_parmi = ('DERIVE', 'INTEGRE', 'SPEC_OSCI', 'DSP', 'FFT', 'CORR_ACCE',
+                'COMB', 'COMB_C', 'MULT', 'ASSE', 'INVERSE', 'ABS',
+                'ENVELOPPE', 'COMPOSE', 'EXTRACTION', 'PUISSANCE',
+                'LISS_ENVELOP', 'FRACTILE', 'REGR_POLYNOMIALE')
+    oper = [key for key in un_parmi if kwargs[key] is not None]
+    try:
+        class_ = globals()['CalcFonction_' + oper[0]]
+    except KeyError:
+        UTMESS('F', 'DVP_1')
+    return class_(macro, oper[0], ctxt, kwargs)
+
+
+class CalcFonctionOper(object):
+    """Base of all CALC_FONCTION operations.
+
+    Subclasses must implement the '_run' method and, if necessary, may
+    overload the '_build_data' method.
+    """
+    def __init__(self, macro, oper, ctxt, kwargs):
+        """Initialization"""
+        self.macro = macro
+        self.oper = oper
+        self.ctxt = ctxt
+        self.args = kwargs
+        self.kw = self.args[self.oper]
+        self.resu = None
+        self._lf = []
+        self._dat = None
+        self.typres = AsType(macro.sd)
+
+    def _build_data(self):
+        """Read keywords to build the data"""
+        self._build_list_fonc()
+
+    def _run(self):
+        """Use the input functions from 'self._lf' and the data from
+        'self._dat' to compute the result function 'self.resu'."""
+        raise NotImplementedError('must be defined in a subclass')
+
+    def run(self):
+        """Run the operator"""
+        self._build_data()
+        self.ctxt.f = [func.nom for func in self._lf]
+        self._run()
+        self.build_result()
+
+    def build_result(self):
+        """Create the result function"""
+        macr = self.macro
+        DEFI_FONCTION  = macr.get_cmd('DEFI_FONCTION')
+        IMPR_FONCTION  = macr.get_cmd('IMPR_FONCTION')
+        DEFI_NAPPE     = macr.get_cmd('DEFI_NAPPE')
+        macr.DeclareOut('result', macr.sd)
+        # common keywords to DEFI_FONCTION & DEFI_NAPPE
+        para = self.resu.para
+        for p in ('NOM_PARA', 'NOM_RESU', 'PROL_DROITE', 'PROL_GAUCHE',
+                  'INTERPOL'):
+            if self.args[p] is not None:
+                para[p] = self.args[p]
+
+        if self.typres is not nappe_sdaster:
+            if self.typres is fonction_c:
+                mcval = 'VALE_C'
+            else:
+                mcval = 'VALE'
+            para[mcval] = self.resu.tabul()
+            result = DEFI_FONCTION(**para)
+        else:
+            intf = self.args['INTERPOL_FONC']
+            prdf = self.args['PROL_DROITE_FONC']
+            prgf = self.args['PROL_GAUCHE_FONC']
+            def_fonc = []
+            for f_i in self.resu.l_fonc :
+                def_fonc.append(_F(VALE=f_i.tabul(),
+                                   INTERPOL=intf or f_i.para['INTERPOL'],
+                                   PROL_DROITE=prdf or f_i.para['PROL_DROITE'],
+                                   PROL_GAUCHE=prgf or f_i.para['PROL_GAUCHE'],))
+            npf = 'NOM_PARA_FONC'
+            if self.args[npf] is not None:
+                para[npf] = self.args[npf]
+            result = DEFI_NAPPE(PARA=self.resu.vale_para.tolist(),
+                                DEFI_FONCTION=def_fonc,
+                                **para)
+        if self.args['INFO'] > 1:
+            IMPR_FONCTION(FORMAT='TABLEAU', UNITE=6,
+                          COURBE=_F(FONCTION=result),)
+
+    # utilities
+    def _use_list_para(self):
+        """Interpolate using LIST_PARA."""
+        if self.args['LIST_PARA'] is not None:
+            self.resu = self.resu.evalfonc(self.args['LIST_PARA'].Valeurs())
+
+    def _get_mcsimp(self, mcsimp):
+        """Return the list of mcsimp values for all occurrences of mcfact."""
+        # only one occurrence of MCFACT or only one value in MCSIMP
+        value = []
+        nbmf = len(self.kw)
+        for mcf in self.kw:
+            val = force_list(mcf[mcsimp])
+            assert nbmf == 1 or len(val) == 1, (nbmf, val)
+            value.extend(val)
+        return value
+
+    def _build_list_fonc(self, arg='real', mcsimp='FONCTION'):
+        """Return the list of functions under mcfact/mcsimp converted
+        as t_fonction objects.
+        nappe_sdaster objects are interpolated on the same abscissa."""
+        lf_in = self._get_mcsimp(mcsimp)
+        all_nap = min([int(AsType(i) is nappe_sdaster) for i in lf_in]) == 1
+        if all_nap:
+            list_fonc = [tf.convert() for tf in lf_in]
             list_fonc = homo_support_nappe(list_fonc)
-         elif isinstance(self.sd,fonction_sdaster):
-            for mcfact in COMB :
-               __ex=mcfact['FONCTION'].convert()
-               list_fonc.append(__ex)
+        else:
+            list_fonc = [tf.convert(arg) for tf in lf_in]
+        self._lf = list_fonc
 
-         __ex = 0.
-         for item, comb in zip(list_fonc, COMB):
-            ctxt.f = item.nom
-            __ex = item * comb['COEF'] + __ex
-         # on prend les paramètres de la 1ère fonction
-         __ex.para = copy.copy(list_fonc[0].para)
-      ###
-      if (COMB_C != None):
-         list_fonc=[]
-         if isinstance(self.sd,nappe_sdaster):
-            for mcfact in COMB_C:
-               list_fonc.append(mcfact['FONCTION'].convert())
-            ctxt.f = [f.nom for f in list_fonc]
-            list_fonc = homo_support_nappe(list_fonc)
-         elif isinstance(self.sd,fonction_sdaster) or isinstance(self.sd,fonction_c):
-            for mcfact in COMB_C :
-               __ex=mcfact['FONCTION'].convert(arg='complex')
-               list_fonc.append(__ex)
 
-         __ex = 0.
-         for item, comb in zip(list_fonc, COMB_C):
-            if comb['COEF_R'] != None:
-               coef = complex(comb['COEF_R'])
-            elif comb['COEF_C'] != None:
-               if type(comb['COEF_C']) in EnumTypes:
-                  coef = tocomplex(comb['COEF_C'])
-               else:
-                  coef = comb['COEF_C']
-            ctxt.f = item.nom
-            __ex = item * coef + __ex
-         # on prend les paramètres de la 1ère fonction
-         __ex.para = copy.copy(list_fonc[0].para)
+class CalcFonction_ABS(CalcFonctionOper):
+    """Return absolute value"""
+    def _run(self):
+        """ABS"""
+        self.resu = self._lf[0].abs()
 
-      ### mot clé LIST_PARA uniquement présent si COMB ou COMB_C
-      if (COMB != None) or (COMB_C != None) :
-         if (args['LIST_PARA'] != None) :
-            __ex=__ex.evalfonc(args['LIST_PARA'].Valeurs())
-      ###
-      if (PUISSANCE   != None):
-         __ff=PUISSANCE['FONCTION'].convert()
-         ctxt.f = __ff.nom
-         __ex=__ff
-         for i in range(PUISSANCE['EXPOSANT']-1):
-            __ex=__ex*__ff
-      ###
-      if (EXTRACTION  != None):
-         if EXTRACTION['PARTIE']=='REEL':
-            __ex=EXTRACTION['FONCTION'].convert(arg='real')
-         if EXTRACTION['PARTIE']=='IMAG':
-            __ex=EXTRACTION['FONCTION'].convert(arg='imag')
-         if EXTRACTION['PARTIE']=='MODULE':
-            __ex=EXTRACTION['FONCTION'].convert(arg='modul')
-         if EXTRACTION['PARTIE']=='PHASE':
-            __ex=EXTRACTION['FONCTION'].convert(arg='phase')
-      ###
-      if (ENVELOPPE   != None):
-         list_fonc=[]
-         l_env=ENVELOPPE['FONCTION']
-         if type(l_env) not in EnumTypes:
-            l_env=(l_env,)
-         if isinstance(self.sd,nappe_sdaster):
-            for f in l_env:
-               list_fonc.append(f.convert())
-            ctxt.f = [f.nom for f in list_fonc]
-            list_fonc = homo_support_nappe(list_fonc)
-            vale_para=list_fonc[0].vale_para
-            para     =list_fonc[0].para
-            l_fonc_f =[]
-            for i in range(len(vale_para)):
-               __ff=list_fonc[0].l_fonc[i]
-               for nap in list_fonc[1:] :
-                  ctxt.f = nap.l_fonc[i].nom
-                  __ff=enveloppe([__ff,nap.l_fonc[i]], ENVELOPPE['CRITERE'])
-               l_fonc_f.append(__ff)
-            __ex=t_nappe(vale_para,l_fonc_f,para)
-         elif isinstance(self.sd,fonction_sdaster):
-            for f in l_env:
-               list_fonc.append(f.convert())
-            ctxt.f = [f.nom for f in list_fonc]
-            __ex = enveloppe(list_fonc, ENVELOPPE['CRITERE'])
-      ###
-      if (FRACTILE   != None):
-         list_fonc=[]
-         l_frac=FRACTILE['FONCTION']
-         if type(l_frac) not in EnumTypes:
-            l_frac=(l_frac,)
-         if isinstance(self.sd,nappe_sdaster):
-            for f in l_frac:
-               list_fonc.append(f.convert())
-            ctxt.f = [f.nom for f in list_fonc]
-            list_fonc = homo_support_nappe(list_fonc)
-            vale_para=list_fonc[0].vale_para
-            para     =list_fonc[0].para
-            l_fonc_f =[]
-            for i in range(len(vale_para)):
-               ctxt.f = [nap.l_fonc[i].nom for nap in list_fonc]
-               __ff=fractile([nap.l_fonc[i] for nap in list_fonc], FRACTILE['FRACT'])
-               l_fonc_f.append(__ff)
-            __ex=t_nappe(vale_para,l_fonc_f,para)
-         elif isinstance(self.sd,fonction_sdaster):
-            for f in l_frac:
-               list_fonc.append(f.convert())
-            __ex=list_fonc[0]
-            for f in list_fonc[1:]:
-               ctxt.f = [__ex.nom, f.nom]
-               __ex = fractile(list_fonc, FRACTILE['FRACT'])
-      ###
-      if (CORR_ACCE   != None):
-         __ex=CORR_ACCE['FONCTION'].convert()
-         ctxt.f = __ex.nom
-         para=copy.copy(__ex.para)
-         # suppression de la tendance de l accelero
-         __ex=__ex.suppr_tend()
-         # calcul de la vitesse
-         __ex=__ex.trapeze(0.)
-         # calcul de la tendance de la vitesse : y = a1*x +a0
-         __ex=__ex.suppr_tend()
-         if CORR_ACCE['CORR_DEPL']=='OUI':
+class CalcFonction_ASSE(CalcFonctionOper):
+    """Concatenate two functions"""
+    def _run(self):
+        """ASSE"""
+        assert len(self._lf) == 2, 'exactly 2 functions required'
+        fo0, fo1 = self._lf
+        self.resu = fo0.cat(fo1, self.kw['SURCHARGE'])
+
+class CalcFonction_COMB(CalcFonctionOper):
+    """Combinate real functions."""
+    def _run(self):
+        """COMB_C"""
+        coef = self._get_mcsimp('COEF')
+        self.resu = 0.
+        for item, cfr in zip(self._lf, coef):
+            self.ctxt.f = item.nom
+            self.resu = item * cfr + self.resu
+        # take the parameters of the first function
+        self.resu.para = self._lf[0].para.copy()
+        self._use_list_para()
+
+class CalcFonction_COMB_C(CalcFonctionOper):
+    """Combinate complex functions."""
+    def _build_data(self):
+        """Read keywords to build the data"""
+        self._build_list_fonc(arg='complex')
+        coefr = self._get_mcsimp('COEF_R')
+        coefc = self._get_mcsimp('COEF_C')
+        self._dat = { 'R' : coefr, 'C' : coefc }
+
+    def _run(self):
+        """COMB_C"""
+        self.resu = 0.
+        for item, cfr, cfc in zip(self._lf, self._dat['R'], self._dat['C']):
+            coef = 1.
+            if cfr is not None:
+                coef = complex(cfr)
+            elif cfc is not None:
+                coef = cfc
+                if type(cfc) in (list, tuple):
+                    coef = tocomplex(cfc)
+            self.ctxt.f = item.nom
+            self.resu = item * coef + self.resu
+        # take the parameters of the first function
+        self.resu.para = self._lf[0].para.copy()
+        self._use_list_para()
+
+class CalcFonction_COMPOSE(CalcFonctionOper):
+    """Compose two functions"""
+    def _build_data(self):
+        """Read keywords to build the data"""
+        self._dat = (self.kw['FONC_RESU'].convert(),
+                     self.kw['FONC_PARA'].convert())
+
+    def _run(self):
+        """COMPOSE"""
+        fo1, fo2 = self._dat
+        self.resu = fo1[fo2]
+
+class CalcFonction_CORR_ACCE(CalcFonctionOper):
+    """CORR_ACCE"""
+    def _run(self):
+        """CORR_ACCE"""
+        f_in = self._lf[0]
+        para = f_in.para.copy()
+        # suppression de la tendance de l accelero
+        fres = f_in.suppr_tend()
+        # calcul de la vitesse
+        fres = fres.trapeze(0.)
+        # calcul de la tendance de la vitesse : y = a1*x +a0
+        fres = fres.suppr_tend()
+        if self.kw['CORR_DEPL'] == 'OUI':
             # suppression de la tendance deplacement
             # calcul du deplacement : integration
-            __ex=__ex.trapeze(0.)
+            fres = fres.trapeze(0.)
             # calcul de la tendance du déplacement : y = a1*x +a0
-            __ex=__ex.suppr_tend()
+            fres = fres.suppr_tend()
             # regeneration de la vitesse : derivation
-            __ex=__ex.derive()
-         # regeneration de l accelero : derivation
-         __ex=__ex.derive()
-         __ex.para=para
-      ###
-      if (FFT         != None):
-         if isinstance(self.sd,fonction_c):
-            __ff=FFT['FONCTION'].convert()
-            ctxt.f = __ff.nom
-            __ex=__ff.fft(FFT['METHODE'])
-         if isinstance(self.sd,fonction_sdaster):
-            __ff=FFT['FONCTION'].convert(arg='complex')
-            ctxt.f = __ff.nom
-            __ex=__ff.fft(FFT['METHODE'],FFT['SYME'])
-      ###
-      if (SPEC_OSCI   != None):
-         if SPEC_OSCI['AMOR_REDUIT']==None:
-            l_amor=[0.02, 0.05, 0.1]
-            UTMESS('I','FONCT0_31',valr=l_amor)
-         else:
-            if type(SPEC_OSCI['AMOR_REDUIT']) not in EnumTypes :
-               l_amor=[SPEC_OSCI['AMOR_REDUIT'],]
-            else:
-               l_amor= SPEC_OSCI['AMOR_REDUIT']
-         if SPEC_OSCI['FREQ']==None and SPEC_OSCI['LIST_FREQ']==None:
-            l_freq=[]
-            for i in range(56):
-               l_freq.append( 0.2+0.050*i)
-            for i in range( 8):
-               l_freq.append( 3.0+0.075*i)
-            for i in range(14):
-               l_freq.append( 3.6+0.100*i)
-            for i in range(24):
-               l_freq.append( 5.0+0.125*i)
-            for i in range(28):
-               l_freq.append( 8.0+0.250*i)
-            for i in range( 6):
-               l_freq.append(15.0+0.500*i)
-            for i in range( 4):
-               l_freq.append(18.0+1.000*i)
-            for i in range(10):
-               l_freq.append(22.0+1.500*i)
-            texte=[]
-            for i in range(len(l_freq)/5) :
-               texte.append(' %f %f %f %f %f' %tuple(l_freq[i*5:i*5+5]))
-            UTMESS('I','FONCT0_32',valk=os.linesep.join(texte))
-         elif SPEC_OSCI['LIST_FREQ']!=None:
-            l_freq=SPEC_OSCI['LIST_FREQ'].Valeurs()
-         elif SPEC_OSCI['FREQ']!=None:
-            if type(SPEC_OSCI['FREQ']) not in EnumTypes:
-               l_freq=[SPEC_OSCI['FREQ'],]
-            else:
-               l_freq= SPEC_OSCI['FREQ']
-         if min(l_freq)<1.E-10 :
-            UTMESS('S','FONCT0_43')
-         if abs(SPEC_OSCI['NORME'])<1.E-10 :
-            UTMESS('S','FONCT0_33')
-         if SPEC_OSCI['NATURE_FONC']!='ACCE' :
-            UTMESS('S','FONCT0_34')
-         if SPEC_OSCI['METHODE']!='NIGAM' :
-            UTMESS('S','FONCT0_35')
-         eps=1.e-6
-         for amor in l_amor :
-            if amor>(1-eps) :
-              UTMESS('S','FONCT0_36')
-         __ff=SPEC_OSCI['FONCTION'].convert()
-         ctxt.f = __ff.nom
+            fres = fres.derive()
+        # regeneration de l accelero : derivation
+        self.resu = fres.derive()
+        self.resu.para = para
 
-         # appel à SPEC_OSCI
-         spectr = aster_fonctions.SPEC_OSCI(__ff.vale_x, __ff.vale_y, l_freq, l_amor)
+class CalcFonction_DERIVE(CalcFonctionOper):
+    """Derivation"""
+    def _run(self):
+        """DERIVE"""
+        self.resu = self._lf[0].derive()
 
-         # construction de la nappe
-         vale_para = l_amor
-         para      = { 'INTERPOL'      : ['LIN', 'LOG'],
-                       'NOM_PARA_FONC' : 'FREQ',
-                       'NOM_PARA'      : 'AMOR',
-                       'PROL_DROITE'   : 'EXCLU',
-                       'PROL_GAUCHE'   : 'EXCLU',
-                       'NOM_RESU'      : SPEC_OSCI['NATURE'] }
-         para_fonc = { 'INTERPOL'      : ['LOG','LOG'],
-                       'NOM_PARA'      : 'FREQ',
-                       'PROL_DROITE'   : 'CONSTANT',
-                       'PROL_GAUCHE'   : 'EXCLU',
-                       'NOM_RESU'      : SPEC_OSCI['NATURE'] }
-         if   SPEC_OSCI['NATURE']=='DEPL':
-            ideb = 0
-         elif SPEC_OSCI['NATURE']=='VITE':
-            ideb = 1
-         else:
-            ideb = 2
-         l_fonc = []
-         for iamor in range(len(l_amor)) :
-            l_fonc.append(t_fonction(l_freq,spectr[iamor,ideb,:]/SPEC_OSCI['NORME'],para_fonc))
-         __ex=t_nappe(vale_para,l_fonc,para)
-      ###
-      if (DSP != None):
-        deuxpi = 2. * math.pi
-        __ff = DSP['FONCTION'].convert()
-        wmin = 1.001
-        wcoup = deuxpi * DSP['FREQ_COUP']
-        duree = DSP['DUREE']
-        ksi = DSP['AMOR_REDUIT']
-        pesanteur = DSP['NORME']
-        fract = DSP['FRACT']
-        if DSP['LIST_FREQ'] != None:
-            l_freq = DSP['LIST_FREQ'].Valeurs()
-        elif DSP['FREQ'] != None:
-            l_freq = DSP['FREQ']
+class CalcFonction_ENVELOPPE(CalcFonctionOper):
+    """Return the envelop function"""
+    def _run(self):
+        """ENVELOPPE"""
+        crit = self.kw['CRITERE']
+        if self.typres is nappe_sdaster:
+            nap0 = self._lf[0]
+            vale_para = nap0.vale_para
+            para = nap0.para
+            l_fonc_f = []
+            for i in range(len(vale_para)):
+                env = nap0.l_fonc[i]
+                for nap in self._lf[1:]:
+                    self.ctxt.f = nap.l_fonc[i].nom
+                    env = enveloppe([env, nap.l_fonc[i]], crit)
+                l_fonc_f.append(env)
+            self.resu = t_nappe(vale_para, l_fonc_f, para)
         else:
-            l_freq = __ff.vale_x
-        sro = __ff.evalfonc(l_freq) * pesanteur
-        ctxt.f = sro.nom
+            self.resu = enveloppe(self._lf, crit)
+
+class CalcFonction_EXTRACTION(CalcFonctionOper):
+    """Extract real/imaginary part"""
+    def _build_data(self):
+        dconv = { 'REEL' : 'real', 'IMAG' : 'imag',
+                  'MODULE' : 'modul', 'PHASE' : 'phase' }
+        arg = dconv[self.kw['PARTIE']]
+        self._build_list_fonc(arg=arg)
+
+    def _run(self):
+        """EXTRACTION"""
+        self.resu = self._lf[0]
+
+class CalcFonction_FFT(CalcFonctionOper):
+    """Fast Fourier Transform"""
+    def _build_data(self):
+        """Read keywords to build the data"""
+        opts = {}
+        if self.typres is fonction_sdaster:
+            opts['arg'] = 'complex'
+        self._build_list_fonc(**opts)
+
+    def _run(self):
+        """FFT"""
+        kw = self.kw
+        if self.typres is fonction_c:
+            self.resu = self._lf[0].fft(kw['METHODE'])
+        else:
+            self.resu = self._lf[0].fft(kw['METHODE'], kw['SYME'])
+
+class CalcFonction_FRACTILE(CalcFonctionOper):
+    """Compute the fractile of functions"""
+    def _run(self):
+        """FRACTILE"""
+        fract = self.kw['FRACT']
+        if self.typres is nappe_sdaster:
+            nap0 = self._lf[0]
+            vale_para = nap0.vale_para
+            para = nap0.para
+            l_fonc_f = []
+            for i in range(len(vale_para)):
+                self.ctxt.f = [nap.l_fonc[i].nom for nap in self._lf]
+                lfr = fractile([nap.l_fonc[i] for nap in self._lf], fract)
+                l_fonc_f.append(lfr)
+            self.resu = t_nappe(vale_para, l_fonc_f, para)
+
+        else:
+            self.resu = fractile(self._lf, fract)
+
+class CalcFonction_INTEGRE(CalcFonctionOper):
+    """Integration"""
+    def _run(self):
+        """INTEGRE"""
+        f_in = self._lf[0]
+        kw = self.kw
+        assert kw['METHODE'] in ('TRAPEZE', 'SIMPSON')
+        if kw['METHODE'] == 'TRAPEZE':
+            self.resu = f_in.trapeze(kw['COEF'])
+        elif kw['METHODE'] == 'SIMPSON':
+            self.resu = f_in.simpson(kw['COEF'])
+
+class CalcFonction_INVERSE(CalcFonctionOper):
+    """Reverse"""
+    def _run(self):
+        """INVERSE"""
+        self.resu = self._lf[0].inverse()
+
+class CalcFonction_MULT(CalcFonctionOper):
+    """Multiply the given functions."""
+    def _build_data(self):
+        """Read keywords to build the data"""
+        opts = {}
+        if self.typres is fonction_c:
+            opts['arg'] = 'complex'
+        self._build_list_fonc(**opts)
+
+    def _run(self):
+        """MULT"""
+        self.resu = 1.
+        for item in self._lf:
+            self.ctxt.f = item.nom
+            self.resu = item * self.resu
+        # take the parameters of the first function
+        self.resu.para = self._lf[0].para.copy()
+        self._use_list_para()
+
+class CalcFonction_PUISSANCE(CalcFonctionOper):
+    """Compute f^n"""
+    def _run(self):
+        """PUISSANCE"""
+        self.resu = self._lf[0]
+        for i in range(self.kw['EXPOSANT'] - 1):
+            self.resu = self.resu * self._lf[0]
+
+class CalcFonction_SPEC_OSCI(CalcFonctionOper):
+    """SPEC_OSCI"""
+    def _build_data(self):
+        """Read keywords to build the data"""
+        CalcFonctionOper._build_list_fonc(self)
+        kw = self.kw
+        self._dat = {}
+        # amor
+        if kw['AMOR_REDUIT'] is None:
+            l_amor = [0.02, 0.05, 0.1]
+            UTMESS('I', 'FONCT0_31', valr=l_amor)
+        else:
+            l_amor = force_list(kw['AMOR_REDUIT'])
+        eps = 1.e-6
+        for amor in l_amor:
+            if amor > (1 - eps):
+                UTMESS('S', 'FONCT0_36')
+        self._dat['AMOR'] = l_amor
+        # freq
+        if kw['LIST_FREQ'] is not None:
+            l_freq = kw['LIST_FREQ'].Valeurs()
+        elif kw['FREQ'] is not None:
+            l_freq = force_list(kw['FREQ'])
+        else:
+            l_freq = []
+            for i in range(56):
+                l_freq.append( 0.2 + 0.050 * i)
+            for i in range( 8):
+                l_freq.append( 3.0 + 0.075 * i)
+            for i in range(14):
+                l_freq.append( 3.6 + 0.100 * i)
+            for i in range(24):
+                l_freq.append( 5.0 + 0.125 * i)
+            for i in range(28):
+                l_freq.append( 8.0 + 0.250 * i)
+            for i in range( 6):
+                l_freq.append(15.0 + 0.500 * i)
+            for i in range( 4):
+                l_freq.append(18.0 + 1.000 * i)
+            for i in range(10):
+                l_freq.append(22.0 + 1.500 * i)
+            texte = []
+            for i in range(len(l_freq) / 5):
+                texte.append(' %f %f %f %f %f' % tuple(l_freq[i * 5:i * 5 + 5]))
+            UTMESS('I', 'FONCT0_32', valk=os.linesep.join(texte))
+        if min(l_freq) < 1.E-10:
+            UTMESS('F', 'FONCT0_43')
+        self._dat['FREQ'] = l_freq
+        # check
+        if abs(kw['NORME']) < 1.E-10:
+            UTMESS('S', 'FONCT0_33')
+        if kw['NATURE_FONC'] != 'ACCE':
+            UTMESS('S', 'FONCT0_34')
+        if kw['METHODE'] != 'NIGAM':
+            UTMESS('S', 'FONCT0_35')
+
+    def _run(self):
+        """SPEC_OSCI"""
+        import aster_fonctions
+        f_in = self._lf[0]
+        l_freq, l_amor = self._dat['FREQ'], self._dat['AMOR']
+        # appel à SPEC_OSCI
+        spectr = aster_fonctions.SPEC_OSCI(f_in.vale_x, f_in.vale_y,
+                                           l_freq, l_amor)
+        # construction de la nappe
+        kw = self.kw
+        vale_para = l_amor
+        para = {
+            'INTERPOL'      : ['LIN', 'LOG'],
+            'NOM_PARA_FONC' : 'FREQ',
+            'NOM_PARA'      : 'AMOR',
+            'PROL_DROITE'   : 'EXCLU',
+            'PROL_GAUCHE'   : 'EXCLU',
+            'NOM_RESU'      : kw['NATURE'] }
+        para_fonc = {
+            'INTERPOL' : ['LOG','LOG'],
+            'NOM_PARA'    : 'FREQ',
+            'PROL_DROITE' : 'CONSTANT',
+            'PROL_GAUCHE' : 'EXCLU',
+            'NOM_RESU'    : kw['NATURE'] }
+        if kw['NATURE'] == 'DEPL':
+            ideb = 0
+        elif kw['NATURE'] == 'VITE':
+            ideb = 1
+        else:
+            ideb = 2
+        l_fonc_f = []
+        for iamor in range(len(l_amor)):
+            vale_y = spectr[iamor, ideb, :] / kw['NORME']
+            l_fonc_f.append(t_fonction(l_freq, vale_y, para_fonc))
+        self.resu = t_nappe(vale_para, l_fonc_f, para)
+
+class CalcFonction_DSP(CalcFonctionOper):
+    """DSP"""
+    def _run(self):
+        """DSP"""
+        f_in = self._lf[0]
+        kw = self.kw
+        deuxpi = 2. * math.pi
+        wmin = 1.001
+        wcoup = deuxpi * kw['FREQ_COUP']
+        duree = kw['DUREE']
+        ksi = kw['AMOR_REDUIT']
+        pesanteur = kw['NORME']
+        fract = kw['FRACT']
+        if kw['LIST_FREQ'] != None:
+            l_freq = kw['LIST_FREQ'].Valeurs()
+        elif kw['FREQ'] != None:
+            l_freq = kw['FREQ']
+        else:
+            l_freq = f_in.vale_x
+        sro = f_in.evalfonc(l_freq) * pesanteur
+        self.ctxt.f = sro.nom
         assert 0. < fract < 1., 'invalid value for FRACT'
         assert 0. < ksi < 1., 'invalid value for AMOR_REDUIT'
         def coefn(wn, T, p):
@@ -356,12 +512,9 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
             return 2. * math.log( deuxn * ( 1. - math.exp(sexp)) )
 
         valw = sro.vale_x * deuxpi
- #       if max(valw) > wmin:
- #           pass
         nbfreq = len(valw)
         valg = NP.zeros(nbfreq)
-        sumg = 0.        
-        ZPA = __ff.vale_y[-1]
+        zpa = f_in.vale_y[-1]
         for n in range(nbfreq):
             wn = valw[n]
             if wn <= wmin:
@@ -369,129 +522,96 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
             else:
                 valsro = sro.vale_y[n]
                 if wn > wcoup:
-                    valsro = ZPA
+                    valsro = zpa
                 npi2 = peak2(fract, duree, wn, ksi)
-                v1 = 1./(wn*(math.pi/(2.*ksi)-2.))
-                v2 = (valsro**2)/npi2;
-                Gw = t_fonction(valw, valg, para=__ff.para)
+                v1 = 1. / (wn * (math.pi / (2. * ksi) - 2.))
+                v2 = (valsro**2) / npi2
+                Gw = t_fonction(valw, valg, para=f_in.para)
                 v3 = 2. * Gw.trapeze(0.0)(wn)
-                valg[n] = max([v1*(v2-v3), 0.])
+                valg[n] = max([v1 * (v2 - v3), 0.])
         valf = valw / deuxpi
-        __ex = t_fonction(valf, valg * deuxpi, para=__ff.para)
-      ###
-      if (LISS_ENVELOP!= None):
-         __ff=LISS_ENVELOP['NAPPE'].convert()
-         ctxt.f = __ff.nom
-         sp_nappe=liss_enveloppe.nappe(listFreq=__ff.l_fonc[0].vale_x, listeTable=[f.vale_y for f in __ff.l_fonc], listAmor=__ff.vale_para, entete="")
-         sp_lisse=liss_enveloppe.lissage(nappe=sp_nappe,fmin=LISS_ENVELOP['FREQ_MIN'],fmax=LISS_ENVELOP['FREQ_MAX'],elarg=LISS_ENVELOP['ELARG'],tole_liss=LISS_ENVELOP['TOLE_LISS'])
-         para_fonc=__ff.l_fonc[0].para
-         l_fonc=[]
-         for val in sp_lisse.listTable:
-            l_fonc.append(t_fonction(sp_lisse.listFreq,val,para_fonc))
-         __ex=t_nappe(vale_para=sp_lisse.listAmor,l_fonc=l_fonc,para=__ff.para)
-      ###
-      if (REGR_POLYNOMIALE != None):
-          __ff = REGR_POLYNOMIALE['FONCTION'].convert()
-          ctxt.f = __ff.nom
-          deg = REGR_POLYNOMIALE['DEGRE']
-          coef = NP.polyfit(__ff.vale_x, __ff.vale_y, deg)
-          if coef is None:
-              raise FonctionError("La régression polynomiale n'a pas convergé.")
-          # interpolation sur une liste d'abscisses
-          absc = __ff.vale_x
-          if args['LIST_PARA'] is not None:
-            absc = args['LIST_PARA'].Valeurs()
-          vale = NP.polyval(coef, absc)
-          # paramètres
-          para = __ff.para.copy()
-          para['INTERPOL'] = ['LIN', 'LIN']
-          __ex = t_fonction(absc, vale, para)
-          coef_as_str = os.linesep.join(['   a[%d] = %f' % (i, ci) \
-                                         for i, ci in enumerate(coef)])
-          UTMESS('I', 'FONCT0_57', coef_as_str)
+        self.resu = t_fonction(valf, valg * deuxpi, para=f_in.para)
 
-   except InterpolationError, msg:
-      UTMESS('F', 'FONCT0_27', valk=(ctxt.f, str(msg)))
-   except ParametreError, msg:
-      UTMESS('F', 'FONCT0_28', valk=(ctxt.f, str(msg)))
-   except ProlongementError, msg:
-      UTMESS('F', 'FONCT0_29', valk=(ctxt.f, str(msg)))
-   except FonctionError, msg:
-      UTMESS('F', 'FONCT0_30', valk=(ctxt.f, str(msg), traceback.format_exc()))
+class CalcFonction_LISS_ENVELOP(CalcFonctionOper):
+    """LISS_ENVELOP"""
+    def _build_data(self):
+        """Read keywords to build the data"""
+        self._build_list_fonc(mcsimp='NAPPE')
 
-   ### creation de la fonction produite par appel à DEFI_FONCTION
-   ### on récupère les paramètres issus du calcul de __ex
-   ### et on les surcharge par ceux imposés par l'utilisateur
+    def _run(self):
+        """LISS_ENVELOP"""
+        f_in = self._lf[0]
+        kw = self.kw
+        sp_nappe = liss_enveloppe.nappe(
+            listFreq=f_in.l_fonc[0].vale_x,
+            listeTable=[f.vale_y for f in f_in.l_fonc],
+            listAmor=f_in.vale_para,
+            entete="")
+        sp_lisse = liss_enveloppe.lissage(
+            nappe=sp_nappe,
+            fmin=kw['FREQ_MIN'],
+            fmax=kw['FREQ_MAX'],
+            elarg=kw['ELARG'],
+            tole_liss=kw['TOLE_LISS'])
+        para_fonc = f_in.l_fonc[0].para
+        l_fonc_f = []
+        for val in sp_lisse.listTable:
+            l_fonc_f.append(t_fonction(sp_lisse.listFreq, val, para_fonc))
+        self.resu = t_nappe(sp_lisse.listAmor, l_fonc_f, f_in.para)
 
-   if isinstance(__ex,t_fonction) or isinstance(__ex,t_fonction_c):
-      para=__ex.para
-      if NOM_PARA    != None: para['NOM_PARA']    = NOM_PARA
-      if NOM_RESU    != None: para['NOM_RESU']    = NOM_RESU
-      if PROL_DROITE != None: para['PROL_DROITE'] = PROL_DROITE
-      if PROL_GAUCHE != None: para['PROL_GAUCHE'] = PROL_GAUCHE
-      if INTERPOL    != None: para['INTERPOL']    = INTERPOL
-      if   isinstance(__ex,t_fonction_c): para['VALE_C'] = __ex.tabul()
-      elif isinstance(__ex,t_fonction)  : para['VALE']   = __ex.tabul()
-      C_out=DEFI_FONCTION(**para)
-   elif isinstance(__ex,t_nappe):
-      def_fonc=[]
-      for f in __ex.l_fonc :
-         para=f.para
-         def_fonc.append(_F(VALE       =f.tabul(),
-                            INTERPOL   =INTERPOL_FONC or f.para['INTERPOL'],
-                            PROL_DROITE=PROL_DROITE_FONC or f.para['PROL_DROITE'],
-                            PROL_GAUCHE=PROL_GAUCHE_FONC or f.para['PROL_GAUCHE'],))
-      para=__ex.para
-      if NOM_PARA      != None: para['NOM_PARA']      = NOM_PARA
-      if NOM_RESU      != None: para['NOM_RESU']      = NOM_RESU
-      if PROL_DROITE   != None: para['PROL_DROITE']   = PROL_DROITE
-      if PROL_GAUCHE   != None: para['PROL_GAUCHE']   = PROL_GAUCHE
-      if NOM_PARA_FONC != None: para['NOM_PARA_FONC'] = NOM_PARA_FONC
-      if INTERPOL      != None: para['INTERPOL']      = INTERPOL
-      C_out=DEFI_NAPPE(PARA=__ex.vale_para.tolist(),
-                       DEFI_FONCTION=def_fonc,
-                       **para)
-   if INFO > 1:
-      IMPR_FONCTION(FORMAT='TABLEAU',
-                    UNITE=6,
-                    COURBE=_F(FONCTION=C_out),)
-   return ier
-
+class CalcFonction_REGR_POLYNOMIALE(CalcFonctionOper):
+    """Polynomial regression"""
+    def _run(self):
+        """REGR_POLYNOMIALE"""
+        f_in = self._lf[0]
+        deg = self.kw['DEGRE']
+        coef = NP.polyfit(f_in.vale_x, f_in.vale_y, deg)
+        if coef is None:
+            raise FonctionError("La régression polynomiale n'a pas convergé.")
+        # interpolation sur une liste d'abscisses
+        absc = f_in.vale_x
+        if self.args['LIST_PARA'] is not None:
+            absc = self.args['LIST_PARA'].Valeurs()
+        vale = NP.polyval(coef, absc)
+        # paramètres
+        para = f_in.para.copy()
+        para['INTERPOL'] = ['LIN', 'LIN']
+        self.resu = t_fonction(absc, vale, para)
+        coef_as_str = os.linesep.join(['   a[%d] = %f' % (i, ci) \
+                                       for i, ci in enumerate(coef)])
+        UTMESS('I', 'FONCT0_57', coef_as_str)
 
 
 class Context(object):
-   """Permet de stocker des éléments de contexte pour aider au
-   diagnostic lors de l'émission de message.
-   usage :
-      context = Context()
-      context.f = 'nomfon'
-      print context.f
-   """
-   def __init__(self):
-      self.__nomf = None
+    """Permet de stocker des éléments de contexte pour aider au
+    diagnostic lors de l'émission de message.
+    usage :
+       context = Context()
+       context.f = 'nomfon'
+       print context.f
+    """
+    def __init__(self):
+        self.__nomf = None
 
-   def get_val(self):
-      """Retourne le texte formatté.
-      """
-      nomf = self.__nomf
-      if type(nomf) not in (list, tuple):
-         nomf = [nomf,]
-      pluriel = ''
-      if len(nomf) > 1:
-         pluriel = 's'
-      try:
-         res = """Fonction%(s)s concernée%(s)s : %(nomf)s""" % {
+    def get_val(self):
+        """Retourne le texte formatté."""
+        nomf = self.__nomf
+        if type(nomf) not in (list, tuple):
+            nomf = [nomf,]
+        pluriel = ''
+        if len(nomf) > 1:
+            pluriel = 's'
+        res = """Fonction%(s)s concernée%(s)s : %(nomf)s""" % {
             's'    : pluriel,
             'nomf' : ', '.join(nomf),
-         }
-      except:
-         res = 'erreur de programmation !'
-      return res
+        }
+        return res
 
-   def set_val(self, value):
-      self.__nomf = value
+    def set_val(self, value):
+        """Set function"""
+        self.__nomf = value
 
-   def del_val(self):
-      del self.__nomf
-
-   f = property(get_val, set_val, del_val, "")
+    def del_val(self):
+        """Remove value"""
+        del self.__nomf
+    f = property(get_val, set_val, del_val, "")

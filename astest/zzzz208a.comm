@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 # TITRE FONCTIONNALITES PYTHON SUR GRANDEUR GENERALISEES : POUTRE 3D ENCASTREE
 # zzzz208a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -342,7 +342,8 @@ TEST_RESU(RESU=(
                   REFERENCE='SOURCE_EXTERNE',
                   ),
                   ),);
-TEST_RESU(OBJET=_F(NOM='DYNDIAG .001.000000.VALE',
+
+TEST_RESU(OBJET=_F(NOM='DYNDIAG            .DEPL',
                   S_R=VALDYND,
                   PRECISION=0.01,
                   REFERENCE='SOURCE_EXTERNE',
@@ -522,12 +523,12 @@ TEST_RESU(RESU=(
                   ),);
 
 TEST_RESU(OBJET=(
-               _F(NOM='DYNPLEIN.001.000000.VALE',
+               _F(NOM='DYNPLEIN           .DEPL',
                   S_R=VALDYNP,
                   PRECISION=0.01,
                   REFERENCE='SOURCE_EXTERNE',
                   ),
-               _F(NOM='DYNPLEI2.001.000000.VALE',
+               _F(NOM='DYNPLEI2           .DEPL',
                   S_R=VALDYNP2,
                   PRECISION=0.01,
                   REFERENCE='SOURCE_EXTERNE',

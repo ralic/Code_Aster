@@ -1,14 +1,14 @@
-      SUBROUTINE RBPH01 ( TRANGE, NBCHAM, TYPE, ITRESU, NFONCT, BASEMO,
+      SUBROUTINE RBPH01 ( TRANGE, NBCHAM, TYPEA, ITRESU, NFONCT, BASEMO,
      &                    TYPREF, TYPBAS, TOUSNO, MULTAP )
       IMPLICIT   NONE
       INTEGER             NBCHAM, ITRESU(*), NFONCT
       CHARACTER*8         BASEMO
-      CHARACTER*16        TYPE(*), TYPBAS(*)
+      CHARACTER*16        TYPEA(*), TYPBAS(*)
       CHARACTER*19        TRANGE, TYPREF(*)
       LOGICAL             TOUSNO, MULTAP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,7 +33,6 @@ C     ------------------------------------------------------------------
       CHARACTER*8   BLANC, MODE
       CHARACTER*16  CHAMP(8)
       CHARACTER*19  NOMCHA
-      CHARACTER*24 VALK(2)
       INTEGER      IARG
 C     ------------------------------------------------------------------
       DATA BLANC    /'        '/
@@ -46,15 +45,17 @@ C
 C
       IF ( CHAMP(1) .EQ. 'OUI' ) THEN
          NBCHAM = 3
-         TYPE(1) = 'DEPL            '
-         TYPE(2) = 'VITE            '
-         TYPE(3) = 'ACCE            '
+         TYPEA(1) = 'DEPL            '
+         TYPEA(2) = 'VITE            '
+         TYPEA(3) = 'ACCE            '
          CALL JEEXIN ( TRANGE//'.DEPL' , IRET )
          IF ( IRET .EQ. 0 ) THEN
             CALL U2MESS('F','ALGORITH10_11')
          ELSE
             CALL JEVEUO ( TRANGE//'.DEPL', 'L', ITRESU(1) )
+
          ENDIF
+
          CALL JEEXIN ( TRANGE//'.VITE' , IRET )
          IF ( IRET .EQ. 0 ) THEN
             CALL U2MESS('F','ALGORITH10_12')
@@ -69,7 +70,7 @@ C
          ENDIF
          IF ( NFONCT .NE. 0 ) THEN
             NBCHAM = 4
-            TYPE(4) = 'ACCE_ABSOLU     '
+            TYPEA(4) = 'ACCE_ABSOLU     '
             ITRESU(4) = ITRESU(3)
          ENDIF
          IF ( MODE .EQ. BLANC ) THEN
@@ -78,7 +79,7 @@ C
             TYPREF(3) = ' '
             TYPREF(4) = ' '
          ELSE
-            CALL RSEXCH(' ',BASEMO, 'DEPL', 1, NOMCHA, IRET )
+            CALL RSEXCH(' ',BASEMO,'DEPL',1,NOMCHA,IRET)
             TYPREF(1) = NOMCHA
             TYPREF(2) = NOMCHA
             TYPREF(3) = NOMCHA
@@ -97,7 +98,7 @@ C
 C
          DO 10 I = 1 , NBCHAM
          IF ( CHAMP(I) .EQ. 'DEPL' ) THEN
-            TYPE(I) = 'DEPL'
+            TYPEA(I) = 'DEPL'
             CALL JEEXIN ( TRANGE//'.DEPL' , IRET )
             IF ( IRET .EQ. 0 ) THEN
              CALL U2MESS('F','ALGORITH10_11')
@@ -107,13 +108,13 @@ C
             IF ( MODE .EQ. BLANC ) THEN
                TYPREF(I) = ' '
             ELSE
-               CALL RSEXCH(' ',BASEMO, TYPE(I), 1, NOMCHA, IRET )
+               CALL RSEXCH(' ',BASEMO, TYPEA(I), 1, NOMCHA, IRET )
                TYPREF(I) = NOMCHA
             ENDIF
             TYPBAS(I) = 'DEPL'
 C
          ELSEIF ( CHAMP(I) .EQ. 'VITE' ) THEN
-            TYPE(I) = 'VITE'
+            TYPEA(I) = 'VITE'
             CALL JEEXIN ( TRANGE//'.VITE' , IRET )
             IF ( IRET .EQ. 0 ) THEN
                CALL U2MESS('F','ALGORITH10_12')
@@ -123,13 +124,13 @@ C
             IF ( MODE .EQ. BLANC ) THEN
                TYPREF(I) = ' '
             ELSE
-               CALL RSEXCH(' ',BASEMO, 'DEPL', 1, NOMCHA, IRET )
+               CALL RSEXCH (' ',BASEMO, 'DEPL', 1, NOMCHA, IRET )
                TYPREF(I) = NOMCHA
             ENDIF
             TYPBAS(I) = 'DEPL'
 C
          ELSEIF ( CHAMP(I) .EQ. 'ACCE' ) THEN
-            TYPE(I) = 'ACCE'
+            TYPEA(I) = 'ACCE'
             CALL JEEXIN ( TRANGE//'.ACCE' , IRET )
             IF ( IRET .EQ. 0 ) THEN
              CALL U2MESS('F','ALGORITH10_13')
@@ -139,13 +140,13 @@ C
             IF ( MODE .EQ. BLANC ) THEN
                TYPREF(I) = ' '
             ELSE
-               CALL RSEXCH(' ',BASEMO, 'DEPL', 1, NOMCHA, IRET )
+               CALL RSEXCH (' ',BASEMO, 'DEPL', 1, NOMCHA, IRET )
                TYPREF(I) = NOMCHA
             ENDIF
             TYPBAS(I) = 'DEPL'
 C
          ELSEIF ( CHAMP(I) .EQ. 'ACCE_ABSOLU' ) THEN
-            TYPE(I) = 'ACCE_ABSOLU'
+            TYPEA(I) = 'ACCE_ABSOLU'
             CALL JEEXIN ( TRANGE//'.ACCE' , IRET )
             IF ( IRET .EQ. 0 ) THEN
              CALL U2MESS('F','ALGORITH10_13')
@@ -155,14 +156,14 @@ C
             IF ( MODE .EQ. BLANC ) THEN
                TYPREF(I) = ' '
             ELSE
-               CALL RSEXCH(' ',BASEMO, 'DEPL', 1, NOMCHA, IRET )
+               CALL RSEXCH (' ',BASEMO, 'DEPL', 1, NOMCHA, IRET )
                TYPREF(I) = NOMCHA
             ENDIF
             TYPBAS(I) = 'DEPL'
 C
          ELSEIF ( CHAMP(I) .EQ. 'FORC_NODA' .OR.
      &            CHAMP(I) .EQ. 'REAC_NODA' ) THEN
-            TYPE(I) = CHAMP(I)
+            TYPEA(I) = CHAMP(I)
             CALL JEEXIN ( TRANGE//'.DEPL' , IRET )
             IF ( IRET .EQ. 0 ) THEN
              CALL U2MESS('F','ALGORITH10_11')
@@ -175,13 +176,13 @@ C
             IF ( MODE .EQ. BLANC ) THEN
              CALL U2MESS('F','ALGORITH10_15')
             ELSE
-               CALL RSEXCH('F',BASEMO, TYPE(I), 1, NOMCHA, IRET )
+               CALL RSEXCH ('F',BASEMO, TYPEA(I), 1, NOMCHA, IRET )
                TYPREF(I) = NOMCHA
             ENDIF
-            TYPBAS(I) = TYPE(I)
+            TYPBAS(I) = TYPEA(I)
 C
          ELSE
-            TYPE(I) = CHAMP(I)
+            TYPEA(I) = CHAMP(I)
             CALL JEEXIN ( TRANGE//'.DEPL' , IRET )
             IF ( IRET .EQ. 0 ) THEN
              CALL U2MESS('F','ALGORITH10_11')
@@ -189,7 +190,7 @@ C
                CALL JEVEUO ( TRANGE//'.DEPL', 'L', ITRESU(I) )
             ENDIF
             IF ( .NOT. TOUSNO ) THEN
-               CALL U2MESK('F','ALGORITH10_17',1,TYPE(I))
+               CALL U2MESK('F','ALGORITH10_17',1,TYPEA(I))
             ENDIF
             IF ( MULTAP ) THEN
              CALL U2MESS('F','ALGORITH10_14')
@@ -197,10 +198,10 @@ C
             IF ( MODE .EQ. BLANC ) THEN
              CALL U2MESS('F','ALGORITH10_15')
             ELSE
-               CALL RSEXCH('F',BASEMO, TYPE(I), 1, NOMCHA, IRET )
+               CALL RSEXCH ('F',BASEMO, TYPEA(I), 1, NOMCHA, IRET )
                TYPREF(I) = NOMCHA
             ENDIF
-            TYPBAS(I) = TYPE(I)
+            TYPBAS(I) = TYPEA(I)
 C
          ENDIF
   10     CONTINUE

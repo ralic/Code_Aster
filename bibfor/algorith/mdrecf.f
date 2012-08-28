@@ -1,20 +1,19 @@
       SUBROUTINE MDRECF (NEXCI,NEXCIR,IDESCF,NOMFON,COEFM,
-     &                   IADVEC,INUMOR,FONDEP,FONVIT,FONACC,PSDEL,
-     &                   NEQ,TYPBAS,BASEMO,NBMODE,RIGGEN,NOMMOT)
+     &                   IADVEC,INUMOR,FONDEP,FONVIT,FONACC,JPSDEL,
+     &                   NEQ,TYPBAS,BASEMO,NBMODE,RIGGEN,NOMMOT,NOMRES)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
       INTEGER            NEXCI,NEXCIR,NEQ,NBMODE
       INTEGER            IDESCF(*),INUMOR(*),IADVEC(*)
       REAL*8             COEFM(*),RIGGEN(NBMODE)
-      REAL*8             PSDEL(NEQ,NEXCI)
       CHARACTER*8        NOMFON(2*NEXCI)
       CHARACTER*8        FONDEP(2*NEXCI),FONVIT(2*NEXCI)
       CHARACTER*8        FONACC(2*NEXCI)
-      CHARACTER*8        BASEMO, NOMMOT
+      CHARACTER*8        BASEMO, NOMMOT, NOMRES
       CHARACTER*16       TYPBAS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,7 +63,7 @@ C
       CHARACTER*19  VEASGE, FONCT, FACCE
       CHARACTER*19  CHAMNO, CHAMN2, NOFK19, RESU
       CHARACTER*24  DEEQ,TYPEBA
-      INTEGER      IARG
+      INTEGER      IARG,JPSDEL,NPSDEL,IIPSDL
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
       INTEGER IB ,IBID ,IDDEEQ ,IEQ ,II ,IINST ,IMOD
@@ -97,6 +96,7 @@ C ---    CALCUL TRANSITOIRE CLASSIQUE
       NOMMOT = 'NON'
 
       NEXCIT = NEXCI + NEXCIR*NBMODE
+      NPSDEL = NEXCIT*NEQ
 C
 C --- EXCITATIONS SOUS LE MOT-CLE EXCIT
 C
@@ -112,9 +112,9 @@ C
 
         IF (N1.NE.0) THEN
 C         CAS D'UNE FONC_MULT
-          NOMFON(I) = FONCT
+          NOMFON(I) = FONCT(1:8)
           CALL JEVEUO(FONCT//'.PROL','L',LPROL)
-          NOMFON(I+NEXCIT) = ZK24(LPROL)
+          NOMFON(I+NEXCIT) = ZK24(LPROL)(1:8)
           IF (L1.NE.0) THEN
 C           CAS D'UN VECT_ASSE_GENE
             CALL JEVEUT(VEASGE//'.VALE','L',JVALE)
@@ -143,11 +143,11 @@ C           CAS D'UN NUME_ORDRE
           ENDIF
         ELSE IF (NA.NE.0) THEN
 C         CAS D'UN ACCELEROGRAMME
-          NOMFON(I) = FACCE
-          FONACC(I) = FACCE
+          NOMFON(I) = FACCE(1:8)
+          FONACC(I) = FACCE(1:8)
           CALL JEVEUO(FACCE//'.PROL','L',LPROL)
-          NOMFON(I+NEXCIT) = ZK24(LPROL)
-          FONACC(I+NEXCIT) = ZK24(LPROL)
+          NOMFON(I+NEXCIT) = ZK24(LPROL)(1:8)
+          FONACC(I+NEXCIT) = ZK24(LPROL)(1:8)
           IF (L1.NE.0) THEN
 C           CAS D'UN VECT_ASSE_GENE
             CALL JEVEUT(VEASGE//'.VALE','L',JVALE)
@@ -163,21 +163,27 @@ C           CAS D'UN NUME_ORDRE
         IF (N2.NE.0) THEN
           IF (MONMOT(1).EQ.'OUI') THEN
             NOMMOT = 'OUI'
+            CALL JEEXIN(NOMRES//'           .IPSD',IIPSDL)
+            IF (IIPSDL.EQ.0) THEN
+               CALL WKVECT(NOMRES//'           .IPSD','G V R8',NPSDEL,
+     &                     JPSDEL)
+            ENDIF
+
             CALL GETVID(' ','MODE_STAT',1,IARG,1,MODSTA,NBV)
             IF(NBV.EQ.0) THEN
                IER =IER+1
                CALL U2MESG('E', 'ALGORITH13_46',0,' ',0,0,0,0.D0)
                GOTO 10
-            ENDIF
-            CALL TRMULT(MODSTA,I,MAILLA,NEQ,IDDEEQ,PSDEL(1,I))
+            ENDIF                                  
+            CALL TRMULT(MODSTA,I,MAILLA,NEQ,IDDEEQ,ZR(JPSDEL+(I-1)*NEQ))
             CALL GETVID('EXCIT','VITE',I,IARG,1,FONVIT(I),N4)
             FONCT = FONVIT(I)
             CALL JEVEUO(FONCT//'.PROL','L',LPROL)
-            FONVIT(I+NEXCIT) = ZK24(LPROL)
+            FONVIT(I+NEXCIT) = ZK24(LPROL)(1:8)
             CALL GETVID('EXCIT','DEPL',I,IARG,1,FONDEP(I),N5)
-            FONCT = FONDEP(I)
+            FONCT = FONDEP(I)(1:8)
             CALL JEVEUO(FONCT//'.PROL','L',LPROL)
-            FONDEP(I+NEXCIT) = ZK24(LPROL)
+            FONDEP(I+NEXCIT) = ZK24(LPROL)(1:8)
           ELSE
             CALL ASSERT(.FALSE.)
           ENDIF
@@ -185,6 +191,11 @@ C           CAS D'UN NUME_ORDRE
         IF (N3.NE.0) THEN
           IF (MONMOT(2).EQ.'OUI') THEN
             NOMMOT = 'OUI'
+            CALL JEEXIN(NOMRES//'           .IPSD',IIPSDL)
+            IF (IIPSDL.EQ.0) THEN
+               CALL WKVECT(NOMRES//'           .IPSD','G V R8',NPSDEL,
+     &                     JPSDEL)
+            ENDIF
             CALL GETVID(' ','MODE_CORR',1,IARG,1,MODCOR,NBV)
             IF(NBV.EQ.0) THEN
                IER =IER+1
@@ -192,34 +203,35 @@ C           CAS D'UN NUME_ORDRE
                GOTO 10
             ENDIF
             CALL GETVID('EXCIT','D_FONC_DT',I,IARG,1,FONVIT(I),N4)
-            FONCT = FONVIT(I)
+            FONCT = FONVIT(I)(1:8)
             CALL JEVEUO(FONCT//'.PROL','L',LPROL)
-            FONVIT(I+NEXCIT) = ZK24(LPROL)
+            FONVIT(I+NEXCIT) = ZK24(LPROL)(1:8)
             CALL GETVID('EXCIT','D_FONC_DT2',I,IARG,1,FONACC(I),N5)
-            FONCT = FONACC(I)
+            FONCT = FONACC(I)(1:8)
             CALL JEVEUO(FONCT//'.PROL','L',LPROL)
-            FONACC(I+NEXCIT) = ZK24(LPROL)
-            FONDEP(I) = NOMFON(I)
-            FONDEP(I+NEXCIT) = NOMFON(I+NEXCIT)
+            FONACC(I+NEXCIT) = ZK24(LPROL)(1:8)
+            FONDEP(I) = NOMFON(I)(1:8)
+            FONDEP(I+NEXCIT) = NOMFON(I+NEXCIT)(1:8)
 C
             CALL RSEXCH('F',MODCOR,'DEPL',I,CHAMNO,IRET)
             CALL JEVEUO(CHAMNO//'.VALE','L',IMODCO)
             DO 30 IEQ = 1,NEQ
-               PSDEL(IEQ,I) = ZR(IMODCO+IEQ-1)
+               ZR(JPSDEL+IEQ-1+(I-1)*NEQ) = ZR(IMODCO+IEQ-1)
   30        CONTINUE
             DO 40 NM = 1,NBMODE
                COEF = ZR(IADVEC(I)+NM-1)/RIGGEN(NM)
                CALL RSEXCH('F',BASEMO,'DEPL',NM,CHAMN2,IRET)
                CALL JEVEUO(CHAMN2//'.VALE','L',IMOD)
                DO 50 IEQ = 1,NEQ
-                  PSDEL(IEQ,I) = PSDEL(IEQ,I) - COEF*ZR(IMOD+IEQ-1)
+                  ZR(JPSDEL+IEQ-1+(I-1)*NEQ) = ZR(JPSDEL+IEQ-1+(I-1)*
+     &                                      NEQ) - COEF*ZR(IMOD+IEQ-1)
   50           CONTINUE
                CALL JELIBE(CHAMN2//'.VALE')
   40        CONTINUE
             CALL JELIBE(CHAMNO//'.VALE')
 C
 C           --- MISE A ZERO DES DDL DE LAGRANGE
-            CALL ZERLAG(PSDEL(1,I),NEQ,ZI(IDDEEQ))
+            CALL ZERLAG(ZR(JPSDEL+(I-1)*NEQ),NEQ,ZI(IDDEEQ))
 C
           ELSE
             CALL ASSERT(.FALSE.)
@@ -239,8 +251,8 @@ C (MC NUME_ORDRE), ASSOCIEES A UNE FONCTION MULTIPLICATRICE
         CALL GETVID('EXCIT_RESU','RESULTAT' ,I,IARG,1,RESU,L1)
         CALL GETVR8('EXCIT_RESU','COEF_MULT' ,I,IARG,1,ALPHA,M1)
 C ----- NOMBRE DE PAS DE TEMPS DU RESULTAT
-        CALL JELIRA(RESU//'.INST','LONMAX',NINST,K8BID)
-        CALL JEVEUO(RESU//'.INST','L',JINST)
+        CALL JELIRA(RESU//'.DISC','LONMAX',NINST,K8BID)
+        CALL JEVEUO(RESU//'.DISC','L',JINST)
 C ----- EXCITATION STOCKEE DANS LE CHAMP DEPL (IDEM QUE DYNA_LINE_TRAN)
         CALL JEVEUO(RESU//'.DEPL','L',JDEPL)
 
@@ -266,7 +278,7 @@ C ----- EXCITATION STOCKEE DANS LE CHAMP DEPL (IDEM QUE DYNA_LINE_TRAN)
           ZK24(JPROL-1+5)='EE'
           ZK24(JPROL-1+6)=NOMFON(II)
 
-          NOMFON(NEXCIT+II+JMOD) = ZK24(JPROL)
+          NOMFON(NEXCIT+II+JMOD) = ZK24(JPROL)(1:8)
 
           INUMOR(II+JMOD)=ZI(JORDR-1+JMOD)
           IDESCF(II+JMOD)=2

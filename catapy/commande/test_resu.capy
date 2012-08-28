@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -134,7 +134,7 @@ TEST_RESU=PROC(nom="TEST_RESU",op=23,
            b_vect_asse     =BLOC(condition = "AsType(RESU_GENE) == vect_asse_gene",
              NUME_CMP_GENE   =SIMP(statut='o',typ='I'),
            ),
-           b_mode          =BLOC(condition = "(AsType(RESU_GENE) == harm_gene) or (AsType(RESU_GENE) == mode_gene)",
+           b_mode          =BLOC(condition = "AsType(RESU_GENE) == mode_gene",
                             regles=(UN_PARMI('NUME_ORDRE','FREQ','NUME_MODE'),
                                     UN_PARMI('NOM_CHAM','PARA'),
                                     PRESENT_PRESENT('NOM_CHAM','NUME_CMP_GENE'),),
@@ -143,6 +143,13 @@ TEST_RESU=PROC(nom="TEST_RESU",op=23,
              PARA            =SIMP(statut='f',typ='TXM'),
              NUME_ORDRE      =SIMP(statut='f',typ='I'),
              NUME_MODE       =SIMP(statut='f',typ='I'),
+             FREQ            =SIMP(statut='f',typ='R'),
+           ),
+           b_harm          =BLOC(condition = "AsType(RESU_GENE) == harm_gene",
+                            regles=(UN_PARMI('NUME_ORDRE','FREQ') ,),
+             NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),into=C_NOM_CHAM_INTO()),
+             NUME_CMP_GENE   =SIMP(statut='o',typ='I'),
+             NUME_ORDRE      =SIMP(statut='f',typ='I'),
              FREQ            =SIMP(statut='f',typ='R'),
            ),
            b_tran          =BLOC(condition = "AsType(RESU_GENE) == tran_gene",

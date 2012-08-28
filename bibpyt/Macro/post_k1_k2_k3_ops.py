@@ -1,4 +1,4 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 20/06/2012   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -654,11 +654,11 @@ def get_resxfem(self,xcont,RESULTAT,MODELISATION,MODEL) :
 
 #     XFEM + contact : il faut reprojeter sur le maillage lineaire
       elif xcont[0] != 0 :
-         MAILL1 = self.get_concept(nom_ma.strip())
-         MAILL2 = CREA_MAILLAGE(MAILLAGE = MAILL1,
+         __mail1 = self.get_concept(nom_ma.strip())
+         __mail2 = CREA_MAILLAGE(MAILLAGE = __mail1,
                                QUAD_LINE =_F(TOUT = 'OUI',),);
 
-         __MODLINE=AFFE_MODELE(MAILLAGE=MAILL2,
+         __MODLINE=AFFE_MODELE(MAILLAGE=__mail2,
                                AFFE=(_F(TOUT='OUI',
                                         PHENOMENE='MECANIQUE',
                                         MODELISATION=MODELISATION,),),);
@@ -1405,18 +1405,17 @@ def get_erreur(self,ndim,__tabi,type_para) :
 
       # create error
       if ndim != 3:
-         tab_int = CREA_TABLE(LISTE=(_F(LISTE_R=(tuple(__tabi.EXTR_TABLE().values()['G_MIN'])), PARA='G_MIN'),
+         __tini = CREA_TABLE(LISTE=(_F(LISTE_R=(tuple(__tabi.EXTR_TABLE().values()['G_MIN'])), PARA='G_MIN'),
                                      _F(LISTE_R=(tuple(err[0].tolist())), PARA='ERR_K1'),
                                      _F(LISTE_R=(tuple(err[1].tolist())), PARA='ERR_K2')))
       else:
-         tab_int = CREA_TABLE(LISTE=(_F(LISTE_R=(tuple(__tabi.EXTR_TABLE().values()['G_MIN'])), PARA='G_MIN'),
+         __tini = CREA_TABLE(LISTE=(_F(LISTE_R=(tuple(__tabi.EXTR_TABLE().values()['G_MIN'])), PARA='G_MIN'),
                                      _F(LISTE_R=(tuple(err[0].tolist())), PARA='ERR_K1'),
                                      _F(LISTE_R=(tuple(err[1].tolist())), PARA='ERR_K2'),
                                      _F(LISTE_R=(tuple(err[2].tolist())), PARA='ERR_K3')))
 
       # add error
-      __tabi = CALC_TABLE(TABLE=__tabi,reuse=__tabi,ACTION=(_F(OPERATION='COMB',NOM_PARA='G_MIN',TABLE=tab_int)),INFO=1)
-      DETRUIRE(CONCEPT=(_F(NOM=tab_int)),INFO=1)
+      __tabi = CALC_TABLE(TABLE=__tabi,reuse=__tabi,ACTION=(_F(OPERATION='COMB',NOM_PARA='G_MIN',TABLE=__tini)),INFO=1)
 
       # remove kj_min + sort data
       params = ()

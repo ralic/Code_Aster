@@ -1,17 +1,13 @@
-      SUBROUTINE ZXTRAC(INTERP,PREC,CRIT,NBINST,TI,TEMPS,TYPE,NOMIN,NEQ,
-     &                  ZTRACT,
-     &                                                             IER)
+      SUBROUTINE ZXTRAC(INTERP,PREC,CRIT,NBINST,TI,TEMPS,Y,NEQ,XTRACT,
+     &                  IER)
       IMPLICIT NONE
-      INCLUDE 'jeveux.h'
-      INTEGER                            NBINST,           NEQ,    IER
-      REAL*8                   PREC,            TI(*)
-      COMPLEX*16        ZTRACT(*)
-      CHARACTER*8       INTERP,     CRIT,NOMIN
-      CHARACTER*4       TYPE
-      CHARACTER*24       NOMCHA
+      INTEGER NBINST,NEQ,IER
+      REAL*8  PREC,TI(*)
+      COMPLEX*16 XTRACT(*),Y(*)
+      CHARACTER*(*) INTERP,CRIT
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,21 +33,16 @@ C IN  : CRIT    : CRITERE 'ABSOLU' OU 'RELATIF'
 C IN  : NBINST  : DIMENSION DE LA LISTE DES INSTANTS
 C IN  : TI      : LISTE DES INSTANTS
 C IN  : TEMPS   : TEMPS A INTERPOLER
-C IN  : Z       : TABLEAU DE VECTEURS A DES INSTANTS DONNES
+C IN  : Y       : TABLEAU DE VECTEURS A DES INSTANTS DONNES
 C IN  : NEQ     : DIMENSION DES VECTEURS
-C OUT : ZTRACT  : VECTEUR INTERPOLE AU TEMPS TEMPS
+C OUT : XTRACT  : VECTEUR INTERPOLE AU TEMPS TEMPS
 C OUT : IER     : CODE RETOUR, = 0 : IL Y A EU EXTRACTION
 C-----------------------------------------------------------------------
-C
-C
-C
-C
-
       REAL*8  PREC2
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IRE ,ITRESU
-      REAL*8 TEMPS
+      INTEGER I 
+      REAL*8 ALPHA ,TEMPS 
 C-----------------------------------------------------------------------
       IER = 0
 C
@@ -60,16 +51,12 @@ C
       PREC2 = PREC
       IF ( CRIT(1:7).EQ.'RELATIF') PREC2 = PREC * TI(1)
       IF ( ABS( TEMPS - TI(1) ).LE.PREC2 ) THEN
-         CALL RSEXCH('F',NOMIN,TYPE,1,NOMCHA,IRE)
-         CALL JEVEUO(NOMCHA(1:19)//'.VALE','L',ITRESU)
-         CALL ZCOPY(NEQ,ZC(ITRESU),1,ZTRACT,1)
+         CALL ZCOPY(NEQ,Y(1),1,XTRACT,1)
          GOTO 9999
       ENDIF
       IF ( CRIT(1:7).EQ.'RELATIF') PREC2 = PREC * TI(NBINST)
       IF ( ABS( TEMPS - TI(NBINST) ).LE.PREC2 ) THEN
-         CALL RSEXCH('F',NOMIN,TYPE,NBINST,NOMCHA,IRE)
-         CALL JEVEUO(NOMCHA(1:19)//'.VALE','L',ITRESU)
-         CALL ZCOPY(NEQ,ZC(ITRESU),1,ZTRACT,1)
+         CALL ZCOPY(NEQ,Y((NBINST-1)*NEQ+1),1,XTRACT,1)
          GOTO 9999
       ENDIF
 C
@@ -82,27 +69,30 @@ C
          GOTO 9999
       ENDIF
       IF (INTERP(1:3).EQ.'NON') THEN
-
 C
 C        --- PAS D'INTERPOLATION ---
-C PARCOURS DE LA LISTE DES INSTANTS CALCULES
-C SI
          DO 20 I = 2, NBINST-1
             IF ( CRIT(1:7).EQ.'RELATIF') PREC2 = PREC * TI(I)
             IF ( ABS( TEMPS - TI(I) ).LE.PREC2 ) THEN
-                CALL RSEXCH('F',NOMIN,TYPE,I,NOMCHA,IRE)
-                CALL JEVEUO(NOMCHA(1:19)//'.VALE','L',ITRESU)
-                CALL ZCOPY(NEQ,ZC(ITRESU),1,ZTRACT,1)
-                GOTO 9999
+               CALL ZCOPY(NEQ,Y((I-1)*NEQ+1),1,XTRACT,1)
+               GOTO 9999
             ENDIF
  20      CONTINUE
          IER = IER + 1
       ELSE
+         CALL U2MESS('E','ALGORITH11_79')
 C
 C        --- INTERPOLATION LINEAIRE ---
-        CALL U2MESS('E','ALGORITH11_79')
-
-         IER = IER + 1
+C         DO 30 I = 1, NBINST-1
+C            IF ( TEMPS.GE.TI(I) .AND. TEMPS.LT.TI(I+1) ) THEN
+C               ALPHA = ( TEMPS - TI(I) ) / ( TI(I+1) - TI(I) )
+C               CALL ZCOPY(NEQ,Y((I-1)*NEQ+1),1,XTRACT,1)
+C               CALL ZSCAL(NEQ,(1.D0-ALPHA),XTRACT,1)
+C               CALL ZAXPY(NEQ,ALPHA,Y(I*NEQ+1),1,XTRACT,1)
+C               GOTO 9999
+C            ENDIF
+C 30      CONTINUE
+C         IER = IER + 1
       ENDIF
 C
  9999 CONTINUE

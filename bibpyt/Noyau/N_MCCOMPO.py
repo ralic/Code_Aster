@@ -1,4 +1,4 @@
-#@ MODIF N_MCCOMPO Noyau  DATE 23/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_MCCOMPO Noyau  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -400,8 +400,8 @@ class MCCOMPO(N_OBJECT.OBJECT):
               trouve des sd ; la valeur est la liste des sd attenante.
               Exemple ::
 
-                { 'VALE_F': [ <Cata.cata.para_sensi instance at 0x9419854>,
-                              <Cata.cata.para_sensi instance at 0x941a204> ],
+                { 'VALE_F': [ <Cata.cata.fonction_sdaster instance at 0x9419854>,
+                              <Cata.cata.fonction_sdaster instance at 0x941a204> ],
                   'MODELE': [<Cata.cata.modele instance at 0x941550c>] }
       """
       dico = {}

@@ -8,29 +8,29 @@
      &                   NBREVI,DPLREV,FONREV,
      &                   DEPSTO,VITSTO,ACCSTO,IORSTO,TEMSTO,
      &                   FCHOST,DCHOST,VCHOST,ICHOST,
-     &                   IREDST,DREDST,
+     &                   IREDST,DREDST,IREVST,DREVST,
      &                   COEFM,LIAD,INUMOR,IDESCF,
      &                   NOFDEP,NOFVIT,NOFACC,NOMFON,PSIDEL,MONMOT,
      &                   NBRFIS,FK,DFK,ANGINI,FONCP,
      &                   NBPAL,DTSTO,TCF,VROTAT,PRDEFF,
-     &                   NOMRES,NBEXCI)
+     &                   NOMRES,NBEXCI,PASSTO)
 C
       IMPLICIT NONE
 C
       INCLUDE 'jeveux.h'
       INTEGER      IORSTO(*),IREDST(*),ITEMAX,DESCMM,DESCMR,DESCMA,
-     &             IPARCH(*),LOGCHO(NBCHOC,*),ICHOST(*),IBID
+     &             IPARCH(*),LOGCHO(NBCHOC,*),ICHOST(*),IBID,IREVST(*)
       REAL*8       PULSAT(*),PULSA2(*),MASGEN(*),RIGGEN(*),AMOGEN(*),
      &             GYOGEN(*),RGYGEN(*),
      &             PARCHO(*),PARRED(*),DEPSTO(*),VITSTO(*),ACCSTO(*),
      &             TEMSTO(*),FCHOST(*),DCHOST(*),VCHOST(*),DREDST(*),
-     &             PREC,RBID,DPLMOD(NBCHOC,NEQGEN,*),
-     &             DPLRED(*),DPLREV(*)
+     &             DREVST(*),PREC,DPLMOD(NBCHOC,NEQGEN,*),
+     &             DPLRED(*),DPLREV(*),PASSTO(*)
       REAL*8       DT,DTSTO,TCF,VROTAT,ANGINI
       CHARACTER*8  BASEMO,NOECHO(NBCHOC,*),FONRED(*),FONREV(*)
       CHARACTER*8  NOMRES,MONMOT
       CHARACTER*16 TYPBAS
-      LOGICAL      LAMOR,LFLU,LPSTO,PRDEFF
+      LOGICAL      LAMOR,LFLU,PRDEFF
 C
       REAL*8       COEFM(*),PSIDEL(*)
       INTEGER      LIAD(*),INUMOR(*),IDESCF(*)
@@ -40,7 +40,7 @@ C
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/08/2012   AUTEUR TORKHANI M.TORKHANI 
+C MODIF ALGORITH  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -124,7 +124,7 @@ C-----------------------------------------------------------------------
       INTEGER JDEPL ,JFEXT ,JFEXTI ,JM ,JMASS ,JPHI2 ,JPULS 
       INTEGER JREDI ,JREDR ,JTRA1 ,JVINT ,JVITE ,N100 ,NBCHOC 
       INTEGER NBEXCI ,NBMOD1 ,NBPAS ,NBREDE ,NBREVI ,NBSAUV ,NBSCHO 
-      INTEGER NDT ,NEQGEN, JAMGY, JRIGY
+      INTEGER NDT,NEQGEN, JAMGY, JRIGY,JREVR,JREVI,ISTO4
       REAL*8 DEUX ,R8BID1 ,R8BID2 ,R8BID3 ,R8BID4 ,R8BID5 ,TARCHI 
       REAL*8 TEMPS ,TINIT ,XLAMBD ,XNORM ,XREF ,XX ,ZERO 
 
@@ -143,16 +143,17 @@ C
 C
       CALL JEMARQ()
       ZERO = 0.D0
-      RBID = ZERO
       DEUX = 2.D0
       JCHOR = 1
       JREDR = 1
       JREDI = 1
+      JREVR = 1 
+      JREVI = 1
       JVINT = 1
       ISTO1 = 0
       ISTO2 = 0
       ISTO3 = 0
-      LPSTO = .FALSE.
+      ISTO4 = 0
       NBMOD1 = NEQGEN - 1
       NBSCHO = NBSAUV * 3 * NBCHOC
 C  COUPLAGE EDYOS : CONVERGENCE EDYOS :
@@ -211,7 +212,7 @@ C
         CALL DCOPY(NEQGEN*NEQGEN,MASGEN,1,ZR(JMASS),1)
       ELSEIF (TYPBAS.EQ.'MODELE_GENE     ') THEN
         MATPRE='&&MDEUL1.MATPRE'
-        MATASM=ZK24(ZI(DESCMM+1))
+        MATASM=ZK24(ZI(DESCMM+1))(1:19)
         CALL PRERES(' ','V',IRET,MATPRE,MATASM,IBID,-9999)
       ELSE
         CALL WKVECT('&&MDEUL1.MASS','V V R8',NEQGEN,JMASS)
@@ -274,6 +275,10 @@ C        INITIALISATION POUR LE FLAMBAGE
       IF (NBREDE.NE.0) THEN
          CALL WKVECT('&&MDEUL1.SREDR','V V R8',NBREDE,JREDR)
          CALL WKVECT('&&MDEUL1.SREDI','V V I' ,NBREDE,JREDI)
+      ENDIF   
+      IF (NBREVI.NE.0) THEN
+         CALL WKVECT('&&MDEUL1.SREVR','V V R8',NBREVI,JREVR)
+         CALL WKVECT('&&MDEUL1.SREVI','V V I' ,NBREVI,JREVI)
       ENDIF
 C
 C     --- CONDITIONS INITIALES ---
@@ -371,12 +376,15 @@ C
 C     --- ARCHIVAGE DONNEES INITIALES ---
 C
       TARCHI = TINIT
-      CALL MDARCH(ISTO1,0,TINIT,RBID,NEQGEN,ZR(JDEPL),ZR(JVITE),
-     &            ZR(JACCE),
-     &           ISTO2,NBCHOC,ZR(JCHOR),NBSCHO, ISTO3,NBREDE,ZR(JREDR),
-     &            ZI(JREDI), DEPSTO,VITSTO,ACCSTO,RBID,LPSTO,IORSTO,
-     &            TEMSTO,FCHOST,DCHOST,VCHOST,ICHOST,
-     &            ZR(JVINT),IREDST,DREDST )
+
+      CALL MDARNL (ISTO1,0,TINIT,DT,NEQGEN,
+     &        ZR(JDEPL),ZR(JVITE),ZR(JACCE),
+     &        ISTO2,NBCHOC,ZR(JCHOR),NBSCHO,
+     &        ISTO3,NBREDE,ZR(JREDR),ZI(JREDI),
+     &        ISTO4,NBREVI,ZR(JREVR),ZI(JREVI),
+     &        DEPSTO,VITSTO,ACCSTO,PASSTO,IORSTO,
+     &        TEMSTO,FCHOST,DCHOST,VCHOST,ICHOST,ZR(JVINT),
+     &        IREDST,DREDST,IREVST,DREVST)
 C
       TEMPS = TINIT + DT
       TCF = TEMPS
@@ -523,12 +531,16 @@ C
             IARCHI = I
             TARCHI = TEMPS
             ISTO1 = ISTO1 + 1
-            CALL MDARCH(ISTO1,IARCHI,TEMPS,RBID,NEQGEN,ZR(JDEPL),
-     &                  ZR(JVITE),ZR(JACCE),ISTO2,NBCHOC,ZR(JCHOR),
-     &                  NBSCHO,ISTO3,NBREDE,ZR(JREDR),ZI(JREDI),
-     &                  DEPSTO,VITSTO,ACCSTO,RBID,LPSTO,IORSTO,
-     &                  TEMSTO,FCHOST,DCHOST,VCHOST,ICHOST,
-     &                  ZR(JVINT),IREDST,DREDST)
+
+           CALL MDARNL (ISTO1,IARCHI,TEMPS,DT,NEQGEN,
+     &                  ZR(JDEPL),ZR(JVITE),ZR(JACCE),
+     &                  ISTO2,NBCHOC,ZR(JCHOR),NBSCHO,
+     &                  ISTO3,NBREDE,ZR(JREDR),ZI(JREDI),
+     &                  ISTO4,NBREVI,ZR(JREVR),ZI(JREVI),
+     &                  DEPSTO,VITSTO,ACCSTO,PASSTO,IORSTO,
+     &                  TEMSTO,FCHOST,DCHOST,VCHOST,ICHOST,ZR(JVINT),
+     &                  IREDST,DREDST,IREVST,DREVST)
+
          ENDIF
 C
 C        --- VERIFICATION SI INTERRUPTION DEMANDEE PAR SIGNAL USR1 ---
@@ -545,7 +557,7 @@ C
           RINT1 = 5.D0
           RINT2 = 0.90D0
           IF (MAX(RINT1,N100*TPS1(4)).GT.(RINT2*TPS1(1))) THEN
-           CALL MDSIZE (NOMRES,ISTO1,NEQGEN,LPSTO,NBCHOC,NBREDE)
+           CALL MDSIZE (NOMRES,ISTO1,NEQGEN,NBCHOC,NBREDE,NBREVI)
            IF (NOMRES.EQ.'&&OP0074') THEN
 C          --- CAS D'UNE POURSUITE ---
               CALL GETVID('ETAT_INIT','RESULTAT',1,IARG,1,TRAN,NDT)
@@ -578,10 +590,16 @@ C
         CALL JEDETR('&&MDEUL1.AMOGEI')
         CALL JEDETR('&&MDEUL1.PHI2')
       ENDIF
-      IF (NBCHOC.NE.0) CALL JEDETR('&&MDEUL1.SCHOR')
+      IF (NBCHOC.NE.0) THEN
+         CALL JEDETR('&&MDEUL1.SCHOR')
+      ENDIF
       IF (NBREDE.NE.0) THEN
          CALL JEDETR('&&MDEUL1.SREDR')
          CALL JEDETR('&&MDEUL1.SREDI')
+      ENDIF   
+      IF (NBREVI.NE.0) THEN
+         CALL JEDETR('&&MDEUL1.SREVR')
+         CALL JEDETR('&&MDEUL1.SREVI')
       ENDIF
       IF (IRET.NE.0)
      &   CALL U2MESS('F','ALGORITH5_24')

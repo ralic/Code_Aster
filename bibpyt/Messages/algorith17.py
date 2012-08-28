@@ -1,4 +1,4 @@
-#@ MODIF algorith17 Messages  DATE 23/04/2012   AUTEUR ALARCON A.ALARCON 
+#@ MODIF algorith17 Messages  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -117,5 +117,22 @@ cata_msg={
 
 """),
 
-
+25 : _(u"""
+  Lors de la reprise du calcul, la liste des champs calculés (DEPL, VITE, ACCE) doit être la même 
+  pour le concept entrant et sortant.
+"""),
+26 : _(u"""
+  La structure de données resultat est corrompue. Elle ne contient pas d'objet avec la liste des numéros d'ordre.
+"""),
+27 : _(u"""
+  La structure de données resultat est corrompue. La liste des numéros d'ordres ne correspond pas
+  à la liste des discrétisations temporelles ou fréquentielles.
+"""),
+28 : _(u"""
+  La structure de données en entrée ne contient aucun des champs requis pour la restitution temporelle.
+  Conseil: vérifiez la liste des champs renseignée sous NOM_CHAM, ou bien testez l'option TOUT_CHAM='OUI'.
+"""),
+29 : _(u"""
+  Erreur dans l'allocation de la structure de données dynamique. La liste des champs à allouer n'est pas valide.
+"""),
 }

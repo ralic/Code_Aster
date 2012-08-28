@@ -1,4 +1,4 @@
-#@ MODIF macr_adap_mail_ops Macro  DATE 20/06/2012   AUTEUR ABBAS M.ABBAS 
+#@ MODIF macr_adap_mail_ops Macro  DATE 27/08/2012   AUTEUR NICOLAS G.NICOLAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,7 @@
 """
 Traitement des macros MACR_ADAP_MAIL/MACR_INFO_MAIL
 """
-__revision__ = "V2.2"
+__revision__ = "V2.3"
 #
 import string
 import os
@@ -582,6 +582,17 @@ Sortie :
           else :
             on_a_le_champ = 0
             break
+#       Si oui, est-ce au meme moment ? (remarque : si rien n'est designe, c'est qu'il n'y a qu'un
+#       seul instant ... donc c'est le meme ! En revanche, on ne sait pas comparer une donnee
+#       en numero d'ordre et une donnee en instant. On croise les doigts.)
+        if on_a_le_champ :
+          for cle in [ "NUME_ORDRE", "INST" ] :
+            if dico.has_key(cle) :
+              if ( dico[cle] != None ) :
+                if dico_pilo.has_key(cle) :
+                  if ( dico_pilo[cle] != dico[cle] ) :
+                    on_a_le_champ = 0
+                    break
 #       Le champ de pilotage fait partie des champs mis a jour : on le note
 #       et on utilise le meme nom de champ MED
         if on_a_le_champ :
@@ -638,7 +649,7 @@ Sortie :
   dico_configuration["version_perso"] = version_perso
   if args.has_key("UNITE") :
     UNITE = args["UNITE"]
-    fichier_conf_suppl = os.path.join(Rep_Calc_ASTER,"fort." + str(UNITE))
+    fichier_conf_suppl = os.path.join(Rep_Calc_ASTER, "fort." + str(UNITE))
     dico_configuration["fichier_conf_suppl"] = fichier_conf_suppl
 #
   dico_configuration["niter"] = niter
@@ -846,7 +857,7 @@ Sortie :
 #
 # ======================================================================
 #
-def post_traitement ( INFO, mode_homard, dico_configuration ) :
+def post_traitement ( INFO, mode_homard, dico_configuration, Rep_Calc_ASTER ) :
 #
   """
 Operations eventuelles en post-traitement de l'adaptation
@@ -855,6 +866,7 @@ Entree :
   mode_homard : mode de homard (MODI, INFO, ADAP, LECT)
   dico_configuration : dictionnaire decrivant le fichier de configuration de HOMARD
                        voir la fonction 'cree_configuration'
+  Rep_Calc_ASTER : repertoire de calcul d'Aster
 Sortie :
   d_aux : dictionnaire avec une cle obligatoire :
           erreur : 0, si OK, !=0 si probleme
@@ -888,7 +900,8 @@ Sortie :
 #    On doit personnaliser le repertoire d'arrivee
 #
     HOME = os.environ["HOME"]
-    reparr = os.path.join(HOME, "ASTER_USER", "TEST", "zzzz175b", "Indic")
+    ##reparr = os.path.join(HOME, "ASTER_USER", "TEST", "zzzz175b", "Indic")
+    reparr = Rep_Calc_ASTER
     if os.path.isdir(reparr) :
       l_aux = [ "no", "ar", "tr", "qu", "te", "he", "pe", "py" ]
       for suff in l_aux :
@@ -903,7 +916,8 @@ Sortie :
           if ( INFO >= 3 ) :
             print "\nLe fichier", ficdeb, "est inconnu."
     else :
-      print "Le repertoire", reparr, "est inconnu."
+      if ( INFO >= 2 ) :
+        print "Le repertoire", reparr, "est inconnu."
       erreur = 2
       break
 #
@@ -1466,7 +1480,7 @@ def macr_adap_mail_ops ( self,
 # 7. ==> Post-traitement eventuel
 #====================================================================
 #
-    d_aux = post_traitement ( INFO, mode_homard, dico_configuration )
+    ###d_aux = post_traitement ( INFO, mode_homard, dico_configuration, Rep_Calc_ASTER )
 #
 #====================================================================
 # 8. ==> Ecriture de la commande de lecture des resultats med

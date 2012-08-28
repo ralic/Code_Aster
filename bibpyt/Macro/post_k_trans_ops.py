@@ -1,4 +1,4 @@
-#@ MODIF post_k_trans_ops Macro  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF post_k_trans_ops Macro  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -81,7 +81,7 @@ def post_k_trans_ops(self,RESU_TRANS,K_MODAL,TOUT_ORDRE, NUME_ORDRE,
 #  
 # Traitement des mots clés ORDRE/INST/LIST_INST et LIST_ORDRE
 #  
-  l0_inst = aster.getvectjev(nomresu.ljust(19)+'.INST')
+  l0_inst = aster.getvectjev(nomresu.ljust(19)+'.DISC')
   l0_ord = aster.getvectjev(nomresu.ljust(19)+'.ORDR')
   nbtrans = len(l0_ord)
   li =  [[l0_ord[i],l0_inst[i]] for i in range(nbtrans)]

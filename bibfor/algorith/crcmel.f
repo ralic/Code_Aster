@@ -3,7 +3,7 @@
 C RESPONSABLE PELLET J.PELLET
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 28/08/2012   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,7 +65,7 @@ C                      TOUT        : OUI)
       ZK16(JVALV-1+1) = 'ELAS'
       ZK16(JVALV-1+2) = '1'
       ZK16(JVALV-1+3) = 'PETIT'
-      ZK16(JVALV-1+4) = 'COMP_INCR'
+      ZK16(JVALV-1+4) = 'COMP_ELAS'
       ZK16(JVALV-1+5) = 'ANALYTIQUE'
       ZK16(JVALV-1+6) = '1'
       DO 20 I=7,NCMPMA

@@ -1,4 +1,4 @@
-# MODIF  DATE 06/08/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 28/08/2012   AUTEUR TRAN V-X.TRAN 
 # TITRE BIBLIO_131 FISSURE EN MODE 2 D'UNE EPROUVETTE ELASTOPLASTIQUE
 # ssnp311a.para = tps_job 190 mem_job 256Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -211,6 +211,15 @@ THETA3=CALC_THETA(       MODELE=MO,
 #
 # CALC_G POUR LES INSTANTS 22, 36, 50, 64
 #
+# Ici, la loi de comportement dans CALC_G (ELAS_VMIS_TRAC) 
+# differe de la loi de
+# comportement de STAT_NON_LINE (VMIS_ISOT_TRAC).
+# Ceci est du au fait que l'on veut calculer G en supposant 
+# que le chargement est monotone
+# proportionnel. L'utilisation de la loi VMIS_ISOT_TRAC dans 
+# CALC_G aurait conduit a
+# calculer le parametre GTP (voir doc U2.82.03).
+
 G220=CALC_G(        RESULTAT=CHAMDEPL,
                     COMP_ELAS=_F(  RELATION = 'ELAS_VMIS_TRAC'),
                     THETA=_F(THETA=THETA0),

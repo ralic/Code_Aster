@@ -1,8 +1,8 @@
-#@ MODIF impr_diag_campbell_ops Macro  DATE 05/07/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF impr_diag_campbell_ops Macro  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -42,11 +42,7 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, NFREQ_CAMP, TYP_PREC, TYP_TRI,
 
     # On importe les definitions des commandes a utiliser dans la macro
 
-    POST_RELEVE_T     =self.get_cmd('POST_RELEVE_T')
-    EXTR_MODE         =self.get_cmd('EXTR_MODE')
-    NORM_MODE         =self.get_cmd('NORM_MODE')
     RECU_TABLE        =self.get_cmd('RECU_TABLE')
-    MAC_MODES         =self.get_cmd('MAC_MODES')
     DEFI_LIST_REEL    =self.get_cmd('DEFI_LIST_REEL')
     DEFI_FONCTION     =self.get_cmd('DEFI_FONCTION')
     EXTR_TABLE        =self.get_cmd('EXTR_TABLE')
@@ -76,13 +72,13 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, NFREQ_CAMP, TYP_PREC, TYP_TRI,
     num_vit_tri=sup_redon_listv(VITE_ROTA);
     # Recupere les modes suivant l'ordre de la liste des vitesses de rotation
     nbV1=len(VITE_ROTA);
-    lmo=[None]*nbV1
+    __lmo = [None]*nbV1
     for ii in range(0,nbV1):
         itri = num_vit_tri[ii];
-        lmo[ii]=EXTR_TABLE(TYPE_RESU='MODE_MECA',
-                       TABLE=MODES,
-                       NOM_PARA='NOM_SD',
-                       FILTRE=_F(NOM_PARA='NUME_VITE',VALE_I=itri),);
+        __lmo[ii] = EXTR_TABLE(TYPE_RESU='MODE_MECA',
+                               TABLE=MODES,
+                               NOM_PARA='NOM_SD',
+                               FILTRE=_F(NOM_PARA='NUME_VITE', VALE_I=itri),)
 
     L_VIT1=[];
 
@@ -111,13 +107,13 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, NFREQ_CAMP, TYP_PREC, TYP_TRI,
     nb_FREQ=[];
     for ii in range(nbV):
         # frequences totales
-        tabfreq = RECU_TABLE(CO= lmo[ii],NOM_PARA='FREQ',);
-        tab2=tabfreq.EXTR_TABLE();
+        __tfreq = RECU_TABLE(CO= __lmo[ii],NOM_PARA='FREQ',);
+        tab2=__tfreq.EXTR_TABLE();
         tabf=tab2.FREQ;
         nb_FREQ_prec=nb_FREQ;
         nb_FREQ.append(len(tabf));
 
-        DETRUIRE(CONCEPT=_F(NOM=(tabfreq)),INFO=1)
+        DETRUIRE(CONCEPT=_F(NOM=(__tfreq)),INFO=1)
 
     nbf_max=max(nb_FREQ);
     nbf_min=min(nb_FREQ);
@@ -167,7 +163,7 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, NFREQ_CAMP, TYP_PREC, TYP_TRI,
         L_GR_NOEUD=aster.getvectjev(vectnoeu)
 
         NOEU=len(L_GR_NOEUD);
-        C_MODES=CLASS_MODES(self,lmo,NFREQ,NFREQ_CAMP,L_GR_NOEUD,L_VIT1);
+        C_MODES=CLASS_MODES(self,__lmo,NFREQ,NFREQ_CAMP,L_GR_NOEUD,L_VIT1);
 
         NFREQ_f=C_MODES[0];
         NFREQ_t=C_MODES[1];
@@ -220,7 +216,7 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, NFREQ_CAMP, TYP_PREC, TYP_TRI,
     #-----------------------
     #Extraire les frequences
     #-----------------------
-        FREQ=EXTR_FREQ(self,lmo,Mf,Mt,Ml, NFREQ, NFREQ_f, NFREQ_t, NFREQ_l);
+        FREQ=EXTR_FREQ(self,__lmo,Mf,Mt,Ml, NFREQ, NFREQ_f, NFREQ_t, NFREQ_l);
         FRQ=FREQ[0]
         FRQf=FREQ[1]
         FRQt=FREQ[2]
@@ -476,10 +472,9 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, NFREQ_CAMP, TYP_PREC, TYP_TRI,
         # Trace du diagramme de campbell des modes en flexion
         # ---------------------------------------------------
         EPSI=1.E-7
-        LFONC =[];
-        FON1  =[];
-        mfac1 ={};
-        ll    =0;
+        LFONC =[]
+        mfac1 ={}
+        ll    =0
         if NFREQ_fc>0:
             for jf in range(NFREQ_fc):
                 for iv in range(nbV-1):
@@ -538,33 +533,31 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, NFREQ_CAMP, TYP_PREC, TYP_TRI,
 
                         # 1 cas, Pas de changement sur la plage de vitesse
                         if ((OM3 == -1) and (OM4 == -1)):
-                            FX1=DEFI_LIST_REEL(VALE=[OM1,OM2]);
-                            FY1=DEFI_LIST_REEL(VALE=[F1,F2]);
+                            __fx1=DEFI_LIST_REEL(VALE=[OM1,OM2]);
+                            __fy1=DEFI_LIST_REEL(VALE=[F1,F2]);
                             CS2=color_camp(S2,A1);
                             ICS2=CS2[0];
                             IST2=CS2[1];
                             IMA2=CS2[2];
 
-                            FON1.append([]);
-                            ll=len(FON1)-1;
-                            FON1[ll]=DEFI_FONCTION(NOM_PARA='VITE',VALE_PARA=FX1,VALE_FONC=FY1);
+                            __foni=DEFI_FONCTION(NOM_PARA='VITE',VALE_PARA=__fx1,VALE_FONC=__fy1);
 
                             DICO={};
-                            DICO["FONCTION"]=FON1[ll];
+                            DICO["FONCTION"]=__foni
                             DICO["COULEUR"] =ICS2;
                             DICO["STYLE"]   =IST2;
                             DICO["MARQUEUR"]=IMA2;
                             DICO["LEGENDE"] ='';
                             LFONC.append(DICO);
 
-                            DETRUIRE(CONCEPT=_F(NOM=(FX1, FY1)),INFO=1);
+                            DETRUIRE(CONCEPT=_F(NOM=(__fx1, __fy1)),INFO=1);
 
                         # 2 cas, Changement de sens de precession
                         elif (OM3 >=0) and (OM4 == -1):
-                            FX1=DEFI_LIST_REEL(VALE=[OM1,OM3]); # Premiere partie
-                            FY1=DEFI_LIST_REEL(VALE=[F1,F3]);
-                            FX2=DEFI_LIST_REEL(VALE=[OM3,OM2]); # Deuxieme partie
-                            FY2=DEFI_LIST_REEL(VALE=[F3,F2]);
+                            __fx1=DEFI_LIST_REEL(VALE=[OM1,OM3]); # Premiere partie
+                            __fy1=DEFI_LIST_REEL(VALE=[F1,F3]);
+                            __fx2=DEFI_LIST_REEL(VALE=[OM3,OM2]); # Deuxieme partie
+                            __fy2=DEFI_LIST_REEL(VALE=[F3,F2]);
                             CS1=color_camp(S1,A1);
                             ICS1=CS1[0];
                             IST1=CS1[1];
@@ -574,39 +567,35 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, NFREQ_CAMP, TYP_PREC, TYP_TRI,
                             IST2=CS2[1];
                             IMA2=CS2[2];
 
-                            FON1.append([]);
-                            ll=len(FON1)-1;
-                            FON1[ll]= DEFI_FONCTION(NOM_PARA='VITE',VALE_PARA=FX1,VALE_FONC=FY1);
+                            __foni= DEFI_FONCTION(NOM_PARA='VITE',VALE_PARA=__fx1,VALE_FONC=__fy1);
 
                             DICO={};
-                            DICO["FONCTION"]=FON1[ll];
+                            DICO["FONCTION"]=__foni
                             DICO["COULEUR"] =ICS1;
                             DICO["STYLE"]   =IST1;
                             DICO["MARQUEUR"]=IMA1;
                             DICO["LEGENDE"] ='';
                             LFONC.append(DICO);
 
-                            FON1.append([]);
-                            ll=len(FON1)-1;
-                            FON1[ll]= DEFI_FONCTION(NOM_PARA='VITE',VALE_PARA=FX2,VALE_FONC=FY2);
+                            __foni= DEFI_FONCTION(NOM_PARA='VITE',VALE_PARA=__fx2,VALE_FONC=__fy2);
 
                             DICO={};
-                            DICO["FONCTION"]=FON1[ll];
+                            DICO["FONCTION"]=__foni;
                             DICO["COULEUR"] =ICS2;
                             DICO["STYLE"]   =IST2;
                             DICO["MARQUEUR"]=IMA2;
                             DICO["LEGENDE"] ='';
                             LFONC.append(DICO);
 
-                            DETRUIRE(CONCEPT=_F(NOM=(FX1, FY1, FX2, FY2)),INFO=1);
+                            DETRUIRE(CONCEPT=_F(NOM=(__fx1, __fy1, __fx2, __fy2)),INFO=1);
 
                         # 3 cas, de changement de stabilite
                         elif (OM3 == -1) and (OM4 >= 0):
 
-                            FX1=DEFI_LIST_REEL(VALE=[OM1,OM4]); # Premiere partie
-                            FY1=DEFI_LIST_REEL(VALE=[F1,F4]);
-                            FX2=DEFI_LIST_REEL(VALE=[OM4,OM2]); # Deuxieme partie
-                            FY2=DEFI_LIST_REEL(VALE=[F4,F2]);
+                            __fx1=DEFI_LIST_REEL(VALE=[OM1,OM4]); # Premiere partie
+                            __fy1=DEFI_LIST_REEL(VALE=[F1,F4]);
+                            __fx2=DEFI_LIST_REEL(VALE=[OM4,OM2]); # Deuxieme partie
+                            __fy2=DEFI_LIST_REEL(VALE=[F4,F2]);
                             CS1=color_camp(S2,A1);
                             ICS1=CS1[0];
                             IST1=CS1[1];
@@ -616,42 +605,38 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, NFREQ_CAMP, TYP_PREC, TYP_TRI,
                             IST2=CS2[1];
                             IMA2=CS2[2];
 
-                            FON1.append([]);
-                            ll=len(FON1)-1;
-                            FON1[ll]= DEFI_FONCTION(NOM_PARA='VITE',VALE_PARA=FX1,VALE_FONC=FY1);
+                            __foni= DEFI_FONCTION(NOM_PARA='VITE',VALE_PARA=__fx1,VALE_FONC=__fy1);
 
                             DICO={};
-                            DICO["FONCTION"]=FON1[ll];
+                            DICO["FONCTION"]=__foni;
                             DICO["COULEUR"] =ICS1;
                             DICO["STYLE"]   =IST1;
                             DICO["MARQUEUR"]=IMA1;
                             DICO["LEGENDE"] ='';
                             LFONC.append(DICO);
 
-                            FON1.append([]);
-                            ll=len(FON1)-1;
-                            FON1[ll]= DEFI_FONCTION(NOM_PARA='VITE',VALE_PARA=FX2,VALE_FONC=FY2);
+                            __foni= DEFI_FONCTION(NOM_PARA='VITE',VALE_PARA=__fx2,VALE_FONC=__fy2);
 
                             DICO={};
-                            DICO["FONCTION"]=FON1[ll];
+                            DICO["FONCTION"]=__foni;
                             DICO["COULEUR"] =ICS2;
                             DICO["STYLE"]   =IST2;
                             DICO["MARQUEUR"]=IMA2;
                             DICO["LEGENDE"] ='';
                             LFONC.append(DICO);
 
-                            DETRUIRE(CONCEPT=_F(NOM=(FX1, FY1, FX2, FY2)),INFO=1);
+                            DETRUIRE(CONCEPT=_F(NOM=(__fx1, __fy1, __fx2, __fy2)),INFO=1);
 
                         # 4 et 5 cas de changement de sens de precession et de stabilite
                         elif (OM3 >= 0) and (OM4 >= 0):
                             # 4 eme cas
                             if (OM4 < OM3):
-                                FX1=DEFI_LIST_REEL(VALE=[OM1,OM4]); # Premiere partie
-                                FY1=DEFI_LIST_REEL(VALE=[F1,F4]);
-                                FX2=DEFI_LIST_REEL(VALE=[OM4,OM3]); # Deuxieme partie
-                                FY2=DEFI_LIST_REEL(VALE=[F4,F3]);
-                                FX3=DEFI_LIST_REEL(VALE=[OM3,OM2]); # Troisieme partie
-                                FY3=DEFI_LIST_REEL(VALE=[F3,F2]);
+                                __fx1=DEFI_LIST_REEL(VALE=[OM1,OM4]); # Premiere partie
+                                __fy1=DEFI_LIST_REEL(VALE=[F1,F4]);
+                                __fx2=DEFI_LIST_REEL(VALE=[OM4,OM3]); # Deuxieme partie
+                                __fy2=DEFI_LIST_REEL(VALE=[F4,F3]);
+                                __fx3=DEFI_LIST_REEL(VALE=[OM3,OM2]); # Troisieme partie
+                                __fy3=DEFI_LIST_REEL(VALE=[F3,F2]);
                                 CS1=color_camp(S1,A1);
                                 ICS1=CS1[0];
                                 IST1=CS1[1];
@@ -665,52 +650,46 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, NFREQ_CAMP, TYP_PREC, TYP_TRI,
                                 IST3=CS3[1];
                                 IMA3=CS3[2];
 
-                                FON1.append([]);
-                                ll=len(FON1)-1;
-                                FON1[ll]= DEFI_FONCTION(NOM_PARA='VITE',VALE_PARA=FX1,VALE_FONC=FY1);
+                                __foni= DEFI_FONCTION(NOM_PARA='VITE',VALE_PARA=__fx1,VALE_FONC=__fy1);
 
                                 DICO={};
-                                DICO["FONCTION"]=FON1[ll];
+                                DICO["FONCTION"]=__foni;
                                 DICO["COULEUR"] =ICS1;
                                 DICO["STYLE"]   =IST1;
                                 DICO["MARQUEUR"]=IMA1;
                                 DICO["LEGENDE"] ='';
                                 LFONC.append(DICO);
 
-                                FON1.append([]);
-                                ll=len(FON1)-1;
-                                FON1[ll]= DEFI_FONCTION(NOM_PARA='VITE',VALE_PARA=FX2,VALE_FONC=FY2);
+                                __foni= DEFI_FONCTION(NOM_PARA='VITE',VALE_PARA=__fx2,VALE_FONC=__fy2);
 
                                 DICO={};
-                                DICO["FONCTION"]=FON1[ll];
+                                DICO["FONCTION"]=__foni;
                                 DICO["COULEUR"] =ICS2;
                                 DICO["STYLE"]   =IST2;
                                 DICO["MARQUEUR"]=IMA2;
                                 DICO["LEGENDE"] ='';
                                 LFONC.append(DICO);
 
-                                FON1.append([]);
-                                ll=len(FON1)-1;
-                                FON1[ll]= DEFI_FONCTION(NOM_PARA='VITE',VALE_PARA=FX3,VALE_FONC=FY3);
+                                __foni= DEFI_FONCTION(NOM_PARA='VITE',VALE_PARA=__fx3,VALE_FONC=__fy3);
 
                                 DICO={};
-                                DICO["FONCTION"]=FON1[ll];
+                                DICO["FONCTION"]=__foni;
                                 DICO["COULEUR"] =ICS3;
                                 DICO["STYLE"]   =IST3;
                                 DICO["MARQUEUR"]=IMA3;
                                 DICO["LEGENDE"] ='';
                                 LFONC.append(DICO);
 
-                                DETRUIRE(CONCEPT=_F(NOM=(FX1, FY1, FX2, FY2, FX3,FY3)),INFO=1);
+                                DETRUIRE(CONCEPT=_F(NOM=(__fx1, __fy1, __fx2, __fy2, __fx3,__fy3)),INFO=1);
 
                             # 5 eme cas
                             else:
-                                FX1=DEFI_LIST_REEL(VALE=[OM1,OM3]); # Premiere partie
-                                FY1=DEFI_LIST_REEL(VALE=[F1,F3]);
-                                FX2=DEFI_LIST_REEL(VALE=[OM3,OM4]); # Deuxieme partie
-                                FY2=DEFI_LIST_REEL(VALE=[F3,F4]);
-                                FX3=DEFI_LIST_REEL(VALE=[OM4,OM2]); # Troisieme partie
-                                FY3=DEFI_LIST_REEL(VALE=[F4,F2]);
+                                __fx1=DEFI_LIST_REEL(VALE=[OM1,OM3]); # Premiere partie
+                                __fy1=DEFI_LIST_REEL(VALE=[F1,F3]);
+                                __fx2=DEFI_LIST_REEL(VALE=[OM3,OM4]); # Deuxieme partie
+                                __fy2=DEFI_LIST_REEL(VALE=[F3,F4]);
+                                __fx3=DEFI_LIST_REEL(VALE=[OM4,OM2]); # Troisieme partie
+                                __fy3=DEFI_LIST_REEL(VALE=[F4,F2]);
                                 CS1=color_camp(S1,A1);
                                 ICS1=CS1[0];
                                 IST1=CS1[1];
@@ -724,43 +703,37 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, NFREQ_CAMP, TYP_PREC, TYP_TRI,
                                 IST3=CS3[1];
                                 IMA3=CS3[2];
 
-                                FON1.append([]);
-                                ll=len(FON1)-1;
-                                FON1[ll]= DEFI_FONCTION(NOM_PARA='VITE',VALE_PARA=FX1,VALE_FONC=FY1);
+                                __foni= DEFI_FONCTION(NOM_PARA='VITE',VALE_PARA=__fx1,VALE_FONC=__fy1);
 
                                 DICO={};
-                                DICO["FONCTION"]=FON1[ll];
+                                DICO["FONCTION"]=__foni;
                                 DICO["COULEUR"] =ICS1;
                                 DICO["STYLE"]   =IST1;
                                 DICO["MARQUEUR"]=IMA1;
                                 DICO["LEGENDE"] ='';
                                 LFONC.append(DICO);
 
-                                FON1.append([]);
-                                ll=len(FON1)-1;
-                                FON1[ll]= DEFI_FONCTION(NOM_PARA='VITE',VALE_PARA=FX2,VALE_FONC=FY2);
+                                __foni= DEFI_FONCTION(NOM_PARA='VITE',VALE_PARA=__fx2,VALE_FONC=__fy2);
 
                                 DICO={};
-                                DICO["FONCTION"]=FON1[ll];
+                                DICO["FONCTION"]=__foni;
                                 DICO["COULEUR"] =ICS2;
                                 DICO["STYLE"]   =IST2;
                                 DICO["MARQUEUR"]=IMA2;
                                 DICO["LEGENDE"] ='';
                                 LFONC.append(DICO);
 
-                                FON1.append([]);
-                                ll=len(FON1)-1;
-                                FON1[ll]= DEFI_FONCTION(NOM_PARA='VITE',VALE_PARA=FX3,VALE_FONC=FY3);
+                                __foni= DEFI_FONCTION(NOM_PARA='VITE',VALE_PARA=__fx3,VALE_FONC=__fy3);
+
                                 DICO={};
-                                DICO["FONCTION"]=FON1[ll];
+                                DICO["FONCTION"]=__foni;
                                 DICO["COULEUR"] =ICS3;
                                 DICO["STYLE"]   =IST3;
                                 DICO["MARQUEUR"]=IMA3;
                                 DICO["LEGENDE"] ='';
                                 LFONC.append(DICO);
 
-                                DETRUIRE(CONCEPT=_F(NOM=(FX1, FY1, FX2, FY2, FX3, FY3)),INFO=1);
-
+                                DETRUIRE(CONCEPT=_F(NOM=(__fx1, __fy1, __fx2, __fy2, __fx3, __fy3)),INFO=1);
 
 
             mfac1["COURBE"]=LFONC;
@@ -790,9 +763,6 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, NFREQ_CAMP, TYP_PREC, TYP_TRI,
                         LEGENDE_X = legende_x,
                         LEGENDE_Y = 'FREQ (Hz)',
                             **mfac1);
-            nbll = len(FON1)
-            for ii in range(nbll):
-                DETRUIRE(CONCEPT=_F(NOM=(FON1[ii])),INFO=1);
             del(LFONC)
             del(mfac1, DICO)
 
@@ -803,23 +773,22 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, NFREQ_CAMP, TYP_PREC, TYP_TRI,
         TITRE2 = 'Modes en Torsion'
         if NFREQ_tc>0:
             LFONC =[];
-            FON1 =[0]*NFREQ_tc;
             mfac1={};
             for jj in range(NFREQ_tc):
 
-               FY1=DEFI_LIST_REEL(VALE=[FRQt[int(NVTt[jj][ii]-1)][ii] for ii in range(nbV)]);
-               FON1[jj]=DEFI_FONCTION(NOM_PARA='VITE',VALE_PARA=__FX,VALE_FONC=FY1);
+               __fy1=DEFI_LIST_REEL(VALE=[FRQt[int(NVTt[jj][ii]-1)][ii] for ii in range(nbV)]);
+               __foni=DEFI_FONCTION(NOM_PARA='VITE',VALE_PARA=__FX,VALE_FONC=__fy1);
 
 
                DICO={};
-               DICO["FONCTION"]=FON1[jj];
+               DICO["FONCTION"]=__foni
                DICO["COULEUR"] =1;
                DICO["STYLE"]   =6;
                DICO["MARQUEUR"]=0;
                DICO["LEGENDE"] ='';
                LFONC.append(DICO);
 
-               DETRUIRE(CONCEPT=_F(NOM=(FY1)),INFO=1);
+               DETRUIRE(CONCEPT=_F(NOM=(__fy1)),INFO=1);
 
             mfac1["COURBE"]=LFONC;
             IMPR_FONCTION(
@@ -847,10 +816,6 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, NFREQ_CAMP, TYP_PREC, TYP_TRI,
                   LEGENDE_Y = 'FREQ (Hz)',
                   **mfac1);
 
-
-
-            for ii in range(NFREQ_tc):
-                DETRUIRE(CONCEPT=_F(NOM=(FON1[ii])),INFO=1);
             del(LFONC)
             del(mfac1, DICO)
 
@@ -860,22 +825,21 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, NFREQ_CAMP, TYP_PREC, TYP_TRI,
         TITRE2 = 'Modes en traction/compression'
         if NFREQ_lc>0:
             LFONC =[];
-            FON1 =[0]*NFREQ_lc;
             mfac1={};
             for jj in range(NFREQ_lc):
 
-                FY1=DEFI_LIST_REEL(VALE=[FRQl[int(NVTl[jj][ii]-1)][ii] for ii in range(nbV)]);
-                FON1[jj]=DEFI_FONCTION(NOM_PARA='VITE',VALE_PARA=__FX,VALE_FONC=FY1);
+                __fy1=DEFI_LIST_REEL(VALE=[FRQl[int(NVTl[jj][ii]-1)][ii] for ii in range(nbV)]);
+                __foni=DEFI_FONCTION(NOM_PARA='VITE',VALE_PARA=__FX,VALE_FONC=__fy1);
 
                 DICO={};
-                DICO["FONCTION"]=FON1[jj];
+                DICO["FONCTION"]=__foni
                 DICO["COULEUR"] =8;
                 DICO["STYLE"]   =8;
                 DICO["MARQUEUR"]=0;
                 DICO["LEGENDE"] ='';
                 LFONC.append(DICO);
 
-                DETRUIRE(CONCEPT=_F(NOM=(FY1)),INFO=1);
+                DETRUIRE(CONCEPT=_F(NOM=(__fy1)),INFO=1);
 
             mfac1["COURBE"]=LFONC;
             IMPR_FONCTION(
@@ -902,23 +866,8 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, NFREQ_CAMP, TYP_PREC, TYP_TRI,
                   LEGENDE_Y = 'FREQ (Hz)',
                       **mfac1);
 
-
-
-            for ii in range(NFREQ_lc):
-                DETRUIRE(CONCEPT=_F(NOM=(FON1[ii])),INFO=1);
             del(LFONC)
             del(mfac1, DICO);
-
-        if NFREQ_f>0:
-            for jj in range(nbV):
-                DETRUIRE(CONCEPT=_F(NOM=(Mf[jj])),INFO=1)
-        if NFREQ_t>0:
-            for jj in range(nbV):
-                DETRUIRE(CONCEPT=_F(NOM=(Mt[jj])),INFO=1)
-        if NFREQ_l>0:
-            for jj in range(nbV):
-                DETRUIRE(CONCEPT=_F(NOM=(Ml[jj])),INFO=1)
-
 
 #------------------------------------------------------------------------------------
 
@@ -945,25 +894,24 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, NFREQ_CAMP, TYP_PREC, TYP_TRI,
         # Faire une dictionnaire de courbe
         # Constituer de liste de dictionnaire de fonctions
         LFONC =[];
-        FON1 =[0]*len(L_S1);
         mfac1={};
         for ii in range(len(L_S1)):
             F1 =BVmin*L_S1[ii]/60.
             F2 =BVmax*L_S1[ii]/60.
-            FX1=DEFI_LIST_REEL(VALE=[BVmin,BVmax]);
-            FY1=DEFI_LIST_REEL(VALE=[F1,F2]);
+            __fx1=DEFI_LIST_REEL(VALE=[BVmin,BVmax]);
+            __fy1=DEFI_LIST_REEL(VALE=[F1,F2]);
 
-            FON1[ii]=DEFI_FONCTION(NOM_PARA='VITE',VALE_PARA=FX1,VALE_FONC=FY1);
+            __foni=DEFI_FONCTION(NOM_PARA='VITE',VALE_PARA=__fx1,VALE_FONC=__fy1);
 
             DICO={};
-            DICO["FONCTION"]=FON1[ii];
+            DICO["FONCTION"]=__foni
             DICO["COULEUR"] =1;
             DICO["STYLE"]   =1;
             DICO["MARQUEUR"]=0;
             DICO["LEGENDE"] ='';
             LFONC.append(DICO);
 
-            DETRUIRE(CONCEPT=_F(NOM=(FX1, FY1)),INFO=1);
+            DETRUIRE(CONCEPT=_F(NOM=(__fx1, __fy1)),INFO=1);
 
         mfac1["COURBE"]=LFONC;
         if NFREQ_fc>0:
@@ -1021,9 +969,6 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, NFREQ_CAMP, TYP_PREC, TYP_TRI,
                         LEGENDE_X = legende_x,
                         LEGENDE_Y = 'FREQ (Hz)',
                             **mfac1);
-
-        for ii in range(len(L_S1)):
-            DETRUIRE(CONCEPT=_F(NOM=(FON1[ii])),INFO=1);
 
         del(LFONC)
         del(mfac1, DICO)

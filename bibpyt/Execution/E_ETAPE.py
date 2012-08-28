@@ -1,4 +1,4 @@
-#@ MODIF E_ETAPE Execution  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF E_ETAPE Execution  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -35,6 +35,7 @@ from Noyau.N_info import message, SUPERV
 from strfunc import convert
 
 import genpy
+import aster_core
 import aster
 import checksd
 
@@ -185,7 +186,7 @@ class ETAPE:
 
       return
 
-   def AfficheFinCommande( self, avec_temps=True, sortie=sys.stdout ) :
+   def AfficheFinCommande(self, avec_temps=True, sortie=sys.stdout):
       """
       Methode : ETAPE.AfficheFinCommande
       Intention : afficher sur la sortie standard (par defaut) la fin du
@@ -197,24 +198,23 @@ class ETAPE:
              (self.jdc.impr_macro==1                 )
       # stop pour la commande
       cpu_user, cpu_syst, elapsed = self.jdc.timer.StopAndGet(id(self), hide=not voir)
-      if voir :
-         if avec_temps and self.icmd is not None:
-            rval = aster.utgtme('VMPEAK','VMSIZE','CMAX_JV','CMXU_JV' )
-            if (rval[0][0] > 0.) :
-              UTMESS('I', 'SUPERVIS2_73', valr=(rval[0][0], rval[0][1], rval[0][2], rval[0][3]) )
+      if not voir:
+         return
+      if avec_temps and self.icmd is not None:
+         rval, iret = aster_core.get_mem_stat('VMPEAK', 'VMSIZE', 'CMAX_JV', 'CMXU_JV')
+         if iret == 0:
+            if rval[0] > 0.:
+               UTMESS('I', 'SUPERVIS2_73', valr=rval)
             else :
-              UTMESS('I', 'SUPERVIS2_74', valr=(rval[0][1] , rval[0][2] , rval[0][3]) )
-            UTMESS('I', 'SUPERVIS2_75', vali=self.icmd, valr=(cpu_syst+cpu_user, cpu_syst, elapsed))
-         else :
-            UTMESS('I', 'SUPERVIS2_76', valk=self.nom)
-         UTMESS('I', 'SUPERVIS2_70')
-         
-         if cpu_user > 60. and cpu_syst > 0.5*cpu_user :
-            if avec_temps and int(rval[7]) > 0 :
-              UTMESS('A','SUPERVIS_94',valr=(cpu_syst,cpu_user),vali=(50,int(rval[7])))
-            else :
-              UTMESS('A','SUPERVIS_95',valr=(cpu_syst,cpu_user),vali=(50))
-
+               UTMESS('I', 'SUPERVIS2_74', valr=rval)
+         UTMESS('I', 'SUPERVIS2_75', vali=self.icmd,
+                valr=(cpu_syst+cpu_user, cpu_syst, elapsed))
+      else :
+         UTMESS('I', 'SUPERVIS2_76', valk=self.nom)
+      UTMESS('I', 'SUPERVIS2_70')
+      
+      if cpu_user > 60. and cpu_syst > 0.5*cpu_user :
+         UTMESS('A','SUPERVIS_95',valr=(cpu_syst, cpu_user), vali=50)
       return
 
    def Execute(self):

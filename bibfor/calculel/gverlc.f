@@ -1,6 +1,6 @@
-      SUBROUTINE GVERLC(RESUCO,COMPOR,IORD)
+      SUBROUTINE GVERLC(RESUCO,COMPOR,IORD, INCR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 28/08/2012   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,16 +34,22 @@ C
       INTEGER      IORD
       CHARACTER*8  RESUCO
       CHARACTER*24 COMPOR
+      LOGICAL INCR
 
 
       INTEGER      IRET,JRESV,JRESD,JRESL,JRESK,JCALV,JCALD,JCALL,JCALK
       INTEGER      NBMA,IADR,IADC,IMA
       CHARACTER*8  NOMA,NOMAIL
+      CHARACTER*6  LCHAM(3)
       CHARACTER*16 VALK(3)
       CHARACTER*19 CHRESU,CHCALC,CHTMP
       CHARACTER*24 COMPOM
+      
+      DATA  LCHAM/ 'RELCOM', 'DEFORM', 'INCELA'/
 
       CALL JEMARQ()
+      
+      INCR = .FALSE.
 
       CHTMP ='&&GVERLC_CHTMP'
       CHRESU='&&GVERLC_CHRESU'
@@ -54,7 +60,7 @@ C     PUIS REDUCTION DU CHAMP SUR LA COMPOSANTE 'RELCOM'
 C     QUI CORRESPOND AU NOM DE LA LOI DE COMPORTEMENT
 C
       CALL CARCES(COMPOR,'ELEM',' ','V',CHTMP,'A',IRET)
-      CALL CESRED(CHTMP,0,0,1,'RELCOM','V',CHCALC)
+      CALL CESRED(CHTMP,0,0,3,LCHAM,'V',CHCALC)
       CALL DETRSD('CHAM_ELEM_S',CHTMP)
 
       CALL JEVEUO(CHCALC//'.CESD','L',JCALD)
@@ -76,6 +82,7 @@ C     ET QUE LA LOI DE COMPORTEMENT EST 'ELAS'.
       IF (IRET.NE.0)THEN
         DO 10,IMA = 1,NBMA
           CALL CESEXI('C',JCALD,JCALL,IMA,1,1,1,IADC)
+          
           IF(IADC.GT.0)THEN
              IF(ZK16(JCALV+IADC-1).EQ.'ELAS            ') THEN
                  GOTO 10
@@ -96,23 +103,56 @@ C     DANS CALC_G (VOIR ROUTINE NMDORC)
 C
       ELSE
         CALL CARCES(COMPOM,'ELEM',' ','V',CHTMP,'A',IRET)
-        CALL CESRED(CHTMP,0,0,1,'RELCOM','V',CHRESU)
+        CALL CESRED(CHTMP,0,0,3,LCHAM,'V',CHRESU)
         CALL DETRSD('CHAM_ELEM_S',CHTMP)
 
         CALL JEVEUO(CHRESU//'.CESD','L',JRESD)
         CALL JEVEUO(CHRESU//'.CESV','L',JRESV)
         CALL JEVEUO(CHRESU//'.CESL','L',JRESL)
         CALL JEVEUO(CHRESU//'.CESK','L',JRESK)
-
+        
         DO 20,IMA = 1,NBMA
 
           CALL CESEXI('C',JRESD,JRESL,IMA,1,1,1,IADR)
           CALL CESEXI('C',JCALD,JCALL,IMA,1,1,1,IADC)
 
+C SI LE LDC DANS SNL EST COMP_INC, ON EMMET UNE ALAMRE
+          IF (IADR.GT.0 )THEN
+            IF (ZK16(JRESV+IADR-1+2)(1:9) .EQ. 'COMP_INCR') THEN
+               IF (ZK16(JRESV+IADR-1)(1:4) .EQ. 'VMIS') THEN
+                  CALL U2MESS('A','RUPTURE1_47')
+               ELSE
+                  IF (ZK16(JRESV+IADR-1)(1:4) .NE. 'ELAS') THEN
+                     CALL U2MESS('F','RUPTURE1_47')
+                  ENDIF
+               ENDIF
+            ENDIF
+          ENDIF 
+         
+          IF (IADC.GT.0 )THEN
+            CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',IMA),NOMAIL)
+            IF (ZK16(JCALV+IADC-1+2)(1:9) .EQ. 'COMP_INCR') THEN
+               INCR = .TRUE.
+            ENDIF
+          ENDIF
+
+                    
           IF(IADC.GT.0 .AND.IADR.GT.0 )THEN
 
              IF(ZK16(JRESV+IADR-1).EQ.ZK16(JCALV+IADC-1)) THEN
-                 GOTO 20
+C LE TYPE DE DEFORMATION EST DIFFERENT 
+                 
+                IF (ZK16(JRESV+IADR-1+1).EQ.ZK16(JCALV+IADC-1+1)) THEN
+                  GOTO 20
+                ELSE
+                  CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',IMA),NOMAIL)
+                  VALK(1)=ZK16(JRESV+IADR-1+1)
+                  VALK(2)=ZK16(JCALV+IADC-1+1)
+                  VALK(3)=NOMAIL
+                  CALL U2MESK('A','RUPTURE1_45',3,VALK)
+                  GOTO 9999                      
+                ENDIF
+                
              ELSE
                CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',IMA),NOMAIL)
                VALK(1)=ZK16(JRESV+IADR-1)
@@ -122,7 +162,7 @@ C
                GOTO 9999
              ENDIF
 
-           ENDIF
+         ENDIF
  20     CONTINUE
 
       ENDIF

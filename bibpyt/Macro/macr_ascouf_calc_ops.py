@@ -1,4 +1,4 @@
-#@ MODIF macr_ascouf_calc_ops Macro  DATE 18/06/2012   AUTEUR DELMAS J.DELMAS 
+#@ MODIF macr_ascouf_calc_ops Macro  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -137,7 +137,6 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
 #     --- commande AFFE_CARA_ELEM ---
 #
   if (TORS_P1!=None) or (CL_BOL_P2_GV==None) :
-    if CARA_ELEM!=None : self.DeclareOut('carael',CARA_ELEM)
     motscles={}
     motscles['DISCRET']=[]
     if (TORS_P1!=None)      : motscles['DISCRET'].append(_F( GROUP_MA='P1' ,
@@ -146,8 +145,9 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
     if (CL_BOL_P2_GV==None) : motscles['DISCRET'].append(_F( GROUP_MA='P2' ,
                                                              CARA    ='K_TR_D_N',
                                                              VALE    = ( 0.0 , 0.0 , 0.0 , 0.0 , 0.0 , 0.0 ) ),)
-
-    carael = AFFE_CARA_ELEM( MODELE   = modele ,**motscles)
+    if CARA_ELEM != None:
+        self.DeclareOut('_carael', CARA_ELEM)
+    _carael = AFFE_CARA_ELEM( MODELE   = modele ,**motscles)
 #
   if ECHANGE!=None :
 #------------------------------------------------------------------
@@ -163,12 +163,13 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
 #
 #     --- calcul thermique ---
 #
-     if RESU_THER!=None : self.DeclareOut('resuth',RESU_THER)
+     if RESU_THER != None:
+         self.DeclareOut('_resuth', RESU_THER)
      mcsimp={}
      if INCREMENT['NUME_INST_INIT']!=None : mcsimp['NUME_INST_INIT']=INCREMENT['NUME_INST_INIT']
      if INCREMENT['NUME_INST_FIN' ]!=None : mcsimp['NUME_INST_FIN' ]=INCREMENT['NUME_INST_FIN' ]
      mcfact=_F(LIST_INST=INCREMENT['LIST_INST'],**mcsimp)
-     resuth = THER_LINEAIRE( MODELE     = __modthe ,
+     _resuth = THER_LINEAIRE(MODELE     = __modthe ,
                              CHAM_MATER = __affmat ,
                              ETAT_INIT  = _F(STATIONNAIRE='OUI',),
                              EXCIT      = _F(CHARGE=__chther,),
@@ -178,7 +179,8 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
 #
 #     --- commande AFFE_MATERIAU (mécanique)---
 #
-  if CHAM_MATER!=None : self.DeclareOut('affmth',CHAM_MATER)
+  if CHAM_MATER!=None :
+      self.DeclareOut('_affmth',CHAM_MATER)
   indther= ECHANGE
   mcfact=[]
   mcfac2=[]
@@ -187,35 +189,35 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
        mcfact.append(_F(TOUT    =mater['TOUT'    ],MATER=mater['MATER'],))
        if indther:
          mcfac2.append(_F(NOM_VARC='TEMP',TOUT='OUI',
-                        EVOL=resuth,NOM_CHAM='TEMP',VALE_REF=mater['TEMP_REF'],),)
+                        EVOL=_resuth,NOM_CHAM='TEMP',VALE_REF=mater['TEMP_REF'],),)
        rccmat = mater['MATER']
      else                   :
        mcfact.append(_F(GROUP_MA=mater['GROUP_MA'],MATER=mater['MATER'],))
        if indther:
          mcfac2.append(_F(NOM_VARC='TEMP',GROUP_MA=mater['GROUP_MA'],
-                        EVOL=resuth,NOM_CHAM='TEMP',VALE_REF=mater['TEMP_REF'],),)
+                        EVOL=_resuth,NOM_CHAM='TEMP',VALE_REF=mater['TEMP_REF'],),)
        if    mater['GROUP_MA'][:5]=='COUDE' :
          if TORS_P1!=None :
            mcfact.append(_F(GROUP_MA='P1',MATER=mater['MATER'],))
            mcfact.append(_F(GROUP_MA='P2',MATER=mater['MATER'],))
            if indther:
              mcfac2.append(_F(NOM_VARC='TEMP',GROUP_MA='P1',
-                            EVOL=resuth,NOM_CHAM='TEMP',VALE_REF=mater['TEMP_REF'],),)
+                            EVOL=_resuth,NOM_CHAM='TEMP',VALE_REF=mater['TEMP_REF'],),)
              mcfac2.append(_F(NOM_VARC='TEMP',GROUP_MA='P2',
-                            EVOL=resuth,NOM_CHAM='TEMP',VALE_REF=mater['TEMP_REF'],),)
+                            EVOL=_resuth,NOM_CHAM='TEMP',VALE_REF=mater['TEMP_REF'],),)
          elif (len(mc_AFFE_MATERIAU)==1) and (CL_BOL_P2_GV==None) :
            mcfact.append(_F(GROUP_MA='P2',MATER=mater['MATER'],))
            if indther:
              mcfac2.append(_F(NOM_VARC='TEMP',GROUP_MA='P2',
-                            EVOL=resuth,NOM_CHAM='TEMP',VALE_REF=mater['TEMP_REF'],),)
+                            EVOL=_resuth,NOM_CHAM='TEMP',VALE_REF=mater['TEMP_REF'],),)
        elif (mater['BOL'     ][:3]=='BOL'  ) and (CL_BOL_P2_GV==None) :
          mcfact.append(_F(GROUP_MA='P2',MATER=mater['MATER'],))
          if indther:
            mcfac2.append(_F(NOM_VARC='TEMP',GROUP_MA='P2',
-                          EVOL=resuth,NOM_CHAM='TEMP',VALE_REF=mater['TEMP_REF'],),)
+                          EVOL=_resuth,NOM_CHAM='TEMP',VALE_REF=mater['TEMP_REF'],),)
 
 
-  affmth = AFFE_MATERIAU( MAILLAGE = MAILLAGE ,
+  _affmth = AFFE_MATERIAU(MAILLAGE = MAILLAGE ,
                           MODELE   = modele ,
                           AFFE     = mcfact,
                           AFFE_VARC= mcfac2,)
@@ -387,13 +389,13 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
   
   if contact==None:
     nomres = STAT_NON_LINE( MODELE     = modele ,
-                            CHAM_MATER = affmth ,
-                            CARA_ELEM  = carael ,
+                            CHAM_MATER = _affmth ,
+                            CARA_ELEM  = _carael ,
                             INFO       = INFO   , **motscles)
   else :
     nomres = STAT_NON_LINE( MODELE     = modele ,
-                            CHAM_MATER = affmth ,
-                            CARA_ELEM  = carael ,
+                            CHAM_MATER = _affmth ,
+                            CARA_ELEM  = _carael ,
                             CONTACT    = contact,
                             INFO       = INFO   , **motscles)   
 #
@@ -425,8 +427,8 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
 #     l epaisseur
 #
       l_grno=MAILLAGE.LIST_GROUP_NO()
-      tabprl=[None]*4
-      tablig=[None]*4
+      __tprl=[None]*4
+      __tlig=[None]*4
 #
 #     prelevements des ligaments circonferentiels et longitudinaux
 #     de la sous-epaisseur
@@ -447,11 +449,11 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
                                       GROUP_NO=grno,
                                       OPERATION='EXTRACTION',))
       motscles['TITRE']='TABLE DE POST-TRAITEMENT SECTION SOUS-EPAISSEUR'
-      tabprl[1]=POST_RELEVE_T(**motscles)
-      tablig[1]=POST_RCCM(MATER          = rccmat,
+      __tprl[1]=POST_RELEVE_T(**motscles)
+      __tlig[1]=POST_RCCM(MATER          = rccmat,
                           TYPE_RESU_MECA = 'EVOLUTION',
                           OPTION         = 'PM_PB',
-                          TRANSITOIRE=_F(TABL_RESU_MECA = tabprl[1],),)
+                          TRANSITOIRE=_F(TABL_RESU_MECA = __tprl[1],),)
 #
       motscles={}
       motscles['ACTION']=[]
@@ -464,7 +466,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
                                       OPERATION='EXTRACTION',))
       motscles['TITRE']='TABLE DE POST-TRAITEMENT SECTION SOUS-EPAISSEUR'
 
-      tablig[2]=POST_RELEVE_T(**motscles)
+      __tlig[2]=POST_RELEVE_T(**motscles)
 #
       motscles={}
       nommail=MAILLAGE.nom
@@ -503,16 +505,16 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
                                       VECT_Y=vecty,
                                       OPERATION='MOYENNE',))
       motscles['TITRE']='TABLE DE POST-TRAITEMENT SECTION SOUS-EPAISSEUR'
-      tablig[3]=POST_RELEVE_T(**motscles)
+      __tlig[3]=POST_RELEVE_T(**motscles)
 #
 #     prelevements des ligaments sur les sections MI,TU et GV
 #     les 8 ligaments sont tous les 45 degres
 #
       ACOUR = mc_IMPR_TABLE['ANGLE']*pi/180.0
-      secprl=[None]*3
-      secrcm=[None]*3
-      secinv=[None]*3
-      secmoy=[None]*3
+      __sprl=[None]*3
+      __srcm=[None]*3
+      __sinv=[None]*3
+      __smoy=[None]*3
       for i in range(3):
          if mc_IMPR_TABLE['TRANSFORMEE']=='TUBE': vecty=(0.,0.,1.)
          else :
@@ -534,11 +536,11 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
                                          GROUP_NO=LIG[j]+SECT[i],
                                          OPERATION='EXTRACTION',))
          motscles['TITRE']='TABLE DE POST-TRAITEMENT MOYENNE RCCM SECTION '+SECT[i]
-         secprl[i]=POST_RELEVE_T(**motscles)
-         secrcm[i]=POST_RCCM(MATER          = rccmat,
+         __sprl[i]=POST_RELEVE_T(**motscles)
+         __srcm[i]=POST_RCCM(MATER          = rccmat,
                              TYPE_RESU_MECA = 'EVOLUTION',
                              OPTION         = 'PM_PB',
-                             TRANSITOIRE=_F(TABL_RESU_MECA = secprl[i],),)
+                             TRANSITOIRE=_F(TABL_RESU_MECA = __sprl[i],),)
 #
 #        invariants sur les sections MI,TU et GV
 #
@@ -551,7 +553,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
                                                           NOM_CHAM ='SIGM_ELNO',
                                                           INVARIANT='OUI',
                                                           OPERATION='EXTRACTION'))
-         secinv[i] = POST_RELEVE_T(**motscles)
+         __sinv[i] = POST_RELEVE_T(**motscles)
 #
 #        moyennes contraintes sur les sections MI,TU et GV
 #
@@ -566,7 +568,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
                                                           NOM_CHAM ='SIGM_ELNO',
                                                           NOM_CMP  =('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'),
                                                           OPERATION='MOYENNE'))
-         secmoy[i] = POST_RELEVE_T(**motscles)
+         __smoy[i] = POST_RELEVE_T(**motscles)
 
 #
 #     impression des valeurs maximales pour chaque sous-epaisseur
@@ -575,35 +577,35 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
              list_para=['TRESCA_MEMBRANE','TRESCA_MFLE','TRESCA','SI_LONG','SI_RADI','SI_CIRC']
       else : list_para=mc_IMPR_TABLE['NOM_PARA']
       if 'TRESCA_MEMBRANE' in list_para:
-        IMPR_TABLE(TABLE    = tablig[1],
+        IMPR_TABLE(TABLE    = __tlig[1],
                    FILTRE   = _F( NOM_PARA  ='PM', CRIT_COMP ='MAXI'),
                    NOM_PARA = ('INTITULE','PM'));
       if 'TRESCA_MFLE'     in list_para:
-        IMPR_TABLE(TABLE    = tablig[1],
+        IMPR_TABLE(TABLE    = __tlig[1],
                    FILTRE   =(_F( NOM_PARA ='LIEU',VALE_K   ='ORIG'),
                               _F( NOM_PARA ='PMB', CRIT_COMP='MAXI'),),
                    NOM_PARA = ('INTITULE','PMB'));
-        IMPR_TABLE(TABLE    = tablig[1],
+        IMPR_TABLE(TABLE    = __tlig[1],
                    FILTRE   =(_F( NOM_PARA='LIEU', VALE_K  ='EXTR'),
                               _F( NOM_PARA ='PMB', CRIT_COMP='MAXI'),),
                    NOM_PARA = ('INTITULE','PMB'));
       if 'SI_RADI'         in list_para:
-        IMPR_TABLE(TABLE    = tablig[3],
+        IMPR_TABLE(TABLE    = __tlig[3],
                    FILTRE   =(_F( NOM_PARA='QUANTITE',VALE_K  ='MOMENT_0'),
                               _F( NOM_PARA ='SIXX',   CRIT_COMP='MAXI'),),
                    NOM_PARA = ('INTITULE','SIXX'));
       if 'SI_LONG'         in list_para:
-        IMPR_TABLE(TABLE    = tablig[3],
+        IMPR_TABLE(TABLE    = __tlig[3],
                    FILTRE   =(_F( NOM_PARA='QUANTITE',VALE_K  ='MOMENT_0'),
                               _F( NOM_PARA ='SIYY',   CRIT_COMP='MAXI'),),
                    NOM_PARA = ('INTITULE','SIYY'));
       if 'SI_CIRC'         in list_para:
-        IMPR_TABLE(TABLE    = tablig[3],
+        IMPR_TABLE(TABLE    = __tlig[3],
                    FILTRE   =(_F( NOM_PARA='QUANTITE',VALE_K  ='MOMENT_0'),
                               _F( NOM_PARA ='SIZZ',   CRIT_COMP='MAXI'),),
                    NOM_PARA = ('INTITULE','SIZZ'));
       if 'TRESCA'          in list_para:
-        IMPR_TABLE(TABLE      = tablig[2],
+        IMPR_TABLE(TABLE      = __tlig[2],
                    NOM_PARA   = ('INTITULE','NOEUD','TRESCA',),
                    PAGINATION = 'INTITULE',
                    FILTRE     = _F( NOM_PARA   = 'TRESCA',
@@ -612,30 +614,30 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
 #     impression des resultats pour chaque sous-epaisseur
 #
       if 'TRESCA_MEMBRANE' in list_para:
-        IMPR_TABLE(TABLE    = tablig[1],
+        IMPR_TABLE(TABLE    = __tlig[1],
                    FILTRE   = _F( NOM_PARA='LIEU', VALE_K  ='ORIG'),
                    NOM_PARA = ('INTITULE','PM'));
       if 'TRESCA_MFLE'     in list_para:
-        IMPR_TABLE(TABLE    = tablig[1],
+        IMPR_TABLE(TABLE    = __tlig[1],
                    FILTRE   = _F( NOM_PARA='LIEU', VALE_K  ='ORIG'),
                    NOM_PARA = ('INTITULE','PMB'));
-        IMPR_TABLE(TABLE    = tablig[1],
+        IMPR_TABLE(TABLE    = __tlig[1],
                    FILTRE   = _F( NOM_PARA='LIEU', VALE_K  ='EXTR'),
                    NOM_PARA = ('INTITULE','PMB'));
       if 'SI_RADI'         in list_para:
-        IMPR_TABLE(TABLE    = tablig[3],
+        IMPR_TABLE(TABLE    = __tlig[3],
                    FILTRE   = _F( NOM_PARA='QUANTITE', VALE_K  ='MOMENT_0'),
                    NOM_PARA = ('INTITULE','SIXX'));
       if 'SI_LONG'         in list_para:
-        IMPR_TABLE(TABLE    = tablig[3],
+        IMPR_TABLE(TABLE    = __tlig[3],
                    FILTRE   = _F( NOM_PARA='QUANTITE', VALE_K  ='MOMENT_0'),
                    NOM_PARA = ('INTITULE','SIYY'));
       if 'SI_CIRC'         in list_para:
-        IMPR_TABLE(TABLE    = tablig[3],
+        IMPR_TABLE(TABLE    = __tlig[3],
                    FILTRE   = _F( NOM_PARA='QUANTITE', VALE_K  ='MOMENT_0'),
                    NOM_PARA = ('INTITULE','SIZZ'));
       if 'TRESCA'          in list_para:
-        IMPR_TABLE(TABLE      = tablig[2],
+        IMPR_TABLE(TABLE      = __tlig[2],
                    NOM_PARA   = ('INTITULE','NOEUD','TRESCA',),
                    PAGINATION = 'INTITULE');
 #
@@ -643,30 +645,30 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
 #
       for k in range(3):
        if 'TRESCA_MEMBRANE' in list_para:
-         IMPR_TABLE(TABLE    = secrcm[k],
+         IMPR_TABLE(TABLE    = __srcm[k],
                     FILTRE   = _F( NOM_PARA='LIEU', VALE_K  ='ORIG'),
                     NOM_PARA = ('INTITULE','PM'));
        if 'TRESCA_MFLE'     in list_para:
-         IMPR_TABLE(TABLE    = secrcm[k],
+         IMPR_TABLE(TABLE    = __srcm[k],
                     FILTRE   = _F( NOM_PARA='LIEU', VALE_K  ='ORIG'),
                     NOM_PARA = ('INTITULE','PMB'));
-         IMPR_TABLE(TABLE    = secrcm[k],
+         IMPR_TABLE(TABLE    = __srcm[k],
                     FILTRE   = _F( NOM_PARA='LIEU', VALE_K  ='EXTR'),
                     NOM_PARA = ('INTITULE','PMB'));
        if 'SI_RADI'         in list_para:
-         IMPR_TABLE(TABLE    = secmoy[k],
+         IMPR_TABLE(TABLE    = __smoy[k],
                     FILTRE   = _F( NOM_PARA='QUANTITE', VALE_K  ='MOMENT_0'),
                     NOM_PARA = ('INTITULE','SIXX'));
        if 'SI_LONG'         in list_para:
-         IMPR_TABLE(TABLE    = secmoy[k],
+         IMPR_TABLE(TABLE    = __smoy[k],
                     FILTRE   = _F( NOM_PARA='QUANTITE', VALE_K  ='MOMENT_0'),
                     NOM_PARA = ('INTITULE','SIYY'));
        if 'SI_CIRC'         in list_para:
-         IMPR_TABLE(TABLE    = secmoy[k],
+         IMPR_TABLE(TABLE    = __smoy[k],
                     FILTRE   = _F( NOM_PARA='QUANTITE', VALE_K  ='MOMENT_0'),
                     NOM_PARA = ('INTITULE','SIZZ'));
        if 'TRESCA'          in list_para:
-         IMPR_TABLE(TABLE      = secinv[k],
+         IMPR_TABLE(TABLE      = __sinv[k],
                     NOM_PARA   = ('INTITULE','NOEUD','TRESCA',),
                     PAGINATION = 'INTITULE');
 #
@@ -696,7 +698,8 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
 #   --- post traitement fissure :  calcul de g ----
 #
     motscles = {}
-    if FOND_FISS != None : self.DeclareOut('fonfis',FOND_FISS)
+    if FOND_FISS != None :
+        self.DeclareOut('_fonfis',FOND_FISS)
     if TYPE_MAILLAGE =='FISS_COUDE' :
        motscles['FOND_FISS']=_F(GROUP_NO='FONDFISS',
                                 VECT_GRNO_ORIG=('PFOR','THOR'),
@@ -706,7 +709,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
                                 GROUP_MA='FONDFISS',
                                 GROUP_NO_ORIG='PFOR',
                                 GROUP_MA_ORIG='MAIL_ORI')
-    fonfis=DEFI_FOND_FISS(MAILLAGE=MAILLAGE,
+    _fonfis=DEFI_FOND_FISS(MAILLAGE=MAILLAGE,
                           LEVRE_SUP=_F(GROUP_MA='FACE1'),
                           LEVRE_INF=_F(GROUP_MA='FACE2'),
                           INFO=INFO,**motscles
@@ -714,7 +717,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
     if THETA_3D!=None :
       for thet in THETA_3D:
         _nothet=CALC_THETA(MODELE=modele,
-                           FOND_FISS=fonfis,
+                           FOND_FISS=_fonfis,
                            THETA_3D=_F(TOUT   = 'OUI',
                                        MODULE = 1.,
                                        R_INF  = thet['R_INF'],
@@ -741,7 +744,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
                                                     LISSAGE_G='LAGRANGE',)
         _nogloc=CALC_G (RESULTAT   =nomres,
                         TOUT_ORDRE ='OUI',
-                        THETA=_F( FOND_FISS  =fonfis,
+                        THETA=_F( FOND_FISS  =_fonfis,
                                   R_INF      = thet['R_INF'],
                                   R_SUP      = thet['R_SUP'],),**motscles);
 
@@ -763,7 +766,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
                                     motscles['VERSION'   ]= IMPRESSION['VERSION']
       if IMPRESSION['FORMAT']=='CASTEM' :
                                     motscles['NIVE_GIBI' ]= IMPRESSION['NIVE_GIBI']
-      mcfresu.append(_F(RESULTAT=resuth,))
+      mcfresu.append(_F(RESULTAT=_resuth,))
     IMPR_RESU( MODELE = modele,
                RESU   = mcfresu,
                FORMAT=IMPRESSION['FORMAT'],**motscles)

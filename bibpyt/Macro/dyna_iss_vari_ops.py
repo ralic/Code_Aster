@@ -1,4 +1,4 @@
-#@ MODIF dyna_iss_vari_ops Macro  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF dyna_iss_vari_ops Macro  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -56,7 +56,6 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
    CREA_CHAMP = self.get_cmd('CREA_CHAMP')
    DYNA_LINE_HARM = self.get_cmd('DYNA_LINE_HARM')
    DETRUIRE= self.get_cmd('DETRUIRE')
-
 
    DEFI_FONCTION  = self.get_cmd('DEFI_FONCTION')
    CALC_FONCTION  = self.get_cmd('CALC_FONCTION')
@@ -426,12 +425,7 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
                                   ),
                         );
          #  recuperer le vecteur modal depl calcule par dyge
-         desc = __dyge.sdj.DESC.get()
-         assert desc[ii_cham-1].strip() ==cham_calc , 'Champ'+cham_calc+ 'non trouvé'
-
-         nomcham = __dyge.sdj.TACH.get()[ii_cham][0].strip()
-         cham = sd_cham_gene(nomcham)
-         RS = NP.array(cham.VALE.get())
+         RS = NP.array(__dyge.sdj.DEPL.get())
          DETRUIRE(CONCEPT=_F(NOM=(__dyge)),INFO=1)
 
 
@@ -453,15 +447,10 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
                                       COEF_MULT= 1.0,
                                   ),
                         );
-         #  recuperer le vecteur modal depl calcule par dyge
-            desc = __dyge.sdj.DESC.get()
-            assert desc[ii_cham-1].strip() ==cham_calc , 'Champ'+cham_calc+ 'non trouvé'
-
-            nomcham = __dyge.sdj.TACH.get()[ii_cham][0].strip()
-            cham = sd_cham_gene(nomcham)
-            RS = NP.array(cham.VALE.get())
+            #  recuperer le vecteur modal depl calcule par dyge
+            RS = NP.array(__dyge.sdj.DEPL.get())
             DETRUIRE(CONCEPT=_F(NOM=(__dyge)),INFO=1)
-             # stockage des matrices résultats: sum(s_q s_q* )
+            # stockage des matrices résultats: sum(s_q s_q* )
             SP=SP+RS*NP.conj(RS[:,NP.newaxis])
 
 
@@ -480,7 +469,7 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
 
 ##-------------------------------------------------------------------------------------------------------------------------
 ##--------------------------------------------------------------------------------------------------------------------------
-#  Creation des sorties : table_fonction pour SPEC ou dyna_trans pour TRANS
+#  Creation des sorties : table_fonction pour SPEC ou tran_gene pour TRANS
 #--------------------------------------------------------------------------------------------------------------------------
 #-
    aster.affiche('MESSAGE','TYPE_RESU : '+TYPE_RESU)
@@ -551,20 +540,17 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
 #   ATTENTION:  on sort le champ en dépalcement: c'est équivalent au champ en acceleration car on a applique un signal en ACCE pour fosi en acce
       #   #         cela evite de diviser pr w2 pour intégrer l'acceleration (erreurs numeriques au point 0)
       #   #         on remplace donc le champ en acceleration
-      cham_calc='ACCE'
-      ii_cham=3
 
-#       print ' putvectjev'
 #      si tous les point on été calculés: pas d'interpolation
       if  FREQ_FIN ==None :
          for  k,freqk in enumerate(l_freq_sig):
             coef_a=(vale_re[k]+vale_im[k]*1.j)
             VEC_comp=VEC[k]*coef_a
-            nomcham = __dyge0.sdj.TACH.get()[ii_cham][k].strip()
             tup_re=tuple(VEC_comp.real)
             tup_im=tuple(VEC_comp.imag)
-            aster.putvectjev( nomcham + '.VALE        ', nbmodt,tuple(range(1,nbmodt+1)),tup_re,tup_im,1 )
-
+            #                                     1         2         3
+            #                                   8901234567890123456789012
+            aster.putvectjev(__dyge0.get_name()+'           .ACCE        ', nbmodt,tuple(range(nbmodt*k+1,nbmodt*(k+1)+1)),tup_re,tup_im,1 )
       else:
 
          for  k,freqk in enumerate(l_freq_sig):
@@ -586,11 +572,11 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, UNITE_RESU_FOR
                   VEC_comp=(VEC[vale_i-1]+dfp*(VEC[vale_i]-VEC[vale_i-1]))*coef_a
                   VEC_real=VEC_comp.real
                   VEC_imag=VEC_comp.imag
-            nomcham = __dyge0.sdj.TACH.get()[ii_cham][k].strip()
             tup_re=tuple(VEC_real)
             tup_im=tuple(VEC_imag)
-            aster.putvectjev( nomcham + '.VALE        ', nbmodt,tuple(range(1,nbmodt+1)),tup_re,tup_im,1 )
-
+            #                                     1         2         3
+            #                                   8901234567890123456789012
+            aster.putvectjev(__dyge0.get_name()+'           .ACCE        ', nbmodt,tuple(range(nbmodt*k+1,nbmodt*(k+1)+1)),tup_re,tup_im,1 )
 
       print 'REST_SPEC_TEMP'
 

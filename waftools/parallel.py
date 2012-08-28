@@ -18,9 +18,9 @@ def options(self):
 def configure(self):
     from Options import options as opts
     if opts.parallel:
-        os.environ.setdefault('CC', 'mpicc')
-        os.environ.setdefault('CXX', 'mpicxx')
-        os.environ.setdefault('FC', 'mpif90')
+        os.environ.setdefault('CC', getattr(self.env, 'CC', 'mpicc'))
+        os.environ.setdefault('CXX', getattr(self.env, 'CXX', 'mpicxx'))
+        os.environ.setdefault('FC', getattr(self.env, 'FC', 'mpif90'))
     self.load_compilers()
     self.check_openmp()
 
@@ -43,7 +43,7 @@ def load_compilers(self):
 
 @Configure.conf
 def load_compilers_mpi(self):
-    check = partial(self.check_cfg, args='--showme:compile --showme:link',
+    check = partial(self.check_cfg, args='--showme:compile --showme:link -show',
                     package='', uselib_store='MPI', mandatory=False)
     cc = os.environ.get('CC')
     cxx = os.environ.get('CXX')

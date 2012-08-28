@@ -1,4 +1,4 @@
-#@ MODIF test_fonction_ops Macro  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF test_fonction_ops Macro  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -425,15 +425,15 @@ def test_fonction_ops(self,TEST_NOOK,VALEUR,ATTRIBUT,**args):
                   prolD = 'LINEAIRE'
                curInterpol = [fctProl[1][0:3], fctProl[1][4:7]]
 
-               fctInt = CALC_FONCTION(INTEGRE = _F(FONCTION=lafonc,),
+               __fInt = CALC_FONCTION(INTEGRE = _F(FONCTION=lafonc,),
                                       PROL_DROITE = prolD,
                                       PROL_GAUCHE = prolG,
                                       INTERPOL = curInterpol)
 
-               res1 = fctInt(intervalle[0])
-               res2 = fctInt(intervalle[1])
+               res1 = __fInt(intervalle[0])
+               res2 = __fInt(intervalle[1])
 
-               DETRUIRE(CONCEPT = _F(NOM = fctInt),INFO = 1)
+               DETRUIRE(CONCEPT = _F(NOM = __fInt),INFO = 1)
 
                res = (res2-res1)/(intervalle[1]-intervalle[0])
                valpu[0] = intervalle[0]

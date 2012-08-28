@@ -1,4 +1,4 @@
-#& MODIF ENTETE  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+#& MODIF ENTETE  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -166,7 +166,8 @@ class fonction_c(fonction_class):
          ordo = numpy.arctan2(numpy.array(self.OrdoImg()), numpy.array(self.Ordo())) * 180. / pi
       elif arg == 'complex':
          ordo = map(complex,self.Ordo(),self.OrdoImg())
-
+      else:
+         assert False, 'unexpected value for arg: %r' % arg
       return class_fonction(self.Absc(), ordo, self.Parametres(), nom=self.nom)
 
    def Valeurs(self) :

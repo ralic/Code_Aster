@@ -1,6 +1,6 @@
       SUBROUTINE REHAGL(NOMRES,RESGEN,MAILSK,PROFNO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,136 +39,143 @@ C
       INCLUDE 'jeveux.h'
 C
 C
-C
-      CHARACTER*6 PGC
-      CHARACTER*8 NOMRES,BASMOD
-      CHARACTER*8 CHSYMB,SYMB(3)
-      CHARACTER*8 MAILSK,MODGEN,RESGEN,SOUTR,KBID
-      CHARACTER*19 NUMDDL
-      CHARACTER*19 NUMGEN,CHAMNE,PROFNO
-      CHARACTER*19 NUME(3)
-      CHARACTER*24 CREFE(2),CHAMOL,CHAMBA,INDIRF
-      CHARACTER*24 VALK(4)
-      CHARACTER*24 CHAMNO,CHAREF
-      CHARACTER*16 NOMPAR(1)
-      INTEGER IAFREQ(1)
-      COMPLEX*16  CBID
-      CHARACTER*1 K1BID
+      REAL*8       EPSI
+      CHARACTER*1  K1BID
+      CHARACTER*4  CHAMP(8)
+      CHARACTER*6  PGC
+      CHARACTER*8  CHMP(3),CRIT,INTERP,K8B,NOMRES,BASMOD,
+     &             MAILSK,MODGEN,RESGEN,SOUTR,K8BID,K8REP
+      CHARACTER*19 NUMDDL,NUMGEN,KNUME,KFREQ,HARMGE,PROFNO
+      CHARACTER*24 CREFE(2),CHAMBA,INDIRF,CHAMNO,SELIAI,SIZLIA,SST,
+     &             VALK,NOMSST,K24BID
+      INTEGER      ITRESU(3),ELIM,NEQET,NEQRED,LMAPRO,LSILIA,LSST,
+     &             LMOET
+      INTEGER      IARG
 C
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER I ,IAD ,IAR ,IBID ,IDEP ,IEQ ,IER
-      INTEGER IRET ,ISYMB ,J ,K ,L ,LDNEW ,LLCHAB
-      INTEGER LLCHOL ,LLIND ,LLINSK ,LLNUEQ ,LLORS ,LLPRS ,LLREF
-      INTEGER LLROT ,LREF ,LTROTX ,LTROTY ,LTROTZ ,LTVEC ,NBBAS
-      INTEGER NBCMP ,NBCOU ,NBFREQ ,NBNOT ,NBSST ,NBSYMB ,NEQ
-      INTEGER NEQS ,NUTARS
-      REAL*8 FREQ ,RBID
+      INTEGER I ,I1 ,IAD ,IAR ,IARCHI ,IBID ,ICH 
+      INTEGER IDEP ,IDRESU ,IEQ ,IER ,IRE1 
+      INTEGER IRE2 ,IRE3 ,IRET ,IRETOU ,J ,JFREQ ,JNUME 
+      INTEGER K ,K1 ,L ,LDNEW ,LFREQ ,LLCHAB ,LLIND 
+      INTEGER LLINSK ,LLNEQU ,LLNUEQ ,LLORS ,LLPRS ,LLREF1 ,LLREF2 
+      INTEGER LLROT ,LREFE ,LTROTX ,LTROTY ,LTROTZ ,LTVEC ,N1 
+      INTEGER NBBAS ,NBCHAM ,NBCMP ,NBCOU ,NBFREQ ,NBNOT 
+      INTEGER NBSST ,NEQ ,NEQGEN ,NEQS ,NUMSST ,NUTARS
 C-----------------------------------------------------------------------
-      DATA PGC/'REHAGL'/
-      DATA SOUTR/'&SOUSSTR'/
-      DATA NOMPAR/'FREQ'/
+      DATA PGC   /'REHAGL'/
+      DATA SOUTR /'&SOUSSTR'/
 C-----------------------------------------------------------------------
 C
       CALL JEMARQ()
+
       INDIRF = '&&'//PGC//'.INDIR.SST'
 C
-C-----------------ECRITURE DU TITRE-------------------------------------
-C
+C --- ECRITURE DU TITRE
       CALL TITRE
 C
-C------------------------VERIF SQUELETTE--------------------------------
-C
+C --- VERIFICATION SQUELETTE
       CALL JEEXIN(MAILSK//'.INV.SKELETON',IRET)
       IF (IRET.EQ.0) THEN
-            VALK (1) = MAILSK
+        VALK = MAILSK
         CALL U2MESG('F', 'ALGORITH14_27',1,VALK,0,0,0,0.D0)
-      END IF
-
+      ENDIF
       CALL JEVEUO(MAILSK//'.INV.SKELETON','L',LLINSK)
 C
-C-----DETERMINATION DES CHAMPS CALCULES LORS DES CALCULS HARMONIQUES----
+C --- DETERMINATION DES CHAMPS A RESTITUER, PARMI DEPL, VITE ET ACCE
+
+      HARMGE = RESGEN
+
+C --- CALCUL DU NOMBRE DE CHAMPS A RESTITUER ET LEURS ADDRESSES
+
+      CALL JEEXIN(RESGEN//'           .DEPL',IRE1)
+      CALL JEEXIN(RESGEN//'           .VITE',IRE2)
+      CALL JEEXIN(RESGEN//'           .ACCE',IRE3)
 C
-C     LES NOMS SYMBOLIQUES DES CHAMPS CALCULES, PARMI DEPL, VITE ET ACCE
-C     SONT STOCKES DANS LE VECTEUR SYMB. LEURS NUME_DDL SONT ECRITS
-C     DANS LE VECTEUR NUM.
-C
-      ISYMB = 0
-C
-      CALL RSEXCH(' ',RESGEN,'DEPL',1,CHAMNO,IRET)
-C
-      IF (IRET.EQ.0) THEN
-        ISYMB = ISYMB + 1
-        SYMB(ISYMB) = 'DEPL'
-        CHAREF = CHAMNO(1:19)//'.REFE'
-        CALL JEVEUO(CHAREF,'L',LREF)
-        NUME(ISYMB) = ZK24(LREF+1)
-        CALL JELIBE(CHAREF)
-      END IF
-C
-C
-      CALL RSEXCH(' ',RESGEN,'VITE',1,CHAMNO,IRET)
-C
-      IF (IRET.EQ.0) THEN
-        ISYMB = ISYMB + 1
-        SYMB(ISYMB) = 'VITE'
-        CHAREF = CHAMNO(1:19)//'.REFE'
-        CALL JEVEUO(CHAREF,'L',LREF)
-        NUME(ISYMB) = ZK24(LREF+1)
-        CALL JELIBE(CHAREF)
-      END IF
-C
-C
-      CALL RSEXCH(' ',RESGEN,'ACCE',1,CHAMNO,IRET)
-C
-      IF (IRET.EQ.0) THEN
-        ISYMB = ISYMB + 1
-        SYMB(ISYMB) = 'ACCE'
-        CHAREF = CHAMNO(1:19)//'.REFE'
-        CALL JEVEUO(CHAREF,'L',LREF)
-        NUME(ISYMB) = ZK24(LREF+1)
-        CALL JELIBE(CHAREF)
-      END IF
-C
+      IF (IRE1.EQ.0.AND.IRE2.EQ.0.AND.IRE3.EQ.0) THEN
+        VALK = RESGEN
+        CALL U2MESG('F', 'ALGORITH14_35',1,VALK,0,0,0,0.D0)
+      ENDIF
+
+      CALL GETVTX(' ','TOUT_CHAM',0,IARG,1,K8REP,N1)
+      IF (K8REP(1:3).EQ.'OUI') THEN
+        IF (IRE1.EQ.0) THEN
+          CALL U2MESS('F','ALGORITH10_44')
+        ENDIF
+        IF (IRE2.EQ.0) THEN
+          CALL U2MESS('F','ALGORITH10_45')
+        ENDIF
+        IF (IRE3.EQ.0) THEN
+          CALL U2MESS('F','ALGORITH10_46')
+        ENDIF
+        NBCHAM = 3
+        CHMP(1) = 'DEPL'
+        CHMP(2) = 'VITE'
+        CHMP(3) = 'ACCE'
+        CALL JEVEUO(HARMGE//'.DEPL','L',ITRESU(1))
+        CALL JEVEUO(HARMGE//'.VITE','L',ITRESU(2))
+        CALL JEVEUO(HARMGE//'.ACCE','L',ITRESU(3))
+      ELSE
+C ----  ON RECHERCHE LES CHAMPS QU'IL FAUT RESTITUER      
+         CALL GETVTX ( ' ', 'NOM_CHAM', 1,IARG,0, CHAMP, N1 )
+         NBCHAM = -N1
+         CALL GETVTX ( ' ', 'NOM_CHAM', 1,IARG,NBCHAM, CHAMP, N1 )
+C ----   BOUCLE SUR LES CHAMPS DEMANDES
+         DO 69 I = 1 , NBCHAM
+         
+           IF ( CHAMP(I).EQ.'DEPL' ) THEN
+              CHMP(I) = 'DEPL'
+              CALL JEEXIN ( HARMGE//'.DEPL' , IRET )
+              IF ( IRET.EQ.0 ) THEN
+               CALL U2MESS('F','ALGORITH10_11')
+              ELSE
+               CALL JEVEUO ( HARMGE//'.DEPL', 'L', ITRESU(I) )
+              ENDIF
+           ELSEIF ( CHAMP(I).EQ.'VITE' ) THEN
+              CHMP(I) = 'VITE'
+              CALL JEEXIN ( HARMGE//'.VITE' , IRET )
+              IF ( IRET.EQ.0 ) THEN
+               CALL U2MESS('F','ALGORITH10_12')
+              ELSE
+               CALL JEVEUO ( HARMGE//'.VITE', 'L', ITRESU(I) )
+              ENDIF
+           ELSEIF ( CHAMP(I).EQ.'ACCE' ) THEN
+              CHMP(I) = 'ACCE'
+              CALL JEEXIN ( HARMGE//'.ACCE' , IRET )
+              IF ( IRET.EQ.0 ) THEN
+               CALL U2MESS('F','ALGORITH10_13')
+              ELSE
+               CALL JEVEUO ( HARMGE//'.ACCE', 'L', ITRESU(I) )
+              ENDIF
+           ELSE
+C ----        SI LE CHAMP N'EST PAS DEPL,VITE OU ACCE ON PLANTE
+              CALL U2MESS('F','ALGORITH10_16')
+           ENDIF
+69       CONTINUE
+      ENDIF
 C     NOMBRE DE CHAMPS SYMBOLIQUES CALCULES.
 C     ON S'ASSURE QUE LEUR NOMBRE EST NON NUL.
 C
-      NBSYMB = ISYMB
-C
-      IF (NBSYMB.EQ.0) THEN
-            VALK (1) = RESGEN
+      IF (NBCHAM.EQ.0) THEN
+        VALK = RESGEN
         CALL U2MESG('F', 'ALGORITH14_35',1,VALK,0,0,0,0.D0)
       END IF
 C
-C     VERIFICATION DE LA COHERENCE DES NUM_DDL
-C
-      NUMGEN = NUME(1)
-      IF (NBSYMB.GT.1) THEN
-        DO 10 I = 2,NBSYMB
-          IF (NUME(I).NE.NUMGEN) THEN
-            VALK (1) = SYMB(I)
-            VALK (2) = NUME(I)
-            VALK (3) = SYMB(1)
-            VALK (4) = NUMGEN
-            CALL U2MESG('F', 'ALGORITH14_36',4,VALK,0,0,0,0.D0)
-          END IF
-
-   10   CONTINUE
-      END IF
-C
-C
-C-------------------RECUPERATION DU MODELE GENERALISE-------------------
-C
+C --- RECUPERATION DE LA NUMEROTATION ET DU MODELE GENERALISE
+      CALL JEVEUO(HARMGE//'.REFD','L',LLREF1)
+      K24BID=ZK24(LLREF1+3)
+      NUMGEN(1:14)=K24BID(1:14)
       NUMGEN(15:19) = '.NUME'
-      CALL JEVEUO(NUMGEN//'.REFN','L',LLREF)
-      MODGEN = ZK24(LLREF)
-C
+      CALL JEVEUO(NUMGEN//'.REFN','L',LLREF2)
+      K24BID=ZK24(LLREF2)
+      MODGEN = K24BID(1:8)
       CALL JELIRA(MODGEN//'      .MODG.SSNO','NOMMAX',NBSST,K1BID)
-      KBID = '  '
-      CALL MGUTDM(MODGEN,KBID,1,'NB_CMP_MAX',NBCMP,KBID)
+      K8BID = '  '
+      CALL MGUTDM(MODGEN,K8BID,1,'NB_CMP_MAX',NBCMP,K8BID)
+      CALL JEVEUO(NUMGEN//'.NEQU','L',LLNEQU)
+      NEQGEN = ZI(LLNEQU)
 C
-C--------------RECUPERATION DES ROTATIONS-------------------------------
-C
+C --- RECUPERATION DES ROTATIONS
       CALL WKVECT('&&'//PGC//'ROTX','V V R',NBSST,LTROTX)
       CALL WKVECT('&&'//PGC//'ROTY','V V R',NBSST,LTROTY)
       CALL WKVECT('&&'//PGC//'ROTZ','V V R',NBSST,LTROTZ)
@@ -177,33 +184,64 @@ C
         ZR(LTROTZ+I-1) = ZR(LLROT)
         ZR(LTROTY+I-1) = ZR(LLROT+1)
         ZR(LTROTX+I-1) = ZR(LLROT+2)
-   15 CONTINUE
+15    CONTINUE
 C
-C-------------------CREATION DU PROF-CHAMNO-----------------------------
-C
+C --- CREATION DU PROF-CHAMNO
       CALL GENUGL(PROFNO,INDIRF,MODGEN,MAILSK)
-      CALL JELIRA(PROFNO//'.NUEQ','LONMAX',NEQ,K1BID)
+      CALL JELIRA(PROFNO//'.NUEQ','LONMAX',NEQ,K8BID)
 C
-C----------------------RECUPERATION DU NOMBRE DE NOEUDS-----------------
+C --- RECUPERATION DU NOMBRE DE NOEUDS
+      CALL DISMOI('F','NB_NO_MAILLA',MAILSK,'MAILLAGE',NBNOT,K8BID,IRET)
 C
-      CALL DISMOI('F','NB_NO_MAILLA',MAILSK,'MAILLAGE',NBNOT,KBID,IRET)
-C
-C----------------------RECUPERATION DE LA BASE MODALE-------------------
-C
+C --- INFORMATIONS POUR CREATION DES CHAMNO A PARTIR DES .REFE
       CREFE(1) = MAILSK
       CREFE(2) = PROFNO
 C
-C--------------RECUPERATION NOMBRE DE FREQUENCES D'EXCITATION-----------
+C --- RECUPERATION DES FREQUENCES
+      CALL GETVTX(' ','CRITERE'  ,0,IARG,1,CRIT,N1)
+      CALL GETVR8(' ','PRECISION',0,IARG,1,EPSI,N1)
+      CALL GETVTX(' ','INTERPOL' ,0,IARG,1,INTERP,N1)
 C
-      CALL RSORAC(RESGEN,'LONUTI',IBID,RBID,KBID,CBID,RBID,KBID,
-     &            NBFREQ,1, IBID)
+      KNUME = '&&RETREC.NUM_RANG'
+      KFREQ = '&&RETREC.FREQ'
+      CALL RSTRAN(INTERP,HARMGE,' ',1,KFREQ,KNUME,NBFREQ,IRETOU)
+      IF (IRETOU.NE.0) THEN
+        CALL U2MESS('F','ALGORITH10_47')
+      ENDIF
+      CALL JEEXIN(KFREQ,IRET)
+      IF (IRET.GT.0) THEN
+        CALL JEVEUO(KFREQ,'E',JFREQ)
+        CALL JEVEUO(KNUME,'E',JNUME)
+      END IF
 C
-C
-C--------------------ALLOCATION STRUCTURE DE DONNEES RESULTAT-----------
+C --- ALLOCATION DE LA STRUCTURE DE DONNEES RESULTAT-COMPOSE
 C
       CALL RSCRSD('G',NOMRES,'DYNA_HARMO',NBFREQ)
 C
-C----------------------RESTITUTION PROPREMENT DITE----------------------
+C-- ON TESTE SI ON A EU RECOURS A L'ELIMINATION
+C
+      SELIAI=NUMGEN(1:14)//'.ELIM.BASE'
+      SIZLIA=NUMGEN(1:14)//'.ELIM.TAIL'
+      SST=   NUMGEN(1:14)//'.ELIM.NOMS'
+
+      CALL JEEXIN(SELIAI,ELIM)
+      IF (ELIM .NE. 0) THEN
+        NEQET=0
+        CALL JEVEUO(NUMGEN//'.NEQU','L',IBID)
+        NEQRED=ZI(IBID)
+        NOMSST=MODGEN//'      .MODG.SSNO'
+        CALL JEVEUO(SELIAI,'L',LMAPRO)
+        CALL JEVEUO(SIZLIA,'L',LSILIA)
+        CALL JEVEUO(SST,'L',LSST)
+        DO 10 I=1,NBSST
+          NEQET=NEQET+ZI(LSILIA+I-1)
+  10    CONTINUE
+        CALL WKVECT('&&MODE_ETENDU_REST_ELIM','V V C',NEQET,LMOET)    
+      ENDIF      
+C
+C -------------------------------------
+C --- RESTITUTION SUR BASE PHYSIQUE ---
+C -------------------------------------
 C
       CALL JEVEUO(NUMGEN//'.NUEQ','L',LLNUEQ)
       CALL JENONU(JEXNOM(NUMGEN//'.LILI',SOUTR),IBID)
@@ -211,111 +249,146 @@ C
       CALL JENONU(JEXNOM(NUMGEN//'.LILI',SOUTR),IBID)
       CALL JEVEUO(JEXNUM(NUMGEN//'.PRNO',IBID),'L',LLPRS)
 C
-C----------------------RESTITUTION PROPREMENT DITE----------------------
-C
-      CALL JEVEUO(NUMGEN//'.NUEQ','L',LLNUEQ)
-C
-C     BOUCLE SUR LES FREQUENCES ETUDIEES
-C
-      DO 20 I = 1,NBFREQ
-C
-C     BOUCLE SUR LES CHAMPS A RESTITUER
-C
-C
-        DO 30 ISYMB = 1,NBSYMB
-C
-          CHSYMB = SYMB(ISYMB)
-C
-C  REQUETTE NOM ET ADRESSE CHAMNO GENERALISE
-          CALL DCAPNO(RESGEN,CHSYMB,I,CHAMOL)
-          CALL JEVEUO(CHAMOL,'L',LLCHOL)
-C
-C  REQUETTE NOM ET ADRESSE NOUVEAU CHAMNO
-          CALL RSEXCH(' ',NOMRES,CHSYMB,I,CHAMNE,IER)
-          CALL VTCREA(CHAMNE,CREFE,'G','C',NEQ)
-          CALL JEVEUO(CHAMNE//'.VALE','E',LDNEW)
-C
-C   BOUCLE SUR LES SOUS-STRUCTURES
-C
-          DO 40 K = 1,NBSST
-            CALL JEEXIN(JEXNUM(INDIRF,K),IRET)
-C
-C TEST SI LA SST GENERE DES DDL GLOBAUX
-C
-            IF (IRET.NE.0) THEN
-              KBID = '  '
-              CALL MGUTDM(MODGEN,KBID,K,'NOM_BASE_MODALE',IBID,BASMOD)
-              CALL DISMOI('F','NB_MODES_TOT',BASMOD,'RESULTAT',
-     &                      NBBAS,KBID,IER)
-              KBID = '  '
-              CALL MGUTDM(MODGEN,KBID,K,'NOM_NUME_DDL',IBID,NUMDDL)
-              CALL DISMOI('F','NB_EQUA',NUMDDL,'NUME_DDL',NEQS,KBID,
-     &                    IRET)
-              CALL WKVECT('&&'//PGC//'.TRAV','V V C',NEQS,LTVEC)
-C
-C RECUPERATION DU NUMERO TARDIF DE LA SST
-C
-              DO 50 J = 1,NBSST
-                IF (ZI(LLORS+J-1).EQ.K) NUTARS = J
-   50         CONTINUE
-              IEQ = ZI(LLPRS+ (NUTARS-1)*2)
-C
-C  BOUCLE SUR LES MODES PROPRES DE LA BASE
-C
-              DO 60 J = 1,NBBAS
-                CALL DCAPNO(BASMOD,'DEPL',J,CHAMBA)
-                CALL JEVEUO(CHAMBA,'L',LLCHAB)
-C     BOUCLE SUR LES EQUATIONS PHYSIQUES
-                IAD = LLCHOL + ZI(LLNUEQ+IEQ+J-2) - 1
-C
-C  BOUCLE SUR LES DDL DE LA BASE
-C
-                DO 70 L = 1,NEQS
-                  ZC(LTVEC+L-1) = ZC(LTVEC+L-1) + ZR(LLCHAB+L-1)*ZC(IAD)
-   70           CONTINUE
-                CALL JELIBE(CHAMBA)
-   60         CONTINUE
-              CALL JEVEUO(JEXNUM(INDIRF,K),'L',LLIND)
-              CALL JELIRA(JEXNUM(INDIRF,K),'LONMAX',NBCOU,K1BID)
-              NBCOU = NBCOU/2
-              DO 80 L = 1,NBCOU
-                IDEP = ZI(LLIND+ (L-1)*2)
-                IAR = ZI(LLIND+ (L-1)*2+1)
-                ZC(LDNEW+IAR-1) = ZC(LTVEC+IDEP-1)
-   80         CONTINUE
-              CALL JELIBE(JEXNUM(INDIRF,K))
-              CALL JEDETR('&&'//PGC//'.TRAV')
-            END IF
+      IARCHI = 0     
+       
+      IF (INTERP(1:3).NE.'NON') THEN
+        CALL U2MESS('F','ALGORITH3_86')
+      ELSE
 
-   40     CONTINUE
-          CALL RSNOCH(NOMRES,CHSYMB,I)
+C        CALL JEEXIN(HARMGE//'.ORDR',IRET)
+C        IF (IRET.NE.0.AND.ZI(JNUME).EQ.1) IARCHI=0
 C
-          CALL JELIBE(CHAMOL)
+        DO 50 I=0,NBFREQ-1
+          IARCHI = IARCHI + 1
 C
-C ROTATION DU CHAMPS AU NOEUDS
+          DO 52 ICH=1,NBCHAM
+            IDRESU = ITRESU(ICH)
+C-- SI ELIMINATION, ON RESTITUE D'ABORD LES MODES GENERALISES       
+            IF (ELIM .NE. 0) THEN      
+              DO 22 I1=1,NEQET
+                ZC(LMOET+I1-1)=DCMPLX(0.D0,0.D0)
+                DO 33 K1=1,NEQRED
+                  ZC(LMOET+I1-1)=ZC(LMOET+I1-1)+
+     &              ZR(LMAPRO+(K1-1)*NEQET+I1-1)*
+     &              ZC(IDRESU+K1-1+(ZI(JNUME+I)-1)*NEQRED)
+  33            CONTINUE
+  22          CONTINUE             
+            ENDIF        
+            CALL RSEXCH(' ',NOMRES,CHMP(ICH),IARCHI,CHAMNO,IRET)
+            IF (IRET.EQ.0) THEN
+              CALL U2MESK('A','ALGORITH2_64',1,CHAMNO)
+            ELSEIF (IRET.EQ.100) THEN
+              CALL VTCREA(CHAMNO,CREFE,'G','C',NEQ)
+            ELSE
+              CALL ASSERT(.FALSE.)
+            ENDIF
+            CHAMNO(20:24) = '.VALE'
+            CALL JEVEUO(CHAMNO,'E',LDNEW)
 C
-          CALL ROTCHC(PROFNO,ZC(LDNEW),ZR(LTROTZ),NBSST,ZI(LLINSK),
-     &                NBNOT,NBCMP,3)
-          CALL ROTCHC(PROFNO,ZC(LDNEW),ZR(LTROTY),NBSST,ZI(LLINSK),
-     &                NBNOT,NBCMP,2)
-          CALL ROTCHC(PROFNO,ZC(LDNEW),ZR(LTROTX),NBSST,ZI(LLINSK),
-     &                NBNOT,NBCMP,1)
-   30   CONTINUE
+C --- BOUCLE SUR LES SOUS-STRUCTURES
 C
-C     ENREGISTREMENT DES FREQUENCES DANS NOMRES
+            DO 54 K=1,NBSST
+              CALL JEEXIN(JEXNUM(INDIRF,K),IRET)
 C
-        CALL RSADPA(RESGEN,'L',1,NOMPAR,I,0,IAFREQ,KBID)
-        FREQ = ZR(IAFREQ(1))
-        CALL RSADPA(NOMRES,'E',1,NOMPAR,I,0,IAFREQ,KBID)
-        ZR(IAFREQ(1)) = FREQ
+C --- TEST SI LA SST GENERE DES DDL GLOBAUX
 C
-   20 CONTINUE
+              IF (IRET.NE.0) THEN
+C
+C --- RECUPERATION DU NUMERO TARDIF DE LA SST
+C
+                IF (ELIM .NE. 0) THEN
+                  CALL JENONU(JEXNOM(NOMSST,ZK8(LSST+K-1)),NUMSST)
+                  IEQ=0
+                  DO 43 I1=1,K-1
+                    IEQ=IEQ+ZI(LSILIA+I1-1)
+  43              CONTINUE 
+                ELSE
+                  NUMSST=K
+C  RECUPERATION DU NUMERO TARDIF DE LA SST
+                  NUTARS = 0
+                  DO 44 J=1,NBSST
+                    IF(ZI(LLORS+J-1).EQ.NUMSST) NUTARS=J
+  44              CONTINUE
+                  IEQ=ZI(LLPRS+(NUTARS-1)*2)
+                ENDIF
+                K8BID = '  '
+                CALL MGUTDM(MODGEN,K8BID,NUMSST,'NOM_BASE_MODALE',
+     &                      IBID,BASMOD)
+                CALL DISMOI('F','NB_MODES_TOT',BASMOD,'RESULTAT',
+     &                      NBBAS,K8BID,IER)
+                K8BID = '  '
+                CALL MGUTDM(MODGEN,K8BID,NUMSST,'NOM_NUME_DDL',IBID,
+     &                      NUMDDL)
+                CALL DISMOI('F','NB_EQUA',NUMDDL,'NUME_DDL',NEQS,K8BID,
+     &                      IRET)
+                CALL WKVECT('&&'//PGC//'.TRAV','V V C',NEQS,LTVEC)
+C
+C --- BOUCLE SUR LES MODES PROPRES DE LA BASE
+C
+                DO 58 J=1,NBBAS
+                  CALL DCAPNO(BASMOD,'DEPL',J,CHAMBA)
+                  CALL JEVEUO(CHAMBA,'L',LLCHAB)
+
+                  IF (ELIM .NE. 0) THEN
+                    IAD=LMOET+IEQ+J-1
+                  ELSE
+                    IAD=IDRESU+(ZI(JNUME+I)-1)*NEQGEN+
+     &                  ZI(LLNUEQ+IEQ+J-2)-1
+                  ENDIF
+C
+C --- BOUCLE SUR LES EQUATIONS PHYSIQUES
+C
+                  DO 60 L=1,NEQS
+                    ZC(LTVEC+L-1)=ZC(LTVEC+L-1)+ZR(LLCHAB+L-1)*ZC(IAD)
+60                CONTINUE
+58              CONTINUE
+                CALL JEVEUO(JEXNUM(INDIRF,NUMSST),'L',LLIND)
+                CALL JELIRA(JEXNUM(INDIRF,NUMSST),'LONMAX',NBCOU,
+     &                      K8BID)
+                NBCOU = NBCOU/2
+                DO 65 L=1,NBCOU
+                  IDEP = ZI(LLIND+(L-1)*2)
+                  IAR = ZI(LLIND+(L-1)*2+1)
+                  ZC(LDNEW+IAR-1) = ZC(LTVEC+IDEP-1)
+65              CONTINUE
+                CALL JEDETR('&&'//PGC//'.TRAV')
+              ENDIF
+C
+54          CONTINUE
+            CALL RSNOCH(NOMRES,CHMP(ICH),IARCHI)
+C
+C --- ROTATION DU CHAMP AUX NOEUDS
+C
+            CALL ROTCHC(PROFNO,ZC(LDNEW),ZR(LTROTZ),NBSST,ZI(LLINSK),
+     &                  NBNOT,NBCMP,3)
+            CALL ROTCHC(PROFNO,ZC(LDNEW),ZR(LTROTY),NBSST,ZI(LLINSK),
+     &                  NBNOT,NBCMP,2)
+            CALL ROTCHC(PROFNO,ZC(LDNEW),ZR(LTROTX),NBSST,ZI(LLINSK),
+     &                  NBNOT,NBCMP,1)
+C
+52        CONTINUE
+          CALL RSADPA(NOMRES,'E',1,'FREQ',IARCHI,0,LFREQ,K8B)
+          ZR(LFREQ) = ZR(JFREQ+I)
+50      CONTINUE
+C
+      ENDIF
+C
+      CALL WKVECT(NOMRES//'           .REFD','G V K24',7,LREFE)
+
+      ZK24(LREFE  ) = ZK24(LLREF1)
+      ZK24(LREFE+1) = ZK24(LLREF1+1)
+      ZK24(LREFE+2) = ZK24(LLREF1+2)
+      ZK24(LREFE+3) = ZK24(LLREF1+3)
+      ZK24(LREFE+4) = ZK24(LLREF1+4)
+      ZK24(LREFE+5) = ZK24(LLREF1+5)
+      ZK24(LREFE+6) = ZK24(LLREF1+6)
 C
       CALL JEDETC('V','&&'//PGC,1)
-      CALL JELIBE(NUMGEN//'.NUEQ')
+      CALL JEDETC(' ','&&RETREC',1)
 C
       GOTO 9999
-
+C
  9999 CONTINUE
+
       CALL JEDEMA()
       END

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/04/2012   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,9 +17,9 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE COURTOIS M.COURTOIS
-def calc_fonction_prod(self,DERIVE,EXTRACTION,INTEGRE,INVERSE,COMB,COMB_C,
-                       ENVELOPPE,FRACTILE,SPEC_OSCI,ASSE,FFT,COMPOSE,CORR_ACCE,PUISSANCE,
-                       LISS_ENVELOP,ABS, REGR_POLYNOMIALE, DSP, **args):
+def calc_fonction_prod(self, DERIVE, EXTRACTION, INTEGRE, INVERSE, COMB, COMB_C, MULT,
+                       ENVELOPPE, FRACTILE, SPEC_OSCI, ASSE, FFT, COMPOSE, CORR_ACCE,
+                       PUISSANCE, LISS_ENVELOP, ABS, REGR_POLYNOMIALE, DSP, **args):
 
    if (INTEGRE     != None): return fonction_sdaster
    if (DERIVE      != None): return fonction_sdaster
@@ -49,6 +49,12 @@ def calc_fonction_prod(self,DERIVE,EXTRACTION,INTEGRE,INVERSE,COMB,COMB_C,
    if (DSP         != None): return fonction_sdaster
    if (COMPOSE     != None): return fonction_sdaster
    if (ASSE        != None): return fonction_sdaster
+   if (MULT        != None):
+      type_vale = AsType(MULT[0]['FONCTION'])
+      for mcfact in MULT:
+          if(AsType(mcfact['FONCTION']) != type_vale):
+             raise AsException("CALC_FONCTION/MULT : pas de types hétérogènes nappe/fonction")
+      return type_vale
    if (FFT         != None):
       vale=FFT[0]['FONCTION']
       if (AsType(vale) == fonction_sdaster )  : return fonction_c
@@ -67,9 +73,10 @@ CALC_FONCTION=MACRO(nom="CALC_FONCTION",
                     fr="Effectue des opérations mathématiques sur des concepts de type fonction",
                     reentrant='n',
                     UIinfo={"groupes":("Fonctions",)},
-         regles=(UN_PARMI('DERIVE','INTEGRE','SPEC_OSCI','DSP','COMB','COMB_C','ENVELOPPE',
-                          'COMPOSE','EXTRACTION','ASSE','FFT','CORR_ACCE', 'PUISSANCE',
-                          'LISS_ENVELOP','INVERSE','ABS','FRACTILE','REGR_POLYNOMIALE'),),
+         regles=(UN_PARMI('DERIVE', 'INTEGRE', 'SPEC_OSCI', 'DSP', 'FFT', 'CORR_ACCE',
+                          'COMB', 'COMB_C', 'MULT', 'ASSE', 'INVERSE', 'ABS',
+                          'ENVELOPPE', 'COMPOSE', 'EXTRACTION', 'PUISSANCE', 
+                          'LISS_ENVELOP', 'FRACTILE', 'REGR_POLYNOMIALE'),),
          FFT             =FACT(statut='f',fr="Transformée de Fourier ou de son inverse",
            FONCTION        =SIMP(statut='o',typ=(fonction_sdaster,fonction_c) ),
            METHODE         =SIMP(statut='f',typ='TXM',defaut="PROL_ZERO",into=("PROL_ZERO","TRONCATURE","COMPLET") ),
@@ -131,7 +138,11 @@ CALC_FONCTION=MACRO(nom="CALC_FONCTION",
            COEF_R          =SIMP(statut='f',typ='R',fr="Coefficient réel de la combinaison linéaire associée à la fonction" ),
            COEF_C          =SIMP(statut='f',typ='C',fr="Coefficient complexe de la combinaison linéaire associée à la fonction" ),
          ),
-         b_comb          =BLOC ( condition = "COMB != None or COMB_C != None or REGR_POLYNOMIALE != None",
+         MULT            =FACT(statut='f',max='**',fr="Produit de fonctions réelles",
+           FONCTION        =SIMP(statut='o',typ=(fonction_sdaster,fonction_c,nappe_sdaster) ),
+         ),
+         b_comb          =BLOC ( condition = "COMB != None or COMB_C != None " \
+                                             "or REGR_POLYNOMIALE != None or MULT != None",
              LIST_PARA      =SIMP(statut='f',typ=listr8_sdaster ),
          ),
          COMPOSE         =FACT(statut='f',fr="Composition de deux fonctions FONC_RESU(FONC_PARA)",

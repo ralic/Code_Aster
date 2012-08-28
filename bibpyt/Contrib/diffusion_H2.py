@@ -1,4 +1,4 @@
-#@ MODIF diffusion_H2 Contrib  DATE 31/07/2012   AUTEUR DESROCHE X.DESROCHES 
+#@ MODIF diffusion_H2 Contrib  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -338,9 +338,9 @@ def char_source_ops(self,RESU_H2,TINIT,TFIN,RESUMECA,GRMAVOL,DIME,Ctot0,Nl,Kt,a1
    __VINT1=CREA_CHAMP( OPERATION='EXTR',TYPE_CHAM='NOEU_VAR2_R',RESULTAT=__EPEQN,NOM_CHAM='VARI_NOEU',INST=TFIN) 
    
    # recopie du champ C20 pour initialiser le futur champ source
-   NEUTNOEU=CREA_CHAMP(OPERATION='AFFE',TYPE_CHAM='NOEU_NEUT_R',MAILLAGE=__MAIL,
+   __chtmp=CREA_CHAMP(OPERATION='AFFE',TYPE_CHAM='NOEU_NEUT_R',MAILLAGE=__MAIL,
                     AFFE=(_F(VALE=0.,GROUP_MA=GRMAVOL,NOM_CMP='X1',),))
-   nomcham = NEUTNOEU.sdj.nomj()
+   nomcham = __chtmp.sdj.nomj()
                     
    # on suppose que les noeuds du maillage thermique et mecaniqeu sont les memes (pour eviter un PROJ_CHAMP)
    lc_t0=__C20.EXTR_COMP('TEMP',[],1)
@@ -363,13 +363,12 @@ def char_source_ops(self,RESU_H2,TINIT,TFIN,RESUMECA,GRMAVOL,DIME,Ctot0,Nl,Kt,a1
       ######### avec INCLUDE   : ne trouve pas SOURCE, mais en important la macro, cela marche
       source[ino]=SOURCE(Cl,p1,dpdt,Ctot0,Nl,Kt,a1,a2,a3)
 
-   aster.putvectjev( 'NEUTNOEU           .VALE', nbnode,tuple(range(1,nbnode+1)),tuple(source),tuple(bidon),1 )
-   __NEUTG =CREA_CHAMP( OPERATION='DISC',TYPE_CHAM='ELGA_NEUT_R',MODELE=__MOTH,PROL_ZERO='OUI',CHAM_GD=NEUTNOEU,) ;
+   nomvect = '%-19s.VALE' % __chtmp.nom
+   aster.putvectjev(nomvect, nbnode,tuple(range(1,nbnode+1)),tuple(source),tuple(bidon),1 )
+   __NEUTG =CREA_CHAMP( OPERATION='DISC',TYPE_CHAM='ELGA_NEUT_R',MODELE=__MOTH,PROL_ZERO='OUI',CHAM_GD=__chtmp,) ;
    __CHSOUR=CREA_CHAMP( OPERATION='ASSE',TYPE_CHAM='ELGA_SOUR_R',MODELE=__MOTH,INFO=1,
                     ASSE=(_F(CHAM_GD =__NEUTG,GROUP_MA=GRMAVOL,NOM_CMP = 'X1',NOM_CMP_RESU ='SOUR',),))
                     
-   DETRUIRE(INFO=1,CONCEPT=_F(NOM=(NEUTNOEU)))
-   
    chth=AFFE_CHAR_THER(MODELE=__MOTH,
                            SOURCE=_F(SOUR_CALCULEE=__CHSOUR,),
                            )
@@ -450,9 +449,9 @@ def champ_detoile_ops(self,RESU_H2,TINIT,TFIN,RESUMECA,GRMAVOL,DIME,Ctot0,Nl,Kt,
    __VINT1=CREA_CHAMP( OPERATION='EXTR',TYPE_CHAM='NOEU_VAR2_R',RESULTAT=__EPEQN,NOM_CHAM='VARI_NOEU',INST=TFIN) 
    
    # recopie du champ C20 pour initialiser le futur champ source
-   NEUTNOEU=CREA_CHAMP(OPERATION='AFFE',TYPE_CHAM='NOEU_NEUT_R',MAILLAGE=__MAIL,
+   __chtmp=CREA_CHAMP(OPERATION='AFFE',TYPE_CHAM='NOEU_NEUT_R',MAILLAGE=__MAIL,
                     AFFE=(_F(VALE=0.,GROUP_MA=GRMAVOL,NOM_CMP='X1',),))
-   nomcham = NEUTNOEU.sdj.nomj()
+   nomcham = __chtmp.sdj.nomj()
                     
    # on suppose que les noeuds du maillage thermique et mecaniqeu sont les memes (pour eviter un PROJ_CHAMP)
    lc_t0=__C20.EXTR_COMP('TEMP',[],1)
@@ -470,10 +469,9 @@ def champ_detoile_ops(self,RESU_H2,TINIT,TFIN,RESUMECA,GRMAVOL,DIME,Ctot0,Nl,Kt,
       p1=p_t1[ino]
       detoile[ino]=DETOILE(Cl,p1,Ctot0,Nl,Kt,a1,a2,a3)
 
-   aster.putvectjev( 'NEUTNOEU           .VALE', nbnode,tuple(range(1,nbnode+1)),tuple(detoile),tuple(bidon),1 )
-   NEUTG =CREA_CHAMP( OPERATION='DISC',TYPE_CHAM='ELNO_NEUT_R',MODELE=__MOTH,PROL_ZERO='OUI',CHAM_GD=NEUTNOEU,) ;
-   DETRUIRE(INFO=1,CONCEPT=_F(NOM=(NEUTNOEU)))
-   
+   nomvect = '%-19s.VALE' % __chtmp.nom
+   aster.putvectjev(nomvect, nbnode,tuple(range(1,nbnode+1)),tuple(detoile),tuple(bidon),1 )
+   NEUTG =CREA_CHAMP( OPERATION='DISC',TYPE_CHAM='ELNO_NEUT_R',MODELE=__MOTH,PROL_ZERO='OUI',CHAM_GD=__chtmp,) ;
                        
    ################################################################
 

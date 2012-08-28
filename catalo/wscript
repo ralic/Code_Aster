@@ -103,8 +103,8 @@ def build_cata_ele(self, ojb, install_path):
         exec_pyaster(self, 'Execution/E_SUPERV.py', cwd=bldnode.abspath(),
                      args=['-eficas_path', '${PYTHONARCHDIR}',
                            '-commandes', comm.abspath(),
-                           '-memjeveux', '8',
-                           '-tpmax', '60'])
+                           '-memjeveux', '64',
+                           '-tpmax', '120'])
     finally: # fort.4 -> .ojb
         os.rename(after, before)
 

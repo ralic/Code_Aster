@@ -19,7 +19,7 @@
       LOGICAL EXTIM,THLAGR,GLAGR,MILIEU,PAIR,THLAG2,LMELAS
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 28/08/2012   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,8 +72,8 @@ C ......................................................................
 
 
       INTEGER I,IBID,IADRG,IADRGS,IRET,JRESU,NCHIN
-      INTEGER NNOFF,NUM,INCR,NRES,NSIG,NDEP
-      INTEGER NDEG,IERD,INIT,GPMI(3), NUMFON
+      INTEGER NNOFF,NUM,INCR,NRES,NSIG,INO1,INO2,INGA
+      INTEGER NDEG,IERD,GPMI(3), NUMFON
       INTEGER IADRNO,IADGI,IADABS,IFM,NIV,IFON
 
       REAL*8 GTHI,GPMR(3),XL
@@ -91,7 +91,7 @@ C ......................................................................
       CHARACTER*19 BASLOC,PINTTO,CNSETO,HEAVTO,LONCHA,LNNO,LTNO,PMILTO
       CHARACTER*19 LONGCO,PINTER,AINTER,CFACE,BASECO
       CHARACTER*24 LIGRMO,CHGEOM,CHGTHI
-      CHARACTER*24 CHSIGI,CHDEPI
+      CHARACTER*24 CHSIGI,CHDEPI,SIGOUT,CELMOD
       CHARACTER*24 LCHIN(40),LCHOUT(1),CHTHET,CHTIME
       CHARACTER*24 OBJCUR,NORMFF,PAVOLU,PAPRES,PA2D3D
       CHARACTER*24 CHSIG,CHEPSP,CHVARI,TYPE,PEPSIN
@@ -133,22 +133,29 @@ C- RECUPERATION DU COMPORTEMENT
       END IF
 
 C- RECUPERATION DE L'ETAT INITIAL
+      IF (INCR.NE.0) THEN
+          CALL GETVID('COMP_INCR','SIGM_INIT',1,IARG,1,CHSIGI,NSIG)
+C- VERIFICATION DU TYPE DE CHAMP + TRANSFO, SI NECESSAIRE, EN CHAMP ELNO
+          IF (NSIG.NE.0) THEN
+              CALL CHPVER ('C', CHSIGI,'ELNO','SIEF_R',INO1)
+              CALL CHPVER ('C', CHSIGI,'NOEU','SIEF_R',INO2)
+              CALL CHPVER ('C', CHSIGI,'ELGA','SIEF_R',INGA)
+              IF ((INO1.EQ.1).AND.(INO2.EQ.1).AND.(INGA.EQ.1))THEN
+                 CALL U2MESS('F','RUPTURE1_12')
+              ELSE IF (INGA.EQ.0) THEN
+                 LIGRMO = MODELE//'.MODELE'
+                 CELMOD = '&&MECALG.CELMOD'
+                 SIGOUT = '&&MECALG.SIGOUT'
+                 CALL ALCHML(LIGRMO,'CALC_G','PSIGINR','V',CELMOD,
+     &            IRET,' ')
+                 CALL CHPCHD(CHSIGI,'ELNO',CELMOD,'NON','V',
+     &           SIGOUT)
+                 CALL CHPVER ('C', SIGOUT,'ELNO','SIEF_R',INO1)
+              END IF
+          ENDIF
+      ENDIF
 
-      CALL GETFAC('ETAT_INIT',INIT)
-      IF (INIT.NE.0) THEN
-        CALL GETVID('ETAT_INIT','SIGM',1,IARG,1,CHSIGI,NSIG)
-        IF(NSIG.NE.0)THEN
-            CALL CHPVER('F',CHSIGI,'ELGA','SIEF_R',IERD)
-        ENDIF
-        CALL GETVID('ETAT_INIT','DEPL',1,IARG,1,CHDEPI,NDEP)
-        IF(NDEP.NE.0)THEN
-            CALL CHPVER('F',CHDEPI,'NOEU','DEPL_R',IERD)
-        ENDIF
-        IF ((NSIG.EQ.0) .AND. (NDEP.EQ.0)) THEN
-          CALL U2MESS('F','RUPTURE1_12')
-        END IF
-      END IF
-
+C- RECUPERATION (S'ILS EXISTENT) DES CHAMP DE TEMPERATURES (T,TREF)
       CALL VRCINS(MODELE,MATE,' ',TIME,CHVARC,CODRET)
       CALL VRCREF(MODELE,MATE(1:8),'        ',CHVREF(1:19))
 
@@ -298,17 +305,17 @@ C       OR ON A BESOIN DE LSN ET LST MEME POUR LES
           LCHIN(NCHIN+3) = CHVARI
           NCHIN = NCHIN + 3
         END IF
-        IF (INIT.NE.0) THEN
-          IF (NSIG.NE.0) THEN
+C Ecriture du champ de contrainte initiale
+C On ecrit le champ utilisateur s'il est aux noeuds
+C ou le champ transforme s'il etait aux gauss.
+        IF (NSIG.NE.0) THEN
             LPAIN(NCHIN+1) = 'PSIGINR'
-            LCHIN(NCHIN+1) = CHSIGI
-            NCHIN = NCHIN + 1
+          IF (INGA.EQ.0) THEN
+             LCHIN(NCHIN+1)=SIGOUT
+          ELSE       
+             LCHIN(NCHIN+1) = CHSIGI
           END IF
-          IF (NDEP.NE.0) THEN
-            LPAIN(NCHIN+1) = 'PDEPINR'
-            LCHIN(NCHIN+1) = CHDEPI
-            NCHIN = NCHIN + 1
-          END IF
+          NCHIN = NCHIN + 1
         END IF
         IF (OPTION.EQ.'CALC_G'.OR.OPTION.EQ.'CALC_G_F') THEN
           IF (CHVITE.NE.' ') THEN

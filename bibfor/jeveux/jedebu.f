@@ -1,6 +1,6 @@
       SUBROUTINE JEDEBU(NBFI, MXZON, IDB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -208,26 +208,20 @@ C
         CALL U2MESG('I','JEVEUX1_75',0,' ',0,IBID,0,RVAL)  
       ENDIF
       K8TAB(1) = 'LIMIT_JV'
-      K8TAB(2) = 'MEM_TOTA'   
+      K8TAB(2) = 'MEM_TOTA'
       K8TAB(3) = 'VMSIZE'
-      K8TAB(4) = 'CMAX_JV'  
-      K8TAB(5) = 'COUR_JV'  
-      K8TAB(6) = 'MEM_MUMP'  
+      K8TAB(4) = 'CMAX_JV'
+      K8TAB(5) = 'COUR_JV'
+      K8TAB(6) = 'MEM_MUMP'
       CALL UTGTME(6,K8TAB,RVAL,IRET)
 C  
       IF ( RVAL(3) .GT. 0 ) THEN
 C     
         CALL UTPTME(1,'RLQ_MEM ',RVAL(3),IRET)
         IF ( RVAL(1)-RVAL(3) .LE. 0 ) THEN
-          CALL U2MESG('F' ,'JEVEUX1_71',0,' ',0,IBID,3,RVAL)
+          CALL U2MESR('F' ,'JEVEUX1_71',3,RVAL)
         ENDIF 
         CALL JERMXD((RVAL(1)-RVAL(3))*1024*1024,IRET)
-        IF ( IRET.EQ.0 ) THEN
-          K8TAB(5) = 'RLQ_MEM'       
-          K8TAB(6) = 'COUR_JV'  
-          CALL UTGTME(6,K8TAB,RVAL,IRET2)
-          CALL U2MESG('I' ,'JEVEUX1_74',0,' ',0,IBID,5,RVAL) 
-        ENDIF 
       ENDIF 
 C 
       LISZON = 1

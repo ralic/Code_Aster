@@ -1,5 +1,5 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
-# TITRE TAUX DE RESTITUTION AVEC ETAT INITIAL
+# MODIF  DATE 28/08/2012   AUTEUR TRAN V-X.TRAN 
+# TITRE TAUX DE RESTITUTION D ENERGIE AVEC PREDEFORMATION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,10 +18,10 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # sslp102a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
-#       (DEFORMATIONS OU CONTRAINTES INITIALES)
+#      
 #
 
-DEBUT(CODE=_F(NOM='SSLP102A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='SSLP102A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
 
 MA=LIRE_MAILLAGE(FORMAT='MED',  )
 
@@ -136,41 +136,48 @@ THETA4=CALC_THETA(       MODELE=MO,
 
 G1=CALC_G(        RESULTAT=RESU,
                   NUME_ORDRE=1,
-                  THETA=_F(THETA=THETA1 ));
-
+                  THETA=_F(THETA=THETA1 ),
+                  COMP_ELAS=_F(
+                           RELATION = 'ELAS'),
+                           );
+ 
 G2=CALC_G(        RESULTAT=RESU,
                   NUME_ORDRE=1,
-                  THETA=_F(THETA=THETA2 ));
+                  THETA=_F(THETA=THETA2 ),
+                  COMP_ELAS=_F(
+                           RELATION = 'ELAS'),);
 
 G3=CALC_G(        RESULTAT=RESU,
                   NUME_ORDRE=1,
-                  THETA=_F(THETA=THETA3 ));
+                  THETA=_F(THETA=THETA3 ),
+                  COMP_ELAS=_F(
+                           RELATION = 'ELAS'),);
 
 G4=CALC_G(        RESULTAT=RESU,
                   NUME_ORDRE=1,
-                  THETA=_F(THETA=THETA4 ));
+                  THETA=_F(THETA=THETA4 ),
+                  COMP_ELAS=_F(
+                           RELATION = 'ELAS'),);
 
 #--------------------------------------------------------------------
 #  CALCUL DE G AVEC DEFORMATIONS INITIALES + ETAT INITIAL
 #--------------------------------------------------------------------
 
 
-G13=CALC_G(        RESULTAT=RESU,
-                   NUME_ORDRE=1,
-                   ETAT_INIT=_F( DEPL = DEPLA),
-                   THETA=_F(THETA=THETA3 ))
+# G13=CALC_G(        RESULTAT=RESU,
+#                    NUME_ORDRE=1,
+#                    ETAT_INIT=_F( DEPL = DEPLA),
+#                    THETA=_F(THETA=THETA3 ))
 
-G14=CALC_G(        RESULTAT=RESU,
-                   NUME_ORDRE=1,
-                   ETAT_INIT=_F( DEPL = DEPLA),
-                   THETA=_F(THETA=THETA4 ))
-
-
+# G14=CALC_G(        RESULTAT=RESU,
+#                    NUME_ORDRE=1,
+#                    ETAT_INIT=_F( DEPL = DEPLA),
+#                    THETA=_F(THETA=THETA4 ))
 #--------------------------------------------------------------------
 #                TESTS DES RESULTATS                                #
 #--------------------------------------------------------------------
 
-
+ 
 TEST_TABLE(       TABLE=G1,
                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
                                   VALE_I = 1),
@@ -179,11 +186,11 @@ TEST_TABLE(       TABLE=G1,
                       PRECISION=1.E-3   )
 
 TEST_TABLE(       TABLE=G2,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                        FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
                                   VALE_I = 1),
                        NOM_PARA='G',
                            VALE=1.8E-1,
-                      PRECISION=1.E-3   )
+                     PRECISION=1.E-3   )
 
 TEST_TABLE(       TABLE=G3,
                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
@@ -196,23 +203,8 @@ TEST_TABLE(       TABLE=G4,
                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
                                   VALE_I = 1),
                        NOM_PARA='G',
-                           VALE=1.8E-1,
+                          VALE=1.8E-1,
                       PRECISION=1.E-3   )
-
-TEST_TABLE(       TABLE=G13,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
-                       NOM_PARA='G',
-                           VALE=1.21E-1,
-                      PRECISION=2.E-2   )
-
-TEST_TABLE(       TABLE=G14,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
-                       NOM_PARA='G',
-                           VALE=2.88E-1,
-                      PRECISION=2.E-2   )
-
 
 FIN( )
 #

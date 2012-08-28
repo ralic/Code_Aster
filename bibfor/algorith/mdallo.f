@@ -1,19 +1,19 @@
       SUBROUTINE MDALLO (NOMRES,BASEMO,MASGEN,RIGGEN,AMOGEN,NBMODE,DT,
      +                   NBSAUV, NBCHOC,NOECHO,INTITU,
-     +                   NBREDE,FONRED, NBREVI,
-     +                   JDEPL,JVITE,JACCE,JPTEM,JORDR,JINST,
+     +                   NBREDE,FONRED,NBREVI,FONREV,
+     +                   JDEPL,JVITE,JACCE,JPTEM,JORDR,JDISC,
      +                   JFCHO,JDCHO,JVCHO, JADCHO,
-     +                   JREDC,JREDD, LPSTO, METHOD)
+     +                   JREDC,JREDD, JREVC, JREVD, METHOD,
+     +                   NBSYM,NOMSYM,TYPCAL)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
-      CHARACTER*(*) BASEMO
-      CHARACTER*8 NOMRES,MASGEN,RIGGEN,AMOGEN,INTITU(*),KBID,KB
-      CHARACTER*8 NOECHO(NBCHOC,*),FONRED(NBREDE,*)
+      CHARACTER*(*) BASEMO,MASGEN,RIGGEN,AMOGEN
+      CHARACTER*8 NOMRES,INTITU(*),KBID,KB
+      CHARACTER*8 NOECHO(NBCHOC,*),FONRED(NBREDE,*),FONREV(NBREVI,*)
       CHARACTER*16 METHOD
-      LOGICAL LPSTO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,10 +32,10 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_21
 C
-C     ALLOCATION DES VECTEURS DE SORTIE
+C     ALLOCATION DES VECTEURS DE SORTIE POUR UN CALCUL TRANSITOIRE 
+C     SUR BASE GENERALISEE (SD_DYNA_GENE)
 C     ------------------------------------------------------------------
 C IN  : NOMRES : NOM DU RESULTAT
-C IN  : METHOD : METHODE EMPLOYE
 C IN  : BASEMO : NOM DU CONCEPT BASE MODALE
 C IN  : MASGEN : NOM DU CONCEPT MASSE GENERALISEE
 C IN  : RIGGEN : NOM DU CONCEPT RAIDEUR GENERALISEE
@@ -49,18 +49,22 @@ C IN  : INTITU : TABLEAU DES NOMS DES LIAISONS
 C IN  : NBREDE : NOMBRE DE RELATION EFFORT DEPLACEMENT (RED)
 C IN  : FONRED : TABLEAU DES FONCTIONS DE RED
 C IN  : NBREVI : NOMBRE DE RELATION EFFORT VITESSE (REV)
-C IN  : LPSTO  : LOGIQUE =VRAI SI STOCKAGE DU PAS DE TEMPS VARIABLE
 C IN  : METHOD : ALGORITHME UTILISE (DEVOGE, EULER, ...)
 C                DANS LE CAS ITMI, UN OBJET EST DIFFERENT
+C IN  : TYPCAL : VAUT 'HARM' OU 'TRAN'
 C ----------------------------------------------------------------------
-      INTEGER      NBSAUV, NBSTOC,J1REFE
+      INTEGER      NBSAUV, NBSTOC,J1REFE, NBSYM, IARG, INOM
       CHARACTER*8  NUMGEN,BLANC
+      CHARACTER*5  ATTRIB
+      CHARACTER*4  TYPCAL,NOMSYM(3)
+      CHARACTER*12 BL11PT
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER I ,IC ,IRET ,JACCE ,JADCHO ,JDCHO ,JDEPL 
-      INTEGER JDESC ,JFCHO ,JINST ,JINTI ,JNCHO ,JORDR ,JPTEM 
-      INTEGER JREDC ,JREDD ,JREDN ,JREFE ,JSST ,JVCHO ,JVINT 
-      INTEGER JVITE ,NBCHOC ,NBMODE ,NBREDE ,NBREVI ,NBSTO1 
+      INTEGER I ,IC ,IRET ,JACCE ,JADCHO ,JDCHO ,JDEPL, JCHMP
+      INTEGER JDESC ,JFCHO ,JDISC ,JINTI ,JNCHO ,JORDR ,JPTEM 
+      INTEGER JREDC ,JREDD ,JREDN , JREVC ,JREVD ,JREVN
+      INTEGER JREFE ,JSST ,JVCHO ,JVINT 
+      INTEGER JVITE ,NBCHOC ,NBMODE ,NBREDE ,NBREVI ,NBSTO1
       REAL*8 DT 
 C-----------------------------------------------------------------------
       CALL JEMARQ()
@@ -71,37 +75,67 @@ C-----------------------------------------------------------------------
       JADCHO= 1
       JREDC = 1
       JREDD = 1
+      JREVC = 1
+      JREVD = 1
       BLANC =  '        '
+      BL11PT = '           .'
 C
       CALL JEEXIN(NOMRES//'           .REFD',IRET)
       IF (IRET.EQ.0) THEN
 C On recupere la numerotation generalisee
-         CALL JEEXIN(RIGGEN//'           .REFA',IRET)
+         CALL JEEXIN(RIGGEN(1:8)//'           .REFA',IRET)
          IF (IRET.NE.0) THEN
-           CALL JEVEUO(RIGGEN//'           .REFA','L',J1REFE)
+           CALL JEVEUO(RIGGEN(1:8)//'           .REFA','L',J1REFE)
            NUMGEN = ZK24(J1REFE+1)(1:8)
          ELSE
            NUMGEN = BLANC
          ENDIF
-         CALL WKVECT(NOMRES//'           .REFD','G V K24',7,JREFE)
-         ZK24(JREFE) = RIGGEN
-         ZK24(JREFE+1) = MASGEN
-         ZK24(JREFE+2) = AMOGEN
-         ZK24(JREFE+3) = NUMGEN
-         ZK24(JREFE+4) = ' '
-         ZK24(JREFE+5) = BASEMO(1:8)
-         ZK24(JREFE+6) = ' '
+         CALL WKVECT(NOMRES//'           .REFD','G V K24',5,JREFE)
+         ZK24(JREFE) = RIGGEN(1:8)
+         ZK24(JREFE+1) = MASGEN(1:8)
+         ZK24(JREFE+2) = AMOGEN(1:8)
+         ZK24(JREFE+3) = NUMGEN(1:8)
+         ZK24(JREFE+4) = BASEMO(1:8)
       ENDIF
 C
       CALL JEEXIN(NOMRES//'           .DESC',IRET)
       IF (IRET.EQ.0) THEN
          CALL WKVECT(NOMRES//'           .DESC','G V I',5,JDESC)
+C
          ZI(JDESC) = 1
-         IF ( NBCHOC.NE.0 ) ZI(JDESC) = 2
-C        --- DANS LE CAS ITMI ET ADAPT (METHODES A PAS VARIABLE),
-C            ON MET LA VALEUR 3 QUI SERVIRA DE TEST
-C             A LA COMMANDE POST_DYNA_MODA_T
-         IF (METHOD.EQ.'ITMI' .OR. METHOD(1:5).EQ.'ADAPT') ZI(JDESC) = 3
+C        
+         IF (TYPCAL.EQ.'HARM') THEN 
+           ZI(JDESC) = 4
+C          -- DANS LE CAS 'HARM' ON REMPLIT LA VALEUR A 4
+C
+C          -- BLINDAGE : VERIFICATION DE NBSYM ET NOMSYM
+           IF ((NBSYM.LE.0).OR.(NBSYM.GE.4)) THEN
+             CALL U2MESS('F','ALGORITH17_29')
+           ENDIF
+           DO 50, INOM = 1,NBSYM
+             IF ((NOMSYM(INOM)(1:4).NE.'DEPL').AND.
+     &           (NOMSYM(INOM)(1:4).NE.'VITE').AND. 
+     &           (NOMSYM(INOM)(1:4).NE.'ACCE')) THEN
+               CALL U2MESS('F','ALGORITH17_29')
+             ENDIF
+  50       CONTINUE 
+         ELSEIF (TYPCAL.EQ.'TRAN') THEN
+C         -- INITIALISATION DES CHAMPS A ALLOUER DANS LE CAS TRANS.
+          NBSYM     = 3
+          NOMSYM(1) = 'DEPL'
+          NOMSYM(2) = 'VITE'
+          NOMSYM(3) = 'ACCE'
+          IF ( NBCHOC.NE.0 ) THEN
+            ZI(JDESC) = 2
+          ENDIF
+C         -DANS LE CAS ITMI ET ADAPT (METHODES A PAS VARIABLE),
+C          ON MET LA VALEUR 3 QUI SERVIRA DE TEST
+C           A LA COMMANDE POST_DYNA_MODA_T
+          IF (METHOD.EQ.'ITMI'.OR.METHOD(1:5).EQ.'ADAPT')  THEN
+            ZI(JDESC) = 3
+          ENDIF
+C         DANS LE CAS TRANSITOIRE, ON REMPLIT TOUJOURS LES TROIS CHAMPS
+         ENDIF
 C        ---
          ZI(JDESC+1) = NBMODE
          ZI(JDESC+2) = NBCHOC
@@ -109,39 +143,60 @@ C        ---
          ZI(JDESC+4) = NBREVI
       ENDIF
 C
+      IF (TYPCAL.EQ.'TRAN') THEN 
+          ATTRIB = 'G V R'
+          NBSYM = 3
+          NOMSYM(1) = 'DEPL'
+          NOMSYM(2) = 'VITE'
+          NOMSYM(3) = 'ACCE'
+      ELSE
+          ATTRIB = 'G V C'
+      ENDIF
+C
       IF (NBSAUV.NE.0) THEN
-        CALL JECREO(NOMRES//'           .DEPL' ,'G V R')
-        CALL JEECRA(NOMRES//'           .DEPL' ,'LONMAX',NBSTOC,KBID)
-        CALL JEECRA(NOMRES//'           .DEPL' ,'LONUTI',NBSTOC,KBID)
-        CALL JEVEUT(NOMRES//'           .DEPL' ,'E',JDEPL)
-        CALL JECREO(NOMRES//'           .VITE' ,'G V R')
-        CALL JEECRA(NOMRES//'           .VITE' ,'LONMAX',NBSTOC,KBID)
-        CALL JEECRA(NOMRES//'           .VITE' ,'LONUTI',NBSTOC,KBID)
-        CALL JEVEUT(NOMRES//'           .VITE' ,'E',JVITE)
-        CALL JECREO(NOMRES//'           .ACCE' ,'G V R')
-        CALL JEECRA(NOMRES//'           .ACCE' ,'LONMAX',NBSTOC,KBID)
-        CALL JEECRA(NOMRES//'           .ACCE' ,'LONUTI',NBSTOC,KBID)
-        CALL JEVEUT(NOMRES//'           .ACCE' ,'E',JACCE)
+C       BOUCLE SUR LES CHAMPS A SAUVEGARDER (DEPL/VITE/ACCE)
+        DO 140 INOM = 1, NBSYM
+C
+          CALL JECREO(NOMRES//BL11PT//NOMSYM(INOM), ATTRIB)
+          CALL JEECRA(NOMRES//BL11PT//NOMSYM(INOM),'LONMAX',
+     &                NBSTOC,KBID)
+          CALL JEECRA(NOMRES//BL11PT//NOMSYM(INOM),'LONUTI',
+     &                NBSTOC,KBID)
+          CALL JEVEUT(NOMRES//BL11PT//NOMSYM(INOM),'E',JCHMP)
+C
+C         INITIALISATION DES CHAMPS A ZERO
+C
+          IF (TYPCAL.EQ.'TRAN') THEN 
+            DO 150, I = 0,NBSTOC-1
+              ZR(JCHMP+I) = 0.D0
+ 150        CONTINUE
+          ELSE
+            DO 160, I = 0,NBSTOC-1
+              ZC(JCHMP+I) = DCMPLX(0.D0,0.D0)
+ 160        CONTINUE
+          ENDIF
+          IF (NOMSYM(INOM).EQ.'DEPL') JDEPL=JCHMP
+          IF (NOMSYM(INOM).EQ.'VITE') JVITE=JCHMP
+          IF (NOMSYM(INOM).EQ.'ACCE') JACCE=JCHMP
+ 140    CONTINUE
+C
+C       OBJETS COMMUNS
         CALL JECREO(NOMRES//'           .ORDR' ,'G V I')
         CALL JEECRA(NOMRES//'           .ORDR' ,'LONMAX',NBSAUV,KBID)
         CALL JEECRA(NOMRES//'           .ORDR' ,'LONUTI',NBSAUV,KBID)
         CALL JEVEUT(NOMRES//'           .ORDR' ,'E',JORDR)
-        CALL JECREO(NOMRES//'           .INST' ,'G V R')
-        CALL JEECRA(NOMRES//'           .INST' ,'LONMAX',NBSAUV,KBID)
-        CALL JEECRA(NOMRES//'           .INST' ,'LONUTI',NBSAUV,KBID)
-        CALL JEVEUT(NOMRES//'           .INST' ,'E',JINST)
-        IF (LPSTO) THEN
+        CALL JECREO(NOMRES//'           .DISC' , 'G V R')
+        CALL JEECRA(NOMRES//'           .DISC' ,'LONMAX',NBSAUV,KBID)
+        CALL JEECRA(NOMRES//'           .DISC' ,'LONUTI',NBSAUV,KBID)
+        CALL JEVEUT(NOMRES//'           .DISC' ,'E',JDISC)
+C
+        IF (TYPCAL.EQ.'TRAN') THEN
           CALL JECREO(NOMRES//'           .PTEM' ,'G V R')
           CALL JEECRA(NOMRES//'           .PTEM' ,'LONMAX',NBSAUV,KBID)
           CALL JEECRA(NOMRES//'           .PTEM' ,'LONUTI',NBSAUV,KBID)
           CALL JEVEUT(NOMRES//'           .PTEM' ,'E',JPTEM)
-        ELSE
-          CALL JECREO(NOMRES//'           .PTEM' ,'G V R')
-          CALL JEECRA(NOMRES//'           .PTEM' ,'LONMAX',1,KBID)
-          CALL JEECRA(NOMRES//'           .PTEM' ,'LONUTI',1,KBID)
-          CALL JEVEUT(NOMRES//'           .PTEM' ,'E',JPTEM)
+          ZR(JPTEM) = DT
         ENDIF
-        ZR(JPTEM) = DT
       ENDIF
 C
 C     --- CREATION DES VECTEURS DE STOCKAGE DES FORCES DE CHOC ---
@@ -214,5 +269,27 @@ C     --- CREATION DES VECTEURS DE STOCKAGE DES RELA_EFFO_DEPL ---
         ENDIF
       ENDIF
 C
+C     --- CREATION DES VECTEURS DE STOCKAGE DES RELA_EFFO_VITE ---      
+      IF ( NBREVI.NE.0 ) THEN
+        NBSTOC = NBREVI * NBSAUV
+        IF (NBSAUV.NE.0) THEN
+          CALL JECREO(NOMRES//'           .REVC','G V I')
+          CALL JEECRA(NOMRES//'           .REVC','LONMAX',NBSTOC,KBID)
+          CALL JEECRA(NOMRES//'           .REVC','LONUTI',NBSTOC,KBID)
+          CALL JEVEUT(NOMRES//'           .REVC','E',JREVC)
+          CALL JECREO(NOMRES//'           .REVD','G V R')
+          CALL JEECRA(NOMRES//'           .REVD','LONMAX',NBSTOC,KBID)
+          CALL JEECRA(NOMRES//'           .REVD','LONUTI',NBSTOC,KBID)
+          CALL JEVEUT(NOMRES//'           .REVD','E',JREVD)
+        ENDIF
+        CALL JEEXIN(NOMRES//'           .REVN',IRET)
+        IF (IRET.EQ.0) THEN
+          CALL WKVECT(NOMRES//'           .REVN','G V K24',NBREVI,JREVN)
+          DO 30 I = 1,NBREVI
+             ZK24(JREVN+I-1) = FONREV(I,1)//FONREV(I,2)//FONREV(I,3)
+ 30       CONTINUE
+        ENDIF
+      ENDIF
+C      
       CALL JEDEMA()
       END

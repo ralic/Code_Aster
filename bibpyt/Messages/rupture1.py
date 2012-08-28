@@ -1,4 +1,4 @@
-#@ MODIF rupture1 Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF rupture1 Messages  DATE 28/08/2012   AUTEUR TRAN V-X.TRAN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -86,11 +86,11 @@ Veuillez le renseigner.
 """),
 
 12: _(u"""
-Aucun champ initial trouvé.
+Le champ de contrainte initiale n'est ni de type ELNO, ni NOEU, ni ELGA.
 """),
 
 13: _(u"""
-%(k1)s : champ initial impossible avec cette option.
+%(k1)s : prise en compte d'un état initial impossible avec cette option.
 """),
 
 14: _(u"""
@@ -118,10 +118,11 @@ association satisfaisante.
 
 
 20: _(u"""
-Une déformation initiale est présente dans la charge. Ceci est incompatible
-avec la contrainte initiale sigma_INIT.
+Votre étude comporte une charge de type PRE_EPSI. Ceci est incompatible
+avec la présence d'une contrainte initiale dans le calcul de G(mot clé SIGM_INIT
+de l'opérateur CALC_G).
 -> Risque et Conseil :
-On ne peut pas faire de calcul en introduisant simultanément une contrainte
+On ne peut pas faire de calcul de G en introduisant simultanément une contrainte
 initiale ET une déformation initiale. Veuillez revoir les données.
 """),
 
@@ -237,6 +238,19 @@ Le mot clé METHODE_POSTK doit être fourni si et seulement si la table TABLE a ét
 calculée avec l'opérateur POST_K1_K2_K3.
 """),
 
+45: _(u"""
+ Lois de comportement différentes pour la maille %(k3)s :
+ - type de déformation de la loi de comportement extraite de la SD Résultat   : %(k1)s
+ - type de déformation de la loi de comportement fournie à l'opérateur CALC_G : %(k2)s
+
+--> Risques & conseils :
+On doit généralement utiliser la même type de déformation de loi de comportement entre le calcul et le
+post-traitement. On peut utiliser deux type de déformation différents, mais alors
+l'utilisateur doit être vigilant sur l'interprétation des résultats(cf.U2.05.01).
+Si plusieurs types de déformation de comportements sont définis sur la structure, le type de déformation comportement à
+indiquer dans CALC_G est celui du matériau dans lequel la fissure se développe.
+Dans ce cas, ce message d'alarme est quand même émis mais le résultat est bien cohérent.
+"""),
 
 46: _(u"""
 Le taux de restitution d'énergie G est négatif ou nul sur certains des noeuds du fond de fissure :
@@ -244,6 +258,14 @@ le calcul de propagation est impossible.
 -> Risque et Conseil :
 Vérifier les paramètres du calcul de G (rayons des couronnes ou abscisse curviligne
 maximale, type de lissage, ...).
+"""),
+
+47: _(u"""
+Vous demandez un calcul de G en post-traitement d'un calcul élastoplastique. Ceci n'est valable que 
+si votre CHARGEMENT est MONOTONE PROPORTIONNEL.
+Si tel est le cas, renseignez, dans CALC_G, l'option COMP_ELAS, RELATION = ELAS_VMIS_XXX pour un calcul de G.
+Si votre chargement n'est pas monotone proportionnel, il faut renseigner, dans CALC_G, 
+l'option COMP_INCR, RELATION=VMIS_XXX, et dans ce cas vous calculerez GTP (modèle en cours de validation).
 """),
 
 49: _(u"""

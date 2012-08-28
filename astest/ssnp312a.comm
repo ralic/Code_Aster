@@ -1,4 +1,4 @@
-# MODIF  DATE 06/08/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 28/08/2012   AUTEUR TRAN V-X.TRAN 
 # TITRE DMT94.132 EPROUVETTE CT BIMETALLIQUE
 # ssnp312a.para = tps_job 220 mem_job 512Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -153,67 +153,78 @@ THETA4=CALC_THETA(MODELE=MO,
 G5_0=CALC_G(THETA=_F(THETA=THETA0),
            RESULTAT=CHAMDEPL,
            NUME_ORDRE=5,
-           COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+            
+           );
 #
 
 G10_0=CALC_G(THETA=_F(THETA=THETA0),
             RESULTAT=CHAMDEPL,
             NUME_ORDRE=10,
-            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+             
+            );
 #
 
 G20_0=CALC_G(THETA=_F(THETA=THETA0),
             RESULTAT=CHAMDEPL,
             NUME_ORDRE=20,
-            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+             
+            );
 #
 
 G30_0=CALC_G(THETA=_F(THETA=THETA0),
             RESULTAT=CHAMDEPL,
             NUME_ORDRE=30,
-            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+             
+            );
 #
 
 G40_0=CALC_G(THETA=_F(THETA=THETA0),
             RESULTAT=CHAMDEPL,
             NUME_ORDRE=40,
-            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+             
+            );
 #
 
 G70_0=CALC_G(THETA=_F(THETA=THETA0),
             RESULTAT=CHAMDEPL,
             NUME_ORDRE=70,
-            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+             
+            );
 #
 
 G100_0=CALC_G(THETA=_F(THETA=THETA0),
               RESULTAT=CHAMDEPL,
               NUME_ORDRE=100,
-              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+               
+              );
 #
 
 G130_0=CALC_G(THETA=_F(THETA=THETA0),
               RESULTAT=CHAMDEPL,
               NUME_ORDRE=130,
-              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+               
+              );
 #
 
 G160_0=CALC_G(THETA=_F(THETA=THETA0),
               RESULTAT=CHAMDEPL,
               NUME_ORDRE=160,
-              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+               
+              );
 #
 
 G190_0=CALC_G(THETA=_F(THETA=THETA0),
               RESULTAT=CHAMDEPL,
               NUME_ORDRE=190,
-              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+               
+              );
 #
 
 G220_0=CALC_G(THETA=_F(THETA=THETA0),
               RESULTAT=CHAMDEPL,
               NUME_ORDRE=220,
-              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+               
+              );
 #
 #
 # CALCUL DE G THETA POUR LE CHAMP THETA1
@@ -222,67 +233,78 @@ G220_0=CALC_G(THETA=_F(THETA=THETA0),
 G5_1=CALC_G(THETA=_F(THETA=THETA1),
          RESULTAT=CHAMDEPL,
          NUME_ORDRE=5,
-         COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+          
+         );
 #
 
 G10_1=CALC_G(THETA=_F(THETA=THETA1),
           RESULTAT=CHAMDEPL,
           NUME_ORDRE=10,
-          COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+           
+          );
 #
 
 G20_1=CALC_G(THETA=_F(THETA=THETA1),
           RESULTAT=CHAMDEPL,
           NUME_ORDRE=20,
-          COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+           
+          );
 #
 
 G30_1=CALC_G(THETA=_F(THETA=THETA1),
           RESULTAT=CHAMDEPL,
           NUME_ORDRE=30,
-          COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+           
+          );
 #
 
 G40_1=CALC_G(THETA=_F(THETA=THETA1),
           RESULTAT=CHAMDEPL,
           NUME_ORDRE=40,
-          COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+           
+          );
 #
 
 G70_1=CALC_G(THETA=_F(THETA=THETA1),
              RESULTAT=CHAMDEPL,
              NUME_ORDRE=70,
-             COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+              
+             );
 #
 
 G100_1=CALC_G(THETA=_F(THETA=THETA1),
               RESULTAT=CHAMDEPL,
               NUME_ORDRE=100,
-              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+               
+              );
 #
 
 G130_1=CALC_G(THETA=_F(THETA=THETA1),
               RESULTAT=CHAMDEPL,
               NUME_ORDRE=130,
-              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+               
+              );
 #
 
 G160_1=CALC_G(THETA=_F(THETA=THETA1),
               RESULTAT=CHAMDEPL,
               NUME_ORDRE=160,
-              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+               
+              );
 #
 
 G190_1=CALC_G(THETA=_F(THETA=THETA1),
               RESULTAT=CHAMDEPL,
               NUME_ORDRE=190,
-              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+               
+              );
 #
 
 G220_1=CALC_G(THETA=_F(THETA=THETA1),
               RESULTAT=CHAMDEPL,
               NUME_ORDRE=220,
-              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+               
+              );
 #
 #
 # CALCUL DE G THETA POUR LE CHAMP THETA2
@@ -291,67 +313,78 @@ G220_1=CALC_G(THETA=_F(THETA=THETA1),
 G5_2=CALC_G(THETA=_F(THETA=THETA2),
            RESULTAT=CHAMDEPL,
            NUME_ORDRE=5,
-           COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+            
+           );
 #
 
 G10_2=CALC_G(THETA=_F(THETA=THETA2),
             RESULTAT=CHAMDEPL,
             NUME_ORDRE=10,
-            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+             
+            );
 #
 
 G20_2=CALC_G(THETA=_F(THETA=THETA2),
             RESULTAT=CHAMDEPL,
             NUME_ORDRE=20,
-            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+             
+            );
 #
 
 G30_2=CALC_G(THETA=_F(THETA=THETA2),
             RESULTAT=CHAMDEPL,
             NUME_ORDRE=30,
-            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+             
+            );
 #
 
 G40_2=CALC_G(THETA=_F(THETA=THETA2),
             RESULTAT=CHAMDEPL,
             NUME_ORDRE=40,
-            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+             
+            );
 #
 
 G70_2=CALC_G(THETA=_F(THETA=THETA2),
             RESULTAT=CHAMDEPL,
             NUME_ORDRE=70,
-            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+             
+            );
 #
 
 G100_2=CALC_G(THETA=_F(THETA=THETA2),
               RESULTAT=CHAMDEPL,
               NUME_ORDRE=100,
-              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+               
+              );
 #
 
 G130_2=CALC_G(THETA=_F(THETA=THETA2),
               RESULTAT=CHAMDEPL,
               NUME_ORDRE=130,
-              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+               
+              );
 #
 
 G160_2=CALC_G(THETA=_F(THETA=THETA2),
               RESULTAT=CHAMDEPL,
               NUME_ORDRE=160,
-              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+               
+              );
 #
 
 G190_2=CALC_G(THETA=_F(THETA=THETA2),
               RESULTAT=CHAMDEPL,
               NUME_ORDRE=190,
-              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+               
+              );
 #
 
 G220_2=CALC_G(THETA=_F(THETA=THETA2),
               RESULTAT=CHAMDEPL,
               NUME_ORDRE=220,
-              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+               
+              );
 #
 # CALCUL DE G THETA POUR LE CHAMP THETA3
 # --------------------------------------
@@ -359,67 +392,75 @@ G220_2=CALC_G(THETA=_F(THETA=THETA2),
 G5_3=CALC_G(THETA=_F(THETA=THETA3),
            RESULTAT=CHAMDEPL,
            NUME_ORDRE=5,
-           COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+            
+           );
 #
 
 G10_3=CALC_G(THETA=_F(THETA=THETA3),
             RESULTAT=CHAMDEPL,
             NUME_ORDRE=10,
-            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+             
+            );
 #
 
 G20_3=CALC_G(THETA=_F(THETA=THETA3),
             RESULTAT=CHAMDEPL,
             NUME_ORDRE=20,
-            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+             
+            );
 #
 
 G30_3=CALC_G(THETA=_F(THETA=THETA3),
             RESULTAT=CHAMDEPL,
             NUME_ORDRE=30,
-            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+             
+            );
 #
 
 G40_3=CALC_G(THETA=_F(THETA=THETA3),
             RESULTAT=CHAMDEPL,
             NUME_ORDRE=40,
-            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+             
+            );
 #
 
 G70_3=CALC_G(THETA=_F(THETA=THETA3),
             RESULTAT=CHAMDEPL,
             NUME_ORDRE=70,
-            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+             
+            );
 #
 
 G100_3=CALC_G(THETA=_F(THETA=THETA3),
               RESULTAT=CHAMDEPL,
               NUME_ORDRE=100,
-              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+               
+              );
 #
 
 G130_3=CALC_G(THETA=_F(THETA=THETA3),
               RESULTAT=CHAMDEPL,
               NUME_ORDRE=130,
-              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+               
+              );
 #
 
 G160_3=CALC_G(THETA=_F(THETA=THETA3),
               RESULTAT=CHAMDEPL,
               NUME_ORDRE=160,
-              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+               );
 #
 
 G190_3=CALC_G(THETA=_F(THETA=THETA3),
               RESULTAT=CHAMDEPL,
               NUME_ORDRE=190,
-              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+               );
 #
 
 G220_3=CALC_G(THETA=_F(THETA=THETA3),
               RESULTAT=CHAMDEPL,
               NUME_ORDRE=220,
-              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+               );
 #
 # CALCUL DE G THETA POUR LE CHAMP THETA4
 # --------------------------------------
@@ -427,67 +468,67 @@ G220_3=CALC_G(THETA=_F(THETA=THETA3),
 G5_4=CALC_G(THETA=_F(THETA=THETA4),
            RESULTAT=CHAMDEPL,
            NUME_ORDRE=5,
-           COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+            );
 #
 
 G10_4=CALC_G(THETA=_F(THETA=THETA4),
             RESULTAT=CHAMDEPL,
             NUME_ORDRE=10,
-            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+             );
 #
 
 G20_4=CALC_G(THETA=_F(THETA=THETA4),
             RESULTAT=CHAMDEPL,
             NUME_ORDRE=20,
-            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+             );
 #
 
 G30_4=CALC_G(THETA=_F(THETA=THETA4),
             RESULTAT=CHAMDEPL,
             NUME_ORDRE=30,
-            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+             );
 #
 
 G40_4=CALC_G(THETA=_F(THETA=THETA4),
             RESULTAT=CHAMDEPL,
             NUME_ORDRE=40,
-            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+             );
 #
 
 G70_4=CALC_G(THETA=_F(THETA=THETA4),
             RESULTAT=CHAMDEPL,
             NUME_ORDRE=70,
-            COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+             );
 #
 
 G100_4=CALC_G(THETA=_F(THETA=THETA4),
               RESULTAT=CHAMDEPL,
               NUME_ORDRE=100,
-              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+               );
 #
 
 G130_4=CALC_G(THETA=_F(THETA=THETA4),
               RESULTAT=CHAMDEPL,
               NUME_ORDRE=130,
-              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+               );
 #
 
 G160_4=CALC_G(THETA=_F(THETA=THETA4),
               RESULTAT=CHAMDEPL,
               NUME_ORDRE=160,
-              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+               );
 #
 
 G190_4=CALC_G(THETA=_F(THETA=THETA4),
               RESULTAT=CHAMDEPL,
               NUME_ORDRE=190,
-              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+               );
 #
 
 G220_4=CALC_G(THETA=_F(THETA=THETA4),
               RESULTAT=CHAMDEPL,
               NUME_ORDRE=220,
-              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',),);
+               );
 #
 # TESTS DES RESULTATS COURONNE 0
 # -----------------------------------

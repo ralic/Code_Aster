@@ -8,7 +8,7 @@
       CHARACTER*19  RESIN,VECTOT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,7 @@ C     REALISATION N.GREFFET
 C     OPERATEUR "ENVOI A FFT : CREATION DE FONCTIONS"
 C     IN:
 C       RESIN    : SD_RESULTAT INITIALE HARMONIQUE
-C                  (VENANT DE DYNA_LINE_HARM)
+C                  (VENANT DE DYNA_LINE_HARM OU DYNA_TRAN_MODAL)
 C       METHOD   : METHODE POUR FFT
 C       SYMETRIE : SPECTRE SYMETRIQUE OU NON
 C       NSENS    : SENS FFT (1=DIRECT,-1=INVERSE)
@@ -83,10 +83,10 @@ C
       LFON = LVAR + NBORDR
       FONOUT = '&&PREFFT.FCTFFT'
 C
-      IF (TYPRES .NE. 'TRAN_GENE') THEN
+      IF (TYPRES(6:9).NE. 'GENE') THEN
          CALL RSEXCH('F',RESIN,GRANDE,1,CHDEP,IRET)
          CALL JEVEUO(CHDEP//'.VALE','L',LVAL)
-C  Nombre d'equations : NEQ
+C        --- NOMBRE D'EQUATIONS : NEQ
          CHDEP2 = CHDEP(1:19)//'.VALE'
          CALL JELIRA(CHDEP2,'LONMAX',NEQ,K1B)
       ELSE
@@ -94,56 +94,74 @@ C  Nombre d'equations : NEQ
          CHDEP2 = RESIN//'.'//GRANDE
          CALL JELIRA(CHDEP2,'LONMAX',NEQ,K1B)
          NEQ = NEQ / NBORDR
-         CALL JEVEUO(RESIN//'.INST' ,'L',LACCE)
+         CALL JEVEUO(RESIN//'.DISC' ,'L',LACCE)
+C        --- LACCE : ACCES A LA LISTE D'INSTANTS/FREQUENCES
       ENDIF
+C
       IDDL = 1
       II = 0
       SYM = SYMETR
+
       IF ( NSENS.EQ.1 ) THEN
-C  Retirer 1 pour DYNA_LINE_TRAN...
-C         NBORDR = NBORDR -1
+C     --- DE TEMPOREL EN FREQUENTIEL : TRAN_GENE EN HARM_GENE
+C         OU BIEN DYNA_TRANS EN DYNA_HARMO
 C
+C        --- PREMIER FFT SUR UN SEUL DDL DANS LE BUT DE DIMENSIONNER
+C            LE VECTEUR RESULTAT VECTOT, INDEXE PAR NPARA
          IF (TYPRES .NE. 'TRAN_GENE') THEN
+C        --- CAS OU ON DISPOSE D'UNE DYNA_TRANS:
             DO 5 IORDR = 0 , NBORDR-1
+C           --- BOUCLE SUR LES NUMEROS D'ORDRE (INSTANTS ARCHIVES)
                CALL RSEXCH('F',RESIN,GRANDE,IORDR,CHAM19,IRET)
                CALL RSADPA(RESIN,'L',1,'INST',IORDR,0,LACCE,K8B)
                CALL JEVEUO(CHAM19//'.VALE','L',LVALE)
+C              --- REMPLIR LE VECTEUR ABSCISSES DE LA FONCTION PREFFT
+C                  AVEC LA LISTE D'INSTANTS RECUPEREE
                ZR(LVAR+IORDR) = ZR(LACCE)
+C              --- REMPLIR LE VECTEUR ORDONNES DE LA FONCTION PREFFT
+C                  AVEC LE CHAMP RECUPERE
                ZR(LFON+II) = ZR(LVALE+IDDL-1)
                II = II + 1
                CALL JELIBE(CHAM19//'.VALE')
    5        CONTINUE
          ELSE
+C        --- CAS D'UNE TRAN_GENE:
             DO 6 IORDR = 0 , NBORDR-1
+C              --- REMPLIR L'ABSCISSE ET ORDONNE DE LA FONCTION PREFFT
                ZR(LVAR+IORDR) = ZR(LACCE+IORDR)
                ZR(LFON+II) = ZR(LVAL+IDDL-1+(NEQ*IORDR))
                II = II + 1
    6        CONTINUE
          ENDIF
-C         NIN = LVAR
+C
          NBVIN = NBORDR*2
-C         CALL SPDFFT(NSENS,NIN,NBVIN,NOUT,NBVOUT,METHOD,SYM,'V')
+C
+C        --- CALCUL DE LA FFT DE LA FONCTION PREFFT DEFINIE PRECEDEMNT
          CALL SPDFFT(NSENS,NOMFON,NBVIN,FONOUT,NBVOUT,METHOD,SYM,'V')
          CALL JEVEUO(FONOUT,'L',NOUT)
 C
-C   Recup resultat FFT-1
-C
+C        --- VERIFICATIONS AVANT CREATION DE LA VECTEUR DES FFT FINAL
          CALL JEEXIN( VECTOT , IRET )
-C         IF ( IRET.EQ.0) THEN
-C            CALL WKVECT(VECTOT,'V V C',(NEQ+1)*NBVOUT,NPARA)
-C         ELSE
-C            CALL JEVEUO(VECTOT,'L',NPARA)
-C         ENDIF
          IF ( IRET.NE.0) CALL JEDETR(VECTOT)
+C
+C        --- CREATION DU VECTEUR DES FFTS
          CALL WKVECT(VECTOT,'V V C',(NEQ+1)*NBVOUT,NPARA)
+C
+C        --- REMPLISSAGE AVEC LES PREMIERS RESULTATS POUR IDDL=1
          LFON2 = NOUT + NBVOUT
          DO 15 I = 1,NBVOUT
             ZC(NPARA+(IDDL-1)*NBVOUT+I-1) = ZC(LFON2+I-1)
    15    CONTINUE
+C
+C        --- BOUCLE DES FFTS SUR LES AUTRES DDL'S
+C            REFERER AUX PRECEDENTS COMMENTAIRES POUR + DE DETAILS
          IF (TYPRES .NE. 'TRAN_GENE') THEN
+C        --- CAS D'UNE DYNA_TRANS A L'ENTREE
             CALL JELIBE(CHAM19//'.VALE')
+C           --- BOUCLE SUR LES DDL'S 2 A NEQ
             DO 10 IDDL = 2 , NEQ
                II = 0
+C              --- REMPLISSAGE ORDONNEES DE LA FONCTION PREFFT
                DO 20 IORDR = 0 , NBORDR-1
                   CALL RSEXCH('F',RESIN,GRANDE,IORDR,CHAM19,IRET)
                   CALL RSADPA(RESIN,'L',1,'INST',IORDR,0,LACCE,K8B)
@@ -154,109 +172,156 @@ C         ENDIF
    20          CONTINUE
                SYM = SYMETR
                NBVIN = NBORDR*2
+C              --- CALCUL DES FFT
                CALL SPDFFT(NSENS,NOMFON,NBVIN,FONOUT,NBVOUT,METHOD,
      &                  SYM,'V')
                CALL JEVEUO(FONOUT,'L',NOUT)
-C
-C   Recup resultat FFT-1
-C
+C              --- SAUVEGARDE DES RESULTATS DANS VECTOT
                LFON2 = NOUT + NBVOUT
                DO 30 J = 1,NBVOUT
                   ZC(NPARA+(IDDL-1)*NBVOUT+J-1) = ZC(LFON2+J-1)
    30          CONTINUE
    10       CONTINUE
+C
          ELSE
+C        --- CAS D'UNE TRAN_GENE A L'ENTREE
+C           --- BOUCLE SUR LES DDL'S 2 A NEQ
             DO 11 IDDL = 2 , NEQ
                II = 0
+C              --- REMPLISSAGE ORDONNEES DE LA FONCTION PREFFT
                DO 21 IORDR = 0 , NBORDR-1
                   ZR(LFON+II) = ZR(LVAL+IDDL-1+(NEQ*IORDR))
-C                  ZR(LFON+II) = ZR(LVAL+(IDDL-1)*NBORDR+IORDR)
                   II = II + 1
    21          CONTINUE
                SYM = SYMETR
                NBVIN = NBORDR*2
+C              --- CALCUL DES FFT
                CALL SPDFFT(NSENS,NOMFON,NBVIN,FONOUT,NBVOUT,METHOD,
      &                  SYM,'V')
                CALL JEVEUO(FONOUT,'L',NOUT)
-C
-C   Recup resultat FFT-1
-C
+C              --- SAUVEGARDE DES RESULTATS DANS VECTOT
                LFON2 = NOUT + NBVOUT
                DO 31 J = 1,NBVOUT
                   ZC(NPARA+(IDDL-1)*NBVOUT+J-1) = ZC(LFON2+J-1)
    31          CONTINUE
    11       CONTINUE
-
+C
          ENDIF
 C
-C On stocke les instants a la fin
-C
+C        --- STOCKAGE DES INSTANTS A LA FIN DANS VECTOT
          DO 40 I = 1,NBVOUT
             ZC(NPARA+(NEQ*NBVOUT)+I-1) = ZC(NOUT+I-1)
-
    40    CONTINUE
-C  Sens inverse
+C
       ELSEIF ( NSENS.EQ.-1 ) THEN
-         DO 50 IORDR = 1 , NBORDR
-            CALL RSEXCH('F',RESIN,GRANDE,IORDR,CHAM19,IRET)
-            CALL RSADPA(RESIN,'L',1,'FREQ',IORDR,0,LACCE,K8B)
-            CALL JEVEUO(CHAM19//'.VALE','L',LVALE)
-            ZR(LVAR+IORDR-1) = ZR(LACCE)
-            ZR(LFON+II) = DBLE(ZC(LVALE+IDDL-1))
-            II = II + 1
-            ZR(LFON+II) = DIMAG(ZC(LVALE+IDDL-1))
-            II = II + 1
-            CALL JELIBE(CHAM19//'.VALE')
-   50    CONTINUE
+C     --- DE FREQUENTIEL EN TEMPOREL : HARM_GENE EN TRAN_GENE
+C         OU BIEN DYNA_HARMO EN DYNA_TRANS
+C
+C        --- PREMIER FFT_INV SUR UN SEUL DDL DS LE BUT DE DIMENSIONNER
+C            LE VECTEUR RESULTAT VECTOT, INDEXE PAR NPARA
+         IF (TYPRES .NE. 'HARM_GENE') THEN
+C        --- CAS D'UNE SD ENTRANTE HARMONIQUE SUR BASE PHYSIQUE
+C            => SD_RESULTAT
+           DO 50 IORDR = 1 , NBORDR
+C             --- REMPLIR L'ABSCISSE ET ORDONNE DE LA FONCTION PREFFT
+C             --- NOTE : VALEURS DES CHAMPS SONT COMPLEXES           
+              CALL RSEXCH('F',RESIN,GRANDE,IORDR,CHAM19,IRET)
+              CALL RSADPA(RESIN,'L',1,'FREQ',IORDR,0,LACCE,K8B)
+              CALL JEVEUO(CHAM19//'.VALE','L',LVALE)
+              ZR(LVAR+IORDR-1) = ZR(LACCE)
+              ZR(LFON+II) = DBLE(ZC(LVALE+IDDL-1))
+              II = II + 1
+              ZR(LFON+II) = DIMAG(ZC(LVALE+IDDL-1))
+              II = II + 1
+              CALL JELIBE(CHAM19//'.VALE')
+   50      CONTINUE
+         ELSE
+C        --- CAS D'UNE SD HARM_GENE
+            DO 51 IORDR = 0 , NBORDR-1
+C             --- REMPLIR L'ABSCISSE ET ORDONNE DE LA FONCTION PREFFT
+C             --- NOTE : VALEURS DES CHAMPS SONT COMPLEXES
+              ZR(LVAR+IORDR) = ZR(LACCE+IORDR)
+              ZR(LFON+II) = DBLE(ZC(LVAL+IDDL-1+(NEQ*IORDR)))
+              II = II + 1
+              ZR(LFON+II) = DIMAG(ZC(LVAL+IDDL-1+(NEQ*IORDR)))
+              II = II + 1
+   51       CONTINUE
+         ENDIF
+C
          IF (ABS(ZR(LFON+II-1)).LT.((1.D-6)*ABS(ZR(LFON+II-2)))) THEN
             ZR(LFON+II-1) = 0.D0
          ENDIF
-C         NIN = LVAR
+C
          NBVIN = NBORDR*3
+C        --- CALCUL DU PREMIER FFT INVERSE SUR LA FONCTION CALCULEE
          CALL SPDFFT(NSENS,NOMFON,NBVIN,FONOUT,NBVOUT,METHOD,SYM,'V')
          CALL JEVEUO(FONOUT,'L',NOUT)
 C
-C   Recup resultat FFT-1
-C
+C        --- VERIFICATIONS AVANT CREATION DE LA VECTEUR DES FFT FINAL
          CALL JEEXIN( VECTOT , IRET )
-C         IF ( IRET.EQ.0) THEN
-C            CALL WKVECT(VECTOT,'V V C',(NEQ+1)*NBVOUT,NPARA)
-C         ELSE
-C            CALL JEVEUO(VECTOT,'L',NPARA)
-C         ENDIF
          IF ( IRET.NE.0) CALL JEDETR(VECTOT)
+C
+C        --- CREATION DU VECTEUR DES FFTS
          CALL WKVECT(VECTOT,'V V R',(NEQ+1)*NBVOUT,NPARA)
+C
+C        --- REMPLISSAGE AVEC LES PREMIERS RESULTATS POUR IDDL=1
          LFON2 = NOUT + NBVOUT
          DO 55 I = 1,NBVOUT
             ZR(NPARA+(IDDL-1)*NBVA+I-1) = ZR(LFON2+I-1)
    55    CONTINUE
-         CALL JELIBE(CHAM19//'.VALE')
-         DO 100 IDDL = 2 , NEQ
-            II = 0
-            DO 70 IORDR = 1 , NBORDR
-               CALL RSEXCH('F',RESIN,GRANDE,IORDR,CHAM19,IRET)
-               CALL RSADPA(RESIN,'L',1,'FREQ',IORDR,0,LACCE,K8B)
-               CALL JEVEUO(CHAM19//'.VALE','L',LVALE)
-               ZR(LFON+II) = DBLE(ZC(LVALE+IDDL-1))
-               II = II + 1
-               ZR(LFON+II) = DIMAG(ZC(LVALE+IDDL-1))
-               II = II + 1
-               CALL JELIBE(CHAM19//'.VALE')
-   70       CONTINUE
-            SYM = SYMETR
-            NBVIN = NBORDR*3
-            CALL SPDFFT(NSENS,NOMFON,NBVIN,FONOUT,NBVOUT,METHOD,
-     &                  SYM,'V')
-            CALL JEVEUO(FONOUT,'L',NOUT)
-
 C
-C   Recup resultat FFT-1
-C
-            LFON2 = NOUT + NBVOUT
-            DO 80 J = 1,NBVOUT
-               ZR(NPARA+(IDDL-1)*NBVOUT+J-1) = ZR(LFON2+J-1)
-   80       CONTINUE
-  100    CONTINUE
+C        --- BOUCLE DES FFTS INVERSES SUR LES AUTRES DDL'S
+C            REFERER AUX PRECEDENTS COMMENTAIRES POUR + DE DETAILS
+         IF (TYPRES .NE. 'HARM_GENE') THEN
+           CALL JELIBE(CHAM19//'.VALE')
+C          --- BOUCLE SUR LES AUTRES DDLS DE 2 A NEQ
+           DO 100 IDDL = 2 , NEQ
+              II = 0
+              DO 70 IORDR = 1 , NBORDR
+                 CALL RSEXCH('F',RESIN,GRANDE,IORDR,CHAM19,IRET)
+                 CALL RSADPA(RESIN,'L',1,'FREQ',IORDR,0,LACCE,K8B)
+                 CALL JEVEUO(CHAM19//'.VALE','L',LVALE)
+                 ZR(LFON+II) = DBLE(ZC(LVALE+IDDL-1))
+                 II = II + 1
+                 ZR(LFON+II) = DIMAG(ZC(LVALE+IDDL-1))
+                 II = II + 1
+                 CALL JELIBE(CHAM19//'.VALE')
+   70         CONTINUE
+              SYM = SYMETR
+              NBVIN = NBORDR*3
+C             --- CALCUL DES FFT'S INVERSES
+              CALL SPDFFT(NSENS,NOMFON,NBVIN,FONOUT,NBVOUT,METHOD,
+     &                    SYM,'V')
+              CALL JEVEUO(FONOUT,'L',NOUT)
+C             --- SAUVEGARDE DES RESULTATS DANS VECTOT
+              LFON2 = NOUT + NBVOUT
+              DO 80 J = 1,NBVOUT
+                 ZR(NPARA+(IDDL-1)*NBVOUT+J-1) = ZR(LFON2+J-1)
+   80         CONTINUE
+  100      CONTINUE
+         ELSE
+           DO 101 IDDL = 2 , NEQ
+              II = 0
+              DO 102 IORDR = 0 , NBORDR-1
+C               --- REMPLIR L'ABSCISSE ET ORDONNE DE LA FONCTION PREFFT
+                ZR(LFON+II) = DBLE(ZC(LVAL+IDDL-1+(NEQ*IORDR)))
+                II = II + 1
+                ZR(LFON+II) = DIMAG(ZC(LVAL+IDDL-1+(NEQ*IORDR)))
+                II = II + 1
+  102         CONTINUE
+              SYM = SYMETR
+              NBVIN = NBORDR*3
+C             --- CALCUL DES FFT'S INVERSES
+              CALL SPDFFT(NSENS,NOMFON,NBVIN,FONOUT,NBVOUT,METHOD,
+     &                    SYM,'V')
+              CALL JEVEUO(FONOUT,'L',NOUT)
+C             --- SAUVEGARDE DES RESULTATS DANS VECTOT
+              LFON2 = NOUT + NBVOUT
+              DO 103 J = 1,NBVOUT
+                 ZR(NPARA+(IDDL-1)*NBVOUT+J-1) = ZR(LFON2+J-1)
+  103         CONTINUE
+  101      CONTINUE
+         ENDIF
 C
 C On stocke les instants a la fin
 C
@@ -264,7 +329,7 @@ C
             ZR(NPARA+(NEQ*NBVOUT)+I-1) = ZR(NOUT+I-1)
   400    CONTINUE
       ENDIF
-      IF (TYPRES .NE. 'TRAN_GENE') CALL JELIBE(CHAM19//'.VALE')
+      IF (TYPRES(6:9) .NE. 'GENE') CALL JELIBE(CHAM19//'.VALE')
 C
       NBVA = NBVOUT
       CALL JEDETR( KNUME )
