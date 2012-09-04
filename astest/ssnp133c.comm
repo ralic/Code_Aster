@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 # TITRE TEST DES ELEMENTS D'INTERFACE SUR UNE PLAQUE TROUEE
 # ssnp133c.para = tps_job 150 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -200,7 +200,7 @@ EVOL = STAT_NON_LINE(INFO=1,
     DEPL_REFE      = 2*Gc/Sc,
     ITER_GLOB_MAXI = 12,
     ),
-  SOLVEUR    = _F(METHODE = 'MUMPS',NPREC=-1),
+  SOLVEUR    = _F(METHODE = 'MUMPS'),
   ARCHIVAGE = _F(
     LIST_INST      = INS_ARCH
     )
@@ -256,48 +256,48 @@ FY = RECU_FONCTION ( TABLE  = FORCE,
 TEST_TABLE(TABLE=TAB_U,
               FILTRE=(_F(NOM_PARA='INST',VALE=50)),
               NOM_PARA='DY',
-              VALE=2.8872E-03,
+              VALE=2.87853E-03,
               REFERENCE='NON_REGRESSION')
 TEST_TABLE(TABLE=FORCE,
               FILTRE=(_F(NOM_PARA='INST',VALE=50)),
               NOM_PARA='DY',
-              VALE= 2.8603E+07,
+              VALE= 2.88263E+07,
               REFERENCE='NON_REGRESSION')
 
 TEST_TABLE(TABLE=TAB_U,
               FILTRE=(_F(NOM_PARA='INST',VALE=75)),
               NOM_PARA='DY',
-              VALE=6.43269E-03,
+              VALE=6.55609E-03,
               REFERENCE='NON_REGRESSION')
 TEST_TABLE(TABLE=FORCE,
               FILTRE=(_F(NOM_PARA='INST',VALE=75)),
               NOM_PARA='DY',
-              VALE=9.8916E+06,
+              VALE=1.04922E+07,
               REFERENCE='NON_REGRESSION',
               )
 
 TEST_TABLE(TABLE=TAB_U,
               FILTRE=(_F(NOM_PARA='INST',VALE=100)),
               NOM_PARA='DY',
-              VALE=7.8109E-03,
+              VALE=7.47879E-03,
               REFERENCE='NON_REGRESSION')
 TEST_TABLE(TABLE=FORCE,
               FILTRE=(_F(NOM_PARA='INST',VALE=100)),
               NOM_PARA='DY',
-              VALE=4.7092E+06,
+              VALE=4.94452E+06,
               REFERENCE='NON_REGRESSION',
               )
 
 TEST_TABLE(TABLE=TAB_U,
               FILTRE=(_F(NOM_PARA='INST',VALE=140)),
               NOM_PARA='DY',
-              VALE=2.2116E-02,
+              VALE=0.0157679,
               REFERENCE='NON_REGRESSION',
               )
 TEST_TABLE(TABLE=FORCE,
               FILTRE=(_F(NOM_PARA='INST',VALE=140)),
               NOM_PARA='DY',
-              VALE=6.24908E+05,
+              VALE=8.56080E+05,
               REFERENCE='NON_REGRESSION',
               )
 

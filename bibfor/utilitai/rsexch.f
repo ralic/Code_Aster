@@ -5,7 +5,7 @@
       CHARACTER*(*) KSTOP,NOMSD,NOMSY,CHEXTR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,7 +69,7 @@ C     --- NOM SYMBOLIQUE PERMIS ?
 
 
 C     --- RECUPERATION DU NUMERO DE RANGEMENT ---
-      CALL RSUTRG(NOMD2,IORDR,IRANG)
+      CALL RSUTRG(NOMD2,IORDR,IRANG,NBORDR)
 
 
 C     -- LE NUMERO DE RANGEMENT EXISTE :
@@ -89,7 +89,6 @@ C     --- LE NUMERO DE RANGEMENT N'EXISTE PAS :
 C     -----------------------------------------
       ELSE
         CALL JELIRA(NOMD2//'.ORDR','LONMAX',NBORMX,K1BID)
-        CALL JELIRA(NOMD2//'.ORDR','LONUTI',NBORDR,K1BID)
         IF (NBORDR.GE.NBORMX) THEN
           ICODE = 110
           GOTO 10

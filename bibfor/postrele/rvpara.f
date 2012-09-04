@@ -1,7 +1,7 @@
       SUBROUTINE RVPARA ( NOMTAB,MCF, NBPOST )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF POSTRELE  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -604,7 +604,8 @@ C
       CALL TBAJPA (NOMTAB, NBP, NOPARA, TYPARA )
 C
       K24BID = NOMTAB(1:8)//'           .TITR'
-      CALL TITREA('T',NOMTAB,NOMTAB,K24BID,'C',' ',0,'G' )
+      CALL TITREA('T',NOMTAB,NOMTAB,K24BID,'C',' ',0,'G',
+     &            '(1PE12.5)')
 C
       CALL JEDETR(NOCMP )
 C

@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,89 +29,103 @@ C
 C
 
       INTEGER       IRET, NBFAC, IOCC,NBORD2,NBORD1,IORD2,IORD1
-      INTEGER       KORD1,IAD,JORD1,JORD2,N1
-      REAL*8        INST1,INST2,TRANS
+      INTEGER       KORD1,IAD,JORD1,JORD2,N1,NORDMX
+      REAL*8        INST1,INST2,TRANS,TPREV,VALR(2)
       CHARACTER*8   K8B, RESU2, RESU1
       CHARACTER*16  TYPE,OPER,CHTER
       CHARACTER*19  NOMCH,CHAM1,RESU19
       INTEGER       IARG,NBCHAM,KCH
-      LOGICAL       EXIST
 
 C ----------------------------------------------------------------------
       CALL JEMARQ()
 
 
-C     -- CREATION (OU NON) DE RESU2
-C     -- CALCUL DE NBORD2 ET JORD2
+C     -- ALLOCATION DE RESU2
+C     -- CALCUL DE JORD2
 C     --------------------------------
       CALL GETRES ( RESU2, TYPE, OPER )
       CALL GETFAC ( 'ASSE', NBFAC )
 
+C     -- LA RE-ENTRANCE EST INTERDITE:
       CALL JEEXIN ( RESU2//'           .DESC', IRET )
-      IF ( IRET .EQ. 0 ) THEN
-        CALL RSCRSD('G', RESU2, TYPE, 100 )
-      ENDIF
+      CALL ASSERT(IRET.EQ.0)
 
+C     -- ON COMPTE LE NOMBRE MAX. DE NUMEROS D'ORDRE DE LA
+C        SD_RESULTAT :
+      NORDMX=0
+      DO 101 IOCC = 1,NBFAC
+        CALL GETVID ( 'ASSE', 'RESULTAT'  , IOCC,IARG,1, RESU1 , N1 )
+        RESU19=RESU1
+        CALL JELIRA(RESU19//'.ORDR','LONUTI',NBORD1,K8B)
+        NORDMX=NORDMX+NBORD1
+101   CONTINUE
+
+
+C     -- ALLOCATION DE LA SD_RESULTAT :
+      CALL RSCRSD('G', RESU2, TYPE, NORDMX )
       RESU19=RESU2
-      CALL JELIRA(RESU19//'.ORDR','LONUTI',NBORD2,K8B)
-      IF (NBORD2.GT.0) THEN
-         CALL JEVEUO(RESU19//'.ORDR','L',JORD2)
-         IORD2=ZI(JORD2-1+NBORD2)
-      ELSE
-         IORD2=0
-      ENDIF
+      CALL JEVEUO(RESU19//'.ORDR','L',JORD2)
 
 
-C       BOUCLE SUR LES OCCURRENCES DE ASSE :
-C       -----------------------------------------------------------
+C     BOUCLE SUR LES OCCURRENCES DE ASSE :
+C     ------------------------------------
+      IORD2=0
+      TPREV=-1.D300
       DO 100 IOCC = 1,NBFAC
         CALL GETVR8 ( 'ASSE', 'TRANSLATION'  , IOCC,IARG,1, TRANS , N1 )
         CALL GETVID ( 'ASSE', 'RESULTAT'  , IOCC,IARG,1, RESU1 , N1 )
         RESU19=RESU1
         CALL JELIRA(RESU19//'.ORDR','LONUTI',NBORD1,K8B)
         CALL JEVEUO(RESU19//'.ORDR','L',JORD1)
-
-        CALL JEEXIN(RESU19//'.DESC',IRET)
         CALL JELIRA(RESU19//'.DESC','NOMUTI',NBCHAM,K8B)
 
-        EXIST = .TRUE.
 C       BOUCLE SUR LES CHAMPS 'TEMP' DE RESU1 ET RECOPIE DANS RESU2:
 C       -----------------------------------------------------------
         DO 110, KORD1=1,NBORD1
           IORD1 = ZI(JORD1-1+KORD1)
-          IF(EXIST) IORD2 = IORD2 + 1
-          EXIST = .FALSE.
+          IORD2 = IORD2 + 1
+
+C         -- STOCKAGE DE L'INSTANT :
+          CALL RSADPA(RESU1,'L',1,'INST',IORD1,0,IAD,K8B)
+          INST1=ZR(IAD)
+C         -- ON VERIFIE QUE LES INSTANTS SONT CROISSANTS :
+          INST2=INST1+TRANS
+          IF (INST2.LT.TPREV) THEN
+            VALR(1)=TPREV
+            VALR(2)=INST2
+            CALL U2MESR('F','CALCULEL4_21',2,VALR)
+          ELSE IF (INST2.EQ.TPREV) THEN
+C           -- SI UN INSTANT EST TROUVE PLUSIEURS FOIS, ON ECRASE :
+            CALL U2MESR('I','CALCULEL4_22',1,INST2)
+            IORD2=IORD2-1
+          ENDIF
+          TPREV=INST2
+
+          CALL RSADPA (RESU2,'E',1,'INST',IORD2,0,IAD,K8B)
+          ZR(IAD)=INST2
+
           DO 115 KCH=1,NBCHAM
-             CALL JENUNO (JEXNUM(RESU19//'.DESC',KCH),CHTER)
+            CALL JENUNO (JEXNUM(RESU19//'.DESC',KCH),CHTER)
 
-C            1- RECUPERATION DU CHAMP : CHAM1
+C           1- RECUPERATION DU CHAMP : CHAM1
+            CALL RSEXCH(' ',RESU1, CHTER, IORD1, CHAM1, IRET )
+            IF (IRET.NE.0) GOTO 115
 
-             CALL RSEXCH(' ',RESU1, CHTER, IORD1, CHAM1, IRET )
-             IF (IRET.NE.0) GOTO 115
+C           2- STOCKAGE DE CHAM1 :
+            CALL RSEXCH(' ',RESU2, CHTER, IORD2, NOMCH, IRET )
+            CALL ASSERT(IRET.EQ.0.OR.IRET.EQ.100)
+            CALL COPISD('CHAMP_GD','G',CHAM1,NOMCH)
+            CALL RSNOCH(RESU2,CHTER,IORD2)
 
-C            2- STOCKAGE DE CHAM1 :
-
-             CALL RSEXCH(' ',RESU2, CHTER, IORD2, NOMCH, IRET )
-             IF ( IRET .EQ. 110 )  CALL RSAGSD ( RESU2, 0 )
-             CALL COPISD('CHAMP_GD','G',CHAM1,NOMCH)
-             CALL RSNOCH(RESU2,CHTER,IORD2)
-             EXIST = .TRUE.
-
- 115       CONTINUE
-
-C          3- STOCKAGE DE L'INSTANT ASSOCIE A CHAM1 :
-
-           CALL RSADPA(RESU1,'L',1,'INST',IORD1,0,IAD,K8B)
-           INST1=ZR(IAD)
-           INST2=INST1+TRANS
-           CALL RSADPA (RESU2,'E',1,'INST',IORD2,0,IAD,K8B)
-           ZR(IAD)=INST2
-
+ 115      CONTINUE
  110    CONTINUE
-        CALL JEDETR('&&OP0124.NUME_ORDR1')
  100  CONTINUE
-      CALL JEDETR('&&OP0124.NUME_ORDR2')
+
+
+C     -- EVENTUELLEMENT, IL FAUT DETRUIRE LES PROF_CHNO INUTILES
+C        (A CAUSE DES INSTANTS MULTIPLES) :
+      CALL RSMENA(RESU2)
+
 
       CALL JEDEMA()
-
       END

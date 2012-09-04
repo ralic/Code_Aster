@@ -1,4 +1,4 @@
-#@ MODIF calcchamp Messages  DATE 27/02/2012   AUTEUR SELLENET N.SELLENET 
+#@ MODIF calcchamp Messages  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,6 +29,15 @@ cata_msg = {
 Conseil :
  Si vous souhaitez réellement calculer à nouveau cette option,
  créez une nouvelle structure de données.
+"""),
+
+2 : _(u"""
+ L'option %(k1)s nécessaire au calcul de l'option %(k2)s est
+ manquante dans les structures de données résultat %(k3)s et
+ %(k4)s pour le numéro d'ordre %(i1)d.
+ 
+ Le calcul de cette option n'est donc pas possible.
+ L'option demandée n'est calculable sur les éléments du modèle.
 """),
 
 }

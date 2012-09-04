@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 03/09/2012   AUTEUR DESROCHE X.DESROCHES 
 # TITRE PLAQUE ENTAILLEE EN ELASTOPLASTICITE (ELEMENTS HEX8 SI)
 # ssnp123c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,8 +20,7 @@
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='SSNP123C', NIV_PUB_WEB='INTERNET'),
-      DEBUG=_F(SDVERI='OUI'),
-      IGNORE_ALARM=('ELEMENTS4_74'),);
+      DEBUG=_F(SDVERI='OUI'),)
 
 # DEFINITION DU PROBLEME
 #=======================
@@ -123,6 +122,25 @@ S_T=POST_RELEVE_T(ACTION=_F(INTITULE='S_EXT',
                   INFO=1,);
 
 IMPR_TABLE(TABLE=S_T,);
+
+ECHAN2=INTE_MAIL_3D(MAILLAGE=MA,
+                   DEFI_SEGMENT=_F(ORIGINE=(0.1,0.97,-0.03,),
+                                   EXTREMITE=(5.0,0.97,-0.03,),),
+                   PRECISION=0.00001,
+                   INFO=1,);
+
+S_T2=POST_RELEVE_T(ACTION=_F(INTITULE='S_EXT',
+                            CHEMIN=ECHAN2,
+                            RESULTAT=RESU,
+                            NOM_CHAM='SIGM_NOEU',
+                            INST=1.0,
+                            CRITERE='RELATIF',
+                            NOM_CMP='SIYY',
+                            REPERE='GLOBAL',
+                            MOYE_NOEUD='OUI',
+                            OPERATION='EXTRACTION',),
+                  INFO=1,);
+
 
 
 # TESTS

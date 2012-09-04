@@ -5,7 +5,7 @@
       CHARACTER*(*) NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,10 +59,9 @@ C ----------------------------------------------------------------------
       NOMS2 = NOMSD
       CALL JELIRA(NOMS2//'.DESC','NOMMAX',NBCHAM,KBID)
       CALL JELIRA(NOMS2//'.ORDR','LONMAX',NBORMX,KBID)
-      CALL JELIRA(NOMS2//'.ORDR','LONUTI',NBORDR,KBID)
       CALL JEVEUO(NOMS2//'.ORDR','E',JORDR)
 
-      CALL RSUTRG(NOMS2,IORDR,IRANG)
+      CALL RSUTRG(NOMS2,IORDR,IRANG,NBORDR)
 
 C     -- SI IORDR N'EST PAS TROUVE DANS NOMSD, ON VERIFIE
 C        QUE IORDR > DERNIER NUMERO D'ORDRE

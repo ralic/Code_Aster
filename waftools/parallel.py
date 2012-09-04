@@ -18,9 +18,9 @@ def options(self):
 def configure(self):
     from Options import options as opts
     if opts.parallel:
-        os.environ.setdefault('CC', getattr(self.env, 'CC', 'mpicc'))
-        os.environ.setdefault('CXX', getattr(self.env, 'CXX', 'mpicxx'))
-        os.environ.setdefault('FC', getattr(self.env, 'FC', 'mpif90'))
+        os.environ.setdefault('CC', self.env.CC or 'mpicc')
+        os.environ.setdefault('CXX', self.env.CXX or 'mpicxx')
+        os.environ.setdefault('FC', self.env.FC or 'mpif90')
     self.load_compilers()
     self.check_openmp()
 

@@ -1,7 +1,7 @@
       SUBROUTINE TEREFE(NOMREF,TYPELE,VALREF)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -27,7 +27,7 @@ C
 C
 C ----------------------------------------------------------------------
 C
-C ROUTINE UTILITAIRE POUR ACCES AUX VALUERS *_REFE POUR L'OPTION
+C ROUTINE UTILITAIRE POUR ACCES AUX VALEURS *_REFE POUR L'OPTION
 C REFE_FORC_NODA
 C
 C ----------------------------------------------------------------------
@@ -72,6 +72,10 @@ C
       ELSEIF (NOMREF.EQ.'EPSI_REFE') THEN
         IF (TYPELE.EQ.'MECA_INCO') THEN
           INDEX  = 2
+        ELSEIF (TYPELE.EQ.'GRILLE') THEN
+          INDEX  = 1
+        ELSEIF (TYPELE.EQ.'MEMBRANE') THEN
+          INDEX  = 1
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF

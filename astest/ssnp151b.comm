@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 # TITRE EPROUVETTE CT 3D AVEC ELEMENTS D'INTERFACE (HEXA20) ET LOI DE RUPTURE DUCTILE CZM_TRA_MIX
 # ssnp151b.para = tps_job 900 mem_job 1536Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -189,7 +189,7 @@ UP=STAT_NON_LINE(MODELE=MO,
                         DEPL_REFE      = delc,
                         ITER_GLOB_MAXI = 12,
                   ),
-                 SOLVEUR    = _F(METHODE = 'MUMPS', NPREC=-1),
+                 SOLVEUR    = _F(METHODE = 'MUMPS'),
                  NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
                  ARCHIVAGE=_F(LIST_INST=LIS_ARCH),
                );
@@ -240,21 +240,21 @@ TEST_TABLE(TABLE=FORCE,
            NOM_PARA='DY',
            FILTRE=_F(NOM_PARA='DEPLACE',
                      VALE=0.8),
-           VALE=5.10308E+04,
+           VALE=5.09591E+04,
            REFERENCE='NON_REGRESSION');
 
 TEST_TABLE(TABLE=FORCE,
            NOM_PARA='DY',
            FILTRE=_F(NOM_PARA='DEPLACE',
                      VALE=1.0),
-           VALE=5.21477E+04,
+           VALE=5.22155E+04,
            REFERENCE='NON_REGRESSION');
 
 TEST_TABLE(TABLE=FORCE,
            NOM_PARA='DY',
            FILTRE=_F(NOM_PARA='DEPLACE',
                      VALE=1.2),
-           VALE=5.33973E+04,
+           VALE=5.32126E+04,
            REFERENCE='NON_REGRESSION');
 
 

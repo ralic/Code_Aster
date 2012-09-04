@@ -1,10 +1,10 @@
       SUBROUTINE PJXXCO(TYPCAL,METHOD,LCORRE,ISOLE,
      &                  RESUIN,CHAM1,
      &                  MOA1,MOA2,
-     &                  NOMA1,NOMA2,CNREF)
+     &                  NOMA1,NOMA2,CNREF,NOCA)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,22 +40,19 @@ C
 C
 C 0.1. ==> ARGUMENTS
 C
-
       INCLUDE 'jeveux.h'
       LOGICAL ISOLE
       CHARACTER*4 TYPCAL
       CHARACTER*8 RESUIN
       CHARACTER*8 MOA1,MOA2,CORRU
-      CHARACTER*8 NOMA1,NOMA2,CNREF
+      CHARACTER*8 NOMA1,NOMA2,CNREF,NOCA
       CHARACTER*16 LCORRE(2),K16BID,CORTMP
       CHARACTER*19 CHAM1,METHOD
 
 C
 C 0.2. ==> COMMUNS
 C ----------------------------------------------------------------------
-C
       CHARACTER*24 VALK(2)
-C
 C
 C 0.3. ==> VARIABLES LOCALES
 C
@@ -109,25 +106,43 @@ C         -- VERIFICATION DE LA COHERENCE DE LA DEMANDE
 C         -- FORMULEE PAR L'UTILISATEUR
           IF ((METHOD.EQ.'ECLA_PG') .AND. (.NOT.LELGA)) THEN
             VALK(1) = METHOD
-            VALK(2) = CHAM1
-            CALL U2MESK('F','CALCULEL5_33', 2 ,VALK)
+            IF(LNOEU) THEN
+              CALL U2MESK('F','CALCULEL5_32', 1 ,VALK)
+            ELSE
+              IF (LELNO) VALK(2) = 'ELNO'
+              IF (LELEM) VALK(2) = 'ELEM'
+              CALL U2MESK('F','CALCULEL5_33', 2 ,VALK)
+            ENDIF
           ENDIF
 
           IF (       (METHOD.EQ.'COLLOCATION')
      &         .AND. (.NOT.LNOEU)
      &         .AND. (.NOT.LELNO)
      &         .AND. (.NOT.LELEM)) THEN
+            CALL ASSERT(LELGA)
             VALK(1) = METHOD
-            VALK(2) = CHAM1
+            VALK(2) = 'ELGA'
             CALL U2MESK('F','CALCULEL5_33', 2 ,VALK)
           ENDIF
 
-
+          IF (       (METHOD.EQ.'SOUS_POINT')
+     &         .AND. (.NOT.LNOEU)
+     &         .AND. (.NOT.LELNO)) THEN
+            CALL ASSERT(LELGA .OR. LELEM)
+            VALK(1) = METHOD
+            VALK(2) = 'ELGA ET ELEM'
+            CALL U2MESK('F','CALCULEL5_33', 2 ,VALK)
+          ENDIF
 
 C         -- ON UTILISE LCORRE(1) OU LCORRE(2) SUIVANT LE TYPE DE CHAMP
 
           IF ((LNOEU) .OR. (LELNO) .OR. (LELEM)) THEN
-            CALL PJEFCO(MOA1,MOA2,LCORRE(1),'V')
+
+            IF (METHOD.EQ.'SOUS_POINT')THEN
+                CALL PJSPCO(MOA1,MOA2,LCORRE(1),'V',NOCA)
+            ELSE
+                CALL PJEFCO(MOA1,MOA2,LCORRE(1),'V')
+            ENDIF
           ENDIF
 
 

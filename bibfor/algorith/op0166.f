@@ -1,7 +1,7 @@
       SUBROUTINE OP0166()
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,12 +43,12 @@ C
       LOGICAL LNOEU,LELNO,LELEM,LELGA
       CHARACTER*4 TYCHV,TYPCAL
       CHARACTER*8 K8B,NOMA1,NOMA2,NOMA3,RESUIN,PROL0,PROJON,NOREIN
-      CHARACTER*8 NOMO1,NOMO2,MOA1,MOA2,CNREF,NOMARE
+      CHARACTER*8 NOMO1,NOMO2,MOA1,MOA2,CNREF,NOMARE,NOCA
       CHARACTER*16 TYPRES,NOMCMD,LCORRE(2),CORRU
-      CHARACTER*19 RESUOU,CHAM1,METHOD
+      CHARACTER*19 RESUOU,CHAM1,METHOD,RTYP
       CHARACTER*19 LIGRE1,LIGRE2
       CHARACTER*24 VALK(4)
-      INTEGER      IARG
+      INTEGER      IARG,NBOCC
 
 
 
@@ -127,7 +127,7 @@ C      IL N'EST PAS POSSIBLE DE PROJETER UNE SD_RESULTAT
 
 
 
-C     2- CALCUL DE NOMA1, NOMA2, MOA1, MOA2, CNREF:
+C     2- CALCUL DE NOMA1, NOMA2, MOA1, MOA2, CNREF, NOCA:
 C     ---------------------------------------------
 C        NOMA1 : NOM DU MAILLAGE "1"
 C        NOMA2 : NOM DU MAILLAGE "2"
@@ -186,6 +186,26 @@ C
         ENDIF
       ENDIF
 
+      IF (METHOD .EQ. 'SOUS_POINT')THEN
+C       RECUPERATION DU CARA_ELEM
+        CALL GETVID(' ','CARA_ELEM'  ,1,IARG,1,NOCA,N1)
+        CALL ASSERT(N1.NE.0)
+C       LE MOT-CLE 'MODELE_2' EST OBLIGATOIRE
+        CALL GETVID(' ','MODELE_2',1,IARG,1,NOMO2,N1)
+        IF (N1.EQ.0) THEN
+            CALL U2MESS('F','CALCULEL5_40')
+        ENDIF
+C       VIS_A_VIS EST INTERDIT AVEC SOUS_POINT
+        CALL GETFAC('VIS_A_VIS',NBOCC)
+        IF (NBOCC.NE.0) CALL U2MESS('F','CALCULEL5_31')
+        IF (.NOT. ISOLE)THEN
+          CALL DISMOI('F','TYPE_RESU',RESUIN,'RESULTAT',IBID,RTYP,IE)
+          IF (RTYP.NE.'EVOL_THER') CALL U2MESS('F','CALCULEL5_30')
+        ENDIF
+      ELSE
+        NOCA = ' '
+      ENDIF
+
 
 C     3- CALCUL DE LA SD_LCORRESP_2_MAILLA :
 C     ------------------------------------
@@ -201,7 +221,7 @@ C          ELLE COMPORTE PJEF_EL (TABLEAU AUXILIAIRE)
         CALL PJXXCO(TYPCAL,METHOD,LCORRE,ISOLE,
      &            RESUIN,CHAM1,
      &            MOA1,MOA2,
-     &            NOMA1,NOMA2,CNREF)
+     &            NOMA1,NOMA2,CNREF,NOCA)
       ENDIF
 
 C     3.1 : SI TYPCAL='1', IL FAUT S'ARRETER LA :
@@ -250,8 +270,9 @@ C       =====================
 
 C       ---- METHODE 'NUAGE_DEG' :
 C       ----   ON NE PEUT PROJETER QUE DES CHAM_NO
-
-            CALL PJXXCH(LCORRE(1),CHAM1,RESUOU,' ','NON',' ','G',IRET)
+            TYCHV = ' '
+            CALL PJXXCH(LCORRE(1),CHAM1,RESUOU,TYCHV,' ','NON',' ',
+     &                                                     'G',IRET)
             CALL ASSERT(IRET.EQ.0)
 
           ELSE
@@ -274,18 +295,49 @@ C       ---- ON DETERMINE LE TYPE DE CHAMP A PROJETER
 C       ------ CAS OU IL Y A UN CHAM_NO
               IF (METHOD.EQ.'ECLA_PG') THEN
                 VALK(1) = METHOD
-                VALK(2) = CHAM1
-                CALL U2MESK('F','CALCULEL5_33', 2 ,VALK)
+                CALL U2MESK('F','CALCULEL5_32', 1 ,VALK)
               ENDIF
-              CALL PJXXCH(LCORRE(1),CHAM1,
-     &            RESUOU,' ','NON',' ','G',IRET)
-              CALL ASSERT(IRET.EQ.0)
-
-            ELSEIF (LELNO.OR.LELEM) THEN
-C       ------ CAS OU IL Y A UN CHAM_ELEM (ELNO) OU UN CHAM_ELEM (ELEM)
+              IF (METHOD.EQ.'SOUS_POINT')THEN
+                LIGRE2 = NOMO2//'.MODELE'
+                PROL0='NON'
+                CALL PJSPMA(LCORRE(1),CHAM1,RESUOU,PROL0,
+     &                                  LIGRE2,NOCA,'G',IRET)
+              ELSE
+                TYCHV = ' '
+                CALL PJXXCH(LCORRE(1),CHAM1,
+     &            RESUOU,TYCHV,' ','NON',' ','G',IRET)
+                CALL ASSERT(IRET.EQ.0)
+              ENDIF
+            ELSEIF (LELNO) THEN
+C       ------ CAS OU IL Y A UN CHAM_ELEM (ELNO)
               IF (METHOD.EQ.'ECLA_PG') THEN
                 VALK(1) = METHOD
-                VALK(2) = CHAM1
+                VALK(2) = 'ELNO'
+                CALL U2MESK('F','CALCULEL5_33', 2 ,VALK)
+              ENDIF
+C       ------   LE MOT-CLE 'MODELE_2' EST OBLIGATOIRE
+              CALL GETVTX(' ','PROL_ZERO',1,IARG,1,PROL0,IE)
+              CALL GETVID(' ','MODELE_2',1,IARG,1,NOMO2,N1)
+              IF (N1.EQ.0) THEN
+                CALL U2MESS('F','CALCULEL5_37')
+              ENDIF
+
+              LIGRE2 = NOMO2//'.MODELE'
+              IF (METHOD.EQ.'SOUS_POINT')THEN
+                CALL PJSPMA(LCORRE(1),CHAM1,RESUOU,PROL0,
+     &                                  LIGRE2,NOCA,'G',IRET)
+              ELSE
+                TYCHV = ' '
+                CALL PJXXCH(LCORRE(1),CHAM1,
+     &            RESUOU,TYCHV,' ',PROL0,LIGRE2,'G',IRET)
+                CALL ASSERT(IRET.EQ.0)
+              ENDIF
+            ELSEIF (LELEM) THEN
+C       ------ CAS OU IL Y A UN CHAM_ELEM (ELEM)
+              IF ((METHOD.EQ.'ECLA_PG').OR.
+     &            (METHOD.EQ.'SOUS_POINT')) THEN
+                VALK(1) = METHOD
+                VALK(2) = 'ELEM'
                 CALL U2MESK('F','CALCULEL5_33', 2 ,VALK)
               ENDIF
 C       ------   LE MOT-CLE 'MODELE_2' EST OBLIGATOIRE
@@ -295,15 +347,17 @@ C       ------   LE MOT-CLE 'MODELE_2' EST OBLIGATOIRE
                 CALL U2MESS('F','CALCULEL5_37')
               ENDIF
               LIGRE2 = NOMO2//'.MODELE'
+              TYCHV = ' '
               CALL PJXXCH(LCORRE(1),CHAM1,
-     &            RESUOU,' ',PROL0,LIGRE2,'G',IRET)
+     &            RESUOU,TYCHV,' ',PROL0,LIGRE2,'G',IRET)
               CALL ASSERT(IRET.EQ.0)
 
             ELSEIF (LELGA) THEN
 C       ------ CAS OU IL Y A UN CHAM_ELEM (ELGA)
-              IF (METHOD.EQ.'COLLOCATION') THEN
+              IF ((METHOD.EQ.'COLLOCATION') .OR.
+     &            (METHOD.EQ.'SOUS_POINT')) THEN
                 VALK(1) = METHOD
-                VALK(2) = CHAM1
+                VALK(2) = 'ELGA'
                 CALL U2MESK('F','CALCULEL5_33', 2 ,VALK)
               ENDIF
 C       ------  LES MOTS-CLES 'MODELE_1' ET 'MODELE_2' SONT OBLIGATOIRES
@@ -331,7 +385,8 @@ C       ------  LES MOTS-CLES 'MODELE_1' ET 'MODELE_2' SONT OBLIGATOIRES
 C       2- CAS SD_RESULTAT :
 C       =====================
         ELSE
-          CALL PJXXPR(RESUIN,RESUOU(1:8),MOA1,MOA2,LCORRE(1),'G')
+          CALL PJXXPR(RESUIN,RESUOU(1:8),MOA1,MOA2,LCORRE(1),'G',
+     &                NOCA,METHOD)
         ENDIF
 
  9999 CONTINUE
@@ -343,6 +398,10 @@ C       =====================
       IF (LELGA) THEN
         CALL DETRSD('CORRESP_2_MAILLA',LCORRE(2))
         CALL DETRSD('MAILLAGE','&&PJELC2')
+      ENDIF
+
+      IF (METHOD.EQ.'SOUS_POINT') THEN
+        CALL DETRSD('MAILLAGE','&&PJSPCO')
       ENDIF
 
       CALL JEDEMA()

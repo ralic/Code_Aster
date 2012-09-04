@@ -1,0 +1,151 @@
+      SUBROUTINE PJCOR2(NOCA,CNS1Z,CES2Z,
+     &     LIGREL,CORRES,NOMPAZ,IRET)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF CALCULEL  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C
+C
+      IMPLICIT NONE
+      INCLUDE 'jeveux.h'
+      CHARACTER*(*) CNS1Z,CES2Z
+      CHARACTER*8 NOCA,NOMPAZ
+      CHARACTER*16 CORRES,OPTION
+      CHARACTER*19 LIGREL
+      INTEGER IRET
+C
+C COMMANDE PROJ_CHAMP
+C   RECOPIE DES VALEURS PROJETEES AUX NOEUDS DU MAILLAGE "SOUS-POINT"
+C     SUR LES SOUS-POINTS DU MAILLAGE 2
+C   UTILISATION DE LA SD CORRES (TABLEAU AUXILIAIRE .PJEF_SP)
+C     ------------------------------------------------------------------
+C     VARIABLES LOCALES:
+C     ------------------
+      CHARACTER*1 KBID
+      CHARACTER*8 NOMGD,NOMPAR
+      CHARACTER*19 CNS1,CES2,CEL2
+      CHARACTER*19 DCEL
+      CHARACTER*24 VALK(5)
+      INTEGER  JPO, IPO
+      INTEGER JCE2C,JCE2L,JCE2V,JCE2D,JCE2K
+
+
+      INTEGER JCNS1C,JCNS1L,JCNS1V,JCNS1K,JCNS1D
+      INTEGER NBNO1,NCMP1
+      INTEGER IAD2
+      INTEGER ICMP,ICMP1
+
+      INTEGER IMA,IPT, ISP,JCESC,JLGRF
+
+C     ------------------------------------------------------------------
+
+      CALL JEMARQ()
+      IRET = 0
+      CNS1 = CNS1Z
+      CES2 = CES2Z
+
+
+      CEL2 = '&&PJCOR2.CEL2'
+
+C     1- RECUPERATION D'INFORMATIONS DANS CNS1 :
+C     ------------------------------------------
+      CALL JEVEUO(CNS1//'.CNSK','L',JCNS1K)
+      CALL JEVEUO(CNS1//'.CNSD','L',JCNS1D)
+      CALL JEVEUO(CNS1//'.CNSC','L',JCNS1C)
+      CALL JEVEUO(CNS1//'.CNSV','L',JCNS1V)
+      CALL JEVEUO(CNS1//'.CNSL','L',JCNS1L)
+      CALL JELIRA(CNS1//'.CNSC','LONMAX',NCMP1,KBID)
+
+      NOMGD = ZK8(JCNS1K-1+2)
+      NBNO1 = ZI(JCNS1D-1+1)
+
+
+
+      OPTION = 'INI_SP_MATER'
+
+      IF(NOMGD.EQ.'TEMP_R') THEN
+         NOMPAR = 'PTEMMAT'
+      ELSEIF (NOMGD.EQ.'HYDR_R') THEN
+         NOMPAR = 'PHYDMAT'
+      ELSEIF (NOMGD.EQ.'NEUT_R') THEN
+         NOMPAR = 'PNEUMAT'
+      ELSE
+         CALL ASSERT(.FALSE.)
+      ENDIF
+
+C------------------------------------------------------------------
+C     2- ALLOCATION DE CES2 (ELGA):
+
+
+C     -----------------------------
+      CALL DETRSD('CHAM_ELEM_S',CES2)
+
+      DCEL='&&PJCOR2'
+
+      CALL JEVEUO(LIGREL//'.LGRF','L',JLGRF)
+      CALL CESVAR(NOCA,' ',LIGREL,DCEL)
+      CALL ALCHML(LIGREL,OPTION,NOMPAR,'V',CEL2,IRET,DCEL)
+
+      NOMPAZ=NOMPAR
+
+      IF (IRET.EQ.1) THEN
+        VALK(1) = NOMPAR
+        VALK(2) = OPTION
+        VALK(3) = LIGREL
+        VALK(4) = CEL2
+        CALL U2MESK('F','CALCULEL_50',4,VALK)
+      ENDIF
+
+      CALL CELCES(CEL2,'V',CES2)
+      CALL DETRSD('CHAM_ELEM',CEL2)
+
+      CALL JEVEUO(CES2//'.CESD','L',JCE2D)
+      CALL JEVEUO(CES2//'.CESC','L',JCE2C)
+      CALL JEVEUO(CES2//'.CESV','E',JCE2V)
+      CALL JEVEUO(CES2//'.CESL','E',JCE2L)
+      CALL JEVEUO(CES2//'.CESK','L',JCE2K)
+
+
+
+
+C------------------------------------------------------------------
+C     3- REMPLISSAGE DES VALEURS DE CES2 :
+C     -------------------------------
+
+
+      CALL JEVEUO(CORRES//'.PJEF_SP','L',JPO)
+
+C NBNO1 EST LE NOMBRE DE PSEUDO-NOEUDS DU MAILLAGE 2
+
+      DO 92 ICMP1=1,NCMP1
+        ICMP=ICMP1
+
+        DO 98 IPO=1,NBNO1
+          IMA= ZI(JPO+3*(IPO-1))
+          IPT= ZI(JPO+3*(IPO-1)+1)
+          ISP= ZI(JPO+3*(IPO-1)+2)
+
+          CALL CESEXI('C',JCE2D,JCE2L,IMA,IPT,ISP,ICMP,IAD2)
+          IF (IAD2.LE.0) GOTO 98
+          ZR(JCE2V-1+IAD2)=ZR(JCNS1V+(IPO-1)*NCMP1+ICMP-1)
+
+   98   CONTINUE
+   92 CONTINUE
+
+
+      CALL JEDEMA()
+      END

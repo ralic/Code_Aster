@@ -6,7 +6,7 @@
      &                    CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -208,6 +208,11 @@ C
      &              ZK8(ADSK+1), NCMPRF, ZK8(ADSC),
      &              NCMPVE, NTLCMP, NTNCMP, NTUCMP )
 C
+      IF ( NCMPVE.GT.80 ) THEN
+        CALL U2MESK('A','MED_99',1,NOCHMD)
+        GOTO 9999
+      ENDIF
+C
 C     ON REMPLACE LES NOMS DES COMPOSANTES
       IF ( ETIQCP.NE.' ' ) THEN
         CALL JEVEUO(NTNCMP,'L',JNOCM1)
@@ -320,6 +325,7 @@ C====
 C 6. LA FIN
 C====
 C
+ 9999 CONTINUE
       IF ( NIVINF.GT.1 ) THEN
           WRITE (IFM,*) ' '
       ENDIF

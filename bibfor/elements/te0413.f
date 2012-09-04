@@ -4,7 +4,7 @@
       CHARACTER*16      OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,7 @@ C.......................................................................
       INTEGER  JNBSPI,NBCOU,NPGH,IRET,ICOU,IGAUH,ISP,TMA(3,3)
 
       CHARACTER*16 VALK(2)
-      LOGICAL  GRILLE,DKQ,DKG,LKIT
+      LOGICAL  DKQ,DKG,LKIT
 
       DEUX   = 2.D0
       DKQ = .FALSE.
@@ -74,9 +74,6 @@ C.......................................................................
 
       CALL ELREF5(' ','RIGI',NDIM,NNO,NNOEL,NPG,IPOIDS,ICOOPG,
      &                                         IVF,IDFDX,IDFD2,JGANO)
-
-      GRILLE = .FALSE.
-      IF (NOMTE(1:8).EQ.'MEGRDKT ')  GRILLE = .TRUE.
 
       CALL JEVECH('PGEOMER','L',JGEOM)
       CALL JEVECH('PCOMPOR','L',ICOMPO)
@@ -117,12 +114,7 @@ C.......................................................................
       DSP = 0.0D0
       DST = 0.0D0
 
-      IF ( GRILLE ) THEN
-        NPGH = 1
-        COEF = DEUX
-      ELSE
-        NPGH = 3
-      END IF
+      NPGH = 3
 
       READ (ZK16(ICOMPO-1+2),'(I16)') NBVAR
       EP = ZR(ICACOQ)
@@ -184,10 +176,7 @@ C        ==========================================================
 C       -- COTE DES POINTS D'INTEGRATION
 C       --------------------------------
                 IF (IGAUH.EQ.1) THEN
-                  IF (GRILLE) THEN
-                  ELSE
-                    COEF = 1.D0/3.D0
-                  END IF
+                  COEF = 1.D0/3.D0
                 ELSE IF (IGAUH.EQ.2) THEN
                   COEF = 4.D0/3.D0
                 ELSE

@@ -5,7 +5,7 @@
       CHARACTER*(*)       RESUZ, LISARC, LICHEX
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -164,7 +164,7 @@ C
       CALL JEVEUO ( KNUM, 'L', JORDR )
       DO 30 K = 1 , NBTROU
          KARCH = ZI(JORDR+K-1)
-         CALL RSUTRG ( RESU, KARCH, IRANG )
+         CALL RSUTRG(RESU,KARCH,IRANG,IBID)
          ZI(JARCH+IRANG-1) = 1
  30   CONTINUE
       CALL JEDETR ( KNUM )

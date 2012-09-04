@@ -1,6 +1,6 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 # TITRE TP RUPTURE : POUTRE DCB 3D ELASTIQUE
-# forma08b.para = tps_job 100 mem_job 512Mo ncpus 1 liste_test S
+# forma08b.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -206,7 +206,7 @@ U=STAT_NON_LINE(
                    DEPL_REFE      = dc,
                    ITER_GLOB_MAXI = 20,
                   ),
-  SOLVEUR = _F(METHODE = 'MUMPS', NPREC=-1),
+  SOLVEUR = _F(METHODE = 'MUMPS'),
   ARCHIVAGE = _F(
     LIST_INST     = INS_ARCH
   ))

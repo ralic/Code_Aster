@@ -1,16 +1,18 @@
       SUBROUTINE ACEINC(NOMA,NOMO,NBMCF,MCLF,NTYELE,NBOCC,IVR,
      &                  NBEPO,NBEDI,NBECO,NBECA,NBEBA,NBEMA,NBEGB,
-     &                  NBTEL,NOCACO,NOCAGB,JDLM,JDLN,LMAX,IER)
+     &                  NBEMB,NBTEL,LOCACO,LOCAGB,LOCAMB,
+     &                  JDLM,JDLN,LMAX,IER)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
-      INTEGER           NOCACO,NBMCF,NTYELE(*),NBOCC(*),IVR(*),NOCAGB
-      INTEGER           NBEPO,NBEDI,NBECO,NBECA,NBEBA,NBEGB,NBTEL
+      INTEGER           NBMCF,NTYELE(*),NBOCC(*),IVR(*)
+      INTEGER           NBEPO,NBEDI,NBECO,NBECA,NBEBA,NBEGB,NBEMB,NBTEL
       INTEGER           JDLM,JDLN,LMAX,IER
+      LOGICAL           LOCACO,LOCAGB,LOCAMB
       CHARACTER*8       NOMA,NOMO
       CHARACTER*16      MCLF(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,8 +60,9 @@ C
       CALL JEMARQ()
       CALL GETRES(NOMU,CONCEP,CMD)
 C
-      NOCACO = 0
-      NOCAGB = 0
+      LOCACO = .FALSE.
+      LOCAGB = .FALSE.
+      LOCAMB = .FALSE.
       NNOE   = 0
 C
 C --- RECONSTRUCTION DES NOMS JEVEUX DU CONCEPT MAILLAGE ET MODELE
@@ -110,7 +113,7 @@ C
      &                  IOC,IARG,LMAX,ZK8(JDLS),NJ)
             CALL GETVEM(NOMA,'NOEUD',MCLF(MCL),'NOEUD',
      &                  IOC,IARG,LMAX,ZK8(JDLS),NN)
-          ELSEIF ( MCL.EQ.11 ) THEN
+          ELSEIF ((MCL.EQ.11).OR.(MCL.EQ.14)) THEN
             CALL GETVR8(MCLF(MCL),'ORIG_AXE',IOC,IARG,0,R8B,NORIG)
           ENDIF
           IF (MCL.EQ.1 .OR. MCL.EQ.3 .OR .MCL.EQ.4 .OR .MCL.EQ.13 .OR.
@@ -124,8 +127,9 @@ C ---     DES NOEUDS SONT AFFECTES :
 C
 C ---     "GROUP_MA" = MAILLES DANS LA LISTE DES GROUPES DE MAILLES
           IF (NG.GT.0) THEN
-            IF (MCL.EQ.2)  NOCACO = NOCACO + 1
-            IF (MCL.EQ.11) NOCAGB = NOCAGB + 1
+            IF (MCL.EQ.2)  LOCACO = .TRUE.
+            IF (MCL.EQ.11) LOCAGB = .TRUE.
+            IF (MCL.EQ.14) LOCAMB = .TRUE.
             DO 34 I = 1 , NG
               CALL JEVEUO(JEXNOM(MLGGMA,ZK8(JDLS+I-1)),'L',JDGM)
               CALL JELIRA(JEXNOM(MLGGMA,ZK8(JDLS+I-1)),'LONUTI',
@@ -136,7 +140,7 @@ C ---     "GROUP_MA" = MAILLES DANS LA LISTE DES GROUPES DE MAILLES
                 NUTYEL = ZI(JDME+NUMMAI-1)
                 IF (MCL.NE.4) ZI(JDLM+NUMMAI-1) = -MCL
                 CALL VAFCAR('MAILLE',MCLF(MCL),NOMMAI,NBEPO,NBEDI,
-     &                      NBECO,NBECA,NBEBA,NBEMA,NBEGB,
+     &                      NBECO,NBECA,NBEBA,NBEMA,NBEGB,NBEMB,
      &                            NUTYEL,NTYELE,CAR,NCARA,IVR,KIOC,IER)
  36           CONTINUE
  34         CONTINUE
@@ -144,15 +148,16 @@ C ---     "GROUP_MA" = MAILLES DANS LA LISTE DES GROUPES DE MAILLES
 C
 C ---     "MAILLE" = MAILLES DE LA LISTE DE MAILLES
           IF (NM.GT.0) THEN
-            IF (MCL.EQ.2) NOCACO = NOCACO + 1
-            IF (MCL.EQ.11) NOCAGB = NOCAGB + 1
+            IF (MCL.EQ.2)  LOCACO = .TRUE.
+            IF (MCL.EQ.11) LOCAGB = .TRUE.
+            IF (MCL.EQ.14) LOCAMB = .TRUE.
             DO 46 I = 1 , NM
               NOMMAI = ZK8(JDLS+I-1)
               CALL JENONU(JEXNOM(MLGNMA,NOMMAI),NUMMAI)
               NUTYEL = ZI(JDME+NUMMAI-1)
               IF (MCL.NE.4) ZI(JDLM+NUMMAI-1) = -MCL
               CALL VAFCAR('MAILLE',MCLF(MCL),NOMMAI,NBEPO,NBEDI,NBECO,
-     &                    NBECA,NBEBA,NBEMA,NBEGB,
+     &                    NBECA,NBEBA,NBEMA,NBEGB,NBEMB,
      &                            NUTYEL,NTYELE,CAR,NCARA,IVR,KIOC,IER)
  46         CONTINUE
           ENDIF
@@ -176,7 +181,7 @@ C ---   "GROUP_NO" = MAILLES TARDIVES DANS LA LISTE DE GROUPES DE NOEUDS
                   CALL JENUNO(JEXNUM(MLGNNO,NUMNOE),NOMNOE)
                   NUTYEL = ZI(JDNE+NUMNOE-1)
                   CALL VAFCAR('NOEUD',MCLF(MCL),NOMNOE,NBEPO,NBEDI,
-     &                        NBECO,NBECA,NBEBA,NBEMA,NBEGB,
+     &                        NBECO,NBECA,NBEBA,NBEMA,NBEGB,NBEMB,
      &                            NUTYEL,NTYELE,CAR,NCARA,IVR,KIOC,IER)
  50             CONTINUE
  48           CONTINUE
@@ -194,7 +199,7 @@ C ---       "NOEUD" = MAILLES TARDIVES  DE LA LISTE DE NOEUDS
                 ENDIF
                 NUTYEL = ZI(JDNE+NUMNOE-1)
                 CALL VAFCAR('NOEUD',MCLF(MCL),NOMNOE,NBEPO,NBEDI,
-     &                      NBECO,NBECA,NBEBA,NBEMA,NBEGB,
+     &                      NBECO,NBECA,NBEBA,NBEMA,NBEGB,NBEMB,
      &                            NUTYEL,NTYELE,CAR,NCARA,IVR,KIOC,IER)
  58           CONTINUE
             ENDIF

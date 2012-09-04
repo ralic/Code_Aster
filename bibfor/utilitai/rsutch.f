@@ -6,7 +6,7 @@
       LOGICAL LVERIF
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,9 +52,7 @@ C ----------------------------------------------------------------------
       CALL ASSERT(ISYMB.GT.0)
       CALL CODENT(ISYMB,'D0',NUCH)
 
-      CALL JELIRA(RESU19//'.ORDR','LONUTI',NBORDR,K1BID)
-
-      CALL RSUTRG(NOMSD,IORDR,IRANG)
+      CALL RSUTRG(NOMSD,IORDR,IRANG,NBORDR)
       CALL ASSERT(IRANG.GE.0)
       CALL ASSERT(IRANG.LE.NBORDR)
 

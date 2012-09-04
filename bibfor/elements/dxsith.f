@@ -6,7 +6,7 @@
       CHARACTER*16 NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -60,8 +60,7 @@ C
       NBCMP = 6
 C
       IF ((NOMTE.EQ.'MEDKTG3').OR.
-     &    (NOMTE.EQ.'MEDKQG4'). OR.
-     &    (NOMTE.EQ.'MET3TR3')) THEN
+     &    (NOMTE.EQ.'MEDKQG4')) THEN
         DKG = .TRUE.
       END IF
 C

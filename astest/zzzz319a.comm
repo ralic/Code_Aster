@@ -1,0 +1,155 @@
+# MODIF  DATE 04/09/2012   AUTEUR LADIER A.LADIER 
+# TITRE VALIDATION INFORMATIQUE DE MACR_ADAP_MAIL
+# zzzz319a.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='ZZZZ319A',
+              NIV_PUB_WEB='INTERNET',),
+      IGNORE_ALARM='HOMARD0_9',);
+
+MA_INIT=LIRE_MAILLAGE(UNITE=20,
+                      FORMAT='MED',);
+
+#################################################################
+### RAFFINEMENT #################################################
+### TEST DE USAGE_CMP='RELATIF' / TEST DE USAGE_CMP='ABSOLU' ####
+###ET CHAM_CAT='DIAMETRE' #######################################
+#################################################################
+
+MO=AFFE_MODELE(MAILLAGE=MA_INIT,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='D_PLAN',),);
+
+CHA_INDI=CREA_CHAMP(TYPE_CHAM='ELNO_VARI_R',
+                    OPERATION='AFFE',
+                    MODELE=MO,
+                    AFFE=(_F(GROUP_MA='FACE_1',
+                             NOM_CMP='V1',
+                             VALE=-1.0,),
+                          _F(GROUP_MA='FACE_2',
+                             NOM_CMP='V1',
+                             VALE=-2.0,),),);
+
+MACR_ADAP_MAIL(MAILLAGE_N=MA_INIT,
+               MAILLAGE_NP1=CO('MA_R1_RE'),
+               ADAPTATION='RAFFINEMENT',
+               CHAM_GD=CHA_INDI,
+               USAGE_CMP='RELATIF',
+               CRIT_RAFF_PE=0.5,
+               ADD_CHAM=(_F(CHAM_GD=CO('D_R1_RE'),
+                            CHAM_CAT='DIAMETRE',),),);
+
+MACR_ADAP_MAIL(MAILLAGE_N=MA_INIT,
+               MAILLAGE_NP1=CO('MA_R1_AB'),
+               ADAPTATION='RAFFINEMENT',
+               CHAM_GD=CHA_INDI,
+               USAGE_CMP='ABSOLU',
+               CRIT_RAFF_PE=0.5,
+               ADD_CHAM=_F(CHAM_GD=CO('D_R1_AB'),
+                           CHAM_CAT='DIAMETRE',),);
+
+TEST_RESU(CARTE=(_F(CHAM_GD=D_R1_RE, 
+                    NOM_CMP='X1', 
+                    MAILLE='M15', 
+                    REFERENCE='ANALYTIQUE',
+                    PRECISION=1.E-6,
+                    VALE=0.707106781,),
+                 _F(CHAM_GD=D_R1_RE, 
+                    NOM_CMP='X1', 
+                    MAILLE='M12', 
+                    REFERENCE='ANALYTIQUE', 
+                    PRECISION=1.E-6,
+                    VALE=1.118033989,),
+                 _F(CHAM_GD=D_R1_AB, 
+                    NOM_CMP='X1', 
+                    MAILLE='M15', 
+                    REFERENCE='ANALYTIQUE',
+                    PRECISION=1.E-6,
+                    VALE=0.707106781,),
+                 _F(CHAM_GD=D_R1_AB, 
+                    NOM_CMP='X1', 
+                    MAILLE='M12', 
+                    REFERENCE='ANALYTIQUE', 
+                    PRECISION=1.E-6,
+                    VALE=1.118033989,),),);
+
+#################################################################
+### MACR_ADAP_MAIL ##############################################
+### LANGUE = 'ANGLAIS' / ADAPTATION = 'RIEN' ####################
+#################################################################
+
+MACR_ADAP_MAIL(MAILLAGE_N=MA_INIT,
+               LANGUE = 'ANGLAIS',
+               MAILLAGE_NP1=CO('MA_INIT2'),
+               ADAPTATION='RIEN',)
+
+#################################################################
+### DEUX CYCLES DE RAFFINEMENT-DERAFFINEMENT ####################
+### TEST DE NIVE_MIN ET CHAM_CAT='NIVEAU' #######################
+#################################################################
+
+MACR_ADAP_MAIL(MAILLAGE_N=MA_INIT,
+               MAILLAGE_NP1=CO('MA_R1'),
+               ADAPTATION='RAFFINEMENT_UNIFORME',
+               ADD_CHAM=_F(CHAM_GD=CO('N_R1'),
+                           CHAM_CAT='NIVEAU',),);
+
+MACR_ADAP_MAIL(MAILLAGE_N=MA_R1,
+               MAILLAGE_NP1=CO('MA_D1'),
+               ADAPTATION='DERAFFINEMENT',
+               CHAM_GD=N_R1,
+               CRIT_DERA_ABS=3.,
+               NIVE_MIN=1,);
+
+MACR_ADAP_MAIL(MAILLAGE_N=MA_D1,
+               MAILLAGE_NP1=CO('MA_R2'),
+               ADAPTATION='RAFFINEMENT_UNIFORME',
+               ADD_CHAM=_F(CHAM_GD=CO('N_R2'),
+                           CHAM_CAT='NIVEAU',),);
+
+MACR_ADAP_MAIL(MAILLAGE_N=MA_R2,
+               MAILLAGE_NP1=CO('MA_D2'),
+               ADAPTATION='DERAFFINEMENT',
+               CHAM_GD=N_R2,
+               CRIT_DERA_ABS=3.,
+               NIVE_MIN=1,
+               ADD_CHAM=_F(CHAM_GD=CO('N_D2'),
+                           CHAM_CAT='NIVEAU',),);
+
+TEST_RESU(CARTE=(_F(CHAM_GD=N_R1, 
+                    NOM_CMP='X1', 
+                    MAILLE='M17', 
+                    REFERENCE='ANALYTIQUE',
+                    PRECISION=1.E-6,
+                    VALE=1.,),
+                 _F(CHAM_GD=N_R2, 
+                    NOM_CMP='X1', 
+                    MAILLE='M44', 
+                    REFERENCE='ANALYTIQUE', 
+                    PRECISION=1.E-6,
+                    VALE=2.,),
+                 _F(CHAM_GD=N_D2, 
+                    NOM_CMP='X1', 
+                    MAILLE='M17', 
+                    REFERENCE='ANALYTIQUE',
+                    PRECISION=1.E-6,
+                    VALE=1.,),),);
+
+FIN();

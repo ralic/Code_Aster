@@ -1,7 +1,7 @@
       SUBROUTINE JNI080(ELREFE,NMAXOB,LIOBJ,NBOBJ)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE VABHHTS J.PELLET
+C RESPONSABLE PELLET J.PELLET
       INCLUDE 'jeveux.h'
       CHARACTER*8 ELREFE
       INTEGER NMAXOB,NBOBJ
@@ -294,8 +294,8 @@ C ======================================================================
 C DEB ------------------------------------------------------------------
 
 C-----------------------------------------------------------------------
-      INTEGER L1 
-      REAL*8 R8NNEM 
+      INTEGER L1
+      REAL*8 R8NNEM
 C-----------------------------------------------------------------------
       NBOBJ = 3
       CALL ASSERT(NMAXOB.GT.NBOBJ)

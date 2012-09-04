@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 # TITRE FISSURATION INTERFACE 3D (HEXA20), LOI CZM_TRA_MIX
 # ssnp118w.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -68,7 +68,7 @@ MO=AFFE_MODELE(
                  _F(
                    MAILLE = 'CUBEDEG',
                    PHENOMENE = 'MECANIQUE',
-                   MODELISATION = '3D_INTERFACE'
+                   MODELISATION = '3D_INTERFACE_S'
                    )
                  )
               )

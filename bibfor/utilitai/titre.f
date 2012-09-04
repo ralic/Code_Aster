@@ -1,8 +1,8 @@
-      SUBROUTINE TITRE
+      SUBROUTINE TITRE ()
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,5 +30,6 @@ C-----------------------------------------------------------------------
       NOMOBJ = ' '
       NOMOBJ(1:8)   = NOMCON
       NOMOBJ(20:24) = '.TITR'
-      CALL TITREA('T',NOMCON,NOMCON,NOMOBJ,'C',' ',0,'G' )
+      CALL TITREA('T',NOMCON,NOMCON,NOMOBJ,'C',' ',0,'G',
+     &            '(1PE12.5)')
       END

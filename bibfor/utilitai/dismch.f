@@ -1,6 +1,6 @@
       SUBROUTINE DISMCH(QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,12 +46,15 @@ C
 C
 C
 C-----------------------------------------------------------------------
-      INTEGER IANOMO ,IATYPE ,IER1 ,IER2 ,IPHEN ,JAFCK 
+      INTEGER IANOMO ,IATYPE ,IER1 ,IER2 ,IPHEN ,JAFCK
 C-----------------------------------------------------------------------
       CALL JEMARQ()
+      REPK  = ' '
+      REPI  = 0
+      IERD = 0
+
       NOMOB = NOMOBZ
       NOM19 = NOMOBZ
-      REPK  = ' '
 
 C     -- CHARGE OU CHAR_CINE ?
       CALL JEEXIN(NOMOB//'.TYPE',IER1)
@@ -92,7 +95,7 @@ C     -- CHARGE OU CHAR_CINE ?
 C --- LIGREL ELEMENTS DE CONTACT
       ELSEIF (KTYP(1:3).EQ.'ME ') THEN
          IPHEN = 1
-         SUF = 'CHME'         
+         SUF = 'CHME'
       ELSE
          CALL U2MESS('F','UTILITAI_52')
       END IF

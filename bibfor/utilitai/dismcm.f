@@ -1,6 +1,6 @@
       SUBROUTINE DISMCM(QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,17 +45,19 @@ C
       LOGICAL TROUVE
       INTEGER NBMAX,IZONE,I
 C-----------------------------------------------------------------------
-      INTEGER IANORC ,IAOBJ ,IAPROL ,IAVALE ,IAVALK ,IF ,II 
-      INTEGER III ,IMAX ,IRC ,IRET ,JDESC ,LONOBJ ,N 
-      INTEGER N1 ,NBRC ,NBZONE ,NC ,NF ,NMAT ,NR 
+      INTEGER IANORC ,IAOBJ ,IAPROL ,IAVALE ,IAVALK ,IF ,II
+      INTEGER III ,IMAX ,IRC ,IRET ,JDESC ,LONOBJ ,N
+      INTEGER N1 ,NBRC ,NBZONE ,NC ,NF ,NMAT ,NR
 
 C-----------------------------------------------------------------------
       PARAMETER(NBMAX=30)
 C
       CALL JEMARQ()
-      NOMOB=NOMOBZ
-      REPK=' '
+      REPK  = ' '
+      REPI  = 0
+      IERD = 0
 
+      NOMOB=NOMOBZ
 
 
       IF (QUESTI.EQ.'NOM_MAILLA') THEN

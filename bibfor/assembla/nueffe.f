@@ -7,7 +7,7 @@
       CHARACTER*2 BASE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ASSEMBLA  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE VABHHTS J.PELLET
+C RESPONSABLE PELLET J.PELLET
 C TOLE CRP_20
 
 C ----------------------------------------------------------------------
@@ -935,7 +935,7 @@ C       ----------------------------------------------------------------
         VALI(2) = NMA
         VALI(3) = NLAG
         VALI(4) = NEQUA
-                
+
         CALL U2MESI('I','FACTOR_1',4,VALI)
 C        WRITE (IFM,*) '--- NOMBRE TOTAL DE NOEUDS : ',NMA + NLAG,
 C     &    ' DONT : ',NLAG,' NOEUDS "LAGRANGE"'

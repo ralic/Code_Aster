@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 # TITRE NON-REGRESSION THERMO-ELASTICITE POUR TOUTES COQUES SURFACIQUES
 # RESPONSABLE PELLET J.PELLET
 # ssls200a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test R
@@ -61,6 +61,9 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                         PHENOMENE='MECANIQUE',
                         MODELISATION='DKT',),
                      _F(MAILLE='Q2',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='Q4G',),
+                     _F(MAILLE='T4',
                         PHENOMENE='MECANIQUE',
                         MODELISATION='Q4G',),
                      _F(MAILLE='Q3',
@@ -165,13 +168,14 @@ MESTAT=CALC_ELEM(reuse =MESTAT,
                  RESULTAT=MESTAT,
                  OPTION=('EPSI_ELGA','SIGM_ELNO','EPSI_ELNO','EFGE_ELNO',),);
 
+
 MESTAT2=POST_CHAMP(RESULTAT=MESTAT,
                    EXTR_COQUE=_F(NOM_CHAM=('SIGM_ELNO','EPSI_ELNO',),
                                  NUME_COUCHE=1,
                                  NIVE_COUCHE='MOY',),);
 MESTAT=CALC_ELEM(reuse =MESTAT,
                  RESULTAT=MESTAT,
-                 MAILLE=('Q1','T1','Q2','Q3','T3',),
+                 MAILLE=('Q1','T1','Q2','Q3','T3','T4'),
                  OPTION=('DEGE_ELNO','DEGE_ELGA',));
 
 MESTAT2=CALC_CHAMP(reuse =MESTAT2,
@@ -184,36 +188,36 @@ ENGENDRE_TEST(CO=MESTAT,);
 TEST_RESU(RESU=(
           _F( RESULTAT= MESTAT  , NOM_CHAM= 'DEPL', NUME_ORDRE=      1,
               REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-              TYPE_TEST= 'SOMM_ABS', VALE=  4.3695191085311E+04 ),
+              TYPE_TEST= 'SOMM_ABS', VALE=  44977.374737775 ),
           _F( RESULTAT= MESTAT  , NOM_CHAM= 'EFGE_ELNO', NUME_ORDRE=      1,
               REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-              TYPE_TEST= 'SOMM_ABS', VALE=  1.7258610574198E+05 ),
+              TYPE_TEST= 'SOMM_ABS', VALE=  1.8375951290494E+05 ),
           _F( RESULTAT= MESTAT  , NOM_CHAM= 'EPSI_ELGA', NUME_ORDRE=      1,
               REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-              TYPE_TEST= 'SOMM_ABS', VALE=  8.2678128326671E+04 ),
+              TYPE_TEST= 'SOMM_ABS', VALE=  85388.644399506 ),
           _F( RESULTAT= MESTAT2 , NOM_CHAM= 'EPSI_ELNO', NUME_ORDRE=      1,
               REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-              TYPE_TEST= 'SOMM_ABS', VALE=  2.9073111133851E+04 ),
+              TYPE_TEST= 'SOMM_ABS', VALE=  31611.626917402 ),
           _F( RESULTAT= MESTAT2 , NOM_CHAM= 'EPSI_NOEU', NUME_ORDRE=      1,
               REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-              TYPE_TEST= 'SOMM_ABS', VALE=  9.3577816424933E+03 ),
+              TYPE_TEST= 'SOMM_ABS', VALE=  9400.46207321969 ),
           _F( RESULTAT= MESTAT  , NOM_CHAM= 'SIEF_ELGA', NUME_ORDRE=      1,
               REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-              TYPE_TEST= 'SOMM_ABS', VALE=  1.2938618571158E+06 ),
+              TYPE_TEST= 'SOMM_ABS', VALE=  1.3966885948028E+06 ),
           _F( RESULTAT= MESTAT  , NOM_CHAM= 'SIGM_ELNO', NUME_ORDRE=      1,
               REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-              TYPE_TEST= 'SOMM_ABS', VALE=  1.4210693808160E+06 ),
+              TYPE_TEST= 'SOMM_ABS', VALE=  1.6880698817572E+06 ),
           _F( RESULTAT= MESTAT  , NOM_CHAM= 'DEGE_ELNO', NUME_ORDRE=      1,
               REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-              TYPE_TEST= 'SOMM_ABS', VALE=  2.4435240515360E+04 ),
+              TYPE_TEST= 'SOMM_ABS', VALE=  27786.118051879 ),
           _F( RESULTAT= MESTAT  , NOM_CHAM= 'DEGE_ELGA', NUME_ORDRE=      1,
               REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-              TYPE_TEST= 'SOMM_ABS', VALE=  2.1089830569202E+04 ),
+              TYPE_TEST= 'SOMM_ABS', VALE=  22052.339482186 ),
           ),)
 
 # ----------------------------------------------------------------------
 
-MASS2=POST_ELEM(ENER_POT=_F(MAILLE=('Q1','T1','Q2','Q3','T3',),),
+MASS2=POST_ELEM(ENER_POT=_F(MAILLE=('Q1','T1','Q2','Q3','T3','T4'),),
                 MODELE=MO,
                 CHAM_MATER=CHMAT,
                 CARA_ELEM=CARA,
@@ -230,7 +234,7 @@ ENGENDRE_TEST(CO=(MASS2,MASS3,),);
 TEST_TABLE(TABLE=MASS2,
            TYPE_TEST='SOMM_ABS',
            NOM_PARA='NUME_ORDRE',
-           VALE_I=5,
+           VALE_I=6,
            PRECISION=1e-10,
            REFERENCE='NON_REGRESSION',);
 
@@ -245,7 +249,7 @@ TEST_TABLE(TABLE=MASS2,
 TEST_TABLE(TABLE=MASS2,
            TYPE_TEST='SOMM_ABS',
            NOM_PARA='TOTALE',
-           VALE=25814353.2294,
+           VALE=3.1720951977555E+07,
            PRECISION=0.0003,
            REFERENCE='NON_REGRESSION',);
 
@@ -259,112 +263,112 @@ TEST_TABLE(TABLE=MASS2,
 TEST_TABLE(TABLE=MASS3,
            TYPE_TEST='SOMM_ABS',
            NOM_PARA='MASSE',
-           VALE=88.749538027,
+           VALE=101.42804345939,
            PRECISION=1e-10,
            REFERENCE='NON_REGRESSION',);
 
 TEST_TABLE(TABLE=MASS3,
            TYPE_TEST='SOMM_ABS',
            NOM_PARA='CDG_X',
-           VALE=0.761904761905,
+           VALE=0.79166666666667,
            PRECISION=1e-10,
            REFERENCE='NON_REGRESSION',);
 
 TEST_TABLE(TABLE=MASS3,
            TYPE_TEST='SOMM_ABS',
            NOM_PARA='CDG_Y',
-           VALE=0.428571428571,
+           VALE=0.41666666666667,
            PRECISION=1e-10,
            REFERENCE='NON_REGRESSION',);
 
 TEST_TABLE(TABLE=MASS3,
            TYPE_TEST='SOMM_ABS',
            NOM_PARA='CDG_Z',
-           VALE=0.857142857143,
+           VALE=0.83333333333333,
            PRECISION=1e-10,
            REFERENCE='NON_REGRESSION',);
 
 TEST_TABLE(TABLE=MASS3,
            TYPE_TEST='SOMM_ABS',
            NOM_PARA='IX_G',
-           VALE=38.3388948201,
+           VALE=42.881522818109,
            PRECISION=1e-10,
            REFERENCE='NON_REGRESSION',);
 
 TEST_TABLE(TABLE=MASS3,
            TYPE_TEST='SOMM_ABS',
            NOM_PARA='IY_G',
-           VALE=46.7095258512,
+           VALE=52.774983223877,
            PRECISION=1e-10,
            REFERENCE='NON_REGRESSION',);
 
 TEST_TABLE(TABLE=MASS3,
            TYPE_TEST='SOMM_ABS',
            NOM_PARA='IZ_G',
-           VALE=28.0549163224,
+           VALE=32.016043662522,
            PRECISION=1e-10,
            REFERENCE='NON_REGRESSION',);
 
 TEST_TABLE(TABLE=MASS3,
            TYPE_TEST='SOMM_ABS',
            NOM_PARA='IXY_G',
-           VALE=2.56588800418,
+           VALE=2.8174456516497,
            PRECISION=1e-10,
            REFERENCE='NON_REGRESSION',);
 
 TEST_TABLE(TABLE=MASS3,
            TYPE_TEST='SOMM_ABS',
            NOM_PARA='IXZ_G',
-           VALE=5.13177600836,
+           VALE=5.6348913032995,
            PRECISION=1e-10,
            REFERENCE='NON_REGRESSION',);
 
 TEST_TABLE(TABLE=MASS3,
            TYPE_TEST='SOMM_ABS',
            NOM_PARA='IYZ_G',
-           VALE=12.4364063525,
+           VALE=13.839293040904,
            PRECISION=1e-10,
            REFERENCE='NON_REGRESSION',);
 
 TEST_TABLE(TABLE=MASS3,
            TYPE_TEST='SOMM_ABS',
            NOM_PARA='IX_PRIN_G',
-           VALE=20.0379579022,
+           VALE=23.090901720559,
            PRECISION=1e-10,
            REFERENCE='NON_REGRESSION',);
 
 TEST_TABLE(TABLE=MASS3,
            TYPE_TEST='SOMM_ABS',
            NOM_PARA='IY_PRIN_G',
-           VALE=40.1376500641,
+           VALE=44.88701823962,
            PRECISION=1e-10,
            REFERENCE='NON_REGRESSION',);
 
 TEST_TABLE(TABLE=MASS3,
            TYPE_TEST='SOMM_ABS',
            NOM_PARA='IZ_PRIN_G',
-           VALE=52.9277290274,
+           VALE=59.694629744329,
            PRECISION=1e-10,
            REFERENCE='NON_REGRESSION',);
 
 TEST_TABLE(TABLE=MASS3,
            TYPE_TEST='SOMM_ABS',
            NOM_PARA='ALPHA',
-           VALE=125.03147009,
+           VALE=125.44376870922,
            PRECISION=1e-10,
            REFERENCE='NON_REGRESSION',);
 
 TEST_TABLE(TABLE=MASS3,
            TYPE_TEST='SOMM_ABS',
            NOM_PARA='BETA',
-           VALE=58.5908333064,
+           VALE=58.461139706551,
            PRECISION=1e-10,
            REFERENCE='NON_REGRESSION',);
 
 TEST_TABLE(TABLE=MASS3,
            TYPE_TEST='SOMM_ABS',
            NOM_PARA='GAMMA',
-           VALE=149.107781688,
+           VALE=148.75614101555,
            PRECISION=1e-10,
            REFERENCE='NON_REGRESSION',);
 

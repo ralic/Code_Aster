@@ -1,6 +1,6 @@
-# MODIF  DATE 28/08/2012   AUTEUR TRAN V-X.TRAN 
+# MODIF  DATE 03/09/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE CALCUL DU PARAMETRE GP DANS LE CAS D'UNE ENTAILLE ELLIPTIQUE EN 3D
-# ssnv218a.para = tps_job 600 mem_job 300Mo ncpus 1 liste_test S
+# ssnv218a.para = tps_job 600 mem_job 1024Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG

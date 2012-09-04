@@ -5,7 +5,7 @@
       CHARACTER*(*) NOMSD,NOMSY
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,9 +53,8 @@ C ----------------------------------------------------------------------
 C     -- CALCUL ET VALIDATION DU NUMERO DE RANGEMENT :IRANG
 C     -----------------------------------------------------
       CALL JELIRA(NOMD2//'.ORDR','LONMAX',NORMAX,K1BID)
-      CALL RSUTRG(NOMD2,IORDR,IRETOU)
+      CALL RSUTRG(NOMD2,IORDR,IRETOU,NORDR)
       IF (IRETOU.EQ.0) THEN
-        CALL JELIRA(NOMD2//'.ORDR','LONUTI',NORDR,K1BID)
         IRANG = NORDR + 1
         IF (IRANG.GT.NORMAX) CALL U2MESS('F','UTILITAI4_42')
         CALL JEECRA(NOMD2//'.ORDR','LONUTI',IRANG,' ')

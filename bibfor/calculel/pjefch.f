@@ -1,6 +1,7 @@
-      SUBROUTINE PJEFCH(CORRES,CH1,CH2,PRFCHN,PROL0,LIGREL,BASE,IRET)
+      SUBROUTINE PJEFCH(CORRES,CH1,CH2,TYCHA2,PRFCHN,PROL0,LIGREL,BASE,
+     &                                                            IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +18,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE VABHHTS J.PELLET
+C RESPONSABLE PELLET J.PELLET
       IMPLICIT NONE
 C-------------------------------------------------------------------
 C     BUT : PROJETER UN CHAMP "CH1" SUIVANT "CORRES"
@@ -31,11 +32,10 @@ C     ------------------------------------------------------------------
       INCLUDE 'jeveux.h'
       CHARACTER*19 CH1,CH2,CH0S,CH1S,CH2S,PRFCHN,LIGREL
       CHARACTER*16 OPTION,CORRES
-      CHARACTER*4 TYCH,TYCHV
+      CHARACTER*4 TYCH,TYCHV,TYCHA2
       CHARACTER*1 BASE
       CHARACTER*(*) PROL0
       INTEGER IRET,IBID,JCELK,NNCP
-      INTEGER      IARG
 
 
       CH0S = '&&PJEFCH'//'.CH0S'
@@ -45,16 +45,7 @@ C     ------------------------------------------------------------------
 
       CALL DISMOI('F','TYPE_CHAMP',CH1,'CHAMP',IBID,TYCH,IBID)
 
-C     L'UTILISATEUR VEUT-IL DES CHAM_NO ?  TYCHV
-      IF (CORRES.EQ.' ') THEN
-        TYCHV = 'NOEU'
-
-      ELSE
-        CALL GETVTX(' ','TYPE_CHAM',1,IARG,1,TYCHV,IBID)
-        IF (IBID.EQ.0) TYCHV = ' '
-      ENDIF
-
-      CALL ASSERT(TYCHV.EQ.' ' .OR. TYCHV.EQ.'NOEU')
+      TYCHV = TYCHA2
 
 C     1 : TRANSFORMATION DE CH1 EN CHAMP SIMPLE : CH1S
 C     -------------------------------------------------
@@ -87,6 +78,7 @@ C CAS MODIFICATION STRUCTURALE : PROJECTION SUR MAILLAGE MESURE
         CALL CNSPRM(CH1S,'V',CH2S,IRET)
 
       ELSE
+
         IF (TYCH.EQ.'NOEU') THEN
           CALL CNSPRJ(CH1S,CORRES,'V',CH2S,IRET)
 

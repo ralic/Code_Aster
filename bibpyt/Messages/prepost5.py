@@ -1,4 +1,4 @@
-#@ MODIF prepost5 Messages  DATE 11/06/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF prepost5 Messages  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,6 +32,12 @@ Champ inexistant SIEF_ELGA ou SIEF_ELGA numéro d'ordre %(k1)s pour le calcul de 
 
 3 : _(u"""
 Champ inexistant DEPL numéro d'ordre %(k1)s pour le calcul de l'option %(k2)s
+"""),
+
+4 : _(u"""
+ Il n'existe aucun noeud lié à la liste de de mailles ou au groupe de mailles fournit à IMPR_RESU.
+ 
+ Conseil : Vérifiez les mots-clés MAILLE ou GROUP_MA fournit à IMPR_RESU.
 """),
 
 8 : _(u"""
@@ -74,7 +80,7 @@ Champ inexistant DEPL numéro d'ordre %(k1)s pour le calcul de l'option %(k2)s
 """),
 
 31 : _(u"""
-  on ne trouve pas le groupe  %(k1)s
+  On ne trouve pas le groupe %(k1)s.
 """),
 
 32 : _(u"""

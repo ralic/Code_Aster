@@ -4,7 +4,7 @@
       CHARACTER*8 ELREFA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE VABHHTS J.PELLET
+C RESPONSABLE PELLET J.PELLET
 C ======================================================================
 C BUT : INITIALISER LES ELREFA
 C ======================================================================
@@ -39,9 +39,9 @@ C ----------------------------------------------------------------------
       REAL*8 FF(NBNOMX),DFF(3,NBNOMX),DFF2(3,3,NBNOMX)
       CHARACTER*24 LIOBJ(NMAXOB)
       CHARACTER*8 NOFPG(NBFAMX)
-      
+
 C     NBPGMX, NBNOMX, NBFAMX SE REFERER A ELRACA
-      
+
 C DEB ------------------------------------------------------------------
 
 

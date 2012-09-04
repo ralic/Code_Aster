@@ -1,0 +1,213 @@
+# MODIF  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+# TITRE EXTRACTION D UNE NAPPE D'ARMATURES REPRESENTEE PAR UNE MEMBRANE
+# ssns110a.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+# ON IGNORE LES ALARMES CONCERNANT LES MAILLES D'INTERFACE DEGENEREES
+DEBUT(CODE=_F(NOM='SSNS110A',NIV_PUB_WEB='INTERNET'),IGNORE_ALARM=('MODELISA4_9'),DEBUG=_F(SDVERI='OUI'))
+
+import math
+
+# -----------------------------------------------------
+# DEFINITION DES MATERIAUX
+# -----------------------------------------------------
+
+#  Parametres geometriques
+pas       = 0.2
+diametre  = 0.02
+fact_geo  = diametre*math.pi/pas
+section_l = math.pi*diametre**2/(4.*pas)
+
+#  Traction exercee sur la barre d'armature
+masse = 1. # tonnes
+g     = 9.81
+T     = 1000.*masse*g
+sig_l = T/pas
+
+#  Grandeurs materiaux
+E_A    = 200.E9
+NU_A   = 0.3
+E_B    = 30.E9
+NU_B   = 0.22
+
+SIGM_C    = 10.E6*fact_geo
+GLIS_C    = 1.E-3
+ALPHA     = 0.7
+BETA      = 1.
+PENALAGR  = 100.
+
+MA_A=DEFI_MATERIAU(ELAS_MEMBRANE=_F(M_LLLL = E_A*section_l,
+                                    M_LLTT = 0.,
+                                    M_LLLT = 0.,
+                                    M_TTTT = E_A*section_l,
+                                    M_TTLT = 0.,
+                                    M_LTLT = 0.),)
+
+MA_B=DEFI_MATERIAU(ELAS        =_F(E  = E_B,
+                                   NU = NU_B,),
+                   CZM_LAB_MIX =_F(SIGM_C      = SIGM_C,
+                                   GLIS_C      = GLIS_C,
+                                   ALPHA       = ALPHA,
+                                   BETA        = BETA,
+                                   PENA_LAGR   = PENALAGR,
+                                   CINEMATIQUE = 'GLIS_1D',))
+
+# -----------------------------------------------------
+# DEFINITION DU MODELE ET AFFECTATION DES MATERIAUX
+# -----------------------------------------------------
+
+MAIL=LIRE_MAILLAGE(FORMAT    = 'MED',);
+
+MAIL=DEFI_GROUP(reuse         = MAIL,
+                MAILLAGE      = MAIL,
+                CREA_GROUP_NO =(_F(NOM           = 'BOUT',
+                                   GROUP_MA      = 'BOUT'),))
+
+MODE=AFFE_MODELE(MAILLAGE = MAIL,
+                 AFFE     = (_F(GROUP_MA    = ('BETON','BOUT'),
+                               PHENOMENE    = 'MECANIQUE',
+                               MODELISATION = '3D'),
+                             _F(GROUP_MA    = ('ARMATU'),
+                               PHENOMENE    = 'MECANIQUE',
+                               MODELISATION = 'MEMBRANE'),
+                             _F(GROUP_MA    = 'CZM_BA',
+                               PHENOMENE    = 'MECANIQUE',
+                               MODELISATION = '3D_INTERFACE',)))
+
+MATE=AFFE_MATERIAU(MAILLAGE = MAIL,
+                   AFFE     = (_F(GROUP_MA = 'ARMATU',
+                                  MATER    = MA_A,),
+                               _F(GROUP_MA = 'CZM_BA',
+                                  MATER    = MA_B,),
+                               _F(GROUP_MA = 'BETON',
+                                  MATER    = MA_B,)));
+
+# -----------------------------------------------------
+# DEFINITION DES CHARGEMENTS
+# -----------------------------------------------------
+
+BATI=AFFE_CHAR_CINE(MODELE   = MODE,
+                    MECA_IMPO =(_F(GROUP_MA = ('B_FOND','A_FOND'),
+                                   DY = 0),
+                                _F(GROUP_MA = ('A_FOND'),
+                                   DZ = 0),
+                                _F(GROUP_MA = ('B_GAUC','A_GAUC'),
+                                   DX = 0),
+                                _F(GROUP_MA = ('B_DROI','A_DROI'),
+                                   DX = 0)),);
+
+TRAC=AFFE_CHAR_MECA(MODELE   = MODE,
+                    FORCE_ARETE = _F(GROUP_MA = 'BOUT',
+                                     FX       = 0,
+                                     FY       = -sig_l,
+                                     FZ       = 0))
+
+L_INST   = DEFI_LIST_REEL(DEBUT      = 0.,
+                          INTERVALLE =(_F(JUSQU_A =  10., NOMBRE  = 2)))
+
+INSTANTS=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=L_INST),
+                        ECHEC=_F(ACTION = 'DECOUPE'),);
+
+RAMPE   = DEFI_FONCTION(NOM_PARA = 'INST',
+                        VALE     = (0,0.,10,10.))
+
+# -----------------------------------------------------
+# ORIENTATION DES ZONES COHESIVES ET DE LA MEMBRANE
+# -----------------------------------------------------
+
+ORIENTAT=AFFE_CARA_ELEM(MODELE   = MODE,
+                        MASSIF   =_F(GROUP_MA   = 'CZM_BA',
+                                   ANGL_REP = (0., -90.,0.)),
+                        MEMBRANE =(_F(GROUP_MA     = 'ARMATU',
+                                    ANGL_REP     = (-90., 0.,))));
+
+# -----------------------------------------------------
+# CALCUL
+# -----------------------------------------------------
+
+RESU = STAT_NON_LINE(MODELE        = MODE,
+                     CHAM_MATER    = MATE,
+                     CARA_ELEM     = (ORIENTAT),
+                     EXCIT         =(_F(CHARGE = BATI),
+                                     _F(CHARGE      = TRAC,
+                                        FONC_MULT   = RAMPE)),
+                     COMP_INCR     =(_F(GROUP_MA = 'ARMATU',   RELATION = 'ELAS'),
+                                     _F(GROUP_MA = 'BETON',   RELATION = 'ELAS'),
+                                     _F(GROUP_MA = 'CZM_BA',   RELATION = 'CZM_LAB_MIX')),
+                     INCREMENT     = _F(LIST_INST = INSTANTS),
+                     NEWTON        = _F(MATRICE   = 'TANGENTE',
+                                        REAC_ITER = 1),
+                     CONVERGENCE   = _F(RESI_REFE_RELA = 1.E-4,
+                                        SIGM_REFE      = 1.E6,
+                                        EPSI_REFE      = sig_l/(E_A*section_l),
+                                        DEPL_REFE      = GLIS_C,
+                                        ITER_GLOB_MAXI = 10),
+                     SOLVEUR       = _F(METHODE = 'MUMPS',
+                                        PCENT_PIVOT = 20));
+
+# -----------------------------------------------------
+# POST-TRAITEMENT ET VALIDATION DES RESULTATS
+# -----------------------------------------------------
+
+TAB_DY = POST_RELEVE_T(ACTION=_F(INTITULE = 'DEPLACEMENT',
+                                 NOM_CHAM = 'DEPL',
+                                 OPERATION = 'MOYENNE_ARITH',
+                                 GROUP_NO = 'BOUT',
+                                 NOM_CMP = 'DY',
+                                 RESULTAT = RESU));
+
+IMPR_TABLE(TABLE = TAB_DY);
+
+# Comparaison a une resolution 3D du meme probleme
+
+TEST_TABLE(TABLE     = TAB_DY,
+           NOM_PARA  = 'MOYENNE',
+           FILTRE    =_F(NOM_PARA = 'NUME_ORDRE',
+                         VALE_I   = 1),
+           VALE      = -140.36714E-6,
+           PRECISION = 2.E-2,
+           REFERENCE = 'AUTRE_ASTER',);
+
+TEST_TABLE(TABLE     = TAB_DY,
+           NOM_PARA  = 'MOYENNE',
+           FILTRE    =_F(NOM_PARA = 'NUME_ORDRE',
+                         VALE_I   = 2),
+           VALE      = -318.45792E-6,
+           PRECISION = 2.E-2,
+           REFERENCE = 'AUTRE_ASTER',);
+
+# Tests de non-regression
+
+TEST_TABLE(TABLE     = TAB_DY,
+           NOM_PARA  = 'MOYENNE',
+           FILTRE    =_F(NOM_PARA = 'NUME_ORDRE',
+                         VALE_I   = 1),
+           VALE      = -137.99653E-6,
+           PRECISION = 1.E-6,
+           REFERENCE = 'NON_REGRESSION',);
+
+TEST_TABLE(TABLE     = TAB_DY,
+           NOM_PARA  = 'MOYENNE',
+           FILTRE    =_F(NOM_PARA = 'NUME_ORDRE',
+                         VALE_I   = 2),
+           VALE      = -314.93105E-6,
+           PRECISION = 1.E-6,
+           REFERENCE = 'NON_REGRESSION',);
+
+FIN();

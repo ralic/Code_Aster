@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ AFFE_CARA_ELEM=OPER(nom="AFFE_CARA_ELEM",op=  19,sd_prod=cara_elem,
    reentrant='n',
    UIinfo ={"groupes":("Modélisation",)},
    regles = (AU_MOINS_UN('POUTRE','BARRE','COQUE','CABLE','DISCRET','DISCRET_2D','MASSIF',
-                         'GRILLE','MULTIFIBRE','RIGI_PARASOL'),
+                         'GRILLE','MEMBRANE','MULTIFIBRE','RIGI_PARASOL'),
              PRESENT_PRESENT('MULTIFIBRE','GEOM_FIBRE'),
              EXCLUS('DISCRET','DISCRET_2D'),),
    MODELE = SIMP(statut='o',typ=modele_sdaster ),
@@ -523,6 +523,19 @@ AFFE_CARA_ELEM=OPER(nom="AFFE_CARA_ELEM",op=  19,sd_prod=cara_elem,
       AXE                  = SIMP(statut='f',typ='R',max='**'),
       COEF_RIGI_DRZ        = SIMP(statut='f',typ='R',defaut= 1.0E-10 ),
       GRILLE_NCOU          = SIMP(statut='f',typ='I',defaut= 1,),
+   ),
+
+#  ============================================================================
+   MEMBRANE             = FACT(statut='f',max='**',
+      regles               = (UN_PARMI('MAILLE','GROUP_MA'),
+                              EXCLUS('ANGL_REP','ORIG_AXE'),
+                              ENSEMBLE('ORIG_AXE','AXE')),
+      MAILLE               = SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+      GROUP_MA             = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+      ANGL_REP             = SIMP(statut='f',typ='R',max=2),
+      ORIG_AXE             = SIMP(statut='f',typ='R',max='**'),
+      AXE                  = SIMP(statut='f',typ='R',max='**'),
+      MEMBRANE_NCOU        = SIMP(statut='f',typ='I',defaut= 1,),
    ),
 
 #============================================================================

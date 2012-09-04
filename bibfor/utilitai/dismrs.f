@@ -1,6 +1,6 @@
       SUBROUTINE DISMRS(QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,14 +49,15 @@ C     ------------------
       REAL*8       RBID
 
 C-----------------------------------------------------------------------
-      INTEGER I ,IAD ,IATACH ,ICO ,IEXI ,IRET ,J 
-      INTEGER JLIPAR ,K ,N1 ,NBCH ,NBDYN ,NBMOD ,NBSTAT 
-      INTEGER NBSY 
+      INTEGER I ,IAD ,IATACH ,ICO ,IEXI ,IRET ,J
+      INTEGER JLIPAR ,K ,N1 ,NBCH ,NBDYN ,NBMOD ,NBSTAT
+      INTEGER NBSY
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       NOMOB = NOMOBZ
       REPI  = 0
       REPK  = ' '
+      IERD = 0
 
 
       IF (QUESTI.EQ.'TYPE_RESU') THEN

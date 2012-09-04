@@ -2,9 +2,9 @@
      &                  DDEDT,VIM,VIP,R)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -60,21 +60,19 @@ C OPTION CALCUL DU RESIDU OU CALCUL DE LA MATRICE TANGENTE
       RIGI = OPTION(1:4).EQ.'FULL' .OR. OPTION(1:4).EQ.'RIGI'
       ELAS = OPTION(11:14).EQ.'ELAS' 
 
-
-C RECUPERATION DES PARAMETRES PHYSIQUES
-
       IF (OPTION.EQ.'RIGI_MECA_TANG') THEN
         POUM = '-'
       ELSE
         POUM = '+'
       ENDIF
 
+C RECUPERATION DES PARAMETRES PHYSIQUES
       CALL RCVALB(FAMI,KPG,KSP,POUM,MAT,' ','RUPT_FRAG',0,' ',
      &            0.D0,4,NOM,VAL,COD,2)
 
       GC   = VAL(1)      
       SC   = VAL(2)  
-      DC   = 2*GC/SC
+      DC   = 2.D0*GC/SC
       H    = SC/DC
       R    = H * VAL(3)
       C    = H * VAL(4)
@@ -85,8 +83,8 @@ C    LECTURE DES VARIABLES INTERNES
       GA   = VIM(4) 
 
 C    CALCUL DE KAPPA : KA = DC*(1-SQRT(1-GA))
-      TMP  = SQRT(MAX(0.D0,1-GA))
-      TMP  = DC*(1-TMP)
+      TMP  = SQRT(MAX(0.D0,1.D0-GA))
+      TMP  = DC*(1.D0-TMP)
       TMP  = MAX(0.D0,TMP)
       TMP  = MIN(DC,TMP)
       KA   = TMP
@@ -109,7 +107,7 @@ C    SI RIGI_MECA_*
 C    CONTACT   
       IF (TN .LT. 0.D0) THEN
         REGIME = -1
-        DN = 0
+        DN = 0.D0
         
 C    SURFACE LIBRE (SOUS CONTRAINTE)   
       ELSE IF (TN .LT. R*KA) THEN
@@ -159,7 +157,7 @@ C        (NULLE POUR CE TYPE D'IRREVERSIBILITE)
 C   V7 A V9 : VALEURS DE DELTA
 
       KAP = MIN( MAX(KA,DN) , DC )
-      GAP = KAP/DC * (2 - KAP/DC)
+      GAP = KAP/DC * (2.D0 - KAP/DC)
       GAP = MAX(0.D0,GAP)
       GAP = MIN(1.D0,GAP)
 
@@ -194,19 +192,19 @@ C    AJUSTEMENT POUR PRENDRE EN COMPTE *_MECA_ELAS
 
       CALL R8INIR(36, 0.D0, DDEDT,1)
 
-      DDEDT(2,2) = 1/(C+R)
-      DDEDT(3,3) = 1/(C+R)
+      DDEDT(2,2) = 1.D0/(C+R)
+      DDEDT(3,3) = 1.D0/(C+R)
  
       IF (REGIME .EQ. 0) THEN
-        DDNDTN = 0
+        DDNDTN = 0.D0
       ELSE IF (REGIME .EQ. 1) THEN
-        DDNDTN = 1/(R-H)
+        DDNDTN = 1.D0/(R-H)
       ELSE IF (REGIME .EQ. 2) THEN
-        DDNDTN = 1/R
+        DDNDTN = 1.D0/R
       ELSE IF (REGIME .EQ. 3) THEN
-        DDNDTN = 1/R
+        DDNDTN = 1.D0/R
       ELSE IF (REGIME .EQ. -1) THEN
-        DDNDTN = 0
+        DDNDTN = 0.D0
       END IF
       DDEDT(1,1) = DDNDTN
       

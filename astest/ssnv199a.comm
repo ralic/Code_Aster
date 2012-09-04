@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 # TITRE DCB EN 3D AVEC DES ELEMENTS DE JOINT HEXA8 CZM_EXP_REG
 # ssnv199a.para = tps_job 100 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -264,7 +264,7 @@ FRES = POST_RELEVE_T(
 TEST_RESU (
   RESU = (
     _F(
-      REFERENCE = 'ANALYTIQUE',
+      REFERENCE = 'NON_REGRESSION',
       RESULTAT  = U,
       NOM_CHAM  = 'DEPL',
       NOM_CMP   = 'DY',
@@ -281,13 +281,13 @@ TEST_TABLE(TABLE=FRES,
            NOM_PARA='DY',
            VALE=7.18071475,
            PRECISION=0.02,
-           REFERENCE='ANALYTIQUE')
+           REFERENCE='NON_REGRESSION')
 
 
 TEST_RESU (
   RESU = (
     _F(
-      REFERENCE = 'ANALYTIQUE',
+      REFERENCE = 'NON_REGRESSION',
       RESULTAT  = U,
       NOM_CHAM  = 'DEPL',
       NOM_CMP   = 'DY',
@@ -304,13 +304,13 @@ TEST_TABLE(TABLE=FRES,
            NOM_PARA  = 'DY',
            VALE      = 5.83764679,
            PRECISION = 0.02,
-           REFERENCE = 'ANALYTIQUE')
+           REFERENCE = 'NON_REGRESSION')
 
 
 TEST_RESU (
   RESU = (
     _F(
-      REFERENCE = 'ANALYTIQUE',
+      REFERENCE = 'NON_REGRESSION',
       RESULTAT  = U,
       NOM_CHAM  = 'DEPL',
       NOM_CMP   = 'DY',
@@ -327,7 +327,7 @@ TEST_TABLE(TABLE=FRES,
            NOM_PARA  = 'DY',
            VALE      = 4.93430151,
            PRECISION = 0.02,
-           REFERENCE = 'ANALYTIQUE')
+           REFERENCE = 'NON_REGRESSION')
 
 
 IMPR_TABLE(TABLE = UPILO)

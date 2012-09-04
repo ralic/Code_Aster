@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/08/2012   AUTEUR SFAYOLLE S.FAYOLLE 
+#& MODIF COMMANDE  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -86,6 +86,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                   "3D_JOINT",        # RESP. : LAVERNE J.LAVERNE
                                   "3D_JOINT_HYME",   # RESP. : LAVERNE J.LAVERNE
                                   "3D_INTERFACE",    # RESP. : LAVERNE J.LAVERNE
+                                  "3D_INTERFACE_S",  # RESP. : LAVERNE J.LAVERNE
                                   "AXIS",            # RESP. : LEFEBVRE J.P.LEFEBVRE
                                   "AXIS_FLUI_STRU",  # RESP. : GREFFET N.GREFFET
                                   "AXIS_FLUIDE",     # RESP. : GREFFET N.GREFFET
@@ -100,6 +101,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                   "AXIS_GVNO",       # RESP. : BEAURAIN J.BEAURAIN
                                   "AXIS_JOINT",      # RESP. : LAVERNE J.LAVERNE
                                   "AXIS_INTERFACE",  # RESP. : LAVERNE J.LAVERNE
+                                  "AXIS_INTERFACE_S",# RESP. : LAVERNE J.LAVERNE
                                   "AXIS_ELDI",       # RESP. : LAVERNE J.LAVERNE
                                   "BARRE",           # RESP. : FLEJOU J.L.FLEJOU
                                   "2D_BARRE",        # RESP. : FLEJOU J.L.FLEJOU
@@ -122,6 +124,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                   "PLAN_JOINT",      # RESP. : LAVERNE J.LAVERNE
                                   "PLAN_JOINT_HYME", # RESP. : LAVERNE J.LAVERNE
                                   "PLAN_INTERFACE",  # RESP. : LAVERNE J.LAVERNE
+                                  "PLAN_INTERFACE_S",# RESP. : LAVERNE J.LAVERNE
                                   "PLAN_ELDI",       # RESP. : LAVERNE J.LAVERNE
                                   "D_PLAN_ABSO",     # RESP. : DEVESA G.DEVESA
                                   "D_PLAN_INCO",     # RESP. : MICHEL S.MICHEL
@@ -138,6 +141,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                   "FLUI_STRU",       # RESP. : GREFFET N.GREFFET
                                   "GRILLE_EXCENTRE", # RESP. : ROSPARS C.ROSPARS
                                   "GRILLE_MEMBRANE", # RESP. : ROSPARS C.ROSPARS
+                                  "MEMBRANE",        # RESP. : ROSPARS C.ROSPARS
                                   "POU_C_T",         # RESP. : FLEJOU J.L.FLEJOU
                                   "POU_D_E",         # RESP. : FLEJOU J.L.FLEJOU
                                   "POU_D_EM",        # RESP. : FLEJOU J.L.FLEJOU

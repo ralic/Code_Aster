@@ -1,11 +1,12 @@
-      SUBROUTINE TITREB( DONNEE,ILIGD,ICOLD,NBTITR,SORTIE,ILIGS,ICOLS)
+      SUBROUTINE TITREB(DONNEE,ILIGD,ICOLD,NBTITR,SORTIE,ILIGS,ICOLS,
+     &                  FORMR)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
-      CHARACTER*(*)      DONNEE(*),                SORTIE(*)
-      INTEGER                   ILIGD,ICOLD,NBTITR,       ILIGS,ICOLS
+      CHARACTER*(*) DONNEE(*),SORTIE(*),FORMR
+      INTEGER       ILIGD,ICOLD,NBTITR,ILIGS,ICOLS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,13 +33,15 @@ C IN NBTITR : I : NOMBRE MAXIMUM DE LIGNES DE TITRE EN ENTREE
 C     ------------------------------------------------------------------
 
 C
-      INTEGER       IVAL, IGEN,IPOSA,IPOSB,IPOSC,MXDEMO,IACC,IAD
+      INTEGER       IVAL, IGEN,IPOSA,IPOSB,IPOSC,MXDEMO,IACC,IAD,LENF
       INTEGER       IBID,ICLASS,IDEB,IERD,ILG,IPLACE,IRET,ITIT,IUTI,JAD
-      INTEGER       JPARA,LTIT,NBACCE,NBPA,NBPARA,NL,IUNIFI,LXLGUT
+      INTEGER       JPARA,LTIT,NBACCE,NBPA,NBPARA,NL,IUNIFI,LXLGUT,ITMP
+      INTEGER       DEB,FIN,LENG
 
       REAL*8        RVAL,RBID,R8VIDE
       CHARACTER*4   CTYPE
       CHARACTER*4   CT(3)
+      CHARACTER*16  FORMRB
       CHARACTER*80  CVAL
       CHARACTER*255 CGEN
 C
@@ -69,6 +72,25 @@ C     ------------------------------------------------------------------
 C
 C     --- LIRE LE NOM DU DEMON DE MINUIT ---
       CALL JEMARQ()
+
+C     --- ANALYSE DU FORMAT
+      IF ( FORMR.EQ.' ' ) THEN
+         LENG = 9
+         LENF = 12
+         FORMRB = '(1PE12.5)'
+      ELSE
+         FORMRB=FORMR
+         LENG = LXLGUT(FORMRB)
+         DEB = 0
+         FIN = 0
+         DO 300 ITMP=1,LENG
+           IF ( FORMRB(ITMP:ITMP).EQ.'E' ) DEB = ITMP+1
+           IF ( FORMRB(ITMP:ITMP).EQ.'.' ) FIN = ITMP-1
+  300    CONTINUE
+         CALL ASSERT(DEB.NE.0.AND.FIN.NE.0)
+         READ(FORMRB(DEB:FIN),'(I2)') LENF
+      ENDIF
+
       NBPARA = 0
       LFREQ = .FALSE.
       ICOLD  = ICOLD + 1
@@ -373,8 +395,9 @@ C                   ENTIER
                     IGEN = IGEN+ILG+1
                   ELSE IF ((CTYPE(1:1).EQ.'R').AND.(.NOT.LFREQ)) THEN
 C                   REEL
-                    ILG = 12
-                    WRITE(CGEN(IGEN+1:IGEN+ILG),'(1PE12.5)') ZR(IAD)
+                    ILG = LENF+1
+                    WRITE(CGEN(IGEN+1:IGEN+ILG),
+     &                    '(1X,'//FORMRB(1:LENG)//')')ZR(IAD)
                     IGEN = IGEN+ILG+1
                   ELSE IF ((CTYPE(1:3).EQ.'K16').AND.(LFREQ)) THEN
 C                   K16
@@ -400,8 +423,9 @@ C                   ENTIER
                     IGEN = IGEN+ILG+1
                   ELSE IF (CTYPE(1:1).EQ.'R') THEN
 C                   REEL
-                    ILG = 12
-                    WRITE(CGEN(IGEN+1:IGEN+ILG),'(1PE12.5)') ZR(IAD)
+                    ILG = LENF+1
+                    WRITE(CGEN(IGEN+1:IGEN+ILG),
+     &                    '(1X,'//FORMRB(1:LENG)//')')ZR(IAD)
                     IGEN = IGEN+ILG+1
                   ELSE IF (CTYPE(1:2).EQ.'K8') THEN
 C                   K8
@@ -453,7 +477,7 @@ CCC   CONCEPT INEXISTANT
                CALL JEVEUO(PARA(IUTI),'L',JAD)
                IF (CVAL(1:1).EQ.'R') THEN
                   RBID = ZR(JAD)
-                  WRITE(CGEN(IDEB:),'(1PE12.5)') RBID
+                  WRITE(CGEN(IDEB:),FORMRB(1:LENG)) RBID
                   IGEN = LXLGUT(CGEN)
                   IDEB = IGEN+1
                ELSE IF (CVAL(1:1).EQ.'I') THEN

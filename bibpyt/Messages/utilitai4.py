@@ -1,4 +1,4 @@
-#@ MODIF utilitai4 Messages  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
+#@ MODIF utilitai4 Messages  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,10 +35,6 @@ cata_msg={
 
 11: _(u"""
  problème(s) rencontre(s) lors de l'accès au RESU_GENE
-"""),
-
-13: _(u"""
- Seul le type complexe est traité.
 """),
 
 14: _(u"""

@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 13/12/2011   AUTEUR FOUCAULT A.FOUCAULT 
+#& MODIF COMMANDE  DATE 04/09/2012   AUTEUR FERNANDES R.FERNANDES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,7 +26,7 @@ CALC_MAC3COEUR = MACRO(nom="CALC_MAC3COEUR",
          TYPE_COEUR   = SIMP(statut='o',typ='TXM',into=("TEST","900","1300","N4","EPR") ),
          # TYPE DE COEUR A CONSIDERER
          TABLE_N      = SIMP(statut='o',typ=table_sdaster),         # TABLE INITIALE DES DAMAC A L INSTANT N
-         MAILLAGE_N   = SIMP(statut='o',typ=maillage_sdaster),        # MAILLAGE EN ATTENDANT MIEUX ???
+         MAILLAGE_N   = SIMP(statut='f',typ=maillage_sdaster),        # MAILLAGE EN ATTENDANT MIEUX ???
 
          LAME = FACT(statut='f',max=1,
                      fr="Estimation des lames d'eau entre AC",
@@ -35,6 +35,7 @@ CALC_MAC3COEUR = MACRO(nom="CALC_MAC3COEUR",
 
          DEFORMATION  = FACT(statut='f',max=1,
                       fr="Estimation des deformations des AC",
+               RESU_INIT    = SIMP(statut='f',typ=resultat_sdaster),
                NIVE_FLUENCE = SIMP(statut='o',typ='R',validators=NoRepeat(),max=1), # FLUENCE MAXIMALE DANS LE COEUR
                UNITE_THYC      = SIMP(statut='o',typ='I', max=1),),
                 );

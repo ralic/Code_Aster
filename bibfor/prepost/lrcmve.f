@@ -6,7 +6,7 @@
      &                    ADSL, ADSV, ADSD,
      &                    CODRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 27/08/2012   AUTEUR NICOLAS G.NICOLAS 
+C MODIF PREPOST  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -255,8 +255,7 @@ C
 C       SI TYPE DE CHAMP = 'ELGA'
         IF (TYPECH(1:4).EQ.'ELGA')THEN
           DO 133 , NUVAL = 0 , LGPROA-1
-           JAUX = ZI(ADPROA+NUVAL)
-           IMA=ZI(JNUMMA+JAUX-1)
+           IMA=ZI(JNUMMA+NUVAL)
            NBPT=NPGMA(IMA)
             NBPTM=NPGMM(IMA)
             DO 134 ,  I = 1 , NBPTM
@@ -275,9 +274,8 @@ C             IS GAUSS POINT IN ASTER ELEMENT ?
 C       SI TYPE DE CHAMP = 'ELEM'/'ELNO'
         ELSE
           DO 1330 , NUVAL = 0 , LGPROA-1
-           JAUX = ZI(ADPROA+NUVAL)
             DO 1340 ,  I = 1 , NBNOMA
-              CALL CESEXI('S',ADSD,ADSL,ZI(JNUMMA+JAUX-1),I,1,NRCMP,KK)
+              CALL CESEXI('S',ADSD,ADSL,ZI(JNUMMA+NUVAL),I,1,NRCMP,KK)
               LAUX = LAUX + NBCMFI
               ZL(ADSL-KK-1) = .TRUE.
               ZR(ADSV-KK-1) = ZR(LAUX)

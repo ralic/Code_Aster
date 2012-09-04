@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 # TITRE FISSURATION INTERFACE 3D (HEXA20) SUR DCB, LOI CZM_OUV_MIX
 # ssnv199e.para = tps_job 150 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -209,7 +209,7 @@ U=STAT_NON_LINE(
                    DEPL_REFE      = dc,
                    ITER_GLOB_MAXI = 12,
                   ),
-  SOLVEUR = _F(METHODE = 'MUMPS', NPREC=-1),
+  SOLVEUR = _F(METHODE = 'MUMPS'),
   NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
   )
 
@@ -250,7 +250,7 @@ U=STAT_NON_LINE(reuse=U,
                    DEPL_REFE      = dc,
                    ITER_GLOB_MAXI = 12,
                   ),
-  SOLVEUR = _F(METHODE = 'MUMPS',NPREC=-1),
+  SOLVEUR = _F(METHODE = 'MUMPS'),
   ARCHIVAGE = _F(
     LIST_INST     = INS_ARCH
   ))
@@ -294,11 +294,11 @@ FRES = POST_RELEVE_T(
 TEST_RESU (
   RESU = (
     _F(
-      REFERENCE = 'ANALYTIQUE',
+      REFERENCE = 'NON_REGRESSION',
       RESULTAT  = U,
       NOM_CHAM  = 'DEPL',
       NOM_CMP   = 'DY',
-      VALE      = 5.16307,
+      VALE      = 5.00829,
       GROUP_NO  = 'NO7',
       INST      = 2.0
       ),
@@ -308,18 +308,18 @@ TEST_RESU (
 TEST_TABLE(TABLE=FRES,
            FILTRE=(_F(NOM_PARA='INST',VALE=2.0)),
            NOM_PARA='DY',
-           VALE=6.73227,
-           REFERENCE='ANALYTIQUE')
+           VALE=6.78854,
+           REFERENCE='NON_REGRESSION')
 
 
 TEST_RESU (
   RESU = (
     _F(
-      REFERENCE = 'ANALYTIQUE',
+      REFERENCE = 'NON_REGRESSION',
       RESULTAT  = U,
       NOM_CHAM  = 'DEPL',
       NOM_CMP   = 'DY',
-      VALE      = 7.15297,
+      VALE      = 6.97298,
       GROUP_NO  = 'NO7',
       INST      = 3.0
       ),
@@ -329,18 +329,18 @@ TEST_RESU (
 TEST_TABLE(TABLE=FRES,
            FILTRE=(_F(NOM_PARA='INST',VALE=3.0)),
            NOM_PARA  = 'DY',
-           VALE      = 5.68393,
-           REFERENCE = 'ANALYTIQUE')
+           VALE      = 5.75772,
+           REFERENCE = 'NON_REGRESSION')
 
 
 TEST_RESU (
   RESU = (
     _F(
-      REFERENCE = 'ANALYTIQUE',
+      REFERENCE = 'NON_REGRESSION',
       RESULTAT  = U,
       NOM_CHAM  = 'DEPL',
       NOM_CMP   = 'DY',
-      VALE      = 9.50315,
+      VALE      = 9.12554,
       GROUP_NO  = 'NO7',
       INST      = 4.0
       ),
@@ -350,8 +350,8 @@ TEST_RESU (
 TEST_TABLE(TABLE=FRES,
            FILTRE=(_F(NOM_PARA='INST',VALE=4.0)),
            NOM_PARA  = 'DY',
-           VALE      = 4.95222,
-           REFERENCE = 'ANALYTIQUE')
+           VALE      = 4.93281,
+           REFERENCE = 'NON_REGRESSION')
 
 
 IMPR_TABLE(TABLE = UPILO)

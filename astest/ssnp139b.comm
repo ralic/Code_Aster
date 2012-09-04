@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE DCB 2D PLASTIQUE AVEC ELEMENTS D'INTERFACE EN FATIGUE : LOI CZM_FAT_MIX
 # ssnp139b.para = tps_job 500 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -242,7 +242,7 @@ U=STAT_NON_LINE(
                    DEPL_REFE      = dc,
                    ITER_GLOB_MAXI = 8,
                   ),
-  SOLVEUR = _F(METHODE = 'MUMPS',NPREC=-1),
+  SOLVEUR = _F(METHODE = 'MUMPS'),
   ARCHIVAGE = _F(LIST_INST = INS_ARCH
     ))
 
@@ -308,7 +308,7 @@ TEST_RESU (
              REFERENCE = 'NON_REGRESSION',
              NOM_CHAM  = 'VARI_ELGA',
              NOM_CMP   = 'V7',
-             VALE      = 7.72751E-05,
+             VALE      = 6.20331E-05,
              MAILLE    = 'M9788',
              POINT     = 2,
              INST      = tfin

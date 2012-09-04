@@ -1,12 +1,13 @@
-      SUBROUTINE TITRE1(ST,NOMOBJ,BASE,NBTITR,TITDON,LGDON)
+      SUBROUTINE TITRE1(ST,NOMOBJ,BASE,NBTITR,TITDON,LGDON,
+     &                  FORMR)
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
-      CHARACTER*1       ST
-      CHARACTER*(*)     NOMOBJ,   BASE,       TITDON(*)
-      INTEGER                  NBTITR,       LGDON(*)
+      CHARACTER*1   ST
+      CHARACTER*(*) NOMOBJ,BASE,TITDON(*),FORMR
+      INTEGER       NBTITR,LGDON(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 06/08/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,7 +67,7 @@ C        --- TANT QU'IL Y A DES COLONNES FAIRE ---
 C
 C              --- ON A TROUVE UN "&",  ATTENTION DEMON ---
                CALL TITREB(TITDON,ILIGD,ICOLD,NBTITR,
-     &                                            ZK80(1),LDONS1,ICOLS)
+     &                     ZK80(1),LDONS1,ICOLS,FORMR)
 C
             ELSE
                ICOLS  = ICOLS + 1

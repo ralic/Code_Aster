@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,6 +35,8 @@ ENTETE__ ELEMENT__ MEDSQU4          MAILLE__ QUAD4
    OPTION__   RIGI_MECA_TANG -1
    OPTION__   VARI_ELNO      -1
    OPTION__   MASS_MECA_EXPLI-1
+   OPTION__   COOR_ELGA_MATER-1
+   OPTION__   INI_SP_MATER   -1
 ENTETE__ ELEMENT__ MEDSTR3          MAILLE__ TRIA3
    ELREFE__  TR3       GAUSS__  RIGI=FPG3   MASS=FPG4   NOEU=NOEU  FPG1=FPG1  FPG_LISTE__  MATER = (RIGI NOEU FPG1)
    ELREFE__  SE2       GAUSS__  RIGI=FPG2
@@ -44,6 +46,8 @@ ENTETE__ ELEMENT__ MEDSTR3          MAILLE__ TRIA3
    OPTION__   RIGI_MECA_TANG -1
    OPTION__   VARI_ELNO      -1
    OPTION__   MASS_MECA_EXPLI-1
+   OPTION__   COOR_ELGA_MATER-1
+   OPTION__   INI_SP_MATER   -1
 ENTETE__ ELEMENT__ MEQ4QU4          MAILLE__ QUAD4
    ELREFE__  QU4       GAUSS__  RIGI=FPG4   MASS=FPG9   NOEU=NOEU  FPG1=FPG1  FPG_LISTE__  MATER = (RIGI NOEU FPG1)
    ELREFE__  SE2       GAUSS__  RIGI=FPG2
@@ -53,15 +57,19 @@ ENTETE__ ELEMENT__ MEQ4QU4          MAILLE__ QUAD4
    OPTION__   RIGI_MECA_TANG -1
    OPTION__   VARI_ELNO      -1
    OPTION__   MASS_MECA_EXPLI-1
+   OPTION__   COOR_ELGA_MATER-1
+   OPTION__   INI_SP_MATER   -1
 ENTETE__ ELEMENT__ MET3TR3          MAILLE__ TRIA3
-   ELREFE__  TR3       GAUSS__  RIGI=FPG3   MASS=FPG4   NOEU=NOEU  FPG1=FPG1  FPG_LISTE__  MATER = (RIGI NOEU FPG1)
+   ELREFE__  TR3       GAUSS__  RIGI=FPG1   MASS=FPG4   NOEU=NOEU  FPG1=FPG1  FPG_LISTE__  MATER = (RIGI NOEU FPG1)
    ELREFE__  SE2       GAUSS__  RIGI=FPG2
    OPTION__   ACCEPTANCE     -1
    OPTION__   FULL_MECA      -1
    OPTION__   RAPH_MECA      -1
    OPTION__   RIGI_MECA_TANG -1
-   OPTION__   SIEF_ELNO      -1
    OPTION__   VARI_ELNO      -1
+   OPTION__   MASS_MECA_EXPLI-1
+   OPTION__   COOR_ELGA_MATER-1
+   OPTION__   INI_SP_MATER   -1
 
 MODE_LOCAL__
     CMATERC  = ADRSJEVE ELEM__         (I1       )
@@ -103,6 +111,7 @@ MODE_LOCAL__
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W       )
     CGEOMER  = GEOM_R   ELEM__         (X        Y        Z        )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
+    EGGEMA_R = GEOM_R   ELGA__ MATER   (X        Y        Z        )
     CTEMPSR  = INST_R   ELEM__         (INST     )
     CTIMER   = INST_R   ELEM__         (INST     DELTAT   THETA    )
     CSOUSOP  = NEUT_K24 ELEM__         (Z1       )
@@ -111,6 +120,9 @@ MODE_LOCAL__
     EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30]    )
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
     ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    )
+    EMNEUT_R = NEUT_R   ELGA__ MATER   (X[1]     )
+    ETEMPMA  = TEMP_R   ELGA__ MATER   (TEMP     )
+    EHYDRMA  = HYDR_R   ELGA__ MATER   (HYDR     )
     CITERAT  = NEUT_R   ELEM__         (X1       )
     ECASECT  = NEUT_R   ELEM__         (X[16]    )
     ENONLIN  = NEUT_I   ELEM__         (X1       )
@@ -208,6 +220,8 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     COOR_ELGA           488   IN__   NGEOMER  PGEOMER  CCACOQU  PCACOQU  ENBSP_I  PNBSP_I
                               OUT__  EGGEOP_R PCOORPG
+    COOR_ELGA_MATER     462   IN__   NGEOMER  PGEOMER  CCACOQU  PCACOQU  ENBSP_I  PNBSP_I
+                              OUT__  EGGEMA_R PCOOPGM
     DEGE_ELNO           33    IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  ENBSP_I  PNBSP_I
                               OUT__  EDEFGNO  PDEFOGR
@@ -273,6 +287,8 @@ OPTION__
                                      MVECTUR  PVECTUR
     INDIC_ENER          -1    IN__    OUT__    XXXXXX   XXXXXX
     INDIC_SEUIL         -1    IN__    OUT__    XXXXXX   XXXXXX
+    INI_SP_MATER        99    IN__
+                              OUT__  EMNEUT_R PNEUMAT  ETEMPMA  PTEMMAT  EHYDRMA  PHYDMAT
     INIT_VARC           99    IN__
                               OUT__  ZVARCPG  PVARCPR
     MASS_INER           31    IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  ENBSP_I  PNBSP_I

@@ -4,7 +4,7 @@
       INTEGER REPI,IERD
       CHARACTER*(*) QUESTI,REPKZ,NOMOBZ
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,8 +47,11 @@ C ----------------------------------------------------------------------
 C DEB ------------------------------------------------------------------
 
       CALL JEMARQ()
+      REPK  = ' '
+      REPI  = 0
+      IERD = 0
+
       NOMOB=NOMOBZ
-      REPK=' '
 
 C     --------------------------------
       IF (QUESTI.EQ.'NOM_MAILLA') THEN

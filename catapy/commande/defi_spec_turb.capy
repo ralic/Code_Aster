@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 03/09/2012   AUTEUR BERRO H.BERRO 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -84,7 +84,7 @@ DEFI_SPEC_TURB=OPER(nom="DEFI_SPEC_TURB",op= 145,sd_prod=spectre_sdaster,
            regles=(UN_PARMI('INTE_SPEC','GRAPPE_1'),
                    ENSEMBLE('INTE_SPEC','FONCTION'),),
            INTE_SPEC       =SIMP(statut='f',typ=interspectre),
-           FONCTION        =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),max='**'),
+           FONCTION        =SIMP(statut='f',typ=(table_fonction),max='**'),
            GRAPPE_1        =SIMP(statut='f',typ='TXM',into=("DEBIT_180","DEBIT_300",) ),
            NOEUD           =SIMP(statut='o',typ=no),
            CARA_ELEM       =SIMP(statut='o',typ=cara_elem ),

@@ -1,8 +1,8 @@
-#@ MODIF sd_prof_chno SD  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_prof_chno SD  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,6 +19,7 @@
 # ======================================================================
 
 from SD import *
+from SD.sd_util      import *
 
 class sd_prof_chno(AsBase):
     nomj = SDNom(fin=19)
@@ -27,4 +28,27 @@ class sd_prof_chno(AsBase):
     NUEQ = AsVI( )
     DEEQ = AsVI( )
 
+
+    def exists(self):
+        # retourne "vrai" si la SD semble exister (et donc qu'elle peut etre vérifiée)
+        return self.PRNO.exists
+
+    def check_1(self, checker):
+        if not self.exists() : return
+        nueq = self.NUEQ.get()
+        deeq = self.DEEQ.get()
+        neq=len(nueq)
+        assert len(deeq)==2*neq
+        for x in nueq :
+           assert 1<= x and x <= neq
+        sdu_tous_differents(self.NUEQ,checker)
+
+        for k in range(neq):
+           nuno=deeq[2*k]
+           nucmp=deeq[2*k+1]
+           assert nuno >= 0
+           if nuno==0 :
+               assert nucmp==0
+           else :
+               assert nucmp!=0
 

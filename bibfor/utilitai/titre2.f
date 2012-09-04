@@ -1,10 +1,11 @@
-      SUBROUTINE TITRE2(NOMCON,NOMCHA,NOMOBJ,MOTFAC,IOCC)
+      SUBROUTINE TITRE2(NOMCON,NOMCHA,NOMOBJ,MOTFAC,IOCC,
+     &                  FORMR)
       IMPLICIT NONE
-      CHARACTER*(*)     NOMCON,NOMCHA,NOMOBJ,MOTFAC
-      INTEGER                                IOCC
+      CHARACTER*(*)     NOMCON,NOMCHA,NOMOBJ,MOTFAC,FORMR
+      INTEGER           IOCC
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,9 +29,11 @@ C IN  NOMCHA : K19 : NOM DU CHAMP A TRAITER DANS LE CAS D'UN RESULTAT
 C IN  NOMOBJ : K24 : NOM DE L'OBJET DE STOCKAGE
 C IN  MOTFAC : K16 : NOM DU MOT CLE FACTEUR SOUS LEQUEL EST LE S-TITRE
 C IN  IOCC   : IS  : OCCURRENCE CONCERNEE SI L'ON A UN MOT CLE FACTEUR
+C IN  FORMR  : K*  : FORMAT DES REELS DANS LE TITRE
 C     ------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      CALL TITREA('S',NOMCON,NOMCHA,NOMOBJ,'D',MOTFAC,IOCC,'V' )
+      CALL TITREA('S',NOMCON,NOMCHA,NOMOBJ,'D',MOTFAC,IOCC,'V',
+     &            FORMR)
       END

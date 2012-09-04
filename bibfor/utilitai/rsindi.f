@@ -9,7 +9,7 @@
       COMPLEX*16 CVAL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE VABHHTS J.PELLET
+C RESPONSABLE PELLET J.PELLET
 C      TROUVER DANS LA TABLE ZX(IAOBJ-1+I),I=1,NBORDR LE SCALAIRE
 C      IVAL,RVAL,CVAL...
 C               AVEC LA PRECISION  / RELATIVE EPSI
@@ -57,7 +57,7 @@ C ----------------------------------------------------------------------
 C     ------------------------------------------------------------------
 
 C-----------------------------------------------------------------------
-      INTEGER I ,IAOBJ ,JORDR 
+      INTEGER I ,IAOBJ ,JORDR
 C-----------------------------------------------------------------------
       CRIT2 = CRIT
       NBTROU = 0

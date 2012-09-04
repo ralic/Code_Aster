@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 07/08/2012   AUTEUR TORKHANI M.TORKHANI 
+%& MODIF TYPELEM  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -63,6 +63,7 @@ MODE_LOCAL__
     EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W       )
+    EGGEMA_R = GEOM_R   ELGA__ MATER   (X        Y        Z        )
     CCOEFC   = IMPE_C   ELEM__         (IMPE     )
     CCOEFR   = IMPE_R   ELEM__         (IMPE     )
     CTEMPSR  = INST_R   ELEM__         (INST     )
@@ -92,6 +93,9 @@ MODE_LOCAL__
     EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30]    )
     EENEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
     EENEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    )
+    EMNEUT_R = NEUT_R   ELGA__ MATER   (X[1]     )
+    ETEMPMA  = TEMP_R   ELGA__ MATER   (TEMP     )
+    EHYDRMA  = HYDR_R   ELGA__ MATER   (HYDR     )
 
     EEINST_R = INST_R   ELNO__ IDEN__  (INST     )
     ESTRAUX  = STRX_R   ELGA__ RIGI    (N        VY       VZ       MT       MFY      MFZ
@@ -122,11 +126,13 @@ OPTION__
                                      CMATERC  PMATERC  ENBSP_I  PNBSP_I  ECAFIEL  PFIBRES  CCOMPOR  PCOMPOR
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_FC1D1D    150   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CFORCEC  PFC1D1D  NGEOMER  PGEOMER
+
                               OUT__  MVECTUC  PVECTUC
     CHAR_MECA_FF1D1D    150   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CFORCEF  PFF1D1D  NGEOMER  PGEOMER
                                      CTEMPSR  PTEMPSR
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_FR1D1D    150   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CFORCER  PFR1D1D  NGEOMER  PGEOMER
+
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_FRELEC    145   IN__   CFRELEC  PFRELEC  NGEOMER  PGEOMER
                               OUT__  MVECTUR  PVECTUR
@@ -155,9 +161,12 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_HYDR_R    150   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  CTEMPSR  PTEMPSR
+
                               OUT__  MVECTUR  PVECTUR
     COOR_ELGA           478   IN__   NGEOMER  PGEOMER  CCAORIE  PCAORIE  ENBSP_I  PNBSP_I  ECAFIEL  PFIBRES
                               OUT__  EGGEOP_R PCOORPG
+    COOR_ELGA_MATER     463   IN__   NGEOMER  PGEOMER  CCAORIE  PCAORIE  ENBSP_I  PNBSP_I  ECAFIEL  PFIBRES
+                              OUT__  EGGEMA_R PCOOPGM
     DEGE_ELNO           158   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PDEPLAR
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  ENBSP_I  PNBSP_I  ZVARCPG  PVARCPR
                                      ZVARCPG  PVARCRR
@@ -198,6 +207,8 @@ OPTION__
     INDIC_SEUIL         -1    IN__    OUT__    XXXXXX   XXXXXX
     INI_STRX            23    IN__   CCAORIE  PCAORIE
                               OUT__  ESTRAUX  PSTRX_R
+    INI_SP_MATER        99    IN__
+                              OUT__  EMNEUT_R PNEUMAT  ETEMPMA  PTEMMAT  EHYDRMA  PHYDMAT
     INIT_VARC           99    IN__
                               OUT__  ZVARCPG  PVARCPR
     MASS_FLUI_STRU      141   IN__   CABSCUR  PABSCUR  CCAGEPO  PCAGEPO  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE

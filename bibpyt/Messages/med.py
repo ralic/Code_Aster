@@ -1,4 +1,4 @@
-#@ MODIF med Messages  DATE 25/06/2012   AUTEUR ABBAS M.ABBAS 
+#@ MODIF med Messages  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -215,7 +215,7 @@ cata_msg = {
 """),
 
 32 : _(u"""
-     Le champ est inconnu.
+     Le champ %(k1)s est inconnu dans le fichier MED.
 """),
 
 33 : _(u"""
@@ -556,6 +556,13 @@ Conseil :
 
 98 : _(u"""
   -> Fichier MED :  %(k1)s champ :  %(k2)s
+"""),
+
+99 : _(u"""
+  Le nombre de composantes à imprimer est trop grand pour le champ %(k1)s.
+  Le format MED accepte au maximum 80 composantes dans un champ.
+  
+  Le champ ne sera donc pas imprimé au format MED.
 """),
 
 }

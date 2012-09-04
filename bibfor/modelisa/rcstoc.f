@@ -9,7 +9,7 @@
       CHARACTER*16       NOMRC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,7 +46,7 @@ C
 C
 C
       REAL*8             VALR8,E1,EI,PRECMA,VALRR(4)
-      CHARACTER*4        VALTX
+      CHARACTER*8        VALTX
       CHARACTER*8        VALCH,K8BID,NOMCLE(5)
       CHARACTER*8        MCLE8,TABLE
       CHARACTER*19       RDEP,NOMFCT,NOMINT
@@ -95,39 +95,58 @@ C
       NBC = 0
       NBK = 0
 C
-C --- 0- GLUT META_MECA_FO ET BETON_DOUBLE_DP :
-C --- ON TRAITE LES TX QUE ON CONVERTIT EN REELS
+C --- 0- GLUT META_MECA*, BETON_DOUBLE_DP, RUPT_FRAG ET CZM_LAB_MIX :
+C --- ON TRAITE LES TX QU ON CONVERTIT EN REELS
 C
       DO 50  I = 1 , NBOBJ
-       IF(ZK8(JTYPO+I-1)(1:2) .EQ. 'TX'  .AND.
-     & (NOMRC .EQ. 'ELAS_META' .OR. NOMRC .EQ. 'ELAS_META_FO'))THEN
-            CALL GETVTX ( NOMRC, ZK16(JNOMO+I-1), 1,IARG,1, VALTX, N )
-            IF ( N .EQ. 1 ) THEN
-               IF ( ZK16(JNOMO+I-1).EQ.'PHASE_REFE'  .AND.
-     &                        VALTX.EQ.'CHAU'        ) THEN
-                  NBR       = NBR + 1
-                  VALR(NBR) = 1.D0
-                  VALK(NBR) = ZK16(JNOMO+I-1)
-               ELSEIF( ZK16(JNOMO+I-1).EQ.'PHASE_REFE'  .AND.
-     &                           VALTX.EQ.'FROI'        ) THEN
-                  NBR       = NBR + 1
-                  VALR(NBR) = 0.D0
-                  VALK(NBR) = ZK16(JNOMO+I-1)
-               ENDIF
-            ENDIF
-         ENDIF
-         IF ( ZK8(JTYPO+I-1)(1:2) .EQ. 'TX'  .AND.
-     &        NOMRC .EQ. 'BETON_DOUBLE_DP' ) THEN
-            CALL GETVTX ( NOMRC, ZK16(JNOMO+I-1), 1,IARG,1, VALTX, N )
-            IF ( N .EQ. 1 ) THEN
-               IF ( ZK16(JNOMO+I-1).EQ.'ECRO_COMP_P_PIC'
-     &            .OR. ZK16(JNOMO+I-1).EQ.'ECRO_TRAC_P_PIC') THEN
-                  NBR       = NBR + 1
-                  VALK(NBR) = ZK16(JNOMO+I-1)
-                  IF ( VALTX.EQ.'LINE'          ) THEN
-                     VALR(NBR) = 0.D0
-                  ELSE
+         IF (ZK8(JTYPO+I-1)(1:2) .EQ. 'TX') THEN
+            IF (NOMRC(1:9) .EQ. 'ELAS_META') THEN
+               CALL GETVTX ( NOMRC, ZK16(JNOMO+I-1),1,IARG,1,VALTX,N)
+               IF ( N .EQ. 1 ) THEN
+                  IF ( ZK16(JNOMO+I-1).EQ.'PHASE_REFE'  .AND.
+     &                           VALTX.EQ.'CHAUD') THEN
+                     NBR       = NBR + 1
                      VALR(NBR) = 1.D0
+                     VALK(NBR) = ZK16(JNOMO+I-1)
+                  ELSEIF( ZK16(JNOMO+I-1).EQ.'PHASE_REFE'  .AND.
+     &                              VALTX.EQ.'FROID') THEN
+                     NBR       = NBR + 1
+                     VALR(NBR) = 0.D0
+                     VALK(NBR) = ZK16(JNOMO+I-1)
+                  ENDIF
+               ENDIF
+            ELSEIF (NOMRC .EQ. 'BETON_DOUBLE_DP') THEN
+               CALL GETVTX ( NOMRC, ZK16(JNOMO+I-1),1,IARG,1,VALTX,N)
+               IF ( N .EQ. 1 ) THEN
+                  IF ( ZK16(JNOMO+I-1).EQ.'ECRO_COMP_P_PIC'
+     &            .OR. ZK16(JNOMO+I-1).EQ.'ECRO_TRAC_P_PIC') THEN
+                     NBR       = NBR + 1
+                     VALK(NBR) = ZK16(JNOMO+I-1)
+                     IF ( VALTX.EQ.'LINEAIRE') THEN
+                        VALR(NBR) = 0.D0
+                     ELSE
+                        VALR(NBR) = 1.D0
+                     ENDIF
+                  ENDIF
+               ENDIF
+            ELSEIF ((NOMRC.EQ.'RUPT_FRAG')
+     &          .OR.(NOMRC.EQ.'CZM_LAB_MIX')) THEN
+               CALL GETVTX ( NOMRC, ZK16(JNOMO+I-1),1,IARG,1,VALTX,N)
+               IF ( N .EQ. 1 ) THEN
+                  IF ( ZK16(JNOMO+I-1).EQ.'CINEMATIQUE') THEN
+                     NBR       = NBR + 1
+                     VALK(NBR) = ZK16(JNOMO+I-1)
+                     IF ( VALTX.EQ.'UNILATER') THEN
+                        VALR(NBR) = 0.D0
+                     ELSEIF ( VALTX.EQ.'GLIS_1D') THEN
+                        VALR(NBR) = 1.D0
+                     ELSEIF ( VALTX.EQ.'GLIS_2D') THEN
+                        VALR(NBR) = 2.D0
+                     ELSE
+                        CALL ASSERT(.FALSE.)
+                     ENDIF
+                  ELSE
+                     CALL ASSERT(.FALSE.)
                   ENDIF
                ENDIF
             ENDIF

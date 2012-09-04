@@ -1,6 +1,6 @@
       SUBROUTINE DISMMS(QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,11 +46,14 @@ C
 C
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IALIME ,IBID ,IER ,JREFA ,JSLVK ,NBLIME 
+      INTEGER I ,IALIME ,IBID ,IER ,JREFA ,JSLVK ,NBLIME
 
 C-----------------------------------------------------------------------
       CALL JEMARQ()
-      REPK = ' '
+      REPK  = ' '
+      REPI  = 0
+      IERD = 0
+
       NOMOB = NOMOBZ
       CALL JEVEUO(NOMOB//'.REFA','L',JREFA)
 

@@ -1,5 +1,5 @@
       SUBROUTINE VAFCAR(TPGZ,MCLFZ,NMOBJZ,NPO,NDI,NCO,NCA,NBA,NMA,
-     &                  NGB,NUTYEL,NTYELE,CAR,NCAR,IVR,KIOC,IER)
+     &                  NGB,NMB,NUTYEL,NTYELE,CAR,NCAR,IVR,KIOC,IER)
       IMPLICIT NONE
       INTEGER                  NTYELE(*),      IVR(*)
       CHARACTER*6                                  KIOC
@@ -9,7 +9,7 @@
       CHARACTER*8       NOMU
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,6 +36,8 @@ C         CARAC DEFI_ARC    >  ELEMENT POUTRE COURBE
 C         CARAC CABLE       >  ELEMENT CABLE
 C         CARAC BARRE       >  ELEMENT BARRE
 C         CARAC MASSIF      >  ELEMENT THERMIQUE
+C         CARAC GRILLE      >  ELEMENT GRILLE
+C         CARAC MEMBRANE    >  ELEMENT MEMBRANE
 C ----------------------------------------------------------------------
       CHARACTER*16  CONCEP, CMD
       CHARACTER*17  TPGE
@@ -43,7 +45,7 @@ C ----------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
       INTEGER I ,IER ,L ,L1 ,NBA ,NCA ,NCAR 
-      INTEGER NCO ,NDI ,NGB ,NMA ,NPD ,NPF ,NPO 
+      INTEGER NCO ,NDI ,NGB ,NMB ,NMA ,NPD ,NPF ,NPO 
       INTEGER NUTYEL 
 C-----------------------------------------------------------------------
       TPG    = TPGZ
@@ -94,6 +96,9 @@ C --- VERIFICATION DU BON TYPE DE L ELEMENT
       ELSEIF(MCLF(1:6).EQ.'GRILLE') THEN
          NPD = NPO + NDI + NCO + NCA + NBA + NMA + 1
          NPF = NPO + NDI + NCO + NCA + NBA + NMA + NGB
+      ELSEIF(MCLF(1:8).EQ.'MEMBRANE') THEN
+         NPD = NPO + NDI + NCO + NCA + NBA + NMA + NGB + 1
+         NPF = NPO + NDI + NCO + NCA + NBA + NMA + NGB + NMB
       ELSE
          VALK(1) = MCLF
          CALL U2MESG('A', 'MODELISA9_11',1,VALK,0,0,0,0.D0)

@@ -1,4 +1,4 @@
-#@ MODIF modelisa Messages  DATE 19/03/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa Messages  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -61,7 +61,7 @@ cata_msg = {
 """),
 
 10 : _(u"""
- la norme de l'axe définie sous le mot clé facteur GRILLE/AXE est nul.
+ la norme de l'axe AXE définie sous le mot clé facteur GRILLE ou MEMBRANE est nul.
 """),
 
 11 : _(u"""
@@ -280,6 +280,11 @@ cata_msg = {
 
 54 : _(u"""
  coque : avec un excentrement, la prise en compte des termes d'inertie de rotation est obligatoire.
+"""),
+
+55 : _(u"""
+ vous ne pouvez affecter des valeurs de type "MEMBRANE" au modèle  %(k1)s
+ qui ne contient pas un seul élément MEMBRANE
 """),
 
 56 : _(u"""

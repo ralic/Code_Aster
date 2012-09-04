@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE  MINCE ENCASTREE SOUMISE A UN GRADIENT THERMIQUE
 # hsls01a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -38,12 +38,12 @@ MOD=AFFE_MODELE(  MAILLAGE=MA,
                              MODELISATION = 'DST'),
                         _F(  GROUP_MA = ('STRIA2','SQUA12'),  PHENOMENE = 'MECANIQUE',
                              MODELISATION = 'DKT'),
-                        _F(  GROUP_MA = 'SQUA2',  PHENOMENE = 'MECANIQUE',
+                        _F(  GROUP_MA = ('SQUA2' ,'STRIA3'),  PHENOMENE = 'MECANIQUE',
                              MODELISATION = 'Q4G'))
                  )
 
 CARA=AFFE_CARA_ELEM(  MODELE=MOD,
-                      COQUE=_F(  GROUP_MA = ('STRIA1','SQUA11','STRIA2','SQUA12','SQUA2'),
+                      COQUE=_F(  GROUP_MA = ('STRIA1','SQUA11','STRIA2','SQUA12','SQUA2','STRIA3'),
                                  EPAIS = 0.01)
                    )
 
@@ -133,7 +133,19 @@ TEST_RESU(RESU=(
              NOEUD = 'N544',      NOM_CMP = 'DRX',         VALE = 95.2381),
            _F(  RESULTAT = MESTAT,  NOM_CHAM = 'FORC_NODA',  NUME_ORDRE = 1,
              CRITERE = 'ABSOLU',    PRECISION = 3.E-5, REFERENCE='ANALYTIQUE',
-             NOEUD = 'N544',      NOM_CMP = 'DRY',         VALE = -71.4286))
+             NOEUD = 'N544',      NOM_CMP = 'DRY',         VALE = -71.4286),
+           _F(  RESULTAT = MESTAT,  NOM_CHAM = 'FORC_NODA',  NUME_ORDRE = 1,
+             CRITERE = 'ABSOLU',    PRECISION = 3.E-5, REFERENCE='ANALYTIQUE',
+             NOEUD = 'N477',      NOM_CMP = 'DRX',         VALE = 71.4286),
+           _F(  RESULTAT = MESTAT,  NOM_CHAM = 'FORC_NODA',  NUME_ORDRE = 1,
+             CRITERE = 'ABSOLU',    PRECISION = 3.E-5, REFERENCE='ANALYTIQUE',
+             NOEUD = 'N477',      NOM_CMP = 'DRY',         VALE = 95.2381),
+           _F(  RESULTAT = MESTAT,  NOM_CHAM = 'FORC_NODA',  NUME_ORDRE = 1,
+             CRITERE = 'ABSOLU',    PRECISION = 3.E-5, REFERENCE='ANALYTIQUE',
+             NOEUD = 'N666',      NOM_CMP = 'DRX',         VALE = 71.4286),
+           _F(  RESULTAT = MESTAT,  NOM_CHAM = 'FORC_NODA',  NUME_ORDRE = 1,
+             CRITERE = 'ABSOLU',    PRECISION = 3.E-5, REFERENCE='ANALYTIQUE',
+             NOEUD = 'N666',      NOM_CMP = 'DRY',         VALE = 95.2381))
           )
 
 FIN()

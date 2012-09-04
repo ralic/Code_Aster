@@ -1,4 +1,4 @@
-#@ MODIF utilitai6 Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF utilitai6 Messages  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -222,15 +222,6 @@ le numéro de rangement %(i1)d est supérieur au max %(i2)d.
 80 : _(u"""
 Concept résultat %(k1)s :
 la variable %(k2)s est inconnue pour le type %(k3)s.
-"""),
-
-82 : _(u"""
- pas de champ trouvé pour la fréquence  %(r1)f
-"""),
-
-83 : _(u"""
- plusieurs champs trouvés pour la fréquence  %(r1)f
- nombre de champs trouvés  : %(i1)d
 """),
 
 84 : _(u"""

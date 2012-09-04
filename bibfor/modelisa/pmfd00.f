@@ -1,6 +1,6 @@
       SUBROUTINE PMFD00()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,14 +47,14 @@ C ----------------------------------------------------------------------
       CHARACTER*24 MODNOM
       CHARACTER*24 MLGNMA
       CHARACTER*24 VPOINT,VNBFIB,VCARFI,VNBFIG,RNOMGF
-      INTEGER NBOCC0,NBOCC1,NBOCC2,NBOCC3
+      INTEGER NBOCC0,NBOCC1,NBOCC2,NBOCC3,NBOCC4
       INTEGER IRET,IBID
       INTEGER NBVM,NMAILP,NUMAIL,NBFIB
       INTEGER I,J,IOC,IPOS
       INTEGER JDNM,JNF,JMP
       INTEGER JNBFG,NBGF,JNGF,JCARFI,JPOINT,IPOINT,NGF,IG,NG,IG1
 C nb de groupes max par element
-C Ce nombre doit Ítre en accord avec les catalogues
+C Ce nombre doit ÔøΩtre en accord avec les catalogues
 C  grandeur_simple__.cata et gener_mepmf1.cata !
       INTEGER NGMXEL
       CHARACTER*2 KNGMX
@@ -114,7 +114,8 @@ C     -------------------------------------------------------
       CALL GETFAC('COQUE',NBOCC1)
       CALL GETFAC('GRILLE',NBOCC2)
       CALL GETFAC('POUTRE',NBOCC3)
-      IF ((NBOCC0+NBOCC1+NBOCC2+NBOCC3).EQ.0) GO TO 9999
+      CALL GETFAC('MEMBRANE',NBOCC4)
+      IF ((NBOCC0+NBOCC1+NBOCC2+NBOCC3+NBOCC4).EQ.0) GO TO 9999
 
 C     -- 2EME CHANCE :
       CALL GETVID(' ','MODELE',0,IARG,1,MODELE,IBID)
@@ -177,7 +178,7 @@ C     ET NUMERO DES GROUPES
 
 C --- VERIFICATIONS PREC_AIRE, PREC_INERTIE POUR L'OCCURENCE
 C     DE MULTIFIBRE
-C   --- On intègre pour tous les groupes de cette occurence
+C   --- On intÔøΩgre pour tous les groupes de cette occurence
         DO 89 I=1,6
           CASECT(I)=ZERO
  89     CONTINUE

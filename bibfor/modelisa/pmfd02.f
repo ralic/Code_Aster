@@ -1,6 +1,6 @@
       SUBROUTINE PMFD02(NOMA,CESDEC)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,7 +37,7 @@ C ----------------------------------------------------------------------
       INTEGER NBMA,NBCOU,NBV,NBSEC
       INTEGER NBAP,K,I,JNCMP,JVALV,JMA
       CHARACTER*19 CARTE
-      CHARACTER*16 MOCLES(2),TYPMCL(2),MOCLEF(3)
+      CHARACTER*16 MOCLES(2),TYPMCL(2),MOCLEF(4)
       CHARACTER*8 K8B
       CHARACTER*24 MESMAI
       INTEGER      IARG
@@ -45,14 +45,14 @@ C ----------------------------------------------------------------------
 
       DATA MOCLES/'MAILLE','GROUP_MA'/
       DATA TYPMCL/'MAILLE','GROUP_MA'/
-      DATA MOCLEF/'COQUE','GRILLE','POUTRE'/
+      DATA MOCLEF/'COQUE','GRILLE','POUTRE','MEMBRANE'/
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 
 
       MESMAI = '&&PMFD02.MES_MAILLES'
       NBAP = 0
-      DO 70 I = 1 , 3
+      DO 70 I = 1 , 4
          CALL GETFAC ( MOCLEF(I), NBOCC )
          NBAP = NBAP + NBOCC
          DO 72 K = 1 , NBOCC
@@ -135,7 +135,25 @@ C     -----------------------------------------------------------
    30 CONTINUE
 
 
-C     4- ON TRANSFORME LA CARTE EN CHAM_ELEM_S
+C     4- MOT CLE "MEMBRANE" :
+C     -----------------------------------------------------------
+      CALL GETFAC ( 'MEMBRANE', NBOCC )
+      DO 40 IOCC = 1,NBOCC
+        CALL RELIEM(' ',NOMA,'NU_MAILLE','MEMBRANE',IOCC,2,MOCLES,
+     &              TYPMCL,MESMAI ,NBMA)
+
+        CALL GETVIS('MEMBRANE','MEMBRANE_NCOU',IOCC,IARG,1,NBCOU,NBV)
+        ZK8(JNCMP-1+1) = 'GRI_NCOU'
+        ZI(JVALV-1+1) =  NBCOU
+
+        CALL JEVEUO (MESMAI , 'L', JMA )
+        CALL NOCART ( CARTE, 3, K8B, 'NUM', NBMA, K8B,
+     +                ZI(JMA), ' ', 1 )
+        CALL JEDETR(MESMAI)
+   40 CONTINUE
+
+
+C     5- ON TRANSFORME LA CARTE EN CHAM_ELEM_S
 C     -----------------------------------------------------------
       CALL CARCES(CARTE,'ELEM',' ','V',CESDEC,'A',IRET)
       CALL DETRSD('CARTE',CARTE)

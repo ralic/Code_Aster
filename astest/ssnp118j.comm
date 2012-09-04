@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 # TITRE FISSURATION INTERFACE 2D PLAN (QUAD8), LOI CZM_FAT_MIX
 # ssnp118j.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -51,7 +51,7 @@ MO=AFFE_MODELE(
                  _F(
                    MAILLE = 'CUBEDEG',
                    PHENOMENE = 'MECANIQUE',
-                   MODELISATION = 'PLAN_INTERFACE'
+                   MODELISATION = 'PLAN_INTERFACE_S'
                    )
                  )
               )

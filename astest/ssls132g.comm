@@ -1,0 +1,199 @@
+# MODIF  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+# TITRE PLAQUE CONSOLE EN FLEXION TRIA3 MEMBRANE POIDS_PROPRE
+# ssls132g.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='SSLS132G',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+#-----------------------------------------------------------------------
+# VALIDATION DES MEMBRANES SUR POUTRE CONSOLE (TRIANGLE)
+# VERIFICATION DU POIDS PROPRE
+#-----------------------------------------------------------------------
+
+MAILL1=LIRE_MAILLAGE(FORMAT='MED'   )
+
+MAILL2=CREA_MAILLAGE(
+               MAILLAGE=MAILL1,
+               CREA_GROUP_MA=_F(
+                   NOM = 'ACPLUS',
+                   GROUP_MA = 'CONSOLE',
+                   PREF_MAILLE = 'B',
+                              )
+                           )
+
+
+MAILTOT=CREA_MAILLAGE(
+               MAILLAGE=MAILL2,
+               CREA_GROUP_MA=_F(
+                   NOM = 'ACMOINS',
+                   GROUP_MA = 'CONSOLE',
+                   PREF_MAILLE = 'C',
+                              )
+                           )
+MAILTOT = DEFI_GROUP(
+             reuse    = MAILTOT,
+             MAILLAGE = MAILTOT,
+             CREA_GROUP_NO = _F(
+                   TOUT_GROUP_MA = 'OUI'))
+
+# -----------------------------------------------------
+# DEFINITION DES MATERIAUX
+# -----------------------------------------------------
+
+E_A = 2.E11
+RHO_A = 7800.
+section_l = 0.2
+
+ACIER=DEFI_MATERIAU(ELAS_MEMBRANE =_F(M_LLLL = E_A*section_l,
+                                      M_LLTT = 0.,
+                                      M_LLLT = 0.,
+                                      M_TTTT = 0.,
+                                      M_TTLT = 0.,
+                                      M_LTLT = 0.,
+                                      RHO    = RHO_A*section_l,),)
+
+BETON=DEFI_MATERIAU(
+            ELAS=_F(  E = 3.E10,   NU = 0.0, RHO = 2500.),
+                          )
+
+# -------------------------------------------------
+# AFFECTATION DES MATERIAUX
+# -------------------------------------------------
+
+MATAF=AFFE_MATERIAU(    MAILLAGE=MAILTOT,
+                          AFFE=(
+                          _F(  GROUP_MA = ('ACPLUS','ACMOINS'),
+                                 MATER = ACIER,
+                               ),
+                          _F(  GROUP_MA = ('CONSOLE'),
+                                 MATER = BETON,
+                               )
+                               )
+                      )
+
+# -------------------------------------------------
+# AFFECTATION DES MODELES
+# -------------------------------------------------
+
+LEMOD=AFFE_MODELE(    MAILLAGE=MAILTOT,     VERIF='MAILLE',
+                        AFFE=(
+                              _F(  GROUP_MA = ('ACPLUS','ACMOINS'),
+                               PHENOMENE = 'MECANIQUE',
+                               MODELISATION = 'MEMBRANE',
+                             ),
+                              _F(  GROUP_MA = ('CONSOLE',),
+                               PHENOMENE = 'MECANIQUE',
+                               MODELISATION = 'DKT',
+                             )
+                          )
+                      )
+
+# -------------------------------------------------
+# AFFECTATION DES CARACTERISTIQUES
+# -------------------------------------------------
+
+LACAR=AFFE_CARA_ELEM(    MODELE=LEMOD,
+                      COQUE=(
+                          _F( GROUP_MA = ('CONSOLE', 'B0X','B1X','B0Y','B1Y',),
+                                EPAIS = .2,
+                                ANGL_REP = (0.0, 0.0,),
+                             ),
+                             ),
+                      MEMBRANE=(
+                                _F( GROUP_MA = 'ACPLUS',
+                                 ANGL_REP=(0.,0.),),
+                                _F( GROUP_MA = 'ACMOINS',
+                                 ANGL_REP=(0.,0.),),
+                               )
+                        )
+
+# ----------------------------------------------
+# CHARGEMENT
+# ----------------------------------------------
+
+ZCHM=AFFE_CHAR_MECA(
+             MODELE=LEMOD,
+            DDL_IMPO=(
+                   _F( GROUP_MA  = ('B0X','B1X'),
+                       DX = 0., DY=0., DZ = 0., DRX = 0., DRY = 0., DRZ = 0. ),
+                ),
+            PESANTEUR = _F(GRAVITE=9.81,
+                           DIRECTION=(0.,0.,-1.),),
+            )
+
+# ----------------------------------------------
+# CALCUL
+# ----------------------------------------------
+
+ZLIST=DEFI_LIST_REEL(   DEBUT=0.,
+             INTERVALLE=_F( JUSQU_A = 1.0,  NOMBRE = 1, )
+           )
+
+LEDEP=STAT_NON_LINE(
+                            MODELE=LEMOD,
+                        CHAM_MATER=MATAF,
+                         CARA_ELEM=LACAR,
+                             EXCIT=_F(
+                CHARGE = ZCHM,
+                ),
+                         COMP_INCR=_F(
+                RELATION = 'ELAS',
+                ),
+                         INCREMENT=_F(
+                LIST_INST = ZLIST,
+                NUME_INST_FIN = 1,
+                ),
+              )
+
+
+LEDEP=CALC_ELEM( reuse = LEDEP,
+                 OPTION     = ('EPSI_ELGA','EPSI_ELNO','EFGE_ELNO', 'VARI_ELNO',),
+                 RESULTAT   = LEDEP,
+               )
+
+LEDEP=CALC_CHAMP(reuse =LEDEP,
+                 RESULTAT=LEDEP,
+                 FORCE=('FORC_NODA','REAC_NODA'),);
+
+# -------------------------------------------------
+# POST TRAITEMENT DES RESULTATS
+# -------------------------------------------------
+
+TAB = POST_RELEVE_T(
+        ACTION = _F(
+               OPERATION = 'EXTRACTION',
+               INTITULE = 'RESU',
+               GROUP_NO = ('B0X','B1X'),
+               RESULTAT = LEDEP,
+               NOM_CHAM = 'REAC_NODA',
+               TOUT_ORDRE = 'OUI',
+               RESULTANTE = 'DZ'))
+
+TEST_TABLE(
+     TABLE = TAB,
+     NOM_PARA = 'DZ',
+     FILTRE = _F(
+         NOM_PARA = 'NUME_ORDRE',
+         VALE_I   = 1,
+         ),
+     VALE = 1.7756E7,
+     REFERENCE = 'ANALYTIQUE'
+  )
+
+FIN()

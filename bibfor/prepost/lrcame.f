@@ -8,7 +8,7 @@
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 27/08/2012   AUTEUR NICOLAS G.NICOLAS 
+C MODIF PREPOST  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C RESPONSABLE SELLENET N.SELLENET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -131,11 +131,11 @@ C
       INTEGER TYPGEO(NTYMAX),LYGEOM(NTYMAX),LYPENT(NTYMAX),LTYP(NTYMAX)
       INTEGER RENUMD(NTYMAX),NLYVAL(NTYMAX), NUANOM(NTYMAX,NNOMAX)
       INTEGER NBTYLU,IAUX2,K,NBTY(NTYMAX)
-      INTEGER JTYPMA,NBNOMA,NMATYP
-      INTEGER JNUMTY, NUMMA,IMA, HDFOK, MEDOK
+      INTEGER JTYPMA,NBNOMA,NMATYP,JNTPRO,LGPROF,CPTYMA
+      INTEGER JNUMTY,NUMMA,IMA,HDFOK,MEDOK,JLGRF,JMAILL
 C
       CHARACTER*1 SAUX01
-      CHARACTER*8 SAUX08,K8B
+      CHARACTER*8 SAUX08,K8B,MODELE
       CHARACTER*8 NOMTYP(NTYMAX)
       CHARACTER*19 PREFIX
       CHARACTER*24 NUMCMP, NTNCMP, NTUCMP, NTVALE, NMCMFI(NTYMAX)
@@ -164,7 +164,7 @@ C
 C
       IF ( NIVINF.GT.1 ) THEN
         WRITE (IFM,1001) 'DEBUT DE '//NOMPRO
-        WRITE (IFM,*) '.. NOM DU CHAMP A LIRE : ', NOCHMD
+        WRITE (IFM,*) '.. NOM DU CHAMP A LIRE : ',NOCHMD
       ENDIF
  1001 FORMAT(/,10('='),A,10('='),/)
 C
@@ -526,34 +526,34 @@ C====
 C 3.1 LECTURE DES VALEURS
 C====
 C
-      TYPENT = TYPEN
-      TYGEOM = TYPNOE
-      CALL LRCMLE ( IDFIMD, NOCHMD,
-     &              NBCMFI, NBVATO, NUMPT, NUMORD,
-     &              TYPENT, TYGEOM,
-     &              NTVALE, NOMPRF,
-     &              CODRET )
+        TYPENT = TYPEN
+        TYGEOM = TYPNOE
+        CALL LRCMLE ( IDFIMD, NOCHMD,
+     &                NBCMFI, NBVATO, NUMPT, NUMORD,
+     &                TYPENT, TYGEOM,
+     &                NTVALE, NOMPRF,
+     &                CODRET )
 C
 C====
-C 3.2 LECTURE DU PROFIL
+C 3.2   LECTURE DU PROFIL
 C====
 C
-      IF ( NOMPRF.EQ.EDNOPF ) THEN
-        LGPROA = 0
-      ELSE
-        CALL LRCMPR ( IDFIMD, NOMPRF, NTPROA, LGPROA, CODRET )
-      ENDIF
+        IF ( NOMPRF.EQ.EDNOPF ) THEN
+          LGPROA = 0
+        ELSE
+          CALL LRCMPR ( IDFIMD, NOMPRF, NTPROA, LGPROA, CODRET )
+        ENDIF
 C
 C====
-C 3.3 TRANFERT DES VALEURS
+C 3.3   TRANFERT DES VALEURS
 C====
 C
-      CALL LRCMVA ( NTVALE, NBVATO, NTPROA, LGPROA,
-     &              NCMPRF, ZK8(JNOCMP),
-     &              NBCMFI, NMCMFI(1), NBCMPV, NCMPVM, NUMCMP,
-     &              NOCHMD,
-     &              ADSL, ADSV,
-     &              CODRET )
+        CALL LRCMVA ( NTVALE, NBVATO, NTPROA, LGPROA,
+     &                NCMPRF, ZK8(JNOCMP),
+     &                NBCMFI, NMCMFI(1), NBCMPV, NCMPVM, NUMCMP,
+     &                NOCHMD,
+     &                ADSL, ADSV,
+     &                CODRET )
 C
       ELSE
 C
@@ -561,7 +561,7 @@ C=====================================================================
 C 4. TRAITEMENT DES CHAMPS AUX ELEMENTS                           ====
 C=====================================================================
 C
-C  ON BOUCLE (71) SUR LES TYPES DE MAILLE LUES DANS LE CHAMP MED.
+C  ON BOUCLE (71) SUR LES TYPES DE MAILLE LUES DANS LE CHAMP MED. 
 C  LES VALEURS NUMERIQUES SONT SAUVEES DANS LE TABLEAU D ADRESSE ADSV
 C  CE TABLEAU A ETE DIMENSIONNE PAR CESCRE A :
 C  NB DE TYPE DE MAIL * NB DE VALEURS PAR MAILLE * NB DE COMPOSANTES
@@ -571,75 +571,112 @@ C       - POUR UN ELNO : NB DE NOEUDS (NBNOMA DONNE PAR CONNECTIVITE)
 C       - POUR UN ELEM : 1
 C       - POUR UN ELGA : VARIABLE (INFO PRESENTE DANS LE TABLEAU NPGMA)
 C
-      NBMA=ZI(ADSD)
-      CALL JEVEUO(NOMAAS(1:8)//'.TYPMAIL','L',JTYPMA)
+        NBMA=ZI(ADSD)
+        CALL JEVEUO(NOMAAS(1:8)//'.TYPMAIL','L',JTYPMA)
 
-      DO 71 , LETYPE = 1 , NBTYLU
+        DO 71 , LETYPE = 1 , NBTYLU
 C
-         NBNOMA=1
-         IF     (TYPECH(1:4).EQ.'ELNO') THEN
+          NBNOMA=1
+          IF     (TYPECH(1:4).EQ.'ELNO') THEN
             NBNOMA = NNOTYP(LTYP(LETYPE))
-         ENDIF
-         IF ( NIVINF.GT.1 ) THEN
-           WRITE (IFM,*) '.... NBNOMA : ', NBNOMA
-         ENDIF
-C
-C====
-C 4.0 VECTEUR CONTENANT LES NUMEROS DES MAILLES POUR CE TYPE
-C====
-C        ON BOUCLE (72) SUR LES MAILLES DU MAILLAGE ASTER
-C        ET ON RELEVE LES MAILLES CORRESPONDANT AU TYPE LU
-         CALL WKVECT ('&&'//NOMPRO//'.NUM.'//NOMTYP(LTYP(LETYPE)),
-     &                  'V V I',NBTY(LETYPE),JNUMTY)
-         K=0
-         DO 72 IMA=1,NBMA
-           IF(ZI(JTYPMA+IMA-1).EQ.LTYP(LETYPE))THEN
-              K=K+1
-              ZI(JNUMTY+K-1)=IMA
-           ENDIF
- 72      CONTINUE
-         IF (K.NE.NBTY(LETYPE)) THEN
-           CALL U2MESS('F','MED_58')
-         ENDIF
+          ENDIF
+          IF ( NIVINF.GT.1 ) THEN
+            WRITE (IFM,*) '.... NBNOMA : ', NBNOMA
+          ENDIF
+
 
 C
 C====
-C 4.1 LECTURE DES VALEURS
+C 4.0   LECTURE DES VALEURS
 C====
 C
-         CALL JEDETC ('V',NTVALE,1)
-         CALL LRCMLE ( IDFIMD, NOCHMD,
-     &                 NBCMFI, NLYVAL(LETYPE), NUMPT, NUMORD,
-     &                 LYPENT(LETYPE), LYGEOM(LETYPE),
-     &                 NTVALE, NOMPRF,
-     &                 CODRET )
+          CALL JEDETC ('V',NTVALE,1)
+          CALL LRCMLE ( IDFIMD, NOCHMD,
+     &                  NBCMFI, NLYVAL(LETYPE), NUMPT, NUMORD,
+     &                  LYPENT(LETYPE), LYGEOM(LETYPE),
+     &                  NTVALE, NOMPRF,
+     &                  CODRET )
 C
 C====
-C 4.2 LECTURE DU PROFIL
+C 4.1   LECTURE DU PROFIL
 C====
 C
-         IF ( NOMPRF.EQ.EDNOPF ) THEN
-             LGPROA = 0
-         ELSE
-             CALL JEDETC ('V',NTPROA,1)
-             CALL LRCMPR ( IDFIMD, NOMPRF,
-     &                     NTPROA, LGPROA,
-     &                     CODRET )
-         ENDIF
+          IF ( NOMPRF.EQ.EDNOPF ) THEN
+            LGPROA = 0
+          ELSE
+            CALL JEDETC ('V',NTPROA,1)
+            CALL LRCMPR ( IDFIMD, NOMPRF,
+     &                    NTPROA, LGPROA,
+     &                    CODRET )
+            CALL JEVEUO(NTPROA,'L',JNTPRO)
+            CALL JELIRA(NTPROA,'LONMAX',LGPROF,K2BID)
+          ENDIF
 C
 C====
-C 4.3 TRANFERT DES VALEURS
+C 4.2   VECTEUR CONTENANT LES NUMEROS DES MAILLES POUR CE TYPE
+C====
+C         ON BOUCLE (72) SUR LES MAILLES DU MAILLAGE ASTER
+C         ET ON RELEVE LES MAILLES CORRESPONDANT AU TYPE LU
+C
+C         ON SOUHAITE VERIFIER QUE LE MODELE ASTER ET LE PROFIL
+C         MED ONT BIEN LE MEME NOMBRE DE MAILLE DE CHAQUE TYPE
+          CALL JEEXIN(LIGREL//'.LGRF',IRET)
+          IF ( IRET.NE.0 ) THEN
+            CALL JEVEUO(LIGREL//'.LGRF','L',JLGRF)
+            MODELE=ZK8(JLGRF+1)
+            CALL JEVEUO(MODELE//'.MAILLE','L',JMAILL)
+          ELSE
+            JMAILL=0
+          ENDIF
+C
+          CALL WKVECT ('&&'//NOMPRO//'.NUM.'//NOMTYP(LTYP(LETYPE)),
+     &                 'V V I',NBTY(LETYPE),JNUMTY)
+          K=0
+          IF ( LGPROA.EQ.0 ) THEN
+            DO 72 IMA=1,NBMA
+              IF(ZI(JTYPMA+IMA-1).EQ.LTYP(LETYPE))THEN
+                IF(JMAILL.EQ.0.OR.
+     &             (JMAILL.NE.0.AND.ZI(JMAILL+IMA-1).NE.0)) THEN
+                  K=K+1
+                  ZI(JNUMTY+K-1)=IMA
+                ENDIF
+              ENDIF
+ 72         CONTINUE
+            IF (K.NE.NBTY(LETYPE)) THEN
+              CALL U2MESS('F','MED_58')
+            ENDIF
+          ELSE
+            K=0
+            CPTYMA=1
+            DO 73 IMA=1,NBMA
+              IF(ZI(JTYPMA+IMA-1).EQ.LTYP(LETYPE)) THEN
+                IF(ZI(JNTPRO+K).EQ.CPTYMA ) THEN
+                  IF(JMAILL.EQ.0.OR.
+     &               (JMAILL.NE.0.AND.ZI(JMAILL+IMA-1).NE.0)) THEN
+                    K=K+1
+                    ZI(JNUMTY+K-1)=IMA
+                  ENDIF
+                ENDIF
+                CPTYMA=CPTYMA+1
+              ENDIF
+ 73         CONTINUE
+            IF (K.NE.LGPROF) THEN
+              CALL U2MESS('F','MED_58')
+            ENDIF
+          ENDIF
+C
+C====
+C 4.3   TRANFERT DES VALEURS
 C====
 C
-         CALL LRCMVE ( NTVALE, NBTY(LETYPE), NBNOMA, NTPROA, LGPROA,
-     &                 NCMPRF, ZK8(JNOCMP),NTYPEL,NPGMAX,INDPG,
-     &                 NBCMFI, NMCMFI(LETYPE), NBCMPV, NCMPVM, NUMCMP,
-     &                 JNUMTY, NOCHMD,NBMA,NPGMA,NPGMM,TYPECH,
-     &                 LTYP(LETYPE),ADSL, ADSV, ADSD,
-     &                 CODRET )
+          CALL LRCMVE ( NTVALE, NBTY(LETYPE), NBNOMA, NTPROA, LGPROA,
+     &                  NCMPRF, ZK8(JNOCMP),NTYPEL,NPGMAX,INDPG,
+     &                  NBCMFI, NMCMFI(LETYPE), NBCMPV, NCMPVM, NUMCMP,
+     &                  JNUMTY, NOCHMD,NBMA,NPGMA,NPGMM,TYPECH,
+     &                  LTYP(LETYPE),ADSL, ADSV, ADSD,
+     &                  CODRET )
 C
-C
-   71 CONTINUE
+   71   CONTINUE
       ENDIF
 C
 C====

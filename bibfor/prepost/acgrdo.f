@@ -12,7 +12,7 @@
       REAL*8     VRESU(24),VALPAR(22),VALA,COEFPA
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/06/2012   AUTEUR TRAN V-X.TRAN 
+C MODIF PREPOST  DATE 03/09/2012   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,7 +80,7 @@ C23456
 
       REAL*8     RESUPC(24), GRDEQ(2), DTAUM(2), NXM(2), NYM(2), COEPRE
       REAL*8     NZM(2), NRUPT(2), DOM(2), SIGEQ(2)
-      REAL*8     NORMAX(2), NORMOY(2),EPNMAX(2), EPNMOY(2), VALPU(2)
+      REAL*8     NORMAX(2), NORMOY(2),EPNMAX(2), EPNMOY(2), VALPU(22)
       REAL*8     PHYDRO, PHYDRM, VALE,VALNU, R8B, SIGM(NBORDR*6)
       REAL*8     SIG(6),EPS(6), EPSE(6), EPSP(6),VEPSP(6)
       REAL*8     EPSL(6), EPSEL(6), EPSPL(6),EQEPSP, JACAUX(3)
@@ -142,6 +142,7 @@ C INITIALISATION
       VEPSPE = 0.D0
       VSIGE = 0.D0
       EPRMAX = 0.D0
+C      EPRMIN = R8MAEM()
       NM1X = 0.D0
       NM1Y = 0.D0
       NM1Z = 0.D0
@@ -155,14 +156,23 @@ C INITIALISATION
       STREMI = 0.D0
       EPNM1M = 0.D0
       SIGMAX = 0.D0
-      SIGMIN = 0.D0
+      SIGMIN = R8MAEM()
       VEPST  = 0.D0
       EPSPAC = 0.D0
       RAYSPH = 0.D0
+      DOM(1) = 0.D0
+      DOM(2) = 0.D0
+      NRUPT(1) = 1.D7
+      NRUPT(2) = 1.D7
       
       DO 20 I = 1, 24
          RESUPC(I) = 0.0D0
 20    CONTINUE
+
+C       DO 2100 I = 1, 22
+C          VALPAR(I) = 0.0D0
+C C         VALPU(I) = 0.0D0
+C 2100  CONTINUE
 
       DO 35 I = 1, 6
          SIG(I) = 0.0D0
@@ -579,7 +589,18 @@ C
 
          PLCICR = .TRUE.
       ENDIF
-
+   
+      DO 109 K = 1,2
+              DTAUM(K) = 0.D0
+              NXM(K)   = 0.D0
+              NYM(K)   = 0.D0
+              NZM(K)   = 0.D0
+              NORMAX(K)= 0.D0
+              NORMOY(K)= 0.D0
+              EPNMAX(K)= 0.D0
+              EPNMOY(K)= 0.D0
+109   CONTINUE
+      
       IF (PLCICR) THEN
 
            CALL ACMATA ( JVECTN, JVECTU, JVECTV, NBORDR, KWORK,

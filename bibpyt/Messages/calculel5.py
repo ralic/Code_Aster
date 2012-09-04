@@ -1,4 +1,4 @@
-#@ MODIF calculel5 Messages  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel5 Messages  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,9 +32,6 @@ Conseils :
   Pour créer un champ de déplacement adapté au maillage %(k1)s, on peut utiliser
   la commande PROJ_CHAMP.
 """),
-
-
-
 
 3 : _(u"""
  Erreur d'utilisation de POST_CHAMP :
@@ -81,9 +78,8 @@ Alarme utilisateur :
 Erreur utilisateur :
   Vous ne pouvez pas utiliser la méthode ECLA_PG avec le mot-clé RESULTAT.
 Conseil :
-  Extrayez le champ aux ELGA que contient votre résultat puis utilisez la méthode ECLA_PG avec le mot-clé CHAM_GD.
+   Extrayez le champ aux ELGA que contient votre résultat puis utilisez la méthode ECLA_PG avec le mot-clé CHAM_GD.
 """),
-
 
 10: _(u"""
 Erreur d'utilisation dans la commande CREA_MAILLAGE :
@@ -152,25 +148,22 @@ Erreur d'utilisation dans la commande CREA_MAILLAGE :
 
 
 
+30 : _(u"""
+PROJ_CHAMP :
+  La méthode SOUS_POINT accepte uniquement les résultats de type
+  EVOL_THER."""),
 
+31 : _(u"""
+PROJ_CHAMP :
+  Le mot-clé facteur VIS_A_VIS est interdit avec la méthode SOUS_POINT."""),
 
-
-
-
-
-
-
-
-
-
-
-
+32 : _(u"""
+PROJ_CHAMP (ou LIAISON_MAILLE) :
+  La méthode %(k1)s est incompatible avec les champs aux noeuds."""),
 
 33 : _(u"""
 PROJ_CHAMP (ou LIAISON_MAILLE) :
-  La méthode %(k1)s est incompatible avec le champ %(k2)s.
-  Vérifiez le type du champ à projeter !"""),
-
+  La méthode %(k1)s est incompatible avec les champs par élément de type %(k2)s."""),
 
 34 : _(u"""
    Maillage quadratique obligatoire avec terme source non nul.
@@ -199,8 +192,10 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
  la grandeur pour la variable:  %(k1)s  doit être:  %(k2)s  mais elle est:  %(k3)s
 """),
 
-
-
+40 : _(u"""
+PROJ_CHAMP  :
+  Vous utilisez la méthode SOUS_POINT.
+  Pour cela, il vous faut renseigner le mot-clé MODELE_2."""),
 
 41 : _(u"""
  pas de variables internes initiales pour la maille  %(k1)s
@@ -290,8 +285,6 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
  Veuillez plutôt utiliser un chargement de type 'force interne'.
 """),
 
-
-
 65 : _(u"""
  composante non définie dans  la grandeur.  composante:  %(k1)s
 """),
@@ -338,11 +331,6 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
  la sd resultat en sortie  %(k1)s
   doit contenir qu'un seul NUME_ORDRE %(k2)s
 """),
-
-
-
-
-
 
 76 : _(u"""
  Il n'est pas encore possible de découper le type_élément :  %(k1)s  en sous-éléments

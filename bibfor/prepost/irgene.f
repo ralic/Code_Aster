@@ -9,7 +9,7 @@
       LOGICAL         LHIST
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
+C MODIF PREPOST  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,7 +76,8 @@ C
             DO 110 ISY = 1,NBNOSY
               CALL RSEXCH(' ',RESU,NOSY(ISY),ORDR(IORD),NOCH19,IRET)
               IF(IRET.EQ.0) THEN
-                CALL TITRE2 (RESU,NOCH19,NOMST,'GENE',IOCC)
+                CALL TITRE2 (RESU,NOCH19,NOMST,'GENE',IOCC,
+     &                       '(1PE12.5)')
                 WRITE(IFI,2010)
                 CALL JEVEUO(NOMST,'L',JTITR)
                 CALL JELIRA(NOMST,'LONMAX',NBTITR,K1BID)

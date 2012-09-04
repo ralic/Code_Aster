@@ -5,7 +5,7 @@
       CHARACTER*19 RESU,KDISC,KRANG
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
+C MODIF UTILITAI  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,10 +22,10 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE VABHHTS J.PELLET
+C RESPONSABLE PELLET J.PELLET
 
 C     POUR INTERP = 'NON'
-C        RECUPERATION DES DISCRETISATIONS ET DES NUMEROS DE RANGEMENT 
+C        RECUPERATION DES DISCRETISATIONS ET DES NUMEROS DE RANGEMENT
 C        ASSOCIES DANS LA STRUCTURE DE DONNEES "RESU"
 C     POUR INTERP = 'LIN', 'LOG', ...
 C        RECUPERATION DES INSTANTS UTILISATEURS
@@ -55,11 +55,11 @@ C     ------------------------------------------------------------------
 C------------------------------------------------------------------
 C
 C-----------------------------------------------------------------------
-      INTEGER I ,IBID ,IER ,IER1 ,IOCC ,IORD ,IRET 
-      INTEGER IVAL ,JBID ,JDISC ,JORDR ,JRANG ,L ,LACCR 
-      INTEGER LDISC ,LLI ,LT ,N ,NBI ,NBI2 ,NBDISC 
-      INTEGER NBTROU ,NNO ,NTO ,NUTROU 
-      REAL*8 EPSI ,RBID ,TUSR 
+      INTEGER I ,IBID ,IER ,IER1 ,IOCC ,IORD ,IRET
+      INTEGER IVAL ,JBID ,JDISC ,JORDR ,JRANG ,L ,LACCR
+      INTEGER LDISC ,LLI ,LT ,N ,NBI ,NBI2 ,NBDISC
+      INTEGER NBTROU ,NNO ,NTO ,NUTROU
+      REAL*8 EPSI ,RBID ,TUSR
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       IER = 0

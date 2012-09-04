@@ -1,7 +1,7 @@
       SUBROUTINE COPICH ( BASE, CH1Z, CH2Z )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE VABHHTS J.PELLET
+C RESPONSABLE PELLET J.PELLET
 
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
@@ -40,10 +40,11 @@ C-----------------------------------------------------------------------
       CHARACTER*4  DOCU
       CHARACTER*8  NOMU,K8BID
       CHARACTER*16 CONCEP,CMD
-      CHARACTER*19 PRNO,PRNO2,CH1ESC,CH2ESC,CH1,CH2
+      CHARACTER*19 PRNO,PRNO2,PRNO3,CH1ESC,CH2ESC,CH1,CH2
       CHARACTER*24  NOOJB
-      INTEGER      IBID,IRET,IRET1,IRET2,JAD,IER,NBSD,ILIMPI,IFETI,
-     &             IFETC1,IFETC2,IDD
+      INTEGER      IBID,IRET,IRET1,IRET2,JAD,IER,NBSD,ILIMPI,IFETI
+      INTEGER      IFETC1,IFETC2,IDD,NUPRF
+      LOGICAL LECO,IDENSD
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 
@@ -84,9 +85,22 @@ C         -- REMARQUE : UN CHAM_NO PEUT NE PAS AVOIR DE PROF_CHNO (' '):
               NOOJB='12345678.PRCHN00000.PRNO'
               CALL GNOMSD ( NOOJB,15,19 )
               PRNO2=NOOJB(1:19)
-              CALL COPISD('PROF_CHNO',BASE,PRNO,PRNO2)
+C             -- POUR ECONOMISER LES PROF_CHNO, ON REGARDE SI
+C                LE PRECEDENT NE CONVIENDRAIT PAS :
+              LECO=.FALSE.
+              READ (NOOJB(15:19),'(I5)') NUPRF
+              IF (NUPRF.GT.0) THEN
+                PRNO3=NOOJB(1:19)
+                CALL CODENT(NUPRF-1,'D0',PRNO3(15:19))
+                IF (IDENSD('PROF_CHNO',PRNO,PRNO3)) LECO=.TRUE.
+              ENDIF
               CALL JEVEUO(CH2//'.REFE','E',JAD)
-              ZK24(JAD-1+2)=PRNO2
+              IF (LECO) THEN
+                ZK24(JAD-1+2)=PRNO3
+              ELSE
+                CALL COPISD('PROF_CHNO',BASE,PRNO,PRNO2)
+                ZK24(JAD-1+2)=PRNO2
+              ENDIF
             END IF
           END IF
         END IF

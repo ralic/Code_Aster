@@ -1,4 +1,4 @@
-#@ MODIF post_dyna_alea_ops Macro  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+#@ MODIF post_dyna_alea_ops Macro  DATE 03/09/2012   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -217,7 +217,6 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
    if INTE_SPEC !=None :
 
       TOUT_ORDRE = args['TOUT_ORDRE']
-      NUME_VITE_FLUI=args['NUME_VITE_FLUI']
 
       NUME_ORDRE_I=args['NUME_ORDRE_I']
       NOEUD_I=args['NOEUD_I']
@@ -236,11 +235,6 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
 #                   2- table de table d interspectre
 
       intespec = INTE_SPEC.nom.ljust(8)
-
-      if NUME_VITE_FLUI :
-         jvite=[NUME_VITE_FLUI,]
-      else :
-         jvite  =[None]
 
 #     ------------------------------------------------------------------
 #     Repérer les couples d'indices selectionnés
@@ -288,10 +282,6 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
 #     Cas de tous les indices centraux
 
       elif OPTION!=None :
-         if NUME_VITE_FLUI :
-            jvite=[NUME_VITE_FLUI,]
-         else :
-            jvite  =[None]
 
          if NUME_ORDRE_I :
             l_ind_i = aster.getvectjev(intespec+'.NUMI')
@@ -332,9 +322,6 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
              l_cmp_j = aster.getvectjev(intespec+'.CMPJ')
              tabres.add_para(['NOEUD_I','NOEUD_J','NOM_CMP_I','NOM_CMP_J'], 'K8')
 
-      if jvite[0]!=None :
-         tabres.add_para('NUME_VITE_FLUI', 'I')
-
 #     ------------------------------------------------------------------
 #     Liste des moments spectraux
 
@@ -355,15 +342,12 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
       # pour la présentation de la table finale, on stocke le nbre de paramètres "initiaux"
       nbpara0 = len(tabres.para)
 
-      for vite in jvite :
-        if INFO==2 :
+      if INFO==2 :
            texte='POUR LA MATRICE INTERSPECTRALE '+INTE_SPEC.nom+'\n'
            aster.affiche('MESSAGE',texte)
-        for ind in l_ind :
+      for ind in l_ind :
            dlign = {}
            dlrecu = {}
-           if vite!=None :
-             dlign['NUME_VITE_FLUI'] = vite
            if NOEUD_I :
              i_foncstat = ind[0] == ind[1] and  ind[2] == ind[3]
              dlign['NOEUD_I'], dlign['NOEUD_J'], dlign['NOM_CMP_I'], dlign['NOM_CMP_J'] = \
@@ -423,9 +407,9 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
                trapz[1:n] = (valy[1:n]+valy[:-1])/2.*(fvalx[1:n]-fvalx[:-1])
                prim_y    = NP.cumsum(trapz)
                val_mom[i_mom] = prim_y[-1]
-                  # -- cas NUME_VITE_FLUI, seule la partie positive du spectre est utilisée
+                  # -- cas si, seule la partie positive du spectre est utilisée
                   # -- Il faut donc doubler lambda  pour calculer le bon écart type
-               if NUME_VITE_FLUI or frez >= 0. :
+               if frez >= 0. :
                  val_mom[i_mom]=val_mom[i_mom]*2.
            for i_mom in l_moments :
              chmo='LAMBDA_'+str(i_mom).zfill(2)

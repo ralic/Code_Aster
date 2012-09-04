@@ -1,8 +1,8 @@
-#@ MODIF modelisa7 Messages  DATE 07/11/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa7 Messages  DATE 03/09/2012   AUTEUR BERRO H.BERRO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -287,36 +287,29 @@ Erreur utilisateur :
 """),
 
 67: _(u"""
- discrétisation insuffisante pour une des fonctions
+  La table des fonctions de forme fournie pour le mode no. %(i1)d n'est pas valide. 
 """),
 
 68: _(u"""
- les fonctions de forme doivent être définies sur un intervalle commun 0,2l ou l est la longueur excitée. la discrétisation doit être strictement croissante avec une exception pour le paramètre l qui doit être répété.
+  La table fournie pour le mode no. %(i1)d n'est pas une table_fonction. 
 """),
 
 69: _(u"""
- discrétisation des fonctions de forme : un seul paramètre doit être répété, correspondant a la longueur excitée l
+  Les fonctions de forme pour le mode no. %(i1)d ne sont pas définies à partir de l'abscisse 0. 
 """),
 
 70: _(u"""
- discrétisation des fonctions de forme : le paramètre correspondant a la longueur excitée l doit être répété.
+  Les fonctions de forme pour le mode no. %(i1)d ne sont pas définies sur le même intervalle. 
 """),
 
 71: _(u"""
- absence de discrétisation sur 0,l ou l,2l pour une des fonctions.
+ Les discrétisations des fonctions de forme pour les différents modes ne sont pas cohérentes. 
+ Le domaine de définition 0,L doivent être communs à toutes les fonctions.
 """),
 
 72: _(u"""
- discrétisation des fonctions de forme : le paramètre répété doit correspondre a la longueur excitée l
-"""),
-
-73: _(u"""
- les discrétisations des fonctions de forme ne sont pas cohérentes. le domaine de définition 0,2l et la longueur excitée l qui en est déduite doivent être communs a toutes les fonctions.
-"""),
-
-74: _(u"""
- les discrétisations des fonctions de forme ne sont pas cohérentes
- les nombres de points sur 0,l et sur l,2l doivent être communs à toutes les fonctions.
+ Les discrétisations des fonctions de forme pour les différents modes ne sont pas cohérentes. 
+ Le nombre de points de discrétisation doivent être communs à toutes les fonctions.
 """),
 
 75: _(u"""

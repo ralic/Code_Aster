@@ -1,6 +1,6 @@
       SUBROUTINE DISMLI(QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,19 +37,14 @@ C       REPKZ  : REPONSE ( SI CHAINE DE CARACTERES )
 C       IERD   : CODE RETOUR (0--> OK, 1 --> PB)
 C
 C ----------------------------------------------------------------------
-C     VARIABLES LOCALES:
-C     ------------------
-C
-C
-C
-C
-C
-C-----------------------------------------------------------------------
-      INTEGER LLDES ,LLREF 
+      INTEGER LLDES ,LLREF
 C-----------------------------------------------------------------------
       CALL JEMARQ()
+      REPK  = ' '
+      REPI  = 0
+      IERD = 0
+
       NOMOB = NOMOBZ
-      REPK=' '
 
       IF  (QUESTI(1:10).EQ.'NOM_MAILLA') THEN
          CALL JEVEUO(NOMOB(1:8)//'.IDC_REFE','L',LLREF)

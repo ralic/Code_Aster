@@ -8,7 +8,7 @@
       CHARACTER*(*)       CHAMZ
 C***********************************************************************
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,11 +37,12 @@ C    IN : NU   / NUME_DDL (K14)
 C              / PROF_CHNO (K19)
 C    OUT :BMODAL          VECTEUR CONTENANT LES MODES
 C-----------------------------------------------------------------------
-      INTEGER       IDDEEQ, I, IRET, IADMOD ,IBID
+      INTEGER       IDDEEQ, I, IRET, IADMOD ,IBID,IEXI,IE
       INTEGER VALI
       CHARACTER*16  CHAMP
-      CHARACTER*19 NU19
+      CHARACTER*19 NU19,PRCHNO
       CHARACTER*24  NOMCHA, DEEQ, VALK(2)
+      LOGICAL IDENSD
 C-----------------------------------------------------------------------
 C
 C
@@ -59,9 +60,12 @@ C
 C
       DO 10 I = 1 , NBMODE
          CALL RSEXCH('F',BASEMO, CHAMP, I, NOMCHA, IRET )
-         CALL JEEXIN (NOMCHA(1:19)//'.VALE' , IBID)
-         IF (IBID.GT.0) THEN
+         CALL JEEXIN (NOMCHA(1:19)//'.VALE' , IEXI)
+         IF (IEXI.GT.0) THEN
            NOMCHA = NOMCHA(1:19)//'.VALE'
+C          SI NOMCHA N'A PAS LA BONNE NUMEROTATION, ON ARRETE TOUT :
+           CALL DISMOI('F','PROF_CHNO',NOMCHA,'CHAM_NO',IBID,PRCHNO,IE)
+           CALL ASSERT(IDENSD('PROF_CHNO',PRCHNO,DEEQ(1:19)))
          ELSE
            NOMCHA = NOMCHA(1:19)//'.CELV'
          END IF

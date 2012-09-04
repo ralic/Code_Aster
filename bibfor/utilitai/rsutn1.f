@@ -6,7 +6,7 @@
       CHARACTER*(*)    RESU, MOTCLE, OBJVEU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +40,7 @@ C     ------------------------------------------------------------------
       CHARACTER*8   K8B, CRIT
       CHARACTER*24  KNUME
       CHARACTER*24 VALK(2)
-      INTEGER      IARG
+      INTEGER      IARG,NRANG
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -80,7 +80,7 @@ C
 C
       II = 0
       DO 20 IORDR = 1,NBTORD
-         CALL RSUTRG ( RESU, ZI(LORDR+IORDR-1), IRANG )
+         CALL RSUTRG(RESU,ZI(LORDR+IORDR-1),IRANG,NRANG)
          IF (IRANG.EQ.0) GOTO 20
          II = II + 1
  20   CONTINUE
@@ -93,7 +93,7 @@ C
       NBORDR = 0
       CALL WKVECT ( OBJVEU, 'V V I', II, JORDR )
       DO 30 IORDR = 1,NBTORD
-         CALL RSUTRG ( RESU, ZI(LORDR+IORDR-1), IRANG )
+         CALL RSUTRG(RESU,ZI(LORDR+IORDR-1),IRANG,NRANG)
          IF (IRANG.NE.0) THEN
             NBORDR = NBORDR + 1
             ZI(JORDR+NBORDR-1) = ZI(LORDR+IORDR-1)

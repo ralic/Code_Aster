@@ -1,4 +1,4 @@
-#@ MODIF calc_mac3coeur_ops Mac3coeur  DATE 27/08/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calc_mac3coeur_ops Mac3coeur  DATE 04/09/2012   AUTEUR FERNANDES R.FERNANDES 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,14 +25,15 @@ from pprint import pformat
 
 import aster_core
 from Cata.cata import MACRO, SIMP, table_sdaster
+from Cata.cata import modele_sdaster, maillage_sdaster
 from mac3coeur_coeur import CoeurFactory
 
 def calc_mac3coeur_ops(self, **args):
     """Corps principal de la macro MAC3COEUR"""
     import aster
     from Accas import _F
-    from mac3coeur_ac_permute import MACRO_AC_PERMUTE
     from Utilitai.UniteAster import UniteAster
+    from Utilitai.Utmess import  UTMESS
 
     STAT_NON_LINE    = self.get_cmd('STAT_NON_LINE')
     MODI_MAILLAGE    = self.get_cmd('MODI_MAILLAGE')
@@ -40,7 +41,7 @@ def calc_mac3coeur_ops(self, **args):
     CREA_CHAMP       = self.get_cmd('CREA_CHAMP')
     CREA_RESU        = self.get_cmd('CREA_RESU')
     AFFE_CHAR_CINE   = self.get_cmd('AFFE_CHAR_CINE')
-    DETRUIRE         = self.get_cmd('DETRUIRE')
+    PERM_MAC3COEUR   = self.get_cmd('PERM_MAC3COEUR')
 
     self.set_icmd(1)
     datg = aster_core.get_option("repdex")
@@ -66,17 +67,28 @@ def calc_mac3coeur_ops(self, **args):
     _coeur.init_from_table(_tabn1)
 
     _MA0  = self['MAILLAGE_N']
-    _MA_N = _coeur.affectation_maillage(_MA0)
-    _MO_N = _coeur.affectation_modele(_MA_N)
-    _GFF  = _coeur.definition_geom_fibre()
-    _CARA = _coeur.definition_cara_coeur(_MO_N,_GFF)
-
     if (_DEFORMATION!=None):
+
+       _RESU_INI  = _DEFORMATION['RESU_INIT']
+       if (_RESU_INI!=None):
+          iret,ibid,nom_ma = aster.dismoi('F','NOM_MAILLA',_RESU_INI.nom,'RESULTAT')
+          iret,ibid,nom_mo = aster.dismoi('F','NOM_MODELE',_RESU_INI.nom,'RESULTAT')
+
+          if (_MA0!=None):
+              UTMESS('A','COEUR0_1')
+          _MA_N = self.get_concept_by_type(nom_ma, maillage_sdaster)
+          _MO_N = self.get_concept_by_type(nom_mo, modele_sdaster)
+
+       else:
+          _MA_N = _coeur.affectation_maillage(_MA0)
+          _MO_N = _coeur.affectation_modele(_MA_N)
+
+       _GFF  = _coeur.definition_geom_fibre()
+       _CARA = _coeur.definition_cara_coeur(_MO_N,_GFF)
 
        UL = UniteAster()
        _unit_eftx = _DEFORMATION['UNITE_THYC']
        nomfich=UL.Nom(_unit_eftx)
-       # 1er cycle
 
        _CH_TRNO,_CH_TRFX,_HYDR_1,_FOHYDR_1=_coeur.lire_resu_thyc(_MO_N,nomfich)
 
@@ -85,26 +97,17 @@ def calc_mac3coeur_ops(self, **args):
        _AVEC_CONTACT = 'OUI'
        _SANS_CONTACT = 'NON'
 
-       print 'DEFINITION DE LA DISCRETISATION TEMPORELLE'
        _time    = _coeur.definition_time(_fluence)
-       print 'DEFINITION DU CHAMP DE FLUENCE'
        _FLUENC  = _coeur.definition_fluence(_fluence,_MA_N)
-       print 'DEFINITION DU CHAMP DE TEMPERATURE'
        _CHTH    = _coeur.definition_champ_temperature(_MA_N)
-       print 'DEFINITION DU CHAMP DE DEPLACEMENT DES INTERNES DE CUVE'
        _DILAT   = _coeur.dilatation_cuve(_MO_N,_MA_N)
-       print 'DEFINITION DES MATERIAUX'
        _AF_MAC  = _coeur.definition_materiau(_MA_N,_GFF,_AVEC_CONTACT,_FLUENC,_CHTH)
        _AF_MSC  = _coeur.definition_materiau(_MA_N,_GFF,_SANS_CONTACT,_FLUENC,_CHTH)
-       print 'DEFINITION DU CHAMP PESANTEUR'
        _PESANT  = _coeur.definition_pesanteur(_MO_N)
-       print 'DEFINITION DES EFFORTS DE MAINTIEN'
-       _F_EMBO   = _coeur.definition_effor_maintien(_MO_N)
-       print 'DEFINITION DU CHAMP DE POUSSE D ARCHIMEDE'
+       _F_EMBO  = _coeur.definition_effor_maintien(_MO_N)
        _ARCH_1  = _coeur.definition_archimede1(_MO_N)
        _FOARCH_1= _coeur.definition_archimede2(_MO_N)
        _ARCH_F1 = _coeur.definition_temp_archimede()
-       print 'DEFINITION DES CHARGEMENTS HYDRAULIQUES'
        _HYDR_F1 = _coeur.definition_temp_hydro_axiale()
        _F_TRAN1 = _coeur.definition_effort_transverse()
 
@@ -134,7 +137,8 @@ def calc_mac3coeur_ops(self, **args):
 
        self.DeclareOut('RESUC1',self.sd)
 
-       RESUC1 = STAT_NON_LINE(
+       if (_RESU_INI!=None):
+          RESUC1 = STAT_NON_LINE(
                       MODELE      = _MO_N,
                       CHAM_MATER  = _AF_MAC,
                       CARA_ELEM   = _CARA,
@@ -149,6 +153,7 @@ def calc_mac3coeur_ops(self, **args):
                                     _F(CHARGE = _DILAT,   ),
                                     _F(CHARGE = _CL_PER_1,),
                                     _F(CHARGE = _PESANT,),),
+                      ETAT_INIT = _F(EVOL_NOLI= _RESU_INI,),AFFICHAGE=_F(INFO_RESIDU='OUI',),
                       COMP_INCR   =(
                                     _F(RELATION='MULTIFIBRE', GROUP_MA =('CRAYON','T_GUIDE'), PARM_THETA=0.5, ),
                                     _F(RELATION='DIS_GRICRA', GROUP_MA = 'ELA',),
@@ -160,7 +165,33 @@ def calc_mac3coeur_ops(self, **args):
                       SOLVEUR     = _F(METHODE='MUMPS',RENUM='AMF',GESTION_MEMOIRE='OUT_OF_CORE',ELIM_LAGR2='NON',PCENT_PIVOT=200,),
                       CONVERGENCE=_F(ITER_GLOB_MAXI=NITER),
                                       );
-
+       else:
+          RESUC1 = STAT_NON_LINE(
+                      MODELE      = _MO_N,
+                      CHAM_MATER  = _AF_MAC,
+                      CARA_ELEM   = _CARA,
+                      EXCIT       =(
+                                    _F(CHARGE = _ARCH_1,   FONC_MULT = _ARCH_F1,),
+                                    _F(CHARGE = _FOARCH_1, FONC_MULT = _ARCH_F1,),
+                                    _F(CHARGE = _HYDR_1,   FONC_MULT = _HYDR_F1,),
+                                    _F(CHARGE = _FOHYDR_1, FONC_MULT = _HYDR_F1,),
+                                    _F(CHARGE = _CH_TRNO,  FONC_MULT = _F_TRAN1,),
+                                    _F(CHARGE = _CH_TRFX,  FONC_MULT = _F_TRAN1,),
+                                    _F(CHARGE = _F_EMBO,  ),
+                                    _F(CHARGE = _DILAT,   ),
+                                    _F(CHARGE = _CL_PER_1,),
+                                    _F(CHARGE = _PESANT,),),AFFICHAGE=_F(INFO_RESIDU='OUI',),
+                      COMP_INCR   =(
+                                    _F(RELATION='MULTIFIBRE', GROUP_MA =('CRAYON','T_GUIDE'), PARM_THETA=0.5, ),
+                                    _F(RELATION='DIS_GRICRA', GROUP_MA = 'ELA',),
+                                    _F(RELATION='DIS_CHOC',   GROUP_MA =('RES_EXT','RES_CONT'),),
+                                    _F(RELATION='ELAS',       GROUP_MA =('EBOINF','EBOSUP','RIG','DIL',),),
+                                    _F(RELATION='DIS_BILI_ELAS',GROUP_MA ='MAINTIEN',),),
+                      INCREMENT   = _F(LIST_INST = _time, INST_FIN=_coeur.temps_simu['T8']),
+                      NEWTON      = _F(MATRICE='TANGENTE', REAC_ITER=1,),
+                      SOLVEUR     = _F(METHODE='MUMPS',RENUM='AMF',GESTION_MEMOIRE='OUT_OF_CORE',ELIM_LAGR2='NON',PCENT_PIVOT=200,),
+                      CONVERGENCE=_F(ITER_GLOB_MAXI=NITER),
+                                      );
        RESUC1 = STAT_NON_LINE( reuse = RESUC1,
                       MODELE      = _MO_N,
                       CHAM_MATER  = _AF_MSC,
@@ -172,7 +203,7 @@ def calc_mac3coeur_ops(self, **args):
                                     _F(CHARGE = _F_EMBO,  ),
                                     _F(CHARGE = _DILAT,   ),
                                     _F(CHARGE = _CL_PER_1,),
-                                    _F(CHARGE = _PESANT,),),
+                                    _F(CHARGE = _PESANT,),),AFFICHAGE=_F(INFO_RESIDU='OUI',),
                       COMP_INCR   =(
                                     _F(RELATION='MULTIFIBRE', GROUP_MA =('CRAYON','T_GUIDE'), PARM_THETA=0.5, ),
                                     _F(RELATION='DIS_GRICRA', GROUP_MA = 'ELA',),
@@ -195,7 +226,7 @@ def calc_mac3coeur_ops(self, **args):
                                     _F(CHARGE = _FOARCH_1, FONC_MULT = _ARCH_F1,),
                                     _F(CHARGE = _DILAT,   ),
                                     _F(CHARGE = _CL_PER_1,),
-                                    _F(CHARGE = _PESANT,),),
+                                    _F(CHARGE = _PESANT,),),AFFICHAGE=_F(INFO_RESIDU='OUI',),
                       COMP_INCR   =(
                                     _F(RELATION='MULTIFIBRE', GROUP_MA =('CRAYON','T_GUIDE'), PARM_THETA=0.5, ),
                                     _F(RELATION='DIS_GRICRA', GROUP_MA = 'ELA',),
@@ -216,6 +247,11 @@ def calc_mac3coeur_ops(self, **args):
        _AVEC_CONTACT = 'OUI'
        _SANS_CONTACT = 'NON'
 
+
+       _MA_N = _coeur.affectation_maillage(_MA0)
+       _MO_N = _coeur.affectation_modele(_MA_N)
+       _GFF  = _coeur.definition_geom_fibre()
+       _CARA = _coeur.definition_cara_coeur(_MO_N,_GFF)
        _time    = _coeur.definition_time(_fluence)
        _FLUENC  = _coeur.definition_fluence(_fluence,_MA_N)
        _CHTH    = _coeur.definition_champ_temperature(_MA_N)
@@ -257,8 +293,8 @@ def calc_mac3coeur_ops(self, **args):
                                     _F(CHARGE = _F_EMBO,  ),
                                     _F(CHARGE = _DILAT,   ),
                                     _F(CHARGE = _PESANT,  ),
-                                    _F(CHARGE = _CL_LAME, ),
-                                    _F(CHARGE = _CL_PER_2,),),
+                    _F(CHARGE = _CL_LAME, ),
+                    _F(CHARGE = _CL_PER_2,),),
                               COMP_INCR   =(
                                     _F(RELATION='MULTIFIBRE', GROUP_MA =('CRAYON','T_GUIDE'), PARM_THETA=0.5, ),
                                     _F(RELATION='DIS_GRICRA', GROUP_MA = 'ELA',),
@@ -282,10 +318,24 @@ def calc_mac3coeur_ops(self, **args):
        _coeurp1 = coeur_factory.get(_typ_coeur)(namep1, _typ_coeur, self, datg)
        _coeurp1.init_from_table(_tabp1)
 
+       _MA1     = _LAME['MAILLAGE_NP1']
 
-       _MA1      = _LAME['MAILLAGE_NP1']
-       _MA_NP1   = _coeurp1.affectation_maillage(_MA1)
-       _MO_NP1   = _coeurp1.affectation_modele(_MA_NP1)
+       __resuf   = PERM_MAC3COEUR( TYPE_COEUR   = _typ_coeur,
+                                  RESU_N       = _SNL_LAME,
+                                  TABLE_N      = _TAB_N,
+                                  TABLE_NP1    = _TAB_NP1,
+                                  MAILLAGE_NP1 = _MA1,)
+
+       _MVDEPL = CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R', NOM_CHAM ='DEPL', RESULTAT = __resuf)
+       
+       iret,ibid,nom_ma = aster.dismoi('F','NOM_MAILLA',__resuf.nom,'RESULTAT')
+       nom_ma = nom_ma.strip()
+       iret,ibid,nom_mo = aster.dismoi('F','NOM_MODELE',__resuf.nom,'RESULTAT')
+       nom_mo = nom_mo.strip()
+
+       _MO_NP1 = self.get_concept_by_type(nom_mo, modele_sdaster)
+       _MA_NP1 = self.get_concept_by_type(nom_ma, maillage_sdaster)
+
        _GFF_NP1  = _coeurp1.definition_geom_fibre()
        _CARANP1  = _coeurp1.definition_cara_coeur(_MO_NP1,_GFF_NP1)
 
@@ -301,108 +351,6 @@ def calc_mac3coeur_ops(self, **args):
        _ARCH_11  = _coeurp1.definition_archimede1(_MO_NP1)
        _FOARCH1  = _coeurp1.definition_archimede2(_MO_NP1)
        _ARCHF11  = _coeurp1.definition_temp_archimede()
-
-       _CL_BID = AFFE_CHAR_CINE(MODELE=_MO_NP1,MECA_IMPO = (_F(TOUT = 'OUI', DX = 0.0, DY = 0.0, DZ = 0.0, DRX = 0.0, DRY = 0.0, DRZ = 0.0,),))
-
-       tran_x = 0.0
-       _coe   = [None]*_coeurp1.nbac
-       _dep   = [None]*_coeurp1.nbac
-       _var   = [None]*_coeurp1.nbac
-       lisdep = []
-       lisvar = []
-       lisdet = []
-
-       indice = 0
-
-       # calcul bidon aster pour initialisation de donnees
-       _BIDON = STAT_NON_LINE( MODELE     = _MO_NP1,
-                              CHAM_MATER  = _AFSCNP1,
-                              CARA_ELEM   = _CARANP1,
-                              EXCIT       = (_F(CHARGE = _CL_BID,),),
-                              COMP_INCR   =(
-                                    _F(RELATION='MULTIFIBRE', GROUP_MA =('CRAYON','T_GUIDE'), PARM_THETA=0.5, ),
-                                    _F(RELATION='DIS_GRICRA', GROUP_MA = 'ELA',),
-                                    _F(RELATION='DIS_CHOC',   GROUP_MA =('RES_EXT','RES_CONT'),),
-                                    _F(RELATION='ELAS',       GROUP_MA =('EBOINF','EBOSUP','RIG','DIL',),),
-                                    _F(RELATION='DIS_BILI_ELAS',GROUP_MA ='MAINTIEN',),),
-                              INCREMENT   = _F(LIST_INST = _timep1, NUME_INST_FIN = 1,),
-                              NEWTON      = _F(MATRICE='TANGENTE', REAC_ITER=1,),
-                              SOLVEUR     = _F(METHODE='MUMPS',RENUM='AMF',GESTION_MEMOIRE='OUT_OF_CORE',ELIM_LAGR2='NON',PCENT_PIVOT=80,),
-                              CONVERGENCE=_F(ITER_GLOB_MAXI=NITER),
-                              )
-
-       for nom in _coeurp1.nameAC.keys() :
-           if nom in _coeur.nameAC :
-              tran_z = _coeurp1.pas_assemblage * (_coeurp1.ALPHAMAC.index(_coeurp1.nameAC[nom][0]) - _coeurp1.ALPHAMAC.index(_coeur.nameAC[nom][0]))
-              tran_y = _coeurp1.pas_assemblage * (_coeurp1.ALPHAMAC.index(_coeurp1.nameAC[nom][2]) - _coeurp1.ALPHAMAC.index(_coeur.nameAC[nom][2]))
-
-              _coe[indice]  = MACRO_AC_PERMUTE(POS_INIT       = _coeur.nameAC[nom],
-                              POS_FIN        = _coeurp1.nameAC[nom],
-                              RESU_INI       = _SNL_LAME,
-                              RESU_FIN       = _BIDON,
-                              MAILLAGE_INIT  = _MA_N,
-                              INSTANT        = _coeur.temps_simu['T1'],
-                              MAILLAGE_FINAL = _MA_NP1,
-                              MODELE_FINAL   = _MO_NP1,
-                              TRAN       = (tran_x,tran_y,tran_z))
-
-              _dep[indice] = CREA_CHAMP(TYPE_CHAM = 'NOEU_DEPL_R',
-                           OPERATION = 'EXTR',
-                           PRECISION =  1.0E-10,
-                           RESULTAT  =  _coe[indice],
-                           NOM_CHAM  = 'DEPL',
-                           INST  =  0.0,);
-
-              _var[indice] = CREA_CHAMP(TYPE_CHAM = 'ELGA_VARI_R',
-                           OPERATION = 'EXTR',
-                           PRECISION =  1.0E-10,
-                           RESULTAT  =  _coe[indice],
-                           NOM_CHAM  = 'VARI_ELGA',
-                           INST  =  0.0,);
-
-              mtdep = (_F(TOUT = 'OUI', CHAM_GD = _dep[indice], CUMUL = 'OUI', COEF_R = 1.0),)
-              mtvar = (_F(TOUT = 'OUI', CHAM_GD = _var[indice], CUMUL = 'OUI', COEF_R = 1.0),)
-              lisdep.extend(mtdep)
-              lisvar.extend(mtvar)
-
-              mtdet={}
-              mtdet["NOM"] =  (_coe[indice],_dep[indice],_var[indice])
-              lisdet.append(mtdet)
-
-              indice = indice + 1
-
-       print 'ASSEMBLAGE DES',indice,'PERMUTATIONS'
-
-       _RES_DEP = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',MODELE=_MO_NP1,OPERATION='ASSE',ASSE=lisdep)
-       _RES_VAR = CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',MODELE=_MO_NP1,OPERATION='ASSE',ASSE=lisvar)
-
-       _RES_SIG = CREA_CHAMP(TYPE_CHAM = 'ELGA_SIEF_R',
-                     OPERATION = 'EXTR',
-                     PRECISION =  1.0E-10,
-                     RESULTAT  =  _coe[0],
-                     NOM_CHAM  = 'SIEF_ELGA',
-                     INST      =  0.0,);
-
-       _RESU_F = CREA_RESU( OPERATION = 'AFFE',
-                    TYPE_RESU = 'EVOL_NOLI',
-                    NOM_CHAM  = 'DEPL',
-                    AFFE      = _F(CHAM_GD=_RES_DEP,INST=0.0,MODELE=_MO_NP1,));
-
-       _RESU_F = CREA_RESU( reuse     = _RESU_F,
-                    OPERATION = 'AFFE',
-                    TYPE_RESU = 'EVOL_NOLI',
-                    NOM_CHAM  = 'SIEF_ELGA',
-                    AFFE      = _F(CHAM_GD=_RES_SIG,INST=0.0,MODELE=_MO_NP1,));
-
-       _RESU_F = CREA_RESU( reuse     = _RESU_F,
-                    OPERATION = 'AFFE',
-                    TYPE_RESU = 'EVOL_NOLI',
-                    NOM_CHAM  = 'VARI_ELGA',
-                    AFFE      = _F(CHAM_GD=_RES_VAR,INST=0.0,MODELE=_MO_NP1,));
-
-       DETRUIRE(CONCEPT=tuple(lisdet))
-
-       _MVDEPL = CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R', NOM_CHAM ='DEPL', RESULTAT = _RESU_F)
 
        _MA_NP1 = MODI_MAILLAGE( reuse = _MA_NP1, MAILLAGE = _MA_NP1, DEFORME = _F( OPTION = 'TRAN', DEPL = _MVDEPL))
 
@@ -434,13 +382,13 @@ def calc_mac3coeur_ops(self, **args):
        RESUJ = STAT_NON_LINE( MODELE      = _MO_NP1,
                               CHAM_MATER  = _AFACNP1,
                               CARA_ELEM   = _CARANP1,
-                              EXCIT          =(
+                              EXCIT   =(
                                     _F(CHARGE = _ARCH_11,  FONC_MULT = _ARCHF11,),
                                     _F(CHARGE = _FOARCH1,  FONC_MULT = _ARCHF11,),
                                     _F(CHARGE = _F_EMBO1,  ),
                                     _F(CHARGE = _PESANT1,  ),
                                     _F(CHARGE = _DILATP1,  ),
-                                    _F(CHARGE = _BLOC2,),),
+                    _F(CHARGE = _BLOC2,),),
                               COMP_INCR   =(
                                     _F(RELATION='MULTIFIBRE', GROUP_MA =('CRAYON','T_GUIDE'), PARM_THETA=0.5, ),
                                     _F(RELATION='DIS_GRICRA', GROUP_MA = 'ELA',),
@@ -448,8 +396,8 @@ def calc_mac3coeur_ops(self, **args):
                                     _F(RELATION='ELAS',       GROUP_MA =('EBOINF','EBOSUP','RIG','DIL',),),
                                     _F(RELATION='DIS_BILI_ELAS',GROUP_MA ='MAINTIEN',),),
                               INCREMENT   = _F(LIST_INST = _timep1, INST_FIN = _coeurp1.temps_simu['T4'],),
-                              NEWTON          = _F(MATRICE='TANGENTE',REAC_ITER=1,),
-                              SOLVEUR          = _F(METHODE='MUMPS',RENUM='AMF',GESTION_MEMOIRE='OUT_OF_CORE',ELIM_LAGR2='NON',PCENT_PIVOT=200,),
+                              NEWTON      = _F(MATRICE='TANGENTE',REAC_ITER=1,),
+                              SOLVEUR     = _F(METHODE='MUMPS',RENUM='AMF',GESTION_MEMOIRE='OUT_OF_CORE',ELIM_LAGR2='NON',PCENT_PIVOT=200,),
                               CONVERGENCE=_F(ITER_GLOB_MAXI=NITER),
                               );
 

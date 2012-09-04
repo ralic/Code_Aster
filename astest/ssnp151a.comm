@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 # TITRE EPROUVETTE CT 2D AVEC ELEMENTS D'INTERFACE (QUAD8) ET LOI DE RUPTURE DUCTILE CZM_TRA_MIX
 # ssnp151a.para = tps_job 300 mem_job 768Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -192,7 +192,7 @@ UP=STAT_NON_LINE(MODELE=MO,
                         DEPL_REFE      = delc,
                         ITER_GLOB_MAXI = 12,
                   ),
-                 SOLVEUR    = _F(METHODE = 'MUMPS', NPREC=-1),
+                 SOLVEUR    = _F(METHODE = 'MUMPS'),
                  NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
                  ARCHIVAGE=_F(LIST_INST=LIS_ARCH),
                );
@@ -242,7 +242,7 @@ TEST_TABLE(TABLE=FORCE,
            NOM_PARA='DY',
            FILTRE=_F(NOM_PARA='DEPLACE',
                      VALE=1.0),
-           VALE=4.75650E+03,
+           VALE=4.76759E+03,
            REFERENCE='NON_REGRESSION');
 
 TEST_TABLE(TABLE=FORCE,

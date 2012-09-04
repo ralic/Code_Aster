@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
+C MODIF ALGORITH  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,30 +37,30 @@ C ----------------------------------------------------------------------
       INTEGER       I, J, ITRESU(8)
       INTEGER       FOCI, FOCF, FOMI, FOMF, FOMO
       REAL*8        R8B, EPSI, ALPHA, XNORM, DEPL(6)
-      CHARACTER*1    K1BID
+      CHARACTER*1    K1BID,TYP1
       CHARACTER*8   K8B, BLANC, BASEMO, CRIT, INTERP, BASEM2,
      &              MAILLA, NOMRES, NOMIN, NOMCMP(6), MODE, MONMOT(2),
      &              MATGEN, NOMGD
       CHARACTER*14  NUMDDL, NUMGEN
       CHARACTER*16  TYPRES, TYPE(8), TYPCHA,
      &              TYPBAS(8), TYPREP, CONCEP
-      CHARACTER*19  FONCT, KINST, KNUME, KREFE, PRCHNO, TRANGE
-      CHARACTER*19  TYPREF(8), PROF
+      CHARACTER*19  FONCT,KINST,KNUME,KREFE,PRCHNO,PRCHN1,TRANGE
+      CHARACTER*19  TYPREF(8),PROF
       CHARACTER*24  MATRIC, CHAMNO, CREFE(2), NOMCHA, CHAMN2, OBJVE1
       CHARACTER*24  OBJVE2,OBJVE3,OBJVE4,CHMOD
-      LOGICAL       TOUSNO, MULTAP, LEFFOR, PREMS
-      INTEGER      IARG
+      LOGICAL       TOUSNO, MULTAP, LEFFOR, PREMS,IDENSD
+      INTEGER      IARG,IEXI
 C     ------------------------------------------------------------------
 C-----------------------------------------------------------------------
-      INTEGER IADESC ,IADRIF ,IARCHI ,IAREFE ,IBID ,ICH ,ID 
-      INTEGER IDBASE ,IDEC ,IDEFM ,IDINSG ,IDRESU ,IDVECG ,IE 
-      INTEGER IER ,INOCMP ,INOECP ,INUDDL ,INUMNO ,IPSDEL ,IRET 
-      INTEGER IRETOU ,J2REFE ,J3REFE ,JC ,JDDL ,JINST ,JNOACC 
-      INTEGER JNODEP ,JNOVIT ,JNUME ,JPSDEL ,JVEC ,LINST ,LLCHA 
-      INTEGER LPSDEL ,LREFE ,LVAL2 ,LVALE ,N1 ,N2 ,N3 
-      INTEGER N4 ,NBCHAM ,NBD ,NBDIR ,NBEXCI ,NBINSG ,NBINST 
-      INTEGER NBMODE ,NBNOEU ,NCMP ,NEQ ,NFONCT 
-      REAL*8 R8PREM 
+      INTEGER IADESC ,IADRIF ,IARCHI ,IAREFE ,IBID ,ICH ,ID
+      INTEGER IDBASE ,IDEC ,IDEFM ,IDINSG ,IDRESU ,IDVECG ,IE
+      INTEGER IER ,INOCMP ,INOECP ,INUDDL ,INUMNO ,IPSDEL ,IRET
+      INTEGER IRETOU ,J2REFE ,J3REFE ,JC ,JDDL ,JINST ,JNOACC
+      INTEGER JNODEP ,JNOVIT ,JNUME ,JPSDEL ,JVEC ,LINST ,LLCHA
+      INTEGER LPSDEL ,LREFE ,LVAL2 ,LVALE ,N1 ,N2 ,N3
+      INTEGER N4 ,NBCHAM ,NBD ,NBDIR ,NBEXCI ,NBINSG ,NBINST
+      INTEGER NBMODE ,NBNOEU ,NCMP ,NEQ ,NFONCT
+      REAL*8 R8PREM
 C-----------------------------------------------------------------------
       DATA BLANC    /'        '/
       DATA CHAMN2   /'&&TRAN75.CHAMN2'/
@@ -313,12 +313,19 @@ C
           ELSE
             DO 110 J = 1,NBMODE
                CALL RSEXCH('F',BASEMO, TYPCHA, J, NOMCHA, IRET )
-               CALL JEEXIN ( NOMCHA(1:19)//'.VALE', IBID )
-               IF (IBID.GT.0) THEN
+               CALL JEEXIN ( NOMCHA(1:19)//'.VALE', IEXI )
+C              TOUSNO=.FALSE. => ON NE S'INTERESSE QU'AUX CHAM_NO :
+               CALL ASSERT(IEXI.GT.0)
+               CALL JELIRA(NOMCHA(1:19)//'.VALE','TYPE',IBID,TYP1)
+               CALL ASSERT(TYP1.EQ.'R')
+
+C              SI NOMCHA N'A PAS LA BONNE NUMEROTATION, ON ARRETE TOUT :
+               CALL ASSERT(PRCHNO.NE.' ')
+               CALL DISMOI('F','PROF_CHNO',NOMCHA,'CHAM_NO',IBID,
+     &                     PRCHN1,IE)
+               CALL ASSERT(IDENSD('PROF_CHNO',PRCHNO,PRCHN1))
+
                   NOMCHA(20:24)='.VALE'
-               ELSE
-                  NOMCHA(20:24)='.CELV'
-               END IF
                CALL JEVEUO(NOMCHA,'L',IDEFM)
                IDEC = 0
                DO 120 I = 1,NBNOEU

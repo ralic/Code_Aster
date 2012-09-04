@@ -8,7 +8,7 @@
       CHARACTER*19  RESIN,VECTOT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
+C MODIF UTILITAI  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -164,7 +164,6 @@ C           --- BOUCLE SUR LES DDL'S 2 A NEQ
 C              --- REMPLISSAGE ORDONNEES DE LA FONCTION PREFFT
                DO 20 IORDR = 0 , NBORDR-1
                   CALL RSEXCH('F',RESIN,GRANDE,IORDR,CHAM19,IRET)
-                  CALL RSADPA(RESIN,'L',1,'INST',IORDR,0,LACCE,K8B)
                   CALL JEVEUO(CHAM19//'.VALE','L',LVALE)
                   ZR(LFON+II) = ZR(LVALE+IDDL-1)
                   II = II + 1
@@ -224,7 +223,7 @@ C        --- CAS D'UNE SD ENTRANTE HARMONIQUE SUR BASE PHYSIQUE
 C            => SD_RESULTAT
            DO 50 IORDR = 1 , NBORDR
 C             --- REMPLIR L'ABSCISSE ET ORDONNE DE LA FONCTION PREFFT
-C             --- NOTE : VALEURS DES CHAMPS SONT COMPLEXES           
+C             --- NOTE : VALEURS DES CHAMPS SONT COMPLEXES
               CALL RSEXCH('F',RESIN,GRANDE,IORDR,CHAM19,IRET)
               CALL RSADPA(RESIN,'L',1,'FREQ',IORDR,0,LACCE,K8B)
               CALL JEVEUO(CHAM19//'.VALE','L',LVALE)
@@ -279,7 +278,6 @@ C          --- BOUCLE SUR LES AUTRES DDLS DE 2 A NEQ
               II = 0
               DO 70 IORDR = 1 , NBORDR
                  CALL RSEXCH('F',RESIN,GRANDE,IORDR,CHAM19,IRET)
-                 CALL RSADPA(RESIN,'L',1,'FREQ',IORDR,0,LACCE,K8B)
                  CALL JEVEUO(CHAM19//'.VALE','L',LVALE)
                  ZR(LFON+II) = DBLE(ZC(LVALE+IDDL-1))
                  II = II + 1

@@ -1,6 +1,6 @@
       SUBROUTINE DISMPM(QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,10 @@ C     ------------------
       CHARACTER*8 KBID
       CHARACTER*16 PHEN,MODE
 C DEB-------------------------------------------------------------------
-      REPK=' '
+      REPK  = ' '
+      REPI  = 0
+      IERD = 0
+
       NOMOB = NOMOBZ
       PHEN=NOMOB(1:16)
       MODE=NOMOB(17:32)

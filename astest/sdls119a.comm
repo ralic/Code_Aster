@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 04/09/2012   AUTEUR LADIER A.LADIER 
 # TITRE PLAQUE SUR APPUI SOUMISE A UNE ACCELERATION DE RICKER (METHODE TEMPS-FREQUENCE)
 # sdls119a.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -237,10 +237,13 @@ DEP0=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
                  RESULTAT= EVOL0, INST=0.0,
                  NOM_CHAM = 'DEPL');
 
-
 VIT0=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
                  RESULTAT= EVOL0, INST=0.0,
                  NOM_CHAM = 'VITE');
+
+ACC0=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+                 RESULTAT= EVOL0, INST=0.0,
+                 NOM_CHAM = 'ACCE');
 #
 
 NF = 3
@@ -253,7 +256,7 @@ for k in range(1,NF):
                       MATR_MASS=masse, MATR_RIGI=rigidite,
                       MATR_AMOR=amorto,
                       SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
-                      ETAT_INIT=_F(DEPL=DEP0, VITE=VIT0,),
+                      ETAT_INIT=_F(DEPL=DEP0, VITE=VIT0, ACCE=ACC0,),
                       INCREMENT=_F(LIST_INST=TEMPL2C,),
                       ARCHIVAGE=_F(PAS_ARCH=2,),
                      EXCIT=(
@@ -342,7 +345,7 @@ for k in range(1,NF):
                       MATR_MASS=masse, MATR_RIGI=rigidite,
                       MATR_AMOR=amorto,
                       SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
-                      ETAT_INIT=_F(DEPL=DEP0, VITE=VIT0,),
+                      ETAT_INIT=_F(DEPL=DEP0, VITE=VIT0, ACCE=ACC0,),
                       INCREMENT=_F(LIST_INST=TEMPL2C,),
                       ARCHIVAGE=_F(PAS_ARCH=2,),
                      EXCIT=(

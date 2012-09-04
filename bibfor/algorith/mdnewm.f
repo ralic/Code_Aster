@@ -16,7 +16,7 @@
       REAL*8       R8B,COEFM(*),PASSTO(*)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/08/2012   AUTEUR ALARCON A.ALARCON 
+C MODIF ALGORITH  DATE 03/09/2012   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -333,26 +333,18 @@ C
                      ZR(JRIGY+IND-1) = RIGGEN(IND) + AROT*RGYGEN(IND)
  116               CONTINUE
  115             CONTINUE
-              ELSE
-                 DO 119 IM = 1 , NBMODE
-                   DO 121 JM = 1 , NBMODE
+                 DO 135 IM = 1 , NBMODE
+                   DO 136 JM = 1 , NBMODE
                      IND = JM + NBMODE*(IM-1)
-                     ZR(JAMGY+IND-1) = AMOGEN(IND)
-                     ZR(JRIGY+IND-1) = RIGGEN(IND)
- 121               CONTINUE
- 119             CONTINUE
+                     ZR(JTRA3+IND-1) = A0*MASGEN(IND) + ZR(JRIGY+IND-1)
+     &                                 + A1*ZR(JAMGY+IND-1)
+                     ZR(JTRA4+IND-1) = A2*MASGEN(IND)+A4*ZR(JAMGY+IND-1)
+                     ZR(JTRA5+IND-1) = A0*MASGEN(IND)+A1*ZR(JAMGY+IND-1)
+                     ZR(JTRA6+IND-1) = A3*MASGEN(IND)+A5*ZR(JAMGY+IND-1)
+ 136               CONTINUE
+ 135             CONTINUE
+                 CALL TRLDS(ZR(JTRA3),NBMODE,NBMODE,IRET)
               ENDIF
-              DO 135 IM = 1 , NBMODE
-                DO 136 JM = 1 , NBMODE
-                  IND = JM + NBMODE*(IM-1)
-                  ZR(JTRA3+IND-1) = A0*MASGEN(IND) + ZR(JRIGY+IND-1)
-     &                                   + A1*ZR(JAMGY+IND-1)
-                  ZR(JTRA4+IND-1) = A2*MASGEN(IND)+A4*ZR(JAMGY+IND-1)
-                  ZR(JTRA5+IND-1) = A0*MASGEN(IND)+A1*ZR(JAMGY+IND-1)
-                  ZR(JTRA6+IND-1) = A3*MASGEN(IND)+A5*ZR(JAMGY+IND-1)
- 136            CONTINUE
- 135          CONTINUE
-              CALL TRLDS(ZR(JTRA3),NBMODE,NBMODE,IRET)
               DO 216 IM = 0,NBMOD1
                  ZR(JTRA1+IM) = ZR(JDEPL+IM)
                  ZR(JDEPL+IM) = ZR(JFEXT+IFE+IM)

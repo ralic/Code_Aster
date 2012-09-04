@@ -1,9 +1,9 @@
       SUBROUTINE EIINIT(NOMTE,IU,IL,IT)
       
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/07/2008   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ALGORITH  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -43,7 +43,8 @@ C ----------------------------------------------------------------------
       DATA LQ8  /8,6/
 C ----------------------------------------------------------------------
       
-      IF (NOMTE.EQ.'MEEI_HEXA20') THEN
+      IF ((NOMTE.EQ.'MEEI_HEXA20')
+     &.OR.(NOMTE.EQ.'MEEI_HEXS20')) THEN
         DO 10 N = 1,16
           IU(1,N) = 1 + (UH20(N)-1)*3
           IU(2,N) = 2 + (UH20(N)-1)*3
@@ -61,7 +62,8 @@ C ----------------------------------------------------------------------
  30     CONTINUE
  
  
-      ELSE IF (NOMTE.EQ.'MEEI_PENTA15') THEN
+      ELSE IF ((NOMTE.EQ.'MEEI_PENTA15')
+     &     .OR.(NOMTE.EQ.'MEEI_PENTS15')) THEN
         DO 110 N = 1,12
           IU(1,N) = 1 + (UP15(N)-1)*3
           IU(2,N) = 2 + (UP15(N)-1)*3
@@ -78,8 +80,10 @@ C ----------------------------------------------------------------------
           IT(N) = UP15(N)          
  130    CONTINUE
  
-
-      ELSE IF ((NOMTE.EQ.'EIPLQU8') .OR. (NOMTE.EQ.'EIAXQU8')) THEN
+      ELSE IF ((NOMTE.EQ.'EIPLQU8')
+     &     .OR.(NOMTE.EQ.'EIPLQS8')
+     &     .OR.(NOMTE.EQ.'EIAXQU8')
+     &     .OR.(NOMTE.EQ.'EIAXQS8')) THEN
       
         DO 210 N = 1,6
           IU(1,N) = 1 + (UQ8(N)-1)*2
@@ -95,6 +99,8 @@ C ----------------------------------------------------------------------
           IT(N) = UQ8(N)          
  230    CONTINUE
 
-      END IF
+      ELSE
+        CALL ASSERT(.FALSE.)
+      ENDIF
       
       END

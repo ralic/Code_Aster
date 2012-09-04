@@ -1,6 +1,6 @@
       SUBROUTINE NUMERO(NUPOSS,MODELZ,INFCHZ,SOLVEU,BASE,NU)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ASSEMBLA  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +30,7 @@ C                  : BASE(2:2) : BASE POUR CREER LE PROF_CHNO
 C VAR/JXOUT K14 NU : NOM DU NUME_DDL.
 C                    SI NUPOSS !=' ', NU PEUT ETRE MODIFIE (NU=NUPOSS)
 C----------------------------------------------------------------------
-C RESPONSABLE VABHHTS J.PELLET
+C RESPONSABLE PELLET J.PELLET
 C CORPS DU PROGRAMME
       IMPLICIT NONE
 
@@ -58,7 +58,7 @@ C DECLARATION VARIABLES LOCALES
       CHARACTER*24 LCHARG,LLIGR,NOMLIG,SDFETI,NOMSDA,K24B,K24CF,
      &             KSOLVF,LLIGRS,INFOFE,NOOBJ,K24MUL
       LOGICAL      LFETI,LFETIC,LCF
-      
+
 C RECUPERATION ET MAJ DU NIVEAU D'IMPRESSION
       CALL INFNIV(IFM,NIV)
 C-----------------------------------------------------------------------
@@ -67,10 +67,10 @@ C LE NOM DU MODELE DE CALCUL
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL UTTCPU('CPU.RESO.1','DEBUT',' ')
-      CALL UTTCPU('CPU.RESO.2','DEBUT',' ')      
+      CALL UTTCPU('CPU.RESO.2','DEBUT',' ')
       K24CF  = '&&NUMERO.FETI.CONTACT'
-      
-C     DECO. FETI+CONTACT      
+
+C     DECO. FETI+CONTACT
       LCF    = .FALSE.
       LIGRCF = ' '
 
@@ -84,8 +84,8 @@ C     DECO. FETI+CONTACT
         CALL JEVEUO(LCHARG,'L',JCHAR)
       ENDIF
       LLIGR = '&&NUMERO.LISTE_LIGREL'
- 
-C     LISTE 
+
+C     LISTE
       CALL WKVECT(LLIGR,'V V K24',NCHAR+1,JLLIGR)
       NBLIG = 0
 C     ON INSERE LE LIGREL DE MODELE
@@ -224,7 +224,7 @@ C DE GCNCON.
             CALL JEVEUO(LIGRCF(1:19)//'.FEL1','L',IFEL1)
             DO 35 IDD=1,NBSD
               K24B=ZK24(IFEL1+IDD-1)
-              IF ((K24B.NE.' ').AND.(K24B(1:19).NE.LIGRCF(1:19))) 
+              IF ((K24B.NE.' ').AND.(K24B(1:19).NE.LIGRCF(1:19)))
      &          CALL DETRSD('LIGREL',K24B)
    35       CONTINUE
             CALL JEDETR(LIGRCF(1:19)//'.FEL1')
@@ -385,9 +385,9 @@ C SOUS-STRUCTURATION QUI EST ILLICITE AVEC FETI, MAIS ON NE SAIT JAMAIS)
    40   CONTINUE
       ENDIF
       CALL JEDETR(LLIGR)
-      
-      
+
+
       CALL UTTCPU('CPU.RESO.1','FIN',' ')
-      CALL UTTCPU('CPU.RESO.2','FIN',' ')      
+      CALL UTTCPU('CPU.RESO.2','FIN',' ')
       CALL JEDEMA()
       END

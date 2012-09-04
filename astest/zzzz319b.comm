@@ -1,0 +1,126 @@
+# MODIF  DATE 04/09/2012   AUTEUR LADIER A.LADIER 
+# TITRE VALIDATION INFORMATIQUE DE MACR_ADAP_MAIL
+# zzzz319b.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='ZZZZ319B',
+              NIV_PUB_WEB='INTERNET',),
+      IGNORE_ALARM='HOMARD0_9',);
+
+#################################################################
+### MAILLAGE ####################################################
+#################################################################
+
+MA=LIRE_MAILLAGE(FORMAT='MED',);
+
+#################################################################
+### CREATION DU CHAMP AVEC DX=1 SUR LE NOEUD A ##################
+#################################################################
+
+CHA=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+               OPERATION='AFFE',
+               MAILLAGE=MA,
+               AFFE=(
+               _F(TOUT='OUI',
+                  NOM_CMP='DX',
+                  VALE=0.,),
+               _F(GROUP_NO='A',
+                  NOM_CMP='DX',
+                  VALE=1.,),),);
+
+#################################################################
+### ADAPTATION AVEC MAJ DU CHAMP AUTO ###########################
+#################################################################
+
+MACR_ADAP_MAIL(MAILLAGE_N=MA,
+               MAILLAGE_NP1=CO('MA_AUTO'),
+               ADAPTATION='RAFFINEMENT_UNIFORME',
+               MAJ_CHAM=_F(CHAM_MAJ=CO('CH_AUTO'),
+                           TYPE_CHAM='NOEU_DEPL_R',
+                           CHAM_GD=CHA,),);
+
+#################################################################
+### ADAPTATION AVEC MAJ DU CHAMP AUTO ###########################
+#################################################################
+
+MACR_ADAP_MAIL(MAILLAGE_N=MA,
+               MAILLAGE_NP1=CO('MA_ISOP2'),
+               ADAPTATION='RAFFINEMENT_UNIFORME',
+               MAJ_CHAM=_F(CHAM_MAJ=CO('CH_ISOP2'),
+                           TYPE_CHAM='NOEU_DEPL_R',
+                           CHAM_GD=CHA,
+                           TYPE_MAJ='ISOP2',),);
+
+#################################################################
+### TEST_RESU ###################################################
+#################################################################
+
+
+TEST_RESU(CHAM_NO=(_F(CHAM_GD=CHA,
+                      NOEUD='N4',
+                      NOM_CMP='DX',
+                      REFERENCE='ANALYTIQUE',
+                      PRECISION=1.E-6,
+                      VALE=0.0,),
+                   _F(CHAM_GD=CHA,
+                      NOEUD='N2',
+                      NOM_CMP='DX',
+                      REFERENCE='ANALYTIQUE',
+                      PRECISION=1.E-6,
+                      VALE=1.0,),),);
+
+TEST_RESU(CHAM_NO=(_F(CHAM_GD=CH_AUTO,
+                      NOEUD='N8',
+                      NOM_CMP='DX',
+                      REFERENCE='ANALYTIQUE',
+                      PRECISION=1.E-6,
+                      VALE=0.375,),
+                   _F(CHAM_GD=CH_AUTO,
+                      NOEUD='N4',
+                      NOM_CMP='DX',
+                      REFERENCE='ANALYTIQUE',
+                      PRECISION=1.E-6,
+                      VALE=0.0,),
+                   _F(CHAM_GD=CH_AUTO,
+                      NOEUD='N2',
+                      NOM_CMP='DX',
+                      REFERENCE='ANALYTIQUE',
+                      PRECISION=1.E-6,
+                      VALE=1.0,),),);
+
+TEST_RESU(CHAM_NO=(_F(CHAM_GD=CH_ISOP2,
+                      NOEUD='N8',
+                      NOM_CMP='DX',
+                      REFERENCE='ANALYTIQUE',
+                      PRECISION=1.E-6,
+                      VALE=0.5,),
+                   _F(CHAM_GD=CH_ISOP2,
+                      NOEUD='N4',
+                      NOM_CMP='DX',
+                      REFERENCE='ANALYTIQUE',
+                      PRECISION=1.E-6,
+                      VALE=0.0,),
+                   _F(CHAM_GD=CH_ISOP2,
+                      NOEUD='N2',
+                      NOM_CMP='DX',
+                      REFERENCE='ANALYTIQUE',
+                      PRECISION=1.E-6,
+                      VALE=1.0,),),);
+
+FIN();

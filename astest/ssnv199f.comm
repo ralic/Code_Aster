@@ -1,4 +1,4 @@
-# MODIF  DATE 30/07/2012   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 # TITRE FISSURATION INTERFACE 3D (PENTA15) SUR DCB, LOI CZM_OUV_MIX
 # ssnv199f.para = tps_job 860 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -178,13 +178,6 @@ FCT = DEFI_FONCTION(
   VALE     = (-1,0 ,  0,0.0001,tfin,tfin  ),
                 )
 
-
-# LES SYSTEMES LINEAIRES SONT DIFFICILES A RESOUDRE. ILS SEMBLENT
-# NUMERIQUEMENT SINGULIERS. DEVERROUILLER LA DETECTION DE SINGULARITE
-# NE SUFFIT PAS. ON PARAMETRE ARTIFICIELLEMENT NPREC A UNE GRANDE VALEUR
-# POUR FORCER MUMPS A RESOUDRE LES SYSTEMES SINGULIERS (A NE PAS FAIRE DANS
-# UNE ETUDE STANDARD).
-# LE PROCESSUS DE NEWTON CORRIGE LES EVENTUELLES DERIVES.
 U=STAT_NON_LINE(
   MODELE     = MO,
   CHAM_MATER = CM,
@@ -204,7 +197,7 @@ U=STAT_NON_LINE(
                    DEPL_REFE      = dc,
                    ITER_GLOB_MAXI = 12,
                   ),
-  SOLVEUR    = _F(METHODE = 'MUMPS', NPREC=1000),
+  SOLVEUR    = _F(METHODE = 'MUMPS'),
   NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
   )
 
@@ -242,7 +235,7 @@ U=STAT_NON_LINE(reuse=U,
                    DEPL_REFE      = dc,
                    ITER_GLOB_MAXI = 12,
                   ),
-  SOLVEUR      = _F(METHODE = 'MUMPS', NPREC=1000),
+  SOLVEUR      = _F(METHODE = 'MUMPS'),
   ARCHIVAGE    = _F(LIST_INST  = INS_ARCH)
   )
 
@@ -284,11 +277,11 @@ FRES = POST_RELEVE_T(
 TEST_RESU (
   RESU = (
     _F(
-      REFERENCE = 'ANALYTIQUE',
+      REFERENCE = 'NON_REGRESSION',
       RESULTAT  = U,
       NOM_CHAM  = 'DEPL',
       NOM_CMP   = 'DY',
-      VALE      = 4.87012,
+      VALE      = 4.85116,
       GROUP_NO  = 'NO7',
       INST      = 2.0
       ),
@@ -298,18 +291,18 @@ TEST_RESU (
 TEST_TABLE(TABLE=FRES,
            FILTRE=(_F(NOM_PARA='INST',VALE=2.0)),
            NOM_PARA='DY',
-           VALE=6.87460E+00,
-           REFERENCE='ANALYTIQUE')
+           VALE=6.89090,
+           REFERENCE='NON_REGRESSION')
 
 
 TEST_RESU (
   RESU = (
     _F(
-      REFERENCE = 'ANALYTIQUE',
+      REFERENCE = 'NON_REGRESSION',
       RESULTAT  = U,
       NOM_CHAM  = 'DEPL',
       NOM_CMP   = 'DY',
-      VALE      = 6.75984E+00,
+      VALE      = 6.74636,
       GROUP_NO  = 'NO7',
       INST      = 3.0
       ),
@@ -319,18 +312,18 @@ TEST_RESU (
 TEST_TABLE(TABLE=FRES,
            FILTRE=(_F(NOM_PARA='INST',VALE=3.0)),
            NOM_PARA  = 'DY',
-           VALE      = 5.83764679,
-           REFERENCE = 'ANALYTIQUE')
+           VALE      = 5.83393,
+           REFERENCE = 'NON_REGRESSION')
 
 
 TEST_RESU (
   RESU = (
     _F(
-      REFERENCE = 'ANALYTIQUE',
+      REFERENCE = 'NON_REGRESSION',
       RESULTAT  = U,
       NOM_CHAM  = 'DEPL',
       NOM_CMP   = 'DY',
-      VALE      = 8.91468E+00,
+      VALE      = 8.92820,
       GROUP_NO  = 'NO7',
       INST      = 4.0
       ),
@@ -340,8 +333,8 @@ TEST_RESU (
 TEST_TABLE(TABLE=FRES,
            FILTRE=(_F(NOM_PARA='INST',VALE=4.0)),
            NOM_PARA  = 'DY',
-           VALE      = 5.05991E+00,
-           REFERENCE = 'ANALYTIQUE')
+           VALE      = 5.06475,
+           REFERENCE = 'NON_REGRESSION')
 
 
 IMPR_TABLE(TABLE = UPILO)

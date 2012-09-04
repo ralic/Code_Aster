@@ -1,4 +1,4 @@
-#@ MODIF calculel4 Messages  DATE 09/01/2012   AUTEUR IDOUX L.IDOUX 
+#@ MODIF calculel4 Messages  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -156,9 +156,38 @@ Risques et conseils :
 """),
 
 19 : _(u"""
- Il est impossible d'utiliser plusieurs chargements de pesanteur en présence d'éléments de 
+ Il est impossible d'utiliser plusieurs chargements de pesanteur en présence d'éléments de
  couplage pesanteur - surface libre d'un fluide (modélisation '2D_FLUI_PESA).
 """),
+
+
+
+
+
+
+21 : _(u"""
+ Erreur utilisateur :
+   La commande CREA_RESU / ASSE concatène des structures de données résultat.
+   Mais il faut que les instants consécutifs soient croissants (en tenant compte de TRANSLATION).
+   Ce n'est pas le cas ici pour les instants : %(r1)f  et %(r2)f
+"""),
+
+22 : _(u"""
+ Information utilisateur :
+   La commande CREA_RESU / ASSE concatène des structures de données résultat.
+   Mais il faut que les instants consécutifs soient croissants (en tenant compte de TRANSLATION).
+   Ici, l'instant %(r1)f  est affecté plusieurs fois.
+   Pour cet instant, les champs sont écrasés.
+"""),
+
+
+
+
+
+
+
+
+
 
 43 : _(u"""
  le NOM_PARA n'existe pas

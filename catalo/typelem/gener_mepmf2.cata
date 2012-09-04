@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -58,6 +58,9 @@ MODE_LOCAL__
     EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30]    )
     EENEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
     EENEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    )
+    EMNEUT_R = NEUT_R   ELGA__ MATER   (X[1]     )
+    ETEMPMA  = TEMP_R   ELGA__ MATER   (TEMP     )
+    EHYDRMA  = HYDR_R   ELGA__ MATER   (HYDR     )
     ENONLIN  = NEUT_I   ELEM__         (X1)
     NVITER   = DEPL_R   ELNO__ IDEN__  (DX       DY       DZ       )
     CEPSINR  = EPSI_R   ELEM__         (EPX      KY       KZ       )
@@ -77,6 +80,7 @@ MODE_LOCAL__
     EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W       )
+    EGGEMA_R = GEOM_R   ELGA__ MATER   (X        Y        Z        )
     CTEMPSR  = INST_R   ELEM__         (INST     )
     CLISTMA  = LISTMA   ELEM__         (LISTMA   TRANS    )
     EMASSINE = MASS_R   ELEM__         (M        CDGX     CDGY     CDGZ     IXX      IYY
@@ -126,11 +130,13 @@ OPTION__
                                      CMATERC  PMATERC
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_FC1D1D    150   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CFORCEC  PFC1D1D  NGEOMER  PGEOMER
+
                               OUT__  MVECTUC  PVECTUC
     CHAR_MECA_FF1D1D    150   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CFORCEF  PFF1D1D  NGEOMER  PGEOMER
                                      CTEMPSR  PTEMPSR
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_FR1D1D    150   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CFORCER  PFR1D1D  NGEOMER  PGEOMER
+
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_FRELEC    145   IN__   CFRELEC  PFRELEC  NGEOMER  PGEOMER
                               OUT__  MVECTUR  PVECTUR
@@ -157,9 +163,13 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_HYDR_R    150   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  CTEMPSR  PTEMPSR
+
                               OUT__  MVECTUR  PVECTUR
     COOR_ELGA           478   IN__   NGEOMER  PGEOMER  CCAORIE  PCAORIE  ENBSP_I  PNBSP_I  ECAFIEL  PFIBRES
                               OUT__  EGGEOP_R PCOORPG
+    COOR_ELGA_MATER     463   IN__   NGEOMER  PGEOMER  CCAORIE  PCAORIE  ENBSP_I  PNBSP_I  ECAFIEL  PFIBRES
+                              OUT__  EGGEMA_R PCOOPGM
+
     DEGE_ELNO           158   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                               OUT__  EDEFGNO  PDEFOGR
@@ -194,6 +204,8 @@ OPTION__
     INDIC_SEUIL         -1    IN__    OUT__    XXXXXX   XXXXXX
     INI_STRX            23    IN__   CCAORIE  PCAORIE
                               OUT__  ESTRAUX  PSTRX_R
+    INI_SP_MATER        99    IN__
+                              OUT__  EMNEUT_R PNEUMAT  ETEMPMA  PTEMMAT  EHYDRMA  PHYDMAT
     INIT_VARC           99    IN__
                               OUT__  ZVARCPG  PVARCPR
     MASS_FLUI_STRU      141   IN__   CABSCUR  PABSCUR  CCAGEPO  PCAGEPO  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE
@@ -267,6 +279,7 @@ OPTION__
     TOU_INI_ELGA        99    IN__
                               OUT__  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R  EGGEOM_R PGEOM_R  EGINST_R PINST_R
                                      EGNEUT_R PNEUT_R  EGNEUT_F PNEUT_F
+
     TOU_INI_ELNO        99    IN__
                               OUT__  EEFGENO  PSIEF_R  ZVARINO  PVARI_R  NGEOMER PGEOM_R  EEINST_R PINST_R
                                      EENEUT_F PNEUT_F  EENEUT_R PNEUT_R

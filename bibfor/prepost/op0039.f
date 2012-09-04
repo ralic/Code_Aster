@@ -1,7 +1,7 @@
       SUBROUTINE OP0039 ()
       IMPLICIT   NONE
 C ----------------------------------------------------------------------
-C MODIF PREPOST  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C RESPONSABLE SELLENET N.SELLENET
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
@@ -242,6 +242,7 @@ C     --- FICHIER ---
 
 C     -- FORMAT CASTEM : IMPRESSION DU MAILLAGE :
 C     -------------------------------------------
+      FORMR=' '
       IF ( FORM .EQ. 'CASTEM' ) THEN
          NUMEMO = 0
          NOMJV  = '&&OP0039.NOM_MODELE'
@@ -270,7 +271,6 @@ C           ---  IMPRESSION DU MAILLAGE -----
      &                                                 NOMAB,IRET)
                   IF (NOMA.NE.NOMAB) CALL U2MESS('F','PREPOST3_66')
                ENDIF
-               FORMR=' '
                CALL IRMAIL ( FORM,IFI,VERSIO,NOMA,LMOD,MODELE,NIVE,
      &                     INFMAI, FORMR )
                NUMEMO = NUMEMO + 1
@@ -745,6 +745,7 @@ C              - ON RECUPERE A PARTIR DE ZI(JNUNOS) LA LISTE DES NUMEROS
 C                DES NOEUDS SOMMETS DE CES MAILLES
 C               (NBNOS = NOMBRE DE NOEUDS SOMMETS DE CETTE LISTE)
                CALL IRMANO(NOMMA,NBMAT,ZI(JNUMA),NBNOS,ZI(JNUNOS))
+               IF ( NBNOS.EQ.0 ) CALL U2MESS('F','PREPOST5_4')
                CALL WKVECT('&&OP0039.FILTRE_NO','V V I',NBNOS,JNOFI)
                II=0
                DO 490 I=1,NBNOS

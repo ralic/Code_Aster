@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 03/09/2012   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,7 @@ C
      &              NEQ,IDBAS1,IDBAS2,IDBAS3,IDVEC3,
      &              I,J,NBPARA,INOM,ITYP,IND,IMATRA,IDVEC1,
      &              IDDEEQ,IDVEC2,IFM,NIV,LLNEQ1,NEQ1,LLNEQ2,IRET
-      INTEGER       IDDL,IER
+      INTEGER       IDDL,IER,INDV
       REAL*8        RBID,PIJ,DDOT,PII,PJJ
       COMPLEX*16    CBID,DCMPLX,ZTEMP,DCONJG
       CHARACTER*1   TYPSCA
@@ -175,12 +175,24 @@ C --- Verification : le nume_ddl doit etre celui de la MATR_ASSE
       ENDIF
 
 C INITIALISATION DE LA TABLE DES MACS
-      NBPARA=3
+      IF (ZCMPLX) THEN
+        NBPARA=3
+      ELSE
+        NBPARA=4
+      ENDIF
       CALL WKVECT('&&OP0141.TYPE_PARA','V V K8 ',NBPARA,ITYP)
       CALL WKVECT('&&OP0141.NOM_PARA'     ,'V V K16',NBPARA,INOM)
       DO 20 I=1 , 2
         ZK8(ITYP+I-1)='I'
  20   CONTINUE
+      IF (ZCMPLX) THEN
+        CALL WKVECT ( '&&OP0141.MAC','V V R',1,INDV)
+      ELSE
+        CALL WKVECT ( '&&OP0141.MAC','V V R',2,INDV)
+C MATRICE GENERALISEE EN PLUS POUR LES MODES REELS
+        ZK16(INOM+3)='Y1_W_Y2'
+        ZK8(ITYP+3)='R'
+      ENDIF
       ZK8(ITYP+2)='R'
       ZK16(INOM)='NUME_MODE_1'
       ZK16(INOM+1)='NUME_MODE_2'
@@ -189,7 +201,7 @@ C INITIALISATION DE LA TABLE DES MACS
       ELSE
         ZK16(INOM+2)='MAC'
       ENDIF
-      CALL TBAJPA (TABLE, 3, ZK16(INOM), ZK8(ITYP) )
+      CALL TBAJPA (TABLE, NBPARA, ZK16(INOM), ZK8(ITYP) )
 
       CALL WKVECT ( '&&OP0141.IJ','V V I',2,IND)
 
@@ -291,8 +303,9 @@ C PB AVEC ZDOTC DE BLAS POUR CERTAIN COMPILO -> CALCUL DIRECT
             ENDIF
 
             ZI(IND+1)=J
-            CALL TBAJLI (TABLE, 3, ZK16(INOM),
-     &          ZI(IND), PIJ, CBID, K8B, 0 )
+            ZR(INDV)=PIJ
+            CALL TBAJLI (TABLE, NBPARA, ZK16(INOM),
+     &          ZI(IND), ZR(INDV), CBID, K8B, 0 )
  40       CONTINUE
  30     CONTINUE
 
@@ -355,16 +368,24 @@ C BOUCLE DE CALCUL DES MACS
      &           ZR(IDVEC3),1))
 
               PIJ = (PIJ**2) / (PII**2 + PJJ**2)
+C  POUR LA MATRICE GENERALISEE : Y1_W_Y2
+              RBID = ABS(DDOT( NEQ,ZR(IDBAS1+(I-1)*NEQ) ,1,
+     &           ZR(IDVEC2),1))
+
+              RBID = (RBID**2) / (PII * PJJ)
+              ZR(INDV+1)=SQRT(RBID*PII*PJJ)
             ELSE
               PIJ = ABS(DDOT( NEQ,ZR(IDBAS1+(I-1)*NEQ) ,1,
      &           ZR(IDVEC2),1))
 
               PIJ = (PIJ**2) / (PII * PJJ)
+              ZR(INDV+1)=SQRT(PIJ*PII*PJJ)
             ENDIF
 
             ZI(IND+1)=J
-            CALL TBAJLI (TABLE, 3, ZK16(INOM),
-     &          ZI(IND), PIJ, CBID, K8B, 0 )
+            ZR(INDV)=PIJ
+            CALL TBAJLI (TABLE, NBPARA, ZK16(INOM),
+     &          ZI(IND), ZR(INDV), CBID, K8B, 0 )
 140       CONTINUE
 130     CONTINUE
 
@@ -374,7 +395,14 @@ C  FIN TEST SUR TYPE DE VECTEURS (C/R)
       IF ( NIV .GE. 2 ) THEN
         CALL TBIMPR(TABLE,'TABLEAU',IFM,3,ZK16(INOM),0,
      &   ' ','1PE12.5','RI')
+        IF (NBPARA .EQ. 4) THEN
+          WRITE(IFM,*) ' '
+          WRITE(IFM,1000) ZK16(INOM+2)
+          CALL TBIMEX(TABLE,IFM,4,ZK16(INOM),'EXCEL','1PE12.5')
+          WRITE(IFM,*) ' '
+        ENDIF
       ENDIF
+1000  FORMAT('AFFICHAGE ',A4,' ET MATRICE GENERALISEE : ')
 
       CALL JEDEMA()
       END

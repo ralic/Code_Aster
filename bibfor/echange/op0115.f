@@ -2,7 +2,7 @@
       IMPLICIT NONE
       INCLUDE 'jeveux.h'
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ECHANGE  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ECHANGE  DATE 03/09/2012   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -31,6 +31,7 @@ C     ------------------------------------------------------------------
       REAL*8 VALR,FMOY,ARED,FMIN,FMAX,PAS,FREQ,R8DEPI,DEPI,NUM,DEN,RBID
 
       COMPLEX*16    VALC
+      LOGICAL    DIAG
 
       CHARACTER*8   NOMU,FONC,K8BID,TFONC,NOMREF,NOEI
       CHARACTER*16  CONCEP,NOMCMD,MOTFAC(3)
@@ -117,16 +118,19 @@ C
         TFONC = ZK24(LPROL)(1:8)
         IF (TFONC .EQ. 'FONCTION') NBFREQ = NBVAL/2
         IF (TFONC .EQ. 'FONCT_C') NBFREQ = NBVAL/3
+        DIAG = .FALSE.
         IF (N2 .LT. 0) THEN
          IF ((ZK8(LNOEI-1+IFONC) .EQ. ZK8(LNOEI-1+IFONC)) .AND.
      &       (ZK8(LCMPI-1+IFONC) .EQ. ZK8(LCMPI-1+IFONC))) THEN
           NBABS = NBFREQ
+          DIAG = .TRUE.
          ELSE
           NBABS = NBFREQ*2
          ENDIF
         ELSEIF (N3 .LT. 0) THEN
          IF (ZI(LNUMI-1+IFONC) .EQ. ZI(LNUMJ-1+IFONC)) THEN
            NBABS = NBFREQ
+           DIAG = .TRUE.
          ELSE
            NBABS = 2*NBFREQ
          ENDIF
@@ -135,31 +139,15 @@ C
         CALL JEECRA(JEXNUM(CHVALE,IFONC),'LONMAX',NBABS,' ')
         CALL JEECRA(JEXNUM(CHVALE,IFONC),'LONUTI',NBABS,' ')
         CALL JEVEUO(JEXNUM(CHVALE,IFONC),'E',ISPEC)
-        IF (N2 .LT. 0) THEN
-         IF ((ZK8(LNOEI-1+IFONC) .EQ. ZK8(LNOEI-1+IFONC)) .AND.
-     &       (ZK8(LCMPI-1+IFONC) .EQ. ZK8(LCMPI-1+IFONC))
-     &         .AND. (TFONC .EQ. 'FONCT_C')) THEN
+        IF ((DIAG) .AND. (TFONC .EQ. 'FONCT_C')) THEN
           DO 107 INUM = 1,NBABS
             ZR(ISPEC-1+INUM) = ZR(LVALE-1+NBFREQ+2*(INUM-1)+1)
 107       CONTINUE
-         ELSE
+        ELSE
           NBABS = NBVAL - NBFREQ
           DO 109 INUM = 1,NBABS
             ZR(ISPEC-1+INUM) = ZR(LVALE-1+NBFREQ+INUM)
 109       CONTINUE
-         ENDIF
-        ELSEIF (N3 .LT. 0) THEN
-         IF ((ZI(LNUMI-1+IFONC) .EQ. ZI(LNUMJ-1+IFONC))
-     &         .AND. (TFONC .EQ. 'FONCT_C')) THEN
-          DO 103 INUM = 1,NBABS
-            ZR(ISPEC-1+INUM) = ZR(LVALE-1+NBFREQ+2*(INUM-1)+1)
-103       CONTINUE
-         ELSE
-          NBABS = NBVAL - NBFREQ
-          DO 105 INUM = 1,NBABS
-            ZR(ISPEC-1+INUM) = ZR(LVALE-1+NBFREQ+INUM)
-105       CONTINUE
-         ENDIF
         ENDIF
 110   CONTINUE
       IF (IOCPF .GT. 0) THEN
@@ -305,16 +293,19 @@ C ON NE RETIENT QUE LA PARTIE REELLE
         CALL GETVR8(MOTFAC(3),'PAS',ICS,IARG,1,PAS,NBVAL)
         IF (FMAX .LT. FMIN) CALL U2MESK('F','SPECTRAL0_2',1,MOTFAC(3))
         NBFREQ=INT((FMAX-FMIN)/PAS) + 1
+        DIAG = .FALSE.
         IF (N6 .LT. 0) THEN
          IF ((ZK8(LNOEI-1+IFONC) .EQ. ZK8(LNOEI-1+IFONC)) .AND.
      &       (ZK8(LCMPI-1+IFONC) .EQ. ZK8(LCMPI-1+IFONC))) THEN
           NBABS = NBFREQ
+          DIAG = .TRUE.
          ELSE
           NBABS = NBFREQ*2
          ENDIF
         ELSEIF (N7 .LT. 0) THEN
          IF (ZI(LNUMI-1+IFONC) .EQ. ZI(LNUMJ-1+IFONC)) THEN
           NBABS = NBFREQ
+          DIAG = .TRUE.
          ELSE
           NBABS = NBFREQ*2
          ENDIF
@@ -324,7 +315,7 @@ C ON NE RETIENT QUE LA PARTIE REELLE
         CALL JEECRA(JEXNUM(CHVALE,IFONC),'LONUTI',NBABS,' ')
         CALL JEVEUO(JEXNUM(CHVALE,IFONC),'E',ISPEC)
         DO 310 IFREQ = 1,NBFREQ
-          IF (ZI(LNUMI-1+IFONC) .EQ. ZI(LNUMJ-1+IFONC)) THEN
+          IF (DIAG) THEN
             IF (NBVALR .LT. 0) THEN
               ZR(ISPEC-1+IFREQ) = VALR
             ELSE

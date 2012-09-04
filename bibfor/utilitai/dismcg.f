@@ -1,6 +1,6 @@
       SUBROUTINE DISMCG(QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,15 +42,14 @@ C     VARIABLES LOCALES:
 C     ------------------
       CHARACTER*8 NOGD
       CHARACTER*8 K8BID
-C
-C
-C
-C-----------------------------------------------------------------------
-      INTEGER IADESC ,IAREFE ,IRET 
+      INTEGER IADESC ,IAREFE ,IRET
 C-----------------------------------------------------------------------
       CALL JEMARQ()
+      REPK  = ' '
+      REPI  = 0
+      IERD = 0
+
       NOMOB = NOMOBZ
-      REPK = ' '
       QUESTL = QUESTI
 
       IF (QUESTI.EQ.'NB_EQUA') THEN

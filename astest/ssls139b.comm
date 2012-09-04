@@ -1,0 +1,165 @@
+# MODIF  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+# TITRE FLEXION D UNE PLAQUE AVEC REPRESENTATION SIMPLIFIEE DES ARMATURES
+# ssls139b.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='SSLS139B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),)
+
+#
+# -------------------------------------------------
+# MISE EN DONNEES
+# -------------------------------------------------
+#
+
+import math
+
+#  Parametres geometriques
+pas      = 0.1
+diametre = 0.02
+section  = math.pi*diametre**2/4.
+
+# Comportement du beton et de l'acier
+E_A    = 200.E9
+NU_A   = 0.3
+E_B    = 30.E9
+NU_B   = 0.22
+
+MA_B=DEFI_MATERIAU(ELAS =_F(E  = E_B,
+                            NU = NU_B,),)
+
+MA_A=DEFI_MATERIAU(ELAS =_F(E  = E_A,
+                            NU = NU_A,),)
+
+MA_0=LIRE_MAILLAGE(FORMAT    = 'MED',);
+
+MAIL=CREA_MAILLAGE(MAILLAGE      = MA_0,
+                   CREA_GROUP_MA =_F(NOM         = 'MEMBRA_T',
+                                     GROUP_MA    = 'MEMBRA',
+                                     PREF_MAILLE = 'T_',),);
+
+MODE=AFFE_MODELE(MAILLAGE = MAIL,
+                 AFFE     = (_F(GROUP_MA    = ('BETON','BOUT'),
+                               PHENOMENE    = 'MECANIQUE',
+                               MODELISATION = '3D'),
+                             _F(GROUP_MA    = ('MEMBRA','MEMBRA_T'),
+                               PHENOMENE    = 'MECANIQUE',
+                               MODELISATION = 'GRILLE_MEMBRANE')))
+
+MATE=AFFE_MATERIAU(MAILLAGE = MAIL,
+                   AFFE     = (_F(GROUP_MA = ('MEMBRA','MEMBRA_T'),
+                                  MATER    = MA_A,),
+                               _F(GROUP_MA = 'BETON',
+                                  MATER    = MA_B,)));
+
+CL_DEPL=AFFE_CHAR_CINE(MODELE   = MODE,
+                       MECA_IMPO =(_F(GROUP_MA = 'ENCAST',
+                                      DX = 0.,
+                                      DY = 0.,
+                                      DZ = 0.),
+                                   _F(GROUP_MA = 'BORDS',
+                                      DY = 0.)),);
+
+# Couple de 400 N.m exerce en bout de plaque
+F_FORCE = FORMULE(NOM_PARA = 'Z',
+                  VALE     = '((Z-0.08)/0.08)*937500.')
+
+COUPLE=AFFE_CHAR_MECA_F(MODELE   = MODE,
+                      FORCE_FACE = _F(GROUP_MA = 'BOUT',
+                                      FX       = F_FORCE))
+
+ORI_GRIL=AFFE_CARA_ELEM(MODELE = MODE,
+                        GRILLE =(_F(GROUP_MA = 'MEMBRA',
+                                    SECTION  = section/pas,
+                                    ANGL_REP = (0., 0.,),),
+                                _F(GROUP_MA = 'MEMBRA_T',
+                                    SECTION  = section/pas,
+                                    ANGL_REP = (90., 0.,),),));
+
+#
+# ----------------------------------------------
+# CALCUL
+# ----------------------------------------------
+#
+
+RESU = MECA_STATIQUE(MODELE        = MODE,
+                     CHAM_MATER    = MATE,
+                     CARA_ELEM     = ORI_GRIL,
+                     EXCIT         =(_F(CHARGE = CL_DEPL),
+                                     _F(CHARGE = COUPLE)),
+                     SOLVEUR       = _F(METHODE = 'MUMPS'
+                                       ),)
+
+#
+# ----------------------------------------------
+# POST-TRAITEMENT
+# ----------------------------------------------
+#
+
+RESU = CALC_CHAMP(RESULTAT    = RESU,
+                  reuse       = RESU,
+                  GROUP_MA    = ('MEMBRA'),
+                  DEFORMATION = 'EPSI_NOEU',
+                  CONTRAINTE  = 'SIEF_NOEU')
+
+#
+# ----------------------------------------------
+# TESTS SUR LES RESULTATS
+# ----------------------------------------------
+#
+
+# Deplacement vertical en bout de plaque
+# (comparaison a la solution 3D de reference et test de non-regression)
+
+TEST_RESU(RESU=(_F(RESULTAT = RESU,
+                   NUME_ORDRE = 1,
+                   NOM_CHAM = 'DEPL',
+                   NOM_CMP = 'DZ',
+                   GROUP_NO = 'POINT_1',
+                   REFERENCE='AUTRE_ASTER',
+                   VALE = -87.1E-6,
+                   PRECISION = 4.E-2,),
+                _F(RESULTAT = RESU,
+                   NUME_ORDRE = 1,
+                   NOM_CHAM = 'DEPL',
+                   NOM_CMP = 'DZ',
+                   GROUP_NO = 'POINT_1',
+                   REFERENCE='NON_REGRESSION',
+                   VALE = -83.962898E-6,
+                   PRECISION = 1.E-6,),))
+
+# Contrainte et deformation dans la grille (non-regression)
+
+TEST_RESU(RESU=(_F(RESULTAT = RESU,
+                   NUME_ORDRE = 1,
+                   NOM_CHAM = 'EPSI_NOEU',
+                   NOM_CMP = 'EPXX',
+                   GROUP_NO = 'POINT_2',
+                   REFERENCE='NON_REGRESSION',
+                   VALE = 6.2297586E-6,
+                   PRECISION = 1.E-6,),
+                _F(RESULTAT = RESU,
+                   NUME_ORDRE = 1,
+                   NOM_CHAM = 'SIEF_NOEU',
+                   NOM_CMP = 'SIXX',
+                   GROUP_NO = 'POINT_2',
+                   REFERENCE='NON_REGRESSION',
+                   VALE = 1.2459517E+6,
+                   PRECISION = 1.E-6,),))
+
+FIN();

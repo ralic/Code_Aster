@@ -1,4 +1,4 @@
-#@ MODIF sd_util SD  DATE 14/02/2012   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF sd_util SD  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -138,6 +138,18 @@ def sdu_monotone(seqini):
 
 #  2) Utilitaires de questionnement :
 #  -----------------------------------------------------------------------------------------
+
+def sdu_verif_nom_gd(nomgd):
+    """vérifie que nomgd est bien un nom de grandeur"""
+    nomgd2=nomgd.strip()
+    ptn=aster.getvectjev('&CATA.GD.NOMGD')
+    ok=False
+    for x in ptn :
+       if x.strip()==nomgd2 :
+          ok=True
+          break
+    if not ok:
+        checker.err(ojb, "condition non respectée : "+nomgd+" n'est pas un nom de grandeur.")
 
 def sdu_nom_gd(numgd):
     """retourne le nom de la grandeur de numéro (numgd)"""

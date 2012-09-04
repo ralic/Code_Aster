@@ -1,0 +1,321 @@
+      SUBROUTINE LCEIAB(FAMI,KPG,KSP,MAT,OPTION,MU,SU,DE,
+     &                  DDEDT,VIM,VIP,R,CODRET)
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+
+      IMPLICIT NONE
+      INTEGER MAT,KPG,KSP,CODRET
+      REAL*8  MU(3),SU(3),DE(6),DDEDT(6,6)
+      REAL*8  VIM(*),VIP(*),R
+      CHARACTER*16 OPTION
+      CHARACTER*(*)  FAMI
+
+C-----------------------------------------------------------------------
+C            LOI DE COMPORTEMENT COHESIVE CZM_LAB_MIX 
+C            POUR LES ELEMENTS D'INTERFACE 2D ET 3D. 
+C
+C IN : FAMI,KPG,KSP,MAT,OPTION
+C      MU  : LAGRANGE
+C      SU  : SAUT DE U
+C      VIM : VARIABLES INTERNES
+C
+C OUT : DE    : DELTA
+C       DDEDT : DERIVEE DE DELTA
+C       VIP   : VARIABLES INTERNES MISES A JOUR
+C       R     : PENALISATION DU LAGRANGE 
+C-----------------------------------------------------------------------
+
+      LOGICAL RESI, RIGI, ELAS
+      INTEGER REGIME,REGM,I,J,COD(6),CINEMA
+      REAL*8  SC,DC,ALPHA,BETA,S0,D0,KA,SK,VAL(6)
+      REAL*8  T(3),PR(3,3),TPO(3),TPON(3),TNO,TNON
+      REAL*8  DNO,DDNO,DNON,DSIDNO
+      REAL*8  RES,RN,DERIV,BMIN,BMAX
+      CHARACTER*8 NOM(6)
+      CHARACTER*1 POUM
+
+      DATA NOM /'SIGM_C','GLIS_C','ALPHA','BETA','PENA_LAG',
+     &          'CINEMATIQUE'/
+C-----------------------------------------------------------------------
+
+C ---------------------------
+C -- PRINCIPALES NOTATIONS --
+C ---------------------------
+C
+C -  CARACTERISTIQUES DE LA ZONE COHESIVE
+C    SC     : CONTRAINTE CRITIQUE
+C    DC     : SAUT DE DEPLACEMENT A LA CONTRAINTE CRITIQUE
+C    ALPHA  : PARAMETRE DE FORME DE LA LOI (PETITS GLISSEMENTS)
+C    BETA   : PARAMETRE DE FORME DE LA LOI (GRANDS GLISSEMENTS)
+C    R      : PARAMETRE DE PENALISATION
+C
+C -  DONNEES D'ENTREE
+C    MU     : LAGRANGE
+C    SU     : SAUT DE U
+C    VIM    : VARIABLES INTERNES
+C             |1   : PLUS GRANDE NORME DU SAUT (KA)
+C             |2   : REGIME DE LA LOI (REGM)
+C             |      |0 : ADHERENCE INITIALE OU COURANTE
+C             |      |1 : DISSIPATION
+C             |      |2 : SURFACE LIBRE FINALE (RUPTURE)
+C             |      |3 : SURFACE LIBRE (SOUS CONTRAINTE)
+C             |3-5 : VALEURS DE DELTA
+C
+C -  DONNEES DE SORTIE
+C    DE     : DELTA CALCULE
+C    DDEDT  : DERIVEE DE DELTA
+C    VIP    : VARIABLES INTERNES MISES A JOUR
+C
+C -  GRANDEURS LOCALES
+C    REGM   : REGIME DE FONCTIONNEMENT DE LA LOI A L'INSTANT PRECEDENT
+C    REGIME : NOUVEAU REGIME DE FONCTIONNEMENT
+C    KA     : OUVERTURE MAXIMALE COURANTE
+C    SK     : CONTRAINTE CRITIQUE COURANTE
+C    T      : FORCE COHESIVE LAMBDA + R.[U]
+C    PR     : MATRICE DE PROJECTION SUIVANT LA CINEMATIQUE
+C    TPO    : FORCE COHESIVE PROJETEE
+C    TNO    : NORME DE LA FORCE COHESIVE PROJETEE
+
+C --------------------
+C -- INITIALISATION --
+C --------------------
+
+C    OPTION CALCUL DU RESIDU OU CALCUL DE LA MATRICE TANGENTE
+      RESI = OPTION(1:4).EQ.'FULL' .OR. OPTION(1:4).EQ.'RAPH'
+      RIGI = OPTION(1:4).EQ.'FULL' .OR. OPTION(1:4).EQ.'RIGI'
+      ELAS = OPTION(11:14).EQ.'ELAS' 
+
+C    RECUPERATION DES PARAMETRES PHYSIQUES
+      IF (OPTION.EQ.'RIGI_MECA_TANG') THEN
+        POUM = '-'
+      ELSE
+        POUM = '+'
+      ENDIF
+
+      CALL RCVALB(FAMI,KPG,KSP,POUM,MAT,' ','CZM_LAB_MIX',0,' ',
+     &            0.D0,6,NOM,VAL,COD,2)
+
+      SC    = VAL(1)
+      DC    = VAL(2)
+      ALPHA = VAL(3)
+      BETA  = VAL(4)
+
+      D0   = DC*BETA/ALPHA
+      S0   = SC*(ALPHA+BETA)**(ALPHA+BETA)/(ALPHA**ALPHA*BETA**BETA)
+      R    = VAL(5)*SC/DC
+
+C    ENTIER DECRIVANT LA CINEMATIQUE DU COMPORTEMENT DE L INTERFACE
+C     (CODE DANS LA ROUTINE RCSTOC)
+      CINEMA = VAL(4)
+
+C    LECTURE DES VARIABLES INTERNES
+      KA   = VIM(1)
+      REGM = NINT(VIM(2))
+      SK   = MAX(0.D0,S0*(KA/D0)**ALPHA/(KA/D0 + 1.D0)**(ALPHA+BETA))
+
+C -----------------------------
+C -- CALCUL DU SECOND MEMBRE --
+C -----------------------------
+
+C    FORCE COHESIVE AUGMENTEE : LAMBDA + R.[U]
+      T(1) = MU(1) + R*SU(1)
+      T(2) = MU(2) + R*SU(2)
+      T(3) = MU(3) + R*SU(3)
+
+C    PROJECTEUR POUR UNE COMPOSANTE NORMALE POSITIVE
+      CALL R8INIR(9,0.D0,PR,1)
+
+      IF ((CINEMA.EQ.0).AND.(T(1).GE.0.D0)) PR(1,1) = 1.D0
+      PR(2,2) = 1.D0
+      IF ((CINEMA.EQ.0).OR.(CINEMA.EQ.2)) PR(3,3) = 1.D0
+
+C    PROJECTION DE LA COMPOSANTE NORMALE POSITIVE
+      TPO(1) = T(1)*PR(1,1)
+      TPO(2) = T(2)*PR(2,2)
+      TPO(3) = T(3)*PR(3,3)
+
+C    NORME DU SECOND MEMBRE PROJETE
+      TNO = SQRT(TPO(1)**2 + TPO(2)**2 + TPO(3)**2)
+
+C    VECTEUR UNITE DIRECTION DE FORCE
+      IF (TNO.GT.0.D0) THEN
+        TPON(1) = TPO(1)/TNO
+        TPON(2) = TPO(2)/TNO
+        TPON(3) = TPO(3)/TNO
+      ELSE
+C       SI LA FORCE EST NULLE, LE VECTEUR DIRECTION EST ARBITRAIRE
+C                                                   (MAIS ADMISSIBLE)
+        TPON(1) = 0.D0
+        TPON(2) = 1.D0
+        TPON(3) = 0.D0
+      ENDIF
+
+C --------------------------------------------
+C -- RESOLUTION DU PROBLEME 1D SUR LA NORME --
+C --------------------------------------------
+
+C    DETERMINATION DU REGIME DE COMPORTEMENT
+      IF (RESI) THEN
+
+C      SURFACE LIBRE (SOUS CONTRAINTE)
+        IF (TNO .LT. R*KA) THEN
+          REGIME = 3
+
+C      ADHERENCE (INITIALE OU COURANTE)
+        ELSE IF (TNO .LE. R*KA + SK) THEN
+          REGIME = 0
+
+C      ENDOMMAGEMENT
+        ELSE
+          REGIME = 1
+        ENDIF
+
+C    SINON, ON N'ACTUALISE PAS LE REGIME DE FONCTIONNEMENT DE LA LOI
+      ELSE
+        REGIME = REGM
+      ENDIF
+
+      CODRET = 0
+
+C    CALCUL DE L'ECOULEMENT 1D SELON LE REGIME DE COMPORTEMENT
+      IF (REGIME.EQ.3) THEN
+        DNO    = TNO/R
+      ELSE IF (REGIME.EQ.0) THEN
+        DNO = KA
+      ELSE
+C     DANS LE CAS GENERAL, UTILISATION D UN ALGORITHME DE NEWTON
+C     1 - ADIMENSIONNALISATION DES VARIABLES
+        TNON  = TNO/S0
+        RN    = R*D0/S0
+
+C     2 - DETERMINATION DE BORNES BMIN ET BMAX POUR NEWTON, AINSI
+C         QUE D UN POINT D INITIALISATION JUDICIEUX
+        DNON = ALPHA/BETA
+100     CONTINUE
+          RES  = DNON**ALPHA/(DNON+1.D0)**(ALPHA+BETA)
+     &         - (TNON - RN*DNON)
+          IF (RES.LT.0) GOTO 110
+          DNON = DNON/100.D0
+          GOTO 100
+110     CONTINUE
+        BMIN  = DNON
+        BMAX  = TNON/RN
+        DNON  = BMAX
+
+C     3 - BOUCLE DE CONVERGENCE DE L ALGORITHME DE NEWTON
+        I = 0
+200     CONTINUE
+C         TEST DU CRITERE
+          RES = DNON**ALPHA/(DNON+1.D0)**(ALPHA+BETA)
+     &          - (TNON - RN*DNON)
+          IF (ABS(RES/RN).LT.1.D-12) GOTO 210
+
+C         DIAGNOSTIC DE NON-CONVERGENCE
+          IF (I.GE.20) THEN
+            CODRET = 1
+            GOTO 9999
+          ENDIF
+          I = I + 1
+
+C         NOUVEL ESTIMATEUR
+          DERIV = (ALPHA-BETA*DNON)*DNON**(ALPHA-1.D0)
+     &            /(DNON+1.D0)**(ALPHA+BETA+1.D0)
+     &            + RN
+          DNON = DNON - RES/DERIV
+
+C         PROJECTION SUR LES BORNES DE L'INTERVALLE
+          IF (DNON.LT.BMIN) DNON = BMIN
+          IF (DNON.GT.BMAX) DNON = BMAX
+          GOTO 200
+
+210     CONTINUE
+        DNO = DNON*D0
+      ENDIF
+
+C ------------------------------------
+C -- CONSTRUCTION DE LA SOLUTION 3D --
+C ------------------------------------
+
+C    CALCUL DU SAUT DE DEPLACEMENT 3D
+      IF (RESI) THEN
+        CALL R8INIR(6, 0.D0, DE,1)
+        DE(1) = DNO*TPON(1)
+        DE(2) = DNO*TPON(2)
+        DE(3) = DNO*TPON(3)
+      ENDIF
+
+C    MISE A JOUR DES VARIABLES INTERNES
+      IF (RESI) THEN
+        VIP(1) = MAX(KA,DNO)
+        VIP(2) = REGIME
+        VIP(3) = DE(1)
+        VIP(4) = DE(2)
+        VIP(5) = DE(3)
+      ENDIF
+
+C ----------------------
+C -- MATRICE TANGENTE --
+C ----------------------
+
+      IF (RIGI) THEN
+
+C      AJUSTEMENT POUR PRENDRE EN COMPTE *_MECA_ELAS
+        IF (ELAS) THEN
+          IF (REGIME.EQ.1) REGIME = 0
+        ENDIF
+
+C      CALCUL DU COEFFICIENT 1D DE LA MATRICE TANGENTE
+        IF (REGIME.EQ.3) THEN
+          DDNO = 1.D0/R
+        ELSE IF (REGIME.EQ.0) THEN
+          DDNO = 0.D0
+        ELSE
+          IF (DNO.GT.0.D0) THEN
+            DNON = DNO/D0
+            DSIDNO = S0/D0*(ALPHA-BETA*DNON)*DNON**(ALPHA-1.D0)
+     &                     /(DNON+1.D0)**(ALPHA+BETA+1.D0)
+            DDNO = 1.D0/(R + DSIDNO)
+          ELSE
+            DDNO = 0.D0
+          ENDIF
+        ENDIF
+
+C      MATRICE TANGENTE 3D
+        CALL R8INIR(36, 0.D0, DDEDT,1)
+        IF (TNO.GT.0.D0) THEN
+          DO 300 I = 1,3
+            DO 300 J = 1,3
+              DDEDT(I,J) = DDNO * TPON(I)*TPON(J)
+     &                     + DNO/TNO * (PR(I,J) - TPON(I)*TPON(J))
+ 300      CONTINUE
+        ELSE
+C         CAS OU TNO EST RIGOUREUSEMENT NUL
+          DO 310 I = 1,3
+            DO 310 J = 1,3
+              DDEDT(I,J) = DDNO * TPON(I)*TPON(J)
+ 310      CONTINUE
+        ENDIF
+
+      ENDIF
+
+9999  CONTINUE
+
+      END

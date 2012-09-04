@@ -1,6 +1,6 @@
       SUBROUTINE GEFACT (DUREE,NOMINF)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 03/09/2012   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,31 +48,32 @@ C
 C 0.3. ==> VARIABLES LOCALES
 C
 C
-      INTEGER      L, N1, NUMVIT, NBPOIN, NBPINI, IRET, IER
+      INTEGER      L, N1, NBPOIN, NBPINI, IRET, IER
       INTEGER      DIM, LONG, DIM2, DIM3, DIM4
       INTEGER      NNN, NBMR, NBPT1, NBPT2, LONGH
-      INTEGER      NBFC, NBVAL,NBVAL1
+      INTEGER      NBFC, NBVAL,NBVAL1,INDICE
       INTEGER      I, II, JJ, J, K, KF, LVAL2, LVALC, IPAS
       INTEGER      IINF, ISUP, LS, LR, LD, LU, LV, LW, IX, IY
       INTEGER      LVAL, LVAL1, LCHDES, INUOR, LNUOR, JNUOR
       INTEGER VALI
 
-      REAL*8       PREC,R8B
+      REAL*8       PREC,R8B,EPSI
       REAL*8       FREQI, FREQF, FREQ, FRINIT, FMAX, FMIN
       REAL*8       PMIN, DFREQ, DIFPAS, DT
-      REAL*8       PAS, PAS1,RESURE, RESUIM
+      REAL*8       PAS, PAS1,RESURE, RESUIM,X1,Y1,X2,Y2,R8PREM
       REAL*8       PUI2, PUI2D, PUI3D
       REAL*8 VALR
 
+      CHARACTER*1  COLI
       CHARACTER*3  INTERP
       CHARACTER*8  K8B,INTESP
-      CHARACTER*16 K16BID, NOMCMD
-      CHARACTER*19 K19BID, NOMINF, NOMINT, NOMFON
+      CHARACTER*16 K16BID, NOMCMD,PROLGD
+      CHARACTER*19 K19BID, NOMINF, NOMINT
       CHARACTER*24 CHVALE, CHDESC, CHNUOR,NOMOBJ
       CHARACTER*24  CHNUMI,CHNUMJ,CHFREQ,CHVAL
       LOGICAL       LFREQF, LFREQI, LNBPN, LINTER, LPREM,DIAG
       INTEGER      IARG
-      INTEGER I1,LNUMI,LNUMJ,LFREQ,NBFREQ,IPROL,IVAL
+      INTEGER I1,LNUMI,LNUMJ,LFREQ,NBFREQ
 C
 C     ----------------------------------------------------------------
 C     --- INITIALISATION  ---
@@ -87,8 +88,6 @@ C===============
 
       CALL GETVID (' ', 'INTE_SPEC'     , 1,IARG,1, NOMINT, L )
 
-      CALL GETVIS (' ', 'NUME_VITE_FLUI', 0,IARG,1, NUMVIT    , N1)
-C
       CALL GETVTX ( ' ', 'INTERPOL'   , 1,IARG,2, INTERP     , N1 )
       LINTER = (INTERP.EQ.'NON')
 
@@ -296,18 +295,6 @@ C         DE LA DES QUELLES LA MATRICE EST NULLE---
 C
 C     --- POUR CHAQUE FONCTION CALCUL DE X,Y POUR CHAQUE FREQ.
 C     (ON PROLONGE PAR 0 EN DEHORS DE (FREQI,FREQF)), PUIS ON STOCKE ---
-C     FONCTION POUR FOINTC
-      NOMFON = '&&GEFACT'
-      CALL WKVECT(NOMFON//'.PROL','V V K24',5,IPROL)
-      ZK24(IPROL)   = 'FONCTION'
-      ZK24(IPROL+1) = 'LIN LIN '
-      ZK24(IPROL+2) =  ' '
-      ZK24(IPROL+3) = 'TOUTRESU'
-      ZK24(IPROL+4) = 'CC      '
-      CALL WKVECT(NOMFON//'.VALE','V V R',NBFREQ*3,IVAL)
-      DO 320 I1 = 1,NBFREQ
-        ZR(IVAL-1+I1) = ZR(LFREQ-1+I1)
-320   CONTINUE
 
       DO 80 KF = 1,NBFC
         CALL JEVEUO(JEXNUM(CHVAL,KF),'L',LVAL2)
@@ -332,29 +319,45 @@ C     FONCTION POUR FOINTC
                 RESUIM = ZR(LVAL2+2*(IPAS-1)+1)
               ENDIF
             ELSE
-              IF (DIAG) THEN
-                DO 330 I1 = 1,NBFREQ
-                  ZR(IVAL+NBFREQ+2*(I1-1))=ZR(LVAL2+I1-1)
-                  ZR(IVAL+NBFREQ+2*(I1-1)+1) = 0.D0
-330             CONTINUE
+C ON INTERPOLLE
+              PROLGD = 'CC      '
+              EPSI   = SQRT ( R8PREM() )
+              CALL FOLOCX(ZR(LFREQ),NBFREQ,FREQ,PROLGD,
+     &                    INDICE,EPSI,COLI,IER)
+              IF (COLI.EQ.'C') THEN
+                IF (DIAG) THEN
+                  RESURE=ZR(LVAL2+INDICE-1)
+                  RESUIM = 0.D0
+                ELSE
+                  RESURE=ZR(LVAL2+2*(INDICE-1))
+                  RESUIM=ZR(LVAL2+2*(INDICE-1)+1)
+                ENDIF
+              ELSE IF ((COLI.EQ.'I') .OR. (COLI.EQ.'E')) THEN
+                X1 = ZR(LFREQ+INDICE-1)
+                X2 = ZR(LFREQ+INDICE)
+                IF (DIAG) THEN
+                  Y1 = ZR(LVAL2+INDICE-1)
+                  Y2 = ZR(LVAL2+INDICE)
+                  RESURE= Y1+(FREQ-X1)*(Y2-Y1)/(X2-X1)
+                  RESUIM = 0.D0
+                ELSE
+                  Y1 = ZR(LVAL2+2*(INDICE-1))
+                  Y2 = ZR(LVAL2+2*INDICE)
+                  RESURE= Y1+(FREQ-X1)*(Y2-Y1)/(X2-X1)
+                  Y1 = ZR(LVAL2+2*(INDICE-1)+1)
+                  Y2 = ZR(LVAL2+2*INDICE+1)
+                  RESUIM= Y1+(FREQ-X1)*(Y2-Y1)/(X2-X1)
+                ENDIF
               ELSE
-                DO 140 I1 = 1,NBFREQ
-                  ZR(IVAL+NBFREQ+2*(I1-1))=ZR(LVAL2+2*(I1-1))
-                  ZR(IVAL+NBFREQ+2*(I1-1)+1)=ZR(LVAL2+2*(I1-1)+1)
-140             CONTINUE
+                CALL U2MESK('A','PREPOST3_6',1,COLI)
               ENDIF
-              CALL FOINTC('F',NOMFON,0,K8B,FREQ,RESURE,RESUIM,IER)
             ENDIF
             ZR(IX) = RESURE
             ZR(IY) = RESUIM
           ENDIF
-
   120   CONTINUE
    80 CONTINUE
       NBVAL1 = NBPT1
-
-      CALL JEDETR(NOMFON//'.PROL')
-      CALL JEDETR(NOMFON//'.VALE')
 
 C===============
 C 4. FACTORISATION DES MATRICES INTERSPECTRALES (UNE PAR FREQ.)

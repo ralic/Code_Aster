@@ -6,7 +6,7 @@
       CHARACTER*(*) NOMSD,LPARA(*),CTYPE(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +58,7 @@ C ----------------------------------------------------------------------
       NOMS2 = NOMSD
 
 C     --- RECUPERATION DU NUMERO DE RANGEMENT ---
-      CALL RSUTRG(NOMSD,IORDR,IRANG)
+      CALL RSUTRG(NOMSD,IORDR,IRANG,NRANG)
 
       IF (CEL.EQ.'L') THEN
         IF (IRANG.EQ.0) THEN
@@ -69,7 +69,6 @@ C     --- RECUPERATION DU NUMERO DE RANGEMENT ---
       ELSE
         IF (IRANG.EQ.0) THEN
           CALL JELIRA(NOMS2//'.ORDR','LONMAX',NBORDR,K8B)
-          CALL JELIRA(NOMS2//'.ORDR','LONUTI',NRANG,K8B)
           NRANG = NRANG + 1
           IF (NRANG.GT.NBORDR) THEN
             VALK (1) = NOMSD

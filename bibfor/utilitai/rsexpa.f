@@ -5,8 +5,8 @@
       CHARACTER*(*)     RESU,      NOMPAR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
-C RESPONSABLE VABHHTS J.PELLET
+C MODIF UTILITAI  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
+C RESPONSABLE PELLET J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,7 +38,7 @@ C ----------------------------------------------------------------------
       INTEGER      NBAC,NBPA,LPOUT
 C
 C-----------------------------------------------------------------------
-      INTEGER IPA ,IRE1 
+      INTEGER IPA ,IRE1
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       IRET=0

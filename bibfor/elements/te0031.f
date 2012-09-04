@@ -4,7 +4,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -199,7 +199,8 @@ C
      &        OPTION.EQ.'M_GAMMA' .OR.
      &        OPTION.EQ.'ECIN_ELEM') THEN
 C     ------------------------------------------
-        IF (NOMTE.EQ.'MEDKTR3') THEN
+        IF (NOMTE.EQ.'MEDKTR3'.OR.
+     &      NOMTE.EQ.'MET3TR3') THEN
           CALL DKTMAS(XYZL,OPTION,PGL,MATLOC,ENER,MULTIC)
         ELSEIF (NOMTE.EQ.'MEDSTR3') THEN
           CALL DSTMAS(XYZL,OPTION,PGL,MATLOC,ENER)

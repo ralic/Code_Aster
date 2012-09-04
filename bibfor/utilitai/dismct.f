@@ -1,6 +1,6 @@
       SUBROUTINE DISMCT(QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/07/2012   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,10 +43,13 @@ C
 C
 C
 C-----------------------------------------------------------------------
-      INTEGER IANBNO ,ITYMA ,NBTYMA 
+      INTEGER IANBNO ,ITYMA ,NBTYMA
 C-----------------------------------------------------------------------
       CALL JEMARQ()
-      REPK=' '
+      REPK  = ' '
+      REPI  = 0
+      IERD = 0
+
       CALL JELIRA('&CATA.TM.NBNO','NUTIOC',NBTYMA,K1BID)
 C
       IF (QUESTI.EQ.'NB_TYPE_MA') THEN

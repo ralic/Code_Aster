@@ -1,0 +1,202 @@
+
+DEBUT(PAR_LOT='NON',);  #PAR_LOT = NON a cause de EXTR_TABLE
+
+EP__=0.5
+MP__=50000.
+
+PRE_GIBI(UNITE_GIBI=22);
+
+MAIL1=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI',),);
+
+
+MAIL1=DEFI_GROUP(reuse=MAIL1,
+                 MAILLAGE=MAIL1,
+                 CREA_GROUP_NO=_F(
+                                  NOM='NO_MA',
+                                  OPTION='ENV_SPHERE',
+                                  POINT=(2.0,3.0),
+                                  RAYON=0.1,
+                                  PRECISION=0.1,
+                                  ),)
+
+MAIL1=DEFI_GROUP(reuse =MAIL1,
+                   MAILLAGE=MAIL1,
+                   CREA_GROUP_NO=_F(GROUP_MA='BORDS',
+                                    NOM='BORDS',),);
+
+MAIL2= CREA_MAILLAGE(MAILLAGE=MAIL1,
+                     CREA_POI1 =(_F(NOM_GROUP_MA = 'MASS',
+                                GROUP_NO = 'NO_MA'),
+                                                                
+                                )       
+                     )
+
+
+MODEL=AFFE_MODELE(MAILLAGE=MAIL2,
+                  AFFE=(_F(GROUP_MA = 'TOUT_ELT',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='DST',),
+                        _F(GROUP_MA = 'MASS',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='DIS_T',),
+  
+                          ),);
+
+#
+#---------------------------------------------------------------------
+#                     CARACTERISTIQUES ELEMENTAIRES 
+#---------------------------------------------------------------------
+
+CARA_ELE=AFFE_CARA_ELEM(MODELE=MODEL,
+                        COQUE=_F(GROUP_MA='SURF',
+                                 EPAIS=EP__,),
+                        DISCRET= (_F(  GROUP_MA = 'MASS',
+                                     CARA = 'M_T_D_N',
+                                     VALE = MP__,),
+                                  _F(  GROUP_MA = 'MASS',
+                                     CARA = 'K_T_D_N',
+                                     VALE = (0.0, 0.0, 0.0),),
+                        ),);
+                         
+
+#---------------------------------------------------------------------
+#                     CARACTERISTIQUES MATERIAUX 
+#---------------------------------------------------------------------
+
+ACIER2=DEFI_MATERIAU(ELAS=_F(E=2.E11,
+                            NU=0.3,
+                            RHO=7800.0,),);
+#
+
+MAT=AFFE_MATERIAU(MAILLAGE=MAIL2,
+                  AFFE=_F(GROUP_MA='SURF',
+                          MATER=ACIER2,),);
+
+#---------------------------------------------------------------------
+#                   CHARGEMENT
+#---------------------------------------------------------------------
+CHAR = AFFE_CHAR_MECA(MODELE=MODEL,
+                   DDL_IMPO=_F(GROUP_NO='BORDS',
+                    DX=0.,  DY=0. , DZ=0.,
+                    DRX=0., DRY=0., DRZ=0.,))
+
+#---------------------------------------------------------------------
+#                     RESOLUTION 
+#---------------------------------------------------------------------
+
+M_EL_RIG=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                        MODELE=MODEL,
+                        CHAM_MATER=MAT,
+                        CARA_ELEM=CARA_ELE,
+                        CHARGE=CHAR,
+                        );
+
+M_EL_MAS=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                        MODELE=MODEL,
+                        CHAM_MATER=MAT,
+                        CARA_ELEM=CARA_ELE,
+                        CHARGE=CHAR,
+                        );
+
+NU=NUME_DDL(MATR_RIGI=M_EL_RIG,);
+
+M_AS_RIG=ASSE_MATRICE(MATR_ELEM=M_EL_RIG,
+                      NUME_DDL=NU,);
+
+M_AS_MAS=ASSE_MATRICE(MATR_ELEM=M_EL_MAS,
+                      NUME_DDL=NU,);
+#
+# les modes etendus ont ete calcules au prealable dans le fichier pilote
+# fort.38
+
+MODET=LIRE_RESU(TYPE_RESU='MODE_MECA',
+                 FORMAT='IDEAS',
+                 MODELE=MODEL,
+                 UNITE=38,
+                 NOM_CHAM='DEPL',
+                 MATR_A =M_AS_RIG,
+                 MATR_B =M_AS_MAS,
+                 FORMAT_IDEAS=_F(NOM_CHAM='DEPL',
+                                 NUME_DATASET=55,
+                                 RECORD_6=(1,2,3,8,2,6,),
+                                 POSI_ORDRE=(7,4,),
+                                 POSI_NUME_MODE=(7,4),
+                                 POSI_FREQ=(8,1,),
+                                 POSI_MASS_GENE=(8,2),
+                                 POSI_AMOR_GENE=(8,3),
+                                 NOM_CMP=('DX','DY','DZ','DRX','DRY','DRZ'),),
+                 TOUT_ORDRE='OUI',);
+
+# calcul des matrices generalisees via MAC_MODES
+MAC_K=MAC_MODES(BASE_1=MODET,
+                  BASE_2=MODET,
+               MATR_ASSE=M_AS_RIG,
+              INFO = 2,
+                  );
+
+MAC_M=MAC_MODES(BASE_1=MODET,
+                  BASE_2=MODET,
+               MATR_ASSE=M_AS_MAS,
+           #   INFO = 2,
+                  );
+
+v_mac_k = MAC_K.EXTR_TABLE()
+v_mac_m = MAC_M.EXTR_TABLE()
+
+l_ordre = []
+l_val_k = []
+l_k = []
+# l_k contient les termes extra-diagonaux normalises
+#     de la matrice de raideur generalisee normalisee
+# Y1_K_Y2/(sqrt(Y1_K_Y1 * Y2_K_Y2)) = sqrt(MAC(Y1,Y2))
+for row in v_mac_k.rows:
+   if row['NUME_MODE_1'] == row['NUME_MODE_2']:
+      l_ordre.append(row['NUME_MODE_1'])
+      l_val_k.append(row['Y1_W_Y2'])
+   else:
+      l_k.append(sqrt(row['MAC']))
+
+l_m = []
+# l_m contient les termes extra-diagonaux normalises
+#     de la matrice de masse generalisee normalisee
+# Y1_M_Y2/(sqrt(Y1_M_Y1 * Y2_M_Y2)) = sqrt(MAC(Y1,Y2))
+# on teste le passage par les termes extra-diagonaux
+l_val_m = []
+l_ord_1_m = []
+l_ord_2_m = []
+l_extra_m = []
+for row in v_mac_m.rows:
+    if row['NUME_MODE_1'] == row['NUME_MODE_2']:
+        l_val_m.append(row['Y1_W_Y2'])
+    else:
+      #  l_m.append(sqrt(row['MAC']))
+        l_ord_1_m.append(row['NUME_MODE_1'])
+        l_ord_2_m.append(row['NUME_MODE_2'])
+        l_extra_m.append(row['Y1_W_Y2'])
+
+for i in range(len(l_extra_m)):
+   deno = sqrt(l_val_m[l_ord_1_m[i]-1]*l_val_m[l_ord_2_m[i]-1])
+   l_m.append(l_extra_m[i]/deno)
+
+#tables pour les termes extra-diagonaux 
+TEXTRA_K = CREA_TABLE(LISTE=(_F(LISTE_I=range(len(l_k)),PARA='ORDRE',),
+                         _F(LISTE_R=l_k,PARA='EXTRA',),),
+                 )
+
+TEXTRA_M = CREA_TABLE(LISTE=(_F(LISTE_I=range(len(l_m)),PARA='ORDRE',),
+                         _F(LISTE_R=l_m,PARA='EXTRA',),),
+                 )
+
+#table pour les frequences
+l_f = []
+for i in range(len(l_ordre)):
+    l_f.append(sqrt(l_val_k[i]/l_val_m[i])/(2.*pi))
+
+TF = CREA_TABLE(LISTE=(_F(LISTE_I=l_ordre,PARA='NUME_ORDRE',),
+                         _F(LISTE_R=l_f,PARA='FREQ',),),
+                 )
+
+FIN();
+
+
+

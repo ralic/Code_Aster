@@ -1,6 +1,6 @@
       SUBROUTINE OP0019()
 
-C MODIF MODELISA  DATE 13/06/2012   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 04/09/2012   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,6 +18,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_20
 C ----------------------------------------------------------------------
 C
 C                O P E R A T E U R    AFFE_CARA_ELEM
@@ -26,31 +27,32 @@ C ----------------------------------------------------------------------
       IMPLICIT  NONE
 C     NBEPO  13 : NOMBRE D'ELEMENTS DE TYPE "POUTRE"
 C     NBEDI   8 : NOMBRE D'ELEMENTS DE TYPE "DISCRET"
-C     NBECO  28 : NOMBRE D'ELEMENTS DE TYPE "COQUE"
+C     NBECO  29 : NOMBRE D'ELEMENTS DE TYPE "COQUE"
 C     NBECA   2 : NOMBRE D'ELEMENTS DE TYPE "CABLE"
 C     NBEBA   2 : NOMBRE D'ELEMENTS DE TYPE "BARRE"
 C     NBEMA  53 : NOMBRE D'ELEMENTS DE TYPE "MASSIF"
 C     NBEGB   6 : NOMBRE D'ELEMENTS DE TYPE "GRILLE"
+C     NBEMB   4 : NOMBRE D'ELEMENTS DE TYPE "MEMBRANE"
       INCLUDE 'jeveux.h'
-      INTEGER     NBEPO,NBEDI,NBECO,NBECA,NBEBA,NBEMA,NBEGB,NBTEL,NBMCF
-      INTEGER     NBEL1,NBEL2,NBEL3
-      PARAMETER  (      NBEPO=13,NBEDI=8,NBECO=28,NBECA=2,NBEBA=2)
+      INTEGER     NBEPO,NBEDI,NBECO,NBECA,NBEBA,NBEMA,NBEGB,NBEMB
+      INTEGER     NBTEL,NBMCF,NBEL1,NBEL2,NBEL3
+      PARAMETER  (      NBEPO=13,NBEDI=8,NBECO=29,NBECA=2,NBEBA=2)
       PARAMETER  (NBEL1=NBEPO   +NBEDI  +NBECO   +NBECA  +NBEBA)
-      PARAMETER  (      NBEMA=54,NBEGB=6)
+      PARAMETER  (      NBEMA=54,NBEGB=6,NBEMB=4)
       PARAMETER  (NBEL2=NBEMA)
-      PARAMETER  (NBEL3=NBEGB)
+      PARAMETER  (NBEL3=NBEGB   +NBEMB)
       PARAMETER  (NBTEL=NBEL1+NBEL2+NBEL3)
 C     NBMCF  : NOMBRE DE MOTS CLES FACTEUR DE L'OPERATEUR
-      PARAMETER  (NBMCF=13)
+      PARAMETER  (NBMCF=14)
 C ----------------------------------------------------------------------
       INTEGER        NBMCLE(NBMCF),NBOCC(NBMCF),IVR(3),NBCART,IRET,I
       INTEGER        NTYELE(NBTEL),NBVER,NLM,NLG,LXC,LXO,NLN,NLJ,LXA
-      INTEGER        LXK,LXB,LXM,LXPF,LXGB,LMAX,IFM,NIV,LXP,NBVM,LXD
-      INTEGER        NBOCCD,LXRP,NOEMAF,LXRM,NOEMF2,NBMAIL,NBMTRD
+      INTEGER        LXK,LXB,LXM,LXPF,LXGB,LXMB,LMAX,IFM,NIV,LXP,NBVM
+      INTEGER        LXD,NBOCCD,LXRP,NOEMAF,LXRM,NOEMF2,NBMAIL,NBMTRD
       INTEGER        NPOUTR,NDISCR,NCOQUE,NCABLE,NBARRE,NMASSI,NGRILL
-      INTEGER        NGRIBT,ICLF,IOC,ICLE,NG,NOCACO,NOCAGB,IARG,DEPART
-      INTEGER        JDNM,IXNW,JDLN,JDLM,JDLS
-
+      INTEGER        NGRIBT,NMEMBR,ICLF,IOC,ICLE,NG,IARG
+      INTEGER        DEPART,JDNM,IXNW,JDLN,JDLM,JDLS
+      LOGICAL        LOCACO, LOCAGB, LOCAMB
       CHARACTER*1    K1BID
       CHARACTER*6    KIOC
       CHARACTER*8    VER(3),NOMU,NOMO,NOMA,LPAIN(3),LPAOUT(1)
@@ -59,7 +61,6 @@ C ----------------------------------------------------------------------
       CHARACTER*16   NOMEL3(NBEL3)
       CHARACTER*19   CARTCF,LIGRMO,LCHIN(3),LCHOUT(1)
       CHARACTER*24   MLGNMA,MODNOM,MODNEM,TMPLST,TMPLMA,TMPLNO,TMPNCF
-
       DATA MCLE   /  'GROUP_MA        ','MAILLE          ',
      &               'GROUP_NO        ','NOEUD           '/
 
@@ -69,11 +70,11 @@ C ----------------------------------------------------------------------
      &               'BARRE           ','MASSIF          ',
      &               'POUTRE_FLUI     ','RIGI_PARASOL    ',
      &               'GRILLE          ','RIGI_MISS_3D    ',
-     &               'DISCRET_2D      '/
+     &               'DISCRET_2D      ','MEMBRANE        '/
 C     !!!! A L'ORDRE DE STOCKAGE
 C        NOMEL1 : POUTRE(13) DISCRET(8) COQUE(28) CABLE(2) BARRE(2)
-C        NOMEL2 : MASSIF(53) 
-C        NOMEL3 : GRILLE(6)
+C        NOMEL2 : MASSIF(53)
+C        NOMEL3 : GRILLE(6) MEMBRANE(4)
       DATA NOMEL1 /         'MECA_POU_D_T    ','MECA_POU_D_E    ',
      &   'MECA_POU_D_T_GD ','MECA_POU_C_T    ','MEFS_POU_D_T    ',
      &   'MECA_POU_D_TG   ','MECA_POHO_HEXA8 ','MECA_POHO_HEXA20',
@@ -84,6 +85,7 @@ C        NOMEL3 : GRILLE(6)
      &   'MECA_2D_DIS_TR_L','THCOTR3         ','THCOTR6         ',
      &   'THCOQU4         ','THCOQU8         ','THCOTR7         ',
      &   'THCOQU9         ','MEDKTR3         ','MEDSTR3         ',
+     &   'MET3TR3         ',
      &   'MEDKQU4         ','MEDSQU4         ','MEQ4QU4         ',
      &   'MECXSE3         ','MEDKTG3         ','MEDKQG4         ',
      &   'MEQ4GG4         ','MET3GG3         ',
@@ -116,9 +118,10 @@ C        NOMEL3 : GRILLE(6)
 
       DATA NOMEL3 /         'MEGCQU4         ','MEGMTR3         ',
      &   'MEGMQU4         ','MEGMTR6         ','MEGMQU8         ',
-     &   'MEGCTR3         '/
+     &   'MEGCTR3         ','MEMBTR3         ','MEMBTR6         ',
+     &   'MEMBQU4         ','MEMBQU8         '/
 
-      DATA NBMCLE /  2,2,4,4,2,2,2,2,2,1,2,0,4/
+      DATA NBMCLE /  2,2,4,4,2,2,2,2,2,1,2,0,4,2/
 C --- ------------------------------------------------------------------
       CALL JEMARQ()
       IRET=0
@@ -133,7 +136,6 @@ C --- INITIALISATION DE  NOMELE
       DO 25 I = 1,NBEL3
          NOMELE(I+NBEL1+NBEL2) = NOMEL3(I)
    25 CONTINUE
-
 C --- ------------------------------------------------------------------
 C --- RECUPERATION DES ARGUMENTS  DE LA COMMANDE
       CALL GETRES(NOMU,CONCEP,CMD)
@@ -233,8 +235,16 @@ C --- VERIFICATION DE LA SYNTAXE DES ELEMENTS "GRILLE"
       END IF
 
 C --- ------------------------------------------------------------------
+C --- VERIFICATION DE LA SYNTAXE DES ELEMENTS "MEMBRANE"
+      LXMB = 0
+      IF (NBOCC(14).NE.0) THEN
+         CALL ACEVMB(NBOCC(14),NLM,NLG)
+         LXMB = MAX(NLM,NLG)
+      END IF
+
+C --- ------------------------------------------------------------------
 C --- LONGUEUR MAXIMUM D UNE LISTE DE MAILLE/NOEUD/GROUP_MA/GROUP_NO
-      LMAX = MAX(1,LXP,LXC,LXO,LXA,LXK,LXB,LXM,LXPF,LXGB)
+      LMAX = MAX(1,LXP,LXC,LXO,LXA,LXK,LXB,LXM,LXPF,LXGB,LXMB)
 
 C --- ------------------------------------------------------------------
 C --- RECUPERATION DU NIVEAU D'IMPRESSION
@@ -312,8 +322,8 @@ C --- RECUPERATION DES NUMEROS DES TYPES ELEMENTS
 C --- ------------------------------------------------------------------
 C --- COMPTEUR D'ELEMENTS ET VERIFICATION COHERENCE DES AFFECTATIONS
       CALL ACECEL(NOMA,NOMO,NBOCC,NBEPO,NBEDI,NBECO,NBECA,NBEBA,NBEMA,
-     &            NBTEL,NTYELE,NPOUTR,NDISCR,NCOQUE,NCABLE,
-     &            NBARRE,NMASSI,NGRILL,NGRIBT,JDLM,JDLN,IRET)
+     &            NBEGB,NBTEL,NTYELE,NPOUTR,NDISCR,NCOQUE,NCABLE,
+     &            NBARRE,NMASSI,NGRILL,NGRIBT,NMEMBR,JDLM,JDLN,IRET)
       IF (IRET.NE.0) THEN
          CALL U2MESS('F','MODELISA5_57')
       END IF
@@ -338,8 +348,8 @@ C     INCREMENTATION DES COMPTEURS D APPELS A NOCART (DISCRET,COQUE,
 C     DEFI_ARC,CABLE,POUTRE,BARRE)
       IRET=0
       CALL ACEINC(NOMA,NOMO,NBMCF,MCLF,NTYELE,NBOCC,IVR,NBEPO,
-     &            NBEDI,NBECO,NBECA,NBEBA,NBEMA,NBEGB,NBTEL,
-     &            NOCACO,NOCAGB,JDLM,JDLN,LMAX,IRET)
+     &            NBEDI,NBECO,NBECA,NBEBA,NBEMA,NBEGB,NBEMB,NBTEL,
+     &            LOCACO,LOCAGB,LOCAMB,JDLM,JDLN,LMAX,IRET)
       IF (IRET.NE.0) THEN
          CALL U2MESS('F','MODELISA5_59')
       END IF
@@ -384,7 +394,7 @@ C        NBEPO + NBEDI + NBECO + NBECA + NBEBA + NBEMA + NBEGB
 C --- ------------------------------------------------------------------
 C --- AFFECTATION DES EPAISSEURS/COURBURES/ANGLES AUX ELEMENTS COQUES
       IF (NBOCC(2).NE.0) THEN
-        CALL ACEACO(NOMU,NOMA,LMAX,NOCAGB,NBOCC(2))
+        CALL ACEACO(NOMU,NOMA,LMAX,LOCAGB,LOCAMB,NBOCC(2))
       END IF
 
 C --- ------------------------------------------------------------------
@@ -438,13 +448,19 @@ C --- AFFECTATION DES MATRICES AUX RAIDEURS REPARTIES
 C --- ------------------------------------------------------------------
 C --- AFFECTATION DES CARACTERISTIQUES POUR L'ELEMENT "GRILLE"
       IF (NBOCC(11).NE.0) THEN
-         CALL ACEAGB(NOMU,NOMA,LMAX,NOCACO,NBOCC(11))
+         CALL ACEAGB(NOMU,NOMA,LMAX,LOCACO,LOCAMB,NBOCC(11))
       END IF
 
 C --- ------------------------------------------------------------------
 C --- AFFECTATION DES MATRICES AUX RAIDEURS MISS
       IF (NBOCC(12).NE.0) THEN
          CALL ACEARM(NOMA,NOMO,LMAX,NOEMF2,NBOCC(12),IVR,IFM)
+      END IF
+
+C --- ------------------------------------------------------------------
+C --- AFFECTATION DES CARACTERISTIQUES POUR L'ELEMENT "MEMBRANE"
+      IF (NBOCC(14).NE.0) THEN
+         CALL ACEAMB(NOMU,NOMA,LMAX,LOCACO,LOCAGB,NBOCC(14))
       END IF
 
 C --- ------------------------------------------------------------------
@@ -465,6 +481,7 @@ C --- TRAITEMENT DES MOTS CLES
 C           MULTIFIBRE  /  GEOM_FIBRE
 C           COQUE       /  COQUE_NCOU
 C           GRILLE      /  COQUE_NCOU
+C           MEMBRANE    /  COQUE_NCOU
 C           POUTRE      /  TUYAU_NCOU
 C           POUTRE      /  TUYAU_NSEC
 C     ----------------------------------------------------------

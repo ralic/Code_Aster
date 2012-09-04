@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 24/07/2012   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 03/09/2012   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,7 +39,6 @@ POST_DYNA_ALEA=MACRO(nom="POST_DYNA_ALEA",
          INTE_SPEC       =SIMP(statut='f',typ=interspectre),
          b_inte_spec_f      =BLOC(condition="""INTE_SPEC !=None""",
             regles=(UN_PARMI('NOEUD_I','NUME_ORDRE_I','OPTION'),),
-            NUME_VITE_FLUI  =SIMP(statut='f',typ='I' ),
             TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
             NUME_ORDRE_I    =SIMP(statut='f',typ='I',max='**' ),
             NOEUD_I         =SIMP(statut='f',typ=no,max='**'),
